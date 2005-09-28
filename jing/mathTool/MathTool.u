@@ -1,0 +1,5 @@
+jing/mathTool/MathTool.class : jing/mathTool/MathTool.java
+jing/mathTool/MathTool.class : jing/mathTool/InvalidDoubleFormatException.java
+jing/mathTool/MathTool.class : jing/mathTool/InvalidDoubleFormatException.class
+jing/mathTool/MathTool.class : jing/mathTool/InvalidIntegerFormatException.java
+jing/mathTool/MathTool.class : jing/mathTool/InvalidIntegerFormatException.class

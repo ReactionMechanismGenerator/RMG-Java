@@ -1,0 +1,7 @@
+jing/chem/FGElement.class : jing/chem/FGElement.java
+jing/chem/FGElement.class : jing/chem/FGElementDictionary.java
+jing/chem/FGElement.class : jing/chem/FGElementDictionary.class
+jing/chem/FGElement.class : jing/chem/UnknownSymbolException.java
+jing/chem/FGElement.class : jing/chem/UnknownSymbolException.class
+jing/chem/FGElement.class : jing/chem/NullSymbolException.java
+jing/chem/FGElement.class : jing/chem/NullSymbolException.class

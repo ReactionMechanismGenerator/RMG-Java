@@ -1,0 +1,9 @@
+jing/chem/ThermoData.class : jing/chem/ThermoData.java
+jing/chem/ThermoData.class : jing/chem/TemperatureOutOfRangeException.java
+jing/chem/ThermoData.class : jing/chem/TemperatureOutOfRangeException.class
+jing/chem/ThermoData.class : jing/param/Temperature.java
+jing/chem/ThermoData.class : jing/param/Temperature.class
+jing/chem/ThermoData.class : jing/param/InvalidUnitException.java
+jing/chem/ThermoData.class : jing/param/InvalidUnitException.class
+jing/chem/ThermoData.class : jing/chem/ThermoGAValue.java
+jing/chem/ThermoData.class : jing/chem/ThermoGAValue.class

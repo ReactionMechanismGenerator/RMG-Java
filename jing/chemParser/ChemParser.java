@@ -1,0 +1,1271 @@
+//!********************************************************************************
+//!
+//!    RMG: Reaction Mechanism Generator                                            
+//!
+//!    Copyright: Jing Song, MIT, 2002, all rights reserved
+//!     
+//!    Author's Contact: jingsong@mit.edu
+//!
+//!    Restrictions:
+//!    (1) RMG is only for non-commercial distribution; commercial usage
+//!        must require other written permission.
+//!    (2) Redistributions of RMG must retain the above copyright
+//!        notice, this list of conditions and the following disclaimer.
+//!    (3) The end-user documentation included with the redistribution,
+//!        if any, must include the following acknowledgment:
+//!        "This product includes software RMG developed by Jing Song, MIT."
+//!        Alternately, this acknowledgment may appear in the software itself,
+//!        if and wherever such third-party acknowledgments normally appear.
+//!  
+//!    RMG IS PROVIDED "AS IS" AND ANY EXPRESSED OR IMPLIED 
+//!    WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES 
+//!    OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE 
+//!    DISCLAIMED.  IN NO EVENT SHALL JING SONG BE LIABLE FOR  
+//!    ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR 
+//!    CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT 
+//!    OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS;  
+//!    OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF  
+//!    LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT  
+//!    (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF 
+//!    THE USE OF RMG, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+//! 
+//!******************************************************************************
+
+
+
+package jing.chemParser;
+
+
+import java.io.*;
+import jing.rxn.*;
+import jing.chem.*;
+
+import java.util.*;
+import jing.mathTool.*;
+import jing.chemUtil.*;
+import jing.rxn.Reaction;
+import jing.chemUtil.Graph;
+import jing.chem.ThermoGAValue;
+import jing.rxn.ArrheniusKinetics;
+import jing.chemUtil.HierarchyTree;
+import jing.rxn.ArrheniusEPKinetics;
+import jing.rxnSys.CoreEdgeReactionModel;
+
+//## package jing::chemParser 
+
+//----------------------------------------------------------------------------
+// jing\chemParser\ChemParser.java                                                                  
+//----------------------------------------------------------------------------
+
+//## class ChemParser 
+public class ChemParser {
+    
+    protected static String COMMENT_SIGN = "//";		//## attribute COMMENT_SIGN 
+    
+    final protected static int MAX_TREE_LEVEL = 20;		//## attribute MAX_TREE_LEVEL 
+    
+    
+    // Constructors
+    
+    //## operation ChemParser() 
+    private  ChemParser() {
+        //#[ operation ChemParser() 
+        //#]
+    }
+    
+    //## operation extractReactionSeperator(String) 
+    public static final String extractReactionSeperator(String p_string) {
+        //#[ operation extractReactionSeperator(String) 
+        if (p_string == null) throw new NullPointerException();
+        
+        StringTokenizer st = new StringTokenizer(p_string);
+        while (st.hasMoreTokens()) {
+        	String s = st.nextToken().trim();
+        	if (s.equals("<=>")) return "<=>";
+        	else if (s.equals("=")) return "=";
+        	else if (s.equals("=>")) return "=>";
+        	else if (s.equals("->")) return "->";	
+        }
+        return null;
+        //#]
+    }
+    
+    // Argument Stringp_name : 
+    /**
+    the name of union
+    */
+    // Argument HashMapp_unRead : 
+    /**
+    the map including all the union, each mapping maps the unread union group's name with their union components' names.
+    */
+    // Argument HashMapp_dictionary : 
+    /**
+    The real dicationary where we can find the graph information from the name.
+    */
+    //## operation findUnion(String,HashMap,HashMap) 
+    public static void findUnion(String p_name, HashMap p_unRead, HashMap p_dictionary) {
+        //#[ operation findUnion(String,HashMap,HashMap) 
+        FunctionalGroupCollection fgc = new FunctionalGroupCollection(p_name);
+        
+        // get the union set according to the p_name
+        HashSet union = (HashSet)p_unRead.get(p_name);
+        Iterator union_iter = union.iterator();
+        while (union_iter.hasNext()) {
+        	String fg_name = (String)union_iter.next();
+        	// if the name of a union componenet is another union group, call findUnion() recusively
+        	if (p_unRead.containsKey(fg_name)) {
+        		findUnion(fg_name, p_unRead, p_dictionary);
+        	}
+        	Matchable fg = (Matchable)p_dictionary.get(fg_name);
+        	if (fg == null) 
+        		throw new InvalidFunctionalGroupException("Unknown FunctionalGroup in findUnion(): " + fg_name);
+        	fgc.addFunctionalGroups(fg);
+        }
+        p_dictionary.put(p_name,fgc);
+        p_unRead.remove(p_name);
+        return;
+        
+        
+        
+        //#]
+    }
+    
+    //## operation parseArrheniusEPKinetics(String) 
+    public static ArrheniusEPKinetics parseArrheniusEPKinetics(String p_string) {
+        //#[ operation parseArrheniusEPKinetics(String) 
+        StringTokenizer token = new StringTokenizer(p_string);
+        if (token.countTokens() != 10) throw new InvalidKineticsFormatException();
+        String TRange = token.nextToken();
+        
+        double A = Double.parseDouble(token.nextToken());
+        if (A<0) throw new NegativeAException("A (<0):" + String.valueOf(A));
+        double n = Double.parseDouble(token.nextToken());
+        double alpha = Double.parseDouble(token.nextToken());
+        double E = Double.parseDouble(token.nextToken());
+        
+        String s = token.nextToken();
+        double DA;
+        if (s.startsWith("*")) {
+        	s = s.substring(1,s.length());
+        	DA = Math.abs(Double.parseDouble(s));
+        	if (DA<1) throw new InvalidUncertaintyException("Multiplier Uncertainty of A (<1): " + String.valueOf(DA));
+        }
+        else {
+        // if not multiplier uncertain, transfer it into multiplier for A
+        	DA = Math.abs(Double.parseDouble(s));
+        	if (DA == 0) DA = 1;
+        	else if (DA > A) throw new NegativeAException("lower bound of A(<0): " + String.valueOf(A-DA));
+        	else {
+        		DA = A/(A-DA);
+        	}	
+        } 
+        
+        double Dn = Math.abs(Double.parseDouble(token.nextToken()));
+        double Dalpha = Math.abs(Double.parseDouble(token.nextToken()));
+        double DE = Math.abs(Double.parseDouble(token.nextToken()));
+        int rank = Integer.parseInt(token.nextToken());  
+        
+        UncertainDouble ua = new UncertainDouble(A, DA, "Multiplier");
+        UncertainDouble un = new UncertainDouble(n, Dn, "Adder");
+        UncertainDouble ualpha = new UncertainDouble(alpha, Dalpha, "Adder");
+        UncertainDouble ue = new UncertainDouble(E, DE, "Adder");
+        
+        ArrheniusEPKinetics k = new ArrheniusEPKinetics(ua, un, ualpha, ue, TRange, rank, null, null);
+        
+        return k; 
+        
+        
+        
+        //#]
+    }
+    
+    //## operation parseArrheniusKinetics(String) 
+    public static ArrheniusKinetics parseArrheniusKinetics(String p_string) {
+        //#[ operation parseArrheniusKinetics(String) 
+        StringTokenizer token = new StringTokenizer(p_string);
+        if (token.countTokens() != 8) throw new InvalidKineticsFormatException();
+        String TRange = token.nextToken();
+        
+        double A = Double.parseDouble(token.nextToken());
+        if (A<0) throw new NegativeAException("A (<0):" + String.valueOf(A));
+        double n = Double.parseDouble(token.nextToken());
+        double E = Double.parseDouble(token.nextToken());
+        
+        double DA = 1;
+        String s = token.nextToken();
+        if (s.startsWith("*")) {
+        	s = s.substring(1,s.length());
+        	DA = Math.abs(Double.parseDouble(s));
+        	if (DA<1) throw new InvalidUncertaintyException("Multiplier Uncertainty of A (<1): " + String.valueOf(DA));
+        }
+        else {
+        // if not multiplier uncertain, transfer it into multiplier for A
+        DA = Math.abs(Double.parseDouble(s));
+        if (DA == 0) DA = 1;
+        	else if (DA > A) throw new NegativeAException("lower bound of A(<0): " + String.valueOf(A-DA));
+        	else {
+        		DA = A/(A-DA);
+        	}	
+        } 
+        double Dn = Double.parseDouble(token.nextToken());
+        double DE = Double.parseDouble(token.nextToken());
+        int rank = Integer.parseInt(token.nextToken());  
+        
+        
+        UncertainDouble ua = new UncertainDouble(A, DA, "Multiplier");
+        UncertainDouble un = new UncertainDouble(n, Dn, "Adder");
+        UncertainDouble ue = new UncertainDouble(E, DE, "Adder");
+        
+        ArrheniusKinetics k = new ArrheniusKinetics(ua, un, ue, TRange, rank, null, null);
+        
+        return k; 
+        
+        
+        
+        //#]
+    }
+    
+    //## operation parseArrheniusReaction(HashMap,String,double,double) 
+    public static Reaction parseCoreArrheniusReaction(SpeciesDictionary p_species, String p_reactionString, double p_AMultiplier, double p_EMultiplier) {
+        //#[ operation parseArrheniusReaction(HashMap,String,double,double) 
+        //boolean isReverse = false;
+		if (p_reactionString == null) throw new NullPointerException("parseArrheniusReaction");
+        
+        StringTokenizer st = new StringTokenizer(p_reactionString);
+        int size = st.countTokens();
+        if (size < 4 || size > 14) throw new InvalidReactionFormatException();
+        
+        int cut = size - 3;
+        String structureString = "";
+        String arrheniusString = "";
+        
+        for (int i=0; i<cut; i++) {
+        	structureString = structureString + st.nextToken() + " ";
+        }
+        for (int i=cut; i<size; i++) {
+        	arrheniusString = arrheniusString + st.nextToken() + " ";
+        }
+        
+        // parse structure string
+        String sep = extractReactionSeperator(structureString);
+        boolean generateReverse;
+        
+        if (sep.equals("=") || sep.equals("<=>")) generateReverse = true;
+        else if (sep.equals("=>") || sep.equals("->")) generateReverse = false;
+        else throw new InvalidStructureException("Unknown reaction seperator: " + structureString);
+        
+        st = new StringTokenizer(structureString,sep);
+        if (st.countTokens() != 2) throw new InvalidStructureException("Unknown format:" + structureString);
+        
+        LinkedList r = parseReactionSpecies(p_species, st.nextToken());
+        LinkedList p = parseReactionSpecies(p_species, st.nextToken());
+        
+        Structure s = new Structure(r,p);
+        s.setDirection(1);
+        
+        // parse kinetics
+        ArrheniusKinetics k = parseSimpleArrheniusKinetics(arrheniusString, p_AMultiplier, p_EMultiplier);
+        
+        return Reaction.makeReaction(s,k,generateReverse);
+        //#]
+    }
+    
+//	## operation parseArrheniusReaction(HashMap,String,double,double) 
+    public static Reaction parseEdgeArrheniusReaction(SpeciesDictionary p_species, String p_reactionString, double p_AMultiplier, double p_EMultiplier) {
+        //#[ operation parseArrheniusReaction(HashMap,String,double,double) 
+        //boolean isReverse = false;
+		if (p_reactionString == null) throw new NullPointerException("parseArrheniusReaction");
+        
+        StringTokenizer st = new StringTokenizer(p_reactionString);
+        int size = st.countTokens();
+        if (size < 4 || size > 14) throw new InvalidReactionFormatException();
+        
+        int cut = size - 3;
+        String structureString = "";
+        String arrheniusString = "";
+        
+        for (int i=0; i<cut; i++) {
+        	structureString = structureString + st.nextToken() + " ";
+        }
+        for (int i=cut; i<size; i++) {
+        	arrheniusString = arrheniusString + st.nextToken() + " ";
+        }
+        
+        // parse structure string
+        String sep = extractReactionSeperator(structureString);
+        boolean generateReverse;
+        
+        if (sep.equals("=") || sep.equals("<=>")) generateReverse = true;
+        else if (sep.equals("=>") || sep.equals("->")) generateReverse = false;
+        else throw new InvalidStructureException("Unknown reaction seperator: " + structureString);
+        
+        st = new StringTokenizer(structureString,sep);
+        if (st.countTokens() != 2) throw new InvalidStructureException("Unknown format:" + structureString);
+        
+        LinkedList r = parseReactionSpecies(p_species, st.nextToken());
+        LinkedList p = parseReactionSpecies(p_species, st.nextToken());
+        if (generateReverse){
+			Structure s = new Structure(p,r);
+	        s.setDirection(1);
+	        
+	        // parse kinetics
+	        ArrheniusKinetics k = parseSimpleArrheniusKinetics(arrheniusString, p_AMultiplier, p_EMultiplier);
+	        
+	        Reaction forward = Reaction.makeReaction(s,k,generateReverse);
+			
+			return forward.getReverseReaction();
+        }
+        else {
+			Structure s = new Structure(r,p);
+	        s.setDirection(1);
+	        
+	        // parse kinetics
+	        ArrheniusKinetics k = parseSimpleArrheniusKinetics(arrheniusString, p_AMultiplier, p_EMultiplier);
+	        
+	        //Reaction forward = Reaction.makeReaction(s,k,generateReverse);
+			
+			return Reaction.makeReaction(s,k,generateReverse);
+        }
+        
+        //#]
+    }
+	
+//	## operation parseArrheniusReaction(HashMap,String,double,double) 
+    public static Reaction parseArrheniusReaction(SpeciesDictionary p_species, String p_reactionString, double p_AMultiplier, double p_EMultiplier, CoreEdgeReactionModel cerm) {
+        //#[ operation parseArrheniusReaction(HashMap,String,double,double) 
+        //boolean isReverse = false;
+		if (p_reactionString == null) throw new NullPointerException("parseArrheniusReaction");
+        
+        StringTokenizer st = new StringTokenizer(p_reactionString);
+        int size = st.countTokens();
+        if (size < 6 || size > 16) throw new InvalidReactionFormatException();
+        
+        int cut = size - 3;
+        String structureString = "";
+        String arrheniusString = "";
+        
+        for (int i=0; i<cut-2; i++) {
+        	structureString = structureString + st.nextToken() + " ";
+        }
+		int direction = Integer.parseInt(st.nextToken());
+		int redundancy = Integer.parseInt(st.nextToken());
+		
+        for (int i=cut; i<size; i++) {
+        	arrheniusString = arrheniusString + st.nextToken() + " ";
+        }
+        
+        // parse structure string
+        String sep = extractReactionSeperator(structureString);
+        boolean generateReverse;
+        
+        if (sep.equals("=") || sep.equals("<=>")) generateReverse = true;
+        else if (sep.equals("=>") || sep.equals("->")) generateReverse = false;
+        else throw new InvalidStructureException("Unknown reaction seperator: " + structureString);
+        
+        st = new StringTokenizer(structureString,sep);
+        if (st.countTokens() != 2) throw new InvalidStructureException("Unknown format:" + structureString);
+        
+        LinkedList r = parseReactionSpecies(p_species, st.nextToken());
+        LinkedList p = parseReactionSpecies(p_species, st.nextToken());
+		Structure s = new Structure(r,p);
+		int i = cerm.categorizeReaction(s);
+		if (i== -1){
+	        if (generateReverse){
+				s = new Structure(p,r);
+		        s.setDirection(1);
+		        
+		        // parse kinetics
+		        ArrheniusKinetics k = parseSimpleArrheniusKinetics(arrheniusString, p_AMultiplier, p_EMultiplier);
+				//s.setRedundancy(redundancy);;
+		        Reaction forward = Reaction.makeReaction(s,k,generateReverse);
+				
+				return forward.getReverseReaction();
+	        }
+	        else {
+				s = new Structure(r,p);
+		        s.setDirection(1);
+		        
+		        // parse kinetics
+		        ArrheniusKinetics k = parseSimpleArrheniusKinetics(arrheniusString, p_AMultiplier, p_EMultiplier);
+				//s.setRedundancy(redundancy);
+		        //Reaction forward = Reaction.makeReaction(s,k,generateReverse);
+				
+				return Reaction.makeReaction(s,k,generateReverse);
+	        }	
+		}
+		else if (i==1){
+			if (direction == 1){
+				s = new Structure(r,p);
+		        s.setDirection(1);
+		        
+		        // parse kinetics
+		        ArrheniusKinetics k = parseSimpleArrheniusKinetics(arrheniusString, p_AMultiplier, p_EMultiplier);
+				//s.setRedundancy(redundancy);
+		        return Reaction.makeReaction(s,k,generateReverse);
+			}
+			
+			if (direction == -1){
+				
+				s = new Structure(p,r);
+		        s.setDirection(1);
+		        
+		        // parse kinetics
+		        ArrheniusKinetics k = parseSimpleArrheniusKinetics(arrheniusString, p_AMultiplier, p_EMultiplier);
+		        Reaction forwardReaction = Reaction.makeReaction(s,k,generateReverse);
+		        return forwardReaction.getReverseReaction();
+			}
+		}
+		
+		return null;
+        //#]
+    }
+	
+	 //## operation parseArrheniusReaction(HashMap,String,double,double) 
+    public static Reaction parseArrheniusReaction(HashMap p_species, String p_reactionString, double p_AMultiplier, double p_EMultiplier) {
+        //#[ operation parseArrheniusReaction(HashMap,String,double,double) 
+        if (p_reactionString == null) throw new NullPointerException("parseArrheniusReaction");
+        
+        StringTokenizer st = new StringTokenizer(p_reactionString);
+        int size = st.countTokens();
+        if (size < 4 || size > 14) throw new InvalidReactionFormatException();
+        
+        int cut = size - 3;
+        String structureString = "";
+        String arrheniusString = "";
+        
+        for (int i=0; i<cut; i++) {
+        	structureString = structureString + st.nextToken() + " ";
+        }
+        for (int i=cut; i<size; i++) {
+        	arrheniusString = arrheniusString + st.nextToken() + " ";
+        }
+        
+        // parse structure string
+        String sep = extractReactionSeperator(structureString);
+        boolean generateReverse;
+        
+        if (sep.equals("=") || sep.equals("<=>")) generateReverse = true;
+        else if (sep.equals("=>") || sep.equals("->")) generateReverse = false;
+        else throw new InvalidStructureException("Unknown reaction seperator: " + structureString);
+        
+        st = new StringTokenizer(structureString,sep);
+        if (st.countTokens() != 2) throw new InvalidStructureException("Unknown format:" + structureString);
+        
+        LinkedList r = parseReactionSpecies(p_species, st.nextToken());
+        LinkedList p = parseReactionSpecies(p_species, st.nextToken());
+        
+        Structure s = new Structure(r,p);
+        s.setDirection(1);
+        
+        // parse kinetics
+        ArrheniusKinetics k = parseSimpleArrheniusKinetics(arrheniusString, p_AMultiplier, p_EMultiplier);
+        
+        return Reaction.makeReaction(s,k,generateReverse);
+        //#]
+    }
+    //## operation parseReactionSpecies(HashMap,String) 
+    public static LinkedList parseReactionSpecies(SpeciesDictionary p_speciesSet, String p_speciesString) {
+        //#[ operation parseReactionSpecies(HashMap,String) 
+        if (p_speciesString == null) throw new NullPointerException();
+        
+        StringTokenizer st = new StringTokenizer(p_speciesString, "+");
+        int speNum = st.countTokens();
+        if (speNum > 3) throw new InvalidStructureException("too many reactants/products: " + p_speciesString);
+        
+        LinkedList reactionSpe = new LinkedList();
+        
+        for (int i = 0; i < speNum; i++) {
+        	String name = st.nextToken().trim();
+        	if (!name.equals("M")) {
+        		Species spe = (Species)p_speciesSet.getSpeciesFromChemkinName(name);	
+        		if (spe == null) throw new InvalidStructureException("unknown reactant/product: " + name);
+        		reactionSpe.add(spe.getChemGraph());
+        	}
+        }
+        
+        return reactionSpe;
+        //#]
+    }
+    
+	 //## operation parseReactionSpecies(HashMap,String) 
+    public static LinkedList parseReactionSpecies(HashMap p_speciesSet, String p_speciesString) {
+        //#[ operation parseReactionSpecies(HashMap,String) 
+        if (p_speciesString == null) throw new NullPointerException();
+        
+        StringTokenizer st = new StringTokenizer(p_speciesString, "+");
+        int speNum = st.countTokens();
+        if (speNum > 3) throw new InvalidStructureException("too many reactants/products: " + p_speciesString);
+        
+        LinkedList reactionSpe = new LinkedList();
+        
+        for (int i = 0; i < speNum; i++) {
+        	String name = st.nextToken().trim();
+        	if (!name.equals("M")) {
+        		Species spe = (Species)p_speciesSet.get(name);
+        		if (spe == null) throw new InvalidStructureException("unknown reactant/product: " + name);
+        		reactionSpe.add(spe.getChemGraph());
+        	}
+        }
+        
+        return reactionSpe;
+        //#]
+    }
+	
+    //## operation parseSimpleArrheniusKinetics(String,double,double) 
+    public static ArrheniusKinetics parseSimpleArrheniusKinetics(String p_string, double p_AMultiplier, double p_EMultiplier) {
+        //#[ operation parseSimpleArrheniusKinetics(String,double,double) 
+        StringTokenizer token = new StringTokenizer(p_string);
+        if (token.countTokens() != 3) throw new InvalidKineticsFormatException();
+        
+        double A = Double.parseDouble(token.nextToken());
+        if (A<0) throw new NegativeAException("A (<0):" + String.valueOf(A));
+        double n = Double.parseDouble(token.nextToken());
+        double E = Double.parseDouble(token.nextToken());
+        
+        UncertainDouble ua = new UncertainDouble(A*p_AMultiplier, 1, "Multiplier");
+        UncertainDouble un = new UncertainDouble(n, 0, "Adder");
+        UncertainDouble ue = new UncertainDouble(E*p_EMultiplier, 0, "Adder");
+        
+        ArrheniusKinetics k = new ArrheniusKinetics(ua, un, ue, "Unknown", 10000, null, null);
+        
+        return k; 
+        
+        
+        
+        //#]
+    }
+    
+    //## operation parseThermoGAValue(String) 
+    public static ThermoGAValue parseThermoGAValue(String p_string) {
+        //#[ operation parseThermoGAValue(String) 
+        String s = p_string.trim();
+        StringTokenizer token = new StringTokenizer(s);
+        
+        int data_num = token.countTokens();
+        if (data_num != 9) throw new InvalidThermoFormatException();
+        
+        double H, S, Cp300, Cp400, Cp500, Cp600, Cp800, Cp1000, Cp1500;
+        H = Double.parseDouble(token.nextToken());
+        S = Double.parseDouble(token.nextToken());
+        Cp300 = Double.parseDouble(token.nextToken());
+        Cp400 = Double.parseDouble(token.nextToken());
+        Cp500 = Double.parseDouble(token.nextToken());
+        Cp600 = Double.parseDouble(token.nextToken());
+        Cp800 = Double.parseDouble(token.nextToken());
+        Cp1000 = Double.parseDouble(token.nextToken());
+        Cp1500 = Double.parseDouble(token.nextToken());
+        
+        return new ThermoGAValue(H, S, Cp300, Cp400, Cp500, Cp600, Cp800, Cp1000, Cp1500, null);
+        
+        
+        
+        
+        //#]
+    }
+    
+    //## operation parseThirdBodyList(String) 
+    public static HashMap parseThirdBodyList(String p_string) {
+        //#[ operation parseThirdBodyList(String) 
+        if (p_string == null) throw new NullPointerException("read third body factor");
+        
+        HashMap thirdBodyList = new HashMap();
+        StringTokenizer st = new StringTokenizer(p_string, "/");
+        while (st.hasMoreTokens()) {
+        	String name = st.nextToken().trim();
+        	Double factor = Double.valueOf(st.nextToken().trim());
+            thirdBodyList.put(name, factor);                   
+        }
+        
+        return thirdBodyList;
+        //#]
+    }
+    
+    //## operation readActions(BufferedReader) 
+    public static LinkedList readActions(BufferedReader p_reader) {
+        //#[ operation readActions(BufferedReader) 
+        LinkedList action = new LinkedList();
+        
+        String line = ChemParser.readUncommentLine(p_reader);
+        while (line != null) {
+        	StringTokenizer token = new StringTokenizer(line);
+        	String index = token.nextToken();
+        	String type = token.nextToken();
+        	String act = token.nextToken();
+        	             
+        	LinkedList site = new LinkedList();
+        	Object element;	             
+        	act = removeBrace(act);
+        	token = new StringTokenizer(act,",");
+        	
+        	if (type.compareToIgnoreCase("CHANGE_BOND")==0) {
+        		String site1 = token.nextToken();
+        		String order = token.nextToken();
+        		String site2 = token.nextToken();
+        		
+        		Integer s1 = new Integer(site1.substring(1,site1.length()));
+        		element = new Integer(order);
+        		Integer s2 = new Integer(site2.substring(1,site2.length()));
+        		
+        		site.add(s1);
+        		site.add(s2);
+        	}
+        	else if (type.compareToIgnoreCase("BREAK_BOND")==0) {
+        		String site1 = token.nextToken();
+        		String bond = token.nextToken();
+        		String site2 = token.nextToken();
+        		
+        		Integer s1 = new Integer(site1.substring(1,site1.length()));
+        		element = Bond.make(bond);
+        		Integer s2 = new Integer(site2.substring(1,site2.length()));
+        		
+        		site.add(s1);
+        		site.add(s2);
+        	}
+        	else if (type.compareToIgnoreCase("FORM_BOND")==0) {
+        		String site1 = token.nextToken();
+        		String bond = token.nextToken();
+        		String site2 = token.nextToken();
+        		
+        		Integer s1 = new Integer(site1.substring(1,site1.length()));
+        		element = Bond.make(bond);
+        		Integer s2 = new Integer(site2.substring(1,site2.length()));
+        		
+        		site.add(s1);
+        		site.add(s2);
+        	}
+        	else if (type.compareToIgnoreCase("GAIN_RADICAL")==0) {
+        		String site1 = token.nextToken();
+        		String order = token.nextToken();
+        		
+        		Integer s1 = new Integer(site1.substring(1,site1.length()));
+        		element = new Integer(order);
+        		
+        		site.add(s1);
+        	}
+        	else if (type.compareToIgnoreCase("LOSE_RADICAL")==0) {
+        		String site1 = token.nextToken();
+        		String order = token.nextToken();
+        		
+        		Integer s1 = new Integer(site1.substring(1,site1.length()));
+        		element = new Integer(order);
+        		
+        		site.add(s1);
+        	}
+        	else {
+        		throw new InvalidActionException("Unknown Action type: " + type);
+        	}
+        	
+        	Action thisAction = new Action(type,site,element);
+        	action.add(thisAction);
+        	
+        	line = ChemParser.readUncommentLine(p_reader);
+        }
+        return action;
+        
+        
+        
+        //#]
+    }
+    
+    //## operation readBond(String) 
+    public static Object readBond(String p_name) throws InvalidGraphFormatException {
+        //#[ operation readBond(String) 
+        String bondType = removeBrace(p_name);
+        StringTokenizer bondToken = new StringTokenizer(bondType, ",");
+        int bondNum = bondToken.countTokens();
+        try {
+        	if (bondNum <= 0) {
+        		throw new InvalidGraphFormatException("bond: " + bondType);
+        	}
+        	else if (bondNum == 1) {
+        		String b = bondToken.nextToken();
+        		Bond bond = Bond.make(b);
+        		return bond;
+        	}
+        	else {
+        		HashSet bondList = new HashSet();
+        		while (bondToken.hasMoreTokens()) {
+        			String b = bondToken.nextToken();
+        			Bond bond = Bond.make(b);
+        			bondList.add(bond);
+        		}
+        		return bondList;
+        	}
+        }
+        catch (UnknownSymbolException e) {
+        	throw new InvalidGraphFormatException("bond: " + bondType);
+        }
+        	
+        
+        
+        
+        //#]
+    }
+    
+    //## operation readChemGraph(BufferedReader) 
+    public static Graph readChemGraph(BufferedReader p_reader) throws IOException {
+        //#[ operation readChemGraph(BufferedReader) 
+        try {
+        	Graph g = new Graph();
+        	
+        	int centralID = -1;
+        	
+        	String line = readUncommentLine(p_reader);
+        	while (line != null) {
+         		StringTokenizer token = new StringTokenizer(line);
+        		// read in ID
+        		String index = token.nextToken();
+        		if (index.endsWith(".")) {index = index.substring(0,index.length()-1);}
+        		Integer ID = new Integer(index);
+                
+                // read in central ID and/or name
+                int thisCentralID = -1;
+                String centralIndex = token.nextToken();
+                String name;
+                if (!centralIndex.equals("*")) {
+                	name = centralIndex;
+                }
+                else {
+                	if (centralID == -1) centralID = 1;
+                	else centralID++;
+                	thisCentralID = centralID;
+                	name = token.nextToken();
+                }
+        
+        		// read in the radical number
+        		String radical = token.nextToken();
+           		Atom atom = (Atom)ChemParser.readChemNodeElement(name,radical);
+                Node presentNode = null;
+                
+           		if (thisCentralID>0) presentNode = g.addNodeAt(ID.intValue(),atom,thisCentralID);
+           		else presentNode = g.addNodeAt(ID.intValue(),atom);
+        
+        		// read in the bonds connected to present node site
+        		while (token.hasMoreTokens()) {
+        			String bondPair = token.nextToken();
+        
+        			bondPair = removeBrace(bondPair);
+        			
+        			StringTokenizer bondPairToken = new StringTokenizer(bondPair,",");
+        
+        			Integer nodeID = new Integer(bondPairToken.nextToken());
+        			String bondType = bondPairToken.nextToken();
+        
+        			Node otherNode = g.getNodeAt(nodeID.intValue());
+        			// (1) if the other node is already in the graph, make/add the bond between those two nodes, otherwise, do nothing
+        			//		wait until the other node added, and then add the arc.
+        			// (2) this requires the adj list should be symetric, say, each bond appears twice. (each node linked by that bond
+        			//      should has the bond recorded in the adjlist of the node.
+        			if (otherNode != null) {
+        				g.addArcBetween(presentNode,Bond.make(bondType),otherNode);
+        			}
+        		}
+        		line = readUncommentLine(p_reader);
+        	}
+        
+        	if (g.isEmpty()) g = null;
+        	else g.identifyFgElement();
+        	return g;
+        }
+        catch (Exception e) {
+        	throw new IOException();
+        }
+        
+        
+        
+        
+        
+        //#]
+    }
+    
+    //## operation readChemNodeElement(String,String) 
+    public static Object readChemNodeElement(String p_name, String p_radical) throws InvalidGraphFormatException, NullSymbolException {
+        //#[ operation readChemNodeElement(String,String) 
+        if (p_name == null || p_radical == null) throw new NullSymbolException();
+        
+        // read in radical
+        FreeElectron fe = null;
+        p_radical = removeBrace(p_radical);
+        try {
+        	fe = FreeElectron.make(p_radical);
+        }
+        catch (UnknownSymbolException e) {
+        	throw new InvalidGraphFormatException("free electron: " + p_radical);
+        }
+        
+        // read in atom
+        String aList = removeBrace(p_name);
+        
+        StringTokenizer aListToken = new StringTokenizer(aList,",");
+        int atomNum = aListToken.countTokens();
+        try {
+        	if (atomNum <= 0) {
+        		throw new InvalidGraphFormatException("atom: " + aList);
+        	}
+        	else if (atomNum == 1) {
+        		String nextToken = aListToken.nextToken();
+        		ChemNodeElement atom = null;
+        		try {
+        			ChemElement ce = ChemElement.make(nextToken);	
+        			atom = Atom.make(ce,fe);
+        		}
+        		catch (UnknownSymbolException e) {
+        			FGElement fge = FGElement.make(nextToken);
+        			atom = FGAtom.make(fge,fe);
+        		}
+        		return atom;
+        	}
+        	else {
+        		HashSet atomList = new HashSet();
+        		ChemNodeElement atom = null;
+        		while (aListToken.hasMoreTokens()) {
+        			String nextToken = aListToken.nextToken();
+        			try {
+        				ChemElement ce = ChemElement.make(nextToken);	
+        				atom = Atom.make(ce,fe);
+        			}
+        			catch (UnknownSymbolException e) {
+        				FGElement fge = FGElement.make(nextToken);
+        				atom = FGAtom.make(fge,fe);
+        			}
+        			atomList.add(atom);
+        		}
+        		return atomList;
+        	}
+        }
+        catch (UnknownSymbolException e) {
+        	throw new InvalidGraphFormatException("ChemNodeElement: " + aList);
+        }
+        
+        
+        
+        //#]
+    }
+    
+    /**
+    Requires:
+    Effects: read and return one graph from the p_reader
+    Modifies: p_reader
+    */
+    //## operation readFGGraph(BufferedReader) 
+    public static Graph readFGGraph(BufferedReader p_reader) throws InvalidGraphFormatException, IOException {
+        //#[ operation readFGGraph(BufferedReader) 
+        Graph g = new Graph();
+        	
+        String line=readUncommentLine(p_reader);
+        
+        try {
+        	int centralID = -1;
+        	while (line != null) {
+        		StringTokenizer token = new StringTokenizer(line);
+        		// read in ID
+        		String index = token.nextToken();
+        		if (index.endsWith(".")) {index = index.substring(0,index.length()-1);}
+        		Integer ID = new Integer(index);
+        	
+        		// read in central ID and/or name
+        	    int thisCentralID = -1;
+        	    String centralIndex = token.nextToken();
+        	    String name;
+        	    if (!centralIndex.startsWith("*")) {
+        	      	name = centralIndex;
+        	    }
+        	    else {
+        	    	if (centralIndex.equals("*")) {
+        		    	if (centralID == -1) centralID = 1;
+        		      	else centralID++;
+        		       	thisCentralID = centralID;
+        			}
+        	 		else {
+        	 			Integer central = new Integer(centralIndex.substring(1,centralIndex.length()));
+        	 			thisCentralID = central.intValue();
+        	 		}
+        	 		name = token.nextToken();
+        		}
+        	
+        		// read in the radical number, note, the number can't be more than one, like: {#1, #2, ...}
+        		// throw exception if unknown symbols are caught
+        		String radical = token.nextToken();
+        	 
+        	 	// form atom nodes with the information of name, central id, and radical number
+        		Object cne = readChemNodeElement(name,radical);
+        		Node presentNode = g.addNodeAt(ID.intValue(),cne,thisCentralID);
+        		
+        		// read in the bonds connected to present node site
+        		while (token.hasMoreTokens()) {
+        			String bondPair = token.nextToken();
+        			bondPair = removeBrace(bondPair);
+        			StringTokenizer bondPairToken = new StringTokenizer(bondPair,",");
+        	  		Integer nodeID = new Integer(bondPairToken.nextToken());
+        			String bondType = bondPairToken.nextToken();
+        	        while (bondPairToken.hasMoreTokens()) {
+        	        	bondType = bondType + "," + bondPairToken.nextToken();
+        	        }
+        	        
+        			Node otherNode = g.getNodeAt(nodeID.intValue());
+        			// (1) if the other node is already in the graph, make/add the bond between those two nodes, otherwise, do nothing
+        			//		wait until the other node added, and then add the arc.
+        			// (2) this requires the adj list should be symetric, say, each bond appears twice. (each node linked by that bond
+        			//      should has the bond recorded in the adjlist of the node.
+        			if (otherNode != null) {
+        				// if there are more than one possible bond, add a set of bonds
+        				Object bond = readBond(bondType);
+        				g.addArcBetween(presentNode,bond,otherNode);
+        			}
+        		}
+        		line=readUncommentLine(p_reader);
+        	}
+        	
+        	
+        	if (g.isEmpty()) g = null;
+        	else g.identifyFgElement();
+        	return g;
+        }
+        catch (Exception e) {
+        	throw new IOException(e.getMessage() + '\n' + "Error Line: " + line + '\n');
+        }
+        	
+        
+        
+        
+        //#]
+    }
+    
+    //## operation readFunctionalGroup(String) 
+    public static Collection readFunctionalGroup(String p_fileName) {
+        //#[ operation readFunctionalGroup(String) 
+        try {
+        	FileReader in = new FileReader(p_fileName);
+        
+        	BufferedReader reader = new BufferedReader(in);
+        	HashSet fgList = new HashSet();
+        
+        	String line = readMeaningfulLine(reader);
+        
+        	while (line != null) {
+        		StringTokenizer st = new StringTokenizer(line);
+        		String name = st.nextToken();
+        		Graph g = readFGGraph(reader);
+        		FunctionalGroup fg = FunctionalGroup.make(name, g);
+        		fgList.add(fg);
+        	}
+        	if (fgList.isEmpty()) fgList = null;
+        	return fgList;
+        }
+        catch (IOException e) {
+        	System.err.println("Can't read species!");
+        	return null;
+        }
+        //#]
+    }
+    
+    /**
+    Requires:
+    Effects: read hierarchy tree structure
+    Modifies:
+    */
+    //## operation readHierarchyTree(BufferedReader,HashMap,int) 
+    public static HierarchyTree readHierarchyTree(BufferedReader p_reader, HashMap p_dictionary, int p_level) throws IOException, NotInDictionaryException {
+        //#[ operation readHierarchyTree(BufferedReader,HashMap,int) 
+        try {
+        	HierarchyTreeNode root = (HierarchyTreeNode)readHierarchyTreeNode(p_reader,p_level,p_dictionary);
+        	if (root == null) return null;
+        	else return new HierarchyTree(root);
+        }
+        catch (IOException e) {
+        	throw new IOException(e.getMessage());
+        }
+        catch (NotInDictionaryException e) {
+        	throw new NotInDictionaryException("During Reading Tree: " + e.getMessage());
+        }
+        	
+        
+        
+        
+        
+        //#]
+    }
+    
+    //## operation readHierarchyTreeNode(BufferedReader,int,HashMap) 
+    public static Object readHierarchyTreeNode(BufferedReader p_reader, int p_level, HashMap p_dictionary) throws IOException {
+        //#[ operation readHierarchyTreeNode(BufferedReader,int,HashMap) 
+        try {
+        	p_reader.mark(1000);
+        	String line = p_reader.readLine();
+        	read: while (line != null) {
+        		line = line.trim();
+        		while (line.startsWith("/") || (line.length() == 0)) {
+        			p_reader.mark(1000);
+        			line = p_reader.readLine();
+        			if (line == null) break read;
+        			line = line.trim();
+        		}
+        		StringTokenizer token = new StringTokenizer(line, ":");
+        		int data_num = token.countTokens();
+        		if (data_num != 2) {
+        			throw new IOException("Invalid tree line");
+        		}
+        		// read in level
+        		String l = token.nextToken().trim();
+        		String level = l.substring(1,l.length());
+        		int present_level = Integer.parseInt(level);
+        		if (p_level != present_level) {
+        			p_reader.reset();
+        			return null;
+        		}
+        		String other = token.nextToken();
+        		token = new StringTokenizer(other);
+        		data_num = token.countTokens();
+        		if (data_num < 1) {
+        			throw new IOException("Invalid tree line");
+        		}
+        
+        		String name = token.nextToken().trim();
+        		Matchable node_element = (Matchable)p_dictionary.get(name);
+        		if (node_element == null) {
+        			if (name.startsWith("Other")) {
+        				DummyLeaf dl = new DummyLeaf(name,p_level);
+        				p_dictionary.put(name,name);
+        				return dl;
+        			}
+        			else throw new NotInDictionaryException(name + " is not found in functional group dictionary!");
+        		}
+        		HierarchyTreeNode node = new HierarchyTreeNode(node_element,p_level);
+        
+        		while (true) {
+        			// read the next level nodes (children)
+        			Object child = readHierarchyTreeNode(p_reader,present_level + 1, p_dictionary);
+        			if (child == null) break;  // can't find children
+        		    if (child instanceof HierarchyTreeNode) { 
+        		    	node.addChildren((HierarchyTreeNode)child);
+        		    }
+        		    else if (child instanceof DummyLeaf) {
+        		    	node.setDummyChild((DummyLeaf)child);
+        		    }
+        		    else throw new InvalidChildException();
+        		}
+        
+        		return node;
+        	}
+        	return null;
+        }
+        catch (IOException e) {
+        	throw new IOException();
+        }
+        
+        
+        
+        
+        //#]
+    }
+    
+    /**
+    Requires:
+    Effects: return the next uncommented and non-empty line.  (skip comment line and empty line).  return null, if it is the end of file
+    Modifies: p_reader
+    */
+    //## operation readMeaningfulLine(BufferedReader) 
+    public static String readMeaningfulLine(BufferedReader p_reader) {
+        //#[ operation readMeaningfulLine(BufferedReader) 
+        if (p_reader == null) return null;
+        
+        String line = null;
+        
+        try {
+        	do {
+        		line = p_reader.readLine();
+        		if (line == null) return null;
+        		line = line.trim();
+        	} while (line.startsWith("//") || line.length() == 0); 
+        	
+        	return line;
+        }
+        catch (IOException e) {
+        	return null;
+        }
+        //#]
+    }
+    
+    /**
+    Requires:
+    Effects: read in species name and adjlist from a species file one by one, return the collection of all the species.  If nothing is read in or if there is any excetption caught, return null.
+    Modifies: the species dictionary
+    */
+    //## operation readSpecies(String) 
+    public static Collection readSpecies(String p_fileName) {
+        //#[ operation readSpecies(String) 
+        try {
+        	FileReader in = new FileReader(p_fileName);
+        
+        	BufferedReader reader = new BufferedReader(in);
+        	HashSet speciesList = new HashSet();
+        
+        	String line = readMeaningfulLine(reader);
+        	while (line != null) {
+        		StringTokenizer st = new StringTokenizer(line);
+        		String name = st.nextToken();
+        		Graph g = readChemGraph(reader);
+        		if (g == null) throw new NullGraphException();
+        		ChemGraph cg = ChemGraph.make(g);
+        		Species spe = Species.make(name,cg);
+        		speciesList.add(spe);
+        		line = readMeaningfulLine(reader);
+        	}
+        	if (speciesList.isEmpty()) speciesList = null;
+        	return speciesList;
+        }
+        catch (IOException e) {
+        	System.err.println("Can't read species!");
+        	System.err.println(e.getMessage());
+        	return null;
+        }
+        catch (ForbiddenStructureException e) {
+        	System.err.println("Can't read species!");
+        	System.err.println("Forbidden Structure:\n" + e.getMessage());
+        	return null;
+        }
+        //#]
+    }
+    
+    /**
+    Requires:
+    Effects: return the next uncommented line in the p_reader.  if it is the end of file or an empty line, return null.
+    Modifies:
+    */
+    //## operation readUncommentLine(BufferedReader) 
+    public static String readUncommentLine(BufferedReader p_reader) {
+        //#[ operation readUncommentLine(BufferedReader) 
+        if (p_reader == null) return null;
+        
+        String line = null;
+        
+        try {
+        	do {
+        		line = p_reader.readLine();
+        		if (line == null) return null;
+        		line = line.trim();
+        		if (line.length() == 0) return null;
+        	} while (line.startsWith("//")); 
+        	
+        	return line;
+        }
+        catch (IOException e) {
+        	return null;
+        }
+        //#]
+    }
+    
+    //## operation readUnion(String) 
+    public static HashSet readUnion(String p_string) throws InvalidUnionFormatException {
+        //#[ operation readUnion(String) 
+        try {
+        	HashSet result = new HashSet();
+        	if (p_string == null) return result;
+        	p_string = p_string.trim();
+        	String prefix = p_string.substring(0,5);
+        	if (prefix.compareToIgnoreCase("union") == 0) {
+        		p_string = p_string.substring(5,p_string.length());
+        		p_string = ChemParser.removeBrace(p_string);
+        		StringTokenizer token = new StringTokenizer(p_string,",");
+        		while (token.hasMoreTokens()) {
+        			String name = token.nextToken();
+        			name = name.trim();
+        			result.add(name);
+        		}
+        	}
+        	return result;
+        }
+        catch (Exception e) {
+        	throw new InvalidUnionFormatException();
+        }	 
+        //#]
+    }
+    
+    //## operation removeBrace(String) 
+    public static String removeBrace(String p_name) {
+        //#[ operation removeBrace(String) 
+        p_name = p_name.trim();
+        if (p_name.startsWith("{") || p_name.startsWith("(") || p_name.startsWith("[")) { 
+        	int trim = 0;
+        	if (p_name.endsWith("}") || p_name.endsWith(")") || p_name.endsWith("]")) {
+        		trim = 1;
+        	}	
+        	else if (p_name.endsWith("},") || p_name.endsWith("),") || p_name.endsWith("],")) {
+        		trim = 2;
+        	}
+        	p_name = p_name.substring(1,p_name.length()-trim);
+        }
+        	
+        return p_name;
+        
+        
+        
+        //#]
+    }
+    
+    //## operation writeBond(Object) 
+    public static String writeBond(Object p_bond) {
+        //#[ operation writeBond(Object) 
+        if (p_bond instanceof Bond) {
+        	return ((Bond)p_bond).getName();
+        }
+        else if (p_bond instanceof Collection) {
+        	String s = "{";
+        	Iterator iter = ((Collection)p_bond).iterator();
+        	while (iter.hasNext()) {
+        		Bond bond = (Bond)iter.next();
+        		s = s + bond.getName() + ",";
+        	}
+        	s = s.substring(0,s.length()-1);	
+        	s = s + "}";
+        	return s;
+        }
+        else throw new InvalidBondException();
+        
+        
+        
+        
+        //#]
+    }
+    
+    //## operation writeChemNodeElement(Object) 
+    public static String writeChemNodeElement(Object p_chemNodeElement) {
+        //#[ operation writeChemNodeElement(Object) 
+        Object o = p_chemNodeElement;
+        
+        if (o instanceof Atom) {
+        	return ((Atom)o).getChemElement().getName();
+        }
+        else if (o instanceof FGAtom) {
+        	return ((FGAtom)o).getFgElement().getName();
+        }
+        else if (o instanceof Collection) {
+        	String s = "{";
+        	Iterator iter = ((Collection)o).iterator();
+        	while (iter.hasNext()) {
+        		Object thisObject = iter.next();
+        		if (thisObject instanceof Atom) {
+        			s = s + ((Atom)thisObject).getChemElement().getName() + ",";
+        		}
+        		else if (thisObject instanceof FGAtom) {
+        			s = s + ((FGAtom)thisObject).getFgElement().getName() + ",";
+        		}
+        	}
+        	s = s.substring(0,s.length()-1);
+        	s = s + "}";
+        	return s;
+        }
+        else throw new InvalidChemNodeElementException();
+        
+        
+        
+        
+        
+        //#]
+    }
+    
+}
+/*********************************************************************
+	File Path	: RMG\RMG\jing\chemParser\ChemParser.java
+*********************************************************************/
+

@@ -1,0 +1,7 @@
+jing/chem/FreeElectronDictionary.class : jing/chem/FreeElectronDictionary.java
+jing/chem/FreeElectronDictionary.class : jing/chem/UnknownSymbolException.java
+jing/chem/FreeElectronDictionary.class : jing/chem/UnknownSymbolException.class
+jing/chem/FreeElectronDictionary.class : jing/chem/FreeElectron.java
+jing/chem/FreeElectronDictionary.class : jing/chem/FreeElectron.class
+jing/chem/FreeElectronDictionary.class : jing/chem/NullSymbolException.java
+jing/chem/FreeElectronDictionary.class : jing/chem/NullSymbolException.class
