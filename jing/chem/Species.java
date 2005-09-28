@@ -95,7 +95,7 @@ public class Species {
         findStablestThermoData();
         calculateLJParameters();
         selectDeltaEDown();
-        generateThreeFrequencyModel();
+        //generateThreeFrequencyModel();
         generateNASAThermoData();
         //#]
     }
