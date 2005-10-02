@@ -103,9 +103,8 @@ public class RateBasedRME implements ReactionModelEnlarger {
 			for(Iterator iter=newReactionSet.iterator();iter.hasNext();){
 				
 				Reaction reaction = (Reaction) iter.next();
-				
-				//restartFileContent = restartFileContent + "("+ reactionCount + ") "+species.getChemkinName() + "  " + reactionSystem.getPresentConcentration(species) + " (mol/cm3) \n";
-				restartFileContent = restartFileContent + reaction.toRestartString() + "\n";
+				if (cerm.categorizeReaction(reaction)==-1)
+					restartFileContent = restartFileContent + reaction.toRestartString() + "\n";
 								
 			}
 			
@@ -118,6 +117,29 @@ public class RateBasedRME implements ReactionModelEnlarger {
         	System.exit(0);
 		}
         
+		try{
+			File coreReactions = new File ("Restart/coreReactions.txt");
+			FileWriter fw = new FileWriter(coreReactions, true);
+			//Species species = (Species) iter.next();
+			restartFileContent="";
+			for(Iterator iter=newReactionSet.iterator();iter.hasNext();){
+				
+				Reaction reaction = (Reaction) iter.next();
+				if (cerm.categorizeReaction(reaction)==1&&reaction.getDirection()==1)
+					restartFileContent = restartFileContent + reaction.toRestartString() + "\n";
+				else if (cerm.categorizeReaction(reaction)==1&&reaction.getDirection()==-1)
+					restartFileContent = restartFileContent + reaction.getReverseReaction().toRestartString() + "\n";
+			}
+			
+			//restartFileContent += "\nEND";
+			fw.write(restartFileContent);
+			fw.close();
+		}
+		catch (IOException e){
+			System.out.println("Could not write the added Reactions to the allReactions file");
+        	System.exit(0);
+		}
+		
         // partition the reaction set into reacted reaction set and unreacted reaction set
         // update the corresponding core and edge model of CoreEdgeReactionModel
         cerm.addReactionSet(newReactionSet);

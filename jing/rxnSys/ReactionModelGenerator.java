@@ -474,6 +474,7 @@ public class ReactionModelGenerator {
 		parseCoreSpecies();
 		parseEdgeSpecies();
 		parseAllReactions();
+		parseCoreReactions();
 		//parseCoreReactions();
 		//parseEdgeReactions();
 		Iterator iter = specs.iterator();
@@ -537,7 +538,7 @@ public class ReactionModelGenerator {
 			boolean found = false;
 			HashSet reactionSet = new HashSet();
 			while (line != null){
-				Reaction reaction = ChemParser.parseCoreArrheniusReaction(dictionary,line,1,1);
+				Reaction reaction = ChemParser.parseCoreArrheniusReaction(dictionary,line,1,1);//,((CoreEdgeReactionModel)reactionSystem.reactionModel));
 				boolean added = reactionSet.add(reaction);
 				if (!added){
 					if (reaction.hasResonanceIsomerAsReactant()){
@@ -551,7 +552,7 @@ public class ReactionModelGenerator {
 					
 					if (!found){
 						System.out.println("Cannot add reaction "+line+" to the Reaction Core. All resonance isomers have already been added");
-						System.exit(0);
+						//System.exit(0);
 					}
 					else found = false;
 				}
@@ -595,6 +596,104 @@ public class ReactionModelGenerator {
 						continue;
 					}
 				}*/
+				if (line.startsWith("CH2O(14) + CH3O2.(39)"))
+					System.out.println("Teri maa");
+				/*if (reaction.getStructure().getDirection()== -1 && ((CoreEdgeReactionModel)reactionSystem.reactionModel).isReactedReaction(reaction)){
+					//line = ChemParser.readMeaningfulLine(reader);
+					if (reactionSet.contains(reaction.getReverseReaction()) && !reactionSet.contains(reaction)){
+						reactionSet.add(reaction);
+						Iterator iter = reactionSet.iterator();
+						while (iter.hasNext()){
+							Reaction reacTemp = (Reaction)iter.next();
+							if (reacTemp.equals(reaction.getReverseReaction())){
+								reactionSet.remove(reacTemp);
+								reactionSet.add(reaction.getReverseReaction());
+								//line = ChemParser.readMeaningfulLine(reader);
+								break;
+							}
+						}
+						
+					}
+					else {
+						line = ChemParser.readMeaningfulLine(reader);
+						continue;//reaction = null;
+					}
+				}*/
+				
+				
+				if (((CoreEdgeReactionModel)reactionSystem.reactionModel).categorizeReaction(reaction)==-1){
+					boolean added = reactionSet.add(reaction);
+					if (!added){
+						found = false;
+						if (reaction.hasResonanceIsomerAsReactant()){
+							//Structure reactionStructure = reaction.getStructure();
+							found = getResonanceStructure(reaction,"reactants", reactionSet);
+						}
+						if (reaction.hasResonanceIsomerAsProduct() && !found){
+							//Structure reactionStructure = reaction.getStructure();
+							found = getResonanceStructure(reaction,"products", reactionSet);
+						}
+					
+						if (!found){
+							Iterator iter = reactionSet.iterator();
+							while (iter.hasNext()){
+								Reaction reacTemp = (Reaction)iter.next();
+								if (reacTemp.equals(reaction)){
+									reactionSet.remove(reacTemp);
+									reactionSet.add(reaction);
+									break;
+								}
+							}
+							
+						//System.out.println("Cannot add reaction "+line+" to the Reaction Core. All resonance isomers have already been added");
+						//System.exit(0);
+						}
+						
+					//else found = false;
+					}
+				}
+				
+				
+				/*Reaction reverse = reaction.getReverseReaction();
+				if (reverse != null && ((CoreEdgeReactionModel)reactionSystem.reactionModel).isReactedReaction(reaction)) {
+					reactionSet.add(reverse);
+					//System.out.println(2 + "\t " + line);
+				}*/
+									//else System.out.println(1 + "\t" + line);
+				
+				i=i+1;
+				
+				line = ChemParser.readMeaningfulLine(reader);
+			}
+			((CoreEdgeReactionModel)reactionSystem.reactionModel).addReactionSet(reactionSet);
+		}
+		catch (IOException e){
+			System.out.println("Could not read the corespecies restart file");
+        	System.exit(0);
+		}
+		
+	}
+	
+	/*private void parseAllReactions() {
+		SpeciesDictionary dictionary = SpeciesDictionary.getInstance();
+		int i=1;
+		//HasMap speciesMap = dictionary.dictionary;
+		try{
+			File allReactions = new File("Restart/allReactions.txt");
+			FileReader fr = new FileReader(allReactions);
+			BufferedReader reader = new BufferedReader(fr);
+			String line = ChemParser.readMeaningfulLine(reader);
+			boolean found = false;
+			HashSet reactionSet = new HashSet();
+			OuterLoop:
+			while (line != null){
+				Reaction reaction = ChemParser.parseArrheniusReaction(dictionary,line,1,1,((CoreEdgeReactionModel)reactionSystem.reactionModel));
+				/*if (reaction.hasReverseReaction() && ((CoreEdgeReactionModel)reactionSystem.reactionModel).isReactedReaction(reaction)){
+					if (reactionSet.contains(reaction.getReverseReaction())){
+						line = ChemParser.readMeaningfulLine(reader);
+						continue;
+					}
+				}
 				if (line.startsWith("H(16) + CH3O2.(39)"))
 					System.out.println("Teri maa");
 				if (reaction.getStructure().getDirection()== -1 && ((CoreEdgeReactionModel)reactionSystem.reactionModel).isReactedReaction(reaction)){
@@ -669,7 +768,7 @@ public class ReactionModelGenerator {
         	System.exit(0);
 		}
 		
-	}
+	}*/
 	
 	private boolean getResonanceStructure(Reaction p_Reaction, String rOrP, HashSet reactionSet) {
 		Structure reactionStructure = p_Reaction.getStructure();
@@ -1059,6 +1158,7 @@ public class ReactionModelGenerator {
 		//printRestartFile();
 		//((CoreEdgeReactionModel)reactionSystem.getReactionModel()).printPDepModel(reactionSystem.getPresentTemperature());;
 		writeRestartFile();
+		writeCoreReactions();
 		writeAllReactions();
 		//writeCoreReactions();
 		//writeEdgeReactions();
