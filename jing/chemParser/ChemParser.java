@@ -233,15 +233,18 @@ public class ChemParser {
         
         StringTokenizer st = new StringTokenizer(p_reactionString);
         int size = st.countTokens();
-        if (size < 4 || size > 14) throw new InvalidReactionFormatException();
+        if (size < 6 || size > 16) throw new InvalidReactionFormatException();
         
         int cut = size - 3;
         String structureString = "";
         String arrheniusString = "";
         
-        for (int i=0; i<cut; i++) {
+        for (int i=0; i<cut-2; i++) {
         	structureString = structureString + st.nextToken() + " ";
         }
+		int direction = Integer.parseInt(st.nextToken());
+		int redundancy = Integer.parseInt(st.nextToken());
+		
         for (int i=cut; i<size; i++) {
         	arrheniusString = arrheniusString + st.nextToken() + " ";
         }
