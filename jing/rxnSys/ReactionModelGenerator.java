@@ -1248,7 +1248,10 @@ public class ReactionModelGenerator {
         	currentT = reactionSystem.getTemperature(begin);
         	currentP = reactionSystem.getPressure(begin);
         	conditionChanged = (!currentT.equals(lastT) || !currentP.equals(lastP));
-
+			//Remove from this to the end of the comments when you figure out the exact problem with daspk...sandeep
+			begin=init;
+			reactionSystem.resetSystemSnapshot();
+			
         	reactionSystem.solveReactionSystem(begin, end, false, reactionChanged, conditionChanged);
 			//((CoreEdgeReactionModel)reactionSystem.getReactionModel()).printPDepModel(reactionSystem.getPresentTemperature());;
 			//printRestartFile();

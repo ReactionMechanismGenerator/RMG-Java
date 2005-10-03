@@ -371,8 +371,11 @@ public class JDASPK implements SASolver, DAESolver {
 		int temp = 1;
         if (nParameter==0) {
         	idid = solveDAE(p_initialization, reactionList, true, thirdBodyReactionList, nState, y, yprime, tBegin, tEnd, this.rtol, this.atol, T, P, temp, tPresent);
-        	if (idid !=1 && idid != 2 && idid != 3)	throw new DynamicSimulatorException("DASPK: SA off.");
-                System.out.println("After ODE: from " + String.valueOf(tBegin) + " SEC to " + String.valueOf(tEnd) + "SEC");
+        	if (idid !=1 && idid != 2 && idid != 3)	{
+				System.out.println("The idid from DASPK was "+idid + " at time "+tPresent[0]);
+				throw new DynamicSimulatorException("DASPK: SA off.");
+        	}
+            System.out.println("After ODE: from " + String.valueOf(tBegin) + " SEC to " + String.valueOf(tEnd) + "SEC");
 				
         	speStatus = generateSpeciesStatus(p_reactionModel, y, yprime, 0);
         }
