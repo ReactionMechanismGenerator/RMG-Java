@@ -108,7 +108,10 @@ public class ReactionModelGenerator {
 					Runtime.getRuntime().exec("cp Restart/allSpecies.txt Restart/allSpecies1.txt");
 					restart = true;
 				}
-				else if (token.equalsIgnoreCase("false")) restart = false;
+				else if (token.equalsIgnoreCase("false")) {
+					Runtime.getRuntime().exec("rm Restart/allSpecies.txt");
+					restart = false;
+				}
 				else throw new InvalidSymbolException("UnIdentified Symbol "+token+" after Restart:");
         	}
         	else throw new InvalidSymbolException("Can't find Restart!");
@@ -942,6 +945,8 @@ public class ReactionModelGenerator {
     			if (!index.startsWith("(")) name = index;
     			else name = st.nextToken().trim();
 				int ID = getID(name);
+				if (line.contains("C5H8O2"))
+					System.out.println("Teri maa");
 				//System.out.println(ID + "\t");
 				//String [] temp = name.split("(");
 				name = getName(name);
