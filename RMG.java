@@ -82,7 +82,8 @@ public class RMG {
 		chemkin.mkdir();
 		File Restart = new File("Restart");
 		Restart.mkdir();
-		
+		File GATPFit = new File("GATPFit");
+		GATPFit.mkdir();
 		
 		 String workingDir = System.getenv("RMG");
 	     System.setProperty("RMG.workingDirectory", workingDir);

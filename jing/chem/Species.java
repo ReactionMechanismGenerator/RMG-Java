@@ -54,6 +54,7 @@ import jing.param.Temperature;
 //## class Species 
 public class Species {
     
+	protected boolean GATPFitExecuted = false;
     protected int ID;		//## attribute ID 
     
     protected static int TOTAL_NUMBER = 0;		//## attribute TOTAL_NUMBER 
@@ -95,8 +96,9 @@ public class Species {
         findStablestThermoData();
         calculateLJParameters();
         selectDeltaEDown();
-        //generateThreeFrequencyModel();
-        generateNASAThermoData();
+		generateNASAThermoDatabyGATPFit();
+		//generateThreeFrequencyModel();
+        //generateNASAThermoData();
         //#]
     }
     
@@ -160,6 +162,83 @@ public class Species {
         //#]
     }
   
+	 //## operation callGATPFit(String) 
+    private boolean callGATPFit(String p_directory) {
+        //#[ operation callGATPFit(String) 
+        if (p_directory == null) throw new NullPointerException();
+        
+        // write GATPFit input file
+		String workingDirectory = System.getProperty("RMG.workingDirectory");
+        // write species name
+        String ls = System.getProperty("line.separator");
+        String result = "SPEC " + getChemkinName() + ls;
+        
+        // write the element
+        ChemGraph cg = getChemGraph();
+        int Hn = cg.getHydrogenNumber();
+        int Cn = cg.getCarbonNumber();
+        int On = cg.getOxygenNumber();
+        if (Cn>0) result += "ELEM " + MathTool.formatInteger(Cn,3,"L") + ls;
+        if (Hn>0) result += "ELEM " + MathTool.formatInteger(Hn,3,"L") + ls;
+        if (On>0) result += "ELEM " + MathTool.formatInteger(On,3,"L") + ls;
+        
+        // write H and S at 298
+        ThermoData td = getThermoData();
+        result += "H298 " + MathTool.formatDouble(td.getH298()*1000, 10, 2).trim() + ls;
+        result += "S298 " + MathTool.formatDouble(td.getS298(), 10, 2).trim() + ls;
+        result += "DLTH " + MathTool.formatDouble(td.getH298()*1000, 10, 2).trim() + ls;
+        
+        // write MW, temperature, ouput format, etc
+        result += "MWEI " + MathTool.formatDouble(getMolecularWeight(), 6, 1).trim() + ls;
+        result += "TEMP 1000.0" + ls;
+        result += "CHEM" + ls;
+        result += "TEM2 2000.0" + ls;
+        result += "LINEARST" + ls;
+        result += String.valueOf(cg.getAtomNumber()) + ls;
+        result += String.valueOf(getInternalRotor()) + ls;
+        
+        // finished writing text for input file, now save result to fort.1
+        String GATPFit_input_name = null;
+        File GATPFit_input = null;
+        
+        GATPFit_input_name = "GATPFit/INPUT.txt";
+        try {
+        	GATPFit_input = new File(GATPFit_input_name);
+        	FileWriter fw = new FileWriter(GATPFit_input);
+        	fw.write(result);
+        	fw.close();
+        	}
+        catch (IOException e) {
+        	String err = "GATPFit input file error: " + ls;
+        	err += e.toString();
+        	throw new GATPFitException(err);
+        }
+        
+        // call GATPFit
+        boolean error = false;
+        try {
+        	 // system call for therfit
+        	String[] command = {workingDirectory +  "/software/GATPFit/GATPFit.exe"};
+			File runningDir = new File("GATPFit");
+        	Process GATPFit = Runtime.getRuntime().exec(command, null, runningDir);
+        	int exitValue = GATPFit.waitFor(); 
+        	GATPFitExecuted = true;
+        	
+        }
+        catch (Exception e) {
+        	String err = "Error in running GATPFit!" + ls;
+        	err += e.toString();
+        	throw new GATPFitException(err);
+        }
+        
+        // return error = true, if there was a problem
+        return error;
+            
+        
+        //#]
+    }
+    
+	
 	   //## operation callTherfit(String,String) 
     private boolean callTherfit(String p_directory, String p_mode) {
         //#[ operation callTherfit(String,String) 
@@ -370,6 +449,43 @@ public class Species {
         //#]
     }
     
+	  //## operation generateNASAThermoDatabyGATPFit() 
+    public void generateNASAThermoDatabyGATPFit() {
+        //#[ operation generateNASAThermoDatabyGATPFit() 
+        // get working directory
+        String dir = System.getProperty("RMG.workingDirectory");
+        
+        try {
+        	// prepare GATPFit input file and execute system call
+        	boolean error = callGATPFit(dir);
+        }
+        catch (GATPFitException e) {
+        	throw new NASAFittingException("Error in running GATPFit: " + e.toString());
+        }
+        
+        // parse output from GATPFit, "output.txt" is the output file name
+        String therfit_nasa_output = "GATPFit/OUTPUT.txt";
+        
+        try {
+        	FileReader in = new FileReader(therfit_nasa_output);
+        	BufferedReader data = new BufferedReader(in);
+        
+        	String line = data.readLine();
+        	line = data.readLine();
+        	String nasaString = "";
+        
+        	while (line != null) {
+        		nasaString += line + System.getProperty("line.separator");
+        		line = data.readLine();
+        	}
+        	nasaThermoData = new NASAThermoData(nasaString);
+        }
+        catch (Exception e) {
+        	throw new NASAFittingException("Error in reading in GATPFit output file: " + System.getProperty("line.separator") + e.toString()); 
+        }
+        //#]
+    }
+	
 	   //## operation generateNASAThermoData() 
     public void generateNASAThermoData() {
         ///#[ operation generateNASAThermoData()
