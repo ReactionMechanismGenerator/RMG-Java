@@ -55,7 +55,7 @@ import jing.param.Temperature;
 public class ChemGraph implements Matchable {
 
     protected int MAX_OXYGEN_NUM = 6;		//## attribute MAX_OXYGEN_NUM
-	protected int MAX_CARBON_NUM = 8;       //SS 
+	protected int MAX_CARBON_NUM = 8;       //SS
 
 	/**
     Maximal radical number allowed in a ChemGraph.
@@ -513,6 +513,199 @@ public class ChemGraph implements Matchable {
     }
 
     /**
+Requires:
+Effects: calculate and return the symmetry number of the cyclic portion of this ChemGraph
+Modifies:
+svp
+*/
+//## operation calculateCyclicSymmetryNumber()
+public int calculateCyclicSymmetryNumber(){
+  //#[ operation calculateCyclicSymmetryNumber()
+ int sn = 1;
+ LinkedList ring_structures = new LinkedList();//list of ring structures
+ LinkedList cycle_list = new LinkedList();//list of cycles
+ Iterator cycle_iter = getGraph().getCycle();
+ while (cycle_iter.hasNext()){
+   LinkedList current_cycle = (LinkedList)cycle_iter.next();
+   cycle_list.add(current_cycle);
+ }
+ //if 2 graph components share at least one cycle, they belong to the same ring structure
+ for (int i = 0; i <= cycle_list.size()-1; i++){
+   LinkedList current_ring = (LinkedList)cycle_list.get(i);
+   if (ring_structures.isEmpty()){
+     ring_structures.add(current_ring);
+   }
+   else{
+     int same_gc = 0;
+     Iterator ring_structure_iter = ring_structures.iterator();
+     Iterator current_ring_iter = current_ring.iterator();
+     while (ring_structure_iter.hasNext()){
+       LinkedList ring_structure = (LinkedList) ring_structure_iter.next();
+       while (current_ring_iter.hasNext()) {
+         GraphComponent gc = (GraphComponent) current_ring_iter.next();
+         if (ring_structure.contains(gc)) {
+           Iterator current_iter = current_ring.iterator();
+           while (current_iter.hasNext()){
+             GraphComponent current_gc = (GraphComponent)current_iter.next();
+             if (!ring_structure.contains(current_gc)){
+               ring_structure.add(current_gc);
+               ring_structures.set(ring_structures.indexOf(ring_structure), ring_structure);
+             }
+           }
+           same_gc++;
+         }
+       }
+     }
+     if (same_gc == 0){
+       ring_structures.add(current_ring);
+     }
+   }
+   if (i != cycle_list.size()-1){
+     for (int j = 1; j <= cycle_list.size()-1; j++){
+       LinkedList next_cycle = (LinkedList)cycle_list.get(j);
+       Iterator ring_structures_iter = ring_structures.iterator();
+       Iterator next_cycle_iter = next_cycle.iterator();
+       while (ring_structures_iter.hasNext()){
+         LinkedList current_ring_structure = (LinkedList)ring_structures_iter.next();
+         while (next_cycle_iter.hasNext()){
+           GraphComponent gc = (GraphComponent)next_cycle_iter.next();
+           if (current_ring_structure.contains(gc)){
+             Iterator ring_iter = next_cycle.iterator();
+             while(ring_iter.hasNext()){
+               GraphComponent current_gc = (GraphComponent)ring_iter.next();
+               if (!current_ring_structure.contains(current_gc)){
+                 current_ring_structure.add(current_gc);
+                 ring_structures.set(ring_structures.indexOf(current_ring_structure),current_ring_structure);
+               }
+             }
+             break;
+           }
+         }
+       }
+     }
+   }
+ }
+ Iterator iter = ring_structures.iterator();
+ while (iter.hasNext()){
+   LinkedList current_ring_structure = (LinkedList)iter.next();
+   Iterator gc_iter = current_ring_structure.iterator();
+   LinkedList node_list = new LinkedList(); //list of all cyclic nodes
+   LinkedList arc_list = new LinkedList(); //list of all cyclic arcs
+   while (gc_iter.hasNext()){
+     GraphComponent gc = (GraphComponent)gc_iter.next();
+     gc.setVisited(false);
+     if (gc instanceof Node){
+       node_list.add(gc);
+     }
+     else {
+       arc_list.add(gc);
+     }
+   }
+   //find all sets of equal nodes
+   LinkedList equal_node_list = new LinkedList();
+   for (int i = 0; i <= node_list.size() - 2; i++) {
+     Node current = (Node) node_list.get(i);
+     if (!current.isVisited()) {
+       LinkedList equal_list = new LinkedList(); //list of equivalent nodes
+       current.setVisited(true);
+       equal_list.add(current);
+       for (int j = i + 1; j <= node_list.size() - 1; j++) {
+         Node next = (Node) node_list.get(j);
+         Iterator list_iter = equal_list.iterator();
+         while (list_iter.hasNext()) {
+           current = (Node) list_iter.next();
+           if (isSymmetric(current, next)) {
+             equal_list.add(next);
+             next.setVisited(true);
+             break;
+           }
+         }
+       }
+       equal_node_list.add(equal_list); //add list of equivalent nodes to list of sets of equivalent nodes
+     }
+   }
+   //find all sets of equal arcs
+   LinkedList equal_arc_list = new LinkedList();
+   for (int i = 0; i <= arc_list.size() - 2; i++) {
+     Arc current = (Arc) arc_list.get(i);
+     if (!current.isVisited()) {
+       LinkedList equal_list = new LinkedList(); //list of equivalent arcs
+       current.setVisited(true);
+       equal_list.add(current);
+       for (int j = i + 1; j <= arc_list.size() - 1; j++) {
+         Arc next = (Arc) arc_list.get(j);
+         Iterator list_iter = equal_list.iterator();
+         while (list_iter.hasNext()) {
+           current = (Arc) list_iter.next();
+           if (isSymmetric(current, next)) {
+             equal_list.add(next);
+             next.setVisited(true);
+             break;
+           }
+         }
+       }
+       equal_arc_list.add(equal_list); //add list of equivalent arcs to list of sets of equivalent arcs
+     }
+   }
+   //find largest set of equal nodes
+   int node_sn = 1;
+   Iterator node_list_iter = equal_node_list.iterator();
+   while (node_list_iter.hasNext()) {
+     LinkedList current = (LinkedList) node_list_iter.next();
+     if (current.size() > node_sn) {
+       node_sn = current.size(); //node symmetry number = size of largest set of equivalent nodes
+     }
+   }
+   //find largest set of equal arcs
+   int arc_sn = 1;
+   Iterator arc_list_iter = equal_arc_list.iterator();
+   while (arc_list_iter.hasNext()) {
+     LinkedList current = (LinkedList) arc_list_iter.next();
+     if (current.size() > arc_sn) {
+       arc_sn = current.size(); //arc symmetry number = size of largest set of equivalent arcs
+     }
+   }
+   if (node_sn == node_list.size() && arc_sn == arc_list.size()) { //all nodes equal and all arcs equal
+     sn *= node_sn;
+     sn *= 2;
+     Node first_node = (Node)node_list.getFirst();
+     FGElement fge = (FGElement)first_node.getFgElement();
+     if (fge.equals(FGElement.make("Cs"))){
+       LinkedList acyclic_neighbor = new LinkedList();
+       Iterator neighbor_iter = first_node.getNeighbor();
+       while (neighbor_iter.hasNext()){
+         Arc arc = (Arc)neighbor_iter.next();
+         if (!arc.getInCycle()){
+           acyclic_neighbor.add(arc);
+         }
+       }
+       if (acyclic_neighbor.size() == 2){
+         Arc a1 = (Arc) acyclic_neighbor.getFirst();
+         Arc a2 = (Arc) acyclic_neighbor.getLast();
+         if (!first_node.isSymmetric(a1, a2)) {
+           sn /= 2;
+         }
+       }
+     }
+   }
+   else {
+     if (node_sn >= arc_sn) {
+       sn *= node_sn;
+     }
+     else {
+       sn *= arc_sn;
+     }
+   }
+   //if (sn >= 2 && sn%2 == 0){//added by Sally for non-planar PAH's
+     //sn = correctSymmetryNumber(sn);
+   //}
+ }
+return sn;
+//#]
+}
+
+
+    /**
     Requires:
     Effects: return G(T)
     Modifies:
@@ -575,37 +768,42 @@ public class ChemGraph implements Matchable {
         //#]
     }
 
-    /**
-    Requires: acyclic ChemGraph
-    Effects: calculate and return the symmetry number of this ChemGraph.  It's actually equals the product of all the atom symmetry numbers, all the bond symmetry numbers, and all the axis symmetry numbers.
-    Modifies:
-    */
     //## operation calculateSymmetryNumber()
-    public int calculateSymmetryNumber() {
-        //#[ operation calculateSymmetryNumber()
-        try {
-        // note: acyclic structure!!!!!!!!!!!!!
-        	int sn = 1;
-        	Iterator iter = getNodeList();
-        	while (iter.hasNext()) {
-        		Node node = (Node)iter.next();
-        	 	sn *= calculateAtomSymmetryNumber(node);
-        	}
-        	iter = getArcList();
-        	while (iter.hasNext()) {
-        		Arc arc = (Arc)iter.next();
-        	 	sn *= calculateBondSymmetryNumber(arc);
-        	}
-        	sn *= calculateAxisSymmetryNumber();
-        	symmetryNumber = sn;
-        	return sn;
-        }
-        catch (ClassCastException e) {
-        	throw new InvalidChemGraphException();
-        }
+   public int calculateSymmetryNumber() {
+       //#[ operation calculateSymmetryNumber()
+       try {
+         getGraph().identifyCycle();//svp
+               int sn = 1;
+               Iterator iter = getNodeList();
+               while (iter.hasNext()) {
+                       Node node = (Node)iter.next();
+                       if (!node.getInCycle()){//svp
+                        sn *= calculateAtomSymmetryNumber(node);
+                        }
 
-        //#]
-    }
+               }
+               iter = getArcList();
+               while (iter.hasNext()) {
+                       Arc arc = (Arc)iter.next();
+                       if (!arc.getInCycle()){//svp
+                       sn *= calculateBondSymmetryNumber(arc);
+                     }
+
+               }
+               sn *= calculateAxisSymmetryNumber();
+               if (!isAcyclic()) {//svp
+                sn *= calculateCyclicSymmetryNumber();
+              }
+
+               symmetryNumber = sn;
+               return sn;
+       }
+       catch (ClassCastException e) {
+               throw new InvalidChemGraphException();
+       }
+
+       //#]
+   }
 
     /**
     Requies:
@@ -1058,7 +1256,7 @@ public class ChemGraph implements Matchable {
         return oNum;
         //#]
     }
-	
+
 
     /**
     Requires:
@@ -1323,6 +1521,33 @@ public class ChemGraph implements Matchable {
     }
 
     /**
+   Requires: both graph components belong to the same graph
+   Effects: return true if two graph components are equal
+   Modifies:
+   svp
+   */
+   //## operation isSymmetric(GraphComponent, GraphComponent)
+   public boolean isSymmetric(GraphComponent p_gc1, GraphComponent p_gc2) {
+   //#[ operation isSymmetric(GraphComponent, GraphComponent)
+   Stack s1 = new Stack();
+   Stack s2 = new Stack();
+   if (p_gc1.isEquivalent(p_gc2, s1, s2)) {
+     resetStack(s1);
+       resetStack(s2);
+       getGraph().resetMatchedGC();
+       return true;
+     }
+     else {
+       resetStack(s1);
+       resetStack(s2);
+       getGraph().resetMatchedGC();
+       return false;
+     }
+   //#]
+ }
+
+
+    /**
     Requires:
     Effects: return if this chem graph is matched with p_functionalGroup at the central nodes.
     Modifies:
@@ -1487,6 +1712,19 @@ public class ChemGraph implements Matchable {
         //#]
     }
 
+    //## operation resetStack(Stack)
+//svp
+  public void resetStack(Stack p_stack) {
+         //#[ operation resetStack(Stack)
+         while (!p_stack.empty()) {
+                 GraphComponent gc = (GraphComponent)p_stack.pop();
+                 gc.setMatchedGC(null);
+         }
+         return;
+         //#]
+     }
+
+
     /**
     Requires:
     Effects: reset the only center to the p_node in this chem graph for thermo calculation
@@ -1548,7 +1786,7 @@ public class ChemGraph implements Matchable {
         return s;
         //#]
     }
-	
+
 	 public String toString(int i) {
 	        //#[ operation toString()
 	        String s ="";// "ChemFormula: " + getChemicalFormula() + '\n';
