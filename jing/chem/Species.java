@@ -1,9 +1,9 @@
 //!********************************************************************************
 //!
-//!    RMG: Reaction Mechanism Generator                                            
+//!    RMG: Reaction Mechanism Generator
 //!
 //!    Copyright: Jing Song, MIT, 2002, all rights reserved
-//!     
+//!
 //!    Author's Contact: jingsong@mit.edu
 //!
 //!    Restrictions:
@@ -16,19 +16,19 @@
 //!        "This product includes software RMG developed by Jing Song, MIT."
 //!        Alternately, this acknowledgment may appear in the software itself,
 //!        if and wherever such third-party acknowledgments normally appear.
-//!  
-//!    RMG IS PROVIDED "AS IS" AND ANY EXPRESSED OR IMPLIED 
-//!    WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES 
-//!    OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE 
-//!    DISCLAIMED.  IN NO EVENT SHALL JING SONG BE LIABLE FOR  
-//!    ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR 
-//!    CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT 
-//!    OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS;  
-//!    OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF  
-//!    LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT  
-//!    (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF 
+//!
+//!    RMG IS PROVIDED "AS IS" AND ANY EXPRESSED OR IMPLIED
+//!    WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
+//!    OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+//!    DISCLAIMED.  IN NO EVENT SHALL JING SONG BE LIABLE FOR
+//!    ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+//!    CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT
+//!    OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS;
+//!    OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
+//!    LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+//!    (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF
 //!    THE USE OF RMG, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-//! 
+//!
 //!******************************************************************************
 
 
@@ -45,51 +45,51 @@ import jing.chemParser.*;
 import jing.chemUtil.Node;
 import jing.param.Temperature;
 
-//## package jing::chem 
+//## package jing::chem
 
 //----------------------------------------------------------------------------
-// jing\chem\Species.java                                                                  
+// jing\chem\Species.java
 //----------------------------------------------------------------------------
 
-//## class Species 
+//## class Species
 public class Species {
-    
+
 	protected boolean GATPFitExecuted = false;
-    protected int ID;		//## attribute ID 
-    
-    protected static int TOTAL_NUMBER = 0;		//## attribute TOTAL_NUMBER 
-    
-    protected ChemGraph chemGraph;		//## attribute chemGraph 
-    
+    protected int ID;		//## attribute ID
+
+    protected static int TOTAL_NUMBER = 0;		//## attribute TOTAL_NUMBER
+
+    protected ChemGraph chemGraph;		//## attribute chemGraph
+
     /**
     The initial value is the parameter for N2, now it is treated as a default value if no further detailed information provided.
     unit: cm-1
     */
-    protected double deltaEDown = 461;		//## attribute deltaEDown 
-    
-    protected String name = null;		//## attribute name 
-    
-    protected HashSet resonanceIsomers = new HashSet();		//## attribute resonanceIsomers 
-    
-    protected boolean therfitExecuted = false;		//## attribute therfitExecuted 
-    
+    protected double deltaEDown = 461;		//## attribute deltaEDown
+
+    protected String name = null;		//## attribute name
+
+    protected HashSet resonanceIsomers = new HashSet();		//## attribute resonanceIsomers
+
+    protected boolean therfitExecuted = false;		//## attribute therfitExecuted
+
     protected LennardJones LJ;
 	protected NASAThermoData nasaThermoData;
     protected ThreeFrequencyModel threeFrequencyModel;
-	//protected WilhoitThermoData wilhoitThermoData;   
+	//protected WilhoitThermoData wilhoitThermoData;
     // Constructors
-    
-    //## operation Species() 
+
+    //## operation Species()
     private  Species() {
         initRelations();
-        //#[ operation Species() 
+        //#[ operation Species()
         //#]
     }
-    //## operation Species(String,ChemGraph) 
+    //## operation Species(String,ChemGraph)
     private  Species(int id, String p_name, ChemGraph p_chemGraph) {
         initRelations();
 		ID = id;
-        //#[ operation Species(String,ChemGraph) 
+        //#[ operation Species(String,ChemGraph)
         name = p_name;
         chemGraph = p_chemGraph;
         generateResonanceIsomers();
@@ -101,46 +101,63 @@ public class Species {
         //generateNASAThermoData();
         //#]
     }
-    
-    //## operation addResonanceIsomer(ChemGraph) 
+
+    //## operation addResonanceIsomer(ChemGraph)
     public boolean addResonanceIsomer(ChemGraph p_resonanceIsomer) {
-        //#[ operation addResonanceIsomer(ChemGraph) 
+        //#[ operation addResonanceIsomer(ChemGraph)
         if (resonanceIsomers == null) resonanceIsomers = new HashSet();
-        
+
         p_resonanceIsomer.setSpecies(this);
         return resonanceIsomers.add(p_resonanceIsomer);
-        
-        
-        
+
+
+
         //#]
     }
-    
-    //## operation calculateCp(Temperature) 
+
+    //## operation calculateCp(Temperature)
     public double calculateCp(Temperature p_temperature) {
-        //#[ operation calculateCp(Temperature) 
+        //#[ operation calculateCp(Temperature)
         return getThermoData().calculateCp(p_temperature);
         //#]
     }
-    
-    //## operation calculateG(Temperature) 
+
+    //## operation calculateG(Temperature)
     public double calculateG(Temperature p_temperature) {
-        //#[ operation calculateG(Temperature) 
+        //#[ operation calculateG(Temperature)
         return getThermoData().calculateG(p_temperature);
         //#]
     }
-    
-    //## operation calculateH(Temperature) 
+
+    //## operation calculateGLowerBound(Temperature)
+    //svp
+      public double calculateGLowerBound(Temperature p_temperature) {
+        //#[ operation calculateGLowerBound(Temperature)
+        return getThermoData().calculateGLowerBound(p_temperature);
+        //#]
+      }
+
+    //## operation calculateGUpperBound(Temperature)
+    //svp
+      public double calculateGUpperBound(Temperature p_temperature) {
+        //#[ operation calculateGUpperBound(Temperature)
+        return getThermoData().calculateGUpperBound(p_temperature);
+        //#]
+      }
+
+
+    //## operation calculateH(Temperature)
     public double calculateH(Temperature p_temperature) {
-        //#[ operation calculateH(Temperature) 
+        //#[ operation calculateH(Temperature)
         return getThermoData().calculateH(p_temperature);
         //#]
     }
-    
-    //## operation calculateLJParameters() 
+
+    //## operation calculateLJParameters()
     public void calculateLJParameters() {
-        //#[ operation calculateLJParameters() 
+        //#[ operation calculateLJParameters()
         int cNum = getChemGraph().getCarbonNumber();
-        
+
         selectLJParametersForSpecialMolecule();
         if (cNum == 1) LJ = new LennardJones(3.758, 148.6);
         else if (cNum == 2) LJ = new LennardJones(4.443, 110.7);
@@ -148,31 +165,31 @@ public class Species {
         else if (cNum == 4) LJ = new LennardJones(4.687, 531.4);
         else if (cNum == 5) LJ = new LennardJones(5.784, 341.1);
         else LJ = new LennardJones(5.949, 399.3);
-        
+
         return;
-        
-        
+
+
         //#]
     }
-    
-    //## operation calculateS(Temperature) 
+
+    //## operation calculateS(Temperature)
     public double calculateS(Temperature p_temperature) {
-        //#[ operation calculateS(Temperature) 
+        //#[ operation calculateS(Temperature)
         return getThermoData().calculateS(p_temperature);
         //#]
     }
-  
-	 //## operation callGATPFit(String) 
+
+	 //## operation callGATPFit(String)
     private boolean callGATPFit(String p_directory) {
-        //#[ operation callGATPFit(String) 
+        //#[ operation callGATPFit(String)
         if (p_directory == null) throw new NullPointerException();
-        
+
         // write GATPFit input file
 		String workingDirectory = System.getProperty("RMG.workingDirectory");
         // write species name
         String ls = System.getProperty("line.separator");
         String result = "SPEC " + getChemkinName() + ls;
-        
+
         // write the element
         ChemGraph cg = getChemGraph();
         int Hn = cg.getHydrogenNumber();
@@ -181,13 +198,13 @@ public class Species {
         if (Cn>0) result += "ELEM " + MathTool.formatInteger(Cn,3,"L") + ls;
         if (Hn>0) result += "ELEM " + MathTool.formatInteger(Hn,3,"L") + ls;
         if (On>0) result += "ELEM " + MathTool.formatInteger(On,3,"L") + ls;
-        
+
         // write H and S at 298
         ThermoData td = getThermoData();
         result += "H298 " + MathTool.formatDouble(td.getH298()*1000, 10, 2).trim() + ls;
         result += "S298 " + MathTool.formatDouble(td.getS298(), 10, 2).trim() + ls;
         result += "DLTH " + MathTool.formatDouble(td.getH298()*1000, 10, 2).trim() + ls;
-        
+
         // write MW, temperature, ouput format, etc
         result += "MWEI " + MathTool.formatDouble(getMolecularWeight(), 6, 1).trim() + ls;
         result += "TEMP 1000.0" + ls;
@@ -196,11 +213,11 @@ public class Species {
         result += "LINEARST" + ls;
         result += String.valueOf(cg.getAtomNumber()) + ls;
         result += String.valueOf(getInternalRotor()) + ls;
-        
+
         // finished writing text for input file, now save result to fort.1
         String GATPFit_input_name = null;
         File GATPFit_input = null;
-        
+
         GATPFit_input_name = "GATPFit/INPUT.txt";
         try {
         	GATPFit_input = new File(GATPFit_input_name);
@@ -213,7 +230,7 @@ public class Species {
         	err += e.toString();
         	throw new GATPFitException(err);
         }
-        
+
         // call GATPFit
         boolean error = false;
         try {
@@ -221,27 +238,27 @@ public class Species {
         	String[] command = {workingDirectory +  "/software/GATPFit/GATPFit.exe"};
 			File runningDir = new File("GATPFit");
         	Process GATPFit = Runtime.getRuntime().exec(command, null, runningDir);
-        	int exitValue = GATPFit.waitFor(); 
+        	int exitValue = GATPFit.waitFor();
         	GATPFitExecuted = true;
-        	
+
         }
         catch (Exception e) {
         	String err = "Error in running GATPFit!" + ls;
         	err += e.toString();
         	throw new GATPFitException(err);
         }
-        
+
         // return error = true, if there was a problem
         return error;
-            
-        
+
+
         //#]
     }
-    
-	
-	   //## operation callTherfit(String,String) 
+
+
+	   //## operation callTherfit(String,String)
     private boolean callTherfit(String p_directory, String p_mode) {
-        //#[ operation callTherfit(String,String) 
+        //#[ operation callTherfit(String,String)
 		/*if (name.equals("C2O2")){
 			System.out.println("Species 166");
 		}*/
@@ -251,7 +268,7 @@ public class Species {
         String result = p_mode.toUpperCase() + '\n';
         result += getChemkinName() + '\n';
         ThermoData td = getThermoData();
-        
+
         result += MathTool.formatDouble(td.getH298(), 8, 2) + '\n';
         result += MathTool.formatDouble(td.getS298(), 8, 2) + '\n';
         result += MathTool.formatDouble(td.getCp300(), 7, 3) + '\n';
@@ -261,7 +278,7 @@ public class Species {
         result += MathTool.formatDouble(td.getCp800(), 7, 3) + '\n';
         result += MathTool.formatDouble(td.getCp1000(), 7, 3) + '\n';
         result += MathTool.formatDouble(td.getCp1500(), 7, 3) + '\n';
-        
+
         ChemGraph cg = getChemGraph();
         result += "C\n";
         result += MathTool.formatInteger(cg.getCarbonNumber(),3,"R") + '\n';
@@ -276,14 +293,14 @@ public class Species {
         	result += MathTool.formatInteger(oNum,3,"R") + '\n';
         }
         result += "0\n0\n";
-        
+
         result += "G\n";
         result += Integer.toString(getInternalRotor()) + '\n';
-        
+
         // finished writing text for input file, now save result to fort.1
         String therfit_input_name = null;
         File therfit_input = null;
-        
+
 		try {
         	// prepare therfit input file, "fort.1" is the input file name
         	therfit_input_name = p_directory+"/fort.1";//p_directory+"/software/therfit/fort.1";
@@ -296,7 +313,7 @@ public class Species {
         	System.out.println("Wrong input file for therfit!");
         	System.exit(0);
         }
-        
+
         // call therfit
         boolean error = false;
 		try {
@@ -328,61 +345,61 @@ public class Species {
        	System.out.println("Error in run therfit!");
        	System.exit(0);
        }
-        
+
         // return error = true, if there was a problem
         return error;
-        
+
         //#]
     }
-	
-    //## operation doDelocalization(ChemGraph,Stack) 
+
+    //## operation doDelocalization(ChemGraph,Stack)
     private ChemGraph doDelocalization(ChemGraph p_chemGraph, Stack p_path) {
-        //#[ operation doDelocalization(ChemGraph,Stack) 
+        //#[ operation doDelocalization(ChemGraph,Stack)
         if (p_path.isEmpty() || p_path.size() != 3) throw new InvalidDelocalizationPathException();
-        
+
         Graph graph = Graph.copy(p_chemGraph.getGraph());
-        
+
         // n1-a1-n2-a2-n3.
         Node node1 = graph.getNodeAt((Integer)p_path.pop());
         Node node2 = graph.getNodeAt((Integer)p_path.pop());
         Node node3 = graph.getNodeAt((Integer)p_path.pop());
         Arc arc1 = graph.getArcBetween(node1,node2);
         Arc arc2 = graph.getArcBetween(node2,node3);
-        
+
         // deal with node1
         Atom atom1 = (Atom)node1.getElement();
         Atom newAtom1 = (Atom)atom1.changeRadical(1,null);
         node1.setElement(newAtom1);
-        
+
         // deal with arc1
         Bond bond1 = (Bond)arc1.getElement();
         Bond newBond1 = bond1.changeBond(-1);
         arc1.setElement(newBond1);
-        
+
         // deal with node2, actually do nothing
-        
+
         // deal with arc2
         Bond bond2 = (Bond)arc2.getElement();
         Bond newBond2 = bond2.changeBond(1);
         arc2.setElement(newBond2);
-        
+
         // deal with node3
         Atom atom3 = (Atom)node3.getElement();
         Atom newAtom3 = (Atom)atom3.changeRadical(-1,null);
         node3.setElement(newAtom3);
-        
+
         node1.updateFgElement();
         node1.updateFeElement();
         node2.updateFgElement();
         node2.updateFeElement();
         node3.updateFgElement();
         node3.updateFeElement();
-        
+
         p_path = null;
-        
+
         try {
         	ChemGraph newIsomer = ChemGraph.make(graph);
-        
+
         	if (addResonanceIsomer(newIsomer)) return newIsomer;
         	else return null;
         }
@@ -391,14 +408,14 @@ public class Species {
         }
         //#]
     }
-    
-    //## operation findAllDelocalizationPaths(Node) 
+
+    //## operation findAllDelocalizationPaths(Node)
     private HashSet findAllDelocalizationPaths(Node p_radical) {
-        //#[ operation findAllDelocalizationPaths(Node) 
+        //#[ operation findAllDelocalizationPaths(Node)
         HashSet allPaths = new HashSet();
         Atom atom = (Atom)p_radical.getElement();
         if (!atom.isRadical()) return allPaths;
-        
+
         Iterator iter = p_radical.getNeighbor();
         while (iter.hasNext()) {
         	Arc arc1 = (Arc)iter.next();
@@ -420,17 +437,17 @@ public class Species {
         				}
         			}
         		}
-        
+
         	}
         }
-        
+
         return allPaths;
         //#]
     }
-    
-    //## operation findStablestThermoData() 
+
+    //## operation findStablestThermoData()
     public void findStablestThermoData() {
-        //#[ operation findStablestThermoData() 
+        //#[ operation findStablestThermoData()
         double H = chemGraph.getThermoData().getH298();
         ChemGraph stablest = chemGraph;
         if (resonanceIsomers != null) {
@@ -444,17 +461,17 @@ public class Species {
         		}
         	}
         }
-        
+
         chemGraph = stablest;
         //#]
     }
-    
-	  //## operation generateNASAThermoDatabyGATPFit() 
+
+	  //## operation generateNASAThermoDatabyGATPFit()
     public void generateNASAThermoDatabyGATPFit() {
-        //#[ operation generateNASAThermoDatabyGATPFit() 
+        //#[ operation generateNASAThermoDatabyGATPFit()
         // get working directory
         String dir = System.getProperty("RMG.workingDirectory");
-        
+
         try {
         	// prepare GATPFit input file and execute system call
         	boolean error = callGATPFit(dir);
@@ -462,18 +479,18 @@ public class Species {
         catch (GATPFitException e) {
         	throw new NASAFittingException("Error in running GATPFit: " + e.toString());
         }
-        
+
         // parse output from GATPFit, "output.txt" is the output file name
         String therfit_nasa_output = "GATPFit/OUTPUT.txt";
-        
+
         try {
         	FileReader in = new FileReader(therfit_nasa_output);
         	BufferedReader data = new BufferedReader(in);
-        
+
         	String line = data.readLine();
         	line = data.readLine();
         	String nasaString = "";
-        
+
         	while (line != null) {
         		nasaString += line + System.getProperty("line.separator");
         		line = data.readLine();
@@ -481,12 +498,12 @@ public class Species {
         	nasaThermoData = new NASAThermoData(nasaString);
         }
         catch (Exception e) {
-        	throw new NASAFittingException("Error in reading in GATPFit output file: " + System.getProperty("line.separator") + e.toString()); 
+        	throw new NASAFittingException("Error in reading in GATPFit output file: " + System.getProperty("line.separator") + e.toString());
         }
         //#]
     }
-	
-	   //## operation generateNASAThermoData() 
+
+	   //## operation generateNASAThermoData()
     public void generateNASAThermoData() {
         ///#[ operation generateNASAThermoData()
         // get working directory
@@ -526,40 +543,40 @@ public class Species {
         //#]
     }
 
-    
+
     /**
     Requires:
     Effects: generate all the possible resonance isomers for the primary chemGraph
     Modifies: this.resonanceIsomers
     */
-    //## operation generateResonanceIsomers() 
+    //## operation generateResonanceIsomers()
     public void generateResonanceIsomers() {
-        //#[ operation generateResonanceIsomers() 
+        //#[ operation generateResonanceIsomers()
         if (chemGraph == null) throw new NullPointerException();
-        
+
         // check if the representation of chemGraph is correct
         if (!chemGraph.repOk()) {
         	resonanceIsomers = null;
         	throw new InvalidChemGraphException();
         }
-        
+
         // generate RI for radical
         generateResonanceIsomersFromRadicalCenter();
-        
+
         // generaate RI for O2, removed, don't allow .o-o.
         //generateResonanceIsomersForOxygen();
-        
+
         if (resonanceIsomers.size() == 1) {
         	ChemGraph cg = (ChemGraph)(resonanceIsomers.iterator().next());
         	if (cg == chemGraph) resonanceIsomers.clear();
         	else addResonanceIsomer(chemGraph);
         }
-        
+
         /*Graph g = Graph.copy(chemGraph.getGraph());
         // generate node-electron stucture
         int nodeNumber = g.getNodeNumber();
         int [] electronOnNode = new int[nodeNumber+1];
-        
+
         Iterator nodeIter = g.getNodeList();
         while (nodeIter.hasNext()) {
         	Node node = (Node)nodeIter.next();
@@ -582,33 +599,33 @@ public class Species {
         	}
         }
         */
-        
+
         // combine them accordingly
         //resonanceIsomer = combineElectronBetweenNodes(g);
-        
+
         return;
-        
-        
-        
-        
+
+
+
+
         //#]
     }
-    
-    //## operation generateResonanceIsomersForOxygen() 
+
+    //## operation generateResonanceIsomersForOxygen()
     public void generateResonanceIsomersForOxygen() {
-        //#[ operation generateResonanceIsomersForOxygen() 
+        //#[ operation generateResonanceIsomersForOxygen()
         // form a O2 graph
         Graph g1 = new Graph();
         Node n1 = g1.addNodeAt(1,Atom.make(ChemElement.make("O"), FreeElectron.make("0")));
         Node n2 = g1.addNodeAt(2,Atom.make(ChemElement.make("O"), FreeElectron.make("0")));
         g1.addArcBetween(n1,Bond.make("D"),n2);
-        
+
         // form a .o-o. graph
         Graph g2 = new Graph();
         Node n3 = g2.addNodeAt(1,Atom.make(ChemElement.make("O"), FreeElectron.make("1")));
         Node n4 = g2.addNodeAt(2,Atom.make(ChemElement.make("O"), FreeElectron.make("1")));
         g2.addArcBetween(n3,Bond.make("S"),n4);
-        
+
         try {
         	if (chemGraph.getGraph().isEquivalent(g1)) {
         		ChemGraph cg = ChemGraph.make(g2);
@@ -623,23 +640,23 @@ public class Species {
         catch (ForbiddenStructureException e) {
         	return;
         }
-        
-        
-        
+
+
+
         //#]
     }
-    
-    //## operation generateResonanceIsomersFromRadicalCenter() 
+
+    //## operation generateResonanceIsomersFromRadicalCenter()
     private void generateResonanceIsomersFromRadicalCenter() {
-        //#[ operation generateResonanceIsomersFromRadicalCenter() 
+        //#[ operation generateResonanceIsomersFromRadicalCenter()
         // only radical is considered here
         if (chemGraph.getRadicalNumber() <= 0) return;
-        
+
         addResonanceIsomer(chemGraph);
-        
+
         Queue undoChemGraph = new Queue(chemGraph.getAtomNumber());
         undoChemGraph.enqueue(chemGraph);
-        
+
         HashSet processedChemGraph = new HashSet();
         while (!undoChemGraph.isEmpty()) {
         	ChemGraph cg = (ChemGraph)undoChemGraph.dequeue();
@@ -664,8 +681,8 @@ public class Species {
         }
         //#]
     }
-    
-    //## operation generateThreeFrequencyModel() 
+
+    //## operation generateThreeFrequencyModel()
 	public void generateThreeFrequencyModel() {
         //#[ operation generateThreeFrequencyModel()
         if (isTriatomicOrSmaller()) return;
@@ -725,103 +742,103 @@ public class Species {
 
         //#]
     }
- 
+
 	  public String getChemkinName() {
-	        //#[ operation getChemkinName() 
+	        //#[ operation getChemkinName()
 	        String chemkinName = getName() + "(" + getID() + ")";
 	        if (chemkinName.length() > 16) chemkinName = "SPC(" + getID() + ")";
 	        return chemkinName;
-	        
+
 	        //#]
 	    }
-	  
-    //## operation getInternalRotor() 
+
+    //## operation getInternalRotor()
     public int getInternalRotor() {
-        //#[ operation getInternalRotor() 
+        //#[ operation getInternalRotor()
         return getChemGraph().getInternalRotor();
         //#]
     }
-    
-    //## operation getMolecularWeight() 
+
+    //## operation getMolecularWeight()
     public double getMolecularWeight() {
-        //#[ operation getMolecularWeight() 
+        //#[ operation getMolecularWeight()
         return getChemGraph().getMolecularWeight();
         //#]
     }
-   
-	   //## operation getNasaThermoData() 
+
+	   //## operation getNasaThermoData()
     public NASAThermoData getNasaThermoData() {
-        //#[ operation getNasaThermoData() 
+        //#[ operation getNasaThermoData()
         //if (nasaThermoData==null && !therfitExecuted) generateNASAThermoData();
-		if (nasaThermoData==null) generateNASAThermoData();        
+		if (nasaThermoData==null) generateNASAThermoData();
         return nasaThermoData;
         //#]
     }
-    
-    //## operation getResonanceIsomers() 
+
+    //## operation getResonanceIsomers()
     public Iterator getResonanceIsomers() {
-        //#[ operation getResonanceIsomers() 
+        //#[ operation getResonanceIsomers()
         return resonanceIsomers.iterator();
         //#]
     }
-	
+
 	public HashSet getResonanceIsomersHashSet(){
 		return resonanceIsomers;
 	}
-    
+
     /**
     Requires:
     Effects: return the thermo data of the stablest resonance isomer.
     Modifies:
     */
-    //## operation getThermoData() 
+    //## operation getThermoData()
     public ThermoData getThermoData() {
-        //#[ operation getThermoData() 
+        //#[ operation getThermoData()
         return chemGraph.getThermoData();
         //#]
     }
-    
-    //## operation getThreeFrequencyMode() 
+
+    //## operation getThreeFrequencyMode()
     public ThreeFrequencyModel getThreeFrequencyMode() {
-        //#[ operation getThreeFrequencyMode() 
+        //#[ operation getThreeFrequencyMode()
         if (threeFrequencyModel==null && !therfitExecuted) generateThreeFrequencyModel();
-        
+
         return threeFrequencyModel;
         //#]
     }
-    
-    //## operation hasResonanceIsomers() 
+
+    //## operation hasResonanceIsomers()
     public boolean hasResonanceIsomers() {
-        //#[ operation hasResonanceIsomers() 
+        //#[ operation hasResonanceIsomers()
         if (resonanceIsomers == null) return false;
         else return (resonanceIsomers.size() > 0);
         //#]
     }
-    
-    //## operation hasThreeFrequencyModel() 
+
+    //## operation hasThreeFrequencyModel()
     public boolean hasThreeFrequencyModel() {
-        //#[ operation hasThreeFrequencyModel() 
+        //#[ operation hasThreeFrequencyModel()
         return (getThreeFrequencyModel() != null);
         //#]
     }
-    
-    //## operation isRadical() 
+
+    //## operation isRadical()
     public boolean isRadical() {
-        //#[ operation isRadical() 
+        //#[ operation isRadical()
         return chemGraph.isRadical();
         //#]
     }
-    
-    //## operation isTriatomicOrSmaller() 
+
+    //## operation isTriatomicOrSmaller()
     public boolean isTriatomicOrSmaller() {
-        //#[ operation isTriatomicOrSmaller() 
+        //#[ operation isTriatomicOrSmaller()
         return (getChemGraph().getAtomNumber()<=3);
         //#]
     }
-    
-    //## operation make(String,ChemGraph) 
+
+    //## operation make(String,ChemGraph)
     public static Species make(String p_name, ChemGraph p_chemGraph) {
-        //#[ operation make(String,ChemGraph) 
+        //#[ operation make(String,ChemGraph)
         SpeciesDictionary dictionary = SpeciesDictionary.getInstance();
         Species spe = (Species)(dictionary.getSpecies(p_chemGraph));
 		/*if (TOTAL_NUMBER == 34){
@@ -837,9 +854,9 @@ public class Species {
         	}
 			int id= ++TOTAL_NUMBER;
         	spe = new Species(id,name,p_chemGraph);
-        	//spe.ID = 
+        	//spe.ID =
         	dictionary.putSpecies(spe);
-			
+
         	//System.out.println("add new species into system: " + name);
         	//System.out.println(p_chemGraph.getGraph());
         }
@@ -847,12 +864,12 @@ public class Species {
         return spe;
         //#]
     }
-    
+
 	public static Species make(String p_name, ChemGraph p_chemGraph, int id) {
-        //#[ operation make(String,ChemGraph) 
+        //#[ operation make(String,ChemGraph)
         SpeciesDictionary dictionary = SpeciesDictionary.getInstance();
         Species spe = (Species)(dictionary.getSpecies(p_chemGraph));
-        
+
         if (spe == null) {
         	String name = p_name;
         	if (name == null || name.length()==0) {
@@ -868,31 +885,31 @@ public class Species {
         return spe;
         //#]
     }
-	
-    //## operation repOk() 
+
+    //## operation repOk()
     public boolean repOk() {
-        //#[ operation repOk() 
+        //#[ operation repOk()
         if (name == null || name.length() == 0) return false;
-        
+
         if (ID < 0 || ID > TOTAL_NUMBER) return false;
-        
+
         if (chemGraph != null && !chemGraph.repOk()) return false;
-        
+
         Iterator iter = resonanceIsomers.iterator();
         while (iter.hasNext()) {
         	ChemGraph cg = (ChemGraph)iter.next();
         	if (cg == null || !cg.repOk()) return false;
         }
-        
+
         return true;
         //#]
     }
-    
-    //## operation selectDeltaEDown() 
+
+    //## operation selectDeltaEDown()
     public void selectDeltaEDown() {
-        //#[ operation selectDeltaEDown() 
+        //#[ operation selectDeltaEDown()
         String name = getName();
-        
+
         if (name.equals("AR")) deltaEDown = 374.0;
         else if (name.equals("H2")) deltaEDown = 224.0;
         else if (name.equals("O2")) deltaEDown = 517.0;
@@ -903,17 +920,17 @@ public class Species {
         else if (name.equals("H2O2")) deltaEDown = 975.0;
         else if (name.equals("CO2")) deltaEDown = 417.0;
         else if (name.equals("CO")) deltaEDown = 283.0;
-        
+
         return;
-        
-        
-        
+
+
+
         //#]
     }
-    
-    //## operation selectLJParametersForSpecialMolecule() 
+
+    //## operation selectLJParametersForSpecialMolecule()
     public void selectLJParametersForSpecialMolecule() {
-        //#[ operation selectLJParametersForSpecialMolecule() 
+        //#[ operation selectLJParametersForSpecialMolecule()
         String name = getName();
         if (name.equals("H2")) LJ = new LennardJones(2.8327, 59.7);
         else if (name.equals("O2")) LJ = new LennardJones(3.467, 106.7);
@@ -925,26 +942,26 @@ public class Species {
         //#]
     }
 	public String toChemkinString() {
-		//#[ operation toChemkinString() 
+		//#[ operation toChemkinString()
 		return getChemkinName();
 		//#]
 	}
-	   
-    //## operation toChemDisString() 
+
+    //## operation toChemDisString()
     public String toChemDisString() {
-        //#[ operation toChemDisString() 
+        //#[ operation toChemDisString()
         return "SPC" + String.valueOf(getID());
         //#]
     }
-    
-    //## operation toString() 
+
+    //## operation toString()
     public String toString() {
-        //#[ operation toString() 
+        //#[ operation toString()
         String s = "Species " + String.valueOf(ID) + '\t';
         s = s + "Name: " + getName() + '\n';
         ChemGraph primary = getChemGraph();
         s = s + primary.toString();
-        
+
         int index=0;
         for (Iterator iter = resonanceIsomers.iterator(); iter.hasNext(); ) {
         	index++;
@@ -957,14 +974,14 @@ public class Species {
         }
         return s;
     }
-        
-//		## operation toString() 
+
+//		## operation toString()
 	    public String toString(int i) {
-	        //#[ operation toString() 
+	        //#[ operation toString()
 			String s ="";
 			ChemGraph primary = getChemGraph();
 	        s = s + primary.toString(i);
-	        
+
 	        int index=0;
 	        /*for (Iterator iter = resonanceIsomers.iterator(); iter.hasNext(); ) {
 	        	index++;
@@ -977,15 +994,15 @@ public class Species {
 	        }*/
 	        return s;
     }
-    
-    //## operation toStringWithoutH() 
+
+    //## operation toStringWithoutH()
     public String toStringWithoutH() {
-        //#[ operation toStringWithoutH() 
+        //#[ operation toStringWithoutH()
         String s = "Species " + String.valueOf(ID) + '\t';
         s = s + "Name: " + getName() + '\n';
         ChemGraph primary = getChemGraph();
         s = s + primary.toStringWithoutH();
-        
+
         int index=0;
         for (Iterator iter = resonanceIsomers.iterator(); iter.hasNext(); ) {
         	index++;
@@ -997,19 +1014,19 @@ public class Species {
         	}
         }
         return s;
-        
-        
-        
-        
+
+
+
+
         //#]
     }
-    
+
 	public String toStringWithoutH(int i) {
-        //#[ operation toStringWithoutH() 
+        //#[ operation toStringWithoutH()
         String s ="";
 		ChemGraph primary = getChemGraph();
         s = s + primary.toStringWithoutH(i);
-        
+
         int index=0;
         /*for (Iterator iter = resonanceIsomers.iterator(); iter.hasNext(); ) {
         	index++;
@@ -1021,66 +1038,66 @@ public class Species {
         	}
         }*/
         return s;
-        
-        
-        
-        
+
+
+
+
         //#]
     }
-	
+
     public int getID() {
         return ID;
     }
-    
+
     public static int getTOTAL_NUMBER() {
         return TOTAL_NUMBER;
     }
-    
+
     public ChemGraph getChemGraph() {
         return chemGraph;
     }
-    
+
     public void setChemGraph(ChemGraph p_chemGraph) {
         chemGraph = p_chemGraph;
     }
-    
+
     public double getDeltaEDown() {
         return deltaEDown;
     }
-    
+
     public String getName() {
         return name;
     }
-    
+
     public void setName(String p_name) {
         name = p_name;
     }
-    
+
     public boolean getTherfitExecuted() {
         return therfitExecuted;
     }
-    
+
     public LennardJones getLJ() {
         return LJ;
     }
-    
+
     public LennardJones newLJ() {
         LJ = new LennardJones();
         return LJ;
     }
-    
+
     public void deleteLJ() {
         LJ=null;
     }
-    
+
     public ThreeFrequencyModel getThreeFrequencyModel() {
         return threeFrequencyModel;
     }
-    
+
     protected void initRelations() {
         LJ = newLJ();
     }
-    
+
 }
 /*********************************************************************
 	File Path	: RMG\RMG\jing\chem\Species.java
