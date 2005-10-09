@@ -1,9 +1,9 @@
 //!********************************************************************************
 //!
-//!    RMG: Reaction Mechanism Generator                                            
+//!    RMG: Reaction Mechanism Generator
 //!
 //!    Copyright: Jing Song, MIT, 2002, all rights reserved
-//!     
+//!
 //!    Author's Contact: jingsong@mit.edu
 //!
 //!    Restrictions:
@@ -16,19 +16,19 @@
 //!        "This product includes software RMG developed by Jing Song, MIT."
 //!        Alternately, this acknowledgment may appear in the software itself,
 //!        if and wherever such third-party acknowledgments normally appear.
-//!  
-//!    RMG IS PROVIDED "AS IS" AND ANY EXPRESSED OR IMPLIED 
-//!    WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES 
-//!    OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE 
-//!    DISCLAIMED.  IN NO EVENT SHALL JING SONG BE LIABLE FOR  
-//!    ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR 
-//!    CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT 
-//!    OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS;  
-//!    OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF  
-//!    LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT  
-//!    (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF 
+//!
+//!    RMG IS PROVIDED "AS IS" AND ANY EXPRESSED OR IMPLIED
+//!    WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
+//!    OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+//!    DISCLAIMED.  IN NO EVENT SHALL JING SONG BE LIABLE FOR
+//!    ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+//!    CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT
+//!    OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS;
+//!    OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
+//!    LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+//!    (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF
 //!    THE USE OF RMG, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-//! 
+//!
 //!******************************************************************************
 
 
@@ -44,34 +44,34 @@ import jing.chem.Species;
 import jing.chem.ChemGraph;
 import jing.param.Temperature;
 
-//## package jing::rxn 
+//## package jing::rxn
 
 //----------------------------------------------------------------------------
-// jing\rxn\Structure.java                                                                  
+// jing\rxn\Structure.java
 //----------------------------------------------------------------------------
 
 /**
 the basic structure of a reaction:
 A + B -> C + D
-A, B, C, and D are species. 
+A, B, C, and D are species.
 */
-//## class Structure 
+//## class Structure
 public class Structure {
-    
-    protected static int MAX_PRODUCT_NUMBER = 3;		//## attribute MAX_PRODUCT_NUMBER 
-    
-    protected static int MAX_REACTANT_NUMBER = 3;		//## attribute MAX_REACTANT_NUMBER 
-    
-    protected int direction;		//## attribute direction 
-    
-    protected int redundancy = 1;		//## attribute redundancy 
-    
+
+    protected static int MAX_PRODUCT_NUMBER = 3;		//## attribute MAX_PRODUCT_NUMBER
+
+    protected static int MAX_REACTANT_NUMBER = 3;		//## attribute MAX_REACTANT_NUMBER
+
+    protected int direction;		//## attribute direction
+
+    protected int redundancy = 1;		//## attribute redundancy
+
     protected LinkedList products;
     protected LinkedList reactants;
-    
+
     // Constructors
-    
-    //## operation Structure(LinkedList,LinkedList) 
+
+    //## operation Structure(LinkedList,LinkedList)
     public  Structure(LinkedList p_reactants, LinkedList p_products) {
         {
             reactants=new LinkedList();
@@ -79,16 +79,16 @@ public class Structure {
         {
             products=new LinkedList();
         }
-        //#[ operation Structure(LinkedList,LinkedList) 
+        //#[ operation Structure(LinkedList,LinkedList)
         reactants = p_reactants;
         products = p_products;
-        
-        
-        
+
+
+
         //#]
     }
-	
-//	## operation Structure(LinkedList,LinkedList) 
+
+//	## operation Structure(LinkedList,LinkedList)
     public  Structure(LinkedList p_reactants, LinkedList p_products, int p_direction) {
         {
             reactants=new LinkedList();
@@ -96,16 +96,16 @@ public class Structure {
         {
             products=new LinkedList();
         }
-        //#[ operation Structure(LinkedList,LinkedList) 
+        //#[ operation Structure(LinkedList,LinkedList)
         reactants = p_reactants;
         products = p_products;
         direction = p_direction;
-        
-        
+
+
         //#]
     }
-	
-    //## operation Structure(LinkedList) 
+
+    //## operation Structure(LinkedList)
     public  Structure(LinkedList p_reactants) {
         {
             reactants=new LinkedList();
@@ -113,7 +113,7 @@ public class Structure {
         {
             products=new LinkedList();
         }
-        //#[ operation Structure(LinkedList) 
+        //#[ operation Structure(LinkedList)
         reactants = p_reactants;
         products = null;
         //#]
@@ -126,31 +126,31 @@ public class Structure {
             reactants=new LinkedList();
         }
     }
-    
-    //## operation calculateHrxn(Temperature) 
+
+    //## operation calculateHrxn(Temperature)
     public double calculateHrxn(Temperature p_temperature) {
-        //#[ operation calculateHrxn(Temperature) 
+        //#[ operation calculateHrxn(Temperature)
         double DH = 0;
-        
+
         for (Iterator iter = getReactants(); iter.hasNext(); ) {
         	ChemGraph cg = (ChemGraph)iter.next();
         	Species spe = cg.getSpecies();
         	DH -= spe.calculateH(p_temperature);
         }
-        
+
         for (Iterator iter = getProducts(); iter.hasNext(); ) {
         	ChemGraph cg = (ChemGraph)iter.next();
         	Species spe = cg.getSpecies();
         	DH += spe.calculateH(p_temperature);
         }
-        
-        return DH;	
+
+        return DH;
         //#]
     }
-    
-    //## operation calculateKeq(Temperature) 
+
+    //## operation calculateKeq(Temperature)
     public double calculateKeq(Temperature p_temperature) {
-        //#[ operation calculateKeq(Temperature) 
+        //#[ operation calculateKeq(Temperature)
         double DG = 0;
         for (Iterator iter = getReactants(); iter.hasNext(); ) {
         	ChemGraph cg = (ChemGraph)iter.next();
@@ -168,34 +168,83 @@ public class Structure {
         Keq = Math.exp(-DG/R/T);
         int deltaN = getDeltaN();
         Keq *= Math.pow(GasConstant.getCCAtmMolK()*p_temperature.getK(),-deltaN);
-        return Keq;	
+        return Keq;
         //#]
     }
-    
-    //## operation calculateSrxn(Temperature) 
+
+    //## operation calculateKeqLowerBound(Temperature)
+      public double calculateKeqLowerBound(Temperature p_temperature) {//svp
+        //#[ operation calculateKeqLowerBound(Temperature)
+        double DG = 0;
+        for (Iterator iter = getReactants();iter.hasNext();) {
+          ChemGraph cg = (ChemGraph)iter.next();
+          Species spe = cg.getSpecies();
+          DG -= spe.calculateGUpperBound(p_temperature);
+        }
+        for (Iterator iter = getProducts(); iter.hasNext();) {
+          ChemGraph cg = (ChemGraph)iter.next();
+          Species spe = cg.getSpecies();
+          DG += spe.calculateGLowerBound(p_temperature);
+        }
+        double Keq;
+        double T = p_temperature.getStandard();
+        double R = GasConstant.getKcalMolK();
+        Keq = Math.exp(-DG/R/T);
+        int deltaN = getDeltaN();
+        Keq *= Math.pow(GasConstant.getCCAtmMolK()*p_temperature.getK(),-deltaN);
+        return Keq;
+        //#]
+      }
+
+      //## operation calculateKeqUpperBound(Temperature)
+        public double calculateKeqUpperBound(Temperature p_temperature) {//svp
+          //#[ operation calculateKeqUpperBound(Temperature)
+          double DG = 0;
+          for (Iterator iter = getReactants();iter.hasNext();) {
+            ChemGraph cg = (ChemGraph)iter.next();
+            Species spe = cg.getSpecies();
+            DG -= spe.calculateGUpperBound(p_temperature);
+          }
+          for (Iterator iter = getProducts(); iter.hasNext();) {
+            ChemGraph cg = (ChemGraph)iter.next();
+            Species spe = cg.getSpecies();
+            DG += spe.calculateGLowerBound(p_temperature);
+          }
+          double Keq;
+          double T = p_temperature.getStandard();
+          double R = GasConstant.getKcalMolK();
+          Keq = Math.exp(-DG/R/T);
+          int deltaN = getDeltaN();
+          Keq *= Math.pow(GasConstant.getCCAtmMolK()*p_temperature.getK(),-deltaN);
+          return Keq;
+          //#]
+        }
+
+
+    //## operation calculateSrxn(Temperature)
     public double calculateSrxn(Temperature p_temperature) {
-        //#[ operation calculateSrxn(Temperature) 
+        //#[ operation calculateSrxn(Temperature)
         double DS = 0;
-        
+
         for (Iterator iter = getReactants(); iter.hasNext(); ) {
         	ChemGraph cg = (ChemGraph)iter.next();
         	Species spe = cg.getSpecies();
         	DS -= spe.calculateS(p_temperature);
         }
-        
+
         for (Iterator iter = getProducts(); iter.hasNext(); ) {
         	ChemGraph cg = (ChemGraph)iter.next();
         	Species spe = cg.getSpecies();
         	DS += spe.calculateS(p_temperature);
         }
-        
-        return DS;	
+
+        return DS;
         //#]
     }
-    
-    //## operation clearChemGraph() 
+
+    //## operation clearChemGraph()
     public void clearChemGraph() {
-        //#[ operation clearChemGraph() 
+        //#[ operation clearChemGraph()
         for (Iterator iter = getReactants(); iter.hasNext(); ) {
         	ChemGraph cg = (ChemGraph)iter.next();
         	Species s = cg.getSpecies();
@@ -223,7 +272,7 @@ public class Structure {
         		cg = null;
         	}
         }
-        
+
         for (Iterator iter = getProducts(); iter.hasNext(); ) {
         	ChemGraph cg = (ChemGraph)iter.next();
         	Species s = cg.getSpecies();
@@ -248,10 +297,10 @@ public class Structure {
         	}
         	if (newCG != cg) {
         		products.set(products.indexOf(cg),newCG);
-        		cg = null;        
+        		cg = null;
         	}
         }
-        
+
         /*Iterator iter = getReactants();
         while (iter.hasNext()) {
         	ChemGraph cg = (ChemGraph)iter.next();
@@ -262,7 +311,7 @@ public class Structure {
         		cg = null;
         	}
         }
-        
+
         iter = getProducts();
         while (iter.hasNext()) {
         	ChemGraph cg = (ChemGraph)iter.next();
@@ -274,179 +323,179 @@ public class Structure {
         	}
         }*/
         return;
-        
-        		
+
+
         //#]
     }
-    
+
     /**
-    Requires: 
+    Requires:
     Effects: check if this sturcture contains the pass-in species.  if it contains the species, either as reactants, or as products, return true; otherwise, return false.
     Modifies:
     */
-    //## operation contains(Species) 
+    //## operation contains(Species)
     public boolean contains(Species p_species) {
-        //#[ operation contains(Species) 
+        //#[ operation contains(Species)
         if (containsAsReactants(p_species) || containsAsProducts(p_species)) return true;
         return false;
-        
-        
-        
+
+
+
         //#]
     }
-    
+
     /**
     Requires:
     Effects: check if this structure contains the species as products.  if it does, return true; otherwise, return false
-    Modifies: 
+    Modifies:
     */
-    //## operation containsAsProducts(Species) 
+    //## operation containsAsProducts(Species)
     public boolean containsAsProducts(Species p_species) {
-        //#[ operation containsAsProducts(Species) 
+        //#[ operation containsAsProducts(Species)
         if (products.contains(p_species)) return true;
         else return false;
         //#]
     }
-    
+
     /**
     Requires:
     Effects: check if this structure contains the species as reactants.  if it does, return true; otherwise, return false
-    Modifies: 
+    Modifies:
     */
-    //## operation containsAsReactants(Species) 
+    //## operation containsAsReactants(Species)
     public boolean containsAsReactants(Species p_species) {
-        //#[ operation containsAsReactants(Species) 
+        //#[ operation containsAsReactants(Species)
         if (reactants.contains(p_species)) return true;
         else return false;
-        
-        
-        
-        //#]
-    }
-    
-    /**
-    Requires:
-    Effects: compare if two structures are the same.  
-    the order doesn't matter, i.e., A+B->C+D is equal to B+A->D+C, etc.
-    Modifies: 
-    */
-    //## operation equals(Object) 
-    public boolean equals(Object p_structure) {
-        //#[ operation equals(Object) 
-        if (this == p_structure) return true;
-         
-        if (!(p_structure instanceof Structure)) return false;
-        
-        Structure structure = (Structure)p_structure;
-        
-        // compare rule: if the two sets have the same size, and one of them contains all the elements in the other set, 
-        // these two sets are the same.
-        boolean requal = MathTool.isListEquivalent(reactants, structure.reactants);
-        boolean pequal = MathTool.isListEquivalent(products, structure.products);
-        
-        return requal&&pequal; 
+
+
+
         //#]
     }
 
-	   //## operation equalsAsSpecies(Structure) 
-    public boolean equalsAsSpecies(Structure p_structure) {
-        //#[ operation equalsAsSpecies(Structure) 
+    /**
+    Requires:
+    Effects: compare if two structures are the same.
+    the order doesn't matter, i.e., A+B->C+D is equal to B+A->D+C, etc.
+    Modifies:
+    */
+    //## operation equals(Object)
+    public boolean equals(Object p_structure) {
+        //#[ operation equals(Object)
         if (this == p_structure) return true;
-         
-        // compare rule: if the two sets have the same size, and one of them contains all the elements in the other set, 
+
+        if (!(p_structure instanceof Structure)) return false;
+
+        Structure structure = (Structure)p_structure;
+
+        // compare rule: if the two sets have the same size, and one of them contains all the elements in the other set,
+        // these two sets are the same.
+        boolean requal = MathTool.isListEquivalent(reactants, structure.reactants);
+        boolean pequal = MathTool.isListEquivalent(products, structure.products);
+
+        return requal&&pequal;
+        //#]
+    }
+
+	   //## operation equalsAsSpecies(Structure)
+    public boolean equalsAsSpecies(Structure p_structure) {
+        //#[ operation equalsAsSpecies(Structure)
+        if (this == p_structure) return true;
+
+        // compare rule: if the two sets have the same size, and one of them contains all the elements in the other set,
         // these two sets are the same.
         boolean requal = isCGListEquivalentAsSpecies(reactants, p_structure.reactants);
         boolean pequal = isCGListEquivalentAsSpecies(products, p_structure.products);
-        
-        return requal&&pequal; 
+
+        return requal&&pequal;
         //#]
     }
-    
-    //## operation generateReverseStructure() 
+
+    //## operation generateReverseStructure()
     public Structure generateReverseStructure() {
-        //#[ operation generateReverseStructure() 
+        //#[ operation generateReverseStructure()
         Structure newS = new Structure(getProductList(), getReactantList());
         newS.setDirection(-getDirection());
-        
+
         return newS;
-        
-        
+
+
         //#]
     }
- 
-	 //## operation generateSpeciesStructure() 
+
+	 //## operation generateSpeciesStructure()
     public Structure generateSpeciesStructure() {
-        //#[ operation generateSpeciesStructure() 
+        //#[ operation generateSpeciesStructure()
         LinkedList r = new LinkedList();
         for (Iterator iter = getReactants(); iter.hasNext(); ) {
         	ChemGraph reactant = (ChemGraph)iter.next();
         	Species spe = reactant.getSpecies();
-        	r.add(spe);	
+        	r.add(spe);
         }
-        
+
         LinkedList p = new LinkedList();
         for (Iterator iter = getProducts(); iter.hasNext(); ) {
         	ChemGraph product = (ChemGraph)iter.next();
         	Species spe = product.getSpecies();
-        	p.add(spe);	
+        	p.add(spe);
         }
-        
+
         Structure s = new Structure(r,p);
         s.setDirection(getDirection());
         s.setRedundancy(getRedundancy());
-        
+
         return s;
         //#]
     }
-    
-    //## operation getDeltaN() 
+
+    //## operation getDeltaN()
     public int getDeltaN() {
-        //#[ operation getDeltaN() 
+        //#[ operation getDeltaN()
         return getProductNumber()-getReactantNumber();
         //#]
     }
-    
-    //## operation getProductList() 
+
+    //## operation getProductList()
     public LinkedList getProductList() {
-        //#[ operation getProductList() 
+        //#[ operation getProductList()
         return products;
         //#]
     }
-    
+
     /**
     Requires:
     Effects: return the number of species in the itsProducts linkedlist.
-    Modifies: 
+    Modifies:
     */
-    //## operation getProductNumber() 
+    //## operation getProductNumber()
     public int getProductNumber() {
-        //#[ operation getProductNumber() 
+        //#[ operation getProductNumber()
         return products.size();
         //#]
     }
-    
-    //## operation getReactantList() 
+
+    //## operation getReactantList()
     public LinkedList getReactantList() {
-        //#[ operation getReactantList() 
+        //#[ operation getReactantList()
         return reactants;
         //#]
     }
-    
+
     /**
     Requires:
     Effects: return the number of speices in the itsReactants linkedlist.
     Modifies:
     */
-    //## operation getReactantNumber() 
+    //## operation getReactantNumber()
     public int getReactantNumber() {
-        //#[ operation getReactantNumber() 
+        //#[ operation getReactantNumber()
         return reactants.size();
         //#]
     }
-    
-    //## operation hashCode() 
+
+    //## operation hashCode()
     public int hashCode() {
-        //#[ operation hashCode() 
+        //#[ operation hashCode()
         int hash = 0;
         Iterator r = getReactants();
         while (r.hasNext()) {
@@ -461,32 +510,32 @@ public class Structure {
         return hash;
         //#]
     }
-    
-    //## operation increaseRedundancy(int) 
+
+    //## operation increaseRedundancy(int)
     public void increaseRedundancy(int p_number) {
-        //#[ operation increaseRedundancy(int) 
+        //#[ operation increaseRedundancy(int)
         redundancy += p_number;
-        
-        
+
+
         //#]
     }
- 
-	   //## operation isCGListEquivalentAsSpecies(LinkedList,LinkedList) 
+
+	   //## operation isCGListEquivalentAsSpecies(LinkedList,LinkedList)
     public static boolean isCGListEquivalentAsSpecies(LinkedList p_list1, LinkedList p_list2) {
-        //#[ operation isCGListEquivalentAsSpecies(LinkedList,LinkedList) 
+        //#[ operation isCGListEquivalentAsSpecies(LinkedList,LinkedList)
         if (p_list1.size() != p_list2.size()) return false;
-        
+
         boolean found = false;
-        
+
         LinkedList templist = (LinkedList)(p_list2.clone());
         for (Iterator iter1 = p_list1.iterator(); iter1.hasNext();) {
         	ChemGraph cg1 = (ChemGraph)iter1.next();
-        	Species s1 = cg1.getSpecies(); 
+        	Species s1 = cg1.getSpecies();
         	found = false;
         	for (Iterator iter2 = templist.iterator(); iter2.hasNext();) {
         		ChemGraph cg2 = (ChemGraph)iter2.next();
         		Species s2 = cg2.getSpecies();
-        		if (s1.equals(s2)) { 
+        		if (s1.equals(s2)) {
         			found = true;
         			iter2.remove();
         			break;
@@ -494,33 +543,33 @@ public class Structure {
         	}
         	if (!found) return false;
         }
-        
+
         if (templist.isEmpty()) return true;
         else return false;
         //#]
     }
-    
-    //## operation isBackward() 
+
+    //## operation isBackward()
     public boolean isBackward() {
-        //#[ operation isBackward() 
+        //#[ operation isBackward()
         return (direction == -1);
         //#]
     }
-    
-    //## operation isForward() 
+
+    //## operation isForward()
     public boolean isForward() {
-        //#[ operation isForward() 
+        //#[ operation isForward()
         return (direction == 1);
         //#]
     }
-    
-    //## operation reactantEqualsProduct() 
+
+    //## operation reactantEqualsProduct()
     public boolean reactantEqualsProduct() {
-        //#[ operation reactantEqualsProduct() 
+        //#[ operation reactantEqualsProduct()
         return MathTool.isListEquivalent(reactants, products);
         //#]
     }
-    
+
     /**
     Requires:
     Effects: check if this structure is valid, which means if the structure is chemically balanced
@@ -528,9 +577,9 @@ public class Structure {
     (2) valance banlance
     Modifies:
     */
-    //## operation repOk() 
+    //## operation repOk()
     public boolean repOk() {
-        //#[ operation repOk() 
+        //#[ operation repOk()
         // check the number of reactants and products
         int reactant_num = getReactantNumber();
         int product_num = getProductNumber();
@@ -540,21 +589,21 @@ public class Structure {
         if (product_num > MAX_REACTANT_NUMBER || product_num < 0) {
         	throw new InvalidProductNumberException();
         }
-        
+
         // add other checkings
         return true;
-         
+
         //#]
     }
-    
-    //## operation toChemkinString() 
+
+    //## operation toChemkinString()
 	 public String toChemkinString(boolean p_includeReverse) {
-	        //#[ operation toChemkinString(boolean) 
+	        //#[ operation toChemkinString(boolean)
 	        String s="";
 	        int index = 0;
 	        int r_num = getReactantNumber();
 	        int p_num = getProductNumber();
-	        
+
 	        Iterator iter1 = getReactants();
 	        while (iter1.hasNext()) {
 	        	index++;
@@ -564,9 +613,9 @@ public class Structure {
 	        }
 	        if (p_includeReverse)
 	        	s += "=";
-	        else 
+	        else
 	        	s += "=>";
-	        	
+
 	        index = 0;
 	        Iterator iter2 = getProducts();
 	        while (iter2.hasNext()) {
@@ -575,19 +624,19 @@ public class Structure {
 	        	if (index < p_num) s = s + cg.getSpecies().toChemkinString() + "+";
 	        	else s += cg.getSpecies().toChemkinString();
 	        }
-	        	 
+
 	        return s;
 	        //#]
 	    }
-	 
-//	## operation toChemkinString() 
+
+//	## operation toChemkinString()
 	 public String toRestartString(boolean p_includeReverse) {
-	        //#[ operation toChemkinString(boolean) 
+	        //#[ operation toChemkinString(boolean)
 	        String s="";
 	        int index = 0;
 	        int r_num = getReactantNumber();
 	        int p_num = getProductNumber();
-	        
+
 	        Iterator iter1 = getReactants();
 	        while (iter1.hasNext()) {
 	        	index++;
@@ -597,9 +646,9 @@ public class Structure {
 	        }
 	        if (p_includeReverse)
 	        	s += " = ";
-	        else 
+	        else
 	        	s += " => ";
-	        	
+
 	        index = 0;
 	        Iterator iter2 = getProducts();
 	        while (iter2.hasNext()) {
@@ -608,20 +657,20 @@ public class Structure {
 	        	if (index < p_num) s = s + cg.getSpecies().toChemkinString() + " + ";
 	        	else s += cg.getSpecies().toChemkinString();
 	        }
-	        	 
+
 	        return s;
 	        //#]
 	    }
-	    
-    
-    //## operation toString() 
+
+
+    //## operation toString()
     public String toString() {
-        //#[ operation toString() 
+        //#[ operation toString()
         String s="";
         int index = 0;
         int r_num = getReactantNumber();
         int p_num = getProductNumber();
-        
+
         Iterator iter1 = getReactants();
         while (iter1.hasNext()) {
         	index++;
@@ -634,7 +683,7 @@ public class Structure {
         		s = s + cg.getSpecies().getName() + "(" + String.valueOf(id) + ") -> ";
         	}
         }
-        
+
         index = 0;
         Iterator iter2 = getProducts();
         while (iter2.hasNext()) {
@@ -646,72 +695,72 @@ public class Structure {
         	}
         	else s = s + cg.getSpecies().getName() + "(" + String.valueOf(id) + ")" + '\t';
         }
-        
+
         s = s + "Direction = " + String.valueOf(direction) + '\t';
         s = s + "Redundancy = " + String.valueOf(redundancy);
-        	 
+
         return s;
         //#]
     }
-    
+
     public static int getMAX_PRODUCT_NUMBER() {
         return MAX_PRODUCT_NUMBER;
     }
-    
+
     public static int getMAX_REACTANT_NUMBER() {
         return MAX_REACTANT_NUMBER;
     }
-    
+
     public int getDirection() {
         return direction;
     }
-    
+
     public void setDirection(int p_direction) {
         direction = p_direction;
     }
-    
+
     public int getRedundancy() {
         return redundancy;
     }
-    
+
     public void setRedundancy(int p_redundancy) {
         redundancy = p_redundancy;
     }
-    
+
     public ListIterator getProducts() {
         ListIterator iter=products.listIterator(0);
         return iter;
     }
-    
+
     public void addProducts(ChemGraph p_ChemGraph) {
         products.add(p_ChemGraph);
     }
-    
+
     public void removeProducts(ChemGraph p_ChemGraph) {
         products.remove(p_ChemGraph);
     }
-    
+
     public void clearProducts() {
         products.clear();
     }
-    
+
     public ListIterator getReactants() {
         ListIterator iter=reactants.listIterator(0);
         return iter;
     }
-    
+
     public void addReactants(ChemGraph p_ChemGraph) {
         reactants.add(p_ChemGraph);
     }
-    
+
     public void removeReactants(ChemGraph p_ChemGraph) {
         reactants.remove(p_ChemGraph);
     }
-    
+
     public void clearReactants() {
         reactants.clear();
     }
-    
+
 }
 /*********************************************************************
 	File Path	: RMG\RMG\jing\rxn\Structure.java
