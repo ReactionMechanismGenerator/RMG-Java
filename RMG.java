@@ -60,8 +60,25 @@ public class RMG {
 
     System.out.println("\\\\\\\\\\\\\\\\\\\\\\\\\\\\    Concentration Profile Output    \\\\\\\\\\\\\\\\\\\\\\\\\\");
     System.out.println(rs.printConcentrationProfile(speList));
+    if (rmg.getError()){//svp
+    	  System.out.println();
+    	  System.out.println("Upper Bounds:");
+    	  System.out.println(rs.printUpperBoundConcentrations(speList));
+    	  System.out.println("Lower Bounds:");
+    	  System.out.println(rs.printLowerBoundConcentrations(speList));
+    	}
     System.out.println("\\\\\\\\\\\\\\\\\\\\\\\\\\\\    Mole Fraction Profile Output    \\\\\\\\\\\\\\\\\\\\\\\\\\");
     System.out.println(rs.printMoleFractionProfile(speList));
+    
+    if (rmg.getSensitivity()){//svp
+    	  LinkedList importantSpecies = rmg.getSpeciesList();
+    	  System.out.println("Sensitivity Analysis:");
+    	  System.out.println(rs.printSensitivityCoefficients(speList, importantSpecies));
+    	  System.out.println();
+    	  System.out.println(rs.printSensitivityToThermo(speList, importantSpecies));
+    	  System.out.println();
+    	  System.out.println(rs.printMostUncertainReactions(speList, importantSpecies));
+    	}
 
     long end = System.currentTimeMillis();
     double min = (end-begin)/1E3/60;
@@ -107,6 +124,14 @@ public class RMG {
                System.setProperty("jing.chem.ChemGraph.forbiddenStructureFile", workingDir + "/databases/"+name+"/forbiddenStructure/ForbiddenStructure.txt");
                System.setProperty("jing.chem.ThermoGAGroupLibrary.pathName", workingDir + "/databases/" + name+"/thermo");
                System.setProperty("jing.rxn.ReactionTemplateLibrary.pathName", workingDir + "/databases/" + name+"/kinetics/kinetics");
+             }
+             line = ChemParser.readMeaningfulLine(reader);
+             if (line.startsWith("PrimaryThermoLibrary")){
+               StringTokenizer st = new StringTokenizer(line);
+               String next = st.nextToken();
+               String name = st.nextToken().trim();
+               String thermoDirectory = System.getProperty("jing.chem.ThermoGAGroupLibrary.pathName");
+               System.setProperty("jing.chem.PrimaryThermoLibrary.pathName", thermoDirectory+"/"+name);
              }
   }
   catch (IOException e) {
