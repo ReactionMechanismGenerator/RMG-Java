@@ -75,8 +75,8 @@ public class ReactionModelGenerator {
     // Constructors
 
 	private HashSet specs = new HashSet();
-	public static native long getCpuTime();
-	static {System.loadLibrary("cpuTime");}
+	//public static native long getCpuTime();
+	//static {System.loadLibrary("cpuTime");}
 
     //## operation ReactionModelGenerator()
     public  ReactionModelGenerator() {
@@ -96,8 +96,8 @@ public class ReactionModelGenerator {
         		System.out.println("undefined system property: jing.rxnSys.ReactionModelGenerator.conditionFile");
         		System.exit(0);
         	}
-			double sandeep = getCpuTime();
-			System.out.println(getCpuTime()/1e9/60);
+			//double sandeep = getCpuTime();
+			//System.out.println(getCpuTime()/1e9/60);
         	FileReader in = new FileReader(initialConditionFile);
         	BufferedReader reader = new BufferedReader(in);
 
