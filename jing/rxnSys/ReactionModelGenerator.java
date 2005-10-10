@@ -1279,7 +1279,8 @@ public class ReactionModelGenerator {
 			//Remove from this to the end of the comments when you figure out the exact problem with daspk...sandeep
 			begin=init;
 			reactionSystem.resetSystemSnapshot();
-
+			end = end.add(delt);
+			
         	reactionSystem.solveReactionSystem(begin, end, false, reactionChanged, conditionChanged);
 			
         	terminated = reactionSystem.isReactionTerminated();
