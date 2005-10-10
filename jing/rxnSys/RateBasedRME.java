@@ -117,7 +117,7 @@ public class RateBasedRME implements ReactionModelEnlarger {
         	System.exit(0);
 		}
         
-		try{
+		/*try{
 			File coreReactions = new File ("Restart/coreReactions.txt");
 			FileWriter fw = new FileWriter(coreReactions, true);
 			//Species species = (Species) iter.next();
@@ -138,7 +138,7 @@ public class RateBasedRME implements ReactionModelEnlarger {
 		catch (IOException e){
 			System.out.println("Could not write the added Reactions to the allReactions file");
         	System.exit(0);
-		}
+		}*/
 		
         // partition the reaction set into reacted reaction set and unreacted reaction set
         // update the corresponding core and edge model of CoreEdgeReactionModel

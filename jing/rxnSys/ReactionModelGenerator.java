@@ -37,7 +37,7 @@ package jing.rxnSys;
 
 
 import java.io.*;
-
+import jing.rxnSys.ReactionSystem;
 import jing.rxn.*;
 import jing.chem.*;
 
@@ -510,11 +510,11 @@ public class ReactionModelGenerator {
 		parseCoreReactions();
 		//parseCoreReactions();
 		//parseEdgeReactions();
-		Iterator iter = specs.iterator();
+		/*Iterator iter = specs.iterator();
 		for (int i=0;i<specs.size();i++){
 			Species temp = (Species)iter.next();
 			System.out.println(temp.getID()+"\t"+temp.getChemkinName()+"\t"+ temp.getResonanceIsomersHashSet().size());;
-		}
+		}*/
 	}
 
 	private void parseEdgeReactions() {
@@ -1212,10 +1212,9 @@ public class ReactionModelGenerator {
         // step 2: iteratively grow reaction system
         while (!terminated || !valid) {
         	while (!valid) {
-				double end_t ;//= System.currentTimeMillis();
+				double end_t ;
 				print_info += reactionSystem.enlargeReactionModel() + "\t";
 				end_t = System.currentTimeMillis();
-			    	//double min = getCpuTime()/1e9/60;//
 				double min=(end_t-begin_t)/1E3/60;
 				print_info += min + "\t";
         		reactionSystem.resetSystemSnapshot();
@@ -1234,11 +1233,7 @@ public class ReactionModelGenerator {
         		System.out.println(conv);
 
         		Runtime runTime = Runtime.getRuntime();
-        		/*System.out.print("Memory used: ");
-        		System.out.println(runTime.totalMemory());
-        		System.out.print("Free memory: ");
-        		System.out.println(runTime.freeMemory());*/
-
+        		
         		runTime.gc();
 
         		System.out.println("After garbage collection:");
@@ -1247,18 +1242,16 @@ public class ReactionModelGenerator {
         		System.out.print("Free memory: ");
         		System.out.println(runTime.freeMemory());
 				end_t = System.currentTimeMillis();
-			    //min = getCpuTime()/1e9/60;//
-			min=(end_t-begin_t)/1E3/60;
+			    
+				min=(end_t-begin_t)/1E3/60;
 			    System.out.println("Running Time is: " + String.valueOf(min) + " minutes.");
 				System.out.println("The model edge has " + ((CoreEdgeReactionModel)reactionSystem.getReactionModel()).getUnreactedReactionSet().size() + " reactions and "+ ((CoreEdgeReactionModel)reactionSystem.getReactionModel()).getUnreactedSpeciesSet().size() + " species.");
 				System.out.println("The model core has " + ((CoreEdgeReactionModel)reactionSystem.getReactionModel()).getReactedReactionSet().size() + " reactions and "+ ((CoreEdgeReactionModel)reactionSystem.getReactionModel()).getReactedSpeciesSet().size() + " species.");
 
 
-				//((CoreEdgeReactionModel)reactionSystem.getReactionModel()).printPDepModel(reactionSystem.getPresentTemperature());;
 				writeRestartFile();
-				//writeCoreReactions();
-				//writeCoreReactions();
-				//writeEdgeReactions();
+				writeCoreReactions();
+				
 				double min_restart = (System.currentTimeMillis()-begin_t)/1e3/60;//getCpuTime()/1e9/60;
 				print_info += min + "\t" + min_restart + "\t" + ((CoreEdgeReactionModel)reactionSystem.getReactionModel()).getReactedSpeciesSet().size()+ "\t" + ((CoreEdgeReactionModel)reactionSystem.getReactionModel()).getReactedReactionSet().size() + "\t" + ((CoreEdgeReactionModel)reactionSystem.getReactionModel()).getUnreactedSpeciesSet().size() + "\t" + ((CoreEdgeReactionModel)reactionSystem.getReactionModel()).getUnreactedReactionSet().size() + "\t" + runTime.totalMemory() + "\n";
 				try {
@@ -1278,20 +1271,17 @@ public class ReactionModelGenerator {
         	//delt = reactionSystem.adjustTimeStep(delt);
         	lastT = (Temperature)currentT.clone();
         	lastP = (Pressure)currentP.clone();
-        	begin = end;
-        	end = begin.add(delt);
+        	//begin = end;
+        	//end = begin.add(delt);
         	currentT = reactionSystem.getTemperature(begin);
         	currentP = reactionSystem.getPressure(begin);
         	conditionChanged = (!currentT.equals(lastT) || !currentP.equals(lastP));
 			//Remove from this to the end of the comments when you figure out the exact problem with daspk...sandeep
-			//begin=init;
-			//reactionSystem.resetSystemSnapshot();
+			begin=init;
+			reactionSystem.resetSystemSnapshot();
 
         	reactionSystem.solveReactionSystem(begin, end, false, reactionChanged, conditionChanged);
-			//((CoreEdgeReactionModel)reactionSystem.getReactionModel()).printPDepModel(reactionSystem.getPresentTemperature());;
-			//printRestartFile();
-			//Chemkin.writeChemkinInputFile(reactionSystem.getReactionModel(),reactionSystem.getPresentStatus());
-
+			
         	terminated = reactionSystem.isReactionTerminated();
         	valid = reactionSystem.isModelValid();
         	if (!valid) {
