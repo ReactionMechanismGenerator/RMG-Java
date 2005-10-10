@@ -644,7 +644,7 @@ public class ThermoGAGroupLibrary {
                                         if (!oldFG.equals(fg)) throw new ReplaceFunctionalGroupException(fgname);
                                 }
                 }
-
+//System.out.println(line);
                         line = ChemParser.readMeaningfulLine(data);
                 }
 
@@ -676,7 +676,7 @@ public class ThermoGAGroupLibrary {
 
                 String line = ChemParser.readMeaningfulLine(data);
                 while (line != null) {
-
+//System.out.println(line);//
                         // step 1: read in index and name
                         StringTokenizer token = new StringTokenizer(line);
                         int index = Integer.parseInt(token.nextToken());
