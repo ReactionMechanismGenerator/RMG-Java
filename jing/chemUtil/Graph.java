@@ -139,7 +139,7 @@ public class Graph {
 
         //#]
     }
-    
+
     /**
     Requires:
     Effects: saturate all the node atom's undefined valence by adding Hydrogen.
@@ -185,6 +185,7 @@ public class Graph {
         return;
         //#]
     }
+
 
     /**
     Requires:
