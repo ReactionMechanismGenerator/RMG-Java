@@ -39,6 +39,8 @@ package jing.chem;
 import java.util.*;
 import jing.param.*;
 import jing.chemUtil.*;
+import jing.param.*;
+import jing.chemUtil.*;
 
 //## package jing::chem
 
