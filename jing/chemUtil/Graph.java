@@ -139,6 +139,52 @@ public class Graph {
 
         //#]
     }
+    
+    /**
+    Requires:
+    Effects: saturate all the node atom's undefined valence by adding Hydrogen.
+    Modifies: this.nodeList
+    */
+    //## operation addMissingHydrogen()
+    public void addMissingHydrogen() {
+        //#[ operation addMissingHydrogen()
+        Atom H = Atom.make(ChemElement.make("H"), FreeElectron.make("0"));
+        Bond S = Bond.make("S");
+        HashMap addedH = new HashMap();
+
+        Iterator iter = getNodeList();
+        while (iter.hasNext()) {
+                Node node = (Node)iter.next();
+                Atom atom = (Atom)node.getElement();
+                int val = (int)atom.getValency();
+
+                int bondOrder = 0;
+                Iterator neighbor_iter = node.getNeighbor();
+                while (neighbor_iter.hasNext()) {
+                        Arc arc = (Arc)neighbor_iter.next();
+                        Bond bond = (Bond)arc.getElement();
+                        bondOrder += bond.getOrder();
+                }
+                if (bondOrder > val) throw new InvalidConnectivityException();
+                else if (bondOrder < val) {
+                        addedH.put(node, new Integer(val-bondOrder));
+                }
+        }
+        //Graph g = getGraph();
+        iter = addedH.keySet().iterator();
+        while (iter.hasNext()) {
+                Node node = (Node)iter.next();
+                int Hnum = ((Integer)addedH.get(node)).intValue();
+                for (int i=0;i<Hnum; i++) {
+                        Node newNode = addNode(H);
+                        addArcBetween(node, S, newNode);
+                }
+                node.updateFgElement();
+        }
+
+        return;
+        //#]
+    }
 
     /**
     Requires:
