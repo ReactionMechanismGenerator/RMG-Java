@@ -311,7 +311,7 @@ public class GATP implements GeneralGAPP {
     //## operation initializePrimaryThermoLibrary()
       public void initializePrimaryThermoLibrary(){//svp
         //#[ operation initializePrimaryThermoLibrary()
-        primaryLibrary = new PrimaryThermoLibrary();
+        primaryLibrary = PrimaryThermoLibrary.getINSTANCE();
         ///#]
       }
 

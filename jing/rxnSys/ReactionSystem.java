@@ -756,6 +756,48 @@ public class ReactionSystem {
         //#]
     }
 
+//	## operation printConcentrationProfile(LinkedList)
+    public String returnConcentrationProfile(LinkedList p_speciesList) {
+        //#[ operation printConcentrationProfile(LinkedList)
+        if (p_speciesList == null) throw new NullPointerException();
+
+
+        if (p_speciesList.isEmpty()) return "EMPTY species list";
+		String output = "";
+        // check the validity of p_speciesList and print the title line
+        output = output + "Time";
+        int size = p_speciesList.size();
+        for (int i=0; i<size; i++) {
+        	Species spe = (Species)p_speciesList.get(i);
+        	if (!spe.repOk()) throw new InvalidSpeciesException();
+         	String name = spe.getName();
+			output = output + '\t' + name;
+        }
+		output = output + "\n";
+        //System.out.println();
+
+        Iterator iter = getSystemSnapshot();
+        while (iter.hasNext()) {
+        	SystemSnapshot ss = (SystemSnapshot)iter.next();
+			output = output + String.valueOf(ss.getTime().getTime());
+        	for (int i=0; i<size; i++) {
+        		Species spe = (Species)p_speciesList.get(i);
+
+         		if (spe != null) {
+         			SpeciesStatus speSta = ss.getSpeciesStatus(spe);
+         			double conc = 0;
+         			if (speSta != null) conc = speSta.getConcentration();
+					output = output + '\t' + String.valueOf(conc) ;
+         		}
+         	}
+			output = output + "\n";
+         	//System.out.println();
+        }
+
+        return output;
+        //#]
+    }
+	
     //## operation printLowerBoundConcentrations(LinkedList)
 //svp
 public String printLowerBoundConcentrations(LinkedList p_speciesList) {
@@ -892,6 +934,50 @@ public String printLowerBoundConcentrations(LinkedList p_speciesList) {
         //#]
     }
 
+	 //## operation printMoleFractionProfile(LinkedList)
+    public String returnMoleFractionProfile(LinkedList p_speciesList) {
+        //#[ operation printMoleFractionProfile(LinkedList)
+        if (p_speciesList == null) throw new NullPointerException();
+
+        if (p_speciesList.isEmpty()) return "EMPTY species list";
+		String output = "";
+        // check the validity of p_speciesList and print the title line
+		output = output + "Time";
+        int size = p_speciesList.size();
+        for (int i=0; i<size; i++) {
+        	Species spe = (Species)p_speciesList.get(i);
+        	if (spe != null) {
+        		if (!spe.repOk()) throw new InvalidSpeciesException();
+        	 	String name = spe.getName();
+				output = output + '\t' + name ;
+        	 }
+        }
+		output = output +"\n";
+        //System.out.println();
+
+        Iterator iter = getSystemSnapshot();
+        while (iter.hasNext()) {
+        	SystemSnapshot ss = (SystemSnapshot)iter.next();
+        	double totalMole = ss.getTotalMole();
+			output = output + String.valueOf(ss.getTime().getTime());
+        	for (int i=0; i<size; i++) {
+        		Species spe = (Species)p_speciesList.get(i);
+        		if (spe != null) {
+        	 		SpeciesStatus speSta = ss.getSpeciesStatus(spe);
+        	 		double mf;
+        	 		if (speSta==null) mf = 0;
+        	 		else mf = speSta.getConcentration()/totalMole;
+					output = output + '\t' + String.valueOf(mf);
+        	 	}
+         	}
+			output = output + "\n";
+         	//System.out.println();
+        }
+
+        return output;
+        //#]
+    }
+	
   //## operation printMostUncertainReactions(LinkedList, LinkedList)
 //svp
       public String printMostUncertainReactions(LinkedList p_speciesList, LinkedList p_importantSpecies){
@@ -1158,8 +1244,6 @@ public String printLowerBoundConcentrations(LinkedList p_speciesList) {
        //#]
       }
 
-
-
 //## operation printSensitivityToThermo(LinkedList, LinkedList)
       //svp
       public String printSensitivityToThermo(LinkedList p_speciesList, LinkedList p_importantSpecies) {
@@ -1378,8 +1462,9 @@ public String printLowerBoundConcentrations(LinkedList p_speciesList) {
         	p_reactionChanged = true;
         }
 
-        SystemSnapshot beginStatus = (SystemSnapshot)(getSystemSnapshotEnd().next());
-        System.out.println(beginStatus.getTime());
+        //SystemSnapshot beginStatus = (SystemSnapshot)(getSystemSnapshotEnd().next());
+        SystemSnapshot beginStatus = initialStatus;
+		System.out.println(beginStatus.getTime());
         System.out.println(p_beginTime);
 
         if (!beginStatus.getTime().equals(p_beginTime)) throw new InvalidBeginStatusException();

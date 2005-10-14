@@ -598,9 +598,11 @@ public class CoreEdgeReactionModel implements ReactionModel {
     //## operation printPDepModel(Temperature) 
     public void printPDepModel(Temperature p_temperature) {
         //#[ operation printPDepModel(Temperature) 
-        System.out.print("This model include totally " + String.valueOf(getSpeciesNumber()) + " Species and ");
+        String modelInformation ="";
+		System.out.print("This model include totally " + String.valueOf(getSpeciesNumber()) + " Species and ");
         System.out.println(String.valueOf(getReactionNumber()) + " Reactions.");
-        //System.out.println("Species Set:");
+        
+		//System.out.println("Species Set:");
         //System.out.println("Totally " + String.valueOf(getSpeciesNumber()) + " Species:");
         /*LinkedList sortedSpeList = new LinkedList();
         for (Iterator iter = getSpecies(); iter.hasNext(); ) {
@@ -676,6 +678,90 @@ public class CoreEdgeReactionModel implements ReactionModel {
         //#]
     }
     
+//	## operation printPDepModel(Temperature) 
+    public String returnPDepModel(Temperature p_temperature) {
+        //#[ operation printPDepModel(Temperature) 
+        String modelInformation ="";
+		modelInformation = modelInformation + "This model include totally " + String.valueOf(getSpeciesNumber()) + " Species and ";
+		modelInformation = modelInformation + String.valueOf(getReactionNumber()) + " Reactions.\n";
+        
+		//System.out.println("Species Set:");
+        //System.out.println("Totally " + String.valueOf(getSpeciesNumber()) + " Species:");
+        /*LinkedList sortedSpeList = new LinkedList();
+        for (Iterator iter = getSpecies(); iter.hasNext(); ) {
+        	Species spe = (Species)iter.next();
+        	int id = spe.getID();
+        	boolean added = false;
+        	if (sortedSpeList.isEmpty()) sortedSpeList.add(spe);
+        	else {
+        		for (int i = 0; i<sortedSpeList.size(); i++) {
+        			Species thisSpe = (Species)sortedSpeList.get(i);
+        			if (thisSpe.getID()>id) {
+        				sortedSpeList.add(i, spe);
+        				added = true;
+        				break;
+        			}
+        		}
+        		if (!added) sortedSpeList.add(spe);
+        	}
+        }
+        
+        for (int i=0; i<sortedSpeList.size(); i++) {
+        	Species spe = (Species)sortedSpeList.get(i);
+        	System.out.println(spe.toStringWithoutH());
+        }
+        
+        System.out.println("Thermo Properties:");
+        System.out.println("SpeciesID\tNamw\tH298\tS298\tCp300\tCp400\tCp500\tCp600\tCp800\tCp1000\tCp1500");
+        for (int i=0; i<sortedSpeList.size(); i++) {
+        	Species spe = (Species)sortedSpeList.get(i);
+        	System.out.println(String.valueOf(spe.getID()) + '\t' + spe.getName() + '\t' + spe.getThermoData().toString());
+        }*/
+        
+        LinkedList nonPDepList = new LinkedList();
+        LinkedList pDepList = new LinkedList();
+        
+        HashSet pDepStructureSet = new HashSet();
+        for (Iterator iter = PDepNetwork.getDictionary().values().iterator(); iter.hasNext(); ) {
+        	PDepNetwork pdn = (PDepNetwork)iter.next();
+        	for (Iterator pdniter = pdn.getPDepNetReactionList(); pdniter.hasNext();) {
+        		PDepNetReaction pdnr = (PDepNetReaction)pdniter.next();
+        		if (isReactedReaction(pdnr)) {
+        			pDepList.add(pdnr);
+        			pDepStructureSet.add(pdnr.getStructure());
+        		}
+        	}
+        }
+        
+        for (Iterator iter = getReactionSet().iterator(); iter.hasNext(); ) {
+        	Reaction r = (Reaction)iter.next();
+        	Structure s = r.getStructure();
+        	if (!pDepStructureSet.contains(s)) {
+        		nonPDepList.add(r);
+        	} 
+        }
+        
+		modelInformation = modelInformation + "//non p_dep reactions:\n";
+        for (Iterator iter = nonPDepList.iterator(); iter.hasNext(); ) {
+        	Reaction r = (Reaction)iter.next();
+        	double rate = r.calculateRate(p_temperature);
+            if (r instanceof TemplateReaction) rate = ((TemplateReaction)r).calculatePDepRate(p_temperature);
+            //System.out.println(r.toString()+"\t rate = \t"+ String.valueOf(rate));
+			modelInformation = modelInformation + r.toChemkinString()+"\n";
+        }
+        
+		modelInformation = modelInformation + "//p_dep reactions:\n";
+        for (Iterator iter = pDepList.iterator(); iter.hasNext(); ) {
+        	PDepNetReaction r = (PDepNetReaction)iter.next();
+            //System.out.println(r.getStructure().toString() + "\t rate = \t" + Double.toString(r.getRate()));
+			modelInformation = modelInformation + r.toChemkinString()+"\n";
+        }
+		modelInformation = modelInformation + "/////////////////////////////";
+        return modelInformation;
+        //#]
+    }
+    
+	
     //## operation repOk() 
     public boolean repOk() {
         //#[ operation repOk() 

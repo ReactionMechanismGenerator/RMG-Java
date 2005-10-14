@@ -59,7 +59,7 @@ class PrimaryThermoLibrary {
   private static PrimaryThermoLibrary INSTANCE = new PrimaryThermoLibrary();		//## attribute INSTANCE
 
   //## operation PrimaryThermoLibrary()
-  public PrimaryThermoLibrary(){
+  private PrimaryThermoLibrary(){
     //#[ operation PrimaryThermoLibrary()
     library = new HashMap();
     dictionary = new HashMap();
@@ -90,7 +90,7 @@ class PrimaryThermoLibrary {
     Iterator iter = library.keySet().iterator();
     while (iter.hasNext()){
       Graph g = (Graph)iter.next();
-      if (g.equals(p_graph)){
+      if (g.isEquivalent(p_graph)){
         td = (ThermoData)library.get(g);
         return td;
       }
@@ -118,6 +118,7 @@ class PrimaryThermoLibrary {
       String line = ChemParser.readMeaningfulLine(data);
 
       read: while(line != null){
+		  //System.out.println(line);
         StringTokenizer st = new StringTokenizer(line);
         String name = st.nextToken();
 

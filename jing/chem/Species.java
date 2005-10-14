@@ -96,9 +96,9 @@ public class Species {
         findStablestThermoData();
         calculateLJParameters();
         selectDeltaEDown();
-		generateNASAThermoDatabyGATPFit();
+		//generateNASAThermoDatabyGATPFit();
 		//generateThreeFrequencyModel();
-        //generateNASAThermoData();
+        generateNASAThermoData();
         //#]
     }
 
@@ -331,7 +331,7 @@ public class Species {
        		line = line.trim();
        		if (!line.startsWith("*** THRFIT Job Complete")) {
        			String speName = getName();
-       			System.out.println("therfit error for species: " + speName);
+       			System.out.println("therfit error for species: " + speName+"\n"+toString());
        			File newfile = new File(therfit_input_name+"."+speName);
        			therfit_input.renameTo(newfile);
        			error = true;
@@ -841,12 +841,7 @@ public class Species {
         //#[ operation make(String,ChemGraph)
         SpeciesDictionary dictionary = SpeciesDictionary.getInstance();
         Species spe = (Species)(dictionary.getSpecies(p_chemGraph));
-		/*if (TOTAL_NUMBER == 34){
-			System.out.println("Wait for it");
-		}
-		if (TOTAL_NUMBER == 35){
-			System.out.println("Wait for it");
-		}*/
+		
         if (spe == null) {
         	String name = p_name;
         	if (name == null || name.length()==0) {
@@ -857,8 +852,6 @@ public class Species {
         	//spe.ID =
         	dictionary.putSpecies(spe);
 
-        	//System.out.println("add new species into system: " + name);
-        	//System.out.println(p_chemGraph.getGraph());
         }
         p_chemGraph.setSpecies(spe);
         return spe;
@@ -878,8 +871,7 @@ public class Species {
         	spe = new Species(id, name,p_chemGraph);
 			if (id > TOTAL_NUMBER) TOTAL_NUMBER=id;
         	dictionary.putSpecies(spe);
-        	//System.out.println("add new species into system: " + name);
-        	//System.out.println(p_chemGraph.getGraph());
+ 
         }
         p_chemGraph.setSpecies(spe);
         return spe;
