@@ -90,11 +90,8 @@ public ThermoData getThermoData(Graph p_graph){
   Iterator iter = library.keySet().iterator();
   while (iter.hasNext()){
     Graph g = (Graph)iter.next();
-    System.out.println(g);
     g.addMissingHydrogen();
-    System.out.println(g);
     if (g.isEquivalent(p_graph)){
-      System.out.println("equivalent");
       td = (ThermoData)library.get(g);
       return td;
     }
