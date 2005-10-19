@@ -112,6 +112,39 @@ public class RMG {
                      System.exit(0);
              }
 
+             // Print out RMG header
+             System.out.println("\n");
+             System.out.println("                            RMG"); 
+             System.out.println("                Reaction Mechanism Generator");
+             System.out.println("                        version 0.9\n");
+             System.out.println(
+            		"     Jing Song, Sumathy Raman, Joanna Yu, William H. Green,\n" +
+             		"        Sarah Petway, Sandeep Sharma, David M. Matheu,\n" +
+             		"  Paul E. Yelvington, Robert Ashcraft, C. Franklin Goldsmith,\n" +
+             		"      John Wen, Andrew Wong, Hsi-Wu Wong, Kevin Van Geem,\n" +
+             		"                    and Gregory Beran\n");
+             
+             System.out.println("\n");
+             System.out.println("----------------------------------------------------------------------");
+        	 System.out.println(" User input:");
+             System.out.println("----------------------------------------------------------------------");
+
+             //GJB: Added mini-reader to reprint input file in job output.
+             FileReader tmpin = new FileReader(initialConditionFile);
+             BufferedReader minireader = new BufferedReader(tmpin);
+             try {
+                 String inputLine = minireader.readLine();
+                 while ( inputLine != null ) {
+                	 System.out.println(inputLine);
+                	 inputLine = minireader.readLine();
+                 }
+              }
+             catch ( IOException error ) {
+                 System.err.println( "Error reading condition file: " + error );
+             }
+             System.out.println("\n----------------------------------------------------------------------\n");
+             minireader.close();
+             
              FileReader in = new FileReader(initialConditionFile);
              BufferedReader reader = new BufferedReader(in);
              String line = ChemParser.readMeaningfulLine(reader);
