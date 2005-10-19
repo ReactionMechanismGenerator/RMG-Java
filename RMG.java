@@ -18,6 +18,7 @@
 
 import java.util.*;
 import java.io.*;
+
 import jing.chem.*;
 import jing.chemParser.*;
 import jing.param.*;
@@ -37,7 +38,7 @@ public class RMG {
 	
     long begin = System.currentTimeMillis();
 	//begin = getCpuTime();
-	//System.out.println(getCpuTime()/1e9 + " " + (System.currentTimeMillis()-begin)/1e3);
+	System.out.println((begin)/1e3);
 	//System.out.println(getCpuTime()/1e9 + " " + (System.currentTimeMillis()-begin)/1e3);
 	//Pressure pres = new Pressure(30,"bar");
 	//System.out.println("The size of the object pressure is "+getObjectSize(pres));
@@ -46,43 +47,75 @@ public class RMG {
     rmg.modelGeneration();
     ReactionSystem rs = rmg.getReactionSystem();
     CoreEdgeReactionModel cerm = (CoreEdgeReactionModel)rs.getReactionModel();
-
-    System.out.println("\n\\\\\\\\\\\\\\\\\\\\\\\\\\    Final Reaction Model Output    \\\\\\\\\\\\\\\\\\\\\\\\\\");
-    cerm.printPDepModel(rs.getPresentTemperature());
-    System.out.println("Model Edge:\n");
-    System.out.print(cerm.getEdge().getSpeciesNumber());
-    System.out.print(" Species;\t");
-    System.out.print(cerm.getEdge().getReactionNumber());
-    System.out.print(" Reactions.\n");
+	//Write core species to RMG_Dictionary.txt
+	String coreSpecies ="";
+	Iterator iter = cerm.getSpecies();
+	while (iter.hasNext()){
+		int i=1;
+		Species spe = (Species) iter.next();
+		coreSpecies = coreSpecies + spe.getChemkinName()+"\n"+spe.getChemGraph().toString(i)+"\n\n";
+	}
+	try{
+		File rmgDictionary = new File("RMG_Dictionary.txt");
+		FileWriter fw = new FileWriter(rmgDictionary);
+		fw.write(coreSpecies);
+		fw.close();
+	}
+	catch (IOException e) {
+    	System.out.println("Could not write RMG_Dictionary.txt");
+    	System.exit(0);
+    }
+	
+	//Write the final model output in a separete Final_Model file
+	String finalOutput = "";
+	finalOutput = finalOutput + "\n\\\\\\\\\\\\\\\\\\\\\\\\\\    Final Reaction Model Output    \\\\\\\\\\\\\\\\\\\\\\\\\\";
+    finalOutput = finalOutput +"\n"+ cerm.returnPDepModel(rs.getPresentTemperature())+"\n";
+	
+	finalOutput = finalOutput + "Model Edge:";
+	finalOutput = finalOutput + cerm.getEdge().getSpeciesNumber()+" ";
+	finalOutput = finalOutput + " Species; ";
+	finalOutput = finalOutput + cerm.getEdge().getReactionNumber()+" ";
+	finalOutput = finalOutput + " Reactions.";
 
 
     LinkedList speList = new LinkedList(rs.getReactionModel().getSpeciesSet());
 
-    System.out.println("\\\\\\\\\\\\\\\\\\\\\\\\\\\\    Concentration Profile Output    \\\\\\\\\\\\\\\\\\\\\\\\\\");
-    System.out.println(rs.printConcentrationProfile(speList));
+	finalOutput = finalOutput + "\\\\\\\\\\\\\\\\\\\\\\\\\\\\    Concentration Profile Output    \\\\\\\\\\\\\\\\\\\\\\\\\\";
+	finalOutput = finalOutput +"\n"+ rs.returnConcentrationProfile(speList)+"\n";
     if (rmg.getError()){//svp
-    	  System.out.println();
-    	  System.out.println("Upper Bounds:");
-    	  System.out.println(rs.printUpperBoundConcentrations(speList));
-    	  System.out.println("Lower Bounds:");
-    	  System.out.println(rs.printLowerBoundConcentrations(speList));
-    	}
-    System.out.println("\\\\\\\\\\\\\\\\\\\\\\\\\\\\    Mole Fraction Profile Output    \\\\\\\\\\\\\\\\\\\\\\\\\\");
-    System.out.println(rs.printMoleFractionProfile(speList));
+		finalOutput = finalOutput + "\n";
+		finalOutput = finalOutput + "Upper Bounds:"+"\n";
+		finalOutput = finalOutput + rs.printUpperBoundConcentrations(speList)+"\n";
+		finalOutput = finalOutput + "Lower Bounds:"+"\n";
+		finalOutput = finalOutput + rs.printLowerBoundConcentrations(speList)+"\n";
+    }
+	finalOutput = finalOutput + "\\\\\\\\\\\\\\\\\\\\\\\\\\\\    Mole Fraction Profile Output    \\\\\\\\\\\\\\\\\\\\\\\\\\";
+	finalOutput = finalOutput +"\n"+ rs.returnMoleFractionProfile(speList)+"\n";
     
     if (rmg.getSensitivity()){//svp
     	  LinkedList importantSpecies = rmg.getSpeciesList();
-    	  System.out.println("Sensitivity Analysis:");
-    	  System.out.println(rs.printSensitivityCoefficients(speList, importantSpecies));
-    	  System.out.println();
-    	  System.out.println(rs.printSensitivityToThermo(speList, importantSpecies));
-    	  System.out.println();
-    	  System.out.println(rs.printMostUncertainReactions(speList, importantSpecies));
+		  finalOutput = finalOutput + "Sensitivity Analysis:";
+		  finalOutput = finalOutput + rs.printSensitivityCoefficients(speList, importantSpecies)+"\n";
+		  finalOutput = finalOutput + "\n";
+		  finalOutput = finalOutput + rs.printSensitivityToThermo(speList, importantSpecies)+"\n";
+		  finalOutput = finalOutput + "\n";
+		  finalOutput = finalOutput + rs.printMostUncertainReactions(speList, importantSpecies)+"\n";
     	}
 
     long end = System.currentTimeMillis();
     double min = (end-begin)/1E3/60;
-    System.out.println("Running Time is: " + String.valueOf(min) + " minutes.");
+	finalOutput = finalOutput +"Running Time is: " + String.valueOf(min) + " minutes.";
+	
+	try{
+		File finalmodel = new File("Final_Model.txt");
+		FileWriter fw = new FileWriter(finalmodel);
+		fw.write(finalOutput);
+		fw.close();
+	}
+	catch (IOException e) {
+    	System.out.println("Could not write Final_Model.txt");
+    	System.exit(0);
+    }
 
     };
 
