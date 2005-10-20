@@ -369,7 +369,7 @@ private LinkedList generateSensitivityStatus(ReactionModel p_reactionModel, doub
 
         // set reaction set
         //if (p_initialization || p_reactionChanged || p_conditionChanged) {
-        generateThirdBodyReactionList(p_reactionModel, p_beginStatus, p_temperature, p_pressure);
+        //generateThirdBodyReactionList(p_reactionModel, p_beginStatus, p_temperature, p_pressure);
         LinkedList rList = generatePDepODEReactionList(p_reactionModel, p_beginStatus, p_temperature, p_pressure);
 
         	//generateAllODEReactionList(p_reactionModel, p_beginStatus, p_temperature, p_pressure);
