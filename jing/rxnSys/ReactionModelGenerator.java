@@ -1318,8 +1318,10 @@ public class ReactionModelGenerator {
           terminated = false;
           reactionSystem.solveReactionSystem(begin, end, true, false, false);
           while (!terminated){
-            begin = end;
-            end = begin.add(delt);
+            //begin = end;
+        	  begin = init;
+            //end = begin.add(delt);
+        	  end = end.add(delt);
             reactionSystem.solveReactionSystem(begin, end, false, false,
                                                false);
             terminated = reactionSystem.isReactionTerminated();
