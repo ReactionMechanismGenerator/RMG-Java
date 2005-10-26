@@ -833,16 +833,16 @@ public String printLowerBoundConcentrations(LinkedList p_speciesList) {
             double k;
             double k_lowerbound;
             double k_upperbound;
-            //if (r instanceof ThirdBodyReaction){
-            //  k = ((ThirdBodyReaction)r).calculateRate(ss);
-            //  k_lowerbound = r.calculateLowerBoundRate(t)*((ThirdBodyReaction)r).calculateThirdBodyCoefficient(ss);
-            //  k_upperbound = r.calculateUpperBoundRate(t)*((ThirdBodyReaction)r).calculateThirdBodyCoefficient(ss);
-           // }
-           // else if (r instanceof TROEReaction){
-           //   k = ((TROEReaction)r).calculateRate(ss);
-           //   k_lowerbound = r.calculateLowerBoundRate(t)*((TROEReaction)r).calculateTroeFallOff(ss);
-           //   k_upperbound = r.calculateUpperBoundRate(t)*((TROEReaction)r).calculateTroeFallOff(ss);
-           // }
+            if (r instanceof ThirdBodyReaction){
+              k = ((ThirdBodyReaction)r).calculateRate(ss);
+              k_lowerbound = r.calculateLowerBoundRate(t)*((ThirdBodyReaction)r).calculateThirdBodyCoefficient(ss);
+              k_upperbound = r.calculateUpperBoundRate(t)*((ThirdBodyReaction)r).calculateThirdBodyCoefficient(ss);
+            }
+            else if (r instanceof TROEReaction){
+              k = ((TROEReaction)r).calculateRate(ss);
+              k_lowerbound = r.calculateLowerBoundRate(t)*((TROEReaction)r).calculateTroeFallOff(ss);
+              k_upperbound = r.calculateUpperBoundRate(t)*((TROEReaction)r).calculateTroeFallOff(ss);
+            }
            if (r instanceof TemplateReaction){
              k = ((TemplateReaction)r).calculatePDepRate(ss.getTemperature());
              k_lowerbound = k/2.0;
@@ -1021,14 +1021,14 @@ public String printLowerBoundConcentrations(LinkedList p_speciesList) {
                   Temperature t = getTemperature(rt);
                   double k;
                   double k_upperbound;
-                  //if (r instanceof ThirdBodyReaction){
-                  //  k = ((ThirdBodyReaction)r).calculateRate(ss);
-                  //  k_upperbound = r.calculateUpperBoundRate(t)*((ThirdBodyReaction)r).calculateThirdBodyCoefficient(ss);
-                 // }
-                  //else if (r instanceof TROEReaction){
-                  //  k = ((TROEReaction)r).calculateRate(ss);
-                  //  k_upperbound = r.calculateUpperBoundRate(t)*((TROEReaction)r).calculateTroeFallOff(ss);
-                 // }
+                  if (r instanceof ThirdBodyReaction){
+                    k = ((ThirdBodyReaction)r).calculateRate(ss);
+                    k_upperbound = r.calculateUpperBoundRate(t)*((ThirdBodyReaction)r).calculateThirdBodyCoefficient(ss);
+                  }
+                  else if (r instanceof TROEReaction){
+                    k = ((TROEReaction)r).calculateRate(ss);
+                    k_upperbound = r.calculateUpperBoundRate(t)*((TROEReaction)r).calculateTroeFallOff(ss);
+                  }
                   if (r instanceof TemplateReaction){
                     k = ((TemplateReaction)r).calculatePDepRate(ss.getTemperature());
                     k_upperbound = k*2.0;
@@ -1200,15 +1200,15 @@ public String printLowerBoundConcentrations(LinkedList p_speciesList) {
                       if (r instanceof TemplateReaction) {
                         k = ( (TemplateReaction) r).calculatePDepRate(ss.getTemperature());
                       }
-                     // else if (r instanceof PDepNetReaction) {
-                     //   k = ( (PDepNetReaction) r).calculateRate(ss);
-                     // }
-                     // else if (r instanceof ThirdBodyReaction) {
-                     //   k = ( (ThirdBodyReaction) r).calculateRate(ss);
-                     // }
-                     // else if (r instanceof TROEReaction) {
-                      //  k = ( (TROEReaction) r).calculateRate(ss);
-                     // }
+                      else if (r instanceof PDepNetReaction) {
+                        k = ( (PDepNetReaction) r).calculateRate(ss.getTemperature());
+                      }
+                      else if (r instanceof ThirdBodyReaction) {
+                        k = ( (ThirdBodyReaction) r).calculateRate(ss);
+                      }
+                      else if (r instanceof TROEReaction) {
+                        k = ( (TROEReaction) r).calculateRate(ss);
+                      }
                       else {
                         k = r.calculateRate(ss.getTemperature());
                       }
@@ -1294,15 +1294,15 @@ public String printLowerBoundConcentrations(LinkedList p_speciesList) {
                       if (r instanceof TemplateReaction) {
                         k = ( (TemplateReaction) r).calculatePDepRate(ss.getTemperature());
                       }
-                     // else if (r instanceof PDepNetReaction) {
-                       // k = ( (PDepNetReaction) r).calculateRate(ss);
-                      //}
-                      //else if (r instanceof ThirdBodyReaction) {
-                      //  k = ( (ThirdBodyReaction) r).calculateRate(ss);
-                     // }
-                     // else if (r instanceof TROEReaction) {
-                     //   k = ( (TROEReaction) r).calculateRate(ss);
-                     // }
+                      else if (r instanceof PDepNetReaction) {
+                        k = ( (PDepNetReaction) r).calculateRate(ss.getTemperature());
+                      }
+                      else if (r instanceof ThirdBodyReaction) {
+                        k = ( (ThirdBodyReaction) r).calculateRate(ss);
+                      }
+                      else if (r instanceof TROEReaction) {
+                        k = ( (TROEReaction) r).calculateRate(ss);
+                      }
                       else {
                         k = r.calculateRate(ss.getTemperature());
                       }
@@ -1328,13 +1328,13 @@ public String printLowerBoundConcentrations(LinkedList p_speciesList) {
                     }
                   }
                   result += "d(ln["+spe.getName()+"])/d(delta_Hf("+spe2.getName()+")): "+thermo_sen+'\n';
-                  ReactionTime rt = ss.getTime();
-                  Temperature t = getTemperature(rt);
-                  double H = spe2.calculateH(t);
-                  double H_upperbound = spe2.getThermoData().calculateHUpperBound(t);
-                  double delta_H = H_upperbound - H;
+                  //ReactionTime rt = ss.getTime();
+                  //Temperature t = getTemperature(rt);
+                  //double H = spe2.calculateH(t);
+                  //double H_upperbound = spe2.getThermoData().calculateHUpperBound(t);
+                  //double delta_H = H_upperbound - H;
                   //System.out.println("error(delta_Hf "+spe2.getName()+") = "+delta_H);
-                  double product = thermo_sen*delta_H;
+                  //double product = thermo_sen*delta_H;
                   //System.out.println("d(ln["+spe.getName()+"])/d(delta_Hf("+spe2.getName()+"))*error(delta_Hf "+spe2.getName()+") = "+product);
                 }
               }
@@ -1383,26 +1383,26 @@ public String printLowerBoundConcentrations(LinkedList p_speciesList) {
                   double k;
                   double k_upperbound;
                   double k_lowerbound;
-                //  if (r instanceof TROEReaction){
-                //    k = ((TROEReaction)r).calculateRate(ss);
-                //    k_upperbound = r.calculateUpperBoundRate(t)*((TROEReaction)r).calculateTroeFallOff(ss);
-                //    k_lowerbound = r.calculateLowerBoundRate(t)*((TROEReaction)r).calculateTroeFallOff(ss);
-                //  }
-                //  else if (r instanceof ThirdBodyReaction){
-                //    k = ((ThirdBodyReaction)r).calculateRate(ss);
-                //    k_upperbound = r.calculateUpperBoundRate(t)*((ThirdBodyReaction)r).calculateThirdBodyCoefficient(ss);
-                //    k_lowerbound = r.calculateLowerBoundRate(t)*((ThirdBodyReaction)r).calculateThirdBodyCoefficient(ss);
-                 // }
+                  if (r instanceof TROEReaction){
+                    k = ((TROEReaction)r).calculateRate(ss);
+                    k_upperbound = r.calculateUpperBoundRate(t)*((TROEReaction)r).calculateTroeFallOff(ss);
+                    k_lowerbound = r.calculateLowerBoundRate(t)*((TROEReaction)r).calculateTroeFallOff(ss);
+                  }
+                  else if (r instanceof ThirdBodyReaction){
+                    k = ((ThirdBodyReaction)r).calculateRate(ss);
+                    k_upperbound = r.calculateUpperBoundRate(t)*((ThirdBodyReaction)r).calculateThirdBodyCoefficient(ss);
+                    k_lowerbound = r.calculateLowerBoundRate(t)*((ThirdBodyReaction)r).calculateThirdBodyCoefficient(ss);
+                  }
                   if (r instanceof TemplateReaction){
                     k = ((TemplateReaction)r).calculatePDepRate(ss.getTemperature());
                     k_upperbound = k*2.0;
                     k_lowerbound = k/2.0;
                   }
-                  //else if (r instanceof PDepNetReaction){
-                  //  k = ((PDepNetReaction)r).calculateRate(ss);
-                  //  k_upperbound = k*2.0;
-                  //  k_lowerbound = k/2.0;
-                 // }
+                  else if (r instanceof PDepNetReaction){
+                    k = ((PDepNetReaction)r).calculateRate(ss.getTemperature());
+                    k_upperbound = k*2.0;
+                    k_lowerbound = k/2.0;
+                  }
                   else {
                     k = r.calculateRate(ss.getTemperature());
                     k_upperbound = r.getUpperBoundRate(t);
