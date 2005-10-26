@@ -36,102 +36,163 @@
 package jing.rxn;
 
 
+import jing.chem.*;
 import java.util.*;
+import jing.param.*;
 import jing.rxnSys.*;
 import jing.rxnSys.SystemSnapshot;
 
 //## package jing::rxn 
 
 //----------------------------------------------------------------------------
-// jing\rxn\ThirdBodyReaction.java                                                                  
+//jing\rxn\ThirdBodyReaction.java                                                                  
 //----------------------------------------------------------------------------
 
 //## class ThirdBodyReaction 
 public class ThirdBodyReaction extends Reaction {
-    
-    protected HashMap weightMap = new HashMap();		//## attribute weightMap 
-    
-    
-    // Constructors
-    
-    public  ThirdBodyReaction() {
-    }
-    
-    //## operation calculateThirdBodyCoefficient(SystemSnapshot) 
-    public double calculateThirdBodyCoefficient(SystemSnapshot p_presentStatus) {
-        //#[ operation calculateThirdBodyCoefficient(SystemSnapshot) 
-        double coef_total = 0;
-        for (Iterator iter = p_presentStatus.getSpeciesStatus(); iter.hasNext(); ) {
-        	SpeciesStatus ss = (SpeciesStatus)iter.next();
-        	double conc = ss.getConcentration();
-        	double coef = 1;
-        	
-        	String name = ss.getSpecies().getName();
-        	if (weightMap.containsKey(name)) {
-        		coef = ((Double)weightMap.get(name)).doubleValue();
-        	}
-        	
-        	coef_total += coef*conc;
-        }
-        
-        for (Iterator iter = p_presentStatus.getInertGas(); iter.hasNext(); ) {
-        	String name = (String)iter.next();
-        	double conc = p_presentStatus.getInertGas(name);
-        	double coef = 1;
-        	
-        	if (weightMap.containsKey(name)) {
-        		coef = ((Double)weightMap.get(name)).doubleValue();
-        	}
-        	
-        	coef_total += coef*conc;
-        }
-        
-        return coef_total;
-        //#]
-    }
-    
-    //## operation generateReverseReaction() 
-    public void generateReverseReaction() {
-        //#[ operation generateReverseReaction() 
-        ThirdBodyReaction r = new ThirdBodyReaction();
-        r.structure = getStructure().generateReverseStructure();
-        r.rateConstant = getRateConstant();
-        r.comments = "Reverse reaction";
-        r.weightMap = weightMap;
-        	
-        r.setReverseReaction(this);
-        this.setReverseReaction(r);
-        
-        return;
-        //#]
-    }
-    
-    //## operation make(Reaction,HashMap) 
-    public static ThirdBodyReaction make(Reaction p_reaction, HashMap p_thirdBodyList) {
-        //#[ operation make(Reaction,HashMap) 
-        ThirdBodyReaction tbr = new ThirdBodyReaction();
-        tbr.structure = p_reaction.getStructure();
-        tbr.rateConstant = p_reaction.getRateConstant();
-        tbr.comments = p_reaction.getComments();
-        tbr.generateReverseReaction(); 
-        
-        p_reaction = null;
-        
-        return tbr;
-        
-        
-        //#]
-    }
-    
-    //## operation putThirdBodyCoefficient(String,double) 
-    public void putThirdBodyCoefficient(String p_name, double p_coefficient) {
-        //#[ operation putThirdBodyCoefficient(String,double) 
-        weightMap.put(p_name,new Double(p_coefficient));
-        
-        
-        //#]
-    }
-    
+  
+  protected HashMap weightMap = new HashMap();		//## attribute weightMap 
+  
+  
+  // Constructors
+  
+  //## operation ThirdBodyReaction() 
+  protected  ThirdBodyReaction() {
+      //#[ operation ThirdBodyReaction() 
+      //#]
+  }
+  
+  //## operation calculateRate(SystemSnapshot) 
+  public double calculateRate(SystemSnapshot p_systemSnapshot) {
+      //#[ operation calculateRate(SystemSnapshot) 
+      Temperature temp = p_systemSnapshot.getTemperature();
+      Kinetics k = getKinetics();
+      double rate = k.calculateRate(temp, calculateHrxn(temp));
+      rate *= calculateThirdBodyCoefficient(p_systemSnapshot);
+      return rate;
+      //#]
+  }
+  
+  //## operation calculateThirdBodyCoefficient(SystemSnapshot) 
+  public double calculateThirdBodyCoefficient(SystemSnapshot p_presentStatus) {
+      //#[ operation calculateThirdBodyCoefficient(SystemSnapshot) 
+      double coef_total = 0;
+      for (Iterator iter = p_presentStatus.getSpeciesStatus(); iter.hasNext(); ) {
+      	SpeciesStatus ss = (SpeciesStatus)iter.next();
+      	double conc = ss.getConcentration();
+      	double coef = 1;
+      	
+      	String name = ss.getSpecies().getName();
+      	if (weightMap.containsKey(name)) {
+      		coef = ((Double)weightMap.get(name)).doubleValue();
+      	}
+      	
+      	coef_total += coef*conc;
+      }
+      
+      for (Iterator iter = p_presentStatus.getInertGas(); iter.hasNext(); ) {
+      	String name = (String)iter.next();
+      	double conc = p_presentStatus.getInertGas(name);
+      	double coef = 1;
+      	
+      	if (weightMap.containsKey(name)) {
+      		coef = ((Double)weightMap.get(name)).doubleValue();
+      	}
+      	
+      	coef_total += coef*conc;
+      }
+      
+      return coef_total;
+      //#]
+  }
+  
+  //## operation formPDepSign(String) 
+  public String formPDepSign(String p_string) {
+      //#[ operation formPDepSign(String) 
+      StringTokenizer st = new StringTokenizer(p_string, "=");
+      String s1 = st.nextToken();
+      s1 += "+m=";
+      String s2 = st.nextToken();
+      s2 += "+m";
+      return (s1+s2);
+      
+      //#]
+  }
+  
+  //## operation generateReverseReaction() 
+  public void generateReverseReaction() {
+      //#[ operation generateReverseReaction() 
+      ThirdBodyReaction r = new ThirdBodyReaction();
+      r.structure = getStructure().generateReverseStructure();
+      r.rateConstant = getRateConstant();
+      r.comments = "Reverse reaction";
+      r.weightMap = weightMap;
+      	
+      r.setReverseReaction(this);
+      this.setReverseReaction(r);
+      
+      //this.setReverseReaction(null);
+      
+      return;
+      //#]
+  }
+  
+  //## operation make(Reaction,HashMap) 
+  public static ThirdBodyReaction make(Reaction p_reaction, HashMap p_thirdBodyList) {
+      //#[ operation make(Reaction,HashMap) 
+      ThirdBodyReaction tbr = new ThirdBodyReaction();
+      tbr.structure = p_reaction.getStructure();
+      tbr.rateConstant = p_reaction.getRateConstant();
+      tbr.comments = p_reaction.getComments();
+      tbr.weightMap = p_thirdBodyList;
+      tbr.generateReverseReaction(); 
+      
+      return tbr;
+      
+      
+      //#]
+  }
+  
+  //## operation putThirdBodyCoefficient(String,double) 
+  public void putThirdBodyCoefficient(String p_name, double p_coefficient) {
+      //#[ operation putThirdBodyCoefficient(String,double) 
+      weightMap.put(p_name,new Double(p_coefficient));
+      
+      
+      //#]
+  }
+  
+  //## operation toChemkinString() 
+  public String toChemkinString() {
+      //#[ operation toChemkinString() 
+      String s = getStructure().toChemkinString(true);
+      s = formPDepSign(s);
+      s = s + '\t' + getKinetics().toChemkinString() + '\n';
+      
+      String tbr = "";
+      // write 3rd-body efficiencies
+      for(Iterator iter = weightMap.keySet().iterator(); iter.hasNext();) {
+      	Object key = iter.next();
+      	double tbe = ((Double)weightMap.get(key)).doubleValue();
+      	String name = key.toString();
+      	Species spe = SpeciesDictionary.getInstance().getSpeciesFromName(name);
+      	if (spe!=null) name = spe.getChemkinName();
+      	if (name.equals("AR")) name = "Ar";
+      	String next = name + "/" + tbe + "/ ";
+      	if ((tbr.length()+next.length())>=80) {
+      		s += tbr + '\n';
+      		tbr = "";
+      	}
+      	tbr += next;
+      
+      }
+      
+      s += tbr;
+      return s;
+      
+      //#]
+  }
+  
 }
 /*********************************************************************
 	File Path	: RMG\RMG\jing\rxn\ThirdBodyReaction.java

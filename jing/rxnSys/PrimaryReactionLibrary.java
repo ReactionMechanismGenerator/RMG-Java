@@ -97,11 +97,11 @@ public class PrimaryReactionLibrary {
             String speciesFile = p_directoryName + "species.txt";
             String reactionFile = p_directoryName + "reactions.txt";
             String thirdBodyReactionFile = p_directoryName + "3rdBodyReactions.txt";
-             
+            String troeReactions = p_directoryName + "troeReactions.txt"; 
         	readSpecies(speciesFile);
         	readReactions(reactionFile);
             readThirdBodyReactions(thirdBodyReactionFile);
-            
+            readTroeReactions(troeReactions);
         	return;
         }
         catch (Exception e) {
@@ -311,6 +311,114 @@ public class PrimaryReactionLibrary {
         //#]
     }
     
+	   //## operation readTroeReactions(String) 
+    public void readTroeReactions(String p_troeReactionFileName) throws IOException {
+        //#[ operation readTroeReactions(String) 
+        try {
+        	FileReader in = new FileReader(p_troeReactionFileName);
+        	BufferedReader data = new BufferedReader(in);
+        	
+        	double A_multiplier = 1;
+        	double E_multiplier = 1;
+        	
+        	String line = ChemParser.readMeaningfulLine(data);
+        	if (line.startsWith("Unit")) {
+        		line = ChemParser.readMeaningfulLine(data);
+        		unit: while(!(line.startsWith("Reaction"))) {
+        			if (line.startsWith("A")) {
+        				StringTokenizer st = new StringTokenizer(line);
+        				String temp = st.nextToken();
+        				String unit = st.nextToken().trim();
+        				if (unit.compareToIgnoreCase("mol/cm3/s") == 0) {
+        					A_multiplier = 1;
+        				}
+        				else if (unit.compareToIgnoreCase("mol/liter/s") == 0) {
+           					A_multiplier = 1e-3;
+        				}
+        			}
+        			else if (line.startsWith("E")) {
+        				StringTokenizer st = new StringTokenizer(line);
+        				String temp = st.nextToken();
+        				String unit = st.nextToken().trim();
+        				if (unit.compareToIgnoreCase("kcal/mol") == 0) {
+        					E_multiplier = 1;
+        				}
+        				else if (unit.compareToIgnoreCase("cal/mol") == 0) {
+           					E_multiplier = 1e-3;
+        				}
+        				else if (unit.compareToIgnoreCase("kJ/mol") == 0) {
+           					E_multiplier = 1/4.186;
+        				}
+        				else if (unit.compareToIgnoreCase("J/mol") == 0) {
+           					E_multiplier = 1/4186;
+        				}			
+        			}
+        			line = ChemParser.readMeaningfulLine(data);
+        		}
+        	}
+            
+        	String reactionLine = ChemParser.readMeaningfulLine(data);
+        	read: while (reactionLine != null) {	
+        		Reaction r;
+        		try {
+        			r = ChemParser.parseArrheniusReaction(speciesSet, reactionLine, A_multiplier, E_multiplier);
+        		}
+        		catch (InvalidReactionFormatException e) {
+        			throw new InvalidReactionFormatException(reactionLine + ": " + e.getMessage());
+        		}
+        		if (r == null) throw new InvalidReactionFormatException(reactionLine);
+                
+        		String thirdBodyLine = ChemParser.readMeaningfulLine(data);
+        		HashMap thirdBodyList = ChemParser.parseThirdBodyList(thirdBodyLine);
+        		
+        		// parse the K at low limit
+        		String lowLine = ChemParser.readMeaningfulLine(data);
+        		StringTokenizer st = new StringTokenizer(lowLine, "/");
+        		String temp = st.nextToken().trim();
+        		String lowString = st.nextToken().trim();
+        		ArrheniusKinetics low = ChemParser.parseSimpleArrheniusKinetics(lowString, A_multiplier, E_multiplier);
+        		
+        		// parse Troe parameters
+        		String troeLine = ChemParser.readMeaningfulLine(data);
+        		st = new StringTokenizer(troeLine, "/");
+        		temp = st.nextToken().trim();
+        		String troeString = st.nextToken().trim();
+        		st = new StringTokenizer(troeString);
+                int n = st.countTokens();
+                if (n != 3 && n != 4) throw new InvalidKineticsFormatException("Troe parameter number = "+n);
+        
+          		double a = Double.parseDouble(st.nextToken().trim());
+        		double T3star = Double.parseDouble(st.nextToken().trim());
+        		double Tstar = Double.parseDouble(st.nextToken().trim());
+        		boolean troe7 = false;
+        		double T2star = 0;
+        		if (st.hasMoreTokens()) {
+        			troe7 = true;
+        			T2star = Double.parseDouble(st.nextToken().trim());
+           		}
+        		
+        		TROEReaction tbr = TROEReaction.make(r,thirdBodyList, low, a, T3star, Tstar, troe7, T2star);
+        		
+        		reactionSet.add(tbr);
+        		Reaction reverse = tbr.getReverseReaction();
+        		if (reverse != null) reactionSet.add(reverse);
+        		
+        		reactionLine = ChemParser.readMeaningfulLine(data);
+        	}
+        	   
+            in.close();
+        	return;
+        }
+        catch (Exception e) {
+        	throw new IOException("Can't read reaction in primary reaction library: troe reaction list.\n" + e.getMessage());
+        }
+        
+        
+        
+        
+        //#]
+    }
+	
     //## operation size() 
     public int size() {
         //#[ operation size() 

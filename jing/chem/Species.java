@@ -195,24 +195,39 @@ public class Species {
         int Hn = cg.getHydrogenNumber();
         int Cn = cg.getCarbonNumber();
         int On = cg.getOxygenNumber();
-        if (Cn>0) result += "ELEM " + MathTool.formatInteger(Cn,3,"L") + ls;
-        if (Hn>0) result += "ELEM " + MathTool.formatInteger(Hn,3,"L") + ls;
-        if (On>0) result += "ELEM " + MathTool.formatInteger(On,3,"L") + ls;
-
+        /*if (Cn>0) result += "ELEM C " + MathTool.formatInteger(Cn,3,"L") + ls;
+        if (Hn>0) result += "ELEM H " + MathTool.formatInteger(Hn,3,"L") + ls;
+        if (On>0) result += "ELEM O " + MathTool.formatInteger(On,3,"L") + ls;*/
+		
+		result += "ELEM C " + MathTool.formatInteger(Cn,3,"L") + ls;
+        result += "ELEM H " + MathTool.formatInteger(Hn,3,"L") + ls;
+        result += "ELEM O " + MathTool.formatInteger(On,3,"L") + ls;
+		
         // write H and S at 298
         ThermoData td = getThermoData();
         result += "H298 " + MathTool.formatDouble(td.getH298()*1000, 10, 2).trim() + ls;
         result += "S298 " + MathTool.formatDouble(td.getS298(), 10, 2).trim() + ls;
+		
         result += "DLTH " + MathTool.formatDouble(td.getH298()*1000, 10, 2).trim() + ls;
 
         // write MW, temperature, ouput format, etc
         result += "MWEI " + MathTool.formatDouble(getMolecularWeight(), 6, 1).trim() + ls;
         result += "TEMP 1000.0" + ls;
+		result += "TMIN 300.0"+ls;
+		result += "TMAX 5000.0" + ls;
         result += "CHEM" + ls;
         result += "TEM2 2000.0" + ls;
         result += "LINEARST" + ls;
         result += String.valueOf(cg.getAtomNumber()) + ls;
         result += String.valueOf(getInternalRotor()) + ls;
+		result += "TECP 300 " + MathTool.formatDouble(td.Cp300,10,2).trim() + ls;
+		result += "TECP 400 " + MathTool.formatDouble(td.Cp400,10,2).trim() + ls;
+		result += "TECP 500 " + MathTool.formatDouble(td.Cp500,10,2).trim() + ls;
+		result += "TECP 600 " + MathTool.formatDouble(td.Cp600,10,2).trim() + ls;
+		result += "TECP 800 " + MathTool.formatDouble(td.Cp800,10,2).trim() + ls;
+		result += "TECP 1000 " + MathTool.formatDouble(td.Cp1000,10,2).trim() +ls;
+		result += "TECP 1500 " + MathTool.formatDouble(td.Cp1500,10,2).trim() + ls;
+		result += "END" + ls;
 
         // finished writing text for input file, now save result to fort.1
         String GATPFit_input_name = null;
@@ -318,33 +333,33 @@ public class Species {
         boolean error = false;
 		try {
        	 // system call for therfit
-       	String[] command = {workingDirectory + "/software/therfit/therfit.exe"};
-       	File runningDir = new File(p_directory );//+ "/therfit");// "/software/therfit");
-       	Process therfit = Runtime.getRuntime().exec(command, null, runningDir);
-       	therfitExecuted = true;
-       	InputStream is = therfit.getErrorStream();
-       	InputStreamReader isr = new InputStreamReader(is);
-       	BufferedReader br = new BufferedReader(isr);
-       	String line=null;
-       	while ( (line = br.readLine()) != null) {
-       		//System.out.println(line);
-       		line = line.trim();
-       		if (!line.startsWith("*** THRFIT Job Complete")) {
-       			String speName = getName();
-       			System.out.println("therfit error for species: " + speName+"\n"+toString());
-       			File newfile = new File(therfit_input_name+"."+speName);
-       			therfit_input.renameTo(newfile);
-       			error = true;
-       		}
-       	}
-       	int exitValue = therfit.waitFor();
-       	br.close();
-       	isr.close();
-       }
-       catch (Exception e) {
-       	System.out.println("Error in run therfit!");
-       	System.exit(0);
-       }
+			String[] command = {workingDirectory + "/software/therfit/therfit.exe"};
+			File runningDir = new File(p_directory );//+ "/therfit");// "/software/therfit");
+			Process therfit = Runtime.getRuntime().exec(command, null, runningDir);
+			therfitExecuted = true;
+			InputStream is = therfit.getErrorStream();
+			InputStreamReader isr = new InputStreamReader(is);
+			BufferedReader br = new BufferedReader(isr);
+			String line=null;
+			while ( (line = br.readLine()) != null) {
+				//System.out.println(line);
+				line = line.trim();
+				if (!line.startsWith("*** THRFIT Job Complete")) {
+					String speName = getName();
+					System.out.println("therfit error for species: " + speName+"\n"+toString());
+					File newfile = new File(therfit_input_name+"."+speName);
+					therfit_input.renameTo(newfile);
+					error = true;
+				}
+			}
+			int exitValue = therfit.waitFor();
+			br.close();
+			isr.close();
+		}
+		catch (Exception e) {
+			System.out.println("Error in run therfit!");
+			System.exit(0);
+		}
 
         // return error = true, if there was a problem
         return error;

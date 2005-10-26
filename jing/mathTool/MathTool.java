@@ -296,6 +296,11 @@ public class MathTool {
         //#]
     }
     
+	  public static double log10(double p_data) {
+	        //#[ operation log10(double) 
+	        return Math.log(p_data)/Math.log(10.0);
+	        //#]
+	    }
 }
 /*********************************************************************
 	File Path	: RMG\RMG\jing\mathTool\MathTool.java

@@ -922,7 +922,7 @@ public class ReactionModelGenerator {
 	}*/
 
 
-	private void parseCoreSpecies() {
+	public void parseCoreSpecies() {
 //		String restartFileContent ="";
 		//int speciesCount = 0;
 		//boolean added;
@@ -933,6 +933,9 @@ public class ReactionModelGenerator {
 			BufferedReader reader = new BufferedReader(fr);
 			String line = ChemParser.readMeaningfulLine(reader);
 			//HashSet speciesSet = new HashSet();
+			if (reactionSystem == null){
+				//ReactionSystem reactionSystem = new ReactionSystem();
+			}
 			reactionSystem.reactionModel = new CoreEdgeReactionModel();
 			while (line!=null) {
 
@@ -955,7 +958,7 @@ public class ReactionModelGenerator {
 
 	}
 
-	private void parseAllSpecies() {
+	public void parseAllSpecies() {
 //		String restartFileContent ="";
 		int speciesCount = 0;
 

@@ -37,6 +37,7 @@ package jing.chemParser;
 
 
 import java.io.*;
+
 import jing.rxn.*;
 import jing.chem.*;
 
@@ -551,7 +552,10 @@ public class ChemParser {
 
         for (int i = 0; i < speNum; i++) {
         	String name = st.nextToken().trim();
-        	if (!name.equals("M")) {
+        	if (!name.startsWith("M")) {
+				if (name.endsWith("(")) {
+        			name = name.substring(0,name.length()-1).trim();
+        		}
         		Species spe = (Species)p_speciesSet.get(name);
         		if (spe == null) throw new InvalidStructureException("unknown reactant/product: " + name);
         		reactionSpe.add(spe.getChemGraph());
