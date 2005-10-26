@@ -637,9 +637,16 @@ private LinkedList generateSensitivityStatus(ReactionModel p_reactionModel, doub
         	if (p_reaction instanceof TemplateReaction) {
         		rate = ((TemplateReaction)p_reaction).calculatePDepRate(p_temperature);
         	}
-        	else {
-        		rate = p_reaction.calculateRate(p_temperature);
-        	}
+                else if (p_reaction instanceof TROEReaction){//svp
+                  rate = ((TROEReaction)p_reaction).calculateRate(p_beginStatus);
+                }
+                else if (p_reaction instanceof ThirdBodyReaction){//svp
+                  rate = ((ThirdBodyReaction)p_reaction).calculateRate(p_beginStatus);
+                }
+
+                else{
+                	rate = p_reaction.calculateRate(p_temperature);
+                }
         	/* the old way to output reaction to Daspk, now only out put rate
         	int direction = p_reaction.getDirection();
 
