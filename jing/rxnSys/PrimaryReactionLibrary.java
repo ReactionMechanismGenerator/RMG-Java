@@ -81,6 +81,24 @@ public class PrimaryReactionLibrary {
     public  PrimaryReactionLibrary() {
     }
     
+    //## operation appendPrimaryReactionLibrary(String, String) 
+    public void appendPrimaryReactionLibrary(String new_p_libraryName, String new_p_directoryName) throws IOException {
+    	//#[ operation appendPrimaryReactionLibrary(String, String) 
+
+    	// Appends the current PRLib with an additional one, allowing the user
+    	// to combine separate PRLibs easily.  GJB 10/05.
+    	String dir = System.getProperty("RMG.workingDirectory");
+     	setName(name+"/"+new_p_libraryName);
+    	try {
+    		read(dir+"/databases/"+new_p_directoryName);	
+    	}
+        catch (IOException e) {
+        	throw new IOException("error in read primary library: " + new_p_libraryName + '\n' + e.getMessage());
+        }
+        //#]
+    }
+    
+    
     //## operation getSpeciesSet() 
     public HashSet getSpeciesSet() {
         //#[ operation getSpeciesSet() 
