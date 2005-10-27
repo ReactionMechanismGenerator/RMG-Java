@@ -468,8 +468,10 @@ public class ReactionModelGenerator {
                         String on = st.nextToken();
                         
                         if (on.compareToIgnoreCase("ON") == 0) {
-                                line = ChemParser.readMeaningfulLine(reader);
-
+                        	// GJB modified to allow multiple primary reaction libraries
+                        	int Ilib = 0;
+                        	line = ChemParser.readMeaningfulLine(reader);
+                        	while (!line.equals("END")) {                     		
                                 StringTokenizer nameST = new StringTokenizer(line);
                                 temp = nameST.nextToken();
                                 String name = nameST.nextToken();
@@ -478,10 +480,19 @@ public class ReactionModelGenerator {
                                 StringTokenizer pathST = new StringTokenizer(line);
                                 temp = pathST.nextToken();
                                 String path = pathST.nextToken();
-                                
-                                primaryReactionLibrary = new PrimaryReactionLibrary(name, path);
-                        }
-                        else {
+                                if (Ilib==0) {
+                                	primaryReactionLibrary = new PrimaryReactionLibrary(name, path);
+                                	Ilib++; 	
+                                }
+                                else {
+                                	primaryReactionLibrary.appendPrimaryReactionLibrary(name,path);
+                                	Ilib++;//just in case anybody wants to track how many are processed
+                                 }
+                                	line = ChemParser.readMeaningfulLine(reader);
+                        	}
+                        	System.out.println("Primary Reaction Libraries in use: " +primaryReactionLibrary.getName());
+                        }	
+                         else {
                                 primaryReactionLibrary = null;
                         }
                 }
