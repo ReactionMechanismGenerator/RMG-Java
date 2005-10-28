@@ -134,16 +134,19 @@ public class ChemGraph implements Matchable {
         	Atom atom = (Atom)node.getElement();
         	int val = (int)atom.getValency();
 
-        	int bondOrder = 0;
+        	double bondOrder = 0;
         	Iterator neighbor_iter = node.getNeighbor();
         	while (neighbor_iter.hasNext()) {
         		Arc arc = (Arc)neighbor_iter.next();
         		Bond bond = (Bond)arc.getElement();
         		bondOrder += bond.getOrder();
         	}
-        	if (bondOrder > val) throw new InvalidConnectivityException();
-        	else if (bondOrder < val) {
-        		addedH.put(node, new Integer(val-bondOrder));
+//        	if (bondOrder > val) throw new InvalidConnectivityException();
+//        	else if (bondOrder < val) {
+//        		addedH.put(node, new Integer(val-bondOrder));
+//        	}
+        	if (bondOrder < val) {
+        		addedH.put(node, new Integer(val-(int)(bondOrder+1.0e-8)));
         	}
         }
         Graph g = getGraph();
