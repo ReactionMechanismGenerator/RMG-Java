@@ -614,7 +614,7 @@ public class ReactionModelGenerator {
 			((CoreEdgeReactionModel)reactionSystem.reactionModel).addReactedReactionSet(reactionSet);
 		}
 		catch (IOException e){
-			System.out.println("Could not read the corespecies restart file");
+			System.out.println("Could not read the coreReactions restart file");
         	System.exit(0);
 		}
 
@@ -1024,7 +1024,7 @@ public class ReactionModelGenerator {
 			//specs.addAll(speciesSet);
 		}
 		catch (IOException e){
-			System.out.println("Could not read the corespecies restart file");
+			System.out.println("Could not read the allSpecies restart file");
         	System.exit(0);
 		}
 
@@ -1098,7 +1098,7 @@ public class ReactionModelGenerator {
 
 		}
 		catch (IOException e){
-			System.out.println("Could not read the corespecies restart file");
+			System.out.println("Could not read the edgepecies restart file");
         	System.exit(0);
 		}
 
@@ -1175,8 +1175,14 @@ public class ReactionModelGenerator {
         }
 		if (restart){
 			reactionSystem.reactionModel = new CoreEdgeReactionModel();
-			((CoreEdgeReactionModel)reactionSystem.reactionModel).addReactedSpeciesSet(reactionSystem.originalReactant);
 			parseRestartFiles();
+			((CoreEdgeReactionModel)reactionSystem.reactionModel).addReactedSpeciesSet(reactionSystem.originalReactant);
+
+			if (reactionSystem.primaryReactionLibrary != null){
+				((CoreEdgeReactionModel)reactionSystem.reactionModel).addReactedSpeciesSet(reactionSystem.primaryReactionLibrary.getSpeciesSet());								
+				((CoreEdgeReactionModel)reactionSystem.reactionModel).addPrimaryReactionSet(reactionSystem.primaryReactionLibrary.getReactionSet());
+
+			}
 		}
 		else reactionSystem.initializeCoreEdgeReactionModel();
         reactionSystem.initializePDepNetwork();
