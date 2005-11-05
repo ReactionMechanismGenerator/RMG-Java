@@ -74,22 +74,58 @@ public class ThirdBodyReaction extends Reaction {
       //#]
   }
   
+  public HashMap getWeightMap(){
+	  return weightMap;
+  }
   //## operation calculateThirdBodyCoefficient(SystemSnapshot) 
   public double calculateThirdBodyCoefficient(SystemSnapshot p_presentStatus) {
       //#[ operation calculateThirdBodyCoefficient(SystemSnapshot) 
       double coef_total = 0;
+	  Set colliders = weightMap.keySet();
+	  
       for (Iterator iter = p_presentStatus.getSpeciesStatus(); iter.hasNext(); ) {
       	SpeciesStatus ss = (SpeciesStatus)iter.next();
       	double conc = ss.getConcentration();
       	double coef = 1;
       	
       	String name = ss.getSpecies().getName();
+		Iterator colliderIter = colliders.iterator();
+		while (colliderIter.hasNext()){
+			String colliderName = (String)colliderIter.next();
+			if (colliderName.compareToIgnoreCase(name) == 0){
+				coef = ((Double)weightMap.get(colliderName)).doubleValue();
+				break;
+			}
+				
+		}
+      	/*if (weightMap.containsKey(name)) {
+      		coef = ((Double)weightMap.get(name)).doubleValue();
+      	}*/
+      	
+      	coef_total += coef*conc;
+      }
+      
+      for (Iterator iter = p_presentStatus.getInertGas(); iter.hasNext(); ) {
+      	String name = (String)iter.next();
+      	double conc = p_presentStatus.getInertGas(name);
+      	double coef = 1;
+      	
       	if (weightMap.containsKey(name)) {
       		coef = ((Double)weightMap.get(name)).doubleValue();
       	}
       	
       	coef_total += coef*conc;
       }
+      
+      return coef_total;
+      //#]
+  }
+  
+//## operation calculateThirdBodyCoefficient(SystemSnapshot) 
+  public double calculateThirdBodyCoefficientForInerts(SystemSnapshot p_presentStatus) {
+      //#[ operation calculateThirdBodyCoefficient(SystemSnapshot) 
+      double coef_total = 0;
+	  Set colliders = weightMap.keySet();
       
       for (Iterator iter = p_presentStatus.getInertGas(); iter.hasNext(); ) {
       	String name = (String)iter.next();
