@@ -74,7 +74,9 @@ public class JDASPK implements SASolver, DAESolver {
 
     protected double rtol;		//## attribute rtol
 
-    protected ODEReaction [] thirdBodyReactionList;		//## attribute thirdBodyReactionList
+	protected TROEODEReaction [] troeReactionList;
+	
+    protected ThirdBodyODEReaction [] thirdBodyReactionList;		//## attribute thirdBodyReactionList
 
     protected InitialStatus initialStatus;//svp
 
@@ -147,7 +149,7 @@ public class JDASPK implements SASolver, DAESolver {
     }
 
     //## operation generateAllODEReactionList(ReactionModel,SystemSnapshot,Temperature,Pressure)
-    public void generateAllODEReactionList(ReactionModel p_reactionModel, SystemSnapshot p_beginStatus, Temperature p_temperature, Pressure p_pressure) {
+    /*public void generateAllODEReactionList(ReactionModel p_reactionModel, SystemSnapshot p_beginStatus, Temperature p_temperature, Pressure p_pressure) {
         //#[ operation generateAllODEReactionList(ReactionModel,SystemSnapshot,Temperature,Pressure)
         int size = p_reactionModel.getReactionSet().size();
         ODEReaction [] result = new ODEReaction[size];
@@ -183,7 +185,7 @@ public class JDASPK implements SASolver, DAESolver {
 
         return;
         //#]
-    }
+    }*/
 
     //## operation generatePDepODEReactionList(ReactionModel,SystemSnapshot,Temperature,Pressure)
     public LinkedList generatePDepODEReactionList(ReactionModel p_reactionModel, SystemSnapshot p_beginStatus, Temperature p_temperature, Pressure p_pressure) {
@@ -213,7 +215,7 @@ public class JDASPK implements SASolver, DAESolver {
         //System.out.println("Total Number of pressure dependent reactions are "+ pDepList.size());
         for (Iterator iter = p_reactionModel.getReactionSet().iterator(); iter.hasNext(); ) {
         	Reaction r = (Reaction)iter.next();
-        	if (!r.reactantEqualsProduct()) {
+        	if (!r.reactantEqualsProduct() && !(r instanceof ThirdBodyReaction) && !(r instanceof TROEReaction)) {
         		Structure s = r.getStructure();
         		if (!pDepStructureSet.contains(s)) {
         			nonPDepList.add(r);
@@ -229,15 +231,19 @@ public class JDASPK implements SASolver, DAESolver {
         //System.out.println("non p_dep reactions: " + nonPDepList.size() );
         for (Iterator iter = nonPDepList.iterator(); iter.hasNext(); ) {
         	Reaction r = (Reaction)iter.next();
-        	all.add(r);
-
-        	ODEReaction or = transferReaction(r, p_beginStatus, p_temperature, p_pressure);
-            reactionList[id] = or;
-            double rate = r.calculateRate(p_temperature);
-            if (r instanceof TemplateReaction) rate = ((TemplateReaction)r).calculatePDepRate(p_temperature);
+        	
+			if (!(r instanceof ThirdBodyReaction) && !(r instanceof TROEReaction)){
+				all.add(r);
+				ODEReaction or = transferReaction(r, p_beginStatus, p_temperature, p_pressure);
+	            reactionList[id] = or;
+				id++;
+			}
+        	
+            //double rate = r.calculateRate(p_temperature);
+            //if (r instanceof TemplateReaction) rate = ((TemplateReaction)r).calculatePDepRate(p_temperature);
             //System.out.println(r.getStructure().toString()+"\t rate = \t"+ String.valueOf(rate));
             //System.out.println(r.toChemkinString());
-			id++;
+			
         }
 
         //System.out.println("p_dep reactions: " + pDepList.size());
@@ -320,20 +326,20 @@ private LinkedList generateSensitivityStatus(ReactionModel p_reactionModel, doub
     public void generateThirdBodyReactionList(ReactionModel p_reactionModel, SystemSnapshot p_beginStatus, Temperature p_temperature, Pressure p_pressure) {
         //#[ operation generateThirdBodyReactionList(ReactionModel,SystemSnapshot,Temperature,Pressure)
         int size = p_reactionModel.getReactionSet().size();
-        ODEReaction [] result = new ODEReaction[size];
+        ThirdBodyODEReaction [] result = new ThirdBodyODEReaction[size];
         int thirdID = 0;
         Iterator iter = p_reactionModel.getReactionSet().iterator();
         while (iter.hasNext()) {
         	Reaction r = (Reaction)iter.next();
 
-            if (r instanceof ThirdBodyReaction) {
+            if ((r instanceof ThirdBodyReaction) && !(r instanceof TROEReaction)) {
             	thirdID++;
-            	ODEReaction or = transferReaction(r, p_beginStatus, p_temperature, p_pressure);
+            	ThirdBodyODEReaction or = (ThirdBodyODEReaction)transferReaction(r, p_beginStatus, p_temperature, p_pressure);
         		result[thirdID-1] = or;
              }
         }
 
-        thirdBodyReactionList = new ODEReaction[thirdID];
+        thirdBodyReactionList = new ThirdBodyODEReaction[thirdID];
 
         for (int i = 0; i < thirdID; i++) {
         	thirdBodyReactionList[i] = result[i];
@@ -343,6 +349,30 @@ private LinkedList generateSensitivityStatus(ReactionModel p_reactionModel, doub
         //#]
     }
 
+	 private void generateTROEReactionList(ReactionModel p_reactionModel, SystemSnapshot p_beginStatus, Temperature p_temperature, Pressure p_pressure) {
+		 int size = p_reactionModel.getReactionSet().size();
+	        TROEODEReaction [] result = new TROEODEReaction[size];
+	        int thirdID = 0;
+	        Iterator iter = p_reactionModel.getReactionSet().iterator();
+	        while (iter.hasNext()) {
+	        	Reaction r = (Reaction)iter.next();
+
+	            if (r instanceof TROEReaction) {
+	            	thirdID++;
+	            	TROEODEReaction or = (TROEODEReaction)transferReaction(r, p_beginStatus, p_temperature, p_pressure);
+	        		result[thirdID-1] = or;
+	             }
+	        }
+
+	        troeReactionList = new TROEODEReaction[thirdID];
+
+	        for (int i = 0; i < thirdID; i++) {
+	        	troeReactionList[i] = result[i];
+	        }
+
+	        return;
+			
+		}
     //## operation getRealID(Species)
     public int getRealID(Species p_species) {
         //#[ operation getRealID(Species)
@@ -369,6 +399,7 @@ private LinkedList generateSensitivityStatus(ReactionModel p_reactionModel, doub
 
         // set reaction set
         //if (p_initialization || p_reactionChanged || p_conditionChanged) {
+		generateTROEReactionList(p_reactionModel, p_beginStatus, p_temperature, p_pressure);
         generateThirdBodyReactionList(p_reactionModel, p_beginStatus, p_temperature, p_pressure);
         LinkedList rList = generatePDepODEReactionList(p_reactionModel, p_beginStatus, p_temperature, p_pressure);
 
@@ -377,23 +408,23 @@ private LinkedList generateSensitivityStatus(ReactionModel p_reactionModel, doub
         //}
 
         // set numbers
-		System.out.println("Total number of reactions to Daspk is "+rList.size());
+		//System.out.println("Total number of reactions to Daspk is "+rList.size());
         int nState = p_reactionModel.getSpeciesNumber();
         int nParameter = 0;
         LinkedList initialSpecies = new LinkedList();
 //        if (parameterInfor!=null) nParameter = parameterInfor.length;
-        if (parameterInfor != 0) {
-          nParameter = rList.size()+thirdBodyReactionList.length; //svp
-          if (initialStatus == null) System.out.println("initialStatus = null");
-          Iterator spe_iter = initialStatus.getSpeciesStatus();
-          while (spe_iter.hasNext()) {
-            SpeciesStatus ss = (SpeciesStatus) spe_iter.next();
-            String name = ss.getSpecies().getName();
-            initialSpecies.add(name);
-            nParameter++;
-          }
+		if (parameterInfor != 0) {
+			nParameter = rList.size()+thirdBodyReactionList.length; //svp
+			if (initialStatus == null) System.out.println("initialStatus = null");
+			Iterator spe_iter = initialStatus.getSpeciesStatus();
+			while (spe_iter.hasNext()) {
+				SpeciesStatus ss = (SpeciesStatus) spe_iter.next();
+				String name = ss.getSpecies().getName();
+				initialSpecies.add(name);
+				nParameter++;
+			}
 
-        }
+		}
 
         int neq = nState*(nParameter+1);
 
@@ -424,126 +455,126 @@ private LinkedList generateSensitivityStatus(ReactionModel p_reactionModel, doub
         }
 
         if (nParameter != 0){//svp
+			
+			parameterInforArray = new ParameterInfor[nParameter];
+			for (int i = 1; i <= rList.size()+thirdBodyReactionList.length; i++){
+				parameterInforArray[i-1] = new ParameterInfor("k",i,0.00);
+			}
+			for (int i=rList.size()+1+thirdBodyReactionList.length; i<=nParameter;i++){
+				parameterInforArray[i -
+				                    1] = new ParameterInfor("CO", nParameter, 0.00);
+			}
 
-          parameterInforArray = new ParameterInfor[nParameter];
-          for (int i = 1; i <= rList.size()+thirdBodyReactionList.length; i++){
-            parameterInforArray[i-1] = new ParameterInfor("k",i,0.00);
-          }
-          for (int i=rList.size()+1+thirdBodyReactionList.length; i<=nParameter;i++){
-            parameterInforArray[i -
-                1] = new ParameterInfor("CO", nParameter, 0.00);
-          }
-
-          if (p_beginTime.getTime() == 0 || p_beginTime.getTime() == 0.00) {
-            LinkedList sensitivityStatus = new LinkedList();
-            int reactionNumber = rList.size()+thirdBodyReactionList.length;
-            int speciesNumber = p_reactionModel.getSpeciesNumber();
+			if (p_beginTime.getTime() == 0 || p_beginTime.getTime() == 0.00) {
+				LinkedList sensitivityStatus = new LinkedList();
+				int reactionNumber = rList.size()+thirdBodyReactionList.length;
+				int speciesNumber = p_reactionModel.getSpeciesNumber();
 //            for (int i=0;i<reactionNumber*speciesNumber;i++){
-            for (int i=0; i<nParameter*speciesNumber;i++){
-              sensitivityStatus.add(i,null);
-            }
-            p_beginStatus.addSensitivity(sensitivityStatus);
-            double sflux = 1;
-            Iterator species_iter = p_reactionModel.getSpecies();
-            while (species_iter.hasNext()) {
-              Species spe = (Species) species_iter.next();
-              int m = getRealID(spe);
-            for (int p=0;p<nParameter;p++){
-                 int k = m + (p+1) * speciesNumber - 1;
+				for (int i=0; i<nParameter*speciesNumber;i++){
+					sensitivityStatus.add(i,null);
+				}
+				p_beginStatus.addSensitivity(sensitivityStatus);
+				double sflux = 1;
+				Iterator species_iter = p_reactionModel.getSpecies();
+				while (species_iter.hasNext()) {
+					Species spe = (Species) species_iter.next();
+					int m = getRealID(spe);
+					for (int p=0;p<nParameter;p++){
+						int k = m + (p+1) * speciesNumber - 1;
                  //if (p >= rList.size()){
-                if (p >= reactionNumber){
-                   int speciesNum = p-rList.size()-thirdBodyReactionList.length;
-                   String name = (String)initialSpecies.get(speciesNum);
-                   sflux = 0;
-                   SensitivityStatus senStatus;
-                   if (name.equalsIgnoreCase(spe.getName())){
-                     senStatus = new SensitivityStatus(1, sflux, m,
-                         p + 1);
-                     y[k] = 1;
-                   }
-                   else{
-                     senStatus = new SensitivityStatus(0,sflux,m,p+1);
-                     y[k]=0;
-                   }
-                      sensitivityStatus.add(k - p_reactionModel.getSpeciesNumber(),
-                                            senStatus);
-                      p_beginStatus.putSensitivityStatus(k - speciesNumber, senStatus);
+						if (p >= reactionNumber){
+							int speciesNum = p-rList.size()-thirdBodyReactionList.length;
+							String name = (String)initialSpecies.get(speciesNum);
+							sflux = 0;
+							SensitivityStatus senStatus;
+							if (name.equalsIgnoreCase(spe.getName())){
+								senStatus = new SensitivityStatus(1, sflux, m,
+										p + 1);
+								y[k] = 1;
+							}
+							else{
+								senStatus = new SensitivityStatus(0,sflux,m,p+1);
+								y[k]=0;
+							}
+							sensitivityStatus.add(k - p_reactionModel.getSpeciesNumber(),
+									senStatus);
+							p_beginStatus.putSensitivityStatus(k - speciesNumber, senStatus);
+							
+							yprime[k] = sflux;
 
-                      yprime[k] = sflux;
+						}
+						else{
+							if (p < rList.size()){
+								Reaction rxn = (Reaction)rList.get(p);
+								if (rxn.containsAsProduct(spe)) {
+									sflux = 1;
+									Iterator new_iter = rxn.getReactants();
+									while (new_iter.hasNext()) {
+										ChemGraph cg = (ChemGraph) new_iter.next();
+										Species reactant = cg.getSpecies();
+										SpeciesStatus ss = p_beginStatus.getSpeciesStatus(reactant);
+										if (ss != null) {
+											sflux *= ss.getConcentration();
+										}
+										else {
+											sflux = 0;
+										}
+									}
+									
+								}
+								if (rxn.containsAsReactant(spe)) {
+									sflux = -1;
+									Iterator new_iter = rxn.getReactants();
+									while (new_iter.hasNext()) {
+										ChemGraph cg = (ChemGraph) new_iter.next();
+										Species reactant = cg.getSpecies();
+										SpeciesStatus ss = p_beginStatus.getSpeciesStatus(reactant);
+										if (ss != null) {
+											sflux *= ss.getConcentration();
+										}
+										else {
+											sflux = 0;
+										}
+									}
+								}
+								else {
+									sflux = 0;
+								}
+								SensitivityStatus senStatus = new SensitivityStatus(0, sflux, m,
+										p+1);
+								sensitivityStatus.add(k-p_reactionModel.getSpeciesNumber(),senStatus);
+								p_beginStatus.putSensitivityStatus(k-speciesNumber,senStatus);
+								y[k] = 0;
+								yprime[k] = sflux;
+							}
+							else {
+								sflux = 0;
+								SensitivityStatus senStatus = new SensitivityStatus(0, sflux, m,
+										p+1);
+								sensitivityStatus.add(k-p_reactionModel.getSpeciesNumber(),senStatus);
+								p_beginStatus.putSensitivityStatus(k-speciesNumber,senStatus);
+								y[k] = 0;
+								yprime[k] = sflux;
 
-                 }
-                 else{
-                   if (p < rList.size()){
-                 Reaction rxn = (Reaction)rList.get(p);
-                   if (rxn.containsAsProduct(spe)) {
-                     sflux = 1;
-                     Iterator new_iter = rxn.getReactants();
-                     while (new_iter.hasNext()) {
-                       ChemGraph cg = (ChemGraph) new_iter.next();
-                       Species reactant = cg.getSpecies();
-                       SpeciesStatus ss = p_beginStatus.getSpeciesStatus(reactant);
-                       if (ss != null) {
-                         sflux *= ss.getConcentration();
-                       }
-                       else {
-                         sflux = 0;
-                       }
-                     }
-
-                   }
-                   if (rxn.containsAsReactant(spe)) {
-                     sflux = -1;
-                     Iterator new_iter = rxn.getReactants();
-                     while (new_iter.hasNext()) {
-                       ChemGraph cg = (ChemGraph) new_iter.next();
-                       Species reactant = cg.getSpecies();
-                       SpeciesStatus ss = p_beginStatus.getSpeciesStatus(reactant);
-                       if (ss != null) {
-                         sflux *= ss.getConcentration();
-                       }
-                       else {
-                         sflux = 0;
-                       }
-                     }
-                   }
-                   else {
-                     sflux = 0;
-                   }
-                   SensitivityStatus senStatus = new SensitivityStatus(0, sflux, m,
-                       p+1);
-                   sensitivityStatus.add(k-p_reactionModel.getSpeciesNumber(),senStatus);
-                   p_beginStatus.putSensitivityStatus(k-speciesNumber,senStatus);
-                     y[k] = 0;
-                     yprime[k] = sflux;
-                 }
-                 else {
-                   sflux = 0;
-                   SensitivityStatus senStatus = new SensitivityStatus(0, sflux, m,
-                     p+1);
-                 sensitivityStatus.add(k-p_reactionModel.getSpeciesNumber(),senStatus);
-                 p_beginStatus.putSensitivityStatus(k-speciesNumber,senStatus);
-                   y[k] = 0;
-                   yprime[k] = sflux;
-
-                 }
-                 }
-            }
-              }
-            }
+							}
+						}
+					}
+				}
+			}
             else {
-            for (int i = p_reactionModel.getSpeciesNumber(); i < y.length; i++) {
-              SensitivityStatus ss = (SensitivityStatus) p_beginStatus.
-                  getSensitivityStatus(i-p_reactionModel.getSpeciesNumber());
-              double sens = ss.getSensitivity();
-              double sflux = ss.getSFlux();
-              int reactionNumber = rList.size();
-            int speciesNumber = p_reactionModel.getSpeciesNumber();
-              Iterator species_iter = p_reactionModel.getSpecies();
-              y[i] = sens;
-              yprime[i] = sflux;
-            }
-          }
-        }
+				for (int i = p_reactionModel.getSpeciesNumber(); i < y.length; i++) {
+					SensitivityStatus ss = (SensitivityStatus) p_beginStatus.
+					getSensitivityStatus(i-p_reactionModel.getSpeciesNumber());
+					double sens = ss.getSensitivity();
+					double sflux = ss.getSFlux();
+					int reactionNumber = rList.size();
+					int speciesNumber = p_reactionModel.getSpeciesNumber();
+					Iterator species_iter = p_reactionModel.getSpecies();
+					y[i] = sens;
+					yprime[i] = sflux;
+				}
+			}
+		}
 
 
 		//System.out.println("Number of Reacted Species is " + numberOfReactedSpecies);
@@ -554,7 +585,7 @@ private LinkedList generateSensitivityStatus(ReactionModel p_reactionModel, doub
         double[] tPresent = {tBegin};
 		int temp = 1;
         if (nParameter==0) {
-        	idid = solveDAE(p_initialization, reactionList, true, thirdBodyReactionList, nState, y, yprime, tBegin, tEnd, this.rtol, this.atol, T, P);
+        	idid = solveDAE(p_initialization, reactionList, true, thirdBodyReactionList, troeReactionList, nState, y, yprime, tBegin, tEnd, this.rtol, this.atol, T, P);
         	if (idid !=1 && idid != 2 && idid != 3)	{
 				System.out.println("The idid from DASPK was "+idid + " at time "+tPresent[0]);
 				throw new DynamicSimulatorException("DASPK: SA off.");
@@ -586,11 +617,12 @@ private LinkedList generateSensitivityStatus(ReactionModel p_reactionModel, doub
         //#]
     }
 
-    //## operation solveDAE(boolean,ODEReaction [],boolean,ODEReaction [],int,double [],double [],double,double,double,double,double,double)
-    private native int solveDAE(boolean p_initialization, ODEReaction [] p_reactionSet, boolean p_reactionChanged, ODEReaction [] p_thirdBodyReactionList, int p_nState, double [] p_y, double [] p_yprime, double p_tBegin, double p_tEnd, double p_rtol, double p_atol, double p_temperature, double p_pressure);
+   
+	//## operation solveDAE(boolean,ODEReaction [],boolean,ODEReaction [],int,double [],double [],double,double,double,double,double,double)
+    private native int solveDAE(boolean p_initialization, ODEReaction [] p_reactionSet, boolean p_reactionChanged, ThirdBodyODEReaction [] p_thirdBodyReactionList, TROEODEReaction [] p_troeReactionList, int p_nState, double [] p_y, double [] p_yprime, double p_tBegin, double p_tEnd, double p_rtol, double p_atol, double p_temperature, double p_pressure);
 
     //## operation solveSEN(boolean,ODEReaction [],boolean,ODEReaction [],int,int,ParameterInfor [],double [],double [],double,double,double,double,double,double)
-    private native int solveSEN(boolean p_initialization, ODEReaction [] p_reactionSet, boolean p_reactionChanged, ODEReaction [] p_thirdBodyReactionList, int p_nState, int p_nParameter, ParameterInfor [] p_parameterInfor, double [] p_y, double [] p_yprime, double p_tBegin, double p_tEnd, double p_rtol, double p_atol, double p_temperature, double p_pressure);
+    private native int solveSEN(boolean p_initialization, ODEReaction [] p_reactionSet, boolean p_reactionChanged, ThirdBodyODEReaction [] p_thirdBodyReactionList, int p_nState, int p_nParameter, ParameterInfor [] p_parameterInfor, double [] p_y, double [] p_yprime, double p_tBegin, double p_tEnd, double p_rtol, double p_atol, double p_temperature, double p_pressure);
     static {System.loadLibrary("daspk");}
 
 
@@ -619,16 +651,10 @@ private LinkedList generateSensitivityStatus(ReactionModel p_reactionModel, doub
         	pid[index] = getRealID(s);
         	index++;
         }
-
+		
+		//ODEReaction or;
         if(p_reaction instanceof PDepNetReaction) {
         	double rate = ((PDepNetReaction)p_reaction).getRate();
-        	//rate /= fixingPDepRate(p_reaction.getStructure());
-        	/*if (p_reaction.getReactantNumber()==1 && p_reaction.getProductNumber()==2) {
-        		if (rate>1.0E7) {
-        			System.out.println("reaction " + p_reaction.getStructure().toString() + "\t rate is too high: " + String.valueOf(rate));
-        			rate = 1.0E7;
-        		}
-        	}*/
         	ODEReaction or = new ODEReaction(rnum, pnum, rid, pid, rate);
         	return or;
         }
@@ -636,45 +662,70 @@ private LinkedList generateSensitivityStatus(ReactionModel p_reactionModel, doub
         	double rate = 0;
         	if (p_reaction instanceof TemplateReaction) {
         		rate = ((TemplateReaction)p_reaction).calculatePDepRate(p_temperature);
-        	}
-                else if (p_reaction instanceof TROEReaction){//svp
-                  rate = ((TROEReaction)p_reaction).calculateRate(p_beginStatus);
-                }
-                else if (p_reaction instanceof ThirdBodyReaction){//svp
-                  rate = ((ThirdBodyReaction)p_reaction).calculateRate(p_beginStatus);
-                }
-
-                else{
-                	rate = p_reaction.calculateRate(p_temperature);
-                }
-        	/* the old way to output reaction to Daspk, now only out put rate
-        	int direction = p_reaction.getDirection();
-
-        	ArrheniusKinetics ak = (ArrheniusKinetics)p_reaction.getKinetics();
-        	double A = ak.getAValue();
-        	double n = ak.getNValue();
-        	double E = ak.getEValue();
-        	double alpha = 0;
-        	if (ak instanceof ArrheniusEPKinetics) alpha = ((ArrheniusEPKinetics)ak).getAlphaValue();
-
-        	double H = p_reaction.calculateHrxn(p_temperature);
-        	double dHdT = (p_reaction.calculateHrxn(Tup)-p_reaction.calculateHrxn(Tlow))/2/dT;
-
-        	double Keq = p_reaction.calculateKeq(p_temperature);
-        	double dKeqdT = (p_reaction.calculateKeq(Tup)-p_reaction.calculateKeq(Tlow))/2/dT;
-
-        	// add thirdbody correction
-        	if (p_reaction instanceof ThirdBodyReaction) {
-        		double correction = ((ThirdBodyReaction)p_reaction).calculateThirdBodyCoefficient(p_beginStatus);
-        		A *= correction;
-        	}
-        	//String output = p_reaction.getStructure().toString() + '\t' + String.valueOf(A) + '\t' +  String.valueOf(n) + '\t' + String.valueOf(E) + '\t' + String.valueOf(alpha) + '\t' + String.valueOf(H) + '\n';
-        	//System.out.println(output);
-        	//System.out.println(" Keq = " + String.valueOf(Keq) + '\t' + "k = " + String.valueOf(p_reaction.calculateRate(p_temperature)));
-        	*/
-
-        	ODEReaction or = new ODEReaction(rnum, pnum, rid, pid, rate);
-        	return or;
+				ODEReaction or = new ODEReaction(rnum, pnum, rid, pid, rate);
+				return or;
+			}
+			else if (p_reaction instanceof TROEReaction){//svp
+				HashMap weightMap = ((ThirdBodyReaction)p_reaction).getWeightMap();
+				int weightMapSize = weightMap.size();
+				int [] colliders = new int[weightMapSize];
+				double [] efficiency = new double[weightMapSize];
+				Iterator colliderIter = weightMap.keySet().iterator();
+				int numCollider =0;
+				for (int i=0; i<weightMapSize; i++){
+					String name = (String)colliderIter.next();
+					Species spe = SpeciesDictionary.getInstance().getSpeciesFromName(name);
+					if (spe != null){
+						colliders[numCollider] = getRealID(spe);
+						efficiency[numCollider] = ((Double)weightMap.get(name)).doubleValue();
+						numCollider++;
+					}
+					
+				}
+				double T2star, T3star, Tstar, a;
+				T2star = ((TROEReaction)p_reaction).getT2star();
+				T3star = ((TROEReaction)p_reaction).getT3star();
+				Tstar = ((TROEReaction)p_reaction).getTstar();
+				a = ((TROEReaction)p_reaction).getA();
+				int direction = p_reaction.getDirection();
+				double Keq = p_reaction.calculateKeq(p_temperature);
+				double lowRate = ((TROEReaction)p_reaction).getLow().calculateRate(p_temperature, -1);
+				double highRate = ((TROEReaction)p_reaction).getKinetics().calculateRate(p_temperature, -1);
+				double inertColliderEfficiency = ((ThirdBodyReaction)p_reaction).calculateThirdBodyCoefficientForInerts(p_beginStatus);
+				boolean troe7 = ((TROEReaction)p_reaction).getTroe7();
+				TROEODEReaction or = new TROEODEReaction(rnum, pnum, rid, pid, direction, Keq, colliders, efficiency, numCollider, inertColliderEfficiency, T2star, T3star, Tstar, a, highRate, lowRate, troe7);
+				return or;
+			}
+			else if (p_reaction instanceof ThirdBodyReaction){//svp
+				HashMap weightMap = ((ThirdBodyReaction)p_reaction).getWeightMap();
+				int weightMapSize = weightMap.size();
+				int [] colliders = new int[weightMapSize];
+				double [] efficiency = new double[weightMapSize];
+				Iterator colliderIter = weightMap.keySet().iterator();
+				int numCollider =0;
+				for (int i=0; i<weightMapSize; i++){
+					String name = (String)colliderIter.next();
+					Species spe = SpeciesDictionary.getInstance().getSpeciesFromName(name);
+					if (spe != null){
+						colliders[numCollider] = getRealID(spe);
+						efficiency[numCollider] = ((Double)weightMap.get(name)).doubleValue();
+						numCollider++;
+					}
+					
+				}
+				rate = p_reaction.calculateRate(p_temperature);
+				double inertColliderEfficiency = ((ThirdBodyReaction)p_reaction).calculateThirdBodyCoefficientForInerts(p_beginStatus);
+				ThirdBodyODEReaction or = new ThirdBodyODEReaction(rnum, pnum, rid, pid, rate, colliders, efficiency,numCollider, inertColliderEfficiency);
+				return or;
+			}
+			
+			else{
+				rate = p_reaction.calculateRate(p_temperature);
+				ODEReaction or = new ODEReaction(rnum, pnum, rid, pid, rate);
+				return or;
+			}
+        	
+        	
         }
         //#]
     }
