@@ -679,7 +679,8 @@ public class CoreEdgeReactionModel implements ReactionModel {
     }
     
 //	## operation printPDepModel(Temperature) 
-    public String returnPDepModel(Temperature p_temperature) {
+    public String returnPDepModel(SystemSnapshot p_ss) {
+		Temperature p_temperature = p_ss.temperature;
         //#[ operation printPDepModel(Temperature) 
         String modelInformation ="";
 		modelInformation = modelInformation + "This model include totally " + String.valueOf(getSpeciesNumber()) + " Species and ";
@@ -746,8 +747,9 @@ public class CoreEdgeReactionModel implements ReactionModel {
         	Reaction r = (Reaction)iter.next();
         	double rate = r.calculateRate(p_temperature);
             if (r instanceof TemplateReaction) rate = ((TemplateReaction)r).calculatePDepRate(p_temperature);
+			if (r instanceof ThirdBodyReaction) rate = ((ThirdBodyReaction)r).calculateRate(p_ss);
             //System.out.println(r.toString()+"\t rate = \t"+ String.valueOf(rate));
-			modelInformation = modelInformation + r.toChemkinString()+"\n";
+			modelInformation = modelInformation + r.toChemkinString()+"\t"+rate+"\n";
         }
         
 		modelInformation = modelInformation + "//p_dep reactions:\n";
