@@ -125,7 +125,8 @@ public class Species {
     //## operation calculateG(Temperature)
     public double calculateG(Temperature p_temperature) {
         //#[ operation calculateG(Temperature)
-        return getThermoData().calculateG(p_temperature);
+        //return getThermoData().calculateG(p_temperature);
+		return nasaThermoData.calculateFreeEnergy(p_temperature);
         //#]
     }
 
@@ -149,8 +150,10 @@ public class Species {
     //## operation calculateH(Temperature)
     public double calculateH(Temperature p_temperature) {
         //#[ operation calculateH(Temperature)
-        return getThermoData().calculateH(p_temperature);
-        //#]
+        //return getThermoData().calculateH(p_temperature);
+        return nasaThermoData.calculateEnthalpy(p_temperature);
+		
+		//#]
     }
 
     //## operation calculateLJParameters()
@@ -175,8 +178,9 @@ public class Species {
     //## operation calculateS(Temperature)
     public double calculateS(Temperature p_temperature) {
         //#[ operation calculateS(Temperature)
-        return getThermoData().calculateS(p_temperature);
-        //#]
+        //return getThermoData().calculateS(p_temperature);
+        return nasaThermoData.calculateEntropy(p_temperature);
+		//#]
     }
 
 	 //## operation callGATPFit(String)
@@ -205,10 +209,10 @@ public class Species {
 		
         // write H and S at 298
         ThermoData td = getThermoData();
-        result += "H298 " + MathTool.formatDouble(td.getH298()*1000, 10, 2).trim() + ls;
+        result += "H298 " + MathTool.formatDouble(td.getH298(), 10, 2).trim() + ls;
         result += "S298 " + MathTool.formatDouble(td.getS298(), 10, 2).trim() + ls;
 		
-        result += "DLTH " + MathTool.formatDouble(td.getH298()*1000, 10, 2).trim() + ls;
+        result += "DLTH " + MathTool.formatDouble(td.getH298(), 10, 2).trim() + ls;
 
         // write MW, temperature, ouput format, etc
         result += "MWEI " + MathTool.formatDouble(getMolecularWeight(), 6, 1).trim() + ls;
