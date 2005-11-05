@@ -130,6 +130,30 @@ public class TROEReaction extends ThirdBodyReaction {
       //#]
   }
   
+  //## operation generateReverseReaction() 
+  public void generateReverseReaction() {
+      //#[ operation generateReverseReaction() 
+      TROEReaction r = new TROEReaction();
+      r.structure = getStructure().generateReverseStructure();
+      r.rateConstant = getRateConstant();
+      r.comments = "Reverse reaction";
+      r.weightMap = weightMap;
+	  r.low = low;
+      r.a = a;
+      r.Tstar = Tstar;
+      r.T3star = T3star;
+      r.troe7 = troe7;
+      r.T2star = T2star;
+	  
+      r.setReverseReaction(this);
+      this.setReverseReaction(r);
+      
+      //this.setReverseReaction(null);
+      
+      return;
+      //#]
+  }
+  
   //## operation make(Reaction,HashMap,ArrheniusKinetics,double,double,double,boolean,double) 
   public static TROEReaction make(Reaction p_reaction, HashMap p_weightMap, final ArrheniusKinetics p_low, double p_a, double p_T3star, double p_Tstar, boolean p_troe7, double p_T2star) {
       //#[ operation make(Reaction,HashMap,ArrheniusKinetics,double,double,double,boolean,double) 
@@ -138,7 +162,7 @@ public class TROEReaction extends ThirdBodyReaction {
       tr.rateConstant = p_reaction.getRateConstant();
       tr.comments = p_reaction.getComments();
       // generate reverse rxn
-      tr.generateReverseReaction();
+      
       
       tr.weightMap = p_weightMap;
       tr.low = p_low;
@@ -148,6 +172,8 @@ public class TROEReaction extends ThirdBodyReaction {
       tr.troe7 = p_troe7;
       tr.T2star = p_T2star;
       
+	  tr.generateReverseReaction();
+	  
       return tr;
       //#]
   }
