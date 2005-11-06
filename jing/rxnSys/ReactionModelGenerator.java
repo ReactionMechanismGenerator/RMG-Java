@@ -115,6 +115,7 @@ public class ReactionModelGenerator {
 				token = st.nextToken();
 				if (token.equalsIgnoreCase("true")) {
 					Runtime.getRuntime().exec("cp Restart/allSpecies.txt Restart/allSpecies1.txt");
+					Runtime.getRuntime().exec("echo  >> allSpecies.txt");
 					restart = true;
 				}
 				else if (token.equalsIgnoreCase("false")) {
@@ -1212,9 +1213,12 @@ public class ReactionModelGenerator {
 		print_info += "\t\t\t\t\t\t\t" + ((CoreEdgeReactionModel)reactionSystem.getReactionModel()).getReactedSpeciesSet().size()+ "\t" + ((CoreEdgeReactionModel)reactionSystem.getReactionModel()).getReactedReactionSet().size() + "\t" + ((CoreEdgeReactionModel)reactionSystem.getReactionModel()).getUnreactedSpeciesSet().size() + "\t" + ((CoreEdgeReactionModel)reactionSystem.getReactionModel()).getUnreactedReactionSet().size() + "\n";
 		//printRestartFile();
 		//((CoreEdgeReactionModel)reactionSystem.getReactionModel()).printPDepModel(reactionSystem.getPresentTemperature());;
-		writeRestartFile();
-		writeCoreReactions();
-		writeAllReactions();
+		if (!restart){
+			writeRestartFile();
+			writeCoreReactions();
+			writeAllReactions();
+		}
+		
 		//writeCoreReactions();
 		//writeEdgeReactions();
 
