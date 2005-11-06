@@ -90,10 +90,22 @@ public class ReactionSystem {
         reactionGenerator = p_reactionGenerator;
         originalReactant = p_speciesSeed;
         systemSnapshot.add(initialStatus);
-
+		
+		if (!checkInitialConsistency()) {
+        	System.out.println("Initial consition is not consistent: C = P/RT is not satisfied!");
+        	System.exit(-1);
+        }
 
         //#]
     }
+	
+//	## operation checkInitialConsistency() 
+    public boolean checkInitialConsistency() {
+        //#[ operation checkInitialConsistency() 
+        return initialStatus.isTPCConsistent();
+        //#]
+    }
+	
     public  ReactionSystem() {
         {
             systemSnapshot=new LinkedList();
@@ -1464,8 +1476,8 @@ public String printLowerBoundConcentrations(LinkedList p_speciesList) {
 
         //SystemSnapshot beginStatus = (SystemSnapshot)(getSystemSnapshotEnd().next());
         SystemSnapshot beginStatus = initialStatus;
-		System.out.println(beginStatus.getTime());
-        System.out.println(p_beginTime);
+		//System.out.println(beginStatus.getTime());
+        //System.out.println(p_beginTime);
 
         if (!beginStatus.getTime().equals(p_beginTime)) throw new InvalidBeginStatusException();
 
