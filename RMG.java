@@ -69,7 +69,7 @@ public class RMG {
 	//Write the final model output in a separete Final_Model file
 	String finalOutput = "";
 	finalOutput = finalOutput + "\n\\\\\\\\\\\\\\\\\\\\\\\\\\    Final Reaction Model Output    \\\\\\\\\\\\\\\\\\\\\\\\\\";
-    finalOutput = finalOutput +"\n"+ cerm.returnPDepModel(rs.getPresentTemperature())+"\n";
+    finalOutput = finalOutput +"\n"+ cerm.returnPDepModel(rs.getPresentStatus())+"\n";
 	
 	finalOutput = finalOutput + "Model Edge:";
 	finalOutput = finalOutput + cerm.getEdge().getSpeciesNumber()+" ";
