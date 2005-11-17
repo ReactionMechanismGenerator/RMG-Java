@@ -96,9 +96,9 @@ public class Species {
         findStablestThermoData();
         calculateLJParameters();
         selectDeltaEDown();
-		//generateNASAThermoDatabyGATPFit();
+		generateNASAThermoDatabyGATPFit();
 		//generateThreeFrequencyModel();
-        generateNASAThermoData();
+        //generateNASAThermoData();
         //#]
     }
 
@@ -221,7 +221,8 @@ public class Species {
 		result += "TMAX 5000.0" + ls;
         result += "CHEM" + ls;
         result += "TEM2 2000.0" + ls;
-        result += "LINEARST" + ls;
+		if (chemGraph.isLinear())  result += "LINEAR" + ls;
+		else result += "NONLINEAR" + ls;
         result += String.valueOf(cg.getAtomNumber()) + ls;
         result += String.valueOf(getInternalRotor()) + ls;
 		result += "TECP 300 " + MathTool.formatDouble(td.Cp300,10,2).trim() + ls;
@@ -278,9 +279,7 @@ public class Species {
 	   //## operation callTherfit(String,String)
     private boolean callTherfit(String p_directory, String p_mode) {
         //#[ operation callTherfit(String,String)
-		/*if (name.equals("C2O2")){
-			System.out.println("Species 166");
-		}*/
+		
         if (p_directory == null || p_mode == null) throw new NullPointerException();
 		String workingDirectory = System.getProperty("RMG.workingDirectory");
         // write therfit input file
