@@ -755,6 +755,55 @@ return sn;
         //#]
     }
 
+//	## operation isLinear() 
+    public boolean isLinear() {
+        //#[ operation isLinear() 
+        // only check for linearity in molecules with at least two atoms
+        if (getAtomNumber() == 1) return false;
+        
+        // cyclic molecules are not linear
+        if (!isAcyclic()) return false;
+        
+        // biatomic molecules are always linear
+        if (getAtomNumber() == 2) return true;
+        
+        // molecules with only double bonds are linear (e.g. CO2)
+        boolean allDouble = true;
+        Iterator iter = getArcList();
+        while (iter.hasNext()) {
+        	Arc arc = (Arc)iter.next();
+        	Bond bond = (Bond)arc.getElement();
+        	if (!bond.isDouble()) allDouble = false;
+        }
+        if (allDouble) return true;
+        
+        // molecule with alternating single and triple bonds are linear (e.g. acetylene)
+        boolean alternatingSingleTriple = true;
+        Iterator node_iter = getNodeList();
+        while (node_iter.hasNext()) {
+        	Node node = (Node)node_iter.next();
+        	int neighborNumber = node.getNeighborNumber();
+        	if (neighborNumber == 2) {
+        		Iterator neighbor_iter = node.getNeighbor();
+        		Arc a1 = (Arc)neighbor_iter.next();
+        		Bond b1 = (Bond)a1.getElement();
+        		Arc a2 = (Arc)neighbor_iter.next();
+        		Bond b2 = (Bond)a2.getElement();
+        		if (! ((b1.isTriple() && b2.isSingle()) || (b1.isSingle() && b2.isTriple())))
+        			alternatingSingleTriple = false;
+        	}
+        	else if (neighborNumber > 2)
+        		alternatingSingleTriple = false;
+        }
+            
+            if (alternatingSingleTriple) return true;
+        
+        // if none of the above are true, it's nonlinear
+        return false;
+        
+        //#]
+    }
+	
     /**
     Requires:
     Effects: return S(T)
