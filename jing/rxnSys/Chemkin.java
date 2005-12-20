@@ -393,10 +393,11 @@ public class Chemkin implements DAESolver {
   //## operation writeChemkinInputFile(ReactionModel,SystemSnapshot)
   public static void writeChemkinInputFile(final ReactionModel p_reactionModel, SystemSnapshot p_beginStatus) {
       //#[ operation writeChemkinInputFile(ReactionModel,SystemSnapshot)
-      String result = writeChemkinElement();
-      result += writeChemkinSpecies(p_reactionModel, p_beginStatus);
-      result += writeChemkinThermo(p_reactionModel);
-      result += writeChemkinReactions(p_reactionModel);
+      StringBuilder result=new StringBuilder();
+	  result.append(writeChemkinElement());
+      result.append(writeChemkinSpecies(p_reactionModel, p_beginStatus));
+      result.append(writeChemkinThermo(p_reactionModel));
+      result.append(writeChemkinReactions(p_reactionModel));
 
       String dir = System.getProperty("RMG.workingDirectory");
       if (!dir.endsWith("/")) dir += "/";
@@ -405,7 +406,7 @@ public class Chemkin implements DAESolver {
 
       try {
       	FileWriter fw = new FileWriter(file);
-      	fw.write(result);
+      	fw.write(result.toString());
       	fw.close();
       }
       catch (Exception e) {
@@ -420,7 +421,8 @@ public class Chemkin implements DAESolver {
   //## operation writeChemkinReactions(ReactionModel)
   public static String writeChemkinReactions(ReactionModel p_reactionModel) {
       //#[ operation writeChemkinReactions(ReactionModel)
-      String result = "REACTIONS	KCAL/MOLE\n";
+      StringBuilder result =new StringBuilder();
+	  result.append("REACTIONS	KCAL/MOLE\n");
       CoreEdgeReactionModel cerm = (CoreEdgeReactionModel)p_reactionModel;
 
       HashSet RISet = new HashSet();
@@ -436,7 +438,12 @@ public class Chemkin implements DAESolver {
       	Reaction rxn = (Reaction)iter.next();
       	if (rxn.isForward()) {
       		if (rxn.hasResonanceIsomer()) RISet.add(rxn);
-      		else result = result + " " + rxn.toChemkinString() + '\n';
+      		else {
+				result.append(" ");
+				result.append(rxn.toChemkinString());
+				result.append( '\n');
+      		}
+
       	}
       }
 
@@ -449,29 +456,45 @@ public class Chemkin implements DAESolver {
       		Reaction r2 = (Reaction)iter.next();
       		if (r1.isDuplicated(r2)) {
       			if (isPDepReaction(r1)) {
-      				if (!found) result = result + " " + r1.toChemkinString() + '\n';
+      				if (!found){
+						result.append(" ");
+						result.append(r1.toChemkinString());
+						result.append( '\n');
+      				}
       			}
       			else if  (isPDepReaction(r2)) {
-      				if (!found) result = result + " " + r2.toChemkinString() + '\n';
+      				if (!found){
+						result.append(" ");
+						result.append(r2.toChemkinString());
+						result.append( '\n');
+      				}
       			}
       			else {
       				if (!found) {
-      					result = result + " " + r1.toChemkinString() + '\n';
-      	 				result = result + "\t" + "DUP\n";
+						result.append(" ");
+						result.append(r1.toChemkinString());
+						result.append( '\n');
+      	 				result.append("\t DUP\n");
       	 			}
-      				result = result + " " + r2.toChemkinString() + '\n';
-      				result = result + "\t" + "DUP\n";
+					result.append(" ");
+					result.append(r2.toChemkinString());
+					result.append( '\n');
+      				result.append("\t DUP\n");
       			}
       			iter.remove();
       			found = true;
       		}
       	}
-      	if (!found) result = result + " " + r1.toChemkinString() + '\n';
+      	if (!found){
+			result.append(" ");
+			result.append(r1.toChemkinString());
+			result.append( '\n');
+      	}
       }
 
-      result += "END\n";
+      result.append("END\n");
 
-      return result;
+      return result.toString();
 
       //#]
   }
@@ -479,24 +502,25 @@ public class Chemkin implements DAESolver {
   //## operation writeChemkinSpecies(ReactionModel,SystemSnapshot)
   public static String writeChemkinSpecies(ReactionModel p_reactionModel, SystemSnapshot p_beginStatus) {
       //#[ operation writeChemkinSpecies(ReactionModel,SystemSnapshot)
-      String result = "SPECIES\n";
+      StringBuilder result = new StringBuilder();
+	  result.append("SPECIES\n");
       CoreEdgeReactionModel cerm = (CoreEdgeReactionModel)p_reactionModel;
 
       // write inert gas
       for (Iterator iter = p_beginStatus.getInertGas(); iter.hasNext();) {
       	String name = (String)iter.next();
-      	result = result + '\t' + name + '\n';
+      	result.append('\t' + name + '\n');
       }
 
       // write species
       for (Iterator iter = cerm.getSpecies(); iter.hasNext(); ) {
       	Species spe = (Species)iter.next();
-      	result = result + '\t' + spe.getChemkinName() + '\n';
+      	result.append('\t' + spe.getChemkinName() + '\n');
       }
 
-      result += "END\n";
+      result.append("END\n");
 
-      return result;
+      return result.toString();
 
       //#]
   }
@@ -504,17 +528,19 @@ public class Chemkin implements DAESolver {
   //## operation writeChemkinThermo(ReactionModel)
   public static String writeChemkinThermo(ReactionModel p_reactionModel) {
       //#[ operation writeChemkinThermo(ReactionModel)
-      String result = "THERMO\n";
-      result += "   300.000  1000.000  5000.000\n";
+      StringBuilder result = new StringBuilder();
+	  result.append("THERMO\n");
+      result.append("   300.000  1000.000  5000.000\n");
 
       CoreEdgeReactionModel cerm = (CoreEdgeReactionModel)p_reactionModel;
       for (Iterator iter = cerm.getSpecies(); iter.hasNext(); ) {
       	Species spe = (Species)iter.next();
-      	result = result + spe.getNasaThermoData() + '\n';
+      	result.append(spe.getNasaThermoData());
+      	result.append('\n');
       }
-      result += "END\n";
+      result.append("END\n");
 
-      return result;
+      return result.toString();
 
       //#]
   }
