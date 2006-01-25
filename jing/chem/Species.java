@@ -868,7 +868,7 @@ public class Species {
 			int id= ++TOTAL_NUMBER;
         	spe = new Species(id,name,p_chemGraph);
         	//spe.ID =
-        	dictionary.putSpecies(spe);
+        	dictionary.putSpecies(spe, true);
 
         }
         p_chemGraph.setSpecies(spe);
@@ -888,7 +888,7 @@ public class Species {
         	}
         	spe = new Species(id, name,p_chemGraph);
 			if (id > TOTAL_NUMBER) TOTAL_NUMBER=id;
-        	dictionary.putSpecies(spe);
+        	dictionary.putSpecies(spe, false);
  
         }
         p_chemGraph.setSpecies(spe);
