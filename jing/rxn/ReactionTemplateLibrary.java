@@ -70,7 +70,7 @@ public class ReactionTemplateLibrary {
         
         String separator = System.getProperty("file.separator");
         if (!kineticsDirectory.endsWith(separator)) kineticsDirectory = kineticsDirectory + separator;
-        
+	System.out.println(kineticsDirectory);        
         read(kineticsDirectory);
         //#]
     }
