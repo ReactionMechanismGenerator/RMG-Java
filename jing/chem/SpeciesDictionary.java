@@ -148,26 +148,26 @@ public class SpeciesDictionary {
     }
     
     //## operation putSpecies(Species) 
-    public void putSpecies(Species p_species) {
+    public void putSpecies(Species p_species, boolean write) {
         //#[ operation putSpecies(Species) 
 		String restartFileContent="";
-		try{
-			File allSpecies = new File ("Restart/allSpecies.txt");
-			FileWriter fw = new FileWriter(allSpecies, true);
-			//Species species = (Species) iter.next();
-			restartFileContent = restartFileContent + p_species.getChemkinName() + " \n ";// + 0 + " (mol/cm3) \n";
-			restartFileContent = restartFileContent + p_species.toString(1) + "\n\n";
-			
-			//restartFileContent += "\nEND";
-			fw.write(restartFileContent);
-			fw.close();
+		if (write){
+			try{
+				File allSpecies = new File ("Restart/allSpecies.txt");
+				FileWriter fw = new FileWriter(allSpecies, true);
+				//Species species = (Species) iter.next();
+				restartFileContent = restartFileContent + p_species.getChemkinName() + " \n ";// + 0 + " (mol/cm3) \n";
+				restartFileContent = restartFileContent + p_species.toString(1) + "\n\n";
+				
+				//restartFileContent += "\nEND";
+				fw.write(restartFileContent);
+				fw.close();
+			}
+			catch (IOException e){
+				System.out.println("Could not write the restart edgespecies file");
+	        	System.exit(0);
+			}
 		}
-		catch (IOException e){
-			System.out.println("Could not write the restart edgespecies file");
-        	System.exit(0);
-		}
-		
-		
         if (p_species.hasResonanceIsomers()) {
         	Iterator iter = p_species.getResonanceIsomers();
         	while (iter.hasNext()) {
