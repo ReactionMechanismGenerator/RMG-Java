@@ -114,8 +114,8 @@ public class ReactionModelGenerator {
 				String token = st.nextToken();
 				token = st.nextToken();
 				if (token.equalsIgnoreCase("true")) {
-					Runtime.getRuntime().exec("cp Restart/allSpecies.txt Restart/allSpecies1.txt");
-					Runtime.getRuntime().exec("echo  >> allSpecies.txt");
+					//Runtime.getRuntime().exec("cp Restart/allSpecies.txt Restart/allSpecies1.txt");
+					//Runtime.getRuntime().exec("echo  >> allSpecies.txt");
 					restart = true;
 				}
 				else if (token.equalsIgnoreCase("false")) {
@@ -641,8 +641,7 @@ public class ReactionModelGenerator {
 						continue;
 					}
 				}*/
-				if (line.startsWith("CH2O(14) + CH3O2.(39)"))
-					System.out.println("Teri maa");
+				
 				/*if (reaction.getStructure().getDirection()== -1 && ((CoreEdgeReactionModel)reactionSystem.reactionModel).isReactedReaction(reaction)){
 					//line = ChemParser.readMeaningfulLine(reader);
 					if (reactionSet.contains(reaction.getReverseReaction()) && !reactionSet.contains(reaction)){
@@ -969,33 +968,51 @@ public class ReactionModelGenerator {
 		}
 
 	}
-
+	public static void garbageCollect(){
+		System.gc();
+	}
+	
+	public static long memoryUsed(){
+		garbageCollect();
+		Runtime rT = Runtime.getRuntime();
+		long uM, tM, fM;
+		tM = rT.totalMemory();
+		fM = rT.freeMemory();
+		uM = tM - fM;
+		return uM;
+	}
+	
 	public void parseAllSpecies() {
 //		String restartFileContent ="";
 		int speciesCount = 0;
 
 		boolean added;
 		try{
+			long initialTime = System.currentTimeMillis();
+			StringBuilder sb = new StringBuilder();
+			sb.append("\t Cumulative Time until after the event\n");
+			sb.append("# \t Read Graph \t ChemGraph \t Species \t total\t Memory Used");
+			
 			File coreSpecies = new File ("Restart/allSpecies1.txt");
-			FileReader fr = new FileReader(coreSpecies);
-			BufferedReader reader = new BufferedReader(fr);
+			BufferedReader reader = new BufferedReader(new FileReader(coreSpecies));
 			String line = ChemParser.readMeaningfulLine(reader);
 			HashSet speciesSet = new HashSet();
-
+			int i=0;
 			while (line!=null) {
-
+				i++;
+				sb.append(i);sb.append("\t");
     			StringTokenizer st = new StringTokenizer(line);
     			String index = st.nextToken();
     			String name = null;
     			if (!index.startsWith("(")) name = index;
     			else name = st.nextToken().trim();
 				int ID = getID(name);
-				//if (line.contains("C5H8O2"))
-					//System.out.println("Teri maa");
-				//System.out.println(ID + "\t");
-				//String [] temp = name.split("(");
+				
 				name = getName(name);
     			Graph g = ChemParser.readChemGraph(reader);
+				double timeNow = (System.currentTimeMillis()-initialTime)/1e3;
+				sb.append(timeNow);sb.append("\t");
+				
     			ChemGraph cg = null;
     			try {
     				cg = ChemGraph.make(g);
@@ -1004,12 +1021,14 @@ public class ReactionModelGenerator {
     				System.out.println("Forbidden Structure:\n" + e.getMessage());
     				System.exit(0);
     			}
-
+				timeNow = (System.currentTimeMillis()-initialTime)/1e3;
+				sb.append(timeNow);sb.append("\t");
 
     			Species species = Species.make(name,cg,ID);
        			//speciesSet.put(name, species);
     			speciesSet.add(species);
-
+				timeNow = (System.currentTimeMillis()-initialTime)/1e3;
+				sb.append(timeNow);sb.append("\t");
 				/*if (name.equals("C5H11.")){
 					System.out.println(species.getChemkinName());
 				}*/
@@ -1019,7 +1038,12 @@ public class ReactionModelGenerator {
     			//SpeciesStatus ss = new SpeciesStatus(species,species_type,concentration,flux);
     			//speciesStatus.put(species, ss);
     			line = ChemParser.readMeaningfulLine(reader);
+				sb.append((System.currentTimeMillis()-initialTime)/1e3);sb.append("\t");
+				sb.append(memoryUsed());sb.append("\t");
+				System.out.println(sb.toString());
+				sb.delete(0,sb.length());
     		}
+			
 			//reactionSystem.reactionModel = new CoreEdgeReactionModel();
 			//((CoreEdgeReactionModel)reactionSystem.reactionModel).addReactedSpeciesSet(speciesSet);
 			//specs.addAll(speciesSet);
@@ -1495,21 +1519,22 @@ public class ReactionModelGenerator {
 	}
 
 	private void writeEdgeSpecies() {
-		String restartFileContent ="";
+		StringBuilder restartFileContent = new StringBuilder();
 		int speciesCount = 0;
 		try{
 			File edgeSpecies = new File ("Restart/edgeSpecies.txt");
 			FileWriter fw = new FileWriter(edgeSpecies);
 			for(Iterator iter=((CoreEdgeReactionModel)reactionSystem.reactionModel).getUnreactedSpeciesSet().iterator();iter.hasNext();){
 				Species species = (Species) iter.next();
-				restartFileContent = restartFileContent + species.getID() + "\n";
+				restartFileContent.append(species.getID());
+				restartFileContent.append( "\n");
 				/*Species species = (Species) iter.next();
 				restartFileContent = restartFileContent + "("+ speciesCount + ") "+species.getChemkinName() + " \n ";// + 0 + " (mol/cm3) \n";
 				restartFileContent = restartFileContent + species.toString(1) + "\n";
 				speciesCount = speciesCount + 1;*/
 			}
 			//restartFileContent += "\nEND";
-			fw.write(restartFileContent);
+			fw.write(restartFileContent.toString());
 			fw.close();
 		}
 		catch (IOException e){
@@ -1545,19 +1570,20 @@ public class ReactionModelGenerator {
 
 	private void writeCoreSpecies() {
 
-		String restartFileContent ="";
+		StringBuilder restartFileContent = new StringBuilder();
 		int speciesCount = 0;
 		try{
 			File coreSpecies = new File ("Restart/coreSpecies.txt");
 			FileWriter fw = new FileWriter(coreSpecies);
 			for(Iterator iter=reactionSystem.reactionModel.getSpecies();iter.hasNext();){
 				Species species = (Species) iter.next();
-				restartFileContent = restartFileContent + species.getID() + "\n";//("+ speciesCount + ") "+species.getChemkinName() + " \n ";// + reactionSystem.getPresentConcentration(species) + " (mol/cm3) \n";
+				restartFileContent.append(species.getID());
+				restartFileContent.append( "\n");//("+ speciesCount + ") "+species.getChemkinName() + " \n ";// + reactionSystem.getPresentConcentration(species) + " (mol/cm3) \n";
 				//restartFileContent = restartFileContent + species.toString(1) + "\n";
 				//speciesCount = speciesCount + 1;
 			}
 			//restartFileContent += "\nEND";
-			fw.write(restartFileContent);
+			fw.write(restartFileContent.toString());
 			fw.close();
 		}
 		catch (IOException e){
