@@ -140,6 +140,25 @@ public class SpeciesDictionary {
 	        //#]
 	    }
 	
+	    //## operation getSpeciesSetFromName(String) 
+	    public HashSet getSpeciesSetFromName(String p_name) {
+	        //#[ operation getSpeciesSetFromName(String) 
+	        if (p_name == null) throw new NullPointerException();
+	        
+	        HashSet speSet = new HashSet();
+	        Iterator iter = dictionary.values().iterator();
+	        while (iter.hasNext()) {
+	        	Species spe = (Species)iter.next();
+	        	if (spe.getName().compareToIgnoreCase(p_name) == 0) {
+	        		speSet.add(spe);
+	        	}
+	        }
+	        
+	        return speSet;
+	        
+	        //#]
+	    }
+		
     //## operation getSpeciesSet() 
     public HashSet getSpeciesSet() {
         //#[ operation getSpeciesSet() 
