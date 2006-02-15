@@ -81,6 +81,7 @@ public class Graph {
         }
         //#[ operation Graph()
         centralNode = new HashMap();
+		identifyCycle();
         //#]
     }
 
@@ -759,6 +760,10 @@ public class Graph {
         return iter;
         //#]
     }
+	
+	public int getCycleNumber(){
+		return cycle.size();
+	}
 
     /**
     Requies:
