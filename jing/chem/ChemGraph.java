@@ -56,6 +56,7 @@ public class ChemGraph implements Matchable {
 
     protected int MAX_OXYGEN_NUM = 6;		//## attribute MAX_OXYGEN_NUM
 	protected int MAX_CARBON_NUM = 8;       //SS
+	protected int MAX_CYCLE_NUM = 1;		//SS (no fused rings)
 
 	/**
     Maximal radical number allowed in a ChemGraph.
@@ -107,7 +108,7 @@ public class ChemGraph implements Matchable {
         //#[ operation ChemGraph(Graph)
         graph = p_graph;
 
-        if (isForbiddenStructure(p_graph) || getRadicalNumber() > MAX_RADICAL_NUM || getOxygenNumber() > MAX_OXYGEN_NUM) {
+        if (isForbiddenStructure(p_graph) || getRadicalNumber() > MAX_RADICAL_NUM || getOxygenNumber() > MAX_OXYGEN_NUM || getCycleNumber() > MAX_CYCLE_NUM) {
         	graph = null;
         	throw new ForbiddenStructureException(p_graph.toString());
         }
@@ -1018,13 +1019,13 @@ return sn;
 
         chemicalFormula = s;
         if (radical == 1) {
-        	chemicalFormula = chemicalFormula + ".";
+        	chemicalFormula = chemicalFormula + "J";
         }
         else if (radical == 2) {
-        	chemicalFormula = chemicalFormula + "..";
+        	chemicalFormula = chemicalFormula + "JJ";
         }
         else if (radical == 3) {
-        	chemicalFormula = chemicalFormula + "...";
+        	chemicalFormula = chemicalFormula + "JJJ";
         }
 
         return chemicalFormula;
@@ -1201,6 +1202,9 @@ return sn;
         //#]
     }
 
+	public int getCycleNumber(){
+		return getGraph().getCycleNumber();
+	}
     //## operation getHydrogenNumber()
     public int getHydrogenNumber() {
         //#[ operation getHydrogenNumber()
