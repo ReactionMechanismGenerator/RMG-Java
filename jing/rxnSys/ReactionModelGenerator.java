@@ -514,6 +514,417 @@ public class ReactionModelGenerator {
         //#]
     }
 
+	 //## operation initializeReactionSystem()
+    public void initializeReactionSystemForIntegration() throws InvalidSymbolException, IOException {
+        //#[ operation initializeReactionSystem()
+        try {
+        	String initialConditionFile = System.getProperty("jing.rxnSys.ReactionModelGenerator.conditionFile");
+        	if (initialConditionFile == null) {
+        		System.out.println("undefined system property: jing.rxnSys.ReactionModelGenerator.conditionFile");
+        		System.exit(0);
+        	}
+			//double sandeep = getCpuTime();
+			//System.out.println(getCpuTime()/1e9/60);
+        	FileReader in = new FileReader(initialConditionFile);
+        	BufferedReader reader = new BufferedReader(in);
+
+        	TemperatureModel temperatureModel = null;
+        	PressureModel pressureModel = null;
+        	ReactionModelEnlarger reactionModelEnlarger = null;
+        	
+        	FinishController finishController = null;
+        	DynamicSimulator dynamicSimulator = null;
+        	PrimaryReactionLibrary primaryReactionLibrary = null;
+			String line = ChemParser.readMeaningfulLine(reader);
+
+			//line = ChemParser.readMeaningfulLine(reader);
+
+			if (line.startsWith("Database")){//svp
+                line = ChemParser.readMeaningfulLine(reader);
+              }
+              else throw new InvalidSymbolException("Can't find database!");
+              if (line.startsWith("PrimaryThermoLibrary")){//svp
+                line = ChemParser.readMeaningfulLine(reader);
+              }
+              else throw new InvalidSymbolException("Can't find primary thermo library!");
+
+
+        	// read temperature model
+        	if (line.startsWith("TemperatureModel:")) {
+        		StringTokenizer st = new StringTokenizer(line);
+        		String name = st.nextToken();
+        		String modelType = st.nextToken();
+        		String t = st.nextToken();
+        		String unit = st.nextToken();
+        		if (modelType.equals("Constant")) {
+        			double temp = Double.parseDouble(t);
+        			unit = ChemParser.removeBrace(unit);
+        			temperatureModel = new ConstantTM(temp, unit);
+        		}
+        		else if (modelType.equals("Curved")) {
+        			// add reading curved temperature function here
+        			temperatureModel = new CurvedTM(new LinkedList());
+        		}
+        		else {
+        			throw new InvalidSymbolException("condition.txt: Unknown TemperatureModel = " + modelType);
+        		}
+        	}
+        	else throw new InvalidSymbolException("condition.txt: can't find TemperatureModel!");
+
+        	// read in pressure model
+        	line = ChemParser.readMeaningfulLine(reader);
+        	if (line.startsWith("PressureModel:")) {
+        		StringTokenizer st = new StringTokenizer(line);
+        		String name = st.nextToken();
+        		String modelType = st.nextToken();
+        		String p = st.nextToken();
+        		String unit = st.nextToken();
+        		if (modelType.equals("Constant")) {
+        			double pressure = Double.parseDouble(p);
+        			unit = ChemParser.removeBrace(unit);
+        			pressureModel = new ConstantPM(pressure, unit);
+        		}
+        		else if (modelType.equals("Curved")) {
+        			// add reading curved temperature function here
+        			pressureModel = new CurvedPM(new LinkedList());
+        		}
+        		else {
+        			throw new InvalidSymbolException("condition.txt: Unknown PressureModel = " + modelType);
+        		}
+        	}
+        	else throw new InvalidSymbolException("condition.txt: can't find PressureModel!");
+
+        	// read in reactants
+        	line = ChemParser.readMeaningfulLine(reader);
+        	HashSet speciesSeed = new HashSet();
+        	HashMap speciesSet = new HashMap();
+        	HashMap speciesStatus = new HashMap();
+			int speciesnum = 1;
+        	if (line.startsWith("InitialStatus")) {
+        		line = ChemParser.readMeaningfulLine(reader);
+        		while (!line.equals("END")) {
+        			StringTokenizer st = new StringTokenizer(line);
+        			String index = st.nextToken();
+        			String name = null;
+        			if (!index.startsWith("(")) name = index;
+        			else name = st.nextToken();
+					//if (restart) name += "("+speciesnum+")";
+					speciesnum ++;
+        			String conc = st.nextToken();
+        			double concentration = Double.parseDouble(conc);
+        			String unit = st.nextToken();
+        			unit = ChemParser.removeBrace(unit);
+        			if (unit.equals("mole/l") || unit.equals("mol/l") || unit.equals("mole/liter") || unit.equals("mol/liter")) {
+        				concentration /= 1000;
+        				unit = "mol/cm3";
+        			}
+        			else if (unit.equals("mole/m3") || unit.equals("mol/m3")) {
+        				concentration /= 1000000;
+        				unit = "mol/cm3";
+        			}
+        			else if (!unit.equals("mole/cm3") && !unit.equals("mol/cm3")) {
+        				throw new InvalidUnitException("Species Concentration in condition.txt!");
+        			}
+
+        			Graph g = ChemParser.readChemGraph(reader);
+        			ChemGraph cg = null;
+        			try {
+        				cg = ChemGraph.make(g);
+        			}
+        			catch (ForbiddenStructureException e) {
+        				System.out.println("Forbidden Structure:\n" + e.getMessage());
+        				System.exit(0);
+        			}
+
+        			Species species = Species.make(name,cg);
+           			speciesSet.put(name, species);
+        			speciesSeed.add(species);
+        			double flux = 0;
+        			int species_type = 1; // reacted species
+        			SpeciesStatus ss = new SpeciesStatus(species,species_type,concentration,flux);
+        			speciesStatus.put(species, ss);
+        			line = ChemParser.readMeaningfulLine(reader);
+        		}
+				ReactionTime initial = new ReactionTime(0,"S");
+        		initialStatus = new InitialStatus(speciesStatus,temperatureModel.getTemperature(initial),pressureModel.getPressure(initial));
+
+        	}
+        	else throw new InvalidSymbolException("condition.txt: can't find InitialStatus!");
+
+        	// read in inert gas concentration
+        	line = ChemParser.readMeaningfulLine(reader);
+            if (line.startsWith("InertGas:")) {
+           		line = ChemParser.readMeaningfulLine(reader);
+           		while (!line.equals("END")) {
+        	    	StringTokenizer st = new StringTokenizer(line);
+        	    	String name = st.nextToken().trim();
+        			String conc = st.nextToken();
+        			double inertConc = Double.parseDouble(conc);
+        			String unit = st.nextToken();
+        			unit = ChemParser.removeBrace(unit);
+        			if (unit.equals("mole/l") || unit.equals("mol/l") || unit.equals("mole/liter") || unit.equals("mol/liter")) {
+        				inertConc /= 1000;
+        				unit = "mol/cm3";
+        			}
+        			else if (unit.equals("mole/m3") || unit.equals("mol/m3")) {
+        				inertConc /= 1000000;
+        				unit = "mol/cm3";
+        			}
+        			else if (!unit.equals("mole/cm3") && !unit.equals("mol/cm3")) {
+        				throw new InvalidUnitException("Species Concentration in condition.txt!");
+        			}
+        			SystemSnapshot.putInertGas(name,inertConc);
+        	   		line = ChemParser.readMeaningfulLine(reader);
+        		}
+           	}
+        	else throw new InvalidSymbolException("condition.txt: can't find Inert gas concentration!");
+
+        	// read in reaction model enlarger
+        	line = ChemParser.readMeaningfulLine(reader);
+        	if (line.startsWith("ReactionModelEnlarger:")) {
+        		StringTokenizer st = new StringTokenizer(line);
+        		String name = st.nextToken();
+        		String rmeType = st.nextToken();
+        		if (rmeType.equals("RateBasedModelEnlarger")) {
+        			reactionModelEnlarger = new RateBasedRME();
+        		}
+        		else if (rmeType.equals("RateBasedPDepModelEnlarger")) {
+        			reactionModelEnlarger = new RateBasedPDepRME();
+        		}
+        		else {
+        			throw new InvalidSymbolException("condition.txt: Unknown ReactionModelEnlarger = " + rmeType);
+        		}
+        	}
+        	else throw new InvalidSymbolException("condition.txt: can't find ReactionModelEnlarger!");
+
+        	// read in finish controller
+        	line = ChemParser.readMeaningfulLine(reader);
+        	if (line.startsWith("FinishController")) {
+        		line = ChemParser.readMeaningfulLine(reader);
+        		StringTokenizer st = new StringTokenizer(line);
+        		String index = st.nextToken();
+        		String goal = st.nextToken();
+        		String type = st.nextToken();
+        		TerminationTester tt;
+        		if (type.startsWith("Conversion")) {
+        			HashSet spc = new HashSet();
+        			while (st.hasMoreTokens()) {
+        				String name = st.nextToken();
+        				Species spe = (Species)speciesSet.get(name);
+        				if (spe == null) throw new InvalidConversionException("Unknown reactant: " + name);
+        				String conv = st.nextToken();
+        				double conversion;
+        				try {
+        					if (conv.endsWith("%")) {
+        						conversion = Double.parseDouble(conv.substring(0,conv.length()-1))/100;
+        					}
+        					else {
+        						conversion = Double.parseDouble(conv);
+        					}
+        				}
+        				catch (NumberFormatException e) {
+        					throw new NumberFormatException("wrong number format for conversion in initial condition file!");
+        				}
+        				SpeciesConversion sc = new SpeciesConversion(spe, conversion);
+        				spc.add(sc);
+        			}
+        			tt = new ConversionTT(spc);
+        		}
+        		else if (type.startsWith("ReactionTime")) {
+        			double time = Double.parseDouble(st.nextToken());
+        			String unit = ChemParser.removeBrace(st.nextToken());
+        			ReactionTime rt = new ReactionTime(time, unit);
+        			tt = new ReactionTimeTT(rt);
+        		}
+        		else {
+        			throw new InvalidSymbolException("condition.txt: Unknown FinishController = " + type);
+        		}
+
+        		line = ChemParser.readMeaningfulLine(reader);
+        		st = new StringTokenizer(line, ":");
+        		String temp = st.nextToken();
+        		String tol = st.nextToken();
+        		double tolerance;
+        		try {
+        			if (tol.endsWith("%")) {
+        				tolerance = Double.parseDouble(tol.substring(0,tol.length()-1))/100;
+        			}
+        			else {
+        				tolerance = Double.parseDouble(tol);
+        			}
+        		}
+        		catch (NumberFormatException e) {
+        			throw new NumberFormatException("wrong number format for conversion in initial condition file!");
+        		}
+        		ValidityTester vt = null;
+        		if (reactionModelEnlarger instanceof RateBasedRME) vt = new RateBasedVT(tolerance);
+        		else if (reactionModelEnlarger instanceof RateBasedPDepRME) vt = new RateBasedPDepVT(tolerance);
+        		else throw new InvalidReactionModelEnlargerException();
+        		finishController = new FinishController(tt, vt);
+        	}
+        	else throw new InvalidSymbolException("condition.txt: can't find FinishController!");
+
+        	// read in dynamic simulator
+        	line = ChemParser.readMeaningfulLine(reader);
+        	if (line.startsWith("DynamicSimulator")) {
+        		StringTokenizer st = new StringTokenizer(line,":");
+        		String temp = st.nextToken();
+        		String simulator = st.nextToken().trim();
+        		// read in time step
+        		line = ChemParser.readMeaningfulLine(reader);
+        		if (line.startsWith("TimeStep:")) {
+        			st = new StringTokenizer(line);
+        			temp = st.nextToken();
+        			double tStep = Double.parseDouble(st.nextToken());
+        			String unit = st.nextToken();
+        			unit = ChemParser.removeBrace(unit);
+        			setTimeStep(new ReactionTime(tStep, unit));
+        		}
+        		else throw new InvalidSymbolException("condition.txt: can't find time step for dynamic simulator!");
+
+        		// read in atol
+        		
+        		line = ChemParser.readMeaningfulLine(reader);
+        		if (line.startsWith("Atol:")) {
+        			st = new StringTokenizer(line);
+        			temp = st.nextToken();
+        			atol = Double.parseDouble(st.nextToken());
+        		}
+        		else throw new InvalidSymbolException("condition.txt: can't find Atol for dynamic simulator!");
+
+        		// read in rtol
+        		
+        		line = ChemParser.readMeaningfulLine(reader);
+        		if (line.startsWith("Rtol:")) {
+        			st = new StringTokenizer(line);
+        			temp = st.nextToken();
+        			String rel_tol = st.nextToken();
+        			if (rel_tol.endsWith("%"))
+        				rtol = Double.parseDouble(rel_tol.substring(0,rel_tol.length()-1));
+        			else
+        				rtol = Double.parseDouble(rel_tol);
+        		}
+        		else throw new InvalidSymbolException("condition.txt: can't find Rtol for dynamic simulator!");
+
+                        if (simulator.equals("DASPK")) {
+                              paraInfor = 0;//svp
+                              // read in SA
+                              line = ChemParser.readMeaningfulLine(reader);
+                              if (line.startsWith("Error bars")) {//svp
+                                      st = new StringTokenizer(line,":");
+                                      temp = st.nextToken();
+                                      String sa = st.nextToken().trim();
+                                      if (sa.compareToIgnoreCase("on")==0) {
+                                        paraInfor = 1;
+                                        error = true;
+                                      }
+                                      else if (sa.compareToIgnoreCase("off")==0) {
+                                       paraInfor = 0;
+                                       error = false;
+                                      }
+                                      else throw new InvalidSymbolException("condition.txt: can't find error on/off information!");
+
+
+                              }
+
+                              else throw new InvalidSymbolException("condition.txt: can't find SA information!");
+                              line = ChemParser.readMeaningfulLine(reader);
+                             if (line.startsWith("Display sensitivity coefficients")){//svp
+                               st = new StringTokenizer(line,":");
+                               temp = st.nextToken();
+                               String sa = st.nextToken().trim();
+                               if (sa.compareToIgnoreCase("on")==0){
+                                 paraInfor = 1;
+                                 sensitivity = true;
+                               }
+                               else if (sa.compareToIgnoreCase("off")==0){
+                                 if (paraInfor != 1){
+                                   paraInfor = 0;
+                                 }
+                                 sensitivity = false;
+                               }
+                               else throw new InvalidSymbolException("condition.txt: can't find SA on/off information!");
+                               
+                               dynamicSimulator = new JDASPK(rtol, atol, 0, initialStatus);
+                             }
+                             species = new LinkedList();
+                             line = ChemParser.readMeaningfulLine(reader);
+                             
+                             if (line.startsWith("Display sensitivity information") ){
+                               line = ChemParser.readMeaningfulLine(reader);
+                               System.out.println(line);
+                               while (!line.equals("END")){
+                                 st = new StringTokenizer(line);
+                                 String name = st.nextToken();
+                              
+                                 species.add(name);
+                                 line = ChemParser.readMeaningfulLine(reader);
+                               }
+                             }
+
+                      }
+
+        		else if (simulator.equals("DASSL")) {
+        			dynamicSimulator = new JDASSL();
+        		}
+        		else throw new InvalidSymbolException("condition.txt: Unknown DynamicSimulator = " + simulator);
+        	}
+        	else throw new InvalidSymbolException("condition.txt: can't find DynamicSimulator!");
+
+        	// read in reaction model enlarger
+               
+        	line = ChemParser.readMeaningfulLine(reader);
+                if (line.startsWith("PrimaryReactionLibrary:")) {
+                        StringTokenizer st = new StringTokenizer(line);
+                        String temp = st.nextToken();
+                        String on = st.nextToken();
+                        
+                        if (on.compareToIgnoreCase("ON") == 0) {
+                        	// GJB modified to allow multiple primary reaction libraries
+                        	int Ilib = 0;
+                        	line = ChemParser.readMeaningfulLine(reader);
+                        	while (!line.equals("END")) {                     		
+                                StringTokenizer nameST = new StringTokenizer(line);
+                                temp = nameST.nextToken();
+                                String name = nameST.nextToken();
+
+                                line = ChemParser.readMeaningfulLine(reader);
+                                StringTokenizer pathST = new StringTokenizer(line);
+                                temp = pathST.nextToken();
+                                String path = pathST.nextToken();
+                                if (Ilib==0) {
+                                	primaryReactionLibrary = new PrimaryReactionLibrary(name, path);
+                                	Ilib++; 	
+                                }
+                                else {
+                                	primaryReactionLibrary.appendPrimaryReactionLibrary(name,path);
+                                	Ilib++;//just in case anybody wants to track how many are processed
+                                 }
+                                	line = ChemParser.readMeaningfulLine(reader);
+                        	}
+                        	System.out.println("Primary Reaction Libraries in use: " +primaryReactionLibrary.getName());
+                        }	
+                         else {
+                                primaryReactionLibrary = null;
+                        }
+                }
+
+        	else throw new InvalidSymbolException("condition.txt: can't find PrimaryReactionLibrary!");
+
+        	in.close();
+
+        	ReactionGenerator reactionGenerator = new TemplateReactionGenerator();
+
+        	reactionSystem = new ReactionSystem(temperatureModel, pressureModel, reactionModelEnlarger, finishController, dynamicSimulator, primaryReactionLibrary, reactionGenerator, speciesSeed, initialStatus);
+
+		}
+        catch (IOException e) {
+        	System.err.println("Error in read in reaction system initialization file!");
+        	throw new IOException("Reaction System Initialization: " + e.getMessage());
+        }
+        //#]
+    }
+	
     private void parseRestartFiles() {
 		parseAllSpecies();
 		parseCoreSpecies();
@@ -571,7 +982,7 @@ public class ReactionModelGenerator {
 
 	}
 
-	private void parseCoreReactions() {
+	public void parseCoreReactions() {
 		SpeciesDictionary dictionary = SpeciesDictionary.getInstance();
 		int i=1;
 		//HasMap speciesMap = dictionary.dictionary;
@@ -989,18 +1400,18 @@ public class ReactionModelGenerator {
 		boolean added;
 		try{
 			long initialTime = System.currentTimeMillis();
-			StringBuilder sb = new StringBuilder();
-			sb.append("\t Cumulative Time until after the event\n");
-			sb.append("# \t Read Graph \t ChemGraph \t Species \t total\t Memory Used");
+			//StringBuilder sb = new StringBuilder();
+			//sb.append("\t Cumulative Time until after the event\n");
+			//sb.append("# \t Read Graph \t ChemGraph \t Species \t total\t Memory Used");
 			
-			File coreSpecies = new File ("Restart/allSpecies1.txt");
+			File coreSpecies = new File ("Restart/allSpecies.txt");
 			BufferedReader reader = new BufferedReader(new FileReader(coreSpecies));
 			String line = ChemParser.readMeaningfulLine(reader);
 			HashSet speciesSet = new HashSet();
 			int i=0;
 			while (line!=null) {
 				i++;
-				sb.append(i);sb.append("\t");
+				//sb.append(i);sb.append("\t");
     			StringTokenizer st = new StringTokenizer(line);
     			String index = st.nextToken();
     			String name = null;
@@ -1011,7 +1422,7 @@ public class ReactionModelGenerator {
 				name = getName(name);
     			Graph g = ChemParser.readChemGraph(reader);
 				double timeNow = (System.currentTimeMillis()-initialTime)/1e3;
-				sb.append(timeNow);sb.append("\t");
+				//sb.append(timeNow);sb.append("\t");
 				
     			ChemGraph cg = null;
     			try {
@@ -1022,13 +1433,13 @@ public class ReactionModelGenerator {
     				System.exit(0);
     			}
 				timeNow = (System.currentTimeMillis()-initialTime)/1e3;
-				sb.append(timeNow);sb.append("\t");
+				//sb.append(timeNow);sb.append("\t");
 
     			Species species = Species.make(name,cg,ID);
        			//speciesSet.put(name, species);
     			speciesSet.add(species);
 				timeNow = (System.currentTimeMillis()-initialTime)/1e3;
-				sb.append(timeNow);sb.append("\t");
+				//sb.append(timeNow);sb.append("\t");
 				/*if (name.equals("C5H11.")){
 					System.out.println(species.getChemkinName());
 				}*/
@@ -1038,10 +1449,10 @@ public class ReactionModelGenerator {
     			//SpeciesStatus ss = new SpeciesStatus(species,species_type,concentration,flux);
     			//speciesStatus.put(species, ss);
     			line = ChemParser.readMeaningfulLine(reader);
-				sb.append((System.currentTimeMillis()-initialTime)/1e3);sb.append("\t");
-				sb.append(memoryUsed());sb.append("\t");
-				System.out.println(sb.toString());
-				sb.delete(0,sb.length());
+				//sb.append((System.currentTimeMillis()-initialTime)/1e3);sb.append("\t");
+				//sb.append(memoryUsed());sb.append("\t");
+				//System.out.println(sb.toString());
+				//sb.delete(0,sb.length());
     		}
 			
 			//reactionSystem.reactionModel = new CoreEdgeReactionModel();
