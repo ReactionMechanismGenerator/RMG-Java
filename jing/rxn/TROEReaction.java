@@ -135,7 +135,7 @@ public class TROEReaction extends ThirdBodyReaction {
       //#[ operation generateReverseReaction() 
       TROEReaction r = new TROEReaction();
       r.structure = getStructure().generateReverseStructure();
-      r.rateConstant = getRateConstant();
+      r.kinetics = getKinetics();
       r.comments = "Reverse reaction";
       r.weightMap = weightMap;
 	  r.low = low;
@@ -159,7 +159,7 @@ public class TROEReaction extends ThirdBodyReaction {
       //#[ operation make(Reaction,HashMap,ArrheniusKinetics,double,double,double,boolean,double) 
       TROEReaction tr = new TROEReaction();
       tr.structure = p_reaction.getStructure();
-      tr.rateConstant = p_reaction.getRateConstant();
+      tr.kinetics = p_reaction.getKinetics();
       tr.comments = p_reaction.getComments();
       // generate reverse rxn
       

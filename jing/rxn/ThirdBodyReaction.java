@@ -161,7 +161,7 @@ public class ThirdBodyReaction extends Reaction {
       //#[ operation generateReverseReaction() 
       ThirdBodyReaction r = new ThirdBodyReaction();
       r.structure = getStructure().generateReverseStructure();
-      r.rateConstant = getRateConstant();
+      r.kinetics = getKinetics();
       r.comments = "Reverse reaction";
       r.weightMap = weightMap;
       	
@@ -179,7 +179,7 @@ public class ThirdBodyReaction extends Reaction {
       //#[ operation make(Reaction,HashMap) 
       ThirdBodyReaction tbr = new ThirdBodyReaction();
       tbr.structure = p_reaction.getStructure();
-      tbr.rateConstant = p_reaction.getRateConstant();
+      tbr.kinetics = p_reaction.getKinetics();
       tbr.comments = p_reaction.getComments();
       tbr.weightMap = p_thirdBodyList;
       tbr.generateReverseReaction(); 

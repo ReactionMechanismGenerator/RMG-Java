@@ -251,7 +251,7 @@ public class ReactionTemplate {
     }
     
     //## operation findClosestRateConstant(Collection) 
-    public RateConstant findClosestRateConstant(Collection p_matchedPathSet) {
+    public Kinetics findClosestRateConstant(Collection p_matchedPathSet) {
         //#[ operation findClosestRateConstant(Collection) 
         HashSet exactTreeNode = new HashSet();
         HashSet exactKey = new HashSet();
@@ -275,7 +275,7 @@ public class ReactionTemplate {
         // find if exact kt exists.  if it does, return it.
         KineticsTemplate kt = kineticsTemplateLibrary.getKineticsTemplate(exactKey);
         int rNum = getReactantNumber();
-        if (kt!=null) return new RateConstant(kt,0);
+        if (kt!=null) return kt.kinetics;
         
         Collection allPossibleTreeNodeSet = MathTool.expand(p_matchedPathSet.iterator());
         
@@ -308,9 +308,9 @@ public class ReactionTemplate {
         
         // get averaged k with the closest distance
         Kinetics newK = ArrheniusKinetics.average(bestKineticsSet);
-        KineticsTemplate newKT = kineticsTemplateLibrary.addKinetics(exactKey, newK);
-        RateConstant rc = new RateConstant(newKT, bestKineticsTemplateSet, closest);
-        return rc; 
+        //KineticsTemplate newKT = kineticsTemplateLibrary.addKinetics(exactKey, newK);
+        //RateConstant rc = new RateConstant(newKT, bestKineticsTemplateSet, closest);
+        return newK; 
         
         
         
@@ -318,7 +318,7 @@ public class ReactionTemplate {
     }
     
     //## operation findExactRateConstant(Collection) 
-    public RateConstant findExactRateConstant(Collection p_matchedPathSet) {
+    public Kinetics findExactRateConstant(Collection p_matchedPathSet) {
         //#[ operation findExactRateConstant(Collection) 
         HashSet fgc = new HashSet();
         for (Iterator iter = p_matchedPathSet.iterator(); iter.hasNext();) {
@@ -333,7 +333,7 @@ public class ReactionTemplate {
         KineticsTemplate kt = kineticsTemplateLibrary.getKineticsTemplate(fgc);
         
         if (kt==null) return null;
-        else return new RateConstant(kt,0);
+        else return kt.kinetics;
         
         
         
@@ -347,7 +347,7 @@ public class ReactionTemplate {
     Modifies:
     */
     //## operation findRateConstant(Structure) 
-    public RateConstant findRateConstant(Structure p_structure) {
+    public Kinetics findRateConstant(Structure p_structure) {
         //#[ operation findRateConstant(Structure) 
         // look for kinetics in kinetics template libarry
         LinkedList reactants = null;
@@ -409,9 +409,9 @@ public class ReactionTemplate {
         
         if (p_structure.isForward()) {
         	Collection fg = structureTemplate.getMatchedFunctionalGroup(reactants);
-        	RateConstant rc = findExactRateConstant(fg);
-        	if (rc==null) rc = findClosestRateConstant(fg);
-        	return rc;
+        	Kinetics k = findExactRateConstant(fg);
+        	if (k==null) k = findClosestRateConstant(fg);
+        	return k;
         }
         else return null;
         
@@ -661,8 +661,8 @@ public class ReactionTemplate {
         			Structure old_structure = (Structure)structureMap.get(structure);
         			if (old_structure == null) {
         		 		structureMap.put(structure,structure);
-        				RateConstant rateConstant = findRateConstant(structure);
-        		 		rateMap.put(structure,rateConstant);
+        				Kinetics k = findRateConstant(structure);
+        		 		rateMap.put(structure,k);
         			}
         			else {
         				old_structure.increaseRedundancy(redundancy);
@@ -680,8 +680,8 @@ public class ReactionTemplate {
         
         for (Iterator mapIter = structureMap.values().iterator(); mapIter.hasNext(); ) {
         	Structure structure = (Structure)mapIter.next();
-        	RateConstant rc = (RateConstant)rateMap.get(structure);
-        	TemplateReaction reaction = TemplateReaction.makeTemplateReaction(structure, rc, this);
+        	Kinetics k = (Kinetics)rateMap.get(structure);
+        	TemplateReaction reaction = TemplateReaction.makeTemplateReaction(structure, k, this);
         	//System.out.println(reaction.toString());
         	if (!reaction.repOk()) throw new InvalidTemplateReactionException(reaction.toString());
         	structure.clearChemGraph();
@@ -748,8 +748,8 @@ public class ReactionTemplate {
         
         				if (old_structure == null) {
         					structureMap.put(structure,structure);
-        					RateConstant rateConstant = findRateConstant(structure);
-        		 			rateMap.put(structure,rateConstant);
+        					Kinetics k = findRateConstant(structure);
+        		 			rateMap.put(structure,k);
         				}
         				else {
         					old_structure.increaseRedundancy(redundancy);
@@ -771,8 +771,8 @@ public class ReactionTemplate {
         
         for (Iterator iter = structureMap.values().iterator(); iter.hasNext(); ) {
         	Structure structure = (Structure)iter.next();
-        	RateConstant rc = (RateConstant)rateMap.get(structure);
-        	TemplateReaction reaction = TemplateReaction.makeTemplateReaction(structure, rc, this);
+        	Kinetics k = (Kinetics)rateMap.get(structure);
+        	TemplateReaction reaction = TemplateReaction.makeTemplateReaction(structure, k, this);
         	//System.out.println(reaction.toString());
         	if (!reaction.repOk()) throw new InvalidTemplateReactionException(reaction.toString());
         	structure.clearChemGraph();

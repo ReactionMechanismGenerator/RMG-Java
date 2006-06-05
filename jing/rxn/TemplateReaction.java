@@ -60,10 +60,10 @@ public class TemplateReaction extends Reaction {
     // Constructors
     
     //## operation TemplateReaction(Structure,RateConstant,ReactionTemplate) 
-    private  TemplateReaction(Structure p_structure, RateConstant p_rateConstant, ReactionTemplate p_template) {
+    private  TemplateReaction(Structure p_structure, Kinetics p_kinetics, ReactionTemplate p_template) {
         //#[ operation TemplateReaction(Structure,RateConstant,ReactionTemplate) 
         structure = p_structure;
-        rateConstant = p_rateConstant;
+        kinetics = p_kinetics;
         reactionTemplate = p_template;
         //#]
     }
@@ -199,12 +199,12 @@ public class TemplateReaction extends Reaction {
     }
     
     //## operation makeTemplateReaction(Structure,RateConstant,ReactionTemplate) 
-    public static TemplateReaction makeTemplateReaction(Structure p_structure, RateConstant p_rateConstant, ReactionTemplate p_template) {
+    public static TemplateReaction makeTemplateReaction(Structure p_structure, Kinetics p_kinetics, ReactionTemplate p_template) {
         //#[ operation makeTemplateReaction(Structure,RateConstant,ReactionTemplate) 
         TemplateReaction reaction = p_template.getReactionFromStructure(p_structure);
         
         if (reaction == null) {
-        	reaction = new TemplateReaction(p_structure,p_rateConstant,p_template);
+        	reaction = new TemplateReaction(p_structure,p_kinetics,p_template);
         	if (reaction.isBackward()) {
         		TemplateReaction reverse = reaction.generateReverseForBackwardReaction();
         		reaction.setReverseReaction(reverse);
@@ -236,7 +236,7 @@ public class TemplateReaction extends Reaction {
     }
     
     //## operation toFullString() 
-    public String toFullString() {
+    /*public String toFullString() {
         //#[ operation toFullString() 
         String s = getStructure().toString() + '\n' + getReactionTemplate().toString() + '\n';
         s = s + getKinetics().toChemkinString() + '\n';
@@ -245,7 +245,7 @@ public class TemplateReaction extends Reaction {
         
         return s;
         //#]
-    }
+    }*/
     
     //## operation toString() 
     public String toString() {

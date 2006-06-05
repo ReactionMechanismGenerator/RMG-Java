@@ -68,7 +68,7 @@ public class Reaction {
 
     protected Reaction reverseReaction = null;		//## attribute reverseReaction
 
-    protected RateConstant rateConstant;
+    protected Kinetics kinetics;
     protected Structure structure;
     protected double UpperBoundRate=0;//svp
     protected double LowerBoundRate = 0;//svp
@@ -81,10 +81,10 @@ public class Reaction {
         //#]
     }
     //## operation Reaction(Structure,RateConstant)
-    private  Reaction(Structure p_structure, RateConstant p_rateConstant) {
+    private  Reaction(Structure p_structure, Kinetics p_kinetics) {
         //#[ operation Reaction(Structure,RateConstant)
         structure = p_structure;
-        rateConstant = p_rateConstant;
+        kinetics = p_kinetics;
         //#]
     }
 
@@ -152,7 +152,7 @@ public class Reaction {
         //#[ operation calculateRate(Temperature)
         if (isForward()) {
         	double Hrxn = calculateHrxn(p_temperature);
-        	double k = getRateConstant().calculateRate(p_temperature, Hrxn);
+        	double k = kinetics.calculateRate(p_temperature, Hrxn);
         	k *= getStructure().getRedundancy();
         	return k;
         }
@@ -177,23 +177,15 @@ public class Reaction {
           double A;
           double E;
           double n;
-          if (getRateConstant()==null){
-            A = getKinetics().getA().getUpperBound();
-            E = getKinetics().getE().getLowerBound();
-            n = getKinetics().getN().getUpperBound();
-          }
-          else{
-            A = getRateConstant().getKineticsTemplate().getKinetics().getA().
-                getUpperBound();
-            E = getRateConstant().getKineticsTemplate().getKinetics().getE().
-                getLowerBound();
-            n = getRateConstant().getKineticsTemplate().getKinetics().getN().
-                getUpperBound();
-          }
+          
+          A = kinetics.getA().getUpperBound();
+          E = kinetics.getE().getLowerBound();      
+          n = kinetics.getN().getUpperBound();
+                
           if (A > 1E300) {
-            A = getRateConstant().getKineticsTemplate().getKinetics().getA().getValue()*1.2;
-         }
-          Kinetics kinetics = getRateConstant().getKinetics();
+            A = kinetics.getA().getValue()*1.2;
+		  }
+          //Kinetics kinetics = getRateConstant().getKinetics();
           if (kinetics instanceof ArrheniusEPKinetics){
             ArrheniusEPKinetics arrhenius = (ArrheniusEPKinetics)kinetics;
             double H = calculateHrxn(p_temperature);
@@ -230,13 +222,13 @@ public class Reaction {
           Reaction r = getReverseReaction();
           if (r == null) throw new NullPointerException("Reverse reaction is null.\n" + structure.toString());
           if (!r.isForward()) throw new InvalidReactionDirectionException();
-          double A = getRateConstant().getKinetics().getA().getUpperBound();
-          double E = getRateConstant().getKinetics().getE().getLowerBound();
-          double n = getRateConstant().getKinetics().getN().getUpperBound();
+          double A = kinetics.getA().getUpperBound();
+          double E = kinetics.getE().getLowerBound();
+          double n = kinetics.getN().getUpperBound();
           if (A > 1E300) {
-            A = getRateConstant().getKinetics().getA().getValue()*1.2;
+            A = kinetics.getA().getValue()*1.2;
          }
-          Kinetics kinetics = getRateConstant().getKinetics();
+          //Kinetics kinetics = getRateConstant().getKinetics();
           if (kinetics instanceof ArrheniusEPKinetics){
             ArrheniusEPKinetics arrhenius = (ArrheniusEPKinetics)kinetics;
             double H = calculateHrxn(p_temperature);
@@ -280,13 +272,13 @@ public class Reaction {
       public double calculateLowerBoundRate(Temperature p_temperature){
         //#[ operation calculateLowerBoundRate(Temperature)
         if (isForward()){
-          double A = getRateConstant().getKinetics().getA().getLowerBound();
-          double E = getRateConstant().getKinetics().getE().getUpperBound();
-          double n = getRateConstant().getKinetics().getN().getLowerBound();
+          double A = kinetics.getA().getLowerBound();
+          double E = kinetics.getE().getUpperBound();
+          double n = kinetics.getN().getLowerBound();
           if (A > 1E300 || A <= 0) {
-            A = getRateConstant().getKinetics().getA().getValue()/1.2;
+            A = kinetics.getA().getValue()/1.2;
          }
-          Kinetics kinetics = getRateConstant().getKinetics();
+          //Kinetics kinetics = getRateConstant().getKinetics();
           if (kinetics instanceof ArrheniusEPKinetics){
             ArrheniusEPKinetics arrhenius = (ArrheniusEPKinetics)kinetics;
             double H = calculateHrxn(p_temperature);
@@ -321,13 +313,12 @@ public class Reaction {
           Reaction r = getReverseReaction();
           if (r == null) throw new NullPointerException("Reverse reaction is null.\n" + structure.toString());
           if (!r.isForward()) throw new InvalidReactionDirectionException();
-          double A = getRateConstant().getKinetics().getA().getLowerBound();
-          double E = getRateConstant().getKinetics().getE().getUpperBound();
-          double n = getRateConstant().getKinetics().getN().getLowerBound();
+          double A = kinetics.getA().getLowerBound();
+          double E = kinetics.getE().getUpperBound();
+          double n = kinetics.getN().getLowerBound();
           if (A > 1E300) {
-             A = getRateConstant().getKinetics().getA().getValue()/1.2;
+             A = kinetics.getA().getValue()/1.2;
           }
-          Kinetics kinetics = getRateConstant().getKinetics();
           if (kinetics instanceof ArrheniusEPKinetics){
             ArrheniusEPKinetics arrhenius = (ArrheniusEPKinetics)kinetics;
             double H = calculateHrxn(p_temperature);
@@ -605,9 +596,9 @@ public class Reaction {
         //#[ operation generateReverseReaction()
         Structure s = getStructure();
 
-        RateConstant rc = getRateConstant();
+        Kinetics k = getKinetics();
         Structure newS = s.generateReverseStructure();
-        Reaction r = new Reaction(newS, rc);
+        Reaction r = new Reaction(newS, k);
 
         r.setReverseReaction(this);
         this.setReverseReaction(r);
@@ -638,21 +629,20 @@ public class Reaction {
         //#]
     }
 
-    //## operation getForwardRateConstant()
-    public RateConstant getForwardRateConstant() {
+    /*//## operation getForwardRateConstant()
+    public Kinetics getForwardRateConstant() {
         //#[ operation getForwardRateConstant()
-        if (isForward()) return rateConstant;
+        if (isForward()) return kinetics;
         else return null;
         //#]
     }
-
+*/
     //## operation getKinetics()
     public Kinetics getKinetics() {
         //#[ operation getKinetics()
         if (isForward()) {
-        	Kinetics k = rateConstant.getKinetics();
         	int red = structure.getRedundancy();
-        	return k.multiply(red);
+        	return kinetics.multiply(red);
         }
         else if (isBackward()) {
         	Reaction rr = getReverseReaction();
@@ -709,8 +699,8 @@ public class Reaction {
         //#]
     }
 
-    //## operation getRateConstant()
-    public RateConstant getRateConstant() {
+    /*//## operation getRateConstant()
+    public Kinetics getRateConstant() {
         //#[ operation getRateConstant()
         if (isForward()) {
         	return rateConstant;
@@ -723,7 +713,7 @@ public class Reaction {
         }
         else throw new InvalidReactionDirectionException(structure.toString());
         //#]
-    }
+    }*/
 
     //## operation getReactantList()
     public LinkedList getReactantList() {
@@ -845,11 +835,8 @@ public class Reaction {
         if (!p_structure.repOk()) throw new InvalidStructureException(p_structure.toChemkinString(false));
         if (!p_kinetics.repOk()) throw new InvalidKineticsException(p_kinetics.toString());
 
-        KineticsTemplate kt = new KineticsTemplate();
-        kt.setKinetics(p_kinetics);
-        RateConstant rc = new RateConstant(kt, 0);
 
-        Reaction r = new Reaction(p_structure, rc);
+        Reaction r = new Reaction(p_structure, p_kinetics);
 
         if (p_generateReverse) {
         	r.generateReverseReaction();
@@ -886,10 +873,10 @@ public class Reaction {
         	return false;
         }
 
-        if (!getRateConstant().repOk()) {
+        /*if (!getRateConstant().repOk()) {
         	System.out.println("Invalid Rate Constant: " + getRateConstant().toString());
         	return false;
-        }
+        }*/
 
         if (!getKinetics().repOk()) {
         	System.out.println("Invalid Kinetics: " + getKinetics().toString());
@@ -986,8 +973,8 @@ public class Reaction {
         return reverseReaction;
     }
 
-    public void setRateConstant(RateConstant p_RateConstant) {
-        rateConstant = p_RateConstant;
+    public void setKinetics(Kinetics p_kinetics) {
+        kinetics = p_kinetics;
     }
 
     public Structure getStructure() {

@@ -56,10 +56,10 @@ public class LibraryReaction extends Reaction {
     // Constructors
     
     //## operation LibraryReaction(Structure,RateConstant) 
-    protected  LibraryReaction(Structure p_structure, RateConstant p_rateConstant) {
+    protected  LibraryReaction(Structure p_structure, Kinetics p_kinetics) {
         //#[ operation LibraryReaction(Structure,RateConstant) 
         structure = p_structure;
-        rateConstant = p_rateConstant;
+        kinetics = p_kinetics;
         comments = "Library Reaction";
         
         
@@ -67,10 +67,10 @@ public class LibraryReaction extends Reaction {
         //#]
     }
     //## operation LibraryReaction(Structure,RateConstant,String) 
-    private  LibraryReaction(Structure p_structure, RateConstant p_rateConstant, String p_comments) {
+    private  LibraryReaction(Structure p_structure, Kinetics p_kinetics, String p_comments) {
         //#[ operation LibraryReaction(Structure,RateConstant,String) 
         structure = p_structure;
-        rateConstant = p_rateConstant;
+        kinetics = p_kinetics;
         if (comments != null) comments = "Libarry Reaction: " + p_comments;
         else comments = "Libarry Reaction";
         
