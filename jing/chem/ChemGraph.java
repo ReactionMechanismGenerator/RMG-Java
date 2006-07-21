@@ -61,7 +61,7 @@ public class ChemGraph implements Matchable {
 	/**
     Maximal radical number allowed in a ChemGraph.
     */
-    protected static int MAX_RADICAL_NUM = 3;		//## attribute MAX_RADICAL_NUM
+    protected static int MAX_RADICAL_NUM = 4;		//## attribute MAX_RADICAL_NUM
 
     /**
     Chemical Formula of a ChemGraph.
@@ -79,7 +79,7 @@ public class ChemGraph implements Matchable {
     A collection of all the possible symmetry Axis in a ChemGraph.
     For example: the C=C=O skeleton in (CH3)2C=C=O
     */
-    protected HashSet symmetryAxis = null;		//## attribute symmetryAxis
+    //protected HashSet symmetryAxis = null;		//## attribute symmetryAxis
 
     /**
     Symmetry number of a ChemGraph.  Used in calculating entropy.
@@ -392,7 +392,7 @@ public class ChemGraph implements Matchable {
         //#[ operation calculateAxisSymmetryNumber()
         int sn = 1;
         // note: acyclic structure!!!!!!!!!!!!!
-        symmetryAxis = new HashSet();
+        HashSet symmetryAxis = new HashSet();
 
         Iterator iter = getArcList();
         while (iter.hasNext()) {
@@ -918,7 +918,7 @@ return sn;
         cg.thermoData = p_chemGraph.thermoData;
         cg.thermoGAPP = p_chemGraph.thermoGAPP;
 
-        HashSet oldSymmetryAxis = p_chemGraph.getSymmetryAxis();
+        /*HashSet oldSymmetryAxis = p_chemGraph.getSymmetryAxis();
         if (oldSymmetryAxis != null) {
         	cg.symmetryAxis = new HashSet();
         	for (Iterator iAxis = oldSymmetryAxis.iterator(); iAxis.hasNext(); ) {
@@ -934,7 +934,7 @@ return sn;
            		}
         		cg.symmetryAxis.add(newAxis);
            	}
-        }
+        }*/
 
         return cg;
         }
@@ -1925,9 +1925,9 @@ return sn;
         return internalRotor;
     }
 
-    public HashSet getSymmetryAxis() {
+    /*public HashSet getSymmetryAxis() {
         return symmetryAxis;
-    }
+    }*/
 
     protected String getUniqueString() {
         return uniqueString;
