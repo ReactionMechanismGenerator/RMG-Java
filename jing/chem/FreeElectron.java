@@ -105,6 +105,9 @@ public class FreeElectron {
         else if (p_name.equals("3")) {
         	electron = new FreeElectron("3",3);
         }
+        else if (p_name.equals("4")) {
+			electron = new FreeElectron("4",4);
+        }
         else {
         	throw new UnknownSymbolException("FreeElectron");
         }
@@ -176,6 +179,9 @@ public class FreeElectron {
         }
         else if ((p_name.equals("3")) || (p_name.compareToIgnoreCase("TriRadical")==0)) {
         	return "3";
+        }
+        else if ((p_name.equals("4")) || (p_name.compareToIgnoreCase("TetraRadical")==0)) {
+			return "4";
         }
         else {
         	throw new UnknownSymbolException("FreeElectron");
