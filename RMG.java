@@ -36,9 +36,11 @@ public class RMG {
     //## configuration RMG::RMG
     public static void main(String[] args) {
 	
-    long begin = System.currentTimeMillis();
+    
+ 	long tAtInitialization = System.currentTimeMillis();
+	Global.tAtInitialization = tAtInitialization;
 	//begin = getCpuTime();
-	System.out.println((begin)/1e3);
+	//System.out.println((begin)/1e3);
 	//System.out.println(getCpuTime()/1e9 + " " + (System.currentTimeMillis()-begin)/1e3);
 	//Pressure pres = new Pressure(30,"bar");
 	//System.out.println("The size of the object pressure is "+getObjectSize(pres));
@@ -103,7 +105,7 @@ public class RMG {
     	}
 
     long end = System.currentTimeMillis();
-    double min = (end-begin)/1E3/60;
+    double min = (end-tAtInitialization)/1E3/60;
 	finalOutput = finalOutput +"Running Time is: " + String.valueOf(min) + " minutes.";
 	
 	try{
