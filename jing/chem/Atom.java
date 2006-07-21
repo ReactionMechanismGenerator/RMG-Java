@@ -83,6 +83,9 @@ public class Atom implements ChemNodeElement {
       	else if (order == 3) {
       		name = name + " tri-rad";
       	}
+      	else if (order == 4) {
+			name = name + "tetra-rad";
+      	}
       	else {
       		throw new InvalidFreeElectronException();
       	}
