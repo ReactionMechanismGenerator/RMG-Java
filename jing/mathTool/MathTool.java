@@ -264,6 +264,33 @@ public class MathTool {
         else return false;
         //#]
     }
+	
+	 //## operation isListEquivalent(LinkedList,LinkedList) 
+    public static boolean isListEqual(LinkedList p_list1, LinkedList p_list2) {
+        //#[ operation isListEquivalent(LinkedList,LinkedList) 
+        if (p_list1.size() != p_list2.size()) return false;
+        
+        boolean found = false;
+        
+        LinkedList templist = (LinkedList)(p_list2.clone());
+        for (Iterator iter1 = p_list1.iterator(); iter1.hasNext();) {
+        	Object o1 = iter1.next();
+        	found = false;
+        	for (Iterator iter2 = templist.iterator(); iter2.hasNext();) {
+        		Object o2 = iter2.next();
+        		if (o1==o2) { 
+        			found = true;
+        			iter2.remove();
+        			break;
+        		}
+        	}
+        	if (!found) return false;
+        }
+        
+        if (templist.isEmpty()) return true;
+        else return false;
+        //#]
+    }
     
     //## operation isSub(Object,Object) 
     public static boolean isSub(Object p_child, Object p_father) {
