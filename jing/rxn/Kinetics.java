@@ -61,6 +61,8 @@ public interface Kinetics {
     */
     //## operation calculateRate(Temperature,double) 
     double calculateRate(Temperature temperature, double Hrxn);
+	
+	double calculateRate(Temperature temperature);
     
     //## operation getA() 
     UncertainDouble getA();
@@ -88,6 +90,10 @@ public interface Kinetics {
     
     //## operation getSource() 
     String getSource();
+	
+	void setSource(String p_string);
+	
+	void setComments(String p_string);
     
     //## operation multiply(double) 
     Kinetics multiply(double p_multiple);
@@ -96,10 +102,12 @@ public interface Kinetics {
     boolean repOk();
     
     //## operation toChemkinString() 
-    String toChemkinString();
+    String toChemkinString(double Hrxn, Temperature p_temperature);
     
     //## operation toString() 
     String toString();
+	
+	boolean equals(Kinetics p_k);
     
 }
 /*********************************************************************
