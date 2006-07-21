@@ -36,8 +36,12 @@
 package jing.rxn;
 
 
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.*;
 import jing.param.*;
+import jing.chem.GATPFitException;
 import jing.mathTool.*;
 import jing.param.Temperature;
 import jing.mathTool.UncertainDouble;
@@ -104,7 +108,7 @@ public class ArrheniusKinetics implements Kinetics {
         double min_E=Double.MAX_VALUE;
         double max_alpha=Double.MIN_VALUE;
         double min_alpha=Double.MAX_VALUE;
-        String comment = "Average Rate Constants calculated from:\n";
+        String source = "Average Rate Constants calculated from:\n";
                 
         int index = 0;
         Iterator iter = p_kSet.iterator();
@@ -147,7 +151,7 @@ public class ArrheniusKinetics implements Kinetics {
         	if (min_E > E_lower) min_E = E_lower;
         	sum_E += E;                                             
                     
-            comment = comment + "(" + String.valueOf(index) +")" + k.getComment() + '\n';
+            //source = source + "(" + String.valueOf(index) +")" + k.toChemkinString() + '\n';
         }
                 
         double new_A = Math.exp(sum_logA/size);
@@ -163,13 +167,13 @@ public class ArrheniusKinetics implements Kinetics {
         UncertainDouble E_average = new UncertainDouble(new_E, new_dE, "Adder");
                 
         if (type.equals("ArrheniusKinetics")) {
-        	return new ArrheniusKinetics(A_average, n_average, E_average,"Unknown",5, "Average", comment);
+        	return new ArrheniusKinetics(A_average, n_average, E_average,"Unknown",5, source, "Average");
         }	                	
         else if (type.equals("ArrheniusEPKinetics")) {
         	double new_alpha = sum_alpha/size;
         	double new_dalpha = Math.max(max_alpha-new_alpha, new_alpha-min_alpha);
         	UncertainDouble alpha_average = new UncertainDouble(new_alpha, new_dalpha, "Adder");
-        	return new ArrheniusEPKinetics(A_average, n_average, alpha_average, E_average, "Unknown",5, "Average", comment);
+        	return new ArrheniusEPKinetics(A_average, n_average, alpha_average, E_average, "Unknown",5, source, "Average");
         }
         else throw new InvalidKineticsTypeException("Unknown Kinetics Type: " + type);
         
@@ -190,7 +194,33 @@ public class ArrheniusKinetics implements Kinetics {
         
         //#]
     }
-    
+	
+//	## operation calculateRate(Temperature,double) 
+    public double calculateRate(Temperature p_temperature) {
+        //#[ operation calculateRate(Temperature,double) 
+        double T = p_temperature.getStandard();
+        double R = GasConstant.getKcalMolK();
+        
+        //if (E.getValue() < 0) throw new NegativeEnergyBarrierException();        
+        double rate = A.getValue() * Math.pow(T, n.getValue()) * Math.exp(-E.getValue()/R/T);
+        return rate;
+        
+        
+        //#]
+    }
+	
+	public boolean equals(Kinetics p_k){
+		if (p_k == null) return true;
+		
+		if (Math.abs((p_k.getA().getValue()-A.getValue())/A.getValue()) > 0.01)
+			return false;
+		if (Math.abs((p_k.getE().getValue()-E.getValue())/E.getValue()) > 0.01 && E.getValue() != 0)
+			return false;
+		if (Math.abs((p_k.getN().getValue()-n.getValue())/n.getValue()) > 0.01 && n.getValue() != 0)
+			return false;
+		return true;
+	}
+	
     //## operation getAValue() 
     public double getAValue() {
         //#[ operation getAValue() 
@@ -230,9 +260,9 @@ public class ArrheniusKinetics implements Kinetics {
     }
     
     //## operation toChemkinString() 
-    public String toChemkinString() {
+    public String toChemkinString(double Hrxn, Temperature p_temperature) {
         //#[ operation toChemkinString() 
-        return String.valueOf(getAValue()) + '\t' + String.valueOf(getNValue()) + '\t' + String.valueOf(getEValue());
+        return String.valueOf(getAValue()) + '\t' + String.valueOf(getNValue()) + '\t' + String.valueOf(getEValue() + "\t!" + source + " "+comment);
         //#]
     }
     
@@ -272,6 +302,15 @@ public class ArrheniusKinetics implements Kinetics {
     public String getSource() {
         return source;
     }
+	
+	public void setSource(String p_source){
+		source = p_source;
+		return;
+	}
+	
+	public void setComments(String p_comments) {
+		comment = p_comments;
+	}
     
 }
 /*********************************************************************
