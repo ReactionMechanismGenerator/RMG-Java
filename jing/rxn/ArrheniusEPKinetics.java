@@ -66,6 +66,12 @@ public class ArrheniusEPKinetics extends ArrheniusKinetics {
     public  ArrheniusEPKinetics() {
     }
     
+	public String toChemkinString(double p_Hrxn, Temperature p_temperature){
+		double Ea = E.getValue() + alpha.getValue()*p_Hrxn;
+		return String.valueOf(getAValue()) + '\t' + String.valueOf(getNValue()) + '\t' + Ea + "\t!" + source + " "+comment;
+        
+	}
+	
     //## operation calculateRate(Temperature,double) 
     public double calculateRate(Temperature p_temperature, double p_Hrxn) {
         //#[ operation calculateRate(Temperature,double) 
