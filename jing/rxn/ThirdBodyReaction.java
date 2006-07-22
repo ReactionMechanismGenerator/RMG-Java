@@ -200,11 +200,11 @@ public class ThirdBodyReaction extends Reaction {
   }
   
   //## operation toChemkinString() 
-  public String toChemkinString() {
+  public String toChemkinString(Temperature p_temperature) {
       //#[ operation toChemkinString() 
       String s = getStructure().toChemkinString(true);
       s = formPDepSign(s);
-      s = s + '\t' + getKinetics().toChemkinString() + '\n';
+      s = s + '\t' + getKinetics().toChemkinString(calculateHrxn(p_temperature),p_temperature) + '\n';
       
       String tbr = "";
       // write 3rd-body efficiencies
