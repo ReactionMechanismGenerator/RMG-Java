@@ -39,6 +39,7 @@ package jing.rxn;
 import java.io.*;
 import jing.chem.*;
 import java.util.*;
+
 import jing.param.*;
 import jing.mathTool.*;
 import jing.chemUtil.*;
@@ -72,7 +73,7 @@ public class ReactionTemplate {
     
     protected String name = "";		//## attribute name 
     
-    protected HashMap reactionDictionaryByReactant = new HashMap();		//## attribute reactionDictionaryByReactant 
+    //protected HashMap reactionDictionaryByReactant = new HashMap();		//## attribute reactionDictionaryByReactant 
     
     protected HashMap reactionDictionaryByStructure = new HashMap();		//## attribute reactionDictionaryByStructure 
     
@@ -92,6 +93,9 @@ public class ReactionTemplate {
         //#]
     }
     
+	/*public int getNumberOfReactions(){
+		return reactionDictionaryByStructure.size();
+	}*/
     //## operation ableToGeneratePDepWellPaths() 
     public boolean ableToGeneratePDepWellPaths() {
         //#[ operation ableToGeneratePDepWellPaths() 
@@ -319,7 +323,8 @@ public class ReactionTemplate {
     
     //## operation findExactRateConstant(Collection) 
     public Kinetics findExactRateConstant(Collection p_matchedPathSet) {
-        //#[ operation findExactRateConstant(Collection) 
+        //#[ operation findExactRateConstant(Collection) \
+		
         HashSet fgc = new HashSet();
         for (Iterator iter = p_matchedPathSet.iterator(); iter.hasNext();) {
         	Stack s = (Stack)iter.next();
@@ -328,12 +333,16 @@ public class ReactionTemplate {
         	else {
         		Matchable fg = (Matchable)node.getElement();
         		fgc.add(fg);
+				
         	}
         }
         KineticsTemplate kt = kineticsTemplateLibrary.getKineticsTemplate(fgc);
         
         if (kt==null) return null;
-        else return kt.kinetics;
+        else {
+			//kt.kinetics.setSource(kt.kinetics.toChemkinString());
+			return kt.kinetics;
+        }
         
         
         
@@ -409,8 +418,14 @@ public class ReactionTemplate {
         
         if (p_structure.isForward()) {
         	Collection fg = structureTemplate.getMatchedFunctionalGroup(reactants);
+			String comments = getKineticsComments(fg);
         	Kinetics k = findExactRateConstant(fg);
-        	if (k==null) k = findClosestRateConstant(fg);
+        	if (k==null) {
+				k = findClosestRateConstant(fg);
+				k.setSource(name + " estimate: ");
+        	}
+        	else k.setSource(name  + " exact: ");
+			k.setComments(comments);
         	return k;
         }
         else return null;
@@ -421,7 +436,20 @@ public class ReactionTemplate {
         //#]
     }
     
-    //## operation findUnion(String,HashMap) 
+    private String getKineticsComments(Collection p_matchedPathSet) {
+		StringBuilder comment = new StringBuilder();
+		for (Iterator iter = p_matchedPathSet.iterator(); iter.hasNext();) {
+        	Stack s = (Stack)iter.next();
+        	HierarchyTreeNode node = (HierarchyTreeNode)s.peek();
+        	if (node.hasDummyChild()) comment.append((node.getDummyChild().getName()+"    "));
+        	else {
+        		comment.append(((FunctionalGroup)node.getElement()).getName() + "     ");
+        	}
+        }
+		return comment.toString();
+	}
+
+	//## operation findUnion(String,HashMap) 
     private void findUnion(String p_name, HashMap p_unRead) {
         //#[ operation findUnion(String,HashMap) 
         HashSet union = (HashSet)p_unRead.get(p_name);
@@ -534,11 +562,11 @@ public class ReactionTemplate {
     }
     
     //## operation getReactionSetFromReactant(LinkedList) 
-    public HashSet getReactionSetFromReactant(LinkedList p_reactant) {
+    /*public HashSet getReactionSetFromReactant(LinkedList p_reactant) {
         //#[ operation getReactionSetFromReactant(LinkedList) 
         return (HashSet)reactionDictionaryByReactant.get(p_reactant);
         //#]
-    }
+    }*/
     
     //## operation hasOneReactant() 
     public boolean hasOneReactant() {
@@ -593,12 +621,13 @@ public class ReactionTemplate {
         //#[ operation reactOneReactant(Species) 
         LinkedList r = new LinkedList();
         r.add(p_reactant);
-        HashSet reaction = getReactionSetFromReactant(r);
+		
+        /*HashSet reaction = getReactionSetFromReactant(r);
         if (reaction != null)
-        	return reaction;
+        	return reaction;*/
         
         ChemGraph rg;
-        reaction = new HashSet();
+        HashSet reaction = new HashSet();
         
         if (!p_reactant.hasResonanceIsomers()) {
         	// react the main structre
@@ -616,7 +645,7 @@ public class ReactionTemplate {
         }
         
         // put in reactionDictionaryByReactant
-        reactionDictionaryByReactant.put(r,reaction);
+        //reactionDictionaryByReactant.put(r,reaction);
         
         // return the reaction set
         return reaction;
@@ -628,7 +657,7 @@ public class ReactionTemplate {
         //#]
     }
     
-    //## operation reactOneReactant(ChemGraph) 
+	   //## operation reactOneReactant(ChemGraph) 
     protected HashSet reactOneReactant(ChemGraph p_chemGraph) {
         //#[ operation reactOneReactant(ChemGraph) 
         HashSet reaction_set = new HashSet();
@@ -643,6 +672,171 @@ public class ReactionTemplate {
         
         HashMap structureMap = new HashMap();
         HashMap rateMap = new HashMap();
+		HashMap reactionMap = new HashMap();
+        
+        for (Iterator iter = allReactionSites.iterator(); iter.hasNext(); ) {
+            MatchedSite ms = (MatchedSite)iter.next();
+         	HashMap site = ms.getCenter();
+         	int redundancy = ms.getRedundancy();
+        
+            // reset the reacted site for rg in reactant linkedlist
+            p_chemGraph.resetReactedSite(site);
+            // react reactant to form a new structure
+            try {
+            	LinkedList product = reactionAdjList.reactChemGraph(reactant);
+				SpeciesDictionary sd = SpeciesDictionary.getInstance();
+				for (int i=0; i< product.size(); i++){
+					String name = null;
+					Species sp = Species.make(name, ((ChemGraph)product.get(i)));
+				}
+        	    boolean rpsame = MathTool.isListEquivalent(reactant, product);
+        	    if (!rpsame) {
+        			Structure structure = new Structure(reactant,product);
+        			structure.setRedundancy(redundancy);
+					Reaction old_reaction = (Reaction)reactionMap.get(structure);
+					if (old_reaction == null){
+						Kinetics k = findRateConstant(structure);
+						TemplateReaction r = TemplateReaction.makeTemplateReaction(structure,k, this);
+						reactionMap.put(structure,r);
+					}
+					else {
+						Kinetics k = findRateConstant(structure);
+						old_reaction.addAdditionalKinetics(k, redundancy);
+						//old_reaction.getStructure().increaseRedundancy(redundancy);
+						structure = null;
+					}
+        		}
+            }
+            catch (ForbiddenStructureException e) {
+            	// do the next reaction site
+            }
+        	catch (InvalidProductNumberException e) {
+        		// do the next reaction site
+        	}
+        }
+        
+        for (Iterator mapIter = reactionMap.values().iterator(); mapIter.hasNext(); ) {
+        	
+        	Reaction reaction = (Reaction)mapIter.next();
+        	//System.out.println(reaction.toString());
+        	if (!reaction.repOk()) throw new InvalidTemplateReactionException(reaction.toString());
+			reaction.getStructure().clearChemGraph();
+        	reaction_set.add(reaction);
+        }
+        
+        return reaction_set;
+        //#]
+    }
+	
+//	## operation reactTwoReactants(ChemGraph,ChemGraph) 
+    protected TemplateReaction calculateForwardRateConstant(ChemGraph chemGraph1, ChemGraph chemGraph2, Structure p_structure) {
+        //#[ operation reactTwoReactants(ChemGraph,ChemGraph) 
+        
+        ChemGraph r1 = chemGraph1;
+        ChemGraph r2 = chemGraph2;
+        if (r1 == r2) {
+        	try{
+        		r2 = ChemGraph.copy(r2);
+        	}
+        	catch (ForbiddenStructureException e) {
+        		return null;
+        	}
+        }
+        
+		TemplateReaction reverseReaction = null;
+        /*TemplateReaction reverseReaction = getReactionFromStructure(p_structure);
+		if (reverseReaction != null){
+			if (!reverseReaction.isForward()) throw new InvalidReactionDirectionException();
+			return reverseReaction;
+		}*/
+        HashSet allReactionSites1 = structureTemplate.identifyReactedSites(r1,1);
+        HashSet allReactionSites2 = structureTemplate.identifyReactedSites(r2,2);
+        
+        LinkedList reactant = new LinkedList();
+        reactant.add(r1);
+        reactant.add(r2);
+        
+		HashSet rateSet = new HashSet();
+        
+        for (Iterator iter1 = allReactionSites1.iterator(); iter1.hasNext(); ) {
+        	MatchedSite ms1 = (MatchedSite)iter1.next();
+        	HashMap site1 = ms1.getCenter();
+            r1.resetReactedSite(site1);
+        
+            int redundancy1 = ms1.getRedundancy();
+        
+        	for (Iterator iter2 = allReactionSites2.iterator(); iter2.hasNext(); ) {
+        		MatchedSite ms2 = (MatchedSite)iter2.next();
+        		HashMap site2 = (HashMap)ms2.getCenter();
+        	    r2.resetReactedSite(site2);
+        
+        	    int redundancy2 = ms2.getRedundancy();
+        		int redundancy = redundancy1*redundancy2;
+        
+             	try {
+        	     	LinkedList product = reactionAdjList.reactChemGraph(reactant);
+        	        boolean rpsame = MathTool.isListEquivalent(reactant, product);
+        	        if (!rpsame) {
+            			Structure structure = new Structure(reactant,product);
+						if (structure.equals(p_structure)){
+							Kinetics k = findRateConstant(p_structure);
+							if (reverseReaction == null){
+								reverseReaction = TemplateReaction.makeTemplateReaction(p_structure,k,this);
+							}
+							else {
+								//p_structure.increaseRedundancy(redundancy);
+								reverseReaction.addAdditionalKinetics(k,redundancy);
+								//structure = null;
+							}
+								
+	        			}
+						/*else {
+							SpeciesDictionary sd = SpeciesDictionary.getInstance();
+							while (!product.isEmpty())
+								sd.remove(((ChemGraph)product.remove()));
+							
+						}*/
+            			
+        	        }
+        			
+        		}
+        		catch (ForbiddenStructureException e) {
+        			// do the next reaction site
+        		}
+        		catch (InvalidProductNumberException e) {
+        			// do the next reaction site
+        		}
+				catch (InvalidChemGraphException e){
+					
+				}
+        	}
+        }
+        //reverseReaction.getStructure().clearChemGraph();
+        return reverseReaction;
+        //#]
+    }
+    
+//	## operation reactTwoReactants(ChemGraph,ChemGraph) 
+    protected TemplateReaction calculateForwardRateConstant(ChemGraph p_chemGraph, Structure p_structure) {
+        //#[ operation reactTwoReactants(ChemGraph,ChemGraph) 
+        
+		
+		TemplateReaction reverseReaction = null;
+		/*TemplateReaction reverseReaction = getReactionFromStructure(p_structure);
+		if (reverseReaction != null){
+			if (!reverseReaction.isForward()) throw new InvalidReactionDirectionException();
+			
+			return reverseReaction;
+		}*/
+        HashSet rateSet = new HashSet();
+		HashSet allReactionSites = structureTemplate.identifyReactedSites(p_chemGraph,1);
+        
+        if (allReactionSites.isEmpty()) return reverseReaction;
+        
+        // add present chemgraph into the reactant linked list
+        LinkedList reactant = new LinkedList();
+        reactant.add(p_chemGraph);
+     
         
         for (Iterator iter = allReactionSites.iterator(); iter.hasNext(); ) {
             MatchedSite ms = (MatchedSite)iter.next();
@@ -657,17 +851,24 @@ public class ReactionTemplate {
         	    boolean rpsame = MathTool.isListEquivalent(reactant, product);
         	    if (!rpsame) {
         			Structure structure = new Structure(reactant,product);
-        			structure.setRedundancy(redundancy);
-        			Structure old_structure = (Structure)structureMap.get(structure);
-        			if (old_structure == null) {
-        		 		structureMap.put(structure,structure);
-        				Kinetics k = findRateConstant(structure);
-        		 		rateMap.put(structure,k);
+        			if (structure.equals(p_structure)){
+						Kinetics k = findRateConstant(p_structure);
+						if (reverseReaction == null){
+							reverseReaction = TemplateReaction.makeTemplateReaction(p_structure,k,this);
+						}
+						else {
+							//p_structure.increaseRedundancy(redundancy);
+							reverseReaction.addAdditionalKinetics(k,redundancy);
+							//structure = null;
+						}
+							
         			}
-        			else {
-        				old_structure.increaseRedundancy(redundancy);
-        				structure = null;
-        			}
+					/*else {
+						SpeciesDictionary sd = SpeciesDictionary.getInstance();
+						while (!product.isEmpty())
+							sd.remove(((ChemGraph)product.remove()));
+						
+					}*/
         		}
             }
             catch (ForbiddenStructureException e) {
@@ -677,22 +878,12 @@ public class ReactionTemplate {
         		// do the next reaction site
         	}
         }
-        
-        for (Iterator mapIter = structureMap.values().iterator(); mapIter.hasNext(); ) {
-        	Structure structure = (Structure)mapIter.next();
-        	Kinetics k = (Kinetics)rateMap.get(structure);
-        	TemplateReaction reaction = TemplateReaction.makeTemplateReaction(structure, k, this);
-        	//System.out.println(reaction.toString());
-        	if (!reaction.repOk()) throw new InvalidTemplateReactionException(reaction.toString());
-        	structure.clearChemGraph();
-        	reaction_set.add(reaction);
-        }
-        
-        return reaction_set;
+		//reverseReaction.getStructure().clearChemGraph();
+        return reverseReaction;
         //#]
     }
-    
-    //## operation reactTwoReactants(ChemGraph,ChemGraph) 
+	
+	   //## operation reactTwoReactants(ChemGraph,ChemGraph) 
     protected HashSet reactTwoReactants(ChemGraph p_chemGraph1, ChemGraph p_chemGraph2) {
         //#[ operation reactTwoReactants(ChemGraph,ChemGraph) 
         HashSet reaction_set = new HashSet();
@@ -722,6 +913,7 @@ public class ReactionTemplate {
         
         HashMap structureMap = new HashMap();
         HashMap rateMap = new HashMap();
+        HashMap reactionMap = new HashMap();
         
         for (Iterator iter1 = allReactionSites1.iterator(); iter1.hasNext(); ) {
         	MatchedSite ms1 = (MatchedSite)iter1.next();
@@ -740,22 +932,29 @@ public class ReactionTemplate {
         
              	try {
         	     	LinkedList product = reactionAdjList.reactChemGraph(reactant);
+					SpeciesDictionary sd = SpeciesDictionary.getInstance();
+					for (int i=0; i< product.size(); i++){
+						String name = null;
+						Species sp = Species.make(name, ((ChemGraph)product.get(i)));
+					}
         	        boolean rpsame = MathTool.isListEquivalent(reactant, product);
-        			if (!rpsame) {
-        				Structure structure = new Structure(reactant,product);
-        				Structure old_structure = (Structure)structureMap.get(structure);
-        				structure.setRedundancy(redundancy);
-        
-        				if (old_structure == null) {
-        					structureMap.put(structure,structure);
-        					Kinetics k = findRateConstant(structure);
-        		 			rateMap.put(structure,k);
-        				}
-        				else {
-        					old_structure.increaseRedundancy(redundancy);
-        					structure = null;
-        				}
-        			}
+        	        if (!rpsame) {
+            			Structure structure = new Structure(reactant,product);
+            			structure.setRedundancy(redundancy);
+    					Reaction old_reaction = (Reaction)reactionMap.get(structure);
+    					if (old_reaction == null){
+    						Kinetics k = findRateConstant(structure);
+    						TemplateReaction r = TemplateReaction.makeTemplateReaction(structure,k, this);
+    						reactionMap.put(structure,r);
+    					}
+    					else {
+    						Kinetics k = findRateConstant(structure);
+    						old_reaction.addAdditionalKinetics(k, redundancy);
+							//old_reaction.getStructure().increaseRedundancy(redundancy);
+							structure = null;
+    					}
+        	        }
+        			
         		}
         		catch (ForbiddenStructureException e) {
         			// do the next reaction site
@@ -769,13 +968,12 @@ public class ReactionTemplate {
         	}
         }
         
-        for (Iterator iter = structureMap.values().iterator(); iter.hasNext(); ) {
-        	Structure structure = (Structure)iter.next();
-        	Kinetics k = (Kinetics)rateMap.get(structure);
-        	TemplateReaction reaction = TemplateReaction.makeTemplateReaction(structure, k, this);
+        for (Iterator mapIter = reactionMap.values().iterator(); mapIter.hasNext(); ) {
+        	
+        	Reaction reaction = (Reaction)mapIter.next();
         	//System.out.println(reaction.toString());
         	if (!reaction.repOk()) throw new InvalidTemplateReactionException(reaction.toString());
-        	structure.clearChemGraph();
+        	reaction.getStructure().clearChemGraph();
         	reaction_set.add(reaction);
         }
         
@@ -789,10 +987,10 @@ public class ReactionTemplate {
         LinkedList r = new LinkedList();
         r.add(p_reactant1);
         r.add(p_reactant2);
-        HashSet reaction = getReactionSetFromReactant(r);
-        if (reaction != null) return reaction;
+        /*HashSet reaction = getReactionSetFromReactant(r);
+        if (reaction != null) return reaction;*/
         
-        reaction = new HashSet();
+        HashSet reaction = new HashSet();
         
         boolean RI1 = p_reactant1.hasResonanceIsomers();
         boolean RI2 = p_reactant2.hasResonanceIsomers();
@@ -837,7 +1035,7 @@ public class ReactionTemplate {
         	}
         }
         // put int reactionDictionaryByReactant
-        reactionDictionaryByReactant.put(r,reaction);
+        //reactionDictionaryByReactant.put(r,reaction);
         
         // return the reaction set
         return reaction;
