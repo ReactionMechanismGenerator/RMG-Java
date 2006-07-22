@@ -39,6 +39,7 @@ package jing.rxn;
 import jing.chem.*;
 import java.util.*;
 import jing.chem.Species;
+import jing.param.Global;
 
 //## package jing::rxn 
 
@@ -127,27 +128,53 @@ public class TemplateReactionGenerator implements ReactionGenerator {
         	return reaction_set;
         }
         
+		double singleReaction = 0, doubleReaction = 0;
+		double longestTime = 0;
+		String longestTemplate = "";
+		StringBuffer HAbs = new StringBuffer();//"H_Abstraction");
+		
         // add here the algorithm to generate reaction
         // loop over all the reaction template to find any possible match between the species seed set and the reaction template library
         Iterator template_iter = reactionTemplateLibrary.getReactionTemplate();
         while (template_iter.hasNext()) {
         	ReactionTemplate current_template = (ReactionTemplate)template_iter.next();
         	// the reaction template has only one reactant, we only need to loop over the whole species seed set to find a match
-        	if (current_template.hasOneReactant()) {
+        	double startTime = System.currentTimeMillis();
+			if (current_template.hasOneReactant()) {
         		HashSet current_reactions = current_template.reactOneReactant(p_species);
-        		reaction_set.addAll(current_reactions);                                
+        		reaction_set.addAll(current_reactions);   
+				singleReaction = singleReaction + ((System.currentTimeMillis()-startTime)/1000/60);
         	}
+			
         	// the reaction template has two reactants, we need to check all the possible combination of two species
+			
+			
         	else if (current_template.hasTwoReactants()) {
+				double tempStart = System.currentTimeMillis();
+				double species_StartTime = 0;
         		Iterator species_iter = p_speciesSet.iterator();
         		while (species_iter.hasNext()) {
+					if (current_template.name.equals("H_Abstraction"))
+						species_StartTime = System.currentTimeMillis();
+					
         			Species first_reactant = (Species)species_iter.next();
         			HashSet current_reactions = current_template.reactTwoReactants(first_reactant,p_species);
         			reaction_set.addAll(current_reactions);
         			current_reactions = current_template.reactTwoReactants(p_species,first_reactant);
         			reaction_set.addAll(current_reactions);
-        
+					if (current_template.name.equals("H_Abstraction")) {
+						double speciesTime = ((System.currentTimeMillis()-species_StartTime)/1000/60);
+						if (speciesTime >= 1)
+							HAbs.append(first_reactant.getChemkinName() + "\t" + speciesTime + "\t" + current_reactions.size() + "\t");
+					}
+					
         		}
+				doubleReaction += ((System.currentTimeMillis()-startTime)/1000/60);
+				double thisDoubleReaction = ((System.currentTimeMillis()-startTime)/1000/60);
+				if (thisDoubleReaction >= longestTime){
+					longestTime = thisDoubleReaction;
+					longestTemplate = current_template.name;
+				}
         		if (!p_speciesSet.contains(p_species)) {
         			HashSet current_reactions = current_template.reactTwoReactants(p_species, p_species);
         			reaction_set.addAll(current_reactions);
@@ -155,6 +182,8 @@ public class TemplateReactionGenerator implements ReactionGenerator {
         	}
         }
         
+		Global.enlargerInfo.append(p_species.getChemkinName() + "\t" + singleReaction + "\t" + doubleReaction + "\t" + longestTime +"\t" + longestTemplate + "\t" + HAbs.toString() + "\n");
+		
         return reaction_set;
         
         
