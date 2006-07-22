@@ -179,12 +179,12 @@ public class TROEReaction extends ThirdBodyReaction {
   }
   
   //## operation toChemkinString() 
-  public String toChemkinString() {
+  public String toChemkinString(Temperature p_temperature) {
       //#[ operation toChemkinString() 
-      String s = super.toChemkinString()+'\n';
+      String s = super.toChemkinString(p_temperature)+'\n';
       
       // write pressure-dependence parameters
-      s += "LOW/" + low.toChemkinString() + "/\n";
+      s += "LOW/" + low.toChemkinStringNoComments(calculateHrxn(p_temperature),p_temperature) + "/\n";
       s += "TROE/" + a + '\t' + T3star + '\t' + Tstar;
       if(troe7) s += "\t" + T2star;
       s = s + "/\n";
@@ -195,11 +195,11 @@ public class TROEReaction extends ThirdBodyReaction {
   }
   
   //## operation toString() 
-  public String toString() {
+  public String toString(Temperature p_temperature) {
       //#[ operation toString() 
       String s = getStructure().toChemkinString(true) + '\n';
-      s += "kInf = " + getKinetics().toChemkinString() + '\n';
-      s += "kZero = " + low.toChemkinString() + '\n';
+      s += "kInf = " + getKinetics().toChemkinString(calculateHrxn(p_temperature),p_temperature) + '\n';
+      s += "kZero = " + low.toChemkinString(calculateHrxn(p_temperature),p_temperature) + '\n';
       s += "a = " + a + '\t' + "T*** = " + T3star + '\t' + "T* = " + Tstar + '\t';
       if(troe7) s += "T** = " + T2star;
       s += "\n";
