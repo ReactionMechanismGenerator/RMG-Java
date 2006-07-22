@@ -74,9 +74,9 @@ public class JDASPK implements SASolver, DAESolver {
 
     protected double rtol;		//## attribute rtol
 
-	protected TROEODEReaction [] troeReactionList;
+	protected TROEODEReaction [] troeReactionList = null;
 
-    protected ThirdBodyODEReaction [] thirdBodyReactionList;		//## attribute thirdBodyReactionList
+    protected ThirdBodyODEReaction [] thirdBodyReactionList = null;		//## attribute thirdBodyReactionList
 
     protected InitialStatus initialStatus;//svp
 
@@ -687,7 +687,7 @@ private LinkedList generateSensitivityStatus(ReactionModel p_reactionModel, doub
         else {
         	double rate = 0;
         	if (p_reaction instanceof TemplateReaction) {
-        		rate = ((TemplateReaction)p_reaction).calculatePDepRate(p_temperature);
+        		rate = ((TemplateReaction)p_reaction).calculateTotalPDepRate(p_temperature);
 				ODEReaction or = new ODEReaction(rnum, pnum, rid, pid, rate);
 				return or;
 			}
@@ -746,7 +746,7 @@ private LinkedList generateSensitivityStatus(ReactionModel p_reactionModel, doub
 			}
 
 			else{
-				rate = p_reaction.calculateRate(p_temperature);
+				rate = p_reaction.calculateTotalRate(p_temperature);
 				ODEReaction or = new ODEReaction(rnum, pnum, rid, pid, rate);
 				return or;
 			}
