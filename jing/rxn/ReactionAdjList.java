@@ -384,7 +384,7 @@ public class ReactionAdjList {
            	String name = null;
 		
 			ChemGraph pcg = ChemGraph.make(pg);
-			Species ps = Species.make(name, pcg);
+			//Species ps = Species.make(name, pcg);
 			products.add(pcg);
 		
 			
