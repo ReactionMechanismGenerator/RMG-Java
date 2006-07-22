@@ -267,9 +267,11 @@ public class ArrheniusKinetics implements Kinetics {
     }
     
 	public String toChemkinStringNoComments(double Hrxn, Temperature p_temperature) {
+		//#[ operation toChemkinString() 
 		return String.valueOf(getAValue()) + '\t' + String.valueOf(getNValue()) + '\t' + String.valueOf(getEValue());
         //#]
 	}
+	
     //## operation toString() 
     public String toString() {
         //#[ operation toString() 
