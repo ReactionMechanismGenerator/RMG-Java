@@ -200,10 +200,10 @@ public class ReactionSystem {
         	Reaction r = (Reaction)iur.next();
         	double flux = 0;
         	if (r instanceof TemplateReaction) {
-        		flux = ((TemplateReaction)r).calculatePDepRate(p_temperature);
+        		flux = ((TemplateReaction)r).calculateTotalPDepRate(p_temperature);
         	}
         	else {
-        	 	flux = r.calculateRate(p_temperature);
+        	 	flux = r.calculateTotalRate(p_temperature);
         	}
         	if (flux > 0) {
         		for (Iterator rIter=r.getReactants(); rIter.hasNext();) {
@@ -226,7 +226,7 @@ public class ReactionSystem {
 
         	}
         	else {
-        		throw new NegativeRateException(r.toChemkinString() + ": " + String.valueOf(flux));
+        		throw new NegativeRateException(r.toChemkinString(p_temperature) + ": " + String.valueOf(flux));
         	}
         }
 
@@ -297,13 +297,13 @@ public class ReactionSystem {
     }
 
     //## operation enlargeReactionModel()
-    public String enlargeReactionModel() {
+    public void enlargeReactionModel() {
         //#[ operation enlargeReactionModel()
         if (reactionModelEnlarger == null) throw new NullPointerException("ReactionModelEnlarger");
 
-        String species = reactionModelEnlarger.enlargeReactionModel(this);
+        reactionModelEnlarger.enlargeReactionModel(this);
 
-        return species;
+        return;
         //#]
     }
 
