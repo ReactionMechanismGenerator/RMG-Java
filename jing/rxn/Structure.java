@@ -397,6 +397,25 @@ public class Structure {
         //#]
     }
 
+	
+    //## operation equals(Object)
+    public boolean isDuplicate(Object p_structure) {
+        //#[ operation equals(Object)
+        if (this == p_structure) return true;
+
+        if (!(p_structure instanceof Structure)) return false;
+
+        Structure structure = (Structure)p_structure;
+
+        // compare rule: if the two sets have the same size, and one of them contains all the elements in the other set,
+        // these two sets are the same.
+        boolean requal = MathTool.isListEqual(reactants, structure.reactants);
+        boolean pequal = MathTool.isListEqual(products, structure.products);
+
+        return requal&&pequal;
+        //#]
+    }
+	
 	   //## operation equalsAsSpecies(Structure)
     public boolean equalsAsSpecies(Structure p_structure) {
         //#[ operation equalsAsSpecies(Structure)
@@ -535,7 +554,7 @@ public class Structure {
         	for (Iterator iter2 = templist.iterator(); iter2.hasNext();) {
         		ChemGraph cg2 = (ChemGraph)iter2.next();
         		Species s2 = cg2.getSpecies();
-        		if (s1.equals(s2)) {
+        		if (s1==s2) {
         			found = true;
         			iter2.remove();
         			break;
