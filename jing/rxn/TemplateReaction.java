@@ -108,6 +108,44 @@ public class TemplateReaction extends Reaction {
         //#]
     }
     
+//  ## operation calculatePDepRate(Temperature) 
+    public double calculateTotalPDepRate(Temperature p_temperature) {
+        //#[ operation calculatePDepRate(Temperature) 
+        PDepNetwork pdn = getPDepNetwork();
+        if (pdn != null) {
+        	
+        	Iterator iter = pdn.getPDepNetReactionList(); 
+        	while (iter.hasNext()) {
+        		PDepNetReaction pdnr = (PDepNetReaction)iter.next();
+        		if (pdnr.getStructure().equals(getStructure())) {
+        			double temp = pdnr.getTemperature();
+        			if (temp != p_temperature.getK()) {
+        				System.out.println("Different temperature used!");
+        				System.exit(0);
+        			}
+        			//System.out.println("for reaction " + toString() + "\t using p dep rate:" + String.valueOf(pdnr.getRate()));
+        			return pdnr.getRate();
+        		}
+        	}
+        	iter = pdn.getPDepNonincludedReactionList(); 
+        	while (iter.hasNext()) {
+        		PDepNetReaction pdnr = (PDepNetReaction)iter.next();
+        		if (pdnr.getStructure().equals(getStructure())) {
+        			double temp = pdnr.getTemperature();
+        			if (temp != p_temperature.getK()) {
+        				System.out.println("Different temperature used!");
+        				System.exit(0);
+        			}
+        			//System.out.println("for reaction " + toString() + "\t using p dep rate:" + String.valueOf(pdnr.getRate()));
+        			return pdnr.getRate();
+        		}
+        	}
+        }
+        
+        return calculateTotalRate(p_temperature);
+        //#]
+    }
+    
     //## operation generateReverseForBackwardReaction() 
     private TemplateReaction generateReverseForBackwardReaction() {
         //#[ operation generateReverseForBackwardReaction() 
@@ -126,8 +164,58 @@ public class TemplateReaction extends Reaction {
         LinkedList freactant = fs.getReactantList();
         LinkedList fproduct = fs.getProductList();
         
-        Structure rs = new Structure(fproduct, freactant);
-        TemplateReaction rr = rRT.getReactionFromStructure(rs);
+        Structure rs = new Structure(fproduct, freactant, -1*this.getDirection());
+		TemplateReaction rr = null;
+		int rNum = fproduct.size();
+    	HashSet rReactionSet = new HashSet();
+    	if (rNum == 1) {
+    		ChemGraph cg = (ChemGraph)fproduct.getFirst();
+    		//rReactionSet = rRT.reactOneReactant(cg);
+			rr = rRT.calculateForwardRateConstant(cg,rs);
+    	}
+    	else if (rNum == 2) {
+    		ChemGraph cg1 = (ChemGraph)fproduct.getFirst();
+    		ChemGraph cg2 = (ChemGraph)fproduct.getLast(); 
+    		//rReactionSet = rRT.reactTwoReactants(cg1,cg2);
+			rr = rRT.calculateForwardRateConstant(cg1,cg2,rs);
+			if (rr == null)
+				rr = rRT.calculateForwardRateConstant(cg2,cg1,rs);
+    		//rReactionSet.addAll(rRT.reactTwoReactants(cg2,cg1));
+    	}
+    	else throw new InvalidReactantNumberException();
+    	
+		if (!rr.isForward()) {
+			String err = "Backward:" + structure.toString() + String.valueOf(structure.calculateKeq(new Temperature(298,"K"))) + '\n';
+			err = err + "Forward:" + rr.structure.toString()+ String.valueOf(rr.structure.calculateKeq(new Temperature(298,"K"))) ;
+			 
+			throw new InvalidReactionDirectionException(err);
+		}
+		rr.setReverseReaction(this);
+		return rr;
+		
+    	/*for (Iterator iter = rReactionSet.iterator(); iter.hasNext();) {
+    		TemplateReaction tr = (TemplateReaction)iter.next();
+    		if (tr.getStructure().equals(rs)) {
+    			if (!tr.isForward()) {
+    				String err = "Backward:" + structure.toString() + String.valueOf(structure.calculateKeq(new Temperature(298,"K"))) + '\n';
+    				err = err + "Forward:" + tr.structure.toString()+ String.valueOf(tr.structure.calculateKeq(new Temperature(298,"K"))) ;
+    				 
+    				throw new InvalidReactionDirectionException(err);
+    			}
+      			tr.setReverseReaction(this);
+    			return tr;
+    		}
+    	}
+    	Structure s = getStructure();
+    	System.out.println("can't generate reverse reaction for: " + s.toString());
+    	for (Iterator iter = s.getReactants(); iter.hasNext(); ) {
+    		ChemGraph cg = (ChemGraph)iter.next();
+    		System.out.println(cg.getName());
+    		System.out.println(cg.getGraph());
+    	}
+    	
+    	throw new FailToGenerateReverseReactionException(getStructure().toString());
+        /*TemplateReaction rr = rRT.getReactionFromStructure(rs);
         if (rr != null) {
         	if (!rr.isForward()) {
         		double keq1 = structure.calculateKeq(new Temperature(298,"K"));
@@ -147,17 +235,30 @@ public class TemplateReaction extends Reaction {
         	HashSet rReactionSet = new HashSet();
         	if (rNum == 1) {
         		ChemGraph cg = (ChemGraph)fproduct.getFirst();
-        		rReactionSet = rRT.reactOneReactant(cg);	
+        		//rReactionSet = rRT.reactOneReactant(cg);
+				rr = rRT.calculateForwardRateConstant(cg,rs);
         	}
         	else if (rNum == 2) {
         		ChemGraph cg1 = (ChemGraph)fproduct.getFirst();
         		ChemGraph cg2 = (ChemGraph)fproduct.getLast(); 
-        		rReactionSet = rRT.reactTwoReactants(cg1,cg2);
-        		rReactionSet.addAll(rRT.reactTwoReactants(cg2,cg1));
+        		//rReactionSet = rRT.reactTwoReactants(cg1,cg2);
+				rr = rRT.calculateForwardRateConstant(cg1,cg2,rs);
+				if (rr == null)
+					rr = rRT.calculateForwardRateConstant(cg2,cg1,rs);
+        		//rReactionSet.addAll(rRT.reactTwoReactants(cg2,cg1));
         	}
         	else throw new InvalidReactantNumberException();
         	
-        	for (Iterator iter = rReactionSet.iterator(); iter.hasNext();) {
+			if (!rr.isForward()) {
+				String err = "Backward:" + structure.toString() + String.valueOf(structure.calculateKeq(new Temperature(298,"K"))) + '\n';
+				err = err + "Forward:" + rr.structure.toString()+ String.valueOf(rr.structure.calculateKeq(new Temperature(298,"K"))) ;
+				 
+				throw new InvalidReactionDirectionException(err);
+			}
+  			rr.setReverseReaction(this);
+			return rr;
+			
+        	/*for (Iterator iter = rReactionSet.iterator(); iter.hasNext();) {
         		TemplateReaction tr = (TemplateReaction)iter.next();
         		if (tr.getStructure().equals(rs)) {
         			if (!tr.isForward()) {
@@ -179,7 +280,7 @@ public class TemplateReaction extends Reaction {
         	}
         	
         	throw new FailToGenerateReverseReactionException(getStructure().toString());
-        }
+        }*/
         	
         //#]
     }
@@ -202,7 +303,8 @@ public class TemplateReaction extends Reaction {
     public static TemplateReaction makeTemplateReaction(Structure p_structure, Kinetics p_kinetics, ReactionTemplate p_template) {
         //#[ operation makeTemplateReaction(Structure,RateConstant,ReactionTemplate) 
         TemplateReaction reaction = p_template.getReactionFromStructure(p_structure);
-        
+        //TemplateReaction reaction = null;
+		
         if (reaction == null) {
         	reaction = new TemplateReaction(p_structure,p_kinetics,p_template);
         	if (reaction.isBackward()) {
@@ -248,11 +350,11 @@ public class TemplateReaction extends Reaction {
     }*/
     
     //## operation toString() 
-    public String toString() {
+    public String toString(Temperature p_temperature) {
         //#[ operation toString() 
         String s = getStructure().toString() + '\t' + getReactionTemplate().getName() + '\t';
         Kinetics k = getKinetics();
-        String kString = k.toChemkinString();
+        String kString = k.toChemkinString(calculateHrxn(p_temperature), p_temperature);
         if (k instanceof ArrheniusEPKinetics) {
         	double alpha = ((ArrheniusEPKinetics)k).getAlphaValue();
         	kString = kString + '\t' + String.valueOf(alpha);
@@ -263,17 +365,17 @@ public class TemplateReaction extends Reaction {
     }
     
 	   //## operation toStringWithReveseReaction() 
-    public String toStringWithReveseReaction() {
+    public String toStringWithReveseReaction(Temperature p_temperature) {
         //#[ operation toStringWithReveseReaction() 
         TemplateReaction rr = (TemplateReaction)getReverseReaction();
-        if (rr == null) return getStructure().toChemkinString(false) + '\t' + getReactionTemplate().getName() + '\t' + getKinetics().toChemkinString();
+        if (rr == null) return getStructure().toChemkinString(false) + '\t' + getReactionTemplate().getName() + '\t' + getKinetics().toChemkinString(calculateHrxn(p_temperature), p_temperature);
         else {
         	TemplateReaction temp = null;
         	if (isForward()) temp = this;
         	else if (isBackward()) temp = rr;
         	else throw new InvalidReactionDirectionException();
         	
-        	return temp.getStructure().toChemkinString(false) + '\t' + temp.getReactionTemplate().getName() + '\t' + temp.getKinetics().toChemkinString();
+        	return temp.getStructure().toChemkinString(false) + '\t' + temp.getReactionTemplate().getName() + '\t' + temp.getKinetics().toChemkinString(calculateHrxn(p_temperature), p_temperature);
         }
         
         //#]
