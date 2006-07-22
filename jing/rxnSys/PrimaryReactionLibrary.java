@@ -183,7 +183,9 @@ public class PrimaryReactionLibrary {
         		Reaction r;
         		try {
         			r = ChemParser.parseArrheniusReaction(speciesSet, line, A_multiplier, E_multiplier);
-        		}
+					r.setKineticsSource("Seed Mechanism: "+ name);
+					r.setKineticsComments(" ");
+				}
         		catch (InvalidReactionFormatException e) {
         			throw new InvalidReactionFormatException(line + ": " + e.getMessage());
         		}
@@ -191,7 +193,11 @@ public class PrimaryReactionLibrary {
         		
         		reactionSet.add(r);
         		Reaction reverse = r.getReverseReaction();
-        		if (reverse != null) reactionSet.add(reverse);
+				
+        		if (reverse != null) {
+					//reverse.getKinetics().setSource("Seed Mechanism: " + name);
+					reactionSet.add(reverse);
+        		}
         		
         		line = ChemParser.readMeaningfulLine(data);
         	}
@@ -308,10 +314,16 @@ public class PrimaryReactionLibrary {
         		HashMap thirdBodyList = ChemParser.parseThirdBodyList(thirdBodyLine);
         		
         		ThirdBodyReaction tbr = ThirdBodyReaction.make(r,thirdBodyList);
+				tbr.setKineticsSource("Seed Mechanism: "+ name);
+				tbr.setKineticsComments(" ");
         		reactionSet.add(tbr);
         		
         		Reaction reverse = tbr.getReverseReaction();
-        		if (reverse != null) reactionSet.add(reverse);
+				
+        		if (reverse != null) {
+					//reverse.getKinetics().setSource("Seed Mechanism: "+ name);
+					reactionSet.add(reverse);
+        		}
         		
         		reactionLine = ChemParser.readMeaningfulLine(data);
         	}
@@ -416,10 +428,16 @@ public class PrimaryReactionLibrary {
            		}
         		
         		TROEReaction tbr = TROEReaction.make(r,thirdBodyList, low, a, T3star, Tstar, troe7, T2star);
-        		
+				tbr.setKineticsSource("Seed Mechanism: "+ name);
+				tbr.setKineticsComments(" ");
+				
         		reactionSet.add(tbr);
         		Reaction reverse = tbr.getReverseReaction();
-        		if (reverse != null) reactionSet.add(reverse);
+				
+        		if (reverse != null) {
+					//reverse.getKinetics().setSource("Seed Mechanism: "+ name);
+					reactionSet.add(reverse);
+        		}
         		
         		reactionLine = ChemParser.readMeaningfulLine(data);
         	}
