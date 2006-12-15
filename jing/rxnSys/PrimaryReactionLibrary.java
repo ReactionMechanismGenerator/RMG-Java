@@ -225,8 +225,15 @@ public class PrimaryReactionLibrary {
         	// step 1: read in structure
         	String line = ChemParser.readMeaningfulLine(data);
         	read: while (line != null) {
-        		String name = line.trim();
-        		Graph graph;
+        		// GJB allow unreactive species
+        		StringTokenizer st = new StringTokenizer(line);
+				String name = st.nextToken().trim();
+				boolean IsReactive = true;
+				if (st.hasMoreTokens()) {
+					String reactive = st.nextToken().trim();
+					if ( reactive.equalsIgnoreCase("unreactive") ) IsReactive = false;
+				}
+            	Graph graph;
         		try {
         			graph = ChemParser.readChemGraph(data);
         		}
@@ -236,6 +243,9 @@ public class PrimaryReactionLibrary {
         		if (graph == null) throw new InvalidChemGraphException(name);
         		ChemGraph cg = ChemGraph.make(graph);	
         		Species spe = Species.make(name, cg);
+        		// GJB: Turn off reactivity if necessary, but don't let code turn it on
+        		// again if was already set as unreactive from input file
+        		if(IsReactive==false) spe.setReactivity(IsReactive);
         		speciesSet.put(name, spe);
         		line = ChemParser.readMeaningfulLine(data);
         	}

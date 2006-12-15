@@ -77,6 +77,11 @@ public class Species {
 	protected NASAThermoData nasaThermoData;
     protected ThreeFrequencyModel threeFrequencyModel;
 	//protected WilhoitThermoData wilhoitThermoData;
+
+    // Flag to tag certain species as library only... i.e. we won't try them against RMG templates.
+    // They will only react as defined in the primary reaction library.   GJB
+    protected boolean IsReactive = true; 
+    
     // Constructors
 
     //## operation Species()
@@ -1108,6 +1113,13 @@ public class Species {
         LJ = newLJ();
     }
 
+    public boolean isReactive() {
+    	return IsReactive;
+    }	
+    
+    public void setReactivity(boolean reactive) {
+    	IsReactive = reactive;
+    }
 }
 /*********************************************************************
 	File Path	: RMG\RMG\jing\chem\Species.java

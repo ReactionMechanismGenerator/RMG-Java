@@ -218,6 +218,15 @@ public class ReactionModelGenerator {
         				throw new InvalidUnitException("Species Concentration in condition.txt!");
         			}
 
+        			//GJB to allow "unreactive" species that only follow user-defined library reactions.  
+        			// They will not react according to RMG reaction families 
+					boolean IsReactive = true;
+					if (st.hasMoreTokens()) {
+						String reactive = st.nextToken().trim();
+						if (reactive.equalsIgnoreCase("unreactive"))
+							IsReactive = false;
+					}
+        			
         			Graph g = ChemParser.readChemGraph(reader);
         			ChemGraph cg = null;
         			try {
@@ -229,6 +238,7 @@ public class ReactionModelGenerator {
         			}
 					//System.out.println(name);
         			Species species = Species.make(name,cg);
+        			species.setReactivity(IsReactive); // GJB
            			speciesSet.put(name, species);
         			speciesSeed.add(species);
         			double flux = 0;
@@ -1313,7 +1323,7 @@ public class ReactionModelGenerator {
 		StringBuilder print_info = Global.diagnosticInfo;
 		print_info.append("\nMolecule \t Flux\t\tTime\t \t\t \t Core \t \t Edge \t \t memory\n");
 		print_info.append(" \t moleular \t characteristic \t findspecies \t enlarger \t restart1 \t solver \t gc \t restart+diagnosis \t chemkin \t validitytester \t Species \t Reactions\t Species\t Reactions \t memory used  \t allSpecies \t TotalTime\n");
-		print_info.append("\t\t\t\t\t\t\t" + ((CoreEdgeReactionModel)reactionSystem.getReactionModel()).getReactedSpeciesSet().size()+ "\t" + ((CoreEdgeReactionModel)reactionSystem.getReactionModel()).getReactedReactionSet().size() + "\t" + ((CoreEdgeReactionModel)reactionSystem.getReactionModel()).getUnreactedSpeciesSet().size() + "\t" + ((CoreEdgeReactionModel)reactionSystem.getReactionModel()).getUnreactedReactionSetIncludingReverseSize() + "\n");
+		print_info.append("\t\t\t\t\t\t\t" + ((CoreEdgeReactionModel)reactionSystem.getReactionModel()).getReactedSpeciesSet().size()+ "\t" + ((CoreEdgeReactionModel)reactionSystem.getReactionModel()).getReactedReactionSet().size() + "\t" + ((CoreEdgeReactionModel)reactionSystem.getReactionModel()).getUnreactedSpeciesSet().size() + "\t" + ((CoreEdgeReactionModel)reactionSystem.getReactionModel()).getUnreactedReactionSet().size() + "\n");
 
 		if (!restart){
 			writeRestartFile();
@@ -1385,7 +1395,7 @@ public class ReactionModelGenerator {
 				//allReactions = calculateAllReactionsinReactionTemplate();
 				allSpecies = SpeciesDictionary.getInstance().size();
 				
-				print_info.append(solverMin + "\t"  + gc + "\t" + restart2 + "\t" + chemkint + "\t" + vTester + "\t" + ((CoreEdgeReactionModel)reactionSystem.getReactionModel()).getReactedSpeciesSet().size()+ "\t" + ((CoreEdgeReactionModel)reactionSystem.getReactionModel()).getReactedReactionSet().size() + "\t" + ((CoreEdgeReactionModel)reactionSystem.getReactionModel()).getUnreactedSpeciesSet().size() + "\t" + ((CoreEdgeReactionModel)reactionSystem.getReactionModel()).getUnreactedReactionSetIncludingReverseSize() + "\t" + mU + "\t" + allSpecies + "\t" + (System.currentTimeMillis()-Global.tAtInitialization)/1000/60 +"\n");
+				print_info.append(solverMin + "\t"  + gc + "\t" + restart2 + "\t" + chemkint + "\t" + vTester + "\t" + ((CoreEdgeReactionModel)reactionSystem.getReactionModel()).getReactedSpeciesSet().size()+ "\t" + ((CoreEdgeReactionModel)reactionSystem.getReactionModel()).getReactedReactionSet().size() + "\t" + ((CoreEdgeReactionModel)reactionSystem.getReactionModel()).getUnreactedSpeciesSet().size() + "\t" + ((CoreEdgeReactionModel)reactionSystem.getReactionModel()).getUnreactedReactionSet().size() + "\t" + mU + "\t" + allSpecies + "\t" + (System.currentTimeMillis()-Global.tAtInitialization)/1000/60 +"\n");
 				
         	}
         	reactionChanged = false;
