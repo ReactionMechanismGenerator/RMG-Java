@@ -51,22 +51,22 @@ Using conversion to control the termination of reaction systerm.  ie, reaction t
 //## class ConversionTT 
 public class ConversionTT implements TerminationTester {
     
-    protected HashSet speciesGoalConversionSet;
+    protected LinkedList speciesGoalConversionSet;
     
     // Constructors
     
     //## operation ConversionTT() 
     private  ConversionTT() {
         {
-            speciesGoalConversionSet=new HashSet();
+            speciesGoalConversionSet=new LinkedList();
         }
         //#[ operation ConversionTT() 
         //#]
     }
     //## operation ConversionTT(HashSet) 
-    public  ConversionTT(HashSet p_scs) {
+    public  ConversionTT(LinkedList p_scs) {
         {
-            speciesGoalConversionSet=new HashSet();
+            speciesGoalConversionSet=new LinkedList();
         }
         //#[ operation ConversionTT(HashSet) 
         speciesGoalConversionSet = p_scs;

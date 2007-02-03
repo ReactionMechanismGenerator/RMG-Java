@@ -103,6 +103,9 @@ public class RateBasedRME implements ReactionModelEnlarger {
         double Cp = next.calculateCp(temp);
         System.out.println("Thermo\t" + String.valueOf(H) + '\t' + String.valueOf(S)+ '\t' + String.valueOf(G)+ '\t' + String.valueOf(Cp));
         
+		
+		startTime = System.currentTimeMillis();
+		
         if (cerm.containsAsReactedSpecies(next)) 
         	throw new InvalidNextCandidateSpeciesException();
         else {
@@ -110,11 +113,11 @@ public class RateBasedRME implements ReactionModelEnlarger {
         	cerm.moveFromUnreactedToReactedReaction();
         	
         }
-		
+		Global.moveUnreactedToReacted = (System.currentTimeMillis()-startTime)/1000/60; 
 		
         // generate new reaction set
 		startTime = System.currentTimeMillis();
-        HashSet newReactionSet = p_reactionSystem.getReactionGenerator().react(cerm.getReactedSpeciesSet(),next);
+		LinkedHashSet newReactionSet = p_reactionSystem.getReactionGenerator().react(cerm.getReactedSpeciesSet(),next);
 		
 		double enlargeTime = (System.currentTimeMillis()-startTime)/1000/60;
 		
@@ -145,7 +148,7 @@ public class RateBasedRME implements ReactionModelEnlarger {
 		
 		double restartTime = (System.currentTimeMillis()-startTime)/1000/60;
         
-		Global.diagnosticInfo.append(enlargeTime+"\t" + restartTime +"\t");
+		Global.diagnosticInfo.append(Global.moveUnreactedToReacted + "\t" +enlargeTime+"\t" + restartTime +"\t");
 		
         // partition the reaction set into reacted reaction set and unreacted reaction set
         // update the corresponding core and edge model of CoreEdgeReactionModel
@@ -174,7 +177,7 @@ public class RateBasedRME implements ReactionModelEnlarger {
     //## operation getNextCandidateSpecies(CoreEdgeReactionModel,PresentStatus) 
     public Species getNextCandidateSpecies(CoreEdgeReactionModel p_reactionModel, PresentStatus p_presentStatus, String maxflux) {
         //#[ operation getNextCandidateSpecies(CoreEdgeReactionModel,PresentStatus) 
-        HashSet unreactedSpecies = p_reactionModel.getUnreactedSpeciesSet();
+    	LinkedHashSet unreactedSpecies = p_reactionModel.getUnreactedSpeciesSet();
          
         Species maxSpecies = null;
         double maxFlux = 0;
@@ -184,7 +187,10 @@ public class RateBasedRME implements ReactionModelEnlarger {
         Iterator iter = unreactedSpecies.iterator();
         while (iter.hasNext()) {
         	Species us = (Species)iter.next();
-        	double thisFlux = Math.abs(p_presentStatus.getSpeciesStatus(us).getFlux());
+        	//double thisFlux = Math.abs(p_presentStatus.getSpeciesStatus(us).getFlux());
+			//System.out.println(p_presentStatus.unreactedSpeciesFlux[83]);
+			//System.exit(0);
+			double thisFlux = Math.abs(p_presentStatus.unreactedSpeciesFlux[us.getID()]);
 			if (includeSpecies != null && includeSpecies.contains(us)) {
 				if (thisFlux > maxIncludedFlux) {
 	        		maxIncludedFlux = thisFlux;
@@ -212,7 +218,7 @@ public class RateBasedRME implements ReactionModelEnlarger {
         
 		
 		
-		HashSet ur = p_reactionModel.getUnreactedReactionSet();
+        LinkedHashSet ur = p_reactionModel.getUnreactedReactionSet();
         
 		HashMap significantReactions = new HashMap();
 		int reactionWithSpecies = 0;
@@ -224,15 +230,15 @@ public class RateBasedRME implements ReactionModelEnlarger {
 			if (r.contains(maxSpecies)){
 				reactionWithSpecies++;
 				if (r instanceof TemplateReaction) {
-	        		flux = ((TemplateReaction)r).calculatePDepRate(p_temperature);
+	        		flux = ((TemplateReaction)r).calculateTotalPDepRate(p_temperature);
 	        	}
 	        	else {
-	        	 	flux = r.calculateRate(p_temperature);
+	        	 	flux = r.calculateTotalRate(p_temperature);
 	        	}
 	        	if (flux > 0) {
 	        		for (Iterator rIter=r.getReactants(); rIter.hasNext();) {
-	        		    ChemGraph cg = (ChemGraph)rIter.next();
-	        		    Species spe = cg.getSpecies();
+						Species spe = (Species)rIter.next();
+	        		    
 	        		    double conc = (p_presentStatus.getSpeciesStatus(spe)).getConcentration();
 	        			if (conc<0)
 	        				throw new NegativeConcentrationException(spe.getName() + ": " + String.valueOf(conc));

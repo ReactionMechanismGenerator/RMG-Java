@@ -38,6 +38,8 @@ package jing.rxnSys;
 
 import java.util.*;
 
+import jing.chem.Species;
+
 //## package jing::rxnSys 
 
 //----------------------------------------------------------------------------
@@ -104,11 +106,10 @@ public class RateBasedVT implements ValidityTester {
         // check if all the unreacted species has their fluxes under the system min flux
         PresentStatus ps = p_reactionSystem.getPresentStatus();
         calculateRmin(ps);
-        for (Iterator iter = ps.getSpeciesStatus(); iter.hasNext(); ) {
-        	SpeciesStatus ss = (SpeciesStatus)iter.next();
-        	if (ss.isUnreactedSpecies()) {
-        		if (ss.getFlux() > Rmin) return false;
-        	}
+        for (Iterator iter =((CoreEdgeReactionModel) p_reactionSystem.getReactionModel()).getUnreactedSpeciesSet().iterator(); iter.hasNext(); ) {
+        	Species s = (Species)iter.next();
+        	if (ps.unreactedSpeciesFlux[s.getID()] > Rmin) return false;
+        	
         }
         //System.out.println("The minimum flux required is " + Rmin);
 		

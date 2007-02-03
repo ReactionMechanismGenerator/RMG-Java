@@ -92,7 +92,7 @@ public class FinishController {
     public TerminationTester newTerminationTester(String p_type, Object p_end) {
         //#[ operation newTerminationTester(String,Object) 
         if (p_type.equals("Conversion")) {
-        	HashSet scs = (HashSet)p_end;
+        	LinkedList scs = (LinkedList)p_end;
         	terminationTester = new ConversionTT(scs);
         }
         else if (p_type.equals("ReactionTime")) {

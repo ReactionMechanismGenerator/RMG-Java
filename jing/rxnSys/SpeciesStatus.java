@@ -118,6 +118,14 @@ public class SpeciesStatus {
         return flux;
     }
     
+    public void setFlux(double p_flux) {
+    	flux = p_flux;
+    }
+    
+    public void setConcentration(double p_conc) {
+    	concentration = p_conc;
+    }
+    
     public Species getSpecies() {
         return species;
     }

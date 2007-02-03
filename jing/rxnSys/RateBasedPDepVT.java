@@ -75,7 +75,7 @@ public class RateBasedPDepVT extends RateBasedVT {
         	double rleak = pdn.getKLeak();
         	if (!pdn.isActive() && pdn.getIsChemAct()) {
         		Temperature t = p_reactionSystem.getTemperature(ps.getPresentTime());
-        		rleak = pdn.getEntryReaction().calculateRate(t);
+        		rleak = pdn.getEntryReaction().calculateTotalRate(t);
         	}
             for (Iterator rIter = pdn.getReactant().iterator(); rIter.hasNext(); ) {
         		ChemGraph cg = (ChemGraph)rIter.next();

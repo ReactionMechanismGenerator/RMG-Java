@@ -38,6 +38,8 @@ package jing.rxnSys;
 
 
 import java.util.*;
+
+import jing.mathTool.MathTool;
 import jing.param.*;
 import jing.chem.Species;
 import jing.param.Pressure;
@@ -55,7 +57,7 @@ The real status of the system at a specific reaction time.  For example: the T, 
 //## class SystemSnapshot
 public class SystemSnapshot {
 
-    protected static HashMap inertGas = new HashMap();		//## attribute inertGas
+    protected static LinkedHashMap inertGas = new LinkedHashMap();		//## attribute inertGas
 
     protected Pressure pressure;		//## attribute pressure
 
@@ -63,18 +65,19 @@ public class SystemSnapshot {
 
     protected double totalMole = -1;		//## attribute totalMole
 
-    protected HashMap speciesStatus;
-    protected LinkedList senStatus;//svp
+    protected LinkedHashMap speciesStatus;
+    protected double [] senStatus;//svp
     protected ReactionTime time;
     protected LinkedList reactionList;//svp
-    protected HashMap IDTranslator;//svp
+    protected LinkedHashMap IDTranslator;//svp
+	protected double[] unreactedSpeciesFlux = null;
 
     // Constructors
 
     //## operation SystemSnapshot()
     public  SystemSnapshot() {
         {
-            speciesStatus = new HashMap();
+            speciesStatus = new LinkedHashMap();
         }
         initRelations();
         //#[ operation SystemSnapshot()
@@ -84,9 +87,9 @@ public class SystemSnapshot {
         //#]
     }
     //## operation SystemSnapshot(ReactionTime,HashMap,Temperature,Pressure)
-    public  SystemSnapshot(ReactionTime p_reactionTime, HashMap p_speciesStatus, Temperature p_temperature, Pressure p_pressure) {
+    public  SystemSnapshot(ReactionTime p_reactionTime, LinkedHashMap p_speciesStatus, Temperature p_temperature, Pressure p_pressure) {
         {
-            speciesStatus = new HashMap();
+            speciesStatus = new LinkedHashMap();
         }
         initRelations();
         //#[ operation SystemSnapshot(ReactionTime,HashMap,Temperature,Pressure)
@@ -99,10 +102,9 @@ public class SystemSnapshot {
 
     //## operation SystemSnapshot(ReactionTime,HashMap,HashMap)
     //svp
-    public SystemSnapshot(ReactionTime p_reactionTime, HashMap p_speciesStatus, LinkedList p_sensitivityStatus, Temperature p_temperature, Pressure p_pressure) {
+    public SystemSnapshot(ReactionTime p_reactionTime, LinkedHashMap p_speciesStatus, double [] p_sensitivityStatus, Temperature p_temperature, Pressure p_pressure) {
       {
-        speciesStatus = new HashMap();
-        senStatus = new LinkedList();
+        speciesStatus = new LinkedHashMap();
       }
       initRelations();
       time = p_reactionTime;
@@ -114,7 +116,7 @@ public class SystemSnapshot {
 
     //## operation addSensitivity(LinkedList)
     //svp
-    public void addSensitivity(LinkedList p_senStatus) {
+    public void addSensitivity(double [] p_senStatus) {
       //#[ operation addSensitivity(LinkedList)
       senStatus = p_senStatus;
       //#]
@@ -123,9 +125,9 @@ public class SystemSnapshot {
 
 
     //## operation addSpeciesStatus(HashMap)
-    public void addSpeciesStatus(HashMap p_speciesStatus) {
+    public void addSpeciesStatus(LinkedHashMap p_speciesStatus) {
         //#[ operation addSpeciesStatus(HashMap)
-        if (speciesStatus == null) speciesStatus = new HashMap();
+        if (speciesStatus == null) speciesStatus = new LinkedHashMap();
 
         if (p_speciesStatus == null) return;
 
@@ -152,17 +154,17 @@ public class SystemSnapshot {
 
     //## operation getSensitivityStatus()
     //svp
-      public Iterator getSensitivityStatus(){
+      public double [] getSensitivityStatus(){
         //#[operation getSensitivityStatus()
-        Iterator iter = senStatus.iterator();
-        return iter;
+        
+        return senStatus;
       }
 
       //## operation getSensitivityStatus(int)
       //svp
-        public SensitivityStatus getSensitivityStatus(int p_int){
+        public double getSensitivityStatus(int p_int){
           //#[operation getSensitivityStatus(int)
-          return (SensitivityStatus)senStatus.get(p_int);
+          return senStatus[p_int];
         }
 
 
@@ -223,8 +225,28 @@ public class SystemSnapshot {
 
         double error = Math.abs(realConc-conc)/realConc;
 
-        if (error < 0.01) return true;
-        else return false;
+        if (error < 0.00001) {
+        	
+        	return true;
+        }
+        else {
+//        	renormalizing the concentration
+        	HashSet hs= new HashSet(inertGas.keySet());
+        	for (Iterator iter = hs.iterator(); iter.hasNext(); ) {
+                String name = (String)iter.next();
+        		double c = (Double)inertGas.get(name);
+                c = c*realConc/conc;
+                //System.out.println(MathTool.formatDouble(c, 15,6));
+                inertGas.remove(name);
+                inertGas.put(name, c);
+        	}
+        	for (Iterator iter = getSpeciesStatus(); iter.hasNext(); ) {
+                SpeciesStatus ss = (SpeciesStatus)iter.next();
+                //System.out.println(String.format("%1.6e",ss.getConcentration()*realConc/conc));
+                ss.setConcentration(ss.getConcentration()*realConc/conc);
+        	}
+        	return false;
+        }
 
 
         //#]
@@ -239,11 +261,9 @@ public class SystemSnapshot {
 
     //## operation putSensitivityStatus(int)
     //svp
-      public void putSensitivityStatus(int index, SensitivityStatus p_senStatus) {
+      public void putSensitivityStatus(int index, double p_senStatus) {
         //#[ operation putSensitivityStatus(int)
-        int spe_num = p_senStatus.getSpeciesNumber();
-        int rxn_num = p_senStatus.getReactionNumber();
-        senStatus.add(index, p_senStatus);
+        senStatus[index] = p_senStatus;
         //#]
       }
 
@@ -280,7 +300,7 @@ public class SystemSnapshot {
 
       //## operation setIDTranslator(HashMap)
     //svp
-      public void setIDTranslator(HashMap p_hashMap){
+      public void setIDTranslator(LinkedHashMap p_hashMap){
         //#[ operation setIDTranslator(HashMap)
         IDTranslator = p_hashMap;
         //#]

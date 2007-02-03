@@ -37,9 +37,11 @@ package jing.rxnSys;
 
 
 import java.io.*;
+
 import jing.rxn.*;
 import jing.chem.*;
 import java.util.*;
+
 import jing.param.*;
 
 import org.w3c.dom.*;
@@ -66,6 +68,7 @@ public class Chemkin implements DAESolver {
 
   protected double rtol;		//## attribute rtol
 
+  protected static String thermoHeader = "";
 
   // Constructors
 
@@ -75,12 +78,54 @@ public class Chemkin implements DAESolver {
       if (p_rtol < 0 || p_atol < 0) throw new InvalidChemkinParameterException("Negative rtol or atol!");
       if (p_reactorType == null) throw new NullPointerException();
 
+      String dir = System.getProperty("RMG.workingDirectory");
+      
+      //create the documentTypesDefinitions
+      File docFile = new File("chemkin/documentTypeDefinitions");
+      docFile.mkdir();
+      copyFiles(dir+"/software/reactorModel/documentTypeDefinitions/reactorInput.dtd", "chemkin/documentTypeDefinitions/reactorInput.dtd");
+      copyFiles(dir+"/software/reactorModel/documentTypeDefinitions/reactorOutput.dtd", "chemkin/documentTypeDefinitions/reactorOutput.dtd");
+      
       rtol = p_rtol;
       atol = p_atol;
       reactorType = p_reactorType;
+      thermoHeader += "! neon added by pey (20/6/04) - used thermo for Ar\n";
+		thermoHeader += "Ne                120186Ne  1               G  0300.00   5000.00  1000.00      1\n";
+		thermoHeader += " 0.02500000E+02 0.00000000E+00 0.00000000E+00 0.00000000E+00 0.00000000E+00    2\n";
+		thermoHeader += "-0.07453750E+04 0.04366001E+02 0.02500000E+02 0.00000000E+00 0.00000000E+00    3\n";
+		thermoHeader += " 0.00000000E+00 0.00000000E+00-0.07453750E+04 0.04366001E+02                   4\n";
+		thermoHeader += "N2                121286N   2               G  0300.00   5000.00  1000.00      1\n";
+		thermoHeader += " 0.02926640e+02 0.01487977e-01-0.05684761e-05 0.01009704e-08-0.06753351e-13    2\n";
+		thermoHeader += "-0.09227977e+04 0.05980528e+02 0.03298677e+02 0.01408240e-01-0.03963222e-04    3\n";
+		thermoHeader += " 0.05641515e-07-0.02444855e-10-0.01020900e+05 0.03950372e+02                   4\n";
+		thermoHeader += "Ar                120186Ar  1               G  0300.00   5000.00  1000.00      1\n";
+		thermoHeader += " 0.02500000e+02 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00    2\n";
+		thermoHeader += "-0.07453750e+04 0.04366001e+02 0.02500000e+02 0.00000000e+00 0.00000000e+00    3\n";
+		thermoHeader += " 0.00000000e+00 0.00000000e+00-0.07453750e+04 0.04366001e+02                   4\n";
       //#]
   }
-  public  Chemkin() {
+  private void copyFiles(String string, String string2)  {
+	  File src = new File(string);
+	  File dest = new File(string2);
+	  FileInputStream fin;
+	  try {
+		  fin = new FileInputStream(src);
+		  FileOutputStream fout = new FileOutputStream (dest);
+		  int c;
+		  while ((c = fin.read()) >= 0) 
+			  fout.write(c);
+		  fin.close();
+		  fout.close();
+	  } catch (FileNotFoundException e) {
+		  // TODO Auto-generated catch block
+		  e.printStackTrace();
+	}catch (IOException e){
+		e.printStackTrace();
+	}
+
+		
+  }
+public  Chemkin() {
   }
 
   //## operation checkChemkinMessage()
@@ -88,7 +133,7 @@ public class Chemkin implements DAESolver {
       //#[ operation checkChemkinMessage()
       try {
       	String dir = System.getProperty("RMG.workingDirectory");
-      	String filename = dir + "software/reactorModel/chem.message";
+      	String filename = "chemkin/chem.message";
       	FileReader fr = new FileReader(filename);
       	BufferedReader br = new BufferedReader(fr);
 
@@ -121,11 +166,11 @@ public class Chemkin implements DAESolver {
   }
 
   //## operation generateSpeciesStatus(ReactionModel,ArrayList,ArrayList,ArrayList)
-  private HashMap generateSpeciesStatus(ReactionModel p_reactionModel, ArrayList p_speciesChemkinName, ArrayList p_speciesConc, ArrayList p_speciesFlux) {
+  private LinkedHashMap generateSpeciesStatus(ReactionModel p_reactionModel, ArrayList p_speciesChemkinName, ArrayList p_speciesConc, ArrayList p_speciesFlux) {
       //#[ operation generateSpeciesStatus(ReactionModel,ArrayList,ArrayList,ArrayList)
       int size = p_speciesChemkinName.size();
       if (size != p_speciesConc.size() || size != p_speciesFlux.size()) throw new InvalidSpeciesStatusException();
-      HashMap speStatus = new HashMap();
+      LinkedHashMap speStatus = new LinkedHashMap();
       for (int i=0;i<size;i++){
       	String name = (String)p_speciesChemkinName.get(i);
       	int ID = parseIDFromChemkinName(name);
@@ -181,7 +226,7 @@ public class Chemkin implements DAESolver {
       try {
       	// open output file and build the DOM tree
       	String dir = System.getProperty("RMG.workingDirectory");
-      	String filename = dir + "software/reactorModel/reactorOutput.xml";
+      	String filename = "chemkin/reactorOutput.xml";
       	File inputFile = new File(filename);
 
       	DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
@@ -201,7 +246,7 @@ public class Chemkin implements DAESolver {
       	Text returnmessageText = (Text) returnmessageElement.getFirstChild();
       	String returnmessage = returnmessageText.toString();
 	returnmessage=returnmessage.trim();
-      	if (!returnmessage.equals("SUCCESSFULLY COMPLETED RUN.")) {
+      	if (!returnmessage.contains("SUCCESSFULLY COMPLETED RUN.")) {
       		System.out.println("External reactor model failed!");
       		System.out.println("Reactor model error message: " + returnmessage);
       		System.exit(0);
@@ -246,7 +291,7 @@ public class Chemkin implements DAESolver {
       	// begin at i=2, since T and P take already the first two position of states
       	int nSpe = (states.getLength()-2)/2;
       	int index = 0;
-      	HashMap inertGas = new HashMap();
+      	LinkedHashMap inertGas = new LinkedHashMap();
       	for (int i = 2; i < nSpe+2; i++) {
       		// get amount element and the units
       		Element amountElement = (Element) states.item(i);
@@ -292,7 +337,7 @@ public class Chemkin implements DAESolver {
               }
       */
       	ReactionTime rt = new ReactionTime(time, timeUnits);
-      	HashMap speStatus = generateSpeciesStatus(p_reactionModel, speciesIDs, amounts, fluxes);
+      	LinkedHashMap speStatus = generateSpeciesStatus(p_reactionModel, speciesIDs, amounts, fluxes);
       	SystemSnapshot ss = new SystemSnapshot(rt, speStatus, T, P);
       	ss.inertGas = inertGas;
       	return ss;
@@ -317,8 +362,8 @@ public class Chemkin implements DAESolver {
 
       try {
          	// system call for chemkin
-         	String[] command = {dir + "software/reactorModel/chem.exe"};
-         	File runningDir = new File(dir + "software/reactorModel");
+         	String[] command = {dir + "/software/reactorModel/chem.exe"};
+         	File runningDir = new File("chemkin");
           Process chemkin = Runtime.getRuntime().exec(command, null, runningDir);
           InputStream ips = chemkin.getInputStream();
           InputStreamReader is = new InputStreamReader(ips);
@@ -347,8 +392,8 @@ public class Chemkin implements DAESolver {
 
       try {
          	// system call for reactor
-         	String[] command = {dir + "software/reactorModel/reactor.exe"};
-         	File runningDir = new File(dir + "software/reactorModel");
+         	String[] command = {dir + "/software/reactorModel/reactor.exe"};
+         	File runningDir = new File("chemkin");
           Process reactor = Runtime.getRuntime().exec(command, null, runningDir);
           InputStream ips = reactor.getInputStream();
           InputStreamReader is = new InputStreamReader(ips);
@@ -396,10 +441,13 @@ public class Chemkin implements DAESolver {
 
       StringBuilder result=new StringBuilder();
 	  result.append(writeChemkinElement());
+	  double start = System.currentTimeMillis();
       result.append(writeChemkinSpecies(p_reactionModel, p_beginStatus));
       result.append(writeChemkinThermo(p_reactionModel));
-      result.append(writeChemkinPdepReactions(p_reactionModel));
-
+      Global.chemkinThermo = Global.chemkinThermo + (System.currentTimeMillis() - start)/1000/60;
+	  start = System.currentTimeMillis();
+	  result.append(writeChemkinReactions(p_reactionModel));
+	  Global.chemkinReaction = Global.chemkinReaction + (System.currentTimeMillis() - start)/1000/60;
 
       String dir = System.getProperty("RMG.workingDirectory");
       if (!dir.endsWith("/")) dir += "/";
@@ -416,38 +464,43 @@ public class Chemkin implements DAESolver {
       	System.out.println(e.getMessage());
       	System.exit(0);
       }
-
+      
       //#]
   }
   
 //## operation writeChemkinReactions(ReactionModel)
-  /*public static String writeChemkinReactions(ReactionModel p_reactionModel) {
+  public static String writeChemkinReactions(ReactionModel p_reactionModel) {
       //#[ operation writeChemkinReactions(ReactionModel)
       StringBuilder result = new StringBuilder();
 	  result.append("REACTIONS	KCAL/MOLE\n");
       CoreEdgeReactionModel cerm = (CoreEdgeReactionModel)p_reactionModel;
 
       
-	  HashSet all = cerm.getReactedReactionSet();
+      LinkedHashSet all = cerm.getReactedReactionSet();
 	  
+      HashSet hs = new HashSet();
+      int numfor = 0;
+      int numrev = 0;
+      int numdup = 0;
+      int numnorev = 0;
       for (Iterator iter = all.iterator(); iter.hasNext(); ) {
       	Reaction rxn = (Reaction)iter.next();
       	if (rxn.isForward()) {
-      		if (rxn.hasResonanceIsomer()) {
-				result.append(" " + rxn.toChemkinString(Global.temperature) + "\n   DUP \n");
-				//result.append(" " + rxn.toChemkinString() + "\n");
-      		}
-      		else result.append(" " + rxn.toChemkinString(Global.temperature) + "\n");
+      		result.append(" " + rxn.toChemkinString(Global.temperature) + "\n");
+      		
       	}
+      	
       }
-
+     
       result.append("END\n");
 
       return result.toString();
 
       //#]
-  }*/
+  }
 
+  
+  
   //## operation writeChemkinReactions(ReactionModel)
  public static String writeChemkinPdepReactions(ReactionModel p_reactionModel) {
       //#[ operation writeChemkinReactions(ReactionModel)
@@ -457,7 +510,7 @@ public class Chemkin implements DAESolver {
 
       CoreEdgeReactionModel cerm = (CoreEdgeReactionModel)p_reactionModel;
 
-      HashSet RISet = new HashSet();
+      LinkedHashSet RISet = new LinkedHashSet();
       // print normal reactions
       LinkedList rxns = cerm.generatePDepReactionSet();
       LinkedList nonPDepReactionList = (LinkedList)rxns.get(0);
@@ -484,7 +537,7 @@ public class Chemkin implements DAESolver {
       	boolean found = false;
       	for (Iterator iter = RIList.iterator(); iter.hasNext();) {
       		Reaction r2 = (Reaction)iter.next();
-      		if (r1.isDuplicated(r2)) {
+      		if (r1.equals(r2)) {
       			if (isPDepReaction(r1)) {
 
       				if (!found) result .append(" " + r1.toChemkinString(Global.temperature) + '\n');
@@ -559,8 +612,9 @@ public class Chemkin implements DAESolver {
   public static String writeChemkinThermo(ReactionModel p_reactionModel) {
       //#[ operation writeChemkinThermo(ReactionModel)
       StringBuilder result = new StringBuilder();
-	  result.append("THERMO\n");
+	  result.append("THERMO ALL\n");
       result.append("   300.000  1000.000  5000.000\n");
+      result.append(thermoHeader);
 
       CoreEdgeReactionModel cerm = (CoreEdgeReactionModel)p_reactionModel;
       for (Iterator iter = cerm.getSpecies(); iter.hasNext(); ) {
@@ -614,13 +668,14 @@ public class Chemkin implements DAESolver {
       	if (cerm.containsAsReactedSpecies(thisSpecies)) {
       		String spcChemkinName = thisSpecies.getChemkinName();
       		double concentration = spcStatus.getConcentration();
-      		input += "<amount units=\"molPerCm3\" speciesid=\"" + spcChemkinName + "\">" + concentration + "</amount>" + "\n";
+      		input += "<amount units=\"molPerCm3\" speciesid=\"" + spcChemkinName + "\">" + String.format("%1.6e",concentration) + "</amount>" + "\n";
       	}
       }
       for (Iterator iter = p_beginStatus.getInertGas(); iter.hasNext(); ) {
       	String name = (String)iter.next();
       	double conc = p_beginStatus.getInertGas(name);
-      	input += "<amount units=\"molPerCm3\" speciesid=\"" + name + "\">" + conc + "</amount>" + "\n";
+      	if (conc != 0.0)
+      		input += "<amount units=\"molPerCm3\" speciesid=\"" + name + "\">" + String.format("%1.6e",conc) + "</amount>" + "\n";
       }
       input += "</systemstate>" + "\n";
       input += "</inputvalues>" + "\n";
@@ -628,7 +683,7 @@ public class Chemkin implements DAESolver {
 
       // write "input" string to file
       try {
-      	String file = dir + "software/reactorModel/reactorInput.xml";
+      	String file = "chemkin/reactorInput.xml";
       	FileWriter fw = new FileWriter(file);
       	fw.write(input);
       	fw.close();
@@ -668,8 +723,17 @@ public class Chemkin implements DAESolver {
       rtol = p_rtol;
   }
 public SystemSnapshot solve(boolean p_initialization, ReactionModel p_reactionModel, boolean p_reactionChanged, SystemSnapshot p_beginStatus, ReactionTime p_beginTime, ReactionTime p_endTime, Temperature p_temperature, Pressure p_pressure, boolean p_conditionChanged) {
-	// TODO Auto-generated method stub
-	return null;
+	
+	//writeChemkinInputFile(p_reactionModel, p_beginStatus);
+	
+	runChemkin();
+	checkChemkinMessage();
+	
+	writeReactorInputFile(p_reactionModel, p_beginTime, p_endTime, p_beginStatus);
+	runReactor();
+	System.out.println("After ODE: from " + p_beginTime + " to "+ p_endTime);
+	SystemSnapshot result = readReactorOutputFile(p_reactionModel);
+	return result;
 }
 
 }

@@ -53,7 +53,7 @@ public class ODEReaction {
     
     protected double H;		//## attribute H 
     
-    protected double Keq;		//## attribute Keq 
+    protected double Keq=0;		//## attribute Keq 
     
     protected double alpha;		//## attribute alpha 
     
@@ -190,6 +190,22 @@ public class ODEReaction {
     public boolean getSetRate() {
         return setRate;
     }
+	
+	public String toString(){
+		StringBuilder s = new StringBuilder();
+		for (int i=0; i<rNum; i++) {
+			s.append(rID[i]+"  ");
+		}
+		s.append("  =  ");
+		
+		for (int i=0; i<pNum; i++) {
+			s.append(pID[i]+"  ");
+		}
+		
+		s.append("    "+ rate +"\n");
+		
+		return s.toString();
+	}
     
 }
 /*********************************************************************

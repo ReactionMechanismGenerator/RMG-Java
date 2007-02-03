@@ -49,7 +49,7 @@ public interface ReactionModelEnlarger {
     
     
     //## operation enlargeReactionModel(ReactionSystem) 
-    String enlargeReactionModel(ReactionSystem p_reactionSystem);
+    void enlargeReactionModel(ReactionSystem p_reactionSystem);
     
 }
 /*********************************************************************

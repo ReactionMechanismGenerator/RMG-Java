@@ -52,19 +52,19 @@ import jing.rxn.Reaction;
 //## class AbstractReactionModel 
 public class AbstractReactionModel implements ReactionModel {
     
-    protected HashSet reaction;
+    protected LinkedHashSet reaction;
     protected ReactionModelEnlarger reactionModelEnlarger;
-    protected HashSet species;
+    protected LinkedHashSet species;
     
     // Constructors
     
     //## operation AbstractReactionModel(ReactionModelEnlarger) 
     public  AbstractReactionModel(ReactionModelEnlarger p_reactionModelEnlarger) {
         {
-            species=new HashSet();
+            species=new LinkedHashSet();
         }
         {
-            reaction=new HashSet();
+            reaction=new LinkedHashSet();
         }
         //#[ operation AbstractReactionModel(ReactionModelEnlarger) 
         reactionModelEnlarger = p_reactionModelEnlarger;
@@ -73,12 +73,12 @@ public class AbstractReactionModel implements ReactionModel {
         //#]
     }
     //## operation AbstractReactionModel(HashSet) 
-    public  AbstractReactionModel(HashSet p_reactionSet) {
+    public  AbstractReactionModel(LinkedHashSet p_reactionSet) {
         {
-            species=new HashSet();
+            species=new LinkedHashSet();
         }
         {
-            reaction=new HashSet();
+            reaction=new LinkedHashSet();
         }
         //#[ operation AbstractReactionModel(HashSet) 
         reaction = p_reactionSet;
@@ -95,10 +95,10 @@ public class AbstractReactionModel implements ReactionModel {
     }
     public  AbstractReactionModel() {
         {
-            reaction=new HashSet();
+            reaction=new LinkedHashSet();
         }
         {
-            species=new HashSet();
+            species=new LinkedHashSet();
         }
     }
     
@@ -187,7 +187,7 @@ public class AbstractReactionModel implements ReactionModel {
     }
     
     //## operation getReactionSet() 
-    public HashSet getReactionSet() {
+    public LinkedHashSet getReactionSet() {
         //#[ operation getReactionSet() 
         return reaction;
         //#]
@@ -201,7 +201,7 @@ public class AbstractReactionModel implements ReactionModel {
     }
     
     //## operation getSpeciesSet() 
-    public HashSet getSpeciesSet() {
+    public LinkedHashSet getSpeciesSet() {
         //#[ operation getSpeciesSet() 
         return species;
         //#]
@@ -210,10 +210,10 @@ public class AbstractReactionModel implements ReactionModel {
     //## operation isDisjoint(AbstractReactionModel,AbstractReactionModel) 
     public static boolean isDisjoint(AbstractReactionModel p_model1, AbstractReactionModel p_model2) {
         //#[ operation isDisjoint(AbstractReactionModel,AbstractReactionModel) 
-        HashSet s1 = p_model1.getSpeciesSet();
-        HashSet s2 = p_model2.getSpeciesSet();    
-        HashSet r1 = p_model1.getReactionSet();
-        HashSet r2 = p_model2.getReactionSet(); 
+    	LinkedHashSet s1 = p_model1.getSpeciesSet();
+    	LinkedHashSet s2 = p_model2.getSpeciesSet();    
+    	LinkedHashSet r1 = p_model1.getReactionSet();
+    	LinkedHashSet r2 = p_model2.getReactionSet(); 
         
         return (MathTool.isCollectionDisjoint(s1,s2) && MathTool.isCollectionDisjoint(s1,s2));
         
@@ -326,14 +326,14 @@ public class AbstractReactionModel implements ReactionModel {
     }
     
     //## operation setReactionSet(HashSet) 
-    public void setReactionSet(HashSet p_reactionSet) {
+    public void setReactionSet(LinkedHashSet p_reactionSet) {
         //#[ operation setReactionSet(HashSet) 
         reaction = p_reactionSet;
         //#]
     }
     
     //## operation setSpeciesSet(HashSet) 
-    public void setSpeciesSet(HashSet p_speciesSet) {
+    public void setSpeciesSet(LinkedHashSet p_speciesSet) {
         //#[ operation setSpeciesSet(HashSet) 
         species = p_speciesSet;
         //#]

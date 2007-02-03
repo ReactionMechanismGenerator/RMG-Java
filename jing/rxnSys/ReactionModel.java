@@ -63,7 +63,7 @@ public interface ReactionModel {
     int getReactionNumber();
     
     //## operation getReactionSet() 
-    HashSet getReactionSet();
+    LinkedHashSet getReactionSet();
     
     //## operation getSpecies() 
     Iterator getSpecies();
@@ -72,7 +72,7 @@ public interface ReactionModel {
     int getSpeciesNumber();
     
     //## operation getSpeciesSet() 
-    HashSet getSpeciesSet();
+    LinkedHashSet getSpeciesSet();
     
     //## operation isEmpty() 
     boolean isEmpty();

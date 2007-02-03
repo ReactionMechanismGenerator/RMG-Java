@@ -43,10 +43,20 @@ package jing.rxnSys;
 
 import jing.rxn.*;
 import jing.chem.*;
+
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.*;
+
 import jing.chem.Species;
 import jing.rxn.Reaction;
 import jing.rxn.Structure;
+import jing.param.Global;
 import jing.param.Pressure;
 import jing.param.Temperature;
 import jing.param.ParameterInfor;
@@ -58,35 +68,35 @@ import jing.param.ParameterInfor;
 //----------------------------------------------------------------------------
 
 //## class JDASPK
-public class JDASPK implements SASolver, DAESolver {
+public class JDASPK implements ODESolver{
 
-    protected HashMap IDTranslator = new HashMap();		//## attribute IDTranslator
+    protected LinkedHashMap IDTranslator = new LinkedHashMap();		//## attribute IDTranslator
 
     protected double atol;		//## attribute atol
 
     protected int maxSpeciesNumber = 0;		//## attribute maxSpeciesNumber
 
-     protected int parameterInfor;//svp
+    protected int parameterInfor;//svp
 
     protected ParameterInfor [] parameterInforArray = null;		//## attribute parameterInfor
 
-    protected ODEReaction [] reactionList = null;		//## attribute reactionList
-
     protected double rtol;		//## attribute rtol
 
-	protected TROEODEReaction [] troeReactionList = null;
-
-    protected ThirdBodyODEReaction [] thirdBodyReactionList = null;		//## attribute thirdBodyReactionList
-
     protected InitialStatus initialStatus;//svp
-
-    protected LinkedList thirdBody;
-
-    protected LinkedList troe;
-
-    //protected int temp =1;
-    // Constructors
-
+	protected int nState =  3 ;
+    protected int neq = 3;
+	protected int nParameter =0;
+	protected double [] y;
+	protected double [] yprime;
+	protected int [] info = new int[30];
+	protected LinkedList rList ;
+    protected LinkedList thirdBodyList ;
+    protected LinkedList troeList ;
+	protected StringBuilder outputString ;
+	protected StringBuilder thermoString = new StringBuilder();
+	protected StringBuilder rString;
+	protected StringBuilder troeString;
+	protected StringBuilder tbrString;
     //## operation JDASPK()
     private  JDASPK() {
         //#[ operation JDASPK()
@@ -112,92 +122,19 @@ public class JDASPK implements SASolver, DAESolver {
     }
 
 
-    //## operation clean()
-    public void clean() {
-        //#[ operation clean()
-        cleanDaspk();
-        //#]
-    }
-
-    //## operation cleanDaspk()
-    private native void cleanDaspk();
-
-    //## operation fixingPDepRate(Structure)
-    public double fixingPDepRate(Structure p_structure) {
-        //#[ operation fixingPDepRate(Structure)
-        //check c4h9o. beta scission
-        	if (p_structure.getReactantNumber() == 1 && p_structure.getProductNumber() == 2) {
-        	    ChemGraph r = (ChemGraph)p_structure.getReactants().next();
-        	    Iterator it = p_structure.getProducts();
-        	    ChemGraph p1 = (ChemGraph)it.next();
-        	    ChemGraph p2 = (ChemGraph)it.next();
-
-        	    if (r.getChemicalFormula().equals("C4H9O.")) {
-        	    	if (p1.getChemicalFormula().equals("C2H5.") || p2.getChemicalFormula().equals("C2H5.") ) {
-               			return 1E3;
-        	     	}
-        	    	else if (p1.getChemicalFormula().equals("C3H7.") || p2.getChemicalFormula().equals("C3H7.") ) {
-               			return 1E3;
-        	     	}
-        	    	else if (p1.getChemicalFormula().equals("CH3.") || p2.getChemicalFormula().equals("CH3.") ) {
-               			return 1E3;
-        	     	}
-        	    	else if (p1.getChemicalFormula().equals("H.") || p2.getChemicalFormula().equals("H.") ) {
-               			return 1E3;
-        	     	}
-        	    }
-        	}
-
-        return 1;
-        //#]
-    }
-
-    //## operation generateAllODEReactionList(ReactionModel,SystemSnapshot,Temperature,Pressure)
-    /*public void generateAllODEReactionList(ReactionModel p_reactionModel, SystemSnapshot p_beginStatus, Temperature p_temperature, Pressure p_pressure) {
-        //#[ operation generateAllODEReactionList(ReactionModel,SystemSnapshot,Temperature,Pressure)
-        int size = p_reactionModel.getReactionSet().size();
-        ODEReaction [] result = new ODEReaction[size];
-        int id = 0;
-        int thirdID = 0;
-        Iterator iter = p_reactionModel.getReactionSet().iterator();
-        while (iter.hasNext()) {
-        	Reaction r = (Reaction)iter.next();
-            if (r instanceof ThirdBodyReaction) {
-            	thirdID++;
-            	ODEReaction or = transferReaction(r, p_beginStatus, p_temperature, p_pressure);
-        		result[size - thirdID] = or;
-            }
-            else {
-        		id++;
-            	ODEReaction or = transferReaction(r, p_beginStatus, p_temperature, p_pressure);
-        		result[id-1] = or;
-            }
-        }
-
-        reactionList = new ODEReaction[id];
-        thirdBodyReactionList = new ODEReaction[thirdID];
-
-        if (id+thirdID != size) throw new InvalidReactionSetException("Generating ODE reaction list for daspk");
-
-        for (int i = 0; i < id; i++) {
-        	reactionList[i] = result[i];
-
-        }
-        for (int i = id; i < size; i++) {
-        	thirdBodyReactionList[i-id] = result[i];
-        }
-
-        return;
-        //#]
-    }*/
 
     //## operation generatePDepODEReactionList(ReactionModel,SystemSnapshot,Temperature,Pressure)
-    public LinkedList generatePDepODEReactionList(ReactionModel p_reactionModel, SystemSnapshot p_beginStatus, Temperature p_temperature, Pressure p_pressure) {
+    public StringBuilder generatePDepODEReactionList(ReactionModel p_reactionModel, SystemSnapshot p_beginStatus, Temperature p_temperature, Pressure p_pressure) {
         //#[ operation generatePDepODEReactionList(ReactionModel,SystemSnapshot,Temperature,Pressure)
-        LinkedList nonPDepList = new LinkedList();
+        StringBuilder rString = new StringBuilder();
+        StringBuilder arrayString = new StringBuilder();
+        StringBuilder rateString = new StringBuilder();
+        
+        rList = new LinkedList();
+    	LinkedList nonPDepList = new LinkedList();
         LinkedList pDepList = new LinkedList();
 
-        HashSet pDepStructureSet = new HashSet();
+        LinkedHashSet pDepStructureSet = new LinkedHashSet();
         for (Iterator iter = PDepNetwork.getDictionary().values().iterator(); iter.hasNext(); ) {
         	PDepNetwork pdn = (PDepNetwork)iter.next();
         	for (Iterator pdniter = pdn.getPDepNetReactionList(); pdniter.hasNext();) {
@@ -216,64 +153,90 @@ public class JDASPK implements SASolver, DAESolver {
         		}
         	}
         }
-        //System.out.println("Total Number of pressure dependent reactions are "+ pDepList.size());
+        
         for (Iterator iter = p_reactionModel.getReactionSet().iterator(); iter.hasNext(); ) {
         	Reaction r = (Reaction)iter.next();
-        	if (!r.reactantEqualsProduct() && !(r instanceof ThirdBodyReaction) && !(r instanceof TROEReaction)) {
+        	if (r.isForward() && !(r instanceof ThirdBodyReaction) && !(r instanceof TROEReaction)) {
         		Structure s = r.getStructure();
         		if (!pDepStructureSet.contains(s)) {
         			nonPDepList.add(r);
         		}
         	}
         }
-        //System.out.println("Total Number of non pressure dependent reactions are "+ nonPDepList.size());
-
+        
+        
+        
 		int size = nonPDepList.size() + pDepList.size();
-        reactionList = new ODEReaction[size];
-        LinkedList all = new LinkedList();
-        int id = 0;
-        //System.out.println("non p_dep reactions: " + nonPDepList.size() );
+       
+       
+       
         for (Iterator iter = nonPDepList.iterator(); iter.hasNext(); ) {
         	Reaction r = (Reaction)iter.next();
 
 			if (!(r instanceof ThirdBodyReaction) && !(r instanceof TROEReaction)){
-				all.add(r);
+				rList.add(r);
 				ODEReaction or = transferReaction(r, p_beginStatus, p_temperature, p_pressure);
-	            reactionList[id] = or;
-				id++;
+				arrayString.append(or.rNum+" "+or.pNum+" ");
+				for (int i=0;i<3;i++){
+					if (i<or.rNum)
+						arrayString.append(or.rID[i]+" ");
+					else
+						arrayString.append(0+" ");
+				}
+				for (int i=0;i<3;i++){
+					if (i<or.pNum)
+						arrayString.append(or.pID[i]+" ");
+					else
+						arrayString.append(0+" ");
+				}
+				if (r.hasReverseReaction())
+					arrayString.append(1 + " ");
+				else
+					arrayString.append(0 + " ");
+				rateString.append(or.rate + " " + or.A + " " + or.n + " " + or.E + " "+r.calculateKeq(p_temperature)+ " ");
+					
 			}
 
-            //double rate = r.calculateRate(p_temperature);
-            //if (r instanceof TemplateReaction) rate = ((TemplateReaction)r).calculatePDepRate(p_temperature);
-            //System.out.println(r.getStructure().toString()+"\t rate = \t"+ String.valueOf(rate));
-            //System.out.println(r.toChemkinString());
-
         }
 
-        //System.out.println("p_dep reactions: " + pDepList.size());
+        
         for (Iterator iter = pDepList.iterator(); iter.hasNext(); ) {
         	Reaction r = (Reaction)iter.next();
-        	all.add(r);
+        	rList.add(r);
 
         	ODEReaction or = transferReaction(r, p_beginStatus, p_temperature, p_pressure);
-            reactionList[id] = or;
-            //System.out.println(r.getStructure().toString() + "\t rate = \t" + Double.toString(or.getRate()));
-            //System.out.println(r.toChemkinString());
-			id++;
+        	arrayString.append(or.rNum+" "+or.pNum+" ");
+			for (int i=0;i<3;i++){
+				if (i<or.rNum)
+					arrayString.append(or.rID[i]+" ");
+				else
+					arrayString.append(0+" ");
+			}
+			for (int i=0;i<3;i++){
+				if (i<or.pNum)
+					arrayString.append(or.pID[i]+" ");
+				else
+					arrayString.append(0+" ");
+			}
+			if (r.hasReverseReaction())
+				arrayString.append(1 + " ");
+			else
+				arrayString.append(0 + " ");
+			rateString.append(or.rate + " " + or.A + " " + or.n + " " + or.E + " "+or.Keq+" ");
         }
-
-        return all;
+        rString.append(arrayString.toString()+"\n"+rateString.toString());
+        return rString;
         //#]
     }
 
     //## operation generateSpeciesStatus(ReactionModel,double [],double [],int)
-    private HashMap generateSpeciesStatus(ReactionModel p_reactionModel, double [] p_y, double [] p_yprime, int p_paraNum) {
+    private LinkedHashMap generateSpeciesStatus(ReactionModel p_reactionModel, double [] p_y, double [] p_yprime, int p_paraNum) {
         //#[ operation generateSpeciesStatus(ReactionModel,double [],double [],int)
         int neq = p_reactionModel.getSpeciesNumber()*(p_paraNum+1);
         if (p_y.length != neq) throw new DynamicSimulatorException();
         if (p_yprime.length != neq) throw new DynamicSimulatorException();
 
-        HashMap speStatus = new HashMap();
+        LinkedHashMap speStatus = new LinkedHashMap();
 
         for (Iterator iter = p_reactionModel.getSpecies(); iter.hasNext(); ) {
         	Species spe = (Species)iter.next();
@@ -297,90 +260,139 @@ public class JDASPK implements SASolver, DAESolver {
     }
 
     //## operation generateSensitivityStatus(ReactionModel,double [],double [],int)
-private LinkedList generateSensitivityStatus(ReactionModel p_reactionModel, double [] p_y, double [] p_yprime, int p_paraNum) {
-    //#[ operation generateSensitivityStatus(ReactionModel,double [],double [],int)
-    int neq = p_reactionModel.getSpeciesNumber()*(p_paraNum+1);
-    if (p_y.length != neq) throw new DynamicSimulatorException();
-    if (p_yprime.length != neq) throw new DynamicSimulatorException();
+    private double [] generateSensitivityStatus(ReactionModel p_reactionModel, double [] p_y, double [] p_yprime, int p_paraNum) {
+    	//#[ operation generateSensitivityStatus(ReactionModel,double [],double [],int)
+    	int neq = p_reactionModel.getSpeciesNumber()*(p_paraNum+1);
+    	if (p_y.length != neq) throw new DynamicSimulatorException();
+    	if (p_yprime.length != neq) throw new DynamicSimulatorException();
 
-    LinkedList senStatus = new LinkedList();
+    	double [] senStatus = new double[nParameter*nState];
 
-    if (p_paraNum > 0){
-    for (int i = p_reactionModel.getSpeciesNumber();i<neq;i++){
-      double sens = p_y[i];
-      double sflux = p_yprime[i];
-      int reaction_num = i/p_reactionModel.getSpeciesNumber();
-      int species_num = (i+1)%p_reactionModel.getSpeciesNumber();
-      if (species_num == 0){
-        species_num = p_reactionModel.getSpeciesNumber();
-      }
-      //String name = "dC"+String.valueOf(species_num)+"/dk"+String.valueOf(reaction_num);
-      //System.out.println(name + '\t' + String.valueOf(sens) + '\t' + String.valueOf(sflux));
-      SensitivityStatus ss = new SensitivityStatus(sens, sflux, species_num, reaction_num);
-      int index = i-p_reactionModel.getSpeciesNumber();
-      senStatus.add(ss);
+    	for (int i = p_reactionModel.getSpeciesNumber();i<neq;i++){
+    		double sens = p_y[i];
+    		int index = i-p_reactionModel.getSpeciesNumber();
+    		senStatus[index] = p_y[i];
+    	}
+    	return senStatus;
+    	//#]
     }
-    }
-    return senStatus;
-    //#]
-}
 
 
     //## operation generateThirdBodyReactionList(ReactionModel,SystemSnapshot,Temperature,Pressure)
-    public void generateThirdBodyReactionList(ReactionModel p_reactionModel, SystemSnapshot p_beginStatus, Temperature p_temperature, Pressure p_pressure) {
+    public StringBuilder generateThirdBodyReactionList(ReactionModel p_reactionModel, SystemSnapshot p_beginStatus, Temperature p_temperature, Pressure p_pressure) {
         //#[ operation generateThirdBodyReactionList(ReactionModel,SystemSnapshot,Temperature,Pressure)
         int size = p_reactionModel.getReactionSet().size();
-        thirdBody = new LinkedList();
-        ThirdBodyODEReaction [] result = new ThirdBodyODEReaction[size];
-        int thirdID = 0;
+        StringBuilder arrayString = new StringBuilder();
+        StringBuilder rateString = new StringBuilder();
+        StringBuilder tbrString = new StringBuilder();
         Iterator iter = p_reactionModel.getReactionSet().iterator();
+        thirdBodyList = new LinkedList();
+        
         while (iter.hasNext()) {
         	Reaction r = (Reaction)iter.next();
-
-            if ((r instanceof ThirdBodyReaction) && !(r instanceof TROEReaction)) {
-            	thirdID++;
+            if ((r.isForward()) && (r instanceof ThirdBodyReaction) && !(r instanceof TROEReaction)) {
             	ThirdBodyODEReaction or = (ThirdBodyODEReaction)transferReaction(r, p_beginStatus, p_temperature, p_pressure);
-        		result[thirdID-1] = or;
-                        thirdBody.add((ThirdBodyReaction)r);
+                thirdBodyList.add((ThirdBodyReaction)r);
+                
+            	arrayString.append(or.rNum+" "+or.pNum+" ");
+    			for (int i=0;i<3;i++){
+    				if (i<or.rNum)
+    					arrayString.append(or.rID[i]+" ");
+    				else
+    					arrayString.append(0+" ");
+    			}
+    			for (int i=0;i<3;i++){
+    				if (i<or.pNum)
+    					arrayString.append(or.pID[i]+" ");
+    				else
+    					arrayString.append(0+" ");
+    			}
+    			if (r.hasReverseReaction())
+    				arrayString.append(1 + " ");
+    			else
+    				arrayString.append(0 + " ");
+    			arrayString.append(or.numCollider+" ");
+    			for (int i=0; i<10; i++){
+    				if (i <  or.numCollider)
+    					arrayString.append(or.colliders[i] + " ");
+    				else
+    					arrayString.append(0 + " ");
+    			}
+    			rateString.append(or.rate + " " + or.A + " " + or.n + " " + or.E + " "+r.calculateKeq(p_temperature)+ " " +or.inertColliderEfficiency+" ");
+    			for (int i=0; i<10; i++){
+    				if (i < or.numCollider)
+    					rateString.append(or.efficiency[i] + " ");
+    				else
+    					rateString.append(0 + " ");
+    			}
+                
+                
              }
         }
 
-        thirdBodyReactionList = new ThirdBodyODEReaction[thirdID];
-
-        for (int i = 0; i < thirdID; i++) {
-        	thirdBodyReactionList[i] = result[i];
-        }
-
-        return;
+        tbrString.append(arrayString.toString()+"\n"+rateString.toString());
+        return tbrString;
         //#]
     }
 
-	 private void generateTROEReactionList(ReactionModel p_reactionModel, SystemSnapshot p_beginStatus, Temperature p_temperature, Pressure p_pressure) {
+	 private StringBuilder generateTROEReactionList(ReactionModel p_reactionModel, SystemSnapshot p_beginStatus, Temperature p_temperature, Pressure p_pressure) {
 		 int size = p_reactionModel.getReactionSet().size();
-	        TROEODEReaction [] result = new TROEODEReaction[size];
-	        int thirdID = 0;
-                troe = new LinkedList();
-	        Iterator iter = p_reactionModel.getReactionSet().iterator();
-	        while (iter.hasNext()) {
-	        	Reaction r = (Reaction)iter.next();
+		 StringBuilder arrayString = new StringBuilder();
+		 StringBuilder rateString = new StringBuilder();
+	     StringBuilder troeString = new StringBuilder(); 
+	     Iterator iter = p_reactionModel.getReactionSet().iterator();
+	     troeList = new LinkedList();
+	     
+	     while (iter.hasNext()) {
+	    	 Reaction r = (Reaction)iter.next();
 
-	            if (r instanceof TROEReaction) {
-	            	thirdID++;
-	            	TROEODEReaction or = (TROEODEReaction)transferReaction(r, p_beginStatus, p_temperature, p_pressure);
-	        		result[thirdID-1] = or;
-                                troe.add((TROEReaction)r);
-	             }
-	        }
+	    	 if (r.isForward() && r instanceof TROEReaction) {
+	    		 TROEODEReaction or = (TROEODEReaction)transferReaction(r, p_beginStatus, p_temperature, p_pressure);
+	    		 troeList.add((TROEReaction)r);
+	    		 arrayString.append(or.rNum+" "+or.pNum+" ");
+	    			for (int i=0;i<3;i++){
+	    				if (i<or.rNum)
+	    					arrayString.append(or.rID[i]+" ");
+	    				else
+	    					arrayString.append(0+" ");
+	    			}
+	    			for (int i=0;i<3;i++){
+	    				if (i<or.pNum)
+	    					arrayString.append(or.pID[i]+" ");
+	    				else
+	    					arrayString.append(0+" ");
+	    			}
+	    				    			
+	    			if (r.hasReverseReaction())
+	    				arrayString.append(1 + " ");
+	    			else
+	    				arrayString.append(0 + " ");
+	    			
+	    			arrayString.append(or.numCollider+" ");
+	    			for (int i=0; i<10; i++){
+	    				if (i <  or.numCollider)
+	    					arrayString.append(or.colliders[i] + " ");
+	    				else
+	    					arrayString.append(0 + " ");
+	    			}
+	    			if (or.troe7)
+	    				arrayString.append(0 + " ");
+	    			else
+	    				arrayString.append(1 + " ");
+	    			rateString.append(or.highRate + " " + or.A + " " + or.n + " " + or.E + " "+r.calculateKeq(p_temperature)+ " "+or.inertColliderEfficiency+" ");
+	    			for (int i=0; i<10; i++){
+	    				if (i < or.numCollider)
+	    					rateString.append(or.efficiency[i] + " ");
+	    				else
+	    					rateString.append(0 + " ");
+	    			}
+	    			rateString.append(or.a + " " + or.Tstar + " " + or.T2star + " " + or.T3star + " " + or.lowRate+ " ");
+	    	 }
+	     }
+	     troeString.append(arrayString.toString()+"\n"+rateString.toString());
+	     return troeString;
 
-	        troeReactionList = new TROEODEReaction[thirdID];
-
-	        for (int i = 0; i < thirdID; i++) {
-	        	troeReactionList[i] = result[i];
-	        }
-
-	        return;
-
-		}
+	 }
     //## operation getRealID(Species)
     public int getRealID(Species p_species) {
         //#[ operation getRealID(Species)
@@ -389,237 +401,186 @@ private LinkedList generateSensitivityStatus(ReactionModel p_reactionModel, doub
         	maxSpeciesNumber++;
         	id = new Integer(maxSpeciesNumber);
         	IDTranslator.put(p_species, id);
+        	thermoString.append(p_species.calculateG(Global.temperature) + " ");
         }
 
         return id.intValue();
         //#]
     }
 
-    //## operation solve(boolean,ReactionModel,boolean,SystemSnapshot,ReactionTime,ReactionTime,Temperature,Pressure,boolean)
-    public SystemSnapshot solve(boolean p_initialization, ReactionModel p_reactionModel, boolean p_reactionChanged, SystemSnapshot p_beginStatus, ReactionTime p_beginTime, ReactionTime p_endTime, Temperature p_temperature, Pressure p_pressure, boolean p_conditionChanged) {
-        //#[ operation solve(boolean,ReactionModel,boolean,SystemSnapshot,ReactionTime,ReactionTime,Temperature,Pressure,boolean)
-        ReactionTime rt = p_beginStatus.getTime();
+//  ## operation solve(boolean,ReactionModel,boolean,SystemSnapshot,ReactionTime,ReactionTime,Temperature,Pressure,boolean)
+    public LinkedList solve(boolean p_initialization, ReactionModel p_reactionModel, boolean p_reactionChanged, SystemSnapshot p_beginStatus, ReactionTime p_beginTime, ReactionTime p_endTime, Temperature p_temperature, Pressure p_pressure, boolean p_conditionChanged, int p_numSteps) {
+    	
+    	outputString = new StringBuilder();
+    	//first generate an id for all the species
+    	Iterator spe_iter = p_reactionModel.getSpecies();
+    	while (spe_iter.hasNext()){
+    		Species spe = (Species)spe_iter.next();
+    		int id = getRealID(spe);
+    	}
+    	double startTime = System.currentTimeMillis();
+		
+		ReactionTime rt = p_beginStatus.getTime();
         if (!rt.equals(p_beginTime)) throw new InvalidBeginStatusException();
 
-        // set time
         double tBegin = p_beginTime.getStandardTime();
         double tEnd = p_endTime.getStandardTime();
 
+		double T = p_temperature.getK();
+		double P = p_pressure.getAtm();
+		
+		LinkedList initialSpecies = new LinkedList();
+		
         // set reaction set
-        //if (p_initialization || p_reactionChanged || p_conditionChanged) {
-		generateTROEReactionList(p_reactionModel, p_beginStatus, p_temperature, p_pressure);
-        generateThirdBodyReactionList(p_reactionModel, p_beginStatus, p_temperature, p_pressure);
-        LinkedList rList = generatePDepODEReactionList(p_reactionModel, p_beginStatus, p_temperature, p_pressure);
-
-        	//generateAllODEReactionList(p_reactionModel, p_beginStatus, p_temperature, p_pressure);
-        	//p_reactionChanged = true;
-        //}
-
-        // set numbers
-		//System.out.println("Total number of reactions to Daspk is "+rList.size());
-        int nState = p_reactionModel.getSpeciesNumber();
-        int nParameter = 0;
-        LinkedList initialSpecies = new LinkedList();
-//        if (parameterInfor!=null) nParameter = parameterInfor.length;
-		if (parameterInfor != 0) {
-			nParameter = rList.size()+thirdBodyReactionList.length+troeReactionList.length; //svp
-			if (initialStatus == null) System.out.println("initialStatus = null");
-			Iterator spe_iter = initialStatus.getSpeciesStatus();
-			while (spe_iter.hasNext()) {
-				SpeciesStatus ss = (SpeciesStatus) spe_iter.next();
-				String name = ss.getSpecies().getName();
-				initialSpecies.add(name);
-				nParameter++;
+        if (p_initialization || p_reactionChanged || p_conditionChanged) {
+			
+        	nState = p_reactionModel.getSpeciesNumber();
+			
+			
+			//rString is a combination of a integer and a real array
+			//real array format:  rate, A, n, Ea, Keq
+			//int array format :  nReac, nProd, r1, r2, r3, p1, p2, p3, HASrev(T=1 or F=0)
+			rString = generatePDepODEReactionList(p_reactionModel, p_beginStatus, p_temperature, p_pressure);
+			
+			//tbrString is a combination of a integer and a real array
+			//real array format:  rate, A, n, Ea, Keq, inertEfficiency, e1, e2, ..., e10  (16 elements)
+			//int array format :  nReac, nProd, r1, r2, r3, p1, p2, p3, HASrev(T=1 or F=0), ncollider, c1, c2,..c10 (20 elements)
+			tbrString = generateThirdBodyReactionList(p_reactionModel, p_beginStatus, p_temperature, p_pressure);
+			
+			//troeString is a combination of a integer and a real array
+			//real array format:  rate, A, n, Ea, Keq, inertEfficiency, e1, e2, ..., e10, alpha, Tstar, T2star, T3star, lowRate  (21 elements)
+			//int array format :  nReac, nProd, r1, r2, r3, p1, p2, p3, HASrev(T=1 or F=0), ncollider, c1, c2,..c10, troe(0=T or 1=F) (21 elements)
+        	troeString = generateTROEReactionList(p_reactionModel, p_beginStatus, p_temperature, p_pressure);
+        	nParameter = 0;
+			if (parameterInfor != 0) {
+				nParameter = rList.size() + thirdBodyList.size() + troeList.size() + p_reactionModel.getSpeciesNumber();				
 			}
-
-		}
-
-        int neq = nState*(nParameter+1);
-
-        // set temperature and pressure
-        double T = p_temperature.getK();
-        double P = p_pressure.getAtm();
-
-        // set initial value of y and yprime;
-        double [] y = new double[neq];
-        double [] yprime = new double[neq];
-
-		//double numberOfReactedSpecies=0;
-        // get the present status at t_begin, and set y and y' accordingly
-        System.out.println("Before ODE: " + String.valueOf(tBegin) + "SEC");
-        System.out.println("End at : " + String.valueOf(tEnd) + "SEC");
-        for (Iterator iter = p_beginStatus.getSpeciesStatus(); iter.hasNext(); ) {
-        	SpeciesStatus ss = (SpeciesStatus)iter.next();
-        	double conc = ss.getConcentration();
-        	double flux = ss.getFlux();
-        	if (ss.isReactedSpecies()) {
-
-        		Species spe = ss.getSpecies();
-        		int id = getRealID(spe);
-        		System.out.println(String.valueOf(spe.getID()) + '\t' + spe.getName() + '\t' + String.valueOf(conc) + '\t' + String.valueOf(flux));
-                        //System.out.println("neq: "+neq);
-                        //System.out.println("id: "+id);
-         		y[id-1] = conc;
-        		yprime[id-1] = flux;
-        	}
+			neq = nState*(nParameter + 1);
+			initializeWorkSpace();
+			initializeConcentrations(p_beginStatus, p_reactionModel, p_beginTime, p_endTime, initialSpecies);
+			
+			
         }
-
-        if (nParameter != 0){//svp
-
-			parameterInforArray = new ParameterInfor[nParameter];
-			for (int i = 1; i <= rList.size()+thirdBodyReactionList.length+troeReactionList.length; i++){
-				parameterInforArray[i-1] = new ParameterInfor("k",i,0.00);
-			}
-			for (int i=rList.size()+1+thirdBodyReactionList.length+troeReactionList.length; i<=nParameter;i++){
-				parameterInforArray[i -
-				                    1] = new ParameterInfor("CO", nParameter, 0.00);
-			}
-
-			if (p_beginTime.getTime() == 0 || p_beginTime.getTime() == 0.00) {
-				LinkedList sensitivityStatus = new LinkedList();
-				int reactionNumber = rList.size()+thirdBodyReactionList.length+troeReactionList.length;
-				int speciesNumber = p_reactionModel.getSpeciesNumber();
-//            for (int i=0;i<reactionNumber*speciesNumber;i++){
-				for (int i=0; i<nParameter*speciesNumber;i++){
-					sensitivityStatus.add(i,null);
-				}
-				p_beginStatus.addSensitivity(sensitivityStatus);
-				double sflux = 1;
-				Iterator species_iter = p_reactionModel.getSpecies();
-				while (species_iter.hasNext()) {
-					Species spe = (Species) species_iter.next();
-					int m = getRealID(spe);
-					for (int p=0;p<nParameter;p++){
-						int k = m + (p+1) * speciesNumber - 1;
-                 //if (p >= rList.size()){
-						if (p >= reactionNumber){
-							int speciesNum = p-rList.size()-thirdBodyReactionList.length-troeReactionList.length;
-							String name = (String)initialSpecies.get(speciesNum);
-							sflux = 0;
-							SensitivityStatus senStatus;
-							if (name.equalsIgnoreCase(spe.getName())){
-								senStatus = new SensitivityStatus(1, sflux, m,
-										p + 1);
-								y[k] = 1;
-							}
-							else{
-								senStatus = new SensitivityStatus(0,sflux,m,p+1);
-								y[k]=0;
-							}
-							sensitivityStatus.add(k - p_reactionModel.getSpeciesNumber(),
-									senStatus);
-							p_beginStatus.putSensitivityStatus(k - speciesNumber, senStatus);
-
-							yprime[k] = sflux;
-
-						}
-						else{
-                                                  Reaction rxn;
-							if (p < rList.size()){
-                                                         rxn = (Reaction) rList.get(p);
-                                                        }
-                                                        else if (p < rList.size()+thirdBodyReactionList.length){
-                                                          rxn = (Reaction)thirdBody.get(p-rList.size());
-                                                        }
-                                                        else{
-                                                          rxn = (Reaction)troe.get(p-rList.size()-thirdBodyReactionList.length);
-                                                        }
-
-								if (rxn.containsAsProduct(spe)) {
-									sflux = 1;
-									Iterator new_iter = rxn.getReactants();
-									while (new_iter.hasNext()) {
-										ChemGraph cg = (ChemGraph) new_iter.next();
-										Species reactant = cg.getSpecies();
-										SpeciesStatus ss = p_beginStatus.getSpeciesStatus(reactant);
-										if (ss != null) {
-											sflux *= ss.getConcentration();
-										}
-										else {
-											sflux = 0;
-										}
-									}
-
-								}
-								if (rxn.containsAsReactant(spe)) {
-									sflux = -1;
-									Iterator new_iter = rxn.getReactants();
-									while (new_iter.hasNext()) {
-										ChemGraph cg = (ChemGraph) new_iter.next();
-										Species reactant = cg.getSpecies();
-										SpeciesStatus ss = p_beginStatus.getSpeciesStatus(reactant);
-										if (ss != null) {
-											sflux *= ss.getConcentration();
-										}
-										else {
-											sflux = 0;
-										}
-									}
-								}
-								else {
-									sflux = 0;
-								}
-								SensitivityStatus senStatus = new SensitivityStatus(0, sflux, m,
-										p+1);
-								sensitivityStatus.add(k-p_reactionModel.getSpeciesNumber(),senStatus);
-								p_beginStatus.putSensitivityStatus(k-speciesNumber,senStatus);
-								y[k] = 0;
-								yprime[k] = sflux;
-
-							//}
-
-							//else {
-							//	sflux = 0;
-							//	SensitivityStatus senStatus = new SensitivityStatus(0, sflux, m,
-							//			p+1);
-							//	sensitivityStatus.add(k-p_reactionModel.getSpeciesNumber(),senStatus);
-							//	p_beginStatus.putSensitivityStatus(k-speciesNumber,senStatus);
-							//	y[k] = 0;
-							//	yprime[k] = sflux;
-
-							//}
-						}
-					}
-				}
-			}
-            else {
-				for (int i = p_reactionModel.getSpeciesNumber(); i < y.length; i++) {
-					SensitivityStatus ss = (SensitivityStatus) p_beginStatus.
-					getSensitivityStatus(i-p_reactionModel.getSpeciesNumber());
-					double sens = ss.getSensitivity();
-					double sflux = ss.getSFlux();
-					int reactionNumber = rList.size()+thirdBodyReactionList.length+troeReactionList.length;
-					int speciesNumber = p_reactionModel.getSpeciesNumber();
-					Iterator species_iter = p_reactionModel.getSpecies();
-					y[i] = sens;
-					yprime[i] = sflux;
-				}
-			}
-		}
-
-
-		//System.out.println("Number of Reacted Species is " + numberOfReactedSpecies);
-
-        int idid;
-        HashMap speStatus = new HashMap();
-        LinkedList senStatus = new LinkedList();
-        double[] tPresent = {tBegin};
+        outputString.append(nState +"\t" + neq+"\n");
+        outputString.append( tBegin+" "+tEnd+" " + p_numSteps + "\n");
+		for (int i=0; i<nState; i++)
+			outputString.append(y[i]+" ");
+		outputString.append("\n");
+		for (int i=0; i<nState; i++)
+			outputString.append(yprime[i]+" ");
+		outputString.append("\n");
+		for (int i=0; i<30; i++)
+			outputString.append(info[i]+" ");
+		outputString.append("\n"+ rtol + " "+atol);
+		
+		outputString.append("\n" + thermoString.toString() + "\n" + p_temperature.getK() + " " + p_pressure.getPa() + "\n" + rList.size() + "\n" + rString.toString() + "\n" + thirdBodyList.size() + "\n"+tbrString.toString() + "\n" + troeList.size() + "\n" + troeString.toString()+"\n");
+		
+        int idid=0;
+        
+        
 		int temp = 1;
-        if (nParameter==0) {
-        	idid = solveDAE(p_initialization, reactionList, true, thirdBodyReactionList, troeReactionList, nState, y, yprime, tBegin, tEnd, this.rtol, this.atol, T, P);
-        	if (idid !=1 && idid != 2 && idid != 3)	{
-				System.out.println("The idid from DASPK was "+idid + " at time "+tPresent[0]);
+        Global.solverPrepossesor = Global.solverPrepossesor + (System.currentTimeMillis() - startTime)/1000/60;
+		
+
+        LinkedList systemSnapshotList = solveSEN(p_numSteps, p_reactionModel, p_beginTime, p_endTime, p_beginStatus);
+        
+        return systemSnapshotList;
+    }
+    
+    //## operation solve(boolean,ReactionModel,boolean,SystemSnapshot,ReactionTime,ReactionTime,Temperature,Pressure,boolean)
+    public SystemSnapshot solve(boolean p_initialization, ReactionModel p_reactionModel, boolean p_reactionChanged, SystemSnapshot p_beginStatus, ReactionTime p_beginTime, ReactionTime p_endTime, Temperature p_temperature, Pressure p_pressure, boolean p_conditionChanged) {
+    	
+    	outputString = new StringBuilder();
+    	//first generate an id for all the species
+    	Iterator spe_iter = p_reactionModel.getSpecies();
+    	while (spe_iter.hasNext()){
+    		Species spe = (Species)spe_iter.next();
+    		int id = getRealID(spe);
+    	}
+    	double startTime = System.currentTimeMillis();
+		
+		ReactionTime rt = p_beginStatus.getTime();
+        if (!rt.equals(p_beginTime)) throw new InvalidBeginStatusException();
+
+        double tBegin = p_beginTime.getStandardTime();
+        double tEnd = p_endTime.getStandardTime();
+
+		double T = p_temperature.getK();
+		double P = p_pressure.getAtm();
+		
+		LinkedList initialSpecies = new LinkedList();
+		
+        // set reaction set
+        if (p_initialization || p_reactionChanged || p_conditionChanged) {
+			
+        	nState = p_reactionModel.getSpeciesNumber();
+			
+			
+			//rString is a combination of a integer and a real array
+			//real array format:  rate, A, n, Ea, Keq
+			//int array format :  nReac, nProd, r1, r2, r3, p1, p2, p3, HASrev(T=1 or F=0)
+			rString = generatePDepODEReactionList(p_reactionModel, p_beginStatus, p_temperature, p_pressure);
+			
+			//tbrString is a combination of a integer and a real array
+			//real array format:  rate, A, n, Ea, Keq, inertEfficiency, e1, e2, ..., e10  (16 elements)
+			//int array format :  nReac, nProd, r1, r2, r3, p1, p2, p3, HASrev(T=1 or F=0), ncollider, c1, c2,..c10 (20 elements)
+			tbrString = generateThirdBodyReactionList(p_reactionModel, p_beginStatus, p_temperature, p_pressure);
+			
+			//troeString is a combination of a integer and a real array
+			//real array format:  rate, A, n, Ea, Keq, inertEfficiency, e1, e2, ..., e10, alpha, Tstar, T2star, T3star, lowRate  (21 elements)
+			//int array format :  nReac, nProd, r1, r2, r3, p1, p2, p3, HASrev(T=1 or F=0), ncollider, c1, c2,..c10, troe(0=T or 1=F) (21 elements)
+        	troeString = generateTROEReactionList(p_reactionModel, p_beginStatus, p_temperature, p_pressure);
+        	nParameter = 0;
+			if (parameterInfor != 0) {
+				nParameter = rList.size() + thirdBodyList.size() + troeList.size() + p_reactionModel.getSpeciesNumber();				
+			}
+			neq = nState*(nParameter + 1);
+			initializeWorkSpace();
+			initializeConcentrations(p_beginStatus, p_reactionModel, p_beginTime, p_endTime, initialSpecies);
+			
+			
+        }
+        outputString.append(nState +"\t" + neq+"\n");
+        outputString.append( tBegin+" "+tEnd+"\n" );
+		for (int i=0; i<nState; i++)
+			outputString.append(y[i]+" ");
+		outputString.append("\n");
+		for (int i=0; i<nState; i++)
+			outputString.append(yprime[i]+" ");
+		outputString.append("\n");
+		for (int i=0; i<30; i++)
+			outputString.append(info[i]+" ");
+		outputString.append("\n"+ rtol + " "+atol);
+		
+		outputString.append("\n" + thermoString.toString() + "\n" + p_temperature.getK() + " " + p_pressure.getPa() + "\n" + rList.size() + "\n" + rString.toString() + "\n" + thirdBodyList.size() + "\n"+tbrString.toString() + "\n" + troeList.size() + "\n" + troeString.toString()+"\n");
+		
+        int idid=0;
+        LinkedHashMap speStatus = new LinkedHashMap();
+        double [] senStatus = new double[nParameter*nState];
+        
+		int temp = 1;
+        Global.solverPrepossesor = Global.solverPrepossesor + (System.currentTimeMillis() - startTime)/1000/60;
+		if (nParameter==0) {
+			startTime = System.currentTimeMillis();
+        	//idid = solveDAE(p_initialization, reactionList, p_reactionChanged, thirdBodyReactionList, troeReactionList, nState, y, yprime, tBegin, tEnd, this.rtol, this.atol, T, P);
+        	idid = solveDAE();
+			if (idid !=1 && idid != 2 && idid != 3)	{
+				System.out.println("The idid from DASPK was "+idid );
 				throw new DynamicSimulatorException("DASPK: SA off.");
         	}
             System.out.println("After ODE: from " + String.valueOf(tBegin) + " SEC to " + String.valueOf(tEnd) + "SEC");
-
+			Global.solvertime = Global.solvertime + (System.currentTimeMillis() - startTime)/1000/60;
+			startTime = System.currentTimeMillis();
         	speStatus = generateSpeciesStatus(p_reactionModel, y, yprime, 0);
+			Global.speciesStatusGenerator = Global.speciesStatusGenerator + (System.currentTimeMillis() - startTime)/1000/60;
         }
         else {
 
-        	idid = solveSEN(p_initialization, reactionList, p_reactionChanged, thirdBodyReactionList, troeReactionList, nState, nParameter, this.parameterInforArray, y, yprime, tBegin, tEnd, this.rtol, this.atol, T, P);
-        	if (idid != 2 && idid != 3) throw new DynamicSimulatorException("DASPK: SA on.");
-        	//speStatus = generateSpeciesStatus(p_reactionModel, y, yprime, nParameter);
+        	//idid = solveSEN(p_initialization, reactionList, p_reactionChanged, thirdBodyReactionList, troeReactionList, nState, nParameter, this.parameterInforArray, y, yprime, tBegin, tEnd, this.rtol, this.atol, T, P);
+        	idid = solveDAE();
+        	
+        	//if (idid != 2 && idid != 3) throw new DynamicSimulatorException("DASPK: SA on.");
+        	speStatus = generateSpeciesStatus(p_reactionModel, y, yprime, nParameter);
                 System.out.println("After ODE: from " + String.valueOf(tBegin) + " SEC to " + String.valueOf(tEnd) + "SEC");
                  speStatus = generateSpeciesStatus(p_reactionModel, y, yprime, nParameter);
                  senStatus = generateSensitivityStatus(p_reactionModel,y,yprime,nParameter);
@@ -627,8 +588,8 @@ private LinkedList generateSensitivityStatus(ReactionModel p_reactionModel, doub
                  sss.setIDTranslator(IDTranslator);
                  LinkedList reactionList = new LinkedList();
                  reactionList.addAll(rList);
-                 reactionList.addAll(thirdBody);
-                 reactionList.addAll(troe);
+                 reactionList.addAll(thirdBodyList);
+                 reactionList.addAll(troeList);
                  sss.setReactionList(reactionList);
                  return sss;
 
@@ -644,18 +605,264 @@ private LinkedList generateSensitivityStatus(ReactionModel p_reactionModel, doub
     }
 
 
-	//## operation solveDAE(boolean,ODEReaction [],boolean,ODEReaction [],int,double [],double [],double,double,double,double,double,double)
-    private native int solveDAE(boolean p_initialization, ODEReaction [] p_reactionSet, boolean p_reactionChanged, ThirdBodyODEReaction [] p_thirdBodyReactionList, TROEODEReaction [] p_troeReactionList, int p_nState, double [] p_y, double [] p_yprime, double p_tBegin, double p_tEnd, double p_rtol, double p_atol, double p_temperature, double p_pressure);
+    
+	private int solveDAE() {
+		double startTime = System.currentTimeMillis();
+		String workingDirectory = System.getProperty("RMG.workingDirectory");
+		
+		//write the input file
+		File SolverInput = new File("ODESolver/SolverInput.dat");
+		try {
+			FileWriter fw = new FileWriter(SolverInput);
+			fw.write(outputString.toString());
+			fw.close();
+		} catch (IOException e) {
+			System.err.println("Problem writing Solver Input File!");
+			e.printStackTrace();
+		}
+		Global.writeSolverFile +=(System.currentTimeMillis()-startTime)/1000/60;
+		//run the solver on the input file
+		boolean error = false;
+        try {
+        	 // system call for therfit
+        	String[] command = {workingDirectory +  "/software/ODESolver/daspk.exe"};
+			File runningDir = new File("ODESolver");
+			
+			Process ODESolver = Runtime.getRuntime().exec(command, null, runningDir);
+			InputStream is = ODESolver.getInputStream();
+			InputStreamReader isr = new InputStreamReader(is);
+			BufferedReader br = new BufferedReader(isr);
+			String line=null;
+			while ( (line = br.readLine()) != null) {
+				//System.out.println(line);
+				line = line.trim();
+				if (!(line.contains("ODESOLVER SUCCESSFUL"))) {
+					System.err.println("Error running the ODESolver: "+line);
+					error = true;
+				}
+			}
+        	int exitValue = 4;
+        	exitValue = ODESolver.waitFor();
+        	System.out.println(br.readLine() + exitValue);
+        	
+        }
+        catch (Exception e) {
+        	String err = "Error in running ODESolver \n";
+        	err += e.toString();
+        	e.printStackTrace();
+        	System.exit(0);
+        }
+        
+        startTime = System.currentTimeMillis();
+        //read the result
+        File SolverOutput = new File("ODESolver/SolverOutput.dat");
+        try {
+        	FileReader fr = new FileReader(SolverOutput);
+        	BufferedReader br = new BufferedReader(fr);
+        	String line = br.readLine();
+        	//StringTokenizer st = new StringTokenizer(line);
+        	Global.solverIterations = Integer.parseInt(line.trim());
+        	line = br.readLine();
+        	if (Double.parseDouble(line.trim()) != neq) {
+        		System.out.println("ODESolver didnt generate all species result");
+        		System.exit(0);
+        	}
+        	for (int i=0; i<nParameter+1; i++){
+        		for (int j=0; j<nState; j++) {
+        			line = br.readLine();
+            		y[i*nState + j] = Double.parseDouble(line.trim());
+        		}
+        		line = br.readLine();
+        	}
+        	
+        	for (int i=0; i<nParameter+1; i++){
+        		for (int j=0; j<nState; j++) {
+        			line = br.readLine();
+            		yprime[i*nState + j] = Double.parseDouble(line.trim());
+        		}
+        		line = br.readLine();
+        	}
+        	
+        	for (int i=0; i<30; i++){
+        		line = br.readLine();
+        		info[i] = Integer.parseInt(line.trim());
+        	}
+        	
+        }
+        catch (IOException e) {
+        	String err = "Error in reading Solver Output File! \n";
+        	err += e.toString();
+        	e.printStackTrace();
+        	System.exit(0);
+        }
+        Global.readSolverFile += (System.currentTimeMillis() - startTime)/1000/60;
+		return 1;
+	}
+	
+	
+	private LinkedList solveSEN(int p_numSteps, ReactionModel p_reactionModel, ReactionTime tBegin, ReactionTime tEnd, SystemSnapshot p_beginStatus) {
+		double startTime = System.currentTimeMillis();
+		String workingDirectory = System.getProperty("RMG.workingDirectory");
+		ReactionTime tStep = tEnd;
+		LinkedList systemSnapshotList = new LinkedList();
+		//write the input file
+		File SolverInput = new File("ODESolver/SolverInput.dat");
+		try {
+			FileWriter fw = new FileWriter(SolverInput);
+			fw.write(outputString.toString());
+			fw.close();
+		} catch (IOException e) {
+			System.err.println("Problem writing Solver Input File!");
+			e.printStackTrace();
+		}
+		Global.writeSolverFile +=(System.currentTimeMillis()-startTime)/1000/60;
+		//run the solver on the input file
+		boolean error = false;
+        try {
+        	 // system call for therfit
+        	String[] command = {workingDirectory +  "/software/ODESolver/daspk.exe"};
+			File runningDir = new File("ODESolver");
+			
+			Process ODESolver = Runtime.getRuntime().exec(command, null, runningDir);
+			InputStream is = ODESolver.getInputStream();
+			InputStreamReader isr = new InputStreamReader(is);
+			BufferedReader br = new BufferedReader(isr);
+			String line=null;
+			while ( (line = br.readLine()) != null) {
+				//System.out.println(line);
+				line = line.trim();
+				if (!(line.contains("ODESOLVER SUCCESSFUL"))) {
+					System.err.println("Error running the ODESolver: "+line);
+					error = true;
+				}
+			}
+        	int exitValue = 4;
+        	exitValue = ODESolver.waitFor();
+        	System.out.println(br.readLine() + exitValue);
+        	
+        }
+        catch (Exception e) {
+        	String err = "Error in running ODESolver \n";
+        	err += e.toString();
+        	e.printStackTrace();
+        	System.exit(0);
+        }
+        
+        startTime = System.currentTimeMillis();
+        //read the result
+        File SolverOutput = new File("ODESolver/SolverOutput.dat");
+        try {
+        	FileReader fr = new FileReader(SolverOutput);
+        	BufferedReader br = new BufferedReader(fr);
+        	String line ;
 
-    //## operation solveSEN(boolean,ODEReaction [],boolean,ODEReaction [],int,int,ParameterInfor [],double [],double [],double,double,double,double,double,double)
-    private native int solveSEN(boolean p_initialization, ODEReaction [] p_reactionSet, boolean p_reactionChanged, ThirdBodyODEReaction [] p_thirdBodyReactionList, TROEODEReaction [] p_troeReactionList, int p_nState, int p_nParameter, ParameterInfor [] p_parameterInfor, double [] p_y, double [] p_yprime, double p_tBegin, double p_tEnd, double p_rtol, double p_atol, double p_temperature, double p_pressure);
-    static {System.loadLibrary("daspk");}
+        	for (int k=0; k<p_numSteps; k++){
+        		line = br.readLine();
+            	if (Double.parseDouble(line.trim()) != neq) {
+            		System.out.println("ODESolver didnt generate all species result");
+            		System.exit(0);
+            	}
+            	for (int i=0; i<nParameter+1; i++){
+            		for (int j=0; j<nState; j++) {
+            			line = br.readLine();
+                		y[i*nState + j] = Double.parseDouble(line.trim());
+            		}
+            		line = br.readLine();
+            	}
+            	
+            	for (int i=0; i<nParameter+1; i++){
+            		for (int j=0; j<nState; j++) {
+            			line = br.readLine();
+                		yprime[i*nState + j] = Double.parseDouble(line.trim());
+            		}
+            		line = br.readLine();
+            	}
+            	LinkedHashMap speStatus = new LinkedHashMap();
+                double [] senStatus = new double[nParameter*nState];
+            	
+                System.out.println("After ODE: from " + String.valueOf(tBegin) + " SEC to " + String.valueOf(tEnd) + "SEC");
+                speStatus = generateSpeciesStatus(p_reactionModel, y, yprime, nParameter);
+                senStatus = generateSensitivityStatus(p_reactionModel,y,yprime,nParameter);
+                SystemSnapshot sss = new SystemSnapshot(tEnd, speStatus, senStatus, p_beginStatus.getTemperature(), p_beginStatus.getPressure());
+                sss.setIDTranslator(IDTranslator);
+                LinkedList reactionList = new LinkedList();
+                reactionList.addAll(rList);
+                reactionList.addAll(thirdBodyList);
+                reactionList.addAll(troeList);
+                sss.setReactionList(reactionList);
+                systemSnapshotList.add(sss);
+            	tBegin = tEnd;
+            	tEnd = tEnd.add(tStep);
+        	}
+        	
+        	
+        }
+        catch (IOException e) {
+        	String err = "Error in reading Solver Output File! \n";
+        	err += e.toString();
+        	e.printStackTrace();
+        	System.exit(0);
+        }
+        Global.readSolverFile += (System.currentTimeMillis() - startTime)/1000/60;
+		return systemSnapshotList;
+	}
+	
+	
+	private void initializeWorkSpace() {
+		for (int i=0; i<30; i++)
+			info[i] = 0;
+		info[2] = 1; //print out the time steps
+		info[4] = 1; //use analytical jacobian
+		if (nParameter != 0) {
+			info[18] = nParameter; //the number of parameters
+			info[19] = 2; //perform senstivity analysis
+			info[24] = 1;//staggered corrector method is used
+		}
+		
+		
+		
+	}
+	private void initializeConcentrations(SystemSnapshot p_beginStatus, ReactionModel p_reactionModel, ReactionTime p_beginTime, ReactionTime p_endTime, LinkedList initialSpecies) {
+    	//System.out.println("After ODE:  from " + String.valueOf(p_beginTime.time) + "SEC to "+String.valueOf(p_endTime.time)+"SEC");
+		//System.out.println("End at : " + String.valueOf(p_endTime.time) + "SEC");
+		y = new double[neq];
+		yprime = new double[neq];
+		for (Iterator iter = p_beginStatus.getSpeciesStatus(); iter.hasNext(); ) {
+			SpeciesStatus ss = (SpeciesStatus)iter.next();
+			double conc = ss.getConcentration();
+			double flux = ss.getFlux();
+			if (ss.isReactedSpecies()) {
 
+				Species spe = ss.getSpecies();
+				int id = getRealID(spe);
+				//System.out.println(String.valueOf(spe.getID()) + '\t' + spe.getName() + '\t' + String.valueOf(conc) + '\t' + String.valueOf(flux));
+ 
+				y[id-1] = conc;
+				yprime[id-1] = flux;
+			}
+		}
 
-    //## operation transferReaction(Reaction,SystemSnapshot,Temperature,Pressure)
+		if (nParameter != 0){//svp
+						
+			double [] sensitivityStatus = new double[nState*nParameter];
+			int speciesNumber = p_reactionModel.getSpeciesNumber();
+			
+			for (int i=0; i<nParameter*speciesNumber;i++){
+				sensitivityStatus[i] = 0;
+			}
+			p_beginStatus.addSensitivity(sensitivityStatus);							
+		}
+
+	}
+		
+	
+	//## operation transferReaction(Reaction,SystemSnapshot,Temperature,Pressure)
     public ODEReaction transferReaction(Reaction p_reaction, SystemSnapshot p_beginStatus, Temperature p_temperature, Pressure p_pressure) {
         //#[ operation transferReaction(Reaction,SystemSnapshot,Temperature,Pressure)
-        double dT = 1;
+    	
+    	//System.out.println(p_reaction.getStructure().toString()+"\t"+p_reaction.calculateTotalRate(Global.temperature));
+        double startTime = System.currentTimeMillis();
+		double dT = 1;
         Temperature Tup = new Temperature(p_temperature.getStandard()+dT, Temperature.getStandardUnit());
         Temperature Tlow = new Temperature(p_temperature.getStandard()-dT, Temperature.getStandardUnit());
 
@@ -665,7 +872,7 @@ private LinkedList generateSensitivityStatus(ReactionModel p_reactionModel, doub
         int [] rid = new int[rnum];
         int index = 0;
         for (Iterator r_iter = p_reaction.getReactants(); r_iter.hasNext(); ) {
-        	Species s = ((ChemGraph)r_iter.next()).getSpecies();
+        	Species s = (Species)r_iter.next();
         	rid[index] = getRealID(s);
         	index++;
         }
@@ -673,25 +880,33 @@ private LinkedList generateSensitivityStatus(ReactionModel p_reactionModel, doub
         int [] pid = new int[pnum];
         index = 0;
         for (Iterator p_iter = p_reaction.getProducts(); p_iter.hasNext(); ) {
-        	Species s = ((ChemGraph)p_iter.next()).getSpecies();
+			Species s = (Species)p_iter.next();
         	pid[index] = getRealID(s);
         	index++;
         }
 
+		//Global.transferReaction = Global.transferReaction + (System.currentTimeMillis() - startTime)/1000/60;
 		//ODEReaction or;
         if(p_reaction instanceof PDepNetReaction) {
-        	double rate = ((PDepNetReaction)p_reaction).getRate();
+        	double rate = ((PDepNetReaction)p_reaction).calculateTotalRate(p_beginStatus.temperature);
         	ODEReaction or = new ODEReaction(rnum, pnum, rid, pid, rate);
+			//Global.transferReaction = Global.transferReaction + (System.currentTimeMillis() - startTime)/1000/60;
         	return or;
         }
         else {
         	double rate = 0;
         	if (p_reaction instanceof TemplateReaction) {
-        		rate = ((TemplateReaction)p_reaction).calculateTotalPDepRate(p_temperature);
+				//startTime = System.currentTimeMillis();
+        		//rate = ((TemplateReaction)p_reaction).getRateConstant();
+				
+				rate = ((TemplateReaction)p_reaction).calculateTotalRate(p_beginStatus.temperature);
 				ODEReaction or = new ODEReaction(rnum, pnum, rid, pid, rate);
+				//Global.transferReaction = Global.transferReaction + (System.currentTimeMillis() - startTime)/1000/60;
+				
 				return or;
 			}
 			else if (p_reaction instanceof TROEReaction){//svp
+				startTime = System.currentTimeMillis();
 				HashMap weightMap = ((ThirdBodyReaction)p_reaction).getWeightMap();
 				int weightMapSize = weightMap.size();
 				int [] colliders = new int[weightMapSize];
@@ -708,6 +923,7 @@ private LinkedList generateSensitivityStatus(ReactionModel p_reactionModel, doub
 					}
 
 				}
+				Global.transferReaction = Global.transferReaction + (System.currentTimeMillis() - startTime)/1000/60;
 				double T2star, T3star, Tstar, a;
 				T2star = ((TROEReaction)p_reaction).getT2star();
 				T3star = ((TROEReaction)p_reaction).getT3star();
@@ -723,6 +939,7 @@ private LinkedList generateSensitivityStatus(ReactionModel p_reactionModel, doub
 				return or;
 			}
 			else if (p_reaction instanceof ThirdBodyReaction){//svp
+				startTime = System.currentTimeMillis();
 				HashMap weightMap = ((ThirdBodyReaction)p_reaction).getWeightMap();
 				int weightMapSize = weightMap.size();
 				int [] colliders = new int[weightMapSize];
@@ -739,15 +956,23 @@ private LinkedList generateSensitivityStatus(ReactionModel p_reactionModel, doub
 					}
 
 				}
-				rate = p_reaction.calculateRate(p_temperature);
+				Global.transferReaction = Global.transferReaction + (System.currentTimeMillis() - startTime)/1000/60;
+				
+				rate = p_reaction.calculateTotalRate(p_beginStatus.temperature);
+				
 				double inertColliderEfficiency = ((ThirdBodyReaction)p_reaction).calculateThirdBodyCoefficientForInerts(p_beginStatus);
+				//rate = p_reaction.getRateConstant();
 				ThirdBodyODEReaction or = new ThirdBodyODEReaction(rnum, pnum, rid, pid, rate, colliders, efficiency,numCollider, inertColliderEfficiency);
 				return or;
 			}
 
 			else{
-				rate = p_reaction.calculateTotalRate(p_temperature);
+				rate = p_reaction.calculateTotalRate(p_beginStatus.temperature);
+				//startTime = System.currentTimeMillis();
+				//rate = p_reaction.getRateConstant();
 				ODEReaction or = new ODEReaction(rnum, pnum, rid, pid, rate);
+				//Global.transferReaction = Global.transferReaction + (System.currentTimeMillis() - startTime)/1000/60;
+				
 				return or;
 			}
 

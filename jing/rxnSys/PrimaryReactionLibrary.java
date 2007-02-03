@@ -57,7 +57,7 @@ public class PrimaryReactionLibrary {
     
     protected String name;		//## attribute name 
     
-    protected HashSet reactionSet = new HashSet();		//## attribute reactionSet 
+    protected LinkedHashSet reactionSet = new LinkedHashSet();		//## attribute reactionSet 
     
     protected HashMap speciesSet = new HashMap();		//## attribute speciesSet 
     
@@ -100,9 +100,9 @@ public class PrimaryReactionLibrary {
     
     
     //## operation getSpeciesSet() 
-    public HashSet getSpeciesSet() {
+    public LinkedHashSet getSpeciesSet() {
         //#[ operation getSpeciesSet() 
-        return new HashSet(speciesSet.values());
+        return new LinkedHashSet(speciesSet.values());
         //#]
     }
     
@@ -480,7 +480,7 @@ public class PrimaryReactionLibrary {
         name = p_name;
     }
     
-    public HashSet getReactionSet() {
+    public LinkedHashSet getReactionSet() {
         return reactionSet;
     }
     

@@ -53,7 +53,7 @@ public class PresentStatus extends SystemSnapshot {
     // Constructors
     
 	   //## operation PresentStatus(ReactionTime,HashMap,Temperature,Pressure) 
-    public  PresentStatus(ReactionTime p_reactionTime, HashMap p_speciesStatus, Temperature p_temperature, Pressure p_pressure) {
+    public  PresentStatus(ReactionTime p_reactionTime, LinkedHashMap p_speciesStatus, Temperature p_temperature, Pressure p_pressure) {
         //#[ operation PresentStatus(ReactionTime,HashMap,Temperature,Pressure) 
         super(p_reactionTime, p_speciesStatus, p_temperature, p_pressure);
         //#]
@@ -65,6 +65,7 @@ public class PresentStatus extends SystemSnapshot {
         speciesStatus = p_systemSnapshot.speciesStatus;
         temperature = p_systemSnapshot.temperature;
         pressure = p_systemSnapshot.pressure;
+		unreactedSpeciesFlux = p_systemSnapshot.unreactedSpeciesFlux;
         //#]
     }
     public  PresentStatus() {

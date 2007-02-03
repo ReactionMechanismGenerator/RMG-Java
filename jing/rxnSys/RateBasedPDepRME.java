@@ -57,7 +57,7 @@ public class RateBasedPDepRME implements ReactionModelEnlarger {
     }
     
     //## operation enlargeReactionModel(ReactionSystem) 
-    public String enlargeReactionModel(ReactionSystem p_reactionSystem) {
+    public void enlargeReactionModel(ReactionSystem p_reactionSystem) {
         //#[ operation enlargeReactionModel(ReactionSystem) 
         Object update = getNextUpdatedObject(p_reactionSystem);
         String return_string = "";
@@ -79,13 +79,13 @@ public class RateBasedPDepRME implements ReactionModelEnlarger {
         	
         	// print the reaction forms this species
             System.out.println("the reactions forming this species:");
-            HashSet ur = cerm.getUnreactedReactionSet();
+            LinkedHashSet ur = cerm.getUnreactedReactionSet();
             for (Iterator iter = ur.iterator(); iter.hasNext();) {
             	Reaction r = (Reaction)iter.next();
             	if (r.contains(next)) {
-            		double rate = r.calculateRate(p_reactionSystem.getPresentTemperature());
+            		double rate = r.calculateTotalRate(p_reactionSystem.getPresentTemperature());
             		if (r instanceof TemplateReaction) {
-            			rate = ((TemplateReaction)r).calculatePDepRate(p_reactionSystem.getPresentTemperature());
+            			rate = ((TemplateReaction)r).calculateTotalPDepRate(p_reactionSystem.getPresentTemperature());
             		}
             		System.out.print(r.toString() + "\trate is " + String.valueOf(rate));
             		for (Iterator rIter = r.getReactants(); rIter.hasNext();) {
@@ -105,7 +105,7 @@ public class RateBasedPDepRME implements ReactionModelEnlarger {
         		cerm.moveFromUnreactedToReactedReaction();
         	}
         	// generate new reaction set
-        	HashSet newReactionSet = p_reactionSystem.getReactionGenerator().react(cerm.getReactedSpeciesSet(),next);
+        	LinkedHashSet newReactionSet = p_reactionSystem.getReactionGenerator().react(cerm.getReactedSpeciesSet(),next);
         	
         	// partition the reaction set into reacted reaction set and unreacted reaction set
         	// update the corresponding core and edge model of CoreEdgeReactionModel
@@ -140,7 +140,7 @@ public class RateBasedPDepRME implements ReactionModelEnlarger {
         }
         else throw new InvalidReactionSystemUpdateException();
         
-        return return_string;
+        return ;
         
         //#]
     }

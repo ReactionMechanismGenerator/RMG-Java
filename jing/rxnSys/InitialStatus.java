@@ -60,7 +60,7 @@ public class InitialStatus extends SystemSnapshot {
         //#]
     }
     //## operation InitialStatus(HashMap) 
-	  public  InitialStatus(HashMap p_speciesStatus, Temperature p_temperature, Pressure p_pressure) {
+	  public  InitialStatus(LinkedHashMap p_speciesStatus, Temperature p_temperature, Pressure p_pressure) {
 	        //#[ operation InitialStatus(HashMap,Temperature,Pressure) 
 	        super(new ReactionTime(0,"S"),p_speciesStatus,p_temperature,p_pressure);
 	        //#]
