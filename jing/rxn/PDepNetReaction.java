@@ -96,7 +96,7 @@ public class PDepNetReaction extends Reaction {
     public String toChemkinString() {
         //#[ operation toChemkinString() 
 		
-        String result = getStructure().toChemkinString(true) + '\t' + rate +" 0.0 0.0" + '\n';
+        String result = getStructure().toChemkinString(true).toString() + '\t' + rate +" 0.0 0.0" + '\n';
         //result += getItsChebyshevPolynomials().toChemkinString() + '\n';
         return result;
         

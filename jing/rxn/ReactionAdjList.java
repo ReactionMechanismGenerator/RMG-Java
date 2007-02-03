@@ -42,6 +42,7 @@ import java.util.*;
 import jing.chemUtil.*;
 import jing.chemUtil.Arc;
 import jing.chemUtil.Graph;
+import jing.param.Global;
 
 //## package jing::rxn 
 
@@ -116,7 +117,7 @@ public class ReactionAdjList {
         //#[ operation mutate(Graph) 
         try {
         	Iterator act_iter = getActions();
-        	HashSet changedAtom = new HashSet();
+        	LinkedHashSet changedAtom = new LinkedHashSet();
         	while (act_iter.hasNext()) {
         		Action act = (Action)act_iter.next();
         		switch (act.type) {
@@ -133,7 +134,7 @@ public class ReactionAdjList {
         		        Arc arc = p_graph.getArcBetween(n1,n2);
         		        Object oldBond = arc.getElement();
         		        if (oldBond instanceof Collection) {
-        		        	HashSet b = new HashSet();
+        		        	LinkedHashSet b = new LinkedHashSet();
         		        	Iterator bond_iter = ((Collection)oldBond).iterator();
         		        	while (bond_iter.hasNext()) {
         		        		Bond thisBond = (Bond)bond_iter.next();
@@ -234,7 +235,7 @@ public class ReactionAdjList {
         				// new a radical or set the new radical	order
         				Object oldAtom = n.getElement();
         				if (oldAtom instanceof Collection) {
-        		        	HashSet atom = new HashSet();
+        		        	LinkedHashSet atom = new LinkedHashSet();
         		        	Iterator atom_iter = ((Collection)oldAtom).iterator();
         		        	while (atom_iter.hasNext()) {
         		        		ChemNodeElement thisAtom = (ChemNodeElement)atom_iter.next();
@@ -269,7 +270,7 @@ public class ReactionAdjList {
         	        	// new a radical or set the new radical	order
         				Object oldAtom = n.getElement();
         				if (oldAtom instanceof Collection) {
-        		        	HashSet atom = new HashSet();
+        		        	LinkedHashSet atom = new LinkedHashSet();
         		        	Iterator atom_iter = ((Collection)oldAtom).iterator();
         		        	while (atom_iter.hasNext()) {
         		        		ChemNodeElement thisAtom = (ChemNodeElement)atom_iter.next();
@@ -360,13 +361,19 @@ public class ReactionAdjList {
     
     //## operation reactChemGraph(LinkedList) 
     public LinkedList reactChemGraph(LinkedList p_reactants) throws InvalidChemGraphException, ForbiddenStructureException {
+		double pT = System.currentTimeMillis();
         //#[ operation reactChemGraph(LinkedList) 
         LinkedList reactants = new LinkedList();
         LinkedList products = new LinkedList();
         
         for (Iterator iter = p_reactants.iterator(); iter.hasNext(); ) {
-        	Graph g = ((ChemGraph)iter.next()).getGraph();
-        	reactants.add(g);
+			Object o = iter.next();
+			Graph g = null;
+			if (o instanceof ChemGraph)
+				 g = ((ChemGraph)o).getGraph();
+			else
+				g = ((Species)o).getChemGraph().getGraph();
+			reactants.add(g);
         }
         
         LinkedList productGraph = null;
@@ -379,16 +386,17 @@ public class ReactionAdjList {
         
         for (Iterator iter = productGraph.iterator(); iter.hasNext(); ) {
            	Graph pg = (Graph)iter.next();
-           	if (ChemGraph.isForbiddenStructure(pg)) 
-           		throw new ForbiddenStructureException(pg.toString());
+           	/*if (ChemGraph.isForbiddenStructure(pg)) 
+           		throw new ForbiddenStructureException(pg.toString());*/
            	String name = null;
 		
-			ChemGraph pcg = ChemGraph.make(pg);
+			ChemGraph pcg = ChemGraph.make(pg,true);
 			//Species ps = Species.make(name, pcg);
 			products.add(pcg);
 		
 			
         }
+		Global.RT_reactChemGraph += (System.currentTimeMillis()-pT)/1000/60;
         return products;
         
         

@@ -37,6 +37,9 @@ package jing.rxn;
 
 
 import jing.chem.*;
+import jing.chemUtil.Graph;
+import jing.chemUtil.Node;
+
 import java.util.*;
 import jing.param.*;
 import jing.param.Temperature;
@@ -65,13 +68,14 @@ public class TemplateReaction extends Reaction {
         structure = p_structure;
         kinetics = p_kinetics;
         reactionTemplate = p_template;
+		
         //#]
     }
     public  TemplateReaction() {
     }
     
     //## operation calculatePDepRate(Temperature) 
-    public double calculatePDepRate(Temperature p_temperature) {
+   /* public double calculatePDepRate(Temperature p_temperature) {
         //#[ operation calculatePDepRate(Temperature) 
         PDepNetwork pdn = getPDepNetwork();
         if (pdn != null) {
@@ -106,7 +110,7 @@ public class TemplateReaction extends Reaction {
         
         return calculateRate(p_temperature);
         //#]
-    }
+    }*/
     
 //  ## operation calculatePDepRate(Temperature) 
     public double calculateTotalPDepRate(Temperature p_temperature) {
@@ -147,7 +151,7 @@ public class TemplateReaction extends Reaction {
     }
     
     //## operation generateReverseForBackwardReaction() 
-    private TemplateReaction generateReverseForBackwardReaction() {
+    private TemplateReaction generateReverseForBackwardReaction(Structure fs, Structure fsSp) {
         //#[ operation generateReverseForBackwardReaction() 
         // we need to only generate reverse reaction for backward reaction, so that we wont be stuck into a self loop.
         if (!this.isBackward()) return null;
@@ -160,30 +164,84 @@ public class TemplateReaction extends Reaction {
         else if (fRT.isBackward()) rRT = fRT.getReverseReactionTemplate();
         else throw new InvalidReactionTemplateDirectionException();
         
-        Structure fs = getStructure();
+        //Structure fs = getStructure();
         LinkedList freactant = fs.getReactantList();
         LinkedList fproduct = fs.getProductList();
         
         Structure rs = new Structure(fproduct, freactant, -1*this.getDirection());
-		TemplateReaction rr = null;
+		Structure rsSp = new Structure(fsSp.products, fsSp.reactants, -1*this.getDirection());
+		TemplateReaction rr = rRT.getReactionFromStructure(rsSp);
+		if (rr!= null) {
+			rr.setReverseReaction(this);
+			return rr;
+		}
 		int rNum = fproduct.size();
-    	HashSet rReactionSet = new HashSet();
-    	if (rNum == 1) {
-    		ChemGraph cg = (ChemGraph)fproduct.getFirst();
-    		//rReactionSet = rRT.reactOneReactant(cg);
+		Kinetics k = rRT.findRateConstant(rs);
+		if (k == null && rRT.name.equals("R_Recombination")) {
+			
+			ChemGraph cg = ((ChemGraph)fproduct.get(0));
+			Graph g = cg.getGraph();
+			Node n = (Node)g.getCentralNodeAt(2);
+			if (n == null){
+				cg = ((ChemGraph)fproduct.get(1));
+				g = cg.getGraph();
+				n = (Node)g.getCentralNodeAt(2);
+			}
+			g.clearCentralNode();
+			g.setCentralNode(1,n);
+			k = rRT.findRateConstant(rs);	
+		}
+		else if (k==null && rRT.name.equals("H_Abstraction")) {
+			ChemGraph cg1 = ((ChemGraph)fproduct.get(0));
+			Graph g1 = cg1.getGraph();
+			Node n3 = (Node)g1.getCentralNodeAt(3);
+			if (n3 == null){
+				cg1 = ((ChemGraph)fproduct.get(1));
+				g1 = cg1.getGraph();
+				n3 = (Node)g1.getCentralNodeAt(3);
+				Node n2 = (Node)g1.getCentralNodeAt(2);
+				g1.clearCentralNode();
+				g1.setCentralNode(1,n3);
+				g1.setCentralNode(2,n2);
+				ChemGraph cg2 = ((ChemGraph)fproduct.get(0));
+				Graph g2 = cg2.getGraph();
+				Node n1 = (Node)g2.getCentralNodeAt(1);
+				g2.clearCentralNode();
+				g2.setCentralNode(3,n1);
+			}
+			else {
+				Node n2 = (Node)g1.getCentralNodeAt(2);
+				g1.clearCentralNode();
+				g1.setCentralNode(1,n3);
+				g1.setCentralNode(2,n2);
+				ChemGraph cg2 = ((ChemGraph)fproduct.get(1));
+				Graph g2 = cg2.getGraph();
+				Node n1 = (Node)g2.getCentralNodeAt(1);
+				g2.clearCentralNode();
+				g2.setCentralNode(3,n1);
+			}
+			k = rRT.findRateConstant(rs);
+		}
+		else if (k==null && rRT.name.equals("intra_H_migration")) {
+			ChemGraph cg = ((ChemGraph)fproduct.get(0));
 			rr = rRT.calculateForwardRateConstant(cg,rs);
-    	}
-    	else if (rNum == 2) {
-    		ChemGraph cg1 = (ChemGraph)fproduct.getFirst();
-    		ChemGraph cg2 = (ChemGraph)fproduct.getLast(); 
-    		//rReactionSet = rRT.reactTwoReactants(cg1,cg2);
-			rr = rRT.calculateForwardRateConstant(cg1,cg2,rs);
-			if (rr == null)
-				rr = rRT.calculateForwardRateConstant(cg2,cg1,rs);
-    		//rReactionSet.addAll(rRT.reactTwoReactants(cg2,cg1));
-    	}
-    	else throw new InvalidReactantNumberException();
-    	
+			if (!rr.isForward()) {
+				String err = "Backward:" + structure.toString() + String.valueOf(structure.calculateKeq(new Temperature(298,"K"))) + '\n';
+				err = err + "Forward:" + rr.structure.toString()+ String.valueOf(rr.structure.calculateKeq(new Temperature(298,"K"))) ;
+				 
+				throw new InvalidReactionDirectionException(err);
+			}
+			rr.setReverseReaction(this);
+			rRT.addReaction(rr);
+			return rr;
+			
+		}
+		if (k==null){
+			System.out.println("Couldn't find the rate constant for reaction: "+rs.toChemkinString(true)+" with "+rRT.name);
+			System.exit(0);
+		}
+			rr = new TemplateReaction(rsSp,k,rRT);
+
 		if (!rr.isForward()) {
 			String err = "Backward:" + structure.toString() + String.valueOf(structure.calculateKeq(new Temperature(298,"K"))) + '\n';
 			err = err + "Forward:" + rr.structure.toString()+ String.valueOf(rr.structure.calculateKeq(new Temperature(298,"K"))) ;
@@ -191,96 +249,10 @@ public class TemplateReaction extends Reaction {
 			throw new InvalidReactionDirectionException(err);
 		}
 		rr.setReverseReaction(this);
+		rRT.addReaction(rr);
 		return rr;
 		
-    	/*for (Iterator iter = rReactionSet.iterator(); iter.hasNext();) {
-    		TemplateReaction tr = (TemplateReaction)iter.next();
-    		if (tr.getStructure().equals(rs)) {
-    			if (!tr.isForward()) {
-    				String err = "Backward:" + structure.toString() + String.valueOf(structure.calculateKeq(new Temperature(298,"K"))) + '\n';
-    				err = err + "Forward:" + tr.structure.toString()+ String.valueOf(tr.structure.calculateKeq(new Temperature(298,"K"))) ;
-    				 
-    				throw new InvalidReactionDirectionException(err);
-    			}
-      			tr.setReverseReaction(this);
-    			return tr;
-    		}
-    	}
-    	Structure s = getStructure();
-    	System.out.println("can't generate reverse reaction for: " + s.toString());
-    	for (Iterator iter = s.getReactants(); iter.hasNext(); ) {
-    		ChemGraph cg = (ChemGraph)iter.next();
-    		System.out.println(cg.getName());
-    		System.out.println(cg.getGraph());
-    	}
-    	
-    	throw new FailToGenerateReverseReactionException(getStructure().toString());
-        /*TemplateReaction rr = rRT.getReactionFromStructure(rs);
-        if (rr != null) {
-        	if (!rr.isForward()) {
-        		double keq1 = structure.calculateKeq(new Temperature(298,"K"));
-        		double keq2 = rr.structure.calculateKeq(new Temperature(298,"K")); 
-        		String err = "Backward:" + structure.toString() + '\t' + "Keq = " + String.valueOf(keq1) + '\n';
-        		err = err + "Forward:" + rr.structure.toString()+ '\t' + "Keq = " + String.valueOf(keq2) ;
-        			 
-        		throw new InvalidReactionDirectionException(err);
-        	}
-        	Reaction fr = rr.getReverseReaction();
-        	if (fr != null && fr != this) throw new MultipleReverseReactionException();
-        	rr.setReverseReaction(this);
-        	return rr;
-        }
-        else {
-        	int rNum = fproduct.size();
-        	HashSet rReactionSet = new HashSet();
-        	if (rNum == 1) {
-        		ChemGraph cg = (ChemGraph)fproduct.getFirst();
-        		//rReactionSet = rRT.reactOneReactant(cg);
-				rr = rRT.calculateForwardRateConstant(cg,rs);
-        	}
-        	else if (rNum == 2) {
-        		ChemGraph cg1 = (ChemGraph)fproduct.getFirst();
-        		ChemGraph cg2 = (ChemGraph)fproduct.getLast(); 
-        		//rReactionSet = rRT.reactTwoReactants(cg1,cg2);
-				rr = rRT.calculateForwardRateConstant(cg1,cg2,rs);
-				if (rr == null)
-					rr = rRT.calculateForwardRateConstant(cg2,cg1,rs);
-        		//rReactionSet.addAll(rRT.reactTwoReactants(cg2,cg1));
-        	}
-        	else throw new InvalidReactantNumberException();
-        	
-			if (!rr.isForward()) {
-				String err = "Backward:" + structure.toString() + String.valueOf(structure.calculateKeq(new Temperature(298,"K"))) + '\n';
-				err = err + "Forward:" + rr.structure.toString()+ String.valueOf(rr.structure.calculateKeq(new Temperature(298,"K"))) ;
-				 
-				throw new InvalidReactionDirectionException(err);
-			}
-  			rr.setReverseReaction(this);
-			return rr;
-			
-        	/*for (Iterator iter = rReactionSet.iterator(); iter.hasNext();) {
-        		TemplateReaction tr = (TemplateReaction)iter.next();
-        		if (tr.getStructure().equals(rs)) {
-        			if (!tr.isForward()) {
-        				String err = "Backward:" + structure.toString() + String.valueOf(structure.calculateKeq(new Temperature(298,"K"))) + '\n';
-        				err = err + "Forward:" + tr.structure.toString()+ String.valueOf(tr.structure.calculateKeq(new Temperature(298,"K"))) ;
-        				 
-        				throw new InvalidReactionDirectionException(err);
-        			}
-          			tr.setReverseReaction(this);
-        			return tr;
-        		}
-        	}
-        	Structure s = getStructure();
-        	System.out.println("can't generate reverse reaction for: " + s.toString());
-        	for (Iterator iter = s.getReactants(); iter.hasNext(); ) {
-        		ChemGraph cg = (ChemGraph)iter.next();
-        		System.out.println(cg.getName());
-        		System.out.println(cg.getGraph());
-        	}
-        	
-        	throw new FailToGenerateReverseReactionException(getStructure().toString());
-        }*/
+ 
         	
         //#]
     }
@@ -300,16 +272,37 @@ public class TemplateReaction extends Reaction {
     }
     
     //## operation makeTemplateReaction(Structure,RateConstant,ReactionTemplate) 
-    public static TemplateReaction makeTemplateReaction(Structure p_structure, Kinetics p_kinetics, ReactionTemplate p_template) {
+    public static TemplateReaction makeTemplateReaction(Structure p_structureSp, Kinetics p_kinetics, ReactionTemplate p_template, Structure p_structure) {
         //#[ operation makeTemplateReaction(Structure,RateConstant,ReactionTemplate) 
-        TemplateReaction reaction = p_template.getReactionFromStructure(p_structure);
+        double PT = System.currentTimeMillis();
+		TemplateReaction reaction = p_template.getReactionFromStructure(p_structureSp);
+		Global.getReacFromStruc = Global.getReacFromStruc + (System.currentTimeMillis() - PT)/1000/60;
+		
         //TemplateReaction reaction = null;
 		
         if (reaction == null) {
-        	reaction = new TemplateReaction(p_structure,p_kinetics,p_template);
+        	reaction = new TemplateReaction(p_structureSp,p_kinetics,p_template);
         	if (reaction.isBackward()) {
-        		TemplateReaction reverse = reaction.generateReverseForBackwardReaction();
+				double pt = System.currentTimeMillis();
+        		TemplateReaction reverse = reaction.generateReverseForBackwardReaction(p_structure, p_structureSp);
         		reaction.setReverseReaction(reverse);
+				Global.generateReverse = Global.generateReverse + (System.currentTimeMillis() - pt)/1000/60;
+        	}
+        	else {
+        		ReactionTemplate fRT = reaction.getReactionTemplate();
+                ReactionTemplate rRT = null;
+                
+                
+                if (fRT.isNeutral()) rRT = fRT;
+                else rRT = fRT.getReverseReactionTemplate();
+                
+                if (rRT != null){
+                	TemplateReaction reverse = new TemplateReaction(p_structureSp.generateReverseStructure(),null,rRT);
+            		reaction.setReverseReaction(reverse);
+            		reverse.setReverseReaction(reaction);
+            		rRT.addReaction(reverse);
+                }
+        		
         	}
         	p_template.addReaction(reaction);    
         	if (!(reaction.getReactantNumber() == 2 && reaction.getProductNumber() == 2)) {
@@ -325,7 +318,7 @@ public class TemplateReaction extends Reaction {
         	Structure st = reaction.getStructure();
         	if (st!=p_structure) p_structure = null;
         }
-        
+		Global.makeTR += (System.currentTimeMillis()-PT)/1000/60;
         return reaction;
         //#]
     }
@@ -354,11 +347,8 @@ public class TemplateReaction extends Reaction {
         //#[ operation toString() 
         String s = getStructure().toString() + '\t' + getReactionTemplate().getName() + '\t';
         Kinetics k = getKinetics();
-        String kString = k.toChemkinString(calculateHrxn(p_temperature), p_temperature);
-        if (k instanceof ArrheniusEPKinetics) {
-        	double alpha = ((ArrheniusEPKinetics)k).getAlphaValue();
-        	kString = kString + '\t' + String.valueOf(alpha);
-        }
+        String kString = k.toChemkinString(calculateHrxn(p_temperature), p_temperature, false);
+       
         return s + kString;
         
         //#]
@@ -368,14 +358,14 @@ public class TemplateReaction extends Reaction {
     public String toStringWithReveseReaction(Temperature p_temperature) {
         //#[ operation toStringWithReveseReaction() 
         TemplateReaction rr = (TemplateReaction)getReverseReaction();
-        if (rr == null) return getStructure().toChemkinString(false) + '\t' + getReactionTemplate().getName() + '\t' + getKinetics().toChemkinString(calculateHrxn(p_temperature), p_temperature);
+        if (rr == null) return getStructure().toChemkinString(false).toString() + '\t' + getReactionTemplate().getName() + '\t' + getKinetics().toChemkinString(calculateHrxn(p_temperature), p_temperature, true);
         else {
         	TemplateReaction temp = null;
         	if (isForward()) temp = this;
         	else if (isBackward()) temp = rr;
         	else throw new InvalidReactionDirectionException();
         	
-        	return temp.getStructure().toChemkinString(false) + '\t' + temp.getReactionTemplate().getName() + '\t' + temp.getKinetics().toChemkinString(calculateHrxn(p_temperature), p_temperature);
+        	return temp.getStructure().toChemkinString(false).toString() + '\t' + temp.getReactionTemplate().getName() + '\t' + temp.getKinetics().toChemkinString(calculateHrxn(p_temperature), p_temperature, true);
         }
         
         //#]
@@ -386,6 +376,12 @@ public class TemplateReaction extends Reaction {
         return pDepNetwork;
     }
     
+	public double getRateConstant(){
+		if (rateConstant == 0)
+			rateConstant = calculateTotalPDepRate(Global.temperature);
+		return rateConstant;
+	}
+	
     public ReactionTemplate getReactionTemplate() {
         return reactionTemplate;
     }

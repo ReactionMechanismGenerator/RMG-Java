@@ -102,7 +102,7 @@ public interface Kinetics {
     boolean repOk();
     
     //## operation toChemkinString() 
-    String toChemkinString(double Hrxn, Temperature p_temperature);
+    String toChemkinString(double Hrxn, Temperature p_temperature, boolean includeComments);
     
     //## operation toString() 
     String toString();

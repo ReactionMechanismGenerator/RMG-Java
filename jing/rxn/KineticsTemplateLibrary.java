@@ -51,18 +51,18 @@ import jing.chemUtil.*;
 //## class KineticsTemplateLibrary 
 public class KineticsTemplateLibrary {
     
-    protected HashMap kineticsTemplate;
+    protected LinkedHashMap kineticsTemplate;
     
     // Constructors
     
     public  KineticsTemplateLibrary() {
         {
-            kineticsTemplate=new HashMap();
+            kineticsTemplate=new LinkedHashMap();
         }
     }
     
     //## operation addKinetics(HashSet,Kinetics) 
-    public KineticsTemplate addKinetics(HashSet p_fgc, Kinetics p_kinetics) {
+    public KineticsTemplate addKinetics(LinkedHashSet p_fgc, Kinetics p_kinetics) {
         //#[ operation addKinetics(HashSet,Kinetics) 
         KineticsTemplate old = getKineticsTemplate(p_fgc);
         // if there is already a number in the library, and it is not the root node, output information
@@ -105,7 +105,7 @@ public class KineticsTemplateLibrary {
     }
     
     //## operation getKinetics(HashSet) 
-    public Kinetics getKinetics(HashSet p_key) {
+    public Kinetics getKinetics(LinkedHashSet p_key) {
         //#[ operation getKinetics(HashSet) 
         KineticsTemplate kt = getKineticsTemplate(p_key);
         if (kt==null) return null;
@@ -114,7 +114,7 @@ public class KineticsTemplateLibrary {
     }
     
     //## operation getKineticsTemplate(HashSet) 
-    public KineticsTemplate getKineticsTemplate(HashSet p_key) {
+    public KineticsTemplate getKineticsTemplate(LinkedHashSet p_key) {
         //#[ operation getKineticsTemplate(HashSet) 
         return (KineticsTemplate)(kineticsTemplate.get(p_key));
         //#]
@@ -126,7 +126,7 @@ public class KineticsTemplateLibrary {
         // check if each kinetics is fine
         Iterator iter = getKineticsTemplate();
         while (iter.hasNext()) {
-        	KineticsTemplate kt = getKineticsTemplate((HashSet)iter.next());
+        	KineticsTemplate kt = getKineticsTemplate((LinkedHashSet)iter.next());
         	if (!kt.repOk()) return false;
         }
         return true;
@@ -153,7 +153,7 @@ public class KineticsTemplateLibrary {
         Iterator key_iter = getKineticsTemplate();
         while (key_iter.hasNext()) {
         	index++;
-        	HashSet key = (HashSet)key_iter.next();
+        	LinkedHashSet key = (LinkedHashSet)key_iter.next();
         	KineticsTemplate kt = getKineticsTemplate(key);
         	s = s + kt.toString() + '\n';
         }
@@ -185,7 +185,7 @@ public class KineticsTemplateLibrary {
         };
     }
     
-    public void removeKineticsTemplate(HashSet key) {
+    public void removeKineticsTemplate(LinkedHashSet key) {
         KineticsTemplate p_KineticsTemplate = getKineticsTemplate(key);
         kineticsTemplate.remove(key);
     }

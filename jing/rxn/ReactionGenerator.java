@@ -61,10 +61,10 @@ public interface ReactionGenerator {
     a set of reactants.
     */
     //## operation react(HashSet) 
-    HashSet react(HashSet p_speciesseed);
+	LinkedHashSet react(LinkedHashSet p_speciesseed);
     
     //## operation react(HashSet,Species) 
-    HashSet react(HashSet p_speciesSet, Species p_species);
+	LinkedHashSet react(LinkedHashSet p_speciesSet, Species p_species);
     
 }
 /*********************************************************************

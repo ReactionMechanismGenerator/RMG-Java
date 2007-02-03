@@ -68,6 +68,8 @@ public class Reaction {
 
   protected Kinetics fittedReverseKinetics = null;		//## attribute fittedReverseKinetics
 
+  protected double rateConstant =0 ; 
+  
   protected Reaction reverseReaction = null;		//## attribute reverseReaction
 
   protected Kinetics kinetics;
@@ -75,7 +77,8 @@ public class Reaction {
   protected double UpperBoundRate=0;//svp
   protected double LowerBoundRate = 0;//svp
 	protected Kinetics additionalKinetics = null;  //This is incase a reaction has two completely different transition states.
-
+	protected boolean finalized = false;
+	protected String ChemkinString = null;
   // Constructors
 
   //## operation Reaction()
@@ -88,6 +91,7 @@ public class Reaction {
       //#[ operation Reaction(Structure,RateConstant)
       structure = p_structure;
       kinetics = p_kinetics;
+	  //rateConstant = calculateTotalRate(Global.temperature);
       //#]
   }
 
@@ -96,7 +100,7 @@ public class Reaction {
       //#[ operation allProductsIncluded(HashSet)
       Iterator iter = getProducts();
       while (iter.hasNext()) {
-      	Species spe = ((ChemGraph)iter.next()).getSpecies();
+      	Species spe = ((Species)iter.next());
       	if (!p_speciesSet.contains(spe)) return false;
       }
       return true;
@@ -109,7 +113,7 @@ public class Reaction {
       if (p_speciesSet == null) throw new NullPointerException();
       Iterator iter = getReactants();
       while (iter.hasNext()) {
-      	Species spe = ((ChemGraph)iter.next()).getSpecies();
+      	Species spe = ((Species)iter.next());
       	if (!p_speciesSet.contains(spe)) return false;
       }
       return true;
@@ -149,32 +153,11 @@ public class Reaction {
       //#]
     }
 
-
-  //## operation calculateRate(Temperature)
-  public double calculateRate(Temperature p_temperature) {
-      //#[ operation calculateRate(Temperature)
-      if (isForward()) {
-      	double Hrxn = calculateHrxn(p_temperature);
-      	double k = kinetics.calculateRate(p_temperature, Hrxn);
-      	k *= getStructure().getRedundancy();
-      	return k;
-      }
-      else if (isBackward()) {
-      	Reaction r = getReverseReaction();
-      	if (r == null) throw new NullPointerException("Reverse reaction is null.\n" + structure.toString());
-      	if (!r.isForward()) throw new InvalidReactionDirectionException();
-      	double k = r.calculateRate(p_temperature);
-      	return k*calculateKeq(p_temperature);
-      }
-      else {
-      	throw new InvalidReactionDirectionException();
-      }
-      //#]
-  }
   
   public double calculateTotalRate(Temperature p_temperature){
   	double rate =0;
-	double Hrxn = calculateHrxn(p_temperature);
+	Temperature stdtemp = new Temperature(298,"K");
+	double Hrxn = calculateHrxn(stdtemp);
   	if (isForward()){
   		Iterator kineticIter = getAllKinetics().iterator();
       	while (kineticIter.hasNext()){
@@ -184,7 +167,7 @@ public class Reaction {
 			else 
 				rate = rate + k.calculateRate(p_temperature);
       	}
-		rate = rate*structure.getRedundancy();
+		
       	return rate;
   	}
   	else if (isBackward()){
@@ -408,7 +391,7 @@ public class Reaction {
       //#[ operation checkRateRange()
       Temperature t = new Temperature(1500,"K");
 
-      double rate = calculateRate(t);
+      double rate = calculateTotalRate(t);
 
       if (getReactantNumber() == 2) {
       	if (rate > BIMOLECULAR_RATE_UPPER) return false;
@@ -437,8 +420,8 @@ public class Reaction {
       //#[ operation containsAsProduct(Species)
       Iterator iter = getProducts();
       while (iter.hasNext()) {
-      	ChemGraph cg = (ChemGraph)iter.next();
-      	Species spe = cg.getSpecies();
+      	//ChemGraph cg = (ChemGraph)iter.next();
+      	Species spe = (Species)iter.next();
       	if (spe.equals(p_species)) return true;
       }
 
@@ -451,8 +434,8 @@ public class Reaction {
       //#[ operation containsAsReactant(Species)
       Iterator iter = getReactants();
       while (iter.hasNext()) {
-      	ChemGraph cg = (ChemGraph)iter.next();
-      	Species spe = cg.getSpecies();
+      	//ChemGraph cg = (ChemGraph)iter.next();
+      	Species spe = (Species)iter.next();
       	if (spe.equals(p_species)) return true;
       }
 
@@ -487,7 +470,7 @@ public class Reaction {
 
       	String result = "";
       	for (double t = 300.0; t<1500.0; t+=50.0) {
-      		double rate = calculateRate(new Temperature(t,"K"));
+      		double rate = calculateTotalRate(new Temperature(t,"K"));
       		result += String.valueOf(t) + '\t' + String.valueOf(rate) + '\n';
       	}
 
@@ -627,8 +610,13 @@ public class Reaction {
 
       Kinetics k = getKinetics();
       Structure newS = s.generateReverseStructure();
+	  newS.setRedundancy(s.getRedundancy());
       Reaction r = new Reaction(newS, k);
 
+	  if (hasAdditionalKinetics()){
+		  r.addAdditionalKinetics(additionalKinetics,1);
+	  }
+	  
       r.setReverseReaction(this);
       this.setReverseReaction(r);
 
@@ -722,6 +710,12 @@ public class Reaction {
       //#]
   }
 
+  public double getRateConstant(){
+	  if (rateConstant == 0)
+		  rateConstant = calculateTotalRate(Global.temperature);
+	  return rateConstant;
+  }
+  
   //## operation getProductNumber()
   public int getProductNumber() {
       //#[ operation getProductNumber()
@@ -790,7 +784,7 @@ public class Reaction {
 	    public boolean hasResonanceIsomerAsProduct() {
 	        //#[ operation hasResonanceIsomerAsProduct()
 	        for (Iterator iter = getProducts(); iter.hasNext();) {
-	        	Species spe = ((ChemGraph)iter.next()).getSpecies();
+	        	Species spe = ((Species)iter.next());
 	        	if (spe.hasResonanceIsomers()) return true;
 	        }
 	        return false;
@@ -801,7 +795,7 @@ public class Reaction {
 	    public boolean hasResonanceIsomerAsReactant() {
 	        //#[ operation hasResonanceIsomerAsReactant()
 	        for (Iterator iter = getReactants(); iter.hasNext();) {
-	        	Species spe = ((ChemGraph)iter.next()).getSpecies();
+				Species spe = ((Species)iter.next());
 	        	if (spe.hasResonanceIsomers()) return true;
 	        }
 	        return false;
@@ -827,7 +821,7 @@ public class Reaction {
   }
 
 	   //## operation isDuplicated(Reaction)
-  public boolean isDuplicated(Reaction p_reaction) {
+  /*public boolean isDuplicated(Reaction p_reaction) {
       //#[ operation isDuplicated(Reaction)
       // the same structure, return true
       Structure str1 = getStructure();
@@ -838,12 +832,12 @@ public class Reaction {
       // if not the same structure, check the resonance isomers
       if (!hasResonanceIsomer()) return false;
 
-      if (str1.equalsAsSpecies(str2)) return true;
+      if (str1.equals(str2)) return true;
       else return false;
 
 
       //#]
-  }
+  }*/
 
   //## operation isBackward()
   public boolean isBackward() {
@@ -869,7 +863,7 @@ public class Reaction {
   //## operation makeReaction(Structure,Kinetics,boolean)
   public static Reaction makeReaction(Structure p_structure, Kinetics p_kinetics, boolean p_generateReverse) {
       //#[ operation makeReaction(Structure,Kinetics,boolean)
-      if (!p_structure.repOk()) throw new InvalidStructureException(p_structure.toChemkinString(false));
+      if (!p_structure.repOk()) throw new InvalidStructureException(p_structure.toChemkinString(false).toString());
       if (!p_kinetics.repOk()) throw new InvalidKineticsException(p_kinetics.toString());
 
 
@@ -925,12 +919,12 @@ public class Reaction {
       	System.out.println(getStructure().toString());
       	Temperature tup = new Temperature(1500,"K");
       	if (isForward()) {
-      		System.out.println("k(T=1500) = " + String.valueOf(calculateRate(tup)));
+      		System.out.println("k(T=1500) = " + String.valueOf(calculateTotalRate(tup)));
       	}
       	else {
-      		System.out.println("k(T=1500) = " + String.valueOf(calculateRate(tup)));
+      		System.out.println("k(T=1500) = " + String.valueOf(calculateTotalRate(tup)));
       		System.out.println("Keq(T=1500) = " + String.valueOf(calculateKeq(tup)));
-      		System.out.println("krev(T=1500) = " + String.valueOf(getReverseReaction().calculateRate(tup)));
+      		System.out.println("krev(T=1500) = " + String.valueOf(getReverseReaction().calculateTotalRate(tup)));
       	}
       	System.out.println(getKinetics());
       	return false;
@@ -951,27 +945,30 @@ public class Reaction {
 	  //## operation toChemkinString()
   public String toChemkinString(Temperature p_temperature) {
       //#[ operation toChemkinString()
+	  if (ChemkinString != null)
+		  return ChemkinString;
 	  	StringBuilder result = new StringBuilder();
-      	String structure = getStructure().toChemkinString(hasReverseReaction());
-	  	double Hrxn = calculateHrxn(p_temperature);
+      	StringBuilder strucString = getStructure().toChemkinString(hasReverseReaction());
+		Temperature stdtemp = new Temperature(298,"K");
+		double Hrxn = calculateHrxn(stdtemp);
 		if (hasAdditionalKinetics()){
 			Iterator iter = getAllKinetics().iterator();
-			String k = ((Kinetics)iter.next()).toChemkinString(Hrxn,p_temperature);
-			result.append(structure + "  " + k + "\nDUP");
+			String k = ((Kinetics)iter.next()).toChemkinString(Hrxn,p_temperature, true);
+			result.append(strucString + "  " + k + "\nDUP");
 			while (iter.hasNext()){
 				
-				k = ((Kinetics)iter.next()).toChemkinString(Hrxn,p_temperature);
+				k = ((Kinetics)iter.next()).toChemkinString(Hrxn,p_temperature, true);
 				
-				result.append("\n"+structure + "  " + k + "\nDUP");
+				result.append("\n"+strucString + "  " + k + "\nDUP");
 				
 			}
 		}
 		else {
-			String k = getKinetics().toChemkinString(Hrxn,p_temperature);
-	        result.append(structure+ " " + k) ;
+			String k = getKinetics().toChemkinString(Hrxn,p_temperature, true);
+			result.append(strucString+ " " + k);
 		}
 		
-
+		ChemkinString = result.toString();
       return result.toString();
 
       //#]
@@ -981,7 +978,7 @@ public class Reaction {
       //#[ operation toChemkinString()
 	
       String result = getStructure().toRestartString(hasReverseReaction())+ " "+getStructure().direction + " "+getStructure().redundancy;
-      String k = getKinetics().toChemkinString(calculateHrxn(p_temperature),p_temperature);
+      String k = getKinetics().toChemkinString(calculateHrxn(p_temperature),p_temperature, true);
       result = result + " " + k;
 
       return result;
@@ -999,19 +996,27 @@ public class Reaction {
       //#]
   }
 
+ 
   //## operation toString()
   public String toString(Temperature p_temperature) {
       //#[ operation toString()
       Kinetics k = getKinetics();
-      String kString = k.toChemkinString(calculateHrxn(p_temperature),p_temperature);
-      if (k instanceof ArrheniusEPKinetics) {
-      	double alpha = ((ArrheniusEPKinetics)k).getAlphaValue();
-      	kString = kString + '\t' + String.valueOf(alpha);
-      }
+      String kString = k.toChemkinString(calculateHrxn(p_temperature),p_temperature,false);
+      
       return getStructure().toString() + '\t' + kString;
       //#]
   }
 
+  public String toString() {
+      //#[ operation toString()
+	  Temperature p_temperature = Global.temperature;
+      Kinetics k = getKinetics();
+      String kString = k.toChemkinString(calculateHrxn(p_temperature),p_temperature,false);
+      
+      return getStructure().toString() + '\t' + kString;
+      //#]
+  }
+  
   public static double getBIMOLECULAR_RATE_UPPER() {
       return BIMOLECULAR_RATE_UPPER;
   }
@@ -1033,10 +1038,13 @@ public class Reaction {
   }
 	
 	public void addAdditionalKinetics(Kinetics p_kinetics, int red) {
+		if (finalized)
+			return;
 		if (p_kinetics == null)
 			return;
 		if (kinetics == null){
 			kinetics = p_kinetics;
+			structure.redundancy = 1;
 		}
 		else if (kinetics.equals(p_kinetics)){
 			structure.increaseRedundancy(red);
@@ -1045,6 +1053,7 @@ public class Reaction {
 			if (p_kinetics.calculateRate(Global.temperature) > kinetics.calculateRate(Global.temperature)){
 				additionalKinetics = kinetics;
 				kinetics = p_kinetics;
+				structure.redundancy = 1;
 			}
 			else additionalKinetics = p_kinetics;
 		else if (additionalKinetics.equals(p_kinetics))
@@ -1082,9 +1091,9 @@ public class Reaction {
 	
 	public HashSet getAllKinetics(){
 		HashSet allKinetics = new HashSet();
-		allKinetics.add(kinetics);
+		allKinetics.add(kinetics.multiply(structure.redundancy));
 		if ( hasAdditionalKinetics()){
-			allKinetics.add(additionalKinetics);
+			allKinetics.add(additionalKinetics.multiply(structure.redundancy));
 			
 		}
 		
@@ -1093,6 +1102,11 @@ public class Reaction {
 	
 	
 
+	public void setFinalized(boolean p_finalized) {
+		finalized = p_finalized;
+		return;
+	}
+	
   public Structure getStructure() {
       return structure;
   }

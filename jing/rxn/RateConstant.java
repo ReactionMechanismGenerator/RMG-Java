@@ -38,6 +38,7 @@ package jing.rxn;
 
 import java.util.*;
 import jing.mathTool.*;
+import jing.param.Global;
 import jing.param.Temperature;
 
 //## package jing::rxn 
@@ -129,11 +130,11 @@ public class RateConstant {
     }
     
     //## operation toChemkinString() 
-    public String toChemkinString() {
+    /*public String toChemkinString() {
         //#[ operation toChemkinString() 
-        return getKineticsTemplate().getKinetics().toChemkinString();
+        return getKineticsTemplate().getKinetics().toChemkinString(Global.temperature);
         //#]
-    }
+    }*/
     
     //## operation toString() 
     public String toString() {

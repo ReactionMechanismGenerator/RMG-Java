@@ -85,7 +85,7 @@ public class LibraryReactionGenerator implements ReactionGenerator {
     the pass-in structure of a library reaction.
     */
     //## operation match(HashSet,LibraryReaction) 
-    protected boolean match(HashSet p_speciesSeed, LibraryReaction p_libraryReaction) {
+    protected boolean match(LinkedHashSet p_speciesSeed, LibraryReaction p_libraryReaction) {
         //#[ operation match(HashSet,LibraryReaction) 
         Iterator iter = p_libraryReaction.getReactants();
         
@@ -111,9 +111,9 @@ public class LibraryReactionGenerator implements ReactionGenerator {
     the species involved in reaction system.
     */
     //## operation react(HashSet) 
-    public HashSet react(HashSet p_speciesSeed) {
+    public LinkedHashSet react(LinkedHashSet p_speciesSeed) {
         //#[ operation react(HashSet) 
-        HashSet reaction_set = new HashSet();
+    	LinkedHashSet reaction_set = new LinkedHashSet();
         
         if (!reactionLibrary.repOk() || reactionLibrary.isEmpty() || p_speciesSeed.size()==0) {
         	return reaction_set;
@@ -135,10 +135,10 @@ public class LibraryReactionGenerator implements ReactionGenerator {
     }
     
     //## operation react(HashSet,Species) 
-    public HashSet react(HashSet p_speciesSet, Species p_species) {
+    public LinkedHashSet react(LinkedHashSet p_speciesSet, Species p_species) {
         //#[ operation react(HashSet,Species) 
         if (!p_speciesSet.contains(p_species)) p_speciesSet.add(p_species);
-        HashSet species = (HashSet)p_speciesSet.clone();
+        LinkedHashSet species = (LinkedHashSet)p_speciesSet.clone();
         
         return react(species);
         

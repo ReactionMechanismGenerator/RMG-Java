@@ -73,14 +73,14 @@ public class TemplateReactionGenerator implements ReactionGenerator {
     the set of species in the reaction system.
     */
     //## operation react(HashSet) 
-    public HashSet react(HashSet p_speciesSeed) {
+    public LinkedHashSet react(LinkedHashSet p_speciesSeed) {
         //#[ operation react(HashSet) 
         if (p_speciesSeed.size() == 0) {
         	return null;
         }
         
-        HashSet reaction_set = new HashSet();
-        HashSet species_set = new HashSet();
+        LinkedHashSet reaction_set = new LinkedHashSet();
+        //LinkedHashSet species_set = new LinkedHashSet();
         
         // add here the algorithm to generate reaction
         // loop over all the reaction template to find any possible match between the species seed set and the reaction template library
@@ -92,10 +92,11 @@ public class TemplateReactionGenerator implements ReactionGenerator {
         		Iterator species_iter1 = p_speciesSeed.iterator();
         		while (species_iter1.hasNext()) {
         			Species first_reactant = (Species)species_iter1.next();
-        			if (first_reactant.isReactive()) { //GJB
-        				HashSet current_reactions = current_template.reactOneReactant(first_reactant);
+        			if (first_reactant.isReactive()) {
+        				LinkedHashSet current_reactions = current_template.reactOneReactant(first_reactant);
         				reaction_set.addAll(current_reactions);
         			}
+        			
         		}                                
         	}
         	// the reaction template has two reactants, we need to check all the possible combination of two species
@@ -109,11 +110,12 @@ public class TemplateReactionGenerator implements ReactionGenerator {
         				while (species_iter2.hasNext()) {
         					Species second_reactant = (Species)species_iter2.next();
         					if (second_reactant.isReactive()) {
-        						HashSet current_reactions = current_template.reactTwoReactants(first_reactant,second_reactant);
+ 		       					LinkedHashSet current_reactions = current_template.reactTwoReactants(first_reactant,second_reactant);
         						reaction_set.addAll(current_reactions);
         					}
         				}
         			}
+        			
         		}
         	}
         }
@@ -126,9 +128,12 @@ public class TemplateReactionGenerator implements ReactionGenerator {
     }
     
     //## operation react(HashSet,Species) 
-    public HashSet react(HashSet p_speciesSet, Species p_species) {
+    public LinkedHashSet react(LinkedHashSet p_speciesSet, Species p_species) {
         //#[ operation react(HashSet,Species) 
-        HashSet reaction_set = new HashSet();
+    	LinkedHashSet reaction_set = new LinkedHashSet();
+    	if (!p_species.isReactive()){
+    		return reaction_set;
+    	}
         
         if (p_speciesSet.size() == 0 && p_species == null) {
         	return reaction_set;
@@ -147,12 +152,12 @@ public class TemplateReactionGenerator implements ReactionGenerator {
         	// the reaction template has only one reactant, we only need to loop over the whole species seed set to find a match
         	double startTime = System.currentTimeMillis();
 			if (current_template.hasOneReactant()) {
-				if (p_species.isReactive()) { // GJB
-        		HashSet current_reactions = current_template.reactOneReactant(p_species);
-        		reaction_set.addAll(current_reactions);   
+        		
+				LinkedHashSet current_reactions = current_template.reactOneReactant(p_species);
+				reaction_set.addAll(current_reactions);   
 				singleReaction = singleReaction + ((System.currentTimeMillis()-startTime)/1000/60);
-				}
-			}
+        		
+        	}
 			
         	// the reaction template has two reactants, we need to check all the possible combination of two species
 			
@@ -161,34 +166,32 @@ public class TemplateReactionGenerator implements ReactionGenerator {
 				double tempStart = System.currentTimeMillis();
 				double species_StartTime = 0;
         		Iterator species_iter = p_speciesSet.iterator();
-        		if (p_species.isReactive()) { // GJB if-cond
-        			while (species_iter.hasNext()) {
-        				if (current_template.name.equals("H_Abstraction"))
-        					species_StartTime = System.currentTimeMillis();
+        		while (species_iter.hasNext()) {
+					if (current_template.name.equals("H_Abstraction"))
+						species_StartTime = System.currentTimeMillis();
 					
-        				Species first_reactant = (Species)species_iter.next();
-        				if (first_reactant.isReactive()) {
-        					HashSet current_reactions = current_template.reactTwoReactants(first_reactant,p_species);
-        					reaction_set.addAll(current_reactions);
-        					current_reactions = current_template.reactTwoReactants(p_species,first_reactant);
-        					reaction_set.addAll(current_reactions);
-        					if (current_template.name.equals("H_Abstraction")) {
-        						double speciesTime = ((System.currentTimeMillis()-species_StartTime)/1000/60);
-        						if (speciesTime >= 1)
-        							HAbs.append(first_reactant.getChemkinName() + "\t" + speciesTime + "\t" + current_reactions.size() + "\t");
-        					}
-        				}	
+        			Species first_reactant = (Species)species_iter.next();
+        			if (first_reactant.isReactive()){
+        				LinkedHashSet current_reactions = current_template.reactTwoReactants(first_reactant,p_species);
+            			reaction_set.addAll(current_reactions);
+            			current_reactions = current_template.reactTwoReactants(p_species,first_reactant);
+            			reaction_set.addAll(current_reactions);
+    					if (current_template.name.equals("H_Abstraction")) {
+    						double speciesTime = ((System.currentTimeMillis()-species_StartTime)/1000/60);
+    						if (speciesTime >= 1)
+    							HAbs.append(first_reactant.getChemkinName() + "\t" + speciesTime + "\t" + current_reactions.size() + "\t");
+    					}
         			}
-        			doubleReaction += ((System.currentTimeMillis()-startTime)/1000/60);
-        			double thisDoubleReaction = ((System.currentTimeMillis()-startTime)/1000/60);
-        			if (thisDoubleReaction >= longestTime){
-        				longestTime = thisDoubleReaction;
-        				longestTemplate = current_template.name;
-        			}
-        			if (!p_speciesSet.contains(p_species)) {
-        				HashSet current_reactions = current_template.reactTwoReactants(p_species, p_species);
-        				reaction_set.addAll(current_reactions);
-        			}
+        		}
+				doubleReaction += ((System.currentTimeMillis()-startTime)/1000/60);
+				double thisDoubleReaction = ((System.currentTimeMillis()-startTime)/1000/60);
+				if (thisDoubleReaction >= longestTime){
+					longestTime = thisDoubleReaction;
+					longestTemplate = current_template.name;
+				}
+        		if (!p_speciesSet.contains(p_species)) {
+        			LinkedHashSet current_reactions = current_template.reactTwoReactants(p_species, p_species);
+        			reaction_set.addAll(current_reactions);
         		}
         	}
         }

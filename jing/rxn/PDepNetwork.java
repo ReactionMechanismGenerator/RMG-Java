@@ -175,7 +175,7 @@ public class PDepNetwork {
         kLeak = 0;
         Temperature t = new Temperature(715,"K");
         if (isChemAct) {
-        	kLeak = entryReaction.calculateRate(t);
+        	kLeak = entryReaction.calculateTotalRate(t);
         }
         else {
         	if (pDepWellList.size()!=1) {
@@ -186,7 +186,7 @@ public class PDepNetwork {
         	PDepWell pdw = (PDepWell)iter.next();
         	for (Iterator pathiter = pdw.getPaths(); pathiter.hasNext(); ) {
         		PDepPathReaction pdpr = (PDepPathReaction)pathiter.next();
-        		kLeak += pdpr.getTemplateReaction().calculateRate(t);
+        		kLeak += pdpr.getTemplateReaction().calculateTotalRate(t);
         	}
         }
         
@@ -272,7 +272,7 @@ public class PDepNetwork {
         //#[ operation runPDepCalculation(ReactionSystem) 
         if (!isActive() && getIsChemAct()) {
         	Temperature t = p_reactionSystem.getPresentTemperature();
-        	kLeak = getEntryReaction().calculateRate(t);
+        	kLeak = getEntryReaction().calculateTotalRate(t);
         	return;
         }
         

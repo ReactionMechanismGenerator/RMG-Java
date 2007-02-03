@@ -66,9 +66,14 @@ public class ArrheniusEPKinetics extends ArrheniusKinetics {
     public  ArrheniusEPKinetics() {
     }
     
-	public String toChemkinString(double p_Hrxn, Temperature p_temperature){
+	public String toChemkinString(double p_Hrxn, Temperature p_temperature, boolean includeComments){
 		double Ea = E.getValue() + alpha.getValue()*p_Hrxn;
-		return String.valueOf(getAValue()) + '\t' + String.valueOf(getNValue()) + '\t' + Ea + "\t!" + source + " "+comment;
+		if (includeComments)
+			return String.format("%1.7e \t %2.5f \t %3.5f \t !%s  %s", getAValue(), getNValue() , Ea, source, comment);
+		else
+			return String.format("%1.7e \t %2.5f \t %3.5f \t ", getAValue(), getNValue() , Ea);
+		
+		//return String.valueOf(getAValue()) + '\t' + String.valueOf(getNValue()) + '\t' + Ea + "\t!" + source + " "+comment;
         
 	}
 	

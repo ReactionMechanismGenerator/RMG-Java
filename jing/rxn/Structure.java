@@ -133,14 +133,27 @@ public class Structure {
         double DH = 0;
 
         for (Iterator iter = getReactants(); iter.hasNext(); ) {
-        	ChemGraph cg = (ChemGraph)iter.next();
-        	Species spe = cg.getSpecies();
+        	Object o = iter.next();
+			Species spe = null;
+			if (o instanceof Species)
+				spe = (Species)o;
+			else {
+				ChemGraph cg = (ChemGraph)o;
+				spe = cg.getSpecies();
+			}
+				
         	DH -= spe.calculateH(p_temperature);
         }
 
         for (Iterator iter = getProducts(); iter.hasNext(); ) {
-        	ChemGraph cg = (ChemGraph)iter.next();
-        	Species spe = cg.getSpecies();
+        	Object o = iter.next();
+			Species spe = null;
+			if (o instanceof Species)
+				spe = (Species)o;
+			else {
+				ChemGraph cg = (ChemGraph)o;
+	        	spe = cg.getSpecies();
+			}
         	DH += spe.calculateH(p_temperature);
         }
 
@@ -153,13 +166,25 @@ public class Structure {
         //#[ operation calculateKeq(Temperature)
         double DG = 0;
         for (Iterator iter = getReactants(); iter.hasNext(); ) {
-        	ChemGraph cg = (ChemGraph)iter.next();
-        	Species spe = cg.getSpecies();
+			Object o = iter.next();
+			Species spe = null;
+			if (o instanceof Species)
+				spe = (Species)o;
+			else {
+				ChemGraph cg = (ChemGraph)o;
+				spe = cg.getSpecies();
+			}
         	DG -= spe.calculateG(p_temperature);
         }
         for (Iterator iter = getProducts(); iter.hasNext(); ) {
-        	ChemGraph cg = (ChemGraph)iter.next();
-        	Species spe = cg.getSpecies();
+			Object o = iter.next();
+			Species spe = null;
+			if (o instanceof Species)
+				spe = (Species)o;
+			else {
+				ChemGraph cg = (ChemGraph)o;
+				spe = cg.getSpecies();
+			}
         	DG += spe.calculateG(p_temperature);
         }
         double Keq;
@@ -177,13 +202,25 @@ public class Structure {
         //#[ operation calculateKeqLowerBound(Temperature)
         double DG = 0;
         for (Iterator iter = getReactants();iter.hasNext();) {
-          ChemGraph cg = (ChemGraph)iter.next();
-          Species spe = cg.getSpecies();
+			Object o = iter.next();
+			Species spe = null;
+			if (o instanceof Species)
+				spe = (Species)o;
+			else {
+				ChemGraph cg = (ChemGraph)o;
+				spe = cg.getSpecies();
+			}
           DG -= spe.calculateGUpperBound(p_temperature);
         }
         for (Iterator iter = getProducts(); iter.hasNext();) {
-          ChemGraph cg = (ChemGraph)iter.next();
-          Species spe = cg.getSpecies();
+			Object o = iter.next();
+			Species spe = null;
+			if (o instanceof Species)
+				spe = (Species)o;
+			else {
+				ChemGraph cg = (ChemGraph)o;
+				spe = cg.getSpecies();
+			}
           DG += spe.calculateGLowerBound(p_temperature);
         }
         double Keq;
@@ -201,13 +238,25 @@ public class Structure {
           //#[ operation calculateKeqUpperBound(Temperature)
           double DG = 0;
           for (Iterator iter = getReactants();iter.hasNext();) {
-            ChemGraph cg = (ChemGraph)iter.next();
-            Species spe = cg.getSpecies();
+			  Object o = iter.next();
+				Species spe = null;
+				if (o instanceof Species)
+					spe = (Species)o;
+				else {
+					ChemGraph cg = (ChemGraph)o;
+					spe = cg.getSpecies();
+				}
             DG -= spe.calculateGUpperBound(p_temperature);
           }
           for (Iterator iter = getProducts(); iter.hasNext();) {
-            ChemGraph cg = (ChemGraph)iter.next();
-            Species spe = cg.getSpecies();
+			  Object o = iter.next();
+				Species spe = null;
+				if (o instanceof Species)
+					spe = (Species)o;
+				else {
+					ChemGraph cg = (ChemGraph)o;
+					spe = cg.getSpecies();
+				}
             DG += spe.calculateGLowerBound(p_temperature);
           }
           double Keq;
@@ -227,14 +276,26 @@ public class Structure {
         double DS = 0;
 
         for (Iterator iter = getReactants(); iter.hasNext(); ) {
-        	ChemGraph cg = (ChemGraph)iter.next();
-        	Species spe = cg.getSpecies();
+			Object o = iter.next();
+			Species spe = null;
+			if (o instanceof Species)
+				spe = (Species)o;
+			else {
+				ChemGraph cg = (ChemGraph)o;
+				spe = cg.getSpecies();
+			}
         	DS -= spe.calculateS(p_temperature);
         }
 
         for (Iterator iter = getProducts(); iter.hasNext(); ) {
-        	ChemGraph cg = (ChemGraph)iter.next();
-        	Species spe = cg.getSpecies();
+			Object o = iter.next();
+			Species spe = null;
+			if (o instanceof Species)
+				spe = (Species)o;
+			else {
+				ChemGraph cg = (ChemGraph)o;
+				spe = cg.getSpecies();
+			}
         	DS += spe.calculateS(p_temperature);
         }
 
@@ -243,7 +304,7 @@ public class Structure {
     }
 
     //## operation clearChemGraph()
-    public void clearChemGraph() {
+    /*public void clearChemGraph() {
         //#[ operation clearChemGraph()
         for (Iterator iter = getReactants(); iter.hasNext(); ) {
         	ChemGraph cg = (ChemGraph)iter.next();
@@ -321,12 +382,12 @@ public class Structure {
         		products.set(products.indexOf(cg),newCg);
         		cg = null;
         	}
-        }*/
+        }
         return;
 
 
         //#]
-    }
+    }*/
 
     /**
     Requires:
@@ -380,6 +441,72 @@ public class Structure {
     Modifies:
     */
     //## operation equals(Object)
+	public boolean equalsAsChemGraph(Object p_structure) {
+        //check if p_structure is a structure
+		if (!(p_structure instanceof Structure)) return false;
+		
+		//check if p_structure is equal to my structure
+		if (p_structure == this) return true;
+		
+		Structure structure = (Structure)p_structure;
+		
+		//check if each of the reactant of this is present in the reactant of structure.
+		Iterator iter = reactants.iterator();
+		LinkedList p_structureReactants = (LinkedList)structure.reactants.clone();
+		
+		while (iter.hasNext()){
+			ChemGraph cg = (ChemGraph)iter.next();
+			if (cgPresentInList(cg,p_structureReactants))
+				continue;
+			else
+				return false;
+		}
+		
+		
+		//check if each of the productt of this is present in the reactant of structure.
+		iter = products.iterator();
+		LinkedList p_structureProducts = (LinkedList)structure.products.clone();
+		while (iter.hasNext()){
+			ChemGraph cg = (ChemGraph)iter.next();
+			if (cgPresentInList(cg,p_structureProducts))
+				continue;
+			else
+				return false;
+		}
+		
+		return true;
+        //#]
+    }
+	
+	public static boolean cgPresentInList( ChemGraph cg, LinkedList l){
+		if (!cg.getSpecies().hasResonanceIsomers()) {
+			boolean present = false;
+			Iterator iter = l.iterator();
+			while (iter.hasNext()){
+				ChemGraph cg2 = (ChemGraph)iter.next();
+				if (cg2.getSpecies().equals(cg.getSpecies())){
+					l.remove(cg2);
+					return true;
+				}
+			}
+			return false;
+		}
+		else {
+			boolean present = false;
+			Iterator iter = l.iterator();
+			while (iter.hasNext()){
+				ChemGraph cg2 = (ChemGraph)iter.next();
+				if (cg2.getSpecies().hasResonanceIsomers()){
+					if (cg2.equals(cg)){
+						l.remove(cg2);
+						return true;
+					}
+				}
+			}
+			return false;
+		}
+	}
+	
     public boolean equals(Object p_structure) {
         //#[ operation equals(Object)
         if (this == p_structure) return true;
@@ -388,18 +515,34 @@ public class Structure {
 
         Structure structure = (Structure)p_structure;
 
+		 boolean requal = isCGListEquivalentAsSpecies(reactants, structure.reactants);
+	        
+			if (requal){
+				return isCGListEquivalentAsSpecies(products, structure.products);
+			}
+			else 
+				return false;
+		
         // compare rule: if the two sets have the same size, and one of them contains all the elements in the other set,
         // these two sets are the same.
-        boolean requal = MathTool.isListEquivalent(reactants, structure.reactants);
-        boolean pequal = MathTool.isListEquivalent(products, structure.products);
+        /*if (equalsAsSpecies(structure)){
+			boolean requal = MathTool.isListEquivalent(reactants, structure.reactants);
+	        boolean pequal = MathTool.isListEquivalent(products, structure.products);
 
-        return requal&&pequal;
+			//boolean requal = MathTool.isListEqual(reactants, structure.reactants);
+	        //boolean pequal = MathTool.isListEqual(products, structure.products);
+
+	        return requal&&pequal;
+        }
+        else 
+			return false;
+		*/
         //#]
     }
 
 	
     //## operation equals(Object)
-    public boolean isDuplicate(Object p_structure) {
+    /*public boolean isDuplicate(Object p_structure) {
         //#[ operation equals(Object)
         if (this == p_structure) return true;
 
@@ -409,26 +552,34 @@ public class Structure {
 
         // compare rule: if the two sets have the same size, and one of them contains all the elements in the other set,
         // these two sets are the same.
-        boolean requal = MathTool.isListEqual(reactants, structure.reactants);
-        boolean pequal = MathTool.isListEqual(products, structure.products);
+		 //if (equalsAsSpecies((Structure)p_structure)){
+				//boolean requal = MathTool.isListEquivalent(reactants, structure.reactants);
+		        //boolean pequal = MathTool.isListEquivalent(products, structure.products);
 
-        return requal&&pequal;
+				boolean requal = MathTool.isListEqual(reactants, structure.reactants);
+		        boolean pequal = MathTool.isListEqual(products, structure.products);
+
+		        return requal&&pequal;
         //#]
-    }
+    }*/
 	
 	   //## operation equalsAsSpecies(Structure)
-    public boolean equalsAsSpecies(Structure p_structure) {
+    /*public boolean equalsAsSpecies(Structure p_structure) {
         //#[ operation equalsAsSpecies(Structure)
         if (this == p_structure) return true;
 
         // compare rule: if the two sets have the same size, and one of them contains all the elements in the other set,
         // these two sets are the same.
         boolean requal = isCGListEquivalentAsSpecies(reactants, p_structure.reactants);
-        boolean pequal = isCGListEquivalentAsSpecies(products, p_structure.products);
-
-        return requal&&pequal;
+        
+		if (requal){
+			return isCGListEquivalentAsSpecies(products, p_structure.products);
+		}
+		else 
+			return false;
+        //return requal&&pequal;
         //#]
-    }
+    }*/
 
     //## operation generateReverseStructure()
     public Structure generateReverseStructure() {
@@ -443,7 +594,7 @@ public class Structure {
     }
 
 	 //## operation generateSpeciesStructure()
-    public Structure generateSpeciesStructure() {
+    /*public Structure generateSpeciesStructure() {
         //#[ operation generateSpeciesStructure()
         LinkedList r = new LinkedList();
         for (Iterator iter = getReactants(); iter.hasNext(); ) {
@@ -465,7 +616,7 @@ public class Structure {
 
         return s;
         //#]
-    }
+    }*/
 
     //## operation getDeltaN()
     public int getDeltaN() {
@@ -514,16 +665,16 @@ public class Structure {
 
     //## operation hashCode()
     public int hashCode() {
-        //#[ operation hashCode()
+//		#[ operation hashCode()
         int hash = 0;
         Iterator r = getReactants();
         while (r.hasNext()) {
-			Object reactant = r.next();
+        	Object reactant = r.next();
         	hash += reactant.hashCode();
         }
         Iterator p = getProducts();
         while (p.hasNext()) {
-			Object product = p.next();
+        	Object product = p.next();
         	hash += product.hashCode();
         }
         return hash;
@@ -548,12 +699,10 @@ public class Structure {
 
         LinkedList templist = (LinkedList)(p_list2.clone());
         for (Iterator iter1 = p_list1.iterator(); iter1.hasNext();) {
-        	ChemGraph cg1 = (ChemGraph)iter1.next();
-        	Species s1 = cg1.getSpecies();
+			Species s1 = (Species)iter1.next();
         	found = false;
         	for (Iterator iter2 = templist.iterator(); iter2.hasNext();) {
-        		ChemGraph cg2 = (ChemGraph)iter2.next();
-        		Species s2 = cg2.getSpecies();
+				Species s2 = (Species)iter2.next();
         		if (s1==s2) {
         			found = true;
         			iter2.remove();
@@ -616,9 +765,9 @@ public class Structure {
     }
 
     //## operation toChemkinString()
-	 public String toChemkinString(boolean p_includeReverse) {
+	 public StringBuilder toChemkinString(boolean p_includeReverse) {
 	        //#[ operation toChemkinString(boolean)
-	        String s="";
+	        StringBuilder s = new StringBuilder();
 	        int index = 0;
 	        int r_num = getReactantNumber();
 	        int p_num = getProductNumber();
@@ -626,28 +775,43 @@ public class Structure {
 	        Iterator iter1 = getReactants();
 	        while (iter1.hasNext()) {
 	        	index++;
-	        	ChemGraph cg = (ChemGraph)iter1.next();
-	        	if (index < r_num) s = s + cg.getSpecies().toChemkinString() + "+";
-	        	else s += cg.getSpecies().toChemkinString();
+				Object o = iter1.next();
+				Species spe ;
+				if (o instanceof Species){
+					spe = (Species)o;
+				}
+				else {
+					spe = ((ChemGraph)o).getSpecies();
+				}
+	        	if (index < r_num) s = s.append(spe.toChemkinString() + "+");
+	        	else s.append(spe.toChemkinString());
 	        }
 	        if (p_includeReverse)
-	        	s += "=";
+	        	s.append("=");
 	        else
-	        	s += "=>";
+	        	s.append("=>");
 
 	        index = 0;
 	        Iterator iter2 = getProducts();
 	        while (iter2.hasNext()) {
 	        	index++;
-	        	ChemGraph cg = (ChemGraph)iter2.next();
-	        	if (index < p_num) s = s + cg.getSpecies().toChemkinString() + "+";
-	        	else s += cg.getSpecies().toChemkinString();
+	        	Object o = iter2.next();
+				Species spe ;
+				if (o instanceof Species){
+					spe = (Species)o;
+				}
+				else {
+					spe = ((ChemGraph)o).getSpecies();
+				}
+	        	if (index < p_num) s.append(spe.toChemkinString() + "+");
+	        	else s.append(spe.toChemkinString());
 	        }
 
 	        return s;
 	        //#]
 	    }
 
+//	## operation toChemkinString()
 //	## operation toChemkinString()
 	 public String toRestartString(boolean p_includeReverse) {
 	        //#[ operation toChemkinString(boolean)
@@ -659,22 +823,22 @@ public class Structure {
 	        Iterator iter1 = getReactants();
 	        while (iter1.hasNext()) {
 	        	index++;
-	        	ChemGraph cg = (ChemGraph)iter1.next();
-	        	if (index < r_num) s = s + cg.getSpecies().toChemkinString() + " + ";
-	        	else s += cg.getSpecies().toChemkinString();
+				Species spe = (Species)iter1.next();
+	        	if (index < r_num) s = s + spe.toChemkinString() + "+";
+	        	else s += spe.toChemkinString();
 	        }
 	        if (p_includeReverse)
-	        	s += " = ";
+	        	s += "=";
 	        else
-	        	s += " => ";
+	        	s += "=>";
 
 	        index = 0;
 	        Iterator iter2 = getProducts();
 	        while (iter2.hasNext()) {
 	        	index++;
-	        	ChemGraph cg = (ChemGraph)iter2.next();
-	        	if (index < p_num) s = s + cg.getSpecies().toChemkinString() + " + ";
-	        	else s += cg.getSpecies().toChemkinString();
+				Species spe = (Species)iter2.next();
+	        	if (index < p_num) s = s + spe.toChemkinString() + "+";
+	        	else s += spe.toChemkinString();
 	        }
 
 	        return s;
@@ -683,7 +847,7 @@ public class Structure {
 
 
     //## operation toString()
-    public String toString() {
+    /*public String toString() {
         //#[ operation toString()
         String s="";
         int index = 0;
@@ -720,7 +884,7 @@ public class Structure {
 
         return s;
         //#]
-    }
+    }*/
 
     public static int getMAX_PRODUCT_NUMBER() {
         return MAX_PRODUCT_NUMBER;
@@ -762,6 +926,10 @@ public class Structure {
     public void clearProducts() {
         products.clear();
     }
+	
+	public String toString() {
+		return toChemkinString(true).toString();
+	}
 
     public ListIterator getReactants() {
         ListIterator iter=reactants.listIterator(0);

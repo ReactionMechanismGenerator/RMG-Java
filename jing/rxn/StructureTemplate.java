@@ -42,6 +42,7 @@ import jing.chemUtil.*;
 import jing.chem.Matchable;
 import jing.chem.ChemGraph;
 import jing.chemUtil.HierarchyTree;
+import jing.param.Global;
 
 //## package jing::rxn 
 
@@ -151,14 +152,20 @@ public class StructureTemplate {
     Modifies:
     */
     //## operation getMatchedFunctionalGroup(LinkedList) 
-    public Collection getMatchedFunctionalGroup(LinkedList p_reactants) {
+    public LinkedList getMatchedFunctionalGroup(LinkedList p_reactants) {
         //#[ operation getMatchedFunctionalGroup(LinkedList) 
         LinkedList fgCollection = new LinkedList();
         boolean found = false;
         Iterator r_iter = p_reactants.iterator();
         while (r_iter.hasNext()) {
         	found = false;
-        	ChemGraph cg = (ChemGraph)r_iter.next();
+			Object o = r_iter.next();
+			ChemGraph cg = null;
+			if (o instanceof Species)
+				cg = ((Species)r_iter.next()).getChemGraph();
+			else
+				cg = (ChemGraph)o;
+        	 
         	Iterator t_iter = reactantTree.iterator();
         	while (t_iter.hasNext()) {
         		HierarchyTree t = (HierarchyTree)t_iter.next();
@@ -169,8 +176,9 @@ public class StructureTemplate {
         	    }
         	}
         	if (!found) {
-        		System.out.println("can't find matched path: " + cg.toString());
-        		System.exit(0);
+        		//System.out.println("can't find matched path: " + cg.toString());
+        		//System.exit(0);
+				return null;
         	}
         }
         
@@ -206,13 +214,16 @@ public class StructureTemplate {
     Modifies: 
     */
     //## operation identifyReactedSites(ChemGraph,int) 
-    public HashSet identifyReactedSites(ChemGraph p_reactant, int p_position) {
+    public LinkedHashSet identifyReactedSites(ChemGraph p_reactant, int p_position) {
+		double pT = System.currentTimeMillis();
         //#[ operation identifyReactedSites(ChemGraph,int) 
         Matchable allowed = getAllowedFunctionalGroupAt(p_position);
         if (allowed == null) return null;
         
-        return p_reactant.identifyReactionMatchedSite(allowed);
-        
+        LinkedHashSet hS =  p_reactant.identifyReactionMatchedSite(allowed);
+		double t = (System.currentTimeMillis()-pT)/1000/60;
+        Global.RT_identifyReactedSites += t;
+		return hS;
         
         
         //#]
@@ -233,14 +244,14 @@ public class StructureTemplate {
     }
     
     //## operation setReactant(int,HashSet) 
-    public void setReactant(int p_position, HashSet p_reactantFGSet) {
+    public void setReactant(int p_position, LinkedHashSet p_reactantFGSet) {
         //#[ operation setReactant(int,HashSet) 
         reactants.add(p_position, p_reactantFGSet);
         //#]
     }
     
     //## operation setReactantTree(HashSet) 
-    public void setReactantTree(HashSet p_treeSet) {
+    public void setReactantTree(LinkedHashSet p_treeSet) {
         //#[ operation setReactantTree(HashSet) 
         if (p_treeSet == null) throw new InvalidReactantTreeException();
         int size = p_treeSet.size();

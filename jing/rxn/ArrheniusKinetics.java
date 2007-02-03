@@ -260,18 +260,17 @@ public class ArrheniusKinetics implements Kinetics {
     }
     
     //## operation toChemkinString() 
-    public String toChemkinString(double Hrxn, Temperature p_temperature) {
+    public String toChemkinString(double Hrxn, Temperature p_temperature, boolean includeComments) {
         //#[ operation toChemkinString() 
-        return String.valueOf(getAValue()) + '\t' + String.valueOf(getNValue()) + '\t' + String.valueOf(getEValue() + "\t!" + source + " "+comment);
+    	if (includeComments)
+    		return String.format("%1.3e \t %2.2f \t %3.2f \t !%s  %s", A.getValue(), n.getValue() , E.getValue(), source, comment);
+    	else
+    		return String.format("%1.3e \t %2.2f \t %3.2f \t ", A.getValue(), n.getValue() , E.getValue());
+    	
+        //String.valueOf(getAValue()) + '\t' + String.valueOf(getNValue()) + '\t' + String.valueOf(getEValue() + "\t!" + source + " "+comment);
         //#]
     }
-    
-	public String toChemkinStringNoComments(double Hrxn, Temperature p_temperature) {
-		//#[ operation toChemkinString() 
-		return String.valueOf(getAValue()) + '\t' + String.valueOf(getNValue()) + '\t' + String.valueOf(getEValue());
-        //#]
-	}
-	
+   
     //## operation toString() 
     public String toString() {
         //#[ operation toString() 

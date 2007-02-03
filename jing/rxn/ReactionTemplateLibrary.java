@@ -52,14 +52,14 @@ public class ReactionTemplateLibrary {
     
     protected static ReactionTemplateLibrary INSTANCE = new ReactionTemplateLibrary();		//## attribute INSTANCE 
     
-    protected HashSet reactionTemplate;
+    protected LinkedHashSet reactionTemplate;
     
     // Constructors
     
     //## operation ReactionTemplateLibrary() 
     private  ReactionTemplateLibrary() {
         {
-            reactionTemplate=new HashSet();
+            reactionTemplate=new LinkedHashSet();
         }
         //#[ operation ReactionTemplateLibrary() 
         String kineticsDirectory = System.getProperty("jing.rxn.ReactionTemplateLibrary.pathName");
@@ -92,6 +92,7 @@ public class ReactionTemplateLibrary {
         //#[ operation read(String) 
         File f = new File(p_directoryName);
         String[] fileNames = f.list();
+        Arrays.sort(fileNames);
         if (f==null) {
         	System.err.println("empty reaction template directory!");
         	System.exit(0);
