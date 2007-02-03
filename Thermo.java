@@ -36,6 +36,7 @@ public static void main(String[] args) {
          System.out.println(g);
          ChemGraph chemgraph = ChemGraph.make(g);
 		 Species spe = Species.make("molecule",chemgraph);
+		 System.out.println("The number of resonance isomers is " + spe.getResonanceIsomersHashSet().size());
 		 System.out.println("The NASA data is \n"+ spe.getNasaThermoData());
         //int K = chemgraph.getKekule();
         int symm = chemgraph.getSymmetryNumber();

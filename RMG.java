@@ -39,11 +39,7 @@ public class RMG {
     
  	long tAtInitialization = System.currentTimeMillis();
 	Global.tAtInitialization = tAtInitialization;
-	//begin = getCpuTime();
-	//System.out.println((begin)/1e3);
-	//System.out.println(getCpuTime()/1e9 + " " + (System.currentTimeMillis()-begin)/1e3);
-	//Pressure pres = new Pressure(30,"bar");
-	//System.out.println("The size of the object pressure is "+getObjectSize(pres));
+	
 	initializeSystemProperties(args[0]);
     ReactionModelGenerator rmg = new ReactionModelGenerator();
     rmg.modelGeneration();
@@ -70,14 +66,14 @@ public class RMG {
 	
 	//Write the final model output in a separete Final_Model file
 	String finalOutput = "";
-	finalOutput = finalOutput + "\n\\\\\\\\\\\\\\\\\\\\\\\\\\    Final Reaction Model Output    \\\\\\\\\\\\\\\\\\\\\\\\\\";
-    finalOutput = finalOutput +"\n"+ cerm.returnPDepModel(rs.getPresentStatus())+"\n";
+	//finalOutput = finalOutput + "\n\\\\\\\\\\\\\\\\\\\\\\\\\\    Final Reaction Model Output    \\\\\\\\\\\\\\\\\\\\\\\\\\";
+    //finalOutput = finalOutput +"\n"+ cerm.returnPDepModel(rs.getPresentStatus())+"\n";
 	
-	finalOutput = finalOutput + "Model Edge:";
-	finalOutput = finalOutput + cerm.getEdge().getSpeciesNumber()+" ";
-	finalOutput = finalOutput + " Species; ";
-	finalOutput = finalOutput + cerm.getEdge().getReactionNumber()+" ";
-	finalOutput = finalOutput + " Reactions.";
+	//finalOutput = finalOutput + "Model Edge:";
+	//finalOutput = finalOutput + cerm.getEdge().getSpeciesNumber()+" ";
+	//finalOutput = finalOutput + " Species; ";
+	//finalOutput = finalOutput + cerm.getEdge().getReactionNumber()+" ";
+	//finalOutput = finalOutput + " Reactions.";
 
 
     LinkedList speList = new LinkedList(rs.getReactionModel().getSpeciesSet());
@@ -124,19 +120,17 @@ public class RMG {
 	public static void initializeSystemProperties(String inputfile) {
 	    File f = new File(".");
 	    String dir = f.getAbsolutePath();
-		//File chemdis = new File("chemdis");
-		//chemdis.mkdir();
 		File therfit = new File("therfit");
 		therfit.mkdir();
-		//File fit3p = new File("fit3p");
-		//fit3p.mkdir();
 		File chemkin = new File("chemkin");
 		chemkin.mkdir();
-		writeThermoFile();
+		//writeThermoFile();
 		File Restart = new File("Restart");
 		Restart.mkdir();
 		File GATPFit = new File("GATPFit");
 		GATPFit.mkdir();
+		File ODESolver = new File("ODESolver");
+		ODESolver.mkdir();
 		
 		 String workingDir = System.getenv("RMG");
 	     System.setProperty("RMG.workingDirectory", workingDir);
@@ -220,7 +214,7 @@ public class RMG {
 		thermoFile += " 0.02926640e+02 0.01487977e-01-0.05684761e-05 0.01009704e-08-0.06753351e-13    2\n";
 		thermoFile += "-0.09227977e+04 0.05980528e+02 0.03298677e+02 0.01408240e-01-0.03963222e-04    3\n";
 		thermoFile += " 0.05641515e-07-0.02444855e-10-0.01020900e+05 0.03950372e+02                   4\n";
-		thermoFile += "Ar                120186Ar  1               G  0300.00   5000.00  1000.00      1\n";
+		thermoFile += "AR                120186Ar  1               G  0300.00   5000.00  1000.00      1\n";
 		thermoFile += " 0.02500000e+02 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00    2\n";
 		thermoFile += "-0.07453750e+04 0.04366001e+02 0.02500000e+02 0.00000000e+00 0.00000000e+00    3\n";
 		thermoFile += " 0.00000000e+00 0.00000000e+00-0.07453750e+04 0.04366001e+02                   4\n";
