@@ -72,7 +72,7 @@ abstract public class GraphComponent {
     */
     protected boolean visited = false;		//## attribute visited 
     
-    protected HashSet neighbor;
+    protected LinkedHashSet neighbor = null;
     
     // Constructors
     
@@ -84,7 +84,19 @@ abstract public class GraphComponent {
     //## operation GraphComponent(Object) 
     public  GraphComponent(Object p_element) {
         {
-            neighbor=new HashSet();
+			if (this instanceof Arc)
+				neighbor = new LinkedHashSet(3,1);
+			else if (this instanceof Node) {
+				if (p_element instanceof Atom) {
+					int valency = (int)(((Atom)p_element).getValency()+1);
+					neighbor = new LinkedHashSet(valency+1,1);
+				}
+				else
+					neighbor = new LinkedHashSet(5,1);
+			}
+			else
+				neighbor = new LinkedHashSet();
+			
         }
         //#[ operation GraphComponent(Object) 
         element = p_element;
@@ -95,7 +107,7 @@ abstract public class GraphComponent {
     }
     public  GraphComponent() {
         {
-            neighbor=new HashSet();
+			neighbor = new LinkedHashSet();
         }
     }
     
@@ -160,7 +172,7 @@ abstract public class GraphComponent {
     Modifies: visited status and matchedGC of nodes and arcs.
     */
     //## operation identifyAllMatchedSites(GraphComponent) 
-    public HashSet identifyAllMatchedSites(GraphComponent p_graphComponent) {
+    public LinkedHashSet identifyAllMatchedSites(GraphComponent p_graphComponent) {
         //#[ operation identifyAllMatchedSites(GraphComponent) 
         if (this == p_graphComponent) return null;
         
@@ -185,7 +197,7 @@ abstract public class GraphComponent {
         	found = false;
         	GraphComponent co2 = (GraphComponent)iter2.next();
         	// if a neighbor in c2 has not been visited, compare it with the neighbors not visited in c1
-        	HashSet matchedAtThisPosition = new HashSet();
+        	LinkedHashSet matchedAtThisPosition = new LinkedHashSet();
         
         	GraphComponent matched = co2.getMatchedGC();
         	if (matched == null) {
@@ -194,7 +206,7 @@ abstract public class GraphComponent {
         		while (iter1.hasNext()) {
         			co1 = (GraphComponent)iter1.next();
         			if (co1.getMatchedGC() == null && co2.getMatchedGC() == null) {
-        				HashSet ms = co1.identifyAllMatchedSites(co2);
+        				LinkedHashSet ms = co1.identifyAllMatchedSites(co2);
         				if (ms != null) {
         					found = true;
         					matchedAtThisPosition.add(ms);
@@ -224,7 +236,7 @@ abstract public class GraphComponent {
         this.setMatchedGC(null);
         p_graphComponent.setMatchedGC(null);
         
-        HashSet result = new HashSet();
+        LinkedHashSet result = new LinkedHashSet();
         
         if (matchedList.isEmpty()) {
         	if (this instanceof Node && p_graphComponent instanceof Node) {
@@ -465,6 +477,7 @@ abstract public class GraphComponent {
         			if (co1.getMatchedGC() == null) {
         				if (co1.isSub(co2,p_stack1,p_stack2)) {
         					foundNum++;
+        					
         				}
         			}
         		}
@@ -584,7 +597,82 @@ abstract public class GraphComponent {
     //## operation isSubCentralMatched(GraphComponent,Stack,Stack) 
     public boolean isSubCentralMatched(GraphComponent p_graphComponent, Stack p_stack1, Stack p_stack2) {
         //#[ operation isSubCentralMatched(GraphComponent,Stack,Stack) 
-        if (this == p_graphComponent) return false;
+        
+    	
+    	if (this == p_graphComponent) return false;
+        
+        if ((this instanceof Node) && (p_graphComponent instanceof Node)) {
+        	if (((Node)this).getCentralID().intValue() != ((Node)p_graphComponent).getCentralID().intValue()) return false;
+        }
+        
+        // compare the this gc with the p_gc for one step
+        boolean found = contentSub(p_graphComponent);
+        if (!found) return false;
+        else {
+        	this.setMatchedGC(p_graphComponent);
+        	p_graphComponent.setMatchedGC(this);
+        }
+        
+        // compare the neighbor
+        Collection c1 = neighbor;
+        Collection c2 = p_graphComponent.neighbor;
+        
+        int foundNum = 0;
+        Iterator iter2 = c2.iterator();
+        while (iter2.hasNext()) {
+        	foundNum = 0;
+        	GraphComponent co2 = (GraphComponent)iter2.next();
+        	// if a neighbor in c2 has not been visited, compare it with the neighbors not visited in c1
+        	
+        	GraphComponent matched = co2.getMatchedGC();
+        	if (matched == null) {
+        		Iterator iter1 = c1.iterator();
+        		GraphComponent co1 = null;
+        		while (iter1.hasNext()) {
+        			co1 = (GraphComponent)iter1.next();
+        			// if a non-visited neighbor in c1 has been found to be the sub of this neighbor in c2
+        			// set found to true and set visited for both two GC as true, break
+        			if (co2.getMatchedGC() == null && co1.getMatchedGC() == null) {
+                    	if (co1.isSubCentralMatched(co2,p_stack1,p_stack2)) {
+           					
+           					boolean matchedRest = false;
+           					matchedRest = isSubCentralMatched(p_graphComponent, p_stack1, p_stack2);
+           					if (matchedRest) {
+           						foundNum++;
+           						co1.setMatchedGC(null); co2.setMatchedGC(null);
+           						return true;
+           					}
+           					else {
+           						p_graphComponent.setMatchedGC(this); this.setMatchedGC(p_graphComponent);
+           						co1.setMatchedGC(null); co2.setMatchedGC(null);
+           						continue;
+           					}
+        				}
+                		
+                    }
+        		}
+        		
+        		p_graphComponent.setMatchedGC(null); this.setMatchedGC(null);
+        		return false;
+        		
+        		//else if (foundNum == 1) {
+        		//}
+        
+        	}
+        	// if a neighbor of has been visited, check if p_graphComponent has a corresponding match neighbor
+        	// if there is no match in p_chemGraph's neighbor, this and p_graphComponent are not matched, return false
+        	else {
+        		if (!c1.contains(matched) || matched.getMatchedGC()!=co2) {
+        			p_graphComponent.setMatchedGC(null); this.setMatchedGC(null);
+         			return false;
+        		}
+        	}
+        }
+        
+        return true;
+    	
+    	
+    	/*if (this == p_graphComponent) return false;
         
         if ((this instanceof Node) && (p_graphComponent instanceof Node)) {
         	if (((Node)this).getCentralID().intValue() != ((Node)p_graphComponent).getCentralID().intValue()) return false;
@@ -610,6 +698,7 @@ abstract public class GraphComponent {
         	foundNum = 0;
         	GraphComponent co2 = (GraphComponent)iter2.next();
         	// if a neighbor in c2 has not been visited, compare it with the neighbors not visited in c1
+        	
         	GraphComponent matched = co2.getMatchedGC();
         	if (matched == null) {
         		Iterator iter1 = c1.iterator();
@@ -644,7 +733,7 @@ abstract public class GraphComponent {
         	}
         }
         
-        return true;
+        return true;*/
         
         
         

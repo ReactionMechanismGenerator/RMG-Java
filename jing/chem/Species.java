@@ -43,6 +43,7 @@ import jing.mathTool.Queue;
 import jing.chemUtil.*;
 import jing.chemParser.*;
 import jing.chemUtil.Node;
+import jing.param.Global;
 import jing.param.Temperature;
 
 //## package jing::chem
@@ -69,7 +70,7 @@ public class Species {
 
     protected String name = null;		//## attribute name
 
-    protected HashSet resonanceIsomers = new HashSet();		//## attribute resonanceIsomers
+    protected LinkedHashSet resonanceIsomers = new LinkedHashSet();		//## attribute resonanceIsomers
 
     protected boolean therfitExecuted = false;		//## attribute therfitExecuted
 
@@ -110,7 +111,7 @@ public class Species {
     //## operation addResonanceIsomer(ChemGraph)
     public boolean addResonanceIsomer(ChemGraph p_resonanceIsomer) {
         //#[ operation addResonanceIsomer(ChemGraph)
-        if (resonanceIsomers == null) resonanceIsomers = new HashSet();
+        if (resonanceIsomers == null) resonanceIsomers = new LinkedHashSet();
 
         p_resonanceIsomer.setSpecies(this);
         return resonanceIsomers.add(p_resonanceIsomer);
@@ -214,13 +215,18 @@ public class Species {
 		
         // write H and S at 298
         ThermoData td = getThermoData();
-        result += "H298 " + MathTool.formatDouble(td.getH298(), 10, 2).trim() + ls;
-        result += "S298 " + MathTool.formatDouble(td.getS298(), 10, 2).trim() + ls;
+		result += "H298 " + String.format("%4.2e \n",td.getH298());
+		result += "S298 " + String.format("%4.2e \n",td.getS298());
+		result += "DLTH " + String.format("%4.2e \n",td.getH298());
+		result += "MWEI " + String.format("%6.1e \n",getMolecularWeight());
 		
-        result += "DLTH " + MathTool.formatDouble(td.getH298(), 10, 2).trim() + ls;
+		//result += "H298 " + MathTool.formatDouble(td.getH298(), 10, 2).trim() + ls;
+        //result += "S298 " + MathTool.formatDouble(td.getS298(), 10, 2).trim() + ls;
+		
+        //result += "DLTH " + MathTool.formatDouble(td.getH298(), 10, 2).trim() + ls;
 
         // write MW, temperature, ouput format, etc
-        result += "MWEI " + MathTool.formatDouble(getMolecularWeight(), 6, 1).trim() + ls;
+        //result += "MWEI " + MathTool.formatDouble(getMolecularWeight(), 6, 1).trim() + ls;
         result += "TEMP 1000.0" + ls;
 		result += "TMIN 300.0"+ls;
 		result += "TMAX 5000.0" + ls;
@@ -230,13 +236,21 @@ public class Species {
 		else result += "NONLINEAR" + ls;
         result += String.valueOf(cg.getAtomNumber()) + ls;
         result += String.valueOf(getInternalRotor()) + ls;
-		result += "TECP 300 " + MathTool.formatDouble(td.Cp300,10,2).trim() + ls;
-		result += "TECP 400 " + MathTool.formatDouble(td.Cp400,10,2).trim() + ls;
-		result += "TECP 500 " + MathTool.formatDouble(td.Cp500,10,2).trim() + ls;
-		result += "TECP 600 " + MathTool.formatDouble(td.Cp600,10,2).trim() + ls;
-		result += "TECP 800 " + MathTool.formatDouble(td.Cp800,10,2).trim() + ls;
-		result += "TECP 1000 " + MathTool.formatDouble(td.Cp1000,10,2).trim() +ls;
-		result += "TECP 1500 " + MathTool.formatDouble(td.Cp1500,10,2).trim() + ls;
+		result += "TECP 300 " + String.format("%4.2e \n",td.Cp300);
+		result += "TECP 400 " + String.format("%4.2e \n",td.Cp400);
+		result += "TECP 500 " + String.format("%4.2e \n",td.Cp500);
+		result += "TECP 600 " + String.format("%4.2e \n",td.Cp600);
+		result += "TECP 800 " + String.format("%4.2e \n",td.Cp800);
+		result += "TECP 1000 " + String.format("%4.2e \n",td.Cp1000);
+		result += "TECP 1500 " + String.format("%4.2e \n",td.Cp1500);
+		
+		//result += "TECP 300 " + MathTool.formatDouble(td.Cp300,10,2).trim() + ls;
+		//result += "TECP 400 " + MathTool.formatDouble(td.Cp400,10,2).trim() + ls;
+		//result += "TECP 500 " + MathTool.formatDouble(td.Cp500,10,2).trim() + ls;
+		//result += "TECP 600 " + MathTool.formatDouble(td.Cp600,10,2).trim() + ls;
+		//result += "TECP 800 " + MathTool.formatDouble(td.Cp800,10,2).trim() + ls;
+		//result += "TECP 1000 " + MathTool.formatDouble(td.Cp1000,10,2).trim() +ls;
+		//result += "TECP 1500 " + MathTool.formatDouble(td.Cp1500,10,2).trim() + ls;
 		result += "END" + ls;
 
         // finished writing text for input file, now save result to fort.1
@@ -655,7 +669,7 @@ public class Species {
         		addResonanceIsomer(cg);
         		}
         	else if (chemGraph.getGraph().isEquivalent(g2)) {
-        		ChemGraph cg = ChemGraph.make(g1);
+        		ChemGraph cg = ChemGraph.make(g1,true);
         		addResonanceIsomer(cg);
         	}
         	return;
@@ -862,6 +876,7 @@ public class Species {
     //## operation make(String,ChemGraph)
     public static Species make(String p_name, ChemGraph p_chemGraph) {
         //#[ operation make(String,ChemGraph)
+		double pT = System.currentTimeMillis();
         SpeciesDictionary dictionary = SpeciesDictionary.getInstance();
         Species spe = (Species)(dictionary.getSpecies(p_chemGraph));
 		
@@ -876,11 +891,56 @@ public class Species {
         	dictionary.putSpecies(spe, true);
 
         }
-        p_chemGraph.setSpecies(spe);
+        else {
+			if (spe.chemGraph.equals(p_chemGraph)){
+				//spe.chemGraph.graph = p_chemGraph.graph;
+				//p_chemGraph = spe.chemGraph;
+				
+				p_chemGraph.thermoData = spe.chemGraph.thermoData;
+				p_chemGraph.symmetryNumber = spe.chemGraph.symmetryNumber;
+				p_chemGraph.internalRotor = spe.chemGraph.internalRotor;
+			}
+			else if (spe.hasResonanceIsomers()){
+				Iterator cgIter = spe.getResonanceIsomers();
+				while(cgIter.hasNext()){
+					ChemGraph cg = (ChemGraph)cgIter.next();
+					if (cg.equals(p_chemGraph)){
+						p_chemGraph.thermoData = spe.chemGraph.thermoData;
+						p_chemGraph.symmetryNumber = spe.chemGraph.symmetryNumber;
+						p_chemGraph.internalRotor = spe.chemGraph.internalRotor;
+						break;
+					}
+				}
+			}
+			else {
+				System.out.println("Cannot make species which has a chemgraph: "+p_chemGraph.toString());
+				System.exit(0);
+			}
+        }
+		p_chemGraph.setSpecies(spe);
+		Global.makeSpecies += (System.currentTimeMillis()-pT)/1000/60;
         return spe;
         //#]
     }
 
+//	## operation make(String,ChemGraph)
+    /*public static Species make(String p_name, Graph p_graph) throws InvalidChemGraphException, ForbiddenStructureException {
+        //#[ operation make(String,ChemGraph)
+		double pT = System.currentTimeMillis();
+        SpeciesDictionary dictionary = SpeciesDictionary.getInstance();
+        Species spe = dictionary.getSpeciesFromGraph(p_graph);
+		
+        if (spe == null) {
+        	ChemGraph cg = ChemGraph.make(p_graph);
+			spe = make(null, cg);
+			cg.setSpecies(spe);
+			
+        }
+        
+        return spe;
+        //#]
+    }*/
+	
 	public static Species make(String p_name, ChemGraph p_chemGraph, int id) {
         //#[ operation make(String,ChemGraph)
         SpeciesDictionary dictionary = SpeciesDictionary.getInstance();

@@ -191,11 +191,14 @@ public class FGElement {
   public static FGElement make(String p_name) {
       //#[ operation make(String)
       try {
-      	String internalName = translateName(p_name);
-      	FGElement fge = fGElementDictionary.getFGElement(internalName);
-      	if (fge == null) {
-      		fge = FGElement.create(internalName);
-      		fGElementDictionary.putFGElement(fge);
+      	//String internalName = translateName(p_name);
+      	//FGElement fge = fGElementDictionary.getFGElement(internalName);
+		FGElement fge = fGElementDictionary.getFGElement(p_name);
+      	
+		if (fge == null) {
+      		//fge = FGElement.create(internalName);
+			fge = FGElement.create(p_name);
+			fGElementDictionary.putFGElement(fge);
       	}
       	return fge;
       }

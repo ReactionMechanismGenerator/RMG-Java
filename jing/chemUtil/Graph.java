@@ -37,6 +37,7 @@ package jing.chemUtil;
 
 
 import jing.chem.*;
+
 import java.util.*;
 
 //## package jing::chemUtil
@@ -58,7 +59,7 @@ public class Graph {
 
     protected boolean acyclic;		//## attribute acyclic
 
-    protected HashMap centralNode;		//## attribute centralNode
+    protected LinkedHashMap centralNode;		//## attribute centralNode
 
     protected LinkedList cycle;		//## attribute cycle
 
@@ -67,7 +68,7 @@ public class Graph {
     protected int highestNodeID = 0;		//## attribute highestNodeID
 
     protected ArrayList arcList;
-    protected HashMap nodeList;
+    protected LinkedHashMap nodeList;
 
     // Constructors
 
@@ -77,10 +78,10 @@ public class Graph {
             arcList=new ArrayList();
         }
         {
-            nodeList=new HashMap();
+            nodeList=new LinkedHashMap();
         }
         //#[ operation Graph()
-        centralNode = new HashMap();
+        centralNode = new LinkedHashMap();
 		identifyCycle();
         //#]
     }
@@ -151,7 +152,7 @@ public class Graph {
         //#[ operation addMissingHydrogen()
         Atom H = Atom.make(ChemElement.make("H"), FreeElectron.make("0"));
         Bond S = Bond.make("S");
-        HashMap addedH = new HashMap();
+        LinkedHashMap addedH = new LinkedHashMap();
 
         Iterator iter = getNodeList();
         while (iter.hasNext()) {
@@ -839,11 +840,27 @@ public class Graph {
     */
     //## operation hashCode()
     public int hashCode() {
-        //#[ operation hashCode()
+//		#[ operation hashCode()
         return getNodeNumber() * 100000 + getArcNumber();
+        //#]
+		/*StringBuilder string = new StringBuilder();
+        Iterator nodeIter = getNodeList();
+		while (nodeIter.hasNext()){
+			Object o = nodeIter.next();
+			string.append(o.toString());
+		}
+		Iterator arcIter = getArcList();
+		while(arcIter.hasNext()){
+			Object o = arcIter.next();
+			string.append(o.toString());
+		}
+        return string.toString().hashCode();*/
         //#]
     }
 
+
+
+	
     /**
     Requires:
     Effects: identify and return all the possible matched pattens between this graph and p_graph.
@@ -851,9 +868,9 @@ public class Graph {
     Modifies: visited status of nodes and arcs in this graph.
     */
     //## operation identifyAllOrderedMatchedSites(Graph)
-    public HashSet identifyAllOrderedMatchedSites(Graph p_graph) {
+    public LinkedHashSet identifyAllOrderedMatchedSites(Graph p_graph) {
         //#[ operation identifyAllOrderedMatchedSites(Graph)
-        HashSet allMatchedSites = new HashSet();
+    	LinkedHashSet allMatchedSites = new LinkedHashSet();
 
         clearCentralNode();
         resetMatchedGC();
@@ -865,7 +882,7 @@ public class Graph {
          	Iterator iter1 = getNodeList();
         	while (iter1.hasNext()) {
         		Node node1 = (Node)iter1.next();
-          		HashSet matched = node1.identifyAllMatchedSites(node2);
+        		LinkedHashSet matched = node1.identifyAllMatchedSites(node2);
         		if (matched!=null) allMatchedSites.addAll(matched);
         	}
         }
@@ -881,10 +898,10 @@ public class Graph {
     Modifies: visited status of nodes and arcs in this graph.
     */
     //## operation identifyAllUnorderedMatchedSite(Graph)
-    public HashSet identifyAllUnorderedMatchedSite(Graph p_graph) {
+    public LinkedHashSet identifyAllUnorderedMatchedSite(Graph p_graph) {
         //#[ operation identifyAllUnorderedMatchedSite(Graph)
-        HashSet matchedSite = new HashSet();
-        HashSet total = new HashSet();
+        LinkedHashSet matchedSite = new LinkedHashSet();
+        LinkedHashSet total = new LinkedHashSet();
         int size = p_graph.getCentralNodeNumber();
         Stack stack1 = new Stack();
         Stack stack2 = new Stack();
@@ -904,7 +921,7 @@ public class Graph {
                 if (found) {
                 	refreshCentralNode();
                 	// check if the combination of the id of central nodes has been found already
-                	HashSet IdSet = new HashSet();
+                	LinkedHashSet IdSet = new LinkedHashSet();
                 	Iterator iter = getCentralNodeList();
                 	while (iter.hasNext()) {
                 		Integer id = ((Node)iter.next()).getID();
@@ -913,7 +930,7 @@ public class Graph {
                 	if (!total.contains(IdSet)) {
                 		// if this is a new combination, add to matched site list
                 		total.add(IdSet);
-                		matchedSite.add((HashMap)(centralNode.clone()));
+                		matchedSite.add((LinkedHashMap)(centralNode.clone()));
                 	}
                 	else {
                 		// if this is an old combination, do not add to matched site list
@@ -1580,7 +1597,7 @@ public class Graph {
         return MAXNODENUMBER;
     }
 
-    public HashMap getCentralNode() {
+    public LinkedHashMap getCentralNode() {
         return centralNode;
     }
 

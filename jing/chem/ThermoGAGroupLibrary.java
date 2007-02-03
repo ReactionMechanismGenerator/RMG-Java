@@ -613,7 +613,6 @@ public class ThermoGAGroupLibrary {
                 read: while (line != null) {
                         StringTokenizer st = new StringTokenizer(line);
                         String fgname = st.nextToken();
-
                     data.mark(10000);
                         line = ChemParser.readMeaningfulLine(data);
                         if (line == null) break read;
@@ -643,7 +642,7 @@ public class ThermoGAGroupLibrary {
                                         FunctionalGroup oldFG = (FunctionalGroup)old;
                                         if (!oldFG.equals(fg)) throw new ReplaceFunctionalGroupException(fgname);
                                 }
-                }
+						}
 //System.out.println(line);
                         line = ChemParser.readMeaningfulLine(data);
                 }

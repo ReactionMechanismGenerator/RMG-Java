@@ -76,7 +76,7 @@ public class HierarchyTreeNode extends TreeNode {
     Modifies
     */
     //## operation HierarchyTreeNode(Matchable,int,HashSet) 
-    public  HierarchyTreeNode(Matchable p_element, int p_depth, HashSet p_children) {
+    public  HierarchyTreeNode(Matchable p_element, int p_depth, LinkedHashSet p_children) {
         //#[ operation HierarchyTreeNode(Matchable,int,HashSet) 
         super(p_element);
         

@@ -485,7 +485,7 @@ public class ChemParser {
         	if (!name.equals("M")) {
         		Species spe = (Species)p_speciesSet.getSpeciesFromChemkinName(name);
         		if (spe == null) throw new InvalidStructureException("unknown reactant/product: " + name);
-        		reactionSpe.add(spe.getChemGraph());
+        		reactionSpe.add(spe);
         	}
         }
 
@@ -558,7 +558,7 @@ public class ChemParser {
         		}
         		Species spe = (Species)p_speciesSet.get(name);
         		if (spe == null) throw new InvalidStructureException("unknown reactant/product: " + name);
-        		reactionSpe.add(spe.getChemGraph());
+        		reactionSpe.add(spe);
         	}
         }
 
@@ -897,7 +897,8 @@ public class ChemParser {
         			atom = Atom.make(ce,fe);
         		}
         		catch (UnknownSymbolException e) {
-        			FGElement fge = FGElement.make(nextToken);
+					String Internalname = FGElement.translateName(nextToken);
+        			FGElement fge = FGElement.make(Internalname);
         			atom = FGAtom.make(fge,fe);
         		}
         		return atom;
@@ -912,7 +913,8 @@ public class ChemParser {
         				atom = Atom.make(ce,fe);
         			}
         			catch (UnknownSymbolException e) {
-        				FGElement fge = FGElement.make(nextToken);
+						String Internalname = FGElement.translateName(nextToken);
+        				FGElement fge = FGElement.make(Internalname);
         				atom = FGAtom.make(fge,fe);
         			}
         			atomList.add(atom);
@@ -1080,6 +1082,7 @@ public class ChemParser {
         	p_reader.mark(1000);
         	String line = p_reader.readLine();
         	read: while (line != null) {
+        		
         		line = line.trim();
         		while (line.startsWith("/") || (line.length() == 0)) {
         			p_reader.mark(1000);
@@ -1087,6 +1090,7 @@ public class ChemParser {
         			if (line == null) break read;
         			line = line.trim();
         		}
+        		
         		StringTokenizer token = new StringTokenizer(line, ":");
         		int data_num = token.countTokens();
         		if (data_num != 2) {
@@ -1117,10 +1121,13 @@ public class ChemParser {
         			}
         			else throw new NotInDictionaryException(name + " is not found in functional group dictionary!");
         		}
+        		/*if (name.equals("Cyclopropane"))
+        			System.out.println(name);*/
         		HierarchyTreeNode node = new HierarchyTreeNode(node_element,p_level);
 
         		while (true) {
         			// read the next level nodes (children)
+        			
         			Object child = readHierarchyTreeNode(p_reader,present_level + 1, p_dictionary);
         			if (child == null) break;  // can't find children
         		    if (child instanceof HierarchyTreeNode) {

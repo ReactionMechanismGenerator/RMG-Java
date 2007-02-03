@@ -49,7 +49,7 @@ public class TreeNode {
     
     protected Object element;		//## attribute element 
     
-    protected HashSet children;
+    protected LinkedHashSet children;
     protected TreeNode father;
     
     // Constructors
@@ -57,7 +57,7 @@ public class TreeNode {
     //## operation TreeNode() 
     public  TreeNode() {
         {
-            children=new HashSet();
+            children=new LinkedHashSet();
         }
         //#[ operation TreeNode() 
         //#]
@@ -68,9 +68,9 @@ public class TreeNode {
     Modifies:
     */
     //## operation TreeNode(Object,HashSet) 
-    public  TreeNode(Object p_element, HashSet p_children) {
+    public  TreeNode(Object p_element, LinkedHashSet p_children) {
         {
-            children=new HashSet();
+            children=new LinkedHashSet();
         }
         //#[ operation TreeNode(Object,HashSet) 
         element = p_element;
@@ -85,7 +85,7 @@ public class TreeNode {
     //## operation TreeNode(Object) 
     public  TreeNode(Object p_element) {
         {
-            children=new HashSet();
+            children=new LinkedHashSet();
         }
         //#[ operation TreeNode(Object) 
         element = p_element;

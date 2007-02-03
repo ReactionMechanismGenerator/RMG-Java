@@ -43,6 +43,7 @@ import jing.chemParser.*;
 import jing.chemUtil.Arc;
 import jing.chemUtil.Node;
 import jing.chemUtil.Graph;
+import jing.param.Global;
 import jing.param.Temperature;
 
 //## package jing::chem
@@ -54,9 +55,9 @@ import jing.param.Temperature;
 //## class ChemGraph
 public class ChemGraph implements Matchable {
 
-    protected int MAX_OXYGEN_NUM = 6;		//## attribute MAX_OXYGEN_NUM
-	protected int MAX_CARBON_NUM = 8;       //SS
-	protected int MAX_CYCLE_NUM = 1;		//SS (no fused rings)
+    protected static int MAX_OXYGEN_NUM = 6;		//## attribute MAX_OXYGEN_NUM
+	protected static  int MAX_CARBON_NUM = 8;       //SS
+	protected static int MAX_CYCLE_NUM = 1;		//SS (no fused rings)
 
 	/**
     Maximal radical number allowed in a ChemGraph.
@@ -73,7 +74,7 @@ public class ChemGraph implements Matchable {
     */
     protected static HashSet forbiddenStructure = new HashSet();		//## attribute forbiddenStructure
 
-    protected int internalRotor = 0;		//## attribute internalRotor
+    protected int internalRotor = -1;		//## attribute internalRotor
 
     /**
     A collection of all the possible symmetry Axis in a ChemGraph.
@@ -108,8 +109,11 @@ public class ChemGraph implements Matchable {
         //#[ operation ChemGraph(Graph)
         graph = p_graph;
 
+		
+		
         if (isForbiddenStructure(p_graph) || getRadicalNumber() > MAX_RADICAL_NUM || getOxygenNumber() > MAX_OXYGEN_NUM || getCycleNumber() > MAX_CYCLE_NUM) {
-        	graph = null;
+		//if (getRadicalNumber() > MAX_RADICAL_NUM || getOxygenNumber() > MAX_OXYGEN_NUM || getCycleNumber() > MAX_CYCLE_NUM) {		        
+			graph = null;
         	throw new ForbiddenStructureException(p_graph.toString());
         }
 
@@ -127,7 +131,7 @@ public class ChemGraph implements Matchable {
         //#[ operation addMissingHydrogen()
         Atom H = Atom.make(ChemElement.make("H"), FreeElectron.make("0"));
         Bond S = Bond.make("S");
-        HashMap addedH = new HashMap();
+        LinkedHashMap addedH = new LinkedHashMap();
 
         Iterator iter = getNodeList();
         while (iter.hasNext()) {
@@ -392,7 +396,7 @@ public class ChemGraph implements Matchable {
         //#[ operation calculateAxisSymmetryNumber()
         int sn = 1;
         // note: acyclic structure!!!!!!!!!!!!!
-        HashSet symmetryAxis = new HashSet();
+        LinkedHashSet symmetryAxis = new LinkedHashSet();
 
         Iterator iter = getArcList();
         while (iter.hasNext()) {
@@ -409,7 +413,7 @@ public class ChemGraph implements Matchable {
         		FGElement fge1 = (FGElement)n1.getFgElement();
         		FGElement fge2 = (FGElement)n2.getFgElement();
 
-                HashSet axis = new HashSet();
+                LinkedHashSet axis = new LinkedHashSet();
                 axis.add(arc);
                 if (fge1.equals(Cdd)) n1 = getToEndOfAxis(arc,n1,axis);
                 if (fge2.equals(Cdd)) n2 = getToEndOfAxis(arc,n2,axis);
@@ -1150,7 +1154,7 @@ return sn;
     Modifies:
     */
     //## operation getCentralNode()
-    public HashMap getCentralNode() {
+    public LinkedHashMap getCentralNode() {
         //#[ operation getCentralNode()
         return getGraph().getCentralNode();
         //#]
@@ -1296,6 +1300,45 @@ return sn;
         //#]
     }
 
+	public int getDoubleBonds(){
+		int dBond = 0;
+		Iterator iter = getArcList();
+		while (iter.hasNext()){
+			Arc arc = (Arc)iter.next();
+			Bond bond = (Bond)arc.getElement();
+			if (bond.order==2){
+				dBond++;
+			}
+		}
+		return dBond;
+	}
+	
+	public int getSingleBonds(){
+		int sBond = 0;
+		Iterator iter = getArcList();
+		while (iter.hasNext()){
+			Arc arc = (Arc)iter.next();
+			Bond bond = (Bond)arc.getElement();
+			if (bond.order==1){
+				sBond++;
+			}
+		}
+		return sBond;
+	}
+	
+	public int getTripleBonds(){
+		int tBond = 0;
+		Iterator iter = getArcList();
+		while (iter.hasNext()){
+			Arc arc = (Arc)iter.next();
+			Bond bond = (Bond)arc.getElement();
+			if (bond.order==3){
+				tBond++;
+			}
+		}
+		return tBond;
+	}
+	
     //## operation getOxygenNumber()
     public int getOxygenNumber() {
         //#[ operation getOxygenNumber()
@@ -1320,9 +1363,9 @@ return sn;
     Modifies:
     */
     //## operation getRadicalNode()
-    public HashSet getRadicalNode() {
+    public LinkedHashSet getRadicalNode() {
         //#[ operation getRadicalNode()
-        HashSet radicalNode = new HashSet();
+        LinkedHashSet radicalNode = new LinkedHashSet();
         Iterator iter = getNodeList();
         while (iter.hasNext()) {
         	Node n = (Node)iter.next();
@@ -1419,7 +1462,7 @@ return sn;
         //#]
     }
 
-    /**
+   /**
     Requires:
     Effects: return chemicalFormula's hashcode.  i.e., all the isomers have the same hashcode
     Modifies:
@@ -1428,7 +1471,7 @@ return sn;
     public int hashCode() {
         //#[ operation hashCode()
         if (chemicalFormula == null) generateChemicalFormula();
-        return chemicalFormula.hashCode();
+        return chemicalFormula.hashCode()+getTripleBonds()*300 + getSingleBonds()*1 + getDoubleBonds()*20;
         //#]
     }
 
@@ -1438,7 +1481,7 @@ return sn;
     Modifies:
     */
     //## operation identifyReactionMatchedSite(Matchable)
-    public HashSet identifyReactionMatchedSite(Matchable p_functionalGroup) {
+    public LinkedHashSet identifyReactionMatchedSite(Matchable p_functionalGroup) {
         //#[ operation identifyReactionMatchedSite(Matchable)
         if (p_functionalGroup instanceof FunctionalGroup) {
         	FunctionalGroup fg = (FunctionalGroup)p_functionalGroup;
@@ -1448,11 +1491,11 @@ return sn;
         		return getGraph().identifyAllOrderedMatchedSites(fg.getGraph());
         	}
         	else {
-        		return new HashSet();
+        		return new LinkedHashSet();
         	}
         }
         else if (p_functionalGroup instanceof FunctionalGroupCollection) {
-        	HashSet result = new HashSet();
+        	LinkedHashSet result = new LinkedHashSet();
         	FunctionalGroupCollection fgc = (FunctionalGroupCollection)p_functionalGroup;
         	Iterator iter = fgc.getFunctionalGroups();
         	while (iter.hasNext()) {
@@ -1460,7 +1503,7 @@ return sn;
         		boolean thisIsRadical = this.isRadical();
         		boolean fgIsRadical = fg.isRadical();
         		if (thisIsRadical == fgIsRadical) {
-           			HashSet site = getGraph().identifyAllOrderedMatchedSites(fg.getGraph());
+           			LinkedHashSet site = getGraph().identifyAllOrderedMatchedSites(fg.getGraph());
         			result.addAll(site);
         		}
         	}
@@ -1479,7 +1522,7 @@ return sn;
     Modifies:
     */
     //## operation identifyThermoMatchedSite(FunctionalGroup)
-    public HashSet identifyThermoMatchedSite(FunctionalGroup p_functionalGroup) {
+    public LinkedHashSet identifyThermoMatchedSite(FunctionalGroup p_functionalGroup) {
         //#[ operation identifyThermoMatchedSite(FunctionalGroup)
         return getGraph().identifyAllUnorderedMatchedSite(p_functionalGroup.getGraph());
         //#]
@@ -1524,14 +1567,34 @@ return sn;
     //## operation isForbiddenStructure(Graph)
     public static boolean isForbiddenStructure(Graph p_graph) {
         //#[ operation isForbiddenStructure(Graph)
-        for (Iterator iter = forbiddenStructure.iterator(); iter.hasNext(); ) {
+		
+		Iterator iter = p_graph.getNodeList();
+		while (iter.hasNext()){
+			Node n = (Node)iter.next();
+			Atom atom = (Atom)n.getElement();
+			if (atom.isOxygen()) {
+				Iterator neighborarc = n.getNeighbor();
+				if (neighborarc.hasNext()){
+					Arc arc1 = (Arc)neighborarc.next();
+					if (neighborarc.hasNext()){
+						Node neighbornode1 = n.getOtherNode(arc1);
+						Arc arc2 = (Arc)neighborarc.next();
+						Node neighbornode2 = n.getOtherNode(arc2);
+						if (((Atom)neighbornode1.getElement()).isOxygen() && ((Atom)neighbornode2.getElement()).isOxygen())
+							return true;
+					}
+				}
+			}
+		}
+		return false;
+        /*for (Iterator iter = forbiddenStructure.iterator(); iter.hasNext(); ) {
         	FunctionalGroup fg = (FunctionalGroup)iter.next();
         	Graph g = fg.getGraph();
         	if (p_graph.isSub(g)) {
         		return true;
         	}
         }
-        return false;
+        return false;*/
         //#]
     }
 
@@ -1628,32 +1691,121 @@ return sn;
     Modifies:
     */
     //## operation make(Graph)
-    public static ChemGraph make(Graph p_graph) throws InvalidChemGraphException, ForbiddenStructureException {
+    /*public static ChemGraph make(Graph p_graph) throws InvalidChemGraphException, ForbiddenStructureException {
         //#[ operation make(Graph)
-        try {
-        	ChemGraph cg = new ChemGraph(p_graph);
-        	cg.addMissingHydrogen();
+		double pT = System.currentTimeMillis();
+		Global.makeChemG++;
+		Species sp = SpeciesDictionary.getInstance().getSpeciesFromGraph(p_graph);
+		ChemGraph cg = null;
+		if (sp !=null){
+			if (sp.hasResonanceIsomers()){
+				Iterator rIter = sp.getResonanceIsomers();
+				while(rIter.hasNext()){
+					ChemGraph chemGraph = (ChemGraph)rIter.next();
+					if (chemGraph.graph.equals(p_graph)){
+						chemGraph.graph = p_graph;
+						return chemGraph;
+						
+					}
+						
+				}
+			}
+			else {
+				sp.chemGraph.graph = p_graph;
+				return sp.chemGraph;
+			}
+		}
+		if (cg == null){
+			try {
+	        	cg = new ChemGraph(p_graph);
+	        	cg.addMissingHydrogen();
 
-        	if (cg.repOk()){
-        		cg.generateChemicalFormula();
-        		cg.calculateSymmetryNumber();
-        		cg.generateThermoData();
-        		cg.calculateInternalRotor();
-        		return cg;
-        	}
-        	else {
-        		throw new InvalidChemGraphException();
-        	}
-        }
-        catch (ForbiddenStructureException e) {
-        	throw new ForbiddenStructureException(e.getMessage());
-        }
-
-
+	        	if (cg.repOk()){
+	        		cg.generateChemicalFormula();
+	        		//cg.calculateSymmetryNumber();
+					Global.symmetryCG+=(System.currentTimeMillis()-pT)/1000/60;
+					pT = System.currentTimeMillis();
+	        		//cg.generateThermoData();
+					Global.thermoCG += (System.currentTimeMillis()-pT)/1000/60;
+					pT = System.currentTimeMillis();
+	        		//cg.calculateInternalRotor();
+					
+	        	}
+	        	else {
+	        		throw new InvalidChemGraphException();
+	        	}
+	        }
+	        catch (ForbiddenStructureException e) {
+	        	throw new ForbiddenStructureException(e.getMessage());
+	        }
+		}
+		Global.IRCG+=(System.currentTimeMillis()-pT)/1000/60;
+		return cg;
 
         //#]
-    }
+    }*/
 
+	 public static ChemGraph make(Graph p_graph, boolean hasHydrogen) throws InvalidChemGraphException, ForbiddenStructureException {
+	        //#[ operation make(Graph)
+			double pT = System.currentTimeMillis();
+			
+			ChemGraph cg  = null;
+			if (cg == null){
+				try {
+		        	cg = new ChemGraph(p_graph);
+					if (!hasHydrogen)
+						cg.addMissingHydrogen();
+
+		        	if (cg.repOk()){
+		        		cg.generateChemicalFormula();
+						
+						
+		        	}
+		        	else {
+		        		throw new InvalidChemGraphException();
+		        	}
+					//cgd.putSpecies(cg);
+		        }
+		        catch (ForbiddenStructureException e) {
+		        	throw new ForbiddenStructureException(e.getMessage());
+		        }
+			}
+			
+			return cg;
+
+	        //#]
+	    }
+	
+	 public static ChemGraph make(Graph p_graph) throws InvalidChemGraphException, ForbiddenStructureException {
+	        //#[ operation make(Graph)
+			double pT = System.currentTimeMillis();
+			
+			//ChemGraphDictionary cgd = ChemGraphDictionary.getInstance();
+			ChemGraph cg  = null;//= cgd.getChemGraphFromGraph(p_graph);
+			if (cg == null){
+				try {
+					
+		        	cg = new ChemGraph(p_graph);
+					cg.addMissingHydrogen();
+
+		        	if (cg.repOk()){
+		        		cg.generateChemicalFormula();
+		        	}
+		        	else {
+		        		throw new InvalidChemGraphException();
+		        	}
+					//cgd.putSpecies(cg);
+		        }
+		        catch (ForbiddenStructureException e) {
+		        	throw new ForbiddenStructureException(e.getMessage());
+		        }
+			}
+			
+			return cg;
+
+	        //#]
+	    }
+	
     /**
     Requires:
     Effects: read in forbidden structure for ChemGraph
@@ -1922,6 +2074,9 @@ return sn;
     }
 
     public int getInternalRotor() {
+		if (internalRotor <0 ){
+			calculateInternalRotor();
+		}
         return internalRotor;
     }
 
@@ -1936,6 +2091,10 @@ return sn;
     public Graph getGraph() {
         return graph;
     }
+	
+	public void setGraph(Graph p_graph){
+		graph = p_graph;
+	}
 
     public Species getSpecies() {
         return species;

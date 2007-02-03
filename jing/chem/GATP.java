@@ -177,7 +177,7 @@ public class GATP implements GeneralGAPP {
            				System.err.println("Thermo group not found: " + node.getID());
            			}
            			else {
-           				//System.out.println(node.getID() + " " + thisGAValue.getName());
+           				//System.out.println(node.getID() + " " + thisGAValue.getName()+ "  "+thisGAValue.toString());
            				result.plus(thisGAValue);
            			}
            		}
@@ -208,7 +208,7 @@ public class GATP implements GeneralGAPP {
            		System.err.println("Radical group not found: " + node.getID());
            	}
            	else {
-           		//System.out.println(node.getID() + " radical correction: " + thisGAValue.getName());
+           		//System.out.println(node.getID() + " radical correction: " + thisGAValue.getName() + "  "+thisGAValue.toString());
            		result.plus(thisGAValue);
             }
 
@@ -263,8 +263,10 @@ public class GATP implements GeneralGAPP {
     //## operation getOtherCorrection(ChemGraph)
     public ThermoGAValue getOtherCorrection(ChemGraph p_chemGraph) {
         //#[ operation getOtherCorrection(ChemGraph)
+		HashMap oldCentralNode = (HashMap)(p_chemGraph.getCentralNode()).clone();
         ThermoGAValue ga = thermoLibrary.findOtherCorrection(p_chemGraph);
         //if (ga != null) System.out.println("Other Correction: " + ga.getName());
+		p_chemGraph.setCentralNode(oldCentralNode);
         return ga;
         //#]
     }
@@ -274,6 +276,7 @@ public class GATP implements GeneralGAPP {
         //#[ operation getRingCorrection(ChemGraph)
 		 if (p_chemGraph.isAcyclic()) return null;
 
+		 	HashMap oldCentralNode = (HashMap)(p_chemGraph.getCentralNode()).clone();
 	        ChemGraph sat = p_chemGraph;
 	        if (sat.isRadical()) {
 				sat = ChemGraph.saturate(p_chemGraph);
@@ -281,6 +284,7 @@ public class GATP implements GeneralGAPP {
 	        ThermoGAValue ga = thermoLibrary.findRingCorrection(sat);
 	        /*System.out.println("Ring Correction for "+ p_chemGraph.generateChemicalFormula() +" : " + ga.getName());
 	        System.out.println(p_chemGraph.toStringWithoutH());*/
+			p_chemGraph.setCentralNode(oldCentralNode);
 	        return ga;
 
 

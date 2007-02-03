@@ -57,12 +57,12 @@ public class MathTool {
     }
     
     //## operation expand(Iterator) 
-    public static Collection expand(Iterator p_iter) {
+    public static LinkedList expand(Iterator p_iter) {
         //#[ operation expand(Iterator) 
         if (!(p_iter.hasNext())) return new LinkedList();
         
         Object present = p_iter.next();
-        Collection result = expand(p_iter);
+		LinkedList result = expand(p_iter);
         if (result.isEmpty()) {
         	if (present instanceof Collection) {
         		Iterator iter1 = ((Collection)present).iterator();
@@ -114,12 +114,12 @@ public class MathTool {
     }
     
     //## operation expandDisjointly(Iterator) 
-    public static Collection expandDisjointly(Iterator p_iter) {
+    public static LinkedList expandDisjointly(Iterator p_iter) {
         //#[ operation expandDisjointly(Iterator) 
         if (!(p_iter.hasNext())) return new LinkedList();
         
         Object present = p_iter.next();
-        Collection result = expandDisjointly(p_iter);
+		LinkedList result = expandDisjointly(p_iter);
         if (result.isEmpty()) {
         	if (present instanceof Collection) {
         		Iterator iter1 = ((Collection)present).iterator();

@@ -47,9 +47,9 @@ import java.util.*;
 //## class MatchedSite 
 public class MatchedSite {
     
-    protected HashMap center = new HashMap();		//## attribute center 
+    protected LinkedHashMap center = new LinkedHashMap();		//## attribute center 
     
-    protected HashSet periphery = new HashSet();		//## attribute periphery 
+    protected LinkedHashSet periphery = new LinkedHashSet();		//## attribute periphery 
     
     protected int redundancy = 1;		//## attribute redundancy 
     
@@ -226,19 +226,23 @@ public class MatchedSite {
         //#]
     }
     
-    public HashMap getCenter() {
+    public LinkedHashMap getCenter() {
         return center;
     }
     
-    public void setCenter(HashMap p_center) {
+    public void setCenter(LinkedHashMap p_center) {
         center = p_center;
     }
     
-    public HashSet getPeriphery() {
+	public String toString(){
+		return center.toString();
+	}
+	
+    public LinkedHashSet getPeriphery() {
         return periphery;
     }
     
-    public void setPeriphery(HashSet p_periphery) {
+    public void setPeriphery(LinkedHashSet p_periphery) {
         periphery = p_periphery;
     }
     

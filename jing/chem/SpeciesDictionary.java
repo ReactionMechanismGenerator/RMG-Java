@@ -41,6 +41,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.*;
 
+import jing.chemUtil.Graph;
 import jing.rxnSys.CoreEdgeReactionModel;
 
 //## package jing::chem 
@@ -54,7 +55,7 @@ public class SpeciesDictionary {
     
     private static SpeciesDictionary INSTANCE = new SpeciesDictionary();		//## attribute INSTANCE 
     
-    private static HashMap dictionary;		//## attribute dictionary 
+    private static LinkedHashMap dictionary;		//## attribute dictionary 
     
     
     // Constructors
@@ -62,7 +63,7 @@ public class SpeciesDictionary {
     //## operation SpeciesDictionary() 
     private  SpeciesDictionary() {
         //#[ operation SpeciesDictionary() 
-        dictionary = new HashMap();
+        dictionary = new LinkedHashMap();
         //#]
     }
     
@@ -121,6 +122,18 @@ public class SpeciesDictionary {
         
         //#]
     }
+	
+	public static Species getSpeciesFromGraph(Graph g) {
+		if (g == null) throw new NullPointerException();
+		Iterator iter = dictionary.keySet().iterator();
+		while(iter.hasNext()) {
+			ChemGraph cg = (ChemGraph)iter.next();
+			if (cg.graph.isEquivalent(g)) {
+				return (Species)dictionary.get(cg);
+			}
+		}
+		return null;
+	}
     
 	 public static Species getSpeciesFromChemkinName(String p_name) {
 	        //#[ operation getSpeciesFromName(String) 

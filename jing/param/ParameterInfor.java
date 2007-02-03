@@ -66,6 +66,7 @@ public class ParameterInfor {
         if (name.equals("C0")) type = 1;
         else if (name.equals("T")) type = 2;
          else if (name.equalsIgnoreCase("k")) type = 3;//svp
+         else if (name.equalsIgnoreCase("G")) type = 4; //sandeep for thermo
         else type = -1;
 
         ID = p_ID;

@@ -56,7 +56,8 @@ public class GasConstant {
     //## operation getCCAtmMolK() 
     public static double getCCAtmMolK() {
         //#[ operation getCCAtmMolK() 
-        return 82.059;
+        //return 82.059;
+    	return 82.053;
         //#]
     }
     
