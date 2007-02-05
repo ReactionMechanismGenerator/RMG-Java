@@ -97,6 +97,8 @@ public class JDASPK implements ODESolver{
 	protected StringBuilder rString;
 	protected StringBuilder troeString;
 	protected StringBuilder tbrString;
+	protected double [] reactionFlux;
+	
     //## operation JDASPK()
     private  JDASPK() {
         //#[ operation JDASPK()
@@ -591,15 +593,19 @@ public class JDASPK implements ODESolver{
                  reactionList.addAll(thirdBodyList);
                  reactionList.addAll(troeList);
                  sss.setReactionList(reactionList);
+                 sss.setReactionFlux(reactionFlux);
                  return sss;
 
         }
 
 		SystemSnapshot sss = new SystemSnapshot(p_endTime, speStatus, p_beginStatus.getTemperature(), p_beginStatus.getPressure());
-		//ReactionSystem.outputAllPathways(SpeciesDictionary.getSpeciesFromName("CH4"), rList, sss, p_temperature);
-        //ReactionSystem.outputAllPathways(SpeciesDictionary.getSpeciesFromName("CO"), rList, sss, p_temperature);
-        //ReactionSystem.outputAllPathways(SpeciesDictionary.getSpeciesFromName("CO2"), rList, sss, p_temperature);
-
+		LinkedList reactionList = new LinkedList();
+        reactionList.addAll(rList);
+        reactionList.addAll(thirdBodyList);
+        reactionList.addAll(troeList);
+        sss.setReactionList(reactionList);
+        sss.setReactionFlux(reactionFlux);
+		
         return sss;
         //#]
     }
@@ -682,7 +688,11 @@ public class JDASPK implements ODESolver{
         		}
         		line = br.readLine();
         	}
-        	
+        	reactionFlux = new double[rList.size()+thirdBodyList.size()+troeList.size()];
+        	for (int i=0; i<rList.size()+thirdBodyList.size()+troeList.size(); i++){
+        		line = br.readLine();
+        		reactionFlux[i] = Double.parseDouble(line.trim());
+        	}
         	for (int i=0; i<30; i++){
         		line = br.readLine();
         		info[i] = Integer.parseInt(line.trim());
@@ -777,6 +787,11 @@ public class JDASPK implements ODESolver{
             		}
             		line = br.readLine();
             	}
+            	reactionFlux = new double[rList.size()+thirdBodyList.size()+troeList.size()];
+            	for (int i=0; i<rList.size()+thirdBodyList.size()+troeList.size(); i++){
+            		line = br.readLine();
+            		reactionFlux[i] = Double.parseDouble(line.trim());
+            	}
             	LinkedHashMap speStatus = new LinkedHashMap();
                 double [] senStatus = new double[nParameter*nState];
             	
@@ -791,6 +806,7 @@ public class JDASPK implements ODESolver{
                 reactionList.addAll(troeList);
                 sss.setReactionList(reactionList);
                 systemSnapshotList.add(sss);
+                sss.setReactionFlux(reactionFlux);
             	tBegin = tEnd;
             	tEnd = tEnd.add(tStep);
         	}

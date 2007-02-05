@@ -100,6 +100,7 @@ public class JDASSL implements ODESolver{
 	protected StringBuilder rString ;
 	protected StringBuilder tbrString;
 	protected StringBuilder troeString;
+	protected double [] reactionFlux;
 
     //## operation JDASPK()
     private  JDASSL() {
@@ -521,7 +522,12 @@ public class JDASSL implements ODESolver{
         
 
 		SystemSnapshot sss = new SystemSnapshot(p_endTime, speStatus, p_beginStatus.getTemperature(), p_beginStatus.getPressure());
-		
+		LinkedList reactionList = new LinkedList();
+        reactionList.addAll(rList);
+        reactionList.addAll(thirdBodyList);
+        reactionList.addAll(troeList);
+        sss.setReactionList(reactionList);
+		sss.setReactionFlux(reactionFlux);
         return sss;
         //#]
     }
@@ -594,6 +600,11 @@ public class JDASSL implements ODESolver{
         	for (int i=0; i<neq; i++){
         		line = br.readLine();
         		yprime[i] = Double.parseDouble(line.trim());
+        	}
+        	reactionFlux = new double[rList.size()+thirdBodyList.size()+troeList.size()];
+        	for (int i=0; i<rList.size()+thirdBodyList.size()+troeList.size(); i++){
+        		line = br.readLine();
+        		reactionFlux[i] = Double.parseDouble(line.trim());
         	}
         	
         }
