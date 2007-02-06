@@ -345,7 +345,7 @@ public class TemplateReaction extends Reaction {
     //## operation toString() 
     public String toString(Temperature p_temperature) {
         //#[ operation toString() 
-        String s = getStructure().toString() + '\t' + getReactionTemplate().getName() + '\t';
+        String s = getStructure().toString()  + '\t';
         Kinetics k = getKinetics();
         String kString = k.toChemkinString(calculateHrxn(p_temperature), p_temperature, false);
        

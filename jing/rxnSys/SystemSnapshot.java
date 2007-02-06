@@ -71,6 +71,7 @@ public class SystemSnapshot {
     protected LinkedList reactionList;//svp
     protected LinkedHashMap IDTranslator;//svp
 	protected double[] unreactedSpeciesFlux = null;
+	protected double[] reactionFlux ;
 
     // Constructors
 
@@ -320,6 +321,9 @@ public class SystemSnapshot {
         //#]
       }
 
+      public void setReactionFlux(double [] p_reactionFlux) {
+    	  reactionFlux = p_reactionFlux;
+      }
 
     public Temperature getTemperature() {
         return temperature;

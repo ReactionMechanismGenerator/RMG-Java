@@ -71,6 +71,7 @@ public class ReactionSystem {
     protected ReactionModelEnlarger reactionModelEnlarger;
     protected LinkedList systemSnapshot;
     protected TemperatureModel temperatureModel;
+    protected double [] reactionFlux;
 
     // Constructors
 
@@ -990,6 +991,34 @@ public String printLowerBoundConcentrations(LinkedList p_speciesList) {
         //#]
     }
 	
+	 //## operation printMoleFractionProfile(LinkedList)
+    public String returnReactionFlux() {
+        //#[ operation printMoleFractionProfile(LinkedList)
+       
+		StringBuilder output = new StringBuilder("");
+        // check the validity of p_speciesList and print the title line
+		output.append("///////ReactionFlux//////// \n");
+       
+
+        Iterator iter = getSystemSnapshot();
+        while (iter.hasNext()) {
+        	SystemSnapshot ss = (SystemSnapshot)iter.next();
+        	if (ss.getTime().time == 0.0) continue;
+        	
+        	
+			output.append("\n Time: " + String.valueOf(ss.getTime().getTime())+"\n");
+        	for (int i=0; i<ss.reactionList.size(); i++) {
+        		
+        		output.append("reaction " + (i+1) + '\t' + ss.reactionFlux[i] + "\n");
+        	 	
+         	}
+			
+        }
+
+        return output.toString();
+        //#]
+    }
+    
   //## operation printMostUncertainReactions(LinkedList, LinkedList)
 //svp
       public String printMostUncertainReactions(LinkedList p_speciesList, LinkedList p_importantSpecies){
@@ -1146,6 +1175,26 @@ public String printLowerBoundConcentrations(LinkedList p_speciesList) {
        return result;
        //#]
       }
+      
+      public String printOrderedReactions() {
+    	  StringBuilder result = new StringBuilder("Reactions: \n");
+    	  Iterator iter = getSystemSnapshot();
+    	  SystemSnapshot ss = (SystemSnapshot) iter.next();
+    	  ss = (SystemSnapshot) iter.next();
+    	  LinkedList reactionList = ss.getReactionList();
+    	  for (int j = 0; j < reactionList.size(); j++) {
+    		  Reaction r = (Reaction) reactionList.get(j);
+    		  if (r instanceof PDepNetReaction) {
+    			  int J = j+1;
+    			  result.append(J + ". " + r.getStructure().toString()+'\n');
+    		  }
+    		  else {
+    			  int J = j+1;
+    			  result.append(J + ". " + r.toString(Global.temperature)+'\n');
+    		  }
+      	}
+    	return result.toString();
+      }
 
     //## operation printSensitivityCoefficients(LinkedList, LinkedList)
       //svp
@@ -1154,29 +1203,12 @@ public String printLowerBoundConcentrations(LinkedList p_speciesList) {
         int size = p_speciesList.size();
         int n = 0;
         Iterator iter = getSystemSnapshot();
-        StringBuilder result = new StringBuilder("\nReactions:\n");
+        StringBuilder result = new StringBuilder("\n");
         while (iter.hasNext()) {
         	SystemSnapshot ss = (SystemSnapshot) iter.next();
-        	if (n == 0) {
-        		if (ss.getTime().getTime() != 0){
-        			LinkedList reactionList = ss.getReactionList();
-        			for (int j = 0; j < reactionList.size(); j++) {
-        				Reaction r = (Reaction) reactionList.get(j);
-        				if (r instanceof PDepNetReaction) {
-        					int J = j+1;
-        					result.append(J + ". " + r.getStructure().toString()+'\n');
-        				}
-        				else {
-        					int J = j+1;
-        					result.append(J + ". " + r.toString(Global.temperature)+'\n');
-        				}
-        				ReactionTime rt = ss.getTime();
-        				Temperature t = getTemperature(rt);
-        			}
-        			n = 1;
-        			result.append("\nSensitivities:\n");
-        		}
-        	}
+        	
+        	result.append("\nSensitivities:\n");
+        	
         	if (ss.getTime().getTime() != 0) {
         		result.append('\n');
         		result.append("Time:" + String.valueOf(ss.getTime().getTime())+'\n');
@@ -1381,7 +1413,7 @@ public String printLowerBoundConcentrations(LinkedList p_speciesList) {
     }
 
     //## operation solveReactionSystem(ReactionTime,ReactionTime,boolean,boolean,boolean)
-    public void solveReactionSystem(ReactionTime p_beginTime, ReactionTime p_endTime, boolean p_initialization, boolean p_reactionChanged, boolean p_conditionChanged) {
+    public ReactionTime solveReactionSystem(ReactionTime p_beginTime, ReactionTime p_endTime, boolean p_initialization, boolean p_reactionChanged, boolean p_conditionChanged, int iterationNum) {
         //#[ operation solveReactionSystem(ReactionTime,ReactionTime,boolean,boolean,boolean)
         Temperature t = getTemperatureModel().getTemperature(p_beginTime);
         Pressure p = getPressureModel().getPressure(p_beginTime);
@@ -1397,19 +1429,17 @@ public String printLowerBoundConcentrations(LinkedList p_speciesList) {
 
         if (!beginStatus.getTime().equals(p_beginTime)) throw new InvalidBeginStatusException();
 
-        SystemSnapshot present = getDynamicSimulator().solve(p_initialization, getReactionModel(), p_reactionChanged, beginStatus, p_beginTime, p_endTime,t,p, p_conditionChanged);
+        SystemSnapshot present = getDynamicSimulator().solve(p_initialization, getReactionModel(), p_reactionChanged, beginStatus, p_beginTime, p_endTime,t,p, p_conditionChanged, finishController.terminationTester, iterationNum);
 
         appendUnreactedSpeciesStatus(present, t);
 
         systemSnapshot.add(present);
-        return;
+        return present.time;
         //#]
     }
 
-    //## operation solveReactionSystem(ReactionTime,ReactionTime,boolean,boolean,boolean)
-    public void solveReactionSystem(ReactionTime p_beginTime, ReactionTime p_endTime, boolean p_initialization, boolean p_reactionChanged, boolean p_conditionChanged, int numSteps) {
-        //#[ operation solveReactionSystem(ReactionTime,ReactionTime,boolean,boolean,boolean)
-        Temperature t = getTemperatureModel().getTemperature(p_beginTime);
+    public void solveReactionSystemwithSEN(ReactionTime p_beginTime, ReactionTime p_endTime, boolean p_initialization, boolean p_reactionChanged, boolean p_conditionChanged) {
+    	Temperature t = getTemperatureModel().getTemperature(p_beginTime);
         Pressure p = getPressureModel().getPressure(p_beginTime);
 
         SystemSnapshot beginStatus = (SystemSnapshot)(getSystemSnapshotEnd().next());
@@ -1423,12 +1453,16 @@ public String printLowerBoundConcentrations(LinkedList p_speciesList) {
 
         if (!beginStatus.getTime().equals(p_beginTime)) throw new InvalidBeginStatusException();
 
-        LinkedList sS = ((JDASPK)getDynamicSimulator()).solve(p_initialization, getReactionModel(), p_reactionChanged, beginStatus, p_beginTime, p_endTime,t,p, p_conditionChanged, numSteps);
+        LinkedList sS = ((JDASPK)getDynamicSimulator()).solveSEN(p_initialization, getReactionModel(), p_reactionChanged, beginStatus, p_beginTime, p_endTime,t,p, p_conditionChanged, finishController.terminationTester);
 
-        systemSnapshot = sS;
+        for (int i=0; i< sS.size(); i++){
+        	systemSnapshot.add(sS.get(i));
+        }
         return;
-        //#]
-    }
+		
+	}
+    //## operation solveReactionSystem(ReactionTime,ReactionTime,boolean,boolean,boolean)
+  
     
     //## operation toString()
     public String toString() {
@@ -1548,6 +1582,8 @@ public String printLowerBoundConcentrations(LinkedList p_speciesList) {
     public void setTemperatureModel(TemperatureModel p_TemperatureModel) {
         temperatureModel = p_TemperatureModel;
     }
+
+	
 
 }
 /*********************************************************************

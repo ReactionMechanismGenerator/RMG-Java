@@ -128,6 +128,10 @@ public class Chemkin implements DAESolver {
 public  Chemkin() {
   }
 
+	public void addConversion(double [] temp1, int temp2){
+	
+	}
+	
   //## operation checkChemkinMessage()
   public void checkChemkinMessage() {
       //#[ operation checkChemkinMessage()
@@ -722,7 +726,9 @@ public  Chemkin() {
   public void setRtol(double p_rtol) {
       rtol = p_rtol;
   }
-public SystemSnapshot solve(boolean p_initialization, ReactionModel p_reactionModel, boolean p_reactionChanged, SystemSnapshot p_beginStatus, ReactionTime p_beginTime, ReactionTime p_endTime, Temperature p_temperature, Pressure p_pressure, boolean p_conditionChanged) {
+  
+  
+public SystemSnapshot solve(boolean p_initialization, ReactionModel p_reactionModel, boolean p_reactionChanged, SystemSnapshot p_beginStatus, ReactionTime p_beginTime, ReactionTime p_endTime, Temperature p_temperature, Pressure p_pressure, boolean p_conditionChanged, TerminationTester tt, int iternum) {
 	
 	//writeChemkinInputFile(p_reactionModel, p_beginStatus);
 	

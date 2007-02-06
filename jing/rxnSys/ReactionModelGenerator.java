@@ -57,8 +57,8 @@ import jing.chemParser.*;
 //## class ReactionModelGenerator
 public class ReactionModelGenerator {
 
-    protected ReactionTime timeStep;		//## attribute timeStep
-
+    protected LinkedList timeStep;		//## attribute timeStep
+    
     protected String workingDirectory;		//## attribute workingDirectory
 
     protected ReactionSystem reactionSystem;
@@ -109,6 +109,7 @@ public class ReactionModelGenerator {
         	FinishController finishController = null;
         	DynamicSimulator dynamicSimulator = null;
         	PrimaryReactionLibrary primaryReactionLibrary = null;
+        	double [] conversionSet = new double[50];
 			String line = ChemParser.readMeaningfulLine(reader);
         	if (line.startsWith("Restart")){
 				StringTokenizer st = new StringTokenizer(line);
@@ -334,6 +335,7 @@ public class ReactionModelGenerator {
         					else {
         						conversion = Double.parseDouble(conv);
         					}
+        					conversionSet[49] = conversion;
         				}
         				catch (NumberFormatException e) {
         					throw new NumberFormatException("wrong number format for conversion in initial condition file!");
@@ -383,15 +385,39 @@ public class ReactionModelGenerator {
         		StringTokenizer st = new StringTokenizer(line,":");
         		String temp = st.nextToken();
         		String simulator = st.nextToken().trim();
+        		
+        		int numConversions = 0;
         		// read in time step
         		line = ChemParser.readMeaningfulLine(reader);
-        		if (line.startsWith("TimeStep:")) {
+        		if (line.startsWith("TimeStep:") && finishController.terminationTester instanceof ReactionTimeTT) {
         			st = new StringTokenizer(line);
         			temp = st.nextToken();
-        			double tStep = Double.parseDouble(st.nextToken());
-        			String unit = st.nextToken();
-        			unit = ChemParser.removeBrace(unit);
-        			setTimeStep(new ReactionTime(tStep, unit));
+        			while (st.hasMoreTokens()) {
+        				double tStep = Double.parseDouble(st.nextToken());
+            			String unit = "sec";
+            			setTimeStep(new ReactionTime(tStep, unit));
+        			}      
+        			((ReactionTimeTT)finishController.terminationTester).setTimeSteps(timeStep);
+        		}
+        		else if (line.startsWith("Conversions:") && finishController.terminationTester instanceof ConversionTT){
+        			st = new StringTokenizer(line);
+        			temp = st.nextToken();
+        			int i=0;
+        			SpeciesConversion sc = (SpeciesConversion)((ConversionTT)finishController.terminationTester).speciesGoalConversionSet.get(0);
+        			Species convSpecies = sc.species;
+        			Iterator iter = initialStatus.getSpeciesStatus();
+        			double initialConc = 0;
+        			while (iter.hasNext()){
+        				SpeciesStatus sps = (SpeciesStatus)iter.next();
+        				if (sps.species.equals(convSpecies)) initialConc = sps.concentration;
+        			}
+        			while (st.hasMoreTokens()){
+        				double conv = Double.parseDouble(st.nextToken());
+            			conversionSet[i] = (1-conv) * initialConc;
+            			i++;
+        			}
+        			conversionSet[i] = (1 - conversionSet[49])* initialConc;
+        			numConversions = i+1;
         		}
         		else throw new InvalidSymbolException("condition.txt: can't find time step for dynamic simulator!");
 
@@ -490,6 +516,7 @@ public class ReactionModelGenerator {
         			}
         		}
         		else throw new InvalidSymbolException("condition.txt: Unknown DynamicSimulator = " + simulator);
+                dynamicSimulator.addConversion(conversionSet, numConversions);
         	}
         	else throw new InvalidSymbolException("condition.txt: can't find DynamicSimulator!");
 
@@ -553,19 +580,255 @@ public class ReactionModelGenerator {
 
 
 	
+ 
+
+	//## operation modelGeneration()
+    public void modelGeneration() {
+        //#[ operation modelGeneration()
+        //long begin_t = System.currentTimeMillis();
+		try{
+        	ChemGraph.readForbiddenStructure();
+         	initializeReactionSystem();
+        }
+        catch (IOException e) {
+        	System.err.println(e.getMessage());
+        	System.exit(0);
+        }
+        catch (InvalidSymbolException e) {
+        	System.err.println(e.getMessage());
+        	System.exit(0);
+        }
+		if (restart){
+			reactionSystem.reactionModel = new CoreEdgeReactionModel();
+			parseRestartFiles();
+			((CoreEdgeReactionModel)reactionSystem.reactionModel).addReactedSpeciesSet(reactionSystem.originalReactant);
+
+			if (reactionSystem.primaryReactionLibrary != null){
+				((CoreEdgeReactionModel)reactionSystem.reactionModel).addReactedSpeciesSet(reactionSystem.primaryReactionLibrary.getSpeciesSet());								
+				((CoreEdgeReactionModel)reactionSystem.reactionModel).addPrimaryReactionSet(reactionSystem.primaryReactionLibrary.getReactionSet());
+
+			}
+		}
+		else reactionSystem.initializeCoreEdgeReactionModel();
+        reactionSystem.initializePDepNetwork();
+		
+		
+
+        
+        ReactionTime init = reactionSystem.getInitialReactionTime();
+        ReactionTime begin = init;
+        ReactionTime end;
+        if (reactionSystem.finishController.terminationTester instanceof ReactionTimeTT)
+        	end = (ReactionTime)timeStep.get(0);
+        else
+        	end = new ReactionTime(1e6,"sec");
+        int iterationNumber = 1;
+
+        Temperature lastT = reactionSystem.getTemperature(init);
+        Temperature currentT = reactionSystem.getTemperature(init);
+        Pressure lastP = reactionSystem.getPressure(init);
+        Pressure currentP = reactionSystem.getPressure(init);
+        boolean conditionChanged = false;
+
+        Chemkin.writeChemkinInputFile(reactionSystem.getReactionModel(),reactionSystem.getPresentStatus());
+		
+        end = reactionSystem.solveReactionSystem(begin, end, true, true, true, iterationNumber-1);
+        //System.exit(0);
+        boolean terminated = reactionSystem.isReactionTerminated();
+        boolean valid = reactionSystem.isModelValid();
+		System.out.println("The model core has " + ((CoreEdgeReactionModel)reactionSystem.getReactionModel()).getReactedReactionSet().size() + " reactions and "+ ((CoreEdgeReactionModel)reactionSystem.getReactionModel()).getReactedSpeciesSet().size() + " species.");
+		System.out.println("The model edge has " + ((CoreEdgeReactionModel)reactionSystem.getReactionModel()).getUnreactedReactionSet().size() + " reactions and "+ ((CoreEdgeReactionModel)reactionSystem.getReactionModel()).getUnreactedSpeciesSet().size() + " species.");
+
+		
+		StringBuilder print_info = Global.diagnosticInfo;
+		print_info.append("\nMolecule \t Flux\t\tTime\t \t\t \t Core \t \t Edge \t \t memory\n");
+
+		print_info.append(" \t moleular \t characteristic \t findspecies \t moveUnreactedToReacted \t enlarger \t restart1 \t totalEnlarger \t resetSystem  \t readSolverFile\t writeSolverFile \t justSolver \t SolverIterations \t solverSpeciesStatus \t Totalsolver \t gc  \t restart+diagnosis \t chemkin thermo \t chemkin reactions \t validitytester \t Species \t Reactions\t Species\t Reactions \t memory used  \t allSpecies \t TotalTime \t findRateConstant\t identifyReactedSites \t reactChemGraph \t makespecies\t CheckReverseReaction \t makeTemplateReaction \t getReactionfromStruc \t genReverseFromReac");
+		print_info.append("\t\t\t\t\t\t\t" + ((CoreEdgeReactionModel)reactionSystem.getReactionModel()).getReactedSpeciesSet().size()+ "\t" + ((CoreEdgeReactionModel)reactionSystem.getReactionModel()).getReactedReactionSet().size() + "\t" + ((CoreEdgeReactionModel)reactionSystem.getReactionModel()).getUnreactedSpeciesSet().size() + "\t" + ((CoreEdgeReactionModel)reactionSystem.getReactionModel()).getUnreactedReactionSetIncludingReverseSize() + "\t"+Global.makeSpecies+"\n");
+
+
+		double solverMin = 0; 
+		double vTester = 0;
+		
+		if (!restart){
+			writeRestartFile();
+			writeCoreReactions();
+			writeAllReactions();
+		}
+		
+		//System.exit(0);
+		SpeciesDictionary dictionary = SpeciesDictionary.getInstance();
+		System.out.println(dictionary.size());
+        boolean reactionChanged = false;
+		
+		double tAtInitialization = Global.tAtInitialization;
+		
+		
+        // step 2: iteratively grow reaction system
+        while (!terminated || !valid) {
+        	while (!valid) {
+				
+				
+				double pt = System.currentTimeMillis();
+				reactionSystem.enlargeReactionModel();
+				double totalEnlarger = (System.currentTimeMillis() - pt)/1000/60;
+				
+				pt = System.currentTimeMillis();
+				reactionSystem.resetSystemSnapshot();
+				double resetSystem = (System.currentTimeMillis() - pt)/1000/60;
+        		reactionChanged = true;
+        		
+        		begin = init;
+        		if (reactionSystem.finishController.terminationTester instanceof ReactionTimeTT)
+        			end = (ReactionTime)timeStep.get(0);
+        		else
+        			end = new ReactionTime(1e6,"sec");
+        		iterationNumber = 1;
+        		
+        		currentT = reactionSystem.getTemperature(begin);
+        		currentP = reactionSystem.getPressure(begin);
+        		conditionChanged = (!currentT.equals(lastT) || !currentP.equals(lastP));
+        		
+        		double startTime = System.currentTimeMillis();
+				Chemkin.writeChemkinInputFile(reactionSystem.getReactionModel(),reactionSystem.getPresentStatus());
+				double chemkint = (System.currentTimeMillis()-startTime)/1000/60;
+				
+				startTime = System.currentTimeMillis();
+				end = reactionSystem.solveReactionSystem(begin, end, false, reactionChanged, conditionChanged, iterationNumber-1);
+				solverMin = solverMin + (System.currentTimeMillis()-startTime)/1000/60;
+				
+				System.out.println("At this time: " + end.toString());
+        		Species spe = SpeciesDictionary.getSpeciesFromID(1);
+        		double conv = reactionSystem.getPresentConversion(spe);
+        		System.out.print("current conversion = ");
+        		System.out.println(conv);
+
+			    System.out.println("Running Time is: " + String.valueOf((System.currentTimeMillis()-tAtInitialization)/1000/60) + " minutes.");
+				System.out.println("The model edge has " + ((CoreEdgeReactionModel)reactionSystem.getReactionModel()).getUnreactedReactionSet().size() + " reactions and "+ ((CoreEdgeReactionModel)reactionSystem.getReactionModel()).getUnreactedSpeciesSet().size() + " species.");
+				System.out.println("The model core has " + ((CoreEdgeReactionModel)reactionSystem.getReactionModel()).getReactedReactionSet().size() + " reactions and "+ ((CoreEdgeReactionModel)reactionSystem.getReactionModel()).getReactedSpeciesSet().size() + " species.");
+
+
+				
+				startTime = System.currentTimeMillis();
+				double mU = memoryUsed();
+				double gc = (System.currentTimeMillis()-startTime)/1000/60;
+				
+				
+				
+				
+				
+				startTime = System.currentTimeMillis();
+                valid = reactionSystem.isModelValid();
+				vTester = vTester + (System.currentTimeMillis()-startTime)/1000/60;
+				
+				startTime = System.currentTimeMillis();
+
+				writeDiagnosticInfo();
+				writeEnlargerInfo();
+				double restart2 = (System.currentTimeMillis()-startTime)/1000/60;
+				
+				int allSpecies, allReactions;
+				allSpecies = SpeciesDictionary.getInstance().size();
+				print_info.append(totalEnlarger + "\t" + resetSystem + "\t" + Global.readSolverFile + "\t" + Global.writeSolverFile + "\t" + Global.solvertime + "\t" + Global.solverIterations + "\t" + Global.speciesStatusGenerator +  "\t" + solverMin + "\t"  + gc + "\t"  + restart2 + "\t" + Global.chemkinThermo + '\t' + Global.chemkinReaction + "\t" + vTester + "\t" + ((CoreEdgeReactionModel)reactionSystem.getReactionModel()).getReactedSpeciesSet().size()+ "\t" + ((CoreEdgeReactionModel)reactionSystem.getReactionModel()).getReactedReactionSet().size() + "\t" + ((CoreEdgeReactionModel)reactionSystem.getReactionModel()).getUnreactedSpeciesSet().size() + "\t" + ((CoreEdgeReactionModel)reactionSystem.getReactionModel()).getUnreactedReactionSetIncludingReverseSize() + "\t" + mU + "\t" + allSpecies + "\t" + (System.currentTimeMillis()-Global.tAtInitialization)/1000/60 + "\t"+ String.valueOf(Global.RT_findRateConstant)+"\t"+Global.RT_identifyReactedSites+"\t"+Global.RT_reactChemGraph+"\t"+Global.makeSpecies+"\t"+Global.checkReactionReverse+"\t"+Global.makeTR+ "\t" + Global.getReacFromStruc + "\t" + Global.generateReverse+"\n");
+				
+        	}
+        	reactionChanged = false;
+        	
+        	lastT = (Temperature)currentT.clone();
+        	lastP = (Pressure)currentP.clone();
+        	
+        	currentT = reactionSystem.getTemperature(begin);
+        	currentP = reactionSystem.getPressure(begin);
+        	conditionChanged = (!currentT.equals(lastT) || !currentP.equals(lastP));
+			
+        	
+        	begin=((SystemSnapshot)(reactionSystem.getSystemSnapshotEnd().next())).time;
+        	if (reactionSystem.finishController.terminationTester instanceof ReactionTimeTT){
+        		if (iterationNumber < timeStep.size()){
+            		end = (ReactionTime)timeStep.get(iterationNumber);
+        			
+            	}
+            	else
+            		end = ((ReactionTimeTT)reactionSystem.finishController.terminationTester).finalTime;
+        	}
+        	else
+        		end = new ReactionTime(1e6,"sec");
+        	iterationNumber++;
+			double startTime = System.currentTimeMillis();
+			end = reactionSystem.solveReactionSystem(begin, end, false, reactionChanged, false, iterationNumber-1);
+			solverMin = solverMin + (System.currentTimeMillis()-startTime)/1000/60;
+			
+			startTime = System.currentTimeMillis();
+        	
+			terminated = reactionSystem.isReactionTerminated();
+        	valid = reactionSystem.isModelValid();
+			
+			
+        	if (valid) {
+        		System.out.println("At this time: " + end.toString());
+        		Species spe = SpeciesDictionary.getSpeciesFromID(1);
+        		double conv = reactionSystem.getPresentConversion(spe);
+        		System.out.print("current conversion = ");
+        		System.out.println(conv);
+
+        		Runtime runTime = Runtime.getRuntime();
+        		System.out.print("Memory used: ");
+        		System.out.println(runTime.totalMemory());
+        		System.out.print("Free memory: ");
+        		System.out.println(runTime.freeMemory());
+
+        		//runTime.gc();
+
+        		System.out.println("After garbage collection:");
+        		System.out.print("Memory used: ");
+        		System.out.println(runTime.totalMemory());
+        		System.out.print("Free memory: ");
+        		System.out.println(runTime.freeMemory());
+				System.out.println("The model core has " + ((CoreEdgeReactionModel)reactionSystem.getReactionModel()).getReactedReactionSet().size() + " reactions and "+ ((CoreEdgeReactionModel)reactionSystem.getReactionModel()).getReactedSpeciesSet().size() + " species.");
+
+        	}
+			vTester = vTester + (System.currentTimeMillis()-startTime)/1000/60;
+        }
+        if (paraInfor != 0){
+        	System.out.println("Model Generation performed. Now generating sensitivity data.");
+          DynamicSimulator dynamicSimulator2 = new JDASPK(rtol, atol, paraInfor, initialStatus);
+          dynamicSimulator2.addConversion(((JDASPK)reactionSystem.dynamicSimulator).conversionSet, ((JDASPK)reactionSystem.dynamicSimulator).conversionSet.length);
+          reactionSystem.setDynamicSimulator(dynamicSimulator2);
+          
+          int numSteps = reactionSystem.systemSnapshot.size() -1;
+          reactionSystem.resetSystemSnapshot();
+          begin = init;
+          if (reactionSystem.finishController.terminationTester instanceof ReactionTimeTT){
+          		end = ((ReactionTimeTT)reactionSystem.finishController.terminationTester).finalTime;
+          }
+          else
+ 	     		end = new ReactionTime(1e6,"sec");
+          terminated = false;
+          reactionSystem.solveReactionSystemwithSEN(begin, end, true, false, false);
+         
+        }
+
+
+        System.out.println("Model Generation Completed");
+		Chemkin.writeChemkinInputFile(reactionSystem.getReactionModel(),reactionSystem.getPresentStatus());
+		
+        
+        return;
+
+
+
+
+
+        //#]
+    }
+
     private void parseRestartFiles() {
 		parseAllSpecies();
 		parseCoreSpecies();
 		parseEdgeSpecies();
 		parseAllReactions();
 		parseCoreReactions();
-		//parseCoreReactions();
-		//parseEdgeReactions();
-		/*Iterator iter = specs.iterator();
-		for (int i=0;i<specs.size();i++){
-			Species temp = (Species)iter.next();
-			System.out.println(temp.getID()+"\t"+temp.getChemkinName()+"\t"+ temp.getResonanceIsomersHashSet().size());;
-		}*/
+
 	}
 
 	
@@ -730,101 +993,6 @@ public class ReactionModelGenerator {
 
 	}
 
-	/*private void parseAllReactions() {
-		SpeciesDictionary dictionary = SpeciesDictionary.getInstance();
-		int i=1;
-		//HasMap speciesMap = dictionary.dictionary;
-		try{
-			File allReactions = new File("Restart/allReactions.txt");
-			FileReader fr = new FileReader(allReactions);
-			BufferedReader reader = new BufferedReader(fr);
-			String line = ChemParser.readMeaningfulLine(reader);
-			boolean found = false;
-			HashSet reactionSet = new HashSet();
-			OuterLoop:
-			while (line != null){
-				Reaction reaction = ChemParser.parseArrheniusReaction(dictionary,line,1,1,((CoreEdgeReactionModel)reactionSystem.reactionModel));
-				/*if (reaction.hasReverseReaction() && ((CoreEdgeReactionModel)reactionSystem.reactionModel).isReactedReaction(reaction)){
-					if (reactionSet.contains(reaction.getReverseReaction())){
-						line = ChemParser.readMeaningfulLine(reader);
-						continue;
-					}
-				}
-				if (line.startsWith("H(16) + CH3O2.(39)"))
-					System.out.println("Teri maa");
-				if (reaction.getStructure().getDirection()== -1 && ((CoreEdgeReactionModel)reactionSystem.reactionModel).isReactedReaction(reaction)){
-					//line = ChemParser.readMeaningfulLine(reader);
-					if (reactionSet.contains(reaction.getReverseReaction()) && !reactionSet.contains(reaction)){
-						reactionSet.add(reaction);
-						Iterator iter = reactionSet.iterator();
-						while (iter.hasNext()){
-							Reaction reacTemp = (Reaction)iter.next();
-							if (reacTemp.equals(reaction.getReverseReaction())){
-								reactionSet.remove(reacTemp);
-								reactionSet.add(reaction.getReverseReaction());
-								//line = ChemParser.readMeaningfulLine(reader);
-								break;
-							}
-						}
-
-					}
-					else {
-						line = ChemParser.readMeaningfulLine(reader);
-						continue;//reaction = null;
-					}
-				}
-
-
-
-				boolean added = reactionSet.add(reaction);
-				if (!added){
-					found = false;
-					if (reaction.hasResonanceIsomerAsReactant()){
-						//Structure reactionStructure = reaction.getStructure();
-						found = getResonanceStructure(reaction,"reactants", reactionSet);
-					}
-					if (reaction.hasResonanceIsomerAsProduct() && !found){
-						//Structure reactionStructure = reaction.getStructure();
-						found = getResonanceStructure(reaction,"products", reactionSet);
-					}
-
-					if (!found){
-						Iterator iter = reactionSet.iterator();
-						while (iter.hasNext()){
-							Reaction reacTemp = (Reaction)iter.next();
-							if (reacTemp.equals(reaction)){
-								reactionSet.remove(reacTemp);
-								reactionSet.add(reaction);
-								break;
-							}
-						}
-
-					//System.out.println("Cannot add reaction "+line+" to the Reaction Core. All resonance isomers have already been added");
-					//System.exit(0);
-					}
-
-				//else found = false;
-				}
-
-				Reaction reverse = reaction.getReverseReaction();
-				if (reverse != null && ((CoreEdgeReactionModel)reactionSystem.reactionModel).isReactedReaction(reaction)) {
-					reactionSet.add(reverse);
-					//System.out.println(2 + "\t " + line);
-				}
-									//else System.out.println(1 + "\t" + line);
-
-				i=i+1;
-
-				line = ChemParser.readMeaningfulLine(reader);
-			}
-			((CoreEdgeReactionModel)reactionSystem.reactionModel).addReactionSet(reactionSet);
-		}
-		catch (IOException e){
-			System.out.println("Could not read the corespecies restart file");
-        	System.exit(0);
-		}
-
-	}*/
 
 	private boolean getResonanceStructure(Reaction p_Reaction, String rOrP, LinkedHashSet reactionSet) {
 		Structure reactionStructure = p_Reaction.getStructure();
@@ -887,64 +1055,7 @@ public class ReactionModelGenerator {
 
 	}
 
-	/*private void parseCoreSpecies() {
-//		String restartFileContent ="";
-		int speciesCount = 0;
-		boolean added;
-		try{
-			File coreSpecies = new File ("Restart/coreSpecies.txt");
-			FileReader fr = new FileReader(coreSpecies);
-			BufferedReader reader = new BufferedReader(fr);
-			String line = ChemParser.readMeaningfulLine(reader);
-			HashSet speciesSet = new HashSet();
 
-			while (line!=null) {
-
-    			StringTokenizer st = new StringTokenizer(line);
-    			String index = st.nextToken();
-    			String name = null;
-    			if (!index.startsWith("(")) name = index;
-    			else name = st.nextToken().trim();
-				int ID = getID(name);
-				//String [] temp = name.split("(");
-				name = getName(name);
-    			Graph g = ChemParser.readChemGraph(reader);
-    			ChemGraph cg = null;
-    			try {
-    				cg = ChemGraph.make(g);
-    			}
-    			catch (ForbiddenStructureException e) {
-    				System.out.println("Forbidden Structure:\n" + e.getMessage());
-    				System.exit(0);
-    			}
-
-
-    			Species species = Species.make(name,cg,ID);
-       			//speciesSet.put(name, species);
-    			speciesSet.add(species);
-
-				if (name.equals("C5H11.")){
-					System.out.println(species.getChemkinName());
-				}
-
-    			double flux = 0;
-    			int species_type = 1; // reacted species
-    			//SpeciesStatus ss = new SpeciesStatus(species,species_type,concentration,flux);
-    			//speciesStatus.put(species, ss);
-    			line = ChemParser.readMeaningfulLine(reader);
-    		}
-			//reactionSystem.reactionModel = new CoreEdgeReactionModel();
-			((CoreEdgeReactionModel)reactionSystem.reactionModel).addReactedSpeciesSet(speciesSet);
-			specs.addAll(speciesSet);
-		}
-		catch (IOException e){
-			System.out.println("Could not read the corespecies restart file");
-        	System.exit(0);
-		}
-
-	}*/
-
-	
 	
 	public void parseCoreSpecies() {
 //		String restartFileContent ="";
@@ -1197,279 +1308,6 @@ public class ReactionModelGenerator {
 
 	}
 
-	/*private void parseEdgeSpecies() {
-//		String restartFileContent ="";
-		int speciesCount = 0;
-		int highestID=0;
-		try{
-			File coreSpecies = new File ("Restart/edgeSpecies.txt");
-			FileReader fr = new FileReader(coreSpecies);
-			BufferedReader reader = new BufferedReader(fr);
-			String line = ChemParser.readMeaningfulLine(reader);
-			HashSet speciesSet = new HashSet();
-
-			while (line != null) {
-				StringTokenizer st = new StringTokenizer(line);
-    			String index = st.nextToken();
-    			String name = null;
-    			if (!index.startsWith("(")) name = index;
-    			else name = st.nextToken();
-				int ID = getID(name);
-				name = getName(name);
-				//specs[ID-1]=name;
-
-				if (ID >highestID) highestID=ID;
-    			Graph g = ChemParser.readChemGraph(reader);
-    			ChemGraph cg = null;
-    			try {
-    				cg = ChemGraph.make(g);
-    			}
-    			catch (ForbiddenStructureException e) {
-    				System.out.println("Forbidden Structure:\n" + e.getMessage());
-    				System.exit(0);
-    			}
-
-    			Species species = Species.make(name,cg, ID);
-       			//speciesSet.put(name, species);
-				speciesSet.add(species);
-    			double flux = 0;
-    			int species_type = 1; // reacted species
-    			//SpeciesStatus ss = new SpeciesStatus(species,species_type,concentration,flux);
-    			//speciesStatus.put(species, ss);
-    			line = ChemParser.readMeaningfulLine(reader);
-    		}
-			//reactionSystem.reactionModel = new CoreEdgeReactionModel();
-			((CoreEdgeReactionModel)reactionSystem.reactionModel).addUnreactedSpeciesSet(speciesSet);
-			specs.addAll(speciesSet);
-		}
-		catch (IOException e){
-			System.out.println("Could not read the corespecies restart file");
-        	System.exit(0);
-		}
-
-	}*/
-
-
-	//## operation modelGeneration()
-    public void modelGeneration() {
-        //#[ operation modelGeneration()
-        //long begin_t = System.currentTimeMillis();
-		try{
-        	ChemGraph.readForbiddenStructure();
-         	initializeReactionSystem();
-        }
-        catch (IOException e) {
-        	System.err.println(e.getMessage());
-        	System.exit(0);
-        }
-        catch (InvalidSymbolException e) {
-        	System.err.println(e.getMessage());
-        	System.exit(0);
-        }
-		if (restart){
-			reactionSystem.reactionModel = new CoreEdgeReactionModel();
-			parseRestartFiles();
-			((CoreEdgeReactionModel)reactionSystem.reactionModel).addReactedSpeciesSet(reactionSystem.originalReactant);
-
-			if (reactionSystem.primaryReactionLibrary != null){
-				((CoreEdgeReactionModel)reactionSystem.reactionModel).addReactedSpeciesSet(reactionSystem.primaryReactionLibrary.getSpeciesSet());								
-				((CoreEdgeReactionModel)reactionSystem.reactionModel).addPrimaryReactionSet(reactionSystem.primaryReactionLibrary.getReactionSet());
-
-			}
-		}
-		else reactionSystem.initializeCoreEdgeReactionModel();
-        reactionSystem.initializePDepNetwork();
-		
-		
-
-        ReactionTime delt = timeStep;
-        ReactionTime init = reactionSystem.getInitialReactionTime();
-        ReactionTime begin = init;
-        ReactionTime end = begin.add(timeStep);
-
-        Temperature lastT = reactionSystem.getTemperature(init);
-        Temperature currentT = reactionSystem.getTemperature(init);
-        Pressure lastP = reactionSystem.getPressure(init);
-        Pressure currentP = reactionSystem.getPressure(init);
-        boolean conditionChanged = false;
-
-        Chemkin.writeChemkinInputFile(reactionSystem.getReactionModel(),reactionSystem.getPresentStatus());
-		
-        reactionSystem.solveReactionSystem(begin, end, true, true, true);
-        //System.exit(0);
-        boolean terminated = reactionSystem.isReactionTerminated();
-        boolean valid = reactionSystem.isModelValid();
-		System.out.println("The model core has " + ((CoreEdgeReactionModel)reactionSystem.getReactionModel()).getReactedReactionSet().size() + " reactions and "+ ((CoreEdgeReactionModel)reactionSystem.getReactionModel()).getReactedSpeciesSet().size() + " species.");
-		System.out.println("The model edge has " + ((CoreEdgeReactionModel)reactionSystem.getReactionModel()).getUnreactedReactionSet().size() + " reactions and "+ ((CoreEdgeReactionModel)reactionSystem.getReactionModel()).getUnreactedSpeciesSet().size() + " species.");
-
-		
-		StringBuilder print_info = Global.diagnosticInfo;
-		print_info.append("\nMolecule \t Flux\t\tTime\t \t\t \t Core \t \t Edge \t \t memory\n");
-
-		print_info.append(" \t moleular \t characteristic \t findspecies \t moveUnreactedToReacted \t enlarger \t restart1 \t totalEnlarger \t resetSystem  \t readSolverFile\t writeSolverFile \t justSolver \t SolverIterations \t solverSpeciesStatus \t Totalsolver \t gc  \t restart+diagnosis \t chemkin thermo \t chemkin reactions \t validitytester \t Species \t Reactions\t Species\t Reactions \t memory used  \t allSpecies \t TotalTime \t findRateConstant\t identifyReactedSites \t reactChemGraph \t makespecies\t CheckReverseReaction \t makeTemplateReaction \t getReactionfromStruc \t genReverseFromReac");
-		print_info.append("\t\t\t\t\t\t\t" + ((CoreEdgeReactionModel)reactionSystem.getReactionModel()).getReactedSpeciesSet().size()+ "\t" + ((CoreEdgeReactionModel)reactionSystem.getReactionModel()).getReactedReactionSet().size() + "\t" + ((CoreEdgeReactionModel)reactionSystem.getReactionModel()).getUnreactedSpeciesSet().size() + "\t" + ((CoreEdgeReactionModel)reactionSystem.getReactionModel()).getUnreactedReactionSetIncludingReverseSize() + "\t"+Global.makeSpecies+"\n");
-
-
-		double solverMin = 0; 
-		double vTester = 0;
-		
-		if (!restart){
-			writeRestartFile();
-			writeCoreReactions();
-			writeAllReactions();
-		}
-		
-		//System.exit(0);
-		SpeciesDictionary dictionary = SpeciesDictionary.getInstance();
-		System.out.println(dictionary.size());
-        boolean reactionChanged = false;
-		
-		double tAtInitialization = Global.tAtInitialization;
-		
-		
-        // step 2: iteratively grow reaction system
-        while (!terminated || !valid) {
-        	while (!valid) {
-				
-				double pt = System.currentTimeMillis();
-				reactionSystem.enlargeReactionModel();
-				double totalEnlarger = (System.currentTimeMillis() - pt)/1000/60;
-				
-				pt = System.currentTimeMillis();
-				reactionSystem.resetSystemSnapshot();
-				double resetSystem = (System.currentTimeMillis() - pt)/1000/60;
-        		reactionChanged = true;
-        		delt = timeStep;
-        		begin = init;
-        		end = begin.add(delt);
-        		currentT = reactionSystem.getTemperature(begin);
-        		currentP = reactionSystem.getPressure(begin);
-        		conditionChanged = (!currentT.equals(lastT) || !currentP.equals(lastP));
-        		
-        		double startTime = System.currentTimeMillis();
-				Chemkin.writeChemkinInputFile(reactionSystem.getReactionModel(),reactionSystem.getPresentStatus());
-				double chemkint = (System.currentTimeMillis()-startTime)/1000/60;
-				
-				startTime = System.currentTimeMillis();
-				reactionSystem.solveReactionSystem(begin, end, false, reactionChanged, conditionChanged);
-				solverMin = solverMin + (System.currentTimeMillis()-startTime)/1000/60;
-				
-				System.out.println("At this time: " + end.toString());
-        		Species spe = SpeciesDictionary.getSpeciesFromID(1);
-        		double conv = reactionSystem.getPresentConversion(spe);
-        		System.out.print("current conversion = ");
-        		System.out.println(conv);
-
-			    System.out.println("Running Time is: " + String.valueOf((System.currentTimeMillis()-tAtInitialization)/1000/60) + " minutes.");
-				System.out.println("The model edge has " + ((CoreEdgeReactionModel)reactionSystem.getReactionModel()).getUnreactedReactionSet().size() + " reactions and "+ ((CoreEdgeReactionModel)reactionSystem.getReactionModel()).getUnreactedSpeciesSet().size() + " species.");
-				System.out.println("The model core has " + ((CoreEdgeReactionModel)reactionSystem.getReactionModel()).getReactedReactionSet().size() + " reactions and "+ ((CoreEdgeReactionModel)reactionSystem.getReactionModel()).getReactedSpeciesSet().size() + " species.");
-
-
-				
-				startTime = System.currentTimeMillis();
-				double mU = memoryUsed();
-				double gc = (System.currentTimeMillis()-startTime)/1000/60;
-				
-				
-				
-				
-				
-				startTime = System.currentTimeMillis();
-                valid = reactionSystem.isModelValid();
-				vTester = vTester + (System.currentTimeMillis()-startTime)/1000/60;
-				
-				startTime = System.currentTimeMillis();
-
-				writeDiagnosticInfo();
-				writeEnlargerInfo();
-				double restart2 = (System.currentTimeMillis()-startTime)/1000/60;
-				
-				int allSpecies, allReactions;
-				allSpecies = SpeciesDictionary.getInstance().size();
-				print_info.append(totalEnlarger + "\t" + resetSystem + "\t" + Global.readSolverFile + "\t" + Global.writeSolverFile + "\t" + Global.solvertime + "\t" + Global.solverIterations + "\t" + Global.speciesStatusGenerator +  "\t" + solverMin + "\t"  + gc + "\t"  + restart2 + "\t" + Global.chemkinThermo + '\t' + Global.chemkinReaction + "\t" + vTester + "\t" + ((CoreEdgeReactionModel)reactionSystem.getReactionModel()).getReactedSpeciesSet().size()+ "\t" + ((CoreEdgeReactionModel)reactionSystem.getReactionModel()).getReactedReactionSet().size() + "\t" + ((CoreEdgeReactionModel)reactionSystem.getReactionModel()).getUnreactedSpeciesSet().size() + "\t" + ((CoreEdgeReactionModel)reactionSystem.getReactionModel()).getUnreactedReactionSetIncludingReverseSize() + "\t" + mU + "\t" + allSpecies + "\t" + (System.currentTimeMillis()-Global.tAtInitialization)/1000/60 + "\t"+ String.valueOf(Global.RT_findRateConstant)+"\t"+Global.RT_identifyReactedSites+"\t"+Global.RT_reactChemGraph+"\t"+Global.makeSpecies+"\t"+Global.checkReactionReverse+"\t"+Global.makeTR+ "\t" + Global.getReacFromStruc + "\t" + Global.generateReverse+"\n");
-				
-        	}
-        	reactionChanged = false;
-        	
-        	lastT = (Temperature)currentT.clone();
-        	lastP = (Pressure)currentP.clone();
-        	
-        	currentT = reactionSystem.getTemperature(begin);
-        	currentP = reactionSystem.getPressure(begin);
-        	conditionChanged = (!currentT.equals(lastT) || !currentP.equals(lastP));
-			
-        	begin=end;
-			end = end.add(delt);
-			
-			double startTime = System.currentTimeMillis();
-        	reactionSystem.solveReactionSystem(begin, end, false, reactionChanged, false);
-			solverMin = solverMin + (System.currentTimeMillis()-startTime)/1000/60;
-			//System.exit(0);
-			startTime = System.currentTimeMillis();
-        	
-			terminated = reactionSystem.isReactionTerminated();
-        	valid = reactionSystem.isModelValid();
-			
-			
-        	if (!valid) {
-        		System.out.println("At this time: " + end.toString());
-        		Species spe = SpeciesDictionary.getSpeciesFromID(1);
-        		double conv = reactionSystem.getPresentConversion(spe);
-        		System.out.print("current conversion = ");
-        		System.out.println(conv);
-
-        		Runtime runTime = Runtime.getRuntime();
-        		System.out.print("Memory used: ");
-        		System.out.println(runTime.totalMemory());
-        		System.out.print("Free memory: ");
-        		System.out.println(runTime.freeMemory());
-
-        		//runTime.gc();
-
-        		System.out.println("After garbage collection:");
-        		System.out.print("Memory used: ");
-        		System.out.println(runTime.totalMemory());
-        		System.out.print("Free memory: ");
-        		System.out.println(runTime.freeMemory());
-				System.out.println("The model core has " + ((CoreEdgeReactionModel)reactionSystem.getReactionModel()).getReactedReactionSet().size() + " reactions and "+ ((CoreEdgeReactionModel)reactionSystem.getReactionModel()).getReactedSpeciesSet().size() + " species.");
-
-        	}
-			vTester = vTester + (System.currentTimeMillis()-startTime)/1000/60;
-        }
-        if (paraInfor != 0){
-        	System.out.println("Model Generation performed. Now generating sensitivity data.");
-          DynamicSimulator dynamicSimulator2 = new JDASPK(rtol, atol, paraInfor, initialStatus);
-          reactionSystem.setDynamicSimulator(dynamicSimulator2);
-          int numSteps = reactionSystem.systemSnapshot.size() -1;
-          reactionSystem.resetSystemSnapshot();
-          begin = init;
-          end = begin.add(delt);
-          terminated = false;
-          reactionSystem.solveReactionSystem(begin, end, true, false, false, numSteps);
-          
-          /*while (!terminated){
-            begin = init;
-        	
-        	  end = end.add(delt);
-            reactionSystem.solveReactionSystem(begin, end, true, false,
-                                               false);
-            terminated = reactionSystem.isReactionTerminated();
-          }*/
-        }
-
-
-        System.out.println(end);
-		Chemkin.writeChemkinInputFile(reactionSystem.getReactionModel(),reactionSystem.getPresentStatus());
-		
-        
-        return;
-
-
-
-
-
-        //#]
-    }
 
 	/*private int calculateAllReactionsinReactionTemplate() {
 		int totalnum = 0;
@@ -1717,12 +1555,14 @@ public class ReactionModelGenerator {
 
 
 
-	public ReactionTime getTimeStep() {
+	public LinkedList getTimeStep() {
         return timeStep;
     }
 
     public void setTimeStep(ReactionTime p_timeStep) {
-        timeStep = p_timeStep;
+        if (timeStep == null)
+        	timeStep = new LinkedList();
+        timeStep.add(p_timeStep);
     }
 
     public String getWorkingDirectory() {

@@ -51,7 +51,7 @@ Using reaction time to control the termination of the reaction system.  ie., if 
 public class ReactionTimeTT implements TerminationTester {
     
     protected ReactionTime finalTime;		//## attribute finalTime 
-    
+    protected LinkedList timeStep;
     
     // Constructors
     
@@ -67,6 +67,10 @@ public class ReactionTimeTT implements TerminationTester {
         
         
         //#]
+    }
+    protected void setTimeSteps(LinkedList p_timeStep) {
+    	timeStep = p_timeStep;
+    	timeStep.add(finalTime);
     }
     
     //## operation getFinalTime() 
