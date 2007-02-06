@@ -101,7 +101,9 @@ public class JDASSL implements ODESolver{
 	protected StringBuilder tbrString;
 	protected StringBuilder troeString;
 	protected double [] reactionFlux;
-
+	protected double [] conversionSet;
+	protected double endTime;
+	
     //## operation JDASPK()
     private  JDASSL() {
         //#[ operation JDASPK()
@@ -126,7 +128,11 @@ public class JDASSL implements ODESolver{
       }
     }
 
-
+    public void addConversion(double [] p_conversions, int numConversion) {
+    	conversionSet = new double[numConversion];
+    	for (int i=0; i< numConversion; i++)
+    		conversionSet[i] = p_conversions[i];
+    }
 
     //## operation generatePDepODEReactionList(ReactionModel,SystemSnapshot,Temperature,Pressure)
     public StringBuilder generatePDepODEReactionList(ReactionModel p_reactionModel, SystemSnapshot p_beginStatus, Temperature p_temperature, Pressure p_pressure) {
@@ -426,7 +432,7 @@ public class JDASSL implements ODESolver{
     }
 
     //## operation solve(boolean,ReactionModel,boolean,SystemSnapshot,ReactionTime,ReactionTime,Temperature,Pressure,boolean)
-    public SystemSnapshot solve(boolean p_initialization, ReactionModel p_reactionModel, boolean p_reactionChanged, SystemSnapshot p_beginStatus, ReactionTime p_beginTime, ReactionTime p_endTime, Temperature p_temperature, Pressure p_pressure, boolean p_conditionChanged) {
+    public SystemSnapshot solve(boolean p_initialization, ReactionModel p_reactionModel, boolean p_reactionChanged, SystemSnapshot p_beginStatus, ReactionTime p_beginTime, ReactionTime p_endTime, Temperature p_temperature, Pressure p_pressure, boolean p_conditionChanged, TerminationTester tt, int p_iterationNum) {
  
     	//first generate an id for all the species
     	Iterator spe_iter = p_reactionModel.getSpecies();
@@ -487,8 +493,16 @@ public class JDASSL implements ODESolver{
         }
         else
         	info[0] = 1;
-        outputString.append(nState + "\t" + neq+"\n");
-		for (int i=0; i<neq; i++)
+        if (tt instanceof ConversionTT){
+        	SpeciesConversion sc = (SpeciesConversion)((ConversionTT)tt).speciesGoalConversionSet.get(0);
+            outputString.append(nState + "\t" + neq + "\t" +  getRealID(sc.species) + "\t" +conversionSet[p_iterationNum]+"\n");
+    		
+        }
+        else{
+        	outputString.append(nState + "\t" + neq + "\t" +  -1 + "\t" +0+"\n");
+    		
+        }
+        for (int i=0; i<neq; i++)
 			outputString.append(y[i]+" ");
 		outputString.append("\n");
 		for (int i=0; i<neq; i++)
@@ -513,7 +527,7 @@ public class JDASSL implements ODESolver{
 				System.out.println("The idid from DASPK was "+idid );
 				throw new DynamicSimulatorException("DASPK: SA off.");
         	}
-            System.out.println("After ODE: from " + String.valueOf(tBegin) + " SEC to " + String.valueOf(tEnd) + "SEC");
+            System.out.println("After ODE: from " + String.valueOf(tBegin) + " SEC to " + String.valueOf(endTime) + "SEC");
 			Global.solvertime = Global.solvertime + (System.currentTimeMillis() - startTime)/1000/60;
 			startTime = System.currentTimeMillis();
         	speStatus = generateSpeciesStatus(p_reactionModel, y, yprime, 0);
@@ -521,7 +535,7 @@ public class JDASSL implements ODESolver{
         }
         
 
-		SystemSnapshot sss = new SystemSnapshot(p_endTime, speStatus, p_beginStatus.getTemperature(), p_beginStatus.getPressure());
+		SystemSnapshot sss = new SystemSnapshot(new ReactionTime(endTime,"sec"), speStatus, p_beginStatus.getTemperature(), p_beginStatus.getPressure());
 		LinkedList reactionList = new LinkedList();
         reactionList.addAll(rList);
         reactionList.addAll(thirdBodyList);
@@ -592,6 +606,7 @@ public class JDASSL implements ODESolver{
         		System.out.println("ODESolver didnt generate all species result");
         		System.exit(0);
         	}
+        	endTime = Double.parseDouble(br.readLine().trim());
         	for (int i=0; i<neq; i++){
         		line = br.readLine();
         		y[i] = Double.parseDouble(line.trim());
