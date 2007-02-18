@@ -104,7 +104,7 @@ public class ReactionSystem {
 //	## operation checkInitialConsistency() 
     public boolean checkInitialConsistency() {
         //#[ operation checkInitialConsistency() 
-        return initialStatus.isTPCConsistent();
+        return initialStatus.isTPCConsistent(dynamicSimulator, finishController);
         //#]
     }
 	
@@ -1253,7 +1253,7 @@ public String printLowerBoundConcentrations(LinkedList p_speciesList) {
         							int J = j + 1;
         							sens /= conc;
         							sens *= k;
-        							result.append("d(ln[" + spe.getName() + "])/d(lnk" + J +"): " +sens +'\n');
+        							result.append("d(ln[" + spe.getName() + "])/d(lnk" + J +"): \t" +sens +'\n');
         						}
                    
         					}

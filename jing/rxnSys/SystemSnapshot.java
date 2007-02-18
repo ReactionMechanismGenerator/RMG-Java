@@ -215,7 +215,7 @@ public class SystemSnapshot {
     }
 
     //## operation isTPCConsistent()
-    public boolean isTPCConsistent() {
+    public boolean isTPCConsistent(DynamicSimulator ds, FinishController fc) {
         //#[ operation isTPCConsistent()
         double T = temperature.getK();
         double P = pressure.getPa();
@@ -245,6 +245,12 @@ public class SystemSnapshot {
                 SpeciesStatus ss = (SpeciesStatus)iter.next();
                 //System.out.println(String.format("%1.6e",ss.getConcentration()*realConc/conc));
                 ss.setConcentration(ss.getConcentration()*realConc/conc);
+        	}
+        	if (fc.terminationTester instanceof ConversionTT) {
+        		double [] conversion = ds.getConversion();
+        		for (int j=0; j< conversion.length; j++){
+        			conversion[j] = conversion[j]*realConc/conc;
+        		}
         	}
         	return false;
         }

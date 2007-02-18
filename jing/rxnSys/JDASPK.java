@@ -131,6 +131,10 @@ public class JDASPK implements ODESolver{
     		conversionSet[i] = p_conversions[i];
     }
 
+    public double[] getConversion(){
+		return conversionSet;
+	}
+    
     //## operation generatePDepODEReactionList(ReactionModel,SystemSnapshot,Temperature,Pressure)
     public StringBuilder generatePDepODEReactionList(ReactionModel p_reactionModel, SystemSnapshot p_beginStatus, Temperature p_temperature, Pressure p_pressure) {
         //#[ operation generatePDepODEReactionList(ReactionModel,SystemSnapshot,Temperature,Pressure)
@@ -833,14 +837,14 @@ public class JDASPK implements ODESolver{
 			while ( (line = br.readLine()) != null) {
 				//System.out.println(line);
 				line = line.trim();
-				if (!(line.contains("ODESOLVER SUCCESSFUL"))) {
-					System.err.println("Error running the ODESolver: "+line);
-					error = true;
-				}
+				//if (!(line.contains("ODESOLVER SUCCESSFUL"))) {
+					System.out.println(line);
+					//error = true;
+				//}
 			}
         	int exitValue = 4;
         	exitValue = ODESolver.waitFor();
-        	System.out.println(br.readLine() + exitValue);
+        	//System.out.println(br.readLine() + exitValue);
         	
         }
         catch (Exception e) {

@@ -68,7 +68,7 @@ public class Chemkin implements DAESolver {
 
   protected double rtol;		//## attribute rtol
 
-  protected static String thermoHeader = "";
+  //protected String thermoHeader = "";
 
   // Constructors
 
@@ -89,20 +89,7 @@ public class Chemkin implements DAESolver {
       rtol = p_rtol;
       atol = p_atol;
       reactorType = p_reactorType;
-      thermoHeader += "! neon added by pey (20/6/04) - used thermo for Ar\n";
-		thermoHeader += "Ne                120186Ne  1               G  0300.00   5000.00  1000.00      1\n";
-		thermoHeader += " 0.02500000E+02 0.00000000E+00 0.00000000E+00 0.00000000E+00 0.00000000E+00    2\n";
-		thermoHeader += "-0.07453750E+04 0.04366001E+02 0.02500000E+02 0.00000000E+00 0.00000000E+00    3\n";
-		thermoHeader += " 0.00000000E+00 0.00000000E+00-0.07453750E+04 0.04366001E+02                   4\n";
-		thermoHeader += "N2                121286N   2               G  0300.00   5000.00  1000.00      1\n";
-		thermoHeader += " 0.02926640e+02 0.01487977e-01-0.05684761e-05 0.01009704e-08-0.06753351e-13    2\n";
-		thermoHeader += "-0.09227977e+04 0.05980528e+02 0.03298677e+02 0.01408240e-01-0.03963222e-04    3\n";
-		thermoHeader += " 0.05641515e-07-0.02444855e-10-0.01020900e+05 0.03950372e+02                   4\n";
-		thermoHeader += "Ar                120186Ar  1               G  0300.00   5000.00  1000.00      1\n";
-		thermoHeader += " 0.02500000e+02 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00    2\n";
-		thermoHeader += "-0.07453750e+04 0.04366001e+02 0.02500000e+02 0.00000000e+00 0.00000000e+00    3\n";
-		thermoHeader += " 0.00000000e+00 0.00000000e+00-0.07453750e+04 0.04366001e+02                   4\n";
-      //#]
+      
   }
   private void copyFiles(String string, String string2)  {
 	  File src = new File(string);
@@ -130,6 +117,10 @@ public  Chemkin() {
 
 	public void addConversion(double [] temp1, int temp2){
 	
+	}
+	
+	public double[] getConversion(){
+		return null;
 	}
 	
   //## operation checkChemkinMessage()
@@ -615,6 +606,20 @@ public  Chemkin() {
   //## operation writeChemkinThermo(ReactionModel)
   public static String writeChemkinThermo(ReactionModel p_reactionModel) {
       //#[ operation writeChemkinThermo(ReactionModel)
+	  String thermoHeader = "! neon added by pey (20/6/04) - used thermo for Ar\n";
+		thermoHeader += "Ne                120186Ne  1               G  0300.00   5000.00  1000.00      1\n";
+		thermoHeader += " 0.02500000E+02 0.00000000E+00 0.00000000E+00 0.00000000E+00 0.00000000E+00    2\n";
+		thermoHeader += "-0.07453750E+04 0.04366001E+02 0.02500000E+02 0.00000000E+00 0.00000000E+00    3\n";
+		thermoHeader += " 0.00000000E+00 0.00000000E+00-0.07453750E+04 0.04366001E+02                   4\n";
+		thermoHeader += "N2                121286N   2               G  0300.00   5000.00  1000.00      1\n";
+		thermoHeader += " 0.02926640e+02 0.01487977e-01-0.05684761e-05 0.01009704e-08-0.06753351e-13    2\n";
+		thermoHeader += "-0.09227977e+04 0.05980528e+02 0.03298677e+02 0.01408240e-01-0.03963222e-04    3\n";
+		thermoHeader += " 0.05641515e-07-0.02444855e-10-0.01020900e+05 0.03950372e+02                   4\n";
+		thermoHeader += "Ar                120186Ar  1               G  0300.00   5000.00  1000.00      1\n";
+		thermoHeader += " 0.02500000e+02 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00    2\n";
+		thermoHeader += "-0.07453750e+04 0.04366001e+02 0.02500000e+02 0.00000000e+00 0.00000000e+00    3\n";
+		thermoHeader += " 0.00000000e+00 0.00000000e+00-0.07453750e+04 0.04366001e+02                   4\n";
+    //#]
       StringBuilder result = new StringBuilder();
 	  result.append("THERMO ALL\n");
       result.append("   300.000  1000.000  5000.000\n");

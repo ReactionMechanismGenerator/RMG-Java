@@ -802,7 +802,7 @@ public class ReactionModelGenerator {
           		end = ((ReactionTimeTT)reactionSystem.finishController.terminationTester).finalTime;
           }
           else
- 	     		end = new ReactionTime(1e6,"sec");
+ 	     		end = end.add(end);
           terminated = false;
           reactionSystem.solveReactionSystemwithSEN(begin, end, true, false, false);
          

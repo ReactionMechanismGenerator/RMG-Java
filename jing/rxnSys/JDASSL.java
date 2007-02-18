@@ -134,6 +134,10 @@ public class JDASSL implements ODESolver{
     		conversionSet[i] = p_conversions[i];
     }
 
+    public double[] getConversion(){
+		return conversionSet;
+	}
+    
     //## operation generatePDepODEReactionList(ReactionModel,SystemSnapshot,Temperature,Pressure)
     public StringBuilder generatePDepODEReactionList(ReactionModel p_reactionModel, SystemSnapshot p_beginStatus, Temperature p_temperature, Pressure p_pressure) {
         //#[ operation generatePDepODEReactionList(ReactionModel,SystemSnapshot,Temperature,Pressure)
