@@ -1,0 +1,6 @@
+c    kFit common block for chemdis
+      integer nTLow(-1:mxPpts+1),nTHigh(-1:mxPpts+1)
+      real*8 aFit(-1:mxPpts+1),rNFit(-1:mxPpts+1),eFit(-1:mxPpts+1),
+     2   avgErr(-1:mxPpts+1)
+      common /kFit/aFit,rNFit,eFit,avgErr,nTLow,nTHigh
+

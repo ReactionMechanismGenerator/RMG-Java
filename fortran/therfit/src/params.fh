@@ -1,0 +1,31 @@
+c
+c     Header file for parameter sizes for vectors xdat, ydat, etc, and
+c     number of parameters
+
+      parameter(maxpar = 6)
+      parameter(maxdat = 30)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

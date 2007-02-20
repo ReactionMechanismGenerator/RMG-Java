@@ -1,0 +1,7 @@
+! parameters to specify volume change (set SPED to zero for CONV reactor)
+SPED 0         ! engine speed (rpm)
+CADI -180      ! initial crank angle (degrees)
+COMP 9.8       ! compression ratio
+RLA  3.0       ! ratio of connecting rod to crank radius
+VOLC 4.445E-5  ! clearance volume (m3)
+END

@@ -1,0 +1,37 @@
+c***********************************************************************
+c dmm 20000224
+c    
+c     Common blocks for gamma lookup table, dlgamgen, etc.
+c
+c     Modifications:
+c     pey 15Aug04
+c     Reordered common block so it is aligned (Intel compiler complained.)
+c
+c***********************************************************************
+
+      integer igmax
+
+      parameter(igmax = 5000)
+      logical gammaspec
+      real*8 gzinc, gzmax
+      real*8 dlgtab(igmax)
+
+c      common/cdgamma/gammaspec, gzinc, gzmax, dlgtab
+      common/cdgamma/ gzinc, gzmax, dlgtab, gammaspec
+
+c
+c     $Id$
+c     $Author$
+c     $Date$
+c     $Source$
+c     $Revision$
+c     $Log$
+c     Revision 1.1  2007-02-20 23:10:23  sandeeps
+c     Initial revision
+c
+c     Revision 1.3  2002/07/21 21:14:16  dmmatheu
+c     before changes to reduce memory demand ...
+c
+c     Revision 1.2  2000/02/24 21:33:38  dmmatheu
+c     initial revision
+c

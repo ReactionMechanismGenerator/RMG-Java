@@ -1,0 +1,6 @@
+c    labels common block for chemdis
+      character collNm(mxColls)*10,caseStr*10
+      character isName(mxWells)*15,pdName(mxWells,0:mxProds)*20
+c  dmm 20010925 for printing of CHEMKIN-like file
+      character reName*20
+      common /labels/isName,pdName,collNm,caseStr,reName

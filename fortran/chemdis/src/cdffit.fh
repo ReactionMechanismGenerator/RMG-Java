@@ -1,0 +1,6 @@
+c    FFit common block for chemdis
+      integer NFit
+      real*8 FitVec(mxFitP)
+      character funStr*80,FOpt*8
+      common /Ffit/FitVec,Nfit,funStr,FOpt
+            

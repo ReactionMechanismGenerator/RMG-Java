@@ -1,0 +1,13 @@
+c***********************************************************************
+c dmm 20000310
+c
+c     This is the header file for the straight BS algorithm. TBS is the
+c     T array for the BS alg.
+c***********************************************************************
+
+      integer maxNOS, maxmodes
+      parameter(maxNOS = 156000, maxmodes = 200)
+c Sandeep has changed the value of maxNOS from 150000 to 156000 to avoid RMG from crashing.
+      real*8 TBS(maxNOS)
+      common /BSTT/ TBS
+

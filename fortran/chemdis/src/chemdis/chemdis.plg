@@ -1,0 +1,48 @@
+<html>
+<body>
+<pre>
+<h1>Build Log</h1>
+<h3>
+--------------------Configuration: chemdis - Win32 Debug--------------------
+</h3>
+<h3>Command Lines</h3>
+Creating temporary file "C:\DOCUME~1\sandeep\LOCALS~1\Temp\RSP93.tmp" with contents
+[
+version.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:windows /incremental:no /pdb:"Debug/chemdis.pdb" /debug /machine:I386 /out:"Debug/chemdis.exe" /pdbtype:sept 
+.\Debug\straightBS.obj
+.\Debug\cdaux.obj
+.\Debug\cdbits.obj
+.\Debug\cdchem.obj
+.\Debug\cddiss.obj
+.\Debug\cdffits.obj
+.\Debug\cdffuns.obj
+.\Debug\cdfouts.obj
+.\Debug\cdgets.obj
+.\Debug\cdkfits.obj
+.\Debug\cdkouts.obj
+.\Debug\cdrecur.obj
+.\Debug\cdsets.obj
+.\Debug\cdstab.obj
+.\Debug\cdstr.obj
+.\Debug\cdsubs.obj
+.\Debug\chebyshev.obj
+.\Debug\chemdis2.obj
+.\Debug\gammln.obj
+.\Debug\genRhos.obj
+.\Debug\PrintBarkerFiles.obj
+.\Debug\PrintSteadyInput.obj
+]
+Creating command line "link.exe @C:\DOCUME~1\sandeep\LOCALS~1\Temp\RSP93.tmp"
+<h3>Output Window</h3>
+Linking...
+libc.lib(wincrt0.obj) : error LNK2001: unresolved external symbol _WinMain@16
+Debug/chemdis.exe : fatal error LNK1120: 1 unresolved externals
+Error executing link.exe.
+
+
+
+<h3>Results</h3>
+chemdis.exe - 2 error(s), 0 warning(s)
+</pre>
+</body>
+</html>

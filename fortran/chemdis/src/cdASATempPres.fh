@@ -1,0 +1,56 @@
+c******************************************************************
+c dmm 20000628
+c
+c     ASATempPres header file
+c
+c     This file used for keeping track of branches at different T's and
+c     P's during the ASA exploration of the PDep network.
+c
+c     iDCmatrix:  holds sioWell value for channel dominant at this T, P
+c     and step
+c
+c     iCurTemp:  array, holds indexes of current temperatures for
+c     calculation; these refer to temperatures in stemp.  If iCurTemp(i)
+c     = n, then we will be examining temperature sTemp(n).  iCurTemp
+c     should have 'nTemps' nonzero elements.
+c
+c     iCurPres:  same as for temp but for pressure
+c     
+c     must include after cdparams.fh
+c***********************************************************************
+
+      integer iDCmatrix(mxTPts, mxPPts, mxWells)
+      integer iCurTemp(mxTPts)
+      integer iCurPres(mxPPts)
+
+      common /ASATempPres/ iDCmatrix, iCurTemp, iCurPres
+
+c $Id$
+c $Author$
+c $Date$
+c $Source$
+c $Revision$
+c $Log$
+c Revision 1.1  2007-02-20 23:10:23  sandeeps
+c Initial revision
+c
+c Revision 1.2  2000/06/28 16:58:06  dmmatheu
+c no changes
+c
+c Revision 1.1  2000/06/28 16:57:40  dmmatheu
+c Initial revision
+c
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,9 @@
+C:\Acads\Research\fortran\chemdis\src\PrintBarkerFiles.F(23) : warning 767 - The argument MAXN has not been used
+C:\Acads\Research\fortran\chemdis\src\PrintBarkerFiles.F(23) : warning 197 - Variable NBSLENGTH has been declared but not used
+C:\Acads\Research\fortran\chemdis\src\PrintBarkerFiles.F(23) : warning 197 - Variable ISPACE has been declared but not used
+C:\Acads\Research\fortran\chemdis\src\PrintBarkerFiles.F(23) : warning 197 - Variable IC has been declared but not used
+C:\Acads\Research\fortran\chemdis\src\PrintBarkerFiles.F(26) : warning 197 - Variable DUM1 has been declared but not used
+C:\Acads\Research\fortran\chemdis\src\PrintBarkerFiles.F(26) : warning 197 - Variable DUM2 has been declared but not used
+C:\Acads\Research\fortran\chemdis\src\PrintBarkerFiles.F(168) : comment 1005 - This declaration of RR has caused the intrinsic of the same name to be inaccessible
+C:\Acads\Research\fortran\chemdis\src\PrintBarkerFiles.F(205) : error 573 - Missing expression
+C:\Acads\Research\fortran\chemdis\src\PrintBarkerFiles.F(302) : warning 21 - Label 912 is declared, but not used

@@ -1,0 +1,7 @@
+      integer mxBuf
+      parameter (mxBuf = mxProds+mxWells)
+c     variables for density matrix calculations
+      integer nLower(mxWells,0:mxBuf)
+      real*8 rhoUpper(mxWells,0:mxBuf),rhoLower(mxWells,0:mxBuf),
+     2   prodGamS(mxWells)
+      common /rhoVar/ rhoUpper,rhoLower,prodGamS,nLower

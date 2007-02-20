@@ -1,0 +1,51 @@
+ RMG-Generated Partial Network 1753                                                                                      
+
+ TAG ID:           
+
+ ISOMER MASS: 55.00 amu
+
+ FREQUENCIES (cm-1)
+  1       SPC727              8.00 x  560.2   6.00 x  899.3  12.00 x 2197.9
+
+ One active rotation assumed.
+
+ PRODUCT CHANNELS                            A          n      alpha      E (kcal)
+  1: 1  SPC727          = SPC578 + SPC17      1.9800E+14  -0.015  0.000E+00     61.430
+  1: 2  SPC727          = SPC578 + SPC17      1.8600E+12   0.675  0.000E+00     60.730
+  1: 3  SPC727          = SPC283              2.0700E+12   0.456  0.000E+00     61.700
+  1: 4  SPC727          = SPC243              6.0800E+10   0.965  0.000E+00     44.130
+  1: 5  SPC727          = SPC582 + SPC17      1.3700E+13   0.396  0.000E+00     45.680
+  1: 6  SPC727          = SPC823              9.0600E+12   0.424  0.000E+00     60.010
+  1: 7  SPC727          = SPC161              3.6500E+11   0.635  0.000E+00     60.930
+
+ COLLIDERS       x        m       sigma     e/k    dEavg(300)  exp(dEd)    beta
+ !N2          1.000     28.0      3.62     97.50      461.0      0.000
+
+
+ **** DISSOC ( 1) PARAMETERS ****
+
+ REACTANT CHANNEL 
+  1:  0  SPC727          => *SPC727         
+
+ WELL INFO         kcal   # depth   sigma   e/k     Ebar HP   Ebar LP
+  1  SPC727              0.00      1     4.60   531.40      0.00      0.00
+
+ Well depth (kcal) is determined from input barrier heights.
+ Chart depth is determined by isomerization linkage.
+
+ DISSOC calculations from E of  44.13 to at least  61.70 kcals,
+ in  0.20 kcal (  70.0 cm-1) steps.
+
+ INTEGRATION STEP RANGE
+  T (K)   # steps  Estart (kcal) Eend (kcal)
+   300.6    119        44.13      67.73
+   305.5    119        44.13      67.73
+   315.4    123        44.13      68.53
+   330.3    124        44.13      68.73
+   350.3    124        44.13      68.73
+   375.0    131        44.13      70.13
+   403.4    137        44.13      71.33
+   433.6    140        44.13      71.93
+   462.4    147        44.13      73.33
+   485.4    152        44.13      74.33
+   498.3    155        44.13      74.93

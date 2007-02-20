@@ -1,0 +1,25 @@
+
+
+nc7h16          
+ 
+--> nc7h16           --------- HARMONIC OSCIL FIT ------------
+       VIBRATIONS #1:  MODES =   15.0  FREQUENCY =   250.2 CM-1
+       VIBRATIONS #2:  MODES =   35.0  FREQUENCY =  1181.4 CM-1
+       VIBRATIONS #3:  MODES =  -10.0  FREQUENCY =  2365.4 CM-1
+ GEO MEAN VIBRATION:  MODES = 40.000  FREQUENCY =   555.0 CM-1
+ 
+ CALCULATIONS FOR A NON-LINEAR MOLECULE WITH  45 INT MODES (10 INT ROTS)
+ (IN CHOSEN UNITS:    Cp(0):  7.948   Cp(inf):  87.428)
+
+  HF298 input  HF298 fit  S298 input  S298 fit
+   -28400.      -28409.     64.56      64.54
+
+  T(K)     Cp input   Cp (HOE)   Delta   Cp (poly)   Delta
+    300.     43.08     42.17     -0.91     42.32     -0.76
+    400.     54.66     53.97     -0.69     54.71      0.05
+    500.     63.70     64.19      0.49     64.23      0.53
+    600.     70.53     71.73      1.20     71.37      0.84
+    800.     78.44     80.37      1.93     80.26      1.82
+   1000.     84.05     84.21      0.16     84.40      0.35
+   1500.     95.36     87.01     -8.35     86.94     -8.42
+   5000.               87.50               87.55

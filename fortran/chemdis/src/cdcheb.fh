@@ -1,0 +1,6 @@
+c	  common block for chebyshev fitting (pey 4/6/04)
+      integer nchebT, nchebP
+      real*8 chebcoeffs(mxChebT,mxChebP)
+      real*8 tcheb(mxTPts), pcheb(mxPPts), tmin, tmax, pmin, pmax
+      common /chebycommon/ nchebT,nchebP,tcheb,pcheb,chebcoeffs,
+     >                     tmin, tmax, pmin, pmax

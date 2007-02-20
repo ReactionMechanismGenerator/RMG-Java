@@ -1,0 +1,74 @@
+ RMG-Generated Partial Network 488                                                                                       
+
+ TAG ID:           
+
+ ISOMER MASS: ***** amu
+
+ FREQUENCIES (cm-1)
+  1       SPC57              33.00 x  280.0  55.00 x 1200.0  31.00 x 2800.0
+
+ One active rotation assumed.
+
+ ISOMERIZATION CHANNEL A'S
+             SPC57     
+      SPC57            0.0000E+00
+
+ ISOMERIZATION CHANNEL N'S
+             SPC57     
+      SPC57            0.0000E+00
+
+ ISOMERIZATION CHANNEL alpha'S
+             SPC57     
+ SPC57       0.0000E+00
+
+ ISOMERIZATION CHANNEL E'S (kcal)
+             SPC57     
+ SPC57         0.000
+
+ PRODUCT CHANNELS                            A          n      alpha      E (kcal)
+  1: 1  SPC57           = SPC301 + SPC6       1.1921E+22  -3.748  0.000E+00    100.104
+  1: 2  SPC57           = SPC302 + SPC13      1.3732E+22  -1.388  0.000E+00     89.385
+  1: 3  SPC57           = SPC126 + SPC10      2.9832E+27  -2.852  0.000E+00     88.137
+  1: 4  SPC57           = SPC303 + SPC6       9.0338E+21  -3.734  0.000E+00    100.077
+  1: 5  SPC57           = SPC297 + SPC6       5.0508E+22  -4.158  0.000E+00     97.659
+  1: 6  SPC57           = SPC5 + SPC5         4.7878E+31  -4.102  0.000E+00     88.294
+  1: 7  SPC57           = SPC300 + SPC9       9.8828E+23  -1.933  0.000E+00     88.192
+  1: 8  SPC57           = SPC298 + SPC6       9.1192E+23  -4.551  0.000E+00     97.908
+  1: 9  SPC57           = SPC306 + SPC6       1.9285E+24  -4.482  0.000E+00     95.999
+  1:10  SPC57           = SPC307 + SPC4       2.3180E+24  -2.032  0.000E+00     88.275
+  1:11  SPC57           = SPC299 + SPC6       9.1192E+23  -4.551  0.000E+00     97.908
+  1:12  SPC57           = SPC304 + SPC6       2.9208E+23  -4.365  0.000E+00     97.793
+  1:13  SPC57           = SPC196 + SPC13      4.5948E+25  -2.442  0.000E+00     89.274
+  1:14  SPC57           = SPC305 + SPC3       1.7566E+24  -2.018  0.000E+00     88.247
+
+ COLLIDERS       x        m       sigma     e/k    dEavg(300)  exp(dEd)    beta
+ !nC7H16      0.153    100.0      5.95    399.30      461.0      0.000
+ !H2O         0.847     18.0      5.95    399.30      461.0      0.000
+
+
+ **** CHEMACT PARAMETERS ****
+
+ REACTANT CHANNEL                              A          n      alpha      E (kcal)
+  1:- 6  SPC5 + SPC5          => SPC57          3.2500E+14  -0.700  0.000E+00      0.000
+
+ WELL INFO         kcal   # depth   sigma   e/k     Ebar HP   Ebar LP
+  1  SPC57             -88.29      1     5.95   399.00    -88.29    -88.29
+
+ Well depth (kcal) is determined from input barrier heights.
+ Chart depth is determined by isomerization linkage.
+
+ CHEMACT calculations from E of   0.00 to at least  11.81 kcals,
+ in  0.20 kcal (  70.0 cm-1) steps.
+
+ INTEGRATION STEP RANGE
+  T (K)   # steps  Estart (kcal) Eend (kcal)
+   301.7    174         0.00      34.60
+   315.5    186         0.00      37.00
+   345.5    211         0.00      42.00
+   397.7    256         0.00      51.00
+   483.6    335         0.00      66.80
+   625.5    470         0.00      93.80
+   867.8    715         0.00     142.80
+  1294.2    ***         0.00     232.80
+  2012.8    ***         0.00     388.80
+  2842.5    ***         0.00     400.00

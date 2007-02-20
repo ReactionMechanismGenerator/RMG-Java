@@ -1,0 +1,59 @@
+ RMG-Generated Partial Network 803                                                                                       
+
+ TAG ID:           
+
+ ISOMER MASS: ***** amu
+
+ FREQUENCIES (cm-1)
+  1       SPC660             21.00 x  422.6  23.00 x 1552.3   4.00 x 4851.6
+
+ One active rotation assumed.
+
+ ISOMERIZATION CHANNEL A'S
+             SPC660    
+      SPC660           0.0000E+00
+
+ ISOMERIZATION CHANNEL N'S
+             SPC660    
+      SPC660           0.0000E+00
+
+ ISOMERIZATION CHANNEL alpha'S
+             SPC660    
+ SPC660      0.0000E+00
+
+ ISOMERIZATION CHANNEL E'S (kcal)
+             SPC660    
+ SPC660        0.000
+
+ PRODUCT CHANNELS                            A          n      alpha      E (kcal)
+  1: 1  SPC660          = SPC683              1.2500E+10   0.000  0.000E+00     19.100
+  1: 2  SPC660          = SPC680              3.1200E+09   0.000  0.000E+00     19.050
+  1: 3  SPC660          = SPC661 + SPC17      4.8500E+10   0.410  0.000E+00     14.500
+  1: 4  SPC660          = SPC682              4.6800E+09   0.000  0.000E+00     22.350
+  1: 5  SPC660          = SPC42 + SPC15       1.0000E+23  -2.755  0.000E+00      4.820
+  1: 6  SPC660          = SPC679              1.1942E+10   0.651  0.000E+00     38.184
+  1: 7  SPC660          = SPC681              5.8500E+08   0.000  0.000E+00     25.550
+
+ COLLIDERS       x        m       sigma     e/k    dEavg(300)  exp(dEd)    beta
+ !N2          1.000     28.0      3.62     97.50      461.0      0.000
+
+
+ **** CHEMACT PARAMETERS ****
+
+ REACTANT CHANNEL                              A          n      alpha      E (kcal)
+  1:- 5  SPC42 + SPC15        => SPC660         6.7228E+11   0.074  0.000E+00      3.071
+
+ WELL INFO         kcal   # depth   sigma   e/k     Ebar HP   Ebar LP
+  1  SPC660             -4.82      1     5.70   341.10     -4.82     -4.82
+
+ Well depth (kcal) is determined from input barrier heights.
+ Chart depth is determined by isomerization linkage.
+
+ CHEMACT calculations from E of   0.00 to at least  33.36 kcals,
+ in  0.20 kcal (  70.0 cm-1) steps.
+
+ INTEGRATION STEP RANGE
+  T (K)   # steps  Estart (kcal) Eend (kcal)
+   290.0    218         0.00      43.40
+   350.0    236         0.00      47.00
+   500.0    279         0.00      55.60

@@ -1,0 +1,48 @@
+c    specifies all parameters for common blocks used in chemdis
+
+      integer mxWells, mxProds
+      parameter (mxWells = 30, mxProds = 150)  
+c     old values mxWells = 12, mxProds = 10 ...
+      
+      integer mxTPts, mxPPts
+c      parameter (mxTPts = 20, mxPPts = 61)
+      parameter (mxTPts = 41, mxPPts = 14)
+
+      
+      integer mxColls
+      parameter (mxColls = 5)
+      
+      integer mxFreqs
+      parameter (mxFreqs = 70)
+      
+      integer mxFitP
+      parameter (mxFitP = 20)
+      
+      integer mxKfit
+      parameter (mxKFit = 6)
+c dmm 20010808 for multiple free rotors
+      integer mxRots
+      parameter (mxRots = 5)
+c dmm 2000628 for xkmax variable
+      integer mxSects
+      parameter(mxSects = 5)
+c dmm 2000628
+
+c pey 4/6/04
+	  integer mxChebT, mxChebP
+	  parameter(mxChebT = 10, mxChebP = 10)
+c end pey
+
+C $Id$
+c $Author$
+C $Date$
+C $Log$
+C Revision 1.1  2007-02-20 23:10:23  sandeeps
+C Initial revision
+C
+C Revision 1.2  2002/07/21 21:12:44  dmmatheu
+C middle of changes to bring code back to low-memory demand
+C
+C Revision 1.1  2001/08/08 20:59:25  dmmatheu
+C Initial revision
+C
