@@ -72,7 +72,7 @@ public class ReactionModelGenerator {
     protected double atol;
 
 
-	protected boolean restart;
+	protected boolean restart = false;
     // Constructors
 
 	private HashSet specs = new HashSet();
@@ -111,7 +111,7 @@ public class ReactionModelGenerator {
         	PrimaryReactionLibrary primaryReactionLibrary = null;
         	double [] conversionSet = new double[50];
 			String line = ChemParser.readMeaningfulLine(reader);
-        	if (line.startsWith("Restart")){
+        	/*if (line.startsWith("Restart")){
 				StringTokenizer st = new StringTokenizer(line);
 				String token = st.nextToken();
 				token = st.nextToken();
@@ -126,9 +126,9 @@ public class ReactionModelGenerator {
 				}
 				else throw new InvalidSymbolException("UnIdentified Symbol "+token+" after Restart:");
         	}
-        	else throw new InvalidSymbolException("Can't find Restart!");
+        	else throw new InvalidSymbolException("Can't find Restart!");*/
 
-			line = ChemParser.readMeaningfulLine(reader);
+			//line = ChemParser.readMeaningfulLine(reader);
 
 			if (line.startsWith("Database")){//svp
                 line = ChemParser.readMeaningfulLine(reader);
@@ -598,7 +598,7 @@ public class ReactionModelGenerator {
         	System.err.println(e.getMessage());
         	System.exit(0);
         }
-		if (restart){
+		/*if (restart){
 			reactionSystem.reactionModel = new CoreEdgeReactionModel();
 			parseRestartFiles();
 			((CoreEdgeReactionModel)reactionSystem.reactionModel).addReactedSpeciesSet(reactionSystem.originalReactant);
@@ -608,8 +608,8 @@ public class ReactionModelGenerator {
 				((CoreEdgeReactionModel)reactionSystem.reactionModel).addPrimaryReactionSet(reactionSystem.primaryReactionLibrary.getReactionSet());
 
 			}
-		}
-		else reactionSystem.initializeCoreEdgeReactionModel();
+		}*/
+		reactionSystem.initializeCoreEdgeReactionModel();
         reactionSystem.initializePDepNetwork();
 		
 		
@@ -650,11 +650,11 @@ public class ReactionModelGenerator {
 		double solverMin = 0; 
 		double vTester = 0;
 		
-		if (!restart){
+		/*if (!restart){
 			writeRestartFile();
 			writeCoreReactions();
 			writeAllReactions();
-		}
+		}*/
 		
 		//System.exit(0);
 		SpeciesDictionary dictionary = SpeciesDictionary.getInstance();
