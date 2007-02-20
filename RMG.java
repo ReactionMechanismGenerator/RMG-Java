@@ -89,7 +89,7 @@ public class RMG {
     }
 	finalOutput = finalOutput + "\\\\\\\\\\\\\\\\\\\\\\\\\\\\    Mole Fraction Profile Output    \\\\\\\\\\\\\\\\\\\\\\\\\\";
 	finalOutput = finalOutput +"\n"+ rs.returnMoleFractionProfile(speList)+"\n";
-    
+    finalOutput = finalOutput + rs.printOrderedReactions() + "\n";
     if (rmg.getSensitivity()){//svp
     	  LinkedList importantSpecies = rmg.getSpeciesList();
 		  finalOutput = finalOutput + "Sensitivity Analysis:";
@@ -97,9 +97,10 @@ public class RMG {
 		  finalOutput = finalOutput + "\n";
 		  finalOutput = finalOutput + rs.printSensitivityToThermo(speList, importantSpecies)+"\n";
 		  finalOutput = finalOutput + "\n";
-		  finalOutput = finalOutput + rs.printMostUncertainReactions(speList, importantSpecies)+"\n";
+		  finalOutput = finalOutput + rs.printMostUncertainReactions(speList, importantSpecies)+"\n\n";
+		  
     	}
-
+    finalOutput = finalOutput + rs.returnReactionFlux() + "\n";
     long end = System.currentTimeMillis();
     double min = (end-tAtInitialization)/1E3/60;
 	finalOutput = finalOutput +"Running Time is: " + String.valueOf(min) + " minutes.";
@@ -178,7 +179,7 @@ public class RMG {
              FileReader in = new FileReader(initialConditionFile);
              BufferedReader reader = new BufferedReader(in);
              String line = ChemParser.readMeaningfulLine(reader);
-			 	line = ChemParser.readMeaningfulLine(reader);
+			 //line = ChemParser.readMeaningfulLine(reader);
 			 
              if (line.startsWith("Database")){
                StringTokenizer st = new StringTokenizer(line);
