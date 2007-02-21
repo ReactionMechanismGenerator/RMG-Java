@@ -701,7 +701,7 @@ c     Calculate wfac
          dwdEp = -(5.0 + 1.365*(Eprime**(-0.5)))*(wfac**2.0)
       else
          wfac = EXP(-2.4191*(Eprime**0.25))
-         dwdEp = -(0.60478*(Eprime**-0.75))*wfac
+         dwdEp = -(0.60478*(Eprime**(-0.75)))*wfac
       endif
 c     Calculate afrac
       afrac = 1.0 - betaR*wfac
@@ -737,8 +737,16 @@ c $Date$
 c $Source$
 c $Revision$
 c $Log$
-c Revision 1.1  2007-02-20 23:10:23  sandeeps
-c Initial revision
+c Revision 1.2  2007-02-21 03:16:25  sandeeps
+c Changed a minor syntax so that g95 can compile it. No major change in the program itself
+c
+c Revision 1.1.1.1  2007/02/20 23:10:23  sandeeps
+c Fortran_software contain
+c 1. therfir
+c 2. chemdis
+c 3. reactorModel (chemkin, as modified by Paul)
+c 4. ODESolver (the fortran code which RMG uses to call daspk or dassl)
+c 5. fit3pbnd
 c
 c Revision 1.16  2001/12/16 20:44:45  dmmatheu
 c before adding Whitten-Rabinovitch subroutine, to get smooth DOS/SOS
