@@ -1,0 +1,5 @@
+<project name="RMG">
+<target name="compile">
+<javac srcdir="." destdir="."/>
+</target>
+</project>
