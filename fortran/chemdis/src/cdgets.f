@@ -687,7 +687,7 @@ c	(also fill in the tcheb and pcheb arrays if using Chebyshev fitting)
 
       		do it=1,ntemps
 				tcheb(it) = cos(pi*(float(it) - 0.5)/float(ntemps))
-				temp(it) = 1.0/((tcheb(it)*(1.0/tmin - 1.0/tmax)
+				temp(it) = 1.0/((tcheb(it)*(1.0/tmax - 1.0/tmin)
      >                           + 1.0/tmin + 1.0/tmax)/2.0)
 			enddo
 
@@ -1039,8 +1039,17 @@ c $Author$
 c $Date$
 c $Revision$
 c $Log$
-c Revision 1.1  2007-02-20 23:10:23  sandeeps
-c Initial revision
+c Revision 1.2  2007-03-09 02:37:51  sandeeps
+c Made changes so that dimensionless T in chebyshev polynomial is what it is in chemkin and
+c not like the original venkatesh paper.
+c
+c Revision 1.1.1.1  2007/02/20 23:10:23  sandeeps
+c Fortran_software contain
+c 1. therfir
+c 2. chemdis
+c 3. reactorModel (chemkin, as modified by Paul)
+c 4. ODESolver (the fortran code which RMG uses to call daspk or dassl)
+c 5. fit3pbnd
 c
 c Revision 1.17  2001/10/18 20:58:35  dmmatheu
 c before changes to allow 1 RRKM k(E) table to be calculated a la BARKER
