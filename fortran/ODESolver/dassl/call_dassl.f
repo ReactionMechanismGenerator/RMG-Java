@@ -128,7 +128,7 @@ C     INITIALIZE VARIABLES IN COMMON BLOC
 
 
       INTEGER  INFO(30), LIW, LRW, IWORK(*), IPAR(1),IDID, iter,
-     $     IMPSPECIES
+     $     IMPSPECIES, conc
       DOUBLE PRECISION Y(NSTATE), YPRIME(NSTATE), Time, TOUT, RTOL, ATOL
      $     , RWORK(*), TARGETCONC
 
@@ -143,6 +143,7 @@ C     INITIALIZE VARIABLES IN COMMON BLOC
 
       EXTERNAL RES, JAC, GETFLUX
 
+      conc = 1
       IPAR(1)= NSTATE
 
       LIW = 41 + NSTATE
@@ -177,6 +178,7 @@ C     **********************************
       IF (IMPSPECIES .EQ. -1) THEN
          TARGETCONC = -1E10
          IMPSPECIES = 1
+         conc = -1
       END IF
 
  1    IF (Time .LE. TOUT .AND. Y(IMPSPECIES) .GE. TARGETCONC*Y(NSTATE))
@@ -200,6 +202,9 @@ C     **********************************
                PREVREACTIONFLUX(I) = CURRENTREACTIONFLUX(I)
             END DO
             PREVTIME = TIME
+            if (conc .eq. 1) then
+               tout = 200*time
+            end if
 c            write(*,*) time, y(impspecies), targetConc*y(nstate)
             GO TO 1
          END IF
