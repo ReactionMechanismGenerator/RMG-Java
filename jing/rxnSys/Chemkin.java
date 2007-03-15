@@ -677,14 +677,14 @@ public  Chemkin() {
       	if (cerm.containsAsReactedSpecies(thisSpecies)) {
       		String spcChemkinName = thisSpecies.getChemkinName();
       		double concentration = spcStatus.getConcentration();
-      		input += "<amount units=\"molPerCm3\" speciesid=\"" + spcChemkinName + "\">" + String.format("%1.6e",concentration) + "</amount>" + "\n";
+      		input += "<amount units=\"molPerCm3\" speciesid=\"" + spcChemkinName + "\">" + concentration + "</amount>" + "\n";
       	}
       }
       for (Iterator iter = p_beginStatus.getInertGas(); iter.hasNext(); ) {
       	String name = (String)iter.next();
       	double conc = p_beginStatus.getInertGas(name);
       	if (conc != 0.0)
-      		input += "<amount units=\"molPerCm3\" speciesid=\"" + name + "\">" + String.format("%1.6e",conc) + "</amount>" + "\n";
+      		input += "<amount units=\"molPerCm3\" speciesid=\"" + name + "\">" + conc + "</amount>" + "\n";
       }
       input += "</systemstate>" + "\n";
       input += "</inputvalues>" + "\n";

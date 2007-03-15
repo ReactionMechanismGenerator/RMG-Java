@@ -105,7 +105,7 @@ public class NASAThermoData {
       return dataString;
   }
   
-  public Double calculateEnthalpy(Temperature temp){
+  public double calculateEnthalpy(Temperature temp){
 	  double T = temp.getK();
 	  double enthalpy;
 	  if (T < 298) throw new TemperatureOutOfRangeException();
@@ -128,7 +128,7 @@ public class NASAThermoData {
 		  
   }
   
-  public Double calculateEntropy(Temperature temp){
+  public double calculateEntropy(Temperature temp){
 	  double T = temp.getK();
 	  double entropy;
 	  if (T < 298) throw new TemperatureOutOfRangeException();
@@ -151,7 +151,7 @@ public class NASAThermoData {
 		  
   }
   
-  public Double calculateCp(Temperature temp){
+  public double calculateCp(Temperature temp){
 	  double T = temp.getK();
 	  double Cp;
 	  if (T < 298) throw new TemperatureOutOfRangeException();

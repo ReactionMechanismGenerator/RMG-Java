@@ -235,8 +235,8 @@ public class SystemSnapshot {
         	HashSet hs= new HashSet(inertGas.keySet());
         	for (Iterator iter = hs.iterator(); iter.hasNext(); ) {
                 String name = (String)iter.next();
-        		double c = (Double)inertGas.get(name);
-                c = c*realConc/conc;
+        		Double c = (Double)inertGas.get(name);
+                c = new Double(c.doubleValue()*realConc/conc);
                 //System.out.println(MathTool.formatDouble(c, 15,6));
                 inertGas.remove(name);
                 inertGas.put(name, c);

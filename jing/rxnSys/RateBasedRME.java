@@ -252,7 +252,7 @@ public class RateBasedRME implements ReactionModelEnlarger {
 	        		throw new NegativeRateException(r.toChemkinString(Global.temperature) + ": " + String.valueOf(flux));
 	        	}
 				if (flux > 0.01 * maxFlux)
-					significantReactions.put(r,flux);
+					significantReactions.put(r,new Double(flux));
 			}
         	
         }
