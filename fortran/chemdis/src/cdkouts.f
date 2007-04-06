@@ -293,7 +293,7 @@ c     Write an end line
  30   format('END')
 
 c	Formats
- 22	format(500(F8.1))
+ 22	format(500(F8.2))
  23	format(500(E11.3))
  24	format('ISOMER ', A25)
  25	format('PRODUCT', A25)
@@ -828,8 +828,16 @@ c $Date$
 c $Source$
 c $Revision$
 c $Log$
-c Revision 1.1  2007-02-20 23:10:23  sandeeps
-c Initial revision
+c Revision 1.2  2007-04-06 03:05:55  sandeeps
+c changed so that the temperature and pressure ranges are given with 2 decimal places.
+c
+c Revision 1.1.1.1  2007/02/20 23:10:23  sandeeps
+c Fortran_software contain
+c 1. therfir
+c 2. chemdis
+c 3. reactorModel (chemkin, as modified by Paul)
+c 4. ODESolver (the fortran code which RMG uses to call daspk or dassl)
+c 5. fit3pbnd
 c
 c Revision 1.11  2002/03/08 22:45:27  dmmatheu
 c before changes to produce chemdis-xmg version with easier-to-read
