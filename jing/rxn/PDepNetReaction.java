@@ -37,6 +37,8 @@ package jing.rxn;
 
 
 import java.util.*;
+import jing.param.*;
+import jing.rxnSys.SystemSnapshot;
 
 //## package jing::rxn 
 
@@ -47,39 +49,46 @@ import java.util.*;
 //## class PDepNetReaction 
 public class PDepNetReaction extends Reaction {
     
-    protected double pressure;		//## attribute pressure 
-    
-    protected double rate = 0;		//## attribute rate 
-    
-    protected double temperature;		//## attribute temperature 
-    
+    protected ChebyshevPolynomials itsChebyshevPolynomials;
     
     // Constructors
     
-    //## operation PDepNetReaction(LinkedList,LinkedList,double,double,double) 
-    public  PDepNetReaction(LinkedList p_reactant, LinkedList p_product, double p_rate, double p_temperature, double p_pressure) {
-        //#[ operation PDepNetReaction(LinkedList,LinkedList,double,double,double) 
-        if (p_rate < 0 || p_temperature < 0 || p_pressure < 0) throw new InvalidPDepNetReactionException();
-        Structure st = new Structure(p_reactant, p_product,1);
-        structure = st;
-        rate = p_rate;
-        temperature = p_temperature;
-        pressure = p_pressure;
-        
+    //## operation PDepNetReaction(LinkedList,LinkedList,ChebyshevPolynomials) 
+    public  PDepNetReaction(LinkedList p_reactant, LinkedList p_product, final ChebyshevPolynomials p_cp) {
+        //#[ operation PDepNetReaction(LinkedList,LinkedList,ChebyshevPolynomials) 
+        structure = new Structure(p_reactant, p_product,1);
+        itsChebyshevPolynomials = p_cp;
+        if (itsChebyshevPolynomials.getPlow().getAtm() <= 0){
+            Pressure P = new Pressure(0.01,"atm");
+            itsChebyshevPolynomials.setPlow(P);
+          }
         //#]
     }
     public  PDepNetReaction() {
     }
     
-    public double getPressure() {
-        return pressure;
+    //## operation calculateRate(SystemSnapshot) 
+    public double calculateRate(SystemSnapshot p_systemSnapshot) {
+        //#[ operation calculateRate(SystemSnapshot) 
+        Temperature temp = p_systemSnapshot.getTemperature();
+        Pressure pres = p_systemSnapshot.getPressure();
+        if (itsChebyshevPolynomials == null) throw new NullPointerException();
+        return itsChebyshevPolynomials.calculateRate(temp, pres);
+        //#]
     }
     
-    public double getRate() {
-        return rate;
+    
+//  ## operation calculateRate(SystemSnapshot) 
+    public double calculateRate() {
+        //#[ operation calculateRate(SystemSnapshot) 
+        Temperature temp = Global.temperature;
+        Pressure pres = Global.pressure;
+        if (itsChebyshevPolynomials == null) throw new NullPointerException();
+        return itsChebyshevPolynomials.calculateRate(temp, pres);
+        //#]
     }
-	
-//	## operation formPDepSign(String) 
+    
+    //## operation formPDepSign(String) 
     public String formPDepSign(String p_string) {
         //#[ operation formPDepSign(String) 
         StringTokenizer st = new StringTokenizer(p_string, "=");
@@ -91,23 +100,49 @@ public class PDepNetReaction extends Reaction {
         
         //#]
     }
-	
-//	## operation toChemkinString() 
-    public String toChemkinString() {
+    
+    //## operation toChemkinString() 
+    public String toChemkinString(Temperature t) {
         //#[ operation toChemkinString() 
-		
-        String result = getStructure().toChemkinString(true).toString() + '\t' + rate +" 0.0 0.0" + '\n';
-        //result += getItsChebyshevPolynomials().toChemkinString() + '\n';
+        String result = formPDepSign(getStructure().toChemkinString(true).toString()) + '\t' + "1.0E0 0.0 0.0" + '\n';
+        result += getItsChebyshevPolynomials().toChemkinString() + '\n';
         return result;
         
         //#]
     }
-    public void setRate(double p_rate) {
-        rate = p_rate;
+    /**
+     * Generates a reaction whose structure is opposite to that of the present reaction.
+     * Just appends the rate constant of this reaction to the reverse reaction.
+     *
+     */
+    //## operation generateReverseReaction()
+    public void generateReverseReaction() {
+        //#[ operation generateReverseReaction()
+        
+
+        
+        
+        PDepNetReaction r = new PDepNetReaction(structure.products, structure.reactants, getItsChebyshevPolynomials());
+
+  	  
+  	  
+        
+        this.setReverseReaction(r);
+
+        return;
+        //#]
     }
     
-    public double getTemperature() {
-        return temperature;
+    public String toString(){
+    	return toChemkinString(Global.temperature);
+    }
+    
+    public ChebyshevPolynomials getItsChebyshevPolynomials() {
+        return itsChebyshevPolynomials;
+    }
+    
+    public void setItsChebyshevPolynomials(ChebyshevPolynomials p_ChebyshevPolynomials) {
+        itsChebyshevPolynomials = p_ChebyshevPolynomials;
     }
     
 }
