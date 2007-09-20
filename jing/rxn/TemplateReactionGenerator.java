@@ -94,6 +94,7 @@ public class TemplateReactionGenerator implements ReactionGenerator {
         			Species first_reactant = (Species)species_iter1.next();
         			if (first_reactant.isReactive()) {
         				LinkedHashSet current_reactions = current_template.reactOneReactant(first_reactant);
+        				first_reactant.addPdepPaths(current_reactions);
         				reaction_set.addAll(current_reactions);
         			}
         			
@@ -120,11 +121,31 @@ public class TemplateReactionGenerator implements ReactionGenerator {
         	}
         }
         
+        //PDepNetwork.completeNetwork(p_speciesSeed);
+        
         return reaction_set;
         
         
         
         //#]
+    }
+    
+    public void generatePdepReactions(Species p_species){
+    	Iterator template_iter = reactionTemplateLibrary.getReactionTemplate();
+    	LinkedHashSet pdepReactionSet = new LinkedHashSet();
+        while (template_iter.hasNext()) {
+        	ReactionTemplate current_template = (ReactionTemplate)template_iter.next();
+        	// the reaction template has only one reactant, we only need to loop over the whole species seed set to find a match
+        	double startTime = System.currentTimeMillis();
+			if (current_template.hasOneReactant()) {
+        		
+				LinkedHashSet current_reactions = current_template.reactOneReactant(p_species);
+				 
+				pdepReactionSet.addAll(current_reactions);
+				
+        	}
+        }
+        p_species.addPdepPaths(pdepReactionSet);
     }
     
     //## operation react(HashSet,Species) 
@@ -144,6 +165,8 @@ public class TemplateReactionGenerator implements ReactionGenerator {
 		String longestTemplate = "";
 		StringBuffer HAbs = new StringBuffer();//"H_Abstraction");
 		
+		HashSet pdepReactionSet = new HashSet();
+		
         // add here the algorithm to generate reaction
         // loop over all the reaction template to find any possible match between the species seed set and the reaction template library
         Iterator template_iter = reactionTemplateLibrary.getReactionTemplate();
@@ -155,6 +178,7 @@ public class TemplateReactionGenerator implements ReactionGenerator {
         		
 				LinkedHashSet current_reactions = current_template.reactOneReactant(p_species);
 				reaction_set.addAll(current_reactions);   
+				pdepReactionSet.addAll(current_reactions);
 				singleReaction = singleReaction + ((System.currentTimeMillis()-startTime)/1000/60);
         		
         	}
@@ -196,7 +220,11 @@ public class TemplateReactionGenerator implements ReactionGenerator {
         	}
         }
         
+        p_species.addPdepPaths(pdepReactionSet);
+        
 		Global.enlargerInfo.append(p_species.getChemkinName() + "\t" + singleReaction + "\t" + doubleReaction + "\t" + longestTime +"\t" + longestTemplate + "\t" + HAbs.toString() + "\n");
+		
+		//PDepNetwork.completeNetwork(p_species);
 		
         return reaction_set;
         
