@@ -64,6 +64,7 @@ public class RMG {
     	System.exit(0);
     }
 	
+	//rs.reduceModel();
 	//Write the final model output in a separete Final_Model file
 	String finalOutput = "";
 	//finalOutput = finalOutput + "\n\\\\\\\\\\\\\\\\\\\\\\\\\\    Final Reaction Model Output    \\\\\\\\\\\\\\\\\\\\\\\\\\";
@@ -105,6 +106,7 @@ public class RMG {
     double min = (end-tAtInitialization)/1E3/60;
 	finalOutput = finalOutput +"Running Time is: " + String.valueOf(min) + " minutes.";
 	
+	
 	try{
 		File finalmodel = new File("Final_Model.txt");
 		FileWriter fw = new FileWriter(finalmodel);
@@ -132,6 +134,12 @@ public class RMG {
 		GATPFit.mkdir();
 		File ODESolver = new File("ODESolver");
 		ODESolver.mkdir();
+		File fit3p = new File("fit3p");
+		fit3p.mkdir();
+		File chemdis = new File("chemdis");
+		ChemParser.deleteDir(chemdis);
+		chemdis.mkdir();
+		
 		
 		 String workingDir = System.getenv("RMG");
 	     System.setProperty("RMG.workingDirectory", workingDir);
@@ -185,9 +193,10 @@ public class RMG {
                StringTokenizer st = new StringTokenizer(line);
                String next = st.nextToken();
                String name = st.nextToken().trim();
-               System.setProperty("jing.chem.ChemGraph.forbiddenStructureFile", workingDir + "/database/"+name+"/forbiddenStructure/ForbiddenStructure.txt");
-               System.setProperty("jing.chem.ThermoGAGroupLibrary.pathName", workingDir + "/database/" + name+"/thermo");
-               System.setProperty("jing.rxn.ReactionTemplateLibrary.pathName", workingDir + "/database/" + name+"/kinetics/kinetics");
+               System.setProperty("jing.chem.ChemGraph.forbiddenStructureFile", workingDir + "/databases/"+name+"/forbiddenStructure/ForbiddenStructure.txt");
+               System.setProperty("jing.chem.ThermoGAGroupLibrary.pathName", workingDir + "/databases/" + name+"/thermo");
+               System.setProperty("jing.rxn.ReactionTemplateLibrary.pathName", workingDir + "/databases/" + name+"/kinetics/kinetics");
+               System.setProperty("jing.rxn.ReactionLibrary.pathName",workingDir + "/databases/" + name + "/kinetics/reactionLibrary");
              }
              line = ChemParser.readMeaningfulLine(reader);
              if (line.startsWith("PrimaryThermoLibrary")){
@@ -203,6 +212,8 @@ public class RMG {
 }
   }
 
+	
+	
 	private static void writeThermoFile() {
 		// TODO Auto-generated method stub
 		String thermoFile = "300.000  1000.000  5000.000 \n";
