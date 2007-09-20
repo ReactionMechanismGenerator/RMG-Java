@@ -93,6 +93,7 @@ public class FreeElectron {
         else if (p_name.equals("1")) {
         	electron = new FreeElectron("1",1);
         }
+        // if spin in not specified then by default it is a triplet
         else if (p_name.equals("2")) {
         	electron = new FreeElectron("2",2);
         }
