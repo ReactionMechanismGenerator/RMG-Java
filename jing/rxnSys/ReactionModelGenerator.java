@@ -175,6 +175,7 @@ public class ReactionModelGenerator {
         			double pressure = Double.parseDouble(p);
         			unit = ChemParser.removeBrace(unit);
         			pressureModel = new ConstantPM(pressure, unit);
+        			Global.pressure = new Pressure(pressure, unit);
         		}
         		else if (modelType.equals("Curved")) {
         			// add reading curved temperature function here
@@ -290,6 +291,7 @@ public class ReactionModelGenerator {
         		String rmeType = st.nextToken();
         		if (rmeType.equals("RateBasedModelEnlarger")) {
         			reactionModelEnlarger = new RateBasedRME();
+        			PDepNetwork.generateNetworks = false;
 					line = ChemParser.readMeaningfulLine(reader);
 					st = new StringTokenizer(line);
 					String iS = st.nextToken();
@@ -302,6 +304,7 @@ public class ReactionModelGenerator {
         		}
         		else if (rmeType.equals("RateBasedPDepModelEnlarger")) {
         			reactionModelEnlarger = new RateBasedPDepRME();
+        			PDepNetwork.generateNetworks = true;
 					line = ChemParser.readMeaningfulLine(reader);
         		}
         		else {
@@ -630,9 +633,11 @@ public class ReactionModelGenerator {
         Pressure currentP = reactionSystem.getPressure(init);
         boolean conditionChanged = false;
 
-        Chemkin.writeChemkinInputFile(reactionSystem.getReactionModel(),reactionSystem.getPresentStatus());
+        //Chemkin.writeChemkinInputFile(reactionSystem.getReactionModel(),reactionSystem.getPresentStatus());
+        
 		
         end = reactionSystem.solveReactionSystem(begin, end, true, true, true, iterationNumber-1);
+        Chemkin.writeChemkinInputFile(reactionSystem);
         //System.exit(0);
         boolean terminated = reactionSystem.isReactionTerminated();
         boolean valid = reactionSystem.isModelValid();
@@ -668,10 +673,13 @@ public class ReactionModelGenerator {
         while (!terminated || !valid) {
         	while (!valid) {
 				
-				
+				writeCoreSpecies();
 				double pt = System.currentTimeMillis();
 				reactionSystem.enlargeReactionModel();
 				double totalEnlarger = (System.currentTimeMillis() - pt)/1000/60;
+				
+				//PDepNetwork.completeNetwork(reactionSystem.reactionModel.getSpeciesSet());
+				reactionSystem.initializePDepNetwork();
 				
 				pt = System.currentTimeMillis();
 				reactionSystem.resetSystemSnapshot();
@@ -689,13 +697,15 @@ public class ReactionModelGenerator {
         		currentP = reactionSystem.getPressure(begin);
         		conditionChanged = (!currentT.equals(lastT) || !currentP.equals(lastP));
         		
-        		double startTime = System.currentTimeMillis();
-				Chemkin.writeChemkinInputFile(reactionSystem.getReactionModel(),reactionSystem.getPresentStatus());
-				double chemkint = (System.currentTimeMillis()-startTime)/1000/60;
+        		
 				
-				startTime = System.currentTimeMillis();
+				double startTime = System.currentTimeMillis();
 				end = reactionSystem.solveReactionSystem(begin, end, false, reactionChanged, conditionChanged, iterationNumber-1);
 				solverMin = solverMin + (System.currentTimeMillis()-startTime)/1000/60;
+				
+				startTime = System.currentTimeMillis();
+        		Chemkin.writeChemkinInputFile(reactionSystem);
+        		double chemkint = (System.currentTimeMillis()-startTime)/1000/60;
 				
 				System.out.println("At this time: " + end.toString());
         		Species spe = SpeciesDictionary.getSpeciesFromID(1);
@@ -705,8 +715,16 @@ public class ReactionModelGenerator {
 
 			    System.out.println("Running Time is: " + String.valueOf((System.currentTimeMillis()-tAtInitialization)/1000/60) + " minutes.");
 				System.out.println("The model edge has " + ((CoreEdgeReactionModel)reactionSystem.getReactionModel()).getUnreactedReactionSet().size() + " reactions and "+ ((CoreEdgeReactionModel)reactionSystem.getReactionModel()).getUnreactedSpeciesSet().size() + " species.");
-				System.out.println("The model core has " + ((CoreEdgeReactionModel)reactionSystem.getReactionModel()).getReactedReactionSet().size() + " reactions and "+ ((CoreEdgeReactionModel)reactionSystem.getReactionModel()).getReactedSpeciesSet().size() + " species.");
-
+				if (reactionSystem.getDynamicSimulator() instanceof JDASPK){
+					JDASPK solver = (JDASPK)reactionSystem.getDynamicSimulator();
+					System.out.println("The model core has " + solver.getReactionSize() + " reactions and "+ ((CoreEdgeReactionModel)reactionSystem.getReactionModel()).getReactedSpeciesSet().size() + " species.");
+				}
+				else{
+					JDASSL solver = (JDASSL)reactionSystem.getDynamicSimulator();
+					System.out.println("The model core has " + solver.getReactionSize() + " reactions and "+ ((CoreEdgeReactionModel)reactionSystem.getReactionModel()).getReactedSpeciesSet().size() + " species.");
+				
+				}
+					
 
 				
 				startTime = System.currentTimeMillis();
@@ -784,11 +802,21 @@ public class ReactionModelGenerator {
         		System.out.println(runTime.totalMemory());
         		System.out.print("Free memory: ");
         		System.out.println(runTime.freeMemory());
-				System.out.println("The model core has " + ((CoreEdgeReactionModel)reactionSystem.getReactionModel()).getReactedReactionSet().size() + " reactions and "+ ((CoreEdgeReactionModel)reactionSystem.getReactionModel()).getReactedSpeciesSet().size() + " species.");
-
+        		if (reactionSystem.getDynamicSimulator() instanceof JDASPK){
+					JDASPK solver = (JDASPK)reactionSystem.getDynamicSimulator();
+					System.out.println("The model core has " + solver.getReactionSize() + " reactions and "+ ((CoreEdgeReactionModel)reactionSystem.getReactionModel()).getReactedSpeciesSet().size() + " species.");
+        		}
+				else{
+					JDASSL solver = (JDASSL)reactionSystem.getDynamicSimulator();
+					System.out.println("The model core has " + solver.getReactionSize() + " reactions and "+ ((CoreEdgeReactionModel)reactionSystem.getReactionModel()).getReactedSpeciesSet().size() + " species.");
+        		}
+				
         	}
 			vTester = vTester + (System.currentTimeMillis()-startTime)/1000/60;
         }
+        
+        //System.out.println("Performing model reduction");
+        
         if (paraInfor != 0){
         	System.out.println("Model Generation performed. Now generating sensitivity data.");
           DynamicSimulator dynamicSimulator2 = new JDASPK(rtol, atol, paraInfor, initialStatus);
@@ -808,9 +836,9 @@ public class ReactionModelGenerator {
          
         }
 
-
+        Chemkin.writeChemkinInputFile(reactionSystem.getReactionModel(),reactionSystem.getPresentStatus());
         System.out.println("Model Generation Completed");
-		Chemkin.writeChemkinInputFile(reactionSystem.getReactionModel(),reactionSystem.getPresentStatus());
+		
 		
         
         return;
