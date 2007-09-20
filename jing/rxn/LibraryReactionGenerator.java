@@ -38,6 +38,7 @@ package jing.rxn;
 
 import jing.chem.*;
 import java.util.*;
+
 import jing.chem.Species;
 
 //## package jing::rxn 
@@ -141,11 +142,15 @@ public class LibraryReactionGenerator implements ReactionGenerator {
         LinkedHashSet species = (LinkedHashSet)p_speciesSet.clone();
         
         return react(species);
-        
-        
-        
-        
         //#]
+    }
+    
+    public void generatePdepReactions(Species p_species){
+    	LinkedHashSet speciesSet = new LinkedHashSet();
+    	speciesSet.add(p_species);
+    	LinkedHashSet reactionSet = react(speciesSet);
+    	
+        p_species.addPdepPaths(reactionSet);
     }
     
 }
