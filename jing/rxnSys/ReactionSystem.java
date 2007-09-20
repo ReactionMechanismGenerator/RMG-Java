@@ -72,6 +72,7 @@ public class ReactionSystem {
     protected LinkedList systemSnapshot;
     protected TemperatureModel temperatureModel;
     protected double [] reactionFlux;
+    protected LibraryReactionGenerator lrg = new LibraryReactionGenerator();
 
     // Constructors
 
@@ -196,66 +197,125 @@ public class ReactionSystem {
 		if (!(reactionModel instanceof CoreEdgeReactionModel)) return;
 
         CoreEdgeReactionModel model = (CoreEdgeReactionModel)reactionModel;
+        
+        if (reactionModelEnlarger instanceof RateBasedRME){
+        	LinkedHashSet ur = model.getUnreactedReactionSet();
+            double [] unreactedFlux = new double[SpeciesDictionary.getInstance().size()+1];
+            for (Iterator iur = ur.iterator(); iur.hasNext();) {
+            	Reaction r = (Reaction)iur.next();
+            	double flux = 0;
+            	if (r instanceof TemplateReaction) {
+            		//flux = ((TemplateReaction)r).calculateTotalPDepRate(p_temperature);
+    				flux = ((TemplateReaction)r).getRateConstant();
+            	}
+            	else {
+            	 	//flux = r.calculateTotalRate(p_temperature);
+    				flux = r.getRateConstant();
+            	}
+            	if (flux > 0) {
+            		for (Iterator rIter=r.getReactants(); rIter.hasNext();) {
+    					Species spe = (Species)rIter.next();
+            		    double conc = (p_systemSnapshot.getSpeciesStatus(spe)).getConcentration();
+            			if (conc<0)
+            				throw new NegativeConcentrationException(spe.getName() + ": " + String.valueOf(conc));
+            		    flux *= conc;
 
-        LinkedHashSet ur = model.getUnreactedReactionSet();
-        double [] unreactedFlux = new double[SpeciesDictionary.getInstance().size()+1];
-        for (Iterator iur = ur.iterator(); iur.hasNext();) {
-        	Reaction r = (Reaction)iur.next();
-        	double flux = 0;
-        	if (r instanceof TemplateReaction) {
-        		//flux = ((TemplateReaction)r).calculateTotalPDepRate(p_temperature);
-				flux = ((TemplateReaction)r).getRateConstant();
-        	}
-        	else {
-        	 	//flux = r.calculateTotalRate(p_temperature);
-				flux = r.getRateConstant();
-        	}
-        	if (flux > 0) {
-        		for (Iterator rIter=r.getReactants(); rIter.hasNext();) {
-					Species spe = (Species)rIter.next();
-        		    double conc = (p_systemSnapshot.getSpeciesStatus(spe)).getConcentration();
-        			if (conc<0)
-        				throw new NegativeConcentrationException(spe.getName() + ": " + String.valueOf(conc));
-        		    flux *= conc;
+            		}
 
-        		}
+            		for (Iterator rIter=r.getProducts(); rIter.hasNext();) {
+    					Species spe = (Species)rIter.next();
+            			if (model.containsAsUnreactedSpecies(spe)) {
+            				unreactedFlux[spe.getID()] += flux;
+            			}
+            		}
 
-        		for (Iterator rIter=r.getProducts(); rIter.hasNext();) {
-					Species spe = (Species)rIter.next();
-        			if (model.containsAsUnreactedSpecies(spe)) {
-        				unreactedFlux[spe.getID()] += flux;
+            	}
+            	else {
+            		throw new NegativeRateException(r.toChemkinString(p_temperature) + ": " + String.valueOf(flux));
+            	}
+            }
+    		p_systemSnapshot.unreactedSpeciesFlux = unreactedFlux;
+    		
+    		return;
+        }
+        else if (reactionModelEnlarger instanceof RateBasedPDepRME){
+        	double [] unreactedFlux = new double[SpeciesDictionary.getInstance().size()+1];
+        	// first take all the unreacted reactions from PDepNetwork and calculate their rate
+        	// populate the reactionModel with all the unreacted species if they are already not there.
+        	
+        	for (Iterator iter=PDepNetwork.getDictionary().values().iterator(); iter.hasNext();){
+        		PDepNetwork pdn = (PDepNetwork)iter.next();
+        		Iterator reaction_iter = pdn.getPDepNetReactionList();
+        		while (reaction_iter.hasNext()){
+        			PDepNetReaction r = (PDepNetReaction)reaction_iter.next();
+        			int rxnType = model.categorizeReaction(r);
+        			//if (rxnType == 0) throw new InvalidReactionSetException();
+        			if (rxnType == -1){
+        				double flux = r.calculateRate();
+        				for (Iterator rIter=r.getReactants(); rIter.hasNext();) {
+        					Species spe = (Species)rIter.next();
+        					double conc =0; 
+        					if (p_systemSnapshot.getSpeciesStatus(spe) != null)
+        						 conc = (p_systemSnapshot.getSpeciesStatus(spe)).getConcentration();
+                			if (conc<0)
+                				throw new NegativeConcentrationException(spe.getName() + ": " + String.valueOf(conc));
+                		    flux *= conc;
+
+                		}
+        				for (Iterator pIter = r.getProducts(); pIter.hasNext();){
+        					Species spe = (Species)pIter.next();
+        					
+        					unreactedFlux[spe.getID()] += flux;
+        				}
         			}
         		}
+        	}
+        	LinkedHashSet ur = model.getUnreactedReactionSet();
+            
+            for (Iterator iur = ur.iterator(); iur.hasNext();) {
+            	Reaction r = (Reaction)iur.next();
+            	double flux = 0;
+            	if (r instanceof TemplateReaction) {
+            		//flux = ((TemplateReaction)r).calculateTotalPDepRate(p_temperature);
+    				flux = ((TemplateReaction)r).getRateConstant();
+            	}
+            	else {
+            	 	//flux = r.calculateTotalRate(p_temperature);
+    				flux = r.getRateConstant();
+            	}
+            	if (flux > 0) {
+            		for (Iterator rIter=r.getReactants(); rIter.hasNext();) {
+    					Species spe = (Species)rIter.next();
+    					double conc = 0;
+    					if (p_systemSnapshot.getSpeciesStatus(spe) == null)
+    						conc = 0;
+    					else
+    						conc = (p_systemSnapshot.getSpeciesStatus(spe)).getConcentration();
+            			if (conc<0)
+            				throw new NegativeConcentrationException(spe.getName() + ": " + String.valueOf(conc));
+            		    flux *= conc;
 
-        	}
-        	else {
-        		throw new NegativeRateException(r.toChemkinString(p_temperature) + ": " + String.valueOf(flux));
-        	}
+            		}
+
+            		for (Iterator rIter=r.getProducts(); rIter.hasNext();) {
+    					Species spe = (Species)rIter.next();
+            			if (model.containsAsUnreactedSpecies(spe)) {
+            				
+            				unreactedFlux[spe.getID()] += flux;
+            			}
+            		}
+
+            	}
+            	else {
+            		throw new NegativeRateException(r.toChemkinString(p_temperature) + ": " + String.valueOf(flux));
+            	}
+            }
+    		p_systemSnapshot.unreactedSpeciesFlux = unreactedFlux;
+    		
+    		return;
         }
-		p_systemSnapshot.unreactedSpeciesFlux = unreactedFlux;
-		//System.out.println(unreactedFlux[83]);
-		//System.exit(0);
-		return;
-		/*Global.speciesStatusGenerator = Global.speciesStatusGenerator +(System.currentTimeMillis() - startTime)/1000/60;
+        
 		
-        LinkedHashSet us = model.getUnreactedSpeciesSet();
-        for (Iterator ius = us.iterator(); ius.hasNext();) {
-        	Species spe = (Species)ius.next();
-        	double flux = unreactedFlux[spe.getID()];
-        	if (flux<0)
-        		throw new NegativeRateException();
-
-        	SpeciesStatus speStatus = new SpeciesStatus(spe, 0, 0, flux);
-        	p_systemSnapshot.putSpeciesStatus(speStatus);
-        }
-
-        return;*/
-
-
-
-
-
-
         //#]
     }
 
@@ -487,44 +547,26 @@ public class ReactionSystem {
         cerm.addPrimaryReactionSet(primaryReactionSet);
 
         LinkedHashSet newReactions = getReactionGenerator().react(cerm.getReactedSpeciesSet());
+        
+        if (reactionModelEnlarger instanceof RateBasedRME)	
+        	cerm.addReactionSet(newReactions);
+    	else {
+    		
+        	Iterator iter = newReactions.iterator();
+        	while (iter.hasNext()){
+        		Reaction r = (Reaction)iter.next();
+        		if (r.getReactantNumber() == 2 && r.getProductNumber() == 2){
+        			cerm.addReaction(r);
+        		}
+        	}
+    	}
+        
 
-        /*for (Iterator iter = newReactions.iterator(); iter.hasNext();) {
-        	Reaction r = (Reaction)iter.next();
-        	System.out.println(r.toChemkinString(Global.temperature));
-        }*/
+      
 
-        cerm.addReactionSet(newReactions);
-        /*
-        HashSet allNewReactions = new HashSet();
-        HashSet rs = cerm.getReactedSpeciesSet();
-        for (Iterator iter = primarySpeciesSet.iterator(); iter.hasNext(); ) {
-        	Species spe = (Species)iter.next();
-        	HashSet newReactions = getReactionGenerator().react(rs,spe);
-        	allNewReactions.addAll(newReactions);
-        }
-
-
-        //add in all the species and reactions from PRL as reacted species/reactions into model
-        cerm.addReactedSpeciesSet(primarySpeciesSet);
-        HashSet primaryReactionSet = primaryReactionLibrary.getReactionSet();
-        try {
-        	cerm.addReactedReactionSet(primaryReactionSet);
-        }
-        catch (InvalidReactedReactionException e) {
-        	System.out.println("During adding primary reaction library: find a invalid reacted reaction in library:" );
-        	System.out.println(e.getMessage());
-        	System.exit(0);
-        }
-
-        // add the new reactions accordingly
-        cerm.addReactionSet(allNewReactions);
-        */
+        
+       
         return;
-
-
-
-
-
 
         //#]
     }
@@ -533,9 +575,22 @@ public class ReactionSystem {
     protected void initializeCoreEdgeModelWithoutPRL() {
         //#[ operation initializeCoreEdgeModelWithoutPRL()
     	LinkedHashSet reactionSet = getReactionGenerator().react(originalReactant);
-        reactionModel = new CoreEdgeReactionModel(new LinkedHashSet(originalReactant),reactionSet);
-
-        if (reactionModel.isEmpty()) {
+    	reactionSet.addAll(lrg.react(originalReactant));
+    	
+    	if (reactionModelEnlarger instanceof RateBasedRME)	
+    		reactionModel = new CoreEdgeReactionModel(new LinkedHashSet(originalReactant),reactionSet);
+    	else {
+    		reactionModel = new CoreEdgeReactionModel(new LinkedHashSet(originalReactant));
+        	Iterator iter = reactionSet.iterator();
+        	while (iter.hasNext()){
+        		Reaction r = (Reaction)iter.next();
+        		if (r.getReactantNumber() == 2 && r.getProductNumber() == 2){
+        			((CoreEdgeReactionModel)reactionModel).addReaction(r);
+        		}
+        	}
+    	}
+    		
+        if (reactionModel.isEmpty() && reactionModelEnlarger instanceof RateBasedRME) {
         	LinkedHashSet us = ((CoreEdgeReactionModel)reactionModel).getUnreactedSpeciesSet();
         	LinkedHashSet rs = ((CoreEdgeReactionModel)reactionModel).getReactedSpeciesSet();
         	LinkedHashSet newReactions = new LinkedHashSet();
@@ -544,21 +599,22 @@ public class ReactionSystem {
         		Species spe = (Species)iter.next();
         		rs.add(spe);
         		newReactions.addAll(getReactionGenerator().react(rs,spe));
+        		newReactions.addAll(lrg.react(rs,spe));
         		iter.remove();
         	}
 
         	((CoreEdgeReactionModel)reactionModel).addReactionSet(newReactions);
         	((CoreEdgeReactionModel)reactionModel).moveFromUnreactedToReactedReaction();
         }
+        else if (reactionModel.isEmpty() && reactionModelEnlarger instanceof RateBasedPDepRME) {
+        	while (reactionModel.isEmpty()){
+        		initializePDepNetwork();
+        		appendUnreactedSpeciesStatus(initialStatus, Global.temperature);
+        		enlargeReactionModel();
+        	}
+        }
 
         return;
-
-
-
-
-
-
-
 
         //#]
     }
@@ -569,8 +625,6 @@ public class ReactionSystem {
         if (hasPrimaryReactionLibrary()) initializeCoreEdgeModelWithPRL();
         else initializeCoreEdgeModelWithoutPRL();
 
-
-
         //#]
     }
 
@@ -579,7 +633,8 @@ public class ReactionSystem {
         //#[ operation initializePDepNetwork()
         for (Iterator iter = PDepNetwork.getDictionary().values().iterator(); iter.hasNext(); ) {
         	PDepNetwork pdn = (PDepNetwork)iter.next();
-        	pdn.runPDepCalculation(this);
+        	if (pdn.getAltered())
+        		pdn.runPDepCalculation(this);
         }
         //#]
     }
@@ -606,7 +661,7 @@ public class ReactionSystem {
     }
 
     //## operation outputAllPathways(Species,LinkedList,SystemSnapshot,Temperature)
-    public static void outputAllPathways(Species p_species, LinkedList p_reactionList, SystemSnapshot p_systemSnapshot, Temperature p_temperature) {
+    /*public static void outputAllPathways(Species p_species, LinkedList p_reactionList, SystemSnapshot p_systemSnapshot, Temperature p_temperature) {
         //#[ operation outputAllPathways(Species,LinkedList,SystemSnapshot,Temperature)
         ReactionTime rt = p_systemSnapshot.getTime();
         Temperature temp = p_temperature;
@@ -622,7 +677,7 @@ public class ReactionSystem {
         			flux = ((TemplateReaction)rxn).calculateTotalPDepRate(temp);
         		}
         		else if (rxn instanceof PDepNetReaction) {
-        			flux = ((PDepNetReaction)rxn).getRate();
+        			flux = ((PDepNetReaction)rxn).calculateRate();
         		}
         		else {
         			flux = rxn.calculateTotalRate(temp);
@@ -679,7 +734,7 @@ public class ReactionSystem {
 
 
         //#]
-    }
+    }*/
 
     //## operation outputReactionFlux(SystemSnapshot)
     public void outputReactionFlux(SystemSnapshot p_systemSnapshot) {
@@ -744,7 +799,7 @@ public class ReactionSystem {
         for (int i=0; i<size; i++) {
         	Species spe = (Species)p_speciesList.get(i);
         	if (!spe.repOk()) throw new InvalidSpeciesException();
-         	String name = spe.getName();
+         	String name = spe.getChemkinName();
          	System.out.print('\t' + name);
         }
         System.out.println();
@@ -784,7 +839,7 @@ public class ReactionSystem {
         for (int i=0; i<size; i++) {
         	Species spe = (Species)p_speciesList.get(i);
         	if (!spe.repOk()) throw new InvalidSpeciesException();
-         	String name = spe.getName();
+         	String name = spe.getChemkinName();
 			output = output + '\t' + name;
         }
 		output = output + "\n";
@@ -919,7 +974,7 @@ public String printLowerBoundConcentrations(LinkedList p_speciesList) {
         	Species spe = (Species)p_speciesList.get(i);
         	if (spe != null) {
         		if (!spe.repOk()) throw new InvalidSpeciesException();
-        	 	String name = spe.getName();
+        	 	String name = spe.getChemkinName();
         	 	System.out.print('\t' + name);
         	 }
         }
@@ -961,7 +1016,7 @@ public String printLowerBoundConcentrations(LinkedList p_speciesList) {
         	Species spe = (Species)p_speciesList.get(i);
         	if (spe != null) {
         		if (!spe.repOk()) throw new InvalidSpeciesException();
-        	 	String name = spe.getName();
+        	 	String name = spe.getChemkinName();
 				output = output + '\t' + name ;
         	 }
         }
@@ -991,8 +1046,43 @@ public String printLowerBoundConcentrations(LinkedList p_speciesList) {
         //#]
     }
 	
-	 //## operation printMoleFractionProfile(LinkedList)
+    //## operation printMoleFractionProfile(LinkedList)
     public String returnReactionFlux() {
+        //#[ operation printMoleFractionProfile(LinkedList)
+       
+		StringBuilder output = new StringBuilder("");
+        // check the validity of p_speciesList and print the title line
+		output.append("///////ReactionFlux//////// \n \t");
+      
+		Iterator iter = getSystemSnapshot();
+		while(iter.hasNext()){
+			SystemSnapshot ss = (SystemSnapshot)iter.next();
+			if (ss.getTime().time == 0.0) continue;
+			output.append(ss.getTime() + "\t");
+		}
+		output.append("\n");	
+		LinkedList reactionSet = ((SystemSnapshot)getSystemSnapshotEnd().next()).reactionList;
+		
+		
+		for (int i=0; i<reactionSet.size(); i++) {
+			iter = getSystemSnapshot();
+			output.append("reaction " + (i+1) + '\t' );
+			while (iter.hasNext()) {
+				SystemSnapshot ss = (SystemSnapshot)iter.next();
+				if (ss.getTime().time == 0.0) continue;
+        	
+				output.append( ss.reactionFlux[i] + "\t");
+        	 	
+         	}
+			output.append("\n");
+        }
+
+        return output.toString();
+        //#]
+    }
+    
+	 //## operation printMoleFractionProfile(LinkedList)
+    /*public String returnReactionFlux() {
         //#[ operation printMoleFractionProfile(LinkedList)
        
 		StringBuilder output = new StringBuilder("");
@@ -1017,7 +1107,7 @@ public String printLowerBoundConcentrations(LinkedList p_speciesList) {
 
         return output.toString();
         //#]
-    }
+    }*/
     
   //## operation printMostUncertainReactions(LinkedList, LinkedList)
 //svp
@@ -1075,7 +1165,7 @@ public String printLowerBoundConcentrations(LinkedList p_speciesList) {
                     k_upperbound = k*2.0;
                    }
                   else if (r instanceof PDepNetReaction){
-                    k = ((PDepNetReaction)r).calculateTotalRate(ss.getTemperature());
+                    k = ((PDepNetReaction)r).calculateRate();
                     k_upperbound = k*2.0;
                   }
                   else {
@@ -1237,7 +1327,7 @@ public String printLowerBoundConcentrations(LinkedList p_speciesList) {
         								k = ( (TemplateReaction) r).calculateTotalPDepRate(ss.getTemperature());
         							}
         							else if (r instanceof PDepNetReaction) {
-        								k = ( (PDepNetReaction) r).calculateTotalRate(ss.getTemperature());
+        								k = ( (PDepNetReaction) r).calculateRate();
         							}
         							else if (r instanceof ThirdBodyReaction) {
         								k = ( (ThirdBodyReaction) r).calculateRate(ss);
@@ -1412,6 +1502,13 @@ public String printLowerBoundConcentrations(LinkedList p_speciesList) {
         //#]
     }
 
+	public void reduceModel() {
+		double [] yMax;
+		//yMax = getDynamicSimulator().getHighestConcentrations();
+		
+		
+	}
+
     //## operation solveReactionSystem(ReactionTime,ReactionTime,boolean,boolean,boolean)
     public ReactionTime solveReactionSystem(ReactionTime p_beginTime, ReactionTime p_endTime, boolean p_initialization, boolean p_reactionChanged, boolean p_conditionChanged, int iterationNum) {
         //#[ operation solveReactionSystem(ReactionTime,ReactionTime,boolean,boolean,boolean)
@@ -1582,6 +1679,7 @@ public String printLowerBoundConcentrations(LinkedList p_speciesList) {
     public void setTemperatureModel(TemperatureModel p_TemperatureModel) {
         temperatureModel = p_TemperatureModel;
     }
+
 
 	
 
