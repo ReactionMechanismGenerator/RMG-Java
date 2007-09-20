@@ -36,6 +36,7 @@
 package jing.rxnSys;
 
 
+import jing.param.Global;
 import jing.rxn.*;
 import jing.chem.*;
 import java.util.*;
@@ -227,6 +228,22 @@ public class AbstractReactionModel implements ReactionModel {
         //#[ operation isEmpty() 
         return reaction.size()==0;
         //#]
+    }
+    
+    public boolean isEmpty(FinishController fc){
+    	boolean impSpeciesPresent = false;
+    	if (fc.terminationTester instanceof ConversionTT){
+    		Species sp = ((SpeciesConversion)((ConversionTT)fc.terminationTester).speciesGoalConversionSet.get(0)).species;
+    		for (Iterator iter = reaction.iterator(); iter.hasNext();){
+    			Reaction r = (Reaction)iter.next();
+    			if (r.isForward() && r.calculateKeq(Global.temperature) <= 0.1 && r.getStructure().containsAsProducts(sp)){
+    				impSpeciesPresent = true;
+    				break;
+    			}
+    		}
+    		return (reaction.size() == 0 || !impSpeciesPresent);
+    	}
+    	return reaction.size() == 0;
     }
     
     //## operation outputModelByTemplates() 
