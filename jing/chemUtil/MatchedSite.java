@@ -47,9 +47,9 @@ import java.util.*;
 //## class MatchedSite 
 public class MatchedSite {
     
-    protected LinkedHashMap center = new LinkedHashMap();		//## attribute center 
+    protected HashMap center = new HashMap();		//## attribute center 
     
-    protected LinkedHashSet periphery = new LinkedHashSet();		//## attribute periphery 
+    protected HashMap periphery = new HashMap();		//## attribute periphery 
     
     protected int redundancy = 1;		//## attribute redundancy 
     
@@ -57,7 +57,7 @@ public class MatchedSite {
     // Constructors
     
     //## operation MatchedSite(Collection) 
-    public  MatchedSite(Collection p_gcSet) {
+    /*public  MatchedSite(Collection p_gcSet) {
         //#[ operation MatchedSite(Collection) 
         for (Iterator iter = p_gcSet.iterator(); iter.hasNext() ; ) {
         	GraphComponent gc = (GraphComponent)iter.next();
@@ -72,50 +72,101 @@ public class MatchedSite {
         		}
         	}
         	else if (gc instanceof Arc) {
+        		periphery.add(gc);
         	}
         	else {
         		throw new InvalidGraphComponentException();
         	}
         }
         //#]
-    }
+    }*/
+    
     public  MatchedSite() {
     }
     
     //## operation addPeriphery(Node) 
-    public boolean addPeriphery(Node p_node) {
+    public boolean putPeriphery(GraphComponent gc, GraphComponent superGc) {
         //#[ operation addPeriphery(Node) 
-        if (p_node == null) throw new NullPointerException("Node");
-        if (contains(p_node)) return false;
+        if (gc == null || superGc == null) throw new NullPointerException("Node");
+        if (contains(gc)) return false;
         else {
-        	periphery.add(p_node);                    
+        	periphery.put(superGc, gc);                    
         	return true;
         }
         //#]
     }
     
     //## operation contains(Node) 
-    public boolean contains(Node p_node) {
+    public boolean contains(GraphComponent p_gc) {
         //#[ operation contains(Node) 
-        if (p_node == null) throw new NullPointerException("Node");
-        return (containsAsCenter(p_node) || containsAsPeriphery(p_node));
+        if (p_gc == null) throw new NullPointerException("Node");
+        return (containsAsCenter(p_gc) || containsAsPeriphery(p_gc));
         //#]
     }
     
+    /*public boolean contains(HashSet arcs, Node mainNode){
+    	
+    	Iterator iter = arcs.iterator();
+    	while (iter.hasNext()){
+    		Arc arc = (Arc)iter.next();
+    		Iterator nodeIter = arc.getNeighbor();
+    		while (nodeIter.hasNext()){
+        		Node node = (Node)nodeIter.next();
+        		if (!contains(node) && node != mainNode) return false;
+        	}
+    	}
+    	
+    	return true;
+    }*/
+    
     //## operation containsAsCenter(Node) 
-    public boolean containsAsCenter(Node p_node) {
+    public boolean containsAsCenter(GraphComponent p_gc) {
         //#[ operation containsAsCenter(Node) 
-        if (p_node == null) throw new NullPointerException("Node");
-        return center.containsValue(p_node);
+        if (p_gc == null) throw new NullPointerException("Node");
+        return center.containsValue(p_gc);
         //#]
     }
     
     //## operation containsAsPeriphery(Node) 
-    public boolean containsAsPeriphery(Node p_node) {
+    public boolean containsAsPeriphery(GraphComponent p_gc) {
         //#[ operation containsAsPeriphery(Node) 
-        if (p_node == null) throw new NullPointerException("Node");
-        return periphery.contains(p_node);
+        if (p_gc == null) throw new NullPointerException("Node");
+        return periphery.containsValue(p_gc);
         //#]
+    }
+    
+    public boolean isSuper(Object p_matchedSite){
+    	if (this == p_matchedSite) return false;
+    	
+    	if (!(p_matchedSite instanceof MatchedSite)) return false;
+    	MatchedSite ms = (MatchedSite)p_matchedSite;
+    	
+    	if (this.center.keySet().size() < ms.center.keySet().size()) return false;
+    	if (this.periphery.size() < ms.periphery.size()) return false;
+    	
+    	Iterator centerIter = ms.getCenter().keySet().iterator();
+    	
+    	while (centerIter.hasNext()){
+    		Integer cid = (Integer)centerIter.next();
+    		GraphComponent cg1 = (GraphComponent)getCenter().get(cid);
+    		GraphComponent cg2 = (GraphComponent)(ms.getCenter().get(cid));
+    		if (cg1 == null) return false;
+    		if (cg1 != cg2)
+    			return false;
+    		
+    		
+    	}
+    	
+    	Iterator peripheryIter = ms.periphery.keySet().iterator();
+    	while (peripheryIter.hasNext()){
+    		GraphComponent keycg = (GraphComponent)peripheryIter.next();
+    		GraphComponent cg1 = (GraphComponent)getPeriphery().get(keycg);
+    		GraphComponent cg2 = (GraphComponent)(ms.getPeriphery().get(keycg));
+    		if (cg1 == null) return false;
+    		if (cg1 != cg2)
+    			return false;
+    	}
+    	return true;
     }
     
     //## operation equals(Object) 
@@ -129,6 +180,7 @@ public class MatchedSite {
         
         return (center.equals(ms.center) && periphery.equals(ms.periphery));
         
+    	//return false;
         
         //#]
     }
@@ -144,24 +196,26 @@ public class MatchedSite {
     public static MatchedSite merge(MatchedSite p_ms1, MatchedSite p_ms2) {
         //#[ operation merge(MatchedSite,MatchedSite) 
         MatchedSite merged = new MatchedSite();
-        
+        if (p_ms1.isSuper(p_ms2))
+        	return p_ms1;
         HashMap c1 = p_ms1.getCenter();
         HashMap c2 = p_ms2.getCenter();
         HashMap cm = merged.getCenter();
-        HashSet p1 = p_ms1.getPeriphery();
-        HashSet p2 = p_ms2.getPeriphery();
-        HashSet pm = merged.getPeriphery();
+        HashMap p1 = p_ms1.getPeriphery();
+        HashMap p2 = p_ms2.getPeriphery();
+        HashMap pm = merged.getPeriphery();
         
         cm.putAll(c1);
-        pm.addAll(p1);
+        pm.putAll(p1);
         
         for (Iterator cIter = c2.keySet().iterator(); cIter.hasNext();) {
         	Integer centralID = (Integer)cIter.next();
-        	Node n = (Node)c2.get(centralID);
+        	GraphComponent n = (GraphComponent)c2.get(centralID);
         	if (cm.containsKey(centralID) || cm.containsValue(n)) {
+        		
         		return null;
         	}
-        	else if (p1.contains(n) || p2.contains(n)) {
+        	else if (p1.containsValue(n) || p2.containsValue(n)) {
         		return null;
         	}
         	else {
@@ -169,13 +223,17 @@ public class MatchedSite {
         	}
         }
         
-        for (Iterator pIter = p2.iterator(); pIter.hasNext();) {
-        	Node n = (Node)pIter.next();
-        	if (pm.contains(n) || cm.containsValue(n)) {
+        for (Iterator pIter = p2.keySet().iterator(); pIter.hasNext();) {
+        	GraphComponent key = (GraphComponent)pIter.next();
+        	GraphComponent n = (GraphComponent)p2.get(key);
+        	if (pm.containsKey(key) || cm.containsValue(n)) {
+        		return null;
+        	}
+        	else if (c1.containsValue(n) || c2.containsValue(n)){
         		return null;
         	}
         	else {
-        		pm.add(n);
+        		pm.put(key, n);
         	}
         }
         
@@ -189,12 +247,12 @@ public class MatchedSite {
     }
     
     //## operation putCenter(Integer,Node) 
-    public boolean putCenter(Integer p_centralID, Node p_node) {
+    public boolean putCenter(Integer p_centralID, GraphComponent p_gc) {
         //#[ operation putCenter(Integer,Node) 
-        if (p_node == null) throw new NullPointerException("Node");
-        if (contains(p_node)) return false;
+        if (p_gc == null) throw new NullPointerException("Node");
+        if (contains(p_gc)) return false;
         else {
-        	center.put(p_centralID, p_node);
+        	center.put(p_centralID, p_gc);
         	return true;
         }
         
@@ -226,7 +284,7 @@ public class MatchedSite {
         //#]
     }
     
-    public LinkedHashMap getCenter() {
+    public HashMap getCenter() {
         return center;
     }
     
@@ -238,13 +296,13 @@ public class MatchedSite {
 		return center.toString();
 	}
 	
-    public LinkedHashSet getPeriphery() {
+    public HashMap getPeriphery() {
         return periphery;
     }
     
-    public void setPeriphery(LinkedHashSet p_periphery) {
+    /*public void setPeriphery(LinkedHashSet p_periphery) {
         periphery = p_periphery;
-    }
+    }*/
     
     public int getRedundancy() {
         return redundancy;
