@@ -38,6 +38,7 @@ package jing.chem;
 
 import java.io.*;
 import java.util.*;
+
 import jing.mathTool.*;
 import jing.mathTool.Queue;
 import jing.chemUtil.*;
@@ -83,6 +84,8 @@ public class Species {
     // They will only react as defined in the primary reaction library.   GJB
     protected boolean IsReactive = true; 
     
+    protected HashSet paths;
+    
     // Constructors
 
     //## operation Species()
@@ -103,7 +106,9 @@ public class Species {
         calculateLJParameters();
         selectDeltaEDown();
 		generateNASAThermoDatabyGATPFit();
-		
+		generateThreeFrequencyModel();
+        //generateNASAThermoData();
+        //#]
     }
 
     //## operation addResonanceIsomer(ChemGraph)
@@ -213,16 +218,18 @@ public class Species {
 		
         // write H and S at 298
         ThermoData td = getThermoData();
-        Object [] formatString = {new Double(td.getH298())};
-		result += "H298 " + String.format("%4.2e \n",formatString);
-		formatString[0] = new Double(td.getS298());
-		result += "S298 " + String.format("%4.2e \n",formatString);
-		formatString[0] = new Double(td.getH298());
-		result += "DLTH " + String.format("%4.2e \n",formatString);
-		formatString[0] = new Double(getMolecularWeight());
-		result += "MWEI " + String.format("%6.1e \n",formatString);
+		result += "H298 " + String.format("%4.2e \n",td.getH298());
+		result += "S298 " + String.format("%4.2e \n",td.getS298());
+		result += "DLTH " + String.format("%4.2e \n",td.getH298());
+		result += "MWEI " + String.format("%6.1e \n",getMolecularWeight());
 		
+		//result += "H298 " + MathTool.formatDouble(td.getH298(), 10, 2).trim() + ls;
+        //result += "S298 " + MathTool.formatDouble(td.getS298(), 10, 2).trim() + ls;
 		
+        //result += "DLTH " + MathTool.formatDouble(td.getH298(), 10, 2).trim() + ls;
+
+        // write MW, temperature, ouput format, etc
+        //result += "MWEI " + MathTool.formatDouble(getMolecularWeight(), 6, 1).trim() + ls;
         result += "TEMP 1000.0" + ls;
 		result += "TMIN 300.0"+ls;
 		result += "TMAX 5000.0" + ls;
@@ -232,22 +239,21 @@ public class Species {
 		else result += "NONLINEAR" + ls;
         result += String.valueOf(cg.getAtomNumber()) + ls;
         result += String.valueOf(getInternalRotor()) + ls;
-        formatString[0] = new Double(td.Cp300);
-		result += "TECP 300 " + String.format("%4.2e \n",formatString);
-		formatString[0] = new Double(td.Cp400);
-		result += "TECP 400 " + String.format("%4.2e \n",formatString);
-		formatString[0] = new Double(td.Cp500);
-		result += "TECP 500 " + String.format("%4.2e \n",formatString);
-		formatString[0] = new Double(td.Cp600);
-		result += "TECP 600 " + String.format("%4.2e \n",formatString);
-		formatString[0] = new Double(td.Cp800);
-		result += "TECP 800 " + String.format("%4.2e \n",formatString);
-		formatString[0] = new Double(td.Cp1000);
-		result += "TECP 1000 " + String.format("%4.2e \n",formatString);
-		formatString[0] = new Double(td.Cp1500);
-		result += "TECP 1500 " + String.format("%4.2e \n",formatString);
+		result += "TECP 300 " + String.format("%4.2e \n",td.Cp300);
+		result += "TECP 400 " + String.format("%4.2e \n",td.Cp400);
+		result += "TECP 500 " + String.format("%4.2e \n",td.Cp500);
+		result += "TECP 600 " + String.format("%4.2e \n",td.Cp600);
+		result += "TECP 800 " + String.format("%4.2e \n",td.Cp800);
+		result += "TECP 1000 " + String.format("%4.2e \n",td.Cp1000);
+		result += "TECP 1500 " + String.format("%4.2e \n",td.Cp1500);
 		
-		
+		//result += "TECP 300 " + MathTool.formatDouble(td.Cp300,10,2).trim() + ls;
+		//result += "TECP 400 " + MathTool.formatDouble(td.Cp400,10,2).trim() + ls;
+		//result += "TECP 500 " + MathTool.formatDouble(td.Cp500,10,2).trim() + ls;
+		//result += "TECP 600 " + MathTool.formatDouble(td.Cp600,10,2).trim() + ls;
+		//result += "TECP 800 " + MathTool.formatDouble(td.Cp800,10,2).trim() + ls;
+		//result += "TECP 1000 " + MathTool.formatDouble(td.Cp1000,10,2).trim() +ls;
+		//result += "TECP 1500 " + MathTool.formatDouble(td.Cp1500,10,2).trim() + ls;
 		result += "END" + ls;
 
         // finished writing text for input file, now save result to fort.1
@@ -688,7 +694,7 @@ public class Species {
 
         addResonanceIsomer(chemGraph);
 
-        Queue undoChemGraph = new Queue(chemGraph.getAtomNumber());
+        Queue undoChemGraph = new Queue(2*chemGraph.getAtomNumber());
         undoChemGraph.enqueue(chemGraph);
 
         HashSet processedChemGraph = new HashSet();
@@ -710,13 +716,120 @@ public class Species {
         				}
         			}
         		}
+        		
         	}
         	processedChemGraph.add(cg);
         }
+        /*for (Iterator iter = getResonanceIsomers(); iter.hasNext(); ){
+        	ChemGraph cg = (ChemGraph)iter.next();
+        	makeSingletAndTriplet(cg);
+        	
+        }*/
+        
         //#]
     }
 
-    //## operation generateThreeFrequencyModel()
+    private void makeSingletAndTriplet(ChemGraph cg) {
+    	HashSet radicalNode = cg.getRadicalNode();
+    	Iterator radicalIter = radicalNode.iterator();
+    	while (radicalIter.hasNext()) {
+    		Node radical = (Node)radicalIter.next();
+    		int radicalNumber = ((Atom)radical.getElement()).getRadicalNumber();
+    		if (radicalNumber == 2 && radical.getFeElement().spin == null) {
+    			// make singlet
+    			Graph graph = Graph.copy(cg.getGraph());
+    			int nodeID = radical.getID();
+    			Node newNode = graph.getNodeAt(nodeID);
+    			newNode.getFeElement().spin = "S";
+    			
+    			try {
+    				ChemGraph newIsomer = ChemGraph.make(graph);
+    				
+    				addResonanceIsomer(newIsomer);
+    			}
+    			catch (ForbiddenStructureException e) {
+    				
+    			}
+    			
+//    			 make triplet
+    			Graph graph2 = Graph.copy(cg.getGraph());
+    			
+    			Node newNode2 = graph.getNodeAt(nodeID);
+    			newNode.getFeElement().spin = "T";
+    			try {
+    				ChemGraph newIsomer = ChemGraph.make(graph2);
+    				
+    				addResonanceIsomer(newIsomer);
+    			}
+    			catch (ForbiddenStructureException e) {
+    				
+    			}
+    		}
+    		else if (radicalNumber == 2 && radical.getFeElement().spin.equals("T")) {
+    			// make singlet
+    			Graph graph = Graph.copy(cg.getGraph());
+    			int nodeID = radical.getID();
+    			Node newNode = graph.getNodeAt(nodeID);
+    			newNode.getFeElement().spin = "S";
+    			
+    			try {
+    				ChemGraph newIsomer = ChemGraph.make(graph);
+    				
+    				addResonanceIsomer(newIsomer);
+    			}
+    			catch (ForbiddenStructureException e) {
+    				
+    			}
+    			
+//    			 make nonSinglet
+    			Graph graph2 = Graph.copy(cg.getGraph());
+    			
+    			Node newNode2 = graph.getNodeAt(nodeID);
+    			newNode.getFeElement().spin = null;
+    			try {
+    				ChemGraph newIsomer = ChemGraph.make(graph2);
+    				
+    				addResonanceIsomer(newIsomer);
+    			}
+    			catch (ForbiddenStructureException e) {
+    				
+    			}
+    		}
+    		else if (radicalNumber == 2 && radical.getFeElement().spin.equals("S")) {
+    			// make triplet
+    			Graph graph = Graph.copy(cg.getGraph());
+    			int nodeID = radical.getID();
+    			Node newNode = graph.getNodeAt(nodeID);
+    			newNode.getFeElement().spin = "T";
+    			try {
+    				ChemGraph newIsomer = ChemGraph.make(graph);
+    				
+    				addResonanceIsomer(newIsomer);
+    			}
+    			catch (ForbiddenStructureException e) {
+    				
+    			}
+    			
+    			
+//   			 make nonSinglet
+    			Graph graph2 = Graph.copy(cg.getGraph());
+    			
+    			Node newNode2 = graph.getNodeAt(nodeID);
+    			newNode.getFeElement().spin = null;
+    			try {
+    				ChemGraph newIsomer = ChemGraph.make(graph2);
+    				
+    				addResonanceIsomer(newIsomer);
+    			}
+    			catch (ForbiddenStructureException e) {
+    				
+    			}
+    		}
+    		
+    	}
+		
+	}
+	//## operation generateThreeFrequencyModel()
 	public void generateThreeFrequencyModel() {
         //#[ operation generateThreeFrequencyModel()
         if (isTriatomicOrSmaller()) return;
@@ -877,15 +990,18 @@ public class Species {
         SpeciesDictionary dictionary = SpeciesDictionary.getInstance();
         Species spe = (Species)(dictionary.getSpecies(p_chemGraph));
 		
+        
         if (spe == null) {
         	String name = p_name;
         	if (name == null || name.length()==0) {
         		name = p_chemGraph.getChemicalFormula();
         	}
 			int id= ++TOTAL_NUMBER;
+			
         	spe = new Species(id,name,p_chemGraph);
         	//spe.ID =
         	dictionary.putSpecies(spe, true);
+        	
 
         }
         else {
@@ -920,7 +1036,24 @@ public class Species {
         //#]
     }
 
-
+//	## operation make(String,ChemGraph)
+    /*public static Species make(String p_name, Graph p_graph) throws InvalidChemGraphException, ForbiddenStructureException {
+        //#[ operation make(String,ChemGraph)
+		double pT = System.currentTimeMillis();
+        SpeciesDictionary dictionary = SpeciesDictionary.getInstance();
+        Species spe = dictionary.getSpeciesFromGraph(p_graph);
+		
+        if (spe == null) {
+        	ChemGraph cg = ChemGraph.make(p_graph);
+			spe = make(null, cg);
+			cg.setSpecies(spe);
+			
+        }
+        
+        return spe;
+        //#]
+    }*/
+	
 	public static Species make(String p_name, ChemGraph p_chemGraph, int id) {
         //#[ operation make(String,ChemGraph)
         SpeciesDictionary dictionary = SpeciesDictionary.getInstance();
@@ -1160,6 +1293,17 @@ public class Species {
     public void setReactivity(boolean reactive) {
     	IsReactive = reactive;
     }
+    
+	public void addPdepPaths(HashSet pdepReactionSet) {
+		if (paths == null)
+			paths = pdepReactionSet;
+		else
+			paths.addAll(pdepReactionSet);
+	}
+	
+	public HashSet getPdepPaths(){
+		return paths;
+	}
 }
 /*********************************************************************
 	File Path	: RMG\RMG\jing\chem\Species.java
