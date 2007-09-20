@@ -94,6 +94,7 @@ public class JDASSL implements ODESolver{
 	protected double [] yprime;
 	protected int [] info = new int[30];
 	protected LinkedList rList ;
+	protected LinkedList duplicates ;
     protected LinkedList thirdBodyList ;
     protected LinkedList troeList ;
 	protected StringBuilder outputString ;
@@ -140,12 +141,14 @@ public class JDASSL implements ODESolver{
     
     //## operation generatePDepODEReactionList(ReactionModel,SystemSnapshot,Temperature,Pressure)
     public StringBuilder generatePDepODEReactionList(ReactionModel p_reactionModel, SystemSnapshot p_beginStatus, Temperature p_temperature, Pressure p_pressure) {
-        //#[ operation generatePDepODEReactionList(ReactionModel,SystemSnapshot,Temperature,Pressure)
+    	  //#[ operation generatePDepODEReactionList(ReactionModel,SystemSnapshot,Temperature,Pressure)
         StringBuilder rString = new StringBuilder();
         StringBuilder arrayString = new StringBuilder();
         StringBuilder rateString = new StringBuilder();
+        CoreEdgeReactionModel cerm = (CoreEdgeReactionModel)p_reactionModel;
         
         rList = new LinkedList();
+        duplicates = new LinkedList();
     	LinkedList nonPDepList = new LinkedList();
         LinkedList pDepList = new LinkedList();
 
@@ -154,34 +157,68 @@ public class JDASSL implements ODESolver{
         	PDepNetwork pdn = (PDepNetwork)iter.next();
         	for (Iterator pdniter = pdn.getPDepNetReactionList(); pdniter.hasNext();) {
         		PDepNetReaction pdnr = (PDepNetReaction)pdniter.next();
-        		if (!pdnr.reactantEqualsProduct()) {
-        			if (p_reactionModel instanceof CoreEdgeReactionModel) {
-        				if (((CoreEdgeReactionModel)p_reactionModel).isReactedReaction(pdnr)) {
-        					pDepList.add(pdnr);
-        					pDepStructureSet.add(pdnr.getStructure());
-        				}
-        			}
-        			else {
+        		if (cerm.categorizeReaction(pdnr) != 1) continue;
+        		
+        		//check if this reaction is not already in the list and also check if this reaction has a reverse reaction
+        		// which is already present in the list.
+        		if (pdnr.getReverseReaction() == null)
+        			pdnr.generateReverseReaction();
+        		
+        		if (!pdnr.reactantEqualsProduct()  && !troeList.contains(pdnr) && !troeList.contains(pdnr.getReverseReaction()) && !thirdBodyList.contains(pdnr) && !thirdBodyList.contains(pdnr.getReverseReaction()) ) {
+        			if (!pDepList.contains(pdnr) && !pDepList.contains(pdnr.getReverseReaction())){
         				pDepList.add(pdnr);
-        				pDepStructureSet.add(pdnr.getStructure());
         			}
+        			else if (pDepList.contains(pdnr) && !pDepList.contains(pdnr.getReverseReaction()))
+        				continue;
+        			else if (!pDepList.contains(pdnr) && pDepList.contains(pdnr.getReverseReaction())){
+        				Temperature T = new Temperature(298, "K");
+        				if (pdnr.calculateKeq(T)>0.999) {
+        	      			pDepList.remove(pdnr.getReverseReaction());
+        	      			pDepList.add(pdnr);
+        	      		}
+        			}
+        				
         		}
         	}
         }
         
-        for (Iterator iter = p_reactionModel.getReactionSet().iterator(); iter.hasNext(); ) {
-        	Reaction r = (Reaction)iter.next();
-        	if (r.isForward() && !(r instanceof ThirdBodyReaction) && !(r instanceof TROEReaction)) {
-        		Structure s = r.getStructure();
-        		if (!pDepStructureSet.contains(s)) {
-        			nonPDepList.add(r);
-        		}
-        	}
-        }
-        
-        
-        
-		int size = nonPDepList.size() + pDepList.size();
+        /*for (Iterator iter = p_reactionModel.getReactionSet().iterator(); iter.hasNext(); ) {
+    	Reaction r = (Reaction)iter.next();
+    	if (r.isForward() && !(r instanceof ThirdBodyReaction) && !(r instanceof TROEReaction)) {
+    		
+    		nonPDepList.add(r);
+    	}
+    }*/
+    
+    LinkedList removeReactions = new LinkedList();
+    for (Iterator iter = p_reactionModel.getReactionSet().iterator(); iter.hasNext(); ) {
+    	Reaction r = (Reaction)iter.next();
+    	
+    	boolean presentInPDep = false;
+    	if (r.isForward() && !(r instanceof ThirdBodyReaction) && !(r instanceof TROEReaction)) {
+    		Iterator r_iter = pDepList.iterator();
+    		while (r_iter.hasNext()){
+    			Reaction pDepr = (Reaction)r_iter.next();
+    			if (pDepr.equals(r)){
+    				removeReactions.add(pDepr);
+    				duplicates.add(pDepr);
+    				if (!r.hasAdditionalKinetics()){
+    					duplicates.add(r);
+    					presentInPDep = true;
+    				}
+    			}
+    		}
+    		if (!presentInPDep)
+    			nonPDepList.add(r);
+    	}
+    }
+    for (Iterator iter = removeReactions.iterator(); iter.hasNext();){
+  	  Reaction r = (Reaction)iter.next();
+  	  pDepList.remove(r);
+    }
+    
+    
+	int size = nonPDepList.size() + pDepList.size() + duplicates.size();
        
        
        
@@ -214,6 +251,7 @@ public class JDASSL implements ODESolver{
 
         }
 
+       
         
         for (Iterator iter = pDepList.iterator(); iter.hasNext(); ) {
         	Reaction r = (Reaction)iter.next();
@@ -233,12 +271,41 @@ public class JDASSL implements ODESolver{
 				else
 					arrayString.append(0+" ");
 			}
-			if (r.hasReverseReaction())
-				arrayString.append(1 + " ");
-			else
-				arrayString.append(0 + " ");
-			rateString.append(or.rate + " " + or.A + " " + or.n + " " + or.E + " "+or.Keq+" ");
+			
+			arrayString.append(1 + " ");
+			
+			rateString.append(or.rate + " " + or.A + " " + or.n + " " + or.E + " "+r.calculateKeq(p_temperature)+" ");
         }
+        
+        for (Iterator iter = duplicates.iterator(); iter.hasNext(); ) {
+        	Reaction r = (Reaction)iter.next();
+
+			if (!(r instanceof ThirdBodyReaction) && !(r instanceof TROEReaction)){
+				rList.add(r);
+				ODEReaction or = transferReaction(r, p_beginStatus, p_temperature, p_pressure);
+				arrayString.append(or.rNum+" "+or.pNum+" ");
+				for (int i=0;i<3;i++){
+					if (i<or.rNum)
+						arrayString.append(or.rID[i]+" ");
+					else
+						arrayString.append(0+" ");
+				}
+				for (int i=0;i<3;i++){
+					if (i<or.pNum)
+						arrayString.append(or.pID[i]+" ");
+					else
+						arrayString.append(0+" ");
+				}
+				//if (r.hasReverseReaction())
+					arrayString.append(1 + " ");
+				//else
+					//arrayString.append(0 + " ");
+				rateString.append(or.rate + " " + or.A + " " + or.n + " " + or.E + " "+r.calculateKeq(p_temperature)+ " ");
+					
+			}
+
+        }
+        
         rString.append(arrayString.toString()+"\n"+rateString.toString());
         return rString;
         //#]
@@ -475,12 +542,7 @@ public class JDASSL implements ODESolver{
 			}
 			neq = nState*(nParameter + 1);
 			
-			//rString is a combination of a integer and a real array
-			//real array format:  rate, A, n, Ea, Keq
-			//int array format :  nReac, nProd, r1, r2, r3, p1, p2, p3, rev(=1 or -1)
-			rString = generatePDepODEReactionList(p_reactionModel, p_beginStatus, p_temperature, p_pressure);
-			
-			//tbrString is a combination of a integer and a real array
+//			tbrString is a combination of a integer and a real array
 			//real array format:  rate, A, n, Ea, Keq, inertEfficiency, e1, e2, ..., e10  (16 elements)
 			//int array format :  nReac, nProd, r1, r2, r3, p1, p2, p3, rev(=1 or -1), ncollider, c1, c2,..c10 (20 elements)
 			tbrString = generateThirdBodyReactionList(p_reactionModel, p_beginStatus, p_temperature, p_pressure);
@@ -489,6 +551,12 @@ public class JDASSL implements ODESolver{
 			//real array format:  rate, A, n, Ea, Keq, inertEfficiency, e1, e2, ..., e10, alpha, Tstar, T2star, T3star, lowRate  (21 elements)
 			//int array format :  nReac, nProd, r1, r2, r3, p1, p2, p3, rev(=1 or -1), ncollider, c1, c2,..c10, troe(0=T or 1=F) (21 elements)
         	troeString = generateTROEReactionList(p_reactionModel, p_beginStatus, p_temperature, p_pressure);
+			
+			//rString is a combination of a integer and a real array
+			//real array format:  rate, A, n, Ea, Keq
+			//int array format :  nReac, nProd, r1, r2, r3, p1, p2, p3, rev(=1 or -1)
+			rString = generatePDepODEReactionList(p_reactionModel, p_beginStatus, p_temperature, p_pressure);
+			
 			
 			initializeWorkSpace();
 			initializeConcentrations(p_beginStatus, p_reactionModel, p_beginTime, p_endTime, initialSpecies);
@@ -527,6 +595,7 @@ public class JDASSL implements ODESolver{
 			startTime = System.currentTimeMillis();
         	
 			idid = solveDAE();
+			
 			if (idid !=1 && idid != 2 && idid != 3)	{
 				System.out.println("The idid from DASPK was "+idid );
 				throw new DynamicSimulatorException("DASPK: SA off.");
@@ -541,7 +610,8 @@ public class JDASSL implements ODESolver{
 
 		SystemSnapshot sss = new SystemSnapshot(new ReactionTime(endTime,"sec"), speStatus, p_beginStatus.getTemperature(), p_beginStatus.getPressure());
 		LinkedList reactionList = new LinkedList();
-        reactionList.addAll(rList);
+		reactionList.addAll(rList);
+        reactionList.addAll(duplicates);
         reactionList.addAll(thirdBodyList);
         reactionList.addAll(troeList);
         sss.setReactionList(reactionList);
@@ -700,7 +770,7 @@ public class JDASSL implements ODESolver{
 		//Global.transferReaction = Global.transferReaction + (System.currentTimeMillis() - startTime)/1000/60;
 		//ODEReaction or;
         if(p_reaction instanceof PDepNetReaction) {
-        	double rate = ((PDepNetReaction)p_reaction).calculateTotalRate(p_beginStatus.temperature);
+        	double rate = ((PDepNetReaction)p_reaction).calculateRate();
         	ODEReaction or = new ODEReaction(rnum, pnum, rid, pid, rate);
 			//Global.transferReaction = Global.transferReaction + (System.currentTimeMillis() - startTime)/1000/60;
         	return or;
@@ -797,6 +867,9 @@ public class JDASSL implements ODESolver{
         return atol;
     }
 
+    public int getReactionSize(){
+    	return rList.size()+troeList.size()+thirdBodyList.size();
+    }
     public int getMaxSpeciesNumber() {
         return maxSpeciesNumber;
     }
