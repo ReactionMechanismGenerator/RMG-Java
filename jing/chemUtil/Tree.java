@@ -45,12 +45,19 @@ import java.util.*;
 //----------------------------------------------------------------------------
 
 //## class Tree 
+/**
+ * Class used to implement a tree. This class tree will be extended to form the heirarchy tree which 
+ * is used to implement all the thermo and kinetics trees. 
+ */
 public class Tree {
     
     protected TreeNode root;
     
     // Constructors
     
+    /**
+     * Initializes the tree by taking the root of the tree.
+     */
     //## operation Tree(TreeNode) 
     public  Tree(TreeNode p_root) {
         initRelations();
@@ -65,6 +72,10 @@ public class Tree {
         initRelations();
     }
     
+    /**
+     * 
+     * @return The root of the tree
+     */
     //## operation getRoot() 
     public TreeNode getRoot() {
         //#[ operation getRoot() 
@@ -73,9 +84,8 @@ public class Tree {
     }
     
     /**
-    Requires:
-    Effects: return hight of the tree
-    Modifies:
+    @return hight of the tree
+    
     */
     //## operation height() 
     public int height() {
@@ -88,9 +98,8 @@ public class Tree {
     }
     
     /**
-    Requires:
-    Effects: return true iff the tree is empty, i.e., no root node
-    Modifies:
+    Return true iff the tree is empty, i.e., no root node
+    
     */
     //## operation isEmpty() 
     public boolean isEmpty() {
@@ -103,6 +112,10 @@ public class Tree {
         //#]
     }
     
+    /**
+     * Calls the repOK function of the root TreeNode.
+     * 
+     */
     //## operation repOk() 
     public boolean repOk() {
         //#[ operation repOk() 
@@ -118,21 +131,18 @@ public class Tree {
     }
     
     /**
-    Requires:
-    Effects: return number of nodes
-    Modifies:
+    Return number of nodes
+    
     */
     //## operation size() 
     public int size() {
         //#[ operation size() 
         return root.size();
-        
-        
-        
-        //#]
+   
     }
     
-    public TreeNode newRoot() {
+    
+    private TreeNode newRoot() {
         root = new TreeNode();
         return root;
     }
@@ -141,6 +151,10 @@ public class Tree {
         root=null;
     }
     
+    /**
+     * Initializes the root of the tree.
+     *
+     */
     protected void initRelations() {
         root = newRoot();
     }
