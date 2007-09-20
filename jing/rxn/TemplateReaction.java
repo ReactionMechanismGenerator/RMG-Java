@@ -122,26 +122,26 @@ public class TemplateReaction extends Reaction {
         	while (iter.hasNext()) {
         		PDepNetReaction pdnr = (PDepNetReaction)iter.next();
         		if (pdnr.getStructure().equals(getStructure())) {
-        			double temp = pdnr.getTemperature();
+        			/*double temp = pdnr.getTemperature();
         			if (temp != p_temperature.getK()) {
         				System.out.println("Different temperature used!");
         				System.exit(0);
-        			}
+        			}*/
         			//System.out.println("for reaction " + toString() + "\t using p dep rate:" + String.valueOf(pdnr.getRate()));
-        			return pdnr.getRate();
+        			return pdnr.calculateRate();
         		}
         	}
         	iter = pdn.getPDepNonincludedReactionList(); 
         	while (iter.hasNext()) {
         		PDepNetReaction pdnr = (PDepNetReaction)iter.next();
         		if (pdnr.getStructure().equals(getStructure())) {
-        			double temp = pdnr.getTemperature();
+        			/*double temp = pdnr.getTemperature();
         			if (temp != p_temperature.getK()) {
         				System.out.println("Different temperature used!");
         				System.exit(0);
-        			}
+        			}*/
         			//System.out.println("for reaction " + toString() + "\t using p dep rate:" + String.valueOf(pdnr.getRate()));
-        			return pdnr.getRate();
+        			return pdnr.calculateRate();
         		}
         	}
         }
@@ -241,6 +241,8 @@ public class TemplateReaction extends Reaction {
 			System.exit(0);
 		}
 			rr = new TemplateReaction(rsSp,k,rRT);
+			if (!(rr.getReactantNumber() ==2 && rr.getProductNumber() == 2))
+				rr.pDepNetwork = PDepNetwork.makePDepNetwork(rr);
 
 		if (!rr.isForward()) {
 			String err = "Backward:" + structure.toString() + String.valueOf(structure.calculateKeq(new Temperature(298,"K"))) + '\n';
@@ -277,16 +279,15 @@ public class TemplateReaction extends Reaction {
         double PT = System.currentTimeMillis();
 		TemplateReaction reaction = p_template.getReactionFromStructure(p_structureSp);
 		Global.getReacFromStruc = Global.getReacFromStruc + (System.currentTimeMillis() - PT)/1000/60;
-		
-        //TemplateReaction reaction = null;
-		
+			
         if (reaction == null) {
         	reaction = new TemplateReaction(p_structureSp,p_kinetics,p_template);
         	if (reaction.isBackward()) {
 				double pt = System.currentTimeMillis();
         		TemplateReaction reverse = reaction.generateReverseForBackwardReaction(p_structure, p_structureSp);
         		reaction.setReverseReaction(reverse);
-				Global.generateReverse = Global.generateReverse + (System.currentTimeMillis() - pt)/1000/60;
+        		
+				//Global.generateReverse = Global.generateReverse + (System.currentTimeMillis() - pt)/1000/60;
         	}
         	else {
         		ReactionTemplate fRT = reaction.getReactionTemplate();
@@ -297,15 +298,18 @@ public class TemplateReaction extends Reaction {
                 else rRT = fRT.getReverseReactionTemplate();
                 
                 if (rRT != null){
-                	TemplateReaction reverse = new TemplateReaction(p_structureSp.generateReverseStructure(),null,rRT);
-            		reaction.setReverseReaction(reverse);
+                	TemplateReaction reverse = new TemplateReaction(p_structureSp.generateReverseStructure(),p_kinetics,rRT);
+                	reaction.setReverseReaction(reverse);
             		reverse.setReverseReaction(reaction);
             		rRT.addReaction(reverse);
+                	if (!(reverse.getReactantNumber() == 2 && reverse.getProductNumber() ==2))
+                		reverse.pDepNetwork = PDepNetwork.makePDepNetwork(reverse);
+            		
                 }
         		
         	}
         	p_template.addReaction(reaction);    
-        	if (!(reaction.getReactantNumber() == 2 && reaction.getProductNumber() == 2)) {
+        	if (!(reaction.getReactantNumber() == 2 && reaction.getProductNumber() == 2) ) {
         		reaction.pDepNetwork = PDepNetwork.makePDepNetwork(reaction);     
         	}
         	else {
@@ -330,17 +334,7 @@ public class TemplateReaction extends Reaction {
         //#]
     }
     
-    //## operation toFullString() 
-    /*public String toFullString() {
-        //#[ operation toFullString() 
-        String s = getStructure().toString() + '\n' + getReactionTemplate().toString() + '\n';
-        s = s + getKinetics().toChemkinString() + '\n';
-        s = s + "Detailed rate constant information: " + getRateConstant().toString() + '\n';
-        s = s + "Comments for this reaction: " + getComments().toString();
-        
-        return s;
-        //#]
-    }*/
+   
     
     //## operation toString() 
     public String toString(Temperature p_temperature) {
