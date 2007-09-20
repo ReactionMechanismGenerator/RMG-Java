@@ -79,6 +79,7 @@ public class ReactionTemplate {
   protected ReactionAdjList reactionAdjList;
   protected ReactionTemplate reverseReactionTemplate;
   protected StructureTemplate structureTemplate;
+  protected LinkedHashMap forbiddenStructures = new LinkedHashMap();
   
   // Constructors
   
@@ -482,10 +483,7 @@ public class ReactionTemplate {
       fgDictionary.put(p_name,fgc);
       p_unRead.remove(p_name);
       return;
-      
-      
-      
-      
+
       //#]
   }
   
@@ -675,7 +673,11 @@ public class ReactionTemplate {
   protected LinkedHashSet reactOneReactant(ChemGraph p_chemGraph) {
       //#[ operation reactOneReactant(ChemGraph) 
 	  LinkedHashSet reaction_set = new LinkedHashSet();
+	  if (name.equals("Intra_R_Add_Endocyclic") && !p_chemGraph.isAcyclic()) return reaction_set;
       
+	 
+	  
+	
       LinkedHashSet allReactionSites = structureTemplate.identifyReactedSites(p_chemGraph,1);
 	  //System.out.println("Species: "+p_chemGraph.toString());
       
@@ -694,11 +696,23 @@ public class ReactionTemplate {
       for (Iterator iter = allReactionSites.iterator(); iter.hasNext(); ) {
 		  
           MatchedSite ms = (MatchedSite)iter.next();
-          LinkedHashMap site = ms.getCenter();
+          HashMap site = ms.getCenter();
        	  int redundancy = ms.getRedundancy();
 		  //System.out.println(ms.toString());
           // reset the reacted site for rg in reactant linkedlist
           p_chemGraph.resetReactedSite(site);
+          
+          boolean forbidden = false;
+          Iterator forbiddenIter = forbiddenStructures.values().iterator();
+          while (forbiddenIter.hasNext()){
+        	  Matchable fg = (Matchable)forbiddenIter.next();
+        	  if (p_chemGraph.isSubAtCentralNodes(fg)){
+        		  forbidden = true;
+        		  break;
+        	  }
+          }
+          if (forbidden) break;
+          
           // react reactant to form a new structure
           try {
           	LinkedList product = reactionAdjList.reactChemGraph(reactant);
@@ -879,7 +893,7 @@ public class ReactionTemplate {
       
       for (Iterator iter = allReactionSites.iterator(); iter.hasNext(); ) {
           MatchedSite ms = (MatchedSite)iter.next();
-          LinkedHashMap site = ms.getCenter();
+          HashMap site = ms.getCenter();
        	int redundancy = ms.getRedundancy();
       
           // reset the reacted site for rg in reactant linkedlist
@@ -953,6 +967,8 @@ public class ReactionTemplate {
       	r2 = p_chemGraph2;
       }
       
+      
+      
       /*if (name.equalsIgnoreCase("H_Abstraction")){
     	  System.out.println( "Here");
       }*/
@@ -961,6 +977,8 @@ public class ReactionTemplate {
       LinkedHashSet allReactionSites2 = structureTemplate.identifyReactedSites(r2,2);
       
       if (allReactionSites1.isEmpty() || allReactionSites2.isEmpty()) return reaction_set;
+      
+     
       
       LinkedList reactant = new LinkedList();
 	  LinkedList reactantSp = new LinkedList();
@@ -975,16 +993,38 @@ public class ReactionTemplate {
       
       for (Iterator iter1 = allReactionSites1.iterator(); iter1.hasNext(); ) {
       	MatchedSite ms1 = (MatchedSite)iter1.next();
-      	LinkedHashMap site1 = ms1.getCenter();
+      	HashMap site1 = ms1.getCenter();
           r1.resetReactedSite(site1);
       
+          boolean forbidden1 = false;
+          Iterator forbiddenIter = forbiddenStructures.values().iterator();
+          while (forbiddenIter.hasNext()){
+        	  Matchable fg = (Matchable)forbiddenIter.next();
+        	  if (r1.isSubAtCentralNodes(fg)){
+        		  forbidden1 = true;
+        		  break;
+        	  }
+          }
+          if (forbidden1) continue;
+          
           int redundancy1 = ms1.getRedundancy();
       
       	for (Iterator iter2 = allReactionSites2.iterator(); iter2.hasNext(); ) {
       		MatchedSite ms2 = (MatchedSite)iter2.next();
-      		LinkedHashMap site2 = (LinkedHashMap)ms2.getCenter();
+      		HashMap site2 = (HashMap)ms2.getCenter();
       	    r2.resetReactedSite(site2);
       
+      	    boolean forbidden2 = false;
+      	    forbiddenIter = forbiddenStructures.values().iterator();
+      	    while (forbiddenIter.hasNext()){
+      	    	Matchable fg = (Matchable)forbiddenIter.next();
+      	    	if (r2.isSubAtCentralNodes(fg)){
+      	    		forbidden2 = true;
+      	    		break;
+      	    	}
+ 	         }
+ 	         if (forbidden2) continue;
+          
       	    int redundancy2 = ms2.getRedundancy();
       		int redundancy = redundancy1*redundancy2;
       
@@ -1138,9 +1178,11 @@ public class ReactionTemplate {
       String DictionaryName = directoryName + "dictionary.txt";
       String TreeName = directoryName + "tree.txt";
       String LibraryName = directoryName + "rateLibrary.txt";
+      String ForbiddenName = directoryName + "forbiddenGroups.txt";
       
       try {
       	readFGDictionary(DictionaryName);
+      	readForbiddenStructures(ForbiddenName);
       	String reverseRTName = readReactionAdjList(ReactionAdjListName);
       	readTree(TreeName);
       	readLibrary(LibraryName);
@@ -1159,6 +1201,75 @@ public class ReactionTemplate {
       return;
       //#]
   }
+  
+  public void readForbiddenStructures(String p_fileName) throws  IOException {
+      //#[ operation readFGDictionary(String) 
+      try {
+      	FileReader in = new FileReader(p_fileName);
+      	BufferedReader data = new BufferedReader(in);
+      	HashMap unRead = new HashMap();
+      	String fgname = null;
+      
+      	// step 1: read in structure
+      	String line = ChemParser.readMeaningfulLine(data);
+      	read: while (line != null) {
+      		StringTokenizer token = new StringTokenizer(line);
+      		fgname = token.nextToken();
+      		data.mark(10000);
+      		line = ChemParser.readMeaningfulLine(data);
+      		if (line == null) break read;
+      		line = line.trim();
+      		String prefix = line.substring(0,5);
+      		if (prefix.compareToIgnoreCase("union") == 0) {
+      			HashSet union = ChemParser.readUnion(line);
+       			unRead.put(fgname,union);
+      		}
+      		else {
+      			data.reset();
+      			Graph fgGraph = null;
+      			try {
+      				fgGraph = ChemParser.readFGGraph(data);
+      			}
+      			catch (InvalidGraphFormatException e) {
+      				throw new InvalidFunctionalGroupException(fgname + ": " + e.getMessage());
+      			}
+      			if (fgGraph == null)
+                      throw new InvalidFunctionalGroupException(fgname);
+      
+      			FunctionalGroup fg = FunctionalGroup.make(fgname, fgGraph);
+      			Object old = forbiddenStructures.get(fgname);
+      			if (old == null) {
+      				forbiddenStructures.put(fgname,fg);
+      			}
+      			else {
+      				FunctionalGroup oldFG = (FunctionalGroup)old;
+      				if (!oldFG.equals(fg)) throw new ReplaceFunctionalGroupException(fgname);
+      			}
+              }
+      		line = ChemParser.readMeaningfulLine(data);
+      	}
+      
+      	while (!unRead.isEmpty()) {
+      		fgname = (String)(unRead.keySet().iterator().next());
+      		ChemParser.findUnion(fgname,unRead,forbiddenStructures);
+      	}
+      
+          in.close();
+      	return;
+      }
+      catch (Exception e) {
+    	  System.out.println("Did not read forbiddenStructures");
+      	//throw new IOException(e.getMessage());
+      }
+      
+      
+      
+      
+      
+      
+      //#]
+  }
+  
   
   //## operation readFGDictionary(String) 
   public void readFGDictionary(String p_fileName) throws  IOException {
