@@ -56,7 +56,7 @@ import jing.param.Temperature;
 public class ChemGraph implements Matchable {
 
     protected static int MAX_OXYGEN_NUM = 6;		//## attribute MAX_OXYGEN_NUM
-	protected static  int MAX_CARBON_NUM = 8;       //SS
+	protected static  int MAX_CARBON_NUM = 20;       //SS
 	protected static int MAX_CYCLE_NUM = 1;		//SS (no fused rings)
 
 	/**
@@ -1485,14 +1485,14 @@ return sn;
         //#[ operation identifyReactionMatchedSite(Matchable)
         if (p_functionalGroup instanceof FunctionalGroup) {
         	FunctionalGroup fg = (FunctionalGroup)p_functionalGroup;
-        	boolean thisIsRadical = this.isRadical();
-        	boolean fgIsRadical = fg.isRadical();
-        	if (thisIsRadical == fgIsRadical) {
+        	//boolean thisIsRadical = this.isRadical();
+        	//boolean fgIsRadical = fg.isRadical();
+        	//if (thisIsRadical == fgIsRadical) {
         		return getGraph().identifyAllOrderedMatchedSites(fg.getGraph());
-        	}
-        	else {
-        		return new LinkedHashSet();
-        	}
+        	//}
+        	//else {
+        		//return new LinkedHashSet();
+        	//}
         }
         else if (p_functionalGroup instanceof FunctionalGroupCollection) {
         	LinkedHashSet result = new LinkedHashSet();
@@ -1500,12 +1500,12 @@ return sn;
         	Iterator iter = fgc.getFunctionalGroups();
         	while (iter.hasNext()) {
         		FunctionalGroup fg = (FunctionalGroup)iter.next();
-        		boolean thisIsRadical = this.isRadical();
-        		boolean fgIsRadical = fg.isRadical();
-        		if (thisIsRadical == fgIsRadical) {
+        		//boolean thisIsRadical = this.isRadical();
+        		//boolean fgIsRadical = fg.isRadical();
+        		//if (thisIsRadical == fgIsRadical) {
            			LinkedHashSet site = getGraph().identifyAllOrderedMatchedSites(fg.getGraph());
         			result.addAll(site);
-        		}
+        		//}
         	}
         	return result;
         }
@@ -1568,7 +1568,8 @@ return sn;
     public static boolean isForbiddenStructure(Graph p_graph) {
         //#[ operation isForbiddenStructure(Graph)
 		
-		Iterator iter = p_graph.getNodeList();
+    	
+		/*Iterator iter = p_graph.getNodeList();
 		while (iter.hasNext()){
 			Node n = (Node)iter.next();
 			Atom atom = (Atom)n.getElement();
@@ -1586,15 +1587,17 @@ return sn;
 				}
 			}
 		}
-		return false;
-        /*for (Iterator iter = forbiddenStructure.iterator(); iter.hasNext(); ) {
+		return false;*/
+        
+        
+        for (Iterator iter = forbiddenStructure.iterator(); iter.hasNext(); ) {
         	FunctionalGroup fg = (FunctionalGroup)iter.next();
         	Graph g = fg.getGraph();
         	if (p_graph.isSub(g)) {
         		return true;
         	}
         }
-        return false;*/
+        return false;
         //#]
     }
 
@@ -1626,6 +1629,7 @@ return sn;
         	Iterator iter = ((FunctionalGroupCollection)p_functional).getFunctionalGroups();
         	while (iter.hasNext()) {
         		FunctionalGroup fg = (FunctionalGroup)iter.next();
+        		
         		if (isSubAtCentralNodes(fg)) return true;
           	}
           	return false;
