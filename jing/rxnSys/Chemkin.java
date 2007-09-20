@@ -441,7 +441,39 @@ public  Chemkin() {
       result.append(writeChemkinThermo(p_reactionModel));
       Global.chemkinThermo = Global.chemkinThermo + (System.currentTimeMillis() - start)/1000/60;
 	  start = System.currentTimeMillis();
-	  result.append(writeChemkinReactions(p_reactionModel));
+	  result.append(writeChemkinPdepReactions(p_reactionModel));
+	  Global.chemkinReaction = Global.chemkinReaction + (System.currentTimeMillis() - start)/1000/60;
+
+      String dir = System.getProperty("RMG.workingDirectory");
+      if (!dir.endsWith("/")) dir += "/";
+      dir += "software/reactorModel/";
+      String file = "chemkin/chem.inp";
+
+      try {
+      	FileWriter fw = new FileWriter(file);
+      	fw.write(result.toString());
+      	fw.close();
+      }
+      catch (Exception e) {
+      	System.out.println("Error in writing chemkin input file chem.inp!");
+      	System.out.println(e.getMessage());
+      	System.exit(0);
+      }
+      
+      //#]
+  }
+  
+  public static void writeChemkinInputFile(ReactionSystem rs) {
+      //#[ operation writeChemkinInputFile(ReactionModel,SystemSnapshot)
+
+      StringBuilder result=new StringBuilder();
+	  result.append(writeChemkinElement());
+	  double start = System.currentTimeMillis();
+      result.append(writeChemkinSpecies(rs.reactionModel, rs.initialStatus));
+      result.append(writeChemkinThermo(rs.reactionModel));
+      Global.chemkinThermo = Global.chemkinThermo + (System.currentTimeMillis() - start)/1000/60;
+	  start = System.currentTimeMillis();
+	  result.append(writeChemkinPdepReactions(rs));
 	  Global.chemkinReaction = Global.chemkinReaction + (System.currentTimeMillis() - start)/1000/60;
 
       String dir = System.getProperty("RMG.workingDirectory");
@@ -494,7 +526,55 @@ public  Chemkin() {
       //#]
   }
 
-  
+  public static String writeChemkinPdepReactions(ReactionSystem rs) {
+      //#[ operation writeChemkinReactions(ReactionModel)
+
+      StringBuilder result = new StringBuilder();
+	  result.append("REACTIONS	KCAL/MOLE\n");
+	  
+	  LinkedList rList = new LinkedList();
+	  LinkedList troeList = new LinkedList();
+	  LinkedList tbrList = new LinkedList();
+	  LinkedList duplicates = new LinkedList();
+	  
+	  if (rs.dynamicSimulator instanceof JDASPK){
+		  rList = ((JDASPK)rs.dynamicSimulator).rList;
+		  troeList = ((JDASPK)rs.dynamicSimulator).troeList;
+		  tbrList = ((JDASPK)rs.dynamicSimulator).thirdBodyList;
+		  duplicates = ((JDASPK)rs.dynamicSimulator).duplicates;
+	  }
+	  else if (rs.dynamicSimulator instanceof JDASSL){
+		  rList = ((JDASSL)rs.dynamicSimulator).rList;
+		  troeList = ((JDASSL)rs.dynamicSimulator).troeList;
+		  tbrList = ((JDASSL)rs.dynamicSimulator).thirdBodyList;
+		  duplicates = ((JDASSL)rs.dynamicSimulator).duplicates;
+	  }
+	  
+	  
+      
+      for (Iterator iter = rList.iterator(); iter.hasNext();){
+    	  Reaction r = (Reaction)iter.next();
+    	  result.append(r.toChemkinString(Global.temperature)+"\n");
+      }
+      for (Iterator iter = troeList.iterator(); iter.hasNext();){
+    	  Reaction r = (Reaction)iter.next();
+    	  result.append(r.toChemkinString(Global.temperature)+"\n");
+      }
+      for (Iterator iter = tbrList.iterator(); iter.hasNext();){
+    	  Reaction r = (Reaction)iter.next();
+    	  result.append(r.toChemkinString(Global.temperature)+"\n");
+      }
+      for (Iterator iter = duplicates.iterator(); iter.hasNext();){
+    	  Reaction r = (Reaction)iter.next();
+    	  result.append(r.toChemkinString(Global.temperature)+"\n\tDUP\n");
+      }
+
+      result.append("END\n");
+
+      return result.toString();
+
+      //#]
+  }
   
   //## operation writeChemkinReactions(ReactionModel)
  public static String writeChemkinPdepReactions(ReactionModel p_reactionModel) {
@@ -502,68 +582,75 @@ public  Chemkin() {
 
       StringBuilder result = new StringBuilder();
 	  result.append("REACTIONS	KCAL/MOLE\n");
-
+	  
+	  LinkedList pDepList = new LinkedList();
+	  LinkedList nonPDepList = new LinkedList();
+	  LinkedList duplicates = new LinkedList();
+	  
       CoreEdgeReactionModel cerm = (CoreEdgeReactionModel)p_reactionModel;
-
-      LinkedHashSet RISet = new LinkedHashSet();
-      // print normal reactions
-      LinkedList rxns = cerm.generatePDepReactionSet();
-      LinkedList nonPDepReactionList = (LinkedList)rxns.get(0);
-      LinkedList pDepReactionList = (LinkedList)rxns.get(1);
-      LinkedList all = new LinkedList();
-      //all.addAll(p_reactionModel.getReactionSet());
-	  all.addAll(nonPDepReactionList);
-      all.addAll(pDepReactionList);
-
-      for (Iterator iter = all.iterator(); iter.hasNext(); ) {
-      	Reaction rxn = (Reaction)iter.next();
-      	if (rxn.isForward()) {
-      		if (rxn.hasResonanceIsomer()) RISet.add(rxn);
-
-      		else result.append(" " + rxn.toChemkinString(Global.temperature) + "\n");
-
+      //first get troe and thirdbodyreactions
+      for (Iterator iter = cerm.getReactionSet().iterator(); iter.hasNext(); ) {
+        	Reaction r = (Reaction)iter.next();
+        	if (r.isForward() && r instanceof ThirdBodyReaction || r instanceof TROEReaction) {        		
+        		pDepList.add(r);
+        	}
+        }
+      
+      for (Iterator iter = PDepNetwork.getDictionary().values().iterator(); iter.hasNext(); ) {
+      	PDepNetwork pdn = (PDepNetwork)iter.next();
+      	for (Iterator pdniter = pdn.getPDepNetReactionList(); pdniter.hasNext();) {
+      		PDepNetReaction pdnr = (PDepNetReaction)pdniter.next();
+      		if (cerm.categorizeReaction(pdnr) != 1) continue;
+      		
+      		//check if this reaction is not already in the list and also check if this reaction has a reverse reaction
+      		// which is already present in the list.
+      		if (pdnr.getReverseReaction() == null)
+      			pdnr.generateReverseReaction();
+      		
+      		if (!pdnr.reactantEqualsProduct() && !pDepList.contains(pdnr) && !pDepList.contains(pdnr.getReverseReaction()) )  {
+      			pDepList.add(pdnr);
+      		}
       	}
       }
-
-      // print possible duplicated reactions
-      LinkedList RIList = new LinkedList(RISet);
-      while (!RIList.isEmpty()) {
-      	Reaction r1 = (Reaction)RIList.removeFirst();
-      	boolean found = false;
-      	for (Iterator iter = RIList.iterator(); iter.hasNext();) {
-      		Reaction r2 = (Reaction)iter.next();
-      		if (r1.equals(r2)) {
-      			if (isPDepReaction(r1)) {
-
-      				if (!found) result .append(" " + r1.toChemkinString(Global.temperature) + '\n');
-
-      			}
-      			else if  (isPDepReaction(r2)) {
-
-      				if (!found) result.append(" " + r2.toChemkinString(Global.temperature) + '\n');
-
-      			}
-      			else {
-      				if (!found) {
-
-      					result.append(" " + r1.toChemkinString(Global.temperature) + '\n');
-      	 				result.append("\t" + "DUP\n");
-
-      	 			}
-
-      				result.append(" " + r2.toChemkinString(Global.temperature) + '\n');
-      				result.append("\t" + "DUP\n");
-
-      			}
-      			iter.remove();
-      			found = true;
-      		}
-
-		}
-      	if (!found) result.append(" " + r1.toChemkinString(Global.temperature) + '\n');
-
+      LinkedList removeReactions = new LinkedList();
+      for (Iterator iter = p_reactionModel.getReactionSet().iterator(); iter.hasNext(); ) {
+      	Reaction r = (Reaction)iter.next();
       	
-
+      	boolean presentInPDep = false;
+      	if (r.isForward() && !(r instanceof ThirdBodyReaction) && !(r instanceof TROEReaction)) {
+      		Iterator r_iter = pDepList.iterator();
+      		while (r_iter.hasNext()){
+      			Reaction pDepr = (Reaction)r_iter.next();
+      			if (pDepr.equals(r)){
+      				removeReactions.add(pDepr);
+      				duplicates.add(pDepr);
+      				if (!r.hasAdditionalKinetics()){
+      					duplicates.add(r);
+      					presentInPDep = true;
+      				}
+      			}
+      		}
+      		if (!presentInPDep)
+      			nonPDepList.add(r);
+      	}
+      }
+      
+      for (Iterator iter = removeReactions.iterator(); iter.hasNext();){
+    	  Reaction r = (Reaction)iter.next();
+    	  pDepList.remove(r);
+      }
+      
+      for (Iterator iter = pDepList.iterator(); iter.hasNext();){
+    	  Reaction r = (Reaction)iter.next();
+    	  result.append(r.toChemkinString(Global.temperature)+"\n");
+      }
+      for (Iterator iter = nonPDepList.iterator(); iter.hasNext();){
+    	  Reaction r = (Reaction)iter.next();
+    	  result.append(r.toChemkinString(Global.temperature)+"\n");
+      }
+      for (Iterator iter = duplicates.iterator(); iter.hasNext();){
+    	  Reaction r = (Reaction)iter.next();
+    	  result.append(r.toChemkinString(Global.temperature)+"\n\tDUP\n");
       }
 
       result.append("END\n");
