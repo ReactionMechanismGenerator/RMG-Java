@@ -79,17 +79,32 @@ public class CoreEdgeReactionModel implements ReactionModel {
     //## operation CoreEdgeReactionModel(HashSet,HashSet) 
     public  CoreEdgeReactionModel(LinkedHashSet p_reactedSpeciesSet, LinkedHashSet p_reactionSet) {
         initRelations();
-        //#[ operation CoreEdgeReactionModel(HashSet,HashSet) 
-        core = newCore();
+        
+        
         core.setSpeciesSet(p_reactedSpeciesSet);
         addReactionSet(p_reactionSet);
-        
-        
+
         //#]
     }
 
-	
-	
+	/**
+	 * This initializer just takes in the species and the reactions are added from the Pdep-networks
+	 * 
+	 */
+	public CoreEdgeReactionModel(LinkedHashSet p_reactedSpeciesSet){
+		initRelations();
+		core.setSpeciesSet(p_reactedSpeciesSet);
+		Iterator iter = PDepNetwork.getDictionary().values().iterator();
+		while (iter.hasNext()){
+			PDepNetwork pdn = (PDepNetwork)iter.next();
+			Iterator reactionIter = pdn.getPDepNetReactionList();
+			while (reactionIter.hasNext()){
+				addReaction(((Reaction)reactionIter.next()));
+			}
+			
+		}
+	}
+    
     //## operation addPrimaryReactionSet(HashSet) 
     public void addPrimaryReactionSet(LinkedHashSet p_reactionSet) {
         //#[ operation addPrimaryReactionSet(HashSet) 
@@ -255,6 +270,20 @@ public class CoreEdgeReactionModel implements ReactionModel {
         
         return;
         //#]
+    }
+    
+    /**
+     * Add a given reaction. First Categorize the
+     * reaction as either core or Edge and then add it to the list
+     * 
+     */
+    public void addReaction(Reaction p_reaction){
+    	int rxnType = categorizeReaction(p_reaction);
+    	if (rxnType == 1){
+    		addReactedReaction(p_reaction);
+    	}
+    	else
+    		addUnreactedReaction(p_reaction);
     }
     
     //## operation addUnreactedReaction(Reaction) 
@@ -431,16 +460,16 @@ public class CoreEdgeReactionModel implements ReactionModel {
 	        //#[ operation generatePDepReactionSet() 
 	        LinkedList nonPDepList = new LinkedList();
 	        LinkedList pDepList = new LinkedList();
+	        LinkedList duplicates = new LinkedList();
 	        
-	        HashSet pDepStructureSet = new HashSet();
+	        
 	        
 	        LinkedHashSet rSet = getReactionSet();
 	        for (Iterator iter = rSet.iterator(); iter.hasNext(); ) {
 	        	Reaction r = (Reaction)iter.next();
-	        	if (r instanceof ThirdBodyReaction || r instanceof TROEReaction) {
+	        	if (r instanceof ThirdBodyReaction || r instanceof TROEReaction && r.isForward()) {
 	        		pDepList.add(r);
-	        		pDepStructureSet.add(r.getStructure());//.generateSpeciesStructure());
-	        		//pDepStructureSet.add(r.getStructure().generateReverseStructure());//.generateSpeciesStructure());
+	        		
 	        	}
 	        }
 	        
@@ -448,30 +477,42 @@ public class CoreEdgeReactionModel implements ReactionModel {
 	        	PDepNetwork pdn = (PDepNetwork)iter.next();
 	        	for (Iterator pdniter = pdn.getPDepNetReactionList(); pdniter.hasNext();) {
 	        		PDepNetReaction pdnr = (PDepNetReaction)pdniter.next();
-	        		Structure s = pdnr.getStructure();//.generateSpeciesStructure();
-	        		if (!pdnr.reactantEqualsProduct() && !pDepStructureSet.contains(s) && isReactedReaction(pdnr)) {
-	        			pDepList.add(pdnr);
-	        			pDepStructureSet.add(s);
-	        		}	
+	        		Structure s = pdnr.getStructure();
+	        		if (!pdnr.reactantEqualsProduct() && isReactedReaction(pdnr)) {
+	        			// if 2 reactants = 2 products then compare it with reaction in the core.
+	        			// if the same reaction is present then the reactions should go to the duplicate list.
+	        			if (pdnr.getStructure().getReactantNumber() ==2 && pdnr.getStructure().getProductNumber() ==2){
+	        				if (containsAsReactedReaction(pdnr))
+	        					duplicates.add(pdnr);
+	        				else
+	        					pDepList.add(pdnr);
+	        			}
+	        			else
+	        				pDepList.add(pdnr);
+	        			
+	        		}
 	        	}
 	        }
 	        
-	        for (Iterator iter = getReactionSet().iterator(); iter.hasNext(); ) {
+	        Iterator iter = getReactionSet().iterator();
+	        while (iter.hasNext()) {
 	        	Reaction r = (Reaction)iter.next();
-	        	if (!r.reactantEqualsProduct() && !(r instanceof ThirdBodyReaction) && !(r instanceof TROEReaction)) {
-	        		Structure s = r.getStructure();
-	        		//Structure ss = s.generateSpeciesStructure();
-	        		Structure rs = s.generateReverseStructure();
-	        		//Structure rss = rs.generateSpeciesStructure();
-	        		if (!pDepStructureSet.contains(s) && !pDepStructureSet.contains(rs)) {
+	        	if (!r.reactantEqualsProduct() && !(r instanceof ThirdBodyReaction) && !(r instanceof TROEReaction) && r.isForward()) {
+	        		
+	        		if (!pDepList.contains(r)  ) {
 	        			nonPDepList.add(r);
-	        		}                                   
+	        		}
+	        		else if (r.getStructure().getReactantNumber() == 2 && r.getStructure().getProductNumber() == 2 && !r.hasAdditionalKinetics())
+	        			duplicates.add(r);
+	        		else if (r.getStructure().getReactantNumber() == 2 && r.getStructure().getProductNumber() == 2 && r.hasAdditionalKinetics())
+	        			nonPDepList.add(r);
 	        	}
 	        }
 	        
 	        LinkedList all = new LinkedList();
 	        all.add(0,nonPDepList);
 	        all.add(1,pDepList);
+	        all.add(2,duplicates);
 	        return all;
 	        //#]
 	    }
@@ -558,6 +599,12 @@ public class CoreEdgeReactionModel implements ReactionModel {
     public boolean isEmpty() {
         //#[ operation isEmpty() 
         return core.isEmpty();
+        //#]
+    }
+    
+    public boolean isEmpty(FinishController fc) {
+        //#[ operation isEmpty() 
+        return core.isEmpty(fc);
         //#]
     }
     
@@ -728,7 +775,7 @@ public class CoreEdgeReactionModel implements ReactionModel {
         for (Iterator iter = pDepList.iterator(); iter.hasNext(); ) {
         	PDepNetReaction r = (PDepNetReaction)iter.next();
             //System.out.println(r.getStructure().toString() + "\t rate = \t" + Double.toString(r.getRate()));
-			System.out.println(r.toChemkinString());
+			System.out.println(r.toChemkinString(Global.temperature));
         }
         System.out.println("/////////////////////////////");
         return;
@@ -813,7 +860,7 @@ public class CoreEdgeReactionModel implements ReactionModel {
         for (Iterator iter = pDepList.iterator(); iter.hasNext(); ) {
         	PDepNetReaction r = (PDepNetReaction)iter.next();
             //System.out.println(r.getStructure().toString() + "\t rate = \t" + Double.toString(r.getRate()));
-			modelInformation = modelInformation + r.toChemkinString()+"\n";
+			modelInformation = modelInformation + r.toChemkinString(Global.temperature)+"\n";
         }
 		modelInformation = modelInformation + "/////////////////////////////";
         return modelInformation;
