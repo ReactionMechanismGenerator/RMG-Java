@@ -45,15 +45,22 @@ import java.util.*;
 //----------------------------------------------------------------------------
 
 //## class DummyLeaf 
+/**
+ * Stores the name and depth of the leafs which are difficult to futher classify and are names as "Others" in kinetics tree.
+ */
 public class DummyLeaf {
     
-    protected int depth;		//## attribute depth 
+    private int depth;		//## attribute depth 
     
-    protected String name;		//## attribute name 
+    private String name;		//## attribute name 
     
     
     // Constructors
     
+    /**
+     * Takes in a name and depth of the dummy leaf from the thermo and kinetics heirarchy trees. 
+     * More specifically all Other nodes are included as Dummy leafs.
+     */
     //## operation DummyLeaf(String,int) 
     public  DummyLeaf(String p_name, int p_depth) {
         //#[ operation DummyLeaf(String,int) 
@@ -64,18 +71,11 @@ public class DummyLeaf {
         
         //#]
     }
+    
     public  DummyLeaf() {
     }
     
-    //## operation calculateDistance(DummyLeaf) 
-    public int calculateDistance(DummyLeaf p_dummyLeaf) {
-        //#[ operation calculateDistance(DummyLeaf) 
-        return -(depth-p_dummyLeaf.getDepth());
-        
-        
-        
-        //#]
-    }
+   
     
     public int getDepth() {
         return depth;
