@@ -45,6 +45,10 @@ import java.util.*;
 //----------------------------------------------------------------------------
 
 //## class TreeNode 
+/**
+ * This class is used to model the nodes of a tree. Each TreeNode can have only one father and can 
+ * have many children.
+ */
 public class TreeNode {
     
     protected Object element;		//## attribute element 
