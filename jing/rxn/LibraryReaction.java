@@ -50,13 +50,13 @@ the reaction in the kinetics library.  the part inherited from super class React
 //## class LibraryReaction 
 public class LibraryReaction extends Reaction {
     
-    protected Structure key;		//## attribute key 
+	protected PDepNetwork pDepNetwork;
     
     
     // Constructors
     
     //## operation LibraryReaction(Structure,RateConstant) 
-    protected  LibraryReaction(Structure p_structure, Kinetics p_kinetics) {
+    private  LibraryReaction(Structure p_structure, Kinetics p_kinetics) {
         //#[ operation LibraryReaction(Structure,RateConstant) 
         structure = p_structure;
         kinetics = p_kinetics;
@@ -71,8 +71,8 @@ public class LibraryReaction extends Reaction {
         //#[ operation LibraryReaction(Structure,RateConstant,String) 
         structure = p_structure;
         kinetics = p_kinetics;
-        if (comments != null) comments = "Libarry Reaction: " + p_comments;
-        else comments = "Libarry Reaction";
+        if (comments != null) comments = "Library Reaction: " + p_comments;
+        else comments = "Library Reaction";
         
         
         
@@ -81,12 +81,14 @@ public class LibraryReaction extends Reaction {
     public  LibraryReaction() {
     }
     
-    //## operation getKey() 
-    public Structure getKey() {
-        //#[ operation getKey() 
-        return key;
-        //#]
+    public static LibraryReaction makeLibraryReaction(Reaction r){
+    	LibraryReaction lR = new LibraryReaction(r.structure, r.kinetics, null);
+    	
+    	
+    	return lR;
     }
+    
+    
     
 }
 /*********************************************************************
