@@ -61,7 +61,7 @@ public class PDepWell {
         {
             paths=new HashSet();
         }
-        //#[ operation PDepWell(Species) 
+        
         isomer = p_species;
         paths = new HashSet();
         boolean added = false;
@@ -86,6 +86,39 @@ public class PDepWell {
         return;
         //#]
     }
+    
+    
+    
+    protected  PDepWell(Species p_species, Reaction tr) {
+    	{
+            paths=new HashSet();
+        }
+        
+        isomer = p_species;
+        PDepPathReaction pdpr = new PDepPathReaction(tr);
+        paths.add(pdpr);
+        return;
+    }
+    
+    protected PDepWell(Species p_species, HashSet tsSet){
+    	{
+    		paths = new HashSet();
+    	}
+    	
+    	isomer = p_species;
+    	Iterator iter = tsSet.iterator();
+    	while (iter.hasNext()){
+    		Reaction tr = (Reaction) iter.next();
+    		PDepPathReaction pdpr = new PDepPathReaction(tr);
+            paths.add(pdpr);
+    	}
+    }
+    
+    protected void addPath(Reaction tr){
+    	PDepPathReaction pdpr = new PDepPathReaction(tr);
+		paths.add(pdpr);
+    }
+    
     public  PDepWell() {
         {
             paths=new HashSet();
