@@ -443,6 +443,10 @@ public class Reaction {
       //#]
   }
 
+  /**
+   * Checks if the structure of the reaction is the same. Does not check the rate constant.
+   * Two reactions with the same structure but different rate constants will be equal.
+   */
   //## operation equals(Object)
   public boolean equals(Object p_reaction) {
       //#[ operation equals(Object)
@@ -575,8 +579,9 @@ public class Reaction {
       	fittedReverseKinetics = null;
       }
       else {
-      	double temp = 715;
-      	Kinetics k = getKinetics();
+      	//double temp = 715;
+      	double temp = Global.temperature.getK();
+    	Kinetics k = getKinetics();
       	double doubleAlpha;
       	if (k instanceof ArrheniusEPKinetics) doubleAlpha = ((ArrheniusEPKinetics)k).getAlphaValue();
       	else doubleAlpha = 0;
@@ -603,6 +608,11 @@ public class Reaction {
       //#]
   }
 
+  /**
+   * Generates a reaction whose structure is opposite to that of the present reaction.
+   * Just appends the rate constant of this reaction to the reverse reaction.
+   *
+   */
   //## operation generateReverseReaction()
   public void generateReverseReaction() {
       //#[ operation generateReverseReaction()
@@ -641,7 +651,7 @@ public class Reaction {
   //## operation getFittedReverseKinetics()
   public Kinetics getFittedReverseKinetics() {
       //#[ operation getFittedReverseKinetics()
-      if (fittedReverseKinetics == null) fitReverseKineticsPrecisely();
+      if (fittedReverseKinetics == null) fitReverseKineticsRoughly();
       return fittedReverseKinetics;
       //#]
   }
@@ -964,8 +974,8 @@ public class Reaction {
 			}
 		}
 		else {
-			String k = getKinetics().toChemkinString(Hrxn,p_temperature, true);
-			result.append(strucString+ " " + k);
+			String k = getKinetics().toChemkinString(Hrxn,p_temperature, true) + " forward rate: " +calculateTotalRate(p_temperature) + "  reverse rate:  "+ getReverseReaction().calculateTotalRate(p_temperature);
+			result.append(strucString+ " " + k );
 		}
 		
 		ChemkinString = result.toString();
@@ -1029,6 +1039,11 @@ public class Reaction {
       comments = p_comments;
   }
 
+  /**
+   * Returns the reverse reaction of this reaction. If there is no reverse reaction present
+   * then a null object is returned.
+   * @return
+   */
   public Reaction getReverseReaction() {
       return reverseReaction;
   }
