@@ -38,6 +38,7 @@ package jing.chemUtil;
 
 import jing.chem.*;
 import java.util.*;
+
 import jing.mathTool.*;
 
 //## package jing::chemUtil 
@@ -47,39 +48,32 @@ import jing.mathTool.*;
 //----------------------------------------------------------------------------
 
 /**
-GraphComponenet is the super abstract class which represents a component in a graph.  The component could be an Arc or a Node, and user can put whatever they like as the element stroed in the component.  GraphComponent also save the information about one-step connectivity, which is the nearest neighbor of this GraphComponent.
+* GraphComponenet is the super abstract class which represents a component in a graph.  The component could be an Arc or a Node, and user can put whatever they like as the element stroed in the component.  GraphComponent also save the information about one-step connectivity, which is the nearest neighbor of this GraphComponent.
 */
 //## class GraphComponent 
 abstract public class GraphComponent {
     
-    /**
-    The content this graph component stores.
-    */
+    
     protected Object element = null;		//## attribute element 
     
-    /**
-    A flag indicating if this graph component is in a cycle.
-    */
+    
     protected boolean inCycle = false;		//## attribute inCycle 
     
-    /**
-    Storing the correspondingly matched graph component when we comparing two graphs.
-    */
+    
     protected GraphComponent matchedGC = null;		//## attribute matchedGC 
     
-    /**
-    A flag indicating if this graph component has been visited when we are doing traversal/search in a graph.
-    */
+    
     protected boolean visited = false;		//## attribute visited 
     
+    
     protected LinkedHashSet neighbor = null;
+    
+    protected Integer centralID = new Integer(-1);
     
     // Constructors
     
     /**
-    Requires:
-    Effects: construct a new GraphComponent and store the pass-in object as the element of this GraphComponent.
-    Modifies: 
+     Construct a new GraphComponent and store the pass-in object as the element of this GraphComponent. 
     */
     //## operation GraphComponent(Object) 
     public  GraphComponent(Object p_element) {
@@ -112,11 +106,9 @@ abstract public class GraphComponent {
     }
     
     /**
-    Requires:
-    Effects: if this and p_GraphComponent is not the same instance, add the pass-in p_GraphComponent as the neighbor this, add this as the neighbor of p_GraphComponent, too.
+    If this and p_GraphComponent is not the same instance, add the pass-in p_GraphComponent as the neighbor this, add this as the neighbor of p_GraphComponent, too.
     if this and the pass-in GraphComponents are the same object, throw InvalidNeighborException since we forbid one to be its own neighbor.
-    Notice: this function has a good side-effect: it not only add p_GraphComponent as the neighbor of this, but also the reversed direction.  so if addNeighbor(p_GraphComponent) is called, it actually add two-way relation between this and p_GraphComponent.
-    Modifies: this.neighbor, p_GraphComponent.neighbor.
+    This function has a good side-effect: it not only add p_GraphComponent as the neighbor of this, but also the reversed direction.  so if addNeighbor(p_GraphComponent) is called, it actually add two-way relation between this and p_GraphComponent.
     */
     //## operation addNeighbor(GraphComponent) 
     public void addNeighbor(GraphComponent p_GraphComponent) throws InvalidNeighborException {
@@ -139,9 +131,7 @@ abstract public class GraphComponent {
     }
     
     /**
-    Requires:
-    Effects: clear neighbor set.
-    Modifies: neighbor set will be set empty.
+    Clear neighbor set. Neighbor set will be set empty.
     */
     //## operation clearNeighbor() 
     public void clearNeighbor() {
@@ -155,9 +145,8 @@ abstract public class GraphComponent {
     public abstract boolean contentSub(GraphComponent p_graphComponent);
     
     /**
-    Requires:
-    Effects: return the number of the neighbor of this graph component.
-    Modifies:
+    Return the number of the neighbor of this graph component.
+    
     */
     //## operation getNeighborNumber() 
     public int getNeighborNumber() {
@@ -167,12 +156,134 @@ abstract public class GraphComponent {
     }
     
     /**
-    Requires:
-    Effects: identifiy and return all possible matched patterns starting from this GraphComponent and p_graphComponent.
-    Modifies: visited status and matchedGC of nodes and arcs.
+    Identifiy and return all possible matched patterns starting from this GraphComponent and p_graphComponent.<br>
+    <b>Modifies</b><br>
+    visited status and matchedGC of nodes and arcs.
     */
     //## operation identifyAllMatchedSites(GraphComponent) 
-    public LinkedHashSet identifyAllMatchedSites(GraphComponent p_graphComponent) {
+    LinkedList identifyAllMatchedSites(GraphComponent p_graphComponent) {
+        //#[ operation identifyAllMatchedSites(GraphComponent) 
+        if (this == p_graphComponent) return null;
+        
+        // compare the this gc with the p_gc for one step
+        if (!contentSub(p_graphComponent)) return null;
+        
+        // compare the neighbor
+        Collection c1 = neighbor;
+        Collection c2 = p_graphComponent.neighbor;
+        int positionNum = c2.size();
+        int candidateNum = c1.size();
+        if (positionNum > candidateNum)	return null;
+        
+        boolean found = false;
+        
+        this.setMatchedGC(p_graphComponent);
+        p_graphComponent.setMatchedGC(this);
+        
+        LinkedList matchedList = new LinkedList();
+        Iterator iter2 = c2.iterator();
+        boolean nonVisited = true;
+        while (iter2.hasNext()) {
+        	
+        	GraphComponent co2 = (GraphComponent)iter2.next();
+        
+        	GraphComponent matched = co2.getMatchedGC();
+        	
+        	if (matched == null) {
+        		nonVisited = false;
+        		LinkedHashSet matchedAtThisSite = new LinkedHashSet();
+        		Iterator iter1 = c1.iterator();
+        		GraphComponent co1 = null;
+        		while (iter1.hasNext()) {
+        			co1 = (GraphComponent)iter1.next();
+        			if (co1.getMatchedGC() == null && co2.getMatchedGC() == null) {
+        				LinkedList listOfMatchedsites = co1.identifyAllMatchedSites(co2);
+        				if (listOfMatchedsites != null) {
+        					matchedAtThisSite.addAll(listOfMatchedsites);
+        				}
+        			}
+        		}
+        		if (matchedAtThisSite != null)
+        			matchedList.add(matchedAtThisSite);
+        		else {
+        			this.setMatchedGC(null);
+        			p_graphComponent.setMatchedGC(null);
+        			return null;
+        		}
+        	}
+        	else {
+        		if (!c1.contains(matched)) {
+        			this.setMatchedGC(null);
+        			p_graphComponent.setMatchedGC(null);
+        
+         			return null;
+        		}
+        	}
+        }
+        
+        this.setMatchedGC(null);
+        p_graphComponent.setMatchedGC(null);
+        
+        if (nonVisited) {
+        	Integer cid = (p_graphComponent).getCentralID();
+			MatchedSite ms = new MatchedSite();
+			if (!(p_graphComponent).isCentralNode()) {
+    			if (!ms.putPeriphery(p_graphComponent, this)) return null;
+    		}
+    		else {
+    			if (!ms.putCenter(cid, this)) return null;
+    		}
+			matchedList.add(ms);
+        	return matchedList;
+        }
+        else{
+        	if (matchedList.isEmpty()) return null;
+        	else {
+        		int index  = 0;
+            	MatchedSite matchedSite = new MatchedSite();
+            	Integer cid = (p_graphComponent).getCentralID();
+        		if (!(p_graphComponent).isCentralNode()) {
+        			if (!matchedSite.putPeriphery(p_graphComponent, this)) return null;
+        		}
+        		else {
+        			if (!matchedSite.putCenter(cid, this)) return null;
+        		}
+            	LinkedList result = uniteNextValidMs(matchedSite, matchedList, index);
+            	return result;
+        	}
+        	
+        }
+        //#]
+    }
+    
+    private LinkedList uniteNextValidMs(MatchedSite p_ms, LinkedList matchedList, int index) {
+    	LinkedList result = new LinkedList();
+		LinkedHashSet thisListOfMS = (LinkedHashSet)matchedList.get(index);
+		Iterator thisListIterator = thisListOfMS.iterator();
+		if (index == matchedList.size()-1){
+			while (thisListIterator.hasNext()){
+				MatchedSite ms = (MatchedSite)thisListIterator.next();
+				MatchedSite mergedMS = MatchedSite.merge(p_ms, ms);
+				if (mergedMS != null) result.add(mergedMS);
+			}
+		}
+		else {
+			while (thisListIterator.hasNext()){
+				MatchedSite ms = (MatchedSite)thisListIterator.next();
+				MatchedSite mergedMS = MatchedSite.merge(p_ms, ms);
+				LinkedList unitedSoFar = new LinkedList();
+				if (mergedMS != null)
+					 unitedSoFar = uniteNextValidMs(mergedMS, matchedList, index +1);
+				if (unitedSoFar != null) result.addAll(unitedSoFar);
+			}
+		}
+		if (result.isEmpty())
+			return null;
+		else
+			return result;
+	}
+    
+    /* LinkedHashSet identifyAllMatchedSites(GraphComponent p_graphComponent) {
         //#[ operation identifyAllMatchedSites(GraphComponent) 
         if (this == p_graphComponent) return null;
         
@@ -215,12 +326,13 @@ abstract public class GraphComponent {
         		}
         		if (!found) {
         			this.setMatchedGC(null);
-        			p_graphComponent.setMatchedGC(null);
-        
+        			p_graphComponent.setMatchedGC(null);       
         			return null;
         		}
         		else {
         			matchedList.add(matchedAtThisPosition);
+        			
+        			
         		}
         	}
         	else {
@@ -239,20 +351,17 @@ abstract public class GraphComponent {
         LinkedHashSet result = new LinkedHashSet();
         
         if (matchedList.isEmpty()) {
-        	if (this instanceof Node && p_graphComponent instanceof Node) {
+        	
         		MatchedSite ms = new MatchedSite();
-        		Integer cid = ((Node)p_graphComponent).getCentralID();
-        		if (!((Node)p_graphComponent).isCentralNode()) {
-        			if (!ms.addPeriphery((Node)this)) return null;
+        		Integer cid = (p_graphComponent).getCentralID();
+        		if (!(p_graphComponent).isCentralNode()) {
+        			if (!ms.addPeriphery(this)) return null;
         		}
         		else {
-        			if (!ms.putCenter(cid, (Node)this)) return null;
+        			if (!ms.putCenter(cid, this)) return null;
         		}
         		result.add(ms);
-        	}
-        	else {
-        		return null;
-        	}
+        	
         }
         else {
         	int matchedSize = matchedList.size();
@@ -266,18 +375,17 @@ abstract public class GraphComponent {
         		for (Iterator oneMatchIter = oneMatchSet.iterator(); oneMatchIter.hasNext();) {
         			Collection oneMatch = (Collection)oneMatchIter.next();
         			MatchedSite ms = MatchedSite.union(oneMatch);
-        
+        			
         			if (ms != null) {
         				boolean add = true;
-        				if (this instanceof Node && p_graphComponent instanceof Node) {
-        					Integer cid = ((Node)p_graphComponent).getCentralID();
-        					if (!((Node)p_graphComponent).isCentralNode()) {
-        						if (!ms.addPeriphery((Node)this)) add = false;
+        				
+        					Integer cid = (p_graphComponent).getCentralID();
+        					if (!(p_graphComponent).isCentralNode()) {
+        						if (!ms.addPeriphery(this)) add = false;
         					}
         					else {
-        						if (!ms.putCenter(cid, (Node)this)) add = false;
+        						if (!ms.putCenter(cid, this)) add = false;
         					}
-        				}
         				if (add) result.add(ms);
         			}
         		}
@@ -288,17 +396,18 @@ abstract public class GraphComponent {
         
         
         //#]
-    }
+    }*/
     
-    /**
-    Requires:
-    Effects: check if this and p_GraphComponent are neighbors.  
-    (0) if (this == p_GraphComponent), return false;
-    (1) if neighbor of this contains p_GraphComponent and neighbor of p_GraphComponent contains this, return true;
-    (2) if neighbor of this contains p_GraphComponent and neighbor of p_GraphComponent does not contain this,  return false;
-    (3) if neighbor of this does not contain p_GraphComponent and neighbor of p_GraphComponent contains this, return false;
-    (4) if neighbor of this does not contain p_GraphComponent and neighbor of p_GraphComponent does not contain this, return false;
-    Modifies: 
+    
+   
+	/**
+    Check if this and p_GraphComponent are neighbors.<br>  
+    <li> if (this == p_GraphComponent), return false </li>
+    <li>if neighbor of this contains p_GraphComponent and neighbor of p_GraphComponent contains this, return true</li>
+    <li>if neighbor of this contains p_GraphComponent and neighbor of p_GraphComponent does not contain this,  return false</li>
+    <li>if neighbor of this does not contain p_GraphComponent and neighbor of p_GraphComponent contains this, return false</li>
+    <li>if neighbor of this does not contain p_GraphComponent and neighbor of p_GraphComponent does not contain this, return false</li>
+    
     */
     //## operation isConnected(GraphComponent) 
     public boolean isConnected(GraphComponent p_GraphComponent) {
@@ -314,9 +423,9 @@ abstract public class GraphComponent {
     }
     
     /**
-    Requires:
-    Effects: check if this GraphComponent and the pass-in GraphComponent are logically equivalent, which means those two GraphComponents should store the same element and also have equivalent neighbors.
-    Modifies: visited and matchedGC
+    Check if this GraphComponent and the pass-in GraphComponent are logically equivalent, which means those two GraphComponents should store the same element and also have equivalent neighbors.<br>
+    <b>Modifies</b><br>
+    It modifies visited and matchedGC
     */
     //## operation isEquivalent(GraphComponent,Stack,Stack) 
     public boolean isEquivalent(GraphComponent p_graphComponent, Stack p_stack1, Stack p_stack2) {
@@ -416,9 +525,9 @@ abstract public class GraphComponent {
     }
     
     /**
-    Requires:
-    Effects: return true iff this GC is equivalent to p_graphComponent, (checking centerID)
-    Modifies: visited and matchedGC status
+    Return true iff this GC is equivalent to p_graphComponent, also the central ID of the graph components should be the same.<br>
+    <b>Modifies</b><br>
+    It modifies visited and matchedGC status
     */
     //## operation isEquivalentCenterMatched(GraphComponent,Stack,Stack) 
     public boolean isEquivalentCenterMatched(GraphComponent p_graphComponent, Stack p_stack1, Stack p_stack2) {
@@ -434,12 +543,13 @@ abstract public class GraphComponent {
     }
     
     /**
-    Requires: this graphcomponent and the pass-in graph component are not in the same graph.
-    Effects: check if this GraphComponents is a SubGraph of the pass-in GraphComponent.  Here, SubGraph means two things:
-    (1) the graph structure itself
-    (2) the contents stored in the graph
-    Notice: Node's central ID doesn't matter
-    Modifies: this.visited.
+    This graphcomponent and the pass-in graph component should not be in the same graph.<br>
+    Check if this GraphComponents is a SubGraph of the pass-in GraphComponent.  Here, SubGraph means two things:<br>
+    <li>the graph structure itself<\li>
+    <li> the contents stored in the graph<\li>
+    Node's central ID doesn't matter.<br>
+    <b>Modifies</b><br>
+    It modifies this.visited.
     */
     //## operation isSub(GraphComponent,Stack,Stack) 
     public boolean isSub(GraphComponent p_graphComponent, Stack p_stack1, Stack p_stack2) {
@@ -509,12 +619,13 @@ abstract public class GraphComponent {
     }
     
     /**
-    Requires: this graphcomponent and the pass-in graph component are not in the same graph.
-    Effects: check if this GraphComponents is a SubGraph of the pass-in GraphComponent.  Here, SubGraph means two things:
-    (1) the graph structure itself
-    (2) the contents stored in the graph
-    Notice: the central ID of the matched Nodes connected to this graph component will be set according to the matching grpah component connected to the pass-in graph component.
-    Modifies: this.visited.
+    This graphcomponent and the pass-in graph component should not be in the same graph.
+    Check if this GraphComponents is a SubGraph of the pass-in GraphComponent.  Here, SubGraph means two things:
+    <li>the graph structure itself<\li>
+    <li>the contents stored in the graph<\li>
+    The central ID of the matched Nodes connected to this graph component will be set according to the matching grpah component connected to the pass-in graph component.<br>
+    <b>Modifies</b><br>
+    It modifies this.visited.
     */
     //## operation isSubAndSetCentralID(GraphComponent,Stack,Stack) 
     public boolean isSubAndSetCentralID(GraphComponent p_graphComponent, Stack p_stack1, Stack p_stack2) {
@@ -584,15 +695,13 @@ abstract public class GraphComponent {
     }
     
     /**
-    Requires: this graphcomponent and the pass-in graph component are not in the same graph.
-    Effects: check if this GraphComponents is a SubGraph of the pass-in GraphComponent.  Here, SubGraph means two things:
-    (1) the graph structure itself
-    (2) the contents stored in the graph
-    Notice: the central ID of the Nodes matching with each other should be matched.
-    Modifies: this.visited.
-    
-    
-    
+    This graphcomponent and the pass-in graph component are not in the same graph.
+    Check if this GraphComponents is a SubGraph of the pass-in GraphComponent.  Here, SubGraph means two things:
+    <li>The graph structure itself</li> 
+    <li>The contents stored in the graph</li> 
+    The central ID of the Nodes matching with each other should be matched.<br>
+    <b>Modifies</b><br>
+     It modifies this.visited.
     */
     //## operation isSubCentralMatched(GraphComponent,Stack,Stack) 
     public boolean isSubCentralMatched(GraphComponent p_graphComponent, Stack p_stack1, Stack p_stack2) {
@@ -671,79 +780,12 @@ abstract public class GraphComponent {
         
         return true;
     	
-    	
-    	/*if (this == p_graphComponent) return false;
-        
-        if ((this instanceof Node) && (p_graphComponent instanceof Node)) {
-        	if (((Node)this).getCentralID().intValue() != ((Node)p_graphComponent).getCentralID().intValue()) return false;
-        }
-        
-        // compare the this gc with the p_gc for one step
-        boolean found = contentSub(p_graphComponent);
-        if (!found) return false;
-        else {
-        	this.setMatchedGC(p_graphComponent);
-        	p_graphComponent.setMatchedGC(this);
-        	p_stack1.push(this);
-        	p_stack2.push(p_graphComponent);
-        }
-        
-        // compare the neighbor
-        Collection c1 = neighbor;
-        Collection c2 = p_graphComponent.neighbor;
-        
-        int foundNum = 0;
-        Iterator iter2 = c2.iterator();
-        while (iter2.hasNext()) {
-        	foundNum = 0;
-        	GraphComponent co2 = (GraphComponent)iter2.next();
-        	// if a neighbor in c2 has not been visited, compare it with the neighbors not visited in c1
-        	
-        	GraphComponent matched = co2.getMatchedGC();
-        	if (matched == null) {
-        		Iterator iter1 = c1.iterator();
-        		GraphComponent co1 = null;
-        		while (iter1.hasNext()) {
-        			co1 = (GraphComponent)iter1.next();
-        			// if a non-visited neighbor in c1 has been found to be the sub of this neighbor in c2
-        			// set found to true and set visited for both two GC as true, break
-        			if (co2.getMatchedGC() == null && co1.getMatchedGC() == null) {
-                    	if (co1.isSubCentralMatched(co2,p_stack1,p_stack2)) {
-           					foundNum++;
-        				}
-                    }
-        		}
-        		if (foundNum == 0) {
-        			resetStack(p_stack1,this);
-        			resetStack(p_stack2,p_graphComponent);
-        			return false;
-        		}
-        		else if (foundNum == 1) {
-        		}
-        
-        	}
-        	// if a neighbor of has been visited, check if p_graphComponent has a corresponding match neighbor
-        	// if there is no match in p_chemGraph's neighbor, this and p_graphComponent are not matched, return false
-        	else {
-        		if (!c1.contains(matched) || matched.getMatchedGC()!=co2) {
-        			resetStack(p_stack1,this);
-        			resetStack(p_stack2,p_graphComponent);
-         			return false;
-        		}
-        	}
-        }
-        
-        return true;*/
-        
-        
-        
-        //#]
+    
     }
     
     /**
-    Requires:
-    Effects: return true iff p_gc1 and p_gc are two equivalent neighbors of this GC.
-    Modifies:
+    Return true iff p_gc1 and p_gc are two equivalent neighbors of this GC.
+    
     */
     //## operation isSymmetric(GraphComponent,GraphComponent) 
     public boolean isSymmetric(GraphComponent p_gc1, GraphComponent p_gc2) {
@@ -776,9 +818,8 @@ abstract public class GraphComponent {
     }
     
     /**
-    Requires:
-    Effects: return the Visited status of this GraphComponent.
-    Modifies:
+    Return the Visited status of this GraphComponent.
+    
     */
     //## operation isVisited() 
     public boolean isVisited() {
@@ -787,13 +828,7 @@ abstract public class GraphComponent {
         //#]
     }
     
-    /**
-    Requires:
-    Effects: abstract operation will be implemented by subclass of Node and Ard to check if rep of neighbor are ok.
-    Modifies: 
-    */
-    //## operation neighborOk() 
-    public abstract boolean neighborOk();
+   
     
     //## operation printLable() 
     public String printLable() {
@@ -805,10 +840,10 @@ abstract public class GraphComponent {
     }
     
     /**
-    Requires:
-    Effects: if this and the pass-in component are connected, delete this connection, i.e., delete each other from their neighbor collection.
-    Modifies: p_GraphComponent.neighbor, this.neighbor
-    */
+     *If this and the pass-in component are connected, delete this connection, i.e., delete each other from their neighbor collection.<br>
+     <b>Modifies</b><br>
+     It modifies p_GraphComponent.neighbor, this.neighbor
+     */
     //## operation removeNeighbor(GraphComponent) 
     public void removeNeighbor(GraphComponent p_GraphComponent) {
         //#[ operation removeNeighbor(GraphComponent) 
@@ -820,13 +855,7 @@ abstract public class GraphComponent {
         //#]
     }
     
-    /**
-    Requires:
-    Effects:abstract operation should be implemented by subclass of Node and Arc to check if right rep is okay.
-    Modifies:
-    */
-    //## operation repOk() 
-    public abstract boolean repOk();
+    
     
     //## operation resetStack(Stack,GraphComponent) 
     private void resetStack(Stack p_stack, GraphComponent p_graphComponent) {
@@ -842,7 +871,7 @@ abstract public class GraphComponent {
     }
     
     //## operation resetStack(Stack) 
-    public void resetStack(Stack p_stack) {
+    private void resetStack(Stack p_stack) {
         //#[ operation resetStack(Stack) 
         while (!p_stack.empty()) {
         	GraphComponent gc = (GraphComponent)p_stack.pop();
@@ -852,8 +881,33 @@ abstract public class GraphComponent {
         //#]
     }
     
+    //## operation isCentralNode()
+    public boolean isCentralNode() {
+        //#[ operation isCentralNode()
+        return centralID.intValue()>0;
+        //#]
+    }
+    
+//  ## operation setCentralID(int)
+    public void setCentralID(int p_centralID) {
+        //#[ operation setCentralID(int)
+        centralID = new Integer(p_centralID);
+
+
+        //#]
+    }
+    
+    public Integer getCentralID() {
+        return centralID;
+    }
+
+    public void setCentralID(Integer p_centralID) {
+        centralID = p_centralID;
+    }
+
+    
     //## operation setNeighborVisited(GraphComponent,boolean) 
-    public void setNeighborVisited(GraphComponent p_firstNeighbor, boolean p_visit) {
+    /*public void setNeighborVisited(GraphComponent p_firstNeighbor, boolean p_visit) {
         //#[ operation setNeighborVisited(GraphComponent,boolean) 
         Iterator iter = getNeighbor();
         while (iter.hasNext()) {
@@ -865,12 +919,11 @@ abstract public class GraphComponent {
         }
         return;
         //#]
-    }
+    }*/
     
     /**
-    Requires:
-    Effects: retrun the toString() method of the stored element.
-    Modifies: 
+    Retrun the toString() method of the stored element.
+    
     */
     //## operation toString() 
     public String toString() {
@@ -879,6 +932,9 @@ abstract public class GraphComponent {
         //#]
     }
     
+    /**
+    Returns the content this graph component stores.
+    */
     public Object getElement() {
         return element;
     }
@@ -887,30 +943,58 @@ abstract public class GraphComponent {
         element = p_element;
     }
     
+    /**
+    Returns true if this graph component is in a cycle.
+    */
     public boolean getInCycle() {
         return inCycle;
     }
     
+    /**
+    Sets the incycle of graph component as true.
+    */
     public void setInCycle(boolean p_inCycle) {
+    	
         inCycle = p_inCycle;
     }
     
+    /**
+     * returns the matched graph component. Usually useful when comparing two graphs during 
+     * the test of equivalence or sub graph matching.
+     * @return graphComponent
+     */
     public GraphComponent getMatchedGC() {
         return matchedGC;
     }
     
+    /**
+     * set the p_matchedGC as the matched graph component of this. Used in equivalence and subgraph matching 
+     * functions.
+     * @param p_matchedGC
+     */
     public void setMatchedGC(GraphComponent p_matchedGC) {
         matchedGC = p_matchedGC;
     }
     
+    /**
+     * has the graph component been visited
+     * 
+     */
     public boolean getVisited() {
         return visited;
     }
     
+    /** 
+     * changes the visited status of the graph component.
+     * @param p_visited
+     */
     public void setVisited(boolean p_visited) {
         visited = p_visited;
     }
     
+    /**
+     * returns the iterator of all the neighbors of the graph component.
+     */
     public Iterator getNeighbor() {
         Iterator iter=neighbor.iterator();
         return iter;
