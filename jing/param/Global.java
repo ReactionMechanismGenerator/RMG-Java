@@ -11,6 +11,7 @@ public class Global {
 	public static double checkReactionReverse = 0;
 	public static double makeTR = 0;
 	public static Temperature temperature = new Temperature();
+	public static Pressure pressure = new Pressure();
 	public static double solvertime= 0; //the time taken by just daspk.
 	public static double writeSolverFile = 0;
 	public static double readSolverFile = 0;
