@@ -61,7 +61,7 @@ public class Node extends GraphComponent {
   */
   protected Integer ID;		//## attribute ID
 
-  protected Integer centralID = new Integer(-1);		//## attribute centralID
+  //protected Integer centralID = new Integer(-1);		//## attribute centralID
 
   protected FreeElectron feElement = null;		//## attribute feElement
 
@@ -819,6 +819,12 @@ public class Node extends GraphComponent {
       //#[ operation includeFgElement(FGElement)
       //#]
   }
+  //## operation setID(int)
+  public void setID(int p_ID) {
+      //#[ operation setID(int)
+      ID = new Integer(p_ID);
+      //#]
+  }
 
   //## operation includeFgElementInChemNodeElement(FGElement)
   public boolean includeFgElementInChemNodeElement(FGElement p_fgElement) {
@@ -845,12 +851,7 @@ public class Node extends GraphComponent {
       //#]
   }
 
-  //## operation isCentralNode()
-  public boolean isCentralNode() {
-      //#[ operation isCentralNode()
-      return centralID.intValue()>0;
-      //#]
-  }
+ 
 
   /**
   Requires:
@@ -974,22 +975,9 @@ public class Node extends GraphComponent {
       //#]
   }
 
-  //## operation setCentralID(int)
-  public void setCentralID(int p_centralID) {
-      //#[ operation setCentralID(int)
-      centralID = new Integer(p_centralID);
+  
 
-
-      //#]
-  }
-
-  //## operation setID(int)
-  public void setID(int p_ID) {
-      //#[ operation setID(int)
-      ID = new Integer(p_ID);
-      //#]
-  }
-
+ 
   //## operation toString()
   public String toString() {
       //#[ operation toString()
@@ -1125,13 +1113,7 @@ public class Node extends GraphComponent {
       ID = p_ID;
   }
 
-  public Integer getCentralID() {
-      return centralID;
-  }
-
-  public void setCentralID(Integer p_centralID) {
-      centralID = p_centralID;
-  }
+  
 
   public void setFeElement(FreeElectron p_feElement) {
       feElement = p_feElement;
