@@ -50,14 +50,14 @@ public class PDepPathReaction {
     
     protected String type;		//## attribute type 
     
-    protected TemplateReaction templateReaction;
+    protected Reaction reaction;
     
     // Constructors
     
     //## operation PDepPathReaction(TemplateReaction) 
-    protected  PDepPathReaction(TemplateReaction p_templateReaction) {
+    protected  PDepPathReaction(Reaction p_reaction) {
         //#[ operation PDepPathReaction(TemplateReaction) 
-        templateReaction = p_templateReaction;
+        reaction = p_reaction;
         type = null;
         //#]
     }
@@ -68,11 +68,11 @@ public class PDepPathReaction {
     public Kinetics getKinetics() {
         //#[ operation getKinetics() 
         Kinetics k = null;
-        if (templateReaction.isForward()) {
-        	k = templateReaction.getKinetics();
+        if (reaction.isForward()) {
+        	k = reaction.getKinetics();
         }
         else {
-        	k = templateReaction.getFittedReverseKinetics();
+        	k = reaction.getFittedReverseKinetics();
         }
         
         return k;
@@ -83,28 +83,28 @@ public class PDepPathReaction {
     //## operation getProductList() 
     public LinkedList getProductList() {
         //#[ operation getProductList() 
-        return templateReaction.getProductList();
+        return reaction.getProductList();
         //#]
     }
     
     //## operation getProductNumber() 
     public int getProductNumber() {
         //#[ operation getProductNumber() 
-        return templateReaction.getProductNumber();
+        return reaction.getProductNumber();
         //#]
     }
     
     //## operation getReactantList() 
     public LinkedList getReactantList() {
         //#[ operation getReactantList() 
-        return templateReaction.getReactantList();
+        return reaction.getReactantList();
         //#]
     }
     
     //## operation getReactantNumber() 
     public int getReactantNumber() {
         //#[ operation getReactantNumber() 
-        return templateReaction.getReactantNumber();
+        return reaction.getReactantNumber();
         //#]
     }
     
@@ -171,8 +171,8 @@ public class PDepPathReaction {
         if (isNonIncluded()) s = "PRODUCT"; 
         s += '\n';
         for (Iterator iter = getProductList().iterator(); iter.hasNext(); ) {
-        	ChemGraph cg = (ChemGraph)iter.next();
-        	Species spe = cg.getSpecies();
+        	
+        	Species spe = (Species) iter.next();
         	s += spe.toChemDisString() + " + ";
         }
         s = s.substring(0, s.length()-3) + '\n'; 
@@ -198,8 +198,8 @@ public class PDepPathReaction {
         type = p_type;
     }
     
-    public TemplateReaction getTemplateReaction() {
-        return templateReaction;
+    public Reaction getReaction() {
+        return reaction;
     }
     
 }
