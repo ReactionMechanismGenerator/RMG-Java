@@ -34,7 +34,9 @@
 
 
 package jing.chemUtil;
-
+/**
+ * Provides classes that are fundamental to the building and mantaining molecules and heirarchy tree structures.
+ */
 
 import java.util.*;
 import jing.mathTool.*;
@@ -47,21 +49,19 @@ import jing.chemParser.*;
 //----------------------------------------------------------------------------
 
 /**
-Arc is the graph component connecting two nodes in a graph.  it can store special information defined by user. Arc's neighbor should be node, and each arc has a neighbor collection with the size equal to or less than 2 since the arc can at most connect two nodes.
-*/
+ * Arc is the graph component connecting two nodes in a graph.  it can store special information defined by user. Arc's neighbor should be node, and each arc has a neighbor collection with the size equal to or less than 2 since the arc can at most connect two nodes.
+ */
 //## class Arc 
 public class Arc extends GraphComponent {
     
-    protected boolean backArc = false;		//## attribute backArc 
+    //private boolean backArc = false;		//## attribute backArc 
     
     
     // Constructors
     
     /**
-    Requires:
-    Effects: constructor to store the pass-in element into Arc and put all the contents in the pass-in collection if the collection size is less than or equal to 2.  if the size is greater than 2, throw InvalidNeighborSizeException().
-    Modifies: 
-    */
+     * constructor to store the pass-in element into Arc and put all the contents in the pass-in collection if the collection size is less than or equal to 2.  if the size is greater than 2, throw InvalidNeighborSizeException(). 
+     */
     //## operation Arc(Object,Collection) 
     public  Arc(Object p_element, Collection p_neighbor) throws InvalidNeighborException {
         //#[ operation Arc(Object,Collection) 
@@ -84,9 +84,8 @@ public class Arc extends GraphComponent {
         //#]
     }
     /**
-    Requires:
-    Effects:constrctor.  store the pass-in element into this Arc
-    Modifies:
+    Store the pass-in element into this Arc
+    
     */
     //## operation Arc(Object) 
     public  Arc(Object p_element) {
@@ -98,9 +97,8 @@ public class Arc extends GraphComponent {
     }
     
     /**
-    Requires:
-    Effects:  if the pass-in GraphComponent is an instance of Node, add the pass-in GraphComponent into this.neighbor collection.   Otherwise, throw InvalidNeighborException.
-    Modifies: this.neighbor
+    If the pass-in GraphComponent is an instance of Node, add the pass-in GraphComponent into this.neighbor collection.   Otherwise, throw InvalidNeighborException.<br><br>
+    <b>Modifies:</b><br> this.neighbor
     */
     //## operation addNeighbor(GraphComponent) 
     public void addNeighbor(GraphComponent p_graphComponent) throws InvalidNeighborException {
@@ -116,9 +114,8 @@ public class Arc extends GraphComponent {
     }
     
     /**
-    Requires:
-    Effects: use super's addNeighbor().
-    Modifies:
+    add the pass-in Node into this.neighbor collection.<br><br>
+    <b>Modifies:</b><br> this.neighbor
     */
     //## operation addNeighbor(Node) 
     public void addNeighbor(Node p_node) {
@@ -130,6 +127,12 @@ public class Arc extends GraphComponent {
         //#]
     }
     
+    /**
+     * This method is not recursive and compares only the arcs and not the neighbors. 
+     * <li>Returns false if the passed in GraphCompnent is not an instance of Arc.</li>
+     * <li>Returns true if the passed in Arc is the same as the this.</li>
+     * <li>Returns true if the passed in Arc has a set of possible bonds in its elements (eq: {S,D,T}) and is a superset of this.element.</li>
+     */
     //## operation contentSub(GraphComponent) 
     public boolean contentSub(GraphComponent p_graphComponent) {
         //#[ operation contentSub(GraphComponent) 
@@ -146,9 +149,8 @@ public class Arc extends GraphComponent {
     }
     
     /**
-    Requires:
-    Effects: if this arc connects p_node and another node, return that node; otherwise, return null;
-    Modifies:
+    If this arc connects p_node and another node, return that node; otherwise, return null;
+    
     */
     //## operation getOtherNode(Node) 
     public Node getOtherNode(Node p_node) {
@@ -168,22 +170,11 @@ public class Arc extends GraphComponent {
         //#]
     }
     
-    /**
-    Requires:
-    Effects: return super.isConnected()
-    Modifies:
-    */
-    //## operation isConnected(Node) 
-    public boolean isConnected(Node p_node) {
-        //#[ operation isConnected(Node) 
-        return super.isConnected(p_node);
-        //#]
-    }
+    
     
     /**
-    Requires:
-    Effects: if pass-in GraphComponent is an instance of Node, return super.isConnected(); otherwise, return false; since arc can't connect to arc.
-    Modifies:
+    If pass-in GraphComponent is an instance of Node, return super.isConnected(); otherwise, return false; since arc can't connect to arc.
+    
     */
     //## operation isConnected(GraphComponent) 
     public boolean isConnected(GraphComponent p_graphComponent) {
@@ -194,9 +185,8 @@ public class Arc extends GraphComponent {
     }
     
     /**
-    Requires:
-    Effects: return false since only node can be leaf.
-    Modifies:
+    Return false since only node can be leaf.
+    
     */
     //## operation isLeaf() 
     public boolean isLeaf() {
@@ -206,24 +196,29 @@ public class Arc extends GraphComponent {
         //#]
     }
     
+    /**
+     * Adds the nodes p_node1 and p_node2 as neighbors and then checks if the number of neighbors are greater than 2.
+     * @param p_node1
+     * @param p_node2
+     */
     //## operation link(Node,Node) 
     public void link(Node p_node1, Node p_node2) {
         //#[ operation link(Node,Node) 
         addNeighbor(p_node1);
         addNeighbor(p_node2);
+        repOk();
         return;
         //#]
     }
     
     /**
-    Requires:
-    Effects: check if neighbor of this arc is okay.
-    (1) the neighbor collection size should be equal to 2.  if it is not 2, return false.
-    (2) both the two neighbors should be nodes. if any of them is not a node, return false;
-    Modifies:
+    Check if neighbor of this arc is okay.<br>
+    <li>the neighbor collection size should be equal to 2.  if it is not 2, return false</li>
+    <li>both the two neighbors should be nodes. if any of them is not a node, return false</li>
+    
     */
     //## operation neighborOk() 
-    public boolean neighborOk() {
+    private boolean neighborOk() {
         //#[ operation neighborOk() 
         // check if this arc has two neighbors
         if (neighbor.size() != 2) return false;
@@ -238,62 +233,31 @@ public class Arc extends GraphComponent {
         //#]
     }
     
-    //## operation rearrangeBenzene(String) 
-    public void rearrangeBenzene(String p_startType) {
-        //#[ operation rearrangeBenzene(String) 
-        /*Bond bond = (Bond)getElement();
-        if (!bond.isBenzene()) return;
-        
-        if (p_startType.compareToIgnoreCase("D") != 0 && p_startType.compareToIgnoreCase("S") != 0) {
-        	throw new BenzeneRearrangeException();
-        }
-         
-        Bond newBond = Bond.make(p_startType);
-        setElement(newBond);
-        setVisited(true);
-        
-        Iterator iter = getNeighbor();
-        while (iter.hasNext()) {
-        	Node n = (Node)iter.next();
-        	if (!n.isVisited()) {
-        		rearrangeBenzene(this);
-        	}
-        }
-        
-        return;
-        */
-        //#]
-    }
+   
     
     /**
-    Requires:
-    Effects: check if the rep is ok in the following aspects:
+    Check if the rep is ok in the following aspects:
     (1) neighborOk()?
     Modifies:
     */
     //## operation repOk() 
-    public boolean repOk() {
+    private boolean repOk() {
         //#[ operation repOk() 
         return (neighborOk());
         //#]
     }
     
+    /**
+     * Writes the name of the bond eg: S, D, T etc.
+     */
     //## operation toString() 
     public String toString() {
         //#[ operation toString() 
         return ChemParser.writeBond(getElement());
-        
-        
-        //#]
+ 
     }
     
-    public boolean getBackArc() {
-        return backArc;
-    }
-    
-    public void setBackArc(boolean p_backArc) {
-        backArc = p_backArc;
-    }
+   
     
 }
 /*********************************************************************

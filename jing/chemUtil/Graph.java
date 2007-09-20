@@ -55,20 +55,20 @@ public class Graph {
     /**
     number of nodes in this graph
     */
-    protected static int MAXNODENUMBER = 1000;		//## attribute MAXNODENUMBER
+    private static int MAXNODENUMBER = 1000;		//## attribute MAXNODENUMBER
 
-    protected boolean acyclic;		//## attribute acyclic
+    private boolean acyclic;		//## attribute acyclic
 
-    protected LinkedHashMap centralNode;		//## attribute centralNode
+    private LinkedHashMap centralNode;		//## attribute centralNode
 
-    protected LinkedList cycle;		//## attribute cycle
+    private LinkedList cycle;		//## attribute cycle
 
-    protected int highestCentralID = 0;		//## attribute highestCentralID
+    private int highestCentralID = 0;		//## attribute highestCentralID
 
-    protected int highestNodeID = 0;		//## attribute highestNodeID
+    private int highestNodeID = 0;		//## attribute highestNodeID
 
-    protected ArrayList arcList;
-    protected LinkedHashMap nodeList;
+    private ArrayList arcList;
+    private LinkedHashMap nodeList;
 
     // Constructors
 
@@ -80,16 +80,15 @@ public class Graph {
         {
             nodeList=new LinkedHashMap();
         }
-        //#[ operation Graph()
+        
         centralNode = new LinkedHashMap();
 		identifyCycle();
-        //#]
+        
     }
 
     /**
-    Requires:
-    Effects: add a new arc with p_arcElement to connect those two nodes on those p_positions.  if there are no nodes on those p_positions, throw NotInGraphException.
-    Modifies: this.nodeList, this.arcList
+    Add a new arc with p_arcElement to connect those two nodes on those p_positions.  if there are no nodes on those p_positions, throw NotInGraphException.<br>
+    <b>Modifies</b><br> this.nodeList, this.arcList
     */
     //## operation addArcBetween(int,Object,int)
     public Arc addArcBetween(int p_position1, Object p_arcElement, int p_position2) throws NotInGraphException {
@@ -110,9 +109,8 @@ public class Graph {
     }
 
     /**
-    Requires:
-    Effects: if any of the two pass-in two nodes is null or not in the graph, throw NotInGraphException; otherwise, if there already is an arc between, throw PositionOccupiedException; otherwise, add an arc storing the pass-in p_arcElement and connecting the two pass-in nodes.
-    Modifies: this.arcList, this.nodeList,p_node1, p_node2
+    If any of the two pass-in two nodes is null or not in the graph, throw NotInGraphException; otherwise, if there already is an arc between, throw PositionOccupiedException; otherwise, add an arc storing the pass-in p_arcElement and connecting the two pass-in nodes.<br>
+    <b>Modifies</b><br> this.arcList, this.nodeList,p_node1, p_node2
     */
     //## operation addArcBetween(Node,Object,Node)
     public Arc addArcBetween(Node p_node1, Object p_arcElement, Node p_node2) {
@@ -143,9 +141,8 @@ public class Graph {
     }
 
     /**
-    Requires:
-    Effects: saturate all the node atom's undefined valence by adding Hydrogen.
-    Modifies: this.nodeList
+    Saturate all the node atom's undefined valence by adding Hydrogen.<br>
+    <b>Modifies</b><br> this.nodeList
     */
     //## operation addMissingHydrogen()
     public void addMissingHydrogen() {
@@ -190,9 +187,8 @@ public class Graph {
 
 
     /**
-    Requires:
-    Effects: if p_element != null, add a new node with element = p_element; else do nothing and return null.
-    Modifies: this.nodeList, this.highestNodeID
+    If p_element != null, add a new node with element = p_element; else do nothing and return null.<br>
+    <b>Modifies</b><br> this.nodeList, this.highestNodeID
     */
     //## operation addNode(Object)
     public Node addNode(Object p_element) {
@@ -206,9 +202,8 @@ public class Graph {
     }
 
     /**
-    Requires:
-    Effects: if the node at the p_position in this graph has been ocuppied, throw PositionOcuppiedException; otherwise, add a new node storing p_nodeElement at the p_position of this graph
-    Modifies: this.nodeList
+    If the node at the p_position in this graph has been ocuppied, throw PositionOcuppiedException; otherwise, add a new node storing p_nodeElement at the p_position of this graph<br>
+    <b>Modifies</b><br> this.nodeList
     */
     //## operation addNodeAt(int,Object)
     public Node addNodeAt(int p_position, Object p_nodeElement) throws PositionOccupiedException {
@@ -222,15 +217,11 @@ public class Graph {
 
         return node;
 
-
-
-        //#]
     }
 
     /**
-    Requires:
-    Effects: add a new node with p_nodeElement and p_centralID at p_position of this graph.  If p_position is occupied or p_centralPosition is occupuied, throw PositionOccupiedException.
-    Modifies: this.nodeList, this.centralNodeList, this.highestNodeID, this.highestCentralNodeID
+    Add a new node with p_nodeElement and p_centralID at p_position of this graph.  If p_position is occupied or p_centralPosition is occupuied, throw PositionOccupiedException.<br>
+    <b>Modifies</b><br> this.nodeList, this.centralNodeList, this.highestNodeID, this.highestCentralNodeID
     */
     //## operation addNodeAt(int,Object,int)
     public Node addNodeAt(int p_position, Object p_nodeElement, int p_centralPosition) {
@@ -263,9 +254,8 @@ public class Graph {
     }
 
     /**
-    Requires:
-    Effects: if all the graph components in this graph are visited, return true; otherwise, return false.
-    Modifies:
+    If all the graph components in this graph are visited, return true; otherwise, return false.
+    
     */
     //## operation allVisited()
     public boolean allVisited() {
@@ -285,9 +275,8 @@ public class Graph {
     }
 
     /**
-    Requires:
-    Effects: return true iff there is no center node
-    Modifies:
+    Return true iff there is no center node
+    
     */
     //## operation centerIsEmpty()
     private boolean centerIsEmpty() {
@@ -298,9 +287,8 @@ public class Graph {
     }
 
     /**
-    Requires:
-    Effects: clear node list, arc list, cycle list, and center node list.
-    Modifies: this
+    Clear node list, arc list, cycle list, and center node list.<br>
+    <b>Modifies</b><br> this
     */
     //## operation clear()
     public void clear() {
@@ -315,9 +303,8 @@ public class Graph {
     }
 
     /**
-    Requires:
-    Effects: reset the centralID of node in the centralNode list  to -1, and clear centralNode list. reset highestCentralID to 0.
-    Modifies: this.centralNode, and the centralID of the nodes in this graph.
+    Reset the centralID of node in the centralNode list  to -1, and clear centralNode list. reset highestCentralID to 0.<br>
+    <b>Modifies</b><br> this.centralNode, and the centralID of the nodes in this graph.
     */
     //## operation clearCentralNode()
     public void clearCentralNode() {
@@ -334,9 +321,8 @@ public class Graph {
     }
 
     /**
-    Requires:
-    Effects: clear cycle list
-    Modifies: this.cycle
+    Clear cycle list<br>
+    <b>Modifies</b><br> this.cycle
     */
     //## operation clearCycle()
     public void clearCycle() {
@@ -346,9 +332,8 @@ public class Graph {
     }
 
     /**
-    Requires:
-    Effects: clear the node list of this graph. reset highestNodeID to 0.
-    Modifies: this.nodeList
+    Clear the node list of this graph. reset highestNodeID to 0.<br>
+    <b>Modifies</b><br> this.nodeList
     */
     //## operation clearNodeList()
     public void clearNodeList() {
@@ -361,9 +346,8 @@ public class Graph {
     }
 
     /**
-    Requires:
-    Effects: put two graphs g1 and g2 into one overall graph, and return the combined graph.  The indexes of the nodes in g2 will be following the ones in g1.
-    Modifies:
+    Put two graphs g1 and g2 into one overall graph, and return the combined graph.  The indexes of the nodes in g2 will be following the ones in g1.
+    
     */
     //## operation combine(Graph,Graph)
     public static Graph combine(Graph p_g1, Graph p_g2) {
@@ -419,9 +403,8 @@ public class Graph {
     }
 
     /**
-    Requires:
-    Effects: if all pass-in arc and nodes exit in graph, link two nodes by the arc; otherwise, throw NotInGraphException.
-    Modifies:
+    If all pass-in arc and nodes exit in graph, link two nodes by the arc; otherwise, throw NotInGraphException.
+    
     */
     //## operation connect(Node,Arc,Node)
     public void connect(Node p_node1, Arc p_arc, Node p_node2) {
@@ -436,9 +419,8 @@ public class Graph {
     }
 
     /**
-    Requires:
-    Effects: return true iff the nodeList contains p_node.
-    Modifies:
+    Return true iff the nodeList contains p_node.
+    
     */
     //## operation contains(Node)
     public boolean contains(Node p_node) {
@@ -448,9 +430,8 @@ public class Graph {
     }
 
     /**
-    Requires:
-    Effects: return true iff the arcList contains p_arc
-    Modifies:
+    Return true iff the arcList contains p_arc
+   
     */
     //## operation contains(Arc)
     public boolean contains(Arc p_arc) {
@@ -460,9 +441,7 @@ public class Graph {
     }
 
     /**
-    Requires:
-    Effects: return true iff this graph contains the p_graphComponent.
-    Modifies:
+    Return true iff this graph contains the p_graphComponent.
     */
     //## operation contains(GraphComponent)
     public boolean contains(GraphComponent p_graphComponent) {
@@ -474,10 +453,8 @@ public class Graph {
     }
 
     /**
-    Requires:
-    Effects: return a cloned object of the pass-in graph
-    Modifies:
-    */
+    Return a cloned object of the pass-in graph
+     */
     //## operation copy(Graph)
     public static Graph copy(Graph p_graph) throws InvalidNeighborException {
         //#[ operation copy(Graph)
@@ -508,9 +485,8 @@ public class Graph {
     }
 
     /**
-    Requires:
-    Effects: recursive function to identify possible cycle starting from p_node. Add identified cycle to this.cycle.
-    Modifies: this.cycle.  visited status of nodes and arcs.
+    Recursive function to identify possible cycle starting from p_node. Add identified cycle to this.cycle.<br>
+    <b>Modifies</b><br> this.cycle.  visited status of nodes and arcs.
     */
     //## operation cycleIdentificationDFS(Node,LinkedList)
     public void cycleIdentificationDFS(Node p_node, LinkedList p_list) {
@@ -559,9 +535,9 @@ public class Graph {
     }
 
     /**
-    Requires: all the graph component's visited reset to false before the deepFirstSearch.
-    Effects: mark all the graph components on the deep first search path as visited
-    Modifies: visited status of all the graph components in this graph.
+    <b>Requires</b><br> all the graph component's visited reset to false before the deepFirstSearch.<br>
+    <b>Effects</b><br> mark all the graph components on the deep first search path as visited<br>
+    <b>Modifies</b><br> visited status of all the graph components in this graph.
     */
     //## operation deepFirstSearch(GraphComponent)
     private static void deepFirstSearch(GraphComponent p_graphComponent) {
@@ -578,9 +554,8 @@ public class Graph {
     }
 
     /**
-    Requires:
-    Effects: remove all the nodes that is Leaf and the associated arc of the removed nodes.
-    Modifies: this.nodeList, this.arcList
+    Remove all the nodes that is Leaf and the associated arc of the removed nodes.<br>
+    <b>Modifies</b><br> this.nodeList, this.arcList
     */
     //## operation deleteLeaf(Graph)
     protected void deleteLeaf(Graph p_graph) {
@@ -598,9 +573,8 @@ public class Graph {
     }
 
     /**
-    Requires:
-    Effects: return true iff this graph and p_graph is equivalent at center nodes.  if no center nodes defined, return true iff this graph is equivalent with p_graph.
-    Modifies: visited status of nodes and arcs.
+    Return true iff this graph and p_graph is equivalent at center nodes.  if no center nodes defined, return true iff this graph is equivalent with p_graph.<br>
+    <b>Modifies</b><br> visited status of nodes and arcs.
     */
     //## operation equals(Object)
     public boolean equals(Object p_graph) {
@@ -615,11 +589,9 @@ public class Graph {
     }
 
     /**
-    Requires: there is no duplicated bond between two atoms.
-    Effects: loop over the arc list to find out the arc whose neighbor set includes the position1 and position2.  if found, return this arc; otherwise, return null.
-    Modifies:
-
-
+    <b>Requires</b><br> there is no duplicated bond between two atoms.<br>
+    <b>Effects</b><br> loop over the arc list to find out the arc whose neighbor set includes the position1 and position2.  if found, return this arc; otherwise, return null.
+    
     */
     //## operation getArcBetween(int,int)
     public Arc getArcBetween(int p_position1, int p_position2) throws NotInGraphException {
@@ -636,9 +608,8 @@ public class Graph {
     }
 
     /**
-    Requires:
-    Effects: if there is an arc connecting the two nodes in this graph, return that arc, otherwise, return null.
-    Modifies:
+    If there is an arc connecting the two nodes in this graph, return that arc, otherwise, return null.
+    
     */
     //## operation getArcBetween(Node,Node)
     public Arc getArcBetween(Node p_node1, Node p_node2) {
@@ -664,9 +635,8 @@ public class Graph {
     }
 
     /**
-    Requires:
-    Effects: return the iterator over the arc collection
-    Modifies:
+    Return the iterator over the arc collection
+    
     */
     //## operation getArcList()
     public Iterator getArcList() {
@@ -677,9 +647,7 @@ public class Graph {
     }
 
     /**
-    Requires;
-    Effects: return the number of arcs in this Graph
-    Modifies:
+    Return the number of arcs in this Graph
     */
     //## operation getArcNumber()
     public int getArcNumber() {
@@ -689,9 +657,7 @@ public class Graph {
     }
 
     /**
-    Requires:
-    Effects: return the node with p_centralID as centralID in centralNode list
-    Modifies:
+    Return the node with p_centralID as centralID in centralNode list
     */
     //## operation getCentralNodeAt(int)
     public Node getCentralNodeAt(int p_centralID) {
@@ -701,9 +667,7 @@ public class Graph {
     }
 
     /**
-    Requires:
-    Effects: return the node with p_ID as centralID in centralNode list
-    Modifies:
+    Return the node with p_ID as centralID in centralNode list
     */
     //## operation getCentralNodeAt(Integer)
     public Node getCentralNodeAt(Integer p_ID) {
@@ -713,9 +677,7 @@ public class Graph {
     }
 
     /**
-    Requires:
-    Effects: return iterator of center node ID
-    Modifies:
+    Return iterator of center node ID
     */
     //## operation getCentralNodeKeys()
     public Iterator getCentralNodeKeys() {
@@ -725,9 +687,7 @@ public class Graph {
     }
 
     /**
-    Requires:
-    Effects: return iterator over the cetnralNode list of this graph.
-    Modifies:
+    Return iterator over the cetnralNode list of this graph.
     */
     //## operation getCentralNodeList()
     public Iterator getCentralNodeList() {
@@ -738,9 +698,7 @@ public class Graph {
     }
 
     /**
-    Requires:
-    Effects: return number of central nodes in this graph.
-    Modifies:
+    Return number of central nodes in this graph.
     */
     //## operation getCentralNodeNumber()
     public int getCentralNodeNumber() {
@@ -750,9 +708,7 @@ public class Graph {
     }
 
     /**
-    Requires:
-    Effects: return the iterator over the cycle collection.
-    Modifies:
+    Return the iterator over the cycle collection.
     */
     //## operation getCycle()
     public Iterator getCycle() {
@@ -762,14 +718,17 @@ public class Graph {
         //#]
     }
 	
+    /**
+     * REturn the number of cycles in the graph.
+     * 
+     */
 	public int getCycleNumber(){
 		return cycle.size();
 	}
 
     /**
-    Requies:
-    Effects: return the highestCenteralID of this graph.
-    Modifies:
+    Return the highestCenteralID of this graph.
+    
     */
     //## operation getHighestCentralID()
     public int getHighestCentralID() {
@@ -779,9 +738,8 @@ public class Graph {
     }
 
     /**
-    Requires:
-    Effects: return the node at the p_position in this graph, if there is no node at that position, or if at this position, there is a null node, throw NotInGraphException.
-    Modifies:
+    Return the node at the p_position in this graph, if there is no node at that position, or if at this position, there is a null node, throw NotInGraphException.
+   
     */
     //## operation getNodeAt(int)
     public Node getNodeAt(int p_position) throws NotInGraphException {
@@ -795,9 +753,7 @@ public class Graph {
     }
 
     /**
-    Requires:
-    Effects: return the node at p_ID position in this graph, if there is no node at that position, or if at this position, there is a null node, throw NotInGraphException.
-    Modifies:
+    Return the node at p_ID position in this graph, if there is no node at that position, or if at this position, there is a null node, throw NotInGraphException.
     */
     //## operation getNodeAt(Integer)
     public Node getNodeAt(Integer p_ID) {
@@ -809,9 +765,7 @@ public class Graph {
     }
 
     /**
-    Requires:
-    Effects: return the iterator over the node collection
-    Modifies:
+    Return the iterator over the node collection
     */
     //## operation getNodeList()
     public Iterator getNodeList() {
@@ -822,9 +776,7 @@ public class Graph {
     }
 
     /**
-    Requires:
-    Effects: return the number of nodes in this Graph
-    Modifies:
+    Return the number of nodes in this Graph
     */
     //## operation getNodeNumber()
     public int getNodeNumber() {
@@ -834,38 +786,22 @@ public class Graph {
     }
 
     /**
-    Requires:
-    Effects: compute and return the hashcode of this graph.  hashcode = 10^6*(#node) + #arc
-    Modifies:
+    Compute and return the hashcode of this graph.  hashcode = 10^6*(#node) + #arc
     */
     //## operation hashCode()
     public int hashCode() {
 //		#[ operation hashCode()
         return getNodeNumber() * 100000 + getArcNumber();
-        //#]
-		/*StringBuilder string = new StringBuilder();
-        Iterator nodeIter = getNodeList();
-		while (nodeIter.hasNext()){
-			Object o = nodeIter.next();
-			string.append(o.toString());
-		}
-		Iterator arcIter = getArcList();
-		while(arcIter.hasNext()){
-			Object o = arcIter.next();
-			string.append(o.toString());
-		}
-        return string.toString().hashCode();*/
-        //#]
+
     }
 
 
 
 	
     /**
-    Requires:
-    Effects: identify and return all the possible matched pattens between this graph and p_graph.
-    Note: the order of center node doesn't matter.
-    Modifies: visited status of nodes and arcs in this graph.
+    Identify and return all the possible matched pattens between this graph and p_graph.
+    The order of center node doesn't matter.<br>
+    <b>Modifies</b><br> visited status of nodes and arcs in this graph.
     */
     //## operation identifyAllOrderedMatchedSites(Graph)
     public LinkedHashSet identifyAllOrderedMatchedSites(Graph p_graph) {
@@ -882,7 +818,8 @@ public class Graph {
          	Iterator iter1 = getNodeList();
         	while (iter1.hasNext()) {
         		Node node1 = (Node)iter1.next();
-        		LinkedHashSet matched = node1.identifyAllMatchedSites(node2);
+        		LinkedList matched = new LinkedList();
+        		matched = node1.identifyAllMatchedSites(node2);
         		if (matched!=null) allMatchedSites.addAll(matched);
         	}
         }
@@ -892,10 +829,9 @@ public class Graph {
     }
 
     /**
-    Requires:
-    Effects: identify and return all the possible matched pattens between this graph and p_graph.
-    Note: the order of center node does matter.
-    Modifies: visited status of nodes and arcs in this graph.
+    Identify and return all the possible matched pattens between this graph and p_graph.
+    The order of center node does matter.<br>
+    <b>Modifies</b><br> visited status of nodes and arcs in this graph.
     */
     //## operation identifyAllUnorderedMatchedSite(Graph)
     public LinkedHashSet identifyAllUnorderedMatchedSite(Graph p_graph) {
@@ -948,13 +884,13 @@ public class Graph {
         return matchedSite;
         //#]
     }
+    
 
     /**
-    Requires:
-    Effects:
-    (1) identify all the nodes/arcs involved in at least one cycle in this graph.
-    (2) add those graph component involved in a ring into cycle collection.
-    Modifies: the inCycle attributes of all the graph componenets, and this.cycle
+    
+    <li> identify all the nodes/arcs involved in at least one cycle in this graph</li>
+    <li> add those graph component involved in a ring into cycle collection.</li>
+    <b>Modifies</b><br> the inCycle attributes of all the graph componenets, and this.cycle
     */
     //## operation identifyCycle()
     public void identifyCycle() throws InconnectedGraphException {
@@ -986,9 +922,8 @@ public class Graph {
     }
 
     /**
-    Requires:
-    Effects: identify the type of each node in this graph as Cs, Cd, Ca, Ck, etc.
-    Modifies:
+    Identify the type of each node in this graph as Cs, Cd, Ca, Ck, etc.
+    
     */
     //## operation identifyFgElement()
     public void identifyFgElement() {
@@ -1006,9 +941,8 @@ public class Graph {
     }
 
     /**
-    Requires:
-    Effects: return true iff this graph is acyclic.
-    Modifies:
+    Return true iff this graph is acyclic.
+    
     */
     //## operation isAcyclic()
     public boolean isAcyclic() {
@@ -1019,9 +953,8 @@ public class Graph {
     }
 
     /**
-    Requires:
-    Effects: if all the graph components in this graph are connected to each other, i.e., there is no seperated parts in this graph, return true, otherwise, return false.
-    Modifies: visited status of every graph component
+    If all the graph components in this graph are connected to each other, i.e., there is no seperated parts in this graph, return true, otherwise, return false.<br>
+    <b>Modifies</b><br> visited status of every graph component
     */
     //## operation isConnected()
     public boolean isConnected() {
@@ -1040,9 +973,8 @@ public class Graph {
     }
 
     /**
-    Requires:
-    Effects: return true iff there is no node and arc in this graph.
-    Modifies:
+    Return true iff there is no node and arc in this graph.
+   
     */
     //## operation isEmpty()
     public boolean isEmpty() {
@@ -1053,9 +985,8 @@ public class Graph {
     }
 
     /**
-    Requires:
-    Effects: if this graph and the pass-in p_graph are equivalent to each other.  No check for centerID.
-    Modifies:visited status of all the graph component
+    If this graph and the pass-in p_graph are equivalent to each other.  No check for centerID.<br>
+    <b>Modifies</b><br> visited status of all the graph component
     */
     //## operation isEquivalent(Object)
     public boolean isEquivalent(Object p_graph) {
@@ -1090,9 +1021,8 @@ public class Graph {
     }
 
     /**
-    Requires:
-    Effects: if two graphs both have centers, compare equivalence at centers; if two graphs both have no centers, call isEquivalent to check the no-center equivalence; otherwise, return false.
-    Modifies: visited status of nodes in both graphs
+    If two graphs both have centers, compare equivalence at centers; if two graphs both have no centers, call isEquivalent to check the no-center equivalence; otherwise, return false.<br>
+    <b>Modifies</b><br> visited status of nodes in both graphs
     */
     //## operation isEquivalentAtCentralNodes(Object)
     public boolean isEquivalentAtCentralNodes(Object p_graph) {
@@ -1137,9 +1067,8 @@ public class Graph {
     }
 
     /**
-    Requires:
-    Effects: return true iff this graph is a subgraph of p_graph, i.e., iff there is a node in this graph is a subNode of one node in p_graph.
-    Modifies: Visited status of all the nodes in this and p_graph.
+    Return true iff this graph is a subgraph of p_graph, i.e., iff there is a node in this graph is a subNode of one node in p_graph.<br>
+    <b>Modifies</b><br>Visited status of all the nodes in this and p_graph.
     */
     //## operation isSub(Graph)
     public boolean isSub(Graph p_graph) {
@@ -1163,9 +1092,8 @@ public class Graph {
     }
 
     /**
-    Requires:
-    Effects: return true iff this graph is a subgraph of p_graph at central nodes, i.e., iff a central node in this graph is a subNode of one central node in p_graph.
-    Modifies: visited status of all the nodes in this and p_graph.
+    Return true iff this graph is a subgraph of p_graph at central nodes, i.e., iff a central node in this graph is a subNode of one central node in p_graph.<br>
+    <b>Modifies</b><br> visited status of all the nodes in this and p_graph.
     */
     //## operation isSubAtCentralNodes(Graph)
     public boolean isSubAtCentralNodes(Graph p_graph) {
@@ -1199,9 +1127,8 @@ public class Graph {
     }
 
     /**
-    Requires:
-    Effects: if this graph is connected, do nothing; if the graph is not connected, partioning the graph into a list of graphs.
-    Modifies: this
+    If this graph is connected, do nothing; if the graph is not connected, partioning the graph into a list of graphs.<br>
+    <b>Modifies</b><br>this
     */
     //## operation partition()
     public LinkedList partition() throws NotPartitionedException {
@@ -1264,9 +1191,8 @@ public class Graph {
     }
 
     /**
-    Requires:
-    Effects: clear central node list, and reform it according to centralID information of node in the graph
-    Modifies: this.centralNodeList
+    Clear central node list, and reform it according to centralID information of node in the graph<br>
+    <b>Modifies</b><br>this.centralNodeList
 
     */
     //## operation refreshCentralNode()
@@ -1287,9 +1213,8 @@ public class Graph {
     }
 
     /**
-    Requires:
-    Effects: refresh centralNode list according to the nodeID setting of each individual node in nodeList
-    Modifies: this.centralNode
+    Refresh centralNode list according to the nodeID setting of each individual node in nodeList<br>
+    <b>Modifies</b><br>this.centralNode
     */
     //## operation refreshHighestNodeID()
     public void refreshHighestNodeID() {
@@ -1308,9 +1233,8 @@ public class Graph {
     }
 
     /**
-    Requires:
-    Effects: if the pass-in arc is in this graph, remove it from this graph, also get rid of all the connectivity between this arc and all it neighbor nodes.  if it is not in the graph, throw NotInGraphException.
-    Modifies: this
+    If the pass-in arc is in this graph, remove it from this graph, also get rid of all the connectivity between this arc and all it neighbor nodes.  if it is not in the graph, throw NotInGraphException.<br>
+    <b>Modifies</b><br>this
     */
     //## operation removeArc(Arc)
     public void removeArc(Arc p_arc) {
@@ -1330,9 +1254,8 @@ public class Graph {
     }
 
     /**
-    Requires:
-    Effects: remove arc between the two nodes at p_position1 and p_position2, iff that arc exists.
-    Modifies: this.arcList
+    Remove arc between the two nodes at p_position1 and p_position2, iff that arc exists.<br>
+    <b>Modifies</b><br>this.arcList
     */
     //## operation removeArcAt(int,int)
     public void removeArcAt(int p_position1, int p_position2) {
@@ -1351,9 +1274,8 @@ public class Graph {
     }
 
     /**
-    Requires:
-    Effects: if p_node is in this graph, remove it, and remove all the arcs linked to it.  if p_node is not in this graph, throw NotInGraphException.
-    Modifies: this.nodeList
+    If p_node is in this graph, remove it, and remove all the arcs linked to it.  if p_node is not in this graph, throw NotInGraphException.<br>
+    <b>Modifies</b><br>this.nodeList
     */
     //## operation removeNode(Node)
     public void removeNode(Node p_node) {
@@ -1389,9 +1311,8 @@ public class Graph {
     }
 
     /**
-    Requires:
-    Effects: remove the node at the p_position, iff it exists
-    Modifies: this.nodeList
+    Remove the node at the p_position, iff it exists<br>
+    <b>Modifies</b><br>this.nodeList
     */
     //## operation removeNodeAt(int)
     public void removeNodeAt(int p_position) {
@@ -1410,9 +1331,8 @@ public class Graph {
     }
 
     /**
-    Requires:
-    Effects: return true.  there is no restrict for graph invalidity
-    Modifies:
+    Return true.  there is no restrict for graph invalidity
+    
     */
     //## operation repOk()
     public boolean repOk() {
@@ -1422,9 +1342,8 @@ public class Graph {
     }
 
     /**
-    Requires:
-    Effects: reset all the matched GC for eac node and arc in the graph to null, to prepare for a new matching/equivalent testing
-    Modifies: matchedGC of every node and arc in this graph
+    Reset all the matched GC for eac node and arc in the graph to null, to prepare for a new matching/equivalent testing<br>
+    <b>Modifies</b><br>matchedGC of every node and arc in this graph
     */
     //## operation resetMatchedGC()
     public void resetMatchedGC() {
@@ -1444,9 +1363,8 @@ public class Graph {
     }
 
     /**
-    Requires:
-    Effects: if the pass-in node in this graph, set it as the ith central node of this graph, where i = p_position; if the node is not in graph, throw NotInGraphException.
-    Modifies: centralID of the node in this graph, this.centralNode list
+    If the pass-in node in this graph, set it as the ith central node of this graph, where i = p_position; if the node is not in graph, throw NotInGraphException.<br>
+    <b>Modifies</b><br>centralID of the node in this graph, this.centralNode list
     */
     //## operation setCentralNode(int,Node)
     public void setCentralNode(int p_position, Node p_node) throws NotInGraphException {
@@ -1464,9 +1382,8 @@ public class Graph {
     }
 
     /**
-    Requires:
-    Effects: set all the current central nodes as normal ones, and reset the centralID and centralNode list according to the pass-in p_centralNode HashMap.
-    Modifies: this.centralNode, centralID of all the old  and new central nodes
+    Set all the current central nodes as normal ones, and reset the centralID and centralNode list according to the pass-in p_centralNode HashMap.<br>
+    <b>Modifies</b><br>this.centralNode, centralID of all the old  and new central nodes
     */
     //## operation setCentralNodes(HashMap)
     public void setCentralNodes(HashMap p_centralNode) {
@@ -1487,9 +1404,8 @@ public class Graph {
     }
 
     /**
-    Requires:
-    Effects: set the visited status of all the graph components in this graph as the pass-in p_visited.
-    Modifies: this.nodeList, this.arcList
+    Set the visited status of all the graph components in this graph as the pass-in p_visited.<br>
+    <b>Modifies</b><br>this.nodeList, this.arcList
     */
     //## operation setVisited(boolean)
     private void setVisited(boolean p_visited) {
@@ -1508,8 +1424,7 @@ public class Graph {
     }
 
     /**
-    Requies:
-    Effects: output a string of adjacency list of this graph
+    Output a string of adjacency list of this graph
     Modifies:
     */
     //## operation toString()
@@ -1526,8 +1441,7 @@ public class Graph {
     }
 
     /**
-    Requies:
-    Effects: output a string of adjacency list of this graph without outputting the centralID information of node
+    Output a string of adjacency list of this graph without outputting the centralID information of node
     Modifies:
     */
     //## operation toStringWithoutCentralID()
@@ -1544,8 +1458,7 @@ public class Graph {
     }
 
     /**
-    Requies:
-    Effects: output a string of adjacency list of this graph without outputting the centralID information of node and without outputting H node
+    Output a string of adjacency list of this graph without outputting the centralID information of node and without outputting H node
     Modifies:
     */
     //## operation toStringWithoutCentralIDAndH()
@@ -1567,9 +1480,8 @@ public class Graph {
     }
 
     /**
-    Requies:
-    Effects: set highestCentralID to p_centralID iff present highestCentralID is less than p_centralID
-    Modifies: this.highestCentralID
+    Set highestCentralID to p_centralID iff present highestCentralID is less than p_centralID<br>
+    <b>Modifies</b><br>this.highestCentralID
     */
     //## operation updateHighestCentralID(int)
     public void updateHighestCentralID(int p_centralID) {
@@ -1580,9 +1492,8 @@ public class Graph {
     }
 
     /**
-    Requires:
-    Effects: set highestNodeID = p_position iff p_position > highestNodeID
-    Modifies: this.highestNodeID
+    Set highestNodeID = p_position iff p_position > highestNodeID<br>
+    <b>Modifies</b><br>this.highestNodeID
 
     */
     //## operation updateHighestNodeID(int)
