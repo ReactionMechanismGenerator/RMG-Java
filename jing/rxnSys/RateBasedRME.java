@@ -118,7 +118,8 @@ public class RateBasedRME implements ReactionModelEnlarger {
         // generate new reaction set
 		startTime = System.currentTimeMillis();
 		LinkedHashSet newReactionSet = p_reactionSystem.getReactionGenerator().react(cerm.getReactedSpeciesSet(),next);
-		
+		newReactionSet.addAll(p_reactionSystem.lrg.react(cerm.getReactedSpeciesSet(),next));
+    	
 		double enlargeTime = (System.currentTimeMillis()-startTime)/1000/60;
 		
 		
@@ -252,7 +253,7 @@ public class RateBasedRME implements ReactionModelEnlarger {
 	        		throw new NegativeRateException(r.toChemkinString(Global.temperature) + ": " + String.valueOf(flux));
 	        	}
 				if (flux > 0.01 * maxFlux)
-					significantReactions.put(r,new Double(flux));
+					significantReactions.put(r,flux);
 			}
         	
         }

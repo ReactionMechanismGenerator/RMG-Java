@@ -78,8 +78,8 @@ public class RateBasedPDepVT extends RateBasedVT {
         		rleak = pdn.getEntryReaction().calculateTotalRate(t);
         	}
             for (Iterator rIter = pdn.getReactant().iterator(); rIter.hasNext(); ) {
-        		ChemGraph cg = (ChemGraph)rIter.next();
-        		Species spe = cg.getSpecies();
+            	Species spe = (Species)rIter.next();
+        		
         		double conc = 0;
         		if (cerm.containsAsReactedSpecies(spe)) conc = ps.getSpeciesStatus(spe).getConcentration();
         		rleak *= conc;

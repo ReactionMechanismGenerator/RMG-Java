@@ -77,6 +77,8 @@ public interface ReactionModel {
     //## operation isEmpty() 
     boolean isEmpty();
     
+    boolean isEmpty(FinishController fc);
+    
 }
 /*********************************************************************
 	File Path	: RMG\RMG\jing\rxnSys\ReactionModel.java
