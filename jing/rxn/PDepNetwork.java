@@ -56,8 +56,9 @@ import jing.rxnSys.ReactionSystem;
 public class PDepNetwork {
     
     protected static int ID = 0;		//## attribute ID 
+    public static boolean generateNetworks;
     
-    protected static HashMap dictionary = new HashMap();		//## attribute dictionary 
+    protected static HashMap dictionary = new LinkedHashMap();		//## attribute dictionary 
     
     protected Reaction entryReaction = null;		//## attribute entryReaction 
     
@@ -74,6 +75,9 @@ public class PDepNetwork {
     protected LinkedList pDepNetReactionList;
     protected LinkedList pDepNonincludedReactionList;
     protected LinkedList pDepWellList;
+    
+    protected HashSet nonIncludedSpecies = new HashSet();
+    protected boolean altered = true;
     
     // Constructors
     
@@ -94,7 +98,7 @@ public class PDepNetwork {
     }
     
     //## operation addPDepWell(PDepWell) 
-    protected void addPDepWell(PDepWell p_newWell) {
+    private void addPDepWell(PDepWell p_newWell) {
         //#[ operation addPDepWell(PDepWell) 
         if (pDepWellList.contains(p_newWell)) return;
         
@@ -110,7 +114,7 @@ public class PDepNetwork {
     }
     
     //## operation decideWellPathType() 
-    public void decideWellPathType() {
+    private void decideWellPathType() {
         //#[ operation decideWellPathType() 
         for (Iterator iter = getPDepWellList(); iter.hasNext(); ) {
         	PDepWell pdw = (PDepWell)iter.next();
@@ -121,9 +125,12 @@ public class PDepNetwork {
         		LinkedList p = pdpr.getProductList();
         
         		if (pNum == 1) {
-        			Species spe = ((ChemGraph)p.iterator().next()).getSpecies();
+        			Species spe = (Species)p.iterator().next();
         			if (includeAsIsomer(spe)) pdpr.setTypeAsIsomer();
-        			else pdpr.setTypeAsNonIncluded();
+        			else {
+        				pdpr.setTypeAsNonIncluded();
+        				nonIncludedSpecies.add(spe);
+        			}
         		}
         		else if (pNum == 2) {
         			if (isChemAct) {
@@ -145,13 +152,13 @@ public class PDepNetwork {
     }
     
     //## operation getEntryMass() 
-    public double getEntryMass() {
+    private double getEntryMass() {
         //#[ operation getEntryMass() 
         double mass = 0;
         
         for (Iterator iter = reactant.iterator(); iter.hasNext();) {
-        	ChemGraph cg = (ChemGraph)iter.next();
-        	mass += cg.getMolecularWeight();
+        	Species spe = (Species)iter.next();
+        	mass += spe.getMolecularWeight();
         }
         
         return mass;
@@ -159,7 +166,7 @@ public class PDepNetwork {
     }
     
     //## operation includeAsIsomer(Species) 
-    public boolean includeAsIsomer(Species p_species) {
+    private boolean includeAsIsomer(Species p_species) {
         //#[ operation includeAsIsomer(Species) 
         for (Iterator iter = getPDepWellList(); iter.hasNext(); ) {
         	PDepWell pdw = (PDepWell)iter.next();
@@ -170,10 +177,14 @@ public class PDepNetwork {
     }
     
     //## operation initializeKLeak() 
-    public void initializeKLeak() {
+    private void initializeKLeak() {
         //#[ operation initializeKLeak() 
         kLeak = 0;
-        Temperature t = new Temperature(715,"K");
+        
+        
+        //Temperature t = new Temperature(715,"K");
+        Temperature t = Global.temperature;
+        
         if (isChemAct) {
         	kLeak = entryReaction.calculateTotalRate(t);
         }
@@ -186,33 +197,54 @@ public class PDepNetwork {
         	PDepWell pdw = (PDepWell)iter.next();
         	for (Iterator pathiter = pdw.getPaths(); pathiter.hasNext(); ) {
         		PDepPathReaction pdpr = (PDepPathReaction)pathiter.next();
-        		kLeak += pdpr.getTemplateReaction().calculateTotalRate(t);
+        		kLeak += pdpr.getReaction().calculateTotalRate(t);
         	}
         }
         
-        //System.out.println("present k leak = " + String.valueOf(kLeak));
-        //#]
+       
+    }
+    
+    private void updateKLeak(){
+    	
+    	if (!isActive() && getIsChemAct()){
+    		double rate = entryReaction.calculateTotalRate(Global.temperature);
+    		kLeak = rate;
+    		return;
+    	}
+    	
+    	kLeak = 0;
+    	for (Iterator iter = getPDepNonincludedReactionList(); iter.hasNext();){
+    		PDepNetReaction pdnr = (PDepNetReaction) iter.next();
+    		double rate = pdnr.calculateRate();
+    		if (rate < 0 ) throw new InvalidPDepNetReactionException();
+    		kLeak += rate;
+    	}
+    	return;
     }
     
     //## operation initializePDepNetwork(TemplateReaction) 
-    public void initializePDepNetwork(TemplateReaction p_entryReaction) {
+    private void initializePDepNetwork(Reaction p_entryReaction) {
         //#[ operation initializePDepNetwork(TemplateReaction) 
         reactant = (LinkedList)p_entryReaction.getReactantList().clone();
         if (reactant.size() == 1) {
         	isChemAct = false;
         	entryReaction = null;
-        	ChemGraph cg = (ChemGraph)p_entryReaction.getReactants().next();
-         	Species spe = cg.getSpecies();
-         	PDepWell pdw = new PDepWell(spe);
+         	Species spe = (Species)p_entryReaction.getReactants().next();
+         	PDepWell pdw = new PDepWell(spe, p_entryReaction);
         
          	// add a new PDepWell into PDepWell list
          	addPDepWell(pdw);
-         	product = null;                      
+         	product = null; 
+         	if (p_entryReaction.structure.products.size() == 1){
+         		nonIncludedSpecies.add(p_entryReaction.structure.products.get(0));
+         	}
+         		
         }
         else if (reactant.size() == 2) {
         	isChemAct = true;
         	entryReaction = p_entryReaction;
         	product = (LinkedList)p_entryReaction.getProductList().clone();
+        	nonIncludedSpecies.add(product.get(0));
         }
         else throw new InvalidPDepNetworkTypeException();
         
@@ -228,31 +260,33 @@ public class PDepNetwork {
     }
     
     //## operation makePDepNetwork(TemplateReaction) 
-    public static PDepNetwork makePDepNetwork(TemplateReaction p_entryReaction) {
+    public static PDepNetwork makePDepNetwork(Reaction p_entryReaction) {
         //#[ operation makePDepNetwork(TemplateReaction) 
-	return null;
-	/*Object key = null;
-        if (p_entryReaction.getReactantNumber() == 2) {
-        	Species pro = ((ChemGraph)p_entryReaction.getProducts().next()).getSpecies();
+	
+    	Object key = null;
+    	
+    	if (!generateNetworks)
+    		return null;
+    	if (p_entryReaction.getReactantNumber() == 2) {
+    		Species pro = (Species)p_entryReaction.getProducts().next();
         	if (pro.isTriatomicOrSmaller()) return null;
         	key = p_entryReaction.getStructure();
         }
         else {
-        	key = ((ChemGraph)p_entryReaction.getReactants().next()).getSpecies();
+        	key = (Species)p_entryReaction.getReactants().next();
         	if (((Species)key).isTriatomicOrSmaller()) return null;
         }
         
-        Object obj = dictionary.get(key);
+        PDepNetwork obj = (PDepNetwork)dictionary.get(key);
         if (obj == null) {
         	// if it is a->b, but a doesn't have three frequency model, return null
         	if (p_entryReaction.getReactantNumber() == 1) {
-        		ChemGraph cg = (ChemGraph)p_entryReaction.getReactants().next();
-         		Species spe = cg.getSpecies();
+         		Species spe = (Species)p_entryReaction.getReactants().next();
          		if (!spe.hasThreeFrequencyModel()) {
          			return null;
          		}
            	}
-        	//System.out.println("construct a new PDepNetwork " + key.toString());
+        	
         	PDepNetwork pnw = new PDepNetwork();
         	dictionary.put(key, pnw);
         	pnw.initializePDepNetwork(p_entryReaction);
@@ -260,9 +294,17 @@ public class PDepNetwork {
         	return pnw;
         
         }
-        else return (PDepNetwork)obj;
+        else if (p_entryReaction.getReactantNumber() == 1){
+        	PDepWell pdw = (PDepWell)obj.pDepWellList.get(0);
+        	pdw.addPath(p_entryReaction);
+        	obj.decideWellPathType();
+        	obj.initializeKLeak();
+        	obj.altered = true;
+        	return obj;
+        }
         
-      */  
+        else return (PDepNetwork)obj;
+         
         
         //#]
     }
@@ -322,10 +364,22 @@ public class PDepNetwork {
         	System.exit(0);
         }
         
-        // parse the output file from chemdis
+        parseChemdisOutputCP();
+        updateKLeak();
+        
+        altered = false;
+        
+        
+        
+        //#]
+    }
+    
+//  ## operation parseChemdisOutputCP() 
+    private void parseChemdisOutputCP() {
+        //#[ operation parseChemdisOutputCP() 
         try {
-			//String dir = System.getProperty("RMG.workingDirectory");
-        	String chemdis_output = "chemdis/chemdis-xmg.out";
+        	String dir = System.getProperty("RMG.workingDirectory");
+        	String chemdis_output = "chemdis/chemdis-rmg.out";
         
         	FileReader in = new FileReader(chemdis_output);
         	BufferedReader data = new BufferedReader(in);
@@ -342,6 +396,7 @@ public class PDepNetwork {
         	}
         	else {
         		System.out.println("Wrong output from chemdis: unknown type!");
+        		System.out.println("Unknown key word for PDep Network: " + line);
         		System.exit(0);  	
         	}
         	LinkedList reactant = new LinkedList();
@@ -355,7 +410,7 @@ public class PDepNetwork {
         	int idr1 = Integer.parseInt(r1);
         	Species sr1 = SpeciesDictionary.getInstance().getSpeciesFromID(idr1);
         	String newName = sr1.getName()+"("+String.valueOf(sr1.getID())+")";
-        	reactant.add(sr1.getChemGraph());
+        	reactant.add(sr1);
         	if (rNum == 2) {
         		temp = st.nextToken();
         		String r2 = st.nextToken().trim();
@@ -363,7 +418,43 @@ public class PDepNetwork {
         		int idr2 = Integer.parseInt(r2);
         		Species sr2 = SpeciesDictionary.getInstance().getSpeciesFromID(idr2); 
         		newName += "+" + sr2.getName()+"("+String.valueOf(sr2.getID())+")";
-        		reactant.add(sr2.getChemGraph());
+        		reactant.add(sr2);
+        	}
+        	
+        	double Tmax=0;
+        	double Tmin=0;
+        	double Pmax=0;
+        	double Pmin=0;
+        	
+        	int nT = 7; 
+        	int nP = 4;
+        	
+        	line = ChemParser.readMeaningfulLine(data);
+        	if (line.startsWith("Temperature range")) {
+        		line = ChemParser.readMeaningfulLine(data);
+        		st = new StringTokenizer(line);
+        		String tL = st.nextToken().trim();
+        		String tH = st.nextToken().trim();
+        		Tmin = Double.parseDouble(tL);
+        		Tmax = Double.parseDouble(tH);
+        	}
+        	else {
+        		System.out.println("Can't read T range from chemdis output file!");
+        		System.exit(0);  	
+        	}
+                                                 
+        	line = ChemParser.readMeaningfulLine(data);
+        	if (line.startsWith("Pressure range")) {
+        		line = ChemParser.readMeaningfulLine(data);
+        		st = new StringTokenizer(line);
+        		String pL = st.nextToken().trim();
+        		String pH = st.nextToken().trim();
+        		Pmin = Double.parseDouble(pL);
+        		Pmax = Double.parseDouble(pH);
+        	}
+        	else {
+        		System.out.println("Can't read P range from chemdis output file!");
+        		System.exit(0);  	
         	}
         	
         	pDepNetReactionList.clear();
@@ -373,32 +464,66 @@ public class PDepNetwork {
         		line = line.trim();
         		LinkedList product = new LinkedList();
         		st = new StringTokenizer(line);
-        		String temperature = st.nextToken();
-        		double doubleT = Double.parseDouble(temperature); 
-        		String pressure = st.nextToken();                 
-        		double doubleP = Double.parseDouble(pressure); 
         		String rxntype = st.nextToken();
         		int pNum = 1;
         		String p1 = st.nextToken().trim();
         		p1 = p1.substring(3, p1.length());
         		int idp1 = Integer.parseInt(p1);
         		Species sp1 = SpeciesDictionary.getInstance().getSpeciesFromID(idp1);
-        	    product.add(sp1.getChemGraph());
-        		String next = st.nextToken();
-        		if ((next.trim()).equals("+")) {
-        			String p2 = st.nextToken().trim();
-        			p2 = p2.substring(3, p2.length());
-        			int idp2 = Integer.parseInt(p2);
-        			Species sp2 = SpeciesDictionary.getInstance().getSpeciesFromID(idp2);
-        			product.add(sp2.getChemGraph());
-        			next = st.nextToken();
-        			pNum++;
+        	    product.add(sp1);
+        		if (st.hasMoreTokens()) {
+        			String next = st.nextToken();
+         			if ((next.trim()).equals("+")) {	
+        				String p2 = st.nextToken().trim();
+        				p2 = p2.substring(3, p2.length());
+        				int idp2 = Integer.parseInt(p2);
+        				Species sp2 = SpeciesDictionary.getInstance().getSpeciesFromID(idp2);
+        				product.add(sp2);
+        				pNum++;
+        			}
         		}
-        		double k = Double.parseDouble(next);
-        		PDepNetReaction pdnr = new PDepNetReaction(reactant, product, k, p_reactionSystem.getPresentTemperature().getK() ,p_reactionSystem.getPresentPressure().getAtm());
-        		if (rxntype.equals("ISOMER")) pDepNetReactionList.add(pdnr);
+        		
+        		// read chebyshev polynomial
+        		double [][] alpha = new double[nT][nP];
+        		for (int i = 0; i < nT; i++) {
+        			line = ChemParser.readMeaningfulLine(data);
+        			st = new StringTokenizer(line);
+        			for (int j = 0; j < nP; j++) {
+        				String a = st.nextToken().trim();
+        				alpha[i][j] = Double.parseDouble(a);
+        			}
+        		}
+        		
+        		Temperature tLow = new Temperature(Tmin, "K");
+        		Temperature tHigh = new Temperature(Tmax, "K");
+        		Pressure pLow = new Pressure(Pmin, "Atm");
+        		Pressure pHigh = new Pressure(Pmax, "Atm");
+        		ChebyshevPolynomials cp = new ChebyshevPolynomials(nT, tLow, tHigh, nP, pLow, pHigh, alpha);
+        		
+        		PDepNetReaction pdnr = new PDepNetReaction(reactant, product, cp);
+        		if (rxntype.equals("ISOMER")) {
+        			//if pDepNetReactionList contains this reaction simply add the chebyshev
+        			// rate of this reaction to the one already present in the system.
+        			if (pDepNetReactionList.contains(pdnr)){
+        				int i = pDepNetReactionList.indexOf(pdnr);
+        				PDepNetReaction pdnrAlreadyPresent = (PDepNetReaction)pDepNetReactionList.get(i);
+        				pdnrAlreadyPresent.itsChebyshevPolynomials.addChebyshevPolynomial(cp);
+        			}
+        			else
+        				pDepNetReactionList.add(pdnr);
+        		}
         		else if (rxntype.equals("PRODUCT")) {
-        			if (pNum == 2) pDepNetReactionList.add(pdnr);
+        			if (pNum == 2) {
+//        				if pDepNetReactionList contains this reaction simply add the chebyshev
+            			// rate of this reaction to the one already present in the system.
+            			if (pDepNetReactionList.contains(pdnr)){
+            				int i = pDepNetReactionList.indexOf(pdnr);
+            				PDepNetReaction pdnrAlreadyPresent = (PDepNetReaction)pDepNetReactionList.get(i);
+            				pdnrAlreadyPresent.itsChebyshevPolynomials.addChebyshevPolynomial(cp);
+            			}
+            			else
+            				pDepNetReactionList.add(pdnr);
+        			}
         			else if (pNum == 1) {
         				if (includeAsIsomer(sp1)) pDepNetReactionList.add(pdnr);
         				else pDepNonincludedReactionList.add(pdnr);
@@ -408,7 +533,7 @@ public class PDepNetwork {
         		
         	}
         	in.close();
-        	updateKLeak();
+        	
         	File f = new File("chemdis/fort.10");
         	File newFile = new File("chemdis/"+newName+"_input");
         	f.renameTo(newFile);
@@ -418,24 +543,21 @@ public class PDepNetwork {
         }
         catch (Exception e) {
         	System.out.println("Wrong output from chemdis!");
+        	System.out.println(e.getMessage());
         	System.exit(0);
         }
         
-        
-        
-        
-        
         //#]
     }
-    
-    //## operation toString() 
+
+	//## operation toString() 
     public String toString() {
         //#[ operation toString() 
         if (entryReaction != null) {
         	return entryReaction.getStructure().toString();
         }
         else {
-        	Species spe = ((ChemGraph)reactant.getFirst()).getSpecies();
+        	Species spe = (Species)reactant.getFirst();
         	return spe.getName()+"("+ String.valueOf(spe.getID()) +")";
         	
         }
@@ -459,7 +581,7 @@ public class PDepNetwork {
         	System.exit(0);	
         }
         //System.out.println("begin to new a well");
-        PDepWell pdw = new PDepWell(p_nextIsomer);
+        PDepWell pdw = new PDepWell(p_nextIsomer, p_nextIsomer.getPdepPaths());
         //System.out.println("begin to add new well to system");
         addPDepWell(pdw);
         //System.out.println("finish adding new well to system");
@@ -467,30 +589,19 @@ public class PDepNetwork {
         //#]
     }
     
-    //## operation updateKLeak() 
-    public void updateKLeak() {
-        //#[ operation updateKLeak() 
-        kLeak = 0;
-        for (Iterator iter = getPDepNonincludedReactionList(); iter.hasNext(); ) {
-        	PDepNetReaction pdnr = (PDepNetReaction)iter.next();
-        	double rate = pdnr.getRate();
-        	if (rate < 0) throw new InvalidPDepNetReactionException();
-        	kLeak += rate;
-        }
-        return;
-        //#]
-    }
+    
     
     //## operation writePDepNetworkHeader(ReactionSystem) 
-    public String writePDepNetworkHeader(ReactionSystem p_reactionSystem) {
+    private String writePDepNetworkHeader(ReactionSystem p_reactionSystem) {
         //#[ operation writePDepNetworkHeader(ReactionSystem) 
         String s = "RMG-Generated Partial Network " + String.valueOf(getID()) + '\n';
-        s += "TEMP\n";
-        double temp = p_reactionSystem.getPresentTemperature().getK();
-        s += "1\t" + Double.toString(temp) + '\n';
-        s += "PRES\n";
-        double pres = p_reactionSystem.getPresentPressure().getAtm();
-        s += "1\t" + Double.toString(pres) + '\n';
+        s += "TRANGE\n 300 \t 1500 \t 10 \n";
+        //double temp = p_reactionSystem.getPresentTemperature().getK();
+        //s += "1\t" + Double.toString(temp) + '\n';
+        s += "PRANGE\n 0.01 \t 100 \t 10 \n";
+        s += "CHEBYSHEV \n 7 \t 4 \n";
+        //double pres = p_reactionSystem.getPresentPressure().getAtm();
+        //s += "1\t" + Double.toString(pres) + '\n';
         
         if (isChemAct) {
         	s += "CHEMACT\n";
@@ -630,33 +741,9 @@ public class PDepNetwork {
         return iter;
     }
     
-    public ListIterator getPDepNetReactionListEnd() {
-        return pDepNetReactionList.listIterator(pDepNetReactionList.lastIndexOf(pDepNetReactionList.getLast()));
-    }
-    
-    public void deletePDepNetReactionList(PDepNetReaction p_PDepNetReaction) {
-        pDepNetReactionList.remove(p_PDepNetReaction);
-        p_PDepNetReaction=null;
-    }
-    
     public ListIterator getPDepNonincludedReactionList() {
         ListIterator iter=pDepNonincludedReactionList.listIterator(0);
         return iter;
-    }
-    
-    public ListIterator getPDepNonincludedReactionListEnd() {
-        return pDepNonincludedReactionList.listIterator(pDepNonincludedReactionList.lastIndexOf(pDepNonincludedReactionList.getLast()));
-    }
-    
-    public PDepNetReaction newPDepNonincludedReactionList() {
-        PDepNetReaction newPDepNetReaction = new PDepNetReaction();
-        pDepNonincludedReactionList.add(newPDepNetReaction);
-        return newPDepNetReaction;
-    }
-    
-    public void deletePDepNonincludedReactionList(PDepNetReaction p_PDepNetReaction) {
-        pDepNonincludedReactionList.remove(p_PDepNetReaction);
-        p_PDepNetReaction=null;
     }
     
     public ListIterator getPDepWellList() {
@@ -664,15 +751,60 @@ public class PDepNetwork {
         return iter;
     }
     
-    public ListIterator getPDepWellListEnd() {
-        return pDepWellList.listIterator(pDepWellList.lastIndexOf(pDepWellList.getLast()));
-    }
+    public boolean getAltered(){
+		return altered;
+	}
     
-    public void deletePDepWellList(PDepWell p_PDepWell) {
-        pDepWellList.remove(p_PDepWell);
-        p_PDepWell=null;
+    public Iterator getNonIncludedSpecies(){
+    	return nonIncludedSpecies.iterator();
     }
-    
+	
+    /*
+	public static void completeNetwork(Species p_species, HashSet hs) {
+		if (p_species == null) return;
+		if (p_species.getPdepPaths() == null) return;
+		
+		Iterator iter = dictionary.values().iterator();
+		while (iter.hasNext()){
+			PDepNetwork pdn = (PDepNetwork)iter.next();
+			if (pdn.nonIncludedSpecies.contains(p_species)){
+				PDepWell pdw = new PDepWell(p_species, p_species.getPdepPaths());
+				
+				pdn.completeNetwork(pdw, hs);
+				//pdn.addPDepWell(pdw);
+				//pdn.nonIncludedSpecies.remove(p_species);
+				
+				pdn.altered = true;
+			}
+			
+		}
+		
+	}
+	
+	private void completeNetwork(PDepWell pdw, HashSet hs) {
+		Iterator iter = pdw.isomer.getPdepPaths().iterator();
+		addPDepWell(pdw);
+		nonIncludedSpecies.remove(pdw.isomer);
+		while (iter.hasNext()){
+			Reaction r = (Reaction)iter.next();
+			Species spe = (Species)r.getStructure().products.get(0);
+			if (r.getProductNumber() == 1 && this.nonIncludedSpecies.contains(spe) && hs.contains(spe)) {
+				PDepWell pdw_new = new PDepWell(spe, spe.getPdepPaths());
+				completeNetwork(pdw_new, hs);
+			}
+		}
+		
+	}
+
+	
+	public static void completeNetwork(HashSet hs) {
+		Iterator iter = hs.iterator();
+		while (iter.hasNext()){
+			Species sp = (Species)iter.next();
+			completeNetwork(sp, hs);
+		}
+	}
+    */
 }
 /*********************************************************************
 	File Path	: RMG\RMG\jing\rxn\PDepNetwork.java
