@@ -87,6 +87,19 @@ public class PDepPathReaction {
         //#]
     }
     
+    public int hashCode(){
+    	return reaction.hashCode();
+    }
+    
+    public boolean equals(Object pDepPathReaction){
+    	if (this == pDepPathReaction) return true;
+    	if (!(pDepPathReaction instanceof PDepPathReaction)) return false;
+    	PDepPathReaction pdpr = (PDepPathReaction)pDepPathReaction;
+    	if (!pdpr.reaction.equals(reaction)) return false;
+    	
+    	return true;
+    }
+    
     //## operation getProductNumber() 
     public int getProductNumber() {
         //#[ operation getProductNumber() 
