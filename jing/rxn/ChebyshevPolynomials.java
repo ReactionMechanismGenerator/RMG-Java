@@ -116,11 +116,53 @@ public class ChebyshevPolynomials {
     		
     		System.exit(0);
     	}
-    	for (int i = 0; i < NT; i++) {
-        	for (int j = 0; j < NP; j++) {
-        		alpha[i][j] = alpha[i][j]+cbp.alpha[i][j];
-        	}
-        } 
+    	
+    	//let us take 10 Gauss-Tchebycheff pivot points
+    	int dT = 10;
+    	int dP = 10;
+    	double [] T_pivot = new double[10];
+    	double [] P_pivot = new double[10];
+    	double [][] k_total = new double[10][10];
+    	
+    	for (int i=1; i<=dT; i++){
+    		T_pivot[i-1] = Math.cos((2*i-1)*Math.PI/2/dT);
+    		T_pivot[i-1] = 2/(T_pivot[i-1]*(1/Tup.getK() - 1/Tlow.getK()) + 1/Tlow.getK() + 1/Tup.getK());
+    	}
+    	
+    	for (int i=1; i<=dP; i++){
+    		
+    		P_pivot[i-1] = Math.cos((2*i - 1)*Math.PI/2/dP);
+    		P_pivot[i-1] = Math.pow(10,( (P_pivot[i-1]*(Math.log10(Pup.getAtm()) -Math.log10(Plow.getAtm())) + Math.log10(Plow.getAtm()) + Math.log10(Pup.getAtm()))/2 ));
+    	}
+    	
+    	for (int i=0; i<dT; i++){
+    		for (int j=0; j<dP; j++){
+    			k_total[i][j] = Math.log10(calculateRate(new Temperature(T_pivot[i],"K"),new Pressure(P_pivot[j],"atm")) + cbp.calculateRate(new Temperature(T_pivot[i],"K"),new Pressure(P_pivot[j],"atm")));
+    		}
+    	}
+    	
+    	for(int n=0; n<NT; n++){
+    		for (int m=0; m<NP; m++){
+    			double anm = 0;
+    			for (int i=0; i<dT; i++){
+    				for (int j=0; j<dP; j++){
+    					anm = anm + k_total[i][j] * calculatePhi((n+1), Math.cos((i+0.5)*Math.PI/dT)) * calculatePhi((m+1), Math.cos((j+0.5)*Math.PI/dP));
+    				}
+    			}
+    			alpha[n][m] = anm*4/dT/dP;
+    		}
+    	}
+    	
+    	for (int i=0 ;i<NT; i++){
+    		alpha[i][0] = alpha[i][0]/2.0;
+    	}
+    	
+    	for (int i=0 ;i<NP; i++){
+    		alpha[0][i] = alpha[0][i]/2.0;
+    	}
+    	
+    	return;
+    	
     }
     
     //## operation calculatePhi(int,double) 
