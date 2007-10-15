@@ -58,7 +58,7 @@ import jing.chemParser.*;
 public class ReactionModelGenerator {
 
     protected LinkedList timeStep;		//## attribute timeStep
-    
+    protected ReactionModel reactionModel;      //gmagoon 9/24/07
     protected String workingDirectory;		//## attribute workingDirectory
 
     protected ReactionSystem reactionSystem;
@@ -70,6 +70,11 @@ public class ReactionModelGenerator {
     protected InitialStatus initialStatus;//svp
     protected double rtol;//svp
     protected double atol;
+    protected PrimaryReactionLibrary primaryReactionLibrary;//9/24/07 gmagoon
+    protected ReactionModelEnlarger reactionModelEnlarger;//9/24/07 gmagoon
+    protected LinkedHashSet speciesSeed;//9/24/07 gmagoon;
+    protected ReactionGenerator reactionGenerator;//9/24/07 gmagoon
+    protected LibraryReactionGenerator lrg;// = new LibraryReactionGenerator();//9/24/07 gmagoon: moved from ReactionSystem.java;10/4/07 gmagoon: postponed initialization of lrg til later
 
 
 	protected boolean restart = false;
@@ -104,11 +109,12 @@ public class ReactionModelGenerator {
 
         	TemperatureModel temperatureModel = null;
         	PressureModel pressureModel = null;
-        	ReactionModelEnlarger reactionModelEnlarger = null;
+  //      	ReactionModelEnlarger reactionModelEnlarger = null;//10/9/07 gmagoon: commented out: unneeded now and causes scope problems
         	
         	FinishController finishController = null;
         	DynamicSimulator dynamicSimulator = null;
-        	PrimaryReactionLibrary primaryReactionLibrary = null;
+        	//PrimaryReactionLibrary primaryReactionLibrary = null;//10/14/07 gmagoon: see below
+                setPrimaryReactionLibrary(null);//10/14/07 gmagoon: changed to use setPrimaryReactionLibrary
         	double [] conversionSet = new double[50];
 			String line = ChemParser.readMeaningfulLine(reader);
         	/*if (line.startsWith("Restart")){
@@ -189,7 +195,9 @@ public class ReactionModelGenerator {
 
         	// read in reactants
         	line = ChemParser.readMeaningfulLine(reader);
-        	LinkedHashSet speciesSeed = new LinkedHashSet();
+                //10/4/07 gmagoon: moved to initializeCoreEdgeReactionModel
+        	//LinkedHashSet p_speciesSeed = new LinkedHashSet();//gmagoon 10/4/07: changed to p_speciesSeed
+                //setSpeciesSeed(p_speciesSeed);//gmagoon 10/4/07: added
         	LinkedHashMap speciesSet = new LinkedHashMap();
         	LinkedHashMap speciesStatus = new LinkedHashMap();
 			int speciesnum = 1;
@@ -242,7 +250,7 @@ public class ReactionModelGenerator {
         			Species species = Species.make(name,cg);
         			species.setReactivity(IsReactive); // GJB
            			speciesSet.put(name, species);
-        			speciesSeed.add(species);
+        			getSpeciesSeed().add(species);
         			double flux = 0;
         			int species_type = 1; // reacted species
         			SpeciesStatus ss = new SpeciesStatus(species,species_type,concentration,flux);
@@ -545,29 +553,33 @@ public class ReactionModelGenerator {
                                 temp = pathST.nextToken();
                                 String path = pathST.nextToken();
                                 if (Ilib==0) {
-                                	primaryReactionLibrary = new PrimaryReactionLibrary(name, path);
+                                	//primaryReactionLibrary = new PrimaryReactionLibrary(name, path);
+                                        setPrimaryReactionLibrary(new PrimaryReactionLibrary(name, path));//10/14/07 gmagoon: changed to use setPrimaryReactionLibrary
                                 	Ilib++; 	
                                 }
                                 else {
-                                	primaryReactionLibrary.appendPrimaryReactionLibrary(name,path);
+                                	//primaryReactionLibrary.appendPrimaryReactionLibrary(name,path);
+                                        getPrimaryReactionLibrary().appendPrimaryReactionLibrary(name,path);//10/14/07 gmagoon: changed to use getPrimaryReactionLibrary; check to make sure this is valid
                                 	Ilib++;//just in case anybody wants to track how many are processed
                                  }
                                 	line = ChemParser.readMeaningfulLine(reader);
                         	}
-                        	System.out.println("Primary Reaction Libraries in use: " +primaryReactionLibrary.getName());
+                        	System.out.println("Primary Reaction Libraries in use: " +getPrimaryReactionLibrary().getName());//10/14/07 gmagoon: changed to use getPrimaryReactionLibrary
                         }	
                          else {
-                                primaryReactionLibrary = null;
+                                //primaryReactionLibrary = null;
+                                setPrimaryReactionLibrary(null);//10/14/07 gmagoon: changed to use setPrimaryReactionLibrary; check to make sure this is valid
                         }
                 }
 
         	else throw new InvalidSymbolException("condition.txt: can't find PrimaryReactionLibrary!");
 
         	in.close();
-
-        	ReactionGenerator reactionGenerator = new TemplateReactionGenerator();
-
-        	reactionSystem = new ReactionSystem(temperatureModel, pressureModel, reactionModelEnlarger, finishController, dynamicSimulator, primaryReactionLibrary, reactionGenerator, speciesSeed, initialStatus);
+                //10/4/07 gmagoon: moved to modelGeneration()
+               //ReactionGenerator p_reactionGenerator = new TemplateReactionGenerator();//10/4/07 gmagoon: changed to p_reactionGenerator from reactionGenerator
+               // setReactionGenerator(p_reactionGenerator);//10/4/07 gmagoon: added
+                setLibraryReactionGenerator(new LibraryReactionGenerator());//10/10/07 gmagoon: moved from modelGeneration (sequence lrg increases species id, and the different sequence was causing problems as main species id was 6 instead of 1)
+        	reactionSystem = new ReactionSystem(temperatureModel, pressureModel, reactionModelEnlarger, finishController, dynamicSimulator, getPrimaryReactionLibrary(), getReactionGenerator(), getSpeciesSeed(), initialStatus, getReactionModel(),lrg);
 
 		}
         catch (IOException e) {
@@ -576,7 +588,9 @@ public class ReactionModelGenerator {
         }
         //#]
     }
-
+    public void setReactionModel(ReactionModel p_ReactionModel) {
+        reactionModel = p_ReactionModel;
+    }
 	 
 
 	
@@ -591,6 +605,10 @@ public class ReactionModelGenerator {
         //long begin_t = System.currentTimeMillis();
 		try{
         	ChemGraph.readForbiddenStructure();
+                setSpeciesSeed(new LinkedHashSet());//10/4/07 gmagoon moved from initializeCoreEdgeReactionModel
+                setReactionGenerator(new TemplateReactionGenerator());//10/4/07 gmagoon: moved inside initializeReactionSystem
+              //  setLibraryReactionGenerator(new LibraryReactionGenerator());//10/10/07 gmagoon: moved after initializeReactionSystem
+              //  initializeCoreEdgeReactionModel();//10/4/07 gmagoon moved from below to run initializeCoreEdgeReactionModel before initializeReactionSystem
          	initializeReactionSystem();
         }
         catch (IOException e) {
@@ -612,7 +630,7 @@ public class ReactionModelGenerator {
 
 			}
 		}*/
-		reactionSystem.initializeCoreEdgeReactionModel();
+		initializeCoreEdgeReactionModel();//10/4/07 gmagoon: moved before initializeReactionSystem
         reactionSystem.initializePDepNetwork();
 		
 		
@@ -641,15 +659,15 @@ public class ReactionModelGenerator {
         //System.exit(0);
         boolean terminated = reactionSystem.isReactionTerminated();
         boolean valid = reactionSystem.isModelValid();
-		System.out.println("The model core has " + ((CoreEdgeReactionModel)reactionSystem.getReactionModel()).getReactedReactionSet().size() + " reactions and "+ ((CoreEdgeReactionModel)reactionSystem.getReactionModel()).getReactedSpeciesSet().size() + " species.");
-		System.out.println("The model edge has " + ((CoreEdgeReactionModel)reactionSystem.getReactionModel()).getUnreactedReactionSet().size() + " reactions and "+ ((CoreEdgeReactionModel)reactionSystem.getReactionModel()).getUnreactedSpeciesSet().size() + " species.");
+		System.out.println("The model core has " + ((CoreEdgeReactionModel)getReactionModel()).getReactedReactionSet().size() + " reactions and "+ ((CoreEdgeReactionModel)getReactionModel()).getReactedSpeciesSet().size() + " species.");
+		System.out.println("The model edge has " + ((CoreEdgeReactionModel)getReactionModel()).getUnreactedReactionSet().size() + " reactions and "+ ((CoreEdgeReactionModel)getReactionModel()).getUnreactedSpeciesSet().size() + " species.");
 
 		
 		StringBuilder print_info = Global.diagnosticInfo;
 		print_info.append("\nMolecule \t Flux\t\tTime\t \t\t \t Core \t \t Edge \t \t memory\n");
 
 		print_info.append(" \t moleular \t characteristic \t findspecies \t moveUnreactedToReacted \t enlarger \t restart1 \t totalEnlarger \t resetSystem  \t readSolverFile\t writeSolverFile \t justSolver \t SolverIterations \t solverSpeciesStatus \t Totalsolver \t gc  \t restart+diagnosis \t chemkin thermo \t chemkin reactions \t validitytester \t Species \t Reactions\t Species\t Reactions \t memory used  \t allSpecies \t TotalTime \t findRateConstant\t identifyReactedSites \t reactChemGraph \t makespecies\t CheckReverseReaction \t makeTemplateReaction \t getReactionfromStruc \t genReverseFromReac");
-		print_info.append("\t\t\t\t\t\t\t" + ((CoreEdgeReactionModel)reactionSystem.getReactionModel()).getReactedSpeciesSet().size()+ "\t" + ((CoreEdgeReactionModel)reactionSystem.getReactionModel()).getReactedReactionSet().size() + "\t" + ((CoreEdgeReactionModel)reactionSystem.getReactionModel()).getUnreactedSpeciesSet().size() + "\t" + ((CoreEdgeReactionModel)reactionSystem.getReactionModel()).getUnreactedReactionSetIncludingReverseSize() + "\t"+Global.makeSpecies+"\n");
+		print_info.append("\t\t\t\t\t\t\t" + ((CoreEdgeReactionModel)getReactionModel()).getReactedSpeciesSet().size()+ "\t" + ((CoreEdgeReactionModel)getReactionModel()).getReactedReactionSet().size() + "\t" + ((CoreEdgeReactionModel)getReactionModel()).getUnreactedSpeciesSet().size() + "\t" + ((CoreEdgeReactionModel)getReactionModel()).getUnreactedReactionSetIncludingReverseSize() + "\t"+Global.makeSpecies+"\n");
 
 
 		double solverMin = 0; 
@@ -675,7 +693,7 @@ public class ReactionModelGenerator {
 				
 				writeCoreSpecies();
 				double pt = System.currentTimeMillis();
-				reactionSystem.enlargeReactionModel();
+				enlargeReactionModel();
 				double totalEnlarger = (System.currentTimeMillis() - pt)/1000/60;
 				
 				//PDepNetwork.completeNetwork(reactionSystem.reactionModel.getSpeciesSet());
@@ -714,14 +732,14 @@ public class ReactionModelGenerator {
         		System.out.println(conv);
 
 			    System.out.println("Running Time is: " + String.valueOf((System.currentTimeMillis()-tAtInitialization)/1000/60) + " minutes.");
-				System.out.println("The model edge has " + ((CoreEdgeReactionModel)reactionSystem.getReactionModel()).getUnreactedReactionSet().size() + " reactions and "+ ((CoreEdgeReactionModel)reactionSystem.getReactionModel()).getUnreactedSpeciesSet().size() + " species.");
+				System.out.println("The model edge has " + ((CoreEdgeReactionModel)getReactionModel()).getUnreactedReactionSet().size() + " reactions and "+ ((CoreEdgeReactionModel)getReactionModel()).getUnreactedSpeciesSet().size() + " species.");
 				if (reactionSystem.getDynamicSimulator() instanceof JDASPK){
 					JDASPK solver = (JDASPK)reactionSystem.getDynamicSimulator();
-					System.out.println("The model core has " + solver.getReactionSize() + " reactions and "+ ((CoreEdgeReactionModel)reactionSystem.getReactionModel()).getReactedSpeciesSet().size() + " species.");
+					System.out.println("The model core has " + solver.getReactionSize() + " reactions and "+ ((CoreEdgeReactionModel)getReactionModel()).getReactedSpeciesSet().size() + " species.");
 				}
 				else{
 					JDASSL solver = (JDASSL)reactionSystem.getDynamicSimulator();
-					System.out.println("The model core has " + solver.getReactionSize() + " reactions and "+ ((CoreEdgeReactionModel)reactionSystem.getReactionModel()).getReactedSpeciesSet().size() + " species.");
+					System.out.println("The model core has " + solver.getReactionSize() + " reactions and "+ ((CoreEdgeReactionModel)getReactionModel()).getReactedSpeciesSet().size() + " species.");
 				
 				}
 					
@@ -747,7 +765,7 @@ public class ReactionModelGenerator {
 				
 				int allSpecies, allReactions;
 				allSpecies = SpeciesDictionary.getInstance().size();
-				print_info.append(totalEnlarger + "\t" + resetSystem + "\t" + Global.readSolverFile + "\t" + Global.writeSolverFile + "\t" + Global.solvertime + "\t" + Global.solverIterations + "\t" + Global.speciesStatusGenerator +  "\t" + solverMin + "\t"  + gc + "\t"  + restart2 + "\t" + Global.chemkinThermo + '\t' + Global.chemkinReaction + "\t" + vTester + "\t" + ((CoreEdgeReactionModel)reactionSystem.getReactionModel()).getReactedSpeciesSet().size()+ "\t" + ((CoreEdgeReactionModel)reactionSystem.getReactionModel()).getReactedReactionSet().size() + "\t" + ((CoreEdgeReactionModel)reactionSystem.getReactionModel()).getUnreactedSpeciesSet().size() + "\t" + ((CoreEdgeReactionModel)reactionSystem.getReactionModel()).getUnreactedReactionSetIncludingReverseSize() + "\t" + mU + "\t" + allSpecies + "\t" + (System.currentTimeMillis()-Global.tAtInitialization)/1000/60 + "\t"+ String.valueOf(Global.RT_findRateConstant)+"\t"+Global.RT_identifyReactedSites+"\t"+Global.RT_reactChemGraph+"\t"+Global.makeSpecies+"\t"+Global.checkReactionReverse+"\t"+Global.makeTR+ "\t" + Global.getReacFromStruc + "\t" + Global.generateReverse+"\n");
+				print_info.append(totalEnlarger + "\t" + resetSystem + "\t" + Global.readSolverFile + "\t" + Global.writeSolverFile + "\t" + Global.solvertime + "\t" + Global.solverIterations + "\t" + Global.speciesStatusGenerator +  "\t" + solverMin + "\t"  + gc + "\t"  + restart2 + "\t" + Global.chemkinThermo + '\t' + Global.chemkinReaction + "\t" + vTester + "\t" + ((CoreEdgeReactionModel)getReactionModel()).getReactedSpeciesSet().size()+ "\t" + ((CoreEdgeReactionModel)getReactionModel()).getReactedReactionSet().size() + "\t" + ((CoreEdgeReactionModel)getReactionModel()).getUnreactedSpeciesSet().size() + "\t" + ((CoreEdgeReactionModel)getReactionModel()).getUnreactedReactionSetIncludingReverseSize() + "\t" + mU + "\t" + allSpecies + "\t" + (System.currentTimeMillis()-Global.tAtInitialization)/1000/60 + "\t"+ String.valueOf(Global.RT_findRateConstant)+"\t"+Global.RT_identifyReactedSites+"\t"+Global.RT_reactChemGraph+"\t"+Global.makeSpecies+"\t"+Global.checkReactionReverse+"\t"+Global.makeTR+ "\t" + Global.getReacFromStruc + "\t" + Global.generateReverse+"\n");
 				
         	}
         	reactionChanged = false;
@@ -804,11 +822,11 @@ public class ReactionModelGenerator {
         		System.out.println(runTime.freeMemory());
         		if (reactionSystem.getDynamicSimulator() instanceof JDASPK){
 					JDASPK solver = (JDASPK)reactionSystem.getDynamicSimulator();
-					System.out.println("The model core has " + solver.getReactionSize() + " reactions and "+ ((CoreEdgeReactionModel)reactionSystem.getReactionModel()).getReactedSpeciesSet().size() + " species.");
+					System.out.println("The model core has " + solver.getReactionSize() + " reactions and "+ ((CoreEdgeReactionModel)getReactionModel()).getReactedSpeciesSet().size() + " species.");
         		}
 				else{
 					JDASSL solver = (JDASSL)reactionSystem.getDynamicSimulator();
-					System.out.println("The model core has " + solver.getReactionSize() + " reactions and "+ ((CoreEdgeReactionModel)reactionSystem.getReactionModel()).getReactedSpeciesSet().size() + " species.");
+					System.out.println("The model core has " + solver.getReactionSize() + " reactions and "+ ((CoreEdgeReactionModel)getReactionModel()).getReactedSpeciesSet().size() + " species.");
         		}
 				
         	}
@@ -836,7 +854,7 @@ public class ReactionModelGenerator {
          
         }
 
-        Chemkin.writeChemkinInputFile(reactionSystem.getReactionModel(),reactionSystem.getPresentStatus());
+        Chemkin.writeChemkinInputFile(getReactionModel(),reactionSystem.getPresentStatus());
         System.out.println("Model Generation Completed");
 		
 		
@@ -894,7 +912,7 @@ public class ReactionModelGenerator {
 				//if (reverse != null) reactionSet.add(reverse);
 				line = ChemParser.readMeaningfulLine(reader);
 			}
-			((CoreEdgeReactionModel)reactionSystem.reactionModel).addReactionSet(reactionSet);
+			((CoreEdgeReactionModel)getReactionModel()).addReactionSet(reactionSet);
 		}
 		catch (IOException e){
 			System.out.println("Could not read the corespecies restart file");
@@ -944,7 +962,7 @@ public class ReactionModelGenerator {
 				line = ChemParser.readMeaningfulLine(reader);
 				i=i+1;
 			}
-			((CoreEdgeReactionModel)reactionSystem.reactionModel).addReactedReactionSet(reactionSet);
+			((CoreEdgeReactionModel)getReactionModel()).addReactedReactionSet(reactionSet);
 		}
 		catch (IOException e){
 			System.out.println("Could not read the coreReactions restart file");
@@ -966,9 +984,9 @@ public class ReactionModelGenerator {
 			LinkedHashSet reactionSet = new LinkedHashSet();
 			OuterLoop:
 			while (line != null){
-				Reaction reaction = ChemParser.parseArrheniusReaction(dictionary,line,1,1,((CoreEdgeReactionModel)reactionSystem.reactionModel));
+				Reaction reaction = ChemParser.parseArrheniusReaction(dictionary,line,1,1,((CoreEdgeReactionModel)getReactionModel()));
 				
-				if (((CoreEdgeReactionModel)reactionSystem.reactionModel).categorizeReaction(reaction)==-1){
+				if (((CoreEdgeReactionModel)getReactionModel()).categorizeReaction(reaction)==-1){
 					boolean added = reactionSet.add(reaction);
 					if (!added){
 						found = false;
@@ -1012,7 +1030,7 @@ public class ReactionModelGenerator {
 
 				line = ChemParser.readMeaningfulLine(reader);
 			}
-			((CoreEdgeReactionModel)reactionSystem.reactionModel).addReactionSet(reactionSet);
+			((CoreEdgeReactionModel)getReactionModel()).addReactionSet(reactionSet);
 		}
 		catch (IOException e){
 			System.out.println("Could not read the corespecies restart file");
@@ -1099,7 +1117,7 @@ public class ReactionModelGenerator {
 			if (reactionSystem == null){
 				//ReactionSystem reactionSystem = new ReactionSystem();
 			}
-			reactionSystem.reactionModel = new CoreEdgeReactionModel();
+			setReactionModel(new CoreEdgeReactionModel());//10/4/07 gmagoon:changed to setReactionModel
 			while (line!=null) {
 
     			StringTokenizer st = new StringTokenizer(line);
@@ -1109,7 +1127,7 @@ public class ReactionModelGenerator {
 				if (spe == null)
 					System.out.println("There was no species with ID "+ID +" in the species dictionary");
 
-				((CoreEdgeReactionModel)reactionSystem.reactionModel).addReactedSpecies(spe);
+				((CoreEdgeReactionModel)getReactionModel()).addReactedSpecies(spe);
 				line = ChemParser.readMeaningfulLine(reader);
 			}
 
@@ -1324,7 +1342,7 @@ public class ReactionModelGenerator {
 				if (spe == null)
 					System.out.println("There was no species with ID "+ID +" in the species dictionary");
 				//reactionSystem.reactionModel = new CoreEdgeReactionModel();
-				((CoreEdgeReactionModel)reactionSystem.reactionModel).addUnreactedSpecies(spe);
+				((CoreEdgeReactionModel)getReactionModel()).addUnreactedSpecies(spe);
 				line = ChemParser.readMeaningfulLine(reader);
 			}
 
@@ -1452,7 +1470,7 @@ public class ReactionModelGenerator {
 		try{
 			File coreSpecies = new File ("Restart/edgeReactions.txt");
 			FileWriter fw = new FileWriter(coreSpecies);
-			for(Iterator iter=((CoreEdgeReactionModel)reactionSystem.reactionModel).getUnreactedReactionSet().iterator();iter.hasNext();){
+			for(Iterator iter=((CoreEdgeReactionModel)getReactionModel()).getUnreactedReactionSet().iterator();iter.hasNext();){
 
 				Reaction reaction = (Reaction) iter.next();
 				//if (reaction.getDirection()==1){
@@ -1478,7 +1496,7 @@ public class ReactionModelGenerator {
 		try{
 			File allReactions = new File ("Restart/allReactions.txt");
 			FileWriter fw = new FileWriter(allReactions);
-			for(Iterator iter=reactionSystem.reactionModel.getReaction();iter.hasNext();){
+			for(Iterator iter=getReactionModel().getReaction();iter.hasNext();){
 
 				Reaction reaction = (Reaction) iter.next();
 
@@ -1487,7 +1505,7 @@ public class ReactionModelGenerator {
 
 			}
 
-			for(Iterator iter=((CoreEdgeReactionModel)reactionSystem.reactionModel).getUnreactedReactionSet().iterator();iter.hasNext();){
+			for(Iterator iter=((CoreEdgeReactionModel)getReactionModel()).getUnreactedReactionSet().iterator();iter.hasNext();){
 
 				Reaction reaction = (Reaction) iter.next();
 				//if (reaction.getDirection()==1){
@@ -1512,7 +1530,7 @@ public class ReactionModelGenerator {
 		try{
 			File edgeSpecies = new File ("Restart/edgeSpecies.txt");
 			FileWriter fw = new FileWriter(edgeSpecies);
-			for(Iterator iter=((CoreEdgeReactionModel)reactionSystem.reactionModel).getUnreactedSpeciesSet().iterator();iter.hasNext();){
+			for(Iterator iter=((CoreEdgeReactionModel)getReactionModel()).getUnreactedSpeciesSet().iterator();iter.hasNext();){
 				Species species = (Species) iter.next();
 				restartFileContent.append(species.getID());
 				restartFileContent.append( "\n");
@@ -1537,7 +1555,7 @@ public class ReactionModelGenerator {
 		try{
 			File coreSpecies = new File ("Restart/coreReactions.txt");
 			FileWriter fw = new FileWriter(coreSpecies);
-			for(Iterator iter=reactionSystem.reactionModel.getReaction();iter.hasNext();){
+			for(Iterator iter=getReactionModel().getReaction();iter.hasNext();){
 
 				Reaction reaction = (Reaction) iter.next();
 				if (reaction.getDirection()==1){
@@ -1563,7 +1581,7 @@ public class ReactionModelGenerator {
 		try{
 			File coreSpecies = new File ("Restart/coreSpecies.txt");
 			FileWriter fw = new FileWriter(coreSpecies);
-			for(Iterator iter=reactionSystem.reactionModel.getSpecies();iter.hasNext();){
+			for(Iterator iter=getReactionModel().getSpecies();iter.hasNext();){
 				Species species = (Species) iter.next();
 				restartFileContent.append(species.getID());
 				restartFileContent.append( "\n");//("+ speciesCount + ") "+species.getChemkinName() + " \n ";// + reactionSystem.getPresentConcentration(species) + " (mol/cm3) \n";
@@ -1621,10 +1639,177 @@ public LinkedList getSpeciesList() {
         return reactionSystem;
     }
 
+    //added by gmagoon 9/24/07
     public void setReactionSystem(ReactionSystem p_ReactionSystem) {
         reactionSystem = p_ReactionSystem;
     }
+    
+    //copied from ReactionSystem.java by gmagoon 9/24/07
+    public ReactionModel getReactionModel() {
+        return reactionModel;
+    }
+    
+    //## operation initializeCoreEdgeModelWithPRL()
+    //9/24/07 gmagoon: moved from ReactionSystem.java
+    public void initializeCoreEdgeModelWithPRL() {
+        //#[ operation initializeCoreEdgeModelWithPRL()
+        initializeCoreEdgeModelWithoutPRL();
 
+        CoreEdgeReactionModel cerm = (CoreEdgeReactionModel)getReactionModel();
+
+        LinkedHashSet primarySpeciesSet = getPrimaryReactionLibrary().getSpeciesSet(); //10/14/07 gmagoon: changed to use getPrimaryReactionLibrary
+        LinkedHashSet primaryReactionSet = getPrimaryReactionLibrary().getReactionSet();
+        cerm.addReactedSpeciesSet(primarySpeciesSet);
+        cerm.addPrimaryReactionSet(primaryReactionSet);
+
+        LinkedHashSet newReactions = getReactionGenerator().react(cerm.getReactedSpeciesSet());
+        
+        if (reactionModelEnlarger instanceof RateBasedRME)	
+        	cerm.addReactionSet(newReactions);
+    	else {
+    		
+        	Iterator iter = newReactions.iterator();
+        	while (iter.hasNext()){
+        		Reaction r = (Reaction)iter.next();
+        		if (r.getReactantNumber() == 2 && r.getProductNumber() == 2){
+        			cerm.addReaction(r);
+        		}
+        	}
+    	}
+        
+
+      
+
+        
+       
+        return;
+
+        //#]
+    }
+
+    //## operation initializeCoreEdgeModelWithoutPRL()
+    //9/24/07 gmagoon: moved from ReactionSystem.java
+    protected void initializeCoreEdgeModelWithoutPRL() {
+        //#[ operation initializeCoreEdgeModelWithoutPRL()
+    	LinkedHashSet reactionSet = getReactionGenerator().react(getSpeciesSeed());
+       // LinkedHashSet reactionSetTwo = getLibraryReactionGenerator().react(getSpeciesSeed()); //gmagoon: added for testing around 10/5/07
+    	reactionSet.addAll(getLibraryReactionGenerator().react(getSpeciesSeed()));
+    	
+    	if (reactionModelEnlarger instanceof RateBasedRME)	
+    		setReactionModel(new CoreEdgeReactionModel(new LinkedHashSet(getSpeciesSeed()),reactionSet));//10/4/07 gmagoon: changed to use setReactionModel
+    	else {
+    		setReactionModel(new CoreEdgeReactionModel(new LinkedHashSet(getSpeciesSeed())));//10/4/07 gmagoon: changed to use setReactionModel
+        	Iterator iter = reactionSet.iterator();
+        	while (iter.hasNext()){
+        		Reaction r = (Reaction)iter.next();
+        		if (r.getReactantNumber() == 2 && r.getProductNumber() == 2){
+        			((CoreEdgeReactionModel)getReactionModel()).addReaction(r);
+        		}
+        	}
+    	}
+        //10/9/07 gmagoon: copy reactionModel to reactionSystem; there may still be scope problems, particularly in above elseif statement
+        reactionSystem.setReactionModel(getReactionModel());
+        if (getReactionModel().isEmpty() && reactionModelEnlarger instanceof RateBasedRME) {
+        	LinkedHashSet us = ((CoreEdgeReactionModel)getReactionModel()).getUnreactedSpeciesSet();
+        	LinkedHashSet rs = ((CoreEdgeReactionModel)getReactionModel()).getReactedSpeciesSet();
+        	LinkedHashSet newReactions = new LinkedHashSet();
+
+        	for (Iterator iter = us.iterator(); iter.hasNext(); ) {
+        		Species spe = (Species)iter.next();
+        		rs.add(spe);
+        		newReactions.addAll(getReactionGenerator().react(rs,spe));
+        		newReactions.addAll(lrg.react(rs,spe));
+        		iter.remove();
+        	}
+
+        	((CoreEdgeReactionModel)getReactionModel()).addReactionSet(newReactions);
+        	((CoreEdgeReactionModel)getReactionModel()).moveFromUnreactedToReactedReaction();
+        }
+        else if (getReactionModel().isEmpty() && reactionModelEnlarger instanceof RateBasedPDepRME) {
+        	while (getReactionModel().isEmpty()){
+        		reactionSystem.initializePDepNetwork();//9/25/07 gmagoon: unresolved question: what to do with initializePDepNetwork? leave in ReactionSystem class or move elsewhere (e.g. ReactionModelGenerator)?;//10/14/07 gmagoon: I am leaning towards leaving it where it is since it is used in solveReactionSystem, but it probably warrants further investigation
+        		reactionSystem.appendUnreactedSpeciesStatus(initialStatus, Global.temperature);
+        		enlargeReactionModel();
+        	}
+        }
+        //10/9/07 gmagoon: copy reactionModel to reactionSystem; there may still be scope problems, particularly in above elseif statement
+        reactionSystem.setReactionModel(getReactionModel());
+        return;
+
+        //#]
+    }
+
+    //## operation initializeCoreEdgeReactionModel()
+    //9/24/07 gmagoon: moved from ReactionSystem.java
+    public void initializeCoreEdgeReactionModel() {
+       // setSpeciesSeed(new LinkedHashSet());//10/4/07 gmagoon:moved from initializeReactionSystem; later moved to modelGeneration()
+        //#[ operation initializeCoreEdgeReactionModel()
+        if (hasPrimaryReactionLibrary()) initializeCoreEdgeModelWithPRL();
+        else initializeCoreEdgeModelWithoutPRL();
+
+        //#]
+    }
+    
+    //9/24/07 gmagoon: copied from ReactionSystem.java
+    public ReactionGenerator getReactionGenerator() {
+        return reactionGenerator;
+    }
+    
+    //10/4/07 gmagoon: moved from ReactionSystem.java
+    public void setReactionGenerator(ReactionGenerator p_ReactionGenerator) {
+      reactionGenerator = p_ReactionGenerator;
+    }
+    
+    //9/25/07 gmagoon: moved from ReactionSystem.java
+    //## operation enlargeReactionModel()
+    public void enlargeReactionModel() {
+        //#[ operation enlargeReactionModel()
+        if (reactionModelEnlarger == null) throw new NullPointerException("ReactionModelEnlarger");
+
+        reactionModelEnlarger.enlargeReactionModel(reactionSystem, getReactionModel());
+
+        return;
+        //#]
+    }
+    
+    //9/25/07 gmagoon: moved from ReactionSystem.java
+        //## operation hasPrimaryReactionLibrary()
+    public boolean hasPrimaryReactionLibrary() {
+        //#[ operation hasPrimaryReactionLibrary()
+        if (primaryReactionLibrary == null) return false;
+        return (primaryReactionLibrary.size() > 0);
+        //#]
+    }
+    
+    //9/25/07 gmagoon: moved from ReactionSystem.java
+    public PrimaryReactionLibrary getPrimaryReactionLibrary() {
+        return primaryReactionLibrary;
+    }
+
+    //9/25/07 gmagoon: moved from ReactionSystem.java
+    public void setPrimaryReactionLibrary(PrimaryReactionLibrary p_PrimaryReactionLibrary) {
+        primaryReactionLibrary = p_PrimaryReactionLibrary;
+    }
+    
+    //10/4/07 gmagoon: added
+    public LinkedHashSet getSpeciesSeed() {
+        return speciesSeed;
+    }
+
+    //10/4/07 gmagoon: added
+    public void setSpeciesSeed(LinkedHashSet p_speciesSeed) {
+        speciesSeed = p_speciesSeed;
+    }
+
+    //10/4/07 gmagoon: added
+    public LibraryReactionGenerator getLibraryReactionGenerator() {
+        return lrg;
+    }
+
+    //10/4/07 gmagoon: added
+    public void setLibraryReactionGenerator(LibraryReactionGenerator p_lrg) {
+        lrg = p_lrg;
+    }
 }
 /*********************************************************************
 	File Path	: RMG\RMG\jing\rxnSys\ReactionModelGenerator.java

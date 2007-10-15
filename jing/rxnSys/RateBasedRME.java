@@ -76,10 +76,11 @@ public class RateBasedRME implements ReactionModelEnlarger {
 			
 	}
 	
+    //9/25/07 gmagoon: added ReactionModel parameter    
     //## operation enlargeReactionModel(ReactionSystem) 
-    public void enlargeReactionModel(ReactionSystem p_reactionSystem) {
+    public void enlargeReactionModel(ReactionSystem p_reactionSystem, ReactionModel rm) {
         //#[ operation enlargeReactionModel(ReactionSystem) 
-        ReactionModel rm = p_reactionSystem.getReactionModel();
+        //ReactionModel rm = p_reactionSystem.getReactionModel();
         if (!(rm instanceof CoreEdgeReactionModel)) throw new InvalidReactionModelTypeException();
         CoreEdgeReactionModel cerm = (CoreEdgeReactionModel)rm;
         

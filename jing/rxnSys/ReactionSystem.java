@@ -65,19 +65,21 @@ public class ReactionSystem {
     protected FinishController finishController;
     protected InitialStatus initialStatus;
     protected PressureModel pressureModel;
-    protected PrimaryReactionLibrary primaryReactionLibrary;
-    protected ReactionGenerator reactionGenerator;
+    protected PrimaryReactionLibrary primaryReactionLibrary;//10/14/07 gmagoon: restored (I had commented out)
+    protected ReactionGenerator reactionGenerator;//10/9/07 gmagoon: uncommented out for use in RateBasedPDepRME (I had commented out a week or two ago)
     protected ReactionModel reactionModel;
     protected ReactionModelEnlarger reactionModelEnlarger;
     protected LinkedList systemSnapshot;
     protected TemperatureModel temperatureModel;
     protected double [] reactionFlux;
-    protected LibraryReactionGenerator lrg = new LibraryReactionGenerator();
+    protected LibraryReactionGenerator lrg;//9/24/07 gmagoon: moved to ReactionModelGenerator.java; 9/25/07 variable is passed from ReactionModelGenerator
 
     // Constructors
 
     //## operation ReactionSystem(TemperatureModel,PressureModel,ReactionModelEnlarger,FinishController,DynamicSimulator,PrimaryReactionLibrary,ReactionGenerator,HashSet,InitialStatus)
-    public  ReactionSystem(TemperatureModel p_temperatureModel, PressureModel p_pressureModel, ReactionModelEnlarger p_reactionModelEnlarger, FinishController p_finishController, DynamicSimulator p_dynamicSimulator, PrimaryReactionLibrary p_primaryReactionLibrary, ReactionGenerator p_reactionGenerator, LinkedHashSet p_speciesSeed, InitialStatus p_initialStatus) {
+    //9/24/07 gmagoon: reactionModel changed to parameter passed to class; setReactionModel method removed; 10/4/07: this was incorrect; setReactionModel restored
+    //9/25/07 gmagoon: removed primaryReactionLibrary from parameters
+    public  ReactionSystem(TemperatureModel p_temperatureModel, PressureModel p_pressureModel, ReactionModelEnlarger p_reactionModelEnlarger, FinishController p_finishController, DynamicSimulator p_dynamicSimulator, PrimaryReactionLibrary p_primaryReactionLibrary, ReactionGenerator p_reactionGenerator, LinkedHashSet p_speciesSeed, InitialStatus p_initialStatus, ReactionModel p_reactionModel, LibraryReactionGenerator p_libraryReactionGenerator) {
         {
             systemSnapshot=new LinkedList();
         }
@@ -85,12 +87,14 @@ public class ReactionSystem {
         temperatureModel = p_temperatureModel;
         pressureModel = p_pressureModel;
         setFinishController(p_finishController);
+        setReactionModel(p_reactionModel);//10/4/07 gmagoon: changed to use setReactionModel
         reactionModelEnlarger = p_reactionModelEnlarger;
         initialStatus = p_initialStatus;
         dynamicSimulator = p_dynamicSimulator;
-        primaryReactionLibrary = p_primaryReactionLibrary;
-        reactionGenerator = p_reactionGenerator;
+        primaryReactionLibrary = p_primaryReactionLibrary;//10/14/07 gmagoon: restored (I had commented out)
+        reactionGenerator = p_reactionGenerator; //10/4/07 gmagoon: no longer needed here;//10/9/07 gmagoon needed in RateBasedPDepRME
         originalReactant = p_speciesSeed;
+        lrg = p_libraryReactionGenerator;
         systemSnapshot.add(initialStatus);
 		
 		if (!checkInitialConsistency()) {
@@ -191,6 +195,7 @@ public class ReactionSystem {
     }
 
     //## operation appendUnreactedSpeciesStatus(SystemSnapshot,Temperature)
+    //9/24/07: gmagoon: modified to include p_reactionModel as parameter; subsequently removed
     public void appendUnreactedSpeciesStatus(SystemSnapshot p_systemSnapshot, Temperature p_temperature) {
         //#[ operation appendUnreactedSpeciesStatus(SystemSnapshot,Temperature)
         double startTime = System.currentTimeMillis();
@@ -357,17 +362,17 @@ public class ReactionSystem {
         //#]
     }
 
-    
+    //9/25/07 gmagoon: moved to ReactionModelGenerator.java
     //## operation enlargeReactionModel()
-    public void enlargeReactionModel() {
-        //#[ operation enlargeReactionModel()
-        if (reactionModelEnlarger == null) throw new NullPointerException("ReactionModelEnlarger");
-
-        reactionModelEnlarger.enlargeReactionModel(this);
-
-        return;
-        //#]
-    }
+//    public void enlargeReactionModel() {
+//        //#[ operation enlargeReactionModel()
+//        if (reactionModelEnlarger == null) throw new NullPointerException("ReactionModelEnlarger");
+//
+//       reactionModelEnlarger.enlargeReactionModel(this);
+//
+//        return;
+//        //#]
+//    }
 
     //## operation findMainChannel(Species,SystemSnapshot)
     public Reaction findMainChannel(Species p_species, SystemSnapshot p_systemSnapshot) {
@@ -519,112 +524,19 @@ public class ReactionSystem {
         //#]
     }
 
-    //## operation hasPrimaryReactionLibrary()
-    public boolean hasPrimaryReactionLibrary() {
-        //#[ operation hasPrimaryReactionLibrary()
-        if (primaryReactionLibrary == null) return false;
-        return (primaryReactionLibrary.size() > 0);
-        //#]
-    }
+//9/25/07 gmagoon: moved to ReactionModelGenerator.java    
+//    //## operation hasPrimaryReactionLibrary()
+//    public boolean hasPrimaryReactionLibrary() {
+//        //#[ operation hasPrimaryReactionLibrary()
+//        if (primaryReactionLibrary == null) return false;
+//        return (primaryReactionLibrary.size() > 0);
+//        //#]
+//    }
 
     //## operation identifyColliders()
     public HashMap identifyColliders() {
         //#[ operation identifyColliders()
         return getInitialStatus().identifyColliders();
-        //#]
-    }
-
-    //## operation initializeCoreEdgeModelWithPRL()
-    public void initializeCoreEdgeModelWithPRL() {
-        //#[ operation initializeCoreEdgeModelWithPRL()
-        initializeCoreEdgeModelWithoutPRL();
-
-        CoreEdgeReactionModel cerm = (CoreEdgeReactionModel)reactionModel;
-
-        LinkedHashSet primarySpeciesSet = primaryReactionLibrary.getSpeciesSet();
-        LinkedHashSet primaryReactionSet = primaryReactionLibrary.getReactionSet();
-        cerm.addReactedSpeciesSet(primarySpeciesSet);
-        cerm.addPrimaryReactionSet(primaryReactionSet);
-
-        LinkedHashSet newReactions = getReactionGenerator().react(cerm.getReactedSpeciesSet());
-        
-        if (reactionModelEnlarger instanceof RateBasedRME)	
-        	cerm.addReactionSet(newReactions);
-    	else {
-    		
-        	Iterator iter = newReactions.iterator();
-        	while (iter.hasNext()){
-        		Reaction r = (Reaction)iter.next();
-        		if (r.getReactantNumber() == 2 && r.getProductNumber() == 2){
-        			cerm.addReaction(r);
-        		}
-        	}
-    	}
-        
-
-      
-
-        
-       
-        return;
-
-        //#]
-    }
-
-    //## operation initializeCoreEdgeModelWithoutPRL()
-    protected void initializeCoreEdgeModelWithoutPRL() {
-        //#[ operation initializeCoreEdgeModelWithoutPRL()
-    	LinkedHashSet reactionSet = getReactionGenerator().react(originalReactant);
-    	reactionSet.addAll(lrg.react(originalReactant));
-    	
-    	if (reactionModelEnlarger instanceof RateBasedRME)	
-    		reactionModel = new CoreEdgeReactionModel(new LinkedHashSet(originalReactant),reactionSet);
-    	else {
-    		reactionModel = new CoreEdgeReactionModel(new LinkedHashSet(originalReactant));
-        	Iterator iter = reactionSet.iterator();
-        	while (iter.hasNext()){
-        		Reaction r = (Reaction)iter.next();
-        		if (r.getReactantNumber() == 2 && r.getProductNumber() == 2){
-        			((CoreEdgeReactionModel)reactionModel).addReaction(r);
-        		}
-        	}
-    	}
-    		
-        if (reactionModel.isEmpty() && reactionModelEnlarger instanceof RateBasedRME) {
-        	LinkedHashSet us = ((CoreEdgeReactionModel)reactionModel).getUnreactedSpeciesSet();
-        	LinkedHashSet rs = ((CoreEdgeReactionModel)reactionModel).getReactedSpeciesSet();
-        	LinkedHashSet newReactions = new LinkedHashSet();
-
-        	for (Iterator iter = us.iterator(); iter.hasNext(); ) {
-        		Species spe = (Species)iter.next();
-        		rs.add(spe);
-        		newReactions.addAll(getReactionGenerator().react(rs,spe));
-        		newReactions.addAll(lrg.react(rs,spe));
-        		iter.remove();
-        	}
-
-        	((CoreEdgeReactionModel)reactionModel).addReactionSet(newReactions);
-        	((CoreEdgeReactionModel)reactionModel).moveFromUnreactedToReactedReaction();
-        }
-        else if (reactionModel.isEmpty() && reactionModelEnlarger instanceof RateBasedPDepRME) {
-        	while (reactionModel.isEmpty()){
-        		initializePDepNetwork();
-        		appendUnreactedSpeciesStatus(initialStatus, Global.temperature);
-        		enlargeReactionModel();
-        	}
-        }
-
-        return;
-
-        //#]
-    }
-
-    //## operation initializeCoreEdgeReactionModel()
-    public void initializeCoreEdgeReactionModel() {
-        //#[ operation initializeCoreEdgeReactionModel()
-        if (hasPrimaryReactionLibrary()) initializeCoreEdgeModelWithPRL();
-        else initializeCoreEdgeModelWithoutPRL();
-
         //#]
     }
 
@@ -1510,7 +1422,9 @@ public String printLowerBoundConcentrations(LinkedList p_speciesList) {
 	}
 
     //## operation solveReactionSystem(ReactionTime,ReactionTime,boolean,boolean,boolean)
+    //9/24/07 gmagoon: added p_reactionModel as parameter; subsequently removed
     public ReactionTime solveReactionSystem(ReactionTime p_beginTime, ReactionTime p_endTime, boolean p_initialization, boolean p_reactionChanged, boolean p_conditionChanged, int iterationNum) {
+ 
         //#[ operation solveReactionSystem(ReactionTime,ReactionTime,boolean,boolean,boolean)
         Temperature t = getTemperatureModel().getTemperature(p_beginTime);
         Pressure p = getPressureModel().getPressure(p_beginTime);
@@ -1620,26 +1534,31 @@ public String printLowerBoundConcentrations(LinkedList p_speciesList) {
         pressureModel = p_PressureModel;
     }
 
-    public PrimaryReactionLibrary getPrimaryReactionLibrary() {
-        return primaryReactionLibrary;
-    }
+//9/25/07 gmagoon: moved to ReactionModelGenerator.java    
+//    public PrimaryReactionLibrary getPrimaryReactionLibrary() {
+//        return primaryReactionLibrary;
+//    }
 
-    public void setPrimaryReactionLibrary(PrimaryReactionLibrary p_PrimaryReactionLibrary) {
-        primaryReactionLibrary = p_PrimaryReactionLibrary;
-    }
+//9/25/07 gmagoon: moved to ReactionModelGenerator.java
+//    public void setPrimaryReactionLibrary(PrimaryReactionLibrary p_PrimaryReactionLibrary) {
+//        primaryReactionLibrary = p_PrimaryReactionLibrary;
+//    }
 
+////10/4/07 gmagoon: used in ReactionModelGenerator.java;10/9/07: restored for use by RateBasedPDepRME
     public ReactionGenerator getReactionGenerator() {
         return reactionGenerator;
     }
 
-    public void setReactionGenerator(ReactionGenerator p_ReactionGenerator) {
-        reactionGenerator = p_ReactionGenerator;
-    }
+////10/4/07 gmagoon: used in ReactionModelGenerator.java
+//    public void setReactionGenerator(ReactionGenerator p_ReactionGenerator) {
+//        reactionGenerator = p_ReactionGenerator;
+//    }
 
     public ReactionModel getReactionModel() {
         return reactionModel;
     }
-
+    
+    //gmagoon 10/4/07: restored setReactionModel
     public void setReactionModel(ReactionModel p_ReactionModel) {
         reactionModel = p_ReactionModel;
     }
