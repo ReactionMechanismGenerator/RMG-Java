@@ -61,13 +61,15 @@ public class ReactionModelGenerator {
     protected ReactionModel reactionModel;      //gmagoon 9/24/07
     protected String workingDirectory;		//## attribute workingDirectory
 
-    protected ReactionSystem reactionSystem;
-
+   // protected ReactionSystem reactionSystem;
+    protected LinkedList reactionSystemList; //10/24/07 gmagoon: changed from reactionSystem to reactionSystemList
+    
     protected int paraInfor;//svp
     protected boolean error;//svp
     protected boolean sensitivity;//svp
     protected LinkedList species;//svp
-    protected InitialStatus initialStatus;//svp
+  //  protected InitialStatus initialStatus;//svp
+    protected LinkedList initialStatusList; //10/23/07 gmagoon: changed from initialStatus to initialStatusList
     protected double rtol;//svp
     protected double atol;
     protected PrimaryReactionLibrary primaryReactionLibrary;//9/24/07 gmagoon
@@ -75,7 +77,20 @@ public class ReactionModelGenerator {
     protected LinkedHashSet speciesSeed;//9/24/07 gmagoon;
     protected ReactionGenerator reactionGenerator;//9/24/07 gmagoon
     protected LibraryReactionGenerator lrg;// = new LibraryReactionGenerator();//9/24/07 gmagoon: moved from ReactionSystem.java;10/4/07 gmagoon: postponed initialization of lrg til later
-
+    //10/23/07 gmagoon: added additional variables
+    protected LinkedList tempList;
+    protected LinkedList presList;
+    protected LinkedList validList;//10/24/07 gmagoon: added
+    //10/25/07 gmagoon: moved variables from modelGeneration()
+    protected LinkedList initList = new LinkedList();
+    protected LinkedList beginList = new LinkedList();
+    protected LinkedList endList = new LinkedList();
+    protected LinkedList lastTList = new LinkedList();
+    protected LinkedList currentTList = new LinkedList();
+    protected LinkedList lastPList = new LinkedList();
+    protected LinkedList currentPList = new LinkedList();
+    protected LinkedList conditionChangedList = new LinkedList();
+    protected LinkedList reactionChangedList = new LinkedList();
 
 	protected boolean restart = false;
     // Constructors
@@ -94,7 +109,8 @@ public class ReactionModelGenerator {
     }
 
     //## operation initializeReactionSystem()
-    public void initializeReactionSystem() throws InvalidSymbolException, IOException {
+    //10/24/07 gmagoon: changed name to initializeReactionSystems
+    public void initializeReactionSystems() throws InvalidSymbolException, IOException {
         //#[ operation initializeReactionSystem()
         try {
         	String initialConditionFile = System.getProperty("jing.rxnSys.ReactionModelGenerator.conditionFile");
@@ -107,12 +123,13 @@ public class ReactionModelGenerator {
         	FileReader in = new FileReader(initialConditionFile);
         	BufferedReader reader = new BufferedReader(in);
 
-        	TemperatureModel temperatureModel = null;
-        	PressureModel pressureModel = null;
+        	//TemperatureModel temperatureModel = null;//10/27/07 gmagoon: commented out
+        	//PressureModel pressureModel = null;//10/27/07 gmagoon: commented out
   //      	ReactionModelEnlarger reactionModelEnlarger = null;//10/9/07 gmagoon: commented out: unneeded now and causes scope problems
         	
         	FinishController finishController = null;
-        	DynamicSimulator dynamicSimulator = null;
+        	//DynamicSimulator dynamicSimulator = null;//10/27/07 gmagoon: commented out and replaced with following line
+                LinkedList dynamicSimulatorList = new LinkedList();
         	//PrimaryReactionLibrary primaryReactionLibrary = null;//10/14/07 gmagoon: see below
                 setPrimaryReactionLibrary(null);//10/14/07 gmagoon: changed to use setPrimaryReactionLibrary
         	double [] conversionSet = new double[50];
@@ -147,22 +164,40 @@ public class ReactionModelGenerator {
 
 
         	// read temperature model
+                //gmagoon 10/23/07: modified to handle multiple temperatures; note that this requires different formatting of units in condition.txt
         	if (line.startsWith("TemperatureModel:")) {
         		StringTokenizer st = new StringTokenizer(line);
         		String name = st.nextToken();
         		String modelType = st.nextToken();
-        		String t = st.nextToken();
+        		//String t = st.nextToken();
         		String unit = st.nextToken();
+                        unit = ChemParser.removeBrace(unit);
         		if (modelType.equals("Constant")) {
-        			double temp = Double.parseDouble(t);
-        			unit = ChemParser.removeBrace(unit);
-        			temperatureModel = new ConstantTM(temp, unit);
-					Global.temperature = new Temperature(temp,unit);
+                                tempList = new LinkedList();
+                                //read first temperature
+                                double t = Double.parseDouble(st.nextToken());
+                                tempList.add(new ConstantTM(t, unit));
+                                Temperature temp = new Temperature(t, unit);//10/29/07 gmagoon: added this line and next two lines to set Global.lowTemperature and Global.highTemperature
+                                Global.lowTemperature = (Temperature)temp.clone();
+                                Global.highTemperature = (Temperature)temp.clone();
+                                //read remaining temperatures
+        			while (st.hasMoreTokens()) {
+                                    t = Double.parseDouble(st.nextToken());
+                                    tempList.add(new ConstantTM(t, unit));
+                                    temp = new Temperature(t,unit);//10/29/07 gmagoon: added this line and next two "if" statements to set Global.lowTemperature and Global.highTemperature
+                                    if(temp.getK() < Global.lowTemperature.getK())
+                                        Global.lowTemperature = (Temperature)temp.clone();
+                                    if(temp.getK() > Global.highTemperature.getK())
+                                        Global.highTemperature = (Temperature)temp.clone();
+                                }
+			       // Global.temperature = new Temperature(t,unit);
         		}
-        		else if (modelType.equals("Curved")) {
-        			// add reading curved temperature function here
-        			temperatureModel = new CurvedTM(new LinkedList());
-        		}
+                        //10/23/07 gmagoon: commenting out; further updates needed to get this to work
+        		//else if (modelType.equals("Curved")) {
+                        //        String t = st.nextToken();
+        		//	// add reading curved temperature function here
+        		//	temperatureModel = new CurvedTM(new LinkedList());
+        		//}
         		else {
         			throw new InvalidSymbolException("condition.txt: Unknown TemperatureModel = " + modelType);
         		}
@@ -175,18 +210,26 @@ public class ReactionModelGenerator {
         		StringTokenizer st = new StringTokenizer(line);
         		String name = st.nextToken();
         		String modelType = st.nextToken();
-        		String p = st.nextToken();
+        		//String p = st.nextToken();
         		String unit = st.nextToken();
+                        unit = ChemParser.removeBrace(unit);
         		if (modelType.equals("Constant")) {
-        			double pressure = Double.parseDouble(p);
-        			unit = ChemParser.removeBrace(unit);
-        			pressureModel = new ConstantPM(pressure, unit);
-        			Global.pressure = new Pressure(pressure, unit);
+                                presList = new LinkedList();
+                                //read first pressure
+                                double p = Double.parseDouble(st.nextToken());
+                                presList.add(new ConstantPM(p, unit));
+                                //read remaining temperatures
+        			while (st.hasMoreTokens()) {
+                                    p = Double.parseDouble(st.nextToken());
+                                    presList.add(new ConstantPM(p, unit));
+                                }	
+        			//Global.pressure = new Pressure(p, unit);
         		}
-        		else if (modelType.equals("Curved")) {
-        			// add reading curved temperature function here
-        			pressureModel = new CurvedPM(new LinkedList());
-        		}
+                        //10/23/07 gmagoon: commenting out; further updates needed to get this to work
+        		//else if (modelType.equals("Curved")) {
+        		//	// add reading curved pressure function here
+        		//	pressureModel = new CurvedPM(new LinkedList());
+        		//}
         		else {
         			throw new InvalidSymbolException("condition.txt: Unknown PressureModel = " + modelType);
         		}
@@ -258,10 +301,40 @@ public class ReactionModelGenerator {
         			line = ChemParser.readMeaningfulLine(reader);
         		}
 				ReactionTime initial = new ReactionTime(0,"S");
-        		initialStatus = new InitialStatus(speciesStatus,temperatureModel.getTemperature(initial),pressureModel.getPressure(initial));
-
+                                //10/23/07 gmagoon: modified for handling multiple temperature, pressure conditions; note: concentration within speciesStatus (and list of conversion values) should not need to be modified for each T,P since this is done within isTPCconsistent in ReactionSystem
+                                initialStatusList = new LinkedList();
+                                for (Iterator iter = tempList.iterator(); iter.hasNext(); ) {
+                                    TemperatureModel tm = (TemperatureModel)iter.next();
+                                    for (Iterator iter2 = presList.iterator(); iter2.hasNext(); ){
+                                        PressureModel pm = (PressureModel)iter2.next();
+                                       // LinkedHashMap speStat = (LinkedHashMap)speciesStatus.clone();//10/31/07 gmagoon: trying creating multiple instances of speciesStatus to address issues with concentration normalization (last normalization seems to apply to all)
+                                        Set ks = speciesStatus.keySet();
+                                        LinkedHashMap speStat = new LinkedHashMap();
+                                        for (Iterator iter3 = ks.iterator(); iter3.hasNext();){//11/1/07 gmagoon: perform deep copy; (is there an easier or more elegant way to do this?)
+                                            SpeciesStatus ssCopy = (SpeciesStatus)speciesStatus.get(iter3.next());
+                                            speStat.put(ssCopy.getSpecies(),new SpeciesStatus(ssCopy.getSpecies(),ssCopy.getSpeciesType(),ssCopy.getConcentration(),ssCopy.getFlux()));
+                                        }
+                                        initialStatusList.add(new InitialStatus(speStat,tm.getTemperature(initial),pm.getPressure(initial)));
+                                    }
+                                }
         	}
         	else throw new InvalidSymbolException("condition.txt: can't find InitialStatus!");
+                
+                //11/6/07 gmagoon: initializing temperatureArray and pressureArray before libraryReactionGenerator is initialized (initialization calls PDepNetwork and performs initializekLeak); note: subsequently moved here from after condition file reading (in case primaryReactionLibrary calls the similar pdep functions
+                LinkedList temperatureArray = new LinkedList();
+                LinkedList pressureArray = new LinkedList();
+                Iterator iterIS = initialStatusList.iterator();
+                for (Iterator iter = tempList.iterator(); iter.hasNext(); ) {
+                      TemperatureModel tm = (TemperatureModel)iter.next();
+                      for (Iterator iter2 = presList.iterator(); iter2.hasNext(); ){
+                        PressureModel pm = (PressureModel)iter2.next();
+                        InitialStatus is = (InitialStatus)iterIS.next();
+                        temperatureArray.add(tm.getTemperature(is.getTime()));
+                        pressureArray.add(pm.getPressure(is.getTime()));
+                      }
+                }
+                PDepNetwork.setTemperatureArray(temperatureArray);
+                PDepNetwork.setPressureArray(pressureArray);
 
         	// read in inert gas concentration
         	line = ChemParser.readMeaningfulLine(reader);
@@ -416,7 +489,7 @@ public class ReactionModelGenerator {
         			int i=0;
         			SpeciesConversion sc = (SpeciesConversion)((ConversionTT)finishController.terminationTester).speciesGoalConversionSet.get(0);
         			Species convSpecies = sc.species;
-        			Iterator iter = initialStatus.getSpeciesStatus();
+        			Iterator iter = ((InitialStatus)(initialStatusList.get(0))).getSpeciesStatus();//10/23/07 gmagoon: changed to use first element of initialStatusList, as subsequent operations should not be affected by which one is chosen
         			double initialConc = 0;
         			while (iter.hasNext()){
         				SpeciesStatus sps = (SpeciesStatus)iter.next();
@@ -494,8 +567,10 @@ public class ReactionModelGenerator {
                                  sensitivity = false;
                                }
                                else throw new InvalidSymbolException("condition.txt: can't find SA on/off information!");
-                               
-                               dynamicSimulator = new JDASPK(rtol, atol, 0, initialStatus);
+                               //10/23/07 gmagoon: changed below from dynamicSimulator to dynamicSimulatorList
+                               for (Iterator iter = initialStatusList.iterator(); iter.hasNext(); ) {
+                                    dynamicSimulatorList.add(new JDASPK(rtol, atol, 0, (InitialStatus)iter.next()));
+                               }
                              }
                              species = new LinkedList();
                              line = ChemParser.readMeaningfulLine(reader);
@@ -515,7 +590,14 @@ public class ReactionModelGenerator {
                       }
 
         		else if (simulator.equals("DASSL")) {
-        			dynamicSimulator = new JDASSL(rtol, atol, 0, initialStatus);
+        			//10/23/07 gmagoon: changed below from dynamicSimulator to dynamicSimulatorList
+                              // for (Iterator iter = initialStatusList.iterator(); iter.hasNext(); ) {
+                              //      dynamicSimulatorList.add(new JDASSL(rtol, atol, 0, (InitialStatus)iter.next()));
+                              // }
+                            //11/1/07 gmagoon: changed loop to use i index, and updated DASSL constructor to pass i
+                               for (int i = 0;i < initialStatusList.size();i++) {
+                                    dynamicSimulatorList.add(new JDASSL(rtol, atol, 0, (InitialStatus)initialStatusList.get(i), i));
+                               }
         		}
         		else if (simulator.equals("Chemkin")) {
         			line = ChemParser.readMeaningfulLine(reader);
@@ -523,12 +605,20 @@ public class ReactionModelGenerator {
         				st = new StringTokenizer(line, ":");
         				temp = st.nextToken();
         				String reactorType = st.nextToken().trim();
-        				dynamicSimulator = new Chemkin(rtol, atol, reactorType);
+        				//10/23/07 gmagoon: changed below from dynamicSimulator to dynamicSimulatorList
+                                        for (Iterator iter = initialStatusList.iterator(); iter.hasNext(); ) {
+                                            //dynamicSimulatorList.add(new JDASPK(rtol, atol, 0, (InitialStatus)iter.next()));
+                                            dynamicSimulatorList.add(new Chemkin(rtol, atol, reactorType));//11/4/07 gmagoon: fixing apparent cut/paste error
+                                        }
         			}
         		}
         		else throw new InvalidSymbolException("condition.txt: Unknown DynamicSimulator = " + simulator);
-                dynamicSimulator.addConversion(conversionSet, numConversions);
-        	}
+                //10/23/07 gmagoon: changed below from dynamicSimulator to dynamicSimulatorList; note: although conversionSet should actually be different for each T,P condition, it will be modified in isTPCconsistent within ReactionSystem
+                for (Iterator iter = dynamicSimulatorList.iterator(); iter.hasNext(); ) {
+                    double [] cs = conversionSet.clone();//11/1/07 gmagoon: trying to make sure multiple instances of conversionSet are used
+                    ((DynamicSimulator)(iter.next())).addConversion(cs, numConversions);
+                    }
+                }
         	else throw new InvalidSymbolException("condition.txt: can't find DynamicSimulator!");
 
         	// read in reaction model enlarger
@@ -575,13 +665,68 @@ public class ReactionModelGenerator {
         	else throw new InvalidSymbolException("condition.txt: can't find PrimaryReactionLibrary!");
 
         	in.close();
+                
+                //11/6/07 gmagoon: initializing temperatureArray and pressureArray before libraryReactionGenerator is initialized (initialization calls PDepNetwork and performs initializekLeak); UPDATE: moved after initialStatusList initialization (in case primaryReactionLibrary calls the similar pdep functions
+//                LinkedList temperatureArray = new LinkedList();
+//                LinkedList pressureArray = new LinkedList();
+//                Iterator iterIS = initialStatusList.iterator();
+//                for (Iterator iter = tempList.iterator(); iter.hasNext(); ) {
+//                      TemperatureModel tm = (TemperatureModel)iter.next();
+//                      for (Iterator iter2 = presList.iterator(); iter2.hasNext(); ){
+//                        PressureModel pm = (PressureModel)iter2.next();
+//                        InitialStatus is = (InitialStatus)iterIS.next();
+//                        temperatureArray.add(tm.getTemperature(is.getTime()));
+//                        pressureArray.add(pm.getPressure(is.getTime()));
+//                      }
+//                }
+//                PDepNetwork.setTemperatureArray(temperatureArray);
+//                PDepNetwork.setPressureArray(pressureArray);
+                
+                        
+                
                 //10/4/07 gmagoon: moved to modelGeneration()
                //ReactionGenerator p_reactionGenerator = new TemplateReactionGenerator();//10/4/07 gmagoon: changed to p_reactionGenerator from reactionGenerator
                // setReactionGenerator(p_reactionGenerator);//10/4/07 gmagoon: added
-                setLibraryReactionGenerator(new LibraryReactionGenerator());//10/10/07 gmagoon: moved from modelGeneration (sequence lrg increases species id, and the different sequence was causing problems as main species id was 6 instead of 1)
-        	reactionSystem = new ReactionSystem(temperatureModel, pressureModel, reactionModelEnlarger, finishController, dynamicSimulator, getPrimaryReactionLibrary(), getReactionGenerator(), getSpeciesSeed(), initialStatus, getReactionModel(),lrg);
-
-		}
+                setReactionGenerator(new TemplateReactionGenerator()); //11/4/07 gmagoon: moved from modelGeneration; mysteriously, moving this later moves "Father" lines up in output at runtime, immediately after condition file (as in original code); previously, these Father lines were just before "Can't read primary reaction library files!"
+                lrg = new LibraryReactionGenerator();//10/10/07 gmagoon: moved from modelGeneration (sequence lrg increases species id, and the different sequence was causing problems as main species id was 6 instead of 1); //10/31/07 gmagoon: restored this line from 10/10/07 backup: somehow it got lost along the way; 11/5/07 gmagoon: changed to use "lrg =" instead of setLibraryReactionGenerator
+                //10/24/07 gmagoon: updated to use multiple reactionSystem variables
+                reactionSystemList = new LinkedList();
+                // LinkedList temperatureArray = new LinkedList();//10/30/07 gmagoon: added temperatureArray variable for passing to PDepNetwork; 11/6/07 gmagoon: moved before initialization of lrg;
+                // LinkedList pressureArray = new LinkedList();//10/30/07 gmagoon: same for pressure;//UPDATE: commenting out: not needed if updateKLeak is done for one temperature/pressure at a time; 11/1-2/07 restored;11/6/07 gmagoon: moved before initialization of lrg;
+                Iterator iter3 = initialStatusList.iterator();
+                Iterator iter4 = dynamicSimulatorList.iterator();
+                int i = 0;//10/30/07 gmagoon: added
+                for (Iterator iter = tempList.iterator(); iter.hasNext(); ) {
+                      TemperatureModel tm = (TemperatureModel)iter.next();
+                      //InitialStatus is = (InitialStatus)iter3.next();//10/31/07 gmagoon: fixing apparent bug by moving these inside inner "for loop"
+                      //DynamicSimulator ds = (DynamicSimulator)iter4.next();
+                      for (Iterator iter2 = presList.iterator(); iter2.hasNext(); ){
+                        PressureModel pm = (PressureModel)iter2.next();
+                        InitialStatus is = (InitialStatus)iter3.next();//10/31/07 gmagoon: moved from outer "for loop""
+                        DynamicSimulator ds = (DynamicSimulator)iter4.next();
+                       // temperatureArray.add(tm.getTemperature(is.getTime()));//10/30/07 gmagoon: added; //10/31/07 added .getTemperature(is.getTime()); 11/6/07 gmagoon: moved before initialization of lrg;
+                       // pressureArray.add(pm.getPressure(is.getTime()));//10/30/07 gmagoon: added//UPDATE: commenting out: not needed if updateKLeak is done for one temperature/pressure at a time;11/1-2/07 restored with .getTemperature(is.getTime()) added;11/6/07 gmagoon: moved before initialization of lrg;
+                        //11/1/07 gmagoon: trying to make a deep copy of terminationTester when it is instance of ConversionTT
+                        //UPDATE: actually, I don't think this deep copy was necessary; original case with FinishController fc = new FinishController(finishController.getTerminationTester(), finishController.getValidityTester()) is probably OK; (in any case, this didn't do completetly deep copy (references to speciesConversion element in LinkedList were the same);
+                       // TerminationTester termTestCopy;
+                       // if (finishController.getTerminationTester() instanceof ConversionTT){
+                       //    ConversionTT termTest = (ConversionTT)finishController.getTerminationTester();
+                       //     LinkedList spcCopy = (LinkedList)(termTest.getSpeciesGoalConversionSetList().clone());
+                       //     termTestCopy = new ConversionTT(spcCopy);
+                       // }
+                       // else{
+                       //     termTestCopy = finishController.getTerminationTester();
+                       // }
+ 
+                        FinishController fc = new FinishController(finishController.getTerminationTester(), finishController.getValidityTester());//10/31/07 gmagoon: changed to create new finishController instance in each case (apparently, the finish controller becomes associated with reactionSystem in setFinishController within ReactionSystem); alteratively, could use clone, but might need to change FinishController to be "cloneable"
+                       // FinishController fc = new FinishController(termTestCopy, finishController.getValidityTester());
+                        reactionSystemList.add(new ReactionSystem(tm, pm, reactionModelEnlarger, fc, ds, getPrimaryReactionLibrary(), getReactionGenerator(), getSpeciesSeed(), is, getReactionModel(),lrg, i)); 
+                        i++;//10/30/07 gmagoon: added
+                      }
+                 }
+             //    PDepNetwork.setTemperatureArray(temperatureArray);//10/30/07 gmagoon: passing temperatureArray to PDepNetwork; 11/6/07 gmagoon: moved before initialization of lrg;
+             //    PDepNetwork.setPressureArray(pressureArray);//10/30/07 gmagoon: same for pressure;//UPDATE: commenting out: not needed if updateKLeak is done for one temperature/pressure at a time; 11/1-2/07 restored; 11/6/07 gmagoon: moved before initialization of lrg;
+            }
         catch (IOException e) {
         	System.err.println("Error in read in reaction system initialization file!");
         	throw new IOException("Reaction System Initialization: " + e.getMessage());
@@ -603,13 +748,13 @@ public class ReactionModelGenerator {
     public void modelGeneration() {
         //#[ operation modelGeneration()
         //long begin_t = System.currentTimeMillis();
-		try{
+	try{
         	ChemGraph.readForbiddenStructure();
                 setSpeciesSeed(new LinkedHashSet());//10/4/07 gmagoon moved from initializeCoreEdgeReactionModel
-                setReactionGenerator(new TemplateReactionGenerator());//10/4/07 gmagoon: moved inside initializeReactionSystem
+              //  setReactionGenerator(new TemplateReactionGenerator());//10/4/07 gmagoon: moved inside initializeReactionSystem; 11/3-4/07 gmagoon: probably reverted on or before 10/10/07 (although I have not investigated this change in detail); //11/4/07 gmagoon: moved inside initializeReactionSystems
               //  setLibraryReactionGenerator(new LibraryReactionGenerator());//10/10/07 gmagoon: moved after initializeReactionSystem
-              //  initializeCoreEdgeReactionModel();//10/4/07 gmagoon moved from below to run initializeCoreEdgeReactionModel before initializeReactionSystem
-         	initializeReactionSystem();
+              //  initializeCoreEdgeReactionModel();//10/4/07 gmagoon moved from below to run initializeCoreEdgeReactionModel before initializeReactionSystem; 11/3-4/07 gmagoon: probably reverted on or before 10/10/07
+         	initializeReactionSystems();
         }
         catch (IOException e) {
         	System.err.println(e.getMessage());
@@ -630,35 +775,79 @@ public class ReactionModelGenerator {
 
 			}
 		}*/
-		initializeCoreEdgeReactionModel();//10/4/07 gmagoon: moved before initializeReactionSystem
-        reactionSystem.initializePDepNetwork();
-		
-		
-
+       
+        //10/31/07 gmagoon: initialize validList (to false) before initializeCoreEdgeReactionModel is called
+        validList = new LinkedList();
+        for (Integer i = 0; i<reactionSystemList.size();i++) {
+            validList.add(false);
+       }
         
-        ReactionTime init = reactionSystem.getInitialReactionTime();
-        ReactionTime begin = init;
-        ReactionTime end;
-        if (reactionSystem.finishController.terminationTester instanceof ReactionTimeTT)
-        	end = (ReactionTime)timeStep.get(0);
-        else
-        	end = new ReactionTime(1e6,"sec");
+        initializeCoreEdgeReactionModel();//10/4/07 gmagoon: moved before initializeReactionSystem; 11/3-4/07 gmagoon: probably reverted on or before 10/10/07
+        //10/24/07 gmagoon: changed to use reactionSystemList
+ //       LinkedList initList = new LinkedList();//10/25/07 gmagoon: moved these variables to apply to entire class
+ //       LinkedList beginList = new LinkedList();
+ //       LinkedList endList = new LinkedList();
+ //       LinkedList lastTList = new LinkedList();
+ //       LinkedList currentTList = new LinkedList();
+ //       LinkedList lastPList = new LinkedList();
+ //       LinkedList currentPList = new LinkedList();
+ //       LinkedList conditionChangedList = new LinkedList();
+ //       LinkedList reactionChangedList = new LinkedList();
+        //10/24/07 gmagoon: note: each element of for loop could be done in parallel if desired; some modifications would be needed
+        for (Iterator iter = reactionSystemList.iterator(); iter.hasNext(); ) {
+            ReactionSystem rs = (ReactionSystem)iter.next();
+            rs.initializePDepNetwork();
+
+            ReactionTime init = rs.getInitialReactionTime();
+            initList.add(init);
+            ReactionTime begin = init;
+            beginList.add(begin);
+            ReactionTime end;
+            if (rs.finishController.terminationTester instanceof ReactionTimeTT){
+                    end = (ReactionTime)timeStep.get(0);
+                    endList.add(end);
+            }
+            else{
+                    end = new ReactionTime(1e6,"sec");
+                    endList.add(end);
+            }
+ //           int iterationNumber = 1;
+
+            lastTList.add(rs.getTemperature(init));
+            currentTList.add(rs.getTemperature(init));
+            lastPList.add(rs.getPressure(init));
+            currentPList.add(rs.getPressure(init));
+            conditionChangedList.add(false);
+            reactionChangedList.add(false);//10/31/07 gmagoon: added
+
+            //Chemkin.writeChemkinInputFile(reactionSystem.getReactionModel(),reactionSystem.getPresentStatus());
+        }
         int iterationNumber = 1;
-
-        Temperature lastT = reactionSystem.getTemperature(init);
-        Temperature currentT = reactionSystem.getTemperature(init);
-        Pressure lastP = reactionSystem.getPressure(init);
-        Pressure currentP = reactionSystem.getPressure(init);
-        boolean conditionChanged = false;
-
-        //Chemkin.writeChemkinInputFile(reactionSystem.getReactionModel(),reactionSystem.getPresentStatus());
-        
-		
-        end = reactionSystem.solveReactionSystem(begin, end, true, true, true, iterationNumber-1);
-        Chemkin.writeChemkinInputFile(reactionSystem);
+        LinkedList terminatedList = new LinkedList();//10/24/07 gmagoon: this may not be necessary, as if one reactionSystem is terminated, I think all should be terminated
+        //validList = new LinkedList();//10/31/07 gmagoon: moved before initializeCoreEdgeReactionModel
+        //10/24/07 gmagoon: initialize allTerminated and allValid to true; these variables keep track of whether all the reactionSystem variables satisfy termination and validity, respectively
+        boolean allTerminated = true;
+        boolean allValid = true;
+        //10/24/07 gmagoon: note: each element of for loop could be done in parallel if desired; some modifications would be needed
+        for (Integer i = 0; i<reactionSystemList.size();i++) {
+            ReactionSystem rs = (ReactionSystem)reactionSystemList.get(i);
+            ReactionTime begin = (ReactionTime)beginList.get(i);
+            ReactionTime end = (ReactionTime)endList.get(i);
+            endList.set(i,rs.solveReactionSystem(begin, end, true, true, true, iterationNumber-1));
+            Chemkin.writeChemkinInputFile(rs);//11/9/07 gmagoon:****temporarily commenting out: there is a NullPointerException in Reaction.toChemkinString when called from writeChemkinPdepReactions; occurs with pre-modified version of RMG as well; //11/12/07 gmagoon: restored; ****this appears to be source of non-Pdep bug
+            boolean terminated = rs.isReactionTerminated();
+            terminatedList.add(terminated);
+            if(!terminated)
+                allTerminated = false;
+            boolean valid = rs.isModelValid();
+            //validList.add(valid);
+            validList.set(i, valid);//10/31/07 gmagoon: validList initialization moved before initializeCoreEdgeReactionModel
+            if(!valid)
+                allValid = false;
+            reactionChangedList.set(i,false);
+        }
         //System.exit(0);
-        boolean terminated = reactionSystem.isReactionTerminated();
-        boolean valid = reactionSystem.isModelValid();
+       
 		System.out.println("The model core has " + ((CoreEdgeReactionModel)getReactionModel()).getReactedReactionSet().size() + " reactions and "+ ((CoreEdgeReactionModel)getReactionModel()).getReactedSpeciesSet().size() + " species.");
 		System.out.println("The model edge has " + ((CoreEdgeReactionModel)getReactionModel()).getUnreactedReactionSet().size() + " reactions and "+ ((CoreEdgeReactionModel)getReactionModel()).getUnreactedSpeciesSet().size() + " species.");
 
@@ -682,66 +871,119 @@ public class ReactionModelGenerator {
 		//System.exit(0);
 		SpeciesDictionary dictionary = SpeciesDictionary.getInstance();
 		System.out.println(dictionary.size());
-        boolean reactionChanged = false;
+                //boolean reactionChanged = false;//10/24/07 gmagoon: I don't know if this is even required, but I will change to use reactionChangedList (I put analogous line of code for list in above for loop); update: yes, it is required; I had been thinking of conditionChangedList
 		
 		double tAtInitialization = Global.tAtInitialization;
 		
-		
+	//10/24/07: changed to use allTerminated and allValid	
         // step 2: iteratively grow reaction system
-        while (!terminated || !valid) {
-        	while (!valid) {
+        while (!allTerminated || !allValid) {
+        	while (!allValid) {
 				
 				writeCoreSpecies();
 				double pt = System.currentTimeMillis();
-				enlargeReactionModel();
+				enlargeReactionModel();//10/24/07 gmagoon: need to adjust this function
 				double totalEnlarger = (System.currentTimeMillis() - pt)/1000/60;
 				
 				//PDepNetwork.completeNetwork(reactionSystem.reactionModel.getSpeciesSet());
-				reactionSystem.initializePDepNetwork();
+                                
+                                //10/24/07 gmagoon: changed to use reactionSystemList
+                                for (Iterator iter = reactionSystemList.iterator(); iter.hasNext(); ) {
+                                       ReactionSystem rs = (ReactionSystem)iter.next();
+                                       rs.initializePDepNetwork();
+                                }
+				//reactionSystem.initializePDepNetwork();
 				
 				pt = System.currentTimeMillis();
-				reactionSystem.resetSystemSnapshot();
+                                //10/24/07 gmagoon: changed to use reactionSystemList
+                                for (Iterator iter = reactionSystemList.iterator(); iter.hasNext(); ) {
+                                       ReactionSystem rs = (ReactionSystem)iter.next();
+                                       rs.resetSystemSnapshot();
+                                }
+				//reactionSystem.resetSystemSnapshot();
 				double resetSystem = (System.currentTimeMillis() - pt)/1000/60;
-        		reactionChanged = true;
+                                //10/24/07 gmagoon: changed to use reactionSystemList
+                                for (Integer i = 0; i<reactionSystemList.size();i++) {
+                                    //reactionChanged = true;
+                                    ReactionSystem rs = (ReactionSystem)reactionSystemList.get(i);
+                                    reactionChangedList.set(i,true);
         		
-        		begin = init;
-        		if (reactionSystem.finishController.terminationTester instanceof ReactionTimeTT)
-        			end = (ReactionTime)timeStep.get(0);
-        		else
-        			end = new ReactionTime(1e6,"sec");
-        		iterationNumber = 1;
-        		
-        		currentT = reactionSystem.getTemperature(begin);
-        		currentP = reactionSystem.getPressure(begin);
-        		conditionChanged = (!currentT.equals(lastT) || !currentP.equals(lastP));
-        		
-        		
-				
-				double startTime = System.currentTimeMillis();
-				end = reactionSystem.solveReactionSystem(begin, end, false, reactionChanged, conditionChanged, iterationNumber-1);
-				solverMin = solverMin + (System.currentTimeMillis()-startTime)/1000/60;
+                                   // begin = init;
+                                    beginList.set(i, (ReactionTime)initList.get(i));
+                                    if (rs.finishController.terminationTester instanceof ReactionTimeTT)
+                                            endList.set(i, (ReactionTime)timeStep.get(0));
+                                            //end = (ReactionTime)timeStep.get(0);
+                                    else
+                                            endList.set(i, new ReactionTime(1e6,"sec"));
+                                            //end = new ReactionTime(1e6,"sec");
+                                  //  iterationNumber = 1;//10/24/07 gmagoon: moved outside of loop
+
+                                    currentTList.set(i,rs.getTemperature((ReactionTime)beginList.get(i)));
+                                    currentPList.set(i,rs.getPressure((ReactionTime)beginList.get(i)));
+                                    conditionChangedList.set(i,!(((Temperature)currentTList.get(i)).equals((Temperature)lastTList.get(i))) || !(((Pressure)currentPList.get(i)).equals((Pressure)lastPList.get(i))));
+                                    //currentT = reactionSystem.getTemperature(begin);
+                                    //currentP = reactionSystem.getPressure(begin);
+                                    //conditionChanged = (!currentT.equals(lastT) || !currentP.equals(lastP));
+                                }
+                                iterationNumber = 1;
+                                
+                                double startTime = System.currentTimeMillis();
+                                
+                                //10/24/07 gmagoon: changed to use reactionSystemList
+                                for (Integer i = 0; i<reactionSystemList.size();i++) {
+                                    ReactionSystem rs = (ReactionSystem)reactionSystemList.get(i);
+                                    boolean reactionChanged = (Boolean)reactionChangedList.get(i);
+                                    boolean conditionChanged = (Boolean)conditionChangedList.get(i);
+                                    ReactionTime begin = (ReactionTime)beginList.get(i);
+                                    ReactionTime end = (ReactionTime)endList.get(i);
+                                    endList.set(i,rs.solveReactionSystem(begin, end, false, reactionChanged, conditionChanged, iterationNumber-1));
+                                    //end = reactionSystem.solveReactionSystem(begin, end, false, reactionChanged, conditionChanged, iterationNumber-1);
+                                }
+                                solverMin = solverMin + (System.currentTimeMillis()-startTime)/1000/60;
 				
 				startTime = System.currentTimeMillis();
-        		Chemkin.writeChemkinInputFile(reactionSystem);
-        		double chemkint = (System.currentTimeMillis()-startTime)/1000/60;
+                                //10/24/07 gmagoon: changed to use reactionSystemList
+                                for (Integer i = 0; i<reactionSystemList.size();i++) {
+                                    ReactionSystem rs = (ReactionSystem)reactionSystemList.get(i);
+                                    Chemkin.writeChemkinInputFile(rs);//10/25/07 gmagoon: ***I don't know if this will still work with multiple reaction systems: may want to modify to only write one chemkin input file for all reaction systems //11/9/07 gmagoon:****temporarily commenting out; cf. previous comment; //11/12/07 gmagoon: restored; ****this appears to be source of non-Pdep bug 
+                                    //Chemkin.writeChemkinInputFile(reactionSystem);
+                                }
+                                double chemkint = (System.currentTimeMillis()-startTime)/1000/60;
 				
-				System.out.println("At this time: " + end.toString());
-        		Species spe = SpeciesDictionary.getSpeciesFromID(1);
-        		double conv = reactionSystem.getPresentConversion(spe);
-        		System.out.print("current conversion = ");
-        		System.out.println(conv);
+                                //10/24/07 gmagoon: changed to use reactionSystemList
+                                for (Integer i = 0; i<reactionSystemList.size();i++) {
+                                    ReactionSystem rs = (ReactionSystem)reactionSystemList.get(i);
+                                    System.out.println("For reaction system: "+(i+1)+" out of "+reactionSystemList.size());
+                                    System.out.println("At this time: " + ((ReactionTime)endList.get(i)).toString());
+                                    Species spe = SpeciesDictionary.getSpeciesFromID(1);
+                                    double conv = rs.getPresentConversion(spe);
+                                    System.out.print("current conversion = ");
+                                    System.out.println(conv);
+                                }
 
 			    System.out.println("Running Time is: " + String.valueOf((System.currentTimeMillis()-tAtInitialization)/1000/60) + " minutes.");
 				System.out.println("The model edge has " + ((CoreEdgeReactionModel)getReactionModel()).getUnreactedReactionSet().size() + " reactions and "+ ((CoreEdgeReactionModel)getReactionModel()).getUnreactedSpeciesSet().size() + " species.");
-				if (reactionSystem.getDynamicSimulator() instanceof JDASPK){
-					JDASPK solver = (JDASPK)reactionSystem.getDynamicSimulator();
+				//10/24/07 gmagoon: note: all reaction systems should use the same core, but I will display for each reactionSystem for testing purposes:
+                                for (Integer i = 0; i<reactionSystemList.size();i++) {
+                                    ReactionSystem rs = (ReactionSystem)reactionSystemList.get(i);
+                                    System.out.println("For reaction system: "+(i+1)+" out of "+reactionSystemList.size());
+                                    if (rs.getDynamicSimulator() instanceof JDASPK){
+					JDASPK solver = (JDASPK)rs.getDynamicSimulator();
 					System.out.println("The model core has " + solver.getReactionSize() + " reactions and "+ ((CoreEdgeReactionModel)getReactionModel()).getReactedSpeciesSet().size() + " species.");
-				}
-				else{
-					JDASSL solver = (JDASSL)reactionSystem.getDynamicSimulator();
+                                    }
+                                    else{
+					JDASSL solver = (JDASSL)rs.getDynamicSimulator();
 					System.out.println("The model core has " + solver.getReactionSize() + " reactions and "+ ((CoreEdgeReactionModel)getReactionModel()).getReactedSpeciesSet().size() + " species.");
-				
-				}
+				    }
+                                }
+                               // if (reactionSystem.getDynamicSimulator() instanceof JDASPK){
+			       //	JDASPK solver = (JDASPK)reactionSystem.getDynamicSimulator();
+				//	System.out.println("The model core has " + solver.getReactionSize() + " reactions and "+ ((CoreEdgeReactionModel)getReactionModel()).getReactedSpeciesSet().size() + " species.");
+				//}
+				//else{
+				//	JDASSL solver = (JDASSL)reactionSystem.getDynamicSimulator();
+				//	System.out.println("The model core has " + solver.getReactionSize() + " reactions and "+ ((CoreEdgeReactionModel)getReactionModel()).getReactedSpeciesSet().size() + " species.");
+				//}
 					
 
 				
@@ -754,7 +996,16 @@ public class ReactionModelGenerator {
 				
 				
 				startTime = System.currentTimeMillis();
-                valid = reactionSystem.isModelValid();
+                                //10/24/07 gmagoon: updating to use reactionSystemList
+                                allValid = true;
+                                for (Integer i = 0; i<reactionSystemList.size();i++) {
+                                    ReactionSystem rs = (ReactionSystem)reactionSystemList.get(i);
+                                    boolean valid = rs.isModelValid();
+                                    if(!valid)
+                                        allValid = false;
+                                    validList.set(i,valid);
+                                    //valid = reactionSystem.isModelValid();
+                                }
 				vTester = vTester + (System.currentTimeMillis()-startTime)/1000/60;
 				
 				startTime = System.currentTimeMillis();
@@ -768,44 +1019,89 @@ public class ReactionModelGenerator {
 				print_info.append(totalEnlarger + "\t" + resetSystem + "\t" + Global.readSolverFile + "\t" + Global.writeSolverFile + "\t" + Global.solvertime + "\t" + Global.solverIterations + "\t" + Global.speciesStatusGenerator +  "\t" + solverMin + "\t"  + gc + "\t"  + restart2 + "\t" + Global.chemkinThermo + '\t' + Global.chemkinReaction + "\t" + vTester + "\t" + ((CoreEdgeReactionModel)getReactionModel()).getReactedSpeciesSet().size()+ "\t" + ((CoreEdgeReactionModel)getReactionModel()).getReactedReactionSet().size() + "\t" + ((CoreEdgeReactionModel)getReactionModel()).getUnreactedSpeciesSet().size() + "\t" + ((CoreEdgeReactionModel)getReactionModel()).getUnreactedReactionSetIncludingReverseSize() + "\t" + mU + "\t" + allSpecies + "\t" + (System.currentTimeMillis()-Global.tAtInitialization)/1000/60 + "\t"+ String.valueOf(Global.RT_findRateConstant)+"\t"+Global.RT_identifyReactedSites+"\t"+Global.RT_reactChemGraph+"\t"+Global.makeSpecies+"\t"+Global.checkReactionReverse+"\t"+Global.makeTR+ "\t" + Global.getReacFromStruc + "\t" + Global.generateReverse+"\n");
 				
         	}
-        	reactionChanged = false;
-        	
-        	lastT = (Temperature)currentT.clone();
-        	lastP = (Pressure)currentP.clone();
-        	
-        	currentT = reactionSystem.getTemperature(begin);
-        	currentP = reactionSystem.getPressure(begin);
-        	conditionChanged = (!currentT.equals(lastT) || !currentP.equals(lastP));
+                for (Integer i = 0; i<reactionSystemList.size();i++) {
+                    ReactionSystem rs = (ReactionSystem)reactionSystemList.get(i);
+                    reactionChangedList.set(i, false);
+                    //reactionChanged = false;
+                    Temperature currentT = (Temperature)currentTList.get(i);
+                    Pressure currentP = (Pressure)currentPList.get(i);
+                    lastTList.set(i,(Temperature)currentT.clone()) ;
+                    lastPList.set(i,(Pressure)currentP.clone());
+                    //lastT = (Temperature)currentT.clone();
+                    //lastP = (Pressure)currentP.clone();
+
+                    currentTList.set(i,rs.getTemperature((ReactionTime)beginList.get(i)));//10/24/07 gmagoon: ****I think this should actually be at end? (it shouldn't matter for isothermal/isobaric case)
+                    currentPList.set(i,rs.getPressure((ReactionTime)beginList.get(i)));
+                    conditionChangedList.set(i,!(((Temperature)currentTList.get(i)).equals((Temperature)lastTList.get(i))) || !(((Pressure)currentPList.get(i)).equals((Pressure)lastPList.get(i))));
+                    //currentT = reactionSystem.getTemperature(begin);//10/24/07 gmagoon: ****I think this should actually be at end? (it shouldn't matter for isothermal/isobaric case)
+                    //currentP = reactionSystem.getPressure(begin);
+                    //conditionChanged = (!currentT.equals(lastT) || !currentP.equals(lastP));
+
+                    beginList.set(i,((SystemSnapshot)(rs.getSystemSnapshotEnd().next())).time);
+                   // begin=((SystemSnapshot)(reactionSystem.getSystemSnapshotEnd().next())).time;
+                    if (rs.finishController.terminationTester instanceof ReactionTimeTT){
+                            if (iterationNumber < timeStep.size()){
+                                endList.set(i,(ReactionTime)timeStep.get(iterationNumber));
+                            //end = (ReactionTime)timeStep.get(iterationNumber);
+                            }
+                            else
+                                endList.set(i, ((ReactionTimeTT)rs.finishController.terminationTester).finalTime);
+                                //end = ((ReactionTimeTT)reactionSystem.finishController.terminationTester).finalTime;
+                    }
+                    else
+                        endList.set(i,new ReactionTime(1e6,"sec"));
+                        //end = new ReactionTime(1e6,"sec");
+                }        
+                iterationNumber++;
+		double startTime = System.currentTimeMillis();
+                //10/24/07 gmagoon: changed to use reactionSystemList
+                for (Integer i = 0; i<reactionSystemList.size();i++) {
+                    ReactionSystem rs = (ReactionSystem)reactionSystemList.get(i);
+                    boolean reactionChanged = (Boolean)reactionChangedList.get(i);
+                    boolean conditionChanged = (Boolean)conditionChangedList.get(i);
+                    ReactionTime begin = (ReactionTime)beginList.get(i);
+                    ReactionTime end = (ReactionTime)endList.get(i);
+                    endList.set(i,rs.solveReactionSystem(begin, end, false, reactionChanged, false, iterationNumber-1));
+                   // end = reactionSystem.solveReactionSystem(begin, end, false, reactionChanged, false, iterationNumber-1);
+                }
+		solverMin = solverMin + (System.currentTimeMillis()-startTime)/1000/60;
 			
-        	
-        	begin=((SystemSnapshot)(reactionSystem.getSystemSnapshotEnd().next())).time;
-        	if (reactionSystem.finishController.terminationTester instanceof ReactionTimeTT){
-        		if (iterationNumber < timeStep.size()){
-            		end = (ReactionTime)timeStep.get(iterationNumber);
-        			
-            	}
-            	else
-            		end = ((ReactionTimeTT)reactionSystem.finishController.terminationTester).finalTime;
-        	}
-        	else
-        		end = new ReactionTime(1e6,"sec");
-        	iterationNumber++;
-			double startTime = System.currentTimeMillis();
-			end = reactionSystem.solveReactionSystem(begin, end, false, reactionChanged, false, iterationNumber-1);
-			solverMin = solverMin + (System.currentTimeMillis()-startTime)/1000/60;
-			
-			startTime = System.currentTimeMillis();
-        	
-			terminated = reactionSystem.isReactionTerminated();
-        	valid = reactionSystem.isModelValid();
-			
-			
-        	if (valid) {
-        		System.out.println("At this time: " + end.toString());
-        		Species spe = SpeciesDictionary.getSpeciesFromID(1);
-        		double conv = reactionSystem.getPresentConversion(spe);
-        		System.out.print("current conversion = ");
-        		System.out.println(conv);
+		startTime = System.currentTimeMillis();
+                
+                //10/24/07 gmagoon: changed to use reactionSystemList
+                allTerminated = true;
+                allValid = true;
+        	for (Integer i = 0; i<reactionSystemList.size();i++) {
+                    ReactionSystem rs = (ReactionSystem)reactionSystemList.get(i);
+                    boolean terminated = rs.isReactionTerminated();
+                    terminatedList.set(i,terminated);
+                    if(!terminated)
+                        allTerminated = false;
+                    boolean valid = rs.isModelValid();     
+                    validList.set(i,valid);
+                    if(!valid)
+                        allValid = false;
+		    //terminated = reactionSystem.isReactionTerminated();
+                    //valid = reactionSystem.isModelValid();
+                }
+                
+		//10/24/07 gmagoon: changed to use reactionSystemList, allValid	
+        	if (allValid) {
+                        //10/24/07 gmagoon: changed to use reactionSystemList
+                        for (Integer i = 0; i<reactionSystemList.size();i++) {
+                            ReactionSystem rs = (ReactionSystem)reactionSystemList.get(i);
+                            System.out.println("For reaction system: "+(i+1)+" out of "+reactionSystemList.size());
+                            System.out.println("At this time: " + ((ReactionTime)endList.get(i)).toString());
+                            Species spe = SpeciesDictionary.getSpeciesFromID(1);
+                            double conv = rs.getPresentConversion(spe);
+                            System.out.print("current conversion = ");
+                            System.out.println(conv);
+                        }
+        		//System.out.println("At this time: " + end.toString());
+        		//Species spe = SpeciesDictionary.getSpeciesFromID(1);
+        		//double conv = reactionSystem.getPresentConversion(spe);
+        		//System.out.print("current conversion = ");
+        		//System.out.println(conv);
 
         		Runtime runTime = Runtime.getRuntime();
         		System.out.print("Memory used: ");
@@ -820,14 +1116,27 @@ public class ReactionModelGenerator {
         		System.out.println(runTime.totalMemory());
         		System.out.print("Free memory: ");
         		System.out.println(runTime.freeMemory());
-        		if (reactionSystem.getDynamicSimulator() instanceof JDASPK){
-					JDASPK solver = (JDASPK)reactionSystem.getDynamicSimulator();
-					System.out.println("The model core has " + solver.getReactionSize() + " reactions and "+ ((CoreEdgeReactionModel)getReactionModel()).getReactedSpeciesSet().size() + " species.");
-        		}
-				else{
-					JDASSL solver = (JDASSL)reactionSystem.getDynamicSimulator();
-					System.out.println("The model core has " + solver.getReactionSize() + " reactions and "+ ((CoreEdgeReactionModel)getReactionModel()).getReactedSpeciesSet().size() + " species.");
-        		}
+                        //10/24/07 gmagoon: note: all reaction systems should use the same core, but I will display for each reactionSystem for testing purposes:
+                        for (Integer i = 0; i<reactionSystemList.size();i++) {
+                            ReactionSystem rs = (ReactionSystem)reactionSystemList.get(i);
+                            System.out.println("For reaction system: "+(i+1)+" out of "+reactionSystemList.size());
+                            if (rs.getDynamicSimulator() instanceof JDASPK){
+                                JDASPK solver = (JDASPK)rs.getDynamicSimulator();
+                                System.out.println("The model core has " + solver.getReactionSize() + " reactions and "+ ((CoreEdgeReactionModel)getReactionModel()).getReactedSpeciesSet().size() + " species.");
+                            }
+                            else{
+                                JDASSL solver = (JDASSL)rs.getDynamicSimulator();
+                                System.out.println("The model core has " + solver.getReactionSize() + " reactions and "+ ((CoreEdgeReactionModel)getReactionModel()).getReactedSpeciesSet().size() + " species.");
+                            }
+                        }
+//        		if (reactionSystem.getDynamicSimulator() instanceof JDASPK){
+//					JDASPK solver = (JDASPK)reactionSystem.getDynamicSimulator();
+//					System.out.println("The model core has " + solver.getReactionSize() + " reactions and "+ ((CoreEdgeReactionModel)getReactionModel()).getReactedSpeciesSet().size() + " species.");
+//        		}
+//				else{
+//					JDASSL solver = (JDASSL)reactionSystem.getDynamicSimulator();
+//					System.out.println("The model core has " + solver.getReactionSize() + " reactions and "+ ((CoreEdgeReactionModel)getReactionModel()).getReactedSpeciesSet().size() + " species.");
+//      		}
 				
         	}
 			vTester = vTester + (System.currentTimeMillis()-startTime)/1000/60;
@@ -835,26 +1144,48 @@ public class ReactionModelGenerator {
         
         //System.out.println("Performing model reduction");
         
+ 
         if (paraInfor != 0){
-        	System.out.println("Model Generation performed. Now generating sensitivity data.");
-          DynamicSimulator dynamicSimulator2 = new JDASPK(rtol, atol, paraInfor, initialStatus);
-          dynamicSimulator2.addConversion(((JDASPK)reactionSystem.dynamicSimulator).conversionSet, ((JDASPK)reactionSystem.dynamicSimulator).conversionSet.length);
-          reactionSystem.setDynamicSimulator(dynamicSimulator2);
-          
-          int numSteps = reactionSystem.systemSnapshot.size() -1;
-          reactionSystem.resetSystemSnapshot();
-          begin = init;
-          if (reactionSystem.finishController.terminationTester instanceof ReactionTimeTT){
-          		end = ((ReactionTimeTT)reactionSystem.finishController.terminationTester).finalTime;
-          }
-          else
- 	     		end = end.add(end);
-          terminated = false;
-          reactionSystem.solveReactionSystemwithSEN(begin, end, true, false, false);
+              System.out.println("Model Generation performed. Now generating sensitivity data.");
+              //10/24/07 gmagoon: updated to use reactionSystemList
+              LinkedList dynamicSimulator2List = new LinkedList();
+              for (Integer i = 0; i<reactionSystemList.size();i++) {
+                ReactionSystem rs = (ReactionSystem)reactionSystemList.get(i);
+                dynamicSimulator2List.add(new JDASPK(rtol, atol, paraInfor, (InitialStatus)initialStatusList.get(i)));
+                //DynamicSimulator dynamicSimulator2 = new JDASPK(rtol, atol, paraInfor, initialStatus);
+                ((DynamicSimulator)dynamicSimulator2List.get(i)).addConversion(((JDASPK)rs.dynamicSimulator).conversionSet, ((JDASPK)rs.dynamicSimulator).conversionSet.length);
+                //dynamicSimulator2.addConversion(((JDASPK)reactionSystem.dynamicSimulator).conversionSet, ((JDASPK)reactionSystem.dynamicSimulator).conversionSet.length);
+                rs.setDynamicSimulator((DynamicSimulator)dynamicSimulator2List.get(i));
+                //reactionSystem.setDynamicSimulator(dynamicSimulator2);
+
+                int numSteps = rs.systemSnapshot.size() -1;
+                rs.resetSystemSnapshot();
+                beginList.set(i, (ReactionTime)initList.get(i));
+                //begin = init;
+                if (rs.finishController.terminationTester instanceof ReactionTimeTT){
+                            endList.set(i,((ReactionTimeTT)rs.finishController.terminationTester).finalTime);
+                            //end = ((ReactionTimeTT)reactionSystem.finishController.terminationTester).finalTime;
+                }
+                else{
+                            ReactionTime end = (ReactionTime)endList.get(i);
+                            endList.set(i, end.add(end));
+                            //end = end.add(end);
+                }
+                terminatedList.set(i, false);
+                //terminated = false;
+                ReactionTime begin = (ReactionTime)beginList.get(i);
+                ReactionTime end = (ReactionTime)endList.get(i);
+                rs.solveReactionSystemwithSEN(begin, end, true, false, false);
+                //reactionSystem.solveReactionSystemwithSEN(begin, end, true, false, false);
+             }
          
         }
-
-        Chemkin.writeChemkinInputFile(getReactionModel(),reactionSystem.getPresentStatus());
+        //10/24/07 gmagoon: updated to use reactionSystemList (***see previous comment regarding having one Chemkin input file)
+        for (Integer i = 0; i<reactionSystemList.size();i++) {
+                ReactionSystem rs = (ReactionSystem)reactionSystemList.get(i);
+                Chemkin.writeChemkinInputFile(getReactionModel(),rs.getPresentStatus());//11/9/07 gmagoon: temporarily commenting out; see previous comment; this line may not cause a problem because it is different instance of writeChemkinInputFile, but I am commenting out just in case//11/12/07 gmagoon: restored; ****this appears to be source of non-Pdep bug 
+        }
+        
         System.out.println("Model Generation Completed");
 		
 		
@@ -1114,9 +1445,9 @@ public class ReactionModelGenerator {
 			BufferedReader reader = new BufferedReader(fr);
 			String line = ChemParser.readMeaningfulLine(reader);
 			//HashSet speciesSet = new HashSet();
-			if (reactionSystem == null){
-				//ReactionSystem reactionSystem = new ReactionSystem();
-			}
+//			if (reactionSystem == null){//10/24/07 gmagoon: commenting out since contents of if was already commented out anyway
+//				//ReactionSystem reactionSystem = new ReactionSystem();
+//			}
 			setReactionModel(new CoreEdgeReactionModel());//10/4/07 gmagoon:changed to setReactionModel
 			while (line!=null) {
 
@@ -1395,13 +1726,14 @@ public class ReactionModelGenerator {
 		
 	}
 
+        //10/25/07 gmagoon: I don't think this is used, but I will update to use reactionSystem and reactionTime as parameter to access temperature; commented-out usage of writeRestartFile will need to be modified
 	//Is still incomplete.
-    public void writeRestartFile() {
+    public void writeRestartFile(ReactionSystem p_rs, ReactionTime p_time ) {
 		writeCoreSpecies();
-		//writeCoreReactions();
+		//writeCoreReactions(p_rs, p_time);
 		writeEdgeSpecies();
-		//writeAllReactions();
-		//writeEdgeReactions();
+		//writeAllReactions(p_rs, p_time);
+		//writeEdgeReactions(p_rs, p_time);
 
 		//String restartFileName;
 		//String restartFileContent="";
@@ -1463,8 +1795,8 @@ public class ReactionModelGenerator {
 
 	/*Only write the forward reactions in the model core.
 	The reverse reactions are generated from the forward reactions.*/
-
-	private void writeEdgeReactions() {
+        //10/25/07 gmagoon: added reaction system and reaction time as parameters and eliminated use of Global.temperature
+	private void writeEdgeReactions(ReactionSystem p_rs, ReactionTime p_time) {
 		StringBuilder restartFileContent =new StringBuilder();
 		int reactionCount = 1;
 		try{
@@ -1475,7 +1807,7 @@ public class ReactionModelGenerator {
 				Reaction reaction = (Reaction) iter.next();
 				//if (reaction.getDirection()==1){
 					//restartFileContent = restartFileContent + "("+ reactionCount + ") "+species.getChemkinName() + "  " + reactionSystem.getPresentConcentration(species) + " (mol/cm3) \n";
-					restartFileContent = restartFileContent.append(reaction.toRestartString(Global.temperature) + "\n");
+					restartFileContent = restartFileContent.append(reaction.toRestartString(p_rs.getTemperature(p_time)) + "\n");
 					reactionCount = reactionCount + 1;
 				//}
 			}
@@ -1490,7 +1822,8 @@ public class ReactionModelGenerator {
 
 	}
 
-	private void writeAllReactions() {
+         //10/25/07 gmagoon: added reaction system and reaction time as parameters and eliminated use of Global.temperature
+	private void writeAllReactions(ReactionSystem p_rs, ReactionTime p_time) {
 		StringBuilder restartFileContent = new StringBuilder();
 		int reactionCount = 1;
 		try{
@@ -1501,7 +1834,7 @@ public class ReactionModelGenerator {
 				Reaction reaction = (Reaction) iter.next();
 
 				//restartFileContent = restartFileContent + "("+ reactionCount + ") "+species.getChemkinName() + "  " + reactionSystem.getPresentConcentration(species) + " (mol/cm3) \n";
-				restartFileContent = restartFileContent.append(reaction.toRestartString(Global.temperature) + "\n");
+				restartFileContent = restartFileContent.append(reaction.toRestartString(p_rs.getTemperature(p_time)) + "\n");
 
 			}
 
@@ -1510,7 +1843,7 @@ public class ReactionModelGenerator {
 				Reaction reaction = (Reaction) iter.next();
 				//if (reaction.getDirection()==1){
 					//restartFileContent = restartFileContent + "("+ reactionCount + ") "+species.getChemkinName() + "  " + reactionSystem.getPresentConcentration(species) + " (mol/cm3) \n";
-				restartFileContent = restartFileContent.append(reaction.toRestartString(Global.temperature) + "\n");
+				restartFileContent = restartFileContent.append(reaction.toRestartString(p_rs.getTemperature(p_time)) + "\n");
 
 			}
 			//restartFileContent += "\nEND";
@@ -1549,7 +1882,8 @@ public class ReactionModelGenerator {
 		}
 	}
 
-	private void writeCoreReactions() {
+         //10/25/07 gmagoon: added reaction system and reaction time as parameters and eliminated use of Global.temperature
+	private void writeCoreReactions(ReactionSystem p_rs, ReactionTime p_time) {
 		StringBuilder restartFileContent = new StringBuilder();
 		int reactionCount = 0;
 		try{
@@ -1560,7 +1894,7 @@ public class ReactionModelGenerator {
 				Reaction reaction = (Reaction) iter.next();
 				if (reaction.getDirection()==1){
 					//restartFileContent = restartFileContent + "("+ reactionCount + ") "+species.getChemkinName() + "  " + reactionSystem.getPresentConcentration(species) + " (mol/cm3) \n";
-					restartFileContent = restartFileContent.append(reaction.toRestartString(Global.temperature) + "\n");
+					restartFileContent = restartFileContent.append(reaction.toRestartString(p_rs.getTemperature(p_time)) + "\n");
 					reactionCount = reactionCount + 1;
 				}
 			}
@@ -1634,15 +1968,20 @@ public LinkedList getSpeciesList() {
   return species;
 }
 
+//gmagoon 10/24/07: commented out getReactionSystem and setReactionSystem
+//    public ReactionSystem getReactionSystem() {
+//        return reactionSystem;
+//    }
 
-    public ReactionSystem getReactionSystem() {
-        return reactionSystem;
-    }
+//11/2/07 gmagoon: adding accessor method for reactionSystemList
+ public LinkedList getReactionSystemList(){
+     return reactionSystemList;
+ }
 
     //added by gmagoon 9/24/07
-    public void setReactionSystem(ReactionSystem p_ReactionSystem) {
-        reactionSystem = p_ReactionSystem;
-    }
+//    public void setReactionSystem(ReactionSystem p_ReactionSystem) {
+//        reactionSystem = p_ReactionSystem;
+//    }
     
     //copied from ReactionSystem.java by gmagoon 9/24/07
     public ReactionModel getReactionModel() {
@@ -1708,7 +2047,12 @@ public LinkedList getSpeciesList() {
         	}
     	}
         //10/9/07 gmagoon: copy reactionModel to reactionSystem; there may still be scope problems, particularly in above elseif statement
-        reactionSystem.setReactionModel(getReactionModel());
+        //10/24/07 gmagoon: want to copy same reaction model to all reactionSystem variables; should probably also make similar modifications elsewhere; may or may not need to copy in ...WithPRL function
+        for (Integer i = 0; i<reactionSystemList.size();i++) {
+                    ReactionSystem rs = (ReactionSystem)reactionSystemList.get(i);
+                    rs.setReactionModel(getReactionModel());
+        }
+        //reactionSystem.setReactionModel(getReactionModel());
         if (getReactionModel().isEmpty() && reactionModelEnlarger instanceof RateBasedRME) {
         	LinkedHashSet us = ((CoreEdgeReactionModel)getReactionModel()).getUnreactedSpeciesSet();
         	LinkedHashSet rs = ((CoreEdgeReactionModel)getReactionModel()).getReactedSpeciesSet();
@@ -1727,13 +2071,24 @@ public LinkedList getSpeciesList() {
         }
         else if (getReactionModel().isEmpty() && reactionModelEnlarger instanceof RateBasedPDepRME) {
         	while (getReactionModel().isEmpty()){
-        		reactionSystem.initializePDepNetwork();//9/25/07 gmagoon: unresolved question: what to do with initializePDepNetwork? leave in ReactionSystem class or move elsewhere (e.g. ReactionModelGenerator)?;//10/14/07 gmagoon: I am leaning towards leaving it where it is since it is used in solveReactionSystem, but it probably warrants further investigation
-        		reactionSystem.appendUnreactedSpeciesStatus(initialStatus, Global.temperature);
-        		enlargeReactionModel();
+                    for (Integer i = 0; i<reactionSystemList.size();i++) {
+                        ReactionSystem rs = (ReactionSystem)reactionSystemList.get(i);
+                        rs.initializePDepNetwork();
+                        rs.appendUnreactedSpeciesStatus((InitialStatus)initialStatusList.get(i), rs.getPresentTemperature());//10/25/07 gmagoon: changed to use getPresentTemperature
+                        //rs.appendUnreactedSpeciesStatus((InitialStatus)initialStatusList.get(i), rs.getTemperature((ReactionTime)beginList.get(i)));//10/25/07 gmagoon: removing uses of Global.temperature
+                    }
+                    //reactionSystem.initializePDepNetwork();//9/25/07 gmagoon: unresolved question: what to do with initializePDepNetwork? leave in ReactionSystem class or move elsewhere (e.g. ReactionModelGenerator)?;//10/14/07 gmagoon: I am leaning towards leaving it where it is since it is used in solveReactionSystem, but it probably warrants further investigation
+                    //reactionSystem.appendUnreactedSpeciesStatus(initialStatus, Global.temperature);
+                    enlargeReactionModel();
         	}
         }
         //10/9/07 gmagoon: copy reactionModel to reactionSystem; there may still be scope problems, particularly in above elseif statement
-        reactionSystem.setReactionModel(getReactionModel());
+        //10/24/07 gmagoon: updated to use reactionSystemList
+        for (Integer i = 0; i<reactionSystemList.size();i++) {
+            ReactionSystem rs = (ReactionSystem)reactionSystemList.get(i);
+            rs.setReactionModel(getReactionModel());
+        }
+        //reactionSystem.setReactionModel(getReactionModel());
         return;
 
         //#]
@@ -1761,12 +2116,13 @@ public LinkedList getSpeciesList() {
     }
     
     //9/25/07 gmagoon: moved from ReactionSystem.java
+    //10/24/07 gmagoon: changed to use reactionSystemList
     //## operation enlargeReactionModel()
     public void enlargeReactionModel() {
         //#[ operation enlargeReactionModel()
         if (reactionModelEnlarger == null) throw new NullPointerException("ReactionModelEnlarger");
 
-        reactionModelEnlarger.enlargeReactionModel(reactionSystem, getReactionModel());
+        reactionModelEnlarger.enlargeReactionModel(reactionSystemList, reactionModel, validList);
 
         return;
         //#]

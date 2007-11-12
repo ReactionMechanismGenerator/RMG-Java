@@ -73,13 +73,13 @@ public class ReactionSystem {
     protected TemperatureModel temperatureModel;
     protected double [] reactionFlux;
     protected LibraryReactionGenerator lrg;//9/24/07 gmagoon: moved to ReactionModelGenerator.java; 9/25/07 variable is passed from ReactionModelGenerator
-
+    protected int index;//10/30/07 gmagoon: added index variable to number different reaction systems; starts at zero
     // Constructors
 
     //## operation ReactionSystem(TemperatureModel,PressureModel,ReactionModelEnlarger,FinishController,DynamicSimulator,PrimaryReactionLibrary,ReactionGenerator,HashSet,InitialStatus)
     //9/24/07 gmagoon: reactionModel changed to parameter passed to class; setReactionModel method removed; 10/4/07: this was incorrect; setReactionModel restored
     //9/25/07 gmagoon: removed primaryReactionLibrary from parameters
-    public  ReactionSystem(TemperatureModel p_temperatureModel, PressureModel p_pressureModel, ReactionModelEnlarger p_reactionModelEnlarger, FinishController p_finishController, DynamicSimulator p_dynamicSimulator, PrimaryReactionLibrary p_primaryReactionLibrary, ReactionGenerator p_reactionGenerator, LinkedHashSet p_speciesSeed, InitialStatus p_initialStatus, ReactionModel p_reactionModel, LibraryReactionGenerator p_libraryReactionGenerator) {
+    public  ReactionSystem(TemperatureModel p_temperatureModel, PressureModel p_pressureModel, ReactionModelEnlarger p_reactionModelEnlarger, FinishController p_finishController, DynamicSimulator p_dynamicSimulator, PrimaryReactionLibrary p_primaryReactionLibrary, ReactionGenerator p_reactionGenerator, LinkedHashSet p_speciesSeed, InitialStatus p_initialStatus, ReactionModel p_reactionModel, LibraryReactionGenerator p_libraryReactionGenerator, int p_index) {
         {
             systemSnapshot=new LinkedList();
         }
@@ -96,6 +96,7 @@ public class ReactionSystem {
         originalReactant = p_speciesSeed;
         lrg = p_libraryReactionGenerator;
         systemSnapshot.add(initialStatus);
+        index = p_index;//10/30/07 gmagoon: added
 		
 		if (!checkInitialConsistency()) {
         	System.out.println("Initial consition is not consistent: C = P/RT is not satisfied!");
@@ -211,11 +212,13 @@ public class ReactionSystem {
             	double flux = 0;
             	if (r instanceof TemplateReaction) {
             		//flux = ((TemplateReaction)r).calculateTotalPDepRate(p_temperature);
-    				flux = ((TemplateReaction)r).getRateConstant();
+                        flux = ((TemplateReaction)r).getRateConstant(p_temperature, p_systemSnapshot.getPressure());//10/26/07 gmagoon: changed to pass temperature and pressure; I assume systemSnapshot contains pressure at desired time
+    			//flux = ((TemplateReaction)r).getRateConstant();
             	}
             	else {
             	 	//flux = r.calculateTotalRate(p_temperature);
-    				flux = r.getRateConstant();
+                        flux = r.getRateConstant(p_temperature);//10/26/07 gmagoon: changed to pass temperature
+    			//flux = r.getRateConstant();
             	}
             	if (flux > 0) {
             		for (Iterator rIter=r.getReactants(); rIter.hasNext();) {
@@ -256,7 +259,7 @@ public class ReactionSystem {
         			int rxnType = model.categorizeReaction(r);
         			//if (rxnType == 0) throw new InvalidReactionSetException();
         			if (rxnType == -1){
-        				double flux = r.calculateRate();
+        				double flux = r.calculateRate((SystemSnapshot)systemSnapshot.getLast());//10/25/07 gmagoon: using last systemSnapshot as parameter to avoid use of Global.temperature and Global.pressure; ****is this correct handling of systemSnapshot with use of getLast?; possible alternative is getSystemSnapshotEnd
         				for (Iterator rIter=r.getReactants(); rIter.hasNext();) {
         					Species spe = (Species)rIter.next();
         					double conc =0; 
@@ -282,11 +285,13 @@ public class ReactionSystem {
             	double flux = 0;
             	if (r instanceof TemplateReaction) {
             		//flux = ((TemplateReaction)r).calculateTotalPDepRate(p_temperature);
-    				flux = ((TemplateReaction)r).getRateConstant();
+                        flux = ((TemplateReaction)r).getRateConstant(p_temperature, p_systemSnapshot.getPressure());//10/26/07 gmagoon: changed to pass temperature and pressure; I assume systemSnapshot contains pressure at desired time; note: interestingly, this did not appear to turn up on my initial search for uses of templateReaction version of getRateConstant (I could have missed it by mistaking reaction version for the one I was searching for); also NetBeans did not indicate an error until I changed reaction version of getRateConstant
+    			//flux = ((TemplateReaction)r).getRateConstant();
             	}
             	else {
             	 	//flux = r.calculateTotalRate(p_temperature);
-    				flux = r.getRateConstant();
+                     flux = r.getRateConstant(p_temperature);//10/26/07 gmagoon: changed to pass temperature
+    			//	flux = r.getRateConstant();
             	}
             	if (flux > 0) {
             		for (Iterator rIter=r.getReactants(); rIter.hasNext();) {
@@ -391,7 +396,7 @@ public class ReactionSystem {
         		if (spe.equals(p_species)) {
         			double flux = rxn.calculateTotalRate(temp);
         			if (rxn instanceof TemplateReaction) {
-        				flux = ((TemplateReaction)rxn).calculateTotalPDepRate(temp);
+        				flux = ((TemplateReaction)rxn).calculateTotalPDepRate(temp, getPressure(rt));//10/25/07 gmagoon: added pressure
         			}
         			else if (rxn instanceof ThirdBodyReaction) {
         				flux *= ((ThirdBodyReaction)rxn).calculateThirdBodyCoefficient(p_systemSnapshot);
@@ -825,7 +830,7 @@ public String printLowerBoundConcentrations(LinkedList p_speciesList) {
               k_upperbound = r.calculateUpperBoundRate(t)*((TROEReaction)r).calculateTroeFallOff(ss);
             }
            if (r instanceof TemplateReaction){
-             k = ((TemplateReaction)r).calculateTotalPDepRate(ss.getTemperature());
+             k = ((TemplateReaction)r).calculateTotalPDepRate(ss.getTemperature(), ss.getPressure());//10/25/07 gmagoon: added pressure
              k_lowerbound = k/2.0;
              k_upperbound = k*2.0;
            }
@@ -1073,11 +1078,11 @@ public String printLowerBoundConcentrations(LinkedList p_speciesList) {
                     k_upperbound = r.calculateUpperBoundRate(t)*((TROEReaction)r).calculateTroeFallOff(ss);
                   }
                   if (r instanceof TemplateReaction){
-                    k = ((TemplateReaction)r).calculateTotalPDepRate(ss.getTemperature());
+                    k = ((TemplateReaction)r).calculateTotalPDepRate(ss.getTemperature(), ss.getPressure());//10/25/07 gmagoon: added pressure
                     k_upperbound = k*2.0;
                    }
                   else if (r instanceof PDepNetReaction){
-                    k = ((PDepNetReaction)r).calculateRate();
+                    k = ((PDepNetReaction)r).calculateRate((SystemSnapshot)systemSnapshot.getLast());//10/25/07 gmagoon: using last systemSnapshot as parameter to avoid use of Global.temperature and Global.pressure; ****is this correct handling of systemSnapshot with use of getLast?
                     k_upperbound = k*2.0;
                   }
                   else {
@@ -1181,7 +1186,7 @@ public String printLowerBoundConcentrations(LinkedList p_speciesList) {
       public String printOrderedReactions() {
     	  StringBuilder result = new StringBuilder("Reactions: \n");
     	  Iterator iter = getSystemSnapshot();
-    	  SystemSnapshot ss = (SystemSnapshot) iter.next();
+    	  SystemSnapshot ss = (SystemSnapshot) iter.next();//10/25/07 gmagoon (?) why is this done twice
     	  ss = (SystemSnapshot) iter.next();
     	  LinkedList reactionList = ss.getReactionList();
     	  for (int j = 0; j < reactionList.size(); j++) {
@@ -1192,7 +1197,8 @@ public String printLowerBoundConcentrations(LinkedList p_speciesList) {
     		  }
     		  else {
     			  int J = j+1;
-    			  result.append(J + ". " + r.toString(Global.temperature)+'\n');
+                           result.append(J + ". " + r.toString(ss.getTemperature())+'\n');
+    			  //result.append(J + ". " + r.toString(Global.temperature)+'\n');//10/25/07 gmagoon: changed from using global.temperature
     		  }
       	}
     	return result.toString();
@@ -1236,10 +1242,10 @@ public String printLowerBoundConcentrations(LinkedList p_speciesList) {
         							Temperature t = getTemperature(rt);
         							double k;
         							if (r instanceof TemplateReaction) {
-        								k = ( (TemplateReaction) r).calculateTotalPDepRate(ss.getTemperature());
+        								k = ( (TemplateReaction) r).calculateTotalPDepRate(ss.getTemperature(), ss.getPressure());//10/25/07 gmagoon: added pressure
         							}
         							else if (r instanceof PDepNetReaction) {
-        								k = ( (PDepNetReaction) r).calculateRate();
+        								k = ( (PDepNetReaction) r).calculateRate((SystemSnapshot)systemSnapshot.getLast());//10/25/07 gmagoon: using last systemSnapshot as parameter to avoid use of Global.temperature and Global.pressure; ****is this correct handling of systemSnapshot with use of getLast?
         							}
         							else if (r instanceof ThirdBodyReaction) {
         								k = ( (ThirdBodyReaction) r).calculateRate(ss);
@@ -1358,7 +1364,7 @@ public String printLowerBoundConcentrations(LinkedList p_speciesList) {
                     k_lowerbound = r.calculateLowerBoundRate(t)*((ThirdBodyReaction)r).calculateThirdBodyCoefficient(ss);
                   }
                   if (r instanceof TemplateReaction){
-                    k = ((TemplateReaction)r).calculateTotalPDepRate(ss.getTemperature());
+                    k = ((TemplateReaction)r).calculateTotalPDepRate(ss.getTemperature(), ss.getPressure());//10/25/07 gmagoon: added pressure
                     k_upperbound = k*2.0;
                     k_lowerbound = k/2.0;
                   }
@@ -1599,7 +1605,10 @@ public String printLowerBoundConcentrations(LinkedList p_speciesList) {
         temperatureModel = p_TemperatureModel;
     }
 
-
+    //10/30/07 gmagoon: added accessor method for index
+    public int getIndex() {
+        return index;
+    }
 	
 
 }

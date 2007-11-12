@@ -441,7 +441,8 @@ public  Chemkin() {
       result.append(writeChemkinThermo(p_reactionModel));
       Global.chemkinThermo = Global.chemkinThermo + (System.currentTimeMillis() - start)/1000/60;
 	  start = System.currentTimeMillis();
-	  result.append(writeChemkinPdepReactions(p_reactionModel));
+          result.append(writeChemkinPdepReactions(p_reactionModel, p_beginStatus)); //10/26/07 gmagoon: changed to pass p_beginStatus
+	  //result.append(writeChemkinPdepReactions(p_reactionModel));
 	  Global.chemkinReaction = Global.chemkinReaction + (System.currentTimeMillis() - start)/1000/60;
 
       String dir = System.getProperty("RMG.workingDirectory");
@@ -496,7 +497,8 @@ public  Chemkin() {
   }
   
 //## operation writeChemkinReactions(ReactionModel)
-  public static String writeChemkinReactions(ReactionModel p_reactionModel) {
+//10/26/07 gmagoon: changed to take temperature as parameter (it doesn't seem like this method is currently used anywhere)
+  public static String writeChemkinReactions(ReactionModel p_reactionModel, Temperature p_temperature) {
       //#[ operation writeChemkinReactions(ReactionModel)
       StringBuilder result = new StringBuilder();
 	  result.append("REACTIONS	KCAL/MOLE\n");
@@ -513,7 +515,8 @@ public  Chemkin() {
       for (Iterator iter = all.iterator(); iter.hasNext(); ) {
       	Reaction rxn = (Reaction)iter.next();
       	if (rxn.isForward()) {
-      		result.append(" " + rxn.toChemkinString(Global.temperature) + "\n");
+            result.append(" " + rxn.toChemkinString(p_temperature) + "\n");//10/26/07 gmagoon: changed to avoid use of Global.temperature
+      	//	result.append(" " + rxn.toChemkinString(Global.temperature) + "\n");
       		
       	}
       	
@@ -554,19 +557,24 @@ public  Chemkin() {
       
       for (Iterator iter = rList.iterator(); iter.hasNext();){
     	  Reaction r = (Reaction)iter.next();
-    	  result.append(r.toChemkinString(Global.temperature)+"\n");
+          //10/26/07 gmagoon: changed to avoid use of Global.temperature; I am using getPresentTemperature for the time being; it is possible that getInitialStatus.getTemperature or something similar may be more appropriate
+          result.append(r.toChemkinString(rs.getPresentTemperature())+"\n");
+    	  //result.append(r.toChemkinString(Global.temperature)+"\n");
       }
       for (Iterator iter = troeList.iterator(); iter.hasNext();){
     	  Reaction r = (Reaction)iter.next();
-    	  result.append(r.toChemkinString(Global.temperature)+"\n");
+          result.append(r.toChemkinString(rs.getPresentTemperature())+"\n");
+    	  //result.append(r.toChemkinString(Global.temperature)+"\n");
       }
       for (Iterator iter = tbrList.iterator(); iter.hasNext();){
     	  Reaction r = (Reaction)iter.next();
-    	  result.append(r.toChemkinString(Global.temperature)+"\n");
+          result.append(r.toChemkinString(rs.getPresentTemperature())+"\n");
+    	  //result.append(r.toChemkinString(Global.temperature)+"\n");
       }
       for (Iterator iter = duplicates.iterator(); iter.hasNext();){
     	  Reaction r = (Reaction)iter.next();
-    	  result.append(r.toChemkinString(Global.temperature)+"\n\tDUP\n");
+          result.append(r.toChemkinString(rs.getPresentTemperature())+"\n\tDUP\n");
+    	  //result.append(r.toChemkinString(Global.temperature)+"\n\tDUP\n");
       }
 
       result.append("END\n");
@@ -577,7 +585,7 @@ public  Chemkin() {
   }
   
   //## operation writeChemkinReactions(ReactionModel)
- public static String writeChemkinPdepReactions(ReactionModel p_reactionModel) {
+ public static String writeChemkinPdepReactions(ReactionModel p_reactionModel, SystemSnapshot p_beginStatus) {
       //#[ operation writeChemkinReactions(ReactionModel)
 
       StringBuilder result = new StringBuilder();
@@ -642,15 +650,18 @@ public  Chemkin() {
       
       for (Iterator iter = pDepList.iterator(); iter.hasNext();){
     	  Reaction r = (Reaction)iter.next();
-    	  result.append(r.toChemkinString(Global.temperature)+"\n");
+          result.append(r.toChemkinString(p_beginStatus.getTemperature())+"\n");//10/26/07 gmagoon: eliminating use of Global.temperature; **** I use beginStatus here, which may or may not be appropriate
+    	  //result.append(r.toChemkinString(Global.temperature)+"\n");
       }
       for (Iterator iter = nonPDepList.iterator(); iter.hasNext();){
     	  Reaction r = (Reaction)iter.next();
-    	  result.append(r.toChemkinString(Global.temperature)+"\n");
+          result.append(r.toChemkinString(p_beginStatus.getTemperature())+"\n");
+    	  //result.append(r.toChemkinString(Global.temperature)+"\n");
       }
       for (Iterator iter = duplicates.iterator(); iter.hasNext();){
     	  Reaction r = (Reaction)iter.next();
-    	  result.append(r.toChemkinString(Global.temperature)+"\n\tDUP\n");
+          result.append(r.toChemkinString(p_beginStatus.getTemperature())+"\n\tDUP\n");
+    	  //result.append(r.toChemkinString(Global.temperature)+"\n\tDUP\n");
       }
 
       result.append("END\n");

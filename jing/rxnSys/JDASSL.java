@@ -41,6 +41,7 @@
 package jing.rxnSys;
 
 
+import java.awt.image.IndexColorModel;
 import jing.rxn.*;
 import jing.chem.*;
 
@@ -101,6 +102,7 @@ public class JDASSL implements ODESolver{
 	protected StringBuilder rString ;
 	protected StringBuilder tbrString;
 	protected StringBuilder troeString;
+        protected int index; //11/1/07 gmagoon: adding index to allow appropriate naming of RWORK, IWORK****may need to make similar modification for DASPK?
 	protected double [] reactionFlux;
 	protected double [] conversionSet;
 	protected double endTime;
@@ -110,11 +112,13 @@ public class JDASSL implements ODESolver{
         //#[ operation JDASPK()
         //#]
     }
+    //11/1/07 gmagoon: added p_index parameter
     //## operation JDASPK(double,double,int, InitialStatus)
-    public  JDASSL(double p_rtol, double p_atol, int p_parameterInfor, InitialStatus p_initialStatus) {
+    public  JDASSL(double p_rtol, double p_atol, int p_parameterInfor, InitialStatus p_initialStatus, int p_index) {
         //#[ operation JDASPK(double,double,int, InitialStatus)
         rtol = p_rtol;
         atol = p_atol;
+        index = p_index;
 
         parameterInfor = p_parameterInfor;
         initialStatus = p_initialStatus;
@@ -632,6 +636,15 @@ public class JDASSL implements ODESolver{
 			FileWriter fw = new FileWriter(SolverInput);
 			fw.write(outputString.toString());
 			fw.close();
+                        //11/1/07 gmagoon: renaming RWORK and IWORK files if they exist
+                        File f = new File("ODESolver/RWORK_"+index+".dat");
+                        File newFile = new File("ODESolver/RWORK.dat");
+                        if(f.exists()){
+                            f.renameTo(newFile);
+                            f = new File("ODESolver/IWORK_"+index+".dat");
+                            newFile = new File("ODESolver/IWORK.dat");
+                            f.renameTo(newFile);
+                        }
 		} catch (IOException e) {
 			System.err.println("Problem writing Solver Input File!");
 			e.printStackTrace();
@@ -667,6 +680,13 @@ public class JDASSL implements ODESolver{
         	System.exit(0);
         }
         
+        //11/1/07 gmagoon: renaming RWORK and IWORK files
+        File f = new File("ODESolver/RWORK.dat");
+        File newFile = new File("ODESolver/RWORK_"+index+".dat"); 
+        f.renameTo(newFile);
+        f = new File("ODESolver/IWORK.dat");
+        newFile = new File("ODESolver/IWORK_"+index+".dat");
+        f.renameTo(newFile);
         //read the result
         File SolverOutput = new File("ODESolver/SolverOutput.dat");
         try {
@@ -704,6 +724,7 @@ public class JDASSL implements ODESolver{
         	System.exit(0);
         }
         SolverOutput.delete();
+
 		return 1;
 	}
 	private void initializeWorkSpace() {
@@ -770,7 +791,12 @@ public class JDASSL implements ODESolver{
 		//Global.transferReaction = Global.transferReaction + (System.currentTimeMillis() - startTime)/1000/60;
 		//ODEReaction or;
         if(p_reaction instanceof PDepNetReaction) {
-        	double rate = ((PDepNetReaction)p_reaction).calculateRate();
+        	//10/25/07 gmagoon: updated to use calculateRate with system snapshot (to avoid use of Global.temperature and Global.pressure)
+                SystemSnapshot currentTPSnapshot = new SystemSnapshot();//10/25/07 gmagoon: make currentTPsnapshot variable, which will be used to pass temperature and pressure to calculateRate
+        	currentTPSnapshot.setTemperature(p_temperature);
+                currentTPSnapshot.setPressure(p_pressure);
+                double rate = ((PDepNetReaction)p_reaction).calculateRate(currentTPSnapshot);
+                //double rate = ((PDepNetReaction)p_reaction).calculateRate();
         	ODEReaction or = new ODEReaction(rnum, pnum, rid, pid, rate);
 			//Global.transferReaction = Global.transferReaction + (System.currentTimeMillis() - startTime)/1000/60;
         	return or;

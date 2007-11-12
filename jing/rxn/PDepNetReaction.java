@@ -77,16 +77,16 @@ public class PDepNetReaction extends Reaction {
         //#]
     }
     
-    
+    //10/25/07 gmagoon: commenting out to eliminate use of Global.temperature and Global.pressure
 //  ## operation calculateRate(SystemSnapshot) 
-    public double calculateRate() {
-        //#[ operation calculateRate(SystemSnapshot) 
-        Temperature temp = Global.temperature;
-        Pressure pres = Global.pressure;
-        if (itsChebyshevPolynomials == null) throw new NullPointerException();
-        return itsChebyshevPolynomials.calculateRate(temp, pres);
-        //#]
-    }
+//    public double calculateRate() {
+//        //#[ operation calculateRate(SystemSnapshot) 
+//        Temperature temp = Global.temperature;
+//        Pressure pres = Global.pressure;
+//        if (itsChebyshevPolynomials == null) throw new NullPointerException();
+//        return itsChebyshevPolynomials.calculateRate(temp, pres);
+//        //#]
+//    }
     
     //## operation formPDepSign(String) 
     public String formPDepSign(String p_string) {
@@ -133,8 +133,11 @@ public class PDepNetReaction extends Reaction {
         //#]
     }
     
-    public String toString(){
-    	return toChemkinString(Global.temperature);
+  //10/26/07 gmagoon: changed to take temperature as parameter (required changing function name from toString to reactionToString
+  public String reactionToString(Temperature p_temperature) {
+  //public String toString(){
+    	return toChemkinString(p_temperature);
+        //return toChemkinString(Global.temperature);
     }
     
     public ChebyshevPolynomials getItsChebyshevPolynomials() {

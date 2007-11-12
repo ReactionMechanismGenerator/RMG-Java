@@ -76,9 +76,10 @@ public class Reaction {
   protected Structure structure;
   protected double UpperBoundRate=0;//svp
   protected double LowerBoundRate = 0;//svp
-	protected Kinetics additionalKinetics = null;  //This is incase a reaction has two completely different transition states.
-	protected boolean finalized = false;
-	protected String ChemkinString = null;
+  protected Kinetics additionalKinetics = null;  //This is incase a reaction has two completely different transition states.
+  protected boolean finalized = false;
+  protected String ChemkinString = null;
+  protected boolean ratesForKineticsAndAdditionalKineticsCross = false; //10/29/07 gmagoon: added variable to keep track of whether both rate constants are maximum for some temperature in the temperature range
   // Constructors
 
   //## operation Reaction()
@@ -580,7 +581,10 @@ public class Reaction {
       }
       else {
       	//double temp = 715;
-      	double temp = Global.temperature.getK();
+    //    double temp = 298.15; //10/29/07 gmagoon: Sandeep made change to temp = 298 on his computer locally
+    //    double temp = 1350; //11/6/07 gmagoon:**** changed to actual temperature in my condition file to create agreement with old version; apparently, choice of temp has large effect; //11/9/07 gmagoon: commented out
+          double temp = 298.15; //11/9/07 gmagoon: restored use of 298.15 per discussion with Sandeep
+          //double temp = Global.temperature.getK();
     	Kinetics k = getKinetics();
       	double doubleAlpha;
       	if (k instanceof ArrheniusEPKinetics) doubleAlpha = ((ArrheniusEPKinetics)k).getAlphaValue();
@@ -720,9 +724,12 @@ public class Reaction {
       //#]
   }
 
-  public double getRateConstant(){
+  //10/26/07 gmagoon: changed to have temperature and pressure passed as parameters (part of eliminating use of Global.temperature)
+  public double getRateConstant(Temperature p_temperature){
+  //public double getRateConstant(){
 	  if (rateConstant == 0)
-		  rateConstant = calculateTotalRate(Global.temperature);
+                  rateConstant = calculateTotalRate(p_temperature);
+	//	  rateConstant = calculateTotalRate(Global.temperature);
 	  return rateConstant;
   }
   
@@ -1017,9 +1024,11 @@ public class Reaction {
       //#]
   }
 
-  public String toString() {
+  //10/26/07 gmagoon: changed to take temperature as parameter (required changing function name from toString to reactionToString
+  public String reactionToString(Temperature p_temperature) {
+ // public String toString() {
       //#[ operation toString()
-	  Temperature p_temperature = Global.temperature;
+	//  Temperature p_temperature = Global.temperature;
       Kinetics k = getKinetics();
       String kString = k.toChemkinString(calculateHrxn(p_temperature),p_temperature,false);
       
@@ -1064,33 +1073,128 @@ public class Reaction {
 		else if (kinetics.equals(p_kinetics)){
 			structure.increaseRedundancy(red);
 		}
-		else if (additionalKinetics == null)
-			if (p_kinetics.calculateRate(Global.temperature) > kinetics.calculateRate(Global.temperature)){
-				additionalKinetics = kinetics;
+                //10/29/07 gmagoon: changed to use Global.highTemperature, Global.lowTemperature (versus Global.temperature); apparently this function chooses the top two rates when there are multiple reactions with same reactants and products; the reactions with the top two rates are used; use of high and low temperatures would be less than ideal in cases where temperature of system changes over the course of reaction
+                //10/31/07 gmagoon: it is assumed that two rate constants vs. temperature cross each other at most one time over the temperature range of interest
+                //if there at least three different reactions/rates and rate crossings/intersections occur, the two rates used are based on the lowest simulation temperature and a warning is displayed
+                else if (additionalKinetics == null){
+			if (p_kinetics.calculateRate(Global.lowTemperature) > kinetics.calculateRate(Global.lowTemperature)){
+				if (p_kinetics.calculateRate(Global.highTemperature) < kinetics.calculateRate(Global.highTemperature))
+                                    ratesForKineticsAndAdditionalKineticsCross = true;
+                                additionalKinetics = kinetics;
 				kinetics = p_kinetics;
-				structure.redundancy = 1;
+				structure.redundancy = 1;  
 			}
-			else additionalKinetics = p_kinetics;
+			else{
+                            if(p_kinetics.calculateRate(Global.highTemperature) > kinetics.calculateRate(Global.highTemperature))
+                                ratesForKineticsAndAdditionalKineticsCross = true;
+                            additionalKinetics = p_kinetics;
+                        }
+                }
 		else if (additionalKinetics.equals(p_kinetics))
 			return;
 		else {
-			if (p_kinetics.calculateRate(Global.temperature) > kinetics.calculateRate(Global.temperature)){
-				additionalKinetics = kinetics;
-				kinetics = p_kinetics;
-				System.out.println("More than 2 kinetics provided for reaction " + structure.toChemkinString(true));
-				System.out.println("Ignoring the rate constant " + additionalKinetics.toString() );
-			
-			}
-			else if (p_kinetics.calculateRate(Global.temperature) < additionalKinetics.calculateRate(Global.temperature)){
-				System.out.println("More than 2 kinetics provided for reaction " + structure.toChemkinString(true));
-				System.out.println("Ignoring the rate constant " + p_kinetics.toString() );
-			}
-			else {
-				System.out.println("More than 2 kinetics provided for reaction " + structure.toChemkinString(true));
-				System.out.println("Ignoring the rate constant " + additionalKinetics.toString() );
-				additionalKinetics = p_kinetics;
-			}
-		}
+                        if(ratesForKineticsAndAdditionalKineticsCross){
+                            if(p_kinetics.calculateRate(Global.lowTemperature) > kinetics.calculateRate(Global.lowTemperature)){
+                                if(p_kinetics.calculateRate(Global.highTemperature) > kinetics.calculateRate(Global.highTemperature))
+                                    ratesForKineticsAndAdditionalKineticsCross = false;
+                                System.out.println("WARNING: reaction that may be significant at higher temperatures within the provided range is being neglected; see following for details:");
+                                System.out.println("More than 2 kinetics provided for reaction " + structure.toChemkinString(true));
+                                System.out.println("Ignoring the rate constant " + additionalKinetics.toString() ); 
+                                additionalKinetics = kinetics;
+                                kinetics = p_kinetics;  
+                            }
+                            else if (p_kinetics.calculateRate(Global.lowTemperature) < additionalKinetics.calculateRate(Global.lowTemperature)){
+                                if(p_kinetics.calculateRate(Global.highTemperature) > kinetics.calculateRate(Global.highTemperature))
+                                    System.out.println("WARNING: reaction that may be significant at higher temperatures within the provided range is being neglected; see following for details:");
+                                System.out.println("More than 2 kinetics provided for reaction " + structure.toChemkinString(true));
+                                System.out.println("Ignoring the rate constant " + p_kinetics.toString() );
+                            }
+                            else{//else p_kinetics @ low temperature is between kinetics and additional kinetics at low temperature
+                                if(p_kinetics.calculateRate(Global.highTemperature) < kinetics.calculateRate(Global.highTemperature))
+                                    ratesForKineticsAndAdditionalKineticsCross = false;
+                                System.out.println("WARNING: reaction that may be significant at higher temperatures within the provided range is being neglected; see following for details:");
+                                System.out.println("More than 2 kinetics provided for reaction " + structure.toChemkinString(true));
+                                System.out.println("Ignoring the rate constant " + additionalKinetics.toString() );
+                                additionalKinetics = p_kinetics;
+                            }
+                            
+                        }
+                        else{
+                            if ((p_kinetics.calculateRate(Global.lowTemperature) > kinetics.calculateRate(Global.lowTemperature)) && (p_kinetics.calculateRate(Global.highTemperature) > kinetics.calculateRate(Global.highTemperature))){
+                                System.out.println("More than 2 kinetics provided for reaction " + structure.toChemkinString(true));
+                                System.out.println("Ignoring the rate constant " + additionalKinetics.toString() ); //10/29/07 gmagoon: note that I have moved this before reassignment of variables; I think this was a minor bug in original code   
+                                additionalKinetics = kinetics;
+                                kinetics = p_kinetics;   
+
+                            }
+                            else if ((p_kinetics.calculateRate(Global.lowTemperature) < additionalKinetics.calculateRate(Global.lowTemperature))&&(p_kinetics.calculateRate(Global.highTemperature) < additionalKinetics.calculateRate(Global.highTemperature))){
+                                    System.out.println("More than 2 kinetics provided for reaction " + structure.toChemkinString(true));
+                                    System.out.println("Ignoring the rate constant " + p_kinetics.toString() );
+                            }
+                            else if ((p_kinetics.calculateRate(Global.lowTemperature) > additionalKinetics.calculateRate(Global.lowTemperature))&&(p_kinetics.calculateRate(Global.highTemperature) > additionalKinetics.calculateRate(Global.highTemperature))&&(p_kinetics.calculateRate(Global.lowTemperature) < kinetics.calculateRate(Global.lowTemperature))&&(p_kinetics.calculateRate(Global.highTemperature) < kinetics.calculateRate(Global.highTemperature))){
+                                    System.out.println("More than 2 kinetics provided for reaction " + structure.toChemkinString(true));
+                                    System.out.println("Ignoring the rate constant " + additionalKinetics.toString() );
+                                    additionalKinetics = p_kinetics;
+                            }
+                            else //else there is at least one crossing in the temperature range of interest between p_kinetics and either kinetics or additionalKinetics; base which reaction is kept on the lowest temperature
+                            {
+                                if(p_kinetics.calculateRate(Global.lowTemperature) > kinetics.calculateRate(Global.lowTemperature)){
+                                    if(p_kinetics.calculateRate(Global.highTemperature) < additionalKinetics.calculateRate(Global.highTemperature))
+                                        System.out.println("WARNING: reaction that may be significant at higher temperatures within the provided range is being neglected; see following for details:");
+                                    System.out.println("More than 2 kinetics provided for reaction " + structure.toChemkinString(true));
+                                    System.out.println("Ignoring the rate constant " + additionalKinetics.toString() );
+                                    additionalKinetics = kinetics;
+                                    kinetics = p_kinetics;
+                                    ratesForKineticsAndAdditionalKineticsCross = true;
+                                }
+                                else if(p_kinetics.calculateRate(Global.lowTemperature) < additionalKinetics.calculateRate(Global.lowTemperature)){
+                                   System.out.println("WARNING: reaction that may be significant at higher temperatures within the provided range is being neglected; see following for details:");
+                                   System.out.println("More than 2 kinetics provided for reaction " + structure.toChemkinString(true));
+                                   System.out.println("Ignoring the rate constant " + p_kinetics.toString() );
+                                }
+                                else //else p_kinetics at low temperature is between kinetics and additional kinetics at low temperature
+                                {
+                                    if(p_kinetics.calculateRate(Global.highTemperature) > kinetics.calculateRate(Global.highTemperature))
+                                        ratesForKineticsAndAdditionalKineticsCross = true;
+                                    else//else p_kinetics crosses additional kinetics
+                                        System.out.println("WARNING: reaction that may be significant at higher temperatures within the provided range is being neglected; see following for details:");
+                                    System.out.println("More than 2 kinetics provided for reaction " + structure.toChemkinString(true));
+                                    System.out.println("Ignoring the rate constant " + additionalKinetics.toString() );
+                                    additionalKinetics = p_kinetics;
+                                }
+                                
+                            
+                            }
+                        }
+		}                
+//                else if (additionalKinetics == null){
+//			if (p_kinetics.calculateRate(Global.temperature) > kinetics.calculateRate(Global.temperature)){
+//				additionalKinetics = kinetics;
+//				kinetics = p_kinetics;
+//				structure.redundancy = 1;
+//			}
+//			else additionalKinetics = p_kinetics;
+//              }
+//		else if (additionalKinetics.equals(p_kinetics))
+//			return;
+//		else {
+//			if (p_kinetics.calculateRate(Global.temperature) > kinetics.calculateRate(Global.temperature)){
+//				additionalKinetics = kinetics;
+//				kinetics = p_kinetics;
+//				System.out.println("More than 2 kinetics provided for reaction " + structure.toChemkinString(true));
+//				System.out.println("Ignoring the rate constant " + additionalKinetics.toString() );
+//			
+//			}
+//			else if (p_kinetics.calculateRate(Global.temperature) < additionalKinetics.calculateRate(Global.temperature)){
+//				System.out.println("More than 2 kinetics provided for reaction " + structure.toChemkinString(true));
+//				System.out.println("Ignoring the rate constant " + p_kinetics.toString() );
+//			}
+//			else {
+//				System.out.println("More than 2 kinetics provided for reaction " + structure.toChemkinString(true));
+//				System.out.println("Ignoring the rate constant " + additionalKinetics.toString() );
+//				additionalKinetics = p_kinetics;
+//			}
+//		}
 	}
 	
 	public boolean hasAdditionalKinetics(){

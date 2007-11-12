@@ -482,7 +482,8 @@ public class JDASPK implements ODESolver{
         	maxSpeciesNumber++;
         	id = new Integer(maxSpeciesNumber);
         	IDTranslator.put(p_species, id);
-        	thermoString.append(p_species.calculateG(Global.temperature) + " ");
+                thermoString.append(p_species.calculateG(initialStatus.getTemperature()) + " ");//10/26/07 gmagoon: changed to avoid use of Global.temperature;****ideally, current temperature would be used, but initial temperature is simplest to pass in current implementation
+        	//thermoString.append(p_species.calculateG(Global.temperature) + " ");
         }
 
         return id.intValue();
@@ -998,7 +999,12 @@ public class JDASPK implements ODESolver{
 		//Global.transferReaction = Global.transferReaction + (System.currentTimeMillis() - startTime)/1000/60;
 		//ODEReaction or;
         if(p_reaction instanceof PDepNetReaction) {
-        	double rate = ((PDepNetReaction)p_reaction).calculateRate();
+                //10/25/07 gmagoon: updated to use calculateRate with system snapshot (to avoid use of Global.temperature and Global.pressure)
+                SystemSnapshot currentTPSnapshot = new SystemSnapshot();//10/25/07 gmagoon: make currentTPsnapshot variable, which will be used to pass temperature and pressure to calculateRate
+        	currentTPSnapshot.setTemperature(p_temperature);
+                currentTPSnapshot.setPressure(p_pressure);
+                double rate = ((PDepNetReaction)p_reaction).calculateRate(currentTPSnapshot);
+                //double rate = ((PDepNetReaction)p_reaction).calculateRate()
         	ODEReaction or = new ODEReaction(rnum, pnum, rid, pid, rate);
 			//Global.transferReaction = Global.transferReaction + (System.currentTimeMillis() - startTime)/1000/60;
         	return or;
