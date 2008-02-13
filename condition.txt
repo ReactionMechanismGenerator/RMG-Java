@@ -1,0 +1,51 @@
+//tracks the consumption of 1,3-hexadiene in presence of N2, Methane and hydrogen.
+//notice the primary reaction library is turned off because this is not 
+//a oxidation mechanism. Also the sensitivity analysis section is missing 
+//because we are using the dassl solver.
+
+Database: RMG_database
+PrimaryThermoLibrary: primaryThermoLibrary
+TemperatureModel: Constant 1350 (K)
+
+PressureModel: Constant 1 (atm)
+
+
+InitialStatus:
+
+(1) HXD13 6.829e-4 (mol/cm3)
+1 C 0 {2,D}
+2 C 0 {1,D} {3,S}
+3 C 0 {2,S} {4,D}
+4 C 0 {3,D} {5,S}
+5 C 0 {4,S} {6,S}
+6 C 0 {5,S}
+
+(3) CH4 0.104 (mol/cm3)
+1 C 0
+
+(6) H2 1.56e-2 (mol/cm3)
+1 H 0 {2,S}
+2 H 0 {1,S}
+
+END
+
+InertGas:
+N2 0.8797 (mol/cm3)
+AR 0.0e-6 (mol/cm3)
+END
+
+ReactionModelEnlarger: RateBasedModelEnlarger
+
+FinishController: RateBasedFinishController
+(1) Goal Conversion: HXD13 0.9
+(2) Error Tolerance: 0.1
+
+DynamicSimulator: DASSL
+Conversions: 0.01 0.1 0.2 0.3 0.4 0.5 0.6 0.7 0.8
+Atol: 1e-18
+Rtol: 1e-8
+
+PrimaryReactionLibrary: off
+Name: Leeds
+Location: RMG_database/primaryReactionLibrary/combustion_core/version5
+END
