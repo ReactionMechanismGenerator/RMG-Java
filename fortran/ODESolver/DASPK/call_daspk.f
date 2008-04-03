@@ -275,7 +275,7 @@ C     of the second kind
                GO TO 1
             else if (idid .eq. 1) then
                iter = iter+1
-               
+
                CALL REACTION_FLUX(Y, CURRENTREACTIONFLUX, RPAR)
               DO I=1,REACTIONSIZE+THIRDBODYREACTIONSIZE+TROEREACTIONSIZE
                   TOTALREACTIONFLUX(I) = TOTALREACTIONFLUX(I) +
@@ -291,6 +291,7 @@ C     of the second kind
       ELSE
  2       IF (Y(IMPSPECIES) .GE. TARGETCONC*Y(NSTATE))
      $        THEN
+
             CALL DDASPK(RES, NEQ, Time, Y, YPRIME, TOUT, INFO, RTOL, 
      $           Atol,IDID,RWORK, LRW, IWORK, LIW, RPAR, IPAR, JAC,PSOL,
      $           SENPAR, G_RES)
@@ -302,7 +303,7 @@ C     of the second kind
                GO TO 1
             else if (idid .eq. 1) then
                iter = iter+1
-               
+
                CALL REACTION_FLUX(Y, CURRENTREACTIONFLUX, RPAR)
               DO I=1,REACTIONSIZE+THIRDBODYREACTIONSIZE+TROEREACTIONSIZE
                   TOTALREACTIONFLUX(I) = TOTALREACTIONFLUX(I) +
@@ -310,8 +311,11 @@ C     of the second kind
      $                 (TIME - PREVTIME)/2
                   PREVREACTIONFLUX(I) = CURRENTREACTIONFLUX(I)
                END DO
+c               write(*,*) time
                PREVTIME = TIME
-               tout = 200*time
+               if (time .le. 1e6) then
+                  tout = 200*time
+               end if
                go to 2
             END IF
          END IF
