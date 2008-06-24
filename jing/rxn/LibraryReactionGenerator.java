@@ -86,7 +86,7 @@ public class LibraryReactionGenerator implements ReactionGenerator {
     the pass-in structure of a library reaction.
     */
     //## operation match(HashSet,LibraryReaction) 
-    protected boolean match(LinkedHashSet p_speciesSeed, LibraryReaction p_libraryReaction) {
+    private boolean match(LinkedHashSet p_speciesSeed, LibraryReaction p_libraryReaction) {
         //#[ operation match(HashSet,LibraryReaction) 
         Iterator iter = p_libraryReaction.getReactants();
         
@@ -134,6 +134,7 @@ public class LibraryReactionGenerator implements ReactionGenerator {
         
         //#]
     }
+    
     
     //## operation react(HashSet,Species) 
     public LinkedHashSet react(LinkedHashSet p_speciesSet, Species p_species) {
