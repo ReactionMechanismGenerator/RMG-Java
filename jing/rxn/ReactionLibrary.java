@@ -66,7 +66,7 @@ public class ReactionLibrary {
     
     protected HashMap dictionary;
     
-    protected HashMap library;
+    protected HashSet library;
     
     // Constructors
     
@@ -78,7 +78,7 @@ public class ReactionLibrary {
     //## operation ReactionLibrary() 
     private  ReactionLibrary() {
         {
-            library=new HashMap();
+            library=new HashSet();
             dictionary = new HashMap();
         }
         String directory = System.getProperty("jing.rxn.ReactionLibrary.pathName");
@@ -162,14 +162,14 @@ public class ReactionLibrary {
         		reactants.addAll(r.getReactantList());
         		LibraryReaction fLR = LibraryReaction.makeLibraryReaction(r);
         		
-        		library.put(reactants,fLR);
+        		library.add(fLR);
         		
         		Reaction reverse = r.getReverseReaction();
 				LibraryReaction rLR = LibraryReaction.makeLibraryReaction(reverse);
 				
         		if (rLR != null) {
         			reactants.addAll(reverse.getReactantList());
-					library.put(reactants,rLR);
+					library.add(rLR);
 					fLR.setReverseReaction(rLR);
 					rLR.setReverseReaction(fLR);
 					if (fLR.getReactantNumber()!= 2 || fLR.getProductNumber() != 2){
@@ -273,7 +273,7 @@ public class ReactionLibrary {
         //## operation getLibraryReaction() 
     public Iterator getLibraryReaction() {
         //#[ operation getLibraryReaction() 
-        Iterator iter=library.values().iterator();
+        Iterator iter=library.iterator();
         return iter;
         //#]
     }

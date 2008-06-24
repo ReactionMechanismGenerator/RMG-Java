@@ -732,10 +732,9 @@ public class ReactionTemplate {
       			Structure structure = new Structure(reactant,product);
 				Kinetics k = findRateConstant(structure);
 				Structure structureSp = new Structure(reactantSp, productSp);
-				/*if (structureSp.toChemkinString(true).equals("C7H15J(4)=C7H15J(6)"))
-				{
-					System.out.println(k.toString());
-				}*/
+				
+				
+				
 				structureSp.direction = structure.direction;
       			structure.setRedundancy(redundancy);
 					Reaction old_reaction = (Reaction)reactionMap.get(structureSp);

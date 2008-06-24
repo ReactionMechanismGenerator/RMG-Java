@@ -88,6 +88,7 @@ public class TemplateReactionGenerator implements ReactionGenerator {
         while (template_iter.hasNext()) {
         	ReactionTemplate current_template = (ReactionTemplate)template_iter.next();
         	// the reaction template has only one reactant, we only need to loop over the whole species seed set to find a match
+//        	System.out.println(current_template.name);
         	if (current_template.hasOneReactant()) {
         		Iterator species_iter1 = p_speciesSeed.iterator();
         		while (species_iter1.hasNext()) {
