@@ -499,8 +499,8 @@ public class Reaction {
 
       	try {
       	    // system call for fit3p
-      		String[] command = {"fit3p/fit3pbnd.exe"};
-      		File runningDir = new File(dir + "software/fit3p");
+      		String[] command = {dir+ "/software/fit3p/fit3pbnd.exe"};
+      		File runningDir = new File("fit3p");
       	    Process fit = Runtime.getRuntime().exec(command, null, runningDir);
       	    int exitValue = fit.waitFor();
       	}
@@ -572,6 +572,111 @@ public class Reaction {
       //#]
   }
 
+  //## operation fitReverseKineticsPrecisely()
+  public Kinetics getPreciseReverseKinetics() {
+      //#[ operation fitReverseKineticsPrecisely()
+      
+      Kinetics fittedReverseKinetics =null;
+      
+
+      	String result = "";
+      	for (double t = 300.0; t<1500.0; t+=50.0) {
+      		double rate = calculateTotalRate(new Temperature(t,"K"));
+      		result += String.valueOf(t) + '\t' + String.valueOf(rate) + '\n';
+      	}
+
+          // run fit3p
+      	String dir = System.getProperty("RMG.workingDirectory");
+
+      	File fit3p_input;
+
+      	try {
+      	        // prepare fit3p input file, "input.dat" is the input file name
+      	        fit3p_input = new File("fit3p/input.dat");
+      	        FileWriter fw = new FileWriter(fit3p_input);
+      	        fw.write(result);
+      	        fw.close();
+      	}
+      	catch (IOException e) {
+      	        System.out.println("Wrong input file for fit3p!");
+      	        System.out.println(e.getMessage());
+      	        System.exit(0);
+      	}
+
+      	try {
+      	    // system call for fit3p
+      		String[] command = {dir+ "/software/fit3p/fit3pbnd.exe"};
+      		File runningDir = new File("fit3p");
+      	    Process fit = Runtime.getRuntime().exec(command, null, runningDir);
+      	    int exitValue = fit.waitFor();
+      	}
+      	catch (Exception e) {
+      	    System.out.println("Error in run fit3p!");
+      	    System.out.println(e.getMessage());
+      	    System.exit(0);
+      	}
+
+      	// parse the output file from chemdis
+      	try {
+      	        String fit3p_output = "fit3p/output.dat";
+
+      	        FileReader in = new FileReader(fit3p_output);
+      	        BufferedReader data = new BufferedReader(in);
+
+      	        String line = ChemParser.readMeaningfulLine(data);
+      	        line = line.trim();
+      	    	StringTokenizer st = new StringTokenizer(line);
+      	        String A = st.nextToken();
+      	        String temp = st.nextToken();
+      	        temp = st.nextToken();
+      	        temp = st.nextToken();
+      	        double Ar = Double.parseDouble(temp);
+
+      			line = ChemParser.readMeaningfulLine(data);
+      	        line = line.trim();
+      	        st = new StringTokenizer(line);
+      	        String n = st.nextToken();
+      	        temp = st.nextToken();
+      	        temp = st.nextToken();
+      	        double nr = Double.parseDouble(temp);
+
+      			line = ChemParser.readMeaningfulLine(data);
+      	        line = line.trim();
+      	        st = new StringTokenizer(line);
+      	        String E = st.nextToken();
+      	        temp = st.nextToken();
+      	        temp = st.nextToken();
+      	        temp = st.nextToken();
+      	        double Er = Double.parseDouble(temp);
+      			if (Er < 0) {
+      				System.err.println(getStructure().toString());
+      				System.err.println("fitted Er < 0: "+Double.toString(Er));
+      				double increase = Math.exp(-Er/GasConstant.getKcalMolK()/715.0);
+      				double deltan = Math.log(increase)/Math.log(715.0);
+      				System.err.println("n enlarged by factor of: " + Double.toString(deltan));
+      				nr += deltan;
+      				Er = 0;
+
+      			}
+
+
+      	    	UncertainDouble udAr = new UncertainDouble(Ar, 0, "Adder");
+      	        UncertainDouble udnr = new UncertainDouble(nr, 0, "Adder");
+      	        UncertainDouble udEr = new UncertainDouble(Er, 0, "Adder");
+
+      	        fittedReverseKinetics = new ArrheniusKinetics(udAr, udnr , udEr, "300-1500", 1, "fitting from forward and thermal",null);
+      	        in.close();
+      	}
+      	catch (Exception e) {
+      	        System.out.println("Error in read output.dat from fit3p!");
+      	        System.out.println(e.getMessage());
+      	        System.exit(0);
+      	}
+      
+
+      return fittedReverseKinetics;
+      //#]
+  }
   //## operation fitReverseKineticsRoughly()
   public void fitReverseKineticsRoughly() {
       //#[ operation fitReverseKineticsRoughly()
@@ -596,7 +701,7 @@ public class Reaction {
       	if (doubleEr < 0) {
       		System.err.println("fitted Er < 0: "+Double.toString(doubleEr));
       		System.err.println(getStructure().toString());
-      		doubleEr = 0;
+      		//doubleEr = 0;
       	}
 
       	UncertainDouble Er = new UncertainDouble(doubleEr, k.getE().getUncertainty(), k.getE().getType());
@@ -605,8 +710,6 @@ public class Reaction {
       	double doubleA = k.getAValue()* Math.pow(temp, k.getNValue())* Math.exp(Srxn/GasConstant.getCalMolK());
       	doubleA *= Math.pow(GasConstant.getCCAtmMolK()*temp, -getStructure().getDeltaN());
       	fittedReverseKinetics = new ArrheniusKinetics(new UncertainDouble(doubleA, 0, "Adder"), n , Er, "300-1500", 1, "fitting from forward and thermal",null);
-
-
       }
       return;
       //#]
@@ -981,7 +1084,7 @@ public class Reaction {
 			}
 		}
 		else {
-			String k = getKinetics().toChemkinString(Hrxn,p_temperature, true) + " forward rate: " +calculateTotalRate(p_temperature) + "  reverse rate:  "+ getReverseReaction().calculateTotalRate(p_temperature);
+			String k = getKinetics().toChemkinString(Hrxn,p_temperature, true) ;//+ " forward rate: " +calculateTotalRate(p_temperature) + "  reverse rate:  "+ getReverseReaction().calculateTotalRate(p_temperature);
 			result.append(strucString+ " " + k );
 		}
 		
