@@ -43,8 +43,8 @@ import java.util.*;
 import jing.chem.Species;
 import jing.rxn.Reaction;
 import jing.param.Global;
+import jing.param.Pressure;
 import jing.param.Temperature;
-import jing.param.Pressure;//10/25/07 gmagoon: added
 
 //## package jing::rxnSys 
 
@@ -81,7 +81,7 @@ public class CoreEdgeReactionModel implements ReactionModel {
     public  CoreEdgeReactionModel(LinkedHashSet p_reactedSpeciesSet, LinkedHashSet p_reactionSet) {
         initRelations();
         
-     
+        
         core.setSpeciesSet(p_reactedSpeciesSet);
         addReactionSet(p_reactionSet);
 
@@ -156,7 +156,7 @@ public class CoreEdgeReactionModel implements ReactionModel {
             				Reaction r = (Reaction)rIter.next();
             				if (r.equals(reverse)) rIter.remove();
             			}
-         
+            
             		}
             		addUnreactedReaction(reverse);
             	}
@@ -165,7 +165,7 @@ public class CoreEdgeReactionModel implements ReactionModel {
         }
         
         return;
-       
+        
         
         //#]
     }
@@ -290,6 +290,8 @@ public class CoreEdgeReactionModel implements ReactionModel {
     //## operation addUnreactedReaction(Reaction) 
     public void addUnreactedReaction(Reaction p_reaction) throws InvalidUnreactedReactionException {
         //#[ operation addUnreactedReaction(Reaction) 
+    	if (p_reaction instanceof PDepNetReaction)
+    		System.out.println(p_reaction);
         if (isUnreactedReaction(p_reaction)) getUnreactedReactionSet().add(p_reaction);
         else throw new InvalidUnreactedReactionException(p_reaction.toString());
         //#]
@@ -393,7 +395,7 @@ public class CoreEdgeReactionModel implements ReactionModel {
         return type;
         //#]
     }
-   
+    
     //## operation contains(Reaction) 
     public boolean contains(Reaction p_reaction) {
         //#[ operation contains(Reaction) 
@@ -581,8 +583,8 @@ public class CoreEdgeReactionModel implements ReactionModel {
     public LinkedHashSet getUnreactedSpeciesSet() {
         //#[ operation getUnreactedSpeciesSet() 
         return getEdge().getSpeciesSet();
-       
-    
+        
+        
         //#]
     }
     
@@ -591,8 +593,8 @@ public class CoreEdgeReactionModel implements ReactionModel {
         //#[ operation isCoreEdgeConsistent() 
         return AbstractReactionModel.isDisjoint(core,edge);
         
-       
-       
+        
+        
         //#]
     }
     
@@ -655,18 +657,18 @@ public class CoreEdgeReactionModel implements ReactionModel {
         CoreEdgeReactionModel result = new CoreEdgeReactionModel();
         result.getCore().setSpeciesSet(rs);
         result.getEdge().setSpeciesSet(us);
-       
+        
         result.addReactionSet(rr1);
         result.addReactionSet(ur1);
         result.addReactionSet(rr2);
         result.addReactionSet(ur2);
         
         return result;
-       
-       
+        
+        
         //#]
     }
-   
+    
     //## operation moveFromUnreactedToReactedReaction() 
     public void moveFromUnreactedToReactedReaction() {
         //#[ operation moveFromUnreactedToReactedReaction() 
@@ -785,15 +787,16 @@ public class CoreEdgeReactionModel implements ReactionModel {
         return;
         //#]
     }
-   
+
+    
 //	## operation printPDepModel(Temperature) 
     public String returnPDepModel(SystemSnapshot p_ss) {
-	Temperature p_temperature = p_ss.temperature;
+		Temperature p_temperature = p_ss.temperature;
         //#[ operation printPDepModel(Temperature) 
         String modelInformation ="";
-	modelInformation = modelInformation + "This model include totally " + String.valueOf(getSpeciesNumber()) + " Species and ";
-	modelInformation = modelInformation + String.valueOf(getReactionNumber()) + " Reactions.\n";
-       
+		modelInformation = modelInformation + "This model include totally " + String.valueOf(getSpeciesNumber()) + " Species and ";
+		modelInformation = modelInformation + String.valueOf(getReactionNumber()) + " Reactions.\n";
+        
 		//System.out.println("Species Set:");
         //System.out.println("Totally " + String.valueOf(getSpeciesNumber()) + " Species:");
         /*LinkedList sortedSpeList = new LinkedList();
@@ -834,7 +837,7 @@ public class CoreEdgeReactionModel implements ReactionModel {
         for (Iterator iter = PDepNetwork.getDictionary().values().iterator(); iter.hasNext(); ) {
         	PDepNetwork pdn = (PDepNetwork)iter.next();
         	for (Iterator pdniter = pdn.getPDepNetReactionList(); pdniter.hasNext();) {
-       		PDepNetReaction pdnr = (PDepNetReaction)pdniter.next();
+        		PDepNetReaction pdnr = (PDepNetReaction)pdniter.next();
         		if (isReactedReaction(pdnr)) {
         			pDepList.add(pdnr);
         			pDepStructureSet.add(pdnr.getStructure());
@@ -849,7 +852,7 @@ public class CoreEdgeReactionModel implements ReactionModel {
         		nonPDepList.add(r);
         	} 
         }
-       
+        
 		modelInformation = modelInformation + "//non p_dep reactions:\n";
         for (Iterator iter = nonPDepList.iterator(); iter.hasNext(); ) {
         	Reaction r = (Reaction)iter.next();

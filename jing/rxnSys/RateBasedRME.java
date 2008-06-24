@@ -112,6 +112,12 @@ public class RateBasedRME implements ReactionModelEnlarger {
                 nextList.add(null);//****hopefully, null will contribute to length of list; otherwise, modifications will be needed
         }
 		
+        // generate new reaction set
+		/*startTime = System.currentTimeMillis();
+		LinkedHashSet newReactionSet = p_reactionSystem.lrg.react(cerm.getReactedSpeciesSet(),next);
+		newReactionSet.addAll(p_reactionSystem.getReactionGenerator().react(cerm.getReactedSpeciesSet(),next));
+    	
+		double enlargeTime = (System.currentTimeMillis()-startTime)/1000/60;*/
 		
        startTime = System.currentTimeMillis();
 	
@@ -253,7 +259,7 @@ public class RateBasedRME implements ReactionModelEnlarger {
 			if (r.contains(maxSpecies)){
 				reactionWithSpecies++;
 				if (r instanceof TemplateReaction) {
-                                    flux = ((TemplateReaction)r).calculateTotalPDepRate(p_temperature, p_pressure);//10/30/07 gmagoon: changed to include pressure
+                    flux = ((TemplateReaction)r).calculateTotalPDepRate(p_temperature, p_pressure);//10/30/07 gmagoon: changed to include pressure
 	        		//flux = ((TemplateReaction)r).calculateTotalPDepRate(p_temperature);
 	        	}
 	        	else {

@@ -133,6 +133,16 @@ public class RateBasedPDepRME implements ReactionModelEnlarger {
                                 ((LibraryReactionGenerator)p_reactionSystem.lrg).generatePdepReactions(nextIsomer);
                                 }
                                 pnw.update(nextIsomer);
+                                CoreEdgeReactionModel cerm = (CoreEdgeReactionModel)p_reactionSystem.getReactionModel();
+                                if (!cerm.contains(nextIsomer))
+                                        cerm.addUnreactedSpecies(nextIsomer);
+                                        /*Iterator reactionIter = pnw.getPDepNetReactionList();
+                                        while (reactionIter.hasNext()){
+                                                Reaction r = (Reaction)reactionIter.next();
+                                                cerm.addReaction(r);
+                                        }
+                                }*/
+
                         pnw.runPDepCalculation(p_reactionSystem);
                        // return;//10/30/07 gmagoon: I don't think this should be here anymore
                 }
@@ -166,6 +176,7 @@ public class RateBasedPDepRME implements ReactionModelEnlarger {
                         }
                         // generate new reaction set
                         LinkedHashSet newReactionSet = p_reactionSystem.getReactionGenerator().react(cerm.getReactedSpeciesSet(),next);
+                    	p_reactionSystem.lrg.generatePdepReactions(next);
                         newReactionSet.addAll(p_reactionSystem.lrg.react(cerm.getReactedSpeciesSet(),next));
 
                         // partition the reaction set into reacted reaction set and unreacted reaction set

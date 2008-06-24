@@ -306,7 +306,12 @@ public class ReactionTemplate {
          		}
          	}
       }
-      
+ /*     if (bestKineticsSet.size() == 0) {
+    	 	System.out.println("problem with rate constant"); 
+    	 	System.out.println(reactionAdjList.productNumber);
+    	 	System.out.println(reactionAdjList.reactantNumber);
+    	  
+      }*/
       if (bestKineticsSet.size() == 0) throw new RateConstantNotFoundException();
       
       // get averaged k with the closest distance
@@ -448,6 +453,113 @@ public class ReactionTemplate {
       //#]
   }
   
+  
+  /**
+  Requires:
+  Effects: call itsKineticsTemplateLibrary.findKinetics() to find out the kinetics for the structure, return the found kinetics or null if nothing is found.
+  Modifies:
+  */
+  //## operation findRateConstant(Structure) 
+  public Kinetics findReverseRateConstant(Structure p_structure) {
+		double pT = System.currentTimeMillis();
+      //#[ operation findRateConstant(Structure) 
+      // look for kinetics in kinetics template libarry
+      LinkedList reactants = null;
+      if (isForward()) {
+      	p_structure.setDirection(1);
+      	reactants = p_structure.reactants;
+      }
+      else if (isBackward()) {
+      	p_structure.setDirection(-1);
+      }
+      else if (isNeutral()) {
+      	boolean thermoConsistence = true;
+      	// in H abstraction, we allow biradical abstract H from a molecule, but the reverse is now allowed
+      	// therefore, such H abs reactions will be all set as forward reaction
+      	if (name.equals("H_Abstraction")) {
+      		Iterator iter = p_structure.reactants.iterator();
+      		while (iter.hasNext()) {
+      			ChemGraph cg = (ChemGraph)iter.next();
+      			int rNum = cg.getRadicalNumber();
+      			if (rNum >= 2) {
+      				thermoConsistence = false;
+      				reactants = p_structure.reactants;
+      				p_structure.setDirection(1);
+      			}
+      		}
+      	}
+      
+          if (thermoConsistence) {
+      		Temperature T = new Temperature(298, "K");
+      		// to avoid calculation error's effect, lower the threshold for forward reaction
+      		//if (p_structure.calculateKeq(T)>0.999)  {
+      		/*if (p_structure.calculateKeq(T)>0.999 && p_structure.calculateKeq(T) <1.001) {
+      			System.out.println(p_structure.toChemkinString(true));
+      		}*/
+      		if (p_structure.calculateKeq(T)>0.999) {
+      			p_structure.setDirection(1);
+      	 		reactants = p_structure.reactants;
+      		}
+      		else {
+      			p_structure.setDirection(-1);
+      		}
+      		// for intra h migration, set the ROO. as the forward
+        		if (name.equals("intra_H_migration")) {
+              ChemGraph rcg = (ChemGraph)(p_structure.getReactants().next());
+          	HashSet rrad = rcg.getRadicalNode();
+           	Atom rra = (Atom)( (Node) ( (rrad.iterator()).next())).getElement();
+              ChemGraph pcg = (ChemGraph)(p_structure.getProducts().next());
+            	HashSet prad = pcg.getRadicalNode();
+             	Atom pra = (Atom)( (Node) ( (prad.iterator()).next())).getElement();
+              if (rra.isOxygen() && pra.isCarbon()) {
+              	p_structure.setDirection(1);
+               	reactants = p_structure.reactants;
+              }
+              else if (pra.isOxygen() && rra.isCarbon())
+                  p_structure.setDirection(-1);
+              }
+      
+      	}
+      }
+      else {
+      	throw new InvalidReactionTemplateDirectionException();
+      }
+      
+      if (p_structure.isForward()) {
+      	LinkedList fg = structureTemplate.getMatchedFunctionalGroup(reactants);
+			if (fg == null) {
+				Global.RT_findRateConstant += (System.currentTimeMillis()-pT)/1000/60;
+				return null;
+			}
+			String comments = getKineticsComments(fg);
+      	Kinetics k = findExactRateConstant(fg);
+      	if (k==null) {
+      		try{
+				k = findClosestRateConstant(fg);
+				k.setSource(name + " estimate: ");
+      		}
+      		catch (RateConstantNotFoundException e) {
+              	return k;
+              }
+
+      	}
+      	else k.setSource(name  + " exact: ");
+			k.setComments(comments);
+			Global.RT_findRateConstant += (System.currentTimeMillis()-pT)/1000/60;
+      	return k;
+      }
+      else {
+			Global.RT_findRateConstant += (System.currentTimeMillis()-pT)/1000/60;
+			return null;
+      }
+      
+      
+      
+      
+      //#]
+  }
+  
+  
   private String getKineticsComments(Collection p_matchedPathSet) {
 		StringBuilder comment = new StringBuilder();
 		for (Iterator iter = p_matchedPathSet.iterator(); iter.hasNext();) {
@@ -507,7 +619,8 @@ public class ReactionTemplate {
       if (direction != 1 || !repOk()) {
       	return null;
       }
-      
+      if (name.equals("Diels-Alder reaction"))
+    	  System.out.println("stop");
       ReactionTemplate reversetemplate = new ReactionTemplate();
       
       // set direction
@@ -675,7 +788,7 @@ public class ReactionTemplate {
 	  LinkedHashSet reaction_set = new LinkedHashSet();
 	  if (name.equals("Intra_R_Add_Endocyclic") && !p_chemGraph.isAcyclic()) return reaction_set;
       
-	 
+
 	  
 	
       LinkedHashSet allReactionSites = structureTemplate.identifyReactedSites(p_chemGraph,1);
@@ -743,7 +856,8 @@ public class ReactionTemplate {
 						TemplateReaction r = TemplateReaction.makeTemplateReaction(structureSp,k, this,structure);
 						
 						structure = null;
-						reactionMap.put(structureSp,r);
+						if (r != null)
+							reactionMap.put(structureSp,r);
 					}
 					else {
 						
@@ -1051,7 +1165,8 @@ public class ReactionTemplate {
   					if (old_reaction == null){		
 						 
 						TemplateReaction r= TemplateReaction.makeTemplateReaction(structureSp,k, this,structure);
-						reactionMap.put(structureSp,r);
+						if (r != null)
+							reactionMap.put(structureSp,r);
 						structure = null;
   					}
   					else { 						

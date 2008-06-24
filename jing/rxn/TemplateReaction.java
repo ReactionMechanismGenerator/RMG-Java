@@ -42,8 +42,7 @@ import jing.chemUtil.Node;
 
 import java.util.*;
 import jing.param.*;
-import jing.param.Temperature;
-import jing.rxnSys.SystemSnapshot;//10/25/07 gmagoon: added
+import jing.rxnSys.SystemSnapshot;
 
 //## package jing::rxn 
 
@@ -114,7 +113,6 @@ public class TemplateReaction extends Reaction {
     }*/
     
 //  ## operation calculatePDepRate(Temperature) 
-//10/25/07 gmagoon: added pressure as parameter
     public double calculateTotalPDepRate(Temperature p_temperature, Pressure p_pressure) {
         //#[ operation calculatePDepRate(Temperature) 
         PDepNetwork pdn = getPDepNetwork();
@@ -130,12 +128,13 @@ public class TemplateReaction extends Reaction {
         				System.exit(0);
         			}*/
         			//System.out.println("for reaction " + toString() + "\t using p dep rate:" + String.valueOf(pdnr.getRate()));
-                                //10/25/07 gmagoon: updated to use calculateRate with system snapshot (to avoid use of Global.temperature and Global.pressure)
+        			//10/25/07 gmagoon: updated to use calculateRate with system snapshot (to avoid use of Global.temperature and Global.pressure)
                                 SystemSnapshot currentTPSnapshot = new SystemSnapshot();//10/25/07 gmagoon: make currentTPsnapshot variable, which will be used to pass temperature and pressure to calculateRate
                                 currentTPSnapshot.setTemperature(p_temperature);
                                 currentTPSnapshot.setPressure(p_pressure);
-                                return pdnr.calculateRate(currentTPSnapshot);
-        			//return pdnr.calculateRate();
+                                double rate = pdnr.calculateRate(currentTPSnapshot);
+                                currentTPSnapshot = null;
+                                return rate;
         		}
         	}
         	iter = pdn.getPDepNonincludedReactionList(); 
@@ -148,12 +147,12 @@ public class TemplateReaction extends Reaction {
         				System.exit(0);
         			}*/
         			//System.out.println("for reaction " + toString() + "\t using p dep rate:" + String.valueOf(pdnr.getRate()));
-                                //10/25/07 gmagoon: updated to use calculateRate with system snapshot (to avoid use of Global.temperature and Global.pressure)
-                                SystemSnapshot currentTPSnapshot = new SystemSnapshot();//10/25/07 gmagoon: make currentTPsnapshot variable, which will be used to pass temperature and pressure to calculateRate
+        			SystemSnapshot currentTPSnapshot = new SystemSnapshot();//10/25/07 gmagoon: make currentTPsnapshot variable, which will be used to pass temperature and pressure to calculateRate
                                 currentTPSnapshot.setTemperature(p_temperature);
                                 currentTPSnapshot.setPressure(p_pressure);
-                                return pdnr.calculateRate(currentTPSnapshot);
-        			//return pdnr.calculateRate();
+                                double rate =  pdnr.calculateRate(currentTPSnapshot);
+                                currentTPSnapshot = null;
+                                return rate;
         		}
         	}
         }
@@ -167,7 +166,7 @@ public class TemplateReaction extends Reaction {
         //#[ operation generateReverseForBackwardReaction() 
         // we need to only generate reverse reaction for backward reaction, so that we wont be stuck into a self loop.
         if (!this.isBackward()) return null;
-       
+        
         ReactionTemplate fRT = getReactionTemplate();
         ReactionTemplate rRT = null;
         
@@ -179,16 +178,16 @@ public class TemplateReaction extends Reaction {
         //Structure fs = getStructure();
         LinkedList freactant = fs.getReactantList();
         LinkedList fproduct = fs.getProductList();
-       
+        
         Structure rs = new Structure(fproduct, freactant, -1*this.getDirection());
-	Structure rsSp = new Structure(fsSp.products, fsSp.reactants, -1*this.getDirection());
-	TemplateReaction rr = rRT.getReactionFromStructure(rsSp);
+		Structure rsSp = new Structure(fsSp.products, fsSp.reactants, -1*this.getDirection());
+		TemplateReaction rr = rRT.getReactionFromStructure(rsSp);
 		if (rr!= null) {
 			rr.setReverseReaction(this);
 			return rr;
 		}
 		int rNum = fproduct.size();
-		Kinetics k = rRT.findRateConstant(rs);
+		Kinetics k = rRT.findReverseRateConstant(rs);
 		if (k == null && rRT.name.equals("R_Recombination")) {
 			
 			ChemGraph cg = ((ChemGraph)fproduct.get(0));
@@ -249,8 +248,9 @@ public class TemplateReaction extends Reaction {
 			
 		}
 		if (k==null){
-			System.out.println("Couldn't find the rate constant for reaction: "+rs.toChemkinString(true)+" with "+rRT.name);
-			System.exit(0);
+			System.err.println("Couldn't find the rate constant for reaction: "+rs.toChemkinString(true)+" with "+rRT.name);
+			//System.exit(0);
+			return null;
 		}
 			rr = new TemplateReaction(rsSp,k,rRT);
 			if (!(rr.getReactantNumber() ==2 && rr.getProductNumber() == 2))
@@ -297,6 +297,8 @@ public class TemplateReaction extends Reaction {
         	if (reaction.isBackward()) {
 				double pt = System.currentTimeMillis();
         		TemplateReaction reverse = reaction.generateReverseForBackwardReaction(p_structure, p_structureSp);
+        		if (reverse == null)
+        			return null;
         		reaction.setReverseReaction(reverse);
         		
 				//Global.generateReverse = Global.generateReverse + (System.currentTimeMillis() - pt)/1000/60;
@@ -304,8 +306,8 @@ public class TemplateReaction extends Reaction {
         	else {
         		ReactionTemplate fRT = reaction.getReactionTemplate();
                 ReactionTemplate rRT = null;
-               
-               
+                
+                
                 if (fRT.isNeutral()) rRT = fRT;
                 else rRT = fRT.getReverseReactionTemplate();
                 
@@ -373,8 +375,7 @@ public class TemplateReaction extends Reaction {
         	
         	return temp.getStructure().toChemkinString(false).toString() + '\t' + temp.getReactionTemplate().getName() + '\t' + temp.getKinetics().toChemkinString(calculateHrxn(p_temperature), p_temperature, true);
         }
-
-       
+        
         //#]
     }
     
@@ -382,8 +383,8 @@ public class TemplateReaction extends Reaction {
     public PDepNetwork getPDepNetwork() {
         return pDepNetwork;
     }
-        //10/26/07 gmagoon: changed to have temperature and pressure passed as parameters (part of eliminating use of Global.temperature); pressure is required since I changed calculateTotalPDepRate
-        public double getRateConstant(Temperature p_temperature, Pressure p_pressure){
+    
+      public double getRateConstant(Temperature p_temperature, Pressure p_pressure){
 	//public double getRateConstant(){
 		if (rateConstant == 0)
                         rateConstant = calculateTotalPDepRate(p_temperature, p_pressure);

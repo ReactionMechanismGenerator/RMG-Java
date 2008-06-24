@@ -545,6 +545,7 @@ public class ReactionSystem {
         //#]
     }
 
+
     //## operation initializePDepNetwork()
     public void initializePDepNetwork() {
         //#[ operation initializePDepNetwork()
@@ -1491,6 +1492,10 @@ public String printLowerBoundConcentrations(LinkedList p_speciesList) {
     public LinkedHashSet getOriginalReactant() {
         return originalReactant;
     }
+    
+    public void setOriginalReactant(LinkedHashSet p_originalReactant){
+    	originalReactant = p_originalReactant;
+    }
 
     public DynamicSimulator getDynamicSimulator() {
         return dynamicSimulator;
@@ -1540,25 +1545,15 @@ public String printLowerBoundConcentrations(LinkedList p_speciesList) {
         pressureModel = p_PressureModel;
     }
 
-//9/25/07 gmagoon: moved to ReactionModelGenerator.java    
-//    public PrimaryReactionLibrary getPrimaryReactionLibrary() {
-//        return primaryReactionLibrary;
-//    }
 
-//9/25/07 gmagoon: moved to ReactionModelGenerator.java
-//    public void setPrimaryReactionLibrary(PrimaryReactionLibrary p_PrimaryReactionLibrary) {
-//        primaryReactionLibrary = p_PrimaryReactionLibrary;
-//    }
-
+     public LibraryReactionGenerator getLibraryReactionGenerator() {
+        return lrg;
+     }
 ////10/4/07 gmagoon: used in ReactionModelGenerator.java;10/9/07: restored for use by RateBasedPDepRME
     public ReactionGenerator getReactionGenerator() {
         return reactionGenerator;
     }
 
-////10/4/07 gmagoon: used in ReactionModelGenerator.java
-//    public void setReactionGenerator(ReactionGenerator p_ReactionGenerator) {
-//        reactionGenerator = p_ReactionGenerator;
-//    }
 
     public ReactionModel getReactionModel() {
         return reactionModel;

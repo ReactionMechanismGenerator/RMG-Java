@@ -764,17 +764,6 @@ public class ReactionModelGenerator {
         	System.err.println(e.getMessage());
         	System.exit(0);
         }
-		/*if (restart){
-			reactionSystem.reactionModel = new CoreEdgeReactionModel();
-			parseRestartFiles();
-			((CoreEdgeReactionModel)reactionSystem.reactionModel).addReactedSpeciesSet(reactionSystem.originalReactant);
-
-			if (reactionSystem.primaryReactionLibrary != null){
-				((CoreEdgeReactionModel)reactionSystem.reactionModel).addReactedSpeciesSet(reactionSystem.primaryReactionLibrary.getSpeciesSet());								
-				((CoreEdgeReactionModel)reactionSystem.reactionModel).addPrimaryReactionSet(reactionSystem.primaryReactionLibrary.getReactionSet());
-
-			}
-		}*/
        
         //10/31/07 gmagoon: initialize validList (to false) before initializeCoreEdgeReactionModel is called
         validList = new LinkedList();
@@ -964,19 +953,19 @@ public class ReactionModelGenerator {
 			    System.out.println("Running Time is: " + String.valueOf((System.currentTimeMillis()-tAtInitialization)/1000/60) + " minutes.");
 				System.out.println("The model edge has " + ((CoreEdgeReactionModel)getReactionModel()).getUnreactedReactionSet().size() + " reactions and "+ ((CoreEdgeReactionModel)getReactionModel()).getUnreactedSpeciesSet().size() + " species.");
 				//10/24/07 gmagoon: note: all reaction systems should use the same core, but I will display for each reactionSystem for testing purposes:
-                                for (Integer i = 0; i<reactionSystemList.size();i++) {
-                                    ReactionSystem rs = (ReactionSystem)reactionSystemList.get(i);
-                                    System.out.println("For reaction system: "+(i+1)+" out of "+reactionSystemList.size());
-                                    if (rs.getDynamicSimulator() instanceof JDASPK){
-					JDASPK solver = (JDASPK)rs.getDynamicSimulator();
-					System.out.println("The model core has " + solver.getReactionSize() + " reactions and "+ ((CoreEdgeReactionModel)getReactionModel()).getReactedSpeciesSet().size() + " species.");
-                                    }
-                                    else{
-					JDASSL solver = (JDASSL)rs.getDynamicSimulator();
-					System.out.println("The model core has " + solver.getReactionSize() + " reactions and "+ ((CoreEdgeReactionModel)getReactionModel()).getReactedSpeciesSet().size() + " species.");
-				    }
-                                }
-                               // if (reactionSystem.getDynamicSimulator() instanceof JDASPK){
+				for (Integer i = 0; i<reactionSystemList.size();i++) {
+					ReactionSystem rs = (ReactionSystem)reactionSystemList.get(i);
+					System.out.println("For reaction system: "+(i+1)+" out of "+reactionSystemList.size());
+					if (rs.getDynamicSimulator() instanceof JDASPK){
+						JDASPK solver = (JDASPK)rs.getDynamicSimulator();
+						System.out.println("The model core has " + solver.getReactionSize() + " reactions and "+ ((CoreEdgeReactionModel)getReactionModel()).getReactedSpeciesSet().size() + " species.");
+					}
+					else{
+						JDASSL solver = (JDASSL)rs.getDynamicSimulator();
+						System.out.println("The model core has " + solver.getReactionSize() + " reactions and "+ ((CoreEdgeReactionModel)getReactionModel()).getReactedSpeciesSet().size() + " species.");
+					}
+				}
+				// if (reactionSystem.getDynamicSimulator() instanceof JDASPK){
 			       //	JDASPK solver = (JDASPK)reactionSystem.getDynamicSimulator();
 				//	System.out.println("The model core has " + solver.getReactionSize() + " reactions and "+ ((CoreEdgeReactionModel)getReactionModel()).getReactedSpeciesSet().size() + " species.");
 				//}
@@ -1117,18 +1106,18 @@ public class ReactionModelGenerator {
         		System.out.print("Free memory: ");
         		System.out.println(runTime.freeMemory());
                         //10/24/07 gmagoon: note: all reaction systems should use the same core, but I will display for each reactionSystem for testing purposes:
-                        for (Integer i = 0; i<reactionSystemList.size();i++) {
-                            ReactionSystem rs = (ReactionSystem)reactionSystemList.get(i);
-                            System.out.println("For reaction system: "+(i+1)+" out of "+reactionSystemList.size());
-                            if (rs.getDynamicSimulator() instanceof JDASPK){
-                                JDASPK solver = (JDASPK)rs.getDynamicSimulator();
-                                System.out.println("The model core has " + solver.getReactionSize() + " reactions and "+ ((CoreEdgeReactionModel)getReactionModel()).getReactedSpeciesSet().size() + " species.");
-                            }
-                            else{
-                                JDASSL solver = (JDASSL)rs.getDynamicSimulator();
-                                System.out.println("The model core has " + solver.getReactionSize() + " reactions and "+ ((CoreEdgeReactionModel)getReactionModel()).getReactedSpeciesSet().size() + " species.");
-                            }
-                        }
+        		for (Integer i = 0; i<reactionSystemList.size();i++) {
+        			ReactionSystem rs = (ReactionSystem)reactionSystemList.get(i);
+        			System.out.println("For reaction system: "+(i+1)+" out of "+reactionSystemList.size());
+        			if (rs.getDynamicSimulator() instanceof JDASPK){
+        				JDASPK solver = (JDASPK)rs.getDynamicSimulator();
+        				System.out.println("The model core has " + solver.getReactionSize() + " reactions and "+ ((CoreEdgeReactionModel)getReactionModel()).getReactedSpeciesSet().size() + " species.");
+        			}
+        			else{
+        				JDASSL solver = (JDASSL)rs.getDynamicSimulator();
+        				System.out.println("The model core has " + solver.getReactionSize() + " reactions and "+ ((CoreEdgeReactionModel)getReactionModel()).getReactedSpeciesSet().size() + " species.");
+        			}
+        		}
 //        		if (reactionSystem.getDynamicSimulator() instanceof JDASPK){
 //					JDASPK solver = (JDASPK)reactionSystem.getDynamicSimulator();
 //					System.out.println("The model core has " + solver.getReactionSize() + " reactions and "+ ((CoreEdgeReactionModel)getReactionModel()).getReactedSpeciesSet().size() + " species.");
@@ -1538,25 +1527,21 @@ public class ReactionModelGenerator {
 		return speciesSet;
 	}
 	
-	public void parseAllSpecies() {
+	public LinkedHashSet parseAllSpecies() {
 //		String restartFileContent ="";
 		int speciesCount = 0;
+		LinkedHashSet speciesSet = new LinkedHashSet();
 
 		boolean added;
 		try{
 			long initialTime = System.currentTimeMillis();
-			//StringBuilder sb = new StringBuilder();
-			//sb.append("\t Cumulative Time until after the event\n");
-			//sb.append("# \t Read Graph \t ChemGraph \t Species \t total\t Memory Used");
 			
-			File coreSpecies = new File ("Restart/allSpecies.txt");
+			File coreSpecies = new File ("allSpecies.txt");
 			BufferedReader reader = new BufferedReader(new FileReader(coreSpecies));
 			String line = ChemParser.readMeaningfulLine(reader);
-			HashSet speciesSet = new HashSet();
 			int i=0;
 			while (line!=null) {
 				i++;
-				//sb.append(i);sb.append("\t");
     			StringTokenizer st = new StringTokenizer(line);
     			String index = st.nextToken();
     			String name = null;
@@ -1566,9 +1551,6 @@ public class ReactionModelGenerator {
 				
 				name = getName(name);
     			Graph g = ChemParser.readChemGraph(reader);
-				double timeNow = (System.currentTimeMillis()-initialTime)/1e3;
-				//sb.append(timeNow);sb.append("\t");
-				
     			ChemGraph cg = null;
     			try {
     				cg = ChemGraph.make(g);
@@ -1577,38 +1559,23 @@ public class ReactionModelGenerator {
     				System.out.println("Forbidden Structure:\n" + e.getMessage());
     				System.exit(0);
     			}
-				timeNow = (System.currentTimeMillis()-initialTime)/1e3;
-				//sb.append(timeNow);sb.append("\t");
-
-    			Species species = Species.make(name,cg,ID);
-       			//speciesSet.put(name, species);
+    			Species species;
+    			if (ID == 0)
+    				species = Species.make(name,cg);
+    			else 
+    				species = Species.make(name,cg,ID);
     			speciesSet.add(species);
-				timeNow = (System.currentTimeMillis()-initialTime)/1e3;
-				//sb.append(timeNow);sb.append("\t");
-				/*if (name.equals("C5H11.")){
-					System.out.println(species.getChemkinName());
-				}*/
-
     			double flux = 0;
-    			int species_type = 1; // reacted species
-    			//SpeciesStatus ss = new SpeciesStatus(species,species_type,concentration,flux);
-    			//speciesStatus.put(species, ss);
-    			line = ChemParser.readMeaningfulLine(reader);
-				//sb.append((System.currentTimeMillis()-initialTime)/1e3);sb.append("\t");
-				//sb.append(memoryUsed());sb.append("\t");
-				//System.out.println(sb.toString());
-				//sb.delete(0,sb.length());
+    			int species_type = 1; 
+     			line = ChemParser.readMeaningfulLine(reader);
+     			System.out.println(line);
     		}
-			
-			//reactionSystem.reactionModel = new CoreEdgeReactionModel();
-			//((CoreEdgeReactionModel)reactionSystem.reactionModel).addReactedSpeciesSet(speciesSet);
-			//specs.addAll(speciesSet);
 		}
 		catch (IOException e){
 			System.out.println("Could not read the allSpecies restart file");
         	System.exit(0);
 		}
-
+		return speciesSet;
 	}
 
 	private String getName(String name) {
