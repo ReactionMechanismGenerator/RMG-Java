@@ -217,7 +217,7 @@ public class ChebyshevPolynomials {
         for (int i = 0; i < NT; i++) {
         	result += "CHEB / ";
         	for (int j = 0; j < NP; j++) {
-        		result += alpha[i][j] + " ";
+        		result += String.format("%1.7e",alpha[i][j]) + " ";
         	}
         	result += "/\n";
         }
