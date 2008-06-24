@@ -186,6 +186,8 @@ public class Node extends GraphComponent {
       FGElement Od = FGElement.make("Od");
       FGElement Oa = FGElement.make("Oa");
       FGElement H = FGElement.make("H");
+      FGElement R1H = FGElement.make("R!H"); 
+      FGElement R = FGElement.make("R");
 
       FGElement fgElement = p_fgAtom.getFgElement();
       FreeElectron feElement = p_fgAtom.getFreeElectron();
@@ -204,8 +206,11 @@ public class Node extends GraphComponent {
       	}
       	// Cd, R, and R!H, return themselves
       	// addition to Cd, in our all reaction families, end up with Cd only
-      	else {
+      	else if (fgElement == R || fgElement == R1H){
       		return p_fgAtom;
+      	}
+      	else{
+      		return FGAtom.make(Cdd,feElement);
       	}
       }
       else if (p_changedOrder == -1) {
@@ -775,6 +780,16 @@ public class Node extends GraphComponent {
 
       return otherArcs;
       //#]
+  }
+  
+  public HashSet getNeighboringNodes(){
+	  HashSet neighboringNodes = new HashSet();
+	  Iterator iter = getNeighbor();
+	  while (iter.hasNext()){
+		  Arc arc = (Arc)iter.next();
+		  neighboringNodes.add(getOtherNode(arc));
+	  }
+	  return neighboringNodes;
   }
 
   /**

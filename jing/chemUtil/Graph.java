@@ -37,6 +37,7 @@ package jing.chemUtil;
 
 
 import jing.chem.*;
+import jing.mathTool.MathTool;
 
 import java.util.*;
 
@@ -61,7 +62,7 @@ public class Graph {
 
     private LinkedHashMap centralNode;		//## attribute centralNode
 
-    private LinkedList cycle;		//## attribute cycle
+    private LinkedList SSSRings;		//## attribute cycle
 
     private int highestCentralID = 0;		//## attribute highestCentralID
 
@@ -69,6 +70,7 @@ public class Graph {
 
     private ArrayList arcList;
     private LinkedHashMap nodeList;
+    private boolean [] isAromatic;
 
     // Constructors
 
@@ -82,9 +84,10 @@ public class Graph {
         }
         
         centralNode = new LinkedHashMap();
-		identifyCycle();
         
     }
+    
+
 
     /**
     Add a new arc with p_arcElement to connect those two nodes on those p_positions.  if there are no nodes on those p_positions, throw NotInGraphException.<br>
@@ -327,7 +330,7 @@ public class Graph {
     //## operation clearCycle()
     public void clearCycle() {
         //#[ operation clearCycle()
-        cycle.clear();
+        SSSRings.clear();
         //#]
     }
 
@@ -484,12 +487,12 @@ public class Graph {
         //#]
     }
 
-    /**
+    /*/**
     Recursive function to identify possible cycle starting from p_node. Add identified cycle to this.cycle.<br>
     <b>Modifies</b><br> this.cycle.  visited status of nodes and arcs.
     */
     //## operation cycleIdentificationDFS(Node,LinkedList)
-    public void cycleIdentificationDFS(Node p_node, LinkedList p_list) {
+    /*public void cycleIdentificationDFS(Node p_node, LinkedList p_list) {
         //#[ operation cycleIdentificationDFS(Node,LinkedList)
         p_node.setVisited(true);
         p_list.add(p_node);
@@ -532,7 +535,7 @@ public class Graph {
 
         return;
         //#]
-    }
+    }*/
 
     /**
     <b>Requires</b><br> all the graph component's visited reset to false before the deepFirstSearch.<br>
@@ -566,12 +569,489 @@ public class Graph {
         	if (node.isLeaf()) removeNode(node);
         }
 
-
-
-
         //#]
     }
+    
+    public boolean hasExocyclicPi(LinkedList cycle){
+    	boolean hasExoPi = false;
+    	for (int i=0; i<cycle.size(); i=i+2){
+    		Node n = (Node)cycle.get(i);
+    		Iterator nodeNeighbor = n.getNeighbor();
+    		while (nodeNeighbor.hasNext()){
+    			Arc arc = (Arc)nodeNeighbor.next();
+    			Bond b = (Bond)arc.getElement();
+    			if (!cycle.contains(arc) && b.isDouble())
+    				return true;
+    		}
+    	}
+    	return hasExoPi;
+    }
+    
+    public void getAromatic(){
+    	isAromatic = new boolean[SSSRings.size()];
+    	int [] alreadyClassified = new int[SSSRings.size()];
+    	for (int i=0;i <SSSRings.size(); i++)
+    		alreadyClassified[i] = 0;
+    	LinkedList ringWithExoCyclicPi = new LinkedList();
+    	for (int i=0; i<SSSRings.size(); i++){
+    		LinkedList cycle = (LinkedList) SSSRings.get(i);
+			boolean ringDoubleBonds = false;
+			boolean quarternaryAtom = false;
+			boolean saturatedCarbon = false;
+			int numPiBonds = 0;
+			
+			//preliminary screening
+			for (int j=0;j<cycle.size(); j++){
+				GraphComponent gc = (GraphComponent)cycle.get(j);
+				if (gc instanceof Node){
+					Node n = (Node)gc;
+					Atom a = (Atom)n.getElement();
+					//has monoradicals not aromatic
+					if (a.getRadicalNumber() == 1){
+						isAromatic[i] =  false;
+						alreadyClassified[i] = 1;
+						break;
+					}
+					//has more than 2 saturated carbon atoms, not aromatic
+				    if (a.isCarbon() && n.getNeighborNumber() == 4){
+				    	if(saturatedCarbon){
+				    		isAromatic[i] = false;
+							alreadyClassified[i] = 1;
+				    		break;
+				    	}
+				    	else
+				    		saturatedCarbon = true;				    		
+				    }
+				    //has a quarternary atom, not aromatic
+				    if (n.getNeighborNumber() == 4){
+				    	Iterator neighborNodes = n.getNeighboringNodes().iterator();
+				    	while (neighborNodes.hasNext()){
+				    		Node neighborNode = (Node)neighborNodes.next();
+				    		if (((Atom)neighborNode.getElement()).isHydrogen()){
+				    			quarternaryAtom = true;
+								alreadyClassified[i] = 1;
+				    			break;
+				    		}
+				    	}
+				    	if(quarternaryAtom){
+				    		isAromatic[i] = false;
+							alreadyClassified[i] = 1;
+				    		break;
+				    	}
+				    }
+				}
+				else {
+					Arc a = (Arc)gc;
+					if (((Bond)a.getElement()).isDouble())
+						ringDoubleBonds = true;
+				}
+				
+			}
+			if (!ringDoubleBonds){
+				isAromatic[i] = false;
+				alreadyClassified[i] = 1;
+				continue;
+			}
+			
 
+    		
+    		//check for aromaticity of rings with exocyclipi bonds
+    		for (int j=0; j<SSSRings.size(); j++){
+    				classifyAsAromatic(j,alreadyClassified);
+    		}
+    	}
+    }
+  
+    public void classifyAsAromatic(int j, int [] alreadyClassified){
+    	if (alreadyClassified[j] == 1)
+    		return;
+    	LinkedList cycle = (LinkedList)SSSRings.get(j);
+    	int aromaticExoPi = 0;
+    	int nonAromaticExoPi = 0;
+    	for (int i=0; i<cycle.size(); i=i+2){
+    		Node n = (Node)cycle.get(i);
+    		Iterator neighbor = n.getNeighbor();
+    		while (neighbor.hasNext()){
+    			Arc arc = (Arc)neighbor.next();
+    			Bond b = (Bond)arc.getElement();
+    			if (!cycle.contains(arc) && b.isDouble()){
+    				boolean classifiedThisDouble = false;
+    				//this is a exocycle, find out if it is part of any other cycle
+    				for (int k=j+1;k<SSSRings.size();k++){
+    					
+    					LinkedList otherCycle = (LinkedList)SSSRings.get(k);
+    					if (otherCycle.contains(arc)){
+    						//this cycle contains the arc, now find out if it is aromatic
+    						classifyAsAromatic(k, alreadyClassified);
+    						if (isAromatic[k])
+    							aromaticExoPi++;
+    						else
+    							nonAromaticExoPi++;	
+    						classifiedThisDouble = true;
+    					}
+    				}
+    				if(!classifiedThisDouble)
+    					nonAromaticExoPi++;
+    			}
+    				
+    		}
+    	}
+    	
+    	int numPiBonds = 0;
+    	if (aromaticExoPi != 0){
+    		if (aromaticExoPi %2 != 0){
+    			alreadyClassified[j] =1;
+    			isAromatic[j] = false;
+    			return;
+    		}
+    	}
+    	else
+    		numPiBonds = aromaticExoPi + nonAromaticExoPi;
+    	
+		//more thorough screening, for cycles with no exocyclic Pi bonds
+		//if (aromaticExoPi == 0 && nonAromaticExoPi == 0 ){
+			for (int k=0;k<cycle.size(); k++){
+				GraphComponent gc = (GraphComponent)cycle.get(k);
+				if (gc instanceof Node){
+					Node node = (Node)gc;
+					Atom a = (Atom)node.getElement();
+    				//dont have to check for cationic carbon or boron
+    				//saturated heteroatoms contribute 2 pi bonds, but only O is the heteroatom
+    				if (a.isOxygen() && node.getNeighborNumber()==2)
+    					numPiBonds = numPiBonds+2;
+    				//we dont have anionic carbon
+				}
+				else{
+					//if a double bond then 2 pi electrons and if a triple bond then 4 pi electrons
+					Arc a = (Arc)gc;
+					Bond b = (Bond)a.getElement();
+					if (b.isDouble() || b.isTriple())
+						numPiBonds = numPiBonds+2;
+				}
+			}
+			if ((numPiBonds-2)%4 == 0){
+				alreadyClassified[j] = 1;
+				isAromatic[j] = true;
+				return;
+			}
+			else{
+				alreadyClassified[j] = 1;
+				isAromatic[j] = false;
+				return;
+			}
+		//}
+
+
+    	
+    }
+    
+    public void formSSSR(){
+    	//determine the number of SSSR
+    	if (SSSRings != null)
+    		return;
+    	int numSSSR = getArcNumber()-getNodeNumber()+1;
+    	if (numSSSR == 0){
+    		acyclic = true;
+    		return;
+    	}
+    	else{
+    		acyclic = false;
+    		SSSRings = new LinkedList();
+    	}
+    	
+    	//remove the nonRing Nodes
+    	Graph g = Graph.copy(this);
+    	boolean moreRemovals = true;
+    	HashSet removeNodes = new HashSet();
+    	while (moreRemovals){
+    		moreRemovals = false;
+    		Iterator nodeIter = g.getNodeList();
+    		while (nodeIter.hasNext()){
+    			Node n = (Node)nodeIter.next();
+    			if (n.getNeighborNumber() <= 1)
+    				removeNodes.add(n);
+    		}
+    		Iterator removeNodesIter = removeNodes.iterator();
+    		while(removeNodesIter.hasNext()){
+    			moreRemovals = true;
+    			Node n = (Node)removeNodesIter.next();
+    			g.removeNodeWithoutIDChange(n);
+    		}
+    		removeNodes.clear();
+    	}
+
+     	if (numSSSR == 1){
+    		//get any node
+    		LinkedList ring = new LinkedList();
+    		Iterator nodeIter = g.getNodeList();
+    		Node n = (Node)nodeIter.next();
+    		ring.add(0,n);
+    		int i = 1;
+    		while (i <(g.getNodeNumber()+g.getArcNumber())){
+    			Arc arc = (Arc)n.getNeighbor().next();
+    			Node nextNode = n.getOtherNode(arc);
+    			ring.add(i,arc);
+    			i++;
+    			ring.add(i,nextNode);
+    			i++;
+    			n=nextNode;
+    		}
+    		SSSRings.add(ring);
+    		
+    	}
+    	else {
+    		//identify quarternary and tertiary atom centers
+    		LinkedHashSet quarternary = new LinkedHashSet();
+    		LinkedHashSet tertiary = new LinkedHashSet();
+    		Iterator nodeIter = g.getNodeList();
+    		while (nodeIter.hasNext()){
+    			Node n = (Node)nodeIter.next();
+    			if (n.getNeighborNumber() == 3 )
+    				tertiary.add(n);
+    			if (n.getNeighborNumber() == 4)
+    				quarternary.add(n);
+    		}
+    		Iterator quarternaryIter = quarternary.iterator();
+    		Iterator tertiaryIter = tertiary.iterator();
+    		Node n;
+    		int pathWidth = 0;
+    		int [] level = new int[4];
+    		boolean [] grow = new boolean[16];
+
+    		int [] numTerminalAtoms = new int[4];
+    		int nodeNum = g.getNodeNumber();
+    		while (!((!quarternaryIter.hasNext() && !tertiaryIter.hasNext()) || (SSSRings.size()==numSSSR && allAtomsIncluded(SSSRings,g)))){
+        		for (int i=0;i<16;i++)
+        			grow[i] = true;
+        		Node [] paths = new Node[4*nodeNum];
+    			LinkedList  ringsFromNode = new LinkedList();
+    			if (quarternaryIter.hasNext()){
+    				n = (Node)quarternaryIter.next();
+    				pathWidth = 4;
+    				Iterator nextNodeIter = n.getNeighboringNodes().iterator();
+    				for(int i=0; i<pathWidth; i++){
+    					paths[i*nodeNum] = n;
+    					paths[i*nodeNum+1] = (Node)nextNodeIter.next();
+    					level[i] = 1;
+    					grow[i*4] = true;
+    					numTerminalAtoms[i] = 1;
+	        			checkPresenceOfRings(i,paths,level,pathWidth,nodeNum,ringsFromNode, grow,numTerminalAtoms);
+
+    				}
+    			}	
+    			else{
+    				n = (Node)tertiaryIter.next();
+    				pathWidth = 3;
+    				Iterator nextNodeIter = n.getNeighboringNodes().iterator();
+    				for(int i=0; i<pathWidth; i++){
+    					paths[i*nodeNum] = n;
+    					paths[i*nodeNum+1] = (Node)nextNodeIter.next();
+    					level[i] =1;
+    					grow[i*4] = true;
+    					numTerminalAtoms[i] = 1;
+    					//System.out.print( paths[i*nodeNum].getID()+ " "+ paths[i*nodeNum+1].getID()+" ");
+	        			checkPresenceOfRings(i,paths,level,pathWidth,nodeNum,ringsFromNode, grow,numTerminalAtoms);
+
+    				}
+    			}
+    			int maxlevel = 1;
+    			boolean allBranched = false;
+     			int prevlevel= 0;
+     			int ringsFound = SSSRings.size();
+    			while (maxlevel == prevlevel+1){
+    				prevlevel = maxlevel;
+    				for (int i=0; i<pathWidth; i++){
+    					Node nlevel = paths[i*nodeNum+level[i]];
+    					if (numTerminalAtoms[i] ==1 && grow[i*4]){
+    						level[i]++;
+    						if (maxlevel == prevlevel)
+    							maxlevel++;
+    						numTerminalAtoms[i] = 0;
+    						Iterator nextNodeIter = nlevel.getNeighboringNodes().iterator();
+    						while (nextNodeIter.hasNext()){
+    							Node nextNode = (Node)nextNodeIter.next();
+        						if (nextNode != paths[i*nodeNum+level[i]-2]){
+        							paths[i*nodeNum+level[i]+numTerminalAtoms[i]]=nextNode;
+        							numTerminalAtoms[i]++;
+        						}
+    						}
+
+    					}
+	        			checkPresenceOfRings(i,paths,level,pathWidth,nodeNum,ringsFromNode, grow,numTerminalAtoms);
+
+    				}
+    				
+    			}
+    			for (int i=0;i<ringsFromNode.size();i++){
+    				LinkedList cycle = (LinkedList) ringsFromNode.get(i);
+    				if (!cycleAlreadyPresent(cycle,SSSRings))
+    					SSSRings.add(cycle);
+    			}
+    			
+    			if (1+pathWidth/2 > ringsFromNode.size()){
+    				//find unfound rings
+    				for (int i=0; i<pathWidth; i++){
+    			   		for (int numTerm = 0; numTerm < numTerminalAtoms[i] ; numTerm++){
+    			   			Node ni = paths[i*nodeNum+level[i]+numTerm];
+        					Iterator niIterator = ni.getNeighboringNodes().iterator();
+        					while (niIterator.hasNext()){
+        						Node niNeighbor = (Node)niIterator.next();
+        						if (niNeighbor != paths[i*nodeNum+level[i]-1]){
+        							for (int j=i+1; j<pathWidth;j++){
+        		    			   		for (int numTerm2 = 0; numTerm2< numTerminalAtoms[j] ; numTerm2++){
+
+            								Node nj = paths[j*nodeNum+level[j]+numTerm2];
+            								Iterator njIterator = nj.getNeighboringNodes().iterator();
+            								while (njIterator.hasNext()){
+            									Node njNeighbor = (Node)njIterator.next();
+            									if (njNeighbor!=paths[j*nodeNum+level[j]-1] && njNeighbor==niNeighbor && (grow[i*4+numTerm] || grow[j*4+numTerm2])){
+            										LinkedList cycle = new LinkedList();
+            										for (int k=0; k<=level[i]-1;k++){
+            											cycle.add(paths[i*nodeNum+k]);
+            										}
+            										cycle.add(ni);
+            										cycle.add(niNeighbor);
+            										cycle.add(nj);
+            										for (int k=level[j]-1; k>0 ;k--)
+            											cycle.add(paths[j*nodeNum+k]);
+            										if (!cycleAlreadyPresent(cycle,SSSRings))
+            				    						SSSRings.add(cycle);
+            									}
+            								}
+        		    			   		}
+       								
+        							}
+        						}
+        					}
+    			   		}
+    					
+    					
+    				}
+    			}
+    			
+    		}
+    		
+    	}
+    	if (!acyclic){
+    		LinkedList SSSRingsCopy = new LinkedList();
+    		//System.out.println(SSSRings.size()+" Rings found");
+    		for (int i=0;i<SSSRings.size();i++){
+    			LinkedList cycle = (LinkedList)SSSRings.get(i);
+    			//System.out.println("Ring "+i+1+ " size= "+cycle.size());
+    			LinkedList actualCycle = new LinkedList();
+    			for (int j=0; j<cycle.size(); j++){
+    				Node node1 = getNodeAt( ((Node)cycle.get(j)).getID() );
+					Node node2 = getNodeAt(((Node)cycle.get(0)).getID());
+    				if (j != cycle.size()-1){
+    					node2 = getNodeAt(((Node)cycle.get(j+1)).getID());
+    				}
+    				actualCycle.add(node1);
+    				actualCycle.add( getArcBetween(node1,node2));
+    				//System.out.print(node1.getID()+ " ");
+    			}
+    			//System.out.println();
+    			cycle = null;
+    			SSSRingsCopy.add(i,actualCycle);
+    		}
+        	SSSRings = SSSRingsCopy;
+
+    	}
+    	g = null;
+    	return;
+    	
+    }
+    
+    public boolean allAtomsIncluded(LinkedList SSSRings,Graph g){
+    	Iterator nodeIter = g.getNodeList();
+    	while (nodeIter.hasNext()){
+    		Node n = (Node)nodeIter.next();
+    		boolean nodeFound = false;
+    		for (int i=0; i<SSSRings.size(); i++){
+    			LinkedList cycle = (LinkedList)SSSRings.get(i);
+    			if (cycle.contains(n)){
+    				nodeFound = true;
+    				break;
+    			}
+    		}
+    		if (!nodeFound)
+    			return false;
+    	}
+    	return true;
+    }
+    
+    public void checkPresenceOfRings(int i,Node[] paths,int []level,int pathWidth, int nodeNum, LinkedList ringsFromNode, boolean [] grow, int [] numTerminalAtoms){
+    	//for ( i=0;i<pathWidth;i++){
+    		for (int numTerm = 0; numTerm < numTerminalAtoms[i] ; numTerm++){
+    			Node n = (Node)paths[i*nodeNum+level[i]+numTerm];
+    			if (!grow[i*4+numTerm])
+    				continue;
+        		Iterator neighborsIter = n.getNeighboringNodes().iterator();
+        		while (neighborsIter.hasNext()){
+        			Node neighbor = (Node)neighborsIter.next();
+        			if (neighbor == paths[i*nodeNum+level[i]-1] )
+        				continue;
+        			for (int j=0; j<pathWidth; j++){
+        				if (i == j)
+        					continue;
+        				for (int numTerm2=0; numTerm2 <numTerminalAtoms[j]; numTerm2++){
+        					Node checkNode = (Node)paths[j*nodeNum+level[j]+numTerm2];
+        					if ((!grow[j*4+numTerm2]&&numTerminalAtoms[j]>=2) )
+        						continue;
+            				if (neighbor == checkNode){
+            					//cycle found
+            					grow[i*4+numTerm] = false;
+            					grow[j*4+numTerm2] = false;
+            					LinkedList cycle = new LinkedList();
+            					for (int k=0;k<=level[i]-1;k++){
+            						cycle.add(paths[i*nodeNum+k]);
+            					}
+            					cycle.add(n);
+            					cycle.add(neighbor);
+            					for (int k=level[j]-1;k>=1;k--){
+            						cycle.add(paths[j*nodeNum+k]);
+            					}
+            					if (!cycleAlreadyPresent(cycle,ringsFromNode))
+            						ringsFromNode.add(cycle);
+            				}
+        				}
+        				
+        			}
+        		}
+    		}
+    		
+    	//}
+    	return;
+    }
+    
+    public boolean cycleAlreadyPresent(LinkedList cycle,LinkedList SSSRings){
+    	if (SSSRings.size() == 0)
+    		return false;
+    	for (int i=0;i<SSSRings.size();i++){
+    		LinkedList nextCycle = (LinkedList )SSSRings.get(i);
+    		if (MathTool.isListEqual(nextCycle,cycle))
+    			return true;
+    	}
+    	return false;
+    }
+    
+    /**
+    Output a string of adjacency list of this graph
+    Modifies:
+    */
+    //## operation toString()
+    public String toNewString() {
+        //#[ operation toString()
+        String s = "";
+        for (int i = 1; i<=highestNodeID; i++) {
+        	Node n = getNodeAt(i);
+        	if (n != null) s = s + n.toString() + '\n';
+        }
+
+        return s;
+        //#]
+    }
+    
+    
     /**
     Return true iff this graph and p_graph is equivalent at center nodes.  if no center nodes defined, return true iff this graph is equivalent with p_graph.<br>
     <b>Modifies</b><br> visited status of nodes and arcs.
@@ -607,6 +1087,11 @@ public class Graph {
         //#]
     }
 
+    
+    public boolean[] getIsAromatic(){
+    	return isAromatic;
+    }
+    
     /**
     If there is an arc connecting the two nodes in this graph, return that arc, otherwise, return null.
     
@@ -711,19 +1196,25 @@ public class Graph {
     Return the iterator over the cycle collection.
     */
     //## operation getCycle()
-    public Iterator getCycle() {
+    public LinkedList getCycle() {
         //#[ operation getCycle()
-        Iterator iter = cycle.iterator();
-        return iter;
+        //Iterator iter = SSSRings.iterator();
+        return SSSRings;
         //#]
     }
 	
+    public void setCycle(LinkedList p_cycle){
+    	SSSRings = p_cycle;
+    }
+    
     /**
      * REturn the number of cycles in the graph.
      * 
      */
 	public int getCycleNumber(){
-		return cycle.size();
+		if (SSSRings == null) formSSSR();
+		if (acyclic) return 0;
+		else return SSSRings.size();
 	}
 
     /**
@@ -893,7 +1384,7 @@ public class Graph {
     <b>Modifies</b><br> the inCycle attributes of all the graph componenets, and this.cycle
     */
     //## operation identifyCycle()
-    public void identifyCycle() throws InconnectedGraphException {
+    /*public void identifyCycle() throws InconnectedGraphException {
         //#[ operation identifyCycle()
         if (!isConnected()) throw new InconnectedGraphException();
 
@@ -914,12 +1405,12 @@ public class Graph {
             }
         }
 
-        if (cycle.size() == 0) acyclic = true;
+        if (SSSRings.size() == 0) acyclic = true;
         else acyclic = false;
 
         return;
         //#]
-    }
+    }*/
 
     /**
     Identify the type of each node in this graph as Cs, Cd, Ca, Ck, etc.
@@ -947,7 +1438,7 @@ public class Graph {
     //## operation isAcyclic()
     public boolean isAcyclic() {
         //#[ operation isAcyclic()
-        if (cycle == null) identifyCycle();
+        if (SSSRings == null) formSSSR();
         return acyclic;
         //#]
     }
@@ -1299,6 +1790,39 @@ public class Graph {
         if (p_node.getID().intValue() >= highestNodeID) {
         	refreshHighestNodeID();
         }
+
+        p_node = null;
+
+
+
+
+
+
+        //#]
+    }
+    
+    /**
+    If p_node is in this graph, remove it, and remove all the arcs linked to it.  if p_node is not in this graph, throw NotInGraphException.<br>
+    <b>Modifies</b><br>this.nodeList
+    */
+    //## operation removeNode(Node)
+    public void removeNodeWithoutIDChange(Node p_node) {
+        //#[ operation removeNode(Node)
+        if (!contains(p_node)) throw new NotInGraphException();
+
+        Stack stack = new Stack();
+
+        // find all arc linked to this removed node
+        Iterator iter = p_node.getNeighbor();
+        while (iter.hasNext()) {
+        	Arc arc = (Arc)iter.next();
+        	Node otherNode = p_node.getOtherNode(arc);
+        	if (!contains(otherNode)) throw new InvalidConnectivityException();
+        	otherNode.neighbor.remove(arc);
+        	arcList.remove(arc);
+        }
+        // remove this node
+        nodeList.remove(p_node.getID());
 
         p_node = null;
 

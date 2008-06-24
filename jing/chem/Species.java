@@ -60,7 +60,7 @@ public class Species {
     protected int ID;		//## attribute ID
 
     protected static int TOTAL_NUMBER = 0;		//## attribute TOTAL_NUMBER
-
+    protected static boolean addID = true;
     protected ChemGraph chemGraph;		//## attribute chemGraph
 
     /**
@@ -494,7 +494,14 @@ public class Species {
         	Iterator iter = resonanceIsomers.iterator();
         	while (iter.hasNext()) {
         		ChemGraph g = (ChemGraph)iter.next();
+        		
         		double newH = g.getThermoData().getH298();
+        		if (g.fromprimarythermolibrary){
+        			H = newH;
+        			stablest = g;
+        			return;
+        		}
+        			
         		if (newH < H) {
         			H = newH;
         			stablest = g;
@@ -611,7 +618,53 @@ public class Species {
         	if (cg == chemGraph) resonanceIsomers.clear();
         	else addResonanceIsomer(chemGraph);
         }
+        
+        if (chemGraph.getRadicalNumber() >= 2){
+        	//find if there are radicals next to each other and in that case 
+        	//increase the bond order by 1
+        	Iterator radicalnodeIter = chemGraph.getRadicalNode().iterator();
+        	while (radicalnodeIter.hasNext()){
+        		Node n1 = (Node)radicalnodeIter.next();
+        		Iterator arcs = n1.getNeighbor();
+        		while (arcs.hasNext()){
+        			Arc arc1 = (Arc)arcs.next();
+        			Bond bond1 = (Bond)arc1.getElement();
+        			Node n2 = arc1.getOtherNode(n1);
+        			Atom a2 = (Atom)n2.getElement();
+        			if (a2.isRadical() && !bond1.isTriple()){
+        			   Graph newG = Graph.copy(chemGraph.getGraph());
 
+        			   Node newn1 = newG.getNodeAt(n1.getID());
+        			   Atom newa1 = (Atom)newn1.getElement();
+        			   newa1.changeRadical(-1, null);
+        			   newn1.setElement(newa1);
+
+        			   Node newn2 = newG.getNodeAt(n2.getID());
+        			   Atom newa2 = (Atom)newn2.getElement();
+        			   newa2.changeRadical(-1,null);
+        			   newn2.setElement(newa2);
+
+        			   Arc newarc1 = newG.getArcBetween(n2.getID(), n1.getID());
+        			   Bond newb1 = (Bond)newarc1.getElement();
+        			   newb1.changeBond(1);
+        			   newarc1.setElement(newb1);
+        			   ChemGraph newchemG;
+        			   try {
+						  newchemG = ChemGraph.make(newG);
+						   addResonanceIsomer(newchemG);
+
+					   } catch (InvalidChemGraphException e) {
+						  // TODO Auto-generated catch block
+						  e.printStackTrace();
+					   } catch (ForbiddenStructureException e) {
+						  // TODO Auto-generated catch block
+						  e.printStackTrace();
+					   }
+        			}
+        			
+        		}
+        	}
+        }
         /*Graph g = Graph.copy(chemGraph.getGraph());
         // generate node-electron stucture
         int nodeNumber = g.getNodeNumber();
@@ -694,7 +747,7 @@ public class Species {
 
         addResonanceIsomer(chemGraph);
 
-        Queue undoChemGraph = new Queue(2*chemGraph.getAtomNumber());
+        Queue undoChemGraph = new Queue(4*chemGraph.getAtomNumber());
         undoChemGraph.enqueue(chemGraph);
 
         HashSet processedChemGraph = new HashSet();
@@ -892,9 +945,13 @@ public class Species {
 
 	  public String getChemkinName() {
 	        //#[ operation getChemkinName()
-	        String chemkinName = getName() + "(" + getID() + ")";
-	        if (chemkinName.length() > 16) chemkinName = "SPC(" + getID() + ")";
-	        return chemkinName;
+		  if (addID){
+			  String chemkinName = getName() + "(" + getID() + ")";
+		        if (chemkinName.length() > 16) chemkinName = "SPC(" + getID() + ")";
+		        return chemkinName;
+		  }
+		  else
+			  return getName();
 
 	        //#]
 	    }
@@ -992,6 +1049,7 @@ public class Species {
 		
         
         if (spe == null) {
+        	
         	String name = p_name;
         	if (name == null || name.length()==0) {
         		name = p_chemGraph.getChemicalFormula();
@@ -1295,6 +1353,7 @@ public class Species {
     }
     
 	public void addPdepPaths(HashSet pdepReactionSet) {
+		
 		if (paths == null)
 			paths = pdepReactionSet;
 		else
@@ -1303,6 +1362,9 @@ public class Species {
 	
 	public HashSet getPdepPaths(){
 		return paths;
+	}
+	public static void setAddID(boolean p_addID){
+		addID = p_addID;
 	}
 }
 /*********************************************************************

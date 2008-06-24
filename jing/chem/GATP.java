@@ -88,7 +88,10 @@ public class GATP implements GeneralGAPP {
         //#[ operation generateThermoData(ChemGraph)
         ThermoData result = primaryLibrary.getThermoData(p_chemGraph.getGraph());
         //System.out.println(result);
-        if (result != null) return result;
+        if (result != null) {
+        	p_chemGraph.fromprimarythermolibrary = true;
+        	return result;
+        }
         result = getFromLibrary(p_chemGraph.getChemicalFormula());
         if (result != null) return result;
 

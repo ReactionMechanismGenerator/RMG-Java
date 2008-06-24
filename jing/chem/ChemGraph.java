@@ -56,8 +56,8 @@ import jing.param.Temperature;
 public class ChemGraph implements Matchable {
 
     protected static int MAX_OXYGEN_NUM = 6;		//## attribute MAX_OXYGEN_NUM
-	protected static  int MAX_CARBON_NUM = 20;       //SS
-	protected static int MAX_CYCLE_NUM = 1;		//SS (no fused rings)
+	protected static  int MAX_CARBON_NUM = 25;       //SS
+	protected static int MAX_CYCLE_NUM = 10;		//SS (no fused rings)
 
 	/**
     Maximal radical number allowed in a ChemGraph.
@@ -96,7 +96,8 @@ public class ChemGraph implements Matchable {
     protected Species species;
     protected ThermoData thermoData;
     protected GeneralGAPP thermoGAPP;
-
+    protected boolean fromprimarythermolibrary = false;
+    protected boolean isAromatic = false;
     // Constructors
 
     //## operation ChemGraph()
@@ -108,6 +109,8 @@ public class ChemGraph implements Matchable {
     private  ChemGraph(Graph p_graph) throws ForbiddenStructureException {
         //#[ operation ChemGraph(Graph)
         graph = p_graph;
+        
+       // isAromatic = isAromatic();
 
 		
 		
@@ -121,7 +124,66 @@ public class ChemGraph implements Matchable {
         //#]
     }
 
-    /**
+    /*private boolean isAromatic() {
+		//first see if it is cyclic
+    	if (graph.getCycleNumber() == 0)
+    		return false;
+    	
+    	//if cyclic then iterate over all the cycles
+    	Iterator cyclesIter = graph.getCycle();
+    	while (cyclesIter.hasNext()){
+    		LinkedList cycle = (LinkedList)cyclesIter.next();
+    		boolean hasdoublebond = false;
+    		boolean quarternaryAtom = false;
+    		boolean monoRadical = false;
+    		int unsaturatedCarbon =0 ;
+    		for (int i=0; i<=cycle.size(); i++){
+    			GraphComponent gc = (GraphComponent)cycle.get(i);
+    			
+    			
+    			if (gc instanceof Arc){
+    				if ( ((Bond)((Arc)gc).getElement()).isDouble())
+    					hasdoublebond = true;
+    			}
+    			else {
+    				
+    				Atom a = (Atom)((Node)gc).getElement();
+    				
+//    				is it unsaturate Carbon
+    				if (a.isCarbon() && !a.isRadical())
+    					unsaturatedCarbon++;
+    				
+    				//it is a monoradical
+    				if (a.freeElectron.order == 1){
+    					monoRadical = true;
+    					return false;
+    				}
+    				
+    				//you have to check for SO2RR radical presence 
+    				///what is a quarternary atom...i will check
+    			}
+    		}
+    		if (!hasdoublebond || unsaturatedCarbon > 1)
+    			return false;
+    		
+    		//first check if the ring has exocyclic pi bonds
+    		for (int i=0; i<=cycle.size();i++){
+    			GraphComponent gc = (GraphComponent)cycle.get(i);
+    			if (gc instanceof Node){
+    				Iterator neighbors = gc.getNeighbor();
+    				while (neighbors.hasNext()){
+    					Arc neighborArc = (Arc)neighbors.next();
+    					
+    				}
+    				
+    			}
+    		}
+    	}
+		
+	}*/
+	
+	
+	/**
     Requires:
     Effects: saturate all the node atom's undefined valence by adding Hydrogen.
     Modifies: this.graph.nodeList
@@ -532,7 +594,7 @@ public int calculateCyclicSymmetryNumber(){
  int sn = 1;
  LinkedList ring_structures = new LinkedList();//list of ring structures
  LinkedList cycle_list = new LinkedList();//list of cycles
- Iterator cycle_iter = getGraph().getCycle();
+ Iterator cycle_iter = getGraph().getCycle().iterator();
  while (cycle_iter.hasNext()){
    LinkedList current_cycle = (LinkedList)cycle_iter.next();
    cycle_list.add(current_cycle);
@@ -708,6 +770,8 @@ public int calculateCyclicSymmetryNumber(){
      //sn = correctSymmetryNumber(sn);
    //}
  }
+ graph.setCycle(null);
+ graph.formSSSR();
 return sn;
 //#]
 }
@@ -829,7 +893,7 @@ return sn;
    public int calculateSymmetryNumber() {
        //#[ operation calculateSymmetryNumber()
        try {
-         getGraph().identifyCycle();//svp
+         getGraph().formSSSR();//svp
                int sn = 1;
                Iterator iter = getNodeList();
                while (iter.hasNext()) {
@@ -1202,7 +1266,7 @@ return sn;
     //## operation getCycle()
     public Iterator getCycle() {
         //#[ operation getCycle()
-        return getGraph().getCycle();
+        return getGraph().getCycle().iterator();
         //#]
     }
 

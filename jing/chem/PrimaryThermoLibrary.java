@@ -130,7 +130,7 @@ public HashMap readDictionary(String p_fileName) throws FileNotFoundException, I
       Graph graph = null;
 
         graph = ChemParser.readChemGraph(data);
-
+        graph.addMissingHydrogen();
       Object old = dictionary.get(name);
       if (old == null){
         dictionary.put(name, graph);
