@@ -54,29 +54,28 @@ import jing.rxnSys.ReactionSystem;
 
 //## class PDepNetwork 
 public class PDepNetwork {
-   
+    
     protected static int ID = 0;		//## attribute ID 
     public static boolean generateNetworks;
-   
-    protected static HashMap dictionary = new LinkedHashMap();		//## attribute dictionary 
-   
+    
+    protected static HashMap dictionary = new HashMap();		//## attribute dictionary 
+    
     protected Reaction entryReaction = null;		//## attribute entryReaction 
-   
+    
     protected boolean isChemAct;		//## attribute isChemAct 
     
-    //protected double kLeak;		//## attribute kLeak 
-    protected double[] kLeak; //10/30/07 gmagoon: changed kLeak to an array
-
+    protected double[] kLeak;		//## attribute kLeak 
+    
     protected LinkedList product = null;		//## attribute product 
-  
+    
     protected LinkedList reactant = null;		//## attribute reactant 
- 
+    
     protected static int totalNumber = 0;		//## attribute totalNumber 
     //10/30/07 gmagoon: note that implementation would probably need to be changed if temperature or pressure change with time
     //(10/30/07) UPDATE: actually, since current T,P is passed to updateKLeak and initial T in temperatureArray is only used in initializeKLeak, perhaps it is not an issue (?); should not be an issue if initializeKLeak is only called at t = 0 and kLeak is updated before being used at subsequent times; even so, updateKLeak may not be called often enough for it to correspond to current T,P in current implementation (only updated when species is added, I think?)
     protected static LinkedList temperatureArray; //10/30/07 gmagoon: added LinkedList for temperatures as static variable: note that temperatures will be repeated in cases where there are multiple pressures
     protected static LinkedList pressureArray; //10/30/07 gmagoon: added LinkedList for pressures as static variable: note that pressures will be repeated in cases where there are multiple temperatures;//UPDATE: commenting out: not needed if updateKLeak is done for one temperature/pressure at a time; //11/1-2/07 restored
-   
+    
     protected LinkedList pDepNetReactionList;
     protected LinkedList pDepNonincludedReactionList;
     protected LinkedList pDepWellList;
@@ -106,15 +105,15 @@ public class PDepNetwork {
     private void addPDepWell(PDepWell p_newWell) {
         //#[ operation addPDepWell(PDepWell) 
         if (pDepWellList.contains(p_newWell)) return;
-       
+        
         pDepWellList.add(p_newWell);
-       
+        
         decideWellPathType();
-       
+        
         return;
-       
-       
-       
+        
+        
+        
         //#]
     }
     
@@ -151,11 +150,11 @@ public class PDepNetwork {
         	}
         }
         return;
-      
-      
+        
+        
         //#]
     }
-   
+    
     //## operation getEntryMass() 
     private double getEntryMass() {
         //#[ operation getEntryMass() 
@@ -165,7 +164,7 @@ public class PDepNetwork {
         	Species spe = (Species)iter.next();
         	mass += spe.getMolecularWeight();
         }
-       
+        
         return mass;
         //#]
     }
@@ -180,7 +179,7 @@ public class PDepNetwork {
         return false;
         //#]
     }
-   
+    
     //## operation initializeKLeak() 
     //10/26/07 gmagoon: changed to take temperature as parameter as part of elimination of uses of Global.temperature
     //10/30/07 gmagoon: removed temperature
@@ -299,17 +298,14 @@ public class PDepNetwork {
     public boolean isActive() {
         //#[ operation isActive() 
         return (!pDepWellList.isEmpty());
-       
+        
         //#]
     }
-   
+    
     //## operation makePDepNetwork(TemplateReaction) 
-    //10/26/07 gmagoon: changed to take temperature as parameter (needed for initializeKLeak)
-    //10/30/07 gmagoon: reverted to case without temperature passed as parameter
     public static PDepNetwork makePDepNetwork(Reaction p_entryReaction) {
-//    public static PDepNetwork makePDepNetwork(Reaction p_entryReaction, Temperature p_temperature) {
         //#[ operation makePDepNetwork(TemplateReaction) 
-
+	
     	Object key = null;
     	
     	if (!generateNetworks)
@@ -337,8 +333,7 @@ public class PDepNetwork {
         	PDepNetwork pnw = new PDepNetwork();
         	dictionary.put(key, pnw);
         	pnw.initializePDepNetwork(p_entryReaction);
-                pnw.initializeKLeak();//10/30/07 reverted to not passing temperature
-                //pnw.initializeKLeak(p_temperature);//10/26/07 gmagoon: changed to pass temperature
+        	pnw.initializeKLeak();
         	return pnw;
         
         }
@@ -346,8 +341,7 @@ public class PDepNetwork {
         	PDepWell pdw = (PDepWell)obj.pDepWellList.get(0);
         	pdw.addPath(p_entryReaction);
         	obj.decideWellPathType();
-                obj.initializeKLeak();//10/30/07 reverted to not passing temperature
-                //obj.initializeKLeak(p_temperature);//10/26/07 gmagoon: changed to pass temperature
+        	obj.initializeKLeak();
         	obj.altered = true;
         	return obj;
         }
@@ -363,9 +357,7 @@ public class PDepNetwork {
         //#[ operation runPDepCalculation(ReactionSystem) 
         if (!isActive() && getIsChemAct()) {
         	Temperature t = p_reactionSystem.getPresentTemperature();
-               
-                kLeak[p_reactionSystem.getIndex()] = getEntryReaction().calculateTotalRate(t);//10/30/07 gmagoon: updated to change kLeak corresponding to reactionSystem being passed
-        	//kLeak = getEntryReaction().calculateTotalRate(t);
+  		    kLeak[p_reactionSystem.getIndex()] = getEntryReaction().calculateTotalRate(t);//10/30/07 gmagoon: updated to change kLeak corresponding to reactionSystem being passed
         	return;
         }
         
@@ -381,9 +373,9 @@ public class PDepNetwork {
         
 //		 run chemdis
         String dir = System.getProperty("RMG.workingDirectory");
-       
+        
         File chemdis_input;
-       
+        
         try {
         	// prepare chemdis input file, "fort.10" is the input file name
         	chemdis_input = new File("chemdis/fort.10");
@@ -416,13 +408,12 @@ public class PDepNetwork {
         }
         
         parseChemdisOutputCP();
-        //updateKLeak(p_reactionSystem.getPresentTemperature(), p_reactionSystem.getPresentPressure());//10/25/07 gmagoon: changed to pass temperature, pressure
-        //(p_reactionSystem.getPresentTemperature(), p_reactionSystem.getPresentPressure(), p_reactionSystem.getIndex());//10/30/07 gmagoon: adding index
-        updateKLeak();//11/1-2/07 gmagoon: reverting to version without temperature and pressure so all are updated at once
+        updateKLeak();
+        
         altered = false;
-       
-       
-       
+        
+        
+        
         //#]
     }
     
@@ -636,18 +627,22 @@ public class PDepNetwork {
         PDepWell pdw = new PDepWell(p_nextIsomer, p_nextIsomer.getPdepPaths());
         //System.out.println("begin to add new well to system");
         addPDepWell(pdw);
+        if (nonIncludedSpecies.contains(p_nextIsomer)){
+        	nonIncludedSpecies.remove(p_nextIsomer);
+        }
+
         //System.out.println("finish adding new well to system");
         return;
         //#]
     }
     
     
-  
+    
     //## operation writePDepNetworkHeader(ReactionSystem) 
     private String writePDepNetworkHeader(ReactionSystem p_reactionSystem) {
         //#[ operation writePDepNetworkHeader(ReactionSystem) 
         String s = "RMG-Generated Partial Network " + String.valueOf(getID()) + '\n';
-        s += "TRANGE\n 300 \t 1500 \t 10 \n";
+        s += "TRANGE\n 300 \t 2000 \t 10 \n";
         //double temp = p_reactionSystem.getPresentTemperature().getK();
         //s += "1\t" + Double.toString(temp) + '\n';
         s += "PRANGE\n 0.01 \t 100 \t 10 \n";
@@ -771,17 +766,12 @@ public class PDepNetwork {
     public boolean getIsChemAct() {
         return isChemAct;
     }
-
+    
     //10/30/07 gmagoon: modified to access one kLeak out of array at various temperatures
     public double getKLeak(Integer p_index)
     {
         return kLeak[p_index];
     }
-//    public double getKLeak() {
-//
-//        return kLeak;
-//
-//    }
     
     public LinkedList getProduct() {
         return product;
@@ -817,8 +807,8 @@ public class PDepNetwork {
     public Iterator getNonIncludedSpecies(){
     	return nonIncludedSpecies.iterator();
     }
-   
-    //10/30/07: gmagoon: added function to set temperatureArray (used with kLeak); I think it should be declared as static so it belongs to class rather than object and temperatureArray will be static
+	
+     //10/30/07: gmagoon: added function to set temperatureArray (used with kLeak); I think it should be declared as static so it belongs to class rather than object and temperatureArray will be static
     //****note that there is some inefficiency in the current implementation since temperatures will be repeated if there are multiple pressures; if calculating kLeak takes a long time, changing implementation may be warranted; UPDATE: if kLeak depends on pressure as well, there will be no inefficiency
     public static void setTemperatureArray(LinkedList p_tempArray){
         temperatureArray = p_tempArray;
@@ -830,8 +820,8 @@ public class PDepNetwork {
    public static void setPressureArray(LinkedList p_pressureArray){
         pressureArray = p_pressureArray;
     }
-
-    /*
+    
+       /*
 	public static void completeNetwork(Species p_species, HashSet hs) {
 		if (p_species == null) return;
 		if (p_species.getPdepPaths() == null) return;
