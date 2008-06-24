@@ -793,14 +793,14 @@ public class JDASSL implements ODESolver{
         if(p_reaction instanceof PDepNetReaction) {
         	//10/25/07 gmagoon: updated to use calculateRate with system snapshot (to avoid use of Global.temperature and Global.pressure)
             SystemSnapshot currentTPSnapshot = new SystemSnapshot();//10/25/07 gmagoon: make currentTPsnapshot variable, which will be used to pass temperature and pressure to calculateRate
-    	currentTPSnapshot.setTemperature(p_temperature);
+            currentTPSnapshot.setTemperature(p_temperature);
             currentTPSnapshot.setPressure(p_pressure);
             double rate = ((PDepNetReaction)p_reaction).calculateRate(currentTPSnapshot);
+            if (String.valueOf(rate).equals("NaN")){
+            	System.err.println(p_reaction.toChemkinString(currentTPSnapshot.getTemperature()) + "Has bad rate probably due to Ea<DH");
+            	rate = 0;
+            }
             currentTPSnapshot = null;
-        	if (String.valueOf(rate).equals("NaN")){
-        		System.err.println(p_reaction.toChemkinString(Global.temperature) + "Has bad rate probably due to Ea<DH");
-        		rate = 0;
-        	}
         	ODEReaction or = new ODEReaction(rnum, pnum, rid, pid, rate);
 			//Global.transferReaction = Global.transferReaction + (System.currentTimeMillis() - startTime)/1000/60;
         	return or;

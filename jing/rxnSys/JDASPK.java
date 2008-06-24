@@ -1003,11 +1003,11 @@ public class JDASPK implements ODESolver{
       		 currentTPSnapshot.setTemperature(p_temperature);
              currentTPSnapshot.setPressure(p_pressure);
              double rate = ((PDepNetReaction)p_reaction).calculateRate(currentTPSnapshot);
-        	 currentTPSnapshot = null;
-             if (String.valueOf(rate).equals("NaN")){
-        		System.err.println(p_reaction.toChemkinString(Global.temperature) + "Has bad rate probably due to Ea<DH");
+                   if (String.valueOf(rate).equals("NaN")){
+        		System.err.println(p_reaction.toChemkinString(currentTPSnapshot.getTemperature()) + "Has bad rate probably due to Ea<DH");
         		rate = 0;
         	}
+            currentTPSnapshot = null;
         	ODEReaction or = new ODEReaction(rnum, pnum, rid, pid, rate);
 			//Global.transferReaction = Global.transferReaction + (System.currentTimeMillis() - startTime)/1000/60;
         	return or;
