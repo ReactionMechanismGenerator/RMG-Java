@@ -32,5 +32,8 @@ public class Global {
 	
 	public static double chemkinThermo = 0;
 	public static double chemkinReaction = 0;
-
+        //5/13/08 gmagoon: added variables temporarily for automatic time-stepping timing; 6/25/08: commented out (along with timing in JDASSL)
+     //   public static double JDASSLtime= 0;
+     //   public static double fortrantime= 0;
+     //   public static double timesteppingtime= 0;
 }
