@@ -91,6 +91,7 @@ public class ReactionModelGenerator {
     protected LinkedList currentPList = new LinkedList();
     protected LinkedList conditionChangedList = new LinkedList();
     protected LinkedList reactionChangedList = new LinkedList();
+    protected int numConversions;//5/6/08 gmagoon: moved from initializeReactionSystem() to be an attribute so it can be accessed by modelGenerator()
 
 	protected boolean restart = false;
     // Constructors
@@ -470,16 +471,24 @@ public class ReactionModelGenerator {
         		String temp = st.nextToken();
         		String simulator = st.nextToken().trim();
         		
-        		int numConversions = 0;
+                        numConversions = 0;//5/6/08 gmagoon: moved declaration from initializeReactionSystem() to be an attribute so it can be accessed by modelGenerator()
+        		//int numConversions = 0;
+			boolean autoflag = false;//5/2/08 gmagoon: updating the following if/else-if block to consider input where we want to check model validity within the ODE solver at each time step; this will be indicated by the use of a string beginning with "AUTO" after the "TimeStep" or "Conversions" line
         		// read in time step
         		line = ChemParser.readMeaningfulLine(reader);
         		if (line.startsWith("TimeStep:") && finishController.terminationTester instanceof ReactionTimeTT) {
         			st = new StringTokenizer(line);
         			temp = st.nextToken();
         			while (st.hasMoreTokens()) {
-        				double tStep = Double.parseDouble(st.nextToken());
-            			String unit = "sec";
-            			setTimeStep(new ReactionTime(tStep, unit));
+					temp = st.nextToken();
+					if (temp.startsWith("AUTO")){//note potential opportunity for making case insensitive by using: temp.toUpperCase().startsWith("AUTO")
+						autoflag=true;
+					}
+        				else if (!autoflag){//use "else if" to make sure additional numbers are not read in case numbers are erroneously used following AUTO; note that there could still be a problem if numbers come before "AUTO"
+						double tStep = Double.parseDouble(temp);
+            					String unit = "sec";
+            					setTimeStep(new ReactionTime(tStep, unit));
+					}
         			}      
         			((ReactionTimeTT)finishController.terminationTester).setTimeSteps(timeStep);
         		}
@@ -496,9 +505,15 @@ public class ReactionModelGenerator {
         				if (sps.species.equals(convSpecies)) initialConc = sps.concentration;
         			}
         			while (st.hasMoreTokens()){
-        				double conv = Double.parseDouble(st.nextToken());
-            			conversionSet[i] = (1-conv) * initialConc;
-            			i++;
+					temp=st.nextToken();
+					if (temp.startsWith("AUTO")){
+						autoflag=true;
+					}
+					else if (!autoflag){
+        					double conv = Double.parseDouble(temp);
+            					conversionSet[i] = (1-conv) * initialConc;
+            					i++;
+					}
         			}
         			conversionSet[i] = (1 - conversionSet[49])* initialConc;
         			numConversions = i+1;
@@ -568,8 +583,10 @@ public class ReactionModelGenerator {
                                }
                                else throw new InvalidSymbolException("condition.txt: can't find SA on/off information!");
                                //10/23/07 gmagoon: changed below from dynamicSimulator to dynamicSimulatorList
-                               for (Iterator iter = initialStatusList.iterator(); iter.hasNext(); ) {
-                                    dynamicSimulatorList.add(new JDASPK(rtol, atol, 0, (InitialStatus)iter.next()));
+                              //6/25/08 gmagoon: changed loop to use i index, and updated DASPK constructor to pass i (mirroring changes to DASSL
+                              //6/25/08 gmagoon: updated to pass autoflag and validity tester; this requires FinishController block of input file to be present before DynamicSimulator block, but this requirement may have already existed anyway, particularly in construction of conversion/time step lists; *perhaps we should formalize this requirement by checking to make sure validityTester is not null?
+                               for (int i = 0;i < initialStatusList.size();i++) {
+                                    dynamicSimulatorList.add(new JDASPK(rtol, atol, 0, (InitialStatus)initialStatusList.get(i), i,finishController.getValidityTester(), autoflag));
                                }
                              }
                              species = new LinkedList();
@@ -595,8 +612,9 @@ public class ReactionModelGenerator {
                               //      dynamicSimulatorList.add(new JDASSL(rtol, atol, 0, (InitialStatus)iter.next()));
                               // }
                             //11/1/07 gmagoon: changed loop to use i index, and updated DASSL constructor to pass i
+                            //5/5/08 gmagoon: updated to pass autoflag and validity tester; this requires FinishController block of input file to be present before DynamicSimulator block, but this requirement may have already existed anyway, particularly in construction of conversion/time step lists; *perhaps we should formalize this requirement by checking to make sure validityTester is not null?
                                for (int i = 0;i < initialStatusList.size();i++) {
-                                    dynamicSimulatorList.add(new JDASSL(rtol, atol, 0, (InitialStatus)initialStatusList.get(i), i));
+                                    dynamicSimulatorList.add(new JDASSL(rtol, atol, 0, (InitialStatus)initialStatusList.get(i), i, finishController.getValidityTester(), autoflag));
                                }
         		}
         		else if (simulator.equals("Chemkin")) {
@@ -782,6 +800,17 @@ public class ReactionModelGenerator {
  //       LinkedList currentPList = new LinkedList();
  //       LinkedList conditionChangedList = new LinkedList();
  //       LinkedList reactionChangedList = new LinkedList();
+        //5/6/08 gmagoon: determine whether there are intermediate time/conversion steps, type of termination tester is based on characteristics of 1st reaction system (it is assumed that they are all identical in terms of type of termination tester)
+        boolean intermediateSteps = true;
+        ReactionSystem rs0 = (ReactionSystem)reactionSystemList.get(0);
+        if (rs0.finishController.terminationTester instanceof ReactionTimeTT){
+            if (timeStep == null){
+                intermediateSteps = false;
+            }
+        }
+        else if (numConversions==1){ //if we get to this block, we presumably have a conversion terminationTester; this required moving numConversions to be attribute...alternative to using numConversions is to access one of the DynamicSimulators and determine conversion length
+            intermediateSteps=false;
+        }
         //10/24/07 gmagoon: note: each element of for loop could be done in parallel if desired; some modifications would be needed
         for (Iterator iter = reactionSystemList.iterator(); iter.hasNext(); ) {
             ReactionSystem rs = (ReactionSystem)iter.next();
@@ -793,7 +822,14 @@ public class ReactionModelGenerator {
             beginList.add(begin);
             ReactionTime end;
             if (rs.finishController.terminationTester instanceof ReactionTimeTT){
-                    end = (ReactionTime)timeStep.get(0);
+                    //5/5/08 gmagoon: added below if statement to avoid null pointer exception in cases where there are no intermediate time steps specified
+                    if (!(timeStep==null)){
+                        end = (ReactionTime)timeStep.get(0);
+                    }             
+                    else{
+                        end= ((ReactionTimeTT)rs.finishController.terminationTester).finalTime;
+                    }
+                    //end = (ReactionTime)timeStep.get(0);
                     endList.add(end);
             }
             else{
@@ -899,9 +935,17 @@ public class ReactionModelGenerator {
         		
                                    // begin = init;
                                     beginList.set(i, (ReactionTime)initList.get(i));
-                                    if (rs.finishController.terminationTester instanceof ReactionTimeTT)
-                                            endList.set(i, (ReactionTime)timeStep.get(0));
-                                            //end = (ReactionTime)timeStep.get(0);
+                                    if (rs.finishController.terminationTester instanceof ReactionTimeTT){
+                                        //5/5/08 gmagoon: added below if statement to avoid null pointer exception in cases where there are no intermediate time steps specified
+                                        if (!(timeStep==null)){
+                                            endList.set(i,(ReactionTime)timeStep.get(0));
+                                        }             
+                                        else{
+                                            endList.set(i, ((ReactionTimeTT)rs.finishController.terminationTester).finalTime);
+                                        }
+                                        // endList.set(i, (ReactionTime)timeStep.get(0));
+                                        //end = (ReactionTime)timeStep.get(0);
+                                    }
                                     else
                                             endList.set(i, new ReactionTime(1e6,"sec"));
                                             //end = new ReactionTime(1e6,"sec");
@@ -1008,71 +1052,93 @@ public class ReactionModelGenerator {
 				print_info.append(totalEnlarger + "\t" + resetSystem + "\t" + Global.readSolverFile + "\t" + Global.writeSolverFile + "\t" + Global.solvertime + "\t" + Global.solverIterations + "\t" + Global.speciesStatusGenerator +  "\t" + solverMin + "\t"  + gc + "\t"  + restart2 + "\t" + Global.chemkinThermo + '\t' + Global.chemkinReaction + "\t" + vTester + "\t" + ((CoreEdgeReactionModel)getReactionModel()).getReactedSpeciesSet().size()+ "\t" + ((CoreEdgeReactionModel)getReactionModel()).getReactedReactionSet().size() + "\t" + ((CoreEdgeReactionModel)getReactionModel()).getUnreactedSpeciesSet().size() + "\t" + ((CoreEdgeReactionModel)getReactionModel()).getUnreactedReactionSetIncludingReverseSize() + "\t" + mU + "\t" + allSpecies + "\t" + (System.currentTimeMillis()-Global.tAtInitialization)/1000/60 + "\t"+ String.valueOf(Global.RT_findRateConstant)+"\t"+Global.RT_identifyReactedSites+"\t"+Global.RT_reactChemGraph+"\t"+Global.makeSpecies+"\t"+Global.checkReactionReverse+"\t"+Global.makeTR+ "\t" + Global.getReacFromStruc + "\t" + Global.generateReverse+"\n");
 				
         	}
-                for (Integer i = 0; i<reactionSystemList.size();i++) {
-                    ReactionSystem rs = (ReactionSystem)reactionSystemList.get(i);
-                    reactionChangedList.set(i, false);
-                    //reactionChanged = false;
-                    Temperature currentT = (Temperature)currentTList.get(i);
-                    Pressure currentP = (Pressure)currentPList.get(i);
-                    lastTList.set(i,(Temperature)currentT.clone()) ;
-                    lastPList.set(i,(Pressure)currentP.clone());
-                    //lastT = (Temperature)currentT.clone();
-                    //lastP = (Pressure)currentP.clone();
+                //5/6/08 gmagoon: in order to handle cases where no intermediate time/conversion steps are used, only evaluate the next block of code when there are intermediate time/conversion steps
+                double startTime = System.currentTimeMillis();
+                if(intermediateSteps){
+                    for (Integer i = 0; i<reactionSystemList.size();i++) {
+                        ReactionSystem rs = (ReactionSystem)reactionSystemList.get(i);
+                        reactionChangedList.set(i, false);
+                        //reactionChanged = false;
+                        Temperature currentT = (Temperature)currentTList.get(i);
+                        Pressure currentP = (Pressure)currentPList.get(i);
+                        lastTList.set(i,(Temperature)currentT.clone()) ;
+                        lastPList.set(i,(Pressure)currentP.clone());
+                        //lastT = (Temperature)currentT.clone();
+                        //lastP = (Pressure)currentP.clone();
 
-                    currentTList.set(i,rs.getTemperature((ReactionTime)beginList.get(i)));//10/24/07 gmagoon: ****I think this should actually be at end? (it shouldn't matter for isothermal/isobaric case)
-                    currentPList.set(i,rs.getPressure((ReactionTime)beginList.get(i)));
-                    conditionChangedList.set(i,!(((Temperature)currentTList.get(i)).equals((Temperature)lastTList.get(i))) || !(((Pressure)currentPList.get(i)).equals((Pressure)lastPList.get(i))));
-                    //currentT = reactionSystem.getTemperature(begin);//10/24/07 gmagoon: ****I think this should actually be at end? (it shouldn't matter for isothermal/isobaric case)
-                    //currentP = reactionSystem.getPressure(begin);
-                    //conditionChanged = (!currentT.equals(lastT) || !currentP.equals(lastP));
+                        currentTList.set(i,rs.getTemperature((ReactionTime)beginList.get(i)));//10/24/07 gmagoon: ****I think this should actually be at end? (it shouldn't matter for isothermal/isobaric case)
+                        currentPList.set(i,rs.getPressure((ReactionTime)beginList.get(i)));
+                        conditionChangedList.set(i,!(((Temperature)currentTList.get(i)).equals((Temperature)lastTList.get(i))) || !(((Pressure)currentPList.get(i)).equals((Pressure)lastPList.get(i))));
+                        //currentT = reactionSystem.getTemperature(begin);//10/24/07 gmagoon: ****I think this should actually be at end? (it shouldn't matter for isothermal/isobaric case)
+                        //currentP = reactionSystem.getPressure(begin);
+                        //conditionChanged = (!currentT.equals(lastT) || !currentP.equals(lastP));
 
-                    beginList.set(i,((SystemSnapshot)(rs.getSystemSnapshotEnd().next())).time);
-                   // begin=((SystemSnapshot)(reactionSystem.getSystemSnapshotEnd().next())).time;
-                    if (rs.finishController.terminationTester instanceof ReactionTimeTT){
-                            if (iterationNumber < timeStep.size()){
-                                endList.set(i,(ReactionTime)timeStep.get(iterationNumber));
-                            //end = (ReactionTime)timeStep.get(iterationNumber);
-                            }
-                            else
-                                endList.set(i, ((ReactionTimeTT)rs.finishController.terminationTester).finalTime);
-                                //end = ((ReactionTimeTT)reactionSystem.finishController.terminationTester).finalTime;
+                        beginList.set(i,((SystemSnapshot)(rs.getSystemSnapshotEnd().next())).time);
+                       // begin=((SystemSnapshot)(reactionSystem.getSystemSnapshotEnd().next())).time;
+                        if (rs.finishController.terminationTester instanceof ReactionTimeTT){
+                                if (iterationNumber < timeStep.size()){
+                                    endList.set(i,(ReactionTime)timeStep.get(iterationNumber));
+                                //end = (ReactionTime)timeStep.get(iterationNumber);
+                                }
+                                else
+                                    endList.set(i, ((ReactionTimeTT)rs.finishController.terminationTester).finalTime);
+                                    //end = ((ReactionTimeTT)reactionSystem.finishController.terminationTester).finalTime;
+                        }
+                        else
+                            endList.set(i,new ReactionTime(1e6,"sec"));
+                            //end = new ReactionTime(1e6,"sec");
+                    }        
+                    iterationNumber++;
+                    startTime = System.currentTimeMillis();//5/6/08 gmagoon: moved declaration outside of if statement so it can be accessed in subsequent vTester line; previous steps are probably so fast that I could eliminate this line without much effect on normal operation with intermediate steps
+                    //double startTime = System.currentTimeMillis();
+                    //10/24/07 gmagoon: changed to use reactionSystemList
+                    for (Integer i = 0; i<reactionSystemList.size();i++) {
+                        ReactionSystem rs = (ReactionSystem)reactionSystemList.get(i);
+                        boolean reactionChanged = (Boolean)reactionChangedList.get(i);
+                        boolean conditionChanged = (Boolean)conditionChangedList.get(i);
+                        ReactionTime begin = (ReactionTime)beginList.get(i);
+                        ReactionTime end = (ReactionTime)endList.get(i);
+                        endList.set(i,rs.solveReactionSystem(begin, end, false, reactionChanged, false, iterationNumber-1));
+                       // end = reactionSystem.solveReactionSystem(begin, end, false, reactionChanged, false, iterationNumber-1);
                     }
-                    else
-                        endList.set(i,new ReactionTime(1e6,"sec"));
-                        //end = new ReactionTime(1e6,"sec");
-                }        
-                iterationNumber++;
-		double startTime = System.currentTimeMillis();
-                //10/24/07 gmagoon: changed to use reactionSystemList
-                for (Integer i = 0; i<reactionSystemList.size();i++) {
-                    ReactionSystem rs = (ReactionSystem)reactionSystemList.get(i);
-                    boolean reactionChanged = (Boolean)reactionChangedList.get(i);
-                    boolean conditionChanged = (Boolean)conditionChangedList.get(i);
-                    ReactionTime begin = (ReactionTime)beginList.get(i);
-                    ReactionTime end = (ReactionTime)endList.get(i);
-                    endList.set(i,rs.solveReactionSystem(begin, end, false, reactionChanged, false, iterationNumber-1));
-                   // end = reactionSystem.solveReactionSystem(begin, end, false, reactionChanged, false, iterationNumber-1);
-                }
-		solverMin = solverMin + (System.currentTimeMillis()-startTime)/1000/60;
-			
-		startTime = System.currentTimeMillis();
-                
-                //10/24/07 gmagoon: changed to use reactionSystemList
+                    solverMin = solverMin + (System.currentTimeMillis()-startTime)/1000/60;
+
+                    startTime = System.currentTimeMillis();
+
+                    //5/6/08 gmagoon: changed to separate validity and termination testing, and termination testing is done last...termination testing should be done even if there are no intermediate conversions; however, validity is guaranteed if there are no intermediate conversions based on previous conditional if statement
+                     allValid = true;
+                     for (Integer i = 0; i<reactionSystemList.size();i++) {
+                        ReactionSystem rs = (ReactionSystem)reactionSystemList.get(i);
+                        boolean valid = rs.isModelValid();     
+                        validList.set(i,valid);
+                        if(!valid)
+                            allValid = false;
+                    }
+                }//5/6/08 gmagoon: end of block for intermediateSteps
                 allTerminated = true;
-                allValid = true;
         	for (Integer i = 0; i<reactionSystemList.size();i++) {
                     ReactionSystem rs = (ReactionSystem)reactionSystemList.get(i);
                     boolean terminated = rs.isReactionTerminated();
                     terminatedList.set(i,terminated);
                     if(!terminated)
                         allTerminated = false;
-                    boolean valid = rs.isModelValid();     
-                    validList.set(i,valid);
-                    if(!valid)
-                        allValid = false;
-		    //terminated = reactionSystem.isReactionTerminated();
-                    //valid = reactionSystem.isModelValid();
                 }
+           //     //10/24/07 gmagoon: changed to use reactionSystemList
+           //     allTerminated = true;
+           //     allValid = true;
+           //  	for (Integer i = 0; i<reactionSystemList.size();i++) {
+            //        ReactionSystem rs = (ReactionSystem)reactionSystemList.get(i);
+            //        boolean terminated = rs.isReactionTerminated();
+            //        terminatedList.set(i,terminated);
+            //        if(!terminated)
+            //            allTerminated = false;
+            //        boolean valid = rs.isModelValid();     
+            //        validList.set(i,valid);
+            //        if(!valid)
+            //            allValid = false;
+            //    }
+            //    //terminated = reactionSystem.isReactionTerminated();
+            //    //valid = reactionSystem.isModelValid();
                 
 		//10/24/07 gmagoon: changed to use reactionSystemList, allValid	
         	if (allValid) {
@@ -1128,7 +1194,7 @@ public class ReactionModelGenerator {
 //      		}
 				
         	}
-			vTester = vTester + (System.currentTimeMillis()-startTime)/1000/60;
+			vTester = vTester + (System.currentTimeMillis()-startTime)/1000/60;//5/6/08 gmagoon: for case where intermediateSteps = false, this will use startTime declared just before intermediateSteps loop, and will only include termination testing, but no validity testing
         }
         
         //System.out.println("Performing model reduction");
@@ -1140,7 +1206,9 @@ public class ReactionModelGenerator {
               LinkedList dynamicSimulator2List = new LinkedList();
               for (Integer i = 0; i<reactionSystemList.size();i++) {
                 ReactionSystem rs = (ReactionSystem)reactionSystemList.get(i);
-                dynamicSimulator2List.add(new JDASPK(rtol, atol, paraInfor, (InitialStatus)initialStatusList.get(i)));
+                //6/25/08 gmagoon: updated to pass index i
+                //6/25/08 gmagoon: updated to pass (dummy) finishController and autoflag (set to false here); 
+                dynamicSimulator2List.add(new JDASPK(rtol, atol, paraInfor, (InitialStatus)initialStatusList.get(i),i));
                 //DynamicSimulator dynamicSimulator2 = new JDASPK(rtol, atol, paraInfor, initialStatus);
                 ((DynamicSimulator)dynamicSimulator2List.get(i)).addConversion(((JDASPK)rs.dynamicSimulator).conversionSet, ((JDASPK)rs.dynamicSimulator).conversionSet.length);
                 //dynamicSimulator2.addConversion(((JDASPK)reactionSystem.dynamicSimulator).conversionSet, ((JDASPK)reactionSystem.dynamicSimulator).conversionSet.length);
