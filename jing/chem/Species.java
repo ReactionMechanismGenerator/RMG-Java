@@ -369,7 +369,7 @@ public class Species {
 			while ( (line = br.readLine()) != null) {
 				//System.out.println(line);
 				line = line.trim();
-				if (!line.startsWith("*** THRFIT Job Complete")) {
+				if (!line.startsWith("STOP  *** THRFIT Job Complete")) {
 					String speName = getName();
 					System.out.println("therfit error for species: " + speName+"\n"+toString());
 					File newfile = new File(therfit_input_name+"."+speName);
