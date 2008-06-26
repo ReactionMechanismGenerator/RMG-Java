@@ -787,12 +787,18 @@ public class Graph {
     		Node n = (Node)nodeIter.next();
     		ring.add(0,n);
     		int i = 1;
-    		while (i <(g.getNodeNumber()+g.getArcNumber())){
-    			Arc arc = (Arc)n.getNeighbor().next();
-    			Node nextNode = n.getOtherNode(arc);
-    			ring.add(i,arc);
-    			i++;
-    			ring.add(i,nextNode);
+    		while (i <(g.getNodeNumber())){
+    			Iterator neighborArc = n.getNeighbor();
+    			Arc arc = (Arc)neighborArc.next();
+
+     			Node nextNode = n.getOtherNode(arc);
+    			if (!ring.contains(nextNode))
+    				ring.add(i,nextNode);
+    			else {
+       				arc = (Arc)neighborArc.next();
+       				nextNode = n.getOtherNode(arc);
+       				ring.add(i,nextNode);
+    			}
     			i++;
     			n=nextNode;
     		}
