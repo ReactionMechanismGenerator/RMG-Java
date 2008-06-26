@@ -100,6 +100,8 @@ public class JDASPK implements ODESolver{
 	protected StringBuilder rString;
 	protected StringBuilder troeString;
         protected int index; //6/25/08 gmagoon: adding index to allow appropriate naming of RWORK, IWORK (mirroring DASSL change)
+        protected ValidityTester validityTester; //6/25/08 gmagoon: adding validityTester and autoflag as attributes needed for "automatic" time stepping (mirroring JDASSL change)
+        protected boolean autoflag;
 	protected StringBuilder tbrString;
 	protected double [] reactionFlux;
 	protected double [] conversionSet;
@@ -112,11 +114,31 @@ public class JDASPK implements ODESolver{
     }
     
     //6/25/08 gmagoon: added p_index parameter (mirroring JDASSL change)
+    //6/25/08 gmagoon: adding validityTester and autoflag as attributes needed for "automatic" time stepping
     //## operation JDASPK(double,double,int, InitialStatus)
+    public  JDASPK(double p_rtol, double p_atol, int p_parameterInfor, InitialStatus p_initialStatus, int p_index, ValidityTester p_vt, boolean p_autoflag) {
+        //#[ operation JDASPK(double,double,int, InitialStatus)
+        rtol = p_rtol;
+        atol = p_atol;
+        index = p_index;
+        validityTester = p_vt;
+        autoflag=p_autoflag;
+
+        parameterInfor = p_parameterInfor;
+        initialStatus = p_initialStatus;
+
+
+        //#]
+    }
+    
+    //6/25/08 gmagoon: defined alternate constructor for use with sensitivity analysis (lacks autoflag and validityTester parameters)
     public  JDASPK(double p_rtol, double p_atol, int p_parameterInfor, InitialStatus p_initialStatus, int p_index) {
         //#[ operation JDASPK(double,double,int, InitialStatus)
         rtol = p_rtol;
         atol = p_atol;
+        index = p_index;
+        
+        autoflag=false;//6/25/08 gmagoon: set autoflag to be false with this constructor (not used for sensitivity analysis)
 
         parameterInfor = p_parameterInfor;
         initialStatus = p_initialStatus;
@@ -549,15 +571,18 @@ public class JDASPK implements ODESolver{
 			
 			
         }
+        //6/25/08 gmagoon: (next two lines) for autoflag, get binary 0 or 1 corresponding to boolean false/true
+        int af = 0;
+        if (autoflag) af = 1;
         if (tt instanceof ConversionTT){
         	SpeciesConversion sc = (SpeciesConversion)((ConversionTT)tt).speciesGoalConversionSet.get(0);
             outputString.append(nState + "\t" + neq + "\t" +  getRealID(sc.species) + "\t 1 \n" );
-            outputString.append(conversionSet[p_iterationNum]+"\n");
+            outputString.append(conversionSet[p_iterationNum]+"\t"+ af+"\n");//6/25/08 gmagoon: added autoflag, needed when using daspkAUTO.exe
     		
         }
         else{
         	outputString.append(nState + "\t" + neq + "\t" +  -1 + "\t" +1+"\n");
-        	outputString.append(0+"\n");
+        	outputString.append(0+"\t"+ af+"\n");//6/25/08 gmagoon: added autoflag, needed when using daspkAUTO.exe
     		
         }
         outputString.append( tBegin+" "+tEnd+"\n" );
@@ -572,7 +597,145 @@ public class JDASPK implements ODESolver{
 		outputString.append("\n"+ rtol + " "+atol);
 		
 		outputString.append("\n" + thermoString.toString() + "\n" + p_temperature.getK() + " " + p_pressure.getPa() + "\n" + rList.size() + "\n" + rString.toString() + "\n" + thirdBodyList.size() + "\n"+tbrString.toString() + "\n" + troeList.size() + "\n" + troeString.toString()+"\n");
-		
+        //6/25/08 gmagoon: code for providing edge reaction info to DASPK (copied from DASSL) in cases if the automatic time stepping flag is set to true
+        if(autoflag){
+            StringBuilder edgeReacInfoString = new StringBuilder();
+            int edgeReactionCounter=0;
+            int edgeSpeciesCounter=0;
+            
+            //much of code below is taken or based off of code from appendUnreactedSpeciesStatus in ReactionSystem.java
+            CoreEdgeReactionModel model = (CoreEdgeReactionModel)p_reactionModel;
+            //we assume the reaction model enlarger is either RateBasedRME or RateBasedPdepRME
+            //first use reactions in unreacted reaction set, which is valid for both RateBasedRME and RateBasedPdepRME
+            HashMap edgeID = new HashMap();
+            LinkedHashSet ur = model.getUnreactedReactionSet();
+            for (Iterator iur = ur.iterator(); iur.hasNext();) {
+                edgeReactionCounter++;
+            	Reaction r = (Reaction)iur.next();
+                //find k, the rate coefficient
+            	double k;
+            	if (r instanceof TemplateReaction){
+                        k = ((TemplateReaction)r).getRateConstant(p_temperature, p_pressure);
+            	}
+            	else {
+                        k = r.getRateConstant(p_temperature);
+            	}
+            	if (k > 0) {
+                        int reacCount=0;
+                        int prodCount=0;
+                        int[] tempReacArray = {0, 0, 0};
+                        int[] tempProdArray = {0, 0, 0};
+                        //iterate over the reactants, counting and storing IDs in tempReacArray, up to a maximum of 3 reactants
+            		for (Iterator rIter=r.getReactants(); rIter.hasNext();) {
+                                reacCount++;
+                                Species spe = (Species)rIter.next();
+                                tempReacArray[reacCount-1]=getRealID(spe);
+            		}
+                        //iterate over the products, selecting products which are not already in the core, counting and storing ID's (created sequentially in a HashMap, similar to getRealID) in tempProdArray, up to a maximum of 3
+            		for (Iterator pIter=r.getProducts(); pIter.hasNext();) {
+                                Species spe = (Species)pIter.next();
+            			if (model.containsAsUnreactedSpecies(spe)) {
+                                    prodCount++;
+                                    Integer id = (Integer)edgeID.get(spe);
+                                    if (id == null) {
+                                        edgeSpeciesCounter++;
+                                        id = new Integer(edgeSpeciesCounter);
+                                        edgeID.put(spe, id);
+                                    }
+                                    tempProdArray[prodCount-1]=id;
+            			}
+            		}
+                        //update the output string with info for one reaction
+                        edgeReacInfoString.append("\n"+ reacCount + " " + prodCount + " " + tempReacArray[0] + " " + tempReacArray[1] + " " + tempReacArray[2] + " " + tempProdArray[0] + " " + tempProdArray[1] + " " + tempProdArray[2] + " " + k);
+            	}
+            	else {
+            		throw new NegativeRateException(r.toChemkinString(p_temperature) + ": " + String.valueOf(k));
+            	}
+            }
+            //for the case where validityTester is RateBasedPDepVT (assumed to also be directly associated with use of RateBasedPDepRME), consider two additional types of reactions
+            if (validityTester instanceof RateBasedPDepVT){
+                //first consider PDepNetReactionList
+        	// populate the reactionModel with all the unreacted species if they are already not there.***? does this refer to categorize reaction?
+        	for (Iterator iter=PDepNetwork.getDictionary().values().iterator(); iter.hasNext();){
+        		PDepNetwork pdn = (PDepNetwork)iter.next();
+        		Iterator reaction_iter = pdn.getPDepNetReactionList();
+        		while (reaction_iter.hasNext()){
+        			PDepNetReaction r = (PDepNetReaction)reaction_iter.next();
+        			int rxnType = model.categorizeReaction(r);
+        			if (rxnType == -1){
+                                        edgeReactionCounter++;
+                                        //4/30/08 gmagoon: temporary SystemSnapshot is created to pass temperature and pressure to calculateRate
+                                        //ideally, calculateRate in PDepNetReaction.java would be changed to take temperature and pressure, since these are the only variables it uses (I think)
+                                        SystemSnapshot dummySS=new SystemSnapshot();
+                                        dummySS.setTemperature(p_temperature);
+                                        dummySS.setPressure(p_pressure);
+        				double k = r.calculateRate(dummySS);
+                                        int reacCount=0;
+                                        int prodCount=0;
+                                        int[] tempReacArray = {0, 0, 0};
+                                        int[] tempProdArray = {0, 0, 0};
+                                        //iterate over the reactants, counting and storing IDs in tempReacArray, up to a maximum of 3 reactants
+        				for (Iterator rIter=r.getReactants(); rIter.hasNext();) {
+        					reacCount++;
+                                                Species spe = (Species)rIter.next();
+                                                tempReacArray[reacCount-1]=getRealID(spe);
+                                        }
+                                        //iterate over the products counting and storing ID's (created sequentially in a HashMap, similar to getRealID(except using HashMap rather than LinkedHashMap)) in tempProdArray, up to a maximum of 3
+        				for (Iterator pIter = r.getProducts(); pIter.hasNext();){
+        					Species spe = (Species)pIter.next();
+                                                if (model.containsAsUnreactedSpecies(spe)) {
+                                                    prodCount++;
+                                                    Integer id = (Integer)edgeID.get(spe);
+                                                    if (id == null) {
+                                                         edgeSpeciesCounter++;
+                                                         id = new Integer(edgeSpeciesCounter);
+                                                         edgeID.put(spe, id);
+                                                    }
+                                                    tempProdArray[prodCount-1]=id;
+                                                }
+                                        }
+                                        //update the output string with info for one reaction
+                                        edgeReacInfoString.append("\n"+ reacCount + " " + prodCount + " " + tempReacArray[0] + " " + tempReacArray[1] + " " + tempReacArray[2] + " " + tempProdArray[0] + " " + tempProdArray[1] + " " + tempProdArray[2] + " " + k);
+        			}
+        		}
+        	}
+                //second, consider kLeak of each reaction network so that the validity of each reaction network may be tested
+                for (Iterator iter = PDepNetwork.getDictionary().values().iterator(); iter.hasNext();) {
+                        PDepNetwork pdn = (PDepNetwork)iter.next();
+                        double k = pdn.getKLeak(index);//index in DASSL should correspond to the same (reactionSystem/TPcondition) index as used by kLeak
+                        if (!pdn.isActive() && pdn.getIsChemAct()) {
+                                k = pdn.getEntryReaction().calculateTotalRate(p_temperature);
+                        }
+                        int reacCount=0;
+                        int prodCount=1;//prodCount will not be modified as each PDepNetwork will be treated as a pseudo-edge species product
+                        boolean allCoreReac=true; //allCoreReac will be used to track whether all reactant species are in the core
+                        int[] tempReacArray = {0, 0, 0};
+                        int[] tempProdArray = {0, 0, 0};
+                        //iterate over the reactants, counting and storing IDs in tempReacArray, up to a maximum of 3 reactants
+                        for (Iterator rIter = pdn.getReactant().iterator(); rIter.hasNext(); ) {
+                            reacCount++;
+                            Species spe = (Species)rIter.next();
+                            if(model.containsAsReactedSpecies(spe)){
+                                tempReacArray[reacCount-1]=getRealID(spe);
+                            }
+                            else{
+                                allCoreReac=false;
+                            }
+                        }
+                        if(allCoreReac){//only consider cases where all reactants are in the core
+                            edgeReactionCounter++;
+                            //account for pseudo-edge species product by incrementing the edgeSpeciesCounter and storing the ID in the tempProdArray; each of these ID's will occur once and only once; thus, note that the corresponding PDepNetwork is NOT stored to the HashMap
+                            edgeSpeciesCounter++;
+                            tempProdArray[0]=edgeSpeciesCounter;
+                            //update the output string with info for kLeak for one PDepNetwork
+                            edgeReacInfoString.append("\n" + reacCount + " " + prodCount + " " + tempReacArray[0] + " " + tempReacArray[1] + " " + tempReacArray[2] + " " + tempProdArray[0] + " " + tempProdArray[1] + " " + tempProdArray[2] + " " + k);
+                        }
+                }
+            }
+            outputString.append("\n" + ((RateBasedVT)validityTester).getTolerance() + "\n" + edgeSpeciesCounter + " " + edgeReactionCounter);//***thresh needs to be defined
+            outputString.append(edgeReacInfoString);
+        }
+        //end of code for autoflag=true
         int idid=0;
         LinkedHashMap speStatus = new LinkedHashMap();
         double [] senStatus = new double[nParameter*nState];
@@ -637,7 +800,7 @@ public class JDASPK implements ODESolver{
 		boolean error = false;
         try {
         	 // system call for therfit
-        	String[] command = {workingDirectory +  "/software/ODESolver/daspk.exe"};
+        	String[] command = {workingDirectory +  "/software/ODESolver/daspkAUTO.exe"};//6/25/08 gmagoon: changed to call daspkAUTO.exe
 			File runningDir = new File("ODESolver");
 			
 			Process ODESolver = Runtime.getRuntime().exec(command, null, runningDir);
