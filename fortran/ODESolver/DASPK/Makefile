@@ -11,4 +11,7 @@ dassl.exe:$(FOBJECTS)
 	$(F90) $(FLAGS) $<
 %.o:%.f
 	$(F90) $(FLAGS) $<
-
+%.o:daspk/%.f90
+	$(F90) $(FLAGS) $<
+%.o:%.f90
+	$(F90) $(FLAGS) $<

@@ -9,4 +9,5 @@ dassl.exe:$(FOBJECTS)
 	cp dasslAUTO.exe $(RMG)/software/ODESolver
 %.o:%.f
 	$(F90) $(FLAGS) $<
-
+%.o:%.f90
+	$(F90) $(FLAGS) $<
