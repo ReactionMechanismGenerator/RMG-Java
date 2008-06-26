@@ -99,6 +99,7 @@ public class JDASPK implements ODESolver{
 	protected StringBuilder thermoString = new StringBuilder();
 	protected StringBuilder rString;
 	protected StringBuilder troeString;
+        protected int index; //6/25/08 gmagoon: adding index to allow appropriate naming of RWORK, IWORK (mirroring DASSL change)
 	protected StringBuilder tbrString;
 	protected double [] reactionFlux;
 	protected double [] conversionSet;
@@ -109,8 +110,10 @@ public class JDASPK implements ODESolver{
         //#[ operation JDASPK()
         //#]
     }
+    
+    //6/25/08 gmagoon: added p_index parameter (mirroring JDASSL change)
     //## operation JDASPK(double,double,int, InitialStatus)
-    public  JDASPK(double p_rtol, double p_atol, int p_parameterInfor, InitialStatus p_initialStatus) {
+    public  JDASPK(double p_rtol, double p_atol, int p_parameterInfor, InitialStatus p_initialStatus, int p_index) {
         //#[ operation JDASPK(double,double,int, InitialStatus)
         rtol = p_rtol;
         atol = p_atol;
@@ -616,6 +619,15 @@ public class JDASPK implements ODESolver{
 			FileWriter fw = new FileWriter(SolverInput);
 			fw.write(outputString.toString());
 			fw.close();
+                        //6/25/08 gmagoon: renaming RWORK and IWORK files if they exist (mirroring DASSL changes)
+                        File f = new File("ODESolver/RWORK_"+index+".dat");
+                        File newFile = new File("ODESolver/RWORK.dat");
+                        if(f.exists()){
+                            f.renameTo(newFile);
+                            f = new File("ODESolver/IWORK_"+index+".dat");
+                            newFile = new File("ODESolver/IWORK.dat");
+                            f.renameTo(newFile);
+                        }
 		} catch (IOException e) {
 			System.err.println("Problem writing Solver Input File!");
 			e.printStackTrace();
@@ -652,6 +664,13 @@ public class JDASPK implements ODESolver{
         	e.printStackTrace();
         	System.exit(0);
         }
+        //6/25/08 gmagoon: renaming RWORK and IWORK files (mirroring JDASSL changes)
+        File f = new File("ODESolver/RWORK.dat");
+        File newFile = new File("ODESolver/RWORK_"+index+".dat"); 
+        f.renameTo(newFile);
+        f = new File("ODESolver/IWORK.dat");
+        newFile = new File("ODESolver/IWORK_"+index+".dat");
+        f.renameTo(newFile);
         
         startTime = System.currentTimeMillis();
         //read the result
