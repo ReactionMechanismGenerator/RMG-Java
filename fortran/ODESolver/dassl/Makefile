@@ -1,12 +1,12 @@
-F77	= f77
+F90	= ifort
 FLAGS	= -c -g
 LFLAGS  = 
-FOBJECTS= ddassl.o daux.o dlinpk.o call_dassl.o res.o getflux.o res_daepack.o reaction_flux.o
+FOBJECTS= ddassl.o daux.o dlinpk.o call_dasslAUTO.o res.o getflux.o res_daepack.o reaction_flux.o
 
 
 dassl.exe:$(FOBJECTS)  
-	$(F77) $(LFLAGS) $(FOBJECTS) -g -o dassl.exe
-	cp dassl.exe $(RMG)/software/ODESolver
+	$(F90) $(LFLAGS) $(FOBJECTS) -g -o dasslAUTO.exe
+	cp dasslAUTO.exe $(RMG)/software/ODESolver
 %.o:%.f
-	$(F77) $(FLAGS) $<
+	$(F90) $(FLAGS) $<
 
