@@ -4,7 +4,7 @@ LFLAGS  =
 FOBJECTS= ddassl.o daux.o dlinpk.o call_dasslAUTO.o res.o getflux.o res_daepack.o reaction_flux.o
 
 
-dassl.exe:$(FOBJECTS)  
+dasslAUTO.exe:$(FOBJECTS)  
 	$(F90) $(LFLAGS) $(FOBJECTS) -g -o dasslAUTO.exe
 	cp dasslAUTO.exe $(RMG)/software/ODESolver
 %.o:%.f
