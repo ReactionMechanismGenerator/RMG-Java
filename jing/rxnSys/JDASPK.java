@@ -1004,7 +1004,7 @@ public class JDASPK implements ODESolver{
 		boolean error = false;
         try {
         	 // system call for therfit
-        	String[] command = {workingDirectory +  "/software/ODESolver/daspk.exe"};
+        	String[] command = {workingDirectory +  "/software/ODESolver/daspkAUTO.exe"};
 			File runningDir = new File("ODESolver");
 			
 			Process ODESolver = Runtime.getRuntime().exec(command, null, runningDir);
