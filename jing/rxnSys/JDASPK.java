@@ -786,9 +786,13 @@ public class JDASPK implements ODESolver{
                         File f = new File("ODESolver/RWORK_"+index+".dat");
                         File newFile = new File("ODESolver/RWORK.dat");
                         if(f.exists()){
+                            if(newFile.exists())//09/08/08 gmagoon: delete newFile if it already exists to avoid "false" (failed) result when renaming; if file already exists, renaming appears to fail, returning false, on Windows Vista; I didn't notice this before on XP, but I may have missed it; three other instances of this modification were also made 
+                                newFile.delete();
                             f.renameTo(newFile);
                             f = new File("ODESolver/IWORK_"+index+".dat");
                             newFile = new File("ODESolver/IWORK.dat");
+                            if(newFile.exists()) 
+                                newFile.delete();
                             f.renameTo(newFile);
                         }
 		} catch (IOException e) {
@@ -829,10 +833,14 @@ public class JDASPK implements ODESolver{
         }
         //6/25/08 gmagoon: renaming RWORK and IWORK files (mirroring JDASSL changes)
         File f = new File("ODESolver/RWORK.dat");
-        File newFile = new File("ODESolver/RWORK_"+index+".dat"); 
+        File newFile = new File("ODESolver/RWORK_"+index+".dat");
+        if(newFile.exists()) 
+            newFile.delete();
         f.renameTo(newFile);
         f = new File("ODESolver/IWORK.dat");
         newFile = new File("ODESolver/IWORK_"+index+".dat");
+        if(newFile.exists()) 
+            newFile.delete();
         f.renameTo(newFile);
         
         startTime = System.currentTimeMillis();
