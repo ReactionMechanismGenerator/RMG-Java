@@ -177,32 +177,6 @@ public class PDepPathReaction {
         //#]
     }
     
-    //## operation toChemDisString() 
-    public String toChemDisString() {
-        //#[ operation toChemDisString() 
-        String s = type;
-        if (isNonIncluded()) s = "PRODUCT"; 
-        s += '\n';
-        for (Iterator iter = getProductList().iterator(); iter.hasNext(); ) {
-        	
-        	Species spe = (Species) iter.next();
-        	s += spe.toChemDisString() + " + ";
-        }
-        s = s.substring(0, s.length()-3) + '\n'; 
-        
-        Kinetics k = getKinetics(); 
-        if (k == null) throw new NullPointerException();
-        
-        s += Double.toString(k.getAValue()) + '\t';	
-        s += Double.toString(k.getNValue()) + '\t';	
-        s += "0.0\t";	
-        s += Double.toString(k.getEValue()) + '\n';
-        
-        return s;	
-          
-        //#]
-    }
-    
     public String getType() {
         return type;
     }

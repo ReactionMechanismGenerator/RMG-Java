@@ -606,7 +606,7 @@ public  Chemkin() {
       
       for (Iterator iter = PDepNetwork.getDictionary().values().iterator(); iter.hasNext(); ) {
       	PDepNetwork pdn = (PDepNetwork)iter.next();
-      	for (Iterator pdniter = pdn.getPDepNetReactionList(); pdniter.hasNext();) {
+      	for (Iterator pdniter = pdn.getPDepNetReactionListIterator(); pdniter.hasNext();) {
       		PDepNetReaction pdnr = (PDepNetReaction)pdniter.next();
       		if (cerm.categorizeReaction(pdnr) != 1) continue;
       		

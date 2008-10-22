@@ -253,7 +253,7 @@ public class ReactionSystem {
         	
         	for (Iterator iter=PDepNetwork.getDictionary().values().iterator(); iter.hasNext();){
         		PDepNetwork pdn = (PDepNetwork)iter.next();
-        		Iterator reaction_iter = pdn.getPDepNetReactionList();
+        		Iterator reaction_iter = pdn.getPDepNetReactionListIterator();
         		while (reaction_iter.hasNext()){
         			PDepNetReaction r = (PDepNetReaction)reaction_iter.next();
         			int rxnType = model.categorizeReaction(r);
@@ -552,7 +552,8 @@ public class ReactionSystem {
         for (Iterator iter = PDepNetwork.getDictionary().values().iterator(); iter.hasNext(); ) {
         	PDepNetwork pdn = (PDepNetwork)iter.next();
         	if (pdn.getAltered())
-        		pdn.runPDepCalculation(this);
+        		//pdn.runPDepCalculation(this);
+				Chemdis.runPDepCalculation(pdn, this);
         }
         //#]
     }

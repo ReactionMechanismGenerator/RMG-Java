@@ -125,44 +125,10 @@ public class PDepWell {
         }
     }
     
-    //## operation toChemDisString() 
-    public String toChemDisString() {
-        //#[ operation toChemDisString() 
-        Species spe = getIsomer();
-        String s = spe.toChemDisString() + '\n';
-        s += "FREQ\n"; 
-        ThreeFrequencyModel tfm = spe.getThreeFrequencyModel();
-        int fnumber = tfm.getFrequencyNumber();
-        s += " " + String.valueOf(fnumber) + " ";
-        double [] freq = tfm.getFrequency();
-        double [] deg = tfm.getDegeneracy();
-        for (int i=0; i<fnumber; i++) {
-        	double f = freq[i];
-        	double d = deg[i];
-        	s += MathTool.formatDouble(f, 7, 1) + " ";
-        	s += MathTool.formatDouble(d, 7, 1) + " ";
-        }
-        s += '\n';
-        for (Iterator iter = getPaths(); iter.hasNext(); ) {
-        	PDepPathReaction pdpr = (PDepPathReaction)iter.next();
-        	s += pdpr.toChemDisString();
-        }
-        return s;  
-        
-        	
-        
-        
-        
-        
-        
-        
-        //#]
-    }
-    
     //## operation toString() 
     public String toString() {
         //#[ operation toString() 
-        return toChemDisString();
+		return Chemdis.writeWellInput(this);
         //#]
     }
     

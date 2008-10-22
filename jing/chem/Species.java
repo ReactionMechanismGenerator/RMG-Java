@@ -1193,13 +1193,6 @@ public class Species {
 		//#]
 	}
 
-    //## operation toChemDisString()
-    public String toChemDisString() {
-        //#[ operation toChemDisString()
-        return "SPC" + String.valueOf(getID());
-        //#]
-    }
-
     //## operation toString()
     public String toString() {
         //#[ operation toString()

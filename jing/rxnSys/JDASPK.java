@@ -179,7 +179,7 @@ public class JDASPK implements ODESolver{
         LinkedHashSet pDepStructureSet = new LinkedHashSet();
         for (Iterator iter = PDepNetwork.getDictionary().values().iterator(); iter.hasNext(); ) {
         	PDepNetwork pdn = (PDepNetwork)iter.next();
-        	for (Iterator pdniter = pdn.getPDepNetReactionList(); pdniter.hasNext();) {
+        	for (Iterator pdniter = pdn.getPDepNetReactionListIterator(); pdniter.hasNext();) {
         		PDepNetReaction pdnr = (PDepNetReaction)pdniter.next();
         		if (cerm.categorizeReaction(pdnr) != 1) continue;
         		//check if this reaction is not already in the list and also check if this reaction has a reverse reaction
@@ -658,7 +658,7 @@ public class JDASPK implements ODESolver{
         	// populate the reactionModel with all the unreacted species if they are already not there.***? does this refer to categorize reaction?
         	for (Iterator iter=PDepNetwork.getDictionary().values().iterator(); iter.hasNext();){
         		PDepNetwork pdn = (PDepNetwork)iter.next();
-        		Iterator reaction_iter = pdn.getPDepNetReactionList();
+        		Iterator reaction_iter = pdn.getPDepNetReactionListIterator();
         		while (reaction_iter.hasNext()){
         			PDepNetReaction r = (PDepNetReaction)reaction_iter.next();
         			int rxnType = model.categorizeReaction(r);

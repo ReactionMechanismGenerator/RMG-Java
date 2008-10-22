@@ -118,7 +118,7 @@ public class TemplateReaction extends Reaction {
         PDepNetwork pdn = getPDepNetwork();
         if (pdn != null) {
         	
-        	Iterator iter = pdn.getPDepNetReactionList(); 
+        	Iterator iter = pdn.getPDepNetReactionListIterator(); 
         	while (iter.hasNext()) {
         		PDepNetReaction pdnr = (PDepNetReaction)iter.next();
         		if (pdnr.getStructure().equals(getStructure())) {
@@ -137,7 +137,7 @@ public class TemplateReaction extends Reaction {
                                 return rate;
         		}
         	}
-        	iter = pdn.getPDepNonincludedReactionList(); 
+        	iter = pdn.getPDepNonincludedReactionListIterator(); 
         	while (iter.hasNext()) {
         		PDepNetReaction pdnr = (PDepNetReaction)iter.next();
         		if (pdnr.getStructure().equals(getStructure())) {

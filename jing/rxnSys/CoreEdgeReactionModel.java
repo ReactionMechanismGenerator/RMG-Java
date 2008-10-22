@@ -98,7 +98,7 @@ public class CoreEdgeReactionModel implements ReactionModel {
 		Iterator iter = PDepNetwork.getDictionary().values().iterator();
 		while (iter.hasNext()){
 			PDepNetwork pdn = (PDepNetwork)iter.next();
-			Iterator reactionIter = pdn.getPDepNetReactionList();
+			Iterator reactionIter = pdn.getPDepNetReactionListIterator();
 			while (reactionIter.hasNext()){
 				addReaction(((Reaction)reactionIter.next()));
 			}
@@ -478,7 +478,7 @@ public class CoreEdgeReactionModel implements ReactionModel {
 	        
 	        for (Iterator iter = PDepNetwork.getDictionary().values().iterator(); iter.hasNext(); ) {
 	        	PDepNetwork pdn = (PDepNetwork)iter.next();
-	        	for (Iterator pdniter = pdn.getPDepNetReactionList(); pdniter.hasNext();) {
+	        	for (Iterator pdniter = pdn.getPDepNetReactionListIterator(); pdniter.hasNext();) {
 	        		PDepNetReaction pdnr = (PDepNetReaction)pdniter.next();
 	        		Structure s = pdnr.getStructure();
 	        		if (!pdnr.reactantEqualsProduct() && isReactedReaction(pdnr)) {
@@ -749,7 +749,7 @@ public class CoreEdgeReactionModel implements ReactionModel {
         HashSet pDepStructureSet = new HashSet();
         for (Iterator iter = PDepNetwork.getDictionary().values().iterator(); iter.hasNext(); ) {
         	PDepNetwork pdn = (PDepNetwork)iter.next();
-        	for (Iterator pdniter = pdn.getPDepNetReactionList(); pdniter.hasNext();) {
+        	for (Iterator pdniter = pdn.getPDepNetReactionListIterator(); pdniter.hasNext();) {
         		PDepNetReaction pdnr = (PDepNetReaction)pdniter.next();
         		if (isReactedReaction(pdnr)) {
         			pDepList.add(pdnr);
@@ -836,7 +836,7 @@ public class CoreEdgeReactionModel implements ReactionModel {
         HashSet pDepStructureSet = new HashSet();
         for (Iterator iter = PDepNetwork.getDictionary().values().iterator(); iter.hasNext(); ) {
         	PDepNetwork pdn = (PDepNetwork)iter.next();
-        	for (Iterator pdniter = pdn.getPDepNetReactionList(); pdniter.hasNext();) {
+        	for (Iterator pdniter = pdn.getPDepNetReactionListIterator(); pdniter.hasNext();) {
         		PDepNetReaction pdnr = (PDepNetReaction)pdniter.next();
         		if (isReactedReaction(pdnr)) {
         			pDepList.add(pdnr);

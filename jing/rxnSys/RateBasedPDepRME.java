@@ -105,7 +105,7 @@ public class RateBasedPDepRME implements ReactionModelEnlarger {
                         else {
                                 double maxKLeak = 0;
                                 PDepNetReaction path = null;
-                                for (Iterator iter = pnw.getPDepNonincludedReactionList(); iter.hasNext(); ) {
+                                for (Iterator iter = pnw.getPDepNonincludedReactionListIterator(); iter.hasNext(); ) {
                                         PDepNetReaction pdnr = (PDepNetReaction)iter.next();
                                        
                                         double kleak = pdnr.calculateRate(p_reactionSystem.getPresentStatus());//10/30/07 gmagoon: changed to include systemSnapshot (presentStatus)
@@ -143,7 +143,9 @@ public class RateBasedPDepRME implements ReactionModelEnlarger {
                                         }
                                 }*/
 
-                        pnw.runPDepCalculation(p_reactionSystem);
+                        Chemdis.runPDepCalculation(pnw, p_reactionSystem);
+						
+								
                        // return;//10/30/07 gmagoon: I don't think this should be here anymore
                 }
 
