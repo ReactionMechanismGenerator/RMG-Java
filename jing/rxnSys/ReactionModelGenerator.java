@@ -740,6 +740,7 @@ public class ReactionModelGenerator {
                        // FinishController fc = new FinishController(termTestCopy, finishController.getValidityTester());
                         reactionSystemList.add(new ReactionSystem(tm, pm, reactionModelEnlarger, fc, ds, getPrimaryReactionLibrary(), getReactionGenerator(), getSpeciesSeed(), is, getReactionModel(),lrg, i)); 
                         i++;//10/30/07 gmagoon: added
+												System.out.println("Created reaction system "+i+"\n");
                       }
                  }
              //    PDepNetwork.setTemperatureArray(temperatureArray);//10/30/07 gmagoon: passing temperatureArray to PDepNetwork; 11/6/07 gmagoon: moved before initialization of lrg;
@@ -895,7 +896,7 @@ public class ReactionModelGenerator {
 		
 		//System.exit(0);
 		SpeciesDictionary dictionary = SpeciesDictionary.getInstance();
-		System.out.println(dictionary.size());
+		System.out.println("Species dictionary size: "+dictionary.size());
                 //boolean reactionChanged = false;//10/24/07 gmagoon: I don't know if this is even required, but I will change to use reactionChangedList (I put analogous line of code for list in above for loop); update: yes, it is required; I had been thinking of conditionChangedList
 		
 		double tAtInitialization = Global.tAtInitialization;
@@ -2132,6 +2133,7 @@ public LinkedList getSpeciesList() {
     //## operation initializeCoreEdgeReactionModel()
     //9/24/07 gmagoon: moved from ReactionSystem.java
     public void initializeCoreEdgeReactionModel() {
+			  System.out.println("\nInitializing core-edge reaction model");
        // setSpeciesSeed(new LinkedHashSet());//10/4/07 gmagoon:moved from initializeReactionSystem; later moved to modelGeneration()
         //#[ operation initializeCoreEdgeReactionModel()
         if (hasPrimaryReactionLibrary()) initializeCoreEdgeModelWithPRL();
@@ -2156,7 +2158,7 @@ public LinkedList getSpeciesList() {
     public void enlargeReactionModel() {
         //#[ operation enlargeReactionModel()
         if (reactionModelEnlarger == null) throw new NullPointerException("ReactionModelEnlarger");
-
+			System.out.println("\nEnlarging reaction model");
         reactionModelEnlarger.enlargeReactionModel(reactionSystemList, reactionModel, validList);
 
         return;

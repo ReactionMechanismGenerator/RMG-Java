@@ -84,6 +84,8 @@ public class ReactionLibrary {
         String directory = System.getProperty("jing.rxn.ReactionLibrary.pathName");
         String dictionaryFile = directory + "/Dictionary.txt";
         String libraryFile = directory + "/Library.txt";
+			
+			System.out.println("\nReading primary reaction library from "+directory);
         try{
             read(dictionaryFile, libraryFile);
           }

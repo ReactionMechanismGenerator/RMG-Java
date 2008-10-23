@@ -88,6 +88,9 @@ public interface Kinetics {
     //## operation getRank() 
     int getRank();
     
+	//## operation getTRange()
+	String getTRange();
+	
     //## operation getSource() 
     String getSource();
 	

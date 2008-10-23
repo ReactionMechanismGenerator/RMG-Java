@@ -70,7 +70,7 @@ public class ReactionTemplateLibrary {
         
         String separator = System.getProperty("file.separator");
         if (!kineticsDirectory.endsWith(separator)) kineticsDirectory = kineticsDirectory + separator;
-	System.out.println(kineticsDirectory);        
+	      System.out.println("\nReading kinetics database from "+kineticsDirectory);        
         read(kineticsDirectory);
         //#]
     }
@@ -94,7 +94,7 @@ public class ReactionTemplateLibrary {
         String[] fileNames = f.list();
         Arrays.sort(fileNames);
         if (f==null) {
-        	System.err.println("empty reaction template directory!");
+        	System.err.println("Empty reaction template directory!");
         	System.exit(0);
         }
         for (int i=0; i<fileNames.length;i++) {

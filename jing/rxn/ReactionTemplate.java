@@ -1319,6 +1319,10 @@ public class ReactionTemplate {
   public void readForbiddenStructures(String p_fileName) throws  IOException {
       //#[ operation readFGDictionary(String) 
       try {
+				if (!(new File("filename")).exists()) {
+					// System.out.println("forbiddenStructures file does not exist");
+					return;
+				}
       	FileReader in = new FileReader(p_fileName);
       	BufferedReader data = new BufferedReader(in);
       	HashMap unRead = new HashMap();
@@ -1372,7 +1376,7 @@ public class ReactionTemplate {
       	return;
       }
       catch (Exception e) {
-    	  System.out.println("Did not read forbiddenStructures");
+    	  System.out.println("Failed to read forbiddenStructures file");
       	//throw new IOException(e.getMessage());
       }
       

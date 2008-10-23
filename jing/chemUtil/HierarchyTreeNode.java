@@ -122,11 +122,11 @@ public class HierarchyTreeNode extends TreeNode {
     //## operation addChildren(HierarchyTreeNode) 
     public void addChildren(HierarchyTreeNode p_child) throws HierarchyTreeNodeException, InvalidHierarchyRelationException {
         //#[ operation addChildren(HierarchyTreeNode) 
-        if (!(p_child.isSubAtCentralNodes(this))) {
-        	String s = "Father " + ((Matchable)(this.element)).getName() + " Child " + ((Matchable)(p_child.element)).getName();
-                System.out.println(s);
-                //throw new InvalidHierarchyRelationException(s);
-        }
+			if (!(p_child.isSubAtCentralNodes(this))) {
+				String s = "Father " + ((Matchable)(this.element)).getName() + " Child " + ((Matchable)(p_child.element)).getName();
+				System.out.println(s);
+				//throw new InvalidHierarchyRelationException(s);
+			}
         
         if (p_child.getDepth() != getDepth()+1) throw new InvalidTreeNodeLevelException(); 
         

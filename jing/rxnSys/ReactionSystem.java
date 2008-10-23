@@ -99,8 +99,8 @@ public class ReactionSystem {
         index = p_index;//10/30/07 gmagoon: added
 		
 		if (!checkInitialConsistency()) {
-        	System.out.println("Initial consition is not consistent: C = P/RT is not satisfied!");
-        	System.out.println("Renormalizing the concentrations");
+        	System.out.println("Initial composition was not consistent: C = P/RT was not satisfied!");
+        	System.out.println("The concentrations have been renormalized.");
         	//System.exit(-1);
         }
 

@@ -120,8 +120,8 @@ public class RateBasedPDepRME implements ReactionModelEnlarger {
                                 nextIsomer = (Species)path.getProducts().next();
                         }
                         if (nextIsomer == null) throw new InvalidReactionSystemUpdateException();
-                                if (pnw.getIsChemAct())
-                                    System.out.println("entry reaction " + pnw.getEntryReaction().reactionToString(p_reactionSystem.getPresentTemperature()));//10/26/07: gmagoon: changed to use reactionToString rather than toString with temperature passed
+												if (pnw.getIsChemAct())
+														System.out.println("entry reaction " + pnw.getEntryReaction().reactionToString(p_reactionSystem.getPresentTemperature()));//10/26/07: gmagoon: changed to use reactionToString rather than toString with temperature passed
                                 //System.out.println("entry reaction " + pnw.getEntryReaction().toString());
                         else {
                                 Species entry = (Species)pnw.getReactant().iterator().next();
@@ -156,8 +156,8 @@ public class RateBasedPDepRME implements ReactionModelEnlarger {
                         CoreEdgeReactionModel cerm = (CoreEdgeReactionModel)rm;
                         PresentStatus ps = p_reactionSystem.getPresentStatus();
 
-                        System.out.print("\nAdd a new reacted Species:");
-                        System.out.println(next.getName());
+                        System.out.print("\nAdd a new reacted Species: ");
+                        System.out.println(next.getChemkinName());
                         return_string=next.getChemkinName();
                         System.out.println(next.toStringWithoutH());
                         Temperature temp = new Temperature(715, "K");
@@ -165,7 +165,7 @@ public class RateBasedPDepRME implements ReactionModelEnlarger {
                         double S = next.calculateS(temp);
                         double G = next.calculateG(temp);
                         double Cp = next.calculateCp(temp);
-                        System.out.println("Thermo\t" + String.valueOf(H) + '\t' + String.valueOf(S)+ '\t' + String.valueOf(G)+ '\t' + String.valueOf(Cp));
+                        System.out.println("Thermo\t" + String.valueOf(H) + " \t" + String.valueOf(S)+ " \t" + String.valueOf(G)+ " \t" + String.valueOf(Cp));
 
 
 
@@ -196,6 +196,7 @@ public class RateBasedPDepRME implements ReactionModelEnlarger {
                 }
                 else throw new InvalidReactionSystemUpdateException();
             }
+					System.out.println("");
         }
     
         return;//10/30/07 gmagoon: added return statement in case it is needed
@@ -247,22 +248,23 @@ public class RateBasedPDepRME implements ReactionModelEnlarger {
         System.out.print("Time: ");
         System.out.println(ps.getTime());
         System.out.println("Rmin: " + String.valueOf(Rmin));
-        System.out.println("unreacted Spe " + maxSpecies.getName() + " with highest flux: " + String.valueOf(maxFlux));
+        System.out.println("Unreacted species " + maxSpecies.getName() + " has highest flux: " + String.valueOf(maxFlux));
         if (maxPdn != null)
-        	System.out.println("PDepNetwork " + maxPdn.toString() + " with highest rleak: " + String.valueOf(maxRleak));
+        	System.out.println("PDepNetwork " + maxPdn.toString() + " has highest rleak: " + String.valueOf(maxRleak));
 
         // return max pdep network only if there is no species present
         if (maxRleak >= Rmin && maxFlux <= Rmin) {
+					System.out.println("Adding the PDepNetwork");
         	if (maxPdn.getIsChemAct())
         		System.out.println("entry reaction " + maxPdn.getEntryReaction().toString());
         	else {
         		Species entry = (Species)maxPdn.getReactant().iterator().next();
         		System.out.println("entry species " + entry.toString());
         	}
-        		
         	return maxPdn;
         }
         else {
+					System.out.println("Adding the unreacted species");
         	return maxSpecies;
         }	
         

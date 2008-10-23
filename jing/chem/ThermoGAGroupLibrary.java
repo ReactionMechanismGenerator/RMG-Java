@@ -120,6 +120,8 @@ public class ThermoGAGroupLibrary {
 
         String separator = System.getProperty("file.separator");
         if (!directory.endsWith(separator)) directory = directory + separator;
+			
+			System.out.println("\nReading thermo database from "+directory);
 
         String gDictionary = directory + "Group_Dictionary.txt";
         String gTree = directory + "Group_Tree.txt";

@@ -83,7 +83,7 @@ public class KineticsTemplateLibrary {
         		}
         		if (iter.hasNext()) s = s + " + ";
         	}
-        	System.out.println("multiple value find for: " + s);
+					System.out.println(" Multiple values found for: " + s + ". Ignoring " + p_kinetics.getTRange() +"K data with A="+p_kinetics.getAValue());
         	return old;
         }
         else {
