@@ -480,15 +480,15 @@ public class ReactionModelGenerator {
         			st = new StringTokenizer(line);
         			temp = st.nextToken();
         			while (st.hasMoreTokens()) {
-					temp = st.nextToken();
-					if (temp.startsWith("AUTO")){//note potential opportunity for making case insensitive by using: temp.toUpperCase().startsWith("AUTO")
-						autoflag=true;
-					}
+                        temp = st.nextToken();
+                        if (temp.startsWith("AUTO")){//note potential opportunity for making case insensitive by using: temp.toUpperCase().startsWith("AUTO")
+                            autoflag=true;
+                        }
         				else if (!autoflag){//use "else if" to make sure additional numbers are not read in case numbers are erroneously used following AUTO; note that there could still be a problem if numbers come before "AUTO"
-						double tStep = Double.parseDouble(temp);
-            					String unit = "sec";
-            					setTimeStep(new ReactionTime(tStep, unit));
-					}
+                            double tStep = Double.parseDouble(temp);
+                            String unit = "sec";
+                            setTimeStep(new ReactionTime(tStep, unit));
+                        }
         			}      
         			((ReactionTimeTT)finishController.terminationTester).setTimeSteps(timeStep);
         		}
