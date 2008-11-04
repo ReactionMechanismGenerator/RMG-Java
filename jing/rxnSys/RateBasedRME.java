@@ -255,7 +255,7 @@ public class RateBasedRME implements ReactionModelEnlarger {
         	Reaction r = (Reaction)iur.next();
         	double flux = 0;
 			Temperature p_temperature = p_presentStatus.temperature;
-                        Pressure p_pressure = p_presentStatus.pressure;//10/30/07 gmagoon: added
+            Pressure p_pressure = p_presentStatus.pressure;//10/30/07 gmagoon: added
 			if (r.contains(maxSpecies)){
 				reactionWithSpecies++;
 				if (r instanceof TemplateReaction) {
@@ -290,12 +290,12 @@ public class RateBasedRME implements ReactionModelEnlarger {
 		
         System.out.print("Time: ");
         System.out.println(p_presentStatus.getTime());
-        System.out.println("unreacted Spe with highest flux: " + String.valueOf(maxFlux));
-		System.out.println("The total number of unreacted reactions with this species is "+reactionWithSpecies);
+        System.out.println("Unreacted species " + maxSpecies.getName() + " has highest flux: " + String.valueOf(maxFlux));
+		System.out.println("The total number of unreacted reactions with this species is "+reactionWithSpecies+". Significant ones are:");
 		Iterator reactionIter = significantReactions.keySet().iterator();
 		while (reactionIter.hasNext()){
 			Reaction r = (Reaction)reactionIter.next();
-			System.out.println("1.\t"+r.getStructure().toChemkinString(r.hasReverseReaction())+"\t"+significantReactions.get(r));
+			System.out.println(" "+r.getStructure().toChemkinString(r.hasReverseReaction())+"\t"+significantReactions.get(r));
 		}
         
         return maxSpecies;
