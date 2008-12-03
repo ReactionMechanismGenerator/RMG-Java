@@ -136,9 +136,13 @@ public class PDepWell {
         return isomer;
     }
     
-    public Iterator getPaths() {
+    public Iterator getPathsIterator() {
         Iterator iter=paths.iterator();
         return iter;
+    }
+	
+	public HashSet getPaths() {
+        return paths;
     }
     
 }

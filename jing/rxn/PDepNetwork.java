@@ -122,9 +122,9 @@ public class PDepNetwork {
     //## operation decideWellPathType() 
     private void decideWellPathType() {
         //#[ operation decideWellPathType() 
-        for (Iterator iter = getPDepWellList(); iter.hasNext(); ) {
+        for (Iterator iter = getPDepWellListIterator(); iter.hasNext(); ) {
         	PDepWell pdw = (PDepWell)iter.next();
-        	for (Iterator pathIter = pdw.getPaths(); pathIter.hasNext(); ) {
+        	for (Iterator pathIter = pdw.getPathsIterator(); pathIter.hasNext(); ) {
         		PDepPathReaction pdpr = (PDepPathReaction)pathIter.next();
         		int pNum = pdpr.getProductNumber();
         		LinkedList r = pdpr.getReactantList();
@@ -174,7 +174,7 @@ public class PDepNetwork {
     //## operation includeAsIsomer(Species) 
     public boolean includeAsIsomer(Species p_species) {
         //#[ operation includeAsIsomer(Species) 
-        for (Iterator iter = getPDepWellList(); iter.hasNext(); ) {
+        for (Iterator iter = getPDepWellListIterator(); iter.hasNext(); ) {
         	PDepWell pdw = (PDepWell)iter.next();
         	if ((pdw.getIsomer()).equals(p_species)) return true;
         }
@@ -213,9 +213,9 @@ public class PDepNetwork {
         		System.out.println("Dissoc is not initialized correctly" + toString());
         		System.exit(0);
         	}
-        	Iterator iter = getPDepWellList();
+        	Iterator iter = getPDepWellListIterator();
         	PDepWell pdw = (PDepWell)iter.next();
-        	for (Iterator pathiter = pdw.getPaths(); pathiter.hasNext(); ) {
+        	for (Iterator pathiter = pdw.getPathsIterator(); pathiter.hasNext(); ) {
         		PDepPathReaction pdpr = (PDepPathReaction)pathiter.next();
                         //10/30/07 gmagoon: updating to use kLeak array
                         for (Integer i = 0; i<temperatureArray.size();i++) {
@@ -455,9 +455,13 @@ public class PDepNetwork {
         return pDepNonincludedReactionList;
     }
     
-    public ListIterator getPDepWellList() {
+    public ListIterator getPDepWellListIterator() {
         ListIterator iter=pDepWellList.listIterator(0);
         return iter;
+    }
+	
+	public LinkedList getPDepWellList() {
+        return pDepWellList;
     }
     
     public boolean getAltered(){

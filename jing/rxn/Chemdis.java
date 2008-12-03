@@ -64,15 +64,16 @@ import jing.rxnSys.ReactionSystem;
  * 
  * @author jwallen
  */
-public class Chemdis {
+public class Chemdis implements PDepKineticsEstimator {
 
 	/**
 	 * Runs a pressure-dependent calculation by preparing the input file,
-	 * calling the Chemdis executable, and parsing the output file.
+	 * calling the Chemdis executable, parsing the output file, and updating
+	 * the network/system accordingly.
 	 * @param pdn The pressure-dependent reaction network of interest
 	 * @param rxnSystem The reaction system of interest
 	 */
-	public static void runPDepCalculation(PDepNetwork pdn, ReactionSystem rxnSystem) {
+	public void runPDepCalculation(PDepNetwork pdn, ReactionSystem rxnSystem) {
         
 		String dir = System.getProperty("RMG.workingDirectory");
 		
@@ -129,7 +130,7 @@ public class Chemdis {
 			
 			// Add wells to file string
 			int index = 0;
-			for (Iterator iter = pdn.getPDepWellList(); iter.hasNext(); ) {
+			for (Iterator iter = pdn.getPDepWellListIterator(); iter.hasNext(); ) {
 				index++;
 				PDepWell pdw = (PDepWell) iter.next();
 				str += "Well " + String.valueOf(index) + '\n';
@@ -222,7 +223,7 @@ public class Chemdis {
         str += '\n';
         
 		// Write the reactions connected to the well
-		for (Iterator iter = pdw.getPaths(); iter.hasNext(); ) {
+		for (Iterator iter = pdw.getPathsIterator(); iter.hasNext(); ) {
         	PDepPathReaction pdpr = (PDepPathReaction)iter.next();
         	str += writeReactionInput(pdpr);
         }
@@ -289,7 +290,7 @@ public class Chemdis {
         	// Write dissociation header
 			str += "DISSOC\n";
         	str += "INPWONLY\n";
-        	str += "SPC" + String.valueOf(((PDepWell) pdn.getPDepWellList().next()).getIsomer().getID()) + '\n';
+        	str += "SPC" + String.valueOf(((PDepWell) pdn.getPDepWellListIterator().next()).getIsomer().getID()) + '\n';
         }
         
         // Write entry mass
@@ -298,7 +299,7 @@ public class Chemdis {
         
 		// Write Lennard-Jones parameters
 		str += "PARAMETERS\n";
-        LennardJones lj = ((PDepWell) pdn.getPDepWellList().next()).getIsomer().getLJ();
+        LennardJones lj = ((PDepWell) pdn.getPDepWellListIterator().next()).getIsomer().getLJ();
         str += MathTool.formatDouble(lj.getSigma(), 10, 2) + '\t' + MathTool.formatDouble(lj.getEpsilon(), 10, 2) + '\n';
         
 		// Write mean change in energy for deactivating collision

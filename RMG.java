@@ -146,6 +146,9 @@ public class RMG {
 		File chemdis = new File("chemdis");
 		ChemParser.deleteDir(chemdis);
 		chemdis.mkdir();
+		File fame = new File("fame");
+		ChemParser.deleteDir(fame);
+		fame.mkdir();
 		
 		
 		 String workingDir = System.getenv("RMG");

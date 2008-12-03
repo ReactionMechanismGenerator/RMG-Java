@@ -143,10 +143,11 @@ public class RateBasedPDepRME implements ReactionModelEnlarger {
                                         }
                                 }*/
 
-                        Chemdis.runPDepCalculation(pnw, p_reactionSystem);
+                        PDepKineticsEstimator pDep = new Chemdis();
+						//PDepKineticsEstimator pDep = new FastMasterEqn();
+						pDep.runPDepCalculation(pnw, p_reactionSystem);
 						
-								
-                       // return;//10/30/07 gmagoon: I don't think this should be here anymore
+						// return;//10/30/07 gmagoon: I don't think this should be here anymore
                 }
 
                 else if (update instanceof Species ) {//10/30/07 gmagoon: changed from if to else if ****confirm this is OK

@@ -551,9 +551,10 @@ public class ReactionSystem {
         //#[ operation initializePDepNetwork()
         for (Iterator iter = PDepNetwork.getDictionary().values().iterator(); iter.hasNext(); ) {
         	PDepNetwork pdn = (PDepNetwork)iter.next();
-        	if (pdn.getAltered())
-        		//pdn.runPDepCalculation(this);
-				Chemdis.runPDepCalculation(pdn, this);
+        	if (pdn.getAltered()) {
+        		PDepKineticsEstimator pDep = new Chemdis();
+				pDep.runPDepCalculation(pdn, this);
+			}
         }
         //#]
     }
