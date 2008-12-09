@@ -11,6 +11,10 @@ package jing.chem;
 import java.util.*;
 import jing.chemUtil.*;
 
+import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
 
 public class FrequencyGroups{//gmagoon 111708: removed "implements GeneralGAPP"
 
@@ -27,16 +31,39 @@ public class FrequencyGroups{//gmagoon 111708: removed "implements GeneralGAPP"
 
    //gmagoon 11/17/08: based off of generateThermoData from GATP.java;
    // this function generates a list of frequencies using Franklin's code for use in pressure-dependent network calculations
-   //FreqData class temporarily commented out for testing 11/18/08
-    // public FreqData generateFreqData(ChemGraph p_chemGraph) {
-      public LinkedList generateFreqData(ChemGraph p_chemGraph){
-       // result = new FreqData();//note: FreqData class has not yet been created, but may be something similar to ThreeFrequencyModel
+      public SpectroscopicData generateFreqData(ChemGraph p_chemGraph, ThermoData p_thermoData) {
+        result = new SpectroscopicData();
         LinkedList groupCount=getFreqGroup(p_chemGraph);//use database to count groups in structure
-        //write input to Franklin's code (will also need to have heat capacity, internal rotor info, etc. passed to this function) ****not yet done
+        
+        //write input to Franklin's code
+        //determine linearity by mapping true/false to 1/0
+        int linearity=0;
+        if(p_chemGraph.isLinear())
+            linearity=1;
+        //(file writing code based on code in JDASSL.java
+        File franklInput = new File("franklInput.dat");
+        try {
+            FileWriter fw = new FileWriter(franklInput);
+            fw.write(p_thermoData.getCp300()+" "+p_thermoData.getCp400()+" "+p_thermoData.getCp500()+" "+p_thermoData.getCp600()+" "+p_thermoData.getCp800()+" "+p_thermoData.getCp1000()+" "+p_thermoData.getCp1500()+"\n");
+            fw.write(p_chemGraph.getAtomNumber()+"\n");
+            fw.write(p_chemGraph.getInternalRotor()+"\n");
+            fw.write(linearity+"\n");
+            //print the group counts to the file
+            Iterator iter = groupCount.iterator();
+            while (iter.hasNext())
+                fw.write((Integer)iter.next());
+            fw.close();
+        }
+        catch (IOException e) {
+            System.err.println("Problem writing frequency estimation input file!");
+            e.printStackTrace();
+        }
+		
         //call Franklin's code****not yet done
-        //read in results of Franklin's code****not yet done
-       // return result;
-          return groupCount;
+        
+         //read in results of Franklin's code into result****not yet done
+       
+          return result;
         //#]
     }
 
@@ -70,16 +97,23 @@ public class FrequencyGroups{//gmagoon 111708: removed "implements GeneralGAPP"
                     }
            	}
         }
-
+        p_chemGraph.setCentralNode(oldCentralNode);
+        
         //from groupCountMap, create the "result" LinkedList consisting of the numbers of each type of group used by Franklin's code in the order that his code requires them
         //if the group name is not in groupCountMap, a zero will be used
         //in the future, we may want to "un-hardcode" this by also reading in a file with a list of the different groups used by Franklin's code and the order in which they occur
         //*this section of code not yet done*
+        String[] orderedInputGroups={"RsCH3","RdCH2"};//this should contain the group names (or keys names) used by Franklin's frequency estimation code in the order that his input format requires them
         
-         p_chemGraph.setCentralNode(oldCentralNode);
-         return result;
-
-
+        for(int i=1;i<=orderedInputGroups.length;i++){
+            String inputGroup=orderedInputGroups[i-1];
+            if(groupCountMap.containsKey(inputGroup))
+                result.add((Integer)(groupCountMap.get(inputGroup)));
+            else
+                result.add(0);
+        }
+        
+        return result;
 
         //#]
     }
