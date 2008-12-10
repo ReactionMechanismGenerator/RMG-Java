@@ -36,11 +36,11 @@ public class FrequencyGroups{//gmagoon 111708: removed "implements GeneralGAPP"
         LinkedList groupCount=getFreqGroup(p_chemGraph);//use database to count groups in structure
         
         //write input to Franklin's code
-        //determine linearity by mapping true/false to 1/0
-        int linearity=0;
+        //determine linearity by mapping true/false to 0/1
+        int linearity=1;
         if(p_chemGraph.isLinear())
-            linearity=1;
-        //(file writing code based on code in JDASSL.java
+            linearity=0;
+        //(file writing code based on code in JDASSL.java)
         File franklInput = new File("franklInput.dat");
         try {
             FileWriter fw = new FileWriter(franklInput);
@@ -104,7 +104,6 @@ public class FrequencyGroups{//gmagoon 111708: removed "implements GeneralGAPP"
         //in the future, we may want to "un-hardcode" this by also reading in a file with a list of the different groups used by Franklin's code and the order in which they occur
         //*this section of code not yet done*
         String[] orderedInputGroups={"RsCH3","RdCH2"};//this should contain the group names (or keys names) used by Franklin's frequency estimation code in the order that his input format requires them
-        
         for(int i=1;i<=orderedInputGroups.length;i++){
             String inputGroup=orderedInputGroups[i-1];
             if(groupCountMap.containsKey(inputGroup))
