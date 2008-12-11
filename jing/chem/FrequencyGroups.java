@@ -101,7 +101,7 @@ public class FrequencyGroups{//gmagoon 111708: removed "implements GeneralGAPP"
                 vibs[i]=Double.parseDouble(st.nextToken());
                 i++;
             }
-            //after this, i should equal nfreqs; we could put a check here to confirm this
+            //at this point, i should equal nfreqs; we could put a check here to confirm this
             rotfreq=new double[rotors];
             rotV=new double[rotors];
             line=br.readLine();
@@ -112,6 +112,7 @@ public class FrequencyGroups{//gmagoon 111708: removed "implements GeneralGAPP"
                 rotV[i]=Double.parseDouble(st2.nextToken());
                 i++;
             }
+            //at this point, i should equal rotors; we could put a check here to confirm this
             fr.close();
         }
         catch (IOException e) {
@@ -160,7 +161,7 @@ public class FrequencyGroups{//gmagoon 111708: removed "implements GeneralGAPP"
         //from groupCountMap, create the "result" LinkedList consisting of the numbers of each type of group used by Franklin's code in the order that his code requires them
         //if the group name is not in groupCountMap, a zero will be used
         //in the future, we may want to "un-hardcode" this by also reading in a file with a list of the different groups used by Franklin's code and the order in which they occur
-        String[] orderedInputGroups={"RsCH3","RdCH2","CtCH","RsCH2sR","CdCHsR","Aldehyde","Cumulene","Ketene","CtCsR","RsCHsR2","CdCsR2","Ketone","RsCsR3","RsCH2r","RdCHr","CtCr","RsCHrsR","CdCrsR","OdCrsR","RsCrsR2","RsCHrr","RdCrr","RsCrrsR","Alcohol","Ether","ROOH","ROOR","Peroxy","Oxy"};//this should contain the group names (or keys names) used by Franklin's frequency estimation code in the order that his input format requires them
+        String[] orderedInputGroups={"RsCH3","RdCH2","CtCH","RsCH2sR","CdCHsR","Aldehyde","Cumulene","Ketene","CtCsR","RsCHsR2","CdCsR2","Ketone","RsCsR3","RsCH2r","RdCHr","RsCHrsR","CdCrsR","OdCrsR","RsCrsR2","Alcohol","Ether","ROOH","ROOR","Peroxy"};//this should contain the group names (or keys names) used by Franklin's frequency estimation code in the order that his input format requires them
         for(int i=1;i<=orderedInputGroups.length;i++){
             String inputGroup=orderedInputGroups[i-1];
             if(groupCountMap.containsKey(inputGroup))
