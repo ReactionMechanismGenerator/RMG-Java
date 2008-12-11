@@ -15,6 +15,7 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.BufferedReader;
 
 public class FrequencyGroups{//gmagoon 111708: removed "implements GeneralGAPP"
 
@@ -32,8 +33,10 @@ public class FrequencyGroups{//gmagoon 111708: removed "implements GeneralGAPP"
    //gmagoon 11/17/08: based off of generateThermoData from GATP.java;
    // this function generates a list of frequencies using Franklin's code for use in pressure-dependent network calculations
       public SpectroscopicData generateFreqData(ChemGraph p_chemGraph, ThermoData p_thermoData) {
-        result = new SpectroscopicData();
         LinkedList groupCount=getFreqGroup(p_chemGraph);//use database to count groups in structure
+        double[] rotfreq=null;
+        double[] rotV=null;
+        double[] vibs=null;
         
         //write input to Franklin's code
         //determine linearity by mapping true/false to 0/1
@@ -41,7 +44,7 @@ public class FrequencyGroups{//gmagoon 111708: removed "implements GeneralGAPP"
         if(p_chemGraph.isLinear())
             linearity=0;
         //(file writing code based on code in JDASSL.java)
-        File franklInput = new File("franklInput.dat");
+        File franklInput = new File("dat");
         try {
             FileWriter fw = new FileWriter(franklInput);
             fw.write(p_thermoData.getCp300()+" "+p_thermoData.getCp400()+" "+p_thermoData.getCp500()+" "+p_thermoData.getCp600()+" "+p_thermoData.getCp800()+" "+p_thermoData.getCp1000()+" "+p_thermoData.getCp1500()+"\n");
@@ -59,11 +62,66 @@ public class FrequencyGroups{//gmagoon 111708: removed "implements GeneralGAPP"
             e.printStackTrace();
         }
 		
-        //call Franklin's code****not yet done
+        //call Franklin's code
+        try{
+            File runningdir=new File("?????");
+            String command = "?????";
+            Process freqProc = Runtime.getRuntime().exec(command, null, runningdir); 
+            int exitValue = freqProc.waitFor();
+        }
+        catch (Exception e) {
+            String err = "Error in running frequency estimation process \n";
+            err += e.toString();
+            e.printStackTrace();
+        }
         
-         //read in results of Franklin's code into result****not yet done
-       
-          return result;
+         //read in results of Franklin's code into result
+        File franklOutput = new File("rho_input");
+        String line="";
+        try{
+            FileReader fr = new FileReader(franklOutput);
+            BufferedReader br = new BufferedReader(fr);
+            line = br.readLine();
+            int atoms=Integer.parseInt(line.trim());
+            line = br.readLine();
+            int rotors=Integer.parseInt(line.trim());
+            line = br.readLine();
+            int nonlinearityQ=Integer.parseInt(line.trim());
+            //read the HO frequencies, RR frequencies, and barrier heights
+            int nfreq=0;
+            if (nonlinearityQ==1)
+                nfreq=3*atoms-6;
+            else
+                nfreq=3*atoms-5;
+            vibs=new double[nfreq];
+            line=br.readLine();
+            int i=0;
+            StringTokenizer st=new StringTokenizer(line.trim());
+            while(st.hasMoreTokens()){
+                vibs[i]=Double.parseDouble(st.nextToken());
+                i++;
+            }
+            //after this, i should equal nfreqs; we could put a check here to confirm this
+            rotfreq=new double[rotors];
+            rotV=new double[rotors];
+            line=br.readLine();
+            i=0;
+            StringTokenizer st2=new StringTokenizer(line.trim());
+            while(st2.hasMoreTokens()){
+                rotfreq[i]=Double.parseDouble(st2.nextToken());
+                rotV[i]=Double.parseDouble(st2.nextToken());
+                i++;
+            }
+            fr.close();
+        }
+        catch (IOException e) {
+                System.err.println("Problem reading frequency estimation output file!");
+                e.printStackTrace();           
+        }
+        
+        SpectroscopicData result = new SpectroscopicData(vibs, rotfreq, rotV);
+        
+        return result;
         //#]
     }
 
@@ -102,8 +160,7 @@ public class FrequencyGroups{//gmagoon 111708: removed "implements GeneralGAPP"
         //from groupCountMap, create the "result" LinkedList consisting of the numbers of each type of group used by Franklin's code in the order that his code requires them
         //if the group name is not in groupCountMap, a zero will be used
         //in the future, we may want to "un-hardcode" this by also reading in a file with a list of the different groups used by Franklin's code and the order in which they occur
-        //*this section of code not yet done*
-        String[] orderedInputGroups={"RsCH3","RdCH2"};//this should contain the group names (or keys names) used by Franklin's frequency estimation code in the order that his input format requires them
+        String[] orderedInputGroups={"RsCH3","RdCH2","CtCH","RsCH2sR","CdCHsR","Aldehyde","Cumulene","Ketene","CtCsR","RsCHsR2","CdCsR2","Ketone","RsCsR3","RsCH2r","RdCHr","CtCr","RsCHrsR","CdCrsR","OdCrsR","RsCrsR2","RsCHrr","RdCrr","RsCrrsR","Alcohol","Ether","ROOH","ROOR","Peroxy","Oxy"};//this should contain the group names (or keys names) used by Franklin's frequency estimation code in the order that his input format requires them
         for(int i=1;i<=orderedInputGroups.length;i++){
             String inputGroup=orderedInputGroups[i-1];
             if(groupCountMap.containsKey(inputGroup))
