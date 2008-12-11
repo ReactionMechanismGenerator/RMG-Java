@@ -91,6 +91,17 @@ public class SpectroscopicData {
 	public SpectroscopicData() {
 		clear();
 	}
+        
+        /**
+	 * gmagoon 12/11/08: alternative constructor
+	 */
+	public SpectroscopicData(double[] p_vibrations, double[] p_hinderedFrequencies, double[] p_hinderedBarriers) {
+                vibrations = p_vibrations;
+		rotations = null;
+		symmetry = 1;
+		hinderedFrequencies = p_hinderedFrequencies;
+		hinderedBarriers = p_hinderedBarriers;
+	}
 	
 	//==========================================================================
 	//
