@@ -49,6 +49,14 @@ public class SpectroscopicData {
 	//
 	
 	/**
+	 * A flag that specifies whether or not to utilize the three-frequency
+	 * model for the spectroscopic data. Setting this to true makes the code
+	 * dependent on the THERFIT module; setting this to false makes the code
+	 * use Frankie instead.
+	 */
+	public static boolean useThreeFrequencyModel = false;
+	
+	/**
 	 * An array of vibrational frequencies, each representing one degree of
 	 * freedom modeled as a simple harmonic oscillator. Units are cm^-1.
 	 */

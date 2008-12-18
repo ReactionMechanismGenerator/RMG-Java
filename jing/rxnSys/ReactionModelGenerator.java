@@ -100,7 +100,7 @@ public class ReactionModelGenerator {
 	//public static native long getCpuTime();
 	//static {System.loadLibrary("cpuTime");}
 
-    //## operation ReactionModelGenerator()
+	//## operation ReactionModelGenerator()
     public  ReactionModelGenerator() {
         //#[ operation ReactionModelGenerator()
         workingDirectory = System.getProperty("RMG.workingDirectory");
@@ -237,7 +237,24 @@ public class ReactionModelGenerator {
         	}
         	else throw new InvalidSymbolException("condition.txt: can't find PressureModel!");
 
-        	// read in reactants
+        	// read in spectroscopic data estimator
+        	line = ChemParser.readMeaningfulLine(reader);
+        	if (line.startsWith("SpectroscopicDataEstimator:")) {
+        		StringTokenizer st = new StringTokenizer(line);
+        		String name = st.nextToken();
+        		String sdeType = st.nextToken().toLowerCase();
+        		if (sdeType.equals("frequencygroups") || sdeType.equals("default")) {
+        			SpectroscopicData.useThreeFrequencyModel = false;
+        		}
+				else if (sdeType.equals("therfit") || sdeType.equals("threefrequencymodel")) {
+        			SpectroscopicData.useThreeFrequencyModel = true;
+        		}
+				else throw new InvalidSymbolException("condition.txt: Unknown SpectroscopicDataEstimator = " + sdeType);
+				
+        	}
+        	else throw new InvalidSymbolException("condition.txt: can't find SpectroscopicDataEstimator!");
+			
+			// read in reactants
         	line = ChemParser.readMeaningfulLine(reader);
                 //10/4/07 gmagoon: moved to initializeCoreEdgeReactionModel
         	//LinkedHashSet p_speciesSeed = new LinkedHashSet();//gmagoon 10/4/07: changed to p_speciesSeed
@@ -388,6 +405,29 @@ public class ReactionModelGenerator {
         			reactionModelEnlarger = new RateBasedPDepRME();
         			PDepNetwork.generateNetworks = true;
 					line = ChemParser.readMeaningfulLine(reader);
+					if (line.startsWith("PDepKineticsEstimator:")) {
+						st = new StringTokenizer(line);
+						name = st.nextToken();
+						String pdkeType = st.nextToken().toLowerCase();
+						if (!(reactionModelEnlarger instanceof RateBasedPDepRME))
+							throw new InvalidSymbolException("condition.txt: PDepKineticsEstimator specified, but reaction model enlarger is not pressure-dependent!");
+						if (pdkeType.equals("fastmasterequation") || pdkeType.equals("fame") || pdkeType.equals("default")) {
+							((RateBasedPDepRME) reactionModelEnlarger).setPDepKineticsEstimator(new FastMasterEqn());
+							SpectroscopicData.useThreeFrequencyModel = false;
+						}
+						else if (pdkeType.equals("chemdis") || pdkeType.equals("modifiedstrongcollision")) {
+							((RateBasedPDepRME) reactionModelEnlarger).setPDepKineticsEstimator(new Chemdis());
+							if (!SpectroscopicData.useThreeFrequencyModel) {
+								System.out.println("Warning: Switching SpectroscopicDataEstimator to three-frequency model.");
+								SpectroscopicData.useThreeFrequencyModel = true;
+							}
+						}
+						else {
+							throw new InvalidSymbolException("condition.txt: Unknown PDepKineticsEstimator = " + pdkeType);
+						}
+					}
+					else throw new InvalidSymbolException("condition.txt: can't find PDepKineticsEstimator!");
+					line = ChemParser.readMeaningfulLine(reader);
         		}
         		else {
         			throw new InvalidSymbolException("condition.txt: Unknown ReactionModelEnlarger = " + rmeType);
@@ -395,7 +435,7 @@ public class ReactionModelGenerator {
 				
         	}
         	else throw new InvalidSymbolException("condition.txt: can't find ReactionModelEnlarger!");
-
+			
         	// read in finish controller
         	//line = ChemParser.readMeaningfulLine(reader);
         	if (line.startsWith("FinishController")) {

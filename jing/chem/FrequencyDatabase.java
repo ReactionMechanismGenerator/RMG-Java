@@ -32,7 +32,10 @@ public class FrequencyDatabase {
         freqDictionary = new HashMap();
         
        // String directory = System.getProperty("jing.chem.FrequencyDatabase.pathName");//gmagoon 111708: note: this needs to be added in RMG.java and/or Thermo.java
-        String directory = "c:/Users/User1/Documents/NetBeansProjects/RMGdev/build/databases/RMG_database/frequencies";
+        //String directory = "c:/Users/User1/Documents/NetBeansProjects/RMGdev/build/databases/RMG_database/frequencies";
+        String dir = System.getProperty("RMG.workingDirectory");
+			
+		String directory = dir + "/databases/RMG_database/frequencies";
         if (directory == null) {
         	System.out.println("undefined system property: jing.chem.FrequencyDatabase.pathName, exit!");
         	System.exit(0);

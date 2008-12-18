@@ -80,6 +80,13 @@ public class Species {
     protected ThreeFrequencyModel threeFrequencyModel;
 	//protected WilhoitThermoData wilhoitThermoData;
 
+	/**
+	 * The spectroscopic data for the species (vibrational frequencies,
+	 * rotational frequencies, symmetry number, and hindered frequency-barrier 
+	 * pairs. Will eventually replace ThreeFrequencyModel.
+	 */
+	protected SpectroscopicData spectroscopicData;
+	
     // Flag to tag certain species as library only... i.e. we won't try them against RMG templates.
     // They will only react as defined in the primary reaction library.   GJB
     protected boolean IsReactive = true; 
@@ -105,9 +112,10 @@ public class Species {
         findStablestThermoData();
         calculateLJParameters();
         selectDeltaEDown();
-		generateNASAThermoDatabyGATPFit();
-		generateThreeFrequencyModel();
-        //generateNASAThermoData();
+		generateNASAThermoData();
+        //generateThreeFrequencyModel();
+		spectroscopicData = new SpectroscopicData();
+        generateSpectroscopicData();
         //#]
     }
 
@@ -190,206 +198,6 @@ public class Species {
         //return getThermoData().calculateS(p_temperature);
         return nasaThermoData.calculateEntropy(p_temperature);
 		//#]
-    }
-
-	 //## operation callGATPFit(String)
-    private boolean callGATPFit(String p_directory) {
-        //#[ operation callGATPFit(String)
-        if (p_directory == null) throw new NullPointerException();
-
-        // write GATPFit input file
-		String workingDirectory = System.getProperty("RMG.workingDirectory");
-        // write species name
-        String ls = System.getProperty("line.separator");
-        String result = "SPEC " + getChemkinName() + ls;
-
-        // write the element
-        ChemGraph cg = getChemGraph();
-        int Hn = cg.getHydrogenNumber();
-        int Cn = cg.getCarbonNumber();
-        int On = cg.getOxygenNumber();
-        /*if (Cn>0) result += "ELEM C " + MathTool.formatInteger(Cn,3,"L") + ls;
-        if (Hn>0) result += "ELEM H " + MathTool.formatInteger(Hn,3,"L") + ls;
-        if (On>0) result += "ELEM O " + MathTool.formatInteger(On,3,"L") + ls;*/
-		
-		result += "ELEM C " + MathTool.formatInteger(Cn,3,"L") + ls;
-        result += "ELEM H " + MathTool.formatInteger(Hn,3,"L") + ls;
-        result += "ELEM O " + MathTool.formatInteger(On,3,"L") + ls;
-		
-        // write H and S at 298
-        ThermoData td = getThermoData();
-		result += "H298 " + String.format("%4.2e \n",td.getH298());
-		result += "S298 " + String.format("%4.2e \n",td.getS298());
-		result += "DLTH " + String.format("%4.2e \n",td.getH298());
-		result += "MWEI " + String.format("%6.1e \n",getMolecularWeight());
-		
-		//result += "H298 " + MathTool.formatDouble(td.getH298(), 10, 2).trim() + ls;
-        //result += "S298 " + MathTool.formatDouble(td.getS298(), 10, 2).trim() + ls;
-		
-        //result += "DLTH " + MathTool.formatDouble(td.getH298(), 10, 2).trim() + ls;
-
-        // write MW, temperature, ouput format, etc
-        //result += "MWEI " + MathTool.formatDouble(getMolecularWeight(), 6, 1).trim() + ls;
-        result += "TEMP 1000.0" + ls;
-		result += "TMIN 300.0"+ls;
-		result += "TMAX 5000.0" + ls;
-        result += "CHEM" + ls;
-        result += "TEM2 2000.0" + ls;
-		if (chemGraph.isLinear())  result += "LINEAR" + ls;
-		else result += "NONLINEAR" + ls;
-        result += String.valueOf(cg.getAtomNumber()) + ls;
-        result += String.valueOf(getInternalRotor()) + ls;
-		result += "TECP 300 " + String.format("%4.2e \n",td.Cp300);
-		result += "TECP 400 " + String.format("%4.2e \n",td.Cp400);
-		result += "TECP 500 " + String.format("%4.2e \n",td.Cp500);
-		result += "TECP 600 " + String.format("%4.2e \n",td.Cp600);
-		result += "TECP 800 " + String.format("%4.2e \n",td.Cp800);
-		result += "TECP 1000 " + String.format("%4.2e \n",td.Cp1000);
-		result += "TECP 1500 " + String.format("%4.2e \n",td.Cp1500);
-		
-		//result += "TECP 300 " + MathTool.formatDouble(td.Cp300,10,2).trim() + ls;
-		//result += "TECP 400 " + MathTool.formatDouble(td.Cp400,10,2).trim() + ls;
-		//result += "TECP 500 " + MathTool.formatDouble(td.Cp500,10,2).trim() + ls;
-		//result += "TECP 600 " + MathTool.formatDouble(td.Cp600,10,2).trim() + ls;
-		//result += "TECP 800 " + MathTool.formatDouble(td.Cp800,10,2).trim() + ls;
-		//result += "TECP 1000 " + MathTool.formatDouble(td.Cp1000,10,2).trim() +ls;
-		//result += "TECP 1500 " + MathTool.formatDouble(td.Cp1500,10,2).trim() + ls;
-		result += "END" + ls;
-
-        // finished writing text for input file, now save result to fort.1
-        String GATPFit_input_name = null;
-        File GATPFit_input = null;
-
-        GATPFit_input_name = "GATPFit/INPUT.txt";
-        try {
-        	GATPFit_input = new File(GATPFit_input_name);
-        	FileWriter fw = new FileWriter(GATPFit_input);
-        	fw.write(result);
-        	fw.close();
-        	}
-        catch (IOException e) {
-        	String err = "GATPFit input file error: " + ls;
-        	err += e.toString();
-        	throw new GATPFitException(err);
-        }
-
-        // call GATPFit
-        boolean error = false;
-        try {
-        	 // system call for therfit
-        	String[] command = {workingDirectory +  "/software/GATPFit/GATPFit.exe"};
-			File runningDir = new File("GATPFit");
-        	Process GATPFit = Runtime.getRuntime().exec(command, null, runningDir);
-        	int exitValue = GATPFit.waitFor();
-        	GATPFitExecuted = true;
-
-        }
-        catch (Exception e) {
-        	String err = "Error in running GATPFit!" + ls;
-        	err += e.toString();
-        	throw new GATPFitException(err);
-        }
-
-        // return error = true, if there was a problem
-        return error;
-
-
-        //#]
-    }
-
-
-	   //## operation callTherfit(String,String)
-    private boolean callTherfit(String p_directory, String p_mode) {
-        //#[ operation callTherfit(String,String)
-		
-        if (p_directory == null || p_mode == null) throw new NullPointerException();
-		String workingDirectory = System.getProperty("RMG.workingDirectory");
-        // write therfit input file
-        String result = p_mode.toUpperCase() + '\n';
-        result += getChemkinName() + '\n';
-        ThermoData td = getThermoData();
-
-        result += MathTool.formatDouble(td.getH298(), 8, 2) + '\n';
-        result += MathTool.formatDouble(td.getS298(), 8, 2) + '\n';
-        result += MathTool.formatDouble(td.getCp300(), 7, 3) + '\n';
-        result += MathTool.formatDouble(td.getCp400(), 7, 3) + '\n';
-        result += MathTool.formatDouble(td.getCp500(), 7, 3) + '\n';
-        result += MathTool.formatDouble(td.getCp600(), 7, 3) + '\n';
-        result += MathTool.formatDouble(td.getCp800(), 7, 3) + '\n';
-        result += MathTool.formatDouble(td.getCp1000(), 7, 3) + '\n';
-        result += MathTool.formatDouble(td.getCp1500(), 7, 3) + '\n';
-
-        ChemGraph cg = getChemGraph();
-        result += "C\n";
-        result += MathTool.formatInteger(cg.getCarbonNumber(),3,"R") + '\n';
-        result += "H\n";
-        result += MathTool.formatInteger(cg.getHydrogenNumber(),3,"R") + '\n';
-        int oNum = cg.getOxygenNumber();
-        if (oNum == 0) {
-        	result += "0\n0\n";
-        }
-        else {
-        	result += "O\n";
-        	result += MathTool.formatInteger(oNum,3,"R") + '\n';
-        }
-        result += "0\n0\n";
-
-        result += "G\n";
-        result += Integer.toString(getInternalRotor()) + '\n';
-
-        // finished writing text for input file, now save result to fort.1
-        String therfit_input_name = null;
-        File therfit_input = null;
-
-		try {
-        	// prepare therfit input file, "fort.1" is the input file name
-        	therfit_input_name = p_directory+"/fort.1";//p_directory+"/software/therfit/fort.1";
-        	therfit_input = new File(therfit_input_name);
-        	FileWriter fw = new FileWriter(therfit_input);
-        	fw.write(result);
-        	fw.close();
-        	}
-        catch (IOException e) {
-        	System.out.println("Wrong input file for therfit!");
-        	System.exit(0);
-        }
-
-        // call therfit
-        boolean error = false;
-		try {
-       	 // system call for therfit
-			String[] command = {workingDirectory + "/software/therfit/therfit.exe"};
-			File runningDir = new File(p_directory );//+ "/therfit");// "/software/therfit");
-			Process therfit = Runtime.getRuntime().exec(command, null, runningDir);
-			therfitExecuted = true;
-			InputStream is = therfit.getErrorStream();
-			InputStreamReader isr = new InputStreamReader(is);
-			BufferedReader br = new BufferedReader(isr);
-			String line=null;
-			while ( (line = br.readLine()) != null) {
-				//System.out.println(line);
-				line = line.trim();
-				if (!line.startsWith("STOP  *** THRFIT Job Complete")) {
-					String speName = getName();
-					System.out.println("therfit error for species: " + speName+"\n"+toString());
-					File newfile = new File(therfit_input_name+"."+speName);
-					therfit_input.renameTo(newfile);
-					error = true;
-				}
-			}
-			int exitValue = therfit.waitFor();
-			br.close();
-			isr.close();
-		}
-		catch (Exception e) {
-			System.out.println("Error in run therfit!");
-			System.exit(0);
-		}
-
-        // return error = true, if there was a problem
-        return error;
-
-        //#]
     }
 
     //## operation doDelocalization(ChemGraph,Stack)
@@ -513,81 +321,10 @@ public class Species {
         //#]
     }
 
-	  //## operation generateNASAThermoDatabyGATPFit()
-    public void generateNASAThermoDatabyGATPFit() {
-        //#[ operation generateNASAThermoDatabyGATPFit()
-        // get working directory
-        String dir = System.getProperty("RMG.workingDirectory");
-
-        try {
-        	// prepare GATPFit input file and execute system call
-        	boolean error = callGATPFit(dir);
-        }
-        catch (GATPFitException e) {
-        	throw new NASAFittingException("Error in running GATPFit: " + e.toString());
-        }
-
-        // parse output from GATPFit, "output.txt" is the output file name
-        String therfit_nasa_output = "GATPFit/OUTPUT.txt";
-
-        try {
-        	FileReader in = new FileReader(therfit_nasa_output);
-        	BufferedReader data = new BufferedReader(in);
-
-        	String line = data.readLine();
-        	line = data.readLine();
-        	String nasaString = "";
-
-        	while (line != null) {
-        		nasaString += line + System.getProperty("line.separator");
-        		line = data.readLine();
-        	}
-        	nasaThermoData = new NASAThermoData(nasaString);
-        }
-        catch (Exception e) {
-        	throw new NASAFittingException("Error in reading in GATPFit output file: " + System.getProperty("line.separator") + e.toString());
-        }
-        //#]
-    }
-
-	   //## operation generateNASAThermoData()
-    public void generateNASAThermoData() {
-        ///#[ operation generateNASAThermoData()
-        // get working directory
-        //String dir = System.getProperty("RMG.workingDirectory");
-        String mode = "WILHOI"; // use Wilhoit polynomial to extrapolate Cp
-		String dir = "therfit";
-        // prepare therfit input file and execute system call
-        boolean error = callTherfit(dir,mode);
-
-        // parse output from therfit, "fort.25" is the output file name
-        if (error) {
-        	System.out.println("Error in generating NASA thermodata!");
-        	System.exit(0);
-        }
-
-        try {
-        	String therfit_nasa_output = dir+"/fort.54";
-
-        	FileReader in = new FileReader(therfit_nasa_output);
-        	BufferedReader data = new BufferedReader(in);
-
-        	String line = data.readLine();
-        	String nasaString = "";
-
-        	while (line != null) {
-        		nasaString += line + "\n";
-        		line = data.readLine();
-        	}
-        	nasaThermoData = new NASAThermoData(nasaString);
-        }
-        catch (Exception e) {
-        	System.out.println("Wrong output from therfit!");
-        	System.exit(0);
-        }
-
-
-        //#]
+	public void generateNASAThermoData() {
+        //nasaThermoData = Therfit.generateNASAThermoData(this);
+        nasaThermoData = GATPFit.generateNASAThermoData(this);
+		GATPFitExecuted = (nasaThermoData != null);
     }
 
 
@@ -882,65 +619,28 @@ public class Species {
     	}
 		
 	}
-	//## operation generateThreeFrequencyModel()
+	
+	public void generateSpectroscopicData() {
+		if (SpectroscopicData.useThreeFrequencyModel) {
+			generateThreeFrequencyModel();
+			spectroscopicData = null;
+		}
+		else {
+			spectroscopicData = FrequencyGroups.getINSTANCE().generateFreqData(this);
+			threeFrequencyModel = null;
+		}
+	}
+	
 	public void generateThreeFrequencyModel() {
-        //#[ operation generateThreeFrequencyModel()
-        if (isTriatomicOrSmaller()) return;
+        
+		// Do nothing if molecule is triatomic or smaller
+		if (isTriatomicOrSmaller()) 
+			return;
 
-        //String directory = System.getProperty("RMG.workingDirectory");
-        String mode = "HOE"; // use Harmonic Oscillator Eqn to calc psuedo-freqs
-		String dir = "therfit";
-        // prepare therfit input file and execute system call
-        boolean error = callTherfit(dir,mode);
-        if (error) return;
+        // Create three frequency model for this species
+        threeFrequencyModel = Therfit.generateThreeFrequencyModel(this);
 
-        double [] degeneracy = new double [3];
-        double [] frequency = new double [3];
-
-        try {
-        	String therfit_output = dir+"/fort.25";
-
-        	FileReader in = new FileReader(therfit_output);
-        	BufferedReader data = new BufferedReader(in);
-
-        	String line = ChemParser.readMeaningfulLine(data);
-        	if (!line.startsWith(getChemkinName())) {
-        		System.out.println("Wrong output from therfit!");
-        		System.exit(0);
-        	}
-
-        	int index = 0;
-        	line = ChemParser.readMeaningfulLine(data);
-        	while (line != null) {
-        		line = line.trim();
-        		if (line.startsWith("VIBRATION")) {
-        			if (index > 2) break;
-        			StringTokenizer token = new StringTokenizer(line);
-        			String temp = token.nextToken();
-        			temp = token.nextToken();
-        			temp = token.nextToken();
-        			temp = token.nextToken();
-        			String deg = token.nextToken();
-        			temp = token.nextToken();
-        			temp = token.nextToken();
-        	        String freq = token.nextToken();
-        	        degeneracy[index] = Double.parseDouble(deg);
-        	        frequency[index] = Double.parseDouble(freq);
-        	        index++;
-        	    }
-        		line = ChemParser.readMeaningfulLine(data);
-        	}
-
-        	in.close();
-        }
-        catch (Exception e) {
-        	System.out.println("Wrong output fort.25 from therfit!");
-        	System.exit(0);
-        }
-        // creat threeFrequencyModel for this species
-        threeFrequencyModel = new ThreeFrequencyModel(frequency, degeneracy);
-
-        //#]
+		therfitExecuted = (threeFrequencyModel != null);
     }
 
 	  public String getChemkinName() {
@@ -1024,6 +724,10 @@ public class Species {
         //#[ operation hasThreeFrequencyModel()
         return (getThreeFrequencyModel() != null);
         //#]
+    }
+	
+	public boolean hasSpectroscopicData() {
+        return (spectroscopicData != null || threeFrequencyModel != null);
     }
 
     //## operation isRadical()
@@ -1333,7 +1037,11 @@ public class Species {
         return threeFrequencyModel;
     }
 
-    protected void initRelations() {
+    public SpectroscopicData getSpectroscopicData() {
+        return spectroscopicData;
+    }
+
+	protected void initRelations() {
         LJ = newLJ();
     }
 

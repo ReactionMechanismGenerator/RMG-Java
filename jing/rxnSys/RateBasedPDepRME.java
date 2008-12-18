@@ -50,12 +50,22 @@ import jing.param.*;
 //## class RateBasedPDepRME 
 public class RateBasedPDepRME implements ReactionModelEnlarger {
     
-    
+    private PDepKineticsEstimator pDepKineticsEstimator;
+	
     // Constructors
     
     public  RateBasedPDepRME() {
+		pDepKineticsEstimator = null;
     }
     
+	public PDepKineticsEstimator getPDepKineticsEstimator() {
+		return pDepKineticsEstimator;
+	}
+	
+	public void setPDepKineticsEstimator(PDepKineticsEstimator pdke) {
+		pDepKineticsEstimator = pdke;
+	}
+	
     //9/25/07 gmagoon: added ReactionModel as parameter
     //10/30/07 gmagoon: adjusted parameters to match ReactionModelEnlarger
     //## operation enlargeReactionModel(ReactionSystem) 
@@ -97,99 +107,99 @@ public class RateBasedPDepRME implements ReactionModelEnlarger {
                 String return_string = "";
         
                 if (update instanceof PDepNetwork) {
-                        PDepNetwork pnw = (PDepNetwork)update;
-                        Species nextIsomer = null;
-                        if (!pnw.isActive() && pnw.getIsChemAct()) {
-                                nextIsomer = (Species)pnw.getProduct().iterator().next();
-                        }
-                        else {
-                                double maxKLeak = 0;
-                                PDepNetReaction path = null;
-                                for (Iterator iter = pnw.getPDepNonincludedReactionListIterator(); iter.hasNext(); ) {
-                                        PDepNetReaction pdnr = (PDepNetReaction)iter.next();
-                                       
-                                        double kleak = pdnr.calculateRate(p_reactionSystem.getPresentStatus());//10/30/07 gmagoon: changed to include systemSnapshot (presentStatus)
-                                        //double kleak = pdnr.calculateRate();
-                                        if (maxKLeak < kleak) {
-                                                maxKLeak = kleak;
-                                                path = pdnr;
-                                        }
-                                }
+					PDepNetwork pnw = (PDepNetwork)update;
+					Species nextIsomer = null;
+					if (!pnw.isActive() && pnw.getIsChemAct()) {
+							nextIsomer = (Species)pnw.getProduct().iterator().next();
+					}
+					else {
+						double maxKLeak = 0;
+						PDepNetReaction path = null;
+						for (Iterator iter = pnw.getPDepNonincludedReactionListIterator(); iter.hasNext(); ) {
+							PDepNetReaction pdnr = (PDepNetReaction)iter.next();
 
-                                if (path == null) throw new InvalidReactionSystemUpdateException();
-                                nextIsomer = (Species)path.getProducts().next();
-                        }
-                        if (nextIsomer == null) throw new InvalidReactionSystemUpdateException();
-												if (pnw.getIsChemAct())
-														System.out.println("entry reaction " + pnw.getEntryReaction().reactionToString(p_reactionSystem.getPresentTemperature()));//10/26/07: gmagoon: changed to use reactionToString rather than toString with temperature passed
-                                //System.out.println("entry reaction " + pnw.getEntryReaction().toString());
-                        else {
-                                Species entry = (Species)pnw.getReactant().iterator().next();
-                                System.out.println("entry species " + entry.toString());
-                        }
-                                System.out.println("adding new isomer to the PDepNetwork: " + nextIsomer.toString());
-                                if (nextIsomer.getPdepPaths() == null){
-                                        ((TemplateReactionGenerator)p_reactionSystem.getReactionGenerator()).generatePdepReactions(nextIsomer);
-                                ((LibraryReactionGenerator)p_reactionSystem.lrg).generatePdepReactions(nextIsomer);
-                                }
-                                pnw.update(nextIsomer);
-                                CoreEdgeReactionModel cerm = (CoreEdgeReactionModel)p_reactionSystem.getReactionModel();
-                                if (!cerm.contains(nextIsomer))
-                                        cerm.addUnreactedSpecies(nextIsomer);
-                                        /*Iterator reactionIter = pnw.getPDepNetReactionList();
-                                        while (reactionIter.hasNext()){
-                                                Reaction r = (Reaction)reactionIter.next();
-                                                cerm.addReaction(r);
-                                        }
-                                }*/
+							double kleak = pdnr.calculateRate(p_reactionSystem.getPresentStatus());//10/30/07 gmagoon: changed to include systemSnapshot (presentStatus)
+							//double kleak = pdnr.calculateRate();
+							if (maxKLeak < kleak) {
+								maxKLeak = kleak;
+								path = pdnr;
+							}
+						}
 
-                        PDepKineticsEstimator pDep = new Chemdis();
-						//PDepKineticsEstimator pDep = new FastMasterEqn();
-						pDep.runPDepCalculation(pnw, p_reactionSystem);
-						
-						// return;//10/30/07 gmagoon: I don't think this should be here anymore
+						if (path == null) throw new InvalidReactionSystemUpdateException();
+						nextIsomer = (Species)path.getProducts().next();
+					}
+					if (nextIsomer == null) throw new InvalidReactionSystemUpdateException();
+
+					if (pnw.getIsChemAct())
+						System.out.println("entry reaction " + pnw.getEntryReaction().reactionToString(p_reactionSystem.getPresentTemperature()));//10/26/07: gmagoon: changed to use reactionToString rather than toString with temperature passed
+						//System.out.println("entry reaction " + pnw.getEntryReaction().toString());
+					else {
+						Species entry = (Species)pnw.getReactant().iterator().next();
+						System.out.println("entry species " + entry.toString());
+					}
+					System.out.println("adding new isomer to the PDepNetwork: " + nextIsomer.toString());
+
+					if (nextIsomer.getPdepPaths() == null){
+						((TemplateReactionGenerator)p_reactionSystem.getReactionGenerator()).generatePdepReactions(nextIsomer);
+						((LibraryReactionGenerator)p_reactionSystem.lrg).generatePdepReactions(nextIsomer);
+					}
+					pnw.update(nextIsomer);
+					CoreEdgeReactionModel cerm = (CoreEdgeReactionModel)p_reactionSystem.getReactionModel();
+					if (!cerm.contains(nextIsomer))
+						cerm.addUnreactedSpecies(nextIsomer);
+					/*Iterator reactionIter = pnw.getPDepNetReactionList();
+					while (reactionIter.hasNext()){
+							Reaction r = (Reaction)reactionIter.next();
+							cerm.addReaction(r);
+					}
+					}*/
+
+					pDepKineticsEstimator.runPDepCalculation(pnw, p_reactionSystem);
+
+					// return;//10/30/07 gmagoon: I don't think this should be here anymore
                 }
 
                 else if (update instanceof Species ) {//10/30/07 gmagoon: changed from if to else if ****confirm this is OK
-                        Species next = (Species)update;
-                        //10/10/07 gmagoon: switched to use rm
-                        //CoreEdgeReactionModel cerm = (CoreEdgeReactionModel)p_reactionSystem.getReactionModel();
-                        CoreEdgeReactionModel cerm = (CoreEdgeReactionModel)rm;
-                        PresentStatus ps = p_reactionSystem.getPresentStatus();
+					Species next = (Species)update;
+					//10/10/07 gmagoon: switched to use rm
+					//CoreEdgeReactionModel cerm = (CoreEdgeReactionModel)p_reactionSystem.getReactionModel();
+					CoreEdgeReactionModel cerm = (CoreEdgeReactionModel)rm;
+					PresentStatus ps = p_reactionSystem.getPresentStatus();
 
-                        System.out.print("\nAdd a new reacted Species: ");
-                        System.out.println(next.getChemkinName());
-                        return_string=next.getChemkinName();
-                        System.out.println(next.toStringWithoutH());
-                        Temperature temp = new Temperature(715, "K");
-                        double H = next.calculateH(temp);
-                        double S = next.calculateS(temp);
-                        double G = next.calculateG(temp);
-                        double Cp = next.calculateCp(temp);
-                        System.out.println("Thermo\t" + String.valueOf(H) + " \t" + String.valueOf(S)+ " \t" + String.valueOf(G)+ " \t" + String.valueOf(Cp));
+					System.out.print("\nAdd a new reacted Species: ");
+					System.out.println(next.getChemkinName());
+					return_string=next.getChemkinName();
+					System.out.println(next.toStringWithoutH());
+					Temperature temp = new Temperature(715, "K");
+					double H = next.calculateH(temp);
+					double S = next.calculateS(temp);
+					double G = next.calculateG(temp);
+					double Cp = next.calculateCp(temp);
+					System.out.println("Thermo\t" + String.valueOf(H) + " \t" + String.valueOf(S)+ " \t" + String.valueOf(G)+ " \t" + String.valueOf(Cp));
 
 
 
-                        if (cerm.containsAsReactedSpecies(next)) 
-                                //throw new InvalidNextCandidateSpeciesException();
-                                System.out.println("Species is already present in reaction model");//10/31/07 gmagoon: preliminary message; should probably be refined in future
-                        else {
-                                cerm.moveFromUnreactedToReactedSpecies(next);
-                                cerm.moveFromUnreactedToReactedReaction();
-                        }
-                        // generate new reaction set
-                        LinkedHashSet newReactionSet = p_reactionSystem.getReactionGenerator().react(cerm.getReactedSpeciesSet(),next);
-                    	p_reactionSystem.lrg.generatePdepReactions(next);
-                        newReactionSet.addAll(p_reactionSystem.lrg.react(cerm.getReactedSpeciesSet(),next));
+					if (cerm.containsAsReactedSpecies(next)) 
+						//throw new InvalidNextCandidateSpeciesException();
+						System.out.println("Species is already present in reaction model");//10/31/07 gmagoon: preliminary message; should probably be refined in future
+					else {
+						cerm.moveFromUnreactedToReactedSpecies(next);
+						cerm.moveFromUnreactedToReactedReaction();
+					}
+					// generate new reaction set
+					LinkedHashSet newReactionSet = p_reactionSystem.getReactionGenerator().react(cerm.getReactedSpeciesSet(),next);
+					p_reactionSystem.lrg.generatePdepReactions(next);
+					newReactionSet.addAll(p_reactionSystem.lrg.react(cerm.getReactedSpeciesSet(),next));
 
-                        // partition the reaction set into reacted reaction set and unreacted reaction set
-                        // update the corresponding core and edge model of CoreEdgeReactionModel
-                        Iterator iter = newReactionSet.iterator();
-                        while (iter.hasNext()){
-                                Reaction r = (Reaction)iter.next();
-                                if (r.getReactantNumber() ==2 && r.getProductNumber() == 2)
-                                        cerm.addReaction(r);
-                        }
+					// partition the reaction set into reacted reaction set and unreacted reaction set
+					// update the corresponding core and edge model of CoreEdgeReactionModel
+					Iterator iter = newReactionSet.iterator();
+					while (iter.hasNext()){
+						Reaction r = (Reaction)iter.next();
+						if (r.getReactantNumber() ==2 && r.getProductNumber() == 2)
+								cerm.addReaction(r);
+					}
                 }
                 //11/1/07 gmagoon: added case where update is instance of string (this would come into play if there is a repeated object)
                 else if (update instanceof String ){
@@ -197,7 +207,7 @@ public class RateBasedPDepRME implements ReactionModelEnlarger {
                 }
                 else throw new InvalidReactionSystemUpdateException();
             }
-					System.out.println("");
+			System.out.println("");
         }
     
         return;//10/30/07 gmagoon: added return statement in case it is needed

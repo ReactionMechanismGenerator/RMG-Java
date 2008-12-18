@@ -75,6 +75,11 @@ public class Chemdis implements PDepKineticsEstimator {
 	 */
 	public void runPDepCalculation(PDepNetwork pdn, ReactionSystem rxnSystem) {
         
+		if (pdn.getReactant() == null) {
+			System.out.println("Warning: Empty pressure-dependent network detected. Skipping.");
+			return;
+		}
+		
 		String dir = System.getProperty("RMG.workingDirectory");
 		
 		if (!pdn.isActive() && pdn.getIsChemAct()) {
@@ -133,6 +138,25 @@ public class Chemdis implements PDepKineticsEstimator {
 			for (Iterator iter = pdn.getPDepWellListIterator(); iter.hasNext(); ) {
 				index++;
 				PDepWell pdw = (PDepWell) iter.next();
+				
+				// NEW: Make sure a reactant path is available
+				boolean hasReactantPath = false;
+				for (Iterator iter2 = pdw.getPathsIterator(); iter2.hasNext(); ) {
+					PDepPathReaction pdpr = (PDepPathReaction)iter2.next();
+					if (pdpr.isReactant())
+						hasReactantPath = true;
+				}
+				if (!hasReactantPath && pdn.getIsChemAct()) {
+					/*LinkedList l = new LinkedList();
+					l.add(pdw.getIsomer());
+					Structure s = new Structure(pdn.getReactant(), l, 1);
+					Kinetics k = new Kinetics();
+					Reaction rxn = Reaction.makeReaction(s, k, true);
+					PDepPathReaction pdpr = new PDepPathReaction(rxn);*/
+					System.out.println("Error: Well '" + pdw.getIsomer().getName() + "' missing reactant path!");
+					System.exit(0); 
+				}
+		
 				str += "Well " + String.valueOf(index) + '\n';
 				str += writeWellInput(pdw);
 			}

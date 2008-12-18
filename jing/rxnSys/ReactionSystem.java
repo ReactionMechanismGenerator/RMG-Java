@@ -548,15 +548,29 @@ public class ReactionSystem {
 
     //## operation initializePDepNetwork()
     public void initializePDepNetwork() {
-        //#[ operation initializePDepNetwork()
-        for (Iterator iter = PDepNetwork.getDictionary().values().iterator(); iter.hasNext(); ) {
+        if (!(reactionModelEnlarger instanceof RateBasedPDepRME)) {
+			System.out.println("ERROR: Reaction model enlarger is not pressure-dependent!");
+			System.exit(0);
+		}
+		PDepKineticsEstimator pDepKineticsEstimator = 
+				((RateBasedPDepRME) reactionModelEnlarger).getPDepKineticsEstimator();
+		
+		LinkedList pdnList = new LinkedList(PDepNetwork.getDictionary().values());
+		for (Iterator iter = pdnList.iterator(); iter.hasNext(); ) {
         	PDepNetwork pdn = (PDepNetwork)iter.next();
         	if (pdn.getAltered()) {
-        		PDepKineticsEstimator pDep = new Chemdis();
-				pDep.runPDepCalculation(pdn, this);
+        		pDepKineticsEstimator.runPDepCalculation(pdn, this);
 			}
         }
-        //#]
+		
+		
+		/*for (Iterator iter = PDepNetwork.getDictionary().values().iterator(); iter.hasNext(); ) {
+        	PDepNetwork pdn = (PDepNetwork)iter.next();
+        	if (pdn.getAltered()) {
+        		pDepKineticsEstimator.runPDepCalculation(pdn, this);
+			}
+        }*/
+        
     }
 
     //## operation isFinished()

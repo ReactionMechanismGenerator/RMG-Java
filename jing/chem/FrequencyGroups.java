@@ -32,41 +32,76 @@ public class FrequencyGroups{//gmagoon 111708: removed "implements GeneralGAPP"
 
    //gmagoon 11/17/08: based off of generateThermoData from GATP.java;
    // this function generates a list of frequencies using Franklin's code for use in pressure-dependent network calculations
-      public SpectroscopicData generateFreqData(ChemGraph p_chemGraph, ThermoData p_thermoData) {
-        LinkedList groupCount=getFreqGroup(p_chemGraph);//use database to count groups in structure
-        double[] rotfreq=null;
-        double[] rotV=null;
-        double[] vibs=null;
+      public SpectroscopicData generateFreqData(Species species) {
+		
+		ChemGraph p_chemGraph = species.getChemGraph();
+		ThermoData p_thermoData = species.getThermoData();
+				
+		// Skip if species is monatomic
+		if (p_chemGraph.getAtomNumber() < 2)
+			return new SpectroscopicData();
+		  
+		LinkedList groupCount=getFreqGroup(p_chemGraph);//use database to count groups in structure
         
-        //write input to Franklin's code
-        //determine linearity by mapping true/false to 0/1
-        int linearity=1;
-        if(p_chemGraph.isLinear())
-            linearity=0;
-        //(file writing code based on code in JDASSL.java)
-        File franklInput = new File("dat");
+		double[] vibFreq = null;
+        double[] hindFreq = null;
+		double[] hindBarrier = null;
+			
+		int atoms = p_chemGraph.getAtomNumber();
+		int rotor = p_chemGraph.getInternalRotor();
+		int linearity = (p_chemGraph.isLinear()) ? 0 : 1;	// 0 if linear, 1 if nonlinear
+		int degeneracy = 0;
+		
+		degeneracy = 
+				9*((Integer) groupCount.get(0)) + 5*((Integer) groupCount.get(1)) + 
+				3*((Integer) groupCount.get(2)) + 7*((Integer) groupCount.get(3)) + 
+				5*((Integer) groupCount.get(4))	+ 5*((Integer) groupCount.get(5)) + 
+				3*((Integer) groupCount.get(6)) + 3*((Integer) groupCount.get(7)) + 
+				2*((Integer) groupCount.get(8)) + 6*((Integer) groupCount.get(9)) + 
+				4*((Integer) groupCount.get(10)) + 4*((Integer) groupCount.get(11)) + 
+				5*((Integer) groupCount.get(12)) + 6*((Integer) groupCount.get(13)) + 
+                3*((Integer) groupCount.get(14)) + 4*((Integer) groupCount.get(15)) + 
+				2*((Integer) groupCount.get(16)) + 2*((Integer) groupCount.get(17)) + 
+				3*((Integer) groupCount.get(18)) + 4*((Integer) groupCount.get(19)) + 
+				1*((Integer) groupCount.get(20)) + 5*((Integer) groupCount.get(21)) + 
+				3*((Integer) groupCount.get(22)) + 3*((Integer) groupCount.get(23));
+		
+		
+		int nFreq = 3 * atoms - 5 - rotor - degeneracy - linearity;
+		if (nFreq < 0) {
+			//System.out.println("ERROR: Attempted to fit a negative number of frequencies!");
+			//System.exit(0);
+			rotor = 0;
+		}
+		
+		//(file writing code based on code in JDASSL.java)
+        File franklInput = new File("frankie/dat");
         try {
             FileWriter fw = new FileWriter(franklInput);
             fw.write(p_thermoData.getCp300()+" "+p_thermoData.getCp400()+" "+p_thermoData.getCp500()+" "+p_thermoData.getCp600()+" "+p_thermoData.getCp800()+" "+p_thermoData.getCp1000()+" "+p_thermoData.getCp1500()+"\n");
-            fw.write(p_chemGraph.getAtomNumber()+"\n");
-            fw.write(p_chemGraph.getInternalRotor()+"\n");
+            fw.write(atoms+"\n");
+            fw.write(rotor+"\n");
             fw.write(linearity+"\n");
             //print the group counts to the file
-            Iterator iter = groupCount.iterator();
-            while (iter.hasNext())
-                fw.write((Integer)iter.next());
-            fw.close();
+            for (Iterator iter = groupCount.iterator(); iter.hasNext(); ) {
+				Integer i = (Integer) iter.next();
+				fw.write(i + "\n");
+			}
+			fw.close();
         }
         catch (IOException e) {
             System.err.println("Problem writing frequency estimation input file!");
             e.printStackTrace();
         }
 		
+		touchOutputFile();
+		
         //call Franklin's code
         try{
-            File runningdir=new File("?????");
-            String command = "?????";
-            Process freqProc = Runtime.getRuntime().exec(command, null, runningdir); 
+            String dir = System.getProperty("RMG.workingDirectory");
+			File runningdir=new File("frankie/");
+            String command = dir + "/software/frankie/frankie.exe";
+           	Process freqProc = Runtime.getRuntime().exec(command, null, runningdir); 
             int exitValue = freqProc.waitFor();
         }
         catch (Exception e) {
@@ -76,53 +111,80 @@ public class FrequencyGroups{//gmagoon 111708: removed "implements GeneralGAPP"
         }
         
          //read in results of Franklin's code into result
-        File franklOutput = new File("rho_input");
+        File franklOutput = new File("frankie/rho_input");
         String line="";
-        try{
-            FileReader fr = new FileReader(franklOutput);
+        try { 
+            
+			FileReader fr = new FileReader(franklOutput);
             BufferedReader br = new BufferedReader(fr);
-            line = br.readLine();
-            int atoms=Integer.parseInt(line.trim());
-            line = br.readLine();
-            int rotors=Integer.parseInt(line.trim());
-            line = br.readLine();
-            int nonlinearityQ=Integer.parseInt(line.trim());
-            //read the HO frequencies, RR frequencies, and barrier heights
-            int nfreq=0;
-            if (nonlinearityQ==1)
-                nfreq=3*atoms-6;
+            
+			// Read information about molecule (numuber of atoms, number of rotors, linearity)
+			atoms = Integer.parseInt(br.readLine().trim());
+            int nHind = Integer.parseInt(br.readLine().trim());
+            int nonlinearityQ = Integer.parseInt(br.readLine().trim());
+            
+			// Determine the expected number of harmonic oscillator frequencies
+			nFreq = 0;
+            if (nonlinearityQ == 1)
+                nFreq = 3 * atoms - 6 - nHind;
             else
-                nfreq=3*atoms-5;
-            vibs=new double[nfreq];
-            line=br.readLine();
-            int i=0;
-            StringTokenizer st=new StringTokenizer(line.trim());
-            while(st.hasMoreTokens()){
-                vibs[i]=Double.parseDouble(st.nextToken());
-                i++;
-            }
-            //at this point, i should equal nfreqs; we could put a check here to confirm this
-            rotfreq=new double[rotors];
-            rotV=new double[rotors];
-            line=br.readLine();
-            i=0;
-            StringTokenizer st2=new StringTokenizer(line.trim());
-            while(st2.hasMoreTokens()){
-                rotfreq[i]=Double.parseDouble(st2.nextToken());
-                rotV[i]=Double.parseDouble(st2.nextToken());
-                i++;
-            }
-            //at this point, i should equal rotors; we could put a check here to confirm this
-            fr.close();
+                nFreq = 3 * atoms - 5 - nHind;
+			
+			// Read the harmonic oscillator frequencies
+			vibFreq = new double[nFreq];
+            int i = 0;
+			while (i < nFreq) {
+				StringTokenizer st = new StringTokenizer(br.readLine().trim());
+				if (st.countTokens() == 0)
+					continue;
+				else {
+					vibFreq[i] = Double.parseDouble(st.nextToken());
+					i++;
+				}
+			}
+			if (i != nFreq) {
+				System.out.println("Warning: Number of frequencies read is less than expected.");
+			}
+			
+			// Read the hindered rotor frequencies and barrier heights
+			hindFreq = new double[nHind];
+			hindBarrier = new double[nHind];
+			i = 0;
+			while (i < nHind) {
+				StringTokenizer st = new StringTokenizer(br.readLine().trim());
+				if (st.countTokens() == 0)
+					continue;
+				else {
+					hindFreq[i] = Double.parseDouble(st.nextToken());
+					hindBarrier[i] = Double.parseDouble(st.nextToken());
+					i++;
+				}
+			}
+			if (i != nHind) {
+				System.out.println("Warning: Number of hindered rotors read is less than expected.");
+			}
+			
+			fr.close();
         }
         catch (IOException e) {
                 System.err.println("Problem reading frequency estimation output file!");
                 e.printStackTrace();           
         }
+		catch (NullPointerException e) {
+                System.err.println("Problem reading frequency estimation output file!");
+                e.printStackTrace();           
+        }
         
-        SpectroscopicData result = new SpectroscopicData(vibs, rotfreq, rotV);
-        
-        return result;
+		// Rename input and output files
+		String newName = species.getName()+"("+String.valueOf(species.getID())+")";
+        File f = new File("frankie/dat");
+		File newFile = new File("frankie/"+newName+"_input");
+		f.renameTo(newFile);
+		f = new File("frankie/rho_input");
+		newFile = new File("frankie/"+newName+"_output");
+		f.renameTo(newFile);
+		
+        return new SpectroscopicData(vibFreq, hindFreq, hindBarrier);
         //#]
     }
 
@@ -186,6 +248,22 @@ public class FrequencyGroups{//gmagoon 111708: removed "implements GeneralGAPP"
     protected static FrequencyGroups getINSTANCE() {
         return INSTANCE;
     }
+	
+	private void touchOutputFile() {
+		try {
+			File output = new File("frankie/rho_input");
+			if (output.exists())
+				output.delete();
+			output.createNewFile();
+		}
+		catch(IOException e) {
+			System.out.println("Error: Unable to touch file \"frankie/rho_input\".");
+			System.exit(0);
+		}
+		catch(Exception e) {
+			System.out.println(e.getMessage());
+		}
+	}
 
 
 }

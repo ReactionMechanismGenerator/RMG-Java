@@ -327,7 +327,7 @@ public class PDepNetwork {
         	// if it is a->b, but a doesn't have three frequency model, return null
         	if (p_entryReaction.getReactantNumber() == 1) {
          		Species spe = (Species)p_entryReaction.getReactants().next();
-         		if (!spe.hasThreeFrequencyModel()) {
+         		if (!spe.hasSpectroscopicData()) {
          			return null;
          		}
            	}
@@ -380,10 +380,15 @@ public class PDepNetwork {
     public void update(Species p_nextIsomer) {
         //#[ operation update(Species) 
         if (includeAsIsomer(p_nextIsomer)) throw new DuplicatedIsomersException();
-        if (!p_nextIsomer.hasThreeFrequencyModel()) {
+        /*if (!p_nextIsomer.hasThreeFrequencyModel()) {
         	System.out.println("Species doesn't have three frequency model: " + p_nextIsomer.toString());
         	System.exit(0);	
+        }*/
+		if (!p_nextIsomer.hasSpectroscopicData()) {
+        	System.out.println("Species doesn't have spectroscopic data: " + p_nextIsomer.toString());
+        	System.exit(0);	
         }
+        
         //System.out.println("begin to new a well");
         PDepWell pdw = new PDepWell(p_nextIsomer, p_nextIsomer.getPdepPaths());
         //System.out.println("begin to add new well to system");

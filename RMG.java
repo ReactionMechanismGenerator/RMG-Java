@@ -149,6 +149,9 @@ public class RMG {
 		File fame = new File("fame");
 		ChemParser.deleteDir(fame);
 		fame.mkdir();
+		File frankie = new File("frankie");
+		ChemParser.deleteDir(frankie);
+		frankie.mkdir();
 		
 		
 		 String workingDir = System.getenv("RMG");
@@ -203,10 +206,10 @@ public class RMG {
                StringTokenizer st = new StringTokenizer(line);
                String next = st.nextToken();
                String name = st.nextToken().trim();
-               System.setProperty("jing.chem.ChemGraph.forbiddenStructureFile", workingDir + "/databases/"+name+"/forbiddenStructure/ForbiddenStructure.txt");
-               System.setProperty("jing.chem.ThermoGAGroupLibrary.pathName", workingDir + "/databases/" + name+"/thermo");
-               System.setProperty("jing.rxn.ReactionTemplateLibrary.pathName", workingDir + "/databases/" + name+"/kinetics/kinetics");
-               System.setProperty("jing.rxn.ReactionLibrary.pathName",workingDir + "/databases/" + name + "/kinetics/reactionLibrary");
+               System.setProperty("jing.chem.ChemGraph.forbiddenStructureFile", workingDir + "databases/"+name+"/forbiddenStructure/ForbiddenStructure.txt");
+               System.setProperty("jing.chem.ThermoGAGroupLibrary.pathName", workingDir + "databases/" + name+"/thermo");
+               System.setProperty("jing.rxn.ReactionTemplateLibrary.pathName", workingDir + "databases/" + name+"/kinetics/kinetics");
+               System.setProperty("jing.rxn.ReactionLibrary.pathName",workingDir + "databases/" + name + "/kinetics/reactionLibrary");
              }
              line = ChemParser.readMeaningfulLine(reader);
              if (line.startsWith("PrimaryThermoLibrary")){

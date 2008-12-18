@@ -47,6 +47,7 @@ import java.util.ListIterator;
 import java.util.StringTokenizer;
 import jing.chem.LennardJones;
 import jing.chem.Species;
+import jing.chem.SpectroscopicData;
 import jing.param.Pressure;
 import jing.param.Temperature;
 import jing.rxnSys.ReactionSystem;
@@ -97,10 +98,18 @@ public class FastMasterEqn implements PDepKineticsEstimator {
         // Collect well and reaction parameters
 		getUniWells(pdn, uniWells);
 		getMultiWells(pdn, multiWells);
-		getReactions(pdn, reactions);
+		getReactions(pdn, reactions, uniWells, multiWells);
 
+		if (reactions.size() == 0) {
+			System.out.println("Warning: Empty pressure-dependent network detected. Skipping.");
+			return;
+		}
+		
 		// Create FAME input files
 		writeInputFile(pdn, rxnSystem, uniWells, multiWells, reactions);
+		
+		// Touch FAME output file
+		touchOutputFile();
 		
 		// FAME system call
 		try {
@@ -137,12 +146,15 @@ public class FastMasterEqn implements PDepKineticsEstimator {
 		else if (runCount < 1000)	path += "0";
 		path += Integer.toString(runCount);
 		
-		File input = new File("fame_input.txt");
+		File input = new File("fame/fame_input.txt");
 		File newInput = new File(path +  "_input.txt");
 		input.renameTo(newInput);
-		File output = new File("fame_output.txt");
+		File output = new File("fame/fame_output.txt");
 		File newOutput = new File(path +  "_output.txt");
 		output.renameTo(newOutput);
+		
+		// Write finished indicator to console
+		System.out.println("FAME execution for network " + Integer.toString(runCount) + " complete.");
 	}
 	
 	/**
@@ -159,8 +171,6 @@ public class FastMasterEqn implements PDepKineticsEstimator {
 		// Collect simulation parameters
 		Temperature temperature = rxnSystem.getPresentTemperature();
 		Pressure pressure = rxnSystem.getPresentPressure();
-		double grainMaxEnergy = getGrainMaxEnergy(uniWells, multiWells); // [=] kJ/mol
-		double grainSize = getGrainSize(grainMaxEnergy, uniWells.size()); // [=] kJ/mol
 		BathGas bathGas = new BathGas(rxnSystem);
 		
 		int numChebTempPolys = 4, numChebPressPolys = 4;
@@ -172,14 +182,24 @@ public class FastMasterEqn implements PDepKineticsEstimator {
 			double E = isomer.calculateH(stdTemp);
 			double H = isomer.calculateH(stdTemp);
 			double G = isomer.calculateG(stdTemp);
-			if (E < Eref)
-				Eref = E;
-			if (H < Href)
-				Href = H;
-			if (G < Gref)
-				Gref = G;
-			
+			if (E < Eref) {
+				Eref = E; Href = H; Gref = G;
+			}
 		}
+		for (int n = 0; n < multiWells.size(); n++) {
+			MultiWell isomer = ((MultiWell) multiWells.get(n));
+			for (int i = 0; i < isomer.getNumberOfSpecies(); i++) {
+				double E = isomer.calculateH(i, stdTemp);
+				double H = isomer.calculateH(i, stdTemp);
+				double G = isomer.calculateG(i, stdTemp);
+				if (E < Eref) {
+					Eref = E; Href = H; Gref = G;
+				}
+			}
+		}
+		
+		double grainMaxEnergy = getGrainMaxEnergy(uniWells, multiWells, 2100, Eref); // [=] kJ/mol
+		double grainSize = getGrainSize(grainMaxEnergy, uniWells.size()); // [=] kJ/mol
 		
 		// Create the simulation parameters file fame/simData.txt
 		try {
@@ -210,42 +230,97 @@ public class FastMasterEqn implements PDepKineticsEstimator {
 				Species isomer = ((PDepWell) uniWells.get(i)).getIsomer();
 				isomer.calculateLJParameters();
 				
-				fw.write("# Unimolecular well " + Integer.toString(i+1) + ": " + isomer.getName() + "\n");
+				fw.write("# Unimolecular well " + Integer.toString(i+1) + ": " + isomer.getName() + "(" + Integer.toString(isomer.getID()) + ")" + "\n");
 				fw.write("Ground-state energy                 " + (isomer.calculateH(stdTemp) - Eref) * 4.184 + " kJ/mol\n");
 				fw.write("Enthalpy of formation               " + (isomer.calculateH(stdTemp) - Href) * 4.184 + " kJ/mol\n");
 				fw.write("Free energy of formation            " + (isomer.calculateG(stdTemp) - Gref) * 4.184 + " kJ/mol\n");
 				fw.write("LJ sigma parameter                  " + (isomer.getLJ().getSigma() * 1e-10) + " m\n");
 				fw.write("LJ epsilon parameter                " + (isomer.getLJ().getEpsilon() * 1.381e-23) + " J\n");
 				fw.write("Molecular weight                    " + isomer.getMolecularWeight() + " g/mol\n");
-				fw.write("\n");
-
-				// ALSO NEED SUM AND DENSITY OF STATES!
 				
-
+				SpectroscopicData data = isomer.getSpectroscopicData();
+				if (data.getVibrationCount() > 0) {
+					fw.write("Harmonic oscillators                " + data.getVibrationCount() + "\n");
+					for (int j = 0; j < data.getVibrationCount(); j++)
+						fw.write(data.getVibration(j) + " cm^-1\n");
+				}
+				if (data.getRotationCount() > 0) {
+					fw.write("Rigid rotors                        " + data.getRotationCount() + "\n");
+					for (int j = 0; j < data.getRotationCount(); j++)
+						fw.write(data.getRotation(j) + " cm^-1\n");
+				}
+				if (data.getHinderedCount() > 0) {
+					fw.write("Hindered rotors                     " + data.getHinderedCount() + "\n");
+					for (int j = 0; j < data.getHinderedCount(); j++)
+						fw.write(data.getHinderedFrequency(j) + " cm^-1\n");
+					for (int j = 0; j < data.getHinderedCount(); j++)
+						fw.write(data.getHinderedBarrier(j) + " cm^-1\n");
+				}
+				fw.write("Symmetry number                         " + data.getSymmetryNumber() + "\n");
+					
+				fw.write("\n");
 			}
 			
 			for (int i = 0; i < multiWells.size(); i++) {
 				
 				MultiWell isomer = (MultiWell) multiWells.get(i);
 
-				fw.write("# Multimolecular well " + Integer.toString(i+1) + ": " + isomer.getSpeciesNames() + "\n");
+				fw.write("# Multimolecular well " + Integer.toString(i+1) + ": ");
+				fw.write(isomer.getSpecies(0).getName() + "(" + Integer.toString(isomer.getSpecies(0).getID()) + ")");
+				for (int j = 1; j < isomer.getNumberOfSpecies(); j++)
+					fw.write(" + " + isomer.getSpecies(j).getName() + "(" + Integer.toString(isomer.getSpecies(j).getID()) + ")");
+				fw.write("\n");
 				fw.write("Number of species                   " + Integer.toString(isomer.getNumberOfSpecies()) + "\n");
 				fw.write("Ground-state energy                 ");
 				for (int j = 0; j < isomer.getNumberOfSpecies(); j++)
-					fw.write((isomer.calculateH(stdTemp) - Href) * 4.184 + " kJ/mol    ");
+					fw.write((isomer.calculateH(j, stdTemp) - Href) * 4.184 + " kJ/mol    ");
 				fw.write("\n");
 				fw.write("Enthalpy of formation               ");
 				for (int j = 0; j < isomer.getNumberOfSpecies(); j++)
-					fw.write((isomer.calculateH(stdTemp) - Href) * 4.184 + " kJ/mol    ");
+					fw.write((isomer.calculateH(j, stdTemp) - Href) * 4.184 + " kJ/mol    ");
 				fw.write("\n");
 				fw.write("Free energy of formation            ");
 				for (int j = 0; j < isomer.getNumberOfSpecies(); j++)
-					fw.write((isomer.calculateG(stdTemp) - Gref) * 4.184 + " kJ/mol    ");
-				fw.write("\n");
+					fw.write((isomer.calculateG(j, stdTemp) - Gref) * 4.184 + " kJ/mol    ");
 				fw.write("\n");
 				
-				// ALSO NEED SUM AND DENSITY OF STATES!
-
+				fw.write("Harmonic oscillators                ");
+				for (int j = 0; j < isomer.getNumberOfSpecies(); j++)
+					fw.write(isomer.getSpecies(j).getSpectroscopicData().getVibrationCount() + " ");
+				fw.write("\n");
+				for (int j = 0; j < isomer.getNumberOfSpecies(); j++) {
+					SpectroscopicData data = isomer.getSpecies(j).getSpectroscopicData();
+					for (int k = 0; k < data.getVibrationCount(); k++)
+						fw.write(data.getVibration(k) + " cm^-1\n");
+				}
+				
+				fw.write("Rigid rotors                        ");
+				for (int j = 0; j < isomer.getNumberOfSpecies(); j++)
+					fw.write(isomer.getSpecies(j).getSpectroscopicData().getRotationCount() + " ");
+				fw.write("\n");
+				for (int j = 0; j < isomer.getNumberOfSpecies(); j++) {
+					SpectroscopicData data = isomer.getSpecies(j).getSpectroscopicData();
+					for (int k = 0; k < data.getRotationCount(); k++)
+						fw.write(data.getRotation(k) + " cm^-1\n");
+				}
+				
+				fw.write("Hindered rotors                     ");
+				for (int j = 0; j < isomer.getNumberOfSpecies(); j++)
+					fw.write(isomer.getSpecies(j).getSpectroscopicData().getHinderedCount() + " ");
+				fw.write("\n");
+				for (int j = 0; j < isomer.getNumberOfSpecies(); j++) {
+					SpectroscopicData data = isomer.getSpecies(j).getSpectroscopicData();
+					for (int k = 0; k < data.getHinderedCount(); k++)
+						fw.write(data.getHinderedFrequency(k) + " cm^-1\n");
+					for (int k = 0; k < data.getHinderedCount(); k++)
+						fw.write(data.getHinderedBarrier(k) + " cm^-1\n");
+				}
+				fw.write("Symmetry number                     ");
+				for (int j = 0; j < isomer.getNumberOfSpecies(); j++)
+					fw.write(isomer.getSpecies(j).getSpectroscopicData().getSymmetryNumber() + " ");
+				fw.write("\n");
+				
+				fw.write("\n");
 			}
 			
 			for (int i = 0; i < reactions.size(); i++) {
@@ -255,6 +330,9 @@ public class FastMasterEqn implements PDepKineticsEstimator {
 				// Determine isomer(s) associated with reactant
 				int isomer1 = getAssociatedIsomer(pdpr.getReactantList(), uniWells, multiWells); 
 				int isomer2 = getAssociatedIsomer(pdpr.getProductList(), uniWells, multiWells); 
+				if (isomer1 < 1 || isomer2 < 1) {
+					continue;
+				}
 				
 				String comment = "# Reaction " + Integer.toString(i+1) + ": ";
 				if (isomer1 > uniWells.size())
@@ -268,16 +346,22 @@ public class FastMasterEqn implements PDepKineticsEstimator {
 					comment += ((PDepWell) uniWells.get(isomer2-1)).getIsomer().getName();
 				comment += "\n";
 				
+				// Calculate transition state energy = ground-state energy of reactant (isomer 1) + activation energy
+				double E0 = 0.0;
+				if (isomer1 > uniWells.size())
+					E0 = ((MultiWell) multiWells.get(isomer1-uniWells.size()-1)).calculateH(stdTemp);
+				else
+					E0 = ((PDepWell) uniWells.get(isomer1-1)).getIsomer().calculateH(stdTemp);
+				E0 += pdpr.getKinetics().getEValue();
+						
 				fw.write(comment);
 				fw.write("Isomer 1                            " + isomer1 + "\n");
 				fw.write("Isomer 2                            " + isomer2 + "\n");
-				fw.write("Ground-state energy                 " + pdpr.getKinetics().getEValue() * 4.184 + " kJ/mol\n");
+				fw.write("Ground-state energy                 " + (E0 - Eref) * 4.184 + " kJ/mol\n");
 				fw.write("Arrhenius preexponential            " + pdpr.getKinetics().getAValue() + " s^-1\n");
 				fw.write("Arrhenius activation energy         " + pdpr.getKinetics().getEValue() * 4.184 + " kJ/mol\n");
 				fw.write("Arrhenius temperature exponent      " + pdpr.getKinetics().getNValue() + "\n");
 				fw.write("\n");
-
-				// OPTIONAL SUM AND DENSITY OF STATES FOR TRANSITION STATE
 			}
 			
 			fw.write("\n");
@@ -286,6 +370,10 @@ public class FastMasterEqn implements PDepKineticsEstimator {
 		catch(IOException e) {
 			System.out.println("Error: Unable to create file \"fame_input.txt\".");
 			System.exit(0);
+		}
+		catch(IndexOutOfBoundsException e) {
+			System.out.println("Error: IndexOutOfBoundsException thrown.");
+			e.printStackTrace(System.out);
 		}
 		catch(Exception e) {
 			System.out.println(e.getMessage());
@@ -312,21 +400,6 @@ public class FastMasterEqn implements PDepKineticsEstimator {
 		
 		double Tmin = 0, Tmax = 0, Pmin = 0, Pmax = 0;
 		
-	    // Determine entrant reaction
-		Reaction entryReaction = pdn.getEntryReaction();
-		if (entryReaction.getReactantNumber() == 1) {
-			for (int i = 0; i < numUniWells; i++) {
-				if (((PDepWell) uniWells.get(i)).getIsomer().equals((Species) entryReaction.getReactantList().get(0)))
-					entryWell = i + 1;
-			}
-		}
-		else {
-			for (int n = 0; n < numMultiWells; n++) {
-				if (((MultiWell) multiWells.get(n)).getSpeciesList().equals(entryReaction.getReactantList()))
-					entryWell = numUniWells + n + 1;
-			}
-		}
-		
 		try {
         	
 			File output = new File("fame/fame_output.txt");
@@ -340,10 +413,10 @@ public class FastMasterEqn implements PDepKineticsEstimator {
 				
 				str = br.readLine().trim();
 				
-				if (str.charAt(0) == '#')
-					continue;
-				else if (str.length() == 0)
+				if (str.length() == 0)
 					found = true;
+				else if (str.charAt(0) == '#')
+					continue;
 				else if (str.substring(0, 28).equals("Number of unimolecular wells"))
 					numUniWells = Integer.parseInt(str.substring(29).trim());
 				else if (str.substring(0, 30).equals("Number of multimolecular wells"))
@@ -366,18 +439,41 @@ public class FastMasterEqn implements PDepKineticsEstimator {
 				}
 			}
 			
+			if (numUniWells > 5) {
+				numUniWells--;
+				numUniWells++;
+			}
+			
 			// Initialize temperature and pressure variables based on read values
 			Temperature tLow = new Temperature(Tmin, "K");
 			Temperature tHigh = new Temperature(Tmax, "K");
 			Pressure pLow = new Pressure(Pmin, "bar");
 			Pressure pHigh = new Pressure(Pmax, "bar");
 							
+			// Determine entrant reaction
+			LinkedList entryReactant = pdn.getReactant();
+			if (entryReactant.size() == 1) {
+				for (int i = 0; i < numUniWells; i++) {
+					if (((PDepWell) uniWells.get(i)).getIsomer().equals((Species) entryReactant.get(0)))
+						entryWell = i + 1;
+				}
+			}
+			else {
+				for (int n = 0; n < numMultiWells; n++) {
+					if (((MultiWell) multiWells.get(n)).getSpeciesList().equals(entryReactant))
+						entryWell = numUniWells + n + 1;
+				}
+			}
+		
 			// Reset reaction lists
 			LinkedList pDepNetReactionList = pdn.getPDepNetReactionList();
 			pDepNetReactionList.clear();
         	LinkedList pDepNonincludedReactionList = pdn.getPDepNonincludedReactionList();
 			pDepNonincludedReactionList.clear();
         
+			int netReactionCount = 0;
+			int nonincludedReactionCount = 0;
+			
 			// Read Chebyshev coefficients for each reaction
 			for (int i = 0; i < numUniWells + numMultiWells; i++) {
 				for (int j = 0; j < numUniWells + numMultiWells; j++) {
@@ -402,54 +498,80 @@ public class FastMasterEqn implements PDepKineticsEstimator {
 								numTemperatures, tLow, tHigh, numPressures, pLow, pHigh,
 								alpha);
 
-						// Only add reactions where the entry well is the reactant
-						if (j == entryWell - 1) {
-							// Determine reactants
-							LinkedList reactant = new LinkedList();
-							if (i < numUniWells) {
-								reactant.add( ((PDepWell) uniWells.get(i)).getIsomer() );
-							}
-							else {
-								MultiWell mw = (MultiWell) multiWells.get(i - numUniWells);
-								for (int l = 0; l < mw.getNumberOfSpecies(); l++) {
-									reactant.add(mw.getSpecies(l));
-								}
-							}
-
-							// Determine products
-							LinkedList product = new LinkedList();
-							if (j < numUniWells) {
-								product.add( ((PDepWell) uniWells.get(i)).getIsomer() );
-							}
-							else {
-								MultiWell mw = (MultiWell) multiWells.get(j - numUniWells);
-								for (int l = 0; l < mw.getNumberOfSpecies(); l++) {
-									product.add(mw.getSpecies(l));
-								}
-							}
-						
-							// Initialize net reaction
-							PDepNetReaction pdnr = new PDepNetReaction(reactant, product, cp);
-							
-							// Add net reaction to appropriate linked list
-							if (i < numUniWells) {
-								if (pdn.includeAsIsomer(((PDepWell) uniWells.get(i)).getIsomer()))
-									pDepNetReactionList.add(pdnr);
-								else
-									pDepNonincludedReactionList.add(pdnr);
-									
-							} 
-							else {
-								// Add reaction to net reaction list (note: this assumes all reactions are to be included)
-								pDepNetReactionList.add(pdnr);
+						// Determine reactants
+						LinkedList reactant = new LinkedList();
+						if (i < numUniWells) {
+							reactant.add( ((PDepWell) uniWells.get(i)).getIsomer() );
+						}
+						else {
+							MultiWell mw = (MultiWell) multiWells.get(i - numUniWells);
+							for (int l = 0; l < mw.getNumberOfSpecies(); l++) {
+								reactant.add(mw.getSpecies(l));
 							}
 						}
+
+						// Determine products
+						LinkedList product = new LinkedList();
+						if (j < numUniWells) {
+							product.add( ((PDepWell) uniWells.get(j)).getIsomer() );
+						}
+						else {
+							MultiWell mw = (MultiWell) multiWells.get(j - numUniWells);
+							for (int l = 0; l < mw.getNumberOfSpecies(); l++) {
+								product.add(mw.getSpecies(l));
+							}
+						}
+
+						// Initialize net reaction
+						PDepNetReaction pdnr = new PDepNetReaction(reactant, product, cp);
+
+						// Add net reaction to appropriate linked list
+						boolean includeReactants = false;
+						boolean includeProducts = false;
+						
+						if (i < numUniWells) {
+							PDepWell well1 = (PDepWell) uniWells.get(i);
+							includeReactants = pdn.includeAsIsomer(well1.getIsomer());
+						}
+						else {
+							MultiWell well1 = (MultiWell) multiWells.get(i - numUniWells);
+							includeReactants = well1.includeAsIsomer(pdn);
+						}
+						
+						if (j < numUniWells) {
+							PDepWell well2 = (PDepWell) uniWells.get(j);
+							includeProducts = pdn.includeAsIsomer(well2.getIsomer());
+						}
+						else {
+							MultiWell well2 = (MultiWell) multiWells.get(j - numUniWells);
+							includeProducts = well2.includeAsIsomer(pdn);
+						}
+						
+						// Only add forward reactions
+						//if (i > j) {
+						if (j + 1 == entryWell) {
+							if (includeReactants && includeProducts) {
+								pDepNetReactionList.add(pdnr);
+								netReactionCount++;
+							}
+							else {
+								pDepNonincludedReactionList.add(pdnr);
+								nonincludedReactionCount++;
+							}
+						}
+						
+						// Skip blank line between records
+						str = br.readLine().trim();
+
 					}
 				}
 			}
 			
 			// Close file when finished
 			br.close();
+			
+			System.out.println(Integer.toString(netReactionCount) + " net reactions and " + 
+					Integer.toString(nonincludedReactionCount) + " nonincluded reactions in network");
 		}
 		catch(IOException e) {
 			System.out.println("Error: Unable to read from file \"fame_output.txt\".");
@@ -480,12 +602,41 @@ public class FastMasterEqn implements PDepKineticsEstimator {
 		return 0;
 	}
 
-	private double getGrainMaxEnergy(LinkedList uniWells, LinkedList multiWells) {
-		return 800;	// [=] kJ/mol
+	private double getGrainMaxEnergy(LinkedList uniWells, LinkedList multiWells, double T, double Eref) {
+
+		double Emax = 0.0;
+		Temperature stdTemp = new Temperature(298, "K");
+        
+		for (int i = 0; i < uniWells.size(); i++) {
+			Species isomer = ((PDepWell) uniWells.get(i)).getIsomer();
+			double E = isomer.calculateH(stdTemp);
+			if (E > Emax)
+				Emax = E;
+		}
+		for (int n = 0; n < multiWells.size(); n++) {
+			MultiWell isomer = ((MultiWell) multiWells.get(n));
+			double E = isomer.calculateH(stdTemp);
+			if (E > Emax)
+				Emax = E;
+		}
+		
+		Emax -= Eref;
+		Emax *= 4.184;
+		Emax += 25 * 0.008314 * T;
+		
+		// Round up to nearest ten kJ/mol
+		return Math.ceil(Emax / 10) * 10.0;	// [=] kJ/mol
 	}
 
-	private double getGrainSize(double grainMaxEnergy, int numSpecies) {
-		return grainMaxEnergy / 500;
+	private double getGrainSize(double grainMaxEnergy, int numUniWells) {
+		if (numUniWells < 5)
+			return grainMaxEnergy / 200;
+		else if (numUniWells < 10)
+			return grainMaxEnergy / 100;
+		else if (numUniWells < 20)
+			return grainMaxEnergy / 50;
+		else
+			return grainMaxEnergy / 20;
 	}
 
 	/**
@@ -499,6 +650,12 @@ public class FastMasterEqn implements PDepKineticsEstimator {
 			PDepWell pdw = (PDepWell) iter.next();
 			uniWells.add(pdw);
 		}
+		for (Iterator iter = pdn.getNonIncludedSpecies(); iter.hasNext(); ) {
+			Species spe = (Species) iter.next();
+			PDepWell pdw = new PDepWell(spe);
+			uniWells.add(pdw);
+		}
+		
 	}
 	
 	/**
@@ -525,17 +682,37 @@ public class FastMasterEqn implements PDepKineticsEstimator {
 	 * @param pdn The pressure-dependent network of interest
 	 * @param reactions A list in which to place the reactions
 	  */
-	private void getReactions(PDepNetwork pdn, LinkedList reactions) {
+	private void getReactions(PDepNetwork pdn, LinkedList reactions,
+			LinkedList uniWells, LinkedList multiWells) {
 		reactions.clear();
 		for (ListIterator iter = pdn.getPDepWellListIterator(); iter.hasNext(); ) {
 			PDepWell pdw = (PDepWell) iter.next();
 			for (Iterator iter2 = pdw.getPathsIterator(); iter2.hasNext(); ) {
 				PDepPathReaction pdpr = (PDepPathReaction) iter2.next();
-				reactions.add(pdpr);
+				// Only add if reactants and products are both included in isomer lists
+				int isomer1 = getAssociatedIsomer(pdpr.getReactantList(), uniWells, multiWells); 
+				int isomer2 = getAssociatedIsomer(pdpr.getProductList(), uniWells, multiWells); 
+				if (isomer1 > 0 && isomer2 > 0) 
+					reactions.add(pdpr);
 			}
 		}
 	}
 
+	public void touchOutputFile() {
+		try {
+			File output = new File("fame/fame_output.txt");
+			if (output.exists())
+				output.delete();
+			output.createNewFile();
+		}
+		catch(IOException e) {
+			System.out.println("Error: Unable to touch file \"fame_output.txt\".");
+			System.exit(0);
+		}
+		catch(Exception e) {
+			System.out.println(e.getMessage());
+		}
+	}
 	
 	//==========================================================================
 	//
@@ -606,6 +783,20 @@ public class FastMasterEqn implements PDepKineticsEstimator {
 			}
 			return str;
 		}
+		
+		public boolean includeAsIsomer(PDepNetwork pdn) {
+			for (ListIterator iter = pdn.getPDepWellListIterator(); iter.hasNext(); ) {
+				PDepWell pdw = (PDepWell) iter.next();
+				for (Iterator iter2 = pdw.getPathsIterator(); iter2.hasNext(); ) {
+					PDepPathReaction pdpr = (PDepPathReaction) iter2.next();
+					if (pdpr.getProductList().equals(speciesList))
+						return (pdpr.isProduct() || pdpr.isReactant());
+				}
+			}
+			return false;
+		}
+		
+		
 	}
 	
 	//==========================================================================
