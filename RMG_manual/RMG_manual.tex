@@ -1,0 +1,891 @@
+\documentclass[12pt,letterpaper]{article}
+
+\usepackage{pslatex}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{multirow}
+\usepackage{url}
+\usepackage{hyperref}
+\begin{document}
+
+\title{RMG Instruction Manual}
+\author{Green Group \\ Massachusetts Institute of Technology}
+\date{\today}
+\maketitle
+\pagenumbering{roman}
+
+\newpage
+
+\tableofcontents
+\setcounter{tocdepth}{4}
+
+\newpage
+\setcounter{page}{0}
+\pagenumbering{arabic}
+
+\section{Introduction}
+RMG is an automatic reaction mechanism generator. It is an object-oriented
+program written in Java, which provides a stable, robust programming architecture
+that is easily extended, modified, and improved. The core of RMG
+is two data structures: graphs and trees. The graphs represent the chemical
+structures, and the trees represent the databases of thermodynamic and
+kinetic data.\\
+
+RMG was developed by Dr. Jing Song under the guidance of Prof.
+William Green in the Department of Chemical Engineering at the Massachusetts
+Institute of Technology.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Installing RMG}
+
+\subsection{Installation and License Requirements} \label{install requirements}
+RMG is intended to be an open source program, available to the general
+public free of charge. Currently, that is not the case. RMG does require
+that the user obtain a license for some of RMG's dependencies, and \textbf{it is the
+user's responsibility to ensure these licenses have been obtained}.
+
+To install RMG, you will need:
+
+\begin{enumerate}
+\item The JAVA 2 Platform, Standard Edition. \\ \url{http://java.sun.com/j2se/index.jsp}
+\item The DASPK3.1 solver package, which is available for research purposes but \underline{is} subject to copywrite restrictions. \\ \url{http://www.engineering.ucsb.edu/~cse/software.html}
+\end{enumerate}
+\subsection{Linux Installation}\label{linux installation}
+To install RMG on a linux computer:  {\bf SANDEEP:  Are you going to create a makefile?  How do we deal with compiling DASPK once it has been untarred?}
+
+\begin{enumerate}
+\item Create the directory in which you want to install RMG.\\
+\texttt{\$ mkdir <dir>} \\
+For the purposes of this document, we will set the directory to:\\  \texttt{\$ mkdir /usr/share/RMG}
+
+\item Set the RMG environment variable as the directory created in the first step:\\
+\texttt{\$ RMG="<dir>"} \\
+In our example, you would code:  \texttt{\$ RMG="/usr/share/RMG"}
+
+\item Download the \texttt{RMG.tar}, untar it, and move it to the \$RMG directory:\\
+\texttt{\$ tar -xvf RMG.tar} \\
+\texttt{\$ mv RMG/* \$RMG}
+
+\item  Before running RMG, a shared library file has to be generated which RMG will use to perform numerical integration.  Currently RMG uses DASPK3.0 (see Section \ref{install requirements}).  Copy the file \texttt{daskpk31.tgz} to the directory \texttt{"\$RMG/lib"} and untar it.\\
+\texttt{\$ tar -zxvf daspk31.tgz}
+\\ NOW WHAT?!
+
+\item If you want to rum RMG from the bash shell, use your preferred editor and add the following lines to your \texttt{.bashrc} file: \\
+\texttt{RMG="<dir>"} (e.g. \texttt{RMG="/usr/share/RMG"} )\\
+\texttt{LD\_LIBRARY\_PATH=\$LD\_LIBRARY\_PATH:\$RMG/lib}
+
+\end{enumerate}
+
+\subsection{Windows Installation}\label{windows installation}
+To install RMG on a Windows computer, unzip the \texttt{RMG.zip} file to a directory of your choice (e.g. \texttt{C://Programs/RMG}).\\
+Once RMG is unzipped, you will need to create the \texttt{daspk.dll} library.  The file \texttt{daspk.dll} can be created using either Compaq Visual Fortran or Microsoft Visual C++.
+\\ {\bf is the following valid only for MS Visual C++?  Should we drop the CV Fortran?}
+\begin{enumerate}
+\item Create a new empty Win32 Dynamic-Link Library project called daspk.
+\item Go to project $\rightarrow$ add to project $\rightarrow$ files.
+\item Add the following DASPK files (located in the DASPK3.0 directory):\\
+\begin{tabular}{llll}
+\texttt{adf\_dummy.f} & \texttt{daux.f}  & \texttt{dbanpre.f}  & \texttt{ddaspk.f} \\
+\texttt{dilupre.f} & \texttt{dlinpk.f}  & \texttt{drbdpre.f}  & \texttt{drbgpre.f} \\
+\texttt{dsensd.f} & \texttt{dsparsk.f}  & \texttt{mpi\_dummy.f}  &
+\end{tabular}
+
+\item Add the following C++ files (located in the /RMG/software/CPlusWrapper directory):\\
+\begin{tabular}{llll}
+\texttt{cdaspk.h} & \texttt{cdaspk.cpp}  & \texttt{JDASPK.cpp}  & \texttt{jing\_rxnSys\_JDASPK.h} \\
+\texttt{parameter.h} & \texttt{parameter.cpp}  & \texttt{reaction.h}  & \texttt{reaction.cpp}
+\end{tabular}
+
+\item Go to Build $\rightarrow$ Build \texttt{daspk.dll}
+
+\item Move \texttt{daspk.dll} to the \texttt{RMG/software/rmg} directory.
+
+\end{enumerate}
+\subsection{ChemGreen Installation}
+
+TO BE ADDED
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Creating an Initialization File}
+To run RMG, you must specify the initial conditions and the model generation
+parameters, all of which are contained in a single file, \texttt{condition.txt}. If you
+are running RMG on a linux computer, the file \texttt{condition.txt} can be located
+in any directory, although it is advised that you create a special directory
+for RMG simulations, since each \texttt{condition.txt} creates its own subdirectories.
+If you are using a Windows machine, the \texttt{condition.txt} must remain in
+\texttt{RMG/condition} (please consult Section \ref{running in windows}).\\
+The \texttt{condition.txt} file should specify the following conditions (in order):
+
+\begin{enumerate}
+\item Whether to restart a prior run
+\item The main database
+\item The primary thermodynamic library
+\item The initial temperature and pressure of the system
+\item The name, concentration, and chemical structure of the reactants
+\item The specification and concentration of the inert gas(es)
+\item The reaction families selected for modeling the system
+\item The model enlarger
+\item The finish controller
+\item The dynamic simulator
+\item Sensitivity analysis
+\item The primary reaction library
+\end{enumerate}
+
+For Linux operation, the name \texttt{condition.txt} is variable. As you'll see in
+Section \ref{running in linux}, you can change the name of the initialization file, so long as it
+remains a \texttt{.txt} file. For Windows operation, the name of the file must remain
+\texttt{condition.txt}.
+
+\subsection{Restart}\label{restart}
+The first item in the file \texttt{condition.txt} is the restart command. Whenever
+RMG runs the \texttt{condition.txt} file, it creates a new directory (in the same directory
+as the initialization file): \texttt{./restart/}. There are five text files within
+the new restart directory: \texttt{allSpecies.txt}, \texttt{coreSpecies.txt}, \texttt{edgeSpecies.txt}, \texttt{coreReactions.txt}, and \texttt{edgeReactions.txt}. See Section \ref{RMG output} for a description of
+these files.\\
+
+There are two options for the restart command: \texttt{true} and \texttt{false}.\\
+
+\texttt{Restart: true} \\
+
+When the restart is set to true, RMG will read the five files in the \texttt{./restart/}
+directory and resume the simulation. The restart command can be very
+useful. If RMG ever crashes, it is possible to rerun the simulation. Similarly,
+with the restart command you can run a simulation under a given set of
+conditions and then rerun the same simulation with different conditions (e.g.
+a new temperature, reactant concentration, etc.). Alternatively, you can use
+the restart to change which species are examined in the sensitivity analysis.
+If the simulation is new, then the restart command must be set to:\\
+
+\texttt{Restart: false}
+
+\subsection{Database}
+
+In the main RMG directory is a directory of databases: \texttt{\$RMG/databases/}.
+By default, there is one directory within the directory of databases: \texttt{\$RMG/databases/database}.
+It is possible, however, to create multiple databases. For example, you
+can copy the entire contents of the default database into a new database,
+\texttt{\$RMG/databases/databaseII}, and change some of the values.
+Unless you have created your own databases, the Database setting should
+be left at the default value: \\
+
+\texttt{Database: database}
+
+\subsection{Primary Thermo Library}\label{primary thermo library}
+
+By default, RMG will calculate the thermodynamic properties of the species
+from Benson additivity formulas. In general, the group-additivity results are
+suitably accurate. However, if you would like to override the default settings,
+you may specify the thermodynamic properties of species in the primaryThermoLibrary.
+When a species is specified in the primaryThermoLibrary, RMG
+will automatically use those thermodynamic properties instead of generating
+them from Benson's formulas. Multiple libraries may be created, if so desired.
+Please see Section \ref{editing thermo database} for details on editing the primary thermo library.
+In general, it is best to leave the PrimaryThermoLibrary set to its default
+value:\\
+
+\texttt{PrimaryThermoLibrary: primaryThermoLibary}
+
+\subsection{Initial Conditions}
+
+The fourth item in the initialization file is the initial temperature and pressure.
+Currently, RMG can only model constant temperature and volume
+systems. Future versions will allow for variable temperature and pressure.
+Please note that the temperature and pressure must be accompanied by a
+unit (in parentheses). Suitable temperature units are: K, F, and C. Suitable
+pressure units are: atm, torr, pa, and bar. The following example assumes
+that the system begins at 600 Kelvin and 200 atmospheres. \\
+
+\begin{tabular}{l}
+\texttt{TemperatureModel: Constant 600 (K)} \\
+\texttt{PressureModel: Constant 200 (atm)}
+\end{tabular}
+
+\subsection{Reactants}
+
+The name, concentration, and structure of each reactant must be specified.
+For each reactant, the first line should include the reactant number (e.g.
+(1)), its name (e.g. C2O2), and it's concentration with units (e.g. 4.09e-3
+(mol/cm3)). The next line defines the reactant structure, described by an
+adjacency list. ChemGreen is a useful tool for generating adjacency lists.
+Please note that you may choose the simplified adjacency list in which the
+hydrogen atoms are omitted (shown below). \\
+
+
+\begin{tabular}{lllll}
+\multicolumn{5}{l}{\texttt{InitialStatus:}} \\
+\multicolumn{5}{l}{\texttt{(1) C2O2. 4.09e-3 (mol/cm3)}} \\
+\texttt{1}   & \texttt{C} & \texttt{0} & \texttt{\{2,D\}} & \texttt{\{3,D\} }\\
+\texttt{2}   & \texttt{C} & \texttt{0} & \texttt{\{1,D\}} & \texttt{\{4,D\} } \\
+\texttt{3}   & \texttt{O} & \texttt{0} & \texttt{\{1,D\}} &\\
+\texttt{4}   & \texttt{O} & \texttt{0} & \texttt{\{2,D\}} & \\
+& & & & \\
+\multicolumn{5}{l}{\texttt{(2) O2 1.1E-7 (mol/cm3) }}\\
+\texttt{1} & \texttt{O} & \texttt{0} & \texttt{\{2,D\}} & \\
+\texttt{2} & \texttt{O} & \texttt{0} & \texttt{\{1,D\}} & \\
+\texttt{END} \\
+\end{tabular} \\
+
+
+Please note that the keyword ``\texttt{END}" must be placed at the end of the
+InitialStatus section.\\
+
+If one of the reactants is a resonance isomer, you only need to define one
+of the resonance structures, and RMG will automatically detect the others.
+
+\subsection{Inert Gases}
+
+Following InitialStatus, the initialization file specifies which inert gases, if any,
+are used. Currently RMG can handle three inert gases: N$_2$, Ne, and Ar. If
+one of the gases is not used, set the concentration to 0.0 (mol/cm3). If no
+bath gas is used, set all concentrations to zero. In the example below, there
+is no nitrogen, the neon is omitted, and the argon concentration is 2.21E-6
+(mol/cm3).\\
+
+\begin{tabular}{l}
+\texttt{InertGas:} \\
+\texttt{N2 0.0 (mol/cm3)}\\
+\texttt{Ar 2.21E-6 (mol/cm3)} \\
+\texttt{END}
+\end{tabular}\\
+
+Please note that the keyword ``\texttt{END}" must be placed at the end of the
+InertGas section.
+\subsection{Reaction Model Enlarger}
+
+The Reaction Model Enlarger specifies the rules for reaction mechanism
+growth. Currently there is only one setting for mechanism growth, so please
+leave this entry as it is: \\
+
+\texttt{ReactionModelEnlarger: RateBasedModelEnlarger} \\
+
+As RMG expands, other model enlargers will become available (e.g. for
+pressure-dependent reaction networks).
+
+\subsection{Finish Controller}
+
+The Finish Controller defines the termination rules for model growth. Additionally,
+it includes the precision parameters such as reaction time, conversion,
+and error tolerance. Currently, there is only one finish controller. Future
+versions of RMG will have additional finish controllers, such as pressure dependence.\\
+
+Below the Finish Controller line, you must specify the goal. The goal tells
+the program when to terminate the reaction model expansion. There are two
+goal options: \texttt{ReactionTime} and \texttt{Conversion}. \texttt{ReactionTime} must be followed
+by a number and a time unit. \texttt{Conversion} must be followed by a reactant
+species name and a number between 0 and 1. \\
+
+Beneath the goal, you must specify the error tolerance. Typical values
+for the error tolerance are between 0.0001 and 0.5. A smaller error tolerance
+corresponds to a larger model; consequently, it is advised to use a large
+error tolerance when generating a new model. Once the initial simulation
+has finished, you can tighten the tolerance and apply the restart function to
+generate an expanded model.
+In the first example, the reaction will run for 0.001 seconds. In the second
+example, the reaction will run until 90\% of the C$_2$O$_2$ is consumed and has a
+much tighter error tolerance. \\
+
+\begin{tabular}{l}
+\texttt{FinishController: RateBasedFinishController} \\
+\texttt{(1) Goal ReactionTime: 0.001 (sec)} \\
+\texttt{(2) Error Tolerance: 0.1} \\
+\end{tabular}\\
+
+or\\
+
+\begin{tabular}{l}
+\texttt{FinishController: RateBasedFinishController} \\
+\texttt{(1) Goal Conversion: C2O2 0.90} \\
+\texttt{(2) Error Tolerance: 0.0001} \\
+\end{tabular}\\
+
+For the initial model run, it is often preferable to use \texttt{Goal Conversion}
+instead of \texttt{Goal Reaction Time}, since it is difficult to judge \textit{a priori} what the
+reaction time should be.\\
+
+For a more detailed description on rate-based model enlargement, please
+consult the paper ``Rate-Based Construction of Kinetic Models for Complex
+Systems" by Roberta G. Susnow, Anthony M. Dean, William H. Green,
+Pawel K. Peczak, and Linda J. Broadbelt, in the \textit{Journal of Physical Chemistry
+A}, Vol. 101, pages 3731-40, 1997.
+
+\subsection{Dynamic Simulator}
+
+RMG uses the DASPK dynamic solver. Future versions of RMG might include
+the CHEMKIN dynamic solver. \\
+
+The first line beneath the solver is \texttt{TimeStep}, which is followed by a number
+and a unit of time. The \texttt{TimeStep} indicates how frequently RMG should
+check to see if the model needs to be enlarged. In the current example, RMG
+will check every second of simulation time to see whether the error tolerance
+is satisfied. The next two lines specify the absolute and relative tolerance,
+respectively. Common values for the absolute tolerance are 1e-15 to 1e-25.
+Relative tolerance is usually 1e-3 to 1e-5. \\
+
+\begin{tabular}{l}
+\texttt{DynamicSimulator: DASPK} \\
+\texttt{TimeStep: 1 (sec)} \\
+\texttt{Atol: 1e-20} \\
+\texttt{Rtol: 1e-4} \\
+\end{tabular}\\
+
+
+\subsection{Sensitivity Analysis}
+
+As long as DASPK is chosen for the dynamic solver, RMG can perform
+sensitivity analysis and generate error bars on the concentration profiles.
+The sensitivity analysis is based upon first-order sensitivity coefficients and
+uncertainties in the rate constants. To utilize the sensitivity analysis, either
+the first or second line must be set to \texttt{on}. If both \texttt{Error bars} and \texttt{Display sensitivity coefficients} are set to off, then RMG will not perform a sensitivity
+analysis.\\
+
+When the option to generate error bars is turned on, RMG calculates
+the upper and lower bounds on the concentration profiles for all core species.
+These upper and lower bounds are generated by the first-order sensitivity
+equation:\\
+
+\begin{equation}
+\ln C_i \left( t,\overrightarrow{k} + \Delta \overrightarrow{k} \right) \approx \ln C_i \left( t,\overrightarrow{k} \right) + \sum_j \frac{\partial \ln C_i}{\partial \ln k_j} \Delta \ln k_j \nonumber
+\end{equation} 
+
+where $C_i$ is the concentration of the $i^{\underline{th}}$ species, and $\overrightarrow{k}$ is the vector of rate
+constants.\\
+
+If the option to display sensitivity coefficients is turned on, you must
+specify a list of species for which the sensitivities should be displayed. The
+output file will then include the sensitivities of those species with respect to
+all the rate constants, all the heats of formations, and the initial concentrations
+of all the reactants. Additionally, if you choose to display the sensitivity
+coefficients, RMG will print a list of the five reactions that contribute the
+most to the uncertainty in the concentration (for each species selected by the
+user).\\
+
+Sensitivities to rate constants are normalized sensitivities ($\partial \ln C_i/ \partial \ln k_j$),
+and sensitivities to heats of formation are semi-normalized ($ \partial \ln C_i/ \partial \Delta H_f$ ).
+The contribution of a reaction to the uncertainty is estimated as the product
+of the normalized sensitivity and the uncertainty in the rate constant ($\Delta \ln k$).
+In the following example, RMG will perform a sensitivity analysis. Error
+bars will be generated for all the species, and the sensitivity coefficients will
+be generated for carbon monoxide, carbon dioxide, methane, and water.\\
+
+\begin{tabular}{l}
+\texttt{Error bars: On} \\
+\texttt{Display sensitivity coefficients: Off} \\
+\texttt{Display sensitivity information for:} \\
+\texttt{CO} \\
+\texttt{CO2} \\
+\texttt{CH4} \\
+\texttt{H2O} \\
+\texttt{END} \\
+\end{tabular}\\
+
+Please note that the keyword ``\texttt{END}" must be placed at the end of the
+Error bars section.
+
+\subsection{Primary Reaction Library}
+
+The final section of the file \texttt{condition.txt} specifies which, if any, primary reaction
+libraries are used. Currently, the only available reaction library included
+with RMG is the Leeds' oxidation library. You can specify your own primary
+reaction library in the location section. Please note that the oxidation library
+should not be used for pyrolysis models. In the following example, the user
+has created her own reaction library with a few additional reactions specific
+to n-butane, and these reactions are to be used in addition to the Leeds'
+oxidation library.\\
+
+\begin{tabular}{l}
+\texttt{PrimaryReactionLibrary: on}\\
+\texttt{Name: nbutane}\\
+\texttt{Location: database/primaryReactionLibrary/nbutane}\\
+\texttt{Name: Leeds}\\
+\texttt{Location: database/primaryReactionLibrary/combustion\_core/version5}\\
+\texttt{END}
+\end{tabular}\\
+
+
+Please note that the keyword ``\texttt{END}" must be placed at the end of the
+Primary Reaction Library section. Because the units for the Arrhenius parameters
+are given in each library, the different libraries can have different units.
+Additionally, if the same reaction occurs more than once in the combined
+library, the first instance of it from the first library in which it appears is the
+one that gets used.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Modifying RMG}
+\subsection{Editing the Thermodynamic Database}\label{editing thermo database}
+As mentioned in Section \ref{primary thermo library}, it is possible to override the default thermodynamic
+values and substitute your own thermodynamic data.
+
+\subsubsection{Basic Structure of the Thermo Database}
+
+The thermodynamics database consists of three sections, each of which is an ASCII file that can be edited to alter the information. This description
+applies to non-radical groups. There are other tree/library/dictionary files
+for radical groups, ring corrections, and other corrections. The nomenclature
+is different, but they would be edited in a similar way. The files of interest
+are located in the directory: \texttt{\$RMG/databases/database/thermo/}.
+The three files are described below. \\
+
+\textbf{Dictionary File} (\texttt{Group\_Dictionary.txt}): This file contains the name and
+adjacency list (structure) for all of the nodes contained within the thermo
+tree. The nomenclature within all three files must be identical. The asterisk
+``*" denotes the central atom in the group for which the group value is defined.
+The format for each line in the adjacency list is: atom \#, * if central atom,
+element, \# of radicals (0, 1, 2) on element, bonding.\\
+
+\begin{tabular}{llllll}
+\multicolumn{6}{l}{\texttt{Cb-(Cds-Cdd-Cd)}} \\
+\texttt{1} & \texttt{*} & \texttt{Cb}  & \texttt{0} & \texttt{\{2,S\}} &  \\
+\texttt{2} &            & \texttt{Cd}  & \texttt{0} & \texttt{\{1,S\}} & \texttt{\{3,D\}} \\
+\texttt{3} &            & \texttt{Cdd} & \texttt{0} & \texttt{\{2,D\}} & \texttt{\{4,D\}} \\
+\texttt{4} &            & \texttt{C}   & \texttt{0} & \texttt{\{3,D\}} & \\
+\end{tabular}\\
+
+\textbf{Tree File} (\texttt{Group\_Tree.txt}): This file defines the tree structure of the
+database. The nodes at any particular level are defined by including the text
+``\texttt{Lx:}" prior to the name of the group at that node, where ``\texttt{x}" is a number
+corresponding to the level in the tree. A sample is given below:\\
+
+\begin{tabular}{llllllll}
+\texttt{L0:} & \texttt{R} & & & & & & \\
+             & \texttt{L1:} & \texttt{C} & & & & & \\
+             &              & \texttt{L2:} & \texttt{Cbf} & & & & \\
+             &              &              & \texttt{L3:}  & \multicolumn{3}{l}{\texttt{Cbf-CbCbCbf}} & \\
+             &              & \texttt{L2:} & \texttt{Cb}  & & & & \\
+             &              &              & \texttt{L3:}  & \multicolumn{2}{l}{\texttt{Cb-H}} & & \\
+             &              &              & \texttt{L3:}  & \multicolumn{2}{l}{\texttt{Cb-Os}} & & \\
+             &              &              & \texttt{L3:}  & \multicolumn{2}{l}{\texttt{Cb-C}} & & \\
+             &              &              & & \texttt{L4:}  & \multicolumn{2}{l}{\texttt{Cb-Cs}} & \\
+	     &              &              & & \texttt{L4:}  & \multicolumn{2}{l}{\texttt{Cb-Cds}} & \\
+	     &              &              & & & \texttt{L5:}  & \multicolumn{2}{l}{\texttt{Cb-(Cds-Od) // Cb-CO}} \\
+	     &              &              & & & \texttt{L5:}  & \multicolumn{2}{l}{\texttt{Cb-(Cds-Cd)}} \\
+	     &              &              & & & & \texttt{L6:}  & \texttt{Cb-(Cds-Cds) // Cb-Cd} \\
+             &              &              & & \texttt{L4:}  & \multicolumn{2}{l}{\texttt{Cb-Cb}} & \\
+             &              & \texttt{L2:} & \texttt{Ct} & & & & \\
+\end{tabular} \\
+
+Note that the indentation is not necessary because it is the ``\texttt{Lx:}" that
+the computer reads, but is very helpful in making these files human readable.\\
+
+\textbf{Library File} (\texttt{Group\_Library.txt}): This is the archive of the actual data
+associated with a given group in the tree and dictionary. There are 15 (space
+or tab separated) fields in the thermo library to describe the group. The
+units for enthalpy are kcal/mole, and the units for entropy and heat capacity
+(Cp) are cal/mole-K. The columns are described in Table \ref{library table}.\\
+
+\begin{table}
+\begin{tabular}{|l|p{11.1cm}|} \hline
+Column \# & What it contains \\ \hline
+1     & A unique number; this does not correspond to any other part of the thermo database, but numbering sequentially is most logical \\ \hline
+2     & Group name; same as in tree and dictionary \\ \hline
+3-4   & Enthalpy and Entropy at 298K \\ \hline
+5-11  & Cp at T = 300, 400, 500, 600, 800, 1000, and 1500K \\ \hline
+12-13 & dH and dS: absolute uncertainties in
+the enthalpy/entropy estimates \\ \hline
+14    & dCp: absolute uncertainty in the Cp estimate
+(no temperature consideration) \\ \hline
+15    & Comments Section: usually citing the source of
+the data or comments on the reliability \\ \hline
+\end{tabular} \\
+\caption{Description of Library File Structure}
+\label{library table}
+\end{table}
+A sample entry can be found in Section \ref{changing thermo data}.
+
+\subsubsection{Thermo Database and Adjacency List Notation}
+
+In general, the thermo database uses what are known as function group
+elements. Function group elements serve to define the atom and its bonding
+environment. These definitions serve to simplify the adjacency lists of groups
+and allow for more general descriptions of groups. The notation used in the
+database is shown below. New functional group elements cannot be added to
+RMG in a simple way, as they must be hard-coded into the RMG software
+with the appropriate properties.\\
+
+If you examine the file \texttt{Group\_Dictionary.txt}, you will see that these groups
+are used extensively, even more so that the actual atoms C, H, or O. You
+will also see that groups can be defined using a bracketed notation, which
+simply means that either atom/functional group element will generate this
+node. For example:\\
+
+\begin{tabular}{lllll}
+\multicolumn{5}{l}{\texttt{Cb-Cds}} \\
+\texttt{1} &  \texttt{*} &  \texttt{Cb} & \texttt{0} & \texttt{\{2,S\}} \\
+\texttt{2} &             &  \texttt{\{Cd,CO\}} &  \texttt{0} & \texttt{\{1,S\}}
+\end{tabular}
+
+In this example, the second ``element" is actually either Cd or CO. The
+reason that either Cd or CO will generate the same node is because both
+fall under the more general Cds definition, which is a carbon atom with one
+double and two single bonds. This can also be useful if there is a secondary
+effect and all that matters is that there is a $\pi$-bond present, but the fact that
+it is C=O or C=C does not matter. This is not used very much in
+the thermo database, but occurs much more in the kinetics databases where
+radical delocalization can play a major role in determining the rate constant
+of a reaction. A table of the possible functional groups can be seen in Table \ref{functional group table}.
+
+\begin{table}
+\begin{tabular}{|l|c|p{9cm}|} \hline
+Cs  & The graphics & Carbon bonded to four single bonds \\ \hline
+Cd  & will be added & Carbon bonded to a double bond and two single bonds.  (The other end of the double bond is carbon) \\ \hline
+Cdd & later & Carbon bonded to two double bonds \\ \hline
+Ct  & & Carbon bonded to a triple bond and single bond \\ \hline
+Cb  & & Carbon bonded to two benzene bonds and a single bond.  (The carbon belongs to only one benzene ring) \\ \hline
+Cbf & & Carbon bonded to three benzene bonds (the carbon belongs to two or three benzene rings) \\ \hline
+CO  & & Carbon bonded to a double bond and two single bonds.  (The other end of the double bond is oxygen) \\ \hline
+Os  & & Oxygen bonded to two single bonds \\ \hline
+Od  & & Oxygen bonded to a double bond \\ \hline
+Oa  & & Oxygen triplet \\ \hline
+R   & & Any atom \\ \hline
+R!H & & Any non-hydrogen atom \\ \hline
+\end{tabular}
+\caption{Functional Group Elements}
+\label{functional group table}
+\end{table}
+
+\subsubsection{Changing the Data for an Existing Group}\label{changing thermo data}
+
+This task is relatively simple, as it only involves commenting out the line you
+want to replace and putting new values in its place. Only the file \texttt{Group\_Library.txt}
+will need to be altered in this case. Perhaps the simplest way to show this
+is through an example. Commenting out a line can be accomplished by
+introducing a ``\texttt{//}" at the start of the line.\\
+
+Let's assume that you have the following group values, which are for a
+carbon in a benzene ring attached to an H and to a single-bonded O:\\
+
+{\tiny{
+\begin{tabular}{lllllllllllllll}
+\texttt{\#} & \texttt{Group} & \texttt{H} & \texttt{S} & \texttt{Cp300} & \texttt{Cp400} & \texttt{Cp500} & \texttt{Cp600} & \texttt{Cp800} & \texttt{Cp1000} & \texttt{Cp1500} & \texttt{dH} & \texttt{dS} & \texttt{dCp} & \texttt{Note} \\ \hline
+\texttt{7} & \texttt{Cb-H} & \texttt{3.3} & \texttt{11.53} & \texttt{3.24} & \texttt{4.44} & \texttt{5.46} & \texttt{6.3} & \texttt{7.54} & \texttt{8.41} & \texttt{9.73} & \texttt{0.11} & \texttt{0.12} & \texttt{0.1} & \texttt{Cb-H Benson} \\
+\texttt{8} & \texttt{Cb-Os} & \texttt{-0.9} & \texttt{-10.2} & \texttt{3.9} & \texttt{5.3} & \texttt{6.2} & \texttt{6.6} & \texttt{6.9} & \texttt{6.9} & \texttt{7.07} & \texttt{0.16} & \texttt{0.1} & \texttt{0.1} & \texttt{Cb-O Benson} \\
+\end{tabular}\\
+}}
+
+Suppose you think that the group enthalpy for Cb-H is actually 3.85
+kcal/mole instead of 3.3 kcal/mole, and you are quite sure, so the dH = 0.03 instead of 0.11. The suggested way
+to change this would be to comment out (deletion is also an option, but
+not advised) line 7 and add a similar line with the new values. It is also
+suggested that you describe why you have alter the database in the "Note"
+section, potentially providing a URL to a more detailed description. The
+new scenario would look like this:\\
+
+{\tiny{
+\begin{tabular}{lllllllllllllll}
+\texttt{\#} & \texttt{Group} & \texttt{H} & \texttt{S} & \texttt{Cp300} & \texttt{Cp400} & \texttt{Cp500} & \texttt{Cp600} & \texttt{Cp800} & \texttt{Cp1000} & \texttt{Cp1500} & \texttt{dH} & \texttt{dS} & \texttt{dCp} & \texttt{Note} \\ \hline
+\texttt{//7} & \texttt{Cb-H} & \texttt{3.3} & \texttt{11.53} & \texttt{3.24} & \texttt{4.44} & \texttt{5.46} & \texttt{6.3} & \texttt{7.54} & \texttt{8.41} & \texttt{9.73} & \texttt{0.11} & \texttt{0.12} & \texttt{0.1} & \texttt{Cb-H Benson} \\
+\texttt{7} & \texttt{Cb-H} & \texttt{3.85} & \texttt{11.53} & \texttt{3.24} & \texttt{4.44} & \texttt{5.46} & \texttt{6.3} & \texttt{7.54} & \texttt{8.41} & \texttt{9.73} & \texttt{0.03} & \texttt{0.12} & \texttt{0.1} & \texttt{My Value is so much better} \\
+\texttt{8} & \texttt{Cb-Os} & \texttt{-0.9} & \texttt{-10.2} & \texttt{3.9} & \texttt{5.3} & \texttt{6.2} & \texttt{6.6} & \texttt{6.9} & \texttt{6.9} & \texttt{7.07} & \texttt{0.16} & \texttt{0.1} & \texttt{0.1} & \texttt{Cb-O Benson} \\
+\end{tabular}\\
+}}
+
+You may also refer one group value to another if you believe that they
+should be the same. This is done by putting the name of the group
+that has the same thermo parameters in column 3 and leaving columns 4-
+15 blank. Effectively, if RMG encounters the group and finds the name of
+another group instead of numerical value, it will assign the current group the
+same values that occur in the referred group.\\
+
+\begin{tabular}{lllll}
+\texttt{253} & \texttt{Cb-(Os-(Os-Cs))} & \texttt{-2.5} & \texttt{-8.5} & \texttt{...} \\
+\texttt{254} & \texttt{Cb-(Os-(Os-H))} & \texttt{Cb-(Os-(Os-Cs))} &
+\end{tabular} \\
+
+The above example would assume that the group values for \#254 are
+identical to those of \#253.\\
+
+This referencing does not need to be done if the group to which you want
+to refer lies directly above the current group in the tree, because if the tree
+does not have a certain node defined it will look back up the tree to find the
+nearest relative and use those values.\\
+
+
+\begin{tabular}{lllll}
+\texttt{253} & \texttt{Cb-(Os-(Os-Cs))} & \texttt{-2.5} & \texttt{-8.5} & \texttt{...} \\
+\texttt{254} & \texttt{Cb-(Os-(Os-H))} & \texttt{Cb-(Os-(Os-Cs))} & \\
+\texttt{255} & \texttt{Cb-(Os-(Os-(Cs-OsHH)))} & \texttt{Cb-(Os-(Os-Cs))} & \\
+\end{tabular} \\
+
+
+In this case, the referring of \#255 back to \#253 is unnecessary because
+RMG would refer back to \#253 by default if it did not find any values for
+\#255. This redundancy will not create any problems within RMG, but it is
+simply unnecessary.\\
+
+If you are adding a new group, you will need to follow the procedure
+below for adding a group to the tree, dictionary, and library files as well.\\
+
+Please be aware that version control may be a significant issue with the databases and should
+be addressed early to ensure consistency within the group.
+
+\subsubsection{Adding Additional Nodes to the Thermo Database}
+
+This task is more complicated than the previous example because it involves altering all three database
+files in a consistent manner. It is worth noting that the order in which
+species are added to the dictionary and library does not matter; however,
+the position where the new group is added to the tree is of the utmost
+importance. It is useful to create the tree and dictionary with items in the
+same order.  This ordering will facilitate cross checking and debugging if needed. Since all
+files must use the same nomenclature, the ability to search may make consistent
+ordering unnecessary. The procedure is described below.\\
+
+\begin{enumerate}
+
+\item Find the appropriate location to place the new group and ensure that
+the nomenclature is unambiguous and unique. Placing the group in the
+incorrect location could cause incorrect estimates to be made when the
+tree is being searched. Using Chemgreen to navigate the tree structure
+is a useful way to find the location for your new group.\\
+
+\item Add the line of text to the \texttt{Group\_Tree.txt} file in the following form,
+where ``\texttt{x}" is the appropriate level. The following example is for a C-O-O-H off of a
+benzene ring.\\
+
+\texttt{Lx: Cb-(Os-(Os-H))}\\
+
+\item Using the same name as in the tree, append the file \texttt{Group\_Dictionary.txt} to define the structure of the group and its atom center (denoted by the *):
+
+\begin{tabular}{llllll}
+\multicolumn{6}{l}{\texttt{Cb-(Os-(Os-H))}} \\
+\texttt{1} & \texttt{*} & \texttt{Cb}  & \texttt{0} & \texttt{\{2,S\}} &  \\
+\texttt{2} &            & \texttt{O}  & \texttt{0} & \texttt{\{1,S\}} & \texttt{\{3,S\}} \\
+\texttt{3} &            & \texttt{O} & \texttt{0} & \texttt{\{2,S\}} & \texttt{\{4,S\}} \\
+\texttt{4} &            & \texttt{H}   & \texttt{0} & \texttt{\{3,S\}} & \\
+\end{tabular}\\
+
+\item Add the new group to the \texttt{Group\_Library.txt} file using the same nomenclature
+and whatever thermo data you have for the group. The format was shown in the previous section.\\
+
+\begin{tabular}{l}
+{\small{\texttt{2374 Cb-(Os-(Os-H)) 3.5 10.0 ... "I added this b/c ..."} }}\\
+\end{tabular}\\
+\end{enumerate}
+
+\subsection{Editing the Primary Reaction Library}
+
+A primary reaction library (PRLib) consists of four files: \texttt{reactions.txt}, \texttt{species.txt},
+\texttt{3rdBodyReactions.txt}, and \texttt{troeReactions.txt}. It is not necessary to define reactions
+for each of the files if the user does not wish to, but all four files must
+exist, and they must include the Unit declaration and Reaction headings.\\
+
+When you use a PRLib, all species and reactions in the library are immediately
+added to the mechanism, though the species come in with zero
+initial concentration unless otherwise specified in the input condition file.
+The user will see these reactions listed in the file \texttt{Final\_Model.txt}. PRLibs
+are particularly useful for (i) small molecule reactions which tend to deviate
+from the standard library values more significantly and (ii) to incorporate a
+set of known experimental values for key reactions.\\
+
+\begin{enumerate}
+
+\item The first file, \texttt{reactions.txt}, defines the standard reactions. The file has
+the structure shown in the following sample. Comments are denoted
+with ``\texttt{//}" and are ignored by the RMG parser.\\
+
+{\footnotesize{
+\begin{tabular}{l}
+\texttt{// Define the units} \\
+\texttt{// Units allowed for A are: "mol/liter/s" or "mol/cm3/s"} \\
+\texttt{// Units allowed for E are: "kcal/mol", "cal/mol", "kJ/mol", or "J/mol"} \\
+\\
+\texttt{Unit:} \\
+\texttt{A: mol/cm3/s}\\
+\texttt{E: kcal/mol}\\
+\\
+\texttt{Reactions:}\\
+\texttt{// The format is:}\\
+\texttt{// "R1 + R2 = P1 + P2 A n Ea dA dn dEa "}\\
+\texttt{// where R1, R2, P1, P2 are species; A, n, and Ea are the Arrhenius }\\
+\texttt{// parameters, and dA, dn, dEa are the errors in those parameters (normally} \\
+\texttt{// additive, but can also be multiplicative if a * comes before the number) }\\
+\texttt{O2 + CO = CO2 + O 1.26E13 0.00 196.90 *1.7 0 0 }\\
+\end{tabular}\\
+}}
+
+\item The species list is just a series of molecular names and connectivity
+lists, analogous to the formats used in the input file \texttt{condition.txt}. All
+species present in \texttt{reactions.txt} must be given a structure in \texttt{species.txt}.
+The structure should have the same format as the adjacency list shown
+in Section 3.1.6. Please note that the names that are used in the
+reaction library will be those used throughout the mechanism. In this
+manner, the user can adopt a preferred nomenclature for individual
+species.\\
+
+\item The next file is \texttt{3rdBodyReaction.txt}, which lists reactions involving a
+third body (bath gas). A sample file, with a 3rd-body reaction, is listed
+below. The first line defines the reaction using the same format as in \texttt{reactions.
+txt}. The next line lists collision efficiencies for various bath-gas
+species that scale the concentrations of particular species when calculating
+the total bath gas concentration. In the example below, CH$_4$ is
+particularly effective as a 3rd body, and its effective concentration is
+tripled.\\
+
+{\footnotesize{
+\begin{tabular}{l}
+\texttt{// Define the units} \\
+\texttt{// Units allowed for A are: "mol/liter/s" or "mol/cm3/s"} \\
+\texttt{// Units allowed for E are: "kcal/mol", "cal/mol", "kJ/mol", or "J/mol"} \\
+\\
+\texttt{Unit:} \\
+\texttt{A: mol/cm3/s} \\
+\texttt{E: kJ/mol} \\
+\\
+\texttt{Reactions:} \\
+\texttt{CO + O + M = CO2 + M 1.54E15 0.00 12.56 *1.2 0 0} \\
+\texttt{N2/0.4/ O2/0.4/ CO/0.75/ CO2/1.5/ H2O/6.5/ CH4/3.0/ C2H6/3.0/ AR/0.35/} \\
+\texttt{// the first line defines the reaction and Arrhenius parameters,} \\
+\texttt{// while the second gives the scaling factors for different bath gas species} \\
+\texttt{// which contribute to [M].} \\
+\end{tabular}\\
+}}
+
+\item The final file, \texttt{troeReactions.txt}, is present for specifying pressure-dependent
+reactions according to the Troe expression. The format of each reactions
+is the same as is used by ChemKin. For example:
+
+{\footnotesize{
+\begin{tabular}{l}
+\texttt{Unit:} \\
+\texttt{A: mol/cm3/s} \\
+\texttt{E: kJ/mol} \\
+\\
+\texttt{Reactions:} \\
+\texttt{C2H2 + H (+M) = C2H3 (+M) 8.43E12 0.00 10.81 *1.2 0 0} \\
+\texttt{N2/0.4/ O2/0.4/ CO/0.75/ CO2/1.5/ H2O/6.5/ CH4/3.0/ C2H6/3.0/ AR/0.35/} \\
+\texttt{LOW / 3.43E18 0.0 6.15 /} \\
+\texttt{TROE / 1 1 1 1231 /} \\
+\\
+\texttt{// the first two lines are very similar to the 3rdBodyReactions.txt format} \\
+\texttt{// the next like specifies either the low pressure limit Arrhenius} \\
+\texttt{// parameters, and the final line specifies the 3 or 4 Troe parameters} \\
+\texttt{// in the order: a, T***, T*, T** (the last parameter is optional).} \\
+\end{tabular}\\
+}}
+
+
+
+
+
+
+
+
+
+\end{enumerate}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Running RMG}
+\subsection{Running RMG from the Command Line in Linux}\label{running in linux}
+
+This section assumes that RMG is already installed according to the directions
+in Section \ref{linux installation}. Additionally, it is assumed that you have created a
+directory (either in your home directory or elsewhere) in which the initialization file \texttt{condition.
+txt} has been placed. In the example, we assume that we have created a
+directory \texttt{/hexane\_pyro}, which contains the condition file \texttt{hexane\_pyro.txt}.
+
+\begin{enumerate}
+\item Change the current working directory to the directory with the condition file:\\
+
+\texttt{\$ cd /hexane\_pyro/}\\
+
+\item Run the following Java command to launch the program (all one line):\\
+
+\texttt{\$ java -Xmx500m -classpath \$RMG/software/RMG RMG hexane\_pyro.txt
+> output \&} \\
+
+When RMG is started, it creates six subdirectories: \texttt{chemkin}, \texttt{fit3p},
+\texttt{GATPfit}, and \texttt{Restart}.\\
+
+In this example, all of the output from RMG is piped to a file output. The
+\texttt{> output} part of the command is optional but recommended. Please note
+that the Java option \texttt{-Xmx500m} is hardware specific. In this example, we
+assume that we can allot five hundred megabytes of memory for Java Virtual
+Machine running RMG; please consult a guide to Java for more information.
+To see the content of the output file as it is being generated, use the command:\\ \texttt{\$ tail -f output}.
+
+\end{enumerate}
+
+\subsection{Running RMG from the Command Line in Windows}\label{running in windows}
+
+Running RMG in Windows is a little different than under linux. The most
+important difference is the location and name of the condition file. In the
+Windows version of RMG, there is a condition directory in the RMG directory:
+\texttt{RMG/condition}. The \texttt{condition.txt} file must be placed inside this
+directory, and it must have the title \texttt{condition.txt}.\\
+
+To run RMG in Windows:
+
+\begin{enumerate}
+\item  Place the new \texttt{condition.txt} in \texttt{RMG/condition}\\
+
+\item  Open a DOS-prompt\\
+
+\item  Change directories to \texttt{RMG/software/rmg}\\
+
+\item  type \texttt{run}
+\end{enumerate}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Analyzing the Output}
+\subsection{RMG Output Files}\label{RMG output}
+
+RMG will generate several types of output files, each with a different purpose.
+For linux users, these files will be located in the same directory which
+contains the condition file; for Windows users, the output files are located
+in the directory \texttt{RMG/software/RMG/}. Generally, there are five outputs from
+RMG:
+
+\begin{enumerate}
+\item \texttt{output.txt}.  This is a large file that shows the many steps RMG went
+through to build the model, including the addition of each new species,
+concentrations and fluxes at all of the reported integration time steps, and generally the details as RMG builds the mechanism. It is useful
+for debugging if a problem occurs, but other output files are better if
+all you care about is the final model and its behavior. This file also
+lists the input file at the beginning.\\
+
+\item  \texttt{Final\_Model.txt}.  As its name would imply, this file contains the details of
+the final model created by RMG. It gives the total number of reactions
+and both the species in the model (core) and in the model's edge (those species
+whose flux was not high enough to be included in the model). It also
+gives all of the reactions included in the model, but does not list the
+species directly. If you want the species list, see the Chemkin file or
+the dictionary file (described below). After the list of reactions, the concentration
+and mole fraction profiles of each species are listed, based on
+the time step provided in the input file. This data can easily be pasted
+into a spreadsheeting program for analysis and plotting. If sensitivity
+information was requested, it would also be displayed in this file.\\
+
+\item \texttt{chem.inp} and \texttt{therm.dat} (located in \texttt{./chemkin}).  These are the Chemkin model and thermodynamic data input files
+of the model. The file \texttt{chem.inp} lists the elements, species, reactions,
+and thermodynamic data (without N$_2$, Ar, or Ne) for the model. The
+full list of thermodynamic data (with N$_2$, Ar, or Ne) can be found in
+\texttt{therm.dat}.\\
+
+\item \texttt{RMG\_Dictionary.txt}.  This file lists all the species by name
+that are used in the model, as well as their adjacency list;  consequently, it will allow to user to see a graphical representation of all species in the model. Typically the user will copy this file to an appropriate directory so that it can be read by Chemgreen (See Section \ref{view chemgreen} for further details).\\
+
+\item Restart files (located in \texttt{./Restart/}).  As mentioned in Section \ref{restart}, these five files are used if the job needs to be restarted.  The
+user does not ever need to interact with these files directly, but they do
+list more details than any of the other output files. The five files are:
+\texttt{coreSpecies.txt}, \texttt{coreReactions.txt}, \texttt{edgeSpecies.txt}, \texttt{allSpecies.txt} and \texttt{all
+Reactions.txt}. The file \texttt{coreSpecies.txt} lists the identification name/number
+for all species in the core model, \texttt{edgeSpecies.txt} lists the edge species
+identification name/number, and \texttt{allSpecies.txt} lists both the identification
+name/number and the structural data for all species in both the core and edge. The reaction files are similar except they list reaction data.\\
+
+\end{enumerate}
+
+\subsection{Viewing the Species in ChemGreen}\label{view chemgreen}
+
+When RMG has finished, it will create a file \texttt{RMG\_Dictionary.txt} in the same
+directory as the \texttt{condition.txt} file. This file contains a list of all the core species
+(usually the edge species are too numerous to be of use); the core species can
+be viewed easily using ChemGreen. To view the core species, rename the first part of the file (this step isn't strictly necessary, but it is
+convenient and a good practice). The file must still end in ``\texttt{\_Dictionary.txt}"
+(e.g. \texttt{newname\_Dictionary.txt}) for ChemGreen to read it. Next, copy this file
+to the directory \texttt{/\$ChemGreen/.../thermo}. Once the file is in the thermo directory,
+double-click on the \texttt{chemgreen.bat} file to launch the program. Please
+note that you must close and relaunch the program every time you add a
+new file to the thermo directory. Once ChemGreen has launched, doubleclick
+on the folder \texttt{Thermo}. Your new file should appear in this directory (e.g. newname without the ``\texttt{\_Dictionary.txt}").\\
+
+A new window should appear with a list of names. Highlight any name
+and click "view" to see its structure.
+\end{document}
