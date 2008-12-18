@@ -11,7 +11,7 @@
 
 !	Program: fame
 !
-!	Version: 0.0.1							Date: 8 Sept 2008
+!	Version: 0.1.8							Date: 12 Dec 2008
 !
 ! 	Calculates phenomenological rate coefficients k(T, P) for a given potential
 ! 	energy surface using provided thermochemical and density-of-state data for
@@ -125,7 +125,7 @@ program fame
  
 	! Calculate density of states for each well
 	if (verbose >= 1) write (*,*), 'Calculating density of states...'
-	call calcDensityOfStates(simData%E, uniData, multiData)
+	call calcDensityOfStates(simData%E, uniData, multiData, verbose)
 
 	! Allocate memory for master equation matrices
 	allocate( 	Mi( 1:simData%nGrains, 1:simData%nGrains, 1:simData%nUni)	)
@@ -143,14 +143,16 @@ program fame
 	allocate( 	K( size(simData%Tlist), size(simData%Plist), &
 		1:(simData%nUni+simData%nMulti), 1:(simData%nUni+simData%nMulti) )	)
 
+	if (verbose >= 1) write (*,*), 'Calculating k(T, P)...'
+	
 	do t = 1, size(simData%Tlist)
 		
 		simData%T = simData%Tlist(t)
 		
 		! Calculate the equilibrium (Boltzmann) distributions
-		if (verbose >= 2) write (*,*), 'Determining equilibrium distributions at T =', simData%T, 'K...'
+		if (verbose >= 2) write (*,*), '\tDetermining equilibrium distributions at T =', simData%T, 'K...'
 		call calcEqDists(uniData, multiData, simData%E, simData%T, bi, bn)
-				
+		
 		do p = 1, size(simData%Plist)
 
 			! Part II: Construct full ME matrix
@@ -158,29 +160,38 @@ program fame
 	
 			simData%P = simData%Plist(p)
 
-			if (verbose >= 1) write (*,*), 'Calculating k(T, P) at T =', simData%T, 'K, P =', simData%P, 'bar...'
+			if (verbose >= 2) write (*,*), '\tCalculating k(T, P) at T =', simData%T, 'K, P =', simData%P, 'bar...'
 
 			! Reactive terms in master equation
-			if (verbose >= 2) write (*,*), '\tDetermining reactive terms in full master equation...'
+			if (verbose >= 3) write (*,*), '\t\tDetermining reactive terms in full master equation...'
 			call ME_reaction(simData, uniData, multiData, rxnData, Mi, Hn, Kij, Fim, Gnj, Jnm, bi, bn)
 			
 			! Collisional terms in master equation
-			if (verbose >= 2) write (*,*), '\tDetermining collisional terms in full master equation...'
+			if (verbose >= 3) write (*,*), '\t\tDetermining collisional terms in full master equation...'
 			call ME_collision(simData, uniData, Mi, bi)
 			
 			! Part III: Determine approximate phenomenological rate coefficients
 			! ------------------------------------------------------------------
 		
 			! Determine reservoir cutoff grains for each unimolecular isomer
-			if (verbose >= 2) write (*,*), '\tDetermining reservoir cutoff grains...'
-			call getReservoirCutoffs(simData, rxnData, nRes)
+			if (verbose >= 3) write (*,*), '\t\tDetermining reservoir cutoff grains...'
+			call getReservoirCutoffs(simData, uniData, rxnData, nRes)
+			do i = 1, size(nRes)
+				j = ceiling(uniData(i)%E / simData%dE) + 1
+				if (nRes(i) < j .or. nRes(i) >= simData%nGrains) then
+					write (*,*), 'ERROR: Invalid reservoir grain.'
+					stop
+				end if
+			end do
 			
 			! Apply steady state/reservoir state approximations
-			if (verbose >= 2) write (*,*), '\tApplying steady-state/reservoir-state approximation...'
-			call ssrsRates(simData, nRes, Mi, Hn, Kij, Fim, Gnj, Jnm, bi, bn, K(t,p,:,:))
+			if (verbose >= 3) write (*,*), '\t\tApplying steady-state/reservoir-state approximation...'
+			call ssrsRates(simData, uniData, rxnData, nRes, Mi, Hn, Kij, Fim, Gnj, Jnm, bi, bn, K(t,p,:,:))
 
 		end do
 	end do
+
+	write (*,*), K(4,3,:,:)
 
 	! Fit k(T, P) to approximate formula
 	if (verbose >= 1) write (*,*), 'Fitting k(T,P) to model...'
@@ -189,6 +200,13 @@ program fame
 	do i = 1, simData%nUni + simData%nMulti
 		do j = 1, simData%nUni + simData%nMulti
 			if (i /= j) then
+				if (sum(K(:,:,i,j)) == 0) then
+					write(*,*), 'ERROR in FAME execution: Rate coefficient(s) not properly estimated!'
+					stop
+				end if
+				if (verbose >=2) then
+					write (*,*), '\tFitting k(T,P) for isomers', i, 'and', j
+				end if
 				call fitRateModel(K(:,:,i,j), simData%Tlist, simData%Plist, simData%nChebT, simData%nChebP, chebCoeff(:,:,i,j))
 			end if
 		end do

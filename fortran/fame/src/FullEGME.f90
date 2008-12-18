@@ -88,6 +88,8 @@ contains
 				Hrxn = uniData(i)%H - sum(multiData(n)%H)
 				Grxn = uniData(i)%G - sum(multiData(n)%G)
 				Keq_298 = exp(-Grxn * 1000. / 8.314472 / 298.)
+				! Convert Keq_298 from Ka to Kc: to units of (mol/cm^3)^-1
+				Keq_298 = Keq_298 * (8.314472 * 298 / 1.0e5) * (1.0e6)
 				Keq = Keq_298 * exp(-Hrxn * 1000. / 8.314472 * (1./simData%T - 1./298.))
 				
 				! Calculate rate coefficient for uni --> bi using RRKM theory
@@ -104,7 +106,6 @@ contains
 					if (bn(r,n) /= 0) then
                			Fim(r,i,n) = Keq * Gnj(r,n,i) * bi(r,i) / bn(r,n)
             		end if
-!             		Fim(r,i,n) = Keq * Gnj(r,n,i) * bi(r,i)
 				end do
 				
 			else															! uni <---> uni
@@ -116,7 +117,7 @@ contains
 				! Determine equilibrium constant at rxn conditions from thermochemical data
 				Hrxn = uniData(i)%H - uniData(j)%H
 				Grxn = uniData(i)%G - uniData(j)%G
-				Keq_298 = exp(-Grxn * 1000. / 8.314472 / 298.)
+				Keq_298 = exp(-Grxn * 1000. / 8.314472 / 298.) 
 				Keq = Keq_298 * exp(-Hrxn * 1000. / 8.314472 * (1./simData%T - 1./298.))
 				
 ! 				! Calculate rate coefficient for i --> j using RRKM theory
@@ -237,8 +238,20 @@ contains
 				do s = lb, ub
 					call transferRate(s, r, simData%E(s), simData%E(r), simData%alpha, uniData(i)%E, bi(:,i), P(s,r))
 				end do
-				P(start:simData%nGrains,r) = P(start:simData%nGrains,r) / sum(P(start:simData%nGrains,r))
-				P(r,r) = P(r,r) - 1
+! 				if (sum(P(start:simData%nGrains,r)) .ne. 0) then
+! 					P(start:simData%nGrains,r) = P(start:simData%nGrains,r) / sum(P(start:simData%nGrains,r))
+! 				end if
+! 				P(r,r) = P(r,r) - 1
+			end do
+			
+			! Normalize using detailed balance
+			do r = simData%nGrains, start, -1
+				C(r) = (1 - sum(C(r+1:simData%nGrains) * P(r+1:simData%nGrains,r))) / sum(P(1:r,r))
+			end do
+			do r = start, simData%nGrains
+				P(r,1:r-1) = P(r,1:r-1) * C(r)
+				P(1:r-1,r) = P(1:r-1,r) * C(r)
+				P(r,r) = P(r,r) * C(r) - 1
 			end do
 			
 			! Add to ME matrix
@@ -283,6 +296,8 @@ contains
 		if (Ej < E0) then
 			rate = 0;
 		elseif (Ei < E0) then
+			rate = 0;
+		elseif (f(j) .eq. 0) then
 			rate = 0;
 		elseif (Ej >= Ei) then
 			rate = exp(-(Ej - Ei) / alpha);
@@ -410,9 +425,12 @@ contains
 		do r = 1, size(E)
 			if (E(r) < E0 .or. N(r) == 0) then
 				k(r) = 0;
+			elseif (N(r) .ne. 0) then
+				s = floor(arrh_Ea / dE)
+				if (s < 0) s = 0
+				k(r) = arrh_A * (T ** arrh_n) * N(r - s) / N(r)
 			else
-				s = floor(E0 / dE);
-				k(r) = arrh_A * (T ** arrh_n) * N(r - s) / N(r);
+				k(r) = 0
 			end if
 		end do
 		

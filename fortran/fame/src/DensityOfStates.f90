@@ -22,12 +22,14 @@ contains
 	!   energies - The energy grains in kJ/mol (from simData%E).
 	!   uniData - The chemical data about each unimolecular isomer.
 	!   multiData - The chemical data about each multimolecular source/sink.
-	subroutine calcDensityOfStates(energies, uniData, multiData)
+	!	verbose - Represents the amount of information outputted to the console
+	subroutine calcDensityOfStates(energies, uniData, multiData, verbose)
 		
 		! Provide parameter type checking of inputs and outputs
 		real(8), dimension(:), intent(in)				:: 	energies
 		type(UniWell), dimension(:), intent(inout)		:: 	uniData
 		type(MultiWell), dimension(:), intent(inout)	:: 	multiData
+		integer, intent(in)								:: 	verbose
 		
 		real(8) conv		! Conversion factor: cm^-1 per kJ/mol
 		real(8) Emax		! Maximum energy of range in cm^-1
@@ -42,7 +44,7 @@ contains
 		conv = 1000 / 6.022e23 / 6.626e-34 / 2.9979e10
 		
 		Emax = ceiling(maxval(energies) * conv)
-		dE = 0.1 * conv
+		dE = 0.2 * (energies(2) - energies(1)) * conv
 		nE = Emax / dE + 1
 		allocate( E(1:nE) )
 		do i = 1, nE
@@ -55,6 +57,7 @@ contains
 		
 		! Calculate the density of states for each unimolecular well
 		do i = 1, size(uniData)
+			if (verbose >= 2) write (*,*), '\tUnimolecular isomer', i, '...'
 			call densityOfStates(E, &
 				uniData(i)%E * conv, &
 				uniData(i)%vibFreq, &
@@ -65,9 +68,10 @@ contains
 				rho1)
 			uniData(i)%densStates = rho1(1:nE:dn) / conv
 		end do
-		
+			
 		! Calculate the density of states for each multimolecular well
 		do n = 1, size(multiData)
+			if (verbose >= 2) write (*,*), '\tMultimolecular isomer', n, '...'
 			call densityOfStates(E, &
 				multiData(n)%E(1) * conv, &
 				multiData(n)%vibFreq(1,:), &
@@ -123,28 +127,39 @@ contains
 		real(8), dimension(:), intent(in)		:: 	hindFreq
 		real(8), dimension(:), intent(in)		:: 	hindBarrier
 		integer, intent(in)						:: 	symmNum
-		real(8), dimension(:), intent(out)		:: 	rho
+		real(8), dimension(:), intent(inout)	:: 	rho
 		
 		real(8) dE
 		real(8), dimension(:), allocatable		:: rho_RR
 		real(8), dimension(:), allocatable		:: rho_HR
+		real(8), dimension(:), allocatable		:: rho1
 		integer N
+		integer i, j, found
 		
 		N = size(E)
 		dE = E(2) - E(1)
 		
 		! Free rotors
-		if (size(rotFreq) > 0) then
+		if (rotFreq(1) > 0) then
 			allocate( rho_RR(1:N) )
 			rho_RR = 0 * rho_RR
 			call calcFreeRotorStates(E, E0, rotFreq, symmNum, rho_RR)
 		end if
 		
 		! Hindered rotors
-		if (size(hindFreq) > 0) then
-			allocate( rho_HR(1:N) )
-			rho_HR = 0 * rho_HR
-			call calcHinderedRotorStates(E, E0, hindFreq(1), hindBarrier(1), symmNum, rho_HR)
+		if (hindFreq(1) > 0) then
+			allocate( rho1(1:N) )
+			do i = 1, size(hindFreq)
+				if (hindFreq(i) > 0 .and. hindBarrier(i) > 0) then
+					call calcHinderedRotorStates(E, E0, hindFreq(i), hindBarrier(i), rho1)
+					if (allocated(rho_HR)) then
+						call convolveStates(rho_HR, E0, rho1, E0, dE)
+					else
+						allocate( rho_HR(1:N) )
+						rho_HR = rho1
+					end if
+				end if
+			end do
 		end if
 		
 		! Total rotational component of density of states
@@ -161,10 +176,40 @@ contains
 		else
 			rho = 0 * rho
 		end if
-		
+
 		! Add vibrational states via Beyer-Swinehart algorithm
-		call beyerSwinehart(E, E0, vibFreq, rho)		
+		call beyerSwinehart(E, E0, vibFreq, rho)
 		
+		! For this approach the density of states must be smooth
+		i = ceiling(E0 / dE) + 1
+		do while (i <= size(E) - 1)
+			if (rho(i+1) == 0) then
+				j = i + 2
+				found = 1
+				do while (j <= size(E) .and. found == 1)
+					if (rho(j) /= 0) then
+						found = 0
+					else
+						j = j + 1
+					end if
+				end do
+				if (found == 0) then
+					do k = i + 1, j - 1	
+						rho(k) = (rho(j) - rho(i)) / (j - i) * (k - i) + rho(i)
+					end do
+				else
+					do k = i + 1, size(E)
+						rho(k) = rho(i)
+					end do
+				end if
+				i = j
+			else
+				i = i + 1
+			end if
+		end do
+		
+		return
+				
 	end subroutine
 	
 	! --------------------------------------------------------------------------
@@ -273,18 +318,16 @@ contains
 	!   E0 - The ground-state energy in cm^-1.
 	!   freq - The hindered rotor rotational constant in cm^-1.
 	!   barrier - The hindered rotor barrier height in cm^-1.
-	!   symmNum - The symmetry number.
 	!
 	! Returns:
 	!	rho - The hindered rotor density of states in (cm^-1)^-1.
-	subroutine calcHinderedRotorStates(E, E0, freq, barrier, symmNum, rho)
+	subroutine calcHinderedRotorStates(E, E0, freq, barrier, rho)
 		
 		! Provide parameter type checking of inputs and outputs
 		real(8), dimension(:), intent(in)		:: 	E
 		real(8), intent(in)						:: 	E0
 		real(8), intent(in)						:: 	freq
 		real(8), intent(in)						:: 	barrier
-		integer, intent(in)						:: 	symmNum
 		real(8), dimension(:), intent(out)		:: 	rho
 		
 		integer i, n
@@ -293,7 +336,9 @@ contains
 		tol = 1.0e-7
 		
 		do i = 1, size(E)
-			if (E(i) - E0 < freq/2.d0) then
+			if (E(i) - E0 < 0) then
+				rho(i) = 0
+			elseif (E(i) - E0 < freq/2.d0) then
 				m = 0.d0
 				call celliptic(m, tol, K, n)
 				rho(i) = K / sqrt(barrier)
@@ -402,7 +447,7 @@ contains
 		end do
 		
 		! The Beyer-Swinehart algorithm
-		rho(start) = 1 / dE
+		rho(start) = 1.0 / dE
 		do i = 1, nVib
 			do j = start, size(E)
 				grain = j + vibFreq(i) / dE			! Destination bin

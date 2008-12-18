@@ -172,36 +172,51 @@ contains
 			else if (index(str(1:24), 'Free energy of formation') /= 0) then
 				call readNumberAndUnit(str(25:), uniData%G, unit)
 			else if (index(str(1:20), 'Harmonic oscillators') /= 0) then
-				call readInteger(str(21:), i)
-				allocate(uniData%vibFreq(1:i))
-				do i = 1, i
+				call readInteger(str(21:), j)
+				allocate(uniData%vibFreq(1:j))
+				do i = 1, j
 					read (1, fmt='(a128)', iostat=ios), str
 					call readNumberAndUnit(str, uniData%vibFreq(i), unit)
 				end do
 			else if (index(str(1:12), 'Rigid rotors') /= 0) then
-				call readInteger(str(13:), i)
-				allocate(uniData%rotFreq(1:i))
-				do i = 1, i
-					read (1, fmt='(a128)', iostat=ios), str
-					call readNumberAndUnit(str, uniData%rotFreq(i), unit)
-				end do
+				call readInteger(str(13:), j)
+				if (j > 0) then
+					allocate(uniData%rotFreq(1:j))
+					do i = 1, j
+						read (1, fmt='(a128)', iostat=ios), str
+						call readNumberAndUnit(str, uniData%rotFreq(i), unit)
+					end do
+				end if
 			else if (index(str(1:15), 'Hindered rotors') /= 0) then
 				call readInteger(str(16:), j)
-				allocate(uniData%hindFreq(1:j))
-				allocate(uniData%hindBarrier(1:j))
-				do i = 1, j
-					read (1, fmt='(a128)', iostat=ios), str
-					call readNumberAndUnit(str, uniData%hindFreq(i), unit)
-				end do
-				do i = 1, j
-					read (1, fmt='(a128)', iostat=ios), str
-					call readNumberAndUnit(str, uniData%hindBarrier(i), unit)
-				end do
+				if (j > 0) then
+					allocate(uniData%hindFreq(1:j))
+					allocate(uniData%hindBarrier(1:j))
+					do i = 1, j
+						read (1, fmt='(a128)', iostat=ios), str
+						call readNumberAndUnit(str, uniData%hindFreq(i), unit)
+					end do
+					do i = 1, j
+						read (1, fmt='(a128)', iostat=ios), str
+						call readNumberAndUnit(str, uniData%hindBarrier(i), unit)
+					end do
+				end if
 			else if (index(str(1:15), 'Symmetry number') /= 0) then
 				call readInteger(str(16:), uniData%symmNum)
 			end if
 
 		end do
+		
+		if (.not. allocated(uniData%rotFreq)) then
+			allocate(uniData%rotFreq(1))
+			uniData%rotFreq(1) = 0
+		end if
+		if (.not. allocated(uniData%hindFreq)) then
+			allocate(uniData%hindFreq(1))
+			uniData%hindFreq(1) = 0
+			allocate(uniData%hindBarrier(1))
+			uniData%hindBarrier(1) = 0
+		end if
 		
 	end subroutine
 	
@@ -284,34 +299,38 @@ contains
 				do i = 1, multiData%numSpecies
 					call readInteger(str(21:), number(i))
 				end do
-				allocate(multiData%rotFreq(1:multiData%numSpecies, 1:maxval(number)))
-				multiData%rotFreq = 0 * multiData%rotFreq
-				do i = 1, multiData%numSpecies
-					do j = 1, number(i)
-						read (1, fmt='(a128)', iostat=ios), str
-						call readNumberAndUnit(str, multiData%rotFreq(i, j), unit)
+				if (maxval(number) > 0) then
+					allocate(multiData%rotFreq(1:multiData%numSpecies, 1:maxval(number)))
+					multiData%rotFreq = 0 * multiData%rotFreq
+					do i = 1, multiData%numSpecies
+						do j = 1, number(i)
+							read (1, fmt='(a128)', iostat=ios), str
+							call readNumberAndUnit(str, multiData%rotFreq(i, j), unit)
+						end do
 					end do
-				end do
+				end if
 				deallocate(number)
 			else if (index(str(1:15), 'Hindered rotors') /= 0) then
 				allocate(number(1:multiData%numSpecies))
 				do i = 1, multiData%numSpecies
 					call readInteger(str(16:), number(i))
 				end do
-				allocate(multiData%hindFreq(1:multiData%numSpecies, 1:maxval(number)))
-				allocate(multiData%hindBarrier(1:multiData%numSpecies, 1:maxval(number)))
-				multiData%hindFreq = 0 * multiData%hindFreq
-				multiData%hindBarrier = 0 * multiData%hindBarrier
-				do i = 1, multiData%numSpecies
-					do j = 1, number(i)
-						read (1, fmt='(a128)', iostat=ios), str
-						call readNumberAndUnit(str, multiData%hindFreq(i, j), unit)
+				if (maxval(number) > 0) then
+					allocate(multiData%hindFreq(1:multiData%numSpecies, 1:maxval(number)))
+					allocate(multiData%hindBarrier(1:multiData%numSpecies, 1:maxval(number)))
+					multiData%hindFreq = 0 * multiData%hindFreq
+					multiData%hindBarrier = 0 * multiData%hindBarrier
+					do i = 1, multiData%numSpecies
+						do j = 1, number(i)
+							read (1, fmt='(a128)', iostat=ios), str
+							call readNumberAndUnit(str, multiData%hindFreq(i, j), unit)
+						end do
+						do j = 1, number(i)
+							read (1, fmt='(a128)', iostat=ios), str
+							call readNumberAndUnit(str, multiData%hindBarrier(i, j), unit)
+						end do
 					end do
-					do j = 1, number(i)
-						read (1, fmt='(a128)', iostat=ios), str
-						call readNumberAndUnit(str, multiData%hindBarrier(i, j), unit)
-					end do
-				end do
+				end if
 				deallocate(number)
 			else if (index(str(1:15), 'Symmetry number') /= 0) then
 				allocate(multiData%symmNum(1:multiData%numSpecies))
@@ -321,6 +340,17 @@ contains
 			end if
 
 		end do
+		
+		if (.not. allocated(multiData%rotFreq)) then
+			allocate(multiData%rotFreq(1:multiData%numSpecies, 1))
+			multiData%rotFreq = 0 * multiData%rotFreq
+		end if
+		if (.not. allocated(multiData%hindFreq)) then
+			allocate(multiData%hindFreq(1:multiData%numSpecies, 1))
+			multiData%hindFreq = 0 * multiData%hindFreq
+			allocate(multiData%hindBarrier(1:multiData%numSpecies, 1))
+			multiData%hindBarrier = 0 * multiData%hindBarrier
+		end if
 		
 	end subroutine
 	

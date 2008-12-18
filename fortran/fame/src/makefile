@@ -9,6 +9,7 @@
 
 # Name of compiler
 FORTRAN = g95
+#FORTRAN = gfortran
 
 # Name of executable
 BIN = ../fame.exe
@@ -18,6 +19,7 @@ OBJ = fileIO.o Simulation.o Species.o Reaction.o DensityOfStates.o FastEGME.o Fu
 
 # Compiler flags
 CFLAGS = -ftrace=full
+#CFLAGS =
 
 # Linker flags
 LFLAGS = -L/usr/lib -lpthread -lblas -llapack
