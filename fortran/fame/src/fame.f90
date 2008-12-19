@@ -35,6 +35,7 @@ program fame
 	use DensityOfStatesModule
 	use FullEGMEModule
 	use FastEGMEModule
+	use StrongCollisionModule
 	use RateModelModule
 	
 	! Verbosity of console output flag
@@ -152,7 +153,7 @@ program fame
 		! Calculate the equilibrium (Boltzmann) distributions
 		if (verbose >= 2) write (*,*), '\tDetermining equilibrium distributions at T =', simData%T, 'K...'
 		call calcEqDists(uniData, multiData, simData%E, simData%T, bi, bn)
-		
+				
 		do p = 1, size(simData%Plist)
 
 			! Part II: Construct full ME matrix
@@ -185,14 +186,36 @@ program fame
 			end do
 			
 			! Apply steady state/reservoir state approximations
-			if (verbose >= 3) write (*,*), '\t\tApplying steady-state/reservoir-state approximation...'
-			call ssrsRates(simData, uniData, rxnData, nRes, Mi, Hn, Kij, Fim, Gnj, Jnm, bi, bn, K(t,p,:,:))
+! 			if (verbose >= 3) write (*,*), '\t\tApplying steady-state/reservoir-state approximation...'
+! 			call ssrsRates(simData, uniData, rxnData, nRes, Mi, Hn, Kij, Fim, Gnj, Jnm, bi, bn, K(t,p,:,:))
+
+			! Apply steady state/reservoir state approximations
+			if (verbose >= 3) write (*,*), '\t\tApplying steady-state/modified strong collision approximation...'
+ 			call ssmscRates(simData, uniData, multiData, rxnData, Kij, Fim, Gnj, Jnm, bi, bn, K(t,p,:,:))
+
 
 		end do
 	end do
 
-	write (*,*), K(4,3,:,:)
-
+ 	write (*,*), K(4,3,:,:)
+	
+	! Test for validity of fitted rate coefficients
+! 	do i = 1, simData%nUni + simData%nMulti
+! 		do j = 1, simData%nUni + simData%nMulti
+! 			if (i /= j) then
+! 				do t = 1, size(simData%Tlist)
+! 					do p = 1, size(simData%Tlist)
+! 						if (K(t,p,i,j) == 0.) then
+! 							write(*,*), 'ERROR in FAME execution: Rate coefficient(s) not properly estimated!'
+! 							write(*,*), 't =', t, '   p =', p, '   i =', i, '   j =', j
+! 							K(t,p,i,j) = 1.0e-50
+! 						end if
+! 					end do
+! 				end do
+! 			end if
+! 		end do
+! 	end do
+					
 	! Fit k(T, P) to approximate formula
 	if (verbose >= 1) write (*,*), 'Fitting k(T,P) to model...'
 	allocate( chebCoeff(simData%nChebT, simData%nChebP, &
@@ -200,11 +223,11 @@ program fame
 	do i = 1, simData%nUni + simData%nMulti
 		do j = 1, simData%nUni + simData%nMulti
 			if (i /= j) then
-				if (sum(K(:,:,i,j)) == 0) then
+				if (sum(K(:,:,i,j)) == 0.) then
 					write(*,*), 'ERROR in FAME execution: Rate coefficient(s) not properly estimated!'
 					stop
 				end if
-				if (verbose >=2) then
+				if (verbose >= 2) then
 					write (*,*), '\tFitting k(T,P) for isomers', i, 'and', j
 				end if
 				call fitRateModel(K(:,:,i,j), simData%Tlist, simData%Plist, simData%nChebT, simData%nChebP, chebCoeff(:,:,i,j))

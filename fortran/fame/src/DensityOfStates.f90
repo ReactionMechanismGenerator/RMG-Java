@@ -142,7 +142,7 @@ contains
 		! Free rotors
 		if (rotFreq(1) > 0) then
 			allocate( rho_RR(1:N) )
-			rho_RR = 0 * rho_RR
+			rho_RR = rho_RR * 0
 			call calcFreeRotorStates(E, E0, rotFreq, symmNum, rho_RR)
 		end if
 		
@@ -246,6 +246,9 @@ contains
 		allocate( f(1:size(rho1)) )
 		allocate( rho(1:size(rho1)) )
 		
+		do i = 1, n2-1
+			rho(i) = 0
+		end do
 		do i = n2, size(rho1)
 			f = 0 * f
 			do j = n1, i

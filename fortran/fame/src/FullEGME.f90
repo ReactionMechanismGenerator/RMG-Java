@@ -135,11 +135,9 @@ contains
 					if (bi(r,j) > 0) then
 						Kij(r,i,j) = Keq * Kij(r,j,i) * bi(r,i) / bi(r,j)
 					else
-						Kij(r,i,j) = 0
+						Kij(r,i,j) = 0.0
 					end if
 				end do
-				
-				
 				
 			end if
 		end do
@@ -421,13 +419,14 @@ contains
 		
 		integer		:: r, s
 		 
+		s = floor(arrh_Ea / dE)
+		if (s < 0) s = 0
+		
 		! Determine rate coefficients using inverse Laplace transform
 		do r = 1, size(E)
 			if (E(r) < E0 .or. N(r) == 0) then
 				k(r) = 0;
 			elseif (N(r) .ne. 0) then
-				s = floor(arrh_Ea / dE)
-				if (s < 0) s = 0
 				k(r) = arrh_A * (T ** arrh_n) * N(r - s) / N(r)
 			else
 				k(r) = 0
