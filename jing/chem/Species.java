@@ -307,6 +307,7 @@ public class Species {
         		if (g.fromprimarythermolibrary){
         			H = newH;
         			stablest = g;
+                    chemGraph = stablest; // presumably this should be before the return? rwest
         			return;
         		}
         			
