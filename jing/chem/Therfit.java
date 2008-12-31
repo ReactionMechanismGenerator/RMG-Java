@@ -200,7 +200,7 @@ public class Therfit {
 			while ( (line = br.readLine()) != null) {
 				//System.out.println(line);
 				line = line.trim();
-				if (!line.startsWith("STOP  *** THRFIT Job Complete")) {
+				if (!line.startsWith(" *** THRFIT Job Complete")) {
 					String speName = species.getName();
 					System.out.println("therfit error for species: " + speName+"\n"+species.toString());
 					File newfile = new File(therfit_input_name+"."+speName);
