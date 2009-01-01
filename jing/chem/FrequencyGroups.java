@@ -16,6 +16,8 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.BufferedReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 
 public class FrequencyGroups{//gmagoon 111708: removed "implements GeneralGAPP"
 
@@ -99,10 +101,17 @@ public class FrequencyGroups{//gmagoon 111708: removed "implements GeneralGAPP"
         //call Franklin's code
         try{
             String dir = System.getProperty("RMG.workingDirectory");
-			File runningdir=new File("frankie/");
+            File runningdir=new File("frankie");
             String command = dir + "/software/frankie/frankie.exe";
-           	Process freqProc = Runtime.getRuntime().exec(command, null, runningdir); 
-            int exitValue = freqProc.waitFor();
+            Process freqProc = Runtime.getRuntime().exec(command, null, runningdir); 
+            InputStream is = freqProc.getInputStream();
+            InputStreamReader isr = new InputStreamReader(is);
+            BufferedReader br = new BufferedReader(isr);
+            String line=null;
+            while ( (line = br.readLine()) != null) {
+                    line = line.trim();
+            }
+            int exitVal = freqProc.waitFor();
         }
         catch (Exception e) {
             String err = "Error in running frequency estimation process \n";
