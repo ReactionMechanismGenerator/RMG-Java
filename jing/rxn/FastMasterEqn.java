@@ -158,7 +158,7 @@ public class FastMasterEqn implements PDepKineticsEstimator {
 	}
 	
 	/**
-	 * Creates the input file needed by Chemdis that represents a pressure-
+	 * Creates the input file needed by FAME that represents a pressure-
 	 * dependent reaction network.
 	 * @param pdn The reaction network of interest
 	 * @param rxnSystem The reaction system of interest
@@ -382,7 +382,7 @@ public class FastMasterEqn implements PDepKineticsEstimator {
 	}
 	
 	/**
-	 * Parses a Chemdis output file and updates the reaction network and system
+	 * Parses a FAME output file and updates the reaction network and system
 	 * accordingly.
 	 * @param pdn The pressure-dependent reaction network of interest
 	 * @param rxnSystem The reaction system of interest
