@@ -182,7 +182,9 @@ public class SpeciesDictionary {
     //## operation putSpecies(Species) 
     public void putSpecies(Species p_species, boolean write) {
         //#[ operation putSpecies(Species) 
-		String restartFileContent="";
+        
+        // we can't read the restart file, so no point writing it (which currently takes a LOT of time). rwest
+		/* String restartFileContent="";
 		if (write){
 			try{
 				File allSpecies = new File ("Restart/allSpecies.txt");
@@ -199,7 +201,7 @@ public class SpeciesDictionary {
 				System.out.println("Could not write the restart edgespecies file");
 	        	System.exit(0);
 			}
-		}
+		}*/
         if (p_species.hasResonanceIsomers()) {
         	Iterator iter = p_species.getResonanceIsomers();
         	while (iter.hasNext()) {
