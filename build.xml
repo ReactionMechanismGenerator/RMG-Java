@@ -1,7 +1,14 @@
 <project name="RMG">
-
-<target name="compile">
-<javac srcdir="." destdir="."/>
-</target>
-
+    <target name="compile">
+        <javac srcdir="." destdir="."/>
+    </target>
+    
+    <target name="clean" description="delete all compiled classes">
+        <delete>
+            <fileset dir=".">
+                <include name="**/*.class"/>
+                <include name="*.class"/>
+            </fileset>
+        </delete>
+    </target>
 </project>
