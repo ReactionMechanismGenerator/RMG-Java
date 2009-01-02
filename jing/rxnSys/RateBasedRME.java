@@ -146,6 +146,7 @@ public class RateBasedRME implements ReactionModelEnlarger {
 
 
                     startTime = System.currentTimeMillis();
+                   /* // we can't read in the restart files, so for now there's no point in writing them!
                     StringBuilder restartFileContent= new StringBuilder();
                     try{
                             File allReactions = new File ("Restart/allReactions.txt");
@@ -168,7 +169,8 @@ public class RateBasedRME implements ReactionModelEnlarger {
                             System.out.println("Could not write the added Reactions to the allReactions file");
                     System.exit(0);
                     }
-
+                    */
+                    
                     double restartTime = (System.currentTimeMillis()-startTime)/1000/60;
 
                     Global.diagnosticInfo.append(Global.moveUnreactedToReacted + "\t" +enlargeTime+"\t" + restartTime +"\t");
