@@ -855,7 +855,9 @@ public class ReactionModelGenerator {
         //10/24/07 gmagoon: note: each element of for loop could be done in parallel if desired; some modifications would be needed
         for (Iterator iter = reactionSystemList.iterator(); iter.hasNext(); ) {
             ReactionSystem rs = (ReactionSystem)iter.next();
-            rs.initializePDepNetwork();
+            if ((reactionModelEnlarger instanceof RateBasedPDepRME)) {//1/2/09 gmagoon and rwest: only call initializePDepNetwork for P-dep cases
+                rs.initializePDepNetwork();
+            }
 
             ReactionTime init = rs.getInitialReactionTime();
             initList.add(init);
@@ -954,11 +956,14 @@ public class ReactionModelGenerator {
 				//PDepNetwork.completeNetwork(reactionSystem.reactionModel.getSpeciesSet());
                                 
                                 //10/24/07 gmagoon: changed to use reactionSystemList
-                                for (Iterator iter = reactionSystemList.iterator(); iter.hasNext(); ) {
+                                 if ((reactionModelEnlarger instanceof RateBasedPDepRME)) {//1/2/09 gmagoon and rwest: only call initializePDepNetwork for P-dep cases
+                                    for (Iterator iter = reactionSystemList.iterator(); iter.hasNext(); ) {
                                        ReactionSystem rs = (ReactionSystem)iter.next();
                                        rs.initializePDepNetwork();
                                 }
 				//reactionSystem.initializePDepNetwork();
+                                 }
+                               
 				
 				pt = System.currentTimeMillis();
                                 //10/24/07 gmagoon: changed to use reactionSystemList

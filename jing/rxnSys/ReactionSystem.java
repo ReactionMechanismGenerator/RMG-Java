@@ -1455,9 +1455,11 @@ public String printLowerBoundConcentrations(LinkedList p_speciesList) {
         SystemSnapshot beginStatus = (SystemSnapshot)(getSystemSnapshotEnd().next());
 
         if (p_reactionChanged || p_initialization || p_conditionChanged) {
+             if ((reactionModelEnlarger instanceof RateBasedPDepRME)) {//1/2/09 gmagoon and rwest: only call initializePDepNetwork for P-dep cases
         	initializePDepNetwork();
-        	p_reactionChanged = true;
-        	beginStatus = getInitialStatus();
+             }
+            p_reactionChanged = true;
+            beginStatus = getInitialStatus();
         }
 
 
@@ -1479,9 +1481,11 @@ public String printLowerBoundConcentrations(LinkedList p_speciesList) {
         SystemSnapshot beginStatus = (SystemSnapshot)(getSystemSnapshotEnd().next());
 
         if (p_reactionChanged || p_initialization || p_conditionChanged) {
+            if ((reactionModelEnlarger instanceof RateBasedPDepRME)) {//1/2/09 gmagoon and rwest: only call initializePDepNetwork for P-dep cases
         	initializePDepNetwork();
-        	p_reactionChanged = true;
-        	beginStatus = getInitialStatus();
+            }
+            p_reactionChanged = true;
+            beginStatus = getInitialStatus();
         }
 
 
