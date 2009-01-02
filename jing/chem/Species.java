@@ -200,6 +200,7 @@ public class Species {
 		//#]
     }
 
+
     //## operation doDelocalization(ChemGraph,Stack)
     private ChemGraph doDelocalization(ChemGraph p_chemGraph, Stack p_path) {
         //#[ operation doDelocalization(ChemGraph,Stack)
