@@ -200,7 +200,7 @@ public class Therfit {
 			while ( (line = br.readLine()) != null) {
 				//System.out.println(line);
 				line = line.trim();
-				if (!line.startsWith("*** THRFIT Job Complete")) {
+				if (line.indexOf("*** THRFIT Job Complete") < 0) {
 					String speName = species.getName();
 					System.out.println("therfit error for species: " + speName+"\n"+species.toString());
                     System.out.println("Was expecting '*** THRFIT Job Complete...' and instead got '" + line +"'.");
