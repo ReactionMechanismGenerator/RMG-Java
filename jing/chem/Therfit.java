@@ -203,7 +203,7 @@ public class Therfit {
 				if (line.indexOf("*** THRFIT Job Complete") < 0) {
 					String speName = species.getName();
 					System.out.println("therfit error for species: " + speName+"\n"+species.toString());
-                    System.out.println("Was expecting '*** THRFIT Job Complete...' and instead got '" + line +"'.");
+                    System.out.println("Was expecting output to contain '*** THRFIT Job Complete' and instead got '" + line +"'.");
 					File newfile = new File(therfit_input_name+"."+speName);
 					therfit_input.renameTo(newfile);
 					error = true;
