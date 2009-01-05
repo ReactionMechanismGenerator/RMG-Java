@@ -73,7 +73,7 @@ public class ReactionSystem {
     protected TemperatureModel temperatureModel;
     protected double [] reactionFlux;
     protected LibraryReactionGenerator lrg;//9/24/07 gmagoon: moved to ReactionModelGenerator.java; 9/25/07 variable is passed from ReactionModelGenerator
-    protected int index;//10/30/07 gmagoon: added index variable to number different reaction systems; starts at zero
+    protected int ind;//10/30/07 gmagoon: added index variable to number different reaction systems; starts at zero; 1/5/09 changed name from index to ind to avoid confusion with local variables used below
     // Constructors
 
     //## operation ReactionSystem(TemperatureModel,PressureModel,ReactionModelEnlarger,FinishController,DynamicSimulator,PrimaryReactionLibrary,ReactionGenerator,HashSet,InitialStatus)
@@ -96,7 +96,7 @@ public class ReactionSystem {
         originalReactant = p_speciesSeed;
         lrg = p_libraryReactionGenerator;
         systemSnapshot.add(initialStatus);
-        index = p_index;//10/30/07 gmagoon: added
+        ind = p_index;//10/30/07 gmagoon: added
 		
 		if (!checkInitialConsistency()) {
         	System.out.println("Initial composition was not consistent: C = P/RT was not satisfied!");
@@ -1622,7 +1622,7 @@ public String printLowerBoundConcentrations(LinkedList p_speciesList) {
 
     //10/30/07 gmagoon: added accessor method for index
     public int getIndex() {
-        return index;
+        return ind;
     }
 	
 
