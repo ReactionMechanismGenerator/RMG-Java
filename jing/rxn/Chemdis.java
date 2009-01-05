@@ -212,7 +212,12 @@ public class Chemdis implements PDepKineticsEstimator {
         str += Double.toString(k.getAValue()) + '\t';	
         str += Double.toString(k.getNValue()) + '\t';	
         str += "0.0\t";	
-        str += Double.toString(k.getEValue()) + '\n';
+        if (k.getEValue()<0) {
+            System.out.println("Warning! Changed E from "+Double.toString(k.getEValue())+" to 0 for Chemdis calculation.");
+            str += "0.0\n";
+        } else {
+            str += Double.toString(k.getEValue()) + '\n';
+        }
         
         return str;	
 	}
