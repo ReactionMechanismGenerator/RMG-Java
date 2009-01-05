@@ -2111,15 +2111,19 @@ public LinkedList getSpeciesList() {
     //9/24/07 gmagoon: moved from ReactionSystem.java
     protected void initializeCoreEdgeModelWithoutPRL() {
         //#[ operation initializeCoreEdgeModelWithoutPRL()
-    	LinkedHashSet reactionSet = getReactionGenerator().react(getSpeciesSeed());
-       // LinkedHashSet reactionSetTwo = getLibraryReactionGenerator().react(getSpeciesSeed()); //gmagoon: added for testing around 10/5/07
-    	reactionSet.addAll(getLibraryReactionGenerator().react(getSpeciesSeed()));
     	
-    	if (reactionModelEnlarger instanceof RateBasedRME)	
+		// Determine initial set of reactions and edge species using only the 
+		// species enumerated in the input file as the core
+		LinkedHashSet reactionSet = getReactionGenerator().react(getSpeciesSeed());
+		reactionSet.addAll(getLibraryReactionGenerator().react(getSpeciesSeed()));
+    	
+    	// Set initial core-edge reaction model based on above results
+		if (reactionModelEnlarger instanceof RateBasedRME)	
     		setReactionModel(new CoreEdgeReactionModel(new LinkedHashSet(getSpeciesSeed()),reactionSet));//10/4/07 gmagoon: changed to use setReactionModel
     	else {
     		setReactionModel(new CoreEdgeReactionModel(new LinkedHashSet(getSpeciesSeed())));//10/4/07 gmagoon: changed to use setReactionModel
-        	Iterator iter = reactionSet.iterator();
+        	// Only keep the reactions involving bimolecular reactants and bimolecular products
+			Iterator iter = reactionSet.iterator();
         	while (iter.hasNext()){
         		Reaction r = (Reaction)iter.next();
         		if (r.getReactantNumber() == 2 && r.getProductNumber() == 2){
@@ -2127,42 +2131,29 @@ public LinkedList getSpeciesList() {
         		}
         	}
     	}
-        //10/9/07 gmagoon: copy reactionModel to reactionSystem; there may still be scope problems, particularly in above elseif statement
+        
+		//10/9/07 gmagoon: copy reactionModel to reactionSystem; there may still be scope problems, particularly in above elseif statement
         //10/24/07 gmagoon: want to copy same reaction model to all reactionSystem variables; should probably also make similar modifications elsewhere; may or may not need to copy in ...WithPRL function
-        for (Integer i = 0; i<reactionSystemList.size();i++) {
-                    ReactionSystem rs = (ReactionSystem)reactionSystemList.get(i);
-                    rs.setReactionModel(getReactionModel());
+        for (Integer i = 0; i < reactionSystemList.size(); i++) {
+			ReactionSystem rs = (ReactionSystem) reactionSystemList.get(i);
+			rs.setReactionModel(getReactionModel());
         }
         //reactionSystem.setReactionModel(getReactionModel());
-        if (getReactionModel().isEmpty() && reactionModelEnlarger instanceof RateBasedRME) {
-        	LinkedHashSet us = ((CoreEdgeReactionModel)getReactionModel()).getUnreactedSpeciesSet();
-        	LinkedHashSet rs = ((CoreEdgeReactionModel)getReactionModel()).getReactedSpeciesSet();
-        	LinkedHashSet newReactions = new LinkedHashSet();
-
-        	for (Iterator iter = us.iterator(); iter.hasNext(); ) {
-        		Species spe = (Species)iter.next();
-        		rs.add(spe);
-        		newReactions.addAll(getReactionGenerator().react(rs,spe));
-        		newReactions.addAll(lrg.react(rs,spe));
-        		iter.remove();
-        	}
-
-        	((CoreEdgeReactionModel)getReactionModel()).addReactionSet(newReactions);
-        	((CoreEdgeReactionModel)getReactionModel()).moveFromUnreactedToReactedReaction();
-        }
-        else if (getReactionModel().isEmpty() && reactionModelEnlarger instanceof RateBasedPDepRME) {
-        	while (getReactionModel().isEmpty()){
-                    for (Integer i = 0; i<reactionSystemList.size();i++) {
-                        ReactionSystem rs = (ReactionSystem)reactionSystemList.get(i);
-                        rs.initializePDepNetwork();
-                        rs.appendUnreactedSpeciesStatus((InitialStatus)initialStatusList.get(i), rs.getPresentTemperature());//10/25/07 gmagoon: changed to use getPresentTemperature
-                        //rs.appendUnreactedSpeciesStatus((InitialStatus)initialStatusList.get(i), rs.getTemperature((ReactionTime)beginList.get(i)));//10/25/07 gmagoon: removing uses of Global.temperature
-                    }
-                    //reactionSystem.initializePDepNetwork();//9/25/07 gmagoon: unresolved question: what to do with initializePDepNetwork? leave in ReactionSystem class or move elsewhere (e.g. ReactionModelGenerator)?;//10/14/07 gmagoon: I am leaning towards leaving it where it is since it is used in solveReactionSystem, but it probably warrants further investigation
-                    //reactionSystem.appendUnreactedSpeciesStatus(initialStatus, Global.temperature);
-                    enlargeReactionModel();
-        	}
-        }
+		
+		// We cannot return a system with no core reactions, so if this is a case we must add to the core
+        while (getReactionModel().isEmpty()) {
+			for (Integer i = 0; i < reactionSystemList.size(); i++) {
+				ReactionSystem rs = (ReactionSystem) reactionSystemList.get(i);
+				if (reactionModelEnlarger instanceof RateBasedPDepRME) 
+					rs.initializePDepNetwork();
+				rs.appendUnreactedSpeciesStatus((InitialStatus)initialStatusList.get(i), rs.getPresentTemperature());//10/25/07 gmagoon: changed to use getPresentTemperature
+				//rs.appendUnreactedSpeciesStatus((InitialStatus)initialStatusList.get(i), rs.getTemperature((ReactionTime)beginList.get(i)));//10/25/07 gmagoon: removing uses of Global.temperature
+				}
+			//reactionSystem.initializePDepNetwork();//9/25/07 gmagoon: unresolved question: what to do with initializePDepNetwork? leave in ReactionSystem class or move elsewhere (e.g. ReactionModelGenerator)?;//10/14/07 gmagoon: I am leaning towards leaving it where it is since it is used in solveReactionSystem, but it probably warrants further investigation
+			//reactionSystem.appendUnreactedSpeciesStatus(initialStatus, Global.temperature);
+			enlargeReactionModel();
+		}
+		
         //10/9/07 gmagoon: copy reactionModel to reactionSystem; there may still be scope problems, particularly in above elseif statement
         //10/24/07 gmagoon: updated to use reactionSystemList
         for (Integer i = 0; i<reactionSystemList.size();i++) {

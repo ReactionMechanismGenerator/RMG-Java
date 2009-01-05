@@ -195,59 +195,17 @@ public class ReactionSystem {
         //#]
     }
 
-    //## operation appendUnreactedSpeciesStatus(SystemSnapshot,Temperature)
     //9/24/07: gmagoon: modified to include p_reactionModel as parameter; subsequently removed
     public void appendUnreactedSpeciesStatus(SystemSnapshot p_systemSnapshot, Temperature p_temperature) {
-        //#[ operation appendUnreactedSpeciesStatus(SystemSnapshot,Temperature)
-        double startTime = System.currentTimeMillis();
+        
+		double startTime = System.currentTimeMillis();
+		
 		if (!(reactionModel instanceof CoreEdgeReactionModel)) return;
-
         CoreEdgeReactionModel model = (CoreEdgeReactionModel)reactionModel;
         
-        if (reactionModelEnlarger instanceof RateBasedRME){
-        	LinkedHashSet ur = model.getUnreactedReactionSet();
-            double [] unreactedFlux = new double[SpeciesDictionary.getInstance().size()+1];
-            for (Iterator iur = ur.iterator(); iur.hasNext();) {
-            	Reaction r = (Reaction)iur.next();
-            	double flux = 0;
-            	if (r instanceof TemplateReaction) {
-            		//flux = ((TemplateReaction)r).calculateTotalPDepRate(p_temperature);
-                        flux = ((TemplateReaction)r).getRateConstant(p_temperature, p_systemSnapshot.getPressure());//10/26/07 gmagoon: changed to pass temperature and pressure; I assume systemSnapshot contains pressure at desired time
-    			//flux = ((TemplateReaction)r).getRateConstant();
-            	}
-            	else {
-            	 	//flux = r.calculateTotalRate(p_temperature);
-                        flux = r.getRateConstant(p_temperature);//10/26/07 gmagoon: changed to pass temperature
-    			//flux = r.getRateConstant();
-            	}
-            	if (flux > 0) {
-            		for (Iterator rIter=r.getReactants(); rIter.hasNext();) {
-    					Species spe = (Species)rIter.next();
-            		    double conc = (p_systemSnapshot.getSpeciesStatus(spe)).getConcentration();
-            			if (conc<0)
-            				throw new NegativeConcentrationException(spe.getName() + ": " + String.valueOf(conc));
-            		    flux *= conc;
-
-            		}
-
-            		for (Iterator rIter=r.getProducts(); rIter.hasNext();) {
-    					Species spe = (Species)rIter.next();
-            			if (model.containsAsUnreactedSpecies(spe)) {
-            				unreactedFlux[spe.getID()] += flux;
-            			}
-            		}
-
-            	}
-            	else {
-            		throw new NegativeRateException(r.toChemkinString(p_temperature) + ": " + String.valueOf(flux));
-            	}
-            }
-    		p_systemSnapshot.unreactedSpeciesFlux = unreactedFlux;
-    		
-    		return;
-        }
-        else if (reactionModelEnlarger instanceof RateBasedPDepRME){
-        	double [] unreactedFlux = new double[SpeciesDictionary.getInstance().size()+1];
+		double [] unreactedFlux = new double[SpeciesDictionary.getInstance().size()+1];
+		
+        if (reactionModelEnlarger instanceof RateBasedPDepRME) {
         	// first take all the unreacted reactions from PDepNetwork and calculate their rate
         	// populate the reactionModel with all the unreacted species if they are already not there.
         	
@@ -272,59 +230,53 @@ public class ReactionSystem {
                 		}
         				for (Iterator pIter = r.getProducts(); pIter.hasNext();){
         					Species spe = (Species)pIter.next();
-        					
         					unreactedFlux[spe.getID()] += flux;
         				}
         			}
         		}
         	}
-        	LinkedHashSet ur = model.getUnreactedReactionSet();
+		}
+		
+		LinkedHashSet ur = model.getUnreactedReactionSet();
             
-            for (Iterator iur = ur.iterator(); iur.hasNext();) {
-            	Reaction r = (Reaction)iur.next();
-            	double flux = 0;
-            	if (r instanceof TemplateReaction) {
-            		//flux = ((TemplateReaction)r).calculateTotalPDepRate(p_temperature);
-                        flux = ((TemplateReaction)r).getRateConstant(p_temperature, p_systemSnapshot.getPressure());//10/26/07 gmagoon: changed to pass temperature and pressure; I assume systemSnapshot contains pressure at desired time; note: interestingly, this did not appear to turn up on my initial search for uses of templateReaction version of getRateConstant (I could have missed it by mistaking reaction version for the one I was searching for); also NetBeans did not indicate an error until I changed reaction version of getRateConstant
-    			//flux = ((TemplateReaction)r).getRateConstant();
-            	}
-            	else {
-            	 	//flux = r.calculateTotalRate(p_temperature);
-                     flux = r.getRateConstant(p_temperature);//10/26/07 gmagoon: changed to pass temperature
-    			//	flux = r.getRateConstant();
-            	}
-            	if (flux > 0) {
-            		for (Iterator rIter=r.getReactants(); rIter.hasNext();) {
-    					Species spe = (Species)rIter.next();
-    					double conc = 0;
-    					if (p_systemSnapshot.getSpeciesStatus(spe) == null)
-    						conc = 0;
-    					else
-    						conc = (p_systemSnapshot.getSpeciesStatus(spe)).getConcentration();
-            			if (conc<0)
-            				throw new NegativeConcentrationException(spe.getName() + ": " + String.valueOf(conc));
-            		    flux *= conc;
+		for (Iterator iur = ur.iterator(); iur.hasNext();) {
+			Reaction r = (Reaction)iur.next();
+			double flux = 0;
+			if (r instanceof TemplateReaction) {
+				//flux = ((TemplateReaction)r).calculateTotalPDepRate(p_temperature);
+				flux = ((TemplateReaction)r).getRateConstant(p_temperature, p_systemSnapshot.getPressure());//10/26/07 gmagoon: changed to pass temperature and pressure; I assume systemSnapshot contains pressure at desired time; note: interestingly, this did not appear to turn up on my initial search for uses of templateReaction version of getRateConstant (I could have missed it by mistaking reaction version for the one I was searching for); also NetBeans did not indicate an error until I changed reaction version of getRateConstant
+				//flux = ((TemplateReaction)r).getRateConstant();
+			}
+			else {
+				// flux = r.calculateTotalRate(p_temperature);
+				flux = r.getRateConstant(p_temperature);//10/26/07 gmagoon: changed to pass temperature
+				// flux = r.getRateConstant();
+			}
+			if (flux > 0) {
+				for (Iterator rIter=r.getReactants(); rIter.hasNext();) {
+					Species spe = (Species)rIter.next();
+					double conc = 0;
+					if (p_systemSnapshot.getSpeciesStatus(spe) != null)
+						conc = (p_systemSnapshot.getSpeciesStatus(spe)).getConcentration();
+					if (conc<0)
+						throw new NegativeConcentrationException(spe.getName() + ": " + String.valueOf(conc));
+					flux *= conc;
 
-            		}
+				}
 
-            		for (Iterator rIter=r.getProducts(); rIter.hasNext();) {
-    					Species spe = (Species)rIter.next();
-            			if (model.containsAsUnreactedSpecies(spe)) {
-            				
-            				unreactedFlux[spe.getID()] += flux;
-            			}
-            		}
+				for (Iterator rIter=r.getProducts(); rIter.hasNext();) {
+					Species spe = (Species)rIter.next();
+					if (model.containsAsUnreactedSpecies(spe)) {
+						unreactedFlux[spe.getID()] += flux;
+					}
+				}
 
-            	}
-            	else {
-            		throw new NegativeRateException(r.toChemkinString(p_temperature) + ": " + String.valueOf(flux));
-            	}
-            }
-    		p_systemSnapshot.unreactedSpeciesFlux = unreactedFlux;
-    		
-    		return;
-        }
-        
+			}
+			else {
+				throw new NegativeRateException(r.toChemkinString(p_temperature) + ": " + String.valueOf(flux));
+			}
+		}
+		p_systemSnapshot.unreactedSpeciesFlux = unreactedFlux;
 		
         //#]
     }
