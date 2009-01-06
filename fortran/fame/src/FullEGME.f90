@@ -425,11 +425,12 @@ contains
 		! Determine rate coefficients using inverse Laplace transform
 		do r = 1, size(E)
 			if (E(r) < E0 .or. N(r) == 0) then
-				k(r) = 0;
+				k(r) = 0
 			elseif (N(r) .ne. 0) then
 				k(r) = arrh_A * (T ** arrh_n) * N(r - s) / N(r)
 			else
-				k(r) = 0
+				write (*,*), 'Something is wrong with the inverse Laplace transform!'
+				stop
 			end if
 		end do
 		

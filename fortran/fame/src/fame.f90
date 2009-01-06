@@ -197,7 +197,9 @@ program fame
 		end do
 	end do
 
- 	write (*,*), K(4,3,:,:)
+ 	do i = 1, simData%nUni + simData%nMulti
+		write (*,*), K(4,3,i,:)
+	end do
 	
 	! Test for validity of fitted rate coefficients
 ! 	do i = 1, simData%nUni + simData%nMulti

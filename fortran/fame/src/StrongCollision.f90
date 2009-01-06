@@ -81,7 +81,7 @@ contains
 		! Zero rate coefficient matrix
 		do i = 1, simData%nUni + simData%nMulti
 			do j = 1, simData%nUni + simData%nMulti
-				K(i,j) = 0
+				K(i,j) = 0.0
 			end do
 		end do
 		
@@ -98,15 +98,22 @@ contains
 			
 			do r = 1, start-1
 				do i = 1, simData%nUni
-					p(r,i) = 0
+					p(r,i) = 0.0
 				end do
 			end do
 			
 			do r = start, simData%nGrains
 
+				! Zero A matrix
+				do i = 1, simData%nUni
+					do j = 1, simData%nUni
+						A(i,j) = 0.0
+					end do
+				end do
+				
 				! Collisional deactivation
 				do i = 1, simData%nUni
-					A(i,i) = - eps * w(i);
+					A(i,i) = - eps * w(i)
 				end do
 				
 				! Isomerization
@@ -118,12 +125,12 @@ contains
 						end if
 					end do
 				end do
-				
+
 				! Dissociation
 				do i = 1, simData%nUni
 					do n = 1, simData%nMulti
 						A(i,i) = A(i,i) - Gnj(r,n,i)
-						b(i) = 0
+						b(i) = 0.0
 					end do
 				end do
 				
@@ -155,7 +162,7 @@ contains
 			
 			! Stabilization rates (i.e.) R + R' --> Ai or M --> Ai
 			do i = 1, simData%nUni
-				val = sum(eps * w(i) * p(:,i))
+				val = eps * w(i) * sum(p(:,i))
 				val = abs(val)
 				K(i,src) = K(i,src) + val
 				K(src,src) = K(src,src) - val
