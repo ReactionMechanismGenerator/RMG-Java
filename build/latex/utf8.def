@@ -1,0 +1,68 @@
+% Copyright 2000 Vladimir Volovich <vvv@vsu.ru>
+\ProvidesFile{utf-8.def}[2000/08/19 v0.1 input encoding file for utf-8]
+
+\makeatletter
+\let\@inpenc@test\relax
+
+\count@192
+\loop
+  \bgroup
+    \uccode`\~\count@
+    \uppercase{%
+  \egroup
+    \def~##1{\csname U2\string~\string##1\endcsname}%
+    }
+\ifnum\count@<223\relax
+  \advance\count@\@ne
+\repeat
+
+\count@224
+\loop
+  \bgroup
+    \uccode`\~\count@
+    \uppercase{%
+  \egroup
+    \def~##1##2{\csname U3\string~\string##1\string##2\endcsname}%
+    }
+\ifnum\count@<239\relax
+  \advance\count@\@ne
+\repeat
+
+% FIXME: define U4, U5, U6
+
+\def\get@code#1#2;{\count@\if x\noexpand#1"\else#1\fi#2\relax}
+
+\def\UnicodeCharacter#1#2{%
+  \get@code#1;%
+  \ifnum\count@<"80\relax
+    \Error
+  \else\ifnum\count@<"800\relax
+    \@tempcnta\count@
+    \divide\count@64
+    \bgroup
+      \advance\count@192
+      \uccode`\~\count@
+      \uppercase{%
+    \egroup
+      \toks@{U2\string~}%
+      }%
+    \multiply\count@64
+    \advance\@tempcnta-\count@
+    \advance\@tempcnta"80
+    \bgroup
+      \uccode`\~\@tempcnta
+      \uppercase{%
+    \egroup
+      \toks@\expandafter{\the\toks@\string~}%
+      }%
+    \expandafter\expandafter\expandafter
+    \def\expandafter\csname\the\toks@\endcsname{#2}%
+  \else
+    \Error
+  \fi\fi
+}
+
+\@ifundefined{ver@utfcyr.def}{\input{utfcyr.def}}\relax
+\@ifundefined{ver@utflat.def}{\input{utflat.def}}\relax
+
+\makeatother
