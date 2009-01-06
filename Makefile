@@ -85,3 +85,7 @@ linkcheck:
 	@echo
 	@echo "Link check complete; look for any errors in the above output " \
 	      "or in build/linkcheck/output.txt."
+
+upload:
+	scp -r build/html/* athena.dialup.mit.edu:www/RMG/
+	scp build/latex/*.pdf athena.dialup.mit.edu:www/RMG/
