@@ -1,0 +1,55 @@
+.. probably only visible to green group members
+
+How generate these docs, using Python
+========================================
+This documentation is generated using `Sphinx <http://sphinx.pocoo.org/>`_ so that is the place to look for documentation of syntax etc.
+These instructions are specific to RMG and the Green Group, and describe how to run Sphinx on a shared computer and how to get the documentation source.
+
+On a linux computer such as Rainier
+***********************************
+These instructions should get you up and running on a shared computer such as Rainier or Monch without needing a superuser password or anything.
+A bonus side-effect will be that you have the Easy Install package set up correctly, so you can easily get and install other python packages. 
+See http://peak.telecommunity.com/DevCenter/EasyInstall or http://pypi.python.org/pypi/setuptools for more details.
+
+Get the python distribution utils running 
+------------------------------------------
+
+1. Create a file ``.pydistutils.cfg`` in your home directory
+
+It should contain the following::
+
+ [install]
+ install_lib = ~/lib/python
+ # This next line directs EasyInstall
+ # and the distutils to install scripts in the user's "bin" directory.
+ install_scripts = ~/bin
+
+2. Run the command ``export PYTHONPATH=$HOME'/lib/python/'`` and also add it to your .bashrc file for next time you log in.
+
+#. Create the folders ``bin``, ``lib`` and ``lib/python`` in your home directory
+
+#. Download the EasyInstall bootstrap script from http://peak.telecommunity.com/dist/ez_setup.py  to ``~/lib``
+
+#. Change into ``~/lib`` and run ``$ python ez_setup.py``
+
+
+Get and install sphinx
+----------------------
+#. Type ``easy_install sphinx``
+
+Yes, it's that easy.
+
+Get the source from CVS
+-----------------------
+#. Set up your CVS root by typing ``export CVSROOT=:ext:username@monch.mit.edu:/home/cvs`` 
+   replacing ``username`` with your username
+#. In a sensible location, type ``cvs co RMG_manual``
+
+Compile the documentation
+-------------------------
+#. Inside the ``RMG_manual`` directory type one of the following:
+
+  * ``make html`` to generate the html web pages
+  * ``make latex`` to generate the latex source (then follow the instructions to build it to pdf)
+  * ``make upload`` to upload the html and pdf to your (own) athena web space such as http://web.mit.edu/rwest/www/RMG/
+
