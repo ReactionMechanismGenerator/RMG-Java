@@ -680,7 +680,7 @@ public class ThermoGAGroupLibrary {
 //System.out.println(line);//
                         // step 1: read in index and name
                         StringTokenizer token = new StringTokenizer(line);
-                        int index = Integer.parseInt(token.nextToken());
+                        String index = token.nextToken(); //1/6/09 gmagoon changed index from integer to string, so that if/when ChemGreen/RMGVE adds a decimal after the entry number (after editing thermo library), RMG will still be able to read it
                         String name = token.nextToken();
 
                         // step 2: find this functional group in dictionary by name
