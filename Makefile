@@ -11,6 +11,9 @@ PAPEROPT_a4     = -D latex_paper_size=a4
 PAPEROPT_letter = -D latex_paper_size=letter
 ALLSPHINXOPTS   = -d build/doctrees $(PAPEROPT_$(PAPER)) $(SPHINXOPTS) source
 
+#macro
+REMOVEAPPLEJUNK = find source/ -iname "._*" -exec rm {} \;
+
 .PHONY: help clean html web pickle htmlhelp latex changes linkcheck
 
 help:
@@ -25,14 +28,17 @@ help:
 
 clean:
 	-rm -rf build/*
+	$(REMOVEAPPLEJUNK)
 
 html:
+	$(REMOVEAPPLEJUNK)
 	mkdir -p build/html build/doctrees
 	$(SPHINXBUILD) -b html $(ALLSPHINXOPTS) build/html
 	@echo
 	@echo "Build finished. The HTML pages are in build/html."
 
 pickle:
+	$(REMOVEAPPLEJUNK)
 	mkdir -p build/pickle build/doctrees
 	$(SPHINXBUILD) -b pickle $(ALLSPHINXOPTS) build/pickle
 	@echo
@@ -41,12 +47,14 @@ pickle:
 web: pickle
 
 json:
+	$(REMOVEAPPLEJUNK)
 	mkdir -p build/json build/doctrees
 	$(SPHINXBUILD) -b json $(ALLSPHINXOPTS) build/json
 	@echo
 	@echo "Build finished; now you can process the JSON files."
 
 htmlhelp:
+	$(REMOVEAPPLEJUNK)
 	mkdir -p build/htmlhelp build/doctrees
 	$(SPHINXBUILD) -b htmlhelp $(ALLSPHINXOPTS) build/htmlhelp
 	@echo
@@ -54,6 +62,7 @@ htmlhelp:
 	      ".hhp project file in build/htmlhelp."
 
 latex:
+	$(REMOVEAPPLEJUNK)
 	mkdir -p build/latex build/doctrees
 	cp -b source/_latex/* build/latex/
 	$(SPHINXBUILD) -b latex $(ALLSPHINXOPTS) build/latex
@@ -63,12 +72,14 @@ latex:
 	      "run these through (pdf)latex."
 
 changes:
+	$(REMOVEAPPLEJUNK)
 	mkdir -p build/changes build/doctrees
 	$(SPHINXBUILD) -b changes $(ALLSPHINXOPTS) build/changes
 	@echo
 	@echo "The overview file is in build/changes."
 
 linkcheck:
+	$(REMOVEAPPLEJUNK)
 	mkdir -p build/linkcheck build/doctrees
 	$(SPHINXBUILD) -b linkcheck $(ALLSPHINXOPTS) build/linkcheck
 	@echo
