@@ -64,7 +64,7 @@ htmlhelp:
 latex:
 	$(REMOVEAPPLEJUNK)
 	mkdir -p build/latex build/doctrees
-	cp -b source/_latex/* build/latex/
+	cp -b source/_latex/*.* build/latex/
 	$(SPHINXBUILD) -b latex $(ALLSPHINXOPTS) build/latex
 	@echo
 	@echo "Build finished; the LaTeX files are in build/latex."
