@@ -1069,6 +1069,27 @@ public class Species {
 	public static void setAddID(boolean p_addID){
 		addID = p_addID;
 	}
+	
+	/**
+	 * Checks to see if the species is an isomer of another species by comparing
+	 * the numbers of each atom type in each species.
+	 * @param species The species to check the current one against
+	 * @return true if they are isomers, false otherwise
+	 */
+	public boolean isIsomerOf(Species species) {
+		ChemGraph cg1 = getChemGraph();
+		ChemGraph cg2 = species.getChemGraph();
+		boolean areIsomers = true;
+		if (cg1.getCarbonNumber() != cg2.getCarbonNumber())
+			areIsomers = false;
+		if (cg1.getOxygenNumber() != cg2.getOxygenNumber())
+			areIsomers = false;
+		if (cg1.getHydrogenNumber() != cg2.getHydrogenNumber())
+			areIsomers = false;
+		// Should add other atom types in the future!
+		return areIsomers;
+	}
+	
 }
 /*********************************************************************
 	File Path	: RMG\RMG\jing\chem\Species.java

@@ -107,12 +107,20 @@ public class RateBasedPDepRME implements ReactionModelEnlarger {
                 String return_string = "";
         
                 if (update instanceof PDepNetwork) {
+					// This code runs if the highest species flux is less than
+					// the minimum rate, but the leak rate from the PDepNetwork
+					// is above the minimum rate
+					// This means we must move a PDepNetReaction from the
+					// nonincluded list to the included list
+					
 					PDepNetwork pnw = (PDepNetwork)update;
 					Species nextIsomer = null;
 					if (!pnw.isActive() && pnw.getIsChemAct()) {
-							nextIsomer = (Species)pnw.getProduct().iterator().next();
+						nextIsomer = (Species)pnw.getProduct().iterator().next();
 					}
 					else {
+						// There is a bug in this code! 
+						// Either results in a DuplicatedIsomersException or selects an inappropriate isomer to add/include
 						double maxKLeak = 0;
 						PDepNetReaction path = null;
 						for (Iterator iter = pnw.getPDepNonincludedReactionListIterator(); iter.hasNext(); ) {
@@ -265,7 +273,7 @@ public class RateBasedPDepRME implements ReactionModelEnlarger {
 
         // return max pdep network only if there is no species present
         if (maxRleak >= Rmin && maxFlux <= Rmin) {
-					System.out.println("Adding the PDepNetwork");
+			System.out.println("Adding the PDepNetwork");
         	if (maxPdn.getIsChemAct())
         		System.out.println("entry reaction " + maxPdn.getEntryReaction().toString());
         	else {
@@ -275,7 +283,7 @@ public class RateBasedPDepRME implements ReactionModelEnlarger {
         	return maxPdn;
         }
         else {
-					System.out.println("Adding the unreacted species");
+			System.out.println("Adding the unreacted species");
         	return maxSpecies;
         }	
         

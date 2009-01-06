@@ -176,15 +176,15 @@ public class FastMasterEqn implements PDepKineticsEstimator {
 		int numChebTempPolys = 4, numChebPressPolys = 4;
 		
 		// Determine reference energies (units are kcal/mol)
-		double Eref = 1000000.0, Href = 1000000.0, Gref = 1000000.0;
+		double Eref = 1000000.0;
 		for (int i = 0; i < uniWells.size(); i++) {
 			Species isomer = ((PDepWell) uniWells.get(i)).getIsomer();
 			double E = isomer.calculateH(stdTemp);
 			double H = isomer.calculateH(stdTemp);
 			double G = isomer.calculateG(stdTemp);
-			if (E < Eref) {
-				Eref = E; Href = H; Gref = G;
-			}
+			if (E < Eref) Eref = E; 
+			if (H < Eref) Eref = H; 
+			if (G < Eref) Eref = G; 
 		}
 		for (int n = 0; n < multiWells.size(); n++) {
 			MultiWell isomer = ((MultiWell) multiWells.get(n));
@@ -192,9 +192,9 @@ public class FastMasterEqn implements PDepKineticsEstimator {
 				double E = isomer.calculateH(i, stdTemp);
 				double H = isomer.calculateH(i, stdTemp);
 				double G = isomer.calculateG(i, stdTemp);
-				if (E < Eref) {
-					Eref = E; Href = H; Gref = G;
-				}
+				if (E < Eref) Eref = E; 
+				if (H < Eref) Eref = H; 
+				if (G < Eref) Eref = G; 
 			}
 		}
 		
@@ -232,8 +232,8 @@ public class FastMasterEqn implements PDepKineticsEstimator {
 				
 				fw.write("# Unimolecular well " + Integer.toString(i+1) + ": " + isomer.getName() + "(" + Integer.toString(isomer.getID()) + ")" + "\n");
 				fw.write("Ground-state energy                 " + (isomer.calculateH(stdTemp) - Eref) * 4.184 + " kJ/mol\n");
-				fw.write("Enthalpy of formation               " + (isomer.calculateH(stdTemp) - Href) * 4.184 + " kJ/mol\n");
-				fw.write("Free energy of formation            " + (isomer.calculateG(stdTemp) - Gref) * 4.184 + " kJ/mol\n");
+				fw.write("Enthalpy of formation               " + (isomer.calculateH(stdTemp) - Eref) * 4.184 + " kJ/mol\n");
+				fw.write("Free energy of formation            " + (isomer.calculateG(stdTemp) - Eref) * 4.184 + " kJ/mol\n");
 				fw.write("LJ sigma parameter                  " + (isomer.getLJ().getSigma() * 1e-10) + " m\n");
 				fw.write("LJ epsilon parameter                " + (isomer.getLJ().getEpsilon() * 1.381e-23) + " J\n");
 				fw.write("Molecular weight                    " + isomer.getMolecularWeight() + " g/mol\n");
@@ -273,15 +273,15 @@ public class FastMasterEqn implements PDepKineticsEstimator {
 				fw.write("Number of species                   " + Integer.toString(isomer.getNumberOfSpecies()) + "\n");
 				fw.write("Ground-state energy                 ");
 				for (int j = 0; j < isomer.getNumberOfSpecies(); j++)
-					fw.write((isomer.calculateH(j, stdTemp) - Href) * 4.184 + " kJ/mol    ");
+					fw.write((isomer.calculateH(j, stdTemp) - Eref) * 4.184 + " kJ/mol    ");
 				fw.write("\n");
 				fw.write("Enthalpy of formation               ");
 				for (int j = 0; j < isomer.getNumberOfSpecies(); j++)
-					fw.write((isomer.calculateH(j, stdTemp) - Href) * 4.184 + " kJ/mol    ");
+					fw.write((isomer.calculateH(j, stdTemp) - Eref) * 4.184 + " kJ/mol    ");
 				fw.write("\n");
 				fw.write("Free energy of formation            ");
 				for (int j = 0; j < isomer.getNumberOfSpecies(); j++)
-					fw.write((isomer.calculateG(j, stdTemp) - Gref) * 4.184 + " kJ/mol    ");
+					fw.write((isomer.calculateG(j, stdTemp) - Eref) * 4.184 + " kJ/mol    ");
 				fw.write("\n");
 				
 				fw.write("Harmonic oscillators                ");
@@ -439,11 +439,6 @@ public class FastMasterEqn implements PDepKineticsEstimator {
 				}
 			}
 			
-			if (numUniWells > 5) {
-				numUniWells--;
-				numUniWells++;
-			}
-			
 			// Initialize temperature and pressure variables based on read values
 			Temperature tLow = new Temperature(Tmin, "K");
 			Temperature tHigh = new Temperature(Tmax, "K");
@@ -526,30 +521,20 @@ public class FastMasterEqn implements PDepKineticsEstimator {
 						PDepNetReaction pdnr = new PDepNetReaction(reactant, product, cp);
 
 						// Add net reaction to appropriate linked list
-						boolean includeReactants = false;
-						boolean includeProducts = false;
+						boolean includeReactants = true;
+						boolean includeProducts = true;
 						
-						if (i < numUniWells) {
+						/*if (i < numUniWells) {
 							PDepWell well1 = (PDepWell) uniWells.get(i);
 							includeReactants = pdn.includeAsIsomer(well1.getIsomer());
-						}
-						else {
-							MultiWell well1 = (MultiWell) multiWells.get(i - numUniWells);
-							includeReactants = well1.includeAsIsomer(pdn);
-						}
-						
+						}*/
 						if (j < numUniWells) {
 							PDepWell well2 = (PDepWell) uniWells.get(j);
 							includeProducts = pdn.includeAsIsomer(well2.getIsomer());
 						}
-						else {
-							MultiWell well2 = (MultiWell) multiWells.get(j - numUniWells);
-							includeProducts = well2.includeAsIsomer(pdn);
-						}
 						
-						// Only add forward reactions
-						//if (i > j) {
-						if (j + 1 == entryWell) {
+						// Only add forward reactions for which the entry well is the *reactant*
+						if (i + 1 == entryWell && !pDepNetReactionList.contains(pdnr)) {
 							if (includeReactants && includeProducts) {
 								pDepNetReactionList.add(pdnr);
 								netReactionCount++;

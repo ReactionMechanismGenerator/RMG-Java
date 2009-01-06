@@ -389,6 +389,17 @@ public class PDepNetwork {
         	System.exit(0);	
         }
         
+		// Only add if species is an isomer (that is, has the same numbers of each atom)
+		if (!pDepWellList.isEmpty()) {
+			PDepWell pdw = (PDepWell) pDepWellList.get(0);
+			if (!p_nextIsomer.isIsomerOf(pdw.getIsomer())) {
+				System.out.println("Attempted to add species to PDepNetwork that is not an isomer of that network!");
+				System.out.println("Network contains isomers of type " + pdw.getIsomer().getName());
+				System.out.println("Isomer to add was of type " + p_nextIsomer.getName());
+				System.exit(0);	
+			}
+		}
+		
         //System.out.println("begin to new a well");
         PDepWell pdw = new PDepWell(p_nextIsomer, p_nextIsomer.getPdepPaths());
         //System.out.println("begin to add new well to system");
