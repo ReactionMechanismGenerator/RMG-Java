@@ -1,0 +1,311 @@
+.. _modification:
+
+Modifying RMG
+=============
+
+
+.. _editingthermodatabase:
+
+Editing the Thermodynamic Database
+----------------------------------
+
+As mentioned in Section :ref:`primarythermolibrary`, it is possible to
+override the default thermodynamic values and substitute your own thermodynamic
+data.
+
+
+Basic Structure of the Thermo Database
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+The thermodynamics database consists of three sections, each of which is an
+ASCII file that can be edited to alter the information. This description applies
+to non-radical groups. There are other tree/library/dictionary files for radical
+groups, ring corrections, and other corrections. The nomenclature is different,
+but they would be edited in a similar way. The files of interest are located in
+the directory: ``$RMG/databases/database/thermo/``. The three files are
+described below.  ---
+
+**Dictionary File** (``Group_Dictionary.txt``): This file contains the name and
+adjacency list (structure) for all of the nodes contained within the thermo
+tree. The nomenclature within all three files must be identical. The asterisk
+"\*" denotes the central atom in the group for which the group value is defined.
+The format for each line in the adjacency list is: atom #, \* if central atom,
+element, # of radicals (0, 1, 2) on element, bonding. ---
+
+``Cb-(Cds-Cdd-Cd)``  ---  ``1`` & ``*`` & ``Cb``  & ``0`` & ``{2,S}`` &   ---
+``2`` &            & ``Cd``  & ``0`` & ``{1,S}`` & ``{3,D}``  ---  ``3`` &
+& ``Cdd`` & ``0`` & ``{2,D}`` & ``{4,D}``  ---  ``4`` &            & ``C``   &
+``0`` & ``{3,D}`` &  ---
+
+**Tree File** (``Group_Tree.txt``): This file defines the tree structure of the
+database. The nodes at any particular level are defined by including the text
+"``Lx:``" prior to the name of the group at that node, where "``x``" is a number
+corresponding to the level in the tree. A sample is given below: ---
+
+``L0:`` & ``R`` & & & & & &  ---  & ``L1:`` & ``C`` & & & & &  ---  &
+& ``L2:`` & ``Cbf`` & & & &  ---  &              &              & ``L3:``  &
+``Cbf-CbCbCbf`` &  ---  &              & ``L2:`` & ``Cb``  & & & &  ---  &
+&              & ``L3:``  & ``Cb-H`` & &  ---  &              &              &
+``L3:``  & ``Cb-Os`` & &  ---  &              &              & ``L3:``  &
+``Cb-C`` & &  ---  &              &              & & ``L4:``  & ``Cb-Cs`` &  ---
+&              &              & & ``L4:``  & ``Cb-Cds`` &  ---  &              &
+& & & ``L5:``  & ``Cb-(Cds-Od) // Cb-CO``  ---  &              &              &
+& & ``L5:``  & ``Cb-(Cds-Cd)``  ---  &              &              & & & &
+``L6:``  & ``Cb-(Cds-Cds) // Cb-Cd``  ---  &              &              & &
+``L4:``  & ``Cb-Cb`` &  ---  &              & ``L2:`` & ``Ct`` & & & &  ---
+
+Note that the indentation is not necessary because it is the "``Lx:``" that the
+computer reads, but is very helpful in making these files human readable. ---
+
+**Library File** (``Group_Library.txt``): This is the archive of the actual data
+associated with a given group in the tree and dictionary. There are 15 (space or
+tab separated) fields in the thermo library to describe the group. The units for
+enthalpy are kcal/mole, and the units for entropy and heat capacity (Cp) are
+cal/mole-K. The columns are described in Table :ref:`library table`. ---
+
+Column # & What it contains  ---   1     & A unique number; this does not
+correspond to any other part of the thermo database, but numbering sequentially
+is most logical  ---   2     & Group name; same as in tree and dictionary  ---
+3-4   & Enthalpy and Entropy at 298K  ---   5-11  & Cp at T = 300, 400, 500,
+600, 800, 1000, and 1500K  ---   12-13 & dH and dS: absolute uncertainties in
+the enthalpy/entropy estimates  ---   14    & dCp: absolute uncertainty in the
+Cp estimate (no temperature consideration)  ---   15    & Comments Section:
+usually citing the source of the data or comments on the reliability  ---
+Caption: Description of Library File Structure
+
+.. _librarytable:
+
+A sample entry can be found in Section :ref:`changingthermodata`.
+
+
+Thermo Database and Adjacency List Notation
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+In general, the thermo database uses what are known as function group elements.
+Function group elements serve to define the atom and its bonding environment.
+These definitions serve to simplify the adjacency lists of groups and allow for
+more general descriptions of groups. The notation used in the database is shown
+below. New functional group elements cannot be added to RMG in a simple way, as
+they must be hard-coded into the RMG software with the appropriate properties.
+---
+
+If you examine the file ``Group_Dictionary.txt``, you will see that these groups
+are used extensively, even more so that the actual atoms C, H, or O. You will
+also see that groups can be defined using a bracketed notation, which simply
+means that either atom/functional group element will generate this node. For
+example: ---
+
+``Cb-Cds``  ---  ``1`` &  ``*`` &  ``Cb`` & ``0`` & ``{2,S}``  ---  ``2`` &
+&  ``{Cd,CO}`` &  ``0`` & ``{1,S}``
+
+In this example, the second "element" is actually either Cd or CO. The reason
+that either Cd or CO will generate the same node is because both fall under the
+more general Cds definition, which is a carbon atom with one double and two
+single bonds. This can also be useful if there is a secondary effect and all
+that matters is that there is a $π-bond present, but the fact that it is C=O or
+C=C does not matter. This is not used very much in the thermo database, but
+occurs much more in the kinetics databases where radical delocalization can play
+a major role in determining the rate constant of a reaction. A table of the
+possible functional groups can be seen in Table :ref:`functional group table`.
+
+Cs  & The graphics & Carbon bonded to four single bonds  ---   Cd  & will be
+added & Carbon bonded to a double bond and two single bonds.  (The other end of
+the double bond is carbon)  ---   Cdd & later & Carbon bonded to two double
+bonds  ---   Ct  & & Carbon bonded to a triple bond and single bond  ---   Cb  &
+& Carbon bonded to two benzene bonds and a single bond.  (The carbon belongs to
+only one benzene ring)  ---   Cbf & & Carbon bonded to three benzene bonds (the
+carbon belongs to two or three benzene rings)  ---   CO  & & Carbon bonded to a
+double bond and two single bonds.  (The other end of the double bond is oxygen)
+---   Os  & & Oxygen bonded to two single bonds  ---   Od  & & Oxygen bonded to
+a double bond  ---   Oa  & & Oxygen triplet  ---   R   & & Any atom  ---   R!H &
+& Any non-hydrogen atom  ---
+
+Caption: Functional Group Elements
+
+.. _functionalgrouptable:
+
+
+.. _changingthermodata:
+
+Changing the Data for an Existing Group
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+This task is relatively simple, as it only involves commenting out the line you
+want to replace and putting new values in its place. Only the file
+``Group_Library.txt`` will need to be altered in this case. Perhaps the simplest
+way to show this is through an example. Commenting out a line can be
+accomplished by introducing a "``//``" at the start of the line. ---
+
+Let's assume that you have the following group values, which are for a carbon in
+a benzene ring attached to an H and to a single-bonded O: ---
+
+``#`` & ``Group`` & ``H`` & ``S`` & ``Cp300`` & ``Cp400`` & ``Cp500`` &
+``Cp600`` & ``Cp800`` & ``Cp1000`` & ``Cp1500`` & ``dH`` & ``dS`` & ``dCp`` &
+``Note``  ---   ``7`` & ``Cb-H`` & ``3.3`` & ``11.53`` & ``3.24`` & ``4.44`` &
+``5.46`` & ``6.3`` & ``7.54`` & ``8.41`` & ``9.73`` & ``0.11`` & ``0.12`` &
+``0.1`` & ``Cb-H Benson``  ---  ``8`` & ``Cb-Os`` & ``-0.9`` & ``-10.2`` &
+``3.9`` & ``5.3`` & ``6.2`` & ``6.6`` & ``6.9`` & ``6.9`` & ``7.07`` & ``0.16``
+& ``0.1`` & ``0.1`` & ``Cb-O Benson``  ---
+
+Suppose you think that the group enthalpy for Cb-H is actually 3.85 kcal/mole
+instead of 3.3 kcal/mole, and you are quite sure, so the dH = 0.03 instead of
+0.11. The suggested way to change this would be to comment out (deletion is also
+an option, but not advised) line 7 and add a similar line with the new values.
+It is also suggested that you describe why you have alter the database in the
+"Note" section, potentially providing a URL to a more detailed description. The
+new scenario would look like this: ---
+
+``#`` & ``Group`` & ``H`` & ``S`` & ``Cp300`` & ``Cp400`` & ``Cp500`` &
+``Cp600`` & ``Cp800`` & ``Cp1000`` & ``Cp1500`` & ``dH`` & ``dS`` & ``dCp`` &
+``Note``  ---   ``//7`` & ``Cb-H`` & ``3.3`` & ``11.53`` & ``3.24`` & ``4.44`` &
+``5.46`` & ``6.3`` & ``7.54`` & ``8.41`` & ``9.73`` & ``0.11`` & ``0.12`` &
+``0.1`` & ``Cb-H Benson``  ---  ``7`` & ``Cb-H`` & ``3.85`` & ``11.53`` &
+``3.24`` & ``4.44`` & ``5.46`` & ``6.3`` & ``7.54`` & ``8.41`` & ``9.73`` &
+``0.03`` & ``0.12`` & ``0.1`` & ``My Value is so much better``  ---  ``8`` &
+``Cb-Os`` & ``-0.9`` & ``-10.2`` & ``3.9`` & ``5.3`` & ``6.2`` & ``6.6`` &
+``6.9`` & ``6.9`` & ``7.07`` & ``0.16`` & ``0.1`` & ``0.1`` & ``Cb-O Benson``
+---
+
+You may also refer one group value to another if you believe that they should be
+the same. This is done by putting the name of the group that has the same thermo
+parameters in column 3 and leaving columns 4- 15 blank. Effectively, if RMG
+encounters the group and finds the name of another group instead of numerical
+value, it will assign the current group the same values that occur in the
+referred group. ---
+
+``253`` & ``Cb-(Os-(Os-Cs))`` & ``-2.5`` & ``-8.5`` & ``...``  ---  ``254`` &
+``Cb-(Os-(Os-H))`` & ``Cb-(Os-(Os-Cs))`` &
+
+The above example would assume that the group values for #254 are identical to
+those of #253. ---
+
+This referencing does not need to be done if the group to which you want to
+refer lies directly above the current group in the tree, because if the tree
+does not have a certain node defined it will look back up the tree to find the
+nearest relative and use those values. ---
+
+``253`` & ``Cb-(Os-(Os-Cs))`` & ``-2.5`` & ``-8.5`` & ``...``  ---  ``254`` &
+``Cb-(Os-(Os-H))`` & ``Cb-(Os-(Os-Cs))`` &  ---  ``255`` &
+``Cb-(Os-(Os-(Cs-OsHH)))`` & ``Cb-(Os-(Os-Cs))`` &  ---
+
+In this case, the referring of #255 back to #253 is unnecessary because RMG
+would refer back to #253 by default if it did not find any values for #255. This
+redundancy will not create any problems within RMG, but it is simply
+unnecessary. ---
+
+If you are adding a new group, you will need to follow the procedure below for
+adding a group to the tree, dictionary, and library files as well. ---
+
+Please be aware that version control may be a significant issue with the
+databases and should be addressed early to ensure consistency within the group.
+
+
+Adding Additional Nodes to the Thermo Database
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+This task is more complicated than the previous example because it involves
+altering all three database files in a consistent manner. It is worth noting
+that the order in which species are added to the dictionary and library does not
+matter; however, the position where the new group is added to the tree is of the
+utmost importance. It is useful to create the tree and dictionary with items in
+the same order.  This ordering will facilitate cross checking and debugging if
+needed. Since all files must use the same nomenclature, the ability to search
+may make consistent ordering unnecessary. The procedure is described below. ---
+
+#. Find the appropriate location to place the new group and ensure that the
+   nomenclature is unambiguous and unique. Placing the group in the incorrect
+   location could cause incorrect estimates to be made when the tree is being
+   searched. Using Chemgreen to navigate the tree structure is a useful way to find
+   the location for your new group. ---
+
+#. Add the line of text to the ``Group_Tree.txt`` file in the following form,
+   where "``x``" is the appropriate level. The following example is for a C-O-O-H
+   off of a benzene ring. ---
+
+   ``Lx: Cb-(Os-(Os-H))`` ---
+
+#. Using the same name as in the tree, append the file ``Group_Dictionary.txt``
+   to define the structure of the group and its atom center (denoted by the \*):
+
+   ``Cb-(Os-(Os-H))``  ---  ``1`` & ``*`` & ``Cb``  & ``0`` & ``{2,S}`` &   ---
+   ``2`` &            & ``O``  & ``0`` & ``{1,S}`` & ``{3,S}``  ---  ``3`` &
+   & ``O`` & ``0`` & ``{2,S}`` & ``{4,S}``  ---  ``4`` &            & ``H``   &
+   ``0`` & ``{3,S}`` &  ---
+
+#. Add the new group to the ``Group_Library.txt`` file using the same
+   nomenclature and whatever thermo data you have for the group. The format was
+   shown in the previous section. ---
+
+   ``2374 Cb-(Os-(Os-H)) 3.5 10.0 ... "I added this b/c ..."``  ---
+
+
+Editing the Primary Reaction Library
+------------------------------------
+
+A primary reaction library (PRLib) consists of four files: ``reactions.txt``,
+``species.txt``, ``3rdBodyReactions.txt``, and ``troeReactions.txt``. It is not
+necessary to define reactions for each of the files if the user does not wish
+to, but all four files must exist, and they must include the Unit declaration
+and Reaction headings. ---
+
+When you use a PRLib, all species and reactions in the library are immediately
+added to the mechanism, though the species come in with zero initial
+concentration unless otherwise specified in the input condition file. The user
+will see these reactions listed in the file ``Final_Model.txt``. PRLibs are
+particularly useful for (i) small molecule reactions which tend to deviate from
+the standard library values more significantly and (ii) to incorporate a set of
+known experimental values for key reactions. ---
+
+#. The first file, ``reactions.txt``, defines the standard reactions. The file
+   has the structure shown in the following sample. Comments are denoted with
+   "``//``" and are ignored by the RMG parser. ---
+
+   ``// Define the units``  ---  ``// Units allowed for A are: "mol/liter/s" or
+   "mol/cm3/s"``  ---  ``// Units allowed for E are: "kcal/mol", "cal/mol",
+   "kJ/mol", or "J/mol"``  ---   ---  ``Unit:``  ---  ``A: mol/cm3/s`` ---  ``E:
+   kcal/mol`` ---   ---  ``Reactions:`` ---  ``// The format is:`` ---  ``// "R1 +
+   R2 = P1 + P2 A n Ea dA dn dEa "`` ---  ``// where R1, R2, P1, P2 are species; A,
+   n, and Ea are the Arrhenius`` ---  ``// parameters, and dA, dn, dEa are the
+   errors in those parameters (normally``  ---  ``// additive, but can also be
+   multiplicative if a * comes before the number)`` ---  ``O2 + CO = CO2 + O
+   1.26E13 0.00 196.90 *1.7 0 0`` ---
+
+#. The species list is just a series of molecular names and connectivity lists,
+   analogous to the formats used in the input file ``condition.txt``. All species
+   present in ``reactions.txt`` must be given a structure in ``species.txt``. The
+   structure should have the same format as the adjacency list shown in Section
+   3.1.6. Please note that the names that are used in the reaction library will be
+   those used throughout the mechanism. In this manner, the user can adopt a
+   preferred nomenclature for individual species. ---
+
+#. The next file is ``3rdBodyReaction.txt``, which lists reactions involving a
+   third body (bath gas). A sample file, with a 3rd-body reaction, is listed below.
+   The first line defines the reaction using the same format as in ``reactions.
+   txt``. The next line lists collision efficiencies for various bath-gas species
+   that scale the concentrations of particular species when calculating the total
+   bath gas concentration. In the example below, CH$_4$ is particularly effective
+   as a 3rd body, and its effective concentration is tripled. ---
+
+   ``// Define the units``  ---  ``// Units allowed for A are: "mol/liter/s" or
+   "mol/cm3/s"``  ---  ``// Units allowed for E are: "kcal/mol", "cal/mol",
+   "kJ/mol", or "J/mol"``  ---   ---  ``Unit:``  ---  ``A: mol/cm3/s``  ---  ``E:
+   kJ/mol``  ---   ---  ``Reactions:``  ---  ``CO + O + M = CO2 + M 1.54E15 0.00
+   12.56 *1.2 0 0``  ---  ``N2/0.4/ O2/0.4/ CO/0.75/ CO2/1.5/ H2O/6.5/ CH4/3.0/
+   C2H6/3.0/ AR/0.35/``  ---  ``// the first line defines the reaction and
+   Arrhenius parameters,``  ---  ``// while the second gives the scaling factors
+   for different bath gas species``  ---  ``// which contribute to [M].``  ---
+
+#. The final file, ``troeReactions.txt``, is present for specifying pressure-
+   dependent reactions according to the Troe expression. The format of each
+   reactions is the same as is used by ChemKin. For example:
+
+   ``Unit:``  ---  ``A: mol/cm3/s``  ---  ``E: kJ/mol``  ---   ---  ``Reactions:``
+   ---  ``C2H2 + H (+M) = C2H3 (+M) 8.43E12 0.00 10.81 *1.2 0 0``  ---  ``N2/0.4/
+   O2/0.4/ CO/0.75/ CO2/1.5/ H2O/6.5/ CH4/3.0/ C2H6/3.0/ AR/0.35/``  ---  ``LOW /
+   3.43E18 0.0 6.15 /``  ---  ``TROE / 1 1 1 1231 /``  ---   ---  ``// the first
+   two lines are very similar to the 3rdBodyReactions.txt format``  ---  ``// the
+   next like specifies either the low pressure limit Arrhenius``  ---  ``//
+   parameters, and the final line specifies the 3 or 4 Troe parameters``  ---  ``//
+   in the order: a, T***, T*, T** (the last parameter is optional).``  ---
+
+.. % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

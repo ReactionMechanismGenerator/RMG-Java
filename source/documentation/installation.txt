@@ -1,0 +1,90 @@
+.. _installation:
+
+Installing RMG
+==============
+
+
+.. _installrequirements:
+
+Installation and License Requirements
+-------------------------------------
+
+RMG is intended to be an open source program, available to the general public
+free of charge. Currently, that is not the case. RMG does require that the user
+obtain a license for some of RMG's dependencies, and **it is the user's
+responsibility to ensure these licenses have been obtained**.
+
+To install RMG, you will need:
+
+#. The JAVA 2 Platform, Standard Edition.  ---
+   `<http://java.sun.com/j2se/index.jsp>`_
+
+#. The DASPK3.1 solver package, which is available for research purposes but
+   subject to copywrite restrictions.  ---  `<http://www.engineering.ucsb.edu/
+   cse/software.html>`_
+
+
+.. _linuxinstallation:
+
+Linux Installation
+------------------
+
+To install RMG on a linux computer:   SANDEEP:  Are you going to create a
+makefile?  How do we deal with compiling DASPK once it has been untarred?
+
+#. Create the directory in which you want to install RMG. ---  ``$ mkdir <dir>``
+   ---  For the purposes of this document, we will set the directory to: ---   ``$
+   mkdir /usr/share/RMG``
+
+#. Set the RMG environment variable as the directory created in the first step:
+   ---  ``$ RMG="<dir>"``  ---  In our example, you would code:  ``$
+   RMG="/usr/share/RMG"``
+
+#. Download the ``RMG.tar``, untar it, and move it to the $RMG directory: ---
+   ``$ tar -xvf RMG.tar``  ---  ``$ mv RMG/* $RMG``
+
+#. Before running RMG, a shared library file has to be generated which RMG will
+   use to perform numerical integration.  Currently RMG uses DASPK3.0 (see Section
+   :ref:`installrequirements`).  Copy the file ``daskpk31.tgz`` to the directory
+   ``"$RMG/lib"`` and untar it. ---  ``$ tar -zxvf daspk31.tgz``  ---  NOW WHAT?!
+
+#. If you want to rum RMG from the bash shell, use your preferred editor and add
+   the following lines to your ``.bashrc`` file:  ---  ``RMG="<dir>"`` (e.g.
+   ``RMG="/usr/share/RMG"`` ) ---  ``LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$RMG/lib``
+
+
+.. _windowsinstallation:
+
+Windows Installation
+--------------------
+
+To install RMG on a Windows computer, unzip the ``RMG.zip`` file to a directory
+of your choice (e.g. ``C://Programs/RMG``). ---  Once RMG is unzipped, you will
+need to create the ``daspk.dll`` library.  The file ``daspk.dll`` can be created
+using either Compaq Visual Fortran or Microsoft Visual C++.  ---   is the
+following valid only for MS Visual C++?  Should we drop the CV Fortran?
+
+#. Create a new empty Win32 Dynamic-Link Library project called daspk.
+
+#. Go to project $-->$ add to project $-->$ files.
+
+#. Add the following DASPK files (located in the DASPK3.0 directory): ---
+
+   ``adf_dummy.f``  ``daux.f``   ``dbanpre.f``   ``ddaspk.f``  ``dilupre.f``
+   ``dlinpk.f``   ``drbdpre.f``   ``drbgpre.f``  ``dsensd.f``  ``dsparsk.f``
+   ``mpi_dummy.f``
+
+#. Add the following C++ files (located in the /RMG/software/CPlusWrapper
+   directory): ---  ``cdaspk.h``  ``cdaspk.cpp``   ``JDASPK.cpp``
+   ``jing_rxnSys_JDASPK.h`` ``parameter.h``  ``parameter.cpp``   ``reaction.h``
+   ``reaction.cpp``
+
+#. Go to Build $-->$ Build ``daspk.dll``
+
+#. Move ``daspk.dll`` to the ``RMG/software/rmg`` directory.
+
+
+ChemGreen Installation
+----------------------
+
+TO BE ADDED

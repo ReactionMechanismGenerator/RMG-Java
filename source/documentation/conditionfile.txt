@@ -1,0 +1,306 @@
+.. _conditionfile:
+
+Creating an Initialization File
+===============================
+
+To run RMG, you must specify the initial conditions and the model generation
+parameters, all of which are contained in a single file, ``condition.txt``. If
+you are running RMG on a linux computer, the file ``condition.txt`` can be
+located in any directory, although it is advised that you create a special
+directory for RMG simulations, since each ``condition.txt`` creates its own
+subdirectories. If you are using a Windows machine, the ``condition.txt`` must
+remain in ``RMG/condition`` (please consult Section :ref:`runninginwindows`).
+---  The ``condition.txt`` file should specify the following conditions (in
+order):
+
+#. Whether to restart a prior run
+
+#. The main database
+
+#. The primary thermodynamic library
+
+#. The initial temperature and pressure of the system
+
+#. The name, concentration, and chemical structure of the reactants
+
+#. The specification and concentration of the inert gas(es)
+
+#. The reaction families selected for modeling the system
+
+#. The model enlarger
+
+#. The finish controller
+
+#. The dynamic simulator
+
+#. Sensitivity analysis
+
+#. The primary reaction library
+
+For Linux operation, the name ``condition.txt`` is variable. As you'll see in
+Section :ref:`running in linux`, you can change the name of the initialization
+file, so long as it remains a ``.txt`` file. For Windows operation, the name of
+the file must remain ``condition.txt``.
+
+
+.. _restart:
+
+Restart
+-------
+
+The first item in the file ``condition.txt`` is the restart command. Whenever
+RMG runs the ``condition.txt`` file, it creates a new directory (in the same
+directory as the initialization file): ``./restart/``. There are five text files
+within the new restart directory: ``allSpecies.txt``, ``coreSpecies.txt``,
+``edgeSpecies.txt``, ``coreReactions.txt``, and ``edgeReactions.txt``. See
+Section :ref:`rmg output` for a description of these files. ---
+
+There are two options for the restart command: ``true`` and ``false``. ---
+
+``Restart: true``  ---
+
+When the restart is set to true, RMG will read the five files in the
+``./restart/`` directory and resume the simulation. The restart command can be
+very useful. If RMG ever crashes, it is possible to rerun the simulation.
+Similarly, with the restart command you can run a simulation under a given set
+of conditions and then rerun the same simulation with different conditions (e.g.
+a new temperature, reactant concentration, etc.). Alternatively, you can use the
+restart to change which species are examined in the sensitivity analysis. If the
+simulation is new, then the restart command must be set to: ---
+
+``Restart: false``
+
+
+Database
+--------
+
+In the main RMG directory is a directory of databases: ``$RMG/databases/``. By
+default, there is one directory within the directory of databases:
+``$RMG/databases/database``. It is possible, however, to create multiple
+databases. For example, you can copy the entire contents of the default database
+into a new database, ``$RMG/databases/databaseII``, and change some of the
+values. Unless you have created your own databases, the Database setting should
+be left at the default value:  ---
+
+``Database: database``
+
+
+.. _primarythermolibrary:
+
+Primary Thermo Library
+----------------------
+
+By default, RMG will calculate the thermodynamic properties of the species from
+Benson additivity formulas. In general, the group-additivity results are
+suitably accurate. However, if you would like to override the default settings,
+you may specify the thermodynamic properties of species in the
+primaryThermoLibrary. When a species is specified in the primaryThermoLibrary,
+RMG will automatically use those thermodynamic properties instead of generating
+them from Benson's formulas. Multiple libraries may be created, if so desired.
+Please see Section :ref:`editing thermo database` for details on editing the
+primary thermo library. In general, it is best to leave the PrimaryThermoLibrary
+set to its default value: ---
+
+``PrimaryThermoLibrary: primaryThermoLibary``
+
+
+Initial Conditions
+------------------
+
+The fourth item in the initialization file is the initial temperature and
+pressure. Currently, RMG can only model constant temperature and volume systems.
+Future versions will allow for variable temperature and pressure. Please note
+that the temperature and pressure must be accompanied by a unit (in
+parentheses). Suitable temperature units are: K, F, and C. Suitable pressure
+units are: atm, torr, pa, and bar. The following example assumes that the system
+begins at 600 Kelvin and 200 atmospheres.  ---
+
+``TemperatureModel: Constant (K) 600``  ---  ``PressureModel: Constant (atm)
+200``
+
+
+Reactants
+---------
+
+The name, concentration, and structure of each reactant must be specified. For
+each reactant, the first line should include the reactant number (e.g. (1)), its
+name (e.g. C2O2), and it's concentration with units (e.g. 4.09e-3 (mol/cm3)).
+The next line defines the reactant structure, described by an adjacency list.
+ChemGreen is a useful tool for generating adjacency lists. Please note that you
+may choose the simplified adjacency list in which the hydrogen atoms are omitted
+(shown below).  ---
+
+``InitialStatus:``  ---  ``(1) C2O2. 4.09e-3 (mol/cm3)``  ---  ``1``   & ``C`` &
+``0`` & ``{2,D}`` & ``{3,D}`` ---  ``2``   & ``C`` & ``0`` & ``{1,D}`` &
+``{4,D}``  ---  ``3``   & ``O`` & ``0`` & ``{1,D}`` & ---  ``4``   & ``O`` &
+``0`` & ``{2,D}`` &  ---  & & & &  ---  ``(2) O2 1.1E-7 (mol/cm3)`` ---  ``1`` &
+``O`` & ``0`` & ``{2,D}`` &  ---  ``2`` & ``O`` & ``0`` & ``{1,D}`` &  ---
+``END``  ---
+
+Please note that the keyword "``END``" must be placed at the end of the
+InitialStatus section. ---
+
+If one of the reactants is a resonance isomer, you only need to define one of
+the resonance structures, and RMG will automatically detect the others.
+
+
+Inert Gases
+-----------
+
+Following InitialStatus, the initialization file specifies which inert gases, if
+any, are used. Currently RMG can handle three inert gases: N$_2$, Ne, and Ar. If
+one of the gases is not used, set the concentration to 0.0 (mol/cm3). If no bath
+gas is used, set all concentrations to zero. In the example below, there is no
+nitrogen, the neon is omitted, and the argon concentration is 2.21E-6 (mol/cm3).
+---
+
+``InertGas:``  ---  ``N2 0.0 (mol/cm3)`` ---  ``Ar 2.21E-6 (mol/cm3)``  ---
+``END``
+
+Please note that the keyword "``END``" must be placed at the end of the InertGas
+section.
+
+
+Reaction Model Enlarger
+-----------------------
+
+The Reaction Model Enlarger specifies the rules for reaction mechanism growth.
+Currently there is only one setting for mechanism growth, so please leave this
+entry as it is:  ---
+
+``ReactionModelEnlarger: RateBasedModelEnlarger``  ---
+
+As RMG expands, other model enlargers will become available (e.g. for pressure-
+dependent reaction networks).
+
+
+Finish Controller
+-----------------
+
+The Finish Controller defines the termination rules for model growth.
+Additionally, it includes the precision parameters such as reaction time,
+conversion, and error tolerance. Currently, there is only one finish controller.
+Future versions of RMG will have additional finish controllers, such as pressure
+dependence. ---
+
+Below the Finish Controller line, you must specify the goal. The goal tells the
+program when to terminate the reaction model expansion. There are two goal
+options: ``ReactionTime`` and ``Conversion``. ``ReactionTime`` must be followed
+by a number and a time unit. ``Conversion`` must be followed by a reactant
+species name and a number between 0 and 1.  ---
+
+Beneath the goal, you must specify the error tolerance. Typical values for the
+error tolerance are between 0.0001 and 0.5. A smaller error tolerance
+corresponds to a larger model; consequently, it is advised to use a large error
+tolerance when generating a new model. Once the initial simulation has finished,
+you can tighten the tolerance and apply the restart function to generate an
+expanded model. In the first example, the reaction will run for 0.001 seconds.
+In the second example, the reaction will run until 90% of the C$_2$O$_2$ is
+consumed and has a much tighter error tolerance.  ---
+
+``FinishController: RateBasedFinishController``  ---  ``(1) Goal ReactionTime:
+0.001 (sec)``  ---  ``(2) Error Tolerance: 0.1``  ---
+
+or ---
+
+``FinishController: RateBasedFinishController``  ---  ``(1) Goal Conversion:
+C2O2 0.90``  ---  ``(2) Error Tolerance: 0.0001``  ---
+
+For the initial model run, it is often preferable to use ``Goal Conversion``
+instead of ``Goal Reaction Time``, since it is difficult to judge *a priori*
+what the reaction time should be. ---
+
+For a more detailed description on rate-based model enlargement, please consult
+the paper "Rate-Based Construction of Kinetic Models for Complex Systems" by
+Roberta G. Susnow, Anthony M. Dean, William H. Green, Pawel K. Peczak, and Linda
+J. Broadbelt, in the *Journal of Physical Chemistry A*, Vol. 101, pages 3731-40,
+1997.
+
+
+Dynamic Simulator
+-----------------
+
+RMG uses the DASPK dynamic solver. Future versions of RMG might include the
+CHEMKIN dynamic solver.  ---
+
+The first line beneath the solver is ``TimeStep``, which is followed by a number
+and a unit of time. The ``TimeStep`` indicates how frequently RMG should check
+to see if the model needs to be enlarged. In the current example, RMG will check
+every second of simulation time to see whether the error tolerance is satisfied.
+The next two lines specify the absolute and relative tolerance, respectively.
+Common values for the absolute tolerance are 1e-15 to 1e-25. Relative tolerance
+is usually 1e-3 to 1e-5.  ---
+
+``DynamicSimulator: DASPK``  ---  ``TimeStep: 1 (sec)``  ---  ``Atol: 1e-20``
+---  ``Rtol: 1e-4``  ---
+
+
+Sensitivity Analysis
+--------------------
+
+As long as DASPK is chosen for the dynamic solver, RMG can perform sensitivity
+analysis and generate error bars on the concentration profiles. The sensitivity
+analysis is based upon first-order sensitivity coefficients and uncertainties in
+the rate constants. To utilize the sensitivity analysis, either the first or
+second line must be set to ``on``. If both ``Error bars`` and ``Display
+sensitivity coefficients`` are set to off, then RMG will not perform a
+sensitivity analysis. ---
+
+When the option to generate error bars is turned on, RMG calculates the upper
+and lower bounds on the concentration profiles for all core species. These upper
+and lower bounds are generated by the first-order sensitivity equation: ---
+
+BIG EQUATION!!
+
+where $C_i$ is the concentration of the $i^th species, and overrightarrowk is
+the vector of rate constants. ---
+
+If the option to display sensitivity coefficients is turned on, you must specify
+a list of species for which the sensitivities should be displayed. The output
+file will then include the sensitivities of those species with respect to all
+the rate constants, all the heats of formations, and the initial concentrations
+of all the reactants. Additionally, if you choose to display the sensitivity
+coefficients, RMG will print a list of the five reactions that contribute the
+most to the uncertainty in the concentration (for each species selected by the
+user). ---
+
+Sensitivities to rate constants are normalized sensitivities (FORMULA), and
+sensitivities to heats of formation are semi-normalized (FORMULA ). The
+contribution of a reaction to the uncertainty is estimated as the product of the
+normalized sensitivity and the uncertainty in the rate constant (FORMULA. In the
+following example, RMG will perform a sensitivity analysis. Error bars will be
+generated for all the species, and the sensitivity coefficients will be
+generated for carbon monoxide, carbon dioxide, methane, and water. ---
+
+``Error bars: On``  ---  ``Display sensitivity coefficients: Off``  ---
+``Display sensitivity information for:``  ---  ``CO``  ---  ``CO2``  ---
+``CH4``  ---  ``H2O``  ---  ``END``  ---
+
+Please note that the keyword "``END``" must be placed at the end of the Error
+bars section.
+
+
+Primary Reaction Library
+------------------------
+
+The final section of the file ``condition.txt`` specifies which, if any, primary
+reaction libraries are used. Currently, the only available reaction library
+included with RMG is the Leeds' oxidation library. You can specify your own
+primary reaction library in the location section. Please note that the oxidation
+library should not be used for pyrolysis models. In the following example, the
+user has created her own reaction library with a few additional reactions
+specific to n-butane, and these reactions are to be used in addition to the
+Leeds' oxidation library. ---
+
+``PrimaryReactionLibrary: on`` ---  ``Name: nbutane`` ---  ``Location:
+database/primaryReactionLibrary/nbutane`` ---  ``Name: Leeds`` ---  ``Location:
+database/primaryReactionLibrary/combustion_core/version5`` ---  ``END``
+
+Please note that the keyword "``END``" must be placed at the end of the Primary
+Reaction Library section. Because the units for the Arrhenius parameters are
+given in each library, the different libraries can have different units.
+Additionally, if the same reaction occurs more than once in the combined
+library, the first instance of it from the first library in which it appears is
+the one that gets used.
+
+.. % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
