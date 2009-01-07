@@ -36,10 +36,7 @@ model, to generate a new set of edge species and reactions. The time-integration
 restarts, and the expanded list of edge species is monitored for signiﬁcant species 
 to be included in the core. The process continues until all signiﬁcant species and 
 reactions have been included in the model. The user is free to vary the deﬁnition 
-of a "significant" rate to reﬁne the mechanism as desired. For a more detailed description on rate-based model enlargement, please consult the paper "Rate-Based 
-Construction of Kinetic Models for Complex Systems" by Roberta G. Susnow, 
-Anthony M. Dean, William H. Green, Pawel K. Peczak, and Linda J. Broadbelt, 
-in the *Journal of Physical Chemistry A*, Vol. 101, pages 3731-40, 1997. 
+of a "significant" rate to reﬁne the mechanism as desired. For a more detailed description on rate-based model enlargement, please consult the paper "Rate-Based Construction of Kinetic Models for Complex Systems" by Roberta G. Susnow, Anthony M. Dean, William H. Green, Pawel K. Peczak, and Linda J. Broadbelt, in *Journal of Physical Chemistry A*, Vol. 101, pages 3731-40, 1997. (doi:`10.1021/jp9637690 <http://dx.doi.org/10.1021/jp9637690>`_)
 
 RMG is an object-oriented program written in Java, which provides a stable, 
 robust programming architecture that is easily extended, modiﬁed, and improved. 

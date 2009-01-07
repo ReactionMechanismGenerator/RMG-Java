@@ -4,6 +4,8 @@ Installing RMG
 ==============
 
 
+
+.. index:: DASSL, DASPK, DAEPACK, requirements, license
 .. _installrequirements:
 
 Installation and License Requirements
@@ -14,14 +16,29 @@ free of charge. Currently, that is not the case. RMG does require that the user
 obtain a license for some of RMG's dependencies, and **it is the user's
 responsibility to ensure these licenses have been obtained**.
 
-To install RMG, you will need:
+For a minimal installation, you will need:
 
-#. The JAVA 2 Platform, Standard Edition.  ---
-   `<http://java.sun.com/j2se/index.jsp>`_
+#. a fortran 77 compiler (we recommend the gnu-gcc compiler suite) 
+   http://www.gnu.org/software/gcc/gcc.html 
+#. a fortran 90 compiler (we recommend the free g95 compiler) 
+   http://www.g95.org/ 
+#. GNU make, which controls the generation of executables, and is present in most linux distributions. 
+   http://www.gnu.org/software/make/ 
+#. JDK 6; Java SE Development Kit (JDK) 
+   http://java.sun.com/javase/downloads/index.jsp
+#. DASSL solver package, which is in the public domain and can be found at  
+   http://www.cs.ucsb.edu/~cse/software.html 
 
-#. The DASPK3.1 solver package, which is available for research purposes but
-   subject to copywrite restrictions.  ---  `<http://www.engineering.ucsb.edu/
-   cse/software.html>`_
+To perform sensitivity analysis on the models generated, you will also need:
+
+#. DASPK3.1 solver package, which is **subject to copyright restrictions**, but available for research purposes. `<http://www.cs.ucsb.edu/~cse/software.html>`_
+#. DAEPACK library file which can be obtained with the JACOBIAN software. 
+   JACOBIAN is a no-cost software for registered acadamic users. 
+   `<http://www.numericatech.com/academia.htm>`_. 
+#. LAPACK, linear algebra package which is present with most linux distributions. 
+   `<http://www.netlib.org/lapack/>`_
+#. BLAS, basic linear algebra subprograms which is present in most linux distributions. 
+   `<http://www.netlib.org/blas/>`_
 
 
 .. _linuxinstallation:
@@ -29,28 +46,55 @@ To install RMG, you will need:
 Linux Installation
 ------------------
 
-To install RMG on a linux computer:   SANDEEP:  Are you going to create a
-makefile?  How do we deal with compiling DASPK once it has been untarred?
+To install RMG on a linux computer:  
 
-#. Create the directory in which you want to install RMG. ---  ``$ mkdir <dir>``
+1. Create the directory in which you want to install RMG. ---  ``$ mkdir <dir>``
    ---  For the purposes of this document, we will set the directory to: ---   ``$
    mkdir /usr/share/RMG``
 
-#. Set the RMG environment variable as the directory created in the first step:
-   ---  ``$ RMG="<dir>"``  ---  In our example, you would code:  ``$
-   RMG="/usr/share/RMG"``
+2. Set the RMG environment variable as the directory created in the first step:
+   ---  ``$ export RMG="<dir>"``  ---  In our example, you would code:  
+   ``$ export RMG="/usr/share/RMG"``. It is highly recommended that you include the above line in 
+   your :file:`.bashrc` file if you are using a bash shell. If you are using a c shell then type the line 
+   ``setenv RMG /usr/share/RMG`` in your :file:`.cshrc` file.
 
-#. Download the ``RMG.tar``, untar it, and move it to the $RMG directory: ---
-   ``$ tar -xvf RMG.tar``  ---  ``$ mv RMG/* $RMG``
 
-#. Before running RMG, a shared library file has to be generated which RMG will
-   use to perform numerical integration.  Currently RMG uses DASPK3.0 (see Section
-   :ref:`installrequirements`).  Copy the file ``daskpk31.tgz`` to the directory
-   ``"$RMG/lib"`` and untar it. ---  ``$ tar -zxvf daspk31.tgz``  ---  NOW WHAT?!
+3. Download the :file:`RMG.tar`, untar it, and move it to the :file:`$RMG` directory::
 
-#. If you want to rum RMG from the bash shell, use your preferred editor and add
-   the following lines to your ``.bashrc`` file:  ---  ``RMG="<dir>"`` (e.g.
-   ``RMG="/usr/share/RMG"`` ) ---  ``LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$RMG/lib``
+   $ tar -xvf RMG.tar
+   $ mv RMG_2_00/* $RMG
+
+
+4. Make and install GATPFit by going into the directory :file`$RMG/software/GATPFit/GATPFit` 
+   and running the MakeFile by typing ``make`` on the command line. 
+
+5. Download the DASSL software package from http://www.cs.ucsb.edu/~cse/software.html 
+   and move all the source files (:file:`*.f` files), namely :file:`ddassl.f`, :file:`daux.f` 
+   and :file:`dlinpk.f`, from dassl to the directory :file:`$RMG/software/ODESolver/dassl`. 
+   After all the files have been transferred just execute the MakeFile by changing into 
+   the :file:`$RMG/software/ODESolver/` directory and typing ``make`` on the command line. 
+
+With this your installation of RMG is successful. The next few steps are 
+required only if you want RMG to be able to perform sensitivity analysis on 
+the models generated. Currently RMG uses DASPK3.1 (see Section :ref:`installrequirements`) 
+to perform sensitivity analysis. Analytical Jacobian and partial derivatives 
+with respect to rates of reactions and Gibbs free energy of molecules are 
+generated using the automated differentiator of DAEPACK. 
+
+
+6. Download daspk31.tgz and untar it using the command ``$ tar -zxvf daspk31.tgz``. 
+   Copy all the source files (:file:`*.f` files) from the untarred directories :file:`ad solver`,
+   :file:`preconds` and :file:`solver` into the directory :file:`$RMG/software/ODESolver/DASPK`. 
+
+7. The next step is to obtain the DAEPACK library file. One you have obtained 
+   the daepack library file make a symbolic link of the library file in :file:`/lib` 
+   directory (or any directory which is present in the library file search path, in 
+   our case we are using :file:`/lib`. To modify your library file search path use a command 
+   like ``LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$RMG/lib``). 
+
+8. Now go to :file:`$RMG/software/ODESolver/DASPK` directory and run the 
+   Makefile by typing ``make``. If the Makefile is executed successfully then you are ready to 
+   perform sensitivity analysis on the models generated by RMG. 
 
 
 .. _windowsinstallation:
@@ -58,17 +102,21 @@ makefile?  How do we deal with compiling DASPK once it has been untarred?
 Windows Installation
 --------------------
 
-To install RMG on a Windows computer, unzip the ``RMG.zip`` file to a directory
-of your choice (e.g. ``C://Programs/RMG``). ---  Once RMG is unzipped, you will
-need to create the ``daspk.dll`` library.  The file ``daspk.dll`` can be created
+.. warning::
+
+   These instructions pre-date RMG2 and are **old**.
+
+To install RMG on a Windows computer, unzip the :file:`RMG.zip` file to a directory
+of your choice (e.g. :file:`C://Programs/RMG`). ---  Once RMG is unzipped, you will
+need to create the ``daspk.dll`` library.  The file :file:`daspk.dll` can be created
 using either Compaq Visual Fortran or Microsoft Visual C++.  ---   is the
 following valid only for MS Visual C++?  Should we drop the CV Fortran?
 
 #. Create a new empty Win32 Dynamic-Link Library project called daspk.
 
-#. Go to project $-->$ add to project $-->$ files.
+#. Go to :menuselection:`project --> add to project --> files`.
 
-#. Add the following DASPK files (located in the DASPK3.0 directory): ---
+#. Add the following DASPK files (located in the DASPK3.0 directory):
 
    ``adf_dummy.f``  ``daux.f``   ``dbanpre.f``   ``ddaspk.f``  ``dilupre.f``
    ``dlinpk.f``   ``drbdpre.f``   ``drbgpre.f``  ``dsensd.f``  ``dsparsk.f``
@@ -79,7 +127,7 @@ following valid only for MS Visual C++?  Should we drop the CV Fortran?
    ``jing_rxnSys_JDASPK.h`` ``parameter.h``  ``parameter.cpp``   ``reaction.h``
    ``reaction.cpp``
 
-#. Go to Build $-->$ Build ``daspk.dll``
+#. Go to :menuselection:`Build --> Build daspk.dll`
 
 #. Move ``daspk.dll`` to the ``RMG/software/rmg`` directory.
 
