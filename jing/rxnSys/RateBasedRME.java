@@ -47,6 +47,7 @@ import jing.rxn.Reaction;
 import jing.rxn.TemplateReaction;
 import jing.chem.ChemGraph;
 import jing.chem.Species;
+import jing.rxnSys.SpeciesStatus;
 import jing.chem.SpeciesDictionary;
 //import RMG;
 //## package jing::rxnSys 
@@ -134,6 +135,12 @@ public class RateBasedRME implements ReactionModelEnlarger {
                     //10/30/07 gmagoon: note subsequent lines were previously outside of else block (and it probably didn't matter then), but now I think they belong in else block
                     Global.moveUnreactedToReacted = (System.currentTimeMillis()-startTime)/1000/60; 
 
+                     // add species status to reaction system 
+                    Species species=(Species)nextList.get(i);
+                    SpeciesStatus speciesStatus = new SpeciesStatus( species, 1, 0.0 , 0.0); // (species, type (reacted=1), concentration, flux)
+                    PresentStatus ps = ((ReactionSystem)p_reactionSystemList.get(i)).getPresentStatus();
+                    ps.putSpeciesStatus(speciesStatus);
+                   
                     // generate new reaction set
                     startTime = System.currentTimeMillis();
                     LinkedHashSet newReactionSet = ((ReactionSystem)p_reactionSystemList.get(i)).getReactionGenerator().react(cerm.getReactedSpeciesSet(),(Species)nextList.get(i));
@@ -178,6 +185,8 @@ public class RateBasedRME implements ReactionModelEnlarger {
                     // partition the reaction set into reacted reaction set and unreacted reaction set
                     // update the corresponding core and edge model of CoreEdgeReactionModel
                     cerm.addReactionSet(newReactionSet);
+                   
+                    
                } 
             }
        }
