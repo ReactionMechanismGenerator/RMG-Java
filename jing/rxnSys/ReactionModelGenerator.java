@@ -2165,21 +2165,17 @@ public LinkedList getSpeciesList() {
 				ReactionSystem rs = (ReactionSystem) reactionSystemList.get(i);
 				if (reactionModelEnlarger instanceof RateBasedPDepRME) 
 					rs.initializePDepNetwork();
-				rs.appendUnreactedSpeciesStatus((InitialStatus)initialStatusList.get(i), rs.getPresentTemperature());//10/25/07 gmagoon: changed to use getPresentTemperature
-				//rs.appendUnreactedSpeciesStatus((InitialStatus)initialStatusList.get(i), rs.getTemperature((ReactionTime)beginList.get(i)));//10/25/07 gmagoon: removing uses of Global.temperature
+				rs.appendUnreactedSpeciesStatus((InitialStatus)initialStatusList.get(i), rs.getPresentTemperature());
 				}
-			//reactionSystem.initializePDepNetwork();//9/25/07 gmagoon: unresolved question: what to do with initializePDepNetwork? leave in ReactionSystem class or move elsewhere (e.g. ReactionModelGenerator)?;//10/14/07 gmagoon: I am leaning towards leaving it where it is since it is used in solveReactionSystem, but it probably warrants further investigation
-			//reactionSystem.appendUnreactedSpeciesStatus(initialStatus, Global.temperature);
 			enlargeReactionModel();
+            
 		}
 		
-        //10/9/07 gmagoon: copy reactionModel to reactionSystem; there may still be scope problems, particularly in above elseif statement
-        //10/24/07 gmagoon: updated to use reactionSystemList
         for (Integer i = 0; i<reactionSystemList.size();i++) {
             ReactionSystem rs = (ReactionSystem)reactionSystemList.get(i);
             rs.setReactionModel(getReactionModel());
         }
-        //reactionSystem.setReactionModel(getReactionModel());
+
         return;
 
         //#]
