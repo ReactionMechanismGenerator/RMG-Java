@@ -92,6 +92,7 @@ public class ReactionModelGenerator {
     protected LinkedList conditionChangedList = new LinkedList();
     protected LinkedList reactionChangedList = new LinkedList();
     protected int numConversions;//5/6/08 gmagoon: moved from initializeReactionSystem() to be an attribute so it can be accessed by modelGenerator()
+    protected String equationOfState;
 
 	protected boolean restart = false;
     // Constructors
@@ -236,9 +237,25 @@ public class ReactionModelGenerator {
         		}
         	}
         	else throw new InvalidSymbolException("condition.txt: can't find PressureModel!");
+            
+            // after PressureModel comes an optional line EquationOfState
+            // if "EquationOfState: Liquid" is found then initial concentrations are assumed to be correct
+            // if it is ommited, then initial concentrations are normalised to ensure PV=NRT (ideal gas law)
+            line = ChemParser.readMeaningfulLine(reader);
+            if (line.startsWith("EquationOfState")) {
+                StringTokenizer st = new StringTokenizer(line);
+        		String name = st.nextToken();
+        		String eosType = st.nextToken();
+                if (eosType.equals("Liquid")) {
+                    equationOfState="Liquid";
+                    System.out.println("Equation of state: Liquid. Relying on concentrations in input file to get density correct; not checking PV=NRT");
+                }
+                line = ChemParser.readMeaningfulLine(reader);
+            }
+                
 
         	// read in spectroscopic data estimator
-        	line = ChemParser.readMeaningfulLine(reader);
+        //	line = ChemParser.readMeaningfulLine(reader);
         	if (line.startsWith("SpectroscopicDataEstimator:")) {
         		StringTokenizer st = new StringTokenizer(line);
         		String name = st.nextToken();
@@ -256,6 +273,7 @@ public class ReactionModelGenerator {
 			
 			// read in reactants
         	line = ChemParser.readMeaningfulLine(reader);
+
                 //10/4/07 gmagoon: moved to initializeCoreEdgeReactionModel
         	//LinkedHashSet p_speciesSeed = new LinkedHashSet();//gmagoon 10/4/07: changed to p_speciesSeed
                 //setSpeciesSeed(p_speciesSeed);//gmagoon 10/4/07: added
@@ -778,9 +796,9 @@ public class ReactionModelGenerator {
  
                         FinishController fc = new FinishController(finishController.getTerminationTester(), finishController.getValidityTester());//10/31/07 gmagoon: changed to create new finishController instance in each case (apparently, the finish controller becomes associated with reactionSystem in setFinishController within ReactionSystem); alteratively, could use clone, but might need to change FinishController to be "cloneable"
                        // FinishController fc = new FinishController(termTestCopy, finishController.getValidityTester());
-                        reactionSystemList.add(new ReactionSystem(tm, pm, reactionModelEnlarger, fc, ds, getPrimaryReactionLibrary(), getReactionGenerator(), getSpeciesSeed(), is, getReactionModel(),lrg, i)); 
+                        reactionSystemList.add(new ReactionSystem(tm, pm, reactionModelEnlarger, fc, ds, getPrimaryReactionLibrary(), getReactionGenerator(), getSpeciesSeed(), is, getReactionModel(),lrg, i, equationOfState)); 
                         i++;//10/30/07 gmagoon: added
-												System.out.println("Created reaction system "+i+"\n");
+						System.out.println("Created reaction system "+i+"\n");
                       }
                  }
              //    PDepNetwork.setTemperatureArray(temperatureArray);//10/30/07 gmagoon: passing temperatureArray to PDepNetwork; 11/6/07 gmagoon: moved before initialization of lrg;
@@ -962,7 +980,7 @@ public class ReactionModelGenerator {
                                        rs.initializePDepNetwork();
                                 }
 				//reactionSystem.initializePDepNetwork();
-                                 }
+                            }
                                
 				
 				pt = System.currentTimeMillis();
@@ -1228,6 +1246,7 @@ public class ReactionModelGenerator {
         			else{
         				JDASSL solver = (JDASSL)rs.getDynamicSimulator();
         				System.out.println("The model core has " + solver.getReactionSize() + " reactions and "+ ((CoreEdgeReactionModel)getReactionModel()).getReactedSpeciesSet().size() + " species.");
+                        System.out.println("(although rs.getReactionModel().getReactionNumber() returns "+rs.getReactionModel().getReactionNumber()+")");
         			}
         		}
 //        		if (reactionSystem.getDynamicSimulator() instanceof JDASPK){

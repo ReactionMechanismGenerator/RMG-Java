@@ -74,12 +74,13 @@ public class ReactionSystem {
     protected double [] reactionFlux;
     protected LibraryReactionGenerator lrg;//9/24/07 gmagoon: moved to ReactionModelGenerator.java; 9/25/07 variable is passed from ReactionModelGenerator
     protected int ind;//10/30/07 gmagoon: added index variable to number different reaction systems; starts at zero; 1/5/09 changed name from index to ind to avoid confusion with local variables used below
+    protected String equationOfState; // rwest: could be "Liquid"
     // Constructors
 
     //## operation ReactionSystem(TemperatureModel,PressureModel,ReactionModelEnlarger,FinishController,DynamicSimulator,PrimaryReactionLibrary,ReactionGenerator,HashSet,InitialStatus)
     //9/24/07 gmagoon: reactionModel changed to parameter passed to class; setReactionModel method removed; 10/4/07: this was incorrect; setReactionModel restored
     //9/25/07 gmagoon: removed primaryReactionLibrary from parameters
-    public  ReactionSystem(TemperatureModel p_temperatureModel, PressureModel p_pressureModel, ReactionModelEnlarger p_reactionModelEnlarger, FinishController p_finishController, DynamicSimulator p_dynamicSimulator, PrimaryReactionLibrary p_primaryReactionLibrary, ReactionGenerator p_reactionGenerator, LinkedHashSet p_speciesSeed, InitialStatus p_initialStatus, ReactionModel p_reactionModel, LibraryReactionGenerator p_libraryReactionGenerator, int p_index) {
+    public  ReactionSystem(TemperatureModel p_temperatureModel, PressureModel p_pressureModel, ReactionModelEnlarger p_reactionModelEnlarger, FinishController p_finishController, DynamicSimulator p_dynamicSimulator, PrimaryReactionLibrary p_primaryReactionLibrary, ReactionGenerator p_reactionGenerator, LinkedHashSet p_speciesSeed, InitialStatus p_initialStatus, ReactionModel p_reactionModel, LibraryReactionGenerator p_libraryReactionGenerator, int p_index, String p_equationOfState) {
         {
             systemSnapshot=new LinkedList();
         }
@@ -97,8 +98,13 @@ public class ReactionSystem {
         lrg = p_libraryReactionGenerator;
         systemSnapshot.add(initialStatus);
         ind = p_index;//10/30/07 gmagoon: added
+        equationOfState=p_equationOfState;
 		
-		if (!checkInitialConsistency()) {
+        
+        if (equationOfState=="Liquid") {
+            System.out.println("Liquid phase: Not checking C=P/RT; assuming concentrations are specified correctly");
+        }
+		else if (!checkInitialConsistency()) {
         	System.out.println("Initial composition was not consistent: C = P/RT was not satisfied!");
         	System.out.println("The concentrations have been renormalized.");
         	//System.exit(-1);
@@ -424,7 +430,7 @@ public class ReactionSystem {
         double C0 = getInitialConcentration(p_species);
         double C = getPresentConcentration(p_species);
 
-        if (C>C0) return -1;
+       // if (C>C0) return -1;
 
         return (1-C/C0);
         //#]
