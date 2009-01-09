@@ -20,19 +20,21 @@ condition file ``hexane_pyro.txt``.
    file::
     $ cd /hexane_pyro/
 
-#. Run the following Java command to launch the program 
-   (all one line)::
-    $ java -Xmx500m -classpath $RMG/software/RMG RMG hexane_pyro.txt > output &
-  
-When RMG is started, it creates six subdirectories: ``chemkin``, ``fit3p``,
-``GATPfit``, and ``Restart``.
+#. Run the following Java command to launch the program (all one line):
 
-In this example, all of the output from RMG is piped to a file output. The ``> output`` 
-part of the command is optional but recommended. Please note that the
-Java option ``-Xmx500m`` is hardware specific. In this example, we assume that
-we can allot five hundred megabytes of memory for Java Virtual Machine running
-RMG; please consult a guide to Java for more information. To see the content of
-the output file as it is being generated, use the command:  ``$ tail -f output``.
+   ``$ java -Xmx500m -classpath $RMG/software/RMG RMG hexane_pyro.txt > output &``
+  
+
+   When RMG is started, it creates six subdirectories: ``chemkin``, ``fit3p``,
+   ``GATPfit``, and ``Restart``.
+
+   In this example, all of the output from RMG is piped to a file output. The ``>
+   output`` part of the command is optional but recommended. Please note that the
+   Java option ``-Xmx500m`` is hardware specific. In this example, we assume that
+   we can allot five hundred megabytes of memory for Java Virtual Machine running
+   RMG; please consult a guide to Java for more information. To see the content of
+   the output file as it is being generated, use the command:  ``$ tail -f
+   output``.
 
 
 .. _runninginwindows:
@@ -54,6 +56,6 @@ To run RMG in Windows:
 
 #. Change directories to ``RMG/software/rmg``
 
-#. Type ``run``
+#. type ``run``
 
 .. % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
