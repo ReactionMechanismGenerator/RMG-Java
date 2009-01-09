@@ -577,8 +577,8 @@ public class Chemdis implements PDepKineticsEstimator {
         		
         	}
         	in.close();
-        	
-        	File f = new File("chemdis/fort.10");
+			
+			File f = new File("chemdis/fort.10");
         	File newFile = new File("chemdis/"+newName+"_input");
         	f.renameTo(newFile);
         	f = new File(chemdis_output);

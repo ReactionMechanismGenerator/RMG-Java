@@ -37,6 +37,7 @@ package jing.rxn;
 
 
 import java.util.*;
+import jing.chem.Species;
 import jing.param.*;
 import jing.rxnSys.SystemSnapshot;
 
@@ -147,6 +148,25 @@ public class PDepNetReaction extends Reaction {
     public void setItsChebyshevPolynomials(ChebyshevPolynomials p_ChebyshevPolynomials) {
         itsChebyshevPolynomials = p_ChebyshevPolynomials;
     }
+	
+	@Override
+	public String toString() {
+		String rxn = "";
+		for (ListIterator iter = getReactants(); iter.hasNext(); ) {
+			Species reactant = (Species) iter.next();
+			rxn += reactant.getName() + "(" + Integer.toString(reactant.getID()) + ") ";
+			if (iter.hasNext())
+				rxn += "+ ";
+		}
+		rxn += "--> ";
+		for (ListIterator iter = getProducts(); iter.hasNext(); ) {
+			Species product = (Species) iter.next();
+			rxn += product.getName() + "(" + Integer.toString(product.getID()) + ") ";
+			if (iter.hasNext())
+				rxn += "+ ";
+		}
+		return rxn;
+	}
     
 }
 /*********************************************************************

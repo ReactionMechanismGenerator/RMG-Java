@@ -120,10 +120,11 @@ public class FastMasterEqn implements PDepKineticsEstimator {
             InputStream ips = fame.getInputStream();
             InputStreamReader is = new InputStreamReader(ips);
             BufferedReader br = new BufferedReader(is);
-            String line = null;
+            // Print FAME stdout
+			/*String line = null;
             while ( (line = br.readLine()) != null) {
             	System.out.println(line);
-            }
+            }*/
             int exitValue = fame.waitFor();
         }
         catch (Exception e) {
@@ -328,8 +329,8 @@ public class FastMasterEqn implements PDepKineticsEstimator {
 				PDepPathReaction pdpr = (PDepPathReaction) reactions.get(i);
 				
 				// Determine isomer(s) associated with reactant
-				int isomer1 = getAssociatedIsomer(pdpr.getReactantList(), uniWells, multiWells); 
-				int isomer2 = getAssociatedIsomer(pdpr.getProductList(), uniWells, multiWells); 
+				int isomer1 = getAssociatedIsomer(pdn, pdpr.getReactantList(), uniWells, multiWells, false); 
+				int isomer2 = getAssociatedIsomer(pdn, pdpr.getProductList(), uniWells, multiWells, true); 
 				if (isomer1 < 1 || isomer2 < 1) {
 					continue;
 				}
@@ -466,8 +467,7 @@ public class FastMasterEqn implements PDepKineticsEstimator {
         	LinkedList pDepNonincludedReactionList = pdn.getPDepNonincludedReactionList();
 			pDepNonincludedReactionList.clear();
         
-			int netReactionCount = 0;
-			int nonincludedReactionCount = 0;
+			boolean foundInvalid = false;
 			
 			// Read Chebyshev coefficients for each reaction
 			for (int i = 0; i < numUniWells + numMultiWells; i++) {
@@ -485,9 +485,20 @@ public class FastMasterEqn implements PDepKineticsEstimator {
 							StringTokenizer tkn = new StringTokenizer(str);
 							for (int p = 0; p < numPressures; p++)
 								alpha[t][p] = Double.parseDouble(tkn.nextToken());
-
+								
 						}
 
+						boolean invalid = false;
+						for (int t = 0; t < numTemperatures; t++) {
+							for (int p = 0; p < numPressures; p++)
+								if (alpha[t][p] == 0)
+									invalid = true;
+						}
+						if (invalid) {
+							foundInvalid = true;
+							continue;
+						}
+						
 						// Create Chebyshev polynomial object for current rate coefficient
 						ChebyshevPolynomials cp = new ChebyshevPolynomials(
 								numTemperatures, tLow, tHigh, numPressures, pLow, pHigh,
@@ -537,11 +548,9 @@ public class FastMasterEqn implements PDepKineticsEstimator {
 						if (i + 1 == entryWell && !pDepNetReactionList.contains(pdnr)) {
 							if (includeReactants && includeProducts) {
 								pDepNetReactionList.add(pdnr);
-								netReactionCount++;
 							}
 							else {
 								pDepNonincludedReactionList.add(pdnr);
-								nonincludedReactionCount++;
 							}
 						}
 						
@@ -555,8 +564,21 @@ public class FastMasterEqn implements PDepKineticsEstimator {
 			// Close file when finished
 			br.close();
 			
-			System.out.println(Integer.toString(netReactionCount) + " net reactions and " + 
-					Integer.toString(nonincludedReactionCount) + " nonincluded reactions in network");
+			if (foundInvalid)
+				System.out.println("Warning: At least one reaction was ignored due to a rate coefficient of zero.");
+			
+			/*System.out.println("Included reactions:");
+			for (Iterator iter = pDepNetReactionList.iterator(); iter.hasNext(); ) {
+				PDepNetReaction pdnr = (PDepNetReaction) iter.next();
+				System.out.println(pdnr.toString());
+			}
+			System.out.println("Nonincluded reactions:");
+			for (Iterator iter = pDepNonincludedReactionList.iterator(); iter.hasNext(); ) {
+				PDepNetReaction pdnr = (PDepNetReaction) iter.next();
+				System.out.println(pdnr.toString());
+			}*/
+			System.out.println(Integer.toString(pDepNetReactionList.size()) + " net reactions and " + 
+					Integer.toString(pDepNonincludedReactionList.size()) + " nonincluded reactions in network");
 		}
 		catch(IOException e) {
 			System.out.println("Error: Unable to read from file \"fame_output.txt\".");
@@ -568,13 +590,16 @@ public class FastMasterEqn implements PDepKineticsEstimator {
         
     }
 
-	private int getAssociatedIsomer(LinkedList speciesList, LinkedList uniWells, 
-			LinkedList multiWells) {
+	private int getAssociatedIsomer(PDepNetwork pdn, LinkedList speciesList, 
+			LinkedList uniWells, LinkedList multiWells, boolean areProducts) {
 		if (speciesList.size() == 1) {
 			for (int j = 0; j < uniWells.size(); j++) {
 				PDepWell pdw = (PDepWell) uniWells.get(j);
 				if (pdw.getIsomer().equals(speciesList.get(0)))
-					return (j + 1);
+					if (areProducts)
+						return (j + 1);
+					else if (!areProducts && pdn.includeAsIsomer(pdw.getIsomer()))
+						return (j + 1);
 			}
 		}
 		else if (speciesList.size() > 1) {
@@ -652,12 +677,15 @@ public class FastMasterEqn implements PDepKineticsEstimator {
 		multiWells.clear();
 		for (ListIterator iter = pdn.getPDepWellListIterator(); iter.hasNext(); ) {
 			PDepWell pdw = (PDepWell) iter.next();
-			for (Iterator iter2 = pdw.getPathsIterator(); iter2.hasNext(); ) {
-				PDepPathReaction pdpr = (PDepPathReaction) iter2.next();
-				if (pdpr.getProductList().size() > 1)
-					multiWells.add(new MultiWell(pdpr.getProductList()));
-				else if (pdpr.getReactantList().size() > 1)
-					multiWells.add(new MultiWell(pdpr.getProductList()));
+			// Only add multimolecular product channels from included unimolecular wells
+			if (pdn.includeAsIsomer(pdw.getIsomer())) {
+				for (Iterator iter2 = pdw.getPathsIterator(); iter2.hasNext(); ) {
+					PDepPathReaction pdpr = (PDepPathReaction) iter2.next();
+					if (pdpr.getProductList().size() > 1)
+						multiWells.add(new MultiWell(pdpr.getProductList()));
+					else if (pdpr.getReactantList().size() > 1)
+						multiWells.add(new MultiWell(pdpr.getProductList()));
+				}
 			}
 		}
 	}
@@ -674,9 +702,9 @@ public class FastMasterEqn implements PDepKineticsEstimator {
 			PDepWell pdw = (PDepWell) iter.next();
 			for (Iterator iter2 = pdw.getPathsIterator(); iter2.hasNext(); ) {
 				PDepPathReaction pdpr = (PDepPathReaction) iter2.next();
-				// Only add if reactants and products are both included in isomer lists
-				int isomer1 = getAssociatedIsomer(pdpr.getReactantList(), uniWells, multiWells); 
-				int isomer2 = getAssociatedIsomer(pdpr.getProductList(), uniWells, multiWells); 
+				// Only add if reactants and products are both *included* and in isomer lists
+				int isomer1 = getAssociatedIsomer(pdn, pdpr.getReactantList(), uniWells, multiWells, false); 
+				int isomer2 = getAssociatedIsomer(pdn, pdpr.getProductList(), uniWells, multiWells, true); 
 				if (isomer1 > 0 && isomer2 > 0) 
 					reactions.add(pdpr);
 			}
