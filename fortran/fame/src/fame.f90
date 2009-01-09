@@ -74,7 +74,8 @@ program fame
 	
 	! Indices
 	integer t, p, i, j
-
+	integer found
+	
 	verbose = 1
 
 	! Part I: Load data from files on disk
@@ -200,39 +201,33 @@ program fame
  	do i = 1, simData%nUni + simData%nMulti
 		write (*,*), K(4,3,i,:)
 	end do
-	
-	! Test for validity of fitted rate coefficients
-! 	do i = 1, simData%nUni + simData%nMulti
-! 		do j = 1, simData%nUni + simData%nMulti
-! 			if (i /= j) then
-! 				do t = 1, size(simData%Tlist)
-! 					do p = 1, size(simData%Tlist)
-! 						if (K(t,p,i,j) == 0.) then
-! 							write(*,*), 'ERROR in FAME execution: Rate coefficient(s) not properly estimated!'
-! 							write(*,*), 't =', t, '   p =', p, '   i =', i, '   j =', j
-! 							K(t,p,i,j) = 1.0e-50
-! 						end if
-! 					end do
-! 				end do
-! 			end if
-! 		end do
-! 	end do
 					
 	! Fit k(T, P) to approximate formula
+	! Also test for validity of fitted rate coefficients
 	if (verbose >= 1) write (*,*), 'Fitting k(T,P) to model...'
 	allocate( chebCoeff(simData%nChebT, simData%nChebP, &
 		simData%nUni+simData%nMulti, simData%nUni+simData%nMulti) )
 	do i = 1, simData%nUni + simData%nMulti
 		do j = 1, simData%nUni + simData%nMulti
 			if (i /= j) then
-				if (sum(K(:,:,i,j)) == 0.) then
+				found = 0
+				do t = 1, size(simData%Tlist)
+					do p = 1, size(simData%Tlist)
+						if (K(t,p,i,j) == 0.) then
+							found = 1
+						end if
+					end do
+				end do
+				if (found == 1) then
 					write(*,*), 'ERROR in FAME execution: Rate coefficient(s) not properly estimated!'
-					stop
+					!stop
+					chebCoeff(:,:,i,j) = 0 * chebCoeff(:,:,i,j)
+				else
+					if (verbose >= 2) then
+						write (*,*), '\tFitting k(T,P) for isomers', i, 'and', j
+					end if
+					call fitRateModel(K(:,:,i,j), simData%Tlist, simData%Plist, simData%nChebT, simData%nChebP, chebCoeff(:,:,i,j))
 				end if
-				if (verbose >= 2) then
-					write (*,*), '\tFitting k(T,P) for isomers', i, 'and', j
-				end if
-				call fitRateModel(K(:,:,i,j), simData%Tlist, simData%Plist, simData%nChebT, simData%nChebP, chebCoeff(:,:,i,j))
 			end if
 		end do
 	end do

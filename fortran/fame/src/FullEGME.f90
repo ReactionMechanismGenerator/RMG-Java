@@ -104,9 +104,10 @@ contains
 				! Calculate rate coefficient for bi --> uni
 				do r = 1, simData%nGrains
 					if (bn(r,n) /= 0) then
-               			Fim(r,i,n) = Keq * Gnj(r,n,i) * bi(r,i) / bn(r,n)
+!               			Fim(r,i,n) = Keq * Gnj(r,n,i) * bi(r,i) / bn(r,n)
+               			Fim(r,i,n) = Gnj(r,n,i) * bi(r,i) / bn(r,n)
             		end if
-				end do
+				end do				
 				
 			else															! uni <---> uni
 				
@@ -133,7 +134,8 @@ contains
 				! Calculate rate coefficient for j --> i using detailed balance
 				do r = 1, simData%nGrains
 					if (bi(r,j) > 0) then
-						Kij(r,i,j) = Keq * Kij(r,j,i) * bi(r,i) / bi(r,j)
+!						Kij(r,i,j) = Keq * Kij(r,j,i) * bi(r,i) / bi(r,j)
+						Kij(r,i,j) = Kij(r,j,i) * bi(r,i) / bi(r,j)
 					else
 						Kij(r,i,j) = 0.0
 					end if

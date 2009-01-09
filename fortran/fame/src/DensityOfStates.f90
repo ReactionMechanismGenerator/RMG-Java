@@ -66,7 +66,8 @@ contains
 				uniData(i)%hindBarrier, &
 				uniData(i)%symmNum, &
 				rho1)
-			uniData(i)%densStates = rho1(1:nE:dn) / conv
+			! rho1 [=] (cm^-1)^-1, but want units of (kJ/mol)^-1
+			uniData(i)%densStates = rho1(1:nE:dn) * conv
 		end do
 			
 		! Calculate the density of states for each multimolecular well
@@ -93,7 +94,7 @@ contains
 				call convolveStates(rho1, E1 * conv, rho2, multiData(n)%E(i) * conv, dE)
 				E1 = E1 + multiData(n)%E(i)
 			end do
-			multiData(n)%densStates = rho1(1:nE:dn) / conv
+			multiData(n)%densStates = rho1(1:nE:dn) * conv
 		end do
 		
 		deallocate (rho1, rho2, E)
@@ -246,11 +247,10 @@ contains
 		allocate( f(1:size(rho1)) )
 		allocate( rho(1:size(rho1)) )
 		
-		do i = 1, n2-1
-			rho(i) = 0
+		do i = 1, n2
+			rho(i) = 0.0
 		end do
 		do i = n2, size(rho1)
-			f = 0 * f
 			do j = n1, i
 				f(j) = rho2(i-j+1) * rho1(j) * dE
 			end do
@@ -438,7 +438,7 @@ contains
 		real(8) dE
 		integer start
 		integer nVib
-		integer grain
+		integer dGrain
 		
 		dE = E(2) - E(1)
 		start = ceiling(E0 / dE) + 1
@@ -452,11 +452,9 @@ contains
 		! The Beyer-Swinehart algorithm
 		rho(start) = 1.0 / dE
 		do i = 1, nVib
-			do j = start, size(E)
-				grain = j + vibFreq(i) / dE			! Destination bin
-				if (grain <= size(E)) then
-					rho(grain) = rho(grain) + rho(j)
-				end if
+			dGrain = nint(vibFreq(i) / dE)
+			do j = start, size(E)-dGrain
+				rho(j + dGrain) = rho(j + dGrain) + rho(j)
 			end do
 		end do
 		

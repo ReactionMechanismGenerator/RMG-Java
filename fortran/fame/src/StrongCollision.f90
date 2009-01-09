@@ -119,7 +119,7 @@ contains
 				! Isomerization
 				do i = 1, simData%nUni
 					do j = 1, simData%nUni
-						if (i /= j .and. Kij(r,i,j) > 1.0e-6) then
+						if (i /= j) then
 							A(i,j) = Kij(r,i,j)
 							A(i,i) = A(i,i) - Kij(r,j,i)
 						end if
@@ -144,10 +144,6 @@ contains
 					b(src) = eps * w(src) * bi(r,src)
 				end if
 				
-! 				do i = 1, simData%nUni
-! 					write (*,*), A(i,:)
-! 				end do
-				
 				! Solve for steady-state population
 				call DGESV( simData%nUni, 1, A, simData%nUni, iPiv, b, simData%nUni, info )
 				if (info > 0) then
@@ -162,11 +158,14 @@ contains
 			
 			! Stabilization rates (i.e.) R + R' --> Ai or M --> Ai
 			do i = 1, simData%nUni
-				val = eps * w(i) * sum(p(:,i))
-				val = abs(val)
-				K(i,src) = K(i,src) + val
-				K(src,src) = K(src,src) - val
+				if (i /= src) then
+					val = eps * w(i) * sum(p(:,i))
+					val = abs(val)
+					K(i,src) = K(i,src) + val
+					K(src,src) = K(src,src) - val
+				end if
 			end do
+			
 			
 			! Dissociation rates (i.e.) R + R' --> Bn + Cn or M --> Bn + Cn
 			if (src <= simData%nUni) then
