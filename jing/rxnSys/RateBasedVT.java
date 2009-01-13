@@ -108,7 +108,11 @@ public class RateBasedVT implements ValidityTester {
         calculateRmin(ps);
         for (Iterator iter =((CoreEdgeReactionModel) p_reactionSystem.getReactionModel()).getUnreactedSpeciesSet().iterator(); iter.hasNext(); ) {
         	Species s = (Species)iter.next();
-        	if (ps.unreactedSpeciesFlux[s.getID()] > Rmin) return false;
+        	if (ps.unreactedSpeciesFlux[s.getID()] > Rmin) 
+            {
+                System.out.println("Exceeded largest permitted flux for convergence (tolerance="+tolerance+"): " + Rmin);
+                return false;
+            }
         	
         }
         //System.out.println("The minimum flux required is " + Rmin);
