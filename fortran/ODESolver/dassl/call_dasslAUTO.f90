@@ -23,13 +23,13 @@
      &     REACTIONSIZE, THIRDBODYREACTIONSIZE, TROEREACTIONSIZE, &
      &     REACTIONARRAY(9*RMAX), THIRDBODYREACTIONARRAY(20*TBRMAX), &
      &     TROEREACTIONARRAY(21*TROEMAX), I, J, IDID, impspecies, &
-     &     AUTOFLAG, ESPECIES, EREACTIONSIZE
+     &     AUTOFLAG, ESPECIES, EREACTIONSIZE, ConstantConcentration(SPMAX+1)
 
       DOUBLE PRECISION Y(SPMAX), YPRIME(SPMAX), T, TOUT, RTOL, ATOL,&
      &     RWORK(51+9*SPMAX+SPMAX**2), TEMPERATURE, PRESSURE,&
      &     REACTIONRATEARRAY(5*rmax),&
      &     THIRDBODYREACTIONRATEARRAY(16*Tbrmax),&
-     &     TROEREACTIONRATEARRAY(21*TROemax), targetconc, THRESH
+     &     TROEREACTIONRATEARRAY(21*TROemax), targetconc, THRESH 
      ! 4/25/08 gmagoon:make auto arrays allocatable and double
      ! precision for KVEC
      INTEGER, DIMENSION(:), ALLOCATABLE :: NEREAC,NEPROD
@@ -42,7 +42,7 @@
       COMMON /REAC/ REACTIONRATEARRAY, THIRDBODYREACTIONRATEARRAY,&
      &     TROEREACTIONRATEARRAY, temperature, pressure,&
      &     REACTIONARRAY, THIRDBODYREACTIONARRAY,&
-     &     TROEREACTIONARRAY
+     &     TROEREACTIONARRAY, ConstantConcentration
 !5/12/08 gmagoon: added timing (cf. http://beige.ucs.indiana.edu/B673/node105.html)
 !      integer count_0, count_1, count_rate, count_max
 !      double precision start, finish
@@ -148,6 +148,10 @@
 	!	&       /(8.314*TEMPERATURE))
 		END DO
 	END IF
+    
+    ! read constantConcentration data (if flag = 1 then the concentration of that species will not be integrated)
+    ! there is one integer for each species (up to nstate-1), then the last one is for the VOLUME
+    READ(12,*) (ConstantConcentration(I), i=1,nstate)
 
 
 ! READ RWORK AND IWORK

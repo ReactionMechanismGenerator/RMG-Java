@@ -10,7 +10,7 @@ C     INITIALIZE VARIABLES IN COMMON BLOC
      $     TROEREACTIONSIZE
 
       INTEGER REACTIONARRAY(9*100000), THIRDBODYREACTIONARRAY(20*100),
-     $     TROEREACTIONARRAY(21*100)
+     $     TROEREACTIONARRAY(21*100), ConstantConcentration(1501)
 
       DOUBLE PRECISION REACTIONRATEARRAY(5*100000),
      $     THIRDBODYREACTIONRATEARRAY(16*100),
@@ -18,7 +18,8 @@ C     INITIALIZE VARIABLES IN COMMON BLOC
 
       COMMON /REAC/ REACTIONRATEARRAY, ThirdbodyREACTIONRATEARRAY,
      $     TROEREACTIONRATEARRAY,temperature, pressure, 
-     $     REACTIONARRAY, THIRDBODYREACTIONARRAY, TROEREACTIONARRAY
+     $     REACTIONARRAY, THIRDBODYREACTIONARRAY, TROEREACTIONARRAY,
+     $     ConstantConcentration
 
 
       
@@ -216,6 +217,10 @@ c change of moles
       DO I=1, NSTATE-1
          DEL(I) = DEL(I) * tempY(NSTATE)
       END DO
+      
+c   NO CHANGE IN FIRST SPECIES CONCENTRATION!!  
+c   (eg. dissolved oxygen in liquid phase)
+c      DEL(1)=0
 
       DO I=1,NSTATE-1
          SUMYPRIME = sumyprime + DEL(I)
@@ -223,6 +228,16 @@ c change of moles
 
 c this is the rate of change of volume
       DEL(NSTATE) = sumyprime*8.314*temperature/pressure/1e-6
+      
+c   NO CHANGE IN VOLUME!
+c      DEL(NSTATE) = 0
+      DO I=1,NSTATE
+         IF (constantConcentration(I) .EQ. 1) THEN
+            DEL(I) = 0
+         END IF
+      END DO
+      
+      
 c      del(nstate) = 0
 c      write(*,*) sumyprime
       END SUBROUTINE GETFLUX
