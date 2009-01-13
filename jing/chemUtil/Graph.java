@@ -1494,6 +1494,10 @@ public class Graph {
         Graph graph = (Graph)p_graph;
 
         if (isEmpty() && graph.isEmpty()) return true;
+        
+        if (getNodeNumber() != graph.getNodeNumber()) {
+            return false;
+        }
 
         resetMatchedGC();
         graph.resetMatchedGC();
