@@ -978,6 +978,23 @@ public class JDASPK implements ODESolver{
 		
 		outputString.append("\n" + thermoString.toString() + "\n" + p_temperature.getK() + " " + p_pressure.getPa() + "\n" + rList.size() + "\n" + rString.toString() + "\n" + thirdBodyList.size() + "\n"+tbrString.toString() + "\n" + troeList.size() + "\n" + troeString.toString()+"\n");
 		
+        // Add list of flags for constantConcentration
+        // one for each species, and a final one for the volume
+        // if 1:  will not change the number of moles of that species (or the volume)
+        // if 0:  will integrate the ODE as normal
+        // eg. liquid phase calculations with a constant concentration of O2 (the solubility limit - replenished from the gas phase)
+        // for normal use, this will be a sequence of '0 's
+        for (Iterator iter = p_reactionModel.getSpecies(); iter.hasNext(); ) {
+        	Species spe = (Species)iter.next();
+            if (spe.isConstantConcentration())
+                System.err.println("WARNING. 'ConstantConcentration' option not implemented in DASPK solver. Use DASSL if you need this.");
+                /*outputString.append("1 ");
+            else 
+                outputString.append("0 ");*/
+        }
+        // outputString.append("0 \n"); // for liquid EOS or constant volume this should be 1 
+
+        
         int idid=0;
         
         
