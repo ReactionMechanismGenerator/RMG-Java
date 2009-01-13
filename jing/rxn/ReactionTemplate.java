@@ -1287,6 +1287,7 @@ public class ReactionTemplate {
       }
       
       setName(p_reactionTemplateName);
+      System.out.println("Reading forwards template:   "+p_reactionTemplateName);
       
       String ReactionAdjListName = directoryName + "reactionAdjList.txt";
       String DictionaryName = directoryName + "dictionary.txt";
@@ -1302,7 +1303,7 @@ public class ReactionTemplate {
       	readLibrary(LibraryName);
       	fillKineticsBottomToTop();
       	if (reverseRTName != null && reverseRTName.compareToIgnoreCase("none")!=0) {
-      		System.out.println(reverseRTName);
+      		System.out.println("Generating reverse template: "+reverseRTName);
       		reverseReactionTemplate = generateReverseReactionTemplate(reverseRTName);
       	}
       }
