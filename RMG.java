@@ -42,10 +42,11 @@ public class RMG {
 	
 	initializeSystemProperties(args[0]);
     ReactionModelGenerator rmg = new ReactionModelGenerator();
+        
+    // Generate the model!
     rmg.modelGeneration();
-  //  ReactionSystem rs = rmg.getReactionSystem();//11/1-2/07 gmagoon: commenting out
-        CoreEdgeReactionModel cerm = (CoreEdgeReactionModel)rmg.getReactionModel();//11/1-2/07 gmagoon: changing to get reactionModel from reactionModelGenerator
-    //  CoreEdgeReactionModel cerm = (CoreEdgeReactionModel)rs.getReactionModel();
+        
+    CoreEdgeReactionModel cerm = (CoreEdgeReactionModel)rmg.getReactionModel();
 	//Write core species to RMG_Dictionary.txt
 	String coreSpecies ="";
 	Iterator iter = cerm.getSpecies();
@@ -77,8 +78,7 @@ public class RMG {
 	//finalOutput = finalOutput + cerm.getEdge().getReactionNumber()+" ";
 	//finalOutput = finalOutput + " Reactions.";
 
-       LinkedList speList = new LinkedList(rmg.getReactionModel().getSpeciesSet());//11/1-2/07 gmagoon: changing to use reactionModelGenerator rather than reactionSystem
-   // LinkedList speList = new LinkedList(rs.getReactionModel().getSpeciesSet());
+       LinkedList speList = new LinkedList(rmg.getReactionModel().getSpeciesSet());
 
        //11/2/07 gmagoon: changing to loop over all reaction systems
        LinkedList rsList = rmg.getReactionSystemList();
@@ -168,13 +168,13 @@ public class RMG {
              System.out.println("\n");
              System.out.println("                            RMG"); 
              System.out.println("                Reaction Mechanism Generator");
-             System.out.println("                        version 0.9\n");
+             System.out.println("                        version 3.0-alpha\n");
              System.out.println(
             		"     Jing Song, Sumathy Raman, Joanna Yu, William H. Green,\n" +
              		"        Sarah Petway, Sandeep Sharma, David M. Matheu,\n" +
              		"  Paul E. Yelvington, Robert Ashcraft, C. Franklin Goldsmith,\n" +
              		"      John Wen, Andrew Wong, Hsi-Wu Wong, Kevin Van Geem,\n" +
-             		"                    and Gregory Beran\n");
+             		"          Gregory Beran, Joshua Allen, and Richard H. West\n");
              
              System.out.println("\n");
              System.out.println("----------------------------------------------------------------------");
@@ -239,7 +239,7 @@ public class RMG {
 		thermoFile += " 0.02926640e+02 0.01487977e-01-0.05684761e-05 0.01009704e-08-0.06753351e-13    2\n";
 		thermoFile += "-0.09227977e+04 0.05980528e+02 0.03298677e+02 0.01408240e-01-0.03963222e-04    3\n";
 		thermoFile += " 0.05641515e-07-0.02444855e-10-0.01020900e+05 0.03950372e+02                   4\n";
-		thermoFile += "AR                120186Ar  1               G  0300.00   5000.00  1000.00      1\n";
+		thermoFile += "Ar                120186Ar  1               G  0300.00   5000.00  1000.00      1\n";
 		thermoFile += " 0.02500000e+02 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00    2\n";
 		thermoFile += "-0.07453750e+04 0.04366001e+02 0.02500000e+02 0.00000000e+00 0.00000000e+00    3\n";
 		thermoFile += " 0.00000000e+00 0.00000000e+00-0.07453750e+04 0.04366001e+02                   4\n";
