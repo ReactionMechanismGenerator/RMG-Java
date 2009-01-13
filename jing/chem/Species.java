@@ -91,6 +91,10 @@ public class Species {
     // They will only react as defined in the primary reaction library.   GJB
     protected boolean IsReactive = true; 
     
+    // flag to tag certain species as having a constant concentration 
+    // they won't be consumed by reactions (will lead to mass creation!)
+    protected boolean constantConcentration = false;
+    
     protected HashSet paths;
     
     // Constructors
@@ -1053,6 +1057,14 @@ public class Species {
     
     public void setReactivity(boolean reactive) {
     	IsReactive = reactive;
+    }
+    
+    public boolean isConstantConcentration() {
+        return constantConcentration;
+    }
+    
+    public void setConstantConcentration(boolean hasconstantconcentration){
+        constantConcentration = hasconstantconcentration;
     }
     
 	public void addPdepPaths(HashSet pdepReactionSet) {

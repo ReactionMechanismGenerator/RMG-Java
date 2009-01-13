@@ -738,6 +738,23 @@ public class JDASSL implements ODESolver{
             outputString.append(edgeReacInfoString);
         }
         //end of code for autoflag=true
+      
+        // Add list of flags for constantConcentration
+        // one for each species, and a final one for the volume
+        // if 1: DASSL will not change the number of moles of that species (or the volume)
+        // if 0: DASSL will integrate the ODE as normal
+        // eg. liquid phase calculations with a constant concentration of O2 (the solubility limit - replenished from the gas phase)
+        // for normal use, this will be a sequence of '0 's
+        for (Iterator iter = p_reactionModel.getSpecies(); iter.hasNext(); ) {
+        	Species spe = (Species)iter.next();
+            if (spe.isConstantConcentration())
+                outputString.append("1 ");
+            else 
+                outputString.append("0 ");
+        }
+        outputString.append("0 \n"); // for liquid EOS or constant volume this should be 1 
+  
+        
         int idid=0;
         LinkedHashMap speStatus = new LinkedHashMap();
         LinkedList senStatus = new LinkedList();

@@ -307,13 +307,21 @@ public class ReactionModelGenerator {
         				throw new InvalidUnitException("Species Concentration in condition.txt!");
         			}
 
-        			//GJB to allow "unreactive" species that only follow user-defined library reactions.  
-        			// They will not react according to RMG reaction families 
+        			// GJB to allow "unreactive" species that only follow user-defined library reactions.  
+        			// They will not react according to RMG reaction families.
+                    
+                    // RWEST to allow species with "constantConcentration" that will not have their amount altered 
+                    // by the ODE solver. eg. liquid phase calculation with O2 always at the solubility limit being 
+                    // replenished by the gas phase. 
+                    // WARNING!! Currently only implemented in DASSL, not DASPK!!
 					boolean IsReactive = true;
+                    boolean constantConcentration = false;
 					if (st.hasMoreTokens()) {
 						String reactive = st.nextToken().trim();
 						if (reactive.equalsIgnoreCase("unreactive"))
 							IsReactive = false;
+                        if (reactive.equalsIgnoreCase("constantconcentration"))
+                            constantConcentration = true;
 					}
         			
         			Graph g = ChemParser.readChemGraph(reader);
@@ -328,6 +336,7 @@ public class ReactionModelGenerator {
 					//System.out.println(name);
         			Species species = Species.make(name,cg);
         			species.setReactivity(IsReactive); // GJB
+                    species.setConstantConcentration(constantConcentration);
            			speciesSet.put(name, species);
         			getSpeciesSeed().add(species);
         			double flux = 0;
@@ -920,7 +929,7 @@ public class ReactionModelGenerator {
             ReactionTime begin = (ReactionTime)beginList.get(i);
             ReactionTime end = (ReactionTime)endList.get(i);
             endList.set(i,rs.solveReactionSystem(begin, end, true, true, true, iterationNumber-1));
-            Chemkin.writeChemkinInputFile(rs);//11/9/07 gmagoon:****temporarily commenting out: there is a NullPointerException in Reaction.toChemkinString when called from writeChemkinPdepReactions; occurs with pre-modified version of RMG as well; //11/12/07 gmagoon: restored; ****this appears to be source of non-Pdep bug
+            Chemkin.writeChemkinInputFile(rs);
             boolean terminated = rs.isReactionTerminated();
             terminatedList.add(terminated);
             if(!terminated)
