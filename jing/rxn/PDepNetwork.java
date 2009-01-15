@@ -484,4 +484,26 @@ public class PDepNetwork {
 		return false;
 	}
 	
+	/**
+	 * Counts the number of core reactions that are hidden amongst those
+	 * net reactions which are found in the pressure-dependent networks.
+	 * This is particularly useful in the initialization of the reaction model,
+	 * in which the core must have at least one reaction in it before the
+	 * dynamic simulator can be executed.
+	 * @param cerm The current core/edge reaction model
+	 * @return The number of core reactions found
+	 */
+	public static int getNumCoreReactions(CoreEdgeReactionModel cerm) {
+		int numCoreReactions = 0;
+		for (ListIterator<PDepNetwork> iter0 = networks.listIterator(); iter0.hasNext(); ) {
+			PDepNetwork pdn = iter0.next();
+			for (ListIterator<PDepReaction> iter = pdn.getNetReactions().listIterator(); iter.hasNext(); ) {
+				PDepReaction rxn = iter.next();
+				if (rxn.isCoreReaction(cerm))
+					numCoreReactions++;
+			}
+		}
+		return numCoreReactions;
+	}
+	
 }
