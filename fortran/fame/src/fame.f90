@@ -11,7 +11,7 @@
 
 !	Program: fame
 !
-!	Version: 0.1.8							Date: 12 Dec 2008
+!	Version: 0.2.0							Date: 14 Jan 2009
 !
 ! 	Calculates phenomenological rate coefficients k(T, P) for a given potential
 ! 	energy surface using provided thermochemical and density-of-state data for
@@ -93,7 +93,7 @@ program fame
 	! Load simulation data from input file
 	if (verbose >= 2) write (*,*), '\tReading simulation parameters...'
 	call loadSimulationData(simData)
-	
+			
 	! Load unimolecular isomer well data from input file
 	if (verbose >= 2) write (*,*), '\tReading unimolecular isomer data...'
 	allocate (uniData(1:simData%nUni))
@@ -186,21 +186,25 @@ program fame
 				end if
 			end do
 			
-			! Apply steady state/reservoir state approximations
-! 			if (verbose >= 3) write (*,*), '\t\tApplying steady-state/reservoir-state approximation...'
-! 			call ssrsRates(simData, uniData, rxnData, nRes, Mi, Hn, Kij, Fim, Gnj, Jnm, bi, bn, K(t,p,:,:))
-
-			! Apply steady state/reservoir state approximations
-			if (verbose >= 3) write (*,*), '\t\tApplying steady-state/modified strong collision approximation...'
- 			call ssmscRates(simData, uniData, multiData, rxnData, Kij, Fim, Gnj, Jnm, bi, bn, K(t,p,:,:))
-
+			if (simData%mode == 1) then
+				! Apply steady state/reservoir state approximations
+				if (verbose >= 3) write (*,*), '\t\tApplying steady-state/modified strong collision approximation...'
+				call ssmscRates(simData, uniData, multiData, rxnData, Kij, Fim, Gnj, Jnm, bi, bn, K(t,p,:,:))
+			elseif (simData%mode == 2) then
+				! Apply steady state/reservoir state approximations
+				if (verbose >= 3) write (*,*), '\t\tApplying steady-state/reservoir-state approximation...'
+				call ssrsRates(simData, uniData, rxnData, nRes, Mi, Hn, Kij, Fim, Gnj, Jnm, bi, bn, K(t,p,:,:))
+			else
+				write (*,*), 'ERROR: An invalid solution mode was provided!'
+				stop
+			end if
 
 		end do
 	end do
 
- 	do i = 1, simData%nUni + simData%nMulti
-		write (*,*), K(4,3,i,:)
-	end do
+ 	!do i = 1, simData%nUni + simData%nMulti
+	!	write (*,*), K(4,3,i,:)
+	!end do
 					
 	! Fit k(T, P) to approximate formula
 	! Also test for validity of fitted rate coefficients
@@ -219,7 +223,7 @@ program fame
 					end do
 				end do
 				if (found == 1) then
-					write(*,*), 'ERROR in FAME execution: Rate coefficient(s) not properly estimated!'
+					!write(*,*), 'ERROR in FAME execution: Rate coefficient(s) not properly estimated!'
 					!stop
 					chebCoeff(:,:,i,j) = 0 * chebCoeff(:,:,i,j)
 				else

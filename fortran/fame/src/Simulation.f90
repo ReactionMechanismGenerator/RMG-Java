@@ -24,6 +24,7 @@ module SimulationModule
 	! Contains the parameters necessary to complete the master equation 
 	! calculation.
 	type Simulation
+		integer								:: mode		! 1 = modified strong collision, 2 = reservoir state
 		real(8), dimension(:), allocatable	:: Tlist	! An array of temperatures to evaluate k(T, P) at
 		real(8), dimension(:), allocatable	:: Plist	! An array of pressures to evaluate k(T, P) at
 		real(8)	T				! The currently-active temperature of the simulation in K
@@ -85,7 +86,16 @@ contains
 			end if
 
 			! Process if not a comment and if a recognized entry
-			if (index(str(1:12), 'Temperatures') /= 0) then
+			if (index(str(1:4), 'Mode') /= 0) then
+				call removeWhitespace(str(5:))
+				if (index(str(5:27), 'ModifiedStrongCollision') /= 0) then
+					simData%mode = 1
+				elseif (index(str(5:18), 'ReservoirState') /= 0) then
+					simData%mode = 2
+				else
+					simData%mode = 0
+				end if
+			else if (index(str(1:12), 'Temperatures') /= 0) then
 				call readInteger(str(13:), i)
 				allocate(simData%Tlist(1:i))
 				do i = 1, i
