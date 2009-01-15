@@ -73,7 +73,7 @@ public interface ReactionModel {
     
     //## operation getSpeciesSet() 
     LinkedHashSet getSpeciesSet();
-    
+	
     //## operation isEmpty() 
     boolean isEmpty();
     

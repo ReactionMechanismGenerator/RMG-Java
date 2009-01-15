@@ -215,16 +215,17 @@ public class ReactionSystem {
         	// first take all the unreacted reactions from PDepNetwork and calculate their rate
         	// populate the reactionModel with all the unreacted species if they are already not there.
         	
-        	for (Iterator iter=PDepNetwork.getDictionary().values().iterator(); iter.hasNext();){
-        		PDepNetwork pdn = (PDepNetwork)iter.next();
-        		Iterator reaction_iter = pdn.getPDepNetReactionListIterator();
+        	for (Iterator iter=PDepNetwork.getNetworks().iterator(); iter.hasNext();){
+        		PDepNetwork pdn = (PDepNetwork) iter.next();
+        		Iterator reaction_iter = pdn.getNetReactions().listIterator();
         		while (reaction_iter.hasNext()){
-        			PDepNetReaction r = (PDepNetReaction)reaction_iter.next();
+        			PDepReaction r = (PDepReaction) reaction_iter.next();
         			int rxnType = model.categorizeReaction(r);
         			//if (rxnType == 0) throw new InvalidReactionSetException();
         			if (rxnType == -1){
-        				double flux = r.calculateRate((SystemSnapshot)systemSnapshot.getLast());//10/25/07 gmagoon: using last systemSnapshot as parameter to avoid use of Global.temperature and Global.pressure; ****is this correct handling of systemSnapshot with use of getLast?; possible alternative is getSystemSnapshotEnd
-        				for (Iterator rIter=r.getReactants(); rIter.hasNext();) {
+						SystemSnapshot ss = (SystemSnapshot) systemSnapshot.getLast();
+        				double flux = r.calculateRate(ss.getTemperature(), ss.getPressure());
+						for (Iterator rIter=r.getReactants(); rIter.hasNext();) {
         					Species spe = (Species)rIter.next();
         					double conc =0; 
         					if (p_systemSnapshot.getSpeciesStatus(spe) != null)
@@ -510,25 +511,30 @@ public class ReactionSystem {
 			System.out.println("ERROR: Reaction model enlarger is not pressure-dependent!");
 			System.exit(0);
 		}
+		
+		CoreEdgeReactionModel cerm = (CoreEdgeReactionModel) reactionModel;
+		
 		PDepKineticsEstimator pDepKineticsEstimator = 
 				((RateBasedPDepRME) reactionModelEnlarger).getPDepKineticsEstimator();
 		
-		LinkedList pdnList = new LinkedList(PDepNetwork.getDictionary().values());
+		LinkedList pdnList = new LinkedList(PDepNetwork.getNetworks());
 		for (Iterator iter = pdnList.iterator(); iter.hasNext(); ) {
         	PDepNetwork pdn = (PDepNetwork)iter.next();
         	if (pdn.getAltered()) {
-        		pDepKineticsEstimator.runPDepCalculation(pdn, this);
+				
+        		// Update the k(T, P) estimates for the network
+				pDepKineticsEstimator.runPDepCalculation(pdn, this, cerm);
+				
+				// Each net reaction with k(T, P) > 0 can be treated as a core or edge reaction (?)
+				/*for (ListIterator<PDepReaction> iter2 = pdn.getNetReactions().listIterator(); iter2.hasNext(); ) {
+					PDepReaction rxn = iter2.next();
+					if (rxn.isCoreReaction())
+						cerm.addReactedReaction(rxn);
+					else if (rxn.isEdgeReaction())
+						cerm.addUnreactedReaction(rxn);	
+				}*/
 			}
-        }
-		
-		
-		/*for (Iterator iter = PDepNetwork.getDictionary().values().iterator(); iter.hasNext(); ) {
-        	PDepNetwork pdn = (PDepNetwork)iter.next();
-        	if (pdn.getAltered()) {
-        		pDepKineticsEstimator.runPDepCalculation(pdn, this);
-			}
-        }*/
-        
+		}	
     }
 
     //## operation isFinished()
@@ -809,8 +815,8 @@ public String printLowerBoundConcentrations(LinkedList p_speciesList) {
              k_lowerbound = k/2.0;
              k_upperbound = k*2.0;
            }
-           else if (r instanceof PDepNetReaction){
-             k = ((PDepNetReaction)r).calculateTotalRate(ss.getTemperature());
+           else if (r instanceof PDepReaction){
+             k = ((PDepReaction) r).calculateTotalRate(ss.getTemperature());
              k_lowerbound = k/2.0;
              k_upperbound = k*2.0;
            }
@@ -963,8 +969,13 @@ public String printLowerBoundConcentrations(LinkedList p_speciesList) {
 				SystemSnapshot ss = (SystemSnapshot)iter.next();
 				if (ss.getTime().time == 0.0) continue;
         	
-				output.append( ss.reactionFlux[i] + "\t");
-        	 	
+				if (i < ss.reactionFlux.length)
+					output.append( ss.reactionFlux[i] + "\t");
+				else {
+					System.out.println("Warning: Size of reaction set does not match number of reaction fluxes. Expected reaction flux missing.");
+					output.append("\n");
+					return output.toString();
+				}
          	}
 			output.append("\n");
         }
@@ -1056,8 +1067,9 @@ public String printLowerBoundConcentrations(LinkedList p_speciesList) {
                     k = ((TemplateReaction)r).calculateTotalPDepRate(ss.getTemperature(), ss.getPressure());//10/25/07 gmagoon: added pressure
                     k_upperbound = k*2.0;
                    }
-                  else if (r instanceof PDepNetReaction){
-                    k = ((PDepNetReaction)r).calculateRate((SystemSnapshot)systemSnapshot.getLast());//10/25/07 gmagoon: using last systemSnapshot as parameter to avoid use of Global.temperature and Global.pressure; ****is this correct handling of systemSnapshot with use of getLast?
+                  else if (r instanceof PDepReaction){
+                    SystemSnapshot ssnap = (SystemSnapshot) systemSnapshot.getLast();
+					k = ((PDepReaction)r).calculateRate(ssnap.getTemperature(), ssnap.getPressure());//10/25/07 gmagoon: using last systemSnapshot as parameter to avoid use of Global.temperature and Global.pressure; ****is this correct handling of systemSnapshot with use of getLast?
                     k_upperbound = k*2.0;
                   }
                   else {
@@ -1139,7 +1151,7 @@ public String printLowerBoundConcentrations(LinkedList p_speciesList) {
                   double s1 = r1.getSensitivity();
                   double k1 = r1.getUncertainty();
                   Reaction rxn1 = r1.getReaction();
-                  if (rxn1 instanceof PDepNetReaction){
+                  if (rxn1 instanceof PDepReaction) {
                     result += rxn1.getStructure().toString()+'\n';
                   }
                   else{
@@ -1166,7 +1178,7 @@ public String printLowerBoundConcentrations(LinkedList p_speciesList) {
     	  LinkedList reactionList = ss.getReactionList();
     	  for (int j = 0; j < reactionList.size(); j++) {
     		  Reaction r = (Reaction) reactionList.get(j);
-    		  if (r instanceof PDepNetReaction) {
+    		  if (r instanceof PDepReaction) {
     			  int J = j+1;
     			  result.append(J + ". " + r.getStructure().toString()+'\n');
     		  }
@@ -1219,8 +1231,9 @@ public String printLowerBoundConcentrations(LinkedList p_speciesList) {
         							if (r instanceof TemplateReaction) {
         								k = ( (TemplateReaction) r).calculateTotalPDepRate(ss.getTemperature(), ss.getPressure());//10/25/07 gmagoon: added pressure
         							}
-        							else if (r instanceof PDepNetReaction) {
-        								k = ( (PDepNetReaction) r).calculateRate((SystemSnapshot)systemSnapshot.getLast());//10/25/07 gmagoon: using last systemSnapshot as parameter to avoid use of Global.temperature and Global.pressure; ****is this correct handling of systemSnapshot with use of getLast?
+        							else if (r instanceof PDepReaction) {
+        								SystemSnapshot ssnap = (SystemSnapshot)systemSnapshot.getLast();
+        								k = ( (PDepReaction) r).calculateRate(ssnap.getTemperature(), ssnap.getPressure());//10/25/07 gmagoon: using last systemSnapshot as parameter to avoid use of Global.temperature and Global.pressure; ****is this correct handling of systemSnapshot with use of getLast?
         							}
         							else if (r instanceof ThirdBodyReaction) {
         								k = ( (ThirdBodyReaction) r).calculateRate(ss);
@@ -1343,8 +1356,8 @@ public String printLowerBoundConcentrations(LinkedList p_speciesList) {
                     k_upperbound = k*2.0;
                     k_lowerbound = k/2.0;
                   }
-                  else if (r instanceof PDepNetReaction){
-                    k = ((PDepNetReaction)r).calculateTotalRate(ss.getTemperature());
+                  else if (r instanceof PDepReaction){
+                    k = ((PDepReaction)r).calculateTotalRate(ss.getTemperature());
                     k_upperbound = k*2.0;
                     k_lowerbound = k/2.0;
                   }

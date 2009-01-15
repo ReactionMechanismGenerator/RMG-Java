@@ -37,6 +37,7 @@ package jing.rxnSys;
 
 
 import java.util.*;
+import jing.chem.Species;
 import jing.param.Pressure;
 import jing.param.Temperature;
 
@@ -77,6 +78,10 @@ public class PresentStatus extends SystemSnapshot {
         return super.getTime();
         //#]
     }
+	
+	/*public double getUnreactedSpeciesFlux(Species species) {
+		return unreactedSpeciesFlux[species.getID()];
+	}*/
     
 }
 /*********************************************************************

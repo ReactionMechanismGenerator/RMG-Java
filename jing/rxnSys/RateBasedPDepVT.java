@@ -64,40 +64,11 @@ public class RateBasedPDepVT extends RateBasedVT {
     
     //## operation isModelValid(ReactionSystem) 
     public boolean isModelValid(ReactionSystem p_reactionSystem) {
-        //#[ operation isModelValid(ReactionSystem) 
-        if (!super.isModelValid(p_reactionSystem)) return false;
-        
-        PresentStatus ps = p_reactionSystem.getPresentStatus();
-        CoreEdgeReactionModel cerm = (CoreEdgeReactionModel)p_reactionSystem.getReactionModel();
-        
-        for (Iterator iter = PDepNetwork.getDictionary().values().iterator(); iter.hasNext();) {
-        	PDepNetwork pdn = (PDepNetwork)iter.next();
-        	//double rleak = pdn.getKLeak();
-            double rleak = pdn.getKLeak(p_reactionSystem.getIndex()); //10/30/07 gmagoon: changed to pass index so KLeak at appropriate temperature, pressure is obtained; ASIDE: what if Kleak was only updated with getKLeak ?
-        	if (!pdn.isActive() && pdn.getIsChemAct()) {
-        		Temperature t = p_reactionSystem.getTemperature(ps.getPresentTime());
-        		rleak = pdn.getEntryReaction().calculateTotalRate(t);
-        	}
-            for (Iterator rIter = pdn.getReactant().iterator(); rIter.hasNext(); ) {
-            	Species spe = (Species)rIter.next();
-        		
-        		double conc = 0;
-        		if (cerm.containsAsReactedSpecies(spe)) conc = ps.getSpeciesStatus(spe).getConcentration();
-        		rleak *= conc;
-        	}
-        	if (rleak > Rmin)
-            {
-                System.out.println("Exceeded largest permitted leak for convergence (tolerance="+tolerance+"): " + Rmin);
-                return false;
-            }
-        }
-        
-        return true;	                               
-        //#]
+        return super.isModelValid(p_reactionSystem);
     }
     
 }
 /*********************************************************************
- File Path	: RMG\RMG\jing\rxnSys\RateBasedPDepVT.java
- *********************************************************************/
+	File Path	: RMG\RMG\jing\rxnSys\RateBasedPDepVT.java
+*********************************************************************/
 

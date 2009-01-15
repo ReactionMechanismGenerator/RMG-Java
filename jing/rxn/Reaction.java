@@ -95,7 +95,28 @@ public class Reaction {
 	  //rateConstant = calculateTotalRate(Global.temperature);
       //#]
   }
+  /*public Reaction(Reaction rxn) {
+		structure = rxn.structure;
+		kinetics = rxn.kinetics;
 
+		comments = rxn.comments;
+
+		fittedReverseKinetics = rxn.fittedReverseKinetics;
+
+		rateConstant = rxn.rateConstant;
+
+		reverseReaction = rxn.reverseReaction;
+
+		UpperBoundRate = rxn.UpperBoundRate;
+		LowerBoundRate = rxn.LowerBoundRate;
+		additionalKinetics = rxn.additionalKinetics;
+		finalized = rxn.finalized;
+		ChemkinString  = rxn.ChemkinString;
+		ratesForKineticsAndAdditionalKineticsCross = rxn.ratesForKineticsAndAdditionalKineticsCross;
+
+  }*/
+  
+  
   //## operation allProductsIncluded(HashSet)
   public boolean allProductsIncluded(HashSet p_speciesSet) {
       //#[ operation allProductsIncluded(HashSet)
@@ -784,7 +805,8 @@ public class Reaction {
       	if (!rr.isForward()) throw new InvalidReactionDirectionException(structure.toString());
       	return rr.getKinetics();
       }
-      else throw new InvalidReactionDirectionException(structure.toString());
+      else 
+		  throw new InvalidReactionDirectionException(structure.toString());
 
 
 
@@ -1336,6 +1358,42 @@ public class Reaction {
   public void setStructure(Structure p_Structure) {
       structure = p_Structure;
   }
+  
+  /**
+	 * Returns the reaction as an ASCII string.
+	 * @return A string representing the reaction equation in ASCII test.
+	 */
+	@Override
+	public String toString() {
+		if (getReactantNumber() == 0 || getProductNumber() == 0)
+			return "";
+		
+		String rxn = "";
+		Species species = (Species) structure.getReactantList().get(0);
+		rxn = rxn + species.getName() + "(" + Integer.toString(species.getID()) + ")";
+		for (int i = 1; i < getReactantNumber(); i++) {
+			species = (Species) structure.getReactantList().get(i);
+			rxn += " + " + species.getName() + "(" + Integer.toString(species.getID()) + ")";
+		}
+		rxn += " --> ";
+		species = (Species) structure.getProductList().get(0);
+		rxn = rxn + species.getName() + "(" + Integer.toString(species.getID()) + ")";
+		for (int i = 1; i < getProductNumber(); i++) {
+			species = (Species) structure.getProductList().get(i);
+			rxn += " + " + species.getName() + "(" + Integer.toString(species.getID()) + ")";
+		}
+		
+		return rxn;
+	}
+	
+	public void generateKineticsFromReverse() {
+		if (!hasReverseReaction())
+			return;
+		
+		fitReverseKineticsRoughly();
+		structure.setDirection(1);
+		setKinetics(getFittedReverseKinetics());
+	}
 
 }
 /*********************************************************************

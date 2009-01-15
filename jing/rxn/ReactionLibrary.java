@@ -173,10 +173,10 @@ public class ReactionLibrary {
         			reactants.addAll(reverse.getReactantList());
 					library.add(rLR);
 					fLR.setReverseReaction(rLR);
-					rLR.setReverseReaction(fLR);
-					if (fLR.getReactantNumber()!= 2 || fLR.getProductNumber() != 2){
-						fLR.pDepNetwork = PDepNetwork.makePDepNetwork(fLR);
-						rLR.pDepNetwork = PDepNetwork.makePDepNetwork(rLR);
+					rLR.setReverseReaction(fLR);						
+					if (fLR.getReactantNumber()!= 2 || fLR.getProductNumber() != 2) {
+						fLR.pDepNetwork = PDepNetwork.addReactionToNetworks(fLR);
+						rLR.pDepNetwork = PDepNetwork.addReactionToNetworks(rLR);
 					}
 			    	else{
 			    		fLR.pDepNetwork = null;

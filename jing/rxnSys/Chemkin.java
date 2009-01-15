@@ -191,7 +191,7 @@ public  Chemkin() {
   //## operation isPDepReaction(Reaction)
   private static boolean isPDepReaction(Reaction p_reaction) {
       //#[ operation isPDepReaction(Reaction)
-      if (p_reaction instanceof PDepNetReaction || p_reaction instanceof ThirdBodyReaction || p_reaction instanceof TROEReaction) return true;
+      if (p_reaction instanceof PDepReaction || p_reaction instanceof ThirdBodyReaction || p_reaction instanceof TROEReaction) return true;
       else return false;
 
       //#]
@@ -604,19 +604,19 @@ public  Chemkin() {
         	}
         }
       
-      for (Iterator iter = PDepNetwork.getDictionary().values().iterator(); iter.hasNext(); ) {
+      for (Iterator iter = PDepNetwork.getNetworks().iterator(); iter.hasNext(); ) {
       	PDepNetwork pdn = (PDepNetwork)iter.next();
-      	for (Iterator pdniter = pdn.getPDepNetReactionListIterator(); pdniter.hasNext();) {
-      		PDepNetReaction pdnr = (PDepNetReaction)pdniter.next();
-      		if (cerm.categorizeReaction(pdnr) != 1) continue;
+      	for (ListIterator pdniter = pdn.getNetReactions().listIterator(); pdniter.hasNext();) {
+      		PDepReaction rxn = (PDepReaction) pdniter.next();
+      		if (cerm.categorizeReaction(rxn) != 1) continue;
       		
       		//check if this reaction is not already in the list and also check if this reaction has a reverse reaction
       		// which is already present in the list.
-      		if (pdnr.getReverseReaction() == null)
-      			pdnr.generateReverseReaction();
+      		if (rxn.getReverseReaction() == null)
+      			rxn.generateReverseReaction();
       		
-      		if (!pdnr.reactantEqualsProduct() && !pDepList.contains(pdnr) && !pDepList.contains(pdnr.getReverseReaction()) )  {
-      			pDepList.add(pdnr);
+      		if (!rxn.reactantEqualsProduct() && !pDepList.contains(rxn) && !pDepList.contains(rxn.getReverseReaction()) )  {
+      			pDepList.add(rxn);
       		}
       	}
       }

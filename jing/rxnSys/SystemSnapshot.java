@@ -368,6 +368,10 @@ public class SystemSnapshot {
     protected void initRelations() {
         time = newTime();
     }
+	
+	public double getUnreactedSpeciesFlux(Species species) {
+		return unreactedSpeciesFlux[species.getID()];
+	}
 
 }
 /*********************************************************************

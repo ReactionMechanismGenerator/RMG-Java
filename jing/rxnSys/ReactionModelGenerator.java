@@ -307,21 +307,13 @@ public class ReactionModelGenerator {
         				throw new InvalidUnitException("Species Concentration in condition.txt!");
         			}
 
-        			// GJB to allow "unreactive" species that only follow user-defined library reactions.  
-        			// They will not react according to RMG reaction families.
-                    
-                    // RWEST to allow species with "constantConcentration" that will not have their amount altered 
-                    // by the ODE solver. eg. liquid phase calculation with O2 always at the solubility limit being 
-                    // replenished by the gas phase. 
-                    // WARNING!! Currently only implemented in DASSL, not DASPK!!
+        			//GJB to allow "unreactive" species that only follow user-defined library reactions.  
+        			// They will not react according to RMG reaction families 
 					boolean IsReactive = true;
-                    boolean constantConcentration = false;
 					if (st.hasMoreTokens()) {
 						String reactive = st.nextToken().trim();
 						if (reactive.equalsIgnoreCase("unreactive"))
 							IsReactive = false;
-                        if (reactive.equalsIgnoreCase("constantconcentration"))
-                            constantConcentration = true;
 					}
         			
         			Graph g = ChemParser.readChemGraph(reader);
@@ -336,7 +328,6 @@ public class ReactionModelGenerator {
 					//System.out.println(name);
         			Species species = Species.make(name,cg);
         			species.setReactivity(IsReactive); // GJB
-                    species.setConstantConcentration(constantConcentration);
            			speciesSet.put(name, species);
         			getSpeciesSeed().add(species);
         			double flux = 0;
@@ -364,22 +355,6 @@ public class ReactionModelGenerator {
                                 }
         	}
         	else throw new InvalidSymbolException("condition.txt: can't find InitialStatus!");
-                
-                //11/6/07 gmagoon: initializing temperatureArray and pressureArray before libraryReactionGenerator is initialized (initialization calls PDepNetwork and performs initializekLeak); note: subsequently moved here from after condition file reading (in case primaryReactionLibrary calls the similar pdep functions
-                LinkedList temperatureArray = new LinkedList();
-                LinkedList pressureArray = new LinkedList();
-                Iterator iterIS = initialStatusList.iterator();
-                for (Iterator iter = tempList.iterator(); iter.hasNext(); ) {
-                      TemperatureModel tm = (TemperatureModel)iter.next();
-                      for (Iterator iter2 = presList.iterator(); iter2.hasNext(); ){
-                        PressureModel pm = (PressureModel)iter2.next();
-                        InitialStatus is = (InitialStatus)iterIS.next();
-                        temperatureArray.add(tm.getTemperature(is.getTime()));
-                        pressureArray.add(pm.getPressure(is.getTime()));
-                      }
-                }
-                PDepNetwork.setTemperatureArray(temperatureArray);
-                PDepNetwork.setPressureArray(pressureArray);
 
         	// read in inert gas concentration
         	line = ChemParser.readMeaningfulLine(reader);
@@ -438,11 +413,13 @@ public class ReactionModelGenerator {
 						String pdkeType = st.nextToken().toLowerCase();
 						if (!(reactionModelEnlarger instanceof RateBasedPDepRME))
 							throw new InvalidSymbolException("condition.txt: PDepKineticsEstimator specified, but reaction model enlarger is not pressure-dependent!");
-						if (pdkeType.equals("fastmasterequation") || pdkeType.equals("fame") || pdkeType.equals("default")) {
-							((RateBasedPDepRME) reactionModelEnlarger).setPDepKineticsEstimator(new FastMasterEqn());
-							SpectroscopicData.useThreeFrequencyModel = false;
+						if (pdkeType.equals("reservoirstate")) {
+							((RateBasedPDepRME) reactionModelEnlarger).setPDepKineticsEstimator(new FastMasterEqn(FastMasterEqn.Mode.RESERVOIRSTATE));
 						}
-						else if (pdkeType.equals("chemdis") || pdkeType.equals("modifiedstrongcollision")) {
+						else if (pdkeType.equals("modifiedstrongcollision")) {
+							((RateBasedPDepRME) reactionModelEnlarger).setPDepKineticsEstimator(new FastMasterEqn(FastMasterEqn.Mode.STRONGCOLLISION));
+						}
+						else if (pdkeType.equals("chemdis")) {
 							((RateBasedPDepRME) reactionModelEnlarger).setPDepKineticsEstimator(new Chemdis());
 							if (!SpectroscopicData.useThreeFrequencyModel) {
 								System.out.println("Warning: Switching SpectroscopicDataEstimator to three-frequency model.");
@@ -929,7 +906,7 @@ public class ReactionModelGenerator {
             ReactionTime begin = (ReactionTime)beginList.get(i);
             ReactionTime end = (ReactionTime)endList.get(i);
             endList.set(i,rs.solveReactionSystem(begin, end, true, true, true, iterationNumber-1));
-            Chemkin.writeChemkinInputFile(rs);
+            Chemkin.writeChemkinInputFile(rs);//11/9/07 gmagoon:****temporarily commenting out: there is a NullPointerException in Reaction.toChemkinString when called from writeChemkinPdepReactions; occurs with pre-modified version of RMG as well; //11/12/07 gmagoon: restored; ****this appears to be source of non-Pdep bug
             boolean terminated = rs.isReactionTerminated();
             terminatedList.add(terminated);
             if(!terminated)
@@ -2175,7 +2152,7 @@ public LinkedList getSpeciesList() {
 				if (reactionModelEnlarger instanceof RateBasedPDepRME) 
 					rs.initializePDepNetwork();
 				rs.appendUnreactedSpeciesStatus((InitialStatus)initialStatusList.get(i), rs.getPresentTemperature());
-				}
+			}
 			enlargeReactionModel();
             
 		}

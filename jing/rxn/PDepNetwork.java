@@ -1,558 +1,487 @@
-//!********************************************************************************
-//!
-//!    RMG: Reaction Mechanism Generator                                            
-//!
-//!    Copyright: Jing Song, MIT, 2002, all rights reserved
-//!     
-//!    Author's Contact: jingsong@mit.edu
-//!
-//!    Restrictions:
-//!    (1) RMG is only for non-commercial distribution; commercial usage
-//!        must require other written permission.
-//!    (2) Redistributions of RMG must retain the above copyright
-//!        notice, this list of conditions and the following disclaimer.
-//!    (3) The end-user documentation included with the redistribution,
-//!        if any, must include the following acknowledgment:
-//!        "This product includes software RMG developed by Jing Song, MIT."
-//!        Alternately, this acknowledgment may appear in the software itself,
-//!        if and wherever such third-party acknowledgments normally appear.
-//!  
-//!    RMG IS PROVIDED "AS IS" AND ANY EXPRESSED OR IMPLIED 
-//!    WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES 
-//!    OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE 
-//!    DISCLAIMED.  IN NO EVENT SHALL JING SONG BE LIABLE FOR  
-//!    ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR 
-//!    CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT 
-//!    OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS;  
-//!    OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF  
-//!    LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT  
-//!    (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF 
-//!    THE USE OF RMG, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-//! 
-//!******************************************************************************
-
-
+////////////////////////////////////////////////////////////////////////////////
+//
+//
+//
+////////////////////////////////////////////////////////////////////////////////
 
 package jing.rxn;
 
-
-import java.io.*;
-import jing.chem.*;
-import java.util.*;
-import jing.param.*;
-import jing.rxnSys.*;
-import jing.mathTool.*;
-import jing.chemParser.*;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.ListIterator;
 import jing.chem.Species;
-import jing.rxnSys.ReactionSystem;
+import jing.param.Pressure;
+import jing.param.Temperature;
+import jing.rxnSys.CoreEdgeReactionModel;
+import jing.rxnSys.SystemSnapshot;
 
-//## package jing::rxn 
-
-//----------------------------------------------------------------------------
-// jing\rxn\PDepNetwork.java                                                                  
-//----------------------------------------------------------------------------
-
-//## class PDepNetwork 
+/**
+ * A PDepNetwork object represents a single pressure-dependent reaction network.
+ * Such a network is made up of three types of reactions: isomerizations
+ * (A1 --> A2), associations (B + C --> A), and dissociations (A --> B + C).
+ * Thus each network is defined by
+ * <ul>
+ * <li>A list of unimolecular isomers { A1, A2, ... }
+ * <li>A list of multimolecular isomers { B1 + C1, B2 + C2, ... }
+ * <li>A list of path reactions (isomerizations, associations, and dissociations)
+ * </ul>
+ * PDepNetwork can also be used in a static manner to interact with all of the
+ * existing PDepNetwork objects at once.
+ * 
+ * This is a rewrite of the old PDepNetwork class, which was tailored too 
+ * closely to the CHEMDIS way of treating pressure-dependent networks. The new
+ * class is more general and is tailored to the FAME way of treating 
+ * pressure-dependent networks
+ * @author jwallen
+ */
 public class PDepNetwork {
-    
-    protected static int ID = 0;		//## attribute ID 
-    public static boolean generateNetworks;
-    
-    protected static HashMap dictionary = new HashMap();		//## attribute dictionary 
-    
-    protected Reaction entryReaction = null;		//## attribute entryReaction 
-    
-    protected boolean isChemAct;		//## attribute isChemAct 
-    
-    protected double[] kLeak;		//## attribute kLeak 
-    
-    protected LinkedList product = null;		//## attribute product 
-    
-    protected LinkedList reactant = null;		//## attribute reactant 
-    
-    protected static int totalNumber = 0;		//## attribute totalNumber 
-    //10/30/07 gmagoon: note that implementation would probably need to be changed if temperature or pressure change with time
-    //(10/30/07) UPDATE: actually, since current T,P is passed to updateKLeak and initial T in temperatureArray is only used in initializeKLeak, perhaps it is not an issue (?); should not be an issue if initializeKLeak is only called at t = 0 and kLeak is updated before being used at subsequent times; even so, updateKLeak may not be called often enough for it to correspond to current T,P in current implementation (only updated when species is added, I think?)
-    protected static LinkedList temperatureArray; //10/30/07 gmagoon: added LinkedList for temperatures as static variable: note that temperatures will be repeated in cases where there are multiple pressures
-    protected static LinkedList pressureArray; //10/30/07 gmagoon: added LinkedList for pressures as static variable: note that pressures will be repeated in cases where there are multiple temperatures;//UPDATE: commenting out: not needed if updateKLeak is done for one temperature/pressure at a time; //11/1-2/07 restored
-    
-    protected LinkedList pDepNetReactionList;
-    protected LinkedList pDepNonincludedReactionList;
-    protected LinkedList pDepWellList;
-    
-    protected HashSet nonIncludedSpecies = new HashSet();
-    protected boolean altered = true;
-    
-    // Constructors
-    
-    //## operation PDepNetwork() 
-    private  PDepNetwork() {
-        {
-            pDepNetReactionList=new LinkedList();
-        }
-        {
-            pDepNonincludedReactionList=new LinkedList();
-        }
-        {
-            pDepWellList=new LinkedList();
-        }
-        //#[ operation PDepNetwork() 
-        ID = totalNumber++;
-        //#]
-    }
 
+	//==========================================================================
+	//
+	//	Data members
+	//
 	
-
-	//## operation addPDepWell(PDepWell) 
-    private void addPDepWell(PDepWell p_newWell) {
-        //#[ operation addPDepWell(PDepWell) 
-        if (pDepWellList.contains(p_newWell)) return;
-        
-        pDepWellList.add(p_newWell);
-        
-        decideWellPathType();
-        
-        return;
-        
-        
-        
-        //#]
-    }
+	/**
+	 * A hash map containing all of the PDepNetworks created. Each network is
+	 * identified by the chemical formula of the unimolecular isomers.
+	 */
+	protected static LinkedList<PDepNetwork> networks = new LinkedList<PDepNetwork>();
     
-    //## operation decideWellPathType() 
-    private void decideWellPathType() {
-        //#[ operation decideWellPathType() 
-        for (Iterator iter = getPDepWellListIterator(); iter.hasNext(); ) {
-        	PDepWell pdw = (PDepWell)iter.next();
-        	for (Iterator pathIter = pdw.getPathsIterator(); pathIter.hasNext(); ) {
-        		PDepPathReaction pdpr = (PDepPathReaction)pathIter.next();
-        		int pNum = pdpr.getProductNumber();
-        		LinkedList r = pdpr.getReactantList();
-        		LinkedList p = pdpr.getProductList();
-        
-        		if (pNum == 1) {
-        			Species spe = (Species)p.iterator().next();
-        			if (includeAsIsomer(spe)) pdpr.setTypeAsIsomer();
-        			else {
-        				pdpr.setTypeAsNonIncluded();
-        				nonIncludedSpecies.add(spe);
-        			}
-        		}
-        		else if (pNum == 2) {
-        			if (isChemAct) {
-        				if (MathTool.isListEquivalent(r, product) && MathTool.isListEquivalent(p,reactant)) {
-        				    pdpr.setTypeAsReactant();
-        				}
-        				else pdpr.setTypeAsProduct();
-        			}
-        			else {
-        				pdpr.setTypeAsProduct();
-        			}
-        		}
-        	}
-        }
-        return;
-        
-        
-        //#]
-    }
+	/**
+	 * Set to true if RMG is ready to allow pressure-dependent networks to be 
+	 * created and false if not. A holdover from the original PDepNetwork class. 
+	 */
+	public static boolean generateNetworks = false;
     
-    //## operation getEntryMass() 
-    public double getEntryMass() {
-        //#[ operation getEntryMass() 
-        double mass = 0;
-        
-        for (Iterator iter = reactant.iterator(); iter.hasNext();) {
-        	Species spe = (Species)iter.next();
-        	mass += spe.getMolecularWeight();
-        }
-        
-        return mass;
-        //#]
-    }
-    
-    //## operation includeAsIsomer(Species) 
-    public boolean includeAsIsomer(Species p_species) {
-        //#[ operation includeAsIsomer(Species) 
-        for (Iterator iter = getPDepWellListIterator(); iter.hasNext(); ) {
-        	PDepWell pdw = (PDepWell)iter.next();
-        	if ((pdw.getIsomer()).equals(p_species)) return true;
-        }
-        return false;
-        //#]
-    }
-    
-    //## operation initializeKLeak() 
-    //10/26/07 gmagoon: changed to take temperature as parameter as part of elimination of uses of Global.temperature
-    //10/30/07 gmagoon: removed temperature
-    private void initializeKLeak() {
-    //private void initializeKLeak(Temperature t) {
-        //#[ operation initializeKLeak() 
-      
-        //10/30/07 gmagoon: updating to use kLeak array
-        kLeak = new double[temperatureArray.size()];//10/30/07 gmagoon: initialize size of kLeak//10/31/07: moved to setTemperatureArray;
-        for (Integer i = 0; i<temperatureArray.size();i++) {
-             kLeak[i] = 0;
-        }
-        //kleak = 0
-       
-       
-        //Temperature t = new Temperature(715,"K");
-        //10/26/07 gmagoon: changed to avoid use of Global.temperature; t is passed as parameter
-        //Temperature t = Global.temperature;
-        
-        if (isChemAct) {
-            //10/30/07 gmagoon: updating to use kLeak array
-            for (Integer i = 0; i<temperatureArray.size();i++) {
-                kLeak[i] = entryReaction.calculateTotalRate((Temperature)temperatureArray.get(i));
-            }
-            //kLeak = entryReaction.calculateTotalRate(t);
-        }
-        else {
-        	if (pDepWellList.size()!=1) {
-        		System.out.println("Dissoc is not initialized correctly" + toString());
-        		System.exit(0);
-        	}
-        	Iterator iter = getPDepWellListIterator();
-        	PDepWell pdw = (PDepWell)iter.next();
-        	for (Iterator pathiter = pdw.getPathsIterator(); pathiter.hasNext(); ) {
-        		PDepPathReaction pdpr = (PDepPathReaction)pathiter.next();
-                        //10/30/07 gmagoon: updating to use kLeak array
-                        for (Integer i = 0; i<temperatureArray.size();i++) {
-                            kLeak[i] += pdpr.getReaction().calculateTotalRate((Temperature)temperatureArray.get(i));
-                        }
-        		//kLeak += pdpr.getReaction().calculateTotalRate(t);
-        	}
-        }
-       
-      
-    }
-   
-    //10/25/07 gmagoon: updated to take temperature, pressure
-    //10/30/07 gmagoon: switched back to not take temperature/pressure when it is called for a particular reaction system; this may lead to inefficiencies\
-    //UPDATE: temperature, pressure, included, along with index to specify which kLeak to update
-    //11/1-2/07 gmagoon: updating to use temperature and pressure array and update all at once; updating one at a time may be causing problems; **note that this would need to be fixed in cases where temperature and pressure are not constant, since initial temp and pressure are in arrays
-     public void updateKLeak(){    
-    //private void updateKLeak(Temperature p_temperature, Pressure p_pressure, Integer p_index){
-    //private void updateKLeak(Temperature p_temperature, Pressure p_pressure){    	
-  //      if(kLeak == null)//10/31/07 gmagoon: set size of kLeak****may need further invesitgation; ideally, initializeKLeak should set size of kLeak I think; 11/6/07 gmagoon: not needed after temperatureArray, pressureArray initialization was moved before lrg initialization
-  //          kLeak = new double[temperatureArray.size()];
-       
-        for(int i = 0; i < temperatureArray.size(); i++){
-            Temperature p_temperature = (Temperature)temperatureArray.get(i);
-            Pressure p_pressure = (Pressure)pressureArray.get(i);
-            if (!isActive() && getIsChemAct()){
-                    double rate = entryReaction.calculateTotalRate(p_temperature);//10/25/07 gmagoon: changed to avoid use of Global.temperature
-                    //double rate = entryReaction.calculateTotalRate(Global.temperature);
-                    //kLeak = rate;
-                    kLeak[i] = rate;//10/30/07 gmagoon: updated to change a particular element of kLeak array;
-                    return;
-            }
-
-            //kLeak = 0;
-            kLeak[i] = 0; //10/30/07 gmagoon: updated to change a particular element of kLeak array;
-            for (Iterator iter = getPDepNonincludedReactionListIterator(); iter.hasNext();){
-                    PDepNetReaction pdnr = (PDepNetReaction) iter.next();
-                    //10/25/07 gmagoon: updated to use calculateRate with system snapshot (to avoid use of Global.temperature and Global.pressure)
-                    SystemSnapshot currentTPSnapshot = new SystemSnapshot();//10/25/07 gmagoon: make currentTPsnapshot variable, which will be used to pass temperature and pressure to calculateRate
-                    currentTPSnapshot.setTemperature(p_temperature);
-                    currentTPSnapshot.setPressure(p_pressure);
-                    double rate = pdnr.calculateRate(currentTPSnapshot);
-                    //double rate = pdnr.calculateRate();
-                    if (rate < 0 ) throw new InvalidPDepNetReactionException();
-                    //kLeak += rate;
-                    kLeak[i] += rate;//10/30/07 gmagoon: updated to change a particular element of kLeak array;
-            }
-        }
-    	return;
-    }
-    
-    //## operation initializePDepNetwork(TemplateReaction) 
-    private void initializePDepNetwork(Reaction p_entryReaction) {
-        //#[ operation initializePDepNetwork(TemplateReaction) 
-        reactant = (LinkedList)p_entryReaction.getReactantList().clone();
-        if (reactant.size() == 1) {
-        	isChemAct = false;
-        	entryReaction = null;
-         	Species spe = (Species)p_entryReaction.getReactants().next();
-         	PDepWell pdw = new PDepWell(spe, p_entryReaction);
-        
-         	// add a new PDepWell into PDepWell list
-         	addPDepWell(pdw);
-         	product = null; 
-         	if (p_entryReaction.structure.products.size() == 1){
-         		nonIncludedSpecies.add(p_entryReaction.structure.products.get(0));
-         	}
-         		
-        }
-        else if (reactant.size() == 2) {
-        	isChemAct = true;
-        	entryReaction = p_entryReaction;
-        	product = (LinkedList)p_entryReaction.getProductList().clone();
-        	nonIncludedSpecies.add(product.get(0));
-        }
-        else throw new InvalidPDepNetworkTypeException();
-        
-        //#]
-    }
-    
-    //## operation isActive() 
-    public boolean isActive() {
-        //#[ operation isActive() 
-        return (!pDepWellList.isEmpty());
-        
-        //#]
-    }
-    
-    //## operation makePDepNetwork(TemplateReaction) 
-    public static PDepNetwork makePDepNetwork(Reaction p_entryReaction) {
-        //#[ operation makePDepNetwork(TemplateReaction) 
+	/**
+	 * The list of unimolecular isomers.
+	 */
+	private LinkedList<PDepIsomer> uniIsomerList;
 	
-    	Object key = null;
-    	
-    	if (!generateNetworks)
-    		return null;
-    	if (p_entryReaction.getReactantNumber() == 2) {
-    		Species pro = (Species)p_entryReaction.getProducts().next();
-        	if (pro.isTriatomicOrSmaller()) return null;
-        	key = p_entryReaction.getStructure();
-        }
-        else {
-        	key = (Species)p_entryReaction.getReactants().next();
-        	if (((Species)key).isTriatomicOrSmaller()) return null;
-        }
-        
-        PDepNetwork obj = (PDepNetwork)dictionary.get(key);
-        if (obj == null) {
-        	// if it is a->b, but a doesn't have three frequency model, return null
-        	if (p_entryReaction.getReactantNumber() == 1) {
-         		Species spe = (Species)p_entryReaction.getReactants().next();
-         		if (!spe.hasSpectroscopicData()) {
-         			return null;
-         		}
-           	}
-        	
-        	PDepNetwork pnw = new PDepNetwork();
-        	dictionary.put(key, pnw);
-        	pnw.initializePDepNetwork(p_entryReaction);
-        	pnw.initializeKLeak();
-        	return pnw;
-        
-        }
-        else if (p_entryReaction.getReactantNumber() == 1){
-        	PDepWell pdw = (PDepWell)obj.pDepWellList.get(0);
-        	pdw.addPath(p_entryReaction);
-        	obj.decideWellPathType();
-        	obj.initializeKLeak();
-        	obj.altered = true;
-        	return obj;
-        }
-        
-        else return (PDepNetwork)obj;
-         
-        
-        //#]
-    }
-    
-    //## operation toString() 
-    public String toString() {
-        //#[ operation toString() 
-        if (entryReaction != null) {
-        	return entryReaction.getStructure().toString();
-        }
-        else {
-        	Species spe = (Species)reactant.getFirst();
-        	return spe.getName()+"("+ String.valueOf(spe.getID()) +")";
-        	
-        }
-        
-        //#]
-    }
-    
-    //## operation totalSize() 
-    public static int totalSize() {
-        //#[ operation totalSize() 
-        return dictionary.values().size();
-        //#]
-    }
-    
-    //## operation update(Species) 
-    public void update(Species p_nextIsomer) {
-        //#[ operation update(Species) 
-        if (includeAsIsomer(p_nextIsomer)) throw new DuplicatedIsomersException();
-        /*if (!p_nextIsomer.hasThreeFrequencyModel()) {
-        	System.out.println("Species doesn't have three frequency model: " + p_nextIsomer.toString());
-        	System.exit(0);	
-        }*/
-		if (!p_nextIsomer.hasSpectroscopicData()) {
-        	System.out.println("Species doesn't have spectroscopic data: " + p_nextIsomer.toString());
-        	System.exit(0);	
-        }
-        
-		// Only add if species is an isomer (that is, has the same numbers of each atom)
-		if (!pDepWellList.isEmpty()) {
-			PDepWell pdw = (PDepWell) pDepWellList.get(0);
-			if (!p_nextIsomer.isIsomerOf(pdw.getIsomer())) {
-				System.out.println("Attempted to add species to PDepNetwork that is not an isomer of that network!");
-				System.out.println("Network contains isomers of type " + pdw.getIsomer().getName());
-				System.out.println("Isomer to add was of type " + p_nextIsomer.getName());
-				System.exit(0);	
-			}
-		}
-		
-        //System.out.println("begin to new a well");
-        PDepWell pdw = new PDepWell(p_nextIsomer, p_nextIsomer.getPdepPaths());
-        //System.out.println("begin to add new well to system");
-        addPDepWell(pdw);
-        if (nonIncludedSpecies.contains(p_nextIsomer)){
-        	nonIncludedSpecies.remove(p_nextIsomer);
-        }
-
-        //System.out.println("finish adding new well to system");
-        return;
-        //#]
-    }
-    
-    public static int getID() {
-        return ID;
-    }
-    
-    public static HashMap getDictionary() {
-        return dictionary;
-    }
-    
-    public Reaction getEntryReaction() {
-        return entryReaction;
-    }
-    
-    public boolean getIsChemAct() {
-        return isChemAct;
-    }
-    
-    //10/30/07 gmagoon: modified to access one kLeak out of array at various temperatures
-    public double getKLeak(Integer p_index)
-    {
-        return kLeak[p_index];
-    }
-    
-	public void setKLeak(int index, double rate) {
-		kLeak[index] = rate;
+	/**
+	 * The list of multimolecular isomers.
+	 */
+	private LinkedList<PDepIsomer> multiIsomerList;
+	
+	/**
+	 * The list of path reactions (isomerizations, associations, and 
+	 * dissociations that directly connect two isomers).
+	 */
+	private LinkedList<PDepReaction> pathReactionList;
+	
+	/**
+	 * The list of net reactions (allowing reactions between two isomers not
+	 * directly connected by a path reaction) that belong in the core or the
+	 * edge of the current reaction model.
+	 */
+	private LinkedList<PDepReaction> netReactionList;
+	
+	/**
+	 * The list of net reactions (allowing reactions between two isomers not
+	 * directly connected by a path reaction) that are neither in the core nor
+	 * on the edge of the current reaction model.
+	 */
+	private LinkedList<PDepReaction> nonincludedReactionList;
+	
+	/**
+	 * True if the network has been modified in such a way as to require a
+	 * new pressure-dependent calculation, and false otherwise. Examples include
+	 * changing the number of isomers or the number of path reactions.
+	 */
+	private boolean altered;
+	
+	//==========================================================================
+	//
+	//	Constructor
+	//
+	
+	/**
+	 * Creates an empty pressure-dependent network. Does not automatically add
+	 * the network to the PDepNetwork.networks collection.
+	 */
+	public PDepNetwork() {
+		uniIsomerList = new LinkedList<PDepIsomer>();
+		uniIsomerList.clear();
+		multiIsomerList = new LinkedList<PDepIsomer>();
+		multiIsomerList.clear();
+		pathReactionList = new LinkedList<PDepReaction>();
+		pathReactionList.clear();
+		netReactionList = new LinkedList<PDepReaction>();
+		netReactionList.clear();
+		nonincludedReactionList = new LinkedList<PDepReaction>();
+		nonincludedReactionList.clear();
+		altered = false;
 	}
-    
-    
 	
-    public LinkedList getProduct() {
-        return product;
-    }
-    
-    public LinkedList getReactant() {
-        return reactant;
-    }
-    
-    public static int getTotalNumber() {
-        return totalNumber;
-    }
-    
-    public ListIterator getPDepNetReactionListIterator() {
-        ListIterator iter=pDepNetReactionList.listIterator(0);
-        return iter;
-    }
-    
-    public ListIterator getPDepNonincludedReactionListIterator() {
-        ListIterator iter=pDepNonincludedReactionList.listIterator(0);
-        return iter;
-    }
+	//==========================================================================
+	//
+	//	Get accessor methods
+	//
 	
-	public LinkedList getPDepNetReactionList() {
-        return pDepNetReactionList;
-    }
-    
-    public LinkedList getPDepNonincludedReactionList() {
-        return pDepNonincludedReactionList;
-    }
-    
-    public ListIterator getPDepWellListIterator() {
-        ListIterator iter=pDepWellList.listIterator(0);
-        return iter;
-    }
+	/**
+	 * Returns the list of unimolecular isomers.
+	 * @return The list of unimolecular isomers
+	 */
+	public LinkedList<PDepIsomer> getUniIsomers() {
+		return uniIsomerList;
+	}
 	
-	public LinkedList getPDepWellList() {
-        return pDepWellList;
-    }
-    
-    public boolean getAltered(){
+	/**
+	 * Returns the list of multimolecular isomers.
+	 * @return The list of multimolecular isomers
+	 */
+	public LinkedList<PDepIsomer> getMultiIsomers() {
+		return multiIsomerList;
+	}
+	
+	/**
+	 * Returns the list of path reactions.
+	 * @return The list of path reactions
+	 */
+	public LinkedList<PDepReaction> getPathReactions() {
+		return pathReactionList;
+	}
+	
+	/**
+	 * Returns the list of net reactions (in the core or on the edge).
+	 * @return The list of net reactions
+	 */
+	public LinkedList<PDepReaction> getNetReactions() {
+		return netReactionList;
+	}
+	
+	/**
+	 * Returns the list of nonincluded reactions (neither in the core nor on 
+	 * the edge).
+	 * @return The list of nonincluded reactions
+	 */
+	public LinkedList<PDepReaction> getNonincludedReactions() {
+		return nonincludedReactionList;
+	}
+	
+	/**
+	 * Returns the status of the altered flag: true if the network requires a
+	 * new pressure-dependent calculation, false if not.
+	 * @return The status of the altered flag
+	 */
+	public boolean getAltered() {
 		return altered;
 	}
-    
+	
+	/**
+	 * Returns the isomer that contains the same species as those in 
+	 * speciesList.
+	 * @param speciesList The species to check the isomers for
+	 * @return The isomer that contains the same species as those in 
+	 * speciesList
+	 */
+	public PDepIsomer getIsomer(LinkedList speciesList) {
+		if (speciesList.size() == 1) {
+			for (ListIterator<PDepIsomer> iter = uniIsomerList.listIterator(); iter.hasNext(); ) {
+				PDepIsomer isomer = iter.next();
+				if (isomer.getSpeciesList().equals(speciesList))
+					return isomer;
+			}
+		}
+		else if (speciesList.size() > 1) {
+			for (ListIterator<PDepIsomer> iter = multiIsomerList.listIterator(); iter.hasNext(); ) {
+				PDepIsomer isomer = iter.next();
+				if (isomer.getSpeciesList().equals(speciesList))
+					return isomer;
+			}
+		}
+		return null;
+	}
+
+	/**
+	 * Checks to see if the network contains species as a unimolecular isomer.
+	 * @param species The species to check for
+	 * @return True if species is a unimolecular isomer in the network, false if
+	 * not
+	 */
+	public boolean contains(Species species) {
+		for (ListIterator<PDepIsomer> iter = uniIsomerList.listIterator(); iter.hasNext(); ) {
+			PDepIsomer isomer = iter.next();
+			if (isomer.getSpecies(0).equals(species))
+				return true;
+		}
+		return false;
+	}
+	
+	//==========================================================================
+	//
+	//	Set accessor methods
+	//
+	
+	
+	/**
+	 * Adds an isomer (unimolecular or multimolecular) to the appropriate 
+	 * list in the network if it is not already present.
+	 * @param isomer The isomer to add
+	 */
+	public void addIsomer(PDepIsomer isomer) {
+		
+		// Don't add if isomer is already in network
+		if (uniIsomerList.contains(isomer) || multiIsomerList.contains(isomer))
+			return;
+		
+		// Add isomer
+		if (isomer.isUnimolecular())
+			uniIsomerList.add(isomer);
+		else if (isomer.isMultimolecular())
+			multiIsomerList.add(isomer);
+		
+		// Mark network as changed so that updated rates can be determined
+		altered = true;
+	}
+	
+	/**
+	 * Adds a path reaction to the network if it is not already present.
+	 * @param newRxn The path reaction to add
+	 */
+	public void addReaction(PDepReaction newRxn) {
+		
+		// Check to ensure that reaction is not already present
+		for (ListIterator<PDepReaction> iter = pathReactionList.listIterator(); iter.hasNext(); ) {
+			PDepReaction rxn = iter.next();
+			if (rxn.equals(newRxn))
+				return;
+		}
+		
+		// Add reaction
+		pathReactionList.add(newRxn);
+	}
+	
+	/**
+	 * Updates the status of the altered flag: true if the network requires a
+	 * new pressure-dependent calculation, false if not.
+	 * @param alt The new status of the altered flag
+	 */
 	public void setAltered(boolean alt) {
 		altered = alt;
 	}
 	
-    public Iterator getNonIncludedSpecies(){
-    	return nonIncludedSpecies.iterator();
-    }
+	//==========================================================================
+	//
+	//	Other methods
+	//
 	
-     //10/30/07: gmagoon: added function to set temperatureArray (used with kLeak); I think it should be declared as static so it belongs to class rather than object and temperatureArray will be static
-    //****note that there is some inefficiency in the current implementation since temperatures will be repeated if there are multiple pressures; if calculating kLeak takes a long time, changing implementation may be warranted; UPDATE: if kLeak depends on pressure as well, there will be no inefficiency
-    public static void setTemperatureArray(LinkedList p_tempArray){
-        temperatureArray = p_tempArray;
-    }
-
-     //10/30/07: gmagoon: added function to set temperatureArray (used with kLeak); see comments for previous function
-     //UPDATE: commenting out: not needed if updateKLeak is done for one temperature/pressure at a time
-     //11/1-2/07 gmagoon: restoring
-   public static void setPressureArray(LinkedList p_pressureArray){
-        pressureArray = p_pressureArray;
-    }
-    
-       /*
-	public static void completeNetwork(Species p_species, HashSet hs) {
-		if (p_species == null) return;
-		if (p_species.getPdepPaths() == null) return;
+	/**
+	 * Redistributes the net reactions based on the current core and edge
+	 * reaction models. Especially useful when one or more species has been
+	 * moved from the edge to the core since the last pressure-dependent
+	 * calculation.
+	 * @param cerm The current core/edge reaction model
+	 */
+	public void updateReactionLists(CoreEdgeReactionModel cerm) {
+		LinkedList<PDepReaction> reactionList = new LinkedList<PDepReaction>();
+		for (int i = 0; i < netReactionList.size(); i++) {
+			PDepReaction rxn = netReactionList.get(i);
+			reactionList.add(rxn);
+		}
+		for (int i = 0; i < nonincludedReactionList.size(); i++) {
+			PDepReaction rxn = nonincludedReactionList.get(i);
+			reactionList.add(rxn);
+		}
+		netReactionList.clear();
+        nonincludedReactionList.clear();
 		
-		Iterator iter = dictionary.values().iterator();
-		while (iter.hasNext()){
-			PDepNetwork pdn = (PDepNetwork)iter.next();
-			if (pdn.nonIncludedSpecies.contains(p_species)){
-				PDepWell pdw = new PDepWell(p_species, p_species.getPdepPaths());
-				
-				pdn.completeNetwork(pdw, hs);
-				//pdn.addPDepWell(pdw);
-				//pdn.nonIncludedSpecies.remove(p_species);
-				
-				pdn.altered = true;
+		for (int i = 0; i < reactionList.size(); i++) {
+			PDepReaction forward = reactionList.get(i);
+			PDepReaction reverse = (PDepReaction) forward.getReverseReaction();
+			if (forward.isEdgeReaction(cerm) || forward.isCoreReaction(cerm))
+				netReactionList.add(forward);
+			else if (reverse.isEdgeReaction(cerm) || reverse.isCoreReaction(cerm))
+				netReactionList.add(reverse);
+			else
+				nonincludedReactionList.add(forward);
+		}
+			
+	}
+	
+	//==========================================================================
+	//
+	//	Static methods (for access to PDepNetwork.networks)
+	//
+	
+	/**
+	 * Returns the linked list containing the currently-existing pressure-
+	 * dependent networks
+	 * @return The currently-existing pressure-dependent networks
+	 */
+	public static LinkedList<PDepNetwork> getNetworks() {
+		return networks;
+	}
+	
+	/**
+	 * Used to add a reaction to the appropriate pressure-dependent network. If
+	 * no such network exists, a new network is created. For isomerization
+	 * reactions connecting two existing networks, the networks are merged. This
+	 * function is to be called whenever a new reaction is added to the edge.
+	 * @param reaction The reaction to add
+	 * @return The network the reaction was added to
+	 */
+	public static PDepNetwork addReactionToNetworks(Reaction reaction) {
+		
+		PDepNetwork pdn = null;
+		Species species;
+			
+		// Each PDepReaction must have a unimolecular isomer as the reactant
+		if (reaction.getReactantNumber() != 1)
+			return null;
+		
+		// Get species of unimolecular isomer
+		if (reaction.getReactantNumber() == 1)
+			species = (Species) reaction.getReactantList().get(0);
+		else if (reaction.getProductNumber() == 1)
+			species = (Species) reaction.getProductList().get(0);
+		else
+			return null;
+		
+		// For debugging: view reaction being added and its kinetics
+		/*System.out.println(reaction.toString() + 
+				"    A = " + reaction.getKinetics().getAValue() + " s^-1 " +
+				"    Ea = " + reaction.getKinetics().getEValue() + " kcal/mol " +
+				"    n = " + reaction.getKinetics().getNValue());*/
+		
+		if (reaction.getProductNumber() == 1) {
+			// Isomerization reactions should cause networks to be merged together
+			// This means that each unimolecular isomer should only appear in one network
+			
+			// Get the appropriate pressure-dependent network(s)
+			PDepNetwork reac_pdn = null;
+			PDepNetwork prod_pdn = null;
+			Species reactant = (Species) reaction.getReactantList().get(0);
+			Species product = (Species) reaction.getProductList().get(0);
+			for (ListIterator<PDepNetwork> iter = networks.listIterator(); iter.hasNext(); ) {
+				PDepNetwork n = iter.next();
+				if (n.contains(reactant))
+					reac_pdn = n;
+				if (n.contains(product))
+					prod_pdn = n;
 			}
 			
+			if (reac_pdn != null && prod_pdn != null && reac_pdn != prod_pdn) {
+				// Two distinct networks found; must join them together
+				pdn = reac_pdn;
+				for (int i = 0; i < prod_pdn.getUniIsomers().size(); i++)
+					pdn.addIsomer(prod_pdn.getUniIsomers().get(i));
+				for (int i = 0; i < prod_pdn.getMultiIsomers().size(); i++)
+					pdn.addIsomer(prod_pdn.getMultiIsomers().get(i));
+				for (int i = 0; i < prod_pdn.getPathReactions().size(); i++)
+					pdn.addReaction(prod_pdn.getPathReactions().get(i));
+				// Also remove the second network from the list of networks
+				networks.remove(prod_pdn);
+			}
+			else if (reac_pdn != null && prod_pdn != null && reac_pdn == prod_pdn) {
+				// Both species already present as unimolecular isomers in the same network, so use that network
+				pdn = reac_pdn;
+			}
+			else if (reac_pdn != null) {
+				// Only reactant species found in a network, so use that network
+				pdn = reac_pdn;
+			}
+			else if (prod_pdn != null) {
+				// Only product species found in a network, so use that network
+				pdn = reac_pdn;
+			}
+			else {
+				// No networks found for either species; will create a new network
+				pdn = null;
+			}
+ 
 		}
-		
-	}
-	
-	private void completeNetwork(PDepWell pdw, HashSet hs) {
-		Iterator iter = pdw.isomer.getPdepPaths().iterator();
-		addPDepWell(pdw);
-		nonIncludedSpecies.remove(pdw.isomer);
-		while (iter.hasNext()){
-			Reaction r = (Reaction)iter.next();
-			Species spe = (Species)r.getStructure().products.get(0);
-			if (r.getProductNumber() == 1 && this.nonIncludedSpecies.contains(spe) && hs.contains(spe)) {
-				PDepWell pdw_new = new PDepWell(spe, spe.getPdepPaths());
-				completeNetwork(pdw_new, hs);
+		else if (reaction.getProductNumber() > 1) {
+			// Dissociation reactions are added to the network containing that unimolecular isomer
+			// Since each unimolecular isomer should only appear in one network, there should only be one such addition
+			// If no existing network is found, a new one may be created
+			
+			// Get the appropriate pressure-dependent network
+			Species reactant = (Species) reaction.getReactantList().get(0);
+			for (ListIterator<PDepNetwork> iter = networks.listIterator(); iter.hasNext(); ) {
+				PDepNetwork n = iter.next();
+				if (n.contains(reactant))
+					pdn = n;
 			}
 		}
 		
-	}
+		// If network not found, create a new network
+		if (pdn == null) {
+			pdn = new PDepNetwork();
+			PDepIsomer isomer = new PDepIsomer(species);
+			pdn.addIsomer(isomer);
+			networks.add(pdn);
+		}
 
+		// Add the reaction to the network
+		PDepIsomer reactantIsomer = pdn.getIsomer(reaction.getReactantList());
+		if (reactantIsomer == null) {
+			reactantIsomer = new PDepIsomer(reaction.getReactantList());
+			pdn.addIsomer(reactantIsomer);
+		}
+		PDepIsomer productIsomer = pdn.getIsomer(reaction.getProductList());
+		if (productIsomer == null) {
+			productIsomer = new PDepIsomer(reaction.getProductList());
+			pdn.addIsomer(productIsomer);
+		}
+		PDepReaction rxn = new PDepReaction(reactantIsomer, productIsomer, reaction);
+		pdn.addReaction(rxn);
+		
+		// The key is the chemical formula of the unimolecular well
+		String key = species.getName();
+		
+		return pdn;
+		
+	}
 	
-	public static void completeNetwork(HashSet hs) {
-		Iterator iter = hs.iterator();
-		while (iter.hasNext()){
-			Species sp = (Species)iter.next();
-			completeNetwork(sp, hs);
+	/**
+	 * Useful for debugging, this function prints the isomers of each network
+	 * to the console window.
+	 */
+	public static void printNetworks() {
+		int index = 0;
+		for (ListIterator<PDepNetwork> iter0 = networks.listIterator(); iter0.hasNext(); ) {
+			PDepNetwork pdn = iter0.next();
+			index++;
+			System.out.print("Network #" + Integer.toString(index) + ": ");
+			for (ListIterator<PDepIsomer> iter = pdn.getUniIsomers().listIterator(); iter.hasNext(); ) {
+				PDepIsomer isomer = iter.next();
+				System.out.print(isomer.toString());
+				if (iter.hasNext())
+					System.out.print(", ");
+			}
+			System.out.print("; ");
+			for (ListIterator<PDepIsomer> iter = pdn.getMultiIsomers().listIterator(); iter.hasNext(); ) {
+				PDepIsomer isomer = iter.next();
+				System.out.print(isomer.toString());
+				if (iter.hasNext())
+					System.out.print(", ");
+			}
+			System.out.print("\n");
 		}
 	}
-    */
+	
+	/**
+	 * Checks to see if there are any core reactions hidden amongst those
+	 * net reactions which are found in the pressure-dependent networks.
+	 * This is particularly useful in the initialization of the reaction model,
+	 * in which the core must have at least one reaction in it before the
+	 * dynamic simulator can be executed.
+	 * @param cerm The current core/edge reaction model
+	 * @return True if core reactions are found, false if not
+	 */
+	public static boolean hasCoreReactions(CoreEdgeReactionModel cerm) {
+		for (ListIterator<PDepNetwork> iter0 = networks.listIterator(); iter0.hasNext(); ) {
+			PDepNetwork pdn = iter0.next();
+			for (ListIterator<PDepReaction> iter = pdn.getNetReactions().listIterator(); iter.hasNext(); ) {
+				PDepReaction rxn = iter.next();
+				if (rxn.isCoreReaction(cerm))
+					return true;
+			}
+		}
+		return false;
+	}
+	
 }
-/*********************************************************************
-	File Path	: RMG\RMG\jing\rxn\PDepNetwork.java
-*********************************************************************/
-
