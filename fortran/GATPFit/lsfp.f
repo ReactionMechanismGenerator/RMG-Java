@@ -1,6 +1,3 @@
-C Revised by Richard H. West at MIT, Dec 2008
-C to read input from STDIN and output result to STDOUT
-C
 C Revised by John Z. WEN at MIT, Oct 2005
 C Add the minumim and maximum temperatures:
 C     The code calculate from 200K to 6000K
@@ -32,9 +29,7 @@ C
 C max atoms number allowed in a species is 999
 C max number of different atoms is 5 
 	integer indc_elno(5,3)
-C	PARAMETER (LIN=10,LOUT=16)
-C stdin and stdout 
-	PARAMETER (LIN=5,LOUT=6)
+	PARAMETER (LIN=10,LOUT=16) 
 C For input file
 	CHARACTER(LEN=4) MARK, DATATYPE
 	CHARACTER(LEN=16) TEXT, SNAM
@@ -62,12 +57,10 @@ C
 C
 C: For the format of input file, please ref. a sample file. 
 C
-!      OPEN (LIN, FORM='FORMATTED', STATUS='OLD',
-!     1 FILE='INPUT.txt')
-
-!      OPEN (LOUT, FORM='FORMATTED', STATUS='UNKNOWN',
-!     1 FILE='OUTPUT.txt')
-
+      OPEN (LIN, FORM='FORMATTED', STATUS='OLD',
+     1 FILE='INPUT.txt')
+      OPEN (LOUT, FORM='FORMATTED', STATUS='UNKNOWN',
+     1 FILE='OUTPUT.txt')
 C
 	MARK=''
 	DATATYPE=''
@@ -119,15 +112,12 @@ C
 	   ENDIF
 	ENDDO
 C
-!! these lines have been replaced...
-!	rewind (LIN)
-!	DO I=1,IJ-1
-!	READ (LIN, 100) MARK, TEXT 
+	rewind (LIN)
+	DO I=1,IJ-1
+	READ (LIN, 100) MARK, TEXT 
 !	WRITE(*,*) MARK, TEXT
-!	ENDDO
-!	READ (LIN, *) MARK, H_298
-!! ...by the following line:
-	READ (TEXT,*) H_298
+	ENDDO
+	READ (LIN, *) MARK, H_298
 !	WRITE(*,*) MARK, H_298
 	READ (LIN, *) MARK, S_298
 !	WRITE(*,*) MARK, S_298
@@ -139,7 +129,7 @@ C
 !	WRITE(*,*) MARK, T_int
 	READ (LIN, *) MARK, T_min
 !	WRITE(*,*) MARK, T_min
-	READ (LIN,*) MARK, T_max
+	READ (LIN, *) MARK, T_max
 !	WRITE(*,*) MARK, T_max
 	if (T_max .gt. 6000.0) then
 	write(*,*) 'Warning!!!'
@@ -166,7 +156,7 @@ C
 	READ (LIN, *) ROTORS
 !	WRITE(*,*) 'NO. OF ROTORS', ROTORS
  104	FORMAT(F8.1)
-!      CLOSE(LIN)
+      CLOSE(LIN)
 !	PAUSE
 C
 C: Keywords input over
@@ -1097,8 +1087,8 @@ C
 C
 !	DATA CS1/0.D0,0.D0,0.D0,0.D0,0.D0,0.D0,0.D0/
 C
-!      OPEN (LIN, FORM='FORMATTED', STATUS='OLD',
-!     1 FILE='INPUT.txt')
+      OPEN (LIN, FORM='FORMATTED', STATUS='OLD',
+     1 FILE='INPUT.txt')
 C
 	DO I=1,50
 	   TEMP1(I)=0.0D0
@@ -1110,49 +1100,42 @@ C
 	TEXT=''
 C
 	IJ=0
-	IK=0
+      IK=0
 	IM=0
-!	DO I=1,50
-!	   IJ=IJ+1
-!         READ (LIN, 100) MARK, TEXT
-!         IF (MARK .EQ. 'TECP') THEN
-!	      IK=IJ
-!	      GOTO 250
-!	   ENDIF
-!	ENDDO
-! 250  CONTINUE
-C
-!	rewind (LIN)
-C
-!	IJ=0
-!	DO I=1,50
-!	   IJ=IJ+1
-!         READ (LIN, 100) MARK, TEXT
-!         IF (MARK .EQ. 'END ') THEN
-!	      IM=IJ
-!	      GOTO 300
-!	   ENDIF
-!	ENDDO
-
- 100	FORMAT (A4,1X,A40)
-C
-!	rewind (LIN)
-C
-!	DO I=1,IK-1
-!		READ (LIN, 100) MARK, TEXT
-!	ENDDO
-C
 	DO I=1,50
-        READ (LIN, 100) MARK, TEXT
-        IF (MARK .EQ. 'END ') THEN
-            GOTO 300
-        ELSEIF (MARK .EQ. 'TECP') THEN
-            READ (TEXT, *) TEMP1(I), C1(I)
-!           WRITE(*,*) TEMP1(I),C1(I)
-        ENDIF
-
+	   IJ=IJ+1
+         READ (LIN, 100) MARK, TEXT
+         IF (MARK .EQ. 'TECP') THEN
+	      IK=IJ
+	      GOTO 250
+	   ENDIF
+	ENDDO
+ 250  CONTINUE
+C
+	rewind (LIN)
+C
+	IJ=0
+	DO I=1,50
+	   IJ=IJ+1
+         READ (LIN, 100) MARK, TEXT
+         IF (MARK .EQ. 'END ') THEN
+	      IM=IJ
+	      GOTO 300
+	   ENDIF
 	ENDDO
  300	CONTINUE
+ 100	FORMAT (A4,1X,A40)
+C
+	rewind (LIN)
+C
+	DO I=1,IK-1
+         READ (LIN, 100) MARK, TEXT
+	ENDDO
+C
+	DO I=1,IM-IK
+	   READ (LIN, *) MARK, TEMP1(I), C1(I)
+!	WRITE(*,*) TEMP1(I),C1(I)
+	ENDDO
 !	PAUSE
  101	FORMAT (A4,1X,F4.0,1X,F8.1)
 C
