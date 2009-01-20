@@ -176,6 +176,7 @@ public class PDepIsomer {
 	/**
 	 * Calculates the Gibbs free energy of the ith species of the isomer at the 
 	 * specified temperature.
+	 * @param species The index of the species
 	 * @param temperature The temperature at which to do the calculation
 	 * @return The Gibbs free energy of the ith species
 	 */
@@ -200,11 +201,33 @@ public class PDepIsomer {
 	/**
 	 * Calculates the enthalpy of the ith species of the isomer at the 
 	 * specified temperature.
+	 * @param species The index of the species
 	 * @param temperature The temperature at which to do the calculation
 	 * @return The enthalpy of the ith species
 	 */
 	public double calculateH(int species, Temperature temperature) {
 		return speciesList.get(species).calculateH(temperature);
+	}
+	
+	/**
+	 * Returns the total molecular weight of the isomer.
+	 * @return The total molecular weight of the isomer
+	 */
+	public double getMolecularWeight() {
+		double molWt = 0;
+		for (int i = 0; i < speciesList.size(); i++) {
+			molWt += speciesList.get(i).getMolecularWeight();
+		}
+		return molWt;
+	}
+
+	/**
+	 * Returns the molecular weight of the ith species of the isomer.
+	 * @param species The index of the species
+	 * @return The molecular weight of the ith species
+	 */
+	public double getMolecularWeight(int species) {
+		return speciesList.get(species).getMolecularWeight();
 	}
 	
 }

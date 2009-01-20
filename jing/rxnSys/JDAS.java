@@ -716,8 +716,8 @@ public abstract class JDAS implements DAESolver {
         	String[] command = {workingDirectory +  "/software/ODESolver/" + execName};//5/5/08 gmagoon: changed to call dasslAUTO.exe
 			File runningDir = new File("ODESolver");
 			
-			Process ODESolver = Runtime.getRuntime().exec(command, null, runningDir);
-			InputStream is = ODESolver.getInputStream();
+			Process solver = Runtime.getRuntime().exec(command, null, runningDir);
+			InputStream is = solver.getInputStream();
 			InputStreamReader isr = new InputStreamReader(is);
 			BufferedReader br = new BufferedReader(isr);
 			String line=null;
@@ -728,7 +728,7 @@ public abstract class JDAS implements DAESolver {
 					error = true;
 				}          
 			}
-        	int exitValue = ODESolver.waitFor();
+        	int exitValue = solver.waitFor();
         }
         catch (Exception e) {
         	String err = "Error in running ODESolver \n";

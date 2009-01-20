@@ -98,7 +98,7 @@ public class FrequencyGroups{//gmagoon 111708: removed "implements GeneralGAPP"
 		
 		touchOutputFile();
 		
-        //call Franklin's code
+		//call Franklin's code
         try{
             String dir = System.getProperty("RMG.workingDirectory");
             File runningdir=new File("frankie");

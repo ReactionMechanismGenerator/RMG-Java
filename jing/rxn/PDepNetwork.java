@@ -291,6 +291,8 @@ public class PDepNetwork {
 		for (int i = 0; i < reactionList.size(); i++) {
 			PDepReaction forward = reactionList.get(i);
 			PDepReaction reverse = (PDepReaction) forward.getReverseReaction();
+			if (forward == null || reverse == null)
+				return;
 			if (forward.isEdgeReaction(cerm) || forward.isCoreReaction(cerm))
 				netReactionList.add(forward);
 			else if (reverse.isEdgeReaction(cerm) || reverse.isCoreReaction(cerm))
@@ -504,6 +506,28 @@ public class PDepNetwork {
 			}
 		}
 		return numCoreReactions;
+	}
+	
+	/**
+	 * Returns the core reactions that are hidden amongst those
+	 * net reactions which are found in the pressure-dependent networks.
+	 * This is particularly useful in the initialization of the reaction model,
+	 * in which the core must have at least one reaction in it before the
+	 * dynamic simulator can be executed.
+	 * @param cerm The current core/edge reaction model
+	 * @return The number of core reactions found
+	 */
+	public static LinkedList<PDepReaction> getCoreReactions(CoreEdgeReactionModel cerm) {
+		LinkedList<PDepReaction> coreReactions = new LinkedList<PDepReaction>();
+		for (ListIterator<PDepNetwork> iter0 = networks.listIterator(); iter0.hasNext(); ) {
+			PDepNetwork pdn = iter0.next();
+			for (ListIterator<PDepReaction> iter = pdn.getNetReactions().listIterator(); iter.hasNext(); ) {
+				PDepReaction rxn = iter.next();
+				if (rxn.isCoreReaction(cerm))
+					coreReactions.add(rxn);
+			}
+		}
+		return coreReactions;
 	}
 	
 }

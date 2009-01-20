@@ -1187,7 +1187,7 @@ public String printLowerBoundConcentrations(LinkedList p_speciesList) {
                            result.append(J + ". " + r.toString(ss.getTemperature())+'\n');
     			  //result.append(J + ". " + r.toString(Global.temperature)+'\n');//10/25/07 gmagoon: changed from using global.temperature
     		  }
-      	}
+			}
     	return result.toString();
       }
 

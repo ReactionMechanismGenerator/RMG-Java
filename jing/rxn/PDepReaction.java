@@ -236,8 +236,8 @@ public class PDepReaction extends Reaction {
 			if (cerm.containsAsReactedSpecies(reactant.getSpecies(i)) == false)
 				return false;
 		// At least one product species must be in the edge
-		for (int i = 0; i < reactant.getNumSpecies(); i++) 
-			if (cerm.containsAsUnreactedSpecies(reactant.getSpecies(i)) == true)
+		for (int i = 0; i < product.getNumSpecies(); i++) 
+			if (cerm.containsAsUnreactedSpecies(product.getSpecies(i)) == true)
 				return true;
 		// If here, then reaction is not on the edge
 		return false;
@@ -256,8 +256,8 @@ public class PDepReaction extends Reaction {
 			if (cerm.containsAsReactedSpecies(reactant.getSpecies(i)) == false)
 				return false;
 		// All product species must be in the edge
-		for (int i = 0; i < reactant.getNumSpecies(); i++) 
-			if (cerm.containsAsReactedSpecies(reactant.getSpecies(i)) == false)
+		for (int i = 0; i < product.getNumSpecies(); i++) 
+			if (cerm.containsAsReactedSpecies(product.getSpecies(i)) == false)
 				return false;
 		// If here, then reaction is in the core
 		return true;
@@ -345,11 +345,21 @@ public class PDepReaction extends Reaction {
 	 */
 	@Override
 	public void generateReverseReaction() {
-        
-		PDepReaction r = new PDepReaction(product, reactant, chebyshev);
-        setReverseReaction(r);
-
+        if (chebyshev != null) {
+			PDepReaction r = new PDepReaction(product, reactant, chebyshev);
+			setReverseReaction(r); 
+		}
+		else {
+			super.generateReverseReaction();
+			PDepReaction r = new PDepReaction(product, reactant, super.getReverseReaction()); 
+			setReverseReaction(r); 
+		}
     }
+	
+	@Override
+	public boolean hasReverseReaction() {
+		return (pDepReverse != null);
+	}
 	
 	/**
 	 * A holdover from the old PDepNetReaction class, used by

@@ -2131,11 +2131,15 @@ public LinkedList getSpeciesList() {
 			Iterator iter = reactionSet.iterator();
         	while (iter.hasNext()){
         		Reaction r = (Reaction)iter.next();
-        		if (r.getReactantNumber() == 2 && r.getProductNumber() == 2){
+        		if (r.getReactantNumber() > 1 && r.getProductNumber() > 1){
         			((CoreEdgeReactionModel)getReactionModel()).addReaction(r);
         		}
-        	}
-    	}
+				else {
+					((CoreEdgeReactionModel)getReactionModel()).categorizeReaction(r.getStructure());
+					PDepNetwork.addReactionToNetworks(r);
+				}
+			}
+		}
         
 		//10/9/07 gmagoon: copy reactionModel to reactionSystem; there may still be scope problems, particularly in above elseif statement
         //10/24/07 gmagoon: want to copy same reaction model to all reactionSystem variables; should probably also make similar modifications elsewhere; may or may not need to copy in ...WithPRL function

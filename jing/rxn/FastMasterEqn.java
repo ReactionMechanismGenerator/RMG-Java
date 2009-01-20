@@ -478,13 +478,13 @@ public class FastMasterEqn implements PDepKineticsEstimator {
 			boolean ignoredARate = false;
 			for (int i = 0; i < numUniWells + numMultiWells; i++) {
 				for (int j = 0; j < numUniWells + numMultiWells; j++) {
-					if (i != j) {
+					if (i != j && br.ready()) {
 					
 						double[][] alpha = new double[numTemperatures][numPressures];
 
 						// Comment line at start of reaction
 						str = br.readLine().trim();
-
+						
 						// Read Chebyshev coefficients from file
 						boolean valid = true;
 						for (int t = 0; t < numTemperatures; t++) {
@@ -497,6 +497,9 @@ public class FastMasterEqn implements PDepKineticsEstimator {
 							}
 						}
 						
+						// Skip blank line between records
+						str = br.readLine().trim();
+							
 						// If the fitted rate coefficient is not valid, then don't add the net reaction
 						if (!valid) {
 							ignoredARate = true;
@@ -527,9 +530,6 @@ public class FastMasterEqn implements PDepKineticsEstimator {
 
 						// Add net reaction to list
 						netReactionList.add(rxn);
-						
-						// Skip blank line between records
-						str = br.readLine().trim();
 
 					}
 				}
@@ -552,11 +552,12 @@ public class FastMasterEqn implements PDepKineticsEstimator {
 				}
 			}
 			
+			if (ignoredARate)
+				System.out.println("Warning: One or more rate coefficients in FAME output was ignored due to invalid values.");
+
 			// Update reaction lists (sort into included and nonincluded)
 			pdn.updateReactionLists(cerm);
 			
-			if (ignoredARate)
-				System.out.println("Warning: One or more rate coefficients in FAME output was ignored due to invalid values.");
 		}
 		catch(IOException e) {
 			System.out.println("Error: Unable to read from file \"fame_output.txt\".");
@@ -564,6 +565,7 @@ public class FastMasterEqn implements PDepKineticsEstimator {
 		}
 		catch(Exception e) {
 			System.out.println(e.getMessage());
+			e.printStackTrace();
 		}
         
     }
