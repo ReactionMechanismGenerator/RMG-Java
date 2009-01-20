@@ -989,7 +989,7 @@ c        ENDIF                                                           THE0854
 c	end pey
 C        CLOSE(1,STATUS='KEEP')                                         THE08550
 C        CLOSE(54,STATUS='KEEP')                                        THE08560
-      STOP ' *** THRFIT Job Complete ... Conitinuing ***'
+      STOP ' *** Therfit Job Complete ***'
       END                                                              
 C ***
 C ***
@@ -4652,8 +4652,16 @@ c $Date$
 c $Source$
 c $Revision$
 c $Log$
-c Revision 1.1  2007-02-20 23:10:23  sandeeps
-c Initial revision
+c Revision 1.2  2009-01-20 18:22:49  rwest
+c changed end of therfit output to "Therfit Job Complete". (must update fortran and java code simultaneously)
+c
+c Revision 1.1.1.1  2007/02/20 23:10:23  sandeeps
+c Fortran_software contain
+c 1. therfir
+c 2. chemdis
+c 3. reactorModel (chemkin, as modified by Paul)
+c 4. ODESolver (the fortran code which RMG uses to call daspk or dassl)
+c 5. fit3pbnd
 c
 c Revision 1.2  2002/04/18 21:29:11  dmmatheu
 c version for working with XMG, courtesy of amamo, modified by dmm.
