@@ -111,6 +111,14 @@ public class SpectroscopicData {
 		hinderedBarriers = p_hinderedBarriers;
 	}
 	
+	/**
+	 * Default constructor. Initializes all data to empty.
+	 */
+	public SpectroscopicData(ThreeFrequencyModel tfm) {
+		loadThreeFrequencyModel(tfm);
+	}
+        
+    
 	//==========================================================================
 	//
 	//	Accessors

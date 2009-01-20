@@ -1044,7 +1044,17 @@ public class Species {
     }
 
     public SpectroscopicData getSpectroscopicData() {
-        return spectroscopicData;
+		// Generate data if needed
+		if (spectroscopicData == null && threeFrequencyModel == null)
+			generateSpectroscopicData();
+		// Return data in appropriate form
+		if (spectroscopicData != null)
+			return spectroscopicData;
+		else if (threeFrequencyModel != null)
+			return new SpectroscopicData(threeFrequencyModel);
+		else if (isTriatomicOrSmaller())
+			return new SpectroscopicData();
+		else return null;
     }
 
 	protected void initRelations() {
