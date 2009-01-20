@@ -9,7 +9,7 @@
 module StrongCollisionModule
 
 	use SimulationModule
-	use SpeciesModule
+	use IsomerModule
 	use ReactionModule
 
 contains
@@ -28,8 +28,8 @@ contains
 
 		! Provide parameter type checking of inputs and outputs
 		type(Simulation), intent(in)				:: 	simData
-		type(UniWell), dimension(:), intent(in)		:: 	uniData
-		type(MultiWell), dimension(:), intent(in)	:: 	multiData
+		type(Isomer), dimension(:), intent(in)		:: 	uniData
+		type(Isomer), dimension(:), intent(in)	:: 	multiData
 		type(Reaction), dimension(:), intent(in)	:: 	rxnData
 		real(8), dimension(:,:,:), intent(in)		:: 	Kij
 		real(8), dimension(:,:,:), intent(in)		:: 	Fim
@@ -73,9 +73,9 @@ contains
 		! Determine collision frequency for each isomer
 		allocate( w(1:simData%nUni) )
 		do i = 1, simData%nUni
-			mu = 1.0 / ( 1.0 / uniData(i)%MW + 1.0 / simData%bathGas%MW ) / 6.022e26
-			call collisionFrequency(simData%T, 0.5 * (uniData(i)%sigma + simData%bathGas%sigma), &
-				0.5 * (uniData(i)%eps + simData%bathGas%eps), mu, gasConc, w(i))
+			mu = 1.0 / ( 1.0 / uniData(i)%MW(1) + 1.0 / simData%bathGas%MW ) / 6.022e26
+			call collisionFrequency(simData%T, 0.5 * (uniData(i)%sigma(1) + simData%bathGas%sigma), &
+				0.5 * (uniData(i)%eps(1) + simData%bathGas%eps), mu, gasConc, w(i))
 		end do
 		
 		! Zero rate coefficient matrix
@@ -266,7 +266,7 @@ contains
 	subroutine getActiveSpaceStart(simData, uniData, rxnData, well, start)
 	
 		type(Simulation), intent(in)				:: 	simData
-		type(UniWell), dimension(:), intent(in)		:: 	uniData
+		type(Isomer), dimension(:), intent(in)		:: 	uniData
 		type(Reaction), dimension(:), intent(in)	:: 	rxnData
 		integer, intent(in)							::	well
 		integer, intent(out)						::	start

@@ -8,7 +8,7 @@
 
 module DensityOfStatesModule
 
-	use SpeciesModule
+	use IsomerModule
 
 contains
 
@@ -20,16 +20,12 @@ contains
 	!
 	! Parameters:
 	!   energies - The energy grains in kJ/mol (from simData%E).
-	!   uniData - The chemical data about each unimolecular isomer.
-	!   multiData - The chemical data about each multimolecular source/sink.
-	!	verbose - Represents the amount of information outputted to the console
-	subroutine calcDensityOfStates(energies, uniData, multiData, verbose)
+	!   isom - The chemical data for a single isomer.
+	subroutine calcDensityOfStates(energies, isom)
 		
 		! Provide parameter type checking of inputs and outputs
 		real(8), dimension(:), intent(in)				:: 	energies
-		type(UniWell), dimension(:), intent(inout)		:: 	uniData
-		type(MultiWell), dimension(:), intent(inout)	:: 	multiData
-		integer, intent(in)								:: 	verbose
+		type(Isomer), intent(inout)						:: 	isom
 		
 		real(8) conv		! Conversion factor: cm^-1 per kJ/mol
 		real(8) Emax		! Maximum energy of range in cm^-1
@@ -55,47 +51,29 @@ contains
 		
 		dn = anint((energies(2) - energies(1)) / dE * conv)
 		
-		! Calculate the density of states for each unimolecular well
-		do i = 1, size(uniData)
-			if (verbose >= 2) write (*,*), '\tUnimolecular isomer', i, '...'
-			call densityOfStates(E, &
-				uniData(i)%E * conv, &
-				uniData(i)%vibFreq, &
-				uniData(i)%rotFreq, &
-				uniData(i)%hindFreq, &
-				uniData(i)%hindBarrier, &
-				uniData(i)%symmNum, &
-				rho1)
-			! rho1 [=] (cm^-1)^-1, but want units of (kJ/mol)^-1
-			uniData(i)%densStates = rho1(1:nE:dn) * conv
-		end do
-			
 		! Calculate the density of states for each multimolecular well
-		do n = 1, size(multiData)
-			if (verbose >= 2) write (*,*), '\tMultimolecular isomer', n, '...'
+		call densityOfStates(E, &
+			isom%E(1) * conv, &
+			isom%vibFreq(1,:), &
+			isom%rotFreq(1,:), &
+			isom%hindFreq(1,:), &
+			isom%hindBarrier(1,:), &
+			isom%symmNum(1), &
+			rho1)
+		E1 = isom%E(1)
+		do i = 2, isom%numSpecies
 			call densityOfStates(E, &
-				multiData(n)%E(1) * conv, &
-				multiData(n)%vibFreq(1,:), &
-				multiData(n)%rotFreq(1,:), &
-				multiData(n)%hindFreq(1,:), &
-				multiData(n)%hindBarrier(1,:), &
-				multiData(n)%symmNum(1), &
-				rho1)
-			E1 = multiData(n)%E(1)
-			do i = 2, multiData(n)%numSpecies
-				call densityOfStates(E, &
-					multiData(n)%E(i) * conv, &
-					multiData(n)%vibFreq(i,:), &
-					multiData(n)%rotFreq(i,:), &
-					multiData(n)%hindFreq(i,:), &
-					multiData(n)%hindBarrier(i,:), &
-					multiData(n)%symmNum(i), &
-					rho2)
-				call convolveStates(rho1, E1 * conv, rho2, multiData(n)%E(i) * conv, dE)
-				E1 = E1 + multiData(n)%E(i)
-			end do
-			multiData(n)%densStates = rho1(1:nE:dn) * conv
+				isom%E(i) * conv, &
+				isom%vibFreq(i,:), &
+				isom%rotFreq(i,:), &
+				isom%hindFreq(i,:), &
+				isom%hindBarrier(i,:), &
+				isom%symmNum(i), &
+				rho2)
+			call convolveStates(rho1, E1 * conv, rho2, isom%E(i) * conv, dE)
+			E1 = E1 + isom%E(i)
 		end do
+		isom%densStates = rho1(1:nE:dn) * conv
 		
 		deallocate (rho1, rho2, E)
 		

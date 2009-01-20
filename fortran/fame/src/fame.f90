@@ -30,7 +30,7 @@
 program fame
 
 	use SimulationModule
-	use SpeciesModule
+	use IsomerModule
 	use ReactionModule
 	use DensityOfStatesModule
 	use FullEGMEModule
@@ -44,9 +44,9 @@ program fame
 	! The simulation parameters
 	type(Simulation) 								::	simData
 	! The unimolecular isomer data
-	type(UniWell), dimension(:), allocatable		:: 	uniData	
+	type(Isomer), dimension(:), allocatable			:: 	uniData	
 	! The bimolecular source/sink data
-	type(MultiWell), dimension(:), allocatable		:: 	multiData
+	type(Isomer), dimension(:), allocatable			:: 	multiData
 	! The reaction data
 	type(Reaction), dimension(:), allocatable		:: 	rxnData
 	! Mi(r,s,i) = Collisional transition from energy s to energy r for unimolecular well i
@@ -76,7 +76,7 @@ program fame
 	integer t, p, i, j
 	integer found
 	
-	verbose = 1
+	verbose = 2
 
 	! Part I: Load data from files on disk
 	! ------------------------------------
@@ -98,14 +98,14 @@ program fame
 	if (verbose >= 2) write (*,*), '\tReading unimolecular isomer data...'
 	allocate (uniData(1:simData%nUni))
 	do i = 1, simData%nUni
-		call loadUniWellData(uniData(i), simData%nGrains)
+		call loadIsomerData(uniData(i), simData%nGrains)
 	end do
 
 	! Load multimolecular isomer well data from input file
 	if (verbose >= 2) write (*,*), '\tReading multimolecular isomer data...'
 	allocate (multiData(1:simData%nMulti))
 	do i = 1, simData%nMulti
-		call loadMultiWellData(multiData(i), simData%nGrains)
+		call loadIsomerData(multiData(i), simData%nGrains)
 	end do
 
 	! Load reaction data from input file
@@ -127,8 +127,13 @@ program fame
  
 	! Calculate density of states for each well
 	if (verbose >= 1) write (*,*), 'Calculating density of states...'
-	call calcDensityOfStates(simData%E, uniData, multiData, verbose)
-
+	do i = 1, simData%nUni
+		call calcDensityOfStates(simData%E, uniData(i))
+	end do
+	do n = 1, simData%nMulti
+		call calcDensityOfStates(simData%E, multiData(n))
+	end do
+	
 	! Allocate memory for master equation matrices
 	allocate( 	Mi( 1:simData%nGrains, 1:simData%nGrains, 1:simData%nUni)	)
 	allocate( 	Hn( 1:simData%nGrains, 1:simData%nGrains, 1:simData%nMulti)	)
@@ -153,7 +158,12 @@ program fame
 		
 		! Calculate the equilibrium (Boltzmann) distributions
 		if (verbose >= 2) write (*,*), '\tDetermining equilibrium distributions at T =', simData%T, 'K...'
-		call calcEqDists(uniData, multiData, simData%E, simData%T, bi, bn)
+		do i = 1, simData%nUni
+			call calcEqDist(uniData(i), simData%E, simData%T, bi(:,i))
+		end do
+		do n = 1, simData%nMulti
+			call calcEqDist(multiData(n), simData%E, simData%T, bn(:,n))
+		end do
 				
 		do p = 1, size(simData%Plist)
 
@@ -179,7 +189,7 @@ program fame
 			if (verbose >= 3) write (*,*), '\t\tDetermining reservoir cutoff grains...'
 			call getReservoirCutoffs(simData, uniData, rxnData, nRes)
 			do i = 1, size(nRes)
-				j = ceiling(uniData(i)%E / simData%dE) + 1
+				j = ceiling(uniData(i)%E(1) / simData%dE) + 1
 				if (nRes(i) < j .or. nRes(i) >= simData%nGrains) then
 					write (*,*), 'ERROR: Invalid reservoir grain.'
 					stop
@@ -216,15 +226,14 @@ program fame
 			if (i /= j) then
 				found = 0
 				do t = 1, size(simData%Tlist)
-					do p = 1, size(simData%Tlist)
+					do p = 1, size(simData%Plist)
 						if (K(t,p,i,j) == 0.) then
 							found = 1
 						end if
 					end do
 				end do
 				if (found == 1) then
-					!write(*,*), 'ERROR in FAME execution: Rate coefficient(s) not properly estimated!'
-					!stop
+					write(*,*), 'Warning: Rate coefficient(s) not properly estimated!'
 					chebCoeff(:,:,i,j) = 0 * chebCoeff(:,:,i,j)
 				else
 					if (verbose >= 2) then

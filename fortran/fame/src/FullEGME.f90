@@ -9,7 +9,7 @@
 module FullEGMEModule
 
 	use SimulationModule
-	use SpeciesModule
+	use IsomerModule
 	use ReactionModule
 
 contains
@@ -34,8 +34,8 @@ contains
 	subroutine ME_reaction(simData, uniData, multiData, rxnData, Mi, Hn, Kij, Fim, Gnj, Jnm, bi, bn)
 
 		type(Simulation), intent(in)				:: 	simData
-		type(UniWell), dimension(:), intent(in)		:: 	uniData
-		type(MultiWell), dimension(:), intent(in)	:: 	multiData
+		type(Isomer), dimension(:), intent(in)		:: 	uniData
+		type(Isomer), dimension(:), intent(in)		:: 	multiData
 		type(Reaction), dimension(:), intent(in)	:: 	rxnData
 		real(8), dimension(:,:,:), intent(inout)	:: 	Mi
 		real(8), dimension(:,:,:), intent(inout)	:: 	Hn
@@ -45,12 +45,6 @@ contains
 		real(8), dimension(:,:,:), intent(inout)	:: 	Jnm
 		real(8), dimension(:,:), intent(in)			:: 	bi
 		real(8), dimension(:,:), intent(in)			:: 	bn
-		
-		! Equilibrium variables
-		real(8)		::	Hrxn		! Enthalpy of reaction in kJ/mol
-		real(8)		::	Grxn		! Free energy of reaction in kJ/mol
-		real(8)		::	Keq_298		! Equilibrium constant at 298 K
-		real(8)		::	Keq			! Equilibrium constant at rxn temperature
 		
 		! Indices
 		integer		:: i, j, m, n, r, t
@@ -84,30 +78,21 @@ contains
 					n = rxnData(t)%isomer(2) - simData%nUni
 				end if
 				
-				! Determine equilibrium constant at rxn conditions from thermochemical data
-				Hrxn = uniData(i)%H - sum(multiData(n)%H)
-				Grxn = uniData(i)%G - sum(multiData(n)%G)
-				Keq_298 = exp(-Grxn * 1000. / 8.314472 / 298.)
-				! Convert Keq_298 from Ka to Kc: to units of (mol/cm^3)^-1
-				Keq_298 = Keq_298 * (8.314472 * 298 / 1.0e5) * (1.0e6)
-				Keq = Keq_298 * exp(-Hrxn * 1000. / 8.314472 * (1./simData%T - 1./298.))
-				
 				! Calculate rate coefficient for uni --> bi using RRKM theory
 ! 				call rate_rrkm(uniData(i)%densStates, rxnData(t)%sumStates, &
-! 					rxnData(t)%E - uniData(i)%E, simData%E, Gnj(:,n,i))
+! 					rxnData(t)%E - uniData(i)%E(1), simData%E, Gnj(:,n,i))
 				
 				! Calculate rate coefficient for uni --> bi using ILT method
-				call rate_ilt(rxnData(t)%E - uniData(i)%E, uniData(i)%densStates, &
+				call rate_ilt(rxnData(t)%E - uniData(i)%E(1), uniData(i)%densStates, &
 					rxnData(t)%arrh_A, rxnData(t)%arrh_n, rxnData(t)%arrh_Ea, &
 					simData%T, simData%dE, simData%E, Gnj(:,n,i))
 				
 				! Calculate rate coefficient for bi --> uni
 				do r = 1, simData%nGrains
 					if (bn(r,n) /= 0) then
-!               			Fim(r,i,n) = Keq * Gnj(r,n,i) * bi(r,i) / bn(r,n)
                			Fim(r,i,n) = Gnj(r,n,i) * bi(r,i) / bn(r,n)
             		end if
-				end do				
+				end do
 				
 			else															! uni <---> uni
 				
@@ -115,26 +100,19 @@ contains
 				i = rxnData(t)%isomer(1)
 				j = rxnData(t)%isomer(2)
 				
-				! Determine equilibrium constant at rxn conditions from thermochemical data
-				Hrxn = uniData(i)%H - uniData(j)%H
-				Grxn = uniData(i)%G - uniData(j)%G
-				Keq_298 = exp(-Grxn * 1000. / 8.314472 / 298.) 
-				Keq = Keq_298 * exp(-Hrxn * 1000. / 8.314472 * (1./simData%T - 1./298.))
-				
 ! 				! Calculate rate coefficient for i --> j using RRKM theory
-! 				call rate_rrkm(uniData(i)%densStates, rxnData(t)%sumStates, rxnData(t)%E - uniData(i)%E, simData%E, Kij(:,j,i))
+! 				call rate_rrkm(uniData(i)%densStates, rxnData(t)%sumStates, rxnData(t)%E - uniData(i)%E(1), simData%E, Kij(:,j,i))
 ! 				! Calculate rate coefficient for j --> i using RRKM theory
-! 				call rate_rrkm(uniData(j)%densStates, rxnData(t)%sumStates, rxnData(t)%E - uniData(j)%E, simData%E, Kij(:,i,j))
+! 				call rate_rrkm(uniData(j)%densStates, rxnData(t)%sumStates, rxnData(t)%E - uniData(j)%E(1), simData%E, Kij(:,i,j))
 				
 				! Calculate rate coefficient for i --> j using ILT method
-				call rate_ilt(rxnData(t)%E - uniData(i)%E, uniData(i)%densStates, &
+				call rate_ilt(rxnData(t)%E - uniData(i)%E(1), uniData(i)%densStates, &
 					rxnData(t)%arrh_A, rxnData(t)%arrh_n, rxnData(t)%arrh_Ea, &
 					simData%T, simData%dE, simData%E, Kij(:,j,i))
 				
 				! Calculate rate coefficient for j --> i using detailed balance
 				do r = 1, simData%nGrains
 					if (bi(r,j) > 0) then
-!						Kij(r,i,j) = Keq * Kij(r,j,i) * bi(r,i) / bi(r,j)
 						Kij(r,i,j) = Kij(r,j,i) * bi(r,i) / bi(r,j)
 					else
 						Kij(r,i,j) = 0.0
@@ -192,7 +170,7 @@ contains
 	subroutine ME_collision(simData, uniData, Mi, bi)
 
 		type(Simulation), intent(in)				:: 	simData
-		type(UniWell), dimension(:), intent(in)		:: 	uniData
+		type(Isomer), dimension(:), intent(in)		:: 	uniData
 		real(8), dimension(:,:,:), intent(inout)	:: 	Mi
 		real(8), dimension(:,:), intent(in)			:: 	bi
 			
@@ -220,12 +198,12 @@ contains
 		! Collisional energy transfer contributions
 		do i = 1, simData%nUni
 		
-			start = ceiling(uniData(i)%E / (simData%E(2) - simData%E(1))) + 1
+			start = ceiling(uniData(i)%E(1) / (simData%E(2) - simData%E(1))) + 1
 			 
 			! Determine collision frequency for the current isomer
-			mu = 1/(1/uniData(i)%MW + 1/simData%bathGas%MW) / 6.022e26
-			call collisionFrequency(simData%T, 0.5 * (uniData(i)%sigma + simData%bathGas%sigma), &
-				0.5 * (uniData(i)%eps + simData%bathGas%eps), mu, gasConc, w)
+			mu = 1/(1/uniData(i)%MW(1) + 1/simData%bathGas%MW) / 6.022e26
+			call collisionFrequency(simData%T, 0.5 * (uniData(i)%sigma(1) + simData%bathGas%sigma), &
+				0.5 * (uniData(i)%eps(1) + simData%bathGas%eps), mu, gasConc, w)
 			
 			P = 0 * P
 			C = 0 * C
@@ -236,7 +214,7 @@ contains
 				lb = max(r - probRange, start)
 				ub = min(r + probRange, simData%nGrains)
 				do s = lb, ub
-					call transferRate(s, r, simData%E(s), simData%E(r), simData%alpha, uniData(i)%E, bi(:,i), P(s,r))
+					call transferRate(s, r, simData%E(s), simData%E(r), simData%alpha, uniData(i)%E(1), bi(:,i), P(s,r))
 				end do
 ! 				if (sum(P(start:simData%nGrains,r)) .ne. 0) then
 ! 					P(start:simData%nGrains,r) = P(start:simData%nGrains,r) / sum(P(start:simData%nGrains,r))

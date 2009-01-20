@@ -9,7 +9,7 @@
 module FastEGMEModule
 
 	use SimulationModule
-	use SpeciesModule
+	use IsomerModule
 	use ReactionModule
 
 contains
@@ -31,7 +31,7 @@ contains
 	subroutine getReservoirCutoffs(simData, uniData, rxnData, nRes)
 	
 		type(Simulation), intent(in)				:: 	simData
-		type(UniWell), dimension(:), intent(in)		:: 	uniData
+		type(Isomer), dimension(:), intent(in)		:: 	uniData
 		type(Reaction), dimension(:), intent(in)	:: 	rxnData
 		integer, dimension(:), intent(out)			::	nRes
 		
@@ -39,7 +39,7 @@ contains
 		
 		! Determine reservoir cutoffs by looking at transition state energies
 		do i = 1, simData%nUni
-			start = ceiling(uniData(i)%E / simData%dE) + 1
+			start = ceiling(uniData(i)%E(1) / simData%dE) + 1
 			Eres = simData%Emax
 			do t = 1, simData%nRxn
 				if (rxnData(t)%isomer(1) == i .or. rxnData(t)%isomer(2) == i) then
@@ -77,7 +77,7 @@ contains
 
 		! Provide parameter type checking of inputs and outputs
 		type(Simulation), intent(in)				:: 	simData
-		type(UniWell), dimension(:), intent(in)		:: 	uniData
+		type(Isomer), dimension(:), intent(in)		:: 	uniData
 		type(Reaction), dimension(:), intent(in)	:: 	rxnData
 		integer, dimension(:), intent(in) 			:: 	nRes
 		real(8), dimension(:,:,:), intent(in)		:: 	Mi
@@ -337,7 +337,7 @@ contains
 		real(8), dimension(:,:), intent(inout)		:: 	L
 		integer, dimension(:), intent(in)			:: 	nAct
 		type(Simulation), intent(in)				:: 	simData
-		type(UniWell), dimension(:), intent(in)		:: 	uniData
+		type(Isomer), dimension(:), intent(in)		:: 	uniData
 		type(Reaction), dimension(:), intent(in)	:: 	rxnData
 		real(8), dimension(:,:), intent(in)			:: 	bi
 		
@@ -443,7 +443,7 @@ contains
 	subroutine calcUniEqRatios(simData, uniData, rxnData, bi, C)
 	
 		type(Simulation), intent(in)				:: 	simData
-		type(UniWell), dimension(:), intent(in)		:: 	uniData
+		type(Isomer), dimension(:), intent(in)		:: 	uniData
 		type(Reaction), dimension(:), intent(in)	:: 	rxnData
 		real(8), dimension(:,:), intent(in)			:: 	bi
 		real(8), dimension(:), intent(out)			:: 	C
@@ -482,8 +482,8 @@ contains
 				j = rxnData(t)%isomer(2)
 				
 				! Determine equilibrium constant at rxn conditions from thermochemical data
-				Hrxn = uniData(i)%H - uniData(j)%H
-				Grxn = uniData(i)%G - uniData(j)%G
+				Hrxn = sum(uniData(i)%H) - sum(uniData(j)%H)
+				Grxn = sum(uniData(i)%G) - sum(uniData(j)%G)
 				Keq_298 = exp(-Grxn * 1000. / 8.314472 / 298.) 
 				Keq = Keq_298 * exp(-Hrxn * 1000. / 8.314472 * (1./simData%T - 1./298.))
 								
