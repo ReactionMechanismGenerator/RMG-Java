@@ -707,7 +707,18 @@ public abstract class JDAS implements DAESolver {
 		}
 		
 		// Rename RWORK and IWORK files if they exist
-		renameIntermediateFiles();
+		File f = new File("ODESolver/RWORK_"+index+".dat");
+		File newFile = new File("ODESolver/RWORK.dat");
+		if(f.exists()){
+			if(newFile.exists())
+				newFile.delete();
+			f.renameTo(newFile);
+			f = new File("ODESolver/IWORK_"+index+".dat");
+			newFile = new File("ODESolver/IWORK.dat");
+			if(newFile.exists())
+				newFile.delete();
+			f.renameTo(newFile);
+		}
 		
 		//run the solver on the input file
 		boolean error = false;
