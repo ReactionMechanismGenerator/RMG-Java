@@ -318,6 +318,7 @@
 
          CALL DDASSL(RES, NSTATE, Time, Y, YPRIME, TOUT, INFO, RTOL, &
      &        Atol, IDID, RWORK, LRW, IWORK, LIW, RPAR, IPAR, JAC)
+!         WRITE(*,*) Time, Tout
          IF (IDID .EQ. -1) THEN
             WRITE(*,*) "Warning: 500 steps were already taken, taking &
      &           another 500 steps"
@@ -334,7 +335,7 @@
                PREVREACTIONFLUX(I) = CURRENTREACTIONFLUX(I)
             END DO
             PREVTIME = TIME
-            if (conc .eq. 1) then
+            if (conc .eq. 1 .AND. Time .le. 1E6) then
                tout = 200*time
             end if
 !            write(*,*) time, y(impspecies), targetConc*y(nstate)
