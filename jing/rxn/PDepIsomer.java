@@ -230,4 +230,31 @@ public class PDepIsomer {
 		return speciesList.get(species).getMolecularWeight();
 	}
 	
+	@Override
+	public boolean equals(Object object) {
+		if (object instanceof PDepIsomer)
+			return equals((PDepIsomer) object);
+		else
+			return false;
+	}
+	
+	public boolean equals(PDepIsomer isomer) {
+		if (getNumSpecies() != isomer.getNumSpecies())
+			return false;
+		else {
+			for (int i = 0; i < getNumSpecies(); i++) {
+				Species speciesI = speciesList.get(i);
+				boolean found = false;
+				for (int j = 0; j < isomer.getNumSpecies(); j++) {
+					Species speciesJ = isomer.speciesList.get(i);
+					if (speciesI.equals(speciesJ))
+						found = true;
+				}
+				if (!found)
+					return false;
+			}
+			return true;
+		}
+	}
+	
 }

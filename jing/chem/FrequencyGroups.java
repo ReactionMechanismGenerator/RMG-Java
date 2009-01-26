@@ -68,12 +68,26 @@ public class FrequencyGroups{//gmagoon 111708: removed "implements GeneralGAPP"
 				1*((Integer) groupCount.get(20)) + 5*((Integer) groupCount.get(21)) + 
 				3*((Integer) groupCount.get(22)) + 3*((Integer) groupCount.get(23));
 		
-		
 		int nFreq = 3 * atoms - 5 - rotor - degeneracy - linearity;
 		if (nFreq < 0) {
-			//System.out.println("ERROR: Attempted to fit a negative number of frequencies!");
-			//System.exit(0);
-			rotor = 0;
+			System.err.println("The number of vibrational degrees of freedom for " +
+				species.getName() + "(" + Integer.toString(species.getID()) +
+				") is overspecified.");
+			System.err.println(Integer.toString(degeneracy) + " harmonic oscillators and " +
+					Integer.toString(rotor) + " internal rotors are specified, but only " +
+					Integer.toString(3 * atoms - 5 - linearity) + " modes are allowed.");
+			// If possible, turn off internal rotors until the number of fitted frequencies is zero
+			if (nFreq + rotor >= 0) {
+				System.out.println("Turning off " + Integer.toString(Math.abs(nFreq)) + 
+						" internal rotors.");
+				rotor += nFreq;
+			}
+			else {
+				System.err.println("Error: Unable to fit frequency data for " +
+						species.getName() + "(" + Integer.toString(species.getID()) + ").");
+				//System.exit(0);
+				return new SpectroscopicData();
+			}
 		}
 		
 		//(file writing code based on code in JDASSL.java)
@@ -126,6 +140,11 @@ public class FrequencyGroups{//gmagoon 111708: removed "implements GeneralGAPP"
             
 			FileReader fr = new FileReader(franklOutput);
             BufferedReader br = new BufferedReader(fr);
+			
+			// If the output file is empty, then an error occurred
+			if (franklOutput.length() == 0)
+				throw new IOException("Error: FrequencyGroups estimation for " + 
+						species.getName() + "(" + Integer.toString(species.getID()) + ") failed.");
             
 			// Read information about molecule (numuber of atoms, number of rotors, linearity)
 			atoms = Integer.parseInt(br.readLine().trim());

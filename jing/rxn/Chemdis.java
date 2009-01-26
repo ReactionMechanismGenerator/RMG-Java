@@ -88,6 +88,11 @@ public class Chemdis implements PDepKineticsEstimator {
 		if (pdn.getAltered() == false)
 			return;
 		
+		// Don't do if unimolecular isomers are too small
+		for (int i = 0; i < pdn.getUniIsomers().size(); i++) 
+			if (pdn.getUniIsomers().get(i).getSpecies(0).isTriatomicOrSmaller())
+				return;
+		
 		// Determine wells and reactions; skip if no reactions in network
 		LinkedList<PDepIsomer> uniIsomers = pdn.getUniIsomers();
 		LinkedList<PDepIsomer> multiIsomers = pdn.getMultiIsomers();
@@ -104,24 +109,23 @@ public class Chemdis implements PDepKineticsEstimator {
 		netReactionList.clear();
 		try {
 		
-			for (int i = 0; i < pdn.getUniIsomers().size(); i++) {
-				PDepIsomer entryIsomer = pdn.getUniIsomers().get(i);
-				PDepReaction entryReaction = getEntryReaction(pdn, entryIsomer);
-				if (entryReaction != null) {
-					writeInputFile(pdn, rxnSystem, entryIsomer, entryReaction);
-					executeChemdis();
-					netReactionList.addAll(readOutputFile(pdn, rxnSystem, entryIsomer));
-				}
+			if (pdn.getUniIsomers().size() == 1 && pdn.getMultiIsomers().size() == 1) {
+				
+				runForIsomer(pdn, rxnSystem, pdn.getUniIsomers().get(0), netReactionList);
+				PDepReaction rxn = netReactionList.getFirst();
+				rxn.generateReverseReaction();
+				
 			}
-			for (int n = 0; n < pdn.getMultiIsomers().size(); n++) {
-				PDepIsomer entryIsomer = pdn.getMultiIsomers().get(n);
-				PDepReaction entryReaction = getEntryReaction(pdn, entryIsomer);
-				if (entryReaction != null) {
-					writeInputFile(pdn, rxnSystem, entryIsomer, entryReaction);
-					executeChemdis();
-					netReactionList.addAll(readOutputFile(pdn, rxnSystem, entryIsomer));
-				}
+			else {
+				
+				for (int i = 0; i < pdn.getUniIsomers().size(); i++)
+					runForIsomer(pdn, rxnSystem, pdn.getUniIsomers().get(i), netReactionList);
+				for (int n = 0; n < pdn.getMultiIsomers().size(); n++)
+					runForIsomer(pdn, rxnSystem, pdn.getMultiIsomers().get(n), netReactionList);
+				
 			}
+			
+			
 			
 		}
 		catch (Exception e) {
@@ -152,11 +156,29 @@ public class Chemdis implements PDepKineticsEstimator {
 		
     }
 	
-	public PDepReaction getEntryReaction(PDepNetwork pdn, PDepIsomer isomer) {
-		for (ListIterator<PDepReaction> iter = pdn.getPathReactions().listIterator(); iter.hasNext(); ) {
-			PDepReaction rxn = iter.next();
-			if (rxn.getReactant().equals(isomer) || rxn.getProduct().equals(isomer))
-				return rxn;
+	private void runForIsomer(PDepNetwork pdn, ReactionSystem rxnSystem, 
+			PDepIsomer entryIsomer, LinkedList<PDepReaction> netReactionList) throws Exception {
+		
+		System.out.println("Writing Chemdis input file...");
+		writeInputFile(pdn, rxnSystem, entryIsomer);
+		System.out.println("Executing Chemdis...");
+		executeChemdis();
+		System.out.println("Reading Chemdis output file...");
+		netReactionList.addAll(readOutputFile(pdn, rxnSystem, entryIsomer));
+		System.out.println("Chemdis execution completed");
+		
+	}
+	
+	public Reaction getEntryReaction(PDepNetwork pdn, PDepIsomer isomer) {
+		if (isomer.isUnimolecular())
+			return null;
+		else if (isomer.isMultimolecular()) {
+			for (ListIterator<PDepReaction> iter = pdn.getPathReactions().listIterator(); iter.hasNext(); ) {
+				PDepReaction reaction = iter.next();
+				Reaction rxn = reaction;
+				if (reaction.getReactant().equals(isomer) || reaction.getProduct().equals(isomer))
+					return rxn;
+			}
 		}
 		return null;
 	}
@@ -192,8 +214,10 @@ public class Chemdis implements PDepKineticsEstimator {
 	 * @param rxnSystem The reaction system of interest
 	 */
 	public void writeInputFile(PDepNetwork pdn, ReactionSystem rxnSystem, 
-			PDepIsomer entryIsomer, PDepReaction entryReaction) throws Exception {
+			PDepIsomer entryIsomer) throws Exception {
 		
+		Reaction entryReaction = getEntryReaction(pdn, entryIsomer);
+				
 		try {
         	// "fort.10" is the name of the Chemdis import file
         	File chemdis_input = new File("chemdis/fort.10");
@@ -205,8 +229,8 @@ public class Chemdis implements PDepKineticsEstimator {
 			// Add wells to file string
 			for (int i = 0; i < pdn.getUniIsomers().size(); i++) {
 				PDepIsomer isom = pdn.getUniIsomers().get(i);
-				str += "Well " + String.valueOf(i) + '\n';
-				str += writeWellInput(pdn, isom, isom.equals(entryIsomer));
+				str += "Well " + String.valueOf(i+1) + '\n';
+				str += writeWellInput(pdn, isom, entryReaction, isom.equals(entryIsomer));
 			}
 			
 			// Write string to file
@@ -236,16 +260,18 @@ public class Chemdis implements PDepKineticsEstimator {
 	 * @param rxn The reaction of interest
 	 * @return A string containing the input file information about the reaction
 	 */
-	public String writeReactionInput(PDepReaction rxn) {
+	public String writeReactionInput(PDepReaction rxn, boolean isEntryReaction) {
 
 		// Not really sure that this is how the reaction type ought to be set
 		String type = "";
 		if (rxn.getType() == PDepReaction.Type.ISOMERIZATION)
 			type = "ISOMER";
-		else if (rxn.getType() == PDepReaction.Type.ASSOCIATION)
-			type = "REACTANT";
-		else if (rxn.getType() == PDepReaction.Type.DISSOCIATION)
-			type = "PRODUCT";
+		else if (rxn.getType() == PDepReaction.Type.ASSOCIATION) {
+			if (isEntryReaction) type = "PRODUCT"; else type = "REACTANT";
+		}
+		else if (rxn.getType() == PDepReaction.Type.DISSOCIATION) {
+			if (isEntryReaction) type = "REACTANT"; else type = "PRODUCT";
+		}
 		else
 			return "";
 		
@@ -257,7 +283,7 @@ public class Chemdis implements PDepKineticsEstimator {
         }
         str = str.substring(0, str.length()-3) + '\n'; 
         
-        Kinetics k = rxn.getHighPKinetics(); 
+        Kinetics k = rxn.getKinetics(); 
         if (k == null) 
 			throw new NullPointerException();
         
@@ -281,7 +307,7 @@ public class Chemdis implements PDepKineticsEstimator {
 	 * @return A string containing the input file information about the well
 	 */
 	public String writeWellInput(PDepNetwork pdn, PDepIsomer isomer,
-			boolean isEntryIsomer) {
+			Reaction entryReaction, boolean isEntryIsomer) {
         
 		// A "well" refers specifically to a unimolecular isomer
 		if (!isomer.isUnimolecular())
@@ -311,23 +337,15 @@ public class Chemdis implements PDepKineticsEstimator {
 		// Write the reactions connected to the well
 		for (ListIterator<PDepReaction> iter = pdn.getPathReactions().listIterator(); iter.hasNext(); ) {
 			PDepReaction rxn = iter.next();
-			if (isEntryIsomer) {
-				if (rxn.getReactant().equals(isomer)) {
-					if (!rxn.hasReverseReaction())
-						rxn.generateReverseReaction();
-					str += writeReactionInput((PDepReaction) rxn.getReverseReaction());
-				}
-				else if (rxn.getProduct().equals(isomer))
-					str += writeReactionInput(rxn);
-			}
-			else {
-				if (rxn.getReactant().equals(isomer))
-					str += writeReactionInput(rxn);
-				else if (rxn.getProduct().equals(isomer)) {
-					if (!rxn.hasReverseReaction())
-						rxn.generateReverseReaction();
-					str += writeReactionInput((PDepReaction) rxn.getReverseReaction());
-				}
+			if (rxn.getReactant().equals(isomer) || !rxn.getProduct().equals(isomer))
+				str += writeReactionInput(rxn, rxn.equals(entryReaction));
+			else if (!rxn.getReactant().equals(isomer) || rxn.getProduct().equals(isomer)) {
+				rxn.generateReverseReaction();
+				Reaction rxn2 = rxn.getReverseReaction();
+				rxn2.fitReverseKineticsRoughly();
+
+				PDepReaction reverse = new PDepReaction(rxn.getProduct(), rxn.getReactant(), rxn2.getFittedReverseKinetics());
+				str += writeReactionInput(reverse, reverse.equals(entryReaction));
 			}
 		}
 		
@@ -344,7 +362,7 @@ public class Chemdis implements PDepKineticsEstimator {
 	 * @return The header to the Chemdis input file
 	 */
 	private String writeNetworkHeader(PDepNetwork pdn, ReactionSystem rxnSystem,
-			PDepIsomer entryIsomer, PDepReaction entryReaction) throws Exception {
+			PDepIsomer entryIsomer, Reaction entryReaction) throws Exception {
         
 		// Check that inputs are non-null
 		if (pdn == null || rxnSystem == null)

@@ -89,6 +89,25 @@ public class PDepReaction extends Reaction {
 	}
 	
 	/**
+	 * Create a pressure-dependent path reaction connecting isomers reac and
+	 * prod and having high-pressure Arrhenius kinetics as found in rxn.
+	 * @param reac The reactant PDepIsomer
+	 * @param prod The product PDepIsomer
+	 * @param kin The high-pressure kinetics for the forward reaction
+	 */
+	public PDepReaction(PDepIsomer reac, PDepIsomer prod, Kinetics kin) {
+		super();
+		structure = null;
+		kinetics = kin;
+		reverseReaction = null;
+		if (structure == null)
+			structure = new Structure(reac.getSpeciesList(), prod.getSpeciesList(), 1);
+		setReactant(reac);
+		setProduct(prod);
+		chebyshev = null;
+	}
+	
+	/**
 	 * Create a pressure-dependent net reaction connecting isomers reac and
 	 * prod and having k(T, P) kinetics as approximated by the Chebyshev 
 	 * polynomials of cheb.
@@ -347,12 +366,14 @@ public class PDepReaction extends Reaction {
 	public void generateReverseReaction() {
         if (chebyshev != null) {
 			PDepReaction r = new PDepReaction(product, reactant, chebyshev);
-			setReverseReaction(r); 
+			setReverseReaction(r);
+			r.setReverseReaction(this);
 		}
 		else {
 			super.generateReverseReaction();
 			PDepReaction r = new PDepReaction(product, reactant, super.getReverseReaction()); 
 			setReverseReaction(r); 
+			r.setReverseReaction(this);
 		}
     }
 	

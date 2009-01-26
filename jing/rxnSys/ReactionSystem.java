@@ -1177,7 +1177,7 @@ public String printLowerBoundConcentrations(LinkedList p_speciesList) {
     	  ss = (SystemSnapshot) iter.next();
     	  LinkedList reactionList = ss.getReactionList();
     	  for (int j = 0; j < reactionList.size(); j++) {
-    		  Reaction r = (Reaction) reactionList.get(j);
+		    Reaction r = (Reaction) reactionList.get(j);
     		  if (r instanceof PDepReaction) {
     			  int J = j+1;
     			  result.append(J + ". " + r.getStructure().toString()+'\n');

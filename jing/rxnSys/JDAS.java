@@ -115,64 +115,10 @@ public abstract class JDAS implements DAESolver {
     	LinkedList nonPDepList = new LinkedList();
         LinkedList pDepList = new LinkedList();
 
-        LinkedHashSet pDepStructureSet = new LinkedHashSet();
-        for (Iterator iter = PDepNetwork.getNetworks().iterator(); iter.hasNext(); ) {
-        	PDepNetwork pdn = (PDepNetwork)iter.next();
-        	for (Iterator pdniter = pdn.getNetReactions().iterator(); pdniter.hasNext();) {
-        		PDepReaction rxn = (PDepReaction) pdniter.next();
-        		if (cerm.categorizeReaction(rxn) != 1) continue;
-        		//check if this reaction is not already in the list and also check if this reaction has a reverse reaction
-        		// which is already present in the list.
-        		if (rxn.getReverseReaction() == null)
-        			rxn.generateReverseReaction();
-        		
-        		if (!rxn.reactantEqualsProduct()  && !troeList.contains(rxn) && !troeList.contains(rxn.getReverseReaction()) && !thirdBodyList.contains(rxn) && !thirdBodyList.contains(rxn.getReverseReaction()) ) {
-        			if (!pDepList.contains(rxn) && !pDepList.contains(rxn.getReverseReaction())){
-        				pDepList.add(rxn);
-        			}
-        			else if (pDepList.contains(rxn) && !pDepList.contains(rxn.getReverseReaction()))
-        				continue;
-        			else if (!pDepList.contains(rxn) && pDepList.contains(rxn.getReverseReaction())){
-        				Temperature T = new Temperature(298, "K");
-        				if (rxn.calculateKeq(T)>0.999) {
-        	      			pDepList.remove(rxn.getReverseReaction());
-        	      			pDepList.add(rxn);
-        	      		}
-        			}
-        				
-        		}
-        	}
-        }
-    
-		LinkedList removeReactions = new LinkedList();
-		for (Iterator iter = p_reactionModel.getReactionSet().iterator(); iter.hasNext(); ) {
-			Reaction r = (Reaction)iter.next();
-
-			boolean presentInPDep = false;
-			if (r.isForward() && !(r instanceof ThirdBodyReaction) && !(r instanceof TROEReaction)) {
-				Iterator r_iter = pDepList.iterator();
-				while (r_iter.hasNext()){
-					Reaction pDepr = (Reaction)r_iter.next();
-					if (pDepr.equals(r)){
-						removeReactions.add(pDepr);
-						duplicates.add(pDepr);
-						if (!r.hasAdditionalKinetics()){
-							duplicates.add(r);
-							presentInPDep = true;
-						}
-					}
-				}
-				if (!presentInPDep)
-					nonPDepList.add(r);
-			}
-		}
-		for (Iterator iter = removeReactions.iterator(); iter.hasNext();){
-		  Reaction r = (Reaction)iter.next();
-		  pDepList.remove(r);
-		}
+		generatePDepReactionList(p_reactionModel, p_beginStatus, p_temperature, p_pressure, nonPDepList, pDepList);
 
 		int size = nonPDepList.size() + pDepList.size() + duplicates.size();
-       
+
         for (Iterator iter = nonPDepList.iterator(); iter.hasNext(); ) {
         	Reaction r = (Reaction)iter.next();
 
@@ -205,32 +151,37 @@ public abstract class JDAS implements DAESolver {
 
         for (Iterator iter = pDepList.iterator(); iter.hasNext(); ) {
         	Reaction r = (Reaction)iter.next();
-        	rList.add(r);
+        	
+			if (r instanceof PDepReaction) {
+			
+				rList.add(r);
 
-        	ODEReaction or = transferReaction(r, p_beginStatus, p_temperature, p_pressure);
-        	arrayString.append(or.rNum+" "+or.pNum+" ");
-			for (int i=0;i<3;i++){
-				if (i<or.rNum)
-					arrayString.append(or.rID[i]+" ");
-				else
-					arrayString.append(0+" ");
+				ODEReaction or = transferReaction(r, p_beginStatus, p_temperature, p_pressure);
+				arrayString.append(or.rNum+" "+or.pNum+" ");
+				for (int i=0;i<3;i++){
+					if (i<or.rNum)
+						arrayString.append(or.rID[i]+" ");
+					else
+						arrayString.append(0+" ");
+				}
+				for (int i=0;i<3;i++){
+					if (i<or.pNum)
+						arrayString.append(or.pID[i]+" ");
+					else
+						arrayString.append(0+" ");
+				}
+
+				arrayString.append(1 + " ");
+
+				rateString.append(or.rate + " " + or.A + " " + or.n + " " + or.E + " "+r.calculateKeq(p_temperature)+" ");
 			}
-			for (int i=0;i<3;i++){
-				if (i<or.pNum)
-					arrayString.append(or.pID[i]+" ");
-				else
-					arrayString.append(0+" ");
-			}
-			
-			arrayString.append(1 + " ");
-			
-			rateString.append(or.rate + " " + or.A + " " + or.n + " " + or.E + " "+r.calculateKeq(p_temperature)+" ");
         }
         
-        for (Iterator iter = duplicates.iterator(); iter.hasNext(); ) {
+		for (Iterator iter = duplicates.iterator(); iter.hasNext(); ) {
         	Reaction r = (Reaction)iter.next();
 
-			if (!(r instanceof ThirdBodyReaction) && !(r instanceof TROEReaction)){
+			//if (!(r instanceof ThirdBodyReaction) && !(r instanceof TROEReaction)){
+			if (r instanceof PDepReaction) {
 				rList.add(r);
 				ODEReaction or = transferReaction(r, p_beginStatus, p_temperature, p_pressure);
 				arrayString.append(or.rNum+" "+or.pNum+" ");
@@ -259,6 +210,47 @@ public abstract class JDAS implements DAESolver {
         rString.append(arrayString.toString()+"\n"+rateString.toString());
         return rString;
     }
+	
+	public void generatePDepReactionList(ReactionModel p_reactionModel, 
+			SystemSnapshot p_beginStatus, Temperature p_temperature, Pressure p_pressure,
+			LinkedList nonPDepList, LinkedList pDepList) {
+    
+		CoreEdgeReactionModel cerm = (CoreEdgeReactionModel)p_reactionModel;
+        
+		for (Iterator iter = PDepNetwork.getCoreReactions(cerm).iterator(); iter.hasNext(); ) {
+			PDepReaction rxn = (PDepReaction) iter.next();
+			if (cerm.categorizeReaction(rxn) != 1) continue;
+        		//check if this reaction is not already in the list and also check if this reaction has a reverse reaction
+			// which is already present in the list.
+			if (rxn.getReverseReaction() == null)
+				rxn.generateReverseReaction();
+
+			if (!rxn.reactantEqualsProduct()  && !troeList.contains(rxn) && !troeList.contains(rxn.getReverseReaction()) && !thirdBodyList.contains(rxn) && !thirdBodyList.contains(rxn.getReverseReaction()) ) {
+				if (!pDepList.contains(rxn) && !pDepList.contains(rxn.getReverseReaction())){
+					pDepList.add(rxn);
+				}
+				else if (pDepList.contains(rxn) && !pDepList.contains(rxn.getReverseReaction()))
+					continue;
+				else if (!pDepList.contains(rxn) && pDepList.contains(rxn.getReverseReaction())){
+					Temperature T = new Temperature(298, "K");
+					if (rxn.calculateKeq(T)>0.999) {
+						pDepList.remove(rxn.getReverseReaction());
+						pDepList.add(rxn);
+					}
+				}
+
+			}
+		}
+		
+		for (Iterator iter = p_reactionModel.getReactionSet().iterator(); iter.hasNext(); ) {
+			Reaction r = (Reaction)iter.next();
+			if (r.isForward() && !(r instanceof ThirdBodyReaction) && !(r instanceof TROEReaction))
+				nonPDepList.add(r);
+		}
+			
+		duplicates.clear();
+
+	}
 	
 	protected LinkedHashMap generateSpeciesStatus(ReactionModel p_reactionModel, 
 			double [] p_y, double [] p_yprime, int p_paraNum) {

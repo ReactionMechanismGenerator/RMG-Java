@@ -6,16 +6,10 @@
 
 package jing.rxn;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.ListIterator;
 import jing.chem.Species;
-import jing.param.Pressure;
-import jing.param.Temperature;
 import jing.rxnSys.CoreEdgeReactionModel;
-import jing.rxnSys.SystemSnapshot;
 
 /**
  * A PDepNetwork object represents a single pressure-dependent reaction network.
@@ -475,15 +469,7 @@ public class PDepNetwork {
 	 * @return True if core reactions are found, false if not
 	 */
 	public static boolean hasCoreReactions(CoreEdgeReactionModel cerm) {
-		for (ListIterator<PDepNetwork> iter0 = networks.listIterator(); iter0.hasNext(); ) {
-			PDepNetwork pdn = iter0.next();
-			for (ListIterator<PDepReaction> iter = pdn.getNetReactions().listIterator(); iter.hasNext(); ) {
-				PDepReaction rxn = iter.next();
-				if (rxn.isCoreReaction(cerm))
-					return true;
-			}
-		}
-		return false;
+		return (getCoreReactions(cerm).size() > 0);
 	}
 	
 	/**
@@ -496,16 +482,7 @@ public class PDepNetwork {
 	 * @return The number of core reactions found
 	 */
 	public static int getNumCoreReactions(CoreEdgeReactionModel cerm) {
-		int numCoreReactions = 0;
-		for (ListIterator<PDepNetwork> iter0 = networks.listIterator(); iter0.hasNext(); ) {
-			PDepNetwork pdn = iter0.next();
-			for (ListIterator<PDepReaction> iter = pdn.getNetReactions().listIterator(); iter.hasNext(); ) {
-				PDepReaction rxn = iter.next();
-				if (rxn.isCoreReaction(cerm))
-					numCoreReactions++;
-			}
-		}
-		return numCoreReactions;
+		return getCoreReactions(cerm).size();
 	}
 	
 	/**
@@ -523,7 +500,7 @@ public class PDepNetwork {
 			PDepNetwork pdn = iter0.next();
 			for (ListIterator<PDepReaction> iter = pdn.getNetReactions().listIterator(); iter.hasNext(); ) {
 				PDepReaction rxn = iter.next();
-				if (rxn.isCoreReaction(cerm))
+				if (rxn.isCoreReaction(cerm) && !coreReactions.contains(rxn))
 					coreReactions.add(rxn);
 			}
 		}

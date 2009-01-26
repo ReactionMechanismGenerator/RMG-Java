@@ -9,10 +9,8 @@ package jing.rxnSys;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.LinkedList;
-import java.util.ListIterator;
 import jing.chem.Species;
 import jing.param.Temperature;
-import jing.rxn.PDepIsomer;
 import jing.rxn.PDepKineticsEstimator;
 import jing.rxn.PDepNetwork;
 import jing.rxn.PDepReaction;
@@ -121,7 +119,6 @@ public class RateBasedPDepRME implements ReactionModelEnlarger {
 
 				// Generate new reaction set; partition into core and edge
 				LinkedHashSet newReactionSet = rxnSystem.getReactionGenerator().react(cerm.getReactedSpeciesSet(),maxSpecies);
-				rxnSystem.getLibraryReactionGenerator().generatePdepReactions(maxSpecies);
 				newReactionSet.addAll(rxnSystem.getLibraryReactionGenerator().react(cerm.getReactedSpeciesSet(),maxSpecies));
 				Iterator rxnIter = newReactionSet.iterator();
 				while (rxnIter.hasNext()){

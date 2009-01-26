@@ -366,16 +366,27 @@ public class FastMasterEqn implements PDepKineticsEstimator {
 				else
 					isomer2 = multiIsomers.indexOf(product) + uniIsomers.size() + 1;
 					
+				// Arrhenius parameters
+				double A = rxn.getHighPKinetics().getAValue();
+				double Ea = rxn.getHighPKinetics().getEValue();
+				double n = rxn.getHighPKinetics().getNValue();
+				if (Ea < 0) {
+					System.out.println("Warning: Adjusted activation energy of reaction " +
+							rxn.toString() + " from " + Double.toString(Ea) +
+							" kcal/mol to 0 kcal/mol for FAME calculation.");
+					Ea = 0;
+				}
+				
 				// Calculate transition state energy = ground-state energy of reactant (isomer 1) + activation energy
-				double E0 = rxn.getHighPKinetics().getEValue() + reactant.calculateH(stdTemp);
+				double E0 = Ea + reactant.calculateH(stdTemp);
 						
 				fw.write("# Reaction " + rxn.toString() + ":\n");
 				fw.write("Isomer 1                            " + isomer1 + "\n");
 				fw.write("Isomer 2                            " + isomer2 + "\n");
 				fw.write("Ground-state energy                 " + (E0 - Eref) * 4.184 + " kJ/mol\n");
-				fw.write("Arrhenius preexponential            " + rxn.getHighPKinetics().getAValue() + " s^-1\n");
-				fw.write("Arrhenius activation energy         " + rxn.getHighPKinetics().getEValue() * 4.184 + " kJ/mol\n");
-				fw.write("Arrhenius temperature exponent      " + rxn.getHighPKinetics().getNValue() + "\n");
+				fw.write("Arrhenius preexponential            " + A + " s^-1\n");
+				fw.write("Arrhenius activation energy         " + Ea * 4.184 + " kJ/mol\n");
+				fw.write("Arrhenius temperature exponent      " + n + "\n");
 				fw.write("\n");
 			}
 			
@@ -428,7 +439,10 @@ public class FastMasterEqn implements PDepKineticsEstimator {
 				if (!output.exists()) 
 					throw new Exception("FAME output file not found!");	
 			}
-				
+			
+			if (output.length() == 0)
+				throw new IOException();
+			
 			BufferedReader br = new BufferedReader(new FileReader(output));
 			
 			String str = "";
@@ -492,7 +506,9 @@ public class FastMasterEqn implements PDepKineticsEstimator {
 							StringTokenizer tkn = new StringTokenizer(str);
 							for (int p = 0; p < numPressures; p++) {
 								alpha[t][p] = Double.parseDouble(tkn.nextToken());
-								if (alpha[t][p] == 0)
+								if (alpha[t][p] == 0 ||
+										Double.isNaN(alpha[t][p]) ||
+										Double.isInfinite(alpha[t][p])) 
 									valid = false;
 							}
 						}
@@ -630,11 +646,7 @@ public class FastMasterEqn implements PDepKineticsEstimator {
 			PDepIsomer isomer = iter.next();
 			for (int i = 0; i < isomer.getNumSpecies(); i++) {
 				double E = isomer.calculateH(i, stdTemp);
-				double H = isomer.calculateH(i, stdTemp);
-				double G = isomer.calculateG(i, stdTemp);
 				if (E < Eref) Eref = E; 
-				if (H < Eref) Eref = H; 
-				if (G < Eref) Eref = G; 
 			}
 		
 		}
@@ -642,11 +654,7 @@ public class FastMasterEqn implements PDepKineticsEstimator {
 			PDepIsomer isomer = iter.next();
 			for (int i = 0; i < isomer.getNumSpecies(); i++) {
 				double E = isomer.calculateH(i, stdTemp);
-				double H = isomer.calculateH(i, stdTemp);
-				double G = isomer.calculateG(i, stdTemp);
 				if (E < Eref) Eref = E; 
-				if (H < Eref) Eref = H; 
-				if (G < Eref) Eref = G; 
 			}
 		
 		}
