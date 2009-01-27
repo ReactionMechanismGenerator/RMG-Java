@@ -6,95 +6,117 @@ Installing RMG
 
 
 .. index:: DASSL, DASPK, DAEPACK, requirements, license
-.. _installrequirements:
 
-Installation and License Requirements
--------------------------------------
+.. _licenserequirements:
+
+License Requirements
+--------------------
 
 RMG is intended to be an open source program, available to the general public
-free of charge. Currently, that is not the case. RMG does require that the user
-obtain a license for some of RMG's dependencies, and **it is the user's
-responsibility to ensure these licenses have been obtained**.
+free of charge. The primary RMG code is distributed under the terms of the 
+MIT/X11 License. Although many of RMG's dependencies are also available under
+compatible open source licenses, there remain a few dependencies with more
+restrictive licences. **It is the user's
+responsibility to ensure these licenses have been obtained.**
+
+.. _installrequirements:
+
+Installation Prerequisites
+--------------------------
 
 For a minimal installation, you will need:
 
-#. a fortran 77 compiler (we recommend the gnu-gcc compiler suite) 
-   http://www.gnu.org/software/gcc/gcc.html 
-#. a fortran 90 compiler (we recommend the free g95 compiler) 
-   http://www.g95.org/ 
-#. GNU make, which controls the generation of executables, and is present in most linux distributions. 
-   http://www.gnu.org/software/make/ 
-#. JDK 6; Java SE Development Kit (JDK) 
-   http://java.sun.com/javase/downloads/index.jsp
-#. DASSL solver package, which is in the public domain and can be found at  
-   http://www.cs.ucsb.edu/~cse/software.html 
+* **The Java SE Runtime Environment (JRE), version 6.** This is available from http://java.sun.com/javase/downloads/index.jsp.
+* **The Differential Algebraic System Solver (DASSL).** This is available in the public domain from http://www.cs.ucsb.edu/~cse/software.html.
+* **A Fortran 90 compiler.** We recommend the free g95 compiler, available from http://www.g95.org/.
+* **A Fortran 77 compiler.** The g95 compiler can successfully build the Fortran 77 source code as well.
+* **The Basic Linear Algebra Subprograms (BLAS).** This is present in most Linux distributions, and is also available from http://www.netlib.org/blas/. Although only the BLAS source code is required, we recommend installing the full package if possible.
+* **The Linear Algebra PACKage (LAPACK).** This is present in most Linux distributions, and is also available from http://www.netlib.org/lapack/. Although only the LAPACK source code is required, we recommend installing the full package if possible.
 
+Although not required, we also recommend that you obtain:
+
+* **GNU make.** This controls the generation of Fortran executables, and is present in most Linux distributions. More information can be found at http://www.gnu.org/software/make/. 
+   
 To perform sensitivity analysis on the models generated, you will also need:
 
-#. DASPK3.1 solver package, which is **subject to copyright restrictions**, but available for research purposes. `<http://www.cs.ucsb.edu/~cse/software.html>`_
-#. DAEPACK library file which can be obtained with the JACOBIAN software. 
-   JACOBIAN is a no-cost software for registered acadamic users. 
-   `<http://www.numericatech.com/academia.htm>`_. 
-#. LAPACK, linear algebra package which is present with most linux distributions. 
-   `<http://www.netlib.org/lapack/>`_
-#. BLAS, basic linear algebra subprograms which is present in most linux distributions. 
-   `<http://www.netlib.org/blas/>`_
+* **The Large Scale Differential Algebraic Equation Solver with Sensitivity Analysis (DASPK), version 3.1.** DASPK 3.1 is *subject to copyright restrictions*, but available for research purposes from http://www.cs.ucsb.edu/~cse/software.html.
+* **The Differential Algebraic Equation PACKage (DAEPACK) library file.** This can be obtained with the JACOBIAN software, which can be obtained at no cost for registered acadamic users from http://www.numericatech.com/academia.htm.
 
+To manipulate the RMG source code you will need: 
+
+* **The Java SE Development Kit (JDK), version 6.** This is available from http://java.sun.com/javase/downloads/index.jsp.
 
 .. _linuxinstallation:
 
 Linux Installation
 ------------------
 
-To install RMG on a linux computer:  
+To install RMG on a Linux computer:  
 
-1. Create the directory in which you want to install RMG. ---  ``$ mkdir <dir>``
-   ---  For the purposes of this document, we will set the directory to: ---   ``$
-   mkdir /usr/share/RMG``
+1. Create the directory in which you want to install RMG. For the purposes of this document, we will set the directory to ``/usr/local/rmg``. ::
 
-2. Set the RMG environment variable as the directory created in the first step:
-   ---  ``$ export RMG="<dir>"``  ---  In our example, you would code:  
-   ``$ export RMG="/usr/share/RMG"``. It is highly recommended that you include the above line in 
-   your :file:`.bashrc` file if you are using a bash shell. If you are using a c shell then type the line 
-   ``setenv RMG /usr/share/RMG`` in your :file:`.cshrc` file.
+	$ mkdir /usr/local/rmg
 
+2. Set the RMG environment variable as the directory created in the first step. In a bash shell you would type, for our example, ::
+	
+	$ export RMG=/usr/local/rmg
 
-3. Download the :file:`RMG.tar`, untar it, and move it to the :file:`$RMG` directory::
+   In a C shell you would type, for our example, ::
+	
+	$ setenv RMG /usr/local/rmg
+		
+   To avoid typing this line each time, append it to your ``~/.bashrc`` (bash shell) or ``~/.cshrc`` (C shell) file.
 
-   $ tar -xvf RMG.tar
-   $ mv RMG_2_00/* $RMG
+3. Download the file ``RMG.tar.gz`` for the 3.0 release, ungzip and untar it, and move its contents to the ``$RMG`` directory. ::
 
+	$ tar -xvzf RMG.tar.gz
+	$ mv rmg/* $RMG
 
-4. Make and install GATPFit by going into the directory :file`$RMG/software/GATPFit/GATPFit` 
-   and running the MakeFile by typing ``make`` on the command line. 
+4. Compile GATPFit. Change to the directory ``$RMG/fortran_software/fortran/GATPFit/src`` and execute the makefile. Copy the resulting executable, ``GATPFit.exe``, to ``$RMG/software/GATPFit/GATPFit.exe`` if this is not already done. ::
 
-5. Download the DASSL software package from http://www.cs.ucsb.edu/~cse/software.html 
-   and move all the source files (:file:`*.f` files), namely :file:`ddassl.f`, :file:`daux.f` 
-   and :file:`dlinpk.f`, from dassl to the directory :file:`$RMG/software/ODESolver/dassl`. 
-   After all the files have been transferred just execute the MakeFile by changing into 
-   the :file:`$RMG/software/ODESolver/` directory and typing ``make`` on the command line. 
+	$ cd $RMG/fortran_software/fortran/GATPFit/src
+	$ make
+	$ cp GATPFit.exe $RMG/software/GATPFit/GATPFit.exe
 
-With this your installation of RMG is successful. The next few steps are 
-required only if you want RMG to be able to perform sensitivity analysis on 
-the models generated. Currently RMG uses DASPK3.1 (see Section :ref:`installrequirements`) 
-to perform sensitivity analysis. Analytical Jacobian and partial derivatives 
-with respect to rates of reactions and Gibbs free energy of molecules are 
-generated using the automated differentiator of DAEPACK. 
+5. Compile FAME. Change to the directory ``$RMG/fortran_software/fortran/fame/src`` and execute the makefile. Copy the resulting executable, ``fame.exe``, to ``$RMG/software/fame/fame.exe`` if this is not already done. ::
 
+	$ cd $RMG/fortran_software/fortran/fame/src
+	$ make
+	$ cp ../fame.exe $RMG/software/fame/fame.exe
 
-6. Download daspk31.tgz and untar it using the command ``$ tar -zxvf daspk31.tgz``. 
-   Copy all the source files (:file:`*.f` files) from the untarred directories :file:`ad solver`,
-   :file:`preconds` and :file:`solver` into the directory :file:`$RMG/software/ODESolver/DASPK`. 
+6. Compile Frankie. Change to the directory ``$RMG/fortran_software/fortran/frankie/src`` and execute the makefile. Copy the resulting executable, frankie.exe``, to ``$RMG/software/frankie/frankie.exe`` if this is not already done. ::
 
-7. The next step is to obtain the DAEPACK library file. One you have obtained 
-   the daepack library file make a symbolic link of the library file in :file:`/lib` 
-   directory (or any directory which is present in the library file search path, in 
-   our case we are using :file:`/lib`. To modify your library file search path use a command 
-   like ``LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$RMG/lib``). 
+	$ cd $RMG/fortran_software/fortran/frankie/src
+	$ make
+	$ cp ../frankie.exe $RMG/software/frankie/frankie.exe
 
-8. Now go to :file:`$RMG/software/ODESolver/DASPK` directory and run the 
-   Makefile by typing ``make``. If the Makefile is executed successfully then you are ready to 
-   perform sensitivity analysis on the models generated by RMG. 
+7. Compile the DASSL ODE solver. Download and unpack DASSL, then move all the DASSL source files -- specifically :file:`ddassl.f`, :file:`daux.f` 
+   and :file:`dlinpk.f` -- to the directory ``$RMG/software/ODESolver/dassl``. Change to that directory and execute the makefile. Copy the resulting executable, ``dasslAUTO.exe``, to ``$RMG/software/ODESolver/dasslAUTO.exe`` if this is not already done. ::
+
+	$ tar -xvzf dassl.tar.gz
+	$ mv *.f $RMG/fortran_software/fortran/ODESolver/dassl
+	$ cd $RMG/fortran_software/fortran/ODESolver/dassl
+	$ make
+	$ cp dasslAUTO.exe $RMG/software/ODESolver/dasslAUTO.exe
+
+Your installation of RMG is nearly complete.
+
+The next few steps are required only if you want RMG to be able to perform sensitivity analysis on the models generated. Currently RMG uses DASPK3.1 (see Section :ref:`installrequirements`) to perform sensitivity analysis. Analytical Jacobian and partial derivatives with respect to rates of reactions and Gibbs free energy of molecules are generated using the automated differentiator of DAEPACK. 
+
+8. Obtain the DAEPACK library file. Make a symbolic link of the library file in a directory in your library file search path, e.g. ``/usr/lib``. 
+
+9. Download daspk31.tgz and untar it using the command ``$ tar -zxvf daspk31.tgz``. Copy all the source files (:file:`*.f` files) from the untarred directories :file:`ad_solver`,
+   :file:`preconds` and :file:`solver` into the directory ``$RMG/fortran_software/fortran/ODESolver/daspk``. Change to that directory and execute the makefile. Copy the resulting executable, ``daspkAUTO.exe``, to ``$RMG/software/ODESolver/daspkAUTO.exe`` if this is not already done. ::
+
+	$ tar -xvzf daspk31.tgz
+	$ mv ad_solver/*.f $RMG/fortran_software/fortran/ODESolver/daspk
+	$ mv preconds/*.f $RMG/fortran_software/fortran/ODESolver/daspk
+	$ mv solver/*.f $RMG/fortran_software/fortran/ODESolver/daspk
+	$ cd $RMG/fortran_software/fortran/ODESolver/dassl
+	$ make
+	$ cp daspkAUTO.exe $RMG/software/ODESolver/daspkAUTO.exe
+
+You are now ready to run RMG with sensitivity analysis support.
 
 
 .. _windowsinstallation:

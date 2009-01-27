@@ -21,6 +21,8 @@ order):
 
 #. The initial temperature and pressure of the system
 
+#. The method to use to estimate spectroscopic data for each species
+
 #. The name, concentration, and chemical structure of the reactants
 
 #. The specification and concentration of the inert gas(es)
@@ -80,7 +82,7 @@ Database
 
 In the main RMG directory is a directory of databases: :file:`$RMG/databases/`. By
 default, there is one directory within the directory of databases:
-:file:``$RMG/databases/database`. It is possible, however, to create multiple
+:file:`$RMG/databases/database`. It is possible, however, to create multiple
 databases. For example, you can copy the entire contents of the default database
 into a new database, :file:`$RMG/databases/databaseII`, and change some of the
 values. Unless you have created your own databases, the Database setting should
@@ -121,6 +123,18 @@ begins at 600 Kelvin and 200 atmospheres::
 
    TemperatureModel: Constant (K) 600
    PressureModel: Constant (atm) 200 
+
+
+Spectroscopic Data
+------------------
+
+The fifth item in the initialization file is the method to use to estimate the 
+spectroscopic data (i.e. rovibrational modes) of each species. At present 
+there is only one method available, which utilizes approximate frequencies
+based on functional groups in the molecule when possible, then fits remaining
+degrees of freedom to heat capacity data. This item should read::
+
+   SpectroscopicDataEstimator: FrequencyGroups
 
 
 Reactants
@@ -207,13 +221,24 @@ Reaction Model Enlarger
 -----------------------
 
 The Reaction Model Enlarger specifies the rules for reaction mechanism growth.
-Currently there is only one setting for mechanism growth, so please leave this
-entry as it is::
+There are two options: RateBasedModelEnlarger and RateBasedPDepModelEnlarger.
+The former ignores pressure dependence of reaction networks, while the latter
+considers them. Choosing RateBasedModelEnlarger implies that the line should 
+read::
 
   ReactionModelEnlarger: RateBasedModelEnlarger
 
-As RMG expands, other model enlargers will become available 
-(e.g. for pressure-dependent reaction networks).
+Choosing RateBasedPDepModelEnlarger also requires specification of a method to
+use when approximating pressure-dependent kinetics. There are currently two
+such options: ModifiedStrongCollision and ReservoirState. The former utilizes
+the modified strong collision approach of A.Y. Chang, J.W. Bozzelli, and 
+A. M. Dean, and works reasonably well while running more rapidly. The latter 
+utilizes the steady state/reservoir state approach of N. J. B. Green and 
+Z. A. Bhatti, and is more accurate but more expensive. Such a specification
+would look as follows::
+ 
+  ReactionModelEnlarger: RateBasedPDepModelEnlarger
+  PDepKineticsEstimator: ModifiedStrongCollision
 
 
 Finish Controller
@@ -221,9 +246,11 @@ Finish Controller
 
 The Finish Controller defines the termination rules for model growth.
 Additionally, it includes the precision parameters such as reaction time,
-conversion, and error tolerance. Currently, there is only one finish controller.
-Future versions of RMG will have additional finish controllers, such as pressure
-dependence. 
+conversion, and error tolerance. Currently, there are two finish controllers:
+RateBasedFinishController and RateBasedPDepFinishController. A choice of 
+RateBasedModelEnlarger for the Reaction Model Enlarger should coincide with a
+choice of RateBasedFinishController, while RateBasedPDepModelEnlarger and
+RateBasedPDepFinishController should also be paired.
 
 Below the Finish Controller line, you must specify the goal. The goal tells the
 program when to terminate the reaction model expansion. There are two goal
