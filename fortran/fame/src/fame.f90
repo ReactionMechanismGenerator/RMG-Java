@@ -76,7 +76,7 @@ program fame
 	integer t, p, i, j
 	integer found
 	
-	verbose = 2
+	verbose = 0
 
 	! Part I: Load data from files on disk
 	! ------------------------------------
