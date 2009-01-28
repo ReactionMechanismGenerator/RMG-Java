@@ -56,7 +56,53 @@ Compile the documentation
 
 On a Windows computer
 **********************
-I believe Amrit has managed to do this, and will put helpful comments here!
+
+Installing Python on Windows
+-----------------------------
+
+1. Python for Windows may be obtained from
+   http://www.python.org/download/. Although the site lists versions
+   upto Python 3.0, not all of these have the easy_install package
+   available yet. For the moment, I would recommend Python 2.5.4
+
+2. Visit http://pypi.python.org/pypi/setuptools and download and
+   install the ``setuptools`` executable for your Python version(2.5).
+
+3. Go to the Environmen Variables settings in Windows(``Control
+   Panel-->System-->Advanced System Settings``)  and add the address of
+   the ``Scripts`` folder in the Python directory to the variable
+   ``Path`` under System Variables. Typically this will be someting
+   like ``C:\Python25\Scripts``
+  
+
+Installing Sphinx
+-----------------
+
+1. Visit http://pypi.python.org/pypi/Sphinx and download the
+   Sphinx.egg file for your Python version. Save it in an easily
+   accesible folder.
+
+
+2. Open a command prompt. Type and run ``easy_install <path to the
+   Sphinx.egg file>``
+
+
+Running Sphinx
+-------------- 
+1. Running Sphinx requires you to specify a source directory and a
+   build directory. For our uses, the source directory would be the one
+   containing all the .txt files of the RMG documentation.
+
+#. The build directory is where all the compile html pages are
+   stored. The location can be chosen as per your convenience.
+
+#. Open a Command Prompt and type ``sphinx-build -b html <path to   
+   source directory> <path to build directory>``. You can now view the
+   html pages created in the build directory which can then be uploaded
+   etc.
+
+
+#. Please refer to http://sphinx.pocoo.org/contents.html for details
 
 Mathematics!
 *************
