@@ -65,7 +65,7 @@ Installing Python on Windows
    upto Python 3.0, not all of these have the easy_install package
    available yet. For the moment, I would recommend Python 2.5.4
 
-2. Visit http://pypi.python.org/pypi/setuptools and download and
+2. Visit http://pypi.python.org/pypi/setuptools. Download and
    install the ``setuptools`` executable for your Python version(2.5).
 
 3. Go to the Environmen Variables settings in Windows(``Control
