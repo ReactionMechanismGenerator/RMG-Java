@@ -93,7 +93,7 @@ Running Sphinx
    build directory. For our uses, the source directory would be the one
    containing all the .txt files of the RMG documentation.
 
-#. The build directory is where all the compile html pages are
+#. The build directory is where all the compiled html pages are
    stored. The location can be chosen as per your convenience.
 
 #. Open a Command Prompt and type ``sphinx-build -b html <path to   
