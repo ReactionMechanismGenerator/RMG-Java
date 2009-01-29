@@ -14,7 +14,7 @@ License Requirements
 
 RMG is intended to be an open source program, available to the general public
 free of charge. The primary RMG code is distributed under the terms of the 
-MIT/X11 License. Although many of RMG's dependencies are also available under
+`MIT/X11 License <http://www.opensource.org/licenses/mit-license.php>`_. Although many of RMG's dependencies are also available under
 compatible open source licenses, there remain a few dependencies with more
 restrictive licences. **It is the user's
 responsibility to ensure these licenses have been obtained.**
@@ -67,30 +67,30 @@ To install RMG on a Linux computer:
 		
    To avoid typing this line each time, append it to your ``~/.bashrc`` (bash shell) or ``~/.cshrc`` (C shell) file.
 
-3. Download the file ``RMG.tar.gz`` for the 3.0 release, ungzip and untar it, and move its contents to the ``$RMG`` directory. ::
+3. **Get the source code.** Download the file ``RMG.tar.gz`` for the 3.0 release, ungzip and untar it, and move its contents to the ``$RMG`` directory. ::
 
 	$ tar -xvzf RMG.tar.gz
 	$ mv rmg/* $RMG
 
-4. Compile GATPFit. Change to the directory ``$RMG/fortran_software/fortran/GATPFit/src`` and execute the makefile. Copy the resulting executable, ``GATPFit.exe``, to ``$RMG/software/GATPFit/GATPFit.exe`` if this is not already done. ::
+4. **Compile GATPFit.** Change to the directory ``$RMG/fortran_software/fortran/GATPFit/src`` and execute the makefile. Copy the resulting executable, ``GATPFit.exe``, to ``$RMG/software/GATPFit/GATPFit.exe`` if this is not already done. ::
 
 	$ cd $RMG/fortran_software/fortran/GATPFit/src
 	$ make
 	$ cp GATPFit.exe $RMG/software/GATPFit/GATPFit.exe
 
-5. Compile FAME. Change to the directory ``$RMG/fortran_software/fortran/fame/src`` and execute the makefile. Copy the resulting executable, ``fame.exe``, to ``$RMG/software/fame/fame.exe`` if this is not already done. ::
+5. **Compile FAME.** Change to the directory ``$RMG/fortran_software/fortran/fame/src`` and execute the makefile. Copy the resulting executable, ``fame.exe``, to ``$RMG/software/fame/fame.exe`` if this is not already done. ::
 
 	$ cd $RMG/fortran_software/fortran/fame/src
 	$ make
 	$ cp ../fame.exe $RMG/software/fame/fame.exe
 
-6. Compile Frankie. Change to the directory ``$RMG/fortran_software/fortran/frankie/src`` and execute the makefile. Copy the resulting executable, frankie.exe``, to ``$RMG/software/frankie/frankie.exe`` if this is not already done. ::
+6. **Compile Frankie.** Change to the directory ``$RMG/fortran_software/fortran/frankie/src`` and execute the makefile. Copy the resulting executable, frankie.exe``, to ``$RMG/software/frankie/frankie.exe`` if this is not already done. ::
 
 	$ cd $RMG/fortran_software/fortran/frankie/src
 	$ make
 	$ cp ../frankie.exe $RMG/software/frankie/frankie.exe
 
-7. Compile the DASSL ODE solver. Download and unpack DASSL, then move all the DASSL source files -- specifically :file:`ddassl.f`, :file:`daux.f` 
+7. **Compile the DASSL ODE solver.** Download and unpack DASSL, then move all the DASSL source files -- specifically :file:`ddassl.f`, :file:`daux.f` 
    and :file:`dlinpk.f` -- to the directory ``$RMG/software/ODESolver/dassl``. Change to that directory and execute the makefile. Copy the resulting executable, ``dasslAUTO.exe``, to ``$RMG/software/ODESolver/dasslAUTO.exe`` if this is not already done. ::
 
 	$ tar -xvzf dassl.tar.gz
