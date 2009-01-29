@@ -24,7 +24,7 @@ It should contain the following::
  # and the distutils to install scripts in the user's "bin" directory.
  install_scripts = ~/bin
 
-2. Run the command ``export PYTHONPATH=$HOME'/lib/python/'`` and also add it to your .bashrc file for next time you log in.
+2. Run the command ``export PYTHONPATH=$HOME'/lib/python/'`` and also add it to your :file:`.bashrc` file for next time you log in.
 
 #. Create the folders ``bin``, ``lib`` and ``lib/python`` in your home directory
 
@@ -108,4 +108,4 @@ Mathematics!
 *************
 
 Instructions are at http://sphinx.pocoo.org/latest/ext/math.html
-At the moment the :file:'`conf.py` is set up to use the ``sphinx.ext.pngmath`` extension, which means you will need to have both :math:`\textrm{\LaTeX}` and `dvipng <http://savannah.nongnu.org/projects/dvipng/>`_ installed. We may be able to switch to ``sphinx.ext.jsmath`` - give it a go. 
+At the moment the :file:`conf.py` is set up to use the ``sphinx.ext.pngmath`` extension, which means you will need to have both :math:`\textrm{\LaTeX}` and `dvipng <http://savannah.nongnu.org/projects/dvipng/>`_ installed. We may be able to switch to ``sphinx.ext.jsmath`` - give it a go. 
