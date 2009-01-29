@@ -11,6 +11,8 @@ PAPEROPT_a4     = -D latex_paper_size=a4
 PAPEROPT_letter = -D latex_paper_size=letter
 ALLSPHINXOPTS   = -d build/doctrees $(PAPEROPT_$(PAPER)) $(SPHINXOPTS) source
 
+# export TEXINPUTS=$PWD"/source/_latex/:"
+
 #macro
 REMOVEAPPLEJUNK = find source/ -iname "._*" -exec rm {} \;
 
@@ -70,6 +72,7 @@ latex:
 	@echo "Build finished; the LaTeX files are in build/latex."
 	@echo "Run \`make all-pdf' or \`make all-ps' in that directory to" \
 	      "run these through (pdf)latex."
+	cd build/latex; make all-pdf
 
 changes:
 	$(REMOVEAPPLEJUNK)
@@ -87,5 +90,7 @@ linkcheck:
 	      "or in build/linkcheck/output.txt."
 
 upload:
-	scp -r build/html/* athena.dialup.mit.edu:www/RMG/
-	scp build/latex/*.pdf athena.dialup.mit.edu:www/RMG/
+	rsync -rtz -e ssh build/html/* athena.dialup.mit.edu:www/RMG/
+	rsync -rtz -e ssh build/latex/*.pdf athena.dialup.mit.edu:www/RMG/
+	#scp -r build/html/* athena.dialup.mit.edu:www/RMG/
+	#scp build/latex/*.pdf athena.dialup.mit.edu:www/RMG/
