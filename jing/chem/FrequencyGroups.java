@@ -52,28 +52,13 @@ public class FrequencyGroups{//gmagoon 111708: removed "implements GeneralGAPP"
 		int atoms = p_chemGraph.getAtomNumber();
 		int rotor = p_chemGraph.getInternalRotor();
 		int linearity = (p_chemGraph.isLinear()) ? 0 : 1;	// 0 if linear, 1 if nonlinear
-		int degeneracy = 0;
-		
-		degeneracy = 
-				9*((Integer) groupCount.get(0)) + 5*((Integer) groupCount.get(1)) + 
-				3*((Integer) groupCount.get(2)) + 7*((Integer) groupCount.get(3)) + 
-				5*((Integer) groupCount.get(4))	+ 5*((Integer) groupCount.get(5)) + 
-				3*((Integer) groupCount.get(6)) + 3*((Integer) groupCount.get(7)) + 
-				2*((Integer) groupCount.get(8)) + 6*((Integer) groupCount.get(9)) + 
-				4*((Integer) groupCount.get(10)) + 4*((Integer) groupCount.get(11)) + 
-				5*((Integer) groupCount.get(12)) + 6*((Integer) groupCount.get(13)) + 
-                3*((Integer) groupCount.get(14)) + 4*((Integer) groupCount.get(15)) + 
-				2*((Integer) groupCount.get(16)) + 2*((Integer) groupCount.get(17)) + 
-				3*((Integer) groupCount.get(18)) + 4*((Integer) groupCount.get(19)) + 
-				1*((Integer) groupCount.get(20)) + 5*((Integer) groupCount.get(21)) + 
-				3*((Integer) groupCount.get(22)) + 3*((Integer) groupCount.get(23));
+		int degeneracy = getDegeneracy(groupCount);
 		
 		int nFreq = 3 * atoms - 5 - rotor - degeneracy - linearity;
 		if (nFreq < 0) {
-			System.err.println("The number of vibrational degrees of freedom for " +
-				species.getName() + "(" + Integer.toString(species.getID()) +
-				") is overspecified.");
-			System.err.println(Integer.toString(degeneracy) + " harmonic oscillators and " +
+			System.out.println(species.getName() + "(" + Integer.toString(species.getID()) +
+				") is overspecified: " +
+					Integer.toString(degeneracy) + " harmonic oscillators and " +
 					Integer.toString(rotor) + " internal rotors are specified, but only " +
 					Integer.toString(3 * atoms - 5 - linearity) + " modes are allowed.");
 			// If possible, turn off internal rotors until the number of fitted frequencies is zero
@@ -83,10 +68,13 @@ public class FrequencyGroups{//gmagoon 111708: removed "implements GeneralGAPP"
 				rotor += nFreq;
 			}
 			else {
-				System.err.println("Error: Unable to fit frequency data for " +
-						species.getName() + "(" + Integer.toString(species.getID()) + ").");
-				//System.exit(0);
-				return new SpectroscopicData();
+				// Turn off functional groups until the system is underspecified
+				System.out.println("Turning off functional groups to make problem underspecified.");
+				while (nFreq < 0) {
+					removeFunctionalGroup(groupCount);
+					degeneracy = getDegeneracy(groupCount);
+					nFreq = 3 * atoms - 5 - rotor - degeneracy - linearity;
+				}
 			}
 		}
 		
@@ -293,6 +281,46 @@ public class FrequencyGroups{//gmagoon 111708: removed "implements GeneralGAPP"
 		}
 	}
 
+	private int getDegeneracy(LinkedList groupCount) {
+		return	9*((Integer) groupCount.get(0)) + 5*((Integer) groupCount.get(1)) +
+				3*((Integer) groupCount.get(2)) + 7*((Integer) groupCount.get(3)) +
+				5*((Integer) groupCount.get(4))	+ 5*((Integer) groupCount.get(5)) +
+				3*((Integer) groupCount.get(6)) + 3*((Integer) groupCount.get(7)) +
+				2*((Integer) groupCount.get(8)) + 6*((Integer) groupCount.get(9)) +
+				4*((Integer) groupCount.get(10)) + 4*((Integer) groupCount.get(11)) +
+				5*((Integer) groupCount.get(12)) + 6*((Integer) groupCount.get(13)) +
+                3*((Integer) groupCount.get(14)) + 4*((Integer) groupCount.get(15)) +
+				2*((Integer) groupCount.get(16)) + 2*((Integer) groupCount.get(17)) +
+				3*((Integer) groupCount.get(18)) + 4*((Integer) groupCount.get(19)) +
+				1*((Integer) groupCount.get(20)) + 5*((Integer) groupCount.get(21)) +
+				3*((Integer) groupCount.get(22)) + 3*((Integer) groupCount.get(23));
+	}
+
+	private void removeFunctionalGroup(LinkedList groupCount) {
+		if ((Integer) groupCount.get(20) > 0) groupCount.set(20, (Integer) groupCount.get(20) - 1);
+		else if ((Integer) groupCount.get(8) > 0) groupCount.set(8, (Integer) groupCount.get(8) - 1);
+		else if ((Integer) groupCount.get(16) > 0) groupCount.set(16, (Integer) groupCount.get(16) - 1);
+		else if ((Integer) groupCount.get(17) > 0) groupCount.set(17, (Integer) groupCount.get(17) - 1);
+		else if ((Integer) groupCount.get(2) > 0) groupCount.set(2, (Integer) groupCount.get(2) - 1);
+		else if ((Integer) groupCount.get(6) > 0) groupCount.set(6, (Integer) groupCount.get(6) - 1);
+		else if ((Integer) groupCount.get(7) > 0) groupCount.set(7, (Integer) groupCount.get(7) - 1);
+		else if ((Integer) groupCount.get(14) > 0) groupCount.set(14, (Integer) groupCount.get(14) - 1);
+		else if ((Integer) groupCount.get(18) > 0) groupCount.set(18, (Integer) groupCount.get(18) - 1);
+		else if ((Integer) groupCount.get(23) > 0) groupCount.set(23, (Integer) groupCount.get(23) - 1);
+		else if ((Integer) groupCount.get(10) > 0) groupCount.set(10, (Integer) groupCount.get(10) - 1);
+		else if ((Integer) groupCount.get(11) > 0) groupCount.set(11, (Integer) groupCount.get(11) - 1);
+		else if ((Integer) groupCount.get(15) > 0) groupCount.set(15, (Integer) groupCount.get(15) - 1);
+		else if ((Integer) groupCount.get(19) > 0) groupCount.set(19, (Integer) groupCount.get(19) - 1);
+		else if ((Integer) groupCount.get(1) > 0) groupCount.set(1, (Integer) groupCount.get(1) - 1);
+		else if ((Integer) groupCount.get(4) > 0) groupCount.set(4, (Integer) groupCount.get(4) - 1);
+		else if ((Integer) groupCount.get(5) > 0) groupCount.set(5, (Integer) groupCount.get(5) - 1);
+		else if ((Integer) groupCount.get(12) > 0) groupCount.set(12, (Integer) groupCount.get(12) - 1);
+		else if ((Integer) groupCount.get(21) > 0) groupCount.set(21, (Integer) groupCount.get(21) - 1);
+		else if ((Integer) groupCount.get(9) > 0) groupCount.set(9, (Integer) groupCount.get(9) - 1);
+		else if ((Integer) groupCount.get(13) > 0) groupCount.set(13, (Integer) groupCount.get(13) - 1);
+		else if ((Integer) groupCount.get(3) > 0) groupCount.set(3, (Integer) groupCount.get(3) - 1);
+		else if ((Integer) groupCount.get(0) > 0) groupCount.set(0, (Integer) groupCount.get(0) - 1);
+	}
 
 }
 /*********************************************************************

@@ -100,7 +100,7 @@ public class ReactionTemplateLibrary {
         for (int i=0; i<fileNames.length;i++) {
         	String fullName = p_directoryName + "/" + fileNames[i];
         	File d = new java.io.File(fullName);
-        	if (d.isDirectory() && !d.getName().equals("CVS")) {
+        	if (d.isDirectory() && !d.getName().toUpperCase().equals("CVS")) {
         		ReactionTemplate rt = new ReactionTemplate();
         		rt.read(fileNames[i],fullName);
         		addReactionTemplate(rt);
