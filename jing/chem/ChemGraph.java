@@ -98,6 +98,7 @@ public class ChemGraph implements Matchable {
     protected GeneralGAPP thermoGAPP;
     protected boolean fromprimarythermolibrary = false;
     protected boolean isAromatic = false;
+    protected String InChI;
     // Constructors
 
     //## operation ChemGraph()
@@ -985,6 +986,7 @@ return sn;
         cg.symmetryNumber = p_chemGraph.symmetryNumber;
         cg.thermoData = p_chemGraph.thermoData;
         cg.thermoGAPP = p_chemGraph.thermoGAPP;
+        cg.InChI = p_chemGraph.InChI;
 
         /*HashSet oldSymmetryAxis = p_chemGraph.getSymmetryAxis();
         if (oldSymmetryAxis != null) {
@@ -1101,6 +1103,11 @@ return sn;
 
         //#]
     }
+    
+    public String generateInChI() {
+    	InChI = Species.generateInChI(this);
+    	return InChI;
+    }
 
     /**
     Requires:
@@ -1121,7 +1128,7 @@ return sn;
         }
         //#]
     }
-
+    
     /**
     Requires:
     Effects: return the Arc between two positions in this ChemGraph
@@ -1288,6 +1295,11 @@ return sn;
         }
         return hNum;
         //#]
+    }
+    
+    public String getInChI() {
+    	if (InChI == null || InChI.length() == 0) generateInChI();
+    	return InChI;
     }
 
     /**

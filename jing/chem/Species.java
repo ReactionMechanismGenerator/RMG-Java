@@ -74,6 +74,8 @@ public class Species {
     protected LinkedHashSet resonanceIsomers = new LinkedHashSet();		//## attribute resonanceIsomers
 
     protected boolean therfitExecuted = false;		//## attribute therfitExecuted
+    
+    protected String InChI = null;	//## attribute InChI
 
     protected LennardJones LJ;
 	protected NASAThermoData nasaThermoData;
@@ -120,6 +122,7 @@ public class Species {
         //generateThreeFrequencyModel();
 		spectroscopicData = new SpectroscopicData();
         generateSpectroscopicData();
+        InChI = p_chemGraph.getInChI();
         //#]
     }
 
@@ -993,6 +996,227 @@ public class Species {
 
         //#]
     }
+	
+	// Convert ChemGraph (p_chemGraph) to String (InChIstring)
+	public static String generateInChI(ChemGraph p_chemGraph) {
+		
+		String InChIstring = "";
+		// Convert chemGraph to string
+		int randNum = 1;
+		String p_string = p_chemGraph.toString(randNum);
+		StringTokenizer st = new StringTokenizer(p_string);
+		
+		// Extract the necessary information from the adjacency list
+		//		- Element symbol
+		//		- Radical number
+		//		- Bonds (strength and connectivity)
+		
+		// Define two running counters, atomCount & atomBondCount
+		int atomCount = 1;
+		int atomBondCount = 0;
+		
+		// Assume molecule has <= 50 atoms
+		// Assume no atom can have > 6 unique bonds
+		int maxAtoms = 50;
+		int maxBonds = 6;
+		String[] elementSymbol = new String[maxAtoms];
+		String[] radical = new String[maxAtoms];
+		String[][] atomConnect = new String[maxAtoms][maxBonds];
+		String[][] bondOrder = new String[maxAtoms][maxBonds];
+		
+		// Atom-by-atom, extract the necessary information
+		String line = st.nextToken();
+		while (st.hasMoreTokens()) {
+			// If the next token is the next integer in the series 
+			if (line.equals(Integer.toString(atomCount))) {
+				// Grab element symbol and radical number
+				elementSymbol[atomCount-1] = st.nextToken();
+				radical[atomCount-1] = st.nextToken();
+				// If bonds exist ....
+				if (st.hasMoreTokens()) {
+					// Grab the first {bond}
+					line = st.nextToken();
+					int atomPartnerCount = 0;
+					while (line.endsWith("}")) {
+						++atomBondCount;
+						String insideBraces = ChemParser.removeBrace(line);
+						int commaPos = insideBraces.indexOf(",");
+						// Store bond order and atom connectivity
+						atomConnect[atomCount-1][atomPartnerCount] = insideBraces.substring(0,commaPos);
+						bondOrder[atomCount-1][atomPartnerCount] = insideBraces.substring(commaPos+1);
+						if (st.hasMoreTokens())
+							line = st.nextToken();
+						else
+							line = "";
+						++atomPartnerCount; 
+					}
+				} else
+					line = "";
+				++atomCount;
+			} else
+				line = st.nextToken();
+		}
+		
+		int mRad = 1;
+		int radCount = 0;
+		// Assume the species does not contain > 4 radicals
+		int maxRad = 4;
+		int[] radLocation = new int[maxRad];
+		int[] radType = new int[maxRad];
+		for (int numRads=0; numRads<(atomCount-1); numRads++) {
+			if (!radical[numRads].equals("0") & !radical[numRads].equals("null")) {
+				// If a radical exists on the atom, store its location
+				radLocation[radCount] = numRads+1;
+				// Convert RMG's radical number definition to a .mol file's
+				// 		radical number definition
+				if (radical[numRads].equals("2S"))
+					radType[radCount] = 1;
+				else if (radical[numRads].equals("1") | radical[numRads].equals("3"))
+					radType[radCount] = 2;
+				else if (radical[numRads].equals("2") | radical[numRads].equals("2T"))
+					radType[radCount] = 3;
+				++radCount;
+				// If at least one radical exist, .mol file will have 2 "M" lines
+				mRad = 2;
+			}
+		}
+		
+		// Convert the information into a connection table (as defined by a .mol file)
+		
+		// Create the "Header Block"
+		String cTable = "\n\n\n";
+		// Create the "Counts Line"
+		if (atomCount-1 < 10) {
+			cTable += "  " + (atomCount-1);
+		} else
+			cTable += " " + (atomCount-1);
+		if (atomBondCount/2 < 10) {
+			cTable += "  " + (atomBondCount/2) + "  0  0  0  0  0  0  0  0  " + mRad + " v2000";
+		} else 
+			cTable += " " + (atomBondCount/2) + "  0  0  0  0  0  0  0  0  " + mRad + " v2000";
+		// Create the "Atom Block"
+		for (int numAtoms=0; numAtoms<atomCount-1; numAtoms++) {
+			// Assume no 3-d information available
+			//		Set all atoms x,y,z-coordinates at (0.0,0.0,0.0)
+			cTable += "\n    0.0       0.0       0.0    " + elementSymbol[numAtoms] + "  " + " 0  0  0  0  0  0  0  0  0  0  0  0";
+		}
+		
+		// Create the "Bond Block"
+		// Convert Chemical Bond from S, D, T, etc. to 1, 2, 3, etc.
+		int[] bondStrength = new int[atomBondCount/2];
+		int bondCount = 0;
+		for (int i=0; i<maxAtoms; i++) {	// Assuming <= 50 atoms in a species
+			for (int j=0; j<maxBonds; j++) {	// Assuming no atom has > 6 bonds
+				
+				if (atomConnect[i][j] != null) {
+					int secondAtom = Integer.parseInt(atomConnect[i][j]);
+					
+					if (secondAtom > i) {	// Do not want to double count bonds
+						// Convert Chemical Bond from S, D, T, etc. to 1, 2, 3, etc.
+						if (bondOrder[i][j].equals("S")) {
+							bondStrength[bondCount] = 1;
+						} else if (bondOrder[i][j].equals("D")) {
+							bondStrength[bondCount] = 2;
+						} else if (bondOrder[i][j].equals("T")) {
+							bondStrength[bondCount] = 3;
+						} else if (bondOrder[i][j].equals("B")) {
+							bondStrength[bondCount] = 4;
+						}
+						
+						cTable += "\n";
+						
+						if (i+1 < 10 && secondAtom < 10) {
+							cTable += "  " + (i+1) + "  " + secondAtom + "  " + bondStrength[bondCount] + "  0  0  0  0";
+						} else if (i+1 < 10 && secondAtom >= 10) {
+							cTable += "  " + (i+1) + " " + secondAtom + "  " + bondStrength[bondCount] + "  0  0  0  0";
+						} else if (i+1 >= 10 && secondAtom < 10) {
+							cTable += " " + (i+1) + "  " + secondAtom + "  " + bondStrength[bondCount] + "  0  0  0  0";
+						} else 
+							cTable += " " + (i+1) + " " + secondAtom + "  " + bondStrength[bondCount] + "  0  0  0  0";
+						
+						++bondCount;
+					}
+				
+				} else	// There are no more bonds for this atom
+					break;
+			}
+		}
+		
+		// Create the "Properties Block"
+		for (int i=0; i<mRad-1; i++) {
+			cTable += "\nM  RAD  " + radCount;
+			for (int j=0; j<radCount; j++) {
+				if (radLocation[j] < 10) {
+					cTable += "   " + radLocation[j] + "   " + radType[j]; 
+				} else
+					cTable += "  " + radLocation[j] + "   " + radType[j];
+			}
+		}
+		cTable += "\nM  END";
+		
+		//
+        File molFile = null;
+		String workingDirectory = System.getProperty("RMG.workingDirectory");
+		String inchiDirectory = workingDirectory + "/InChI";
+
+		// Write the cTable to species.mol file
+        try {
+        	molFile = new File(inchiDirectory + "/species.mol");
+        	FileWriter fw = new FileWriter(molFile);
+        	fw.write(cTable);
+        	fw.close();
+        } catch (IOException e) {
+        	String err = "Error writing species.mol file for InChI generation: ";
+        	err += e.toString();
+        	System.out.println(err);
+        }
+
+        // Call cINChI-1 executable file
+        try {
+        	String[] command = {workingDirectory + "/software/InChI/cInChI-1", 
+        			inchiDirectory + "/species.mol",
+        			inchiDirectory + "/species.txt",
+        			inchiDirectory + "/species.log",
+        			inchiDirectory + "/species.prb",
+        			"-DoNotAddH"};
+			File runningDir = new File("InChI");
+        	Process InChI = Runtime.getRuntime().exec(command, null, runningDir);
+        	
+        	InputStream errStream = InChI.getErrorStream();
+        	InputStream inpStream = InChI.getInputStream();
+        	errStream.close();
+        	inpStream.close();
+        	
+        	int exitValue = InChI.waitFor();
+        }
+        catch (Exception e) {
+        	String err = "Error running cINChI-1: ";
+        	err += e.toString();
+        	System.out.println(err);
+        }
+		
+		// Read in the output of the cINChI-1 executable file (species.txt)
+        FileReader in = null;
+		try {
+			in = new FileReader(inchiDirectory + "/species.txt");
+		} catch (FileNotFoundException e) {
+			String err = "Error reading species.txt file: ";
+			err += e.toString();
+			System.out.println(err);
+		}
+        
+		BufferedReader reader = new BufferedReader(in);
+        line = ChemParser.readMeaningfulLine(reader);
+        read: while (line != null) {
+        	if (line.startsWith("InChI")) {
+        		InChIstring = line;
+        		break;
+        	}
+        	line = ChemParser.readMeaningfulLine(reader);
+        }
+        
+        return InChIstring;
+	}
 
     public int getID() {
         return ID;
@@ -1099,18 +1323,27 @@ public class Species {
 	 * @return true if they are isomers, false otherwise
 	 */
 	public boolean isIsomerOf(Species species) {
-		ChemGraph cg1 = getChemGraph();
-		ChemGraph cg2 = species.getChemGraph();
+//		ChemGraph cg1 = getChemGraph();
+//		ChemGraph cg2 = species.getChemGraph();
 		boolean areIsomers = true;
-		if (cg1.getCarbonNumber() != cg2.getCarbonNumber())
-			areIsomers = false;
-		if (cg1.getOxygenNumber() != cg2.getOxygenNumber())
-			areIsomers = false;
-		if (cg1.getHydrogenNumber() != cg2.getHydrogenNumber())
-			areIsomers = false;
+//		if (cg1.getCarbonNumber() != cg2.getCarbonNumber())
+//			areIsomers = false;
+//		if (cg1.getOxygenNumber() != cg2.getOxygenNumber())
+//			areIsomers = false;
+//		if (cg1.getHydrogenNumber() != cg2.getHydrogenNumber())
+//			areIsomers = false;
+		String inchi1 = getInChI();
+		String inchi2 = species.getInChI();
+		String[] inchi1Layers = inchi1.split("/");
+		String[] inchi2Layers = inchi2.split("/");
+		if (inchi1Layers[1] != inchi2Layers[1]) areIsomers = false;
 		// Should add other atom types in the future!
 		return areIsomers;
 	}
+	
+    public String getInChI() {
+        return InChI;
+    }
 	
 }
 /*********************************************************************

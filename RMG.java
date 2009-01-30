@@ -53,7 +53,7 @@ public class RMG {
 	while (iter.hasNext()){
 		int i=1;
 		Species spe = (Species) iter.next();
-		coreSpecies = coreSpecies + spe.getChemkinName()+"\n"+spe.getChemGraph().toString(i)+"\n\n";
+		coreSpecies = coreSpecies + spe.getChemkinName()+ " " + spe.getInChI() + "\n"+spe.getChemGraph().toString(i)+"\n\n";
 	}
 	try{
 		File rmgDictionary = new File("RMG_Dictionary.txt");
@@ -152,6 +152,9 @@ public class RMG {
 		File frankie = new File("frankie");
 		ChemParser.deleteDir(frankie);
 		frankie.mkdir();
+		File inchi = new File("InChI");
+		ChemParser.deleteDir(inchi);
+		inchi.mkdir();
 		
 		
 		 String workingDir = System.getenv("RMG");
