@@ -177,11 +177,11 @@ public class FastMasterEqn implements PDepKineticsEstimator {
 		
 		// Clean up files
 		String path = "fame/";
-		runCount++;
-		if (runCount < 10)			path += "000";
-		else if (runCount < 100)	path += "00";
-		else if (runCount < 1000)	path += "0";
-		path += Integer.toString(runCount);
+		int id = pdn.getID();
+		if (id < 10)			path += "000";
+		else if (id < 100)	path += "00";
+		else if (id < 1000)	path += "0";
+		path += Integer.toString(id);
 		
 		File input = new File("fame/fame_input.txt");
 		File newInput = new File(path +  "_input.txt");
@@ -191,7 +191,8 @@ public class FastMasterEqn implements PDepKineticsEstimator {
 		output.renameTo(newOutput);
 		
 		// Write finished indicator to console
-		System.out.println("FAME execution for network " + Integer.toString(runCount) + " complete.");
+		System.out.println("FAME execution for network " + Integer.toString(id) + " complete.");
+		runCount++;
 		
 	}
 	

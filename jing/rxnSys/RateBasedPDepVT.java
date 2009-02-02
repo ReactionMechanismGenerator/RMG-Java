@@ -64,7 +64,30 @@ public class RateBasedPDepVT extends RateBasedVT {
     
     //## operation isModelValid(ReactionSystem) 
     public boolean isModelValid(ReactionSystem p_reactionSystem) {
-        return super.isModelValid(p_reactionSystem);
+        
+		// Check if all the unreacted species has their fluxes under the system min flux
+        if (!super.isModelValid(p_reactionSystem))
+			return false;
+
+		// check if all the networks has their leak fluxes under the system min flux
+        PresentStatus ps = p_reactionSystem.getPresentStatus();
+        calculateRmin(ps);
+
+		for (Iterator iter = PDepNetwork.getNetworks().iterator(); iter.hasNext(); ) {
+        	PDepNetwork pdn = (PDepNetwork )iter.next();
+        	if (pdn.getLeakFlux(ps) > Rmin)
+            {
+                System.out.println("Exceeded largest permitted flux for convergence (tolerance="+tolerance+"): " + Rmin);
+                return false;
+            }
+
+        }
+        
+        return true;
+
+
+        //#]
+
     }
     
 }

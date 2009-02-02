@@ -229,9 +229,6 @@ public class TemplateReaction extends Reaction {
 			return null;
 		}
 		rr = new TemplateReaction(rsSp, k, rRT);
-		if (rr.getReactantNumber() == 1) {
-			rr.pDepNetwork = PDepNetwork.addReactionToNetworks(rr);
-		}
 		if (!rr.isForward()) {
 			String err = "Backward:" + structure.toString() + String.valueOf(structure.calculateKeq(new Temperature(298, "K"))) + '\n';
 			err = err + "Forward:" + rr.structure.toString() + String.valueOf(rr.structure.calculateKeq(new Temperature(298, "K")));
@@ -296,27 +293,10 @@ public class TemplateReaction extends Reaction {
 					reverse.setReverseReaction(reaction);
 					reverse.generateKineticsFromReverse();
 					rRT.addReaction(reverse);
-					if (reverse.getReactantNumber() == 1) {
-						reverse.pDepNetwork = PDepNetwork.addReactionToNetworks(reverse);
-					}
 				}
 
 			}
 			p_template.addReaction(reaction);
-			if (reaction.getReactantNumber() == 1) {
-				reaction.pDepNetwork = PDepNetwork.addReactionToNetworks(reaction);
-			} else {
-				reaction.pDepNetwork = null;
-			}
-			/*if (!reaction.hasKinetics()) {
-				if (reaction.isBackward()) {
-					reaction.fitReverseKineticsRoughly();
-					Kinetics kinetics = reaction.getFittedReverseKinetics();
-					Structure structure = reaction.getStructure();
-					structure.setDirection(1);
-					reaction.setKinetics(kinetics);
-				}
-			}*/
 			if (!reaction.repOk()) {
 				throw new InvalidTemplateReactionException();
 			}

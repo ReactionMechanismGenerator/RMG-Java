@@ -146,12 +146,12 @@ public class LibraryReactionGenerator implements ReactionGenerator {
         //#]
     }
     
-    public void generatePdepReactions(Species p_species){
+    public LinkedHashSet generatePdepReactions(Species p_species){
     	LinkedHashSet speciesSet = new LinkedHashSet();
     	speciesSet.add(p_species);
     	LinkedHashSet reactionSet = react(speciesSet);
     	
-        p_species.addPdepPaths(reactionSet);
+        return reactionSet;
     }
     
 }

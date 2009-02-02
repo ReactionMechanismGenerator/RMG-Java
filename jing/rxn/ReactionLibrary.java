@@ -174,14 +174,6 @@ public class ReactionLibrary {
 					library.add(rLR);
 					fLR.setReverseReaction(rLR);
 					rLR.setReverseReaction(fLR);						
-					if (fLR.getReactantNumber()!= 2 || fLR.getProductNumber() != 2) {
-						fLR.pDepNetwork = PDepNetwork.addReactionToNetworks(fLR);
-						rLR.pDepNetwork = PDepNetwork.addReactionToNetworks(rLR);
-					}
-			    	else{
-			    		fLR.pDepNetwork = null;
-		        		rLR.pDepNetwork = null;
-			    	}
 			    }
         		
         		line = ChemParser.readMeaningfulLine(data);
@@ -194,10 +186,6 @@ public class ReactionLibrary {
         	throw new IOException("Can't read reaction in primary reaction library.\n" + e.getMessage());
         }
         
-        
-        
-        
-        //#]
     }
     
     

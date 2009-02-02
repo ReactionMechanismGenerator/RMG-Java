@@ -11,6 +11,7 @@ import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import jing.chem.Species;
 import jing.param.Temperature;
+import jing.rxn.PDepIsomer;
 import jing.rxn.PDepKineticsEstimator;
 import jing.rxn.PDepNetwork;
 import jing.rxn.PDepReaction;
@@ -83,56 +84,86 @@ public class RateBasedPDepRME implements ReactionModelEnlarger {
 			double maxFlux = 0;
 			for (Iterator iter = cerm.getUnreactedSpeciesSet().iterator(); iter.hasNext(); ) {
 				Species us = (Species) iter.next();
-				if (flux[us.getID()] >= maxFlux) {
-					maxFlux = flux[us.getID()];
+				if (Math.abs(flux[us.getID()]) >= maxFlux) {
+					maxFlux = Math.abs(flux[us.getID()]);
 					maxSpecies = us;
 				}
 			}
 			if (maxSpecies == null) throw new NullPointerException();
 			
+			// Determine network with maximum leak flux and its flux
+			PDepNetwork maxNetwork = null;
+			double maxLeak = 0;
+			for (Iterator iter = PDepNetwork.getNetworks().iterator(); iter.hasNext(); ) {
+				PDepNetwork pdn = (PDepNetwork) iter.next();
+				if (Math.abs(pdn.getLeakFlux(ps)) >= maxLeak) {
+					maxLeak = Math.abs(pdn.getLeakFlux(ps));
+					maxNetwork = pdn;
+				}
+			}
+			if (maxNetwork == null) throw new NullPointerException();
+
 			// Output results of above calculations to console
 			System.out.print("Time: ");
 			System.out.println(ps.getTime());
 			System.out.println("Rmin: " + String.valueOf(Rmin));
 			System.out.println("Unreacted species " + maxSpecies.getName() + " has highest flux: " + String.valueOf(maxFlux));
-			
-			// Add a species to the core
-			System.out.print("\nAdd a new reacted Species: ");
-			System.out.println(maxSpecies.getChemkinName());
-			System.out.println(maxSpecies.toStringWithoutH());
-			Temperature temp = new Temperature(715, "K");
-			double H = maxSpecies.calculateH(temp);
-			double S = maxSpecies.calculateS(temp);
-			double G = maxSpecies.calculateG(temp);
-			double Cp = maxSpecies.calculateCp(temp);
-			System.out.println("Thermo\t" + String.valueOf(H) + " \t" + String.valueOf(S)+ " \t" + String.valueOf(G)+ " \t" + String.valueOf(Cp));
+			System.out.println("Network " + maxNetwork.getID() + " has highest leak flux: " + String.valueOf(maxLeak));
 
-			if (cerm.containsAsReactedSpecies(maxSpecies)) 
-				System.out.println("Species " + maxSpecies.getName() + "(" + 
-						Integer.toString(maxSpecies.getID()) + 
-						") is already present in reaction model");
-			else {
+			if (maxFlux > Rmin && (maxFlux > maxLeak || maxLeak < Rmin)) {
 
-				// Move the species and appropriate reactions from the edge to the core
-				cerm.moveFromUnreactedToReactedSpecies(maxSpecies);
-				cerm.moveFromUnreactedToReactedReaction();
+				// Add a species to the core
+				System.out.print("\nAdd a new reacted Species: ");
+				System.out.println(maxSpecies.getChemkinName());
+				System.out.println(maxSpecies.toStringWithoutH());
+				Temperature temp = new Temperature(715, "K");
+				double H = maxSpecies.calculateH(temp);
+				double S = maxSpecies.calculateS(temp);
+				double G = maxSpecies.calculateG(temp);
+				double Cp = maxSpecies.calculateCp(temp);
+				System.out.println("Thermo\t" + String.valueOf(H) + " \t" + String.valueOf(S)+ " \t" + String.valueOf(G)+ " \t" + String.valueOf(Cp));
 
-				// Generate new reaction set; partition into core and edge
-				LinkedHashSet newReactionSet = rxnSystem.getReactionGenerator().react(cerm.getReactedSpeciesSet(),maxSpecies);
-				newReactionSet.addAll(rxnSystem.getLibraryReactionGenerator().react(cerm.getReactedSpeciesSet(),maxSpecies));
-				Iterator rxnIter = newReactionSet.iterator();
-				while (rxnIter.hasNext()){
-					Reaction r = (Reaction) rxnIter.next();
-					if (r.getReactantNumber() == 2 && r.getProductNumber() == 2)
-						cerm.addReaction(r);
+				if (cerm.containsAsReactedSpecies(maxSpecies))
+					System.out.println("Species " + maxSpecies.getName() + "(" +
+							Integer.toString(maxSpecies.getID()) +
+							") is already present in reaction model");
+				else {
+
+					// Move the species and appropriate reactions from the edge to the core
+					cerm.moveFromUnreactedToReactedSpecies(maxSpecies);
+					cerm.moveFromUnreactedToReactedReaction();
+
+					// Generate new reaction set; partition into core and edge
+					LinkedHashSet newReactionSet = rxnSystem.getReactionGenerator().react(cerm.getReactedSpeciesSet(),maxSpecies);
+					newReactionSet.addAll(rxnSystem.getLibraryReactionGenerator().react(cerm.getReactedSpeciesSet(),maxSpecies));
+					Iterator rxnIter = newReactionSet.iterator();
+					while (rxnIter.hasNext()){
+						Reaction r = (Reaction) rxnIter.next();
+						if (r.getReactantNumber() > 1 && r.getProductNumber() > 1)
+							cerm.addReaction(r);
+						else {
+							cerm.categorizeReaction(r.getStructure());
+							PDepNetwork.addReactionToNetworks(r);
+						}
+					}
+
+					// Also make species included in all PDepNetworks for which the species is a unimolecular isomer
+					for (Iterator iter = PDepNetwork.getNetworks().iterator(); iter.hasNext(); ) {
+						PDepNetwork pdn = (PDepNetwork) iter.next();
+						if (pdn.contains(maxSpecies))
+							pdn.makeIsomerIncluded(pdn.getIsomer(maxSpecies));
+					}
 				}
 
-				// Also make species included in all PDepNetworks for which the species is a unimolecular isomer
-				for (Iterator iter = PDepNetwork.getNetworks().iterator(); iter.hasNext(); ) {
-					PDepNetwork pdn = (PDepNetwork) iter.next();
-					if (pdn.contains(maxSpecies))
-						pdn.updateReactionLists(cerm);
-				}
+			}
+			else if (maxLeak > Rmin) {
+
+				PDepIsomer isomer = maxNetwork.getMaxLeakIsomer(ps);
+				System.out.print("\nAdd a new included Species: " + isomer.toString() +
+						" to network " + maxNetwork.getID());
+
+				maxNetwork.makeIsomerIncluded(isomer);
+
 			}
 			
 			System.out.println("");

@@ -2113,26 +2113,37 @@ public LinkedList getSpeciesList() {
     //9/24/07 gmagoon: moved from ReactionSystem.java
     protected void initializeCoreEdgeModelWithoutPRL() {
         //#[ operation initializeCoreEdgeModelWithoutPRL()
-    	
-		// Determine initial set of reactions and edge species using only the 
+
+		CoreEdgeReactionModel cerm = new CoreEdgeReactionModel(new LinkedHashSet(getSpeciesSeed()));
+		setReactionModel(cerm);
+
+		PDepNetwork.reactionModel = getReactionModel();
+		PDepNetwork.reactionSystem = (ReactionSystem) getReactionSystemList().get(0);
+
+		// Determine initial set of reactions and edge species using only the
 		// species enumerated in the input file as the core
 		LinkedHashSet reactionSet = getReactionGenerator().react(getSpeciesSeed());
 		reactionSet.addAll(getLibraryReactionGenerator().react(getSpeciesSeed()));
-    	
+
     	// Set initial core-edge reaction model based on above results
-		if (reactionModelEnlarger instanceof RateBasedRME)	
-    		setReactionModel(new CoreEdgeReactionModel(new LinkedHashSet(getSpeciesSeed()),reactionSet));//10/4/07 gmagoon: changed to use setReactionModel
-    	else {
-    		setReactionModel(new CoreEdgeReactionModel(new LinkedHashSet(getSpeciesSeed())));//10/4/07 gmagoon: changed to use setReactionModel
-        	// Only keep the reactions involving bimolecular reactants and bimolecular products
+		if (reactionModelEnlarger instanceof RateBasedRME)	{
+			// Only keep the reactions involving bimolecular reactants and bimolecular products
+			Iterator iter = reactionSet.iterator();
+        	while (iter.hasNext()){
+        		Reaction r = (Reaction)iter.next();
+        		cerm.addReaction(r);
+			}
+		}
+		else {
+    		// Only keep the reactions involving bimolecular reactants and bimolecular products
 			Iterator iter = reactionSet.iterator();
         	while (iter.hasNext()){
         		Reaction r = (Reaction)iter.next();
         		if (r.getReactantNumber() > 1 && r.getProductNumber() > 1){
-        			((CoreEdgeReactionModel)getReactionModel()).addReaction(r);
+        			cerm.addReaction(r);
         		}
 				else {
-					((CoreEdgeReactionModel)getReactionModel()).categorizeReaction(r.getStructure());
+					cerm.categorizeReaction(r.getStructure());
 					PDepNetwork.addReactionToNetworks(r);
 				}
 			}

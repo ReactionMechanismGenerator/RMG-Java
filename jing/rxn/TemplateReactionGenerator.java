@@ -131,7 +131,7 @@ public class TemplateReactionGenerator implements ReactionGenerator {
         //#]
     }
     
-    public void generatePdepReactions(Species p_species){
+    public LinkedHashSet generatePdepReactions(Species p_species){
     	Iterator template_iter = reactionTemplateLibrary.getReactionTemplate();
     	LinkedHashSet pdepReactionSet = new LinkedHashSet();
         while (template_iter.hasNext()) {
@@ -146,7 +146,7 @@ public class TemplateReactionGenerator implements ReactionGenerator {
 				
         	}
         }
-        p_species.addPdepPaths(pdepReactionSet);
+        return pdepReactionSet;
     }
     
     //## operation react(HashSet,Species) 

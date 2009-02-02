@@ -6,12 +6,15 @@
 
 package jing.rxn;
 
+import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.ListIterator;
 import jing.chem.ChemGraph;
 import jing.chem.Species;
 import jing.chem.SpeciesDictionary;
 import jing.param.Temperature;
+import jing.rxnSys.CoreEdgeReactionModel;
+import jing.rxnSys.ReactionSystem;
 
 /**
  * Represents a single isomer (unimolecular or multimolecular) of a pressure-
@@ -31,7 +34,12 @@ public class PDepIsomer {
 	 * A linked list containing the species that make up the isomer. 
 	 */
 	private LinkedList<Species> speciesList;
-	
+
+	/**
+	 * Set to true if the pathways from this isomer is included in the network.
+	 */
+	private boolean included;
+
 	//==========================================================================
 	//
 	//	Constructors
@@ -44,6 +52,7 @@ public class PDepIsomer {
 	public PDepIsomer(Species species) {
 		speciesList = new LinkedList<Species>();
 		speciesList.add(species);
+		included = false;
 	}
 	
 	/**
@@ -55,6 +64,7 @@ public class PDepIsomer {
 		speciesList = new LinkedList<Species>();
 		speciesList.add(species1);
 		speciesList.add(species2);
+		included = true;
 	}
 	
 	/**
@@ -70,6 +80,7 @@ public class PDepIsomer {
 			else if (obj instanceof ChemGraph)
 				speciesList.add(SpeciesDictionary.getSpecies((ChemGraph) obj));
 		}
+		included = (speList.size() > 1);
 	}
 	
 	//==========================================================================
@@ -135,7 +146,14 @@ public class PDepIsomer {
 		return getSpeciesNames();
 	}
 
-	
+	public boolean getIncluded() {
+		return included;
+	}
+
+	public void setIncluded(boolean incl) {
+		included = incl;
+	}
+
 	//==========================================================================
 	//
 	//	Other methods
@@ -256,5 +274,21 @@ public class PDepIsomer {
 			return true;
 		}
 	}
-	
+
+	public LinkedHashSet generatePaths(ReactionSystem rxnSystem) {
+		if (!isUnimolecular())
+			return new LinkedHashSet();
+		LinkedHashSet reactionSet = ((TemplateReactionGenerator) rxnSystem.getReactionGenerator()).generatePdepReactions(getSpecies(0));
+		reactionSet.addAll(((LibraryReactionGenerator) rxnSystem.getLibraryReactionGenerator()).generatePdepReactions(getSpecies(0)));
+		return reactionSet;
+	}
+
+	public boolean isCore(CoreEdgeReactionModel cerm) {
+		for (int i = 0; i < speciesList.size(); i++) {
+			if (!cerm.containsAsReactedSpecies(speciesList.get(i)))
+				return false;
+		}
+		return true;
+	}
+
 }
