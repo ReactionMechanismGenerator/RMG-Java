@@ -39,14 +39,14 @@ contains
 		
 		! Determine reservoir cutoffs by looking at transition state energies
 		do i = 1, simData%nUni
-			start = ceiling(uniData(i)%E(1) / simData%dE) + 1
+			start = ceiling((uniData(i)%E(1) - simData%Emin) / simData%dE) + 1
 			Eres = simData%Emax
 			do t = 1, simData%nRxn
 				if (rxnData(t)%isomer(1) == i .or. rxnData(t)%isomer(2) == i) then
 					if (rxnData(t)%E < Eres) Eres = rxnData(t)%E
 				end if
 			end do
-			nRes(i) = floor((Eres - 10 * simData%alpha) / simData%dE)
+			nRes(i) = floor((Eres - simData%Emin - 10 * simData%alpha) / simData%dE)
 			! Make sure nRes(i) is valid (i.e. points to grain at or above ground state)
 			if (nRes(i) < start) then
 				nRes(i) = start
@@ -287,7 +287,18 @@ contains
 		
 		end do
 
-		! Clean up
+! 		! Sign check on K matrix (not sure why this is necessary...)
+!         do i = 1, nUni+nMulti
+!             do j = 1, nUni+nMulti
+!                 if (i == j) then
+!                     if (K(i,j) > 0) K(i,j) = -K(i,j)
+!                 else
+!                     if (K(i,j) < 0) K(i,j) = abs(K(i,j))
+!                 end if
+!             end do  
+!         end do
+        
+        ! Clean up
 		deallocate( tempV1, tempV2, tempV3 )	
 		deallocate( nAct, L )
 
@@ -475,7 +486,7 @@ contains
 		! This is done by iterating over transition states
 		ind = 1
 		do t = 1, simData%nRxn
-			if (rxnData(t)%isomer(1) <= simData%nUni .and. rxnData(t)%isomer(2) <= simData%nUni) then			! bi <---> bi
+			if (rxnData(t)%isomer(1) <= simData%nUni .and. rxnData(t)%isomer(2) <= simData%nUni .and. ind < nUni) then			! bi <---> bi
 				
 				! Determine the wells involved
 				i = rxnData(t)%isomer(1)
@@ -498,7 +509,7 @@ contains
 			end if
 		end do
 		
-		if (ind /= nUni) then
+        if (ind /= nUni) then
 			write (*,*), 'ERROR: Incorrect number of isomerization reactions!'
 			stop
 		end if

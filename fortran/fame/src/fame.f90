@@ -72,7 +72,9 @@ program fame
 	! chebCoeff(i,j,t,p) = Coefficient matrix for product of Chebyshev polynomials phi_t(Tred) * phi_p(Pred) for reaction j --> i 
 	real(8), dimension(:,:,:,:), allocatable 		:: 	chebCoeff
 	
-	! Indices
+	real(8) Eref
+    
+    ! Indices
 	integer t, p, i, j
 	integer found
 	
@@ -124,14 +126,16 @@ program fame
 
 	! Close file
 	close(1)
- 
-	! Calculate density of states for each well
+    
+    ! Calculate density of states for each well
 	if (verbose >= 1) write (*,*), 'Calculating density of states...'
 	do i = 1, simData%nUni
-		call calcDensityOfStates(simData%E, uniData(i))
+		if (verbose >= 2) write (*,*), '\tUnimolecular isomer', i
+        call calcDensityOfStates(simData, uniData(i))
 	end do
 	do n = 1, simData%nMulti
-		call calcDensityOfStates(simData%E, multiData(n))
+		if (verbose >= 2) write (*,*), '\tMultimolecular isomer', n
+        call calcDensityOfStates(simData, multiData(n))
 	end do
 	
 	! Allocate memory for master equation matrices
@@ -164,7 +168,7 @@ program fame
 		do n = 1, simData%nMulti
 			call calcEqDist(multiData(n), simData%E, simData%T, bn(:,n))
 		end do
-				
+		
 		do p = 1, size(simData%Plist)
 
 			! Part II: Construct full ME matrix
@@ -189,13 +193,13 @@ program fame
 			if (verbose >= 3) write (*,*), '\t\tDetermining reservoir cutoff grains...'
 			call getReservoirCutoffs(simData, uniData, rxnData, nRes)
 			do i = 1, size(nRes)
-				j = ceiling(uniData(i)%E(1) / simData%dE) + 1
+				j = ceiling((uniData(i)%E(1) - simData%Emin) / simData%dE) + 1
 				if (nRes(i) < j .or. nRes(i) >= simData%nGrains) then
 					write (*,*), 'ERROR: Invalid reservoir grain.'
 					stop
 				end if
 			end do
-			
+            
 			if (simData%mode == 1) then
 				! Apply steady state/reservoir state approximations
 				if (verbose >= 3) write (*,*), '\t\tApplying steady-state/modified strong collision approximation...'
@@ -208,14 +212,18 @@ program fame
 				write (*,*), 'ERROR: An invalid solution mode was provided!'
 				stop
 			end if
-
+            
 		end do
 	end do
 
- 	!do i = 1, simData%nUni + simData%nMulti
-	!	write (*,*), K(4,3,i,:)
-	!end do
-					
+!     do t = 1, size(simData%Tlist)
+!         do p = 1, size(simData%Plist)
+!             do i = 1, simData%nUni + simData%nMulti
+!                 write (*,*), K(t,p,i,:)
+!             end do
+! 		end do
+!     end do
+    
 	! Fit k(T, P) to approximate formula
 	! Also test for validity of fitted rate coefficients
 	if (verbose >= 1) write (*,*), 'Fitting k(T,P) to model...'
@@ -245,7 +253,7 @@ program fame
 		end do
 	end do
 
-	! Write output file
+    ! Write output file
 	if (verbose >= 1) write (*,*), 'Saving results...'
 	call saveResults('fame_output.txt', simData, chebCoeff)
 	

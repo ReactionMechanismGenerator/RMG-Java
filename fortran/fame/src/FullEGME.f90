@@ -93,7 +93,7 @@ contains
                			Fim(r,i,n) = Gnj(r,n,i) * bi(r,i) / bn(r,n)
             		end if
 				end do
-				
+								
 			else															! uni <---> uni
 				
 				! Determine the wells involved
@@ -153,7 +153,7 @@ contains
 				end if
 			end do
 		end do
-
+        
 	end subroutine
 
 	! --------------------------------------------------------------------------
@@ -198,8 +198,8 @@ contains
 		! Collisional energy transfer contributions
 		do i = 1, simData%nUni
 		
-			start = ceiling(uniData(i)%E(1) / (simData%E(2) - simData%E(1))) + 1
-			 
+			start = ceiling((uniData(i)%E(1) - simData%Emin) / (simData%E(2) - simData%E(1))) + 1
+			
 			! Determine collision frequency for the current isomer
 			mu = 1/(1/uniData(i)%MW(1) + 1/simData%bathGas%MW) / 6.022e26
 			call collisionFrequency(simData%T, 0.5 * (uniData(i)%sigma(1) + simData%bathGas%sigma), &
@@ -216,10 +216,6 @@ contains
 				do s = lb, ub
 					call transferRate(s, r, simData%E(s), simData%E(r), simData%alpha, uniData(i)%E(1), bi(:,i), P(s,r))
 				end do
-! 				if (sum(P(start:simData%nGrains,r)) .ne. 0) then
-! 					P(start:simData%nGrains,r) = P(start:simData%nGrains,r) / sum(P(start:simData%nGrains,r))
-! 				end if
-! 				P(r,r) = P(r,r) - 1
 			end do
 			
 			! Normalize using detailed balance

@@ -8,7 +8,8 @@
 
 module DensityOfStatesModule
 
-	use IsomerModule
+	use SimulationModule
+    use IsomerModule
 
 contains
 
@@ -19,13 +20,13 @@ contains
 	! Estimates the density of states for each isomer in the network.
 	!
 	! Parameters:
-	!   energies - The energy grains in kJ/mol (from simData%E).
+	!   simData - The simulation data.
 	!   isom - The chemical data for a single isomer.
-	subroutine calcDensityOfStates(energies, isom)
+	subroutine calcDensityOfStates(simData, isom)
 		
 		! Provide parameter type checking of inputs and outputs
-		real(8), dimension(:), intent(in)				:: 	energies
-		type(Isomer), intent(inout)						:: 	isom
+		type(Simulation), intent(in)		:: 	simData
+		type(Isomer), intent(inout)			:: 	isom
 		
 		real(8) conv		! Conversion factor: cm^-1 per kJ/mol
 		real(8) Emax		! Maximum energy of range in cm^-1
@@ -36,22 +37,44 @@ contains
 		real(8), dimension(:), allocatable :: rho1		! Temporary array for density of states calculation
 		real(8), dimension(:), allocatable :: rho2		! Temporary array for density of states calculation
 		real(8) E1
-		
+		integer i
+        integer n0
+        
 		conv = 1000 / 6.022e23 / 6.626e-34 / 2.9979e10
-		
-		Emax = ceiling(maxval(energies) * conv)
-		dE = 0.2 * (energies(2) - energies(1)) * conv
-		nE = Emax / dE + 1
+		n0 = 1
+        
+		! Initialize energy range of density of states calculation with energy range of simulation
+        Emax = simData%Emax
+		Emin = simData%Emin
+        
+        ! Must lower Emin if one of the species has a lower E
+        do i = 1, isom%numSpecies
+            do while (isom%E(i) < Emin)
+                Emin = Emin - simData%dE
+                n0 = n0 + 1
+            end do
+        end do
+        
+        ! Convert Emin and Emax to units of cm^-1
+        Emax = Emax * conv
+        Emin = Emin * conv
+                
+        ! Use a grain size of 20% of the total simulation grain size
+        dE = 0.2 * simData%dE * conv
+        dn = anint(simData%dE / dE * conv)
+        
+		! Create energy grains for density of states calculation
+        nE = (Emax - Emin) / dE + 1
 		allocate( E(1:nE) )
 		do i = 1, nE
-			E(i) = (i - 1) * dE
+			E(i) = (i - 1) * dE + Emin
 		end do
+        
+        ! Create temporary density of states arrays
 		allocate( rho1(1:nE) )
 		allocate( rho2(1:nE) )
 		
-		dn = anint((energies(2) - energies(1)) / dE * conv)
-		
-		! Calculate the density of states for each multimolecular well
+        ! Calculate the density of states for each multimolecular well
 		call densityOfStates(E, &
 			isom%E(1) * conv, &
 			isom%vibFreq(1,:), &
@@ -61,7 +84,7 @@ contains
 			isom%symmNum(1), &
 			rho1)
 		E1 = isom%E(1)
-		do i = 2, isom%numSpecies
+        do i = 2, isom%numSpecies
 			call densityOfStates(E, &
 				isom%E(i) * conv, &
 				isom%vibFreq(i,:), &
@@ -70,11 +93,12 @@ contains
 				isom%hindBarrier(i,:), &
 				isom%symmNum(i), &
 				rho2)
-			call convolveStates(rho1, E1 * conv, rho2, isom%E(i) * conv, dE)
+			call convolveStates(E, rho1, E1 * conv, rho2, isom%E(i) * conv, dE)
 			E1 = E1 + isom%E(i)
 		end do
-		isom%densStates = rho1(1:nE:dn) * conv
-		
+        isom%densStates = rho1(n0:nE:dn) * conv
+		isom%densStates(simData%nGrains) = rho1(nE)
+        
 		deallocate (rho1, rho2, E)
 		
 	end subroutine
@@ -101,7 +125,7 @@ contains
 		! Provide parameter type checking of inputs and outputs
 		real(8), dimension(:), intent(in)		:: 	E
 		real(8), intent(in)						:: 	E0
-		real(8), dimension(:), intent(in)		:: 	vibFreq
+		real(8), dimension(:), intent(in), allocatable		:: 	vibFreq
 		real(8), dimension(:), intent(in)		:: 	rotFreq
 		real(8), dimension(:), intent(in)		:: 	hindFreq
 		real(8), dimension(:), intent(in)		:: 	hindBarrier
@@ -125,14 +149,14 @@ contains
 			call calcFreeRotorStates(E, E0, rotFreq, symmNum, rho_RR)
 		end if
 		
-		! Hindered rotors
+        ! Hindered rotors
 		if (hindFreq(1) > 0) then
 			allocate( rho1(1:N) )
 			do i = 1, size(hindFreq)
 				if (hindFreq(i) > 0 .and. hindBarrier(i) > 0) then
 					call calcHinderedRotorStates(E, E0, hindFreq(i), hindBarrier(i), rho1)
 					if (allocated(rho_HR)) then
-						call convolveStates(rho_HR, E0, rho1, E0, dE)
+						call convolveStates(E, rho_HR, E0, rho1, E0, dE)
 					else
 						allocate( rho_HR(1:N) )
 						rho_HR = rho1
@@ -143,7 +167,7 @@ contains
 		
 		! Total rotational component of density of states
 		if (allocated(rho_RR) .and. allocated(rho_HR)) then
-			call convolveStates(rho_RR, E0, rho_HR, E0, dE)
+			call convolveStates(E, rho_RR, E0, rho_HR, E0, dE)
 			rho = rho_RR
 			deallocate(rho_RR, rho_HR)
 		elseif (allocated(rho_RR)) then
@@ -155,13 +179,13 @@ contains
 		else
 			rho = 0 * rho
 		end if
-
+        
 		! Add vibrational states via Beyer-Swinehart algorithm
-		call beyerSwinehart(E, E0, vibFreq, rho)
-		
+        call beyerSwinehart(E, E0, vibFreq, rho)
+        
 		! For this approach the density of states must be smooth
-		i = ceiling(E0 / dE) + 1
-		do while (i <= size(E) - 1)
+		i = ceiling((E0 - E(1)) / dE) + 1
+        do while (i <= size(E) - 1)
 			if (rho(i+1) == 0) then
 				j = i + 2
 				found = 1
@@ -187,7 +211,7 @@ contains
 			end if
 		end do
 		
-		return
+        return
 				
 	end subroutine
 	
@@ -198,7 +222,8 @@ contains
 	! Convolves two density of states vectors.
 	!
 	! Parameters:
-	!   rho1 - The first density of states in (cm^-1)^-1.
+	!   E - The energy grains in cm^-1.
+    !   rho1 - The first density of states in (cm^-1)^-1.
 	!   E1 - The first ground-state energy in cm^-1.
 	!   rho2 - The second density of states in (cm^-1)^-1.
 	!   E2 - The second ground-state energy in cm^-1.
@@ -206,10 +231,11 @@ contains
 	!
 	! Returns:
 	!	rho1 - The convolved density of states in (cm^-1)^-1.
-	subroutine convolveStates(rho1, E1, rho2, E2, dE)
+	subroutine convolveStates(E, rho1, E1, rho2, E2, dE)
 		
 		! Provide parameter type checking of inputs and outputs
-		real(8), dimension(:), intent(inout)	:: 	rho1
+		real(8), dimension(:), intent(in)       ::  E
+        real(8), dimension(:), intent(inout)	:: 	rho1
 		real(8), intent(in)						:: 	E1
 		real(8), dimension(:), intent(in)		:: 	rho2
 		real(8), intent(in)						:: 	E2
@@ -218,11 +244,13 @@ contains
 		integer n1, n2
 		real(8), dimension(:), allocatable		:: 	rho
 		real(8), dimension(:), allocatable		:: 	f
-		
-		n1 = ceiling(E1 / dE) + 1
-		n2 = ceiling(E2 / dE) + 1
-		
-		allocate( f(1:size(rho1)) )
+		integer i
+        
+		! Identify grains at which each density of states array begins
+        n1 = ceiling((E1 - E(1)) / dE) + 1
+        n2 = ceiling((E2 - E(1)) / dE) + 1
+        
+        allocate( f(1:size(rho1)) )
 		allocate( rho(1:size(rho1)) )
 		
 		do i = 1, n2
@@ -268,8 +296,8 @@ contains
 		integer nRot
 		
 		dE = E(2) - E(1)
-		start = ceiling(E0 / dE) + 1
-		
+		start = ceiling((E0 + E(1)) / dE) + 1
+        
 		nRot = 0
 		do i = 1, size(rotFreq)
 			if (rotFreq(i) > 0) nRot = nRot + 1
@@ -410,7 +438,7 @@ contains
 		! Provide parameter type checking of inputs and outputs
 		real(8), dimension(:), intent(in)		:: 	E
 		real(8), intent(in)						:: 	E0
-		real(8), dimension(:), intent(in)		:: 	vibFreq
+		real(8), dimension(:), intent(in), allocatable		:: 	vibFreq
 		real(8), dimension(:), intent(inout)	:: 	rho
 		
 		real(8) dE
@@ -419,13 +447,15 @@ contains
 		integer dGrain
 		
 		dE = E(2) - E(1)
-		start = ceiling(E0 / dE) + 1
-		
-		! Count nonzero vibrational modes
+		start = ceiling((E0 - E(1)) / dE) + 1
+        
+        ! Count nonzero vibrational modes
 		nVib = 0
-		do i = 1, size(vibFreq)
-			if (vibFreq(i) > 0) nVib = nVib + 1
-		end do
+		if (allocated(vibFreq)) then
+            do i = 1, size(vibFreq)
+                if (vibFreq(i) > 0) nVib = nVib + 1
+            end do
+        end if
 		
 		! The Beyer-Swinehart algorithm
 		rho(start) = 1.0 / dE
@@ -435,7 +465,7 @@ contains
 				rho(j + dGrain) = rho(j + dGrain) + rho(j)
 			end do
 		end do
-		
+        
 	end subroutine
 
 	! --------------------------------------------------------------------------

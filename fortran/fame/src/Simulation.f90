@@ -30,7 +30,8 @@ module SimulationModule
 		real(8)	T				! The currently-active temperature of the simulation in K
 		real(8)	P				! The currently-active pressure of the simulation in bar
 		real(8)	dE				! The grain size in kJ/mol
-		real(8)	Emax			! The maximum energy in kJ/mol
+		real(8) Emin            ! The minimum energy in kJ/mol
+        real(8)	Emax			! The maximum energy in kJ/mol
 		real(8)	tfinal			! The length of the simulation in s
 		real(8)	alpha			! The average energy loss in a deactivating collision in kJ/mol
 		integer	nUni			! The number of unimolecular isomer wells
@@ -111,9 +112,11 @@ contains
 				end do
 			else if (index(str(1:10), 'Grain size') /= 0) then
 				call readNumberAndUnit(str(11:), simData%dE, unit)
+			else if (index(str(1:20), 'Minimum grain energy') /= 0) then
+				call readNumberAndUnit(str(21:), simData%Emin, unit)
 			else if (index(str(1:20), 'Maximum grain energy') /= 0) then
-				call readNumberAndUnit(str(21:), simData%Emax, unit)
-			else if (index(str(1:15), 'Simulation time') /= 0) then
+                call readNumberAndUnit(str(21:), simData%Emax, unit)
+            else if (index(str(1:15), 'Simulation time') /= 0) then
 				call readNumberAndUnit(str(16:), simData%tfinal, unit)
 			else if (index(str(1:26), 'Exponential down parameter') /= 0) then
 				call readNumberAndUnit(str(27:), simData%alpha, unit)
@@ -136,13 +139,13 @@ contains
 			end if
 
 		end do
-		
-		! Sets the energy levels of the individual grains
-		simData%nGrains = simData%Emax / simData%dE + 1
-		allocate (simData%E(1:simData%nGrains))
-		do i = 1, simData%nGrains
- 			simData%E(i) = simData%dE * (i - 1)
- 		end do	
+        
+        ! Sets the energy levels of the individual grains
+        simData%nGrains = (simData%Emax - simData%Emin) / simData%dE + 1
+        allocate (simData%E(1:simData%nGrains))
+        do i = 1, simData%nGrains
+            simData%E(i) = simData%dE * (i - 1) + simData%Emin
+        end do      
 		
 	end subroutine
 

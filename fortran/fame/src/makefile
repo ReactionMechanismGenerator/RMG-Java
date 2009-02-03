@@ -40,6 +40,7 @@ clean:
 $(BIN): $(OBJ)
 	$(FORTRAN) $(OBJ) -o $(BIN) $(LFLAGS)
 	touch ../fame_output.txt
+	cp $(BIN) $(RMG)/software/fame/fame.exe
 
 # Compiler rule
 %.o: %.f90

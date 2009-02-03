@@ -274,22 +274,6 @@ contains
 		integer i, t, start0
 		
 		start = simData%nGrains
-			
-! 		! Determine reservoir cutoffs by looking at transition state energies
-! 		do i = 1, simData%nUni
-! 			start = ceiling(uniData(i)%E / simData%dE) + 1
-! 			Eres = simData%Emax
-! 			do t = 1, simData%nRxn
-! 				if (rxnData(t)%isomer(1) == i .or. rxnData(t)%isomer(2) == i) then
-! 					if (rxnData(t)%E < Eres) Eres = rxnData(t)%E
-! 				end if
-! 			end do
-! 			start0 = floor(Eres / simData%dE)
-! 			write (*,*), start0
-! 			if (start0 < start) then
-! 				start = start0
-! 			end if
-! 		end do
 		
 		i = well
 		Eres = simData%Emax
@@ -298,7 +282,7 @@ contains
 				if (rxnData(t)%E < Eres) Eres = rxnData(t)%E
 			end if
 		end do
-		start = floor(Eres / simData%dE)
+		start = ceiling((Eres - simData%Emin) / simData%dE) + 1
 
 	end subroutine
 	
