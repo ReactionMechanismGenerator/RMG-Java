@@ -1157,7 +1157,8 @@ public class Species {
 		//
         File molFile = null;
 		String workingDirectory = System.getProperty("RMG.workingDirectory");
-		String inchiDirectory = workingDirectory + "/InChI";
+		//String inchiDirectory = workingDirectory + "/InChI";
+		String inchiDirectory = "InChI";
 
 		// Write the cTable to species.mol file
         try {
@@ -1173,11 +1174,11 @@ public class Species {
 
         // Call cINChI-1 executable file
         try {
-        	String[] command = {workingDirectory + "/software/InChI/cInChI-1", 
-        			inchiDirectory + "/species.mol",
-        			inchiDirectory + "/species.txt",
-        			inchiDirectory + "/species.log",
-        			inchiDirectory + "/species.prb",
+        	String[] command = {workingDirectory + "/software/InChI/cInChI-1",
+        			"species.mol",
+        			"species.txt",
+        			"species.log",
+        			"species.prb",
         			"-DoNotAddH"};
 			File runningDir = new File("InChI");
         	Process InChI = Runtime.getRuntime().exec(command, null, runningDir);
@@ -1186,8 +1187,8 @@ public class Species {
         	InputStream inpStream = InChI.getInputStream();
         	errStream.close();
         	inpStream.close();
-        	
-        	int exitValue = InChI.waitFor();
+
+            int exitValue = InChI.waitFor();
         }
         catch (Exception e) {
         	String err = "Error running cINChI-1: ";

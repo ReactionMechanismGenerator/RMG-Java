@@ -377,8 +377,7 @@ public class PDepNetwork {
 		double maxLeak = 0.0;
 		for (ListIterator<PDepReaction> iter = nonincludedReactionList.listIterator(); iter.hasNext(); ) {
 			PDepReaction rxn = iter.next();
-			if (rxn.getType() == PDepReaction.Type.ISOMERIZATION &&
-					(!rxn.getReactant().getIncluded() || !rxn.getProduct().getIncluded())) {
+			if (!rxn.getReactant().getIncluded() || !rxn.getProduct().getIncluded()) {
 				if (Math.abs(rxn.calculateFlux(ss)) > maxLeak) {
 					maxReaction = rxn;
 					maxLeak = rxn.calculateFlux(ss);

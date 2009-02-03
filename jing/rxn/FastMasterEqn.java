@@ -220,9 +220,9 @@ public class FastMasterEqn implements PDepKineticsEstimator {
 		int numChebTempPolys = 4, numChebPressPolys = 4;
 		
 		// Determine reference energies
-		double Eref = getReferenceEnergy(uniIsomers, multiIsomers, stdTemp);		// [=] kcal/mol
-		double grainMaxEnergy = getGrainMaxEnergy(uniIsomers, multiIsomers, 2100, Eref); // [=] kJ/mol
-		double grainSize = getGrainSize(grainMaxEnergy, uniIsomers.size()); // [=] kJ/mol
+		double grainMinEnergy = getGrainMinEnergy(uniIsomers, multiIsomers); // [=] kJ/mol
+		double grainMaxEnergy = getGrainMaxEnergy(uniIsomers, multiIsomers, 2100); // [=] kJ/mol
+		double grainSize = getGrainSize(grainMinEnergy, grainMaxEnergy, uniIsomers.size()); // [=] kJ/mol
 		
 		// Create the simulation parameters file fame/simData.txt
 		try {
@@ -237,6 +237,7 @@ public class FastMasterEqn implements PDepKineticsEstimator {
 			fw.write("Pressures                           5\n");
 			fw.write("0.01 bar\n0.1 bar\n1 bar\n10 bar\n100 bar\n");
             fw.write("Grain size                          " + grainSize + " kJ/mol\n");
+			fw.write("Minimum grain energy                " + grainMinEnergy + " kJ/mol\n");
 			fw.write("Maximum grain energy                " + grainMaxEnergy + " kJ/mol\n");
 			fw.write("Number of unimolecular wells        " + uniIsomers.size() + "\n");
 			fw.write("Number of multimolecular wells      " + multiIsomers.size() + "\n");
@@ -255,9 +256,9 @@ public class FastMasterEqn implements PDepKineticsEstimator {
 				species.calculateLJParameters();
 				
 				fw.write("# Unimolecular well " + Integer.toString(i+1) + ": " + species.getName() + "(" + Integer.toString(species.getID()) + ")" + "\n");
-				fw.write("Ground-state energy                 " + (species.calculateH(stdTemp) - Eref) * 4.184 + " kJ/mol\n");
-				fw.write("Enthalpy of formation               " + (species.calculateH(stdTemp) - Eref) * 4.184 + " kJ/mol\n");
-				fw.write("Free energy of formation            " + (species.calculateG(stdTemp) - Eref) * 4.184 + " kJ/mol\n");
+				fw.write("Ground-state energy                 " + (species.calculateH(stdTemp) * 4.184) + " kJ/mol\n");
+				fw.write("Enthalpy of formation               " + (species.calculateH(stdTemp) * 4.184) + " kJ/mol\n");
+				fw.write("Free energy of formation            " + (species.calculateG(stdTemp) * 4.184) + " kJ/mol\n");
 				fw.write("LJ sigma parameter                  " + (species.getLJ().getSigma() * 1e-10) + " m\n");
 				fw.write("LJ epsilon parameter                " + (species.getLJ().getEpsilon() * 1.381e-23) + " J\n");
 				fw.write("Molecular weight                    " + species.getMolecularWeight() + " g/mol\n");
@@ -297,15 +298,15 @@ public class FastMasterEqn implements PDepKineticsEstimator {
 				fw.write("Number of species                   " + Integer.toString(isomer.getNumSpecies()) + "\n");
 				fw.write("Ground-state energy                 ");
 				for (int j = 0; j < isomer.getNumSpecies(); j++)
-					fw.write((isomer.calculateH(j, stdTemp) - Eref) * 4.184 + " kJ/mol    ");
+					fw.write((isomer.calculateH(j, stdTemp) * 4.184) + " kJ/mol    ");
 				fw.write("\n");
 				fw.write("Enthalpy of formation               ");
 				for (int j = 0; j < isomer.getNumSpecies(); j++)
-					fw.write((isomer.calculateH(j, stdTemp) - Eref) * 4.184 + " kJ/mol    ");
+					fw.write((isomer.calculateH(j, stdTemp) * 4.184) + " kJ/mol    ");
 				fw.write("\n");
 				fw.write("Free energy of formation            ");
 				for (int j = 0; j < isomer.getNumSpecies(); j++)
-					fw.write((isomer.calculateG(j, stdTemp) - Eref) * 4.184 + " kJ/mol    ");
+					fw.write((isomer.calculateG(j, stdTemp) * 4.184) + " kJ/mol    ");
 				fw.write("\n");
 				
 				fw.write("Harmonic oscillators                ");
@@ -380,13 +381,13 @@ public class FastMasterEqn implements PDepKineticsEstimator {
 				
 				// Calculate transition state energy = ground-state energy of reactant (isomer 1) + activation energy
 				double E0 = Ea + reactant.calculateH(stdTemp);
-						
+				
 				fw.write("# Reaction " + rxn.toString() + ":\n");
 				fw.write("Isomer 1                            " + isomer1 + "\n");
 				fw.write("Isomer 2                            " + isomer2 + "\n");
-				fw.write("Ground-state energy                 " + (E0 - Eref) * 4.184 + " kJ/mol\n");
+				fw.write("Ground-state energy                 " + (E0 * 4.184) + " kJ/mol\n");
 				fw.write("Arrhenius preexponential            " + A + " s^-1\n");
-				fw.write("Arrhenius activation energy         " + Ea * 4.184 + " kJ/mol\n");
+				fw.write("Arrhenius activation energy         " + (Ea * 4.184) + " kJ/mol\n");
 				fw.write("Arrhenius temperature exponent      " + n + "\n");
 				fw.write("\n");
 			}
@@ -597,12 +598,10 @@ public class FastMasterEqn implements PDepKineticsEstimator {
 	 * @param uniIsomers The set of unimolecular isomers in the network
 	 * @param multiIsomers The set of multimolecular isomers in the network
 	 * @param T The temperature of the calculation in K
-	 * @param Eref The reference energy (the energy used to shift all 
-	 * energies of the system such that the lowest one is zero) in kJ/mol
 	 * @return The maximum grain energy in kJ/mol
 	 */
 	private double getGrainMaxEnergy(LinkedList<PDepIsomer> uniIsomers, 
-			LinkedList<PDepIsomer> multiIsomers, double T, double Eref) {
+			LinkedList<PDepIsomer> multiIsomers, double T) {
 
 		double Emax = 0.0;
 		Temperature stdTemp = new Temperature(298, "K");
@@ -620,48 +619,47 @@ public class FastMasterEqn implements PDepKineticsEstimator {
 				Emax = E;
 		}
 		
-		Emax -= Eref;
 		Emax *= 4.184;
 		Emax += 25 * 0.008314 * T;
 		
 		// Round up to nearest ten kJ/mol
 		return Math.ceil(Emax / 10) * 10.0;	// [=] kJ/mol
 	}
-	
+
 	/**
-	 * Determines the reference energy: the energy used to shift all 
-	 * energies of the system such that the lowest one is zero. This reference
-	 * energy comes from the lowest enthalpy or free energy of formation in 
-	 * the network.
-	 * 
+	 * Determines the minimum energy grain to use in the calculation. The
+	 * maximum energy grain is chosen to be at or just below the energy of the
+	 * lowest energy isomer in the system.
+	 *
 	 * @param uniIsomers The set of unimolecular isomers in the network
 	 * @param multiIsomers The set of multimolecular isomers in the network
-	 * @param stdTemp The reference temperature in K
-	 * @return The reference energy in kJ/mol
+	 * @return The minimum grain energy in kJ/mol
 	 */
-	private double getReferenceEnergy(LinkedList<PDepIsomer> uniIsomers,
-			LinkedList<PDepIsomer> multiIsomers, Temperature stdTemp) {
-		
-		double Eref = 1000000.0;
-		for (ListIterator<PDepIsomer> iter = uniIsomers.listIterator(); iter.hasNext(); ) {
-			PDepIsomer isomer = iter.next();
-			for (int i = 0; i < isomer.getNumSpecies(); i++) {
-				double E = isomer.calculateH(i, stdTemp);
-				if (E < Eref) Eref = E; 
-			}
-		
-		}
-		for (ListIterator<PDepIsomer> iter = multiIsomers.listIterator(); iter.hasNext(); ) {
-			PDepIsomer isomer = iter.next();
-			for (int i = 0; i < isomer.getNumSpecies(); i++) {
-				double E = isomer.calculateH(i, stdTemp);
-				if (E < Eref) Eref = E; 
-			}
-		
-		}
-		return Eref;
-	}
+	private double getGrainMinEnergy(LinkedList<PDepIsomer> uniIsomers,
+			LinkedList<PDepIsomer> multiIsomers) {
 
+		double Emin = 1000000.0;
+		Temperature stdTemp = new Temperature(298, "K");
+
+		for (int i = 0; i < uniIsomers.size(); i++) {
+			PDepIsomer isomer = uniIsomers.get(i);
+			double E = isomer.calculateH(stdTemp);
+			if (E < Emin)
+				Emin = E;
+		}
+		for (int n = 0; n < multiIsomers.size(); n++) {
+			PDepIsomer isomer = multiIsomers.get(n);
+			double E = isomer.calculateH(stdTemp);
+			if (E < Emin)
+				Emin = E;
+		}
+
+		Emin *= 4.184;
+
+		// Round down to nearest ten kJ/mol
+		return Math.floor(Emin / 10) * 10.0;	// [=] kJ/mol
+	}
+	
 	/**
 	 * Determines a suitable grain size for the calculation. Too small a grain
 	 * size will cause the simulation to take a very long time to conduct; too 
@@ -670,19 +668,20 @@ public class FastMasterEqn implements PDepKineticsEstimator {
 	 * as the system does, so as to not get completely bogged down in the
 	 * larger networks.
 	 * 
+	 * @param grainMinEnergy The minimum energy grain in kJ/mol
 	 * @param grainMaxEnergy The maximum energy grain in kJ/mol
 	 * @param numUniWells The number of unimolecular isomers in the network.
 	 * @return
 	 */
-	private double getGrainSize(double grainMaxEnergy, int numUniWells) {
+	private double getGrainSize(double grainMinEnergy, double grainMaxEnergy, int numUniWells) {
 		if (numUniWells < 5)
-			return grainMaxEnergy / 200;
+			return (grainMaxEnergy - grainMinEnergy) / 200;
 		else if (numUniWells < 10)
-			return grainMaxEnergy / 100;
+			return (grainMaxEnergy - grainMinEnergy) / 100;
 		else if (numUniWells < 20)
-			return grainMaxEnergy / 50;
+			return (grainMaxEnergy - grainMinEnergy) / 50;
 		else
-			return grainMaxEnergy / 20;
+			return (grainMaxEnergy - grainMinEnergy) / 20;
 	}
 
 	/**
