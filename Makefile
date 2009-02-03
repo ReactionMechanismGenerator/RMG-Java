@@ -90,7 +90,7 @@ linkcheck:
 	      "or in build/linkcheck/output.txt."
 
 upload:
-	rsync -rtz -e ssh build/html/* athena.dialup.mit.edu:www/RMG/
-	rsync -rtz -e ssh build/latex/*.pdf athena.dialup.mit.edu:www/RMG/
+	rsync -vrtz --rsh=ssh build/html/* athena.dialup.mit.edu:www/RMG/
+	rsync -vrtz --rsh=ssh build/latex/*.pdf athena.dialup.mit.edu:www/RMG/
 	#scp -r build/html/* athena.dialup.mit.edu:www/RMG/
 	#scp build/latex/*.pdf athena.dialup.mit.edu:www/RMG/
