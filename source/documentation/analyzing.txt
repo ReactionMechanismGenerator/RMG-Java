@@ -37,8 +37,10 @@ the directory ``RMG/software/RMG/``. Generally, there are five outputs from RMG:
 #. ``chem.inp`` and ``therm.dat`` (located in ``./chemkin``).  These are the
    Chemkin model and thermodynamic data input files of the model. The file
    ``chem.inp`` lists the elements, species, reactions, and thermodynamic data
-   (without N$_2$, Ar, or Ne) for the model. The full list of thermodynamic data
-   (with N$_2$, Ar, or Ne) can be found in ``therm.dat``. ---
+   (without |N2|, Ar, or Ne) for the model. The full list of thermodynamic data
+   (with |N2|, Ar, or Ne) can be found in ``therm.dat``. ---
+
+.. |N2| replace:: N\ :sub:`2`\ 
 
 #. ``RMG_Dictionary.txt``.  This file lists all the species by name that are
    used in the model, as well as their adjacency list;  consequently, it will allow

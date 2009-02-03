@@ -3,8 +3,6 @@
 Installing RMG
 ==============
 
-
-
 .. index:: DASSL, DASPK, DAEPACK, requirements, license
 
 .. _licenserequirements:
@@ -136,14 +134,14 @@ Windows Installation
 
    * Click OK twice to confirm the change.
 
-#. Install g95 (Fortran compiler for Windows) bye downloading and running g95-MinGW.exe from http://ftp.g95.org/#Win (http://ftp.g95.org/g95-MinGW.exe) to install g95. Note: After compiling of GATPFit and DASSL is complete (see next two steps), this program may be uninstalled.
+#. Install g95 (Fortran compiler for Windows) by downloading and running g95-MinGW.exe from http://ftp.g95.org/#Win (http://ftp.g95.org/g95-MinGW.exe) to install g95. Note: After compiling of GATPFit and DASSL is complete (see next two steps), this program may be uninstalled.
 
 #. Compile GATPFit using the Command Prompt (Start-->All Programs-->Accessories -->Command Prompt), change directory to GATPFit directory based on RMG installation directory (e.g. cd \rmg\software\GATPFit\GATPFit). Compile the Fortran files by typing ``g95 -o ../GATPFit *.f`` on the command prompt.
 
 #. Download and compile DASSL by downloading DASSL from
    http://www.engineering.ucsb.edu/~cse/software.html and extract the
-   three Fortran files ``ddassl.f, daux.f and dlinpk.f`` to the dassl
-   directory ``(e.g. c:\RMG\software\ODESolver\dassl)``. To compile the
+   three Fortran files :file:`ddassl.f`, :file:`daux.f` and :file:`dlinpk.f` to the dassl
+   directory (e.g. ``C:\RMG\software\ODESolver\dassl``). To compile the
    Fortran files use the command prompt and change to dassl directory and
    then type ``g95 -o ../dassl *.f`` on the command prompt.
 

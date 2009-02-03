@@ -10,18 +10,19 @@ located in any directory, although it is advised that you create a special
 directory for RMG simulations, since each ``condition.txt`` creates its own
 subdirectories. If you are using a Windows machine, the ``condition.txt`` must
 remain in ``RMG/condition`` (please consult Section :ref:`runninginwindows`).
----  The ``condition.txt`` file should specify the following conditions (in
-order):
 
-#. Whether to restart a prior run
+The ``condition.txt`` file should specify the following conditions, in
+order:
 
-#. The main database
+#. Whether to :ref:`restart <restart>` a prior run
 
-#. The primary thermodynamic library
+#. The main :ref:`database`
 
-#. The initial temperature and pressure of the system
+#. The :ref:`primary thermodynamic library <primarythermolibrary>`
 
-#. The method to use to estimate spectroscopic data for each species
+#. The :ref:`initial temperature and pressure <initialconditions>` of the system
+
+#. The method to use to estimate :ref:`spectroscopic data <spectroscopicdata>` for each species
 
 #. The name, concentration, and chemical structure of the reactants
 
@@ -76,6 +77,7 @@ simulation is new, then the restart command must be set to::
 
    Restart: false
 
+.. _database:
 
 Database
 --------
@@ -110,6 +112,8 @@ set to its default value::
    PrimaryThermoLibrary: primaryThermoLibary
 
 
+.. _initialconditions:
+
 Initial Conditions
 ------------------
 
@@ -124,6 +128,8 @@ begins at 600 Kelvin and 200 atmospheres::
    TemperatureModel: Constant (K) 600
    PressureModel: Constant (atm) 200 
 
+
+.. _spectroscopicdata:
 
 Spectroscopic Data
 ------------------
@@ -203,7 +209,7 @@ Inert Gases
 -----------
 
 Following InitialStatus, the initialization file specifies which inert gases, if
-any, are used. Currently RMG can handle three inert gases: N$_2$, Ne, and Ar. If
+any, are used. Currently RMG can handle three inert gases: |N2|, Ne, and Ar. If
 one of the gases is not used, set the concentration to 0.0 (mol/cm3). If no bath
 gas is used, set all concentrations to zero. In the example below, there is no
 nitrogen, the neon is omitted, and the argon concentration is 2.21E-6 (mol/cm3)::
@@ -213,6 +219,8 @@ nitrogen, the neon is omitted, and the argon concentration is 2.21E-6 (mol/cm3):
   Ar 2.21E-6 (mol/cm3)
   END
 
+.. |N2| replace:: N\ :sub:`2`\ 
+
 Please note that the keyword ``END`` must be placed at the end of the InertGas
 section.
 
@@ -221,25 +229,28 @@ Reaction Model Enlarger
 -----------------------
 
 The Reaction Model Enlarger specifies the rules for reaction mechanism growth.
-There are two options: RateBasedModelEnlarger and RateBasedPDepModelEnlarger.
+There are two options: ``RateBasedModelEnlarger`` and ``RateBasedPDepModelEnlarger``.
 The former ignores pressure dependence of reaction networks, while the latter
-considers them. Choosing RateBasedModelEnlarger implies that the line should 
+considers them. To choose ``RateBasedModelEnlarger`` the line should 
 read::
 
   ReactionModelEnlarger: RateBasedModelEnlarger
 
-Choosing RateBasedPDepModelEnlarger also requires specification of a method to
+Choosing ``RateBasedPDepModelEnlarger`` also requires specification of a method to
 use when approximating pressure-dependent kinetics. There are currently two
-such options: ModifiedStrongCollision and ReservoirState. The former utilizes
+such options: ``ModifiedStrongCollision`` and ``ReservoirState``. The former utilizes
 the modified strong collision approach of A.Y. Chang, J.W. Bozzelli, and 
-A. M. Dean, and works reasonably well while running more rapidly. The latter 
+A. M. Dean [ChangXXXX]_, and works reasonably well while running more rapidly. The latter 
 utilizes the steady state/reservoir state approach of N. J. B. Green and 
-Z. A. Bhatti, and is more accurate but more expensive. Such a specification
+Z. A. Bhatti [GreenXXXX]_, and is more accurate but more expensive. Such a specification
 would look as follows::
  
   ReactionModelEnlarger: RateBasedPDepModelEnlarger
   PDepKineticsEstimator: ModifiedStrongCollision
 
+.. [ChangXXXX] Can we have a full citation here?
+
+.. [GreenXXXX] Can we have a full citation here?
 
 Finish Controller
 -----------------
@@ -247,10 +258,10 @@ Finish Controller
 The Finish Controller defines the termination rules for model growth.
 Additionally, it includes the precision parameters such as reaction time,
 conversion, and error tolerance. Currently, there are two finish controllers:
-RateBasedFinishController and RateBasedPDepFinishController. A choice of 
-RateBasedModelEnlarger for the Reaction Model Enlarger should coincide with a
-choice of RateBasedFinishController, while RateBasedPDepModelEnlarger and
-RateBasedPDepFinishController should also be paired.
+``RateBasedFinishController`` and ``RateBasedPDepFinishController``. A choice of 
+``RateBasedModelEnlarger`` for the Reaction Model Enlarger should coincide with a
+choice of ``RateBasedFinishController``, while ``RateBasedPDepModelEnlarger`` and
+``RateBasedPDepFinishController`` should also be paired.
 
 Below the Finish Controller line, you must specify the goal. The goal tells the
 program when to terminate the reaction model expansion. There are two goal
@@ -281,10 +292,12 @@ instead of ``Goal Reaction Time``, since it is difficult to judge *a priori*
 what the reaction time should be.
 
 For a more detailed description on rate-based model enlargement, please consult
-the paper "Rate-Based Construction of Kinetic Models for Complex Systems" by
-Roberta G. Susnow, Anthony M. Dean, William H. Green, Pawel K. Peczak, and Linda
-J. Broadbelt, in the *Journal of Physical Chemistry A*, Vol. 101, pages 3731-40,
-1997 (doi:`10.1021/jp9637690 <http://dx.doi.org/10.1021/jp9637690>`_).
+[Susnow1997]_.
+
+.. [Susnow1997] "Rate-Based Construction of Kinetic Models for Complex Systems" by
+  Roberta G. Susnow, Anthony M. Dean, William H. Green, Pawel K. Peczak, and Linda
+  J. Broadbelt, in the *Journal of Physical Chemistry A*, Vol. 101, pages 3731-40,
+  1997 (doi:`10.1021/jp9637690 <http://dx.doi.org/10.1021/jp9637690>`_).
 
 
 Dynamic Simulator
@@ -313,7 +326,7 @@ Sensitivity Analysis
 As long as DASPK is chosen for the dynamic solver, RMG can perform sensitivity
 analysis and generate error bars on the concentration profiles. The sensitivity
 analysis is based upon first-order sensitivity coefficients and uncertainties in
-the rate constants. To utilize the sensitivity analysis, either the first or
+the rate constants. To use the sensitivity analysis, either the first or
 second line must be set to ``on``. If both ``Error bars`` and ``Display
 sensitivity coefficients`` are set to off, then RMG will not perform a
 sensitivity analysis. 
