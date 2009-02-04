@@ -73,12 +73,13 @@ contains
 	!	bi - Equilibrium distributions for unimolecular wells
 	! 	bn - Equilibrium distributions for bimolecular wells
 	!	K - The calculated phenomenologicate rate coefficient matrix in s^-1.
-	subroutine ssrsRates(simData, uniData, rxnData, nRes, Mi, Hn, Kij, Fim, Gnj, Jnm, bi, bn, K)
+	subroutine ssrsRates(simData, uniData, multiData, rxnData, nRes, Mi, Hn, Kij, Fim, Gnj, Jnm, bi, bn, K)
 
 		! Provide parameter type checking of inputs and outputs
 		type(Simulation), intent(in)				:: 	simData
 		type(Isomer), dimension(:), intent(in)		:: 	uniData
-		type(Reaction), dimension(:), intent(in)	:: 	rxnData
+		type(Isomer), dimension(:), intent(in)      ::  multiData
+        type(Reaction), dimension(:), intent(in)	:: 	rxnData
 		integer, dimension(:), intent(in) 			:: 	nRes
 		real(8), dimension(:,:,:), intent(in)		:: 	Mi
 		real(8), dimension(:,:,:), intent(in)		:: 	Hn
@@ -109,7 +110,8 @@ contains
 		real(8), dimension(:), allocatable				::	work
 		! Variables for shorthand
 		integer	nUni, nMulti, nGrains
-		
+		integer found
+        
 		nUni = simData%nUni
 		nMulti = simData%nMulti
 		nGrains = simData%nGrains
@@ -143,10 +145,10 @@ contains
 ! 		call fullInverse(L, nAct)
 
 		! Renormalize unimolecular distributions such that the reservoir grains sum to unity
-		do i = 1, nUni
-    		bi(:,i) = bi(:,i) / sum(bi(1:nRes(i),i));
-		end do
-
+		!do i = 1, nUni
+    	!	bi(:,i) = bi(:,i) / sum(bi(1:nRes(i),i))
+		!end do
+        
 		! Initialize phenomenological rate coefficient matrix
 		do i = 1, nUni + nMulti
 			do j = 1, nUni + nMulti
@@ -167,14 +169,15 @@ contains
 		
 			! Reservoir rearrangement terms (on diagonal)
 			! || M_irr * b_ir ||
-			call DGEMV('N', nRes(i), nRes(i), &
-				one, Mi(1:nRes(i), 1:nRes(i), i), nRes(i), &
-				bi(1:nRes(i), i), 1, &
-				zero, tempV1(1:nRes(i)), 1)
-			K(i,i) = K(i,i) + sum( tempV1(1:nRes(i)) )	
+! 			call DGEMV('N', nRes(i), nRes(i), &
+! 				one, Mi(1:nRes(i), 1:nRes(i), i), nRes(i), &
+! 				bi(1:nRes(i), i), 1, &
+! 				zero, tempV1(1:nRes(i)), 1)
+! 			K(i,i) = K(i,i) + sum( tempV1(1:nRes(i)) )	
 			
 			! Unimolecular reaction/collision terms
 			do j = 1, nUni
+            if (i /= j) then
 				! M_jar * b_jr
 				call DGEMV('N', nAct(j), nRes(j), &
 					one, Mi(nRes(j)+1:nGrains, 1:nRes(j), j), nAct(j), &
@@ -191,7 +194,8 @@ contains
 					tempV2(1:nAct(i)), 1, &
 					zero, tempV1(1:nRes(i)), 1)
 				! || M_ira * L_ij * M_jar * b_jr || 
-				K(i,j) = K(i,j) - sum( tempV1(1:nRes(i)) )			
+				K(i,j) = K(i,j) - sum( tempV1(1:nRes(i)) )	
+            end if
 			end do
 		
 			! Bimolecular reaction terms
@@ -218,17 +222,17 @@ contains
 
 		end do
 		
-		! Bimolecular rows of phenomenological rate coefficient matrix
+        ! Bimolecular rows of phenomenological rate coefficient matrix
 		! ------------------------------------------------------------
 		do n = 1, nMulti
 		
 			! Loss term (on diagonal)
 			! || H_n * b_n ||
-			call DGEMV('N', nGrains, nGrains, &
-				one, Hn(:, :, n), nGrains, &
-				bn(:, n), 1, &
-				zero, tempV1(1:nGrains), 1)
-			K(nUni+n,nUni+n) = K(nUni+n,nUni+n) + sum( tempV1(1:nGrains) )	
+! 			call DGEMV('N', nGrains, nGrains, &
+! 				one, Hn(:, :, n), nGrains, &
+! 				bn(:, n), 1, &
+! 				zero, tempV1(1:nGrains), 1)
+! 			K(nUni+n,nUni+n) = K(nUni+n,nUni+n) + sum( tempV1(1:nGrains) )	
 			
 			! Bimolecular-bimolecular interconversion terms - commented because it was assumed that there weren't any of these
 			! || J_nm * b_m ||
@@ -242,7 +246,7 @@ contains
 ! 				end if
 ! 			end do
 			
-			! Unimolecular reaction terms
+            ! Unimolecular reaction terms
 			do j = 1, nUni
 				do i = 1, nUni
 					if (Gnj(nGrains,n,i) /= 0) then
@@ -268,7 +272,7 @@ contains
 			do m = 1, nMulti
 				do i = 1, nUni
 					do j = 1, nUni
-						if (Fim(nGrains,j,m) /= 0 .and. Gnj(nGrains,n,i) /= 0) then
+						if (Fim(nGrains,j,m) /= 0 .and. Gnj(nGrains,n,i) /= 0 .and. n /= m) then
 							! F_jma * b_m
 							tempV3(1:nAct(j)) =  Fim(nRes(j)+1:nGrains, j, m) * bn(nRes(j)+1:nGrains, m)
 							! L_ij * F_jma * b_m
@@ -287,16 +291,15 @@ contains
 		
 		end do
 
-! 		! Sign check on K matrix (not sure why this is necessary...)
-!         do i = 1, nUni+nMulti
-!             do j = 1, nUni+nMulti
-!                 if (i == j) then
-!                     if (K(i,j) > 0) K(i,j) = -K(i,j)
-!                 else
-!                     if (K(i,j) < 0) K(i,j) = abs(K(i,j))
-!                 end if
-!             end do  
-!         end do
+ 		! Must divide all k(T,P) in uni rows by || b^ir(E) ||
+        do i = 1, nUni
+            do j = 1, nUni
+                K(i,j) = K(i,j) / sum(bi(1:nRes(i),i))
+            end do
+            do m = 1, nMulti
+                K(i,nUni+m) = K(i,nUni+m) / sum(bi(1:nRes(i),i))
+            end do
+        end do
         
         ! Clean up
 		deallocate( tempV1, tempV2, tempV3 )	
@@ -353,7 +356,6 @@ contains
 		real(8), dimension(:,:), intent(in)			:: 	bi
 		
 		real(8), dimension(:,:), allocatable		:: 	ai
-		real(8), dimension(:), allocatable			:: 	eqRatio
 		integer i, j, nUni, nGrains, offI, offJ, r, s
 		! Variables for BLAS and LAPACK
 		integer, dimension(:), allocatable			::	iPiv
@@ -366,12 +368,10 @@ contains
 		
 		! Determine equilibrium ratio and apply to equilibrium distributions
 		allocate( ai(1:nGrains,1:nUni) )
-		allocate( eqRatio(1:nUni) )
-		call calcUniEqRatios(simData, uniData, rxnData, bi, eqRatio)
 		do i = 1, nUni
-			ai(:,i) = (eqRatio(i) * bi(:,i))**0.5
-		end do
-		
+            ai(:,i) = bi(:,i)**0.5
+        end do
+        
 		! Symmetrize upper triangular half of matrix L
 		do i = 1, nUni
 			offI = sum(nAct(1:i))
@@ -437,100 +437,11 @@ contains
 		end do
 		
 		! Clean up
-		deallocate( ai, eqRatio )
+		deallocate( ai )
 		
 		
 	end subroutine
 	
 	! --------------------------------------------------------------------------
-	
-	! Subroutine: calcUniEqRatios()
-	! 
-	! Calculates the ratios of the concentrations of each unimolecular well
-	! at equilibrium.
-	!
-	! Parameters:
-	!
-	subroutine calcUniEqRatios(simData, uniData, rxnData, bi, C)
-	
-		type(Simulation), intent(in)				:: 	simData
-		type(Isomer), dimension(:), intent(in)		:: 	uniData
-		type(Reaction), dimension(:), intent(in)	:: 	rxnData
-		real(8), dimension(:,:), intent(in)			:: 	bi
-		real(8), dimension(:), intent(out)			:: 	C
-		
-		real(8), dimension(:), allocatable			:: 	nAct
-		real(8), dimension(:,:), allocatable		:: 	ai
-		real(8), dimension(:,:), allocatable		:: 	A
-		real(8), dimension(:), allocatable			:: 	b
-		integer i, j, t, ind, nUni, nGrains
-		real(8) Hrxn, Grxn, Keq_298, Keq
-		integer, dimension(:), allocatable			:: iPiv
-		integer info
-		
-		nUni = simData%nUni
-		nGrains = simData%nGrains
-		
-		! Nothing to do if only one unimolecular well
-		if (nUni == 1) then
-			C(1) = 1
-			return
-		end if
-		
-		allocate( A(1:nUni,1:nUni) )
-		allocate( b(1:nUni) )
-		A = 0.0 * A
-		b = 0.0 * b
-		
-		! Determine rate coefficients for each reaction
-		! This is done by iterating over transition states
-		ind = 1
-		do t = 1, simData%nRxn
-			if (rxnData(t)%isomer(1) <= simData%nUni .and. rxnData(t)%isomer(2) <= simData%nUni .and. ind < nUni) then			! bi <---> bi
-				
-				! Determine the wells involved
-				i = rxnData(t)%isomer(1)
-				j = rxnData(t)%isomer(2)
-				
-				! Determine equilibrium constant at rxn conditions from thermochemical data
-				Hrxn = sum(uniData(i)%H) - sum(uniData(j)%H)
-				Grxn = sum(uniData(i)%G) - sum(uniData(j)%G)
-				Keq_298 = exp(-Grxn * 1000. / 8.314472 / 298.) 
-				Keq = Keq_298 * exp(-Hrxn * 1000. / 8.314472 * (1./simData%T - 1./298.))
-								
-				A(ind,i) = -1
-				A(ind,j) = Keq
-				do k = 1, simData%nUni
-					if (k /= i .and. k /= j) A(ind,k) = 0
-				end do
-				b(ind) = 0
-				ind = ind + 1
-				
-			end if
-		end do
-		
-        if (ind /= nUni) then
-			write (*,*), 'ERROR: Incorrect number of isomerization reactions!'
-			stop
-		end if
-		
-		do i = 1, nUni-1
-			A(nUni,i) = 0
-		end do
-		A(nUni,nUni) = 1
-		b(nUni) = 1
-
-		allocate( iPiv(1:nUni) )
-		call DGESV( nUni, 1, A, nUni, iPiv, b, nUni, info )
-		if (info > 0) then
-			write (*,*), "Equilibrium ratio matrix is singular!"
-			stop
-		end if
-		
-		C = b / sum(b)
-		
-		deallocate( A, b, iPiv )
-		
-	end subroutine
 
 end module

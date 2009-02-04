@@ -160,12 +160,10 @@ contains
 			do i = 1, simData%nUni
 				if (i /= src) then
 					val = eps * w(i) * sum(p(:,i))
-					val = abs(val)
 					K(i,src) = K(i,src) + val
 					K(src,src) = K(src,src) - val
 				end if
 			end do
-			
 			
 			! Dissociation rates (i.e.) R + R' --> Bn + Cn or M --> Bn + Cn
 			if (src <= simData%nUni) then
@@ -174,7 +172,6 @@ contains
 					do n = 1, simData%nMulti
 						if (Gnj(simData%nGrains,n,i) > 0) then
 							val = sum(Gnj(:,n,i) * p(:,i))
-							val = abs(val)
 							K(n+simData%nUni,src) = K(n+simData%nUni,src) + val
 							K(src,src) = K(src,src) - val
 						end if
@@ -186,7 +183,6 @@ contains
 					do n = 1, simData%nMulti
 						if (n /= src - simData%nUni .and. Gnj(simData%nGrains,n,i) > 0) then
 							val = sum(Gnj(:,n,i) * p(:,i))
-							val = abs(val)
 							K(n+simData%nUni,src) = K(n+simData%nUni,src) + val
 							K(src,src) = K(src,src) - val
 						end if
@@ -195,15 +191,6 @@ contains
 			end if
 			
 		end do
-
-		! DEBUG: Sign check
-! 		do i = 1, simData%nUni + simData%nMulti
-! 			do j = 1, simData%nUni + simData%nMulti
-! 				if (i /= j) then
-! 					if (K(i,j) < 0) write (*,*), K(i,j), 'WARNING: Sign at', i, ',', j, 'is negative.'
-! 				end if
-! 			end do
-! 		end do
 
 		! Clean up
 		deallocate( w, A, b, iPiv, p )

@@ -207,7 +207,7 @@ program fame
 			elseif (simData%mode == 2) then
 				! Apply steady state/reservoir state approximations
 				if (verbose >= 3) write (*,*), '\t\tApplying steady-state/reservoir-state approximation...'
-				call ssrsRates(simData, uniData, rxnData, nRes, Mi, Hn, Kij, Fim, Gnj, Jnm, bi, bn, K(t,p,:,:))
+				call ssrsRates(simData, uniData, multiData, rxnData, nRes, Mi, Hn, Kij, Fim, Gnj, Jnm, bi, bn, K(t,p,:,:))
 			else
 				write (*,*), 'ERROR: An invalid solution mode was provided!'
 				stop
@@ -216,10 +216,36 @@ program fame
 		end do
 	end do
 
+    ! Make sure sign of all k(T, P) is correct
+    found = 0
+    do t = 1, size(simData%Tlist)
+        do p = 1, size(simData%Plist)
+            do i = 1, simData%nUni + simData%nMulti
+                do j = 1, simData%nUni + simData%nMulti
+                    if (i == j) then
+                        if (K(t,p,i,j) > 0) then
+                            K(t,p,i,j) = -K(t,p,i,j)
+                            found = 1
+                        end if
+                    else
+                        if (K(t,p,i,j) < 0) then
+                            K(t,p,i,j) = abs(K(t,p,i,j))
+                            found = 1
+                        end if
+                    end if
+                end do  
+            end do
+        end do
+    end do
+    if (found == 1) then
+        write(*,*) 'WARNING: Absolute value of one or more fitted rate coefficients taken to ensure nonnegativity.'
+    end if
+
 !     do t = 1, size(simData%Tlist)
 !         do p = 1, size(simData%Plist)
+!             write (*,*) 'T =', simData%Tlist(t), 'K, P =', simData%Plist(p), 'bar:'
 !             do i = 1, simData%nUni + simData%nMulti
-!                 write (*,*), K(t,p,i,:)
+!                 write (*,*), '\t', K(t,p,i,:)
 !             end do
 ! 		end do
 !     end do
