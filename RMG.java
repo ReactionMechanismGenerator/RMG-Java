@@ -53,7 +53,11 @@ public class RMG {
 	while (iter.hasNext()){
 		int i=1;
 		Species spe = (Species) iter.next();
-		coreSpecies = coreSpecies + spe.getChemkinName()+ " " + spe.getInChI() + "\n"+spe.getChemGraph().toString(i)+"\n\n";
+		coreSpecies = coreSpecies + spe.getChemkinName();
+		if (spe.useInChI) {
+			coreSpecies += " " + spe.getInChI();
+		}
+		coreSpecies += "\n"+spe.getChemGraph().toString(i)+"\n\n";
 	}
 	try{
 		File rmgDictionary = new File("RMG_Dictionary.txt");

@@ -97,6 +97,9 @@ public class Species {
     // they won't be consumed by reactions (will lead to mass creation!)
     protected boolean constantConcentration = false;
     
+    // Flag which specifies whether to generate InChIs
+	public static boolean useInChI = false;
+    
     protected HashSet paths;
     
     // Constructors
@@ -122,7 +125,7 @@ public class Species {
         //generateThreeFrequencyModel();
 		spectroscopicData = new SpectroscopicData();
         generateSpectroscopicData();
-        InChI = p_chemGraph.getInChI();
+        if (useInChI) InChI = p_chemGraph.getInChI();
         //#]
     }
 
@@ -1015,9 +1018,9 @@ public class Species {
 		int atomCount = 1;
 		int atomBondCount = 0;
 		
-		// Assume molecule has <= 50 atoms
+		// Assume molecule has <= 100 atoms
 		// Assume no atom can have > 6 unique bonds
-		int maxAtoms = 50;
+		int maxAtoms = 100;
 		int maxBonds = 6;
 		String[] elementSymbol = new String[maxAtoms];
 		String[] radical = new String[maxAtoms];

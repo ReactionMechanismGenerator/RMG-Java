@@ -271,6 +271,21 @@ public class ReactionModelGenerator {
         	}
         	else throw new InvalidSymbolException("condition.txt: can't find SpectroscopicDataEstimator!");
 			
+        	// Read in InChI generation
+        	line = ChemParser.readMeaningfulLine(reader);
+        	if (line.startsWith("InChIGeneration:")) {
+        		StringTokenizer st = new StringTokenizer(line);
+        		String name = st.nextToken();
+        		String inchiOnOff = st.nextToken().toLowerCase();
+        		if (inchiOnOff.equals("on")) {
+        			Species.useInChI = true;
+        		} else if (inchiOnOff.equals("off")) {
+        			Species.useInChI = false;
+        		}
+        		else throw new InvalidSymbolException("condition.txt: Unknown InChIGeneration flag: " + inchiOnOff);
+        	}
+        	else throw new InvalidSymbolException("condition.txt: Cannot find InChIGeneration flag.");
+        	
 			// read in reactants
         	line = ChemParser.readMeaningfulLine(reader);
 
