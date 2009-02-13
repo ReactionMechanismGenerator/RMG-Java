@@ -49,11 +49,13 @@ import jing.chemUtil.HierarchyTree;
 //----------------------------------------------------------------------------
 
 /**
-There are four libraries:
+There are six libraries:
 (1) group
 (2) radical
 (3) ring correction
 (4) other correction
+(5) gauche correction
+(6) 1,5 correction
 In each library, the key should be functional group (name + adjList), and the value should be ThermoGAValue.
 for (2), (3), (4), we scan the library to find match between chemgraph and functional group each time. search time O(n), where n is the library size.
 for (1), we first match chemgraph with a tree structure to find out the proper functional group, and then access the library by the key functional group, so the search tiem is O(1) + O(logN), where N is the tree size.
@@ -90,6 +92,14 @@ public class ThermoGAGroupLibrary {
  // end pey
 
     protected HashMap ringLibrary;		//## attribute ringLibrary
+    
+    protected HashMap gaucheDictionary;		
+    protected HashMap gaucheLibrary;		
+    protected HierarchyTree gaucheTree;	
+    
+    protected HashMap oneFiveDictionary;		
+    protected HashMap oneFiveLibrary;		
+    protected HierarchyTree oneFiveTree;	
 
 
     // Constructors
@@ -111,6 +121,14 @@ public class ThermoGAGroupLibrary {
         otherLibrary = new HashMap();
         otherDictionary = new HashMap();
         otherTree = new HierarchyTree();
+        
+        gaucheLibrary = new HashMap();
+        gaucheDictionary = new HashMap();
+        gaucheTree = new HierarchyTree();
+        
+        oneFiveLibrary = new HashMap();
+        oneFiveDictionary = new HashMap();
+        oneFiveTree = new HierarchyTree();
 
         String directory = System.getProperty("jing.chem.ThermoGAGroupLibrary.pathName");
         if (directory == null) {
@@ -137,8 +155,16 @@ public class ThermoGAGroupLibrary {
         // end pey
         String otherLibrary = directory + "Other_Library_Dictionary.txt";
         String otherTree = directory + "Other_Tree.txt";
-
-		read(gDictionary,gTree,gLibrary,rDictionary,rTree,rLibrary,ringDictionary,ringTree,ringLibrary,otherLibrary,otherTree);
+        
+        String gauDictionary = directory + "Gauche_Dictionary.txt";
+        String gauTree = directory + "Gauche_Tree.txt";
+        String gauLibrary = directory + "Gauche_Library.txt";
+        
+        String one5Dictionary = directory + "15_Dictionary.txt";
+        String one5Tree = directory + "15_Tree.txt";
+        String one5Library = directory + "15_Library.txt";
+	
+        read(gDictionary,gTree,gLibrary,rDictionary,rTree,rLibrary,ringDictionary,ringTree,ringLibrary,otherLibrary,otherTree,gauDictionary,gauTree,gauLibrary,one5Dictionary,one5Tree,one5Library);
 
 
 
@@ -170,7 +196,7 @@ public class ThermoGAGroupLibrary {
         		}
         	}
         }
-
+        p_chemGraph.getGraph().resetMatchedGC();
         return result;
         //#]
     }
@@ -186,6 +212,7 @@ public class ThermoGAGroupLibrary {
         if (p_chemGraph == null) return null;
 
         Stack stack = groupTree.findMatchedPath(p_chemGraph);
+        p_chemGraph.getGraph().resetMatchedGC();//2/13/09 gmagoon: resetting the matched GC value...for some reason, thermoLibrary.findGAGroup (within getGAGroup in GATP.java) ended up modifiying the central node so that it was matched; this ended up wreaking havoc with subsequent symmetry number calculations; ideally, I would probably want to fix the code so that it didn't end up modifying the matchedGC from the null value after it is done with it, but I do not immediately see how to due so, and debugging proved extremely difficult; I have also tried to put this elsewhere in this class where it might be appropriate
         if (stack == null) return null;
 
         while (!stack.empty()) {
@@ -194,7 +221,7 @@ public class ThermoGAGroupLibrary {
         	ThermoGAValue ga = (ThermoGAValue)groupLibrary.get(fg);
         	if (ga != null) return ga;
         }
-
+        
         return null;
 
 
@@ -208,6 +235,7 @@ public class ThermoGAGroupLibrary {
         if (p_chemGraph == null) return null;
 
         Stack stack = otherTree.findMatchedPath(p_chemGraph);
+        p_chemGraph.getGraph().resetMatchedGC();
         if (stack == null) return null;
 
         while (!stack.empty()) {
@@ -216,7 +244,7 @@ public class ThermoGAGroupLibrary {
         	ThermoGAValue ga = (ThermoGAValue)otherLibrary.get(fg);
         	if (ga != null) return ga;
         }
-
+     
         return null;
 
 
@@ -231,6 +259,7 @@ public class ThermoGAGroupLibrary {
         if (p_chemGraph == null) return null;
 
         Stack stack = radicalTree.findMatchedPath(p_chemGraph);
+        p_chemGraph.getGraph().resetMatchedGC();
         if (stack == null) return null;
 
         while (!stack.empty()) {
@@ -295,16 +324,62 @@ public class ThermoGAGroupLibrary {
 	                ThermoGAValue ga = (ThermoGAValue)ringLibrary.get(fg);
 	                if (ga != null) return ga;
 	        }
-
+                p_chemGraph.getGraph().resetMatchedGC();
 	        return null;
 	        // end pey
 
 	        //#]
 	    }
 
+    //2/5/09 gmagoon: new functions for gauche and 1,5-interactions
+        /**
+    Requires: the central node of p_chemGraph has been set to the thermo center atom.
+    Effects: find a matched thermo functional group in the group tree for the pass-in p_chemGraph, return this functional group's thermo value.  If no leaf is found, throw  GroupNotFoundException
+    Modifies:
+    */
+    public ThermoGAValue findGaucheGroup(ChemGraph p_chemGraph) throws MultipleGroupFoundException, InvalidCenterTypeException {
+        //#[ operation findGAGroup(ChemGraph)
+        if (p_chemGraph == null) return null;
+
+        Stack stack = gaucheTree.findMatchedPath(p_chemGraph);
+        p_chemGraph.getGraph().resetMatchedGC();
+        if (stack == null) return null;
+
+        while (!stack.empty()) {
+        	HierarchyTreeNode node = (HierarchyTreeNode)stack.pop();
+        	Matchable fg = (Matchable)node.getElement();
+        	ThermoGAValue ga = (ThermoGAValue)gaucheLibrary.get(fg);
+        	if (ga != null) return ga;
+        }
+
+        return null;
+    }
+    
+            /**
+    Requires: the central node of p_chemGraph has been set to the thermo center atom.
+    Effects: find a matched thermo functional group in the group tree for the pass-in p_chemGraph, return this functional group's thermo value.  If no leaf is found, throw  GroupNotFoundException
+    Modifies:
+    */
+    public ThermoGAValue find15Group(ChemGraph p_chemGraph) throws MultipleGroupFoundException, InvalidCenterTypeException {
+        //#[ operation findGAGroup(ChemGraph)
+        if (p_chemGraph == null) return null;
+
+        Stack stack = oneFiveTree.findMatchedPath(p_chemGraph);
+        p_chemGraph.getGraph().resetMatchedGC();
+        if (stack == null) return null;
+
+        while (!stack.empty()) {
+        	HierarchyTreeNode node = (HierarchyTreeNode)stack.pop();
+        	Matchable fg = (Matchable)node.getElement();
+        	ThermoGAValue ga = (ThermoGAValue)oneFiveLibrary.get(fg);
+        	if (ga != null) return ga;
+        }
+
+        return null;
+    }
 
     //## operation read(String,String,String,String,String,String,String,String,String)
-	public void read(String p_groupDictionary, String p_groupTree, String p_groupLibrary, String p_radicalDictionary, String p_radicalTree, String p_radicalLibrary, String p_ringDictionary, String p_ringTree, String p_ringLibrary, String p_otherLibrary, String p_otherTree) {
+	public void read(String p_groupDictionary, String p_groupTree, String p_groupLibrary, String p_radicalDictionary, String p_radicalTree, String p_radicalLibrary, String p_ringDictionary, String p_ringTree, String p_ringLibrary, String p_otherLibrary, String p_otherTree, String p_gaucheDictionary, String p_gaucheTree, String p_gaucheLibrary, String p_15Dictionary, String p_15Tree, String p_15Library) {
 	    // end pey
 	        //#[ operation read(String,String,String,String,String,String,String,String,String)
 	        // try {
@@ -336,6 +411,13 @@ public class ThermoGAGroupLibrary {
 	        	readOtherLibrary(p_otherLibrary);
 	        	readOtherTree(p_otherTree);
 
+                        // step 5: read in Gauche and 15 Correction libraries
+                        readGaucheDictionary(p_gaucheDictionary);
+                        readGaucheTree(p_gaucheTree);
+	        	readGaucheLibrary(p_gaucheLibrary);
+                        read15Dictionary(p_15Dictionary);
+                        read15Tree(p_15Tree);
+	        	read15Library(p_15Library);
 	        /*}
 	        catch (Exception e) {
 	        	throw new ThermoIOException(e.getMessage());
@@ -430,6 +512,93 @@ public class ThermoGAGroupLibrary {
         }
         catch (Exception e) {
         	System.err.println("Can't read thermo Other tree file!");
+        	System.err.println("Error: " + e.getMessage());
+        	System.exit(0);
+        }
+
+
+
+        //#]
+    }
+    
+    //2/5/09 gmagoon: new functions for gauche and 1,5 correction reading (based on analogs for regular values, e.g. readGroupDictionary)
+    public void readGaucheDictionary(String p_fileName) {
+        try {
+        	gaucheDictionary = readStandardDictionary(p_fileName);
+        	return;
+        }
+        catch (Exception e) {
+        	System.err.println("Error in read gauche dictionary!");
+        	System.exit(0);
+        }
+        //#]
+    }
+
+    public void readGaucheLibrary(String p_fileName) {
+        try {
+        	gaucheLibrary = readStandardLibrary(p_fileName, gaucheDictionary);
+        	return;
+        }
+        catch (Exception e) {
+        	System.err.println("Can't read gauche library!");
+        	System.exit(0);
+        }
+
+
+
+
+        //#]
+    }
+
+    public void readGaucheTree(String p_fileName) {
+        try {
+        	gaucheTree = readStandardTree(p_fileName,gaucheDictionary,0);
+        }
+        catch (Exception e) {
+        	System.err.println("Can't read gauche tree file!");
+        	System.err.println("Error: " + e.getMessage());
+        	System.exit(0);
+        }
+
+
+
+        //#]
+    }
+    
+        public void read15Dictionary(String p_fileName) {
+        try {
+        	oneFiveDictionary = readStandardDictionary(p_fileName);
+        	return;
+        }
+        catch (Exception e) {
+        	System.err.println("Error in read 1,5 dictionary!");
+        	System.exit(0);
+        }
+        //#]
+    }
+
+    public void read15Library(String p_fileName) {
+        try {
+        	oneFiveLibrary = readStandardLibrary(p_fileName, oneFiveDictionary);
+        	return;
+        }
+        catch (Exception e) {
+        	System.err.println("Can't read 1,5 library!");
+        	System.exit(0);
+        }
+
+
+
+
+        //#]
+    }
+
+    public void read15Tree(String p_fileName) {
+        try {
+        	oneFiveTree = readStandardTree(p_fileName,oneFiveDictionary,0);
+        }
+        catch (Exception e) {
+        	System.err.println("Can't read 1,5 tree file!");
         	System.err.println("Error: " + e.getMessage());
         	System.exit(0);
         }
