@@ -1181,7 +1181,7 @@ public class Species {
         else if (getOs().equals("linux"))
         	optionsArgument = "-DoNotAddH";
         else if (getOs().equals("mac"))
-        	optionsArgument = "";
+        	optionsArgument = "-DoNotAddH";
         		
         try {
         	String[] command = {workingDirectory + "/software/InChI/cInChI-1",
@@ -1254,8 +1254,8 @@ public class Species {
         	optionsArgument[0] = "-InChI2Struct";
         	optionsArgument[1] = "-OutputSDF";
         } else if (getOs().equals("mac")) {
-        	optionsArgument[0] = "";
-        	optionsArgument[1] = "";
+        	optionsArgument[0] = "-InChI2Struct";
+        	optionsArgument[1] = "-OutputSDF";
         }
         
         try {

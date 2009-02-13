@@ -1222,16 +1222,11 @@ public class GUI extends JPanel implements ActionListener {
         conditionFile += "//\r// File created at: " + sdf.format(cal.getTime()) + "\r\r";
         
         //	Add the name of the database and primary thermo library
-        String rmgEnvVar = System.getProperty("RMG.workingDirectory");
-        conditionFile += "Database: ";
-        if (databasePath.getText().startsWith(rmgEnvVar)) {
-        	int startIndex = rmgEnvVar.length() + 11;
-        	conditionFile += databasePath.getText().substring(startIndex) + "\r";
-        } else {
-        	conditionFile += databasePath.getText() + "\r";
-        }
- 
-        conditionFile += "PrimaryThermoLibrary: " + ptlPath.getText() + "\r";
+        String[] tempString = databasePath.getText().split("[\\\\,/]");
+        conditionFile += "Database: " + tempString[tempString.length-1] + "\r";
+        
+        tempString = ptlPath.getText().split("[\\\\,/]");
+        conditionFile += "PrimaryThermoLibrary: " + tempString[tempString.length-1] + "\r";
         
         //	Add the temperature model, list of temperatures, and units
         conditionFile += "TemperatureModel: " + tempModelCombo.getSelectedItem() +
@@ -1295,23 +1290,23 @@ public class GUI extends JPanel implements ActionListener {
         			tableInput.getValueAt(i,2) + ")\r";
         	} else if (tableInput.getValueAt(i,3).equals("Reactive")) {
         		++nonInertCount;
-        		reactiveSpecies += "\r(" + nonInertCount + ") " +
+        		reactiveSpecies += "(" + nonInertCount + ") " +
         		tableInput.getValueAt(i,0) + " " +
     			tableInput.getValueAt(i,1) + " (" +
     			tableInput.getValueAt(i,2) + ")\r" +
-    			tableInput.getValueAt(i,4);
+    			tableInput.getValueAt(i,4) + "\r";
         	} else if (tableInput.getValueAt(i,3).equals("Unreactive")) {
         		unreactiveStatus = true;
         		++nonInertCount;
-        		reactiveSpecies += "\r(" + nonInertCount + ") " +
+        		reactiveSpecies += "(" + nonInertCount + ") " +
         		tableInput.getValueAt(i,0) + " " +
     			tableInput.getValueAt(i,1) + " (" +
     			tableInput.getValueAt(i,2) + ") unreactive\r" +
-    			tableInput.getValueAt(i,4);
+    			tableInput.getValueAt(i,4) + "\r";
         	}
         }
         //	Add the non-inert gas species
-        conditionFile += "InitialStatus:\r" + reactiveSpecies + "\rEND\r\r";
+        conditionFile += "InitialStatus:\r\r" + reactiveSpecies + "\rEND\r\r";
         //	Add the inert gas species
         conditionFile += "InertGas:\r" + inertSpecies + "END\r\r";
         
@@ -1397,6 +1392,7 @@ public class GUI extends JPanel implements ActionListener {
     	}
     	
         //	Add the primary reaction library
+    	String rmgEnvVar = System.getProperty("RMG.workingDirectory");
     	conditionFile += "PrimaryReactionLibrary: ";
     	if (libraryCombo.getSelectedItem().equals("Yes")) {
     		conditionFile += "on\r";
@@ -1460,15 +1456,11 @@ public class GUI extends JPanel implements ActionListener {
         String tempString = null;
         
         //	Path of Database
-        st = new StringTokenizer(indivLines[lineCounter]);
-        tempString = st.nextToken();	// Skip over "Database:"
-        databasePath.setText(st.nextToken());
+        databasePath.setText(indivLines[lineCounter].substring(9));
         ++lineCounter;
         
         //	Path of PrimaryThermoLibrary
-        st = new StringTokenizer(indivLines[lineCounter]);
-        tempString = st.nextToken();	// Skip over "PrimaryThermoLibrary:"
-        ptlPath.setText(st.nextToken());
+        ptlPath.setText(indivLines[lineCounter].substring(21));
         ++lineCounter;
         
         //	Temperature model
@@ -1719,13 +1711,9 @@ public class GUI extends JPanel implements ActionListener {
     		int numLib = 0;
     		while (!indivLines[lineCounter].startsWith("END")) {
     			++numLib;
-    			st = new StringTokenizer(indivLines[lineCounter]);
-    			tempString = st.nextToken();	// Skip over "Name:"
-    			libName = st.nextToken();
+    			libName = indivLines[lineCounter].substring(5);
     			++lineCounter;
-    			st = new StringTokenizer(indivLines[lineCounter]);
-    			tempString = st.nextToken();	// Skip over "Location:"
-    			libLoc = st.nextToken();
+    			libLoc = indivLines[lineCounter].substring(9);
     			++lineCounter;
     			
     			PRLVector prlEntry = new PRLVector(numLib-1,libName,libLoc);
