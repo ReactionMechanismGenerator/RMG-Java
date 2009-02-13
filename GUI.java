@@ -1091,7 +1091,7 @@ public class GUI extends JPanel implements ActionListener {
     			if (!icInput4.equals("Inert Gas")) {
 	    			if (!speciesAdjList.getText().equals("")) {
 	    				icInput5 = speciesAdjList.getText();
-	    			} else if (InChIInput.getText() != null) {
+	    			} else if (!InChIInput.getText().equals("")) {
 	    				String inchi = InChIInput.getText();
 	    				icInput5 = Species.inchi2chemGraph(inchi);
 	    			} else {
