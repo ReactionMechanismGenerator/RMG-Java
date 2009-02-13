@@ -84,7 +84,7 @@ System.out.println("Done!\n");
 };
 
  public static void initializeSystemProperties() {
-	 String name= "database";
+	 String name= "RMG_database";
 	 String workingDir = System.getenv("RMG");
      System.setProperty("RMG.workingDirectory", workingDir);
  //  System.setProperty("jing.chem.ChemGraph.forbiddenStructureFile",
