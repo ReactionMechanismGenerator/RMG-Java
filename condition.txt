@@ -5,10 +5,11 @@
 
 Database: RMG_database
 PrimaryThermoLibrary: primaryThermoLibrary
-TemperatureModel: Constant 1350 (K)
+TemperatureModel: Constant (K) 1350
+PressureModel: Constant (atm) 1
 
-PressureModel: Constant 1 (atm)
-
+SpectroscopicDataEstimator: therfit
+InChIGeneration: off
 
 InitialStatus:
 
