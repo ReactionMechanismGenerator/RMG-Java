@@ -32,12 +32,15 @@ program fame
 	use SimulationModule
 	use IsomerModule
 	use ReactionModule
+	use InputModule
 	use DensityOfStatesModule
-	use FullEGMEModule
-	use FastEGMEModule
+	use MasterEqnModule
 	use StrongCollisionModule
+	use ReservoirStateModule
 	use RateModelModule
 	
+	implicit none
+
 	! Verbosity of console output flag
 	integer verbose
 
@@ -75,67 +78,24 @@ program fame
 	real(8) Eref
     
     ! Indices
-	integer t, p, i, j
+	integer t, p, i, j, n, m
 	integer found
 	
 	verbose = 0
 
-	! Part I: Load data from files on disk
-	! ------------------------------------
-
-	! Open file for reading; fail if unable to open
-	open(1, iostat=ios, file='fame_input.txt', action='read', status='old', access='sequential', recl=128)
-	if (ios /= 0) then
-		print *, 'Error: Unable to open file "', path, '".'
-		return
-	end if
-
-	if (verbose >= 1) write (*,*), 'Reading from file "input.txt"...'
-
-	! Load simulation data from input file
-	if (verbose >= 2) write (*,*), '\tReading simulation parameters...'
-	call loadSimulationData(simData)
-			
-	! Load unimolecular isomer well data from input file
-	if (verbose >= 2) write (*,*), '\tReading unimolecular isomer data...'
-	allocate (uniData(1:simData%nUni))
-	do i = 1, simData%nUni
-		call loadIsomerData(uniData(i), simData%nGrains)
-	end do
-
-	! Load multimolecular isomer well data from input file
-	if (verbose >= 2) write (*,*), '\tReading multimolecular isomer data...'
-	allocate (multiData(1:simData%nMulti))
-	do i = 1, simData%nMulti
-		call loadIsomerData(multiData(i), simData%nGrains)
-	end do
-
-	! Load reaction data from input file
-	if (verbose >= 2) write (*,*), '\tReading reaction data...'
-	allocate (rxnData(1:simData%nRxn))
-	do i = 1, simData%nRxn
-		call loadReactionData(rxnData(i), simData%nGrains)
-	end do
-	
-	! DEBUG: output parameters to console
-	if (verbose >= 3) then
-		call writeSimulationData(simData)
-		call writeIsomerData(uniData, multiData)
-		call writeReactionData(rxnData)
-	end if
-
-	! Close file
-	close(1)
+	! Load data from files on disk
+	if (verbose >= 1) write (*,*), 'Reading input...'
+	call loadNetwork('fame_input.txt', simData, uniData, multiData, rxnData, verbose)
     
-    ! Calculate density of states for each well
+	! Calculate density of states for each well
 	if (verbose >= 1) write (*,*), 'Calculating density of states...'
 	do i = 1, simData%nUni
 		if (verbose >= 2) write (*,*), '\tUnimolecular isomer', i
-        call calcDensityOfStates(simData, uniData(i))
+        call densityOfStates(simData, uniData(i))
 	end do
 	do n = 1, simData%nMulti
 		if (verbose >= 2) write (*,*), '\tMultimolecular isomer', n
-        call calcDensityOfStates(simData, multiData(n))
+        call densityOfStates(simData, multiData(n))
 	end do
 	
 	! Allocate memory for master equation matrices
@@ -163,12 +123,12 @@ program fame
 		! Calculate the equilibrium (Boltzmann) distributions
 		if (verbose >= 2) write (*,*), '\tDetermining equilibrium distributions at T =', simData%T, 'K...'
 		do i = 1, simData%nUni
-			call calcEqDist(uniData(i), simData%E, simData%T, bi(:,i))
+			bi(:,i) = eqDist(uniData(i), simData%E, simData%T)
 		end do
 		do n = 1, simData%nMulti
-			call calcEqDist(multiData(n), simData%E, simData%T, bn(:,n))
+			bn(:,n) = eqDist(multiData(n), simData%E, simData%T)
 		end do
-		
+			
 		do p = 1, size(simData%Plist)
 
 			! Part II: Construct full ME matrix
@@ -178,28 +138,14 @@ program fame
 
 			if (verbose >= 2) write (*,*), '\tCalculating k(T, P) at T =', simData%T, 'K, P =', simData%P, 'bar...'
 
-			! Reactive terms in master equation
-			if (verbose >= 3) write (*,*), '\t\tDetermining reactive terms in full master equation...'
-			call ME_reaction(simData, uniData, multiData, rxnData, Mi, Hn, Kij, Fim, Gnj, Jnm, bi, bn)
+			! Full master equation matrix
+			if (verbose >= 3) write (*,*), '\t\tDetermining full master equation matrix...'
+			call masterEqn(simData, uniData, multiData, rxnData, Mi, Hn, Kij, Fim, Gnj, Jnm, bi, bn)
 			
-			! Collisional terms in master equation
-			if (verbose >= 3) write (*,*), '\t\tDetermining collisional terms in full master equation...'
-			call ME_collision(simData, uniData, Mi, bi)
-			
-			! Part III: Determine approximate phenomenological rate coefficients
-			! ------------------------------------------------------------------
-		
 			! Determine reservoir cutoff grains for each unimolecular isomer
 			if (verbose >= 3) write (*,*), '\t\tDetermining reservoir cutoff grains...'
-			call getReservoirCutoffs(simData, uniData, rxnData, nRes)
-			do i = 1, size(nRes)
-				j = ceiling((uniData(i)%E(1) - simData%Emin) / simData%dE) + 1
-				if (nRes(i) < j .or. nRes(i) >= simData%nGrains) then
-					write (*,*), 'ERROR: Invalid reservoir grain.'
-					stop
-				end if
-			end do
-            
+			nRes = reservoirCutoffs(simData, uniData, rxnData)
+			
 			if (simData%mode == 1) then
 				! Apply steady state/reservoir state approximations
 				if (verbose >= 3) write (*,*), '\t\tApplying steady-state/modified strong collision approximation...'
@@ -212,44 +158,26 @@ program fame
 				write (*,*), 'ERROR: An invalid solution mode was provided!'
 				stop
 			end if
-            
+			
+			
+! 			do i = 1, simData%nUni + simData%nMulti
+! 				write (*,*) K(t,p,i,:)
+! 			end do
+			
+			! Convert units of multi k(T, P) to cm^3 mol^-1 s^1 using bulk gas concentration C = P/RT
+			do n = simData%nUni+1, simData%nUni+simData%nMulti
+				do i = 1, simData%nUni + simData%nMulti
+					K(t,p,i,n) = K(t,p,i,n) / (simData%P / 8.314472 / simData%T * 1e-1)		! 1e5 Pa/bar * 1e-6 m^3/cm^3 = 1e-1
+				end do
+			end do
+			
 		end do
 	end do
 
-    ! Make sure sign of all k(T, P) is correct
-    found = 0
-    do t = 1, size(simData%Tlist)
-        do p = 1, size(simData%Plist)
-            do i = 1, simData%nUni + simData%nMulti
-                do j = 1, simData%nUni + simData%nMulti
-                    if (i == j) then
-                        if (K(t,p,i,j) > 0) then
-                            K(t,p,i,j) = -K(t,p,i,j)
-                            found = 1
-                        end if
-                    else
-                        if (K(t,p,i,j) < 0) then
-                            K(t,p,i,j) = abs(K(t,p,i,j))
-                            found = 1
-                        end if
-                    end if
-                end do  
-            end do
-        end do
-    end do
-    if (found == 1) then
-        write(*,*) 'WARNING: Absolute value of one or more fitted rate coefficients taken to ensure nonnegativity.'
-    end if
+	!do i = 1, simData%nUni + simData%nMulti
+	!	write (*,*) K(4,3,i,:)
+	!end do
 
-!     do t = 1, size(simData%Tlist)
-!         do p = 1, size(simData%Plist)
-!             write (*,*) 'T =', simData%Tlist(t), 'K, P =', simData%Plist(p), 'bar:'
-!             do i = 1, simData%nUni + simData%nMulti
-!                 write (*,*), '\t', K(t,p,i,:)
-!             end do
-! 		end do
-!     end do
-    
 	! Fit k(T, P) to approximate formula
 	! Also test for validity of fitted rate coefficients
 	if (verbose >= 1) write (*,*), 'Fitting k(T,P) to model...'
@@ -261,7 +189,9 @@ program fame
 				found = 0
 				do t = 1, size(simData%Tlist)
 					do p = 1, size(simData%Plist)
-						if (K(t,p,i,j) == 0.) then
+						!if (K(t,p,i,j) <= 0. .or. isnan(K(t,p,i,j)) .or. &
+						!	abs(K(t,p,i,j)) <= huge(K(t,p,i,j))) then
+						if (K(t,p,i,j) <= 0) then
 							found = 1
 						end if
 					end do
@@ -279,7 +209,7 @@ program fame
 		end do
 	end do
 
-    ! Write output file
+	! Write output file
 	if (verbose >= 1) write (*,*), 'Saving results...'
 	call saveResults('fame_output.txt', simData, chebCoeff)
 	

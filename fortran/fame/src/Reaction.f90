@@ -8,8 +8,8 @@
 
 module ReactionModule
 
-	use fileIO
-
+	implicit none
+	
 	! Struct: Reaction
 	! 
 	! Contains the information for a single reaction.
@@ -23,74 +23,6 @@ module ReactionModule
 	end type
 
 contains
-
-	! --------------------------------------------------------------------------
-	!
-	! Subroutine: loadReactionData()
-	! 
-	! Loads the data from the specified files into the specified isomerData 
-	! objects.
-	!
-	! Parameters:
-	!		path - The path to a file containing the reaction data.
-	!		rxnData - A vector of objects to load the isomer data into.
-	!		iCount - The number of reactions.
-	!		nGrains - The number of grains in each isomer well.
-	subroutine loadReactionData(rxnData, nGrains)
-		
-		! Provide parameter type checking of inputs and outputs
-		type(Reaction), intent(inout)		:: rxnData
-		integer, intent(in) 				:: nGrains
-		
-		! Local variables
-		integer found, ios
-		character(len=128)  str
-		character(len=32) 	unit
-		integer				r
-		real(8)				tempreal
-
-		! Initialize data members
-		rxnData%isomer(1) = 0
-		rxnData%isomer(2) = 0
-		rxnData%E = 0
-		rxnData%arrh_A = 0
-		rxnData%arrh_n = 0
-		rxnData%arrh_Ea = 0
-		
-		ios = 0
-		found = 0
-		do while (ios == 0 .and. found == 0)
-			
-			! Read one line from the file
-			read (1, fmt='(a128)', iostat=ios), str
-			
-			! Skip if comment line
-			if (index(str(1:1), '#') /= 0) cycle
-
-			! Break if blank line
-			if (len(trim(str)) == 0) then
-				found = 1
-				cycle
-			end if
-			
-			! Process if not a comment and if a recognized entry
-			if (index(str(1:19), 'Ground-state energy') /= 0) then
-				call readNumberAndUnit(str(20:), rxnData%E, unit)
-			else if (index(str(1:24), 'Arrhenius preexponential') /= 0) then
-					call readNumberAndUnit(str(25:), rxnData%arrh_A, unit)
-			else if (index(str(1:27), 'Arrhenius activation energy') /= 0) then
-					call readNumberAndUnit(str(28:), rxnData%arrh_Ea, unit)
-			else if (index(str(1:30), 'Arrhenius temperature exponent') /= 0) then
-				call readNumber(str(31:), rxnData%arrh_n)
-			else if (index(str(1:8), 'Isomer 1') /= 0) then
-				call readInteger(str(9:), rxnData%isomer(1))
-			else if (index(str(1:8), 'Isomer 2') /= 0) then
-				call readInteger(str(9:), rxnData%isomer(2))
-			end if
-
-		end do
-		
-	end subroutine
 	
 	! --------------------------------------------------------------------------
 	!

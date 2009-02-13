@@ -6,14 +6,67 @@
 !
 ! ==============================================================================
 
-module FullEGMEModule
+module MasterEqnModule
 
 	use SimulationModule
 	use IsomerModule
 	use ReactionModule
 
+	implicit none
+	
 contains
 
+	! ==========================================================================
+	!
+	! Function: masterEqn()
+	!
+	!   Calculates the full master equation matrix.
+	!
+	! Parameters:
+	!   simData - The simulation parameters.
+	!   uniData - The chemical data about each unimolecular isomer.
+	!   multiData - The chemical data about each multimolecular source/sink.
+	!   rxnData - The chemical data about each reaction.
+	! 	Mi - Collisional transition matrix for each unimolecular well
+	! 	Hn - Collisional transition matrix for each multimolecular well
+	! 	Kij - Reactive transition from unimolecular well to unimolecular well
+	! 	Fim - Reactive transition from multimolecular well to unimolecular well
+	! 	Gnj - Reactive transition from unimolecular well to multimolecular well
+	! 	Jnm - Reactive transition from multimolecular well to multimolecular well
+	!	bi - Equilibrium distributions for unimolecular wells
+	! 	bn - Equilibrium distributions for multimolecular wells
+	subroutine masterEqn(simData, uniData, multiData, rxnData, Mi, Hn, Kij, Fim, Gnj, Jnm, bi, bn)
+
+		type(Simulation), intent(in)				:: 	simData
+		type(Isomer), dimension(:), intent(in)		:: 	uniData
+		type(Isomer), dimension(:), intent(in)		:: 	multiData
+		type(Reaction), dimension(:), intent(in)	:: 	rxnData
+		real(8), dimension(:,:,:), intent(inout)	:: 	Mi
+		real(8), dimension(:,:,:), intent(inout)	:: 	Hn
+		real(8), dimension(:,:,:), intent(inout)	:: 	Kij
+		real(8), dimension(:,:,:), intent(inout)	:: 	Fim
+		real(8), dimension(:,:,:), intent(inout)	:: 	Gnj
+		real(8), dimension(:,:,:), intent(inout)	:: 	Jnm
+		real(8), dimension(:,:), intent(in)			:: 	bi
+		real(8), dimension(:,:), intent(in)			:: 	bn
+		
+		Kij = 0 * Kij
+		Fim = 0 * Fim
+		Gnj = 0 * Gnj
+		Mi = 0 * Mi
+		Jnm = 0 * Jnm
+		Hn = 0 * Hn
+		
+		! Reactive terms in master equation
+		call ME_reaction(simData, uniData, multiData, rxnData, Mi, Hn, Kij, Fim, Gnj, Jnm, bi, bn)
+			
+		! Collisional terms in master equation
+		call ME_collision(simData, uniData, Mi, bi)
+        
+	end subroutine
+
+	! ==========================================================================
+	!
 	! Function: ME_reaction()
 	!
 	!   Calculates the reaction components of the master equation matrix.
@@ -46,16 +99,11 @@ contains
 		real(8), dimension(:,:), intent(in)			:: 	bi
 		real(8), dimension(:,:), intent(in)			:: 	bn
 		
+		real(8) :: arrh2_A, arrh2_Ea, arrh2_n
+		
 		! Indices
-		integer		:: i, j, m, n, r, t
-
-		Fim = 0 * Fim
-		Gnj = 0 * Gnj
-		Kij = 0 * Kij
-		Mi = 0 * Mi
-		Jnm = 0 * Jnm
-		Hn = 0 * Hn
-
+		integer		:: i, j, m, n, r, s, t
+		
 		! Determine rate coefficients for each reaction
 		! This is done by iterating over transition states
 		do t = 1, simData%nRxn
@@ -78,62 +126,51 @@ contains
 					n = rxnData(t)%isomer(2) - simData%nUni
 				end if
 				
-				! Calculate rate coefficient for uni --> bi using RRKM theory
-! 				call rate_rrkm(uniData(i)%densStates, rxnData(t)%sumStates, &
-! 					rxnData(t)%E - uniData(i)%E(1), simData%E, Gnj(:,n,i))
-				
-				! Calculate rate coefficient for uni --> bi using ILT method
-				call rate_ilt(rxnData(t)%E - uniData(i)%E(1), uniData(i)%densStates, &
+				! Calculate rate coefficient for uni --> multi using ILT method
+				call rateILT(rxnData(t)%E - uniData(i)%E(1), uniData(i)%densStates, &
 					rxnData(t)%arrh_A, rxnData(t)%arrh_n, rxnData(t)%arrh_Ea, &
 					simData%T, simData%dE, simData%E, Gnj(:,n,i))
 				
-				! Calculate rate coefficient for bi --> uni
-				do r = 1, simData%nGrains
-					if (bn(r,n) /= 0) then
-               			Fim(r,i,n) = Gnj(r,n,i) * bi(r,i) / bn(r,n)
-            		end if
-				end do
-								
+ 				! Calculate rate coefficient for multi --> uni using detailed balance
+ 				do r = 1, simData%nGrains
+ 					if (bn(r,n) > 0) then
+ 						Fim(r,i,n) = Gnj(r,n,i) * bi(r,i) / bn(r,n)
+ 					end if
+ 				end do
+				
 			else															! uni <---> uni
 				
 				! Determine the wells involved
 				i = rxnData(t)%isomer(1)
 				j = rxnData(t)%isomer(2)
 				
-! 				! Calculate rate coefficient for i --> j using RRKM theory
-! 				call rate_rrkm(uniData(i)%densStates, rxnData(t)%sumStates, rxnData(t)%E - uniData(i)%E(1), simData%E, Kij(:,j,i))
-! 				! Calculate rate coefficient for j --> i using RRKM theory
-! 				call rate_rrkm(uniData(j)%densStates, rxnData(t)%sumStates, rxnData(t)%E - uniData(j)%E(1), simData%E, Kij(:,i,j))
-				
 				! Calculate rate coefficient for i --> j using ILT method
-				call rate_ilt(rxnData(t)%E - uniData(i)%E(1), uniData(i)%densStates, &
+				call rateILT(rxnData(t)%E - uniData(i)%E(1), uniData(i)%densStates, &
 					rxnData(t)%arrh_A, rxnData(t)%arrh_n, rxnData(t)%arrh_Ea, &
 					simData%T, simData%dE, simData%E, Kij(:,j,i))
 				
-				! Calculate rate coefficient for j --> i using detailed balance
-				do r = 1, simData%nGrains
-					if (bi(r,j) > 0) then
-						Kij(r,i,j) = Kij(r,j,i) * bi(r,i) / bi(r,j)
-					else
-						Kij(r,i,j) = 0.0
-					end if
-				end do
+ 				! Calculate rate coefficient for j --> i using detailed balance
+ 				do r = 1, simData%nGrains
+ 					if (bi(r,j) > 0) then
+ 						Kij(r,i,j) = Kij(r,j,i) * bi(r,i) / bi(r,j)
+ 					end if
+ 				end do
 				
 			end if
 		end do
-		
+			
 		! Diagonals of unimolecular wells
 		do i = 1, simData%nUni
 			do j = 1, simData%nUni
 				if (j /= i) then
 					do r = 1, simData%nGrains
-						Mi(r,r,i) = Mi(r,r,i) - Kij(r,j,i);
+						Mi(r,r,i) = Mi(r,r,i) - Kij(r,j,i)
 					end do
 				end if
 			end do
 			do m = 1, simData%nMulti
 				do r = 1, simData%nGrains
-					Mi(r,r,i) = Mi(r,r,i) - Gnj(r,m,i);
+					Mi(r,r,i) = Mi(r,r,i) - Gnj(r,m,i)
 				end do
 			end do
 		end do
@@ -142,13 +179,13 @@ contains
 		do n = 1, simData%nMulti
 			do j = 1, simData%nUni
 				do r = 1, simData%nGrains
-					Hn(r,r,n) = Hn(r,r,n) - Fim(r,j,n);
+					Hn(r,r,n) = Hn(r,r,n) - Fim(r,j,n)
 				end do
 			end do
 			do m = 1, simData%nMulti
 				if (m /= n) then
 					do r = 1, simData%nGrains
-						Hn(r,r,n) = Hn(r,r,n) - Jnm(r,m,n);
+						Hn(r,r,n) = Hn(r,r,n) - Jnm(r,m,n)
 					end do
 				end if
 			end do
@@ -198,7 +235,7 @@ contains
 		! Collisional energy transfer contributions
 		do i = 1, simData%nUni
 		
-			start = ceiling((uniData(i)%E(1) - simData%Emin) / (simData%E(2) - simData%E(1))) + 1
+			start = ceiling((uniData(i)%E(1) - simData%Emin) / simData%dE)
 			
 			! Determine collision frequency for the current isomer
 			mu = 1/(1/uniData(i)%MW(1) + 1/simData%bathGas%MW) / 6.022e26
@@ -354,7 +391,7 @@ contains
 		
 	end subroutine
 	
-	! Function: rate_ilt()
+	! Function: rateILT()
 	!
 	!   Calculates the microcanonical rate coefficient as a function of energy
 	!	using inverse Laplace transform of modified Arrhenius parameters for
@@ -380,7 +417,7 @@ contains
 	!	dE = Grain spacing in kJ/mol
 	!   E = vector of energies at which k(E) will be evaluated in kJ/mol
 	!   k = RRKM microcanonical rate coefficents evaluated at each E in s^-1
-	subroutine rate_ilt(E0, N, arrh_A, arrh_n, arrh_Ea, T, dE, E, k)
+	subroutine rateILT(E0, N, arrh_A, arrh_n, arrh_Ea, T, dE, E, k)
 
 		! Provide parameter type-checking
 		real(8), intent(in)					::	E0
@@ -400,17 +437,52 @@ contains
 		
 		! Determine rate coefficients using inverse Laplace transform
 		do r = 1, size(E)
-			if (E(r) < E0 .or. N(r) == 0) then
+			if (s >= r .or. N(r) == 0) then
 				k(r) = 0
-			elseif (N(r) .ne. 0) then
-				k(r) = arrh_A * (T ** arrh_n) * N(r - s) / N(r)
 			else
-				write (*,*), 'Something is wrong with the inverse Laplace transform!'
-				stop
+				k(r) = arrh_A * (T ** arrh_n) * N(r - s) / N(r)
 			end if
 		end do
 		
 	end subroutine
 
+	! ==========================================================================
+	!
+	! Function: fitReverseKinetics()
+	!
+	!   Estimates the Arrhenius expression for the reverse reaction.
+	!
+	!
+	! Parameters:
+	!   reac = The reactant isomer for the forward reaction
+	!   prod = The product isomer for the forward reaction
+	!   rxn = The forward reaction
+	!
+	! Returns:
+	!	arrh2_A = Arrhenius preexponential factor in s^-1 for reverse reaction
+	!	arrh2_n = Arrhenius temperature exponent for reverse reaction
+	!	arrh2_Ea = Arrhenius activation energy in kJ/mol for reverse reaction
+	subroutine fitReverseKinetics(reac, prod, rxn, arrh2_A, arrh2_Ea, arrh2_n)
+	
+		type(Isomer), intent(in)		:: reac
+		type(Isomer), intent(in)		:: prod
+		type(Reaction), intent(in)		:: rxn
+		real(8), intent(out)			:: arrh2_A
+		real(8), intent(out)			:: arrh2_Ea
+		real(8), intent(out)			:: arrh2_n
+				
+		real(8) Hrxn, Grxn, Srxn, R, T0
+		
+		T0 = 298.15
+		Hrxn = (sum(prod%H) - sum(reac%H)) * 1000.
+		Grxn = (sum(prod%G) - sum(reac%G)) * 1000.
+		Srxn = (Hrxn - Grxn) / T0
+		R = 8.314472
+		
+		arrh2_Ea = rxn%arrh_Ea - Hrxn / 1000.
+		arrh2_n = 0
+		arrh2_A = (rxn%arrh_A * T0 ** rxn%arrh_n) * exp(-Srxn / R)   
+	
+	end subroutine
 
 end module

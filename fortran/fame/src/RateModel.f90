@@ -10,6 +10,8 @@ module RateModelModule
 
 	use SimulationModule
 
+	implicit none
+	
 contains
 
 	! --------------------------------------------------------------------------
@@ -153,6 +155,7 @@ contains
 		real(8), dimension(:,:,:,:), intent(in)		:: alpha
 		
 		integer i, j, t
+		integer ios
 		
 		open(2, iostat=ios, file=path, action='write', status='old', access='sequential', recl=128)
 		write (2,*), '# FAME output'

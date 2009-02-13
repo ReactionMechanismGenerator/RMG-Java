@@ -6,12 +6,14 @@
 !
 ! ==============================================================================
 
-module FastEGMEModule
+module ReservoirStateModule
 
 	use SimulationModule
 	use IsomerModule
 	use ReactionModule
 
+	implicit none
+	
 contains
 
 	! Subroutine: getReservoirCutoffs()
@@ -28,14 +30,15 @@ contains
 	!
 	! Returns:
 	!	nRes - The reservoir cutoff grains for each unimolecular isomer.
-	subroutine getReservoirCutoffs(simData, uniData, rxnData, nRes)
+	function reservoirCutoffs(simData, uniData, rxnData)
 	
 		type(Simulation), intent(in)				:: 	simData
 		type(Isomer), dimension(:), intent(in)		:: 	uniData
 		type(Reaction), dimension(:), intent(in)	:: 	rxnData
-		integer, dimension(:), intent(out)			::	nRes
+		integer, dimension(1:size(uniData))			::	reservoirCutoffs
 		
-		integer i, t, start
+		real(8) Eres
+		integer i, j, t, start
 		
 		! Determine reservoir cutoffs by looking at transition state energies
 		do i = 1, simData%nUni
@@ -46,14 +49,22 @@ contains
 					if (rxnData(t)%E < Eres) Eres = rxnData(t)%E
 				end if
 			end do
-			nRes(i) = floor((Eres - simData%Emin - 10 * simData%alpha) / simData%dE)
-			! Make sure nRes(i) is valid (i.e. points to grain at or above ground state)
-			if (nRes(i) < start) then
-				nRes(i) = start
+			reservoirCutoffs(i) = floor((Eres - 10 * simData%alpha - simData%Emin) / simData%dE)
+			! Make sure reservoirCutoffs(i) is valid (i.e. points to grain at or above ground state)
+			if (reservoirCutoffs(i) < start) then
+				reservoirCutoffs(i) = start
+			end if
+		end do
+		
+		do i = 1, size(reservoirCutoffs)
+			j = ceiling((uniData(i)%E(1) - simData%Emin) / simData%dE) + 1
+			if (reservoirCutoffs(i) < j .or. reservoirCutoffs(i) >= simData%nGrains) then
+				write (*,*), 'ERROR: Invalid reservoir grain.'
+				stop
 			end if
 		end do
 
-	end subroutine
+	end function
 	
 	! --------------------------------------------------------------------------
 	
@@ -87,9 +98,12 @@ contains
 		real(8), dimension(:,:,:), intent(in)		:: 	Fim
 		real(8), dimension(:,:,:), intent(in)		:: 	Gnj
 		real(8), dimension(:,:,:), intent(in)		:: 	Jnm
-		real(8), dimension(:,:), intent(inout)		:: 	bi
+		real(8), dimension(:,:), intent(in)			:: 	bi
 		real(8), dimension(:,:), intent(in)			:: 	bn
 		real(8), dimension(:,:), intent(out) 		:: 	K
+		
+		real(8), dimension(:,:), allocatable		:: 	ai
+		real(8), dimension(:,:), allocatable		:: 	an
 		
 		! Active state grain matrix
 		real(8), dimension(:,:), allocatable	:: 	L
@@ -144,10 +158,15 @@ contains
 		call symmetricInverse(L, nAct, simData, uniData, rxnData, bi)
 ! 		call fullInverse(L, nAct)
 
-		! Renormalize unimolecular distributions such that the reservoir grains sum to unity
-		!do i = 1, nUni
-    	!	bi(:,i) = bi(:,i) / sum(bi(1:nRes(i),i))
-		!end do
+		! Renormalize equilibrium distributions
+		allocate( ai(1:simData%nGrains, 1:simData%nUni) )
+		allocate( an(1:simData%nGrains, 1:simData%nMulti) )
+		do i = 1, simData%nUni
+    		ai(:,i) = bi(:,i) / sum(bi(:,i))
+		end do
+        do n = 1, simData%nMulti
+    		an(:,n) = bn(:,n) / sum(bn(:,n))
+		end do
         
 		! Initialize phenomenological rate coefficient matrix
 		do i = 1, nUni + nMulti
@@ -169,41 +188,41 @@ contains
 		
 			! Reservoir rearrangement terms (on diagonal)
 			! || M_irr * b_ir ||
-! 			call DGEMV('N', nRes(i), nRes(i), &
-! 				one, Mi(1:nRes(i), 1:nRes(i), i), nRes(i), &
-! 				bi(1:nRes(i), i), 1, &
-! 				zero, tempV1(1:nRes(i)), 1)
-! 			K(i,i) = K(i,i) + sum( tempV1(1:nRes(i)) )	
+ 			!call DGEMV('N', nRes(i), nRes(i), &
+ 			!	one, Mi(1:nRes(i), 1:nRes(i), i), nRes(i), &
+ 			!	ai(1:nRes(i), i), 1, &
+ 			!	zero, tempV1(1:nRes(i)), 1)
+ 			!K(i,i) = K(i,i) + sum( tempV1(1:nRes(i)) )	
 			
 			! Unimolecular reaction/collision terms
 			do j = 1, nUni
-            if (i /= j) then
-				! M_jar * b_jr
-				call DGEMV('N', nAct(j), nRes(j), &
-					one, Mi(nRes(j)+1:nGrains, 1:nRes(j), j), nAct(j), &
-					bi(1:nRes(j), j), 1, &
-					zero, tempV3(1:nAct(j)), 1)
-				! L_ij * M_jar * b_jr
-				call DGEMV('N', nAct(i), nAct(j), &
-					one,  L( sum(nAct(1:i-1))+1:sum(nAct(1:i)), sum(nAct(1:j-1))+1:sum(nAct(1:j)) ), nAct(i), &
-					tempV3(1:nAct(j)), 1, &
-					zero, tempV2(1:nAct(i)), 1)
-				! M_ira * L_ij * M_jar * b_jr
-				call DGEMV('N', nRes(i), nAct(i), &
-					one,  Mi(1:nRes(i), nRes(i)+1:nGrains, i), nRes(i), &
-					tempV2(1:nAct(i)), 1, &
-					zero, tempV1(1:nRes(i)), 1)
-				! || M_ira * L_ij * M_jar * b_jr || 
-				K(i,j) = K(i,j) - sum( tempV1(1:nRes(i)) )	
-            end if
-			end do
+            	if (i /= j) then
+					! M_jar * b_jr
+					call DGEMV('N', nAct(j), nRes(j), &
+						one, Mi(nRes(j)+1:nGrains, 1:nRes(j), j), nAct(j), &
+						ai(1:nRes(j), j), 1, &
+						zero, tempV3(1:nAct(j)), 1)
+					! L_ij * M_jar * b_jr
+					call DGEMV('N', nAct(i), nAct(j), &
+						one,  L( sum(nAct(1:i-1))+1:sum(nAct(1:i)), sum(nAct(1:j-1))+1:sum(nAct(1:j)) ), nAct(i), &
+						tempV3(1:nAct(j)), 1, &
+						zero, tempV2(1:nAct(i)), 1)
+					! M_ira * L_ij * M_jar * b_jr
+					call DGEMV('N', nRes(i), nAct(i), &
+						one,  Mi(1:nRes(i), nRes(i)+1:nGrains, i), nRes(i), &
+						tempV2(1:nAct(i)), 1, &
+						zero, tempV1(1:nRes(i)), 1)
+					! || M_ira * L_ij * M_jar * b_jr || 
+					K(i,j) = K(i,j) - sum( tempV1(1:nRes(i)) )
+				end if
+            end do
 		
 			! Bimolecular reaction terms
 			do m = 1, nMulti
 				do j = 1, nUni
 					if (Fim(nGrains,j,m) /= 0) then
 						! F_jma * b_m
-						tempV3(1:nAct(j)) =  Fim(nRes(j)+1:nGrains, j, m) * bn(nRes(j)+1:nGrains, m)
+						tempV3(1:nAct(j)) =  Fim(nRes(j)+1:nGrains, j, m) * an(nRes(j)+1:nGrains, m)
 						! L_ij * F_jma * b_m
 						call DGEMV('N', nAct(i), nAct(j), &
 							one,  L( sum(nAct(1:i-1))+1:sum(nAct(1:i)), sum(nAct(1:j-1))+1:sum(nAct(1:j)) ), nAct(i), &
@@ -228,11 +247,11 @@ contains
 		
 			! Loss term (on diagonal)
 			! || H_n * b_n ||
-! 			call DGEMV('N', nGrains, nGrains, &
-! 				one, Hn(:, :, n), nGrains, &
-! 				bn(:, n), 1, &
-! 				zero, tempV1(1:nGrains), 1)
-! 			K(nUni+n,nUni+n) = K(nUni+n,nUni+n) + sum( tempV1(1:nGrains) )	
+ 			!call DGEMV('N', nGrains, nGrains, &
+ 			!	one, Hn(:, :, n), nGrains, &
+ 			!	an(:, n), 1, &
+ 			!	zero, tempV1(1:nGrains), 1)
+ 			!K(nUni+n,nUni+n) = K(nUni+n,nUni+n) + sum( tempV1(1:nGrains) )	
 			
 			! Bimolecular-bimolecular interconversion terms - commented because it was assumed that there weren't any of these
 			! || J_nm * b_m ||
@@ -240,7 +259,7 @@ contains
 ! 				if (m /= n) then
 ! 					call DGEMV('N', nGrains, nGrains, &
 ! 						one, Jnm(:, n, m), nGrains, &
-! 						bn(:, m), 1, &
+! 						an(:, m), 1, &
 ! 						zero, tempV1(1:nGrains), 1)
 ! 					K(nUni+n, nUni+m) = K(nUni+n, nUni+m) + sum( tempV1(1:nGrains) )
 ! 				end if
@@ -253,7 +272,7 @@ contains
 						! M_jar * b_jr
 						call DGEMV('N', nAct(j), nRes(j), &
 							one, Mi(nRes(j)+1:nGrains, 1:nRes(j), j), nAct(j), &
-							bi(1:nRes(j), j), 1, &
+							ai(1:nRes(j), j), 1, &
 							zero, tempV3(1:nAct(j)), 1)
 						! L_ij * M_jar * b_jr
 						call DGEMV('N', nAct(i), nAct(j), &
@@ -274,7 +293,7 @@ contains
 					do j = 1, nUni
 						if (Fim(nGrains,j,m) /= 0 .and. Gnj(nGrains,n,i) /= 0 .and. n /= m) then
 							! F_jma * b_m
-							tempV3(1:nAct(j)) =  Fim(nRes(j)+1:nGrains, j, m) * bn(nRes(j)+1:nGrains, m)
+							tempV3(1:nAct(j)) =  Fim(nRes(j)+1:nGrains, j, m) * an(nRes(j)+1:nGrains, m)
 							! L_ij * F_jma * b_m
 							call DGEMV('N', nAct(i), nAct(j), &
 								one,  L( sum(nAct(1:i-1))+1:sum(nAct(1:i)), sum(nAct(1:j-1))+1:sum(nAct(1:j)) ), nAct(i), &
@@ -292,18 +311,28 @@ contains
 		end do
 
  		! Must divide all k(T,P) in uni rows by || b^ir(E) ||
-        do i = 1, nUni
-            do j = 1, nUni
-                K(i,j) = K(i,j) / sum(bi(1:nRes(i),i))
-            end do
-            do m = 1, nMulti
-                K(i,nUni+m) = K(i,nUni+m) / sum(bi(1:nRes(i),i))
-            end do
-        end do
+        !do i = 1, nUni
+        !    do j = 1, nUni
+        !        K(i,j) = K(i,j) / sum(bi(1:nRes(i),i))
+        !    end do
+        !    do m = 1, nMulti
+        !        K(i,nUni+m) = K(i,nUni+m) / sum(bi(1:nRes(i),i))
+        !    end do
+        !end do
+		
+		! Must divide all k(T,P) in multi rows by || b^n(E) ||
+        !do n = 1, nMulti
+        !    do j = 1, nUni
+        !        K(nUni+n,j) = K(nUni+n,j) / sum(bn(:,n))
+        !    end do
+        !    do m = 1, nMulti
+        !        K(nUni+n,nUni+m) = K(nUni+n,nUni+m) / sum(bn(:,n))
+        !    end do
+        !end do
         
         ! Clean up
 		deallocate( tempV1, tempV2, tempV3 )	
-		deallocate( nAct, L )
+		deallocate( nAct, L, ai, an )
 
 	end subroutine
 

@@ -12,6 +12,8 @@ module StrongCollisionModule
 	use IsomerModule
 	use ReactionModule
 
+	implicit none
+	
 contains
 
 	! --------------------------------------------------------------------------
@@ -35,9 +37,13 @@ contains
 		real(8), dimension(:,:,:), intent(in)		:: 	Fim
 		real(8), dimension(:,:,:), intent(in)		:: 	Gnj
 		real(8), dimension(:,:,:), intent(in)		:: 	Jnm
-		real(8), dimension(:,:), intent(inout)		:: 	bi
+		real(8), dimension(:,:), intent(in)			:: 	bi
 		real(8), dimension(:,:), intent(in)			:: 	bn
 		real(8), dimension(:,:), intent(out) 		:: 	K
+		
+		real(8), dimension(:,:), allocatable		:: 	ai
+		real(8), dimension(:,:), allocatable		:: 	an
+		
 		
 		! Steady-state populations
 		real(8), dimension(:,:), allocatable	:: 	p
@@ -62,14 +68,21 @@ contains
 		integer, dimension(:), allocatable				::	iPiv
 		integer											::	info
 		integer	src, start
-		real(8)	val
+		real(8)	temp
 		
-		! Fraction of collisions that result in deactivation
-		eps = 0.05
-
 		! Gas concentration in molecules/m^3
 		gasConc = simData%P * 1e5 / 1.381e-23 / simData%T
 
+		! Renormalize equilibrium distributions
+		allocate( ai(1:simData%nGrains, 1:simData%nUni) )
+		allocate( an(1:simData%nGrains, 1:simData%nMulti) )
+		do i = 1, simData%nUni
+    		ai(:,i) = bi(:,i) / sum(bi(:,i))
+		end do
+        do n = 1, simData%nMulti
+    		an(:,n) = bn(:,n) / sum(bn(:,n))
+		end do
+		
 		! Determine collision frequency for each isomer
 		allocate( w(1:simData%nUni) )
 		do i = 1, simData%nUni
@@ -93,8 +106,11 @@ contains
 			
 		do src = 1, simData%nUni+simData%nMulti
 
+			! Determine collision efficiency
+			eps = collisionEfficiency(simData, uniData, rxnData, src)
+
 			! Determine starting grain
-			call getActiveSpaceStart(simData, uniData, rxnData, src, start)
+			start = activeSpaceStart(simData, uniData, rxnData, src)
 			
 			do r = 1, start-1
 				do i = 1, simData%nUni
@@ -104,11 +120,12 @@ contains
 			
 			do r = start, simData%nGrains
 
-				! Zero A matrix
+				! Zero A matrix and b vector
 				do i = 1, simData%nUni
 					do j = 1, simData%nUni
 						A(i,j) = 0.0
 					end do
+					b(i) = 0.0
 				end do
 				
 				! Collisional deactivation
@@ -138,10 +155,10 @@ contains
 				if (src > simData%nUni) then
 					n = src - simData%nUni
 					do i = 1, simData%nUni
-						b(i) = Fim(r,i,n) * bn(r,n)
+						b(i) = Fim(r,i,n) * an(r,n)
 					end do
 				else
-					b(src) = eps * w(src) * bi(r,src)
+					b(src) = eps * w(src) * ai(r,src)
 				end if
 				
 				! Solve for steady-state population
@@ -153,47 +170,33 @@ contains
 				p(r,:) = -b
 				
 			end do
-
+			
 			! Calculate rates
 			
 			! Stabilization rates (i.e.) R + R' --> Ai or M --> Ai
 			do i = 1, simData%nUni
 				if (i /= src) then
-					val = eps * w(i) * sum(p(:,i))
-					K(i,src) = K(i,src) + val
-					K(src,src) = K(src,src) - val
+					temp = eps * w(i) * sum(p(:,i))
+					K(i,src) = K(i,src) + temp
+					K(src,src) = K(src,src) - temp
 				end if
 			end do
 			
 			! Dissociation rates (i.e.) R + R' --> Bn + Cn or M --> Bn + Cn
-			if (src <= simData%nUni) then
-				! Thermal activation
-				do i = 1, simData%nUni
-					do n = 1, simData%nMulti
-						if (Gnj(simData%nGrains,n,i) > 0) then
-							val = sum(Gnj(:,n,i) * p(:,i))
-							K(n+simData%nUni,src) = K(n+simData%nUni,src) + val
-							K(src,src) = K(src,src) - val
-						end if
-					end do
+			do i = 1, simData%nUni
+				do n = 1, simData%nMulti
+					if (n /= src - simData%nUni .and. Gnj(simData%nGrains,n,i) > 0) then
+						temp = sum(Gnj(:,n,i) * p(:,i))
+						K(n+simData%nUni,src) = K(n+simData%nUni,src) + temp
+						K(src,src) = K(src,src) - temp
+					end if
 				end do
-			else
-				! Chemical activation
-				do i = 1, simData%nUni
-					do n = 1, simData%nMulti
-						if (n /= src - simData%nUni .and. Gnj(simData%nGrains,n,i) > 0) then
-							val = sum(Gnj(:,n,i) * p(:,i))
-							K(n+simData%nUni,src) = K(n+simData%nUni,src) + val
-							K(src,src) = K(src,src) - val
-						end if
-					end do
-				end do
-			end if
+			end do
 			
 		end do
 
 		! Clean up
-		deallocate( w, A, b, iPiv, p )
+		deallocate( w, A, b, iPiv, p, ai, an )
 
 	end subroutine
 
@@ -236,7 +239,108 @@ contains
 	
 	! --------------------------------------------------------------------------
 
-	! Subroutine: getActiveSpaceStart()
+	! collisionEfficiency() 
+	!
+	!   Computes the fraction of collisions that result in deactivation.
+	!
+	function collisionEfficiency(simData, uniData, rxnData, src)
+	
+		! Provide parameter type checking of inputs and outputs
+		type(Simulation), intent(in)				:: 	simData
+		type(Isomer), dimension(:), intent(in)		:: 	uniData
+		type(Reaction), dimension(:), intent(in)	:: 	rxnData
+		integer, intent(in)							:: 	src
+		real(8)										::	collisionEfficiency
+		
+		real(8) E0
+		integer t
+		
+		if (src > simData%nUni) then
+			collisionEfficiency = 0.38
+		else
+
+			collisionEfficiency = 0.38
+
+! 			E0 = simData%Emax
+! 			do t = 1, size(rxnData)
+! 				if (rxnData(t)%isomer(1) == src .or. rxnData(t)%isomer(2) == src) then
+! 					if (rxnData(t)%E < E0) E0 = rxnData(t)%E
+! 				end if
+! 			end do
+! 
+! 			collisionEfficiency = efficiency(simData%T, &
+! 				simData%alpha * (1000 / 6.022e23), &
+! 				uniData(src)%densStates / (1000 / 6.022e23), &
+! 				simData%E * (1000 / 6.022e23), &
+! 				E0 * (1000 / 6.022e23))
+			
+		end if
+	
+	end function
+	
+	! --------------------------------------------------------------------------
+	! 
+	! efficiency() 
+	!
+	!   Computes the fraction of collisions that result in deactivation. All
+	!	parameters are assumed to be in SI units.
+	!
+	function efficiency(T, alpha, rho, E, E0)
+
+		! Provide parameter type checking of inputs and outputs
+		real(8), intent(in)					:: 	T
+		real(8), intent(in)					:: 	alpha
+		real(8), dimension(:), intent(in)	:: 	rho
+		real(8), dimension(:), intent(in)	:: 	E
+		real(8), intent(in)					:: 	E0
+		real(8)								::	efficiency
+		
+		real(8) kB, Delta, dE
+		real(8) Fe, FeNum, FeDen
+		real(8) Delta1, Delta2, DeltaN
+		real(8) temp
+		integer r
+		
+		kB = 1.381e-23						! [=] J/K
+		Delta = 1
+		dE = E(2) - E(1)					! [=] J
+
+		FeNum = 0
+		FeDen = 0
+		do r = 1, size(E)
+			temp = rho(r) * exp(-E(r) / kB / T) * dE
+			if (E(r) > E0) then
+				FeNum = FeNum + temp * dE
+				if (FeDen == 0) FeDen = temp * kB * T
+			end if
+		end do
+
+		Fe = FeNum / FeDen
+
+		Delta1 = 0
+		Delta2 = 0
+		DeltaN = 0
+		do r = 1, size(E)
+			temp = rho(r) * exp(-E(r) / kB / T) * dE
+			if (E(r) < E0) then
+				Delta1 = Delta1 + temp * dE
+				Delta2 = Delta2 + temp * exp(-(E0 - E(r)) / (Fe * kB * T)) * dE
+			end if
+			DeltaN = DeltaN + temp * dE
+		end do
+		Delta1 = Delta1 / DeltaN
+		Delta2 = Delta2 / DeltaN
+
+		Delta = Delta1 - (Fe * kB * T) / (alpha + Fe * kB * T) * Delta2
+		
+		efficiency = (alpha / (alpha + Fe * kB * T))**2 / Delta
+		write (*,*), FeNum, FeDen, Fe, Delta, efficiency
+		
+	end function
+	
+	! --------------------------------------------------------------------------
+
+	! Subroutine: activeSpaceStart()
 	! 
 	! Determines the grain below which the reservoir approximation will be used
 	! and above which the pseudo-steady state approximation will be used by
@@ -250,28 +354,29 @@ contains
 	!
 	! Returns:
 	!	nRes - The reservoir cutoff grains for each unimolecular isomer.
-	subroutine getActiveSpaceStart(simData, uniData, rxnData, well, start)
+	function activeSpaceStart(simData, uniData, rxnData, well)
 	
 		type(Simulation), intent(in)				:: 	simData
 		type(Isomer), dimension(:), intent(in)		:: 	uniData
 		type(Reaction), dimension(:), intent(in)	:: 	rxnData
 		integer, intent(in)							::	well
-		integer, intent(out)						::	start
+		integer										::	activeSpaceStart
 		
-		integer i, t, start0
+		real(8) Eres
+		
+		integer t, start
 		
 		start = simData%nGrains
 		
-		i = well
 		Eres = simData%Emax
 		do t = 1, simData%nRxn
-			if (rxnData(t)%isomer(1) == i .or. rxnData(t)%isomer(2) == i) then
+			if (rxnData(t)%isomer(1) == well .or. rxnData(t)%isomer(2) == well) then
 				if (rxnData(t)%E < Eres) Eres = rxnData(t)%E
 			end if
 		end do
-		start = ceiling((Eres - simData%Emin) / simData%dE) + 1
+		activeSpaceStart = ceiling((Eres - simData%Emin) / simData%dE) + 1
 
-	end subroutine
+	end function
 	
 	! --------------------------------------------------------------------------
 
