@@ -18,27 +18,65 @@ import jing.rxn.PDepReaction;
 import jing.rxn.Reaction;
 
 /**
- *
+ * A rate-based reaction model enlarger for use when pressure-dependent
+ * kinetics estimation is desired. In addition to checking the species fluxes,
+ * this class contains a piece of the activated species algorithm (ASA), a
+ * method for ensuring that pressure-dependent networks are being explored in
+ * sufficient detail.
  * @author jwallen
  */
 public class RateBasedPDepRME implements ReactionModelEnlarger {
 
+	/**
+	 * The pressure-dependent kinetics estimator to use. Currently this will
+	 * only hold a FastMasterEqn object, as the Chemdis class has been
+	 * depreciated. This is the object called when a pressure-dependent
+	 * calculation is run.
+	 */
 	private PDepKineticsEstimator pDepKineticsEstimator;
 	
-    // Constructors
+    //==========================================================================
+	//
+	//	Constructors
+	//
     
-    public  RateBasedPDepRME() {
+    /**
+	 * Default constructor. Does not set the pressure-dependent kinetics 
+	 * estimator.
+	 */
+	public RateBasedPDepRME() {
 		pDepKineticsEstimator = null;
     }
     
+	//==========================================================================
+	//
+	//	Accessors
+	//
+    
+	/**
+	 * Returns the current pressure-dependent kinetics estimator.
+	 * @return The current pressure-dependent kinetics estimator
+	 */
 	public PDepKineticsEstimator getPDepKineticsEstimator() {
 		return pDepKineticsEstimator;
 	}
 	
+	/**
+	 * Sets the  pressure-dependent kinetics estimator.
+	 * @param pdke The new pressure-dependent kinetics estimator
+	 */
 	public void setPDepKineticsEstimator(PDepKineticsEstimator pdke) {
 		pDepKineticsEstimator = pdke;
 	}
 
+	/**
+	 * Enlarges the reaction model by either adding a species to the core or
+	 * making a unimolecular isomer included in a PDepNetwork. The action taken
+	 * is based on the fluxes of species.
+	 * @param rxnSystemList The reaction systems in the simulation
+	 * @param rm The current reaction model in the simulation
+	 * @param validList A boolean list of the validity status of each reaction system
+	 */
 	public void enlargeReactionModel(LinkedList rxnSystemList, ReactionModel rm, LinkedList validList) {
 		
 		CoreEdgeReactionModel cerm = (CoreEdgeReactionModel) rm;
@@ -62,20 +100,30 @@ public class RateBasedPDepRME implements ReactionModelEnlarger {
 			double[] flux = new double[len];
 			for (int n = 0; n < len; n++)
 				flux[n] = 0.0;
+
+			// Flux from non-pDep reactions
 			for (Iterator iter = cerm.getUnreactedSpeciesSet().iterator(); iter.hasNext(); ) {
 				Species us = (Species) iter.next();
 				flux[us.getID()] = Math.abs(ps.getUnreactedSpeciesFlux(us));
 			}
+
+			// Flux from pDep reactions
 			for (Iterator iter = PDepNetwork.getNetworks().iterator(); iter.hasNext(); ) {
 				PDepNetwork pdn = (PDepNetwork) iter.next();
 				for (Iterator iter2 = pdn.getNetReactions().iterator(); iter2.hasNext(); ) {
 					PDepReaction rxn = (PDepReaction) iter2.next();
+					double forwardFlux = rxn.calculateForwardFlux(ps);
+					double reverseFlux = rxn.calculateReverseFlux(ps);
 					for (int j = 0; j < rxn.getReactantNumber(); j++) {
 						Species species = (Species) rxn.getReactantList().get(j);
 						if (cerm.containsAsUnreactedSpecies(species))
-							flux[species.getID()] += rxn.calculateFlux(ps);
+							flux[species.getID()] += reverseFlux;
 					}
-						
+					for (int j = 0; j < rxn.getProductNumber(); j++) {
+						Species species = (Species) rxn.getProductList().get(j);
+						if (cerm.containsAsUnreactedSpecies(species))
+							flux[species.getID()] += forwardFlux;
+					}
 				}
 			}
 			
@@ -110,7 +158,8 @@ public class RateBasedPDepRME implements ReactionModelEnlarger {
 			System.out.println("Unreacted species " + maxSpecies.getName() + " has highest flux: " + String.valueOf(maxFlux));
 			System.out.println("Network " + maxNetwork.getID() + " has highest leak flux: " + String.valueOf(maxLeak));
 
-			if (maxFlux > Rmin && (maxFlux > maxLeak || maxLeak < Rmin)) {
+			//if (maxFlux > Rmin && (maxFlux > maxLeak || maxLeak < Rmin)) {
+			if (maxFlux > maxLeak) {
 
 				// Add a species to the core
 				System.out.print("\nAdd a new reacted Species: ");
@@ -156,10 +205,12 @@ public class RateBasedPDepRME implements ReactionModelEnlarger {
 				}
 
 			}
-			else if (maxLeak > Rmin) {
+			//else if (maxLeak > Rmin) {
+			else {
+
 
 				PDepIsomer isomer = maxNetwork.getMaxLeakIsomer(ps);
-				System.out.print("\nAdd a new included Species: " + isomer.toString() +
+				System.out.println("\nAdd a new included Species: " + isomer.toString() +
 						" to network " + maxNetwork.getID());
 
 				maxNetwork.makeIsomerIncluded(isomer);

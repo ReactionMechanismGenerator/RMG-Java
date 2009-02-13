@@ -27,7 +27,7 @@
  * 
  */
 
-import jing.GUI.*;
+import jing.gui.*;
 
 import javax.swing.BorderFactory;
 import javax.swing.Box;

@@ -42,11 +42,23 @@ public class PDepNetwork {
 	//	Data members
 	//
 	
+	/**
+	 * These are used by the network to check the core/edge states of 
+	 * individual isomers and species and to generate pathways when isomers
+	 * gain included status.
+	 */
 	public static ReactionModel reactionModel;
 	public static ReactionSystem reactionSystem;
 
+	/**
+	 * A count of the number of pressure-dependent networks that have been
+	 * created since the inception of the current instance of RMG.
+	 */
 	private static int networkCount = 0;
 
+	/**
+	 * A unique identifier integer for the network.
+	 */
 	private int id;
 
 	/**
@@ -128,6 +140,10 @@ public class PDepNetwork {
 	//	Get accessor methods
 	//
 	
+	/**
+	 * Returns the unique identifier for this network.
+	 * @return The unique identifier for this network.
+	 */
 	public int getID() {
 		return id;
 	}
@@ -207,6 +223,11 @@ public class PDepNetwork {
 		return null;
 	}
 
+	/**
+	 * Returns the unimolecular isomer that contains the indicated species.
+	 * @param species The species to check the isomers for
+	 * @return The unimolecular isomer corresponding to species
+	 */
 	public PDepIsomer getIsomer(Species species) {
 		for (ListIterator<PDepIsomer> iter = uniIsomerList.listIterator(); iter.hasNext(); ) {
 			PDepIsomer isomer = iter.next();
@@ -250,7 +271,6 @@ public class PDepNetwork {
 	//
 	//	Set accessor methods
 	//
-	
 	
 	/**
 	 * Adds an isomer (unimolecular or multimolecular) to the appropriate 
@@ -299,6 +319,12 @@ public class PDepNetwork {
 		altered = alt;
 	}
 
+	/**
+	 * Elevates the status of the designated isomer from nonincluded to 
+	 * included, and generates pathways for this isomer. Generally a large 
+	 * number of pathways are generated.
+	 * @param isomer The isomer to make included.
+	 */
 	public void makeIsomerIncluded(PDepIsomer isomer) {
 
 		if (!isomer.isUnimolecular() || isomer.getIncluded())
@@ -359,7 +385,15 @@ public class PDepNetwork {
 
 	}
 
-
+	/**
+	 * Calculates the leak flux for this network. The leak flux is defined as
+	 * the maximum possible flux to all nonincluded species. The maximum
+	 * modifier implies that only the forward reaction to the nonincluded
+	 * species is used to generate the flux, rather than the combined forward
+	 * and backward reaction.
+	 * @param ss A system snapshot (T, P, concentrations, etc.) to use to calculate the flux.
+	 * @return The leak flux for this network
+	 */
 	public double getLeakFlux(SystemSnapshot ss) {
 		double rLeak = 0.0;
 		for (ListIterator<PDepReaction> iter = nonincludedReactionList.listIterator(); iter.hasNext(); ) {
@@ -372,6 +406,13 @@ public class PDepNetwork {
 		return rLeak;
 	}
 
+	/**
+	 * Calculates the isomer with the largest leak flux for this network. The
+	 * reaction with the maximum flux is used to select the isomer. This isomer
+	 * is the candidate for elevating to included status.
+	 * @param ss A system snapshot (T, P, concentrations, etc.) to use to calculate the flux.
+	 * @return The isomer with the largest leak flux
+	 */
 	public PDepIsomer getMaxLeakIsomer(SystemSnapshot ss) {
 		PDepReaction maxReaction = null;
 		double maxLeak = 0.0;

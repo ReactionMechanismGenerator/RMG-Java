@@ -146,10 +146,18 @@ public class PDepIsomer {
 		return getSpeciesNames();
 	}
 
+	/**
+	 * Returns the included status the isomer.
+	 * @return The included status the isomer.
+	 */
 	public boolean getIncluded() {
 		return included;
 	}
 
+	/**
+	 * Sets the included status the isomer.
+	 * @param incl The new included status the isomer.
+	 */
 	public void setIncluded(boolean incl) {
 		included = incl;
 	}
@@ -248,6 +256,12 @@ public class PDepIsomer {
 		return speciesList.get(species).getMolecularWeight();
 	}
 	
+	/**
+	 * Implements the equals method common to all Java objects. This method
+	 * calls other versions of equals() based on the type of the object passed.
+	 * @param object An object to compare the isomer to.
+	 * @return True if the isomer and the object are equal, false if not
+	 */
 	@Override
 	public boolean equals(Object object) {
 		if (object instanceof PDepIsomer)
@@ -256,6 +270,13 @@ public class PDepIsomer {
 			return false;
 	}
 	
+	/**
+	 * Returns true if the current object and isomer have all of the same
+	 * species, no matter what order the species are stored in each object's
+	 * species list.
+	 * @param isomer The isomer to compare the current isomer to
+	 * @return True if the two isomers have all of the same species, false if not
+	 */
 	public boolean equals(PDepIsomer isomer) {
 		if (getNumSpecies() != isomer.getNumSpecies())
 			return false;
@@ -275,6 +296,11 @@ public class PDepIsomer {
 		}
 	}
 
+	/**
+	 * Returns all of the pressure-dependent pathways involving the current isomer.
+	 * @param rxnSystem A reaction system to use to access the template and library reaction generators.
+	 * @return A hash set of the pressure-dependent pathways involving the current isomer
+	 */
 	public LinkedHashSet generatePaths(ReactionSystem rxnSystem) {
 		if (!isUnimolecular())
 			return new LinkedHashSet();
@@ -283,6 +309,12 @@ public class PDepIsomer {
 		return reactionSet;
 	}
 
+	/**
+	 * Checks to see if the isomer is in the model core (i.e. all of the 
+	 * species in the isomer are core species).
+	 * @param cerm The current core-edge reaction model
+	 * @return True if all species are in the model core, false if not
+	 */
 	public boolean isCore(CoreEdgeReactionModel cerm) {
 		for (int i = 0; i < speciesList.size(); i++) {
 			if (!cerm.containsAsReactedSpecies(speciesList.get(i)))

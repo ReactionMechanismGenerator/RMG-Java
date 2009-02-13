@@ -24,14 +24,19 @@ import jing.rxnSys.CoreEdgeReactionModel;
 import jing.rxnSys.ReactionSystem;
 
 /**
- *
+ * Used to estimate pressure-dependent rate coefficients k(T, P) for a
+ * PDepNetwork object. The estimation is done by a call to the Fortran module
+ * FAME. There are two methods for estimating k(T, P): the modified strong
+ * collision and the reservoir state methods.
  * @author jwallen
  */
 public class FastMasterEqn implements PDepKineticsEstimator {
 
 	/**
 	 * The number of times the FAME module has been called for any network
-	 * since the inception of this RMG execution.
+	 * since the inception of this RMG execution. Used to be used to number the
+	 * FAME input and output files, but now the networks have individual IDs
+	 * that are used for this purpose.
 	 */
 	private static int runCount = 0;
 	
@@ -104,16 +109,32 @@ public class FastMasterEqn implements PDepKineticsEstimator {
 		if (pdn.getAltered() == false)
 			return;
 		
+		// Don't do networks with isomers made up of only monatomic species
+		boolean shouldContinue = true;
+		for (ListIterator iter = pdn.getMultiIsomers().listIterator(); iter.hasNext(); ) {
+			PDepIsomer isomer = (PDepIsomer) iter.next();
+			boolean allMonatomic = true;
+			for (int i = 0; i < isomer.getNumSpecies(); i++) {
+				if (!isomer.getSpecies(i).isMonatomic())
+					allMonatomic = false;
+			}
+			if (allMonatomic)
+				shouldContinue = false;
+		}
 		// No update needed if network is only two wells and one reaction (?)
 		/*if (pdn.getUniIsomers().size() + pdn.getMultiIsomers().size() == 2 &&
-				pdn.getPathReactions().size() == 1) {
-			System.out.println("No pDep calculation needed for network with only two isomers and one reaction.");
+				pdn.getPathReactions().size() == 1)
+			shouldContinue = false;*/
+
+		if (!shouldContinue)
+		{
 			LinkedList<PDepReaction> paths = pdn.getPathReactions();
 			LinkedList<PDepReaction> net = pdn.getNetReactions();
 			net.clear();
-			net.add(paths.get(0));
+			for (int i = 0; i < paths.size(); i++)
+				net.add(paths.get(i));
 			return;
-		}*/
+		}
 		
 		// Get working directory (to find FAME executable)
 		String dir = System.getProperty("RMG.workingDirectory");
@@ -126,20 +147,6 @@ public class FastMasterEqn implements PDepKineticsEstimator {
 			System.out.println("Warning: Empty pressure-dependent network detected. Skipping.");
 			return;
 		}
-		/*for (int i = 0; i < pathReactions.size(); i++) {
-			Reaction reaction = (Reaction) pathReactions.get(i).getTheReaction();
-			System.out.println(reaction.toString() + 
-				"    A = " + reaction.getKinetics().getAValue() + " s^-1 " +
-				"    Ea = " + reaction.getKinetics().getEValue() + " kcal/mol " +
-				"    n = " + reaction.getKinetics().getNValue());
-			reaction = (Reaction) pathReactions.get(i);
-			System.out.println(reaction.toString() + 
-				"    A = " + reaction.getKinetics().getAValue() + " s^-1 " +
-				"    Ea = " + reaction.getKinetics().getEValue() + " kcal/mol " +
-				"    n = " + reaction.getKinetics().getNValue());
-			
-		}*/
-		
 		
 		// Create FAME input files
 		writeInputFile(pdn, rxnSystem, uniIsomers, multiIsomers, pathReactions);
@@ -153,14 +160,14 @@ public class FastMasterEqn implements PDepKineticsEstimator {
 			String[] command = {dir + "/software/fame/fame.exe"};
            	File runningDir = new File("fame/");
 			Process fame = Runtime.getRuntime().exec(command, null, runningDir);                     
-            /*InputStream ips = fame.getInputStream();
+            InputStream ips = fame.getInputStream();
             InputStreamReader is = new InputStreamReader(ips);
             BufferedReader br = new BufferedReader(is);
             // Print FAME stdout
 			String line = null;
             while ( (line = br.readLine()) != null) {
             	System.out.println(line);
-            }*/
+            }
             int exitValue = fame.waitFor();
 			
         }
@@ -170,28 +177,30 @@ public class FastMasterEqn implements PDepKineticsEstimator {
         }
         
 		// Parse FAME output file and update accordingly
-        readOutputFile(pdn, rxnSystem, cerm, uniIsomers, multiIsomers);
+        if (readOutputFile(pdn, rxnSystem, cerm, uniIsomers, multiIsomers)) {
         
-		// Reset altered flag
-        pdn.setAltered(false);
-		
-		// Clean up files
-		String path = "fame/";
-		int id = pdn.getID();
-		if (id < 10)			path += "000";
-		else if (id < 100)	path += "00";
-		else if (id < 1000)	path += "0";
-		path += Integer.toString(id);
-		
-		File input = new File("fame/fame_input.txt");
-		File newInput = new File(path +  "_input.txt");
-		input.renameTo(newInput);
-		File output = new File("fame/fame_output.txt");
-		File newOutput = new File(path +  "_output.txt");
-		output.renameTo(newOutput);
-		
-		// Write finished indicator to console
-		System.out.println("FAME execution for network " + Integer.toString(id) + " complete.");
+			// Reset altered flag
+			pdn.setAltered(false);
+
+			// Clean up files
+			String path = "fame/";
+			int id = pdn.getID();
+			if (id < 10)			path += "000";
+			else if (id < 100)	path += "00";
+			else if (id < 1000)	path += "0";
+			path += Integer.toString(id);
+
+			File input = new File("fame/fame_input.txt");
+			File newInput = new File(path +  "_input.txt");
+			input.renameTo(newInput);
+			File output = new File("fame/fame_output.txt");
+			File newOutput = new File(path +  "_output.txt");
+			output.renameTo(newOutput);
+
+			// Write finished indicator to console
+			System.out.println("FAME execution for network " + Integer.toString(id) + " complete.");
+		}
+
 		runCount++;
 		
 	}
@@ -418,7 +427,7 @@ public class FastMasterEqn implements PDepKineticsEstimator {
 	 * @param uniIsomers The set of unimolecular isomers in the network
 	 * @param multiIsomers The set of multimolecular isomers in the network
 	 */
-	public void readOutputFile(PDepNetwork pdn, ReactionSystem rxnSystem,
+	public boolean readOutputFile(PDepNetwork pdn, ReactionSystem rxnSystem,
 			CoreEdgeReactionModel cerm,
 			LinkedList<PDepIsomer> uniIsomers, 
 			LinkedList<PDepIsomer> multiIsomers) {
@@ -531,17 +540,17 @@ public class FastMasterEqn implements PDepKineticsEstimator {
 
 						// Determine reactants
 						PDepIsomer reactant = null;
-						if (i < numUniWells) 
-							reactant = uniIsomers.get(i);
+						if (j < numUniWells)
+							reactant = uniIsomers.get(j);
 						else
-							reactant = multiIsomers.get(i - numUniWells);
+							reactant = multiIsomers.get(j - numUniWells);
 						
 						// Determine products
 						PDepIsomer product = null;
-						if (j < numUniWells) 
-							product = uniIsomers.get(j);
+						if (i < numUniWells)
+							product = uniIsomers.get(i);
 						else
-							product = multiIsomers.get(j - numUniWells);
+							product = multiIsomers.get(i - numUniWells);
 						
 						// Initialize net reaction
 						PDepReaction rxn = new PDepReaction(reactant, product, cp);
@@ -571,7 +580,7 @@ public class FastMasterEqn implements PDepKineticsEstimator {
 			}
 			
 			if (ignoredARate)
-				System.out.println("Warning: One or more rate coefficients in FAME output was ignored due to invalid values.");
+				throw new Exception("Warning: One or more rate coefficients in FAME output was invalid.");
 
 			// Update reaction lists (sort into included and nonincluded)
 			pdn.updateReactionLists(cerm);
@@ -583,9 +592,17 @@ public class FastMasterEqn implements PDepKineticsEstimator {
 		}
 		catch(Exception e) {
 			System.out.println(e.getMessage());
-			e.printStackTrace();
+			//e.printStackTrace();
+			if (mode == Mode.RESERVOIRSTATE) {
+				System.out.println("Falling back to modified strong collision mode for this network.");
+				mode = Mode.STRONGCOLLISION;
+				runPDepCalculation(pdn, rxnSystem, cerm);
+				mode = Mode.RESERVOIRSTATE;
+				return false;
+			}
 		}
-        
+
+		return true;
     }
 
 	/**
@@ -620,7 +637,7 @@ public class FastMasterEqn implements PDepKineticsEstimator {
 		}
 		
 		Emax *= 4.184;
-		Emax += 25 * 0.008314 * T;
+		Emax += 100 * 0.008314 * T;
 		
 		// Round up to nearest ten kJ/mol
 		return Math.ceil(Emax / 10) * 10.0;	// [=] kJ/mol

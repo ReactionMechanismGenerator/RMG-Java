@@ -363,7 +363,10 @@ public class PDepReaction extends Reaction {
 	 * @return The determined reaction flux
 	 */
 	public double calculateReverseFlux(SystemSnapshot ss) {
-		return pDepReverse.calculateForwardFlux(ss);
+		if (pDepReverse != null)
+			return pDepReverse.calculateForwardFlux(ss);
+		else
+			return 0.0;
 	}
 
 	/**
@@ -409,6 +412,10 @@ public class PDepReaction extends Reaction {
 		}
     }
 	
+	/**
+	 * Returns true if the PDepReaction has a previously-defined reverse reaction.
+	 * @return
+	 */
 	@Override
 	public boolean hasReverseReaction() {
 		return (pDepReverse != null);

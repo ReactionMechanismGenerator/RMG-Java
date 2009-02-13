@@ -104,7 +104,7 @@ public class FrequencyGroups{//gmagoon 111708: removed "implements GeneralGAPP"
         try{
             String dir = System.getProperty("RMG.workingDirectory");
             File runningdir=new File("frankie");
-            String command = dir + "/software/frankie/frankie.exe";
+            String[] command = { dir + "/software/frankie/frankie.exe" };
             Process freqProc = Runtime.getRuntime().exec(command, null, runningdir); 
             InputStream is = freqProc.getInputStream();
             InputStreamReader isr = new InputStreamReader(is);

@@ -756,6 +756,10 @@ public class Species {
         //#]
     }
 
+	public boolean isMonatomic() {
+        return (getChemGraph().getAtomNumber() == 1);
+    }
+
     //## operation make(String,ChemGraph)
     public static Species make(String p_name, ChemGraph p_chemGraph) {
         //#[ operation make(String,ChemGraph)

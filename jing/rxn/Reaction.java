@@ -46,6 +46,7 @@ import jing.mathTool.*;
 import jing.chemParser.*;
 import jing.chem.Species;
 import jing.param.Temperature;
+import jing.rxnSys.NegativeConcentrationException;
 import jing.rxnSys.SystemSnapshot;
 
 //## package jing::rxn
@@ -1393,6 +1394,53 @@ public class Reaction {
 		fitReverseKineticsRoughly();
 		structure.setDirection(1);
 		setKinetics(getFittedReverseKinetics());
+	}
+
+	/**
+	 * Calculates the flux of this reaction given the provided system snapshot.
+	 * The system snapshot contains the temperature, pressure, and
+	 * concentrations of each core species.
+	 * @param ss The system snapshot at which to determine the reaction flux
+	 * @return The determined reaction flux
+	 */
+	public double calculateFlux(SystemSnapshot ss) {
+		return calculateForwardFlux(ss) - calculateReverseFlux(ss);
+	}
+
+	/**
+	 * Calculates the forward flux of this reaction given the provided system snapshot.
+	 * The system snapshot contains the temperature, pressure, and
+	 * concentrations of each core species.
+	 * @param ss The system snapshot at which to determine the reaction flux
+	 * @return The determined reaction flux
+	 */
+	public double calculateForwardFlux(SystemSnapshot ss) {
+		Temperature T = ss.getTemperature();
+		double forwardFlux = getRateConstant(T);
+		for (ListIterator<Species> iter = getReactants(); iter.hasNext(); ) {
+			Species spe = iter.next();
+			double conc = 0.0;
+			if (ss.getSpeciesStatus(spe) != null)
+				conc = ss.getSpeciesStatus(spe).getConcentration();
+			if (conc < 0)
+	        	throw new NegativeConcentrationException(spe.getName() + ": " + String.valueOf(conc));
+			forwardFlux *= conc;
+		}
+		return forwardFlux;
+	}
+
+	/**
+	 * Calculates the flux of this reaction given the provided system snapshot.
+	 * The system snapshot contains the temperature, pressure, and
+	 * concentrations of each core species.
+	 * @param ss The system snapshot at which to determine the reaction flux
+	 * @return The determined reaction flux
+	 */
+	public double calculateReverseFlux(SystemSnapshot ss) {
+		if (hasReverseReaction())
+			return reverseReaction.calculateForwardFlux(ss);
+		else
+			return 0.0;
 	}
 
 }
