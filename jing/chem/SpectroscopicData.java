@@ -48,14 +48,17 @@ public class SpectroscopicData {
 	//	Data members
 	//
 	
+	public enum Mode { OFF, THREEFREQUENCY, FREQUENCYGROUPS };
+
 	/**
-	 * A flag that specifies whether or not to utilize the three-frequency
-	 * model for the spectroscopic data. Setting this to true makes the code
-	 * dependent on the THERFIT module; setting this to false makes the code
-	 * use Frankie instead.
+	 * A flag that specifies the method to use to estimate the spectroscopic
+	 * data. Setting this to THREEFREQUENCY makes the code dependent on the
+	 * THERFIT module; setting this to FREQUENCYGROUPS makes the code use
+	 * Frankie instead. If spectroscopic data is not needed (i.e. non-pressure-
+	 * dependent cases) then OFF is used.
 	 */
-	public static boolean useThreeFrequencyModel = false;
-	
+	public static Mode mode = Mode.OFF;
+
 	/**
 	 * An array of vibrational frequencies, each representing one degree of
 	 * freedom modeled as a simple harmonic oscillator. Units are cm^-1.

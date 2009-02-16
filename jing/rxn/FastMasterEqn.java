@@ -147,7 +147,25 @@ public class FastMasterEqn implements PDepKineticsEstimator {
 			System.out.println("Warning: Empty pressure-dependent network detected. Skipping.");
 			return;
 		}
-		
+
+		// Make sure all species have spectroscopic data
+		for (ListIterator<PDepIsomer> iter = uniIsomers.listIterator(); iter.hasNext(); ) {
+			PDepIsomer isomer = iter.next();
+			for (int i = 0; i < isomer.getNumSpecies(); i++) {
+				Species species = isomer.getSpecies(i);
+				if (!species.hasSpectroscopicData())
+					species.generateSpectroscopicData();
+			}
+		}
+		for (ListIterator<PDepIsomer> iter = multiIsomers.listIterator(); iter.hasNext(); ) {
+			PDepIsomer isomer = iter.next();
+			for (int i = 0; i < isomer.getNumSpecies(); i++) {
+				Species species = isomer.getSpecies(i);
+				if (!species.hasSpectroscopicData())
+					species.generateSpectroscopicData();
+			}
+		}
+
 		// Create FAME input files
 		writeInputFile(pdn, rxnSystem, uniIsomers, multiIsomers, pathReactions);
 		

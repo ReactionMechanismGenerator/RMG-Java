@@ -122,8 +122,6 @@ public class Species {
         calculateLJParameters();
         selectDeltaEDown();
 		generateNASAThermoData();
-        //generateThreeFrequencyModel();
-		spectroscopicData = new SpectroscopicData();
         generateSpectroscopicData();
         if (useInChI) InChI = p_chemGraph.getInChI();
         //#]
@@ -633,18 +631,24 @@ public class Species {
 	}
 	
 	public void generateSpectroscopicData() {
-		if (SpectroscopicData.useThreeFrequencyModel) {
+		if (SpectroscopicData.mode == SpectroscopicData.Mode.THREEFREQUENCY) {
 			generateThreeFrequencyModel();
 			spectroscopicData = null;
 		}
-		else {
+		else if (SpectroscopicData.mode == SpectroscopicData.Mode.FREQUENCYGROUPS) {
 			spectroscopicData = FrequencyGroups.getINSTANCE().generateFreqData(this);
+			threeFrequencyModel = null;
+		}
+		else {
+			spectroscopicData = null;
 			threeFrequencyModel = null;
 		}
 	}
 	
 	public void generateThreeFrequencyModel() {
         
+		threeFrequencyModel = null;
+
 		// Do nothing if molecule is triatomic or smaller
 		if (isTriatomicOrSmaller()) 
 			return;

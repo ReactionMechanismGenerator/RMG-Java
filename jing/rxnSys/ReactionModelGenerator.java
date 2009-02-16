@@ -253,26 +253,7 @@ public class ReactionModelGenerator {
                 line = ChemParser.readMeaningfulLine(reader);
             }
                 
-
-        	// read in spectroscopic data estimator
-        //	line = ChemParser.readMeaningfulLine(reader);
-        	if (line.startsWith("SpectroscopicDataEstimator:")) {
-        		StringTokenizer st = new StringTokenizer(line);
-        		String name = st.nextToken();
-        		String sdeType = st.nextToken().toLowerCase();
-        		if (sdeType.equals("frequencygroups") || sdeType.equals("default")) {
-        			SpectroscopicData.useThreeFrequencyModel = false;
-        		}
-				else if (sdeType.equals("therfit") || sdeType.equals("threefrequencymodel")) {
-        			SpectroscopicData.useThreeFrequencyModel = true;
-        		}
-				else throw new InvalidSymbolException("condition.txt: Unknown SpectroscopicDataEstimator = " + sdeType);
-				
-        	}
-        	else throw new InvalidSymbolException("condition.txt: can't find SpectroscopicDataEstimator!");
-			
         	// Read in InChI generation
-        	line = ChemParser.readMeaningfulLine(reader);
         	if (line.startsWith("InChIGeneration:")) {
         		StringTokenizer st = new StringTokenizer(line);
         		String name = st.nextToken();
@@ -399,64 +380,87 @@ public class ReactionModelGenerator {
            	}
         	else throw new InvalidSymbolException("condition.txt: can't find Inert gas concentration!");
 
-        	// read in reaction model enlarger
-        	line = ChemParser.readMeaningfulLine(reader);
-        	if (line.startsWith("ReactionModelEnlarger:")) {
+        	// read in spectroscopic data estimator
+			line = ChemParser.readMeaningfulLine(reader);
+        	if (line.startsWith("SpectroscopicDataEstimator:")) {
         		StringTokenizer st = new StringTokenizer(line);
         		String name = st.nextToken();
-        		String rmeType = st.nextToken();
-        		if (rmeType.equals("RateBasedModelEnlarger")) {
-        			reactionModelEnlarger = new RateBasedRME();
-        			PDepNetwork.generateNetworks = false;
-					line = ChemParser.readMeaningfulLine(reader);
-					st = new StringTokenizer(line);
-					String iS = st.nextToken();
-					String fileName = st.nextToken();
-					if (iS.startsWith("IncludeSpecies")) {
-						HashSet includeSpecies = readIncludeSpecies(fileName);
-						((RateBasedRME)reactionModelEnlarger).addIncludeSpecies(includeSpecies);
-						line = ChemParser.readMeaningfulLine(reader);
-					}
+        		String sdeType = st.nextToken().toLowerCase();
+        		if (sdeType.equals("frequencygroups") || sdeType.equals("default")) {
+        			SpectroscopicData.mode = SpectroscopicData.Mode.FREQUENCYGROUPS;
         		}
-        		else if (rmeType.equals("RateBasedPDepModelEnlarger")) {
-        			reactionModelEnlarger = new RateBasedPDepRME();
-        			PDepNetwork.generateNetworks = true;
-					line = ChemParser.readMeaningfulLine(reader);
-					if (line.startsWith("PDepKineticsEstimator:")) {
-						st = new StringTokenizer(line);
-						name = st.nextToken();
-						String pdkeType = st.nextToken().toLowerCase();
-						if (!(reactionModelEnlarger instanceof RateBasedPDepRME))
-							throw new InvalidSymbolException("condition.txt: PDepKineticsEstimator specified, but reaction model enlarger is not pressure-dependent!");
-						if (pdkeType.equals("reservoirstate")) {
-							((RateBasedPDepRME) reactionModelEnlarger).setPDepKineticsEstimator(new FastMasterEqn(FastMasterEqn.Mode.RESERVOIRSTATE));
-						}
-						else if (pdkeType.equals("modifiedstrongcollision")) {
-							((RateBasedPDepRME) reactionModelEnlarger).setPDepKineticsEstimator(new FastMasterEqn(FastMasterEqn.Mode.STRONGCOLLISION));
-						}
-						else if (pdkeType.equals("chemdis")) {
-							((RateBasedPDepRME) reactionModelEnlarger).setPDepKineticsEstimator(new Chemdis());
-							if (!SpectroscopicData.useThreeFrequencyModel) {
-								System.out.println("Warning: Switching SpectroscopicDataEstimator to three-frequency model.");
-								SpectroscopicData.useThreeFrequencyModel = true;
-							}
-						}
-						else {
-							throw new InvalidSymbolException("condition.txt: Unknown PDepKineticsEstimator = " + pdkeType);
-						}
-					}
-					else throw new InvalidSymbolException("condition.txt: can't find PDepKineticsEstimator!");
-					line = ChemParser.readMeaningfulLine(reader);
+				else if (sdeType.equals("therfit") || sdeType.equals("threefrequencymodel")) {
+        			SpectroscopicData.mode = SpectroscopicData.Mode.THREEFREQUENCY;
         		}
-        		else {
-        			throw new InvalidSymbolException("condition.txt: Unknown ReactionModelEnlarger = " + rmeType);
+				else if (sdeType.equals("off") || sdeType.equals("none")) {
+        			SpectroscopicData.mode = SpectroscopicData.Mode.OFF;
         		}
-				
+				else throw new InvalidSymbolException("condition.txt: Unknown SpectroscopicDataEstimator = " + sdeType);
+
         	}
-        	else throw new InvalidSymbolException("condition.txt: can't find ReactionModelEnlarger!");
+        	else throw new InvalidSymbolException("condition.txt: can't find SpectroscopicDataEstimator!");
+
+        	// pressure dependence flag
+			line = ChemParser.readMeaningfulLine(reader);
+        	if (line.toLowerCase().startsWith("pressuredependence:")) {
+				StringTokenizer st = new StringTokenizer(line);
+        		String name = st.nextToken();
+        		String pDepType = st.nextToken();
+        		if (pDepType.toLowerCase().equals("modifiedstrongcollision") ||
+						pDepType.toLowerCase().equals("reservoirstate") ||
+						pDepType.toLowerCase().equals("chemdis")) {
+
+					reactionModelEnlarger = new RateBasedPDepRME();
+        			PDepNetwork.generateNetworks = true;
+
+					if (pDepType.toLowerCase().equals("reservoirstate")) {
+						((RateBasedPDepRME) reactionModelEnlarger).setPDepKineticsEstimator(new FastMasterEqn(FastMasterEqn.Mode.RESERVOIRSTATE));
+						if (SpectroscopicData.mode == SpectroscopicData.Mode.OFF) {
+							System.out.println("Warning: Spectroscopic data needed for pressure dependence; switching SpectroscopicDataEstimator to FrequencyGroups.");
+							SpectroscopicData.mode = SpectroscopicData.Mode.FREQUENCYGROUPS;
+						}
+					}
+					else if (pDepType.toLowerCase().equals("modifiedstrongcollision")) {
+						((RateBasedPDepRME) reactionModelEnlarger).setPDepKineticsEstimator(new FastMasterEqn(FastMasterEqn.Mode.STRONGCOLLISION));
+						if (SpectroscopicData.mode == SpectroscopicData.Mode.OFF) {
+							System.out.println("Warning: Spectroscopic data needed for pressure dependence; switching SpectroscopicDataEstimator to FrequencyGroups.");
+							SpectroscopicData.mode = SpectroscopicData.Mode.FREQUENCYGROUPS;
+						}
+					}
+					else if (pDepType.toLowerCase().equals("chemdis")) {
+						((RateBasedPDepRME) reactionModelEnlarger).setPDepKineticsEstimator(new Chemdis());
+						if (SpectroscopicData.mode != SpectroscopicData.Mode.THREEFREQUENCY) {
+							System.out.println("Warning: Switching SpectroscopicDataEstimator to three-frequency model.");
+							SpectroscopicData.mode = SpectroscopicData.Mode.THREEFREQUENCY;
+						}
+					}
+					else {
+						throw new InvalidSymbolException("condition.txt: Unknown PDepKineticsEstimator = " + pDepType);
+					}
+				}
+				else if (pDepType.toLowerCase().equals("off")) {
+					// No pressure dependence
+					reactionModelEnlarger = new RateBasedRME();
+        			PDepNetwork.generateNetworks = false;
+				}
+				else {
+					throw new InvalidSymbolException("condition.txt: Unknown PressureDependence = " + pDepType);
+				}
+			}
+			else throw new InvalidSymbolException("condition.txt: can't find PressureDependence flag!");
 			
-        	// read in finish controller
-        	//line = ChemParser.readMeaningfulLine(reader);
+        	// include species (optional)
+			line = ChemParser.readMeaningfulLine(reader);
+			if (line.startsWith("IncludeSpecies")) {
+				StringTokenizer st = new StringTokenizer(line);
+				String iS = st.nextToken();
+				String fileName = st.nextToken();
+				HashSet includeSpecies = readIncludeSpecies(fileName);
+				((RateBasedRME)reactionModelEnlarger).addIncludeSpecies(includeSpecies);
+				line = ChemParser.readMeaningfulLine(reader);
+			}
+
+			// read in finish controller
         	if (line.startsWith("FinishController")) {
         		line = ChemParser.readMeaningfulLine(reader);
         		StringTokenizer st = new StringTokenizer(line);
