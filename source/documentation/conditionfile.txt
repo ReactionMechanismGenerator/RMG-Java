@@ -129,20 +129,6 @@ begins at 600 Kelvin and 200 atmospheres::
    PressureModel: Constant (atm) 200 
 
 
-.. _spectroscopicdata:
-
-Spectroscopic Data
-------------------
-
-The fifth item in the initialization file is the method to use to estimate the 
-spectroscopic data (i.e. rovibrational modes) of each species. At present 
-there is only one method available, which utilizes approximate frequencies
-based on functional groups in the molecule when possible, then fits remaining
-degrees of freedom to heat capacity data. This item should read::
-
-   SpectroscopicDataEstimator: FrequencyGroups
-
-
 Reactants
 ---------
 
@@ -225,43 +211,64 @@ Please note that the keyword ``END`` must be placed at the end of the InertGas
 section.
 
 
-Reaction Model Enlarger
------------------------
+.. _spectroscopicdata:
 
-The Reaction Model Enlarger specifies the rules for reaction mechanism growth.
-There are two options: ``RateBasedModelEnlarger`` and ``RateBasedPDepModelEnlarger``.
-The former ignores pressure dependence of reaction networks, while the latter
-considers them. To choose ``RateBasedModelEnlarger`` the line should 
-read::
+Spectroscopic Data
+------------------
 
-  ReactionModelEnlarger: RateBasedModelEnlarger
+The next item in the initialization file is the method to use to estimate the 
+spectroscopic data (i.e. rovibrational modes) of each species. At present 
+there is only one method available, which utilizes approximate frequencies
+based on functional groups in the molecule when possible, then fits remaining
+degrees of freedom to heat capacity data. This can also be set to off if
+spectroscopic data is not needed (i.e. when pressure dependence is off).
 
-Choosing ``RateBasedPDepModelEnlarger`` also requires specification of a method to
-use when approximating pressure-dependent kinetics. There are currently two
+When pressure dependent calculation is not desired, this item should read::
+
+   SpectroscopicDataEstimator: off
+
+
+When pressure dependent calculation is desired, this item should read::
+
+   SpectroscopicDataEstimator: FrequencyGroups
+
+
+Pressure Dependence
+-------------------
+
+This flag is used to specify whether the model should account for pressure 
+dependent rate coefficients. If pressure dependence is not desired, this item
+should read::
+
+	PressureDependence: off
+
+If pressure dependence is desired, this item can take one of two values, based
+on the method used to approximate the pressure-dependent kinetics. There are currently two
 such options: ``ModifiedStrongCollision`` and ``ReservoirState``. The former utilizes
-the modified strong collision approach of A.Y. Chang, J.W. Bozzelli, and 
-A. M. Dean [ChangXXXX]_, and works reasonably well while running more rapidly. The latter 
-utilizes the steady state/reservoir state approach of N. J. B. Green and 
-Z. A. Bhatti [GreenXXXX]_, and is more accurate but more expensive. Such a specification
-would look as follows::
+the modified strong collision approach of Chang, Bozzelli, and Dean [Chang2000]_, 
+and works reasonably well while running more rapidly. The latter 
+utilizes the steady state/reservoir state approach of Green and Bhatti [Green2007]_, 
+and is more accurate but more expensive. 
+
+To specify the modified strong collision approach, this item should read::
  
-  ReactionModelEnlarger: RateBasedPDepModelEnlarger
-  PDepKineticsEstimator: ModifiedStrongCollision
+	PressureDependence: ModifiedStrongCollision
 
-.. [ChangXXXX] Can we have a full citation here?
+To specify the reservoir state approach, this item should read::
+ 
+	PressureDependence: ReservoirState
 
-.. [GreenXXXX] Can we have a full citation here?
+.. [Chang2000] A.Y. Chang, J.W. Bozzelli, and A. M. Dean. "Kinetic Analysis of Complex Chemical Activation and Unimolecular Dissociation Reactions using QRRK Theory and the Modified Strong Collision Approximation." *Z. Phys. Chem.* **214** (11), p. 1533-1568 (2000).
+
+.. [Green2007] N.J.B. Green and Z.A. Bhatti. "Steady-State Master Equation Methods." *Phys. Chem. Chem. Phys.* **9**, p. 4275-4290 (2007).
 
 Finish Controller
 -----------------
 
 The Finish Controller defines the termination rules for model growth.
 Additionally, it includes the precision parameters such as reaction time,
-conversion, and error tolerance. Currently, there are two finish controllers:
-``RateBasedFinishController`` and ``RateBasedPDepFinishController``. A choice of 
-``RateBasedModelEnlarger`` for the Reaction Model Enlarger should coincide with a
-choice of ``RateBasedFinishController``, while ``RateBasedPDepModelEnlarger`` and
-``RateBasedPDepFinishController`` should also be paired.
+conversion, and error tolerance. The finish controller item should begin
+with a line that contains only ``FinishController:``.
 
 Below the Finish Controller line, you must specify the goal. The goal tells the
 program when to terminate the reaction model expansion. There are two goal
@@ -276,14 +283,14 @@ tolerance when generating a new model. Once the initial simulation has finished,
 you can tighten the tolerance and apply the restart function to generate an
 expanded model. In the first example, the reaction will run for 0.001 seconds::
 
-  FinishController: RateBasedFinishController
+  FinishController:
   (1) Goal ReactionTime: 0.001 (sec)
   (2) Error Tolerance: 0.1
 
 In the second example, the reaction will run until 90% of the C$_2$O$_2$ is
 consumed and has a much tighter error tolerance::
 
-  FinishController: RateBasedFinishController
+  FinishController:
   (1) Goal Conversion:C2O2 0.90
   (2) Error Tolerance: 0.0001
 
