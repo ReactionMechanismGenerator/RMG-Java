@@ -14,14 +14,16 @@
  * MIT Chemical Engineering
  * Green Group
  * 
- * Last updated: February 10, 2009
+ * Last updated: February 17, 2009
+ *  - Adapted GUI to handle new condition.txt file format
+ *      -- Different location of SpectroscopicDataEstimator
+ *      -- PressureDependence replacing ModelEnlarger + PDepKineticsEstimator
+ *      -- No FinishController options
  * 
  * Currently:
  * 	- creates & displays GUI
  *	- creates .txt file related to running RMG
  *		* condition.txt : file containing all inputs (species, tolerances, etc.) 
- *	- requires 2 folders + 1 program to compile / run properly
- *		* ACD ChemSketch: free program available at http://www.acdlabs.com/download/chemsk.html
  * 
  * Improvements:
  * 
@@ -114,14 +116,18 @@ public class GUI extends JPanel implements ActionListener {
     	headerComments = new JTextArea(3,20);
     	JScrollPane headerScroll = new JScrollPane(headerComments);
     	comments.add(headerScroll);
-    	comments.add(Submit = new JButton("Save"));
+    	comments.add(save = new JButton("Save"));
+        save.addActionListener(this);
+    	save.setActionCommand("saveCondition");
+    	save.setToolTipText("Press to save file");
+        comments.add(saveAndRun = new JButton("Save and Run"));
+        saveAndRun.addActionListener(this);
+    	saveAndRun.setActionCommand("runCondition");
+    	saveAndRun.setToolTipText("Press to save and run file");
     	
     	submitConditionFile.add(comments);
     	submitConditionFile.setBorder(BorderFactory.createCompoundBorder(BorderFactory.createTitledBorder
     			("Create Initialization File: condition.txt"), BorderFactory.createEmptyBorder(5,5,5,5)));
-    	Submit.addActionListener(this);
-    	Submit.setActionCommand("Condition");
-    	Submit.setToolTipText("Press to save file: condition.txt");
     }
     
     public void initializeJCB(JComboBox[] all) {
@@ -1179,7 +1185,7 @@ public class GUI extends JPanel implements ActionListener {
     	}
     }
         
-    public void createConditionFile() {
+    public void createConditionFile(Boolean saveAndRun) {
     	//	Let's create the condition.txt file!
     	String conditionFile = "";
     	
@@ -1385,24 +1391,26 @@ public class GUI extends JPanel implements ActionListener {
     	} else if (libraryCombo.getSelectedItem().equals("No")) {
     		conditionFile += "off\rEND";
     	}
-    	
-		File conditionPath = null;
+
+        File conditionPath = null;
 		FileWriter fw = null;
 		// Write the cTable to species.mol file
         try {
         	conditionPath = askUserForInput("Save file", false);
-        	String[] rmgArgs = new String[1];
         	if (conditionPath != null) {
         		fw = new FileWriter(conditionPath);
         		fw.write(conditionFile);
             	fw.close();
-            	rmgArgs[0] = conditionPath.getAbsolutePath();
-            	RMG.main(rmgArgs);
         	}
         } catch (IOException e) {
         	String err = "Error writing condition file: ";
         	err += e.toString();
         	System.out.println(err);
+        }
+
+        // Run RMG if "Save and Run" selected
+        if (saveAndRun) {
+            runConditionFile(conditionPath.getAbsolutePath());
         }
 	}
     
@@ -1689,6 +1697,12 @@ public class GUI extends JPanel implements ActionListener {
     		libraryCombo.setSelectedItem("No");
     	}
     }
+
+    public void runConditionFile(String c_path) {
+        String[] rmgArgs = {c_path};
+        RMG.main(rmgArgs);
+        System.exit(0);
+    }
     
     public void enableComponents (JComponent[] allComponents) {
     	for (int i=0; i<allComponents.length; i++)
@@ -1745,10 +1759,14 @@ public class GUI extends JPanel implements ActionListener {
     		}
     			
     	}
-    	//	- Create the condition.txt file
-    	else if ("Condition".equals(event.getActionCommand())) {
-    		createConditionFile();
+    	//	Save the condition.txt file
+    	else if ("saveCondition".equals(event.getActionCommand())) {
+    		createConditionFile(false);
     	}
+        //  Save and run the condition.txt file
+        else if ("runCondition".equals(event.getActionCommand())) {
+            createConditionFile(true);
+        }
     	
 	}
     
@@ -1812,7 +1830,7 @@ public class GUI extends JPanel implements ActionListener {
     
     JButton 
     //	Main panel
-    Submit, 
+    save, saveAndRun,
     //	Tab0: Initialization
     AddPRL, DeletePRL, databaseButton, prlButton, ptlButton,
     //  Tab1: Termination

@@ -28,10 +28,12 @@ public class GUIWindow extends JFrame {
 		JMenuBar menuBar = new JMenuBar();
 		setJMenuBar(menuBar);											// Add the menu bar to the window
 		
-		JMenu fileMenu = new JMenu("File");								// Create File menu
-		JMenu helpMenu = new JMenu("Help");								// Create Help menu
-		fileMenu.setMnemonic('F');										// Create shortcut
-		helpMenu.setMnemonic('H');										// Create shortcut
+		JMenu fileMenu = new JMenu("File");			// Create File menu
+        JMenu runMenu = new JMenu("Run");           // Create Run menu
+		JMenu helpMenu = new JMenu("Help");			// Create Help menu
+		fileMenu.setMnemonic('F');					// Create shortcut
+        runMenu.setMnemonic('R');                   //  Create shortcut
+		helpMenu.setMnemonic('H');					// Create shortcut
 		
 		// Construct the File drop-down menu
 		JMenuItem openItem = fileMenu.add("Open");								// Add Open item
@@ -40,16 +42,22 @@ public class GUIWindow extends JFrame {
 		JMenuItem saveItem = fileMenu.add("Save");
 		saveItem.addActionListener(new MenuListener("Save"));
 		saveItem.setAccelerator(KeyStroke.getKeyStroke('S',CTRL_DOWN_MASK));
-		JMenuItem closeItem = fileMenu.add("Close");								// Add Close item
+		JMenuItem closeItem = fileMenu.add("Close");							// Add Close item
 		closeItem.addActionListener(new MenuListener("Close"));
-		
+
+        //  Construct the Run drop-down menu
+        JMenuItem runItem = runMenu.add("Run RMG");                             // Add Run item
+        runItem.addActionListener(new MenuListener("Run"));
+        runItem.setAccelerator(KeyStroke.getKeyStroke('R',CTRL_DOWN_MASK));
+
 		// Construct the Help drop-down menu
 		JMenuItem aboutItem = helpMenu.add("About RMG");
 		aboutItem.addActionListener(new MenuListener("Help"));
 		aboutItem.setAccelerator(KeyStroke.getKeyStroke('H',CTRL_DOWN_MASK));
 		
-		menuBar.add(fileMenu);											// Add the File menu
-		menuBar.add(helpMenu);											// Add the Help menu
+		menuBar.add(fileMenu);			// Add the File menu
+        menuBar.add(runMenu);           // Add the Run menu
+		menuBar.add(helpMenu);			// Add the Help menu
 	}
 	
     class MenuListener implements ActionListener {
@@ -64,11 +72,16 @@ public class GUIWindow extends JFrame {
 				if (openFile != null) theApp.openConditionFile(openFile);
 			}
 			else if (event.getActionCommand().equals("Save")) {
-				theApp.createConditionFile();
+				theApp.createConditionFile(false);
 			}
 			else if (event.getActionCommand().equals("Close")) {
 				System.exit(0);
 			}
+            else if (event.getActionCommand().equals("Run RMG")) {
+                File runFile = null;
+                runFile = theApp.askUserForInput("Run file", false);
+                theApp.runConditionFile(runFile.getAbsolutePath());
+            }
 			else if (event.getActionCommand().equals("About RMG")) {
 				JOptionPane.showMessageDialog(theApp, 
 						"RMG v3.0\n\n(c) Copyright Prof. William H. Green and RMG developers 2009.\n" +

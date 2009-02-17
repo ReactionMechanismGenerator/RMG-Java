@@ -1190,29 +1190,30 @@ public class Species {
         	optionsArgument = "-DoNotAddH";
         else if (getOs().toLowerCase().contains("mac"))
         	optionsArgument = "-DoNotAddH";
-        		
-        try {
-        	String[] command = {workingDirectory + "/software/InChI/cInChI-1",
-        			"species.mol",
-        			"species.txt",
-        			"species.log",
-        			"species.prb",
-        			optionsArgument};
-			File runningDir = new File("InChI");
-        	Process InChI = Runtime.getRuntime().exec(command, null, runningDir);
-        	
-        	InputStream errStream = InChI.getErrorStream();
-        	InputStream inpStream = InChI.getInputStream();
-        	errStream.close();
-        	inpStream.close();
 
-            int exitValue = InChI.waitFor();
-        }
-        catch (Exception e) {
-        	String err = "Error running cINChI-1: ";
-        	err += e.toString();
-        	System.out.println(err);
-        }
+        int exitValue = -1;
+        //while (exitValue != 0) {
+            try {
+                String[] command = {workingDirectory + "/software/InChI/cInChI-1",
+                        "species.mol",
+                        "species.txt",
+                        optionsArgument};
+                File runningDir = new File("InChI");
+                Process InChI = Runtime.getRuntime().exec(command, null, runningDir);
+
+                InputStream errStream = InChI.getErrorStream();
+                InputStream inpStream = InChI.getInputStream();
+                errStream.close();
+                inpStream.close();
+
+                exitValue = InChI.waitFor();
+            }
+            catch (Exception e) {
+                String err = "Error running cINChI-1: ";
+                err += e.toString();
+                System.out.println(err);
+            }
+        //}
 		
 		// Read in the output of the cINChI-1 executable file (species.txt)
         FileReader in = null;
@@ -1265,48 +1266,55 @@ public class Species {
         	optionsArgument[0] = "-InChI2Struct";
         	optionsArgument[1] = "-OutputSDF";
         }
-        
-        try {
-        	String[] command = {workingDirectory + "/software/InChI/cInChI-1",
-        			"inchi.txt",
-        			"temp.txt",
-        			optionsArgument[0]};
-			File runningDir = new File("InChI");
-        	Process InChI = Runtime.getRuntime().exec(command, null, runningDir);
-        	
-        	InputStream errStream = InChI.getErrorStream();
-        	InputStream inpStream = InChI.getInputStream();
-        	errStream.close();
-        	inpStream.close();
 
-            int exitValue = InChI.waitFor();
-        }
-        catch (Exception e) {
-        	String err = "Error running cINChI-1: ";
-        	err += e.toString();
-        	System.out.println(err);
-        }
-        
-        try {
-        	String[] command = {workingDirectory + "/software/InChI/cInChI-1",
-        			"temp.txt",
-        			"temp.mol",
-        			optionsArgument[1]};
-			File runningDir = new File("InChI");
-        	Process InChI = Runtime.getRuntime().exec(command, null, runningDir);
-        	
-        	InputStream errStream = InChI.getErrorStream();
-        	InputStream inpStream = InChI.getInputStream();
-        	errStream.close();
-        	inpStream.close();
 
-            int exitValue = InChI.waitFor();
-        }
-        catch (Exception e) {
-        	String err = "Error running cINChI-1: ";
-        	err += e.toString();
-        	System.out.println(err);
-        }
+        int exitValue = -1;
+        //while (exitValue != 0) {
+            try {
+                String[] command = {workingDirectory + "/software/InChI/cInChI-1",
+                        "inchi.txt",
+                        "temp.txt",
+                        optionsArgument[0]};
+                File runningDir = new File("InChI");
+                Process InChI = Runtime.getRuntime().exec(command, null, runningDir);
+
+                InputStream errStream = InChI.getErrorStream();
+                InputStream inpStream = InChI.getInputStream();
+                errStream.close();
+                inpStream.close();
+
+                exitValue = InChI.waitFor();
+            }
+            catch (Exception e) {
+                String err = "Error running cINChI-1: ";
+                err += e.toString();
+                System.out.println(err);
+            }
+        //}
+
+        exitValue = -1;
+        //while (exitValue != 0) {
+            try {
+                String[] command = {workingDirectory + "/software/InChI/cInChI-1",
+                        "temp.txt",
+                        "temp.mol",
+                        optionsArgument[1]};
+                File runningDir = new File("InChI");
+                Process InChI = Runtime.getRuntime().exec(command, null, runningDir);
+
+                InputStream errStream = InChI.getErrorStream();
+                InputStream inpStream = InChI.getInputStream();
+                errStream.close();
+                inpStream.close();
+
+                exitValue = InChI.waitFor();
+            }
+            catch (Exception e) {
+                String err = "Error running cINChI-1: ";
+                err += e.toString();
+                System.out.println(err);
+            }
+        //}
 		
         String cg = mol2chemGraph(inchiDirectory + "/temp.mol");
         
