@@ -660,27 +660,6 @@ public class GUI extends JPanel implements ActionListener {
     	//	Create cellrenderers for JComboBox/JTable - CENTER text
     	ListCellRenderer centerJComboBoxRenderer = new CenterJCBRenderer();
     	
-    	//	Create the Model Enlarger (ME) panel
-    	JPanel ME = new JPanel();
-    	ME.setBorder(BorderFactory.createCompoundBorder(BorderFactory.createTitledBorder("Model Enlarger"),
-    			BorderFactory.createEmptyBorder(5,5,5,5)));
-    	//	Populate the ME panel
-    	JLabel modelLabel = new JLabel("Choose reaction model enlarger");
-    	ME.add(modelLabel);
-    	modelLabel.setToolTipText("Default = RateBasedModelEnlarger");
-    	ME.add(modelCombo = new JComboBox(meOptions));
-    	modelCombo.setActionCommand("PDepME");
-    	
-    	//	Create the Kinetics Estimator (KE) panel
-    	JPanel KE = new JPanel();
-    	KE.setBorder(BorderFactory.createCompoundBorder(BorderFactory.createTitledBorder("Kinetic Estimator"),
-    			BorderFactory.createEmptyBorder(5,5,5,5)));
-    	//	Populate the KE panel
-    	JLabel estimatorLabel = new JLabel("Choose kinetics estimator");
-    	KE.add(estimatorLabel);
-    	KE.add(estimatorCombo = new JComboBox(keOptions));
-    	estimatorCombo.setEnabled(false);
-    	
     	//	Create the Dynamic Simulator (DS) panel
     	JPanel DS = new JPanel();
     	DS.setBorder(BorderFactory.createCompoundBorder(BorderFactory.createTitledBorder("Dynamic Simulator"),
@@ -760,6 +739,16 @@ public class GUI extends JPanel implements ActionListener {
     	ds.add(interTS);
     	DS.add(ds);
     	
+    	//	Create the Pressure dependence (Pdep) model panel
+    	JPanel Pdep = new JPanel();
+    	Pdep.setBorder(BorderFactory.createCompoundBorder(BorderFactory.createTitledBorder("Pressure dependence"),
+    			BorderFactory.createEmptyBorder(5,5,5,5)));
+    	//	Populate the ME panel
+    	JLabel modelLabel = new JLabel("Choose pressure dependence model");
+    	Pdep.add(modelLabel);
+    	modelLabel.setToolTipText("Default = Off");
+    	Pdep.add(pdepCombo = new JComboBox(pdepOptions));
+    	
     	//	Create the Spectroscopic Data Estimator (SDE) subpanel
     	JPanel SDE = new JPanel();
     	SDE.setBorder(BorderFactory.createCompoundBorder(BorderFactory.createTitledBorder("Spectroscopic Data Estimator"),
@@ -787,13 +776,12 @@ public class GUI extends JPanel implements ActionListener {
     	inchiPanel.add(inchiLabel);
     	inchiPanel.add(inchiCombo = new JComboBox(yesnoOptions));
     	
-        JComboBox[] allTab = {modelCombo, estimatorCombo, sdeCombo, eosCombo, inchiCombo};
+        JComboBox[] allTab = {pdepCombo, sdeCombo, eosCombo, inchiCombo};
         initializeJCB(allTab);
     	
     	Box TabTotal = Box.createVerticalBox();
-    	TabTotal.add(ME);
-    	TabTotal.add(KE);
     	TabTotal.add(DS);
+    	TabTotal.add(Pdep);
     	TabTotal.add(SDE);
     	TabTotal.add(EOS);
     	TabTotal.add(inchiPanel);
@@ -875,19 +863,6 @@ public class GUI extends JPanel implements ActionListener {
         timeCombo.addActionListener(this);
         timeCombo.setRenderer(centerJComboBoxRenderer);
         timeCombo.setSelectedIndex(1);
-        
-        //	Finish controller panel
-        JPanel Finish = new JPanel();
-        Finish.setBorder(BorderFactory.createCompoundBorder(BorderFactory.createTitledBorder("Select Finish Controller"),
-        		BorderFactory.createEmptyBorder(5,5,5,5)));
-        
-        JLabel finishcLabel = new JLabel("Select finish controller");
-        Finish.add(finishcLabel);
-        
-        Finish.add(finishcCombo = new JComboBox(fcOptions));
-        finishcCombo.addActionListener(this);
-        finishcCombo.setSelectedIndex(0);
-        finishcCombo.setRenderer(centerJComboBoxRenderer);
     	
         //	Error tolerance subpanel
         JPanel eTolPanel = new JPanel();
@@ -912,7 +887,6 @@ public class GUI extends JPanel implements ActionListener {
     	goalTypes.add(ReactionTime);
     	term.add(Goal);
     	term.add(goalTypes);
-    	term.add(Finish);
     	term.add(eTolPanel);
     	
     	JPanel terminationPanel = new JPanel();
@@ -1262,14 +1236,6 @@ public class GUI extends JPanel implements ActionListener {
         	conditionFile += "EquationOfState: Liquid\r";
         }
         
-        //	Add the spectroscopic data estimator
-        conditionFile += "SpectroscopicDataEstimator: ";
-        if (sdeCombo.getSelectedItem().equals("Frequency Groups")) {
-        	conditionFile += "frequencygroups\r";
-        } else if (sdeCombo.getSelectedItem().equals("therfit")) {
-        	conditionFile += "therfit\r";
-        }
-        
         //	Add whether to generate InChIs or not
         conditionFile += "InChIGeneration: ";
         if (inchiCombo.getSelectedItem().equals("Yes")) {
@@ -1294,7 +1260,7 @@ public class GUI extends JPanel implements ActionListener {
         		tableInput.getValueAt(i,0) + " " +
     			tableInput.getValueAt(i,1) + " (" +
     			tableInput.getValueAt(i,2) + ")\r" +
-    			tableInput.getValueAt(i,4) + "\r";
+    			tableInput.getValueAt(i,4) + "\r\r";
         	} else if (tableInput.getValueAt(i,3).equals("Unreactive")) {
         		unreactiveStatus = true;
         		++nonInertCount;
@@ -1302,7 +1268,7 @@ public class GUI extends JPanel implements ActionListener {
         		tableInput.getValueAt(i,0) + " " +
     			tableInput.getValueAt(i,1) + " (" +
     			tableInput.getValueAt(i,2) + ") unreactive\r" +
-    			tableInput.getValueAt(i,4) + "\r";
+    			tableInput.getValueAt(i,4) + "\r\r";
         	}
         }
         //	Add the non-inert gas species
@@ -1310,25 +1276,34 @@ public class GUI extends JPanel implements ActionListener {
         //	Add the inert gas species
         conditionFile += "InertGas:\r" + inertSpecies + "END\r\r";
         
-        //	Add the model enlarger
-        conditionFile += "ReactionModelEnlarger: " + modelCombo.getSelectedItem() + "\r";
-        //	IF not PDepModelEnlarger, check if IncludeSpecies.txt file is given
-        if (modelCombo.getSelectedItem().equals("RateBasedModelEnlarger")) {
-	        if (unreactiveStatus) {
-	        	conditionFile += "IncludeSpecies: " + isPath.getText() + "\r\r";
-	        }
-        } else if (modelCombo.getSelectedItem().equals("RateBasedPDepModelEnlarger")) {
-        	conditionFile += "PDepKineticsEstimator: ";
-        	if (estimatorCombo.getSelectedItem().equals("Modified Strong Collision")) {
-        		conditionFile += "modifiedstrongcollision";
-        	} else if (estimatorCombo.getSelectedItem().equals("Reservoir State")) {
-        		conditionFile += "reservoirstate";
-        	}
-        	conditionFile += "\r\r";
+        //	Add the spectroscopic data estimator
+        conditionFile += "SpectroscopicDataEstimator: ";
+        if (sdeCombo.getSelectedItem().equals("Frequency Groups")) {
+        	conditionFile += "FrequencyGroups\r";
+        } else if (sdeCombo.getSelectedItem().equals("Three Frequency Model")) {
+        	conditionFile += "ThreeFrequencyModel\r";
+        } else if (sdeCombo.getSelectedItem().equals("off")) {
+        	conditionFile += "off\r";
+        }
+        
+        //	Add the pressure dependence model
+        conditionFile += "PressureDependence: ";
+    	if (pdepCombo.getSelectedItem().equals("Modified Strong Collision")) {
+    		conditionFile += "modifiedstrongcollision";
+    	} else if (pdepCombo.getSelectedItem().equals("Reservoir State")) {
+    		conditionFile += "reservoirstate";
+    	} else if (pdepCombo.getSelectedItem().equals("off")) {
+    		conditionFile += "off";
+    	}
+        conditionFile += "\r\r";
+        
+        //	Add the path of the IncludeSpecies.txt file (if present)
+        if (unreactiveStatus) {
+        	conditionFile += "IncludeSpecies: " + isPath.getText() + "\r\r";
         }
         
         //	Add the finish controller
-        conditionFile += "FinishController: " + finishcCombo.getSelectedItem() + "\r" +
+        conditionFile += "FinishController:\r" +
         	"(1) Goal ";
         //	If goal is conversion
         boolean conversionGoal = true;
@@ -1495,24 +1470,13 @@ public class GUI extends JPanel implements ActionListener {
         	++lineCounter;
         }
         
-        //	Spectroscopic data estimator
-        st = new StringTokenizer(indivLines[lineCounter]);
-        tempString = st.nextToken();	// Skip over "SpectroscopicDataEstimator:"
-        String sde = st.nextToken();
-        if (sde.equals("frequencygroups")) {
-        	sdeCombo.setSelectedItem("Frequency Groups");
-        } else if (sde.equals("therfit")) {
-        	sdeCombo.setSelectedItem("therfit");
-        }
-        ++lineCounter;
-        
         //	InChI generation
         st = new StringTokenizer(indivLines[lineCounter]);
         tempString = st.nextToken();	// Skip over "InChIGeneration:"
         String inchi = st.nextToken();
-        if (inchi.equals("on")) {
+        if (inchi.toLowerCase().equals("on")) {
         	inchiCombo.setSelectedItem("Yes");
-        } else if (inchi.equals("off")) {
+        } else if (inchi.toLowerCase().equals("off")) {
         	inchiCombo.setSelectedItem("No");
         }
         ++lineCounter;
@@ -1567,38 +1531,40 @@ public class GUI extends JPanel implements ActionListener {
         }
         ++lineCounter;	// Skip over "END"
         
-        //	Model enlarger
+        //	Spectroscopic data estimator
         st = new StringTokenizer(indivLines[lineCounter]);
-        tempString = st.nextToken();	// Skip over "ModelEnlarger:"
-        String me = st.nextToken();
-        modelCombo.setSelectedItem(me);
+        tempString = st.nextToken();	// Skip over "SpectroscopicDataEstimator:"
+        String sde = st.nextToken();
+        if (sde.toLowerCase().equals("frequencygroups")) {
+        	sdeCombo.setSelectedItem("Frequency Groups");
+        } else if (sde.toLowerCase().equals("threefrequencymodel")) {
+        	sdeCombo.setSelectedItem("Three Frequency Model");
+        } else if (sde.toLowerCase().equals("off")) {
+        	sdeCombo.setSelectedItem("off");
+        }
+        ++lineCounter;
+        
+        //	Pressure dependence model
+        st = new StringTokenizer(indivLines[lineCounter]);
+        tempString = st.nextToken();	// Skip over "PressureDependence:"
+        String pdep = st.nextToken();
+        if (pdep.toLowerCase().equals("off")) {
+        	pdepCombo.setSelectedItem("off");
+        } else if (pdep.toLowerCase().equals("reservoirstate")) {
+        	pdepCombo.setSelectedItem("Reservoir State");
+        } else if (pdep.toLowerCase().equals("modifiedstrongcollision")) {
+        	pdepCombo.setSelectedItem("Modified Strong Collision");
+        }
         ++lineCounter;
         
         //	IncludeSpecies.txt file (if present)
-        if (me.equals("RateBasedModelEnlarger")) {
-        	if (indivLines[lineCounter].startsWith("IncludeSpecies")) {
-        		isPath.setText(indivLines[lineCounter].substring(15));
-        		++lineCounter;
-        	}
-        }
-        //	P-dep kinetics estimator
-        else if (me.equals("RateBasedPDepModelEnlarger")) {
-        	st = new StringTokenizer(indivLines[lineCounter]);
-        	tempString = st.nextToken();	// Skip over "PDepKineticsEstimator:"
-        	String ke = st.nextToken();
-        	if (ke.equals("reservoirstate")) {
-        		estimatorCombo.setSelectedItem("Reservoir State");
-        	} else if (ke.equals("modifiedstrongcollision")) {
-        		estimatorCombo.setSelectedItem("Modified Strong Collision");
-        	}
-        	++lineCounter;
-        }
+    	if (indivLines[lineCounter].startsWith("IncludeSpecies")) {
+    		isPath.setText(indivLines[lineCounter].substring(15));
+    		++lineCounter;
+    	}
         
         //	Finish controller
-        st = new StringTokenizer(indivLines[lineCounter]);
-        tempString = st.nextToken();	// Skip over "FinishController:"
-        finishcCombo.setSelectedItem(st.nextToken());
-        ++lineCounter;
+        ++lineCounter;	// Skip over "FinishController:"
         
         //	Goal
         st = new StringTokenizer(indivLines[lineCounter]);
@@ -1765,15 +1731,6 @@ public class GUI extends JPanel implements ActionListener {
     			enableComponents(prlComps);
     		}
     	}
-    	//	If the user enables/disables the p-dep model enlarger
-    	else if ("PDepME".equals(event.getActionCommand())) {
-    		JComponent[] meComps = {estimatorCombo};
-    		if (modelCombo.getSelectedItem().equals("RateBasedModelEnlarger")) {
-    			disableComponents(meComps);
-    		} else if (modelCombo.getSelectedItem().equals("RateBasedPDepModelEnlarger")) {
-    			enableComponents(meComps);
-    		}
-    	}
     	//	If the user enables/disables DASPK
     	else if ("saOnOff".equals(event.getActionCommand())) {
     		JComponent[] saComps =  {eBarsCombo, sensCoeffCombo};
@@ -1803,7 +1760,6 @@ public class GUI extends JPanel implements ActionListener {
 	//	Tab1: Termination Sequence
 	String[] species_blank = {" "};
 	String[] goalOptions = {"Conversion", "ReactionTime"};
-	String[] fcOptions = {"RateBasedFinishController", "RateBasedPDepFinishController"};
 	//	Tab2: Initial Condition
 	String[] tpModel = {"Constant"};
 	String[] concUnits = {"mol/cm3", "mol/m3", "mol/liter"};
@@ -1813,10 +1769,9 @@ public class GUI extends JPanel implements ActionListener {
 	//	Tab3: Error Analysis
 	String[] yesnoOptions = {"No", "Yes"};
 	//	Tab4: Dynamic Simulator
-	String[] meOptions = {"RateBasedModelEnlarger", "RateBasedPDepModelEnlarger"};
-	String[] keOptions = {"Reservoir State", "Modified Strong Collision"};
+	String[] pdepOptions = {"off", "Reservoir State", "Modified Strong Collision"};
 	String[] simOptions = {"DASSL", "DASPK"}; //"CHEMKIN"
-	String[] sdeOptions = {"Frequency Groups", "therfit"};
+	String[] sdeOptions = {"off", "Frequency Groups", "Three Frequency Model"};
 	String[] eosOptions = {"Ideal Gas", "Liquid"};
 	
 	JPanel
@@ -1827,14 +1782,14 @@ public class GUI extends JPanel implements ActionListener {
     //	Tab0: Initialization
     simulatorCombo, timeStepCombo, libraryCombo,
     //	Tab1: Termination Sequence
-    SpeciesConvName, controllerCombo, timeCombo, finishcCombo,
+    SpeciesConvName, controllerCombo, timeCombo,
     //	Tab2: Initial Condition
     UnitsInput, ReactiveInput, tempModelCombo, tempConstantUnit,
     	pressModelCombo, pressConstantUnit,
     //	Tab3: Error Analysis
     SpeciesSensName, eBarsCombo, sensCoeffCombo,
     //	Tab4: Dynamic Simulator
-    modelCombo, estimatorCombo, sdeCombo, eosCombo, inchiCombo;
+    pdepCombo, sdeCombo, eosCombo, inchiCombo;
     
     JTextField
     //	Tab0: Initialization
