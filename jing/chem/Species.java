@@ -1184,11 +1184,11 @@ public class Species {
         
         // Call cINChI-1 executable file
         String optionsArgument = "";
-        if (getOs().equals("windows"))
+        if (getOs().toLowerCase().contains("windows"))
         	optionsArgument = "/DoNotAddH";
-        else if (getOs().equals("linux"))
+        else if (getOs().toLowerCase().contains("linux"))
         	optionsArgument = "-DoNotAddH";
-        else if (getOs().equals("mac"))
+        else if (getOs().toLowerCase().contains("mac"))
         	optionsArgument = "-DoNotAddH";
         		
         try {
@@ -1255,13 +1255,13 @@ public class Species {
 		
         // Call cINChI-1 executable file
         String[] optionsArgument = new String[2];
-        if (getOs().equals("windows")) {
+        if (getOs().toLowerCase().equals("windows")) {
         	optionsArgument[0] = "/InChI2Struct";
         	optionsArgument[1] = "/OutputSDF";
-        } else if (getOs().equals("linux")) {
+        } else if (getOs().toLowerCase().equals("linux")) {
         	optionsArgument[0] = "-InChI2Struct";
         	optionsArgument[1] = "-OutputSDF";
-        } else if (getOs().equals("mac")) {
+        } else if (getOs().toLowerCase().equals("mac")) {
         	optionsArgument[0] = "-InChI2Struct";
         	optionsArgument[1] = "-OutputSDF";
         }
