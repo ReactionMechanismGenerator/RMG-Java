@@ -1409,7 +1409,7 @@ public class GUI extends JPanel implements ActionListener {
         }
 
         // Run RMG if "Save and Run" selected
-        if (saveAndRun) {
+        if (saveAndRun && conditionPath != null) {
             runConditionFile(conditionPath.getAbsolutePath());
         }
 	}

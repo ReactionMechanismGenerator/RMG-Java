@@ -80,7 +80,7 @@ public class GUIWindow extends JFrame {
             else if (event.getActionCommand().equals("Run RMG")) {
                 File runFile = null;
                 runFile = theApp.askUserForInput("Run file", false);
-                theApp.runConditionFile(runFile.getAbsolutePath());
+                if (runFile != null) theApp.runConditionFile(runFile.getAbsolutePath());
             }
 			else if (event.getActionCommand().equals("About RMG")) {
 				JOptionPane.showMessageDialog(theApp, 
