@@ -963,6 +963,16 @@ public class Graph {
 
     	}
     	g = null;
+        Iterator iter = SSSRings.iterator();
+        while(iter.hasNext()){
+            LinkedList ring = (LinkedList)iter.next();
+            Iterator ringIter = ring.iterator();
+            while (ringIter.hasNext()){
+                GraphComponent gc = (GraphComponent)ringIter.next();
+                gc.setInCycle(true);
+            }
+        }
+        
     	return;
     	
     }
