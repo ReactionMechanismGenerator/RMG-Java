@@ -92,6 +92,7 @@ public class FrequencyGroups{//gmagoon 111708: removed "implements GeneralGAPP"
                     Integer i = (Integer) iter.next();
                     fw.write(i + "\n");
 		}
+                fw.write(0+"\n");//write a zero for acyclic species
             }
             else{//cyclic case: print zeroes for group values instead, followed by a line with the number of hydrogens
                 for (Iterator iter = groupCount.iterator(); iter.hasNext(); ) {
