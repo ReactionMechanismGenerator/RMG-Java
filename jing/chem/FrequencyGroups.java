@@ -96,6 +96,7 @@ public class FrequencyGroups{//gmagoon 111708: removed "implements GeneralGAPP"
             }
             else{//cyclic case: print zeroes for group values instead, followed by a line with the number of hydrogens
                 for (Iterator iter = groupCount.iterator(); iter.hasNext(); ) {
+                    Integer i = (Integer) iter.next();
                     fw.write(0 + "\n");
                 }
                 fw.write(p_chemGraph.getHydrogenNumber()+"\n");
