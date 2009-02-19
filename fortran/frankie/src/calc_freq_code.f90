@@ -814,12 +814,11 @@ SUBROUTINE calc_predicted_freq(bond_info, Bond_degeneracy, Total_predicted_freq)
 !------------------------------------------------------------------------------
 
 
-  REAL(8), DIMENSION(12) :: RsCH3_typ_freq    = (/ 2750., 2850.0,  &
+  REAL(8), DIMENSION(10) :: RsCH3_typ_freq    = (/ 2750., 2850.0,  &
                                                 1350.0, 1500.0,   &
                                                  700.0, 800.0,    &
                                                 1000.0, 1100.0,   &
-                                                1350.0, 1400.0,    &
-                                                 800.0, 1000.0    /)
+                                                1350.0, 1400.0 /)
 
   REAL(8), DIMENSION(8)  :: RdCH2_typ_freq    = (/ 2950.0, 3100.0,  &
                                                    1330.0, 1430.0,  &
@@ -877,11 +876,10 @@ SUBROUTINE calc_predicted_freq(bond_info, Bond_degeneracy, Total_predicted_freq)
                                                    1190.0, 1240.0,  &
                                                     400.0,  500.0   /)
 
-  REAL(8), DIMENSION(10)  :: RsCH2r_typ_freq   = (/ 3000.0, 3100.0,  &
+  REAL(8), DIMENSION(8)  :: RsCH2r_typ_freq   = (/ 3000.0, 3100.0,  &
                                                     415.0,  465.0,  &
                                                     780.0,  850.0,  &
-                                                   1435.0, 1475.0,  &
-                                                    800.0, 1000.0   /)
+                                                   1435.0, 1475.0   /)
 
   REAL(8), DIMENSION(6)  :: RdCHr_typ_freq    = (/ 3115.0, 3125.0,  &
                                                     620.0,  680.0,  &
@@ -901,15 +899,12 @@ SUBROUTINE calc_predicted_freq(bond_info, Bond_degeneracy, Total_predicted_freq)
   REAL(8), DIMENSION(4)  :: RsCrsR2_typ_freq  = (/  360.0,  370.0,  &
                                                     300.0,  400.0   /)
 
-  REAL(8), DIMENSION(8)  :: Alcohol_typ_freq  = (/ 3580.0, 3650.0,  &
-                                                   1000.0, 1050.0,  &
-                                                   1210.0, 1345.0,  &
-                                                    800.0, 1000.0   /)
+  REAL(8), DIMENSION(4)  :: Alcohol_typ_freq  = (/ 3580.0, 3650.0,  &
+                                                   1210.0, 1345.0   /)
 
   REAL(8), DIMENSION(2)  :: Ether_typ_freq    = (/  350.0,  500.0   /)
 
-  REAL(8), DIMENSION(10) :: ROOH_typ_freq     = (/ 3580.0, 3650.0,  &
-                                                   1135.0, 1155.0,  &
+  REAL(8), DIMENSION(8) :: ROOH_typ_freq     = (/ 3580.0, 3650.0,  &
                                                    1300.0, 1320.0,  &
                                                     350.0,  425.0,  &
                                                     825.0,  875.0   /)
@@ -918,11 +913,10 @@ SUBROUTINE calc_predicted_freq(bond_info, Bond_degeneracy, Total_predicted_freq)
                                                     795.0,  815.0,  &
                                                    1185.0, 1215.0   /)
 
-  REAL(8), DIMENSION(6)  :: peroxy_typ_freq   = (/  470.0,  515.0,  &
-                                                    800.0,  875.0,  &
+  REAL(8), DIMENSION(4)  :: peroxy_typ_freq   = (/  470.0,  515.0,  &
                                                    1100.0, 1170.0   /)
 
-  REAL(8), DIMENSION(4) :: Rings_typ_freq    = (/ 2750.0, 2950.0,   &
+  REAL(8), DIMENSION(4) :: Rings_typ_freq    = (/ 2750.0, 3150.0,   &
                                                    900.0, 1100.0    /)
 
 
@@ -1010,7 +1004,7 @@ SUBROUTINE calc_predicted_freq(bond_info, Bond_degeneracy, Total_predicted_freq)
 !  times the number frequencies that correspond to that type
 !------------------------------------------------------------------------------
 
-  ALLOCATE(  RsCH3_pred_freq(    RsCH3    * 9 ) )
+  ALLOCATE(  RsCH3_pred_freq(    RsCH3    * 8 ) )
   ALLOCATE(  RdCH2_pred_freq(    RdCH2    * 5 ) )
   ALLOCATE(  CtCH_pred_freq(     CtCH     * 3 ) )
   ALLOCATE(  RsCH2sR_pred_freq(  RsCH2sR  * 7 ) )
@@ -1024,18 +1018,18 @@ SUBROUTINE calc_predicted_freq(bond_info, Bond_degeneracy, Total_predicted_freq)
   ALLOCATE(  CdCsR2_pred_freq(   CdCsR2   * 4 ) )
   ALLOCATE(  Ketone_pred_freq(   Ketone   * 4 ) )
   ALLOCATE(  RsCsR3_pred_freq(   RsCsR3   * 5 ) )
-  ALLOCATE(  RsCH2r_pred_freq(   RsCH2r   * 6 ) )
+  ALLOCATE(  RsCH2r_pred_freq(   RsCH2r   * 5 ) )
   ALLOCATE(  RdCHr_pred_freq(    RdCHr    * 3 ) )
 
   ALLOCATE(  RsCHrsR_pred_freq(  RsCHrsR  * 4 ) )
   ALLOCATE(  CdCrsR_pred_freq(   CdCrsR   * 2 ) )
   ALLOCATE(  OdCrsR_pred_freq(   OdCrsR   * 2 ) )
   ALLOCATE(  RsCrsR2_pred_freq(  RsCrsR2  * 3 ) )
-  ALLOCATE(  Alcohol_pred_freq(  Alcohol  * 4 ) )
+  ALLOCATE(  Alcohol_pred_freq(  Alcohol  * 2 ) )
   ALLOCATE(  Ether_pred_freq(    Ether    * 1 ) )
-  ALLOCATE(  ROOH_pred_freq(     ROOH     * 5 ) )
+  ALLOCATE(  ROOH_pred_freq(     ROOH     * 4 ) )
   ALLOCATE(  ROOR_pred_freq(     ROOR     * 3 ) )
-  ALLOCATE(  peroxy_pred_freq(   peroxy   * 3 ) )
+  ALLOCATE(  peroxy_pred_freq(   peroxy   * 2 ) )
 
   ALLOCATE(  Rings_pred_freq(    Rings    * 2 ) )
 
@@ -1046,7 +1040,7 @@ SUBROUTINE calc_predicted_freq(bond_info, Bond_degeneracy, Total_predicted_freq)
 !  BEGIN calculating the characteristic frequencies
 !------------------------------------------------------------------------------
 
-  CALL  Bond_avg_9x3_2_1(RsCH3,  RsCH3_typ_freq, RsCH3_pred_freq)
+  CALL  Bond_avg_8x3_2_1(RsCH3,  RsCH3_typ_freq, RsCH3_pred_freq)
   CALL  Bond_avg_5x2_1(RdCH2,  RdCH2_typ_freq, RdCH2_pred_freq)
   CALL  Bond_avg_3x2_1(CtCH,  CtCH_typ_freq, CtCH_pred_freq)
   CALL  Bond_avg_7x2_1(RsCH2sR,  RsCH2sR_typ_freq, RsCH2sR_pred_freq)
@@ -1059,17 +1053,17 @@ SUBROUTINE calc_predicted_freq(bond_info, Bond_degeneracy, Total_predicted_freq)
   CALL  Bond_avg_4x1(CdCsR2,  CdCsR2_typ_freq, CdCsR2_pred_freq)
   CALL  Bond_avg_4x1(Ketone,  Ketone_typ_freq, Ketone_pred_freq)
   CALL  Bond_avg_5x2_2_1(RsCsR3, RsCsR3_typ_freq, RsCsR3_pred_freq)
-  CALL  Bond_avg_6x2_1(RsCH2r,  RsCH2r_typ_freq, RsCH2r_pred_freq)
+  CALL  Bond_avg_5x2_1(RsCH2r,  RsCH2r_typ_freq, RsCH2r_pred_freq)
   CALL  Bond_avg_3x1(RdCHr,  RdCHr_typ_freq, RdCHr_pred_freq)
   CALL  Bond_avg_4x1(RsCHrsR,  RsCHrsR_typ_freq, RsCHrsR_pred_freq)
   CALL  Bond_avg_2x1(CdCrsR,  CdCrsR_typ_freq, CdCrsR_pred_freq)
   CALL  Bond_avg_2x1(OdCrsR,  OdCrsR_typ_freq, OdCrsR_pred_freq)
   CALL  Bond_avg_3x2_1(RsCrsR2, RsCrsR2_typ_freq, RsCrsR2_pred_freq)
-  CALL  Bond_avg_4x1(Alcohol,  Alcohol_typ_freq, Alcohol_pred_freq)
+  CALL  Bond_avg_2x1(Alcohol,  Alcohol_typ_freq, Alcohol_pred_freq)
   CALL  Bond_avg_1x1(Ether,  Ether_typ_freq, Ether_pred_freq)
-  CALL  Bond_avg_5x1(ROOH,  ROOH_typ_freq, ROOH_pred_freq)
+  CALL  Bond_avg_4x1(ROOH,  ROOH_typ_freq, ROOH_pred_freq)
   CALL  Bond_avg_3x1(ROOR,  ROOR_typ_freq, ROOR_pred_freq)
-  CALL  Bond_avg_3x1(peroxy,  peroxy_typ_freq, peroxy_pred_freq)
+  CALL  Bond_avg_2x1(peroxy,  peroxy_typ_freq, peroxy_pred_freq)
   CALL  Bond_avg_2x1(Rings,  Rings_typ_freq, Rings_pred_freq)
 
 !------------------------------------------------------------------------------
@@ -1152,17 +1146,17 @@ END SUBROUTINE calc_predicted_freq
 !------------------------------------------------------------------------------
 
 !------------------------------------------------------------------------------
-SUBROUTINE Bond_avg_9x3_2_1 (Number_of_bonds, & 
+SUBROUTINE Bond_avg_8x3_2_1 (Number_of_bonds, & 
                               typical_frequencies, predicted_frequencies)
 
   IMPLICIT NONE
   INTEGER, INTENT(IN) :: Number_of_bonds
   REAL(8), DIMENSION(:), INTENT(IN) :: typical_frequencies
-  REAL(8),DIMENSION(9*Number_of_bonds), INTENT(OUT) :: predicted_frequencies
+  REAL(8),DIMENSION(8*Number_of_bonds), INTENT(OUT) :: predicted_frequencies
   INTEGER                                      :: i,j, k
 
   IF (Number_of_bonds == 0 ) THEN
-     predicted_frequencies = (/ 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0 /) 
+     predicted_frequencies = (/ 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0 /) 
   
   ELSEIF (Number_of_bonds == 1) THEN
      call linspace(typical_frequencies(1),typical_frequencies(2), &
@@ -1177,8 +1171,6 @@ SUBROUTINE Bond_avg_9x3_2_1 (Number_of_bonds, &
                                   typical_frequencies(8) ) / 2.0     
      predicted_frequencies(8) = ( typical_frequencies(9) + &
                                   typical_frequencies(10) ) / 2.0
-     predicted_frequencies(9) = ( typical_frequencies(11) + &
-                                  typical_frequencies(12) ) / 2.0  
 
   ELSE
      call linspace(typical_frequencies(1),typical_frequencies(2), &
@@ -1193,12 +1185,11 @@ SUBROUTINE Bond_avg_9x3_2_1 (Number_of_bonds, &
           Number_of_bonds, predicted_frequencies( (6*Number_of_bonds+1):(7*number_of_bonds) ) )
      call linspace(typical_frequencies(9),typical_frequencies(10), &
           Number_of_bonds, predicted_frequencies( (7*Number_of_bonds+1):(8*number_of_bonds) ) )
-     call linspace(typical_frequencies(11),typical_frequencies(12), &
-          Number_of_bonds, predicted_frequencies( (8*Number_of_bonds+1):(9*number_of_bonds) ) )
+
      
   ENDIF
 
-END SUBROUTINE Bond_avg_9x3_2_1
+END SUBROUTINE Bond_avg_8x3_2_1
 !-------------------------------------------------------------------------
 !------------------------------------------------------------------------------
 SUBROUTINE Bond_avg_5x2_1 (Number_of_bonds, & 
@@ -2530,11 +2521,11 @@ SUBROUTINE Case_5(Total_char_freq, Total_harm_osc_freq, HR_params )
   bu(5)  = 4000.    ! Upper bound is 4000 cm^-1
 
 !  Define the initial guess for the solution
-  x(1) = 500.0 !Harm. osc. frequency
-  x(2) = 800.0 !Harm. osc. frequency
-  x(3) = 1200.0 !Harm. osc. frequency
-  x(4) = 2000.0 !Harm. osc. frequency
-  x(5) = 3000.0 !Harm. osc. frequency
+  x(1) = 400.0 !Harm. osc. frequency
+  x(2) = 600.0 !Harm. osc. frequency
+  x(3) = 1000.0 !Harm. osc. frequency
+  x(4) = 1500.0 !Harm. osc. frequency
+  x(5) = 2000.0 !Harm. osc. frequency
 
 !  Tell how much storage we gave the solver.
   iwork(1) = lwork
@@ -7526,11 +7517,11 @@ SUBROUTINE read_bonds(data, bond_info, bond_degeneracy)
 ! cyclic species C-H stretch
   Rings     = data(28)
 
-Bond_degeneracy =  9*RsCH3 + 5*RdCH2 + 3*CtCH + 7*RSCH2sR + 5*CdCHsR + &
+Bond_degeneracy =  8*RsCH3 + 5*RdCH2 + 3*CtCH + 7*RSCH2sR + 5*CdCHsR + &
                    5*Aldehyde + 3*Cumulene + 3*Ketene + 2*CtCsR + & 
-                   6*RsCHsR2 + 4*CdCsR2 + 4*Ketone + 5*RsCsR3 + 6*RsCH2r + & 
+                   6*RsCHsR2 + 4*CdCsR2 + 4*Ketone + 5*RsCsR3 + 5*RsCH2r + & 
                    3*RdCHr + 4*RsCHrsR + 2*CdCrsR + 2*OdCrsR + 3*RsCrsR2 + & 
-                   4*Alcohol + 1*Ether + 5*ROOH + 3*ROOR + 3*Peroxy + &
+                   2*Alcohol + 1*Ether + 4*ROOH + 3*ROOR + 2*Peroxy + &
                    2*Rings
 
 WRITE(*,*) 'degeneracy = ', Bond_degeneracy
@@ -7638,6 +7629,7 @@ IMPLICIT NONE
   
   ! Normalize the cp data by the ideal gas constant
   R = 8.3145 ! Gas Constant in J/mol-K
+  R = 1.9859 ! Gas Constant in cal/mol-K
   cp_data = cp_data/R
   
   ! Specify the number of atoms, hind. rotors, unknown harm. osc., & linearity
