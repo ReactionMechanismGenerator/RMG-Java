@@ -86,12 +86,23 @@ public class FrequencyGroups{//gmagoon 111708: removed "implements GeneralGAPP"
             fw.write(atoms+"\n");
             fw.write(rotor+"\n");
             fw.write(linearity+"\n");
-            //print the group counts to the file
-            for (Iterator iter = groupCount.iterator(); iter.hasNext(); ) {
-				Integer i = (Integer) iter.next();
-				fw.write(i + "\n");
-			}
-			fw.close();
+            //print the group counts to the file for acyclic case
+            if(p_chemGraph.isAcyclic()){
+                for (Iterator iter = groupCount.iterator(); iter.hasNext(); ) {
+                    Integer i = (Integer) iter.next();
+                    fw.write(i + "\n");
+		}
+            }
+            else{//cyclic case: print zeroes for group values instead, followed by a line with the number of hydrogens
+                for (Iterator iter = groupCount.iterator(); iter.hasNext(); ) {
+                    fw.write(0 + "\n");
+                }
+                fw.write(p_chemGraph.getHydrogenNumber()+"\n");
+            }
+           
+                
+            fw.close();
+
         }
         catch (IOException e) {
             System.err.println("Problem writing frequency estimation input file!");
