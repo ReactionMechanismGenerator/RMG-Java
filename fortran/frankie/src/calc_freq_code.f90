@@ -781,6 +781,7 @@ SUBROUTINE calc_predicted_freq(bond_info, Bond_degeneracy, Total_predicted_freq)
   INTEGER :: Ketene, CtCsR, RsCHsR2, CdCsR2, Ketone, RsCsR3
   INTEGER :: RsCH2r, RdCHr, RsCHrsR, CdCrsR, OdCrsR, RsCrsR2
   INTEGER :: Alcohol, Ether, ROOH, ROOR, Peroxy
+  INTEGER :: Rings
 
 ! All the arrays corresponding to the characteristic frequencies for each bond
   REAL(8), ALLOCATABLE, DIMENSION(:) :: RsCH3_pred_freq, RdCH2_pred_freq 
@@ -795,6 +796,7 @@ SUBROUTINE calc_predicted_freq(bond_info, Bond_degeneracy, Total_predicted_freq)
   REAL(8), ALLOCATABLE, DIMENSION(:) :: RsCrsR2_pred_freq, Alcohol_pred_freq
   REAL(8), ALLOCATABLE, DIMENSION(:) :: Ether_pred_freq, ROOH_pred_freq
   REAL(8), ALLOCATABLE, DIMENSION(:) :: ROOR_pred_freq, peroxy_pred_freq
+  REAL(8), ALLOCATABLE, DIMENSION(:) :: Rings_pred_freq  
 
 
 ! The total number of bonds specified by the connectivity table
@@ -920,6 +922,10 @@ SUBROUTINE calc_predicted_freq(bond_info, Bond_degeneracy, Total_predicted_freq)
                                                     800.0,  875.0,  &
                                                    1100.0, 1170.0   /)
 
+  REAL(8), DIMENSION(4) :: Rings_typ_freq    = (/ 2750.0, 2950.0,   &
+                                                   900.0, 1100.0    /)
+
+
 
 !------------------------------------------------------------------------------
 ! END THE LIST OF TYPICAL FREQUENCIES 
@@ -967,6 +973,8 @@ SUBROUTINE calc_predicted_freq(bond_info, Bond_degeneracy, Total_predicted_freq)
   ROOR      = bond_info(23)
   Peroxy    = bond_info(24)
 
+! ring-specific groups
+  Rings     = bond_info(25)
 
 ! Useful for debugging
  WRITE(*,*) ' RsCH3 = ', RsCH3
@@ -993,6 +1001,7 @@ SUBROUTINE calc_predicted_freq(bond_info, Bond_degeneracy, Total_predicted_freq)
  WRITE(*,*) ' ROOH = ', ROOH
  WRITE(*,*) ' ROOR = ', ROOR
  WRITE(*,*) ' Peroxy = ', Peroxy
+ WRITE(*,*) ' Rings = ', Rings
 
 
 !------------------------------------------------------------------------------
@@ -1028,6 +1037,8 @@ SUBROUTINE calc_predicted_freq(bond_info, Bond_degeneracy, Total_predicted_freq)
   ALLOCATE(  ROOR_pred_freq(     ROOR     * 3 ) )
   ALLOCATE(  peroxy_pred_freq(   peroxy   * 3 ) )
 
+  ALLOCATE(  Rings_pred_freq(    Rings    * 2 ) )
+
 !------------------------------------------------------------------------------
 !  END ALLOCATING ALL THE VECTORS FOR PREDICTED FREQUENCIES
 !------------------------------------------------------------------------------
@@ -1059,7 +1070,7 @@ SUBROUTINE calc_predicted_freq(bond_info, Bond_degeneracy, Total_predicted_freq)
   CALL  Bond_avg_5x1(ROOH,  ROOH_typ_freq, ROOH_pred_freq)
   CALL  Bond_avg_3x1(ROOR,  ROOR_typ_freq, ROOR_pred_freq)
   CALL  Bond_avg_3x1(peroxy,  peroxy_typ_freq, peroxy_pred_freq)
-
+  CALL  Bond_avg_2x1(Rings,  Rings_typ_freq, Rings_pred_freq)
 
 !------------------------------------------------------------------------------
 !  END calculating the bond degeneracy, sump cp bonds, and char. freqs.
@@ -1080,7 +1091,8 @@ SUBROUTINE calc_predicted_freq(bond_info, Bond_degeneracy, Total_predicted_freq)
                              CdCrsR_pred_freq, OdCrsR_pred_freq,   &
                              RsCrsR2_pred_freq, Alcohol_pred_freq, &
                              Ether_pred_freq, ROOH_pred_freq,      &
-                             ROOR_pred_freq, peroxy_pred_freq      /)
+                             ROOR_pred_freq, peroxy_pred_freq,     &
+                             Rings_pred_freq                       /)
 
  !------------------------------------------------------------------------------
 !   Deallocate all the characteristic frequency arrays
@@ -1110,6 +1122,7 @@ SUBROUTINE calc_predicted_freq(bond_info, Bond_degeneracy, Total_predicted_freq)
   DEALLOCATE(  ROOH_pred_freq )
   DEALLOCATE(  ROOR_pred_freq )
   DEALLOCATE(  peroxy_pred_freq )
+  DEALLOCATE(  Rings_pred_freq ) 
 
 END SUBROUTINE calc_predicted_freq
 !------------------------------------------------------------------------------
@@ -7460,6 +7473,7 @@ SUBROUTINE read_bonds(data, bond_info, bond_degeneracy)
   INTEGER :: Ketene, CtCsR, RsCHsR2, CdCsR2, Ketone, RsCsR3
   INTEGER :: RsCH2r, RdCHr, RsCHrsR, CdCrsR, OdCrsR, RsCrsR2
   INTEGER :: Alcohol, Ether, ROOH, ROOR, Peroxy
+  INTEGER :: Rings
   
   INTEGER :: N_atom, N_rot, linearity, bond_degeneracy
   INTEGER, INTENT(IN), DIMENSION(:) :: data
@@ -7509,11 +7523,15 @@ SUBROUTINE read_bonds(data, bond_info, bond_degeneracy)
   ROOR      = data(26)
   Peroxy    = data(27)
 
+! cyclic species C-H stretch
+  Rings     = data(28)
+
 Bond_degeneracy =  9*RsCH3 + 5*RdCH2 + 3*CtCH + 7*RSCH2sR + 5*CdCHsR + &
                    5*Aldehyde + 3*Cumulene + 3*Ketene + 2*CtCsR + & 
                    6*RsCHsR2 + 4*CdCsR2 + 4*Ketone + 5*RsCsR3 + 6*RsCH2r + & 
                    3*RdCHr + 4*RsCHrsR + 2*CdCrsR + 2*OdCrsR + 3*RsCrsR2 + & 
-                   4*Alcohol + 1*Ether + 5*ROOH + 3*ROOR + 3*Peroxy
+                   4*Alcohol + 1*Ether + 5*ROOH + 3*ROOR + 3*Peroxy + &
+                   2*Rings
 
 WRITE(*,*) 'degeneracy = ', Bond_degeneracy
   
@@ -7542,7 +7560,8 @@ WRITE(*,*) 'degeneracy = ', Bond_degeneracy
   bond_info(22) = ROOH
   bond_info(23) = ROOR 
   bond_info(24) = Peroxy
-  
+  bond_info(25) = Rings
+
   ! RMG will probably double-count the number of ROOR bonds.
   ! Assuming that is the case, divide by 2:
   IF (ROOR/2==0) THEN
@@ -7573,8 +7592,8 @@ IMPLICIT NONE
   INTEGER :: degeneracy
   INTEGER :: N_vib
   INTEGER :: N_rot
-  INTEGER, DIMENSION(27) :: data
-  INTEGER, DIMENSION(24) :: bond_info ! must be data - 3 
+  INTEGER, DIMENSION(28) :: data
+  INTEGER, DIMENSION(25) :: bond_info ! must be data - 3 
   REAL(8), ALLOCATABLE, DIMENSION(:) :: Total_predicted_freq
   REAL(8), ALLOCATABLE, DIMENSION(:) :: Total_harm_osc_freq
   REAL(8), ALLOCATABLE, DIMENSION(:,:) :: HR_params
