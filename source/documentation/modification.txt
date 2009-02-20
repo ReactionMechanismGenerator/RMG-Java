@@ -28,7 +28,7 @@ described below.
 Dictionary File (``Group_Dictionary.txt``)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
- This file contains the name and
+This file contains the name and
 adjacency list (structure) for all of the nodes contained within the thermo
 tree. The nomenclature within all three files must be identical. The asterisk
 "\*" denotes the central atom in the group for which the group value is defined.
@@ -44,7 +44,7 @@ element, # of radicals (0, 1, 2) on element, bonding::
 Tree File (``Group_Tree.txt``)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
- This file defines the tree structure of the
+This file defines the tree structure of the
 database. The nodes at any particular level are defined by including the text
 "``Lx:``" prior to the name of the group at that node, where "``x``" is a number
 corresponding to the level in the tree. A sample is given below::

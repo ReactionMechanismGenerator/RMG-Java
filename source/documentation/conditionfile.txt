@@ -137,7 +137,7 @@ InChI Generation
 ----------------
 
 The fifth item in the initialization file is the InChI generation command.
-An InChI, or IUPAC **In**ternational **Ch**emical **I**dentifier, is an unique
+An InChI, or IUPAC **In**\ ternational **Ch**\ emical **I**\ dentifier, is an unique
 species identifier, with the exception of differing electronic or spin states,
 developed by NIST.  An example of an InChI string (which represented the species
 caffeine) is:
@@ -148,18 +148,18 @@ The InChI is composed of layers, separated by a forward-slash (/):
 #. Chemical formula layer
 #. Connectivity layer
 #. Hydrogen layer
-	...
+#. ...
 	
 For the current release, the InChIs are used as another way to represent a
 molecule.  In future releases, the InChIs will link RMG with an online thermochemical
-database: PrIMe, or **Pr**ocess **I**nformatics **M**od**e**l.  The union will
+database: PrIMe, or **Pr**\ ocess **I**\ nformatics **M**\od**e**\ l.  The union will
 allow RMG to search for a community-recommended thermochemical data entry (e.g.
 Arrhenius parameters, NASA polynomials) before using estimation techniques.
 
-The InChI for each species in the model is located in the :ref:`RMG_Dictionary.txt` file.
+The InChI for each species in the model is located in the :file:`RMG_Dictionary.txt` file.
 
-More information on the InChI project may be found here: `Link <http://www.iupac.org/inchi/>`_
-More information on the PrIMe project may be found here: `Link <http://primekinetics.org/>`_
+More information on the InChI project may be found at http://www.iupac.org/inchi/
+More information on the PrIMe project may be found at http://primekinetics.org/
 
 To enable the InChI generation, the item should read::
 

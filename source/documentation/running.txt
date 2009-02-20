@@ -18,10 +18,12 @@ condition file ``hexane_pyro.txt``.
 
 #. Change the current working directory to the directory with the condition
    file::
+
     $ cd /hexane_pyro/
 
 #. Run the following Java command to launch the program 
    (all one line)::
+
     $ java -Xmx500m -classpath $RMG/software/RMG RMG hexane_pyro.txt > output &
   
 When RMG is started, it creates six subdirectories: ``chemkin``, ``fit3p``,
