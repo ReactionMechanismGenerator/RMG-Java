@@ -145,9 +145,9 @@ caffeine) is:
 InChI=1/C8H10N4O2/c1-10-4-9-6-5(10)7(13)12(3)8(14)11(6)2/h4H,1-3H3
 
 The InChI is composed of layers, separated by a forward-slash (/):
-	(1) Chemical formula layer
-	(2) Connectivity layer
-	(3) Hydrogen layer
+#. Chemical formula layer
+#. Connectivity layer
+#. Hydrogen layer
 	...
 	
 For the current release, the InChIs are used as another way to represent a

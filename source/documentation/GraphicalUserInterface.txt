@@ -13,7 +13,7 @@ Launching the Graphical User Interface
 
 [MRH] Add text here!
 
-.. _tabInitialCondition
+.. _tabInitialCondition:
 
 The "Initial Conditions" tab
 ----------------------------
@@ -27,9 +27,9 @@ Reactants and Inert Gases
 
 For each species, a "Name," "Concentration," "Units," and "Reactivity" must be
 specified.  The three options for "Reactivity" are:
-	(1) Inert Gas
-	(2) Unreactive
-	(3) Reactive
+#. Inert Gas
+#. Unreactive
+#. Reactive
 
 - An "Inert Gas" is a species for which RMG will not build a reaction mechanism for.
 - An "Unreactive" species is a species for which RMG will build a mechanism for, but
@@ -43,9 +43,9 @@ molecule is necessary.
 If the species is selected as either "Unreactive" or "Reactive," the user must
 supply structural information about the molecule.  This information may be provided
 in one of three ways:
-	(a) Adjacency List
-	(b) InChI
-	(c) .mol file
+#. Adjacency List
+#. InChI
+#. .mol file
 
 An adjacency list is described in more detail here (add link!).  An example for
 methane is:
@@ -88,7 +88,7 @@ may specify a list of temperatures and pressures for which to build the reaction
 mechanism.  The list of temperatures (or pressures) should be separated from one another
 with a blank space or a return carriage.
 
-.. _tabThermochemicalLibraries
+.. _tabThermochemicalLibraries:
 
 The "Thermochemical Libraries" tab
 ----------------------------------
@@ -112,7 +112,7 @@ file.  For any reactions that appear in multiple "Primary Reaction Libraries", R
 will use the information contained in the first "Primary Reaction Library" the reaction
 is found and ignore all others.
 
-.. _tabTermination
+.. _tabTermination:
 
 The "Termination" tab
 ---------------------
@@ -131,15 +131,15 @@ Lastly, the user must specify an "Error tolerance" for the model.  If building a
 mechanism for a new system, we recommend starting with a high "Error tolerance"
 (e.g 0.1).
 
-.. _tabDynamicSimulator
+.. _tabDynamicSimulator:
 
 The "Dynamic Simulator" tab
 ---------------------------
 
 This tab of the GUI allows the user to specify options for:
-	- the ODE solver
-	- building a pressure dependent mechanism
-	- constructing InChIs
+  * the ODE solver
+  * building a pressure dependent mechanism
+  * constructing InChIs
 	
 The user must select a "Dynamic Simulator" and set the Absolute and Relative
 Tolerances for that Dynamic Simulator.  The user may also select Intermediate times
@@ -155,28 +155,28 @@ Note: If the user specifies "Intermediate Time Steps," the values must have unit
 Seconds.
 
 The user must specify a pressure dependence model.  The options are:
-	- off
-	- Modified Strong Collision
-	- Reservoir State
+  * off
+  * Modified Strong Collision
+  * Reservoir State
 
 More information on the different pressure dependence models is located
 here: (Add link).
 
 If the user specifies a pressure dependent model, the "Spectroscopic Data
 Estimator" field will be enabled.  The options are:
-	- Three Frequency Model
-	- Frequency Groups
+* Three Frequency Model
+* Frequency Groups
 	
 More information on the different spectroscopic data estimation techniques is
 located here: (Add link).
 
 Some optional fields the user may change are:
-	- Equation of State
-	- InChI generation
+  * Equation of State
+  * InChI generation
 	
 The user has two options for the "Equation of State":
-	- Ideal Gas
-	- Liquid
+  * Ideal Gas
+  * Liquid
 	
 The difference between the two options is that RMG will not re-normalize the
 concentrations of the reactants if they do not satisfy PV=nRT.
@@ -185,10 +185,10 @@ The user may also choose to turn off/on the generation of InChIs.  If the user
 chooses to turn InChI generation on, the InChI executable (v 1.01) must be 
 located in the RMG/software/InChI folder.
 
-.. _tabSensitivityAnalysis
+.. _tabSensitivityAnalysis:
 
 The "Sensitivity Analysis" tab
----------------------------
+-------------------------------
 
 This tab of the GUI allows the user to specify options for error bars and 
 sensitivity coefficients.  The features of this tab will only be active if
@@ -202,7 +202,7 @@ The sensitivity coefficients will only be generated for the species listed in th
 "Molecule" table.  The order in which the species appear in the table is not
 important.
 
-.. _saveFile
+.. _saveFile:
 
 Saving the file
 ---------------
@@ -216,7 +216,7 @@ GUI.  These comments will be added to the header of the saved file.
 To save and immediately run a file, the user can press the "Save and Run" button
 near the bottom of the GUI.
 
-.. _openFile
+.. _openFile:
 
 Opening a file
 --------------
@@ -225,7 +225,7 @@ To open and import the information from a "condition.txt" file, the user can sel
 "File" --> "Open" from the navigation toolbar.  Note: The comments in the header of
 the file will not be imported.
 
-.. _runFile
+.. _runFile:
 
 Running the file
 ----------------
