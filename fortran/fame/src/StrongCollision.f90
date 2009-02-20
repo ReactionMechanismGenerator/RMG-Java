@@ -26,7 +26,7 @@ contains
 	!
 	! Parameters:
 	!
-	subroutine ssmscRates(simData, uniData, multiData, rxnData, Kij, Fim, Gnj, Jnm, bi, bn, K)
+	subroutine ssmscRates(simData, uniData, multiData, rxnData, Kij, Fim, Gnj, Jnm, bi, K)
 
 		! Provide parameter type checking of inputs and outputs
 		type(Simulation), intent(in)				:: 	simData
@@ -38,12 +38,7 @@ contains
 		real(8), dimension(:,:,:), intent(in)		:: 	Gnj
 		real(8), dimension(:,:,:), intent(in)		:: 	Jnm
 		real(8), dimension(:,:), intent(in)			:: 	bi
-		real(8), dimension(:,:), intent(in)			:: 	bn
 		real(8), dimension(:,:), intent(out) 		:: 	K
-		
-		real(8), dimension(:,:), allocatable		:: 	ai
-		real(8), dimension(:,:), allocatable		:: 	an
-		
 		
 		! Steady-state populations
 		real(8), dimension(:,:), allocatable	:: 	p
@@ -73,16 +68,6 @@ contains
 		! Gas concentration in molecules/m^3
 		gasConc = simData%P * 1e5 / 1.381e-23 / simData%T
 
-		! Renormalize equilibrium distributions
-		allocate( ai(1:simData%nGrains, 1:simData%nUni) )
-		allocate( an(1:simData%nGrains, 1:simData%nMulti) )
-		do i = 1, simData%nUni
-    		ai(:,i) = bi(:,i) / sum(bi(:,i))
-		end do
-        do n = 1, simData%nMulti
-    		an(:,n) = bn(:,n) / sum(bn(:,n))
-		end do
-		
 		! Determine collision frequency for each isomer
 		allocate( w(1:simData%nUni) )
 		do i = 1, simData%nUni
@@ -155,10 +140,10 @@ contains
 				if (src > simData%nUni) then
 					n = src - simData%nUni
 					do i = 1, simData%nUni
-						b(i) = Fim(r,i,n) * an(r,n)
+						b(i) = Fim(r,i,n)
 					end do
 				else
-					b(src) = eps * w(src) * ai(r,src)
+					b(src) = eps * w(src) * bi(r,src)
 				end if
 				
 				! Solve for steady-state population
@@ -196,7 +181,7 @@ contains
 		end do
 
 		! Clean up
-		deallocate( w, A, b, iPiv, p, ai, an )
+		deallocate( w, A, b, iPiv, p )
 
 	end subroutine
 

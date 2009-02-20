@@ -41,7 +41,6 @@ contains
 		real(8), dimension(:), allocatable :: rho2		! Temporary array for density of states calculation
 		real(8) E1
 		integer i, j, r
-        integer n0
         
 		real(8) Eisom
 		integer start, length
@@ -71,25 +70,15 @@ contains
 				speCount = speCount + 1
 				
 				! Get energy range of density of states
-				Emin = simData%Emin
-				Emax = simData%Emax
-				if (isom%E(i) < Emin) then
-					do while (isom%E(i) < Emin)
-						Emin = Emin - simData%dE
-						Emax = Emax - simData%dE
-					end do
-				else
-					do while (isom%E(i) > Emin)
-						Emin = Emin + simData%dE
-						Emax = Emax + simData%dE
-					end do
-				end if
+				Emin = 0
+				Emax = simData%Emax - simData%Emin
 				dE = simData%dE
+				dn = 10
 				
 				! Convert Emin, Emax, and dE to units of cm^-1
 				Emax = Emax * conv
 				Emin = Emin * conv
-                dE = dE * conv
+                dE = dE * conv / dn
 				
 				! Create energy grains for density of states calculation
 				nE = ceiling((Emax - Emin) / dE) + 1
@@ -115,6 +104,9 @@ contains
 				
 			end if
 		end do
+		
+		! Remove intermediate grains used only for density of states estimation
+		rho1(1:simData%nGrains) = rho1(1:size(rho1):dn)
 		
 		! Shift density of states to appropriate energy range
 		Eisom = sum(isom%E)
@@ -236,7 +228,7 @@ contains
 					end do
 				else
 					do k = i + 1, size(E)
-						states(k) = states(i)
+						states(k) = states(k-1) * states(k-2) / states(k-3)
 					end do
 				end if
 				i = j

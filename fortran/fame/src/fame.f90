@@ -66,8 +66,6 @@ program fame
 	real(8), dimension(:,:,:), allocatable			:: 	Jnm
 	! bi(r,i) = Equilibrium distribution at energy r for unimolecular well i
 	real(8), dimension(:,:), allocatable			:: 	bi
-	! bn(r,n) = Equilibrium distribution at energy r for bimolecular well n
-	real(8), dimension(:,:), allocatable			:: 	bn
 	! K(i,j) = Phenomenological rate coefficients for transitions from species i to species j
 	real(8), dimension(:,:,:,:), allocatable 		:: 	K
 	! The reservoir cutoff grains for each unimolecular isomer
@@ -76,10 +74,12 @@ program fame
 	real(8), dimension(:,:,:,:), allocatable 		:: 	chebCoeff
 	
 	real(8) Eref
-    
+    real(8) conc
+	
     ! Indices
 	integer t, p, i, j, n, m
 	integer found
+	integer badRate
 	
 	verbose = 0
 
@@ -93,10 +93,6 @@ program fame
 		if (verbose >= 2) write (*,*), '\tUnimolecular isomer', i
         call densityOfStates(simData, uniData(i))
 	end do
-	do n = 1, simData%nMulti
-		if (verbose >= 2) write (*,*), '\tMultimolecular isomer', n
-        call densityOfStates(simData, multiData(n))
-	end do
 	
 	! Allocate memory for master equation matrices
 	allocate( 	Mi( 1:simData%nGrains, 1:simData%nGrains, 1:simData%nUni)	)
@@ -107,7 +103,6 @@ program fame
 	allocate( 	Jnm(1:simData%nGrains, 1:simData%nMulti,  1:simData%nMulti)	)
 	! Allocate memory for Boltzmann vectors
 	allocate( 	bi( 1:simData%nGrains, 1:simData%nUni)		)
-	allocate( 	bn( 1:simData%nGrains, 1:simData%nMulti)	)
 	! Allocate memory for reservoir cutoffs	
 	allocate( 	nRes(1:simData%nUni) 	)
 	! Allocate memory for phenomenological rate coefficient matrix	
@@ -123,10 +118,7 @@ program fame
 		! Calculate the equilibrium (Boltzmann) distributions
 		if (verbose >= 2) write (*,*), '\tDetermining equilibrium distributions at T =', simData%T, 'K...'
 		do i = 1, simData%nUni
-			bi(:,i) = eqDist(uniData(i), simData%E, simData%T)
-		end do
-		do n = 1, simData%nMulti
-			bn(:,n) = eqDist(multiData(n), simData%E, simData%T)
+			call eqDist(uniData(i), simData%E, simData%T, bi(:,i), uniData(i)%Q)
 		end do
 			
 		do p = 1, size(simData%Plist)
@@ -138,51 +130,55 @@ program fame
 
 			if (verbose >= 2) write (*,*), '\tCalculating k(T, P) at T =', simData%T, 'K, P =', simData%P, 'bar...'
 
-			! Full master equation matrix
-			if (verbose >= 3) write (*,*), '\t\tDetermining full master equation matrix...'
-			call masterEqn(simData, uniData, multiData, rxnData, Mi, Hn, Kij, Fim, Gnj, Jnm, bi, bn)
+			Kij = 0 * Kij
+			Fim = 0 * Fim
+			Gnj = 0 * Gnj
+			Mi = 0 * Mi
+			Jnm = 0 * Jnm
+			Hn = 0 * Hn
 			
-			! Determine reservoir cutoff grains for each unimolecular isomer
-			if (verbose >= 3) write (*,*), '\t\tDetermining reservoir cutoff grains...'
-			nRes = reservoirCutoffs(simData, uniData, rxnData)
+			! Reactive terms in master equation
+			call ME_reaction(simData, uniData, multiData, rxnData, Mi, Hn, Kij, Fim, Gnj, Jnm, bi)
 			
 			if (simData%mode == 1) then
 				! Apply steady state/reservoir state approximations
 				if (verbose >= 3) write (*,*), '\t\tApplying steady-state/modified strong collision approximation...'
-				call ssmscRates(simData, uniData, multiData, rxnData, Kij, Fim, Gnj, Jnm, bi, bn, K(t,p,:,:))
+				call ssmscRates(simData, uniData, multiData, rxnData, Kij, Fim, Gnj, Jnm, bi, K(t,p,:,:))
 			elseif (simData%mode == 2) then
+				! Collisional terms in master equation
+				call ME_collision(simData, uniData, Mi, bi)
+				! Determine reservoir cutoff grains for each unimolecular isomer
+				if (verbose >= 3) write (*,*), '\t\tDetermining reservoir cutoff grains...'
+				nRes = reservoirCutoffs(simData, uniData, rxnData)
 				! Apply steady state/reservoir state approximations
 				if (verbose >= 3) write (*,*), '\t\tApplying steady-state/reservoir-state approximation...'
-				call ssrsRates(simData, uniData, multiData, rxnData, nRes, Mi, Hn, Kij, Fim, Gnj, Jnm, bi, bn, K(t,p,:,:))
+				call ssrsRates(simData, uniData, multiData, rxnData, nRes, Mi, Hn, Kij, Fim, Gnj, Jnm, bi, K(t,p,:,:))
 			else
 				write (*,*), 'ERROR: An invalid solution mode was provided!'
 				stop
 			end if
 			
-			
-! 			do i = 1, simData%nUni + simData%nMulti
-! 				write (*,*) K(t,p,i,:)
-! 			end do
-			
-			! Convert units of multi k(T, P) to cm^3 mol^-1 s^1 using bulk gas concentration C = P/RT
+			! Convert multimolecular k(T, P) to appropriate units (i.e. cm^3 mol^-1 s^-1)
+			conc = simData%P * 100000. / 8.314472 / simData%T / 1e6
 			do n = simData%nUni+1, simData%nUni+simData%nMulti
-				do i = 1, simData%nUni + simData%nMulti
-					K(t,p,i,n) = K(t,p,i,n) / (simData%P / 8.314472 / simData%T * 1e-1)		! 1e5 Pa/bar * 1e-6 m^3/cm^3 = 1e-1
+				do i = 1, simData%nUni+simData%nMulti
+					K(t,p,i,n) = K(t,p,i,n) / conc
 				end do
 			end do
 			
 		end do
 	end do
 
-	!do i = 1, simData%nUni + simData%nMulti
-	!	write (*,*) K(4,3,i,:)
-	!end do
+ 	!do i = 1, simData%nUni + simData%nMulti
+ 	!	write (*,*) K(4,3,i,:)
+ 	!end do
 
 	! Fit k(T, P) to approximate formula
 	! Also test for validity of fitted rate coefficients
 	if (verbose >= 1) write (*,*), 'Fitting k(T,P) to model...'
 	allocate( chebCoeff(simData%nChebT, simData%nChebP, &
 		simData%nUni+simData%nMulti, simData%nUni+simData%nMulti) )
+	badRate = 0
 	do i = 1, simData%nUni + simData%nMulti
 		do j = 1, simData%nUni + simData%nMulti
 			if (i /= j) then
@@ -197,7 +193,7 @@ program fame
 					end do
 				end do
 				if (found == 1) then
-					write(*,*), 'Warning: Rate coefficient(s) not properly estimated!'
+					badRate = 1
 					chebCoeff(:,:,i,j) = 0 * chebCoeff(:,:,i,j)
 				else
 					if (verbose >= 2) then
@@ -208,14 +204,19 @@ program fame
 			end if
 		end do
 	end do
-
+	
+	if (badRate == 1) then
+		write(*,*), 'Warning: One ore more rate coefficients not properly estimated!'
+	end if			
+	
 	! Write output file
 	if (verbose >= 1) write (*,*), 'Saving results...'
 	call saveResults('fame_output.txt', simData, chebCoeff)
 	
 	! Free memory
-	deallocate( Fim, Gnj, Kij, Jnm, Mi, Hn, bi, bn, Nres, K, chebCoeff )
-
+	deallocate( Fim, Gnj, Kij, Jnm, Mi, Hn, bi, Nres, K, chebCoeff )
+	!deallocate( bn )
+	
 	if (verbose >= 1) write (*,*), 'DONE!'
 	
 

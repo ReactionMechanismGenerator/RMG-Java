@@ -106,6 +106,10 @@ contains
 		one = 1
 		N = 'N'
 		call DGELS(N, nT*nP, nChebT*nChebP, one, A, nT*nP, b, nT*nP, work, 8*nChebT*nChebP, info)
+		if (info > 0) then
+			write (*,*), "Chebyshev fit matrix is singular!"
+			stop
+		end if
 		do t = 1, nChebT
 			do p = 1, nChebP
 				alpha(t,p) = b((p-1)*nChebT+t,1)

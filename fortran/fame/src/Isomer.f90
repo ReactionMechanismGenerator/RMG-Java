@@ -27,6 +27,7 @@ module IsomerModule
 		real(8), dimension(:,:), allocatable	:: 	hindBarrier		! 1D hindered rotor barrier heights in cm^-1
 		integer, dimension(:), allocatable		:: 	symmNum			! Symmetry number for each molecule
 		real(8), dimension(:), allocatable		:: 	densStates		! Convolved density of states for all species in well
+		real(8)									::	Q				! Partition function at current temperature
 	end type
 
 contains
@@ -43,15 +44,15 @@ contains
 	!		E - The grain energies in kJ/mol.
 	!		T - The absolute temperature in K.
 	!		eqDist - The vector in which to place the equilibrium distribution.
-	function eqDist(isom, E, T)
+	subroutine eqDist(isom, E, T, f, Q)
 		
 		type(Isomer), intent(in)				:: isom
 		real(8), dimension(:), intent(in)		:: E
 		real(8), intent(in)						:: T
-		real(8), dimension(1:size(E))			:: eqDist
+		real(8), dimension(:), intent(out)		:: f
+		real(8), intent(out)					:: Q
 		
 		integer nGrains
-		real(8)	Q					! Used for normalization of distribution
 		real(8)	R 					! Gas constant in J mol^-1 K^-1
 		integer	s					! Dummy index
 		
@@ -61,18 +62,14 @@ contains
 
 		! Calculate unnormalized eqDist
 		do s = 1, size(E)
-			eqDist(s) = isom%densStates(s) * exp(-E(s) / (R * T))
+			f(s) = isom%densStates(s) * exp(-E(s) / (R * T))
 		end do
 		
 		! Normalize eqDist
-		Q = sum(eqDist)			
-		eqDist = eqDist / Q
+		Q = sum(f)			
+		f = f / Q
 		
-		! Scale with respect to other species
-		eqDist = eqDist * eqRatio(sum(isom%G), sum(isom%H), T)
-		
-		
-	end function
+	end subroutine
 	
 	function eqRatio(dGf, dHf, T)
 

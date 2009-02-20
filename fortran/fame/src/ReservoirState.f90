@@ -84,7 +84,7 @@ contains
 	!	bi - Equilibrium distributions for unimolecular wells
 	! 	bn - Equilibrium distributions for bimolecular wells
 	!	K - The calculated phenomenologicate rate coefficient matrix in s^-1.
-	subroutine ssrsRates(simData, uniData, multiData, rxnData, nRes, Mi, Hn, Kij, Fim, Gnj, Jnm, bi, bn, K)
+	subroutine ssrsRates(simData, uniData, multiData, rxnData, nRes, Mi, Hn, Kij, Fim, Gnj, Jnm, bi, K)
 
 		! Provide parameter type checking of inputs and outputs
 		type(Simulation), intent(in)				:: 	simData
@@ -99,7 +99,6 @@ contains
 		real(8), dimension(:,:,:), intent(in)		:: 	Gnj
 		real(8), dimension(:,:,:), intent(in)		:: 	Jnm
 		real(8), dimension(:,:), intent(in)			:: 	bi
-		real(8), dimension(:,:), intent(in)			:: 	bn
 		real(8), dimension(:,:), intent(out) 		:: 	K
 		
 		real(8), dimension(:,:), allocatable		:: 	ai
@@ -156,18 +155,8 @@ contains
 		
 		! Invert L
 		call symmetricInverse(L, nAct, simData, uniData, rxnData, bi)
-! 		call fullInverse(L, nAct)
+!		call fullInverse(L, nAct)
 
-		! Renormalize equilibrium distributions
-		allocate( ai(1:simData%nGrains, 1:simData%nUni) )
-		allocate( an(1:simData%nGrains, 1:simData%nMulti) )
-		do i = 1, simData%nUni
-    		ai(:,i) = bi(:,i) / sum(bi(:,i))
-		end do
-        do n = 1, simData%nMulti
-    		an(:,n) = bn(:,n) / sum(bn(:,n))
-		end do
-        
 		! Initialize phenomenological rate coefficient matrix
 		do i = 1, nUni + nMulti
 			do j = 1, nUni + nMulti
@@ -190,7 +179,7 @@ contains
 			! || M_irr * b_ir ||
  			!call DGEMV('N', nRes(i), nRes(i), &
  			!	one, Mi(1:nRes(i), 1:nRes(i), i), nRes(i), &
- 			!	ai(1:nRes(i), i), 1, &
+ 			!	bi(1:nRes(i), i), 1, &
  			!	zero, tempV1(1:nRes(i)), 1)
  			!K(i,i) = K(i,i) + sum( tempV1(1:nRes(i)) )	
 			
@@ -200,7 +189,7 @@ contains
 					! M_jar * b_jr
 					call DGEMV('N', nAct(j), nRes(j), &
 						one, Mi(nRes(j)+1:nGrains, 1:nRes(j), j), nAct(j), &
-						ai(1:nRes(j), j), 1, &
+						bi(1:nRes(j), j), 1, &
 						zero, tempV3(1:nAct(j)), 1)
 					! L_ij * M_jar * b_jr
 					call DGEMV('N', nAct(i), nAct(j), &
@@ -222,7 +211,7 @@ contains
 				do j = 1, nUni
 					if (Fim(nGrains,j,m) /= 0) then
 						! F_jma * b_m
-						tempV3(1:nAct(j)) =  Fim(nRes(j)+1:nGrains, j, m) * an(nRes(j)+1:nGrains, m)
+						tempV3(1:nAct(j)) =  Fim(nRes(j)+1:nGrains, j, m)
 						! L_ij * F_jma * b_m
 						call DGEMV('N', nAct(i), nAct(j), &
 							one,  L( sum(nAct(1:i-1))+1:sum(nAct(1:i)), sum(nAct(1:j-1))+1:sum(nAct(1:j)) ), nAct(i), &
@@ -249,7 +238,7 @@ contains
 			! || H_n * b_n ||
  			!call DGEMV('N', nGrains, nGrains, &
  			!	one, Hn(:, :, n), nGrains, &
- 			!	an(:, n), 1, &
+ 			!	bn(:, n), 1, &
  			!	zero, tempV1(1:nGrains), 1)
  			!K(nUni+n,nUni+n) = K(nUni+n,nUni+n) + sum( tempV1(1:nGrains) )	
 			
@@ -259,7 +248,7 @@ contains
 ! 				if (m /= n) then
 ! 					call DGEMV('N', nGrains, nGrains, &
 ! 						one, Jnm(:, n, m), nGrains, &
-! 						an(:, m), 1, &
+! 						bn(:, m), 1, &
 ! 						zero, tempV1(1:nGrains), 1)
 ! 					K(nUni+n, nUni+m) = K(nUni+n, nUni+m) + sum( tempV1(1:nGrains) )
 ! 				end if
@@ -272,7 +261,7 @@ contains
 						! M_jar * b_jr
 						call DGEMV('N', nAct(j), nRes(j), &
 							one, Mi(nRes(j)+1:nGrains, 1:nRes(j), j), nAct(j), &
-							ai(1:nRes(j), j), 1, &
+							bi(1:nRes(j), j), 1, &
 							zero, tempV3(1:nAct(j)), 1)
 						! L_ij * M_jar * b_jr
 						call DGEMV('N', nAct(i), nAct(j), &
@@ -293,7 +282,7 @@ contains
 					do j = 1, nUni
 						if (Fim(nGrains,j,m) /= 0 .and. Gnj(nGrains,n,i) /= 0 .and. n /= m) then
 							! F_jma * b_m
-							tempV3(1:nAct(j)) =  Fim(nRes(j)+1:nGrains, j, m) * an(nRes(j)+1:nGrains, m)
+							tempV3(1:nAct(j)) =  Fim(nRes(j)+1:nGrains, j, m)
 							! L_ij * F_jma * b_m
 							call DGEMV('N', nAct(i), nAct(j), &
 								one,  L( sum(nAct(1:i-1))+1:sum(nAct(1:i)), sum(nAct(1:j-1))+1:sum(nAct(1:j)) ), nAct(i), &
@@ -309,30 +298,10 @@ contains
 			end do
 		
 		end do
-
- 		! Must divide all k(T,P) in uni rows by || b^ir(E) ||
-        !do i = 1, nUni
-        !    do j = 1, nUni
-        !        K(i,j) = K(i,j) / sum(bi(1:nRes(i),i))
-        !    end do
-        !    do m = 1, nMulti
-        !        K(i,nUni+m) = K(i,nUni+m) / sum(bi(1:nRes(i),i))
-        !    end do
-        !end do
-		
-		! Must divide all k(T,P) in multi rows by || b^n(E) ||
-        !do n = 1, nMulti
-        !    do j = 1, nUni
-        !        K(nUni+n,j) = K(nUni+n,j) / sum(bn(:,n))
-        !    end do
-        !    do m = 1, nMulti
-        !        K(nUni+n,nUni+m) = K(nUni+n,nUni+m) / sum(bn(:,n))
-        !    end do
-        !end do
         
         ! Clean up
 		deallocate( tempV1, tempV2, tempV3 )	
-		deallocate( nAct, L, ai, an )
+		deallocate( nAct, L )
 
 	end subroutine
 
@@ -356,12 +325,12 @@ contains
 		call DGETRF( sum(nAct), sum(nAct), L, sum(nAct), iPiv, info )
 		if (info > 0) then
 			write (*,*), "Active-state grain matrix is singular!"
-			return
+			stop
 		end if
 		call DGETRI( sum(nAct), L, sum(nAct), iPiv, work, sum(nAct), info )
 		if (info > 0) then
 			write (*,*), "Active-state grain matrix is singular!"
-			return
+			stop
 		end if
 		deallocate( iPiv, work )
 		
@@ -384,23 +353,21 @@ contains
 		type(Reaction), dimension(:), intent(in)	:: 	rxnData
 		real(8), dimension(:,:), intent(in)			:: 	bi
 		
-		real(8), dimension(:,:), allocatable		:: 	ai
 		integer i, j, nUni, nGrains, offI, offJ, r, s
 		! Variables for BLAS and LAPACK
 		integer, dimension(:), allocatable			::	iPiv
 		integer										::	info
 		real(8), dimension(:), allocatable			::	work
 		integer										::	block
+		real(8)	Keq
+		real(8) Rgas
+		real(8) temp
+		
+		Rgas = 8.314472 / 1000.
 		
 		nUni = simData%nUni
 		nGrains = simData%nGrains
 		
-		! Determine equilibrium ratio and apply to equilibrium distributions
-		allocate( ai(1:nGrains,1:nUni) )
-		do i = 1, nUni
-            ai(:,i) = bi(:,i)**0.5
-        end do
-        
 		! Symmetrize upper triangular half of matrix L
 		do i = 1, nUni
 			offI = sum(nAct(1:i))
@@ -410,13 +377,22 @@ contains
 					! Blocks on diagonal are full blocks, so symmetrize all entries above diagonal
 					do r = 0, nAct(i)-1
 						do s = 0, r-1
-							L(offI-r,offJ-s) = L(offI-r,offJ-s) * ai(nGrains-s,j) / ai(nGrains-r,i)
+							if (L(offI-r,offJ-s) /= 0) then
+								L(offI-r,offJ-s) = L(offI-r,offJ-s) * sqrt( &
+									uniData(j)%densStates(nGrains-s) / uniData(i)%densStates(nGrains-r) * &
+									uniData(i)%Q / uniData(j)%Q * &
+									exp(-(simData%E(nGrains-s) - simData%E(nGrains-r)) / (Rgas * simData%T)))
+							end if
 						end do
 					end do
 				elseif (i < j) then
 					! Blocks off diagonal are themselves diagonal, so take advantage of this to speed symmetrization
 					do r = 0, min(nAct(i),nAct(j))-1
-						L(offI-r,offJ-r) = L(offI-r,offJ-r) * ai(nGrains-r,j) / ai(nGrains-r,i)
+						if (L(offI-r,offJ-r) /= 0) then
+							L(offI-r,offJ-r) = L(offI-r,offJ-r) * sqrt( &
+								uniData(i)%densStates(nGrains-r) / uniData(j)%densStates(nGrains-r) * &
+								uniData(j)%Q / uniData(i)%Q)
+						end if
 					end do
 				end if
 			end do
@@ -440,34 +416,29 @@ contains
 		end if
 		deallocate( iPiv, work )
 		
-		! Unsymmetrize and restore full matrix L
+		! Fill in lower triangle of matrix L
+		do i = 1, sum(nAct)
+			L(i,1:i-1) = L(1:i-1,i)
+		end do
+		
+		! Unsymmetrize
 		do i = 1, nUni
 			offI = sum(nAct(1:i))
 			do j = 1, nUni
 				offJ = sum(nAct(1:j))
-				if (i == j) then
-					do r = 0, nAct(i)-1
-						do s = 0, r-1
-							L(offI-r,offJ-s) = L(offI-r,offJ-s) * ai(nGrains-r,i) / ai(nGrains-s,j)
-						end do
-						do s = r, nAct(j)-1
-							L(offI-r,offJ-s) = L(offJ-s,offI-r) * ai(nGrains-r,i) / ai(nGrains-s,j)
-						end do
+				do r = 0, nAct(i)-1
+					do s = 0, nAct(j)-1
+						if (uniData(j)%densStates(nGrains-s) /= 0 .and. &
+							abs(simData%E(nGrains-r) - simData%E(nGrains-s)) / (Rgas * simData%T) < 700) then
+							L(offI-r,offJ-s) = L(offI-r,offJ-s) * sqrt( &
+								uniData(i)%densStates(nGrains-r) / uniData(j)%densStates(nGrains-s) * &
+								uniData(j)%Q / uniData(i)%Q * &
+								exp(-(simData%E(nGrains-r) - simData%E(nGrains-s)) / (Rgas * simData%T)))
+						end if
 					end do
-				elseif (i < j) then
-					do r = 0, nAct(i)-1
-						do s = 0, nAct(j)-1
-							L(offI-r,offJ-s) = L(offI-r,offJ-s) * ai(nGrains-r,i) / ai(nGrains-s,j)
-							L(offJ-s,offI-r) = L(offI-r,offJ-s) * ai(nGrains-s,j) / ai(nGrains-r,i)
-						end do
-					end do
-				end if
+				end do
 			end do
-		end do
-		
-		! Clean up
-		deallocate( ai )
-		
+		end do		
 		
 	end subroutine
 	

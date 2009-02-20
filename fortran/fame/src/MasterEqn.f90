@@ -34,8 +34,7 @@ contains
 	! 	Gnj - Reactive transition from unimolecular well to multimolecular well
 	! 	Jnm - Reactive transition from multimolecular well to multimolecular well
 	!	bi - Equilibrium distributions for unimolecular wells
-	! 	bn - Equilibrium distributions for multimolecular wells
-	subroutine masterEqn(simData, uniData, multiData, rxnData, Mi, Hn, Kij, Fim, Gnj, Jnm, bi, bn)
+	subroutine masterEqn(simData, uniData, multiData, rxnData, Mi, Hn, Kij, Fim, Gnj, Jnm, bi)
 
 		type(Simulation), intent(in)				:: 	simData
 		type(Isomer), dimension(:), intent(in)		:: 	uniData
@@ -48,7 +47,6 @@ contains
 		real(8), dimension(:,:,:), intent(inout)	:: 	Gnj
 		real(8), dimension(:,:,:), intent(inout)	:: 	Jnm
 		real(8), dimension(:,:), intent(in)			:: 	bi
-		real(8), dimension(:,:), intent(in)			:: 	bn
 		
 		Kij = 0 * Kij
 		Fim = 0 * Fim
@@ -58,7 +56,7 @@ contains
 		Hn = 0 * Hn
 		
 		! Reactive terms in master equation
-		call ME_reaction(simData, uniData, multiData, rxnData, Mi, Hn, Kij, Fim, Gnj, Jnm, bi, bn)
+		call ME_reaction(simData, uniData, multiData, rxnData, Mi, Hn, Kij, Fim, Gnj, Jnm, bi)
 			
 		! Collisional terms in master equation
 		call ME_collision(simData, uniData, Mi, bi)
@@ -84,7 +82,7 @@ contains
 	! 	Jnm - Reactive transition from multimolecular well to multimolecular well
 	!	bi - Equilibrium distributions for unimolecular wells
 	! 	bn - Equilibrium distributions for multimolecular wells
-	subroutine ME_reaction(simData, uniData, multiData, rxnData, Mi, Hn, Kij, Fim, Gnj, Jnm, bi, bn)
+	subroutine ME_reaction(simData, uniData, multiData, rxnData, Mi, Hn, Kij, Fim, Gnj, Jnm, bi)
 
 		type(Simulation), intent(in)				:: 	simData
 		type(Isomer), dimension(:), intent(in)		:: 	uniData
@@ -97,12 +95,11 @@ contains
 		real(8), dimension(:,:,:), intent(inout)	:: 	Gnj
 		real(8), dimension(:,:,:), intent(inout)	:: 	Jnm
 		real(8), dimension(:,:), intent(in)			:: 	bi
-		real(8), dimension(:,:), intent(in)			:: 	bn
-		
-		real(8) :: arrh2_A, arrh2_Ea, arrh2_n
 		
 		! Indices
 		integer		:: i, j, m, n, r, s, t
+		
+		real(8) Keq
 		
 		! Determine rate coefficients for each reaction
 		! This is done by iterating over transition states
@@ -131,12 +128,14 @@ contains
 					rxnData(t)%arrh_A, rxnData(t)%arrh_n, rxnData(t)%arrh_Ea, &
 					simData%T, simData%dE, simData%E, Gnj(:,n,i))
 				
- 				! Calculate rate coefficient for multi --> uni using detailed balance
- 				do r = 1, simData%nGrains
- 					if (bn(r,n) > 0) then
- 						Fim(r,i,n) = Gnj(r,n,i) * bi(r,i) / bn(r,n)
- 					end if
- 				end do
+ 				! Calculate rate coefficient for multi --> uni via detailed balance
+				! assuming multimolecular isomer is fully thermalized
+				Keq = eqRatio(sum(uniData(i)%G), sum(uniData(i)%H), simData%T) / &
+					eqRatio(sum(multiData(n)%G), sum(multiData(n)%H), simData%T)    
+				Keq = Keq * (simData%P / 1.0)
+				do r = 1, simData%nGrains
+					Fim(r,i,n) = Keq * Gnj(r,n,i) * bi(r,i)
+				end do
 				
 			else															! uni <---> uni
 				
@@ -149,12 +148,13 @@ contains
 					rxnData(t)%arrh_A, rxnData(t)%arrh_n, rxnData(t)%arrh_Ea, &
 					simData%T, simData%dE, simData%E, Kij(:,j,i))
 				
- 				! Calculate rate coefficient for j --> i using detailed balance
- 				do r = 1, simData%nGrains
- 					if (bi(r,j) > 0) then
- 						Kij(r,i,j) = Kij(r,j,i) * bi(r,i) / bi(r,j)
- 					end if
- 				end do
+ 				! Calculate rate coefficient for j --> i via detailed balance
+				do r = 1, simData%nGrains
+					if (uniData(j)%densStates(r) /= 0) then
+						Kij(:,i,j) = Kij(:,j,i) * &
+							uniData(i)%densStates(r) / uniData(j)%densStates(r)
+					end if
+				end do
 				
 			end if
 		end do
@@ -251,7 +251,8 @@ contains
 				lb = max(r - probRange, start)
 				ub = min(r + probRange, simData%nGrains)
 				do s = lb, ub
-					call transferRate(s, r, simData%E(s), simData%E(r), simData%alpha, uniData(i)%E(1), bi(:,i), P(s,r))
+					P(s,r) = transferRate(s, r, simData%E(s), simData%E(r), simData%alpha, &
+						uniData(i)%E(1), uniData(i)%densStates, simData%T)
 				end do
 			end do
 			
@@ -291,7 +292,7 @@ contains
 	!   E0 = electronic + zero-point energy of ground state in cm^-1
 	!   f = equilibrium distribution
 	!   rate = collisional transfer probability in s^-1
-	subroutine transferRate(i, j, Ei, Ej, alpha, E0, f, rate)
+	function transferRate(i, j, Ei, Ej, alpha, E0, rho, T)
 	
 		! Provide parameter type-checking
 		integer, intent(in)					:: 	i
@@ -300,23 +301,24 @@ contains
 		real(8), intent(in)					:: 	Ej
 		real(8), intent(in)					:: 	alpha
 		real(8), intent(in)					:: 	E0
-		real(8), dimension(:), intent(in)	:: 	f
-		real(8), intent(out)				:: 	rate
+		real(8), dimension(:), intent(in)	:: 	rho
+		real(8), intent(in)					:: 	T
+		real(8)								:: 	transferRate
+		
+		real(8) R
+
+		R = 8.314472 / 1000
 		
 		! Evaluate collisional transfer probability
-		if (Ej < E0) then
-			rate = 0;
-		elseif (Ei < E0) then
-			rate = 0;
-		elseif (f(j) .eq. 0) then
-			rate = 0;
+		if (Ej < E0 .or. Ei < E0 .or. rho(j) .eq. 0) then
+			transferRate = 0.
 		elseif (Ej >= Ei) then
-			rate = exp(-(Ej - Ei) / alpha);
+			transferRate = exp(-(Ej - Ei) / alpha)
 		else
-			rate = exp(-(Ei - Ej) / alpha) * f(i) / f(j);
+			transferRate = exp(-(Ei - Ej) / alpha) * rho(i) / rho(j) * exp( -(Ei - Ej) / (R * T))
 		end if
 
-	end subroutine
+	end function
 
 	! --------------------------------------------------------------------------
 		
