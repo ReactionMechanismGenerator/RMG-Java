@@ -52,31 +52,33 @@ public class FrequencyGroups{//gmagoon 111708: removed "implements GeneralGAPP"
 		int atoms = p_chemGraph.getAtomNumber();
 		int rotor = p_chemGraph.getInternalRotor();
 		int linearity = (p_chemGraph.isLinear()) ? 0 : 1;	// 0 if linear, 1 if nonlinear
-		/*int degeneracy = getDegeneracy(groupCount);
-		
-		int nFreq = 3 * atoms - 5 - rotor - degeneracy - linearity;
-		if (nFreq < 0) {
-			System.out.println(species.getName() + "(" + Integer.toString(species.getID()) +
-				") is overspecified: " +
-					Integer.toString(degeneracy) + " harmonic oscillators and " +
-					Integer.toString(rotor) + " internal rotors are specified, but only " +
-					Integer.toString(3 * atoms - 5 - linearity) + " modes are allowed.");
-			// If possible, turn off internal rotors until the number of fitted frequencies is zero
-			if (nFreq + rotor >= 0) {
-				System.out.println("Turning off " + Integer.toString(Math.abs(nFreq)) + 
-						" internal rotors.");
-				rotor += nFreq;
-			}
-			else {
-				// Turn off functional groups until the system is underspecified
-				System.out.println("Turning off functional groups to make problem underspecified.");
-				while (nFreq < 0) {
-					removeFunctionalGroup(groupCount);
-					degeneracy = getDegeneracy(groupCount);
-					nFreq = 3 * atoms - 5 - rotor - degeneracy - linearity;
-				}
-			}
-		}*/
+                if(p_chemGraph.isAcyclic()){//gmagoon 2/20/09: only perform check if molecule is acyclic; for cyclic cases, groups are still counted and constraints on degeneracy will not necessarily be enforced
+                    int degeneracy = getDegeneracy(groupCount);
+
+                    int nFreq = 3 * atoms - 5 - rotor - degeneracy - linearity;
+                    if (nFreq < 0) {
+                            System.out.println(species.getName() + "(" + Integer.toString(species.getID()) +
+                                    ") is overspecified: " +
+                                            Integer.toString(degeneracy) + " harmonic oscillators and " +
+                                            Integer.toString(rotor) + " internal rotors are specified, but only " +
+                                            Integer.toString(3 * atoms - 5 - linearity) + " modes are allowed.");
+                            // If possible, turn off internal rotors until the number of fitted frequencies is zero
+                            if (nFreq + rotor >= 0) {
+                                    System.out.println("Turning off " + Integer.toString(Math.abs(nFreq)) + 
+                                                    " internal rotors.");
+                                    rotor += nFreq;
+                            }
+                            else {
+                                    // Turn off functional groups until the system is underspecified
+                                    System.out.println("Turning off functional groups to make problem underspecified.");
+                                    while (nFreq < 0) {
+                                            removeFunctionalGroup(groupCount);
+                                            degeneracy = getDegeneracy(groupCount);
+                                            nFreq = 3 * atoms - 5 - rotor - degeneracy - linearity;
+                                    }
+                            }
+                    }
+                 }
 		
 		//(file writing code based on code in JDASSL.java)
         File franklInput = new File("frankie/dat");
@@ -295,18 +297,18 @@ public class FrequencyGroups{//gmagoon 111708: removed "implements GeneralGAPP"
 	}
 
 	private int getDegeneracy(LinkedList groupCount) {
-		return	9*((Integer) groupCount.get(0)) + 5*((Integer) groupCount.get(1)) +
+		return	8*((Integer) groupCount.get(0)) + 5*((Integer) groupCount.get(1)) +
 				3*((Integer) groupCount.get(2)) + 7*((Integer) groupCount.get(3)) +
 				5*((Integer) groupCount.get(4))	+ 5*((Integer) groupCount.get(5)) +
 				3*((Integer) groupCount.get(6)) + 3*((Integer) groupCount.get(7)) +
 				2*((Integer) groupCount.get(8)) + 6*((Integer) groupCount.get(9)) +
 				4*((Integer) groupCount.get(10)) + 4*((Integer) groupCount.get(11)) +
-				5*((Integer) groupCount.get(12)) + 6*((Integer) groupCount.get(13)) +
+				5*((Integer) groupCount.get(12)) + 5*((Integer) groupCount.get(13)) +
                 3*((Integer) groupCount.get(14)) + 4*((Integer) groupCount.get(15)) +
 				2*((Integer) groupCount.get(16)) + 2*((Integer) groupCount.get(17)) +
-				3*((Integer) groupCount.get(18)) + 4*((Integer) groupCount.get(19)) +
-				1*((Integer) groupCount.get(20)) + 5*((Integer) groupCount.get(21)) +
-				3*((Integer) groupCount.get(22)) + 3*((Integer) groupCount.get(23));
+				3*((Integer) groupCount.get(18)) + 2*((Integer) groupCount.get(19)) +
+				1*((Integer) groupCount.get(20)) + 4*((Integer) groupCount.get(21)) +
+				2*((Integer) groupCount.get(22)) + 2*((Integer) groupCount.get(23));//gmagoon: updated for Franklin's new code 2/20/09 (Hydrogen group for rings not included)
 	}
 
 	private void removeFunctionalGroup(LinkedList groupCount) {
