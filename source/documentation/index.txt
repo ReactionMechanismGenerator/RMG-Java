@@ -15,6 +15,7 @@ Contents:
    introduction
    installation
    conditionfile
+   GraphicalUserInterface
    running
    analyzing
    modification
