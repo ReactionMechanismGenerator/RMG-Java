@@ -398,6 +398,9 @@ public class PDepNetwork {
 		double rLeak = 0.0;
 		for (ListIterator<PDepReaction> iter = nonincludedReactionList.listIterator(); iter.hasNext(); ) {
 			PDepReaction rxn = iter.next();
+			/*double forwardFlux = rxn.calculateForwardFlux(ss);
+			double reverseFlux = rxn.calculateReverseFlux(ss);
+			System.out.println(rxn.toString() + ": " + forwardFlux + " " + reverseFlux);*/
 			if (rxn.getReactant().getIncluded() && !rxn.getProduct().getIncluded())
 				rLeak += rxn.calculateForwardFlux(ss);
 			else if (!rxn.getReactant().getIncluded() && rxn.getProduct().getIncluded())

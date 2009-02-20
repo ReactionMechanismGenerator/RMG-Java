@@ -52,7 +52,7 @@ public class FrequencyGroups{//gmagoon 111708: removed "implements GeneralGAPP"
 		int atoms = p_chemGraph.getAtomNumber();
 		int rotor = p_chemGraph.getInternalRotor();
 		int linearity = (p_chemGraph.isLinear()) ? 0 : 1;	// 0 if linear, 1 if nonlinear
-		int degeneracy = getDegeneracy(groupCount);
+		/*int degeneracy = getDegeneracy(groupCount);
 		
 		int nFreq = 3 * atoms - 5 - rotor - degeneracy - linearity;
 		if (nFreq < 0) {
@@ -76,7 +76,7 @@ public class FrequencyGroups{//gmagoon 111708: removed "implements GeneralGAPP"
 					nFreq = 3 * atoms - 5 - rotor - degeneracy - linearity;
 				}
 			}
-		}
+		}*/
 		
 		//(file writing code based on code in JDASSL.java)
         File franklInput = new File("frankie/dat");
@@ -153,7 +153,7 @@ public class FrequencyGroups{//gmagoon 111708: removed "implements GeneralGAPP"
             int nonlinearityQ = Integer.parseInt(br.readLine().trim());
             
 			// Determine the expected number of harmonic oscillator frequencies
-			nFreq = 0;
+			int nFreq = 0;
             if (nonlinearityQ == 1)
                 nFreq = 3 * atoms - 6 - nHind;
             else

@@ -182,10 +182,10 @@ public class FastMasterEqn implements PDepKineticsEstimator {
             InputStreamReader is = new InputStreamReader(ips);
             BufferedReader br = new BufferedReader(is);
             // Print FAME stdout
-			String line = null;
+			/*String line = null;
             while ( (line = br.readLine()) != null) {
             	System.out.println(line);
-            }
+            }*/
             int exitValue = fame.waitFor();
 			
         }
