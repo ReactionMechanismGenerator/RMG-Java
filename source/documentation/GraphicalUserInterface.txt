@@ -48,7 +48,7 @@ in one of three ways:
 #. .mol file
 
 An adjacency list is described in more detail here (add link!).  An example for
-methane is:
+methane is::
 
 	1 C 0 {2,S} {3,S} {4,S} {5,S}
 	2 H 0 {1,S}
@@ -56,13 +56,13 @@ methane is:
 	4 H 0 {1,S}
 	5 H 0 {1,S}
 
-An equally valid adjacency list for methane (with the Hydrogen atoms removed) is:
+An equally valid adjacency list for methane (with the Hydrogen atoms removed) is::
 
 	1 C 0
 
 If the user knows the InChI of the molecule (and the InChI executable is located
 in the RMG/software/InChI folder), the GUI will convert the InChI to an adjacency
-list upon pushing the "Add" button.  The InChI for methane is:
+list upon pushing the "Add" button.  The InChI for methane is::
 
 	InChI=1/CH4/h1H4
 
@@ -96,11 +96,11 @@ The "Thermochemical Libraries" tab
 This tab of the GUI allows the user to enter the location of the thermochemical
 libraries RMG will use in building the model.
 
-The default location of the "Main Database" is the RMG/database/RMG_database folder.
+The default location of the "Main Database" is the :file:`RMG/database/RMG_database` folder.
 We recommend to use the default settings.
 
 The default location of the "Primary Thermo Library" is the 
-RMG/database/RMG_database/thermo/PrimaryThermoLibrary folder.  We recommend to use
+:file:`RMG/database/RMG_database/thermo/PrimaryThermoLibrary` folder.  We recommend to use
 the default settings.
 
 By default, the "Primary Reaction Library" is turned off.  If the user turns on
@@ -121,7 +121,7 @@ This tab of the GUI allows the user to specify the termination criteria for the
 model.  A user may specify either the desired "ReactionTime" or "Conversion".
 
 If "Conversion" is selected, the user must specify a species and a fraction
-conversion (ranging from 0 to 1).  The "Species" comboBox will only contain the
+conversion (ranging from 0 to 1).  The "Species" combo-box will only contain the
 "Reactive" and "Unreactive" species specified in the Initialization tab.
 
 If "ReactionTime" is selected, the user must specify the value and units of
@@ -221,7 +221,7 @@ near the bottom of the GUI.
 Opening a file
 --------------
 
-To open and import the information from a "condition.txt" file, the user can select
+To open and import the information from a :file:`condition.txt` file, the user can select
 "File" --> "Open" from the navigation toolbar.  Note: The comments in the header of
 the file will not be imported.
 
