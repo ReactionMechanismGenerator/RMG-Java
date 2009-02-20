@@ -179,14 +179,14 @@ public class GATP implements GeneralGAPP {
                                  //2/5/09 gmagoon: for acyclic molecules, check for and include gauche and 1,5 corrections (cyclic molecules should also have these corrections, but they appear to be more complicated and depend upon the actual 3D-structure; in general, it seems there are fewer gauche corrections for cyclic than acyclic (for the same degree of carbon atom))
                                 if(p_chemGraph.isAcyclic())
                                 {
-//                                    p_chemGraph.resetThermoSite(node);
-//                                    ThermoGAValue thisGaucheValue = thermoLibrary.findGaucheGroup(p_chemGraph);
-//                                    p_chemGraph.resetThermoSite(node);
-//                                    ThermoGAValue thisOneFiveValue = thermoLibrary.find15Group(p_chemGraph);
-//                                    if(thisGaucheValue!=null)
-//                                        result.plus(thisGaucheValue);
-//                                    if(thisOneFiveValue!=null)
-//                                        result.plus(thisOneFiveValue);
+                                    p_chemGraph.resetThermoSite(node);
+                                    ThermoGAValue thisGaucheValue = thermoLibrary.findGaucheGroup(p_chemGraph);
+                                    p_chemGraph.resetThermoSite(node);
+                                    ThermoGAValue thisOneFiveValue = thermoLibrary.find15Group(p_chemGraph);
+                                    if(thisGaucheValue!=null)
+                                        result.plus(thisGaucheValue);
+                                    if(thisOneFiveValue!=null)
+                                        result.plus(thisOneFiveValue);
                                 }
                                 if (thisGAValue == null) {
            				System.err.println("Thermo group not found: " + node.getID());
