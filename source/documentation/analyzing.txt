@@ -43,7 +43,8 @@ the directory ``RMG/software/RMG/``. Generally, there are five outputs from RMG:
 .. |N2| replace:: N\ :sub:`2`\ 
 
 #. ``RMG_Dictionary.txt``.  This file lists all the species by name that are
-   used in the model, as well as their adjacency list;  consequently, it will allow
+   used in the model, as well as their adjacency list; if InChI generation is turned
+   on, the file will also contain the InChI representation for each molecule.  Consequently, it will allow
    to user to see a graphical representation of all species in the model. Typically
    the user will copy this file to an appropriate directory so that it can be read
    by Chemgreen (See Section :ref:`view chemgreen` for further details). ---
