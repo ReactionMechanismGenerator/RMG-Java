@@ -44,6 +44,10 @@ To manipulate the RMG source code you will need:
 
 * **The Java SE Development Kit (JDK), version 6.** This is available from http://java.sun.com/javase/downloads/index.jsp.
 
+To generate InChIs and to convert from InChIs/.mol files to adjacency lists you will need:
+
+* **The IUPAC International Chemical Identifier InChI version 1 (software version 1.01).**  This is available from http://www.iupac.org/inchi/download/index.html
+
 .. _linuxinstallation:
 
 Linux Installation
@@ -116,6 +120,18 @@ The next few steps are required only if you want RMG to be able to perform sensi
 
 You are now ready to run RMG with sensitivity analysis support.
 
+The next few steps are required only if you want RMG to be able to generate InChIs for the species present in the reaction mechanism.
+
+10. Download the InChI version 1 (software version 1.01) source code and Application Program Interface (API).
+
+11.	Change to the InChI-1-API/cInChI/gcc_makefile directory and execute the makefile.  Copy the resulting executable cInChI-1.exe to the $RMG/software/InChI folder.
+
+	$ cd InChI-1-API/cInChI/gcc_makefile
+	$ make
+	$ cp cInChI-1 $RMG/software/InChI
+	
+You are now ready to generate InChIs in RMG.
+
 
 .. _windowsinstallation:
 
@@ -144,6 +160,15 @@ Windows Installation
    directory (e.g. ``C:\RMG\software\ODESolver\dassl``). To compile the
    Fortran files use the command prompt and change to dassl directory and
    then type ``g95 -o ../dassl *.f`` on the command prompt.
+
+The next few steps are required only if you want RMG to be able to generate InChIs for the species present in the reaction mechanism.
+   
+#. Download the InChI version 1 (software version 1.01) source code and Application Program Interface (API):
+	http://www.iupac.org/inchi/download/index.html
+	Unzip the file.  Navigate to the InChI-1-API\cInChI\vc6_project\Release folder.
+	Copy the executable file cInChI-1.exe and paste it in the %rmg%\software\InChI folder.
+	
+You are now ready to generate InChIs in RMG.
 
 
 ChemGreen Installation
