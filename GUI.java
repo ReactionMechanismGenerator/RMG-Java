@@ -724,6 +724,7 @@ public class GUI extends JPanel implements ActionListener {
         interConv.add(multiConvLabel);
         multiConvLabel.setToolTipText("Default = AUTO");
         interConv.add(multiConv = new JTextArea(2,15));
+        multiConv.setText("AUTO");
         
     	//	Create the DS subpanel: interTS
     	JPanel interTS = new JPanel();
@@ -734,6 +735,7 @@ public class GUI extends JPanel implements ActionListener {
         multiTSLabel.setToolTipText("Default = AUTO");
         interTS.add(multiTS = new JTextArea(2,15));
     	multiTS.setEnabled(false);
+    	multiTS.setText("AUTO");
     	
     	//	Create boxes for DS panel
         Box ds = Box.createVerticalBox();
@@ -754,6 +756,7 @@ public class GUI extends JPanel implements ActionListener {
     	Pdep.add(modelLabel);
     	modelLabel.setToolTipText("Default = Off");
     	Pdep.add(pdepCombo = new JComboBox(pdepOptions));
+    	pdepCombo.setActionCommand("pDep");
     	
     	//	Create the Spectroscopic Data Estimator (SDE) subpanel
     	JPanel SDE = new JPanel();
@@ -763,6 +766,7 @@ public class GUI extends JPanel implements ActionListener {
     	JLabel sdeLabel = new JLabel("Spectroscopic Data Estimator");
     	SDE.add(sdeLabel);
     	SDE.add(sdeCombo = new JComboBox(sdeOptions));
+    	sdeCombo.setEnabled(false);
     	
     	//	Create the Equation Of State (EOS) subpanel
     	JPanel EOS = new JPanel();
@@ -1758,6 +1762,13 @@ public class GUI extends JPanel implements ActionListener {
     			disableComponents(otherComps);
     		}
     			
+    	}
+    	else if ("pDep".equals(event.getActionCommand())) {
+    		JComponent[] pDepComps = {sdeCombo};
+    		if (pdepCombo.getSelectedItem().equals("off")) {
+    			disableComponents(pDepComps);
+    		} else
+    			enableComponents(pDepComps);
     	}
     	//	Save the condition.txt file
     	else if ("saveCondition".equals(event.getActionCommand())) {
