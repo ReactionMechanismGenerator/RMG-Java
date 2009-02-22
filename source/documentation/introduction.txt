@@ -50,4 +50,18 @@ and species thermodynamics.
 RMG was developed by Dr. Jing Song under the guidance of Prof. William 
 Green in the Department of Chemical Engineering at the `Massachusetts Institute 
 of Technology <http://web.mit.edu/>`_. Currently the principal developer of RMG is Sandeep Sharma, a 
-graudate student in Prof. William Green’s research group. 
+graudate student in Prof. William Green’s research group.
+
+Changes made in RMG 3.00 include the following:
+New features:
+*Pressure-dependent reaction network generation
+*InChI generation
+*Graphical user interface for input file generation
+*Generation of reaction mechanisms for multiple reaction conditions (T,P)
+*Automatic time stepping option
+Functionality changes:
+*On the first step of mechanism generation, only one species is (*Sandeep is this correct?, I think there is some subtlety here I am missing)
+*Thermodynamics estimates for non-cyclic species incorporate certain steric effects (1,5-interactions and gauche interactions)
+Bug fixes:
+*Fixed bug in symmetry number generation (previously could be underestimated in certain cases)
+*Fixed differential equations to correctly treat cases where total number of moles changes
