@@ -134,7 +134,7 @@ You may also list multiple temperature and pressure conditions, as the example b
    TemperatureModel: Constant (K) 600 700 800 900
    PressureModel: Constant (atm) 1 200 
 
-For cases in which multiple temperatures and pressures are listed, the model generator will simulate the system (still using an isothermal, isobaric model) at all possible combinations of the specified temperatures and pressures. Thus, the resulting reaction mechanism will be valid (within the given error tolerances, estimates, and various other assumptions) at all the conditions specified. (Note, however, that reported concentrations in the Final_model.txt output file will only correspond to the first T/P combination.)
+For cases in which multiple temperatures and pressures are listed, the model generator will simulate the system (still using an isothermal, isobaric model) at all possible combinations of the specified temperatures and pressures. Thus, the resulting reaction mechanism will be valid (within the given error tolerances, estimates, and various other assumptions) at all the conditions specified. (Note, however, that reported concentrations in the ``Final_Model.txt`` output file will only correspond to the first T/P combination.)
 
 .. _InChIgeneration:
 
@@ -350,22 +350,44 @@ For a more detailed description on rate-based model enlargement, please consult
 Dynamic Simulator
 -----------------
 
-RMG uses the DASPK dynamic solver. Future versions of RMG might include the
+RMG uses the DASSL or DASPK dynamic solver. Future versions of RMG might include the
 CHEMKIN dynamic solver.
 
-The first line beneath the solver is ``TimeStep``, which is followed by a number
-and a unit of time. The ``TimeStep`` indicates how frequently RMG should check
-to see if the model needs to be enlarged. In the current example, RMG will check
-every second of simulation time to see whether the error tolerance is satisfied.
-The next two lines specify the absolute and relative tolerance, respectively.
-Common values for the absolute tolerance are 1e-15 to 1e-25. Relative tolerance
-is usually 1e-3 to 1e-5::
+The first line beneath the solver should be either ``TimeStep`` or ``Conversion``, depending
+on whether you chose Goal Conversion of Goal ReactionTime as your finish
+controller criterion.
+(#1****?how to do this in LaTex?)The ``TimeStep`` indicates at what time stpes RMG should check to see if
+the model needs to be enlarged. By default the units of time steps is always
+seconds. For example in the example shown below RMG will stop at 0.0001
+sec, 0.0002 sec ... and so on to see whether the error tolerance is satisfied::
+    DynamicSimulator: DASSL
+    TimeStep: 0.0001 0.0002 0.0004 0.0006 0.0008 0.0009
+(#2***)The other option is to specifiy the Conversions. In this option the conversion
+of the FinishController species (in this case, C$_2$H$_6$) is monitored and
+RMG will stop at conversions of 0.1, 0.2...and so on to see whether
+the error tolerance is satisfied::
+    DynamicSimulator: DASSL
+    Conversions: 0.1 0.2 0.4 0.6 0.8 0.9
 
-  DynamicSimulator: DASPK
-  TimeStep: 1 (sec)
+For both ``TimeStep`` or ``Conversions``, in addition to determining when RMG will stop to check whether error tolerances are satisfied, the concentrations and flux at the points specified will be reported in the ``Final_Model.txt`` file.
+
+If you would not like to specify time steps or conversions, you may have them determined using the "automated time stepping" feature by specifying ``AUTO`` as follows::
+    DynamicSimulator: DASSL
+    TimeStep: AUTO
+or
+    DynamicSimulator: DASSL
+    Conversions: AUTO
+The automated time stepping feature is described in greater detail in the Theory section.
+
+The next two lines specify the absolute and relative tolerance for the ODE solver, respectively.
+Common values for the absolute tolerance are 1e-15 to 1e-25. Relative tolerance
+is usually 1e-4 to 1e-8::
+
   Atol: 1e-20
   Rtol: 1e-4
 
+Note: You have the option of using sensitivity analysis only if you have the
+DASPK solver. If you are using DASSL solver then skip the Sensitivity Analysis section.
 
 Sensitivity Analysis
 --------------------
