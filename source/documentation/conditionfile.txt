@@ -320,11 +320,8 @@ by a number and a time unit. ``Conversion`` must be followed by a reactant
 species name and a number between 0 and 1. 
 
 Beneath the goal, you must specify the error tolerance. Typical values for the
-error tolerance are between 0.0001 and 0.5. A smaller error tolerance
-corresponds to a larger model; consequently, it is advised to use a large error
-tolerance when generating a new model. Once the initial simulation has finished,
-you can tighten the tolerance and apply the restart function to generate an
-expanded model. In the first example, the reaction will run for 0.001 seconds::
+error tolerance are between 0.0001 and 0.5. A smaller error tolerance generally
+corresponds to a larger model and longer model generation times. In the first example, the reaction will run for 0.001 seconds::
 
   FinishController:
   (1) Goal ReactionTime: 0.001 (sec)
