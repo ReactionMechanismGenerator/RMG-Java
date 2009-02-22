@@ -59,6 +59,7 @@ New features:
 *Graphical user interface for input file generation
 *Generation of reaction mechanisms for multiple reaction conditions (T,P)
 *Automatic time stepping option
+*Updated RMG Viewer and Editor (including database editing tools)
 Functionality changes:
 *On the first step of mechanism generation, only one species is added, rather than adding all edge species (as was done in RMG 2.00)(*Sandeep is this correct?, I think there is some subtlety here I am missing)
 *Thermodynamics estimates for non-cyclic species incorporate certain steric effects (1,5-interactions and gauche interactions)
