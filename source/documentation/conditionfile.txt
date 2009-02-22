@@ -377,7 +377,7 @@ If you would not like to specify time steps or conversions, you may have them de
 or
     DynamicSimulator: DASSL
     Conversions: AUTO
-The automated time stepping feature is described in greater detail in the Theory section.
+The automated time stepping feature is described in greater detail in the Theory and Implementation Details appendix.
 
 The next two lines specify the absolute and relative tolerance for the ODE solver, respectively.
 Common values for the absolute tolerance are 1e-15 to 1e-25. Relative tolerance
