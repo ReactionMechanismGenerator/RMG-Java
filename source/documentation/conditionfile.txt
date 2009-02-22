@@ -327,11 +327,11 @@ corresponds to a larger model and longer model generation times. In the first ex
   (1) Goal ReactionTime: 0.001 (sec)
   (2) Error Tolerance: 0.1
 
-In the second example, the reaction will run until 90% of the C$_2$O$_2$ is
+In the second example, the reaction will run until 90% of the C$_2$H$_6$ reactant is
 consumed and has a much tighter error tolerance::
 
   FinishController:
-  (1) Goal Conversion:C2O2 0.90
+  (1) Goal Conversion: C2H6 0.90
   (2) Error Tolerance: 0.0001
 
 For the initial model run, it is often preferable to use ``Goal Conversion``
