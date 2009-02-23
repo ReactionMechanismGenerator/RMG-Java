@@ -64,8 +64,8 @@ the directory ``RMG/software/RMG/``. Generally, there are five outputs from RMG:
 
 .. _viewchemgreen:
 
-Viewing the Species in ChemGreen
---------------------------------
+Viewing the Species in the RMG Viewer/Editor (RMGVE)
+----------------------------------------------------
 
 When RMG has finished, it will create a file ``RMG_Dictionary.txt`` in the same
 directory as the ``condition.txt`` file. This file contains a list of all the
@@ -73,9 +73,9 @@ core species (usually the edge species are too numerous to be of use); the core
 species can be viewed easily using ChemGreen. To view the core species, rename
 the first part of the file (this step isn't strictly necessary, but it is
 convenient and a good practice). The file must still end in
-"``_Dictionary.txt``" (e.g. ``newname_Dictionary.txt``) for ChemGreen to read
+"``_Dictionary.txt``" (e.g. ``newname_Dictionary.txt``) for the RMGVE to read
 it. Next, copy this file to the directory ``/$ChemGreen/.../thermo``. Once the
-file is in the thermo directory, double-click on the ``chemgreen.bat`` file to
+file is in the thermo directory, double-click on the ``RMGVE 20080101.bat`` file to
 launch the program. Please note that you must close and relaunch the program
 every time you add a new file to the thermo directory. Once ChemGreen has
 launched, doubleclick on the folder ``Thermo``. Your new file should appear in
