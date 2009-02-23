@@ -124,7 +124,7 @@ The next few steps are required only if you want RMG to be able to generate InCh
 
 10. Download the InChI version 1 (software version 1.01) source code and Application Program Interface (API).
 
-11.	Change to the InChI-1-API/cInChI/gcc_makefile directory and execute the makefile.  Copy the resulting executable cInChI-1.exe to the $RMG/software/InChI folder.
+11.	Change to the ``InChI-1-API/cInChI/gcc_makefile`` directory and execute the makefile.  Copy the resulting executable ``cInChI-1.exe`` to the ``$RMG/software/InChI`` folder. ::
 
 	$ cd InChI-1-API/cInChI/gcc_makefile
 	$ make

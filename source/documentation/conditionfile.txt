@@ -131,6 +131,7 @@ begins at 600 Kelvin and 200 atmospheres::
    PressureModel: Constant (atm) 200 
 
 You may also list multiple temperature and pressure conditions, as the example below shows::
+
    TemperatureModel: Constant (K) 600 700 800 900
    PressureModel: Constant (atm) 1 200 
 
@@ -145,31 +146,37 @@ The fifth item in the initialization file is the InChI generation command.
 An InChI, or IUPAC **In**\ ternational **Ch**\ emical **I**\ dentifier, is an unique
 species identifier, with the exception of differing electronic or spin states,
 developed by NIST.  An example of an InChI string (which represented the species
-caffeine) is:
+caffeine) is::
 
-InChI=1/C8H10N4O2/c1-10-4-9-6-5(10)7(13)12(3)8(14)11(6)2/h4H,1-3H3
+	InChI=1/C8H10N4O2/c1-10-4-9-6-5(10)7(13)12(3)8(14)11(6)2/h4H,1-3H3
 
 The InChI is composed of layers, separated by a forward-slash (/):
+
 #. Chemical formula layer
+
 #. Connectivity layer
+
 #. Hydrogen layer
+
 #. ...
 	
 For the current release, the InChIs are used as another way to represent a
 molecule.  In future releases, the InChIs will link RMG with an online thermochemical
-database: PrIMe, or **Pr**\ ocess **I**\ nformatics **M**\od**e**\ l.  The union will
+database: PrIMe, or **Pr**\ ocess **I**\ nformatics **M**\od\ **e**\ l.  The union will
 allow RMG to search for a community-recommended thermochemical data entry (e.g.
 Arrhenius parameters, NASA polynomials) before using estimation techniques.
 
 The InChI for each species in the model is located in the :file:`RMG_Dictionary.txt` file.
 
-More information on the InChI project may be found at http://www.iupac.org/inchi/
-More information on the PrIMe project may be found at http://primekinetics.org/
+More information on the InChI project may be found at http://www.iupac.org/inchi/. More information on the PrIMe project may be found at http://primekinetics.org/
 
 To enable the InChI generation, the item should read::
 
 	InChIGeneration: on
 
+To disable the InChI generation, the item should read::
+
+	InChIGeneration: off
 	
 
 Reactants
@@ -291,7 +298,11 @@ such options: ``ModifiedStrongCollision`` and ``ReservoirState``. The former uti
 the modified strong collision approach of Chang, Bozzelli, and Dean [Chang2000]_, 
 and works reasonably well while running more rapidly. The latter 
 utilizes the steady state/reservoir state approach of Green and Bhatti [Green2007]_, 
-and is more accurate but more expensive. 
+and is more theoretically sound but more expensive. 
+
+.. note::
+
+	The reservoir state method is currently in an experimental stage. It should work for most small networks; large networks will likely (and automatically) fall back to the modified strong collision method.
 
 To specify the modified strong collision approach, this item should read::
  
@@ -300,6 +311,8 @@ To specify the modified strong collision approach, this item should read::
 To specify the reservoir state approach, this item should read::
  
 	PressureDependence: ReservoirState
+
+For more information on the two methods, consult the following resources:
 
 .. [Chang2000] A.Y. Chang, J.W. Bozzelli, and A. M. Dean. "Kinetic Analysis of Complex Chemical Activation and Unimolecular Dissociation Reactions using QRRK Theory and the Modified Strong Collision Approximation." *Z. Phys. Chem.* **214** (11), p. 1533-1568 (2000).
 
@@ -327,7 +340,7 @@ corresponds to a larger model and longer model generation times. In the first ex
   (1) Goal ReactionTime: 0.001 (sec)
   (2) Error Tolerance: 0.1
 
-In the second example, the reaction will run until 90% of the C$_2$H$_6$ reactant is
+In the second example, the reaction will run until 90% of the C\ :sub:`2`\ H\ :sub:`6` reactant is
 consumed and has a much tighter error tolerance::
 
   FinishController:
@@ -353,34 +366,33 @@ Dynamic Simulator
 RMG uses the DASSL or DASPK dynamic solver. Future versions of RMG might include the
 CHEMKIN dynamic solver.
 
-The first line beneath the solver should be either ``TimeStep`` or ``Conversion``, depending
-on whether you chose Goal Conversion of Goal ReactionTime as your finish
-controller criterion.
-(#1****?how to do this in LaTex?)The ``TimeStep`` indicates at what time stpes RMG should check to see if
-the model needs to be enlarged. By default the units of time steps is always
-seconds. For example in the example shown below RMG will stop at 0.0001
-sec, 0.0002 sec ... and so on to see whether the error tolerance is satisfied::
-    DynamicSimulator: DASSL
-    TimeStep: 0.0001 0.0002 0.0004 0.0006 0.0008 0.0009
-(#2***)The other option is to specifiy the Conversions. In this option the conversion
-of the FinishController species (in this case, C$_2$H$_6$) is monitored and
-RMG will stop at conversions of 0.1, 0.2...and so on to see whether
-the error tolerance is satisfied::
-    DynamicSimulator: DASSL
-    Conversions: 0.1 0.2 0.4 0.6 0.8 0.9
+The first line beneath the solver should be either ``TimeStep`` or ``Conversion``, depending on whether you chose Goal Conversion of Goal ReactionTime as your finish controller criterion.
+
+The ``TimeStep`` indicates at what time stpes RMG should check to see if the model needs to be enlarged. By default the units of time steps is always seconds. For example in the example shown below RMG will stop at 0.0001 sec, 0.0002 sec ... and so on to see whether the error tolerance is satisfied::
+
+	DynamicSimulator: DASSL
+	TimeStep: 0.0001 0.0002 0.0004 0.0006 0.0008 0.0009
+
+The other option is to specifiy the Conversions. In this option the conversion of the FinishController species (in this case, C\ :sub:`2`\ H\ :sub:`6`) is monitored and RMG will stop at conversions of 0.1, 0.2, ... and so on to see whether the error tolerance is satisfied::
+
+	DynamicSimulator: DASSL
+	Conversions: 0.1 0.2 0.4 0.6 0.8 0.9
 
 For both ``TimeStep`` or ``Conversions``, in addition to determining when RMG will stop to check whether error tolerances are satisfied, the concentrations and flux at the points specified will be reported in the ``Final_Model.txt`` file.
 
 If you would not like to specify time steps or conversions, you may have them determined using the "automated time stepping" feature by specifying ``AUTO`` as follows::
+
     DynamicSimulator: DASSL
     TimeStep: AUTO
-or
+	
+or::
+
     DynamicSimulator: DASSL
     Conversions: AUTO
+	
 The automated time stepping feature is described in greater detail in the Theory and Implementation Details appendix.
 
-The next two lines specify the absolute and relative tolerance for the ODE solver, respectively.
-Common values for the absolute tolerance are 1e-15 to 1e-25. Relative tolerance
+The next two lines specify the absolute and relative tolerance for the ODE solver, respectively. Common values for the absolute tolerance are 1e-15 to 1e-25. Relative tolerance
 is usually 1e-4 to 1e-8::
 
   Atol: 1e-20
@@ -455,9 +467,9 @@ Leeds' oxidation library::
 
  PrimaryReactionLibrary: on 
  Name: nbutane 
- Location: RMG database/primaryReactionLibrary/nbutane 
+ Location: RMG_database/primaryReactionLibrary/nbutane 
  Name: Leeds 
- Location: RMG database/primaryReactionLibrary/combustion core/version5 
+ Location: RMG_database/primaryReactionLibrary/combustion core/version5 
  END 
 
 

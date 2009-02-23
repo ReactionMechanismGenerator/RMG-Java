@@ -26,7 +26,7 @@ condition file ``hexane_pyro.txt``.
 
     $ java -Xmx500m -classpath $RMG/software/RMG RMG hexane_pyro.txt > output &
   
-When RMG is started, it creates six subdirectories: ``chemkin``, ``fit3p``,
+When RMG is started, it creates eight subdirectories in the directory containing the condition file: ``chemkin``, ``fame``, ``fit3p``, ``frankie``, 
 ``GATPfit``, ``InChI`` and ``Restart``.
 
 In this example, all of the output from RMG is piped to a file output. The ``> output`` 

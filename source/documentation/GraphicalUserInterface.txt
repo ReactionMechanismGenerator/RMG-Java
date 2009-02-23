@@ -27,25 +27,19 @@ Reactants and Inert Gases
 
 For each species, a "Name," "Concentration," "Units," and "Reactivity" must be
 specified.  The three options for "Reactivity" are:
-#. Inert Gas
-#. Unreactive
-#. Reactive
 
-- An "Inert Gas" is a species for which RMG will not build a reaction mechanism for.
-- An "Unreactive" species is a species for which RMG will build a mechanism for, but
-	only according to the list of reactions the user has provided
-- A "Reactive" species is a species for which RMG will build a mechanism for, according
-	to the reaction family templates located in the RMG_database/kinetics folder 
+- Inert Gas - a species for which RMG will not build a reaction mechanism for
+
+- Unreactive - a species for which RMG will build a mechanism for, but	only according to the list of reactions the user has provided
+
+- Reactive - a species for which RMG will build a mechanism for, according	to the reaction family templates located in the RMG_database/kinetics folder
  	
 If the species is selected as an "Inert Gas," no structural information for the
 molecule is necessary.
 
 If the species is selected as either "Unreactive" or "Reactive," the user must
 supply structural information about the molecule.  This information may be provided
-in one of three ways:
-#. Adjacency List
-#. InChI
-#. .mol file
+in one of three ways: adjacency list, InChI, or .mol file.
 
 An adjacency list is described in more detail here (add link!).  An example for
 methane is::
