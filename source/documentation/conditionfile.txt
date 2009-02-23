@@ -22,7 +22,7 @@ order:
 
 #. The :ref:`initial temperature and pressure <initialconditions>` of the system
 
-#. Whether to generate an IUPAC International Chemical Identifier (InChI) for each species
+#. Whether to generate an :ref:`IUPAC International Chemical Identifier (InChI) <InChIgeneration>` for each species
 
 #. The method to use to estimate :ref:`spectroscopic data <spectroscopicdata>` for each species
 
@@ -145,7 +145,7 @@ InChI Generation
 The fifth item in the initialization file is the InChI generation command.
 An InChI, or IUPAC **In**\ ternational **Ch**\ emical **I**\ dentifier, is an unique
 species identifier, with the exception of differing electronic or spin states,
-developed by NIST.  An example of an InChI string (which represented the species
+developed by IUPAC and NIST.  An example of an InChI string (which represents the species
 caffeine) is::
 
 	InChI=1/C8H10N4O2/c1-10-4-9-6-5(10)7(13)12(3)8(14)11(6)2/h4H,1-3H3
