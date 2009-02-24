@@ -373,6 +373,10 @@ public class SystemSnapshot {
 		return unreactedSpeciesFlux[species.getID()];
 	}
 
+	public double[] getUnreactedSpeciesFlux() {
+		return unreactedSpeciesFlux;
+	}
+
 }
 /*********************************************************************
         File Path	: RMG\RMG\jing\rxnSys\SystemSnapshot.java

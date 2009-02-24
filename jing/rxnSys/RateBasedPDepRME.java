@@ -102,9 +102,15 @@ public class RateBasedPDepRME implements ReactionModelEnlarger {
 				flux[n] = 0.0;
 
 			// Flux from non-pDep reactions
+			double[] unreactedSpeciesFlux = ps.getUnreactedSpeciesFlux();
 			for (Iterator iter = cerm.getUnreactedSpeciesSet().iterator(); iter.hasNext(); ) {
 				Species us = (Species) iter.next();
-				flux[us.getID()] = Math.abs(ps.getUnreactedSpeciesFlux(us));
+				if (us.getID() < unreactedSpeciesFlux.length)
+					flux[us.getID()] = unreactedSpeciesFlux[us.getID()];
+				else
+					System.out.println("Warning: Attempted to read unreacted species flux for " +
+							us.getName() + "(" + us.getID() + "), but there are only " +
+							unreactedSpeciesFlux.length + " fluxes.");
 			}
 
 			// Flux from pDep reactions
@@ -159,8 +165,35 @@ public class RateBasedPDepRME implements ReactionModelEnlarger {
 			System.out.println("Unreacted species " + maxSpecies.getName() + " has highest flux: " + String.valueOf(maxFlux));
 			System.out.println("Network " + maxNetwork.getID() + " has highest leak flux: " + String.valueOf(maxLeak));
 
-			//if (maxFlux > Rmin) {
+			//if (maxFlux > Rmin)
 			if (maxFlux > maxLeak && maxFlux > Rmin) {
+				if (!updateList.contains(maxSpecies))
+					updateList.add(maxSpecies);
+				else
+					updateList.add(null);
+			}
+			else if (maxLeak > Rmin) {
+				if (!updateList.contains(maxNetwork))
+					updateList.add(maxNetwork);
+				else
+					updateList.add(null);
+			}
+			else
+				updateList.add(null);
+
+		}
+
+		for (int i = 0; i < updateList.size(); i++) {
+
+			Object object = updateList.get(i);
+			ReactionSystem rxnSystem = (ReactionSystem) rxnSystemList.get(i);
+			PresentStatus ps = rxnSystem.getPresentStatus();
+
+			if (object == null)
+				continue;
+			else if (object instanceof Species) {
+
+				Species maxSpecies = (Species) object;
 
 				// Add a species to the core
 				System.out.print("\nAdd a new reacted Species: ");
@@ -206,8 +239,9 @@ public class RateBasedPDepRME implements ReactionModelEnlarger {
 				}
 
 			}
-			else if (maxLeak > Rmin) {
-			
+			else if (object instanceof PDepNetwork) {
+
+				PDepNetwork maxNetwork = (PDepNetwork) object;
 
 				PDepIsomer isomer = maxNetwork.getMaxLeakIsomer(ps);
 				System.out.println("\nAdd a new included Species: " + isomer.toString() +
@@ -216,6 +250,8 @@ public class RateBasedPDepRME implements ReactionModelEnlarger {
 				maxNetwork.makeIsomerIncluded(isomer);
 
 			}
+			else
+				continue;
 			
 			System.out.println("");
         }
