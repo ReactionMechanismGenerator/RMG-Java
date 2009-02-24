@@ -10,7 +10,7 @@ mechanisms composed of elementary chemical reaction steps using a general unders
 Contents:
 
 .. toctree::
-   :maxdepth: 2
+   :maxdepth: 1
 
    introduction
    installation
@@ -19,6 +19,7 @@ Contents:
    running
    analyzing
    modification
+   theory
    BuildingDocumentation
 
 Indices and tables
