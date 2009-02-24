@@ -18,7 +18,7 @@ Launching the Graphical User Interface
 The "Initial Conditions" tab
 ----------------------------
 
-.. image:: RMG_GUI_gifs/tab_initialConditions.gif
+.. image:: RMG_GUI_gifs/tab_initialConditions.png
 
 This tab of the GUI allows the user to enter the Reactants, Inert Gases, and
 Initial Conditions for the simulation.
@@ -88,7 +88,7 @@ with a blank space or a return carriage.
 The "Thermochemical Libraries" tab
 ----------------------------------
 
-.. image:: RMG_GUI_gifs/tab_thermochemLibraries.gif
+.. image:: RMG_GUI_gifs/tab_thermochemLibraries.png
 
 This tab of the GUI allows the user to enter the location of the thermochemical
 libraries RMG will use in building the model.
@@ -111,7 +111,7 @@ is found and ignore all others.
 The "Termination" tab
 ---------------------
 
-.. image:: RMG_GUI_gifs/tab_termination.gif
+.. image:: RMG_GUI_gifs/tab_termination.png
 
 This tab of the GUI allows the user to specify the termination criteria for the
 model.  A user may specify either the desired "ReactionTime" or "Conversion".
@@ -131,7 +131,7 @@ mechanism for a new system, we recommend starting with a high "Error tolerance"
 The "Dynamic Simulator" tab
 ---------------------------
 
-.. image:: RMG_GUI_gifs/tab_dynamicSimulator.gif
+.. image:: RMG_GUI_gifs/tab_dynamicSimulator.png
 
 This tab of the GUI allows the user to specify options for:
   * the ODE solver
@@ -196,7 +196,7 @@ located in the ``RMG/software/InChI`` folder.
 The "Sensitivity Analysis" tab
 -------------------------------
 
-.. image:: RMG_GUI_gifs/tab_sensAnalysis.gif
+.. image:: RMG_GUI_gifs/tab_sensAnalysis.png
 
 This tab of the GUI allows the user to specify options for error bars and 
 sensitivity coefficients.  The features of this tab will only be active if
