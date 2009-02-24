@@ -3,7 +3,7 @@
 Creating a Condition File using the Graphical User Interface
 ============================================================
 
-A user may construct the condition.txt file by hand or by using the
+A user may construct the ``condition.txt`` file by hand or by using the
 Graphical User Interface.
 
 .. _launching:
@@ -18,21 +18,22 @@ Launching the Graphical User Interface
 The "Initial Conditions" tab
 ----------------------------
 
+.. image:: RMG_GUI_gifs\tab_initialConditions.gif
+
 This tab of the GUI allows the user to enter the Reactants, Inert Gases, and
-Initial Conditions for the simulation.  The top half of the tab handles the
-input of Reactants and Inert Gases.
+Initial Conditions for the simulation.
 
 Reactants and Inert Gases
--------------------------
+^^^^^^^^^^^^^^^^^^^^^^^^^
 
 For each species, a "Name," "Concentration," "Units," and "Reactivity" must be
 specified.  The three options for "Reactivity" are:
 
 - Inert Gas - a species for which RMG will not build a reaction mechanism for
 
-- Unreactive - a species for which RMG will build a mechanism for, but	only according to the list of reactions the user has provided
+- Unreactive - a species for which RMG will build a mechanism for, but only according to the list of reactions the user has provided
 
-- Reactive - a species for which RMG will build a mechanism for, according	to the reaction family templates located in the RMG_database/kinetics folder
+- Reactive - a species for which RMG will build a mechanism for, according to the reaction family templates located in the ``RMG_database/kinetics`` folder
  	
 If the species is selected as an "Inert Gas," no structural information for the
 molecule is necessary.
@@ -55,7 +56,7 @@ An equally valid adjacency list for methane (with the Hydrogen atoms removed) is
 	1 C 0
 
 If the user knows the InChI of the molecule (and the InChI executable is located
-in the RMG/software/InChI folder), the GUI will convert the InChI to an adjacency
+in the ``RMG/software/InChI`` folder), the GUI will convert the InChI to an adjacency
 list upon pushing the "Add" button.  The InChI for methane is::
 
 	InChI=1/CH4/h1H4
@@ -68,14 +69,14 @@ convert the .mol file to an adjacency list.
 The user may add/remove species to the model by clicking the appropriate buttons.
 
 Unreactive Species
-------------------
+^^^^^^^^^^^^^^^^^^
 
 If an "Unreactive" species is added to the model, the GUI will ask the user for the
-location of the "IncludeSpecies.txt" file.  If no "Unreactive" species are added to
+location of the ``IncludeSpecies.txt`` file.  If no "Unreactive" species are added to
 the model, the "Location of IncludeSpecies.txt" field will remain inactive.
 
 Initial Conditions
-------------------
+^^^^^^^^^^^^^^^^^^
 
 RMG currently only has one pressure/temperature model: "Constant".  However, the user
 may specify a list of temperatures and pressures for which to build the reaction
@@ -87,23 +88,22 @@ with a blank space or a return carriage.
 The "Thermochemical Libraries" tab
 ----------------------------------
 
+.. image:: RMG_GUI_gifs/tab_thermochemLibraries.gif
+
 This tab of the GUI allows the user to enter the location of the thermochemical
 libraries RMG will use in building the model.
 
-The default location of the "Main Database" is the :file:`RMG/database/RMG_database` folder.
-We recommend to use the default settings.
+The default location of the "Main Database" is the ``RMG/database/RMG_database`` folder.  We recommend to use the default settings.
 
-The default location of the "Primary Thermo Library" is the 
-:file:`RMG/database/RMG_database/thermo/PrimaryThermoLibrary` folder.  We recommend to use
-the default settings.
+The default location of the "Primary Thermo Library" is the ``RMG/database/RMG_database/thermo/PrimaryThermoLibrary`` folder.  We recommend to use the default settings.
 
 By default, the "Primary Reaction Library" is turned off.  If the user turns on
 the "Primary Reaction Library," a "Name" and "Location" must be specified.
 
 Note: The order of the "Primary Reaction Libraries" in the table is important.  The
-order established in the table will be conserved when writing the "condition.txt"
+order established in the table will be conserved when writing the ``condition.txt``
 file.  For any reactions that appear in multiple "Primary Reaction Libraries", RMG
-will use the information contained in the first "Primary Reaction Library" the reaction
+will use the information contained in the first "Primary Reaction Library" if the reaction
 is found and ignore all others.
 
 .. _tabTermination:
@@ -111,15 +111,16 @@ is found and ignore all others.
 The "Termination" tab
 ---------------------
 
+.. image:: RMG_GUI_gifs/tab_termination.gif
+
 This tab of the GUI allows the user to specify the termination criteria for the
 model.  A user may specify either the desired "ReactionTime" or "Conversion".
 
 If "Conversion" is selected, the user must specify a species and a fraction
-conversion (ranging from 0 to 1).  The "Species" combo-box will only contain the
+conversion (ranging from 0 to 1).  The "Species" drop-down menu will only contain the
 "Reactive" and "Unreactive" species specified in the Initialization tab.
 
-If "ReactionTime" is selected, the user must specify the value and units of
-the desired time.
+If "ReactionTime" is selected, the user must specify the value and units of the desired reaction time.
 
 Lastly, the user must specify an "Error tolerance" for the model.  If building a
 mechanism for a new system, we recommend starting with a high "Error tolerance"
@@ -130,11 +131,16 @@ mechanism for a new system, we recommend starting with a high "Error tolerance"
 The "Dynamic Simulator" tab
 ---------------------------
 
+.. image:: RMG_GUI_gifs/tab_dynamicSimulator.gif
+
 This tab of the GUI allows the user to specify options for:
   * the ODE solver
   * building a pressure dependent mechanism
   * constructing InChIs
-	
+
+The ODE Solver
+^^^^^^^^^^^^^^
+
 The user must select a "Dynamic Simulator" and set the Absolute and Relative
 Tolerances for that Dynamic Simulator.  The user may also select Intermediate times
 or conversions for RMG to check whether the reaction mechanism needs to be enlarged.
@@ -143,10 +149,13 @@ in the "Intermediate" time/conversion fields.
 
 The "Intermediate Conversions" field will be enabled (and the "Intermediate Time
 Steps" field will be disabled) if the "Termination Goal" was chosen as
-"Conversion" on the Termination tab.
+"Conversion" on the :ref:`Termination <tabTermination>` tab.
 
 Note: If the user specifies "Intermediate Time Steps," the values must have units of
 Seconds.
+
+The pressure dependence model
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 The user must specify a pressure dependence model.  The options are:
   * off
@@ -158,11 +167,14 @@ here: (Add link).
 
 If the user specifies a pressure dependent model, the "Spectroscopic Data
 Estimator" field will be enabled.  The options are:
-* Three Frequency Model
-* Frequency Groups
+  * Three Frequency Model
+  * Frequency Groups
 	
 More information on the different spectroscopic data estimation techniques is
 located here: (Add link).
+
+Optional fields
+^^^^^^^^^^^^^^^
 
 Some optional fields the user may change are:
   * Equation of State
@@ -177,16 +189,18 @@ concentrations of the reactants if they do not satisfy PV=nRT.
 
 The user may also choose to turn off/on the generation of InChIs.  If the user
 chooses to turn InChI generation on, the InChI executable (v 1.01) must be 
-located in the RMG/software/InChI folder.
+located in the ``RMG/software/InChI`` folder.
 
 .. _tabSensitivityAnalysis:
 
 The "Sensitivity Analysis" tab
 -------------------------------
 
+.. image:: RMG_GUI_gifs/tab_sensAnalysis.gif
+
 This tab of the GUI allows the user to specify options for error bars and 
 sensitivity coefficients.  The features of this tab will only be active if
-"DASPK" is selected as the "Dynamic Simulator."
+"DASPK" is selected as the "Dynamic Simulator"  on the :ref:`Dynamic Simulator <tabDynamicSimulator>` tab.
 
 The user may turn the generation of error bars "on" or "off."  Note: Error bars
 will be generated for all species in the model.
@@ -204,7 +218,7 @@ Saving the file
 To save the file, the user can either press the "Save" button near the bottom of
 the GUI or selecting "File" --> "Save" from the navigation toolbar.  The file does
 not have to be named condition.txt.  Also, the user may add additional comments to
-the "condition.txt" file by adding information to the text field at the bottom of the
+the ``condition.txt`` file by adding information to the text field at the bottom of the
 GUI.  These comments will be added to the header of the saved file.
 
 To save and immediately run a file, the user can press the "Save and Run" button
@@ -215,7 +229,7 @@ near the bottom of the GUI.
 Opening a file
 --------------
 
-To open and import the information from a :file:`condition.txt` file, the user can select
+To open and import the information from a ``condition.txt`` file, the user can select
 "File" --> "Open" from the navigation toolbar.  Note: The comments in the header of
 the file will not be imported.
 
