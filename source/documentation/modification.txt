@@ -180,20 +180,20 @@ Thermo Families present in the ``RMG_Dictionary`` folder.  To load one of the Th
  
 Note: Loading a family could take a few minutes, depending on how large the family is.
 
-Once the family is loaded, a new window will popup.  The name of the window corresponds to the name of the Thermo
+Once the family is loaded, a new window will pop up.  The name of the window corresponds to the name of the Thermo
 family that was read.  In the screen shot shown below, we have chose to load the "Group" family.  Use the scroll bar
 to see the list of functional groups contained in the "Group" family.  To visualize what the different functional
 groups look like, highlight one of the names and then push the "View" button near the top of the "Group" window.
-For instance, if we select the functional group name "Cds-CdOsOs," the RMGVE should look as follows.
+For instance, if we select the functional group name "Cds-OdCsH," the RMGVE should look as follows.
 
 .. image:: RMGVE_pngs/visualizeThermoGroup.png
 
 Notice that the "Adjacency List" window is no longer blank but now contains the adjacency list for the functional group
-"Cds-CdOsOs".  Furthermore, a window entitled "Cds-CdOsOs" opens which contains a visualization of the functaional group.
+"Cds-OdCsH".  Furthermore, a window entitled "Cds-OdCsH" opens which contains a visualization of the functional group.
 
-Note: Notice also that a toolbar appears above the "Dataset viewer," "Adjacency List," and "Cds-CdOsOs" windows.  This toolbar
-may be used to edit the molecule in the "Cds-CdOsOs" window.  For instance, click on the icon with the four arrows (pointing
-up, right, down, and left).  Now click on one of the atoms in the "Cds-CdOsOs" window and drag it to another location within the
+Note: Notice also that a toolbar appears above the "Dataset viewer," "Adjacency List," and "Cds-OdCsH" windows.  This toolbar
+may be used to edit the molecule in the "Cds-OdCsH" window.  For instance, click on the icon with the four arrows (pointing
+up, right, down, and left).  Now click on one of the atoms in the "Cds-OdCsH" window and drag it to another location within the
 window.  To restore (clean) the structure of the functional group, click on the icon containing the picture of a rake.
 
 .. _changingthermodata:
@@ -201,42 +201,47 @@ window.  To restore (clean) the structure of the functional group, click on the 
 Editing the Data for an Existing Thermo Functional Group
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-A leaf in the thermochemistry tree may be **edited** using the RMG Viewer & Editor (RMGVE).
+A leaf in the thermochemistry tree may be **edited** using the RMG Viewer & Editor (RMGVE).  For instructions on how to add a leaf 
+to a thermochemistry tree, please refer to the section below entitled "Adding Additional Nodes to the Thermo Database".
 
 Returning to the "Dataset viewer" window, notice the "Tree/library" button has been enabled.  Click on this button to show
-the data for the highlighted thermo family.
+the data for the highlighted thermo family.  After some re-arranging of the windows, the screen should look as follows.
 
 .. image:: RMGVE_pngs/visualizeThermoData.png
 
 The top half of the new "Group tree/library" window contains the "Group" thermo family tree.  The bottom half contains the
-"Group" thermo family library.  Suppose we want to change the thermo value for the "Cds-CdOsOs" functional group.  To do so,
-we can navigate the tree in the top half of the "Group tree/library" window by opening (double-clicking) the folders corresponding to the "Cds-CdOsOs"
+"Group" thermo family library.  Suppose we want to change the thermo value for the "Cds-OdCsH" functional group.  To do so,
+we can navigate the tree in the top half of the "Group tree/library" window by opening (double-clicking) the folders corresponding to the "Cds-OdCsH"
 functional group:
 
  * L1: C
  * L2: Cds
- * L3: Cds-CdOsOs
- * Cd-CdOsOs
+ * L3: Cds-OdCH
+ * Cd-OdCsH
  
 After navigating the tree, the RMGVE should look like the following snapshot.
 
 .. image:: RMGVE_pngs/traverseThermoTree.png
 
-Notice RMG does not have a data entry for this specific functional group.  Rather, RMG points this functional group to the
-"Cds-CdsCsCs" functional group.  To change this data entry, uncheck the "Read only" field, highlight the row, and push the "Edit" button.  After
-expanding the RMGVE and "Group tree/library" window, the screen should look as follows.
+Notice that RMG has thermodynamic data for this functional group.  If you scroll to the right (using the scroll bar near the bottom of the 
+"Group tree/library" window) far enough, you will see the "Notes" column.  This column is used to document where the data came from.  In
+this case, the thermodynamic data comes from the Benson defined group O=CH-Cs.  Furthermore, it has been noted that the Cp1500 was assumed
+to be the Cp1000 value.
+
+Suppose we had a better estimate for the Cp1500 value (e.g. 12.5 cal/mol/K).  To edit this leaf, uncheck the "Read only" field, highlight the row, and push the
+"Edit" button; the screen should look as follows.
 
 .. image:: RMGVE_pngs/editThermoTree.png
 
-Enter thermochemical data for the functional group "Cds-CdsOsOs" in the new window.  The field "Notes" will be added to the
-thermochemical data for "Cds-CdsOsOs" functional group at the end of the line.  The field "New header comments" will be placed
-above the thermochemical data for "Cds-CdsOsOs" functional group.  Upon changing any of the thermochemical data fields, a line in the
+Enter the new thermochemical data (Cp1500 = 12.5) in the appropriate field.  The field "Notes" will be added to the
+thermochemical data for the "Cds-OdCsH" functional group at the end of the line (after the 12 data entries).  The field "New header comments" will be placed
+above the thermochemical data for the "Cds-OdCsH" functional group.  Upon changing any of the thermochemical data fields, a line in the
 "New header comments" will automatically appear, containing your login name and the current date and time.  The box immediately above
-the "New header comments" field shows how the RMGVE will edit the current data in the ``Group_Dictionary.txt" file.  Once all data has
+the "New header comments" field shows how the RMGVE will edit the current data in the ``Group_Dictionary.txt`` file.  Once all data has
 been entered, close the window.
 
 Returning to the "Group tree/library" window, notice the highlighted row.  The thermochemical data entries have been updated and a star (*)
-has been placed next to the "131" value in the first column.  The star (*) represents that a change has been made.
+has been placed next to the "55" value in the first column.  The star (*) reflects that a change has been made.
  
 When you have completed making changes to the thermochemistry database, close the RMGVE.  Upon doing so, you will be asked which changes you would
 like to accept and save to the ``RMG_database`` folder.  Before pushing the "OK" button, ensure that all of the changes you want to be saved have a
@@ -250,53 +255,50 @@ Viewing the changed thermochemical data
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 To view the thermochemical data that was just edited, open the file from the previous screenshot: ``$RMG/database/RMG_database/thermo/Group_Library.txt``.
-Scrolling down to the entry "131," we see the old and new thermochemical data for the functional group "Cds-CdsOsOs".
+Scrolling down to the entry #55, we see the old and new thermochemical data for the functional group "Cds-OdCsH".
 
-.. image: RMGVE_pngs/viewThermoEdits.png
+.. image:: RMGVE_pngs/viewThermoEdits.png
 
- 
-
-You may also refer one group value to another if you believe that they should be
-the same. This is done by putting the name of the group that has the same thermo
-parameters in column 3 and leaving columns 4- 15 blank. Effectively, if RMG
-encounters the group and finds the name of another group instead of numerical
-value, it will assign the current group the same values that occur in the
+Rather than explicitly entering data for each leaf, one may also refer one functional group to another, if you believe they should be 
+the same.  This is done by putting the name of the group that has the same thermo parameters in column 3 and leaving columns 4-15 blank.
+An example of this is entry #56 where we see that this leaf does not contain thermodynamic data but rather points to the functional group "Cds-Od(Cds-Cds)H," entry #59.
+Effectively, if RMG encounters the group and finds the name of another group instead of numerical values, it will assign the current group the same values that occur in the
 referred group::
 
- 253 Cb-(Os-(Os-Cs))  -2.5  -8.5  etc...
- 254 Cb-(Os-(Os-H))   Cb-(Os-(Os-Cs)) 
+	56.	Cds-OdCdsH	Cds-Od(Cds-Cds)H
+	59.	Cds-Od(Cds-Cds)H		-30.9	33.4	7.45	8.77	etc.
 
-The above example would assume that the group values for #254 are identical to
-those of #253.
+The above example would assume that the group values for #56 are identical to those of #59.
 
-This referencing does not need to be done if the group to which you want to
-refer lies directly above the current group in the tree, because if the tree
-does not have a certain node defined it will look back up the tree to find the
-nearest relative and use those values::
+This referencing does not need to be done if the group to which you want to refer lies directly above the current group in the tree, because if the tree
+does not have a certain node defined it will look back up the tree to find the nearest relative and use those values::
 
  253   Cb-(Os-(Os-Cs))  -2.5  -8.5  etc...
  254   Cb-(Os-(Os-H))   Cb-(Os-(Os-Cs))
  255   Cb-(Os-(Os-(Cs-OsHH)))  Cb-(Os-(Os-Cs))
 
-In this case, the referring of #255 back to #253 is unnecessary because RMG
-would refer back to #253 by default if it did not find any values for #255. This
-redundancy will not create any problems within RMG, but it is simply
-unnecessary.
+In this case, the referring of #255 back to #253 is unnecessary because RMG would refer back to #253 by default if it did not find any values for #255. This
+redundancy will not create any problems within RMG, but it is simply unnecessary.
 
-If you are adding a new group, you will need to follow the procedure below for
-adding a group to the tree, dictionary, and library files as well.
+.. warning::  The RMGVE can only edit leafs which already have thermochemical data stored for them.  In particular:
 
-Please be aware that version control may be a significant issue with the
-databases and should be addressed early to ensure consistency within the group.
+	- The RMGVE does not allow a user to change the "Refer to" field.  This change must be performed by hand.
+	- The ``Group_Library.txt`` file will not recognize changes made in the RMGVE to leaves that "Refer to" another species.  For example, had we entered thermochemical data for entry #56, the RMGVE will show the updates to the H, S, and Cp values in the "Group tree/library" window but will also still show the "Refer to" functional group.  After closing the RMGVE and confirming the change to the database, if one opened the ``Group_Library.txt`` file and looked at entry #56, you will notice the leaf's thermodynamic values were not updated.
+
+.. image:: RMGVE_pngs/bug_referToLeaf.png
+
+.. image:: RMGVE_pngs/bug_groupLibrary.png
+
+Please be aware that version control may be a significant issue with the databases and should be addressed early to ensure consistency within the group.
 
 
 Adding Additional Nodes to the Thermo Database
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 This task is more complicated than the previous example because it involves
-altering all three database files in a consistent manner. It is worth noting
-that the order in which species are added to the dictionary and library does not
-matter; however, the position where the new group is added to the tree is of the
+altering all three database files in a consistent manner, without the help of a Graphical User Interface. It is worth noting
+that the order in which species are added to the dictionary (``_Dictionary.txt`` file) and library (``_Library.txt`` file) does not
+matter; however, the position where the new group is added to the tree (``_Tree.txt`` file) is of the
 utmost importance. It is useful to create the tree and dictionary with items in
 the same order.  This ordering will facilitate cross checking and debugging if
 needed. Since all files must use the same nomenclature, the ability to search
@@ -305,29 +307,30 @@ may make consistent ordering unnecessary. The procedure is described below.
 #. Find the appropriate location to place the new group and ensure that the
    nomenclature is unambiguous and unique. Placing the group in the incorrect
    location could cause incorrect estimates to be made when the tree is being
-   searched. Using Chemgreen to navigate the tree structure is a useful way to find
+   searched. Using the RMGVE to navigate the tree structure is a useful way to find
    the location for your new group. 
 
 #. Add the line of text to the ``Group_Tree.txt`` file in the following form,
-   where "``x``" is the appropriate level. The following example is for a C-O-O-H
-   off of a benzene ring. ---
+   where "``x``" is the appropriate level. The following example is for a O-O-H
+   off of a benzene ring.::
 
-   ``Lx: Cb-(Os-(Os-H))`` ---
+	Lx: Cb-(Os-(Os-H))
 
 #. Using the same name as in the tree, append the file ``Group_Dictionary.txt``
-   to define the structure of the group and its atom center (denoted by the \*):
-
-   ``Cb-(Os-(Os-H))``  ---  ``1`` & ``*`` & ``Cb``  & ``0`` & ``{2,S}`` &   ---
-   ``2`` &            & ``O``  & ``0`` & ``{1,S}`` & ``{3,S}``  ---  ``3`` &
-   & ``O`` & ``0`` & ``{2,S}`` & ``{4,S}``  ---  ``4`` &            & ``H``   &
-   ``0`` & ``{3,S}`` &  ---
-
+   to define the structure of the group and its atom center (denoted by the \*)::
+   
+	Cb-(Os-(Os-H))
+	1* Cb 0 {2,S}
+	2  O 0 {1,S} {3,S}
+	3  O 0 {2,S} {4,S}
+	4  H 0 {3,S}
+	
 #. Add the new group to the ``Group_Library.txt`` file using the same
    nomenclature and whatever thermo data you have for the group. The format was
-   shown in the previous section. ---
-
-   ``2374 Cb-(Os-(Os-H)) 3.5 10.0 ... "I added this b/c ..."``  ---
-
+   shown in the previous section.::
+   
+	2374 Cb-(Os-(Os-H)) 3.5 10.0 ... "I added this b/c ..."
+   
 
 Editing the Primary Reaction Library
 ------------------------------------
