@@ -18,7 +18,7 @@ Launching the Graphical User Interface
 The "Initial Conditions" tab
 ----------------------------
 
-.. image:: RMG_GUI_gifs\tab_initialConditions.gif
+.. image:: RMG_GUI_gifs/tab_initialConditions.gif
 
 This tab of the GUI allows the user to enter the Reactants, Inert Gases, and
 Initial Conditions for the simulation.
