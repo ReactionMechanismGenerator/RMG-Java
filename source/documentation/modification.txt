@@ -22,7 +22,7 @@ ASCII file that can be edited to alter the information. This description applies
 to non-radical groups. There are other tree/library/dictionary files for radical
 groups, ring corrections, and other corrections. The nomenclature is different,
 but they would be edited in a similar way. The files of interest are located in
-the directory: ``$RMG/databases/database/thermo/``. The three files are
+the directory: ``$RMG/database/RMG_database/thermo/``. The three files are
 described below.  
 
 Dictionary File (``Group_Dictionary.txt``)
@@ -155,37 +155,106 @@ possible functional groups can be seen in the table :ref:`"Functional Group Elem
 
 
 
+.. _viewingthermoFGs:
+
+Viewing a Thermo Functional Group in the RMGVE
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Open the RMG Viewer & Editor (RMGVE) by running the ``RMGVE 20080101.bat`` file.
+If your RMG database is located in the ``$RMG\database\RMG_database`` folder, the following
+login screen should appear.
+
+.. image:: RMGVE_pngs/loginScreen.png
+
+The login name is used to document who made what changes in the RMG libraries (more on this soon).
+After entering your name, press the "Login" button to reveal the RMGVE.
+
+.. image:: RMGVE_pngs/homeScreen.png
+
+The RMGVE home screen initially has two windows open: the "Dataset viewer" and the "Adjacency List."
+In the "Dataset viewer" window, double-click on the "Thermo (Branch)" folder to show the different
+Thermo Families present in the ``RMG_Dictionary`` folder.  To load one of the Thermo Families, either:
+
+ * double-click on one of the names OR
+ * highlight one of the names and then push the "Read family" button near the top of the "Dataset viewer" window
+ 
+Note: Loading a family could take a few minutes, depending on how large the family is.
+
+Once the family is loaded, a new window will popup.  The name of the window corresponds to the name of the Thermo
+family that was read.  In the screen shot shown below, we have chose to load the "Group" family.  Use the scroll bar
+to see the list of functional groups contained in the "Group" family.  To visualize what the different functional
+groups look like, highlight one of the names and then push the "View" button near the top of the "Group" window.
+For instance, if we select the functional group name "Cds-CdOsOs," the RMGVE should look as follows.
+
+.. image:: RMGVE_pngs/visualizeThermoGroup.png
+
+Notice that the "Adjacency List" window is no longer blank but now contains the adjacency list for the functional group
+"Cds-CdOsOs".  Furthermore, a window entitled "Cds-CdOsOs" opens which contains a visualization of the functaional group.
+
+Note: Notice also that a toolbar appears above the "Dataset viewer," "Adjacency List," and "Cds-CdOsOs" windows.  This toolbar
+may be used to edit the molecule in the "Cds-CdOsOs" window.  For instance, click on the icon with the four arrows (pointing
+up, right, down, and left).  Now click on one of the atoms in the "Cds-CdOsOs" window and drag it to another location within the
+window.  To restore (clean) the structure of the functional group, click on the icon containing the picture of a rake.
+
 .. _changingthermodata:
 
-Changing the Data for an Existing Group
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Editing the Data for an Existing Thermo Functional Group
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-This task is relatively simple, as it only involves commenting out the line you
-want to replace and putting new values in its place. Only the file
-``Group_Library.txt`` will need to be altered in this case. Perhaps the simplest
-way to show this is through an example. Commenting out a line can be
-accomplished by introducing a "``//``" at the start of the line. ---
+A leaf in the thermochemistry tree may be **edited** using the RMG Viewer & Editor (RMGVE).
 
-Let's assume that you have the following group values, which are for a carbon in
-a benzene ring attached to an H and to a single-bonded O::
+Returning to the "Dataset viewer" window, notice the "Tree/library" button has been enabled.  Click on this button to show
+the data for the highlighted thermo family.
 
- # Group   H    S    Cp300 Cp400 Cp500 Cp600 Cp800 Cp1000 Cp1500  dH    dS    dCp  Note 
- 7 Cb-H   3.3  11.53  3.24  4.44  5.46  6.3   7.54  8.41   9.73   0.11  0.12  0.1  Cb-H Benson 
- 8 Cb-Os -0.9 -10.2   3.9   5.3   6.2   6.6   6.9   6.9    7.07   0.16  0.1   0.1  Cb-O Benson 
+.. image:: RMGVE_pngs/visualizeThermoData.png
 
-Suppose you think that the group enthalpy for Cb-H is actually 3.85 kcal/mole
-instead of 3.3 kcal/mole, and you are quite sure, so the dH = 0.03 instead of
-0.11. The suggested way to change this would be to comment out (deletion is also
-an option, but not advised) line 7 and add a similar line with the new values.
-It is also suggested that you describe why you have alter the database in the
-"Note" section, potentially providing a URL to a more detailed description. The
-new scenario would look like this:: 
+The top half of the new "Group tree/library" window contains the "Group" thermo family tree.  The bottom half contains the
+"Group" thermo family library.  Suppose we want to change the thermo value for the "Cds-CdOsOs" functional group.  To do so,
+we can navigate the tree in the top half of the "Group tree/library" window by opening (double-clicking) the folders corresponding to the "Cds-CdOsOs"
+functional group:
 
- # Group   H    S    Cp300 Cp400 Cp500 Cp600 Cp800 Cp1000 Cp1500  dH    dS    dCp  Note 
- //7 Cb-H   3.3  11.53  3.24  4.44  5.46  6.3   7.54  8.41   9.73   0.11  0.12  0.1  Cb-H Benson 
- 7 Cb-H   3.85 11.53  3.24  4.44  5.46  6.3   7.54  8.41   9.73   0.03  0.12  0.1  My Value is so much better 
- 8 Cb-Os -0.9 -10.2   3.9   5.3   6.2   6.6   6.9   6.9    7.07   0.16  0.1   0.1  Cb-O Benson 
+ * L1: C
+ * L2: Cds
+ * L3: Cds-CdOsOs
+ * Cd-CdOsOs
+ 
+After navigating the tree, the RMGVE should look like the following snapshot.
 
+.. image:: RMGVE_pngs/traverseThermoTree.png
+
+Notice RMG does not have a data entry for this specific functional group.  Rather, RMG points this functional group to the
+"Cds-CdsCsCs" functional group.  To change this data entry, uncheck the "Read only" field, highlight the row, and push the "Edit" button.  After
+expanding the RMGVE and "Group tree/library" window, the screen should look as follows.
+
+.. image:: RMGVE_pngs/editThermoTree.png
+
+Enter thermochemical data for the functional group "Cds-CdsOsOs" in the new window.  The field "Notes" will be added to the
+thermochemical data for "Cds-CdsOsOs" functional group at the end of the line.  The field "New header comments" will be placed
+above the thermochemical data for "Cds-CdsOsOs" functional group.  Upon changing any of the thermochemical data fields, a line in the
+"New header comments" will automatically appear, containing your login name and the current date and time.  The box immediately above
+the "New header comments" field shows how the RMGVE will edit the current data in the ``Group_Dictionary.txt" file.  Once all data has
+been entered, close the window.
+
+Returning to the "Group tree/library" window, notice the highlighted row.  The thermochemical data entries have been updated and a star (*)
+has been placed next to the "131" value in the first column.  The star (*) represents that a change has been made.
+ 
+When you have completed making changes to the thermochemistry database, close the RMGVE.  Upon doing so, you will be asked which changes you would
+like to accept and save to the ``RMG_database`` folder.  Before pushing the "OK" button, ensure that all of the changes you want to be saved have a
+checkmark next to them.  You will receive a message stating whether the edits were saved successfully or not.  Pushing "OK" in this window will close the RMGVE.
+
+Note: Notice the RMGVE directs you to the location of the file that is about to be changed.
+
+.. image:: RMGVE_pngs/acceptThermoEdits.png
+
+Viewing the changed thermochemical data
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+To view the thermochemical data that was just edited, open the file from the previous screenshot: ``$RMG/database/RMG_database/thermo/Group_Library.txt``.
+Scrolling down to the entry "131," we see the old and new thermochemical data for the functional group "Cds-CdsOsOs".
+
+.. image: RMGVE_pngs/viewThermoEdits.png
+
+ 
 
 You may also refer one group value to another if you believe that they should be
 the same. This is done by putting the name of the group that has the same thermo
