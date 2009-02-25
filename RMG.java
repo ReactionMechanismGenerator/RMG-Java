@@ -175,13 +175,14 @@ public class RMG {
              System.out.println("\n");
              System.out.println("                            RMG"); 
              System.out.println("                Reaction Mechanism Generator");
-             System.out.println("                        version 3.0-alpha\n");
+             System.out.println("                        version 3.0\n");
              System.out.println(
             		"     Jing Song, Sumathy Raman, Joanna Yu, William H. Green,\n" +
              		"        Sarah Petway, Sandeep Sharma, David M. Matheu,\n" +
              		"  Paul E. Yelvington, Robert Ashcraft, C. Franklin Goldsmith,\n" +
              		"      John Wen, Andrew Wong, Hsi-Wu Wong, Kevin Van Geem,\n" +
-             		"          Gregory Beran, Joshua Allen, and Richard H. West\n");
+             		"          Gregory Beran, Joshua Allen, Richard H. West\n" +
+             		"                 Michael Harper, and Gregory Magoon");
              
              System.out.println("\n");
              System.out.println("----------------------------------------------------------------------");
