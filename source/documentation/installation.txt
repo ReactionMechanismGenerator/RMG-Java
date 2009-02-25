@@ -138,9 +138,9 @@ You are now ready to generate InChIs in RMG.
 Windows Installation
 --------------------
 
-#. Extract/unzip RMG.tar and move the contents of the RMG 2.00 (directory formed when you unzip RMG.zip) to the desired directory (e.g. c:\RMG)
+1. Extract/unzip RMG.tar and move the contents of the RMG 3.00 (directory formed when you unzip RMG.zip) to the desired directory (e.g. c:\RMG)
 
-#. Add an environment variable for RMG
+2. Add an environment variable for RMG
 
    * Go to Start-->Control Panel-->System (may need to switch to Classic Control Panel view). Click on the Advanced tab, then click on Environment Variables
 
@@ -150,14 +150,14 @@ Windows Installation
 
    * Click OK twice to confirm the change.
 
-#. Install g95 (Fortran compiler for Windows) by downloading and running g95-MinGW.exe from http://ftp.g95.org/#Win (http://ftp.g95.org/g95-MinGW.exe) to install g95. Note: After compiling of GATPFit and DASSL is complete (see next two steps), this program may be uninstalled.
+3. Install g95 (Fortran compiler for Windows) by downloading and running g95-MinGW.exe from http://ftp.g95.org/#Win (http://ftp.g95.org/g95-MinGW.exe) to install g95. Note: After compiling of GATPFit and DASSL is complete (see next two steps), this program may be uninstalled.
 
-#. Compile GATPFit using the Command Prompt (Start-->All Programs-->Accessories -->Command Prompt), change directory to GATPFit directory based on RMG installation directory (e.g. cd \rmg\software\GATPFit\GATPFit). Compile the Fortran files by typing ``g95 -o ../GATPFit *.f`` on the command prompt.
+4. Compile GATPFit using the Command Prompt (Start-->All Programs-->Accessories -->Command Prompt), change directory to GATPFit directory based on RMG installation directory (e.g. cd "%rmg%"\software\GATPFit\GATPFit). Compile the Fortran files by typing ``g95 -o ../GATPFit *.f`` on the command prompt.
 
-#. Download and compile DASSL by downloading DASSL from
+5. Download and compile DASSL by downloading DASSL from
    http://www.engineering.ucsb.edu/~cse/software.html and extract the
    three Fortran files :file:`ddassl.f`, :file:`daux.f` and :file:`dlinpk.f` to the dassl
-   directory (e.g. ``C:\RMG\software\ODESolver\dassl``). To compile the
+   directory (e.g. ``"%rmg%"\software\ODESolver\dassl``). To compile the
    Fortran files use the command prompt and change to dassl directory and
    then type ``g95 -o ../dassl *.f`` on the command prompt.
 
@@ -165,7 +165,7 @@ The next few steps are required only if you want RMG to be able to generate InCh
    
 #. Download the InChI version 1 (software version 1.01) source code and Application Program Interface (API):
 	http://www.iupac.org/inchi/download/index.html and unzip the file.  Navigate to the ``InChI-1-API\cInChI\vc6_project\Release`` folder.
-	Copy the executable file ``cInChI-1.exe`` and paste it in the ``%rmg%\software\InChI`` folder.
+	Copy the executable file ``cInChI-1.exe`` and paste it in the ``"%rmg%"\software\InChI`` folder.
 	
 You are now ready to generate InChIs in RMG.
 
