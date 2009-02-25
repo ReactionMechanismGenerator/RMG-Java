@@ -209,7 +209,7 @@ contains
 			! Bimolecular reaction terms
 			do m = 1, nMulti
 				do j = 1, nUni
-					if (Fim(nGrains,j,m) /= 0) then
+					if (Gnj(nGrains,m,j) /= 0) then
 						! F_jma * b_m
 						tempV3(1:nAct(j)) =  Fim(nRes(j)+1:nGrains, j, m)
 						! L_ij * F_jma * b_m
