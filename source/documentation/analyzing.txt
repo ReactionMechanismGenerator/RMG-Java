@@ -12,7 +12,7 @@ RMG Output Files
 RMG will generate several types of output files, each with a different purpose.
 For linux users, these files will be located in the same directory which
 contains the condition file; for Windows users, the output files are located in
-the directory ``RMG/software/RMG/``. Generally, there are five outputs from RMG:
+the ``%rmg%`` directory. Generally, there are four outputs from RMG:
 
 #. ``output.txt``.  This is a large file that shows the many steps RMG went
    through to build the model, including the addition of each new species,
@@ -20,66 +20,49 @@ the directory ``RMG/software/RMG/``. Generally, there are five outputs from RMG:
    generally the details as RMG builds the mechanism. It is useful for debugging if
    a problem occurs, but other output files are better if all you care about is the
    final model and its behavior. This file also lists the input file at the
-   beginning. ---
+   beginning.
 
-#. ``Final_Model.txt``.  As its name would imply, this file contains the details
-   of the final model created by RMG. It gives the total number of reactions and
-   both the species in the model (core) and in the model's edge (those species
-   whose flux was not high enough to be included in the model). It also gives all
-   of the reactions included in the model, but does not list the species directly.
-   If you want the species list, see the Chemkin file or the dictionary file
-   (described below). After the list of reactions, the concentration and mole
-   fraction profiles of each species are listed, based on the time step provided in
-   the input file. This data can easily be pasted into a spreadsheeting program for
-   analysis and plotting. If sensitivity information was requested, it would also
-   be displayed in this file. ---
+#. ``Final_Model.txt``.  As its name would imply, this file contains the details of the final model created by RMG.   
+   This file reports the concentration and mole fraction profiles of all "core" species, based on the time step information 
+   (the "TimeStep" or "Conversions" field) provided in the ``condition.txt`` file.  This data can easily be pasted into a 
+   spreadsheeting program for analysis and plotting.
+   
+   The next set of information contained in the file is a list of all reactions included in the model, along with the modified Arrhenius parameters
+   used for each reaction.  For information on where these Arrhenius parameters came from (i.e. which reaction family),
+   consult the ``chem.inp`` file.  This set of data may also be pasted into a spreadsheeting program easily.  A negative flux 
+   means the reverse reaction (as written) was dominant.
+   
+   The last set of information is the total running time.  If sensitivity information was requested, it would also appear in this file.
 
-#. ``chem.inp`` and ``therm.dat`` (located in ``./chemkin``).  These are the
-   Chemkin model and thermodynamic data input files of the model. The file
-   ``chem.inp`` lists the elements, species, reactions, and thermodynamic data
-   (without |N2|, Ar, or Ne) for the model. The full list of thermodynamic data
-   (with |N2|, Ar, or Ne) can be found in ``therm.dat``. ---
-
-.. |N2| replace:: N\ :sub:`2`\ 
+#. ``chem.inp`` (located in ``$RMG/chemkin``).  This file contains the CHEMKIN model and associated thermodynamic data. The file
+   lists the elements, species, thermodynamics data (in NASA-7 polynomial form), and reactions (without N2, Ar, or Ne) for the model. 
 
 #. ``RMG_Dictionary.txt``.  This file lists all the species by name that are
-   used in the model, as well as their adjacency list; if InChI generation is turned
-   on, the file will also contain the InChI representation for each molecule.  Consequently, it will allow
-   to user to see a graphical representation of all species in the model. Typically
+   used in the model, as well as their adjacency list; if the :ref:`InChI generation feature <InChIgeneration>` is turned
+   on, the file will also contain the InChI representation for each molecule.  This file allows
+   the user to see a graphical representation of all species in the model. Typically
    the user will copy this file to an appropriate directory so that it can be read
-   by Chemgreen (See Section :ref:`view chemgreen` for further details). ---
-
-#. Restart files (located in ``./Restart/``).  As mentioned in Section
-   :ref:`restart`, these five files are used if the job needs to be restarted.  The
-   user does not ever need to interact with these files directly, but they do list
-   more details than any of the other output files. The five files are:
-   ``coreSpecies.txt``, ``coreReactions.txt``, ``edgeSpecies.txt``,
-   ``allSpecies.txt`` and ``all Reactions.txt``. The file ``coreSpecies.txt`` lists
-   the identification name/number for all species in the core model,
-   ``edgeSpecies.txt`` lists the edge species identification name/number, and
-   ``allSpecies.txt`` lists both the identification name/number and the structural
-   data for all species in both the core and edge. The reaction files are similar
-   except they list reaction data. ---
+   by the RMGVE (See Section :ref:`view rmgve` for further details).
 
 
-.. _viewchemgreen:
+.. _viewrmgve:
 
 Viewing the Species in the RMG Viewer/Editor (RMGVE)
 ----------------------------------------------------
 
 When RMG has finished, it will create a file ``RMG_Dictionary.txt`` in the same
-directory as the ``condition.txt`` file. This file contains a list of all the
+directory as the ``condition.txt`` file; for Windows users, the ``RMG_Dictionary.txt`` file will be
+located in the ``%rmg%`` directory.  This file contains a list of all the
 core species (usually the edge species are too numerous to be of use); the core
-species can be viewed easily using ChemGreen. To view the core species, rename
+species can be viewed easily using the RMGVE. To view the core species, rename
 the first part of the file (this step isn't strictly necessary, but it is
 convenient and a good practice). The file must still end in
 "``_Dictionary.txt``" (e.g. ``newname_Dictionary.txt``) for the RMGVE to read
-it. Next, copy this file to the directory ``/$ChemGreen/.../thermo``. Once the
-file is in the thermo directory, double-click on the ``RMGVE 20080101.bat`` file to
+it. Next, copy this file to the directory ``/database/RMG_database/thermo``. Once the
+file is in the ``thermo`` directory, double-click on the ``RMGVE 20080101.bat`` file to
 launch the program. Please note that you must close and relaunch the program
-every time you add a new file to the thermo directory. Once ChemGreen has
-launched, doubleclick on the folder ``Thermo``. Your new file should appear in
-this directory (e.g. newname without the "``_Dictionary.txt``"). ---
-
-A new window should appear with a list of names. Highlight any name and click
-"view" to see its structure.
+every time you add a new file to the ``thermo`` directory. Once the RMGVE has
+launched, double-click on the folder ``Thermo``. Your new file should appear in
+this directory (e.g. newname without the "``_Dictionary.txt``").  Push the "Read family" button and
+a new window should appear with a list of names. Highlight any name and click
+"View" to see its structure.
