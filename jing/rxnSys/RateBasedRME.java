@@ -88,108 +88,111 @@ public class RateBasedRME implements ReactionModelEnlarger {
         CoreEdgeReactionModel cerm = (CoreEdgeReactionModel)rm;
         
         //10/30/07 gmagoon: iterate over reaction systems that are not valid 
-        LinkedList nextList = new LinkedList();
-        double startTime = System.currentTimeMillis();//note: moved before a couple of lines, but I expect it to have negligible effect on timing
-        for (Integer i = 0; i<p_reactionSystemList.size();i++) {
-            if(!(Boolean)p_validList.get(i)){
-                PresentStatus ps = ((ReactionSystem)p_reactionSystemList.get(i)).getPresentStatus();
-                String maxflux="";
-		        
-                Species next = getNextCandidateSpecies(cerm,ps,maxflux);
-		nextList.add(next);
-		double findSpeciesTime = (System.currentTimeMillis()-startTime)/1000/60;
-		
-		Global.diagnosticInfo.append(next.getChemkinName()+"\t" + maxflux+"\t"+ ((RateBasedVT)((ReactionSystem)p_reactionSystemList.get(i)).finishController.validityTester).Rmin+ "\t" + findSpeciesTime +"\t");
-                System.out.print("\nAdd a new reacted Species:");
-                System.out.println(next.getName());
-                Temperature temp = new Temperature(298, "K");
-                double H = next.calculateH(temp);
-                double S = next.calculateS(temp);
-                double G = next.calculateG(temp);
-                double Cp = next.calculateCp(temp);
-                System.out.println("Thermo\t" + String.valueOf(H) + '\t' + String.valueOf(S)+ '\t' + String.valueOf(G)+ '\t' + String.valueOf(Cp));		
-            }
-            else
-                nextList.add(null);//****hopefully, null will contribute to length of list; otherwise, modifications will be needed
-        }
-		
-        // generate new reaction set
+		LinkedList nextList = new LinkedList();
+		double startTime = System.currentTimeMillis();//note: moved before a couple of lines, but I expect it to have negligible effect on timing
+		for (Integer i = 0; i < p_reactionSystemList.size(); i++) {
+			if (!(Boolean) p_validList.get(i)) {
+				PresentStatus ps = ((ReactionSystem) p_reactionSystemList.get(i)).getPresentStatus();
+				String maxflux = "";
+
+				Species next = getNextCandidateSpecies(cerm, ps, maxflux);
+				nextList.add(next);
+				} else {
+				nextList.add(null);//****hopefully, null will contribute to length of list; otherwise, modifications will be needed
+			}
+		}
+
+		// generate new reaction set
 		/*startTime = System.currentTimeMillis();
 		LinkedHashSet newReactionSet = p_reactionSystem.lrg.react(cerm.getReactedSpeciesSet(),next);
 		newReactionSet.addAll(p_reactionSystem.getReactionGenerator().react(cerm.getReactedSpeciesSet(),next));
-    	
+
 		double enlargeTime = (System.currentTimeMillis()-startTime)/1000/60;*/
-		
-       startTime = System.currentTimeMillis();
-	
-       //10/30/07 gmagoon: add species from nextList
-       for (Integer i = 0; i<p_reactionSystemList.size();i++) {
-            if(!(Boolean)p_validList.get(i)){
-               if (cerm.containsAsReactedSpecies((Species)nextList.get(i))) 
-                    //throw new InvalidNextCandidateSpeciesException();
-                    System.out.println("Species is already present in reaction model");//10/30/07 gmagoon: preliminary message; should probably be refined in future
-               else {
-                    cerm.moveFromUnreactedToReactedSpecies((Species)nextList.get(i));
-        	    //cerm.moveFromUnreactedToReactedSpecies(next);
-                    cerm.moveFromUnreactedToReactedReaction();
-                    //10/30/07 gmagoon: note subsequent lines were previously outside of else block (and it probably didn't matter then), but now I think they belong in else block
-                    Global.moveUnreactedToReacted = (System.currentTimeMillis()-startTime)/1000/60; 
 
-                     // add species status to reaction system 
-                    Species species=(Species)nextList.get(i);
-                    SpeciesStatus speciesStatus = new SpeciesStatus( species, 1, 0.0 , 0.0); // (species, type (reacted=1), concentration, flux)
-                    PresentStatus ps = ((ReactionSystem)p_reactionSystemList.get(i)).getPresentStatus();
-                    ps.putSpeciesStatus(speciesStatus);
-                   
-                    // generate new reaction set
-                    startTime = System.currentTimeMillis();
-                    LinkedHashSet newReactionSet = ((ReactionSystem)p_reactionSystemList.get(i)).getReactionGenerator().react(cerm.getReactedSpeciesSet(),(Species)nextList.get(i));
-                    newReactionSet.addAll(((ReactionSystem)p_reactionSystemList.get(i)).lrg.react(cerm.getReactedSpeciesSet(),(Species)nextList.get(i)));
-                    //LinkedHashSet newReactionSet = p_reactionSystem.getReactionGenerator().react(cerm.getReactedSpeciesSet(),next);
-                    //newReactionSet.addAll(p_reactionSystem.lrg.react(cerm.getReactedSpeciesSet(),next));
+		startTime = System.currentTimeMillis();
 
-                    double enlargeTime = (System.currentTimeMillis()-startTime)/1000/60;
+		//10/30/07 gmagoon: add species from nextList
+		for (Integer i = 0; i < p_reactionSystemList.size(); i++) {
+			if (!(Boolean) p_validList.get(i)) {
+				if (cerm.containsAsReactedSpecies((Species) nextList.get(i))) //throw new InvalidNextCandidateSpeciesException();
+				{
+					System.out.println("Species is already present in reaction model");//10/30/07 gmagoon: preliminary message; should probably be refined in future
+				} else {
+					
+					double findSpeciesTime = (System.currentTimeMillis() - startTime) / 1000 / 60;
+
+					Species species = (Species) nextList.get(i);
+					
+					//Global.diagnosticInfo.append(next.getChemkinName() + "\t" + maxflux + "\t" + ((RateBasedVT) ((ReactionSystem) p_reactionSystemList.get(i)).finishController.validityTester).Rmin + "\t" + findSpeciesTime + "\t");
+					System.out.print("\nAdd a new reacted Species:");
+					System.out.println(species.getName());
+					Temperature temp = new Temperature(298, "K");
+					double H = species.calculateH(temp);
+					double S = species.calculateS(temp);
+					double G = species.calculateG(temp);
+					double Cp = species.calculateCp(temp);
+					System.out.println("Thermo\t" + String.valueOf(H) + '\t' + String.valueOf(S) + '\t' + String.valueOf(G) + '\t' + String.valueOf(Cp));
+			
+					
+					cerm.moveFromUnreactedToReactedSpecies(species);
+					cerm.moveFromUnreactedToReactedReaction();
+					//10/30/07 gmagoon: note subsequent lines were previously outside of else block (and it probably didn't matter then), but now I think they belong in else block
+					Global.moveUnreactedToReacted = (System.currentTimeMillis() - startTime) / 1000 / 60;
+
+					// add species status to reaction system
+					SpeciesStatus speciesStatus = new SpeciesStatus(species, 1, 0.0, 0.0); // (species, type (reacted=1), concentration, flux)
+					PresentStatus ps = ((ReactionSystem) p_reactionSystemList.get(i)).getPresentStatus();
+					ps.putSpeciesStatus(speciesStatus);
+
+					// generate new reaction set
+					startTime = System.currentTimeMillis();
+					LinkedHashSet newReactionSet = ((ReactionSystem) p_reactionSystemList.get(i)).getReactionGenerator().react(cerm.getReactedSpeciesSet(), (Species) nextList.get(i));
+					newReactionSet.addAll(((ReactionSystem) p_reactionSystemList.get(i)).lrg.react(cerm.getReactedSpeciesSet(), (Species) nextList.get(i)));
+					//LinkedHashSet newReactionSet = p_reactionSystem.getReactionGenerator().react(cerm.getReactedSpeciesSet(),next);
+					//newReactionSet.addAll(p_reactionSystem.lrg.react(cerm.getReactedSpeciesSet(),next));
+
+					double enlargeTime = (System.currentTimeMillis() - startTime) / 1000 / 60;
 
 
 
-                    startTime = System.currentTimeMillis();
-                   /* // we can't read in the restart files, so for now there's no point in writing them!
-                    StringBuilder restartFileContent= new StringBuilder();
-                    try{
-                            File allReactions = new File ("Restart/allReactions.txt");
-                            FileWriter fw = new FileWriter(allReactions, true);
-                            //Species species = (Species) iter.next();
-                            for(Iterator iter=newReactionSet.iterator();iter.hasNext();){
+					startTime = System.currentTimeMillis();
+					/* // we can't read in the restart files, so for now there's no point in writing them!
+					StringBuilder restartFileContent= new StringBuilder();
+					try{
+					File allReactions = new File ("Restart/allReactions.txt");
+					FileWriter fw = new FileWriter(allReactions, true);
+					//Species species = (Species) iter.next();
+					for(Iterator iter=newReactionSet.iterator();iter.hasNext();){
 
-                                    Reaction reaction = (Reaction) iter.next();
-                                    if (cerm.categorizeReaction(reaction)==-1)
-                                        restartFileContent.append(reaction.toRestartString(((ReactionSystem)p_reactionSystemList.get(i)).getPresentTemperature()) + "\n");//10/30/07 gmagoon: changed to avoid use of Global.temperature
-                                        //restartFileContent.append(reaction.toRestartString(Global.temperature) + "\n");
+					Reaction reaction = (Reaction) iter.next();
+					if (cerm.categorizeReaction(reaction)==-1)
+					restartFileContent.append(reaction.toRestartString(((ReactionSystem)p_reactionSystemList.get(i)).getPresentTemperature()) + "\n");//10/30/07 gmagoon: changed to avoid use of Global.temperature
+					//restartFileContent.append(reaction.toRestartString(Global.temperature) + "\n");
 
-                            }
+					}
 
-                            //restartFileContent += "\nEND";
-                            fw.write(restartFileContent.toString());
-                            fw.close();
-                    }
-                    catch (IOException e){
-                            System.out.println("Could not write the added Reactions to the allReactions file");
-                    System.exit(0);
-                    }
-                    */
-                    
-                    double restartTime = (System.currentTimeMillis()-startTime)/1000/60;
+					//restartFileContent += "\nEND";
+					fw.write(restartFileContent.toString());
+					fw.close();
+					}
+					catch (IOException e){
+					System.out.println("Could not write the added Reactions to the allReactions file");
+					System.exit(0);
+					}
+					 */
 
-                    Global.diagnosticInfo.append(Global.moveUnreactedToReacted + "\t" +enlargeTime+"\t" + restartTime +"\t");
+					double restartTime = (System.currentTimeMillis() - startTime) / 1000 / 60;
 
-                    // partition the reaction set into reacted reaction set and unreacted reaction set
-                    // update the corresponding core and edge model of CoreEdgeReactionModel
-                    cerm.addReactionSet(newReactionSet);
-                   
-                    
-               } 
-            }
-       }
+					Global.diagnosticInfo.append(Global.moveUnreactedToReacted + "\t" + enlargeTime + "\t" + restartTime + "\t");
+
+					// partition the reaction set into reacted reaction set and unreacted reaction set
+					// update the corresponding core and edge model of CoreEdgeReactionModel
+					cerm.addReactionSet(newReactionSet);
+
+
+				}
+			}
+		}
         
 
         //String return_string;
@@ -279,12 +282,16 @@ public class RateBasedRME implements ReactionModelEnlarger {
 	        	if (flux > 0) {
 	        		for (Iterator rIter=r.getReactants(); rIter.hasNext();) {
 						Species spe = (Species)rIter.next();
-	        		    
-	        		    double conc = (p_presentStatus.getSpeciesStatus(spe)).getConcentration();
-	        			if (conc<0)
-	        				throw new NegativeConcentrationException(spe.getName() + ": " + String.valueOf(conc));
-	        		    flux *= conc;
-						
+	        		    SpeciesStatus status = p_presentStatus.getSpeciesStatus(spe);
+						if (status == null)
+							flux = 0;
+						else {
+							double conc = status.getConcentration();
+							if (conc<0)
+								throw new NegativeConcentrationException(spe.getName() + ": " + String.valueOf(conc));
+							flux *= conc;
+						}
+
 	        		}
 					
 
