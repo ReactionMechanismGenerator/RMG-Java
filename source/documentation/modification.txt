@@ -68,7 +68,7 @@ corresponding to the level in the tree. A sample is given below::
 
 
 Note that the indentation is not necessary because it is the "``Lx:``" that the
-computer reads, but is very helpful in making these files human readable. ---
+computer reads, but is very helpful in making these files human readable.
 
 Library File (``Group_Library.txt``)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -108,7 +108,6 @@ These definitions serve to simplify the adjacency lists of groups and allow for
 more general descriptions of groups. The notation used in the database is shown
 below. New functional group elements cannot be added to RMG in a simple way, as
 they must be hard-coded into the RMG software with the appropriate properties.
----
 
 If you examine the file ``Group_Dictionary.txt``, you will see that these groups
 are used extensively, even more so that the actual atoms C, H, or O. You will
@@ -125,7 +124,7 @@ In this example, the second "element" is actually either Cd or CO. The reason
 that either Cd or CO will generate the same node is because both fall under the
 more general Cds definition, which is a carbon atom with one double and two
 single bonds. This can also be useful if there is a secondary effect and all
-that matters is that there is a $π-bond present, but the fact that it is C=O or
+that matters is that there is a π-bond present, but the fact that it is C=O or
 C=C does not matter. This is not used very much in the thermo database, but
 occurs much more in the kinetics databases where radical delocalization can play
 a major role in determining the rate constant of a reaction. A table of the
@@ -283,7 +282,7 @@ redundancy will not create any problems within RMG, but it is simply unnecessary
 .. warning::  The RMGVE can only edit leafs which already have thermochemical data stored for them.  In particular:
 
 	- The RMGVE does not allow a user to change the "Refer to" field.  This change must be performed by hand.
-	- The ``Group_Library.txt`` file will not recognize changes made in the RMGVE to leaves that "Refer to" another species.  For example, had we entered thermochemical data for entry #56, the RMGVE will show the updates to the H, S, and Cp values in the "Group tree/library" window but will also still show the "Refer to" functional group.  After closing the RMGVE and confirming the change to the database, if one opened the ``Group_Library.txt`` file and looked at entry #56, you will notice the leaf's thermodynamic values were not updated.
+	- The ``Group_Library.txt`` file will not recognize changes made in the RMGVE to leafs that "Refer to" another species.  For example, had we entered thermochemical data for entry #56, the RMGVE will show the updates to the H, S, and Cp values in the "Group tree/library" window but will also still show the "Refer to" functional group.  After closing the RMGVE and confirming the change to the database, if one opened the ``Group_Library.txt`` file and looked at entry #56, you will notice the leaf's thermodynamic values were not updated.
 
 .. image:: RMGVE_pngs/bug_referToLeaf.png
 
@@ -317,7 +316,7 @@ may make consistent ordering unnecessary. The procedure is described below.
 	Lx: Cb-(Os-(Os-H))
 
 #. Using the same name as in the tree, append the file ``Group_Dictionary.txt``
-   to define the structure of the group and its atom center (denoted by the \*)::
+   to define the structure of the group and its atom center (denoted by the *)::
    
 	Cb-(Os-(Os-H))
 	1* Cb 0 {2,S}
@@ -332,73 +331,211 @@ may make consistent ordering unnecessary. The procedure is described below.
 	2374 Cb-(Os-(Os-H)) 3.5 10.0 ... "I added this b/c ..."
    
 
-Editing the Primary Reaction Library
+Editing the Kinetics Database
+-------------------------------
+
+RMG's kinetics database may also be viewed and edited using the RMGVE.  From the RMGVE's home screen, double-click on the
+"Kinetics (Branch)" folder in the "Dataset viewer" window and then double-click on the "kinetics (Family)" folder.  Scroll
+down to the family entitled "H_Abstraction."  Highlight this family and push the "Read family" button.  All 4 buttons in the 
+"Dataset viewer" window should now be active.
+
+	#. "Read family": This button reads in the functional groups pertaining to the highlighted library and displays them in a new window; the name of the new window corresponds to the thermo/kinetic family name. (Option available for both thermo and kinetics).
+	
+	#. "Tree/library": This button opens a window that displays the thermochemical data for the highlighted library.  (Option available for both thermo and kinetics).
+	
+	#. "Reaction recipe": This button opens a window that displays the definition of the reaction family.  (Option available ONLY for kinetics).
+	
+	#. "View family":
+
+Viewing a Reaction Recipe in the RMGVE
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+	
+Push the "Reaction recipe" button.  Your screen should look like the following snapshot (after rearranging and resizing the windows)
+
+.. image:: RMGVE_pngs/viewReactionRecipe.png
+
+Looking at the "H_Abstraction reaction recipe" window: The first non-commented line shows the generic reaction: ``X_H + Y_rad_birad -> X_rad + Y_H``.
+The next uncommented line informs RMG how to handle the reverse reaction.  Some common occurences you will find include:
+
+	- "thermo_consistence": RMG will use the equilibrium constant to compute the reverse reaction rate
+	- "none": RMG assumes the reaction is irreversible
+	- "(f_): <rxnFamilyName>": RMG may use the forward reaction rates stored in the <rxnFamilyName> folder
+
+The next set of uncommented lines describes the changes in the reacting molecules, "X_H" and "Y_rad_birad", connectivity graphs to form the products, 
+"X_rad" and "Y_H".  For the "H_Abstraction" reaction family, a single "S" bond is broken between atoms "1" and "2" and a single "S" bond is formed between
+atoms "2" and "3".  Furthermore, atom "1" gains a radical while atom "3" loses a radical.
+
+For a better understanding of what the atom numbering means, click on one of the species in the "H_Abstraction" window.  If you click on the species "C/H/Cs3",
+your screen should look like the following snapshot
+
+.. image:: RMGVE_pngs/viewReactionRecipeSpecies.png
+
+Looking at "C/H/Cs3" and "Adjacency List" windows reveals the identity of atoms "1" and "2".  Looking at the "Adjacency List" window, notice the atoms that have
+the ``#*`` notation between the counting index and the elemental symbol.  The number before the ``*`` corresponds to the number in the reaction recipe.  The atoms
+of interest are also shown in blue in the "C/H/Cs3" window.
+
+Editing a Reaction Family using the RMGVE
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Returning to the "Dataset viewer" window, click the "Tree/library" button.  The bottom-half of this window contains the following kinetic information:
+
+	#. Groups: The columns entitled "Group 1", "Group 2", etc. represent the structure of the reactant(s).
+	
+	#. Temp: This column contains the Temperature range (in units of Kelvin) over which the kinetic data is valid.
+	
+	#. A, n, a, E0: These columns contain the modified Arrhenius parameters (A, n, E0) and the Evans-Polanyi coefficient (a).  "A" has units of "mol,cm3,s" and "E" has units of "kcal/mol".
+	
+	#. dA, dn, da, dE0: These columns contain the error for the Arrhenius parameters and Evans-Polanyi coefficient.  If the number is reported with a star (*) in front of it, this represents a multiplicative error; else, the error is additive.
+	
+	#. Rank: This column contains the confidence the RMG developers have in the kinetic data on a scale of 1 to 5, with 1 being "very confident" and 5 being "rough estimate".
+	
+	#. Notes: This column contains notes on where the kinetic data came from.  Note: The reaction library is not as well-documented as the thermo library.::
+	
+		The Evans-Polanyi principle states that for a series of closely-related reactions,
+		a linear relationship between the activation energy (Ea) and the enthalpy of 
+		reaction (delHr) is sometimes observed and can be expressed as:
+		
+		Ea = C1 + a*delHr
+		
+		where C1 and a are empirically-derived constants.  For RMG, we assume C1 = 0.
+
+Suppose we want to add a reaction rate to RMG for the following reaction::
+
+	H3C-CH2-CH3 + *CH3 = H3C-*CH-CH3 + CH4
+	
+The first step would be to identify which of RMG's reaction templates the reaction of interest corresponds to.  For our case, the reaction template we want is "H_Abstraction".
+The next step is to find the pair of nodes in the tree that correspond to the reaction of interest.  Looking at the tree, we need to identify a "X_H" and "Y_rad_birad".  For the
+example, "X" is the central carbon of propane and "Y" is the methyl radical.  Traversing down the "X_H" tree leads us to the following node::
+
+	L1: X_H
+	L2: Cs_H
+	L3: C_sec
+	C/H2/NonDeC
+	
+If you are ever uncertain of the structure of one of the nodes, highlight it and push the "View" button to open a window with a 2-d graphical depiction of the species.  Traversing
+the "Y_rad_birad" tree leads us to::
+
+	L1: Y_rad_birad
+	L2: Y_rad
+	L3: Cs_rad
+	C_methyl
+	
+Your screen should look something like the following
+
+.. image:: RMGVE_pngs/visualizeKineticData.png
+
+Notice that RMG contains 4 different sets of kinetic data for this reaction.  There are two explanation for this:
+
+	#. The reaction rates all pertain to the same reaction: The different values could pertain to experimental vs. theoretical values or 
+	differing basis sets in the theoretical calculations (e.g. using an ab initio quantum chemistry sofware program)
+	
+	#. The reaction rates pertain to different reactions: Notice that the "X_H" leaf is only defined as "C/H2/NonDeC".  Thus, one of the reaction rates
+	could correspond to the methyl radical abstracting a Hydrogen atom from:
+		- propane to form the iso-propyl radical
+		- butane to form the sec-butyl radical
+		- ...
+
+For RMG's reaction library, the order in which the reactions appear in the ``rateLibrary.txt`` file is significant.  RMG will use the kinetic data
+for the first instance of the reaction of interest that it finds.  If you click on one of the 4 reaction rates, you'll notice that the RMGVE gives
+you the option of "edit"ing or "delete"ing the entry (as it did for the Thermo library) but it also gives you the option to "move up" or "move down"
+the reaction rate.
+
+We can also add a new entry, by pushing the "add" button.  For example, let's suppose we have the following modified Arrhenius parameters for the
+reaction mentioned above: A = 1.27E14 cm3/mol/s, n = 1.3, E = 10.9 kcal/mol over the temperature range 300-1500K.  Push the "add" button, then push
+the "edit" button, and then fill in the popup window with the kinetic data.  After closing the popup window, your screen should look like this
+
+.. image:: RMGVE_pngs/editKineticTree.png
+
+Close the RMGVE.  A popup window will ask if you want to save the changes you have made.  If you leave the box checked and then open the
+``$RMG/database/RMG_database/kinetics/kinetics/H_Abstraction/rateLibrary.txt`` file, you should see that the file has been updated.
+
+.. image:: RMGVE_pngs/viewReactionEdits.png
+
+Creating a Primary Reaction Library
 ------------------------------------
 
 A primary reaction library (PRLib) consists of four files: ``reactions.txt``,
 ``species.txt``, ``3rdBodyReactions.txt``, and ``troeReactions.txt``. It is not
 necessary to define reactions for each of the files if the user does not wish
 to, but all four files must exist, and they must include the Unit declaration
-and Reaction headings. ---
+and Reaction headings.
 
 When you use a PRLib, all species and reactions in the library are immediately
 added to the mechanism, though the species come in with zero initial
 concentration unless otherwise specified in the input condition file. The user
 will see these reactions listed in the file ``Final_Model.txt``. PRLibs are
-particularly useful for (i) small molecule reactions which tend to deviate from
-the standard library values more significantly and (ii) to incorporate a set of
-known experimental values for key reactions. ---
+particularly useful for
+
+	(i) small molecule reactions which tend to deviate from the standard library values more significantly and 
+	(ii) to incorporate a set of known experimental values for key reactions
 
 #. The first file, ``reactions.txt``, defines the standard reactions. The file
    has the structure shown in the following sample. Comments are denoted with
-   "``//``" and are ignored by the RMG parser. ---
+   "``//``" and are ignored by the RMG parser.::
 
-   ``// Define the units``  ---  ``// Units allowed for A are: "mol/liter/s" or
-   "mol/cm3/s"``  ---  ``// Units allowed for E are: "kcal/mol", "cal/mol",
-   "kJ/mol", or "J/mol"``  ---   ---  ``Unit:``  ---  ``A: mol/cm3/s`` ---  ``E:
-   kcal/mol`` ---   ---  ``Reactions:`` ---  ``// The format is:`` ---  ``// "R1 +
-   R2 = P1 + P2 A n Ea dA dn dEa "`` ---  ``// where R1, R2, P1, P2 are species; A,
-   n, and Ea are the Arrhenius`` ---  ``// parameters, and dA, dn, dEa are the
-   errors in those parameters (normally``  ---  ``// additive, but can also be
-   multiplicative if a * comes before the number)`` ---  ``O2 + CO = CO2 + O
-   1.26E13 0.00 196.90 *1.7 0 0`` ---
+	// Define the units
+	// Units allowed for A are: "mol/liter/s" or "mol/cm3/s"
+	// Units allowed for E are: "kcal/mol", "cal/mol", "kJ/mol", or "J/mol"
+	
+	Unit:
+	A: mol/cm3/s
+	E: kcal/mol
+	
+	Reactions:
+	// The format is:
+	// R1 + R2 = P1 + P2 A n Ea dA dn dEa
+	//	where R1, R2, P1, P2 are species; A, n, and Ea are the Arrhenius
+	//	parameters, and dA, dn, dEa are the errors in those parameter (normally
+	//	additive, but can also be multiplicative if a * comes before the number)
+	O2 + CO = CO2 + O 1.26E13 0.00 196.90 *1.7 0 0
 
 #. The species list is just a series of molecular names and connectivity lists,
    analogous to the formats used in the input file ``condition.txt``. All species
    present in ``reactions.txt`` must be given a structure in ``species.txt``. The
-   structure should have the same format as the adjacency list shown in Section
-   3.1.6. Please note that the names that are used in the reaction library will be
+   structure should have the same format as the adjacency list shown in :ref:`Creating a condition file<conditionFile>`. 
+   Please note that the names that are used in the reaction library will be
    those used throughout the mechanism. In this manner, the user can adopt a
-   preferred nomenclature for individual species. ---
+   preferred nomenclature for individual species.
 
 #. The next file is ``3rdBodyReaction.txt``, which lists reactions involving a
    third body (bath gas). A sample file, with a 3rd-body reaction, is listed below.
-   The first line defines the reaction using the same format as in ``reactions.
-   txt``. The next line lists collision efficiencies for various bath-gas species
+   The first line defines the reaction using the same format as in ``reactions.txt``.
+   The next line lists collision efficiencies for various bath-gas species
    that scale the concentrations of particular species when calculating the total
-   bath gas concentration. In the example below, CH$_4$ is particularly effective
-   as a 3rd body, and its effective concentration is tripled. ---
+   bath gas concentration. In the example below, CH4 is particularly effective
+   as a 3rd body, and its effective concentration is tripled.::
 
-   ``// Define the units``  ---  ``// Units allowed for A are: "mol/liter/s" or
-   "mol/cm3/s"``  ---  ``// Units allowed for E are: "kcal/mol", "cal/mol",
-   "kJ/mol", or "J/mol"``  ---   ---  ``Unit:``  ---  ``A: mol/cm3/s``  ---  ``E:
-   kJ/mol``  ---   ---  ``Reactions:``  ---  ``CO + O + M = CO2 + M 1.54E15 0.00
-   12.56 *1.2 0 0``  ---  ``N2/0.4/ O2/0.4/ CO/0.75/ CO2/1.5/ H2O/6.5/ CH4/3.0/
-   C2H6/3.0/ AR/0.35/``  ---  ``// the first line defines the reaction and
-   Arrhenius parameters,``  ---  ``// while the second gives the scaling factors
-   for different bath gas species``  ---  ``// which contribute to [M].``  ---
+	// Define the units
+	// Units allowed for A are: "mol/liter/s" or "mol/cm3/s"
+	// Units allowed for E are: "kcal/mol", "cal/mol", "kJ/mol", or "J/mol"
+	
+	Unit:
+	A: mol/cm3/s
+	E: kJ/mol
+	
+	Reactions:
+	CO + O + M = CO2 + M 1.54E15 0.00 12.56 *1.2 0 0
+	N2/0.4/ O2/0.4/ CO/0.75/ CO2/1.5/ H2O/6.5/ CH4/3.0/ C2H6/3.0/ AR/0.35/
+	//	the first line defines the reaction and Arrhenius parameters,
+	//	while the second gives the scaling factors for different bath gas species
+	//	which contribute to [M].
 
 #. The final file, ``troeReactions.txt``, is present for specifying pressure-
-   dependent reactions according to the Troe expression. The format of each
-   reactions is the same as is used by ChemKin. For example:
+   dependent reactions according to the Troe expression.  The format of each
+   reactions is the same as is used by CHEMKIN. For example::
 
-   ``Unit:``  ---  ``A: mol/cm3/s``  ---  ``E: kJ/mol``  ---   ---  ``Reactions:``
-   ---  ``C2H2 + H (+M) = C2H3 (+M) 8.43E12 0.00 10.81 *1.2 0 0``  ---  ``N2/0.4/
-   O2/0.4/ CO/0.75/ CO2/1.5/ H2O/6.5/ CH4/3.0/ C2H6/3.0/ AR/0.35/``  ---  ``LOW /
-   3.43E18 0.0 6.15 /``  ---  ``TROE / 1 1 1 1231 /``  ---   ---  ``// the first
-   two lines are very similar to the 3rdBodyReactions.txt format``  ---  ``// the
-   next like specifies either the low pressure limit Arrhenius``  ---  ``//
-   parameters, and the final line specifies the 3 or 4 Troe parameters``  ---  ``//
-   in the order: a, T***, T*, T** (the last parameter is optional).``  ---
+	Unit:
+	A: mol/cm3/s
+	E: kJ/mol
+	
+	Reactions:
+	C2H2 + H (+M) = C2H3 (+M) 8.43E12 0.00 10.81 *1.2 0 0
+	N2/0.4/ O2/0.4/ CO/0.75/ CO2/1.5/ H2O/6.5/ CH4/3.0/ C2H6/3.0/ AR/0.35/
+	LOW / 3.43E18 0.0 6.15 /
+	TROE / 1 1 1 1231 /
+	
+	//	the first two lines are very similar to the ``3rdBodyReaction.txt format``
+	//	the next line specifies the low pressure limit Arrhenius parameters,
+	//	and the final line specifies the 3 or 4 Troe parameters
+	//	in the order: a, T***, T*, T** (the last parameter is optional).
 
-.. % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
