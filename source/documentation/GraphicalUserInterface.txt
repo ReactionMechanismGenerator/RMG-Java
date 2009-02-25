@@ -11,7 +11,14 @@ Graphical User Interface.
 Launching the Graphical User Interface
 --------------------------------------
 
-[MRH] Add text here!
+For Linux users, run the following command to launch the GUI::
+
+    $ java -Xmx500m -classpath $RMG GUI > output &
+
+For Windows users, run the following set of commands to launch the GUI::
+
+	cd "%rmg%"
+	java GUI	 
 
 .. _tabInitialCondition:
 
@@ -20,8 +27,8 @@ The "Initial Conditions" tab
 
 .. image:: RMG_GUI_gifs/tab_initialConditions.png
 
-This tab of the GUI allows the user to enter the Reactants, Inert Gases, and
-Initial Conditions for the simulation.
+This tab of the GUI allows the user to enter the :ref:`Reactants <reactants>`, :ref:`Inert Gases <inertgas>`, and
+:ref:`Initial Conditions <initialconditions>` for the simulation.
 
 Reactants and Inert Gases
 ^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -42,8 +49,7 @@ If the species is selected as either "Unreactive" or "Reactive," the user must
 supply structural information about the molecule.  This information may be provided
 in one of three ways: adjacency list, InChI, or .mol file.
 
-An adjacency list is described in more detail here (add link!).  An example for
-methane is::
+An example of an adjacency list (for methane) is::
 
 	1 C 0 {2,S} {3,S} {4,S} {5,S}
 	2 H 0 {1,S}
@@ -61,10 +67,8 @@ list upon pushing the "Add" button.  The InChI for methane is::
 
 	InChI=1/CH4/h1H4
 
-If neither an adjacency list or InChI have been provided (upon pushing the "Add"
-button), the GUI will ask the user for the location of the .mol file associated
-with this species.  If the InChI executable is in the proper folder, the GUI will
-convert the .mol file to an adjacency list.
+Upon pushing the "Add" button, if neither an adjacency list or InChI have been provided, the GUI will ask the user for the location of the .mol file associated
+with this species.  If the InChI executable is in the proper folder, the GUI will convert the .mol file to an adjacency list.
 
 The user may add/remove species to the model by clicking the appropriate buttons.
 
@@ -90,21 +94,22 @@ The "Thermochemical Libraries" tab
 
 .. image:: RMG_GUI_gifs/tab_thermochemLibraries.png
 
-This tab of the GUI allows the user to enter the location of the thermochemical
-libraries RMG will use in building the model.
+This tab of the GUI allows the user to enter the location of the thermochemical libraries RMG will use in building the model.
 
-The default location of the "Main Database" is the ``RMG/database/RMG_database`` folder.  We recommend to use the default settings.
+The default location of the :ref:`Main Database <database>` is the ``RMG/database/RMG_database`` folder.  We recommend to use the default settings.
 
-The default location of the "Primary Thermo Library" is the ``RMG/database/RMG_database/thermo/PrimaryThermoLibrary`` folder.  We recommend to use the default settings.
+The default location of the :ref:`Primary Thermo Library <primarythermolibrary>` is the ``RMG/database/RMG_database/thermo/PrimaryThermoLibrary`` folder.  We recommend to use the default settings.
 
-By default, the "Primary Reaction Library" is turned off.  If the user turns on
+By default, the :ref:`Primary Reaction Library <primaryreactionlibrary>` is turned off.  If the user turns on
 the "Primary Reaction Library," a "Name" and "Location" must be specified.
 
-Note: The order of the "Primary Reaction Libraries" in the table is important.  The
-order established in the table will be conserved when writing the ``condition.txt``
-file.  For any reactions that appear in multiple "Primary Reaction Libraries", RMG
-will use the information contained in the first "Primary Reaction Library" if the reaction
-is found and ignore all others.
+.. note::
+
+	The order of the "Primary Reaction Libraries" in the table is important.  The
+	order established in the table will be conserved when writing the ``condition.txt``
+	file.  For any reactions that appear in multiple "Primary Reaction Libraries", RMG
+	will use the information contained in the first "Primary Reaction Library" if the reaction
+	is found and ignore all others.
 
 .. _tabTermination:
 
@@ -113,7 +118,7 @@ The "Termination" tab
 
 .. image:: RMG_GUI_gifs/tab_termination.png
 
-This tab of the GUI allows the user to specify the termination criteria for the
+This tab of the GUI allows the user to specify the :ref:`termination criteria <finishcontroller>` for the
 model.  A user may specify either the desired "ReactionTime" or "Conversion".
 
 If "Conversion" is selected, the user must specify a species and a fraction
@@ -134,9 +139,9 @@ The "Dynamic Simulator" tab
 .. image:: RMG_GUI_gifs/tab_dynamicSimulator.png
 
 This tab of the GUI allows the user to specify options for:
-  * the ODE solver
-  * building a pressure dependent mechanism
-  * constructing InChIs
+  * :ref:`the ODE solver <dynamicsimulator>`
+  * :ref:`building a pressure dependent mechanism <pressuredependence>`
+  * :ref:`constructing InChIs <InChIgeneration>`
 
 The ODE Solver
 ^^^^^^^^^^^^^^
@@ -151,27 +156,21 @@ The "Intermediate Conversions" field will be enabled (and the "Intermediate Time
 Steps" field will be disabled) if the "Termination Goal" was chosen as
 "Conversion" on the :ref:`Termination <tabTermination>` tab.
 
-Note: If the user specifies "Intermediate Time Steps," the values must have units of
-Seconds.
+.. note::
+
+	If the user specifies "Intermediate Time Steps," the values must have units of Seconds.
 
 The pressure dependence model
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-The user must specify a pressure dependence model.  The options are:
-  * off
-  * Modified Strong Collision
-  * Reservoir State
+The user must specify a :ref:`pressure dependence model <pressuredependence>`.  The options are:
+ 	* off
+ 	* Modified Strong Collision
+ 	* Reservoir State
 
-More information on the different pressure dependence models is located
-here: (Add link).
-
-If the user specifies a pressure dependent model, the "Spectroscopic Data
-Estimator" field will be enabled.  The options are:
-  * Three Frequency Model
-  * Frequency Groups
-	
-More information on the different spectroscopic data estimation techniques is
-located here: (Add link).
+If the user specifies a pressure dependent model, the "Spectroscopic Data Estimator" field will be enabled.  The options are:
+ 	* Frequency Groups
+ 	* Three Frequency Model (only available for users with **therfit.exe**)
 
 Optional fields
 ^^^^^^^^^^^^^^^
@@ -184,12 +183,10 @@ The user has two options for the "Equation of State":
   * Ideal Gas
   * Liquid
 	
-The difference between the two options is that RMG will not re-normalize the
-concentrations of the reactants if they do not satisfy PV=nRT.
+The difference between the two options is that RMG will not re-normalize the concentrations of the reactants if they do not satisfy PV=nRT.
 
-The user may also choose to turn off/on the generation of InChIs.  If the user
-chooses to turn InChI generation on, the InChI executable (v 1.01) must be 
-located in the ``RMG/software/InChI`` folder.
+The user may also choose to turn off/on the generation of :ref:`InChIs <InChIgeneration>`.  If the user
+chooses to turn InChI generation on, the InChI executable (v 1.01) must be located in the ``RMG/software/InChI`` folder.
 
 .. _tabSensitivityAnalysis:
 
@@ -202,13 +199,10 @@ This tab of the GUI allows the user to specify options for error bars and
 sensitivity coefficients.  The features of this tab will only be active if
 "DASPK" is selected as the "Dynamic Simulator"  on the :ref:`Dynamic Simulator <tabDynamicSimulator>` tab.
 
-The user may turn the generation of error bars "on" or "off."  Note: Error bars
-will be generated for all species in the model.
+The user may turn the generation of error bars "on" or "off."  If turned on, error bars will be generated for all species in the model.
 
 The user may also turn the generation of sensitivity coefficients "on" or "off."
-The sensitivity coefficients will only be generated for the species listed in the
-"Molecule" table.  The order in which the species appear in the table is not
-important.
+The sensitivity coefficients will only be generated for the species listed in the "Molecule" table.  The order in which the species appear in the table is not important.
 
 .. _saveFile:
 
@@ -230,13 +224,14 @@ Opening a file
 --------------
 
 To open and import the information from a ``condition.txt`` file, the user can select
-"File" --> "Open" from the navigation toolbar.  Note: The comments in the header of
-the file will not be imported.
+"File" --> "Open" from the navigation toolbar.
+
+.. note::
+	The comments in the header of the file will not be imported.
 
 .. _runFile:
 
 Running the file
 ----------------
 
-To run a file without viewing it, the user can select "Run" --> "Run RMG" from the
-navigation toolbar.
+To run a file without viewing it, the user can select "Run" --> "Run RMG" from the navigation toolbar.

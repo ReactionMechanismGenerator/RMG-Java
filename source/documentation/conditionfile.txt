@@ -143,6 +143,7 @@ To disable the InChI generation, the item should read::
 
 	InChIGeneration: off
 	
+.. _reactants:
 
 Reactants
 ---------
@@ -205,6 +206,8 @@ the resonance structures, and RMG will automatically detect the others.
  |                  +----------+---------------------+
  |                  | B        | Benzene bond        |
  +------------------+----------+---------------------+
+
+.. _inertgas:
 
 Inert Gases
 -----------
@@ -284,6 +287,9 @@ For more information on the two methods, consult the following resources:
 
 .. [Green2007] N.J.B. Green and Z.A. Bhatti. "Steady-State Master Equation Methods." *Phys. Chem. Chem. Phys.* **9**, p. 4275-4290 (2007).
 
+
+.. _finishcontroller:
+
 Finish Controller
 -----------------
 
@@ -325,6 +331,8 @@ For a more detailed description on rate-based model enlargement, please consult
   J. Broadbelt, in the *Journal of Physical Chemistry A*, Vol. 101, pages 3731-40,
   1997 (doi:`10.1021/jp9637690 <http://dx.doi.org/10.1021/jp9637690>`_).
 
+
+.. _dynamicsimulator:
 
 Dynamic Simulator
 -----------------
@@ -418,6 +426,7 @@ generated for carbon monoxide, carbon dioxide, methane, and water::
 Please note that the keyword ``END`` must be placed at the end of the Error
 bars section.
 
+.. _primaryreactionlibrary:
 
 Primary Reaction Library
 ------------------------
