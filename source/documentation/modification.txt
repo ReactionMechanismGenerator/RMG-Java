@@ -316,7 +316,7 @@ may make consistent ordering unnecessary. The procedure is described below.
 	Lx: Cb-(Os-(Os-H))
 
 #. Using the same name as in the tree, append the file ``Group_Dictionary.txt``
-   to define the structure of the group and its atom center (denoted by the *)::
+   to define the structure of the group and its atom center (denoted by the asterisk)::
    
 	Cb-(Os-(Os-H))
 	1* Cb 0 {2,S}
@@ -359,7 +359,7 @@ The next uncommented line informs RMG how to handle the reverse reaction.  Some 
 
 	- "thermo_consistence": RMG will use the equilibrium constant to compute the reverse reaction rate
 	- "none": RMG assumes the reaction is irreversible
-	- "(f_): <rxnFamilyName>": RMG may use the forward reaction rates stored in the <rxnFamilyName> folder
+	- "(f\_): <rxnFamilyName>": RMG may use the forward reaction rates stored in the <rxnFamilyName> folder
 
 The next set of uncommented lines describes the changes in the reacting molecules, "X_H" and "Y_rad_birad", connectivity graphs to form the products, 
 "X_rad" and "Y_H".  For the "H_Abstraction" reaction family, a single "S" bond is broken between atoms "1" and "2" and a single "S" bond is formed between
@@ -431,8 +431,11 @@ Notice that RMG contains 4 different sets of kinetic data for this reaction.  Th
 	
 	#. The reaction rates pertain to different reactions: Notice that the "X_H" leaf is only defined as "C/H2/NonDeC".  Thus, one of the reaction rates
 	could correspond to the methyl radical abstracting a Hydrogen atom from:
+	
 		- propane to form the iso-propyl radical
+		
 		- butane to form the sec-butyl radical
+		
 		- ...
 
 For RMG's reaction library, the order in which the reactions appear in the ``rateLibrary.txt`` file is significant.  RMG will use the kinetic data
