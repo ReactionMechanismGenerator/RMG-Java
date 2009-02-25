@@ -14,8 +14,6 @@ remain in ``RMG/condition`` (please consult Section :ref:`runninginwindows`).
 The ``condition.txt`` file should specify the following conditions, in
 order:
 
-#. Whether to :ref:`restart <restart>` a prior run
-
 #. The main :ref:`database`
 
 #. The :ref:`primary thermodynamic library <primarythermolibrary>`
@@ -24,15 +22,13 @@ order:
 
 #. Whether to generate an :ref:`IUPAC International Chemical Identifier (InChI) <InChIgeneration>` for each species
 
-#. The method to use to estimate :ref:`spectroscopic data <spectroscopicdata>` for each species
-
 #. The name, concentration, and chemical structure of the reactants
 
 #. The specification and concentration of the inert gas(es)
 
-#. The reaction families selected for modeling the system
+#. The method to use to estimate :ref:`spectroscopic data <spectroscopicdata>` for each species
 
-#. The model enlarger
+#. The :ref:`Pressure dependence <pressuredependence>` model
 
 #. The finish controller
 
@@ -48,37 +44,6 @@ file, so long as it remains a ``.txt`` file. For Windows operation, the name of
 the file must remain ``condition.txt``.
 
 
-.. _restart:
-
-Restart
--------
-
-.. warning::
-
-   The restart feature does not currently work
-
-The first item in the file ``condition.txt`` is the restart command. Whenever
-RMG runs the ``condition.txt`` file, it creates a new directory (in the same
-directory as the initialization file): ``./restart/``. There are five text files
-within the new restart directory: ``allSpecies.txt``, ``coreSpecies.txt``,
-``edgeSpecies.txt``, ``coreReactions.txt``, and ``edgeReactions.txt``. See
-Section :ref:`rmg output` for a description of these files. ---
-
-There are two options for the restart command: ``true`` and ``false``::
-
-   Restart: true
-
-When the restart is set to true, RMG will read the five files in the
-:file:`./restart/` directory and resume the simulation. The restart command can be
-very useful. If RMG ever crashes, it is possible to rerun the simulation.
-Similarly, with the restart command you can run a simulation under a given set
-of conditions and then rerun the same simulation with different conditions (e.g.
-a new temperature, reactant concentration, etc.). Alternatively, you can use the
-restart to change which species are examined in the sensitivity analysis. If the
-simulation is new, then the restart command must be set to::
-
-   Restart: false
-
 .. _database:
 
 Database
@@ -86,13 +51,13 @@ Database
 
 In the main RMG directory is a directory of databases: :file:`$RMG/databases/`. By
 default, there is one directory within the directory of databases:
-:file:`$RMG/databases/database`. It is possible, however, to create multiple
+:file:`$RMG/databases/RMG_database`. It is possible, however, to create multiple
 databases. For example, you can copy the entire contents of the default database
-into a new database, :file:`$RMG/databases/databaseII`, and change some of the
+into a new database, :file:`$RMG/databases/my_database`, and change some of the
 values. Unless you have created your own databases, the Database setting should
 be left at the default value::
 
-   Database: database
+   Database: RMG_database
 
 
 .. _primarythermolibrary:
@@ -111,7 +76,7 @@ Please see Section :ref:`editing thermo database` for details on editing the
 primary thermo library. In general, it is best to leave the PrimaryThermoLibrary
 set to its default value::
 
-   PrimaryThermoLibrary: primaryThermoLibary
+   PrimaryThermoLibrary: primaryThermoLibrary
 
 
 .. _initialconditions:
@@ -119,7 +84,7 @@ set to its default value::
 Initial Conditions
 ------------------
 
-The fourth item in the initialization file is the initial temperature and
+The next item in the initialization file is the initial temperature and
 pressure. Currently, RMG can only model constant temperature and volume systems.
 Future versions will allow for variable temperature and pressure. Please note
 that the temperature and pressure must be accompanied by a unit (in
@@ -142,7 +107,7 @@ For cases in which multiple temperatures and pressures are listed, the model gen
 InChI Generation
 ----------------
 
-The fifth item in the initialization file is the InChI generation command.
+The next item in the initialization file is the InChI generation command.
 An InChI, or IUPAC **In**\ ternational **Ch**\ emical **I**\ dentifier, is an unique
 species identifier, with the exception of differing electronic or spin states,
 developed by IUPAC and NIST.  An example of an InChI string (which represents the species
@@ -186,7 +151,7 @@ The name, concentration, and structure of each reactant must be specified. For
 each reactant, the first line should include the reactant number (e.g. (1)), its
 name (e.g. C2O2), and it's concentration with units (e.g. 4.09e-3 (mol/cm3)).
 The next line defines the reactant structure, described by an adjacency list.
-ChemGreen is a useful tool for generating adjacency lists. Please note that you
+The :ref:`RMG Viewer and Editor <viewingThermoFGs>` is a useful tool for generating adjacency lists. Please note that you
 may choose the simplified adjacency list in which the hydrogen atoms are omitted
 (shown below)::
 
@@ -273,15 +238,16 @@ based on functional groups in the molecule when possible, then fits remaining
 degrees of freedom to heat capacity data. This can also be set to off if
 spectroscopic data is not needed (i.e. when pressure dependence is off).
 
-When pressure dependent calculation is not desired, this item should read::
+When pressure dependent calculations are not desired, this item should read::
 
    SpectroscopicDataEstimator: off
 
 
-When pressure dependent calculation is desired, this item should read::
+When pressure dependent calculations are desired, this item should read::
 
    SpectroscopicDataEstimator: FrequencyGroups
 
+.. _pressuredependence:
 
 Pressure Dependence
 -------------------
@@ -348,7 +314,7 @@ consumed and has a much tighter error tolerance::
   (2) Error Tolerance: 0.0001
 
 For the initial model run, it is often preferable to use ``Goal Conversion``
-instead of ``Goal Reaction Time``, since it is difficult to judge *a priori*
+instead of ``Goal ReactionTime``, since it is difficult to judge *a priori*
 what the reaction time should be.
 
 For a more detailed description on rate-based model enlargement, please consult
@@ -366,9 +332,9 @@ Dynamic Simulator
 RMG uses the DASSL or DASPK dynamic solver. Future versions of RMG might include the
 CHEMKIN dynamic solver.
 
-The first line beneath the solver should be either ``TimeStep`` or ``Conversion``, depending on whether you chose Goal Conversion of Goal ReactionTime as your finish controller criterion.
+The first line beneath the solver should be either ``TimeStep`` or ``Conversions``, depending on whether you chose Goal Conversion of Goal ReactionTime as your finish controller criterion.
 
-The ``TimeStep`` indicates at what time stpes RMG should check to see if the model needs to be enlarged. By default the units of time steps is always seconds. For example in the example shown below RMG will stop at 0.0001 sec, 0.0002 sec ... and so on to see whether the error tolerance is satisfied::
+The ``TimeStep`` indicates at what time stpes RMG should check to see if the model needs to be enlarged. By default the units of time steps is **always** seconds. For example in the example shown below RMG will stop at 0.0001 sec, 0.0002 sec ... and so on to see whether the error tolerance is satisfied::
 
 	DynamicSimulator: DASSL
 	TimeStep: 0.0001 0.0002 0.0004 0.0006 0.0008 0.0009
@@ -440,7 +406,7 @@ generated for all the species, and the sensitivity coefficients will be
 generated for carbon monoxide, carbon dioxide, methane, and water::
 
  Error bars: On 
- Display sensitivity coefficients: Off 
+ Display sensitivity coefficients: On 
  Display sensitivity information for: 
  CO 
  CO2 
@@ -469,7 +435,7 @@ Leeds' oxidation library::
  Name: nbutane 
  Location: RMG_database/primaryReactionLibrary/nbutane 
  Name: Leeds 
- Location: RMG_database/primaryReactionLibrary/combustion core/version5 
+ Location: RMG_database/primaryReactionLibrary/combustion_core/version5 
  END 
 
 
