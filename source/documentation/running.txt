@@ -12,7 +12,7 @@ Running RMG from the Command Line in Linux
 This section assumes that RMG is already installed according to the directions
 in Section :ref:`linux installation`. Additionally, it is assumed that you have
 created a directory (either in your home directory or elsewhere) in which the
-initialization file ``condition. txt`` has been placed. In the example, we
+initialization file ``condition.txt`` has been placed. In the example, we
 assume that we have created a directory ``/hexane_pyro``, which contains the
 condition file ``hexane_pyro.txt``.
 
@@ -26,8 +26,8 @@ condition file ``hexane_pyro.txt``.
 
     $ java -Xmx500m -classpath $RMG/software/RMG RMG hexane_pyro.txt > output &
   
-When RMG is started, it creates eight subdirectories in the directory containing the condition file: ``chemkin``, ``fame``, ``fit3p``, ``frankie``, 
-``GATPfit``, ``InChI`` and ``Restart``.
+When RMG is started, it creates ten subdirectories in the directory containing the condition file: ``therfit``, ``chemkin``, ``fame``, ``chemdis``, ``fit3p``, ``frankie``, 
+``GATPFit``, ``ODESolver``, ``InChI`` and ``Restart``.
 
 In this example, all of the output from RMG is piped to a file output. The ``> output`` 
 part of the command is optional but recommended. Please note that the
@@ -42,20 +42,13 @@ the output file as it is being generated, use the command:  ``$ tail -f output``
 Running RMG from the Command Line in Windows
 --------------------------------------------
 
-Running RMG in Windows is a little different than under linux. The most
-important difference is the location and name of the condition file. In the
-Windows version of RMG, there is a condition directory in the RMG directory:
-``RMG/condition``. The ``condition.txt`` file must be placed inside this
-directory, and it must have the title ``condition.txt``.
+To run RMG in Windows: Open a DOS-prompt, change to the RMG directory, and pass the name & location of the ``condition.txt`` file to RMG::
 
-To run RMG in Windows:
+	cd "%rmg%"
+	java -Xmx500m RMG ``condition.txt``
+	
+.. note::
 
-#. Place the new ``condition.txt`` in ``RMG/condition``
-
-#. Open a DOS-prompt
-
-#. Change directories to ``RMG/software/rmg``
-
-#. Type ``run``
+	The name of the input file does not have to be condition.txt
 
 .. % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
