@@ -1,7 +1,7 @@
 .. probably only visible to green group members
 
-How generate these docs, using Python
-========================================
+How to generate these docs, using Python
+===========================================
 This documentation is generated using `Sphinx <http://sphinx.pocoo.org/>`_ so that is the place to look for documentation of syntax etc.
 These instructions are specific to RMG and the Green Group, and describe how to run Sphinx on a shared computer and how to get the documentation source.
 
