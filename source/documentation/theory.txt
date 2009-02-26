@@ -4,11 +4,10 @@
 Theory and Implementation Details
 **********************************
 
-Introduction
-------------
 A schematic overview of RMG is presented below.
-.. Image:: misc_pngs/RMGschematic.png
-Many of the details of RMG's original implementation ("Version 1.00") are described in [JingThesis]_. For a more recent discussion of RMG, see[GreenChapter]_.
+ .. Image:: misc_pngs/RMGschematic.png
+
+Many of the details of RMG's original implementation (Version 1) are described in [JingThesis]_. For a more recent discussion of RMG, see [GreenChapter]_.
 
 Details of certain aspects of RMG are discussed further below.
 
@@ -131,6 +130,7 @@ The terms in square brackets on the right-hand side are the loss channels; these
 
 Supporting Equations
 --------------------
+why won't this work?
 
 Collision Frequency
 ~~~~~~~~~~~~~~~~~~~
@@ -398,28 +398,34 @@ Originally, the implementation of RMG’s reaction mechanism generation algorith
 Background
 ---------- 
 The reaction mechanism is divided into a “core” and an “edge”. The “core” is tracked by integrating the appropriate equations using an ordinary differential equation (ODE) solver. The “edge” includes species that are products of reactions among the “core” species. Periodically during the course of simulating species concentrations using the ODE solver, mechanism validity is tested. Mechanism validity criteria used by RMG are shown in the equations below.
-::math
-	:nowrap:
-         \begin{array}{l}
-         \frac{{dC_j }}{{dt}} < tol \cdot R_{char} {\rm{ }}\forall {\rm{ }}j \in {\rm{edge species}} \\ 
-         {\rm{with }}R_{char}  = \left[ {\sum\limits_i {\left( {\frac{{dC_i }}{{dt}}} \right)^2 } } \right]^{{\textstyle{1 \over 2}}} {\rm{  }}i \in {\rm{core species}} \\ 
-         \end{array}
 
-In these criteria, :math:`\tol` is a tolerance specified by the user. If any of these criteria are not valid, the edge species with the highest flux is added to the mechanism “core” and the ODE solver restarts simulation from t = 0. In the original implementation, the times or conversions at which model validity is tested are specified by the user.
+.. math::
+	:nowrap:
+
+	\begin{eqnarray}
+	\frac{{dC_j }}{{dt}} < tol \cdot R_{char} {\rm{ }}\forall {\rm{ }}j \in {\rm{edge species}} \\ 
+	{\rm{with }}R_{char}  = \left[ {\sum\limits_i {\left( {\frac{{dC_i }}{{dt}}} \right)^2 } } \right]^{{\textstyle{1 \over 2}}} {\rm{  }}i \in {\rm{core species}}
+	\end{eqnarray}
+
+In these criteria, :math:`tol` is a tolerance specified by the user. If any of these criteria are not valid, the edge species with the highest flux is added to the mechanism “core” and the ODE solver restarts simulation from t = 0. In the original implementation, the times or conversions at which model validity is tested are specified by the user.
 The ODE solvers used by RMG are FORTRAN programs (DASSL or DASPK), while RMG itself is written in Java.
 
 Implementation
 --------------
 In order to achieve the desired behavior for “automated time stepping”, modifications of the type illustrated in Figure 1 were required.
+
 .. Image:: misc_pngs/AUTOmodifications.png
+
 Figure 1. Modifications to implement “automated time stepping”.
 
 As the figure shows, a significant required change was the modification of the ODE solver to have access to edge species flux information at each ODE solver time step. Thus, much of the modification effort involved implementing a scheme for passing edge reaction information to the ODE solver. The implementation ended up requiring changes to the Java classes ReactionModelGenerator and JDASSL and the FORTRAN file call_dassl.f (the modified version was renamed to call_dasslAUTO.f90 to distinguish from the original version). Also, a minor change to the Java class ReactionTimeTT was made.
 An example of an ODE solver input file for “automated time stepping” is shown in Figure 2, below. Differences from “normal” operation are highlighted with boxes.
-.. Image:: misc_pngs/AUTOmodifications.png 
+
+.. Image:: misc_pngs/SolverInput.png 
+
 Figure 2. ODE solver input file example for “automated time stepping”. Boxes highlight differences from the “normal” version.
 
-The first box in the above figure highlights an integer flag signaling to the FORTRAN code that “automated time stepping” is desired (as opposed to “normal” operation”). The next box highlights the section containing the information needed by the ODE solver to check mechanism validity at each step. In particular, this includes the user-specified tolerance, the number of edge species/reactions, and a line for each edge reaction containing the number of reactants, the number of products, ID numbers corresponding to reactants and products, and finally the rate coefficient, k, for the reaction. It should be noted that in the current implementation, the rate coefficient is considered to be a constant, as additional information regarding temperature/pressure dependence is not passed to solver. Thus, the “automated time stepping” code (along with other preexisting DASSL code) would need to be modified to handle non-isothermal cases (as well as non-isobaric pressure-dependent cases).
+The first box in the above figure highlights an integer flag signalling to the FORTRAN code that “automated time stepping” is desired (as opposed to “normal” operation”). The next box highlights the section containing the information needed by the ODE solver to check mechanism validity at each step. In particular, this includes the user-specified tolerance, the number of edge species/reactions, and a line for each edge reaction containing the number of reactants, the number of products, ID numbers corresponding to reactants and products, and finally the rate coefficient, k, for the reaction. It should be noted that in the current implementation, the rate coefficient is considered to be a constant, as additional information regarding temperature/pressure dependence is not passed to solver. Thus, the “automated time stepping” code (along with other preexisting DASSL code) would need to be modified to handle non-isothermal cases (as well as non-isobaric pressure-dependent cases).
 In order to reproduce existing validity testing for cases with pressure-dependence, special considerations are necessary. In particular, each pressure-dependent network is considered as a “pseudo-species” with an associated “pseudo-reaction” using the kleak associated with the network as the rate coefficient. Monitoring flux to these “pseudo-species” thus allows us to consider whether a pressure-dependent network needs to be enlarged, analogously to how monitoring of species flux allows us to consider whether a species needs to be added to the “core” reaction mechanism.
 
 Usage notes
@@ -437,6 +443,8 @@ Table 1. Size of mechanisms generated using the “AUTO” method and varying nu
 .. Image:: misc_pngs/AUTOeffect.png 
 It should be noted that the mechanism generated with the “AUTO” method and the mechanism generated using nine evenly-spaced conversion steps appear to be essentially identical for this system. Thus, in this case, we approach “AUTO” method behavior as we specify a finer “grid” for conversion steps, as one might intuitively expect.
 It is also interesting to note that in the test case considered, the "AUTO" method produced a smaller mechanism than cases with a small number of specified conversion steps. Thus, in this case, the mechanism generated by the “AUTO” method (and cases with a sufficiently fine grid of conversion steps) would not be expected to be more accurate than the mechanism generated without any conversion steps (assuming the kinetics and thermochemistry of the extra species and reactions is accurate). However, the time required to generate the “AUTO” mechanism is significantly shorter, due to the smaller size of the mechanism. Furthermore, one can imagine that mechanisms of similar size to the largest mechanism reported above could be generated by using tighter tolerances and the “AUTO” method, and one could be more confident in their validity. In summary, although it produces a larger mechanism, the use of a low number of conversion steps is not "better" than the use of a high number of conversion steps or the “AUTO” method.
+
+
 Timing Studies
 ~~~~~~~~~~~~~~
 Tests suggest that the time required to generate a mechanism with the “AUTO” method is virtually the same as the time required to generate the same mechanism with conventional use of conversion steps. However, that the computational cost associated with tracking edge-species is significant compared to the cost of solving the ODEs, with the “AUTO” cases requiring a longer amount of time by a factor of two to eight (for the same number of ODE time steps). Three phenomena are proposed to explain this “discrepancy”. First, one would expect that in the “AUTO” case, the total time that we must integrate over during mechanism generation will be shorter, in general; that is, the “AUTO” method avoids “wasted” ODE time steps associated with “overshooting” the point where threshold flux has been reached. Second, the time associated with ODE solving is small in comparison to the total time requirement (< 10% of the total time for mechanism generation). Third, and perhaps most significant, there are fewer calls to the ODE solver when the “AUTO” method is used. In the case of the “AUTO” method, each call to the ODE solver is associated with a modification to the reaction mechanism (with the exception of the final integration). However, in the case of the “normal” method, there are extra calls to the ODE solver, as the integration is often stopped despite the mechanism being valid (i.e. no edge species fluxes exceed the threshold). Thus, in order to generate the same mechanism, the “normal” method requires a larger number of calls to the ODE solver, which, in turn is associated with greater overhead such as reading and writing ODE solver input and output files. Timing studies for the 1,3-hexadiene test case suggest that this overhead can be significant. (Note that the use of eighteen rather than nine conversions exacerbates the time cost, in accord with expectations based on the aforementioned overhead considerations.) The contribution of this overhead to FORTRAN time requirements is relatively small, but noticeable, while the contribution from the overhead on the Java side appears to be more significant. In fact, in this case, the total ODE solver time-requirement is noticeably lower in the “AUTO” case (relative to the “normal” cases). Thus, in this case, it appears that the added overhead associated with extra calls to the ODE solver in the “normal” method has outweighed the extra cost associated with tracking the flux at each time step within the ODE solver, using the “AUTO” method.
@@ -444,6 +452,9 @@ Tests suggest that the time required to generate a mechanism with the “AUTO”
 Summary
 -------
 The “AUTO” method was implemented and tested during development of RMG 3.00 and provides the option of “automated time stepping”. Even so, timing studies suggest that tracking the edge flux “continuously” in the ODE solver is associated with a significant time penalty. However, various mitigating factors appear to reduce the impact of this time penalty on overall mechanism generation time when the “AUTO” method is used. Thus, the “AUTO” method appears to be an appealing alternative to user-specification of time/conversion steps.
+
+
+
 
 .. [JingThesis] \ Jing Song. PhD thesis, Building Robust Chemical Reaction Mechanisms: Next Generation Automatic Model Construction Software. (MIT, 2004)
 
