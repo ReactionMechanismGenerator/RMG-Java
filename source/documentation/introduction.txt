@@ -40,7 +40,7 @@ New features:
 
 Functionality changes:
 
-- On the first step of mechanism generation, only one species is added, rather than adding all edge species (as was done in RMG 2.00)(Sandeep is this correct?, I think there is some subtlety here I am missing)
+- On the first step of mechanism generation, only one species is added, rather than adding all edge species
 
 - Thermodynamics estimates for non-cyclic species incorporate certain steric effects (1,5-interactions and gauche interactions)
 

@@ -416,8 +416,6 @@ Tests suggest that the time required to generate a mechanism with the “AUTO”
 CONCLUSIONS
 The “AUTO” method was implemented and tested in RMG and was determined to function as intended for “automated time stepping”. Even so, timing studies suggest that tracking the edge flux “continuously” in the ODE solver is associated with a significant time penalty. However, various mitigating factors appear to reduce the impact of this time penalty on overall mechanism generation time when the “AUTO” method is used. Thus, the “AUTO” method appears to be an appealing alternative to user-specification of time/conversion steps, suggesting that it holds promise for routine use in mechanism generation with RMG.
 
-References
-----------
 
 .. [Susnow1997] \ R. G. Susnow, A. M. Dean, W. H. Green, P. K. Peczak, and L. J. Broadbelt. "Rate-Based Construction of Kinetic Models for Complex Systems." *J. Phys. Chem. A* **101**, p. 3731-3740 (1997).
 

@@ -21,7 +21,8 @@ Contents:
    modification
    theory
    BuildingDocumentation
-
+   credits
+   
 Indices and tables
 ==================
 
