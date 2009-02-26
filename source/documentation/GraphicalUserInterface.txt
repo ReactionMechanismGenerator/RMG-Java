@@ -1,7 +1,8 @@
 .. _GraphicalUserInterface:
 
+************************************************************
 Creating a Condition File using the Graphical User Interface
-============================================================
+************************************************************
 
 A user may construct the ``condition.txt`` file by hand or by using the
 Graphical User Interface.
@@ -9,7 +10,7 @@ Graphical User Interface.
 .. _launching:
 
 Launching the Graphical User Interface
---------------------------------------
+======================================
 
 For Linux users, run the following command to launch the GUI::
 
@@ -23,7 +24,7 @@ For Windows users, run the following set of commands to launch the GUI::
 .. _tabInitialCondition:
 
 The "Initial Conditions" tab
-----------------------------
+============================
 
 .. image:: RMG_GUI_gifs/tab_initialConditions.png
 
@@ -31,7 +32,7 @@ This tab of the GUI allows the user to enter the :ref:`Reactants <reactants>`, :
 :ref:`Initial Conditions <initialconditions>` for the simulation.
 
 Reactants and Inert Gases
-^^^^^^^^^^^^^^^^^^^^^^^^^
+-------------------------
 
 For each species, a "Name," "Concentration," "Units," and "Reactivity" must be
 specified.  The three options for "Reactivity" are:
@@ -73,14 +74,14 @@ with this species.  If the InChI executable is in the proper folder, the GUI wil
 The user may add/remove species to the model by clicking the appropriate buttons.
 
 Unreactive Species
-^^^^^^^^^^^^^^^^^^
+------------------
 
 If an "Unreactive" species is added to the model, the GUI will ask the user for the
 location of the ``IncludeSpecies.txt`` file.  If no "Unreactive" species are added to
 the model, the "Location of IncludeSpecies.txt" field will remain inactive.
 
 Initial Conditions
-^^^^^^^^^^^^^^^^^^
+------------------
 
 RMG currently only has one pressure/temperature model: "Constant".  However, the user
 may specify a list of temperatures and pressures for which to build the reaction
@@ -90,7 +91,7 @@ with a blank space or a return carriage.
 .. _tabThermochemicalLibraries:
 
 The "Thermochemical Libraries" tab
-----------------------------------
+==================================
 
 .. image:: RMG_GUI_gifs/tab_thermochemLibraries.png
 
@@ -114,7 +115,7 @@ the "Primary Reaction Library," a "Name" and "Location" must be specified.
 .. _tabTermination:
 
 The "Termination" tab
----------------------
+=====================
 
 .. image:: RMG_GUI_gifs/tab_termination.png
 
@@ -134,7 +135,7 @@ mechanism for a new system, we recommend starting with a high "Error tolerance"
 .. _tabDynamicSimulator:
 
 The "Dynamic Simulator" tab
----------------------------
+===========================
 
 .. image:: RMG_GUI_gifs/tab_dynamicSimulator.png
 
@@ -144,7 +145,7 @@ This tab of the GUI allows the user to specify options for:
   * :ref:`constructing InChIs <InChIgeneration>`
 
 The ODE Solver
-^^^^^^^^^^^^^^
+--------------
 
 The user must select a "Dynamic Simulator" and set the Absolute and Relative
 Tolerances for that Dynamic Simulator.  The user may also select Intermediate times
@@ -161,7 +162,7 @@ Steps" field will be disabled) if the "Termination Goal" was chosen as
 	If the user specifies "Intermediate Time Steps," the values must have units of Seconds.
 
 The pressure dependence model
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+-----------------------------
 
 The user must specify a :ref:`pressure dependence model <pressuredependence>`.  The options are:
  	* off
@@ -173,7 +174,7 @@ If the user specifies a pressure dependent model, the "Spectroscopic Data Estima
  	* Three Frequency Model (only available for users with **therfit.exe**)
 
 Optional fields
-^^^^^^^^^^^^^^^
+---------------
 
 Some optional fields the user may change are:
   * Equation of State
@@ -191,7 +192,7 @@ chooses to turn InChI generation on, the InChI executable (v 1.01) must be locat
 .. _tabSensitivityAnalysis:
 
 The "Sensitivity Analysis" tab
--------------------------------
+==============================
 
 .. image:: RMG_GUI_gifs/tab_sensAnalysis.png
 
@@ -207,7 +208,7 @@ The sensitivity coefficients will only be generated for the species listed in th
 .. _saveFile:
 
 Saving the file
----------------
+===============
 
 To save the file, the user can either press the "Save" button near the bottom of
 the GUI or selecting "File" --> "Save" from the navigation toolbar.  The file does
@@ -221,7 +222,7 @@ near the bottom of the GUI.
 .. _openFile:
 
 Opening a file
---------------
+==============
 
 To open and import the information from a ``condition.txt`` file, the user can select
 "File" --> "Open" from the navigation toolbar.
@@ -232,6 +233,6 @@ To open and import the information from a ``condition.txt`` file, the user can s
 .. _runFile:
 
 Running the file
-----------------
+================
 
 To run a file without viewing it, the user can select "Run" --> "Run RMG" from the navigation toolbar.

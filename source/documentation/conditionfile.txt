@@ -1,7 +1,8 @@
 .. _conditionfile:
 
+*************************
 Creating a Condition File
-===============================
+*************************
 
 To run RMG, you must specify the initial conditions and the model generation
 parameters, all of which are contained in a single file, ``condition.txt``. If
@@ -449,5 +450,3 @@ given in each library, the different libraries can have different units.
 Additionally, if the same reaction occurs more than once in the combined
 library, the first instance of it from the first library in which it appears is
 the one that gets used.
-
-.. % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

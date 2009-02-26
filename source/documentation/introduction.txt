@@ -1,7 +1,7 @@
 .. _introduction:
-
+*******************
 Introduction to RMG
-===================
+*******************
 
 RMG is an automatic chemical reaction mechanism generator that constructs 
 mechanisms composed of elementary chemical reaction steps using a general understanding of how hydrocarbons react. The model parameters (rate constants 

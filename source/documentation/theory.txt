@@ -1,10 +1,10 @@
 .. _theory:
-
+**********************************
 Theory and Implementation Details
-=================================
+**********************************
 
 Rate-Based Model Enlarger
--------------------------
+=========================
 
 To construct a mechanism, the user must specify an initial set of species and 
 the initial conditions (temperature, pressure, species concentrations, etc.).  RMG 
@@ -20,7 +20,7 @@ of a "significant" rate to refine the mechanism as desired. For a more detailed 
 
 
 Thermodynamics Estimation Using Group Additivity
-------------------------------------------------
+================================================
 
 Benson's Group Additivity approach, used by RMG, divides a molecule into functional groups, and the contribution of each functional group to the overall thermodynamics is included. RMG's kinetic rate rules use a similar strategy: the reaction rate depends on the two functional groups involved in the reaction. The rate rule database uses an innovative tree structure that allows users to include ever-more specific defintions of the functional groups and the kinetics involving them. In both cases, users can easily modify and expand these databases to suit their needs. In principle, the trees could be expanded until all possible molecules and data for the reactions between all possible pairs of molecules have been included (of course, in practice, the database is much more limited). The kinetics database includes 19 reaction types ("families"), including hydrogen abstractions, cycloadditions, disproportionation reactions, radical recombination reactions, intramolecular rearrangements, etc. 
 
@@ -28,7 +28,7 @@ Each reaction family includes data on many possible functional group pairings in
 
 
 Pressure Dependence in RMG
---------------------------
+==========================
 
 One of the new features in RMG is the ability to calculate pressure-dependent rate constants.  This appendix provides a brief background on the subject, followed by an explanation of how RMG calculates these rate constants.  For a more detailed description on pressure-dependent rate constants, please consult the excellent texts on unimolecular reaction theory by Gilbert and Smith [Gilbert1990]_;
 Holbrook, Pilling, \& Robertson [Holbrook1996]_ ; and Forst [Forst2003]_.
@@ -42,7 +42,7 @@ Chemical activation is not limited to these low-pressure cases, however.  Indeed
 The difficulty, of course, is knowing (i) when a reaction becomes pressure dependent, and (ii) how to quantify the pressure dependence if it occurs.  To answer these questions, we need to solve the master equation.
 
 Formulation of the Master Equation
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+----------------------------------
 
 Begin with the number density of species :math:`i` with energy between :math:`E` and :math:`E + dE`, :math:`n_i(E) dE`.  In a chemically activated or pressure-dependent system, the energy-dependent population can undergo the following possibilities:  it can gain or lose energy by colliding with other molecules, it can be formed by the association reaction of the reactants, it can decompose back to the reactants, it can isomerize to form other well species, or it can decompose to form bimolecular products.  Thus, 
 
@@ -84,7 +84,7 @@ The corresponding equations for the reactants are:
 The units of the number density :math:`n_i \left( E \right) dE` are [particle/volume].  :math:`\omega` is the collision frequency [s\ :sup:`-1`], :math:`P_i \left( E, E^\prime \right) dE` is the probability that a particle with energy :math:`E^\prime` will have energy :math:`E` after collision [unitless], :math:`k_{ij}\left(E\right)` is the microcanonical rate constant for the isomerization from well :math:`j` to well :math:`i` [s\ :sup:`-1`], :math:`K_{eq}` is the equilibrium constant between the reactants :math:`R` and :math:`m` and the :math:`i^{th}` well [volume/particle], :math:`k_{dis}\left(E\right)` is the microcanonical rate constant for the dissociation back to the reactants [s\ :sup:`-1`], :math:`\rho_i \left(E \right)` is the density of states [energy\ :sup:`-1`], :math:`Q_i \left(T \right)` is the partition function for the active degrees of freedom [unitless], :math:`n_R` and :math:`n_m` are the number density of the reactants [particle/volume], and :math:`k_{p_ji}\left(E\right)` is the microcanonical rate constant for the dissociation from well :math:`i` to the :math:`j^{th}` product channel [s\ :sup:`-1`].  The delta function :math:`\delta_{Rmi}` is there to ensure that only wells with direct access to the reactants can be formed from or dissociate back to the reactants.  In principle, the energy-dependent populations are a series of delta peaks and not a continuous function; in practice, however, at energy levels relevant for our calculations, the spacing between delta functions is so small that the populations can be approximated by a continuous function.
 
 Simplifying Assumptions and Solution
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+------------------------------------
 
 At this point we have :math:`N_{wells} + 2` coupled, non-linear integro-differential equations.  We would prefer a system of linear ODEs. To simply the system of equations, we start with two assumptions:
 
@@ -121,10 +121,10 @@ where  :math:`S_i \left( E \right) \equiv  K_{eq}  k_{dis} \left( E \right) n_R 
 The terms in square brackets on the right-hand side are the loss channels; these terms appear in the diagonal of the matrix.  The other term on the right-hand side is the gain to a well from the other wells; these rates appear in the off-diagonal positions.  To calculate the phenomenological rate constants, the above equation is solved for each energy level.  The phenomenological rate constant for a particular channel is the dot product of the steady-state population vector and the vector containing the microcanonical rate constant for that channel.
 
 Supporting Equations
-~~~~~~~~~~~~~~~~~~~~
+--------------------
 
 Collision Frequency
-___________________
+~~~~~~~~~~~~~~~~~~~
 
 The collision frequency, :math:`\omega`, is the product of the second-order energy-transfer rate constant and the bath gas concentration.  To simply calculations, it is assumed that the energy transfer rate constant is independent of energy and is equal to the product of the hard-sphere collision limit and the collision integral for a Lennard-Jones potential [Forst2003]_:
 
@@ -141,12 +141,12 @@ where :math:`d` is the collision diameter, :math:`\mu` is the reduced mass, :mat
 
 
 Collision Efficiency
-____________________
+~~~~~~~~~~~~~~~~~~~~
 
 Currently RMG uses a constant collision efficiency of :math:`\beta = 0.38`. In the future a more rigorous formula will be introduced to more accurately capture the temperature dependence of :math:`\beta`.
 
 Microcanonical Rate Constants
-_____________________________
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 RMG currently does not have data for individual transition states.  Consequently, it is not possible to calculate the microcanonical rate constants using RRKM theory.  Instead, RMG uses its database of Arrhenius parameters to calculate the microcanonical rate constant using the inverse Laplace transform method.  For more details on the inverse Laplace transform method, please read Forst \cite{Forst} and further references therein.  One benefit of using the inverse Laplace transform method is that all the multiplicative constants will cancel.  Thus, as we will see below in Section \ref{density_of_states}, we do not need to know the rotational constants and symmetry numbers for a molecule.
 
@@ -204,7 +204,7 @@ The second method makes use of the fact that the Arrhenius activation energy is 
 
 
 Density of States Estimation
-----------------------------
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 An important quantity to the pressure dependence calculation is the density of states: the number of quantum states per unit energy.  In the master equation, we are interested in the density of states for the active degrees of freedom.  The active degrees of freedom are those degrees of freedom in which the energy of the excited species can be randomized; within RMG, they include the rigid-rotor harmonic-oscillator (RRHO) vibrational frequencies, hindered internal rotors (HR), and the unique one-dimensional external rotation of the molecule (i.e. the K-rotor for a symmetric top approximation).  The translational degrees of freedom and the two degenerate external rotational degrees of freedom are inactive.  Furthermore, RMG assumes that each of these modes is independent.  Thus, just as the partition function for two independent modes is the product of the individual partition functions, the density of states for two independent modes is the convolution integral of the respective density of states:
 
@@ -279,7 +279,7 @@ where :math:`\mathbf{K}` is the complete elliptical integral of the first kind. 
 Finally, following the method of Astholz [Astholz1979] [Gilbert1996], we initialize the Beyer-Swinehart algorithm [Beyer1973] with the K-rotor/hindered-rotor density of states.  This algorithm convolutes this with the vibrational modes.  The result is the density of states for all the active degrees of freedom, :math:`\rho \left( E \right)`.
 
 Frequencies and  Barrier Heights
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+--------------------------------
 
 To summarize everything up to this point:  Our objective is to calculate pressure dependent rate constants for chemically-activated reactions.  To calculate these rate constants, we must solve the master equation.  In order to solve this system of equations, we need the micro-canonical rate constants for the association, isomerization, and dissociation channels.  These rate constants, in turn, require the density of states for the adducts.  Last but not least, the density of states requires detailed information about the rigid-rotor harmonic-oscillator frequencies as well as hindered rotors parameters.  Normally, these physical parameters would be determined from a 3D model of the molecule.
 
@@ -290,7 +290,7 @@ Since the heat capacity is a function of the vibrational and rotational modes, i
 RMG uses a two-step process to estimate the vibrational frequencies and hindered rotor barrier heights.  In the first step, the subroutine will examine the structure of the molecule to determine the types of groups present; it will then use this information to predict most of the vibrational frequencies.  In the second step, the subroutine examines the heat capacity as a function of temperature to determine the barriers to internal rotation and the remaining vibrational frequencies.
 
 Estimating the vibrational frequencies based on the group type
-______________________________________________________________
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 What is meant by “group type” is unique to this subroutine.  In principle, however, it is similar to functional groups.  Thus, methyl groups are one group type, as are ethers, peroxides, branched and straight-chain alkyl backbones, etc.  For each type of group, we have compiled a list of corresponding vibrational modes.  To take methyl groups (R-CH3) as an example, there are nine frequencies that are common to methyl groups:  3 C-H stretches, 2 R-C-H bending modes, 2 R-C-H rocking modes, 1 R-C stretch, and 1 umbrella mode.  Each of these modes has an upper and lower limit (for example, the C-H stretch in methyl groups is typically confined between 2750 and 2850 cm\ :sup:`-1`).
 
@@ -299,8 +299,7 @@ For a non-linear molecule with N atoms and R internal rotors, there will be 3N-6
 For each group type, we count both the number of atoms in that group as well as the number of single bonds between heavy atoms in that group (since each of these bonds may contribute one internal rotor).  Thus, we limit the number of modes for each group to 3 :math:`\times` (Number of atoms in group) - (number of single bonds between heavy atoms in group) - 6.  This approach guarantees that the number of RRHO modes is less than 3N-6-R.  By using this method, the first section of the code will predict almost all of the RRHO modes. 
 
 Estimating the vibrational frequencies based on the heat capacity 
-_________________________________________________________________
-
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 The second part of the subroutine uses the heat capacity to determine both the remaining unknown vibrational modes as well as the barrier heights of any hindered internal rotors.  Using Benson-type group additivity formulas, RMG will calculate the heat capacity for the molecule at seven temperatures.  At each temperature, the heat capacity can be separated into the contributions from external translation, external rotation, rigid-rotor harmonic-oscillator frequencies (RRHO), and hindered internal rotation (HR):
 
@@ -379,20 +378,27 @@ Depending upon the exact number of unknown frequencies and rotors, the code will
 
 
 Automated Time Stepping
------------------------
-EXECUTIVE SUMMARY
+=======================
+
 A means of “automated time stepping” in RMG was desired in order to eliminate the need for the user to specify times/conversions for mechanism validity testing. An “AUTO” option implementing this “automated time stepping” was successfully integrated into RMG. Several tests were carried out with the new “AUTO” option. Results were promising, suggesting that the option functioned as intended without being unreasonably computationally expensive. The “AUTO” option offers a more rigorous implementation of RMG’s rate-based mechanism generation algorithm while allowing straightforward generation of reaction mechanisms that encompass chemistry at all time-scales of interest.
-MOTIVATION
+
+Motivation
+----------
 Originally, the implementation of RMG’s reaction mechanism generation algorithm requires the user to specify times or conversions at which the program will estimate “edge” reaction fluxes and decide whether to include a new species in the “core” reaction model. The choice of which conversions or times to specify is, to a certain extent, arbitrary, and could have a significant impact on the model generated by the program. This arbitrariness can be effectively eliminated by keeping track of the “edge” reaction flux “continuously” within the ODE solver (analogously to how conversion is handled) and terminating ODE solver “integration” when the threshold reaction flux is reached (whereupon a species would be moved from the “edge” to the “core” as in the current RMG implementation). This new method is here referred to as “automated time stepping”. Implementation of such a method would reduce the number of adjustable parameters that the user must tweak during mechanism generation and provide a more rigorous use of the mechanism generation algorithm. At the same time, such a method would allow straightforward generation of mechanisms that encompass chemistry at all time-scales of interest. 
-BACKGROUND 
+
+Background
+---------- 
 The reaction mechanism is divided into a “core” and an “edge”. The “core” is tracked by integrating the appropriate equations using an ordinary differential equation (ODE) solver. The “edge” includes species that are products of reactions among the “core” species. Periodically during the course of simulating species concentrations using the ODE solver, mechanism validity is tested. Mechanism validity criteria used by RMG are shown in Equation 1, below. (**add these equations**)
  
 In these criteria, tol is a tolerance specified by the user. If any of these criteria are not valid, the edge species with the highest flux is added to the mechanism “core” and the ODE solver restarts simulation from t = 0. In the original implementation, the times or conversions at which model validity is tested are specified by the user.
 The ODE solvers used by RMG are FORTRAN programs (DASSL or DASPK), while RMG itself is written in Java.
-IMPLEMENTATION
+
+Implementation
+--------------
 In order to achieve the desired behavior for “automated time stepping”, modifications of the type illustrated in Figure 1 were desired.
  
 Figure 1. Modifications to implement “automated time stepping”.
+
 As the figure shows, a significant required change was the modification of the ODE solver to have access to edge species flux information at each ODE solver time step. Thus, much of the modification effort involved implementing a scheme for passing edge reaction information to the ODE solver. The implementation ended up requiring changes to the Java classes ReactionModelGenerator and JDASSL and the FORTRAN file call_dassl.f (the modified version was renamed to call_dasslAUTO.f90 to distinguish from the original version). Also, a minor change to the Java class ReactionTimeTT was made.
 An example of an ODE solver input file for “automated time stepping” is shown in Figure 2, below. Differences from “normal” operation are highlighted with boxes.
  
@@ -401,19 +407,24 @@ Figure 2. ODE solver input file example for “automated time stepping”. Boxes
 The first box in the above figure highlights an integer flag signaling to the FORTRAN code that “automated time stepping” is desired (as opposed to “normal” operation”). The next box highlights the section containing the information needed by the ODE solver to check mechanism validity at each step. In particular, this includes the user-specified tolerance, the number of edge species/reactions, and a line for each edge reaction containing the number of reactants, the number of products, ID numbers corresponding to reactants and products, and finally the rate coefficient, k, for the reaction. It should be noted that in the current implementation, the rate coefficient is considered to be a constant, as additional information regarding temperature/pressure dependence is not passed to solver. Thus, the “automated time stepping” code (along with other preexisting DASSL code) would need to be modified to handle non-isothermal cases (as well as non-isobaric pressure-dependent cases).
 In order to reproduce existing validity testing for cases with pressure-dependence, special considerations are necessary. In particular, each pressure-dependent network is considered as a “pseudo-species” with an associated “pseudo-reaction” using the kleak associated with the network as the rate coefficient. Monitoring flux to these “pseudo-species” thus allows us to consider whether a pressure-dependent network needs to be enlarged, analogously to how monitoring of species flux allows us to consider whether a species needs to be added to the “core” reaction mechanism.
 
-USAGE NOTES
+Usage notes
+-----------
 The modified code still allows for evaluating flux at user-defined time/conversion points, and the use of “automated time stepping” is invoked by replacing the user-defined time/conversion points with the keyword “AUTO”. Thus, the use of “automated time stepping” will be referred to as the “AUTO” method in subsequent discussion. The modified code has been designed to work for both pressure-dependent and non-pressure-dependent cases; also, the code allows automatic stepping with either a conversion or a reaction time as the user-specified termination criterion.
 
-RESULTS
+Results
+-------
 The new option of “AUTO” time-stepping was tested for several cases to verify that the option was working as desired and to investigate the effects on mechanism generation time and on the resulting mechanism. Note: Throughout this section, “1,3-hexadiene” refers to a system involving methane doped with 1,3-hexadiene (in particular, the system defined by the condition files distributed with the March 2007 release of RMG). A brief summary of findings follows.
 Effects on Generated Mechanism
 One would expect that mechanisms generated using “AUTO” method would be more rigorously valid than those generated using arbitrary user-specified time/conversion steps. In the case of the 1,3-hexadiene system discussed above, mechanisms generated using the “AUTO” method were compared to mechanisms generated using evenly-spaced conversion steps. The results are shown in Table 1, below.
 Tests suggested that we approach “AUTO” method behavior as we specify a finer “grid” for conversion steps, as one might intuitively expect.
 It is also interesting to note that in the test case considered, the "AUTO" method produced a smaller mechanism than cases with a small number of specified conversion steps. Thus, in this case, the mechanism generated by the “AUTO” method (and cases with a sufficiently fine grid of conversion steps) would not be expected to be more accurate than the mechanism generated without any conversion steps (assuming the kinetics and thermochemistry of the extra species and reactions is accurate). However, the time required to generate the “AUTO” mechanism is significantly shorter, due to the smaller size of the mechanism. Furthermore, one can imagine that mechanisms of similar size to the largest mechanism reported above could be generated by using tighter tolerances and the “AUTO” method, and one could be more confident in their validity. Thus, even in this case, the use of a low number of conversion steps is not necessarily better than the use of a high number of conversion steps or the “AUTO” method.
+
 Timing Studies
+--------------
 Tests suggest that the time required to generate a mechanism with the “AUTO” method is virtually the same as the time required to generate the same mechanism with conventional use of conversion steps. Table 3 shows, however, that the computational cost associated with tracking edge-species is significant compared to the cost of solving the ODEs, with the “AUTO” cases requiring a longer amount of time by a factor of two to eight (for the same number of ODE time steps). Three phenomena are proposed to explain this “discrepancy”. First, one would expect that in the “AUTO” case, the total time that we must integrate over during mechanism generation will be shorter, in general; that is, the “AUTO” method avoids “wasted” ODE time steps associated with “overshooting” the point where threshold flux has been reached. Second, the time associated with ODE solving is small in comparison to the total time requirement (< 10% of the total time for mechanism generation). Third, and perhaps most significant, there are fewer calls to the ODE solver when the “AUTO” method is used. In the case of the “AUTO” method, each call to the ODE solver is associated with a modification to the reaction mechanism (with the exception of the final integration). However, in the case of the “normal” method, there are extra calls to the ODE solver, as the integration is often stopped despite the mechanism being valid (i.e. no edge species fluxes exceed the threshold). Thus, in order to generate the same mechanism, the “normal” method requires a larger number of calls to the ODE solver, which, in turn is associated with greater overhead such as reading and writing ODE solver input and output files. Values for T1 and T2 in Table 2 for 1,3-hexadiene suggest that this overhead can be significant. (Note that the use of eighteen rather than nine conversions exacerbates the time cost, in accord with expectations based on the aforementioned overhead considerations.) The contribution of this overhead to FORTRAN time requirements is relatively small, but noticeable, while the contribution from the overhead on the Java side appears to be more significant. In fact, in this case, the total ODE solver time-requirement (T1) is noticeably lower in the “AUTO” case (relative to the “normal” cases). Thus, in this case, it appears that the added overhead associated with extra calls to the ODE solver in the “normal” method has outweighed the extra cost associated with tracking the flux at each time step within the ODE solver, using the “AUTO” method. It should be emphasized, however, that this phenomenon of faster “AUTO” operation has only been observed in the one case extensively studied thus far (in which we have been able to obtain the same mechanism using both “AUTO” and “normal” methods), and may not extend to other systems or situations with larger mechanisms. Further study is needed to determine if this behavior is typical.
 
-CONCLUSIONS
+Conclusions
+-----------
 The “AUTO” method was implemented and tested in RMG and was determined to function as intended for “automated time stepping”. Even so, timing studies suggest that tracking the edge flux “continuously” in the ODE solver is associated with a significant time penalty. However, various mitigating factors appear to reduce the impact of this time penalty on overall mechanism generation time when the “AUTO” method is used. Thus, the “AUTO” method appears to be an appealing alternative to user-specification of time/conversion steps, suggesting that it holds promise for routine use in mechanism generation with RMG.
 
 

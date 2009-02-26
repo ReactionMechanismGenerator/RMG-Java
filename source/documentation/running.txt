@@ -1,13 +1,13 @@
 .. _running:
-
+***********
 Running RMG
-===========
+***********
 
 
 .. _runninginlinux:
 
 Running RMG from the Command Line in Linux
-------------------------------------------
+==========================================
 
 This section assumes that RMG is already installed according to the directions
 in Section :ref:`linux installation`. Additionally, it is assumed that you have
@@ -40,7 +40,7 @@ the output file as it is being generated, use the command:  ``$ tail -f output``
 .. _runninginwindows:
 
 Running RMG from the Command Line in Windows
---------------------------------------------
+============================================
 
 To run RMG in Windows: Open a DOS-prompt, change to the RMG directory, and pass the name & location of the ``condition.txt`` file to RMG::
 

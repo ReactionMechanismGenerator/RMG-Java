@@ -1,12 +1,13 @@
 .. probably only visible to green group members
 
+****************************************
 How to generate these docs, using Python
-===========================================
+****************************************
 This documentation is generated using `Sphinx <http://sphinx.pocoo.org/>`_ so that is the place to look for documentation of syntax etc.
 These instructions are specific to RMG and the Green Group, and describe how to run Sphinx on a shared computer and how to get the documentation source.
 
 On a linux computer such as Rainier
-***********************************
+===================================
 These instructions should get you up and running on a shared computer such as Rainier or Monch without needing a superuser password or anything.
 A bonus side-effect will be that you have the Easy Install package set up correctly, so you can easily get and install other python packages. 
 See http://peak.telecommunity.com/DevCenter/EasyInstall or http://pypi.python.org/pypi/setuptools for more details.
@@ -55,7 +56,7 @@ Compile the documentation
 
 
 On a Windows computer
-**********************
+======================
 
 Installing Python on Windows
 -----------------------------
@@ -105,7 +106,7 @@ Running Sphinx
 #. Please refer to http://sphinx.pocoo.org/contents.html for details
 
 Mathematics!
-*************
+============
 
 Instructions are at http://sphinx.pocoo.org/latest/ext/math.html
 At the moment the :file:`conf.py` is set up to use the ``sphinx.ext.pngmath`` extension, which means you will need to have both :math:`\textrm{\LaTeX}` and `dvipng <http://savannah.nongnu.org/projects/dvipng/>`_ installed. We may be able to switch to ``sphinx.ext.jsmath`` - give it a go. 

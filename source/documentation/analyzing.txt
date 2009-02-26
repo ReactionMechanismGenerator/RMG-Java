@@ -1,13 +1,13 @@
 .. _analyzing:
 
+********************
 Analyzing the Output
-====================
-
+********************
 
 .. _rmgoutput:
 
 RMG Output Files
-----------------
+================
 
 RMG will generate several types of output files, each with a different purpose.
 For linux users, these files will be located in the same directory which
@@ -48,7 +48,7 @@ the ``%rmg%`` directory. Generally, there are four outputs from RMG:
 .. _viewrmgve:
 
 Viewing the Species in the RMG Viewer/Editor (RMGVE)
-----------------------------------------------------
+====================================================
 
 When RMG has finished, it will create a file ``RMG_Dictionary.txt`` in the same
 directory as the ``condition.txt`` file; for Windows users, the ``RMG_Dictionary.txt`` file will be

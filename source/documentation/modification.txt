@@ -1,13 +1,13 @@
 .. _modification:
-
+*************
 Modifying RMG
-=============
+*************
 
 
 .. _editingthermodatabase:
 
 Editing the Thermodynamic Database
-----------------------------------
+==================================
 
 As mentioned in Section :ref:`primarythermolibrary`, it is possible to
 override the default thermodynamic values and substitute your own thermodynamic
@@ -15,7 +15,7 @@ data.
 
 
 Basic Structure of the Thermo Database
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+---------------------------------------
 
 The thermodynamics database consists of three sections, each of which is an
 ASCII file that can be edited to alter the information. This description applies
@@ -100,7 +100,7 @@ A sample entry can be found in Section :ref:`changingthermodata`.
 
 
 Thermo Database and Adjacency List Notation
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+-------------------------------------------
 
 In general, the thermo database uses what are known as function group elements.
 Function group elements serve to define the atom and its bonding environment.
@@ -157,7 +157,7 @@ possible functional groups can be seen in the table :ref:`"Functional Group Elem
 .. _viewingthermoFGs:
 
 Viewing a Thermo Functional Group in the RMGVE
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+----------------------------------------------
 
 Open the RMG Viewer & Editor (RMGVE) by running the ``RMGVE 20080101.bat`` file.
 If your RMG database is located in the ``$RMG\database\RMG_database`` folder, the following
@@ -200,7 +200,7 @@ Notice that the "Adjacency List" window is no longer blank but now contains the 
 .. _changingthermodata:
 
 Editing the Data for an Existing Thermo Functional Group
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+--------------------------------------------------------
 
 A leaf in the thermochemistry tree may be **edited** using the RMG Viewer & Editor (RMGVE).  For instructions on how to add a leaf 
 to a thermochemistry tree, please refer to the section below entitled "Adding Additional Nodes to the Thermo Database".
@@ -296,7 +296,7 @@ Please be aware that version control may be a significant issue with the databas
 
 
 Adding Additional Nodes to the Thermo Database
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+----------------------------------------------
 
 This task is more complicated than the previous example because it involves
 altering all three database files in a consistent manner, without the help of a Graphical User Interface. It is worth noting
@@ -336,7 +336,7 @@ may make consistent ordering unnecessary. The procedure is described below.
    
 
 Editing the Kinetics Database
--------------------------------
+=============================
 
 RMG's kinetics database may also be viewed and edited using the RMGVE.  From the RMGVE's home screen, double-click on the
 "Kinetics (Branch)" folder in the "Dataset viewer" window and then double-click on the "kinetics (Family)" folder.  Scroll
@@ -352,7 +352,7 @@ down to the family entitled "H_Abstraction."  Highlight this family and push the
 	#. "View family":
 
 Viewing a Reaction Recipe in the RMGVE
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+--------------------------------------
 	
 Push the "Reaction recipe" button.  Your screen should look like the following snapshot (after rearranging and resizing the windows)
 
@@ -379,7 +379,7 @@ the ``#*`` notation between the counting index and the elemental symbol.  The nu
 of interest are also shown in blue in the "C/H/Cs3" window.
 
 Editing a Reaction Family using the RMGVE
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+-----------------------------------------
 
 Returning to the "Dataset viewer" window, click the "Tree/library" button.  The bottom-half of this window contains the following kinetic information:
 
@@ -457,7 +457,7 @@ Close the RMGVE.  A popup window will ask if you want to save the changes you ha
 .. image:: RMGVE_pngs/viewReactionEdits.png
 
 Creating a Primary Reaction Library
-------------------------------------
+===================================
 
 A primary reaction library (PRLib) consists of four files: ``reactions.txt``,
 ``species.txt``, ``3rdBodyReactions.txt``, and ``troeReactions.txt``. It is not
