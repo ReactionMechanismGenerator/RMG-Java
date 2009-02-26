@@ -5,7 +5,10 @@ Theory and Implementation Details
 **********************************
 
 A schematic overview of RMG is presented below.
- .. Image:: misc_pngs/RMGschematic.png
+ .. figure:: misc_pngs/RMGschematic.png
+	:width: 600 px
+	
+	A schematic overview of RMG
 
 Many of the details of RMG's original implementation (Version 1) are described in [JingThesis]_. For a more recent discussion of RMG, see [GreenChapter]_.
 
@@ -414,16 +417,17 @@ Implementation
 --------------
 In order to achieve the desired behavior for “automated time stepping”, modifications of the type illustrated in Figure 1 were required.
 
-.. Image:: misc_pngs/AUTOmodifications.png
+.. figure:: misc_pngs/AUTOmodifications.png
+	:width: 800 px
 
-Figure 1. Modifications to implement “automated time stepping”.
+	Figure 1. Modifications to implement “automated time stepping”.
 
 As the figure shows, a significant required change was the modification of the ODE solver to have access to edge species flux information at each ODE solver time step. Thus, much of the modification effort involved implementing a scheme for passing edge reaction information to the ODE solver. The implementation ended up requiring changes to the Java classes ReactionModelGenerator and JDASSL and the FORTRAN file call_dassl.f (the modified version was renamed to call_dasslAUTO.f90 to distinguish from the original version). Also, a minor change to the Java class ReactionTimeTT was made.
 An example of an ODE solver input file for “automated time stepping” is shown in Figure 2, below. Differences from “normal” operation are highlighted with boxes.
 
-.. Image:: misc_pngs/SolverInput.png 
+.. figure:: misc_pngs/SolverInput.png 
 
-Figure 2. ODE solver input file example for “automated time stepping”. Boxes highlight differences from the “normal” version.
+	Figure 2. ODE solver input file example for “automated time stepping”. Boxes highlight differences from the “normal” version.
 
 The first box in the above figure highlights an integer flag signalling to the FORTRAN code that “automated time stepping” is desired (as opposed to “normal” operation”). The next box highlights the section containing the information needed by the ODE solver to check mechanism validity at each step. In particular, this includes the user-specified tolerance, the number of edge species/reactions, and a line for each edge reaction containing the number of reactants, the number of products, ID numbers corresponding to reactants and products, and finally the rate coefficient, k, for the reaction. It should be noted that in the current implementation, the rate coefficient is considered to be a constant, as additional information regarding temperature/pressure dependence is not passed to solver. Thus, the “automated time stepping” code (along with other preexisting DASSL code) would need to be modified to handle non-isothermal cases (as well as non-isobaric pressure-dependent cases).
 In order to reproduce existing validity testing for cases with pressure-dependence, special considerations are necessary. In particular, each pressure-dependent network is considered as a “pseudo-species” with an associated “pseudo-reaction” using the kleak associated with the network as the rate coefficient. Monitoring flux to these “pseudo-species” thus allows us to consider whether a pressure-dependent network needs to be enlarged, analogously to how monitoring of species flux allows us to consider whether a species needs to be added to the “core” reaction mechanism.
@@ -440,9 +444,23 @@ Effects on Generated Mechanism
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 One would expect that mechanisms generated using “AUTO” method would be more rigorously valid than those generated using arbitrary user-specified time/conversion steps. In the case of the 1,3-hexadiene system, mechanisms generated using the “AUTO” method were compared to mechanisms generated using evenly-spaced conversion steps. The results are shown in Table 1, below.\
 
-Table 1. Size of mechanisms generated using the “AUTO” method and varying numbers of evenly-spaced conversion steps. As in the previous section, the goal conversion is 0.9 and the tolerance is 0.05.
 
-.. Image:: misc_pngs/AUTOeffect.png 
+
+
+.. table:: Table 1. Size of mechanisms generated using the “AUTO” method and varying numbers of evenly-spaced conversion steps. As in the previous section, the goal conversion is 0.9 and the tolerance is 0.05.
+
+   =======================  ================  ============
+    # of conversion steps    Core reactions   Core species
+   =======================  ================  ============
+     1                          308            31
+     2                          56             17
+     3                          55             16
+     4                          55             16
+     6                          55             16
+     9                          48             15
+     Auto                       48             15
+   =======================  ================  ============
+
 
 It should be noted that the mechanism generated with the “AUTO” method and the mechanism generated using nine evenly-spaced conversion steps appear to be essentially identical for this system. Thus, in this case, we approach “AUTO” method behavior as we specify a finer “grid” for conversion steps, as one might intuitively expect.
 It is also interesting to note that in the test case considered, the "AUTO" method produced a smaller mechanism than cases with a small number of specified conversion steps. Thus, in this case, the mechanism generated by the “AUTO” method (and cases with a sufficiently fine grid of conversion steps) would not be expected to be more accurate than the mechanism generated without any conversion steps (assuming the kinetics and thermochemistry of the extra species and reactions is accurate). However, the time required to generate the “AUTO” mechanism is significantly shorter, due to the smaller size of the mechanism. Furthermore, one can imagine that mechanisms of similar size to the largest mechanism reported above could be generated by using tighter tolerances and the “AUTO” method, and one could be more confident in their validity. In summary, although it produces a larger mechanism, the use of a low number of conversion steps is not "better" than the use of a high number of conversion steps or the “AUTO” method.
