@@ -5,14 +5,14 @@ Creating a Condition File
 *************************
 
 To run RMG, you must specify the initial conditions and the model generation
-parameters, all of which are contained in a single file, ``condition.txt``. If
-you are running RMG on a linux computer, the file ``condition.txt`` can be
+parameters, all of which are contained in a single file, :file:`condition.txt`. If
+you are running RMG on a linux computer, the file :file:`condition.txt` can be
 located in any directory, although it is advised that you create a special
-directory for RMG simulations, since each ``condition.txt`` creates its own
-subdirectories. If you are using a Windows machine, the ``condition.txt`` must
-remain in ``RMG/condition`` (please consult Section :ref:`runninginwindows`).
+directory for RMG simulations, since each :file:`condition.txt` creates its own
+subdirectories. If you are using a Windows machine, the :file:`condition.txt` must
+remain in :file:`RMG/condition` (please consult Section :ref:`runninginwindows`).
 
-The ``condition.txt`` file should specify the following conditions, in
+The :file:`condition.txt` file should specify the following conditions, in
 order:
 
 #. The main :ref:`database`
@@ -39,10 +39,10 @@ order:
 
 #. The primary reaction library
 
-For Linux operation, the name ``condition.txt`` is variable. As you'll see in
+For Linux operation, the name :file:`condition.txt` is variable. As you'll see in
 Section :ref:`running in linux`, you can change the name of the initialization
-file, so long as it remains a ``.txt`` file. For Windows operation, the name of
-the file must remain ``condition.txt``.
+file, so long as it remains a :file:`.txt` file. For Windows operation, the name of
+the file must remain :file:`condition.txt`.
 
 
 .. _database:
@@ -101,7 +101,7 @@ You may also list multiple temperature and pressure conditions, as the example b
    TemperatureModel: Constant (K) 600 700 800 900
    PressureModel: Constant (atm) 1 200 
 
-For cases in which multiple temperatures and pressures are listed, the model generator will simulate the system (still using an isothermal, isobaric model) at all possible combinations of the specified temperatures and pressures. Thus, the resulting reaction mechanism will be valid (within the given error tolerances, estimates, and various other assumptions) at all the conditions specified. (Note, however, that reported concentrations in the ``Final_Model.txt`` output file will only correspond to the first T/P combination.)
+For cases in which multiple temperatures and pressures are listed, the model generator will simulate the system (still using an isothermal, isobaric model) at all possible combinations of the specified temperatures and pressures. Thus, the resulting reaction mechanism will be valid (within the given error tolerances, estimates, and various other assumptions) at all the conditions specified. (Note, however, that reported concentrations in the :file:`Final_Model.txt` output file will only correspond to the first T/P combination.)
 
 .. _InChIgeneration:
 
@@ -348,7 +348,7 @@ The other option is to specifiy the Conversions. In this option the conversion o
 	DynamicSimulator: DASSL
 	Conversions: 0.1 0.2 0.4 0.6 0.8 0.9
 
-For both ``TimeStep`` or ``Conversions``, in addition to determining when RMG will stop to check whether error tolerances are satisfied, the concentrations and flux at the points specified will be reported in the ``Final_Model.txt`` file.
+For both ``TimeStep`` or ``Conversions``, in addition to determining when RMG will stop to check whether error tolerances are satisfied, the concentrations and flux at the points specified will be reported in the :file:`Final_Model.txt` file.
 
 If you would not like to specify time steps or conversions, you may have them determined using the "automated time stepping" feature by specifying ``AUTO`` as follows::
 
@@ -427,7 +427,7 @@ bars section.
 Primary Reaction Library
 ------------------------
 
-The final section of the file ``condition.txt`` specifies which, if any, primary
+The final section of the file :file:`condition.txt` specifies which, if any, primary
 reaction libraries are used. Currently, the only available reaction library
 included with RMG is the Leeds' oxidation library. You can specify your own
 primary reaction library in the location section. Please note that the oxidation

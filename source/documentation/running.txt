@@ -13,9 +13,9 @@ Running RMG from the Command Line in Linux
 This section assumes that RMG is already installed according to the directions
 in Section :ref:`linux installation`. Additionally, it is assumed that you have
 created a directory (either in your home directory or elsewhere) in which the
-initialization file ``condition.txt`` has been placed. In the example, we
-assume that we have created a directory ``/hexane_pyro``, which contains the
-condition file ``hexane_pyro.txt``.
+initialization file :file:`condition.txt` has been placed. In the example, we
+assume that we have created a directory :file:`/hexane_pyro`, which contains the
+condition file :file:`hexane_pyro.txt`.
 
 #. Change the current working directory to the directory with the condition
    file::
@@ -27,8 +27,8 @@ condition file ``hexane_pyro.txt``.
 
     $ java -Xmx500m -classpath $RMG/software/RMG RMG hexane_pyro.txt > output &
   
-When RMG is started, it creates ten subdirectories in the directory containing the condition file: ``therfit``, ``chemkin``, ``fame``, ``chemdis``, ``fit3p``, ``frankie``, 
-``GATPFit``, ``ODESolver``, ``InChI`` and ``Restart``.
+When RMG is started, it creates ten subdirectories in the directory containing the condition file: :file:`therfit`, :file:`chemkin`, :file:`fame`, :file:`chemdis`, :file:`fit3p`, :file:`frankie`, 
+:file:`GATPFit`, :file:`ODESolver`, :file:`InChI` and :file:`Restart`.
 
 In this example, all of the output from RMG is piped to a file output. The ``> output`` 
 part of the command is optional but recommended. Please note that the
@@ -43,13 +43,13 @@ the output file as it is being generated, use the command:  ``$ tail -f output``
 Running RMG from the Command Line in Windows
 ============================================
 
-To run RMG in Windows: Open a DOS-prompt, change to the RMG directory, and pass the name & location of the ``condition.txt`` file to RMG::
+To run RMG in Windows: Open a DOS-prompt, change to the RMG directory, and pass the name & location of the :file:`condition.txt` file to RMG::
 
 	cd "%rmg%"
-	java -Xmx500m RMG ``condition.txt``
+	java -Xmx500m RMG condition.txt
 	
 .. note::
 
-	The name of the input file does not have to be condition.txt
+	The name of the input file does not have to be :file:`condition.txt`
 
 .. % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

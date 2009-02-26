@@ -23,11 +23,11 @@ ASCII file that can be edited to alter the information. This description applies
 to non-radical groups. There are other tree/library/dictionary files for radical
 groups, ring corrections, and other corrections. The nomenclature is different,
 but they would be edited in a similar way. The files of interest are located in
-the directory: ``$RMG/database/RMG_database/thermo/``. The three files are
+the directory: :file:`$RMG/database/RMG_database/thermo/`. The three files are
 described below.  
 
-Dictionary File (``Group_Dictionary.txt``)
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Dictionary File (:file:`Group_Dictionary.txt`)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 This file contains the name and
 adjacency list (structure) for all of the nodes contained within the thermo
@@ -42,8 +42,8 @@ element, # of radicals (0, 1, 2) on element, bonding::
  3   Cdd  0  {2,D} {4,D}
  4   C    0  {3,D} 
 
-Tree File (``Group_Tree.txt``)
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Tree File (:file:`Group_Tree.txt`)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 This file defines the tree structure of the
 database. The nodes at any particular level are defined by including the text
@@ -71,8 +71,8 @@ corresponding to the level in the tree. A sample is given below::
 Note that the indentation is not necessary because it is the "``Lx:``" that the
 computer reads, but is very helpful in making these files human readable.
 
-Library File (``Group_Library.txt``)
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Library File (:file:`Group_Library.txt`)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 This is the archive of the actual data
 associated with a given group in the tree and dictionary. There are 15 (space or
@@ -110,7 +110,7 @@ more general descriptions of groups. The notation used in the database is shown
 below. New functional group elements cannot be added to RMG in a simple way, as
 they must be hard-coded into the RMG software with the appropriate properties.
 
-If you examine the file ``Group_Dictionary.txt``, you will see that these groups
+If you examine the file :file:`Group_Dictionary.txt`, you will see that these groups
 are used extensively, even more so that the actual atoms C, H, or O. You will
 also see that groups can be defined using a bracketed notation, which simply
 means that either atom/functional group element will generate this node. For
@@ -160,8 +160,8 @@ possible functional groups can be seen in the table :ref:`"Functional Group Elem
 Viewing a Thermo Functional Group in the RMGVE
 ----------------------------------------------
 
-Open the RMG Viewer & Editor (RMGVE) by running the ``RMGVE 20080101.bat`` file.
-If your RMG database is located in the ``$RMG\database\RMG_database`` folder, the following
+Open the RMG Viewer & Editor (RMGVE) by running the :file:`RMGVE 20080101.bat` file.
+If your RMG database is located in the :file:`$RMG\database\RMG_database` folder, the following
 login screen should appear.
 
 .. image:: RMGVE_pngs/loginScreen.png
@@ -173,7 +173,7 @@ After entering your name, press the "Login" button to reveal the RMGVE.
 
 The RMGVE home screen initially has two windows open: the "Dataset viewer" and the "Adjacency List."
 In the "Dataset viewer" window, double-click on the "Thermo (Branch)" folder to show the different
-Thermo Families present in the ``RMG_Dictionary`` folder.  To load one of the Thermo Families, either:
+Thermo Families present in the :file:`RMG_Dictionary` folder.  To load one of the Thermo Families, either:
 
  * double-click on one of the names OR
  * highlight one of the names and then push the "Read family" button near the top of the "Dataset viewer" window
@@ -239,14 +239,14 @@ Enter the new thermochemical data (Cp1500 = 12.5) in the appropriate field.  The
 thermochemical data for the "Cds-OdCsH" functional group at the end of the line (after the 12 data entries).  The field "New header comments" will be placed
 above the thermochemical data for the "Cds-OdCsH" functional group.  Upon changing any of the thermochemical data fields, a line in the
 "New header comments" will automatically appear, containing your login name and the current date and time.  The box immediately above
-the "New header comments" field shows how the RMGVE will edit the current data in the ``Group_Dictionary.txt`` file.  Once all data has
+the "New header comments" field shows how the RMGVE will edit the current data in the :file:`Group_Dictionary.txt` file.  Once all data has
 been entered, close the window.
 
 Returning to the "Group tree/library" window, notice the highlighted row.  The thermochemical data entries have been updated and a star (*)
 has been placed next to the "55" value in the first column.  The star (*) reflects that a change has been made.
  
 When you have completed making changes to the thermochemistry database, close the RMGVE.  Upon doing so, you will be asked which changes you would
-like to accept and save to the ``RMG_database`` folder.  Before pushing the "OK" button, ensure that all of the changes you want to be saved have a
+like to accept and save to the :file:`RMG_database` folder.  Before pushing the "OK" button, ensure that all of the changes you want to be saved have a
 checkmark next to them.  You will receive a message stating whether the edits were saved successfully or not.  Pushing "OK" in this window will close the RMGVE.
 
 .. note::
@@ -258,7 +258,7 @@ checkmark next to them.  You will receive a message stating whether the edits we
 Viewing the changed thermochemical data
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-To view the thermochemical data that was just edited, open the file from the previous screenshot: ``$RMG/database/RMG_database/thermo/Group_Library.txt``.
+To view the thermochemical data that was just edited, open the file from the previous screenshot: :file:`$RMG/database/RMG_database/thermo/Group_Library.txt`.
 Scrolling down to the entry #55, we see the old and new thermochemical data for the functional group "Cds-OdCsH".
 
 .. image:: RMGVE_pngs/viewThermoEdits.png
@@ -287,7 +287,7 @@ redundancy will not create any problems within RMG, but it is simply unnecessary
 .. warning::  The RMGVE can only edit leafs which already have thermochemical data stored for them.  In particular:
 
 	- The RMGVE does not allow a user to change the "Refer to" field.  This change must be performed manually.
-	- The ``Group_Library.txt`` file will not recognize changes made in the RMGVE to leafs that "Refer to" another species.  For example, had we entered thermochemical data for entry #56, the RMGVE will show the updates to the H, S, and Cp values in the "Group tree/library" window but will also still show the "Refer to" functional group.  After closing the RMGVE and confirming the change to the database, if one opened the ``Group_Library.txt`` file and looked at entry #56, you will notice the leaf's thermodynamic values were not updated.
+	- The :file:`Group_Library.txt` file will not recognize changes made in the RMGVE to leafs that "Refer to" another species.  For example, had we entered thermochemical data for entry #56, the RMGVE will show the updates to the H, S, and Cp values in the "Group tree/library" window but will also still show the "Refer to" functional group.  After closing the RMGVE and confirming the change to the database, if one opened the :file:`Group_Library.txt` file and looked at entry #56, you will notice the leaf's thermodynamic values were not updated.
 
 .. image:: RMGVE_pngs/bug_referToLeaf.png
 
@@ -301,8 +301,8 @@ Adding Additional Nodes to the Thermo Database
 
 This task is more complicated than the previous example because it involves
 altering all three database files in a consistent manner, without the help of a Graphical User Interface. It is worth noting
-that the order in which species are added to the dictionary (``_Dictionary.txt`` file) and library (``_Library.txt`` file) does not
-matter; however, the position where the new group is added to the tree (``_Tree.txt`` file) is of the
+that the order in which species are added to the dictionary (:file:`_Dictionary.txt` file) and library (:file:`_Library.txt` file) does not
+matter; however, the position where the new group is added to the tree (:file:`_Tree.txt` file) is of the
 utmost importance. It is useful to create the tree and dictionary with items in
 the same order.  This ordering will facilitate cross checking and debugging if
 needed. Since all files must use the same nomenclature, the ability to search
@@ -314,13 +314,13 @@ may make consistent ordering unnecessary. The procedure is described below.
    searched. Using the RMGVE to navigate the tree structure is a useful way to find
    the location for your new group. 
 
-#. Add the line of text to the ``Group_Tree.txt`` file in the following form,
+#. Add the line of text to the :file:`Group_Tree.txt` file in the following form,
    where "``x``" is the appropriate level. The following example is for a O-O-H
    off of a benzene ring.::
 
 	Lx: Cb-(Os-(Os-H))
 
-#. Using the same name as in the tree, append the file ``Group_Dictionary.txt``
+#. Using the same name as in the tree, append the file :file:`Group_Dictionary.txt`
    to define the structure of the group and its atom center (denoted by the asterisk)::
    
 	Cb-(Os-(Os-H))
@@ -329,7 +329,7 @@ may make consistent ordering unnecessary. The procedure is described below.
 	3  O 0 {2,S} {4,S}
 	4  H 0 {3,S}
 	
-#. Add the new group to the ``Group_Library.txt`` file using the same
+#. Add the new group to the :file:`Group_Library.txt` file using the same
    nomenclature and whatever thermo data you have for the group. The format was
    shown in the previous section.::
    
@@ -441,7 +441,7 @@ Notice that RMG contains 4 different sets of kinetic data for this reaction.  Th
 		
 		- ...
 
-For RMG's reaction library, the order in which the reactions appear in the ``rateLibrary.txt`` file is significant.  RMG will use the kinetic data
+For RMG's reaction library, the order in which the reactions appear in the :file:`rateLibrary.txt` file is significant.  RMG will use the kinetic data
 for the first instance of the reaction of interest that it finds.  If you click on one of the 4 reaction rates, you'll notice that the RMGVE gives
 you the option of "edit"ing or "delete"ing the entry (as it did for the Thermo library) but it also gives you the option to "move up" or "move down"
 the reaction rate.
@@ -453,15 +453,15 @@ the "edit" button, and then fill in the popup window with the kinetic data.  Aft
 .. image:: RMGVE_pngs/editKineticTree.png
 
 Close the RMGVE.  A popup window will ask if you want to save the changes you have made.  If you leave the box checked and then open the
-``$RMG/database/RMG_database/kinetics/kinetics/H_Abstraction/rateLibrary.txt`` file, you should see that the file has been updated.
+:file:`$RMG/database/RMG_database/kinetics/kinetics/H_Abstraction/rateLibrary.txt` file, you should see that the file has been updated.
 
 .. image:: RMGVE_pngs/viewReactionEdits.png
 
 Creating a Primary Reaction Library
 ===================================
 
-A primary reaction library (PRLib) consists of four files: ``reactions.txt``,
-``species.txt``, ``3rdBodyReactions.txt``, and ``troeReactions.txt``. It is not
+A primary reaction library (PRLib) consists of four files: :file:`reactions.txt`,
+:file:`species.txt`, :file:`3rdBodyReactions.txt`, and :file:`troeReactions.txt`. It is not
 necessary to define reactions for each of the files if the user does not wish
 to, but all four files must exist, and they must include the Unit declaration
 and Reaction headings.
@@ -469,13 +469,13 @@ and Reaction headings.
 When you use a PRLib, all species and reactions in the library are immediately
 added to the mechanism, though the species come in with zero initial
 concentration unless otherwise specified in the input condition file. The user
-will see these reactions listed in the file ``Final_Model.txt``. PRLibs are
+will see these reactions listed in the file :file:`Final_Model.txt`. PRLibs are
 particularly useful for
 
 	(i) small molecule reactions which tend to deviate from the standard library values more significantly
 	(ii) incorporating a set of known experimental values for key reactions
 
-#. The first file, ``reactions.txt``, defines the standard reactions. The file
+#. The first file, :file:`reactions.txt`, defines the standard reactions. The file
    has the structure shown in the following sample. Comments are denoted with
    "``//``" and are ignored by the RMG parser.::
 
@@ -496,16 +496,16 @@ particularly useful for
 	O2 + CO = CO2 + O 1.26E13 0.00 196.90 *1.7 0 0
 
 #. The species list is just a series of molecular names and connectivity lists,
-   analogous to the formats used in the input file ``condition.txt``. All species
-   present in ``reactions.txt`` must be given a structure in ``species.txt``. The
+   analogous to the formats used in the input file :file:`condition.txt`. All species
+   present in :file:`reactions.txt` must be given a structure in :file:`species.txt`. The
    structure should have the same format as the adjacency list shown in :ref:`Creating a condition file<conditionFile>`. 
    Please note that the names that are used in the reaction library will be
    those used throughout the mechanism. In this manner, the user can adopt a
    preferred nomenclature for individual species.
 
-#. The next file is ``3rdBodyReaction.txt``, which lists reactions involving a
+#. The next file is :file:`3rdBodyReaction.txt`, which lists reactions involving a
    third body (bath gas). A sample file, with a 3rd-body reaction, is listed below.
-   The first line defines the reaction using the same format as in ``reactions.txt``.
+   The first line defines the reaction using the same format as in :file:`reactions.txt`.
    The next line lists collision efficiencies for various bath-gas species
    that scale the concentrations of particular species when calculating the total
    bath gas concentration. In the example below, CH4 is particularly effective
@@ -526,7 +526,7 @@ particularly useful for
 	//	while the second gives the scaling factors for different bath gas species
 	//	which contribute to [M].
 
-#. The final file, ``troeReactions.txt``, is present for specifying pressure-dependent reactions according to the Troe expression.  The format of each
+#. The final file, :file:`troeReactions.txt`, is present for specifying pressure-dependent reactions according to the Troe expression.  The format of each
    reactions is the same as is used by CHEMKIN. For example::
 
 	Unit:
@@ -539,7 +539,7 @@ particularly useful for
 	LOW / 3.43E18 0.0 6.15 /
 	TROE / 1 1 1 1231 /
 	
-	//	the first two lines are very similar to the ``3rdBodyReaction.txt format``
+	//	the first two lines are very similar to the :file:`3rdBodyReaction.txt` format
 	//	the next line specifies the low pressure limit Arrhenius parameters,
 	//	and the final line specifies the 3 or 4 Troe parameters
 	//	in the order: a, T***, T*, T** (the last parameter is optional).

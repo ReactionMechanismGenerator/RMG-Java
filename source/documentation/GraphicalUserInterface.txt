@@ -4,7 +4,7 @@
 Creating a Condition File using the Graphical User Interface
 ************************************************************
 
-A user may construct the ``condition.txt`` file by hand or by using the
+A user may construct the :file:`condition.txt` file by hand or by using the
 Graphical User Interface.
 
 .. _launching:
@@ -41,7 +41,7 @@ specified.  The three options for "Reactivity" are:
 
 - Unreactive - a species for which RMG will build a mechanism for, but only according to the list of reactions the user has provided
 
-- Reactive - a species for which RMG will build a mechanism for, according to the reaction family templates located in the ``RMG_database/kinetics`` folder
+- Reactive - a species for which RMG will build a mechanism for, according to the reaction family templates located in the :file:`RMG_database/kinetics` folder
  	
 If the species is selected as an "Inert Gas," no structural information for the
 molecule is necessary.
@@ -63,7 +63,7 @@ An equally valid adjacency list for methane (with the Hydrogen atoms removed) is
 	1 C 0
 
 If the user knows the InChI of the molecule (and the InChI executable is located
-in the ``RMG/software/InChI`` folder), the GUI will convert the InChI to an adjacency
+in the :file:`RMG/software/InChI` folder), the GUI will convert the InChI to an adjacency
 list upon pushing the "Add" button.  The InChI for methane is::
 
 	InChI=1/CH4/h1H4
@@ -77,7 +77,7 @@ Unreactive Species
 ------------------
 
 If an "Unreactive" species is added to the model, the GUI will ask the user for the
-location of the ``IncludeSpecies.txt`` file.  If no "Unreactive" species are added to
+location of the :file:`IncludeSpecies.txt` file.  If no "Unreactive" species are added to
 the model, the "Location of IncludeSpecies.txt" field will remain inactive.
 
 Initial Conditions
@@ -97,9 +97,9 @@ The "Thermochemical Libraries" tab
 
 This tab of the GUI allows the user to enter the location of the thermochemical libraries RMG will use in building the model.
 
-The default location of the :ref:`Main Database <database>` is the ``RMG/database/RMG_database`` folder.  We recommend to use the default settings.
+The default location of the :ref:`Main Database <database>` is the :file:`RMG/database/RMG_database` folder.  We recommend to use the default settings.
 
-The default location of the :ref:`Primary Thermo Library <primarythermolibrary>` is the ``RMG/database/RMG_database/thermo/PrimaryThermoLibrary`` folder.  We recommend to use the default settings.
+The default location of the :ref:`Primary Thermo Library <primarythermolibrary>` is the :file:`RMG/database/RMG_database/thermo/PrimaryThermoLibrary` folder.  We recommend to use the default settings.
 
 By default, the :ref:`Primary Reaction Library <primaryreactionlibrary>` is turned off.  If the user turns on
 the "Primary Reaction Library," a "Name" and "Location" must be specified.
@@ -107,7 +107,7 @@ the "Primary Reaction Library," a "Name" and "Location" must be specified.
 .. note::
 
 	The order of the "Primary Reaction Libraries" in the table is important.  The
-	order established in the table will be conserved when writing the ``condition.txt``
+	order established in the table will be conserved when writing the :file:`condition.txt`
 	file.  For any reactions that appear in multiple "Primary Reaction Libraries", RMG
 	will use the information contained in the first "Primary Reaction Library" if the reaction
 	is found and ignore all others.
@@ -187,7 +187,7 @@ The user has two options for the "Equation of State":
 The difference between the two options is that RMG will not re-normalize the concentrations of the reactants if they do not satisfy PV=nRT.
 
 The user may also choose to turn off/on the generation of :ref:`InChIs <InChIgeneration>`.  If the user
-chooses to turn InChI generation on, the InChI executable (v 1.01) must be located in the ``RMG/software/InChI`` folder.
+chooses to turn InChI generation on, the InChI executable (v 1.01) must be located in the :file:`RMG/software/InChI` folder.
 
 .. _tabSensitivityAnalysis:
 
@@ -213,7 +213,7 @@ Saving the file
 To save the file, the user can either press the "Save" button near the bottom of
 the GUI or selecting "File" --> "Save" from the navigation toolbar.  The file does
 not have to be named condition.txt.  Also, the user may add additional comments to
-the ``condition.txt`` file by adding information to the text field at the bottom of the
+the :file:`condition.txt` file by adding information to the text field at the bottom of the
 GUI.  These comments will be added to the header of the saved file.
 
 To save and immediately run a file, the user can press the "Save and Run" button
@@ -224,7 +224,7 @@ near the bottom of the GUI.
 Opening a file
 ==============
 
-To open and import the information from a ``condition.txt`` file, the user can select
+To open and import the information from a :file:`condition.txt` file, the user can select
 "File" --> "Open" from the navigation toolbar.
 
 .. note::

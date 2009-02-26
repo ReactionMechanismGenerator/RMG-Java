@@ -15,7 +15,7 @@ See http://peak.telecommunity.com/DevCenter/EasyInstall or http://pypi.python.or
 Get the python distribution utils running 
 ------------------------------------------
 
-1. Create a file ``.pydistutils.cfg`` in your home directory
+1. Create a file :file:`.pydistutils.cfg` in your home directory
 
 It should contain the following::
 
@@ -27,11 +27,11 @@ It should contain the following::
 
 2. Run the command ``export PYTHONPATH=$HOME'/lib/python/'`` and also add it to your :file:`.bashrc` file for next time you log in.
 
-#. Create the folders ``bin``, ``lib`` and ``lib/python`` in your home directory
+#. Create the folders :file:`bin`, :file:`lib` and :file:`lib/python` in your home directory
 
-#. Download the EasyInstall bootstrap script from http://peak.telecommunity.com/dist/ez_setup.py  to ``~/lib``
+#. Download the EasyInstall bootstrap script from http://peak.telecommunity.com/dist/ez_setup.py  to :file:`~/lib`
 
-#. Change into ``~/lib`` and run ``$ python ez_setup.py``
+#. Change into :file:`~/lib` and run ``$ python ez_setup.py``
 
 
 Get and install sphinx
@@ -48,7 +48,7 @@ Get the source from CVS
 
 Compile the documentation
 -------------------------
-#. Inside the ``RMG_manual`` directory type one of the following:
+#. Inside the :file:`RMG_manual` directory type one of the following:
 
   * ``make html`` to generate the html web pages
   * ``make latex`` to generate the latex source (then follow the instructions to build it to pdf)
@@ -71,9 +71,9 @@ Installing Python on Windows
 
 3. Go to the Environmen Variables settings in Windows(``Control
    Panel-->System-->Advanced System Settings``)  and add the address of
-   the ``Scripts`` folder in the Python directory to the variable
+   the :file:`Scripts` folder in the Python directory to the variable
    ``Path`` under System Variables. Typically this will be someting
-   like ``C:\Python25\Scripts``
+   like :file:`C:\Python25\Scripts`
   
 
 Installing Sphinx
