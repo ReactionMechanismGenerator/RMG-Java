@@ -35,7 +35,9 @@ For a minimal installation, you will need:
 Although not required, we also recommend that you obtain:
 
 * **GNU make.** This controls the generation of Fortran executables, and is present in most Linux distributions. More information can be found at http://www.gnu.org/software/make/. 
-   
+
+* **Apache Ant.** This controls the generation of Java executables. More information can be found at http://ant.apache.org/. 
+
 To perform sensitivity analysis on the models generated, you will also need:
 
 * **The Large Scale Differential Algebraic Equation Solver with Sensitivity Analysis (DASPK), version 3.1.** DASPK 3.1 is *subject to copyright restrictions*, but available for research purposes from http://www.cs.ucsb.edu/~cse/software.html.
@@ -75,57 +77,43 @@ To install RMG on a Linux computer:
 	$ tar -xvzf RMG.tar.gz
 	$ mv rmg/* $RMG
 
-4. **Compile GATPFit.** Change to the directory :file:`$RMG/fortran_software/fortran/GATPFit/src` and execute the makefile. Copy the resulting executable, :file:`GATPFit.exe`, to :file:`$RMG/software/GATPFit/GATPFit.exe` if this is not already done. ::
+Steps 4 and 5 are only required if you are working with the source package. Binary packages are available for several platforms and will already contain the compiled executables.
 
-	$ cd $RMG/fortran_software/fortran/GATPFit/src
+4. **Compile the Fortran programs.** If you are working with the source package, you will need to compile the Fortran programs. To do this, change to the directory :file:`$RMG/software` and execute the makefile. The make script will compile four programs: fame, frankie, DASSL, and GATPFit. ::
+
+	$ cd $RMG/software
 	$ make
-	$ cp GATPFit.exe $RMG/software/GATPFit/GATPFit.exe
+	
+5. **Compile the RMG jar file.** If you are working with the source package, you will need to compile the RMG jar file. To do this, change to the directory :file:`$RMG` and execute the Ant script twice by typing::
 
-5. **Compile FAME.** Change to the directory :file:`$RMG/fortran_software/fortran/fame/src` and execute the makefile. Copy the resulting executable, :file:`fame.exe`, to :file:`$RMG/software/fame/fame.exe` if this is not already done. ::
-
-	$ cd $RMG/fortran_software/fortran/fame/src
-	$ make
-	$ cp ../fame.exe $RMG/software/fame/fame.exe
-
-6. **Compile Frankie.** Change to the directory :file:`$RMG/fortran_software/fortran/frankie/src` and execute the makefile. Copy the resulting executable, :file:`frankie.exe`, to :file:`$RMG/software/frankie/frankie.exe` if this is not already done. ::
-
-	$ cd $RMG/fortran_software/fortran/frankie/src
-	$ make
-	$ cp ../frankie.exe $RMG/software/frankie/frankie.exe
-
-7. **Compile the DASSL ODE solver.** Download and unpack DASSL, then move all the DASSL source files -- specifically :file:`ddassl.f`, :file:`daux.f` 
-   and :file:`dlinpk.f` -- to the directory :file:`$RMG/software/ODESolver/dassl`. Change to that directory and execute the makefile. Copy the resulting executable, :file:`dasslAUTO.exe`, to :file:`$RMG/software/ODESolver/dasslAUTO.exe` if this is not already done. ::
-
-	$ tar -xvzf dassl.tar.gz
-	$ mv *.f $RMG/fortran_software/fortran/ODESolver/dassl
-	$ cd $RMG/fortran_software/fortran/ODESolver/dassl
-	$ make
-	$ cp dasslAUTO.exe $RMG/software/ODESolver/dasslAUTO.exe
+	$ cd $RMG
+	$ ant compile
+	$ ant jar
 
 Your installation of RMG is nearly complete.
 
 The next few steps are required only if you want RMG to be able to perform sensitivity analysis on the models generated. Currently RMG uses DASPK3.1 (see Section :ref:`installrequirements`) to perform sensitivity analysis. Analytical Jacobian and partial derivatives with respect to rates of reactions and Gibbs free energy of molecules are generated using the automated differentiator of DAEPACK. 
 
-8. Obtain the DAEPACK library file. Make a symbolic link of the library file in a directory in your library file search path, e.g. :file:`/usr/lib`. 
+6. Obtain the DAEPACK library file. Make a symbolic link of the library file in a directory in your library file search path, e.g. :file:`/usr/lib`. 
 
-9. Download daspk31.tgz and untar it using the command ``$ tar -zxvf daspk31.tgz``. Copy all the source files (:file:`*.f` files) from the untarred directories :file:`ad_solver`,
-   :file:`preconds` and :file:`solver` into the directory :file:`$RMG/fortran_software/fortran/ODESolver/daspk`. Change to that directory and execute the makefile. Copy the resulting executable, :file:`daspkAUTO.exe`, to :file:`$RMG/software/ODESolver/daspkAUTO.exe` if this is not already done. ::
+7. Download daspk31.tgz and untar it using the command ``$ tar -zxvf daspk31.tgz``. Copy all the source files (:file:`*.f` files) from the untarred directories :file:`ad_solver`,
+   :file:`preconds` and :file:`solver` into the directory :file:`$RMG/software/ODESolver/daspk`. Change to the directory :file:`$RMG/software/ODESolver`and execute the makefile with the ``daspk`` option. Copy the resulting executable, :file:`daspkAUTO.exe`, to :file:`$RMG/software/ODESolver/daspkAUTO.exe` if this is not already done. ::
 
 	$ tar -xvzf daspk31.tgz
-	$ mv ad_solver/*.f $RMG/fortran_software/fortran/ODESolver/daspk
-	$ mv preconds/*.f $RMG/fortran_software/fortran/ODESolver/daspk
-	$ mv solver/*.f $RMG/fortran_software/fortran/ODESolver/daspk
-	$ cd $RMG/fortran_software/fortran/ODESolver/dassl
-	$ make
+	$ mv ad_solver/*.f $RMG/software/ODESolver/daspk
+	$ mv preconds/*.f $RMG/software/ODESolver/daspk
+	$ mv solver/*.f $RMG/software/ODESolver/daspk
+	$ cd $RMG/software/ODESolver
+	$ make daspk
 	$ cp daspkAUTO.exe $RMG/software/ODESolver/daspkAUTO.exe
 
 You are now ready to run RMG with sensitivity analysis support.
 
 The next few steps are required only if you want RMG to be able to generate InChIs for the species present in the reaction mechanism.
 
-10. Download the InChI version 1 (software version 1.01) source code and Application Program Interface (API).
+8. Download the InChI version 1 (software version 1.01) source code and Application Program Interface (API).
 
-11.	Change to the :file:`InChI-1-API/cInChI/gcc_makefile` directory and execute the makefile.  Copy the resulting executable :file:`cInChI-1.exe` to the :file:`$RMG/software/InChI` folder. ::
+9.	Change to the :file:`InChI-1-API/cInChI/gcc_makefile` directory and execute the makefile.  Copy the resulting executable :file:`cInChI-1.exe` to the :file:`$RMG/software/InChI` folder. ::
 
 	$ cd InChI-1-API/cInChI/gcc_makefile
 	$ make
