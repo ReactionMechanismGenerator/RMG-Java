@@ -35,7 +35,7 @@ tree. The nomenclature within all three files must be identical. The asterisk
 The format for each line in the adjacency list is: atom #, \* if central atom,
 element, # of radicals (0, 1, 2) on element, bonding::
 
- Cb-(Cds-Cdd-Cd) 
+ Cb-(Cd-Cdd-Cd) 
  1 * Cb   0  {2,S} 
  2   Cd   0  {1,S} {3,D} 
  3   Cdd  0  {2,D} {4,D}
@@ -58,10 +58,10 @@ corresponding to the level in the tree. A sample is given below::
        L3: Cb-Os 
        L3: Cb-C 
          L4: Cb-Cs 
-         L4: Cb-Cds 
-           L5: Cb-(Cds-Od) // Cb-CO 
-           L5: Cb-(Cds-Cd) 
-             L6: Cb-(Cds-Cds) // Cb-Cd 
+         L4: Cb-Cd 
+           L5: Cb-(Cd-Od) // Cb-CO 
+           L5: Cb-(Cd-Cd) 
+             L6: Cb-(Cd-Cd) // Cb-Cd 
          L4: Cb-Cb 
      L2: Ct 
 
@@ -115,14 +115,14 @@ also see that groups can be defined using a bracketed notation, which simply
 means that either atom/functional group element will generate this node. For
 example::
 
- Cb-Cds 
+ Cb-Cd 
  1 * Cb       0  {2,S} 
  2   {Cd,CO}  0  {1,S} 
 
 
 In this example, the second "element" is actually either Cd or CO. The reason
 that either Cd or CO will generate the same node is because both fall under the
-more general Cds definition, which is a carbon atom with one double and two
+more general Cd definition, which is a carbon atom with one double and two
 single bonds. This can also be useful if there is a secondary effect and all
 that matters is that there is a π-bond present, but the fact that it is C=O or
 C=C does not matter. This is not used very much in the thermo database, but
@@ -165,7 +165,7 @@ login screen should appear.
 
 .. image:: RMGVE_pngs/loginScreen.png
 
-The login name is used to document who made what changes in the RMG libraries (more on this soon).
+The login name is used to document who made what changes in the RMG libraries.
 After entering your name, press the "Login" button to reveal the RMGVE.
 
 .. image:: RMGVE_pngs/homeScreen.png
@@ -180,7 +180,7 @@ Thermo Families present in the ``RMG_Dictionary`` folder.  To load one of the Th
 Note: Loading a family could take a few minutes, depending on how large the family is.
 
 Once the family is loaded, a new window will pop up.  The name of the window corresponds to the name of the Thermo
-family that was read.  In the screen shot shown below, we have chose to load the "Group" family.  Use the scroll bar
+family that was read.  In the screen shot shown below, we have chosen to load the "Group" family.  Use the scroll bar
 to see the list of functional groups contained in the "Group" family.  To visualize what the different functional
 groups look like, highlight one of the names and then push the "View" button near the top of the "Group" window.
 For instance, if we select the functional group name "Cds-OdCsH," the RMGVE should look as follows.
@@ -190,10 +190,12 @@ For instance, if we select the functional group name "Cds-OdCsH," the RMGVE shou
 Notice that the "Adjacency List" window is no longer blank but now contains the adjacency list for the functional group
 "Cds-OdCsH".  Furthermore, a window entitled "Cds-OdCsH" opens which contains a visualization of the functional group.
 
-Note: Notice also that a toolbar appears above the "Dataset viewer," "Adjacency List," and "Cds-OdCsH" windows.  This toolbar
-may be used to edit the molecule in the "Cds-OdCsH" window.  For instance, click on the icon with the four arrows (pointing
-up, right, down, and left).  Now click on one of the atoms in the "Cds-OdCsH" window and drag it to another location within the
-window.  To restore (clean) the structure of the functional group, click on the icon containing the picture of a rake.
+.. note::
+
+	Notice also that a toolbar appears above the "Dataset viewer," "Adjacency List," and "Cds-OdCsH" windows.  This toolbar
+	may be used to edit the molecule in the "Cds-OdCsH" window.  For instance, click on the icon with the four arrows (pointing
+	up, right, down, and left).  Now click on one of the atoms in the "Cds-OdCsH" window and drag it to another location within the
+	window.  To restore (clean) the structure of the functional group, click on the icon containing the picture of a rake.
 
 .. _changingthermodata:
 
@@ -208,7 +210,7 @@ the data for the highlighted thermo family.  After some re-arranging of the wind
 
 .. image:: RMGVE_pngs/visualizeThermoData.png
 
-The top half of the new "Group tree/library" window contains the "Group" thermo family tree.  The bottom half contains the
+The top half of the new "Group tree/library" window contains the "Group" thermo family tree; the bottom half contains the
 "Group" thermo family library.  Suppose we want to change the thermo value for the "Cds-OdCsH" functional group.  To do so,
 we can navigate the tree in the top half of the "Group tree/library" window by opening (double-clicking) the folders corresponding to the "Cds-OdCsH"
 functional group:
@@ -246,7 +248,9 @@ When you have completed making changes to the thermochemistry database, close th
 like to accept and save to the ``RMG_database`` folder.  Before pushing the "OK" button, ensure that all of the changes you want to be saved have a
 checkmark next to them.  You will receive a message stating whether the edits were saved successfully or not.  Pushing "OK" in this window will close the RMGVE.
 
-Note: Notice the RMGVE directs you to the location of the file that is about to be changed.
+.. note::
+
+	Notice the RMGVE directs you to the location of the file that is about to be changed.
 
 .. image:: RMGVE_pngs/acceptThermoEdits.png
 
@@ -281,7 +285,7 @@ redundancy will not create any problems within RMG, but it is simply unnecessary
 
 .. warning::  The RMGVE can only edit leafs which already have thermochemical data stored for them.  In particular:
 
-	- The RMGVE does not allow a user to change the "Refer to" field.  This change must be performed by hand.
+	- The RMGVE does not allow a user to change the "Refer to" field.  This change must be performed manually.
 	- The ``Group_Library.txt`` file will not recognize changes made in the RMGVE to leafs that "Refer to" another species.  For example, had we entered thermochemical data for entry #56, the RMGVE will show the updates to the H, S, and Cp values in the "Group tree/library" window but will also still show the "Refer to" functional group.  After closing the RMGVE and confirming the change to the database, if one opened the ``Group_Library.txt`` file and looked at entry #56, you will notice the leaf's thermodynamic values were not updated.
 
 .. image:: RMGVE_pngs/bug_referToLeaf.png
@@ -361,8 +365,8 @@ The next uncommented line informs RMG how to handle the reverse reaction.  Some 
 	- "none": RMG assumes the reaction is irreversible
 	- "(f\_): <rxnFamilyName>": RMG may use the forward reaction rates stored in the <rxnFamilyName> folder
 
-The next set of uncommented lines describes the changes in the reacting molecules, "X_H" and "Y_rad_birad", connectivity graphs to form the products, 
-"X_rad" and "Y_H".  For the "H_Abstraction" reaction family, a single "S" bond is broken between atoms "1" and "2" and a single "S" bond is formed between
+The next set of uncommented lines describes the changes in the reacting molecules', "X_H" and "Y_rad_birad", connectivity graphs to form the products, 
+"X_rad" and "Y_H".  For the "H_Abstraction" reaction family, a single bond ("S") is broken between atoms "1" and "2" and a single bond ("S") is formed between
 atoms "2" and "3".  Furthermore, atom "1" gains a radical while atom "3" loses a radical.
 
 For a better understanding of what the atom numbering means, click on one of the species in the "H_Abstraction" window.  If you click on the species "C/H/Cs3",
@@ -383,13 +387,7 @@ Returning to the "Dataset viewer" window, click the "Tree/library" button.  The 
 	
 	#. Temp: This column contains the Temperature range (in units of Kelvin) over which the kinetic data is valid.
 	
-	#. A, n, a, E0: These columns contain the modified Arrhenius parameters (A, n, E0) and the Evans-Polanyi coefficient (a).  "A" has units of "mol,cm3,s" and "E" has units of "kcal/mol".
-	
-	#. dA, dn, da, dE0: These columns contain the error for the Arrhenius parameters and Evans-Polanyi coefficient.  If the number is reported with a star (*) in front of it, this represents a multiplicative error; else, the error is additive.
-	
-	#. Rank: This column contains the confidence the RMG developers have in the kinetic data on a scale of 1 to 5, with 1 being "very confident" and 5 being "rough estimate".
-	
-	#. Notes: This column contains notes on where the kinetic data came from.  Note: The reaction library is not as well-documented as the thermo library.::
+	#. A, n, a, E0: These columns contain the modified Arrhenius parameters (A, n, E0) and the Evans-Polanyi coefficient (a).  "A" has units of "mol,cm3,s" and "E" has units of "kcal/mol".::
 	
 		The Evans-Polanyi principle states that for a series of closely-related reactions,
 		a linear relationship between the activation energy (Ea) and the enthalpy of 
@@ -398,6 +396,12 @@ Returning to the "Dataset viewer" window, click the "Tree/library" button.  The 
 		Ea = C1 + a*delHr
 		
 		where C1 and a are empirically-derived constants.  For RMG, we assume C1 = 0.
+	
+	#. dA, dn, da, dE0: These columns contain the error for the Arrhenius parameters and Evans-Polanyi coefficient.  If the number is reported with a star (*) in front of it, this represents a multiplicative error; else, the error is additive.
+	
+	#. Rank: This column contains the confidence the RMG developers have in the kinetic data on a scale of 1 to 5, with 1 being "very confident" and 5 being "rough estimate".
+	
+	#. Notes: This column contains notes on where the kinetic data came from.  The reaction library is not as well-documented as the thermo library.
 
 Suppose we want to add a reaction rate to RMG for the following reaction::
 
@@ -426,11 +430,9 @@ Your screen should look something like the following
 
 Notice that RMG contains 4 different sets of kinetic data for this reaction.  There are two explanation for this:
 
-	#. The reaction rates all pertain to the same reaction: The different values could pertain to experimental vs. theoretical values or 
-	differing basis sets in the theoretical calculations (e.g. using an ab initio quantum chemistry sofware program)
+ #. The reaction rates all pertain to the same reaction: The different values could pertain to experimental vs. theoretical values or differing basis sets in the theoretical calculations (e.g. using an ab initio quantum chemistry sofware package)
 	
-	#. The reaction rates pertain to different reactions: Notice that the "X_H" leaf is only defined as "C/H2/NonDeC".  Thus, one of the reaction rates
-	could correspond to the methyl radical abstracting a Hydrogen atom from:
+ #. The reaction rates pertain to different reactions: Notice that the "X_H" leaf is only defined as "C/H2/NonDeC".  Thus, one of the reaction rates could correspond to the methyl radical abstracting a Hydrogen atom from:
 	
 		- propane to form the iso-propyl radical
 		
@@ -469,8 +471,8 @@ concentration unless otherwise specified in the input condition file. The user
 will see these reactions listed in the file ``Final_Model.txt``. PRLibs are
 particularly useful for
 
-	(i) small molecule reactions which tend to deviate from the standard library values more significantly and 
-	(ii) to incorporate a set of known experimental values for key reactions
+	(i) small molecule reactions which tend to deviate from the standard library values more significantly
+	(ii) incorporating a set of known experimental values for key reactions
 
 #. The first file, ``reactions.txt``, defines the standard reactions. The file
    has the structure shown in the following sample. Comments are denoted with
@@ -523,8 +525,7 @@ particularly useful for
 	//	while the second gives the scaling factors for different bath gas species
 	//	which contribute to [M].
 
-#. The final file, ``troeReactions.txt``, is present for specifying pressure-
-   dependent reactions according to the Troe expression.  The format of each
+#. The final file, ``troeReactions.txt``, is present for specifying pressure-dependent reactions according to the Troe expression.  The format of each
    reactions is the same as is used by CHEMKIN. For example::
 
 	Unit:
