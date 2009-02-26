@@ -403,8 +403,8 @@ The reaction mechanism is divided into a “core” and an “edge”. The “co
 	:nowrap:
 
 	\begin{eqnarray}
-	\frac{{dC_j }}{{dt}} < tol \cdot R_{char} {\rm{ }}\forall {\rm{ }}j \in {\rm{edge species}} \\ 
-	{\rm{with }}R_{char}  = \left[ {\sum\limits_i {\left( {\frac{{dC_i }}{{dt}}} \right)^2 } } \right]^{{\textstyle{1 \over 2}}} {\rm{  }}i \in {\rm{core species}}
+	\frac{{dC_j }}{{dt}} < tol \cdot R_{char} {\rm{ }}\forall {\rm{ }}j \in {\rm{\text{edge species}}} \\ 
+	{\rm{\text{with }}}R_{char}  = \left[ {\sum\limits_i {\left( {\frac{{dC_i }}{{dt}}} \right)^2 } } \right]^{{\textstyle{1 \over 2}}} {\rm{  }}i \in {\rm{\text{core species}}}
 	\end{eqnarray}
 
 In these criteria, :math:`tol` is a tolerance specified by the user. If any of these criteria are not valid, the edge species with the highest flux is added to the mechanism “core” and the ODE solver restarts simulation from t = 0. In the original implementation, the times or conversions at which model validity is tested are specified by the user.
