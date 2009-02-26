@@ -3,31 +3,31 @@
    contain the root `toctree` directive.
 
 *****************
-RMG
+RMG documentation
 *****************
-
-This will become the home page (with a different layout) that will contain
-
-a description
--------------
 
 RMG is an automatic chemical reaction mechanism generator that constructs 
 mechanisms composed of elementary chemical reaction steps using a general understanding of how hydrocarbons react. This is its documentation.
 
-
-a link to the documentation
-----------------------------
+Contents:
 
 .. toctree::
-   :maxdepth: 2
+   :maxdepth: 1
 
-   documentation
+   introduction
+   installation
+   conditionfile
+   GraphicalUserInterface
+   running
+   analyzing
+   modification
+   theory
+   BuildingDocumentation
+   credits
+   
+Indices and tables
+==================
 
-links to download stuff
-------------------------
-see the links on the left
+* :ref:`genindex`
+* :ref:`search`
 
-
-a way to search
----------------
- :ref:`search`\ , or see the box on the left
