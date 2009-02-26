@@ -1,19 +1,29 @@
-//!*******************************************************************
-//!
-//!     Copyright: Jing Song, 2002, all rights reserved
-//!
-//!*******************************************************************
-
-/*********************************************************************
-	Rhapsody	: 4.0
-	Login		: Administrator
-	Component	: RMG
-	Configuration 	: RMG
-	Model Element	: RMG
-//!	Generated Date	: Sun, 10, Nov 2002
-	File Path	: RMG\RMG\MainRMG.java
-*********************************************************************/
-
+////////////////////////////////////////////////////////////////////////////////
+//
+//	RMG - Reaction Mechanism Generator
+//
+//	Copyright (c) 2002-2009 Prof. William H. Green (whgreen@mit.edu) and the
+//	RMG Team (rmg_dev@mit.edu)
+//
+//	Permission is hereby granted, free of charge, to any person obtaining a
+//	copy of this software and associated documentation files (the "Software"),
+//	to deal in the Software without restriction, including without limitation
+//	the rights to use, copy, modify, merge, publish, distribute, sublicense,
+//	and/or sell copies of the Software, and to permit persons to whom the
+//	Software is furnished to do so, subject to the following conditions:
+//
+//	The above copyright notice and this permission notice shall be included in
+//	all copies or substantial portions of the Software.
+//
+//	THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+//	IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+//	FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+//	AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+//	LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+//	FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
+//	DEALINGS IN THE SOFTWARE.
+//
+////////////////////////////////////////////////////////////////////////////////
 
 
 import java.util.*;
@@ -171,21 +181,30 @@ public class RMG {
                      System.exit(0);
              }
 
-             // Print out RMG header
-             System.out.println("\n");
-             System.out.println("                            RMG"); 
-             System.out.println("                Reaction Mechanism Generator");
-             System.out.println("                        version 3.0\n");
-             System.out.println(
-            		"     Jing Song, Sumathy Raman, Joanna Yu, William H. Green,\n" +
-             		"        Sarah Petway, Sandeep Sharma, David M. Matheu,\n" +
-             		"  Paul E. Yelvington, Robert Ashcraft, C. Franklin Goldsmith,\n" +
-             		"      John Wen, Andrew Wong, Hsi-Wu Wong, Kevin Van Geem,\n" +
-             		"          Gregory Beran, Joshua Allen, Richard H. West\n" +
-             		"                 Michael Harper, and Gregory Magoon");
-             
-             System.out.println("\n");
-             System.out.println("----------------------------------------------------------------------");
+            // Print out RMG header
+			System.out.println("");
+			System.out.println("################################################################");
+			System.out.println("#                                                              #");
+			System.out.println("#              RMG - Reaction Mechanism Generator              #");
+			System.out.println("#                         Version 3.0                          #");
+			System.out.println("#                         26 Feb 2009                          #");
+			System.out.println("#                                                              #");
+			System.out.println("#                 http://rmg.sourceforge.net/                  #");
+			System.out.println("#                     http://rmg.mit.edu/                      #");
+			System.out.println("#                                                              #");
+			System.out.println("#  Copyright (c) 2002-2009                                     #");
+			System.out.println("#  Prof. William H. Green and the RMG Team:                    #");
+			System.out.println("#    Joshua Allen, Dr. Robert Ashcraft, Dr. Gregory Beran,     #");
+			System.out.println("#    C. Franklin Goldsmith, Michael Harper, Gregory Magoon,    #");
+			System.out.println("#    Dr. David M. Matheu, Sarah Petway, Sumathy Raman,         #");
+			System.out.println("#    Sandeep Sharma, Kevin Van Geem, Dr. Jing Song,            #");
+			System.out.println("#    Dr. John Wen, Dr. Richard West, Andrew Wong,              #");
+			System.out.println("#    Dr. Hsi-Wu Wong, Dr. Paul E. Yelvington, Dr. Joanna Yu    #");
+			System.out.println("#                                                              #");
+			System.out.println("################################################################");
+			System.out.println("");
+
+            System.out.println("----------------------------------------------------------------------");
         	 System.out.println(" User input:");
              System.out.println("----------------------------------------------------------------------");
 
