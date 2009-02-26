@@ -133,7 +133,6 @@ The terms in square brackets on the right-hand side are the loss channels; these
 
 Supporting Equations
 --------------------
-why won't this work?
 
 Collision Frequency
 ~~~~~~~~~~~~~~~~~~~
