@@ -739,8 +739,11 @@ public class Reaction {
       //#[ operation generateReverseReaction()
       Structure s = getStructure();
 
-      Kinetics k = getKinetics();
-      Structure newS = s.generateReverseStructure();
+      //Kinetics k = getKinetics();
+	  Kinetics k = kinetics;
+	  if (kinetics == null)
+		throw new NullPointerException();
+		Structure newS = s.generateReverseStructure();
 	  newS.setRedundancy(s.getRedundancy());
       Reaction r = new Reaction(newS, k);
 
@@ -790,7 +793,7 @@ public class Reaction {
       //#[ operation getKinetics()
       if (isForward()) {
       	int red = structure.getRedundancy();
-      	return kinetics.multiply(red);
+		return kinetics.multiply(red);
       }
       else if (isBackward()) {
       	Reaction rr = getReverseReaction();
@@ -1377,15 +1380,6 @@ public class Reaction {
 		}
 		
 		return rxn;
-	}
-	
-	public void generateKineticsFromReverse() {
-		if (!hasReverseReaction())
-			return;
-		
-		fitReverseKineticsRoughly();
-		structure.setDirection(1);
-		setKinetics(getFittedReverseKinetics());
 	}
 
 	/**

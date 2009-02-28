@@ -100,7 +100,7 @@ public class PDepReaction extends Reaction {
 	public PDepReaction(PDepIsomer reac, PDepIsomer prod, Reaction rxn) {
 		super();
 		structure = rxn.structure;
-		kinetics = rxn.kinetics;
+		kinetics = rxn.getKinetics();
 		reverseReaction = rxn.reverseReaction;
 		if (structure == null)
 			structure = new Structure(reac.getSpeciesList(), prod.getSpeciesList(), 1);

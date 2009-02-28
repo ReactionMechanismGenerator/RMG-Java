@@ -269,7 +269,6 @@ public class TemplateReaction extends Reaction {
 				if (reverse == null)
 					return null;
 				reaction.setReverseReaction(reverse);
-				reaction.generateKineticsFromReverse();
 			}
 			else {
 				
@@ -285,7 +284,6 @@ public class TemplateReaction extends Reaction {
 					TemplateReaction reverse = new TemplateReaction(p_structureSp.generateReverseStructure(), p_kinetics, rRT);
 					reaction.setReverseReaction(reverse);
 					reverse.setReverseReaction(reaction);
-					reverse.generateKineticsFromReverse();
 					rRT.addReaction(reverse);
 				}
 

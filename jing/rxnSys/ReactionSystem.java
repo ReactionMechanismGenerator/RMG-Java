@@ -953,9 +953,14 @@ public String printLowerBoundConcentrations(LinkedList p_speciesList) {
 		}
 		output.append("\n");	
 		LinkedList reactionSet = ((SystemSnapshot)getSystemSnapshotEnd().next()).reactionList;
+		LinkedList uniqueReactions = ((SystemSnapshot)getSystemSnapshotEnd().next()).getUniqueReactionList();
 		
-		
-		for (int i=0; i<reactionSet.size(); i++) {
+		for (int i=0; i<uniqueReactions.size(); i++) {
+			Reaction rxn = (Reaction) uniqueReactions.get(i);
+			int index = reactionSet.indexOf(rxn);
+			if (index < 0 || index >= reactionSet.size())
+				continue;
+			
 			iter = getSystemSnapshot();
 			output.append("reaction " + (i+1) + '\t' );
 			while (iter.hasNext()) {
@@ -963,12 +968,13 @@ public String printLowerBoundConcentrations(LinkedList p_speciesList) {
 				if (ss.getTime().time == 0.0) continue;
         	
 				if (i < ss.reactionFlux.length)
-					output.append( ss.reactionFlux[i] + "\t");
+					output.append( ss.reactionFlux[index] + "\t");
 				else {
 					System.out.println("Warning: Size of reaction set does not match number of reaction fluxes. Expected reaction flux missing.");
 					output.append("\n");
 					return output.toString();
 				}
+				
          	}
 			output.append("\n");
         }
@@ -1168,7 +1174,7 @@ public String printLowerBoundConcentrations(LinkedList p_speciesList) {
     	  Iterator iter = getSystemSnapshot();
     	  SystemSnapshot ss = (SystemSnapshot) iter.next();//10/25/07 gmagoon (?) why is this done twice
     	  ss = (SystemSnapshot) iter.next();
-    	  LinkedList reactionList = ss.getReactionList();
+    	  LinkedList reactionList = ss.getUniqueReactionList();
     	  for (int j = 0; j < reactionList.size(); j++) {
 		    Reaction r = (Reaction) reactionList.get(j);
     		  if (r instanceof PDepReaction) {

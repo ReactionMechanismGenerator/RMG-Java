@@ -37,6 +37,8 @@ import jing.param.*;
 import jing.chem.Species;
 import jing.param.Pressure;
 import jing.param.Temperature;
+import jing.rxn.PDepReaction;
+import jing.rxn.Reaction;
 
 //## package jing::rxnSys
 
@@ -289,6 +291,22 @@ public class SystemSnapshot {
       return reactionList;
     }
 
+
+	public LinkedList getUniqueReactionList() {
+		LinkedList uniqueList = new LinkedList();
+		for (Iterator iter = reactionList.iterator(); iter.hasNext(); ) {
+			Reaction rxn = (Reaction) iter.next();
+			if (rxn instanceof PDepReaction) {
+				// PDepReaction reactions are already handled correctly
+				uniqueList.add(rxn);
+			}
+			else {
+				if (!uniqueList.contains(rxn) && !uniqueList.contains(rxn.getReverseReaction()))
+					uniqueList.add(rxn);
+			}
+		}
+		return uniqueList;
+	}
 
     //svp
     //## operation getRealID(Species)

@@ -149,11 +149,11 @@ public class FastMasterEqn implements PDepKineticsEstimator {
 
 		if (!shouldContinue)
 		{
-			LinkedList<PDepReaction> paths = pdn.getPathReactions();
+			/*LinkedList<PDepReaction> paths = pdn.getPathReactions();
 			LinkedList<PDepReaction> net = pdn.getNetReactions();
 			net.clear();
 			for (int i = 0; i < paths.size(); i++)
-				net.add(paths.get(i));
+				net.add(paths.get(i));*/
 			return;
 		}
 		
@@ -416,10 +416,24 @@ public class FastMasterEqn implements PDepKineticsEstimator {
 				else
 					isomer2 = multiIsomers.indexOf(product) + uniIsomers.size() + 1;
 					
+				double A = 0.0;
+				double Ea = 0.0;
+				double n = 0.0;
+				if (rxn.isForward()) {
+					A = rxn.getKinetics().getAValue();
+					Ea = rxn.getKinetics().getEValue();
+					n = rxn.getKinetics().getNValue();
+				}
+				else {
+					((Reaction) rxn).generateReverseReaction();
+					Kinetics kin = ((Reaction) rxn).getFittedReverseKinetics();
+					A = kin.getAValue();
+					Ea = kin.getEValue();
+					n = kin.getNValue();
+					int temp = isomer1; isomer1 = isomer2; isomer2 = temp;
+				}
+
 				// Arrhenius parameters
-				double A = rxn.getHighPKinetics().getAValue();
-				double Ea = rxn.getHighPKinetics().getEValue();
-				double n = rxn.getHighPKinetics().getNValue();
 				if (Ea < 0) {
 					System.out.println("Warning: Adjusted activation energy of reaction " +
 							rxn.toString() + " from " + Double.toString(Ea) +
@@ -453,6 +467,7 @@ public class FastMasterEqn implements PDepKineticsEstimator {
 		}
 		catch(Exception e) {
 			System.out.println(e.getMessage());
+			e.printStackTrace(System.out);
 		}
 		
 	}

@@ -165,10 +165,10 @@ public abstract class JDAS implements DAESolver {
 						arrayString.append(0+" ");
 				}
 				// Original DASSL has these lines uncommented, while DASPK is as given (should they be different?)
-				//if (r.hasReverseReaction())
+				if (r.hasReverseReaction())
 					arrayString.append(1 + " ");
-				//else
-				//	arrayString.append(0 + " ");
+				else
+					arrayString.append(0 + " ");
 				rateString.append(or.rate + " " + or.A + " " + or.n + " " + or.E + " "+r.calculateKeq(p_temperature)+ " ");
 					
 			}
