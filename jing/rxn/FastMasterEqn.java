@@ -60,7 +60,7 @@ public class FastMasterEqn implements PDepKineticsEstimator {
 	 * that are used for this purpose.
 	 */
 	private static int runCount = 0;
-	
+
 	/**
 	 * An enumeraction of pressure-dependent kinetics estimation methods:
 	 * <ul>
@@ -70,18 +70,18 @@ public class FastMasterEqn implements PDepKineticsEstimator {
 	 * </ul>
 	 */
 	public enum Mode { NONE, STRONGCOLLISION, RESERVOIRSTATE };
-	
+
 	/**
-	 * The mode to use for estimating the pressure-dependent kinetics. The mode 
+	 * The mode to use for estimating the pressure-dependent kinetics. The mode
 	 * represents the set of approximations used to estimate the k(T, P) values.
 	 */
 	private Mode mode;
-	
+
 	//==========================================================================
 	//
 	//	Constructors
 	//
-	
+
 	/**
 	 * Creates a new object with the desired mode. The mode represents the
 	 * set of approximations used to estimate the k(T, P) values.
@@ -90,12 +90,12 @@ public class FastMasterEqn implements PDepKineticsEstimator {
 	public FastMasterEqn(Mode m) {
 		setMode(m);
 	}
-	
+
 	//==========================================================================
 	//
 	//	Accessors
 	//
-	
+
 	/**
 	 * Returns the current pressure-dependent kinetics estimation mode.
 	 * @return The current pressure-dependent kinetics estimation mode.
@@ -103,7 +103,7 @@ public class FastMasterEqn implements PDepKineticsEstimator {
 	public Mode getMode() {
 		return mode;
 	}
-	
+
 	/**
 	 * Sets the pressure-dependent kinetics estimation mode.
 	 * @param m The new pressure-dependent kinetics estimation mode.
@@ -111,12 +111,12 @@ public class FastMasterEqn implements PDepKineticsEstimator {
 	public void setMode(Mode m) {
 		mode = m;
 	}
-	
+
 	//==========================================================================
 	//
 	//	Other methods
 	//
-	
+
 	/**
 	 * Executes a pressure-dependent rate coefficient calculation.
 	 * @param pdn The pressure-dependent reaction network of interest
@@ -125,11 +125,11 @@ public class FastMasterEqn implements PDepKineticsEstimator {
 	 */
 	public void runPDepCalculation(PDepNetwork pdn, ReactionSystem rxnSystem,
 			CoreEdgeReactionModel cerm) {
-		
+
 		// No update needed if network is not altered
 		if (pdn.getAltered() == false)
 			return;
-		
+
 		// Don't do networks with isomers made up of only monatomic species
 		boolean shouldContinue = true;
 		for (ListIterator iter = pdn.getMultiIsomers().listIterator(); iter.hasNext(); ) {
@@ -156,10 +156,10 @@ public class FastMasterEqn implements PDepKineticsEstimator {
 				net.add(paths.get(i));*/
 			return;
 		}
-		
+
 		// Get working directory (to find FAME executable)
 		String dir = System.getProperty("RMG.workingDirectory");
-        
+
 		// Determine wells and reactions; skip if no reactions in network
 		LinkedList<PDepIsomer> uniIsomers = pdn.getUniIsomers();
 		LinkedList<PDepIsomer> multiIsomers = pdn.getMultiIsomers();
@@ -189,16 +189,16 @@ public class FastMasterEqn implements PDepKineticsEstimator {
 
 		// Create FAME input files
 		writeInputFile(pdn, rxnSystem, uniIsomers, multiIsomers, pathReactions);
-		
+
 		// Touch FAME output file
 		touchOutputFile();
-		
+
 		// FAME system call
 		try {
-           	System.out.println("Running FAME...");
+           	//System.out.println("Running FAME...");
 			String[] command = {dir + "/software/fame/fame.exe"};
            	File runningDir = new File("fame/");
-			Process fame = Runtime.getRuntime().exec(command, null, runningDir);                     
+			Process fame = Runtime.getRuntime().exec(command, null, runningDir);
             InputStream ips = fame.getInputStream();
             InputStreamReader is = new InputStreamReader(ips);
             BufferedReader br = new BufferedReader(is);
@@ -208,16 +208,16 @@ public class FastMasterEqn implements PDepKineticsEstimator {
             	System.out.println(line);
             }*/
             int exitValue = fame.waitFor();
-			
+
         }
         catch (Exception e) {
         	System.out.println("Error while executing FAME!");
         	System.exit(0);
         }
-        
+
 		// Parse FAME output file and update accordingly
         if (readOutputFile(pdn, rxnSystem, cerm, uniIsomers, multiIsomers)) {
-        
+
 			// Reset altered flag
 			pdn.setAltered(false);
 
@@ -237,13 +237,20 @@ public class FastMasterEqn implements PDepKineticsEstimator {
 			output.renameTo(newOutput);
 
 			// Write finished indicator to console
-			System.out.println("FAME execution for network " + Integer.toString(id) + " complete.");
+			//System.out.println("FAME execution for network " + Integer.toString(id) + " complete.");
+			String formula = pdn.getUniIsomers().get(0).getSpecies(0).getName();
+			System.out.println("PDepNetwork #" + Integer.toString(id) +
+				" (" + formula + "): " +
+				pdn.getNetReactions().size() + " included and " +
+				pdn.getNonincludedReactions().size() + " nonincluded net reactions.");
+
+
 		}
 
 		runCount++;
-		
+
 	}
-	
+
 	/**
 	 * Creates the input file needed by FAME that represents a pressure-
 	 * dependent reaction network.
@@ -255,26 +262,26 @@ public class FastMasterEqn implements PDepKineticsEstimator {
 	 */
 	public void writeInputFile(PDepNetwork pdn,	ReactionSystem rxnSystem,
 			LinkedList<PDepIsomer> uniIsomers,
-			LinkedList<PDepIsomer> multiIsomers, 
+			LinkedList<PDepIsomer> multiIsomers,
 			LinkedList<PDepReaction> pathReactions) {
-		
+
 		Temperature stdTemp = new Temperature(298, "K");
-                
+
 		// Collect simulation parameters
 		Temperature temperature = rxnSystem.getPresentTemperature();
 		Pressure pressure = rxnSystem.getPresentPressure();
 		BathGas bathGas = new BathGas(rxnSystem);
-		
+
 		int numChebTempPolys = 4, numChebPressPolys = 4;
-		
+
 		// Determine reference energies
 		double grainMinEnergy = getGrainMinEnergy(uniIsomers, multiIsomers); // [=] kJ/mol
 		double grainMaxEnergy = getGrainMaxEnergy(uniIsomers, multiIsomers, 2100); // [=] kJ/mol
 		double grainSize = getGrainSize(grainMinEnergy, grainMaxEnergy, uniIsomers.size()); // [=] kJ/mol
-		
+
 		// Create the simulation parameters file fame/simData.txt
 		try {
-        	
+
 			File simData = new File("fame/fame_input.txt");
 			FileWriter fw = new FileWriter(simData);
 
@@ -299,10 +306,10 @@ public class FastMasterEqn implements PDepKineticsEstimator {
 			fw.write("\n");
 
 			for (int i = 0; i < uniIsomers.size(); i++) {
-				
+
 				Species species = uniIsomers.get(i).getSpecies(0);
 				species.calculateLJParameters();
-				
+
 				fw.write("# Unimolecular well " + Integer.toString(i+1) + ": " + species.getName() + "(" + Integer.toString(species.getID()) + ")" + "\n");
 				fw.write("Ground-state energy                 " + (species.calculateH(stdTemp) * 4.184) + " kJ/mol\n");
 				fw.write("Enthalpy of formation               " + (species.calculateH(stdTemp) * 4.184) + " kJ/mol\n");
@@ -310,7 +317,7 @@ public class FastMasterEqn implements PDepKineticsEstimator {
 				fw.write("LJ sigma parameter                  " + (species.getLJ().getSigma() * 1e-10) + " m\n");
 				fw.write("LJ epsilon parameter                " + (species.getLJ().getEpsilon() * 1.381e-23) + " J\n");
 				fw.write("Molecular weight                    " + species.getMolecularWeight() + " g/mol\n");
-				
+
 				SpectroscopicData data = species.getSpectroscopicData();
 				if (data.getVibrationCount() > 0) {
 					fw.write("Harmonic oscillators                " + data.getVibrationCount() + "\n");
@@ -330,12 +337,12 @@ public class FastMasterEqn implements PDepKineticsEstimator {
 						fw.write(data.getHinderedBarrier(j) + " cm^-1\n");
 				}
 				fw.write("Symmetry number                         " + data.getSymmetryNumber() + "\n");
-					
+
 				fw.write("\n");
 			}
-			
+
 			for (int i = 0; i < multiIsomers.size(); i++) {
-				
+
 				PDepIsomer isomer = multiIsomers.get(i);
 
 				fw.write("# Multimolecular well " + Integer.toString(i+1) + ": ");
@@ -356,7 +363,7 @@ public class FastMasterEqn implements PDepKineticsEstimator {
 				for (int j = 0; j < isomer.getNumSpecies(); j++)
 					fw.write((isomer.calculateG(j, stdTemp) * 4.184) + " kJ/mol    ");
 				fw.write("\n");
-				
+
 				fw.write("Harmonic oscillators                ");
 				for (int j = 0; j < isomer.getNumSpecies(); j++)
 					fw.write(isomer.getSpecies(j).getSpectroscopicData().getVibrationCount() + " ");
@@ -366,7 +373,7 @@ public class FastMasterEqn implements PDepKineticsEstimator {
 					for (int k = 0; k < data.getVibrationCount(); k++)
 						fw.write(data.getVibration(k) + " cm^-1\n");
 				}
-				
+
 				fw.write("Rigid rotors                        ");
 				for (int j = 0; j < isomer.getNumSpecies(); j++)
 					fw.write(isomer.getSpecies(j).getSpectroscopicData().getRotationCount() + " ");
@@ -376,7 +383,7 @@ public class FastMasterEqn implements PDepKineticsEstimator {
 					for (int k = 0; k < data.getRotationCount(); k++)
 						fw.write(data.getRotation(k) + " cm^-1\n");
 				}
-				
+
 				fw.write("Hindered rotors                     ");
 				for (int j = 0; j < isomer.getNumSpecies(); j++)
 					fw.write(isomer.getSpecies(j).getSpectroscopicData().getHinderedCount() + " ");
@@ -392,14 +399,14 @@ public class FastMasterEqn implements PDepKineticsEstimator {
 				for (int j = 0; j < isomer.getNumSpecies(); j++)
 					fw.write(isomer.getSpecies(j).getSpectroscopicData().getSymmetryNumber() + " ");
 				fw.write("\n");
-				
+
 				fw.write("\n");
 			}
-			
+
 			for (int i = 0; i < pathReactions.size(); i++) {
-				
+
 				PDepReaction rxn = pathReactions.get(i);
-				
+
 				// Determine isomers associated with reactant and product
 				PDepIsomer reactant = rxn.getReactant();
 				PDepIsomer product = rxn.getProduct();
@@ -415,7 +422,7 @@ public class FastMasterEqn implements PDepKineticsEstimator {
 					isomer2 = uniIsomers.indexOf(product) + 1;
 				else
 					isomer2 = multiIsomers.indexOf(product) + uniIsomers.size() + 1;
-					
+
 				double A = 0.0;
 				double Ea = 0.0;
 				double n = 0.0;
@@ -440,10 +447,10 @@ public class FastMasterEqn implements PDepKineticsEstimator {
 							" kcal/mol to 0 kcal/mol for FAME calculation.");
 					Ea = 0;
 				}
-				
+
 				// Calculate transition state energy = ground-state energy of reactant (isomer 1) + activation energy
 				double E0 = Ea + reactant.calculateH(stdTemp);
-				
+
 				fw.write("# Reaction " + rxn.toString() + ":\n");
 				fw.write("Isomer 1                            " + isomer1 + "\n");
 				fw.write("Isomer 2                            " + isomer2 + "\n");
@@ -453,7 +460,7 @@ public class FastMasterEqn implements PDepKineticsEstimator {
 				fw.write("Arrhenius temperature exponent      " + n + "\n");
 				fw.write("\n");
 			}
-			
+
 			fw.write("\n");
             fw.close();
 		}
@@ -469,9 +476,9 @@ public class FastMasterEqn implements PDepKineticsEstimator {
 			System.out.println(e.getMessage());
 			e.printStackTrace(System.out);
 		}
-		
+
 	}
-	
+
 	/**
 	 * Parses a FAME output file and updates the reaction network and system
 	 * accordingly.
@@ -483,9 +490,9 @@ public class FastMasterEqn implements PDepKineticsEstimator {
 	 */
 	public boolean readOutputFile(PDepNetwork pdn, ReactionSystem rxnSystem,
 			CoreEdgeReactionModel cerm,
-			LinkedList<PDepIsomer> uniIsomers, 
+			LinkedList<PDepIsomer> uniIsomers,
 			LinkedList<PDepIsomer> multiIsomers) {
-        
+
 	    String dir = System.getProperty("RMG.workingDirectory");
 	    int numUniWells = 0;
 		int numMultiWells = 0;
@@ -493,31 +500,31 @@ public class FastMasterEqn implements PDepKineticsEstimator {
 		int numTemperatures = 0;
 		int numPressures = 0;
 		int entryWell = 0;
-		
+
 		double Tmin = 0, Tmax = 0, Pmin = 0, Pmax = 0;
-		
+
 		try {
-        	
+
 			File output = new File("fame/fame_output.txt");
 			if (!output.exists()) {
 				output = new File("fame/fort.2");
-				if (!output.exists()) 
-					throw new Exception("FAME output file not found!");	
+				if (!output.exists())
+					throw new Exception("FAME output file not found!");
 			}
-			
+
 			if (output.length() == 0)
 				throw new IOException();
-			
+
 			BufferedReader br = new BufferedReader(new FileReader(output));
-			
+
 			String str = "";
-			
+
 			// Read output file header
 			boolean found = false;
 			while (!found) {
-				
+
 				str = br.readLine().trim();
-				
+
 				if (str.length() == 0)
 					found = true;
 				else if (str.charAt(0) == '#')
@@ -543,27 +550,27 @@ public class FastMasterEqn implements PDepKineticsEstimator {
 					Pmax = Double.parseDouble(strtok.nextToken());
 				}
 			}
-			
+
 			// Initialize temperature and pressure variables based on read values
 			Temperature tLow = new Temperature(Tmin, "K");
 			Temperature tHigh = new Temperature(Tmax, "K");
 			Pressure pLow = new Pressure(Pmin, "bar");
 			Pressure pHigh = new Pressure(Pmax, "bar");
-		
+
 			LinkedList<PDepReaction> netReactionList = pdn.getNetReactions();
 			netReactionList.clear();
-        	
+
 			// Read Chebyshev coefficients for each reaction
 			boolean ignoredARate = false;
 			for (int i = 0; i < numUniWells + numMultiWells; i++) {
 				for (int j = 0; j < numUniWells + numMultiWells; j++) {
 					if (i != j && br.ready()) {
-					
+
 						double[][] alpha = new double[numTemperatures][numPressures];
 
 						// Comment line at start of reaction
 						str = br.readLine().trim();
-						
+
 						// Read Chebyshev coefficients from file
 						boolean valid = true;
 						for (int t = 0; t < numTemperatures; t++) {
@@ -573,20 +580,20 @@ public class FastMasterEqn implements PDepKineticsEstimator {
 								alpha[t][p] = Double.parseDouble(tkn.nextToken());
 								if (alpha[t][p] == 0 ||
 										Double.isNaN(alpha[t][p]) ||
-										Double.isInfinite(alpha[t][p])) 
+										Double.isInfinite(alpha[t][p]))
 									valid = false;
 							}
 						}
-						
+
 						// Skip blank line between records
 						str = br.readLine().trim();
-							
+
 						// If the fitted rate coefficient is not valid, then don't add the net reaction
 						if (!valid) {
 							ignoredARate = true;
 							continue;
 						}
-						
+
 						// Create Chebyshev polynomial object for current rate coefficient
 						ChebyshevPolynomials cp = new ChebyshevPolynomials(
 								numTemperatures, tLow, tHigh, numPressures, pLow, pHigh,
@@ -598,14 +605,14 @@ public class FastMasterEqn implements PDepKineticsEstimator {
 							reactant = uniIsomers.get(j);
 						else
 							reactant = multiIsomers.get(j - numUniWells);
-						
+
 						// Determine products
 						PDepIsomer product = null;
 						if (i < numUniWells)
 							product = uniIsomers.get(i);
 						else
 							product = multiIsomers.get(i - numUniWells);
-						
+
 						// Initialize net reaction
 						PDepReaction rxn = new PDepReaction(reactant, product, cp);
 
@@ -615,10 +622,10 @@ public class FastMasterEqn implements PDepKineticsEstimator {
 					}
 				}
 			}
-			
+
 			// Close file when finished
 			br.close();
-			
+
 			// Set reverse reactions
 			for (int i = 0; i < netReactionList.size(); i++) {
 				PDepReaction rxn1 = netReactionList.get(i);
@@ -632,13 +639,13 @@ public class FastMasterEqn implements PDepKineticsEstimator {
 					}
 				}
 			}
-			
+
 			if (ignoredARate)
 				throw new Exception("Warning: One or more rate coefficients in FAME output was invalid.");
 
 			// Update reaction lists (sort into included and nonincluded)
 			pdn.updateReactionLists(cerm);
-			
+
 		}
 		catch(IOException e) {
 			System.out.println("Error: Unable to read from file \"fame_output.txt\".");
@@ -663,20 +670,20 @@ public class FastMasterEqn implements PDepKineticsEstimator {
 	 * Determines the maximum energy grain to use in the calculation. The
 	 * maximum energy grain is chosen to be 25 * R * T above the highest
 	 * potential energy on the potential energy surface, which hopefully will
-	 * capture the majority of the equilibrium distributions even at the 
+	 * capture the majority of the equilibrium distributions even at the
 	 * high temperature end of the calculation.
-	 * 
+	 *
 	 * @param uniIsomers The set of unimolecular isomers in the network
 	 * @param multiIsomers The set of multimolecular isomers in the network
 	 * @param T The temperature of the calculation in K
 	 * @return The maximum grain energy in kJ/mol
 	 */
-	private double getGrainMaxEnergy(LinkedList<PDepIsomer> uniIsomers, 
+	private double getGrainMaxEnergy(LinkedList<PDepIsomer> uniIsomers,
 			LinkedList<PDepIsomer> multiIsomers, double T) {
 
 		double Emax = 0.0;
 		Temperature stdTemp = new Temperature(298, "K");
-        
+
 		for (int i = 0; i < uniIsomers.size(); i++) {
 			PDepIsomer isomer = uniIsomers.get(i);
 			double E = isomer.calculateH(stdTemp);
@@ -689,10 +696,10 @@ public class FastMasterEqn implements PDepKineticsEstimator {
 			if (E > Emax)
 				Emax = E;
 		}
-		
+
 		Emax *= 4.184;
 		Emax += 100 * 0.008314 * T;
-		
+
 		// Round up to nearest ten kJ/mol
 		return Math.ceil(Emax / 10) * 10.0;	// [=] kJ/mol
 	}
@@ -730,15 +737,15 @@ public class FastMasterEqn implements PDepKineticsEstimator {
 		// Round down to nearest ten kJ/mol
 		return Math.floor(Emin / 10) * 10.0;	// [=] kJ/mol
 	}
-	
+
 	/**
 	 * Determines a suitable grain size for the calculation. Too small a grain
-	 * size will cause the simulation to take a very long time to conduct; too 
+	 * size will cause the simulation to take a very long time to conduct; too
 	 * large a grain size will cause the simulation results to not be very
 	 * precise. The choice is hopefully made such that the grains get larger
 	 * as the system does, so as to not get completely bogged down in the
 	 * larger networks.
-	 * 
+	 *
 	 * @param grainMinEnergy The minimum energy grain in kJ/mol
 	 * @param grainMaxEnergy The maximum energy grain in kJ/mol
 	 * @param numUniWells The number of unimolecular isomers in the network.
@@ -776,7 +783,7 @@ public class FastMasterEqn implements PDepKineticsEstimator {
 			System.out.println(e.getMessage());
 		}
 	}
-	
+
 	/**
 	 * Returns the mode as a string suitable for writing the FAME input file.
 	 * @return The mode as a string suitable for writing the FAME input file.
@@ -788,7 +795,7 @@ public class FastMasterEqn implements PDepKineticsEstimator {
 			return "ReservoirState";
 		else
 			return "";
-		
+
 	}
 
 }

@@ -49,10 +49,10 @@ import jing.rxnSys.SystemSnapshot;
  * </ul>
  * PDepNetwork can also be used in a static manner to interact with all of the
  * existing PDepNetwork objects at once.
- * 
- * This is a rewrite of the old PDepNetwork class, which was tailored too 
+ *
+ * This is a rewrite of the old PDepNetwork class, which was tailored too
  * closely to the CHEMDIS way of treating pressure-dependent networks. The new
- * class is more general and is tailored to the FAME way of treating 
+ * class is more general and is tailored to the FAME way of treating
  * pressure-dependent networks
  * @author jwallen
  */
@@ -62,9 +62,9 @@ public class PDepNetwork {
 	//
 	//	Data members
 	//
-	
+
 	/**
-	 * These are used by the network to check the core/edge states of 
+	 * These are used by the network to check the core/edge states of
 	 * individual isomers and species and to generate pathways when isomers
 	 * gain included status.
 	 */
@@ -87,55 +87,55 @@ public class PDepNetwork {
 	 * identified by the chemical formula of the unimolecular isomers.
 	 */
 	protected static LinkedList<PDepNetwork> networks = new LinkedList<PDepNetwork>();
-    
+
 	/**
-	 * Set to true if RMG is ready to allow pressure-dependent networks to be 
-	 * created and false if not. A holdover from the original PDepNetwork class. 
+	 * Set to true if RMG is ready to allow pressure-dependent networks to be
+	 * created and false if not. A holdover from the original PDepNetwork class.
 	 */
 	public static boolean generateNetworks = false;
-    
+
 	/**
 	 * The list of unimolecular isomers.
 	 */
 	private LinkedList<PDepIsomer> uniIsomerList;
-	
+
 	/**
 	 * The list of multimolecular isomers.
 	 */
 	private LinkedList<PDepIsomer> multiIsomerList;
-	
+
 	/**
-	 * The list of path reactions (isomerizations, associations, and 
+	 * The list of path reactions (isomerizations, associations, and
 	 * dissociations that directly connect two isomers).
 	 */
 	private LinkedList<PDepReaction> pathReactionList;
-	
+
 	/**
 	 * The list of net reactions (allowing reactions between two isomers not
 	 * directly connected by a path reaction) that belong in the core or the
 	 * edge of the current reaction model.
 	 */
 	private LinkedList<PDepReaction> netReactionList;
-	
+
 	/**
 	 * The list of net reactions (allowing reactions between two isomers not
 	 * directly connected by a path reaction) that are neither in the core nor
 	 * on the edge of the current reaction model.
 	 */
 	private LinkedList<PDepReaction> nonincludedReactionList;
-	
+
 	/**
 	 * True if the network has been modified in such a way as to require a
 	 * new pressure-dependent calculation, and false otherwise. Examples include
 	 * changing the number of isomers or the number of path reactions.
 	 */
 	private boolean altered;
-	
+
 	//==========================================================================
 	//
 	//	Constructor
 	//
-	
+
 	/**
 	 * Creates an empty pressure-dependent network. Does not automatically add
 	 * the network to the PDepNetwork.networks collection.
@@ -155,12 +155,12 @@ public class PDepNetwork {
 		id = networkCount + 1;
 		networkCount++;
 	}
-	
+
 	//==========================================================================
 	//
 	//	Get accessor methods
 	//
-	
+
 	/**
 	 * Returns the unique identifier for this network.
 	 * @return The unique identifier for this network.
@@ -176,7 +176,7 @@ public class PDepNetwork {
 	public LinkedList<PDepIsomer> getUniIsomers() {
 		return uniIsomerList;
 	}
-	
+
 	/**
 	 * Returns the list of multimolecular isomers.
 	 * @return The list of multimolecular isomers
@@ -184,7 +184,7 @@ public class PDepNetwork {
 	public LinkedList<PDepIsomer> getMultiIsomers() {
 		return multiIsomerList;
 	}
-	
+
 	/**
 	 * Returns the list of path reactions.
 	 * @return The list of path reactions
@@ -192,7 +192,7 @@ public class PDepNetwork {
 	public LinkedList<PDepReaction> getPathReactions() {
 		return pathReactionList;
 	}
-	
+
 	/**
 	 * Returns the list of net reactions (in the core or on the edge).
 	 * @return The list of net reactions
@@ -200,16 +200,16 @@ public class PDepNetwork {
 	public LinkedList<PDepReaction> getNetReactions() {
 		return netReactionList;
 	}
-	
+
 	/**
-	 * Returns the list of nonincluded reactions (neither in the core nor on 
+	 * Returns the list of nonincluded reactions (neither in the core nor on
 	 * the edge).
 	 * @return The list of nonincluded reactions
 	 */
 	public LinkedList<PDepReaction> getNonincludedReactions() {
 		return nonincludedReactionList;
 	}
-	
+
 	/**
 	 * Returns the status of the altered flag: true if the network requires a
 	 * new pressure-dependent calculation, false if not.
@@ -218,12 +218,12 @@ public class PDepNetwork {
 	public boolean getAltered() {
 		return altered;
 	}
-	
+
 	/**
-	 * Returns the isomer that contains the same species as those in 
+	 * Returns the isomer that contains the same species as those in
 	 * speciesList.
 	 * @param speciesList The species to check the isomers for
-	 * @return The isomer that contains the same species as those in 
+	 * @return The isomer that contains the same species as those in
 	 * speciesList
 	 */
 	public PDepIsomer getIsomer(LinkedList speciesList) {
@@ -287,50 +287,50 @@ public class PDepNetwork {
 		}
 		return false;
 	}
-	
+
 	//==========================================================================
 	//
 	//	Set accessor methods
 	//
-	
+
 	/**
-	 * Adds an isomer (unimolecular or multimolecular) to the appropriate 
+	 * Adds an isomer (unimolecular or multimolecular) to the appropriate
 	 * list in the network if it is not already present.
 	 * @param isomer The isomer to add
 	 */
 	public void addIsomer(PDepIsomer isomer) {
-		
+
 		// Don't add if isomer is already in network
 		if (uniIsomerList.contains(isomer) || multiIsomerList.contains(isomer))
 			return;
-		
+
 		// Add isomer
 		if (isomer.isUnimolecular())
 			uniIsomerList.add(isomer);
 		else if (isomer.isMultimolecular())
 			multiIsomerList.add(isomer);
-		
+
 		// Mark network as changed so that updated rates can be determined
 		altered = true;
 	}
-	
+
 	/**
 	 * Adds a path reaction to the network if it is not already present.
 	 * @param newRxn The path reaction to add
 	 */
 	public void addReaction(PDepReaction newRxn) {
-		
+
 		// Check to ensure that reaction is not already present
 		for (ListIterator<PDepReaction> iter = pathReactionList.listIterator(); iter.hasNext(); ) {
 			PDepReaction rxn = iter.next();
 			if (rxn.equals(newRxn))
 				return;
 		}
-		
+
 		// Add reaction
 		pathReactionList.add(newRxn);
 	}
-	
+
 	/**
 	 * Updates the status of the altered flag: true if the network requires a
 	 * new pressure-dependent calculation, false if not.
@@ -341,8 +341,8 @@ public class PDepNetwork {
 	}
 
 	/**
-	 * Elevates the status of the designated isomer from nonincluded to 
-	 * included, and generates pathways for this isomer. Generally a large 
+	 * Elevates the status of the designated isomer from nonincluded to
+	 * included, and generates pathways for this isomer. Generally a large
 	 * number of pathways are generated.
 	 * @param isomer The isomer to make included.
 	 */
@@ -352,7 +352,7 @@ public class PDepNetwork {
 			return;
 
 		isomer.setIncluded(true);
-		
+
 		LinkedHashSet reactionSet = isomer.generatePaths(reactionSystem);
 
 		for (Iterator iter = reactionSet.iterator(); iter.hasNext(); ) {
@@ -360,7 +360,7 @@ public class PDepNetwork {
 			if (!contains(rxn))
 				addReactionToNetworks(rxn);
 		}
-		
+
 	}
 
 	//==========================================================================
@@ -387,7 +387,7 @@ public class PDepNetwork {
 		}
 		netReactionList.clear();
         nonincludedReactionList.clear();
-		
+
 		for (int i = 0; i < reactionList.size(); i++) {
 			PDepReaction forward = reactionList.get(i);
 			PDepReaction reverse = (PDepReaction) forward.getReverseReaction();
@@ -400,10 +400,6 @@ public class PDepNetwork {
 			else
 				nonincludedReactionList.add(forward);
 		}
-
-		System.out.println(netReactionList.size() + " included and " +
-				nonincludedReactionList.size() + " nonincluded reactions in network.");
-
 	}
 
 	/**
@@ -463,7 +459,7 @@ public class PDepNetwork {
 	//
 	//	Static methods (for access to PDepNetwork.networks)
 	//
-	
+
 	/**
 	 * Returns the linked list containing the currently-existing pressure-
 	 * dependent networks
@@ -472,7 +468,7 @@ public class PDepNetwork {
 	public static LinkedList<PDepNetwork> getNetworks() {
 		return networks;
 	}
-	
+
 	/**
 	 * Used to add a reaction to the appropriate pressure-dependent network. If
 	 * no such network exists, a new network is created. For isomerization
@@ -482,7 +478,7 @@ public class PDepNetwork {
 	 * @return The network the reaction was added to
 	 */
 	public static PDepNetwork addReactionToNetworks(Reaction reaction) {
-		
+
 		// Expect that most reactions passed to this function will be already
 		// present in a network
 
@@ -592,7 +588,7 @@ public class PDepNetwork {
 		return pdn;
 
 	}
-	
+
 	/**
 	 * Useful for debugging, this function prints the isomers of each network
 	 * to the console window.
@@ -619,7 +615,7 @@ public class PDepNetwork {
 			System.out.print("\n");
 		}
 	}
-	
+
 	/**
 	 * Checks to see if there are any core reactions hidden amongst those
 	 * net reactions which are found in the pressure-dependent networks.
@@ -632,7 +628,7 @@ public class PDepNetwork {
 	public static boolean hasCoreReactions(CoreEdgeReactionModel cerm) {
 		return (getCoreReactions(cerm).size() > 0);
 	}
-	
+
 	/**
 	 * Counts the number of core reactions that are hidden amongst those
 	 * net reactions which are found in the pressure-dependent networks.
@@ -645,7 +641,7 @@ public class PDepNetwork {
 	public static int getNumCoreReactions(CoreEdgeReactionModel cerm) {
 		return getCoreReactions(cerm).size();
 	}
-	
+
 	/**
 	 * Returns the core reactions that are hidden amongst those
 	 * net reactions which are found in the pressure-dependent networks.
@@ -667,5 +663,5 @@ public class PDepNetwork {
 		}
 		return coreReactions;
 	}
-	
+
 }
