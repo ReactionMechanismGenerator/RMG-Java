@@ -16,6 +16,5 @@ RMG documentation
    modification
    theory
    credits
-
-* :ref:`genindex`
+   :ref:`genindex`
 

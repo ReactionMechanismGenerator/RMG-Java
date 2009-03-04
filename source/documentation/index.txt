@@ -22,8 +22,9 @@ Contents:
    analyzing
    modification
    theory
-   BuildingDocumentation
    credits
+
+   BuildingDocumentation
    
 Indices and tables
 ==================
