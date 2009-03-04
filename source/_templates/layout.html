@@ -1,5 +1,10 @@
 {% extends "!layout.html" %}
 
+{%- block extrahead %} 
+{{ super() }}
+<link rel="stylesheet" href="{{ pathto('_static/' + 'RMG.css', 1) }}" type="text/css" />
+{% endblock %}
+
 {%- block relbaritems %}
   {%- if current_page_name != 'index' %}
   <li><a href="{{ pathto(current_page_name) }}">{{ title }}</a></li>
@@ -8,10 +13,7 @@
 
 {%- set customsidebar = 'commonSidebarContent.html' %}
 
-{%- block extrahead %} 
-{{ super() }}
-<link rel="stylesheet" href="{{ pathto('_static/' + 'RMG.css', 1) }}" type="text/css" />
-{% endblock %}
+
 
 {#{% block rootrellink %}
     <li><a href="http://sourceforge.net/projects/rmg/">Sourceforge Project</a> &raquo;</li>

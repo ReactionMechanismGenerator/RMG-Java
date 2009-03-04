@@ -1,20 +1,69 @@
 {% extends "layout.html" %}
 
+{%- block extrahead %} 
+{{ super() }}
+<link rel="stylesheet" href="{{ pathto('_static/' + 'RMG-homepage.css', 1) }}" type="text/css" />
+{% endblock %}
+
+
 {%- block relbar1 %}{{ relbar() }}{% endblock %}
-
-{%- block sidebar1 %} {# possible location for sidebar #} {% endblock %}
-
-
-{% block body %} this is the body? most trange{% endblock %}
-
-{#
-
-{%- block sidebar2 %}{% endblock %}
-#}
-{%- set customsidebar = 'homepageSidebarContent.html' %}
-{%- block sidebartoc %}{% endblock %}
-{%- block sidebarrel %}{% endblock %}
-
 {%- block relbar2 %}{{ relbar() }}{% endblock %}
+
+{%- block sidebar1 %}{#empty#}{% endblock %}
+{%- block sidebar2 %}{#empty#}{% endblock %}
+
+{% block body %}
+
+
+  <div class="section" id="rmg-reaction-mechanism-generator">
+<h1>RMG - Reaction Mechanism Generator<a class="headerlink" href="#rmg-reaction-mechanism-generator" title="Permalink to this headline">¶</a></h1>
+<p><strong>Welcome to the RMG home page!</strong></p>
+<p>RMG is an automatic chemical reaction mechanism generator that constructs
+mechanisms composed of elementary chemical reaction steps using a general understanding of how hydrocarbons react.</p>
+<p>The main RMG code is written in Java. A number of computationally intensive tasks have been written in Fortran.</p>
+<p>RMG is free, open-source software available under the terms of the <a class="reference external" href="license.html">MIT/X11 License</a>. The software is developed in the William H. Green research group in the Department of Chemical Engineering at MIT.</p>
+<p>If you are new to RMG, please see <a class="reference external" href="newusers.html">this page</a>.</p>
+
+<div class="section" id="browse-the-site">
+<h2>Browse the Site<a class="headerlink" href="#browse-the-site" title="Permalink to this headline">¶</a></h2>
+<ul>
+<li class="toctree-l1"><a class="reference external" href="news.html">News and Updates</a></li>
+<li class="toctree-l1"><a class="reference external" href="features.html">Features</a></li>
+<li class="toctree-l1"><a class="reference external" href="newusers.html">New Users</a></li>
+<li class="toctree-l1"><a class="reference external" href="download.html">Download</a></li>
+<li class="toctree-l1"><a class="reference external" href="license.html">License</a></li>
+<li class="toctree-l1"><a class="reference external" href="documentation/index.html">Documentation</a></li>
+</ul>
+</div>
+<div class="section" id="contact">
+<h2>Contact<a class="headerlink" href="#contact" title="Permalink to this headline">¶</a></h2>
+<p>Project Supervisor: Prof. William H. Green (<a class="reference external" href="mailto:whgreen&#37;&#52;&#48;mit&#46;edu">whgreen<span>&#64;</span>mit<span>&#46;</span>edu</a>)</p>
+<p>Active Development Team: <a class="reference external" href="mailto:rmg_dev&#37;&#52;&#48;mit&#46;edu">rmg_dev<span>&#64;</span>mit<span>&#46;</span>edu</a></p>
+</div>
+<div class="section" id="links">
+<h2>Links<a class="headerlink" href="#links" title="Permalink to this headline">¶</a></h2>
+<p><a class="reference external" href="http://sourceforge.net/projects/rmg/">RMG on Sourceforge</a></p>
+<p><a class="reference external" href="http://primekinetics.org/">PrIMe - Process Informatics Model</a></p>
+</div>
+</div>
+
+
+
+<h3>Search</h3>
+
+<form class="search" action="{{ pathto('search') }}" method="get">
+  <input type="text" name="q" size="18" /> <input type="submit" value="{{ _('Go') }}" />
+  <input type="hidden" name="check_keywords" value="yes" />
+  <input type="hidden" name="area" value="default" />
+</form>
+
+{% endblock %}
+
+
+
+{%- set customsidebar = 'homepageSidebarContent.html' %}
+
+
+
 
 {# %- block footer %}{%- endblock % #}
