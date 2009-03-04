@@ -6,46 +6,6 @@
 RMG - Reaction Mechanism Generator
 **********************************
 
-**Welcome to the RMG home page!**
-
-RMG is an automatic chemical reaction mechanism generator that constructs 
-mechanisms composed of elementary chemical reaction steps using a general understanding of how hydrocarbons react.
-
-The main RMG code is written in Java. A number of computationally intensive tasks have been written in Fortran.
-
-RMG is free, open-source software available under the terms of the `MIT/X11 License <license.html>`_\ . The software is developed in the William H. Green research group in the Department of Chemical Engineering at MIT.
-
-If you are new to RMG, please see `this page <newusers.html>`_\ .
-
-News and Updates
-----------------
-
-**2009-03-04: RMG 3.0 Released!**
-
-After nearly two years of development, the RMG team is proud to present the release of RMG version 3.0. New features include:
-
-- Cocurrent generation of a reaction mechanism over multiple temperature and pressure conditions
-
-- Automatic time and conversion stepping when no intermediate points specified
-
-- A new open-source module for handling pressure-dependent reaction networks
-
-- On-the-fly generation of InChI strings for species
-
-- A new graphical user interface for easier RMG input file generation
-
-- Updated RMG Viewer and Editor (RMGVE), including database editing tools
-
-- Thermodynamics estimates for non-cyclic species incorporate certain steric effects (1,5-interactions and gauche interactions)
-
-Also including a number of bug fixes, RMG 3.0 is a marked improvement over RMG 2.0. You can find information about downloading RMG `here <download.html>`_\ .
-
-**2007-03-25: RMG 2.0 Release**
-
-RMG 2.0 has been released. The source code of the software, the manual and sample initialization files are provided with this release. 
-
-Browse the Site
----------------
 
 .. toctree::
    :maxdepth: 1
@@ -54,19 +14,4 @@ Browse the Site
    newusers
    download
    license
-   documentation
-   
-Contact
--------
-
-Project Supervisor: Prof. William H. Green (`whgreen@mit.edu <whgreen@mit.edu>`_\ )
-
-Active Development Team: `rmg_dev@mit.edu <rmg_dev@mit.edu>`_
-
-Links
------
-
-`RMG on Sourceforge <http://sourceforge.net/projects/rmg/>`_
-
-`PrIMe - Process Informatics Model <http://primekinetics.org/>`_
-
+   documentation/index

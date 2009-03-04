@@ -131,7 +131,7 @@ html_last_updated_fmt = '%b %d, %Y'
 
 # Additional templates that should be rendered to pages, maps page names to
 # template names.
-#html_additional_pages = {}
+html_additional_pages = {'index': 'homepage.html'}
 
 # If false, no module index is generated.
 html_use_modindex = False
@@ -148,7 +148,7 @@ html_use_modindex = False
 # If true, an OpenSearch description file will be output, and all pages will
 # contain a <link> tag referring to it.  The value of this option must be the
 # base URL from which the finished HTML is served.
-#html_use_opensearch = ''
+html_use_opensearch = 'http://rmg.mit.edu/'
 
 # If nonempty, this is the file name suffix for HTML files (e.g. ".xhtml").
 #html_file_suffix = ''
@@ -169,7 +169,7 @@ latex_font_size = '11pt'
 # Grouping the document tree into LaTeX files. List of tuples
 # (source start file, target name, title, author, document class [howto/manual]).
 latex_documents = [
-  ('documentation/index', 'RMG-manual.tex', ur'RMG Documentation',
+  ('documentation/latex', 'RMG-manual.tex', ur'RMG Documentation',
    ur'W.H. Green et al.', 'manual'),
 ]
 
