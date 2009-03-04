@@ -26,7 +26,7 @@ For Windows users, run the following set of commands to launch the GUI::
 The "Initial Conditions" tab
 ============================
 
-.. image:: RMG_GUI_gifs/tab_initialConditions.png
+.. image:: images/tab_initialConditions.png
 
 This tab of the GUI allows the user to enter the :ref:`Reactants <reactants>`, :ref:`Inert Gases <inertgas>`, and
 :ref:`Initial Conditions <initialconditions>` for the simulation.
@@ -93,7 +93,7 @@ with a blank space or a return carriage.
 The "Thermochemical Libraries" tab
 ==================================
 
-.. image:: RMG_GUI_gifs/tab_thermochemLibraries.png
+.. image:: images/tab_thermochemLibraries.png
 
 This tab of the GUI allows the user to enter the location of the thermochemical libraries RMG will use in building the model.
 
@@ -117,7 +117,7 @@ the "Primary Reaction Library," a "Name" and "Location" must be specified.
 The "Termination" tab
 =====================
 
-.. image:: RMG_GUI_gifs/tab_termination.png
+.. image:: images/tab_termination.png
 
 This tab of the GUI allows the user to specify the :ref:`termination criteria <finishcontroller>` for the
 model.  A user may specify either the desired "ReactionTime" or "Conversion".
@@ -137,7 +137,7 @@ mechanism for a new system, we recommend starting with a high "Error tolerance"
 The "Dynamic Simulator" tab
 ===========================
 
-.. image:: RMG_GUI_gifs/tab_dynamicSimulator.png
+.. image:: images/tab_dynamicSimulator.png
 
 This tab of the GUI allows the user to specify options for:
   * :ref:`the ODE solver <dynamicsimulator>`
@@ -194,7 +194,7 @@ chooses to turn InChI generation on, the InChI executable (v 1.01) must be locat
 The "Sensitivity Analysis" tab
 ==============================
 
-.. image:: RMG_GUI_gifs/tab_sensAnalysis.png
+.. image:: images/tab_sensAnalysis.png
 
 This tab of the GUI allows the user to specify options for error bars and 
 sensitivity coefficients.  The features of this tab will only be active if

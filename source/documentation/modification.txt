@@ -164,12 +164,12 @@ Open the RMG Viewer & Editor (RMGVE) by running the :file:`RMGVE 20080101.bat` f
 If your RMG database is located in the :file:`$RMG\database\RMG_database` folder, the following
 login screen should appear.
 
-.. image:: RMGVE_pngs/loginScreen.png
+.. image:: images/loginScreen.png
 
 The login name is used to document who made what changes in the RMG libraries.
 After entering your name, press the "Login" button to reveal the RMGVE.
 
-.. image:: RMGVE_pngs/homeScreen.png
+.. image:: images/homeScreen.png
 
 The RMGVE home screen initially has two windows open: the "Dataset viewer" and the "Adjacency List."
 In the "Dataset viewer" window, double-click on the "Thermo (Branch)" folder to show the different
@@ -186,7 +186,7 @@ to see the list of functional groups contained in the "Group" family.  To visual
 groups look like, highlight one of the names and then push the "View" button near the top of the "Group" window.
 For instance, if we select the functional group name "Cds-OdCsH," the RMGVE should look as follows.
 
-.. image:: RMGVE_pngs/visualizeThermoGroup.png
+.. image:: images/visualizeThermoGroup.png
 
 Notice that the "Adjacency List" window is no longer blank but now contains the adjacency list for the functional group
 "Cds-OdCsH".  Furthermore, a window entitled "Cds-OdCsH" opens which contains a visualization of the functional group.
@@ -209,7 +209,7 @@ to a thermochemistry tree, please refer to the section below entitled "Adding Ad
 Returning to the "Dataset viewer" window, notice the "Tree/library" button has been enabled.  Click on this button to show
 the data for the highlighted thermo family.  After some re-arranging of the windows, the screen should look as follows.
 
-.. image:: RMGVE_pngs/visualizeThermoData.png
+.. image:: images/visualizeThermoData.png
 
 The top half of the new "Group tree/library" window contains the "Group" thermo family tree; the bottom half contains the
 "Group" thermo family library.  Suppose we want to change the thermo value for the "Cds-OdCsH" functional group.  To do so,
@@ -223,7 +223,7 @@ functional group:
  
 After navigating the tree, the RMGVE should look like the following snapshot.
 
-.. image:: RMGVE_pngs/traverseThermoTree.png
+.. image:: images/traverseThermoTree.png
 
 Notice that RMG has thermodynamic data for this functional group.  If you scroll to the right (using the scroll bar near the bottom of the 
 "Group tree/library" window) far enough, you will see the "Notes" column.  This column is used to document where the data came from.  In
@@ -233,7 +233,7 @@ to be the Cp1000 value.
 Suppose we had a better estimate for the Cp1500 value (e.g. 12.5 cal/mol/K).  To edit this leaf, uncheck the "Read only" field, highlight the row, and push the
 "Edit" button; the screen should look as follows.
 
-.. image:: RMGVE_pngs/editThermoTree.png
+.. image:: images/editThermoTree.png
 
 Enter the new thermochemical data (Cp1500 = 12.5) in the appropriate field.  The field "Notes" will be added to the
 thermochemical data for the "Cds-OdCsH" functional group at the end of the line (after the 12 data entries).  The field "New header comments" will be placed
@@ -253,7 +253,7 @@ checkmark next to them.  You will receive a message stating whether the edits we
 
 	Notice the RMGVE directs you to the location of the file that is about to be changed.
 
-.. image:: RMGVE_pngs/acceptThermoEdits.png
+.. image:: images/acceptThermoEdits.png
 
 Viewing the changed thermochemical data
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -261,7 +261,7 @@ Viewing the changed thermochemical data
 To view the thermochemical data that was just edited, open the file from the previous screenshot: :file:`$RMG/database/RMG_database/thermo/Group_Library.txt`.
 Scrolling down to the entry #55, we see the old and new thermochemical data for the functional group "Cds-OdCsH".
 
-.. image:: RMGVE_pngs/viewThermoEdits.png
+.. image:: images/viewThermoEdits.png
 
 Rather than explicitly entering data for each leaf, one may also refer one functional group to another, if you believe they should be 
 the same.  This is done by putting the name of the group that has the same thermo parameters in column 3 and leaving columns 4-15 blank.
@@ -289,9 +289,9 @@ redundancy will not create any problems within RMG, but it is simply unnecessary
 	- The RMGVE does not allow a user to change the "Refer to" field.  This change must be performed manually.
 	- The :file:`Group_Library.txt` file will not recognize changes made in the RMGVE to leafs that "Refer to" another species.  For example, had we entered thermochemical data for entry #56, the RMGVE will show the updates to the H, S, and Cp values in the "Group tree/library" window but will also still show the "Refer to" functional group.  After closing the RMGVE and confirming the change to the database, if one opened the :file:`Group_Library.txt` file and looked at entry #56, you will notice the leaf's thermodynamic values were not updated.
 
-.. image:: RMGVE_pngs/bug_referToLeaf.png
+.. image:: images/bug_referToLeaf.png
 
-.. image:: RMGVE_pngs/bug_groupLibrary.png
+.. image:: images/bug_groupLibrary.png
 
 Please be aware that version control may be a significant issue with the databases and should be addressed early to ensure consistency within the group.
 
@@ -357,7 +357,7 @@ Viewing a Reaction Recipe in the RMGVE
 	
 Push the "Reaction recipe" button.  Your screen should look like the following snapshot (after rearranging and resizing the windows)
 
-.. image:: RMGVE_pngs/viewReactionRecipe.png
+.. image:: images/viewReactionRecipe.png
 
 Looking at the "H_Abstraction reaction recipe" window: The first non-commented line shows the generic reaction: ``X_H + Y_rad_birad -> X_rad + Y_H``.
 The next uncommented line informs RMG how to handle the reverse reaction.  Some common occurences you will find include:
@@ -373,7 +373,7 @@ atoms "2" and "3".  Furthermore, atom "1" gains a radical while atom "3" loses a
 For a better understanding of what the atom numbering means, click on one of the species in the "H_Abstraction" window.  If you click on the species "C/H/Cs3",
 your screen should look like the following snapshot
 
-.. image:: RMGVE_pngs/viewReactionRecipeSpecies.png
+.. image:: images/viewReactionRecipeSpecies.png
 
 Looking at "C/H/Cs3" and "Adjacency List" windows reveals the identity of atoms "1" and "2".  Looking at the "Adjacency List" window, notice the atoms that have
 the ``#*`` notation between the counting index and the elemental symbol.  The number before the ``*`` corresponds to the number in the reaction recipe.  The atoms
@@ -427,7 +427,7 @@ the "Y_rad_birad" tree leads us to::
 	
 Your screen should look something like the following
 
-.. image:: RMGVE_pngs/visualizeKineticData.png
+.. image:: images/visualizeKineticData.png
 
 Notice that RMG contains 4 different sets of kinetic data for this reaction.  There are two explanation for this:
 
@@ -450,12 +450,12 @@ We can also add a new entry, by pushing the "add" button.  For example, let's su
 reaction mentioned above: A = 1.27E14 cm3/mol/s, n = 1.3, E = 10.9 kcal/mol over the temperature range 300-1500K.  Push the "add" button, then push
 the "edit" button, and then fill in the popup window with the kinetic data.  After closing the popup window, your screen should look like this
 
-.. image:: RMGVE_pngs/editKineticTree.png
+.. image:: images/editKineticTree.png
 
 Close the RMGVE.  A popup window will ask if you want to save the changes you have made.  If you leave the box checked and then open the
 :file:`$RMG/database/RMG_database/kinetics/kinetics/H_Abstraction/rateLibrary.txt` file, you should see that the file has been updated.
 
-.. image:: RMGVE_pngs/viewReactionEdits.png
+.. image:: images/viewReactionEdits.png
 
 Creating a Primary Reaction Library
 ===================================
