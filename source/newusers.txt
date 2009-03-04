@@ -1,0 +1,14 @@
+.. _newusers:
+
+*********
+New Users
+*********
+
+Please e-mail `Bill Green`_ to let us know if you will be using RMG. Feel free to pass along any questions or comments you have regarding RMG. We would love to hear how we can make RMG more useful for your research!
+
+If you need help getting started, you can also email `the RMG team`_ directly and someone will get back to you to provide technical assistance.
+
+RMG is free, open-source software, and is under active and ongoing development. If you are interested in assisting with its development, please let us know. While you are free to use/modify RMG components as you wish, we would like to coordinate with you. Please contact Prof. Green for further information.
+
+.. _Bill Green: whgreen@mit.edu
+.. _the RMG team: rmg_dev@mit.edu

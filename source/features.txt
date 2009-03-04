@@ -1,0 +1,24 @@
+.. _features:
+
+********
+Features
+********
+
+- **Rate-based model enlargement and validation.** This provides an adjustable error bound on the generated model.
+
+- **Thermodynamics estimation using group additivity.**
+
+- **Ability to include reaction models on top of the provided reaction families.**
+
+- **Dynamic simulation to a target time or conversion.** Often the desired simulation time is not known *a priori*, so a target conversion is preferred.
+
+- **Cocurrent generation of a reaction mechanism over multiple temperature and pressure conditions.** This allows for generation of reaction mechanisms that are valid over a range of reaction conditions.
+
+- **Manual and automatic time and conversion stepping.** Specification of intermediate times/conversions allows viewing of the concentration profiles in more detail.
+
+- **A module for handling pressure-dependent reaction networks.** Dissociation and combination reactions have the potential to have rate coefficients that are dependent on both temperature and pressure, and RMG is able to estimate both for networks of arbitrary complexity with a bounded error.
+
+- **On-the-fly generation of InChI strings for species.**
+
+- **Graphical user interfaces for easy input file generation and database editing.**
+

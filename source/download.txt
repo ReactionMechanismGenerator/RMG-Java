@@ -1,0 +1,11 @@
+.. _download:
+
+********
+Download
+********
+
+RMG is hosted on SourceForge, and can be downloaded by visiting `our project page`_ there.
+
+For RMG 3.0, a number of different packages are available. Binary packages are available for Windows (32-bit only) and Linux (i386 only) platforms. A source package compatiable across all platforms is also available.
+
+.. _our project page: http://sourceforge.net/projects/rmg/
