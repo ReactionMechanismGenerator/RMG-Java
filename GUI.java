@@ -41,6 +41,15 @@
  * MIT Chemical Engineering
  * Green Group
  * 
+ * Last updated: March 3, 2009
+ *  - Modified reactants & inert gas input table (Initial Conditions tab)
+ *  	-- If user adds "Inert Gas", the entry must be "N2", "Ar", or "Ne"; otherwise, an error message is displayed to the user (but the GUI's entries remain untouched).
+ *  - Modified how RMG-GUI writes the "condition.txt" file
+ *  	-- If user does not add all of the necessary information for the condition.txt file, an error message is displayed (the GUI's entries remain untouched) and no condition.txt file will be written.
+ *  	-- If user does not add any "Comments" to be placed in the header of the condition.txt file, a warning if displayed
+ *  - Modified how RMG-GUI reads the "condition.txt" file
+ *  	-- If condition.txt file is missing a field, GUI instructs user which field is missing (and where it should be located in file)
+ *  	-- If condition.txt file contains unknown entries (e.g. units of Temperature not equal to K, F, or C), GUI informs user that entry is incorrect and gives user available options
  * Last updated: February 17, 2009
  *  - Adapted GUI to handle new condition.txt file format
  *      -- Different location of SpectroscopicDataEstimator
@@ -67,6 +76,7 @@ import javax.swing.JComponent;
 import javax.swing.JFileChooser;
 import javax.swing.JFormattedTextField;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
@@ -1110,6 +1120,16 @@ public class GUI extends JPanel implements ActionListener {
 	    			    molFile = askUserForInput("Select corresponding .mol file", false);
 	    			    if (molFile != null) icInput5 = Species.mol2chemGraph(molFile.getAbsolutePath());
 	    			}
+    			} else {
+    				String[] inerts = {"N2", "Ar", "Ne"};
+    				boolean correctInertFormat = false;
+    				for (int i=0; i<inerts.length; i++) {
+    					if (icInput1.equals(inerts[i])) correctInertFormat = true;
+    				}
+    				if (!correctInertFormat) {
+    					System.out.println("ERROR: Adding Inert Gas species to model - RMG recognizes the following species as Inert Gas (case sensitive): N2, Ar, Ne");
+    					return;
+    				}
     			}
     			// If a species is marked "Unreactive," ask user for location of IncludeSpecies.txt file
     			if (icInput4.equals("Unreactive")) {
@@ -1219,9 +1239,11 @@ public class GUI extends JPanel implements ActionListener {
     public void createConditionFile(Boolean saveAndRun) {
     	//	Let's create the condition.txt file!
     	String conditionFile = "";
+    	String[] tempString;
     	
     	//	Add user supplied comments
     	conditionFile += "// User supplied comments:\r";
+    	if (headerComments.getText().equals("")) System.out.println("WARNING: Writing condition.txt file: No comments being read in.");
     	String[] header4Condition = headerComments.getText().split("[\n]");
     	for (int i=0; i<header4Condition.length; i++) {
     		conditionFile += "// " + header4Condition[i] + "\r";
@@ -1233,38 +1255,64 @@ public class GUI extends JPanel implements ActionListener {
         conditionFile += "//\r// File created at: " + sdf.format(cal.getTime()) + "\r\r";
         
         //	Add the name of the database and primary thermo library
-        String[] tempString = databasePath.getText().split("[\\\\,/]");
-        conditionFile += "Database: " + tempString[tempString.length-1] + "\r";
+        if (databasePath.getText().equals("")) {
+        	System.out.println("ERROR: Writing condition.txt file: Could not read database (Thermochemical Libraries tab)");
+        	return;
+        }
+        else {
+        	tempString = databasePath.getText().split("[\\\\,/]");
+        	conditionFile += "Database: " + tempString[tempString.length-1] + "\r";
+        }
         
-        tempString = ptlPath.getText().split("[\\\\,/]");
-        conditionFile += "PrimaryThermoLibrary: " + tempString[tempString.length-1] + "\r";
+    	//	Add the name of the primary thermo library
+        if (ptlPath.getText().equals("")) {
+        	System.out.println("ERROR: Writing condition.txt file: Could not read primaryThermoLibrary (Thermochemical Libraries tab)");
+        	return;
+        }
+        else {
+        	tempString = ptlPath.getText().split("[\\\\,/]");
+        	conditionFile += "PrimaryThermoLibrary: " + tempString[tempString.length-1] + "\r";
+        }
         
         //	Add the temperature model, list of temperatures, and units
         conditionFile += "TemperatureModel: " + tempModelCombo.getSelectedItem() +
         	" (" + tempConstantUnit.getSelectedItem() + ")";
-        String[] tempLines = tempConstant.getText().split("[\n]");
-        StringTokenizer st = null;
-        for (int i=0; i<tempLines.length; i++) {
-        	st = new StringTokenizer(tempLines[i]);
-        	while (st.hasMoreTokens()) {
-        		String line = st.nextToken();
-        		if (line.endsWith(",")) line = line.substring(0,line.length()-1);
-        		conditionFile += " " + line;
-        	}
+        if (tempConstant.getText().equals("")) {
+        	System.out.println("ERROR: Writing condition.txt file: Could not read list of temperatures (Initial Conditions tab)");
+        	return;
+        }
+        else {
+        	String[] tempLines = tempConstant.getText().split("[\n]");
+        	StringTokenizer st = null;
+        	for (int i=0; i<tempLines.length; i++) {
+	        	st = new StringTokenizer(tempLines[i]);
+	        	while (st.hasMoreTokens()) {
+	        		String line = st.nextToken();
+	        		if (line.endsWith(",")) line = line.substring(0,line.length()-1);
+	        		conditionFile += " " + line;
+	        	}
+	        }
         }
         conditionFile += "\r";
         
         //	Add the pressure model, list of pressures, and units
         conditionFile += "PressureModel: " + pressModelCombo.getSelectedItem() +
         	" (" + pressConstantUnit.getSelectedItem() + ")";
-        String[] pressLines = pressConstant.getText().split("[\n]");
-        for (int i=0; i<pressLines.length; i++) {
-        	st = new StringTokenizer(pressLines[i]);
-        	while (st.hasMoreTokens()) {
-        		String line = st.nextToken();
-        		if (line.endsWith(",")) line = line.substring(0,line.length()-1);
-        		conditionFile += " " + line;
-        	}
+        if (pressConstant.getText().equals("")) {
+        	System.out.println("ERROR: Writing condition.txt file: Could not read list of pressures (Initial Conditions tab)");
+        	return;
+        }
+        else {
+	        String[] pressLines = pressConstant.getText().split("[\n]");
+	        StringTokenizer st = null;
+	        for (int i=0; i<pressLines.length; i++) {
+	        	st = new StringTokenizer(pressLines[i]);
+	        	while (st.hasMoreTokens()) {
+	        		String line = st.nextToken();
+	        		if (line.endsWith(",")) line = line.substring(0,line.length()-1);
+	        		conditionFile += " " + line;
+	        	}
+	        }
         }
         conditionFile += "\r\r";
         
@@ -1286,32 +1334,38 @@ public class GUI extends JPanel implements ActionListener {
         boolean unreactiveStatus = false;
         String reactiveSpecies = "";
         String inertSpecies = "";
-        for (int i=0; i<tableInput.getRowCount(); i++) {
-        	if (tableInput.getValueAt(i,3).equals("Inert Gas")) {
-        		inertSpecies += tableInput.getValueAt(i,0) + " " +
-        			tableInput.getValueAt(i,1) + " (" +
-        			tableInput.getValueAt(i,2) + ")\r";
-        	} else if (tableInput.getValueAt(i,3).equals("Reactive")) {
-        		++nonInertCount;
-        		reactiveSpecies += "(" + nonInertCount + ") " +
-        		tableInput.getValueAt(i,0) + " " +
-    			tableInput.getValueAt(i,1) + " (" +
-    			tableInput.getValueAt(i,2) + ")\r" +
-    			tableInput.getValueAt(i,4) + "\r\r";
-        	} else if (tableInput.getValueAt(i,3).equals("Unreactive")) {
-        		unreactiveStatus = true;
-        		++nonInertCount;
-        		reactiveSpecies += "(" + nonInertCount + ") " +
-        		tableInput.getValueAt(i,0) + " " +
-    			tableInput.getValueAt(i,1) + " (" +
-    			tableInput.getValueAt(i,2) + ") unreactive\r" +
-    			tableInput.getValueAt(i,4) + "\r\r";
-        	}
+        if (tableInput.getRowCount()==0) {
+        	System.out.println("ERROR: Writing condition.txt file: Could not read table of reactants (Initial Conditions tab)");
+        	return;
         }
-        //	Add the non-inert gas species
-        conditionFile += "InitialStatus:\r\r" + reactiveSpecies + "\rEND\r\r";
-        //	Add the inert gas species
-        conditionFile += "InertGas:\r" + inertSpecies + "END\r\r";
+        else {
+	        for (int i=0; i<tableInput.getRowCount(); i++) {
+	        	if (tableInput.getValueAt(i,3).equals("Inert Gas")) {
+	        		inertSpecies += tableInput.getValueAt(i,0) + " " +
+	        			tableInput.getValueAt(i,1) + " (" +
+	        			tableInput.getValueAt(i,2) + ")\r";
+	        	} else if (tableInput.getValueAt(i,3).equals("Reactive")) {
+	        		++nonInertCount;
+	        		reactiveSpecies += "(" + nonInertCount + ") " +
+	        		tableInput.getValueAt(i,0) + " " +
+	    			tableInput.getValueAt(i,1) + " (" +
+	    			tableInput.getValueAt(i,2) + ")\r" +
+	    			tableInput.getValueAt(i,4) + "\r\r";
+	        	} else if (tableInput.getValueAt(i,3).equals("Unreactive")) {
+	        		unreactiveStatus = true;
+	        		++nonInertCount;
+	        		reactiveSpecies += "(" + nonInertCount + ") " +
+	        		tableInput.getValueAt(i,0) + " " +
+	    			tableInput.getValueAt(i,1) + " (" +
+	    			tableInput.getValueAt(i,2) + ") unreactive\r" +
+	    			tableInput.getValueAt(i,4) + "\r\r";
+	        	}
+	        }
+	        //	Add the non-inert gas species
+	        conditionFile += "InitialStatus:\r\r" + reactiveSpecies + "\rEND\r\r";
+	        //	Add the inert gas species
+	        conditionFile += "InertGas:\r" + inertSpecies + "END\r\r";
+        }
         
         //	Add the spectroscopic data estimator
         conditionFile += "SpectroscopicDataEstimator: ";
@@ -1336,51 +1390,94 @@ public class GUI extends JPanel implements ActionListener {
         
         //	Add the path of the IncludeSpecies.txt file (if present)
         if (unreactiveStatus) {
-        	conditionFile += "IncludeSpecies: " + isPath.getText() + "\r\r";
+        	if (isPath.getText().equals("")) {
+            	System.out.println("ERROR: Writing condition.txt file: Could not read location of IncludeSpecies.txt (Initial Conditions tab)");
+            	return;
+        	}
+        	else {
+        		conditionFile += "IncludeSpecies: " + isPath.getText() + "\r\r";
+        	}
         }
         
         //	Add the finish controller
-        conditionFile += "FinishController:\r" +
-        	"(1) Goal ";
+        conditionFile += "FinishController:\r" + "(1) Goal ";
         //	If goal is conversion
         boolean conversionGoal = true;
         if (controllerCombo.getSelectedItem().equals("Conversion")) {
-        	conditionFile += controllerCombo.getSelectedItem() + " " +
-        		SpeciesConvName.getSelectedItem() + " " + conversion.getText() + "\r";
+        	if (SpeciesConvName.getSelectedItem().equals(" ") || conversion.getText().equals("")) {
+            	System.out.println("ERROR: Writing condition.txt file: Could not read limiting reactant and/or fractional conversion (Termination tab)");
+            	return;
+        	}
+        	else {
+	        	conditionFile += controllerCombo.getSelectedItem() + " " +
+	        		SpeciesConvName.getSelectedItem() + " " + conversion.getText() + "\r";
+        	}
         } else if (controllerCombo.getSelectedItem().equals("ReactionTime")) {
-        	conversionGoal = false;
-        	conditionFile += controllerCombo.getSelectedItem() + " " +
-        		time.getText() + " (" + timeCombo.getSelectedItem() + ")\r";
+        	if (time.getText().equals("")) {
+            	System.out.println("ERROR: Writing condition.txt file: Could not read time of reaction (Termination tab)");
+            	return;
+        	}
+        	else {
+	        	conversionGoal = false;
+	        	conditionFile += controllerCombo.getSelectedItem() + " " +
+	        		time.getText() + " (" + timeCombo.getSelectedItem() + ")\r";
+        	}
         }
-        conditionFile += "(2) Error Tolerance: " + eTolerance.getText() + "\r\r";
+        
+        if (eTolerance.getText().equals("")) {
+        	System.out.println("ERROR: Writing condition.txt file: Could not read model's error tolerance (Termination tab)");
+        	return;
+        } else {
+        	conditionFile += "(2) Error Tolerance: " + eTolerance.getText() + "\r\r";
+        }
         
         //	Add the dynamic simulator
         conditionFile += "DynamicSimulator: " + simulatorCombo.getSelectedItem() + "\r";
         if (conversionGoal) {
         	conditionFile += "Conversions:";
-            String[] convLines = multiConv.getText().split("[\n]");
-            for (int i=0; i<convLines.length; i++) {
-            	st = new StringTokenizer(convLines[i]);
-            	while (st.hasMoreTokens()) {
-            		String line = st.nextToken();
-            		if (line.endsWith(",")) line = line.substring(0,line.length()-1);
-            		conditionFile += " " + line;
-            	}
-            }
+        	if (multiConv.getText().equals("")) {
+            	System.out.println("ERROR: Writing condition.txt file: Could not read list of intermediate conversions (Dynamic Simulator tab)");
+            	return;
+        	}
+        	else {
+	            String[] convLines = multiConv.getText().split("[\n]");
+	            for (int i=0; i<convLines.length; i++) {
+	            	StringTokenizer st = null;
+	            	st = new StringTokenizer(convLines[i]);
+	            	while (st.hasMoreTokens()) {
+	            		String line = st.nextToken();
+	            		if (line.endsWith(",")) line = line.substring(0,line.length()-1);
+	            		conditionFile += " " + line;
+	            	}
+	            }
+        	}   
         } else {
         	conditionFile += "TimeStep:";
-        	String[] tsLines = multiTS.getText().split("[\n]");
-            for (int i=0; i<tsLines.length; i++) {
-            	st = new StringTokenizer(tsLines[i]);
-            	while (st.hasMoreTokens()) {
-            		String line = st.nextToken();
-            		if (line.endsWith(",")) line = line.substring(0,line.length()-1);
-            		conditionFile += " " + line;
-            	}
-            }
+        	if (multiTS.getText().equals("")) {
+            	System.out.println("ERROR: Writing condition.txt file: Could not read list of intermediate time steps (Dynamic Simulator tab)");
+            	return;
+        	}
+        	else {
+	        	String[] tsLines = multiTS.getText().split("[\n]");
+	            for (int i=0; i<tsLines.length; i++) {
+	            	StringTokenizer st = null;
+	            	st = new StringTokenizer(tsLines[i]);
+	            	while (st.hasMoreTokens()) {
+	            		String line = st.nextToken();
+	            		if (line.endsWith(",")) line = line.substring(0,line.length()-1);
+	            		conditionFile += " " + line;
+	            	}
+	            }
+        	}
         }
-    	conditionFile += "\rAtol: " + aTolerance.getText() + "\r" +
-			"Rtol: " + rTolerance.getText() + "\r\r";
+        
+        if (aTolerance.getText().equals("") || rTolerance.getText().equals("")) {
+        	System.out.println("ERROR: Writing condition.txt file: Could not read absolute and/or relative tolerance (Dynamic Simulator tab)");
+        	return;
+        }
+        else {
+        	conditionFile += "\rAtol: " + aTolerance.getText() + "\r" + "Rtol: " + rTolerance.getText() + "\r\r";
+        }
     	
     	//	Add error bars & sensitivity analysis information (if DASPK is selected)
     	if (simulatorCombo.getSelectedItem().equals("DASPK")) {
@@ -1392,15 +1489,18 @@ public class GUI extends JPanel implements ActionListener {
     		}
     		conditionFile += "Display sensitivity coefficients: ";
     		if (sensCoeffCombo.getSelectedItem().equals("Yes")) {
-    			conditionFile += "on\r";
+    			conditionFile += "on\rDisplay sensitivity information for:\r";
+    			if (tableSens.getRowCount()==0) {
+    	        	System.out.println("ERROR: Writing condition.txt file: Could not read table of species for which to perform sensitivity analysis (Sensitivity Analysis tab)");
+    	        	return;
+    			}
+        		for (int j=0; j<tableSens.getRowCount(); j++) {
+        			conditionFile += tableSens.getValueAt(j,0) + "\r";
+        		}
+        		conditionFile += "END\r\r";
     		} else if (sensCoeffCombo.getSelectedItem().equals("No")) {
     			conditionFile += "off\r";
     		}
-    		conditionFile += "Display sensitivity information for:\r";
-    		for (int j=0; j<tableSens.getRowCount(); j++) {
-    			conditionFile += tableSens.getValueAt(j,0) + "\r";
-    		}
-    		conditionFile += "END\r\r";
     	}
     	
         //	Add the primary reaction library
@@ -1408,17 +1508,22 @@ public class GUI extends JPanel implements ActionListener {
     	conditionFile += "PrimaryReactionLibrary: ";
     	if (libraryCombo.getSelectedItem().equals("Yes")) {
     		conditionFile += "on\r";
-    		for (int k=0; k<tablePRL.getRowCount(); k++) {
-    			conditionFile += "Name: " + tablePRL.getValueAt(k,0) + "\r" + "Location: ";
-    			String prlDir = (String)tablePRL.getValueAt(k,1);
-    	        if (prlDir.startsWith(rmgEnvVar)) {
-    	        	int startIndex = rmgEnvVar.length() + 11;
-    	        	conditionFile += prlDir.substring(startIndex) + "\r";
-    	        } else {
-    	        	conditionFile += prlDir + "\r";
-    	        }
+    		if (tablePRL.getRowCount()==0) {
+            	System.out.println("ERROR: Writing condition.txt file: Could not read Primary Reaction Library (Thermochemical Libraries tab)");
+            	return;
+    		} else {
+	    		for (int k=0; k<tablePRL.getRowCount(); k++) {
+	    			conditionFile += "Name: " + tablePRL.getValueAt(k,0) + "\r" + "Location: ";
+	    			String prlDir = (String)tablePRL.getValueAt(k,1);
+	    	        if (prlDir.startsWith(rmgEnvVar)) {
+	    	        	int startIndex = rmgEnvVar.length() + 11;
+	    	        	conditionFile += prlDir.substring(startIndex) + "\r";
+	    	        } else {
+	    	        	conditionFile += prlDir + "\r";
+	    	        }
+	    		}
+	    		conditionFile += "END";
     		}
-    		conditionFile += "END";
     	} else if (libraryCombo.getSelectedItem().equals("No")) {
     		conditionFile += "off\rEND";
     	}
@@ -1469,19 +1574,52 @@ public class GUI extends JPanel implements ActionListener {
         StringTokenizer st = null;
         String tempString = null;
         
+        System.out.println("GUI cannot read in file's header (comments)");
+        
         //	Path of Database
-        databasePath.setText(indivLines[lineCounter].substring(9));
+        st = new StringTokenizer(indivLines[lineCounter]);
+        tempString = st.nextToken();	// Skip over "Database:"
+        if (!tempString.startsWith("Database")) {
+        	System.out.println("ERROR: Reading in condition.txt file - Could not locate Database field (should be first non-commented line in condition.txt file).  GUI does not contain all information present in condition.txt file.");
+        	return;
+        }
+        databasePath.setText(st.nextToken());
         ++lineCounter;
         
         //	Path of PrimaryThermoLibrary
-        ptlPath.setText(indivLines[lineCounter].substring(21));
+        st = new StringTokenizer(indivLines[lineCounter]);
+        tempString = st.nextToken();	// Skip over "PrimaryThermoLibrary:"
+        if (!tempString.startsWith("PrimaryThermoLibrary")) {
+        	System.out.println("ERROR: Reading in condition.txt file - Could not locate PrimaryThermoLibrary field (should be located between 'Database' and 'TemperatureModel' fields in condition.txt file).  GUI does not contain all information present in condition.txt file.");
+        	return;
+        }
+        ptlPath.setText(st.nextToken());
         ++lineCounter;
         
         //	Temperature model
         st = new StringTokenizer(indivLines[lineCounter]);
         tempString = st.nextToken();	// Skip over "TemperatureModel:"
-        tempModelCombo.setSelectedItem(st.nextToken());
-        tempConstantUnit.setSelectedItem(st.nextToken().substring(1,2));
+        if (!tempString.startsWith("TemperatureModel")) {
+        	System.out.println("ERROR: Reading in condition.txt file - Could not locate TemperatureModel field (should be located between 'PrimaryThermoLibrary' and 'PressureModel' fields in condition.txt file).  GUI does not contain all information present in condition.txt file.");
+        	return;
+        }
+        
+        String modelTemp = st.nextToken();
+        if (!modelTemp.equals("Constant")) {
+        	System.out.println("ERROR: Reading in condition.txt file - Invalid TemperatureModel.  RMG recognizes 'Constant' TemperatureModel, but not " + modelTemp + ".  GUI does not contain all information present in condition.txt file.");
+        	return;
+        }
+        tempModelCombo.setSelectedItem(modelTemp);
+        
+        String unitTemp = st.nextToken().substring(1,2);
+        if (unitTemp.equals("K") || unitTemp.equals("F") || unitTemp.equals("C")) {
+        	tempConstantUnit.setSelectedItem(unitTemp);
+        }
+        else {
+        	System.out.println("ERROR: Reading in condition.txt file - Invalid temperature unit.  RMG recognizes temperature units of 'K', 'C', or 'F', but not " + unitTemp + ".  GUI does not contain all information present in condition.txt file.");
+        	return;
+        }
+        
         String temps = st.nextToken();
         while (st.hasMoreTokens()) {
         	temps += " " + st.nextToken();
@@ -1492,9 +1630,30 @@ public class GUI extends JPanel implements ActionListener {
         //	Pressure model
         st = new StringTokenizer(indivLines[lineCounter]);
         tempString = st.nextToken();	// Skip over "PressureModel:"
-        pressModelCombo.setSelectedItem(st.nextToken());
-        String pressUnit = st.nextToken();
-        pressConstantUnit.setSelectedItem(pressUnit.substring(1,pressUnit.length()-1));
+        if (!tempString.startsWith("PressureModel")) {
+        	System.out.println("ERROR: Reading in condition.txt file - Could not locate PressureModel field (should be located between 'TemperatureModel' and 'InChIGeneration' fields in condition.txt file).  GUI does not contain all information present in condition.txt file.");
+        	return;
+        }
+        
+        String modelPress = st.nextToken();
+        if (!modelPress.equals("Constant")) {
+        	System.out.println("ERROR: Reading in condition.txt file - Invalid PressureModel.  RMG recognizes 'Constant' PressureModel, but not " + modelPress + ".  GUI does not contain all information present in condition.txt file.");
+        	return;
+        }
+        else {
+        	pressModelCombo.setSelectedItem(modelPress);
+        }
+        
+        String temp = st.nextToken();
+        String unitPress = temp.substring(1,temp.length()-1);
+        if (unitPress.equals("atm") || unitPress.equals("Pa") || unitPress.equals("bar") || unitPress.equals("torr")) {
+        	pressConstantUnit.setSelectedItem(unitPress);
+        }
+        else {
+        	System.out.println("ERROR: Reading in condition.txt file - Invalid pressure unit.  RMG recognizes pressure units of 'atm', 'Pa', 'bar' or 'torr', but not " + unitPress + ".  GUI does not contain all information present in condition.txt file.");
+        	return;
+        }
+        
         String presses = st.nextToken();
         while (st.hasMoreTokens()) {
         	presses += " " + st.nextToken();
@@ -1512,11 +1671,18 @@ public class GUI extends JPanel implements ActionListener {
         //	InChI generation
         st = new StringTokenizer(indivLines[lineCounter]);
         tempString = st.nextToken();	// Skip over "InChIGeneration:"
+        if (!tempString.startsWith("InChIGeneration")) {
+        	System.out.println("ERROR: Reading in condition.txt file - Could not locate InChIGeneration field (should be located between 'PressureModel' and 'InitialStatus' fields in condition.txt file).  GUI does not contain all information present in condition.txt file.");
+        	return;
+        }
         String inchi = st.nextToken();
         if (inchi.toLowerCase().equals("on")) {
         	inchiCombo.setSelectedItem("Yes");
         } else if (inchi.toLowerCase().equals("off")) {
         	inchiCombo.setSelectedItem("No");
+        } else {
+        	System.out.println("ERROR: Reading in condition.txt file - Invalid argument for InChIGeneration.  RMG recognizes an argument of 'On' or 'Off', but not " + inchi + ".  GUI does not contain all information present in condition.txt file.");
+        	return;
         }
         ++lineCounter;
         
@@ -1564,15 +1730,21 @@ public class GUI extends JPanel implements ActionListener {
     		conc = st.nextToken();
     		unit = st.nextToken();
     		reactivity = "Inert Gas";
-    		ICVector icEntry = new ICVector(numSpecies-1,name,conc,unit.substring(1,unit.length()-1),reactivity,adjList);
-			tmodelInput.updateIC(icEntry);
+    		if (name.equals("Ar") || name.equals("Ne") || name.equals("N2")) {
+    			ICVector icEntry = new ICVector(numSpecies-1,name,conc,unit.substring(1,unit.length()-1),reactivity,adjList);
+    			tmodelInput.updateIC(icEntry);
+    		} else
+    			System.out.println("WARNING: Could not read in one of the inert gas species: " + name + ".  The Inert Gas options are 'N2', 'Ar', and 'Ne' (case sensitive)");
         	++lineCounter;
         }
         ++lineCounter;	// Skip over "END"
         
         //	Spectroscopic data estimator
         st = new StringTokenizer(indivLines[lineCounter]);
-        tempString = st.nextToken();	// Skip over "SpectroscopicDataEstimator:"
+        if (!st.nextToken().startsWith("SpectroscopicDataEstimator")) {
+        	System.out.println("ERROR: Reading in condition.txt file - Could not locate SpectroscopicDataEstimator field (should be located between InertGas and PressureDependence fields in condition.txt file).  GUI does not contain all information present in condition.txt file.");
+        	return;
+        }
         String sde = st.nextToken();
         if (sde.toLowerCase().equals("frequencygroups")) {
         	sdeCombo.setSelectedItem("Frequency Groups");
@@ -1580,12 +1752,18 @@ public class GUI extends JPanel implements ActionListener {
         	sdeCombo.setSelectedItem("Three Frequency Model");
         } else if (sde.toLowerCase().equals("off")) {
         	sdeCombo.setSelectedItem("off");
+        } else {
+        	System.out.println("ERROR: Reading in condition.txt file - Invalid argument for SpectroscopicDataEstimator.  RMG recognizes an argument of 'frequencygroups', 'threefrequencymodel', or 'off' but not " + sde + ".  GUI does not contain all information present in condition.txt file.");
+        	return;
         }
         ++lineCounter;
         
         //	Pressure dependence model
         st = new StringTokenizer(indivLines[lineCounter]);
-        tempString = st.nextToken();	// Skip over "PressureDependence:"
+        if (!st.nextToken().startsWith("PressureDependence")) {
+        	System.out.println("ERROR: Reading in condition.txt file - Could not locate PressureDependence field (should be located between SpectroscopicDataEstimator and FinishController fields in condition.txt file).  GUI does not contain all information present in condition.txt file.");
+        	return;
+        }
         String pdep = st.nextToken();
         if (pdep.toLowerCase().equals("off")) {
         	pdepCombo.setSelectedItem("off");
@@ -1593,6 +1771,9 @@ public class GUI extends JPanel implements ActionListener {
         	pdepCombo.setSelectedItem("Reservoir State");
         } else if (pdep.toLowerCase().equals("modifiedstrongcollision")) {
         	pdepCombo.setSelectedItem("Modified Strong Collision");
+        } else {
+        	System.out.println("ERROR: Reading in condition.txt file - Invalid argument for PressureDependence.  RMG recognizes an argument of 'reservoirstate', 'modifiedstrongcollision', or 'off' but not " + pdep + ".  GUI does not contain all information present in condition.txt file.");
+        	return;
         }
         ++lineCounter;
         
@@ -1619,6 +1800,9 @@ public class GUI extends JPanel implements ActionListener {
         	time.setText(st.nextToken());
         	String units = st.nextToken();
         	timeCombo.setSelectedItem(units.substring(1,units.length()-1));
+        } else {
+        	System.out.println("ERROR: Reading in condition.txt file - Invalid argument for Goal.  RMG recognizes an argument of 'Conversion' or 'ReactionTime' but not " + goal + ".  GUI does not contain all information present in condition.txt file.");
+        	return;
         }
         ++lineCounter;
         
@@ -1632,8 +1816,18 @@ public class GUI extends JPanel implements ActionListener {
         
         //	Dynamic simulator
         st = new StringTokenizer(indivLines[lineCounter]);
-        tempString = st.nextToken();	// Skip over "DynamicSimulator:"
-        simulatorCombo.setSelectedItem(st.nextToken());
+        if (!st.nextToken().startsWith("DynamicSimulator")) {
+        	System.out.println("ERROR: Reading in condition.txt file - Could not locate DynamicSimulator field (should be located between Error Tolerance and Conversions/TimeSteps fields in condition.txt file).  GUI does not contain all information present in condition.txt file.");
+        	return;
+        }
+        String sim = st.nextToken();
+        if (sim.equals("DASPK") || sim.equals("DASSL")) {
+        	simulatorCombo.setSelectedItem(sim);
+        } else {
+        	System.out.println("ERROR: Reading in condition.txt file - Invalid argument for DynamicSimulator.  RMG recognizes an argument of 'DASPK' or 'DASSL' but not " + sim + ".  GUI does not contain all information present in condition.txt file.");
+        	return;
+        }
+        
         ++lineCounter;
         
         //	Intermediate integration step
@@ -1652,13 +1846,21 @@ public class GUI extends JPanel implements ActionListener {
         
         //	Absolute and Relative tolerance
         st = new StringTokenizer(indivLines[lineCounter]);
-        tempString = st.nextToken();	// Skip over "Atol:"
-        aTolerance.setText(st.nextToken());
+        if (!st.nextToken().startsWith("Atol")) {
+        	System.out.println("ERROR: Reading in condition.txt file - Could not locate Atol field (should be located between Conversions/TimeSteps and Rtol fields in condition.txt file).  GUI does not contain all information present in condition.txt file.");
+        	return;
+        } else {
+        	aTolerance.setText(st.nextToken());
+        }
         ++lineCounter;
         
         st = new StringTokenizer(indivLines[lineCounter]);
-        tempString = st.nextToken();	// Skip over "Rtol:"
-        rTolerance.setText(st.nextToken());
+        if (!st.nextToken().startsWith("Rtol")) {
+        	System.out.println("ERROR: Reading in condition.txt file - Could not locate Rtol field (should be located between Atol and PrimaryReactionLibrary fields in condition.txt file).  GUI does not contain all information present in condition.txt file.");
+        	return;
+        } else {
+        	rTolerance.setText(st.nextToken());
+        }
         ++lineCounter;
 
         //	Error bars and Sensitivity analysis (if present)
@@ -1671,6 +1873,9 @@ public class GUI extends JPanel implements ActionListener {
         		eBarsCombo.setSelectedItem("Yes");
         	} else if (onoff.equals("off")) {
         		eBarsCombo.setSelectedItem("No");
+        	} else {
+        		System.out.println("ERROR: Reading in condition.txt file - Invalid argument for Error bars.  RMG recognizes an argument of 'Off' or 'On' but not " + onoff + ".  GUI does not contain all information present in condition.txt file.");
+            	return;
         	}
         	++lineCounter;
         	
@@ -1683,6 +1888,9 @@ public class GUI extends JPanel implements ActionListener {
         		sensCoeffCombo.setSelectedItem("Yes");
         	} else if (onoff.equals("off")) {
         		sensCoeffCombo.setSelectedItem("No");
+        	} else {
+        		System.out.println("ERROR: Reading in condition.txt file - Invalid argument for Display sensitivity coefficients.  RMG recognizes an argument of 'Off' or 'On' but not " + onoff + ".  GUI does not contain all information present in condition.txt file.");
+            	return;
         	}
         	++lineCounter;        	
         }
@@ -1705,7 +1913,10 @@ public class GUI extends JPanel implements ActionListener {
         //	Primary reaction libraries
         tmodelPRL.clear();	// Clear the existing table
         st = new StringTokenizer(indivLines[lineCounter]);
-        tempString = st.nextToken();	// Skip "PrimaryReactionLibrary:"
+        if (!st.nextToken().startsWith("PrimaryReactionLibrary")) {
+        	System.out.println("ERROR: Reading in condition.txt file - Could not locate PrimaryReactionLibrary field (should be located after Rtol field in condition.txt file).  GUI does not contain all information present in condition.txt file.");
+        	return;
+        }
         String onoff = st.nextToken();
         if (onoff.equals("on")) {
     		libraryCombo.setSelectedItem("Yes");
@@ -1726,6 +1937,9 @@ public class GUI extends JPanel implements ActionListener {
     		}
     	} else if (onoff.equals("off")) {
     		libraryCombo.setSelectedItem("No");
+    	} else {
+    		System.out.println("ERROR: Reading in condition.txt file - Invalid argument for PrimaryReactionLibrary.  RMG recognizes an argument of 'Off' or 'On' but not " + onoff + ".  GUI does not contain all information present in condition.txt file.");
+        	return;
     	}
     }
 
