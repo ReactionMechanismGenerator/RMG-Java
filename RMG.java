@@ -187,7 +187,7 @@ public class RMG {
 			System.out.println("#                                                              #");
 			System.out.println("#              RMG - Reaction Mechanism Generator              #");
 			System.out.println("#                         Version 3.0                          #");
-			System.out.println("#                         26 Feb 2009                          #");
+			System.out.println("#                        4 March  2009                         #");
 			System.out.println("#                                                              #");
 			System.out.println("#                 http://rmg.sourceforge.net/                  #");
 			System.out.println("#                     http://rmg.mit.edu/                      #");
@@ -253,7 +253,7 @@ public class RMG {
   }
 
 	
-	
+	/* this function is not used, has not been maintained, and is now out of date.
 	private static void writeThermoFile() {
 		// TODO Auto-generated method stub
 		String thermoFile = "300.000  1000.000  5000.000 \n";
@@ -281,6 +281,7 @@ public class RMG {
 		}
 		return;
 	};
+    */
 }
 /*********************************************************************
 	File Path	: RMG\RMG\MainRMG.java
