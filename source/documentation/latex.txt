@@ -1,0 +1,21 @@
+.. This is the head for the LaTeX file
+
+*****************
+RMG documentation
+*****************
+
+.. toctree::
+   :maxdepth: 1
+
+   introduction
+   installation
+   conditionfile
+   GraphicalUserInterface
+   running
+   analyzing
+   modification
+   theory
+   credits
+
+* :ref:`genindex`
+
