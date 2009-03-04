@@ -61,7 +61,7 @@ public class FrequencyGroupTester {
                                 e.printStackTrace();
                         }
 	  		FrequencyGroups freqGroups= FrequencyGroups.getINSTANCE();
-            //// the following line won't compile
+            //// the following line won't compile, with error:
             ////  generateFreqData(jing.chem.ChemGraph,jing.chem.ThermoData) in jing.chem.FrequencyGroups cannot be applied to (jing.chem.ChemGraph)
             //// rwest commenting out from the CVS version as it's blocking my automated build process
             // freqGroups.generateFreqData(cg2);	
