@@ -115,6 +115,7 @@ div.sphinxsidebar h4 {
 
 div.sphinxsidebar p {
     color: white;
+	text-align: center;
 }
 
 div.sphinxsidebar p.topless {
@@ -642,6 +643,9 @@ span.eqno {
 
 img.logo {
     border: 0;
+	margin-right: auto;
+	margin-left: auto;
+	text-align: center;
 }
 
 /* :::: PRINT :::: */
