@@ -5,7 +5,7 @@ Theory and Implementation Details
 **********************************
 
 A schematic overview of RMG is presented below.
- .. figure:: misc_pngs/RMGschematic.png
+ .. figure:: images/RMGschematic.png
 	:width: 600 px
 	
 	A schematic overview of RMG
@@ -416,7 +416,7 @@ Implementation
 --------------
 In order to achieve the desired behavior for “automated time stepping”, modifications of the type illustrated in Figure 1 were required.
 
-.. figure:: misc_pngs/AUTOmodifications.png
+.. figure:: images/AUTOmodifications.png
 	:width: 800 px
 
 	Figure 1. Modifications to implement “automated time stepping”.
@@ -424,7 +424,7 @@ In order to achieve the desired behavior for “automated time stepping”, modi
 As the figure shows, a significant required change was the modification of the ODE solver to have access to edge species flux information at each ODE solver time step. Thus, much of the modification effort involved implementing a scheme for passing edge reaction information to the ODE solver. The implementation ended up requiring changes to the Java classes ReactionModelGenerator and JDASSL and the FORTRAN file call_dassl.f (the modified version was renamed to call_dasslAUTO.f90 to distinguish from the original version). Also, a minor change to the Java class ReactionTimeTT was made.
 An example of an ODE solver input file for “automated time stepping” is shown in Figure 2, below. Differences from “normal” operation are highlighted with boxes.
 
-.. figure:: misc_pngs/SolverInput.png 
+.. figure:: images/SolverInput.png 
 
 	Figure 2. ODE solver input file example for “automated time stepping”. Boxes highlight differences from the “normal” version.
 
