@@ -168,7 +168,7 @@ latex_font_size = '11pt'
 # Grouping the document tree into LaTeX files. List of tuples
 # (source start file, target name, title, author, document class [howto/manual]).
 latex_documents = [
-  ('index', 'RMG-manual.tex', ur'RMG Documentation',
+  ('documentation/index', 'RMG-manual.tex', ur'RMG Documentation',
    ur'W.H. Green et al.', 'manual'),
 ]
 
