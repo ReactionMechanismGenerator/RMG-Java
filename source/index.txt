@@ -1,0 +1,33 @@
+.. RMG documentation master file, created by sphinx-quickstart on Tue Jan  6 15:07:26 2009.
+   You can adapt this file completely to your liking, but it should at least
+   contain the root `toctree` directive.
+
+*****************
+RMG
+*****************
+
+This will become the home page (with a different layout) that will contain
+
+a description
+-------------
+
+RMG is an automatic chemical reaction mechanism generator that constructs 
+mechanisms composed of elementary chemical reaction steps using a general understanding of how hydrocarbons react. This is its documentation.
+
+
+a link to the documentation
+----------------------------
+
+.. toctree::
+   :maxdepth: 2
+
+   documentation/index
+
+links to download stuff
+------------------------
+see the links on the left
+
+
+a way to search
+---------------
+ :ref:`search`\ , or see the box on the left
