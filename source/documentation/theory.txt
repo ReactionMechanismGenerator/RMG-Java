@@ -446,7 +446,7 @@ One would expect that mechanisms generated using “AUTO” method would be more
 
 
 
-.. table:: Table 1. Size of mechanisms generated using the “AUTO” method and varying numbers of evenly-spaced conversion steps. As in the previous section, the goal conversion is 0.9 and the tolerance is 0.05.
+.. table:: Table 1. Size of mechanisms generated using the “AUTO” method and varying numbers of evenly-spaced conversion steps. In all cases, the goal conversion is 0.9 and the tolerance is 0.05.
 
    =======================  ================  ============
     # of conversion steps    Core reactions   Core species
