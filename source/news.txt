@@ -4,7 +4,7 @@ RMG News and Updates
 **********************************
 
 
-2009-03-04: RMG 3.0 Released!
+2009-03-05: RMG 3.0 Released!
 ==============================
 After nearly two years of development, the RMG team is proud to present the release of RMG version 3.0. New features include:
 
