@@ -1,8 +1,9 @@
 .. _modification:
 
-*************
-Modifying RMG
-*************
+****************************
+Modifying the RMG databases
+****************************
+
 
 
 .. _editingthermodatabase:

@@ -1,8 +1,8 @@
 .. _conditionfile:
 
-*************************
-Creating a Condition File
-*************************
+**********************************
+Creating a Condition File manually
+**********************************
 
 To run RMG, you must specify the initial conditions and the model generation
 parameters, all of which are contained in a single file, :file:`condition.txt`. If
