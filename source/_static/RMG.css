@@ -361,6 +361,8 @@ div.body li{
 }
 div.body p.caption {
     text-align: inherit;
+	font-weight: bold;
+	margin-top: 10px;
 }
 
 div.body td {
@@ -674,4 +676,8 @@ img.logo {
 div.sphinxsidebarwrapper li {
 	margin-bottom: 0.3em;
 	margin-top: 0.2em;
+}
+
+div.figure {
+	text-align: center;
 }
