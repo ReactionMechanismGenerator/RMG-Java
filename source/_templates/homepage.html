@@ -1,5 +1,7 @@
 {% extends "layout.html" %}
 
+{%- set customsidebar = 'homepageSidebarContent.html' %}
+
 {%- block extrahead %} 
 {{ super() }}
 <link rel="stylesheet" href="{{ pathto('_static/' + 'RMG-homepage.css', 1) }}" type="text/css" />
@@ -24,6 +26,11 @@
 <p><strong>Welcome to the RMG home page!</strong></p>
 <p>RMG is an automatic chemical reaction mechanism generator that constructs
 mechanisms composed of elementary chemical reaction steps using a general understanding of how hydrocarbons react.</p>
+
+
+<img id="fluxdiagram" src="{{ pathto('_static/images/HXD13flux-small.png', 1) }}" />
+
+
 
 <div class="section" id="sitemap">
 	<table class="sitemap" >
@@ -75,7 +82,8 @@ mechanisms composed of elementary chemical reaction steps using a general unders
 </div>
 
 
-<img id="fluxdiagram" src="{{ pathto('_static/images/HXD13flux-small.png', 1) }}" />
+
+
 
 <p>The main RMG code is written in Java. A number of computationally intensive tasks have been written in Fortran.</p>
 <p>RMG is free, open-source software available under the terms of the <a class="reference external" href="license.html">MIT/X11 License</a>. The software is developed in the William H. Green research group in the Department of Chemical Engineering at MIT.</p>
@@ -83,6 +91,14 @@ mechanisms composed of elementary chemical reaction steps using a general unders
 
 <p>If you are new to RMG, please see <a class="reference external" href="newusers.html">this page</a>.</p>
 
+
+<h3>Mailing list</h3>
+Subscribe to rmg-users mailing list.
+<FORM Method=POST ACTION="https://lists.sourceforge.net/lists/subscribe/rmg-users">
+<INPUT type="Text" name="email" size="30" value="" placeholder="email address">
+<INPUT type="Submit" name="email-button" value="Subscribe">
+</FORM>
+	
 
 
 <div class="section" id="contact">
@@ -111,18 +127,7 @@ mechanisms composed of elementary chemical reaction steps using a general unders
 
 
 
-{%- set customsidebar = 'homepageSidebarContent.html' %}
 
-
-
-
-
-
-<p>The main RMG code is written in Java. A number of computationally intensive tasks have been written in Fortran.</p>
-<p>RMG is free, open-source software available under the terms of the <a class="reference external" href="license.html">MIT/X11 License</a>. The software is developed in the William H. Green research group in the Department of Chemical Engineering at MIT.</p>
-<img src="{{ pathto('_static/images/mit-redgrey-header1.gif', 1) }}" />
-
-<p>If you are new to RMG, please see <a class="reference external" href="newusers.html">this page</a>.</p>
 
 
 
