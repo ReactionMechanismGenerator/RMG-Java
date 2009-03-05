@@ -21,6 +21,7 @@ Contents:
    running
    analyzing
    modification
+   thermo
    theory/index
    credits
 
