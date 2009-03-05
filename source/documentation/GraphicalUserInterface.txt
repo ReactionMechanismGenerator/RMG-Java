@@ -147,10 +147,11 @@ The "Dynamic Simulator" tab
 
 	Dynamic Simulator tab
 
-This tab of the GUI allows the user to specify options for:
-  * :ref:`the ODE solver <dynamicsimulator>`
-  * :ref:`building a pressure dependent mechanism <pressuredependence>`
-  * :ref:`constructing InChIs <InChIgeneration>`
+This tab of the GUI allows the user to specify options for: 
+
+* :ref:`the ODE solver <dynamicsimulator>`
+* :ref:`building a pressure dependent mechanism <pressuredependence>`
+* :ref:`constructing InChIs <InChIgeneration>`
 
 The ODE Solver
 --------------
@@ -173,24 +174,28 @@ The pressure dependence model
 -----------------------------
 
 The user must specify a :ref:`pressure dependence model <pressuredependence>`.  The options are:
- 	* off
- 	* Modified Strong Collision
- 	* Reservoir State
+
+* off
+* Modified Strong Collision
+* Reservoir State
 
 If the user specifies a pressure dependent model, the "Spectroscopic Data Estimator" field will be enabled.  The options are:
- 	* Frequency Groups
- 	* Three Frequency Model (only available for users with **therfit.exe**)
+
+* Frequency Groups
+* Three Frequency Model (only available for users with **therfit.exe**)
 
 Optional fields
 ---------------
 
 Some optional fields the user may change are:
-  * Equation of State
-  * InChI generation
+
+* Equation of State
+* InChI generation
 	
 The user has two options for the "Equation of State":
-  * Ideal Gas
-  * Liquid
+
+* Ideal Gas
+* Liquid
 	
 The difference between the two options is that RMG will not re-normalize the concentrations of the reactants if they do not satisfy PV=nRT.
 
