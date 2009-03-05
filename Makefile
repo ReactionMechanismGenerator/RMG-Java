@@ -27,6 +27,11 @@ help:
 	@echo "  latex     to make LaTeX files, you can set PAPER=a4 or PAPER=letter"
 	@echo "  changes   to make an overview over all changed/added/deprecated items"
 	@echo "  linkcheck to check all external links for integrity"
+	@echo "  upload    to upload to Sourceforge"
+	@echo "  update    to update from CVS repository"
+	@echo "  all       update, clean, html, latex, upload"
+
+all: update clean html latex upload
 
 clean:
 	-rm -rf build/*
@@ -89,7 +94,12 @@ linkcheck:
 	@echo "Link check complete; look for any errors in the above output " \
 	      "or in build/linkcheck/output.txt."
 
+update:
+	cvs -q update -d
+	
 upload:
+	@echo "Uploading to SourceForge.net..."
+	$(REMOVEAPPLEJUNK)
 	rsync -vrtzaP --rsh=ssh build/html/* rhw27,rmg@web.sourceforge.net:htdocs/
 	rsync -vrtzaP --rsh=ssh build/latex/*.pdf rhw27,rmg@web.sourceforge.net:htdocs/
 	#scp -r build/html/* athena.dialup.mit.edu:www/RMG/
