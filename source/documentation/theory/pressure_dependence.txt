@@ -374,3 +374,7 @@ Depending upon the exact number of unknown frequencies and rotors, the code will
 .. [DQED] \ R. Hanson and F. Krogh. *DQED*. Sandia National Laboratory. http://www.netlib.org/opt/dqed.f.
 
 .. [DQED90] \ J. Burkardt. *DQED FORTRAN90*. Florida State University. http://people.sc.fsu.edu/~burkardt/f_src/dqed/dqed.html.
+
+.. [Astholz1979] \ D. C. Astholz, J. Troe, and W. Wieters. "Unimolecular processes in vibrationally highly excited cycloheptatrienes.  I.  Thermal isomerization in shock waves." *J. Phys. Chem.* **70** (11), p. 5107-5166 (1979).
+
+.. [Beyer1973] \ T. Beyer and D.F. Swinehart. "Number of multiply-restricted partitions." *Comm. ACM* **16** (6), p. 379-379 (1973).

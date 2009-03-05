@@ -11,7 +11,10 @@ RMG - Reaction Mechanism Generator
    :maxdepth: 1
 
    features
+   news
    newusers
-   download
+
    license
+   download
+
    documentation/index

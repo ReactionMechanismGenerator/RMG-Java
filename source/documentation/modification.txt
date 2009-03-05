@@ -26,10 +26,10 @@ but they would be edited in a similar way. The files of interest are located in
 the directory: :file:`$RMG/database/RMG_database/thermo/`. The three files are
 described below.  
 
-Dictionary File (:file:`Group_Dictionary.txt`)
+Dictionary File 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-This file contains the name and
+:file:`Group_Dictionary.txt` contains the name and
 adjacency list (structure) for all of the nodes contained within the thermo
 tree. The nomenclature within all three files must be identical. The asterisk
 "\*" denotes the central atom in the group for which the group value is defined.
@@ -42,10 +42,10 @@ element, # of radicals (0, 1, 2) on element, bonding::
  3   Cdd  0  {2,D} {4,D}
  4   C    0  {3,D} 
 
-Tree File (:file:`Group_Tree.txt`)
+Tree File
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-This file defines the tree structure of the
+:file:`Group_Tree.txt` defines the tree structure of the
 database. The nodes at any particular level are defined by including the text
 "``Lx:``" prior to the name of the group at that node, where "``x``" is a number
 corresponding to the level in the tree. A sample is given below::
@@ -71,10 +71,10 @@ corresponding to the level in the tree. A sample is given below::
 Note that the indentation is not necessary because it is the "``Lx:``" that the
 computer reads, but is very helpful in making these files human readable.
 
-Library File (:file:`Group_Library.txt`)
+Library File 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-This is the archive of the actual data
+:file:`Group_Library.txt` is the archive of the actual data
 associated with a given group in the tree and dictionary. There are 15 (space or
 tab separated) fields in the thermo library to describe the group. The units for
 enthalpy are kcal/mole, and the units for entropy and heat capacity (Cp) are

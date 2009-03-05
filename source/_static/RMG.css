@@ -115,12 +115,14 @@ div.sphinxsidebar h4 {
 
 div.sphinxsidebar p {
     color: white;
+}
+
+p.logo {
 	text-align: center;
 }
 
 div.sphinxsidebar p.topless {
     margin: 5px 10px 10px 10px;
-	text-align: left;
 }
 
 div.sphinxsidebar ul {
@@ -418,9 +420,11 @@ p.topic-title {
 /* Admonitions */
 
 div.admonition {
-    margin-top: 10px;
-    margin-bottom: 10px;
     padding: 7px;
+	background-color: #fec;
+	margin: 10px 1em;
+	border-style: solid;
+	border-color: #933;
 }
 
 div.admonition dt {
@@ -665,4 +669,9 @@ img.logo {
     #top-link {
         display: none;
     }
+}
+
+div.sphinxsidebarwrapper li {
+	margin-bottom: 0.3em;
+	margin-top: 0.2em;
 }

@@ -84,6 +84,3 @@ Summary
 -------
 The “AUTO” method was implemented and tested during development of RMG 3.00 and provides the option of “automated time stepping”. Even so, timing studies suggest that tracking the edge flux “continuously” in the ODE solver is associated with a significant time penalty. However, various mitigating factors appear to reduce the impact of this time penalty on overall mechanism generation time when the “AUTO” method is used. Thus, the “AUTO” method appears to be an appealing alternative to user-specification of time/conversion steps.
 
-.. [Astholz1979] \ D. C. Astholz, J. Troe, and W. Wieters. "Unimolecular processes in vibrationally highly excited cycloheptatrienes.  I.  Thermal isomerization in shock waves." *J. Phys. Chem.* **70** (11), p. 5107-5166 (1979).
-
-.. [Beyer1973] \ T. Beyer and D.F. Swinehart. "Number of multiply-restricted partitions." *Comm. ACM* **16** (6), p. 379-379 (1973).

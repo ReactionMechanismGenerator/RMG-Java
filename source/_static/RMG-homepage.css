@@ -2,3 +2,17 @@ img#fluxdiagram {
 	float: right;
 	margin-left: 1em;
 }
+
+div#browse-the-site.section {
+
+}
+
+table.sitemap tbody tr td h3 {
+	margin: 0;
+	padding-right: 20px;
+	padding-left: 20px;
+}
+
+table.sitemap tbody tr td {
+	vertical-align: top;
+}

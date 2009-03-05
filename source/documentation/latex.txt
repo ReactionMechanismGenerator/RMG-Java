@@ -8,13 +8,15 @@ RMG documentation
    :maxdepth: 1
 
    introduction
+   ../license
    installation
    conditionfile
    GraphicalUserInterface
    running
    analyzing
    modification
-   theory
+   theory/index
    credits
    :ref:`genindex`
 
+This user manual for RMG |release| was generated on |today|. For the latest version of this documentation, please visit http://rmg.mit.edu/. Software updates can also be found at http://sourceforge.net/projects/rmg/
