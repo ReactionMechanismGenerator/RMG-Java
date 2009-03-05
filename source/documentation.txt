@@ -1,9 +1,0 @@
-.. _documentation:
-
-*************
-Documentation
-*************
-
-The online documentation can be viewed in `HTML format <documentation/index.html>`_ or downloaded as a `PDF <documentation/RMG_manual.pdf>`_\ .
-
-The documentation is also available within the RMG package in the ``documentation/`` directory.
