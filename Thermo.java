@@ -53,7 +53,7 @@ public static void main(String[] args) {
   initializeSystemProperties();
 
  try {
-          FileReader in = new FileReader("sandeep.txt");
+          FileReader in = new FileReader("thermo_input.txt");
           BufferedReader data = new BufferedReader(in);
 
           Graph g = ChemParser.readChemGraph(data);
