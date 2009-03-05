@@ -1,0 +1,29 @@
+.. _theory:
+
+**********************************
+Theory and Implementation Details
+**********************************
+
+A schematic overview of RMG is presented below.
+ .. figure:: images/RMGschematic.png
+	:width: 600 px
+	
+	A schematic overview of RMG
+
+Many of the details of RMG's original implementation (Version 1) are described in [JingThesis]_. For a more recent discussion of RMG, see [GreenChapter]_.
+
+Details of certain aspects of RMG are discussed in greater detail below.
+
+.. toctree::
+   :maxdepth: 2
+
+   enlarger
+   group_additivity
+   pressure_dependence
+   time_stepping
+
+
+.. [JingThesis] \ Jing Song. PhD thesis, Building Robust Chemical Reaction Mechanisms: Next Generation Automatic Model Construction Software. (MIT, 2004)
+
+.. [GreenChapter] \ W. H. Green, "Predictive Kinetics: A New Approach for the 21st Century" Advances in Chemical Engineering, vol. 32.
+
