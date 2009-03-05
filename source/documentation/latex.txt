@@ -19,4 +19,4 @@ RMG documentation
    credits
    :ref:`genindex`
 
-This user manual for RMG |release| was generated on |today|. For the latest version of this documentation, please visit http://rmg.mit.edu/. Software updates can also be found at http://sourceforge.net/projects/rmg/
+This user manual for RMG |release| was generated on |today|. For the latest version of this documentation, please visit http://rmg.sourceforge.net/
