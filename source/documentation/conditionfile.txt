@@ -1,7 +1,7 @@
 .. _conditionfile:
 
 **********************************
-Creating a Condition File manually
+Creating a Condition File Manually
 **********************************
 
 To run RMG, you must specify the initial conditions and the model generation

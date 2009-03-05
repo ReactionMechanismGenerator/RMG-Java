@@ -1,7 +1,7 @@
 .. _modification:
 
 ****************************
-Modifying the RMG databases
+Modifying the RMG Databases
 ****************************
 
 

@@ -4,6 +4,8 @@
 RMG documentation
 *****************
 
+This user manual for RMG |release| was generated on |today|. For the latest version of this documentation, please visit http://rmg.sourceforge.net/
+
 .. toctree::
    :maxdepth: 1
 
@@ -15,8 +17,8 @@ RMG documentation
    running
    analyzing
    modification
+   thermo
    theory/index
    credits
    :ref:`genindex`
 
-This user manual for RMG |release| was generated on |today|. For the latest version of this documentation, please visit http://rmg.sourceforge.net/

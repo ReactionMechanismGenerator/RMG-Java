@@ -1,7 +1,7 @@
 .. _GraphicalUserInterface:
 
 ************************************************************
-Creating a Condition File using the Graphical User Interface
+Creating a Condition File Using the Graphical User Interface
 ************************************************************
 
 A user may construct the :file:`condition.txt` file by hand or by using the

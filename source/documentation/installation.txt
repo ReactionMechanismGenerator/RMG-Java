@@ -20,12 +20,32 @@ responsibility to ensure these licenses have been obtained.**
 
 .. _installrequirements:
 
-Installation Prerequisites
-==========================
+Installation of Binary Package
+==============================
 
-For a minimal installation, you will need:
+Multiple binary releases are available from `the RMG website <../download.html>`_\ , including Windows 32-bit and Linux x86. The binary packages provides all of the executables necessary for a functional RMG, although some advanced features require additional third-party applications. To install the binary packages, follow steps 1-3 in the source section for your operating system.
+
+A Windows installer is also provided. The user has the option of installing all or part of the binaries, source, documentation, and examples. The installer will automatically set the ``RMG`` system variable to the installation directory.
+
+Whether you install a binary or a source package, you will need:
 
 * **The Java SE Runtime Environment (JRE), version 6.** This is available from http://java.sun.com/javase/downloads/index.jsp.
+
+To generate InChIs and to convert from InChIs/.mol files to adjacency lists you will need:
+
+* **The IUPAC International Chemical Identifier InChI version 1 (software version 1.01).**  This is available from http://www.iupac.org/inchi/download/index.html
+
+Additional information about the advanced RMG features and the third-party software required to install them can be found in the following section. 
+
+Compiling RMG from Source
+=========================
+
+Compilation Prerequisites
+--------------------------
+
+To build a functional version of RMG you will need the following:
+
+* **The Java SE Development Kit (JDK), version 6.** This is available from http://java.sun.com/javase/downloads/index.jsp.
 * **The Differential Algebraic System Solver (DASSL).** This is available in the public domain from http://www.cs.ucsb.edu/~cse/software.html.
 * **A Fortran 90 compiler.** We recommend the free g95 compiler, available from http://www.g95.org/.
 * **A Fortran 77 compiler.** The g95 compiler can successfully build the Fortran 77 source code as well.
@@ -38,14 +58,10 @@ Although not required, we also recommend that you obtain:
 
 * **Apache Ant.** This controls the generation of Java executables. More information can be found at http://ant.apache.org/. 
 
-To perform sensitivity analysis on the models generated, you will also need:
+.. To perform sensitivity analysis on the models generated, you will also need:
 
-* **The Large Scale Differential Algebraic Equation Solver with Sensitivity Analysis (DASPK), version 3.1.** DASPK 3.1 is *subject to copyright restrictions*, but available for research purposes from http://www.cs.ucsb.edu/~cse/software.html.
-* **The Differential Algebraic Equation PACKage (DAEPACK) library file.** This can be obtained with the JACOBIAN software, which can be obtained at no cost for registered acadamic users from http://www.numericatech.com/academia.htm.
-
-To manipulate the RMG source code you will need: 
-
-* **The Java SE Development Kit (JDK), version 6.** This is available from http://java.sun.com/javase/downloads/index.jsp.
+.. * **The Large Scale Differential Algebraic Equation Solver with Sensitivity Analysis (DASPK), version 3.1.** DASPK 3.1 is *subject to copyright restrictions*, but available for research purposes from http://www.cs.ucsb.edu/~cse/software.html.
+.. * **The Differential Algebraic Equation PACKage (DAEPACK) library file.** This can be obtained with the JACOBIAN software, which can be obtained at no cost for registered acadamic users from http://www.numericatech.com/academia.htm.
 
 To generate InChIs and to convert from InChIs/.mol files to adjacency lists you will need:
 
@@ -54,11 +70,11 @@ To generate InChIs and to convert from InChIs/.mol files to adjacency lists you 
 .. _linuxinstallation:
 
 Linux Installation
-==================
+------------------
 
 To install RMG on a Linux computer:  
 
-1. Create the directory in which you want to install RMG. For the purposes of this document, we will set the directory to :file:`/usr/local/rmg`. ::
+1. Create the directory in which you want to install RMG. For the purposes of this document, we will set the directory to :file:`/usr/local/rmg`. Depending on where you choose to install RMG, you may need superuser privileges. ::
 
 	$ mkdir /usr/local/rmg
 
@@ -66,54 +82,54 @@ To install RMG on a Linux computer:
 	
 	$ export RMG=/usr/local/rmg
 
-   In a C shell you would type, for our example, ::
+  In a C shell you would type, for our example, ::
 	
 	$ setenv RMG /usr/local/rmg
 		
    To avoid typing this line each time, append it to your :file:`~/.bashrc` (bash shell) or :file:`~/.cshrc` (C shell) file.
 
-3. **Get the source code.** Download the file :file:`RMG.tar.gz` for the 3.0 release, ungzip and untar it, and move its contents to the :file:`$RMG` directory. ::
+3. Obtain the source code. Download the file :file:`rmg-3.0-linux-i386.tar.gz` or :file:`rmg-3.0-source.tar.gz`, ungzip and untar it, and move its contents to the :file:`$RMG` directory. ::
 
-	$ tar -xvzf RMG.tar.gz
+	$ tar -xvzf rmg-3.0-source.tar.gz
 	$ mv rmg/* $RMG
 
-Steps 4 and 5 are only required if you are working with the source package. Binary packages are available for several platforms and will already contain the compiled executables.
+Step 4 is only required if you are working with the source package. Binary packages are available for several platforms and will already contain the compiled executables.
 
-4. **Compile the Fortran programs.** If you are working with the source package, you will need to compile the Fortran programs. To do this, change to the directory :file:`$RMG/software` and execute the makefile. The make script will compile four programs: fame, frankie, DASSL, and GATPFit. ::
+4. Compile the programs. If you are working with the source package, you will need to compile RMG and its supporting Fortran programs. To do this, change to the directory :file:`$RMG` and execute the makefile. The make script will compile four programs: fame, frankie, DASSL, and GATPFit. It will then call the ant build script to compile RMG itself. ::
 
-	$ cd $RMG/software
+	$ cd $RMG
 	$ make
 	
-5. **Compile the RMG jar file.** If you are working with the source package, you will need to compile the RMG jar file. To do this, change to the directory :file:`$RMG` and execute the Ant script twice by typing::
+  If you only wish to compile the RMG Java code, you can do so by typing::
 
 	$ cd $RMG
 	$ ant compile
 	$ ant jar
 
-Your installation of RMG is nearly complete.
+At this stage you will have a functional version of RMG. The remaining steps are only required to enable some advanced features.
 
-The next few steps are required only if you want RMG to be able to perform sensitivity analysis on the models generated. Currently RMG uses DASPK3.1 (see Section :ref:`installrequirements`) to perform sensitivity analysis. Analytical Jacobian and partial derivatives with respect to rates of reactions and Gibbs free energy of molecules are generated using the automated differentiator of DAEPACK. 
+.. The next few steps are required only if you want RMG to be able to perform sensitivity analysis on the models generated. Currently RMG uses DASPK3.1 (see Section :ref:`installrequirements`) to perform sensitivity analysis. Analytical Jacobian and partial derivatives with respect to rates of reactions and Gibbs free energy of molecules are generated using the automated differentiator of DAEPACK. 
 
-6. Obtain the DAEPACK library file. Make a symbolic link of the library file in a directory in your library file search path, e.g. :file:`/usr/lib`. 
+.. 6. Obtain the DAEPACK library file. Make a symbolic link of the library file in a directory in your library file search path, e.g. :file:`/usr/lib`. 
 
-7. Download daspk31.tgz and untar it using the command ``$ tar -zxvf daspk31.tgz``. Copy all the source files (:file:`*.f` files) from the untarred directories :file:`ad_solver`,
-   :file:`preconds` and :file:`solver` into the directory :file:`$RMG/software/ODESolver/daspk`. Change to the directory :file:`$RMG/software/ODESolver`and execute the makefile with the ``daspk`` option. Copy the resulting executable, :file:`daspkAUTO.exe`, to :file:`$RMG/software/ODESolver/daspkAUTO.exe` if this is not already done. ::
+.. 7. Download daspk31.tgz and untar it using the command ``$ tar -zxvf daspk31.tgz``. Copy all the source files (:file:`*.f` files) from the untarred directories :file:`ad_solver`,
+..   :file:`preconds` and :file:`solver` into the directory :file:`$RMG/software/ODESolver/daspk`. Change to the directory :file:`$RMG/software/ODESolver`and execute the makefile with the ``daspk`` option. Copy the resulting executable, :file:`daspkAUTO.exe`, to :file:`$RMG/software/ODESolver/daspkAUTO.exe` if this is not already done. ::
 
-	$ tar -xvzf daspk31.tgz
-	$ mv ad_solver/*.f $RMG/software/ODESolver/daspk
-	$ mv preconds/*.f $RMG/software/ODESolver/daspk
-	$ mv solver/*.f $RMG/software/ODESolver/daspk
-	$ cd $RMG/software/ODESolver
-	$ make daspk
-	$ cp daspkAUTO.exe $RMG/software/ODESolver/daspkAUTO.exe
+..	$ tar -xvzf daspk31.tgz
+..	$ mv ad_solver/*.f $RMG/software/ODESolver/daspk
+..	$ mv preconds/*.f $RMG/software/ODESolver/daspk
+..	$ mv solver/*.f $RMG/software/ODESolver/daspk
+..	$ cd $RMG/software/ODESolver
+..	$ make daspk
+..	$ cp daspkAUTO.exe $RMG/software/ODESolver/daspkAUTO.exe
 
-You are now ready to run RMG with sensitivity analysis support.
+.. You are now ready to run RMG with sensitivity analysis support.
 
 The next few steps are required only if you want RMG to be able to generate InChIs for the species present in the reaction mechanism.
 
-8. Download the InChI version 1 (software version 1.01) source code and Application Program Interface (API).
+5. Download the InChI version 1 (software version 1.01) source code and Application Program Interface (API).
 
-9.	Change to the :file:`InChI-1-API/cInChI/gcc_makefile` directory and execute the makefile.  Copy the resulting executable :file:`cInChI-1.exe` to the :file:`$RMG/software/InChI` folder. ::
+6.	Change to the :file:`InChI-1-API/cInChI/gcc_makefile` directory and execute the makefile.  Copy the resulting executable :file:`cInChI-1.exe` to the :file:`$RMG/software/InChI` folder. ::
 
 	$ cd InChI-1-API/cInChI/gcc_makefile
 	$ make
@@ -125,39 +141,33 @@ You are now ready to generate InChIs in RMG.
 .. _windowsinstallation:
 
 Windows Installation
-====================
+--------------------
 
-1. Extract/unzip RMG.tar and move the contents of the RMG 3.00 (directory formed when you unzip RMG.zip) to the desired directory (e.g. c:\RMG)
+To install RMG on a Windows computer:  
 
-2. Add an environment variable for RMG
+1. Create the directory in which you want to install RMG. Depending on where you choose to install RMG, you may need administrator privileges. ::
 
-   * Go to Start-->Control Panel-->System (may need to switch to Classic Control Panel view). Click on the Advanced tab, then click on Environment Variables
+2. Set the RMG environment variable as the directory created in the first step.
+	
+   * Go to ``Start --> Control Panel --> System`` (may need to switch to Classic Control Panel view). Click on the ``Advanced`` tab, then click on ``Environment Variables``.
 
-   * In the lower half of the Environment Variables window (System variables), click New.
+   * In the lower half of the ``Environment Variables`` window (System variables), click ``New``.
 
-   * In the New System Variable window, in the Variable name field, type RMG. In the Variable value field, type the directory in which RMG was installed (e.g. c:\RMG).
+   * In the ``New System Variable`` window, in the ``Variable`` name field, type ``RMG``. In the ``Variable`` value field, type the directory in which RMG was installed.
 
    * Click OK twice to confirm the change.
 
-3. Install g95 (Fortran compiler for Windows) by downloading and running g95-MinGW.exe from http://ftp.g95.org/#Win (http://ftp.g95.org/g95-MinGW.exe) to install g95. Note: After compiling of GATPFit and DASSL is complete (see next two steps), this program may be uninstalled.
+3. Obtain the source code. Download the file :file:`rmg-3.0-win32-i386.zip` or :file:`rmg-3.0-source.tar.gz`, decompress it, and move its contents to the :file:`%RMG%` directory.
 
-4. Compile GATPFit using the Command Prompt (Start-->All Programs-->Accessories -->Command Prompt), change directory to GATPFit directory based on RMG installation directory (e.g. cd "%rmg%"\software\GATPFit\GATPFit). Compile the Fortran files by typing ``g95 -o ../GATPFit *.f`` on the command prompt.
+Step 4 is only required if you are working with the source package. Binary packages are available for several platforms and will already contain the compiled executables.
 
-5. Download and compile DASSL by downloading DASSL from
-   http://www.engineering.ucsb.edu/~cse/software.html and extract the
-   three Fortran files :file:`ddassl.f`, :file:`daux.f` and :file:`dlinpk.f` to the dassl
-   directory (e.g. :file:`"%rmg%"\software\ODESolver\dassl`). To compile the
-   Fortran files use the command prompt and change to dassl directory and
-   then type ``g95 -o ../dassl *.f`` on the command prompt.
+4. Compile the programs. If you are working with the source package, you will need to compile RMG and its supporting Fortran programs. The easiest way to do the latter is to execute the file :file:`make.bat` in the :file:`%rmg%` directory. The batch script does not compile the RMG source; for this you will need ant.
 
 The next few steps are required only if you want RMG to be able to generate InChIs for the species present in the reaction mechanism.
    
-#. Download the InChI version 1 (software version 1.01) source code and Application Program Interface (API):
-	http://www.iupac.org/inchi/download/index.html and unzip the file.  Navigate to the :file:`InChI-1-API\cInChI\vc6_project\Release` folder.
-	Copy the executable file :file:`cInChI-1.exe` and paste it in the :file:`"%rmg%"\software\InChI` folder.
+5. Download the InChI version 1 (software version 1.01) source code and Application Program Interface (API) from `IUPAC <http://www.iupac.org/inchi/download/index.html>`_ and unzip the file. Navigate to the :file:`InChI-1-API\cInChI\vc6_project\Release` folder. Copy the executable file :file:`cInChI-1.exe` and paste it in the :file:`"%rmg%"\software\InChI` folder.
 	
 You are now ready to generate InChIs in RMG.
-
 
 RMG Viewer/Editor (RMGVE) Installation
 ======================================
