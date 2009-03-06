@@ -2,6 +2,8 @@
 Credits
 *******
  
+RMG is based upon work supported by the Department of Energy, Office of Basic Energy Sciences through grant DE-FG02-98ER14914 and by the National Science Foundation under Grants No. 0312359 and 0535604.
+
 Project Supervisor:
 
 - Prof. William H. Green (whgreen@mit.edu)
@@ -52,4 +54,4 @@ RMGVE Developer:
 
 - John Robotham
 
-Development of RMG is made possible by financial support from the NSF and DOE.
+
