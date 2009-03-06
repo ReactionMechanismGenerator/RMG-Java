@@ -5,7 +5,7 @@ Introduction to RMG
 *******************
 
 RMG is an automatic chemical reaction mechanism generator that constructs 
-mechanisms composed of elementary chemical reaction steps using a general understanding of how molecules react. The model parameters (rate constants 
+kinetic models composed of elementary chemical reaction steps using a general understanding of how molecules react. The model parameters (rate constants 
 and reaction thermodynamics) are estimated using a database and the idea that the 
 behavior of functional groups is somewhat independent of the molecule(s) containing them. The RMG database consists of two parts: kinetic rate rules and 
 thermodynamic group additivity values. 
