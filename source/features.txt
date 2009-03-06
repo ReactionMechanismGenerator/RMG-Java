@@ -14,11 +14,13 @@ Features
 
 - **Cocurrent generation of a reaction mechanism over multiple temperature and pressure conditions.** This allows for generation of reaction mechanisms that are valid over a range of reaction conditions.
 
-- **Manual and automatic time and conversion stepping.** Specification of intermediate times/conversions allows viewing of the concentration profiles in more detail.
+- **Manual and automatic time and conversion stepping.** Specify intermediate times/conversions or allow them to be chosen automatically.
 
 - **A module for handling pressure-dependent reaction networks.** Dissociation and combination reactions have the potential to have rate coefficients that are dependent on both temperature and pressure, and RMG is able to estimate both for networks of arbitrary complexity with a bounded error.
 
 - **On-the-fly generation of InChI strings for species.**
 
 - **Graphical user interfaces for easy input file generation and database editing.**
+
+- **Easy Windows installation.**
 

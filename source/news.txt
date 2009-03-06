@@ -22,6 +22,8 @@ After nearly two years of development, the RMG team is proud to present the rele
 
 - Thermodynamics estimates for non-cyclic species incorporate certain steric effects (1,5-interactions and gauche interactions)
 
+- Simplified Windows installation
+
 Also including a number of bug fixes, RMG 3.0 is a marked improvement over RMG 2. Find out how to `download RMG <download.html>`_\ .
 
 2007-03-25: RMG 2 Release
