@@ -51,3 +51,5 @@ Previous Developers:
 RMGVE Developer:
 
 - John Robotham
+
+Development of RMG is made possible by financial support from the NSF and DOE.
