@@ -1,0 +1,53 @@
+*******
+Credits
+*******
+ 
+Project Supervisor:
+
+- Prof. William H. Green
+ 
+Current Developers:
+
+- Joshua Allen
+
+- \ C. Franklin Goldsmith
+
+- Michael Harper
+
+- Gregory Magoon
+
+- Sandeep Sharma
+
+- Dr. Richard West
+
+Original Developer:
+
+- Dr. Jing Song
+
+Previous Developers:
+
+- Dr. Robert Ashcraft
+
+- Dr. Gregory Beran
+
+- Dr. David M. Matheu
+
+- Sumathy Raman
+
+- Dr. Joanna Yu
+
+- Sarah Petway
+
+- Dr. Paul E. Yelvington
+
+- Dr. John Wen
+
+- Andrew Wong
+
+- Dr. Hsi-Wu Wong
+
+- Kevin Van Geem
+
+RMGVE Developer:
+
+- John Robotham
