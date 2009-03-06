@@ -26,11 +26,12 @@ Contents
    theory/index
    credits
 
-..   BuildingDocumentation
 
-Indices and tables
-==================
+
+..   BuildingDocumentation
+	Indices and tables
+	==================
 
 .. * :ref:`genindex`
-* :ref:`search`
+	* :ref:`search`
 
