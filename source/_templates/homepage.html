@@ -25,7 +25,7 @@
 
 <p><strong>Welcome to the RMG home page!</strong></p>
 <p>RMG is an automatic chemical reaction mechanism generator that constructs
-mechanisms composed of elementary chemical reaction steps using a general understanding of how molecules react.</p>
+kinetic models composed of elementary chemical reaction steps using a general understanding of how molecules react.</p>
 
 <div class="figure">
 <img id="fluxdiagram" src="{{ pathto('_static/images/HXD13flux-small.png', 1) }}" />
@@ -46,9 +46,6 @@ mechanisms composed of elementary chemical reaction steps using a general unders
 						<a class="reference external" href="features.html">Features</a>
 					</li>
 					<li class="toctree-l1">
-						<a class="reference external" href="newusers.html">New Users</a>
-					</li>
-					<li class="toctree-l1">
 						<a class="reference external" href="news.html">News and Updates</a>
 					</li>
 				</ul>
@@ -59,7 +56,7 @@ mechanisms composed of elementary chemical reaction steps using a general unders
 				</h3>
 				<ul>
 					<li class="toctree-l1">
-						<a class="reference external" href="license.html">License</a>
+						<a class="reference external" href="license.html">Licenses</a>
 					</li>
 					<li class="toctree-l1">
 						<a class="reference external" href="download.html">Download</a>
@@ -75,7 +72,20 @@ mechanisms composed of elementary chemical reaction steps using a general unders
 						<a class="reference external" href="documentation/index.html">Online documentation</a>
 					</li>
 					<li>
-						<a href="{{pathto('RMG-manual.pdf', 1)}}">User manual PDF</a>
+						<a href="{{pathto('RMG-manual.pdf', 1)}}" onClick="javascript: pageTracker._trackPageview('/documentation/RMG-manual.pdf');">User manual PDF</a>
+					</li>
+				</ul>
+			</td>
+			<td >
+				<h3>
+					Contributing
+				</h3>
+				<ul>
+					<li class="toctree-l1">
+						<a class="reference external" href="credits.html">Credits</a>
+					</li>
+					<li class="toctree-l1">
+						<a class="reference external" href="newusers.html" >New Users</a>
 					</li>
 				</ul>
 			</td>
@@ -87,16 +97,11 @@ mechanisms composed of elementary chemical reaction steps using a general unders
 
 
 
-<p>The main RMG code is written in Java. A number of computationally intensive tasks have been written in Fortran.</p>
+<p>The main RMG code is written in Java, but several computationally intensive tasks are written in Fortran.</p>
 <p>RMG is free, open-source software available under the terms of the <a class="reference external" href="license.html">MIT/X11 License</a>. The software is developed in the William H. Green research group in the Department of Chemical Engineering at MIT.</p>
 <img src="{{ pathto('_static/images/mit-redgrey-header1.gif', 1) }}" />
 
 <p>If you are new to RMG, please see <a class="reference external" href="newusers.html">this page</a>.</p>
-
-
-
-	
-
 
 <div class="section" id="contact">
 <h2>Contact<a class="headerlink" href="#contact" title="Permalink to this headline">¶</a></h2>
