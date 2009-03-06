@@ -52,7 +52,8 @@ Compile the documentation
 
   * ``make html`` to generate the html web pages
   * ``make latex`` to generate the latex source (then follow the instructions to build it to pdf)
-  * ``make upload`` to upload the html and pdf to your (own) athena web space such as http://web.mit.edu/rwest/www/RMG/
+  * ``make upload`` to upload the html and pdf to sourceforge
+  * ``make help`` for a list of other options
 
 
 On a Windows computer
