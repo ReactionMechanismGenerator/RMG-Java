@@ -100,7 +100,7 @@ update:
 upload:
 	@echo "Uploading to SourceForge.net..."
 	$(REMOVEAPPLEJUNK)
-	rsync -vrtzaP --rsh=ssh build/html/* rhw27,rmg@web.sourceforge.net:htdocs/
-	rsync -vrtzaP --rsh=ssh build/latex/*.pdf rhw27,rmg@web.sourceforge.net:htdocs/
+	rsync -rtza --rsh=ssh build/html/* rhw27,rmg@web.sourceforge.net:htdocs/
+	rsync -rtza --rsh=ssh build/latex/*.pdf rhw27,rmg@web.sourceforge.net:htdocs/
 	#scp -r build/html/* athena.dialup.mit.edu:www/RMG/
 	#scp build/latex/*.pdf athena.dialup.mit.edu:www/RMG/
