@@ -145,7 +145,7 @@ Windows Installation
 
 To install RMG on a Windows computer:  
 
-1. Create the directory in which you want to install RMG. Depending on where you choose to install RMG, you may need administrator privileges. ::
+1. Create the directory in which you want to install RMG. Depending on where you choose to install RMG, you may need administrator privileges. 
 
 2. Set the RMG environment variable as the directory created in the first step.
 	

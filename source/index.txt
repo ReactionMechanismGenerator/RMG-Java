@@ -8,13 +8,15 @@ RMG - Reaction Mechanism Generator
 
 
 .. toctree::
-   :maxdepth: 1
-
-   features
-   news
-   newusers
-
-   license
-   download
-
-   documentation/index
+	:maxdepth: 1
+	
+	features
+	news
+	
+	license
+	download
+	
+	documentation/index
+	
+	credits
+	newusers

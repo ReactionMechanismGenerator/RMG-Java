@@ -21,6 +21,8 @@ Please also refer to our website for how to cite RMG in published work.
    modification
    thermo
    theory/index
-   credits
+   ../credits
+
+.. commented out
    :ref:`genindex`
 

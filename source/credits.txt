@@ -4,9 +4,9 @@ Credits
  
 Project Supervisor:
 
-- Prof. William H. Green
+- Prof. William H. Green (whgreen@mit.edu)
  
-Current Developers:
+Current Developers: (rmg_dev@mit.edu)
 
 - Joshua Allen
 
@@ -24,7 +24,7 @@ Original Developer:
 
 - Dr. Jing Song
 
-Previous Developers:
+Previous Developers: 
 
 - Dr. Robert Ashcraft
 

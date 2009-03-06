@@ -688,3 +688,15 @@ div.figure {
 	margin: -9px 10px 0 0;
 }
 
+
+div.sidebarbox {
+	background-color: #737373;
+	border: 2px solid #933;
+	margin: 10px;
+	padding: 10px;
+}
+
+div.sidebarbox h3 {
+	margin-bottom: -5px;
+}
+

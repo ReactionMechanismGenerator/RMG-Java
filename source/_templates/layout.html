@@ -17,6 +17,11 @@
 	
 {%- set sourcename = False %} {#Remove the "view this page's source" link #}
 
+{#%- block sidebarrel %}
+<div class="sidebarbox" id="sidebarrel">
+{{ super () }}
+</div>
+{% endblock %#}
 
 {# the relbar1 block appears immediately after the <body>, so we stick the analytics code in here. Beware of overwriting this block in an extending template. #}
 {%- block relbar1 %}

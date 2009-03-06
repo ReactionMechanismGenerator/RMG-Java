@@ -24,7 +24,7 @@ Contents
    modification
    thermo
    theory/index
-   credits
+   ../credits
 
 
 
