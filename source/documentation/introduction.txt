@@ -5,7 +5,7 @@ Introduction to RMG
 *******************
 
 RMG is an automatic chemical reaction mechanism generator that constructs 
-mechanisms composed of elementary chemical reaction steps using a general understanding of how hydrocarbons react. The model parameters (rate constants 
+mechanisms composed of elementary chemical reaction steps using a general understanding of how molecules react. The model parameters (rate constants 
 and reaction thermodynamics) are estimated using a database and the idea that the 
 behavior of functional groups is somewhat independent of the molecule(s) containing them. The RMG database consists of two parts: kinetic rate rules and 
 thermodynamic group additivity values. 
@@ -21,7 +21,7 @@ and species thermodynamics.
 
 RMG was originally developed by Dr. Jing Song under the guidance of Prof. William 
 Green in the Department of Chemical Engineering at the `Massachusetts Institute 
-of Technology <http://web.mit.edu/>`_. Currently the principal developer of RMG is Sandeep Sharma, a graduate student in Prof. William Green's research group.
+of Technology <http://web.mit.edu/>`_. Currently there are several members of the Green group contributing to RMG's ongoing development. A full list of past and present RMG developers can be found on `the credits page <credits.html>`_\ .
 
 Changes
 -------

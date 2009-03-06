@@ -86,7 +86,7 @@ To install RMG on a Linux computer:
 	
 	$ setenv RMG /usr/local/rmg
 		
-   To avoid typing this line each time, append it to your :file:`~/.bashrc` (bash shell) or :file:`~/.cshrc` (C shell) file.
+  To avoid typing this line each time, append it to your :file:`~/.bashrc` (bash shell) or :file:`~/.cshrc` (C shell) file.
 
 3. Obtain the source code. Download the file :file:`rmg-3.0-linux-i386.tar.gz` or :file:`rmg-3.0-source.tar.gz`, ungzip and untar it, and move its contents to the :file:`$RMG` directory. ::
 
@@ -165,7 +165,7 @@ Step 4 is only required if you are working with the source package. Binary packa
 
 The next few steps are required only if you want RMG to be able to generate InChIs for the species present in the reaction mechanism.
    
-5. Download the InChI version 1 (software version 1.01) source code and Application Program Interface (API) from `IUPAC <http://www.iupac.org/inchi/download/index.html>`_ and unzip the file. Navigate to the :file:`InChI-1-API\cInChI\vc6_project\Release` folder. Copy the executable file :file:`cInChI-1.exe` and paste it in the :file:`"%rmg%"\software\InChI` folder.
+5. Download the InChI version 1 (software version 1.01) source code and Application Program Interface (API) from `IUPAC <http://www.iupac.org/inchi/download/index.html>`_ and unzip the file. Navigate to the :file:`InChI-1-API\\cInChI\\vc6_project\\Release` folder. Copy the executable file :file:`cInChI-1.exe` and paste it in the :file:`"%rmg%"\\software\\InChI` folder.
 	
 You are now ready to generate InChIs in RMG.
 
