@@ -8,9 +8,10 @@
 <link rel="stylesheet" href="{{ pathto('_static/' + 'RMG-homepage.css', 1) }}" type="text/css" />
 {% endblock %}
 
-
-{%- block relbar1 %}{{ relbar() }}{% endblock %}
-{%- block relbar2 %}{{ relbar() }}{% endblock %}
+{#
+{%- block relbar1 %}{{ super() }}{% endblock %}
+{%- block relbar2 %}{{ super() }}{% endblock %}
+#}
 
 {%- block sidebartoc %}{%- endblock %}
 {%- block sidebarrel %}{%- endblock %}
@@ -19,9 +20,7 @@
 {%- block sidebar2 %}{% endblock %#}
 
 {% block body %}
-
-
-  <div class="section" id="rmg-reaction-mechanism-generator">
+<div class="section" id="rmg-reaction-mechanism-generator">
 <h1>RMG - Reaction Mechanism Generator<a class="headerlink" href="#rmg-reaction-mechanism-generator" title="Permalink to this headline">¶</a></h1>
 
 <p><strong>Welcome to the RMG home page!</strong></p>

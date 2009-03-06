@@ -18,6 +18,22 @@
 {%- set sourcename = False %} {#Remove the "view this page's source" link #}
 
 
+{# the relbar1 block appears immediately after the <body>, so we stick the analytics code in here. Beware of overwriting this block in an extending template. #}
+{%- block relbar1 %}
+<script type="text/javascript">
+var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+</script>
+<script type="text/javascript">
+try {
+var pageTracker = _gat._getTracker("UA-7791083-1");
+pageTracker._trackPageview();
+} catch(err) {}</script>
+{{ super () }}
+{% endblock %}
+
+
+
 
 {#{% block rootrellink %}
     <li><a href="http://sourceforge.net/projects/rmg/">Sourceforge Project</a> &raquo;</li>
