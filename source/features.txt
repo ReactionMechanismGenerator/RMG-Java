@@ -1,26 +1,35 @@
 .. _features:
-
 ********
 Features
 ********
 
-- **Rate-based model enlargement and validation.** This provides an adjustable error bound on the generated model.
+- Rate-based model enlargement 
+ 	Reactions are added to the model based on their rate - fastest first.
 
-- **Thermodynamics estimation using group additivity.**
+- Rate-based termination. 
+	The model enlargement stops when all excluded reactions are slower than a given threshold.
+	This provides a controllable error bound on the generated model.
 
-- **Ability to include reaction models on top of the provided reaction families.**
+- Thermodynamics estimation using group additivity.
+	Group additivity based on Benson's groups provide fast and reliable thermochemistry estimates.
 
-- **Dynamic simulation to a target time or conversion.** Often the desired simulation time is not known *a priori*, so a target conversion is preferred.
+- Ability to include reaction models on top of the provided reaction families.
 
-- **Cocurrent generation of a reaction mechanism over multiple temperature and pressure conditions.** This allows for generation of reaction mechanisms that are valid over a range of reaction conditions.
+- Dynamic simulation to a target time or conversion.
+	Often the desired simulation time is not known *a priori*, so a target conversion is preferred.
 
-- **Manual and automatic time and conversion stepping.** Specify intermediate times/conversions or allow them to be chosen automatically.
+- Cocurrent generation of a reaction mechanism over multiple temperature and pressure conditions. 
+	This allows for generation of reaction mechanisms that are valid over a range of reaction conditions.
 
-- **A module for handling pressure-dependent reaction networks.** Dissociation and combination reactions have the potential to have rate coefficients that are dependent on both temperature and pressure, and RMG is able to estimate both for networks of arbitrary complexity with a bounded error.
+- Manual and automatic time and conversion stepping.
+	Specify intermediate times/conversions or allow them to be chosen automatically.
 
-- **On-the-fly generation of InChI strings for species.**
+- A module for handling pressure-dependent reaction networks. 
+	Dissociation and combination reactions have the potential to have rate coefficients that are dependent on both temperature and pressure, and RMG is able to estimate both for networks of arbitrary complexity with a bounded error.
 
-- **Graphical user interfaces for easy input file generation and database editing.**
+- On-the-fly generation of InChI strings for species.
 
-- **Easy Windows installation.**
+- Graphical user interfaces for easy input file generation and database editing.
+
+- Easy Windows installation.
 
