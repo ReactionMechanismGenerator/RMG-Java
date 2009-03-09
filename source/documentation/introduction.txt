@@ -21,7 +21,7 @@ and species thermodynamics.
 
 RMG was originally developed by Dr. Jing Song under the guidance of Prof. William 
 Green in the Department of Chemical Engineering at the `Massachusetts Institute 
-of Technology <http://web.mit.edu/>`_. Currently there are several members of the Green group contributing to RMG's ongoing development. A full list of past and present RMG developers can be found on `the credits page <credits.html>`_\ .
+of Technology <http://web.mit.edu/>`_. Currently there are several members of the Green group contributing to RMG's ongoing development. A full list of past and present RMG developers can be found on the :ref:`credits` page.
 
 Changes
 -------
