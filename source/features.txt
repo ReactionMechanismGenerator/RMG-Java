@@ -19,7 +19,8 @@ Extensible libraries
 Dynamic simulation to a target time or conversion.
 	Often the desired simulation time is not known *a priori*, so a target conversion is preferred.
 
-Cocurrent generation of a reaction mechanism over multiple temperature and pressure conditions. 
+Simultaneous mechanism generation for several conditions.
+	Concurrent generation of a reaction mechanism over multiple temperature and pressure conditions. 
 	This allows for generation of reaction mechanisms that are valid over a range of reaction conditions.
 
 Manual and automatic time and conversion stepping.
