@@ -524,6 +524,8 @@ dd {
     color: #060;
 }
 
+
+
 dt:target,
 .highlight {
     background-color: #fbe54e;
@@ -698,5 +700,10 @@ div.sidebarbox {
 
 div.sidebarbox h3 {
 	margin-bottom: -5px;
+}
+
+dl.docutils dt {
+	font-weight: bold;
+	margin-top: 1em;
 }
 
