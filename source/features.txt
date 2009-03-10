@@ -11,7 +11,7 @@ Features
 	This provides a controllable error bound on the generated model.
 
 - Thermodynamics estimation using group additivity.
-	Group additivity based on Benson's groups provide fast and reliable thermochemistry estimates.
+	Group additivity based on Benson's groups provide fast and reliable thermochemistry estimates. Standalone utility for heat of formation, entropy, and heat capacity estimates also included.
 
 - Ability to include reaction models on top of the provided reaction families.
 
