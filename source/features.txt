@@ -1,11 +1,12 @@
 .. _features:
+
 ********
 Features
 ********
 
 Thermodynamics estimation using group additivity.
 	Group additivity based on Benson's groups provide fast and reliable thermochemistry estimates. A standalone utility for estimating heat of formation, entropy, and heat capacity is also included.
-	
+
 Rate-based model enlargement 
  	Reactions are added to the model based on their rate, fastest first.
 
@@ -15,7 +16,7 @@ Rate-based termination.
 
 Extensible libraries
 	Ability to include reaction models on top of the provided reaction families.
-	
+
 Pressure-dependent reaction networks. 
 	Dissociation and combination reactions have the potential to have rate coefficients that are dependent on both temperature and pressure, and RMG is able to estimate both for networks of arbitrary complexity with a bounded error.
 	
