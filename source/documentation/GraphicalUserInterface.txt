@@ -18,8 +18,8 @@ For Linux users, run the following command to launch the GUI::
 
 For Windows users, run the following set of commands to launch the GUI::
 
-	cd "%rmg%"
-	java GUI	 
+	cd "%rmg%"\software\rmg
+	java -cp RMG.jar GUI	 
 
 .. _tabInitialCondition:
 
