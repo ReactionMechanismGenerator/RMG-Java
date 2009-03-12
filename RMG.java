@@ -60,15 +60,21 @@ public class RMG {
 	//Write core species to RMG_Dictionary.txt
 	String coreSpecies ="";
 	Iterator iter = cerm.getSpecies();
-	while (iter.hasNext()){
-		int i=1;
-		Species spe = (Species) iter.next();
-		coreSpecies = coreSpecies + spe.getChemkinName();
-		if (spe.useInChI) {
-			coreSpecies += " " + spe.getInChI();
+	
+	if (Species.useInChI) {
+		while (iter.hasNext()){
+			int i=1;
+			Species spe = (Species) iter.next();
+			coreSpecies = coreSpecies + spe.getChemkinName() + " " + spe.getInChI() + "\n"+spe.getChemGraph().toString(i)+"\n\n";
 		}
-		coreSpecies += "\n"+spe.getChemGraph().toString(i)+"\n\n";
+	} else {
+		while (iter.hasNext()){
+			int i=1;
+			Species spe = (Species) iter.next();
+			coreSpecies = coreSpecies + spe.getChemkinName() + "\n"+spe.getChemGraph().toString(i)+"\n\n";
+		}
 	}
+
 	try{
 		File rmgDictionary = new File("RMG_Dictionary.txt");
 		FileWriter fw = new FileWriter(rmgDictionary);
