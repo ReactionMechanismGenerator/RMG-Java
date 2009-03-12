@@ -5,6 +5,17 @@ img#fluxdiagram {
 	display: block;
 }
 
+table.sitemap {
+	margin-top: 2em;
+	margin-right: auto;
+	margin-left: auto;
+}
+
+div.figure#fluxdiagram {
+	margin: auto;
+	max-width: 600px
+}
+
 
 table.sitemap tbody tr td h3 {
 	margin: 0;
