@@ -2,12 +2,16 @@
 Estimating Species Thermochemistry
 **********************************
 
-The ``Thermo`` utility produces group additivity‐based thermochemistry estimates without running RMG. As with the thermochemistry estimates used by RMG, the ``Thermo`` utility bases its estimates on group values located in the RMG database.
+The ``Thermo`` utility produces group additivity-based thermochemistry estimates without running RMG. As with the thermochemistry estimates used by RMG, the ``Thermo`` utility bases its estimates on group values located in the RMG database.
 
 Instructions for Use
 --------------------
 
-1. Create a text file named thermo_input.txt in the directory ``$RMG/source/rmg/`` (the same directory as ``RMG.class``, ``Thermo.class``, etc.); in the text file, create the adjacency list corresponding to the molecule of interest using the same syntax used to define a species in the condition.txt input file (see RMG manual). Hydrogens can be omitted for simplicity. For example, the adjacency list for 2,2,4,4‐tetramethylpentane could be written as::
+1. Create a text file named :file:`thermo_input.txt` in any directory that you like.  If a ``GATPFit`` folder does not already exist in this directory, make it using the following command::
+
+	mkdir GATPFit
+	
+  In the text file, create the adjacency list corresponding to the molecule of interest using the same syntax used to define a species in the :file:`condition.txt` input file (see RMG manual). Hydrogens can be omitted for simplicity. For example, the adjacency list for 2,2,4,4-tetramethylpentane could be written as::
 
 	1 C 0 {2,S}
 	2 C 0 {1,S} {3,S} {4,S} {5,S}
@@ -19,17 +23,17 @@ Instructions for Use
 	8 C 0 {6,S}
 	9 C 0 {6,S}
 
-2. At the command prompt, change directory to the location with Thermo.class and thermo_input.txt (``$RMG/source/rmg/``). Execute the command ::
+2. At the command prompt, change directory to the location of the :file:`thermo_input.txt` file and ``GATPFit`` folder and then execute the command ::
 
-	$ java Thermo
+	$ java -classpath "%rmg%"\software\rmg\RMG.jar Thermo thermo_input.txt
 
   To have output written to file instead of to the screen, use the syntax ::
 
-	$ java Thermo > filename.txt
+	$ java -classpath "%rmg%"\software\rmg\RMG.jar Thermo thermo_input.txt > thermo_output.txt
 
-  where ``filename.txt`` is the name of the file to be written.
+  where ``thermo_output.txt`` is the name of the file to be written.
 
-3. The program will read RMG’s thermodynamics database, count groups, and output the NASA polynomials in CHEMKIN format, as well as another set of values labeled ThermoData. The format for ThermoData is
+3. The program will read RMG's thermodynamics database, count groups, and output the NASA polynomials in CHEMKIN format, as well as another set of values labeled ThermoData. The format for ThermoData is
 
 	ΔH\ :sub:`f,298` S\ :sub:`298` C\ :sub:`p,300` C\ :sub:`p,300` C\ :sub:`p,400` C\ :sub:`p,600` C\ :sub:`p,800` C\ :sub:`p,1000` C\ :sub:`p,1500`
 
