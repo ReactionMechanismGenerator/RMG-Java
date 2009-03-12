@@ -16,10 +16,10 @@ For Linux users, run the following command to launch the GUI::
 
     $ java -Xmx500m -classpath $RMG GUI > output &
 
-For Windows users, run the following set of commands to launch the GUI::
+For Windows users, change to the directory where you want the output files to be stored and then run the following set of commands to launch the GUI::
 
-	cd "%rmg%"\software\rmg
-	java -cp RMG.jar GUI	 
+	cd "%rmg%"\rmgRun
+	java -Xmx500m -classpath "%rmg%"\software\rmg\RMG.jar GUI
 
 .. _tabInitialCondition:
 
