@@ -43,10 +43,10 @@ the output file as it is being generated, use the command:  ``$ tail -f output``
 Running RMG from the Command Line in Windows
 ============================================
 
-To run RMG in Windows: Open a DOS-prompt, change to the RMG directory, and pass the name & location of the :file:`condition.txt` file to RMG::
+To run RMG in Windows: Open a DOS-prompt, change to the rmg directory, and pass the name & location of the :file:`condition.txt` file to RMG::
 
-	cd "%rmg%"
-	java -Xmx500m RMG condition.txt
+	cd "%rmg%"\software\rmg
+	java -Xmx500m -cp RMG.jar RMG "%rmg%\conditionFiles\condition.txt"
 	
 .. note::
 
