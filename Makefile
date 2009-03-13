@@ -31,7 +31,7 @@ help:
 	@echo "  update    to update from CVS repository"
 	@echo "  all       update, clean, html, latex, upload"
 
-all: update clean html latex upload
+all: update html latex sitemap upload
 
 clean:
 	-rm -rf build/*
@@ -93,6 +93,10 @@ linkcheck:
 	@echo
 	@echo "Link check complete; look for any errors in the above output " \
 	      "or in build/linkcheck/output.txt."
+
+sitemap:
+	cd sitemap_gen; python sitemap_gen.py --config=config.xml
+	
 
 update:
 	cvs -q update -d
