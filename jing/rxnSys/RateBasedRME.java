@@ -125,7 +125,7 @@ public class RateBasedRME implements ReactionModelEnlarger {
 					double S = species.calculateS(temp);
 					double G = species.calculateG(temp);
 					double Cp = species.calculateCp(temp);
-					System.out.println("Thermo\t" + String.valueOf(H) + '\t' + String.valueOf(S) + '\t' + String.valueOf(G) + '\t' + String.valueOf(Cp));
+					System.out.println("Thermo of species at 298K (H, S, G, Cp, respectivley)\t" + String.valueOf(H) + '\t' + String.valueOf(S) + '\t' + String.valueOf(G) + '\t' + String.valueOf(Cp));
 			
 					
 					cerm.moveFromUnreactedToReactedSpecies(species);

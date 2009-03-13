@@ -109,7 +109,7 @@ public class ChemGraph implements Matchable {
 
 		
 		
-        if (isForbiddenStructure(p_graph) || getRadicalNumber() > MAX_RADICAL_NUM || getOxygenNumber() > MAX_OXYGEN_NUM || getCycleNumber() > MAX_CYCLE_NUM) {
+        if (isForbiddenStructure(p_graph,getRadicalNumber(),getOxygenNumber(),getCarbonNumber()) || getRadicalNumber() > MAX_RADICAL_NUM || getOxygenNumber() > MAX_OXYGEN_NUM || getCycleNumber() > MAX_CYCLE_NUM) {
 		//if (getRadicalNumber() > MAX_RADICAL_NUM || getOxygenNumber() > MAX_OXYGEN_NUM || getCycleNumber() > MAX_CYCLE_NUM) {		        
 			graph = null;
         	throw new ForbiddenStructureException(p_graph.toString());
@@ -981,6 +981,7 @@ return sn;
         cg.thermoData = p_chemGraph.thermoData;
         cg.thermoGAPP = p_chemGraph.thermoGAPP;
         cg.InChI = p_chemGraph.InChI;
+        cg.internalRotor = p_chemGraph.internalRotor;
 
         /*HashSet oldSymmetryAxis = p_chemGraph.getSymmetryAxis();
         if (oldSymmetryAxis != null) {
@@ -1635,7 +1636,7 @@ return sn;
     Modifies:
     */
     //## operation isForbiddenStructure(Graph)
-    public static boolean isForbiddenStructure(Graph p_graph) {
+    public static boolean isForbiddenStructure(Graph p_graph, int radNumber, int oNumber, int cNumber) {
         //#[ operation isForbiddenStructure(Graph)
 		
     	
@@ -1662,9 +1663,11 @@ return sn;
         
         for (Iterator iter = forbiddenStructure.iterator(); iter.hasNext(); ) {
         	FunctionalGroup fg = (FunctionalGroup)iter.next();
-        	Graph g = fg.getGraph();
-        	if (p_graph.isSub(g)) {
-        		return true;
+        	if (radNumber >= fg.rad_count && oNumber >= fg.O_count && cNumber >= fg.C_count) {
+	        	Graph g = fg.getGraph();
+	        	if (p_graph.isSub(g)) {
+	        		return true;
+	        	}
         	}
         }
         return false;
@@ -1912,7 +1915,8 @@ return sn;
         			throw new InvalidFunctionalGroupException(fgname + ": " + e.getMessage());
         		}
         		if (fgGraph == null) throw new InvalidFunctionalGroupException(fgname);
-        		FunctionalGroup fg = FunctionalGroup.make(fgname, fgGraph);
+        		//FunctionalGroup fg = FunctionalGroup.make(fgname, fgGraph);
+        		FunctionalGroup fg = FunctionalGroup.makeForbiddenStructureFG(fgname, fgGraph);
 
         		forbiddenStructure.add(fg);
 

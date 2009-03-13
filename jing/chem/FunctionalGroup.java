@@ -51,6 +51,10 @@ public class FunctionalGroup implements Matchable {
     
     protected Graph graph;
     
+    protected int C_count = 0;
+    protected int O_count = 0;
+    protected int rad_count = 0;
+    
     // Constructors
     
     //## operation FunctionalGroup() 
@@ -64,6 +68,14 @@ public class FunctionalGroup implements Matchable {
         name = p_name;
         graph = p_graph;
         //#]
+    }
+    
+    private FunctionalGroup(String p_name, Graph p_graph, int p_rad_count, int p_O_count, int p_C_count) {
+        name = p_name;
+        graph = p_graph;
+        rad_count = p_rad_count;
+        O_count = p_O_count;
+        C_count = p_C_count;
     }
     
     /**
@@ -293,6 +305,35 @@ public class FunctionalGroup implements Matchable {
         return fg;*/
         return new FunctionalGroup(p_name, p_graph);
         //#]
+    }
+    
+    public static FunctionalGroup makeForbiddenStructureFG(String p_name, Graph p_graph) {
+		// Read in the graph and store each line in its own string
+    	String p_string = p_graph.toString();
+		String[] indivRows = p_string.split("[\n]");
+		
+		// Initialize the radical, oxygen, and carbon counter
+		int radCount = 0;
+		int oCount = 0;
+		int cCount = 0;
+		
+		for (int i=0; i<indivRows.length; i++) {
+			StringTokenizer forbiddenST = new StringTokenizer(indivRows[i]);
+			String counter = forbiddenST.nextToken();	// Skip over the counter, e.g. (1)
+			
+			// Determine if atom is carbon or oxygen
+			String atom = forbiddenST.nextToken();
+			if (atom.toUpperCase().startsWith("C")) ++cCount;
+			else if (atom.toUpperCase().startsWith("O")) ++oCount;
+			
+			// Determine radical number
+			String radical = forbiddenST.nextToken();
+			if (radical.startsWith("1")) ++radCount;
+			else if (radical.startsWith("2")) radCount += 2;
+			else if (radical.startsWith("3")) radCount += 3;
+			else if (radical.startsWith("4")) radCount += 4;
+		}
+    	return new FunctionalGroup(p_name, p_graph, radCount, oCount, cCount);
     }
     
     //## operation repOk() 
