@@ -69,11 +69,15 @@ An equally valid adjacency list for methane (with the Hydrogen atoms removed) is
 
 If the user knows the InChI of the molecule (and the InChI executable is located
 in the :file:`RMG/software/InChI` folder), the GUI will convert the InChI to an adjacency
-list upon pushing the "Add" button.  The InChI for methane is::
+list upon pushing the "Add" button.  If using either InChI software version 1.01 or software version 1.02beta, the InChI for methane is::
 
 	InChI=1/CH4/h1H4
 
-Upon pushing the "Add" button, if neither an adjacency list or InChI have been provided, the GUI will ask the user for the location of the .mol file associated
+However, if using the InChI software version 1.02 for Standard InChI/InChIKey, the InChI for methane is::
+
+	InChI=1S/CH4/h1H4
+
+Please make sure the InChI you pass to the RMG GUI is consistent with the InChI version located in the ``$RMG\software\InChI`` folder.  Upon pushing the "Add" button, if neither an adjacency list or InChI have been provided, the GUI will ask the user for the location of the .mol file associated
 with this species.  If the InChI executable is in the proper folder, the GUI will convert the .mol file to an adjacency list.
 
 The user may add/remove species to the model by clicking the appropriate buttons.
