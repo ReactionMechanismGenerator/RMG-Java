@@ -225,7 +225,7 @@ public class RateBasedPDepRME implements ReactionModelEnlarger {
 				double S = maxSpecies.calculateS(temp);
 				double G = maxSpecies.calculateG(temp);
 				double Cp = maxSpecies.calculateCp(temp);
-				System.out.println("Thermo\t" + String.valueOf(H) + " \t" + String.valueOf(S)+ " \t" + String.valueOf(G)+ " \t" + String.valueOf(Cp));
+				System.out.println("Thermo of species at 715K (H, S, G, Cp, respectively)\t" + String.valueOf(H) + '\t' + String.valueOf(S) + '\t' + String.valueOf(G) + '\t' + String.valueOf(Cp));
 
 				if (cerm.containsAsReactedSpecies(maxSpecies))
 					System.out.println("Species " + maxSpecies.getName() + "(" +
