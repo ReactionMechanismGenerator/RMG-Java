@@ -431,6 +431,28 @@ public class ReactionModelGenerator {
 					else {
 						throw new InvalidSymbolException("condition.txt: Unknown PDepKineticsEstimator = " + pDepType);
 					}
+
+					// Set temperatures and pressures to use in PDep kinetics estimation
+					Temperature[] temperatures = new Temperature[7];
+					temperatures[0] = new Temperature(300, "K");
+					temperatures[1] = new Temperature(600, "K");
+					temperatures[2] = new Temperature(900, "K");
+					temperatures[3] = new Temperature(1200, "K");
+					temperatures[4] = new Temperature(1500, "K");
+					temperatures[5] = new Temperature(1800, "K");
+					temperatures[6] = new Temperature(2100, "K");
+					FastMasterEqn.setTemperatures(temperatures);
+					PDepRateConstant.setTemperatures(temperatures);
+
+					Pressure[] pressures = new Pressure[5];
+					pressures[0] = new Pressure(0.01, "bar");
+					pressures[1] = new Pressure(0.1, "bar");
+					pressures[2] = new Pressure(1, "bar");
+					pressures[3] = new Pressure(10, "bar");
+					pressures[4] = new Pressure(100, "bar");
+					FastMasterEqn.setPressures(pressures);
+					PDepRateConstant.setPressures(pressures);
+
 				}
 				else if (pDepType.toLowerCase().equals("off")) {
 					// No pressure dependence

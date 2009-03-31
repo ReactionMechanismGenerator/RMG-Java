@@ -97,12 +97,7 @@ public class PDepNetwork {
 	/**
 	 * The list of unimolecular isomers.
 	 */
-	private LinkedList<PDepIsomer> uniIsomerList;
-
-	/**
-	 * The list of multimolecular isomers.
-	 */
-	private LinkedList<PDepIsomer> multiIsomerList;
+	private LinkedList<PDepIsomer> isomerList;
 
 	/**
 	 * The list of path reactions (isomerizations, associations, and
@@ -141,10 +136,8 @@ public class PDepNetwork {
 	 * the network to the PDepNetwork.networks collection.
 	 */
 	public PDepNetwork() {
-		uniIsomerList = new LinkedList<PDepIsomer>();
-		uniIsomerList.clear();
-		multiIsomerList = new LinkedList<PDepIsomer>();
-		multiIsomerList.clear();
+		isomerList = new LinkedList<PDepIsomer>();
+		isomerList.clear();
 		pathReactionList = new LinkedList<PDepReaction>();
 		pathReactionList.clear();
 		netReactionList = new LinkedList<PDepReaction>();
@@ -170,20 +163,46 @@ public class PDepNetwork {
 	}
 
 	/**
-	 * Returns the list of unimolecular isomers.
-	 * @return The list of unimolecular isomers
+	 * Returns a list of all of the species in the network.
+	 * @return The list of the species in the network
 	 */
-	public LinkedList<PDepIsomer> getUniIsomers() {
-		return uniIsomerList;
+	public LinkedList<Species> getSpeciesList() {
+
+		LinkedList<Species> speciesList = new LinkedList<Species>();
+		
+		for (Iterator<PDepIsomer> iter = isomerList.iterator(); iter.hasNext(); ) {
+			PDepIsomer isomer = iter.next();
+			for (int i = 0; i < isomer.getNumSpecies(); i++) {
+				if (!speciesList.contains(isomer.getSpecies(i)))
+					speciesList.add(isomer.getSpecies(i));
+			}
+		}
+		
+		return speciesList;
 	}
 
 	/**
-	 * Returns the list of multimolecular isomers.
-	 * @return The list of multimolecular isomers
+	 * Returns the list of isomers.
+	 * @return The list of isomers
 	 */
-	public LinkedList<PDepIsomer> getMultiIsomers() {
-		return multiIsomerList;
+	public LinkedList<PDepIsomer> getIsomers() {
+		return isomerList;
 	}
+
+	public int getNumUniIsomers() {
+		int count = 0;
+		for (Iterator<PDepIsomer> iter = isomerList.iterator(); iter.hasNext(); ) {
+			PDepIsomer isomer = iter.next();
+			if (isomer.isUnimolecular())
+				count++;
+		}
+		return count;
+	}
+
+	public int getNumMultiIsomers() {
+		return isomerList.size() - getNumUniIsomers();
+	}
+
 
 	/**
 	 * Returns the list of path reactions.
@@ -228,14 +247,7 @@ public class PDepNetwork {
 	 */
 	public PDepIsomer getIsomer(LinkedList speciesList) {
 		if (speciesList.size() == 1) {
-			for (ListIterator<PDepIsomer> iter = uniIsomerList.listIterator(); iter.hasNext(); ) {
-				PDepIsomer isomer = iter.next();
-				if (isomer.getSpeciesList().equals(speciesList))
-					return isomer;
-			}
-		}
-		else if (speciesList.size() > 1) {
-			for (ListIterator<PDepIsomer> iter = multiIsomerList.listIterator(); iter.hasNext(); ) {
+			for (ListIterator<PDepIsomer> iter = isomerList.listIterator(); iter.hasNext(); ) {
 				PDepIsomer isomer = iter.next();
 				if (isomer.getSpeciesList().equals(speciesList))
 					return isomer;
@@ -250,9 +262,9 @@ public class PDepNetwork {
 	 * @return The unimolecular isomer corresponding to species
 	 */
 	public PDepIsomer getIsomer(Species species) {
-		for (ListIterator<PDepIsomer> iter = uniIsomerList.listIterator(); iter.hasNext(); ) {
+		for (ListIterator<PDepIsomer> iter = isomerList.listIterator(); iter.hasNext(); ) {
 			PDepIsomer isomer = iter.next();
-			if (isomer.getSpecies(0).equals(species))
+			if (isomer.getSpecies(0).equals(species) && isomer.isUnimolecular())
 				return isomer;
 		}
 		return null;
@@ -265,9 +277,9 @@ public class PDepNetwork {
 	 * not
 	 */
 	public boolean contains(Species species) {
-		for (ListIterator<PDepIsomer> iter = uniIsomerList.listIterator(); iter.hasNext(); ) {
+		for (ListIterator<PDepIsomer> iter = isomerList.listIterator(); iter.hasNext(); ) {
 			PDepIsomer isomer = iter.next();
-			if (isomer.getSpecies(0).equals(species))
+			if (isomer.getSpecies(0).equals(species) && isomer.isUnimolecular())
 				return true;
 		}
 		return false;
@@ -280,10 +292,17 @@ public class PDepNetwork {
 	 * not
 	 */
 	public boolean contains(Reaction reaction) {
-		for (ListIterator<PDepReaction> iter = pathReactionList.listIterator(); iter.hasNext(); ) {
+		if (reaction == null)
+            return false;
+        Reaction reverse = reaction.getReverseReaction();
+        for (ListIterator<PDepReaction> iter = pathReactionList.listIterator(); iter.hasNext(); ) {
 			PDepReaction rxn = iter.next();
-			if (reaction.equals(rxn) || reaction.getReverseReaction().equals(rxn))
+			if (reaction.equals(rxn))
 				return true;
+			if (reverse != null) {
+				if (reverse.equals(rxn))
+					return true;
+			}
 		}
 		return false;
 	}
@@ -301,15 +320,25 @@ public class PDepNetwork {
 	public void addIsomer(PDepIsomer isomer) {
 
 		// Don't add if isomer is already in network
-		if (uniIsomerList.contains(isomer) || multiIsomerList.contains(isomer))
+		if (isomerList.contains(isomer))
 			return;
 
-		// Add isomer
-		if (isomer.isUnimolecular())
-			uniIsomerList.add(isomer);
-		else if (isomer.isMultimolecular())
-			multiIsomerList.add(isomer);
-
+		// Add isomer: keep unimolecular isomers first
+		if (isomer.isUnimolecular()) {
+			int index = -1;
+			for (int i = 0; i < isomerList.size(); i++) {
+				if (isomerList.get(i).isMultimolecular() && index < 0)
+					index = i;
+			}
+			if (index >= 0)
+				isomerList.add(index, isomer);
+			else
+				isomerList.add(isomer);
+				
+		}
+		else
+			isomerList.add(isomer);
+		
 		// Mark network as changed so that updated rates can be determined
 		altered = true;
 	}
@@ -455,6 +484,15 @@ public class PDepNetwork {
 			return null;
 	}
 
+	public String getSpeciesType() {
+		for (Iterator<PDepIsomer> iter = isomerList.iterator(); iter.hasNext(); ) {
+			PDepIsomer isomer = iter.next();
+			if (isomer.isUnimolecular())
+				return isomer.getSpecies(0).getName();
+		}
+		return "";
+	}
+
 	//==========================================================================
 	//
 	//	Static methods (for access to PDepNetwork.networks)
@@ -515,10 +553,8 @@ public class PDepNetwork {
 			if (reac_pdn != null && prod_pdn != null && reac_pdn != prod_pdn) {
 				// Two distinct networks found; must join them together
 				pdn = reac_pdn;
-				for (int i = 0; i < prod_pdn.getUniIsomers().size(); i++)
-					pdn.addIsomer(prod_pdn.getUniIsomers().get(i));
-				for (int i = 0; i < prod_pdn.getMultiIsomers().size(); i++)
-					pdn.addIsomer(prod_pdn.getMultiIsomers().get(i));
+				for (int i = 0; i < prod_pdn.getIsomers().size(); i++)
+					pdn.addIsomer(prod_pdn.getIsomers().get(i));
 				for (int i = 0; i < prod_pdn.getPathReactions().size(); i++)
 					pdn.addReaction(prod_pdn.getPathReactions().get(i));
 				// Also remove the second network from the list of networks
@@ -599,14 +635,7 @@ public class PDepNetwork {
 			PDepNetwork pdn = iter0.next();
 			index++;
 			System.out.print("Network #" + Integer.toString(index) + ": ");
-			for (ListIterator<PDepIsomer> iter = pdn.getUniIsomers().listIterator(); iter.hasNext(); ) {
-				PDepIsomer isomer = iter.next();
-				System.out.print(isomer.toString());
-				if (iter.hasNext())
-					System.out.print(", ");
-			}
-			System.out.print("; ");
-			for (ListIterator<PDepIsomer> iter = pdn.getMultiIsomers().listIterator(); iter.hasNext(); ) {
+			for (ListIterator<PDepIsomer> iter = pdn.getIsomers().listIterator(); iter.hasNext(); ) {
 				PDepIsomer isomer = iter.next();
 				System.out.print(isomer.toString());
 				if (iter.hasNext())

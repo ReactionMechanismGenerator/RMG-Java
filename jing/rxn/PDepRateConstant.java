@@ -1,0 +1,203 @@
+////////////////////////////////////////////////////////////////////////////////
+//
+//	RMG - Reaction Mechanism Generator
+//
+//	Copyright (c) 2002-2009 Prof. William H. Green (whgreen@mit.edu) and the
+//	RMG Team (rmg_dev@mit.edu)
+//
+//	Permission is hereby granted, free of charge, to any person obtaining a
+//	copy of this software and associated documentation files (the "Software"),
+//	to deal in the Software without restriction, including without limitation
+//	the rights to use, copy, modify, merge, publish, distribute, sublicense,
+//	and/or sell copies of the Software, and to permit persons to whom the
+//	Software is furnished to do so, subject to the following conditions:
+//
+//	The above copyright notice and this permission notice shall be included in
+//	all copies or substantial portions of the Software.
+//
+//	THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+//	IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+//	FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+//	AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+//	LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+//	FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
+//	DEALINGS IN THE SOFTWARE.
+//
+////////////////////////////////////////////////////////////////////////////////
+
+package jing.rxn;
+
+import jing.param.Pressure;
+import jing.param.Temperature;
+
+/**
+ * A representation of a pressure-dependent rate coefficient k(T, P).
+ *
+ * @author jwallen
+ */
+public class PDepRateConstant {
+
+	//==========================================================================
+	//
+	//	Data members
+	//
+
+	/**
+	 * An enumeraction of pressure-dependent rate coefficient evaluation methods:
+	 * <ul>
+	 * <li>NONE - The method could not be assessed.
+	 * <li>INTERPOLATE - Bilinear interpolation on T^-1, log P, and log k(T, P) axes.
+	 * <li>CHEBYSHEV - Evaluation of Chebyshev polynomials.
+	 * </ul>
+	 */
+	public enum Mode { NONE, INTERPOLATE, CHEBYSHEV };
+
+	/**
+	 * The mode to use for evaluation the pressure-dependent rate coefficients.
+	 * Default is interpolate.
+	 */
+	private static Mode mode = Mode.CHEBYSHEV;
+
+	/**
+	 * A list of the temperatures at which the rate coefficient has been
+	 * explicitly calculated. For now this is the same for all pressure-
+	 * dependent rates, and so is static to conserve memory.
+	 */
+	private static Temperature[] temperatures;
+
+	/**
+	 * A list of the pressures at which the rate coefficient has been
+	 * explicitly calculated. For now this is the same for all pressure-
+	 * dependent rates, and so is static to conserve memory.
+	 */
+	private static Pressure[] pressures;
+
+	/**
+	 * A matrix of explicitly-evaluated rate coefficient values in s^-1,
+	 * cm^3 mol^-1 s^-1, etc. at each temperature (rows) and pressure (columns)
+	 * in the above lists. These values will be used for interpolation.
+	 */
+	private double[][] rateConstants;
+
+	/**
+	 * The rate coefficient as represented by Chebyshev polynomials.
+	 */
+	private ChebyshevPolynomials chebyshev;
+
+	//==========================================================================
+	//
+	//	Constructors
+	//
+
+	/**
+	 * Constructor.
+	 * @param rates
+	 * @param cheb
+	 */
+	public PDepRateConstant(double[][] rates, double[][] cheb) {
+		rateConstants = rates;
+		chebyshev = new ChebyshevPolynomials(
+				cheb.length, temperatures[0], temperatures[temperatures.length-1],
+				cheb[0].length, pressures[0], pressures[pressures.length-1],
+				cheb);
+	}
+
+	public PDepRateConstant() {
+		rateConstants = null;
+		chebyshev = null;
+	}
+
+	//==========================================================================
+	//
+	//	Static methods
+	//
+
+	public static Mode getMode() {
+		return mode;
+	}
+
+	public static void setMode(Mode m) {
+		mode = m;
+	}
+
+	public static Temperature[] getTemperatures() {
+		return temperatures;
+	}
+
+	public static void setTemperatures(Temperature[] temps) {
+		temperatures = temps;
+	}
+
+	public static Pressure[] getPressures() {
+		return pressures;
+	}
+
+	public static void setPressures(Pressure[] press) {
+		pressures = press;
+	}
+
+	//==========================================================================
+	//
+	//	Other methods
+	//
+
+	public double calculateRate(Temperature temperature, Pressure pressure) throws Exception {
+		double rate = 0.0;
+
+		if (temperature.getK() < temperatures[0].getK() ||
+				temperature.getK() > temperatures[temperatures.length-1].getK() ||
+				pressure.getBar() < pressures[0].getBar() ||
+				pressure.getBar() > pressures[pressures.length-1].getBar())
+				throw new Exception("Attempted to evaluate a rate coefficient outside the allowed temperature and pressure range.");
+
+		if (mode == Mode.INTERPOLATE) {
+
+			int t1 = -1, t2 = -1, p1 = -1, p2 = -1;
+			double x = 0.0, x1 = 0.0, x2 = 0.0, y = 0.0, y1 = 0.0, y2 = 0.0;
+			double z11 = 0.0, z12 = 0.0, z21 = 0.0, z22 = 0.0;
+
+			for (int t = 0; t < temperatures.length - 1; t++) {
+				if (temperatures[t].getK() < temperature.getK() && t1 < 0) {
+					t1 = t; x1 = 1.0 / temperatures[t1].getK();
+					t2 = t + 1; x2 = 1.0 / temperatures[t2].getK();
+				}
+			}
+
+			for (int p = 0; p < pressures.length - 1; p++) {
+				if (pressures[p].getBar() < pressure.getBar() && p1 < 0) {
+					p1 = p; y1 = Math.log10(pressures[p1].getPa());
+					p2 = p + 1; y2 = Math.log10(pressures[p2].getPa());
+				}
+			}
+
+			x = 1.0 / temperature.getK();
+			y = Math.log10(pressure.getPa());
+
+			z11 = Math.log10(rateConstants[t1][p1]);
+			z12 = Math.log10(rateConstants[t1][p2]);
+			z21 = Math.log10(rateConstants[t2][p1]);
+			z22 = Math.log10(rateConstants[t2][p2]);
+
+			rate = (z11 * (x2 - x) * (y2 - y) +
+					z21 * (x - x1) * (y2 - y) +
+					z12 * (x2 - x) * (y - y1) +
+					z22 * (x - x1) * (y - y1)) /
+					((x2 - x1) * (y2 - y1));
+
+			rate = Math.pow(10, rate);
+		}
+		else if (mode == Mode.CHEBYSHEV && chebyshev != null) {
+			rate = chebyshev.calculateRate(temperature, pressure);
+		}
+		
+		return rate;
+	}
+
+	public ChebyshevPolynomials getChebyshev() {
+		return chebyshev;
+	}
+
+	public void setChebyshev(ChebyshevPolynomials cheb) {
+		chebyshev = cheb;
+	}
+}

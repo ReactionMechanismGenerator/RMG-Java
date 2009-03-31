@@ -83,13 +83,14 @@ public class Chemdis implements PDepKineticsEstimator {
 			return;
 		
 		// Don't do if unimolecular isomers are too small
-		for (int i = 0; i < pdn.getUniIsomers().size(); i++) 
-			if (pdn.getUniIsomers().get(i).getSpecies(0).isTriatomicOrSmaller())
+		for (int i = 0; i < pdn.getIsomers().size(); i++) {
+			PDepIsomer isomer = pdn.getIsomers().get(i);
+			if (isomer.isUnimolecular() && isomer.getSpecies(0).isTriatomicOrSmaller())
 				return;
+		}
 		
 		// Determine wells and reactions; skip if no reactions in network
-		LinkedList<PDepIsomer> uniIsomers = pdn.getUniIsomers();
-		LinkedList<PDepIsomer> multiIsomers = pdn.getMultiIsomers();
+		LinkedList<PDepIsomer> isomers = pdn.getIsomers();
 		LinkedList<PDepReaction> pathReactions = pdn.getPathReactions();
 		if (pathReactions.size() == 0) {
 			System.out.println("Warning: Empty pressure-dependent network detected. Skipping.");
@@ -102,25 +103,9 @@ public class Chemdis implements PDepKineticsEstimator {
 		LinkedList<PDepReaction> netReactionList = pdn.getNetReactions();
 		netReactionList.clear();
 		try {
-		
-			if (pdn.getUniIsomers().size() == 1 && pdn.getMultiIsomers().size() == 1) {
-				
-				runForIsomer(pdn, rxnSystem, pdn.getUniIsomers().get(0), netReactionList);
-				PDepReaction rxn = netReactionList.getFirst();
-				rxn.generateReverseReaction();
-				
-			}
-			else {
-				
-				for (int i = 0; i < pdn.getUniIsomers().size(); i++)
-					runForIsomer(pdn, rxnSystem, pdn.getUniIsomers().get(i), netReactionList);
-				for (int n = 0; n < pdn.getMultiIsomers().size(); n++)
-					runForIsomer(pdn, rxnSystem, pdn.getMultiIsomers().get(n), netReactionList);
-				
-			}
-			
-			
-			
+			for (int i = 0; i < pdn.getIsomers().size(); i++)
+				runForIsomer(pdn, rxnSystem, pdn.getIsomers().get(i), netReactionList);
+
 		}
 		catch (Exception e) {
 			System.out.println(e.getMessage());
@@ -221,10 +206,12 @@ public class Chemdis implements PDepKineticsEstimator {
 			String str = writeNetworkHeader(pdn, rxnSystem, entryIsomer, entryReaction);
 			
 			// Add wells to file string
-			for (int i = 0; i < pdn.getUniIsomers().size(); i++) {
-				PDepIsomer isom = pdn.getUniIsomers().get(i);
-				str += "Well " + String.valueOf(i+1) + '\n';
-				str += writeWellInput(pdn, isom, entryReaction, isom.equals(entryIsomer));
+			for (int i = 0; i < pdn.getIsomers().size(); i++) {
+				PDepIsomer isom = pdn.getIsomers().get(i);
+				if (isom.isUnimolecular()) {
+					str += "Well " + String.valueOf(i+1) + '\n';
+					str += writeWellInput(pdn, isom, entryReaction, isom.equals(entryIsomer));
+				}
 			}
 			
 			// Write string to file
@@ -417,7 +404,7 @@ public class Chemdis implements PDepKineticsEstimator {
         
 		// Write Lennard-Jones parameters
 		str += "PARAMETERS\n";
-        LennardJones lj = pdn.getUniIsomers().get(0).getSpecies(0).getLJ();
+        LennardJones lj = pdn.getIsomers().get(0).getSpecies(0).getLJ();
         str += MathTool.formatDouble(lj.getSigma(), 10, 2) + '\t' + MathTool.formatDouble(lj.getEpsilon(), 10, 2) + '\n';
         
 		// Write mean change in energy for deactivating collision
@@ -613,15 +600,9 @@ public class Chemdis implements PDepKineticsEstimator {
         		}
 				PDepIsomer productIsomer = null;
 				if (product.size() == 1) {
-					for (int i = 0; i < pdn.getUniIsomers().size(); i++) {
-						if (pdn.getUniIsomers().get(i).getSpeciesList().equals(product))
-							productIsomer = pdn.getUniIsomers().get(i);
-					}
-				}
-				else if (product.size() > 1) {
-					for (int n = 0; n < pdn.getMultiIsomers().size(); n++) {
-						if (pdn.getMultiIsomers().get(n).getSpeciesList().equals(product))
-							productIsomer = pdn.getMultiIsomers().get(n);
+					for (int i = 0; i < pdn.getIsomers().size(); i++) {
+						if (pdn.getIsomers().get(i).getSpeciesList().equals(product))
+							productIsomer = pdn.getIsomers().get(i);
 					}
 				}
 				if (productIsomer == null) throw new NullPointerException();
@@ -641,9 +622,10 @@ public class Chemdis implements PDepKineticsEstimator {
         		Temperature tHigh = new Temperature(Tmax, "K");
         		Pressure pLow = new Pressure(Pmin, "Atm");
         		Pressure pHigh = new Pressure(Pmax, "Atm");
-        		ChebyshevPolynomials cp = new ChebyshevPolynomials(nT, tLow, tHigh, nP, pLow, pHigh, alpha);
-        		
-        		PDepReaction rxn = new PDepReaction(entryIsomer, productIsomer, cp);
+        		//ChebyshevPolynomials cp = new ChebyshevPolynomials(nT, tLow, tHigh, nP, pLow, pHigh, alpha);
+        		PDepRateConstant rate = new PDepRateConstant();
+
+        		PDepReaction rxn = new PDepReaction(entryIsomer, productIsomer, rate);
         		reactionList.add(rxn);
 				
         		line = ChemParser.readMeaningfulLine(data);

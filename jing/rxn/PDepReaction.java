@@ -74,10 +74,9 @@ public class PDepReaction extends Reaction {
 	private PDepIsomer product;
 	
 	/**
-	 * The pressure-dependent kinetics, as fitted to a set of Chebyshev
-	 * polynomials.
+	 * The pressure-dependent rate coefficient.
 	 */
-	private ChebyshevPolynomials chebyshev;
+	private PDepRateConstant pDepRate;
 	
 	/**
 	 * The reverse PDepReaction. Is used instead of Reaction.reverse when
@@ -106,7 +105,7 @@ public class PDepReaction extends Reaction {
 			structure = new Structure(reac.getSpeciesList(), prod.getSpeciesList(), 1);
 		setReactant(reac);
 		setProduct(prod);
-		chebyshev = null;
+		pDepRate = null;
 	}
 	
 	/**
@@ -125,7 +124,7 @@ public class PDepReaction extends Reaction {
 			structure = new Structure(reac.getSpeciesList(), prod.getSpeciesList(), 1);
 		setReactant(reac);
 		setProduct(prod);
-		chebyshev = null;
+		pDepRate = null;
 	}
 	
 	/**
@@ -134,15 +133,15 @@ public class PDepReaction extends Reaction {
 	 * polynomials of cheb.
 	 * @param reac The reactant PDepIsomer
 	 * @param prod The product PDepIsomer
-	 * @param cheb A set of Chebyshev polynomials representing the fitted k(T, P)
+	 * @param k The k(T, P) rate constant for the reaction
 	 */
-	public PDepReaction(PDepIsomer reac, PDepIsomer prod, ChebyshevPolynomials cheb) {
+	public PDepReaction(PDepIsomer reac, PDepIsomer prod, PDepRateConstant k) {
 		super();
 		structure = new Structure(reac.getSpeciesList(), prod.getSpeciesList(), 1);
 		setReactant(reac);
 		setProduct(prod);
 		setHighPKinetics(null);
-		chebyshev = cheb;
+		pDepRate = k;
 	}
 	
 	//==========================================================================
@@ -224,16 +223,16 @@ public class PDepReaction extends Reaction {
 	 * Returns the Chebyshev polynomial fit to k(T, P) for this net reaction.
 	 * @return The Chebyshev polynomial fit to k(T, P) for this net reaction
 	 */
-	public ChebyshevPolynomials getChebyshevFit() {
-		return chebyshev;
+	public PDepRateConstant setPDepRateConstant() {
+		return pDepRate;
 	}
 	
 	/** 
 	 * Sets the Chebyshev polynomial fit to k(T, P) for this net reaction.
 	 * @param cheb The new Chebyshev polynomial fit to k(T, P) for this net reaction
 	 */
-	public void setChebyshevFit(ChebyshevPolynomials cheb) {
-		chebyshev = cheb;
+	public void setPDepRateConstant(PDepRateConstant r) {
+		pDepRate = r;
 	}
 	
 	/**
@@ -309,7 +308,7 @@ public class PDepReaction extends Reaction {
 	 * @return True if the reaction is a net reaction, false otherwise
 	 */
 	public boolean isNetReaction() {
-		return (chebyshev != null);
+		return (pDepRate != null);
 	}
 	
 	/**
@@ -333,13 +332,19 @@ public class PDepReaction extends Reaction {
 	 * @return The calculated rate coefficient for the forward reaction
 	 */
 	public double calculateRate(Temperature temperature, Pressure pressure) {
-		if (chebyshev != null)
-			return chebyshev.calculateRate(temperature, pressure);
-		else if (kinetics != null)
-			return kinetics.calculateRate(temperature);
-		else
-			return 0.0;
-			
+		double k = 0.0;
+		try {
+			if (pDepRate != null)
+				k = pDepRate.calculateRate(temperature, pressure);
+			else if (kinetics != null)
+				k = kinetics.calculateRate(temperature);
+		}
+		catch (Exception e) {
+			System.out.println(e.getMessage());
+			System.exit(0);
+		}
+
+		return k;
 	}
 	
 	/**
@@ -420,8 +425,8 @@ public class PDepReaction extends Reaction {
 	 */
 	@Override
 	public void generateReverseReaction() {
-        if (chebyshev != null) {
-			PDepReaction r = new PDepReaction(product, reactant, chebyshev);
+        if (pDepRate != null) {
+			PDepReaction r = new PDepReaction(product, reactant, pDepRate);
 			setReverseReaction(r);
 			r.setReverseReaction(this);
 		}
@@ -466,9 +471,9 @@ public class PDepReaction extends Reaction {
 	 */
 	@Override
 	public String toChemkinString(Temperature t) {
-        if (chebyshev != null) {
+        if (pDepRate != null) {
 			String result = formPDepSign(getStructure().toChemkinString(true).toString()) + '\t' + "1.0E0 0.0 0.0" + '\n';
-			result += chebyshev.toChemkinString() + '\n';
+			result += pDepRate.getChebyshev().toChemkinString() + '\n';
 			return result;
 		}
 		else if (kinetics != null)
