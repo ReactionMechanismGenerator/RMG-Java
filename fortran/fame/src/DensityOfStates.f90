@@ -9,7 +9,8 @@
 module DensityOfStatesModule
 
 	use SimulationModule
-    use IsomerModule
+    use SpeciesModule
+	use IsomerModule
 	
 	implicit none
 
@@ -19,16 +20,19 @@ contains
 	!
 	! Subroutine: densityOfStates()
 	! 
-	! Estimates the density of states for each isomer in the network.
+	! Estimates the density of states for each species in the network.
 	!
 	! Parameters:
 	!   simData - The simulation data.
-	!   isomer - The chemical data for a single isomer.
-	subroutine densityOfStates(simData, isom)
+	!   isom - The chemical data for a single isomer.
+	subroutine densityOfStates(simData, isom, speciesList)
 		
 		! Provide parameter type checking of inputs and outputs
-		type(Simulation), intent(in)	:: 	simData
-		type(Isomer), intent(inout)		:: 	isom
+		type(Simulation), intent(in)				:: 	simData
+		type(Isomer), intent(inout)					:: 	isom
+		type(Species), dimension(:), intent(in)		:: 	speciesList
+		
+		type(Species) :: spec
 		
 		real(8) conv		! Conversion factor: cm^-1 per kJ/mol
 		real(8) Emin		! Minimum energy of range in cm^-1
@@ -52,19 +56,12 @@ contains
 		speCount = 0
 		do i = 1, isom%numSpecies
 			
-			vibCount = 0
-			rotCount = 0
-			hindCount = 0
-			do j = 1, size(isom%vibFreq(i,:))
-				if (isom%vibFreq(i,j) > 0) vibCount = vibCount + 1
-			end do
-			do j = 1, size(isom%rotFreq(i,:))
-				if (isom%rotFreq(i,j) > 0) rotCount = rotCount + 1
-			end do
-			do j = 1, size(isom%hindFreq(i,:))
-				if (isom%hindFreq(i,j) > 0) hindCount = hindCount + 1
-			end do
-    
+			spec = speciesList(isom%speciesList(i))
+			
+			vibCount = size(spec%vibFreq)
+			rotCount = size(spec%rotFreq)
+			hindCount = size(spec%hindFreq)
+			
 			if (vibCount > 0 .or. rotCount > 0 .or. hindCount > 0) then
 		
 				speCount = speCount + 1
@@ -90,10 +87,11 @@ contains
 				! Create temporary density of states arrays
 				if (.not. allocated(rho1)) allocate( rho1(1:nE) )
 				allocate( rho2(1:nE) )
-		
+				
 				! Calculate the density of states for each multimolecular well
-				rho2 = states(E + E(1), isom%vibFreq(1,:), isom%rotFreq(1,:), &
-					isom%hindFreq(1,:), isom%hindBarrier(1,:), isom%symmNum(1))
+				rho2 = states(E + E(1), spec%vibFreq, spec%rotFreq, &
+					spec%hindFreq, spec%hindBarrier, spec%symmNum)
+				
 				if (speCount == 1) then
 					rho1 = rho2
 				else
@@ -109,7 +107,7 @@ contains
 		rho1(1:simData%nGrains) = rho1(1:size(rho1):dn)
 		
 		! Shift density of states to appropriate energy range
-		Eisom = sum(isom%E)
+		Eisom = isom%E0
 		start = 0
 		do r = 1, simData%nGrains
 			if (start == 0 .and. Eisom < simData%E(r)) then
@@ -124,6 +122,7 @@ contains
 			stop
 		end if
 		
+		allocate(isom%densStates(1:simData%nGrains))
 		isom%densStates = 0 * isom%densStates
 		isom%densStates(start:simData%nGrains) = rho1(1:length)
 		
@@ -151,17 +150,15 @@ contains
 		
 		! Provide parameter type checking of inputs and outputs
 		real(8), dimension(:), intent(in)		:: 	E
-		real(8), dimension(:), intent(in)		:: 	vibFreq
-		real(8), dimension(:), intent(in)		:: 	rotFreq
-		real(8), dimension(:), intent(in)		:: 	hindFreq
-		real(8), dimension(:), intent(in)		:: 	hindBarrier
+		real(8), dimension(:), allocatable, intent(in)		:: 	vibFreq
+		real(8), dimension(:), allocatable, intent(in)		:: 	rotFreq
+		real(8), dimension(:), allocatable, intent(in)		:: 	hindFreq
+		real(8), dimension(:), allocatable, intent(in)		:: 	hindBarrier
 		integer, intent(in)						:: 	symmNum
 		real(8), dimension(1:size(E))			:: 	states
 		
 		real(8) dE
-		real(8), dimension(:), allocatable		:: rho_RR
-		real(8), dimension(:), allocatable		:: rho_HR
-		real(8), dimension(:), allocatable		:: rho1
+		real(8), dimension(:), allocatable		:: rho0
 		real(8), dimension(:), allocatable		:: rho
 		integer N
 		integer i, j, k, found
@@ -169,46 +166,39 @@ contains
 		N = size(E)
 		dE = E(2) - E(1)
 		
+		allocate( rho0(1:N) )
+		
 		! Free rotors
-		if (rotFreq(1) > 0) then
-			allocate( rho_RR(1:N) )
-			rho_RR = rho_RR * 0
-			rho_RR = calcFreeRotorStates(E, rotFreq, symmNum)
+		if (allocated(rotFreq)) then
+			allocate( rho(1:N) )
+			rho = calcFreeRotorStates(E, rotFreq, symmNum)
 		end if
 		
         ! Hindered rotors
-		if (hindFreq(1) > 0) then
-			allocate( rho1(1:N) )
+		if (allocated(hindFreq)) then
 			do i = 1, size(hindFreq)
 				if (hindFreq(i) > 0 .and. hindBarrier(i) > 0) then
-					rho1 = calcHinderedRotorStates(E, hindFreq(i), hindBarrier(i))
-					if (allocated(rho_HR)) then
-						rho_HR = convolve(rho_HR, rho1, dE)
+					rho0 = calcHinderedRotorStates(E, hindFreq(i), hindBarrier(i))
+					if (allocated(rho)) then
+						rho = convolve(rho, rho0, dE)
 					else
-						allocate( rho_HR(1:N) )
-						rho_HR = rho1
+						allocate( rho(1:N) )
+						rho = rho0
 					end if
 				end if
 			end do
 		end if
 		
-		! Total rotational component of density of states
-		if (allocated(rho_RR) .and. allocated(rho_HR)) then
-			states = convolve(rho_RR, rho_HR, dE)
-			deallocate(rho_RR, rho_HR)
-		elseif (allocated(rho_RR)) then
-			states = rho_RR
-			deallocate(rho_RR)
-		elseif (allocated(rho_HR)) then
-			states = rho_HR
-			deallocate(rho_HR)
-		else
-			states = 0 * states
-		end if
-        
 		! Add vibrational states via Beyer-Swinehart algorithm
-        call beyerSwinehart(E, vibFreq, states)
-        
+		if (.not. allocated(rho)) then
+			allocate( rho(1:N) )
+			rho = 0 * rho
+		end if
+		if (allocated(vibFreq)) then
+			call beyerSwinehart(E, vibFreq, rho)
+		end if
+        states = rho
+		
 		! For this approach the density of states must be smooth
 		i = 1
         do while (i <= size(E) - 1)
@@ -236,7 +226,9 @@ contains
 				i = i + 1
 			end if
 		end do
-				
+		
+		deallocate( rho0, rho )
+		
 	end function
 	
 	! --------------------------------------------------------------------------

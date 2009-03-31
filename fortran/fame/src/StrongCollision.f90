@@ -9,6 +9,7 @@
 module StrongCollisionModule
 
 	use SimulationModule
+	use SpeciesModule
 	use IsomerModule
 	use ReactionModule
 
@@ -26,31 +27,25 @@ contains
 	!
 	! Parameters:
 	!
-	subroutine ssmscRates(simData, uniData, multiData, rxnData, Kij, Fim, Gnj, Jnm, bi, K)
-
+	subroutine ssmscRates(T, P, simData, speciesList, isomerList, rxnList, K)
+	
 		! Provide parameter type checking of inputs and outputs
+		real(8), intent(in)							:: 	T
+		real(8), intent(in)							:: 	P
 		type(Simulation), intent(in)				:: 	simData
-		type(Isomer), dimension(:), intent(in)		:: 	uniData
-		type(Isomer), dimension(:), intent(in)	:: 	multiData
-		type(Reaction), dimension(:), intent(in)	:: 	rxnData
-		real(8), dimension(:,:,:), intent(in)		:: 	Kij
-		real(8), dimension(:,:,:), intent(in)		:: 	Fim
-		real(8), dimension(:,:,:), intent(in)		:: 	Gnj
-		real(8), dimension(:,:,:), intent(in)		:: 	Jnm
-		real(8), dimension(:,:), intent(in)			:: 	bi
+		type(Species), dimension(:), intent(in)		:: 	speciesList
+		type(Isomer), dimension(:), intent(in)		:: 	isomerList
+		type(Reaction), dimension(:), intent(in)	:: 	rxnList
 		real(8), dimension(:,:), intent(out) 		:: 	K
 		
 		! Steady-state populations
-		real(8), dimension(:,:), allocatable	:: 	p
+		real(8), dimension(:,:), allocatable		:: 	pa
 		
 		! Steady-state matrix and vector
-		real(8), dimension(:,:), allocatable	:: 	A
-		real(8), dimension(:), allocatable		:: 	b
-		! Collision frequency and efficiency
-		real(8), dimension(:), allocatable				::	w
-		real(8) eps, mu
-		! Gas concentration
-		real(8) gasConc
+		real(8), dimension(:,:), allocatable		:: 	A
+		real(8), dimension(:), allocatable			:: 	b
+		! Collision efficiency
+		real(8) eps
 		! Number of active-state energy grains for each unimolecular isomer
 		integer, dimension(:), allocatable				:: 	nAct
 		! Indices i and j represent sums over unimolecular wells
@@ -59,188 +54,156 @@ contains
 		integer											::	m, n
 		! Indices r and s represent sums over energy grains
 		integer											::	r, s
+		integer											::	u
 		! Variables for BLAS and LAPACK
 		integer, dimension(:), allocatable				::	iPiv
 		integer											::	info
 		integer	src, start
-		real(8)	temp
+		real(8)	val
 		
-		! Gas concentration in molecules/m^3
-		gasConc = simData%P * 1e5 / 1.381e-23 / simData%T
-
-		! Determine collision frequency for each isomer
-		allocate( w(1:simData%nUni) )
-		do i = 1, simData%nUni
-			mu = 1.0 / ( 1.0 / uniData(i)%MW(1) + 1.0 / simData%bathGas%MW ) / 6.022e26
-			call collisionFrequency(simData%T, 0.5 * (uniData(i)%sigma(1) + simData%bathGas%sigma), &
-				0.5 * (uniData(i)%eps(1) + simData%bathGas%eps), mu, gasConc, w(i))
-		end do
+		integer nUni, reac, prod
 		
 		! Zero rate coefficient matrix
-		do i = 1, simData%nUni + simData%nMulti
-			do j = 1, simData%nUni + simData%nMulti
+		do i = 1, simData%nIsom
+			do j = 1, simData%nIsom
 				K(i,j) = 0.0
 			end do
 		end do
 		
+		! Determine number of unimolecular wells
+		nUni = 0
+		do i = 1, simData%nIsom
+			if (isomerList(i)%numSpecies == 1) nUni = nUni + 1
+		end do
+		
 		! Find steady-state populations at each grain
-		allocate( A(1:simData%nUni, 1:simData%nUni) )
-		allocate( b(1:simData%nUni) )
-		allocate( iPiv(1:simData%nUni) )
-		allocate( p(1:simData%nGrains, 1:simData%nUni) )
+		allocate( A(1:nUni, 1:nUni) )
+		allocate( b(1:nUni) )
+		allocate( iPiv(1:nUni) )
+		allocate( pa(1:simData%nGrains, 1:nUni) )
 			
-		do src = 1, simData%nUni+simData%nMulti
+		do src = 1, simData%nIsom
 
 			! Determine collision efficiency
-			eps = collisionEfficiency(simData, uniData, rxnData, src)
+			eps = collisionEfficiency(simData, isomerList, rxnList, src)
 
 			! Determine starting grain
-			start = activeSpaceStart(simData, uniData, rxnData, src)
+			start = activeSpaceStart(simData, isomerList, rxnList, src)
 			
 			do r = 1, start-1
-				do i = 1, simData%nUni
-					p(r,i) = 0.0
+				do i = 1, nUni
+					pa(r,i) = 0.0
 				end do
 			end do
 			
 			do r = start, simData%nGrains
 
 				! Zero A matrix and b vector
-				do i = 1, simData%nUni
-					do j = 1, simData%nUni
+				do i = 1, nUni
+					do j = 1, nUni
 						A(i,j) = 0.0
 					end do
 					b(i) = 0.0
 				end do
 				
 				! Collisional deactivation
-				do i = 1, simData%nUni
-					A(i,i) = - eps * w(i)
+				do i = 1, nUni
+					A(i,i) = - eps * isomerList(i)%omega
 				end do
 				
-				! Isomerization
-				do i = 1, simData%nUni
-					do j = 1, simData%nUni
-						if (i /= j) then
-							A(i,j) = Kij(r,i,j)
-							A(i,i) = A(i,i) - Kij(r,j,i)
+				! Reactions
+				do u = 1, simData%nRxn
+					reac = rxnList(u)%isomerList(1)
+					prod = rxnList(u)%isomerList(2)
+					if (isomerList(reac)%numSpecies == 1 .and. isomerList(prod)%numSpecies == 1) then
+						A(prod,reac) = rxnList(u)%kf(r)
+						A(reac,reac) = A(reac,reac) - rxnList(u)%kf(r)
+						A(reac,prod) = rxnList(u)%kb(r)
+						A(prod,prod) = A(prod,prod) - rxnList(u)%kb(r)
+					elseif (isomerList(reac)%numSpecies == 1 .and. isomerList(prod)%numSpecies > 1) then
+						A(reac,reac) = A(reac,reac) - rxnList(u)%kf(r)
+					elseif (isomerList(reac)%numSpecies > 1 .and. isomerList(prod)%numSpecies == 1) then
+						A(prod,prod) = A(prod,prod) - rxnList(u)%kb(r)
+					end if
+				end do
+					
+				! Activation
+				if (isomerList(src)%numSpecies == 1) then
+					b(src) = eps * isomerList(src)%omega * isomerList(src)%eqDist(r)
+				else
+					do u = 1, simData%nRxn
+						reac = rxnList(u)%isomerList(1)
+						prod = rxnList(u)%isomerList(2)
+						if (reac == src) then
+							b(prod) = rxnList(u)%kf(r)
+						elseif (prod == src) then
+							b(reac) = rxnList(u)%kb(r)
 						end if
 					end do
-				end do
-
-				! Dissociation
-				do i = 1, simData%nUni
-					do n = 1, simData%nMulti
-						A(i,i) = A(i,i) - Gnj(r,n,i)
-						b(i) = 0.0
-					end do
-				end do
-				
-				! Activation
-				if (src > simData%nUni) then
-					n = src - simData%nUni
-					do i = 1, simData%nUni
-						b(i) = Fim(r,i,n)
-					end do
-				else
-					b(src) = eps * w(src) * bi(r,src)
 				end if
 				
 				! Solve for steady-state population
-				call DGESV( simData%nUni, 1, A, simData%nUni, iPiv, b, simData%nUni, info )
+				call DGESV( nUni, 1, A, nUni, iPiv, b, nUni, info )
 				if (info > 0) then
 					write (*,*), "A singular matrix was encountered! Aborting."
 					stop
 				end if
-				p(r,:) = -b
+				pa(r,:) = -b
 				
 			end do
 			
 			! Calculate rates
 			
 			! Stabilization rates (i.e.) R + R' --> Ai or M --> Ai
-			do i = 1, simData%nUni
+			do i = 1, nUni
 				if (i /= src) then
-					temp = eps * w(i) * sum(p(:,i))
-					K(i,src) = K(i,src) + temp
-					K(src,src) = K(src,src) - temp
+					val = eps * isomerList(i)%omega * sum(pa(:,i))
+					K(i,src) = K(i,src) + val
+					K(src,src) = K(src,src) - val
 				end if
 			end do
 			
 			! Dissociation rates (i.e.) R + R' --> Bn + Cn or M --> Bn + Cn
-			do i = 1, simData%nUni
-				do n = 1, simData%nMulti
-					if (n /= src - simData%nUni .and. Gnj(simData%nGrains,n,i) > 0) then
-						temp = sum(Gnj(:,n,i) * p(:,i))
-						K(n+simData%nUni,src) = K(n+simData%nUni,src) + temp
-						K(src,src) = K(src,src) - temp
-					end if
-				end do
+			do u = 1, simData%nRxn
+				reac = rxnList(u)%isomerList(1)
+				prod = rxnList(u)%isomerList(2)
+				if (reac <= nUni .and. prod > nUni .and. prod /= src) then
+					val = sum(rxnList(u)%kf * pa(:,reac))
+					K(prod,src) = K(prod,src) + val
+					K(src,src) = K(src,src) - val
+				elseif (reac > nUni .and. reac /= src .and. prod <= nUni) then
+					val = sum(rxnList(u)%kb * pa(:,prod))
+					K(reac,src) = K(reac,src) + val
+					K(src,src) = K(src,src) - val
+				end if
 			end do
 			
 		end do
 
 		! Clean up
-		deallocate( w, A, b, iPiv, p )
+		deallocate( A, b, iPiv, pa )
 
 	end subroutine
 
-	! --------------------------------------------------------------------------
-
-	! collisionFrequency() 
+	!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 	!
-	!   Computes the Lennard-Jones (12-6) collision frequency.
-	!
-	! Input:
-	!   T = absolute temperature in K
-	!   sigma = effective Lennard-Jones well-minimum parameter for collision in m
-	!   eps = effective Lennard-Jones well-depth parameter for collision in J
-	!   mu = reduced mass of molecules involved in collision in kg
-	!   Na = molecules of A per m^3
-	!
-	! Output:
-	!   omega = collision frequency in molecules m^-3 s^-1
-	!
-	subroutine collisionFrequency(T, sigma, eps, mu, Na, omega)
-	
-		! Provide parameter type-checking
-		real(8), intent(in)					:: 	T
-		real(8), intent(in)					:: 	sigma
-		real(8), intent(in)					:: 	eps
-		real(8), intent(in)					:: 	mu
-		real(8), intent(in)					:: 	Na
-		real(8), intent(out)				:: 	omega
-		
-		real(8)		:: kB = 1.3806504e-23
-		real(8)		:: collisionIntegral
-		
-		collisionIntegral = 1.16145 / T**0.14874 + 0.52487 / exp(0.77320 * T) + 2.16178 / exp(2.43787 * T) &
-			-6.435/10000 * T**0.14874 * sin(18.0323 * T**(-0.76830) - 7.27371)
-    
-		! Evaluate collision frequency
-		omega = collisionIntegral *	sqrt(8 * kB * T / 3.141592654 / mu) * 3.141592654 * sigma**2 * Na
-	
-	end subroutine
-	
-	! --------------------------------------------------------------------------
-
 	! collisionEfficiency() 
 	!
 	!   Computes the fraction of collisions that result in deactivation.
 	!
-	function collisionEfficiency(simData, uniData, rxnData, src)
+	function collisionEfficiency(simData, isomerList, rxnList, src)
 	
 		! Provide parameter type checking of inputs and outputs
 		type(Simulation), intent(in)				:: 	simData
-		type(Isomer), dimension(:), intent(in)		:: 	uniData
-		type(Reaction), dimension(:), intent(in)	:: 	rxnData
+		type(Isomer), dimension(:), intent(in)		:: 	isomerList
+		type(Reaction), dimension(:), intent(in)	:: 	rxnList
 		integer, intent(in)							:: 	src
 		real(8)										::	collisionEfficiency
 		
 		real(8) E0
 		integer t
 		
-		if (src > simData%nUni) then
+		if (isomerList(src)%numSpecies > 1) then
 			collisionEfficiency = 0.38
 		else
 
@@ -339,11 +302,11 @@ contains
 	!
 	! Returns:
 	!	nRes - The reservoir cutoff grains for each unimolecular isomer.
-	function activeSpaceStart(simData, uniData, rxnData, well)
+	function activeSpaceStart(simData, isomerList, rxnList, well)
 	
 		type(Simulation), intent(in)				:: 	simData
-		type(Isomer), dimension(:), intent(in)		:: 	uniData
-		type(Reaction), dimension(:), intent(in)	:: 	rxnData
+		type(Isomer), dimension(:), intent(in)		:: 	isomerList
+		type(Reaction), dimension(:), intent(in)	:: 	rxnList
 		integer, intent(in)							::	well
 		integer										::	activeSpaceStart
 		
@@ -355,8 +318,10 @@ contains
 		
 		Eres = simData%Emax
 		do t = 1, simData%nRxn
-			if (rxnData(t)%isomer(1) == well .or. rxnData(t)%isomer(2) == well) then
-				if (rxnData(t)%E < Eres) Eres = rxnData(t)%E
+			if (rxnList(t)%isomerList(1) == well .or. rxnList(t)%isomerList(2) == well) then
+				if (rxnList(t)%E0 < Eres) then
+					Eres = rxnList(t)%E0
+				end if
 			end if
 		end do
 		activeSpaceStart = ceiling((Eres - simData%Emin) / simData%dE) + 1

@@ -1,6 +1,6 @@
 ! ==============================================================================
 !
-! 	FastEGME.f90
+! 	ReservoirState.f90
 !
 ! 	Written by Josh Allen (jwallen@mit.edu)
 !
@@ -16,7 +16,334 @@ module ReservoirStateModule
 	
 contains
 
-	! Subroutine: getReservoirCutoffs()
+	!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+	!
+	! Subroutine: ssrsRates()
+	! 
+	! Uses the steady state/reservoir state method of Green and Bhatti to
+	! estimate the phenomenological rate coefficients from a full ME matrix.
+	!
+	subroutine ssrsRates(T, P, simData, speciesList, isomerList, rxnList, K)
+
+		! Provide parameter type checking of inputs and outputs
+		real(8), intent(in)							::	T
+		real(8), intent(in)							::	P
+		type(Simulation), intent(in)				:: 	simData
+		type(Species), dimension(:), intent(in)		:: 	speciesList
+		type(Isomer), dimension(:), intent(inout)   ::  isomerList
+        type(Reaction), dimension(:), intent(in)	:: 	rxnList
+		real(8), dimension(:,:), intent(out) 		:: 	K
+		
+		! Number of reservoir and active-state energy grains for each isomer
+		integer, dimension(:), allocatable			:: 	nRes, nAct
+
+		! Number of unimolecular wells
+		integer nUni, row
+		
+		! Accounting matrix
+		integer, dimension(:,:), allocatable		::	indices
+		
+		! Active state grain matrix and RHS vectors
+		real(8), dimension(:,:), allocatable	:: 	L
+		real(8), dimension(:,:), allocatable	:: 	Z
+		
+		! Pseudo-steady state grain populations
+		real(8), dimension(:,:,:), allocatable	:: 	pa
+		
+		! Variables for LAPACK
+		integer, dimension(:), allocatable				::	iPiv
+		integer											::	info
+		
+		! Indices
+		integer i, n, r, s, reac, prod
+		
+		! Determine number of unimolecular wells
+		nUni = 0
+		do i = 1, simData%nIsom
+			if (isomerList(i)%numSpecies == 1) then
+				nUni = nUni + 1
+			end if
+		end do
+		
+		! Collisional terms in master equation
+		do i = 1, simData%nIsom
+			if (isomerList(i)%numSpecies == 1) then
+				call collision(T, P, simData, isomerList(i), speciesList)
+			end if
+		end do
+		
+		! Determine reservoir cutoff grains for each unimolecular isomer
+		allocate( nRes(1:simData%nIsom), nAct(1:simData%nIsom) )
+		nRes = reservoirCutoffs(simData, isomerList, rxnList)
+		do i = 1, simData%nIsom
+			nAct(i) = simData%nGrains - nRes(i)
+		end do
+
+		! Determine pseudo-steady state populations of active state
+		allocate( pa(1:simData%nGrains, 1:simData%nIsom, 1:nUni) )
+		pa = 0 * pa
+		!call activeStateFull(simData, isomerList, rxnList, nUni, nRes, nAct, pa)
+		call activeStateBanded(simData, isomerList, rxnList, nUni, nRes, nAct, pa)
+		
+		! Initialize phenomenological rate coefficient matrix
+		do i = 1, simData%nIsom
+			do n = 1, simData%nIsom
+				K(i,n) = 0
+			end do
+		end do
+		
+		! Determine phenomenological rate coefficients
+		do i = 1, nUni
+			do n = 1, simData%nIsom
+				do r = 1, nRes(i)
+					K(i,n) = K(i,n) + sum(isomerList(i)%Mcoll(r,:) * pa(:,n,i))
+				end do
+			end do
+		end do
+		do r = 1, simData%nRxn
+			reac = rxnList(r)%isomerList(1)
+			prod = rxnList(r)%isomerList(2)
+			if  (reac <= nUni .and. prod > nUni) then	! Dissociation
+				do n = 1, simData%nIsom
+					K(prod,n) = sum(rxnList(r)%kf * pa(:,n,reac))
+				end do
+			elseif  (reac > nUni .and. prod <= nUni) then	! Combination
+				do n = 1, simData%nIsom
+					K(reac,n) = sum(rxnList(r)%kb * pa(:,n,prod))
+				end do
+			end if
+		end do
+		do n = 1, simData%nIsom
+			K(n,n) = 0.
+		end do
+        
+        ! Clean up
+		deallocate( nRes, nAct, pa )
+
+	end subroutine
+
+	!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+	!
+	! Subroutine: activeStateFull()
+	! 
+	! Determine the pseudo-steady state populations for the active state
+	! grains using a full matrix linear solve.
+	!
+	! Parameters:
+	!
+	subroutine activeStateFull(simData, isomerList, rxnList, nUni, nRes, nAct, pa)
+	
+		! Provide parameter type checking of inputs and outputs
+		type(Simulation), intent(in)				:: 	simData
+		type(Isomer), dimension(:), intent(in)   	::  isomerList
+        type(Reaction), dimension(:), intent(in)	:: 	rxnList
+		integer, intent(in)							:: 	nUni
+		integer, dimension(:), intent(in)			:: 	nRes
+		integer, dimension(:), intent(in)			:: 	nAct
+		real(8), dimension(:,:,:), intent(out) 		:: 	pa
+		
+		!! Accounting matrix
+		integer, dimension(:,:), allocatable		::	indices
+		
+		! Active state grain matrix and RHS vectors
+		real(8), dimension(:,:), allocatable	:: 	L
+		real(8), dimension(:,:), allocatable	:: 	Z
+		
+		! Variables for LAPACK
+		integer, dimension(:), allocatable				::	iPiv
+		integer											::	info
+		
+		! Indices
+		integer i, n, r, s, reac, prod
+		
+		! Construct accounting matrix
+		! Row is grain number, column is well number, value is index into active-state matrix
+		allocate( indices(1:simData%nGrains, 1:nUni ) )
+		call accountingMatrix(simData%nGrains, nUni, nRes, indices)
+		
+		! Create and zero active-state matrix and RHS vectors
+		allocate( L(1:sum(nAct), 1:sum(nAct)), Z(1:sum(nAct), 1:simData%nIsom) )
+		L = 0 * L
+		Z = 0 * Z
+		
+		! Collisional terms in active-state matrix and RHS vectors
+		do i = 1, nUni
+			do r = nRes(i)+1, simData%nGrains
+				do s = nRes(i)+1, simData%nGrains
+					L(indices(r,i), indices(s,i)) = isomerList(i)%Mcoll(r,s)
+				end do
+				Z(indices(r,i), i) = sum(isomerList(i)%Mcoll(r,1:nRes(i)) * &
+					isomerList(i)%eqDist(1:nRes(i)))
+			end do
+		end do
+		
+		! Reactive terms in active-state matrix and RHS vectors
+		do n = 1, simData%nRxn
+			reac = rxnList(n)%isomerList(1)
+			prod = rxnList(n)%isomerList(2)
+			if (reac <= nUni .and. prod <= nUni) then		! Isomerization
+				do r = max(nRes(reac), nRes(prod))+1, simData%nGrains
+					L(indices(r,reac), indices(r,prod)) = rxnList(n)%kb(r)
+					L(indices(r,reac), indices(r,reac)) = L(indices(r,reac), indices(r,reac)) - rxnList(n)%kf(r)
+					L(indices(r,prod), indices(r,reac)) = rxnList(n)%kf(r)
+					L(indices(r,prod), indices(r,prod)) = L(indices(r,prod), indices(r,prod)) - rxnList(n)%kb(r)
+				end do
+			elseif  (reac <= nUni .and. prod > nUni) then	! Dissociation
+				do r = nRes(reac)+1, simData%nGrains
+					L(indices(r,reac), indices(r,reac)) = L(indices(r,reac), indices(r,reac)) - rxnList(n)%kf(r)
+					Z(indices(r,reac), prod) = rxnList(n)%kb(r)
+				end do
+			elseif  (reac > nUni .and. prod <= nUni) then	! Combination
+				do r = nRes(prod)+1, simData%nGrains
+					L(indices(r,prod), indices(r,prod)) = L(indices(r,prod), indices(r,prod)) - rxnList(n)%kb(r)
+					Z(indices(r,prod), reac) = rxnList(n)%kf(r)
+				end do
+			end if
+		end do
+		
+		Z = -Z
+		
+		! Solve for pseudo-steady state populations of active state
+		allocate( iPiv(1:sum(nAct)) )
+		call DGESV(sum(nAct), simData%nIsom, L, sum(nAct), iPiv, Z, sum(nAct), info)
+		if (info /= 0) then
+			write (*,*) 'ERROR: Active-state matrix is singular!'
+			stop
+		end if
+		deallocate( iPiv )
+		
+		! Convert solution to pseudo-steady state populations
+		do r = minval(nRes)+1, simData%nGrains
+			do n = 1, simData%nIsom
+				do i = 1, nUni
+					if (indices(r,i) > 0) pa(r,n,i) = Z(indices(r,i), n)
+				end do
+			end do
+		end do
+		
+		! Clean up
+		deallocate( indices, L, Z )
+		
+		
+	end subroutine
+	
+	!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+	!
+	! Subroutine: activeStateBanded()
+	! 
+	! Determine the pseudo-steady state populations for the active state
+	! grains using a full matrix linear solve.
+	!
+	! Parameters:
+	!
+	subroutine activeStateBanded(simData, isomerList, rxnList, nUni, nRes, nAct, pa)
+	
+		! Provide parameter type checking of inputs and outputs
+		type(Simulation), intent(in)				:: 	simData
+		type(Isomer), dimension(:), intent(in)   	::  isomerList
+        type(Reaction), dimension(:), intent(in)	:: 	rxnList
+		integer, intent(in)							:: 	nUni
+		integer, dimension(:), intent(in)			:: 	nRes
+		integer, dimension(:), intent(in)			:: 	nAct
+		real(8), dimension(:,:,:), intent(out) 		:: 	pa
+		
+		!! Accounting matrix
+		integer, dimension(:,:), allocatable		::	indices
+		
+		! Active state grain matrix and RHS vectors
+		real(8), dimension(:,:), allocatable		:: 	L
+		real(8), dimension(:,:), allocatable		:: 	Z
+		
+		integer										::	bandwidth, halfbandwidth
+		
+		! Variables for LAPACK
+		integer, dimension(:), allocatable			::	iPiv
+		integer										::	info
+		
+		! Indices
+		integer i, n, r, s, reac, prod
+		
+		! Construct accounting matrix
+		! Row is grain number, column is well number, value is index into active-state matrix
+		allocate( indices(1:simData%nGrains, 1:nUni ) )
+		indices = 0 * indices
+		call accountingMatrix(simData%nGrains, nUni, nRes, indices)
+		
+		! Determine bandwidth (at which transfer probabilities are so low that they can be truncated
+		! with negligible error)
+		halfbandwidth = getHalfBandwidth(simData%alpha, simData%dE) * nUni
+		bandwidth = 2 * halfbandwidth + 1
+		
+		! Create and zero active-state matrix and RHS vectors
+		allocate( L(3 * halfbandwidth + 1, 1:sum(nAct)), Z(1:sum(nAct), 1:simData%nIsom) )
+		L = 0 * L
+		Z = 0 * Z
+		
+		! Collisional terms in active-state matrix and RHS vectors
+		do i = 1, nUni
+			do s = nRes(i)+1, simData%nGrains
+				do r = max(nRes(i)+1, s - halfbandwidth), min(simData%nGrains, s + halfbandwidth)
+					L(bandwidth + indices(r,i) - indices(s,i), indices(s,i)) = isomerList(i)%Mcoll(r,s)
+				end do
+				Z(indices(s,i), i) = sum(isomerList(i)%Mcoll(s,1:nRes(i)) * &
+					isomerList(i)%eqDist(1:nRes(i)))
+			end do
+		end do
+		
+		! Reactive terms in active-state matrix and RHS vectors
+		do n = 1, simData%nRxn
+			reac = rxnList(n)%isomerList(1)
+			prod = rxnList(n)%isomerList(2)
+			if (reac <= nUni .and. prod <= nUni) then		! Isomerization
+				do r = max(nRes(reac), nRes(prod))+1, simData%nGrains
+					L(bandwidth + indices(r,reac) - indices(r,prod), indices(r,prod)) = rxnList(n)%kb(r)
+					L(bandwidth, indices(r,prod)) = L(bandwidth, indices(r,prod)) - rxnList(n)%kb(r)
+					L(bandwidth + indices(r,prod) - indices(r,reac), indices(r,reac)) = rxnList(n)%kf(r)
+					L(bandwidth, indices(r,reac)) = L(bandwidth, indices(r,reac)) - rxnList(n)%kf(r)
+				end do
+			elseif  (reac <= nUni .and. prod > nUni) then	! Dissociation
+				do r = nRes(reac)+1, simData%nGrains
+					L(bandwidth, indices(r,reac)) = L(bandwidth, indices(r,reac)) - rxnList(n)%kf(r)
+					Z(indices(r,reac), prod) = rxnList(n)%kb(r)
+				end do
+			elseif  (reac > nUni .and. prod <= nUni) then	! Combination
+				do r = nRes(prod)+1, simData%nGrains
+					L(bandwidth, indices(r,prod)) = L(bandwidth, indices(r,prod)) - rxnList(n)%kb(r)
+					Z(indices(r,prod), reac) = rxnList(n)%kf(r)
+				end do
+			end if
+		end do
+		
+		Z = -Z
+		
+		! Solve for pseudo-steady state populations of active state
+		allocate( iPiv(1:sum(nAct)) )
+		call DGBSV(sum(nAct), halfbandwidth, halfbandwidth, simData%nIsom, &
+			L, 3 * halfbandwidth + 1, iPiv, Z, sum(nAct), info)
+		if (info /= 0) then
+			write (*,*) 'ERROR: Active-state matrix is singular!'
+			stop
+		end if
+		deallocate( iPiv )
+		
+		! Convert solution to pseudo-steady state populations
+		do r = minval(nRes)+1, simData%nGrains
+			do n = 1, simData%nIsom
+				do i = 1, nUni
+					if (indices(r,i) > 0) pa(r,n,i) = Z(indices(r,i), n)
+				end do
+			end do
+		end do
+		
+		! Clean up
+		deallocate( indices, L, Z )
+		
+		
+	end subroutine
+
+	!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+	!
+	! Subroutine: accountingMatrix()
 	! 
 	! Determines the grain below which the reservoir approximation will be used
 	! and above which the pseudo-steady state approximation will be used by
@@ -25,423 +352,88 @@ contains
 	!
 	! Parameters:
 	!   simData - The simulation parameters.
-	!   uniData - The chemical data about each unimolecular isomer.
-	!   rxnData - The chemical data about each transition state.
+	!   isomerList - The chemical data about each isomer.
+	!   rxnList - The chemical data about each transition state.
 	!
 	! Returns:
 	!	nRes - The reservoir cutoff grains for each unimolecular isomer.
-	function reservoirCutoffs(simData, uniData, rxnData)
+	subroutine accountingMatrix(nGrains, nUni, nRes, indices)
+	
+		integer, intent(in)						::	nGrains
+		integer, intent(in)						::	nUni
+		integer, dimension(:), intent(in)		::	nRes
+		integer, dimension(:,:), intent(out)	::	indices
+		
+		integer i, r, row
+		
+		! Construct accounting matrix
+		! Row is grain number, column is well number, value is index into active-state matrix
+		row = 1
+		do r = minval(nRes)+1, nGrains
+			do i = 1, nUni
+				if (r > nRes(i)) then
+					indices(r,i) = row
+					row = row + 1
+				end if
+			end do
+		end do
+		
+	
+	end subroutine
+	
+	!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+	!
+	! Subroutine: reservoirCutoffs()
+	! 
+	! Determines the grain below which the reservoir approximation will be used
+	! and above which the pseudo-steady state approximation will be used by
+	! examining the energies of the transition states connected to each 
+	! unimolecular isomer.
+	!
+	! Parameters:
+	!   simData - The simulation parameters.
+	!   isomerList - The chemical data about each isomer.
+	!   rxnList - The chemical data about each transition state.
+	!
+	! Returns:
+	!	nRes - The reservoir cutoff grains for each unimolecular isomer.
+	function reservoirCutoffs(simData, isomerList, rxnList)
 	
 		type(Simulation), intent(in)				:: 	simData
-		type(Isomer), dimension(:), intent(in)		:: 	uniData
-		type(Reaction), dimension(:), intent(in)	:: 	rxnData
-		integer, dimension(1:size(uniData))			::	reservoirCutoffs
+		type(Isomer), dimension(:), intent(in)		:: 	isomerList
+		type(Reaction), dimension(:), intent(in)	:: 	rxnList
+		integer, dimension(1:size(isomerList))		::	reservoirCutoffs
 		
 		real(8) Eres
 		integer i, j, t, start
 		
 		! Determine reservoir cutoffs by looking at transition state energies
-		do i = 1, simData%nUni
-			start = ceiling((uniData(i)%E(1) - simData%Emin) / simData%dE) + 1
-			Eres = simData%Emax
-			do t = 1, simData%nRxn
-				if (rxnData(t)%isomer(1) == i .or. rxnData(t)%isomer(2) == i) then
-					if (rxnData(t)%E < Eres) Eres = rxnData(t)%E
+		do i = 1, simData%nIsom
+			if (isomerList(i)%numSpecies == 1) then
+			
+				start = ceiling((isomerList(i)%E0 - simData%Emin) / simData%dE) + 1
+				Eres = simData%Emax
+				
+				do t = 1, simData%nRxn
+					if (rxnList(t)%isomerList(1) == i .or. rxnList(t)%isomerList(2) == i) then
+						if (rxnList(t)%E0 < Eres) Eres = rxnList(t)%E0
+					end if
+				end do
+				
+				reservoirCutoffs(i) = floor((Eres - 10 * simData%alpha - simData%Emin) / simData%dE)
+				
+				! Make sure reservoirCutoffs(i) is valid (i.e. points to grain at or above ground state)
+				if (reservoirCutoffs(i) < start) then
+					reservoirCutoffs(i) = start
 				end if
-			end do
-			reservoirCutoffs(i) = floor((Eres - 10 * simData%alpha - simData%Emin) / simData%dE)
-			! Make sure reservoirCutoffs(i) is valid (i.e. points to grain at or above ground state)
-			if (reservoirCutoffs(i) < start) then
-				reservoirCutoffs(i) = start
-			end if
-		end do
-		
-		do i = 1, size(reservoirCutoffs)
-			j = ceiling((uniData(i)%E(1) - simData%Emin) / simData%dE) + 1
-			if (reservoirCutoffs(i) < j .or. reservoirCutoffs(i) >= simData%nGrains) then
-				write (*,*), 'ERROR: Invalid reservoir grain.'
-				stop
+				
+			else
+				reservoirCutoffs(i) = simData%nGrains
 			end if
 		end do
 
 	end function
 	
-	! --------------------------------------------------------------------------
 	
-	! Subroutine: ssrsRates()
-	! 
-	! Uses the steady state/reservoir state method of Green and Bhatti to
-	! estimate the phenomenological rate coefficients from a full ME matrix.
-	!
-	! Parameters:
-	!	nRes - The reservoir cutoff grains for each unimolecular isomer.
-	! 	Mi - Collisional transition matrix for each unimolecular well
-	! 	Hn - Collisional transition matrix for each bimolecular well
-	! 	Kij - Reactive transition from unimolecular well to unimolecular well
-	! 	Fim - Reactive transition from bimolecular well to unimolecular well
-	! 	Gnj - Reactive transition from unimolecular well to bimolecular well
-	! 	Jnm - Reactive transition from bimolecular well to bimolecular well
-	!	bi - Equilibrium distributions for unimolecular wells
-	! 	bn - Equilibrium distributions for bimolecular wells
-	!	K - The calculated phenomenologicate rate coefficient matrix in s^-1.
-	subroutine ssrsRates(simData, uniData, multiData, rxnData, nRes, Mi, Hn, Kij, Fim, Gnj, Jnm, bi, K)
-
-		! Provide parameter type checking of inputs and outputs
-		type(Simulation), intent(in)				:: 	simData
-		type(Isomer), dimension(:), intent(in)		:: 	uniData
-		type(Isomer), dimension(:), intent(in)      ::  multiData
-        type(Reaction), dimension(:), intent(in)	:: 	rxnData
-		integer, dimension(:), intent(in) 			:: 	nRes
-		real(8), dimension(:,:,:), intent(in)		:: 	Mi
-		real(8), dimension(:,:,:), intent(in)		:: 	Hn
-		real(8), dimension(:,:,:), intent(in)		:: 	Kij
-		real(8), dimension(:,:,:), intent(in)		:: 	Fim
-		real(8), dimension(:,:,:), intent(in)		:: 	Gnj
-		real(8), dimension(:,:,:), intent(in)		:: 	Jnm
-		real(8), dimension(:,:), intent(in)			:: 	bi
-		real(8), dimension(:,:), intent(out) 		:: 	K
-		
-		real(8), dimension(:,:), allocatable		:: 	ai
-		real(8), dimension(:,:), allocatable		:: 	an
-		
-		! Active state grain matrix
-		real(8), dimension(:,:), allocatable	:: 	L
-		! Number of active-state energy grains for each unimolecular isomer
-		integer, dimension(:), allocatable				:: 	nAct
-		! Indices i and j represent sums over unimolecular wells
-		integer											::	i, j
-		! Indices m and n represent sums over bimolecular sources/sinks
-		integer											::	m, n
-		! Indices r and s represent sums over energy grains
-		integer											::	r, s
-		! Dummy vectors
-		real(8), dimension(:), allocatable				:: 	tempV1, tempV2, tempV3	
-		! Variables for BLAS and LAPACK
-		real(8)											:: 	one, zero
-		integer, dimension(:), allocatable				::	iPiv
-		integer											::	info
-		real(8), dimension(:), allocatable				::	work
-		! Variables for shorthand
-		integer	nUni, nMulti, nGrains
-		integer found
-        
-		nUni = simData%nUni
-		nMulti = simData%nMulti
-		nGrains = simData%nGrains
-		
-		! Load nAct
-		allocate( nAct(1:nUni) )
-		do i = 1, nUni
-			nAct(i) = nGrains - nRes(i)
-		end do
-
-		! Load L
-		allocate( L(1:sum(nAct), 1:sum(nAct)) )
-		do i = 1, nUni
-			! Active-state collisional interconversion + reactive loss to all other wells
-			L( sum(nAct(1:i-1))+1:sum(nAct(1:i)), sum(nAct(1:i-1))+1:sum(nAct(1:i)) ) = &
-				Mi( nRes(i)+1:nGrains, nRes(i)+1:nGrains, i )
-			! Reactive gain from all other unimolecular wells
-			do j = 1, nUni
-				if (i /= j) then
-					s = min(nAct(i), nAct(j));
-            		do r = 0, s-1
-						L( sum(nAct(1:i)) - r, sum(nAct(1:j)) - r ) = &
-                    		Kij( nGrains - r, i, j )
-					end do
-				end if
-			end do
-		end do
-		
-		! Invert L
-		call symmetricInverse(L, nAct, simData, uniData, rxnData, bi)
-!		call fullInverse(L, nAct)
-
-		! Initialize phenomenological rate coefficient matrix
-		do i = 1, nUni + nMulti
-			do j = 1, nUni + nMulti
-				K(i,j) = 0
-			end do
-		end do
-		
-		! Initialize temporary vectors used in determining phenomenological rate coefficient matrix
-		allocate( tempV1(1:nGrains), tempV2(1:nGrains), tempV3(1:nGrains) )
-		
-		! Set variables used for BLAS
-		one = 1.0
-		zero = 0.0
-
-		! Unimolecular rows of phenomenological rate coefficient matrix
-		! -------------------------------------------------------------
-		do i = 1, nUni
-		
-			! Reservoir rearrangement terms (on diagonal)
-			! || M_irr * b_ir ||
- 			!call DGEMV('N', nRes(i), nRes(i), &
- 			!	one, Mi(1:nRes(i), 1:nRes(i), i), nRes(i), &
- 			!	bi(1:nRes(i), i), 1, &
- 			!	zero, tempV1(1:nRes(i)), 1)
- 			!K(i,i) = K(i,i) + sum( tempV1(1:nRes(i)) )	
-			
-			! Unimolecular reaction/collision terms
-			do j = 1, nUni
-            	if (i /= j) then
-					! M_jar * b_jr
-					call DGEMV('N', nAct(j), nRes(j), &
-						one, Mi(nRes(j)+1:nGrains, 1:nRes(j), j), nAct(j), &
-						bi(1:nRes(j), j), 1, &
-						zero, tempV3(1:nAct(j)), 1)
-					! L_ij * M_jar * b_jr
-					call DGEMV('N', nAct(i), nAct(j), &
-						one,  L( sum(nAct(1:i-1))+1:sum(nAct(1:i)), sum(nAct(1:j-1))+1:sum(nAct(1:j)) ), nAct(i), &
-						tempV3(1:nAct(j)), 1, &
-						zero, tempV2(1:nAct(i)), 1)
-					! M_ira * L_ij * M_jar * b_jr
-					call DGEMV('N', nRes(i), nAct(i), &
-						one,  Mi(1:nRes(i), nRes(i)+1:nGrains, i), nRes(i), &
-						tempV2(1:nAct(i)), 1, &
-						zero, tempV1(1:nRes(i)), 1)
-					! || M_ira * L_ij * M_jar * b_jr || 
-					K(i,j) = K(i,j) - sum( tempV1(1:nRes(i)) )
-				end if
-            end do
-		
-			! Bimolecular reaction terms
-			do m = 1, nMulti
-				do j = 1, nUni
-					if (Gnj(nGrains,m,j) /= 0) then
-						! F_jma * b_m
-						tempV3(1:nAct(j)) =  Fim(nRes(j)+1:nGrains, j, m)
-						! L_ij * F_jma * b_m
-						call DGEMV('N', nAct(i), nAct(j), &
-							one,  L( sum(nAct(1:i-1))+1:sum(nAct(1:i)), sum(nAct(1:j-1))+1:sum(nAct(1:j)) ), nAct(i), &
-							tempV3(1:nAct(j)), 1, &
-							zero, tempV2(1:nAct(i)), 1)
-						! M_ira * L_ij * F_jma * b_m
-						call DGEMV('N', nRes(i), nAct(i), &
-							one,  Mi(1:nRes(i), nRes(i)+1:nGrains, i), nRes(i), &
-							tempV2(1:nAct(i)), 1, &
-							zero, tempV1(1:nRes(i)), 1)
-						! || M_ira * L_ij * F_jma * b_m || 
-						K(i,nUni+m) = K(i,nUni+m) - sum( tempV1(1:nRes(i)) )
-					end if
-				end do
-			end do
-
-		end do
-		
-        ! Bimolecular rows of phenomenological rate coefficient matrix
-		! ------------------------------------------------------------
-		do n = 1, nMulti
-		
-			! Loss term (on diagonal)
-			! || H_n * b_n ||
- 			!call DGEMV('N', nGrains, nGrains, &
- 			!	one, Hn(:, :, n), nGrains, &
- 			!	bn(:, n), 1, &
- 			!	zero, tempV1(1:nGrains), 1)
- 			!K(nUni+n,nUni+n) = K(nUni+n,nUni+n) + sum( tempV1(1:nGrains) )	
-			
-			! Bimolecular-bimolecular interconversion terms - commented because it was assumed that there weren't any of these
-			! || J_nm * b_m ||
-! 			do m = 1, nMulti
-! 				if (m /= n) then
-! 					call DGEMV('N', nGrains, nGrains, &
-! 						one, Jnm(:, n, m), nGrains, &
-! 						bn(:, m), 1, &
-! 						zero, tempV1(1:nGrains), 1)
-! 					K(nUni+n, nUni+m) = K(nUni+n, nUni+m) + sum( tempV1(1:nGrains) )
-! 				end if
-! 			end do
-			
-            ! Unimolecular reaction terms
-			do j = 1, nUni
-				do i = 1, nUni
-					if (Gnj(nGrains,n,i) /= 0) then
-						! M_jar * b_jr
-						call DGEMV('N', nAct(j), nRes(j), &
-							one, Mi(nRes(j)+1:nGrains, 1:nRes(j), j), nAct(j), &
-							bi(1:nRes(j), j), 1, &
-							zero, tempV3(1:nAct(j)), 1)
-						! L_ij * M_jar * b_jr
-						call DGEMV('N', nAct(i), nAct(j), &
-							one,  L( sum(nAct(1:i-1))+1:sum(nAct(1:i)), sum(nAct(1:j-1))+1:sum(nAct(1:j)) ), nAct(i), &
-							tempV3(1:nAct(j)), 1, &
-							zero, tempV2(1:nAct(i)), 1)
-						! G_nia * L_ij * M_jar * b_jr
-						tempV1(1:nAct(i)) = Gnj( nRes(i)+1:nGrains, n, i ) * tempV2(1:nAct(i))
-						! || G_nia * L_ij * M_jar * b_jr || 
-						K(nUni+n,j) = K(nUni+n,j) - sum( tempV1(1:nAct(i)) )
-					end if
-				end do
-			end do
-			
-			! Bimolecular reaction terms
-			do m = 1, nMulti
-				do i = 1, nUni
-					do j = 1, nUni
-						if (Fim(nGrains,j,m) /= 0 .and. Gnj(nGrains,n,i) /= 0 .and. n /= m) then
-							! F_jma * b_m
-							tempV3(1:nAct(j)) =  Fim(nRes(j)+1:nGrains, j, m)
-							! L_ij * F_jma * b_m
-							call DGEMV('N', nAct(i), nAct(j), &
-								one,  L( sum(nAct(1:i-1))+1:sum(nAct(1:i)), sum(nAct(1:j-1))+1:sum(nAct(1:j)) ), nAct(i), &
-								tempV3(1:nAct(j)), 1, &
-								zero, tempV2(1:nAct(i)), 1)
-							! G_nia * L_ij * F_jma * b_m
-							tempV1(1:nAct(i)) = Gnj( nRes(i)+1:nGrains, n, i ) * tempV2(1:nAct(i))
-							! || G_nia * L_ij * F_jma * b_m || 
-							K(nUni+n,nUni+m) = K(nUni+n,nUni+m) - sum( tempV1(1:nAct(i)) )
-						end if
-					end do
-				end do
-			end do
-		
-		end do
-        
-        ! Clean up
-		deallocate( tempV1, tempV2, tempV3 )	
-		deallocate( nAct, L )
-
-	end subroutine
-
-	! Subroutine: fullInverse()
-	! 
-	! Inverts the active-state matrix.
-	!
-	! Parameters:
-	!
-	subroutine fullInverse(L, nAct)
-	
-		real(8), dimension(:,:), intent(inout)		:: 	L
-		integer, dimension(:), intent(in)			:: 	nAct
-		! Variables for BLAS and LAPACK
-		integer, dimension(:), allocatable			::	iPiv
-		integer										::	info
-		real(8), dimension(:), allocatable			::	work
-		
-		! Invert L (requires LAPACK)
-		allocate( iPiv(1:sum(nAct)), work(1:sum(nAct)) )
-		call DGETRF( sum(nAct), sum(nAct), L, sum(nAct), iPiv, info )
-		if (info > 0) then
-			write (*,*), "Active-state grain matrix is singular!"
-			stop
-		end if
-		call DGETRI( sum(nAct), L, sum(nAct), iPiv, work, sum(nAct), info )
-		if (info > 0) then
-			write (*,*), "Active-state grain matrix is singular!"
-			stop
-		end if
-		deallocate( iPiv, work )
-		
-	end subroutine
-
-	! --------------------------------------------------------------------------
-	
-	! Subroutine: symmetricInverse()
-	! 
-	! Inverts the active-state matrix efficiently via a prior symmetrization step.
-	!
-	! Parameters:
-	!
-	subroutine symmetricInverse(L, nAct, simData, uniData, rxnData, bi)
-	
-		real(8), dimension(:,:), intent(inout)		:: 	L
-		integer, dimension(:), intent(in)			:: 	nAct
-		type(Simulation), intent(in)				:: 	simData
-		type(Isomer), dimension(:), intent(in)		:: 	uniData
-		type(Reaction), dimension(:), intent(in)	:: 	rxnData
-		real(8), dimension(:,:), intent(in)			:: 	bi
-		
-		integer i, j, nUni, nGrains, offI, offJ, r, s
-		! Variables for BLAS and LAPACK
-		integer, dimension(:), allocatable			::	iPiv
-		integer										::	info
-		real(8), dimension(:), allocatable			::	work
-		integer										::	block
-		real(8)	Keq
-		real(8) Rgas
-		real(8) temp
-		
-		Rgas = 8.314472 / 1000.
-		
-		nUni = simData%nUni
-		nGrains = simData%nGrains
-		
-		! Symmetrize upper triangular half of matrix L
-		do i = 1, nUni
-			offI = sum(nAct(1:i))
-			do j = 1, nUni
-				offJ = sum(nAct(1:j))
-				if (i == j) then
-					! Blocks on diagonal are full blocks, so symmetrize all entries above diagonal
-					do r = 0, nAct(i)-1
-						do s = 0, r-1
-							if (L(offI-r,offJ-s) /= 0) then
-								L(offI-r,offJ-s) = L(offI-r,offJ-s) * sqrt( &
-									uniData(j)%densStates(nGrains-s) / uniData(i)%densStates(nGrains-r) * &
-									uniData(i)%Q / uniData(j)%Q * &
-									exp(-(simData%E(nGrains-s) - simData%E(nGrains-r)) / (Rgas * simData%T)))
-							end if
-						end do
-					end do
-				elseif (i < j) then
-					! Blocks off diagonal are themselves diagonal, so take advantage of this to speed symmetrization
-					do r = 0, min(nAct(i),nAct(j))-1
-						if (L(offI-r,offJ-r) /= 0) then
-							L(offI-r,offJ-r) = L(offI-r,offJ-r) * sqrt( &
-								uniData(i)%densStates(nGrains-r) / uniData(j)%densStates(nGrains-r) * &
-								uniData(j)%Q / uniData(i)%Q)
-						end if
-					end do
-				end if
-			end do
-		end do
-		
-		! Invert L (requires LAPACK)
-! 		block = ILAENV(1, "DSYTRF", 'U', sum(nAct), sum(nAct), sum(nAct), sum(nAct))
-! 		write (*,*), block, sum(nAct), block*sum(nAct)
-		block = 8
-		allocate( iPiv(1:sum(nAct)) )
-		allocate( work(1:block*sum(nAct)) )
-		call DSYTRF( 'U', sum(nAct), L, sum(nAct), iPiv, work, block*sum(nAct), info )
-		if (info > 0) then
-			write (*,*), "Active-state grain matrix is singular!"
-			return
-		end if
-		call DSYTRI( 'U', sum(nAct), L, sum(nAct), iPiv, work, info )
-		if (info > 0) then
-			write (*,*), "Active-state grain matrix is singular!"
-			return
-		end if
-		deallocate( iPiv, work )
-		
-		! Fill in lower triangle of matrix L
-		do i = 1, sum(nAct)
-			L(i,1:i-1) = L(1:i-1,i)
-		end do
-		
-		! Unsymmetrize
-		do i = 1, nUni
-			offI = sum(nAct(1:i))
-			do j = 1, nUni
-				offJ = sum(nAct(1:j))
-				do r = 0, nAct(i)-1
-					do s = 0, nAct(j)-1
-						if (uniData(j)%densStates(nGrains-s) /= 0 .and. &
-							abs(simData%E(nGrains-r) - simData%E(nGrains-s)) / (Rgas * simData%T) < 700) then
-							L(offI-r,offJ-s) = L(offI-r,offJ-s) * sqrt( &
-								uniData(i)%densStates(nGrains-r) / uniData(j)%densStates(nGrains-s) * &
-								uniData(j)%Q / uniData(i)%Q * &
-								exp(-(simData%E(nGrains-r) - simData%E(nGrains-s)) / (Rgas * simData%T)))
-						end if
-					end do
-				end do
-			end do
-		end do		
-		
-	end subroutine
-	
-	! --------------------------------------------------------------------------
 
 end module

@@ -11,7 +11,7 @@
 
 !	Program: fame
 !
-!	Version: 0.2.0							Date: 14 Jan 2009
+!	Version: 0.3.1							Date: 13 Mar 2009
 !
 ! 	Calculates phenomenological rate coefficients k(T, P) for a given potential
 ! 	energy surface using provided thermochemical and density-of-state data for
@@ -30,11 +30,11 @@
 program fame
 
 	use SimulationModule
+	use SpeciesModule
 	use IsomerModule
 	use ReactionModule
 	use InputModule
 	use DensityOfStatesModule
-	use MasterEqnModule
 	use StrongCollisionModule
 	use ReservoirStateModule
 	use RateModelModule
@@ -46,38 +46,24 @@ program fame
 
 	! The simulation parameters
 	type(Simulation) 								::	simData
-	! The unimolecular isomer data
-	type(Isomer), dimension(:), allocatable			:: 	uniData	
+	! The species data
+	type(Species), dimension(:), allocatable		:: 	speciesList	
 	! The bimolecular source/sink data
-	type(Isomer), dimension(:), allocatable			:: 	multiData
+	type(Isomer), dimension(:), allocatable			:: 	isomerList
 	! The reaction data
-	type(Reaction), dimension(:), allocatable		:: 	rxnData
-	! Mi(r,s,i) = Collisional transition from energy s to energy r for unimolecular well i
-	real(8), dimension(:,:,:), allocatable			:: 	Mi
-	! Hn(r,s,n) = Collisional transition from energy s to energy r for bimolecular well n
-	real(8), dimension(:,:,:), allocatable			:: 	Hn
-	! Kij(r,i,j) = Reactive transition from unimolecular well j to unimolecular well i at energy grain r
-	real(8), dimension(:,:,:), allocatable			:: 	Kij
-	! Fim(r,i,m) = Reactive transition from bimolecular well n to unimolecular well i at energy grain r
-	real(8), dimension(:,:,:), allocatable			:: 	Fim
-	! Gnj(r,n,j) = Reactive transition from unimolecular well j to bimolecular well n at energy grain r
-	real(8), dimension(:,:,:), allocatable			:: 	Gnj
-	! Jnm(r,n,m) = Reactive transition from bimolecular well m to bimolecular well n at energy grain r
-	real(8), dimension(:,:,:), allocatable			:: 	Jnm
-	! bi(r,i) = Equilibrium distribution at energy r for unimolecular well i
-	real(8), dimension(:,:), allocatable			:: 	bi
+	type(Reaction), dimension(:), allocatable		:: 	rxnList
 	! K(i,j) = Phenomenological rate coefficients for transitions from species i to species j
 	real(8), dimension(:,:,:,:), allocatable 		:: 	K
-	! The reservoir cutoff grains for each unimolecular isomer
-	integer, dimension(:), allocatable 				:: 	nRes
 	! chebCoeff(i,j,t,p) = Coefficient matrix for product of Chebyshev polynomials phi_t(Tred) * phi_p(Pred) for reaction j --> i 
 	real(8), dimension(:,:,:,:), allocatable 		:: 	chebCoeff
+	! (T, P) = Current temperature and pressure
+	real(8)											::	T
+	real(8)											::	P
+	! Indices
+	integer u, v, w, i, j, n, m
 	
-	real(8) Eref
-    real(8) conc
-	
-    ! Indices
-	integer t, p, i, j, n, m
+	! Other variables
+	real(8) conc
 	integer found
 	integer badRate
 	
@@ -85,109 +71,96 @@ program fame
 
 	! Load data from files on disk
 	if (verbose >= 1) write (*,*), 'Reading input...'
-	call loadNetwork('fame_input.txt', simData, uniData, multiData, rxnData, verbose)
+	call loadNetwork('fame_input.txt', simData, speciesList, isomerList, rxnList, verbose)
     
-	! Calculate density of states for each well
+	! Calculate density of states for each (unimolecular) well
 	if (verbose >= 1) write (*,*), 'Calculating density of states...'
-	do i = 1, simData%nUni
-		if (verbose >= 2) write (*,*), '\tUnimolecular isomer', i
-        call densityOfStates(simData, uniData(i))
+	do i = 1, simData%nIsom
+		if (isomerList(i)%numSpecies == 1) then
+			call densityOfStates(simData, isomerList(i), speciesList)
+		end if
 	end do
 	
-	! Allocate memory for master equation matrices
-	allocate( 	Mi( 1:simData%nGrains, 1:simData%nGrains, 1:simData%nUni)	)
-	allocate( 	Hn( 1:simData%nGrains, 1:simData%nGrains, 1:simData%nMulti)	)
-	allocate( 	Kij(1:simData%nGrains, 1:simData%nUni,    1:simData%nUni) 	)
-	allocate( 	Fim(1:simData%nGrains, 1:simData%nUni,    1:simData%nMulti) )
-	allocate( 	Gnj(1:simData%nGrains, 1:simData%nMulti,  1:simData%nUni) 	)
-	allocate( 	Jnm(1:simData%nGrains, 1:simData%nMulti,  1:simData%nMulti)	)
-	! Allocate memory for Boltzmann vectors
-	allocate( 	bi( 1:simData%nGrains, 1:simData%nUni)		)
-	! Allocate memory for reservoir cutoffs	
-	allocate( 	nRes(1:simData%nUni) 	)
-	! Allocate memory for phenomenological rate coefficient matrix	
-	allocate( 	K( size(simData%Tlist), size(simData%Plist), &
-		1:(simData%nUni+simData%nMulti), 1:(simData%nUni+simData%nMulti) )	)
+	allocate( 	K( 1:size(simData%Tlist), 1:size(simData%Plist), &
+		1:(simData%nIsom), 1:(simData%nIsom) )	)
 
 	if (verbose >= 1) write (*,*), 'Calculating k(T, P)...'
 	
-	do t = 1, size(simData%Tlist)
+	do u = 1, size(simData%Tlist)
 		
-		simData%T = simData%Tlist(t)
+		T = simData%Tlist(u)
 		
 		! Calculate the equilibrium (Boltzmann) distributions
-		if (verbose >= 2) write (*,*), '\tDetermining equilibrium distributions at T =', simData%T, 'K...'
-		do i = 1, simData%nUni
-			call eqDist(uniData(i), simData%E, simData%T, bi(:,i), uniData(i)%Q)
+		if (verbose >= 2) write (*,*), '\tDetermining equilibrium distributions at T =', T, 'K...'
+		do i = 1, simData%nIsom
+			if (isomerList(i)%numSpecies == 1) then
+				call eqDist(isomerList(i), simData%E, T)
+			end if
 		end do
+		
+		do v = 1, size(simData%Plist)
+
+			P = simData%Plist(v)
+
+			if (verbose >= 2) write (*,*), '\tCalculating k(T, P) at T =', T, 'K, P =', P, 'bar...'
+
+			! Calculate collision frequencies
+			do i = 1, simData%nIsom
+				if (isomerList(i)%numSpecies == 1) then
+					isomerList(i)%omega = collisionFrequency(T, P, simData, &
+						speciesList(isomerList(i)%speciesList(1)))
+				end if
+			end do
 			
-		do p = 1, size(simData%Plist)
-
-			! Part II: Construct full ME matrix
-			! ---------------------------------
-	
-			simData%P = simData%Plist(p)
-
-			if (verbose >= 2) write (*,*), '\tCalculating k(T, P) at T =', simData%T, 'K, P =', simData%P, 'bar...'
-
-			Kij = 0 * Kij
-			Fim = 0 * Fim
-			Gnj = 0 * Gnj
-			Mi = 0 * Mi
-			Jnm = 0 * Jnm
-			Hn = 0 * Hn
-			
-			! Reactive terms in master equation
-			call ME_reaction(simData, uniData, multiData, rxnData, Mi, Hn, Kij, Fim, Gnj, Jnm, bi)
+			! Calculate microcanonical rate coefficients at the current conditions
+			do w = 1, simData%nRxn
+				call microRates(T, P, rxnList(w), simData%E, isomerList)
+			end do
 			
 			if (simData%mode == 1) then
 				! Apply steady state/reservoir state approximations
 				if (verbose >= 3) write (*,*), '\t\tApplying steady-state/modified strong collision approximation...'
-				call ssmscRates(simData, uniData, multiData, rxnData, Kij, Fim, Gnj, Jnm, bi, K(t,p,:,:))
+				call ssmscRates(T, P, simData, speciesList, isomerList, rxnList, K(u,v,:,:))
 			elseif (simData%mode == 2) then
-				! Collisional terms in master equation
-				call ME_collision(simData, uniData, Mi, bi)
-				! Determine reservoir cutoff grains for each unimolecular isomer
-				if (verbose >= 3) write (*,*), '\t\tDetermining reservoir cutoff grains...'
-				nRes = reservoirCutoffs(simData, uniData, rxnData)
-				! Apply steady state/reservoir state approximations
 				if (verbose >= 3) write (*,*), '\t\tApplying steady-state/reservoir-state approximation...'
-				call ssrsRates(simData, uniData, multiData, rxnData, nRes, Mi, Hn, Kij, Fim, Gnj, Jnm, bi, K(t,p,:,:))
+				call ssrsRates(T, P, simData, speciesList, isomerList, rxnList, K(u,v,:,:))
 			else
 				write (*,*), 'ERROR: An invalid solution mode was provided!'
 				stop
 			end if
 			
 			! Convert multimolecular k(T, P) to appropriate units (i.e. cm^3 mol^-1 s^-1)
-			conc = simData%P * 100000. / 8.314472 / simData%T / 1e6
-			do n = simData%nUni+1, simData%nUni+simData%nMulti
-				do i = 1, simData%nUni+simData%nMulti
-					K(t,p,i,n) = K(t,p,i,n) / conc
+			conc = P * 100000. / 8.314472 / T / 1e6
+			do i = 1, simData%nIsom
+				do j = 1, simData%nIsom
+					if (isomerList(j)%numSpecies > 1) K(u,v,i,j) = K(u,v,i,j) / conc
 				end do
 			end do
 			
 		end do
 	end do
 
- 	!do i = 1, simData%nUni + simData%nMulti
- 	!	write (*,*) K(4,3,i,:)
- 	!end do
+   	!do i = 1, simData%nIsom
+	!	write (*,*) K(4,3,i,:)
+	!end do
+
+	!do i = 1, size(simData%Tlist)
+	!	write (*,*) K(i,:,2,1)
+	!end do
 
 	! Fit k(T, P) to approximate formula
 	! Also test for validity of fitted rate coefficients
 	if (verbose >= 1) write (*,*), 'Fitting k(T,P) to model...'
 	allocate( chebCoeff(simData%nChebT, simData%nChebP, &
-		simData%nUni+simData%nMulti, simData%nUni+simData%nMulti) )
+		simData%nIsom, simData%nIsom) )
 	badRate = 0
-	do i = 1, simData%nUni + simData%nMulti
-		do j = 1, simData%nUni + simData%nMulti
+	do i = 1, simData%nIsom
+		do j = 1, simData%nIsom
 			if (i /= j) then
 				found = 0
-				do t = 1, size(simData%Tlist)
-					do p = 1, size(simData%Plist)
-						!if (K(t,p,i,j) <= 0. .or. isnan(K(t,p,i,j)) .or. &
-						!	abs(K(t,p,i,j)) <= huge(K(t,p,i,j))) then
-						if (K(t,p,i,j) <= 0) then
+				do u = 1, size(simData%Tlist)
+					do v = 1, size(simData%Plist)
+						if (K(u,v,i,j) <= 0) then
 							found = 1
 						end if
 					end do
@@ -211,12 +184,26 @@ program fame
 	
 	! Write output file
 	if (verbose >= 1) write (*,*), 'Saving results...'
-	call saveResults('fame_output.txt', simData, chebCoeff)
+	call saveResults('fame_output.txt', simData, K, chebCoeff)
 	
 	! Free memory
-	deallocate( Fim, Gnj, Kij, Jnm, Mi, Hn, bi, Nres, K, chebCoeff )
-	!deallocate( bn )
-	
+! 	do i = 1, simData%nSpecies
+! 		deallocate( speciesList(i)%vibFreq, speciesList(i)%rotFreq, &
+! 			speciesList(i)%hindFreq, speciesList(i)%hindBarrier )
+! 	end do
+	do i = 1, simData%nIsom
+		deallocate( isomerList(i)%speciesList )
+		if (isomerList(i)%numSpecies == 1) then
+			deallocate( isomerList(i)%densStates, isomerList(i)%eqDist )
+			if (allocated(isomerList(i)%Mcoll)) then
+				deallocate(isomerList(i)%Mcoll)
+			end if
+		end if
+	end do
+	do i = 1, simData%nRxn
+		deallocate( rxnList(i)%kf, rxnList(i)%kb )
+	end do
+		
 	if (verbose >= 1) write (*,*), 'DONE!'
 	
 

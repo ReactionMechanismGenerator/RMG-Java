@@ -15,7 +15,7 @@ FORTRAN = g95
 BIN = ../fame.exe
 
 # List of object files in project
-OBJ = Simulation.o Isomer.o Reaction.o Input.o DensityOfStates.o MasterEqn.o StrongCollision.o ReservoirState.o RateModel.o fame.o 
+OBJ = Simulation.o Species.o Isomer.o Reaction.o Input.o DensityOfStates.o StrongCollision.o ReservoirState.o RateModel.o fame.o 
 
 # Compiler flags
 CFLAGS = -ftrace=full
