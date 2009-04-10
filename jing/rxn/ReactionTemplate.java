@@ -1316,7 +1316,7 @@ public class ReactionTemplate {
   public void readForbiddenStructures(String p_fileName) throws  IOException {
       //#[ operation readFGDictionary(String) 
       try {
-				if (!(new File("filename")).exists()) {
+				if (!(new File(p_fileName)).exists()) {
 					// System.out.println("forbiddenStructures file does not exist");
 					return;
 				}
