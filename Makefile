@@ -29,7 +29,9 @@ help:
 	@echo "  linkcheck to check all external links for integrity"
 	@echo "  upload    to upload to Sourceforge"
 	@echo "  update    to update from CVS repository"
-	@echo "  all       update, clean, html, latex, upload"
+	@echo "  sitemap   update the google sitemap"
+	@echo "  all       update, clean, html, latex, sitemap, upload"
+
 
 all: update html latex sitemap upload
 
