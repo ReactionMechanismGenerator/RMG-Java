@@ -91,7 +91,7 @@ To install RMG on a Linux computer:
 3. Obtain the source code. Download the file :file:`rmg-3.0-linux-i386.tar.gz` or :file:`rmg-3.0-source.tar.gz`, ungzip and untar it, and move its contents to the :file:`$RMG` directory. ::
 
 	$ tar -xvzf rmg-3.0-source.tar.gz
-	$ mv rmg/* $RMG
+	$ mv rmg3/* $RMG
 
 Step 4 is only required if you are working with the source package. Binary packages are available for several platforms and will already contain the compiled executables.
 
