@@ -25,7 +25,7 @@ condition file :file:`hexane_pyro.txt`.
 #. Run the following Java command to launch the program 
    (all one line)::
 
-    $ java -Xmx500m -classpath $RMG/software/RMG RMG hexane_pyro.txt > output &
+    $ java -Xmx500m -classpath $RMG/software/rmg/RMG.jar RMG hexane_pyro.txt > output &
   
 When RMG is started, it creates ten subdirectories in the directory containing the condition file: :file:`therfit`, :file:`chemkin`, :file:`fame`, :file:`chemdis`, :file:`fit3p`, :file:`frankie`, 
 :file:`GATPFit`, :file:`ODESolver`, :file:`InChI` and :file:`Restart`.
