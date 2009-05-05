@@ -49,14 +49,14 @@ import jing.param.Temperature;
 //## class ChemGraph
 public class ChemGraph implements Matchable {
 
-    protected static int MAX_OXYGEN_NUM = 6;		//## attribute MAX_OXYGEN_NUM
-	protected static  int MAX_CARBON_NUM = 25;       //SS
+    protected static int MAX_OXYGEN_NUM = 20;		//## attribute MAX_OXYGEN_NUM
+	protected static  int MAX_CARBON_NUM = 100;       //SS
 	protected static int MAX_CYCLE_NUM = 10;		//SS (no fused rings)
 
 	/**
     Maximal radical number allowed in a ChemGraph.
     */
-    protected static int MAX_RADICAL_NUM = 4;		//## attribute MAX_RADICAL_NUM
+    protected static int MAX_RADICAL_NUM = 10;		//## attribute MAX_RADICAL_NUM
 
     /**
     Chemical Formula of a ChemGraph.
@@ -89,7 +89,13 @@ public class ChemGraph implements Matchable {
     protected Graph graph;
     protected Species species;
     protected ThermoData thermoData;
+    protected AbramData abramData;
+    protected UnifacData unifacData;
     protected GeneralGAPP thermoGAPP;
+
+    protected GeneralAbramGAPP abramGAPP;
+    protected GeneralUnifacGAPP unifacGAPP;
+
     protected boolean fromprimarythermolibrary = false;
     protected boolean isAromatic = false;
     protected String InChI;
@@ -1116,6 +1122,7 @@ return sn;
         try {
         	if (thermoGAPP == null) setDefaultThermoGAPP();
         	thermoData = thermoGAPP.generateThermoData(this);
+            //thermoData = thermoGAPP.generateAbramData(this);
         	return thermoData;
         }
         catch (Exception e) {
@@ -1123,7 +1130,40 @@ return sn;
         }
         //#]
     }
-    
+
+    public AbramData generateAbramData() throws FailGenerateThermoDataException {
+        //#[ operation generateThermoData()
+        // use GAPP to generate Thermo data
+        try {
+        	if (abramGAPP == null) setDefaultAbramGAPP();
+        	abramData = abramGAPP.generateAbramData(this);
+            //thermoData = thermoGAPP.generateAbramData(this);
+        	return abramData;
+        }
+        catch (Exception e) {
+        	throw new FailGenerateThermoDataException();
+        }
+        //#]
+    }
+
+        public UnifacData generateUnifacData() throws FailGenerateThermoDataException {
+        //#[ operation generateThermoData()
+        // use GAPP to generate Thermo data
+        try {
+        	if (unifacGAPP == null) setDefaultUnifacGAPP();
+        	unifacData = unifacGAPP.generateUnifacData(this);
+            //thermoData = thermoGAPP.generateAbramData(this);
+        	return unifacData;
+        }
+        catch (Exception e) {
+        	throw new FailGenerateThermoDataException();
+        }
+        //#]
+    }
+
+
+
+
     /**
     Requires:
     Effects: return the Arc between two positions in this ChemGraph
@@ -1481,7 +1521,22 @@ return sn;
         if (thermoData == null) generateThermoData();
         return thermoData;
         //#]
+    }   
+    
+    public AbramData getAbramData() {
+        //#[ operation getThermoData()
+        if (abramData == null) generateAbramData();
+        return abramData;
+        //#]
     }
+
+        public UnifacData getUnifacData() {
+        //#[ operation getThermoData()
+        if (unifacData == null) generateUnifacData();
+        return unifacData;
+        //#]
+    }
+    
 
     /**
     Requires:
@@ -2056,6 +2111,22 @@ return sn;
         return;
         //#]
     }
+    
+    public void setDefaultAbramGAPP() {
+        //#[ operation setDefaultThermoGAPP()
+        abramGAPP = GATP_Solvation.getINSTANCE();
+        return;
+        //#]
+    }
+
+        public void setDefaultUnifacGAPP() {
+        //#[ operation setDefaultThermoGAPP()
+        unifacGAPP = GATP_Unifac.getINSTANCE();
+        return;
+        //#]
+    }
+
+
 
     /**
     Requires:
@@ -2186,10 +2257,17 @@ return sn;
         return thermoGAPP;
     }
 
+    public GeneralAbramGAPP getAbramGAPP() {
+        return abramGAPP;
+    }
+
     public void setThermoGAPP(GeneralGAPP p_GeneralGAPP) {
         thermoGAPP = p_GeneralGAPP;
     }
 
+    public void setAbramGAPP(GeneralAbramGAPP p_GeneralAbramGAPP) {
+        abramGAPP = p_GeneralAbramGAPP;
+    }
 }
 /*********************************************************************
 	File Path	: RMG\RMG\jing\chem\ChemGraph.java
