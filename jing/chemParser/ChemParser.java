@@ -660,6 +660,63 @@ public class ChemParser {
         //#]
     }
 
+////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    // Parser for Abraham Groups
+    // Amrit Jalan, April 19, 2009
+
+        //## operation parseAbrahamGAValue(String)
+    public static AbrahamGAValue parseAbrahamGAValue(String p_string) {
+        //#[ operation parseThermoGAValue(String)
+        String s = p_string.trim();
+        StringTokenizer token = new StringTokenizer(s);
+
+        int data_num = token.countTokens();
+        if (data_num != 5) throw new InvalidThermoFormatException();
+
+        double S,B,E,L,A;
+        S = Double.parseDouble(token.nextToken());
+        B = Double.parseDouble(token.nextToken());
+        E = Double.parseDouble(token.nextToken());
+        L = Double.parseDouble(token.nextToken());
+        A = Double.parseDouble(token.nextToken());
+
+        return new AbrahamGAValue(S,B,E,L,A);
+
+
+
+
+        //#]
+    }
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    // Parser for Unifac Groups
+    // Amrit Jalan, April 19, 2009
+
+        //## operation parseAbrahamGAValue(String)
+    public static UnifacGAValue parseUnifacGAValue(String p_string) {
+        //#[ operation parseThermoGAValue(String)
+        String s = p_string.trim();
+        StringTokenizer token = new StringTokenizer(s);
+
+        int data_num = token.countTokens();
+        if (data_num != 2) throw new InvalidThermoFormatException();
+
+        double R,Q;
+        R = Double.parseDouble(token.nextToken());
+        Q = Double.parseDouble(token.nextToken());
+
+        return new UnifacGAValue(R,Q);
+
+
+
+
+        //#]
+    }
+
+
+
+
+
 
     //## operation parseThirdBodyList(String)
     public static HashMap parseThirdBodyList(String p_string) {
