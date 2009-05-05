@@ -30,7 +30,7 @@ import java.io.*;
 import jing.chem.*;
 import jing.chemParser.*;
 import jing.param.*;
-import jing.chemUtil.*;
+    import jing.chemUtil.*;
 //import bondGroups.*;
 import jing.rxn.*;
 import jing.rxnSys.*;
@@ -66,6 +66,8 @@ public static void main(String[] args) {
 		 System.out.println("The number of resonance isomers is " + spe.getResonanceIsomersHashSet().size());
 		 System.out.println("The NASA data is \n"+ spe.getNasaThermoData());
 		 System.out.println("ThermoData is \n" +  spe.getChemGraph().getThermoData().toString());
+         System.out.println("AbramData is \n" +  spe.getChemGraph().getAbramData().toString());
+         System.out.println("UnifacData is \n" +  spe.getChemGraph().getUnifacData().toString());
         //int K = chemgraph.getKekule();
         int symm = chemgraph.getSymmetryNumber();
         //System.out.println("number of Kekule structures = "+K);
