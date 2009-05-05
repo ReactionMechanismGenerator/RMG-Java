@@ -95,7 +95,16 @@ public class ThermoGAGroupLibrary {
     protected HashMap oneFiveLibrary;		
     protected HierarchyTree oneFiveTree;	
 
+    protected HashMap abramDictionary;
+    protected HashMap abramLibrary;
+    protected HierarchyTree abramTree;
 
+    protected HashMap unifacDictionary;
+    protected HashMap unifacLibrary;
+    protected HierarchyTree unifacTree;
+
+    //protected HashMap solventDictionary;
+    //protected HashMap solventLibrary;
     // Constructors
 
     //## operation ThermoGAGroupLibrary()
@@ -123,6 +132,17 @@ public class ThermoGAGroupLibrary {
         oneFiveLibrary = new HashMap();
         oneFiveDictionary = new HashMap();
         oneFiveTree = new HierarchyTree();
+
+        abramLibrary= new HashMap();
+        abramDictionary=new HashMap();
+        abramTree=new HierarchyTree();
+
+        unifacLibrary= new HashMap();
+        unifacDictionary=new HashMap();
+        unifacTree=new HierarchyTree();
+
+      //  solventDictionary=new HashMap();
+       // solventLibrary=new HashMap();
 
         String directory = System.getProperty("jing.chem.ThermoGAGroupLibrary.pathName");
         if (directory == null) {
@@ -158,7 +178,18 @@ public class ThermoGAGroupLibrary {
         String one5Tree = directory + "15_Tree.txt";
         String one5Library = directory + "15_Library.txt";
 	
-        read(gDictionary,gTree,gLibrary,rDictionary,rTree,rLibrary,ringDictionary,ringTree,ringLibrary,otherLibrary,otherTree,gauDictionary,gauTree,gauLibrary,one5Dictionary,one5Tree,one5Library);
+        String AbDictionary=directory+"Abraham_Dictionary.txt";
+        String AbTree=directory+"Abraham_Tree.txt";
+        String AbLibrary=directory+"Abraham_Library.txt";
+
+        String UnDictionary=directory+"Unifac_Dictionary.txt";
+        String UnTree=directory+"Unifac_Tree.txt";
+        String UnLibrary=directory+"Unifac_Library.txt";
+
+        //String solventdict=directory+"Solvent_Dictionary.txt";
+        //String solventlib=directory+"Solvent_Library.txt";
+
+        read(gDictionary,gTree,gLibrary,rDictionary,rTree,rLibrary,ringDictionary,ringTree,ringLibrary,otherLibrary,otherTree,gauDictionary,gauTree,gauLibrary,one5Dictionary,one5Tree,one5Library,AbDictionary,AbTree,AbLibrary,UnDictionary,UnTree,UnLibrary);
 
 
 
@@ -213,7 +244,10 @@ public class ThermoGAGroupLibrary {
         	HierarchyTreeNode node = (HierarchyTreeNode)stack.pop();
         	Matchable fg = (Matchable)node.getElement();
         	ThermoGAValue ga = (ThermoGAValue)groupLibrary.get(fg);
-        	if (ga != null) return ga;
+        	if (ga != null) //{
+                //System.out.println("Group found: " + fg.getName());
+                return ga;
+            //}
         }
         
         return null;
@@ -372,46 +406,103 @@ public class ThermoGAGroupLibrary {
         return null;
     }
 
+    public AbrahamGAValue findAbrahamGroup(ChemGraph p_chemGraph) throws MultipleGroupFoundException, InvalidCenterTypeException {
+        //#[ operation findGAGroup(ChemGraph)
+        if (p_chemGraph == null) return null;
+
+        Stack stack = abramTree.findMatchedPath(p_chemGraph);
+        p_chemGraph.getGraph().resetMatchedGC();
+        if (stack == null) return null;
+
+        while (!stack.empty()) {
+        	HierarchyTreeNode node = (HierarchyTreeNode)stack.pop();
+        	Matchable fg = (Matchable)node.getElement();
+        	AbrahamGAValue ga = (AbrahamGAValue)abramLibrary.get(fg);
+        	if (ga != null) {
+                System.out.println("Platts Group found: " + fg.getName());
+                return ga;
+            }
+             
+        }
+
+        return null;
+    }
+
+        public UnifacGAValue findUnifacGroup(ChemGraph p_chemGraph) throws MultipleGroupFoundException, InvalidCenterTypeException {
+        //#[ operation findGAGroup(ChemGraph)
+        if (p_chemGraph == null) return null;
+
+        Stack stack = unifacTree.findMatchedPath(p_chemGraph);
+        p_chemGraph.getGraph().resetMatchedGC();
+        if (stack == null) return null;
+
+        while (!stack.empty()) {
+        	HierarchyTreeNode node = (HierarchyTreeNode)stack.pop();
+        	Matchable fg = (Matchable)node.getElement();
+        	UnifacGAValue ga = (UnifacGAValue)unifacLibrary.get(fg);
+        	if (ga != null) {
+                System.out.println("Unifac Group found: " + fg.getName());
+                return ga;
+            }
+
+        }
+
+        return null;
+    }
+
+
     //## operation read(String,String,String,String,String,String,String,String,String)
-	public void read(String p_groupDictionary, String p_groupTree, String p_groupLibrary, String p_radicalDictionary, String p_radicalTree, String p_radicalLibrary, String p_ringDictionary, String p_ringTree, String p_ringLibrary, String p_otherLibrary, String p_otherTree, String p_gaucheDictionary, String p_gaucheTree, String p_gaucheLibrary, String p_15Dictionary, String p_15Tree, String p_15Library) {
+	public void read(String p_groupDictionary, String p_groupTree, String p_groupLibrary, String p_radicalDictionary, String p_radicalTree, String p_radicalLibrary, String p_ringDictionary, String p_ringTree, String p_ringLibrary, String p_otherLibrary, String p_otherTree, String p_gaucheDictionary, String p_gaucheTree, String p_gaucheLibrary, String p_15Dictionary, String p_15Tree, String p_15Library,String p_abramDictionary,String p_abramTree,String p_abramLibrary,String p_unifacDictionary,String p_unifacTree,String p_unifacLibrary) { //,String p_solventDictionary,String p_solventLibrary) {
 	    // end pey
 	        //#[ operation read(String,String,String,String,String,String,String,String,String)
 	        // try {
+        
 	        	// step 1: read in GA Groups
-	        	// read thermo functional Group dictionary
-	         	readGroupDictionary(p_groupDictionary);
-	        	// read thermo functional Group tree structure
-	        	readGroupTree(p_groupTree);
-	        	// read group values
-	        	readGroupLibrary(p_groupLibrary);
+                    // read thermo functional Group dictionary
+                    readGroupDictionary(p_groupDictionary);
+                    // read thermo functional Group tree structure
+                    readGroupTree(p_groupTree);
+                    // read group values
+                    readGroupLibrary(p_groupLibrary);
 
 	        	// step 2: read in Radical Corrections
-	        	// read radical dictionary
-	        	readRadicalDictionary(p_radicalDictionary);
-	        	// read radical tree
-	        	readRadicalTree(p_radicalTree);
-	        	// read radical value
-	        	readRadicalLibrary(p_radicalLibrary);
+                    // read radical dictionary
+                    readRadicalDictionary(p_radicalDictionary);
+                    // read radical tree
+                    readRadicalTree(p_radicalTree);
+                    // read radical value
+                    readRadicalLibrary(p_radicalLibrary);
 
 	        	// step 3: read in Ring Correction
 	                // begin pey
 	                readRingDictionary(p_ringDictionary);
 	                readRingTree(p_ringTree);
-	        	readRingLibrary(p_ringLibrary);
+                    readRingLibrary(p_ringLibrary);
 	                // System.out.println("tree height = " + ringTree.height());
 	                // end pey
 
 	        	// step 4: read in Other Correction
-	        	readOtherLibrary(p_otherLibrary);
-	        	readOtherTree(p_otherTree);
+                    readOtherLibrary(p_otherLibrary);
+                    readOtherTree(p_otherTree);
 
-                        // step 5: read in Gauche and 15 Correction libraries
-                        readGaucheDictionary(p_gaucheDictionary);
-                        readGaucheTree(p_gaucheTree);
-	        	readGaucheLibrary(p_gaucheLibrary);
-                        read15Dictionary(p_15Dictionary);
-                        read15Tree(p_15Tree);
-	        	read15Library(p_15Library);
+                // step 5: read in Gauche and 15 Correction libraries
+                    readGaucheDictionary(p_gaucheDictionary);
+                    readGaucheTree(p_gaucheTree);
+                    readGaucheLibrary(p_gaucheLibrary);
+                    read15Dictionary(p_15Dictionary);
+                    read15Tree(p_15Tree);
+                    read15Library(p_15Library);
+
+                // Added by Amrit Jalan
+                    // Definitions of Platts dictionary, library and tree for Abraham Model Implementation
+                    readAbrahamDictionary(p_abramDictionary);
+                    readAbrahamTree(p_abramTree);
+                    readAbrahamLibrary(p_abramLibrary);
+
+                    readUnifacDictionary(p_unifacDictionary);
+                    readUnifacTree(p_unifacTree);
+                    readUnifacLibrary(p_unifacLibrary);
+
 	        /*}
 	        catch (Exception e) {
 	        	throw new ThermoIOException(e.getMessage());
@@ -558,7 +649,113 @@ public class ThermoGAGroupLibrary {
 
         //#]
     }
-    
+
+        public void readAbrahamDictionary(String p_fileName) {
+        try {
+        	abramDictionary = readStandardDictionary(p_fileName);
+        	return;
+        }
+        catch (Exception e) {
+        	System.err.println("Error in read Abraham dictionary!");
+        	System.exit(0);
+        }
+        //#]
+    }
+
+        public void readUnifacDictionary(String p_fileName) {
+        try {
+        	unifacDictionary = readStandardDictionary(p_fileName);
+        	return;
+        }
+        catch (Exception e) {
+        	System.err.println("Error in read Unifac dictionary!");
+        	System.exit(0);
+        }
+        //#]
+    }
+
+
+            public void readAbrahamLibrary(String p_fileName) {
+        try {
+        	abramLibrary = readAbramLibrary(p_fileName, abramDictionary);
+        	return;
+        }
+        catch (Exception e) {
+        	System.err.println("Can't read Abraham library!");
+        	System.exit(0);
+        }
+
+        //#]
+    }
+
+        public void readUnifacLibrary(String p_fileName) {
+        try {
+        	unifacLibrary = readUNIFACLibrary(p_fileName, unifacDictionary);
+        	return;
+        }
+        catch (Exception e) {
+        	System.err.println("Can't read Unifac library!");
+        	System.exit(0);
+        }
+
+        //#]
+    }
+
+              public void readAbrahamTree(String p_fileName) {
+        try {
+        	abramTree = readStandardTree(p_fileName,abramDictionary,0);
+        }
+        catch (Exception e) {
+        	System.err.println("Can't read Abraham tree file!");
+        	System.err.println("Error: " + e.getMessage());
+        	System.exit(0);
+        }
+
+
+
+        //#]
+    }
+
+              public void readUnifacTree(String p_fileName) {
+        try {
+        	unifacTree = readStandardTree(p_fileName,unifacDictionary,0);
+        }
+        catch (Exception e) {
+        	System.err.println("Can't read Unifac tree file!");
+        	System.err.println("Error: " + e.getMessage());
+        	System.exit(0);
+        }
+
+
+
+        //#]
+    }
+
+        //public void readSolventDictionary(String p_fileName) {
+        //try {
+        //	solventDictionary = readStandard/Dictionary(p_fileName);
+        //	return;
+        //}
+        //catch (Exception e) {
+        //	System.err.println("Error in read Solvent dictionary!");
+        //	System.exit(0);
+        //}
+        //#]
+    //}
+
+      //      public void readSolventLibrary(String p_fileName) {
+      //  try {
+      //  	solventLibrary = readStandardLibrary(p_fileName, solventDictionary);
+      //  	return;
+      //  }
+      //  catch (Exception e) {
+      //  	System.err.println("Can't read solvent library!");
+      //  	System.exit(0);
+      //  }
+
+        //#]
+    //}
+
         public void read15Dictionary(String p_fileName) {
         try {
         	oneFiveDictionary = readStandardDictionary(p_fileName);
@@ -838,7 +1035,7 @@ public class ThermoGAGroupLibrary {
                 BufferedReader data = new BufferedReader(in);
             HashMap library = new HashMap();
 
-                String line = ChemParser.readMeaningfulLine(data);
+            String line = ChemParser.readMeaningfulLine(data);
                 while (line != null) {
 //System.out.println(line);//
                         // step 1: read in index and name
@@ -931,6 +1128,216 @@ public class ThermoGAGroupLibrary {
 
         //#]
     }
+
+    //## operation readAbramLibrary(String,HashMap)
+    protected HashMap readAbramLibrary(String p_fileName, HashMap p_dictionary) throws IOException {
+        //#[ operation readStandardLibrary(String,HashMap)
+        try {
+                FileReader in = new FileReader(p_fileName);
+                BufferedReader data = new BufferedReader(in);
+            HashMap library = new HashMap();
+
+            String line = ChemParser.readMeaningfulLine(data);
+                while (line != null) {
+
+                        // step 1: read in index and name
+                        StringTokenizer token = new StringTokenizer(line);
+                        String index = token.nextToken(); //1/6/09 gmagoon changed index from integer to string, so that if/when ChemGreen/RMGVE adds a decimal after the entry number (after editing thermo library), RMG will still be able to read it
+                        String name = token.nextToken();
+
+                        // step 2: find this functional group in dictionary by name
+                        Matchable fg = (Matchable)p_dictionary.get(name);
+                        if (fg == null) {
+                                throw new FunctionalGroupNotFoundException();
+                                //System.out.println(name);
+                        }
+
+                        // step 3: read in AbrahamGAValue
+                        String thermo = token.nextToken();
+                        // if there is a set of real thermo numbers, read them in and put the thermo data into library
+                        try {
+                                double H = Double.parseDouble(thermo);
+                                thermo = thermo.concat(" ");
+                                for (int i=0;i<4;i++) {
+                                        thermo = thermo.concat(token.nextToken());
+                                        thermo = thermo.concat(" ");
+                                }
+                                AbrahamGAValue gaValue = ChemParser.parseAbrahamGAValue(thermo);
+                                String comments = "";
+                                while (token.hasMoreTokens()) {
+                                   comments = comments + " " + token.nextToken();
+                           }
+                                AbrahamGAValue newGaValue=new AbrahamGAValue(gaValue);
+
+                        // step4: put in library
+                                Object previous = library.put(fg, newGaValue);
+                                if (previous != null) {
+                                        throw new ReplaceThermoGAValueException();
+                                }
+
+                        }
+                        // if there is a referenced name, put the name into library
+                        catch (NumberFormatException e) {
+                                Object o = p_dictionary.get(thermo);
+                                if (o == null) {
+                                        //throw new FunctionalGroupNotFoundException(thermo);
+                                        System.out.print(index);
+                                        System.out.println(": " + thermo);
+                                }
+                                Object previous = library.put(fg, thermo);
+                                if (previous != null) {
+                                      throw new ReplaceThermoGAValueException();
+                                }
+                        }
+
+                        line = ChemParser.readMeaningfulLine(data);
+                }
+
+                // scan the library to give the ones having referenced name the real thermo data
+                Iterator iter = library.keySet().iterator();
+                while (iter.hasNext()) {
+                        Matchable fg = (Matchable)iter.next();
+                        Object gaValue = library.get(fg);
+                        String path = "";
+                        if (gaValue instanceof String) {
+                                do {
+                                        String name = (String)gaValue;
+                                        path = path + "->" + name;
+                                    gaValue = library.get((Matchable)p_dictionary.get(name));
+                                } while (gaValue instanceof String);
+
+                                if (gaValue == null || !(gaValue instanceof ThermoGAValue)) {
+                                        throw new InvalidReferenceThermoGAValueException();
+                                }
+
+                                AbrahamGAValue newGaValue = new AbrahamGAValue((AbrahamGAValue)gaValue);
+                                library.put(fg,newGaValue);
+                         }
+                }
+
+            in.close();
+                return library;
+        }
+        catch (IOException e) {
+                throw new IOException();
+        }
+
+
+
+
+
+
+
+        //#]
+    }
+
+    //## operation readAbramLibrary(String,HashMap)
+    protected HashMap readUNIFACLibrary(String p_fileName, HashMap p_dictionary) throws IOException {
+        //#[ operation readStandardLibrary(String,HashMap)
+        try {
+                FileReader in = new FileReader(p_fileName);
+                BufferedReader data = new BufferedReader(in);
+            HashMap library = new HashMap();
+
+            String line = ChemParser.readMeaningfulLine(data);
+                while (line != null) {
+
+                        // step 1: read in index and name
+                        StringTokenizer token = new StringTokenizer(line);
+                        String index = token.nextToken(); //1/6/09 gmagoon changed index from integer to string, so that if/when ChemGreen/RMGVE adds a decimal after the entry number (after editing thermo library), RMG will still be able to read it
+                        String name = token.nextToken();
+
+                        // step 2: find this functional group in dictionary by name
+                        Matchable fg = (Matchable)p_dictionary.get(name);
+                        if (fg == null) {
+                                throw new FunctionalGroupNotFoundException();
+                                //System.out.println(name);
+                        }
+
+                        // step 3: read in AbrahamGAValue
+                        String thermo = token.nextToken();
+                        // if there is a set of real thermo numbers, read them in and put the thermo data into library
+                        try {
+                                double H = Double.parseDouble(thermo);
+                                thermo = thermo.concat(" ");
+                                for (int i=0;i<1;i++) {
+                                        thermo = thermo.concat(token.nextToken());
+                                        thermo = thermo.concat(" ");
+                                }
+                                UnifacGAValue gaValue = ChemParser.parseUnifacGAValue(thermo);
+                                String comments = "";
+                                while (token.hasMoreTokens()) {
+                                   comments = comments + " " + token.nextToken();
+                           }
+                                UnifacGAValue newGaValue=new UnifacGAValue(gaValue);
+
+                        // step4: put in library
+                                Object previous = library.put(fg, newGaValue);
+                                if (previous != null) {
+                                        throw new ReplaceThermoGAValueException();
+                                }
+
+                        }
+                        // if there is a referenced name, put the name into library
+                        catch (NumberFormatException e) {
+                                Object o = p_dictionary.get(thermo);
+                                if (o == null) {
+                                        //throw new FunctionalGroupNotFoundException(thermo);
+                                        System.out.print(index);
+                                        System.out.println(": " + thermo);
+                                }
+                                Object previous = library.put(fg, thermo);
+                                if (previous != null) {
+                                      throw new ReplaceThermoGAValueException();
+                                }
+                        }
+
+                        line = ChemParser.readMeaningfulLine(data);
+                }
+
+                // scan the library to give the ones having referenced name the real thermo data
+                Iterator iter = library.keySet().iterator();
+                while (iter.hasNext()) {
+                        Matchable fg = (Matchable)iter.next();
+                        Object gaValue = library.get(fg);
+                        String path = "";
+                        if (gaValue instanceof String) {
+                                do {
+                                        String name = (String)gaValue;
+                                        path = path + "->" + name;
+                                    gaValue = library.get((Matchable)p_dictionary.get(name));
+                                } while (gaValue instanceof String);
+
+                                if (gaValue == null || !(gaValue instanceof ThermoGAValue)) {
+                                        throw new InvalidReferenceThermoGAValueException();
+                                }
+
+                                UnifacGAValue newGaValue = new UnifacGAValue((UnifacGAValue)gaValue);
+                                library.put(fg,newGaValue);
+                         }
+                }
+
+            in.close();
+                return library;
+        }
+        catch (IOException e) {
+                throw new IOException();
+        }
+
+
+
+
+
+
+
+        //#]
+    }
+
+
+
+
+
+
 
 
     //## operation readStandardTree(String,HashMap,int)
