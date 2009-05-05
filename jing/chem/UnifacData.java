@@ -26,54 +26,40 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 
-
-
-
-
 package jing.chem;
 
 
+public class UnifacData extends UnifacGAValue {
 
+        public  UnifacData() {
+        //#[ operation ThermoData()
+        super();
+        //#]
+    }
 
+    public  UnifacData(double R, double Q) {
+        //#[ operation ThermoData(double,double,double,double,double,double,double,double,double,String)
+        super(R,Q);
 
-import java.util.*;
+    }      //#]
 
+        //## operation ThermoData(ThermoGAValue)
+    public  UnifacData(UnifacGAValue p_ga) {
+        //#[ operation ThermoData(ThermoGAValue)
+        super(p_ga);
+        //#]
+    }
 
+        //## operation plus(ThermoGAValue)
+    public void plus(UnifacGAValue p_thermoData) {
+        //#[ operation plus(ThermoGAValue)
+        if (p_thermoData == null) return;
 
-//## package jing::chem 
+        R += p_thermoData.R;
+        Q += p_thermoData.Q;
 
-
-
-//----------------------------------------------------------------------------
-
-// jing\chem\GeneralGAPP.java                                                                  
-
-//----------------------------------------------------------------------------
-
-
-
-//## class GeneralGAPP 
-
-public interface GeneralGAPP {
-
-    
-
-    
-
-    //## operation generateThermoData(ChemGraph) 
-
-    ThermoData generateThermoData(ChemGraph p_chemGraph);
-    
-
-    
-
-}
-
-/*********************************************************************
-
-	File Path	: RMG\RMG\jing\chem\GeneralGAPP.java
-
-*********************************************************************/
-
+        }
+        //#]
+    }
 
 

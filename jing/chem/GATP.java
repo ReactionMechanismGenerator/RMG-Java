@@ -35,6 +35,8 @@ import jing.param.*;
 import jing.chemUtil.*;
 import jing.param.*;
 import jing.chemUtil.*;
+import jing.mathTool.*;
+import jing.param.Temperature;
 
 //## package jing::chem
 
@@ -92,6 +94,8 @@ public class GATP implements GeneralGAPP {
         result = new ThermoData();
 
         result.plus(getGAGroup(p_chemGraph));
+
+
         // comment out, waiting for Bill and Joanna making the right ring correction library
         result.plus(getRingCorrection(p_chemGraph));
         result.plus(getOtherCorrection(p_chemGraph));
@@ -119,6 +123,7 @@ public class GATP implements GeneralGAPP {
     public ThermoGAValue getGAGroup(ChemGraph p_chemGraph) {
         //#[ operation getGAGroup(ChemGraph)
         ThermoData result = new ThermoData();
+        //AbramData result_abram = new AbramData();
         Graph g = p_chemGraph.getGraph();
         HashMap oldCentralNode = (HashMap)(p_chemGraph.getCentralNode()).clone();
 
@@ -168,9 +173,12 @@ public class GATP implements GeneralGAPP {
           	Atom atom = (Atom)node.getElement();
           	if (!(atom.getType().equals("H"))) {
            		if (!atom.isRadical()) {
+
            			p_chemGraph.resetThermoSite(node);
            			ThermoGAValue thisGAValue = thermoLibrary.findGAGroup(p_chemGraph);
-                                 //2/5/09 gmagoon: for acyclic molecules, check for and include gauche and 1,5 corrections (cyclic molecules should also have these corrections, but they appear to be more complicated and depend upon the actual 3D-structure; in general, it seems there are fewer gauche corrections for cyclic than acyclic (for the same degree of carbon atom))
+                    //System.out.println(thisGAValue);
+ 
+                    //2/5/09 gmagoon: for acyclic molecules, check for and include gauche and 1,5 corrections (cyclic molecules should also have these corrections, but they appear to be more complicated and depend upon the actual 3D-structure; in general, it seems there are fewer gauche corrections for cyclic than acyclic (for the same degree of carbon atom))
                                 if(p_chemGraph.isAcyclic())
                                 {
                                     p_chemGraph.resetThermoSite(node);
@@ -188,6 +196,7 @@ public class GATP implements GeneralGAPP {
            			else {
            				//System.out.println(node.getID() + " " + thisGAValue.getName()+ "  "+thisGAValue.toString());
            				result.plus(thisGAValue);
+
            			}
            		}
            		else {
@@ -262,12 +271,21 @@ public class GATP implements GeneralGAPP {
 
 
          p_chemGraph.setCentralNode(oldCentralNode);
+         //System.out.println(result);
          return result;
+
 
 
 
         //#]
     }
+
+
+
+
+
+
+
 
     //2/5/09 gmagoon: it seems the function below is broken and not working properly
     //## operation getOtherCorrection(ChemGraph)

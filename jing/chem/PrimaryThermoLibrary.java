@@ -95,6 +95,29 @@ public ThermoData getThermoData(Graph p_graph){
   //#]
 }
 
+//// Added by Amrit Jalan, April 19, 2009
+//// Reads in values of S,B,E and V for Platts' groups
+//
+////## operation getThermoData(ChemGraph)
+//public AbramData getAbramData(Graph p_graph){
+//  //#[ operation getThermoData(ChemGraph)
+//  AbramData td = (AbramData)library.get(p_graph);
+//  if (td != null){
+//    return td;
+//  }
+//  Iterator iter = library.keySet().iterator();
+//  while (iter.hasNext()){
+//    Graph g = (Graph)iter.next();
+//    g.addMissingHydrogen();
+//    if (g.isEquivalent(p_graph)){
+//      td = (AbramData)library.get(g);
+//      return td;
+//    }
+//  }
+//  return null;
+//  //#]
+//}
+
 //## operation read(String, String)
 public void read(String p_dictionary, String p_library) throws IOException, FileNotFoundException {
   //#[ operation read(String)
