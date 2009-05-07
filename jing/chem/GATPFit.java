@@ -150,7 +150,7 @@ public class GATPFit {
         //#[ operation generateNASAThermoDatabyGATPFit()
         // get working directory
         String dir = System.getProperty("RMG.workingDirectory");
-
+        
         try {
         	// prepare GATPFit input file and execute system call
         	boolean error = callGATPFit(species, dir);
