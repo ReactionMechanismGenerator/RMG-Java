@@ -51,6 +51,8 @@ public class SpeciesDictionary {
     
     private static LinkedHashMap dictionary;		//## attribute dictionary 
     
+    private static LinkedList cache = new LinkedList();  // a shortlist of recently requested species used as a cache
+  
     
     // Constructors
     
@@ -70,12 +72,73 @@ public class SpeciesDictionary {
     
     //## operation getSpecies(ChemGraph) 
     public static Species getSpecies(ChemGraph p_chemGraph) {
-        //#[ operation getSpecies(ChemGraph) 
-        return (Species)dictionary.get(p_chemGraph);
+        
+        /* In its simplest form this routine is just: return (Species)dictionary.get(p_chemGraph);
+           This implementation uses a cache consisting of the two previously gotten species
+           this short list of two is checked before the full list (of potentially thousands) of species
+           because very often the species being checked is the same as the penultimate species to be checked.
+           This speeds things up considerably.  rwest 2009/05/08
+           NB. putSpecies() has also been modified to update the cache when new species are added.
+         */
+        
+        Species species = null;
+        
+        // check the cache
+        Iterator iter = cache.iterator();
+        while (iter.hasNext() && species==null) {
+        	Species spe = (Species)iter.next();
+            
+            // see if 'spe' matches our p_chemGraph
+            if (spe.hasResonanceIsomers()) {
+                Iterator iter2 = spe.getResonanceIsomers();
+                while (iter2.hasNext() && species==null) {
+                    ChemGraph resonantisomer = (ChemGraph)iter2.next();
+                    if (resonantisomer.equals(p_chemGraph)) species=spe;
+                }
+            }
+        	else if (spe.getChemGraph().equals(p_chemGraph) ) {
+                species=spe;
+        	}
+        }   
+        // if species still = null then it wasn't in the cache
+        
+        // if we found it in the cache, then we want to move it to the end of the list so it appears as the most recent item
+        if (species != null) {
+            iter.remove(); // remove it from the cache (wherever it was located)
+            cache.add(species); // and put it straight back again
+            return species;
+        }
+        // if we are still here, we haven't found the species yet
+       
+        // now check the dictionary
+        species = (Species)dictionary.get(p_chemGraph);
         
         
+        // for diagnostic purposes, print stuff to a log file if we didn't get a cache hit
+        /*
+        try{
+            File consideredSpecies = new File ("Restart/consideredSpecies.txt");
+            FileWriter fw = new FileWriter(consideredSpecies, true);
+            if (species==null) fw.write( "not in dictionary or cache:");
+            else fw.write( "not in cache: ");
+            fw.close();
+        }
+        catch (IOException e){
+            System.out.println("Could not write the restart consideredSpecies file");
+            System.exit(0);
+        }
+         */
         
-        //#]
+        
+        // update the cache
+        if (species != null) {
+            cache.add(species); // add to the end of the list
+            if (cache.size() > 2)  
+                cache.remove(); // remove from the front of the list
+        }
+        
+        return species;
+        
     }
     
     //## operation getSpeciesFromID(int) 
@@ -177,8 +240,8 @@ public class SpeciesDictionary {
     public void putSpecies(Species p_species, boolean write) {
         //#[ operation putSpecies(Species) 
         
-        // we can't read the restart file, so no point writing it (which currently takes a LOT of time). rwest
-		/* String restartFileContent="";
+        /*  // we can't read the restart file, so no point writing it (which currently takes a LOT of time). rwest
+		 String restartFileContent="";
 		if (write){
 			try{
 				File allSpecies = new File ("Restart/allSpecies.txt");
@@ -195,7 +258,8 @@ public class SpeciesDictionary {
 				System.out.println("Could not write the restart edgespecies file");
 	        	System.exit(0);
 			}
-		}*/
+		}
+        */
         if (p_species.hasResonanceIsomers()) {
         	Iterator iter = p_species.getResonanceIsomers();
         	while (iter.hasNext()) {
@@ -206,7 +270,11 @@ public class SpeciesDictionary {
         else {
         	dictionary.put(p_species.getChemGraph(),p_species);
         }
-        return;
+        
+        // update the cache
+        cache.add(p_species); // add to the end of the list
+        if (cache.size() > 2) 
+            cache.remove(); // remove from the front of the list
         
         
         //#]

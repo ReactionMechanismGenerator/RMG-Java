@@ -763,9 +763,11 @@ public class Species {
         //#[ operation make(String,ChemGraph)
 		double pT = System.currentTimeMillis();
         SpeciesDictionary dictionary = SpeciesDictionary.getInstance();
-        Species spe = (Species)(dictionary.getSpecies(p_chemGraph));
-		
         
+        // first try to get it from the dictionary (which now uses a cache to speed it up)
+        Species spe = (Species)(dictionary.getSpecies(p_chemGraph));
+        
+        // if it wasn't there then it's unique and we need to add it
         if (spe == null) {
         	
         	String name = p_name;
@@ -808,8 +810,27 @@ public class Species {
         }
 		p_chemGraph.setSpecies(spe);
 		Global.makeSpecies += (System.currentTimeMillis()-pT)/1000/60;
+        
+        /*
+        // added by rwest 2009/05/07 to see how many species are considered and in what order
+        // N.B. this file is not cleared at the start of a run; results are just appended
+        String restartFileContent="";
+		try{
+			File consideredSpecies = new File ("Restart/consideredSpecies.txt");
+			FileWriter fw = new FileWriter(consideredSpecies, true);
+			restartFileContent = restartFileContent + spe.getChemkinName() + " \n ";  // name and number
+		//	restartFileContent = restartFileContent + spe.toString(1) + "\n\n";  // full chemgraph
+			fw.write(restartFileContent);
+			fw.close();
+		}
+		catch (IOException e){
+			System.out.println("Could not write the restart consideredSpecies file");
+	    	System.exit(0);
+		}
+        */
+        
         return spe;
-        //#]
+    
     }
 
 //	## operation make(String,ChemGraph)
