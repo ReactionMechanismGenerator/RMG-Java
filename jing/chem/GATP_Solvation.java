@@ -45,36 +45,35 @@ public class GATP_Solvation implements GeneralAbramGAPP {
        UnifacData result_unifac= new UnifacData();
        result_unifac=p_chemGraph.getUnifacData();
        double Volume=result_unifac.R;                         // UNITS unknown! preferred units should be Angstrom^3
-       double r3= (21/88)*Volume;
+       double r3= (21/88)*Volume;                             // r^3=(3/4*pi)*Volume
        double r_solute=Math.pow(r3,1/3);                      // Preferred units are Angstrom
        double r_solvent; r_solvent=3.4;   // Bogus value      // Manually assigned solvent radius [=] Angstrom
        double r_cavity=r_solute+r_solvent;                    // Cavity radius [=] Angstrom
-       double rho; rho=0.5;     // Bogus value                // number density of solvent [=] molecules/Angstrom^3
+       double rho; rho=0.5;               // Bogus value      // number density of solvent [=] molecules/Angstrom^3
        double parameter_y=(88/21)*rho*Math.pow(r_cavity, 3);  // Parameter y from Ashcraft Thesis Refer pg no. 60
        double parameter_ymod=parameter_y/(1-parameter_y);     // parameter_ymod= y/(1-y) Defined for convenience
        double R=8.314;                                        // Gas constant
        double T=298;                                          // Standard state temperature
-       double K1= (R*0.5/r_solvent)*((6*parameter_ymod)+(18*Math.pow(parameter_ymod, 2)));
+       
+       // Definitions of K0, K1 and K2 correspond to those for K0', K1' and K2' respectively from Ashcraft's Thesis
        double K0= -R*(-Math.log(1-parameter_y)+(4.5*Math.pow(parameter_ymod, 2)));
+       double K1= (R*0.5/r_solvent)*((6*parameter_ymod)+(18*Math.pow(parameter_ymod, 2)));
        double K2= -(R*0.25/Math.pow(r_solvent,2))*((12*parameter_ymod)+(18*Math.pow(parameter_ymod, 2)));
 
        // Basic definition of entropy change of solvation from Ashcfrat's Thesis
        double deltaS0;
        deltaS0=K0+(K1*r_cavity)+(K2*Math.pow(r_cavity,2));
        
-       
-
        // Generation of Abraham Solute Parameters
        AbramData result_Abraham= new AbramData();
        result_Abraham.plus(getABGroup(p_chemGraph));
 
-        // Solute descriptors from the Abraham Model
-
-        double S=result_Abraham.S;
-        double B=result_Abraham.B;
-        double E=result_Abraham.E;
-        double L=result_Abraham.L;
-        double A=result_Abraham.A;
+       // Solute descriptors from the Abraham Model
+       double S=result_Abraham.S;
+       double B=result_Abraham.B;
+       double E=result_Abraham.E;
+       double L=result_Abraham.L;
+       double A=result_Abraham.A;
 
         //Manually specified solvent descriptors (constants here are for octanol)
         double c=-0.12;
@@ -85,10 +84,8 @@ public class GATP_Solvation implements GeneralAbramGAPP {
         double a=3.56;
 
         double logK=c + s*S + b*B + e*E + l*L + a*A;    // Implementation of Abraham Model
-        //System.out.println("The log of air/octanol partition coefficient at 298K without reference state corrections is  = " + logK);
-        double deltaG0_octanol=-8.314*298*logK; //Math.exp(logK);
+        double deltaG0_octanol=-8.314*298*logK;
         System.out.println("The free energy of solvation in octanol at 298K without reference state corrections is  = " + deltaG0_octanol +" " + "J/mol");
-
 
         // Calculation of enthalpy change of solvation using the data obtained above
         double deltaH0=deltaG0_octanol-(T*deltaS0);
@@ -114,7 +111,7 @@ public class GATP_Solvation implements GeneralAbramGAPP {
 
         public AbrahamGAValue getABGroup(ChemGraph p_chemGraph) {
         //#[ operation getGAGroup(ChemGraph)
-        //ThermoData result_abram = new ThermoData();
+        
         AbramData result_abram = new AbramData();
         Graph g = p_chemGraph.getGraph();
         HashMap oldCentralNode = (HashMap)(p_chemGraph.getCentralNode()).clone();
@@ -252,7 +249,7 @@ public class GATP_Solvation implements GeneralAbramGAPP {
 
 
          p_chemGraph.setCentralNode(oldCentralNode);
-//         System.out.println(result_abram);
+
          return result_abram;
 
 
