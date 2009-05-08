@@ -2114,7 +2114,7 @@ return sn;
     
     public void setDefaultAbramGAPP() {
         //#[ operation setDefaultThermoGAPP()
-        abramGAPP = GATP_Solvation.getINSTANCE();
+        abramGAPP = GATP_Abraham.getINSTANCE();
         return;
         //#]
     }
