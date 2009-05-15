@@ -1206,7 +1206,7 @@ public class ThermoGAGroupLibrary {
                                     gaValue = library.get((Matchable)p_dictionary.get(name));
                                 } while (gaValue instanceof String);
 
-                                if (gaValue == null || !(gaValue instanceof ThermoGAValue)) {
+                                if (gaValue == null || !(gaValue instanceof AbrahamGAValue)) {
                                         throw new InvalidReferenceThermoGAValueException();
                                 }
 
@@ -1308,7 +1308,7 @@ public class ThermoGAGroupLibrary {
                                     gaValue = library.get((Matchable)p_dictionary.get(name));
                                 } while (gaValue instanceof String);
 
-                                if (gaValue == null || !(gaValue instanceof ThermoGAValue)) {
+                                if (gaValue == null || !(gaValue instanceof UnifacGAValue)) {
                                         throw new InvalidReferenceThermoGAValueException();
                                 }
 
