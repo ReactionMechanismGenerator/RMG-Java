@@ -260,7 +260,23 @@ public class ReactionModelGenerator {
         		else throw new InvalidSymbolException("condition.txt: Unknown InChIGeneration flag: " + inchiOnOff);
         	}
         	else throw new InvalidSymbolException("condition.txt: Cannot find InChIGeneration flag.");
-        	
+
+//            // Read in Solvation effects
+//            if (line.startsWith("Solvation:")) {
+//        		StringTokenizer st = new StringTokenizer(line);
+//        		String name = st.nextToken();
+//        		String solvationOnOff = st.nextToken().toLowerCase();
+//        		if (solvationOnOff.equals("on")) {
+//        			Species.useSolvation = true;
+//        		} else if (solvationOnOff.equals("off")) {
+//        			Species.useSolvation = false;
+//        		}
+//        		else throw new InvalidSymbolException("condition.txt: Unknown solvation flag: " + solvationOnOff);
+//        	}
+//        	else throw new InvalidSymbolException("condition.txt: Cannot find solvation flag.");
+
+
+
 			// read in reactants
         	line = ChemParser.readMeaningfulLine(reader);
 
