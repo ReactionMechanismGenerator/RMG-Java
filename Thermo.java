@@ -27,6 +27,7 @@
 
 import java.util.*;
 import java.io.*;
+
 import jing.chem.*;
 import jing.chemParser.*;
 import jing.param.*;
@@ -51,33 +52,81 @@ public class Thermo {
   //## configuration RMG::RMG
 public static void main(String[] args) {
   initializeSystemProperties();
+	LinkedHashSet speciesSet = new LinkedHashSet();
 
  try {
           FileReader in = new FileReader("thermo_input.txt");
           BufferedReader data = new BufferedReader(in);
-
-          Graph g = ChemParser.readChemGraph(data);
+          
+          // Read the first line of thermo_input.txt
+          String line = ChemParser.readMeaningfulLine(data);
+          StringTokenizer st = new StringTokenizer(line);
+          // The first line should start with "Solvation", otherwise do nothing and display a message to the user
+          if (st.nextToken().startsWith("Solvation")) {
+        	  line = st.nextToken().toLowerCase();
+        	  // The options for the "Solvation" field are "on" or "off" (as of 18May2009), otherwise do nothing and display a message to the user
+        	  // Note: I use "Species.useInChI" because the "Species.useSolvation" updates were not yet committed.
+        	  if (line.equals("on"))
+        		  Species.useInChI = true;
+        	  else if (line.equals("off"))
+        		  Species.useInChI = false;
+        	  else {
+        		  System.out.println("Error in reading thermo_input.txt file:\nThe field 'Solvation' has the options 'on' or 'off'.");
+        		  return;
+        	  }
+        	  // Read in the ChemGraphs and compute their thermo, while there are ChemGraphs to read in
+        	  line = ChemParser.readMeaningfulLine(data);
+        	  while (line != null) {
+        		  String speciesName = line;
+        		  Graph g = ChemParser.readChemGraph(data);
+        		  ChemGraph cg = null;
+        		  try {
+        			  cg = ChemGraph.make(g);
+        		  } catch (ForbiddenStructureException e) {
+        			  System.out.println("Error in reading graph: Graph contains a forbidden structure.\n" + g.toString());
+        			  System.exit(0);
+        		  }
+        		  Species species = Species.make(speciesName,cg);
+        		  speciesSet.add(species);
+        		  line = ChemParser.readMeaningfulLine(data);
+        	  }
+          } else
+        	  System.out.println("Error in reading thermo_input.txt file:\nThe first line must read 'Solvation: on/off'.");
 
           in.close();
+          
+          String thermo_output = "";
+          Iterator iter = speciesSet.iterator();       
+          while (iter.hasNext()){
+        	  Species spe = (Species)iter.next();
+        	  thermo_output += spe.getName() + "\t" + spe.getChemGraph().getThermoData().toString() + "\n";
+          }
+          
+          try {
+        	  File thermoOutput = new File("thermo_output.txt");
+        	  FileWriter fw = new FileWriter(thermoOutput);
+        	  fw.write(thermo_output);
+        	  fw.close();
+          } catch (IOException e) {
+        	  System.out.println("Error in writing thermo_output.txt file.");
+        	  System.exit(0);
+          }
 
-         System.out.println(g);
-         ChemGraph chemgraph = ChemGraph.make(g);
-		 Species spe = Species.make("molecule",chemgraph);
-		 System.out.println("The number of resonance isomers is " + spe.getResonanceIsomersHashSet().size());
-		 System.out.println("The NASA data is \n"+ spe.getNasaThermoData());
-		 System.out.println("ThermoData is \n" +  spe.getChemGraph().getThermoData().toString());
-         System.out.println("AbramData is \n" +  spe.getChemGraph().getAbramData().toString());
-         System.out.println("UnifacData is \n" +  spe.getChemGraph().getUnifacData().toString());
-        //int K = chemgraph.getKekule();
-        int symm = chemgraph.getSymmetryNumber();
-        //System.out.println("number of Kekule structures = "+K);
-        System.out.println(" symmetry number = "+symm);
+//		 System.out.println("The number of resonance isomers is " + spe.getResonanceIsomersHashSet().size());
+//		 System.out.println("The NASA data is \n"+ spe.getNasaThermoData());
+//		 System.out.println("ThermoData is \n" +  spe.getChemGraph().getThermoData().toString());
+//         System.out.println("AbramData is \n" +  spe.getChemGraph().getAbramData().toString());
+//         System.out.println("UnifacData is \n" +  spe.getChemGraph().getUnifacData().toString());
+//        //int K = chemgraph.getKekule();
+//        int symm = chemgraph.getSymmetryNumber();
+//        //System.out.println("number of Kekule structures = "+K);
+//        System.out.println(" symmetry number = "+symm);
 
-         Temperature T = new Temperature(298.0,"K");
-
-         String chemicalFormula = chemgraph.getChemicalFormula();
-
-         System.out.println(chemicalFormula + "  H=" + chemgraph.calculateH(T));
+//         Temperature T = new Temperature(298.0,"K");
+//
+//         String chemicalFormula = chemgraph.getChemicalFormula();
+//
+//         System.out.println(chemicalFormula + "  H=" + chemgraph.calculateH(T));
 
 
     //      Species species = Species.make(chemicalFormula, chemgraph);
@@ -103,9 +152,9 @@ public static void main(String[] args) {
  catch(IOException e){
    System.err.println("Something wrong with ChemParser.readChemGraph");
  }
- catch(ForbiddenStructureException e){
-   System.err.println("Something wrong with ChemGraph.make");
- }
+// catch(ForbiddenStructureException e){
+//   System.err.println("Something wrong with ChemGraph.make");
+// }
 
 
 System.out.println("Done!\n");
