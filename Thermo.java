@@ -53,6 +53,7 @@ public class Thermo {
 public static void main(String[] args) {
   initializeSystemProperties();
 	LinkedHashSet speciesSet = new LinkedHashSet();
+    String thermo_output = "";
 
  try {
           FileReader in = new FileReader("thermo_input.txt");
@@ -66,11 +67,13 @@ public static void main(String[] args) {
         	  line = st.nextToken().toLowerCase();
         	  // The options for the "Solvation" field are "on" or "off" (as of 18May2009), otherwise do nothing and display a message to the user
         	  // Note: I use "Species.useInChI" because the "Species.useSolvation" updates were not yet committed.
-        	  if (line.equals("on"))
+        	  if (line.equals("on")) {
         		  Species.useInChI = true;
-        	  else if (line.equals("off"))
+        		  thermo_output += "Solution-phase chemistry!\n\n";
+        	  } else if (line.equals("off")) {
         		  Species.useInChI = false;
-        	  else {
+        		  thermo_output += "Gas-phase chemistry.\n\n";
+        	  } else {
         		  System.out.println("Error in reading thermo_input.txt file:\nThe field 'Solvation' has the options 'on' or 'off'.");
         		  return;
         	  }
@@ -95,7 +98,9 @@ public static void main(String[] args) {
 
           in.close();
           
-          String thermo_output = "";
+          thermo_output += "Order of entries: Name (read from thermo_input.txt) H298 S298 Cp300 Cp400 Cp500 Cp600 Cp800 Cp1000 C1500\n" +
+          	"Units of H: kcal/mol\nUnits of S and all Cp: cal/mol/K\n\n";
+          
           Iterator iter = speciesSet.iterator();       
           while (iter.hasNext()){
         	  Species spe = (Species)iter.next();
