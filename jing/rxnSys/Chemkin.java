@@ -759,6 +759,9 @@ public  Chemkin() {
       }
       result.append("END\n");
 
+      // Added by Amrit for Richard's liquid phase chemkin code 05/21/2009
+      result.append("\n");
+
       return result.toString();
 
       //#]
