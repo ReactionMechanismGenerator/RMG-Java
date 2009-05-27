@@ -34,7 +34,7 @@ import java.io.*;
 import java.util.*;
 
 import jing.mathTool.*;
-import jing.mathTool.Queue;
+//import jing.mathTool.Queue;
 import jing.chemUtil.*;
 import jing.chemParser.*;
 import jing.chemUtil.Node;
@@ -483,17 +483,54 @@ public class Species {
     //## operation generateResonanceIsomersFromRadicalCenter()
     private void generateResonanceIsomersFromRadicalCenter() {
         //#[ operation generateResonanceIsomersFromRadicalCenter()
+    	/*
+    	 * Updated on 27-May-2009 by Michael Harper
+    	 * 		(in consultation w/Richard West and Josh Allen)
+    	 * Problem: Running RMG produced a "Exception in thread "main" ...
+    	 * 		java.lang.ArrayIndexOutOfBoundsException at ...
+    	 * 		jing.mathTool.Queue.enqueue(Queue.java)", etc.
+    	 * The out-of-bounds index was the undoChemGraph index.  The size
+    	 * 		of the undoChemGraph was set to 4 times the number
+    	 * 		of atoms in the chemgraph.  For some species, this
+    	 * 		value was exceeded, causing RMG to fail.
+    	 * Solution: Change undoChemGraph from Queue() to LinkedList().
+    	 * 		Note: RMG-defined Queue.java is obsolete
+    	 * Examples: Try running a condition.txt file with the following
+    	 * 		sets of species.  Before, an exception would be caught.
+    	 * Test Case 1:
+    	 * 		1 C 0 {2,T}
+    	 * 		2 C 0 {1,T} {3,S}
+    	 * 		3 C 0 {2,S} {4,T}
+    	 * 		4 C 0 {3,T}
+    	 * 
+    	 * 		1 C 1 {2,D}
+    	 * 		2 C 0 {1,D} {3,D}
+    	 * 		3 C 1 {2,D}
+    	 * Test Case 2:
+    	 * 		1 C 2 {2,D}
+    	 * 		2 O 0 {1,D}
+    	 * 
+    	 * 		1 C 1 {2,D}
+    	 * 		2 C 0 {1,D} {3,D}
+    	 * 		3 C 0 {2,D} {4,D}
+    	 * 		4 O 0 {3,D}
+    	 */
+    	
+    	
         // only radical is considered here
         if (chemGraph.getRadicalNumber() <= 0) return;
 
         addResonanceIsomer(chemGraph);
-
-        Queue undoChemGraph = new Queue(4*chemGraph.getAtomNumber());
-        undoChemGraph.enqueue(chemGraph);
+        
+        LinkedList undoChemGraph = new LinkedList();
+        undoChemGraph.add(chemGraph);
+//        Queue undoChemGraph = new Queue(4*chemGraph.getAtomNumber());
+//        undoChemGraph.enqueue(chemGraph);
 
         HashSet processedChemGraph = new HashSet();
         while (!undoChemGraph.isEmpty()) {
-        	ChemGraph cg = (ChemGraph)undoChemGraph.dequeue();
+        	ChemGraph cg = (ChemGraph)undoChemGraph.remove();
+//        	ChemGraph cg = (ChemGraph)undoChemGraph.dequeue();
         	HashSet radicalNode = cg.getRadicalNode();
         	Iterator radicalIter = radicalNode.iterator();
         	while (radicalIter.hasNext()) {
@@ -506,7 +543,8 @@ public class Species {
         				Stack path = (Stack)pathIter.next();
         				ChemGraph newCG = doDelocalization(cg, path);
         				if (newCG!=null && !processedChemGraph.contains(newCG)) {
-        					undoChemGraph.enqueue(newCG);
+        					undoChemGraph.add(newCG);
+//        					undoChemGraph.enqueue(newCG);
         				}
         			}
         		}
