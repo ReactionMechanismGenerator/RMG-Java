@@ -167,7 +167,8 @@ public class ThermoGAGroupLibrary {
         String ringTree = directory + "Ring_Tree.txt";
         String ringLibrary = directory + "Ring_Library.txt";
         // end pey
-        String otherLibrary = directory + "Other_Library_Dictionary.txt";
+        String otherLibrary = directory + "Other_Library.txt";
+        String otherDictionary = directory + "Other_Dictionary.txt";
         String otherTree = directory + "Other_Tree.txt";
         
         String gauDictionary = directory + "Gauche_Dictionary.txt";
@@ -189,7 +190,7 @@ public class ThermoGAGroupLibrary {
         //String solventdict=directory+"Solvent_Dictionary.txt";
         //String solventlib=directory+"Solvent_Library.txt";
 
-        read(gDictionary,gTree,gLibrary,rDictionary,rTree,rLibrary,ringDictionary,ringTree,ringLibrary,otherLibrary,otherTree,gauDictionary,gauTree,gauLibrary,one5Dictionary,one5Tree,one5Library,AbDictionary,AbTree,AbLibrary,UnDictionary,UnTree,UnLibrary);
+        read(gDictionary,gTree,gLibrary,rDictionary,rTree,rLibrary,ringDictionary,ringTree,ringLibrary,otherDictionary,otherLibrary,otherTree,gauDictionary,gauTree,gauLibrary,one5Dictionary,one5Tree,one5Library,AbDictionary,AbTree,AbLibrary,UnDictionary,UnTree,UnLibrary);
 
 
 
@@ -452,7 +453,7 @@ public class ThermoGAGroupLibrary {
 
 
     //## operation read(String,String,String,String,String,String,String,String,String)
-	public void read(String p_groupDictionary, String p_groupTree, String p_groupLibrary, String p_radicalDictionary, String p_radicalTree, String p_radicalLibrary, String p_ringDictionary, String p_ringTree, String p_ringLibrary, String p_otherLibrary, String p_otherTree, String p_gaucheDictionary, String p_gaucheTree, String p_gaucheLibrary, String p_15Dictionary, String p_15Tree, String p_15Library,String p_abramDictionary,String p_abramTree,String p_abramLibrary,String p_unifacDictionary,String p_unifacTree,String p_unifacLibrary) { //,String p_solventDictionary,String p_solventLibrary) {
+	public void read(String p_groupDictionary, String p_groupTree, String p_groupLibrary, String p_radicalDictionary, String p_radicalTree, String p_radicalLibrary, String p_ringDictionary, String p_ringTree, String p_ringLibrary, String p_otherDictionary, String p_otherLibrary, String p_otherTree, String p_gaucheDictionary, String p_gaucheTree, String p_gaucheLibrary, String p_15Dictionary, String p_15Tree, String p_15Library,String p_abramDictionary,String p_abramTree,String p_abramLibrary,String p_unifacDictionary,String p_unifacTree,String p_unifacLibrary) { //,String p_solventDictionary,String p_solventLibrary) {
 	    // end pey
 	        //#[ operation read(String,String,String,String,String,String,String,String,String)
 	        // try {
@@ -482,6 +483,7 @@ public class ThermoGAGroupLibrary {
 	                // end pey
 
 	        	// step 4: read in Other Correction
+                    readOtherDictionary(p_otherDictionary);
                     readOtherLibrary(p_otherLibrary);
                     readOtherTree(p_otherTree);
 
@@ -564,22 +566,29 @@ public class ThermoGAGroupLibrary {
         //#]
     }
 
+    //## operation readOtherDictionary(String)
+    public void readOtherDictionary(String p_fileName) {
+        //#[ operation readOtherDictionary(String)
+        try {
+        	otherDictionary = readStandardDictionary(p_fileName);
+        	return;
+        }
+        catch (Exception e) {
+        	System.err.println("Error in read other dictionary!");
+        	System.exit(0);
+        }
+        //#]
+    }
+
     //## operation readOtherLibrary(String)
     public void readOtherLibrary(String p_fileName) {
         //#[ operation readOtherLibrary(String)
         try {
-        	readStandardCorrectionLibrary(p_fileName, otherLibrary);
-        	Iterator iter = otherLibrary.keySet().iterator();
-        	while (iter.hasNext()) {
-        		FunctionalGroup fg = (FunctionalGroup)iter.next();
-        		otherDictionary.put(fg.name, fg);
-        	}
-
+        	otherLibrary = readStandardLibrary(p_fileName, otherDictionary);
         	return;
         }
         catch (Exception e) {
-        	System.err.println("Can't read other correction Library!");
-        	System.err.println("Error: " + e.getClass().getName() + "  :  " + e.getMessage());
+        	System.err.println("Can't read Other Library!");
         	System.exit(0);
         }
 
