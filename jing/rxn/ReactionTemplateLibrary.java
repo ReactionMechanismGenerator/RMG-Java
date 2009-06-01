@@ -32,6 +32,7 @@ package jing.rxn;
 
 import java.io.*;
 import java.util.*;
+import jing.chemParser.ChemParser;
 
 //## package jing::rxn 
 
@@ -52,21 +53,65 @@ public class ReactionTemplateLibrary {
     
     //## operation ReactionTemplateLibrary() 
     private  ReactionTemplateLibrary() {
-        {
-            reactionTemplate=new LinkedHashSet();
-        }
-        //#[ operation ReactionTemplateLibrary() 
+        reactionTemplate=new LinkedHashSet();
+        
+        //#[ operation ReactionTemplateLibrary()
+
+        // Get the directory which contains the reaction families
         String kineticsDirectory = System.getProperty("jing.rxn.ReactionTemplateLibrary.pathName");
         if (kineticsDirectory == null) {
         	System.out.println("undefined system property: jing.rxn.ReactionTemplateLibrary.pathName, exit!");
         	System.exit(0);
         }
-        
         String separator = System.getProperty("file.separator");
         if (!kineticsDirectory.endsWith(separator)) kineticsDirectory = kineticsDirectory + separator;
+
+        // Read the file families.txt
+        try {
+        	String familiesPath = kineticsDirectory + "families.txt";
+            FileReader in = new FileReader(familiesPath);
+        	BufferedReader data = new BufferedReader(in);
+
+        	String line = ChemParser.readMeaningfulLine(data);
+        	while (line != null) {
+
+                // Tokenize string into its component tokens
+                StringTokenizer token = new StringTokenizer(line);
+                String index = token.nextToken();
+                String status = token.nextToken().toLowerCase();
+                String forward = token.nextToken();
+
+                // Check that family directory exists
+                String forwardPath = kineticsDirectory + forward + separator;
+                File forwardDir = new File(forwardPath);
+                if (!forwardDir.exists())
+                    throw new IOException("Reaction family \"" + forward + "\" specified in families.txt not found!");
+
+                if (status.equals("on")) {
+                    ReactionTemplate rt = new ReactionTemplate();
+                    rt.read(forward,kineticsDirectory + forward + separator);
+                    addReactionTemplate(rt);
+                    ReactionTemplate reverse_rt = rt.getReverseReactionTemplate();
+                    if (reverse_rt != null) addReactionTemplate(reverse_rt);
+                }
+                else {
+                    System.out.println("\nSkipping reaction family \"" + forward + "\"");
+                }
+
+        		line = ChemParser.readMeaningfulLine(data);
+        	}
+
+            in.close();
+        	return;
+        }
+        catch (IOException e) {
+        	System.out.println(e.getMessage());
+            System.exit(0);
+        }
+        
+        /*if (!kineticsDirectory.endsWith(separator)) kineticsDirectory = kineticsDirectory + separator;
 	      System.out.println("\nReading kinetics database from "+kineticsDirectory);        
-        read(kineticsDirectory);
-        //#]
+        read(kineticsDirectory);*/
     }
     
     //## operation isEmpty() 
