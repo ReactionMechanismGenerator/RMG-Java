@@ -695,7 +695,19 @@ public class Species {
 	        //#[ operation getChemkinName()
 		  if (addID){
 			  String chemkinName = getName() + "(" + getID() + ")";
-		        if (chemkinName.length() > 16) chemkinName = "SPC(" + getID() + ")";
+			  /* Updated by MRH on 1-Jun-2008
+			  	If statement used to check if chemkinName length was greater than 16
+			  	I've changed it to length 10.  Chemkin format dictates that any 
+			  	"A+B(+m)=C+D(+m)" be of length 52 or less.  Assuming we have 2 reactants
+			  	and 2 products for a pressure-dependent network, we already use:
+			  		- 2 characters (for the + symbol)
+			  		- 1 character (for the = symbol)
+			  		- 8 characters (4 for each of the (+m) symbols)
+			  	This leaves 52 - 11 - 41 characters for 4 species.  Thus, I've changed
+			  	the criteria from length 16 to length 10.
+			  */
+			  
+		        if (chemkinName.length() > 10) chemkinName = "SPC(" + getID() + ")";
 		        return chemkinName;
 		  }
 		  else
