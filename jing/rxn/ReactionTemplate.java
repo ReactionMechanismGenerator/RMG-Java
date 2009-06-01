@@ -1539,11 +1539,20 @@ public class ReactionTemplate {
           if (!seperator.equals("->")) throw new InvalidReactionAdjListFormatException();
           String pName1 = token.nextToken();
           int productNum = 1;
-          if (token.hasMoreTokens()) {
-          	seperator = token.nextToken();
-          	if (seperator.equals("+")) productNum++;
+//          if (token.hasMoreTokens()) {
+//          	seperator = token.nextToken();
+//          	if (seperator.equals("+")) productNum++;
+//          }
+		/* Updated by MRH on 1-Jun-2009
+			ReactionTemplate.java only looked for one or two products.
+			A. Jalan found a rxn to place into the database with the following recipe:
+				R1-H + R2-OOH -> R1 + R2-O + H2O
+			RMG now looks for as many products as the user specifies in the recipe.
+		*/
+          while (token.hasMoreTokens()) {
+        	  seperator = token.nextToken();
+        	  if (seperator.equals("+")) productNum++;
           }
-      
           // step 2 get reactant structure from dictionary to form structureTemplate
       	Matchable r1 = (Matchable)fgDictionary.get(fgName1);
       	if (r1 == null)	throw new NotInDictionaryException("During reading reactionAdjList: " + fgName1 + " is not found in functional group dictionary!");
