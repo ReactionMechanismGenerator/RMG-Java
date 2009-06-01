@@ -86,7 +86,14 @@ public class ConversionTT implements TerminationTester {
         	SpeciesStatus pss = p_presentStatus.getSpeciesStatus(spe);
         	double init_conc = iss.getConcentration();
         	double pres_conc = pss.getConcentration();
-        	if (pres_conc>init_conc || init_conc == 0) throw new InvalidConversionException();
+        	/* MRH on 1-Jun-2009
+        		Updated from pres_conc>init_conc to pres_conc>1.01*init_conc
+        			For certain cases, ODESovler would fail on the first step
+        			The ODESolver would change the limiting reactant concentration
+        			from 5.xxxxxxx3e-7 to 5.xxxxxxx5e-7 (for example), thus causing
+					RMG to throw an exception.
+			*/
+        	if (pres_conc>(1.01*init_conc) || init_conc == 0) throw new InvalidConversionException();
         	double conversion = (init_conc-pres_conc)/init_conc;
         	if (conversion < sc.getConversion()) return false;
         }
