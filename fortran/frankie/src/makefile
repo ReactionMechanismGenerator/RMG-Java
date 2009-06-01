@@ -11,7 +11,7 @@
 FORTRAN = g95
 
 # Name of executable
-BIN = ../frankie.exe
+BIN = frankie.exe
 
 # List of object files in project
 OBJ = dqed.o calc_freq_code.o 
@@ -37,6 +37,7 @@ clean:
 # Linker rule
 $(BIN): $(OBJ)
 	$(FORTRAN) $(OBJ) -o $(BIN) $(LFLAGS)
+	cp $(BIN) $(RMG)/software/frankie/ 
 
 # Compiler rule
 %.o: %.f90

@@ -12,4 +12,4 @@ GATPFit.exe:$(FOBJECTS)
 	$(F90) $(FLAGS) $<
 
 clean:
-	rm *.o *.exe
+	rm -f *.o *.exe

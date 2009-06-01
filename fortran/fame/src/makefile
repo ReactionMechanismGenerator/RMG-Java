@@ -22,7 +22,7 @@ CFLAGS = -ftrace=full
 #CFLAGS =
 
 # Linker flags
-LFLAGS = -L/usr/lib -lpthread -lblas -llapack
+LFLAGS = -L/usr/lib -lpthread -lblas -llapack -lg2c
 
 # ==============================================================================
 
