@@ -105,10 +105,12 @@ public class JDASSL extends JDAS {
     	outputString = new StringBuilder();
         //first generate an id for all the species
     	Iterator spe_iter = p_reactionModel.getSpecies();
-    	while (spe_iter.hasNext()){
-    		Species spe = (Species)spe_iter.next();
-    		int id = getRealID(spe);
-    	}
+    	// Commented out by MRH on 1-Jun-2009:
+    	//	What is the purpose of this while loop?
+//    	while (spe_iter.hasNext()){
+//    		Species spe = (Species)spe_iter.next();
+//    		int id = getRealID(spe);
+//    	}
     	double startTime = System.currentTimeMillis();
 		
 		ReactionTime rt = p_beginStatus.getTime();
