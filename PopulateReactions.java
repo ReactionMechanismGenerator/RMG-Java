@@ -31,6 +31,7 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
 
@@ -39,6 +40,8 @@ import jing.chem.ForbiddenStructureException;
 import jing.chem.Species;
 import jing.chemParser.ChemParser;
 import jing.chemUtil.Graph;
+import jing.param.Global;
+import jing.param.Temperature;
 import jing.rxn.Kinetics;
 import jing.rxn.Reaction;
 import jing.rxn.TemplateReactionGenerator;
@@ -60,6 +63,14 @@ public class PopulateReactions {
 	 */
 	public static void main(String[] args) {
 		initializeSystemProperties();
+		// Set Global.lowTemp and Global.highTemp
+		//	The values of the low/highTemp are not used in the function.
+		//	They are necessary for the instances of additionalKinetics, 
+		//	e.g. H2C*-CH2-CH2-CH3 -> H3C-CH2-*CH-CH3
+		Global.lowTemperature = new Temperature(300,"K");
+		Global.highTemperature = new Temperature(1500,"K");
+		// Define an integer to count the number of sets of duplicate kinetics
+		int numDupKinetics = 0;
 		// Define variable 'speciesSet' to store the species contained in the input file
 		LinkedHashSet speciesSet = new LinkedHashSet();
 		// Define variable 'reactions' to store all possible rxns between the species in speciesSet
@@ -112,13 +123,15 @@ public class PopulateReactions {
 			Iterator iter_rxns = reactions.iterator();
         	while (iter_rxns.hasNext()){
         		Reaction r = (Reaction)iter_rxns.next();
-        		Kinetics rxn_k = r.getKinetics();
-        		listOfReactions += r.toString()	+ "\t" + rxn_k.getAValue()
-        										+ "\t" + rxn_k.getNValue()
-        										+ "\t" + rxn_k.getEValue()
-        										+ "\t" + rxn_k.getSource()
-        										+ rxn_k.getComment()
-        										+ "\n";
+        		if (r.hasAdditionalKinetics()) {
+        			++numDupKinetics;
+        			HashSet indiv_rxn = r.getAllKinetics();
+        			for (Iterator iter = indiv_rxn.iterator(); iter.hasNext();) {
+        				Kinetics k_rxn = (Kinetics)iter.next();
+        				listOfReactions += r.toString() + "\t" + updateListOfReactions(k_rxn) + "\tDUP " + numDupKinetics + "\n";
+        			}
+        		} else listOfReactions += r.toString() + "\t" + updateListOfReactions(r.getKinetics());
+
         		// Add the products of the reactions to the list of species
         		//	hash set.  The reactants of each reaction are already
         		//	present.  This list will allow us to generate the graphs
@@ -168,5 +181,12 @@ public class PopulateReactions {
 		System.setProperty("jing.chem.ThermoGAGroupLibrary.pathName",	workingDir + "/databases/" + name + "/thermo");
 		System.setProperty("jing.rxn.ReactionTemplateLibrary.pathName",	workingDir + "/databases/" + name + "/kinetics");
 	};
+	
+	public static String updateListOfReactions(Kinetics rxn_k) {
+		String output = rxn_k.getAValue() + "\t" + rxn_k.getNValue()
+			   + "\t" + rxn_k.getEValue() + "\t" + rxn_k.getSource()
+			   + rxn_k.getComment()	+ "\n";
+		return output;
+	}
 
 }
