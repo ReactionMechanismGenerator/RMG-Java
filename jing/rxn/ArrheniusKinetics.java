@@ -102,7 +102,14 @@ public class ArrheniusKinetics implements Kinetics {
         double min_E=Double.MAX_VALUE;
         double max_alpha=Double.MIN_VALUE;
         double min_alpha=Double.MAX_VALUE;
-        String source = "Average Rate Constants calculated from:\n";
+        //String source = "Average Rate Constants calculated from:\n";
+        /*
+         * Commented out by MRH on 11-Jun-2009
+         * 	Some of the numbers reported in the chem.inp files are averages
+         * 	of averages of averages of ... To condense the length of the "source"
+         * 	string, I've shorted the expression to "Average of:"
+         */
+        String source = "Average of: (";
                 
         int index = 0;
         Iterator iter = p_kSet.iterator();
@@ -144,9 +151,25 @@ public class ArrheniusKinetics implements Kinetics {
         	if (max_E < E_upper) max_E = E_upper;
         	if (min_E > E_lower) min_E = E_lower;
         	sum_E += E;                                             
-                    
+        	
+        	/*
+        	 * Update the source of this node. (MRH 11-Jun-2009)
+        	 * 	The source string begins with "Average of:".  This line
+        	 * 	updates that string with one of the sets of nodes used
+        	 * 	in the averaging process.  The && is my way of separting
+        	 * 	the sets of nodes from one another.
+        	 * 
+        	 * Before, RMG kept no record of what was being averaged.
+        	 */
+        	source += k.source + " && ";
             //source = source + "(" + String.valueOf(index) +")" + k.toChemkinString() + '\n';
         }
+        /*
+         * This next line removes the last " && " expression and closes
+         * 	the parentheses.  The syntax is "source.length() - 4" because
+         * 	the " && " expression is length 4.
+         */
+        source = source.substring(0,source.length()-4) + ")";
                 
         double new_A = Math.exp(sum_logA/size);
         double new_dA = Math.max(max_A/new_A, new_A/min_A);
