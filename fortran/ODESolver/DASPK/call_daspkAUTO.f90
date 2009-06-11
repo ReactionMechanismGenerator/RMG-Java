@@ -18,7 +18,7 @@ PROGRAM CALL_DASPKAUTO
       INCLUDE 'reaction.fh'
 
 
-      INTEGER INFO(30), LRW, LIW, I, J, IDID, NSTEPS, IMPSPECIES,numiter &
+      INTEGER INFO(30), LRW, LIW, I, J, IDID, NSTEPS, IMPSPECIES, numiter, & !gmagoon 6/11/09: fixed comma issue
      &     AUTOFLAG, ESPECIES, EREACTIONSIZE
       DOUBLE PRECISION Y(NEQMAX), YPRIME(NEQMAX), T, TOUT, RTOL, ATOL, &
      &     THERMO(SPMAX), TARGETCONC(50), THRESH
@@ -95,7 +95,7 @@ PROGRAM CALL_DASPKAUTO
          READ(12,*) TROEREACTIONSIZE
          READ(12,*)(TROEREACTIONARRAY(I),I=1,21*TROEREACTIONSIZE)
          READ(12,*)(TROEREACTIONRATEARRAY(I),I=1,21*TROEREACTIONSIZE)
-         CLOSE(12)
+
 ! 6/26/08 gmagoon: if autoFlag = 1, read in additional information 
 ! specific to automatic time stepping
 	IF (AUTOFLAG .EQ. 1) THEN
@@ -197,10 +197,13 @@ PROGRAM CALL_DASPKAUTO
          read(13) temperature, pressure
          close(13)
       END IF
-
-
+      
+      CLOSE(12) !gmagoon 6/11/09: moved location for closing 12
+      !(the input file) so that it is not closed before AUTO
+      !information is read in
+      
       if (NUMITER .eq. 1) then
-         CALL SOLVEODE(Y, YPRIME, T, TOUT, INFO, RTOL, ATOL, IDID,&
+         CALL SOLVEODE(Y, YPRIME, T, TOUT, INFO, RTOL, ATOL, IDID, &
      &        THERMO, IMPSPECIES, TARGETCONC(1),AUTOFLAG, &
      &     THRESH,ESPECIES,EREACTIONSIZE,NEREAC,NEPROD,IDEREAC, &
      &     IDEPROD,KVEC)
@@ -250,8 +253,8 @@ PROGRAM CALL_DASPKAUTO
       INTEGER IDEREAC(EREACTIONSIZE,3), IDEPROD(EREACTIONSIZE,3)
       DOUBLE PRECISION KVEC(EREACTIONSIZE)
 
-      DOUBLE PRECISION Y(NEQ), YPRIME(NEQ), Time, TOUT, RTOL, ATOL,&
-    &     , RWORK(51+9*NEQ+NSTATE**2), THERMO(SPMAX), TFINAL,
+      DOUBLE PRECISION Y(NEQ), YPRIME(NEQ), Time, TOUT, RTOL, ATOL, & !gmagoon 6/11/09: fixed space/comma issue
+    &     RWORK(51+9*NEQ+NSTATE**2), THERMO(SPMAX), TFINAL, & !gmagoon 6/11/09: fixed ampersand issue
     &     TARGETCONC, THRESH
 
       DOUBLE PRECISION RPAR(REACTIONSIZE+THIRDBODYREACTIONSIZE+ &
@@ -359,8 +362,7 @@ PROGRAM CALL_DASPKAUTO
 ! different value
       IF (IMPSPECIES .EQ. -1) THEN
 
- 1       IF (Time .LE. TOUT.AND. EDGEFLAG .EQ. -1) &
-     &        THEN
+ 1       IF (Time .LE. TOUT.AND. EDGEFLAG .EQ. -1) THEN !6/11/09 gmagoon: condensing onto one line to avoid warning
             CALL DDASPK(RES, NEQ, Time, Y, YPRIME, TOUT, INFO, RTOL, &
      &           Atol,IDID,RWORK, LRW, IWORK, LIW, RPAR, IPAR, JAC,PSOL, &
      &           SENPAR, G_RES)
@@ -404,7 +406,8 @@ PROGRAM CALL_DASPKAUTO
                WRITE(*,*) "Warning: 500 steps were already taken, taking &
      &              another 500 steps"
                INFO(1) = 1
-               GO TO 1
+               GO TO 2 !gmagoon 6/11/09: fixed to go to 2 (was originally 1,
+  ! but I think this was incorrect and it was causing compiler warning)
             else if (idid .eq. 1) then
                iter = iter+1
 
