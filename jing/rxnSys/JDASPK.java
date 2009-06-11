@@ -156,13 +156,13 @@ public class JDASPK extends JDAS {
         if (autoflag) af = 1;
         if (tt instanceof ConversionTT){
         	SpeciesConversion sc = (SpeciesConversion)((ConversionTT)tt).speciesGoalConversionSet.get(0);
-            outputString.append(nState + "\t" + neq + "\t" +  getRealID(sc.species) + "\t 1 \n" );
-            outputString.append(conversionSet[p_iterationNum]+"\t"+ af+"\n");//6/25/08 gmagoon: added autoflag, needed when using daspkAUTO.exe
+            outputString.append(nState + "\t" + neq + "\t" +  getRealID(sc.species) + "\t 1" +"\t"+ af + "\n"); //6/25/08 gmagoon: added autoflag, needed when using daspkAUTO.exe
+            outputString.append(conversionSet[p_iterationNum]+"\n");
     		
         }
         else{
-        	outputString.append(nState + "\t" + neq + "\t" +  -1 + "\t" +1+"\n");
-        	outputString.append(0+"\t"+ af+"\n");//6/25/08 gmagoon: added autoflag, needed when using daspkAUTO.exe
+        	outputString.append(nState + "\t" + neq + "\t" +  -1 + "\t" +1+"\t"+ af + "\n");//6/25/08 gmagoon: added autoflag, needed when using daspkAUTO.exe
+        	outputString.append(0+"\n");
     		
         }
         outputString.append( tBegin+" "+tEnd+"\n" );
