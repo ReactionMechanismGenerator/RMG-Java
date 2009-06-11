@@ -92,6 +92,7 @@ public abstract class JDAS implements DAESolver {
 	protected double [] reactionFlux;
 	protected double [] conversionSet;
 	protected double endTime;
+        protected StringBuilder thermoString = new StringBuilder();
 	
 	protected JDAS() {
         
@@ -429,7 +430,8 @@ public abstract class JDAS implements DAESolver {
         Integer id = (Integer)IDTranslator.get(p_species);
         if (id == null) {
         	id = new Integer(IDTranslator.size()+1);
-			IDTranslator.put(p_species, id);
+	        IDTranslator.put(p_species, id);
+                thermoString.append(p_species.calculateG(initialStatus.getTemperature()) + " ");//10/26/07 gmagoon: changed to avoid use of Global.temperature;****ideally, current temperature would be used, but initial temperature is simplest to pass in current implementation
         }
         return id.intValue();
     }

@@ -58,8 +58,6 @@ import jing.param.ParameterInfor;
 
 //## class JDASPK
 public class JDASPK extends JDAS {
-
-    protected StringBuilder thermoString = new StringBuilder();
 	
 	private JDASPK() {
         super();
