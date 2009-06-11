@@ -36,6 +36,7 @@ import jing.param.*;
 import jing.mathTool.*;
 import jing.chem.Species;
 import jing.chem.ChemGraph;
+import jing.chemUtil.Graph;
 import jing.param.Temperature;
 
 //## package jing::rxn
@@ -706,6 +707,57 @@ public class Structure {
         	if (!found) return false;
         }
 
+        if (templist.isEmpty()) return true;
+        else return false;
+        //#]
+    }
+    
+    /**
+     *	isSpeciesListEquivalentToChemGraphListAsGraphs.java
+     *		Compares a list of species to a list of chemgraphs and determines
+     *		if the lists are equivalent.
+     *
+     *		The first LinkedList passed to the function is a list of species;
+     *		the second is a list of chemgraphs
+     *
+     *		This function is primarily used to determine if a just formed
+     *		rxn is equivalent to any of the rxns stored in the primary
+     *		reaction libraries.  The p_list1 contains all of the structures
+     *		stored in the primary rxn library; these have already been
+     *		added to the core of the mechanism, thus the structure contains
+     *		reactants/products whose entries are species.  The p_list2
+     *		contains the just formed structure; this is still in the edge
+     *		of the model and thus its entries are chemgraphs.
+     **/
+    public static boolean isSpeciesListEquivalentToChemGraphListAsGraphs(LinkedList p_list1, LinkedList p_list2) {
+        if (p_list1.size() != p_list2.size()) return false;
+
+        boolean found = false;
+
+        LinkedList templist = (LinkedList)(p_list2.clone());
+        for (Iterator iter1 = p_list1.iterator(); iter1.hasNext();) {
+			Species sp1 = (Species)iter1.next();	// This list contains species
+			Graph g1 = sp1.getChemGraph().getGraph();
+        	found = false;
+        	for (Iterator iter2 = templist.iterator(); iter2.hasNext();) {
+				ChemGraph cg2 = (ChemGraph)iter2.next();	// This list contains chemgraphs
+				Graph g2 = cg2.getGraph();
+        		if (g1.isEquivalent(g2)) {
+        			// If the two graphs are equivalent, remove the current
+        			//	chemgraph from the Iterator iter2 so we no longer
+        			//	try to match that chemgraph
+        			found = true;
+        			iter2.remove();
+        			break;
+        		}
+        	}
+        	// If we could not match the species' graph against
+        	//	any of the chemgraphs' graph, the list is not equivalent
+        	if (!found) return false;
+        }
+
+        // If we found a match for all entries in the list, the
+        //	templist will be empty.
         if (templist.isEmpty()) return true;
         else return false;
         //#]
