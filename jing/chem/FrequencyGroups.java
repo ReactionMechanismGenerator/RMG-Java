@@ -109,7 +109,12 @@ public class FrequencyGroups{//gmagoon 111708: removed "implements GeneralGAPP"
             FileWriter fw = new FileWriter(franklInput);
             fw.write(p_thermoData.getCp300()+" "+p_thermoData.getCp400()+" "+p_thermoData.getCp500()+" "+p_thermoData.getCp600()+" "+p_thermoData.getCp800()+" "+p_thermoData.getCp1000()+" "+p_thermoData.getCp1500()+"\n");
             fw.write(atoms+"\n");
-            fw.write(rotor+"\n");
+//            fw.write(rotor+"\n");
+            // Commented out by MRH (in conjunction with CFG) on 12-Jun-2009
+            //	Some cyclic species were taking ~30 seconds to converge
+            //	CFG suggested setting the rotor number to zero for all cyclic species
+            if (p_chemGraph.isAcyclic()) fw.write(rotor+"\n");
+            else fw.write(0+"\n");
             fw.write(linearity+"\n");
             //print the group counts to the file for acyclic case
             if(p_chemGraph.isAcyclic()){
