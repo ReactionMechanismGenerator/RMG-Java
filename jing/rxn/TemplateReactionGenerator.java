@@ -167,6 +167,14 @@ public class TemplateReactionGenerator implements ReactionGenerator {
         Iterator template_iter = reactionTemplateLibrary.getReactionTemplate();
         while (template_iter.hasNext()) {
         	ReactionTemplate current_template = (ReactionTemplate)template_iter.next();
+        	/*
+        	 * Added by MRH on 12-Jun-2009
+        	 * Display more information to the user:
+        	 * 	This println command informs the user which rxn family template
+        	 *		the new core species is reacting against
+        	 */
+        	System.out.println("Reacting " + p_species.getName() + " with the core: " + current_template.name);
+        	
         	// the reaction template has only one reactant, we only need to loop over the whole species seed set to find a match
         	double startTime = System.currentTimeMillis();
 			if (current_template.hasOneReactant()) {
