@@ -245,7 +245,7 @@ public class AbstractReactionModel implements ReactionModel {
     public void outputModelByTemplates() {
         //#[ operation outputModelByTemplates() 
         String s = "Species Set:\n";
-        s = s + "Totally " + String.valueOf(getSpeciesNumber()) + " Species:\n";
+        s = s + "Total of " + String.valueOf(getSpeciesNumber()) + " Species:\n";
         LinkedList sortedSpeList = new LinkedList();
         for (Iterator iter = species.iterator(); iter.hasNext(); ) {
         	Species spe = (Species)iter.next();
@@ -271,7 +271,7 @@ public class AbstractReactionModel implements ReactionModel {
         }
          
         s = s + "\nReaction Set:\n";
-        s = s + "Totally " + String.valueOf(getReactionNumber()) + " Reactions:\n";
+        s = s + "Total of " + String.valueOf(getReactionNumber()) + " Reactions:\n";
         for (Iterator iter = reaction.iterator(); iter.hasNext(); ) {
         	Reaction r = (Reaction)iter.next();
         	s = s + r.toString() + '\n';
@@ -283,10 +283,10 @@ public class AbstractReactionModel implements ReactionModel {
     //## operation printModel() 
     public void printModel() {
         //#[ operation printModel() 
-        System.out.print("This model include totally " + String.valueOf(getSpeciesNumber()) + " Species and ");
+        System.out.print("This model include a total of " + String.valueOf(getSpeciesNumber()) + " Species and ");
         System.out.println(String.valueOf(getReactionNumber()) + " Reactions.");
         System.out.println("Species Set:");
-        System.out.println("Totally " + String.valueOf(getSpeciesNumber()) + " Species:");
+        System.out.println("Total of " + String.valueOf(getSpeciesNumber()) + " Species:");
         LinkedList sortedSpeList = new LinkedList();
         for (Iterator iter = getSpecies(); iter.hasNext(); ) {
         	Species spe = (Species)iter.next();
@@ -312,7 +312,7 @@ public class AbstractReactionModel implements ReactionModel {
         }
          
         System.out.println("\nReaction Set:");
-        System.out.println("Totally " + String.valueOf(getReactionNumber()) + " Reactions:");
+        System.out.println("Total of " + String.valueOf(getReactionNumber()) + " Reactions:");
         for (Iterator iter = getReaction(); iter.hasNext(); ) {
         	Reaction r = (Reaction)iter.next();
         	System.out.println(r);
@@ -354,10 +354,10 @@ public class AbstractReactionModel implements ReactionModel {
     //## operation toString() 
     public String toString() {
         //#[ operation toString() 
-        String s = "This model include totally " + String.valueOf(getSpeciesNumber()) + " Species and ";
+        String s = "This model include a total of " + String.valueOf(getSpeciesNumber()) + " Species and ";
         s = s + String.valueOf(getReactionNumber()) + " Reactions.\n";
         s = s + "Species Set:\n";
-        s = s + "Totally " + String.valueOf(getSpeciesNumber()) + " Species:\n";
+        s = s + "Total of " + String.valueOf(getSpeciesNumber()) + " Species:\n";
         LinkedList sortedSpeList = new LinkedList();
         for (Iterator iter = getSpecies(); iter.hasNext(); ) {
         	Species spe = (Species)iter.next();
@@ -383,7 +383,7 @@ public class AbstractReactionModel implements ReactionModel {
         }
          
         s = s + "\nReaction Set:\n";
-        s = s + "Totally " + String.valueOf(getReactionNumber()) + " Reactions:\n";
+        s = s + "Total of " + String.valueOf(getReactionNumber()) + " Reactions:\n";
         for (Iterator iter = getReaction(); iter.hasNext(); ) {
         	Reaction r = (Reaction)iter.next();
         	s = s + r.toString() + '\n';
