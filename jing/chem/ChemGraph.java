@@ -57,7 +57,9 @@ public class ChemGraph implements Matchable {
     Maximal radical number allowed in a ChemGraph.
     */
     protected static int MAX_RADICAL_NUM = 10;		//## attribute MAX_RADICAL_NUM
-
+    
+    public static boolean useQM = false;//gmagoon 6/15/09: flag for thermo estimation using quantum results; there may be a better place for this (Global?) but for now, this should work
+    
     /**
     Chemical Formula of a ChemGraph.
     */
@@ -99,6 +101,7 @@ public class ChemGraph implements Matchable {
     protected boolean fromprimarythermolibrary = false;
     protected boolean isAromatic = false;
     protected String InChI;
+    protected String InChIKey;
     // Constructors
 
     //## operation ChemGraph()
@@ -1105,11 +1108,19 @@ return sn;
         //#]
     }
     
-    public String generateInChI() {
-    	InChI = Species.generateInChI(this);
-    	return InChI;
+    //6/9/09 gmagoon: modified to also generate InChIKey; see comments in corresponding Species function
+    public String [] generateInChI() {
+    	String [] result = Species.generateInChI(this);
+        InChI = result[0];
+        InChIKey = result[1];
+    	return result;
     }
-
+    
+    public String generateMolFileString() {
+    	String mfs = Species.generateMolFileString(this);
+    	return mfs;
+    }
+    
     /**
     Requires:
     Effects: if the thermoGAPP is not set, set default GAPP.  Use it to calculate the thermoData of this chem graph.  if there is any exception during this process, throw FailGenerateThermoDataException.
@@ -1120,7 +1131,8 @@ return sn;
         //#[ operation generateThermoData()
         // use GAPP to generate Thermo data
         try {
-        	if (thermoGAPP == null) setDefaultThermoGAPP();
+                if (useQM) thermoGAPP=QMTP.getINSTANCE();//6/2/09 gmagoon: temporarily default to QM calc; later we will have a flag in the input file for this
+                else if (thermoGAPP == null) setDefaultThermoGAPP();
         	thermoData = thermoGAPP.generateThermoData(this);
             //thermoData = thermoGAPP.generateAbramData(this);
         	return thermoData;
@@ -1335,6 +1347,11 @@ return sn;
     public String getInChI() {
     	if (InChI == null || InChI.length() == 0) generateInChI();
     	return InChI;
+    }
+    
+    public String getInChIKey() {
+    	if (InChIKey == null || InChIKey.length() == 0) generateInChI();
+    	return InChIKey;
     }
 
     /**

@@ -261,6 +261,15 @@ public class ReactionModelGenerator {
         	}
         	else throw new InvalidSymbolException("condition.txt: Cannot find InChIGeneration flag.");
 
+                // Read in optional QM thermo  generation
+        	if (line.startsWith("Thermo method:")) {
+        		StringTokenizer st = new StringTokenizer(line);
+        		String name = st.nextToken();
+        		String thermoMethod = st.nextToken().toLowerCase();
+        		if (thermoMethod.equals("qm")) {
+        			ChemGraph.useQM = true;
+        		}//otherwise, the flag useQM will remain false by default and the traditional group additivity approach will be used
+        	}
 //            // Read in Solvation effects
 //            if (line.startsWith("Solvation:")) {
 //        		StringTokenizer st = new StringTokenizer(line);

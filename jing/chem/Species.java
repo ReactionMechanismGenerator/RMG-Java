@@ -324,7 +324,7 @@ public class Species {
         chemGraph = stablest;
         //#]
     }
-
+    
 	public void generateNASAThermoData() {
         //nasaThermoData = Therfit.generateNASAThermoData(this);
         nasaThermoData = GATPFit.generateNASAThermoData(this);
@@ -1074,10 +1074,140 @@ public class Species {
     }
 	
 	// Convert ChemGraph (p_chemGraph) to String (InChIstring)
-	public static String generateInChI(ChemGraph p_chemGraph) {
-		
+        // 6/9/09 gmagoon: updated to also read InChIKey
+        //output is string array with first ([0]) element being the InChI string (with "InChI="); the second ([1]) element will be the InChIKey (WITHOUT "InChIKey=")
+        // the function can be easily changed to accomodate other versions of the InChI program by changing the command line options (optionsArgument); for example, if InChIKey generation is turned off, the second element of the string array will be an empty string;
+	public static String [] generateInChI(ChemGraph p_chemGraph) {
+		String [] result = new String[2];
 		String InChIstring = "";
-		// Convert chemGraph to string
+                String InChIKeystring = "";
+                String line = "";
+                String cTable = generateMolFileString(p_chemGraph);
+		
+		//
+                File molFile = null;
+		String workingDirectory = System.getProperty("RMG.workingDirectory");
+		String inchiDirectory = "InChI";
+
+		// Write the cTable to species.mol file
+        try {
+        	molFile = new File(inchiDirectory + "/species.mol");
+        	FileWriter fw = new FileWriter(molFile);
+        	fw.write(cTable);
+        	fw.close();
+        } catch (IOException e) {
+        	String err = "Error writing species.mol file for InChI generation: ";
+        	err += e.toString();
+        	System.out.println(err);
+        }
+        
+        // Call cINChI-1 executable file
+//        String optionsArgument = "";
+//        if (getOs().toLowerCase().contains("windows"))
+//        	optionsArgument = "/DoNotAddH /FixedH /Key";//6/9/09 gmagoon: added fixed H so tautomers are considered separately; this is apparently not an option for version 1.02 (standard inchi); also added Key option to generate inchikey...this is only available in version 1.02beta or later; therefore, this keyword combination will only work for version 1.02beta (as of now)
+//        else if (getOs().toLowerCase().contains("linux"))
+//        	optionsArgument = "-DoNotAddH -FixedH -Key";
+//        else if (getOs().toLowerCase().contains("mac"))
+//        	optionsArgument = "-DoNotAddH -FixedH -Key";
+        //6/9/09 gmagoon: I have reorganized the function in order to get around difficulty when using multiple options...if I just try to pass all options as a string (e.g. "-DoNotAddH -FixedH -Key") it is not correctly interpreted by the InChI program (note that leading "/" is not shown in the resulting "unrecognized option" warning);
+        //I would have liked to have specified optionsArgument as an array of strings, but I was getting "illegal start of expression" errors in NetBeans IDE
+        int exitValue = -1;
+        //while (exitValue != 0) {
+            try {
+                if (getOs().toLowerCase().contains("windows")){
+                    String[] command = {workingDirectory + "/software/InChI/cInChI-1",
+                        "species.mol",
+                        "species.txt",
+                        "/DoNotAddH", "/FixedH", "/Key"};//6/9/09 gmagoon: added fixed H so tautomers are considered separately; this is apparently not an option for version 1.02 (standard inchi); also added Key option to generate inchikey...this is only available in version 1.02beta or later; therefore, this keyword combination will only work for version 1.02beta (as of now)
+                    File runningDir = new File("InChI");
+                    Process InChI = Runtime.getRuntime().exec(command, null, runningDir);
+
+                    InputStream errStream = InChI.getErrorStream();
+                    InputStream inpStream = InChI.getInputStream();
+                    errStream.close();
+                    inpStream.close();
+
+                    exitValue = InChI.waitFor();               
+                }
+                else if (getOs().toLowerCase().contains("linux")){
+                    String[] command = {workingDirectory + "/software/InChI/cInChI-1",
+                        "species.mol",
+                        "species.txt",
+                        "-DoNotAddH", "-FixedH", "-Key"};
+                    File runningDir = new File("InChI");
+                    Process InChI = Runtime.getRuntime().exec(command, null, runningDir);
+
+                    InputStream errStream = InChI.getErrorStream();
+                    InputStream inpStream = InChI.getInputStream();
+                    errStream.close();
+                    inpStream.close();
+
+                    exitValue = InChI.waitFor();
+                }
+                else if (getOs().toLowerCase().contains("mac")){
+                    String[] command = {workingDirectory + "/software/InChI/cInChI-1",
+                        "species.mol",
+                        "species.txt",
+                        "-DoNotAddH", "-FixedH", "-Key"};
+                    File runningDir = new File("InChI");
+                    Process InChI = Runtime.getRuntime().exec(command, null, runningDir);
+
+                    InputStream errStream = InChI.getErrorStream();
+                    InputStream inpStream = InChI.getInputStream();
+                    errStream.close();
+                    inpStream.close();
+
+                    exitValue = InChI.waitFor();
+                }
+                
+//                File runningDir = new File("InChI");
+//                Process InChI = Runtime.getRuntime().exec(command, null, runningDir);
+//
+//                InputStream errStream = InChI.getErrorStream();
+//                InputStream inpStream = InChI.getInputStream();
+//                errStream.close();
+//                inpStream.close();
+//
+//                exitValue = InChI.waitFor();
+            }
+            catch (Exception e) {
+                String err = "Error running cINChI-1: ";
+                err += e.toString();
+                System.out.println(err);
+            }
+        //}
+		
+		// Read in the output of the cINChI-1 executable file (species.txt)
+        FileReader in = null;
+		try {
+			in = new FileReader(inchiDirectory + "/species.txt");
+		} catch (FileNotFoundException e) {
+			String err = "Error reading species.txt file: ";
+			err += e.toString();
+			System.out.println(err);
+		}
+        
+		BufferedReader reader = new BufferedReader(in);
+        line = ChemParser.readMeaningfulLine(reader);
+        read: while (line != null) {
+        	if (line.startsWith("InChI=")) {//changed from InChI to InChI= (to distinguish fro InChIKey
+        		InChIstring = line;
+        	}
+                else if (line.startsWith("InChIKey=")) {//changed from "InChI" to "InChI=" (to distinguish from "InChIKey="
+        		InChIKeystring = line.replace("InChIKey=", "");//read in the InChIKey without the preceding "InChIKey="
+        		break;
+        	}
+        	line = ChemParser.readMeaningfulLine(reader);
+            }
+        result[0]=InChIstring;
+        result[1]=InChIKeystring;
+        return result;
+	}
+	
+        //convert a chemgraph into a string that represents a 2D molefile with all atom positions initialized to zero
+        //gmagoon 6/2/09: I separated this out from generateInChI so it could be easily be used elsewhere
+        public static String generateMolFileString(ChemGraph p_chemGraph) {
+    		// Convert chemGraph to string
 		int randNum = 1;
 		String p_string = p_chemGraph.toString(randNum);
 		StringTokenizer st = new StringTokenizer(p_string);
@@ -1229,79 +1359,10 @@ public class Species {
 			}
 		}
 		cTable += "\nM  END";
-		
-		//
-        File molFile = null;
-		String workingDirectory = System.getProperty("RMG.workingDirectory");
-		String inchiDirectory = "InChI";
-
-		// Write the cTable to species.mol file
-        try {
-        	molFile = new File(inchiDirectory + "/species.mol");
-        	FileWriter fw = new FileWriter(molFile);
-        	fw.write(cTable);
-        	fw.close();
-        } catch (IOException e) {
-        	String err = "Error writing species.mol file for InChI generation: ";
-        	err += e.toString();
-        	System.out.println(err);
-        }
+                
+                return cTable;
+    }
         
-        // Call cINChI-1 executable file
-        String optionsArgument = "";
-        if (getOs().toLowerCase().contains("windows"))
-        	optionsArgument = "/DoNotAddH";
-        else if (getOs().toLowerCase().contains("linux"))
-        	optionsArgument = "-DoNotAddH";
-        else if (getOs().toLowerCase().contains("mac"))
-        	optionsArgument = "-DoNotAddH";
-
-        int exitValue = -1;
-        //while (exitValue != 0) {
-            try {
-                String[] command = {workingDirectory + "/software/InChI/cInChI-1",
-                        "species.mol",
-                        "species.txt",
-                        optionsArgument};
-                File runningDir = new File("InChI");
-                Process InChI = Runtime.getRuntime().exec(command, null, runningDir);
-
-                InputStream errStream = InChI.getErrorStream();
-                InputStream inpStream = InChI.getInputStream();
-                errStream.close();
-                inpStream.close();
-
-                exitValue = InChI.waitFor();
-            }
-            catch (Exception e) {
-                String err = "Error running cINChI-1: ";
-                err += e.toString();
-                System.out.println(err);
-            }
-        //}
-		
-		// Read in the output of the cINChI-1 executable file (species.txt)
-        FileReader in = null;
-		try {
-			in = new FileReader(inchiDirectory + "/species.txt");
-		} catch (FileNotFoundException e) {
-			String err = "Error reading species.txt file: ";
-			err += e.toString();
-			System.out.println(err);
-		}
-        
-		BufferedReader reader = new BufferedReader(in);
-        line = ChemParser.readMeaningfulLine(reader);
-        read: while (line != null) {
-        	if (line.startsWith("InChI")) {
-        		InChIstring = line;
-        		break;
-        	}
-        	line = ChemParser.readMeaningfulLine(reader);
-        }
-        return InChIstring;
-	}
-	
 	public static String inchi2chemGraph (String p_inchi) {
 		String workingDirectory = System.getProperty("RMG.workingDirectory");
 		String inchiDirectory = "InChI";

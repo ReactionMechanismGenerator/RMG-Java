@@ -176,6 +176,18 @@ public class RMG {
 		ChemParser.deleteDir(inchi);
 		inchi.mkdir();
 		
+                //6/3/09 gmagoon: create folders for 3D geometries
+                File twoDmol = new File("2Dmolfiles");
+		ChemParser.deleteDir(twoDmol);//this will clear out contents from previous run; I don't necessarily want this, and I may want to only create the folder if it doesn't exist already
+		twoDmol.mkdir();
+                File threeDmol = new File("3Dmolfiles");
+		ChemParser.deleteDir(threeDmol);
+		threeDmol.mkdir();
+                File qmfiles = new File("Gaussianfiles");
+		//ChemParser.deleteDir(qmfiles);
+		if(!qmfiles.exists()){//create if it doesn't exist; we will not delete files because we want to preserve them between runs to speed things up
+                    qmfiles.mkdir();
+                }
 		
 		 String workingDir = System.getenv("RMG");
 	     System.setProperty("RMG.workingDirectory", workingDir);
