@@ -32,7 +32,7 @@ END
 
 InertGas:
 N2 0.8797 (mol/cm3)
-AR 0.0e-6 (mol/cm3)
+Ar 0.0e-6 (mol/cm3)
 END
 
 SpectroscopicDataEstimator: FrequencyGroups
