@@ -673,6 +673,7 @@ public abstract class JDAS implements DAESolver {
 
 		// For the case where validityTester is RateBasedPDepVT (assumed to also be directly associated with use of RateBasedPDepRME), consider two additional types of reactions
 		if (validityTester instanceof RateBasedPDepVT) {
+                        //first consider NetReactions (formerly known as PDepNetReactionList)
 			for (Iterator iter0 = PDepNetwork.getNetworks().iterator(); iter0.hasNext();) {
 				PDepNetwork pdn = (PDepNetwork) iter0.next();
 				for (ListIterator iter = pdn.getNetReactions().listIterator(); iter.hasNext(); ) {
@@ -684,6 +685,68 @@ public abstract class JDAS implements DAESolver {
 					}
 				}
 			}
+                        //second, consider kLeak of each reaction network so that the validity of each reaction network may be tested
+                        //in the original CHEMDIS approach, we included a reaction and pseudospecies for each kleak/P-dep network
+                        //with the FAME approach we still consider each P-dep network as a pseudospecies, but we have multiple reactions contributing to this pseudo-species, with each reaction having different reactants
+                        for (Iterator iter1 = PDepNetwork.getNetworks().iterator(); iter1.hasNext();) {
+                                PDepNetwork pdn = (PDepNetwork)iter1.next();
+                                //account for pseudo-edge species product by incrementing the edgeSpeciesCounter and storing the ID in the tempProdArray; each of these ID's will occur once and only once; thus, note that the corresponding PDepNetwork is NOT stored to the HashMap
+                                int prodCount=1;//prodCount will not be modified as each PDepNetwork will be treated as a pseudo-edge species product
+                                int[] tempProdArray = {0, 0, 0};
+                                edgeSpeciesCounter++;
+                                tempProdArray[0]=edgeSpeciesCounter;
+                                double k = 0.0;
+                             //   double k = pdn.getKLeak(index);//index in DASSL should correspond to the same (reactionSystem/TPcondition) index as used by kLeak
+                             //   if (!pdn.isActive() && pdn.getIsChemAct()) {
+                             //           k = pdn.getEntryReaction().calculateTotalRate(p_temperature);
+                             //   }
+                                //*****what happens if P-dep network is empty or if all reactions are already included?
+                                for (ListIterator<PDepReaction> iter = pdn.getNonincludedReactions().listIterator(); iter.hasNext(); ) {//cf. getLeakFlux in PDepNetwork
+                                    PDepReaction rxn = iter.next();
+                                    int reacCount=0;
+                                    int[] tempReacArray = {0, 0, 0};
+                                    boolean allCoreReac=false;//allCoreReac will be used to track whether all reactant species are in the core
+                                    if (rxn.getReactant().getIncluded() && !rxn.getProduct().getIncluded()){
+                                        k = rxn.calculateRate(p_temperature, p_pressure);
+                                        allCoreReac=true;//***????
+                                        //iterate over the reactants, counting and storing IDs in tempReacArray, up to a maximum of 3 reactants
+                                        for (ListIterator<Species> rIter = rxn.getReactant().getSpeciesListIterator(); rIter.hasNext(); ) {
+                                            reacCount++;
+                                            Species spe = (Species)rIter.next();
+                                            if(model.containsAsReactedSpecies(spe)){
+                                                tempReacArray[reacCount-1]=getRealID(spe);
+                                            }
+                                            else{
+                                                allCoreReac=false;//***????
+                                            }
+                                        }
+                                    }
+                                    else if (!rxn.getReactant().getIncluded() && rxn.getProduct().getIncluded()){
+                                        PDepReaction rxnReverse = (PDepReaction)rxn.getReverseReaction();
+                                        k = rxnReverse.calculateRate(p_temperature, p_pressure);
+                                        allCoreReac=true;//***????
+                                        //iterate over the reactants, counting and storing IDs in tempReacArray, up to a maximum of 3 reactants
+                                        for (ListIterator<Species> rIter = rxn.getReactant().getSpeciesListIterator(); rIter.hasNext(); ) {
+                                            reacCount++;
+                                            Species spe = (Species)rIter.next();
+                                            if(model.containsAsReactedSpecies(spe)){
+                                                tempReacArray[reacCount-1]=getRealID(spe);
+                                            }
+                                            else{
+                                                allCoreReac=false;//***????
+                                            }
+                                        }
+                                    }
+                                    if(allCoreReac){//only consider cases where all reactants are in the core
+                                        edgeReactionCounter++;
+                                        //update the output string with info for kLeak for one PDepNetwork
+                                        edgeReacInfoString.append("\n" + reacCount + " " + prodCount + " " + tempReacArray[0] + " " + tempReacArray[1] + " " + tempReacArray[2] + " " + tempProdArray[0] + " " + tempProdArray[1] + " " + tempProdArray[2] + " " + k);
+                                    }
+                                    
+                                    
+                                }
+
+                        }
 		}
 
 		edgeSpeciesCounter = edgeID.size();
