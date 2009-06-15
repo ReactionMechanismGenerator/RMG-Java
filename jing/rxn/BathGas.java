@@ -82,6 +82,8 @@ public class BathGas {
 
 	/**
 	 * Updates the bath gas parameters via a weighted average.
+	 * 
+	 * What type of average *should* it be? Geometric? Arithmetic?...
 	 */
 	private void update() {
 
@@ -117,21 +119,25 @@ public class BathGas {
 			}
 			else if (key instanceof String) {
 				String name = (String) key;
-				LennardJones lj = new LennardJones();
-				ljSigma = lj.getSigma();
-				ljEpsilon = lj.getSigma();
-
+				
+				double conc = ((Double) colliders.get(key)).doubleValue();
+				double mf = conc/totalConc;
+								
 				if (name.equals("Ar") || name.equals("AR")) {
-					expDownParam = 374.0;
-					molWt = 39.95;
+					expDownParam += mf *374.0;
+					molWt += mf *39.95;
+					System.out.println("unknown collider Sigma & Epsilon: " + name);
 				}
 				else if (name.equals("N2")) {
-					expDownParam = 461.0;
-					molWt = 28.01;
+					expDownParam += mf * 461.0;
+					molWt += mf * 28.01;
+					ljEpsilon += mf * 97.5;
+					ljSigma += mf * 3.62;
 				}
 				else if (name.equals("He") || name.equals("HE")) {
-					expDownParam = 291.0;
-					molWt = 4.00;
+					expDownParam += mf * 291.0;
+					molWt += mf * 4.00;
+					System.out.println("unknown collider Sigma & Epsilon: " + name);
 				}
 				else {
 					System.out.println("unknown colliders: " + name);
