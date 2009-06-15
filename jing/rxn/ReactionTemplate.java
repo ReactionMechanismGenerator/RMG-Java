@@ -1271,7 +1271,7 @@ public class ReactionTemplate {
   Modifies:
   */
   //## operation read(String,String) 
-  public void read(String p_reactionTemplateName, String p_directoryName) {
+  public void read(String p_reactionTemplateName, String p_directoryName, Temperature p_temp) {
       //#[ operation read(String,String) 
       String directoryName;
       
@@ -1296,7 +1296,7 @@ public class ReactionTemplate {
       	readForbiddenStructures(ForbiddenName);
       	String reverseRTName = readReactionAdjList(ReactionAdjListName);
       	readTree(TreeName);
-      	readLibrary(LibraryName);
+      	readLibrary(LibraryName,p_temp);
       	fillKineticsBottomToTop();
       	if (reverseRTName != null && reverseRTName.compareToIgnoreCase("none")!=0) {
       		System.out.println("Generating reverse template: "+reverseRTName);
@@ -1455,7 +1455,7 @@ public class ReactionTemplate {
   }
   
   //## operation readLibrary(String) 
-  public void readLibrary(String p_fileName) throws IOException, InvalidKineticsFormatException, InvalidFunctionalGroupException {
+  public void readLibrary(String p_fileName, Temperature p_temp) throws IOException, InvalidKineticsFormatException, InvalidFunctionalGroupException {
       //#[ operation readLibrary(String) 
       try {
       	FileReader in = new FileReader(p_fileName);
@@ -1510,7 +1510,7 @@ public class ReactionTemplate {
       		else if (format.equals("Arrhenius_EP")) k = ChemParser.parseArrheniusEPKinetics(line,keyNum);
       		else throw new InvalidKineticsFormatException("Invalid rate constant format: " + line);
       
-      		kineticsTemplateLibrary.addKinetics(fgc,k);
+      		kineticsTemplateLibrary.addKinetics(fgc,k,p_temp);
       		line = ChemParser.readMeaningfulLine(data);
        	}
       

@@ -34,6 +34,7 @@ import java.io.IOException;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
+import java.util.StringTokenizer;
 
 import jing.chem.ChemGraph;
 import jing.chem.ForbiddenStructureException;
@@ -49,12 +50,17 @@ import jing.rxnSys.CoreEdgeReactionModel;
 
 public class PopulateReactions {
 	/**
-	 * Generates a list of all possible reactions between all species supplied
-	 * 	in the input file.
-	 * The input (.txt) file should contain a list of ChemGraphs, with the first
-	 * 	line being a user-defined name for the species and the remaining lines
-	 * 	containing the graph (in the form of an adjacency list).  There is no limit
-	 * 	on the number of ChemGraphs the user may supply.
+	 * Generates a list of all possible reactions, and their modified Arrhenius
+	 * 	parameters, between all species supplied in the input file.
+	 * 
+	 * The input file's first line should specify the system temperature.  The
+	 * 	line should be formatted as follows:
+	 * 		Temperature: 500 (K)
+	 * The input (.txt) file should contain a list of species, with the first
+	 * 	line of each species being a user-defined name for the species and the 
+	 * 	remaining lines	containing the graph (in the form of an adjacency list).
+	 *  There is no limit on the number of ChemGraphs the user may supply.
+	 *  
 	 * The output of the function is two .txt files: PopRxnsOutput_rxns.txt and
 	 * 	PopRxnsOutput_spcs.txt.  The first contains the list of reactions (including
 	 * 	the modified Arrhenius parameters and RMG-generated comments) and the second
@@ -64,7 +70,8 @@ public class PopulateReactions {
 	public static void main(String[] args) {
 		initializeSystemProperties();
 		// Set Global.lowTemp and Global.highTemp
-		//	The values of the low/highTemp are not used in the function.
+		//	The values of the low/highTemp are not used in the function
+		//		(to the best of my knowledge).
 		//	They are necessary for the instances of additionalKinetics, 
 		//	e.g. H2C*-CH2-CH2-CH3 -> H3C-CH2-*CH-CH3
 		Global.lowTemperature = new Temperature(300,"K");
@@ -75,7 +82,6 @@ public class PopulateReactions {
 		LinkedHashSet speciesSet = new LinkedHashSet();
 		// Define variable 'reactions' to store all possible rxns between the species in speciesSet
 		LinkedHashSet reactions = new LinkedHashSet();
-		TemplateReactionGenerator rtLibrary = new TemplateReactionGenerator();
 		
 		// Define two string variables 'listOfReactions' and 'listOfSpecies'
 		//	These strings will hold the list of rxns (including the structure,
@@ -91,7 +97,22 @@ public class PopulateReactions {
 			FileReader fr_input = new FileReader(args[0]);
 			BufferedReader br_input = new BufferedReader(fr_input);
 			// Read in the first line of the input file
+			//	This line should hold the temperature of the system, e.g.
+			//		Temperature: 500 (K)
 			String line = ChemParser.readMeaningfulLine(br_input);
+			Temperature systemTemp = null;
+			if (!line.startsWith("Temperature")) {
+				System.err.println("Error reading input file: Could not locate System Temperature.\n" +
+						"The first line of the input file should read: \"Temperature: Value (Units)\"");
+			} else {
+				StringTokenizer st = new StringTokenizer(line);
+				String dummyString = st.nextToken();	// This token should be "Temperature:"
+				systemTemp = new Temperature(Double.parseDouble(st.nextToken()),ChemParser.removeBrace(st.nextToken()));
+			}
+			Temperature systemTemp_K = new Temperature(systemTemp.getK(),"K");
+			TemplateReactionGenerator rtLibrary = new TemplateReactionGenerator(systemTemp_K);
+			listOfReactions += "System Temperature: " + systemTemp_K.getK() + "K\n\n";
+			line = ChemParser.readMeaningfulLine(br_input);
 			while (line != null) {
 				// The first line of a new species is the user-defined name
 				String speciesName = line;
@@ -150,11 +171,11 @@ public class PopulateReactions {
         	// Write the output files
         	try{
         		File rxns = new File("PopRxnsOutput_rxns.txt");
-        		File spcs = new File("PopRxnsOutput_spcs.txt");
         		FileWriter fw_rxns = new FileWriter(rxns);
-        		FileWriter fw_spcs = new FileWriter(spcs);
         		fw_rxns.write(listOfReactions);
         		fw_rxns.close();
+        		File spcs = new File("PopRxnsOutput_spcs.txt");
+        		FileWriter fw_spcs = new FileWriter(spcs);
         		fw_spcs.write(listOfSpecies);
         		fw_spcs.close();
         	}

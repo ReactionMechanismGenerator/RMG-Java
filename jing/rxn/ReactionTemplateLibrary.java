@@ -33,6 +33,7 @@ package jing.rxn;
 import java.io.*;
 import java.util.*;
 import jing.chemParser.ChemParser;
+import jing.param.Temperature;
 
 //## package jing::rxn 
 
@@ -45,14 +46,14 @@ public class ReactionTemplateLibrary {
     
     protected boolean ForceTheremoConsistence = false;		//## attribute ForceTheremoConsistence 
     
-    protected static ReactionTemplateLibrary INSTANCE = new ReactionTemplateLibrary();		//## attribute INSTANCE 
+//    protected static ReactionTemplateLibrary INSTANCE = new ReactionTemplateLibrary();		//## attribute INSTANCE 
     
     protected LinkedHashSet reactionTemplate;
     
     // Constructors
     
     //## operation ReactionTemplateLibrary() 
-    private  ReactionTemplateLibrary() {
+    public  ReactionTemplateLibrary(Temperature p_temp) {
         reactionTemplate=new LinkedHashSet();
         
         //#[ operation ReactionTemplateLibrary()
@@ -89,7 +90,7 @@ public class ReactionTemplateLibrary {
 
                 if (status.equals("on")) {
                     ReactionTemplate rt = new ReactionTemplate();
-                    rt.read(forward,kineticsDirectory + forward + separator);
+                    rt.read(forward,kineticsDirectory + forward + separator,p_temp);
                     addReactionTemplate(rt);
                     ReactionTemplate reverse_rt = rt.getReverseReactionTemplate();
                     if (reverse_rt != null) addReactionTemplate(reverse_rt);
@@ -127,7 +128,7 @@ public class ReactionTemplateLibrary {
     Modifies:
     */
     //## operation read(String) 
-    public void read(String p_directoryName) {
+    public void read(String p_directoryName, Temperature p_temp) {
         //#[ operation read(String) 
         File f = new File(p_directoryName);
         String[] fileNames = f.list();
@@ -141,7 +142,7 @@ public class ReactionTemplateLibrary {
         	File d = new java.io.File(fullName);
         	if (d.isDirectory() && !d.getName().toUpperCase().equals("CVS")) {
         		ReactionTemplate rt = new ReactionTemplate();
-        		rt.read(fileNames[i],fullName);
+        		rt.read(fileNames[i],fullName, p_temp);
         		addReactionTemplate(rt);
         		ReactionTemplate reverse_rt = rt.getReverseReactionTemplate();
         		if (reverse_rt != null) addReactionTemplate(reverse_rt);
@@ -168,13 +169,13 @@ public class ReactionTemplateLibrary {
         ForceTheremoConsistence = p_ForceTheremoConsistence;
     }
     
-    public static ReactionTemplateLibrary getINSTANCE() {
-        return INSTANCE;
-    }
-    
-    public static void setINSTANCE(ReactionTemplateLibrary p_INSTANCE) {
-        INSTANCE = p_INSTANCE;
-    }
+//    public static ReactionTemplateLibrary getINSTANCE() {
+//        return INSTANCE;
+//    }
+//    
+//    public static void setINSTANCE(ReactionTemplateLibrary p_INSTANCE) {
+//        INSTANCE = p_INSTANCE;
+//    }
     
     public Iterator getReactionTemplate() {
         Iterator iter=reactionTemplate.iterator();

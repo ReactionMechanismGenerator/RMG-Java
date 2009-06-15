@@ -34,6 +34,7 @@ import jing.chem.*;
 import java.util.*;
 import jing.chem.Species;
 import jing.param.Global;
+import jing.param.Temperature;
 
 //## package jing::rxn 
 
@@ -49,9 +50,10 @@ public class TemplateReactionGenerator implements ReactionGenerator {
     // Constructors
     
     //## operation TemplateReactionGenerator() 
-    public  TemplateReactionGenerator() {
+    public  TemplateReactionGenerator(Temperature sysTemp) {
         //#[ operation TemplateReactionGenerator() 
-        reactionTemplateLibrary = ReactionTemplateLibrary.getINSTANCE();
+//        reactionTemplateLibrary = ReactionTemplateLibrary.getINSTANCE();
+    	reactionTemplateLibrary = new ReactionTemplateLibrary(sysTemp);
         
         //#]
     }

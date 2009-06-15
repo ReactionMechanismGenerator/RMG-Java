@@ -800,7 +800,22 @@ public class ReactionModelGenerator {
                 //10/4/07 gmagoon: moved to modelGeneration()
                //ReactionGenerator p_reactionGenerator = new TemplateReactionGenerator();//10/4/07 gmagoon: changed to p_reactionGenerator from reactionGenerator
                // setReactionGenerator(p_reactionGenerator);//10/4/07 gmagoon: added
-                setReactionGenerator(new TemplateReactionGenerator()); //11/4/07 gmagoon: moved from modelGeneration; mysteriously, moving this later moves "Father" lines up in output at runtime, immediately after condition file (as in original code); previously, these Father lines were just before "Can't read primary reaction library files!"
+        	/*
+        	 * MRH 12-Jun-2009
+        	 * A TemplateReactionGenerator now requires a Temperature be passed to it.
+        	 * 	This allows RMG to determine the "best" kinetic parameters to use
+        	 * 	in the mechanism generation.  For now, I choose to pass the first
+        	 * 	temperature in the list of temperatures.  RMG only outputs one mechanism,
+        	 * 	even for multiple temperature/pressure systems, so we can only have one
+        	 * 	set of kinetics.
+        	 */
+        	Temperature t = new Temperature(300,"K");
+        	for (Iterator iter = tempList.iterator(); iter.hasNext();) {
+        		TemperatureModel tm  = (TemperatureModel)iter.next();
+        		t = tm.getTemperature(new ReactionTime(0,"sec"));
+        		break;
+        	}
+                setReactionGenerator(new TemplateReactionGenerator(t)); //11/4/07 gmagoon: moved from modelGeneration; mysteriously, moving this later moves "Father" lines up in output at runtime, immediately after condition file (as in original code); previously, these Father lines were just before "Can't read primary reaction library files!"
                 lrg = new LibraryReactionGenerator();//10/10/07 gmagoon: moved from modelGeneration (sequence lrg increases species id, and the different sequence was causing problems as main species id was 6 instead of 1); //10/31/07 gmagoon: restored this line from 10/10/07 backup: somehow it got lost along the way; 11/5/07 gmagoon: changed to use "lrg =" instead of setLibraryReactionGenerator
                 //10/24/07 gmagoon: updated to use multiple reactionSystem variables
                 reactionSystemList = new LinkedList();
