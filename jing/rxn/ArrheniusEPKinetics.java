@@ -59,7 +59,15 @@ public class ArrheniusEPKinetics extends ArrheniusKinetics {
     }
     public  ArrheniusEPKinetics() {
     }
-    
+	
+	///////////////////////////////////////
+	// Notice that we don't redefine getEValue() here but instead inherit it from ArrheniusKinetics
+	// which means that if we imagine 
+	//   Ea = Eo + alpha * Hrxn
+	// then getEValue() returns Eo NOT Ea
+	// but we DO redefine toChemkinString to return the Ea
+	///////////////////////////////////////
+	
 	public String toChemkinString(double p_Hrxn, Temperature p_temperature, boolean includeComments){
 		double Ea = E.getValue() + alpha.getValue()*p_Hrxn;
 		// If reported Arrhenius Ea value was computed using Evans-Polanyi relationship,
