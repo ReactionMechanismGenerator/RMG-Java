@@ -2285,6 +2285,18 @@ return sn;
     public void setAbramGAPP(GeneralAbramGAPP p_GeneralAbramGAPP) {
         abramGAPP = p_GeneralAbramGAPP;
     }
+    
+    public static void setMaxCarbonNumber(int maxCNumber) {
+    	MAX_CARBON_NUM = maxCNumber;
+    }
+    
+    public static void setMaxOxygenNumber(int maxONumber) {
+    	MAX_OXYGEN_NUM = maxONumber;
+    }
+    
+    public static void setMaxRadicalNumber(int maxRadNumber) {
+    	MAX_RADICAL_NUM = maxRadNumber;
+    }
 }
 /*********************************************************************
 	File Path	: RMG\RMG\jing\chem\ChemGraph.java
