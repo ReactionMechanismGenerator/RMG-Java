@@ -479,6 +479,13 @@ public class Reaction {
       //#]
   }
 
+/*  
+ // fitReverseKineticsPrecisely and getPreciseReverseKinetics 
+ // are not used, not maintained, and we have clue what they do,
+ // so we're commenting them out so we don't keep looking at them.
+ // (oh, and they look pretty similar to each other!)
+ //            - RWest & JWAllen, June 2009
+ 
   //## operation fitReverseKineticsPrecisely()
   public void fitReverseKineticsPrecisely() {
       //#[ operation fitReverseKineticsPrecisely()
@@ -686,11 +693,12 @@ public class Reaction {
       	        System.out.println(e.getMessage());
       	        System.exit(0);
       	}
-      
 
       return fittedReverseKinetics;
       //#]
   }
+// */	
+	
   //## operation fitReverseKineticsRoughly()
   public void fitReverseKineticsRoughly() {
       //#[ operation fitReverseKineticsRoughly()
@@ -699,7 +707,7 @@ public class Reaction {
       	fittedReverseKinetics = null;
       }
       else {
-      	//double temp = 715;
+    //double temp = 715;
     //    double temp = 298.15; //10/29/07 gmagoon: Sandeep made change to temp = 298 on his computer locally
     //    double temp = 1350; //11/6/07 gmagoon:**** changed to actual temperature in my condition file to create agreement with old version; apparently, choice of temp has large effect; //11/9/07 gmagoon: commented out
           double temp = 298.15; //11/9/07 gmagoon: restored use of 298.15 per discussion with Sandeep
@@ -708,9 +716,10 @@ public class Reaction {
       	double doubleAlpha;
       	if (k instanceof ArrheniusEPKinetics) doubleAlpha = ((ArrheniusEPKinetics)k).getAlphaValue();
       	else doubleAlpha = 0;
-
       	double Hrxn = calculateHrxn(new Temperature(temp,"K"));
       	double Srxn = calculateSrxn(new Temperature(temp, "K"));
+		  // for EvansPolyani kinetics (Ea = Eo + alpha * Hrxn) remember that  k.getEValue() gets Eo not Ea
+		  // this Hrxn is for the reverse reaction (ie. -Hrxn_forward)
       	double doubleEr = k.getEValue() - (doubleAlpha-1)*Hrxn;
       	if (doubleEr < 0) {
       		System.err.println("fitted Er < 0: "+Double.toString(doubleEr));
@@ -722,7 +731,7 @@ public class Reaction {
       	UncertainDouble n = new UncertainDouble(0,0, "Adder");
 
       	double doubleA = k.getAValue()* Math.pow(temp, k.getNValue())* Math.exp(Srxn/GasConstant.getCalMolK());
-      	doubleA *= Math.pow(GasConstant.getCCAtmMolK()*temp, -getStructure().getDeltaN());
+      	doubleA *= Math.pow(GasConstant.getCCAtmMolK()*temp, -getStructure().getDeltaN());  // assumes Ideal gas law concentration and 1 Atm reference state
       	fittedReverseKinetics = new ArrheniusKinetics(new UncertainDouble(doubleA, 0, "Adder"), n , Er, "300-1500", 1, "fitting from forward and thermal",null);
       }
       return;
@@ -791,6 +800,8 @@ public class Reaction {
   //## operation getKinetics()
   public Kinetics getKinetics() {
       //#[ operation getKinetics()
+	  // returns the kinetics OF THE FORWARD REACTION
+	  // ie. if THIS is reverse, it calls this.getReverseReaction().getKinetics()
       if (isForward()) {
       	int red = structure.getRedundancy();
 		return kinetics.multiply(red);
