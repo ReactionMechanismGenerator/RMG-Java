@@ -261,15 +261,18 @@ public class ReactionModelGenerator {
         	}
         	else throw new InvalidSymbolException("condition.txt: Cannot find InChIGeneration flag.");
 
+                line = ChemParser.readMeaningfulLine(reader);//read in reactants or thermo line
                 // Read in optional QM thermo  generation
-        	if (line.startsWith("Thermo method:")) {
+        	if (line.startsWith("ThermoMethod:")) {
         		StringTokenizer st = new StringTokenizer(line);
         		String name = st.nextToken();
         		String thermoMethod = st.nextToken().toLowerCase();
         		if (thermoMethod.equals("qm")) {
         			ChemGraph.useQM = true;
         		}//otherwise, the flag useQM will remain false by default and the traditional group additivity approach will be used
-        	}
+        	        line = ChemParser.readMeaningfulLine(reader);//read in reactants
+                }
+            
 //            // Read in Solvation effects
 //            if (line.startsWith("Solvation:")) {
 //        		StringTokenizer st = new StringTokenizer(line);
@@ -287,7 +290,7 @@ public class ReactionModelGenerator {
 
 
 			// read in reactants
-        	line = ChemParser.readMeaningfulLine(reader);
+        	//
 
                 //10/4/07 gmagoon: moved to initializeCoreEdgeReactionModel
         	//LinkedHashSet p_speciesSeed = new LinkedHashSet();//gmagoon 10/4/07: changed to p_speciesSeed
