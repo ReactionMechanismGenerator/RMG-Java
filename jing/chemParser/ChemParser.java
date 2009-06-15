@@ -143,10 +143,42 @@ public class ChemParser {
     }
 
     //## operation parseArrheniusEPKinetics(String)
-    public static ArrheniusEPKinetics parseArrheniusEPKinetics(String p_string) {
+    /**
+     * Input parameters updated by MRH on 8-Jun-2009
+     * 	This function is called when reading a kinetics Library.txt file,
+     * 	if the kinetics tag is Arrhenius_EP.  As of today, all rxn families
+     * 	in the RMG database are labeled Arrhenius_EP.  Instead of passing only
+     * 	the information after the node(s), i.e. Trange, A, n, alpha, E0, etc.,
+     *  the entire data entry is passed.
+     *  
+     *  The string p_string contains the entire line of data (including the randomly
+     *  assigned number and node(s)).  The integer p_keyNum contains the number of
+     *  nodes associated with this data entry (e.g. 1 for Beta_Scission, 2 for 
+     *  H_Abstraction, 3 for Diels_Alder_Addition, etc.).
+     *  
+     *  The output is of type ArrheniusEPKinetics.  The difference is that the
+     *  "comments" and "source" fields are no longer null.  The "source" contains
+     *  the set of nodes associated with this data, and the "comments" are
+     *  the end-of-line comments, hopefully denoting where this data came from.
+     **/
+    public static ArrheniusEPKinetics parseArrheniusEPKinetics(String p_string, int p_keyNum) {
         //#[ operation parseArrheniusEPKinetics(String)
         StringTokenizer token = new StringTokenizer(p_string);
-        if (token.countTokens() != 10) throw new InvalidKineticsFormatException();
+        //if (token.countTokens() != 10) throw new InvalidKineticsFormatException();
+        /*
+         * If statement commented out by MRH on 8-Jun-2009
+         * 	The if statement existed because RMG was looking for 10 tokens:
+         * 		(Trange, A, n, alpha, E0, dA, dn, dalpha, dE0, and Rank).
+         * 		RMG now has no limit on the number of tokens, which allows
+         * 		a RMG user/developer to put comments after the rank
+         */
+        String dummyCounter = token.nextToken();	// This should be the #. associated with the data
+        // Set the source of this data as the set of nodes
+        String source = "";
+        for (int i=0; i<p_keyNum-1; i++) {
+        	source += token.nextToken() + " ";
+        }
+        source += token.nextToken();
         String TRange = token.nextToken();
 
         double A = Double.parseDouble(token.nextToken());
@@ -182,7 +214,15 @@ public class ChemParser {
         UncertainDouble ualpha = new UncertainDouble(alpha, Dalpha, "Adder");
         UncertainDouble ue = new UncertainDouble(E, DE, "Adder");
 
-        ArrheniusEPKinetics k = new ArrheniusEPKinetics(ua, un, ualpha, ue, TRange, rank, null, null);
+        // Set the comments of this data to whatever (if anything) follows the rank
+        String comments = "";
+        if (token.hasMoreTokens()) {
+	        String beginningOfComments = token.nextToken();
+	        String[] splitString = p_string.split(beginningOfComments);
+	        comments = beginningOfComments + splitString[1];
+        }
+        ArrheniusEPKinetics k = new ArrheniusEPKinetics(ua, un, ualpha, ue, TRange, rank, source, comments);
+//        ArrheniusEPKinetics k = new ArrheniusEPKinetics(ua, un, ualpha, ue, TRange, rank, null, null);
 
         return k;
 
@@ -192,10 +232,42 @@ public class ChemParser {
     }
 
     //## operation parseArrheniusKinetics(String)
-    public static ArrheniusKinetics parseArrheniusKinetics(String p_string) {
+    /**
+     * Input parameters updated by MRH on 11-Jun-2009
+     * 	This function is called when reading a kinetics Library.txt file,
+     * 	if the kinetics tag is Arrhenius.  As of today, no rxn families
+     * 	in the RMG database are labeled Arrhenius.  Instead of passing only
+     * 	the information after the node(s), i.e. Trange, A, n, Ea, etc.,
+     *  the entire data entry is passed.
+     *  
+     *  The string p_string contains the entire line of data (including the randomly
+     *  assigned number and node(s)).  The integer p_keyNum contains the number of
+     *  nodes associated with this data entry (e.g. 1 for Beta_Scission, 2 for 
+     *  H_Abstraction, 3 for Diels_Alder_Addition, etc.).
+     *  
+     *  The output is of type ArrheniusKinetics.  The difference is that the
+     *  "comments" and "source" fields are no longer null.  The "source" contains
+     *  the set of nodes associated with this data, and the "comments" are
+     *  the end-of-line comments, hopefully denoting where this data came from.
+     **/
+    public static ArrheniusKinetics parseArrheniusKinetics(String p_string, int p_keyNum) {
         //#[ operation parseArrheniusKinetics(String)
         StringTokenizer token = new StringTokenizer(p_string);
-        if (token.countTokens() != 8) throw new InvalidKineticsFormatException();
+        /*
+         * If statement commented out by MRH on 11-Jun-2009
+         * 	The if statement existed because RMG was looking for 8 tokens:
+         * 		(Trange, A, n, Ea, dA, dn, dEa, and Rank).
+         * 		RMG now has no limit on the number of tokens, which allows
+         * 		a RMG user/developer to put comments after the rank
+         */
+//        if (token.countTokens() != 8) throw new InvalidKineticsFormatException();
+        String dummyCounter = token.nextToken();	// This should be the #. associated with the data
+        // Set the source of this data as the set of nodes
+        String source = "";
+        for (int i=0; i<p_keyNum-1; i++) {
+        	source += token.nextToken() + " ";
+        }
+        source += token.nextToken();
         String TRange = token.nextToken();
 
         double A = Double.parseDouble(token.nextToken());
@@ -228,7 +300,15 @@ public class ChemParser {
         UncertainDouble un = new UncertainDouble(n, Dn, "Adder");
         UncertainDouble ue = new UncertainDouble(E, DE, "Adder");
 
-        ArrheniusKinetics k = new ArrheniusKinetics(ua, un, ue, TRange, rank, null, null);
+        // Set the comments of this data to whatever (if anything) follows the rank
+        String comments = "";
+        if (token.hasMoreTokens()) {
+	        String beginningOfComments = token.nextToken();
+	        String[] splitString = p_string.split(beginningOfComments);
+	        comments = beginningOfComments + splitString[1];
+        }
+        ArrheniusKinetics k = new ArrheniusKinetics(ua, un, ue, TRange, rank, source, comments);
+//        ArrheniusKinetics k = new ArrheniusKinetics(ua, un, ue, TRange, rank, null, null);
 
         return k;
 
