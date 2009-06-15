@@ -235,13 +235,13 @@ public class FrequencyGroups{//gmagoon 111708: removed "implements GeneralGAPP"
         }
         
 		// Rename input and output files
-		String newName = species.getName()+"("+String.valueOf(species.getID())+")";
+		/*String newName = species.getName()+"("+String.valueOf(species.getID())+")";
         File f = new File("frankie/dat");
 		File newFile = new File("frankie/"+newName+"_input");
 		f.renameTo(newFile);
 		f = new File("frankie/rho_input");
 		newFile = new File("frankie/"+newName+"_output");
-		f.renameTo(newFile);
+		f.renameTo(newFile);*/
 		
         return new SpectroscopicData(vibFreq, hindFreq, hindBarrier);
         //#]
