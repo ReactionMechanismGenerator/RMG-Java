@@ -175,7 +175,7 @@ public class TemplateReactionGenerator implements ReactionGenerator {
         	 * 	This println command informs the user which rxn family template
         	 *		the new core species is reacting against
         	 */
-        	System.out.println("Reacting " + p_species.getName() + " with the core: " + current_template.name);
+        	System.out.println("Reacting " + p_species.getChemkinName() + " with the core: " + current_template.name);
         	
         	// the reaction template has only one reactant, we only need to loop over the whole species seed set to find a match
         	double startTime = System.currentTimeMillis();
