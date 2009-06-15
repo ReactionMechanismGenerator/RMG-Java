@@ -231,6 +231,18 @@ public class TemplateReactionGenerator implements ReactionGenerator {
 		
 		//PDepNetwork.completeNetwork(p_species);
 		
+		Runtime runTime = Runtime.getRuntime();
+		System.out.print("Memory used: ");
+		System.out.println(runTime.totalMemory());
+		System.out.print("Free memory: ");
+		System.out.println(runTime.freeMemory());
+		runTime.gc();
+		System.out.println("After garbage collection:");
+		System.out.print("Memory used: ");
+		System.out.println(runTime.totalMemory());
+		System.out.print("Free memory: ");
+		System.out.println(runTime.freeMemory());
+		
         return reaction_set;
         
         
