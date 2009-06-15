@@ -623,6 +623,10 @@ public class ReactionModelGenerator {
                         temp = st.nextToken();
                         if (temp.startsWith("AUTO")){//note potential opportunity for making case insensitive by using: temp.toUpperCase().startsWith("AUTO")
                             autoflag=true;
+                            if(reactionModelEnlarger instanceof RateBasedPDepRME){
+                                System.out.println("Using AUTO option with pressure-dependent model generation is currently unsupported. Please either change to non-pressure-dependent model creation or specify intermediate conversion/time steps.");//gmagoon 6/15/09: with changes from CHEMDIS to FAME, further modifications are needed (for both Java and Fortran code) for the AUTO method to work with P-Dep
+                                System.exit(0);
+                            }
                         }
         				else if (!autoflag){//use "else if" to make sure additional numbers are not read in case numbers are erroneously used following AUTO; note that there could still be a problem if numbers come before "AUTO"
                             double tStep = Double.parseDouble(temp);
@@ -648,6 +652,10 @@ public class ReactionModelGenerator {
 					temp=st.nextToken();
 					if (temp.startsWith("AUTO")){
 						autoflag=true;
+                                                if(reactionModelEnlarger instanceof RateBasedPDepRME){
+                                                    System.out.println("Using AUTO option with pressure-dependent model generation is currently unsupported. Please either change to non-pressure-dependent model creation or specify intermediate conversion/time steps.");//gmagoon 6/15/09: with changes from CHEMDIS to FAME, further modifications are needed (for both Java and Fortran code) for the AUTO method to work with P-Dep
+                                                    System.exit(0);
+                                                }
 					}
 					else if (!autoflag){
         					double conv = Double.parseDouble(temp);
