@@ -9,6 +9,7 @@
 module RateModelModule
 
 	use SimulationModule
+	use ReactionModule
 
 	implicit none
 	
@@ -16,7 +17,7 @@ contains
 
 	! --------------------------------------------------------------------------
 	!
-	! Subroutine: fitRateModel()
+	! Subroutine: fitChebyshevModel()
 	! 
 	! Fits a set of rate coefficients k(T, P) fitted at multiple temperatures
 	! and pressures to a model of the form
@@ -37,7 +38,7 @@ contains
 	!		nChebT - Number of temperatures to use to fit Chebyshev polynomials
 	!		nChebP - Number of pressures to use to fit Chebyshev polynomials
 	!		alpha - Matrix of coefficients.
-	subroutine fitRateModel(K, Tlist, Plist, nChebT, nChebP, alpha)
+	subroutine fitChebyshevModel(K, Tlist, Plist, nChebT, nChebP, alpha)
 		
 		real(8), dimension(:,:), intent(in)		:: K
 		real(8), dimension(:), intent(in)		:: Tlist
@@ -123,6 +124,89 @@ contains
 	end subroutine
 		
 	! --------------------------------------------------------------------------
+	!
+	! Subroutine: fitLogPInterpolateModel()
+	! 
+	! Fits a set of rate coefficients k(T, P) fitted at multiple temperatures
+	! and pressures to a model of the form
+	!
+	!		log k(T, P) = sum_i sum_j alpha_ij * phi_i(Tred) * phi_j(Pred)
+	!
+	! where 
+	!
+	!		Tred = (2/T - 1/Tmin - 1/Tmax) / (1/Tmax - 1/Tmin)
+	!		Pred = (2 log P - log Pmin - log Pmax) / (log Pmax - log Pmin)
+	!
+	! and phi_n(x) is the nth Chebyshev polynomial evaluated at x.
+	!
+	! Parameters:
+	!		K - Matrix of phenomenological rate coefficients.
+	!		Tlist - Vector of absolute temperatures in K.
+	!		Plist - Vector of pressures in bar.
+	!		nChebT - Number of temperatures to use to fit Chebyshev polynomials
+	!		nChebP - Number of pressures to use to fit Chebyshev polynomials
+	!		alpha - Matrix of coefficients.
+	subroutine fitLogPInterpolateModel(K, Tlist, Plist, arrhenius)
+		
+		real(8), dimension(:,:), intent(in)		:: K
+		real(8), dimension(:), intent(in)		:: Tlist
+		real(8), dimension(:), intent(in)		:: Plist
+		type(ArrheniusKinetics), dimension(:), intent(inout)	:: arrhenius
+		
+		real(8), dimension(:,:), allocatable	:: A
+		real(8), dimension(:), allocatable		:: b
+		
+		integer t, p, nT, nP
+		real(8) R
+		
+		! Variables for BLAS and LAPACK
+		integer									::	info
+		integer, dimension(:), allocatable		::	work
+		integer									::	one
+		character								::	N
+		
+		R = 8.314472	! [=] J/mol*K
+		
+		nT = size(Tlist)
+		nP = size(Plist)
+		
+		allocate( A(1:nT, 1:3), b(1:nT) )
+		allocate( work(1:8*nT) )
+		
+		! At each pressure, fit a modified Arrhenius kinetics model
+		do p = 1, nP
+		
+			! Populate A matrix and b vector for linear least-squares fit
+			do t = 1, nT
+				A(t,1) = 1.0
+				A(t,2) = log(Tlist(t))
+				A(t,3) = -1.0 / (R * Tlist(t))
+				b(t) = log(K(t,p))
+			end do
+		
+			! Solve Ax = b to determine Arrhenius coefficients
+			one = 1
+			N = 'N'
+			call DGELS(N, nT, 3, one, A, nT, b, nT, work, 8*nT, info)
+			if (info > 0) then
+				write (*,*), "Log P interpolate fit matrix is singular!"
+				stop
+			end if
+			
+			! Extract Arrhenius coefficients
+			arrhenius(p)%A = exp(b(1))
+			arrhenius(p)%n = b(2)
+			arrhenius(p)%Ea = b(3)
+			
+		end do
+			
+		! Clean up
+		deallocate( work, A, b )
+		
+	end subroutine
+
+
+	! --------------------------------------------------------------------------
 	
 	! Subroutine: chebyshev()
 	! 
@@ -152,13 +236,14 @@ contains
 	!		path - Path to output file.
 	!		simData - The simulation parameters.
 	!		alpha - Matrix of Chebyshev coefficients for each reaction.
-	subroutine saveResults(path, simData, K, alpha)
+	subroutine saveResults(path, simData, K, alpha, arrhenius)
 		
 		character(len=*), intent(in)				:: path
 		type(Simulation), intent(in)				:: simData
 		real(8), dimension(:,:,:,:), intent(in)		:: K
 		real(8), dimension(:,:,:,:), intent(in)		:: alpha
-		
+		type(ArrheniusKinetics), dimension(:,:,:), intent(in) 		:: 	arrhenius
+	
 		real(8), dimension(:), allocatable			:: rate
 		
 		integer i, j, t, p, ind
@@ -171,8 +256,15 @@ contains
 		
 		write (*,*), '# FAME output'
 		write (*,*), 'Number of wells                     ', simData%nIsom
-		write (*,*), 'Number of Chebyshev temperatures    ', simData%nChebT
-		write (*,*), 'Number of Chebyshev pressures       ', simData%nChebP
+		if (simData%fitting == 1) then
+			write (*,*), 'Interpolation model                  Chebyshev'
+			write (*,*), 'Number of Chebyshev temperatures    ', simData%nChebT
+			write (*,*), 'Number of Chebyshev pressures       ', simData%nChebP
+		elseif (simData%fitting == 2) then
+			write (*,*), 'Interpolation model                  LogPInterpolate'
+		else
+			write (*,*), 'Interpolation model                  none'
+		end if
 		write (*,*), 'Temperature range of fit            ', minval(simData%Tlist), 'K    ', maxval(simData%Tlist), 'K'
 		write (*,*), 'Pressure range of fit               ', minval(simData%Plist), 'bar  ', maxval(simData%Plist), 'bar'
 		write (*,*), ''
@@ -188,9 +280,16 @@ contains
 						write (*, fmtStr), K(t,:,i,j)
 					end do
 					! Chebyshev fits
-					do t = 1, simData%nChebT
-						write (*,*), alpha(t,:,i,j)
-					end do
+					if (simData%fitting == 1) then
+						do t = 1, simData%nChebT
+							write (*,*), alpha(t,:,i,j)
+						end do
+					! LogPInterpolate fits
+					elseif (simData%fitting == 2) then
+						do p = 1, size(simData%Plist)
+							write (*,*), arrhenius(p,i,j)%A, arrhenius(p,i,j)%n, arrhenius(p,i,j)%Ea 
+						end do
+					end if
 					write (*,*), ''
 				end if
 			end do

@@ -37,6 +37,7 @@ module SimulationModule
 		integer	nRxn			! The number of reactions
 		type(BathGas) :: bathGas							! Data for the bath gas
 		real(8), dimension(:), allocatable		:: E		! The array of energies in kJ/mol
+		integer								:: fitting		! 0 = none, 1 = Chebyshev, 2 = LogPInterpolate
 		integer	nGrains			! The number of energy grains
 		integer	nChebT			! The number of temperatures to use to fit Chebyshev polynomials
 		integer	nChebP			! The number of pressures to use to fit Chebyshev polynomials

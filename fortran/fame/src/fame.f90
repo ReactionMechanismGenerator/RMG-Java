@@ -54,8 +54,10 @@ program fame
 	type(Reaction), dimension(:), allocatable		:: 	rxnList
 	! K(i,j) = Phenomenological rate coefficients for transitions from species i to species j
 	real(8), dimension(:,:,:,:), allocatable 		:: 	K
-	! chebCoeff(i,j,t,p) = Coefficient matrix for product of Chebyshev polynomials phi_t(Tred) * phi_p(Pred) for reaction j --> i 
+	! chebCoeff(t,p,i,j) = Coefficient matrix for product of Chebyshev polynomials phi_t(Tred) * phi_p(Pred) for reaction j --> i 
 	real(8), dimension(:,:,:,:), allocatable 		:: 	chebCoeff
+	! arrhenius(p,i,j) = Arrhenius kinetics matrix for logPInterpolate fitting model
+	type(ArrheniusKinetics), dimension(:,:,:), allocatable 		:: 	arrhenius
 	! (T, P) = Current temperature and pressure
 	real(8)											::	T
 	real(8)											::	P
@@ -154,6 +156,7 @@ program fame
 	if (verbose >= 1) write (*,*), 'Fitting k(T,P) to model...'
 	allocate( chebCoeff(simData%nChebT, simData%nChebP, &
 		simData%nIsom, simData%nIsom) )
+	allocate( arrhenius(size(simData%Plist), simData%nIsom, simData%nIsom) )
 	badRate = 0
 	do i = 1, simData%nIsom
 		do j = 1, simData%nIsom
@@ -173,7 +176,11 @@ program fame
 					if (verbose >= 2) then
 						write (*,*), '\tFitting k(T,P) for isomers', i, 'and', j
 					end if
-					call fitRateModel(K(:,:,i,j), simData%Tlist, simData%Plist, simData%nChebT, simData%nChebP, chebCoeff(:,:,i,j))
+					if (simData%fitting == 1) then
+						call fitChebyshevModel(K(:,:,i,j), simData%Tlist, simData%Plist, simData%nChebT, simData%nChebP, chebCoeff(:,:,i,j))
+					elseif (simData%fitting == 2) then
+						call fitLogPInterpolateModel(K(:,:,i,j), simData%Tlist, simData%Plist, arrhenius(:,i,j))
+					end if
 				end if
 			end if
 		end do
@@ -185,7 +192,7 @@ program fame
 	
 	! Write output file
 	if (verbose >= 1) write (*,*), 'Saving results...'
-	call saveResults('fame_output.txt', simData, K, chebCoeff)
+	call saveResults('fame_output.txt', simData, K, chebCoeff, arrhenius)
 	
 	! Free memory
 ! 	do i = 1, simData%nSpecies

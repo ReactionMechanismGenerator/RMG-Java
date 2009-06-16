@@ -70,7 +70,9 @@ contains
 		end do
 		
 		call selectEnergyGrains(simData, speciesList, isomerList, rxnList, Emin, Emax, nGrains)
-		call setEnergyGrains(Emin, Emax, nGrains, simData)
+		!call setEnergyGrains(Emin, Emax, nGrains, simData)
+		
+		call setEnergyGrains(simData%Emin, simData%Emax, simData%nGrains, simData)
 		
 		! Close file
 		close(1) 
@@ -160,6 +162,15 @@ contains
 				call readNumberAndUnit(str(30:), simData%bathGas%eps, unit)
 			else if (index(str(1:25), 'Bath gas molecular weight') /= 0) then
 				call readNumberAndUnit(str(26:), simData%bathGas%MW, unit)
+			else if (index(str(1:19), 'Interpolation model') /= 0) then
+				call removeWhitespace(str(20:))
+				if (index(str(20:28), 'Chebyshev') /= 0) then
+					simData%fitting = 1
+				elseif (index(str(20:34), 'LogPInterpolate') /= 0) then
+					simData%fitting = 2
+				else
+					simData%fitting = 0
+				end if
 			else if (index(str(1:32), 'Number of Chebyshev temperatures') /= 0) then
 				call readInteger(str(33:), simData%nChebT)
 			else if (index(str(1:29), 'Number of Chebyshev pressures') /= 0) then
@@ -381,9 +392,9 @@ contains
 		rxnData%isomerList(1) = 0
 		rxnData%isomerList(2) = 0
 		rxnData%E0 = 0
-		rxnData%arrh_A = 0
-		rxnData%arrh_n = 0
-		rxnData%arrh_Ea = 0
+		rxnData%kinetics%A = 0
+		rxnData%kinetics%n = 0
+		rxnData%kinetics%Ea = 0
 		
 		ios = 0
 		found = 0
@@ -405,11 +416,11 @@ contains
 			if (index(str(1:19), 'Ground-state energy') /= 0) then
 				call readNumberAndUnit(str(20:), rxnData%E0, unit)
 			else if (index(str(1:24), 'Arrhenius preexponential') /= 0) then
-					call readNumberAndUnit(str(25:), rxnData%arrh_A, unit)
+					call readNumberAndUnit(str(25:), rxnData%kinetics%A, unit)
 			else if (index(str(1:27), 'Arrhenius activation energy') /= 0) then
-					call readNumberAndUnit(str(28:), rxnData%arrh_Ea, unit)
+					call readNumberAndUnit(str(28:), rxnData%kinetics%Ea, unit)
 			else if (index(str(1:30), 'Arrhenius temperature exponent') /= 0) then
-				call readNumber(str(31:), rxnData%arrh_n)
+				call readNumber(str(31:), rxnData%kinetics%n)
 			else if (index(str(1:15), 'Reactant isomer') /= 0) then
 				call readInteger(str(16:), rxnData%isomerList(1))
 			else if (index(str(1:14), 'Product isomer') /= 0) then

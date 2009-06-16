@@ -12,15 +12,22 @@ module ReactionModule
 
 	implicit none
 	
+	! Struct: ArrheniusKinetics
+	! 
+	! Contains modified Arrhenius kinetics for a single reaction.
+	type ArrheniusKinetics
+		real(8)			::	A			! Arrhenius preexponential factor in s^-1
+		real(8)			::	n			! Arrhenius temperature exponent
+		real(8)			::	Ea			! Arrhenius activation energy in kJ/mol
+	end type
+
 	! Struct: Reaction
 	! 
 	! Contains the information for a single reaction.
 	type Reaction
 		integer								::	isomerList(2)	! Isomer wells connected to transition state
 		real(8)								:: 	E0				! Ground-state electronic + zero-point energy of transition state in kJ/mol
-		real(8)								::	arrh_A			! Arrhenius preexponential factor in s^-1
-		real(8)								::	arrh_n			! Arrhenius temperature exponent
-		real(8)								::	arrh_Ea			! Arrhenius activation energy in kJ/mol
+		type(ArrheniusKinetics)				::	kinetics		! Arrhenius kinetics for high pressure limit
 		real(8), dimension(:), allocatable 	::	kf				! Microcanonical forward reaction rate in s^-1
 		real(8), dimension(:), allocatable 	::	kb				! Microcanonical backward reaction rate in s^-1
 	end type
@@ -62,7 +69,7 @@ contains
     
 			! Calculate forward rate coefficient via inverse Laplace transform
 			call rateILT(rxn%E0 - reac%E0, reac%densStates, &
-				rxn%arrh_A, rxn%arrh_n, rxn%arrh_Ea, T, E, rxn%kf)
+				rxn%kinetics, T, E, rxn%kf)
 				
 			! Calculate backward rate coefficient via detailed balance
 			do r = 1, nGrains
@@ -75,7 +82,7 @@ contains
 			
 			! Calculate forward rate coefficient via inverse Laplace transform
 			call rateILT(rxn%E0 - reac%E0, reac%densStates, &
-				rxn%arrh_A, rxn%arrh_n, rxn%arrh_Ea, T, E, rxn%kf)
+				rxn%kinetics, T, E, rxn%kf)
 				
 			! Calculate equilibrium constant
 			Keq = equilCoeff(prod, reac, T, P)
@@ -95,7 +102,7 @@ contains
 		
 			! Calculate forward rate coefficient via inverse Laplace transform
 			call rateILT(rxn%E0 - reac%E0, reac%densStates, &
-				rxn%arrh_A, rxn%arrh_n, rxn%arrh_Ea, T, E, rxn%kb)
+				rxn%kinetics, T, E, rxn%kb)
 				
 			! Calculate equilibrium constant
 			Keq = equilCoeff(prod, reac, T, P)
@@ -134,20 +141,16 @@ contains
 	!   rho = density of states for the reactant in (kJ/mol)^-1
 	!   E0 = electronic + zero-point energies of ground state of transition 
 	!       state in kJ/mol
-	!	arrh_A = Arrhenius preexponential factor in s^-1
-	!	arrh_n = Arrhenius temperature exponent
-	!	arrh_Ea = Arrhenius activation energy in kJ/mol
+	!	kinetics = Arrhenius kinetics for reaction in high P limit
 	!	T = absolute temperature in K
 	!   E = vector of energies at which k(E) will be evaluated in kJ/mol
 	!   k = RRKM microcanonical rate coefficents evaluated at each E in s^-1
-	subroutine rateILT(E0, rho, arrh_A, arrh_n, arrh_Ea, T, E, k)
+	subroutine rateILT(E0, rho, kinetics, T, E, k)
 
 		! Provide parameter type-checking
 		real(8), intent(in)					::	E0
 		real(8), dimension(:), intent(in)	:: 	rho
-		real(8), intent(in)					::	arrh_A
-		real(8), intent(in)					::	arrh_n
-		real(8), intent(in)					::	arrh_Ea
+		type(ArrheniusKinetics), intent(in)	::	kinetics
 		real(8), intent(in)					::	T
 		real(8), dimension(:), intent(in)	:: 	E
 		real(8), dimension(:), intent(out)	:: 	k
@@ -156,7 +159,7 @@ contains
 		integer		:: r, s
 		
 		dE = E(2) - E(1)
-		s = floor(arrh_Ea / dE)
+		s = floor(kinetics%Ea / dE)
 		if (s < 0) s = 0
 		
 		! Determine rate coefficients using inverse Laplace transform
@@ -164,7 +167,7 @@ contains
 			if (s >= r .or. rho(r) == 0) then
 				k(r) = 0
 			else
-				k(r) = arrh_A * (T ** arrh_n) * rho(r - s) / rho(r)
+				k(r) = kinetics%A * (T ** kinetics%n) * rho(r - s) / rho(r)
 			end if
 		end do
 		
