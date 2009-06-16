@@ -1114,11 +1114,11 @@ public class GUI extends JPanel implements ActionListener {
 	    				icInput5 = speciesAdjList.getText();
 	    			} else if (!InChIInput.getText().equals("")) {
 	    				String inchi = InChIInput.getText();
-	    				icInput5 = Species.inchi2chemGraph(inchi);
+	    				icInput5 = Species.inchi2AdjList(inchi);
 	    			} else {
 	    			    File molFile = null;
 	    			    molFile = askUserForInput("Select corresponding .mol file", false);
-	    			    if (molFile != null) icInput5 = Species.mol2chemGraph(molFile.getAbsolutePath());
+	    			    if (molFile != null) icInput5 = Species.mol2AdjList(molFile.getAbsolutePath(), molFile.getAbsolutePath());
 	    			}
     			} else {
     				String[] inerts = {"N2", "Ar", "Ne"};

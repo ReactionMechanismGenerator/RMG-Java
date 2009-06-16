@@ -1362,9 +1362,27 @@ public class Species {
                 
                 return cTable;
     }
-        
-	public static String inchi2chemGraph (String p_inchi) {
-		String workingDirectory = System.getProperty("RMG.workingDirectory");
+    
+    /**
+     * Converts a single InChI to its RMG adjacency lists
+     * @param p_inchi: String containing the InChI
+     * @return
+     */
+	public static String inchi2AdjList (String p_inchi) {
+		// Convert InChI to .mol file
+		inchi2mol(p_inchi);
+		// Convert .mol file to adjacency list
+        String adjList = mol2AdjList(p_inchi,"InChI/temp.mol");
+        return adjList;
+	}
+	
+	/**
+	 * Converts a single InChI to its .mol file format.  The .mol file
+	 * 	is saved to the $RMG/InChI directory
+	 * @param p_inchi: String containing the InChI
+	 */
+	public static void inchi2mol(String p_inchi) {
+		String workingDirectory = System.getenv("RMG");
 		String inchiDirectory = "InChI";
 		File inchiFile = null;
 		
@@ -1441,20 +1459,21 @@ public class Species {
                 System.out.println(err);
             }
         //}
-		
-        String cg = mol2chemGraph(inchiDirectory + "/temp.mol");
-        
-        return cg;
 	}
 	
-	public static String mol2chemGraph (String filePath) {
-		// Read in .mol file
+	/**
+	 * Convert a .mol file to a RMG adjacency list
+	 * @param inchi: String containing the InChI
+	 * @param filePath: Location of the .mol file
+	 * @return
+	 */
+	public static String mol2AdjList (String inchi, String filePath) {
+		// Read in the .mol file
         FileReader in = null;
 		try {
 			in = new FileReader(filePath);
 		} catch (FileNotFoundException e) {
-			String err = "Error reading .mol file: ";
-			err += e.toString();
+			String err = "Error reading .mol file: " + e.toString();
 			System.out.println(err);
 		}
         
@@ -1474,9 +1493,11 @@ public class Species {
 		// Determine how many lines are in the .mol file
 		String[] molFileLines = molFile.split("[\r]",0);
 		int numOfLines = molFileLines.length;
+		StringTokenizer st = new StringTokenizer(molFileLines[numOfLines-1]);
+		if (st.nextToken().equals("$$$$")) --numOfLines;
 		
 		// Extract the information in the first line (Count Line) of the .mol file
-		StringTokenizer st = new StringTokenizer(molFileLines[0]);
+		st = new StringTokenizer(molFileLines[0]);
 		int numOfAtoms = Integer.parseInt(st.nextToken());
 		int numOfBonds = Integer.parseInt(st.nextToken());
 		// Next few are irrelevant for RMG (as of 10-Feb-2009)
@@ -1547,30 +1568,41 @@ public class Species {
 			// The following variables hold no meaning
 			String M = st.nextToken();
 			String RAD = st.nextToken();
-			// Extract radical information
-			int numOfRads = Integer.parseInt(st.nextToken());
-			for (int j=0; j<numOfRads; j++) {
-				int atom = Integer.parseInt(st.nextToken());
-				int radType = Integer.parseInt(st.nextToken());
-				if (radType == 1)
-					adjListRadical[atom-1] = "2S ";
-				else if (radType == 2)
-					adjListRadical[atom-1] = "1 ";
-				else if (radType== 3)
-					adjListRadical[atom-1] = "2T ";
-				else
-					adjListRadical[atom-1] = "3 ";
+			if (RAD.equals("RAD")) {
+				// Extract radical information
+				int numOfRads = Integer.parseInt(st.nextToken());
+				for (int j=0; j<numOfRads; j++) {
+					int atom = Integer.parseInt(st.nextToken());
+					int radType = Integer.parseInt(st.nextToken());
+					if (radType == 1)
+						adjListRadical[atom-1] = "2S ";
+					else if (radType == 2)
+						adjListRadical[atom-1] = "1 ";
+					else if (radType== 3)
+						adjListRadical[atom-1] = "2T ";
+					else
+						adjListRadical[atom-1] = "3 ";
+				}
+			}
+			/*
+			 * If the M line flag is not equal to "RAD", RMG cannot store the information
+			 * 	(e.g. CHG for InChI=1/C20H40O2/c1-3-5-6-7-8-9-10-11-12-13-14-15-16-17-18-19(4-2)20(21)22/h19H,3-18H2,1-2H3,(H,21,22)/p-1/t19-/m1/s1/fC20H39O2/q-1)
+			 * 	Inform the user the field is being ignored, but continue constructing
+			 * 	the adjacency list.
+			 */
+			else {
+				System.out.println("Ignoring unknown M flag " + RAD + " for " + inchi);
 			}
 		}
 		
 		// Construct the entire adjacency list from its individual lines
-		String cgString = "";
+		String adjList = "";
 		for (int i=0; i<numOfAtoms-1; i++) {
-			cgString += (i+1) + adjListElement[i] + adjListRadical[i] + adjListConnectivity[i] + "\r";
+			adjList += (i+1) + adjListElement[i] + adjListRadical[i] + adjListConnectivity[i] + "\r";
 		}
-		cgString += numOfAtoms + adjListElement[numOfAtoms-1] + adjListRadical[numOfAtoms-1] + adjListConnectivity[numOfAtoms-1];
+		adjList += numOfAtoms + adjListElement[numOfAtoms-1] + adjListRadical[numOfAtoms-1] + adjListConnectivity[numOfAtoms-1];
 		
-		return cgString;
+		return adjList;
 	}
 
     public int getID() {
