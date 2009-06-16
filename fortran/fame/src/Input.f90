@@ -12,6 +12,7 @@ module InputModule
 	use SpeciesModule
 	use IsomerModule
 	use ReactionModule
+	use DensityOfStatesModule
 
 	implicit none
 	
@@ -26,9 +27,8 @@ contains
 	!
 	! Parameters:
 	!		simData - The simulation data object to store the parameters in.
-	subroutine loadNetwork(path, simData, speciesList, isomerList, rxnList, verbose)
+	subroutine loadNetwork(simData, speciesList, isomerList, rxnList, verbose)
 		
-		character(len=*), intent(in)								:: 	path
 		type(Simulation), intent(inout)								:: 	simData
 		type(Species), dimension(:), allocatable, intent(inout)		:: 	speciesList
 		type(Isomer), dimension(:), allocatable, intent(inout)		:: 	isomerList
@@ -38,15 +38,11 @@ contains
 		integer ios		! Input file status
 		
 		integer i, n	! Dummy indices
-		
-		! Open file for reading; fail if unable to open
-		open(1, iostat=ios, file=path, action='read', status='old', access='sequential', recl=128)
-		if (ios /= 0) then
-			print *, 'Error: Unable to open file "', path, '".'
-			return
-		end if
 
-		if (verbose >= 1) write (*,*), 'Reading from file "fame_input.txt"...'
+		real(8) Emin, Emax
+		integer nGrains
+
+		if (verbose >= 1) write (*,*), 'Reading from stdin...'
 
 		! Load simulation data from input file
 		if (verbose >= 2) write (*,*), '\tReading simulation parameters...'
@@ -72,6 +68,9 @@ contains
 		do i = 1, simData%nRxn
 			call loadReactionData(rxnList(i))
 		end do
+		
+		call selectEnergyGrains(simData, speciesList, isomerList, rxnList, Emin, Emax, nGrains)
+		call setEnergyGrains(Emin, Emax, nGrains, simData)
 		
 		! Close file
 		close(1) 
@@ -104,7 +103,7 @@ contains
 		do while (ios == 0 .and. found == 0)
 			
 			! Read one line from the file
-			read (1, fmt='(a128)', iostat=ios), str
+			read (*, fmt='(a128)', iostat=ios), str
 			
 			! Skip if comment line
 			if (index(str(1:1), '#') /= 0) cycle
@@ -129,14 +128,14 @@ contains
 				call readInteger(str(13:), i)
 				allocate(simData%Tlist(1:i))
 				do i = 1, i
-					read (1, fmt='(a128)', iostat=ios), str
+					read (*, fmt='(a128)', iostat=ios), str
 					call readNumberAndUnit(str, simData%Tlist(i), unit)
 				end do
 			else if (index(str(1:9), 'Pressures') /= 0) then
 				call readInteger(str(10:), i)
 				allocate(simData%Plist(1:i))
 				do i = 1, i
-					read (1, fmt='(a128)', iostat=ios), str
+					read (*, fmt='(a128)', iostat=ios), str
 					call readNumberAndUnit(str, simData%Plist(i), unit)
 				end do
 			else if (index(str(1:10), 'Grain size') /= 0) then
@@ -169,13 +168,6 @@ contains
 
 		end do
         
-        ! Sets the energy levels of the individual grains
-        simData%nGrains = nint((simData%Emax - simData%Emin) / simData%dE)
-		allocate (simData%E(1:simData%nGrains))
-        do i = 1, simData%nGrains
-            simData%E(i) = simData%dE * (i - 0.5) + simData%Emin
-        end do
-		
 ! 		write (*,*) simData%mode
 ! 		write (*,*) simData%Tlist
 ! 		write (*,*) simData%Plist
@@ -221,7 +213,7 @@ contains
 		do while (ios == 0 .and. found == 0)
 			
 			! Read one line from the file
-			read (1, fmt='(a128)', iostat=ios), str
+			read (*, fmt='(a128)', iostat=ios), str
 
 			! Skip if comment line
 			if (index(str(1:1), '#') /= 0) cycle
@@ -249,14 +241,14 @@ contains
 				call readInteger(str(21:), number)
 				allocate(spec%vibFreq(1:number))
 				do i = 1, number
-					read (1, fmt='(a128)', iostat=ios), str
+					read (*, fmt='(a128)', iostat=ios), str
 					call readNumberAndUnit(str, spec%vibFreq(i), unit)
 				end do
 			else if (index(str(1:12), 'Rigid rotors') /= 0) then
 				call readInteger(str(13:), number)
 				allocate(spec%rotFreq(1:number))
 				do i = 1, number
-					read (1, fmt='(a128)', iostat=ios), str
+					read (*, fmt='(a128)', iostat=ios), str
 					call readNumberAndUnit(str, spec%rotFreq(i), unit)
 				end do
 			else if (index(str(1:15), 'Hindered rotors') /= 0) then
@@ -264,11 +256,11 @@ contains
 				allocate(spec%hindFreq(1:number))
 				allocate(spec%hindBarrier(1:number))
 				do i = 1, number
-					read (1, fmt='(a128)', iostat=ios), str
+					read (*, fmt='(a128)', iostat=ios), str
 					call readNumberAndUnit(str, spec%hindFreq(i), unit)
 				end do
 				do i = 1, number
-					read (1, fmt='(a128)', iostat=ios), str
+					read (*, fmt='(a128)', iostat=ios), str
 					call readNumberAndUnit(str, spec%hindBarrier(i), unit)
 				end do
 			else if (index(str(1:15), 'Symmetry number') /= 0) then
@@ -318,7 +310,7 @@ contains
 		do while (ios == 0 .and. found == 0)
 			
 			! Read one line from the file
-			read (1, fmt='(a128)', iostat=ios), str
+			read (*, fmt='(a128)', iostat=ios), str
 
 			! Skip if comment line
 			if (index(str(1:1), '#') /= 0) cycle
@@ -334,7 +326,7 @@ contains
 				call readInteger(str(8:), isom%numSpecies)
 				allocate(isom%speciesList(1:isom%numSpecies))
 				do i = 1, isom%numSpecies
-					read (1, fmt='(a128)', iostat=ios), str
+					read (*, fmt='(a128)', iostat=ios), str
 					call readInteger(str, isom%speciesList(i))
 				end do
 			end if
@@ -398,7 +390,7 @@ contains
 		do while (ios == 0 .and. found == 0)
 			
 			! Read one line from the file
-			read (1, fmt='(a128)', iostat=ios), str
+			read (*, fmt='(a128)', iostat=ios), str
 			
 			! Skip if comment line
 			if (index(str(1:1), '#') /= 0) cycle
@@ -560,5 +552,126 @@ contains
 	end subroutine
 
 	!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+	!
+	! Subroutine: setEnergyGrains()
+	!
+	! Set the energy grains to use for the calculations.
+	!
+	subroutine setEnergyGrains(Emin, Emax, nGrains, simData)
+	
+	    real(8), intent(in)							::	Emin
+		real(8), intent(in)							::	Emax
+		integer, intent(in)							::	nGrains
+		type(Simulation), intent(inout)				:: 	simData
+		
+		integer i
+		
+		! Sets the energy levels of the individual grains
+        simData%Emin = Emin
+		simData%Emax = Emax
+		simData%nGrains = nGrains
+		
+		simData%dE = (simData%Emax - simData%Emin) / (simData%nGrains - 1)
+		
+		if (allocated(simData%E)) then
+			deallocate(simData%E)
+		end if
+		
+		allocate (simData%E(1:simData%nGrains))
+        do i = 1, simData%nGrains
+            simData%E(i) = simData%dE * (i - 1) + simData%Emin
+        end do
+	
+	end subroutine
+	
+	
+	!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+	!
+	! Subroutine: selectEnergyGrains()
+	!
+	! Determines a suitable set of energy grains to use for the calculations.
+	!
+	subroutine selectEnergyGrains(simData, speciesList, isomerList, rxnList, Emin, Emax, nE)
+	
+		type(Simulation), intent(inout)							:: 	simData
+		type(Species), dimension(:), allocatable, intent(in)	:: 	speciesList
+		type(Isomer), dimension(:), allocatable, intent(inout)	:: 	isomerList
+		type(Reaction), dimension(:), allocatable, intent(in)	:: 	rxnList
+		real(8), intent(out)									::	Emin
+		real(8), intent(out)									::	Emax
+		integer, intent(out)									::	nE
+		
+		real(8) Tmax, Emax0, mult, value, tol
+		integer isom, i, r, done, maxindex
+		
+		nE = 201
+		
+		Tmax = maxval(simData%Tlist)
+		
+		! Determine minimum energy and isomer with maximum ground-state energy
+		Emin = isomerList(1)%E0
+		isom = 1
+		do i = 1, simData%nIsom
+			if (isomerList(i)%E0 < Emin) then
+				Emin = isomerList(i)%E0
+			elseif (isomerList(i)%E0 > Emax0) then
+				Emax0 = isomerList(i)%E0
+				isom = i
+			end if
+		end do
+! 		do i = 1, simData%nRxn
+! 			if (rxnList(i)%E0 > Emax0) then
+! 				Emax0 = rxnList(i)%E0
+! 			end if
+! 		end do
+		
+		! Round Emin down to nearest kJ/mol
+		Emin = floor(Emin)
+	
+		! Purposely overestimate Emax
+		mult = 50
+		done = 0
+		do while (done == 0)
+		
+			Emax = ceiling(Emax0 + mult * 0.008314472 * Tmax)
+			
+			call setEnergyGrains(Emin, Emax, nE, simData)
+			call densityOfStates(simData, isomerList(isom), speciesList)
+			call eqDist(isomerList(isom), simData%E, Tmax)
+			
+			! Find maximum of distribution
+			maxindex = 0
+			value = 0.0
+			do r = 1, nE
+				if (isomerList(isom)%eqDist(r) > value) then
+					value = isomerList(isom)%eqDist(r)
+					maxindex = r
+				end if
+			end do
+			
+			! If tail of distribution is much lower than the maximum, then we've found bounds for Emax
+			tol = 1e-4
+			if (isomerList(isom)%eqDist(nE) / value < tol) then
+				r = nE - 1
+				do while (r > 0 .and. done == 0)
+					if (isomerList(isom)%eqDist(r) / value > tol) then
+						done = 1
+					else
+						r = r - 1
+					end if
+				end do
+				Emax = simData%E(r)
+			else
+				mult = mult + 50
+			end if
+			
+			deallocate( simData%E, isomerList(isom)%densStates, isomerList(isom)%eqDist )
+			
+		end do
+		
+		! Round Emax up to nearest kJ/mol
+		Emax = ceiling(Emax)		
+		
+	end subroutine
 	
 end module

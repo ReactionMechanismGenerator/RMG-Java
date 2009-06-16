@@ -44,8 +44,8 @@ contains
 		! Steady-state matrix and vector
 		real(8), dimension(:,:), allocatable		:: 	A
 		real(8), dimension(:), allocatable			:: 	b
-		! Collision efficiency
-		real(8) eps
+		! Collision efficiencies (the "modified" in modified strong collision)
+		real(8), dimension(:), allocatable			:: 	beta
 		! Number of active-state energy grains for each unimolecular isomer
 		integer, dimension(:), allocatable				:: 	nAct
 		! Indices i and j represent sums over unimolecular wells
@@ -82,10 +82,12 @@ contains
 		allocate( iPiv(1:nUni) )
 		allocate( pa(1:simData%nGrains, 1:nUni) )
 			
-		do src = 1, simData%nIsom
+		allocate( beta(1:simData%nIsom) )
+			
+		! Determine collision efficiency
+		call collisionEfficiencies(T, simData, isomerList, rxnList, beta)
 
-			! Determine collision efficiency
-			eps = collisionEfficiency(simData, isomerList, rxnList, src)
+		do src = 1, simData%nIsom
 
 			! Determine starting grain
 			start = activeSpaceStart(simData, isomerList, rxnList, src)
@@ -108,7 +110,7 @@ contains
 				
 				! Collisional deactivation
 				do i = 1, nUni
-					A(i,i) = - eps * isomerList(i)%omega
+					A(i,i) = - beta(i) * isomerList(i)%omega
 				end do
 				
 				! Reactions
@@ -129,7 +131,7 @@ contains
 					
 				! Activation
 				if (isomerList(src)%numSpecies == 1) then
-					b(src) = eps * isomerList(src)%omega * isomerList(src)%eqDist(r)
+					b(src) = beta(src) * isomerList(src)%omega * isomerList(src)%eqDist(r)
 				else
 					do u = 1, simData%nRxn
 						reac = rxnList(u)%isomerList(1)
@@ -157,7 +159,7 @@ contains
 			! Stabilization rates (i.e.) R + R' --> Ai or M --> Ai
 			do i = 1, nUni
 				if (i /= src) then
-					val = eps * isomerList(i)%omega * sum(pa(:,i))
+					val = beta(i) * isomerList(i)%omega * sum(pa(:,i))
 					K(i,src) = K(i,src) + val
 					K(src,src) = K(src,src) - val
 				end if
@@ -181,50 +183,52 @@ contains
 		end do
 
 		! Clean up
-		deallocate( A, b, iPiv, pa )
+		deallocate( A, b, iPiv, pa, beta )
 
 	end subroutine
 
 	!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 	!
-	! collisionEfficiency() 
+	! collisionEfficiencies() 
 	!
 	!   Computes the fraction of collisions that result in deactivation.
 	!
-	function collisionEfficiency(simData, isomerList, rxnList, src)
+	subroutine collisionEfficiencies(T, simData, isomerList, rxnList, beta)
 	
 		! Provide parameter type checking of inputs and outputs
+		real(8), intent(in)							::	T
 		type(Simulation), intent(in)				:: 	simData
 		type(Isomer), dimension(:), intent(in)		:: 	isomerList
 		type(Reaction), dimension(:), intent(in)	:: 	rxnList
-		integer, intent(in)							:: 	src
-		real(8)										::	collisionEfficiency
+		real(8), dimension(:), intent(out)			::	beta
 		
 		real(8) E0
-		integer t
+		integer i, r
 		
-		if (isomerList(src)%numSpecies > 1) then
-			collisionEfficiency = 0.38
-		else
-
-			collisionEfficiency = 0.38
-
-! 			E0 = simData%Emax
-! 			do t = 1, size(rxnData)
-! 				if (rxnData(t)%isomer(1) == src .or. rxnData(t)%isomer(2) == src) then
-! 					if (rxnData(t)%E < E0) E0 = rxnData(t)%E
-! 				end if
-! 			end do
-! 
-! 			collisionEfficiency = efficiency(simData%T, &
-! 				simData%alpha * (1000 / 6.022e23), &
-! 				uniData(src)%densStates / (1000 / 6.022e23), &
-! 				simData%E * (1000 / 6.022e23), &
-! 				E0 * (1000 / 6.022e23))
+		do i = 1, simData%nIsom
+			if (isomerList(i)%numSpecies == 1) then
 			
-		end if
+				E0 = simData%Emax
+	 			do r = 1, size(rxnList)
+	 				if (rxnList(r)%isomerList(1) == i .or. rxnList(r)%isomerList(2) == i) then
+	 					if (rxnList(r)%E0 < E0) E0 = rxnList(r)%E0
+	 				end if
+	 			end do
+	 
+	 			beta(i) = efficiency(T, &
+	 				simData%alpha * (1000 / 6.022e23), &
+	 				isomerList(i)%densStates / (1000 / 6.022e23), &
+	 				simData%E * (1000 / 6.022e23), &
+	 				E0 * (1000 / 6.022e23))
+			else
+				beta(i) = 0.
+			end if
+		end do
+		
+		!write (*,*) beta
+		
 	
-	end function
+	end subroutine
 	
 	! --------------------------------------------------------------------------
 	! 
@@ -282,7 +286,15 @@ contains
 		Delta = Delta1 - (Fe * kB * T) / (alpha + Fe * kB * T) * Delta2
 		
 		efficiency = (alpha / (alpha + Fe * kB * T))**2 / Delta
-		write (*,*), FeNum, FeDen, Fe, Delta, efficiency
+		
+		! Place bounds on efficiency range (should probably also warn user!)
+		if (efficiency < 1e-8) then
+			efficiency = 1e-8
+		elseif (efficiency > 1.0) then
+			efficiency = 1.0
+		end if
+		
+		!write (*,*), FeNum, FeDen, Fe, Delta, efficiency
 		
 	end function
 	

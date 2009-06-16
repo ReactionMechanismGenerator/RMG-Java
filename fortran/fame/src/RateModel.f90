@@ -169,51 +169,29 @@ contains
 		! Create format string
 		write (fmtStr,*), '(', size(simData%Plist), 'ES16.4E3)'
 		
-		open(2, iostat=ios, file=path, action='write', status='old', access='sequential')
-		write (2,*), '# FAME output'
-		write (2,*), 'Number of wells                     ', simData%nIsom
-		write (2,*), 'Number of Chebyshev temperatures    ', simData%nChebT
-		write (2,*), 'Number of Chebyshev pressures       ', simData%nChebP
-		write (2,*), 'Temperature range of fit            ', minval(simData%Tlist), 'K    ', maxval(simData%Tlist), 'K'
-		write (2,*), 'Pressure range of fit               ', minval(simData%Plist), 'bar  ', maxval(simData%Plist), 'bar'
-		write (2,*), ''
+		write (*,*), '# FAME output'
+		write (*,*), 'Number of wells                     ', simData%nIsom
+		write (*,*), 'Number of Chebyshev temperatures    ', simData%nChebT
+		write (*,*), 'Number of Chebyshev pressures       ', simData%nChebP
+		write (*,*), 'Temperature range of fit            ', minval(simData%Tlist), 'K    ', maxval(simData%Tlist), 'K'
+		write (*,*), 'Pressure range of fit               ', minval(simData%Plist), 'bar  ', maxval(simData%Plist), 'bar'
+		write (*,*), ''
 		
-		
-		! Actual fitted rate coefficients
 		! The order of each row is (1,2), (1,3), ..., (2,1), (2,3), ...
 		! (i,j) represents the reaction j --> i
-		!allocate( rate(1:simData%nIsom*(simData%nIsom-1)) )
-		!write (2,*), '# Calculated rate coefficients in s^-1 or cm^3 mol^-1 s^-1'
-		!write (2,*), '#     T           P'
-		!do t = 1, size(simData%Tlist)
-		!	do p = 1, size(simData%Plist)
-		!		ind = 1
-		!		do i = 1, simData%nIsom
-		!			do j = 1, simData%nIsom
-		!				if (i /= j) then
-		!					rate(ind) = K(t,p,i,j)
-		!					ind = ind + 1
-		!				end if
-		!			end do
-		!		end do			
-		!		write (2,fmtStr), simData%Tlist(t), simData%Plist(p), rate
-		!	end do
-		!end do
-		!write (2,*), ''
-		!deallocate( rate )
-		
-		! Chebyshev fits
 		do i = 1, simData%nIsom
 			do j = 1, simData%nIsom
 				if (i /= j) then
-					write (2,*), '# Reaction', j, '-->', i
+					write (*,*), '# Reaction', j, '-->', i
+					! Actual fitted rate coefficients
 					do t = 1, size(simData%Tlist)
-						write (2, fmtStr), K(t,:,i,j)
+						write (*, fmtStr), K(t,:,i,j)
 					end do
+					! Chebyshev fits
 					do t = 1, simData%nChebT
-						write (2,*), alpha(t,:,i,j)
+						write (*,*), alpha(t,:,i,j)
 					end do
-					write (2,*), ''
+					write (*,*), ''
 				end if
 			end do
 		end do

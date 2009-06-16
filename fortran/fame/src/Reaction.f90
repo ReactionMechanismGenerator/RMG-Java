@@ -90,8 +90,8 @@ contains
 		elseif (reac%numSpecies > 1 .and. prod%numSpecies == 1) then
 			
 			! Convert to dissocation so that a similar algorithm to above can be used
-			reac = isomerList(rxn%isomerList(1))
-			prod = isomerList(rxn%isomerList(2))
+			reac = isomerList(rxn%isomerList(2))
+			prod = isomerList(rxn%isomerList(1))
 		
 			! Calculate forward rate coefficient via inverse Laplace transform
 			call rateILT(rxn%E0 - reac%E0, reac%densStates, &

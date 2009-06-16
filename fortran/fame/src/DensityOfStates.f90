@@ -61,6 +61,9 @@ contains
 			vibCount = size(spec%vibFreq)
 			rotCount = size(spec%rotFreq)
 			hindCount = size(spec%hindFreq)
+			if (.not. allocated(spec%vibFreq)) vibCount = 0
+			if (.not. allocated(spec%rotFreq)) rotCount = 0
+			if (.not. allocated(spec%hindFreq)) hindCount = 0
 			
 			if (vibCount > 0 .or. rotCount > 0 .or. hindCount > 0) then
 		
@@ -124,7 +127,7 @@ contains
 		
 		allocate(isom%densStates(1:simData%nGrains))
 		isom%densStates = 0 * isom%densStates
-		isom%densStates(start:simData%nGrains) = rho1(1:length)
+		isom%densStates(start:simData%nGrains) = rho1(1:length) * conv
 		
 		deallocate( rho1 )
 		
@@ -342,30 +345,26 @@ contains
 		real(8), dimension(1:size(E))			:: 	calcHinderedRotorStates
 		
 		integer i, n
-		real(8) m, K, tol
+		real(8) m, K, tol, factor, pi
 		
 		tol = 1.0e-7
+		pi = 3.1415926535897932
 		
 		do i = 1, size(E)
+			factor = 2.0 / sqrt(pi**3) * sqrt(pi / freq)
+			
 			if (E(i) < 0) then
 				calcHinderedRotorStates(i) = 0
-			elseif (E(i) < freq/2.d0) then
-				m = 0.d0
+			elseif (E(i) <= barrier) then
+				m = sqrt(E(i) / barrier)
 				call celliptic(m, tol, K, n)
-				calcHinderedRotorStates(i) = K / sqrt(barrier)
-			elseif (E(i) - freq/2.d0 < barrier) then
-				m = sqrt((E(i) - freq/2.d0) / barrier)
-				call celliptic(m, tol, K, n)
-				calcHinderedRotorStates(i) = K / sqrt(barrier)
-			elseif (E(i) - freq/2.d0 == barrier) then
-				m = 1.d0 - tol
-				call celliptic(m, tol, K, n)
-				calcHinderedRotorStates(i) = (K / sqrt(barrier) +  K/sqrt(E(i) - freq/2)) / 2.d0
+				calcHinderedRotorStates(i) = factor * K / sqrt(barrier)
 			else
-				m = sqrt(barrier / (E(i) - freq/2.d0))
+				m = sqrt(barrier / E(i))
 				call celliptic(m, tol, K, n)
-				calcHinderedRotorStates(i) = K / sqrt(E(i) - freq/2.d0)
+				calcHinderedRotorStates(i) = factor * K / sqrt(E(i))
 			end if
+		
 		end do
 		
 	end function
@@ -398,8 +397,10 @@ contains
 		
 		pi = 4.d0 * datan(1.d0)
 
-		A = 1 + m 
-		B = 1 - m
+		!A = 1 + m 
+		!B = 1 - m
+		A = 1
+		B = sqrt(1 - m)
 		n = 0;
 
 		! Skip if m is outside of range (0, 1) or tolerance is negative

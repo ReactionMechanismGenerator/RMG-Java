@@ -15,14 +15,14 @@ FORTRAN = g95
 BIN = ../fame.exe
 
 # List of object files in project
-OBJ = Simulation.o Species.o Isomer.o Reaction.o Input.o DensityOfStates.o StrongCollision.o ReservoirState.o RateModel.o fame.o 
+OBJ = Simulation.o Species.o Isomer.o Reaction.o DensityOfStates.o Input.o StrongCollision.o ReservoirState.o RateModel.o fame.o 
 
 # Compiler flags
 CFLAGS = -ftrace=full
 #CFLAGS =
 
 # Linker flags
-LFLAGS = -L/usr/lib -lpthread -lblas -llapack -lg2c
+LFLAGS = -L/usr/lib -lpthread -lblas -llapack
 
 # ==============================================================================
 

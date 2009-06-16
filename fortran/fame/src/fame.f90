@@ -71,7 +71,7 @@ program fame
 
 	! Load data from files on disk
 	if (verbose >= 1) write (*,*), 'Reading input...'
-	call loadNetwork('fame_input.txt', simData, speciesList, isomerList, rxnList, verbose)
+	call loadNetwork(simData, speciesList, isomerList, rxnList, verbose)
     
 	! Calculate density of states for each (unimolecular) well
 	if (verbose >= 1) write (*,*), 'Calculating density of states...'
@@ -113,10 +113,11 @@ program fame
 			end do
 			
 			! Calculate microcanonical rate coefficients at the current conditions
+			if (verbose >= 2) write (*,*), '\tCalculating microcanonical rate coefficiencts...'
 			do w = 1, simData%nRxn
 				call microRates(T, P, rxnList(w), simData%E, isomerList)
 			end do
-			
+					
 			if (simData%mode == 1) then
 				! Apply steady state/reservoir state approximations
 				if (verbose >= 3) write (*,*), '\t\tApplying steady-state/modified strong collision approximation...'
@@ -140,9 +141,9 @@ program fame
 		end do
 	end do
 
-   	!do i = 1, simData%nIsom
-	!	write (*,*) K(4,3,i,:)
-	!end do
+!    	do i = 1, simData%nIsom
+! 		write (*,*) K(4,3,i,:)
+! 	end do
 
 	!do i = 1, size(simData%Tlist)
 	!	write (*,*) K(i,:,2,1)

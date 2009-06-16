@@ -85,6 +85,19 @@ contains
 		!call activeStateFull(simData, isomerList, rxnList, nUni, nRes, nAct, pa)
 		call activeStateBanded(simData, isomerList, rxnList, nUni, nRes, nAct, pa)
 		
+		! Check that PSSA populations are all nonnegative; fail if not
+		do i = 1, nUni
+			do n = 1, simData%nIsom
+				do r = 1, simData%nGrains
+					if (pa(r,n,i) < 0.0) then
+						write (*,*) 'ERROR: Negative steady-state populations encountered during ReservoirState method.'
+						stop
+					end if
+				end do
+			end do
+		end do
+		
+		
 		! Initialize phenomenological rate coefficient matrix
 		do i = 1, simData%nIsom
 			do n = 1, simData%nIsom
