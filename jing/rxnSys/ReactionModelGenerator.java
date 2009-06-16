@@ -494,14 +494,15 @@ public class ReactionModelGenerator {
 					}
 
 					// Set temperatures and pressures to use in PDep kinetics estimation
-					Temperature[] temperatures = new Temperature[7];
+					Temperature[] temperatures = new Temperature[8];
 					temperatures[0] = new Temperature(300, "K");
-					temperatures[1] = new Temperature(600, "K");
-					temperatures[2] = new Temperature(900, "K");
-					temperatures[3] = new Temperature(1200, "K");
-					temperatures[4] = new Temperature(1500, "K");
-					temperatures[5] = new Temperature(1800, "K");
-					temperatures[6] = new Temperature(2100, "K");
+					temperatures[1] = new Temperature(400, "K");
+					temperatures[2] = new Temperature(600, "K");
+					temperatures[3] = new Temperature(900, "K");
+					temperatures[4] = new Temperature(1200, "K");
+					temperatures[5] = new Temperature(1500, "K");
+					temperatures[6] = new Temperature(1800, "K");
+					temperatures[7] = new Temperature(2100, "K");
 					FastMasterEqn.setTemperatures(temperatures);
 					PDepRateConstant.setTemperatures(temperatures);
 

@@ -27,6 +27,7 @@
 
 package jing.rxn;
 
+import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
@@ -34,9 +35,15 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.io.PrintStream;
+import java.io.StringReader;
 import java.util.LinkedList;
 import java.util.ListIterator;
 import java.util.StringTokenizer;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import jing.chem.Species;
 import jing.chem.SpectroscopicData;
 import jing.param.Pressure;
@@ -192,7 +199,8 @@ public class FastMasterEqn implements PDepKineticsEstimator {
 		}
 
 		// Create FAME input files
-		writeInputFile(pdn, rxnSystem, speciesList, isomerList, pathReactionList);
+		String input = writeInputString(pdn, rxnSystem, speciesList, isomerList, pathReactionList);
+        String output = "";
 
 		// Touch FAME output file
 		touchOutputFile();
@@ -203,31 +211,64 @@ public class FastMasterEqn implements PDepKineticsEstimator {
 			String[] command = {dir + "/software/fame/fame.exe"};
            	File runningDir = new File("fame/");
 			Process fame = Runtime.getRuntime().exec(command, null, runningDir);
-            InputStream ips = fame.getInputStream();
-            InputStreamReader is = new InputStreamReader(ips);
-            BufferedReader br = new BufferedReader(is);
-            // Print FAME stdout
-			/*String line = null;
-            while ( (line = br.readLine()) != null) {
-            	System.out.println(line);
-            }*/
+
+            BufferedReader stdout = new BufferedReader(new InputStreamReader(fame.getInputStream()));
+            BufferedReader stderr = new BufferedReader(new InputStreamReader(fame.getErrorStream()));
+            PrintStream stdin = new PrintStream(new BufferedOutputStream(fame.getOutputStream()), true);
+
+            stdin.print(input);
+
+            String line = stdout.readLine().trim();
+            if (line.contains("# FAME output")) {
+                output += line + "\n";
+                while ( (line = stdout.readLine()) != null) {
+                    output += line + "\n";
+                }
+            }
+            else {
+                // Print FAME stdout
+                System.out.println(line);
+                while ( (line = stdout.readLine()) != null) {
+                    System.out.println(line);
+                }
+                throw new Exception();
+            }
+            
             int exitValue = fame.waitFor();
 
         }
         catch (Exception e) {
-        	System.out.println("Error while executing FAME!");
-        	System.exit(0);
+        	// Save bad input to file
+            try {
+                //FileWriter fw = new FileWriter(new File("fame/" + Integer.toString(runCount+1) + "_input.txt"));
+                FileWriter fw = new FileWriter(new File("fame/" + Integer.toString(pdn.getID()) + "_input.txt"));
+                fw.write(input);
+                fw.close();
+            } catch (IOException ex) {
+                System.out.println("Unable to save FAME input that caused the error.");
+                System.exit(0);
+            }
+            // If using RS method, fall back to MSC
+			if (mode == Mode.RESERVOIRSTATE) {
+				System.out.println("Falling back to modified strong collision mode for this network.");
+				mode = Mode.STRONGCOLLISION;
+				runPDepCalculation(pdn, rxnSystem, cerm);
+				mode = Mode.RESERVOIRSTATE;
+				return;
+			}
+			else
+				System.exit(0);
         }
 
 		// Parse FAME output file and update accordingly
-        if (readOutputFile(pdn, rxnSystem, cerm, isomerList)) {
+        if (parseOutputString(output, pdn, rxnSystem, cerm, isomerList)) {
 
 			// Reset altered flag
 			pdn.setAltered(false);
 
 			// Clean up files
-			String path = "fame/";
 			int id = pdn.getID();
+			/*String path = "fame/";
 			if (id < 10)			path += "000";
 			else if (id < 100)	path += "00";
 			else if (id < 1000)	path += "0";
@@ -238,7 +279,7 @@ public class FastMasterEqn implements PDepKineticsEstimator {
 			input.renameTo(newInput);
 			File output = new File("fame/fame_output.txt");
 			File newOutput = new File(path +  "_output.txt");
-			output.renameTo(newOutput);
+			output.renameTo(newOutput);*/
 
 			// Write finished indicator to console
 			//System.out.println("FAME execution for network " + Integer.toString(id) + " complete.");
@@ -264,12 +305,14 @@ public class FastMasterEqn implements PDepKineticsEstimator {
 	 * @param isomerList The set of isomers in the network
 	 * @param pathReactionList The set of path reactions in the network
 	 */
-	public void writeInputFile(PDepNetwork pdn,	ReactionSystem rxnSystem,
+	public String writeInputString(PDepNetwork pdn, ReactionSystem rxnSystem,
 			LinkedList<Species> speciesList,
 			LinkedList<PDepIsomer> isomerList,
 			LinkedList<PDepReaction> pathReactionList) {
 
-		Temperature stdTemp = new Temperature(298, "K");
+		String input = "";
+
+        Temperature stdTemp = new Temperature(298, "K");
 
 		// Collect simulation parameters
 		Temperature temperature = rxnSystem.getPresentTemperature();
@@ -289,76 +332,76 @@ public class FastMasterEqn implements PDepKineticsEstimator {
 			File simData = new File("fame/fame_input.txt");
 			FileWriter fw = new FileWriter(simData);
 
-			fw.write("# FAME input for RMG-generated pressure dependent network #" + runCount+1 + "\n");
-			fw.write("Mode                                " + getModeString() + "\n");
-			fw.write("Temperatures                        " + temperatures.length + "\n");
+			input += "# FAME input for RMG-generated pressure dependent network #" + runCount+1 + "\n";
+			input += "Mode                                " + getModeString() + "\n";
+			input += "Temperatures                        " + temperatures.length + "\n";
 			for (int t = 0; t < temperatures.length; t++)
-				fw.write(temperatures[t].getK() + " K\n");
-			fw.write("Pressures                           " + pressures.length + "\n");
+				input += temperatures[t].getK() + " K\n";
+			input += "Pressures                           " + pressures.length + "\n";
 			for (int p = 0; p < pressures.length; p++)
-				fw.write(pressures[p].getBar() + " bar\n");
-			fw.write("Grain size                          " + grainSize + " kJ/mol\n");
-			fw.write("Minimum grain energy                " + grainMinEnergy + " kJ/mol\n");
-			fw.write("Maximum grain energy                " + grainMaxEnergy + " kJ/mol\n");
-			fw.write("Number of species                   " + speciesList.size() + "\n");
-			fw.write("Number of wells                     " + isomerList.size() + "\n");
-			fw.write("Number of reactions                 " + pathReactionList.size() + "\n");
-			fw.write("Exponential down parameter          " + bathGas.getExpDownParam() + " kJ/mol\n");
-			fw.write("Bath gas LJ sigma parameter         " + bathGas.getLJSigma() + " m\n");
-			fw.write("Bath gas LJ epsilon parameter       " + bathGas.getLJEpsilon() + " J\n");
-			fw.write("Bath gas molecular weight           " + bathGas.getMolecularWeight() + " g/mol\n");
-			fw.write("Number of Chebyshev temperatures    " + numChebTempPolys + "\n");
-			fw.write("Number of Chebyshev pressures       " + numChebPressPolys + "\n");
-			fw.write("\n");
+				input += pressures[p].getBar() + " bar\n";
+			input += "Grain size                          " + grainSize + " kJ/mol\n";
+			input += "Minimum grain energy                " + grainMinEnergy + " kJ/mol\n";
+			input += "Maximum grain energy                " + grainMaxEnergy + " kJ/mol\n";
+			input += "Number of species                   " + speciesList.size() + "\n";
+			input += "Number of wells                     " + isomerList.size() + "\n";
+			input += "Number of reactions                 " + pathReactionList.size() + "\n";
+			input += "Exponential down parameter          " + bathGas.getExpDownParam() + " kJ/mol\n";
+			input += "Bath gas LJ sigma parameter         " + bathGas.getLJSigma() + " m\n";
+			input += "Bath gas LJ epsilon parameter       " + bathGas.getLJEpsilon() + " J\n";
+			input += "Bath gas molecular weight           " + bathGas.getMolecularWeight() + " g/mol\n";
+			input += "Number of Chebyshev temperatures    " + numChebTempPolys + "\n";
+			input += "Number of Chebyshev pressures       " + numChebPressPolys + "\n";
+			input += "\n";
 
 			for (int i = 0; i < speciesList.size(); i++) {
 
 				Species species = speciesList.get(i);
 				species.calculateLJParameters();
 
-				fw.write("# Species " + Integer.toString(i+1) + ": " + species.getName() + "(" + Integer.toString(species.getID()) + ")" + "\n");
-				fw.write("Ground-state energy                 " + (species.calculateH(stdTemp) * 4.184) + " kJ/mol\n");
-				fw.write("Enthalpy of formation               " + (species.calculateH(stdTemp) * 4.184) + " kJ/mol\n");
-				fw.write("Free energy of formation            " + (species.calculateG(stdTemp) * 4.184) + " kJ/mol\n");
-				fw.write("LJ sigma parameter                  " + (species.getLJ().getSigma() * 1e-10) + " m\n");
-				fw.write("LJ epsilon parameter                " + (species.getLJ().getEpsilon() * 1.381e-23) + " J\n");
-				fw.write("Molecular weight                    " + species.getMolecularWeight() + " g/mol\n");
+				input += "# Species " + Integer.toString(i+1) + ": " + species.getName() + "(" + Integer.toString(species.getID()) + ")" + "\n";
+				input += "Ground-state energy                 " + (species.calculateH(stdTemp) * 4.184) + " kJ/mol\n";
+				input += "Enthalpy of formation               " + (species.calculateH(stdTemp) * 4.184) + " kJ/mol\n";
+				input += "Free energy of formation            " + (species.calculateG(stdTemp) * 4.184) + " kJ/mol\n";
+				input += "LJ sigma parameter                  " + (species.getLJ().getSigma() * 1e-10) + " m\n";
+				input += "LJ epsilon parameter                " + (species.getLJ().getEpsilon() * 1.381e-23) + " J\n";
+				input += "Molecular weight                    " + species.getMolecularWeight() + " g/mol\n";
 
 				SpectroscopicData data = species.getSpectroscopicData();
 				if (data.getVibrationCount() > 0) {
-					fw.write("Harmonic oscillators                " + data.getVibrationCount() + "\n");
+					input += "Harmonic oscillators                " + data.getVibrationCount() + "\n";
 					for (int j = 0; j < data.getVibrationCount(); j++)
-						fw.write(data.getVibration(j) + " cm^-1\n");
+						input += data.getVibration(j) + " cm^-1\n";
 				}
 				if (data.getRotationCount() > 0) {
-					fw.write("Rigid rotors                        " + data.getRotationCount() + "\n");
+					input += "Rigid rotors                        " + data.getRotationCount() + "\n";
 					for (int j = 0; j < data.getRotationCount(); j++)
-						fw.write(data.getRotation(j) + " cm^-1\n");
+						input += data.getRotation(j) + " cm^-1\n";
 				}
 				if (data.getHinderedCount() > 0) {
-					fw.write("Hindered rotors                     " + data.getHinderedCount() + "\n");
+					input += "Hindered rotors                     " + data.getHinderedCount() + "\n";
 					for (int j = 0; j < data.getHinderedCount(); j++)
-						fw.write(data.getHinderedFrequency(j) + " cm^-1\n");
+						input += data.getHinderedFrequency(j) + " cm^-1\n";
 					for (int j = 0; j < data.getHinderedCount(); j++)
-						fw.write(data.getHinderedBarrier(j) + " cm^-1\n");
+						input += data.getHinderedBarrier(j) + " cm^-1\n";
 				}
-				fw.write("Symmetry number                         " + data.getSymmetryNumber() + "\n");
+				input += "Symmetry number                         " + data.getSymmetryNumber() + "\n";
 
-				fw.write("\n");
+				input += "\n";
 			}
 
 			for (int i = 0; i < isomerList.size(); i++) {
 
 				PDepIsomer isomer = isomerList.get(i);
 
-				fw.write("# Well " + Integer.toString(i+1) + ": " + isomer.toString() + "\n");
-				fw.write("Species                                 " + Integer.toString(isomer.getNumSpecies()) + "\n");
+				input += "# Well " + Integer.toString(i+1) + ": " + isomer.toString() + "\n";
+				input += "Species                                 " + Integer.toString(isomer.getNumSpecies()) + "\n";
 				for (int j = 0; j < isomer.getNumSpecies(); j++) {
 					int index = speciesList.indexOf(isomer.getSpecies(j)) + 1;
-					fw.write(index + "\n");
+					input += index + "\n";
 				}
 				
-				fw.write("\n");
+				input += "\n";
 			}
 
 			for (int i = 0; i < pathReactionList.size(); i++) {
@@ -401,18 +444,17 @@ public class FastMasterEqn implements PDepKineticsEstimator {
 				// Calculate transition state energy = ground-state energy of reactant (isomer 1) + activation energy
 				double E0 = Ea + reactant.calculateH(stdTemp);
 
-				fw.write("# Reaction " + rxn.toString() + ":\n");
-				fw.write("Reactant isomer                     " + isomer1 + "\n");
-				fw.write("Product isomer                      " + isomer2 + "\n");
-				fw.write("Ground-state energy                 " + (E0 * 4.184) + " kJ/mol\n");
-				fw.write("Arrhenius preexponential            " + A + " s^-1\n");
-				fw.write("Arrhenius activation energy         " + (Ea * 4.184) + " kJ/mol\n");
-				fw.write("Arrhenius temperature exponent      " + n + "\n");
-				fw.write("\n");
+				input += "# Reaction " + rxn.toString() + ":\n";
+				input += "Reactant isomer                     " + isomer1 + "\n";
+				input += "Product isomer                      " + isomer2 + "\n";
+				input += "Ground-state energy                 " + (E0 * 4.184) + " kJ/mol\n";
+				input += "Arrhenius preexponential            " + A + " s^-1\n";
+				input += "Arrhenius activation energy         " + (Ea * 4.184) + " kJ/mol\n";
+				input += "Arrhenius temperature exponent      " + n + "\n";
+				input += "\n";
 			}
 
-			fw.write("\n");
-            fw.close();
+			input += "\n";
 		}
 		catch(IOException e) {
 			System.out.println("Error: Unable to create file \"fame_input.txt\".");
@@ -427,6 +469,7 @@ public class FastMasterEqn implements PDepKineticsEstimator {
 			e.printStackTrace(System.out);
 		}
 
+        return input;
 	}
 
 	/**
@@ -437,8 +480,8 @@ public class FastMasterEqn implements PDepKineticsEstimator {
 	 * @param cerm The current core/edge reaction model
 	 * @param isomerList The set of isomers in the network
 	 */
-	public boolean readOutputFile(PDepNetwork pdn, ReactionSystem rxnSystem,
-			CoreEdgeReactionModel cerm,
+	public boolean parseOutputString(String output, PDepNetwork pdn,
+            ReactionSystem rxnSystem, CoreEdgeReactionModel cerm,
 			LinkedList<PDepIsomer> isomerList) {
 
 	    String dir = System.getProperty("RMG.workingDirectory");
@@ -452,17 +495,7 @@ public class FastMasterEqn implements PDepKineticsEstimator {
 
 		try {
 
-			File output = new File("fame/fame_output.txt");
-			if (!output.exists()) {
-				output = new File("fame/fort.2");
-				if (!output.exists())
-					throw new Exception("FAME output file not found!");
-			}
-
-			if (output.length() == 0)
-				throw new IOException();
-
-			BufferedReader br = new BufferedReader(new FileReader(output));
+			BufferedReader br = new BufferedReader(new StringReader(output));
 
 			String str = "";
 
@@ -590,9 +623,6 @@ public class FastMasterEqn implements PDepKineticsEstimator {
 				}
 			}
 
-			if (ignoredARate)
-				throw new Exception("Warning: One or more rate coefficients in FAME output was invalid.");
-
 			// Update reaction lists (sort into included and nonincluded)
 			pdn.updateReactionLists(cerm);
 
@@ -601,18 +631,7 @@ public class FastMasterEqn implements PDepKineticsEstimator {
 			System.out.println("Error: Unable to read from file \"fame_output.txt\".");
 			System.exit(0);
 		}
-		catch(Exception e) {
-			System.out.println(e.getMessage());
-			//e.printStackTrace();
-			if (mode == Mode.RESERVOIRSTATE) {
-				System.out.println("Falling back to modified strong collision mode for this network.");
-				mode = Mode.STRONGCOLLISION;
-				runPDepCalculation(pdn, rxnSystem, cerm);
-				mode = Mode.RESERVOIRSTATE;
-				return false;
-			}
-		}
-
+		
 		return true;
     }
 
