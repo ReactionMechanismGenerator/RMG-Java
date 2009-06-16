@@ -126,18 +126,44 @@ public class BathGas {
 				if (name.equals("Ar") || name.equals("AR")) {
 					expDownParam += mf *374.0;
 					molWt += mf *39.95;
-					System.out.println("unknown collider Sigma & Epsilon: " + name);
+					/*
+					 *  Numbers from Table K.2 of "Fundamentals of Momentum, Heat, and Mass Transfer",
+					 *  	Welty, Wicks, Wilson, Rorrer 4th ed.
+					 *  Numbers come from R.C. Reid and T.K. Sherwood, "The Properties of Gases and
+					 *  	Liquids", McGraw-Hill Book Company, New York, 1958.
+					 *  MRH 16-Jun-2009
+					 */
+					ljSigma += mf * 3.418;	// Units of Angstroms
+					ljEpsilon += mf * 124;	// Units of Kelvin (actually epsilon/boltzmann constant)
 				}
 				else if (name.equals("N2")) {
 					expDownParam += mf * 461.0;
 					molWt += mf * 28.01;
-					ljEpsilon += mf * 97.5;
-					ljSigma += mf * 3.62;
+//					ljEpsilon += mf * 97.5;
+//					ljSigma += mf * 3.62;
+					/*
+					 *  Numbers from Table K.2 of "Fundamentals of Momentum, Heat, and Mass Transfer",
+					 *  	Welty, Wicks, Wilson, Rorrer 4th ed.
+					 *  Numbers come from R.C. Reid and T.K. Sherwood, "The Properties of Gases and
+					 *  	Liquids", McGraw-Hill Book Company, New York, 1958.
+					 *  Changed the numbers already stored in RMG for consistency
+					 *  MRH 16-Jun-2009
+					 */
+					ljSigma += mf * 3.681;	// Units of Angstroms
+					ljEpsilon += mf * 91.5;	// Units of Kelvin (actually epsilon/boltzmann constant)
 				}
 				else if (name.equals("He") || name.equals("HE")) {
 					expDownParam += mf * 291.0;
 					molWt += mf * 4.00;
-					System.out.println("unknown collider Sigma & Epsilon: " + name);
+					/*
+					 *  Numbers from Table K.2 of "Fundamentals of Momentum, Heat, and Mass Transfer",
+					 *  	Welty, Wicks, Wilson, Rorrer 4th ed.
+					 *  Numbers come from R.C. Reid and T.K. Sherwood, "The Properties of Gases and
+					 *  	Liquids", McGraw-Hill Book Company, New York, 1958.
+					 *  MRH 16-Jun-2009
+					 */
+					ljSigma += mf * 2.576;	// Units of Angstroms
+					ljEpsilon += mf * 10.22;	// Units of Kelvin (actually epsilon/boltzmann constant)
 				}
 				else {
 					System.out.println("unknown colliders: " + name);
