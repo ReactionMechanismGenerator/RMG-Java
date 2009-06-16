@@ -656,6 +656,7 @@ public abstract class JDAS implements DAESolver {
 	public void getAutoEdgeReactionInfo(CoreEdgeReactionModel model, Temperature p_temperature,
 			Pressure p_pressure) {
 		
+                //IMPORTANT: this code should pass the information needed to perform the same checks as done by the validity testing in the Java code
 		//much of code below is taken or based off of code from appendUnreactedSpeciesStatus in ReactionSystem.java
 		StringBuilder edgeReacInfoString = new StringBuilder();
 		int edgeReactionCounter = 0;
@@ -694,21 +695,20 @@ public abstract class JDAS implements DAESolver {
                                 int prodCount=1;//prodCount will not be modified as each PDepNetwork will be treated as a pseudo-edge species product
                                 int[] tempProdArray = {0, 0, 0};
                                 edgeSpeciesCounter++;
-                                tempProdArray[0]=edgeSpeciesCounter;
+                                tempProdArray[0]=edgeSpeciesCounter;//note that if there are no non-included reactions that have all core reactants for a particular P-dep network, then the ID will be allocated, but not used...hopefully this would not cause problems with the Fortran code
                                 double k = 0.0;
                              //   double k = pdn.getKLeak(index);//index in DASSL should correspond to the same (reactionSystem/TPcondition) index as used by kLeak
                              //   if (!pdn.isActive() && pdn.getIsChemAct()) {
                              //           k = pdn.getEntryReaction().calculateTotalRate(p_temperature);
                              //   }
-                                //*****what happens if P-dep network is empty or if all reactions are already included?
                                 for (ListIterator<PDepReaction> iter = pdn.getNonincludedReactions().listIterator(); iter.hasNext(); ) {//cf. getLeakFlux in PDepNetwork
                                     PDepReaction rxn = iter.next();
                                     int reacCount=0;
                                     int[] tempReacArray = {0, 0, 0};
-                                    boolean allCoreReac=false;//allCoreReac will be used to track whether all reactant species are in the core
+                                    boolean allCoreReac=true;//allCoreReac will be used to track whether all reactant species are in the core
                                     if (rxn.getReactant().getIncluded() && !rxn.getProduct().getIncluded()){
                                         k = rxn.calculateRate(p_temperature, p_pressure);
-                                        allCoreReac=true;//***????
+         
                                         //iterate over the reactants, counting and storing IDs in tempReacArray, up to a maximum of 3 reactants
                                         for (ListIterator<Species> rIter = rxn.getReactant().getSpeciesListIterator(); rIter.hasNext(); ) {
                                             reacCount++;
@@ -717,23 +717,22 @@ public abstract class JDAS implements DAESolver {
                                                 tempReacArray[reacCount-1]=getRealID(spe);
                                             }
                                             else{
-                                                allCoreReac=false;//***????
+                                                allCoreReac=false;
                                             }
                                         }
                                     }
                                     else if (!rxn.getReactant().getIncluded() && rxn.getProduct().getIncluded()){
                                         PDepReaction rxnReverse = (PDepReaction)rxn.getReverseReaction();
                                         k = rxnReverse.calculateRate(p_temperature, p_pressure);
-                                        allCoreReac=true;//***????
-                                        //iterate over the reactants, counting and storing IDs in tempReacArray, up to a maximum of 3 reactants
-                                        for (ListIterator<Species> rIter = rxn.getReactant().getSpeciesListIterator(); rIter.hasNext(); ) {
+                                        //iterate over the products, counting and storing IDs in tempReacArray, up to a maximum of 3 reactants
+                                        for (ListIterator<Species> rIter = rxn.getProduct().getSpeciesListIterator(); rIter.hasNext(); ) {
                                             reacCount++;
                                             Species spe = (Species)rIter.next();
                                             if(model.containsAsReactedSpecies(spe)){
                                                 tempReacArray[reacCount-1]=getRealID(spe);
                                             }
                                             else{
-                                                allCoreReac=false;//***????
+                                                allCoreReac=false;
                                             }
                                         }
                                     }
@@ -749,7 +748,7 @@ public abstract class JDAS implements DAESolver {
                         }
 		}
 
-		edgeSpeciesCounter = edgeID.size();
+		//edgeSpeciesCounter = edgeID.size();
 		outputString.append("\n" + ((RateBasedVT)validityTester).getTolerance() + "\n" + edgeSpeciesCounter + " " + edgeReactionCounter);//***thresh needs to be defined
 		outputString.append(edgeReacInfoString);
 	}
