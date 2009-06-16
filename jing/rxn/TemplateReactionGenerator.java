@@ -83,6 +83,13 @@ public class TemplateReactionGenerator implements ReactionGenerator {
         Iterator template_iter = reactionTemplateLibrary.getReactionTemplate();
         while (template_iter.hasNext()) {
         	ReactionTemplate current_template = (ReactionTemplate)template_iter.next();
+        	/*
+        	 * Added by MRH on 15-Jun-2009
+        	 * Display more information to the user:
+        	 * 	This println command informs the user which rxn family template
+        	 *		the new seed species is reacting against
+        	 */
+        	System.out.println("Reacting the species given in the input file: " + current_template.name);
         	// the reaction template has only one reactant, we only need to loop over the whole species seed set to find a match
 //        	System.out.println(current_template.name);
         	if (current_template.hasOneReactant()) {
@@ -119,7 +126,17 @@ public class TemplateReactionGenerator implements ReactionGenerator {
         }
         
         //PDepNetwork.completeNetwork(p_speciesSeed);
-        
+		Runtime runTime = Runtime.getRuntime();
+		System.out.print("Memory used: ");
+		System.out.println(runTime.totalMemory());
+		System.out.print("Free memory: ");
+		System.out.println(runTime.freeMemory());
+		runTime.gc();
+		System.out.println("After garbage collection:");
+		System.out.print("Memory used: ");
+		System.out.println(runTime.totalMemory());
+		System.out.print("Free memory: ");
+		System.out.println(runTime.freeMemory());
         return reaction_set;
         
         
@@ -135,6 +152,13 @@ public class TemplateReactionGenerator implements ReactionGenerator {
         	// the reaction template has only one reactant, we only need to loop over the whole species seed set to find a match
         	double startTime = System.currentTimeMillis();
 			if (current_template.hasOneReactant()) {
+	        	/*
+	        	 * Added by MRH on 15-Jun-2009
+	        	 * Display more information to the user:
+	        	 * 	This println command informs the user which rxn family template
+	        	 *		the species is reacting against
+	        	 */
+	        	System.out.println("Generating pressure dependent network for " + p_species.getChemkinName() + ": " + current_template.name);
         		
 				LinkedHashSet current_reactions = current_template.reactOneReactant(p_species);
 				 
@@ -142,6 +166,17 @@ public class TemplateReactionGenerator implements ReactionGenerator {
 				
         	}
         }
+		Runtime runTime = Runtime.getRuntime();
+		System.out.print("Memory used: ");
+		System.out.println(runTime.totalMemory());
+		System.out.print("Free memory: ");
+		System.out.println(runTime.freeMemory());
+		runTime.gc();
+		System.out.println("After garbage collection:");
+		System.out.print("Memory used: ");
+		System.out.println(runTime.totalMemory());
+		System.out.print("Free memory: ");
+		System.out.println(runTime.freeMemory());
         return pdepReactionSet;
     }
     
