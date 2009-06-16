@@ -54,6 +54,7 @@ public static void main(String[] args) {
   initializeSystemProperties();
 	LinkedHashSet speciesSet = new LinkedHashSet();
     String thermo_output = "";
+    Temperature systemTemp = new Temperature();
 
  try {
           FileReader in = new FileReader("thermo_input.txt");
@@ -67,16 +68,35 @@ public static void main(String[] args) {
         	  line = st.nextToken().toLowerCase();
         	  // The options for the "Solvation" field are "on" or "off" (as of 18May2009), otherwise do nothing and display a message to the user
         	  // Note: I use "Species.useInChI" because the "Species.useSolvation" updates were not yet committed.
+////<<<<<<< Thermo.java
+//        	  if (line.equals("on"))
+//        		  Species.useSolvation = true;
+//        	  else if (line.equals("off"))
+//        		  Species.useSolvation = false;
+//        	  else {
+////=======
         	  if (line.equals("on")) {
-        		  Species.useInChI = true;
+        		  Species.useSolvation = true;
         		  thermo_output += "Solution-phase chemistry!\n\n";
         	  } else if (line.equals("off")) {
-        		  Species.useInChI = false;
+        		  Species.useSolvation = false;
         		  thermo_output += "Gas-phase chemistry.\n\n";
         	  } else {
+//>>>>>>> 1.9
         		  System.out.println("Error in reading thermo_input.txt file:\nThe field 'Solvation' has the options 'on' or 'off'.");
         		  return;
         	  }
+              // Read in the temperature of the system
+              line = ChemParser.readMeaningfulLine(data);
+              st = new StringTokenizer(line);
+              if (!st.nextToken().startsWith("Temperature")) {
+                  System.out.println("Error in reading thermo_input.txt file:\n The field 'Temperature' should follow the 'Solvation' field.");
+              }
+              double tempValue = Double.parseDouble(st.nextToken());
+              String tempUnits = st.nextToken();
+              systemTemp = new Temperature(tempValue,tempUnits);
+              thermo_output += "System Temperature = " + systemTemp.getK() + "K" + "\n";
+
         	  // Read in the ChemGraphs and compute their thermo, while there are ChemGraphs to read in
         	  line = ChemParser.readMeaningfulLine(data);
         	  while (line != null) {
@@ -98,13 +118,15 @@ public static void main(String[] args) {
 
           in.close();
           
-          thermo_output += "Order of entries: Name (read from thermo_input.txt) H298 S298 Cp300 Cp400 Cp500 Cp600 Cp800 Cp1000 C1500\n" +
-          	"Units of H: kcal/mol\nUnits of S and all Cp: cal/mol/K\n\n";
+          thermo_output += "Order of entries: Name (read from thermo_input.txt) H(T) S(T) G(T) Radius\n" +
+          	"Units of H & G: kcal/mol\nUnits of S cal/mol/K\n\n" + "Units of Radius: Angstrom";
           
           Iterator iter = speciesSet.iterator();       
           while (iter.hasNext()){
         	  Species spe = (Species)iter.next();
-        	  thermo_output += spe.getName() + "\t" + spe.getChemGraph().getThermoData().toString() + "\n";
+        	  thermo_output += spe.getName() + "\t" + spe.calculateH(systemTemp) + "\t" +
+                      spe.calculateS(systemTemp) + "\t" + 
+                      spe.calculateG(systemTemp) + "\t" +  spe.getChemGraph().getRadius() + "\n";
           }
           
           try {
@@ -127,11 +149,33 @@ public static void main(String[] args) {
 //        //System.out.println("number of Kekule structures = "+K);
 //        System.out.println(" symmetry number = "+symm);
 
+////<<<<<<< Thermo.java
+//         System.out.println(g);
+//         ChemGraph chemgraph = ChemGraph.make(g);
+//		 Species spe = Species.make("molecule",chemgraph);
+//		 System.out.println("The number of resonance isomers is " + spe.getResonanceIsomersHashSet().size());
+//		 System.out.println("The NASA data is \n"+ spe.getNasaThermoData());
+//		 System.out.println("ThermoData is \n" +  spe.getChemGraph().getThermoData().toString());
+//         System.out.println("Solvation ThermoData is \n" +  spe.getChemGraph().getSolvationData().toString());
+//         System.out.println("AbramData is \n" +  spe.getChemGraph().getAbramData().toString());
+//         System.out.println("UnifacData is \n" +  spe.getChemGraph().getUnifacData().toString());
+//        //int K = chemgraph.getKekule();
+//        int symm = chemgraph.getSymmetryNumber();
+//        //System.out.println("number of Kekule structures = "+K);
+//        System.out.println(" symmetry number = "+symm);
+//
 //         Temperature T = new Temperature(298.0,"K");
 //
 //         String chemicalFormula = chemgraph.getChemicalFormula();
 //
 //         System.out.println(chemicalFormula + "  H=" + chemgraph.calculateH(T));
+//=======
+////         Temperature T = new Temperature(298.0,"K");
+////
+////         String chemicalFormula = chemgraph.getChemicalFormula();
+////
+////         System.out.println(chemicalFormula + "  H=" + chemgraph.calculateH(T));
+////>>>>>>> 1.8
 
 
     //      Species species = Species.make(chemicalFormula, chemgraph);
