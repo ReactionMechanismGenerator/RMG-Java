@@ -68,21 +68,13 @@ public static void main(String[] args) {
         	  line = st.nextToken().toLowerCase();
         	  // The options for the "Solvation" field are "on" or "off" (as of 18May2009), otherwise do nothing and display a message to the user
         	  // Note: I use "Species.useInChI" because the "Species.useSolvation" updates were not yet committed.
-////<<<<<<< Thermo.java
-//        	  if (line.equals("on"))
-//        		  Species.useSolvation = true;
-//        	  else if (line.equals("off"))
-//        		  Species.useSolvation = false;
-//        	  else {
-////=======
         	  if (line.equals("on")) {
-        		  Species.useSolvation = true;
+        		  Species.useInChI = true;
         		  thermo_output += "Solution-phase chemistry!\n\n";
         	  } else if (line.equals("off")) {
-        		  Species.useSolvation = false;
+        		  Species.useInChI = false;
         		  thermo_output += "Gas-phase chemistry.\n\n";
         	  } else {
-//>>>>>>> 1.9
         		  System.out.println("Error in reading thermo_input.txt file:\nThe field 'Solvation' has the options 'on' or 'off'.");
         		  return;
         	  }
@@ -119,14 +111,14 @@ public static void main(String[] args) {
           in.close();
           
           thermo_output += "Order of entries: Name (read from thermo_input.txt) H(T) S(T) G(T) Radius\n" +
-          	"Units of H & G: kcal/mol\nUnits of S cal/mol/K\n\n" + "Units of Radius: Angstrom";
+          	"Units of H & G: kcal/mol\nUnits of S cal/mol/K\n" + "Units of Radius: Angstrom\n\n";
           
           Iterator iter = speciesSet.iterator();       
           while (iter.hasNext()){
         	  Species spe = (Species)iter.next();
         	  thermo_output += spe.getName() + "\t" + spe.calculateH(systemTemp) + "\t" +
                       spe.calculateS(systemTemp) + "\t" + 
-                      spe.calculateG(systemTemp) + "\t" +  spe.getChemGraph().getRadius() + "\n";
+                      spe.calculateG(systemTemp) + "\n";// +  spe.getChemGraph().getRadius() + "\n";
           }
           
           try {
@@ -149,7 +141,6 @@ public static void main(String[] args) {
 //        //System.out.println("number of Kekule structures = "+K);
 //        System.out.println(" symmetry number = "+symm);
 
-////<<<<<<< Thermo.java
 //         System.out.println(g);
 //         ChemGraph chemgraph = ChemGraph.make(g);
 //		 Species spe = Species.make("molecule",chemgraph);
@@ -169,13 +160,12 @@ public static void main(String[] args) {
 //         String chemicalFormula = chemgraph.getChemicalFormula();
 //
 //         System.out.println(chemicalFormula + "  H=" + chemgraph.calculateH(T));
-//=======
-////         Temperature T = new Temperature(298.0,"K");
-////
-////         String chemicalFormula = chemgraph.getChemicalFormula();
-////
-////         System.out.println(chemicalFormula + "  H=" + chemgraph.calculateH(T));
-////>>>>>>> 1.8
+          
+//         Temperature T = new Temperature(298.0,"K");
+//
+//         String chemicalFormula = chemgraph.getChemicalFormula();
+//
+//         System.out.println(chemicalFormula + "  H=" + chemgraph.calculateH(T));
 
 
     //      Species species = Species.make(chemicalFormula, chemgraph);
