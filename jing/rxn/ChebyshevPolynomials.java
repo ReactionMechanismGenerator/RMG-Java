@@ -42,7 +42,7 @@ import jing.param.Temperature;
 //----------------------------------------------------------------------------
 
 //## class ChebyshevPolynomials 
-public class ChebyshevPolynomials {
+public class ChebyshevPolynomials implements PDepKinetics {
     
     protected int NP;		//## attribute NP 
     

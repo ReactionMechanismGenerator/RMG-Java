@@ -41,6 +41,7 @@ END
 
 SpectroscopicDataEstimator: FrequencyGroups
 PressureDependence: ModifiedStrongCollision
+PDepKineticsModel: Chebyshev
 
 FinishController:
 (1) Goal Conversion: HXD13 0.9

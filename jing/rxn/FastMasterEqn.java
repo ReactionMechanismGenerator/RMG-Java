@@ -46,6 +46,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import jing.chem.Species;
 import jing.chem.SpectroscopicData;
+import jing.mathTool.UncertainDouble;
 import jing.param.Pressure;
 import jing.param.Temperature;
 import jing.rxnSys.CoreEdgeReactionModel;
@@ -350,8 +351,17 @@ public class FastMasterEqn implements PDepKineticsEstimator {
 			input += "Bath gas LJ sigma parameter         " + bathGas.getLJSigma() + " m\n";
 			input += "Bath gas LJ epsilon parameter       " + bathGas.getLJEpsilon() + " J\n";
 			input += "Bath gas molecular weight           " + bathGas.getMolecularWeight() + " g/mol\n";
-			input += "Number of Chebyshev temperatures    " + numChebTempPolys + "\n";
-			input += "Number of Chebyshev pressures       " + numChebPressPolys + "\n";
+			if (PDepRateConstant.getMode() == PDepRateConstant.Mode.CHEBYSHEV) {
+				input += "Interpolation model                 " + "Chebyshev" + "\n";
+				input += "Number of Chebyshev temperatures    " + numChebTempPolys + "\n";
+				input += "Number of Chebyshev pressures       " + numChebPressPolys + "\n";
+			}
+			else if (PDepRateConstant.getMode() == PDepRateConstant.Mode.PDEPARRHENIUS) {
+				input += "Interpolation model                 " + "LogPInterpolate" + "\n";
+			}
+			else {
+				input += "Interpolation model                 " + "Bilinear" + "\n";
+			}
 			input += "\n";
 
 			for (int i = 0; i < speciesList.size(); i++) {
@@ -499,6 +509,8 @@ public class FastMasterEqn implements PDepKineticsEstimator {
 
 			String str = "";
 
+			String model = "";
+
 			// Read output file header
 			boolean found = false;
 			while (!found) {
@@ -511,6 +523,8 @@ public class FastMasterEqn implements PDepKineticsEstimator {
 					continue;
 				else if (str.substring(0, 15).equals("Number of wells"))
 					numWells = Integer.parseInt(str.substring(16).trim());
+				else if (str.substring(0, 19).equals("Interpolation model"))
+					model = str.substring(20).trim().toLowerCase();
 				else if (str.substring(0, 32).equals("Number of Chebyshev temperatures"))
 					numTemperatures = Integer.parseInt(str.substring(33).trim());
 				else if (str.substring(0, 29).equals("Number of Chebyshev pressures"))
@@ -538,6 +552,12 @@ public class FastMasterEqn implements PDepKineticsEstimator {
 			LinkedList<PDepReaction> netReactionList = pdn.getNetReactions();
 			netReactionList.clear();
 
+			String Trange = "";
+			Trange += Double.toString(temperatures[0].getK());
+			Trange += "-";
+			Trange += Double.toString(temperatures[temperatures.length-1].getK());
+			Trange += " K";
+
 			// Read Chebyshev coefficients for each reaction
 			boolean ignoredARate = false;
 			for (int i = 0; i < numWells; i++) {
@@ -564,17 +584,37 @@ public class FastMasterEqn implements PDepKineticsEstimator {
 							}
 						}
 
-						// Read Chebyshev coefficients from file
-						for (int t = 0; t < numTemperatures; t++) {
-							str = br.readLine().trim();
-							StringTokenizer tkn = new StringTokenizer(str);
-							for (int p = 0; p < numPressures; p++) {
-								alpha[t][p] = Double.parseDouble(tkn.nextToken());
-								if (alpha[t][p] == 0 ||
-										Double.isNaN(alpha[t][p]) ||
-										Double.isInfinite(alpha[t][p]))
-									valid = false;
+						PDepRateConstant pDepRate = new PDepRateConstant(rates);
+
+						if (model.equals("chebyshev")) {
+							// Read Chebyshev coefficients from file
+							for (int t = 0; t < numTemperatures; t++) {
+								str = br.readLine().trim();
+								StringTokenizer tkn = new StringTokenizer(str);
+								for (int p = 0; p < numPressures; p++) {
+									alpha[t][p] = Double.parseDouble(tkn.nextToken());
+									if (alpha[t][p] == 0 ||
+											Double.isNaN(alpha[t][p]) ||
+											Double.isInfinite(alpha[t][p]))
+										valid = false;
+								}
 							}
+							pDepRate.setChebyshev(alpha);
+						}
+						else if (model.equals("logpinterpolate")) {
+							PDepArrheniusKinetics pDepKinetics = new PDepArrheniusKinetics(pressures.length);
+							// Read P-dep Arrhenius coefficients from file
+							for (int p = 0; p < pressures.length; p++) {
+								str = br.readLine().trim();
+								StringTokenizer tkn = new StringTokenizer(str);
+								ArrheniusKinetics kinetics = new ArrheniusKinetics(
+									new UncertainDouble(Double.parseDouble(tkn.nextToken()), 0.0, "A"),
+									new UncertainDouble(Double.parseDouble(tkn.nextToken()), 0.0, "A"),
+									new UncertainDouble(Double.parseDouble(tkn.nextToken()) / 4184.0, 0.0, "A"),
+									Trange, 0, "FAME P-Dep calculation", "");
+								pDepKinetics.setKinetics(p, pressures[p], kinetics);
+							}
+							pDepRate.setPDepArrheniusKinetics(pDepKinetics);
 						}
 
 						// Skip blank line between records
@@ -585,13 +625,6 @@ public class FastMasterEqn implements PDepKineticsEstimator {
 							ignoredARate = true;
 							continue;
 						}
-
-						PDepRateConstant pDepRate = new PDepRateConstant(rates, alpha);
-
-						// Create Chebyshev polynomial object for current rate coefficient
-						/*ChebyshevPolynomials cp = new ChebyshevPolynomials(
-								numTemperatures, tLow, tHigh, numPressures, pLow, pHigh,
-								alpha);*/
 
 						// Initialize net reaction
 						PDepIsomer reactant = isomerList.get(j);

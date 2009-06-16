@@ -472,8 +472,16 @@ public class PDepReaction extends Reaction {
 	@Override
 	public String toChemkinString(Temperature t) {
         if (pDepRate != null) {
-			String result = formPDepSign(getStructure().toChemkinString(true).toString()) + '\t' + "1.0E0 0.0 0.0" + '\n';
-			result += pDepRate.getChebyshev().toChemkinString() + '\n';
+
+			String result = getStructure().toChemkinString(true).toString();
+			if (PDepRateConstant.getMode() == PDepRateConstant.Mode.CHEBYSHEV)
+				result = formPDepSign(result);
+			result += '\t' + "1.0E0 0.0 0.0" + '\n';
+
+			if (PDepRateConstant.getMode() == PDepRateConstant.Mode.CHEBYSHEV)
+				result += pDepRate.getChebyshev().toChemkinString() + '\n';
+			else if (PDepRateConstant.getMode() == PDepRateConstant.Mode.PDEPARRHENIUS)
+				result += pDepRate.getPDepArrheniusKinetics().toChemkinString();
 			return result;
 		}
 		else if (kinetics != null)

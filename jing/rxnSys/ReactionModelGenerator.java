@@ -526,7 +526,30 @@ public class ReactionModelGenerator {
 				}
 			}
 			else throw new InvalidSymbolException("condition.txt: can't find PressureDependence flag!");
-			
+
+			// pressure dependence flag
+			if (reactionModelEnlarger instanceof RateBasedPDepRME) {
+				line = ChemParser.readMeaningfulLine(reader);
+				if (line.toLowerCase().startsWith("pdepkineticsmodel:")) {
+					StringTokenizer st = new StringTokenizer(line);
+					String name = st.nextToken();
+					String pDepKinType = st.nextToken();
+					if (pDepKinType.toLowerCase().equals("chebyshev") ||
+							pDepKinType.toLowerCase().equals("pdeparrhenius")) {
+
+						if (pDepKinType.toLowerCase().equals("chebyshev"))
+							PDepRateConstant.setMode(PDepRateConstant.Mode.CHEBYSHEV);
+						else if (pDepKinType.toLowerCase().equals("pdeparrhenius"))
+							PDepRateConstant.setMode(PDepRateConstant.Mode.PDEPARRHENIUS);
+
+					}
+					else {
+						throw new InvalidSymbolException("condition.txt: Unknown PDepKinetics = " + pDepKinType);
+					}
+				}
+				else throw new InvalidSymbolException("condition.txt: can't find PDepKinetics flag!");
+			}
+
         	// include species (optional)
 			line = ChemParser.readMeaningfulLine(reader);
 			if (line.startsWith("IncludeSpecies")) {
