@@ -705,12 +705,13 @@ public abstract class JDAS implements DAESolver {
                                     PDepReaction rxn = iter.next();
                                     int reacCount=0;
                                     int[] tempReacArray = {0, 0, 0};
-                                    boolean allCoreReac=true;//allCoreReac will be used to track whether all reactant species are in the core
+                                    boolean allCoreReac=false;//allCoreReac will be used to track whether all reactant species are in the core
                                     if (rxn.getReactant().getIncluded() && !rxn.getProduct().getIncluded()){
                                         k = rxn.calculateRate(p_temperature, p_pressure);
          
                                         //iterate over the reactants, counting and storing IDs in tempReacArray, up to a maximum of 3 reactants
                                         for (ListIterator<Species> rIter = rxn.getReactant().getSpeciesListIterator(); rIter.hasNext(); ) {
+                                            allCoreReac=true;
                                             reacCount++;
                                             Species spe = (Species)rIter.next();
                                             if(model.containsAsReactedSpecies(spe)){
@@ -726,6 +727,7 @@ public abstract class JDAS implements DAESolver {
                                         k = rxnReverse.calculateRate(p_temperature, p_pressure);
                                         //iterate over the products, counting and storing IDs in tempReacArray, up to a maximum of 3 reactants
                                         for (ListIterator<Species> rIter = rxn.getProduct().getSpeciesListIterator(); rIter.hasNext(); ) {
+                                            allCoreReac=true;
                                             reacCount++;
                                             Species spe = (Species)rIter.next();
                                             if(model.containsAsReactedSpecies(spe)){
