@@ -671,7 +671,7 @@ public abstract class JDAS implements DAESolver {
 			String str = getEdgeReactionString(model, edgeID, r, p_temperature, p_pressure);
 			edgeReacInfoString.append("\n" + str);
 		}
-                edgeSpeciesCounter = edgeID.size();
+                edgeSpeciesCounter = edgeID.size();//update edge species counter (this will be important for the case of non-P-dep operation)
 		// For the case where validityTester is RateBasedPDepVT (assumed to also be directly associated with use of RateBasedPDepRME), consider two additional types of reactions
 		if (validityTester instanceof RateBasedPDepVT) {
                         //first consider NetReactions (formerly known as PDepNetReactionList)
