@@ -689,6 +689,7 @@ public abstract class JDAS implements DAESolver {
                         //second, consider kLeak of each reaction network so that the validity of each reaction network may be tested
                         //in the original CHEMDIS approach, we included a reaction and pseudospecies for each kleak/P-dep network
                         //with the FAME approach we still consider each P-dep network as a pseudospecies, but we have multiple reactions contributing to this pseudo-species, with each reaction having different reactants
+                        edgeSpeciesCounter = edgeID.size();//above functions use getEdgeReactionString, which only uses edgeSpeciesCounter locally; we need to update it for the current context
                         for (Iterator iter1 = PDepNetwork.getNetworks().iterator(); iter1.hasNext();) {
                                 PDepNetwork pdn = (PDepNetwork)iter1.next();
                                 //account for pseudo-edge species product by incrementing the edgeSpeciesCounter and storing the ID in the tempProdArray; each of these ID's will occur once and only once; thus, note that the corresponding PDepNetwork is NOT stored to the HashMap
@@ -708,10 +709,9 @@ public abstract class JDAS implements DAESolver {
                                     boolean allCoreReac=false;//allCoreReac will be used to track whether all reactant species are in the core
                                     if (rxn.getReactant().getIncluded() && !rxn.getProduct().getIncluded()){
                                         k = rxn.calculateRate(p_temperature, p_pressure);
-         
+                                        allCoreReac=true;
                                         //iterate over the reactants, counting and storing IDs in tempReacArray, up to a maximum of 3 reactants
                                         for (ListIterator<Species> rIter = rxn.getReactant().getSpeciesListIterator(); rIter.hasNext(); ) {
-                                            allCoreReac=true;
                                             reacCount++;
                                             Species spe = (Species)rIter.next();
                                             if(model.containsAsReactedSpecies(spe)){
@@ -725,9 +725,10 @@ public abstract class JDAS implements DAESolver {
                                     else if (!rxn.getReactant().getIncluded() && rxn.getProduct().getIncluded()){
                                         PDepReaction rxnReverse = (PDepReaction)rxn.getReverseReaction();
                                         k = rxnReverse.calculateRate(p_temperature, p_pressure);
+                                        allCoreReac=true;
                                         //iterate over the products, counting and storing IDs in tempReacArray, up to a maximum of 3 reactants
                                         for (ListIterator<Species> rIter = rxn.getProduct().getSpeciesListIterator(); rIter.hasNext(); ) {
-                                            allCoreReac=true;
+
                                             reacCount++;
                                             Species spe = (Species)rIter.next();
                                             if(model.containsAsReactedSpecies(spe)){
