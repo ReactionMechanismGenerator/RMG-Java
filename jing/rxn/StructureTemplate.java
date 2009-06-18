@@ -209,6 +209,7 @@ public class StructureTemplate {
     */
     //## operation identifyReactedSites(ChemGraph,int) 
     public LinkedHashSet identifyReactedSites(ChemGraph p_reactant, int p_position) {
+//    	Global.identifyReactiveSitesCount++;
 		double pT = System.currentTimeMillis();
         //#[ operation identifyReactedSites(ChemGraph,int) 
         Matchable allowed = getAllowedFunctionalGroupAt(p_position);
