@@ -1266,6 +1266,145 @@ public class ReactionTemplate {
   }
   
   /**
+   * reactTwoReactants
+   * 	17-Jun-2009 MRH
+   * Function "reacts" two reactants (in the form of ChemGraphs).
+   * 
+   * @param cg1: ChemGraph of species1
+   * @param rs1: Collection of reactive sites for cg1
+   * @param cg2: ChemGraph of species2
+   * @param rs2: Collection of reactive sties for cg2
+   * @return
+   */
+  protected LinkedHashSet reactTwoReactants(ChemGraph cg1, LinkedHashSet rs1, ChemGraph cg2, LinkedHashSet rs2) {
+
+	  LinkedHashSet reaction_set = new LinkedHashSet();
+      if (rs1.isEmpty() || rs2.isEmpty()) return reaction_set;
+      
+      ChemGraph r1 = cg1;
+      ChemGraph r2;
+      if (cg1 == cg2) {
+      	try{
+      		r2 = ChemGraph.copy(cg2);
+      	}
+      	catch (ForbiddenStructureException e) {
+      		return reaction_set;
+      	}
+      }
+      else {
+      	r2 = cg2;
+      }     
+      
+      LinkedList reactant = new LinkedList();
+	  LinkedList reactantSp = new LinkedList();
+      reactant.add(r1);
+      reactant.add(r2);
+	  reactantSp.add(r1.getSpecies());
+	  reactantSp.add(r2.getSpecies());
+      
+	  LinkedHashMap structureMap = new LinkedHashMap();
+	  LinkedHashMap rateMap = new LinkedHashMap();
+	  LinkedHashMap reactionMap = new LinkedHashMap();
+      
+      for (Iterator iter1 = rs1.iterator(); iter1.hasNext(); ) {
+      	MatchedSite ms1 = (MatchedSite)iter1.next();
+      	HashMap site1 = ms1.getCenter();
+          r1.resetReactedSite(site1);
+      
+          boolean forbidden1 = false;
+          Iterator forbiddenIter = forbiddenStructures.values().iterator();
+          while (forbiddenIter.hasNext()){
+        	  Matchable fg = (Matchable)forbiddenIter.next();
+        	  if (r1.isSubAtCentralNodes(fg)){
+        		  forbidden1 = true;
+        		  break;
+        	  }
+          }
+          if (forbidden1) continue;
+          
+          int redundancy1 = ms1.getRedundancy();
+      
+      	for (Iterator iter2 = rs2.iterator(); iter2.hasNext(); ) {
+      		MatchedSite ms2 = (MatchedSite)iter2.next();
+      		HashMap site2 = (HashMap)ms2.getCenter();
+      	    r2.resetReactedSite(site2);
+      
+      	    boolean forbidden2 = false;
+      	    forbiddenIter = forbiddenStructures.values().iterator();
+      	    while (forbiddenIter.hasNext()){
+      	    	Matchable fg = (Matchable)forbiddenIter.next();
+      	    	if (r2.isSubAtCentralNodes(fg)){
+      	    		forbidden2 = true;
+      	    		break;
+      	    	}
+ 	         }
+ 	         if (forbidden2) continue;
+          
+      	    int redundancy2 = ms2.getRedundancy();
+      		int redundancy = redundancy1*redundancy2;
+      
+           	try {
+      	     	LinkedList product = reactionAdjList.reactChemGraph(reactant);
+				LinkedList productSp = new LinkedList();
+//				SpeciesDictionary sd = SpeciesDictionary.getInstance();
+				for (int i=0; i< product.size(); i++){
+					String name = null;
+					if (((ChemGraph)product.get(i)).getSpecies() == null){
+						Species sp = Species.make(name, ((ChemGraph)product.get(i)));
+						productSp.add(sp);
+					}
+				}
+				double pt = System.currentTimeMillis();
+      	        boolean rpsame = MathTool.isListEquivalent(reactantSp, productSp);
+				Global.checkReactionReverse = Global.checkReactionReverse + (System.currentTimeMillis()-pt)/1000/60;
+      	        if (!rpsame) {
+          			Structure structure = new Structure(reactant,product);
+					Structure structureSp = new Structure(reactantSp,productSp);
+					Kinetics k = findRateConstant(structure);
+					structureSp.direction = structure.direction;
+          			structure.setRedundancy(redundancy);
+  					Reaction old_reaction = (Reaction)reactionMap.get(structureSp);
+  					if (old_reaction == null){		
+						 
+						TemplateReaction r= TemplateReaction.makeTemplateReaction(structureSp,k, this,structure);
+						if (r != null)
+							reactionMap.put(structureSp,r);
+						structure = null;
+  					}
+  					else { 						
+  						old_reaction.addAdditionalKinetics(k, redundancy);
+						//old_reaction.getStructure().increaseRedundancy(redundancy);
+						structure = null;
+  					}
+      	        }
+      			
+      		}
+      		catch (ForbiddenStructureException e) {
+      			// do the next reaction site
+      		}
+      		catch (InvalidProductNumberException e) {
+      			// do the next reaction site
+      		}
+			catch (InvalidChemGraphException e){
+				
+			}
+      	}
+      }
+      
+      for (Iterator mapIter = reactionMap.values().iterator(); mapIter.hasNext(); ) {
+      	
+      	Reaction reaction = (Reaction)mapIter.next();
+      	//System.out.println(reaction.toString());
+      	if (!reaction.repOk()) throw new InvalidTemplateReactionException(reaction.toString());
+      	//reaction.getStructure().clearChemGraph();
+		reaction.setFinalized(true);
+      	reaction_set.add(reaction);
+      }
+      
+      return reaction_set;
+  }
+  
+  /**
   Requires:
   Effects: read in the reaction templated defined in the pass-in directory
   Modifies:
