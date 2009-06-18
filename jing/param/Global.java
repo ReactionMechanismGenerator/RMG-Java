@@ -63,4 +63,10 @@ public class Global {
      //   public static double JDASSLtime= 0;
      //   public static double fortrantime= 0;
      //   public static double timesteppingtime= 0;
+	
+	// 18-Jun-2009 MRH
+	//	Used these for profiling purposes for the functions
+	//		reactTwoReactants and identifyReactiveSites
+//	public static int identifyReactiveSitesCount;
+//	public static double RT_reactTwoReactants;
 }
