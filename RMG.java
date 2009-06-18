@@ -190,6 +190,10 @@ public class RMG {
                 }
 		
 		 String workingDir = System.getenv("RMG");
+		 if (workingDir == null) {
+			 System.err.println("Undefined environment variable RMG.");
+			 System.exit(0);
+		 }
 	     System.setProperty("RMG.workingDirectory", workingDir);
 	     System.setProperty("jing.rxnSys.ReactionModelGenerator.conditionFile",inputfile);
 		 try {//svp
