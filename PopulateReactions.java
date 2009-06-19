@@ -149,9 +149,13 @@ public class PopulateReactions {
         			HashSet indiv_rxn = r.getAllKinetics();
         			for (Iterator iter = indiv_rxn.iterator(); iter.hasNext();) {
         				Kinetics k_rxn = (Kinetics)iter.next();
-        				listOfReactions += r.toString() + "\t" + updateListOfReactions(k_rxn) + "\tDUP " + numDupKinetics + "\n";
+        				if (r.isForward())	listOfReactions += r.toString() + "\t" + updateListOfReactions(k_rxn) + "\tDUP " + numDupKinetics + "\n";
+        				else if (r.isBackward()) listOfReactions += r.getReverseReaction().toString() + "\t" + updateListOfReactions(k_rxn) + "\tDUP " + numDupKinetics + "\n";
         			}
-        		} else listOfReactions += r.toString() + "\t" + updateListOfReactions(r.getKinetics());
+        		} else {
+        			if (r.isForward()) listOfReactions += r.toString() + "\t" + updateListOfReactions(r.getKinetics());
+        			else if (r.isBackward()) listOfReactions += r.getReverseReaction().toString() + "\t" + updateListOfReactions(r.getKinetics());
+        		}
 
         		// Add the products of the reactions to the list of species
         		//	hash set.  The reactants of each reaction are already
