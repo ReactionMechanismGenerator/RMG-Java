@@ -418,6 +418,12 @@ public class TemplateReactionGenerator implements ReactionGenerator {
         			}
         		}
         	}
+			doubleReaction += ((System.currentTimeMillis()-startTime)/1000/60);
+			double thisDoubleReaction = ((System.currentTimeMillis()-startTime)/1000/60);
+			if (thisDoubleReaction >= longestTime){
+				longestTime = thisDoubleReaction;
+				longestTemplate = current_template.name;
+			}
         }
 		
         newCoreSpecies.addPdepPaths(pdepReactionSet);
