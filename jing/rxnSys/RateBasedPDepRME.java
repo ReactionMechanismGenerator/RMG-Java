@@ -111,7 +111,7 @@ public class RateBasedPDepRME implements ReactionModelEnlarger {
 				continue;
 				
 			ReactionSystem rxnSystem = (ReactionSystem) rxnSystemList.get(i);
-            PresentStatus ps = rxnSystem.getPresentStatus();
+                        PresentStatus ps = rxnSystem.getPresentStatus();
 
 			// Get Rmin
 			double Rmin = rxnSystem.getRmin();
@@ -122,8 +122,8 @@ public class RateBasedPDepRME implements ReactionModelEnlarger {
 			for (int n = 0; n < len; n++)
 				flux[n] = 0.0;
 
-			// Flux from non-pDep reactions
-			double[] unreactedSpeciesFlux = ps.getUnreactedSpeciesFlux();
+			// Flux from non-pDep and P-dep reactions
+			double[] unreactedSpeciesFlux = ps.getUnreactedSpeciesFlux();//unreacted species flux includes flux from both p-dep and non-pdep rxns: cf. appendUnreactedSpeciesStatus in ReactionSystem
 			for (Iterator iter = cerm.getUnreactedSpeciesSet().iterator(); iter.hasNext(); ) {
 				Species us = (Species) iter.next();
 				if (us.getID() < unreactedSpeciesFlux.length)
@@ -134,26 +134,26 @@ public class RateBasedPDepRME implements ReactionModelEnlarger {
 							unreactedSpeciesFlux.length + " fluxes.");
 			}
 
-			// Flux from pDep reactions
-			for (Iterator iter = PDepNetwork.getNetworks().iterator(); iter.hasNext(); ) {
-				PDepNetwork pdn = (PDepNetwork) iter.next();
-				for (Iterator iter2 = pdn.getNetReactions().iterator(); iter2.hasNext(); ) {
-					PDepReaction rxn = (PDepReaction) iter2.next();
-					double forwardFlux = rxn.calculateForwardFlux(ps);
-					double reverseFlux = rxn.calculateReverseFlux(ps);
-					//System.out.println(rxn.toString() + ": " + forwardFlux + " " + reverseFlux);
-					for (int j = 0; j < rxn.getReactantNumber(); j++) {
-						Species species = (Species) rxn.getReactantList().get(j);
-						if (cerm.containsAsUnreactedSpecies(species))
-							flux[species.getID()] += reverseFlux;
-					}
-					for (int j = 0; j < rxn.getProductNumber(); j++) {
-						Species species = (Species) rxn.getProductList().get(j);
-						if (cerm.containsAsUnreactedSpecies(species))
-							flux[species.getID()] += forwardFlux;
-					}
-				}
-			}
+			// Flux from pDep reactions //gmagoon 61709: ...is already taken into account above (the unreactedSpeciesFlux is also used by the validityTester
+//			for (Iterator iter = PDepNetwork.getNetworks().iterator(); iter.hasNext(); ) {
+//				PDepNetwork pdn = (PDepNetwork) iter.next();
+//				for (Iterator iter2 = pdn.getNetReactions().iterator(); iter2.hasNext(); ) {
+//					PDepReaction rxn = (PDepReaction) iter2.next();
+//					double forwardFlux = rxn.calculateForwardFlux(ps);
+//					double reverseFlux = rxn.calculateReverseFlux(ps);
+//					//System.out.println(rxn.toString() + ": " + forwardFlux + " " + reverseFlux);
+//					for (int j = 0; j < rxn.getReactantNumber(); j++) {
+//						Species species = (Species) rxn.getReactantList().get(j);
+//						if (cerm.containsAsUnreactedSpecies(species))
+//							flux[species.getID()] += reverseFlux;
+//					}
+//					for (int j = 0; j < rxn.getProductNumber(); j++) {
+//						Species species = (Species) rxn.getProductList().get(j);
+//						if (cerm.containsAsUnreactedSpecies(species))
+//							flux[species.getID()] += forwardFlux;
+//					}
+//				}
+//			}
 			
 			// Determine species with maximum flux and its flux
 			Species maxSpecies = null;

@@ -202,40 +202,59 @@ public class ReactionSystem {
 		if (!(reactionModel instanceof CoreEdgeReactionModel)) return;
         CoreEdgeReactionModel model = (CoreEdgeReactionModel)reactionModel;
         
-		double [] unreactedFlux = new double[SpeciesDictionary.getInstance().size()+1];
-		
-        if (reactionModelEnlarger instanceof RateBasedPDepRME) {
-        	// first take all the unreacted reactions from PDepNetwork and calculate their rate
-        	// populate the reactionModel with all the unreacted species if they are already not there.
-        	
-        	for (Iterator iter=PDepNetwork.getNetworks().iterator(); iter.hasNext();){
-        		PDepNetwork pdn = (PDepNetwork) iter.next();
-        		Iterator reaction_iter = pdn.getNetReactions().listIterator();
-        		while (reaction_iter.hasNext()){
-        			PDepReaction r = (PDepReaction) reaction_iter.next();
-        			int rxnType = model.categorizeReaction(r);
-        			//if (rxnType == 0) throw new InvalidReactionSetException();
-        			if (rxnType == -1){
-						SystemSnapshot ss = (SystemSnapshot) systemSnapshot.getLast();
-        				double flux = r.calculateRate(ss.getTemperature(), ss.getPressure());
-						for (Iterator rIter=r.getReactants(); rIter.hasNext();) {
-        					Species spe = (Species)rIter.next();
-        					double conc =0; 
-        					if (p_systemSnapshot.getSpeciesStatus(spe) != null)
-        						 conc = (p_systemSnapshot.getSpeciesStatus(spe)).getConcentration();
-                			if (conc<0)
-                				throw new NegativeConcentrationException(spe.getName() + ": " + String.valueOf(conc));
-                		    flux *= conc;
-
-                		}
-        				for (Iterator pIter = r.getProducts(); pIter.hasNext();){
-        					Species spe = (Species)pIter.next();
-        					unreactedFlux[spe.getID()] += flux;
-        				}
-        			}
-        		}
-        	}
-		}
+		//double [] unreactedFlux = new double[SpeciesDictionary.getInstance().size()+1];
+		double [] unreactedFlux = new double[model.getMaxSpeciesID()+1];//sizing based on MaxSpeciesID should be sufficient
+                if (reactionModelEnlarger instanceof RateBasedPDepRME) {
+                    for (Iterator iter = PDepNetwork.getNetworks().iterator(); iter.hasNext(); ) {
+				PDepNetwork pdn = (PDepNetwork) iter.next();
+				for (Iterator iter2 = pdn.getNetReactions().iterator(); iter2.hasNext(); ) {
+					PDepReaction rxn = (PDepReaction) iter2.next();
+					double forwardFlux = rxn.calculateForwardFlux(p_systemSnapshot);
+					double reverseFlux = rxn.calculateReverseFlux(p_systemSnapshot);
+					//System.out.println(rxn.toString() + ": " + forwardFlux + " " + reverseFlux);
+					for (int j = 0; j < rxn.getReactantNumber(); j++) {
+						Species species = (Species) rxn.getReactantList().get(j);
+						if (model.containsAsUnreactedSpecies(species))
+							unreactedFlux[species.getID()] += reverseFlux;
+					}
+					for (int j = 0; j < rxn.getProductNumber(); j++) {
+						Species species = (Species) rxn.getProductList().get(j);
+						if (model.containsAsUnreactedSpecies(species))
+							unreactedFlux[species.getID()] += forwardFlux;
+					}
+				}
+			}
+// gmagoon 6/19/09: the method below was the original method for P-dep cases, but with the changes to the P-dep code, the iterator would only take into account forward reactions
+//                    // first take all the unreacted reactions from PDepNetwork and calculate their rate
+//                    // populate the reactionModel with all the unreacted species if they are already not there.
+//                    for (Iterator iter=PDepNetwork.getNetworks().iterator(); iter.hasNext();){
+//                            PDepNetwork pdn = (PDepNetwork) iter.next();
+//                            Iterator reaction_iter = pdn.getNetReactions().listIterator();
+//                            while (reaction_iter.hasNext()){
+//                                    PDepReaction r = (PDepReaction) reaction_iter.next();
+//                                    int rxnType = model.categorizeReaction(r);
+//                                    //if (rxnType == 0) throw new InvalidReactionSetException();
+//                                    if (rxnType == -1){
+//                                                    SystemSnapshot ss = (SystemSnapshot) systemSnapshot.getLast();
+//                                            double flux = r.calculateRate(ss.getTemperature(), ss.getPressure());
+//                                                    for (Iterator rIter=r.getReactants(); rIter.hasNext();) {
+//                                                    Species spe = (Species)rIter.next();
+//                                                    double conc =0; 
+//                                                    if (p_systemSnapshot.getSpeciesStatus(spe) != null)
+//                                                             conc = (p_systemSnapshot.getSpeciesStatus(spe)).getConcentration();
+//                                            if (conc<0)
+//                                                    throw new NegativeConcentrationException(spe.getName() + ": " + String.valueOf(conc));
+//                                        flux *= conc;
+//
+//                                    }
+//                                            for (Iterator pIter = r.getProducts(); pIter.hasNext();){
+//                                                    Species spe = (Species)pIter.next();
+//                                                    unreactedFlux[spe.getID()] += flux;
+//                                            }
+//                                    }
+//                            }
+//                    }
+                }
 		
 		LinkedHashSet ur = model.getUnreactedReactionSet();
             

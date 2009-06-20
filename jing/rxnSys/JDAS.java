@@ -679,13 +679,72 @@ public abstract class JDAS implements DAESolver {
 				PDepNetwork pdn = (PDepNetwork) iter0.next();
 				for (ListIterator iter = pdn.getNetReactions().listIterator(); iter.hasNext(); ) {
 					PDepReaction rxn = (PDepReaction) iter.next();
-					if (rxn.isEdgeReaction(model)) {
-						edgeReactionCounter++;
-						String str = getEdgeReactionString(model, edgeID, rxn, p_temperature, p_pressure);
-						edgeReacInfoString.append("\n" + str);
+                                      //  boolean allCoreReac=true; //flag to check whether all the reactants are in the core;
+                                        boolean forwardFlag=true;//flag to track whether the direction that goes to (as products) at least one edge species is forward or reverse (presumably from all core species)
+                                        boolean edgeReaction=false;//flag to track whether this is an edge reaction
+                                        //first determine the direction that gives unreacted products; this will set the forward flag
+                                        for (int j = 0; j < rxn.getReactantNumber(); j++) {
+						Species species = (Species) rxn.getReactantList().get(j);
+						if (model.containsAsUnreactedSpecies(species)){                        
+                                                    forwardFlag = false; //use the reverse reaction
+                                                    edgeReaction = true;
+                                                }
 					}
-				}
+					for (int j = 0; j < rxn.getProductNumber(); j++) {
+						Species species = (Species) rxn.getProductList().get(j);
+						if (model.containsAsUnreactedSpecies(species)){
+                                                    forwardFlag = true; //use the forward reaction
+                                                    edgeReaction = true;
+                                                }
+					}
+                                        //check whether all reactants are in the core; if not, it is not a true edge reaction (alternatively, we could use an allCoreReac flag like elsewhere)
+                                        if (edgeReaction){
+                                            if(forwardFlag){
+                                                for (int j = 0; j < rxn.getReactantNumber(); j++) {
+                                                    Species species = (Species) rxn.getReactantList().get(j);
+                                                    if(!model.containsAsReactedSpecies(species)) edgeReaction = false;
+                                                }
+                                            }
+                                            else{
+                                                for (int j = 0; j < rxn.getProductNumber(); j++) {
+                                                    Species species = (Species) rxn.getProductList().get(j);
+                                                    if(!model.containsAsReactedSpecies(species)) edgeReaction = false;
+                                                }
+                                            }
+                                        }
+                                        //write the string for the reaction with an edge product (it has been assumed above that only one side will have an edge species (although both sides of the reaction could have a core species))
+                                        if(edgeReaction){
+                                            edgeReactionCounter++;
+                                            if(forwardFlag){
+                                                String str = getEdgeReactionString(model, edgeID, rxn, p_temperature, p_pressure);//use the forward reaction
+                                                edgeReacInfoString.append("\n" + str);
+                                            }
+                                            else{
+                                                String str = getEdgeReactionString(model, edgeID, (PDepReaction)rxn.getReverseReaction(), p_temperature, p_pressure);//use the reverse reaction
+                                                edgeReacInfoString.append("\n" + str);
+                                            }
+                                        }
+                                }
 			}
+                                        
+                       //6/19/09 gmagoon: original code below; with new P-dep implementation, it would only take into account forward reactions              
+                                        //if (rxn.isEdgeReaction(model)) {
+					//	edgeReactionCounter++;
+					//	String str = getEdgeReactionString(model, edgeID, rxn, p_temperature, p_pressure);
+					//	edgeReacInfoString.append("\n" + str);
+					//}
+                       //a potentially simpler approach based on the original approach (however, it seems like isEdgeReaction may return false even if there are some core products along with edge products):
+//                                        PDepReaction rxnReverse = (PDepReaction)rxn.getReverseReaction();
+//                                        if (rxn.isEdgeReaction(model)) {
+//                                            edgeReactionCounter++;
+//					    String str = getEdgeReactionString(model, edgeID, rxn, p_temperature, p_pressure);
+//					    edgeReacInfoString.append("\n" + str);
+//					}
+//                                        else if (rxnReverse.isEdgeReaction(model)){
+//                                            edgeReactionCounter++;
+//					    String str = getEdgeReactionString(model, edgeID, rxn, p_temperature, p_pressure);
+//					    edgeReacInfoString.append("\n" + str);
+//                                        }
                         //second, consider kLeak of each reaction network so that the validity of each reaction network may be tested
                         //in the original CHEMDIS approach, we included a reaction and pseudospecies for each kleak/P-dep network
                         //with the FAME approach we still consider each P-dep network as a pseudospecies, but we have multiple reactions contributing to this pseudo-species, with each reaction having different reactants
