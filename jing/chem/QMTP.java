@@ -104,7 +104,7 @@ public class QMTP implements GeneralGAPP {
                     maxAttemptNumber = createGaussianPM3Input(name, directory, p_3dfile, attemptNumber, InChIaug);
                 }
                 else{
-                    maxAttemptNumber = createGaussianPM3Input(name, directory, p_2dfile, attemptNumber, InChIaug);
+                    maxAttemptNumber = createGaussianPM3Input(name, directory, p_2dfile, -1, InChIaug);//use -1 for attemptNumber for monoatomic case
                 }
                 //4. run Gaussian
                 successFlag = runGaussian(name, directory);
@@ -286,9 +286,10 @@ public class QMTP implements GeneralGAPP {
     //creates Gaussian PM3 input file in directory with filename name.gjf by using OpenBabel to convert p_molfile
     //attemptNumber determines which keywords to try
     //the function returns the maximum number of keywords that can be attempted; this will be the same throughout the evaluation of the code, so it may be more appropriate to have this as a "constant" attribute of some sort
+    //attemptNumber=-1 will call a special set of keywords for the monoatomic case
     public int createGaussianPM3Input(String name, String directory, molFile p_molfile, int attemptNumber, String InChIaug){
         //write a file with the input keywords
-        int maxAttemptNumber=11;//update this if additional keyword options are added or removed
+        int maxAttemptNumber=12;//update this if additional keyword options are added or removed
         try{
             File inpKey=new File(directory+"/inputkeywords.txt");
             String inpKeyStr="%chk="+directory+"\\RMGrunCHKfile.chk\n";
@@ -303,7 +304,8 @@ public class QMTP implements GeneralGAPP {
 //            else if(attemptNumber==6) inpKeyStr+="# pm3 opt=(verytight,gdiis) freq=numerical IOP(2/16=3)"; //use numerical frequencies; this takes a relatively long time, so should only be used as one of the last resorts; this seemed to address at least one case of failure for a C6H10JJ species
 //            else if(attemptNumber==7) inpKeyStr+="# pm3 opt freq IOP(2/16=3)"; //use default (not verytight) convergence criteria; use this as last resort
 //            else if(attemptNumber==8) inpKeyStr+="# pm3 opt=(verytight,gdiis) freq=numerical IOP(2/16=3) IOP(4/21=200)";//to address problematic C10H14JJ case
-            if(attemptNumber==1) inpKeyStr+="# pm3 opt=(verytight,gdiis) freq IOP(2/16=3)";//added IOP option to avoid aborting when symmetry changes; 3 is supposed to be default according to documentation, but it seems that 0 (the default) is the only option that doesn't work from 0-4; also, it is interesting to note that all 4 options seem to work for test case with z-matrix input rather than xyz coords; cf. http://www.ccl.net/cgi-bin/ccl/message-new?2006+10+17+005 for original idea for solution
+            if(attemptNumber==-1) inpKeyStr+="# pm3 freq";//keywords for monoatomic case (still need to use freq keyword to get molecular mass)
+            else if(attemptNumber==1) inpKeyStr+="# pm3 opt=(verytight,gdiis) freq IOP(2/16=3)";//added IOP option to avoid aborting when symmetry changes; 3 is supposed to be default according to documentation, but it seems that 0 (the default) is the only option that doesn't work from 0-4; also, it is interesting to note that all 4 options seem to work for test case with z-matrix input rather than xyz coords; cf. http://www.ccl.net/cgi-bin/ccl/message-new?2006+10+17+005 for original idea for solution
             else if(attemptNumber==2) inpKeyStr+="# pm3 opt=(verytight,gdiis) freq IOP(2/16=3) IOP(4/21=2)";//use different SCF method; this addresses at least one case of failure for a C4H7J species
             else if(attemptNumber==3) inpKeyStr+="# pm3 opt=(verytight,calcfc) freq IOP(2/16=3) nosymm";//try multiple different options (no gdiis, use calcfc, nosymm)
             else if(attemptNumber==4) inpKeyStr+="# pm3 opt=(verytight,nolinear,calcfc,small) freq IOP(2/16=3)";//used for troublesome C5H7J2 case (similar error to C5H7J below); calcfc is not necessary for this particular species, but it speeds convergence and probably makes it more robust for other species
@@ -314,6 +316,7 @@ public class QMTP implements GeneralGAPP {
             else if(attemptNumber==9) inpKeyStr+="# pm3 opt=(verytight,gdiis) freq=numerical IOP(2/16=3) IOP(4/21=200)";//to address problematic C10H14JJ case
             else if(attemptNumber==10) inpKeyStr+="# pm3 opt=(calcall,small,maxcyc=100) IOP(2/16=3)"; //6/10/09: used to address troublesome FILUFGAZMJGNEN-UHFFFAOYAImult3 case (InChI=1/C5H6/c1-3-5-4-2/h3H,1H2,2H3/mult3)
             else if(attemptNumber==11) inpKeyStr+="# pm3 opt=(calcfc,verytight,newton,notrustupdate,small,maxcyc=100,maxstep=100) freq=(numerical,step=10) IOP(2/16=3) nosymm";// added 6/10/09 for very troublesome RRMZRNPRCUANER-UHFFFAOYAQ (InChI=1/C5H7/c1-3-5-4-2/h3H,1-2H3) case...there were troubles with negative frequencies, where I don't think they should have been; step size of numerical frequency was adjusted to give positive result; accuracy of result is questionable; it is possible that not all of these keywords are needed; note that for this and other nearly free rotor cases, I think heat capacity will be overestimated by R/2 (R vs. R/2) (but this is a separate issue)
+            else if(attemptNumber==12) inpKeyStr+="# pm3 opt=(tight,gdiis,small,maxcyc=200,maxstep=100) freq=numerical IOP(2/16=3) nosymm";// added 6/22/09 for troublesome QDERTVAGQZYPHT-UHFFFAOYAHmult3(InChI=1/C6H14O4Si/c1-4-8-11(7,9-5-2)10-6-3/h4H,5-6H2,1-3H3/mult3); key aspects appear to be tight (rather than verytight) convergence criteria, no calculation of frequencies during optimization, use of numerical frequencies, and probably also the use of opt=small
             else throw new Exception();//this point should not be reached
             FileWriter fw = new FileWriter(inpKey);
             fw.write(inpKeyStr);
@@ -798,6 +801,7 @@ public class QMTP implements GeneralGAPP {
             int failureFlag=0;//flag (1 or 0) indicating whether the Gaussian job failed
             int InChIMatch=0;//flag (1 or 0) indicating whether the InChI in the file matches InChIaug; this can only be 1 if InChIFound is also 1;
             int InChIFound=0;//flag (1 or 0) indicating whether an InChI was found in the log file
+            int InChIPartialMatch=0;//flag (1 or 0) indicating whether the InChI in the log file is a substring of the InChI in RMG's memory
             String logFileInChI="";
             try{
                 FileReader in = new FileReader(file);
@@ -818,6 +822,7 @@ public class QMTP implements GeneralGAPP {
                         }
                         InChIFound=1;
                         if(logFileInChI.equals(InChIaug)) InChIMatch=1;
+                        else if(InChIaug.startsWith(logFileInChI)) InChIPartialMatch=1;
                     }
                     line=reader.readLine();
                 }
@@ -833,9 +838,58 @@ public class QMTP implements GeneralGAPP {
                 System.out.println("Pre-existing successful quantum result for " + name + " ("+InChIaug+") has been found. This log file will be used.");
                 return true;
             }
-            else if (InChIFound==1 && InChIMatch == 0){
-                System.out.println("Congratulations! You appear to have discovered the first recorded instance of an InChIKey collision: InChIKey(augmented) = " + name + " RMG Augmented InChI = "+ InChIaug + " Log file Augmented InChI = "+logFileInChI);
-                System.exit(0);
+            else if (InChIFound==1 && InChIMatch == 0){//InChIs do not match (most likely due to limited name length mirrored in log file (79 characters), but possibly due to a collision)
+                if(InChIPartialMatch == 1){//case where the InChI in memory begins with the InChI in the log file; we will continue and check the input file, printing a warning if there is no match
+                    File inputFile = new File(directory+"/"+name+".gjf");
+                    if(inputFile.exists()){//read the Gaussian inputFile
+                        String inputFileInChI="";
+                        try{
+                            FileReader inI = new FileReader(inputFile);
+                            BufferedReader readerI = new BufferedReader(inI);
+                            String lineI=readerI.readLine();
+                            while(lineI!=null){
+                                if(lineI.startsWith(" InChI=")){
+                                    inputFileInChI = lineI.trim();
+                                }
+                                lineI=readerI.readLine();
+                            }
+                        }
+                        catch(Exception e){
+                            String err = "Error in reading preexisting Gaussian log file \n";
+                            err += e.toString();
+                            e.printStackTrace();
+                            System.exit(0);
+                        }
+                        if(inputFileInChI.equals(InChIaug)){
+                            if(failureFlag==0){
+                                System.out.println("Pre-existing successful quantum result for " + name + " ("+InChIaug+") has been found. This log file will be used. *Note that input file was read to confirm lack of InChIKey collision (InChI probably more than 79 characters)");
+                                return true;
+                            }
+                            else{//otherwise, failureFlag==1
+                                System.out.println("Pre-existing quantum result for " + name + " ("+InChIaug+") has been found, but the result was apparently unsuccessful. The file will be overwritten with a new calculation. *Note that input file was read to confirm lack of InChIKey collision (InChI probably more than 79 characters)");
+                                return false;
+                            }
+                        }
+                        else{
+                            if(inputFileInChI.equals("")){//InChI was not found in input file
+                                System.out.println("*****Warning: potential InChIKey collision: InChIKey(augmented) = " + name + " RMG Augmented InChI = "+ InChIaug + " Log file Augmented InChI = "+logFileInChI + " . InChI could not be found in the Gaussian input file. You should manually check that the log file contains the intended species.");
+                                return true;
+                            }
+                            else{//InChI was found but doesn't match
+                                System.out.println("Congratulations! You appear to have discovered the first recorded instance of an InChIKey collision: InChIKey(augmented) = " + name + " RMG Augmented InChI = "+ InChIaug + " Gaussian input file Augmented InChI = "+inputFileInChI);
+                                System.exit(0);
+                            }
+                        }
+                    }
+                    else{
+                        System.out.println("*****Warning: potential InChIKey collision: InChIKey(augmented) = " + name + " RMG Augmented InChI = "+ InChIaug + " Log file Augmented InChI = "+logFileInChI + " . Gaussian input file could not be found to check full InChI. You should manually check that the log file contains the intended species.");
+                        return true;
+                    }
+                }
+                else{
+                    System.out.println("Congratulations! You appear to have discovered the first recorded instance of an InChIKey collision: InChIKey(augmented) = " + name + " RMG Augmented InChI = "+ InChIaug + " Log file Augmented InChI = "+logFileInChI);
+                    System.exit(0);
+                }
             }
             else if (InChIFound==0){
                 System.out.println("An InChI was not found in file: " +name+".log");
