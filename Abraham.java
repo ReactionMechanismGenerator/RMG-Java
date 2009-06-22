@@ -115,11 +115,16 @@ public static void main(String[] args) {
        result_Abraham= cg.getAbramData();
 
        // Solute descriptors from the Abraham Model
-       double S=result_Abraham.S;
-       double B=result_Abraham.B;
-       double E=result_Abraham.E;
-       double L=result_Abraham.L;
-       double A=result_Abraham.A;
+//       double S=result_Abraham.S;
+//       double B=result_Abraham.B;
+//       double E=result_Abraham.E;
+//       double L=result_Abraham.L;
+//       double A=result_Abraham.A;
+       double S = 0.0;
+       double B = 0.0;
+       double E = 0.0;
+       double L = 0.0;
+       double A = 0.0;
 
        //double logK=c + s*S + b*B + es*E + l*L + a*A;    // Implementation of Abraham Model
 
