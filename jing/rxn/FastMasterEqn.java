@@ -204,7 +204,7 @@ public class FastMasterEqn implements PDepKineticsEstimator {
         String output = "";
 
 		// Touch FAME output file
-		touchOutputFile();
+		//touchOutputFile(); //no longer needed with standard input/output
 
 		// FAME system call
 		try {
