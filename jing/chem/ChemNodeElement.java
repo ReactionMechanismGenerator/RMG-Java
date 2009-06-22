@@ -76,6 +76,12 @@ public interface ChemNodeElement {
     //## operation isRadical() 
     boolean isRadical();
     
+    // Added by MRH on 18-Jun-2009
+    //	Hardcoding Si and S into RMG-java
+    boolean isSilicon();
+    
+    boolean isSulfur();
+    
 }
 /*********************************************************************
 	File Path	: RMG\RMG\jing\chem\ChemNodeElement.java

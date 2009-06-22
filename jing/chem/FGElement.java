@@ -78,6 +78,18 @@ public class FGElement {
       else if (p_name.compareToIgnoreCase("R!H") == 0) {
       	type = "R!H";
       }
+      /*
+       * WARNING: The elseif statement involving Si must precede the elseif
+       * 	statement involving S.  If not, a "Si" would be recognized as a
+       * 	"S", at least with the current syntax.  This is also true for
+       * 	the "Cl"/"C" elseif statements above
+       */
+      else if (p_name.startsWith("Si") || p_name.startsWith("si")) {
+    	  type = "Si";
+      }
+      else if (p_name.startsWith("S") || p_name.startsWith("s")) {
+    	  type = "S";
+      }
       else {
       	throw new UnknownSymbolException("FGElement type: " + p_name);
       }
@@ -134,6 +146,27 @@ public class FGElement {
       else if (p_name.equals("R!H")) {
       	fge = new FGElement("R!H");
       }
+      else if (p_name.equals("Sis")) {
+    	  fge = new FGElement("Sis");
+      }
+      else if (p_name.equals("Sid")) {
+    	  fge = new FGElement("Sid");
+      }
+      else if (p_name.equals("Sidd")) {
+    	  fge = new FGElement("Sidd");
+      }
+      else if (p_name.equals("Sit")) {
+    	  fge = new FGElement("Sit");
+      }
+      else if (p_name.equals("Ss")) {
+    	  fge = new FGElement("Ss");
+      }
+      else if (p_name.equals("Sa")) {
+    	  fge = new FGElement("Sa");
+      }
+      else if (p_name.equals("Sd")) {
+    	  fge = new FGElement("Sd");
+      }
       else throw new UnknownSymbolException("FGElement: " + p_name);
 
       return fge;
@@ -181,6 +214,14 @@ public class FGElement {
       //#[ operation isOxygen()
       return (getType().equals("O"));
       //#]
+  }
+  
+  public boolean isSilicon() {
+      return (getType().equals("Si"));
+  }
+  
+  public boolean isSulfur() {
+      return (getType().equals("S"));
   }
 
   //## operation make(String)
@@ -252,6 +293,27 @@ public class FGElement {
       }
       else if (p_name.compareToIgnoreCase("R!H")==0 || p_name.compareToIgnoreCase("R|H")==0) {
       	return "R!H";
+      }
+      else if ((p_name.compareToIgnoreCase("Sis")==0)) {
+    	  return "Sis";
+      }
+      else if ((p_name.compareToIgnoreCase("Sid")==0)) {
+    	  return "Sid";
+      }
+      else if ((p_name.compareToIgnoreCase("Sidd")==0)) {
+    	  return "Sidd";
+      }
+      else if ((p_name.compareToIgnoreCase("Sit")==0)) {
+    	  return "Sit";
+      }
+      else if ((p_name.compareToIgnoreCase("Ss")==0)) {
+    	  return "Ss";
+      }
+      else if ((p_name.compareToIgnoreCase("Sa")==0)) {
+        	return "Sa";
+      }
+      else if ((p_name.compareToIgnoreCase("Sd")==0)) {
+    	  return "Sd";
       }
       else {
       	throw new UnknownSymbolException("FGElement");

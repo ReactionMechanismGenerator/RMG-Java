@@ -162,6 +162,14 @@ public class FGAtom implements ChemNodeElement {
         //#]
     }
     
+    public boolean isSilicon() {
+        return (getFgElement().isSilicon());
+    }
+    
+    public boolean isSulfur() {
+        return (getFgElement().isSulfur());
+    }
+    
     //## operation make(FGElement,FreeElectron) 
     public static FGAtom make(FGElement p_fgElement, FreeElectron p_freeElectron) {
         //#[ operation make(FGElement,FreeElectron) 

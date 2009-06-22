@@ -232,6 +232,16 @@ public class Atom implements ChemNodeElement {
 
       //#]
   }
+  
+  // Added by MRH on 18-Jun-2009
+  //	Hardcoding Si and S into RMG-java
+  public boolean isSilicon() {
+	  return (getType().equals("Si"));
+  }
+  
+  public boolean isSulfur() {
+	  return (getType().equals("S"));
+  }
 
   //## operation make(ChemElement,FreeElectron)
   public static Atom make(ChemElement p_chemElement, FreeElectron p_freeElectron) {

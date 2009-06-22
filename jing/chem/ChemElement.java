@@ -114,6 +114,14 @@ public class ChemElement {
       else if (p_name.equals("O")) {
       	ChemElement = new ChemElement("O",8,2,16);
       }
+      // Added by MRH on 18-Jun-2009
+      //	Hardcoding Si and S into RMG-java
+      else if (p_name.equals("Si")) {
+    	  ChemElement = new ChemElement("Si",14,4,28.086);
+      }
+      else if (p_name.equals("S")) {
+    	  ChemElement = new ChemElement("S",16,2,32.064);
+      }
       else {
       	throw new UnknownSymbolException("ChemElement");
       }
@@ -195,6 +203,14 @@ public class ChemElement {
       }
       else if ((p_name.compareToIgnoreCase("O")==0) || (p_name.compareToIgnoreCase("Oxygen")==0)) {
       	return "O";
+      }
+      // Added by MRH on 18-Jun-2009
+      //	Hardcoding Si and S into RMG-java
+      else if ((p_name.compareToIgnoreCase("Si")==0) || (p_name.compareToIgnoreCase("Silicon")==0)) {
+    	  return "Si";
+      }
+      else if ((p_name.compareToIgnoreCase("S")==0) || (p_name.compareToIgnoreCase("Sulfur")==0) || (p_name.compareToIgnoreCase("Sulphur")==0)) {
+    	  return "S";
       }
       else {
       	throw new UnknownSymbolException("ChemElement");

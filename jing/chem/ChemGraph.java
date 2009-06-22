@@ -337,7 +337,7 @@ public class ChemGraph implements Matchable {
 
         if (!atom.isRadical()) {
         // satuated atom symmetric number calculation
-        	if (fge.equals(FGElement.make("Cs"))) {
+        	if (fge.equals(FGElement.make("Cs")) || fge.equals(FGElement.make("Sis"))) {
         	// Cs:
                	Arc a1 = (Arc)neighbor_iter.next();
                	Arc a2 = (Arc)neighbor_iter.next();
@@ -400,7 +400,7 @@ public class ChemGraph implements Matchable {
                		}
                	}
         	}
-        	else if (fge.equals(FGElement.make("Os"))) {
+        	else if (fge.equals(FGElement.make("Os")) || fge.equals(FGElement.make("Ss"))) {
         	// Os:
                	Arc a1 = (Arc)neighbor_iter.next();
                	Arc a2 = (Arc)neighbor_iter.next();
@@ -408,7 +408,7 @@ public class ChemGraph implements Matchable {
                		sn *= 2;
                	}
         	}
-        	else if (fge.equals(FGElement.make("Cdd"))) {
+        	else if (fge.equals(FGElement.make("Cdd")) || fge.equals(FGElement.make("Sidd"))) {
         	// Cdd:
                	Arc a1 = (Arc)neighbor_iter.next();
                	Arc a2 = (Arc)neighbor_iter.next();
@@ -419,7 +419,7 @@ public class ChemGraph implements Matchable {
         }
         else {
         // radical symmetric number calculation
-        	if (fge.equals(FGElement.make("Cs"))) {
+        	if (fge.equals(FGElement.make("Cs")) || fge.equals(FGElement.make("Sis"))) {
         	// only consider Cs. and Cs..
         		FreeElectron fe = atom.getFreeElectron();
             	if (fe.getOrder() == 1) {
@@ -473,16 +473,18 @@ public class ChemGraph implements Matchable {
         		Node n1 = (Node)neighbor_iter.next();
         		Node n2 = (Node)neighbor_iter.next();
 
-        		FGElement Cd = FGElement.make("Cd");
+//        		FGElement Cd = FGElement.make("Cd");
         		FGElement Cdd = FGElement.make("Cdd");
+//        		FGElement Sid = FGElement.make("Sid");
+        		FGElement Sidd = FGElement.make("Sidd");
 
         		FGElement fge1 = (FGElement)n1.getFgElement();
         		FGElement fge2 = (FGElement)n2.getFgElement();
 
                 LinkedHashSet axis = new LinkedHashSet();
                 axis.add(arc);
-                if (fge1.equals(Cdd)) n1 = getToEndOfAxis(arc,n1,axis);
-                if (fge2.equals(Cdd)) n2 = getToEndOfAxis(arc,n2,axis);
+                if (fge1.equals(Cdd) || fge1.equals(Sidd)) n1 = getToEndOfAxis(arc,n1,axis);
+                if (fge2.equals(Cdd) || fge2.equals(Sidd)) n2 = getToEndOfAxis(arc,n2,axis);
 
                	Atom atom1 = (Atom)n1.getElement();
                	Atom atom2 = (Atom)n2.getElement();
@@ -950,7 +952,10 @@ return sn;
         	FGElement fge2 = (FGElement)n2.getFgElement();
         	if (!a1.isRadical() && fge1.equals(FGElement.make("Os")) && !a2.isRadical() && fge2.equals(FGElement.make("Os"))) {
         		return true;
-        	}
+        	} 
+//        	else if (!a1.isRadical() && fge1.equals(FGElement.make("Sis")) && !a2.isRadical() && fge2.equals(FGElement.make("Sis"))) {
+//        		return true;
+//        	}
         }
 
         return false;
@@ -1050,6 +1055,10 @@ return sn;
         int H_number = 0;
         int O_number = 0;
         int radical = 0;
+        // Added by MRH on 18-Jun-2009
+        //	Hardcoding Si and S into RMG-java
+        int Si_number = 0;
+        int S_number = 0;
 
         Iterator iter = getNodeList();
         while (iter.hasNext()) {
@@ -1065,6 +1074,14 @@ return sn;
         	}
         	else if (atom.isOxygen()) {
         		O_number++;
+        	}
+            // Added by MRH on 18-Jun-2009
+            //	Hardcoding Si and S into RMG-java
+        	else if (atom.isSilicon()) {
+        		Si_number++;
+        	}
+        	else if (atom.isSulfur()) {
+        		S_number++;
         	}
         	else {
         		throw new InvalidChemNodeElementException();
@@ -1088,6 +1105,20 @@ return sn;
         	s = s + "O";
         	if (O_number >1) {
         		s = s + String.valueOf(O_number);
+        	}
+        }
+        // Added by MRH on 18-Jun-2009
+        //	Hardcoding Si and S into RMG-java
+        if (Si_number>0) {
+        	s += "Si";
+        	if (Si_number>1) {
+        		s += String.valueOf(Si_number);
+        	}
+        }
+        if (S_number>0) {
+        	s += "S";
+        	if (S_number>1) {
+        		s += String.valueOf(S_number);
         	}
         }
 
@@ -1523,6 +1554,32 @@ return sn;
         return radicalNumber;
         //#]
     }
+    
+    public int getSiliconNumber() {
+        int siNum = 0;
+        Iterator iter = getNodeList();
+        while (iter.hasNext()) {
+        	Node node = (Node)iter.next();
+        	Atom atom = (Atom)node.getElement();
+        	if (atom.isSilicon()) {
+        		siNum++;
+        	}
+        }
+        return siNum;
+    }
+    
+    public int getSulfurNumber() {
+        int sNum = 0;
+        Iterator iter = getNodeList();
+        while (iter.hasNext()) {
+        	Node node = (Node)iter.next();
+        	Atom atom = (Atom)node.getElement();
+        	if (atom.isSulfur()) {
+        		sNum++;
+        	}
+        }
+        return sNum;
+    }
 
     //## operation getSymmetryNumber()
     public int getSymmetryNumber() {
@@ -1575,8 +1632,9 @@ return sn;
         Node nextNode = nextArc.getOtherNode(p_beginNode);
         FGElement fge = (FGElement)nextNode.getFgElement();
         FGElement Cdd = FGElement.make("Cdd");
+        FGElement Sidd = FGElement.make("Sidd");
 
-        if (!fge.equals(Cdd)) return nextNode;
+        if (!fge.equals(Cdd) & !fge.equals(Sidd)) return nextNode;
         else {
         	return getToEndOfAxis(nextArc,nextNode,p_axis);
         }

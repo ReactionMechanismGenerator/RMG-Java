@@ -182,6 +182,13 @@ public class Node extends GraphComponent {
       FGElement H = FGElement.make("H");
       FGElement R1H = FGElement.make("R!H"); 
       FGElement R = FGElement.make("R");
+      FGElement Sis = FGElement.make("Sis");
+      FGElement Sid = FGElement.make("Sid");
+      FGElement Sidd = FGElement.make("Sidd");
+      FGElement Sit = FGElement.make("Sit");
+      FGElement Ss = FGElement.make("Ss");
+      FGElement Sd = FGElement.make("Sd");
+      FGElement Sa = FGElement.make("Sa");
 
       FGElement fgElement = p_fgAtom.getFgElement();
       FreeElectron feElement = p_fgAtom.getFreeElectron();
@@ -203,7 +210,23 @@ public class Node extends GraphComponent {
       	else if (fgElement == R || fgElement == R1H){
       		return p_fgAtom;
       	}
+      	// Sis change into Sid
+      	else if (fgElement == Sis) {
+      		return FGAtom.make(Sid,feElement);
+      	}
+      	// Ss change into Sd
+      	else if (fgElement == Ss) {
+      		return FGAtom.make(Sd,feElement);
+      	}
+      	// Apparently Sidd, Sit, Sa, and Sd cannot do anything
+      	else if (fgElement == Sidd || fgElement == Sit || fgElement == Sa || fgElement == Sd) {
+      		return null;
+      	}
+      	// Nothing for Sid ... according to the above comment, all reaction familes
+      	//	result in Cd staying as Cd, so I'll assume (for now) that Sid stays
+      	//	as Sid
       	else{
+      		// Why are we returning a Cdd?  If we encounter Cdd, we return null
       		return FGAtom.make(Cdd,feElement);
       	}
       }
@@ -226,7 +249,7 @@ public class Node extends GraphComponent {
       				Iterator iter = ((Collection)otherElement).iterator();
       				while (iter.hasNext()) {
       					ChemNodeElement cne = (ChemNodeElement)iter.next();
-      					if (cne.isCarbon()) {
+      					if (cne.isCarbon() || cne.isSilicon() || cne.isSulfur()) {
       						carbon = true;
       					}
       					else if (cne.isOxygen()) {
@@ -255,7 +278,7 @@ public class Node extends GraphComponent {
       			}
       			else {
       				ChemNodeElement cne = (ChemNodeElement)otherElement;
-      				if (cne.isCarbon()) {
+      				if (cne.isCarbon() || cne.isSilicon() || cne.isSulfur()) {
       					return FGAtom.make(Cd,feElement);
       				}
       				else if (cne.isOxygen()) {
@@ -287,6 +310,63 @@ public class Node extends GraphComponent {
       	// no addition happens here
       	// now, i am not including Cb-Cb and Cbf-cb bond addition, should add later
       	else if (fgElement == H || fgElement == Cs || fgElement == Cb ||fgElement == Cbf || fgElement == Oa || fgElement == Os ) {
+      		return null;
+      	}
+      	// Sid change to Sis
+      	else if (fgElement == Sid) {
+      		return FGAtom.make(Sis,feElement);
+      	}
+      	// Sit change to Sid
+       	else if (fgElement == Sit) {
+      		return FGAtom.make(Sid,feElement);
+      	}
+      	// Sidd change to Sid
+      	else if (fgElement == Sidd) {
+      		if (p_otherNode != null) {
+      			Object otherElement = p_otherNode.getElement();
+      			if (otherElement instanceof Collection) {
+      				boolean carbon = false;
+      				Iterator iter = ((Collection)otherElement).iterator();
+      				while (iter.hasNext()) {
+      					ChemNodeElement cne = (ChemNodeElement)iter.next();
+      					if (cne.isCarbon() || cne.isSilicon() || cne.isSulfur() || cne.isOxygen()) {
+      						carbon = true;
+      					}
+      					else if (cne.isAny() || cne.isNonH()) {
+      						carbon = true;
+      					}
+      	     		}
+      				if (carbon) {
+      					return FGAtom.make(Sid,feElement);
+      				}
+      				else {
+      					throw new InvalidChangedOrderException();
+      				}
+      			}
+      			else {
+      				ChemNodeElement cne = (ChemNodeElement)otherElement;
+      				if (cne.isCarbon() || cne.isSilicon() || cne.isSulfur() || cne.isOxygen()) {
+      					return FGAtom.make(Sid,feElement);
+      				}
+      				else if (cne.isAny() || cne.isNonH()) {
+      					return FGAtom.make(Sid,feElement);
+      				}
+      				else {
+      					throw new InvalidChangedOrderException();
+      				}
+      			}
+      		}
+      		// Sidd + null other-end node, change to Sid
+      		else {
+      			return FGAtom.make(Sid,feElement);
+      		}
+      	}
+      	// Sd change to Ss
+      	else if (fgElement == Sd) {
+      		return FGAtom.make(Ss,feElement);
+      	}
+      	// no addition happens here
+      	else if (fgElement == Sis || fgElement == Sa || fgElement == Ss ) {
       		return null;
       	}
       	// R and R!H, return themselves
@@ -396,6 +476,9 @@ public class Node extends GraphComponent {
       					result.add(Cd);
       					result.add(CO);
       			}
+      			else if (p_doubleEnd.compareToIgnoreCase("S")==0 || p_doubleEnd.compareToIgnoreCase("Si")==0) {
+      				result.add(Cd);
+      			}
       			else {
       				throw new InvalidConnectivityException();
       			}
@@ -492,6 +575,96 @@ public class Node extends GraphComponent {
               FGElement Cl = FGElement.make("Cl");
               result.add(Cl);
       }
+      else if (p_atomType.compareToIgnoreCase("Si")==0) {
+        	FGElement Sis = FGElement.make("Sis");
+        	FGElement Sid = FGElement.make("Sid");
+        	FGElement Sidd = FGElement.make("Sidd");
+        	FGElement Sit = FGElement.make("Sit");
+
+        	int unocuppied = p_freeValency - p_single - 2*p_double - 3*p_triple;
+        	if (unocuppied < -0.01) throw new InvalidConnectivityException();
+
+        	if (p_triple != 0) {
+        		if (p_triple == 1) result.add(Sit);
+        		else throw new InvalidConnectivityException();
+        	}
+        	else if (p_double != 0) {
+        		if (p_double == 1) {
+        			if (unocuppied == 2) result.add(Sidd);
+        			if (p_doubleEnd.compareToIgnoreCase("C")==0 || p_doubleEnd.compareToIgnoreCase("O")==0 ||
+        					p_doubleEnd.compareToIgnoreCase("S")==0 || p_doubleEnd.compareToIgnoreCase("Si")==0) {
+        				result.add(Sid);
+        			}
+        			else if (p_doubleEnd.compareToIgnoreCase("R")==0 || p_doubleEnd.compareToIgnoreCase("R!H")==0) {
+        					result.add(Sid);
+        			}
+        			else {
+        				throw new InvalidConnectivityException();
+        			}
+        		}
+        		else if (p_double == 2 && unocuppied == 0) {
+        			result.add(Sidd);
+        		}
+        		else {
+        			throw new InvalidConnectivityException();
+        		}
+        	}
+        	else {
+        		result.add(Sis);
+        		if (unocuppied==2) {
+        			result.add(Sid);
+        		}
+        		else if (unocuppied==3) {
+        			result.add(Sid);
+        			result.add(Sit);
+        		}
+        		else if (unocuppied==4) {
+        			result.add(Sid);
+        			result.add(Sidd);
+        			result.add(Sit);
+        		}
+        		else if (unocuppied > 4 || unocuppied < 0) {
+        			throw new InvalidConnectivityException();
+        		}
+        	}
+      }
+      else if (p_atomType.compareToIgnoreCase("S")==0) {
+        	FGElement Ss = FGElement.make("Ss");
+        	FGElement Sd = FGElement.make("Sd");
+        	FGElement Sa = FGElement.make("Sa");
+
+        	int unocuppied = p_freeValency - p_single - 2*p_double;
+        	if (unocuppied == 2) {
+        		result.add(Ss);
+        		result.add(Sd);
+        	}
+        	else if (unocuppied == 1) {
+        		result.add(Ss);
+        	}
+        	else if (unocuppied == 0) {
+        		if (p_double == 1) {
+        			result.add(Sd);
+        		}
+        		else if (p_double == 0) {
+        			if (p_single == 1 || p_single == 2) {
+        				result.add(Ss);
+        			}
+        			else if (p_single == 0) {
+        				result.add(Sa);
+        			}
+        			else {
+        				throw new InvalidConnectivityException();
+        			}
+        		}
+        		else {
+        			throw new InvalidConnectivityException();
+        		}
+        	}
+        	else {
+        		throw new InvalidConnectivityException();
+        	}
+        }
+      
 
 
       return result;
@@ -598,6 +771,9 @@ public class Node extends GraphComponent {
       						result.add(Cd);
       						result.add(CO);
       					}
+      					else if (thiscne.isSilicon() || thiscne.isSulfur()) {
+      						result.add(Cd);
+      					}
       					else {
       						throw new InvalidConnectivityException();
       					}
@@ -615,6 +791,9 @@ public class Node extends GraphComponent {
       						else if (thiscne.isAny() || thiscne.isNonH()) {
       							result.add(Cd);
       							result.add(CO);
+      						}
+      						else if (thiscne.isSilicon() || thiscne.isSulfur()) {
+      							result.add(Cd);
       						}
       						else {
       							throw new InvalidConnectivityException();
@@ -711,6 +890,147 @@ public class Node extends GraphComponent {
       				}
       				else if (singleNum == 0) {
       					result.add(Oa);
+      				}
+      				else {
+      					throw new InvalidConnectivityException();
+      				}
+      			}
+      			else {
+      				throw new InvalidConnectivityException();
+      			}
+      		}
+      		else {
+      			throw new InvalidConnectivityException();
+      		}
+      	}
+      	else if (a.isSilicon()) {
+      		FGElement Sis = FGElement.make("Sis");
+      		FGElement Sid = FGElement.make("Sid");
+      		FGElement Sidd = FGElement.make("Sidd");
+      		FGElement Sit = FGElement.make("Sit");
+
+      		Iterator iter = getNeighbor();
+      		while (iter.hasNext()) {
+      			Arc arc = (Arc)iter.next();
+      			Object b = arc.getElement();
+      			if (!(b instanceof Bond)) {
+      				System.out.println("encounter bond list during fgelement generation!!");
+      				System.exit(0);
+      			}
+      			Bond bond = (Bond)b;
+      			if (bond.isSingle()) singleNum++;
+      			else if (bond.isDouble()) {
+      				otherEnd[doubleNum] = getOtherNode(arc).getElement();
+      				doubleNum++;
+      			}
+      			else if (bond.isTriple()) tripleNum++;
+      			else {
+      				throw new InvalidBondException();
+      			}
+      		}
+
+      		int unocuppied = valency - singleNum - 2*doubleNum - 3*tripleNum;
+      		if (unocuppied < -0.01) throw new InvalidConnectivityException();
+
+      		if (tripleNum != 0) {
+      			result.add(Sit);
+      		}
+      		else if (doubleNum != 0) {
+      			if (doubleNum == 1) {
+      				Object cne = otherEnd[0];
+      				if (unocuppied == 2) result.add(Sidd);
+      				if (cne instanceof ChemNodeElement) {
+      					ChemNodeElement thiscne = (ChemNodeElement)cne;
+      					if (thiscne.isCarbon() || thiscne.isOxygen() ||
+      							thiscne.isSilicon() || thiscne.isSulfur()) {
+      						result.add(Sid);
+      					}
+      					else if (thiscne.isAny() || thiscne.isNonH()) {
+      						result.add(Sid);
+      					}
+      					else {
+      						throw new InvalidConnectivityException();
+      					}
+      				}
+      				else if (cne instanceof Collection) {
+      					Iterator cne_iter = ((Collection)cne).iterator();
+      					while (cne_iter.hasNext()) {
+      						ChemNodeElement thiscne = (ChemNodeElement)cne_iter.next();
+      						if (thiscne.isCarbon() || thiscne.isOxygen() ||
+      								thiscne.isSilicon() || thiscne.isSulfur()) {
+      							result.add(Sid);
+      						}
+      						else if (thiscne.isAny() || thiscne.isNonH()) {
+      							result.add(Sid);
+      						}
+      						else {
+      							throw new InvalidConnectivityException();
+      						}
+      					}
+      				}
+      				else {
+      					throw new InvalidConnectivityException();
+      				}
+
+      			}
+      			else if (doubleNum == 2) {
+      				result.add(Sidd);
+      			}
+      			else {
+      				throw new InvalidConnectivityException();
+      			}
+      		}
+      		else {
+      			result.add(Sis);
+      			int freeValency = valency-singleNum;
+      			if (freeValency==2) {
+      				result.add(Sid);
+      			}
+      			else if (freeValency==3) {
+      				result.add(Sid);
+      				result.add(Sit);
+      			}
+      			else if (freeValency==4) {
+      				result.add(Sid);
+      				result.add(Sidd);
+      				result.add(Sit);
+      			}
+      			else if (freeValency > 4 || freeValency < 0) {
+      				throw new InvalidConnectivityException();
+      			}
+      		}
+      	}
+      	else if (a.isSulfur()) {
+      		FGElement Ss = FGElement.make("Ss");
+      		FGElement Sd = FGElement.make("Sd");
+      		FGElement Sa = FGElement.make("Sa");
+
+      		Iterator iter = getNeighbor();
+      		while (iter.hasNext()) {
+      			Arc arc = (Arc)iter.next();
+      			Bond bond = (Bond)arc.getElement();
+      			if (bond.isSingle()) singleNum++;
+      			else if (bond.isDouble()) doubleNum++;
+      			else throw new InvalidBondException();
+      		}
+      		int freeValency = valency - singleNum - 2*doubleNum;
+      		if (freeValency == 2) {
+      			result.add(Ss);
+      			result.add(Sd);
+      		}
+      		else if (freeValency == 1) {
+      			result.add(Ss);
+      		}
+      		else if (freeValency == 0) {
+      			if (doubleNum == 1) {
+      				result.add(Sd);
+      			}
+      			else if (doubleNum == 0) {
+      				if (singleNum == 1 || singleNum == 2) {
+      					result.add(Ss);
+      				}
+      				else if (singleNum == 0) {
+      					result.add(Sa);
       				}
       				else {
       					throw new InvalidConnectivityException();

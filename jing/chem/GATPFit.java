@@ -58,13 +58,34 @@ public class GATPFit {
         int Hn = cg.getHydrogenNumber();
         int Cn = cg.getCarbonNumber();
         int On = cg.getOxygenNumber();
+        int Sin = cg.getSiliconNumber();
+        int Sn = cg.getSulfurNumber();
+        
+        int numUniqueElements = 0;
+        if (Hn > 0) ++numUniqueElements;
+        if (Cn > 0) ++numUniqueElements;
+        if (On > 0) ++numUniqueElements;
+        if (Sin > 0) ++numUniqueElements;
+        if (Sn > 0) ++numUniqueElements;
+        
+        // GATPFit.exe requires at least two elements but no more than five
+//        if (numUniqueElements > 4) {
+//        	System.err.println("Species contains more than four unique elements.");
+//        }
+        
+		result += "ELEM C " + MathTool.formatInteger(Cn,3,"L") + ls;
+		result += "ELEM H " + MathTool.formatInteger(Hn,3,"L") + ls;
+        if (On>0) result += "ELEM O " + MathTool.formatInteger(On,3,"L") + ls;
+        if (Sin>0) result += "ELEM Si " + MathTool.formatInteger(Sin,3,"L") + ls;
+        if (Sn>0) result += "ELEM S " + MathTool.formatInteger(Sn,3,"L") + ls;
+        
         /*if (Cn>0) result += "ELEM C " + MathTool.formatInteger(Cn,3,"L") + ls;
         if (Hn>0) result += "ELEM H " + MathTool.formatInteger(Hn,3,"L") + ls;
         if (On>0) result += "ELEM O " + MathTool.formatInteger(On,3,"L") + ls;*/
 		
-		result += "ELEM C " + MathTool.formatInteger(Cn,3,"L") + ls;
-        result += "ELEM H " + MathTool.formatInteger(Hn,3,"L") + ls;
-        result += "ELEM O " + MathTool.formatInteger(On,3,"L") + ls;
+//		result += "ELEM C " + MathTool.formatInteger(Cn,3,"L") + ls;
+//        result += "ELEM H " + MathTool.formatInteger(Hn,3,"L") + ls;
+//        result += "ELEM O " + MathTool.formatInteger(On,3,"L") + ls;
 		
         // write H and S at 298
         ThermoData td = species.getThermoData();
