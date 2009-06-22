@@ -60,28 +60,77 @@ public class NASAThermoData {
 	  lowTemperature = Double.parseDouble(dataString.substring(48,54));
 	  highTemperature = Double.parseDouble(dataString.substring(57,64));
 	  middleTemperature = Double.parseDouble(dataString.substring(66,73));
-	  
-	  String secondLine, thirdLine, fourthLine;
+
+	  /*
+	   * Updated by MRH on 22-Jun-2009
+	   * 	Code assumed dataString would contain 4 (and only 4) lines of code.
+	   * 	For species containing more than 4 unique elements, a fifth line
+	   * 	will now be present.  Here are the old and new formats (roughly):
+	   * 
+	   * Old:
+	   * Name	C x H y O z G Tmin Tmax Tint	1
+	   * a1 a2 a3 a4 a5							2
+	   * a6 a7 a1 a2 a3							3
+	   * a4 a5 a6 a7							4
+	   * 
+	   * New:
+	   * Name				G Tmin Tmax Tint	1&
+	   * C x H y O z Si a S b
+	   * a1 a2 a3 a4 a5							2
+	   * a6 a7 a1 a2 a3							3
+	   * a4 a5 a6 a7							4
+	   * 
+	   * The ampersand at the end of the first line indicates whether the
+	   * 	dataString is of the old or new format.  The Tmin, Tmax, and
+	   * 	Tint are in the same locations, as are the high- and 
+	   * 	low-temperature coefficients.
+	   * 
+	   * NOTE: The new format is not recognized by Chemkin-v.2 but is
+	   * 	recognized by Chemkin-v.4
+	   */
+	  String firstLine, secondLine, thirdLine, fourthLine, fifthLine;
 	  StringTokenizer st = new StringTokenizer(dataString,"\n");
-	  st.nextToken();
+	  firstLine = st.nextToken();
 	  secondLine = st.nextToken();
 	  thirdLine = st.nextToken();
 	  fourthLine = st.nextToken();
-	  highTemperatureCoefficients[0] = Double.parseDouble(secondLine.substring(0,15));
-	  highTemperatureCoefficients[1] = Double.parseDouble(secondLine.substring(15,30));
-	  highTemperatureCoefficients[2] = Double.parseDouble(secondLine.substring(30,45));
-	  highTemperatureCoefficients[3] = Double.parseDouble(secondLine.substring(45,60));
-	  highTemperatureCoefficients[4] = Double.parseDouble(secondLine.substring(60,75));
-	  highTemperatureCoefficients[5] = Double.parseDouble(thirdLine.substring(0,15));
-	  highTemperatureCoefficients[6] = Double.parseDouble(thirdLine.substring(15,30));
-	  
-	  lowTemperatureCoefficients[0] = Double.parseDouble(thirdLine.substring(30,45));
-	  lowTemperatureCoefficients[1] = Double.parseDouble(thirdLine.substring(45,60));
-	  lowTemperatureCoefficients[2] = Double.parseDouble(thirdLine.substring(60,75));
-	  lowTemperatureCoefficients[3] = Double.parseDouble(fourthLine.substring(0,15));
-	  lowTemperatureCoefficients[4] = Double.parseDouble(fourthLine.substring(15,30));
-	  lowTemperatureCoefficients[5] = Double.parseDouble(fourthLine.substring(30,45));
-	  lowTemperatureCoefficients[6] = Double.parseDouble(fourthLine.substring(45,60));
+	  // If there are more tokens, we have a fifth line and are therefore
+	  //	using the new format
+	  if (st.hasMoreTokens()) {
+		  fifthLine = st.nextToken();
+		  
+		  highTemperatureCoefficients[0] = Double.parseDouble(thirdLine.substring(0,15));
+		  highTemperatureCoefficients[1] = Double.parseDouble(thirdLine.substring(15,30));
+		  highTemperatureCoefficients[2] = Double.parseDouble(thirdLine.substring(30,45));
+		  highTemperatureCoefficients[3] = Double.parseDouble(thirdLine.substring(45,60));
+		  highTemperatureCoefficients[4] = Double.parseDouble(thirdLine.substring(60,75));
+		  highTemperatureCoefficients[5] = Double.parseDouble(fourthLine.substring(0,15));
+		  highTemperatureCoefficients[6] = Double.parseDouble(fourthLine.substring(15,30));
+		  
+		  lowTemperatureCoefficients[0] = Double.parseDouble(fourthLine.substring(30,45));
+		  lowTemperatureCoefficients[1] = Double.parseDouble(fourthLine.substring(45,60));
+		  lowTemperatureCoefficients[2] = Double.parseDouble(fourthLine.substring(60,75));
+		  lowTemperatureCoefficients[3] = Double.parseDouble(fifthLine.substring(0,15));
+		  lowTemperatureCoefficients[4] = Double.parseDouble(fifthLine.substring(15,30));
+		  lowTemperatureCoefficients[5] = Double.parseDouble(fifthLine.substring(30,45));
+		  lowTemperatureCoefficients[6] = Double.parseDouble(fifthLine.substring(45,60));
+	  } else {
+		  highTemperatureCoefficients[0] = Double.parseDouble(secondLine.substring(0,15));
+		  highTemperatureCoefficients[1] = Double.parseDouble(secondLine.substring(15,30));
+		  highTemperatureCoefficients[2] = Double.parseDouble(secondLine.substring(30,45));
+		  highTemperatureCoefficients[3] = Double.parseDouble(secondLine.substring(45,60));
+		  highTemperatureCoefficients[4] = Double.parseDouble(secondLine.substring(60,75));
+		  highTemperatureCoefficients[5] = Double.parseDouble(thirdLine.substring(0,15));
+		  highTemperatureCoefficients[6] = Double.parseDouble(thirdLine.substring(15,30));
+		  
+		  lowTemperatureCoefficients[0] = Double.parseDouble(thirdLine.substring(30,45));
+		  lowTemperatureCoefficients[1] = Double.parseDouble(thirdLine.substring(45,60));
+		  lowTemperatureCoefficients[2] = Double.parseDouble(thirdLine.substring(60,75));
+		  lowTemperatureCoefficients[3] = Double.parseDouble(fourthLine.substring(0,15));
+		  lowTemperatureCoefficients[4] = Double.parseDouble(fourthLine.substring(15,30));
+		  lowTemperatureCoefficients[5] = Double.parseDouble(fourthLine.substring(30,45));
+		  lowTemperatureCoefficients[6] = Double.parseDouble(fourthLine.substring(45,60));
+	  }
 	  
       //#]
   }
