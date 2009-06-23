@@ -63,7 +63,7 @@ public class ReactionSystem {
     protected ReactionModel reactionModel;
     protected ReactionModelEnlarger reactionModelEnlarger;
     protected LinkedList systemSnapshot;
-    protected static TemperatureModel temperatureModel;
+    protected TemperatureModel temperatureModel;
     protected double [] reactionFlux;
     protected LibraryReactionGenerator lrg;//9/24/07 gmagoon: moved to ReactionModelGenerator.java; 9/25/07 variable is passed from ReactionModelGenerator
     protected int ind;//10/30/07 gmagoon: added index variable to number different reaction systems; starts at zero; 1/5/09 changed name from index to ind to avoid confusion with local variables used below
@@ -494,7 +494,7 @@ public class ReactionSystem {
     }
 
     //## operation getTemperature(ReactionTime)
-    public static Temperature getTemperature(ReactionTime p_time) {
+    public Temperature getTemperature(ReactionTime p_time) {
         //#[ operation getTemperature(ReactionTime)
         return getTemperatureModel().getTemperature(p_time);
         //#]
@@ -1601,7 +1601,7 @@ public String printLowerBoundConcentrations(LinkedList p_speciesList) {
         p_SystemSnapshot=null;
     }
 
-    public static TemperatureModel getTemperatureModel() {
+    public TemperatureModel getTemperatureModel() {
         return temperatureModel;
     }
 

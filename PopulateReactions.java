@@ -110,7 +110,8 @@ public class PopulateReactions {
 				systemTemp = new Temperature(Double.parseDouble(st.nextToken()),ChemParser.removeBrace(st.nextToken()));
 			}
 			Temperature systemTemp_K = new Temperature(systemTemp.getK(),"K");
-			TemplateReactionGenerator rtLibrary = new TemplateReactionGenerator(systemTemp_K);
+			TemplateReactionGenerator rtLibrary = new TemplateReactionGenerator();
+//			TemplateReactionGenerator rtLibrary = new TemplateReactionGenerator(systemTemp_K);
 			listOfReactions += "System Temperature: " + systemTemp_K.getK() + "K\n\n";
 			line = ChemParser.readMeaningfulLine(br_input);
 			while (line != null) {
