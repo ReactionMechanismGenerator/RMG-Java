@@ -40,15 +40,15 @@ Immutable data holds all the Platt's group value.
 
 public class AbrahamGAValue {
 
-    protected double S = 0;		//## attribute S
+public  double S = 0;		//## attribute S
 
-    protected double B = 0;		//## attribute B
+public double B = 0;		//## attribute B
 
-    protected double E = 0;		//## attribute E
+public  double E = 0;		//## attribute E
 
-    protected double L = 0;		//## attribute L
+public  double L = 0;		//## attribute L
 
-    protected double A= 0;      //## attribute A
+public double A= 0;      //## attribute A
 
 
 
