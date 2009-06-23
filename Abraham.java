@@ -51,13 +51,13 @@ public static void main(String[] args) {
   initializeSystemProperties();
 	LinkedHashSet speciesSet = new LinkedHashSet();
     String abraham_output = "";
-//    double c=0;
-//    double a=0;
-//    double b=0;
-//    double l=0;
-//    double s=0;
-//    double es=0;
-//    String solvent="";
+    double c=0;
+    double a=0;
+    double b=0;
+    double l=0;
+    double s=0;
+    double es=0;
+    String solvent="";
 
  try {
           FileReader in = new FileReader("Abraham_input.txt");
@@ -68,22 +68,22 @@ public static void main(String[] args) {
           StringTokenizer st = new StringTokenizer(line);
 
           // The first line should start with "SolventParameters", otherwise do nothing and display a message to the user
-//          if (st.nextToken().startsWith("SolventParameters")){
-//
-//              c = Double.parseDouble(st.nextToken());
-//              es = Double.parseDouble(st.nextToken());
-//              s = Double.parseDouble(st.nextToken());
-//              a = Double.parseDouble(st.nextToken());
-//              b = Double.parseDouble(st.nextToken());
-//              l = Double.parseDouble(st.nextToken());
-//              solvent=st.nextToken();
-//         } else
-//        	  System.out.println("Error in reading Abraham_input.txt file:\nThe first line must read 'SolventParameters:'.");
+          if (st.nextToken().startsWith("SolventParameters")){
+
+              c = Double.parseDouble(st.nextToken());
+              es = Double.parseDouble(st.nextToken());
+              s = Double.parseDouble(st.nextToken());
+              a = Double.parseDouble(st.nextToken());
+              b = Double.parseDouble(st.nextToken());
+              l = Double.parseDouble(st.nextToken());
+              solvent=st.nextToken();
+         } else
+        	  System.out.println("Error in reading Abraham_input.txt file:\nThe first line must read 'SolventParameters:'.");
 
 
 
           // Read in the ChemGraphs and compute their thermo, while there are ChemGraphs to read in
-        //	  line = ChemParser.readMeaningfulLine(data);
+        	  line = ChemParser.readMeaningfulLine(data);
         	  while (line != null) {
         		  String speciesName = line;
         		  Graph g = ChemParser.readChemGraph(data);
@@ -101,8 +101,8 @@ public static void main(String[] args) {
 
           in.close();
 
-          //abraham_output += "Solvent:" + "\t" + solvent + "\n\n";
-          abraham_output += "Name" + "\t" +"S"+"\t"+"B"+"\t"+"E"+"\t"+"L"+"\t"+"A" + "\n";
+          abraham_output += "Solvent:" + "\t" + solvent + "\n\n";
+          //abraham_output += "Name" + "\t" +"S"+"\t"+"B"+"\t"+"E"+"\t"+"L"+"\t"+"A" + "\n";
 
 
          Iterator iter = speciesSet.iterator();
@@ -114,21 +114,24 @@ public static void main(String[] args) {
        AbramData result_Abraham= new AbramData();
        result_Abraham= cg.getAbramData();
 
+//       // Abraham intercepts for each descriptor
+        result_Abraham.S=result_Abraham.S+0.277;
+        result_Abraham.E=result_Abraham.E+0.248;
+        result_Abraham.A=result_Abraham.A+0.003;
+        result_Abraham.L=result_Abraham.L+0.13;
+        result_Abraham.B=result_Abraham.B+0.071;
+
        // Solute descriptors from the Abraham Model
-//       double S=result_Abraham.S;
-//       double B=result_Abraham.B;
-//       double E=result_Abraham.E;
-//       double L=result_Abraham.L;
-//       double A=result_Abraham.A;
-       double S = 0.0;
-       double B = 0.0;
-       double E = 0.0;
-       double L = 0.0;
-       double A = 0.0;
+       double S=result_Abraham.S;
+       double B=result_Abraham.B;
+       double E=result_Abraham.E;
+       double L=result_Abraham.L;
+       double A=result_Abraham.A;
 
-       //double logK=c + s*S + b*B + es*E + l*L + a*A;    // Implementation of Abraham Model
+       double logK=c + s*S + b*B + es*E + l*L + a*A;    // Implementation of Abraham Model
 
-        abraham_output += spe.getName() + "\t" +S+"\t"+B+"\t"+E+"\t"+L+"\t"+A + "\n";
+        //abraham_output += spe.getName() + "\t" +S+"\t"+B+"\t"+E+"\t"+L+"\t"+A + "\n";
+        abraham_output += spe.getName() + "\t" + logK + "\n";
 
           }
 
