@@ -53,7 +53,7 @@ public class ReactionTemplateLibrary {
     // Constructors
     
     //## operation ReactionTemplateLibrary() 
-    private  ReactionTemplateLibrary() {
+    public ReactionTemplateLibrary() {
         reactionTemplate=new LinkedHashSet();
         
         //#[ operation ReactionTemplateLibrary()
