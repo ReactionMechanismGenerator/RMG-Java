@@ -425,7 +425,7 @@ public  Chemkin() {
   //## operation writeChemkinElement()
   public static  String writeChemkinElement() {
       //#[ operation writeChemkinElement()
-      return "ELEMENTS H C O N Ne Ar He Si SEND\n";
+      return "ELEMENTS H C O N Ne Ar He Si S END\n";
       //#]
   }
 
