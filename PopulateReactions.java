@@ -46,7 +46,7 @@ import jing.param.Temperature;
 import jing.rxn.Kinetics;
 import jing.rxn.Reaction;
 import jing.rxn.TemplateReactionGenerator;
-import jing.rxnSys.CoreEdgeReactionModel;
+import jing.rxnSys.ReactionModelGenerator;
 
 public class PopulateReactions {
 	/**
@@ -110,8 +110,10 @@ public class PopulateReactions {
 				systemTemp = new Temperature(Double.parseDouble(st.nextToken()),ChemParser.removeBrace(st.nextToken()));
 			}
 			Temperature systemTemp_K = new Temperature(systemTemp.getK(),"K");
+			// Creating a new ReactionModelGenerator so I can set the variable temp4BestKinetics
+			ReactionModelGenerator rmg = new ReactionModelGenerator();
+			rmg.setTemp4BestKinetics(systemTemp_K);
 			TemplateReactionGenerator rtLibrary = new TemplateReactionGenerator();
-//			TemplateReactionGenerator rtLibrary = new TemplateReactionGenerator(systemTemp_K);
 			listOfReactions += "System Temperature: " + systemTemp_K.getK() + "K\n\n";
 			line = ChemParser.readMeaningfulLine(br_input);
 			while (line != null) {

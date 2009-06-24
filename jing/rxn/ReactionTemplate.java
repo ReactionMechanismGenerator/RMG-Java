@@ -35,6 +35,7 @@ import jing.chem.*;
 import java.util.*;
 
 import jing.param.*;
+import jing.rxnSys.ReactionModelGenerator;
 import jing.mathTool.*;
 import jing.chemUtil.*;
 import jing.chemParser.*;
@@ -1649,7 +1650,15 @@ public class ReactionTemplate {
       		else if (format.equals("Arrhenius_EP")) k = ChemParser.parseArrheniusEPKinetics(line,keyNum);
       		else throw new InvalidKineticsFormatException("Invalid rate constant format: " + line);
       
-      		kineticsTemplateLibrary.addKinetics(fgc,k);
+          	/*
+          	 * Added by MRH on 24-Jun-2009
+          	 * Restoring feature for RMG to choose the best kinetics based on rank
+          	 * 	and valid temperature range.  We 'get' the static Temperature variable
+          	 * 	temp4BestKinetics from ReactionModelGenerator and pass it to a new
+          	 * 	addKinetics function, that accepts the Temperature as an input 
+          	 */
+          	Temperature firstTempEncountered = ReactionModelGenerator.getTemp4BestKinetics();
+      		kineticsTemplateLibrary.addKinetics(fgc,k,firstTempEncountered);
       		line = ChemParser.readMeaningfulLine(data);
        	}
       

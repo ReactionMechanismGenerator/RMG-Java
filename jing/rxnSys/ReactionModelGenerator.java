@@ -87,6 +87,9 @@ public class ReactionModelGenerator {
     protected LinkedList reactionChangedList = new LinkedList();
     protected int numConversions;//5/6/08 gmagoon: moved from initializeReactionSystem() to be an attribute so it can be accessed by modelGenerator()
     protected String equationOfState;
+    // 24Jun2009 MRH: variable stores the first temperature encountered in the condition.txt file
+    //	This temperature is used to select the "best" kinetics from the rxn library
+    protected static Temperature temp4BestKinetics; 
 
 	protected boolean restart = false;
     // Constructors
@@ -341,6 +344,19 @@ public class ReactionModelGenerator {
         			if (!index.startsWith("(")) name = index;
         			else name = st.nextToken();
 					//if (restart) name += "("+speciesnum+")";
+        			// 24Jun2009: MRH
+        			//	Check if the species name begins with a number.
+        			//	If so, terminate the program and inform the user to choose
+        			//		a different name.  This is implemented so that the chem.inp
+        			//		file generated will be valid when run in Chemkin
+        			try {
+        				int doesNameBeginWithNumber = Integer.parseInt(name.substring(0,1));
+        				System.out.println("\nA species name should not begin with a number." +
+        						" Please rename species: " + name + "\n");
+        				System.exit(0);
+        			} catch (NumberFormatException e) {
+        				// We're good
+        			}
 					speciesnum ++;
         			String conc = st.nextToken();
         			double concentration = Double.parseDouble(conc);
@@ -882,14 +898,14 @@ public class ReactionModelGenerator {
         	 * 	even for multiple temperature/pressure systems, so we can only have one
         	 * 	set of kinetics.
         	 */
-//        	Temperature t = new Temperature(300,"K");
-//        	for (Iterator iter = tempList.iterator(); iter.hasNext();) {
-//        		TemperatureModel tm  = (TemperatureModel)iter.next();
-//        		t = tm.getTemperature(new ReactionTime(0,"sec"));
-//        		break;
-//        	}
-        		setReactionGenerator(new TemplateReactionGenerator());
-//                setReactionGenerator(new TemplateReactionGenerator(t)); //11/4/07 gmagoon: moved from modelGeneration; mysteriously, moving this later moves "Father" lines up in output at runtime, immediately after condition file (as in original code); previously, these Father lines were just before "Can't read primary reaction library files!"
+        	Temperature t = new Temperature(300,"K");
+        	for (Iterator iter = tempList.iterator(); iter.hasNext();) {
+        		TemperatureModel tm  = (TemperatureModel)iter.next();
+        		t = tm.getTemperature(new ReactionTime(0,"sec"));
+        		setTemp4BestKinetics(t);
+        		break;
+        	}
+                setReactionGenerator(new TemplateReactionGenerator()); //11/4/07 gmagoon: moved from modelGeneration; mysteriously, moving this later moves "Father" lines up in output at runtime, immediately after condition file (as in original code); previously, these Father lines were just before "Can't read primary reaction library files!"
                 lrg = new LibraryReactionGenerator();//10/10/07 gmagoon: moved from modelGeneration (sequence lrg increases species id, and the different sequence was causing problems as main species id was 6 instead of 1); //10/31/07 gmagoon: restored this line from 10/10/07 backup: somehow it got lost along the way; 11/5/07 gmagoon: changed to use "lrg =" instead of setLibraryReactionGenerator
                 //10/24/07 gmagoon: updated to use multiple reactionSystem variables
                 reactionSystemList = new LinkedList();
@@ -2391,6 +2407,14 @@ public LinkedList getSpeciesList() {
     //10/4/07 gmagoon: added
     public void setLibraryReactionGenerator(LibraryReactionGenerator p_lrg) {
         lrg = p_lrg;
+    }
+    
+    public static Temperature getTemp4BestKinetics() {
+    	return temp4BestKinetics;
+    }
+    
+    public static void setTemp4BestKinetics(Temperature firstSysTemp) {
+    	temp4BestKinetics = firstSysTemp;
     }
 }
 /*********************************************************************
