@@ -201,8 +201,9 @@ public class JDASPK extends JDAS {
         Global.speciesStatusGenerator = Global.speciesStatusGenerator + (System.currentTimeMillis() - startTime)/1000/60;
         
         
-		SystemSnapshot sss = new SystemSnapshot(new ReactionTime(endTime, "sec"), speStatus, p_beginStatus.getTemperature(), p_beginStatus.getPressure());
-		LinkedList reactionList = new LinkedList();
+	SystemSnapshot sss = new SystemSnapshot(new ReactionTime(endTime, "sec"), speStatus, p_beginStatus.getTemperature(), p_beginStatus.getPressure());
+	sss.inertGas = p_beginStatus.inertGas; //gmagoon 6/23/09: copy inertGas information from initialStatus; this is not rigorously correct, as concentration can change as system evolves for isothermal/isobaric (not constant volume) case; however, this should reproduce the old behavior (when inertGas was a static variable), where this was taken as a constant
+        LinkedList reactionList = new LinkedList();
         reactionList.addAll(rList);
         reactionList.addAll(duplicates);
         reactionList.addAll(thirdBodyList);
@@ -477,6 +478,7 @@ public class JDASPK extends JDAS {
                 speStatus = generateSpeciesStatus(p_reactionModel, y, yprime, nParameter);
                 senStatus = generateSensitivityStatus(p_reactionModel,y,yprime,nParameter);
                 SystemSnapshot sss = new SystemSnapshot(endT, speStatus, senStatus, p_beginStatus.getTemperature(), p_beginStatus.getPressure());
+                sss.inertGas = p_beginStatus.inertGas; //gmagoon 6/23/09: copy inertGas information from initialStatus; this is not rigorously correct, as concentration can change as system evolves for isothermal/isobaric (not constant volume) case; however, this should reproduce the old behavior (when inertGas was a static variable), where this was taken as a constant
                 sss.setIDTranslator(IDTranslator);
                 LinkedList reactionList = new LinkedList();
                 reactionList.addAll(rList);

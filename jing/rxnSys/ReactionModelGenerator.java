@@ -394,7 +394,7 @@ public class ReactionModelGenerator {
                                     TemperatureModel tm = (TemperatureModel)iter.next();
                                     for (Iterator iter2 = presList.iterator(); iter2.hasNext(); ){
                                         PressureModel pm = (PressureModel)iter2.next();
-                                       // LinkedHashMap speStat = (LinkedHashMap)speciesStatus.clone();//10/31/07 gmagoon: trying creating multiple instances of speciesStatus to address issues with concentration normalization (last normalization seems to apply to all)
+                                     //   LinkedHashMap speStat = (LinkedHashMap)speciesStatus.clone();//10/31/07 gmagoon: trying creating multiple instances of speciesStatus to address issues with concentration normalization (last normalization seems to apply to all)
                                         Set ks = speciesStatus.keySet();
                                         LinkedHashMap speStat = new LinkedHashMap();
                                         for (Iterator iter3 = ks.iterator(); iter3.hasNext();){//11/1/07 gmagoon: perform deep copy; (is there an easier or more elegant way to do this?)
@@ -429,7 +429,11 @@ public class ReactionModelGenerator {
         			else if (!unit.equals("mole/cm3") && !unit.equals("mol/cm3")) {
         				throw new InvalidUnitException("Species Concentration in condition.txt!");
         			}
-        			SystemSnapshot.putInertGas(name,inertConc);
+                               
+        			//SystemSnapshot.putInertGas(name,inertConc);
+                                for(Iterator iter=initialStatusList.iterator();iter.hasNext(); ){//6/23/09 gmagoon: needed to change this to accommodate non-static inertConc
+                                    ((InitialStatus)iter.next()).putInertGas(name,inertConc);
+                                }
         	   		line = ChemParser.readMeaningfulLine(reader);
         		}
            	}

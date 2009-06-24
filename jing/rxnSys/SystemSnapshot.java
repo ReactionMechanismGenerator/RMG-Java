@@ -52,7 +52,7 @@ The real status of the system at a specific reaction time.  For example: the T, 
 //## class SystemSnapshot
 public class SystemSnapshot {
 
-    protected static LinkedHashMap inertGas = new LinkedHashMap();		//## attribute inertGas
+    protected LinkedHashMap inertGas = new LinkedHashMap();		//## attribute inertGas //6/23/09 gmagoon: it seems that for multiple T,P cases, there will be multiple system snapshots that have separate concentrations, so I think this should not be static
 
     protected Pressure pressure;		//## attribute pressure
 
@@ -256,7 +256,7 @@ public class SystemSnapshot {
     }
 
     //## operation putInertGas(String,double)
-    public static void putInertGas(String p_name, double p_concentration) {
+    public void putInertGas(String p_name, double p_concentration) {
         //#[ operation putInertGas(String,double)
         inertGas.put(p_name, new Double(p_concentration));
         //#]

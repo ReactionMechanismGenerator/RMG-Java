@@ -27,76 +27,152 @@
 
 
 
+
+
+
 package jing.rxnSys;
 
 
+
+
+
 import java.util.*;
+
 import jing.param.Pressure;
+
 import jing.param.Temperature;
+
+
 
 //## package jing::rxnSys 
 
-//----------------------------------------------------------------------------
-// jing\rxnSys\InitialStatus.java                                                                  
+
+
 //----------------------------------------------------------------------------
 
+// jing\rxnSys\InitialStatus.java                                                                  
+
+//----------------------------------------------------------------------------
+
+
+
 //## class InitialStatus 
+
 public class InitialStatus extends SystemSnapshot {
+
     
+
     protected static double colliderLimit = 0.1;		//## attribute colliderLimit 
+
     
+
     
+
     // Constructors
+
     
+
     //## operation InitialStatus() 
+
     private  InitialStatus() {
+
         //#[ operation InitialStatus() 
+
         //#]
+
     }
+
     //## operation InitialStatus(HashMap) 
+
 	  public  InitialStatus(LinkedHashMap p_speciesStatus, Temperature p_temperature, Pressure p_pressure) {
+
 	        //#[ operation InitialStatus(HashMap,Temperature,Pressure) 
+
 	        super(new ReactionTime(0,"S"),p_speciesStatus,p_temperature,p_pressure);
+
 	        //#]
+
 	    }
+
     
+
     //## operation identifyColliders() 
+
     public HashMap identifyColliders() {
+
         //#[ operation identifyColliders() 
+
         HashMap result = new HashMap();
+
         double totalMole = getTotalMole();
+
         double adjTotalMole = 0;
+
         for (Iterator iter = getSpeciesStatus(); iter.hasNext(); ) {
+
         	SpeciesStatus ss = (SpeciesStatus)iter.next();
+
         	double conc = ss.getConcentration();
+
         	if (conc > colliderLimit*totalMole) {
+
         		adjTotalMole += conc;
+
         		result.put(ss.getSpecies(), new Double(conc)); 
+
         	}
+
         }
-        for (Iterator iter = inertGas.keySet().iterator(); iter.hasNext(); ) {
+
+        for (Iterator iter = this.inertGas.keySet().iterator(); iter.hasNext(); ) {//gmagoon 6/23/09: changed to use this.inertGas... rather than just inertGas... to accommodate now non-static variable inertGas
+
         	Object key = iter.next();
+
         	double conc = ((Double)inertGas.get(key)).doubleValue(); 
+
         	if (conc < 0) throw new NegativeConcentrationException("InertGas");
+
         	if (conc > colliderLimit*totalMole) {
+
         		adjTotalMole += conc;
+
         		result.put(key, new Double(conc)); 
+
         	}
+
         }
+
         
+
         if (result.isEmpty()) throw new InvalidSystemCompositionException();
+
         
+
         return result;
+
         	
+
         //#]
+
     }
+
     
+
     private static double getColliderLimit() {
+
         return colliderLimit;
+
     }
+
     
+
 }
+
 /*********************************************************************
+
 	File Path	: RMG\RMG\jing\rxnSys\InitialStatus.java
+
 *********************************************************************/
+
+
 

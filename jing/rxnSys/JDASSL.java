@@ -218,14 +218,15 @@ public class JDASSL extends JDAS {
         }
         
 
-		SystemSnapshot sss = new SystemSnapshot(new ReactionTime(endTime,"sec"), speStatus, p_beginStatus.getTemperature(), p_beginStatus.getPressure());
-		LinkedList reactionList = new LinkedList();
-		reactionList.addAll(rList);
+	SystemSnapshot sss = new SystemSnapshot(new ReactionTime(endTime,"sec"), speStatus, p_beginStatus.getTemperature(), p_beginStatus.getPressure());
+	sss.inertGas = p_beginStatus.inertGas; //gmagoon 6/23/09: copy inertGas information from initialStatus; this is not rigorously correct, as concentration can change as system evolves for isothermal/isobaric (not constant volume) case; however, this should reproduce the old behavior (when inertGas was a static variable), where this was taken as a constant
+        LinkedList reactionList = new LinkedList();
+	reactionList.addAll(rList);
         reactionList.addAll(duplicates);
         reactionList.addAll(thirdBodyList);
         reactionList.addAll(troeList);
         sss.setReactionList(reactionList);
-		sss.setReactionFlux(reactionFlux);
+	sss.setReactionFlux(reactionFlux);
                 
         return sss;
     }
