@@ -49,20 +49,10 @@ public class TemplateReactionGenerator implements ReactionGenerator {
     
     // Constructors
     
-    //## operation TemplateReactionGenerator() 
-//    public  TemplateReactionGenerator(Temperature sysTemp) {
-//        //#[ operation TemplateReactionGenerator() 
-////        reactionTemplateLibrary = ReactionTemplateLibrary.getINSTANCE();
-//    	reactionTemplateLibrary = new ReactionTemplateLibrary(sysTemp);
-//        
-//        //#]
-//    }
-    
+    //## operation TemplateReactionGenerator()     
     public  TemplateReactionGenerator() {
         //#[ operation TemplateReactionGenerator() 
         reactionTemplateLibrary = ReactionTemplateLibrary.getINSTANCE();
-//    	reactionTemplateLibrary = new ReactionTemplateLibrary();
-        
         //#]
     }
     
