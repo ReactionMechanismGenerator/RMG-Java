@@ -908,5 +908,14 @@ public abstract class JDAS implements DAESolver {
             newFile.delete();
         f.renameTo(newFile);
 	}
+        
+        //6/24/09 gmagoon: this totals the first n-state elements of y (i.e. the non-inert concentrations)
+        public double totalNonInertConcentrations(){
+            double totalNonInertConc=0;
+            for(int i=0; i< nState ; i++){
+                totalNonInertConc+=y[i];
+            }
+            return totalNonInertConc;
+        }
 	
 }

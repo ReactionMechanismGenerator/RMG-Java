@@ -202,7 +202,22 @@ public class JDASPK extends JDAS {
         
         
 	SystemSnapshot sss = new SystemSnapshot(new ReactionTime(endTime, "sec"), speStatus, p_beginStatus.getTemperature(), p_beginStatus.getPressure());
-	sss.inertGas = p_beginStatus.inertGas; //gmagoon 6/23/09: copy inertGas information from initialStatus; this is not rigorously correct, as concentration can change as system evolves for isothermal/isobaric (not constant volume) case; however, this should reproduce the old behavior (when inertGas was a static variable), where this was taken as a constant
+	//sss.inertGas = p_beginStatus.inertGas; //gmagoon 6/23/09: copy inertGas information from initialStatus
+        sss.inertGas = null;//zero out the inert gas info (in principal, this should already be null, but this is done "just-in-case")
+        //total the concentrations of non-inert species
+        double totalNonInertConc = totalNonInertConcentrations();
+        //calculate the scale factor needed to account for volume change
+        double inertScaleFactor = 1;
+        if(p_beginStatus.getTotalInertGas() > 0){//this check will ensure we don't try to divide by zero; otherwise, we will end up setting new concentration to be 0.0*Infinity=NaN
+            inertScaleFactor = (p_beginStatus.getTotalMole()- totalNonInertConc)/p_beginStatus.getTotalInertGas();
+        }
+        //scale the initial concentrations of the inertGas to account for volume change
+        for (Iterator iter = p_beginStatus.getInertGas(); iter.hasNext(); ) {
+            String inertName = (String)iter.next();
+            double originalInertConc = p_beginStatus.getInertGas(inertName);
+            sss.putInertGas(inertName, originalInertConc*inertScaleFactor);       
+        }
+        
         LinkedList reactionList = new LinkedList();
         reactionList.addAll(rList);
         reactionList.addAll(duplicates);
@@ -478,7 +493,22 @@ public class JDASPK extends JDAS {
                 speStatus = generateSpeciesStatus(p_reactionModel, y, yprime, nParameter);
                 senStatus = generateSensitivityStatus(p_reactionModel,y,yprime,nParameter);
                 SystemSnapshot sss = new SystemSnapshot(endT, speStatus, senStatus, p_beginStatus.getTemperature(), p_beginStatus.getPressure());
-                sss.inertGas = p_beginStatus.inertGas; //gmagoon 6/23/09: copy inertGas information from initialStatus; this is not rigorously correct, as concentration can change as system evolves for isothermal/isobaric (not constant volume) case; however, this should reproduce the old behavior (when inertGas was a static variable), where this was taken as a constant
+               // sss.inertGas = p_beginStatus.inertGas; //gmagoon 6/23/09: copy inertGas information from initialStatus
+                sss.inertGas = new LinkedHashMap();//zero out the inert gas info (in principal, this should already be null, but this is done "just-in-case")
+                //total the concentrations of non-inert species
+                double totalNonInertConc = totalNonInertConcentrations();
+                //calculate the scale factor needed to account for volume change
+                double inertScaleFactor = 1;
+                if(p_beginStatus.getTotalInertGas() > 0){//this check will ensure we don't try to divide by zero; otherwise, we will end up setting new concentration to be 0.0*Infinity=NaN
+                    inertScaleFactor = (p_beginStatus.getTotalMole()- totalNonInertConc)/p_beginStatus.getTotalInertGas();
+                }
+                //scale the initial concentrations of the inertGas to account for volume change
+                for (Iterator iter = p_beginStatus.getInertGas(); iter.hasNext(); ) {
+                    String inertName = (String)iter.next();
+                    double originalInertConc = p_beginStatus.getInertGas(inertName);
+                    sss.putInertGas(inertName, originalInertConc*inertScaleFactor);       
+                }
+        
                 sss.setIDTranslator(IDTranslator);
                 LinkedList reactionList = new LinkedList();
                 reactionList.addAll(rList);
