@@ -146,7 +146,7 @@ public class ReactionTemplate {
   }
   
   //## operation extractKineticsTemplateKey(HashSet) 
-  private static final LinkedHashSet extractKineticsTemplateKey(HashSet p_treeNode) {
+  private static final LinkedHashSet extractKineticsTemplateKey(LinkedHashSet p_treeNode) {
       //#[ operation extractKineticsTemplateKey(HashSet) 
       LinkedHashSet key = new LinkedHashSet();
       for (Iterator iter = p_treeNode.iterator(); iter.hasNext(); ) {
@@ -171,7 +171,7 @@ public class ReactionTemplate {
   //## operation fillKineticsBottomToTop() 
   public void fillKineticsBottomToTop() {
       //#[ operation fillKineticsBottomToTop() 
-      HashSet rootSet = new HashSet();
+      LinkedHashSet rootSet = new LinkedHashSet();//6/26/09 gmagoon: changed from HashSet to LinkedHashSet to make behavior deterministic
       
       Iterator tree_iter = getReactantTree();
       while (tree_iter.hasNext()) {
@@ -189,7 +189,7 @@ public class ReactionTemplate {
   Modifies:
   */
   //## operation fillKineticsByAverage(HashSet) 
-  private Kinetics fillKineticsByAverage(HashSet p_treeNodeSet) {
+  private Kinetics fillKineticsByAverage(LinkedHashSet p_treeNodeSet) {
       //#[ operation fillKineticsByAverage(HashSet) 
       // check if k is already in the library
       // if it is, don't do any average;
@@ -236,7 +236,7 @@ public class ReactionTemplate {
       	LinkedHashSet kSet = new LinkedHashSet();
       
       	for (Iterator key_iter = allPossibleTreeNodeKeySet.iterator(); key_iter.hasNext(); ) {
-      		HashSet keySet = new HashSet((Collection)key_iter.next());
+      		LinkedHashSet keySet = new LinkedHashSet((Collection)key_iter.next());
       		Kinetics thisK = fillKineticsByAverage(keySet);
       		if (thisK!=null) kSet.add(thisK);
       	}
