@@ -233,7 +233,7 @@ public class ReactionTemplate {
       	Collection allPossibleTreeNodeKeySet = MathTool.expand(fgc.iterator());
       
       	// this is the set that we could find for all the combinatorial generated from the p_fgc
-      	HashSet kSet = new HashSet();
+      	LinkedHashSet kSet = new LinkedHashSet();
       
       	for (Iterator key_iter = allPossibleTreeNodeKeySet.iterator(); key_iter.hasNext(); ) {
       		HashSet keySet = new HashSet((Collection)key_iter.next());
@@ -280,7 +280,7 @@ public class ReactionTemplate {
       Collection allPossibleTreeNodeSet = MathTool.expand(p_matchedPathSet.iterator());
       
       HashSet bestKineticsTemplateSet = new HashSet();
-      HashSet bestKineticsSet = new HashSet();
+      LinkedHashSet bestKineticsSet = new LinkedHashSet();
       // find the closest distance
       int closest = Integer.MAX_VALUE;
       for (Iterator iter = allPossibleTreeNodeSet.iterator(); iter.hasNext(); ) {
