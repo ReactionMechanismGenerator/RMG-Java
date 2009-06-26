@@ -227,9 +227,9 @@ public class FastMasterEqn implements PDepKineticsEstimator {
                 }
             }
             else {
-                // Print FAME stdout
+                // Print FAME stdout and error
                 System.out.println(line);
-                while ( (line = stdout.readLine()) != null) {
+                while ( ((line = stdout.readLine()) != null) || ((line = stderr.readLine()) != null) ) {
                     System.out.println(line);
                 }
                 throw new Exception();
@@ -245,6 +245,7 @@ public class FastMasterEqn implements PDepKineticsEstimator {
                 FileWriter fw = new FileWriter(new File("fame/" + Integer.toString(pdn.getID()) + "_input.txt"));
                 fw.write(input);
                 fw.close();
+				System.out.println("Troublesome FAME file saved to ./fame/" + Integer.toString(pdn.getID()) + "_input.txt");
             } catch (IOException ex) {
                 System.out.println("Unable to save FAME input that caused the error.");
                 System.exit(0);
@@ -257,8 +258,10 @@ public class FastMasterEqn implements PDepKineticsEstimator {
 				mode = Mode.RESERVOIRSTATE;
 				return;
 			}
-			else
-				System.exit(0);
+			else {
+				System.out.println("Error running FAME.");
+				System.exit(0);				
+			}
         }
 
 		// Parse FAME output file and update accordingly
