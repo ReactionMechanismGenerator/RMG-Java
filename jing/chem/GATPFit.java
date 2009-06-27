@@ -96,9 +96,7 @@ public class GATPFit {
 		
 		//result += "H298 " + MathTool.formatDouble(td.getH298(), 10, 2).trim() + ls;
         //result += "S298 " + MathTool.formatDouble(td.getS298(), 10, 2).trim() + ls;
-		
         //result += "DLTH " + MathTool.formatDouble(td.getH298(), 10, 2).trim() + ls;
-
         // write MW, temperature, ouput format, etc
         //result += "MWEI " + MathTool.formatDouble(species.getMolecularWeight(), 6, 1).trim() + ls;
         result += "TEMP 1000.0" + ls;
@@ -147,28 +145,28 @@ public class GATPFit {
         // call GATPFit
         boolean error = false;
         try {
-        	 // system call for therfit
+        	 // system call for GATPFit
         	String[] command = {workingDirectory +  "/software/GATPFit/GATPFit.exe"};
 			File runningDir = new File("GATPFit");
         	Process GATPFit = Runtime.getRuntime().exec(command, null, runningDir);
         	int exitValue = GATPFit.waitFor();
+			if (exitValue != 0) throw new GATPFitException("Exit value = " + exitValue);
         }
         catch (Exception e) {
         	String err = "Error in running GATPFit!" + ls;
         	err += e.toString();
+			error = true;
         	throw new GATPFitException(err);
         }
 
         // return error = true, if there was a problem
         return error;
 
-
         //#]
     }
 	
-		  //## operation generateNASAThermoData()
+	
     public static NASAThermoData generateNASAThermoData(Species species) {
-        //#[ operation generateNASAThermoDatabyGATPFit()
         // get working directory
         String dir = System.getProperty("RMG.workingDirectory");
         
@@ -200,11 +198,10 @@ public class GATPFit {
         	nasaThermoData = new NASAThermoData(nasaString);
         }
         catch (Exception e) {
-        	throw new NASAFittingException("Error in reading in GATPFit output file: " + System.getProperty("line.separator") + e.toString());
+        	throw new NASAFittingException("Error reading in GATPFit output file: " + System.getProperty("line.separator") + e.toString());
         }
 		
 		return nasaThermoData;
-        //#]
     }
 	
 }
