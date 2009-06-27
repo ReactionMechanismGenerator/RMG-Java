@@ -62,7 +62,7 @@ public class GATP implements GeneralGAPP {
     /**
     This is a thermo library for the species whose thermal data can't be estimated by Group Additivity Method.  For example, H2, H.
     */
-    protected static HashMap library;		//## attribute library
+//    protected static HashMap library;		//## attribute library
 
     protected ThermoGAGroupLibrary thermoLibrary;
 
@@ -72,42 +72,42 @@ public class GATP implements GeneralGAPP {
 
 
     private  GATP() {
-        initializeLibrary();
+     //   initializeLibrary();
         initGAGroupLibrary();
         initializePrimaryThermoLibrary();//svp
     }
 
-    //## operation generateThermoData(ChemGraph)
+
     public ThermoData generateThermoData(ChemGraph p_chemGraph) {
-        //#[ operation generateThermoData(ChemGraph)
         ThermoData result = primaryLibrary.getThermoData(p_chemGraph.getGraph());
         //System.out.println(result);
         if (result != null) {
         	p_chemGraph.fromprimarythermolibrary = true;
         	return result;
         }
-        result = getFromLibrary(p_chemGraph.getChemicalFormula());
-        if (result != null) return result;
+	  // I think this is redundant: -rwest
+      //  result = getFromLibrary(p_chemGraph.getChemicalFormula());
+      //  if (result != null) return result;
 
         result = new ThermoData();
 
         result.plus(getGAGroup(p_chemGraph));
-
 
         // comment out, waiting for Bill and Joanna making the right ring correction library
         result.plus(getRingCorrection(p_chemGraph));
         result.plus(getOtherCorrection(p_chemGraph));
 
         return result;
-        //#]
     }
 
+	/*
     //## operation getFromLibrary(String)
     public ThermoData getFromLibrary(String p_chemicalFormula) {
         //#[ operation getFromLibrary(String)
         return (ThermoData)library.get(p_chemicalFormula);
         //#]
     }
+	*/
 
     /**
     Requires: pass-in ChemGraph object repOk() == true;
@@ -319,7 +319,7 @@ public class GATP implements GeneralGAPP {
         //#]
     }
 
-
+/*
     public void initializeLibrary() {
         library = new HashMap();
         // put in H2
@@ -331,6 +331,7 @@ public class GATP implements GeneralGAPP {
         library.put("H.",td_H);
 
     }
+ */
 
 
       public void initializePrimaryThermoLibrary(){//svp
@@ -344,6 +345,7 @@ public class GATP implements GeneralGAPP {
         return INSTANCE;
     }
 
+	/*
     public static HashMap getLibrary() {
         return library;
     }
@@ -351,6 +353,7 @@ public class GATP implements GeneralGAPP {
     public static void setLibrary(HashMap p_library) {
         library = p_library;
     }
+	 */
 
 }
 /*********************************************************************
