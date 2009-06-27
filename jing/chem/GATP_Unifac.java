@@ -29,13 +29,11 @@ public class GATP_Unifac implements GeneralUnifacGAPP {
 
     // Constructors
 
-    //## operation GATP()
+
     private  GATP_Unifac() {
-        //#[ operation GATP()
         //initializeLibrary();
         initGAGroupLibrary();
         initializePrimaryThermoLibrary();//svp
-        //#]
     }
 
         public UnifacData generateUnifacData(ChemGraph p_chemGraph) {
@@ -218,9 +216,7 @@ public class GATP_Unifac implements GeneralUnifacGAPP {
         //#]
     }
 
-    //## operation initializeLibrary()
 //    public void initializeLibrary() {
-//        //#[ operation initializeLibrary()
 //        library = new HashMap();
 //        // put in H2
 //        ThermoData td_H2 = new ThermoData(0.000,31.233,6.895,6.975,6.994,7.009,7.081,7.219,7.720,0,0,0,"library value for H2");
@@ -230,8 +226,6 @@ public class GATP_Unifac implements GeneralUnifacGAPP {
 //        ThermoData td_H = new ThermoData(52.103,27.419,4.968,4.968,4.968,4.968,4.968,4.968,4.968, 0,0,0,"library value for H radical");
 //        library.put("H.",td_H);
 //
-//
-//        //#]
 //    }
 
 
@@ -247,11 +241,11 @@ public class GATP_Unifac implements GeneralUnifacGAPP {
         library = p_library;
     }
 
-        //## operation initializePrimaryThermoLibrary()
+
       public void initializePrimaryThermoLibrary(){//svp
-        //#[ operation initializePrimaryThermoLibrary()
+
         primaryLibrary = PrimaryThermoLibrary.getINSTANCE();
-        ///#]
+
       }
 
 

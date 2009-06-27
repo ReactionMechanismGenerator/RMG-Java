@@ -135,11 +135,11 @@ public class QMTP implements GeneralGAPP {
         return INSTANCE;
     }
     
-        //## operation initializePrimaryThermoLibrary()
+
     public void initializePrimaryThermoLibrary(){//svp
-        //#[ operation initializePrimaryThermoLibrary()
+
         primaryLibrary = PrimaryThermoLibrary.getINSTANCE();
-        ///#]
+
       }
       
           //## operation getFromLibrary(String)
@@ -158,9 +158,8 @@ public class QMTP implements GeneralGAPP {
         library = p_library;
     }
     
-        //## operation initializeLibrary()
+
     public void initializeLibrary() {
-        //#[ operation initializeLibrary()
         library = new HashMap();
         // put in H2
         ThermoData td_H2 = new ThermoData(0.000,31.233,6.895,6.975,6.994,7.009,7.081,7.219,7.720,0,0,0,"library value for H2");
@@ -169,9 +168,6 @@ public class QMTP implements GeneralGAPP {
         // put in H
         ThermoData td_H = new ThermoData(52.103,27.419,4.968,4.968,4.968,4.968,4.968,4.968,4.968, 0,0,0,"library value for H radical");
         library.put("H.",td_H);
-
-
-        //#]
     }
     
     //embed a molecule in 3D, using RDKit
