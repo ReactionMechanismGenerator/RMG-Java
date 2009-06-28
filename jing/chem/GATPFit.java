@@ -25,8 +25,6 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 
-
-
 package jing.chem;
 
 import java.io.BufferedReader;
@@ -36,6 +34,15 @@ import java.io.FileWriter;
 import java.io.IOException;
 import jing.mathTool.MathTool;
 
+import java.io.*;
+import jing.chem.*;
+import java.util.*;
+import jing.param.*;
+import jing.chemUtil.*;
+import jing.mathTool.*;
+import jing.chemUtil.*;
+import jing.chemParser.*;
+
 /**
  * Contains methods used to interact with GATPFit.
  * @author jwallen
@@ -43,8 +50,11 @@ import jing.mathTool.MathTool;
 public class GATPFit {
 
 		 //## operation callGATPFit(String)
-    private static boolean callGATPFit(Species species, String p_directory) {
+    private static NASAThermoData callGATPFit(Species species, String p_directory) {
         //#[ operation callGATPFit(String)
+        
+        NASAThermoData nasaThermoData = null;
+        
         if (p_directory == null) throw new NullPointerException();
 
         // write GATPFit input file
@@ -125,22 +135,9 @@ public class GATPFit {
 		//result += "TECP 1500 " + MathTool.formatDouble(td.Cp1500,10,2).trim() + ls;
 		result += "END" + ls;
 
-        // finished writing text for input file, now save result to fort.1
+        // finished writing text for input file, now save result to INPUT.txt
         String GATPFit_input_name = null;
         File GATPFit_input = null;
-
-        GATPFit_input_name = "GATPFit/INPUT.txt";
-        try {
-        	GATPFit_input = new File(GATPFit_input_name);
-        	FileWriter fw = new FileWriter(GATPFit_input);
-        	fw.write(result);
-        	fw.close();
-        	}
-        catch (IOException e) {
-        	String err = "GATPFit input file error: " + ls;
-        	err += e.toString();
-        	throw new GATPFitException(err);
-        }
 
         // call GATPFit
         boolean error = false;
@@ -149,19 +146,87 @@ public class GATPFit {
         	String[] command = {workingDirectory +  "/software/GATPFit/GATPFit.exe"};
 			File runningDir = new File("GATPFit");
         	Process GATPFit = Runtime.getRuntime().exec(command, null, runningDir);
-        	int exitValue = GATPFit.waitFor();
+            
+            // send input
+            BufferedInputStream error_buff = new BufferedInputStream(GATPFit.getErrorStream());
+            BufferedReader error_stream = new BufferedReader(new InputStreamReader(error_buff));
+            BufferedOutputStream bufferout = new BufferedOutputStream(GATPFit.getOutputStream());
+            PrintWriter commandInput = new PrintWriter((new OutputStreamWriter(bufferout)), true);
+            commandInput.write(result);
+            commandInput.close();
+            
+            String errline = error_stream.readLine();
+            if (errline!=null){
+                String error_message="GATPFit Error: ";
+                while (errline!=null){
+                    error_message+=errline;
+                    errline=error_stream.readLine();
+                }
+                throw new GATPFitException(error_message);
+            }
+            
+            // read in results
+            BufferedInputStream in = new BufferedInputStream(GATPFit.getInputStream());
+            BufferedReader data = new BufferedReader(new InputStreamReader(in));
+            
+            String line = data.readLine();
+            if (line==null) {
+                System.out.print(result);
+                throw new GATPFitException("no output from GATPFit");
+            }
+            line = data.readLine(); // skip first line (just says "The Chemkin polynomical coefficients calculated:")
+            String nasaString = "";
+            while (line != null) {
+                // System.out.println(line);
+                nasaString += line + System.getProperty("line.separator");
+                line = data.readLine();
+            }
+            in.close();        
+            error_buff.close();
+            
+            nasaThermoData = new NASAThermoData(nasaString);
+            int exitValue = GATPFit.waitFor();
 			if (exitValue != 0) throw new GATPFitException("Exit value = " + exitValue);
         }
         catch (Exception e) {
-        	String err = "Error in running GATPFit!" + ls;
+        	String err = "Error running GATPFit" + ls;
         	err += e.toString();
-			error = true;
+            GATPFit_input_name = "GATPFit/INPUT.txt";
+            err += ls + "To help diagnosis, writing GATPFit input to file "+GATPFit_input_name+ls;
+            try {
+                GATPFit_input = new File(GATPFit_input_name);
+                FileWriter fw = new FileWriter(GATPFit_input);
+                fw.write(result);
+                fw.close();
+        	}
+            catch (IOException e2) {
+                err+= "Couldn't write to file "+ GATPFit_input_name + ls;
+                err += e2.toString();
+            }
         	throw new GATPFitException(err);
         }
+       
+		/*
+		// temporarily save all GATPFit files for debugging purposes
+		GATPFit_input_name = "GATPFit/INPUT."+species.getChemkinName()+".txt";
+		GATPFit_input = new File(GATPFit_input_name);
+		try {
+			FileWriter fw = new FileWriter(GATPFit_input);
+			fw.write(result);
+			fw.close();		
+		}
+		catch (IOException e2) {
+			String err = "Couldn't write to file "+ GATPFit_input_name + ls;
+			err += e2.toString();
+			throw new GATPFitException(err);
+		}
+		 */
 
+		
+        return nasaThermoData;
         // return error = true, if there was a problem
-        return error;
-
+        //return error;
+        
         //#]
     }
 	
@@ -169,15 +234,15 @@ public class GATPFit {
     public static NASAThermoData generateNASAThermoData(Species species) {
         // get working directory
         String dir = System.getProperty("RMG.workingDirectory");
-        
+        NASAThermoData nasaThermoData = null;
         try {
         	// prepare GATPFit input file and execute system call
-        	boolean error = callGATPFit(species, dir);
+            nasaThermoData = callGATPFit(species, dir);
         }
         catch (GATPFitException e) {
         	throw new NASAFittingException("Error in running GATPFit: " + e.toString());
         }
-
+/*
         // parse output from GATPFit, "output.txt" is the output file name
         String therfit_nasa_output = "GATPFit/OUTPUT.txt";
 
@@ -200,6 +265,7 @@ public class GATPFit {
         catch (Exception e) {
         	throw new NASAFittingException("Error reading in GATPFit output file: " + System.getProperty("line.separator") + e.toString());
         }
+*/
 		
 		return nasaThermoData;
     }
