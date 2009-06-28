@@ -9,6 +9,8 @@ C-------------------------------------------------------------------------------
 C Revised by John Z. WEN at MIT, August 2005
 C Change the input enthalpies in 'Kcal/mole'
 C
+C Modified by Richard H. West, June 2009, to read from STDIN rather than a file
+C
 C**********************************************************************************
 C Programmed by John Z. WEN at MIT, June 2005
 C Function: to convert the thermo data taken from the group additivity calculation
@@ -29,7 +31,7 @@ C
 C max atoms number allowed in a species is 999
 C max number of different atoms is 5 
 	integer indc_elno(5,3)
-	PARAMETER (LIN=10,LOUT=16) 
+	PARAMETER (LIN=5,LOUT=6) ! 5 is STDIN and 6 is STDOUT
 C For input file
 	CHARACTER(LEN=4) MARK, DATATYPE
 	CHARACTER(LEN=16) TEXT, SNAM
@@ -56,11 +58,12 @@ C
 	DATA ROL/1.9872D0/
 C
 C: For the format of input file, please ref. a sample file. 
-C
-      OPEN (LIN, FORM='FORMATTED', STATUS='OLD',
-     1 FILE='INPUT.txt')
-      OPEN (LOUT, FORM='FORMATTED', STATUS='UNKNOWN',
-     1 FILE='OUTPUT.txt')
+C  This now commented out because LIN=5 is standard input 
+C  and LOUT=6 is standard output, defined above.
+C      OPEN (LIN, FORM='FORMATTED', STATUS='OLD',
+C     1 FILE='INPUT.txt')
+C      OPEN (LOUT, FORM='FORMATTED', STATUS='UNKNOWN',
+C     1 FILE='OUTPUT.txt')
 C
 	MARK=''
 	DATATYPE=''
@@ -91,7 +94,7 @@ c
 	   J_elem=J_elem+1
 !	   WRITE(*,*) TEXT
 	   ENAM(J_elem)=TEXT(1:(INDEX(TEXT,' ')-1))
-	   do j=1,3
+	   do J=1,3
 	      if (TEXT(INDEX(TEXT,' ')+J:INDEX(TEXT,' ')+J) .EQ. ' ') then
 	         indc_elno(j_elem,J)=1
 	      endif
@@ -100,6 +103,9 @@ c
 	   ELNO(J_elem)=TEXT(INDEX(TEXT,' ')+1:INDEX(TEXT,' ')+4)
 !	   WRITE(*,102) MARK,ENAM(J_ELEM),ELNO(J_ELEM)
 	  ELSE IF (MARK .EQ. 'H298') THEN 
+!       We've read beyond the end of the elements, so read TEXT 
+!       as a double into H_298 and exit the loop
+	    READ(TEXT,*) H_298
 	    GOTO 200
 	  ENDIF
 	ENDDO
@@ -112,12 +118,9 @@ C
 	   ENDIF
 	ENDDO
 C
-	rewind (LIN)
-	DO I=1,IJ-1
-	READ (LIN, 100) MARK, TEXT 
-!	WRITE(*,*) MARK, TEXT
-	ENDDO
-	READ (LIN, *) MARK, H_298
+
+!   We have already read H_298 line, so continue with S_298
+!	READ (LIN, *) MARK, H_298
 !	WRITE(*,*) MARK, H_298
 	READ (LIN, *) MARK, S_298
 !	WRITE(*,*) MARK, S_298
@@ -133,7 +136,7 @@ C
 !	WRITE(*,*) MARK, T_max
 	if (T_max .gt. 6000.0) then
 	write(*,*) 'Warning!!!'
-	write(*,*) 'The maximum temperatue should be smaller than 6000K!'
+	write(*,*) 'The maximum T should be no greater than 6000K!'
 	endif
  101	FORMAT (A4,1X,F8.1)
  102  FORMAT (A5,1X,A2,1X,A4)
@@ -156,14 +159,13 @@ C
 	READ (LIN, *) ROTORS
 !	WRITE(*,*) 'NO. OF ROTORS', ROTORS
  104	FORMAT(F8.1)
-      CLOSE(LIN)
+!      CLOSE(LIN)
 !	PAUSE
 C
 C: Keywords input over
 C
 C: INPUT the Cp, H, and S sample dataset
-C:       ASSUME: M=101, with 51 for the lower temp range;
-C:                         & 1+50 for the higher temp range. 
+C:      
 C
 	DO I=1,M_in
 	   TEMP(I)=0.D0
@@ -180,9 +182,10 @@ C
 C
 ! SWILT uses the enthalpy in: cal/mol
 	DO I=1,M_in
-	   CH(I)  =CH(I)*1.D3
+	   CH(I) = CH(I)*1.D3
 	ENDDO
 C
+! First fit SWILT because it takes into account limits at 0 and infinite T
 	   CALL SWILT(SNAM,ENAM,ELNO,STRUC_MOL,ATOMS,ROTORS,THERM1,
      &	          TEMP,CPT,CH,CS,M_in)
 C
@@ -191,17 +194,21 @@ C
 C: INTERPOLATE ACCORDING TO THE SWILHOIT FORMAT
 C
 	DO I=1,11
-	  TEMF(I)=29.815D0*DFLOAT(I-1)
+!     10 points between 1 and 298
+	  TEMF(I) = 29.815D0*DFLOAT(I-1) 
 	  IF (TEMF(I) .EQ. 0.D0) TEMF(I)=1.0D0
         CALL DATAFIND(THERM1,TEMF(I),CPF(I),CHF(I),CSF(I))
-	  CHF(I)=CHF(I)/1.D3
+	  CHF(I) = CHF(I)/1.D3
 	ENDDO
 !
 	DO I=12,101
+!     90 points between 298 and 6000
 	  TEMF(I)=298.15D0+(6000.D0-298.15D0)*DFLOAT(I-11)/90.D0
-        CALL DATAFIND(THERM1,TEMF(I),CPF(I),CHF(I),CSF(I))
+	  CALL DATAFIND(THERM1,TEMF(I),CPF(I),CHF(I),CSF(I))
 	  CHF(I)=CHF(I)/1.D3
 	ENDDO
+C
+! Then re-fit the other formats to these data points
 C
 	IF (DATATYPE .EQ. 'CHEM') THEN
 	   CALL CHEM(T_int,TINT,THERM1,THERM2,TEMF,CPF,CHF,CSF)
@@ -1006,7 +1013,8 @@ C
      &      F8.3,2X,F8.3,4X,'1')
  598	FORMAT(A16,8X,A2,A3,A2,A3,A2,A3,A2,A3,A1,3X,F7.3,2X,F8.3,
      &      2X,F8.3,4X,'1')
- 601	FORMAT(A16,28X,'G',3X,F7.3,2X,F8.3,2X,F8.3,4X,'1&')
+ 601	FORMAT(A16,28X,'G',3X,F7.3,2X,F8.3,2X,F8.3,4X,'1&') 
+!'
  602	FORMAT(A2,1X,A3,A2,1X,A3,A2,1X,A3,A2,1X,A3,A2,1X,A3)
  300	FORMAT(A16,8X,A4,A1,A4,A1,10X,A1,3X,F7.3,2X,F8.3,2X,F8.3,4X,'1')
  301  FORMAT(ES15.8,ES15.8,ES15.8,ES15.8,ES15.8,4X,'2')
@@ -1074,15 +1082,15 @@ C
 
 C***********************************************************************
 C
-      SUBROUTINE DATAGROUP(M,TEMP,CPT,CH,CS,LIN)
+      SUBROUTINE DATAGROUP(M_in,TEMP,CPT,CH,CS,LIN)
 C
-	INTEGER M,I,LIN,IJ,IK,IM
+	INTEGER M_in,I,LIN,IJ,IK,IM
 	CHARACTER(LEN=4) MARK
 	CHARACTER(LEN=40) TEXT
 	DOUBLE PRECISION TEMP,CPT,CH,CS
 	DIMENSION TEMP(*),CPT(*),CH(*),CS(*)
 	DOUBLE PRECISION TEMP1,C1,CH1,CS1
-	DIMENSION TEMP1(50),C1(50),CH1(50),CS1(50)
+!	DIMENSION TEMP1(50),C1(50),CH1(50),CS1(50)
 C
 ! 	DATA TEMP1/290.262D0, 393.258D0, 496.255D0, 589.888D0, 795.88D0, 
 !     &           1001.87D0, 1488.76D0/
@@ -1094,70 +1102,23 @@ C
 C
 !	DATA CS1/0.D0,0.D0,0.D0,0.D0,0.D0,0.D0,0.D0/
 C
-      OPEN (LIN, FORM='FORMATTED', STATUS='OLD',
-     1 FILE='INPUT.txt')
-C
-	DO I=1,50
-	   TEMP1(I)=0.0D0
-	   C1   (I)=0.0D0
-	   CH1	(I)=0.0D0
-	   CS1	(I)=0.0D0
-	ENDDO
 	MARK=''
 	TEXT=''
-C
-	IJ=0
-      IK=0
-	IM=0
-	DO I=1,50
-	   IJ=IJ+1
-         READ (LIN, 100) MARK, TEXT
-         IF (MARK .EQ. 'TECP') THEN
-	      IK=IJ
-	      GOTO 250
-	   ENDIF
-	ENDDO
- 250  CONTINUE
-C
-	rewind (LIN)
-C
-	IJ=0
-	DO I=1,50
-	   IJ=IJ+1
-         READ (LIN, 100) MARK, TEXT
-         IF (MARK .EQ. 'END ') THEN
-	      IM=IJ
-	      GOTO 300
-	   ENDIF
-	ENDDO
- 300	CONTINUE
  100	FORMAT (A4,1X,A40)
-C
-	rewind (LIN)
-C
-	DO I=1,IK-1
-         READ (LIN, 100) MARK, TEXT
-	ENDDO
-C
-	DO I=1,IM-IK
-	   READ (LIN, *) MARK, TEMP1(I), C1(I)
-!	WRITE(*,*) TEMP1(I),C1(I)
-	ENDDO
-!	PAUSE
  101	FORMAT (A4,1X,F4.0,1X,F8.1)
 C
 C
-	DO I=1,M
-	   TEMP(I)= TEMP1(I)
-	   CPT(I) = C1(I)
-	   CH(I)  = CH1(I)
-	   CS(I)  = CS1(I)
+	DO I=1,M_in
+	   READ(LIN, *) MARK, TEMP(I), CPT(I)
+	   CH(I)  = 0.0D0
+	   CS(I)  = 0.0D0
+	   IF (MARK .NE. 'TECP') THEN
+		  write(*,*) 'Error. Need more TECP'
+	      GOTO 250
+	   ENDIF
 	ENDDO
-!	WRITE(*,*) TEMP(1:M)
-!	WRITE(*,*) CPT(1:M)
 C
-	CLOSE(LIN)
+ 250    CONTINUE
 	RETURN
 C
 	END
-
