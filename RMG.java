@@ -145,7 +145,7 @@ public class RMG {
             }
        }
 
-    };
+    }
 
 	public static void initializeSystemProperties(String inputfile) {
 	    File f = new File(".");

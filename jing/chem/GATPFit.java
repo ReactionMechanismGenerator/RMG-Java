@@ -99,10 +99,10 @@ public class GATPFit {
 		
         // write H and S at 298
         ThermoData td = species.getThermoData();
-		result += "H298 " + String.format("%4.2e \n",td.getH298());
-		result += "S298 " + String.format("%4.2e \n",td.getS298());
-		result += "DLTH " + String.format("%4.2e \n",td.getH298());
-		result += "MWEI " + String.format("%6.1e \n",species.getMolecularWeight());
+		result += "H298 " + Double.toString(td.getH298()) + "\n";
+		result += "S298 " + Double.toString(td.getS298()) + "\n";
+		result += "DLTH " + Double.toString(td.getH298()) + "\n";
+		result += "MWEI " + Double.toString(species.getMolecularWeight()) + "\n";
 		
 		//result += "H298 " + MathTool.formatDouble(td.getH298(), 10, 2).trim() + ls;
         //result += "S298 " + MathTool.formatDouble(td.getS298(), 10, 2).trim() + ls;
@@ -118,13 +118,13 @@ public class GATPFit {
 		else result += "NONLINEAR" + ls;
         result += String.valueOf(cg.getAtomNumber()) + ls;
         result += String.valueOf(species.getInternalRotor()) + ls;
-		result += "TECP 300 " + String.format("%4.2e \n",td.Cp300);
-		result += "TECP 400 " + String.format("%4.2e \n",td.Cp400);
-		result += "TECP 500 " + String.format("%4.2e \n",td.Cp500);
-		result += "TECP 600 " + String.format("%4.2e \n",td.Cp600);
-		result += "TECP 800 " + String.format("%4.2e \n",td.Cp800);
-		result += "TECP 1000 " + String.format("%4.2e \n",td.Cp1000);
-		result += "TECP 1500 " + String.format("%4.2e \n",td.Cp1500);
+		result += "TECP 300 " + Double.toString(td.Cp300) + "\n";
+		result += "TECP 400 " + Double.toString(td.Cp400) + "\n";
+		result += "TECP 500 " + Double.toString(td.Cp500) + "\n";
+		result += "TECP 600 " + Double.toString(td.Cp600) + "\n";
+		result += "TECP 800 " + Double.toString(td.Cp800) + "\n";
+		result += "TECP 1000 " + Double.toString(td.Cp1000) + "\n";
+		result += "TECP 1500 " + Double.toString(td.Cp1500) + "\n";
 		
 		//result += "TECP 300 " + MathTool.formatDouble(td.Cp300,10,2).trim() + ls;
 		//result += "TECP 400 " + MathTool.formatDouble(td.Cp400,10,2).trim() + ls;
