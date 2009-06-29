@@ -34,7 +34,7 @@ C max number of different atoms is 5
 	PARAMETER (LIN=5,LOUT=6) ! 5 is STDIN and 6 is STDOUT
 C For input file
 	CHARACTER(LEN=4) MARK, DATATYPE
-	CHARACTER(LEN=16) TEXT, SNAM
+	CHARACTER(LEN=48) TEXT, SNAM ! beware truncation!
 	CHARACTER(LEN=8) STRUC_MOL
 	CHARACTER(LEN=3) ELNO(5)
 	CHARACTER(LEN=2) ENAM(5)
@@ -105,11 +105,15 @@ c
 	  ELSE IF (MARK .EQ. 'H298') THEN 
 !       We've read beyond the end of the elements, so read TEXT 
 !       as a double into H_298 and exit the loop
+!    WARNING: if the number in the input spans beyond the end of TEXT
+!             then it will be truncated, eg: 1.345678901234567E+012
+!                                            ---------------#######
+!             this number could be read in as 10^12 too small!
 	    READ(TEXT,*) H_298
 	    GOTO 200
 	  ENDIF
 	ENDDO
- 100	FORMAT (A4,1X,A16)
+ 100	FORMAT (A4,1X,A48)  ! beware truncation
  200 	CONTINUE
 C
 	DO I=1,5
