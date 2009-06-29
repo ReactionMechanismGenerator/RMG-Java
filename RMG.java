@@ -209,7 +209,7 @@ public class RMG {
 			System.out.println("#                                                              #");
 			System.out.println("#              RMG - Reaction Mechanism Generator              #");
 			System.out.println("#                         Version 3.1beta                      #");
-			System.out.println("#                         5 March 2009                         #");
+			System.out.println("#                         29 June 2009                         #");
 			System.out.println("#                                                              #");
 			System.out.println("#                 http://rmg.sourceforge.net/                  #");
 			System.out.println("#                                                              #");
