@@ -4,6 +4,7 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.StringTokenizer;
 
 import jing.chem.Species;
 import jing.chemParser.ChemParser;
@@ -63,7 +64,13 @@ public class InChI2AdjList {
 		while (p_inchi != null) {
 			//	Convert the InChI to an adjacency list
 			//	Write the InChI and adjacency list to the listOfAdjList string
-			listOfAdjLists += p_inchi + "\n" + Species.inchi2AdjList(p_inchi) + "\n\n";
+			StringTokenizer st = new StringTokenizer(p_inchi);
+			String name = st.nextToken();
+			listOfAdjLists += name + "\n";
+			if (st.hasMoreTokens())
+				listOfAdjLists += Species.inchi2AdjList(st.nextToken()) + "\n\n";
+			else
+				listOfAdjLists += Species.inchi2AdjList(name) + "\n\n";
 			p_inchi = ChemParser.readMeaningfulLine(input_reader);
 		}
 		
