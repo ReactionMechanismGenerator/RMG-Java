@@ -198,11 +198,13 @@ public class FrequencyGroups{//gmagoon 111708: removed "implements GeneralGAPP"
 					continue;
 				else {
 					vibFreq[i] = Double.parseDouble(st.nextToken());
+					if (vibFreq[i] < 0)
+						throw new IOException("Encountered a negative vibrational frequency while reading Frankie output.");
 					i++;
 				}
 			}
 			if (i != nFreq) {
-				System.out.println("Warning: Number of frequencies read is less than expected.");
+				throw new IOException("Number of frequencies read is less than expected.");
 			}
 			
 			// Read the hindered rotor frequencies and barrier heights
@@ -216,11 +218,15 @@ public class FrequencyGroups{//gmagoon 111708: removed "implements GeneralGAPP"
 				else {
 					hindFreq[i] = Double.parseDouble(st.nextToken());
 					hindBarrier[i] = Double.parseDouble(st.nextToken());
+					if (hindFreq[i] < 0)
+						throw new IOException("Encountered a negative hindered rotor frequency while reading Frankie output.");
+					if (hindBarrier[i] < 0)
+						throw new IOException("Encountered a negative hindered rotor barrier while reading Frankie output.");
 					i++;
 				}
 			}
 			if (i != nHind) {
-				System.out.println("Warning: Number of hindered rotors read is less than expected.");
+				throw new IOException("Number of hindered rotors read is less than expected.");
 			}
 			
 			fr.close();
