@@ -154,10 +154,13 @@ public class PopulateReactions {
         				Kinetics k_rxn = (Kinetics)iter.next();
         				if (r.isForward())	listOfReactions += r.toString() + "\t" + updateListOfReactions(k_rxn) + "\tDUP " + numDupKinetics + "\n";
         				else if (r.isBackward()) listOfReactions += r.getReverseReaction().toString() + "\t" + updateListOfReactions(k_rxn) + "\tDUP " + numDupKinetics + "\n";
+        				else listOfReactions += r.toString() + "\t" + updateListOfReactions(k_rxn) + "\tDUP " + numDupKinetics + "\n";
         			}
         		} else {
         			if (r.isForward()) listOfReactions += r.toString() + "\t" + updateListOfReactions(r.getKinetics());
-        			else if (r.isBackward()) listOfReactions += r.getReverseReaction().toString() + "\t" + updateListOfReactions(r.getKinetics());
+        			//else if (r.isBackward()) listOfReactions += r.toString() + "\t" + updateListOfReactions(r.getFittedReverseKinetics(),r.getReactionTemplate().getName());
+        			else if (r.isBackward()) listOfReactions += r.getReverseReaction().toString() + "\t" + updateListOfReactions(r.getReverseReaction().getKinetics());
+        			else listOfReactions += r.toString() + "\t" + updateListOfReactions(r.getKinetics());
         		}
 
         		// Add the products of the reactions to the list of species
@@ -212,8 +215,15 @@ public class PopulateReactions {
 	
 	public static String updateListOfReactions(Kinetics rxn_k) {
 		String output = rxn_k.getAValue() + "\t" + rxn_k.getNValue()
-			   + "\t" + rxn_k.getEValue() + "\t" + rxn_k.getSource()
-			   + rxn_k.getComment()	+ "\n";
+			   + "\t" + rxn_k.getEValue() + "\t" + rxn_k.getSource() 
+			   + "\t" + rxn_k.getComment() + "\n";
+		return output;
+	}
+	
+	public static String updateListOfReactions(Kinetics rxn_k, String reverseRxnName) {
+		String output = rxn_k.getAValue() + "\t" + rxn_k.getNValue()
+			   + "\t" + rxn_k.getEValue() + "\t" + reverseRxnName + ": "
+			   + rxn_k.getSource() + "\t" + rxn_k.getComment() + "\n";
 		return output;
 	}
 
