@@ -554,7 +554,9 @@ public class QMTP implements GeneralGAPP {
         double h = 6.62606896E-34;//Planck's constant in J-s; cf. http://physics.nist.gov/cgi-bin/cuu/Value?h|search_for=universal_in!
         double c = 299792458. *100;//speed of light in vacuum in cm/s, cf. http://physics.nist.gov/cgi-bin/cuu/Value?c|search_for=universal_in!
         int gdStateDegen = p_chemGraph.getRadicalNumber()+1;//calculate ground state degeneracy from the number of radicals; this should give the same result as spin multiplicity in Gaussian input file (and output file), but we do not explicitly check this (we could use "mult" which cclib reads in if we wanted to do so); also, note that this is not always correct, as there can apparently be additional spatial degeneracy for non-symmetric linear molecules like OH radical (cf. http://cccbdb.nist.gov/thermo.asp)
-        boolean linearity = p_chemGraph.isLinear();//determine linearity (perhaps it would be more appropriate to determine this from point group?)
+        //boolean linearity = p_chemGraph.isLinear();//determine linearity (perhaps it would be more appropriate to determine this from point group?)
+        boolean linearity = false;
+        if (pointGroup.equals("Cinfv")||pointGroup.equals("Dinfh")) linearity=true;//determine linearity from 3D-geometry; changed to correctly consider linear ketene radical case
         //we will use number of atoms from above (alternatively, we could use the chemGraph); this is needed to test whether the species is monoatomic
         double Hf298, S298, Cp300, Cp400, Cp500, Cp600, Cp800, Cp1000, Cp1500;
         double sigmaCorr=0;//statistical correction for S in dimensionless units (divided by R)
