@@ -233,7 +233,9 @@ public class FrequencyGroups{//gmagoon 111708: removed "implements GeneralGAPP"
         }
         catch (IOException e) {
                 System.err.println("Problem reading frequency estimation output file!");
-                e.printStackTrace();           
+				System.out.println(e.getMessage());
+                e.printStackTrace();
+				System.exit(0);
         }
 		catch (NullPointerException e) {
                 System.err.println("Problem reading frequency estimation output file!");
