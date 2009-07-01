@@ -172,6 +172,7 @@ public class PrimaryReactionLibrary {
         		}
         	}
             
+        	LinkedHashSet currentPRLReactions = new LinkedHashSet();
         	line = ChemParser.readMeaningfulLine(data);
         	read: while (line != null) {
         		Reaction r;
@@ -188,17 +189,30 @@ public class PrimaryReactionLibrary {
         		}
         		if (r == null) throw new InvalidReactionFormatException(line);
         		
-        		reactionSet.add(r);
-        		Reaction reverse = r.getReverseReaction();
-				
-        		if (reverse != null) {
-					//reverse.getKinetics().setSource("Seed Mechanism: " + name);
-					reactionSet.add(reverse);
+        		Iterator prlRxnIter = currentPRLReactions.iterator();
+        		boolean foundRxn = false;
+        		while (prlRxnIter.hasNext()) {
+        			Reaction old = (Reaction)prlRxnIter.next();
+        			if (old.equals(r)) {
+        				old.addAdditionalKinetics(r.getKinetics(),1);
+        				foundRxn = true;
+        				break;
+        			}
+        		}
+        		if (!foundRxn) {
+        			currentPRLReactions.add(r);
+	        		Reaction reverse = r.getReverseReaction();
+					
+	        		if (reverse != null) {
+						//reverse.getKinetics().setSource("Seed Mechanism: " + name);
+						currentPRLReactions.add(reverse);
+	        		}
         		}
         		
         		line = ChemParser.readMeaningfulLine(data);
         	}
         	   
+        	reactionSet.addAll(currentPRLReactions);
             in.close();
         	return;
         }
