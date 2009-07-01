@@ -62,6 +62,13 @@ public class ArrheniusKinetics implements Kinetics {
     protected int rank;		//## attribute rank 
     
     protected String source;		//## attribute source 
+    /*
+     * 29Jun2009-MRH: Added fromPrimaryReactionLibrary attribute
+     * 	When RMG computes total rate or ask for kinetics for a given rxn,
+     * 		it first checks if the rxn/structure of interest has kinetics
+     * 		from a PRL.  If so, it will use those numbers.
+     */
+    protected boolean fromPrimaryReactionLibrary;
     
     
     // Constructors
@@ -336,6 +343,14 @@ public class ArrheniusKinetics implements Kinetics {
 	
 	public void setComments(String p_comments) {
 		comment = p_comments;
+	}
+	
+	public void setFromPrimaryReactionLibrary(boolean p_boolean) {
+		fromPrimaryReactionLibrary = p_boolean;
+	}
+	
+	public boolean getFromPrimaryReactionLibrary() {
+		return fromPrimaryReactionLibrary;
 	}
     
 }

@@ -35,6 +35,7 @@ import jing.chem.*;
 import java.util.*;
 
 import jing.param.*;
+import jing.rxnSys.PrimaryReactionLibrary;
 import jing.rxnSys.ReactionModelGenerator;
 import jing.mathTool.*;
 import jing.chemUtil.*;
@@ -359,6 +360,22 @@ public class ReactionTemplate {
   //## operation findRateConstant(Structure) 
   public Kinetics findRateConstant(Structure p_structure) {
 		double pT = System.currentTimeMillis();
+		
+  	  /* 
+  	   *If a primary reaction library exists, check the
+  	   *	current reaction against that list before attempting
+  	   *	to estimate via searching the tree
+  	   */
+		Kinetics k = null;
+  	  if (doesPrimaryReactionLibraryExist()) {
+  		  k = getPrimaryReactionRate(p_structure);
+  	  }
+  	  if (k != null) {
+  		  k.setFromPrimaryReactionLibrary(true);
+  		  p_structure.setDirection(1);
+  		  return k;
+  	  }
+		
       //#[ operation findRateConstant(Structure) 
       // look for kinetics in kinetics template libarry
       LinkedList reactants = null;
@@ -429,10 +446,10 @@ public class ReactionTemplate {
 				return null;
 			}
 			String comments = getKineticsComments(fg);
-      	Kinetics k = findExactRateConstant(fg);
+      	k = findExactRateConstant(fg);
       	if (k==null) {
 				k = findClosestRateConstant(fg);
-				k.setSource(name + " estimate: ");
+				k.setSource(name + " estimate: (" + k.getSource() + ")");
       	}
       	else k.setSource(name  + " exact: ");
 			k.setComments(comments);
@@ -459,7 +476,23 @@ public class ReactionTemplate {
   //## operation findRateConstant(Structure) 
   public Kinetics findReverseRateConstant(Structure p_structure) {
 		double pT = System.currentTimeMillis();
-      //#[ operation findRateConstant(Structure) 
+      //#[ operation findRateConstant(Structure)
+		
+	  	  /* 
+	  	   *If a primary reaction library exists, check the
+	  	   *	current reaction against that list before attempting
+	  	   *	to estimate via searching the tree
+	  	   */
+			Kinetics k = null;
+	  	  if (doesPrimaryReactionLibraryExist()) {
+	  		  k = getPrimaryReactionRate(p_structure);
+	  	  }
+	  	  if (k != null) {
+	  		  k.setFromPrimaryReactionLibrary(true);
+	  		  p_structure.setDirection(1);
+	  		  return k;
+	  	  }
+		
       // look for kinetics in kinetics template libarry
       LinkedList reactants = null;
       if (isForward()) {
@@ -529,11 +562,11 @@ public class ReactionTemplate {
 				return null;
 			}
 			String comments = getKineticsComments(fg);
-      	Kinetics k = findExactRateConstant(fg);
+      	k = findExactRateConstant(fg);
       	if (k==null) {
       		try{
 				k = findClosestRateConstant(fg);
-				k.setSource(name + " estimate: ");
+				k.setSource(name + " estimate: (" + k.getSource() + ")");
       		}
       		catch (RateConstantNotFoundException e) {
               	return k;
@@ -556,7 +589,37 @@ public class ReactionTemplate {
       //#]
   }
   
-  
+  /**
+   * Given a structure, function searches the primary reaction library
+   * 	to determine if user supplied a set of kinetic parameters for
+   * 	this reaction.  If so, RMG uses this set of parameters.  If not,
+   * 	RMG estimates the kinetic parameters by traversing the tree.
+   * 
+   * @param p_structure: Structure of the reaction
+   * @return
+   */
+  private Kinetics getPrimaryReactionRate(Structure p_structure) {
+	  boolean equivReactants = false;
+	  LinkedHashSet primaryRxnLibrary = getPrimaryRxnLibrary();
+	  Iterator iter = primaryRxnLibrary.iterator();
+	  LinkedList p_reactants = p_structure.getReactantList();
+	  LinkedList p_products = p_structure.getProductList();
+	  while (iter.hasNext()) {
+		  Reaction rxn = (Reaction)iter.next();
+		  LinkedList reactants = rxn.getReactantList();
+		  equivReactants = Structure.isSpeciesListEquivalentToChemGraphListAsGraphs(reactants, p_reactants);
+		  if (equivReactants) {
+			  LinkedList products = rxn.getProductList();
+			  if (Structure.isSpeciesListEquivalentToChemGraphListAsGraphs(products,p_products)) {
+				  if (rxn instanceof ThirdBodyReaction || rxn instanceof TROEReaction)
+					  System.out.println("RMG is only utilizing the high-pressure limit parameters for PRL reaction: " + rxn.toString());
+				  return rxn.getKinetics();
+			  }
+		  }
+	  }
+	  return null;
+  }
+
   private String getKineticsComments(Collection p_matchedPathSet) {
 		StringBuilder comment = new StringBuilder();
 		for (Iterator iter = p_matchedPathSet.iterator(); iter.hasNext();) {
@@ -1900,6 +1963,15 @@ public class ReactionTemplate {
   
   public void setStructureTemplate(StructureTemplate p_StructureTemplate) {
       structureTemplate = p_StructureTemplate;
+  }
+  
+  public LinkedHashSet getPrimaryRxnLibrary(){
+      return PrimaryReactionLibrary.getReactionSet();
+  }
+  
+  public boolean doesPrimaryReactionLibraryExist() {
+	  if (PrimaryReactionLibrary.size() != 0) return true;
+	  else return false;
   }
   
 }

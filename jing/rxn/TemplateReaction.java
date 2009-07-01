@@ -62,6 +62,8 @@ public class TemplateReaction extends Reaction {
         structure = p_structure;
         kinetics = p_kinetics;
         reactionTemplate = p_template;
+        if (kinetics != null)	
+        	kineticsFromPrimaryReactionLibrary = p_kinetics.getFromPrimaryReactionLibrary();
 		
         //#]
     }

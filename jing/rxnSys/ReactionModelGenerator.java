@@ -90,6 +90,8 @@ public class ReactionModelGenerator {
     // 24Jun2009 MRH: variable stores the first temperature encountered in the condition.txt file
     //	This temperature is used to select the "best" kinetics from the rxn library
     protected static Temperature temp4BestKinetics; 
+    // This is the new "PrimaryReactionLibrary"
+    protected SeedMechanism seedMechanism;
 
 	protected boolean restart = false;
     // Constructors
@@ -825,46 +827,84 @@ public class ReactionModelGenerator {
 
         	// read in reaction model enlarger
                
+        	/* Read in the Primary Reaction Library
+        	 * MRH 12-Jun-2009
+        	 * 
+        	 * I've made minor changes to this piece of code.  In particular, I've
+        	 * 	eliminated the on/off flag.  The user can specify as many PRLs,
+        	 * 	including none, as they like.
+        	 */        	
         	line = ChemParser.readMeaningfulLine(reader);
-                if (line.startsWith("PrimaryReactionLibrary:")) {
-                        StringTokenizer st = new StringTokenizer(line);
-                        String temp = st.nextToken();
-                        String on = st.nextToken();
-                        
-                        if (on.compareToIgnoreCase("ON") == 0) {
-                        	// GJB modified to allow multiple primary reaction libraries
-                        	int Ilib = 0;
-                        	line = ChemParser.readMeaningfulLine(reader);
-                        	while (!line.equals("END")) {                     		
-                                StringTokenizer nameST = new StringTokenizer(line);
-                                temp = nameST.nextToken();
-                                String name = nameST.nextToken();
+                if (line.startsWith("PrimaryReactionLibrary:")) {                        
+                	// GJB modified to allow multiple primary reaction libraries
+                	int Ilib = 0;
+                	line = ChemParser.readMeaningfulLine(reader);
+                	while (!line.equals("END")) {                     		
+                        StringTokenizer nameST = new StringTokenizer(line);
+                        String temp = nameST.nextToken();	// Should hold "Name:"
+                        String name = nameST.nextToken();
 
-                                line = ChemParser.readMeaningfulLine(reader);
-                                StringTokenizer pathST = new StringTokenizer(line);
-                                temp = pathST.nextToken();
-                                String path = pathST.nextToken();
-                                if (Ilib==0) {
-                                	//primaryReactionLibrary = new PrimaryReactionLibrary(name, path);
-                                        setPrimaryReactionLibrary(new PrimaryReactionLibrary(name, path));//10/14/07 gmagoon: changed to use setPrimaryReactionLibrary
-                                	Ilib++; 	
-                                }
-                                else {
-                                	//primaryReactionLibrary.appendPrimaryReactionLibrary(name,path);
-                                        getPrimaryReactionLibrary().appendPrimaryReactionLibrary(name,path);//10/14/07 gmagoon: changed to use getPrimaryReactionLibrary; check to make sure this is valid
-                                	Ilib++;//just in case anybody wants to track how many are processed
-                                 }
-                                	line = ChemParser.readMeaningfulLine(reader);
-                        	}
-                        	System.out.println("Primary Reaction Libraries in use: " +getPrimaryReactionLibrary().getName());//10/14/07 gmagoon: changed to use getPrimaryReactionLibrary
-                        }	
-                         else {
-                                //primaryReactionLibrary = null;
-                                setPrimaryReactionLibrary(null);//10/14/07 gmagoon: changed to use setPrimaryReactionLibrary; check to make sure this is valid
+                        line = ChemParser.readMeaningfulLine(reader);
+                        StringTokenizer pathST = new StringTokenizer(line);
+                        temp = pathST.nextToken();	// Should hold "Location:"
+                        String path = pathST.nextToken();
+                        if (Ilib==0) {
+                        	//primaryReactionLibrary = new PrimaryReactionLibrary(name, path);
+                                setPrimaryReactionLibrary(new PrimaryReactionLibrary(name, path));//10/14/07 gmagoon: changed to use setPrimaryReactionLibrary
+                        	Ilib++; 	
                         }
-                }
+                        else {
+                        	//primaryReactionLibrary.appendPrimaryReactionLibrary(name,path);
+                                getPrimaryReactionLibrary().appendPrimaryReactionLibrary(name,path);//10/14/07 gmagoon: changed to use getPrimaryReactionLibrary; check to make sure this is valid
+                        	Ilib++;//just in case anybody wants to track how many are processed
+                        }
+                        line = ChemParser.readMeaningfulLine(reader);
+                	}
+//                	System.out.println("Primary Reaction Libraries in use: " +getPrimaryReactionLibrary().getName());//10/14/07 gmagoon: changed to use getPrimaryReactionLibrary
+                	if (Ilib==0) {
+                        //primaryReactionLibrary = null;
+                        setPrimaryReactionLibrary(null);//10/14/07 gmagoon: changed to use setPrimaryReactionLibrary; check to make sure this is valid
+                	}
+                	else System.out.println("Primary Reaction Libraries in use: " + getPrimaryReactionLibrary().getName());
 
-        	else throw new InvalidSymbolException("condition.txt: can't find PrimaryReactionLibrary!");
+                } else throw new InvalidSymbolException("condition.txt: can't find PrimaryReactionLibrary!");
+                
+                /*
+                 * Added by MRH 12-Jun-2009
+                 * 
+                 * The SeedMechanism acts almost exactly as the old
+                 * 	PrimaryReactionLibrary did.  Whatever is in the SeedMechanism
+                 * 	will be placed in the core at the beginning of the simulation.
+                 * 	The user can specify as many seed mechanisms as they like, with
+                 * 	the priority (in the case of duplicates) given to the first
+                 * 	instance.  There is no on/off flag.
+                 */
+                line = ChemParser.readMeaningfulLine(reader);
+                if (line.startsWith("SeedMechanism:")) {
+                	int numMechs = 0;
+                	line = ChemParser.readMeaningfulLine(reader);
+                	while (!line.equals("END")) {                     		
+                        StringTokenizer nameST = new StringTokenizer(line);
+                        String tempString = nameST.nextToken();	// Should be "Name:"
+                        String name = nameST.nextToken();	// User-defined name of Seed Mechanism
+                        line = ChemParser.readMeaningfulLine(reader);
+                        StringTokenizer pathST = new StringTokenizer(line);
+                        tempString = pathST.nextToken();	// Should be "Location:"
+                        String path = pathST.nextToken();	// User-defined location of Base Mechanism
+                        if (numMechs==0) {
+                        	setSeedMechanism(new SeedMechanism(name, path));
+                        	++numMechs; 	
+                        }
+                        else {
+                        	getSeedMechanism().appendSeedMechanism(name,path);
+                        	++numMechs;
+                        }
+                        line = ChemParser.readMeaningfulLine(reader);
+                	}
+                	if (numMechs != 0)	System.out.println("Base Mechanisms in use: " + getSeedMechanism().getName());
+                	else setSeedMechanism(null);
+                } else throw new InvalidSymbolException("Error reading condition.txt file: "
+                		+ "Could not locate SeedMechanism field");
 
         	in.close();
                 
@@ -2227,6 +2267,87 @@ public LinkedList getSpeciesList() {
         return reactionModel;
     }
     
+    /**
+     * MRH 12-Jun-2009
+     * 
+     * Function initializes the model's core and edge.
+     * 	The initial core species always consists of the species contained
+     * 		in the condition.txt file.  If seed mechanisms exist, those species
+     * 		(and the reactions given in the seed mechanism) are also added to
+     * 		the core.
+     * 	The initial edge species/reactions are determined by reacting the core
+     * 		species by one full iteration.
+     */
+    public void initializeCoreEdgeModel() {
+    	LinkedHashSet allInitialCoreSpecies = new LinkedHashSet();
+    	LinkedHashSet allInitialCoreRxns = new LinkedHashSet();
+    	// Add the species from the condition.txt (input) file
+    	allInitialCoreSpecies.addAll(getSpeciesSeed());
+    	// Add the species from the seed mechanisms, if they exist
+    	if (hasSeedMechanisms()) {
+    		allInitialCoreSpecies.addAll(getSeedMechanism().getSpeciesSet());
+    		allInitialCoreRxns.addAll(getSeedMechanism().getReactionSet());
+    	}
+    	
+		CoreEdgeReactionModel cerm = new CoreEdgeReactionModel(allInitialCoreSpecies, allInitialCoreRxns);
+		setReactionModel(cerm);
+
+		PDepNetwork.reactionModel = getReactionModel();
+		PDepNetwork.reactionSystem = (ReactionSystem) getReactionSystemList().get(0);
+
+		// Determine initial set of reactions and edge species using only the
+		// species enumerated in the input file and the seed mechanisms as the core
+		LinkedHashSet reactionSet = getReactionGenerator().react(allInitialCoreSpecies);
+		reactionSet.addAll(getLibraryReactionGenerator().react(allInitialCoreSpecies));
+
+    	// Set initial core-edge reaction model based on above results
+		if (reactionModelEnlarger instanceof RateBasedRME)	{
+			Iterator iter = reactionSet.iterator();
+        	while (iter.hasNext()){
+        		Reaction r = (Reaction)iter.next();
+        		cerm.addReaction(r);
+			}
+		}
+		else {
+    		// Only keep the reactions involving bimolecular reactants and bimolecular products
+			Iterator iter = reactionSet.iterator();
+        	while (iter.hasNext()){
+        		Reaction r = (Reaction)iter.next();
+        		if (r.getReactantNumber() > 1 && r.getProductNumber() > 1){
+        			cerm.addReaction(r);
+        		}
+				else {
+					cerm.categorizeReaction(r.getStructure());
+					PDepNetwork.addReactionToNetworks(r);
+				}
+			}
+		}
+        
+        for (Integer i = 0; i < reactionSystemList.size(); i++) {
+			ReactionSystem rs = (ReactionSystem) reactionSystemList.get(i);
+			rs.setReactionModel(getReactionModel());
+        }
+		
+		// We cannot return a system with no core reactions, so if this is a case we must add to the core
+        while (getReactionModel().isEmpty()) {
+			for (Integer i = 0; i < reactionSystemList.size(); i++) {
+				ReactionSystem rs = (ReactionSystem) reactionSystemList.get(i);
+				if (reactionModelEnlarger instanceof RateBasedPDepRME) 
+					rs.initializePDepNetwork();
+				rs.appendUnreactedSpeciesStatus((InitialStatus)initialStatusList.get(i), rs.getPresentTemperature());
+			}
+			enlargeReactionModel();
+		}
+		
+        for (Integer i = 0; i<reactionSystemList.size();i++) {
+            ReactionSystem rs = (ReactionSystem)reactionSystemList.get(i);
+            rs.setReactionModel(getReactionModel());
+        }
+
+        return;
+    	
+    }
+    
     //## operation initializeCoreEdgeModelWithPRL()
     //9/24/07 gmagoon: moved from ReactionSystem.java
     public void initializeCoreEdgeModelWithPRL() {
@@ -2341,8 +2462,18 @@ public LinkedList getSpeciesList() {
 			  System.out.println("\nInitializing core-edge reaction model");
        // setSpeciesSeed(new LinkedHashSet());//10/4/07 gmagoon:moved from initializeReactionSystem; later moved to modelGeneration()
         //#[ operation initializeCoreEdgeReactionModel()
-        if (hasPrimaryReactionLibrary()) initializeCoreEdgeModelWithPRL();
-        else initializeCoreEdgeModelWithoutPRL();
+//        if (hasPrimaryReactionLibrary()) initializeCoreEdgeModelWithPRL();
+//        else initializeCoreEdgeModelWithoutPRL();
+		/*
+		 * MRH 12-Jun-2009
+		 * 
+		 * I've lumped the initializeCoreEdgeModel w/ and w/o a seed mechanism
+		 * 	(which used to be the PRL) into one function.  Before, RMG would
+		 * 	complete one iteration (construct the edge species/rxns) before adding
+		 * 	the seed mechanism to the rxn, thereby possibly estimating kinetic
+		 * 	parameters for a rxn that exists in a seed mechanism
+		 */
+		initializeCoreEdgeModel();
 
         //#]
     }
@@ -2377,6 +2508,11 @@ public LinkedList getSpeciesList() {
         if (primaryReactionLibrary == null) return false;
         return (primaryReactionLibrary.size() > 0);
         //#]
+    }
+    
+    public boolean hasSeedMechanisms() {
+    	if (getSeedMechanism() == null) return false;
+    	return (seedMechanism.size() > 0);
     }
     
     //9/25/07 gmagoon: moved from ReactionSystem.java
@@ -2415,6 +2551,14 @@ public LinkedList getSpeciesList() {
     
     public static void setTemp4BestKinetics(Temperature firstSysTemp) {
     	temp4BestKinetics = firstSysTemp;
+    }
+    
+    public SeedMechanism getSeedMechanism() {
+        return seedMechanism;
+    }
+
+    public void setSeedMechanism(SeedMechanism p_seedMechanism) {
+        seedMechanism = p_seedMechanism;
     }
 }
 /*********************************************************************

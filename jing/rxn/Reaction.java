@@ -73,6 +73,9 @@ public class Reaction {
   protected boolean finalized = false;
   protected String ChemkinString = null;
   protected boolean ratesForKineticsAndAdditionalKineticsCross = false; //10/29/07 gmagoon: added variable to keep track of whether both rate constants are maximum for some temperature in the temperature range
+  
+  protected boolean kineticsFromPrimaryReactionLibrary = false;
+  protected ReactionTemplate rxnTemplate;
   // Constructors
 
   //## operation Reaction()
@@ -173,7 +176,20 @@ public class Reaction {
   	double rate =0;
 	Temperature stdtemp = new Temperature(298,"K");
 	double Hrxn = calculateHrxn(stdtemp);
-  	if (isForward()){
+	/*
+	 * 29Jun2009-MRH: Added a kinetics from PRL check
+	 * 	If the kinetics for this reaction is from a PRL, use those numbers
+	 * 		to compute the rate.  Else, proceed as before.
+	 */
+	if (kineticsFromPrimaryReactionLibrary) {
+		Kinetics k = kinetics;
+		if (k instanceof ArrheniusEPKinetics)
+			rate += k.calculateRate(p_temperature,Hrxn);
+		else
+			rate += k.calculateRate(p_temperature);
+		return rate;
+	}
+	else if (isForward()){
   		Iterator kineticIter = getAllKinetics().iterator();
       	while (kineticIter.hasNext()){
       		Kinetics k = (Kinetics)kineticIter.next();
@@ -802,6 +818,21 @@ public class Reaction {
       //#[ operation getKinetics()
 	  // returns the kinetics OF THE FORWARD REACTION
 	  // ie. if THIS is reverse, it calls this.getReverseReaction().getKinetics()
+	  
+	  /*
+	   * 29Jun2009-MRH:
+	   * 	When getting kinetics, check whether it comes from a PRL or not.
+	   * 	If so, return the kinetics.  We are not worried about the redundancy
+	   * 	because I assume the user inputs the Arrhenius kinetics for the overall
+	   * 	reaction A = B + C
+	   * 
+	   * 	E.g. CH4 = CH3 + H		A n E
+	   * 		The Arrhenius parameters would be for the overall decomposition of CH4,
+	   * 		not for each carbon-hydrogen bond fission
+	   */
+	  if (isFromPrimaryReactionLibrary()) {
+		  return kinetics;
+	  }
       if (isForward()) {
       	int red = structure.getRedundancy();
 		return kinetics.multiply(red);
@@ -1438,6 +1469,18 @@ public class Reaction {
 			return reverseReaction.calculateForwardFlux(ss);
 		else
 			return 0.0;
+	}
+	
+	public boolean isFromPrimaryReactionLibrary() {
+		return kineticsFromPrimaryReactionLibrary;
+	}
+	
+	public void setIsFromPrimaryReactionLibrary(boolean p_boolean) {
+		kineticsFromPrimaryReactionLibrary = p_boolean;
+	}
+	
+	public ReactionTemplate getReactionTemplate() {
+		return rxnTemplate;
 	}
 
 }
