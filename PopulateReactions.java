@@ -205,6 +205,10 @@ public class PopulateReactions {
 	}
 	
 	public static void initializeSystemProperties() {
+		File GATPFit = new File("GATPFit");
+		ChemParser.deleteDir(GATPFit);
+		GATPFit.mkdir();
+
 		String name= "RMG_database";
 		String workingDir = System.getenv("RMG");
 		System.setProperty("RMG.workingDirectory", workingDir);
