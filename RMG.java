@@ -183,7 +183,7 @@ public class RMG {
                 File threeDmol = new File("3Dmolfiles");
 		ChemParser.deleteDir(threeDmol);
 		threeDmol.mkdir();
-                File qmfiles = new File("Gaussianfiles");
+                File qmfiles = new File("QMfiles");
 		//ChemParser.deleteDir(qmfiles);
 		if(!qmfiles.exists()){//create if it doesn't exist; we will not delete files because we want to preserve them between runs to speed things up
                     qmfiles.mkdir();
