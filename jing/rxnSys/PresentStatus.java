@@ -61,6 +61,7 @@ public class PresentStatus extends SystemSnapshot {
         temperature = p_systemSnapshot.temperature;
         pressure = p_systemSnapshot.pressure;
 		unreactedSpeciesFlux = p_systemSnapshot.unreactedSpeciesFlux;
+		inertGas = p_systemSnapshot.inertGas;
         //#]
     }
     public  PresentStatus() {
