@@ -1236,7 +1236,7 @@ public class GUI extends JPanel implements ActionListener {
     	}
     }
         
-    public void createConditionFile(Boolean saveAndRun) {
+    public void createConditionFile(boolean saveAndRun) {
     	//	Let's create the condition.txt file!
     	String conditionFile = "";
     	String[] tempString;
