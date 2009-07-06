@@ -70,8 +70,8 @@ public class QMTP implements GeneralGAPP {
         if (result != null) return result;
         
         //if there is no data in the libraries, calculate the result based on QM or MM calculations; the below steps will be generalized later to allow for other quantum mechanics packages, etc.
-        String qmProgram="gaussian03";
-        //String qmProgram="mopac";
+        //String qmProgram="gaussian03";
+        String qmProgram="mopac";
         String qmMethod="pm3"; //may eventually want to pass this to various functions to choose which "sub-function" to call
         
         result = new ThermoData();
@@ -83,7 +83,9 @@ public class QMTP implements GeneralGAPP {
         File dir=new File(directory);
         directory = dir.getAbsolutePath();//this and previous three lines get the absolute path for the directory
         //first, check to see if the result already exists and the job terminated successfully
-        if(!successfulGaussianResultExistsQ(name,directory,InChIaug)){//if a successful result doesn't exist from previous run (or from this run), run the calculation; if a successful result exists, we will skip directly to parsing the file
+        boolean gaussianResultExists = successfulGaussianResultExistsQ(name,directory,InChIaug);
+        boolean mopacResultExists = successfulMopacResultExistsQ(name,directory,InChIaug);
+        if(!gaussianResultExists && !mopacResultExists){//if a successful result doesn't exist from previous run (or from this run), run the calculation; if a successful result exists, we will skip directly to parsing the file
             //1. create a 2D file
             //use the absolute path for directory, so we can easily reference from other directories in command-line paths
             //can't use RMG.workingDirectory, since this basically holds the RMG environment variable, not the workingDirectory
@@ -104,14 +106,27 @@ public class QMTP implements GeneralGAPP {
             int successFlag=0;//flag for success of Gaussian run; 0 means it failed, 1 means it succeeded
             int maxAttemptNumber=1;
             while(successFlag==0 && attemptNumber <= maxAttemptNumber){
-                if(p_chemGraph.getAtomNumber() > 1){
-                    maxAttemptNumber = createGaussianPM3Input(name, directory, p_3dfile, attemptNumber, InChIaug);
+                //IF block to check which program to use
+                if (qmProgram.equals("gaussian03")){
+                    if(p_chemGraph.getAtomNumber() > 1){
+                        maxAttemptNumber = createGaussianPM3Input(name, directory, p_3dfile, attemptNumber, InChIaug);
+                    }
+                    else{
+                        maxAttemptNumber = createGaussianPM3Input(name, directory, p_2dfile, -1, InChIaug);//use -1 for attemptNumber for monoatomic case
+                    }
+                    //4. run Gaussian
+                    successFlag = runGaussian(name, directory);
+                }
+                else if (qmProgram.equals("mopac")){
+                    int multiplicity = p_chemGraph.getRadicalNumber()+1; //multiplicity = radical number + 1
+                    maxAttemptNumber = createMopacPM3Input(name, directory, p_3dfile, attemptNumber, InChIaug, multiplicity);
+                    successFlag = runMOPAC(name, directory);
                 }
                 else{
-                    maxAttemptNumber = createGaussianPM3Input(name, directory, p_2dfile, -1, InChIaug);//use -1 for attemptNumber for monoatomic case
+                    System.out.println("Unsupported quantum chemistry program");
+                    System.exit(0);
                 }
-                //4. run Gaussian
-                successFlag = runGaussian(name, directory);
+                //new IF block to check success
                 if(successFlag==1){
                     System.out.println("Attempt #"+attemptNumber + " on species " + name + " ("+InChIaug+") succeeded.");
                 }
@@ -127,8 +142,17 @@ public class QMTP implements GeneralGAPP {
             
 
         }
-        //5. parse Gaussian output and record as thermo data using parseGaussianPM3 (includes symmetry/point group calcs, etc.)
-        result = parseGaussianPM3(name, directory, p_chemGraph);
+        //5. parse QM output and record as thermo data (function includes symmetry/point group calcs, etc.); if both Gaussian and MOPAC results exist, Gaussian result is used
+        if (gaussianResultExists || (qmProgram.equals("gaussian03") && !mopacResultExists)){
+            result = parseGaussianPM3(name, directory, p_chemGraph);
+        }
+        else if (mopacResultExists || qmProgram.equals("mopac")){
+            result = parseMopacPM3(name, directory, p_chemGraph);
+        }
+        else{
+            System.out.println("Unexpected situation in QMTP thermo estimation");
+            System.exit(0);
+        }
         
         return result;
         //#]
