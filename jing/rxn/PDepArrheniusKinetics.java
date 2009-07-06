@@ -75,9 +75,14 @@ public class PDepArrheniusKinetics implements PDepKinetics {
         String result = "";
 		for (int i = 0; i < pressures.length; i++) {
 			result += "PLOG / " + Double.toString(pressures[i].getAtm());
-			result += " / " + Double.toString(kinetics[i].getAValue());
-			result += " / " + Double.toString(kinetics[i].getNValue());
-			result += " / " + Double.toString(kinetics[i].getEValue());
+//			result += " / " + Double.toString(kinetics[i].getAValue());
+//			result += " / " + Double.toString(kinetics[i].getNValue());
+//			result += " / " + Double.toString(kinetics[i].getEValue());
+			// 6Jul2009-MRH:
+			//	PLOG format does not need "/" between parameters
+			result += " " + Double.toString(kinetics[i].getAValue());
+			result += " " + Double.toString(kinetics[i].getNValue());
+			result += " " + Double.toString(kinetics[i].getEValue());
 			result += " /\n";
 		}
 		return result;
