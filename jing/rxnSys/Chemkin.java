@@ -659,7 +659,10 @@ public  Chemkin() {
       
       for (Iterator iter = pDepList.iterator(); iter.hasNext();){
     	  Reaction r = (Reaction)iter.next();
-          result.append(r.toChemkinString(p_beginStatus.getTemperature())+"\n");//10/26/07 gmagoon: eliminating use of Global.temperature; **** I use beginStatus here, which may or may not be appropriate
+			// 6Jul2009-MRH:
+			//	Pass both system temperature and pressure to function toChemkinString.
+    	  	//		The only PDepKineticsModel that uses the passed pressure is RATE
+          result.append(r.toChemkinString(p_beginStatus.getTemperature(),p_beginStatus.getPressure())+"\n");//10/26/07 gmagoon: eliminating use of Global.temperature; **** I use beginStatus here, which may or may not be appropriate
     	  //result.append(r.toChemkinString(Global.temperature)+"\n");
       }
       for (Iterator iter = nonPDepList.iterator(); iter.hasNext();){

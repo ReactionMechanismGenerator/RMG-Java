@@ -490,4 +490,34 @@ public class PDepReaction extends Reaction {
 			return "";
     
     }
+	
+	// 6Jul2009-MRH:
+	//	This toChemkinString function is identical to the toChemkinString(Temperature)
+	//		function, with the exception of the if(PDep.getMode() == Mode.RATE) statement
+	//		The passed pressure p is only read if the mode == RATE
+	@Override
+	public String toChemkinString(Temperature t, Pressure p) {
+        if (pDepRate != null) {
+
+			String result = getStructure().toChemkinString(true).toString();
+			if (PDepRateConstant.getMode() == PDepRateConstant.Mode.CHEBYSHEV)
+				result = formPDepSign(result);
+			if (PDepRateConstant.getMode() == PDepRateConstant.Mode.RATE) {
+				result += "\t" + calculateRate(t,p) + " 0.0 0.0\n";
+				return result;
+			}
+			result += '\t' + "1.0E0 0.0 0.0" + '\n';
+
+			if (PDepRateConstant.getMode() == PDepRateConstant.Mode.CHEBYSHEV)
+				result += pDepRate.getChebyshev().toChemkinString() + '\n';
+			else if (PDepRateConstant.getMode() == PDepRateConstant.Mode.PDEPARRHENIUS)
+				result += pDepRate.getPDepArrheniusKinetics().toChemkinString();
+			return result;
+		}
+		else if (kinetics != null)
+			return super.toChemkinString(t);
+		else
+			return "";
+    
+    }
 }

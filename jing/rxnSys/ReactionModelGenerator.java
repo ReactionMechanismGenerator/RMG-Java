@@ -557,12 +557,19 @@ public class ReactionModelGenerator {
 					String name = st.nextToken();
 					String pDepKinType = st.nextToken();
 					if (pDepKinType.toLowerCase().equals("chebyshev") ||
-							pDepKinType.toLowerCase().equals("pdeparrhenius")) {
+							pDepKinType.toLowerCase().equals("pdeparrhenius") ||
+							pDepKinType.toLowerCase().equals("rate")) {
 
 						if (pDepKinType.toLowerCase().equals("chebyshev"))
 							PDepRateConstant.setMode(PDepRateConstant.Mode.CHEBYSHEV);
 						else if (pDepKinType.toLowerCase().equals("pdeparrhenius"))
 							PDepRateConstant.setMode(PDepRateConstant.Mode.PDEPARRHENIUS);
+						// 6Jul2009-MRH:
+						//	RATE mode reports p-dep rxn kinetics as: A 0.0 0.0
+						//		where A is k(T,P) evaluated at the single temperature
+						//		and pressure given in the condition.txt file
+						else if (pDepKinType.toLowerCase().equals("rate"))
+							PDepRateConstant.setMode(PDepRateConstant.Mode.RATE);
 
 					}
 					else {

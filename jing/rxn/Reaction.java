@@ -1153,6 +1153,35 @@ public class Reaction {
 
       //#]
   }
+  
+  
+  public String toChemkinString(Temperature p_temperature, Pressure p_pressure) {
+	  if (ChemkinString != null)
+		  return ChemkinString;
+	  	StringBuilder result = new StringBuilder();
+      	StringBuilder strucString = getStructure().toChemkinString(hasReverseReaction());
+		Temperature stdtemp = new Temperature(298,"K");
+		double Hrxn = calculateHrxn(stdtemp);
+		if (hasAdditionalKinetics()){
+			Iterator iter = getAllKinetics().iterator();
+			String k = ((Kinetics)iter.next()).toChemkinString(Hrxn,p_temperature, true);
+			result.append(strucString + "  " + k + "\nDUP");
+			while (iter.hasNext()){
+				
+				k = ((Kinetics)iter.next()).toChemkinString(Hrxn,p_temperature, true);
+				
+				result.append("\n"+strucString + "  " + k + "\nDUP");
+				
+			}
+		}
+		else {
+			String k = getKinetics().toChemkinString(Hrxn,p_temperature, true) ;//+ " forward rate: " +calculateTotalRate(p_temperature) + "  reverse rate:  "+ getReverseReaction().calculateTotalRate(p_temperature);
+			result.append(strucString+ " " + k );
+		}
+		
+		ChemkinString = result.toString();
+      return result.toString();
+  }
 
 	public String toRestartString(Temperature p_temperature) {
       //#[ operation toChemkinString()

@@ -51,7 +51,7 @@ public class PDepRateConstant {
 	 * <li>PDEPARRHENIUS - Pressure-dependent Arrhenius equations.
 	 * </ul>
 	 */
-	public enum Mode { NONE, INTERPOLATE, CHEBYSHEV, PDEPARRHENIUS };
+	public enum Mode { NONE, INTERPOLATE, CHEBYSHEV, PDEPARRHENIUS, RATE };
 
 	/**
 	 * The mode to use for evaluation the pressure-dependent rate coefficients.
