@@ -403,7 +403,7 @@ public class QMTP implements GeneralGAPP {
     //unlike createGaussianPM3 input, this requires an additional input specifying the spin multiplicity (radical number + 1) for the species
     public int createMopacPM3Input(String name, String directory, molFile p_molfile, int attemptNumber, String InChIaug, int multiplicity){
         //write a file with the input keywords
-        int maxAttemptNumber=3;//update this if additional keyword options are added or removed
+        int maxAttemptNumber=4;//update this if additional keyword options are added or removed
         String inpKeyStrBoth = "";//this string will be written at both the top (for optimization) and the bottom (for thermo/force calc)
         String inpKeyStrTop = "";//this string will be written only at the top
         String inpKeyStrBottom = "";//this string will be written at the bottom
@@ -424,9 +424,14 @@ public class QMTP implements GeneralGAPP {
                 inpKeyStrTop=" precise nosym recalc=10 dmax=0.10 nonr";
                 inpKeyStrBottom="oldgeo thermo nosym precise ";
             }
-            else if(attemptNumber==3){//used for troublesome CMARQPBQDRXBTN-UHFFFAOYAAmult3 (InChI=1/C3H2O4/c1-3(5)7-6-2-4/h1H2/mult3) case (negative frequency issues)
+            else if(attemptNumber==3){//used for ATCYLHQLTOSVFK-UHFFFAOYAMmult4 (InChI=1/C4H5O5/c1-3(5)8-9-4(2)7-6/h6H,1-2H2/mult4) case (timeout issue; also, negative frequency issues); note that this is very similar to the keyword below, so we may want to consolidate
                 inpKeyStrBoth="pm3 "+radicalString;
-                inpKeyStrTop=" precise nosym recalc=1 dmax=0.05 gnorm=0.0 T=600";
+                inpKeyStrTop=" precise nosym recalc=1 dmax=0.05 gnorm=0.2 cycles=1000";
+                inpKeyStrBottom="oldgeo thermo nosym precise ";
+            }
+            else if(attemptNumber==4){//used for troublesome CMARQPBQDRXBTN-UHFFFAOYAAmult3 (InChI=1/C3H2O4/c1-3(5)7-6-2-4/h1H2/mult3) case (negative frequency issues)
+                inpKeyStrBoth="pm3 "+radicalString;
+                inpKeyStrTop=" precise nosym recalc=1 dmax=0.05 gnorm=0.0 cycles=1000";
                 inpKeyStrBottom="oldgeo thermo nosym precise ";
             }
             else throw new Exception();//this point should not be reached
@@ -582,7 +587,7 @@ public class QMTP implements GeneralGAPP {
         //look in the output file to check for the successful termination of the calculation (this is a trimmed down version of what appears in successfulMOPACResultExistsQ (it doesn't have the InChI check)
         File file = new File(directory+"/"+name+".out");
         int failureFlag=1;//flag (1 or 0) indicating whether the MOPAC job failed
-        int imagFreqFlag=0;//flag (1 or 0) indicating whether the MOPAC job has imaginary frequencies
+        int failureOverrideFlag=0;//flag (1 or 0) to override success as measured by failureFlag
         if(file.exists()){//if the file exists, do further checks; otherwise, we will skip to final statement and return false
             try{
                 FileReader in = new FileReader(file);
@@ -600,7 +605,13 @@ public class QMTP implements GeneralGAPP {
 //         DOES NOT INCLUDE THE  2 IMAGINARY FREQUENCIES
                     else if (trimLine.endsWith("IMAGINARY FREQUENCIES")){
                         System.out.println("*****Imaginary freqencies found:");
-                        imagFreqFlag=1;
+                        failureOverrideFlag=1;
+                    }
+                    else if (trimLine.equals("EXCESS NUMBER OF OPTIMIZATION CYCLES")){//exceeding max cycles error
+                        failureOverrideFlag=1;
+                    }
+                    else if (trimLine.equals("NOT ENOUGH TIME FOR ANOTHER CYCLE")){//timeout error
+                        failureOverrideFlag=1;
                     }
                     line=reader.readLine();
                 }
@@ -612,7 +623,7 @@ public class QMTP implements GeneralGAPP {
                 System.exit(0);
             }
         }
-        if(imagFreqFlag==1) failureFlag=1; //job will be considered a failure if there are imaginary frequencies
+        if(failureOverrideFlag==1) failureFlag=1; //job will be considered a failure if there are imaginary frequencies or if job terminates to to excess time/cycles
         //if the failure flag is 0 and there are no negative frequencies, the process should have been successful
         if (failureFlag==0) successFlag=1;
         
@@ -1268,7 +1279,7 @@ public class QMTP implements GeneralGAPP {
         File file = new File(directory+"/"+name+".out");
         if(file.exists()){//if the file exists, do further checks; otherwise, we will skip to final statement and return false
             int failureFlag=1;//flag (1 or 0) indicating whether the MOPAC job failed
-            int imagFreqFlag=0;//flag (1 or 0) indicating whether the MOPAC job has negative freqencies
+            int failureOverrideFlag=0;//flag (1 or 0) to override success as measured by failureFlag
             int InChIMatch=0;//flag (1 or 0) indicating whether the InChI in the file matches InChIaug; this can only be 1 if InChIFound is also 1;
             int InChIFound=0;//flag (1 or 0) indicating whether an InChI was found in the log file
             int InChIPartialMatch=0;//flag (1 or 0) indicating whether the InChI in the log file is a substring of the InChI in RMG's memory
@@ -1289,7 +1300,13 @@ public class QMTP implements GeneralGAPP {
 //         DOES NOT INCLUDE THE  2 IMAGINARY FREQUENCIES
                     else if (trimLine.endsWith("IMAGINARY FREQUENCIES")){
                       //  System.out.println("*****Imaginary freqencies found:");
-                        imagFreqFlag=1;
+                        failureOverrideFlag=1;
+                    }
+                    else if (trimLine.equals("EXCESS NUMBER OF OPTIMIZATION CYCLES")){//exceeding max cycles error
+                        failureOverrideFlag=1;
+                    }
+                    else if (trimLine.equals("NOT ENOUGH TIME FOR ANOTHER CYCLE")){//timeout error
+                        failureOverrideFlag=1;
                     }
                     else if(line.startsWith(" InChI=")){
                         logFileInChI = line.trim();//output files should take up to 240 characters of the name in the input file
@@ -1306,7 +1323,7 @@ public class QMTP implements GeneralGAPP {
                 e.printStackTrace();
                 System.exit(0);
             }
-            if(imagFreqFlag==1) failureFlag=1; //job will be considered a failure if there are imaginary frequencies
+            if(failureOverrideFlag==1) failureFlag=1; //job will be considered a failure if there are imaginary frequencies or if job terminates to to excess time/cycles
             //if the failure flag is still 0, the process should have been successful
             if (failureFlag==0&&InChIMatch==1){
                 System.out.println("Pre-existing successful MOPAC quantum result for " + name + " ("+InChIaug+") has been found. This log file will be used.");
