@@ -426,12 +426,12 @@ public class QMTP implements GeneralGAPP {
             }
             else if(attemptNumber==3){//used for troublesome CMARQPBQDRXBTN-UHFFFAOYAAmult3 (InChI=1/C3H2O4/c1-3(5)7-6-2-4/h1H2/mult3) case (negative frequency issues)
                 inpKeyStrBoth="pm3 "+radicalString;
-                inpKeyStrTop=" precise nosym recalc=1 dmax=0.05 gnorm=0.0 cycles=1000";
+                inpKeyStrTop=" precise nosym recalc=1 dmax=0.05 gnorm=0.0 cycles=1000 t=1000";
                 inpKeyStrBottom="oldgeo thermo nosym precise ";
             }
             else if(attemptNumber==4){//used for ATCYLHQLTOSVFK-UHFFFAOYAMmult4 (InChI=1/C4H5O5/c1-3(5)8-9-4(2)7-6/h6H,1-2H2/mult4) case (timeout issue; also, negative frequency issues); note that this is very similar to the keyword below, so we may want to consolidate
                 inpKeyStrBoth="pm3 "+radicalString;
-                inpKeyStrTop=" precise nosym recalc=1 dmax=0.05 gnorm=0.2 cycles=1000";
+                inpKeyStrTop=" precise nosym recalc=1 dmax=0.05 gnorm=0.2 cycles=1000 t=1000";
                 inpKeyStrBottom="oldgeo thermo nosym precise ";
             }
 
