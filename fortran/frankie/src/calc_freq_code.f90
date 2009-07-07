@@ -909,9 +909,8 @@ SUBROUTINE calc_predicted_freq(bond_info, Bond_degeneracy, Total_predicted_freq)
                                                     350.0,  425.0,  &
                                                     825.0,  875.0   /)
 
-  REAL(8), DIMENSION(6)  :: ROOR_typ_freq     = (/  350.0,  500.0,  &
-                                                    795.0,  815.0,  &
-                                                   1185.0, 1215.0   /)
+  REAL(8), DIMENSION(4)  :: ROOR_typ_freq     = (/  350.0,  500.0,  &
+                                                    795.0,  815.0   /)
 
   REAL(8), DIMENSION(4)  :: peroxy_typ_freq   = (/  470.0,  515.0,  &
                                                    1100.0, 1170.0   /)
@@ -1028,7 +1027,7 @@ SUBROUTINE calc_predicted_freq(bond_info, Bond_degeneracy, Total_predicted_freq)
   ALLOCATE(  Alcohol_pred_freq(  Alcohol  * 2 ) )
   ALLOCATE(  Ether_pred_freq(    Ether    * 1 ) )
   ALLOCATE(  ROOH_pred_freq(     ROOH     * 4 ) )
-  ALLOCATE(  ROOR_pred_freq(     ROOR     * 3 ) )
+  ALLOCATE(  ROOR_pred_freq(     ROOR     * 2 ) )
   ALLOCATE(  peroxy_pred_freq(   peroxy   * 2 ) )
 
   ALLOCATE(  Rings_pred_freq(    Rings    * 2 ) )
@@ -1062,7 +1061,7 @@ SUBROUTINE calc_predicted_freq(bond_info, Bond_degeneracy, Total_predicted_freq)
   CALL  Bond_avg_2x1(Alcohol,  Alcohol_typ_freq, Alcohol_pred_freq)
   CALL  Bond_avg_1x1(Ether,  Ether_typ_freq, Ether_pred_freq)
   CALL  Bond_avg_4x1(ROOH,  ROOH_typ_freq, ROOH_pred_freq)
-  CALL  Bond_avg_3x1(ROOR,  ROOR_typ_freq, ROOR_pred_freq)
+  CALL  Bond_avg_2x1(ROOR,  ROOR_typ_freq, ROOR_pred_freq)
   CALL  Bond_avg_2x1(peroxy,  peroxy_typ_freq, peroxy_pred_freq)
   CALL  Bond_avg_2x1(Rings,  Rings_typ_freq, Rings_pred_freq)
 
@@ -7517,11 +7516,19 @@ SUBROUTINE read_bonds(data, bond_info, bond_degeneracy)
 ! cyclic species C-H stretch
   Rings     = data(28)
 
+  ! RMG will probably double-count the number of ROOR bonds.
+  ! Assuming that is the case, divide by 2:
+  IF (ROOR/2==0) THEN
+     !it is an odd number, so do nothing
+  ELSE
+     ROOR = ROOR / 2
+  ENDIF
+
 Bond_degeneracy =  8*RsCH3 + 5*RdCH2 + 3*CtCH + 7*RSCH2sR + 5*CdCHsR + &
                    5*Aldehyde + 3*Cumulene + 3*Ketene + 2*CtCsR + & 
                    6*RsCHsR2 + 4*CdCsR2 + 4*Ketone + 5*RsCsR3 + 5*RsCH2r + & 
                    3*RdCHr + 4*RsCHrsR + 2*CdCrsR + 2*OdCrsR + 3*RsCrsR2 + & 
-                   2*Alcohol + 1*Ether + 4*ROOH + 3*ROOR + 2*Peroxy + &
+                   2*Alcohol + 1*Ether + 4*ROOH + 2*ROOR + 2*Peroxy + &
                    2*Rings
 
 WRITE(*,*) 'degeneracy = ', Bond_degeneracy
@@ -7552,14 +7559,6 @@ WRITE(*,*) 'degeneracy = ', Bond_degeneracy
   bond_info(23) = ROOR 
   bond_info(24) = Peroxy
   bond_info(25) = Rings
-
-  ! RMG will probably double-count the number of ROOR bonds.
-  ! Assuming that is the case, divide by 2:
-  IF (ROOR/2==0) THEN
-     !it is an odd number, so do nothing
-  ELSE
-     bond_info(23) = bond_info(23) / 2
-  ENDIF
 
 
 END SUBROUTINE read_bonds
