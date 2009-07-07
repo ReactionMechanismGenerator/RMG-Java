@@ -132,8 +132,16 @@ public class QMTP implements GeneralGAPP {
                 }
                 else if(successFlag==0){
                     if(attemptNumber==maxAttemptNumber){//if this is the last possible attempt, and the calculation fails, exit with an error message
-                        System.out.println("*****Final attempt (#" + maxAttemptNumber + ") on species " + name + " ("+InChIaug+") failed.");
-                        System.exit(0);
+                        if(qmProgram.equals("mopac")){ //if we are running with MOPAC and all keywords fail, try with Gaussian
+                            qmProgram = "gaussian03";
+                            System.out.println("*****Final MOPAC attempt (#" + maxAttemptNumber + ") on species " + name + " ("+InChIaug+") failed. Trying to use Gaussian.");
+                            attemptNumber=0;//this needs to be 0 so that when we increment attemptNumber below, it becomes 1 when returning to the beginning of the for loop
+                            maxAttemptNumber=1;
+                        }
+                        else{
+                            System.out.println("*****Final attempt (#" + maxAttemptNumber + ") on species " + name + " ("+InChIaug+") failed.");
+                            System.exit(0);
+                        }
                     }
                     System.out.println("*****Attempt #"+attemptNumber + " on species " + name + " ("+InChIaug+") failed. Will attempt a new keyword.");
                     attemptNumber++;//try again with new keyword
