@@ -395,7 +395,7 @@ public class QMTP implements GeneralGAPP {
     //unlike createGaussianPM3 input, this requires an additional input specifying the spin multiplicity (radical number + 1) for the species
     public int createMopacPM3Input(String name, String directory, molFile p_molfile, int attemptNumber, String InChIaug, int multiplicity){
         //write a file with the input keywords
-        int maxAttemptNumber=2;//update this if additional keyword options are added or removed
+        int maxAttemptNumber=3;//update this if additional keyword options are added or removed
         String inpKeyStrBoth = "";//this string will be written at both the top (for optimization) and the bottom (for thermo/force calc)
         String inpKeyStrTop = "";//this string will be written only at the top
         String inpKeyStrBottom = "";//this string will be written at the bottom
@@ -411,7 +411,12 @@ public class QMTP implements GeneralGAPP {
                 inpKeyStrTop=" precise";
                 inpKeyStrBottom="oldgeo thermo ";
             }
-            else if(attemptNumber==2){//used for troublesome CMARQPBQDRXBTN-UHFFFAOYAAmult3 (InChI=1/C3H2O4/c1-3(5)7-6-2-4/h1H2/mult3) case (negative frequency issues)
+            else if(attemptNumber==2){//used for troublesome HGRZRPHFLAXXBT-UHFFFAOYAVmult3 (InChI=1/C3H2O4/c4-2(5)1-3(6)7/h1H2/mult3) case (negative frequency and large gradient issues)
+                inpKeyStrBoth="pm3 "+radicalString;
+                inpKeyStrTop=" precise nosym recalc=10 dmax=0.10 nonr";
+                inpKeyStrBottom="oldgeo thermo nosym precise ";
+            }
+            else if(attemptNumber==3){//used for troublesome CMARQPBQDRXBTN-UHFFFAOYAAmult3 (InChI=1/C3H2O4/c1-3(5)7-6-2-4/h1H2/mult3) case (negative frequency issues)
                 inpKeyStrBoth="pm3 "+radicalString;
                 inpKeyStrTop=" precise nosym recalc=1 dmax=0.05 gnorm=0.0";
                 inpKeyStrBottom="oldgeo thermo nosym precise ";
