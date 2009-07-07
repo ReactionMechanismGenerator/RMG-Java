@@ -427,7 +427,8 @@ public class QMTP implements GeneralGAPP {
         //call the OpenBabel process (note that this requires OpenBabel environment variable)
         try{ 
             File runningdir=new File(directory);
-            String command = "babel -imol "+ p_molfile.getPath()+ " -omop " + name+".mop -xk " + inpKeyStrBoth + inpKeyStrTop + " --title \""+InChIaug+"\"";
+            String inpKeyStrTopCombined = inpKeyStrBoth + inpKeyStrTop;
+            String command = "babel -imol "+ p_molfile.getPath()+ " -omop " + name+".mop -xk \"" + inpKeyStrTopCombined + "\" --title \""+InChIaug+"\"";
             Process babelProc = Runtime.getRuntime().exec(command, null, runningdir);
             //read in output
             InputStream is = babelProc.getInputStream();
@@ -442,7 +443,7 @@ public class QMTP implements GeneralGAPP {
             //append the final keywords to the end of the file just written
            // File mopacInpFile = new File(directory+"/"+name+".mop");
             FileWriter fw = new FileWriter(directory+"/"+name+".mop", true);//filewriter with append = true
-            fw.write("\n\n" + inpKeyStrBottom + inpKeyStrBoth);
+            fw.write(System.getProperty("line.separator") + inpKeyStrBottom + inpKeyStrBoth);//on Windows Vista, "\n" appears correctly in WordPad view, but not Notepad view (cf. http://forums.sun.com/thread.jspa?threadID=5386822)
             fw.close();
         }
         catch(Exception e){
@@ -573,6 +574,7 @@ public class QMTP implements GeneralGAPP {
                     if (line.trim().equals("DESCRIPTION OF VIBRATIONS")){//check for this line; if it is here, check for negative frequencies
                         if(!MopacFileContainsNegativeFreqsQ(name, directory)) failureFlag=0;
                     }
+                    line=reader.readLine();
                 }
             }
             catch(Exception e){
