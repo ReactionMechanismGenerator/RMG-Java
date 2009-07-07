@@ -426,7 +426,7 @@ public class QMTP implements GeneralGAPP {
             }
             else if(attemptNumber==3){//used for troublesome CMARQPBQDRXBTN-UHFFFAOYAAmult3 (InChI=1/C3H2O4/c1-3(5)7-6-2-4/h1H2/mult3) case (negative frequency issues)
                 inpKeyStrBoth="pm3 "+radicalString;
-                inpKeyStrTop=" precise nosym recalc=1 dmax=0.05 gnorm=0.0";
+                inpKeyStrTop=" precise nosym recalc=1 dmax=0.05 gnorm=0.0 T=600";
                 inpKeyStrBottom="oldgeo thermo nosym precise ";
             }
             else throw new Exception();//this point should not be reached
@@ -1340,7 +1340,7 @@ public class QMTP implements GeneralGAPP {
                                 return true;
                             }
                             else{//otherwise, failureFlag==1
-                                System.out.println("Pre-existing MOPAC quantum result for " + name + " ("+InChIaug+") has been found, but the result was apparently unsuccessful. The file will be overwritten with a new calculation. *Note that input file was read to confirm lack of InChIKey collision (InChI probably more than 240 characters)");
+                                System.out.println("Pre-existing MOPAC quantum result for " + name + " ("+InChIaug+") has been found, but the result was apparently unsuccessful. The file will be overwritten with a new calculation or Gaussian result (if available) will be used. *Note that input file was read to confirm lack of InChIKey collision (InChI probably more than 240 characters)");
                                 return false;
                             }
                         }
@@ -1370,7 +1370,7 @@ public class QMTP implements GeneralGAPP {
                 System.exit(0);
             }
             else if (failureFlag==1){//note these should cover all possible results for this block, and if the file.exists block is entered, it should return from within the block and should not reach the return statement below
-                System.out.println("Pre-existing MOPAC quantum result for " + name + " ("+InChIaug+") has been found, but the result was apparently unsuccessful. The file will be overwritten with a new calculation.");
+                System.out.println("Pre-existing MOPAC quantum result for " + name + " ("+InChIaug+") has been found, but the result was apparently unsuccessful. The file will be overwritten with a new calculation or Gaussian result (if available) will be used.");
                 return false;
             }
         }
