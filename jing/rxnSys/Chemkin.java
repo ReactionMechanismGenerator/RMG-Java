@@ -754,7 +754,7 @@ public  Chemkin() {
       thermoHeader += "Ne                L10/90Ne  1               G    200.0   6000.00  1000.0       1\n";
       thermoHeader += " 0.25000000E 01 0.00000000E 00 0.00000000E 00 0.00000000E 00 0.00000000E 00    2\n";
       thermoHeader += "-0.74537500E 03 0.33553227E 01 0.25000000E 01 0.00000000E 00 0.00000000E 00    3\n";
-      thermoHeader += " 0.00000000E 00 0.00000000E 00-0.74537498E 03 0.33553227E 01                   4\n";
+      thermoHeader += " 0.00000000E 00 0.00000000E 00-0.74537498E 03 0.33553227E 01                   4\n\n";
       
       StringBuilder result = new StringBuilder();
 	  result.append("THERMO ALL\n");
@@ -765,6 +765,9 @@ public  Chemkin() {
       for (Iterator iter = cerm.getSpecies(); iter.hasNext(); ) {
       	Species spe = (Species)iter.next();
 
+      	if (spe.getNasaThermoSource() != null) {
+      		result.append("!" + spe.getNasaThermoSource() + "\n");
+      	}
       	result.append(spe.getNasaThermoData() + "\n");
 
       }

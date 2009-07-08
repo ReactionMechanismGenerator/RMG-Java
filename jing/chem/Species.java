@@ -73,6 +73,7 @@ public class Species {
 
     protected LennardJones LJ;
 	protected NASAThermoData nasaThermoData;
+	protected String nasaThermoSource;
     protected ThreeFrequencyModel threeFrequencyModel;
 	//protected WilhoitThermoData wilhoitThermoData;
 
@@ -328,6 +329,7 @@ public class Species {
 	public void generateNASAThermoData() {
         //nasaThermoData = Therfit.generateNASAThermoData(this);
         nasaThermoData = GATPFit.generateNASAThermoData(this);
+        nasaThermoSource = getThermoData().source;
 		GATPFitExecuted = (nasaThermoData != null);
     }
 
@@ -1742,6 +1744,10 @@ public class Species {
     	    os = "mac";
     	  }
     	  return os;
+    }
+    
+    public String getNasaThermoSource() {
+    	return nasaThermoSource;
     }
 	
 }

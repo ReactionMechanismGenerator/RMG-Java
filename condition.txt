@@ -4,9 +4,15 @@
 //because we are using the dassl solver.
 
 Database: RMG_database
-PrimaryThermoLibrary: primaryThermoLibrary
-TemperatureModel: Constant (K) 1350
 
+PrimaryThermoLibrary:
+Name: GRIMech3.0
+Location: GRI-Mech3.0
+Name: RMG-old
+Location: primaryThermoLibrary
+END
+
+TemperatureModel: Constant (K) 1350
 PressureModel: Constant (atm) 1
 
 //MaxCarbonNumberPerSpecies: 10

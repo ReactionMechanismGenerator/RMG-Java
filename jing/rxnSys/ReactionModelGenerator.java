@@ -92,6 +92,7 @@ public class ReactionModelGenerator {
     protected static Temperature temp4BestKinetics; 
     // This is the new "PrimaryReactionLibrary"
     protected SeedMechanism seedMechanism;
+    protected PrimaryThermoLibrary primaryThermoLibrary;
 
 	protected boolean restart = false;
     // Constructors
@@ -158,11 +159,40 @@ public class ReactionModelGenerator {
                 line = ChemParser.readMeaningfulLine(reader);
               }
               else throw new InvalidSymbolException("Can't find database!");
-              if (line.startsWith("PrimaryThermoLibrary")){//svp
-                line = ChemParser.readMeaningfulLine(reader);
-              }
-              else throw new InvalidSymbolException("Can't find primary thermo library!");
+//              if (line.startsWith("PrimaryThermoLibrary")){//svp
+//                line = ChemParser.readMeaningfulLine(reader);
+//              }
+//              else throw new InvalidSymbolException("Can't find primary thermo library!");
 
+         	/*
+         	 * Read in the Primary Thermo Library
+         	 * MRH 7-Jul-2009
+         	 */
+             if (line.startsWith("PrimaryThermoLibrary:")) {
+             	int numPTLs = 0;
+             	line = ChemParser.readMeaningfulLine(reader);
+             	while (!line.equals("END")) {                     		
+                     StringTokenizer nameST = new StringTokenizer(line);
+                     String tempString = nameST.nextToken();	// Should be "Name:"
+                     String name = nameST.nextToken();	// User-defined name of PTL
+                     line = ChemParser.readMeaningfulLine(reader);
+                     StringTokenizer pathST = new StringTokenizer(line);
+                     tempString = pathST.nextToken();	// Should be "Location:"
+                     String path = pathST.nextToken();	// User-defined location of PTL
+                     if (numPTLs==0) {
+                     	setPrimaryThermoLibrary(new PrimaryThermoLibrary(name,path));
+                     	++numPTLs; 	
+                     }
+                     else {
+                     	getPrimaryThermoLibrary().appendPrimaryThermoLibrary(name,path);
+                     	++numPTLs;
+                     }
+                     line = ChemParser.readMeaningfulLine(reader);
+             	}
+             	if (numPTLs == 0) setPrimaryThermoLibrary(null);
+             } else throw new InvalidSymbolException("Error reading condition.txt file: "
+             		+ "Could not locate PrimaryThermoLibrary field");
+             line = ChemParser.readMeaningfulLine(reader);
 
         	// read temperature model
                 //gmagoon 10/23/07: modified to handle multiple temperatures; note that this requires different formatting of units in condition.txt
@@ -2566,6 +2596,14 @@ public LinkedList getSpeciesList() {
 
     public void setSeedMechanism(SeedMechanism p_seedMechanism) {
         seedMechanism = p_seedMechanism;
+    }
+    
+    public PrimaryThermoLibrary getPrimaryThermoLibrary() {
+    	return primaryThermoLibrary;
+    }
+    
+    public void setPrimaryThermoLibrary(PrimaryThermoLibrary p_primaryThermoLibrary) {
+    	primaryThermoLibrary = p_primaryThermoLibrary;
     }
 }
 /*********************************************************************

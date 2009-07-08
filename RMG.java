@@ -274,14 +274,21 @@ public class RMG {
                System.setProperty("jing.rxn.ReactionTemplateLibrary.pathName", workingDir + "/databases/" + name+"/kinetics");
                System.setProperty("jing.rxn.ReactionLibrary.pathName",workingDir + "/databases/" + name + "/kinetics/reactionLibrary");
              }
-             line = ChemParser.readMeaningfulLine(reader);
-             if (line.startsWith("PrimaryThermoLibrary")){
-               StringTokenizer st = new StringTokenizer(line);
-               String next = st.nextToken();
-               String name = st.nextToken().trim();
-               String thermoDirectory = System.getProperty("jing.chem.ThermoGAGroupLibrary.pathName");
-               System.setProperty("jing.chem.PrimaryThermoLibrary.pathName", thermoDirectory+"/"+name);
-             }
+             /*
+              * 7-Jul-2009:MRH
+              * 	Commented out reading/setting PrimaryThermoLibrary
+              * 	RMG now allows the user to supply multiple Primary Thermo Libraries
+              * 		(in the same manner as a Primary Reaction Library or Seed Mechanism)
+              * 		in the condition.txt file.
+              */
+//             line = ChemParser.readMeaningfulLine(reader);
+//             if (line.startsWith("PrimaryThermoLibrary")){
+//               StringTokenizer st = new StringTokenizer(line);
+//               String next = st.nextToken();
+//               String name = st.nextToken().trim();
+//               String thermoDirectory = System.getProperty("jing.chem.ThermoGAGroupLibrary.pathName");
+//               System.setProperty("jing.chem.PrimaryThermoLibrary.pathName", thermoDirectory+"/"+name);
+//             }
   }
   catch (IOException e) {
      System.err.println("Error in read in reaction system initialization file!");

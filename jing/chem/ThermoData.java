@@ -79,6 +79,10 @@ public class ThermoData extends ThermoGAValue {
       super(p_name, p_td, p_comments);
       //#]
     }
+    
+    public ThermoData(String p_name, ThermoData p_td, String p_comments, String p_source) {
+    	super(p_name, p_td, p_comments, p_source);
+    }
 
 
     //## operation calculateCp(double)

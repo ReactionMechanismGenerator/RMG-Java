@@ -75,6 +75,8 @@ public class ThermoGAValue {
     protected String comments = null;		//## attribute comments
 
     protected String name = null;		//## attribute name
+    
+    protected String source = null;
 
 
     // Constructors
@@ -142,6 +144,26 @@ public class ThermoGAValue {
 
         //#]
     }
+    
+    public ThermoGAValue(String p_name, ThermoGAValue p_ga, String p_comments, String p_source) {
+        H298 = p_ga.H298;
+        S298 = p_ga.S298;
+        Cp300 = p_ga.Cp300;
+        Cp400 = p_ga.Cp400;
+        Cp500 = p_ga.Cp500;
+        Cp600 = p_ga.Cp600;
+        Cp800 = p_ga.Cp800;
+        Cp1000 = p_ga.Cp1000;
+        Cp1500 = p_ga.Cp1500;
+        dH = p_ga.dH;
+        dS = p_ga.dS;
+        dCp = p_ga.dCp;
+        comments = p_comments;
+        name = p_name;
+        source = p_source;
+
+	}    
+    
     //## operation ThermoGAValue(ThermoGAValue)
     public  ThermoGAValue(ThermoGAValue p_ga) {
         //#[ operation ThermoGAValue(ThermoGAValue)
