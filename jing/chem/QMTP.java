@@ -1330,57 +1330,58 @@ public class QMTP implements GeneralGAPP {
                 return true;
             }
             else if (InChIFound==1 && InChIMatch == 0){//InChIs do not match (most likely due to limited name length mirrored in log file (240 characters), but possibly due to a collision)
-                if(InChIPartialMatch == 1){//case where the InChI in memory begins with the InChI in the log file; we will continue and check the input file, printing a warning if there is no match
-                    File inputFile = new File(directory+"/"+name+".mop");
-                    if(inputFile.exists()){//read the MOPAC inputFile
-                        String inputFileInChI="";
-                        try{
-                            FileReader inI = new FileReader(inputFile);
-                            BufferedReader readerI = new BufferedReader(inI);
-                            String lineI=readerI.readLine();
-                            while(lineI!=null){
-                                if(lineI.startsWith("InChI=")){
-                                    inputFileInChI = lineI.trim();
-                                }
-                                lineI=readerI.readLine();
+               // if(InChIPartialMatch == 1){//case where the InChI in memory begins with the InChI in the log file; we will continue and check the input file, printing a warning if there is no match
+                //look in the input file if the InChI doesn't match (apparently, certain characters can be deleted in MOPAC output file for long InChIs)
+                File inputFile = new File(directory+"/"+name+".mop");
+                if(inputFile.exists()){//read the MOPAC inputFile
+                    String inputFileInChI="";
+                    try{
+                        FileReader inI = new FileReader(inputFile);
+                        BufferedReader readerI = new BufferedReader(inI);
+                        String lineI=readerI.readLine();
+                        while(lineI!=null){
+                            if(lineI.startsWith("InChI=")){
+                                inputFileInChI = lineI.trim();
                             }
+                            lineI=readerI.readLine();
                         }
-                        catch(Exception e){
-                            String err = "Error in reading preexisting MOPAC input file \n";
-                            err += e.toString();
-                            e.printStackTrace();
-                            System.exit(0);
+                    }
+                    catch(Exception e){
+                        String err = "Error in reading preexisting MOPAC input file \n";
+                        err += e.toString();
+                        e.printStackTrace();
+                        System.exit(0);
+                    }
+                    if(inputFileInChI.equals(InChIaug)){
+                        if(failureFlag==0){
+                            System.out.println("Pre-existing successful MOPAC quantum result for " + name + " ("+InChIaug+") has been found. This log file will be used. *Note that input file was read to confirm lack of InChIKey collision (InChI probably more than 240 characters or characters probably deleted from InChI in .out file)");
+                            return true;
                         }
-                        if(inputFileInChI.equals(InChIaug)){
-                            if(failureFlag==0){
-                                System.out.println("Pre-existing successful MOPAC quantum result for " + name + " ("+InChIaug+") has been found. This log file will be used. *Note that input file was read to confirm lack of InChIKey collision (InChI probably more than 240 characters)");
-                                return true;
-                            }
-                            else{//otherwise, failureFlag==1
-                                System.out.println("Pre-existing MOPAC quantum result for " + name + " ("+InChIaug+") has been found, but the result was apparently unsuccessful. The file will be overwritten with a new calculation or Gaussian result (if available) will be used. *Note that input file was read to confirm lack of InChIKey collision (InChI probably more than 240 characters)");
-                                return false;
-                            }
-                        }
-                        else{
-                            if(inputFileInChI.equals("")){//InChI was not found in input file
-                                System.out.println("*****Warning: potential InChIKey collision: InChIKey(augmented) = " + name + " RMG Augmented InChI = "+ InChIaug + " Log file Augmented InChI = "+logFileInChI + " . InChI could not be found in the MOPAC input file. You should manually check that the output file contains the intended species.");
-                                return true;
-                            }
-                            else{//InChI was found but doesn't match
-                                System.out.println("Congratulations! You appear to have discovered the first recorded instance of an InChIKey collision: InChIKey(augmented) = " + name + " RMG Augmented InChI = "+ InChIaug + " MOPAC input file Augmented InChI = "+inputFileInChI);
-                                System.exit(0);
-                            }
+                        else{//otherwise, failureFlag==1
+                            System.out.println("Pre-existing MOPAC quantum result for " + name + " ("+InChIaug+") has been found, but the result was apparently unsuccessful. The file will be overwritten with a new calculation or Gaussian result (if available) will be used. *Note that input file was read to confirm lack of InChIKey collision (InChI probably more than 240 characters or characters probably deleted from InChI in .out file)");
+                            return false;
                         }
                     }
                     else{
-                        System.out.println("*****Warning: potential InChIKey collision: InChIKey(augmented) = " + name + " RMG Augmented InChI = "+ InChIaug + " Log file Augmented InChI = "+logFileInChI + " . MOPAC input file could not be found to check full InChI. You should manually check that the log file contains the intended species.");
-                        return true;
+                        if(inputFileInChI.equals("")){//InChI was not found in input file
+                            System.out.println("*****Warning: potential InChIKey collision: InChIKey(augmented) = " + name + " RMG Augmented InChI = "+ InChIaug + " Log file Augmented InChI = "+logFileInChI + " . InChI could not be found in the MOPAC input file. You should manually check that the output file contains the intended species.");
+                            return true;
+                        }
+                        else{//InChI was found but doesn't match
+                            System.out.println("Congratulations! You appear to have discovered the first recorded instance of an InChIKey collision: InChIKey(augmented) = " + name + " RMG Augmented InChI = "+ InChIaug + " MOPAC input file Augmented InChI = " + inputFileInChI + " Log file Augmented InChI = "+logFileInChI);
+                            System.exit(0);
+                        }
                     }
                 }
                 else{
-                    System.out.println("Congratulations! You appear to have discovered the first recorded instance of an InChIKey collision: InChIKey(augmented) = " + name + " RMG Augmented InChI = "+ InChIaug + "MOPAC output file Augmented InChI = "+logFileInChI);
-                    System.exit(0);
+                    System.out.println("*****Warning: potential InChIKey collision: InChIKey(augmented) = " + name + " RMG Augmented InChI = "+ InChIaug + " Log file Augmented InChI = "+logFileInChI + " . MOPAC input file could not be found to check full InChI. You should manually check that the log file contains the intended species.");
+                    return true;
                 }
+              //  }
+//                else{
+//                    System.out.println("Congratulations! You appear to have discovered the first recorded instance of an InChIKey collision: InChIKey(augmented) = " + name + " RMG Augmented InChI = "+ InChIaug + " MOPAC output file Augmented InChI = "+logFileInChI);
+//                    System.exit(0);
+//                }
             }
             else if (InChIFound==0){
                 System.out.println("An InChI was not found in file: " +name+".out");
