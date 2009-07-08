@@ -983,7 +983,7 @@ public class QMTP implements GeneralGAPP {
         else if (pointGroup.equals("I")) sigmaCorr=+Math.log(2.)-Math.log(60.);//***assumed rot. sym. = 60, chiral
         else if (pointGroup.equals("Ih")) sigmaCorr=-Math.log(60.);//rot. sym. = 60
         else if (pointGroup.equals("Kh")) sigmaCorr=0;//arbitrarily set to zero...one could argue that it is infinite; apparently this is the point group of a single atom (cf. http://www.cobalt.chem.ucalgary.ca/ps/symmetry/tests/G_Kh); this should not have a rotational partition function, and we should not use the symmetry correction in this case
-        else{
+        else{//this point should not be reached, based on checks performed in determinePointGroupUsingSYMMETRYProgram
             System.out.println("Unrecognized point group: "+ pointGroup);
             System.exit(0);
         }
@@ -1034,6 +1034,9 @@ public class QMTP implements GeneralGAPP {
     //finalTol determines how loose the point group criteria are; values are comparable to those specifed in the GaussView point group interface
     //public String determinePointGroupUsingSYMMETRYProgram(String geom, double finalTol){
     public String determinePointGroupUsingSYMMETRYProgram(String geom){
+        int attemptNumber = 1;
+        int maxAttemptNumber = 2;
+        boolean pointGroupFound=false;
         //write the input file
         try {
             File inputFile=new File("c:/Users/User1/Documents/SYMMETRY/symminput.txt");//SYMMETRY program directory
@@ -1046,36 +1049,53 @@ public class QMTP implements GeneralGAPP {
             System.out.println(err);
             System.exit(0);
         }
-        
-        //call the program and read the result
         String result = "";
-        String [] lineArray;
-        try{ 
-           // File runningdir=new File("c:/Users/User1/Documents/SYMMETRY/");//SYMMETRY program directory
-           // String command = "c:/Users/User1/Documents/SYMMETRY/symmetry.exe -final " + finalTol+" c:/Users/User1/Documents/SYMMETRY/symminput.txt";//this seems to be causing an error; cf. , http://forums.sun.com/thread.jspa?forumID=32&threadID=728886 ; therefore, I have switched to use batch file with default tolerance of 0.01
-           // Process symmProc = Runtime.getRuntime().exec(command, null, runningdir);
-            String command = "c:/Users/User1/Documents/SYMMETRY/symmetryDefault.bat"; 
-            Process symmProc = Runtime.getRuntime().exec(command);
-            //check for errors and display the error if there is one
-            InputStream is = symmProc.getInputStream();
-            InputStreamReader isr = new InputStreamReader(is);
-            BufferedReader br = new BufferedReader(isr);
-            String line=null;
-            while ( (line = br.readLine()) != null) {
-                if(line.startsWith("It seems to be the ")){//last line, ("It seems to be the [x] point group") indicates point group
-                    lineArray = line.split(" ");//split the line around spaces
-                    result = lineArray[5];//point group string should be the 6th word
+        String command = "";
+        while (attemptNumber<=maxAttemptNumber && !pointGroupFound){
+            //call the program and read the result
+            result = "";
+            String [] lineArray;
+            try{ 
+               // File runningdir=new File("c:/Users/User1/Documents/SYMMETRY/");//SYMMETRY program directory
+               // String command = "c:/Users/User1/Documents/SYMMETRY/symmetry.exe -final " + finalTol+" c:/Users/User1/Documents/SYMMETRY/symminput.txt";//this seems to be causing an error; cf. , http://forums.sun.com/thread.jspa?forumID=32&threadID=728886 ; therefore, I have switched to use batch file with default tolerance of 0.01
+               // Process symmProc = Runtime.getRuntime().exec(command, null, runningdir);
+                if(attemptNumber==1) command = "c:/Users/User1/Documents/SYMMETRY/symmetryDefault.bat";
+                else if (attemptNumber==2) command = "c:/Users/User1/Documents/SYMMETRY/symmetryLoose.bat";//looser criteria (0.1 instead of 0.01) to properly identify C2v group in VBURLMBUVWIEMQ-UHFFFAOYAVmult5 (InChI=1/C3H4O2/c1-3(2,4)5/h1-2H2/mult5) MOPAC result; C2 and sigma were identified with default, but it should be C2 and sigma*2
+                else{
+                    System.out.println("Invalid attemptNumber: "+ attemptNumber);
+                    System.exit(0);
                 }
+                Process symmProc = Runtime.getRuntime().exec(command);
+                //check for errors and display the error if there is one
+                InputStream is = symmProc.getInputStream();
+                InputStreamReader isr = new InputStreamReader(is);
+                BufferedReader br = new BufferedReader(isr);
+                String line=null;
+                while ( (line = br.readLine()) != null) {
+                    if(line.startsWith("It seems to be the ")){//last line, ("It seems to be the [x] point group") indicates point group
+                        lineArray = line.split(" ");//split the line around spaces
+                        result = lineArray[5];//point group string should be the 6th word
+                    }
+                }
+                int exitValue = symmProc.waitFor();
             }
-            int exitValue = symmProc.waitFor();
-        }
-        catch(Exception e){
-            String err = "Error in running point group calculation process using SYMMETRY \n";
-            err += e.toString();
-            e.printStackTrace();
-            System.exit(0);
-        }
-        
+            catch(Exception e){
+                String err = "Error in running point group calculation process using SYMMETRY \n";
+                err += e.toString();
+                e.printStackTrace();
+                System.exit(0);
+            }
+            //check for a recognized point group
+            if (result.equals("C1")||result.equals("Cs")||result.equals("Ci")||result.equals("C2")||result.equals("C3")||result.equals("C4")||result.equals("C5")||result.equals("C6")||result.equals("C7")||result.equals("C8")||result.equals("D2")||result.equals("D3")||result.equals("D4")||result.equals("D5")||result.equals("D6")||result.equals("D7")||result.equals("D8")||result.equals("C2v")||result.equals("C3v")||result.equals("C4v")||result.equals("C5v")||result.equals("C6v")||result.equals("C7v")||result.equals("C8v")||result.equals("C2h")||result.equals("C3h")||result.equals("C4h")||result.equals("C5h")||result.equals("C6h")||result.equals("C7h")||result.equals("C8h")||result.equals("D2h")||result.equals("D3h")||result.equals("D4h")||result.equals("D5h")||result.equals("D6h")||result.equals("D7h")||result.equals("D8h")||result.equals("D2d")||result.equals("D3d")||result.equals("D4d")||result.equals("D5d")||result.equals("D6d")||result.equals("D7d")||result.equals("D8d")||result.equals("S4")||result.equals("S6")||result.equals("S8")||result.equals("T")||result.equals("Th")||result.equals("Td")||result.equals("O")||result.equals("Oh")||result.equals("Cinfv")||result.equals("Dinfh")||result.equals("I")||result.equals("Ih")||result.equals("Kh")) pointGroupFound=true;
+            else{
+                if(attemptNumber < maxAttemptNumber) System.out.println("Attempt number "+attemptNumber+" did not identify a recognized point group (" +result+"). Will retry with looser point group criteria.");
+                else{
+                    System.out.println("Final attempt number "+attemptNumber+" did not identify a recognized point group (" +result+"). Exiting.");
+                    System.exit(0);
+                }
+                attemptNumber++;
+            }
+        } 
         System.out.println("Point group: "+ result);//print result, at least for debugging purposes
         
         return result;
