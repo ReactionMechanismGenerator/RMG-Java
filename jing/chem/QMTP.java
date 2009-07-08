@@ -426,15 +426,15 @@ public class QMTP implements GeneralGAPP {
                 inpKeyStrTop=" precise nosym gnorm=0.0";
                 inpKeyStrBottom="oldgeo thermo nosym precise "; //precise appeared to be necessary for the problematic case (to avoid negative frequencies); 
             }
-            else if(attemptNumber==3){//used for troublesome HGRZRPHFLAXXBT-UHFFFAOYAVmult3 (InChI=1/C3H2O4/c4-2(5)1-3(6)7/h1H2/mult3) case (negative frequency and large gradient issues)
-                inpKeyStrBoth="pm3 "+radicalString;
-                inpKeyStrTop=" precise nosym recalc=10 dmax=0.10 nonr";
-                inpKeyStrBottom="oldgeo thermo nosym precise ";
-            }
-            else if(attemptNumber==4){//7/8/09: used for GYFVJYRUZAKGFA-UHFFFAOYALmult3 (InChI=1/C6H14O6Si/c1-3-10-13(8,11-4-2)12-6-5-9-7/h6-7H,3-5H2,1-2H3/mult3) case (negative frequency issues in MOPAC) (also, none of the existing Gaussian combinations worked with it); note that the Gaussian result appears to be a different conformation as it is about 0.85 kcal/mol more stable, so the Gaussian result was manually copied to QMFiles directory; note that the MOPAC output included a very low frequency (4-5 cm^-1)
+            else if(attemptNumber==3){//7/8/09: used for GYFVJYRUZAKGFA-UHFFFAOYALmult3 (InChI=1/C6H14O6Si/c1-3-10-13(8,11-4-2)12-6-5-9-7/h6-7H,3-5H2,1-2H3/mult3) case (negative frequency issues in MOPAC) (also, none of the existing Gaussian combinations worked with it); note that the Gaussian result appears to be a different conformation as it is about 0.85 kcal/mol more stable, so the Gaussian result was manually copied to QMFiles directory; note that the MOPAC output included a very low frequency (4-5 cm^-1)
                 inpKeyStrBoth="pm3 "+radicalString;
                 inpKeyStrTop=" precise nosym bfgs gnorm=0.0";
                 inpKeyStrBottom="oldgeo thermo nosym precise "; //precise appeared to be necessary for the problematic case (to avoid negative frequencies)
+            }
+            else if(attemptNumber==4){//used for troublesome HGRZRPHFLAXXBT-UHFFFAOYAVmult3 (InChI=1/C3H2O4/c4-2(5)1-3(6)7/h1H2/mult3) case (negative frequency and large gradient issues)
+                inpKeyStrBoth="pm3 "+radicalString;
+                inpKeyStrTop=" precise nosym recalc=10 dmax=0.10 nonr cycles=2000 t=2000";
+                inpKeyStrBottom="oldgeo thermo nosym precise ";
             }
             else if(attemptNumber==5){//used for troublesome CMARQPBQDRXBTN-UHFFFAOYAAmult3 (InChI=1/C3H2O4/c1-3(5)7-6-2-4/h1H2/mult3) case (negative frequency issues)
                 inpKeyStrBoth="pm3 "+radicalString;
