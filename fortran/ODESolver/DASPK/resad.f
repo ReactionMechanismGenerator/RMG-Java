@@ -19,6 +19,8 @@ C     -   GENERATED: Wed Jan 31 02:02:16 2007
       parameter(tbrmax=50)
       integer troemax
       parameter(troemax=50)
+	integer lindemax
+	parameter(lindemax=50)
       integer i
       integer j
       integer k
@@ -27,6 +29,7 @@ C     -   GENERATED: Wed Jan 31 02:02:16 2007
       integer nstate
       double precision pressure
       integer troereactionsize
+	integer lindereactionsize
       integer ires
       double precision cj
       integer ijac
@@ -43,17 +46,20 @@ C     -   GENERATED: Wed Jan 31 02:02:16 2007
       double precision del(neq)
       double precision yprime(neq)
       double precision rpar(reactionsize+thirdbodyreactionsize+
-     $     troereactionsize+nstate-1)
+     $     troereactionsize+lindereactionsize+nstate-1)
       integer reactionarray
       integer troereactionarray
+	integer lindereactionarray
       double precision troereactionratearray
+	double precision lindereactionratearray
       common /size/ nstate,neq,nparam,reactionsize,troereactionsize,
-     $   thirdbodyreactionsize
+     $   thirdbodyreactionsize,lindereactionsize
       common /reac/ reactionratearray(5*rmax),
      $   thirdbodyreactionratearray(16*tbrmax),troereactionratearray(
      $   21*troemax),temperature,pressure,reactionarray(9*rmax),
      $   thirdbodyreactionarray(20*tbrmax),troereactionarray(21*
-     $   troemax)
+     $   troemax),lindereactionratearray(17*lindemax),
+     $   lindereactionarray(20*lindemax)
 C        zzzderiv - partial derivative array stored in sparse matrix
 C                   format, pattern contained in zzzirn and zzzjcn.
 C        zzzne    - number of entries in zzzderiv.
@@ -77,6 +83,7 @@ C     Active variable offsets and counters
       integer reactionratearrayoft
       integer thirdbodyreactionratearrayoft
       integer troereactionratearrayoft
+	integer lindereactionratearrayoft
       integer temperatureoft
       integer pressureoft
       integer zzzindx
@@ -95,7 +102,8 @@ C     Variable offsets for COMMON BLOCK reac
       reactionratearrayoft=0
       thirdbodyreactionratearrayoft=reactionratearrayoft+(5*rmax)
       troereactionratearrayoft=thirdbodyreactionratearrayoft+(16*tbrmax)
-      temperatureoft=troereactionratearrayoft+(21*troemax)
+	lindereactionratearrayoft=troereactionratearrayoft+(21*troemax)
+      temperatureoft=lindereactionratearrayoft+(17*lindemax)
       pressureoft=temperatureoft+1
 C     Number of independent and dependent variables.
       zzzn=nstate
@@ -168,6 +176,8 @@ C     Done
       parameter(tbrmax=50)
       integer troemax
       parameter(troemax=50)
+	integer lindemax
+	parameter(lindemax=50)
       integer numcollider
       double precision logpr
       double precision lowrate
@@ -185,6 +195,7 @@ C     Done
       double precision pressure
       double precision pr
       integer troereactionsize
+	integer lindereactionsize
       double precision dg
       integer thirdbodyreactionsize
       integer nparam
@@ -217,14 +228,17 @@ C     Done
       double precision rpar(*)
       integer reactionarray
       integer troereactionarray
+	integer lindereactionarray
       double precision troereactionratearray
+	double precision lindereactionratearray
       common /size/ nstate,neq,nparam,reactionsize,troereactionsize,
-     $   thirdbodyreactionsize
+     $   thirdbodyreactionsize,lindereactionsize
       common /reac/ reactionratearray(5*rmax),
      $   thirdbodyreactionratearray(16*tbrmax),troereactionratearray(
      $   21*troemax),temperature,pressure,reactionarray(9*rmax),
      $   thirdbodyreactionarray(20*tbrmax),troereactionarray(21*
-     $   troemax)
+     $   troemax),lindereactionratearray(17*lindemax),
+     $   lindereactionarray(20*lindemax)
 C     Additional arguments for partial derivative construction
 C        zzziw - integer workspace
       integer zzziw(*)
@@ -259,6 +273,7 @@ C     Active variable offsets and counters
       integer reactionratearrayoft
       integer thirdbodyreactionratearrayoft
       integer troereactionratearrayoft
+	integer lindereactionratearrayoft
       integer temperatureoft
       integer pressureoft
       integer yoft
@@ -320,7 +335,8 @@ C     Variable offsets for COMMON BLOCK reac
       reactionratearrayoft=0
       thirdbodyreactionratearrayoft=reactionratearrayoft+(5*rmax)
       troereactionratearrayoft=thirdbodyreactionratearrayoft+(16*tbrmax)
-      temperatureoft=troereactionratearrayoft+(21*troemax)
+	lindereactionratearrayoft=troereactionratearrayoft+(21*troemax)
+      temperatureoft=lindereactionratearrayoft+(17*lindemax)
       pressureoft=temperatureoft+1
 C     
       do i=1,neq
@@ -343,7 +359,7 @@ C
 C     
       do i=1,nstate-1
          thermo(i)=rpar(reactionsize+thirdbodyreactionsize+
-     $      troereactionsize+i)
+     $      troereactionsize+lindereactionsize+i)
       end do
       do i=0,reactionsize-1
          frate=rpar(i+1)
@@ -769,17 +785,33 @@ C
          f=zzzv3
          call DSVM1(foft+1,2,zzzvbar2,logfoft+1,2)
 C     
-         zzzv4=1+pr
-         zzzv5=pr/zzzv4
-         zzzv6=rate*zzzv5
-         zzzv8=zzzv6*f
-         zzzvbar7=zzzv6
-         zzzvbar6=f
-         zzzvbar5=rate*zzzvbar6
-         zzzvbar4=-zzzv5/zzzv4*zzzvbar5
-         zzzvbar2=1.0d0/zzzv4*zzzvbar5+zzzvbar4
-         frate=zzzv8
-         call DSVM2(frateoft+1,2,zzzvbar7,foft+1,2,zzzvbar2,proft+1,2)
+	   if (rnum .gt. 1 .and. pnum .gt. 1) then
+            zzzv4=1+pr
+            zzzv5=1.0d0/zzzv4
+            zzzv6=low*zzzv5
+            zzzv8=zzzv6*f
+            zzzvbar7=zzzv6
+            zzzvbar6=f
+            zzzvbar5=low*zzzvbar6
+            zzzvbar4=-zzzv5/zzzv4*zzzvbar5
+            zzzvbar2=zzzvbar4
+            frate=zzzv8
+            call DSVM2(frateoft+1,2,zzzvbar7,foft+1,2,
+     $         zzzvbar2,proft+1,2)
+	   else
+            zzzv4=1+pr
+            zzzv5=pr/zzzv4
+            zzzv6=rate*zzzv5
+            zzzv8=zzzv6*f
+            zzzvbar7=zzzv6
+            zzzvbar6=f
+            zzzvbar5=rate*zzzvbar6
+            zzzvbar4=-zzzv5/zzzv4*zzzvbar5
+            zzzvbar2=1.0d0/zzzv4*zzzvbar5+zzzvbar4
+            frate=zzzv8
+            call DSVM2(frateoft+1,2,zzzvbar7,foft+1,2,
+     $         zzzvbar2,proft+1,2)
+	   end if
 C     
          if(troereactionarray(21*i+9)==1) then
             zzzv3=frate/keq
@@ -837,6 +869,145 @@ C
 C     
          end do
       end do
+
+      do i=0,lindereactionsize-1
+         rnum=lindereactionarray(i*20+1)
+         pnum=lindereactionarray(i*20+2)
+         dg=0
+         do j=1,rnum
+            dg=dg-thermo(lindereactionarray(20*i+2+j))
+         end do
+         do j=1,pnum
+            dg=dg+thermo(lindereactionarray(20*i+5+j))
+         end do
+         zzzv2=-dg
+         zzzv4=zzzv2*4184
+         zzzv6=zzzv4/8.314
+         zzzv8=zzzv6/temperature
+         zzzv9=exp(zzzv8)
+         zzzv11=82.053*temperature
+         zzzv14=rnum-pnum
+         zzzv15=zzzv11**zzzv14
+         zzzv16=zzzv9*zzzv15
+         zzzvbar15=zzzv9
+         zzzvbar11=zzzv14*zzzv11**(zzzv14-1.0d0)*zzzvbar15
+         zzzvbar9=zzzv15
+         zzzvbar8=zzzv9*zzzvbar9
+         zzzvbar7=-zzzv8/temperature*zzzvbar8+82.053*zzzvbar11
+         keq=zzzv16
+         call DSVM1(keqoft+1,2,zzzvbar7,temperatureoft+1,3)
+C     
+         zzzv3=pressure*1e-6
+         zzzv5=zzzv3/8.314
+         zzzv7=zzzv5/temperature
+         zzzvbar6=-zzzv7/temperature
+         zzzvbar5=1.0d0/temperature
+         zzzvbar3=1.0d0/8.314*zzzvbar5
+         zzzvbar1=1e-6*zzzvbar3
+         m=zzzv7
+         call DSVM2(moft+1,2,zzzvbar6,temperatureoft+1,3,zzzvbar1,
+     $      pressureoft+1,3)
+C     
+         numcollider=lindereactionarray(i*20+10)
+         do j=1,numcollider
+            zzzv5=lindereactionratearray(17*i+6+j)-1
+            zzzv6=y(lindereactionarray(i*20+10+j))*zzzv5
+            zzzv7=m+zzzv6
+            zzzvbar5=y(lindereactionarray(i*20+10+j))
+            zzzvbar3=zzzvbar5
+            zzzvbar2=zzzv5
+            zzzvbar1=1.0d0
+            m=zzzv7
+            call DSVM3(moft+1,2,zzzvbar3,lindereactionratearrayoft+17*i
+     $         +6+j,3,zzzvbar2,yoft+lindereactionarray(i*20+10+j),2,
+     $         zzzvbar1,moft+1,2)
+C     
+         end do
+
+         zzzvbar1=1.0d0
+         lowrate=lindereactionratearray(20*i+20)
+         call DSVM1(lowrateoft+1,2,1.0d0,lindereactionratearrayoft+17*i
+     $      +17,3)
+C     
+         rate=rpar(reactionsize+thirdbodyreactionsize+troereactionsize
+     $      +i+1)
+         direction=lindereactionarray(20*i+9)
+C     
+	   if (rnum .gt. 1 .and. pnum .gt. 1) then
+            zzzv4=1+pr
+            zzzv5=1.0d0/zzzv4
+            zzzvbar5=low
+            zzzvbar4=-zzzv5/zzzv4*zzzvbar5
+            zzzvbar2=zzzvbar4
+            frate=zzzv8
+            call DSVM1(frateoft+1,2,zzzvbar2,proft+1,2)
+	   else
+            zzzv4=1+pr
+            zzzv5=pr/zzzv4
+            zzzvbar5=rate
+            zzzvbar4=-zzzv5/zzzv4*zzzvbar5
+            zzzvbar2=1.0d0/zzzv4*zzzvbar5+zzzvbar4
+            frate=zzzv8
+            call DSVM1(frateoft+1,2,zzzvbar2,proft+1,2)
+	   end if
+C     
+         if(lindereactionarray(20*i+9)==1) then
+            zzzv3=frate/keq
+            zzzvbar2=-zzzv3/keq
+            zzzvbar1=1.0d0/keq
+            rrate=zzzv3
+            call DSVM2(rrateoft+1,2,zzzvbar2,keqoft+1,2,zzzvbar1,
+     $         frateoft+1,2)
+C     
+         else
+            rrate=0
+            call SVZ(rrateoft+1,2)
+C     
+         end if
+         do j=1,rnum
+            zzzv3=frate*y(lindereactionarray(20*i+2+j))
+            zzzvbar2=frate
+            zzzvbar1=y(lindereactionarray(20*i+2+j))
+            frate=zzzv3
+            call DSVM2(frateoft+1,2,zzzvbar2,yoft+lindereactionarray(20
+     $         *i+2+j),2,zzzvbar1,frateoft+1,2)
+C     
+         end do
+         do j=1,pnum
+            zzzv3=rrate*y(lindereactionarray(20*i+5+j))
+            zzzvbar2=rrate
+            zzzvbar1=y(lindereactionarray(20*i+5+j))
+            rrate=zzzv3
+            call DSVM2(rrateoft+1,2,zzzvbar2,yoft+lindereactionarray(20
+     $         *i+5+j),2,zzzvbar1,rrateoft+1,2)
+C     
+         end do
+         do j=1,rnum
+            zzzv3=del(lindereactionarray(20*i+2+j))-frate
+            zzzv5=zzzv3+rrate
+            zzzvbar4=1.0d0
+            zzzvbar2=-1.0d0
+            zzzvbar1=1.0d0
+            del(lindereactionarray(20*i+2+j))=zzzv5
+            call DSVM3(deloft+lindereactionarray(20*i+2+j),zzzsvm2,
+     $         zzzvbar4,rrateoft+1,2,zzzvbar2,frateoft+1,2,zzzvbar1,
+     $         deloft+lindereactionarray(20*i+2+j),zzzsvm2)
+C     
+         end do
+         do j=1,pnum
+            zzzv3=del(lindereactionarray(20*i+5+j))+frate
+            zzzv5=zzzv3-rrate
+            zzzvbar4=-1.0d0
+            zzzvbar2=1.0d0
+            zzzvbar1=1.0d0
+            del(lindereactionarray(20*i+5+j))=zzzv5
+            call DSVM3(deloft+lindereactionarray(20*i+5+j),zzzsvm2,
+     $         zzzvbar4,rrateoft+1,2,zzzvbar2,frateoft+1,2,zzzvbar1,
+     $         deloft+lindereactionarray(20*i+5+j),zzzsvm2)
+C     
+         end do
+      end do
+
       sumyprime=0
       call SVZ(sumyprimeoft+1,2)
 C     

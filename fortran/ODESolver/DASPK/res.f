@@ -6,10 +6,10 @@
       INTEGER IPAR(*), IRES, I, ijac, j, k, senpar
       DOUBLE PRECISION T, Y(NEQ), YPRIME(NEQ), CJ, DEL(NEQ),
      $     RPAR(REACTIONSIZE+THIRDBODYREACTIONSIZE+
-     $     TROEREACTIONSIZE+nstate-1), SUMY, SUMYPRIME,
+     $     TROEREACTIONSIZE+LINDEREACTIONSIZE+nstate-1), SUMY, SUMYPRIME,
      $     Jacobian(NSTATE,NSTATE), tempcj,
      $     dgdk(NSTATE, REACTIONSIZE+THIRDBODYREACTIONSIZE+
-     $     TROEREACTIONSIZE+NSTATE-1)
+     $     TROEREACTIONSIZE+LINDEREACTIONSIZE+NSTATE-1)
 
 
       do i=1,nstate
@@ -20,7 +20,7 @@
 
       do i=1,nstate
          do j=1,reactionsize+thirdbodyreactionsize+troereactionsize+
-     $        nstate-1
+     $        LINDEREACTIONSIZE+nstate-1
             dgdk(i,j) = 0
          end do
       end do
@@ -44,7 +44,7 @@ c calculate the res for sensitivity variables
      $        ijac)
          call calcdgdk(t, y, yprime, dgdk, tempcj, rpar, ipar, senpar)
          do j=1,reactionsize+thirdbodyreactionsize+troereactionsize+
-     $        nstate-1
+     $        LINDEREACTIONSIZE+nstate-1
 c     parameter number
             do i=1,nstate
 c     the equation

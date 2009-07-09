@@ -28,7 +28,7 @@ c     tempy is the total number of moles, get concentration y from it
 C EXTRACT THE THERMO DATA FROM RPAR
       DO I=1,NSTATE-1
          THERMO(I) = RPAR(REACTIONSIZE+THIRDBODYREACTIONSIZE+
-     $        TROEREACTIONSIZE+I)
+     $        TROEREACTIONSIZE+LINDEREACTIONSIZE+I)
 c         write(*,*) thermo(i)
       END DO
 c      stop
@@ -214,7 +214,12 @@ c         write(*,*) temperature
          LOGF = LOGFCENT/(1 + INSIDE**2)
          F = 10**LOGF
 
-         FRATE = RATE * (PR/(1+PR)) * F
+	   IF (RNUM .GT. 1 .AND. PNUM .GT. 1) THEN
+	      FRATE = LOW * (1/(1+PR)) * F
+	   ELSE
+	      FRATE = RATE * (PR/(1+PR)) * F
+	   END IF
+
          IF (TROEREACTIONARRAY(21*I+9) .EQ. 1) THEN
             RRATE = fRATE/KEQ
          ELSE
@@ -240,6 +245,77 @@ C     **********************************
          DO J=1,PNUM
             DEL(TROEREACTIONARRAY(21*I+5+J)) = DEL(TROEREACTIONARRAY
      $           (21*I+5+J)) + FRATE - RRATE
+         END DO
+
+      END DO
+
+C     ******CALCULATE THE FLUX DUE TO LINDEMANN REACTIONS
+      DO I=0,LINDEREACTIONSIZE -1
+
+C CALCULATE THE KEQ
+         RNUM = LINDEREACTIONARRAY(I*20+1)
+         PNUM = LINDEREACTIONARRAY(I*20+2)
+         DG = 0
+         DO J=1,RNUM
+            DG = DG - THERMO(LINDEREACTIONARRAY(20*I+2+J))
+         END DO
+
+         DO J=1,PNUM
+            DG = DG + THERMO(LINDEREACTIONARRAY(20*I+5+J))
+         END DO
+
+         KEQ = EXP(-DG*4184/8.314/TEMPERATURE)*(82.053*TEMPERATURE)**
+     $        (RNUM-PNUM)
+
+C     FIRST CALCULATE THE RATE OF LINDEREACTION
+
+         m = pressure*1e-6/8.314/temperature
+
+         NUMCOLLIDER = LINDEREACTIONARRAY(I*20 + 10)
+         DO J=1,NUMCOLLIDER
+            M = M + Y(LINDEREACTIONARRAY(I*20+10+J))
+     $           *(LINDEREACTIONRATEARRAY(17*I+6+J)-1)
+         END DO
+
+         LOWRATE = LINDEREACTIONRATEARRAY(17*I + 17)
+         RATE = RPAR(REACTIONSIZE+THIRDBODYREACTIONSIZE+TROEREACTIONSIZE
+     $        +I+1)
+         DIRECTION = LINDEREACTIONARRAY(20*I+9)
+c         write(*,*) temperature
+
+         PR = LOWRATE * M/RATE
+
+	   IF (RNUM .GT. 1 .AND. PNUM .GT. 1) THEN
+	      FRATE = LOW * (1/(1+PR))
+	   ELSE
+	      FRATE = RATE * (PR/(1+PR))
+	   END IF
+
+         IF (LINDEREACTIONARRAY(20*I+9) .EQ. 1) THEN
+            RRATE = fRATE/KEQ
+         ELSE
+            RRATE = 0
+         END IF
+
+C     **********************************
+
+
+         DO J=1,RNUM
+            FRATE = FRATE*Y(LINDEREACTIONARRAY(20*I+2+J))
+         END DO
+
+         DO J=1,PNUM
+            RRATE = RRATE*Y(LINDEREACTIONARRAY(20*I+5+J))
+         END DO
+
+         DO J=1,RNUM
+            DEL(LINDEREACTIONARRAY(20*i+2+J)) = DEL(LINDEREACTIONARRAY
+     $           (20*I+2+J)) - FRATE + RRATE
+         END DO
+
+         DO J=1,PNUM
+            DEL(LINDEREACTIONARRAY(20*I+5+J)) = DEL(LINDEREACTIONARRAY
+     $           (20*I+5+J)) + FRATE - RRATE
          END DO
 
       END DO

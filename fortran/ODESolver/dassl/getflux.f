@@ -5,21 +5,24 @@ C     ************************************************
 
 C     INITIALIZE VARIABLES IN COMMON BLOC
       INTEGER NSTATE, REACTIONSIZE, THIRDBODYREACTIONSIZE,
-     $     TROEREACTIONSIZE
+     $     TROEREACTIONSIZE, LINDEREACTIONSIZE
       COMMON /SIZE/ NSTATE, REACTIONSIZE, THIRDBODYREACTIONSIZE,
-     $     TROEREACTIONSIZE
+     $     TROEREACTIONSIZE, LINDEREACTIONSIZE
 
       INTEGER REACTIONARRAY(9*100000), THIRDBODYREACTIONARRAY(20*100),
-     $     TROEREACTIONARRAY(21*100), ConstantConcentration(1501)
+     $     TROEREACTIONARRAY(21*100), ConstantConcentration(1501),
+     $     LINDEREACTIONARRAY(20*100)
 
       DOUBLE PRECISION REACTIONRATEARRAY(5*100000),
      $     THIRDBODYREACTIONRATEARRAY(16*100),
-     $     TROEREACTIONRATEARRAY(21*100), temperature, pressure
+     $     TROEREACTIONRATEARRAY(21*100), temperature, pressure,
+     $     LINDEREACTIONRATEARRAY(17*100)
 
       COMMON /REAC/ REACTIONRATEARRAY, ThirdbodyREACTIONRATEARRAY,
      $     TROEREACTIONRATEARRAY,temperature, pressure, 
      $     REACTIONARRAY, THIRDBODYREACTIONARRAY, TROEREACTIONARRAY,
-     $     ConstantConcentration
+     $     ConstantConcentration, LINDEREACTIONRATEARRAY,
+     $     LINDEREACTIONARRAY
 
 
       
@@ -178,7 +181,18 @@ c         write(*,*) temperature
          LOGF = LOGFCENT/(1 + INSIDE**2)
          F = 10**LOGF
 
-         FRATE = RATE * (PR/(1+PR)) * F
+C	 9-Jul-2009: MRH
+C	 For unimolecular/recombination rxns, effective rate constant is
+C		keff = kinf * (Pr/(1+Pr)) * F
+C	 For chemically-activated bimolecular rxns, effective rate constant is
+C		keff = kzero * (1/(1+Pr)) * F
+	   IF (TROEREACTIONARRAY(I*21+1) .GT. 1 .AND.
+     $		TROEREACTIONARRAY(I*21+2) .GT. 1) THEN
+	      FRATE = LOWRATE * (1/(1+PR)) * F
+	   ELSE
+	      FRATE = RATE * (PR/(1+PR)) * F
+	   END IF
+
          IF (TROEREACTIONARRAY(21*I+9) .EQ. 1) THEN
             RRATE = fRATE/TROEREACTIONRATEARRAY(21*I+5)
          ELSE
@@ -205,6 +219,69 @@ C     **********************************
          DO J=1,PNUM
             DEL(TROEREACTIONARRAY(21*I+5+J)) = DEL(TROEREACTIONARRAY
      $           (21*I+5+J)) + FRATE - RRATE
+         END DO
+
+      END DO
+
+C     ******CALCULATE THE FLUX DUE TO LINDEMANN REACTIONS
+      DO I=0,LINDEREACTIONSIZE -1
+
+C     FIRST CALCULATE THE RATE OF LINDEREACTION
+
+         m = pressure*1e-6/8.314/temperature
+
+         NUMCOLLIDER = LINDEREACTIONARRAY(I*20 + 10)
+         DO J=1,NUMCOLLIDER
+            M = M + Y(LINDEREACTIONARRAY(I*20+10+J))
+     $           *(LINDEREACTIONRATEARRAY(17*I+6+J)-1)
+         END DO
+
+         LOWRATE = LINDEREACTIONRATEARRAY(17*I + 17)
+         RATE = RPAR(REACTIONSIZE+THIRDBODYREACTIONSIZE+TROEREACTIONSIZE
+     $        +I+1)
+         DIRECTION = LINDEREACTIONARRAY(20*I+9)
+c         write(*,*) temperature
+
+         PR = LOWRATE * M/RATE
+
+C	 9-Jul-2009: MRH
+C	 For unimolecular/recombination rxns, effective rate constant is
+C		keff = kinf * (Pr/(1+Pr)) * F
+C	 For chemically-activated bimolecular rxns, effective rate constant is
+C		keff = kzero * (1/(1+Pr)) * F
+	   IF (LINDEREACTIONARRAY(I*20+1) .GT. 1 .AND.
+     $		LINDEREACTIONARRAY(I*20+2) .GT. 1) THEN
+	      FRATE = LOWRATE * (1/(1+PR))
+	   ELSE
+	      FRATE = RATE * (PR/(1+PR))
+	   END IF
+
+         IF (LINDEREACTIONARRAY(20*I+9) .EQ. 1) THEN
+            RRATE = fRATE/LINDEREACTIONRATEARRAY(20*I+5)
+         ELSE
+            RRATE = 0
+         END IF
+
+C     **********************************
+
+         RNUM = LINDEREACTIONARRAY(I*20+1)
+         PNUM = LINDEREACTIONARRAY(I*20+2)
+         DO J=1,RNUM
+            FRATE = FRATE*Y(LINDEREACTIONARRAY(20*I+2+J))
+         END DO
+
+         DO J=1,PNUM
+            RRATE = RRATE*Y(LINDEREACTIONARRAY(20*I+5+J))
+         END DO
+
+         DO J=1,RNUM
+            DEL(LINDEREACTIONARRAY(20*i+2+J)) = DEL(LINDEREACTIONARRAY
+     $           (20*I+2+J)) - FRATE + RRATE
+         END DO
+
+         DO J=1,PNUM
+            DEL(LINDEREACTIONARRAY(20*I+5+J)) = DEL(LINDEREACTIONARRAY
+     $           (20*I+5+J)) + FRATE - RRATE
          END DO
 
       END DO
