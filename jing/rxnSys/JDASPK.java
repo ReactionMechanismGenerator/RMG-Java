@@ -138,10 +138,11 @@ public class JDASPK extends JDAS {
 			//int array format :  nReac, nProd, r1, r2, r3, p1, p2, p3, HASrev(T=1 or F=0)
 			rString = generatePDepODEReactionList(p_reactionModel, p_beginStatus, p_temperature, p_pressure);
 			
+			lindemannString = generateLindemannReactionList(p_reactionModel, p_beginStatus, p_temperature, p_pressure);
 			
 			nParameter = 0;
 			if (parameterInfor != 0) {
-				nParameter = rList.size() + thirdBodyList.size() + troeList.size() + p_reactionModel.getSpeciesNumber();				
+				nParameter = rList.size() + thirdBodyList.size() + troeList.size() + lindemannList.size() + p_reactionModel.getSpeciesNumber();				
 			}
 			neq = nState*(nParameter + 1);
 			initializeWorkSpace();
@@ -174,7 +175,7 @@ public class JDASPK extends JDAS {
 			outputString.append(info[i]+" ");
 		outputString.append("\n"+ rtol + " "+atol);
 		
-		outputString.append("\n" + thermoString.toString() + "\n" + p_temperature.getK() + " " + p_pressure.getPa() + "\n" + rList.size() + "\n" + rString.toString() + "\n" + thirdBodyList.size() + "\n"+tbrString.toString() + "\n" + troeList.size() + "\n" + troeString.toString()+"\n");
+		outputString.append("\n" + thermoString.toString() + "\n" + p_temperature.getK() + " " + p_pressure.getPa() + "\n" + rList.size() + "\n" + rString.toString() + "\n" + thirdBodyList.size() + "\n"+tbrString.toString() + "\n" + troeList.size() + "\n" + troeString.toString()+"\n" + lindemannList.size() + "\n" + lindemannString.toString() + "\n");
         
 		///4/30/08 gmagoon: code for providing edge reaction info to DASPK in cases if the automatic time stepping flag is set to true
 		if (autoflag)
@@ -223,6 +224,7 @@ public class JDASPK extends JDAS {
         reactionList.addAll(duplicates);
         reactionList.addAll(thirdBodyList);
         reactionList.addAll(troeList);
+        reactionList.addAll(lindemannList);
         sss.setReactionList(reactionList);
         sss.setReactionFlux(reactionFlux);
 		
@@ -266,8 +268,8 @@ public class JDASPK extends JDAS {
         		}
         		line = br.readLine();
         	}
-        	reactionFlux = new double[rList.size()+thirdBodyList.size()+troeList.size()];
-        	for (int i=0; i<rList.size()+thirdBodyList.size()+troeList.size(); i++){
+        	reactionFlux = new double[rList.size()+thirdBodyList.size()+troeList.size()+lindemannList.size()];
+        	for (int i=0; i<rList.size()+thirdBodyList.size()+troeList.size()+lindemannList.size(); i++){
         		line = br.readLine();
         		reactionFlux[i] = Double.parseDouble(line.trim());
         	}
@@ -329,9 +331,11 @@ public class JDASPK extends JDAS {
 			//int array format :  nReac, nProd, r1, r2, r3, p1, p2, p3, HASrev(T=1 or F=0)
 			rString = generatePDepODEReactionList(p_reactionModel, p_beginStatus, p_temperature, p_pressure);
 			
+			lindemannString = generateLindemannReactionList(p_reactionModel, p_beginStatus, p_temperature, p_pressure);
+			
 			nParameter = 0;
 			if (parameterInfor != 0) {
-				nParameter = rList.size() + thirdBodyList.size() + troeList.size() + p_reactionModel.getSpeciesNumber();				
+				nParameter = rList.size() + thirdBodyList.size() + troeList.size() + lindemannList.size() + p_reactionModel.getSpeciesNumber();				
 			}
 			neq = nState*(nParameter + 1);
 			initializeWorkSpace();
@@ -369,7 +373,7 @@ public class JDASPK extends JDAS {
 			outputString.append(info[i]+" ");
 		outputString.append("\n"+ rtol + " "+atol);
 		
-		outputString.append("\n" + thermoString.toString() + "\n" + p_temperature.getK() + " " + p_pressure.getPa() + "\n" + rList.size() + "\n" + rString.toString() + "\n" + thirdBodyList.size() + "\n"+tbrString.toString() + "\n" + troeList.size() + "\n" + troeString.toString()+"\n");
+		outputString.append("\n" + thermoString.toString() + "\n" + p_temperature.getK() + " " + p_pressure.getPa() + "\n" + rList.size() + "\n" + rString.toString() + "\n" + thirdBodyList.size() + "\n"+tbrString.toString() + "\n" + troeList.size() + "\n" + troeString.toString()+"\n" + lindemannList.size() + "\n" + lindemannString.toString() + "\n");
 		
         // Add list of flags for constantConcentration
         // one for each species, and a final one for the volume
@@ -481,8 +485,8 @@ public class JDASPK extends JDAS {
             		}
             		line = br.readLine();
             	}
-            	reactionFlux = new double[rList.size()+thirdBodyList.size()+troeList.size()];
-            	for (int i=0; i<rList.size()+thirdBodyList.size()+troeList.size(); i++){
+            	reactionFlux = new double[rList.size()+thirdBodyList.size()+troeList.size()+lindemannList.size()];
+            	for (int i=0; i<rList.size()+thirdBodyList.size()+troeList.size()+lindemannList.size(); i++){
             		line = br.readLine();
             		reactionFlux[i] = Double.parseDouble(line.trim());
             	}
@@ -515,6 +519,7 @@ public class JDASPK extends JDAS {
                 reactionList.addAll(duplicates);
                 reactionList.addAll(thirdBodyList);
                 reactionList.addAll(troeList);
+                reactionList.addAll(lindemannList);
                 sss.setReactionList(reactionList);
                 systemSnapshotList.add(sss);
                 sss.setReactionFlux(reactionFlux);

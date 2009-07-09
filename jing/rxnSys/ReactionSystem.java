@@ -822,6 +822,11 @@ public String printLowerBoundConcentrations(LinkedList p_speciesList) {
               k_lowerbound = r.calculateLowerBoundRate(t)*((TROEReaction)r).calculateTroeFallOff(ss);
               k_upperbound = r.calculateUpperBoundRate(t)*((TROEReaction)r).calculateTroeFallOff(ss);
             }
+            else if (r instanceof LindemannReaction) {
+            	k = ((LindemannReaction)r).calculateRate(ss);
+            	k_lowerbound = r.calculateLowerBoundRate(t)*((LindemannReaction)r).calculateLindemannFallOff(ss);
+            	k_upperbound = r.calculateUpperBoundRate(t)*((LindemannReaction)r).calculateLindemannFallOff(ss);
+            }
            if (r instanceof TemplateReaction){
              k = ((TemplateReaction)r).calculateTotalPDepRate(ss.getTemperature(), ss.getPressure());//10/25/07 gmagoon: added pressure
              k_lowerbound = k/2.0;
@@ -1081,6 +1086,10 @@ public String printLowerBoundConcentrations(LinkedList p_speciesList) {
                     k = ((TROEReaction)r).calculateRate(ss);
                     k_upperbound = r.calculateUpperBoundRate(t)*((TROEReaction)r).calculateTroeFallOff(ss);
                   }
+                  else if (r instanceof LindemannReaction) {
+                	  k = ((LindemannReaction)r).calculateRate(ss);
+                	  k_upperbound = r.calculateUpperBoundRate(t)*((LindemannReaction)r).calculateLindemannFallOff(ss);
+                  }
                   if (r instanceof TemplateReaction){
                     k = ((TemplateReaction)r).calculateTotalPDepRate(ss.getTemperature(), ss.getPressure());//10/25/07 gmagoon: added pressure
                     k_upperbound = k*2.0;
@@ -1259,6 +1268,9 @@ public String printLowerBoundConcentrations(LinkedList p_speciesList) {
         							else if (r instanceof TROEReaction) {
         								k = ( (TROEReaction) r).calculateRate(ss);
         							}
+        							else if (r instanceof LindemannReaction) {
+        								k = ((LindemannReaction)r).calculateRate(ss);
+        							}
         							else {
         								k = r.calculateTotalRate(ss.getTemperature());
         							}
@@ -1363,6 +1375,11 @@ public String printLowerBoundConcentrations(LinkedList p_speciesList) {
                     k = ((TROEReaction)r).calculateRate(ss);
                     k_upperbound = r.calculateUpperBoundRate(t)*((TROEReaction)r).calculateTroeFallOff(ss);
                     k_lowerbound = r.calculateLowerBoundRate(t)*((TROEReaction)r).calculateTroeFallOff(ss);
+                  }
+                  else if (r instanceof LindemannReaction) {
+                	  k = ((LindemannReaction)r).calculateRate(ss);
+                	  k_upperbound = r.calculateUpperBoundRate(t)*((LindemannReaction)r).calculateLindemannFallOff(ss);
+                	  k_lowerbound = r.calculateLowerBoundRate(t)*((LindemannReaction)r).calculateLindemannFallOff(ss);
                   }
                   else if (r instanceof ThirdBodyReaction){
                     k = ((ThirdBodyReaction)r).calculateRate(ss);

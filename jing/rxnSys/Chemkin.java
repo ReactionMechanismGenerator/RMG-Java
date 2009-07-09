@@ -185,7 +185,7 @@ public  Chemkin() {
   //## operation isPDepReaction(Reaction)
   private static boolean isPDepReaction(Reaction p_reaction) {
       //#[ operation isPDepReaction(Reaction)
-      if (p_reaction instanceof PDepReaction || p_reaction instanceof ThirdBodyReaction || p_reaction instanceof TROEReaction) return true;
+      if (p_reaction instanceof PDepReaction || p_reaction instanceof ThirdBodyReaction || p_reaction instanceof TROEReaction || p_reaction instanceof LindemannReaction) return true;
       else return false;
 
       //#]
@@ -540,18 +540,21 @@ public  Chemkin() {
 	  LinkedList troeList = new LinkedList();
 	  LinkedList tbrList = new LinkedList();
 	  LinkedList duplicates = new LinkedList();
+	  LinkedList lindeList = new LinkedList();
 	  
 	  if (rs.dynamicSimulator instanceof JDASPK){
 		  rList = ((JDASPK)rs.dynamicSimulator).rList;
 		  troeList = ((JDASPK)rs.dynamicSimulator).troeList;
 		  tbrList = ((JDASPK)rs.dynamicSimulator).thirdBodyList;
 		  duplicates = ((JDASPK)rs.dynamicSimulator).duplicates;
+		  lindeList = ((JDASPK)rs.dynamicSimulator).lindemannList;
 	  }
 	  else if (rs.dynamicSimulator instanceof JDASSL){
 		  rList = ((JDASSL)rs.dynamicSimulator).rList;
 		  troeList = ((JDASSL)rs.dynamicSimulator).troeList;
 		  tbrList = ((JDASSL)rs.dynamicSimulator).thirdBodyList;
 		  duplicates = ((JDASSL)rs.dynamicSimulator).duplicates;
+		  lindeList = ((JDASSL)rs.dynamicSimulator).lindemannList;
 	  }
 	  
 	  
@@ -576,6 +579,10 @@ public  Chemkin() {
     	  Reaction r = (Reaction)iter.next();
           result.append(r.toChemkinString(rs.getPresentTemperature())+"\n\tDUP\n");
     	  //result.append(r.toChemkinString(Global.temperature)+"\n\tDUP\n");
+      }
+      for (Iterator iter = lindeList.iterator(); iter.hasNext();) {
+    	  Reaction r = (Reaction)iter.next();
+    	  result.append(r.toChemkinString(rs.getPresentTemperature())+"\n");
       }
 
       result.append("END\n");
@@ -608,7 +615,7 @@ public  Chemkin() {
         	 * 		both rxns were given the same set of Arrhenius parameters.  Running this in
         	 * 		Chemkin-v4.1.1 resulted in an error.
         	 */
-        	if (r.isForward() && (r instanceof ThirdBodyReaction || r instanceof TROEReaction)) {        		
+        	if (r.isForward() && (r instanceof ThirdBodyReaction || r instanceof TROEReaction || r instanceof LindemannReaction)) {        		
         		pDepList.add(r);
         	}
         }
@@ -634,7 +641,7 @@ public  Chemkin() {
       	Reaction r = (Reaction)iter.next();
       	
       	boolean presentInPDep = false;
-      	if (r.isForward() && !(r instanceof ThirdBodyReaction) && !(r instanceof TROEReaction)) {
+      	if (r.isForward() && !(r instanceof ThirdBodyReaction) && !(r instanceof TROEReaction) && !(r instanceof LindemannReaction)) {
       		Iterator r_iter = pDepList.iterator();
       		while (r_iter.hasNext()){
       			Reaction pDepr = (Reaction)r_iter.next();

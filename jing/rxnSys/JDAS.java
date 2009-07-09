@@ -47,6 +47,7 @@ import jing.param.Global;
 import jing.param.ParameterInfor;
 import jing.param.Pressure;
 import jing.param.Temperature;
+import jing.rxn.LindemannReaction;
 import jing.rxn.NegativeRateException;
 import jing.rxn.PDepNetwork;
 import jing.rxn.PDepReaction;
@@ -82,10 +83,12 @@ public abstract class JDAS implements DAESolver {
 	protected LinkedList duplicates ;
     protected LinkedList thirdBodyList ;
     protected LinkedList troeList ;
+    protected LinkedList lindemannList;
 	protected StringBuilder outputString ;
 	protected StringBuilder rString ;
 	protected StringBuilder tbrString;
 	protected StringBuilder troeString;
+	protected StringBuilder lindemannString;
 	protected int index; //11/1/07 gmagoon: adding index to allow appropriate naming of RWORK, IWORK****may need to make similar modification for DASPK?
 	protected ValidityTester validityTester; //5/5/08 gmagoon: adding validityTester and autoflag as attributes needed for "automatic" time stepping
 	protected boolean autoflag;
@@ -149,7 +152,7 @@ public abstract class JDAS implements DAESolver {
         for (Iterator iter = nonPDepList.iterator(); iter.hasNext(); ) {
         	Reaction r = (Reaction)iter.next();
 
-			if (!(r instanceof ThirdBodyReaction) && !(r instanceof TROEReaction)){
+			if (!(r instanceof ThirdBodyReaction) && !(r instanceof TROEReaction) && !(r instanceof LindemannReaction)){
 				rList.add(r);
 				ODEReaction or = transferReaction(r, p_beginStatus, p_temperature, p_pressure);
 				arrayString.append(or.rNum+" "+or.pNum+" ");
@@ -207,7 +210,7 @@ public abstract class JDAS implements DAESolver {
 		for (Iterator iter = duplicates.iterator(); iter.hasNext(); ) {
         	Reaction r = (Reaction)iter.next();
 
-			//if (!(r instanceof ThirdBodyReaction) && !(r instanceof TROEReaction)){
+			//if (!(r instanceof ThirdBodyReaction) && !(r instanceof TROEReaction) && !(r instanceof LindemannReaction)){
 			if (r instanceof PDepReaction) {
 				rList.add(r);
 				ODEReaction or = transferReaction(r, p_beginStatus, p_temperature, p_pressure);
@@ -252,7 +255,7 @@ public abstract class JDAS implements DAESolver {
 			if (rxn.getReverseReaction() == null)
 				rxn.generateReverseReaction();
 
-			if (!rxn.reactantEqualsProduct()  && !troeList.contains(rxn) && !troeList.contains(rxn.getReverseReaction()) && !thirdBodyList.contains(rxn) && !thirdBodyList.contains(rxn.getReverseReaction()) ) {
+			if (!rxn.reactantEqualsProduct()  && !troeList.contains(rxn) && !troeList.contains(rxn.getReverseReaction()) && !thirdBodyList.contains(rxn) && !thirdBodyList.contains(rxn.getReverseReaction()) && !lindemannList.contains(rxn) && !lindemannList.contains(rxn.getReverseReaction())) {
 				if (!pDepList.contains(rxn) && !pDepList.contains(rxn.getReverseReaction())){
 					pDepList.add(rxn);
 				}
@@ -271,7 +274,7 @@ public abstract class JDAS implements DAESolver {
 		
 		for (Iterator iter = p_reactionModel.getReactionSet().iterator(); iter.hasNext(); ) {
 			Reaction r = (Reaction)iter.next();
-			if (r.isForward() && !(r instanceof ThirdBodyReaction) && !(r instanceof TROEReaction))
+			if (r.isForward() && !(r instanceof ThirdBodyReaction) && !(r instanceof TROEReaction) && !(r instanceof LindemannReaction))
 				nonPDepList.add(r);
 		}
 			
@@ -320,7 +323,7 @@ public abstract class JDAS implements DAESolver {
         
         while (iter.hasNext()) {
         	Reaction r = (Reaction)iter.next();
-            if ((r.isForward()) && (r instanceof ThirdBodyReaction) && !(r instanceof TROEReaction)) {
+            if ((r.isForward()) && (r instanceof ThirdBodyReaction) && !(r instanceof TROEReaction) && !(r instanceof LindemannReaction)) {
             	
 				ThirdBodyODEReaction or = (ThirdBodyODEReaction)transferReaction(r, p_beginStatus, p_temperature, p_pressure);
                 thirdBodyList.add((ThirdBodyReaction)r);
@@ -423,6 +426,64 @@ public abstract class JDAS implements DAESolver {
 		 }
 		 troeString.append(arrayString.toString()+"\n"+rateString.toString());
 		 return troeString;
+
+	 }
+	
+	protected StringBuilder generateLindemannReactionList(ReactionModel p_reactionModel, 
+			SystemSnapshot p_beginStatus, Temperature p_temperature, Pressure p_pressure) {
+		 
+		int size = p_reactionModel.getReactionSet().size();
+		 StringBuilder arrayString = new StringBuilder();
+		 StringBuilder rateString = new StringBuilder();
+		 StringBuilder lindemannString = new StringBuilder(); 
+		 Iterator iter = p_reactionModel.getReactionSet().iterator();
+		 lindemannList = new LinkedList();
+
+		 while (iter.hasNext()) {
+			 Reaction r = (Reaction)iter.next();
+
+			 if (r.isForward() && r instanceof LindemannReaction) {
+				 LindemannODEReaction or = (LindemannODEReaction)transferReaction(r, p_beginStatus, p_temperature, p_pressure);
+				 lindemannList.add((LindemannReaction)r);
+				 arrayString.append(or.rNum+" "+or.pNum+" ");
+					for (int i=0;i<3;i++){
+						if (i<or.rNum)
+							arrayString.append(or.rID[i]+" ");
+						else
+							arrayString.append(0+" ");
+					}
+					for (int i=0;i<3;i++){
+						if (i<or.pNum)
+							arrayString.append(or.pID[i]+" ");
+						else
+							arrayString.append(0+" ");
+					}
+
+					if (r.hasReverseReaction())
+						arrayString.append(1 + " ");
+					else
+						arrayString.append(0 + " ");
+
+					arrayString.append(or.numCollider+" ");
+					for (int i=0; i<10; i++){
+						if (i <  or.numCollider)
+							arrayString.append(or.colliders[i] + " ");
+						else
+							arrayString.append(0 + " ");
+					}
+
+					rateString.append(or.highRate + " " + or.A + " " + or.n + " " + or.E + " "+r.calculateKeq(p_temperature)+ " "+or.inertColliderEfficiency+" ");
+					for (int i=0; i<10; i++){
+						if (i < or.numCollider)
+							rateString.append(or.efficiency[i] + " ");
+						else
+							rateString.append(0 + " ");
+					}
+					rateString.append(or.lowRate+ " ");
+			 }
+		 }
+		 lindemannString.append(arrayString.toString()+"\n"+rateString.toString());
+		 return lindemannString;
 
 	 }
 	
@@ -548,6 +609,31 @@ public abstract class JDAS implements DAESolver {
 				TROEODEReaction or = new TROEODEReaction(rnum, pnum, rid, pid, direction, Keq, colliders, efficiency, numCollider, inertColliderEfficiency, T2star, T3star, Tstar, a, highRate, lowRate, troe7);
 				return or;
 			}
+			else if (p_reaction instanceof LindemannReaction){
+				HashMap weightMap = ((ThirdBodyReaction)p_reaction).getWeightMap();
+				int weightMapSize = weightMap.size();
+				int [] colliders = new int[weightMapSize];
+				double [] efficiency = new double[weightMapSize];
+				Iterator colliderIter = weightMap.keySet().iterator();
+				int numCollider =0;
+				for (int i=0; i<weightMapSize; i++){
+					String name = (String)colliderIter.next();
+					Species spe = SpeciesDictionary.getInstance().getSpeciesFromName(name);
+					if (spe != null){
+						colliders[numCollider] = getRealID(spe);
+						efficiency[numCollider] = ((Double)weightMap.get(name)).doubleValue();
+						numCollider++;
+					}
+
+				}
+				int direction = p_reaction.getDirection();
+				double Keq = p_reaction.calculateKeq(p_temperature);
+				double lowRate = ((LindemannReaction)p_reaction).getLow().calculateRate(p_temperature, -1);
+				double highRate = ((LindemannReaction)p_reaction).getKinetics().calculateRate(p_temperature, -1);
+				double inertColliderEfficiency = ((ThirdBodyReaction)p_reaction).calculateThirdBodyCoefficientForInerts(p_beginStatus);
+				LindemannODEReaction or = new LindemannODEReaction(rnum, pnum, rid, pid, direction, Keq, colliders, efficiency, numCollider, inertColliderEfficiency, highRate, lowRate);
+				return or;
+			}
 			else if (p_reaction instanceof ThirdBodyReaction){//svp
 				startTime = System.currentTimeMillis();
 				HashMap weightMap = ((ThirdBodyReaction)p_reaction).getWeightMap();
@@ -596,7 +682,7 @@ public abstract class JDAS implements DAESolver {
     }
 
     public int getReactionSize(){
-    	return rList.size()+troeList.size()+thirdBodyList.size();
+    	return rList.size()+troeList.size()+thirdBodyList.size()+lindemannList.size();
     }
     public int getMaxSpeciesNumber() {
         return IDTranslator.size() - 1;

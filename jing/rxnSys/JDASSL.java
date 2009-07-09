@@ -157,6 +157,7 @@ public class JDASSL extends JDAS {
 			//int array format :  nReac, nProd, r1, r2, r3, p1, p2, p3, rev(=1 or -1)
 			rString = generatePDepODEReactionList(p_reactionModel, p_beginStatus, p_temperature, p_pressure);
 			
+			lindemannString = generateLindemannReactionList(p_reactionModel, p_beginStatus, p_temperature, p_pressure);
 			
 			initializeWorkSpace();
 			initializeConcentrations(p_beginStatus, p_reactionModel, p_beginTime, p_endTime, initialSpecies);
@@ -186,7 +187,7 @@ public class JDASSL extends JDAS {
 		for (int i=0; i<30; i++)
 			outputString.append(info[i]+" ");
 		outputString.append("\n"+ rtol + " "+atol);
-		outputString.append("\n" + p_temperature.getK() + " " + p_pressure.getPa() + "\n" + rList.size() + "\n" + rString.toString() + "\n" + thirdBodyList.size() + "\n"+tbrString.toString() + "\n" + troeList.size() + "\n" + troeString.toString()+"\n");
+		outputString.append("\n" + p_temperature.getK() + " " + p_pressure.getPa() + "\n" + rList.size() + "\n" + rString.toString() + "\n" + thirdBodyList.size() + "\n"+tbrString.toString() + "\n" + troeList.size() + "\n" + troeString.toString()+"\n" + lindemannList.size() + "\n" + lindemannString.toString() + "\n");
 	
         //4/30/08 gmagoon: code for providing edge reaction info to DASSL in cases if the automatic time stepping flag is set to true
 		if (autoflag)
@@ -240,6 +241,7 @@ public class JDASSL extends JDAS {
         reactionList.addAll(duplicates);
         reactionList.addAll(thirdBodyList);
         reactionList.addAll(troeList);
+        reactionList.addAll(lindemannList);
         sss.setReactionList(reactionList);
 	sss.setReactionFlux(reactionFlux);
                 
@@ -276,8 +278,8 @@ public class JDASSL extends JDAS {
         		line = br.readLine();
         		yprime[i] = Double.parseDouble(line.trim());
         	}
-        	reactionFlux = new double[rList.size()+thirdBodyList.size()+troeList.size()];
-        	for (int i=0; i<rList.size()+thirdBodyList.size()+troeList.size(); i++){
+        	reactionFlux = new double[rList.size()+thirdBodyList.size()+troeList.size()+lindemannList.size()];
+        	for (int i=0; i<rList.size()+thirdBodyList.size()+troeList.size()+lindemannList.size(); i++){
         		line = br.readLine();
         		reactionFlux[i] = Double.parseDouble(line.trim());
         	}

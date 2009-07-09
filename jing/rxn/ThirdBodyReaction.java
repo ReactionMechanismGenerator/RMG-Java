@@ -142,12 +142,12 @@ public class ThirdBodyReaction extends Reaction {
       //#[ operation formPDepSign(String) 
       StringTokenizer st = new StringTokenizer(p_string.toString(), "=");
       StringBuilder s1 = new StringBuilder(st.nextToken());
-      if (this instanceof TROEReaction)
+      if (this instanceof TROEReaction || this instanceof LindemannReaction)
     	  s1.append("(+m)=");
       else
     	  s1.append("+m=");
       s1.append(st.nextToken());
-      if (this instanceof TROEReaction)
+      if (this instanceof TROEReaction || this instanceof LindemannReaction)
     	  s1.append("(+m)");
       else
     	  s1.append("+m");
@@ -228,6 +228,10 @@ public class ThirdBodyReaction extends Reaction {
       return s.toString();
       
       //#]
+  }
+  
+  public String toChemkinString(Temperature p_temperature, Pressure p_pressure) {
+	  return toChemkinString(p_temperature) + "\n";
   }
   
 }

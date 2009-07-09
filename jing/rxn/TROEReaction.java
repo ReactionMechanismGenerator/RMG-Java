@@ -190,6 +190,15 @@ public class TROEReaction extends ThirdBodyReaction {
       //#]
   }
   
+  public String toChemkinString(Temperature p_temperature, Pressure p_pressure) {
+	  String s = super.toChemkinString(p_temperature) + "\n";
+	  s += "LOW/ " + low.toChemkinString(calculateHrxn(p_temperature), p_temperature, false) + "/\n";
+	  s += "TROE/ " + a + "\t" + T3star + "\t" + Tstar;
+	  if (troe7) s += "\t" + T2star;
+	  s += " /\n";
+	  return s;
+  }
+  
   //## operation toString() 
   public String toString(Temperature p_temperature) {
       //#[ operation toString() 

@@ -443,7 +443,7 @@ public class CoreEdgeReactionModel implements ReactionModel {
 	        LinkedHashSet rSet = getReactionSet();
 	        for (Iterator iter = rSet.iterator(); iter.hasNext(); ) {
 	        	Reaction r = (Reaction)iter.next();
-	        	if (r instanceof ThirdBodyReaction || r instanceof TROEReaction && r.isForward()) {
+	        	if ((r instanceof ThirdBodyReaction || r instanceof TROEReaction || r instanceof LindemannReaction) && r.isForward()) {
 	        		pDepList.add(r);
 	        		
 	        	}
@@ -473,7 +473,7 @@ public class CoreEdgeReactionModel implements ReactionModel {
 	        Iterator iter = getReactionSet().iterator();
 	        while (iter.hasNext()) {
 	        	Reaction r = (Reaction)iter.next();
-	        	if (!r.reactantEqualsProduct() && !(r instanceof ThirdBodyReaction) && !(r instanceof TROEReaction) && r.isForward()) {
+	        	if (!r.reactantEqualsProduct() && !(r instanceof ThirdBodyReaction) && !(r instanceof TROEReaction) && !(r instanceof LindemannReaction) && r.isForward()) {
 	        		
 	        		if (!pDepList.contains(r)  ) {
 	        			nonPDepList.add(r);

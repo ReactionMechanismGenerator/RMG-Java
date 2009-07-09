@@ -611,7 +611,7 @@ public class ReactionTemplate {
 		  if (equivReactants) {
 			  LinkedList products = rxn.getProductList();
 			  if (Structure.isSpeciesListEquivalentToChemGraphListAsGraphs(products,p_products)) {
-				  if (rxn instanceof ThirdBodyReaction || rxn instanceof TROEReaction)
+				  if (rxn instanceof ThirdBodyReaction || rxn instanceof TROEReaction || rxn instanceof LindemannReaction)
 					  System.out.println("RMG is only utilizing the high-pressure limit parameters for PRL reaction: " + rxn.toString());
 				  return rxn.getKinetics();
 			  }
