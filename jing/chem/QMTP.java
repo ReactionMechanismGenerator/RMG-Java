@@ -321,7 +321,7 @@ public class QMTP implements GeneralGAPP {
     //attemptNumber=-1 will call a special set of keywords for the monoatomic case
     public int createGaussianPM3Input(String name, String directory, molFile p_molfile, int attemptNumber, String InChIaug){
         //write a file with the input keywords
-        int maxAttemptNumber=16;//update this if additional keyword options are added or removed
+        int maxAttemptNumber=15;//update this if additional keyword options are added or removed
         try{
             File inpKey=new File(directory+"/inputkeywords.txt");
             String inpKeyStr="%chk="+directory+"\\RMGrunCHKfile.chk\n";
