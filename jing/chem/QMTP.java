@@ -421,17 +421,17 @@ public class QMTP implements GeneralGAPP {
             if(attemptNumber==1){
                 inpKeyStrBoth="pm3 "+radicalString;
                 inpKeyStrTop=" precise";
-                inpKeyStrBottom="oldgeo thermo ";
+                inpKeyStrBottom="oldgeo thermo precise";//7/10/09: based on a quick review of recent results, keyword combo #1 rarely works, and when it did (CJAINEUZFLXGFA-UHFFFAOYAUmult3 (InChI=1/C8H16O5Si/c1-4-11-14(9,12-5-2)13-8-6-10-7(8)3/h7-8H,3-6H2,1-2H3/mult3)), the grad. norm on the force step was about 1.7 (too large); I manually removed this result and re-rean
             }
-            else if(attemptNumber==2){//7/8/09: used for ADMPQLGIEMRGAT-UHFFFAOYAUmult3 (InChI=1/C6H14O5Si/c1-4-9-12(8,10-5-2)11-6(3)7/h6-7H,3-5H2,1-2H3/mult3); all existing Gaussian keywords also failed; however, the Gaussian result was also rectified, and the resulting conformation was about 1.0 kcal/mol more stable than the one resulting from this, so fixed Gaussian result was manually copied to QMFiles folder
-                inpKeyStrBoth="pm3 "+radicalString;
-                inpKeyStrTop=" precise nosym gnorm=0.0";
-                inpKeyStrBottom="oldgeo thermo nosym precise "; //precise appeared to be necessary for the problematic case (to avoid negative frequencies); 
-            }
-            else if(attemptNumber==3){//7/9/09: used for VCSJVABXVCFDRA-UHFFFAOYAI (InChI=1/C8H19O5Si/c1-5-10-8(4)13-14(9,11-6-2)12-7-3/h8H,5-7H2,1-4H3); all existing Gaussian keywords also failed; the Gaussian result was also rectified, but the resulting molecule was over 70 kcal/mol less stable, probably due to a large amount of spin contamination (~1.75 in fixed Gaussian result vs. 0.754 for MOPAC)
+            else if(attemptNumber==2){//7/9/09: used for VCSJVABXVCFDRA-UHFFFAOYAI (InChI=1/C8H19O5Si/c1-5-10-8(4)13-14(9,11-6-2)12-7-3/h8H,5-7H2,1-4H3); all existing Gaussian keywords also failed; the Gaussian result was also rectified, but the resulting molecule was over 70 kcal/mol less stable, probably due to a large amount of spin contamination (~1.75 in fixed Gaussian result vs. 0.754 for MOPAC)
                 inpKeyStrBoth="pm3 "+radicalString;
                 inpKeyStrTop=" precise nosym gnorm=0.0 nonr";
                 inpKeyStrBottom="oldgeo thermo nosym precise ";
+            }
+            else if(attemptNumber==3){//7/8/09: used for ADMPQLGIEMRGAT-UHFFFAOYAUmult3 (InChI=1/C6H14O5Si/c1-4-9-12(8,10-5-2)11-6(3)7/h6-7H,3-5H2,1-2H3/mult3); all existing Gaussian keywords also failed; however, the Gaussian result was also rectified, and the resulting conformation was about 1.0 kcal/mol more stable than the one resulting from this, so fixed Gaussian result was manually copied to QMFiles folder
+                inpKeyStrBoth="pm3 "+radicalString;
+                inpKeyStrTop=" precise nosym gnorm=0.0";
+                inpKeyStrBottom="oldgeo thermo nosym precise "; //precise appeared to be necessary for the problematic case (to avoid negative frequencies); 
             }
             else if(attemptNumber==4){//7/8/09: used for GYFVJYRUZAKGFA-UHFFFAOYALmult3 (InChI=1/C6H14O6Si/c1-3-10-13(8,11-4-2)12-6-5-9-7/h6-7H,3-5H2,1-2H3/mult3) case (negative frequency issues in MOPAC) (also, none of the existing Gaussian combinations worked with it); note that the Gaussian result appears to be a different conformation as it is about 0.85 kcal/mol more stable, so the Gaussian result was manually copied to QMFiles directory; note that the MOPAC output included a very low frequency (4-5 cm^-1)
                 inpKeyStrBoth="pm3 "+radicalString;
