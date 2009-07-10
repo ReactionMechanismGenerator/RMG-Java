@@ -590,8 +590,84 @@ public class ReactionModelGenerator {
 							pDepKinType.toLowerCase().equals("pdeparrhenius") ||
 							pDepKinType.toLowerCase().equals("rate")) {
 
-						if (pDepKinType.toLowerCase().equals("chebyshev"))
+						if (pDepKinType.toLowerCase().equals("chebyshev")) {
 							PDepRateConstant.setMode(PDepRateConstant.Mode.CHEBYSHEV);
+							line = ChemParser.readMeaningfulLine(reader);
+							if (line.startsWith("TRange")) {
+								st = new StringTokenizer(line);
+								String temp = st.nextToken(); // Should be "TRange:"
+								String TUNITS = ChemParser.removeBrace(st.nextToken());
+								double tLow = Double.parseDouble(st.nextToken());
+								Temperature TMIN = new Temperature(tLow,TUNITS);
+								PDepRateConstant.setTMin(TMIN);
+								double tHigh = Double.parseDouble(st.nextToken());
+								if (tHigh <= tLow) {
+									System.err.println("Tmax is less than or equal to Tmin");
+									System.exit(0);
+								}
+								Temperature TMAX = new Temperature(tHigh,TUNITS);
+								PDepRateConstant.setTMax(TMAX);
+								int tResolution = Integer.parseInt(st.nextToken());
+								int tbasisFuncs = Integer.parseInt(st.nextToken());
+								if (tbasisFuncs > tResolution) {
+									System.err.println("The number of basis functions cannot exceed the number of grid points");
+									System.exit(0);
+								}
+								FastMasterEqn.setNumTBasisFuncs(tbasisFuncs);
+								line = ChemParser.readMeaningfulLine(reader);
+								String PUNITS = "";
+								Pressure PMIN = new Pressure();
+								Pressure PMAX = new Pressure();
+								int pResolution = 0;
+								int pbasisFuncs = 0;
+								if (line.startsWith("PRange")) {
+									st = new StringTokenizer(line);
+									temp = st.nextToken(); // Should be "PRange:"
+									PUNITS = ChemParser.removeBrace(st.nextToken());
+									double pLow = Double.parseDouble(st.nextToken());
+									PMIN = new Pressure(pLow,PUNITS);
+									PDepRateConstant.setPMin(PMIN);
+									double pHigh = Double.parseDouble(st.nextToken());
+									if (pHigh <= pLow) {
+										System.err.println("Pmax is less than or equal to Pmin");
+										System.exit(0);
+									}
+									PMAX = new Pressure(pHigh,PUNITS);
+									PDepRateConstant.setPMax(PMAX);
+									pResolution = Integer.parseInt(st.nextToken());
+									pbasisFuncs = Integer.parseInt(st.nextToken());
+									if (pbasisFuncs > pResolution) {
+										System.err.println("The number of basis functions cannot exceed the number of grid points");
+										System.exit(0);
+									}
+									FastMasterEqn.setNumPBasisFuncs(pbasisFuncs);
+								}
+								else {
+									System.err.println("RMG cannot locate PRange field for Chebyshev polynomials.");
+									System.exit(0);
+								}
+								
+								// Set temperatures and pressures to use in PDep kinetics estimation
+								Temperature[] temperatures = new Temperature[tResolution];
+								for (int i=0; i<temperatures.length; i++) {
+									double tempValueTilda = Math.cos((2*(i+1)-1)*Math.PI/(2*temperatures.length));
+									double tempValue = 2 / (tempValueTilda * ((1/TMAX.getK()) - (1/TMIN.getK())) + (1/TMIN.getK()) + (1/TMAX.getK()));
+									temperatures[temperatures.length-i-1] = new Temperature(tempValue,TUNITS);
+								}
+								FastMasterEqn.setTemperatures(temperatures);
+								PDepRateConstant.setTemperatures(temperatures);
+								
+								Pressure[] pressures = new Pressure[pResolution];
+								for (int j=0; j<pressures.length; j++) {
+									double pressValueTilda = Math.cos((2*(j+1)-1)*Math.PI/(2*pressures.length));
+									double pressValue = Math.pow(10,(pressValueTilda*(Math.log10(PMAX.getBar())-Math.log10(PMIN.getBar()))+Math.log10(PMIN.getBar())+Math.log10(PMAX.getBar()))/2);
+									pressures[pressures.length-j-1] = new Pressure(pressValue,PUNITS);
+								}
+								FastMasterEqn.setPressures(pressures);
+								PDepRateConstant.setPressures(pressures);
+								line = ChemParser.readMeaningfulLine(reader);
+							}
+						}
 						else if (pDepKinType.toLowerCase().equals("pdeparrhenius"))
 							PDepRateConstant.setMode(PDepRateConstant.Mode.PDEPARRHENIUS);
 						// 6Jul2009-MRH:
@@ -610,7 +686,8 @@ public class ReactionModelGenerator {
 			}
 
         	// include species (optional)
-			line = ChemParser.readMeaningfulLine(reader);
+			if (!PDepRateConstant.getMode().name().equals("CHEBYSHEV"))
+				line = ChemParser.readMeaningfulLine(reader);
 			if (line.startsWith("IncludeSpecies")) {
 				StringTokenizer st = new StringTokenizer(line);
 				String iS = st.nextToken();

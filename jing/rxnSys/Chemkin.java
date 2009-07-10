@@ -646,12 +646,12 @@ public  Chemkin() {
       		while (r_iter.hasNext()){
       			Reaction pDepr = (Reaction)r_iter.next();
       			if (pDepr.equals(r)){
-      				removeReactions.add(pDepr);
-      				duplicates.add(pDepr);
-      				if (!r.hasAdditionalKinetics()){
-      					duplicates.add(r);
+      				//removeReactions.add(pDepr);
+      				//duplicates.add(pDepr);
+      				//if (!r.hasAdditionalKinetics()){
+      					//duplicates.add(r);
       					presentInPDep = true;
-      				}
+      				//}
       			}
       		}
       		if (!presentInPDep)
@@ -674,12 +674,12 @@ public  Chemkin() {
       }
       for (Iterator iter = nonPDepList.iterator(); iter.hasNext();){
     	  Reaction r = (Reaction)iter.next();
-          result.append(r.toChemkinString(p_beginStatus.getTemperature())+"\n");
+          result.append(r.toChemkinString(p_beginStatus.getTemperature(),p_beginStatus.getPressure())+"\n");
     	  //result.append(r.toChemkinString(Global.temperature)+"\n");
       }
       for (Iterator iter = duplicates.iterator(); iter.hasNext();){
     	  Reaction r = (Reaction)iter.next();
-          result.append(r.toChemkinString(p_beginStatus.getTemperature())+"\n\tDUP\n");
+          result.append(r.toChemkinString(p_beginStatus.getTemperature(),p_beginStatus.getPressure())+"\n\tDUP\n");
     	  //result.append(r.toChemkinString(Global.temperature)+"\n\tDUP\n");
       }
 

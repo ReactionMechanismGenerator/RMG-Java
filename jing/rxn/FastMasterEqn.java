@@ -96,6 +96,9 @@ public class FastMasterEqn implements PDepKineticsEstimator {
 	 * explicitly calculated.
 	 */
 	private static Pressure[] pressures;
+	
+	private static int numTBasisFuncs = -1;
+	private static int numPBasisFuncs = -1;
 
 	//==========================================================================
 	//
@@ -323,7 +326,15 @@ public class FastMasterEqn implements PDepKineticsEstimator {
 		Pressure pressure = rxnSystem.getPresentPressure();
 		BathGas bathGas = new BathGas(rxnSystem);
 
-		int numChebTempPolys = 4, numChebPressPolys = 4;
+		int numChebTempPolys, numChebPressPolys;
+		if (numTBasisFuncs == -1) {
+			numChebTempPolys = 4;
+			numChebPressPolys = 4;
+		}
+		else {
+			numChebTempPolys = numTBasisFuncs;
+			numChebPressPolys = numPBasisFuncs;
+		}
 
 		// Determine reference energies
 		double grainMinEnergy = getGrainMinEnergy(isomerList); // [=] kJ/mol
@@ -804,6 +815,14 @@ public class FastMasterEqn implements PDepKineticsEstimator {
 
 	public static void setPressures(Pressure[] press) {
 		pressures = press;
+	}
+	
+	public static void setNumTBasisFuncs(int n) {
+		numTBasisFuncs = n;
+	}
+	
+	public static void setNumPBasisFuncs(int m) {
+		numPBasisFuncs = m;
 	}
 
 }

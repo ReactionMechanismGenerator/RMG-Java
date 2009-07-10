@@ -90,6 +90,10 @@ public class PDepRateConstant {
 	 */
 	private PDepArrheniusKinetics pDepArrhenius;
 
+	private static Temperature TMIN;
+	private static Temperature TMAX;
+	private static Pressure PMIN;
+	private static Pressure PMAX;
 
 	//==========================================================================
 	//
@@ -212,11 +216,16 @@ public class PDepRateConstant {
 	}
 
 	public void setChebyshev(double[][] cheb) {
-		chebyshev = new ChebyshevPolynomials(
-				cheb.length, temperatures[0], temperatures[temperatures.length-1],
-				cheb[0].length, pressures[0], pressures[pressures.length-1],
-				cheb);
-		
+		if (TMIN == null) {
+			chebyshev = new ChebyshevPolynomials(
+					cheb.length, temperatures[0], temperatures[temperatures.length-1],
+					cheb[0].length, pressures[0], pressures[pressures.length-1],
+					cheb);
+		}
+		else {
+			chebyshev = new ChebyshevPolynomials(
+					cheb.length, TMIN, TMAX, cheb[0].length, PMIN, PMAX, cheb);
+		}
 	}
 
 	public PDepArrheniusKinetics getPDepArrheniusKinetics() {
@@ -225,5 +234,21 @@ public class PDepRateConstant {
 
 	public void setPDepArrheniusKinetics(PDepArrheniusKinetics kin) {
 		pDepArrhenius = kin;
+	}
+	
+	public static void setPMin(Pressure p) {
+		PMIN = p;
+	}
+	
+	public static void setPMax(Pressure p) {
+		PMAX = p;
+	}
+	
+	public static void setTMin(Temperature t) {
+		TMIN = t;
+	}
+	
+	public static void setTMax(Temperature t) {
+		TMAX = t;
 	}
 }

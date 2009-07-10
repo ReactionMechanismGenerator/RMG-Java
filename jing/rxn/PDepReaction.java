@@ -503,7 +503,7 @@ public class PDepReaction extends Reaction {
 			if (PDepRateConstant.getMode() == PDepRateConstant.Mode.CHEBYSHEV)
 				result = formPDepSign(result);
 			if (PDepRateConstant.getMode() == PDepRateConstant.Mode.RATE) {
-				result += "\t" + calculateRate(t,p) + " 0.0 0.0\n";
+				result = formPDepSign(result) + "\t" + calculateRate(t,p) + " 0.0 0.0\n";
 				return result;
 			}
 			result += '\t' + "1.0E0 0.0 0.0" + '\n';
