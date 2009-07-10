@@ -133,12 +133,12 @@ public class JDASPK extends JDAS {
 			//int array format :  nReac, nProd, r1, r2, r3, p1, p2, p3, HASrev(T=1 or F=0), ncollider, c1, c2,..c10 (20 elements)
 			tbrString = generateThirdBodyReactionList(p_reactionModel, p_beginStatus, p_temperature, p_pressure);
 			
+			lindemannString = generateLindemannReactionList(p_reactionModel, p_beginStatus, p_temperature, p_pressure);
+			
 			//rString is a combination of a integer and a real array
 			//real array format:  rate, A, n, Ea, Keq
 			//int array format :  nReac, nProd, r1, r2, r3, p1, p2, p3, HASrev(T=1 or F=0)
 			rString = generatePDepODEReactionList(p_reactionModel, p_beginStatus, p_temperature, p_pressure);
-			
-			lindemannString = generateLindemannReactionList(p_reactionModel, p_beginStatus, p_temperature, p_pressure);
 			
 			nParameter = 0;
 			if (parameterInfor != 0) {
@@ -325,13 +325,12 @@ public class JDASPK extends JDAS {
 			//int array format :  nReac, nProd, r1, r2, r3, p1, p2, p3, HASrev(T=1 or F=0), ncollider, c1, c2,..c10 (20 elements)
 			tbrString = generateThirdBodyReactionList(p_reactionModel, p_beginStatus, p_temperature, p_pressure);
 			
+			lindemannString = generateLindemannReactionList(p_reactionModel, p_beginStatus, p_temperature, p_pressure);
 			
 			//rString is a combination of a integer and a real array
 			//real array format:  rate, A, n, Ea, Keq
 			//int array format :  nReac, nProd, r1, r2, r3, p1, p2, p3, HASrev(T=1 or F=0)
 			rString = generatePDepODEReactionList(p_reactionModel, p_beginStatus, p_temperature, p_pressure);
-			
-			lindemannString = generateLindemannReactionList(p_reactionModel, p_beginStatus, p_temperature, p_pressure);
 			
 			nParameter = 0;
 			if (parameterInfor != 0) {
