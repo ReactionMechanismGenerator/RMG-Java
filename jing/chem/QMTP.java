@@ -423,7 +423,7 @@ public class QMTP implements GeneralGAPP {
             if(attemptNumber==1){
                 inpKeyStrBoth="pm3 "+radicalString;
                 inpKeyStrTop=" precise";
-                inpKeyStrBottom="oldgeo thermo precise";//7/10/09: based on a quick review of recent results, keyword combo #1 rarely works, and when it did (CJAINEUZFLXGFA-UHFFFAOYAUmult3 (InChI=1/C8H16O5Si/c1-4-11-14(9,12-5-2)13-8-6-10-7(8)3/h7-8H,3-6H2,1-2H3/mult3)), the grad. norm on the force step was about 1.7 (too large); I manually removed this result and re-ran...the entropy was increased by nearly 20 cal/mol-K...perhaps we should add a check for the "WARNING" that MOPAC prints out when the gradient is high
+                inpKeyStrBottom="oldgeo thermo precise ";//7/10/09: based on a quick review of recent results, keyword combo #1 rarely works, and when it did (CJAINEUZFLXGFA-UHFFFAOYAUmult3 (InChI=1/C8H16O5Si/c1-4-11-14(9,12-5-2)13-8-6-10-7(8)3/h7-8H,3-6H2,1-2H3/mult3)), the grad. norm on the force step was about 1.7 (too large); I manually removed this result and re-ran...the entropy was increased by nearly 20 cal/mol-K...perhaps we should add a check for the "WARNING" that MOPAC prints out when the gradient is high
             }
             else if(attemptNumber==2){//7/9/09: used for VCSJVABXVCFDRA-UHFFFAOYAI (InChI=1/C8H19O5Si/c1-5-10-8(4)13-14(9,11-6-2)12-7-3/h8H,5-7H2,1-4H3); all existing Gaussian keywords also failed; the Gaussian result was also rectified, but the resulting molecule was over 70 kcal/mol less stable, probably due to a large amount of spin contamination (~1.75 in fixed Gaussian result vs. 0.754 for MOPAC)
                 inpKeyStrBoth="pm3 "+radicalString;
