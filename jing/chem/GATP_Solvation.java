@@ -17,7 +17,7 @@ import jing.param.Temperature;
  *
  * @author User1
  */
-public class GATP_Solvation implements GeneralAbramGAPP {
+public class GATP_Solvation implements GeneralSolvationGAPP {
 
     private static GATP_Solvation INSTANCE = new GATP_Solvation();		//## attribute INSTANCE
 
@@ -31,28 +31,31 @@ public class GATP_Solvation implements GeneralAbramGAPP {
 
 
     private  GATP_Solvation() {
+
+        //#[ operation GATP()
+        //initializeLibrary();
+        //initGAGroupLibrary();
+        //initializePrimaryThermoLibrary();//svp
+        //#]
+
         initializeLibrary();
         initGAGroupLibrary();
         initializePrimaryThermoLibrary();//svp
+
     }
 
-        public AbramData generateAbramData(ChemGraph p_chemGraph) {
-       
-       
-       // Generation of UNIFAC parameters for estimation of species radii and solvation entropy using Rob Ashcraft's method
-       UnifacData result_unifac= new UnifacData();
-       result_unifac=p_chemGraph.getUnifacData();
-       double Volume=result_unifac.R;                         // UNITS unknown! preferred units should be Angstrom^3
-       double r3= (21/88)*Volume;                             // r^3=(3/4*pi)*Volume
-       double r_solute=Math.pow(r3,1/3);                      // Preferred units are Angstrom
-       double r_solvent; r_solvent=3.4;   // Bogus value      // Manually assigned solvent radius [=] Angstrom
+        public ThermoData generateSolvThermoData(ChemGraph p_chemGraph) {
+
+
+       double r_solute=p_chemGraph.getRadius();
+       double r_solvent; r_solvent=3.498;// 3.311;                    // Manually assigned solvent radius [=] Angstrom Calculated using Connolly solvent excluded volume from Chem3dPro
        double r_cavity=r_solute+r_solvent;                    // Cavity radius [=] Angstrom
-       double rho; rho=0.5;               // Bogus value      // number density of solvent [=] molecules/Angstrom^3
-       double parameter_y=(88/21)*rho*Math.pow(r_cavity, 3);  // Parameter y from Ashcraft Thesis Refer pg no. 60
+       double rho; rho=0.00309;  //0.00381;                             // number density of solvent [=] molecules/Angstrom^3   Value here is for decane using density =0.73 g/cm3
+       double parameter_y=(88/21)*rho*Math.pow(r_solvent, 3);  // Parameter y from Ashcraft Thesis Refer pg no. 60
        double parameter_ymod=parameter_y/(1-parameter_y);     // parameter_ymod= y/(1-y) Defined for convenience
-       double R=8.314;                                        // Gas constant
+       double R=8.314;                                        // Gas constant units J/mol K
        double T=298;                                          // Standard state temperature
-       
+
        // Definitions of K0, K1 and K2 correspond to those for K0', K1' and K2' respectively from Ashcraft's Thesis
        double K0= -R*(-Math.log(1-parameter_y)+(4.5*Math.pow(parameter_ymod, 2)));
        double K1= (R*0.5/r_solvent)*((6*parameter_ymod)+(18*Math.pow(parameter_ymod, 2)));
@@ -61,10 +64,12 @@ public class GATP_Solvation implements GeneralAbramGAPP {
        // Basic definition of entropy change of solvation from Ashcfrat's Thesis
        double deltaS0;
        deltaS0=K0+(K1*r_cavity)+(K2*Math.pow(r_cavity,2));
-       
+
+
        // Generation of Abraham Solute Parameters
        AbramData result_Abraham= new AbramData();
-       result_Abraham.plus(getABGroup(p_chemGraph));
+       result_Abraham= p_chemGraph.getAbramData();
+
 
        // Solute descriptors from the Abraham Model
        double S=result_Abraham.S;
@@ -73,37 +78,38 @@ public class GATP_Solvation implements GeneralAbramGAPP {
        double L=result_Abraham.L;
        double A=result_Abraham.A;
 
-        //Manually specified solvent descriptors (constants here are for octanol)
-        double c=-0.12;
-        double s=0.56;
-        double b=0.7;
-        double e=-0.2;
-        double l=0.94;
-        double a=3.56;
+        //Manually specified solvent descriptors (constants here are for decane)
+        double c=0.156;         //-0.12;
+        double s=0;             //0.56;
+        double b=0;             //0.7;
+        double e=-0.143;        //-0.2;
+        double l=0.989;         //0.94;
+        double a=0;             //3.56;
 
         double logK=c + s*S + b*B + e*E + l*L + a*A;    // Implementation of Abraham Model
         double deltaG0_octanol=-8.314*298*logK;
-        System.out.println("The free energy of solvation in octanol at 298K without reference state corrections is  = " + deltaG0_octanol +" " + "J/mol");
+ //       System.out.println("The free energy of solvation in octanol at 298K w/o reference state corrections  = " + deltaG0_octanol +" J/mol for " );
 
         // Calculation of enthalpy change of solvation using the data obtained above
-        double deltaH0=deltaG0_octanol-(T*deltaS0);
+        double deltaH0=deltaG0_octanol+(T*deltaS0);
+        deltaS0=deltaS0/4.18;   //unit conversion from J/mol to cal/mol
+        deltaH0=deltaH0/4180;   //unit conversion from J/mol to kcal/mol
 
        // Generation of Gas Phase data to add to the solution phase quantities
-       ThermoData result =new ThermoData();
-       result = p_chemGraph.getThermoData();
+       ThermoData solvationCorrection = new ThermoData(deltaH0, deltaS0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,"Solvation correction");
+    
 
-       // Modifying standard state enthalpy and entropy
-       result.H298+=deltaH0;
-       result.S298+=deltaS0;
-
-       // Now, the array 'result' contains solution phase estimates of H298, S298 and all the gas phase heat capacities.
+       // Now, solvationCorrection contains solution phase estimates of CORRECTION TO H298, S298 and all the gas phase heat capacities.
        // Assuming the solution phase heat capcities to be the same as that in the gas phase we wouls now want to pass on this
        // modified version of result to the kinetics codes. This might require reading in a keyword from the condition.txt file.
        // Exactly how this will be done is yet to be figured out.
 
-        return result_Abraham;
+        return solvationCorrection;
         //#]
     }
+
+
+            //protected static GATP_Solvation getINSTANCE() {
 
 
 
@@ -277,8 +283,10 @@ public class GATP_Solvation implements GeneralAbramGAPP {
 
 
         protected static GATP_Solvation getINSTANCE() {
+
         return INSTANCE;
     }
+
 
     public static HashMap getLibrary() {
         return library;
@@ -294,6 +302,7 @@ public class GATP_Solvation implements GeneralAbramGAPP {
         primaryLibrary = PrimaryThermoLibrary.getINSTANCE();
 
       }
+
 
 
 }

@@ -40,68 +40,11 @@ public class GATP_Abraham implements GeneralAbramGAPP {
 
         public AbramData generateAbramData(ChemGraph p_chemGraph) {
        
-       
-       // Generation of UNIFAC parameters for estimation of species radii and solvation entropy using Rob Ashcraft's method
-       UnifacData result_unifac= new UnifacData();
-       result_unifac=p_chemGraph.getUnifacData();
-       double Volume=result_unifac.R;                         // UNITS unknown! preferred units should be Angstrom^3
-       double r3= (21/88)*Volume;                             // r^3=(3/4*pi)*Volume
-       double r_solute=Math.pow(r3,1/3);                      // Preferred units are Angstrom
-       double r_solvent; r_solvent=3.4;   // Bogus value      // Manually assigned solvent radius [=] Angstrom
-       double r_cavity=r_solute+r_solvent;                    // Cavity radius [=] Angstrom
-       double rho; rho=0.5;               // Bogus value      // number density of solvent [=] molecules/Angstrom^3
-       double parameter_y=(88/21)*rho*Math.pow(r_cavity, 3);  // Parameter y from Ashcraft Thesis Refer pg no. 60
-       double parameter_ymod=parameter_y/(1-parameter_y);     // parameter_ymod= y/(1-y) Defined for convenience
-       double R=8.314;                                        // Gas constant
-       double T=298;                                          // Standard state temperature
-       
-       // Definitions of K0, K1 and K2 correspond to those for K0', K1' and K2' respectively from Ashcraft's Thesis
-       double K0= -R*(-Math.log(1-parameter_y)+(4.5*Math.pow(parameter_ymod, 2)));
-       double K1= (R*0.5/r_solvent)*((6*parameter_ymod)+(18*Math.pow(parameter_ymod, 2)));
-       double K2= -(R*0.25/Math.pow(r_solvent,2))*((12*parameter_ymod)+(18*Math.pow(parameter_ymod, 2)));
-
-       // Basic definition of entropy change of solvation from Ashcfrat's Thesis
-       double deltaS0;
-       deltaS0=K0+(K1*r_cavity)+(K2*Math.pow(r_cavity,2));
-       
+             
        // Generation of Abraham Solute Parameters
        AbramData result_Abraham= new AbramData();
        result_Abraham.plus(getABGroup(p_chemGraph));
 
-       // Solute descriptors from the Abraham Model
-       double S=result_Abraham.S;
-       double B=result_Abraham.B;
-       double E=result_Abraham.E;
-       double L=result_Abraham.L;
-       double A=result_Abraham.A;
-
-        //Manually specified solvent descriptors (constants here are for octanol)
-        double c=-0.12;
-        double s=0.56;
-        double b=0.7;
-        double e=-0.2;
-        double l=0.94;
-        double a=3.56;
-
-        double logK=c + s*S + b*B + e*E + l*L + a*A;    // Implementation of Abraham Model
-        double deltaG0_octanol=-8.314*298*logK;
-        System.out.println("The free energy of solvation in octanol at 298K without reference state corrections is  = " + deltaG0_octanol +" " + "J/mol");
-
-        // Calculation of enthalpy change of solvation using the data obtained above
-        double deltaH0=deltaG0_octanol-(T*deltaS0);
-
-       // Generation of Gas Phase data to add to the solution phase quantities
-       ThermoData result =new ThermoData();
-       result = p_chemGraph.getThermoData();
-
-       // Modifying standard state enthalpy and entropy
-       result.H298+=deltaH0;
-       result.S298+=deltaS0;
-
-       // Now, the array 'result' contains solution phase estimates of H298, S298 and all the gas phase heat capacities.
-       // Assuming the solution phase heat capcities to be the same as that in the gas phase we wouls now want to pass on this
-       // modified version of result to the kinetics codes. This might require reading in a keyword from the condition.txt file.
-       // Exactly how this will be done is yet to be figured out.
 
         return result_Abraham;
         //#]
@@ -116,7 +59,7 @@ public class GATP_Abraham implements GeneralAbramGAPP {
         Graph g = p_chemGraph.getGraph();
         HashMap oldCentralNode = (HashMap)(p_chemGraph.getCentralNode()).clone();
 
-        // satuate radical site
+        // saturate radical site
         int max_radNum_molecule = ChemGraph.getMAX_RADICAL_NUM();
         int max_radNum_atom = Math.min(8,max_radNum_molecule);
         int [] idArray = new int[max_radNum_molecule];
@@ -140,7 +83,6 @@ public class GATP_Abraham implements GeneralAbramGAPP {
            		node.updateFeElement();
            	}
         }
-
         // add H to satuate chem graph
         Atom H = Atom.make(ChemElement.make("H"),satuated);
         Bond S = Bond.make("S");
@@ -163,17 +105,15 @@ public class GATP_Abraham implements GeneralAbramGAPP {
           	if (!(atom.getType().equals("H"))) {
            		if (!atom.isRadical()) {
 
-
                     p_chemGraph.resetThermoSite(node);
           			AbrahamGAValue thisAbrahamValue = thermoLibrary.findAbrahamGroup(p_chemGraph);
 
-
-                                if (thisAbrahamValue == null) {
+                    if (thisAbrahamValue == null) {
            				System.err.println("Abraham group not found: " + node.getID());
+                        System.out.println(p_chemGraph.toString());
            			}
            			else {
            				//System.out.println(node.getID() + " " + thisGAValue.getName()+ "  "+thisGAValue.toString());
-
                         result_abram.plus(thisAbrahamValue);
            			}
            		}
@@ -219,20 +159,20 @@ public class GATP_Abraham implements GeneralAbramGAPP {
 //
 //         }
 //
-//         // recover the chem graph structure
-//         // recover the radical
-//         for (int i=0; i<radicalSite; i++) {
-//           	int id = idArray[i];
-//           	Node node = g.getNodeAt(id);
-//           	node.setElement(atomArray[i]);
-//           	node.updateFeElement();
-//           	int HNum = atomArray[i].getRadicalNumber();
-//         	//get rid of extra H
-//           	for (int j=0;j<HNum;j++) {
-//          	g.removeNode(newnode[i][j]);
-//           	}
-//           	node.updateFgElement();
-//         }
+         // recover the chem graph structure
+         // recover the radical
+         for (int i=0; i<radicalSite; i++) {
+           	int id = idArray[i];
+           	Node node = g.getNodeAt(id);
+           	node.setElement(atomArray[i]);
+           	node.updateFeElement();
+           	int HNum = atomArray[i].getRadicalNumber();
+         	//get rid of extra H
+           	for (int j=0;j<HNum;j++) {
+                g.removeNode(newnode[i][j]);
+           	}
+           	node.updateFgElement();
+         }
 //
 //         // substrate the enthalphy of H from the result
 //         int rad_number = p_chemGraph.getRadicalNumber();
@@ -247,14 +187,15 @@ public class GATP_Abraham implements GeneralAbramGAPP {
 //			 result.minus(symmtryNumberCorrection);
 //         }
 
-
          p_chemGraph.setCentralNode(oldCentralNode);
 
+      // Abraham intercepts for each descriptor
+        result_abram.S=result_abram.S+0.277;
+        result_abram.E=result_abram.E+0.248;
+        result_abram.A=result_abram.A+0.003;
+        result_abram.L=result_abram.L+0.13;
+        result_abram.B=result_abram.B+0.071;
          return result_abram;
-
-
-
-
         //#]
     }
 
