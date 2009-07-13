@@ -114,13 +114,6 @@ public static void main(String[] args) {
        AbramData result_Abraham= new AbramData();
        result_Abraham= cg.getAbramData();
 
-//       // Abraham intercepts for each descriptor
-        result_Abraham.S=result_Abraham.S+0.277;
-        result_Abraham.E=result_Abraham.E+0.248;
-        result_Abraham.A=result_Abraham.A+0.003;
-        result_Abraham.L=result_Abraham.L+0.13;
-        result_Abraham.B=result_Abraham.B+0.071;
-
        // Solute descriptors from the Abraham Model
        double S=result_Abraham.S;
        double B=result_Abraham.B;
