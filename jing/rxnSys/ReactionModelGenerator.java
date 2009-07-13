@@ -329,6 +329,20 @@ public class ReactionModelGenerator {
         	}
         	else throw new InvalidSymbolException("condition.txt: Cannot find InChIGeneration flag.");
 
+            line = ChemParser.readMeaningfulLine(reader);
+            // Read in Solvation effects
+            if (line.startsWith("Solvation:")) {
+        		StringTokenizer st = new StringTokenizer(line);
+        		String name = st.nextToken();
+        		String solvationOnOff = st.nextToken().toLowerCase();
+        		if (solvationOnOff.equals("on")) {
+        			Species.useSolvation = true;
+        		} else if (solvationOnOff.equals("off")) {
+        			Species.useSolvation = false;
+        		}
+        		else throw new InvalidSymbolException("condition.txt: Unknown solvation flag: " + solvationOnOff);
+        	}
+        	else throw new InvalidSymbolException("condition.txt: Cannot find solvation flag.");
                 line = ChemParser.readMeaningfulLine(reader);//read in reactants or thermo line
                 // Read in optional QM thermo  generation
         	if (line.startsWith("ThermoMethod:")) {
@@ -409,10 +423,13 @@ public class ReactionModelGenerator {
         			//GJB to allow "unreactive" species that only follow user-defined library reactions.  
         			// They will not react according to RMG reaction families 
 					boolean IsReactive = true;
-					if (st.hasMoreTokens()) {
+                    boolean IsConstantConcentration = false;
+					while (st.hasMoreTokens()) {
 						String reactive = st.nextToken().trim();
 						if (reactive.equalsIgnoreCase("unreactive"))
 							IsReactive = false;
+                        if (reactive.equalsIgnoreCase("constantconcentration"))
+                            IsConstantConcentration=true;
 					}
         			
         			Graph g = ChemParser.readChemGraph(reader);
@@ -427,6 +444,7 @@ public class ReactionModelGenerator {
 					//System.out.println(name);
         			Species species = Species.make(name,cg);
         			species.setReactivity(IsReactive); // GJB
+                    species.setConstantConcentration(IsConstantConcentration);
            			speciesSet.put(name, species);
         			getSpeciesSeed().add(species);
         			double flux = 0;
