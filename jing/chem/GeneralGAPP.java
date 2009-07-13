@@ -25,17 +25,7 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 
-
-
-
-
-
 package jing.chem;
-
-
-
-
-
 import java.util.*;
 
 
@@ -50,22 +40,13 @@ import java.util.*;
 
 //----------------------------------------------------------------------------
 
-
-
 //## class GeneralGAPP 
 
 public interface GeneralGAPP {
-
-    
-
-    
-
     //## operation generateThermoData(ChemGraph) 
 
     ThermoData generateThermoData(ChemGraph p_chemGraph);
-    
-
-    
+    //ThermoData generateSolvationData(ChemGraph p_chemGraph);
 
 }
 
