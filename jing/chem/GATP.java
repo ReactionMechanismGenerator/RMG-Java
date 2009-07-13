@@ -121,7 +121,7 @@ public class GATP implements GeneralGAPP {
     public ThermoGAValue getGAGroup(ChemGraph p_chemGraph) {
         //#[ operation getGAGroup(ChemGraph)
         ThermoData result = new ThermoData();
-        //AbramData result_abram = new AbramData();
+    
         Graph g = p_chemGraph.getGraph();
         HashMap oldCentralNode = (HashMap)(p_chemGraph.getCentralNode()).clone();
 

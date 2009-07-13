@@ -121,6 +121,7 @@ public class GATP_Unifac implements GeneralUnifacGAPP {
 
                                 if (thisUnifacValue == null) {
            				System.err.println("Unifac group not found: " + node.getID());
+                        System.out.println(p_chemGraph.toString());
            			}
            			else {
            				//System.out.println(node.getID() + " " + thisGAValue.getName()+ "  "+thisGAValue.toString());
@@ -170,20 +171,20 @@ public class GATP_Unifac implements GeneralUnifacGAPP {
 //
 //         }
 //
-//         // recover the chem graph structure
-//         // recover the radical
-//         for (int i=0; i<radicalSite; i++) {
-//           	int id = idArray[i];
-//           	Node node = g.getNodeAt(id);
-//           	node.setElement(atomArray[i]);
-//           	node.updateFeElement();
-//           	int HNum = atomArray[i].getRadicalNumber();
-//         	//get rid of extra H
-//           	for (int j=0;j<HNum;j++) {
-//          	g.removeNode(newnode[i][j]);
-//           	}
-//           	node.updateFgElement();
-//         }
+         // recover the chem graph structure
+         // recover the radical
+         for (int i=0; i<radicalSite; i++) {
+           	int id = idArray[i];
+           	Node node = g.getNodeAt(id);
+           	node.setElement(atomArray[i]);
+           	node.updateFeElement();
+           	int HNum = atomArray[i].getRadicalNumber();
+         	//get rid of extra H
+           	for (int j=0;j<HNum;j++) {
+          	g.removeNode(newnode[i][j]);
+           	}
+           	node.updateFgElement();
+         }
 //
 //         // substrate the enthalphy of H from the result
 //         int rad_number = p_chemGraph.getRadicalNumber();
