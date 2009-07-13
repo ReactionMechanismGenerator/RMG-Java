@@ -640,7 +640,7 @@ public  Chemkin() {
       for (Iterator iter = p_reactionModel.getReactionSet().iterator(); iter.hasNext(); ) {
       	Reaction r = (Reaction)iter.next();
       	
-//      	boolean presentInPDep = false;
+      	boolean presentInPDep = false;
       	if (r.isForward() && !(r instanceof ThirdBodyReaction) && !(r instanceof TROEReaction) && !(r instanceof LindemannReaction)) {
       		Iterator r_iter = pDepList.iterator();
       		while (r_iter.hasNext()){
@@ -652,11 +652,12 @@ public  Chemkin() {
 //      					duplicates.add(r);
 //      					presentInPDep = true;
 //      				}
+      				presentInPDep = true;
       				nonPDepList.add(r);
       			}
       		}
-//      		if (!presentInPDep)
-//      			nonPDepList.add(r);
+      		if (!presentInPDep)
+      			nonPDepList.add(r);
       	}
       }
       
