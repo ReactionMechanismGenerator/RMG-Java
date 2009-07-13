@@ -94,6 +94,7 @@ public class Species {
     
     // Flag which specifies whether to generate InChIs
 	public static boolean useInChI = false;
+    public static boolean useSolvation = false;
     
     protected HashSet paths;
     
@@ -113,7 +114,11 @@ public class Species {
         name = p_name;
         chemGraph = p_chemGraph;
         generateResonanceIsomers();
-        findStablestThermoData();
+        if (!constantConcentration) {
+            findStablestThermoData();
+        } else {
+            //findSolvationData();
+        }
         calculateLJParameters();
         selectDeltaEDown();
 		generateNASAThermoData();
@@ -764,6 +769,12 @@ public class Species {
         //#]
     }
 
+    public ThermoData getSolvationDAta(){
+        return chemGraph.getSolvationData();
+        //#]
+
+    }
+
     //## operation getThreeFrequencyMode()
     public ThreeFrequencyModel getThreeFrequencyMode() {
         //#[ operation getThreeFrequencyMode()
@@ -838,10 +849,11 @@ public class Species {
 			if (spe.chemGraph.equals(p_chemGraph)){
 				//spe.chemGraph.graph = p_chemGraph.graph;
 				//p_chemGraph = spe.chemGraph;
-				
+
 				p_chemGraph.thermoData = spe.chemGraph.thermoData;
 				p_chemGraph.symmetryNumber = spe.chemGraph.symmetryNumber;
 				p_chemGraph.internalRotor = spe.chemGraph.internalRotor;
+                p_chemGraph.solvthermoData = spe.chemGraph.solvthermoData;
 			}
 			else if (spe.hasResonanceIsomers()){
 				Iterator cgIter = spe.getResonanceIsomers();
@@ -851,6 +863,7 @@ public class Species {
 						p_chemGraph.thermoData = spe.chemGraph.thermoData;
 						p_chemGraph.symmetryNumber = spe.chemGraph.symmetryNumber;
 						p_chemGraph.internalRotor = spe.chemGraph.internalRotor;
+                        p_chemGraph.solvthermoData = spe.chemGraph.solvthermoData;
 						break;
 					}
 				}
