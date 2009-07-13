@@ -49,8 +49,8 @@ import jing.param.Temperature;
 //## class ChemGraph
 public class ChemGraph implements Matchable {
 
-    protected static int MAX_OXYGEN_NUM = 20;		//## attribute MAX_OXYGEN_NUM
-	protected static  int MAX_CARBON_NUM = 100;       //SS
+    protected static int MAX_OXYGEN_NUM = 10; //20 Modified by AJ		//## attribute MAX_OXYGEN_NUM
+	protected static  int MAX_CARBON_NUM = 30;//100 Modified by AJ       //SS
 	protected static int MAX_CYCLE_NUM = 10;		//SS (no fused rings)
 
 	/**
@@ -94,9 +94,10 @@ public class ChemGraph implements Matchable {
     protected AbramData abramData;
     protected UnifacData unifacData;
     protected GeneralGAPP thermoGAPP;
-
+    protected GeneralSolvationGAPP SolvationGAPP;
     protected GeneralAbramGAPP abramGAPP;
     protected GeneralUnifacGAPP unifacGAPP;
+    protected ThermoData solvthermoData;
 
     protected boolean fromprimarythermolibrary = false;
     protected boolean isAromatic = false;
@@ -996,6 +997,7 @@ return sn;
         cg.thermoGAPP = p_chemGraph.thermoGAPP;
         cg.InChI = p_chemGraph.InChI;
         cg.internalRotor = p_chemGraph.internalRotor;
+        cg.solvthermoData = p_chemGraph.solvthermoData;
 
         /*HashSet oldSymmetryAxis = p_chemGraph.getSymmetryAxis();
         if (oldSymmetryAxis != null) {
@@ -1162,11 +1164,41 @@ return sn;
         //#[ operation generateThermoData()
         // use GAPP to generate Thermo data
         try {
+
+        	if (thermoGAPP == null) setDefaultThermoGAPP();
+        //        if (useSolvation) {
+
+          //      }
+
+
+            //thermoData = thermoGAPP.generateThermoData(this);
+            thermoData = thermoGAPP.generateThermoData(this);
+        	//thermoData = thermoGAPP.generateThermoData(this);
+
                 if (useQM) thermoGAPP=QMTP.getINSTANCE();//6/2/09 gmagoon: temporarily default to QM calc; later we will have a flag in the input file for this
                 else if (thermoGAPP == null) setDefaultThermoGAPP();
         	thermoData = thermoGAPP.generateThermoData(this);
+
             //thermoData = thermoGAPP.generateAbramData(this);
         	return thermoData;
+        }
+        catch (Exception e) {
+        	throw new FailGenerateThermoDataException();
+        }
+        //#]
+    }
+
+    // Amrit Jalan 05/09/2009
+
+       public ThermoData generateSolvThermoData() throws FailGenerateThermoDataException {
+        //#[ operation generateSolvThermoData()
+        // use GAPP to generate Thermo data
+        try {
+        	if (SolvationGAPP == null) setDefaultSolvationGAPP();
+            solvthermoData = SolvationGAPP.generateSolvThermoData(this);
+        	//thermoData = thermoGAPP.generateThermoData(this);
+            //thermoData = thermoGAPP.generateAbramData(this);
+        	return solvthermoData;
         }
         catch (Exception e) {
         	throw new FailGenerateThermoDataException();
@@ -1592,10 +1624,29 @@ return sn;
     //## operation getThermoData()
     public ThermoData getThermoData() {
         //#[ operation getThermoData()
-        if (thermoData == null) generateThermoData();
+        if (thermoData == null)
+        { 
+            generateThermoData();
+            // thermoData is brand new gas phase estimate
+            if (Species.useSolvation) {
+                if (solvthermoData==null) generateSolvThermoData();
+                // solvthermoData is estimate of correction
+                thermoData.plus(solvthermoData);
+                thermoData.comments+=" corrected for solvation";
+                // thermoData is corrected
+            }
+        }
         return thermoData;
         //#]
-    }   
+    }
+
+        //## operation getThermoData()
+    public ThermoData getSolvationData() {
+        //#[ operation getThermoData()
+        if (solvthermoData == null) generateSolvThermoData();
+        return solvthermoData;
+        //#]
+    }
     
     public AbramData getAbramData() {
         //#[ operation getThermoData()
@@ -1608,6 +1659,21 @@ return sn;
         //#[ operation getThermoData()
         if (unifacData == null) generateUnifacData();
         return unifacData;
+        //#]
+    }
+
+    /**
+    Added by: Amrit Jalan
+    Effects: calculate the raduis of the chemGraph using UNIFAC Ri values. (hopefully in Angstrom)
+    
+    */
+    //## operation getRadicalNumber()
+    public double getRadius() {
+        //#[ operation getRadius()
+
+       double Ri=getUnifacData().R;   // UNITS unknown! preferred units should be Angstrom^3
+       double ri=3.18*Math.pow(Ri,0.333);   // From Koojiman Ind. Eng. Chem. Res 2002, 41 3326-3328
+        return ri;
         //#]
     }
     
@@ -2186,6 +2252,14 @@ return sn;
         return;
         //#]
     }
+
+    public void setDefaultSolvationGAPP() {
+        //#[ operation setDefaultThermoGAPP()
+        SolvationGAPP = GATP_Solvation.getINSTANCE();
+        return;
+        //#]
+    }
+
     
     public void setDefaultAbramGAPP() {
         //#[ operation setDefaultThermoGAPP()
