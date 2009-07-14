@@ -420,7 +420,7 @@ public class ThermoGAGroupLibrary {
         	Matchable fg = (Matchable)node.getElement();
         	AbrahamGAValue ga = (AbrahamGAValue)abramLibrary.get(fg);
         	if (ga != null) {
-            System.out.println("Platts Group found: " + fg.getName());
+            //System.out.println("Platts Group found: " + fg.getName());
                 return ga;
             }
              
@@ -442,7 +442,7 @@ public class ThermoGAGroupLibrary {
         	Matchable fg = (Matchable)node.getElement();
         	UnifacGAValue ga = (UnifacGAValue)unifacLibrary.get(fg);
         	if (ga != null) {
-                System.out.println("Unifac Group found: " + fg.getName());
+                //System.out.println("Unifac Group found: " + fg.getName());
                 return ga;
             }
 
