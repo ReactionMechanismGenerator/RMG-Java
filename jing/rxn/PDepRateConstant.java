@@ -166,20 +166,39 @@ public class PDepRateConstant {
 		double x = 0.0, x1 = 0.0, x2 = 0.0, y = 0.0, y1 = 0.0, y2 = 0.0;
 		double z11 = 0.0, z12 = 0.0, z21 = 0.0, z22 = 0.0;
 
-		for (int t = 0; t < temperatures.length - 1; t++) {
-			if (temperatures[t].getK() < temperature.getK() && t1 < 0) {
-				t1 = t; x1 = 1.0 / temperatures[t1].getK();
-				t2 = t + 1; x2 = 1.0 / temperatures[t2].getK();
+//		for (int t = 0; t < temperatures.length - 1; t++) {
+//			if (temperatures[t].getK() < temperature.getK() && t1 < 0) {
+//				t1 = t; x1 = 1.0 / temperatures[t1].getK();
+//				t2 = t + 1; x2 = 1.0 / temperatures[t2].getK();
+//			}
+//		}
+//
+//		for (int p = 0; p < pressures.length - 1; p++) {
+//			if (pressures[p].getBar() < pressure.getBar() && p1 < 0) {
+//				p1 = p; y1 = Math.log10(pressures[p1].getPa());
+//				p2 = p + 1; y2 = Math.log10(pressures[p2].getPa());
+//			}
+//		}
+		
+		for (int t=0; t<temperatures.length-1; t++) {
+			if (temperatures[t].getK() < temperature.getK()) {
+				t1 = t;
+			}
+		}
+		
+		for (int p=0; p<pressures.length-1; p++) {
+			if (pressures[p].getBar() < pressure.getBar()) {
+				p1 = p;
 			}
 		}
 
-		for (int p = 0; p < pressures.length - 1; p++) {
-			if (pressures[p].getBar() < pressure.getBar() && p1 < 0) {
-				p1 = p; y1 = Math.log10(pressures[p1].getPa());
-				p2 = p + 1; y2 = Math.log10(pressures[p2].getPa());
-			}
-		}
-
+		x1 = 1.0 / temperatures[t1].getK();
+		t2 = t1+1;
+		x2 = 1.0 / temperatures[t2].getK();
+		y1 = Math.log10(pressures[p1].getPa());
+		p2 = p1+1;
+		y2 = Math.log10(pressures[p2].getPa());
+		
 		x = 1.0 / temperature.getK();
 		y = Math.log10(pressure.getPa());
 
