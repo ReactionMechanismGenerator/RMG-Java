@@ -116,6 +116,29 @@ public class PopulateReactions {
 			TemplateReactionGenerator rtLibrary = new TemplateReactionGenerator();
 			listOfReactions += "System Temperature: " + systemTemp_K.getK() + "K\n\n";
 			line = ChemParser.readMeaningfulLine(br_input);
+
+            StringTokenizer st = new StringTokenizer(line);
+          // The first line should start with "Solvation", otherwise do nothing and display a message to the user
+          if (st.nextToken().startsWith("Solvation")) {
+        	  line = st.nextToken().toLowerCase();
+        	  // The options for the "Solvation" field are "on" or "off" (as of 18May2009), otherwise do nothing and display a message to the user
+        	  // Note: I use "Species.useInChI" because the "Species.useSolvation" updates were not yet committed.
+
+        	  if (line.equals("on")) {
+        		  Species.useSolvation = true;
+                  rmg.setUseDiffusion(true);
+        		  listOfReactions += "Solution-phase chemistry!\n\n";
+        	  } else if (line.equals("off")) {
+        		  Species.useSolvation = false;
+                  rmg.setUseDiffusion(false);
+        		  listOfReactions += "Gas-phase chemistry.\n\n";
+        	  } else {
+
+        		  System.out.println("Error in reading thermo_input.txt file:\nThe field 'Solvation' has the options 'on' or 'off'.");
+        		  return;
+        	  }
+          }
+            line = ChemParser.readMeaningfulLine(br_input);
 			while (line != null) {
 				// The first line of a new species is the user-defined name
 				String speciesName = line;
