@@ -251,4 +251,8 @@ public class PDepRateConstant {
 	public static void setTMax(Temperature t) {
 		TMAX = t;
 	}
+	
+	public double[][] getRateConstants() {
+		return rateConstants;
+	}
 }

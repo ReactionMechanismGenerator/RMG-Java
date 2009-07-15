@@ -41,6 +41,8 @@ import jing.param.*;
 import org.w3c.dom.*;
 import jing.mathTool.*;
 import jing.rxn.Reaction;
+import jing.rxn.PDepRateConstant.Mode;
+
 import javax.xml.parsers.*;
 import javax.xml.transform.*;
 import org.xml.sax.SAXException;
@@ -461,6 +463,25 @@ public  Chemkin() {
       	System.exit(0);
       }
       
+      
+      if (PDepRateConstant.getMode() == Mode.CHEBYSHEV ||
+    		  PDepRateConstant.getMode() == Mode.PDEPARRHENIUS ||
+    		  PDepRateConstant.getMode() == Mode.RATE) {
+    	  StringBuilder gridOfRateCoeffs = new StringBuilder();
+	      gridOfRateCoeffs.append(writeGridOfRateCoeffs(p_reactionModel));
+	      String newFile = "chemkin/tableOfRateCoeffs.txt";
+	      try {
+	    	  FileWriter fw = new FileWriter(newFile);
+	    	  fw.write(gridOfRateCoeffs.toString());
+	    	  fw.close();
+	      }
+	      catch (Exception e) {
+	    	  System.out.println("Error in writing tableOfRateCoeffs.txt");
+	    	  System.out.println(e.getMessage());
+	    	  System.exit(0);
+	      }
+      }
+      
       //#]
   }
   
@@ -788,6 +809,59 @@ public  Chemkin() {
       return result.toString();
 
       //#]
+  }
+  
+
+  public static String writeGridOfRateCoeffs(ReactionModel p_reactionModel) {
+	  
+      StringBuilder result = new StringBuilder();
+	  
+	  LinkedList pDepList = new LinkedList();
+      CoreEdgeReactionModel cerm = (CoreEdgeReactionModel)p_reactionModel;
+      
+      for (Iterator iter = PDepNetwork.getNetworks().iterator(); iter.hasNext(); ) {
+    	  PDepNetwork pdn = (PDepNetwork)iter.next();
+    	  for (ListIterator pdniter = pdn.getNetReactions().listIterator(); pdniter.hasNext();) {
+    		  PDepReaction rxn = (PDepReaction) pdniter.next();
+    		  if (cerm.categorizeReaction(rxn) != 1) continue;	
+    		  //check if this reaction is not already in the list and also check if this reaction has a reverse reaction
+    		  // which is already present in the list.
+    		  if (rxn.getReverseReaction() == null)
+    			  rxn.generateReverseReaction();      		
+    		  if (!rxn.reactantEqualsProduct() && !pDepList.contains(rxn) && !pDepList.contains(rxn.getReverseReaction())) {
+    			  pDepList.add(rxn);
+    		  }
+    	  }
+      }
+      
+      Temperature[] tempsUsedInFame = PDepRateConstant.getTemperatures();
+      int numTemps = tempsUsedInFame.length;
+      Pressure[] pressUsedInFame = PDepRateConstant.getPressures();
+      int numPress = pressUsedInFame.length;
+      
+      for (int i=0; i<numTemps; i++) {
+    	  for (int j=0; j<numPress; j++) {
+    		  result.append("T="+tempsUsedInFame[i].getK()+"K,P="+pressUsedInFame[j].getBar()+"bar\t");
+    	  }
+    	  result.append("\n");
+      }
+      result.append("\n");
+      
+      for (Iterator iter = pDepList.iterator(); iter.hasNext();){
+    	  PDepReaction r = (PDepReaction)iter.next();
+    	  result.append(r.toString()+"\n");
+    	  double[][] rates = new double[numTemps][numPress];
+    	  rates = r.getPDepRate().getRateConstants();
+    	  for (int i=0; i<numTemps; i++) {
+    		  for (int j=0; j<numPress; j++) {
+    			  result.append(rates[i][j] + "\t");
+    		  }
+    		  result.append("\n");
+    	  }
+          result.append("\n");
+      }
+      return result.toString();
+      
   }
 
   //## operation writeReactorInputFile(ReactionModel,ReactionTime,ReactionTime,SystemSnapshot)

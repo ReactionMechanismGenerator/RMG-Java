@@ -520,4 +520,8 @@ public class PDepReaction extends Reaction {
 			return "";
     
     }
+	
+	public PDepRateConstant getPDepRate() {
+		return pDepRate;
+	}
 }
