@@ -2,7 +2,39 @@
 **********************************
 RMG News and Updates
 **********************************
+2009-xx-yy: RMG 3.1 Released!
+==============================
+RMG version 3.1 has been released. The new release includes a number of improvements and bug fixes, including the following:
 
+- Made PrimaryReactionLibrary behave similarly to PrimaryThermoLibrary and added option for SeedMechanism to reproduce previous PrimaryReactionLibrary functionality ***(describe further)***
+
+- Made results more reproducible from run to run by standardizing the order of averaging of values in the kinetics trees
+
+- Corrected inconsistencies in edge flux evaluation for pressure-dependent reactions
+
+- Corrected an error in inert gas normalization for runs with multiple temperatures/pressures
+
+- Fixed DASPK interface
+
+- Fixed bugs in peroxide (ROOR) frequency estimation
+
+- Fixed a bug in the gauche correction database for alkenes
+
+- ***New databases...GRIMech and PrIMe Thermo?***
+
+- Added additional options for the input file, including:
+
+    - User-specified limits for number of carbon / oxygen / radical per species
+ 
+    - User-specified Chebyshev fitting options
+
+- Support for P-Log format for k(T,P) reporting
+
+- Changed many dependent Fortran codes to use standard input and output, rather than writing files
+
+- Fixed issues with duplicate reactions and with Chebyshev fitting in writing CHEMKIN input files ***could we say something more specific here?***
+
+- More frequent garbage collection
 
 2009-03-05: RMG 3.0 Released!
 ==============================
