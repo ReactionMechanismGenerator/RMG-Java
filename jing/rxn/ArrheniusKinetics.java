@@ -70,6 +70,7 @@ public class ArrheniusKinetics implements Kinetics {
      */
     protected boolean fromPrimaryReactionLibrary;
     
+    protected static boolean verbose = false;
     
     // Constructors
     
@@ -190,6 +191,7 @@ public class ArrheniusKinetics implements Kinetics {
         double new_dE = Math.max(max_E-new_E, new_E-min_E);
         UncertainDouble E_average = new UncertainDouble(new_E, new_dE, "Adder");
                 
+        if (!getVerbose()) source = "Average:";
         if (type.equals("ArrheniusKinetics")) {
         	return new ArrheniusKinetics(A_average, n_average, E_average,"Unknown",5, source, "Average");
         }	                	
@@ -351,6 +353,14 @@ public class ArrheniusKinetics implements Kinetics {
 	
 	public boolean getFromPrimaryReactionLibrary() {
 		return fromPrimaryReactionLibrary;
+	}
+	
+	public static void setVerbose(boolean p_boolean) {
+		verbose = p_boolean;
+	}
+	
+	public static boolean getVerbose() {
+		return verbose;
 	}
     
 }

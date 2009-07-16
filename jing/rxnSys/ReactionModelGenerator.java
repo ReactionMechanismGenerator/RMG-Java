@@ -369,6 +369,17 @@ public class ReactionModelGenerator {
 //        	}
 //        	else throw new InvalidSymbolException("condition.txt: Cannot find solvation flag.");
 
+        	if (line.startsWith("Verbose:")) {
+        		StringTokenizer st = new StringTokenizer(line);
+        		String dummyString = st.nextToken();
+        		String OnOff = st.nextToken().toLowerCase();
+        		if (OnOff.equals("off")) {
+        			ArrheniusKinetics.setVerbose(false);
+        		} else if (OnOff.equals("on")) {
+        			ArrheniusKinetics.setVerbose(true);
+        		}
+        		line = ChemParser.readMeaningfulLine(reader);//read in reactants
+            }
 
 
 			// read in reactants
