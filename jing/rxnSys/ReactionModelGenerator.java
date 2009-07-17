@@ -1048,6 +1048,25 @@ public class ReactionModelGenerator {
                 	else setSeedMechanism(null);
                 } else throw new InvalidSymbolException("Error reading condition.txt file: "
                 		+ "Could not locate SeedMechanism field");
+                
+                line = ChemParser.readMeaningfulLine(reader);
+                if (line.startsWith("ChemkinUnits")) {
+                	line = ChemParser.readMeaningfulLine(reader);
+                	if (line.startsWith("Ea")) {
+                		StringTokenizer st = new StringTokenizer(line);
+                		String dummyString = st.nextToken(); // Should be "Ea:"
+                		String units = st.nextToken();
+                		if (units.equals("kcal/mol") || units.equals("cal/mol") ||
+                				units.equals("kJ/mol") || units.equals("J/mol"))
+                			ArrheniusKinetics.setEaUnits(units);
+                		else {
+                			System.err.println("Units for Ea were not recognized: " + units);
+                			System.exit(0);
+                		}
+                	} else throw new InvalidSymbolException("Error reading condition.txt file: "
+                			+ "Could not locate Ea field.");
+                } else throw new InvalidSymbolException("Error reading condition.txt file: "
+                		+ "Could not locate ChemkinUnits field.");
 
         	in.close();
                 

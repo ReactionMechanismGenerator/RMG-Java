@@ -70,3 +70,6 @@ SeedMechanism:
 //Name: GRIMech3.0
 //Location: RMG_database/SeedMechanisms/GRI-Mech3.0
 END
+
+ChemkinUnits:
+Ea: kcal/mol

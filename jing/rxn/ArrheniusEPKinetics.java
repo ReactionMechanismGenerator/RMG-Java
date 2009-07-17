@@ -77,7 +77,20 @@ public class ArrheniusEPKinetics extends ArrheniusKinetics {
 		}
 		Object [] formatString = new Object[5];
 		formatString[0] = new Double(getAValue()); formatString[1] = new Double(getNValue());
-		formatString[2] = new Double(Ea); formatString[3] = source; formatString[4] = comment;
+//		formatString[2] = new Double(Ea);
+		if (EaUnits.equals("kcal/mol")) {
+			formatString[2] = Ea;
+		}
+		else if (EaUnits.equals("cal/mol")) {
+			formatString[2] = Ea * 1000.0;
+		}
+		else if (EaUnits.equals("kJ/mol")) {
+			formatString[2] = Ea * 4.184;
+		}
+		else if (EaUnits.equals("J/mol")) {
+			formatString[2] = Ea * 4184.0;
+		}
+		formatString[3] = source; formatString[4] = comment;
 		
 		if (includeComments){
 			return String.format("%1.7e \t %2.5f \t %3.5f \t !%s  %s", formatString);

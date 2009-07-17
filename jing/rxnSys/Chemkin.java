@@ -618,7 +618,12 @@ public  Chemkin() {
       //#[ operation writeChemkinReactions(ReactionModel)
 
       StringBuilder result = new StringBuilder();
-	  result.append("REACTIONS	KCAL/MOLE\n");
+//      result.append("REACTIONS	KCAL/MOLE\n");
+      String units4Ea = ArrheniusKinetics.getEaUnits();
+      if (units4Ea.equals("cal/mol")) result.append("REACTIONS   CAL/MOL\n");
+      else if (units4Ea.equals("kcal/mol")) result.append("REACTIONS   KCAL/MOL\n");
+      else if (units4Ea.equals("J/mol")) result.append("REACTIONS   J/MOL\n");
+      else if (units4Ea.equals("kJ/mol")) result.append("REACTIONS   KJ/MOL\n");
 	  
 	  LinkedList pDepList = new LinkedList();
 	  LinkedList nonPDepList = new LinkedList();

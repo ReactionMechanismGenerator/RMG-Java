@@ -72,6 +72,8 @@ public class ArrheniusKinetics implements Kinetics {
     
     protected static boolean verbose = false;
     
+    protected static String EaUnits;
+    
     // Constructors
     
     //## operation ArrheniusKinetics(UncertainDouble,UncertainDouble,UncertainDouble,String,int,String,String) 
@@ -290,7 +292,20 @@ public class ArrheniusKinetics implements Kinetics {
         //#[ operation toChemkinString() 
     	Object [] formatString = new Object[5];
 		formatString[0] = new Double(getAValue()); formatString[1] = new Double(getNValue());
-		formatString[2] = new Double(E.getValue()); formatString[3] = source; formatString[4] = comment;
+//		formatString[2] = new Double(E.getValue());
+		if (EaUnits.equals("kcal/mol")) {
+			formatString[2] = E.getValue();
+		}
+		else if (EaUnits.equals("cal/mol")) {
+			formatString[2] = E.getValue() * 1000.0;
+		}
+		else if (EaUnits.equals("kJ/mol")) {
+			formatString[2] = E.getValue() * 4.184;
+		}
+		else if (EaUnits.equals("J/mol")) {
+			formatString[2] = E.getValue() * 4184.0;
+		}
+		formatString[3] = source; formatString[4] = comment;
 		
     	if (includeComments)
     		return String.format("%1.3e \t %2.2f \t %3.2f \t !%s  %s", formatString);
@@ -362,6 +377,14 @@ public class ArrheniusKinetics implements Kinetics {
 	public static boolean getVerbose() {
 		return verbose;
 	}
+	
+    public static void setEaUnits(String p_string) {
+    	EaUnits = p_string;
+    }
+    
+    public static String getEaUnits() {
+    	return EaUnits;
+    }
     
 }
 /*********************************************************************
