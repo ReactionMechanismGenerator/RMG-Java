@@ -48,9 +48,9 @@ public class GATP_Solvation implements GeneralSolvationGAPP {
 
 
        double r_solute=p_chemGraph.getRadius();
-       double r_solvent; r_solvent=3.498;// 3.311;                    // Manually assigned solvent radius [=] Angstrom Calculated using Connolly solvent excluded volume from Chem3dPro
+       double r_solvent; r_solvent=3.498*Math.pow(10,-10);// 3.311;                    // Manually assigned solvent radius [=] meter Calculated using Connolly solvent excluded volume from Chem3dPro
        double r_cavity=r_solute+r_solvent;                    // Cavity radius [=] Angstrom
-       double rho; rho=0.00309;  //0.00381;                             // number density of solvent [=] molecules/Angstrom^3   Value here is for decane using density =0.73 g/cm3
+       double rho; rho=0.00309*Math.pow(10,30);  //0.00381;                             // number density of solvent [=] molecules/Angstrom^3   Value here is for decane using density =0.73 g/cm3
        double parameter_y=(88/21)*rho*Math.pow(r_solvent, 3);  // Parameter y from Ashcraft Thesis Refer pg no. 60
        double parameter_ymod=parameter_y/(1-parameter_y);     // parameter_ymod= y/(1-y) Defined for convenience
        double R=8.314;                                        // Gas constant units J/mol K
