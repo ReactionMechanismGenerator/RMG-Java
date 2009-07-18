@@ -39,6 +39,7 @@ import jing.chemUtil.Node;
 import jing.chemUtil.Graph;
 import jing.param.Global;
 import jing.param.Temperature;
+import jing.rxnSys.ReactionModelGenerator;
 
 //## package jing::chem
 
@@ -1664,17 +1665,52 @@ return sn;
 
     /**
     Added by: Amrit Jalan
-    Effects: calculate the raduis of the chemGraph using UNIFAC Ri values. (hopefully in Angstrom)
-    
+    Effects: calculate the raduis of the chemGraph using UNIFAC Ri values. (UNITSof radius = m)
     */
-    //## operation getRadicalNumber()
+    
     public double getRadius() {
-        //#[ operation getRadius()
 
-       double Ri=getUnifacData().R;   // UNITS unknown! preferred units should be Angstrom^3
-       double ri=3.18*Math.pow(Ri,0.333);   // From Koojiman Ind. Eng. Chem. Res 2002, 41 3326-3328
+        double ri;
+
+        if (getCarbonNumber() == 0 && getOxygenNumber() == 0){    // Which means we ar dealing with HJ or H2
+
+                double ri3;
+                ri3 = 21*8.867/88;                              // 8.867 Ang^3 is the volume of a single Hydrogen Atom
+
+            if (getHydrogenNumber() == 1){                        // i.e. we are dealing with the Hydrogen radical
+
+                ri = Math.pow(ri3,0.333) * Math.pow(10,-10);
+                return ri;
+            }
+            
+            if (getHydrogenNumber() == 2){                        // i.e. we are dealing with the Hydrogen molecule
+                ri3 = 2*ri3;                                      // Assumption: volume of H2 molecule ~ 2 * Volume of H atom
+                ri = Math.pow(ri3,0.333) * Math.pow(10,-10);
+                return ri;                
+            }
+        }
+
+        double Ri=getUnifacData().R;
+        ri=3.18*Math.pow(Ri,0.333)*Math.pow(10,-10);   // From Koojiman Ind. Eng. Chem. Res 2002, 41 3326-3328
         return ri;
-        //#]
+   
+    }
+
+        /**
+    Added by: Amrit Jalan
+    Effects: calculate the diffusivity of the chemGraph using radii, solvent viscosity and Stokes Einstein. (UNITS m2/sec)
+    */
+
+    public double getDiffusivity() {
+        
+       double speRad=getRadius();
+       double solventViscosity = 0.473*Math.pow(10,-3);
+       double diffusivity;
+       Temperature sysTemp = ReactionModelGenerator.getTemp4BestKinetics();
+       double denom = 132*solventViscosity*speRad/7;
+       diffusivity = 1.381*500* Math.pow(10,-23)/denom;  //sysTemp.getK()
+       return diffusivity;
+        
     }
     
 
