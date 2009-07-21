@@ -910,14 +910,46 @@ public abstract class JDAS implements DAESolver {
         // eg. liquid phase calculations with a constant concentration of O2 (the solubility limit - replenished from the gas phase)
         // for normal use, this will be a sequence of '0 's
         outputString.append("\n");
+        
+        // This portion of code was commented out by MRH on 21-Jul-2009.
+        //	The indexing of the species in p_reactionModel did not match up with the
+        //	indexing of the species in the SpeciesStatus.  When constructing an input
+        //	file for a "ConstantConcentration" ODESolver call, the species whose flux
+        //	was being set to zero was not necessarily the desired species
+//		for (Iterator iter = p_reactionModel.getSpecies(); iter.hasNext(); ) {
+//        	Species spe = (Species)iter.next();
+//            if (spe.isConstantConcentration())
+//                outputString.append("1 ");
+//            else 
+//                outputString.append("0 ");
+//        }
+        
+        // Define boolean variable setVolumeConstant: if any species in the condition.txt
+        //	file has been defined with "ConstantConcentration", set this variable to true.
+        //	This variable will determine if the ODESolver assumes constant volume or not.
+        boolean setVolumeConstant = false;
+        int[] tempVector = new int[p_reactionModel.getSpeciesNumber()];
 		for (Iterator iter = p_reactionModel.getSpecies(); iter.hasNext(); ) {
         	Species spe = (Species)iter.next();
-            if (spe.isConstantConcentration())
-                outputString.append("1 ");
-            else 
-                outputString.append("0 ");
+        	int id = getRealID(spe);
+        	// Previous line is due to species order in p_reactionModel not necessarily being
+        	//	sequential.  We read in the species RealID (which is what is read in during
+        	//	the other functions when writing the ODESolver input file) and associate a +1
+        	//	with a "ConstantConcentration" species and a 0 for all others
+			if (spe.isConstantConcentration()) {
+				tempVector[id-1] = 1;
+				setVolumeConstant = true;
+			} else {
+				tempVector[id-1] = 0;
+			}
         }
-        outputString.append("0 \n"); // for liquid EOS or constant volume this should be 1 
+		
+		// Append the constant concentration flags to the outputString
+		for (int i=0; i<tempVector.length; i++) {
+			outputString.append(tempVector[i] + " ");
+		}
+		if (setVolumeConstant) outputString.append("1 \n");
+		else outputString.append("0 \n"); // for liquid EOS or constant volume this should be 1 
 		
 	}
 	
