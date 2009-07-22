@@ -96,7 +96,7 @@ public class QMTP implements GeneralGAPP {
             molFile p_3dfile = new molFile();//it seems this must be initialized, so we initialize to empty object
             //2. convert from 2D to 3D using RDKit if the 2D molfile is for a molecule with 2 or more atoms
             if(p_chemGraph.getAtomNumber() > 1){
-                p_3dfile = embed3D(p_2dfile);
+                p_3dfile = embed3D(p_2dfile, 5*(p_chemGraph.getAtomNumber()-3));//number of conformer attempts is just a linear scaling with molecule size, due to time considerations; in practice, it is probably more like 3^(n-3) or something like that
             }
              //3. create the Gaussian input file
             directory = "QMfiles/";
@@ -207,7 +207,7 @@ public class QMTP implements GeneralGAPP {
     }
     
     //embed a molecule in 3D, using RDKit
-    public molFile embed3D(molFile twoDmolFile){
+    public molFile embed3D(molFile twoDmolFile, int numConfAttempts){
     //convert to 3D MOL file using RDKit script
         int flag=0;
         String directory = "3Dmolfiles/";
@@ -216,11 +216,13 @@ public class QMTP implements GeneralGAPP {
         String name = twoDmolFile.getName();
         try{   
             File runningdir=new File(directory);
-            String command = "c:/Python25/python.exe c:/Python25/distGeomScriptMol.py ";//this should eventually be modified for added generality
+            //String command = "c:/Python25/python.exe c:/Python25/distGeomScriptMol.py ";//this should eventually be modified for added generality
+            String command = "c:/Python25/python.exe c:/Python25/distGeomScriptMolLowestEnergyConf.py ";
             String twoDmolpath=twoDmolFile.getPath();
             command=command.concat(twoDmolpath);
             command=command.concat(" ");
             command=command.concat(name+".mol");//this is the target file name; use the same name as the twoDmolFile (but it will be in he 3Dmolfiles folder
+            command=command.concat(" " + numConfAttempts);
             Process pythonProc = Runtime.getRuntime().exec(command, null, runningdir);
             String killmsg= "Python process for "+twoDmolFile.getName()+" did not complete within 10 seconds, and the process was killed. File was probably not written.";//message to print if the process times out
             Thread timeoutThread = new TimeoutKill(pythonProc, killmsg, 10000L); //create a timeout thread to handle cases where the UFF optimization get's locked up (cf. Ch. 16 of "Ivor Horton's Beginning Java 2: JDK 5 Edition"); once we use the updated version of RDKit, we should be able to get rid of this
@@ -409,7 +411,7 @@ public class QMTP implements GeneralGAPP {
     //unlike createGaussianPM3 input, this requires an additional input specifying the spin multiplicity (radical number + 1) for the species
     public int createMopacPM3Input(String name, String directory, molFile p_molfile, int attemptNumber, String InChIaug, int multiplicity){
         //write a file with the input keywords
-        int maxAttemptNumber=10;//update this if additional keyword options are added or removed
+        int maxAttemptNumber=5;//update this if additional keyword options are added or removed
         String inpKeyStrBoth = "";//this string will be written at both the top (for optimization) and the bottom (for thermo/force calc)
         String inpKeyStrTop = "";//this string will be written only at the top
         String inpKeyStrBottom = "";//this string will be written at the bottom
@@ -440,36 +442,36 @@ public class QMTP implements GeneralGAPP {
                 inpKeyStrTop=" precise nosym gnorm=0.0 bfgs";
                 inpKeyStrBottom="oldgeo thermo nosym precise "; //precise appeared to be necessary for the problematic case (to avoid negative frequencies)
             }
-            else if(attemptNumber==5){
-                inpKeyStrBoth="pm3 "+radicalString;
-                inpKeyStrTop=" precise nosym gnorm=0.0 ddmin=0.0";
-                inpKeyStrBottom="oldgeo thermo nosym precise ";
-            }
-            else if(attemptNumber==6){
-                inpKeyStrBoth="pm3 "+radicalString;
-                inpKeyStrTop=" precise nosym gnorm=0.0 nonr ddmin=0.0";
-                inpKeyStrBottom="oldgeo thermo nosym precise ";
-            }
-            else if(attemptNumber==7){
-                inpKeyStrBoth="pm3 "+radicalString;
-                inpKeyStrTop=" precise nosym bfgs gnorm=0.0 ddmin=0.0";
-                inpKeyStrBottom="oldgeo thermo nosym precise ";
-            }
-            else if(attemptNumber==8){//used for troublesome HGRZRPHFLAXXBT-UHFFFAOYAVmult3 (InChI=1/C3H2O4/c4-2(5)1-3(6)7/h1H2/mult3) case (negative frequency and large gradient issues)
+//            else if(attemptNumber==5){
+//                inpKeyStrBoth="pm3 "+radicalString;
+//                inpKeyStrTop=" precise nosym gnorm=0.0 ddmin=0.0";
+//                inpKeyStrBottom="oldgeo thermo nosym precise ";
+//            }
+//            else if(attemptNumber==6){
+//                inpKeyStrBoth="pm3 "+radicalString;
+//                inpKeyStrTop=" precise nosym gnorm=0.0 nonr ddmin=0.0";
+//                inpKeyStrBottom="oldgeo thermo nosym precise ";
+//            }
+//            else if(attemptNumber==7){
+//                inpKeyStrBoth="pm3 "+radicalString;
+//                inpKeyStrTop=" precise nosym bfgs gnorm=0.0 ddmin=0.0";
+//                inpKeyStrBottom="oldgeo thermo nosym precise ";
+//            }
+            else if(attemptNumber==5){//used for troublesome HGRZRPHFLAXXBT-UHFFFAOYAVmult3 (InChI=1/C3H2O4/c4-2(5)1-3(6)7/h1H2/mult3) case (negative frequency and large gradient issues)
                 inpKeyStrBoth="pm3 "+radicalString;
                 inpKeyStrTop=" precise nosym recalc=10 dmax=0.10 nonr cycles=2000 t=2000";
                 inpKeyStrBottom="oldgeo thermo nosym precise ";
             }
-            else if(attemptNumber==9){//used for troublesome CMARQPBQDRXBTN-UHFFFAOYAAmult3 (InChI=1/C3H2O4/c1-3(5)7-6-2-4/h1H2/mult3) case (negative frequency issues)
-                inpKeyStrBoth="pm3 "+radicalString;
-                inpKeyStrTop=" precise nosym recalc=1 dmax=0.05 gnorm=0.0 cycles=1000 t=1000";
-                inpKeyStrBottom="oldgeo thermo nosym precise ";
-            }
-            else if(attemptNumber==10){//used for ATCYLHQLTOSVFK-UHFFFAOYAMmult4 (InChI=1/C4H5O5/c1-3(5)8-9-4(2)7-6/h6H,1-2H2/mult4) case (timeout issue; also, negative frequency issues); note that this is very similar to the keyword below, so we may want to consolidate
-                inpKeyStrBoth="pm3 "+radicalString;
-                inpKeyStrTop=" precise nosym recalc=1 dmax=0.05 gnorm=0.2 cycles=1000 t=1000";
-                inpKeyStrBottom="oldgeo thermo nosym precise ";
-            }
+         //   else if(attemptNumber==9){//used for troublesome CMARQPBQDRXBTN-UHFFFAOYAAmult3 (InChI=1/C3H2O4/c1-3(5)7-6-2-4/h1H2/mult3) case (negative frequency issues)
+         //       inpKeyStrBoth="pm3 "+radicalString;
+         //       inpKeyStrTop=" precise nosym recalc=1 dmax=0.05 gnorm=0.0 cycles=1000 t=1000";
+         //       inpKeyStrBottom="oldgeo thermo nosym precise ";
+         //   }
+         //   else if(attemptNumber==10){//used for ATCYLHQLTOSVFK-UHFFFAOYAMmult4 (InChI=1/C4H5O5/c1-3(5)8-9-4(2)7-6/h6H,1-2H2/mult4) case (timeout issue; also, negative frequency issues); note that this is very similar to the keyword below, so we may want to consolidate
+         //       inpKeyStrBoth="pm3 "+radicalString;
+         //       inpKeyStrTop=" precise nosym recalc=1 dmax=0.05 gnorm=0.2 cycles=1000 t=1000";
+         //       inpKeyStrBottom="oldgeo thermo nosym precise ";
+         //   }
             else throw new Exception();//this point should not be reached
       //      FileWriter fw = new FileWriter(inpKey);
       //      fw.write(inpKeyStr);
