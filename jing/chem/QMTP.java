@@ -95,8 +95,13 @@ public class QMTP implements GeneralGAPP {
             molFile p_2dfile = new molFile(name, directory, p_chemGraph);
             molFile p_3dfile = new molFile();//it seems this must be initialized, so we initialize to empty object
             //2. convert from 2D to 3D using RDKit if the 2D molfile is for a molecule with 2 or more atoms
-            if(p_chemGraph.getAtomNumber() > 1){
-                p_3dfile = embed3D(p_2dfile, 5*(p_chemGraph.getAtomNumber()-3));//number of conformer attempts is just a linear scaling with molecule size, due to time considerations; in practice, it is probably more like 3^(n-3) or something like that
+            int atoms = p_chemGraph.getAtomNumber();
+            if(atoms > 1){
+                int distGeomAttempts=1;
+                if(atoms > 3){//this check prevents the number of attempts from being negative
+                    distGeomAttempts = 5*(p_chemGraph.getAtomNumber()-3); //number of conformer attempts is just a linear scaling with molecule size, due to time considerations; in practice, it is probably more like 3^(n-3) or something like that
+                }
+                p_3dfile = embed3D(p_2dfile, distGeomAttempts);
             }
              //3. create the Gaussian input file
             directory = "QMfiles/";
