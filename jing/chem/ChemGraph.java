@@ -52,7 +52,7 @@ public class ChemGraph implements Matchable {
 
     protected static int MAX_OXYGEN_NUM = 10; //20 Modified by AJ		//## attribute MAX_OXYGEN_NUM
 	protected static  int MAX_CARBON_NUM = 30;//100 Modified by AJ       //SS
-	protected static int MAX_CYCLE_NUM = 10;		//SS (no fused rings)
+	protected static int MAX_CYCLE_NUM = 10;		//SS (no fused rings); gmagoon: to turn fused rings off, set this to 1 (will exclude multiple non-fused rings, as well, I think)
 
 	/**
     Maximal radical number allowed in a ChemGraph.
