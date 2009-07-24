@@ -2,12 +2,12 @@
 Estimating Species Thermochemistry
 **********************************
 
-The ``Thermo`` utility produces group additivity-based thermochemistry estimates without running RMG. As with the thermochemistry estimates used by RMG, the ``Thermo`` utility bases its estimates on group values located in the RMG database.
+The ``ThermoDataEstimator`` utility produces group additivity-based thermochemistry estimates without running RMG. As with the thermochemistry estimates used by RMG, the ``ThermoDataEstimator`` utility bases its estimates on group values located in the RMG database.
 
 Instructions for Use
 --------------------
 
-1. Create a text file named :file:`thermo_input.txt` in any directory that you like.  If a ``GATPFit`` folder does not already exist in this directory, make it using the following command::
+1. Create a text file named :file:`thermo_input.txt` (or some other name of your choice) in any directory that you like.  If a ``GATPFit`` folder does not already exist in this directory, make it using the following command::
 
 	mkdir GATPFit
 	
@@ -25,11 +25,11 @@ Instructions for Use
 
 2. At the command prompt, change directory to the location of the :file:`thermo_input.txt` file and ``GATPFit`` folder and then execute the command ::
 
-	$ java -classpath "%rmg%"\software\rmg\RMG.jar Thermo thermo_input.txt
+	$ java -classpath "%rmg%"\software\rmg\RMG.jar ThermoDataEstimator thermo_input.txt
 
   To have output written to file instead of to the screen, use the syntax ::
 
-	$ java -classpath "%rmg%"\software\rmg\RMG.jar Thermo thermo_input.txt > thermo_output.txt
+	$ java -classpath "%rmg%"\software\rmg\RMG.jar ThermoDataEstimator thermo_input.txt > thermo_output.txt
 
   where ``thermo_output.txt`` is the name of the file to be written.
 
