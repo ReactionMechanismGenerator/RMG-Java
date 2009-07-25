@@ -229,8 +229,8 @@ public class QMTP implements GeneralGAPP {
             command=command.concat(name+".mol");//this is the target file name; use the same name as the twoDmolFile (but it will be in he 3Dmolfiles folder
             command=command.concat(" " + numConfAttempts);
             Process pythonProc = Runtime.getRuntime().exec(command, null, runningdir);
-            String killmsg= "Python process for "+twoDmolFile.getName()+" did not complete within 10 seconds, and the process was killed. File was probably not written.";//message to print if the process times out
-            Thread timeoutThread = new TimeoutKill(pythonProc, killmsg, 10000L); //create a timeout thread to handle cases where the UFF optimization get's locked up (cf. Ch. 16 of "Ivor Horton's Beginning Java 2: JDK 5 Edition"); once we use the updated version of RDKit, we should be able to get rid of this
+            String killmsg= "Python process for "+twoDmolFile.getName()+" did not complete within 120 seconds, and the process was killed. File was probably not written.";//message to print if the process times out
+            Thread timeoutThread = new TimeoutKill(pythonProc, killmsg, 120000L); //create a timeout thread to handle cases where the UFF optimization get's locked up (cf. Ch. 16 of "Ivor Horton's Beginning Java 2: JDK 5 Edition"); once we use the updated version of RDKit, we should be able to get rid of this
             timeoutThread.start();//start the thread
             //check for errors and display the error if there is one
             InputStream is = pythonProc.getErrorStream();
@@ -429,8 +429,8 @@ public class QMTP implements GeneralGAPP {
 
             if(attemptNumber==1){
                 inpKeyStrBoth="pm3 "+radicalString;
-                inpKeyStrTop=" precise";
-                inpKeyStrBottom="oldgeo thermo precise ";//7/10/09: based on a quick review of recent results, keyword combo #1 rarely works, and when it did (CJAINEUZFLXGFA-UHFFFAOYAUmult3 (InChI=1/C8H16O5Si/c1-4-11-14(9,12-5-2)13-8-6-10-7(8)3/h7-8H,3-6H2,1-2H3/mult3)), the grad. norm on the force step was about 1.7 (too large); I manually removed this result and re-ran...the entropy was increased by nearly 20 cal/mol-K...perhaps we should add a check for the "WARNING" that MOPAC prints out when the gradient is high
+                inpKeyStrTop=" precise nosym";
+                inpKeyStrBottom="oldgeo thermo nosym precise ";//7/10/09: based on a quick review of recent results, keyword combo #1 rarely works, and when it did (CJAINEUZFLXGFA-UHFFFAOYAUmult3 (InChI=1/C8H16O5Si/c1-4-11-14(9,12-5-2)13-8-6-10-7(8)3/h7-8H,3-6H2,1-2H3/mult3)), the grad. norm on the force step was about 1.7 (too large); I manually removed this result and re-ran...the entropy was increased by nearly 20 cal/mol-K...perhaps we should add a check for the "WARNING" that MOPAC prints out when the gradient is high; 7/22/09: for the case of FUGDBSHZYPTWLG-UHFFFAOYADmult3 (InChI=1/C5H8/c1-4-3-5(4)2/h4-5H,1-3H2/mult3), adding nosym seemed to resolve 1. large discrepancies from Gaussian and 2. negative frequencies in mass-weighted coordinates and possibly related issue in discrepancies between regular and mass-weighted coordinate frequencies
             }
             else if(attemptNumber==2){//7/9/09: used for VCSJVABXVCFDRA-UHFFFAOYAI (InChI=1/C8H19O5Si/c1-5-10-8(4)13-14(9,11-6-2)12-7-3/h8H,5-7H2,1-4H3); all existing Gaussian keywords also failed; the Gaussian result was also rectified, but the resulting molecule was over 70 kcal/mol less stable, probably due to a large amount of spin contamination (~1.75 in fixed Gaussian result vs. 0.754 for MOPAC)
                 inpKeyStrBoth="pm3 "+radicalString;
