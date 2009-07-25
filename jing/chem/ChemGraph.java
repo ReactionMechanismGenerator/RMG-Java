@@ -1165,17 +1165,6 @@ return sn;
         //#[ operation generateThermoData()
         // use GAPP to generate Thermo data
         try {
-
-        	if (thermoGAPP == null) setDefaultThermoGAPP();
-        //        if (useSolvation) {
-
-          //      }
-
-
-            //thermoData = thermoGAPP.generateThermoData(this);
-            thermoData = thermoGAPP.generateThermoData(this);
-        	//thermoData = thermoGAPP.generateThermoData(this);
-
                 if (useQM) thermoGAPP=QMTP.getINSTANCE();//6/2/09 gmagoon: temporarily default to QM calc; later we will have a flag in the input file for this
                 else if (thermoGAPP == null) setDefaultThermoGAPP();
         	thermoData = thermoGAPP.generateThermoData(this);
