@@ -36,6 +36,8 @@ RMG version 3.1 has been released. The new release includes a number of improvem
 
 - More frequent garbage collection
 
+Special thanks to Dr. Seyed-Abdolreza Seyed-Reihani and Jeffrey Mo for identifying many of the bugs.
+
 2009-03-05: RMG 3.0 Released!
 ==============================
 After nearly two years of development, the RMG team is proud to present the release of RMG version 3.0. New features include:
