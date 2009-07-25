@@ -18,6 +18,8 @@ Current Developers: (rmg_dev@mit.edu)
 
 - Michael Harper
 
+- Amrit Jalan
+
 - Gregory Magoon
 
 - Sandeep Sharma
