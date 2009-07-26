@@ -33,6 +33,7 @@ package jing.chem;
 
 import java.util.*;
 import jing.chemUtil.*;
+import jing.param.*;
 
 import java.io.File;
 import java.io.FileReader;
@@ -45,15 +46,16 @@ import java.io.InputStreamReader;
 //quantum mechanics thermo property estimator; analog of GATP
 public class QMTP implements GeneralGAPP {
 
+    final protected static double ENTHALPY_HYDROGEN = 52.1; //needed for HBI
     private static QMTP INSTANCE = new QMTP();		//## attribute INSTANCE
     protected static PrimaryThermoLibrary primaryLibrary;//Note: may be able to separate this out into GeneralGAPP, as this is common to both GATP and QMTP
-    protected static HashMap library;		//as above, may be able to move this and associated functions to GeneralGAPP (and possibly change from "x implements y" to "x extends y"), as it is common to both GATP and QMTP
-
+ //   protected static HashMap library;		//as above, may be able to move this and associated functions to GeneralGAPP (and possibly change from "x implements y" to "x extends y"), as it is common to both GATP and QMTP
+    protected ThermoGAGroupLibrary thermoLibrary; //needed for HBI
     // Constructors
 
     //## operation QMTP()
     private QMTP() {
-        initializeLibrary();
+       // initializeLibrary(); //gmagoon 72509: commented out in GATP, so I am mirroring the change here; other library functions below also commented out
         initializePrimaryThermoLibrary();
     }
        //## operation generateThermoData(ChemGraph)
@@ -66,15 +68,159 @@ public class QMTP implements GeneralGAPP {
         	p_chemGraph.fromprimarythermolibrary = true;
         	return result;
         }
-        result = getFromLibrary(p_chemGraph.getChemicalFormula());
-        if (result != null) return result;
+       
         
+        //        result = getFromLibrary(p_chemGraph.getChemicalFormula());//gmagoon 72509: commented out in GATP, so I am mirroring the change here
+//        if (result != null) return result;
+        
+        result=new ThermoData();
+         
+        int maxRadNumForQM = Global.maxRadNumForQM;
+        if (p_chemGraph.getRadicalNumber() > maxRadNumForQM)//use HBI if the molecule has more radicals than maxRadNumForQM; this is helpful because ; also MM4 (and MM3) look like they may have issues with radicals
+        {//this code is based closely off of GATP saturation (in getGAGroup()), but there are some modifications, particularly for symmetry correction
+            //find the initial symmetry number
+            int sigmaRadical = p_chemGraph.getSymmetryNumber();
+            
+            Graph g = p_chemGraph.getGraph();
+            HashMap oldCentralNode = (HashMap)(p_chemGraph.getCentralNode()).clone();
+            // saturate radical site
+            int max_radNum_molecule = ChemGraph.getMAX_RADICAL_NUM();
+            int max_radNum_atom = Math.min(8,max_radNum_molecule);
+            int [] idArray = new int[max_radNum_molecule];
+            Atom []  atomArray = new Atom[max_radNum_molecule];
+            Node [][] newnode = new Node[max_radNum_molecule][max_radNum_atom];
+
+            int radicalSite = 0;
+            Iterator iter = p_chemGraph.getNodeList();
+            FreeElectron satuated = FreeElectron.make("0");
+            while (iter.hasNext()) {
+        	Node node = (Node)iter.next();
+           	Atom atom = (Atom)node.getElement();
+           	if (atom.isRadical()) {
+           		radicalSite ++;
+           		// save the old radical atom
+           		idArray[radicalSite-1] = node.getID().intValue();
+           		atomArray[radicalSite-1] = atom;
+           		// new a satuated atom and replace the old one
+           		Atom newAtom = new Atom(atom.getChemElement(),satuated);
+           		node.setElement(newAtom);
+           		node.updateFeElement();
+           	}
+            }
+
+            // add H to saturate chem graph
+            Atom H = Atom.make(ChemElement.make("H"),satuated);
+            Bond S = Bond.make("S");
+            for (int i=0;i<radicalSite;i++) {
+           	Node node = p_chemGraph.getNodeAt(idArray[i]);
+           	Atom atom = atomArray[i];
+           	int HNum = atom.getRadicalNumber();
+           	for (int j=0;j<HNum;j++) {
+           		newnode[i][j] = g.addNode(H);
+           		g.addArcBetween(node,S,newnode[i][j]);
+           	}
+           	node.updateFgElement();
+            }
+
+            //find the saturated symmetry number
+            int sigmaSaturated = p_chemGraph.getSymmetryNumber();
+            
+   //         result = generateThermoData(g);//I'm not sure what GATP does, but this recursive calling will use HBIs on saturated species if it exists in PrimaryThermoLibrary
+            //check the primary thermo library for the saturated graph
+            result = primaryLibrary.getThermoData(p_chemGraph.getGraph());
+            //System.out.println(result);
+            if (result != null) {
+        	p_chemGraph.fromprimarythermolibrary = true;
+            }
+            else{
+                result=generateQMThermoData(p_chemGraph);
+            }
+            
+            // find the BDE for all radical groups
+            if(thermoLibrary == null) initGAGroupLibrary();
+            for (int i=0; i<radicalSite; i++) {
+          	int id = idArray[i];
+           	Node node = g.getNodeAt(id);
+           	Atom old = (Atom)node.getElement();
+           	node.setElement(atomArray[i]);
+           	node.updateFeElement();
+
+                // get rid of the extra H at ith site
+          	int HNum = atomArray[i].getRadicalNumber();
+           	for (int j=0;j<HNum;j++) {
+           		g.removeNode(newnode[i][j]);
+           	}
+           	node.updateFgElement();
+
+           	p_chemGraph.resetThermoSite(node);
+           	ThermoGAValue thisGAValue = thermoLibrary.findRadicalGroup(p_chemGraph);
+           	if (thisGAValue == null) {
+           		System.err.println("Radical group not found: " + node.getID());
+           	}
+           	else {
+           		//System.out.println(node.getID() + " radical correction: " + thisGAValue.getName() + "  "+thisGAValue.toString());
+           		result.plus(thisGAValue);
+                }
+
+                //recover the saturated site for next radical site calculation
+          	node.setElement(old);
+          	node.updateFeElement();
+           	for (int j=0;j<HNum;j++) {
+           		newnode[i][j] = g.addNode(H);
+           		g.addArcBetween(node,S,newnode[i][j]);
+           	}
+           	node.updateFgElement();
+
+            }
+
+            // recover the chem graph structure
+            // recover the radical
+            for (int i=0; i<radicalSite; i++) {
+           	int id = idArray[i];
+           	Node node = g.getNodeAt(id);
+           	node.setElement(atomArray[i]);
+           	node.updateFeElement();
+           	int HNum = atomArray[i].getRadicalNumber();
+         	//get rid of extra H
+           	for (int j=0;j<HNum;j++) {
+          	g.removeNode(newnode[i][j]);
+           	}
+           	node.updateFgElement();
+            }
+
+            // subtract the enthalphy of H from the result
+            int rad_number = p_chemGraph.getRadicalNumber();
+            ThermoGAValue enthalpy_H = new ThermoGAValue(ENTHALPY_HYDROGEN * rad_number, 0,0,0,0,0,0,0,0,0,0,0,null);
+            result.minus(enthalpy_H);
+           
+            
+            //correct the symmetry number based on the relative radical and saturated symmetry number; this should hopefully sidestep potential complications based on the fact that certain symmetry effects could be included in HBI value itself, and the fact that the symmetry number correction for saturated molecule has already been implemented, and it is likely to be different than symmetry number considered here, since the correction for the saturated molecule will have been external symmetry number, whereas RMG's ChemGraph symmetry number estimator includes both internal and external symmetry contributions; even so, I don't know if this will handle a change from chiral to achiral (or vice versa) properly            
+	    ThermoGAValue symmetryNumberCorrection = new ThermoGAValue(0,-1*GasConstant.getCalMolK()*Math.log((double)(sigmaRadical)/(double)(sigmaSaturated)),0,0,0,0,0,0,0,0,0,0,null);
+            result.plus(symmetryNumberCorrection);
+            
+            p_chemGraph.setCentralNode(oldCentralNode);  
+            
+            //display corrected thermo to user
+            String [] InChInames = getQMFileName(p_chemGraph);//determine the filename (InChIKey) and InChI with appended info for triplets, etc.
+            String name = InChInames[0];
+            String InChIaug = InChInames[1];
+            System.out.println("HBI-based thermo for " + name + "("+InChIaug+"): "+ result.toString());//print result, at least for debugging purposes
+        }
+        else{
+            result = generateQMThermoData(p_chemGraph);
+        }
+        
+        return result;
+        //#]
+    }
+   
+    public ThermoData generateQMThermoData(ChemGraph p_chemGraph){
         //if there is no data in the libraries, calculate the result based on QM or MM calculations; the below steps will be generalized later to allow for other quantum mechanics packages, etc.
         //String qmProgram="gaussian03";
         String qmProgram="mopac";
         String qmMethod="pm3"; //may eventually want to pass this to various functions to choose which "sub-function" to call
         
-        result = new ThermoData();
+        ThermoData result = new ThermoData();
         
         String [] InChInames = getQMFileName(p_chemGraph);//determine the filename (InChIKey) and InChI with appended info for triplets, etc.
         String name = InChInames[0];
@@ -168,9 +314,7 @@ public class QMTP implements GeneralGAPP {
         }
         
         return result;
-        //#]
     }
-   
 
     protected static QMTP getINSTANCE() {
         return INSTANCE;
@@ -183,34 +327,34 @@ public class QMTP implements GeneralGAPP {
 
       }
       
-          //## operation getFromLibrary(String)
-    public ThermoData getFromLibrary(String p_chemicalFormula) {
-        //#[ operation getFromLibrary(String)
-        return (ThermoData)library.get(p_chemicalFormula);
-        //#]
-    }
-    
-    public static HashMap getLibrary() {
-        return library;
-    }
-    
-    //6/2/09 gmagoon: doesn't seem like this function is ever used for GATP
-    public static void setLibrary(HashMap p_library) {
-        library = p_library;
-    }
-    
-
-    public void initializeLibrary() {
-        library = new HashMap();
-        // put in H2
-        ThermoData td_H2 = new ThermoData(0.000,31.233,6.895,6.975,6.994,7.009,7.081,7.219,7.720,0,0,0,"library value for H2");
-        library.put("H2", td_H2);
-
-        // put in H
-        ThermoData td_H = new ThermoData(52.103,27.419,4.968,4.968,4.968,4.968,4.968,4.968,4.968, 0,0,0,"library value for H radical");
-        library.put("H.",td_H);
-    }
-    
+//          //## operation getFromLibrary(String)
+//    public ThermoData getFromLibrary(String p_chemicalFormula) {
+//        //#[ operation getFromLibrary(String)
+//        return (ThermoData)library.get(p_chemicalFormula);
+//        //#]
+//    }
+//    
+//    public static HashMap getLibrary() {
+//        return library;
+//    }
+//    
+//    //6/2/09 gmagoon: doesn't seem like this function is ever used for GATP
+//    public static void setLibrary(HashMap p_library) {
+//        library = p_library;
+//    }
+//    
+//
+//    public void initializeLibrary() {
+//        library = new HashMap();
+//        // put in H2
+//        ThermoData td_H2 = new ThermoData(0.000,31.233,6.895,6.975,6.994,7.009,7.081,7.219,7.720,0,0,0,"library value for H2");
+//        library.put("H2", td_H2);
+//
+//        // put in H
+//        ThermoData td_H = new ThermoData(52.103,27.419,4.968,4.968,4.968,4.968,4.968,4.968,4.968, 0,0,0,"library value for H radical");
+//        library.put("H.",td_H);
+//    }
+//    
     //embed a molecule in 3D, using RDKit
     public molFile embed3D(molFile twoDmolFile, int numConfAttempts){
     //convert to 3D MOL file using RDKit script
@@ -1594,6 +1738,12 @@ public class QMTP implements GeneralGAPP {
 //        }
 //        return negativeFreq;
 //    }
+        //## operation initGAGroupLibrary()
+    protected void initGAGroupLibrary() {
+        //#[ operation initGAGroupLibrary()
+        thermoLibrary = ThermoGAGroupLibrary.getINSTANCE();
+        //#]
+    }
     
 }
 /*********************************************************************

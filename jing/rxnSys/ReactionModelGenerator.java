@@ -351,6 +351,30 @@ public class ReactionModelGenerator {
         		String thermoMethod = st.nextToken().toLowerCase();
         		if (thermoMethod.equals("qm")) {
         			ChemGraph.useQM = true;
+                                line=ChemParser.readMeaningfulLine(reader);
+                                if(line.startsWith("CyclicsOnly:")){
+                                    StringTokenizer st2 = new StringTokenizer(line);
+                                    String nameCyc = st2.nextToken();
+                                    String option = st2.nextToken().toLowerCase();
+                                    if (option.equals("on")) {
+                                        ChemGraph.useQMonCyclicsOnly = true;
+                                    }
+                                }
+                                else{
+                                    System.out.println("Can't find 'CyclicsOnly:' field");
+                                    System.exit(0);
+                                }
+                                line=ChemParser.readMeaningfulLine(reader);
+                                if(line.startsWith("MaxRadNumForQM:")){
+                                    StringTokenizer st3 = new StringTokenizer(line);
+                                    String nameRadNum = st3.nextToken();
+                                    Global.maxRadNumForQM = Integer.parseInt(st3.nextToken());
+           
+                                }
+                                else{
+                                    System.out.println("Can't find 'MaxRadNumForQM:' field");
+                                    System.exit(0);
+                                }
         		}//otherwise, the flag useQM will remain false by default and the traditional group additivity approach will be used
         	        line = ChemParser.readMeaningfulLine(reader);//read in reactants
                 }

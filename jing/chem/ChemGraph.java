@@ -60,7 +60,7 @@ public class ChemGraph implements Matchable {
     protected static int MAX_RADICAL_NUM = 10;		//## attribute MAX_RADICAL_NUM
     
     public static boolean useQM = false;//gmagoon 6/15/09: flag for thermo estimation using quantum results; there may be a better place for this (Global?) but for now, this should work
-    
+    public static boolean useQMonCyclicsOnly=false;
     /**
     Chemical Formula of a ChemGraph.
     */
@@ -1165,7 +1165,10 @@ return sn;
         //#[ operation generateThermoData()
         // use GAPP to generate Thermo data
         try {
-                if (useQM) thermoGAPP=QMTP.getINSTANCE();//6/2/09 gmagoon: temporarily default to QM calc; later we will have a flag in the input file for this
+                if (useQM){
+                    if(useQMonCyclicsOnly && this.isAcyclic()) thermoGAPP=GATP.getINSTANCE();//use GroupAdditivity for acyclic compounds if this option is set
+                    else  thermoGAPP=QMTP.getINSTANCE();
+                }
                 else if (thermoGAPP == null) setDefaultThermoGAPP();
         	thermoData = thermoGAPP.generateThermoData(this);
 
