@@ -361,7 +361,7 @@ public class ReactionModelGenerator {
                                     }
                                 }
                                 else{
-                                    System.out.println("Can't find 'QMForCyclicsOnly:' field");
+                                    System.out.println("condition.txt: Can't find 'QMForCyclicsOnly:' field");
                                     System.exit(0);
                                 }
                                 line=ChemParser.readMeaningfulLine(reader);
@@ -372,7 +372,7 @@ public class ReactionModelGenerator {
            
                                 }
                                 else{
-                                    System.out.println("Can't find 'MaxRadNumForQM:' field");
+                                    System.out.println("condition.txt: Can't find 'MaxRadNumForQM:' field");
                                     System.exit(0);
                                 }
         		}//otherwise, the flag useQM will remain false by default and the traditional group additivity approach will be used
