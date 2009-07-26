@@ -1325,9 +1325,9 @@ public class QMTP implements GeneralGAPP {
     //augmented InChI is InChI appended with /mult3, /mult4, /mult5, or /mult6 for multiplicities of 3 or higher
     public String [] getQMFileName(ChemGraph p_chemGraph){
         String [] result = new String[2];
-        String InChI = p_chemGraph.getInChI();
+        String InChI = p_chemGraph.getInChIAnew();//need to generate InChI and key anew because ChemGraph may have changed (in particular, adding/removing hydrogens in HBI process)
         String newInChI=null;
-        String fileName = p_chemGraph.getInChIKey();
+        String fileName = p_chemGraph.getInChIKeyAnew();
         String newFileName=null;
         int radicalNumber = p_chemGraph.getRadicalNumber();
        // System.out.println("Radical number:"+radicalNumber);//for debugging purposes

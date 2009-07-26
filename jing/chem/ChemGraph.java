@@ -1409,6 +1409,18 @@ return sn;
     	if (InChIKey == null || InChIKey.length() == 0) generateInChI();
     	return InChIKey;
     }
+    
+    //gmagoon 7/25/09: same as above function, except it will replace an existing InChI; this is useful when ChemGraph changes (e.g. during HBI process)
+    public String getInChIAnew() {
+    	generateInChI();
+    	return InChI;
+    }
+    
+    //gmagoon 7/25/09: same as above function, except it will replace an existing InChIKey; this is useful when ChemGraph changes (e.g. during HBI process)
+    public String getInChIKeyAnew() {
+    	generateInChI();
+    	return InChIKey;
+    }
 
     /**
     Requires:
