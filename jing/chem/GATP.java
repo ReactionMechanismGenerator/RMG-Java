@@ -254,17 +254,17 @@ public class GATP implements GeneralGAPP {
            	node.updateFgElement();
          }
 
-         // substrate the enthalphy of H from the result
+         // subtract the enthalphy of H from the result
          int rad_number = p_chemGraph.getRadicalNumber();
          ThermoGAValue enthalpy_H = new ThermoGAValue(ENTHALPY_HYDROGEN * rad_number, 0,0,0,0,0,0,0,0,0,0,0,null);
          result.minus(enthalpy_H);
 
          // make the symmetric number correction to entropy
 
-         if (p_chemGraph.isAcyclic()){
-			 int sigma = p_chemGraph.getSymmetryNumber();
+         if (p_chemGraph.isAcyclic()){//gmagoon 7/25/09: it looks like we have cyclic symmetry number code; we may want to try commenting the cyclic check out; if it turns out that this doesn't work, however, we may wish to revert
+                int sigma = p_chemGraph.getSymmetryNumber();
 	         ThermoGAValue symmtryNumberCorrection = new ThermoGAValue(0,GasConstant.getCalMolK()*Math.log(sigma),0,0,0,0,0,0,0,0,0,0,null);
-			 result.minus(symmtryNumberCorrection);
+                 result.minus(symmtryNumberCorrection);
          }
 
 
