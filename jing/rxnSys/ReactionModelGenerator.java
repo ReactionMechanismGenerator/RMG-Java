@@ -352,7 +352,7 @@ public class ReactionModelGenerator {
         		if (thermoMethod.equals("qm")) {
         			ChemGraph.useQM = true;
                                 line=ChemParser.readMeaningfulLine(reader);
-                                if(line.startsWith("CyclicsOnly:")){
+                                if(line.startsWith("QMForCyclicsOnly:")){
                                     StringTokenizer st2 = new StringTokenizer(line);
                                     String nameCyc = st2.nextToken();
                                     String option = st2.nextToken().toLowerCase();
