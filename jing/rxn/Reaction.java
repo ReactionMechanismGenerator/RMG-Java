@@ -1393,12 +1393,12 @@ public class Reaction {
 		return (additionalKinetics != null);
 	}
 	
-	public int totalNumberOfKinetics(){
-		if (hasAdditionalKinetics())
-			return 2;
-		else
-			return 1;
-	}
+	//public int totalNumberOfKinetics(){ //7/26/09 gmagoon: this is not used, and appears to incorrectly assume that there are a maximum of two kinetics...I think this was old and I have changed it since
+	//	if (hasAdditionalKinetics())
+	//		return 2;
+	//	else
+	//		return 1;
+	//}
 	
 	public HashSet getAllKinetics(){
 		HashSet allKinetics = new HashSet();
