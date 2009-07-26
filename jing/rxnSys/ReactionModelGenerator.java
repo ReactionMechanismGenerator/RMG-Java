@@ -361,7 +361,7 @@ public class ReactionModelGenerator {
                                     }
                                 }
                                 else{
-                                    System.out.println("Can't find 'CyclicsOnly:' field");
+                                    System.out.println("Can't find 'QMForCyclicsOnly:' field");
                                     System.exit(0);
                                 }
                                 line=ChemParser.readMeaningfulLine(reader);
