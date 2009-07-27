@@ -166,7 +166,7 @@ public class JDASSL extends JDAS {
         }
         else
         	info[0] = 1;
-        //5/5/08 gmagoon: (next two lines) for autoflag, get binary 0 or 1 corresponding to boolean true/false
+        //5/5/08 gmagoon: (next two lines) for autoflag, get binary 1 or 0 corresponding to boolean true/false
         int af = 0;
         if (autoflag) af = 1;
         if (tt instanceof ConversionTT){
