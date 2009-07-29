@@ -1068,7 +1068,7 @@ public class ReactionModelGenerator {
                         }
                         line = ChemParser.readMeaningfulLine(reader);
                 	}
-                	if (numMechs != 0)	System.out.println("Base Mechanisms in use: " + getSeedMechanism().getName());
+                	if (numMechs != 0)	System.out.println("Seed Mechanisms in use: " + getSeedMechanism().getName());
                 	else setSeedMechanism(null);
                 } else throw new InvalidSymbolException("Error reading condition.txt file: "
                 		+ "Could not locate SeedMechanism field");
