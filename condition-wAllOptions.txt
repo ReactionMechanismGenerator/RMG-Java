@@ -1,0 +1,145 @@
+// This condition.txt file contains every option available to RMG.
+// The fields that have been commented out are not required.
+// 30-Jul-2009 MRH
+
+// The folder for the "Database" is in reference to $RMG/databases
+Database: RMG_database
+
+// There is no limit to the number of PTLs a user may supply.
+// The "Name" of a PTL can have as many tokens as the user prefers.
+// The "Location" of a PTL is in reference to the "Database" from above
+// *** At least one PTL should be supplied and it should contain data for H and H2,
+//	since Benson's group additivity cannot handle these ***
+PrimaryThermoLibrary:
+Name: GRIMech3.0
+Location: GRI-Mech3.0
+Name:  RMG old
+Location: primaryThermoLibrary
+END
+
+// Only temperature/pressure model currently supported is "Constant"
+// Units for temperature: K, C, F
+// Units for pressure: atm, bar, Pa, torr
+TemperatureModel: Constant (K) 1350
+PressureModel: Constant (atm) 1
+
+// RMG currently only recognizes "Liquid"
+// *** This option is still under construction ***
+//EquationOfState: Liquid
+
+//MaxCarbonNumberPerSpecies: 10
+//MaxOxygenNumberPerSpecies: 4
+//MaxRadicalNumberPerSpecies: 2
+
+// InChI software must be present in $RMG/software/InChI for this feature to work
+//InChIGeneration: off/on
+
+// The thermo portion of this feature is functioning properly.  Reactions coming soon!
+// *** This option is still under construction ***
+//Solvation: off/on
+
+// RMG currently only recognizes "QM"
+// *** This option is still under construction ***
+//ThermoMethod: QM
+// If previous field is on and set to "QM", the next two fields are required
+//QMForCyclicsOnly: on/off
+//MaxRadNum4QM: 4
+
+InitialStatus:
+
+// A species' name cannot begin with a number
+// Concentration units available: mol/cm3, mol/m3, mol/l
+// The following options may follow a species' concentration units:
+//	Unreactive: This species will not react against RMG's rxn families.
+//		Furthermore, a file named IncludeSpecies.txt must be supplied by the user
+//	ConstantConcentration: This species concentration will remain fixed throughout the simulation
+//		*** This option is still under construction ***
+
+(1) HXD13 6.829e-4 (mol/cm3)
+1 C 0 {2,D}
+2 C 0 {1,D} {3,S}
+3 C 0 {2,S} {4,D}
+4 C 0 {3,D} {5,S}
+5 C 0 {4,S} {6,S}
+6 C 0 {5,S} 
+
+(3) CH4 0.104 (mol/cm3)
+1 C 0
+
+(6) H2 1.56e-2 (mol/cm3)
+1 H 0 {2,S}
+2 H 0 {1,S}
+
+END
+
+// Technically, there is no restriction on the name of the Inert Gas.
+// However, RMG only has the Lennard-Jones parameters for N2, Ar, and He
+//	hard-coded into BathGas.java.  Furthermore, RMG only reports the
+//	thermo for N2, Ar, and Ne in the chem.inp file
+// The concentration units available are the same as before
+InertGas:
+N2 0.8797 (mol/cm3)
+Ar 0.0e-6 (mol/cm3)
+END
+
+SpectroscopicDataEstimator: off/frequencygroups
+PressureDependence: off/reservoirstate/modifiedstrongcollision
+// If PressureDependence field is not set to "off", the PDepKineticsModel field must be present
+//PDepKineticsModel: chebyshev/pdeparrhenius/rate
+// If PDepKineticsModel is set to "Chebyshev", the following two fields may be supplied to RMG
+// 	*** If the TRange field is present, the PRange field must also be present ***
+//TRange: (K) 300 2100 8 4
+//PRange: (bar) 0.01 100 5 4
+
+// This file is only necessary if one of the species present in the condition.txt file
+//	was labeled as "Unreactive".
+// *** The location of this file is with respect to the $RMG directory ***
+//IncludeSpecies: includeSpecies.txt
+
+FinishController:
+(1) Goal Conversion: HXD13 0.9
+//(1) Goal ReactionTime 10 (sec/min/hr/day)
+(2) Error Tolerance: 0.1
+
+DynamicSimulator: DASSL
+Conversions: AUTO
+// The units for TimeStep are hard-coded into RMG as seconds
+//TimeStep: AUTO
+Atol: 1e-18
+Rtol: 1e-8
+
+// The following fields must be present if the DynamicSimulator field is set to "DASPK"
+//	Furthermore, they cannot be present if the DyanmicSimulator field is set to "DASSL"
+//Error bars: off/on
+//Display sensitivity coefficients: off/on
+//Display sensitivity information:
+//HXD13
+//CH4
+//END
+
+// There is no limit to the number of PRLs a user may supply.
+// The "Name" of a PRL can have as many tokens as the user prefers.
+// The "Location" of a PRL is in reference to the $RMG/databases directory
+PrimaryReactionLibrary:
+//Name: RMG-example
+//Location: RMG_database/primaryReactionLibrary/Example
+END
+
+// There is no limit to the number of SMs a user may supply.
+// The "Name" of a SM can have as many tokens as the user prefers.
+// The "Location" of a SM is in reference to the $RMG/databases directory
+SeedMechanism:
+//Name: Leeds
+//Location: RMG_database/SeedMechanisms/combustion_core/version5
+//Name: GRIMech3.0
+//Location: RMG_database/SeedMechanisms/GRI-Mech3.0
+END
+
+ChemkinUnits:
+// This field is optional.  If the field is turned "on", the comments for each rxn
+//	present in the chem.inp file will contain the detailed averaging scheme used
+//	to estimate the modified Arrhenius parameters reported.
+//	*** The length of these comments may be too long for the CHEMKIN interpreter to handle ***
+//Verbose: on/off
+A: moles/molecules
+Ea: kcal/mol cal/mol kJ/mol J/mol K
