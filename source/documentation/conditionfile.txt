@@ -288,6 +288,41 @@ For more information on the two methods, consult the following resources:
 
 .. [Green2007] N.J.B. Green and Z.A. Bhatti. "Steady-State Master Equation Methods." *Phys. Chem. Chem. Phys.* **9**, p. 4275-4290 (2007).
 
+Internally, RMG uses bilinear interpolation as its model for :math:`k(T, P)`. However, there
+are a variety of other models for :math:`k(T, P)` that can be outputted in the Chemkin file. 
+Specification of the desired model requires a line in the condition file to be placed directly
+underneath the previous line: **Note:** This line is not required if pressure dependence is set to
+off.
+
+To disregard all temperature and pressure dependence and simply output the rate at the provided
+temperature and pressure, use the line ::
+
+	PDepKineticsModel: Rate
+
+To use logarithmic interpolation of pressure and Arrhenius interpolation for temperature, use the
+line ::
+
+	PDepKineticsModel: PDepArrhenius
+
+To fit a set of Chebyshev polynomials on inverse temperature and logarithmic pressure axes mapped 
+to [-1,1], use the line ::
+
+	PDepKineticsModel: Chebyshev
+	
+If Chebyshev is selected, there are additional optional lines that would be placed beneath that 
+line that specify parameters for the Chebyshev model. The syntax for these lines is ::
+
+	TRange: (K) 300 2000 8 4
+	PRange: (bar) 0.01 100 5 4
+	
+Each line has four parameters: the minimum and maximum temperature/pressure to map to the range
+[-1, 1], the number of temperatures/pressures to generate :math:`k(T, P)` points at before
+fitting, and the number of terms in the Chebyshev polynomial in that dimension. Thus, the example
+above specifies a temperature range of 300-2000 K over which eight temperature points are used,
+and a pressure range of 0.01-100 bar over which five pressure points are used. Therefore forty
+:math:`k(T, P)` points total will be calculated and used to fit the Chebyshev polynomials, which 
+will be of cubic order (i.e. four terms) in temperature and cubic order (i.e. four terms) in 
+pressure.
 
 .. _finishcontroller:
 
