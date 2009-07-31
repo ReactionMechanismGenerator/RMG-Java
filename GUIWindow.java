@@ -95,7 +95,7 @@ public class GUIWindow extends JFrame {
 		public void actionPerformed(ActionEvent event) {
 			if (event.getActionCommand().equals("Open")) {
 				File openFile = null;
-				openFile = theApp.askUserForInput("Open file", false);
+				openFile = theApp.askUserForInput("Open file", false, null);
 				if (openFile != null) theApp.openConditionFile(openFile);
 			}
 			else if (event.getActionCommand().equals("Save")) {
@@ -106,14 +106,13 @@ public class GUIWindow extends JFrame {
 			}
             else if (event.getActionCommand().equals("Run RMG")) {
                 File runFile = null;
-                runFile = theApp.askUserForInput("Run file", false);
+                runFile = theApp.askUserForInput("Run file", false, null);
                 if (runFile != null) theApp.runConditionFile(runFile.getAbsolutePath());
             }
 			else if (event.getActionCommand().equals("About RMG")) {
 				JOptionPane.showMessageDialog(theApp, 
-						"RMG v3.0\n\n(c) Copyright Prof. William H. Green and RMG developers 2009.\n" +
-						"http://sourceforge.net/projects/rmg/\n" +
-						"http://rmg.mit.edu/\n" + 
+						"RMG v3.1\n\n(c) Copyright Prof. William H. Green and RMG developers 2009.\n" +
+						"http://rmg.sourceforge.net/\n"+ 
 						"rmg_dev@mit.edu",
 						"About RMG", JOptionPane.INFORMATION_MESSAGE);
 			}
