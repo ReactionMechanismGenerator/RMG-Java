@@ -1093,6 +1093,9 @@ public class Species {
         //output is string array with first ([0]) element being the InChI string (with "InChI="); the second ([1]) element will be the InChIKey (WITHOUT "InChIKey=")
         // the function can be easily changed to accomodate other versions of the InChI program by changing the command line options (optionsArgument); for example, if InChIKey generation is turned off, the second element of the string array will be an empty string;
 	public static String [] generateInChI(ChemGraph p_chemGraph) {
+		File inchi = new File("InChI");
+		inchi.mkdir();
+		
 		String [] result = new String[2];
 		String InChIstring = "";
                 String InChIKeystring = "";
@@ -1398,6 +1401,8 @@ public class Species {
 	 */
 	public static void inchi2mol(String p_inchi) {
 		String workingDirectory = System.getenv("RMG");
+		File inchi = new File("InChI");
+		inchi.mkdir();
 		String inchiDirectory = "InChI";
 		File inchiFile = null;
 		
