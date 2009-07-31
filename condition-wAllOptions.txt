@@ -7,7 +7,7 @@ Database: RMG_database
 
 // There is no limit to the number of PTLs a user may supply.
 // The "Name" of a PTL can have as many tokens as the user prefers.
-// The "Location" of a PTL is in reference to the "Database" from above
+// The "Location" of a PTL is in reference to the "Database"/thermo directory
 // *** At least one PTL should be supplied and it should contain data for H and H2,
 //	since Benson's group additivity cannot handle these ***
 PrimaryThermoLibrary:
