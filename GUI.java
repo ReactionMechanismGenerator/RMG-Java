@@ -1688,6 +1688,8 @@ public class GUI extends JPanel implements ActionListener {
     			}
     		} else if (pdkmCombo.getSelectedItem().equals("PLOG"))
     			conditionFile += "PDepArrhenius\r";
+    		else if (pdkmCombo.getSelectedItem().equals("Rate"))
+    			conditionFile += "Rate\r";
     	}
     	conditionFile += "\r";
     	
@@ -2145,6 +2147,8 @@ public class GUI extends JPanel implements ActionListener {
 		        	pdkmCombo.setSelectedItem("CHEB");
 		        } else if (pdkm.toLowerCase().equals("pdeparrhenius")) {
 		        	pdkmCombo.setSelectedItem("PLOG");
+		        } else if (pdkm.toLowerCase().equals("rate")) {
+		        	pdkmCombo.setSelectedItem("Rate");
 		        } else {
 		        	System.out.println("ERROR: Reading in condition.txt file - Invalid argument for PDepKineticsModel.  RMG recognizes an argument of 'chebyshev' or 'pdeparrhenius' but not " + pdkm + ".  GUI does not contain all information present in condition.txt file.");
 		        }
@@ -2603,7 +2607,7 @@ public class GUI extends JPanel implements ActionListener {
 	String[] pdepOptions = {"off", "Reservoir State", "Modified Strong Collision"};
 	String[] simOptions = {"DASSL", "DASPK"}; //"CHEMKIN"
 	String[] sdeOptions = {"Frequency Groups"}; //"Three Frequency Model"
-	String[] pdkmOptions = {"CHEB", "PLOG"};
+	String[] pdkmOptions = {"CHEB", "PLOG", "Rate"};
 	//	Tab : Additional Options
 	String[] AUnitsOptions = {"moles", "molecules"};
 	String[] EaUnitsOptions = {"kcal/mol", "cal/mol", "kJ/mol", "J/mol", "Kelvins"};
