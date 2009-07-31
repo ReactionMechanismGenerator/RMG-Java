@@ -165,6 +165,19 @@ public class BathGas {
 					ljSigma += mf * 2.576;	// Units of Angstroms
 					ljEpsilon += mf * 10.22;	// Units of Kelvin (actually epsilon/boltzmann constant)
 				}
+				else if (name.equals("Ne") || name.equals("NE")) {
+				expDownParam += mf * 291.0;	// This is the value for Helium!!!
+				molWt += mf * 20.18;
+				/*
+				 *  Numbers from Table K.2 of "Fundamentals of Momentum, Heat, and Mass Transfer",
+				 *  	Welty, Wicks, Wilson, Rorrer 4th ed.
+				 *  Numbers come from R.C. Reid and T.K. Sherwood, "The Properties of Gases and
+				 *  	Liquids", McGraw-Hill Book Company, New York, 1958.
+				 *  MRH 30-Jul-2009
+				 */
+				ljSigma += mf * 2.789;	// Units of Angstroms
+				ljEpsilon += mf * 35.7;	// Units of Kelvin (actually epsilon/boltzmann constant)
+				}
 				else {
 					System.out.println("unknown colliders: " + name);
 					System.exit(0);
