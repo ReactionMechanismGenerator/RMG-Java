@@ -74,6 +74,8 @@ public class ArrheniusKinetics implements Kinetics {
     
     protected static String EaUnits;
     
+    protected static String AUnits;
+    
     // Constructors
     
     //## operation ArrheniusKinetics(UncertainDouble,UncertainDouble,UncertainDouble,String,int,String,String) 
@@ -291,20 +293,35 @@ public class ArrheniusKinetics implements Kinetics {
     public String toChemkinString(double Hrxn, Temperature p_temperature, boolean includeComments) {
         //#[ operation toChemkinString() 
     	Object [] formatString = new Object[5];
-		formatString[0] = new Double(getAValue()); formatString[1] = new Double(getNValue());
+		
+//    	formatString[0] = new Double(getAValue());
+    	double tempDouble = new Double(getAValue());
+    	if (AUnits.equals("moles")) {
+    		formatString[0] = tempDouble;
+    	} else if (AUnits.equals("molecules")) {
+    		formatString[0] = tempDouble / 6.022e23;
+    	}
+		
+		formatString[1] = new Double(getNValue());
+		
 //		formatString[2] = new Double(E.getValue());
+		tempDouble = E.getValue();
 		if (EaUnits.equals("kcal/mol")) {
-			formatString[2] = E.getValue();
+			formatString[2] = tempDouble;
 		}
 		else if (EaUnits.equals("cal/mol")) {
-			formatString[2] = E.getValue() * 1000.0;
+			formatString[2] = tempDouble * 1000.0;
 		}
 		else if (EaUnits.equals("kJ/mol")) {
-			formatString[2] = E.getValue() * 4.184;
+			formatString[2] = tempDouble * 4.184;
 		}
 		else if (EaUnits.equals("J/mol")) {
-			formatString[2] = E.getValue() * 4184.0;
+			formatString[2] = tempDouble * 4184.0;
 		}
+		else if (EaUnits.equals("Kelvins")) {
+			formatString[2] = tempDouble / 1.987e-3;
+		}
+		
 		formatString[3] = source; formatString[4] = comment;
 		
     	if (includeComments)
@@ -384,6 +401,14 @@ public class ArrheniusKinetics implements Kinetics {
     
     public static String getEaUnits() {
     	return EaUnits;
+    }
+    
+    public static void setAUnits(String p_string) {
+    	AUnits = p_string;
+    }
+    
+    public static String getAUnits() {
+    	return AUnits;
     }
     
 }

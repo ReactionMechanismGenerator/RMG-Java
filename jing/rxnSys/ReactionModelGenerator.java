@@ -171,14 +171,12 @@ public class ReactionModelGenerator {
              if (line.startsWith("PrimaryThermoLibrary:")) {
              	int numPTLs = 0;
              	line = ChemParser.readMeaningfulLine(reader);
-             	while (!line.equals("END")) {                     		
-                     StringTokenizer nameST = new StringTokenizer(line);
-                     String tempString = nameST.nextToken();	// Should be "Name:"
-                     String name = nameST.nextToken();	// User-defined name of PTL
+             	while (!line.equals("END")) {
+             		String[] tempString = line.split("Name: ");
+             		String name = tempString[tempString.length-1].trim();
                      line = ChemParser.readMeaningfulLine(reader);
-                     StringTokenizer pathST = new StringTokenizer(line);
-                     tempString = pathST.nextToken();	// Should be "Location:"
-                     String path = pathST.nextToken();	// User-defined location of PTL
+                     tempString = line.split("Location: ");
+                     String path = tempString[tempString.length-1].trim();
                      if (numPTLs==0) {
                      	setPrimaryThermoLibrary(new PrimaryThermoLibrary(name,path));
                      	++numPTLs; 	
@@ -326,10 +324,9 @@ public class ReactionModelGenerator {
         			Species.useInChI = false;
         		}
         		else throw new InvalidSymbolException("condition.txt: Unknown InChIGeneration flag: " + inchiOnOff);
+        		line = ChemParser.readMeaningfulLine(reader);
         	}
-        	else throw new InvalidSymbolException("condition.txt: Cannot find InChIGeneration flag.");
 
-            line = ChemParser.readMeaningfulLine(reader);
             // Read in Solvation effects
             if (line.startsWith("Solvation:")) {
         		StringTokenizer st = new StringTokenizer(line);
@@ -341,9 +338,10 @@ public class ReactionModelGenerator {
         			Species.useSolvation = false;
         		}
         		else throw new InvalidSymbolException("condition.txt: Unknown solvation flag: " + solvationOnOff);
+        		line = ChemParser.readMeaningfulLine(reader);
         	}
-        	else throw new InvalidSymbolException("condition.txt: Cannot find solvation flag.");
-                line = ChemParser.readMeaningfulLine(reader);//read in reactants or thermo line
+
+                //line = ChemParser.readMeaningfulLine(reader);//read in reactants or thermo line
                 // Read in optional QM thermo  generation
         	if (line.startsWith("ThermoMethod:")) {
         		StringTokenizer st = new StringTokenizer(line);
@@ -392,18 +390,6 @@ public class ReactionModelGenerator {
 //        		else throw new InvalidSymbolException("condition.txt: Unknown solvation flag: " + solvationOnOff);
 //        	}
 //        	else throw new InvalidSymbolException("condition.txt: Cannot find solvation flag.");
-
-        	if (line.startsWith("Verbose:")) {
-        		StringTokenizer st = new StringTokenizer(line);
-        		String dummyString = st.nextToken();
-        		String OnOff = st.nextToken().toLowerCase();
-        		if (OnOff.equals("off")) {
-        			ArrheniusKinetics.setVerbose(false);
-        		} else if (OnOff.equals("on")) {
-        			ArrheniusKinetics.setVerbose(true);
-        		}
-        		line = ChemParser.readMeaningfulLine(reader);//read in reactants
-            }
 
 
 			// read in reactants
@@ -1006,15 +992,12 @@ public class ReactionModelGenerator {
                 	// GJB modified to allow multiple primary reaction libraries
                 	int Ilib = 0;
                 	line = ChemParser.readMeaningfulLine(reader);
-                	while (!line.equals("END")) {                     		
-                        StringTokenizer nameST = new StringTokenizer(line);
-                        String temp = nameST.nextToken();	// Should hold "Name:"
-                        String name = nameST.nextToken();
-
-                        line = ChemParser.readMeaningfulLine(reader);
-                        StringTokenizer pathST = new StringTokenizer(line);
-                        temp = pathST.nextToken();	// Should hold "Location:"
-                        String path = pathST.nextToken();
+                	while (!line.equals("END")) {
+                 		String[] tempString = line.split("Name: ");
+                 		String name = tempString[tempString.length-1].trim();
+                         line = ChemParser.readMeaningfulLine(reader);
+                         tempString = line.split("Location: ");
+                         String path = tempString[tempString.length-1].trim();
                         if (Ilib==0) {
                         	//primaryReactionLibrary = new PrimaryReactionLibrary(name, path);
                                 setPrimaryReactionLibrary(new PrimaryReactionLibrary(name, path));//10/14/07 gmagoon: changed to use setPrimaryReactionLibrary
@@ -1051,13 +1034,11 @@ public class ReactionModelGenerator {
                 	int numMechs = 0;
                 	line = ChemParser.readMeaningfulLine(reader);
                 	while (!line.equals("END")) {                     		
-                        StringTokenizer nameST = new StringTokenizer(line);
-                        String tempString = nameST.nextToken();	// Should be "Name:"
-                        String name = nameST.nextToken();	// User-defined name of Seed Mechanism
-                        line = ChemParser.readMeaningfulLine(reader);
-                        StringTokenizer pathST = new StringTokenizer(line);
-                        tempString = pathST.nextToken();	// Should be "Location:"
-                        String path = pathST.nextToken();	// User-defined location of Base Mechanism
+                 		String[] tempString = line.split("Name: ");
+                 		String name = tempString[tempString.length-1].trim();
+                         line = ChemParser.readMeaningfulLine(reader);
+                         tempString = line.split("Location: ");
+                         String path = tempString[tempString.length-1].trim();
                         if (numMechs==0) {
                         	setSeedMechanism(new SeedMechanism(name, path));
                         	++numMechs; 	
@@ -1076,19 +1057,43 @@ public class ReactionModelGenerator {
                 line = ChemParser.readMeaningfulLine(reader);
                 if (line.startsWith("ChemkinUnits")) {
                 	line = ChemParser.readMeaningfulLine(reader);
+                	if (line.startsWith("Verbose:")) {
+                		StringTokenizer st = new StringTokenizer(line);
+                		String dummyString = st.nextToken();
+                		String OnOff = st.nextToken().toLowerCase();
+                		if (OnOff.equals("off")) {
+                			ArrheniusKinetics.setVerbose(false);
+                		} else if (OnOff.equals("on")) {
+                			ArrheniusKinetics.setVerbose(true);
+                		}
+                		line = ChemParser.readMeaningfulLine(reader);
+                    }
+                	if (line.startsWith("A")) {
+                		StringTokenizer st = new StringTokenizer(line);
+                		String dummyString = st.nextToken(); // Should be "A:"
+                		String units = st.nextToken();
+                		if (units.equals("moles") || units.equals("molecules"))
+                			ArrheniusKinetics.setAUnits(units);
+                		else {
+                			System.err.println("Units for A were not recognized: " + units);
+                			System.exit(0);
+                		}
+                	} else throw new InvalidSymbolException("Error reading condition.txt file: "
+                			+ "Could not locate Chemkin units A field.");
+                	line = ChemParser.readMeaningfulLine(reader);
                 	if (line.startsWith("Ea")) {
                 		StringTokenizer st = new StringTokenizer(line);
                 		String dummyString = st.nextToken(); // Should be "Ea:"
                 		String units = st.nextToken();
                 		if (units.equals("kcal/mol") || units.equals("cal/mol") ||
-                				units.equals("kJ/mol") || units.equals("J/mol"))
+                				units.equals("kJ/mol") || units.equals("J/mol") || units.equals("Kelvins"))
                 			ArrheniusKinetics.setEaUnits(units);
                 		else {
                 			System.err.println("Units for Ea were not recognized: " + units);
                 			System.exit(0);
                 		}
                 	} else throw new InvalidSymbolException("Error reading condition.txt file: "
-                			+ "Could not locate Ea field.");
+                			+ "Could not locate Chemkin units Ea field.");
                 } else throw new InvalidSymbolException("Error reading condition.txt file: "
                 		+ "Could not locate ChemkinUnits field.");
 

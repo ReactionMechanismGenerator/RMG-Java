@@ -619,12 +619,22 @@ public  Chemkin() {
 
       StringBuilder result = new StringBuilder();
 //      result.append("REACTIONS	KCAL/MOLE\n");
+
+      String reactionHeader = "";
+      
       String units4Ea = ArrheniusKinetics.getEaUnits();
-      if (units4Ea.equals("cal/mol")) result.append("REACTIONS   CAL/MOL\n");
-      else if (units4Ea.equals("kcal/mol")) result.append("REACTIONS   KCAL/MOL\n");
-      else if (units4Ea.equals("J/mol")) result.append("REACTIONS   J/MOL\n");
-      else if (units4Ea.equals("kJ/mol")) result.append("REACTIONS   KJ/MOL\n");
+      if (units4Ea.equals("cal/mol")) reactionHeader = "CAL/MOL\t";
+      else if (units4Ea.equals("kcal/mol")) reactionHeader = "KCAL/MOL\t";
+      else if (units4Ea.equals("J/mol")) reactionHeader = "JOULES/MOL\t";
+      else if (units4Ea.equals("kJ/mol")) reactionHeader = "KJOULES/MOL\t";
+      else if (units4Ea.equals("Kelvins")) reactionHeader = "KELVINS\t";
+      
+      String units4A = ArrheniusKinetics.getAUnits();
+      if (units4A.equals("moles")) reactionHeader += "MOLES\n";
+      else if (units4A.equals("molecules")) reactionHeader += "MOLECULES\n";
 	  
+      result.append("REACTIONS\t" + reactionHeader);
+      
 	  LinkedList pDepList = new LinkedList();
 	  LinkedList nonPDepList = new LinkedList();
 	  LinkedList duplicates = new LinkedList();
@@ -767,7 +777,7 @@ public  Chemkin() {
 		thermoHeader += " 0.00000000e+00 0.00000000e+00-0.07453750e+04 0.04366001e+02                   4\n";
        */
     //#]
-      String thermoHeader = "! The first three sets of polynomial coefficients (Ar, N2, Ne) are from         \n";
+      String thermoHeader = "! The first four sets of polynomial coefficients (Ar, N2, Ne, He) are from         \n";
       thermoHeader += "! THIRD MILLENIUM IDEAL GAS AND CONDENSED PHASE THERMOCHEMICAL DATABASE FOR     \n";
       thermoHeader += "! COMBUSTION WITH UPDATES FROM ACTIVE THERMOCHENICAL TABLES                     \n";
       thermoHeader += "! Authors: Alexander Burcat and Branko Ruscic                                   \n";
@@ -789,7 +799,14 @@ public  Chemkin() {
       thermoHeader += "Ne                L10/90Ne  1               G    200.0   6000.00  1000.0       1\n";
       thermoHeader += " 0.25000000E 01 0.00000000E 00 0.00000000E 00 0.00000000E 00 0.00000000E 00    2\n";
       thermoHeader += "-0.74537500E 03 0.33553227E 01 0.25000000E 01 0.00000000E 00 0.00000000E 00    3\n";
-      thermoHeader += " 0.00000000E 00 0.00000000E 00-0.74537498E 03 0.33553227E 01                   4\n\n";
+      thermoHeader += " 0.00000000E 00 0.00000000E 00-0.74537498E 03 0.33553227E 01                   4\n";
+      // thermoHeader += "7440-59-7                                                                       \n";                                                                               
+      // thermoHeader += "He  HF298=0.0 KJ  REF=McBride, Heimel, Ehlers & Gordon "Thermodynamic Properties\n";
+      // thermoHeader += "to 6000K ..." NASA SP-3001 1963.                                                \n";                                                
+      thermoHeader += "He REF ELEMENT    L10/90HE 1.   0.   0.   0.G   200.000  6000.000  B   4.00260 1\n";
+      thermoHeader += " 2.50000000E+00 0.00000000E+00 0.00000000E+00 0.00000000E+00 0.00000000E+00    2\n";
+      thermoHeader += "-7.45375000E+02 9.28723974E-01 2.50000000E+00 0.00000000E+00 0.00000000E+00    3\n";
+      thermoHeader += " 0.00000000E+00 0.00000000E+00-7.45375000E+02 9.28723974E-01 0.00000000E+00    4\n\n";
       
       StringBuilder result = new StringBuilder();
 	  result.append("THERMO ALL\n");

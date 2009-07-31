@@ -32,7 +32,6 @@ package jing.rxn;
 
 import java.util.*;
 import jing.param.*;
-import jing.param.Temperature;
 import jing.mathTool.UncertainDouble;
 
 //## package jing::rxn 
@@ -76,20 +75,35 @@ public class ArrheniusEPKinetics extends ArrheniusKinetics {
 			comment += " (Ea computed using deltaHrxn(T=298K) of " + p_Hrxn + " kcal/mol)";
 		}
 		Object [] formatString = new Object[5];
-		formatString[0] = new Double(getAValue()); formatString[1] = new Double(getNValue());
+		
+//		formatString[0] = new Double(getAValue());
+    	double tempDouble = new Double(getAValue());
+    	if (AUnits.equals("moles")) {
+    		formatString[0] = tempDouble;
+    	} else if (AUnits.equals("molecules")) {
+    		formatString[0] = tempDouble / 6.022e23;
+    	}
+				
+		formatString[1] = new Double(getNValue());
+		
 //		formatString[2] = new Double(Ea);
+		tempDouble = E.getValue();
 		if (EaUnits.equals("kcal/mol")) {
-			formatString[2] = Ea;
+			formatString[2] = tempDouble;
 		}
 		else if (EaUnits.equals("cal/mol")) {
-			formatString[2] = Ea * 1000.0;
+			formatString[2] = tempDouble * 1000.0;
 		}
 		else if (EaUnits.equals("kJ/mol")) {
-			formatString[2] = Ea * 4.184;
+			formatString[2] = tempDouble * 4.184;
 		}
 		else if (EaUnits.equals("J/mol")) {
-			formatString[2] = Ea * 4184.0;
+			formatString[2] = tempDouble * 4184.0;
 		}
+		else if (EaUnits.equals("Kelvins")) {
+			formatString[2] = tempDouble / 1.987e-3;
+		}
+		
 		formatString[3] = source; formatString[4] = comment;
 		
 		if (includeComments){
