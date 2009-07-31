@@ -72,4 +72,5 @@ SeedMechanism:
 END
 
 ChemkinUnits:
+A: moles
 Ea: kcal/mol
