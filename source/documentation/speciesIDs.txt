@@ -9,7 +9,7 @@ and .mol files to adjacency lists.
 .. note::
 
 	The InChI executable must be present in the ``%rmg%\software\InChI`` directory 
-	for any of these modules to function.
+	for the InChI2AdjList and AdjList2InChI modules to function.
 
 InChI2AdjList
 -------------
