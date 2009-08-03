@@ -1,0 +1,96 @@
+****************************************
+Converting Between Different Species IDs
+****************************************
+
+Instead of constructing an adjacency list by hand, new modules have been built
+to convert IUPAC **In**\ ternational **Ch**\ emical **I**\ dentifiers (InChIs) 
+and .mol files to adjacency lists.
+
+.. note::
+
+	The InChI executable must be present in the ``%rmg%\software\InChI`` directory 
+	for any of these modules to function.
+
+InChI2AdjList
+-------------
+
+To convert an InChI (or a series of InChIs) into an adjacency list, create a text
+file in any directory you like (for the purposes of this example, we'll create
+a file named :file:`listOfInChIs.txt`).  List each InChI in this new file,
+separated by a carriage return.  If you'd like to identify the InChI with a
+particular name (e.g. the InChI for 1,3-hexadiene as HXD13), place this name
+before the InChI; if a line only contains the InChI, the default name of this
+species will be the InChI itself.
+
+An example of the :file:`listOfInChIs.txt` file is::
+
+	HXD13	InChI=1/C6H10/c1-3-5-6-4-2/h3,5-6H,1,4H2,2H3
+	CH4	InChI=1/CH4/h1H4
+	H2	InChI=1/H2/h1H
+
+Running the following command will generate a file (:file:`adjList_output.txt`)
+which contains a list of species, in the form of adjacency lists::
+
+	java -classpath "%rmg%"\software\rmg\RMG.jar InChI2AdjList listOfInChIs.txt
+
+Mol2AdjList
+-----------
+
+To convert a .mol file into an adjacency list, create a .mol file in any directory
+you like (for the purpose of this example, we'll create a file named
+:file:`temp.mol`).  An example of a .mol file (for 1,3-hexadiene) is::
+
+	Structure #1
+	  InChI v1 SDfile Output                       
+	
+	  6  5  0  0  0  0  0  0  0  0  1 V2000
+	    0.0000    0.0000    0.0000 C   0  0  0     0  0  0  0  0  0
+	    0.0000    0.0000    0.0000 C   0  0  0     0  0  0  0  0  0
+	    0.0000    0.0000    0.0000 C   0  0  0     0  0  0  0  0  0
+	    0.0000    0.0000    0.0000 C   0  0  0     0  0  0  0  0  0
+	    0.0000    0.0000    0.0000 C   0  0  0     0  0  0  0  0  0
+	    0.0000    0.0000    0.0000 C   0  0  0     0  0  0  0  0  0
+	  1  3  2  0  0  0  0
+	  2  4  1  0  0  0  0
+	  3  5  1  0  0  0  0
+	  4  6  1  0  0  0  0
+	  5  6  2  0  0  0  0
+	M  END
+	$$$$
+
+Passing the location of this .mol file to the Mol2AdjList console, using the
+following command, generates the adjacency list in a file named :file:`adjList.txt`::
+
+	java -classpath "%rmg%"\software\rmg\RMG.jar Mol2AdjList temp.mol > adjList.txt
+
+AdjList2InChI
+-------------
+
+To convert an adjacency list (or series of adjacency lists) to an InChI, create
+a text file in any directory you like (for the purposes of this example, we'll 
+create a file named :file:`listOfAdjLists.txt`).  List each adjacency list
+in this new file, separated by a carriage return.  Furthermore, you must 
+identify each adjacency list with a name (e.g. HXD13 for 1,3-hexadiene);
+place this name before the adjacency list.
+
+An example of the :file:`listOfAdjLists.txt` file is::
+
+	HXD13
+	1 C 0 {2,D}
+	2 C 0 {1,D} {3,S}
+	3 C 0 {2,S} {4,D}
+	4 C 0 {3,D} {5,S}
+	5 C 0 {4,S} {6,S}
+	6 C 0 {5,S} 
+	
+	CH4
+	1 C 0
+	
+	H2
+	1 H 0 {2,S}
+	2 H 0 {1,S}
+
+Running the following command will generate a file (:file:`inchi_output.txt`)
+which contains a list of InChIs, identified by the name given in the input file::
+
+	java -classpath "%rmg%"\software\rmg\RMG.jar AdjList2InChI listOfAdjLists.txt
