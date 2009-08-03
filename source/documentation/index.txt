@@ -23,6 +23,8 @@ Contents
    analyzing
    modification
    thermo
+   reactions
+
    theory/index
    ../credits
 

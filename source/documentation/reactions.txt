@@ -1,0 +1,120 @@
+**********************************************
+Identifying all Reactions for a Set of Species
+**********************************************
+
+The ``PopulateReactions`` module accepts a list of species as input (in the form
+of adjacency lists) and outputs a list of all possible reactions between those
+species, according to the RMG reaction family templates
+(located at ``%rmg%\databases\RMG_database\kinetics``)
+
+Instructions for Use
+--------------------
+
+1. Create a text file in any directory that you like (for the purposes of this 
+example, we'll create a file named :file:`reactions_input.txt`).
+
+At the top of the text file, state the temperature of interest.  When the module
+identifies a reaction, it must also grab the kinetics (in the form of modified
+Arrhenius parameters).  In some cases, the RMG kinetics library has multiple kinetics
+values for the same reaction (e.g. one set valid from 300-500K and another valid
+from 700-900K).  Thus, in order to report the best kinetics, the input file must 
+contain a temperature::
+
+	Temperature: 1200 (K)
+
+The next item to supply to the text file is the Solvation field.  **This feature of
+RMG is still under construction.**  For now, please label the Solvation field "off"::
+
+	Solvation: off 
+
+The next item in the text file are the species of interest.  For each species
+of interest, supply a name and an adjacency list.  The adjacency list should
+have the same syntax used to define a species 
+in the :file:`condition.txt` input file (see RMG manual). Hydrogens can be 
+omitted for simplicity. For example, the adjacency list for 1-butanol and
+oxygen could be written as::
+  
+  	nBuOH
+	1 C 0 {2,S}
+	2 C 0 {1,S} {3,S}
+	3 C 0 {2,S} {4,S}
+	4 C 0 {3,S} {5,S}
+	5 O 0 {4,S}
+	
+	O2
+	1 O 0 {2,D}
+	2 O 0 {1,D}
+
+Thus, the total :file:`reactions_input.txt` file looks like::
+
+	Temperature: 1200 (K)
+	Solvation: off 
+	
+  	nBuOH
+	1 C 0 {2,S}
+	2 C 0 {1,S} {3,S}
+	3 C 0 {2,S} {4,S}
+	4 C 0 {3,S} {5,S}
+	5 O 0 {4,S}
+	
+	O2
+	1 O 0 {2,D}
+	2 O 0 {1,D}
+
+2. At the command prompt, change to the directory containing the 
+:file:`reactions_input.txt` file and then execute the command ::
+
+	java -classpath "%rmg%"\software\rmg\RMG.jar PopulateReactions reactions_input.txt
+
+For linux users::
+
+	java -classpath $RMG\software\rmg\RMG.jar PopulateReactions reactions_input.txt
+
+To have the output written to file instead of to the screen, use the syntax ::
+
+	java -classpath "%rmg%"\software\rmg\RMG.jar PopulateReactions reactions_input.txt > reactions_output.txt
+
+where ``reactions_output.txt`` is the name of the file to be written.
+
+3. Every time a species is found in the input file, the module will:
+
+	* Read in the name and adjacency list of the species
+	* Attempt to react the just-read-in species against each of the reaction 
+	  families located in the ``%rmg%\databases\RMG_database\kinetics`` directory
+	* Store the results
+
+The reaction families the module will attempt to react the just-read-in species against are either unimolecular or bimolecular.
+
+	* If the reaction family is unimolecular, the module attempts to react the current species
+	* If the reaction family is bimolecular (e.g. A+B-->products), the module 
+	  assigns the just-read-in species as A and iterates over all previously read-in 
+	  species (including the just-read-in species) when assigning B.  The module 
+	  then assigns the just-read-in species as B and iterates over all previous 
+	  species for A.
+
+All reactions generated are reported in the :file:`PopRxnsOutput_Rxns.txt` file.
+The top of the file displays:
+
+	* The units for the modified Arrhenius parameters reported
+	* The temperature used in searching for the best kinetics
+	* Whether the reported Arrhenius parameters are for gas-phase or solution-phase
+	  chemistry
+
+Each line after this has the following format (in general):
+
+	B+C-->D+F	A	n	Ea	Rxn_family exact/estimate:	Node1	Node2
+	
+where:
+	
+	- A, n, and Ea are the modified Arrhenius parameters
+	- Rxn_family is the reaction family template used to generate this reaction.  
+	  The "Rxn_family" is a folder in the ``%rmg%\databases\RMG_database\kinetics``
+	  directory 
+	- Node1/Node2 are the reactive subgroups of the species that RMG identified
+	- exact/estimate states whether the Rxn_family folder's :file:`rateLibrary.txt`
+	  file contained data for the Node1-Node2 combination.  If so, the kinetics
+	  reported are found, exactly as written, in the file.  If not, an averaging
+	  scheme was performed to arrive at the reported numbers.
+
+The identities of B, C, D, and F are located in the :file:`PopRxnsOutput_Spcs.txt` 
+file, in the form of adjacency lists.
