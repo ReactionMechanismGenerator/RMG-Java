@@ -578,6 +578,11 @@ Additionally, if the same reaction occurs more than once in the combined
 mechanism, the instance of it from the first mechanism in which it appears is
 the one that gets used.
 
+.. note::
+
+	For more information on what files to include in a Primary Reaction Library or
+	Seed Mechanism, visit :ref:`Building a Primary Reaction Library / Seed Mechanism <formatofseedmechanisms>`
+
 .. _chemkinunits:
 
 Chemkin Units

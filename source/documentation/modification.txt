@@ -458,25 +458,31 @@ Close the RMGVE.  A popup window will ask if you want to save the changes you ha
 
 .. image:: images/viewReactionEdits.png
 
-Creating a Primary Reaction Library
-===================================
+.. _formatofseedmechanisms:
 
-A primary reaction library (PRLib) consists of four files: :file:`reactions.txt`,
-:file:`species.txt`, :file:`3rdBodyReactions.txt`, and :file:`troeReactions.txt`. It is not
-necessary to define reactions for each of the files if the user does not wish
-to, but all four files must exist, and they must include the Unit declaration
-and Reaction headings.
+Creating a Primary Reaction Library / Seed Mechanism
+====================================================
 
-When you use a PRLib, all species and reactions in the library are immediately
-added to the mechanism, though the species come in with zero initial
-concentration unless otherwise specified in the input condition file. The user
-will see these reactions listed in the file :file:`Final_Model.txt`. PRLibs are
-particularly useful for
+A primary reaction library / seed mechanism may consist of five files:
 
-	(i) small molecule reactions which tend to deviate from the standard library values more significantly
-	(ii) incorporating a set of known experimental values for key reactions
+	* :file:`species.txt`
+	* :file:`reactions.txt`
+	* :file:`3rdBodyReactions.txt` 
+	* :file:`lindemannReactions.txt`
+	* :file:`troeReactions.txt`
 
-#. The first file, :file:`reactions.txt`, defines the standard reactions. The file
+The :file:`species.txt` file is **required**.  All other files are optional, and
+if present, must include the Unit declaration and Reaction headings.
+
+#. The :file:`species.txt` file is a series of molecular names and connectivity lists,
+   analogous to the formats used in the input file :file:`condition.txt`. All species
+   present in the four remaining files must be given a structure in :file:`species.txt`. The
+   structure should have the same format as the adjacency list shown in :ref:`Creating a condition file<conditionFile>`. 
+   Please note that the names that are used in the reaction library will be
+   those used throughout the mechanism. In this manner, the user can adopt a
+   preferred nomenclature for individual species.
+
+#. The :file:`reactions.txt` file defines the standard non pressure-dependent reaction. The file
    has the structure shown in the following sample. Comments are denoted with
    "``//``" and are ignored by the RMG parser.::
 
@@ -490,21 +496,16 @@ particularly useful for
 	
 	Reactions:
 	// The format is:
-	// R1 + R2 = P1 + P2 A n Ea dA dn dEa
-	//	where R1, R2, P1, P2 are species; A, n, and Ea are the Arrhenius
-	//	parameters, and dA, dn, dEa are the errors in those parameter (normally
-	//	additive, but can also be multiplicative if a * comes before the number)
+	// R1 + R2 + R3 <=> P1 + P2 + P3	A	n	E	dA	dn	dE
+	//	where R1, R2, R3, P1, P2, P3 are species; A, n, and E are the Arrhenius
+	//	parameters, and dA, dn, dE are the errors in those parameter (normally
+	//	additive, but can also be multiplicative if a * comes before the number).
+	//	A "<=>" or "=" represents a reversible reaction and a 
+	//	"=>" or "->" represents	an irreversible reaction.
 	O2 + CO = CO2 + O 1.26E13 0.00 196.90 *1.7 0 0
 
-#. The species list is just a series of molecular names and connectivity lists,
-   analogous to the formats used in the input file :file:`condition.txt`. All species
-   present in :file:`reactions.txt` must be given a structure in :file:`species.txt`. The
-   structure should have the same format as the adjacency list shown in :ref:`Creating a condition file<conditionFile>`. 
-   Please note that the names that are used in the reaction library will be
-   those used throughout the mechanism. In this manner, the user can adopt a
-   preferred nomenclature for individual species.
 
-#. The next file is :file:`3rdBodyReaction.txt`, which lists reactions involving a
+#. The :file:`3rdBodyReaction.txt` file lists reactions involving a
    third body (bath gas). A sample file, with a 3rd-body reaction, is listed below.
    The first line defines the reaction using the same format as in :file:`reactions.txt`.
    The next line lists collision efficiencies for various bath-gas species
@@ -527,8 +528,26 @@ particularly useful for
 	//	while the second gives the scaling factors for different bath gas species
 	//	which contribute to [M].
 
-#. The final file, :file:`troeReactions.txt`, is present for specifying pressure-dependent reactions according to the Troe expression.  The format of each
-   reactions is the same as is used by CHEMKIN. For example::
+#. The :file:`lindemannReaction.txt` file allows specifying pressure-dependent
+   reactions, according to the Lindemann expression.  The format of each reaction
+   is the same as is used by CHEMKIN.  For example::
+   
+	Unit:
+	A: mol/cm3/s
+	E: cal/mol
+	
+	Reactions:
+	O + CO (+M) <=> CO2 (+M)	1.800E+10     .000    2385.00	0.0	0.0	0.0
+	H2/2.00/ O2/6.00/ H2O/6.00/ CH4/2.00/ CO/1.50/ CO2/3.50/ C2H6/3.00/ Ar/ .50/ 
+	LOW/ 6.020E+14     .000    3000.00/
+	
+	//	the first two lines are similar to the 3rdBodyReaction.txt format
+	//	the next line specifies the low pressure limit Arrhenius parameters
+   
+
+#. The :file:`troeReactions.txt` file allows specifying pressure-dependent 
+   reactions according to the Troe expression.  The format of each
+   reaction is the same as is used by CHEMKIN. For example::
 
 	Unit:
 	A: mol/cm3/s
@@ -540,8 +559,7 @@ particularly useful for
 	LOW / 3.43E18 0.0 6.15 /
 	TROE / 1 1 1 1231 /
 	
-	//	the first two lines are very similar to the :file:`3rdBodyReaction.txt` format
-	//	the next line specifies the low pressure limit Arrhenius parameters,
-	//	and the final line specifies the 3 or 4 Troe parameters
+	//	the first three lines are similar to the lindemannReaction.txt format
+	//	the next line specifies the 3 or 4 Troe parameters
 	//	in the order: a, T***, T*, T** (the last parameter is optional).
 
