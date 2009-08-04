@@ -502,8 +502,10 @@ public class JDASPK extends JDAS {
                 double totalNonInertConc = totalNonInertConcentrations();
                 //calculate the scale factor needed to account for volume change
                 double inertScaleFactor = 1;
-                if(p_beginStatus.getTotalInertGas() > 0){//this check will ensure we don't try to divide by zero; otherwise, we will end up setting new concentration to be 0.0*Infinity=NaN
-                    inertScaleFactor = (p_beginStatus.getTotalMole()- totalNonInertConc)/p_beginStatus.getTotalInertGas();
+                if(p_beginStatus.inertGas != null){//8/4/09 gmagoon: make sure inert gas is defined; otherwise, we will have issues with getTotalInertGas() when we start from non-zero time, as jdmo encountered (null-pointer exception)
+                    if(p_beginStatus.getTotalInertGas() > 0){//this check will ensure we don't try to divide by zero; otherwise, we will end up setting new concentration to be 0.0*Infinity=NaN
+                        inertScaleFactor = (p_beginStatus.getTotalMole()- totalNonInertConc)/p_beginStatus.getTotalInertGas();
+                    }
                 }
                 //scale the initial concentrations of the inertGas to account for volume change
                 for (Iterator iter = p_beginStatus.getInertGas(); iter.hasNext(); ) {
