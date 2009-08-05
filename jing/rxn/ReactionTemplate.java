@@ -1730,7 +1730,7 @@ public class ReactionTemplate {
       
       }
       catch (Exception e) {
-      	throw new IOException("Error reading rate library:" + '\n' + e.getMessage());
+      	throw new IOException("Error reading rate library. The error message is:" + '\n' + e.getMessage());
       }
       //#]
   }
