@@ -230,12 +230,13 @@ public class JDASSL extends JDAS {
             if(p_beginStatus.getTotalInertGas() > 0){//this check will ensure we don't try to divide by zero; otherwise, we will end up setting new concentration to be 0.0*Infinity=NaN
                 inertScaleFactor = (p_beginStatus.getTotalMole()- totalNonInertConc)/p_beginStatus.getTotalInertGas();
             }
-        }
-        //scale the initial concentrations of the inertGas to account for volume change
-        for (Iterator iter = p_beginStatus.getInertGas(); iter.hasNext(); ) {
-            String inertName = (String)iter.next();
-            double originalInertConc = p_beginStatus.getInertGas(inertName);
-            sss.putInertGas(inertName, originalInertConc*inertScaleFactor);       
+        
+            //scale the initial concentrations of the inertGas to account for volume change
+            for (Iterator iter = p_beginStatus.getInertGas(); iter.hasNext(); ) {
+                String inertName = (String)iter.next();
+                double originalInertConc = p_beginStatus.getInertGas(inertName);
+                sss.putInertGas(inertName, originalInertConc*inertScaleFactor);       
+            }
         }
         
         LinkedList reactionList = new LinkedList();
