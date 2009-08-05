@@ -216,11 +216,14 @@ public class ChemParser {
 
         // Set the comments of this data to whatever (if anything) follows the rank
         String comments = "";
-        if (token.hasMoreTokens()) {
+        while (token.hasMoreTokens())
+			comments += token.nextToken() + " ";
+
+		/*if (token.hasMoreTokens()) {
 	        String beginningOfComments = token.nextToken();
 	        String[] splitString = p_string.split(beginningOfComments);
 	        comments = beginningOfComments + splitString[1];
-        }
+        }*/
         ArrheniusEPKinetics k = new ArrheniusEPKinetics(ua, un, ualpha, ue, TRange, rank, source, comments);
 //        ArrheniusEPKinetics k = new ArrheniusEPKinetics(ua, un, ualpha, ue, TRange, rank, null, null);
 
