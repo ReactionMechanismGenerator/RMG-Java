@@ -833,7 +833,7 @@ public String printLowerBoundConcentrations(LinkedList p_speciesList) {
              k_upperbound = k*2.0;
            }
            else if (r instanceof PDepReaction){
-             k = ((PDepReaction) r).calculateTotalRate(ss.getTemperature());
+             k = ((PDepReaction) r).calculateRate(ss.getTemperature(),ss.getPressure());
              k_lowerbound = k/2.0;
              k_upperbound = k*2.0;
            }
@@ -1392,7 +1392,7 @@ public String printLowerBoundConcentrations(LinkedList p_speciesList) {
                     k_lowerbound = k/2.0;
                   }
                   else if (r instanceof PDepReaction){
-                    k = ((PDepReaction)r).calculateTotalRate(ss.getTemperature());
+                    k = ((PDepReaction)r).calculateRate(ss.getTemperature(),ss.getPressure());
                     k_upperbound = k*2.0;
                     k_lowerbound = k/2.0;
                   }
