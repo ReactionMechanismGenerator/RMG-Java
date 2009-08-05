@@ -250,8 +250,6 @@ public class JDASPK extends JDAS {
         	line = br.readLine();
         	if (Double.parseDouble(line.trim()) != neq) {
         		System.out.println("ODESolver didnt generate all species result");
-        		System.out.println("Line253");
-        		System.out.println(neq + line.trim());
         		System.exit(0);
         	}
         	endTime = Double.parseDouble(br.readLine().trim());
@@ -348,7 +346,7 @@ public class JDASPK extends JDAS {
 		if (tt instanceof ConversionTT){
         	SpeciesConversion sc = (SpeciesConversion)((ConversionTT)tt).speciesGoalConversionSet.get(0);
         	iterNum = conversionSet.length;
-            outputString.append(nState + "\t" + neq + "\t" +  getRealID(sc.species) + "\t" +conversionSet.length+ "\t0");//gmagoon 080509: added autoflag=0
+            outputString.append(nState + "\t" + neq + "\t" +  getRealID(sc.species) + "\t" +conversionSet.length+ "\t0\n");//gmagoon 080509: added autoflag=0
     		for (int i=0; i<conversionSet.length; i++){
     			outputString.append(conversionSet[i] + " ");
     		}
@@ -467,10 +465,6 @@ public class JDASPK extends JDAS {
         		line = br.readLine();
             	if (Double.parseDouble(line.trim()) != neq) {
             		System.out.println("ODESolver didnt generate all species result");
-            		System.out.println("Line470");
-            		System.out.println(neq + line.trim());
-            		System.out.println(k);
-            		System.out.println(p_numSteps);
             		System.exit(0);
             	}
             	presentTime = Double.parseDouble(br.readLine().trim());
