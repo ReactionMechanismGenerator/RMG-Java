@@ -2,7 +2,7 @@
 **********************************
 RMG News and Updates
 **********************************
-2009-xx-yy: RMG 3.1 Released!
+2009-08-05: RMG 3.1 Released!
 ==============================
 RMG version 3.1 has been released. The new release includes a number of improvements and bug fixes, including the following:
 
