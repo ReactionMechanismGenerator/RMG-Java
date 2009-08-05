@@ -142,4 +142,4 @@ ChemkinUnits:
 //	*** The length of these comments may be too long for the CHEMKIN interpreter to handle ***
 //Verbose: on/off
 A: moles/molecules
-Ea: kcal/mol cal/mol kJ/mol J/mol K
+Ea: kcal/mol cal/mol kJ/mol J/mol Kelvins
