@@ -843,18 +843,18 @@ C
 	   IF (RNUM .GT. 1 .AND. PNUM .GT. 1) THEN
 	      zzzv4=1+pr
             zzzv5=1.0d0/zzzv4
-            zzzv6=low*zzzv5
+            zzzv6=lowrate*zzzv5
             zzzv8=zzzv6*f
             zzzvbar7=zzzv6
             zzzvbar6=f
-            zzzvbar5=low*zzzvbar6
+            zzzvbar5=lowrate*zzzvbar6
             zzzvbar4=-zzzv5/zzzv4*zzzvbar5
             zzzvbar2=zzzvbar4
             zzzvbar1=zzzv5*zzzvbar6
             frate=zzzv8
-            call DSVM3(frateoft+1,2,zzzvbar7,foft+1,2,zzzvbar2,proft+1,2,
-     $         zzzvbar1,lowrateoft+1,2)
-	   ELSE IF
+            call DSVM3(frateoft+1,2,zzzvbar7,foft+1,2,zzzvbar2,
+     $         proft+1,2,zzzvbar1,lowrateoft+1,2)
+	   ELSE
 	      zzzv4=1+pr
             zzzv5=pr/zzzv4
             zzzv6=rate*zzzv5
@@ -866,9 +866,9 @@ C
             zzzvbar2=1.0d0/zzzv4*zzzvbar5+zzzvbar4
             zzzvbar1=zzzv5*zzzvbar6
             frate=zzzv8
-            call DSVM3(frateoft+1,2,zzzvbar7,foft+1,2,zzzvbar2,proft+1,2,
-     $         zzzvbar1,rateoft+1,2)
-	   END
+            call DSVM3(frateoft+1,2,zzzvbar7,foft+1,2,zzzvbar2,
+     $      proft+1,2,zzzvbar1,rateoft+1,2)
+	   END IF
 
          zzzv4=1+pr
          zzzv5=pr/zzzv4
@@ -1034,14 +1034,14 @@ C
 	   IF (RNUM .GT. 1 .AND. PNUM .GT. 1) THEN
             zzzv4=1+pr
             zzzv5=1.0d0/zzzv4
-            zzzvbar5=low
+            zzzvbar5=lowrate
             zzzvbar4=-zzzv5/zzzv4*zzzvbar5
             zzzvbar2=zzzvbar4
             zzzvbar1=zzzv5
 	      frate=zzzv5*zzzvbar5
             call DSVM2(frateoft+1,2,zzzvbar2,proft+1,2,
      $         zzzvbar1,lowrateoft+1,2)
-	   ELSE IF
+	   ELSE
             zzzv4=1+pr
             zzzv5=pr/zzzv4
             zzzvbar5=rate
@@ -1051,7 +1051,7 @@ C
 	      frate=zzzv5*zzzvbar5
             call DSVM2(frateoft+1,2,zzzvbar2,proft+1,2,
      $         zzzvbar1,rateoft+1,2)
-	   END
+	   END IF
 C     
          if(lindereactionarray(20*i+9)==1) then
             zzzv3=frate/keq

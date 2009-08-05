@@ -215,7 +215,7 @@ c         write(*,*) temperature
          F = 10**LOGF
 
 	   IF (RNUM .GT. 1 .AND. PNUM .GT. 1) THEN
-	      FRATE = LOW * (1/(1+PR)) * F
+	      FRATE = LOWRATE * (1/(1+PR)) * F
 	   ELSE
 	      FRATE = RATE * (PR/(1+PR)) * F
 	   END IF
@@ -286,7 +286,7 @@ c         write(*,*) temperature
          PR = LOWRATE * M/RATE
 
 	   IF (RNUM .GT. 1 .AND. PNUM .GT. 1) THEN
-	      FRATE = LOW * (1/(1+PR))
+	      FRATE = LOWRATE * (1/(1+PR))
 	   ELSE
 	      FRATE = RATE * (PR/(1+PR))
 	   END IF

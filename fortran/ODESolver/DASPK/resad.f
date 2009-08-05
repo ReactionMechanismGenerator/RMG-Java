@@ -788,11 +788,11 @@ C
 	   if (rnum .gt. 1 .and. pnum .gt. 1) then
             zzzv4=1+pr
             zzzv5=1.0d0/zzzv4
-            zzzv6=low*zzzv5
+            zzzv6=lowrate*zzzv5
             zzzv8=zzzv6*f
             zzzvbar7=zzzv6
             zzzvbar6=f
-            zzzvbar5=low*zzzvbar6
+            zzzvbar5=lowrate*zzzvbar6
             zzzvbar4=-zzzv5/zzzv4*zzzvbar5
             zzzvbar2=zzzvbar4
             frate=zzzv8
@@ -936,7 +936,7 @@ C
 	   if (rnum .gt. 1 .and. pnum .gt. 1) then
             zzzv4=1+pr
             zzzv5=1.0d0/zzzv4
-            zzzvbar5=low
+            zzzvbar5=lowrate
             zzzvbar4=-zzzv5/zzzv4*zzzvbar5
             zzzvbar2=zzzvbar4
             frate=zzzv8
