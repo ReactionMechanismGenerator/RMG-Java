@@ -346,7 +346,7 @@ public class JDASPK extends JDAS {
 		if (tt instanceof ConversionTT){
         	SpeciesConversion sc = (SpeciesConversion)((ConversionTT)tt).speciesGoalConversionSet.get(0);
         	iterNum = conversionSet.length;
-            outputString.append(nState + "\t" + neq + "\t" +  getRealID(sc.species) + "\t" +conversionSet.length+"\n");
+            outputString.append(nState + "\t" + neq + "\t" +  getRealID(sc.species) + "\t" +conversionSet.length+ "\t0");//gmagoon 080509: added autoflag=0
     		for (int i=0; i<conversionSet.length; i++){
     			outputString.append(conversionSet[i] + " ");
     		}
