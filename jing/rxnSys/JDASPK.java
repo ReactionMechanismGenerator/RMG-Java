@@ -155,12 +155,12 @@ public class JDASPK extends JDAS {
         if (autoflag) af = 1;
         if (tt instanceof ConversionTT){
         	SpeciesConversion sc = (SpeciesConversion)((ConversionTT)tt).speciesGoalConversionSet.get(0);
-            outputString.append(nState + "\t" + neq + "\t" +  getRealID(sc.species) + "\t 1" +"\t"+ af + "\n"); //6/25/08 gmagoon: added autoflag, needed when using daspkAUTO.exe
+            outputString.append(nState + "\t" + neq + "\t" +  getRealID(sc.species) + "\t 1" +"\t"+ af + "\t0\n"); //6/25/08 gmagoon: added autoflag, needed when using daspkAUTO.exe; 080509 gmagoon: added sensitivity flag = 0
             outputString.append(conversionSet[p_iterationNum]+"\n");
     		
         }
         else{
-        	outputString.append(nState + "\t" + neq + "\t" +  -1 + "\t" +1+"\t"+ af + "\n");//6/25/08 gmagoon: added autoflag, needed when using daspkAUTO.exe
+        	outputString.append(nState + "\t" + neq + "\t" +  -1 + "\t" +1+"\t"+ af + "\t0\n");//6/25/08 gmagoon: added autoflag, needed when using daspkAUTO.exe; 080509 gmagoon: added sensitivity flag = 0
         	outputString.append(0+"\n");
     		
         }
@@ -348,7 +348,7 @@ public class JDASPK extends JDAS {
 		if (tt instanceof ConversionTT){
         	SpeciesConversion sc = (SpeciesConversion)((ConversionTT)tt).speciesGoalConversionSet.get(0);
         	iterNum = conversionSet.length;
-            outputString.append(nState + "\t" + neq + "\t" +  getRealID(sc.species) + "\t" +conversionSet.length+ "\t0\n");//gmagoon 080509: added autoflag=0
+            outputString.append(nState + "\t" + neq + "\t" +  getRealID(sc.species) + "\t" +conversionSet.length+ "\t0\t1\n");//gmagoon 080509: added autoflag=0; later: added sensflag=1
     		for (int i=0; i<conversionSet.length; i++){
     			outputString.append(conversionSet[i] + " ");
     		}
@@ -357,7 +357,7 @@ public class JDASPK extends JDAS {
         else{
         	LinkedList timeSteps = ((ReactionTimeTT)tt).timeStep;
         	iterNum = timeSteps.size();
-        	outputString.append(nState + "\t" + neq + "\t" +  -1 + "\t" +timeSteps.size()+"\n");
+        	outputString.append(nState + "\t" + neq + "\t" +  -1 + "\t" +timeSteps.size()+"\t0\t1\n");
         	for (int i=0; i<timeSteps.size(); i++){
         		outputString.append(((ReactionTime)timeSteps.get(i)).time + " ");
         	}
