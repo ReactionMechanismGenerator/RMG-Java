@@ -22,7 +22,7 @@ PROGRAM CALL_DASPKAUTO
 
 
       INTEGER INFO(30), LRW, LIW, I, J, IDID, NSTEPS, IMPSPECIES, numiter, & !gmagoon 6/11/09: fixed comma issue
-     &     AUTOFLAG, ESPECIES, EREACTIONSIZE
+     &     AUTOFLAG, ESPECIES, EREACTIONSIZE, SENSFLAG
       DOUBLE PRECISION Y(NEQMAX), YPRIME(NEQMAX), T, TOUT, RTOL, ATOL, &
      &     THERMO(SPMAX), TARGETCONC(50), THRESH
      ! 6/26/08 gmagoon:make auto arrays allocatable and double
