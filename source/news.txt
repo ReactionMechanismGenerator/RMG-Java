@@ -10,7 +10,7 @@ RMG version 3.1 has been released. The new release includes a number of improvem
 
 - :ref:`Seed Mechanism <seedmechanism>` allows the mechanism building to start from a seed mechanism, which is included in its entirety before the simulation starts. (This is how :ref:`PrimaryReactionLibrary <primaryreactionlibrary>` behaved in previous releases.)
 
-- New databases: GRIMech 3.0 and PrIMe-recommended thermodynamic values are included
+- New databases: GRIMech 3.0 (PrIMe recommended) thermodynamic and kinetic values are included
 
 - Support for Chemkin's P-Log format for :ref:`k(T,P) reporting <pressuredependence>`  (in addition to Chebyshev format).
 
