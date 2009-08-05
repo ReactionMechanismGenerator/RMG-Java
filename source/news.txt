@@ -20,7 +20,7 @@ RMG version 3.1 has been released. The new release includes a number of improvem
 
 - Fixed a bug in the gauche correction database for alkenes
 
-- ***New databases...GRIMech and PrIMe Thermo?***
+- New databases: GRIMech 3.0 and PrIMe-recommended thermodynamic values
 
 - Added additional options for the input file, including:
 
@@ -32,7 +32,7 @@ RMG version 3.1 has been released. The new release includes a number of improvem
 
 - Changed many dependent Fortran codes to use standard input and output, rather than writing files
 
-- Fixed issues with duplicate reactions and with Chebyshev fitting in writing CHEMKIN input files ***could we say something more specific here?***
+- Fixed issues with duplicate reactions and with Chebyshev fitting in writing CHEMKIN input files
 
 - More frequent garbage collection
 
