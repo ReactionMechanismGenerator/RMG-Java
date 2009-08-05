@@ -466,10 +466,6 @@ public class JDASPK extends JDAS {
         	for (int k=0; k<p_numSteps; k++){
         		line = br.readLine();
             	if (Double.parseDouble(line.trim()) != neq) {
-            		System.out.println("k = " + k);
-            		System.out.println("p_numSteps = " + p_numSteps);
-            		System.out.println("neq = " + neq);
-            		System.out.println("line.trim() = " + line.trim());
             		System.out.println("ODESolver didnt generate all species result");
             		System.exit(0);
             	}
