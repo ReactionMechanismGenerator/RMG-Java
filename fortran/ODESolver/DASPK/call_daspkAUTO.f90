@@ -39,7 +39,11 @@ PROGRAM CALL_DASPKAUTO
 ! which will equal 1 for automatic (solve ODE until flux
 ! exceeds threshhold) or -1 for conventional operation
 ! (i.e. user-specification of time/conversion steps) 
-      READ(12,*) NSTATE, NEQ, IMPSPECIES, NUMITER, AUTOFLAG
+! gmagoon 080509: added sensflag so that DASPK can use this to decide whether
+! to do sensitivity or not; previously, it was using numiter to decide (which is
+! OK in most cases, but not if we use auto or don't specify intermediate
+! conversions)
+      READ(12,*) NSTATE, NEQ, IMPSPECIES, NUMITER, AUTOFLAG, SENSFLAG
       NPARAM = INT(NEQ/NSTATE) - 1
       NSTATE = NSTATE+1
       NEQ = NSTATE*(NPARAM + 1)
@@ -219,14 +223,25 @@ PROGRAM CALL_DASPKAUTO
       !(the input file) so that it is not closed before AUTO
       !information is read in
       
-      if (NUMITER .eq. 1) then
+    !  if (NUMITER .eq. 1) then
+    !     CALL SOLVEODE(Y, YPRIME, T, TOUT, INFO, RTOL, ATOL, IDID, &
+    ! &        THERMO, IMPSPECIES, TARGETCONC(1),AUTOFLAG, &
+    ! &     THRESH,ESPECIES,EREACTIONSIZE,NEREAC,NEPROD,IDEREAC, &
+    ! &     IDEPROD,KVEC)
+    !  else
+    !     CALL SOLVESEN(Y,YPRIME,T, TOUT, INFO, RTOL, ATOL, IDID,&
+    ! &        THERMO, IMPSPECIES, NUMITER, TARGETCONC)
+    !  end if
+     !gmagoon 080509: switched to use sensitivity flag to decide whether to 
+     ! perform sensitivity analysis or not
+      if (sensflag .eq. 1) then
+         CALL SOLVESEN(Y,YPRIME,T, TOUT, INFO, RTOL, ATOL, IDID,&
+     &        THERMO, IMPSPECIES, NUMITER, TARGETCONC)
+      else
          CALL SOLVEODE(Y, YPRIME, T, TOUT, INFO, RTOL, ATOL, IDID, &
      &        THERMO, IMPSPECIES, TARGETCONC(1),AUTOFLAG, &
      &     THRESH,ESPECIES,EREACTIONSIZE,NEREAC,NEPROD,IDEREAC, &
      &     IDEPROD,KVEC)
-      else
-         CALL SOLVESEN(Y,YPRIME,T, TOUT, INFO, RTOL, ATOL, IDID,&
-     &        THERMO, IMPSPECIES, NUMITER, TARGETCONC)
       end if
 
 ! 6/26/08 gmagoon: deallocate memory from allocatable arrays
