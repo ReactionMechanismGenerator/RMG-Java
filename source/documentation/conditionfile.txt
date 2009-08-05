@@ -92,8 +92,8 @@ of the species in the GRI-Mech 3.0 mechanism [GRIMech3.0]_.
 .. [GRIMech3.0] Gregory P. Smith, David M. Golden, Michael Frenklach, Nigel W. Moriarty, Boris Eiteneer, Mikhail Goldenberg, C. Thomas Bowman, Ronald K. Hanson, Soonho Song, William C. Gardiner, Jr., Vitali V. Lissianski, and Zhiwei Qin http://www.me.berkeley.edu/gri_mech/
 
 This library is located in the 
-$RMG/databases/RMG_database/thermo directory.  All "Locations" for the
-PrimaryThermoLibrary field must be with respect to the $RMG/databases/RMG_database/thermo
+:file:`$RMG/databases/RMG_database/thermo` directory.  All "Locations" for the
+PrimaryThermoLibrary field must be with respect to the :file:`$RMG/databases/RMG_database/thermo`
 directory.::
 
    PrimaryThermoLibrary:
@@ -308,7 +308,7 @@ on the method used to approximate the pressure-dependent kinetics. There are cur
 such options: ``ModifiedStrongCollision`` and ``ReservoirState``. The former utilizes
 the modified strong collision approach of Chang, Bozzelli, and Dean [Chang2000]_, 
 and works reasonably well while running more rapidly. The latter 
-utilizes the steady state/reservoir state approach of Green and Bhatti [Green2007]_, 
+utilizes the steady-state/reservoir-state approach of Green and Bhatti [Green2007]_, 
 and is more theoretically sound but more expensive. 
 
 .. note::
@@ -515,7 +515,7 @@ Primary Reaction Library
 The next section of the :file:`condition.txt` file specifies which, if any, primary
 reaction libraries should be used.  When a reaction is specified in a primary reaction
 library, RMG will use these kinetics instead of the kinetics located in the 
-``RMG_database/kinetics/RxnFamily/rateLibrary.txt`` directory.
+:file:`RMG_database/kinetics/RxnFamily/rateLibrary.txt` directory.
 
 Currently, the only primary reaction libraries
 included with RMG are: the Leeds' oxidation library and the GRI-Mech 3.0 mechanism

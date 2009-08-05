@@ -9,6 +9,8 @@ RMG documentation
 RMG is an automatic chemical reaction mechanism generator that constructs 
 mechanisms composed of elementary chemical reaction steps using a general understanding of how molecules react. This is its documentation.
 
+This documentation is for RMG version |release|.
+
 Contents
 ========
 

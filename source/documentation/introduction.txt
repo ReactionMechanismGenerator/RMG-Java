@@ -25,6 +25,42 @@ of Technology <http://web.mit.edu/>`_. Currently there are several members of th
 
 Changes
 -------
+Changes made in RMG 3.1 include the following:
+
+- :ref:`PrimaryReactionLibrary <primaryreactionlibrary>` and :ref:`PrimaryThermoLibrary <primarythermolibrary>`  now both behave as reference libraries from which data are taken (in preference to group additivity estimates), when and if the data are needed.
+
+- :ref:`Seed Mechanism <seedmechanism>` allows the mechanism building to start from a seed mechanism, which is included in its entirety before the simulation starts. (This is how :ref:`PrimaryReactionLibrary <primaryreactionlibrary>` behaved in previous releases.)
+
+- New databases: GRIMech 3.0 and PrIMe-recommended thermodynamic values are included
+
+- Support for Chemkin's P-Log format for :ref:`k(T,P) reporting <pressuredependence>`  (in addition to Chebyshev format).
+
+- Added additional options for the input file, including:
+
+    - User-specified limits for number of carbon / oxygen / radical per species
+ 
+    - User-specified Chebyshev fitting options
+
+- Changed many dependent Fortran codes to use standard input and output, rather than writing temporary files to disk.
+
+- Reduced run-to-run variations by standardizing the order of averaging of values in the kinetics trees.
+
+Bug Fixes:
+
+- Corrected inconsistencies in edge flux evaluation for pressure-dependent reactions.
+
+- Corrected an error in inert gas normalization for runs with multiple temperatures/pressures
+
+- Fixed DASPK interface
+
+- Fixed bugs in peroxide (ROOR) frequency estimation
+
+- Fixed a bug in the gauche correction database for alkenes
+
+- Fixed issues with duplicate reactions and with Chebyshev fitting in writing CHEMKIN input files
+
+- More frequent garbage collection
+
 
 Changes made in RMG 3.0 include the following:
 
