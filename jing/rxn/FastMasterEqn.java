@@ -213,7 +213,7 @@ public class FastMasterEqn implements PDepKineticsEstimator {
 		try {
            	//System.out.println("Running FAME...");
 			String[] command = {dir + "/software/fame/fame.exe"};
-           	File runningDir = new File("fame");
+           	File runningDir = new File("fame/");
 			Process fame = Runtime.getRuntime().exec(command, null, runningDir);
 
             BufferedReader stdout = new BufferedReader(new InputStreamReader(fame.getInputStream()));
@@ -223,9 +223,7 @@ public class FastMasterEqn implements PDepKineticsEstimator {
             stdin.print(input);
 
             String line = stdout.readLine().trim();
-            System.out.println(line);
             if (line.contains("# FAME output")) {
-            	System.out.println("Found # FAME output line");
                 output += line + "\n";
                 while ( (line = stdout.readLine()) != null) {
                     output += line + "\n";
@@ -234,7 +232,6 @@ public class FastMasterEqn implements PDepKineticsEstimator {
             else {
                 // Print FAME stdout and error
                 System.out.println(line);
-                System.out.println("Did not find # FAME output line");
                 while ( ((line = stdout.readLine()) != null) || ((line = stderr.readLine()) != null) ) {
                     System.out.println(line);
                 }
