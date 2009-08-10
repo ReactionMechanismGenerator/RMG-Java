@@ -222,8 +222,8 @@ public class FastMasterEqn implements PDepKineticsEstimator {
 
             stdin.print(input);
 
-            System.out.println(stdout.readLine());
             String line = stdout.readLine().trim();
+            System.out.println(line);
             if (line.contains("# FAME output")) {
             	System.out.println("Found # FAME output line");
                 output += line + "\n";
