@@ -2063,9 +2063,9 @@ public class GUI extends JPanel implements ActionListener {
 		        		name = st.nextToken();
 		        		conc = st.nextToken();
 		        		unit = st.nextToken();
-		        		reactivity = "Reactive";
+		        		reactivity = "Reactive-RMG";
 		        		if (st.hasMoreTokens()) {
-		        			reactivity = "Unreactive";
+		        			reactivity = "Reactive-User";
 		        		}
 		        	} else {
 		        		adjList += line + "\r";
