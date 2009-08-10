@@ -974,12 +974,22 @@ public abstract class JDAS implements DAESolver {
 		if(f.exists()){
 			if(newFile.exists())
 				newFile.delete();
-			f.renameTo(newFile);
+			boolean renameSuccess = f.renameTo(newFile);
+                        if (!renameSuccess)
+                        {
+                            System.out.println("Renaming of RWORK file(s) failed.");
+                            System.exit(0);
+                        }
 			f = new File("ODESolver/IWORK_"+index+".dat");
 			newFile = new File("ODESolver/IWORK.dat");
 			if(newFile.exists())
 				newFile.delete();
-			f.renameTo(newFile);
+			renameSuccess = f.renameTo(newFile);
+                        if (!renameSuccess)
+                        {
+                            System.out.println("Renaming of IWORK file(s) failed.");
+                            System.exit(0);
+                        }
 		}
 		
 		//run the solver on the input file
@@ -1015,16 +1025,26 @@ public abstract class JDAS implements DAESolver {
 	}
 	
 	private void renameIntermediateFiles() {
-		File f = new File("ODESolver/RWORK.dat");
-        File newFile = new File("ODESolver/RWORK_"+index+".dat");
-        if(newFile.exists())
-            newFile.delete();
-        f.renameTo(newFile);
-        f = new File("ODESolver/IWORK.dat");
-        newFile = new File("ODESolver/IWORK_"+index+".dat");
-        if(newFile.exists())
-            newFile.delete();
-        f.renameTo(newFile);
+            File f = new File("ODESolver/RWORK.dat");
+            File newFile = new File("ODESolver/RWORK_"+index+".dat");
+            if(newFile.exists())
+                newFile.delete();
+            boolean renameSuccess = f.renameTo(newFile);
+            if (!renameSuccess)
+            {
+                System.out.println("Renaming of RWORK file(s) failed. (renameIntermediateFiles())");
+                System.exit(0);
+            }
+            f = new File("ODESolver/IWORK.dat");
+            newFile = new File("ODESolver/IWORK_"+index+".dat");
+            if(newFile.exists())
+                newFile.delete();
+            renameSuccess = f.renameTo(newFile);
+            if (!renameSuccess)
+            {
+                System.out.println("Renaming of IWORK file(s) failed. (renameIntermediateFiles())");
+                System.exit(0);
+            }
 	}
         
         //6/24/09 gmagoon: this totals the first n-state elements of y (i.e. the non-inert concentrations)
