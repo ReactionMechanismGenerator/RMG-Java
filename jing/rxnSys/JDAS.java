@@ -1029,7 +1029,12 @@ public abstract class JDAS implements DAESolver {
             File newFile = new File("ODESolver/RWORK_"+index+".dat");
             if(newFile.exists())
                 newFile.delete();
-            f.setWritable(true);
+            System.out.println("f.exists() : "+  f.exists());
+            System.out.println("f.isFile() : "+  f.isFile());
+            System.out.println("f.canRead() : "+  f.canRead());
+            System.out.println("f.canWrite() : "+  f.canWrite());
+            System.out.println("f.setWritable(true) : "+  f.setWritable(true));
+            System.out.println("f.canWrite() : "+  f.canWrite());
             boolean renameSuccess = f.renameTo(newFile);
             if (!renameSuccess)
             {
