@@ -969,8 +969,8 @@ public abstract class JDAS implements DAESolver {
 		}
 		
 		// Rename RWORK and IWORK files if they exist
-		File f = new File("ODESolver/RWORK_"+index+".dat");
-		File newFile = new File("ODESolver/RWORK.dat");
+		File f = new File("ODESolver/RWORK_"+index+".DAT");
+		File newFile = new File("ODESolver/RWORK.DAT");
 		if(f.exists()){
 			if(newFile.exists())
 				newFile.delete();
@@ -980,8 +980,8 @@ public abstract class JDAS implements DAESolver {
                             System.out.println("Renaming of RWORK file(s) failed.");
                             System.exit(0);
                         }
-			f = new File("ODESolver/IWORK_"+index+".dat");
-			newFile = new File("ODESolver/IWORK.dat");
+			f = new File("ODESolver/IWORK_"+index+".DAT");
+			newFile = new File("ODESolver/IWORK.DAT");
 			if(newFile.exists())
 				newFile.delete();
 			renameSuccess = f.renameTo(newFile);
@@ -1025,8 +1025,8 @@ public abstract class JDAS implements DAESolver {
 	}
 	
 	private void renameIntermediateFiles() {
-            File f = new File("ODESolver/RWORK.dat");
-            File newFile = new File("ODESolver/RWORK_"+index+".dat");
+            File f = new File("ODESolver/RWORK.DAT");
+            File newFile = new File("ODESolver/RWORK_"+index+".DAT");
             if(newFile.exists())
                 newFile.delete();
             System.out.println("f.exists() : "+  f.exists());
@@ -1042,8 +1042,8 @@ public abstract class JDAS implements DAESolver {
                 System.out.println("Renaming of RWORK file(s) failed. (renameIntermediateFiles())");
                 System.exit(0);
             }
-            f = new File("ODESolver/IWORK.dat");
-            newFile = new File("ODESolver/IWORK_"+index+".dat");
+            f = new File("ODESolver/IWORK.DAT");
+            newFile = new File("ODESolver/IWORK_"+index+".DAT");
             if(newFile.exists())
                 newFile.delete();
             renameSuccess = f.renameTo(newFile);
