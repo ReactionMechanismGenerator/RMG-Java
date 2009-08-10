@@ -222,7 +222,9 @@ public class FastMasterEqn implements PDepKineticsEstimator {
             PrintStream stdin = new PrintStream(new BufferedOutputStream(fame.getOutputStream()), true);
 
             System.out.println("Read Input/Error/Output streams");
+            System.out.println("input string: \n" + input);
             stdin.print(input);
+            System.out.println("After stdin.print() command");
 
             String line = stdout.readLine().trim();
             if (line.contains("# FAME output")) {
