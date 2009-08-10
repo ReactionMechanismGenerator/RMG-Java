@@ -1035,6 +1035,7 @@ public abstract class JDAS implements DAESolver {
             System.out.println("f.canWrite() : "+  f.canWrite());
             System.out.println("f.setWritable(true) : "+  f.setWritable(true));
             System.out.println("f.canWrite() : "+  f.canWrite());
+            System.out.println("f.getAbsolutePath() : "+  f.getAbsolutePath());
             boolean renameSuccess = f.renameTo(newFile);
             if (!renameSuccess)
             {
