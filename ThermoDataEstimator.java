@@ -55,9 +55,24 @@ public static void main(String[] args) {
          System.out.println(g);
          ChemGraph chemgraph = ChemGraph.make(g);
 		 Species spe = Species.make("molecule",chemgraph);
+		 /*
+		  *	Following line added by MRH on 10Aug2009:
+		  *		After the species is made, the chemgraph is not necessarily the same
+		  *		(e.g. the species contains resonance isomers, and the adjacency list
+		  *		supplied by the user is not the most stable isomer).  This was causing
+		  *		a discrepancy to be displayed to the screen: the "H=" value we were
+		  *		displaying corresponded to the chemgraph supplied by the user; the 
+		  *		ThermData corresponded to the most stable isomer.
+		  *
+		  *		An example of a troublesome chemgraph:
+		  *		1 C 0 {2,T}
+		  *		2 C 0 {1,T} {3,S}
+		  *		3 O 0 {2,S}
+		  */
+		 chemgraph = spe.getChemGraph();
 		 System.out.println("The number of resonance isomers is " + spe.getResonanceIsomersHashSet().size());
 		 System.out.println("The NASA data is \n"+ spe.getNasaThermoData());
-		 System.out.println("ThermoData is \n" +  spe.getChemGraph().getThermoData().toString());
+		 System.out.println("ThermoData is \n" +  chemgraph.getThermoData().toString());
         //int K = chemgraph.getKekule();
         int symm = chemgraph.getSymmetryNumber();
         //System.out.println("number of Kekule structures = "+K);
