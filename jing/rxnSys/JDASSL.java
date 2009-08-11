@@ -252,8 +252,108 @@ public class JDASSL extends JDAS {
     }
 
 	private int solveDAE() {	
-		super.solveDAE("dasslAUTO.exe");
+	//	super.solveDAE("dasslAUTO.exe");
+            	String workingDirectory = System.getProperty("RMG.workingDirectory");
+		
+		// write the input file
+		File SolverInput = new File("ODESolver/SolverInput.dat");
+		try {
+			FileWriter fw = new FileWriter(SolverInput);
+			fw.write(outputString.toString());
+			fw.close();
+		} catch (IOException e) {
+			System.err.println("Problem writing Solver Input File!");
+			e.printStackTrace();
+		}
+		
+		// Rename RWORK and IWORK files if they exist
+		renameIntermediateFilesBeforeRun();
+		
+		//run the solver on the input file
+		boolean error = false;
+                try {
+
+                        String[] command = {workingDirectory +  "/software/ODESolver/dasslAUTO.exe"};//5/5/08 gmagoon: changed to call dasslAUTO.exe
+                                File runningDir = new File("ODESolver");
+
+                                Process solver = Runtime.getRuntime().exec(command, null, runningDir);
+                                InputStream is = solver.getInputStream();
+                                InputStreamReader isr = new InputStreamReader(is);
+                                BufferedReader br = new BufferedReader(isr);
+                                String line=null;
+                                while ( (line = br.readLine()) != null) {
+                                        line = line.trim();
+                                        if (!(line.contains("ODESOLVER SUCCESSFUL"))) {
+                                                System.err.println("Error running the ODESolver: "+line);
+                                                error = true;
+                                        }          
+                                }
+                        int exitValue = solver.waitFor();
+                }
+                catch (Exception e) {
+                        String err = "Error in running ODESolver \n";
+                        err += e.toString();
+                        e.printStackTrace();
+                        System.exit(0);
+                }
+
+                //11/1/07 gmagoon: renaming RWORK and IWORK files
+                renameIntermediateFilesAfterRun();
 		return readOutputFile("ODESolver/SolverOutput.dat");
+	}
+        
+        private void renameIntermediateFilesBeforeRun(){
+                File f = new File("ODESolver/RWORK_"+index+".DAT");
+		File newFile = new File("ODESolver/RWORK.DAT");
+                boolean renameSuccess = false;
+                if(f.exists()){
+			if(newFile.exists())
+				newFile.delete();
+			renameSuccess = f.renameTo(newFile);
+                        if (!renameSuccess)
+                        {
+                            System.out.println("Renaming of RWORK file(s) failed.");
+                            System.exit(0);
+                        }
+                }
+                
+                f = new File("ODESolver/IWORK_"+index+".DAT");
+                newFile = new File("ODESolver/IWORK.DAT");
+                if(f.exists()){
+                    if(newFile.exists())
+                            newFile.delete();
+                    renameSuccess = f.renameTo(newFile);
+                    if (!renameSuccess)
+                    {
+                        System.out.println("Renaming of IWORK file(s) failed.");
+                        System.exit(0);
+                    }
+                }
+		
+        }
+        
+	private void renameIntermediateFilesAfterRun() {
+            File f = new File("ODESolver/RWORK.DAT");
+            File newFile = new File("ODESolver/RWORK_"+index+".DAT");
+            if(newFile.exists())
+                newFile.delete();
+            boolean renameSuccess = f.renameTo(newFile);
+            if (!renameSuccess)
+            {
+                System.out.println("Renaming of RWORK file(s) failed. (renameIntermediateFiles())");
+                System.exit(0);
+            }
+            
+            f = new File("ODESolver/IWORK.DAT");
+            newFile = new File("ODESolver/IWORK_"+index+".DAT");
+            if(newFile.exists())
+                newFile.delete();
+            renameSuccess = f.renameTo(newFile);
+            if (!renameSuccess)
+            {
+                System.out.println("Renaming of IWORK file(s) failed. (renameIntermediateFiles())");
+                System.exit(0);
+            }
 	}
         
 	public int readOutputFile(String path) {
