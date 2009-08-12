@@ -1315,9 +1315,9 @@ public class Species {
 		} else
 			cTable += " " + (atomCount-1);
 		if (atomBondCount/2 < 10) {
-			cTable += "  " + (atomBondCount/2) + "  0  0  0  0  0  0  0  0  " + mRad + " v2000";
+			cTable += "  " + (atomBondCount/2) + "  0  0  0  0  0  0  0  0  " + mRad + " V2000";
 		} else 
-			cTable += " " + (atomBondCount/2) + "  0  0  0  0  0  0  0  0  " + mRad + " v2000";
+			cTable += " " + (atomBondCount/2) + "  0  0  0  0  0  0  0  0  " + mRad + " V2000";
 		// Create the "Atom Block"
 		for (int numAtoms=0; numAtoms<atomCount-1; numAtoms++) {
 			// Assume no 3-d information available
