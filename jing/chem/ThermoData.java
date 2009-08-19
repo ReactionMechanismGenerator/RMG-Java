@@ -90,22 +90,22 @@ public class ThermoData extends ThermoGAValue {
         //#[ operation calculateCp(double)
         double T = p_T;
 
-        if (300<T && T<400) {
+        if (300<=T && T<=400) {
                 return (Cp300+(Cp400-Cp300)*(T-300.0)/100.0);
         }
-        else if (T<500) {
+        else if (T<=500) {
                 return (Cp400+(Cp500-Cp400)*(T-400.0)/100.0);
         }
-        else if (T<600) {
+        else if (T<=600) {
                 return (Cp500+(Cp600-Cp500)*(T-500.0)/100.0);
         }
-        else if (T<800) {
+        else if (T<=800) {
                 return (Cp600+(Cp800-Cp600)*(T-600.0)/200.0);
         }
-        else if (T<1000) {
+        else if (T<=1000) {
                 return (Cp800+(Cp1000-Cp800)*(T-800.0)/200.0);
         }
-        else if (T<1500) {
+        else if (T<=1500) {
                 return (Cp1000+(Cp1500-Cp1000)*(T-1000.0)/500.0);
         }
         else {

@@ -39,6 +39,7 @@ import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.PrintStream;
 import java.io.StringReader;
+import java.text.DecimalFormat;
 import java.util.LinkedList;
 import java.util.ListIterator;
 import java.util.StringTokenizer;
@@ -206,6 +207,16 @@ public class FastMasterEqn implements PDepKineticsEstimator {
 		String input = writeInputString(pdn, rxnSystem, speciesList, isomerList, pathReactionList);
         String output = "";
 
+		// DEBUG only: Write input file
+		/*try {
+			FileWriter fw = new FileWriter(new File("fame/" + Integer.toString(pdn.getID()) + "_input.txt"));
+			fw.write(input);
+			fw.close();
+		} catch (IOException ex) {
+			System.out.println("Unable to write FAME input file.");
+			System.exit(0);
+		}*/
+
 		// Touch FAME output file
 		//touchOutputFile(); //no longer needed with standard input/output
 
@@ -223,7 +234,7 @@ public class FastMasterEqn implements PDepKineticsEstimator {
             stdin.print(input);
 
             String line = stdout.readLine().trim();
-            if (line.contains("# FAME output")) {
+            if (line.contains("##############################################")) {
                 output += line + "\n";
                 while ( (line = stdout.readLine()) != null) {
                     output += line + "\n";
@@ -341,109 +352,183 @@ public class FastMasterEqn implements PDepKineticsEstimator {
 		double grainMaxEnergy = getGrainMaxEnergy(isomerList, 2100); // [=] kJ/mol
 		double grainSize = getGrainSize(grainMinEnergy, grainMaxEnergy, pdn.getNumUniIsomers()); // [=] kJ/mol
 
-		// Create the simulation parameters file fame/simData.txt
+		// Create the input string
 		try {
 
-			File simData = new File("fame/fame_input.txt");
-			FileWriter fw = new FileWriter(simData);
+			// Header
+			input += "################################################################################\n";
+			input += "#\n";
+			input += "#	FAME input file\n";
+			input += "#\n";
+			input += "################################################################################\n";
+			input += "\n";
+			input += "# All syntax in this file is case-insensitive\n";
+			input += "\n";
 
-			input += "# FAME input for RMG-generated pressure dependent network #" + runCount+1 + "\n";
-			input += "Mode                                " + getModeString() + "\n";
-			input += "Temperatures                        " + temperatures.length + "\n";
-			for (int t = 0; t < temperatures.length; t++)
-				input += temperatures[t].getK() + " K\n";
-			input += "Pressures                           " + pressures.length + "\n";
-			for (int p = 0; p < pressures.length; p++)
-				input += pressures[p].getBar() + " bar\n";
-			input += "Grain size                          " + grainSize + " kJ/mol\n";
-			input += "Minimum grain energy                " + grainMinEnergy + " kJ/mol\n";
-			input += "Maximum grain energy                " + grainMaxEnergy + " kJ/mol\n";
-			input += "Number of species                   " + speciesList.size() + "\n";
-			input += "Number of wells                     " + isomerList.size() + "\n";
-			input += "Number of reactions                 " + pathReactionList.size() + "\n";
-			input += "Exponential down parameter          " + bathGas.getExpDownParam() + " kJ/mol\n";
-			input += "Bath gas LJ sigma parameter         " + bathGas.getLJSigma() + " m\n";
-			input += "Bath gas LJ epsilon parameter       " + bathGas.getLJEpsilon() + " J\n";
-			input += "Bath gas molecular weight           " + bathGas.getMolecularWeight() + " g/mol\n";
-			if (PDepRateConstant.getMode() == PDepRateConstant.Mode.CHEBYSHEV) {
-				input += "Interpolation model                 " + "Chebyshev" + "\n";
-				input += "Number of Chebyshev temperatures    " + numChebTempPolys + "\n";
-				input += "Number of Chebyshev pressures       " + numChebPressPolys + "\n";
-			}
-			else if (PDepRateConstant.getMode() == PDepRateConstant.Mode.PDEPARRHENIUS) {
-				input += "Interpolation model                 " + "LogPInterpolate" + "\n";
-			}
-			else {
-				input += "Interpolation model                 " + "Bilinear" + "\n";
-			}
+			// Method
+			input += "# The method to use to extract the phenomenological rate coefficients k(T, P)\n";
+			input += "# 	Options: ModifiedStrongCollision, ReservoirState\n";
+			if (mode == Mode.STRONGCOLLISION)			input += "ModifiedStrongCollision\n";
+			else if (mode == Mode.RESERVOIRSTATE)		input += "ReservoirState\n";
+			else throw new Exception("Unable to determine method to use to estimate phenomenological rate coefficients.");
+			input += "\n";
+
+			// Temperatures
+			input += "# The temperatures at which to estimate k(T, P)\n";
+			input += "# 	First item is the number of temperatures \n";
+			input += "#	Second item is the units; options are K, C, F, or R\n";
+			input += "#	Remaining items are the temperature values in the specified units\n";
+			input += Integer.toString(temperatures.length) + " K\n";
+			for (int i = 0; i < temperatures.length; i++)
+				input += Double.toString(temperatures[i].getK()) + "\n";
+			input += "\n";
+
+			// Pressures
+			input += "# The pressures at which to estimate k(T, P)\n";
+			input += "# 	First item is the number of pressures \n";
+			input += "#	Second item is the units; options are bar, atm, Pa, or torr\n";
+			input += "#	Remaining items are the temperature values in the specified units\n";
+			input += Integer.toString(pressures.length) + " Pa\n";
+			for (int i = 0; i < pressures.length; i++)
+				input += Double.toString(pressures[i].getPa()) + "\n";
+			input += "\n";
+
+			// Interpolation model
+			input += "# The interpolation model to use to fit k(T, P)\n";
+			input += "#	Option 1: No interpolation\n";
+			input += "#		Example: None\n";
+			input += "#	Option 2: Chebyshev polynomials\n";
+			input += "#		Option must be accompanied by two numbers, indicating the number of\n";
+			input += "#		terms in the Chebyshev polynomials for temperature and pressure, \n";
+			input += "#		respectively\n";
+			input += "#		Example: Chebyshev 4 4\n";
+			input += "#	Option 3: Pressure-dependent Arrhenius\n";
+			input += "#		Example: PDepArrhenius\n";
+			if (PDepRateConstant.getMode() == PDepRateConstant.Mode.CHEBYSHEV)
+				input += "Chebyshev " + Integer.toString(numChebTempPolys) +
+						" " + Integer.toString(numChebPressPolys) + "\n";
+			else if (PDepRateConstant.getMode() == PDepRateConstant.Mode.CHEBYSHEV)
+				input += "PDepArrhenius\n";
+			else
+				input += "None\n";
+			input += "\n";
+
+			// Number of energy grains to use (determines to an extent the accuracy and precision of the results)
+			input += "# A method for determining the number of energy grains to use\n";
+			input += "# 	Option 1: Specifying the number to use directly\n";
+			input += "#		Example: NumGrains 201\n";
+			input += "# 	Option 2: Specifying the grain size in J/mol, kJ/mol, cal/mol, kcal/mol, or cm^-1\n";
+			input += "#		Example: GrainSize J/mol 4.184\n";
+			input += "NumGrains " + Integer.toString(201);
+			input += "\n\n";
+
+			// Collisional transfer probability model to use
+			input += "# Collisional transfer probability model\n";
+			input += "# 	Option 1: Single exponential down\n";
+			input += "#		Option must also be accompanied by unit and value of the parameter\n";
+			input += "#		Allowed units are J/mol, kJ/mol, cal/mol, kcal/mol, or cm^-1\n";
+			input += "#		Example: SingleExpDown kJ/mol 7.14\n";
+			input += "SingleExpDown J/mol " + Double.toString(bathGas.getExpDownParam() * 1000);
+			input += "\n\n";
+
+			// Other parameters for bath gas
+			input += "# Bath gas parameters\n";
+			input += "# 	Molecular weight; allowed units are g/mol or u\n";
+			input += "# 	Lennard-Jones sigma parameter; allowed units are m or A\n";
+			input += "# 	Lennard-Jones epsilon parameter; allowed units are J or K\n";
+			input += "u " + Double.toString(bathGas.getMolecularWeight()) + "\n";
+			input += "m " + Double.toString(bathGas.getLJSigma()) + "\n";
+			input += "J " + Double.toString(bathGas.getLJEpsilon()) + "\n";
+			input += "\n";
+
+			input += "# The number of species in the network (minimum of 2)\n";
+			input += Integer.toString(speciesList.size()) + "\n";
 			input += "\n";
 
 			for (int i = 0; i < speciesList.size(); i++) {
 
-				Species species = speciesList.get(i);
-				species.calculateLJParameters();
+				Species spec = speciesList.get(i);
+				spec.calculateLJParameters();
 
-				input += "# Species " + Integer.toString(i+1) + ": " + species.getName() + "(" + Integer.toString(species.getID()) + ")" + "\n";
-				input += "Ground-state energy                 " + (species.calculateH(stdTemp) * 4.184) + " kJ/mol\n";
-				input += "Enthalpy of formation               " + (species.calculateH(stdTemp) * 4.184) + " kJ/mol\n";
-				input += "Free energy of formation            " + (species.calculateG(stdTemp) * 4.184) + " kJ/mol\n";
-				input += "LJ sigma parameter                  " + (species.getLJ().getSigma() * 1e-10) + " m\n";
-				input += "LJ epsilon parameter                " + (species.getLJ().getEpsilon() * 1.381e-23) + " J\n";
-				input += "Molecular weight                    " + species.getMolecularWeight() + " g/mol\n";
+				input += "# Species identifier (128 characters or less, no spaces)\n";
+				input += spec.getName() + "(" + Integer.toString(spec.getID()) + ")\n";
 
-				SpectroscopicData data = species.getSpectroscopicData();
-				if (data.getVibrationCount() > 0) {
-					input += "Harmonic oscillators                " + data.getVibrationCount() + "\n";
-					for (int j = 0; j < data.getVibrationCount(); j++)
-						input += data.getVibration(j) + " cm^-1\n";
-				}
-				if (data.getRotationCount() > 0) {
-					input += "Rigid rotors                        " + data.getRotationCount() + "\n";
-					for (int j = 0; j < data.getRotationCount(); j++)
-						input += data.getRotation(j) + " cm^-1\n";
-				}
-				if (data.getHinderedCount() > 0) {
-					input += "Hindered rotors                     " + data.getHinderedCount() + "\n";
-					for (int j = 0; j < data.getHinderedCount(); j++)
-						input += data.getHinderedFrequency(j) + " cm^-1\n";
-					for (int j = 0; j < data.getHinderedCount(); j++)
-						input += data.getHinderedBarrier(j) + " cm^-1\n";
-				}
-				input += "Symmetry number                         " + data.getSymmetryNumber() + "\n";
+				input += "# Ground-state energy; allowed units are J/mol, kJ/mol, cal/mol, kcal/mol, or cm^-1\n";
+				input += "J/mol " + Double.toString(spec.calculateH(stdTemp) * 4184) + "\n";
+
+				input += "# Thermodynamics data:\n";
+				input += "# 	Standard enthalpy of formation; allowed units are J/mol, kJ/mol, cal/mol, kcal/mol, or cm^-1\n";
+				input += "# 	Standard entropy of formation; allowed units are permutations of energy (J, kJ, cal, or kcal) and temperature (K, C, F, or R)\n";
+				input += "# 	Heat capacity at 300, 400, 500, 600, 800, 1000, and 1500 K\n";
+				input += "J/mol " + Double.toString(spec.calculateH(stdTemp) * 4184) + "\n";
+				input += "J/mol*K " + Double.toString(spec.calculateS(stdTemp) * 4.184) + "\n";
+				input += "7 J/mol*K\n";
+				input += Double.toString(spec.calculateCp(new Temperature(300, "K")) * 4.184) + "\n";
+				input += Double.toString(spec.calculateCp(new Temperature(400, "K")) * 4.184) + "\n";
+				input += Double.toString(spec.calculateCp(new Temperature(500, "K")) * 4.184) + "\n";
+				input += Double.toString(spec.calculateCp(new Temperature(600, "K")) * 4.184) + "\n";
+				input += Double.toString(spec.calculateCp(new Temperature(800, "K")) * 4.184) + "\n";
+				input += Double.toString(spec.calculateCp(new Temperature(1000, "K")) * 4.184) + "\n";
+				input += Double.toString(spec.calculateCp(new Temperature(1500, "K")) * 4.184) + "\n";
+				
+				input += "# Species gas parameters\n";
+				input += "# 	Molecular weight; allowed units are g/mol or u\n";
+				input += "# 	Lennard-Jones sigma parameter; allowed units are m or A\n";
+				input += "# 	Lennard-Jones epsilon parameter; allowed units are J or K\n";
+				input += "u " + Double.toString(spec.getMolecularWeight()) + "\n";
+				input += "m " + Double.toString(spec.getLJ().getSigma() * 1e-10) + "\n";
+				input += "J " + Double.toString(spec.getLJ().getEpsilon() * 1.380665e-23) + "\n";
+
+				input += "# Harmonic oscillators; allowed units are Hz and cm^-1\n";
+				SpectroscopicData data = spec.getSpectroscopicData();
+				input += Integer.toString(data.getVibrationCount()) + " cm^-1\n";
+				for (int j = 0; j < data.getVibrationCount(); j++)
+					input += Double.toString(data.getVibration(j)) + "\n";
+				
+				input += "# Rigid rotors; allowed units are Hz and cm^-1\n";
+				input += Integer.toString(data.getRotationCount()) + " cm^-1\n";
+				for (int j = 0; j < data.getRotationCount(); j++)
+					input += Double.toString(data.getRotation(j));
+				
+				input += "# Hindered rotor frequencies and barriers\n";
+				input += Integer.toString(data.getHinderedCount()) + " cm^-1\n";
+				for (int j = 0; j < data.getHinderedCount(); j++)
+					input += Double.toString(data.getHinderedFrequency(j)) + "\n";
+				input += Integer.toString(data.getHinderedCount()) + " cm^-1\n";
+				for (int j = 0; j < data.getHinderedCount(); j++)
+					input += Double.toString(data.getHinderedBarrier(j)) + "\n";
+				
+				input += "# Symmetry number\n";
+				input += Integer.toString(spec.getChemGraph().calculateSymmetryNumber()) + "\n";
 
 				input += "\n";
 			}
+			
+			input += "# The number of isomers in the network (minimum of 2)\n";
+			input += Integer.toString(isomerList.size()) + "\n";
+			input += "\n";
 
 			for (int i = 0; i < isomerList.size(); i++) {
-
 				PDepIsomer isomer = isomerList.get(i);
 
-				input += "# Well " + Integer.toString(i+1) + ": " + isomer.toString() + "\n";
-				input += "Species                                 " + Integer.toString(isomer.getNumSpecies()) + "\n";
+				input += "# The number and identifiers of each species in the isomer\n";
+				input += Integer.toString(isomer.getNumSpecies());
 				for (int j = 0; j < isomer.getNumSpecies(); j++) {
-					int index = speciesList.indexOf(isomer.getSpecies(j)) + 1;
-					input += index + "\n";
+					Species spec = isomer.getSpecies(j);
+					input += " " + spec.getName() + "(" + Integer.toString(spec.getID()) + ")";
 				}
-				
-				input += "\n";
+				input += "\n\n";
 			}
 
+			input += "# The number of reactions in the network (minimum of 2)\n";
+			input += Integer.toString(pathReactionList.size()) + "\n";
+			input += "\n";
+
 			for (int i = 0; i < pathReactionList.size(); i++) {
-
-				PDepReaction rxn = pathReactionList.get(i);
-
-				// Determine isomers associated with reactant and product
-				PDepIsomer reactant = rxn.getReactant();
-				PDepIsomer product = rxn.getProduct();
-				if (reactant == null || product == null) {
-					continue;
-				}
-				int isomer1 = isomerList.indexOf(reactant) + 1;
-				int isomer2 = isomerList.indexOf(product) + 1;
 				
-				double A = 0.0;
-				double Ea = 0.0;
-				double n = 0.0;
+				PDepReaction rxn = pathReactionList.get(i);
+				
+				double A = 0.0, Ea = 0.0, n = 0.0;
 				if (rxn.isForward()) {
 					A = rxn.getKinetics().getAValue();
 					Ea = rxn.getKinetics().getEValue();
@@ -465,24 +550,33 @@ public class FastMasterEqn implements PDepKineticsEstimator {
 					Ea = 0;
 				}
 
-				// Calculate transition state energy = ground-state energy of reactant (isomer 1) + activation energy
-				double E0 = Ea + reactant.calculateH(stdTemp);
 
-				input += "# Reaction " + rxn.toString() + ":\n";
-				input += "Reactant isomer                     " + isomer1 + "\n";
-				input += "Product isomer                      " + isomer2 + "\n";
-				input += "Ground-state energy                 " + (E0 * 4.184) + " kJ/mol\n";
-				input += "Arrhenius preexponential            " + A + " s^-1\n";
-				input += "Arrhenius activation energy         " + (Ea * 4.184) + " kJ/mol\n";
-				input += "Arrhenius temperature exponent      " + n + "\n";
+				input += "# The reaction equation, in the form A + B --> C + D\n";
+				input += rxn.toString() + "\n";
+
+				input += "# Indices of the reactant and product isomers, starting with 1\n";
+				input += Integer.toString(isomerList.indexOf(rxn.getReactant()) + 1) + " ";
+				input += Integer.toString(isomerList.indexOf(rxn.getProduct()) + 1) + "\n";
+
+				input += "# Ground-state energy; allowed units are J/mol, kJ/mol, cal/mol, kcal/mol, or cm^-1\n";
+				input += "J/mol " + Double.toString((Ea + rxn.getReactant().calculateH(stdTemp)) * 4184) + "\n";
+
+				input += "# High-pressure-limit kinetics model k(T):\n";
+				input += "#	Option 1: Arrhenius\n";
+				input += "# 	Arrhenius preexponential factor; allowed units are combinations of volume {m^3, L, or cm^3} and time {s^-1}\n";
+				input += "# 	Arrhenius activation energy; allowed units are J/mol, kJ/mol, cal/mol, or kcal/mol\n";
+				input += "# 	Arrhenius temperature exponent\n";
+				input += "Arrhenius\n";
+				if (rxn.getReactant().isUnimolecular())
+					input += "s^-1 " + Double.toString(A) + "\n";
+				else if (rxn.getReactant().isMultimolecular())
+					input += "cm^3/mol*s " + Double.toString(A) + "\n";
+				input += "J/mol " + Double.toString(Ea * 4184) + "\n";
+				input += Double.toString(n) + "\n";
+
 				input += "\n";
 			}
 
-			input += "\n";
-		}
-		catch(IOException e) {
-			System.out.println("Error: Unable to create file \"fame_input.txt\".");
-			System.exit(0);
 		}
 		catch(IndexOutOfBoundsException e) {
 			System.out.println("Error: IndexOutOfBoundsException thrown.");
@@ -494,6 +588,22 @@ public class FastMasterEqn implements PDepKineticsEstimator {
 		}
 
         return input;
+	}
+
+	/**
+	 * Parses one meaningful line from a FAME output buffer.
+	 */
+	public String readMeaningfulLine(BufferedReader br) throws IOException {
+
+		String str = "";
+		boolean found = false;
+		
+		while (!found) {
+			str = br.readLine().trim();
+			found = !(str.length() == 0 || str.startsWith("#"));
+		}
+
+		return str;
 	}
 
 	/**
@@ -509,148 +619,136 @@ public class FastMasterEqn implements PDepKineticsEstimator {
 			LinkedList<PDepIsomer> isomerList) {
 
 	    String dir = System.getProperty("RMG.workingDirectory");
-	    int numWells = 0;
-		int numReactions = 0;
-		int numTemperatures = 0;
-		int numPressures = 0;
-		int entryWell = 0;
-
+	    
 		double Tmin = 0, Tmax = 0, Pmin = 0, Pmax = 0;
+
+		LinkedList<PDepReaction> netReactionList = pdn.getNetReactions();
+		netReactionList.clear();
+
+		boolean ignoredARate = false;
 
 		try {
 
 			BufferedReader br = new BufferedReader(new StringReader(output));
 
 			String str = "";
+			StringTokenizer tkn;
 
-			String model = "";
+			String method = readMeaningfulLine(br);
+			
+			str = readMeaningfulLine(br);
+			tkn = new StringTokenizer(str);
+			int numTemp = Integer.parseInt(tkn.nextToken());
+			tkn.nextToken();
+			Tmin = Double.parseDouble(tkn.nextToken());
+			for (int i = 0; i < numTemp-2; i++) tkn.nextToken();
+			Tmax = Double.parseDouble(tkn.nextToken());
 
-			// Read output file header
-			boolean found = false;
-			while (!found) {
 
-				str = br.readLine().trim();
+			str = readMeaningfulLine(br);
+			tkn = new StringTokenizer(str);
+			int numPress = Integer.parseInt(tkn.nextToken());
+			tkn.nextToken();
+			Pmin = Double.parseDouble(tkn.nextToken());
+			for (int i = 0; i < numPress-2; i++) tkn.nextToken();
+			Pmax = Double.parseDouble(tkn.nextToken());
 
-				if (str.length() == 0)
-					found = true;
-				else if (str.charAt(0) == '#')
-					continue;
-				else if (str.substring(0, 15).equals("Number of wells"))
-					numWells = Integer.parseInt(str.substring(16).trim());
-				else if (str.substring(0, 19).equals("Interpolation model"))
-					model = str.substring(20).trim().toLowerCase();
-				else if (str.substring(0, 32).equals("Number of Chebyshev temperatures"))
-					numTemperatures = Integer.parseInt(str.substring(33).trim());
-				else if (str.substring(0, 29).equals("Number of Chebyshev pressures"))
-					numPressures = Integer.parseInt(str.substring(30).trim());
-				else if (str.substring(0, 24).equals("Temperature range of fit")) {
-					StringTokenizer strtok = new StringTokenizer(str.substring(25).trim());
-					Tmin = Double.parseDouble(strtok.nextToken());
-					strtok.nextToken();
-					Tmax = Double.parseDouble(strtok.nextToken());
-				}
-				else if (str.substring(0, 21).equals("Pressure range of fit")) {
-					StringTokenizer strtok = new StringTokenizer(str.substring(22).trim());
-					Pmin = Double.parseDouble(strtok.nextToken());
-					strtok.nextToken();
-					Pmax = Double.parseDouble(strtok.nextToken());
-				}
+			str = readMeaningfulLine(br);
+			tkn = new StringTokenizer(str);
+			String model = tkn.nextToken();
+			int numChebT = 0, numChebP = 0;
+			if (model.toLowerCase().contains("chebyshev")) {
+				numChebT = Integer.parseInt(tkn.nextToken());
+				numChebP = Integer.parseInt(tkn.nextToken());
 			}
 
-			// Initialize temperature and pressure variables based on read values
-			Temperature tLow = new Temperature(Tmin, "K");
-			Temperature tHigh = new Temperature(Tmax, "K");
-			Pressure pLow = new Pressure(Pmin, "bar");
-			Pressure pHigh = new Pressure(Pmax, "bar");
+			str = readMeaningfulLine(br);
+			int numSpecies = Integer.parseInt(str);
 
-			LinkedList<PDepReaction> netReactionList = pdn.getNetReactions();
-			netReactionList.clear();
+			str = readMeaningfulLine(br);
+			int numIsomers = Integer.parseInt(str);
 
-			String Trange = "";
-			Trange += Double.toString(temperatures[0].getK());
-			Trange += "-";
-			Trange += Double.toString(temperatures[temperatures.length-1].getK());
-			Trange += " K";
+			str = readMeaningfulLine(br);
+			int numReactions = Integer.parseInt(str);
 
-			// Read Chebyshev coefficients for each reaction
-			boolean ignoredARate = false;
-			for (int i = 0; i < numWells; i++) {
-				for (int j = 0; j < numWells; j++) {
-					if (i != j && br.ready()) {
+			str = readMeaningfulLine(br);
+			int numKinetics = Integer.parseInt(str);
 
-						double[][] rates = new double[temperatures.length][pressures.length];
-						double[][] alpha = new double[numTemperatures][numPressures];
+			for (int i = 0; i < numKinetics; i++) {
 
-						// Comment line at start of reaction
-						str = br.readLine().trim();
+				double[][] rates = new double[numTemp][numPress];
+				double[][] chebyshev = null;
+				PDepArrheniusKinetics pDepArrhenius = null;
 
-						// Read explicit rate constants from file
-						boolean valid = true;
-						for (int t = 0; t < temperatures.length; t++) {
-							str = br.readLine().trim();
-							StringTokenizer tkn = new StringTokenizer(str);
-							for (int p = 0; p < pressures.length; p++) {
-								rates[t][p] = Double.parseDouble(tkn.nextToken());
-								if (rates[t][p] < 0 ||
-										Double.isNaN(rates[t][p]) ||
-										Double.isInfinite(rates[t][p]))
-									valid = false;
-							}
-						}
-
-						PDepRateConstant pDepRate = new PDepRateConstant(rates);
-
-						if (model.equals("chebyshev")) {
-							// Read Chebyshev coefficients from file
-							for (int t = 0; t < numTemperatures; t++) {
-								str = br.readLine().trim();
-								StringTokenizer tkn = new StringTokenizer(str);
-								for (int p = 0; p < numPressures; p++) {
-									alpha[t][p] = Double.parseDouble(tkn.nextToken());
-									if (alpha[t][p] == 0 ||
-											Double.isNaN(alpha[t][p]) ||
-											Double.isInfinite(alpha[t][p]))
-										valid = false;
-								}
-							}
-							pDepRate.setChebyshev(alpha);
-						}
-						else if (model.equals("logpinterpolate")) {
-							PDepArrheniusKinetics pDepKinetics = new PDepArrheniusKinetics(pressures.length);
-							// Read P-dep Arrhenius coefficients from file
-							for (int p = 0; p < pressures.length; p++) {
-								str = br.readLine().trim();
-								StringTokenizer tkn = new StringTokenizer(str);
-								ArrheniusKinetics kinetics = new ArrheniusKinetics(
-									new UncertainDouble(Double.parseDouble(tkn.nextToken()), 0.0, "A"),
-									new UncertainDouble(Double.parseDouble(tkn.nextToken()), 0.0, "A"),
-									new UncertainDouble(Double.parseDouble(tkn.nextToken()) / 4184.0, 0.0, "A"),
-									Trange, 0, "FAME P-Dep calculation", "");
-								pDepKinetics.setKinetics(p, pressures[p], kinetics);
-							}
-							pDepRate.setPDepArrheniusKinetics(pDepKinetics);
-						}
-
-						// Skip blank line between records
-						str = br.readLine().trim();
-
-						// If the fitted rate coefficient is not valid, then don't add the net reaction
-						if (!valid) {
-							ignoredARate = true;
-							continue;
-						}
-
-						// Initialize net reaction
-						PDepIsomer reactant = isomerList.get(j);
-						PDepIsomer product = isomerList.get(i);
-						//PDepReaction rxn = new PDepReaction(reactant, product, cp);
-						PDepReaction rxn = new PDepReaction(reactant, product, pDepRate);
-
-						// Add net reaction to list
-						netReactionList.add(rxn);
-
+				// Reactant and product isomers
+				str = readMeaningfulLine(br);
+				tkn = new StringTokenizer(str);
+				int reac = Integer.parseInt(tkn.nextToken()) - 1;
+				int prod = Integer.parseInt(tkn.nextToken()) - 1;
+				
+				// Table of phenomenological rate coefficients
+				boolean valid = true;
+				str = readMeaningfulLine(br);	// First row is list of pressures
+				for (int t = 0; t < numTemp; t++) {
+					str = readMeaningfulLine(br);
+					tkn = new StringTokenizer(str);
+					tkn.nextToken();
+					for (int p = 0; p < numPress; p++) {
+						rates[t][p] = Double.parseDouble(tkn.nextToken());
+						if (rates[t][p] < 0 ||
+								Double.isNaN(rates[t][p]) ||
+								Double.isInfinite(rates[t][p]))
+							valid = false;
 					}
 				}
+
+				PDepRateConstant pDepRate = new PDepRateConstant(rates);
+
+				// Chebyshev interpolation model
+				if (model.toLowerCase().contains("chebyshev")) {
+					chebyshev = new double[numChebT][numChebP];
+					for (int t = 0; t < numChebT; t++) {
+						str = readMeaningfulLine(br);
+						tkn = new StringTokenizer(str);
+						for (int p = 0; p < numChebP; p++)
+							chebyshev[t][p] = Double.parseDouble(tkn.nextToken());
+					}
+					pDepRate.setChebyshev(chebyshev);
+				}
+
+				// PDepArrhenius interpolation model
+				else if (model.toLowerCase().contains("pdeparrhenius")) {
+					pDepArrhenius = new PDepArrheniusKinetics(numPress);
+					for (int p = 0; p < numPress; p++) {
+						str = readMeaningfulLine(br);
+						tkn = new StringTokenizer(str);
+						tkn.nextToken();
+						UncertainDouble A = new UncertainDouble(Double.parseDouble(tkn.nextToken()), 0.0, "A");
+						UncertainDouble Ea = new UncertainDouble(Double.parseDouble(tkn.nextToken()) / 4184.0, 0.0, "A");
+						UncertainDouble n = new UncertainDouble(Double.parseDouble(tkn.nextToken()), 0.0, "A");
+						String Trange = Double.toString(Tmin) + "-" + Double.toString(Tmax) + " K";
+						String Prange = Double.toString(Pmin / 1.0e5) + "-" + Double.toString(Pmax / 1.0e5) + " bar";
+						ArrheniusKinetics kinetics = new ArrheniusKinetics(A, n, Ea, Trange, 0, "Result of FAME calculation", "Prange = " + Prange);
+						pDepArrhenius.setKinetics(p, pressures[p], kinetics);
+					}
+					pDepRate.setPDepArrheniusKinetics(pDepArrhenius);
+				}
+
+				// If the fitted rate coefficient is not valid, then don't add the net reaction
+				if (!valid) {
+					ignoredARate = true;
+					continue;
+				}
+
+				// Initialize net reaction
+				PDepIsomer reactant = isomerList.get(reac);
+				PDepIsomer product = isomerList.get(prod);
+				PDepReaction rxn = new PDepReaction(reactant, product, pDepRate);
+
+				// Add net reaction to list
+				netReactionList.add(rxn);
+
+
 			}
 
 			// Close file when finished
