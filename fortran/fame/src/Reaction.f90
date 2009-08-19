@@ -1,52 +1,50 @@
-! ==============================================================================
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !
-!	Reaction.f90
+!	reaction.f90
 !
 !	Written by Josh Allen (jwallen@mit.edu)
 !
-! ==============================================================================
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
 module ReactionModule
 
+	use SpeciesModule
 	use IsomerModule
-
+	
 	implicit none
 	
-	! Struct: ArrheniusKinetics
-	! 
-	! Contains modified Arrhenius kinetics for a single reaction.
 	type ArrheniusKinetics
 		real(8)			::	A			! Arrhenius preexponential factor in s^-1
 		real(8)			::	n			! Arrhenius temperature exponent
 		real(8)			::	Ea			! Arrhenius activation energy in kJ/mol
 	end type
 
-	! Struct: Reaction
-	! 
-	! Contains the information for a single reaction.
 	type Reaction
-		integer								::	isomerList(2)	! Isomer wells connected to transition state
+		character(len=256)					::	equation		! Chemical reaction equation
+		integer								::	reac			! Isomer wells connected to transition state
+		integer								::	prod			! Isomer wells connected to transition state
 		real(8)								:: 	E0				! Ground-state electronic + zero-point energy of transition state in kJ/mol
-		type(ArrheniusKinetics)				::	kinetics		! Arrhenius kinetics for high pressure limit
+		type(ArrheniusKinetics)				::	arrhenius		! Arrhenius kinetics for high pressure limit
 		real(8), dimension(:), allocatable 	::	kf				! Microcanonical forward reaction rate in s^-1
 		real(8), dimension(:), allocatable 	::	kb				! Microcanonical backward reaction rate in s^-1
 	end type
 
 contains
-	
+
 	!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 	!
 	! Subroutine: microRates()
 	!
 	! Calculates the microcanonical forward and backward rates for a given 
 	! reaction at the given conditions.
-	subroutine microRates(T, P, rxn, E, isomerList)
+	!
+	subroutine microRates(rxn, T, E, isomerList, speciesList)
 	
-		real(8), intent(in) :: T
-		real(8), intent(in) :: P
-		real(8), dimension(:), intent(in) :: E
 		type(Reaction), intent(inout) :: rxn
+		real(8), intent(in) :: T
+		real(8), dimension(:), intent(in) :: E
 		type(Isomer), dimension(:), intent(in) :: isomerList
+		type(Species), dimension(:), intent(in) :: speciesList
 		
 		type(Isomer) :: reac, prod
 		integer nGrains, r
@@ -62,14 +60,14 @@ contains
 		rxn%kf = 0 * rxn%kf
 		rxn%kb = 0 * rxn%kb
 		
-		reac = isomerList(rxn%isomerList(1))
-		prod = isomerList(rxn%isomerList(2))
+		reac = isomerList(rxn%reac)
+		prod = isomerList(rxn%prod)
 		
-		if (reac%numSpecies == 1 .and. prod%numSpecies == 1) then
+		if (size(reac%species) == 1 .and. size(prod%species) == 1) then
     
 			! Calculate forward rate coefficient via inverse Laplace transform
 			call rateILT(rxn%E0 - reac%E0, reac%densStates, &
-				rxn%kinetics, T, E, rxn%kf)
+				rxn%arrhenius, T, E, rxn%kf)
 				
 			! Calculate backward rate coefficient via detailed balance
 			do r = 1, nGrains
@@ -78,40 +76,40 @@ contains
 				end if
 			end do
 			
-		elseif (reac%numSpecies == 1 .and. prod%numSpecies > 1) then
+		elseif (size(reac%species) == 1 .and. size(prod%species) > 1) then
 			
 			! Calculate forward rate coefficient via inverse Laplace transform
 			call rateILT(rxn%E0 - reac%E0, reac%densStates, &
-				rxn%kinetics, T, E, rxn%kf)
+				rxn%arrhenius, T, E, rxn%kf)
 				
 			! Calculate equilibrium constant
-			Keq = equilCoeff(prod, reac, T, P)
+			Keq = equilCoeff(reac, prod, T, speciesList)
 			
 			! Calculate backward rate coefficient via detailed balance
 			! assuming multimolecular isomer is fully thermalized
 			do r = 1, nGrains
-				rxn%kb(r) = Keq * rxn%kf(r) * &
-					reac%densStates(r) * exp(-E(r) * 1000 / 8.314472 / T) / reac%Q * dE
+				rxn%kb(r) = rxn%kf(r) / Keq * &
+					reac%densStates(r) * exp(-E(r) / 8.314472 / T) / reac%Q * dE
 			end do
 
-		elseif (reac%numSpecies > 1 .and. prod%numSpecies == 1) then
+		elseif (size(reac%species) > 1 .and. size(prod%species) == 1) then
 			
 			! Convert to dissocation so that a similar algorithm to above can be used
-			reac = isomerList(rxn%isomerList(2))
-			prod = isomerList(rxn%isomerList(1))
-		
+			reac = isomerList(rxn%prod)
+			prod = isomerList(rxn%reac)
+			
 			! Calculate forward rate coefficient via inverse Laplace transform
 			call rateILT(rxn%E0 - reac%E0, reac%densStates, &
-				rxn%kinetics, T, E, rxn%kb)
+				rxn%arrhenius, T, E, rxn%kb)
 				
 			! Calculate equilibrium constant
-			Keq = equilCoeff(prod, reac, T, P)
+			Keq = equilCoeff(reac, prod, T, speciesList)
 			
 			! Calculate backward rate coefficient via detailed balance
 			! assuming multimolecular isomer is fully thermalized
 			do r = 1, nGrains
-				rxn%kf(r) = Keq * rxn%kb(r) * &
-					reac%densStates(r) * exp(-E(r) * 1000 / 8.314472 / T) / reac%Q * dE
+				rxn%kf(r) = rxn%kb(r) / Keq * &
+					reac%densStates(r) * exp(-E(r) / 8.314472 / T) / reac%Q * dE
 			end do
 
 		end if
@@ -183,18 +181,31 @@ contains
 	!   reac = reactant isomer
 	!   prod = product isomer
 	!	T = absolute temperature in K
-	!   P = absolute pressure in bar
-	function equilCoeff(reac, prod, T, P)
+	function equilCoeff(reac, prod, T, speciesList)
 
 		type(Isomer), intent(in) 	::	reac
 		type(Isomer), intent(in) 	::	prod
 		real(8), intent(in)			::	T
-		real(8), intent(in)			::	P
+		type(Species), dimension(:), intent(in) :: speciesList
 		real(8) 					:: 	equilCoeff
 		
-		equilCoeff = eqRatio(prod%dGf, prod%dHf, T) / eqRatio(reac%dGf, reac%dHf, T)
-		!equilCoeff = equilCoeff * (P / 1.0)
-
+		real(8) dGrxn
+		integer i
+		
+		! Determine free energy of reaction
+		dGrxn = 0.0
+		do i = 1, size(reac%species)
+			dGrxn = dGrxn - freeEnergy(speciesList(reac%species(i))%thermo, T)
+		end do
+		do i = 1, size(prod%species)
+			dGrxn = dGrxn + freeEnergy(speciesList(prod%species(i))%thermo, T)
+		end do
+		
+		! Determine Ka
+		equilCoeff = exp(-dGrxn / 8.314472 / T)
+		! Determine Kc
+		equilCoeff = equilCoeff * (100000.0 / 8.314472 / T)**(size(prod%species) - size(reac%species))
+		
 	end function
-	
+
 end module

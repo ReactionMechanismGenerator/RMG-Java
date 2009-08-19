@@ -1,41 +1,36 @@
-! ==============================================================================
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !
-! 	StrongCollision.f90
+!	strongCollision.f90
 !
-! 	Written by Josh Allen (jwallen@mit.edu)
+!	Written by Josh Allen (jwallen@mit.edu)
 !
-! ==============================================================================
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
 module StrongCollisionModule
 
-	use SimulationModule
 	use SpeciesModule
 	use IsomerModule
 	use ReactionModule
-
+	use NetworkModule
+	
 	implicit none
 	
 contains
 
-	! --------------------------------------------------------------------------
-	
+	!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+	!
 	! Subroutine: ssmscRates()
 	! 
 	! Uses the steady state/modified strong collision approach of Chang,
 	! Bozzelli, and Dean to estimate the phenomenological rate coefficients 
 	! from a full ME matrix for the case of a chemically activated system.
 	!
-	! Parameters:
-	!
-	subroutine ssmscRates(T, P, simData, speciesList, isomerList, rxnList, K)
+	subroutine ssmscRates(net, T, P, K)
 	
 		! Provide parameter type checking of inputs and outputs
+		type(Network), intent(in)					:: 	net
 		real(8), intent(in)							:: 	T
 		real(8), intent(in)							:: 	P
-		type(Simulation), intent(in)				:: 	simData
-		type(Species), dimension(:), intent(in)		:: 	speciesList
-		type(Isomer), dimension(:), intent(in)		:: 	isomerList
-		type(Reaction), dimension(:), intent(in)	:: 	rxnList
 		real(8), dimension(:,:), intent(out) 		:: 	K
 		
 		! Steady-state populations
@@ -64,33 +59,33 @@ contains
 		integer nUni, reac, prod
 		
 		! Zero rate coefficient matrix
-		do i = 1, simData%nIsom
-			do j = 1, simData%nIsom
+		do i = 1, size(net%isomers)
+			do j = 1, size(net%isomers)
 				K(i,j) = 0.0
 			end do
 		end do
 		
 		! Determine number of unimolecular wells
 		nUni = 0
-		do i = 1, simData%nIsom
-			if (isomerList(i)%numSpecies == 1) nUni = nUni + 1
+		do i = 1, size(net%isomers)
+			if (size(net%isomers(i)%species) == 1) nUni = nUni + 1
 		end do
 		
 		! Find steady-state populations at each grain
 		allocate( A(1:nUni, 1:nUni) )
 		allocate( b(1:nUni) )
 		allocate( iPiv(1:nUni) )
-		allocate( pa(1:simData%nGrains, 1:nUni) )
+		allocate( pa(1:size(net%E), 1:nUni) )
 			
-		allocate( beta(1:simData%nIsom) )
+		allocate( beta(1:size(net%isomers)) )
 			
 		! Determine collision efficiency
-		call collisionEfficiencies(T, simData, isomerList, rxnList, beta)
+		call collisionEfficiencies(net, T, beta)
 
-		do src = 1, simData%nIsom
+		do src = 1, size(net%isomers)
 
 			! Determine starting grain
-			start = activeSpaceStart(simData, isomerList, rxnList, src)
+			start = activeSpaceStart(net, src)
 			
 			do r = 1, start-1
 				do i = 1, nUni
@@ -98,7 +93,7 @@ contains
 				end do
 			end do
 			
-			do r = start, simData%nGrains
+			do r = start, size(net%E)
 
 				! Zero A matrix and b vector
 				do i = 1, nUni
@@ -110,36 +105,36 @@ contains
 				
 				! Collisional deactivation
 				do i = 1, nUni
-					A(i,i) = - beta(i) * isomerList(i)%omega
+					A(i,i) = - beta(i) * net%isomers(i)%collFreq
 				end do
 				
 				! Reactions
-				do u = 1, simData%nRxn
-					reac = rxnList(u)%isomerList(1)
-					prod = rxnList(u)%isomerList(2)
-					if (isomerList(reac)%numSpecies == 1 .and. isomerList(prod)%numSpecies == 1) then
-						A(prod,reac) = rxnList(u)%kf(r)
-						A(reac,reac) = A(reac,reac) - rxnList(u)%kf(r)
-						A(reac,prod) = rxnList(u)%kb(r)
-						A(prod,prod) = A(prod,prod) - rxnList(u)%kb(r)
-					elseif (isomerList(reac)%numSpecies == 1 .and. isomerList(prod)%numSpecies > 1) then
-						A(reac,reac) = A(reac,reac) - rxnList(u)%kf(r)
-					elseif (isomerList(reac)%numSpecies > 1 .and. isomerList(prod)%numSpecies == 1) then
-						A(prod,prod) = A(prod,prod) - rxnList(u)%kb(r)
+				do u = 1, size(net%reactions)
+					reac = net%reactions(u)%reac
+					prod = net%reactions(u)%prod
+					if (size(net%isomers(reac)%species) == 1 .and. size(net%isomers(prod)%species) == 1) then
+						A(prod,reac) = net%reactions(u)%kf(r)
+						A(reac,reac) = A(reac,reac) - net%reactions(u)%kf(r)
+						A(reac,prod) = net%reactions(u)%kb(r)
+						A(prod,prod) = A(prod,prod) - net%reactions(u)%kb(r)
+					elseif (size(net%isomers(reac)%species) == 1 .and. size(net%isomers(prod)%species) > 1) then
+						A(reac,reac) = A(reac,reac) - net%reactions(u)%kf(r)
+					elseif (size(net%isomers(reac)%species) > 1 .and. size(net%isomers(prod)%species) == 1) then
+						A(prod,prod) = A(prod,prod) - net%reactions(u)%kb(r)
 					end if
 				end do
 					
 				! Activation
-				if (isomerList(src)%numSpecies == 1) then
-					b(src) = beta(src) * isomerList(src)%omega * isomerList(src)%eqDist(r)
+				if (size(net%isomers(src)%species) == 1) then
+					b(src) = beta(src) * net%isomers(src)%collFreq * net%isomers(src)%eqDist(r)
 				else
-					do u = 1, simData%nRxn
-						reac = rxnList(u)%isomerList(1)
-						prod = rxnList(u)%isomerList(2)
+					do u = 1, size(net%reactions)
+						reac = net%reactions(u)%reac
+						prod = net%reactions(u)%prod
 						if (reac == src) then
-							b(prod) = rxnList(u)%kf(r)
+							b(prod) = net%reactions(u)%kf(r)
 						elseif (prod == src) then
-							b(reac) = rxnList(u)%kb(r)
+							b(reac) = net%reactions(u)%kb(r)
 						end if
 					end do
 				end if
@@ -159,22 +154,22 @@ contains
 			! Stabilization rates (i.e.) R + R' --> Ai or M --> Ai
 			do i = 1, nUni
 				if (i /= src) then
-					val = beta(i) * isomerList(i)%omega * sum(pa(:,i))
+					val = beta(i) * net%isomers(i)%collFreq * sum(pa(:,i))
 					K(i,src) = K(i,src) + val
 					K(src,src) = K(src,src) - val
 				end if
 			end do
 			
 			! Dissociation rates (i.e.) R + R' --> Bn + Cn or M --> Bn + Cn
-			do u = 1, simData%nRxn
-				reac = rxnList(u)%isomerList(1)
-				prod = rxnList(u)%isomerList(2)
+			do u = 1, size(net%reactions)
+				reac = net%reactions(u)%reac
+				prod = net%reactions(u)%prod
 				if (reac <= nUni .and. prod > nUni .and. prod /= src) then
-					val = sum(rxnList(u)%kf * pa(:,reac))
+					val = sum(net%reactions(u)%kf * pa(:,reac))
 					K(prod,src) = K(prod,src) + val
 					K(src,src) = K(src,src) - val
 				elseif (reac > nUni .and. reac /= src .and. prod <= nUni) then
-					val = sum(rxnList(u)%kb * pa(:,prod))
+					val = sum(net%reactions(u)%kb * pa(:,prod))
 					K(reac,src) = K(reac,src) + val
 					K(src,src) = K(src,src) - val
 				end if
@@ -193,33 +188,31 @@ contains
 	!
 	!   Computes the fraction of collisions that result in deactivation.
 	!
-	subroutine collisionEfficiencies(T, simData, isomerList, rxnList, beta)
+	subroutine collisionEfficiencies(net, T, beta)
 	
 		! Provide parameter type checking of inputs and outputs
+		type(Network), intent(in)					:: 	net
 		real(8), intent(in)							::	T
-		type(Simulation), intent(in)				:: 	simData
-		type(Isomer), dimension(:), intent(in)		:: 	isomerList
-		type(Reaction), dimension(:), intent(in)	:: 	rxnList
 		real(8), dimension(:), intent(out)			::	beta
 		
 		real(8) E0
 		integer i, r
 		
-		do i = 1, simData%nIsom
-			if (isomerList(i)%numSpecies == 1) then
+		do i = 1, size(net%isomers)
+			if (size(net%isomers(i)%species) == 1) then
 			
-				E0 = simData%Emax
-	 			do r = 1, size(rxnList)
-	 				if (rxnList(r)%isomerList(1) == i .or. rxnList(r)%isomerList(2) == i) then
-	 					if (rxnList(r)%E0 < E0) E0 = rxnList(r)%E0
+				E0 = maxval(net%E)
+	 			do r = 1, size(net%reactions)
+	 				if (net%reactions(r)%reac == i .or. net%reactions(r)%prod == i) then
+	 					if (net%reactions(r)%E0 < E0) E0 = net%reactions(r)%E0
 	 				end if
 	 			end do
 	 
 	 			beta(i) = efficiency(T, &
-	 				simData%alpha * (1000 / 6.022e23), &
-	 				isomerList(i)%densStates / (1000 / 6.022e23), &
-	 				simData%E * (1000 / 6.022e23), &
-	 				E0 * (1000 / 6.022e23))
+	 				net%collisionParameters(1) * (1.0 / 6.022e23), &
+	 				net%isomers(i)%densStates / (1.0 / 6.022e23), &
+	 				net%E * (1.0 / 6.022e23), &
+	 				E0 * (1.0 / 6.022e23))
 			else
 				beta(i) = 0.
 			end if
@@ -314,30 +307,31 @@ contains
 	!
 	! Returns:
 	!	nRes - The reservoir cutoff grains for each unimolecular isomer.
-	function activeSpaceStart(simData, isomerList, rxnList, well)
+	function activeSpaceStart(net, well)
 	
-		type(Simulation), intent(in)				:: 	simData
-		type(Isomer), dimension(:), intent(in)		:: 	isomerList
-		type(Reaction), dimension(:), intent(in)	:: 	rxnList
+		type(Network), intent(in)					:: 	net
 		integer, intent(in)							::	well
 		integer										::	activeSpaceStart
 		
-		real(8) Eres
+		real(8) Eres, Emin, dE
 		
 		integer t, start
 		
-		start = simData%nGrains
+		start = size(net%E)
 		
-		Eres = simData%Emax
-		do t = 1, simData%nRxn
-			if (rxnList(t)%isomerList(1) == well .or. rxnList(t)%isomerList(2) == well) then
-				if (rxnList(t)%E0 < Eres) then
-					Eres = rxnList(t)%E0
+		Emin = minval(net%E)
+		dE = net%E(2) - net%E(1)
+		
+		Eres = maxval(net%E)
+		do t = 1, size(net%reactions)
+			if (net%reactions(t)%reac == well .or. net%reactions(t)%prod == well) then
+				if (net%reactions(t)%E0 < Eres) then
+					Eres = net%reactions(t)%E0
 				end if
 			end if
 		end do
-		activeSpaceStart = ceiling((Eres - simData%Emin) / simData%dE) + 1
-
+		activeSpaceStart = ceiling((Eres - Emin) / dE) + 1
+		
 	end function
 	
 	! --------------------------------------------------------------------------

@@ -1,36 +1,75 @@
-! ==============================================================================
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !
-!	DensityOfStates.f90
+!	states.f90
 !
 !	Written by Josh Allen (jwallen@mit.edu)
 !
-! ==============================================================================
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
-module DensityOfStatesModule
+module StatesModule
 
-	use SimulationModule
-    use SpeciesModule
+	use SpeciesModule
 	use IsomerModule
 	
 	implicit none
-
+	
 contains
 
+	!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+	!
+	! Function: eqDist()
+	! 
+	! Calculates the equilibrium distribution and partition function from
+	! density-of-states data for an isomer.
+	!
+	! Parameters:
+	!		isom - The isom to calculate the distribution for.
+	!		E - The grain energies in kJ/mol.
+	!		T - The absolute temperature in K.
+	!		eqDist - The vector in which to place the equilibrium distribution.
+	subroutine eqDist(isom, E, T)
+		
+		type(Isomer), intent(inout)				:: isom
+		real(8), dimension(:), intent(in)		:: E
+		real(8), intent(in)						:: T
+		
+		integer nGrains
+		real(8)	R 					! Gas constant in J mol^-1 K^-1
+		integer	s					! Dummy index
+		real(8) dE
+		
+		nGrains = size(E)
+		dE = E(2) - E(1)
+		
+		R = 8.314472
+	
+		if (.not. allocated(isom%eqDist)) then
+			allocate( isom%eqDist(1:size(E)) )
+		end if
+
+		! Calculate unnormalized eqDist
+		do s = 1, size(E)
+			isom%eqDist(s) = isom%densStates(s) * exp(-E(s) / (R * T))
+		end do
+		
+		! Normalize eqDist
+		isom%Q = sum(isom%eqDist) * dE			
+		isom%eqDist = isom%eqDist / sum(isom%eqDist)
+		
+	end subroutine
+	
 	! --------------------------------------------------------------------------
 	!
 	! Subroutine: densityOfStates()
 	! 
-	! Estimates the density of states for each species in the network.
+	! Estimates the density of states for a given isomer in the network.
 	!
-	! Parameters:
-	!   simData - The simulation data.
-	!   isom - The chemical data for a single isomer.
-	subroutine densityOfStates(simData, isom, speciesList)
+	subroutine densityOfStates(isom, speciesList, E0)
 		
 		! Provide parameter type checking of inputs and outputs
-		type(Simulation), intent(in)				:: 	simData
 		type(Isomer), intent(inout)					:: 	isom
 		type(Species), dimension(:), intent(in)		:: 	speciesList
+		real(8), dimension(:), intent(in)			::	E0
 		
 		type(Species) :: spec
 		
@@ -50,20 +89,20 @@ contains
 		integer start, length
 		integer vibCount, rotCount, hindCount, speCount
 		
-		! Conversion factor: cm^-1 per kJ/mol
-		conv = 1000 / 6.022e23 / 6.626e-34 / 2.9979e10
+		! Conversion factor: cm^-1 per J/mol
+		conv = 1.0 / 6.022e23 / 6.626e-34 / 2.9979e10
 		
 		speCount = 0
-		do i = 1, isom%numSpecies
+		do i = 1, size(isom%species)
 			
-			spec = speciesList(isom%speciesList(i))
+			spec = speciesList(isom%species(i))
 			
-			vibCount = size(spec%vibFreq)
-			rotCount = size(spec%rotFreq)
-			hindCount = size(spec%hindFreq)
-			if (.not. allocated(spec%vibFreq)) vibCount = 0
-			if (.not. allocated(spec%rotFreq)) rotCount = 0
-			if (.not. allocated(spec%hindFreq)) hindCount = 0
+			vibCount = size(spec%spectral%vibFreq)
+			rotCount = size(spec%spectral%rotFreq)
+			hindCount = size(spec%spectral%hindFreq)
+			if (.not. allocated(spec%spectral%vibFreq)) vibCount = 0
+			if (.not. allocated(spec%spectral%rotFreq)) rotCount = 0
+			if (.not. allocated(spec%spectral%hindFreq)) hindCount = 0
 			
 			if (vibCount > 0 .or. rotCount > 0 .or. hindCount > 0) then
 		
@@ -71,8 +110,8 @@ contains
 				
 				! Get energy range of density of states
 				Emin = 0
-				Emax = simData%Emax - simData%Emin
-				dE = simData%dE
+				Emax = maxval(E0) - minval(E0)
+				dE = E0(2) - E0(1)
 				dn = 10
 				
 				! Convert Emin, Emax, and dE to units of cm^-1
@@ -92,8 +131,8 @@ contains
 				allocate( rho2(1:nE) )
 				
 				! Calculate the density of states for each multimolecular well
-				rho2 = states(E + E(1), spec%vibFreq, spec%rotFreq, &
-					spec%hindFreq, spec%hindBarrier, spec%symmNum)
+				rho2 = states(E + E(1), spec%spectral%vibFreq, spec%spectral%rotFreq, &
+					spec%spectral%hindFreq, spec%spectral%hindBarrier, spec%spectral%symmNum)
 				
 				if (speCount == 1) then
 					rho1 = rho2
@@ -107,32 +146,32 @@ contains
 		end do
 		
 		! Remove intermediate grains used only for density of states estimation
-		rho1(1:simData%nGrains) = rho1(1:size(rho1):dn)
+		rho1(1:size(E0)) = rho1(1:size(rho1):dn)
 		
 		! Shift density of states to appropriate energy range
 		Eisom = isom%E0
 		start = 0
-		do r = 1, simData%nGrains
-			if (start == 0 .and. Eisom < simData%E(r)) then
-				Eisom = simData%E(r)
+		do r = 1, size(E0)
+			if (start == 0 .and. Eisom < E0(r)) then
+				Eisom = E0(r)
 				start = r
 			end if
 		end do
-		length = simData%nGrains - start + 1
+		length = size(E0) - start + 1
 
 		if (.not. allocated(rho1)) then
 			write (*,*) 'ERROR: Unable to calculate density of states. Stopping.'
 			stop
 		end if
 		
-		allocate(isom%densStates(1:simData%nGrains))
+		allocate(isom%densStates(1:size(E0)))
 		isom%densStates = 0 * isom%densStates
-		isom%densStates(start:simData%nGrains) = rho1(1:length) * conv
+		isom%densStates(start:size(E0)) = rho1(1:length) * conv
 		
 		deallocate( rho1 )
 		
 	end subroutine
-
+	
 	! --------------------------------------------------------------------------
 	!
 	! Function: states()

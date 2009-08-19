@@ -1,220 +1,136 @@
-! ==============================================================================
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !
 !	fame.f90
 !
-!	Written primarily by Josh Allen (jwallen@mit.edu) for use by RMG (Reaction 
-!	Mechanism Generator).
+!	Copyright (c) 2008-2009 by Josh Allen.
 !
-!	Copyright (c) 2008 by the William H. Green research group.
-!
-! ==============================================================================
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
-!	Program: fame
-!
-!	Version: 0.3.1							Date: 13 Mar 2009
-!
-! 	Calculates phenomenological rate coefficients k(T, P) for a given potential
-! 	energy surface using provided thermochemical and density-of-state data for
-! 	the unimolecular wells and bimolecular sources/sinks. The method used is
-! 	the steady state/reservoir state approximation to the energy-grained master
-! 	equation, a method introduced in 
-!
-! 	N. J. B. Green and Z. A. Bhatti. ``Steady-state Master Equation Methods.''
-!		Phys. Chem. Chem. Phys. 9, p. 4275-4290 (2007).
-!
-!	Input to this program is provided by a set of text files that should be
-!	placed in a folder named input/ in the directory containing the FAME
-!	executable. Output from this program will be placed in a text file in a
-!	folder named output/ in the directory containing the FAME executable.
-!
 program fame
 
-	use SimulationModule
 	use SpeciesModule
 	use IsomerModule
 	use ReactionModule
+	use NetworkModule
 	use InputModule
-	use DensityOfStatesModule
 	use StrongCollisionModule
 	use ReservoirStateModule
-	use RateModelModule
+	use ModelModule
+	use OutputModule
 	
 	implicit none
 
-	! Verbosity of console output flag
-	integer verbose
-
-	! The simulation parameters
-	type(Simulation) 								::	simData
-	! The species data
-	type(Species), dimension(:), allocatable		:: 	speciesList	
-	! The bimolecular source/sink data
-	type(Isomer), dimension(:), allocatable			:: 	isomerList
-	! The reaction data
-	type(Reaction), dimension(:), allocatable		:: 	rxnList
-	! K(i,j) = Phenomenological rate coefficients for transitions from species i to species j
+	! The activated reaction network
+	type(Network) net
+	! K(t,p,i,j) = Phenomenological rate coefficients for transitions from species i to species j
 	real(8), dimension(:,:,:,:), allocatable 		:: 	K
 	! chebCoeff(t,p,i,j) = Coefficient matrix for product of Chebyshev polynomials phi_t(Tred) * phi_p(Pred) for reaction j --> i 
-	real(8), dimension(:,:,:,:), allocatable 		:: 	chebCoeff
+	real(8), dimension(:,:,:,:), allocatable 		:: 	chebyshevCoefficients
 	! arrhenius(p,i,j) = Arrhenius kinetics matrix for logPInterpolate fitting model
-	type(ArrheniusKinetics), dimension(:,:,:), allocatable 		:: 	arrhenius
+	type(ArrheniusKinetics), dimension(:,:,:), allocatable 		:: 	pDepArrhenius
 	! (T, P) = Current temperature and pressure
-	real(8)											::	T
-	real(8)											::	P
+	real(8)											::	T, P
 	! Indices
 	integer u, v, w, i, j, n, m
-	
-	! Other variables
-	real(8) conc
-	integer found
-	integer badRate
-	
-	verbose = 0
 
-	! Load data from files on disk
-	if (verbose >= 1) write (*,*), 'Reading input...'
-	call loadNetwork(simData, speciesList, isomerList, rxnList, verbose)
-    
+	! Read network information from stdin
+	call loadNetwork(net)
+	
+	! Determine energy range of calculation
+	call selectEnergyGrains(net)
+		
 	! Calculate density of states for each (unimolecular) well
-	if (verbose >= 1) write (*,*), 'Calculating density of states...'
-	do i = 1, simData%nIsom
-		if (isomerList(i)%numSpecies == 1) then
-			call densityOfStates(simData, isomerList(i), speciesList)
+	do i = 1, size(net%isomers)
+		if (size(net%isomers(i)%species) == 1) then
+			call densityOfStates(net%isomers(i), net%species, net%E)
 		end if
 	end do
 	
-	allocate( 	K( 1:size(simData%Tlist), 1:size(simData%Plist), &
-		1:(simData%nIsom), 1:(simData%nIsom) )	)
-
-	if (verbose >= 1) write (*,*), 'Calculating k(T, P)...'
+	! Allocate memory for k(T, P) data
+	allocate( K( 1:size(net%Tlist), 1:size(net%Plist), 1:size(net%isomers), 1:size(net%isomers) ) )
 	
-	do u = 1, size(simData%Tlist)
+	do u = 1, size(net%Tlist)
 		
-		T = simData%Tlist(u)
+		T = net%Tlist(u)
 		
-		! Calculate the equilibrium (Boltzmann) distributions
-		if (verbose >= 2) write (*,*), '\tDetermining equilibrium distributions at T =', T, 'K...'
-		do i = 1, simData%nIsom
-			if (isomerList(i)%numSpecies == 1) then
-				call eqDist(isomerList(i), simData%E, T)
+		! Calculate the equilibrium (Boltzmann) distributions for each (unimolecular) well
+		do i = 1, size(net%isomers)
+			if (size(net%isomers(i)%species) == 1) then
+				call eqDist(net%isomers(i), net%E, T)
 			end if
 		end do
 		
-		do v = 1, size(simData%Plist)
+		! Calculate microcanonical rate coefficients at the current conditions
+		do w = 1, size(net%reactions)
+			call microRates(net%reactions(w), T, net%E, net%isomers, net%species)
+		end do
+		
+		do v = 1, size(net%Plist)
 
-			P = simData%Plist(v)
-
-			if (verbose >= 2) write (*,*), '\tCalculating k(T, P) at T =', T, 'K, P =', P, 'bar...'
+			P = net%Plist(v)
 
 			! Calculate collision frequencies
-			do i = 1, simData%nIsom
-				if (isomerList(i)%numSpecies == 1) then
-					isomerList(i)%omega = collisionFrequency(T, P, simData, &
-						speciesList(isomerList(i)%speciesList(1)))
+			do i = 1, size(net%isomers)
+				if (size(net%isomers(i)%species) == 1) then
+					net%isomers(i)%collFreq = collisionFrequency(T, P, net%bathGas, &
+						net%species(net%isomers(i)%species(1))%general)
 				end if
 			end do
 			
-			! Calculate microcanonical rate coefficients at the current conditions
-			if (verbose >= 2) write (*,*), '\tCalculating microcanonical rate coefficiencts...'
-			do w = 1, simData%nRxn
-				call microRates(T, P, rxnList(w), simData%E, isomerList)
-			end do
-					
-			if (simData%mode == 1) then
-				! Apply steady state/reservoir state approximations
-				if (verbose >= 3) write (*,*), '\t\tApplying steady-state/modified strong collision approximation...'
-				call ssmscRates(T, P, simData, speciesList, isomerList, rxnList, K(u,v,:,:))
-			elseif (simData%mode == 2) then
-				if (verbose >= 3) write (*,*), '\t\tApplying steady-state/reservoir-state approximation...'
-				call ssrsRates(T, P, simData, speciesList, isomerList, rxnList, K(u,v,:,:))
-			else
-				write (*,*), 'ERROR: An invalid solution mode was provided!'
-				stop
+			! Determine phenomenological rate coefficients
+			if (net%method == 1) then
+				call ssmscRates(net, T, P, K(u,v,:,:))
+			elseif (net%method == 2) then
+				call ssrsRates(net, T, P, K(u,v,:,:))
 			end if
 			
-			! Convert multimolecular k(T, P) to appropriate units (i.e. cm^3 mol^-1 s^-1)
-			conc = P * 100000. / 8.314472 / T / 1e6
-			do i = 1, simData%nIsom
-				do j = 1, simData%nIsom
-					if (isomerList(j)%numSpecies > 1) K(u,v,i,j) = K(u,v,i,j) / conc
-				end do
-			end do
-			
-		end do
-	end do
-
-!    	do i = 1, simData%nIsom
-! 		write (*,*) K(4,3,i,:)
-! 	end do
-
-	!do i = 1, size(simData%Tlist)
-	!	write (*,*) K(i,:,2,1)
-	!end do
-
-	! Fit k(T, P) to approximate formula
-	! Also test for validity of fitted rate coefficients
-	if (verbose >= 1) write (*,*), 'Fitting k(T,P) to model...'
-	allocate( chebCoeff(simData%nChebT, simData%nChebP, &
-		simData%nIsom, simData%nIsom) )
-	allocate( arrhenius(size(simData%Plist), simData%nIsom, simData%nIsom) )
-	badRate = 0
-	do i = 1, simData%nIsom
-		do j = 1, simData%nIsom
-			if (i /= j) then
-				found = 0
-				do u = 1, size(simData%Tlist)
-					do v = 1, size(simData%Plist)
+			! Check for validity of phenomenological rate coefficients
+			do i = 1, size(net%isomers)
+				do j = 1, size(net%isomers)
+					if (i /= j) then
 						if (K(u,v,i,j) <= 0) then
-							found = 1
+							write (0, fmt='(A)') 'One ore more rate coefficients not properly estimated.'
+							stop
 						end if
-					end do
+					end if
 				end do
-				if (found == 1) then
-					badRate = 1
-					chebCoeff(:,:,i,j) = 0 * chebCoeff(:,:,i,j)
-				else
-					if (verbose >= 2) then
-						write (*,*), '\tFitting k(T,P) for isomers', i, 'and', j
-					end if
-					if (simData%fitting == 1) then
-						call fitChebyshevModel(K(:,:,i,j), simData%Tlist, simData%Plist, simData%nChebT, simData%nChebP, chebCoeff(:,:,i,j))
-					elseif (simData%fitting == 2) then
-						call fitLogPInterpolateModel(K(:,:,i,j), simData%Tlist, simData%Plist, arrhenius(:,i,j))
-					end if
+			end do
+			
+			! Convert units of bimolecular k(T, P) to cm^3/mol*s
+			do j = 1, size(net%isomers)
+				if (size(net%isomers(j)%species) > 1) then
+					do i = 1, size(net%isomers)
+						K(u,v,i,j) = K(u,v,i,j) * 1.0e6
+					end do
+				end if
+			end do
+			
+			
+		end do
+		
+	end do
+	
+	! Fit phenomenological rate coefficients to selected model
+	if (net%model == 1) then
+		allocate( chebyshevCoefficients(net%numChebT, net%numChebP, size(net%isomers), size(net%isomers)) )
+	elseif (net%model == 2) then
+		allocate( pDepArrhenius(size(net%Plist), size(net%isomers), size(net%isomers)) )
+	end if
+	do i = 1, size(net%isomers)
+		do j = 1, size(net%isomers)
+			if (i /= j) then
+				if (net%model == 1) then
+					call fitChebyshevModel(K(:,:,i,j), net%Tlist, net%Plist, net%numChebT, net%numChebP, chebyshevCoefficients(:,:,i,j))
+				elseif (net%model == 2) then
+					call fitPDepArrheniusModel(K(:,:,i,j), net%Tlist, net%Plist, pDepArrhenius(:,i,j))
 				end if
 			end if
 		end do
 	end do
 	
-	if (badRate == 1) then
-		write(*,*), 'Warning: One ore more rate coefficients not properly estimated!'
-	end if			
+	! Write results to stdout
+	call saveNetwork(net, K, chebyshevCoefficients, pDepArrhenius)
 	
-	! Write output file
-	if (verbose >= 1) write (*,*), 'Saving results...'
-	call saveResults('fame_output.txt', simData, K, chebCoeff, arrhenius)
-	
-	! Free memory
-! 	do i = 1, simData%nSpecies
-! 		deallocate( speciesList(i)%vibFreq, speciesList(i)%rotFreq, &
-! 			speciesList(i)%hindFreq, speciesList(i)%hindBarrier )
-! 	end do
-	do i = 1, simData%nIsom
-		deallocate( isomerList(i)%speciesList )
-		if (isomerList(i)%numSpecies == 1) then
-			deallocate( isomerList(i)%densStates, isomerList(i)%eqDist )
-			if (allocated(isomerList(i)%Mcoll)) then
-				deallocate(isomerList(i)%Mcoll)
-			end if
-		end if
-	end do
-	do i = 1, simData%nRxn
-		deallocate( rxnList(i)%kf, rxnList(i)%kb )
-	end do
-		
-	if (verbose >= 1) write (*,*), 'DONE!'
-	
-
 end program
 
 ! ==============================================================================
