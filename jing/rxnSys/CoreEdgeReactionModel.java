@@ -651,6 +651,11 @@ public class CoreEdgeReactionModel implements ReactionModel {
         	Reaction r = (Reaction)iter.next();
         	if (categorizeReaction(r) == 1) {
         		addReactedReaction(r);
+                        //also add the reverse reaction (added by gmagoon 7/28/09: this should address potential issues where forward and reverse kinetics do not agree due to a non-deterministic identification of a different group for fused cyclic species and reaction families like birad recombination or intraRaddEndocyclic, for which the size of the ring is not always identified the same (e.g. one time, it might be 5-membered ring and another it might be 6-membered ring)); testing of this change suggests that there is a small effect on the numbers for the "official" hexadiene test case, but it appears that this is only due to the kinetics being written to the ODEsolver input file in a different order
+                        if (r.hasReverseReaction()){
+                            Reaction reverse = (Reaction)r.getReverseReaction();
+                            if (categorizeReaction(reverse) == 1) addReactedReaction(reverse);
+                        }
         		iter.remove();
         	}
         }
