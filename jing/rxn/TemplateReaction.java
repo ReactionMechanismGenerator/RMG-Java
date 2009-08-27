@@ -205,7 +205,96 @@ public class TemplateReaction extends Reaction {
 				g2.setCentralNode(3, n1);
 			}
 			k = rRT.findRateConstant(rs);
-		} else if (k == null && rRT.name.equals("intra_H_migration")) {
+		} 
+		
+		/*
+		 * Added by MRH on 27-Aug-2009
+		 * 	This hard-coding is necessary for rxn family templates
+		 * 		that are labeled "thermo_consistence".
+		 * 
+		 * After the chemgraphs are mutated, the central nodes for 
+		 * 	the products are not correct (see example below).  These
+		 * 	hard-coded portions are necessary for RMG to find Kinetics
+		 * 	for the structure.
+		 * 
+		 * Example: CH4 + H
+		 * 	CH4
+		 * 	1 *1 C 0 {2,S} {3,S} {4,S} {5,S}
+		 * 	2 *2 H 0 {1,S}
+		 * 	3    H 0 {1,S}
+		 * 	4    H 0 {1,S}
+		 * 	5    H 0 {1,S}
+		 * 
+		 * 	H
+		 * 	1 *3 H 1
+		 * 
+		 * After RMG has "reactChemGraph" and "mutate" the chemgraphs
+		 * 	of the reactants, the products would look as such:
+		 * 
+		 * prod1
+		 *  1 *1 C 1 {2,S} {3,S} {4,S}
+		 * 	2    H 0 {1,S}
+		 * 	3    H 0 {1,S}
+		 * 	4    H 0 {1,S}
+		 * 
+		 * prod2
+		 *  1 *3 H 0 {2,S}
+		 *  2 *2 H 0 {1,S}
+		 *  
+		 *  Assuming the reaction as written (CH4+H=CH3+H2) is
+		 *  	endothermic at 298K, RMG will label this structure
+		 *  	as direction=-1 (backward).  When attempting to find
+		 *  	Kinetics for the backward reaction, RMG will try
+		 *  	to match the prod1 graph against the generic graphs
+		 *  	X_H and Y_rad_birad.  It cannot match Y_rad_birad
+		 *  	(because there is no *3 node) and it cannot match
+		 *  	X_H (because there is no *2 node).  Thus, a "null"
+		 *  	Kinetics will be returned from the findReverseRateConstant
+		 *  	call.  We then relabel the central nodes on prod1
+		 *  	and prod2 and attempt to get Kinetics for this
+		 *  	structure.
+		 *  
+		 *  I am adding the following bit of code to work with the
+		 *  	new reaction family Aaron Vandeputte is adding to
+		 *  	RMG: "".
+		 * 
+		 */
+		
+		else if (k == null && rRT.name.equals("intra_substitutionS_isomerization")) {
+			ChemGraph cg1 = ((ChemGraph) fproduct.get(0));
+			Graph g1 = cg1.getGraph();
+			Node n1 = (Node) g1.getCentralNodeAt(1);
+			Node n2 = (Node) g1.getCentralNodeAt(2);
+			Node n3 = (Node) g1.getCentralNodeAt(3);
+			Node n4 = (Node) g1.getCentralNodeAt(4);
+			Node n5 = (Node) g1.getCentralNodeAt(5);
+			Node n6 = (Node) g1.getCentralNodeAt(6);
+			Node n7 = (Node) g1.getCentralNodeAt(7);
+			g1.clearCentralNode();
+			g1.setCentralNode(1, n1);
+			g1.setCentralNode(2, n3);
+			g1.setCentralNode(3, n2);
+			if (n7 != null)	{
+				g1.setCentralNode(7, n4);
+				g1.setCentralNode(6, n5);
+				g1.setCentralNode(5, n6);
+				g1.setCentralNode(4, n7);
+			}
+			else if (n6 != null) {
+				g1.setCentralNode(6, n4);
+				g1.setCentralNode(5, n5);
+				g1.setCentralNode(4, n6);
+			}
+			else if (n5 != null) {
+				g1.setCentralNode(5, n4);
+				g1.setCentralNode(4, n5);
+			}
+			else if (n4 != null)
+				g1.setCentralNode(4, n4);
+			k = rRT.findRateConstant(rs);
+		}
+		
+		else if (k == null && rRT.name.equals("intra_H_migration")) {
 			ChemGraph cg = ((ChemGraph) fproduct.get(0));
 			rr = rRT.calculateForwardRateConstant(cg, rs);
 			if (!rr.isForward()) {
