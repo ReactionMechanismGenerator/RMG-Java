@@ -846,7 +846,7 @@ public class ReactionTemplate {
   protected LinkedHashSet reactOneReactant(ChemGraph p_chemGraph) {
       //#[ operation reactOneReactant(ChemGraph) 
 	  LinkedHashSet reaction_set = new LinkedHashSet();
-	  if (name.equals("Intra_R_Add_Endocyclic") && !p_chemGraph.isAcyclic()) return reaction_set;
+	//  if (name.equals("Intra_R_Add_Endocyclic") && !p_chemGraph.isAcyclic()) return reaction_set; //commented out by gmagoon 7/29/09: according to Sandeep this may be an unneeded artifact of an old bug that may have been addressed with the use of ForbiddenGroups for Intra_R_Add_Endocyclic and Intra_R_Add_Exocyclic; however, it should be kept in mind that when this is commented out, it is probably more likely that one will obtain reactions for which the group identification (and hence kinetics estimates) are not reproducible due to identification of different ring paths in the same molecule
       
 
 	  
