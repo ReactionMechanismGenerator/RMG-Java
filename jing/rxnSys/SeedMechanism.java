@@ -33,6 +33,7 @@ import java.io.*;
 import jing.rxn.*;
 import jing.chem.*;
 import java.util.*;
+
 import jing.chemUtil.*;
 import jing.chemParser.*;
 
@@ -179,12 +180,24 @@ public class SeedMechanism {
         		}
         		if (r == null) throw new InvalidReactionFormatException(line);
         		
-        		reactionSet.add(r);
-        		Reaction reverse = r.getReverseReaction();
-				
-        		if (reverse != null) {
-					//reverse.getKinetics().setSource("Seed Mechanism: " + name);
-					reactionSet.add(reverse);
+        		Iterator prlRxnIter = reactionSet.iterator();
+        		boolean foundRxn = false;
+        		while (prlRxnIter.hasNext()) {
+        			Reaction old = (Reaction)prlRxnIter.next();
+        			if (old.equals(r)) {
+        				old.addAdditionalKinetics(r.getKinetics(),1);
+        				foundRxn = true;
+        				break;
+        			}
+        		}
+        		if (!foundRxn) {
+        			reactionSet.add(r);
+	        		Reaction reverse = r.getReverseReaction();
+					
+	        		if (reverse != null) {
+						//reverse.getKinetics().setSource("Seed Mechanism: " + name);
+						reactionSet.add(reverse);
+	        		}
         		}
         		
         		line = ChemParser.readMeaningfulLine(data);
