@@ -515,14 +515,16 @@ public class ReactionAdjList {
         else if (productNumber == 2) {
         	FunctionalGroupCollection p1 = new FunctionalGroupCollection();
         	FunctionalGroupCollection p2 = new FunctionalGroupCollection();
-        	int highestCentralID1 = -1;
-        	int highestCentralID2 = -1;
+        	/*int highestCentralID1 = -1;
+        	int highestCentralID2 = -1;*/
+        	int lowestCentralID1 = 10000;
+        	int lowestCentralID2 = 10000;
         	Iterator p_iter = allProduct.iterator(); 
         	while (p_iter.hasNext()) {
         	   	Graph pg = (Graph)p_iter.next();
         	   	String name = "";
         	   	FunctionalGroup fg = FunctionalGroup.make(name, pg);
-        	   	int present_HCID = pg.getHighestCentralID();
+        	   	/*int present_HCID = pg.getHighestCentralID();
         	   	if (present_HCID <= 0) throw new InvalidCentralIDException();
         	   	if (present_HCID == highestCentralID1) {
         	   		p1.addFunctionalGroups(fg);
@@ -538,6 +540,27 @@ public class ReactionAdjList {
         	   		else if (highestCentralID2 == -1) {
         	   			p2.addFunctionalGroups(fg);
         	   			highestCentralID2 = present_HCID;
+        	   		}
+        	   		else {
+        	   			throw new InvalidCentralIDException();
+        	   		}
+        	   	}*/
+        	   	int present_LCID = pg.getLowestCentralID();
+        	   	if (present_LCID <= 0) throw new InvalidCentralIDException();
+        	   	if (present_LCID == lowestCentralID1) {
+        	   		p1.addFunctionalGroups(fg);
+        	   	}
+        	   	else if (present_LCID == lowestCentralID2) {
+        	   		p2.addFunctionalGroups(fg);
+        	   	}
+        	   	else {
+        	   		if (lowestCentralID1 == 10000) {
+        	   			p1.addFunctionalGroups(fg);
+        	   			lowestCentralID1 = present_LCID;
+        	   		}
+        	   		else if (lowestCentralID2 == 10000) {
+        	   			p2.addFunctionalGroups(fg);
+        	   			lowestCentralID2 = present_LCID;
         	   		}
         	   		else {
         	   			throw new InvalidCentralIDException();

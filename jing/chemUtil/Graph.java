@@ -61,6 +61,8 @@ public class Graph {
     private int highestCentralID = 0;		//## attribute highestCentralID
 
     private int highestNodeID = 0;		//## attribute highestNodeID
+    
+    private int lowestCentralID = 10000;
 
     private ArrayList arcList;
     private LinkedHashMap nodeList;
@@ -241,6 +243,7 @@ public class Graph {
         	}
         	centralNode.put(cenID,node);
         	updateHighestCentralID(p_centralPosition);
+        	updateLowestCentralID(p_centralPosition);
         }
 
         return node;
@@ -313,6 +316,7 @@ public class Graph {
         }
         centralNode.clear();
         highestCentralID = 0;
+        lowestCentralID = 10000;
         return;
         //#]
     }
@@ -1237,6 +1241,10 @@ public class Graph {
         return highestCentralID;
         //#]
     }
+    
+    public int getLowestCentralID() {
+    	return lowestCentralID;
+    }
 
     /**
     Return the node at the p_position in this graph, if there is no node at that position, or if at this position, there is a null node, throw NotInGraphException.
@@ -1651,7 +1659,7 @@ public class Graph {
         while (true) {
         	Graph newGraph = new Graph();
         	int nodeID = 0;
-        	int centralID, highestCentralID=-1;
+        	int centralID, highestCentralID=-1, lowestCentralID=10000;
         	Iterator iter1 = nodeList.keySet().iterator();
         	while (iter1.hasNext()) {
         		Integer ID = (Integer)iter1.next();
@@ -1661,6 +1669,7 @@ public class Graph {
         			centralID = n.getCentralID().intValue();
         			if (centralID >= 0) {
         				if (highestCentralID<centralID) highestCentralID = centralID;
+        				if (lowestCentralID>centralID) lowestCentralID = centralID;
         	 		}
         			iter1.remove();
         			if (centralID >= 0) centralNode.remove(n.getCentralID());
@@ -1672,6 +1681,7 @@ public class Graph {
         	}
         	newGraph.highestNodeID = nodeID;
         	newGraph.highestCentralID = highestCentralID;
+        	newGraph.lowestCentralID = lowestCentralID;
 
         	Iterator iter2 = getArcList();
         	while (iter2.hasNext()) {
@@ -1914,6 +1924,7 @@ public class Graph {
         p_node.setCentralID(p_position);
         Node old = (Node)centralNode.put(new Integer(p_position),p_node);
         updateHighestCentralID(p_position);
+        updateLowestCentralID(p_position);
         if (old != null) old.setCentralID(-1);
         return;
         //#]
@@ -1936,6 +1947,7 @@ public class Graph {
         	node.setCentralID(centralID);
         	Node old = (Node)centralNode.put(centralID,node);
         	updateHighestCentralID(centralID.intValue());
+        	updateLowestCentralID(centralID.intValue());
         	if (old != null) old.setCentralID(-1);
         }
         //#]
@@ -2027,6 +2039,10 @@ public class Graph {
         if (p_centralID > highestCentralID) highestCentralID = p_centralID;
         return;
         //#]
+    }
+    
+    public void updateLowestCentralID(int p_centralID) {
+    	if (p_centralID < lowestCentralID) lowestCentralID = p_centralID;
     }
 
     /**
