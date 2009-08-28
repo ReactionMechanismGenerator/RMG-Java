@@ -261,11 +261,11 @@ public class GATP implements GeneralGAPP {
 
          // make the symmetric number correction to entropy
 
-         if (p_chemGraph.isAcyclic()){//gmagoon 7/25/09: it looks like we have cyclic symmetry number code; we may want to try commenting the cyclic check out; if it turns out that this doesn't work, however, we may wish to revert
+         //if (p_chemGraph.isAcyclic()){//gmagoon 7/25/09: it looks like we have cyclic symmetry number code; we may want to try commenting the cyclic check out; if it turns out that this doesn't work, however, we may wish to revert
                 int sigma = p_chemGraph.getSymmetryNumber();
 	         ThermoGAValue symmtryNumberCorrection = new ThermoGAValue(0,GasConstant.getCalMolK()*Math.log(sigma),0,0,0,0,0,0,0,0,0,0,null);
                  result.minus(symmtryNumberCorrection);
-         }
+         //}
 
 
          p_chemGraph.setCentralNode(oldCentralNode);
