@@ -1326,38 +1326,9 @@ public class QMTP implements GeneralGAPP {
     //augmented InChI is InChI appended with /mult3, /mult4, /mult5, or /mult6 for multiplicities of 3 or higher
     public String [] getQMFileName(ChemGraph p_chemGraph){
         String [] result = new String[2];
-        String InChI = p_chemGraph.getInChIAnew();//need to generate InChI and key anew because ChemGraph may have changed (in particular, adding/removing hydrogens in HBI process)
-        String newInChI=null;
-        String fileName = p_chemGraph.getInChIKeyAnew();
-        String newFileName=null;
-        int radicalNumber = p_chemGraph.getRadicalNumber();
-       // System.out.println("Radical number:"+radicalNumber);//for debugging purposes
-        if (radicalNumber == 2){
-            newInChI = InChI.concat("/mult3");
-            newFileName = fileName.concat("mult3");
-        }
-        else if (radicalNumber == 3){
-            newInChI = InChI.concat("/mult4");
-            newFileName = fileName.concat("mult4");
-        }
-        else if (radicalNumber == 4){
-            newInChI = InChI.concat("/mult5");
-            newFileName = fileName.concat("mult5");
-        }
-        else if (radicalNumber == 5){
-            newInChI = InChI.concat("/mult6");
-            newFileName = fileName.concat("mult6");
-        }
-        else if (radicalNumber > 5){
-            System.out.println("Unexpectedly high multiplicity ("+ (radicalNumber+1)+ ") for " + InChI);
-            System.exit(0);
-        }
-        else{
-            newInChI = InChI;
-            newFileName = fileName;
-        }
-        result[0]=newFileName;
-        result[1]=newInChI;
+        result[0] = p_chemGraph.getModifiedInChIKeyAnew();//need to generate InChI and key anew because ChemGraph may have changed (in particular, adding/removing hydrogens in HBI process)
+        result[1] = p_chemGraph.getModifiedInChIAnew();
+
         return result;
     }
     

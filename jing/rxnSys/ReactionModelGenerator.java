@@ -1305,6 +1305,10 @@ public class ReactionModelGenerator {
                 allValid = false;
             reactionChangedList.set(i,false);
         }
+        //9/1/09 gmagoon: if we are using QM, output a file with the CHEMKIN name, the RMG name, the (modified) InChI, and the (modified) InChIKey
+        if (ChemGraph.useQM){
+            writeInChIs(getReactionModel());
+        }
         //System.exit(0);
        
 		System.out.println("The model core has " + ((CoreEdgeReactionModel)getReactionModel()).getReactedReactionSet().size() + " reactions and "+ ((CoreEdgeReactionModel)getReactionModel()).getReactedSpeciesSet().size() + " species.");
@@ -1417,6 +1421,10 @@ public class ReactionModelGenerator {
                                     ReactionSystem rs = (ReactionSystem)reactionSystemList.get(i);
                                     Chemkin.writeChemkinInputFile(rs);//10/25/07 gmagoon: ***I don't know if this will still work with multiple reaction systems: may want to modify to only write one chemkin input file for all reaction systems //11/9/07 gmagoon:****temporarily commenting out; cf. previous comment; //11/12/07 gmagoon: restored; ****this appears to be source of non-Pdep bug 
                                     //Chemkin.writeChemkinInputFile(reactionSystem);
+                                }
+                                //9/1/09 gmagoon: if we are using QM, output a file with the CHEMKIN name, the RMG name, the (modified) InChI, and the (modified) InChIKey
+                                if (ChemGraph.useQM){
+                                     writeInChIs(getReactionModel());
                                 }
                                 double chemkint = (System.currentTimeMillis()-startTime)/1000/60;
 				
@@ -1680,7 +1688,12 @@ public class ReactionModelGenerator {
                 ReactionSystem rs = (ReactionSystem)reactionSystemList.get(i);
                 Chemkin.writeChemkinInputFile(getReactionModel(),rs.getPresentStatus());//11/9/07 gmagoon: temporarily commenting out; see previous comment; this line may not cause a problem because it is different instance of writeChemkinInputFile, but I am commenting out just in case//11/12/07 gmagoon: restored; ****this appears to be source of non-Pdep bug 
         }
-        
+                
+        //9/1/09 gmagoon: if we are using QM, output a file with the CHEMKIN name, the RMG name, the (modified) InChI, and the (modified) InChIKey
+        if (ChemGraph.useQM){
+            writeInChIs(getReactionModel());
+        }
+                
         System.out.println("Model Generation Completed");
 		
         
@@ -1690,7 +1703,31 @@ public class ReactionModelGenerator {
         
         //#]
     }
+    
+    //9/1/09 gmagoon: this function writes a "dictionary" with Chemkin name, RMG name, (modified) InChI, and InChIKey
+    //this is based off of writeChemkinFile in ChemkinInputFile.java
+    private void writeInChIs(ReactionModel p_reactionModel) {
+        StringBuilder result=new StringBuilder();
+        for (Iterator iter = ((CoreEdgeReactionModel)p_reactionModel).core.getSpecies(); iter.hasNext(); ) {
+            Species species = (Species) iter.next();
+            result.append(species.getChemkinName() + "\t"+species.getName() + "\t" + species.getChemGraph().getModifiedInChIAnew() + "\t" + species.getChemGraph().getModifiedInChIKeyAnew()+ "\n");
+        }
 
+
+      String file = "inchiDictionary.txt";
+
+      try {
+      	FileWriter fw = new FileWriter(file);
+      	fw.write(result.toString());
+      	fw.close();
+      }
+      catch (Exception e) {
+      	System.out.println("Error in writing InChI file inchiDictionary.txt!");
+      	System.out.println(e.getMessage());
+      	System.exit(0);
+      }
+    }
+    
     private void parseRestartFiles() {
 		parseAllSpecies();
 		parseCoreSpecies();

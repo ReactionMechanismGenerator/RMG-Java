@@ -1422,6 +1422,63 @@ return sn;
     	return InChIKey;
     }
 
+    //gmagoon 9/1/09: these functions (getModifiedInChIAnew and getModifiedInChIKeyAnew) do the same as above, except return a modified version of the InChI and InChIKey with an indication of the multiplicity based on the number of radicals if the number of radicals is 2 or greater
+    public String getModifiedInChIAnew(){
+        generateInChI();
+        String newInChI=null;
+        int radicalNumber = this.getRadicalNumber();
+       // System.out.println("Radical number:"+radicalNumber);//for debugging purposes
+        if (radicalNumber == 2){
+            newInChI = InChI.concat("/mult3");
+        }
+        else if (radicalNumber == 3){
+            newInChI = InChI.concat("/mult4");
+        }
+        else if (radicalNumber == 4){
+            newInChI = InChI.concat("/mult5");
+        }
+        else if (radicalNumber == 5){
+            newInChI = InChI.concat("/mult6");
+        }
+        else if (radicalNumber > 5){
+            System.out.println("Unexpectedly high multiplicity ("+ (radicalNumber+1)+ ") for " + InChI);
+            System.exit(0);
+        }
+        else{
+            newInChI = InChI;
+        }
+        
+        return newInChI;
+    }
+    
+    public String getModifiedInChIKeyAnew(){
+        generateInChI();
+        String newInChIKey=null;
+        int radicalNumber = this.getRadicalNumber();
+       // System.out.println("Radical number:"+radicalNumber);//for debugging purposes
+        if (radicalNumber == 2){
+            newInChIKey = InChIKey.concat("mult3");
+        }
+        else if (radicalNumber == 3){
+            newInChIKey = InChIKey.concat("mult4");
+        }
+        else if (radicalNumber == 4){
+            newInChIKey = InChIKey.concat("mult5");
+        }
+        else if (radicalNumber == 5){
+            newInChIKey = InChIKey.concat("mult6");
+        }
+        else if (radicalNumber > 5){
+            System.out.println("Unexpectedly high multiplicity ("+ (radicalNumber+1)+ ") for " + InChI);
+            System.exit(0);
+        }
+        else{
+            newInChIKey= InChIKey;
+        }
+        
+        return newInChIKey;
+    }
+    
     /**
     Requires:
     Effects: add the weight of all the atoms in this graph to calculate the molecular weight of this chem graph
