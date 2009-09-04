@@ -312,7 +312,7 @@ public class FrequencyGroups{//gmagoon 111708: removed "implements GeneralGAPP"
     }
 
 
-    protected static FrequencyGroups getINSTANCE() {
+    public static FrequencyGroups getINSTANCE() {
         return INSTANCE;
     }
 	
