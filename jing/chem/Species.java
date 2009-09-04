@@ -916,7 +916,7 @@ public class Species {
         //#]
     }*/
 	
-	public static Species make(String p_name, ChemGraph p_chemGraph, int id) {
+	/*public static Species make(String p_name, ChemGraph p_chemGraph, int id) {
         //#[ operation make(String,ChemGraph)
         SpeciesDictionary dictionary = SpeciesDictionary.getInstance();
         Species spe = (Species)(dictionary.getSpecies(p_chemGraph));
@@ -934,6 +934,27 @@ public class Species {
         p_chemGraph.setSpecies(spe);
         return spe;
         //#]
+    }*/
+    
+    /**
+     * Species.make
+     * 	As of 4-Sept-2009, this function is only called when making species
+     * 		read in from "Restart" files.  The Restart files are generated
+     * 		after an integration step in RMG, meaning all stored species (core
+     * 		and edge) should be unique.  Therefore, we do not need to check
+     * 		each new species against the SpeciesDictionary.
+     * MRH 4-Sept-2009
+     */
+	public static Species make(String p_name, ChemGraph p_chemGraph, int id) {
+		SpeciesDictionary dictionary = SpeciesDictionary.getInstance();
+		
+		String name = p_name;
+		Species spe = new Species(id, name, p_chemGraph);
+		if (id > TOTAL_NUMBER) TOTAL_NUMBER=id;
+		dictionary.putSpecies(spe, false);
+        p_chemGraph.setSpecies(spe);
+        
+        return spe;
     }
 
     //## operation repOk()
@@ -1551,6 +1572,48 @@ public class Species {
 			double z_coord = Double.parseDouble(st.nextToken());
 			// Extract the element symbol
 			adjListElement[i-1] = " " + st.nextToken() + " ";
+			
+			/*
+			 * Added by MRH on 4-Sept-2009
+			 * 	RMG did not convert single heavy atom radicals properly (e.g. CH3, OH, H).  The
+			 * 		problem was the structure of the .mol file.  I created mol2AdjList assuming
+			 * 		the radical information would be present in the "M RAD" lines located at the
+			 * 		bottom of the .mol file.  For InChI-v.1.01, this is not the case for single
+			 * 		heavy atom radicals.  For the time being, I am hardcoding in the fix.
+			 */
+			if (numOfAtoms == 1) {
+				String totalLine = molFileLines[i];
+				int length = totalLine.length();
+				// This length-15,length-12 may depend on the version of InChI
+				int valencyFlag = Integer.parseInt(totalLine.substring(length-15,length-12).trim());
+				if (valencyFlag != 0) {
+					// One Hydrogen
+					if (valencyFlag == 1) {
+						if (adjListElement[i-1].equals(" C ")) adjListRadical[i-1] = "3 ";
+						else if (adjListElement[i-1].equals(" Si ")) adjListRadical[i-1] = "3 ";
+						else if (adjListElement[i-1].equals(" N ")) adjListRadical[i-1] = "2 ";
+						else if (adjListElement[i-1].equals(" O ")) adjListRadical[i-1] = "1 ";
+						else if (adjListElement[i-1].equals(" S ")) adjListRadical[i-1] = "1 ";
+					// Two Hydrogens
+					} else if (valencyFlag == 2) {
+						if (adjListElement[i-1].equals(" C ")) adjListRadical[i-1] = "2 ";
+						else if (adjListElement[i-1].equals(" Si ")) adjListRadical[i-1] = "2 ";
+						else if (adjListElement[i-1].equals(" N ")) adjListRadical[i-1] = "1 ";
+					// Three Hydrogens
+					} else if (valencyFlag == 3) {
+						if (adjListElement[i-1].equals(" C ")) adjListRadical[i-1] = "1 ";
+						else if (adjListElement[i-1].equals(" Si ")) adjListRadical[i-1] = "1 ";
+					// Zero Hydrogens
+					} else if (valencyFlag == 15) {
+						if (adjListElement[i-1].equals(" C ")) adjListRadical[i-1] = "4 ";
+						else if (adjListElement[i-1].equals(" Si ")) adjListRadical[i-1] = "4 ";
+						else if (adjListElement[i-1].equals(" N ")) adjListRadical[i-1] = "3 ";
+						else if (adjListElement[i-1].equals(" O ")) adjListRadical[i-1] = "2 ";
+						else if (adjListElement[i-1].equals(" S ")) adjListRadical[i-1] = "2 ";
+						else if (adjListElement[i-1].equals(" H ")) adjListRadical[i-1] = "1 ";
+					}
+				}
+			}
 		}
 		
 		//	Extract the connectivity
