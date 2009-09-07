@@ -407,7 +407,7 @@ public class FastMasterEqn implements PDepKineticsEstimator {
 			if (PDepRateConstant.getMode() == PDepRateConstant.Mode.CHEBYSHEV)
 				input += "Chebyshev " + Integer.toString(numChebTempPolys) +
 						" " + Integer.toString(numChebPressPolys) + "\n";
-			else if (PDepRateConstant.getMode() == PDepRateConstant.Mode.CHEBYSHEV)
+			else if (PDepRateConstant.getMode() == PDepRateConstant.Mode.PDEPARRHENIUS)
 				input += "PDepArrhenius\n";
 			else
 				input += "None\n";
