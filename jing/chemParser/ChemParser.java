@@ -517,6 +517,95 @@ public class ChemParser {
 		return null;
         //#]
     }
+    
+    /**
+     * ChemParser.parseRestartReaction(p_rxnString, coreSpcsIDs, core_edge) method
+     * 		Method interprets a string (in the Reaction.toChemkinString() format) and
+     * 		returns a Reaction
+     * 
+     * @param p_rxnString: String listing the reactants, separator ("=" or "=>"), products, Arrhenius
+     * 		parameters, and comments
+     * @param coreSpcsIDs: int[] listing the core species IDs
+     * @param core_edge: String indicating whether the rxn of interest is a "core" or "edge" rxn
+     * @return
+     */
+    public static Reaction parseRestartReaction(String p_rxnString, int[] coreSpcsIDs, String core_edge) {
+    	StringTokenizer st = new StringTokenizer(p_rxnString);
+    	//	First token is the rxn structure: A+B=C+D
+    	//		Note: Up to 3 reactants/products allowed
+    	//			: Either "=" or "=>" will separate reactants and products
+    	String structure = st.nextToken();    	
+    	//	Separate the reactants from the products
+    	boolean generateReverse = false;
+    	String[] reactsANDprods = structure.split("[=>]");
+    	// If the length of reactsANDprods = 1, no "=>" token, meaning
+    	//	reverse rxn
+    	if (reactsANDprods.length == 1) {
+    		reactsANDprods = structure.split("[=]");
+    		generateReverse = true;
+    	}
+    	
+    	SpeciesDictionary sd = SpeciesDictionary.getInstance();
+        LinkedList r = parseReactionSpecies(sd, reactsANDprods[0]);
+        LinkedList p = parseReactionSpecies(sd, reactsANDprods[1]);
+
+        Structure s = new Structure(r,p);
+        s.setDirection(1);
+        
+        /*
+         * All rxns in restart files are listed in the forward direction.
+         * 	If the rxn is from the core, both forward and backward rxn should
+         * 	be stored in the CoreEdgeReactionModel; if from the edge, only
+         * 	the rxn containing core species as reactants should be stored
+         * 	as edge rxns in the CoreEdgeReactionModel.
+         */
+        boolean storeAsForward = true;
+        if (core_edge.equals("edge")) {
+        	boolean foundInCore = false;
+        	for (Iterator iter = r.iterator(); iter.hasNext();) {
+        		Species spc = (Species)iter.next();
+        		for (int i=0; i<coreSpcsIDs.length; i++) {
+        			// If the species is identified as core, move on to the next species
+        			if (coreSpcsIDs[i] == spc.getID()) {
+        				foundInCore = true;
+        				break;
+        			}
+        		}
+        		// If the spc's ID does not match any of the core species' IDs, it is
+        		//	an edge species and the reverse rxn (p-->r) should be stored as an
+        		//	edge rxn in the CoreEdgeReactionModel
+        		if (!foundInCore) {
+        			storeAsForward = false;
+        			break;
+        		}
+        	}
+        }
+    	
+        //	Next three tokens are the modified Arrhenius parameters
+    	double rxn_A = Double.parseDouble(st.nextToken());
+    	double rxn_n = Double.parseDouble(st.nextToken());
+    	double rxn_E = Double.parseDouble(st.nextToken());
+    	
+    	//	For now, restart file does not contain uncertainties
+    	UncertainDouble uA = new UncertainDouble(rxn_A,0.0,"A");
+    	UncertainDouble un = new UncertainDouble(rxn_n,0.0,"A");
+    	UncertainDouble uE = new UncertainDouble(rxn_E,0.0,"A");    	
+    	
+    	//	The remaining tokens are comments
+    	String comments = "";
+    	while (st.hasMoreTokens()) {
+    		comments += st.nextToken();
+    	}
+    	
+    	// Generate the kinetics (assuming a rank of 1 ... as of 7/Sept/2009, the rank
+    	//	of Kinetics should not be important at this stage of the mechanism
+    	//	generation)
+        ArrheniusKinetics k = new ArrheniusKinetics(uA,un,uE,"",1,"",comments);
+        if (storeAsForward)
+        	return Reaction.makeReaction(s,k,generateReverse);
+        else
+        	return Reaction.makeReaction(s.generateReverseStructure(),k,generateReverse);
+    }
 
   //## operation parseArrheniusReaction(HashMap,String,double,double)
   public static Reaction parseArrheniusReaction(HashMap p_species, String p_reactionString, double p_AMultiplier, double p_EMultiplier) {

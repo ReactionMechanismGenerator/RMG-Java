@@ -44,17 +44,17 @@ import jing.param.Temperature;
 //## class ChebyshevPolynomials 
 public class ChebyshevPolynomials implements PDepKinetics {
     
-    protected int NP;		//## attribute NP 
+    protected static int NP;		//## attribute NP 
     
-    protected int NT;		//## attribute NT 
+    protected static int NT;		//## attribute NT 
     
-    protected Pressure Plow;		//## attribute Plow 
+    protected static Pressure Plow;		//## attribute Plow 
     
-    protected Pressure Pup;		//## attribute Pup 
+    protected static Pressure Pup;		//## attribute Pup 
     
-    protected Temperature Tlow;		//## attribute Tlow 
+    protected static Temperature Tlow;		//## attribute Tlow 
     
-    protected Temperature Tup;		//## attribute Tup 
+    protected static Temperature Tup;		//## attribute Tup 
     
     protected double [][] alpha;		//## attribute alpha 
     
@@ -220,7 +220,7 @@ public class ChebyshevPolynomials implements PDepKinetics {
         //#]
     }
     
-    public int getNP() {
+    public static int getNP() {
         return NP;
     }
     
@@ -228,7 +228,7 @@ public class ChebyshevPolynomials implements PDepKinetics {
         NP = p_NP;
     }
     
-    public int getNT() {
+    public static int getNT() {
         return NT;
     }
     
@@ -236,35 +236,35 @@ public class ChebyshevPolynomials implements PDepKinetics {
         NT = p_NT;
     }
     
-    public Pressure getPlow() {
+    public static Pressure getPlow() {
         return Plow;
     }
     
-    public void setPlow(Pressure p_Plow) {
+    public static void setPlow(Pressure p_Plow) {
         Plow = p_Plow;
     }
     
-    public Pressure getPup() {
+    public static Pressure getPup() {
         return Pup;
     }
     
-    public void setPup(Pressure p_Pup) {
+    public static void setPup(Pressure p_Pup) {
         Pup = p_Pup;
     }
     
-    public Temperature getTlow() {
+    public static Temperature getTlow() {
         return Tlow;
     }
     
-    public void setTlow(Temperature p_Tlow) {
+    public static void setTlow(Temperature p_Tlow) {
         Tlow = p_Tlow;
     }
     
-    public Temperature getTup() {
+    public static Temperature getTup() {
         return Tup;
     }
     
-    public void setTup(Temperature p_Tup) {
+    public static void setTup(Temperature p_Tup) {
         Tup = p_Tup;
     }
     

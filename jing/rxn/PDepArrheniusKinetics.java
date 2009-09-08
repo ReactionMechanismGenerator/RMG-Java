@@ -23,16 +23,19 @@ public class PDepArrheniusKinetics implements PDepKinetics {
 	/**
 	 * The list of pressures at which we have Arrhenius parameters.
 	 */
-	private Pressure[] pressures;
+	public Pressure[] pressures;
 
 	/**
 	 * The list of Arrhenius kinetics fitted at each pressure.
 	 */
-	private ArrheniusKinetics[] kinetics;
+	private static ArrheniusKinetics[] kinetics;
+	
+	protected static int numPressures = 0;
 
 	public PDepArrheniusKinetics(int numP) {
 		pressures = new Pressure[numP];
 		kinetics = new ArrheniusKinetics[numP];
+		setNumPressures(numP);
 	}
 	
 	public void setKinetics(int index, Pressure P, ArrheniusKinetics kin) {
@@ -86,6 +89,18 @@ public class PDepArrheniusKinetics implements PDepKinetics {
 			result += " /\n";
 		}
 		return result;
+    }
+    
+    public static void setNumPressures(int numP) {
+    	if (numP > getNumPressures()) numPressures = numP;
+    }
+    
+    public static int getNumPressures() {
+    	return numPressures;
+    }
+    
+    public static ArrheniusKinetics getKinetics(int i) {
+    	return kinetics[i];
     }
 
 }

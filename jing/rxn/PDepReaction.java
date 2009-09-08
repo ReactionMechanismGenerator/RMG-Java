@@ -241,7 +241,7 @@ public class PDepReaction extends Reaction {
 	 * @return The current pressure-dependent reverse reaction
 	 */
 	@Override
-	public Reaction getReverseReaction() {
+	public PDepReaction getReverseReaction() {
 		return pDepReverse;
 	}
 	

@@ -287,8 +287,17 @@ public class CoreEdgeReactionModel implements ReactionModel {
     	if (p_reaction instanceof PDepReaction)
     		System.out.println(p_reaction);
         if (isUnreactedReaction(p_reaction)) getUnreactedReactionSet().add(p_reaction);
+        else if (isUnreactedReaction(p_reaction.getReverseReaction())) getUnreactedReactionSet().add(p_reaction.getReverseReaction());
         else throw new InvalidUnreactedReactionException(p_reaction.toString());
         //#]
+    }
+    
+    public void addUnreactedReactionSet(LinkedHashSet reactions) {
+		Iterator rxnIter = reactions.iterator();
+		while (rxnIter.hasNext()){
+			Reaction rxn = (Reaction)rxnIter.next();
+			addUnreactedReaction(rxn);
+		}
     }
     
     //## operation addUnreactedSpecies(Species) 

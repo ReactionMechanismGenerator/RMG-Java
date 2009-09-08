@@ -839,6 +839,12 @@ public class Reaction {
       }
       else if (isBackward()) {
       	Reaction rr = getReverseReaction();
+      	//	Added by MRH on 7/Sept/2009
+      	//	Required when reading in the restart files
+      	if (rr == null) {
+      		generateReverseReaction();
+      		rr = getReverseReaction();
+      	}
       	if (rr == null) throw new NullPointerException("Reverse reaction is null.\n" + structure.toString());
       	if (!rr.isForward()) throw new InvalidReactionDirectionException(structure.toString());
       	return rr.getKinetics();

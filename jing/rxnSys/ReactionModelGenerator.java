@@ -37,6 +37,7 @@ import jing.chem.*;
 
 import java.util.*;
 
+import jing.mathTool.UncertainDouble;
 import jing.param.*;
 import jing.chemUtil.*;
 import jing.chemParser.*;
@@ -95,6 +96,13 @@ public class ReactionModelGenerator {
     protected PrimaryThermoLibrary primaryThermoLibrary;
 
 	protected boolean restart = false;
+	protected boolean readrestart = false;
+	protected boolean writerestart = false;
+	
+	protected LinkedHashSet restartCoreSpcs = new LinkedHashSet();
+	protected LinkedHashSet restartEdgeSpcs = new LinkedHashSet();
+	protected LinkedHashSet restartCoreRxns = new LinkedHashSet();
+	protected LinkedHashSet restartEdgeRxns = new LinkedHashSet();
     // Constructors
 
 	private HashSet specs = new HashSet();
@@ -191,6 +199,27 @@ public class ReactionModelGenerator {
              } else throw new InvalidSymbolException("Error reading condition.txt file: "
              		+ "Could not locate PrimaryThermoLibrary field");
              line = ChemParser.readMeaningfulLine(reader);
+             
+ 			if (line.toLowerCase().startsWith("readrestart")) {
+				StringTokenizer st = new StringTokenizer(line);
+				String tempString = st.nextToken();	// "ReadRestart:"
+				tempString = st.nextToken();
+				if (tempString.toLowerCase().equals("yes")) {
+					readrestart = true;
+					readRestartSpecies();
+				} else readrestart = false;				
+				line = ChemParser.readMeaningfulLine(reader);
+			} else throw new InvalidSymbolException("Cannot locate ReadRestart field");
+			
+			if (line.toLowerCase().startsWith("writerestart")) {
+				StringTokenizer st = new StringTokenizer(line);
+				String tempString = st.nextToken();	// "WriteRestart:"
+				tempString = st.nextToken();
+				if (tempString.toLowerCase().equals("yes"))
+					writerestart = true;
+				else writerestart = false;
+				line = ChemParser.readMeaningfulLine(reader);
+			} else throw new InvalidSymbolException("Cannot locate WriteRestart field");
 
         	// read temperature model
                 //gmagoon 10/23/07: modified to handle multiple temperatures; note that this requires different formatting of units in condition.txt
@@ -596,6 +625,8 @@ public class ReactionModelGenerator {
 					temperatures[7] = new Temperature(2100, "K");
 					FastMasterEqn.setTemperatures(temperatures);
 					PDepRateConstant.setTemperatures(temperatures);
+					ChebyshevPolynomials.setTlow(temperatures[0]);
+					ChebyshevPolynomials.setTup(temperatures[7]);
 
 					Pressure[] pressures = new Pressure[5];
 					pressures[0] = new Pressure(0.01, "bar");
@@ -605,6 +636,8 @@ public class ReactionModelGenerator {
 					pressures[4] = new Pressure(100, "bar");
 					FastMasterEqn.setPressures(pressures);
 					PDepRateConstant.setPressures(pressures);
+					ChebyshevPolynomials.setPlow(pressures[0]);
+					ChebyshevPolynomials.setPup(pressures[4]);
 
 				}
 				else if (pDepType.toLowerCase().equals("off")) {
@@ -638,14 +671,14 @@ public class ReactionModelGenerator {
 								String TUNITS = ChemParser.removeBrace(st.nextToken());
 								double tLow = Double.parseDouble(st.nextToken());
 								Temperature TMIN = new Temperature(tLow,TUNITS);
-								PDepRateConstant.setTMin(TMIN);
+								ChebyshevPolynomials.setTlow(TMIN);
 								double tHigh = Double.parseDouble(st.nextToken());
 								if (tHigh <= tLow) {
 									System.err.println("Tmax is less than or equal to Tmin");
 									System.exit(0);
 								}
 								Temperature TMAX = new Temperature(tHigh,TUNITS);
-								PDepRateConstant.setTMax(TMAX);
+								ChebyshevPolynomials.setTup(TMAX);
 								int tResolution = Integer.parseInt(st.nextToken());
 								int tbasisFuncs = Integer.parseInt(st.nextToken());
 								if (tbasisFuncs > tResolution) {
@@ -665,14 +698,14 @@ public class ReactionModelGenerator {
 									PUNITS = ChemParser.removeBrace(st.nextToken());
 									double pLow = Double.parseDouble(st.nextToken());
 									PMIN = new Pressure(pLow,PUNITS);
-									PDepRateConstant.setPMin(PMIN);
+									ChebyshevPolynomials.setPlow(PMIN);
 									double pHigh = Double.parseDouble(st.nextToken());
 									if (pHigh <= pLow) {
 										System.err.println("Pmax is less than or equal to Pmin");
 										System.exit(0);
 									}
 									PMAX = new Pressure(pHigh,PUNITS);
-									PDepRateConstant.setPMax(PMAX);
+									ChebyshevPolynomials.setPup(PMAX);
 									pResolution = Integer.parseInt(st.nextToken());
 									pbasisFuncs = Integer.parseInt(st.nextToken());
 									if (pbasisFuncs > pResolution) {
@@ -1287,6 +1320,18 @@ public class ReactionModelGenerator {
         //10/24/07 gmagoon: initialize allTerminated and allValid to true; these variables keep track of whether all the reactionSystem variables satisfy termination and validity, respectively
         boolean allTerminated = true;
         boolean allValid = true;
+        
+        // IF RESTART IS TURNED ON
+        // Update the systemSnapshot for each ReactionSystem in the reactionSystemList
+        if (readrestart) {
+	        for (Integer i=0; i<reactionSystemList.size(); i++) {
+	        	ReactionSystem rs = (ReactionSystem)reactionSystemList.get(i);
+	        	InitialStatus is = rs.getInitialStatus();
+	        	putRestartSpeciesInInitialStatus(is,i);
+				rs.appendUnreactedSpeciesStatus((InitialStatus)initialStatusList.get(i), rs.getPresentTemperature());
+	        }
+        }
+        
         //10/24/07 gmagoon: note: each element of for loop could be done in parallel if desired; some modifications would be needed
         for (Integer i = 0; i<reactionSystemList.size();i++) {
             ReactionSystem rs = (ReactionSystem)reactionSystemList.get(i);
@@ -1343,7 +1388,7 @@ public class ReactionModelGenerator {
         while (!allTerminated || !allValid) {
         	while (!allValid) {
 				
-				writeCoreSpecies();
+				//writeCoreSpecies();
 				double pt = System.currentTimeMillis();
 				enlargeReactionModel();//10/24/07 gmagoon: need to adjust this function
 				double totalEnlarger = (System.currentTimeMillis() - pt)/1000/60;
@@ -1428,6 +1473,14 @@ public class ReactionModelGenerator {
                                 }
                                 double chemkint = (System.currentTimeMillis()-startTime)/1000/60;
 				
+                                if (writerestart) {
+                                	writeCoreSpecies();
+                                	writeCoreReactions();
+                                	writeEdgeSpecies();
+                                	writeEdgeReactions();
+                                	writePDepNetworks();
+                                }
+                                
                                 //10/24/07 gmagoon: changed to use reactionSystemList
                                 for (Integer i = 0; i<reactionSystemList.size();i++) {
                                     ReactionSystem rs = (ReactionSystem)reactionSystemList.get(i);
@@ -2236,9 +2289,9 @@ public class ReactionModelGenerator {
         //10/25/07 gmagoon: I don't think this is used, but I will update to use reactionSystem and reactionTime as parameter to access temperature; commented-out usage of writeRestartFile will need to be modified
 	//Is still incomplete.
     public void writeRestartFile(ReactionSystem p_rs, ReactionTime p_time ) {
-		writeCoreSpecies();
+		//writeCoreSpecies(p_rs);
 		//writeCoreReactions(p_rs, p_time);
-		writeEdgeSpecies();
+		//writeEdgeSpecies();
 		//writeAllReactions(p_rs, p_time);
 		//writeEdgeReactions(p_rs, p_time);
 
@@ -2372,8 +2425,11 @@ public class ReactionModelGenerator {
 			FileWriter fw = new FileWriter(edgeSpecies);
 			for(Iterator iter=((CoreEdgeReactionModel)getReactionModel()).getUnreactedSpeciesSet().iterator();iter.hasNext();){
 				Species species = (Species) iter.next();
-				restartFileContent.append(species.getID());
-				restartFileContent.append( "\n");
+				restartFileContent.append(species.getChemkinName() + "\n");
+				int dummyInt = 0;
+				restartFileContent.append(species.getChemGraph().toString(dummyInt) + "\n");
+				//restartFileContent.append(species.getID());
+				//restartFileContent.append( "\n");
 				/*Species species = (Species) iter.next();
 				restartFileContent = restartFileContent + "("+ speciesCount + ") "+species.getChemkinName() + " \n ";// + 0 + " (mol/cm3) \n";
 				restartFileContent = restartFileContent + species.toString(1) + "\n";
@@ -2424,8 +2480,11 @@ public class ReactionModelGenerator {
 			FileWriter fw = new FileWriter(coreSpecies);
 			for(Iterator iter=getReactionModel().getSpecies();iter.hasNext();){
 				Species species = (Species) iter.next();
-				restartFileContent.append(species.getID());
-				restartFileContent.append( "\n");//("+ speciesCount + ") "+species.getChemkinName() + " \n ";// + reactionSystem.getPresentConcentration(species) + " (mol/cm3) \n";
+				restartFileContent.append(species.getChemkinName()+"\n");
+				int dummyInt = 0;
+				restartFileContent.append(species.getChemGraph().toString(dummyInt)+"\n");
+				//restartFileContent.append(species.getID());
+				//restartFileContent.append( "\n");//("+ speciesCount + ") "+species.getChemkinName() + " \n ";// + reactionSystem.getPresentConcentration(species) + " (mol/cm3) \n";
 				//restartFileContent = restartFileContent + species.toString(1) + "\n";
 				//speciesCount = speciesCount + 1;
 			}
@@ -2439,8 +2498,181 @@ public class ReactionModelGenerator {
 		}
 
 	}
+	
+	private void writeCoreReactions() {
+		StringBuilder restartFileContent = new StringBuilder();
+		try{
+			File coreReactions = new File ("Restart/coreReactions.txt");
+			FileWriter fw = new FileWriter(coreReactions);
+			CoreEdgeReactionModel cerm = (CoreEdgeReactionModel)getReactionModel();
+			LinkedHashSet allcoreRxns = cerm.core.reaction;
+			for(Iterator iter=allcoreRxns.iterator(); iter.hasNext();){
+				Reaction reaction = (Reaction) iter.next();
+				if (reaction.isForward()) 
+					restartFileContent.append(reaction.toChemkinString(new Temperature(298,"K")) + "\n");
+			}
+			fw.write(restartFileContent.toString());
+			fw.close();
+		}
+		catch (IOException e){
+			System.out.println("Could not write the restart corereactions file");
+        	System.exit(0);
+		}
+	}
 
+	private void writeEdgeReactions() {
+		StringBuilder restartFileContent = new StringBuilder();
+		try{
+			File edgeReactions = new File ("Restart/edgeReactions.txt");
+			FileWriter fw = new FileWriter(edgeReactions);
+			CoreEdgeReactionModel cerm = (CoreEdgeReactionModel)getReactionModel();
+			LinkedHashSet alledgeRxns = cerm.edge.reaction;
+			for(Iterator iter=alledgeRxns.iterator(); iter.hasNext();){
+				Reaction reaction = (Reaction) iter.next();
+				if (reaction.isForward())
+					restartFileContent.append(reaction.toChemkinString(new Temperature(298,"K")) + "\n");
+				else if (reaction.getReverseReaction().isForward())
+					restartFileContent.append(reaction.getReverseReaction().toChemkinString(new Temperature(298,"K")) + "\n");
+				else
+					System.out.println("Could not determine forward direction for following rxn: " + reaction.toString());
+				
+			}
+			fw.write(restartFileContent.toString());
+			fw.close();
+		}
+		catch (IOException e){
+			System.out.println("Could not write the restart corereactions file");
+        	System.exit(0);
+		}
+	}
 
+	private void writePDepNetworks() {
+		
+		StringBuilder restartFileContent = new StringBuilder();
+		
+		int numFameTemps = PDepRateConstant.getTemperatures().length;
+		int numFamePress = PDepRateConstant.getPressures().length;
+		int numChebyTemps = ChebyshevPolynomials.getNT();
+		int numChebyPress = ChebyshevPolynomials.getNP();
+		int numPlog = PDepArrheniusKinetics.getNumPressures();
+		
+		restartFileContent.append("NumberOfFameTemps: " + numFameTemps + "\n");
+		restartFileContent.append("NumberOfFamePress: " + numFamePress + "\n");
+		restartFileContent.append("NumberOfChebyTemps: " + numChebyTemps + "\n");
+		restartFileContent.append("NumberOfChebyPress: " + numChebyPress + "\n");
+		restartFileContent.append("NumberOfPLogs: " + numPlog + "\n\n");
+		
+		LinkedList allNets = PDepNetwork.getNetworks();
+		
+		try{
+			File pdepnets = new File ("Restart/pdepnetworks.txt");
+			FileWriter fw = new FileWriter(pdepnets);
+			int netCounter = 0;
+			for(Iterator iter=allNets.iterator(); iter.hasNext();){
+				PDepNetwork pdepnet = (PDepNetwork) iter.next();
+
+				++netCounter;
+				restartFileContent.append("PDepNetwork #" + netCounter+"\n");
+				
+				// Write netReactionList
+				LinkedList netRxns = pdepnet.getNetReactions();
+				restartFileContent.append("netReactionList:\n");
+				for (Iterator iter2=netRxns.iterator(); iter2.hasNext();) {
+					
+					PDepReaction currentPDepRxn = (PDepReaction)iter2.next();
+					restartFileContent.append(currentPDepRxn.toString()+"\n");
+					restartFileContent.append(writeRatesAndParameters(currentPDepRxn,numFameTemps,
+							numFamePress,numChebyTemps,numChebyPress,numPlog));
+					
+					PDepReaction currentPDepReverseRxn = currentPDepRxn.getReverseReaction();
+					restartFileContent.append(currentPDepReverseRxn.toString()+"\n");
+					restartFileContent.append(writeRatesAndParameters(currentPDepReverseRxn,numFameTemps,
+							numFamePress,numChebyTemps,numChebyPress,numPlog));
+
+				}
+				
+				// Write nonincludedReactionList
+				LinkedList nonIncludeRxns = pdepnet.getNonincludedReactions();
+				restartFileContent.append("nonIncludedReactionList:\n");
+				for (Iterator iter2=nonIncludeRxns.iterator(); iter2.hasNext();) {
+					
+					PDepReaction currentPDepRxn = (PDepReaction)iter2.next();
+					restartFileContent.append(currentPDepRxn.toString()+"\n");
+					restartFileContent.append(writeRatesAndParameters(currentPDepRxn,numFameTemps,
+							numFamePress,numChebyTemps,numChebyPress,numPlog));
+					
+					PDepReaction currentPDepReverseRxn = currentPDepRxn.getReverseReaction();
+					restartFileContent.append(currentPDepReverseRxn.toString()+"\n");
+					restartFileContent.append(writeRatesAndParameters(currentPDepReverseRxn,numFameTemps,
+							numFamePress,numChebyTemps,numChebyPress,numPlog));
+				}
+				
+				// Write pathReactionList
+				LinkedList pathRxns = pdepnet.getPathReactions();
+				restartFileContent.append("pathReactionList:\n");
+				for (Iterator iter2=pathRxns.iterator(); iter2.hasNext();) {
+					PDepReaction currentPDepRxn = (PDepReaction)iter2.next();
+					restartFileContent.append(currentPDepRxn.getDirection() + "\t" + currentPDepRxn.toChemkinString(new Temperature(298,"K"))+"\n");
+				}
+				restartFileContent.append("\n");
+				
+				// Write isomerList
+				/*LinkedList isomerList = pdepnet.getIsomers();
+				restartFileContent.append("isomerList:\n");
+				for (Iterator iter2=isomerList.iterator(); iter2.hasNext();) {
+					
+				}*/
+				
+				restartFileContent.append("\n");
+				
+			}
+			fw.write(restartFileContent.toString());
+			fw.close();
+		}
+		catch (IOException e){
+			System.out.println("Could not write the restart corereactions file");
+        	System.exit(0);
+		}
+	}
+	
+	public StringBuilder writeRatesAndParameters(PDepReaction pdeprxn, int numFameTemps,
+			int numFamePress, int numChebyTemps, int numChebyPress, int numPlog) {
+		StringBuilder sb = new StringBuilder();
+		
+		// Write the rate coefficients
+		double[][] rateConstants = pdeprxn.getPDepRate().getRateConstants();
+		for (int i=0; i<numFameTemps; i++) {
+			for (int j=0; j<numFamePress; j++) {
+				sb.append(rateConstants[i][j] + "\t");
+			}
+			sb.append("\n");
+		}
+		sb.append("\n");
+		
+		// If chebyshev polynomials are present, write them
+		if (numChebyTemps != 0) {
+			ChebyshevPolynomials chebyPolys = pdeprxn.getPDepRate().getChebyshev();
+			for (int i=0; i<numChebyTemps; i++) {
+				for (int j=0; j<numChebyPress; j++) {
+					sb.append(chebyPolys.getAlpha(i,j) + "\t");
+				}
+				sb.append("\n");
+			}
+			sb.append("\n");
+		}
+		
+		// If plog parameters are present, write them
+		else if (numPlog != 0) {
+			PDepArrheniusKinetics kinetics = pdeprxn.getPDepRate().getPDepArrheniusKinetics();
+			for (int i=0; i<numPlog; i++) {
+				double Hrxn = pdeprxn.calculateHrxn(new Temperature(298,"K"));
+				sb.append(kinetics.pressures[i].getPa() + "\t" + kinetics.getKinetics(i).toChemkinString(Hrxn,new Temperature(298,"K"),false) + "\n");
+			}
+			sb.append("\n");
+		}
+		
+		return sb;
+	}
 
 	public LinkedList getTimeStep() {
         return timeStep;
@@ -2495,6 +2727,594 @@ public LinkedList getSpeciesList() {
         return reactionModel;
     }
     
+    public void readRestartSpecies() {    	
+		// Read in core species
+		try {
+			FileReader in = new FileReader("Restart/coreSpecies.txt");
+			BufferedReader reader = new BufferedReader(in);
+            String line = ChemParser.readMeaningfulLine(reader);
+			while (line != null) {
+				// The first line of a new species is the user-defined name
+				String totalSpeciesName = line;
+				String[] splitString1 = totalSpeciesName.split("[(]");
+				String[] splitString2 = splitString1[1].split("[)]");
+				// The remaining lines are the graph
+				Graph g = ChemParser.readChemGraph(reader);
+				// Make the ChemGraph, assuming it does not contain a forbidden structure
+				ChemGraph cg = null;
+				try {
+					cg = ChemGraph.make(g);
+				} catch (ForbiddenStructureException e) {
+					System.out.println("Error in reading graph: Graph contains a forbidden structure.\n" + g.toString());
+					System.exit(0);
+				}
+				// Make the species
+				Species species = Species.make(splitString1[0],cg,Integer.parseInt(splitString2[0]));
+				// Add the new species to the set of species
+				restartCoreSpcs.add(species);
+    			/*int species_type = 1; // reacted species
+    			for (int i=0; i<numRxnSystems; i++) {
+    				SpeciesStatus ss = new SpeciesStatus(species,species_type,y[i],yprime[i]);
+    				speciesStatus[i].put(species, ss);
+    			}*/
+				line = ChemParser.readMeaningfulLine(reader);
+			}
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
+		// Read in edge species
+		try {
+			FileReader in = new FileReader("Restart/edgeSpecies.txt");
+			BufferedReader reader = new BufferedReader(in);
+            String line = ChemParser.readMeaningfulLine(reader);
+			while (line != null) {
+				// The first line of a new species is the user-defined name
+				String totalSpeciesName = line;
+				String[] splitString1 = totalSpeciesName.split("[(]");
+				String[] splitString2 = splitString1[1].split("[)]");
+				// The remaining lines are the graph
+				Graph g = ChemParser.readChemGraph(reader);
+				// Make the ChemGraph, assuming it does not contain a forbidden structure
+				ChemGraph cg = null;
+				try {
+					cg = ChemGraph.make(g);
+				} catch (ForbiddenStructureException e) {
+					System.out.println("Error in reading graph: Graph contains a forbidden structure.\n" + g.toString());
+					System.exit(0);
+				}
+				// Make the species
+				Species species = Species.make(splitString1[0],cg,Integer.parseInt(splitString2[0]));
+				// Add the new species to the set of species
+				restartEdgeSpcs.add(species);
+				line = ChemParser.readMeaningfulLine(reader);
+			}
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
+    }
+    
+    public void readRestartReactions() {
+    	// Grab the IDs from the core species
+    	int[] coreSpcsIds = new int[restartCoreSpcs.size()]; 
+    	int i = 0;
+    	for (Iterator iter = restartCoreSpcs.iterator(); iter.hasNext();) {
+    		Species spcs = (Species)iter.next();
+    		coreSpcsIds[i] = spcs.getID();
+    		++i;
+    	}
+    	
+		// Read in core reactions
+		try {
+			FileReader in = new FileReader("Restart/coreReactions.txt");
+			BufferedReader reader = new BufferedReader(in);
+            String line = ChemParser.readMeaningfulLine(reader);
+			while (line != null) {
+				if (!line.trim().equals("DUP")) {
+					Reaction r = ChemParser.parseRestartReaction(line,coreSpcsIds,"core");
+					
+	        		Iterator rxnIter = restartCoreRxns.iterator();
+	        		boolean foundRxn = false;
+	        		while (rxnIter.hasNext()) {
+	        			Reaction old = (Reaction)rxnIter.next();
+	        			if (old.equals(r)) {
+	        				old.addAdditionalKinetics(r.getKinetics(),1);
+	        				foundRxn = true;
+	        				break;
+	        			}
+	        		}
+	        		if (!foundRxn) {
+	        			r.generateReverseReaction();
+	        			restartCoreRxns.add(r);
+	        		}
+				}
+				
+				line = ChemParser.readMeaningfulLine(reader);
+			}
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
+		// Read in edge reactions
+		try {
+			FileReader in = new FileReader("Restart/edgeReactions.txt");
+			BufferedReader reader = new BufferedReader(in);
+            String line = ChemParser.readMeaningfulLine(reader);
+			while (line != null) {
+				if (!line.trim().equals("DUP")) {
+					Reaction r = ChemParser.parseRestartReaction(line,coreSpcsIds,"edge");
+	
+	        		Iterator rxnIter = restartEdgeRxns.iterator();
+	        		boolean foundRxn = false;
+	        		while (rxnIter.hasNext()) {
+	        			Reaction old = (Reaction)rxnIter.next();
+	        			if (old.equals(r)) {
+	        				old.addAdditionalKinetics(r.getKinetics(),1);
+	        				foundRxn = true;
+	        				break;
+	        			}
+	        		}
+	        		if (!foundRxn) {
+	        			r.generateReverseReaction();
+	        			restartEdgeRxns.add(r);
+	        		}
+				}
+				
+				line = ChemParser.readMeaningfulLine(reader);
+			}
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+    }
+    
+    public LinkedHashMap getRestartSpeciesStatus(int i) {
+    	LinkedHashMap speciesStatus = new LinkedHashMap();
+    	
+		try {
+			FileReader in = new FileReader("Restart/coreSpecies.txt");
+			BufferedReader reader = new BufferedReader(in);
+            Integer numRxnSystems = Integer.parseInt(ChemParser.readMeaningfulLine(reader));
+            String line = ChemParser.readMeaningfulLine(reader);
+			while (line != null) {
+				// The first line of a new species is the user-defined name
+				String totalSpeciesName = line;
+				String[] splitString1 = totalSpeciesName.split("[(]");
+				String[] splitString2 = splitString1[1].split("[)]");
+				double y = 0.0;
+				double yprime = 0.0;
+				for (int j=0; j<numRxnSystems; j++) {
+					StringTokenizer st = new StringTokenizer(ChemParser.readMeaningfulLine(reader));
+					if (j == i) {
+						y = Double.parseDouble(st.nextToken());
+						yprime = Double.parseDouble(st.nextToken());
+					}
+				}
+				// The remaining lines are the graph
+				Graph g = ChemParser.readChemGraph(reader);
+				// Make the ChemGraph, assuming it does not contain a forbidden structure
+				ChemGraph cg = null;
+				try {
+					cg = ChemGraph.make(g);
+				} catch (ForbiddenStructureException e) {
+					System.out.println("Error in reading graph: Graph contains a forbidden structure.\n" + g.toString());
+					System.exit(0);
+				}
+				// Make the species
+				Species species = Species.make(splitString1[0],cg);
+				// Add the new species to the set of species
+				//restartCoreSpcs.add(species);
+    			int species_type = 1; // reacted species
+    			SpeciesStatus ss = new SpeciesStatus(species,species_type,y,yprime);
+    			speciesStatus.put(species, ss);
+				line = ChemParser.readMeaningfulLine(reader);
+			}
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
+		return speciesStatus;
+    }
+    
+    public void putRestartSpeciesInInitialStatus(InitialStatus is, int i) {
+    	
+		try {
+			FileReader in = new FileReader("Restart/coreSpecies.txt");
+			BufferedReader reader = new BufferedReader(in);
+            String line = ChemParser.readMeaningfulLine(reader);
+			while (line != null) {
+				// The first line of a new species is the user-defined name
+				String totalSpeciesName = line;
+				String[] splitString1 = totalSpeciesName.split("[(]");
+				String[] splitString2 = splitString1[1].split("[)]");
+				// The remaining lines are the graph
+				Graph g = ChemParser.readChemGraph(reader);
+				// Make the ChemGraph, assuming it does not contain a forbidden structure
+				ChemGraph cg = null;
+				try {
+					cg = ChemGraph.make(g);
+				} catch (ForbiddenStructureException e) {
+					System.out.println("Error in reading graph: Graph contains a forbidden structure.\n" + g.toString());
+					System.exit(0);
+				}
+				// Make the species
+				Species species = Species.make(splitString1[0],cg);
+				// Add the new species to the set of species
+				//restartCoreSpcs.add(species);
+				if (is.getSpeciesStatus(species) == null) {
+	    			SpeciesStatus ss = new SpeciesStatus(species,1,0.0,0.0);
+	    			is.putSpeciesStatus(ss);
+				}
+				line = ChemParser.readMeaningfulLine(reader);
+			}
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
+    }
+    
+    public void readPDepNetworks() {
+    	SpeciesDictionary sd = SpeciesDictionary.getInstance();
+    	LinkedList allNetworks = PDepNetwork.getNetworks(); 
+    	
+    	try {
+			FileReader in = new FileReader("Restart/pdepnetworks.txt");
+			BufferedReader reader = new BufferedReader(in);
+            
+			StringTokenizer st = new StringTokenizer(ChemParser.readMeaningfulLine(reader));
+			String tempString = st.nextToken();
+			int numFameTs = Integer.parseInt(st.nextToken());
+			st = new StringTokenizer(ChemParser.readMeaningfulLine(reader));
+			tempString = st.nextToken();
+			int numFamePs = Integer.parseInt(st.nextToken());
+			st = new StringTokenizer(ChemParser.readMeaningfulLine(reader));
+			tempString = st.nextToken();
+			int numChebyTs = Integer.parseInt(st.nextToken());
+			st = new StringTokenizer(ChemParser.readMeaningfulLine(reader));
+			tempString = st.nextToken();
+			int numChebyPs = Integer.parseInt(st.nextToken());
+			st = new StringTokenizer(ChemParser.readMeaningfulLine(reader));
+			tempString = st.nextToken();
+			int numPlogs = Integer.parseInt(st.nextToken());
+			
+			double[][] rateCoefficients = new double[numFameTs][numFamePs];
+			double[][] chebyPolys = new double[numChebyTs][numChebyPs];
+			Kinetics[] plogKinetics = new Kinetics[numPlogs];
+			
+			
+			
+			String line = ChemParser.readMeaningfulLine(reader);
+			while (line != null) {
+				// line should equal "PDepNetwork #"
+				line = ChemParser.readMeaningfulLine(reader);
+				PDepNetwork newNetwork = new PDepNetwork();
+				LinkedList netRxns = newNetwork.getNetReactions();
+				LinkedList nonincludeRxns = newNetwork.getNonincludedReactions();
+				// line should now be "netReactionList:"
+				line = ChemParser.readMeaningfulLine(reader);
+				while (!line.toLowerCase().startsWith("nonincludedreactionlist")) {
+					
+					// Read in the forward rxn
+					String[] reactsANDprods = line.split("\\-->");
+					
+					PDepIsomer Reactants = null;
+					String reacts = reactsANDprods[0].trim();
+					if (reacts.contains("+")) {
+						String[] indivReacts = reacts.split("[+]");
+						String name = indivReacts[0].trim();
+						Species spc1 = sd.getSpeciesFromChemkinName(name);
+						name = indivReacts[1].trim();
+						Species spc2 = sd.getSpeciesFromChemkinName(name);
+						Reactants = new PDepIsomer(spc1,spc2);
+					} else {
+						String name = reacts.trim();
+						Species spc = sd.getSpeciesFromChemkinName(name);
+						Reactants = new PDepIsomer(spc);
+					}
+					
+					PDepIsomer Products = null;
+					String prods = reactsANDprods[1].trim();
+					if (prods.contains("+")) {
+						String[] indivProds = prods.split("[+]");
+						String name = indivProds[0].trim();
+						Species spc1 = sd.getSpeciesFromChemkinName(name);
+						name = indivProds[1].trim();
+						Species spc2 = sd.getSpeciesFromChemkinName(name);
+						Products = new PDepIsomer(spc1,spc2);
+					} else {
+						String name = prods.trim();
+						Species spc = sd.getSpeciesFromChemkinName(name);
+						Products = new PDepIsomer(spc);
+					}
+					
+					newNetwork.addIsomer(Reactants);
+					newNetwork.addIsomer(Products);
+					
+					for (int i=0; i<numFameTs; i++) {
+						st = new StringTokenizer(ChemParser.readMeaningfulLine(reader));
+						for (int j=0; j<numFamePs; j++) {
+							rateCoefficients[i][j] = Double.parseDouble(st.nextToken());
+						}
+					}
+					
+					PDepRateConstant pdepk = null;
+					if (numChebyTs > 0) {
+						for (int i=0; i<numChebyTs; i++) {
+							st = new StringTokenizer(ChemParser.readMeaningfulLine(reader));
+							for (int j=0; j<numChebyPs; j++) {
+								chebyPolys[i][j] = Double.parseDouble(st.nextToken());
+							}
+						}
+						ChebyshevPolynomials chebyshev = new ChebyshevPolynomials(numChebyTs,
+								ChebyshevPolynomials.getTlow(), ChebyshevPolynomials.getTup(),
+								numChebyPs, ChebyshevPolynomials.getPlow(), ChebyshevPolynomials.getPup(),
+								chebyPolys);
+						pdepk = new PDepRateConstant(rateCoefficients,chebyshev);
+					} else if (numPlogs > 0) {
+						for (int i=0; i<numPlogs; i++) {
+							st = new StringTokenizer(ChemParser.readMeaningfulLine(reader));
+							Pressure p = new Pressure(Double.parseDouble(st.nextToken()),"Pa");
+							UncertainDouble dA = new UncertainDouble(Double.parseDouble(st.nextToken()),0.0,"A");
+							UncertainDouble dn = new UncertainDouble(Double.parseDouble(st.nextToken()),0.0,"A");
+							UncertainDouble dE = new UncertainDouble(Double.parseDouble(st.nextToken()),0.0,"A");
+							ArrheniusKinetics k = new ArrheniusKinetics(dA, dn, dE, "", 1, "", "");
+							PDepArrheniusKinetics pdepAK = new PDepArrheniusKinetics(i);
+							pdepAK.setKinetics(i, p, k);
+							pdepk = new PDepRateConstant(rateCoefficients,pdepAK);
+						}
+					}
+					
+					PDepReaction forward = new PDepReaction(Reactants, Products, pdepk);
+					
+					// Read in the reverse reaction
+					line = ChemParser.readMeaningfulLine(reader);
+					
+					for (int i=0; i<numFameTs; i++) {
+						st = new StringTokenizer(ChemParser.readMeaningfulLine(reader));
+						for (int j=0; j<numFamePs; j++) {
+							rateCoefficients[i][j] = Double.parseDouble(st.nextToken());
+						}
+					}
+					
+					pdepk = null;
+					if (numChebyTs > 0) {
+						for (int i=0; i<numChebyTs; i++) {
+							st = new StringTokenizer(ChemParser.readMeaningfulLine(reader));
+							for (int j=0; j<numChebyPs; j++) {
+								chebyPolys[i][j] = Double.parseDouble(st.nextToken());
+							}
+						}
+						ChebyshevPolynomials chebyshev = new ChebyshevPolynomials(numChebyTs,
+								ChebyshevPolynomials.getTlow(), ChebyshevPolynomials.getTup(),
+								numChebyPs, ChebyshevPolynomials.getPlow(), ChebyshevPolynomials.getPup(),
+								chebyPolys);
+						pdepk = new PDepRateConstant(rateCoefficients,chebyshev);
+					} else if (numPlogs > 0) {
+						for (int i=0; i<numPlogs; i++) {
+							st = new StringTokenizer(ChemParser.readMeaningfulLine(reader));
+							Pressure p = new Pressure(Double.parseDouble(st.nextToken()),"Pa");
+							UncertainDouble dA = new UncertainDouble(Double.parseDouble(st.nextToken()),0.0,"A");
+							UncertainDouble dn = new UncertainDouble(Double.parseDouble(st.nextToken()),0.0,"A");
+							UncertainDouble dE = new UncertainDouble(Double.parseDouble(st.nextToken()),0.0,"A");
+							ArrheniusKinetics k = new ArrheniusKinetics(dA, dn, dE, "", 1, "", "");
+							PDepArrheniusKinetics pdepAK = new PDepArrheniusKinetics(i);
+							pdepAK.setKinetics(i, p, k);
+							pdepk = new PDepRateConstant(rateCoefficients,pdepAK);
+						}
+					}
+					
+					PDepReaction reverse = new PDepReaction(Products, Reactants, pdepk);
+					reverse.setReverseReaction(forward);
+					forward.setReverseReaction(reverse);
+					
+					netRxns.add(forward);
+					
+					line = ChemParser.readMeaningfulLine(reader);
+				}
+				
+				line = ChemParser.readMeaningfulLine(reader);
+				
+				while (!line.toLowerCase().startsWith("pathreactionlist")) {
+					
+					// Read in the forward rxn
+					String[] reactsANDprods = line.split("\\-->");
+					
+					PDepIsomer Reactants = null;
+					String reacts = reactsANDprods[0].trim();
+					if (reacts.contains("+")) {
+						String[] indivReacts = reacts.split("[+]");
+						String name = indivReacts[0].trim();
+						Species spc1 = sd.getSpeciesFromChemkinName(name);
+						name = indivReacts[1].trim();
+						Species spc2 = sd.getSpeciesFromChemkinName(name);
+						Reactants = new PDepIsomer(spc1,spc2);
+					} else {
+						String name = reacts.trim();
+						Species spc = sd.getSpeciesFromChemkinName(name);
+						Reactants = new PDepIsomer(spc);
+					}
+					
+					PDepIsomer Products = null;
+					String prods = reactsANDprods[1].trim();
+					if (prods.contains("+")) {
+						String[] indivProds = prods.split("[+]");
+						String name = indivProds[0].trim();
+						Species spc1 = sd.getSpeciesFromChemkinName(name);
+						name = indivProds[1].trim();
+						Species spc2 = sd.getSpeciesFromChemkinName(name);
+						Products = new PDepIsomer(spc1,spc2);
+					} else {
+						String name = prods.trim();
+						Species spc = sd.getSpeciesFromChemkinName(name);
+						Products = new PDepIsomer(spc);
+					}
+					
+					newNetwork.addIsomer(Reactants);
+					newNetwork.addIsomer(Products);
+					
+					for (int i=0; i<numFameTs; i++) {
+						st = new StringTokenizer(ChemParser.readMeaningfulLine(reader));
+						for (int j=0; j<numFamePs; j++) {
+							rateCoefficients[i][j] = Double.parseDouble(st.nextToken());
+						}
+					}
+					
+					PDepRateConstant pdepk = null;
+					if (numChebyTs > 0) {
+						for (int i=0; i<numChebyTs; i++) {
+							st = new StringTokenizer(ChemParser.readMeaningfulLine(reader));
+							for (int j=0; j<numChebyPs; j++) {
+								chebyPolys[i][j] = Double.parseDouble(st.nextToken());
+							}
+						}
+						ChebyshevPolynomials chebyshev = new ChebyshevPolynomials(numChebyTs,
+								ChebyshevPolynomials.getTlow(), ChebyshevPolynomials.getTup(),
+								numChebyPs, ChebyshevPolynomials.getPlow(), ChebyshevPolynomials.getPup(),
+								chebyPolys);
+						pdepk = new PDepRateConstant(rateCoefficients,chebyshev);
+					} else if (numPlogs > 0) {
+						for (int i=0; i<numPlogs; i++) {
+							st = new StringTokenizer(ChemParser.readMeaningfulLine(reader));
+							Pressure p = new Pressure(Double.parseDouble(st.nextToken()),"Pa");
+							UncertainDouble dA = new UncertainDouble(Double.parseDouble(st.nextToken()),0.0,"A");
+							UncertainDouble dn = new UncertainDouble(Double.parseDouble(st.nextToken()),0.0,"A");
+							UncertainDouble dE = new UncertainDouble(Double.parseDouble(st.nextToken()),0.0,"A");
+							ArrheniusKinetics k = new ArrheniusKinetics(dA, dn, dE, "", 1, "", "");
+							PDepArrheniusKinetics pdepAK = new PDepArrheniusKinetics(i);
+							pdepAK.setKinetics(i, p, k);
+							pdepk = new PDepRateConstant(rateCoefficients,pdepAK);
+						}
+					}
+					
+					PDepReaction forward = new PDepReaction(Reactants, Products, pdepk);
+					
+					// Read in the reverse reaction
+					line = ChemParser.readMeaningfulLine(reader);
+					
+					for (int i=0; i<numFameTs; i++) {
+						st = new StringTokenizer(ChemParser.readMeaningfulLine(reader));
+						for (int j=0; j<numFamePs; j++) {
+							rateCoefficients[i][j] = Double.parseDouble(st.nextToken());
+						}
+					}
+					
+					pdepk = null;
+					if (numChebyTs > 0) {
+						for (int i=0; i<numChebyTs; i++) {
+							st = new StringTokenizer(ChemParser.readMeaningfulLine(reader));
+							for (int j=0; j<numChebyPs; j++) {
+								chebyPolys[i][j] = Double.parseDouble(st.nextToken());
+							}
+						}
+						ChebyshevPolynomials chebyshev = new ChebyshevPolynomials(numChebyTs,
+								ChebyshevPolynomials.getTlow(), ChebyshevPolynomials.getTup(),
+								numChebyPs, ChebyshevPolynomials.getPlow(), ChebyshevPolynomials.getPup(),
+								chebyPolys);
+						pdepk = new PDepRateConstant(rateCoefficients,chebyshev);
+					} else if (numPlogs > 0) {
+						for (int i=0; i<numPlogs; i++) {
+							st = new StringTokenizer(ChemParser.readMeaningfulLine(reader));
+							Pressure p = new Pressure(Double.parseDouble(st.nextToken()),"Pa");
+							UncertainDouble dA = new UncertainDouble(Double.parseDouble(st.nextToken()),0.0,"A");
+							UncertainDouble dn = new UncertainDouble(Double.parseDouble(st.nextToken()),0.0,"A");
+							UncertainDouble dE = new UncertainDouble(Double.parseDouble(st.nextToken()),0.0,"A");
+							ArrheniusKinetics k = new ArrheniusKinetics(dA, dn, dE, "", 1, "", "");
+							PDepArrheniusKinetics pdepAK = new PDepArrheniusKinetics(i);
+							pdepAK.setKinetics(i, p, k);
+							pdepk = new PDepRateConstant(rateCoefficients,pdepAK);
+						}
+					}
+					
+					PDepReaction reverse = new PDepReaction(Products, Reactants, pdepk);
+					reverse.setReverseReaction(forward);
+					forward.setReverseReaction(reverse);
+					
+					nonincludeRxns.add(forward);
+					
+					line = ChemParser.readMeaningfulLine(reader);
+				}
+				
+				line = ChemParser.readMeaningfulLine(reader);
+				
+				while (line != null && !line.toLowerCase().startsWith("pdepnetwork")) {
+					
+					st = new StringTokenizer(line);
+					int direction = Integer.parseInt(st.nextToken());
+					
+					//	First token is the rxn structure: A+B=C+D
+			    	//		Note: Up to 3 reactants/products allowed
+			    	//			: Either "=" or "=>" will separate reactants and products
+			    	String structure = st.nextToken();
+			    	
+			    	//	Separate the reactants from the products
+			    	boolean generateReverse = false;
+			    	String[] reactsANDprods = structure.split("[=>]");
+			    	if (reactsANDprods.length == 1) {
+			    		reactsANDprods = structure.split("[=]");
+			    		generateReverse = true;
+			    	}
+			    	
+			    	sd = SpeciesDictionary.getInstance();
+			        LinkedList r = ChemParser.parseReactionSpecies(sd, reactsANDprods[0]);
+			        LinkedList p = ChemParser.parseReactionSpecies(sd, reactsANDprods[1]);
+
+			        Structure s = new Structure(r,p);
+			        s.setDirection(direction);
+
+			        //	Next three tokens are the modified Arrhenius parameters
+			    	double rxn_A = Double.parseDouble(st.nextToken());
+			    	double rxn_n = Double.parseDouble(st.nextToken());
+			    	double rxn_E = Double.parseDouble(st.nextToken());
+			    	
+			    	UncertainDouble uA = new UncertainDouble(rxn_A,0.0,"A");
+			    	UncertainDouble un = new UncertainDouble(rxn_n,0.0,"A");
+			    	UncertainDouble uE = new UncertainDouble(rxn_E,0.0,"A");    	
+			    	
+			    	//	The remaining tokens are comments
+			    	String comments = "";
+			    	while (st.hasMoreTokens()) {
+			    		comments += st.nextToken();
+			    	}
+			    	
+			        ArrheniusKinetics k = new ArrheniusKinetics(uA,un,uE,"",1,"",comments);
+			        Reaction pathRxn = new Reaction();
+//				        if (direction == 1)
+//				        	pathRxn = Reaction.makeReaction(s,k,generateReverse);
+//				        else
+//				        	pathRxn = Reaction.makeReaction(s.generateReverseStructure(),k,generateReverse);
+			        pathRxn = Reaction.makeReaction(s,k,generateReverse);
+			        
+			        PDepIsomer Reactants = new PDepIsomer(r);
+			        PDepIsomer Products = new PDepIsomer(p);
+			        PDepReaction pdeppathrxn = new PDepReaction(Reactants,Products,pathRxn);
+			        newNetwork.addReaction(pdeppathrxn);
+
+					line = ChemParser.readMeaningfulLine(reader);					
+				}
+				
+				PDepNetwork.getNetworks().add(newNetwork);
+								
+			}
+			
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+    }
+        
     /**
      * MRH 12-Jun-2009
      * 
@@ -2509,6 +3329,14 @@ public LinkedList getSpeciesList() {
     public void initializeCoreEdgeModel() {
     	LinkedHashSet allInitialCoreSpecies = new LinkedHashSet();
     	LinkedHashSet allInitialCoreRxns = new LinkedHashSet();
+    	
+    	if (readrestart) {
+    		readRestartReactions();
+    		readPDepNetworks();
+    		allInitialCoreSpecies.addAll(restartCoreSpcs);
+    		allInitialCoreRxns.addAll(restartCoreRxns);
+    	}
+    	
     	// Add the species from the condition.txt (input) file
     	allInitialCoreSpecies.addAll(getSpeciesSeed());
     	// Add the species from the seed mechanisms, if they exist
@@ -2518,6 +3346,10 @@ public LinkedList getSpeciesList() {
     	}
     	
 		CoreEdgeReactionModel cerm = new CoreEdgeReactionModel(allInitialCoreSpecies, allInitialCoreRxns);
+		if (readrestart) {
+			cerm.addUnreactedSpeciesSet(restartEdgeSpcs);
+			cerm.addUnreactedReactionSet(restartEdgeRxns);
+		}
 		setReactionModel(cerm);
 
 		PDepNetwork.reactionModel = getReactionModel();
@@ -2525,32 +3357,34 @@ public LinkedList getSpeciesList() {
 
 		// Determine initial set of reactions and edge species using only the
 		// species enumerated in the input file and the seed mechanisms as the core
-		LinkedHashSet reactionSet = getReactionGenerator().react(allInitialCoreSpecies);
-		reactionSet.addAll(getLibraryReactionGenerator().react(allInitialCoreSpecies));
-
-    	// Set initial core-edge reaction model based on above results
-		if (reactionModelEnlarger instanceof RateBasedRME)	{
-			Iterator iter = reactionSet.iterator();
-        	while (iter.hasNext()){
-        		Reaction r = (Reaction)iter.next();
-        		cerm.addReaction(r);
+		if (!readrestart) {
+			LinkedHashSet reactionSet = getReactionGenerator().react(allInitialCoreSpecies);
+			reactionSet.addAll(getLibraryReactionGenerator().react(allInitialCoreSpecies));
+	
+	    	// Set initial core-edge reaction model based on above results
+			if (reactionModelEnlarger instanceof RateBasedRME)	{
+				Iterator iter = reactionSet.iterator();
+	        	while (iter.hasNext()){
+	        		Reaction r = (Reaction)iter.next();
+	        		cerm.addReaction(r);
+				}
 			}
-		}
-		else {
-    		// Only keep the reactions involving bimolecular reactants and bimolecular products
-			Iterator iter = reactionSet.iterator();
-        	while (iter.hasNext()){
-        		Reaction r = (Reaction)iter.next();
-        		if (r.getReactantNumber() > 1 && r.getProductNumber() > 1){
-        			cerm.addReaction(r);
-        		}
-				else {
-					cerm.categorizeReaction(r.getStructure());
-					PDepNetwork.addReactionToNetworks(r);
+			else {
+	    		// Only keep the reactions involving bimolecular reactants and bimolecular products
+				Iterator iter = reactionSet.iterator();
+	        	while (iter.hasNext()){
+	        		Reaction r = (Reaction)iter.next();
+	        		if (r.getReactantNumber() > 1 && r.getProductNumber() > 1){
+	        			cerm.addReaction(r);
+	        		}
+					else {
+						cerm.categorizeReaction(r.getStructure());
+						PDepNetwork.addReactionToNetworks(r);
+					}
 				}
 			}
 		}
-        
+			
         for (Integer i = 0; i < reactionSystemList.size(); i++) {
 			ReactionSystem rs = (ReactionSystem) reactionSystemList.get(i);
 			rs.setReactionModel(getReactionModel());

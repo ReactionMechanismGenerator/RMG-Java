@@ -12,15 +12,15 @@ Name: RMG-old
 Location: primaryThermoLibrary
 END
 
+ReadRestart: no
+WriteRestart: yes
+
 TemperatureModel: Constant (K) 1350
 PressureModel: Constant (atm) 1
 
 //MaxCarbonNumberPerSpecies: 10
 //MaxOxygenNumberPerSpecies: 4
 //MaxRadicalNumberPerSpecies: 2
-
-InChIGeneration: off
-Solvation: off
 
 InitialStatus:
 
