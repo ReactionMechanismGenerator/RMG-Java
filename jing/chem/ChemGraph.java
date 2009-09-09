@@ -59,6 +59,9 @@ public class ChemGraph implements Matchable {
     */
     protected static int MAX_RADICAL_NUM = 10;		//## attribute MAX_RADICAL_NUM
     
+    protected static int MAX_SILICON_NUM = 10;
+    protected static int MAX_SULFUR_NUM = 10;
+    
     public static boolean useQM = false;//gmagoon 6/15/09: flag for thermo estimation using quantum results; there may be a better place for this (Global?) but for now, this should work
     public static boolean useQMonCyclicsOnly=false;
     /**
@@ -2528,6 +2531,14 @@ return sn;
     
     public static void setMaxRadicalNumber(int maxRadNumber) {
     	MAX_RADICAL_NUM = maxRadNumber;
+    }
+    
+    public static void setMaxSulfurNumber(int maxSNumber) {
+    	MAX_SULFUR_NUM = maxSNumber;
+    }
+    
+    public static void setMaxSiliconNumber(int maxSiNumber) {
+    	MAX_SILICON_NUM = maxSiNumber;
     }
 }
 /*********************************************************************

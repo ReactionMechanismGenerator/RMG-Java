@@ -18,9 +18,11 @@ WriteRestart: yes
 TemperatureModel: Constant (K) 1350
 PressureModel: Constant (atm) 1
 
-//MaxCarbonNumberPerSpecies: 10
-//MaxOxygenNumberPerSpecies: 4
-//MaxRadicalNumberPerSpecies: 2
+//MaxCarbonNumberPerSpecies: 
+//MaxOxygenNumberPerSpecies: 
+//MaxRadicalNumberPerSpecies: 
+//MaxSulfurNumberPerSpecies: 
+//MaxSiliconNumberPerSpecies: 
 
 InitialStatus:
 

@@ -341,6 +341,22 @@ public class ReactionModelGenerator {
             	System.out.println("Note: Overriding RMG-defined MAX_RADICAL_NUM with user-defined value: " + maxRadNum);
             	line = ChemParser.readMeaningfulLine(reader);
             }
+            if (line.startsWith("MaxSulfurNumber")) {
+            	StringTokenizer st = new StringTokenizer(line);
+            	String dummyString = st.nextToken();	// This should hold "MaxSulfurNumberPerSpecies:"
+            	int maxSNum = Integer.parseInt(st.nextToken());
+            	ChemGraph.setMaxSulfurNumber(maxSNum);
+            	System.out.println("Note: Overriding RMG-defined MAX_SULFUR_NUM with user-defined value: " + maxSNum);
+            	line = ChemParser.readMeaningfulLine(reader);
+            }
+            if (line.startsWith("MaxSiliconNumber")) {
+            	StringTokenizer st = new StringTokenizer(line);
+            	String dummyString = st.nextToken();	// This should hold "MaxSiliconNumberPerSpecies:"
+            	int maxSiNum = Integer.parseInt(st.nextToken());
+            	ChemGraph.setMaxSiliconNumber(maxSiNum);
+            	System.out.println("Note: Overriding RMG-defined MAX_SILICON_NUM with user-defined value: " + maxSiNum);
+            	line = ChemParser.readMeaningfulLine(reader);
+            }
                 
         	// Read in InChI generation
         	if (line.startsWith("InChIGeneration:")) {
@@ -1478,7 +1494,7 @@ public class ReactionModelGenerator {
                                 	writeCoreReactions();
                                 	writeEdgeSpecies();
                                 	writeEdgeReactions();
-                                	writePDepNetworks();
+                                	if (PDepNetwork.generateNetworks == true)	writePDepNetworks();
                                 }
                                 
                                 //10/24/07 gmagoon: changed to use reactionSystemList
