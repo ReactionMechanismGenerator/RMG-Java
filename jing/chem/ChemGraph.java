@@ -1175,6 +1175,9 @@ return sn;
             //thermoData = thermoGAPP.generateAbramData(this);
         	return thermoData;
         }
+		catch (MultipleGroupFoundException e) {
+			throw e;
+		}
         catch (Exception e) {
         	throw new FailGenerateThermoDataException();
         }

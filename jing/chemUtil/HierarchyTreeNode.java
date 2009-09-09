@@ -190,20 +190,30 @@ public class HierarchyTreeNode extends TreeNode {
     This stack stores the tree nodes on the found path.
     */
     //## operation findMatchedPath(Matchable,Stack) 
-    public boolean findMatchedPath(Matchable p_element, Stack p_path) {
+    public boolean findMatchedPath(Matchable p_element, Stack p_path) throws MultipleGroupFoundException {
         //#[ operation findMatchedPath(Matchable,Stack) 
         if (p_element.isSubAtCentralNodes((Matchable)element)) {
         	//if there is a match and this node is a leaf, add node to the p_path;
         	p_path.push(this);
          	if (isLeaf()) return true;
-        
+            boolean already_matched = false;
+
         	//if there is a match and this node is not a leaf, check its children recursively
         	for (Iterator iter = children.iterator(); iter.hasNext(); ) {
         		HierarchyTreeNode node = (HierarchyTreeNode)iter.next();
         		boolean match = node.findMatchedPath(p_element,p_path);
-        		if (match) return true;
+        		// This is faster but expects a well-formed tree, i.e. the children of each node are mutually exclusive
+				//if (match) return true;
+				// This is slower but checks to make sure your tree is well-formed
+				if (match && already_matched) {
+					throw new MultipleGroupFoundException("Parent '" + ((FunctionalGroup) getElement()).getName() + "' has nonexclusive children.");
+				}
+				else if (match)
+					already_matched = true;
         	}
-        	
+			if (already_matched)
+				return true;
+
         	// if all real children don't match, but there is a dummy child, still return true;
         	if (hasDummyChild()) {
         		return true;
