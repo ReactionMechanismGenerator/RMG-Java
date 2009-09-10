@@ -178,8 +178,9 @@ public class HierarchyTreeNode extends TreeNode {
     
     /**
     Requires:
-    Effects: find out a matched path beginning with this tree node.  add the matched tree nodes to p_path.  the return value indicates if the end of matched path is a leaf.  if it is, return true, otherwise, return false.
-    Modifies: p_path
+    Effects: find out a matched path beginning with this tree node, and add the matched tree nodes to p_path.  
+	 The return value is true if this node matches, false if it does not.
+	 Modifies: p_path
     */
     // Argument Matchablep_element : 
     /**
@@ -193,39 +194,40 @@ public class HierarchyTreeNode extends TreeNode {
     public boolean findMatchedPath(Matchable p_element, Stack p_path) throws MultipleGroupFoundException {
         //#[ operation findMatchedPath(Matchable,Stack) 
         if (p_element.isSubAtCentralNodes((Matchable)element)) {
-        	//if there is a match and this node is a leaf, add node to the p_path;
+        	// if there is a match add node to the p_path (and eventually return true)
         	p_path.push(this);
+			
+			//  if this node is a leaf, there are no children, so return straight away.
          	if (isLeaf()) return true;
-            boolean already_matched = false;
-
+			
+            boolean child_already_matched = false;
         	//if there is a match and this node is not a leaf, check its children recursively
         	for (Iterator iter = children.iterator(); iter.hasNext(); ) {
-        		HierarchyTreeNode node = (HierarchyTreeNode)iter.next();
-        		boolean match = node.findMatchedPath(p_element,p_path);
+        		HierarchyTreeNode child = (HierarchyTreeNode)iter.next();
+        		boolean child_matches = child.findMatchedPath(p_element,p_path);
         		// This is faster but expects a well-formed tree, i.e. the children of each node are mutually exclusive
-				//if (match) return true;
+				//if (child_matches) return true;
 				// This is slower but checks to make sure your tree is well-formed
-				if (match && already_matched) {
-					throw new MultipleGroupFoundException("Parent '" + ((FunctionalGroup) getElement()).getName() + "' has nonexclusive children.");
+				if (child_matches && child_already_matched) {
+					throw new MultipleGroupFoundException(
+						"Parent '" + ((FunctionalGroup) getElement()).getName() + 
+						"' has nonexclusive children, one of which is '" +
+						 ((FunctionalGroup) child.getElement()).getName()  + "'.");
 				}
-				else if (match)
-					already_matched = true;
+				else if (child_matches)
+					child_already_matched = true;
         	}
-			if (already_matched)
-				return true;
-
+			//if (child_already_matched)
+			//	return true;
         	// if all real children don't match, but there is a dummy child, still return true;
-        	if (hasDummyChild()) {
-        		return true;
-        	}
+        	//if (hasDummyChild()) 
+        	//	return true;
+        	
+			return true; // we return true if the current node matches
         }
         // if there is no match, return false to the upper level
         return false;
-        
-        
-        
-        
-        //#]
+
     }
     
     //## operation hasDummyChild() 

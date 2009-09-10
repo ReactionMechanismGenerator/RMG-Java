@@ -80,17 +80,14 @@ public class HierarchyTree extends Tree {
     */
     //## operation findMatchedPath(Matchable) 
     public Stack findMatchedPath(Matchable p_element) {
-        //#[ operation findMatchedPath(Matchable) 
+       // Returns the PATH
         if (root == null) return null;
         
         Stack path = new Stack();
         ((HierarchyTreeNode)root).findMatchedPath(p_element,path);
         
         return path;
-        
-        
-        
-        //#]
+		
     }
     
     /**
