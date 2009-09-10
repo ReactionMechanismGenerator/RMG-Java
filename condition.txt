@@ -23,6 +23,7 @@ PressureModel: Constant (atm) 1
 //MaxRadicalNumberPerSpecies: 
 //MaxSulfurNumberPerSpecies: 
 //MaxSiliconNumberPerSpecies: 
+//MaxHeavyAtomPerSpecies: 
 
 InitialStatus:
 

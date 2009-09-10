@@ -357,6 +357,14 @@ public class ReactionModelGenerator {
             	System.out.println("Note: Overriding RMG-defined MAX_SILICON_NUM with user-defined value: " + maxSiNum);
             	line = ChemParser.readMeaningfulLine(reader);
             }
+            if (line.startsWith("MaxHeavyAtom")) {
+            	StringTokenizer st = new StringTokenizer(line);
+            	String dummyString = st.nextToken();	// This should hold "MaxHeavyAtomPerSpecies:"
+            	int maxHANum = Integer.parseInt(st.nextToken());
+            	ChemGraph.setMaxHeavyAtomNumber(maxHANum);
+            	System.out.println("Note: Overriding RMG-defined MAX_HEAVYATOM_NUM with user-defined value: " + maxHANum);
+            	line = ChemParser.readMeaningfulLine(reader);
+            }
                 
         	// Read in InChI generation
         	if (line.startsWith("InChIGeneration:")) {

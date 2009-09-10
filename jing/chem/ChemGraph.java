@@ -62,6 +62,9 @@ public class ChemGraph implements Matchable {
     protected static int MAX_SILICON_NUM = 10;
     protected static int MAX_SULFUR_NUM = 10;
     
+    protected static int MAX_HEAVYATOM_NUM = 100;
+    protected static String repOkString = null;
+    
     public static boolean useQM = false;//gmagoon 6/15/09: flag for thermo estimation using quantum results; there may be a better place for this (Global?) but for now, this should work
     public static boolean useQMonCyclicsOnly=false;
     /**
@@ -2168,6 +2171,7 @@ return sn;
 		        		cg.generateChemicalFormula();
 		        	}
 		        	else {
+		        		System.err.println(getRepOkString());
 		        		throw new InvalidChemGraphException();
 		        	}
 					//cgd.putSpecies(cg);
@@ -2272,12 +2276,34 @@ return sn;
         //if (!valencyOk()) return false;
 
         // check if the radical number greater than MAX_RADICAL_NUM
-        if (getRadicalNumber() > MAX_RADICAL_NUM) return false;
+        if (getRadicalNumber() > MAX_RADICAL_NUM) {
+        	setRepOkString("The following chemgraph exceeds the maximum radicals allowed in a species: " + this.toString());
+        	return false;
+        }
 
         // check if the oxygen atom number is too large
-        if (getOxygenNumber() > MAX_OXYGEN_NUM) return false;
-		if (getCarbonNumber() > MAX_CARBON_NUM) return false;
-
+        if (getOxygenNumber() > MAX_OXYGEN_NUM) {
+        	setRepOkString("The following chemgraph exceeds the maximum oxygens allowed (" + MAX_OXYGEN_NUM + ") in a species:\n" + this.toString());
+        	return false;
+        }
+		if (getCarbonNumber() > MAX_CARBON_NUM) {
+        	setRepOkString("The following chemgraph exceeds the maximum carbons allowed (" + MAX_CARBON_NUM + ") in a species:\n" + this.toString());
+        	return false;
+        }
+		if (getSulfurNumber() > MAX_SULFUR_NUM) {
+        	setRepOkString("The following chemgraph exceeds the maximum sulfurs allowed (" + MAX_SULFUR_NUM + ") in a species:\n" + this.toString());
+        	return false;
+        }
+		if (getSiliconNumber() > MAX_SILICON_NUM) {
+        	setRepOkString("The following chemgraph exceeds the maximum silicons allowed (" + MAX_SILICON_NUM + ") in a species:\n" + this.toString());
+        	return false;
+        }
+		
+		if (getHeavyAtomNumber() > MAX_HEAVYATOM_NUM) {
+        	setRepOkString("The following chemgraph exceeds the maximum heavy atoms allowed (" + MAX_HEAVYATOM_NUM + ") in a species:\n" + this.toString());
+        	return false;
+        }
+		
         return true;
 
 
@@ -2539,6 +2565,22 @@ return sn;
     
     public static void setMaxSiliconNumber(int maxSiNumber) {
     	MAX_SILICON_NUM = maxSiNumber;
+    }
+    
+    public static void setMaxHeavyAtomNumber(int maxHANumber) {
+    	MAX_HEAVYATOM_NUM = maxHANumber;
+    }
+    
+    public int getHeavyAtomNumber() {
+    	return getCarbonNumber() + getOxygenNumber() + getSulfurNumber() + getSiliconNumber();
+    }
+    
+    public void setRepOkString(String s) {
+    	repOkString = s;
+    }
+    
+    public static String getRepOkString() {
+    	return repOkString;
     }
 }
 /*********************************************************************
