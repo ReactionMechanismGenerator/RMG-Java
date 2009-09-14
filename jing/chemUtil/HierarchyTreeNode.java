@@ -209,10 +209,17 @@ public class HierarchyTreeNode extends TreeNode {
 				//if (child_matches) return true;
 				// This is slower but checks to make sure your tree is well-formed
 				if (child_matches && child_already_matched) {
-					throw new MultipleGroupFoundException(
-						"Parent '" + ((FunctionalGroup) getElement()).getName() + 
-						"' has nonexclusive children, one of which is '" +
-						 ((FunctionalGroup) child.getElement()).getName()  + "'.");
+					if (getElement() instanceof FunctionalGroupCollection) {
+						throw new MultipleGroupFoundException(
+								"Parent '" + ((FunctionalGroupCollection) getElement()).getName() + 
+								"' has nonexclusive children, one of which is '" +
+								 ((FunctionalGroup) child.getElement()).getName()  + "'.");
+					} else if (getElement() instanceof FunctionalGroup) {
+						throw new MultipleGroupFoundException(
+								"Parent '" + ((FunctionalGroup) getElement()).getName() + 
+								"' has nonexclusive children, one of which is '" +
+								 ((FunctionalGroup) child.getElement()).getName()  + "'.");
+					}
 				}
 				else if (child_matches)
 					child_already_matched = true;
