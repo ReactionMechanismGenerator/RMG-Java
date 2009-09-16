@@ -49,8 +49,11 @@ public class QMTP implements GeneralGAPP {
     final protected static double ENTHALPY_HYDROGEN = 52.1; //needed for HBI
     private static QMTP INSTANCE = new QMTP();		//## attribute INSTANCE
     protected static PrimaryThermoLibrary primaryLibrary;//Note: may be able to separate this out into GeneralGAPP, as this is common to both GATP and QMTP
- //   protected static HashMap library;		//as above, may be able to move this and associated functions to GeneralGAPP (and possibly change from "x implements y" to "x extends y"), as it is common to both GATP and QMTP
+    public static String qmfolder= "QMFiles/";
+    //   protected static HashMap library;		//as above, may be able to move this and associated functions to GeneralGAPP (and possibly change from "x implements y" to "x extends y"), as it is common to both GATP and QMTP
     protected ThermoGAGroupLibrary thermoLibrary; //needed for HBI
+    public static String qmprogram= "mopac";
+    public static boolean usePolar = false; //use polar keyword in MOPAC
     // Constructors
 
     //## operation QMTP()
@@ -217,7 +220,8 @@ public class QMTP implements GeneralGAPP {
     public ThermoData generateQMThermoData(ChemGraph p_chemGraph){
         //if there is no data in the libraries, calculate the result based on QM or MM calculations; the below steps will be generalized later to allow for other quantum mechanics packages, etc.
         //String qmProgram="gaussian03";
-        String qmProgram="mopac";
+        //String qmProgram="mopac";
+        String qmProgram = qmprogram;
         String qmMethod="pm3"; //may eventually want to pass this to various functions to choose which "sub-function" to call
         
         ThermoData result = new ThermoData();
@@ -225,7 +229,7 @@ public class QMTP implements GeneralGAPP {
         String [] InChInames = getQMFileName(p_chemGraph);//determine the filename (InChIKey) and InChI with appended info for triplets, etc.
         String name = InChInames[0];
         String InChIaug = InChInames[1];
-        String directory = "QMfiles/";
+        String directory = qmfolder;
         File dir=new File(directory);
         directory = dir.getAbsolutePath();//this and previous three lines get the absolute path for the directory
         //first, check to see if the result already exists and the job terminated successfully
@@ -250,26 +254,27 @@ public class QMTP implements GeneralGAPP {
                 p_3dfile = embed3D(p_2dfile, distGeomAttempts);
             }
              //3. create the Gaussian input file
-            directory = "QMfiles/";
+            directory = qmfolder;
             dir=new File(directory);
             directory = dir.getAbsolutePath();//this and previous three lines get the absolute path for the directory
             int attemptNumber=1;//counter for attempts using different keywords
             int successFlag=0;//flag for success of Gaussian run; 0 means it failed, 1 means it succeeded
             int maxAttemptNumber=1;
+            int multiplicity = p_chemGraph.getRadicalNumber()+1; //multiplicity = radical number + 1
             while(successFlag==0 && attemptNumber <= maxAttemptNumber){
                 //IF block to check which program to use
                 if (qmProgram.equals("gaussian03")){
                     if(p_chemGraph.getAtomNumber() > 1){
-                        maxAttemptNumber = createGaussianPM3Input(name, directory, p_3dfile, attemptNumber, InChIaug);
+                        maxAttemptNumber = createGaussianPM3Input(name, directory, p_3dfile, attemptNumber, InChIaug, multiplicity);
                     }
                     else{
-                        maxAttemptNumber = createGaussianPM3Input(name, directory, p_2dfile, -1, InChIaug);//use -1 for attemptNumber for monoatomic case
+                        maxAttemptNumber = createGaussianPM3Input(name, directory, p_2dfile, -1, InChIaug, multiplicity);//use -1 for attemptNumber for monoatomic case
                     }
                     //4. run Gaussian
                     successFlag = runGaussian(name, directory);
                 }
                 else if (qmProgram.equals("mopac")){
-                    int multiplicity = p_chemGraph.getRadicalNumber()+1; //multiplicity = radical number + 1
+                    
                     maxAttemptNumber = createMopacPM3Input(name, directory, p_3dfile, attemptNumber, InChIaug, multiplicity);
                     successFlag = runMOPAC(name, directory);
                 }
@@ -292,7 +297,8 @@ public class QMTP implements GeneralGAPP {
                         else{
                             System.out.println("*****Final attempt (#" + maxAttemptNumber + ") on species " + name + " ("+InChIaug+") failed.");
                             System.out.print(p_chemGraph.toString());
-                            System.exit(0);
+                        //    System.exit(0);
+                            return new ThermoData(1000,0,0,0,0,0,0,0,0,0,0,0,"failed calculation");
                         }
                     }
                     System.out.println("*****Attempt #"+attemptNumber + " on species " + name + " ("+InChIaug+") failed. Will attempt a new keyword.");
@@ -471,7 +477,7 @@ public class QMTP implements GeneralGAPP {
     //attemptNumber determines which keywords to try
     //the function returns the maximum number of keywords that can be attempted; this will be the same throughout the evaluation of the code, so it may be more appropriate to have this as a "constant" attribute of some sort
     //attemptNumber=-1 will call a special set of keywords for the monoatomic case
-    public int createGaussianPM3Input(String name, String directory, molFile p_molfile, int attemptNumber, String InChIaug){
+    public int createGaussianPM3Input(String name, String directory, molFile p_molfile, int attemptNumber, String InChIaug, int multiplicity){
         //write a file with the input keywords
         int maxAttemptNumber=18;//update this if additional keyword options are added or removed
         try{
@@ -501,6 +507,8 @@ public class QMTP implements GeneralGAPP {
             else if(attemptNumber==17) inpKeyStr+="# pm3 opt=(verytight,gdiis,calcall,small) IOP(2/16=3) nosymm";//7/1/09: added for case of ZWMVZWMBTVHPBS-UHFFFAOYAEmult3 (InChI=1/C4H4O2/c1-3-5-6-4-2/h1-2H2/mult3)
             else if(attemptNumber==18) inpKeyStr+="# pm3 opt=(calcall,small,maxcyc=100) IOP(2/16=3)"; //6/10/09: used to address troublesome FILUFGAZMJGNEN-UHFFFAOYAImult3 case (InChI=1/C5H6/c1-3-5-4-2/h3H,1H2,2H3/mult3)
             else throw new Exception();//this point should not be reached
+           // if(multiplicity == 3) inpKeyStr+= " guess=mix"; //assumed to be triplet biradical...use guess=mix to perform unrestricted ; nevermind...I think this would only be for singlet biradicals based on http://www.gaussian.com/g_tech/g_ur/k_guess.htm
+            if (usePolar) inpKeyStr += " polar";
             FileWriter fw = new FileWriter(inpKey);
             fw.write(inpKeyStr);
             fw.close();
@@ -634,6 +642,12 @@ public class QMTP implements GeneralGAPP {
             System.exit(0);
         }
         
+        String polarString = "";
+        if (usePolar){
+            if(multiplicity == 1) polarString = System.getProperty("line.separator") + System.getProperty("line.separator") + System.getProperty("line.separator")+ "oldgeo polar nosym precise " + inpKeyStrBoth;
+            else polarString = System.getProperty("line.separator") + System.getProperty("line.separator") + System.getProperty("line.separator")+ "oldgeo static nosym precise " + inpKeyStrBoth;
+        }
+        
         //call the OpenBabel process (note that this requires OpenBabel environment variable)
         try{ 
             File runningdir=new File(directory);
@@ -653,7 +667,7 @@ public class QMTP implements GeneralGAPP {
             //append the final keywords to the end of the file just written
            // File mopacInpFile = new File(directory+"/"+name+".mop");
             FileWriter fw = new FileWriter(directory+"/"+name+".mop", true);//filewriter with append = true
-            fw.write(System.getProperty("line.separator") + inpKeyStrBottom + inpKeyStrBoth);//on Windows Vista, "\n" appears correctly in WordPad view, but not Notepad view (cf. http://forums.sun.com/thread.jspa?threadID=5386822)
+            fw.write(System.getProperty("line.separator") + inpKeyStrBottom + inpKeyStrBoth + polarString);//on Windows Vista, "\n" appears correctly in WordPad view, but not Notepad view (cf. http://forums.sun.com/thread.jspa?threadID=5386822)
             fw.close();
         }
         catch(Exception e){

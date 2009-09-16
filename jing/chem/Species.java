@@ -1651,21 +1651,35 @@ public class Species {
 			// The following variables hold no meaning
 			String M = st.nextToken();
 			String RAD = st.nextToken();
-			if (RAD.equals("RAD")) {
+                        if (RAD.equals("RAD")){
+			//if (RAD.equals("RAD")||RAD.equals("CHG")) {
 				// Extract radical information
 				int numOfRads = Integer.parseInt(st.nextToken());
 				for (int j=0; j<numOfRads; j++) {
 					int atom = Integer.parseInt(st.nextToken());
 					int radType = Integer.parseInt(st.nextToken());
-					if (radType == 1)
-						adjListRadical[atom-1] = "2S ";
-					else if (radType == 2)
-						adjListRadical[atom-1] = "1 ";
-					else if (radType== 3)
-						adjListRadical[atom-1] = "2T ";
-					else
-						adjListRadical[atom-1] = "3 ";
+                                       // if(RAD.equals("RAD")){
+                                            if (radType == 1)
+                                                    adjListRadical[atom-1] = "2S ";
+                                            else if (radType == 2)
+                                                    adjListRadical[atom-1] = "1 ";
+                                            else if (radType== 3)
+                                                    adjListRadical[atom-1] = "2T ";
+                                            else
+                                                    adjListRadical[atom-1] = "3 ";
+                                      //  }
+                                       // else if(RAD.equals("CHG")){//gmagoon 9/14/09: adding support for CHG, which is produced in InChI generated mol files for biradicals; there still could be issues for biradicals with radical sites on adjacent atoms, so this should be manually checked
+                                       //      if (radType == 1 || radType == -1){
+                                      //          System.out.println("Assuming CHG indicates biradical for " + inchi +  " If this is correct, two of these messages for the same InChI should be generated.");
+                                      //           adjListRadical[atom-1] = "1 ";
+                                      //       }
+                                      //       else {
+                                      //          System.out.println("Ignoring unknown M flag " + RAD + " for " + inchi);
+                                      //       }  
+                                      //  }
+                                        
 				}
+                                
 			}
 			/*
 			 * If the M line flag is not equal to "RAD", RMG cannot store the information
@@ -1673,9 +1687,10 @@ public class Species {
 			 * 	Inform the user the field is being ignored, but continue constructing
 			 * 	the adjacency list.
 			 */
+                        //update gmagoon 9/14/09: CHG is now allowed: see above; update 2: I returned to original case due to difficulties with handling adjacent biradicals
 			else {
 				System.out.println("Ignoring unknown M flag " + RAD + " for " + inchi);
-			}
+			}      
 		}
 		
 		// Construct the entire adjacency list from its individual lines

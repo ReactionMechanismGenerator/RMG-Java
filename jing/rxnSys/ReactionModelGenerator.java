@@ -1377,6 +1377,7 @@ public class ReactionModelGenerator {
         //9/1/09 gmagoon: if we are using QM, output a file with the CHEMKIN name, the RMG name, the (modified) InChI, and the (modified) InChIKey
         if (ChemGraph.useQM){
             writeInChIs(getReactionModel());
+            writeDictionary(getReactionModel());
         }
         //System.exit(0);
        
@@ -1494,6 +1495,7 @@ public class ReactionModelGenerator {
                                 //9/1/09 gmagoon: if we are using QM, output a file with the CHEMKIN name, the RMG name, the (modified) InChI, and the (modified) InChIKey
                                 if (ChemGraph.useQM){
                                      writeInChIs(getReactionModel());
+                                     writeDictionary(getReactionModel());
                                 }
                                 double chemkint = (System.currentTimeMillis()-startTime)/1000/60;
 				
@@ -1769,6 +1771,7 @@ public class ReactionModelGenerator {
         //9/1/09 gmagoon: if we are using QM, output a file with the CHEMKIN name, the RMG name, the (modified) InChI, and the (modified) InChIKey
         if (ChemGraph.useQM){
             writeInChIs(getReactionModel());
+            writeDictionary(getReactionModel());
         }
                 
         System.out.println("Model Generation Completed");
@@ -1803,6 +1806,39 @@ public class ReactionModelGenerator {
       	System.out.println(e.getMessage());
       	System.exit(0);
       }
+    }
+    
+    //9/14/09 gmagoon: function to write dictionary, based on code copied from RMG.java
+    private void writeDictionary(ReactionModel rm){
+        CoreEdgeReactionModel cerm = (CoreEdgeReactionModel)rm;
+        //Write core species to RMG_Dictionary.txt
+	String coreSpecies ="";
+	Iterator iter = cerm.getSpecies();
+	
+	if (Species.useInChI) {
+		while (iter.hasNext()){
+			int i=1;
+			Species spe = (Species) iter.next();
+			coreSpecies = coreSpecies + spe.getChemkinName() + " " + spe.getInChI() + "\n"+spe.getChemGraph().toString(i)+"\n\n";
+		}
+	} else {
+		while (iter.hasNext()){
+			int i=1;
+			Species spe = (Species) iter.next();
+			coreSpecies = coreSpecies + spe.getChemkinName() + "\n"+spe.getChemGraph().toString(i)+"\n\n";
+		}
+	}
+
+	try{
+		File rmgDictionary = new File("RMG_Dictionary.txt");
+		FileWriter fw = new FileWriter(rmgDictionary);
+		fw.write(coreSpecies);
+		fw.close();
+	}
+	catch (IOException e) {
+    	System.out.println("Could not write RMG_Dictionary.txt");
+    	System.exit(0);
+        }
     }
     
     private void parseRestartFiles() {
