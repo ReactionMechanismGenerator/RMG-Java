@@ -1038,7 +1038,7 @@ public class ChemParser {
         	int centralID = -1;
 
         	String line = readUncommentLine(p_reader);
-        	while (line != null) {
+			while (line != null) {
          		StringTokenizer token = new StringTokenizer(line);
         		// read in ID
         		String index = token.nextToken();
@@ -1089,14 +1089,16 @@ public class ChemParser {
         		}
         		line = readUncommentLine(p_reader);
         	}
-
+			
         	if (g.isEmpty()) g = null;
         	else g.identifyFgElement();
         	return g;
         }
         catch (Exception e) {
-			e.printStackTrace();
-			throw new IOException("Couldn't read ChemGraph: " + e.getMessage());
+			if (e.getMessage() == null)
+				throw new IOException("Couldn't read ChemGraph: " + e.getClass().getName());
+			else
+				throw new IOException("Couldn't read ChemGraph: " + e.getMessage());
         }
 
 

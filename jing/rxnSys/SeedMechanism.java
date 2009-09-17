@@ -101,7 +101,8 @@ public class SeedMechanism {
     }
     
     public void read(String p_directoryName) throws IOException {
-        try {
+        System.out.println("Reading seed mechanism from directory " + p_directoryName);
+		try {
         	if (!p_directoryName.endsWith("/")) p_directoryName = p_directoryName + "/";
         	
             String speciesFile = p_directoryName + "species.txt";
@@ -231,12 +232,12 @@ public class SeedMechanism {
             	Graph graph;
         		try {
         			graph = ChemParser.readChemGraph(data);
+					if (graph == null) throw new IOException("Graph was null");
         		}
-        		catch (InvalidGraphFormatException e) {
-        			throw new InvalidChemGraphException(name + ": " + e.getMessage());
+        		catch (IOException e) {
+        			throw new InvalidChemGraphException("Cannot read species '" + name + "': " + e.getMessage());
         		}
-        		if (graph == null) throw new InvalidChemGraphException(name);
-        		ChemGraph cg = ChemGraph.make(graph);	
+				ChemGraph cg = ChemGraph.make(graph);	
         		Species spe = Species.make(name, cg);
         		// GJB: Turn off reactivity if necessary, but don't let code turn it on
         		// again if was already set as unreactive from input file
@@ -249,8 +250,7 @@ public class SeedMechanism {
         	return;
         }
         catch (Exception e) {
-			e.printStackTrace();
-        	throw new IOException("RMG cannot read the \"species.txt\" file in the Seed Mechanism\n" + e.getMessage());
+			throw new IOException("RMG cannot read the \"species.txt\" file in the Seed Mechanism\n" + e.getMessage());
         }
     }
     
