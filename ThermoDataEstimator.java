@@ -44,17 +44,39 @@ public class ThermoDataEstimator {//gmagoon 7/24/09: based off of Thermo.java re
 public static void main(String[] args) {
   initializeSystemProperties();
 
- try {
-          FileReader in = new FileReader(args[0]);
-          BufferedReader data = new BufferedReader(in);
+          initializeSystemProperties();
 
-          Graph g = ChemParser.readChemGraph(data);
+		LinkedList<ChemGraph> graphList = new LinkedList<ChemGraph>();
 
-          in.close();
+		File file = new File(args[0]);
 
-         System.out.println(g);
-         ChemGraph chemgraph = ChemGraph.make(g);
-		 Species spe = Species.make("molecule",chemgraph);
+		try {
+
+			BufferedReader reader = new BufferedReader(new FileReader(file));
+
+			// Read adjacency lists from file until an exception is thrown
+			Graph g = ChemParser.readChemGraph(reader);
+			while (g != null) {
+				ChemGraph cg = ChemGraph.make(g);
+				graphList.add(cg);
+				g = ChemParser.readChemGraph(reader);
+			}
+
+		}
+		catch (InvalidChemGraphException e) {
+			e.printStackTrace();
+		} catch (ForbiddenStructureException e) {
+			e.printStackTrace();
+		}
+		catch (IOException e) {
+			System.out.println(e.toString());
+		}
+
+		for (ListIterator<ChemGraph> iter = graphList.listIterator(); iter.hasNext(); ) {
+			ChemGraph chemgraph = iter.next();
+
+
+         Species spe = Species.make("molecule",chemgraph);
 		 /*
 		  *	Following line added by MRH on 10Aug2009:
 		  *		After the species is made, the chemgraph is not necessarily the same
@@ -70,7 +92,8 @@ public static void main(String[] args) {
 		  *		3 O 0 {2,S}
 		  */
 		 chemgraph = spe.getChemGraph();
-		 System.out.println("The number of resonance isomers is " + spe.getResonanceIsomersHashSet().size());
+		 System.out.println(chemgraph);
+         System.out.println("The number of resonance isomers is " + spe.getResonanceIsomersHashSet().size());
 		 System.out.println("The NASA data is \n"+ spe.getNasaThermoData());
 		 System.out.println("ThermoData is \n" +  chemgraph.getThermoData().toString());
         //int K = chemgraph.getKekule();
@@ -83,7 +106,8 @@ public static void main(String[] args) {
          String chemicalFormula = chemgraph.getChemicalFormula();
 
          System.out.println(chemicalFormula + "  H=" + chemgraph.calculateH(T));
-
+		 System.out.println();
+		}
 
     //      Species species = Species.make(chemicalFormula, chemgraph);
           // this is equal to  System.out.println(species.toString());
@@ -100,17 +124,6 @@ public static void main(String[] args) {
    //       Species species = Species.make(chemicalFormula, chemgraph);
    //       Iterator iterator = species.getResonanceIsomers();
    //       System.out.println(iterator);
-
- }
- catch (FileNotFoundException e) {
-   System.err.println("File was not found!\n");
- }
- catch(IOException e){
-   System.err.println("Something wrong with ChemParser.readChemGraph");
- }
- catch(ForbiddenStructureException e){
-   System.err.println("Something wrong with ChemGraph.make");
- }
 
 
 System.out.println("Done!\n");
