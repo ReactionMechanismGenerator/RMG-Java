@@ -1095,6 +1095,7 @@ public class ChemParser {
         	return g;
         }
         catch (Exception e) {
+			e.printStackTrace();
 			throw new IOException("Couldn't read ChemGraph: " + e.getMessage());
         }
 
