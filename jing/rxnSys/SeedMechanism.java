@@ -249,6 +249,7 @@ public class SeedMechanism {
         	return;
         }
         catch (Exception e) {
+			e.printStackTrace();
         	throw new IOException("RMG cannot read the \"species.txt\" file in the Seed Mechanism\n" + e.getMessage());
         }
     }
