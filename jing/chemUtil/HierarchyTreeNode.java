@@ -176,67 +176,39 @@ public class HierarchyTreeNode extends TreeNode {
         //#]
     }
     
-    /**
+   /**
     Requires:
-    Effects: find out a matched path beginning with this tree node, and add the matched tree nodes to p_path.  
-	 The return value is true if this node matches, false if it does not.
-	 Modifies: p_path
+    Effects: find out a matched path beginning with this tree node.
+	* add the matched tree nodes to p_path.
+	* the return value indicates if the end of matched path is a leaf (or a dummy child).
+	* if it is, return true, otherwise, return false.
+	* (remember, a dummy child is a catch-all 'Others-' node)
+    Modifies: p_path
+    // Argument Matchable p_element : the element we will match with the elements stroed in the tree.
+    // Argument Stack p_path :  This stack stores the tree nodes on the found path.
     */
-    // Argument Matchablep_element : 
-    /**
-    the element we will match with the elements stroed in the tree.
-    */
-    // Argument Stackp_path : 
-    /**
-    This stack stores the tree nodes on the found path.
-    */
-    //## operation findMatchedPath(Matchable,Stack) 
-    public boolean findMatchedPath(Matchable p_element, Stack p_path) throws MultipleGroupFoundException {
-        //#[ operation findMatchedPath(Matchable,Stack) 
+    public boolean findMatchedPath(Matchable p_element, Stack p_path) {
         if (p_element.isSubAtCentralNodes((Matchable)element)) {
-        	// if there is a match add node to the p_path (and eventually return true)
+        	//if there is a match  add node to the p_path;
         	p_path.push(this);
-			
-			//  if this node is a leaf, there are no children, so return straight away.
+			// if  this node is a leaf, we're done.
          	if (isLeaf()) return true;
-			
-            boolean child_already_matched = false;
-        	//if there is a match and this node is not a leaf, check its children recursively
+
+        	//if there is a match but this node is not a leaf, check its children recursively
         	for (Iterator iter = children.iterator(); iter.hasNext(); ) {
-        		HierarchyTreeNode child = (HierarchyTreeNode)iter.next();
-        		boolean child_matches = child.findMatchedPath(p_element,p_path);
-        		// This is faster but expects a well-formed tree, i.e. the children of each node are mutually exclusive
-				//if (child_matches) return true;
-				// This is slower but checks to make sure your tree is well-formed
-				if (child_matches && child_already_matched) {
-					if (getElement() instanceof FunctionalGroupCollection) {
-						throw new MultipleGroupFoundException(
-								"Parent '" + ((FunctionalGroupCollection) getElement()).getName() + 
-								"' has nonexclusive children, one of which is '" +
-								 ((FunctionalGroup) child.getElement()).getName()  + "'.");
-					} else if (getElement() instanceof FunctionalGroup) {
-						throw new MultipleGroupFoundException(
-								"Parent '" + ((FunctionalGroup) getElement()).getName() + 
-								"' has nonexclusive children, one of which is '" +
-								 ((FunctionalGroup) child.getElement()).getName()  + "'.");
-					}
-				}
-				else if (child_matches)
-					child_already_matched = true;
+        		HierarchyTreeNode node = (HierarchyTreeNode)iter.next();
+        		boolean match = node.findMatchedPath(p_element,p_path);
+        		if (match) return true; // got all the way to a leaf
         	}
-			//if (child_already_matched)
-			//	return true;
         	// if all real children don't match, but there is a dummy child, still return true;
-        	//if (hasDummyChild()) 
-        	//	return true;
-        	
-			return true; // we return true if the current node matches
+        	if (hasDummyChild()) {
+        		return true;
+        	}
         }
         // if there is no match, return false to the upper level
         return false;
-
     }
-    
+
     //## operation hasDummyChild() 
     public boolean hasDummyChild() {
         //#[ operation hasDummyChild() 
