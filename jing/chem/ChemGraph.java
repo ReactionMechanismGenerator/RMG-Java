@@ -2264,13 +2264,22 @@ return sn;
     public boolean repOk() {
         //#[ operation repOk()
         // check if the graph is connected
-        if (!getGraph().repOk()) return false;
+        if (!getGraph().repOk()){
+        	setRepOkString("Something is wrong with the following chemgraph: " + this.toString());
+        	return false;
+        }
 
         // a chemical species should be a connected graph
-        if (!getGraph().isConnected()) return false;
+        if (!getGraph().isConnected()) {
+        	setRepOkString("The following chemgraph is not a connected graph: " + this.toString());
+        	return false;
+        }
 
         // check if the elements stored in graph are atomd/bonds
-        if (!graphContentsOk(getGraph())) return false;
+        if (!graphContentsOk(getGraph())) {
+        	setRepOkString("The following chemgraph contains contents other than atoms or bonds: " + this.toString());
+        	return false;
+        }
 
         // check if the valency of every atom is satuated
         //if (!valencyOk()) return false;
