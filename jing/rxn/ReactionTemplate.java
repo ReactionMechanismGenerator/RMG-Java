@@ -372,7 +372,7 @@ public class ReactionTemplate {
   	  }
   	  if (k != null) {
   		  k.setFromPrimaryReactionLibrary(true);
-  		  p_structure.setDirection(1);
+  		  p_structure.setDirection(getPrimaryReactionDirection(p_structure));
   		  return k;
   	  }
 		
@@ -618,6 +618,28 @@ public class ReactionTemplate {
 		  }
 	  }
 	  return null;
+  }
+  
+  private int getPrimaryReactionDirection(Structure p_structure) {
+	  boolean equivReactants = false;
+	  LinkedHashSet primaryRxnLibrary = getPrimaryRxnLibrary();
+	  Iterator iter = primaryRxnLibrary.iterator();
+	  LinkedList p_reactants = p_structure.getReactantList();
+	  LinkedList p_products = p_structure.getProductList();
+	  while (iter.hasNext()) {
+		  Reaction rxn = (Reaction)iter.next();
+		  LinkedList reactants = rxn.getReactantList();
+		  equivReactants = Structure.isSpeciesListEquivalentToChemGraphListAsGraphs(reactants, p_reactants);
+		  if (equivReactants) {
+			  LinkedList products = rxn.getProductList();
+			  if (Structure.isSpeciesListEquivalentToChemGraphListAsGraphs(products,p_products)) {
+				  if (rxn instanceof ThirdBodyReaction || rxn instanceof TROEReaction || rxn instanceof LindemannReaction)
+					  System.out.println("RMG is only utilizing the high-pressure limit parameters for PRL reaction: " + rxn.toString());
+				  return rxn.getStructure().direction;
+			  }
+		  }
+	  }
+	  return -1;
   }
 
   private String getKineticsComments(Collection p_matchedPathSet) {
