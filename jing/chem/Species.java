@@ -843,6 +843,8 @@ public class Species {
         	//spe.ID =
         	dictionary.putSpecies(spe, true);
         	
+			// DEBUG: Tell console I made this species
+			System.out.println("Created new species: " + spe.getName() + "(" + spe.getID() + ")");
 
         }
         else {

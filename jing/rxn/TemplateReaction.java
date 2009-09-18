@@ -353,7 +353,9 @@ public class TemplateReaction extends Reaction {
 		if (reaction == null) {
 			
 			reaction = new TemplateReaction(p_structureSp, p_kinetics, p_template);
-			
+			// DEBUG: Tell console I made this reaction
+			System.out.println("Created new reaction: " + reaction.toString());
+
 			if (reaction.isBackward()) {
 				
 				TemplateReaction reverse = reaction.generateReverseForBackwardReaction(p_structure, p_structureSp);
