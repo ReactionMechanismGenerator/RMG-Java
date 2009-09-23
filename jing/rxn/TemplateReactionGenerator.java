@@ -117,8 +117,9 @@ public class TemplateReactionGenerator implements ReactionGenerator {
         						reaction_set.addAll(current_reactions);
         					}
         				}
+        				Runtime runTime = Runtime.getRuntime();
+        				runTime.gc();
         			}
-        			
         		}
         	}
         }
