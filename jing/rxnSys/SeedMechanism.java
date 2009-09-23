@@ -534,7 +534,7 @@ public class SeedMechanism {
     }
 	
     public int size() {
-        return reactionSet.size();
+        return speciesSet.size();
     }
     
     public String getName() {
