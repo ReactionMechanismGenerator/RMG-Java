@@ -99,7 +99,9 @@ public class TemplateReactionGenerator implements ReactionGenerator {
         				first_reactant.addPdepPaths(current_reactions);
         				reaction_set.addAll(current_reactions);
         			}
-        			
+    				Runtime runTime = Runtime.getRuntime();
+    				runTime.gc();
+    				System.out.println("Free memory: " + runTime.freeMemory());        			
         		}                                
         	}
         	// the reaction template has two reactants, we need to check all the possible combination of two species
@@ -119,6 +121,7 @@ public class TemplateReactionGenerator implements ReactionGenerator {
         				}
         				Runtime runTime = Runtime.getRuntime();
         				runTime.gc();
+        				System.out.println("Free memory: " + runTime.freeMemory());
         			}
         		}
         	}
