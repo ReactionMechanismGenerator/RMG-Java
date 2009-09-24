@@ -328,6 +328,7 @@ public class JDASPK extends JDAS {
         
 	private void renameIntermediateFilesAfterRun() {
             File f = new File("ODESolver/RWORK.DAT");
+            System.out.println(f.exists());
             File newFile = new File("ODESolver/RWORK_"+index+".DAT");
             if(newFile.exists())
                 newFile.delete();
