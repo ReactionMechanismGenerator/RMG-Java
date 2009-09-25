@@ -31,6 +31,7 @@ public class DictionaryReader {
     public static void main(String[] args) {
          String workingDir = System.getenv("RMG");
          System.setProperty("RMG.workingDirectory", workingDir);
+         System.setProperty("LJDatabase.pathName", workingDir + "\\databases\\RMG_database\\Joback");
          
          //block below was commented out and name was changed from inchiDictionaryReader to DictionaryReader after I realized biradicals on adjacent were causing difficulty
          
@@ -95,6 +96,19 @@ public class DictionaryReader {
                 if(!line.equals("InChI=1/H")&&!line.startsWith("HJ(")){//{for some reason, H does not seem to work in Gaussian, even manually, without freq keyword; not sure about why MOPAC fails
                     ChemGraph chemgraph = ChemGraph.make(g);
                     Species spe = Species.make("molecule",chemgraph);
+                    
+                    //calculate and display Lennard-Jones estimates based on Joback correlations for critical properties
+                    LJGroups LJGAPP=LJGroups.getINSTANCE();
+                    LJData ljdata = LJGAPP.generateLJData(chemgraph);
+                    System.out.println("Sums (dTc, dPc, dVc, dTb): " + ljdata.toString());
+                    System.out.println("Tc (K) = " + ljdata.calculateTc());
+                    System.out.println("Pc (bar) = " + ljdata.calculatePc());
+                    System.out.println("Vc (cc/mol) = " + ljdata.calculateVc());
+                    System.out.println("Tb (K) = " + ljdata.calculateTb());
+                    System.out.println("omega = " + ljdata.calculateOmega());
+                    System.out.println("sigma (Angstroms) = " + ljdata.calculateSigma());
+                    System.out.println("epsilon (K) = " + ljdata.calculateEpsilon());
+                    System.out.println("\n\n");
                      /*
                       *	Following line added by MRH on 10Aug2009:
                       *		After the species is made, the chemgraph is not necessarily the same
