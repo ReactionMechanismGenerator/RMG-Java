@@ -211,13 +211,13 @@ contains
 		allocate( rho0(1:N) )
 		
 		! Free rotors
-		if (allocated(rotFreq)) then
+		if (size(rotFreq) > 0) then
 			allocate( rho(1:N) )
 			rho = calcFreeRotorStates(E, rotFreq, symmNum)
 		end if
 		
         ! Hindered rotors
-		if (allocated(hindFreq)) then
+		if (size(hindFreq) > 0) then
 			do i = 1, size(hindFreq)
 				if (hindFreq(i) > 0 .and. hindBarrier(i) > 0) then
 					rho0 = calcHinderedRotorStates(E, hindFreq(i), hindBarrier(i))
@@ -236,7 +236,7 @@ contains
 			allocate( rho(1:N) )
 			rho = 0 * rho
 		end if
-		if (allocated(vibFreq)) then
+		if (size(vibFreq) > 0) then
 			call beyerSwinehart(E, vibFreq, rho)
 		end if
         states = rho

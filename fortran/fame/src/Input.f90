@@ -615,7 +615,7 @@ contains
 		
 		call getFirstToken(string, token)
 		units = token
-			
+		
 		allocate(values(1:numValues))
 		do n = 1, numValues
 			string = readMeaningfulLine()
