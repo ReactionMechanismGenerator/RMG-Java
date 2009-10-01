@@ -184,7 +184,8 @@ public class Species {
     //## operation calculateLJParameters()
     public void calculateLJParameters() {
         //#[ operation calculateLJParameters()
-        int cNum = getChemGraph().getCarbonNumber();
+        //int cNum = getChemGraph().getCarbonNumber();
+		int cNum = getChemGraph().getHeavyAtomNumber();
 
         selectLJParametersForSpecialMolecule();
         if (cNum == 1) LJ = new LennardJones(3.758, 148.6);
