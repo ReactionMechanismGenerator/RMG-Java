@@ -6132,12 +6132,12 @@ SUBROUTINE Case_22(Total_char_freq, Total_harm_osc_freq, HR_params )
   bu(6)  = 4000.    ! Upper bound is 4000 cm^-1
 
 !  Define the initial guess for the solution
-  x(1) = 800.0 !Harm. osc. frequency
+  x(1) = 500.0 !Harm. osc. frequency
   x(2) = FLOOR(REAL(N_rot)/2.) !Degeneracy of first pseudo-frequency: 1/2 N_rot
   x(3) = 500.0 ! First pseudo-barrier height: 500 cm^-1
   x(4) = 3000. ! Second pseudo-barrier height: 3000 cm^-1
-  x(5) = 1200.0 !Harm. osc. frequency
-  x(6) = 1600.0 !Harm. osc. frequency
+  x(5) = 1000.0 !Harm. osc. frequency
+  x(6) = 2000.0 !Harm. osc. frequency
 
 !  Tell how much storage we gave the solver.
   iwork(1) = lwork
@@ -7612,7 +7612,7 @@ IMPLICIT NONE
 
   !  Set the common block varibles:
   CV_temps = (/ 300.0, 400.0, 500.0, 600.0, 800.0, 1000.0, 1500.0 /)
-  nu_low = 100.0
+  nu_low = 50.0
   nu_mid = 150.0
   nu_high = 300.0
 
