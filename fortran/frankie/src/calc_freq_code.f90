@@ -3528,9 +3528,9 @@ SUBROUTINE Case_10(Total_char_freq, Total_harm_osc_freq, HR_params )
 
 !  Define the initial guess for the solution
   x(1) = 1200.0 !Barrier Height
-  x(2) = 150.0 !Hind freq
+  x(2) = 100.0 !Hind freq
   x(3) = 800.0 !Harm. Osc. Freq
-  x(4) = 1200.0 !Harm. Osc. Freq
+  x(4) = 1600.0 !Harm. Osc. Freq
 
 !  Tell how much storage we gave the solver.
   iwork(1) = lwork
