@@ -82,7 +82,7 @@ C and was causing problems for H radical (presumably similar for O atom)
             CP_INF = 2.5D0*1.9872D0
 	ELSE IF (STRUC_MOL .EQ. 'NOLINEAR') THEN
 	   CP_0  =4.0D0*1.9872D0
-	   CP_INF=3.0D0*ATOMS-(2.D0+0.5D0*ROTORS)*1.9872D0
+	   CP_INF=(3.0D0*ATOMS-(2.D0+0.5D0*ROTORS))*1.9872D0
 	ELSE
 	   CP_0  =3.5D0*1.9872D0
 	   CP_INF=(3.0D0*ATOMS-1.5D0)*1.9872D0
