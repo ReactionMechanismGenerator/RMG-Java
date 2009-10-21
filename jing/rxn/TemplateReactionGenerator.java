@@ -100,8 +100,10 @@ public class TemplateReactionGenerator implements ReactionGenerator {
         				reaction_set.addAll(current_reactions);
         			}
     				Runtime runTime = Runtime.getRuntime();
-    				runTime.gc();
-    				System.out.println("Free memory: " + runTime.freeMemory());        			
+    				if (runTime.freeMemory() < runTime.totalMemory()/3) {
+    					runTime.gc();
+    				}
+    				//System.out.println("Free memory: " + runTime.freeMemory());        			
         		}                                
         	}
         	// the reaction template has two reactants, we need to check all the possible combination of two species
@@ -120,8 +122,10 @@ public class TemplateReactionGenerator implements ReactionGenerator {
         					}
         				}
         				Runtime runTime = Runtime.getRuntime();
-        				runTime.gc();
-        				System.out.println("Free memory: " + runTime.freeMemory());
+        				if (runTime.freeMemory() < runTime.totalMemory()/3) {
+        					runTime.gc();
+        				}
+        				//System.out.println("Free memory: " + runTime.freeMemory());
         			}
         		}
         	}
@@ -133,12 +137,15 @@ public class TemplateReactionGenerator implements ReactionGenerator {
 		System.out.println(runTime.totalMemory());
 		System.out.print("Free memory: ");
 		System.out.println(runTime.freeMemory());
-		runTime.gc();
-		System.out.println("After garbage collection:");
-		System.out.print("Memory used: ");
-		System.out.println(runTime.totalMemory());
-		System.out.print("Free memory: ");
-		System.out.println(runTime.freeMemory());
+		if (runTime.freeMemory() < runTime.totalMemory()/3) {
+			runTime.gc();
+			System.out.println("After garbage collection:");
+			System.out.print("Memory used: ");
+			System.out.println(runTime.totalMemory());
+			System.out.print("Free memory: ");
+			System.out.println(runTime.freeMemory());
+		}
+
         return reaction_set;
         
         
@@ -173,12 +180,15 @@ public class TemplateReactionGenerator implements ReactionGenerator {
 		System.out.println(runTime.totalMemory());
 		System.out.print("Free memory: ");
 		System.out.println(runTime.freeMemory());
-		runTime.gc();
-		System.out.println("After garbage collection:");
-		System.out.print("Memory used: ");
-		System.out.println(runTime.totalMemory());
-		System.out.print("Free memory: ");
-		System.out.println(runTime.freeMemory());
+		if (runTime.freeMemory() < runTime.totalMemory()/3) {
+			runTime.gc();
+			System.out.println("After garbage collection:");
+			System.out.print("Memory used: ");
+			System.out.println(runTime.totalMemory());
+			System.out.print("Free memory: ");
+			System.out.println(runTime.freeMemory());
+		}
+		
         return pdepReactionSet;
     }
     
@@ -439,12 +449,14 @@ public class TemplateReactionGenerator implements ReactionGenerator {
 		System.out.println(runTime.totalMemory());
 		System.out.print("Free memory: ");
 		System.out.println(runTime.freeMemory());
-		runTime.gc();
-		System.out.println("After garbage collection:");
-		System.out.print("Memory used: ");
-		System.out.println(runTime.totalMemory());
-		System.out.print("Free memory: ");
-		System.out.println(runTime.freeMemory());
+		if (runTime.freeMemory() < runTime.totalMemory()/3) {
+			runTime.gc();
+			System.out.println("After garbage collection:");
+			System.out.print("Memory used: ");
+			System.out.println(runTime.totalMemory());
+			System.out.print("Free memory: ");
+			System.out.println(runTime.freeMemory());
+		}
 		
 //		double t = (System.currentTimeMillis()-pT)/1000/60;
 //        Global.RT_reactTwoReactants += t;
