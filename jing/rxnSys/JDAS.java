@@ -55,6 +55,7 @@ import jing.rxn.Reaction;
 import jing.rxn.TROEReaction;
 import jing.rxn.TemplateReaction;
 import jing.rxn.ThirdBodyReaction;
+import java.io.BufferedWriter;
 
 /**
  * Common base class for the DASSL and DASPK solvers, which share a lot of
@@ -84,7 +85,8 @@ public abstract class JDAS implements DAESolver {
     protected LinkedList thirdBodyList ;
     protected LinkedList troeList ;
     protected LinkedList lindemannList;
-	protected StringBuilder outputString ;
+	//protected StringBuilder outputString ;
+        protected BufferedWriter bw;
 	protected StringBuilder rString ;
 	protected StringBuilder tbrString;
 	protected StringBuilder troeString;
@@ -741,10 +743,11 @@ public abstract class JDAS implements DAESolver {
 	
 	public void getAutoEdgeReactionInfo(CoreEdgeReactionModel model, Temperature p_temperature,
 			Pressure p_pressure) {
-		
+                 //updated 10/22/09 by gmagoon to use BufferedReader; this isn't exactly the most elegant solution (as I have effectively copied code and made this loop through twice in order to correctly count the number of edge species and reactions), but it should save on memory
+            
                 //IMPORTANT: this code should pass the information needed to perform the same checks as done by the validity testing in the Java code
 		//much of code below is taken or based off of code from appendUnreactedSpeciesStatus in ReactionSystem.java
-		StringBuilder edgeReacInfoString = new StringBuilder();
+		//StringBuilder edgeReacInfoString = new StringBuilder();
 		int edgeReactionCounter = 0;
 		int edgeSpeciesCounter = 0;
 
@@ -754,8 +757,8 @@ public abstract class JDAS implements DAESolver {
 		for (Iterator iur = ur.iterator(); iur.hasNext();) {
 			edgeReactionCounter++;
 			Reaction r = (Reaction) iur.next();
-			String str = getEdgeReactionString(model, edgeID, r, p_temperature, p_pressure);
-			edgeReacInfoString.append("\n" + str);
+			String str = getEdgeReactionString(model, edgeID, r, p_temperature, p_pressure);//this line is needed even when not writing to file because it will update edgeID
+//			edgeReacInfoString.append("\n" + str);
 		}
                 edgeSpeciesCounter = edgeID.size();//update edge species counter (this will be important for the case of non-P-dep operation)
 		// For the case where validityTester is RateBasedPDepVT (assumed to also be directly associated with use of RateBasedPDepRME), consider two additional types of reactions
@@ -801,14 +804,14 @@ public abstract class JDAS implements DAESolver {
                                         //write the string for the reaction with an edge product (it has been assumed above that only one side will have an edge species (although both sides of the reaction could have a core species))
                                         if(edgeReaction){
                                             edgeReactionCounter++;
-                                            if(forwardFlag){
-                                                String str = getEdgeReactionString(model, edgeID, rxn, p_temperature, p_pressure);//use the forward reaction
-                                                edgeReacInfoString.append("\n" + str);
-                                            }
-                                            else{
-                                                String str = getEdgeReactionString(model, edgeID, (PDepReaction)rxn.getReverseReaction(), p_temperature, p_pressure);//use the reverse reaction
-                                                edgeReacInfoString.append("\n" + str);
-                                            }
+ //                                           if(forwardFlag){
+ //                                               String str = getEdgeReactionString(model, edgeID, rxn, p_temperature, p_pressure);//use the forward reaction
+ //                                               edgeReacInfoString.append("\n" + str);
+ //                                           }
+ //                                           else{
+ //                                               String str = getEdgeReactionString(model, edgeID, (PDepReaction)rxn.getReverseReaction(), p_temperature, p_pressure);//use the reverse reaction
+ //                                               edgeReacInfoString.append("\n" + str);
+ //                                           }
                                         }
                                 }
 			}
@@ -887,7 +890,7 @@ public abstract class JDAS implements DAESolver {
                                     if(allCoreReac){//only consider cases where all reactants are in the core
                                         edgeReactionCounter++;
                                         //update the output string with info for kLeak for one PDepNetwork
-                                        edgeReacInfoString.append("\n" + reacCount + " " + prodCount + " " + tempReacArray[0] + " " + tempReacArray[1] + " " + tempReacArray[2] + " " + tempProdArray[0] + " " + tempProdArray[1] + " " + tempProdArray[2] + " " + k);
+//                                        edgeReacInfoString.append("\n" + reacCount + " " + prodCount + " " + tempReacArray[0] + " " + tempReacArray[1] + " " + tempReacArray[2] + " " + tempProdArray[0] + " " + tempProdArray[1] + " " + tempProdArray[2] + " " + k);
                                     }
                                     
                                     
@@ -896,60 +899,229 @@ public abstract class JDAS implements DAESolver {
                         }
 		}
 
-		//edgeSpeciesCounter = edgeID.size();
-		outputString.append("\n" + ((RateBasedVT)validityTester).getTolerance() + "\n" + edgeSpeciesCounter + " " + edgeReactionCounter);//***thresh needs to be defined
-		outputString.append(edgeReacInfoString);
-	}
+
+                
+                //write the counter (and tolerance) info and go through a second time, this time writing to the buffered writer
+                try{
+                    //edgeSpeciesCounter = edgeID.size();
+                    bw.write("\n" + ((RateBasedVT)validityTester).getTolerance() + "\n" + edgeSpeciesCounter + " " + edgeReactionCounter);//***thresh needs to be defined
+                    //bw.flush();
+                    //	bw.write(edgeReacInfoString);
+                    
+                    edgeReactionCounter = 0;
+                    edgeSpeciesCounter = 0;
+
+                    // First use reactions in unreacted reaction set, which is valid for both RateBasedRME and RateBasedPDepRME
+                    edgeID = new HashMap();
+                    ur = model.getUnreactedReactionSet();
+                    for (Iterator iur = ur.iterator(); iur.hasNext();) {
+                            edgeReactionCounter++;
+                            Reaction r = (Reaction) iur.next();
+                            String str = getEdgeReactionString(model, edgeID, r, p_temperature, p_pressure);
+                            bw.write("\n" + str);
+                    }
+                    edgeSpeciesCounter = edgeID.size();//update edge species counter (this will be important for the case of non-P-dep operation)
+                    // For the case where validityTester is RateBasedPDepVT (assumed to also be directly associated with use of RateBasedPDepRME), consider two additional types of reactions
+                    if (validityTester instanceof RateBasedPDepVT) {
+                            //first consider NetReactions (formerly known as PDepNetReactionList)
+                            for (Iterator iter0 = PDepNetwork.getNetworks().iterator(); iter0.hasNext();) {
+                                    PDepNetwork pdn = (PDepNetwork) iter0.next();
+                                    for (ListIterator iter = pdn.getNetReactions().listIterator(); iter.hasNext(); ) {
+                                            PDepReaction rxn = (PDepReaction) iter.next();
+                                          //  boolean allCoreReac=true; //flag to check whether all the reactants are in the core;
+                                            boolean forwardFlag=true;//flag to track whether the direction that goes to (as products) at least one edge species is forward or reverse (presumably from all core species)
+                                            boolean edgeReaction=false;//flag to track whether this is an edge reaction
+                                            //first determine the direction that gives unreacted products; this will set the forward flag
+                                            for (int j = 0; j < rxn.getReactantNumber(); j++) {
+                                                    Species species = (Species) rxn.getReactantList().get(j);
+                                                    if (model.containsAsUnreactedSpecies(species)){                        
+                                                        forwardFlag = false; //use the reverse reaction
+                                                        edgeReaction = true;
+                                                    }
+                                            }
+                                            for (int j = 0; j < rxn.getProductNumber(); j++) {
+                                                    Species species = (Species) rxn.getProductList().get(j);
+                                                    if (model.containsAsUnreactedSpecies(species)){
+                                                        forwardFlag = true; //use the forward reaction
+                                                        edgeReaction = true;
+                                                    }
+                                            }
+                                            //check whether all reactants are in the core; if not, it is not a true edge reaction (alternatively, we could use an allCoreReac flag like elsewhere)
+                                            if (edgeReaction){
+                                                if(forwardFlag){
+                                                    for (int j = 0; j < rxn.getReactantNumber(); j++) {
+                                                        Species species = (Species) rxn.getReactantList().get(j);
+                                                        if(!model.containsAsReactedSpecies(species)) edgeReaction = false;
+                                                    }
+                                                }
+                                                else{
+                                                    for (int j = 0; j < rxn.getProductNumber(); j++) {
+                                                        Species species = (Species) rxn.getProductList().get(j);
+                                                        if(!model.containsAsReactedSpecies(species)) edgeReaction = false;
+                                                    }
+                                                }
+                                            }
+                                            //write the string for the reaction with an edge product (it has been assumed above that only one side will have an edge species (although both sides of the reaction could have a core species))
+                                            if(edgeReaction){
+                                                edgeReactionCounter++;
+                                                if(forwardFlag){
+                                                    String str = getEdgeReactionString(model, edgeID, rxn, p_temperature, p_pressure);//use the forward reaction
+                                                    bw.write("\n" + str);
+                                                }
+                                                else{
+                                                    String str = getEdgeReactionString(model, edgeID, (PDepReaction)rxn.getReverseReaction(), p_temperature, p_pressure);//use the reverse reaction
+                                                    bw.write("\n" + str);
+                                                }
+                                            }
+                                    }
+                            }
+
+                           //6/19/09 gmagoon: original code below; with new P-dep implementation, it would only take into account forward reactions              
+                                            //if (rxn.isEdgeReaction(model)) {
+                                            //	edgeReactionCounter++;
+                                            //	String str = getEdgeReactionString(model, edgeID, rxn, p_temperature, p_pressure);
+                                            //	edgeReacInfoString.append("\n" + str);
+                                            //}
+                           //a potentially simpler approach based on the original approach (however, it seems like isEdgeReaction may return false even if there are some core products along with edge products):
+    //                                        PDepReaction rxnReverse = (PDepReaction)rxn.getReverseReaction();
+    //                                        if (rxn.isEdgeReaction(model)) {
+    //                                            edgeReactionCounter++;
+    //					    String str = getEdgeReactionString(model, edgeID, rxn, p_temperature, p_pressure);
+    //					    edgeReacInfoString.append("\n" + str);
+    //					}
+    //                                        else if (rxnReverse.isEdgeReaction(model)){
+    //                                            edgeReactionCounter++;
+    //					    String str = getEdgeReactionString(model, edgeID, rxn, p_temperature, p_pressure);
+    //					    edgeReacInfoString.append("\n" + str);
+    //                                        }
+                            //second, consider kLeak of each reaction network so that the validity of each reaction network may be tested
+                            //in the original CHEMDIS approach, we included a reaction and pseudospecies for each kleak/P-dep network
+                            //with the FAME approach we still consider each P-dep network as a pseudospecies, but we have multiple reactions contributing to this pseudo-species, with each reaction having different reactants
+                            edgeSpeciesCounter = edgeID.size();//above functions use getEdgeReactionString, which only uses edgeSpeciesCounter locally; we need to update it for the current context
+                            for (Iterator iter1 = PDepNetwork.getNetworks().iterator(); iter1.hasNext();) {
+                                    PDepNetwork pdn = (PDepNetwork)iter1.next();
+                                    //account for pseudo-edge species product by incrementing the edgeSpeciesCounter and storing the ID in the tempProdArray; each of these ID's will occur once and only once; thus, note that the corresponding PDepNetwork is NOT stored to the HashMap
+                                    int prodCount=1;//prodCount will not be modified as each PDepNetwork will be treated as a pseudo-edge species product
+                                    int[] tempProdArray = {0, 0, 0};
+                                    edgeSpeciesCounter++;
+                                    tempProdArray[0]=edgeSpeciesCounter;//note that if there are no non-included reactions that have all core reactants for a particular P-dep network, then the ID will be allocated, but not used...hopefully this would not cause problems with the Fortran code
+                                    double k = 0.0;
+                                 //   double k = pdn.getKLeak(index);//index in DASSL should correspond to the same (reactionSystem/TPcondition) index as used by kLeak
+                                 //   if (!pdn.isActive() && pdn.getIsChemAct()) {
+                                 //           k = pdn.getEntryReaction().calculateTotalRate(p_temperature);
+                                 //   }
+                                    for (ListIterator<PDepReaction> iter = pdn.getNonincludedReactions().listIterator(); iter.hasNext(); ) {//cf. getLeakFlux in PDepNetwork
+                                        PDepReaction rxn = iter.next();
+                                        int reacCount=0;
+                                        int[] tempReacArray = {0, 0, 0};
+                                        boolean allCoreReac=false;//allCoreReac will be used to track whether all reactant species are in the core
+                                        if (rxn.getReactant().getIncluded() && !rxn.getProduct().getIncluded()){
+                                            k = rxn.calculateRate(p_temperature, p_pressure);
+                                            allCoreReac=true;
+                                            //iterate over the reactants, counting and storing IDs in tempReacArray, up to a maximum of 3 reactants
+                                            for (ListIterator<Species> rIter = rxn.getReactant().getSpeciesListIterator(); rIter.hasNext(); ) {
+                                                reacCount++;
+                                                Species spe = (Species)rIter.next();
+                                                if(model.containsAsReactedSpecies(spe)){
+                                                    tempReacArray[reacCount-1]=getRealID(spe);
+                                                }
+                                                else{
+                                                    allCoreReac=false;
+                                                }
+                                            }
+                                        }
+                                        else if (!rxn.getReactant().getIncluded() && rxn.getProduct().getIncluded()){
+                                            PDepReaction rxnReverse = (PDepReaction)rxn.getReverseReaction();
+                                            k = rxnReverse.calculateRate(p_temperature, p_pressure);
+                                            allCoreReac=true;
+                                            //iterate over the products, counting and storing IDs in tempReacArray, up to a maximum of 3 reactants
+                                            for (ListIterator<Species> rIter = rxn.getProduct().getSpeciesListIterator(); rIter.hasNext(); ) {
+
+                                                reacCount++;
+                                                Species spe = (Species)rIter.next();
+                                                if(model.containsAsReactedSpecies(spe)){
+                                                    tempReacArray[reacCount-1]=getRealID(spe);
+                                                }
+                                                else{
+                                                    allCoreReac=false;
+                                                }
+                                            }
+                                        }
+                                        if(allCoreReac){//only consider cases where all reactants are in the core
+                                            edgeReactionCounter++;
+                                            //update the output string with info for kLeak for one PDepNetwork
+                                            bw.write("\n" + reacCount + " " + prodCount + " " + tempReacArray[0] + " " + tempReacArray[1] + " " + tempReacArray[2] + " " + tempProdArray[0] + " " + tempProdArray[1] + " " + tempProdArray[2] + " " + k);
+                                        }
+
+
+                                    }
+
+                            }
+                    }
+                }
+                catch(IOException e) {
+                    System.err.println("Problem writing Solver Input File!");
+                    e.printStackTrace();
+                }
+        
+        
+        }
 	
 	public void getConcentractionFlags(ReactionModel p_reactionModel) {
-		
-		// Add list of flags for constantConcentration
-        // one for each species, and a final one for the volume
-        // if 1: DASSL will not change the number of moles of that species (or the volume)
-        // if 0: DASSL will integrate the ODE as normal
-        // eg. liquid phase calculations with a constant concentration of O2 (the solubility limit - replenished from the gas phase)
-        // for normal use, this will be a sequence of '0 's
-        outputString.append("\n");
-        
-        // This portion of code was commented out by MRH on 21-Jul-2009.
-        //	The indexing of the species in p_reactionModel did not match up with the
-        //	indexing of the species in the SpeciesStatus.  When constructing an input
-        //	file for a "ConstantConcentration" ODESolver call, the species whose flux
-        //	was being set to zero was not necessarily the desired species
-//		for (Iterator iter = p_reactionModel.getSpecies(); iter.hasNext(); ) {
-//        	Species spe = (Species)iter.next();
-//            if (spe.isConstantConcentration())
-//                outputString.append("1 ");
-//            else 
-//                outputString.append("0 ");
-//        }
-        
-        // Define boolean variable setVolumeConstant: if any species in the condition.txt
-        //	file has been defined with "ConstantConcentration", set this variable to true.
-        //	This variable will determine if the ODESolver assumes constant volume or not.
-        boolean setVolumeConstant = false;
-        int[] tempVector = new int[p_reactionModel.getSpeciesNumber()];
-		for (Iterator iter = p_reactionModel.getSpecies(); iter.hasNext(); ) {
-        	Species spe = (Species)iter.next();
-        	int id = getRealID(spe);
-        	// Previous line is due to species order in p_reactionModel not necessarily being
-        	//	sequential.  We read in the species RealID (which is what is read in during
-        	//	the other functions when writing the ODESolver input file) and associate a +1
-        	//	with a "ConstantConcentration" species and a 0 for all others
-			if (spe.isConstantConcentration()) {
-				tempVector[id-1] = 1;
-				setVolumeConstant = true;
-			} else {
-				tempVector[id-1] = 0;
-			}
-        }
-		
-		// Append the constant concentration flags to the outputString
-		for (int i=0; i<tempVector.length; i++) {
-			outputString.append(tempVector[i] + " ");
-		}
-		if (setVolumeConstant) outputString.append("1 \n");
-		else outputString.append("0 \n"); // for liquid EOS or constant volume this should be 1 
+            try{
+                    // Add list of flags for constantConcentration
+            // one for each species, and a final one for the volume
+            // if 1: DASSL will not change the number of moles of that species (or the volume)
+            // if 0: DASSL will integrate the ODE as normal
+            // eg. liquid phase calculations with a constant concentration of O2 (the solubility limit - replenished from the gas phase)
+            // for normal use, this will be a sequence of '0 's
+            bw.write("\n");
+
+            // This portion of code was commented out by MRH on 21-Jul-2009.
+            //	The indexing of the species in p_reactionModel did not match up with the
+            //	indexing of the species in the SpeciesStatus.  When constructing an input
+            //	file for a "ConstantConcentration" ODESolver call, the species whose flux
+            //	was being set to zero was not necessarily the desired species
+    //		for (Iterator iter = p_reactionModel.getSpecies(); iter.hasNext(); ) {
+    //        	Species spe = (Species)iter.next();
+    //            if (spe.isConstantConcentration())
+    //                outputString.append("1 ");
+    //            else 
+    //                outputString.append("0 ");
+    //        }
+
+            // Define boolean variable setVolumeConstant: if any species in the condition.txt
+            //	file has been defined with "ConstantConcentration", set this variable to true.
+            //	This variable will determine if the ODESolver assumes constant volume or not.
+            boolean setVolumeConstant = false;
+            int[] tempVector = new int[p_reactionModel.getSpeciesNumber()];
+                    for (Iterator iter = p_reactionModel.getSpecies(); iter.hasNext(); ) {
+                    Species spe = (Species)iter.next();
+                    int id = getRealID(spe);
+                    // Previous line is due to species order in p_reactionModel not necessarily being
+                    //	sequential.  We read in the species RealID (which is what is read in during
+                    //	the other functions when writing the ODESolver input file) and associate a +1
+                    //	with a "ConstantConcentration" species and a 0 for all others
+                            if (spe.isConstantConcentration()) {
+                                    tempVector[id-1] = 1;
+                                    setVolumeConstant = true;
+                            } else {
+                                    tempVector[id-1] = 0;
+                            }
+            }
+
+                    // Append the constant concentration flags to the outputString
+                    for (int i=0; i<tempVector.length; i++) {
+                            bw.write(tempVector[i] + " ");
+                    }
+                    if (setVolumeConstant) bw.write("1 \n");
+                    else bw.write("0 \n"); // for liquid EOS or constant volume this should be 1 
+                
+            }
+            catch (IOException e) {
+        	System.err.println("Problem writing Solver Input File!");
+                e.printStackTrace();
+            }
 		
 	}
 	
@@ -962,5 +1134,18 @@ public abstract class JDAS implements DAESolver {
             }
             return totalNonInertConc;
         }
-	
+        
+        // set up the input file
+        public void setupInputFile(){
+            File SolverInput = new File("ODESolver/SolverInput.dat");
+            try {
+                    FileWriter fw = new FileWriter(SolverInput);
+                    bw = new BufferedWriter(fw);
+    //                fw.write(outputString.toString());
+    //                fw.close();
+            } catch (IOException e) {
+                    System.err.println("Problem creating Solver Input File!");
+                    e.printStackTrace();
+            }
+        }
 }

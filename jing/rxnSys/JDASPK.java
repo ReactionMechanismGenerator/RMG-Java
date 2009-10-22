@@ -32,6 +32,7 @@ import jing.rxn.*;
 import jing.chem.*;
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
@@ -97,8 +98,9 @@ public class JDASPK extends JDAS {
 
     //## operation solve(boolean,ReactionModel,boolean,SystemSnapshot,ReactionTime,ReactionTime,Temperature,Pressure,boolean)
     public SystemSnapshot solve(boolean p_initialization, ReactionModel p_reactionModel, boolean p_reactionChanged, SystemSnapshot p_beginStatus, ReactionTime p_beginTime, ReactionTime p_endTime, Temperature p_temperature, Pressure p_pressure, boolean p_conditionChanged,TerminationTester tt, int p_iterationNum) {
-    	
-    	outputString = new StringBuilder();
+        // set up the input file
+        setupInputFile();
+    	//outputString = new StringBuilder();
     	//first generate an id for all the species
     	Iterator spe_iter = p_reactionModel.getSpecies();
     	while (spe_iter.hasNext()){
@@ -153,34 +155,47 @@ public class JDASPK extends JDAS {
         //6/25/08 gmagoon: (next two lines) for autoflag, get binary 0 or 1 corresponding to boolean false/true
         int af = 0;
         if (autoflag) af = 1;
-        if (tt instanceof ConversionTT){
-        	SpeciesConversion sc = (SpeciesConversion)((ConversionTT)tt).speciesGoalConversionSet.get(0);
-            outputString.append(nState + "\t" + neq + "\t" +  getRealID(sc.species) + "\t 1" +"\t"+ af + "\t0\n"); //6/25/08 gmagoon: added autoflag, needed when using daspkAUTO.exe; 080509 gmagoon: added sensitivity flag = 0
-            outputString.append(conversionSet[p_iterationNum]+"\n");
-    		
+        try{
+            if (tt instanceof ConversionTT){
+                    SpeciesConversion sc = (SpeciesConversion)((ConversionTT)tt).speciesGoalConversionSet.get(0);
+                bw.write(nState + "\t" + neq + "\t" +  getRealID(sc.species) + "\t 1" +"\t"+ af + "\t0\n"); //6/25/08 gmagoon: added autoflag, needed when using daspkAUTO.exe; 080509 gmagoon: added sensitivity flag = 0
+                bw.write(conversionSet[p_iterationNum]+"\n");
+
+            }
+            else{
+                    bw.write(nState + "\t" + neq + "\t" +  -1 + "\t" +1+"\t"+ af + "\t0\n");//6/25/08 gmagoon: added autoflag, needed when using daspkAUTO.exe; 080509 gmagoon: added sensitivity flag = 0
+                    bw.write(0+"\n");
+
+            }
+            bw.write( tBegin+" "+tEnd+"\n" );
+                    for (int i=0; i<nState; i++)
+                            bw.write(y[i]+" ");
+                    bw.write("\n");
+                    for (int i=0; i<nState; i++)
+                            bw.write(yprime[i]+" ");
+                    bw.write("\n");
+                    for (int i=0; i<30; i++)
+                            bw.write(info[i]+" ");
+                    bw.write("\n"+ rtol + " "+atol);
+
+                    bw.write("\n" + thermoString.toString() + "\n" + p_temperature.getK() + " " + p_pressure.getPa() + "\n" + rList.size() + "\n" + rString.toString() + "\n" + thirdBodyList.size() + "\n"+tbrString.toString() + "\n" + troeList.size() + "\n" + troeString.toString()+"\n" + lindemannList.size() + "\n" + lindemannString.toString() + "\n");
         }
-        else{
-        	outputString.append(nState + "\t" + neq + "\t" +  -1 + "\t" +1+"\t"+ af + "\t0\n");//6/25/08 gmagoon: added autoflag, needed when using daspkAUTO.exe; 080509 gmagoon: added sensitivity flag = 0
-        	outputString.append(0+"\n");
-    		
+        catch (IOException e) {
+            System.err.println("Problem writing Solver Input File!");
+            e.printStackTrace();
         }
-        outputString.append( tBegin+" "+tEnd+"\n" );
-		for (int i=0; i<nState; i++)
-			outputString.append(y[i]+" ");
-		outputString.append("\n");
-		for (int i=0; i<nState; i++)
-			outputString.append(yprime[i]+" ");
-		outputString.append("\n");
-		for (int i=0; i<30; i++)
-			outputString.append(info[i]+" ");
-		outputString.append("\n"+ rtol + " "+atol);
-		
-		outputString.append("\n" + thermoString.toString() + "\n" + p_temperature.getK() + " " + p_pressure.getPa() + "\n" + rList.size() + "\n" + rString.toString() + "\n" + thirdBodyList.size() + "\n"+tbrString.toString() + "\n" + troeList.size() + "\n" + troeString.toString()+"\n" + lindemannList.size() + "\n" + lindemannString.toString() + "\n");
-        
 		///4/30/08 gmagoon: code for providing edge reaction info to DASPK in cases if the automatic time stepping flag is set to true
 		if (autoflag)
 			getAutoEdgeReactionInfo((CoreEdgeReactionModel) p_reactionModel, p_temperature, p_pressure);
-		
+	
+                //this should be the end of the input file
+                try{
+                    bw.close();
+                }
+                catch (IOException e) {
+                    System.err.println("Problem closing Solver Input File!");
+                    e.printStackTrace();
+		}
         int idid=0;
         LinkedHashMap speStatus = new LinkedHashMap();
         double [] senStatus = new double[nParameter*nState];
@@ -238,15 +253,15 @@ public class JDASPK extends JDAS {
                 String workingDirectory = System.getProperty("RMG.workingDirectory");
 		
 		// write the input file
-		File SolverInput = new File("ODESolver/SolverInput.dat");
-		try {
-			FileWriter fw = new FileWriter(SolverInput);
-			fw.write(outputString.toString());
-			fw.close();
-		} catch (IOException e) {
-			System.err.println("Problem writing Solver Input File!");
-			e.printStackTrace();
-		}
+//		File SolverInput = new File("ODESolver/SolverInput.dat");
+//		try {
+//			FileWriter fw = new FileWriter(SolverInput);
+//			fw.write(outputString.toString());
+//			fw.close();
+//		} catch (IOException e) {
+//			System.err.println("Problem writing Solver Input File!");
+//			e.printStackTrace();
+//		}
 		
 		// Rename RWORK and IWORK files if they exist
                 renameIntermediateFilesBeforeRun();
@@ -414,8 +429,8 @@ public class JDASPK extends JDAS {
 	}
 	
 	public LinkedList solveSEN(boolean p_initialization, ReactionModel p_reactionModel, boolean p_reactionChanged, SystemSnapshot p_beginStatus, ReactionTime p_beginTime, ReactionTime p_endTime, Temperature p_temperature, Pressure p_pressure, boolean p_conditionChanged,TerminationTester tt) {
-    	
-		outputString = new StringBuilder();
+                setupInputFile();
+	//	outputString = new StringBuilder();
 		Iterator spe_iter = p_reactionModel.getSpecies();
     	while (spe_iter.hasNext()){
     		Species spe = (Species)spe_iter.next();
@@ -466,55 +481,68 @@ public class JDASPK extends JDAS {
 			
 			
         //}
-		int iterNum;
-		if (tt instanceof ConversionTT){
-        	SpeciesConversion sc = (SpeciesConversion)((ConversionTT)tt).speciesGoalConversionSet.get(0);
-        	iterNum = conversionSet.length;
-            outputString.append(nState + "\t" + neq + "\t" +  getRealID(sc.species) + "\t" +conversionSet.length+ "\t0\t1\n");//gmagoon 080509: added autoflag=0; later: added sensflag=1
-    		for (int i=0; i<conversionSet.length; i++){
-    			outputString.append(conversionSet[i] + " ");
-    		}
-    		outputString.append("\n");
-        }
-        else{
-        	LinkedList timeSteps = ((ReactionTimeTT)tt).timeStep;
-        	iterNum = timeSteps.size();
-        	outputString.append(nState + "\t" + neq + "\t" +  -1 + "\t" +timeSteps.size()+"\t0\t1\n");
-        	for (int i=0; i<timeSteps.size(); i++){
-        		outputString.append(((ReactionTime)timeSteps.get(i)).time + " ");
-        	}
-    		outputString.append("\n");
-        }
-        outputString.append( tBegin+" "+tEnd+ "\n");
-		for (int i=0; i<nState; i++)
-			outputString.append(y[i]+" ");
-		outputString.append("\n");
-		for (int i=0; i<nState; i++)
-			outputString.append(yprime[i]+" ");
-		outputString.append("\n");
-		for (int i=0; i<30; i++)
-			outputString.append(info[i]+" ");
-		outputString.append("\n"+ rtol + " "+atol);
-		
-		outputString.append("\n" + thermoString.toString() + "\n" + p_temperature.getK() + " " + p_pressure.getPa() + "\n" + rList.size() + "\n" + rString.toString() + "\n" + thirdBodyList.size() + "\n"+tbrString.toString() + "\n" + troeList.size() + "\n" + troeString.toString()+"\n" + lindemannList.size() + "\n" + lindemannString.toString() + "\n");
-		
-        // Add list of flags for constantConcentration
-        // one for each species, and a final one for the volume
-        // if 1:  will not change the number of moles of that species (or the volume)
-        // if 0:  will integrate the ODE as normal
-        // eg. liquid phase calculations with a constant concentration of O2 (the solubility limit - replenished from the gas phase)
-        // for normal use, this will be a sequence of '0 's
-        for (Iterator iter = p_reactionModel.getSpecies(); iter.hasNext(); ) {
-        	Species spe = (Species)iter.next();
-            if (spe.isConstantConcentration())
-                System.err.println("WARNING. 'ConstantConcentration' option not implemented in DASPK solver. Use DASSL if you need this.");
-                /*outputString.append("1 ");
-            else 
-                outputString.append("0 ");*/
-        }
-        // outputString.append("0 \n"); // for liquid EOS or constant volume this should be 1 
+		int iterNum = 0;
+                try{
+                    if (tt instanceof ConversionTT){
+                        SpeciesConversion sc = (SpeciesConversion)((ConversionTT)tt).speciesGoalConversionSet.get(0);
+                        iterNum = conversionSet.length;
+                        bw.write(nState + "\t" + neq + "\t" +  getRealID(sc.species) + "\t" +conversionSet.length+ "\t0\t1\n");//gmagoon 080509: added autoflag=0; later: added sensflag=1
+                        for (int i=0; i<conversionSet.length; i++){
+                                bw.write(conversionSet[i] + " ");
+                        }
+                        bw.write("\n");
+                    }
+                    else{
+                        LinkedList timeSteps = ((ReactionTimeTT)tt).timeStep;
+                        iterNum = timeSteps.size();
+                        bw.write(nState + "\t" + neq + "\t" +  -1 + "\t" +timeSteps.size()+"\t0\t1\n");
+                        for (int i=0; i<timeSteps.size(); i++){
+                                bw.write(((ReactionTime)timeSteps.get(i)).time + " ");
+                        }
+                        bw.write("\n");
+                     }
+                    bw.write( tBegin+" "+tEnd+ "\n");
+                    for (int i=0; i<nState; i++)
+                            bw.write(y[i]+" ");
+                    bw.write("\n");
+                    for (int i=0; i<nState; i++)
+                            bw.write(yprime[i]+" ");
+                    bw.write("\n");
+                    for (int i=0; i<30; i++)
+                            bw.write(info[i]+" ");
+                    bw.write("\n"+ rtol + " "+atol);
 
-        
+                    bw.write("\n" + thermoString.toString() + "\n" + p_temperature.getK() + " " + p_pressure.getPa() + "\n" + rList.size() + "\n" + rString.toString() + "\n" + thirdBodyList.size() + "\n"+tbrString.toString() + "\n" + troeList.size() + "\n" + troeString.toString()+"\n" + lindemannList.size() + "\n" + lindemannString.toString() + "\n");
+
+                    // Add list of flags for constantConcentration
+                    // one for each species, and a final one for the volume
+                    // if 1:  will not change the number of moles of that species (or the volume)
+                    // if 0:  will integrate the ODE as normal
+                    // eg. liquid phase calculations with a constant concentration of O2 (the solubility limit - replenished from the gas phase)
+                    // for normal use, this will be a sequence of '0 's
+                    for (Iterator iter = p_reactionModel.getSpecies(); iter.hasNext(); ) {
+                            Species spe = (Species)iter.next();
+                        if (spe.isConstantConcentration())
+                            System.err.println("WARNING. 'ConstantConcentration' option not implemented in DASPK solver. Use DASSL if you need this.");
+                            /*outputString.append("1 ");
+                        else 
+                            outputString.append("0 ");*/
+                    }
+                    // outputString.append("0 \n"); // for liquid EOS or constant volume this should be 1 
+                }
+                catch (IOException e) {
+                    System.err.println("Problem writing Solver Input File!");
+                    e.printStackTrace();
+                }
+                
+        //this should be the end of the input file
+        try{
+            bw.close();
+        }
+        catch (IOException e) {
+            System.err.println("Problem closing Solver Input File!");
+            e.printStackTrace();
+        }
         int idid=0;
         
         
@@ -535,15 +563,15 @@ public class JDASPK extends JDAS {
 		ReactionTime beginT = new ReactionTime(0.0, "sec");
 		ReactionTime endT;
 		//write the input file
-		File SolverInput = new File("ODESolver/SolverInput.dat");
-		try {
-			FileWriter fw = new FileWriter(SolverInput);
-			fw.write(outputString.toString());
-			fw.close();
-		} catch (IOException e) {
-			System.err.println("Problem writing Solver Input File!");
-			e.printStackTrace();
-		}
+	//	File SolverInput = new File("ODESolver/SolverInput.dat");
+	//	try {
+	//		FileWriter fw = new FileWriter(SolverInput);
+	//		fw.write(outputString.toString());
+	//		fw.close();
+	//	} catch (IOException e) {
+	//		System.err.println("Problem writing Solver Input File!");
+        //			e.printStackTrace();
+	//	}
 		Global.writeSolverFile +=(System.currentTimeMillis()-startTime)/1000/60;
 		//run the solver on the input file
 		boolean error = false;

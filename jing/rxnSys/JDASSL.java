@@ -33,6 +33,7 @@ import jing.rxn.*;
 import jing.chem.*;
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
@@ -102,7 +103,9 @@ public class JDASSL extends JDAS {
     //## operation solve(boolean,ReactionModel,boolean,SystemSnapshot,ReactionTime,ReactionTime,Temperature,Pressure,boolean)
     public SystemSnapshot solve(boolean p_initialization, ReactionModel p_reactionModel, boolean p_reactionChanged, SystemSnapshot p_beginStatus, ReactionTime p_beginTime, ReactionTime p_endTime, Temperature p_temperature, Pressure p_pressure, boolean p_conditionChanged, TerminationTester tt, int p_iterationNum) {
         
-    	outputString = new StringBuilder();
+        // set up the input file
+        setupInputFile();
+        //outputString = new StringBuilder();
         //first generate an id for all the species
     	Iterator spe_iter = p_reactionModel.getSpecies();
     	// Commented out by MRH on 1-Jun-2009:
@@ -169,33 +172,45 @@ public class JDASSL extends JDAS {
         //5/5/08 gmagoon: (next two lines) for autoflag, get binary 1 or 0 corresponding to boolean true/false
         int af = 0;
         if (autoflag) af = 1;
-        if (tt instanceof ConversionTT){
-                SpeciesConversion sc = (SpeciesConversion)((ConversionTT)tt).speciesGoalConversionSet.get(0);    
-                outputString.append(nState + "\t" + neq + "\t" +  getRealID(sc.species) + "\t" +conversionSet[p_iterationNum]+"\t"+ af+"\n");//5/5/08 gmagoon: added autoflag, needed when using dasslAUTO.exe
-    		
+        try{
+            if (tt instanceof ConversionTT){
+                    SpeciesConversion sc = (SpeciesConversion)((ConversionTT)tt).speciesGoalConversionSet.get(0);    
+                    bw.write(nState + "\t" + neq + "\t" +  getRealID(sc.species) + "\t" +conversionSet[p_iterationNum]+"\t"+ af+"\n");//5/5/08 gmagoon: added autoflag, needed when using dasslAUTO.exe
+
+            }
+            else{
+                    bw.write(nState + "\t" + neq + "\t" +  -1 + "\t" +0+ "\t"+ af+"\n");//5/5/08 gmagoon: added autoflag, needed when using dasslAUTO.exe
+
+            }
+            for (int i=0; i<neq; i++)
+                    bw.write(y[i]+" ");
+            bw.write("\n");
+            for (int i=0; i<neq; i++)
+                    bw.write(yprime[i]+" ");
+            bw.write("\n" + tBegin+" "+tEnd+"\n");
+            for (int i=0; i<30; i++)
+                    bw.write(info[i]+" ");
+            bw.write("\n"+ rtol + " "+atol);
+            bw.write("\n" + p_temperature.getK() + " " + p_pressure.getPa() + "\n" + rList.size() + "\n" + rString.toString() + "\n" + thirdBodyList.size() + "\n"+tbrString.toString() + "\n" + troeList.size() + "\n" + troeString.toString()+"\n" + lindemannList.size() + "\n" + lindemannString.toString() + "\n");
         }
-        else{
-        	outputString.append(nState + "\t" + neq + "\t" +  -1 + "\t" +0+ "\t"+ af+"\n");//5/5/08 gmagoon: added autoflag, needed when using dasslAUTO.exe
-    		
+        catch (IOException e) {
+        	System.err.println("Problem writing Solver Input File!");
+                e.printStackTrace();
         }
-        for (int i=0; i<neq; i++)
-			outputString.append(y[i]+" ");
-		outputString.append("\n");
-		for (int i=0; i<neq; i++)
-			outputString.append(yprime[i]+" ");
-		outputString.append("\n" + tBegin+" "+tEnd+"\n");
-		for (int i=0; i<30; i++)
-			outputString.append(info[i]+" ");
-		outputString.append("\n"+ rtol + " "+atol);
-		outputString.append("\n" + p_temperature.getK() + " " + p_pressure.getPa() + "\n" + rList.size() + "\n" + rString.toString() + "\n" + thirdBodyList.size() + "\n"+tbrString.toString() + "\n" + troeList.size() + "\n" + troeString.toString()+"\n" + lindemannList.size() + "\n" + lindemannString.toString() + "\n");
-	
         //4/30/08 gmagoon: code for providing edge reaction info to DASSL in cases if the automatic time stepping flag is set to true
 		if (autoflag)
 			getAutoEdgeReactionInfo((CoreEdgeReactionModel) p_reactionModel, p_temperature, p_pressure);
         
 		// Add flags that specify whether the concentrations are constant or not
 		getConcentractionFlags(p_reactionModel);
-        
+                //this should be the end of the input file
+                try{
+                    bw.close();
+                }
+                catch (IOException e) {
+                    System.err.println("Problem closing Solver Input File!");
+                    e.printStackTrace();
+		}
         int idid=0;
         LinkedHashMap speStatus = new LinkedHashMap();
         LinkedList senStatus = new LinkedList();
@@ -255,16 +270,16 @@ public class JDASSL extends JDAS {
 	//	super.solveDAE("dasslAUTO.exe");
             	String workingDirectory = System.getProperty("RMG.workingDirectory");
 		
-		// write the input file
-		File SolverInput = new File("ODESolver/SolverInput.dat");
-		try {
-			FileWriter fw = new FileWriter(SolverInput);
-			fw.write(outputString.toString());
-			fw.close();
-		} catch (IOException e) {
-			System.err.println("Problem writing Solver Input File!");
-			e.printStackTrace();
-		}
+//		// write the input file
+//		File SolverInput = new File("ODESolver/SolverInput.dat");
+//		try {
+//			FileWriter fw = new FileWriter(SolverInput);
+//			fw.write(outputString.toString());
+//			fw.close();
+//		} catch (IOException e) {
+//			System.err.println("Problem writing Solver Input File!");
+//			e.printStackTrace();
+//		}
 		
 		// Rename RWORK and IWORK files if they exist
 		renameIntermediateFilesBeforeRun();
