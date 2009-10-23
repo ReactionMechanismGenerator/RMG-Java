@@ -87,6 +87,7 @@ public abstract class JDAS implements DAESolver {
     protected LinkedList lindemannList;
 	//protected StringBuilder outputString ;
         protected BufferedWriter bw;
+        protected FileWriter fw;
 	protected StringBuilder rString ;
 	protected StringBuilder tbrString;
 	protected StringBuilder troeString;
@@ -1139,7 +1140,7 @@ public abstract class JDAS implements DAESolver {
         public void setupInputFile(){
             File SolverInput = new File("ODESolver/SolverInput.dat");
             try {
-                    FileWriter fw = new FileWriter(SolverInput);
+                    fw = new FileWriter(SolverInput);
                     bw = new BufferedWriter(fw);
     //                fw.write(outputString.toString());
     //                fw.close();

@@ -192,6 +192,7 @@ public class JDASPK extends JDAS {
                 try{
                     bw.flush();
                     bw.close();
+                    fw.close();
                 }
                 catch (IOException e) {
                     System.err.println("Problem closing Solver Input File!");
