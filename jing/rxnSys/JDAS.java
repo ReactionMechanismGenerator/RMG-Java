@@ -805,14 +805,14 @@ public abstract class JDAS implements DAESolver {
                                         //write the string for the reaction with an edge product (it has been assumed above that only one side will have an edge species (although both sides of the reaction could have a core species))
                                         if(edgeReaction){
                                             edgeReactionCounter++;
- //                                           if(forwardFlag){
- //                                               String str = getEdgeReactionString(model, edgeID, rxn, p_temperature, p_pressure);//use the forward reaction
+                                            if(forwardFlag){
+                                                String str = getEdgeReactionString(model, edgeID, rxn, p_temperature, p_pressure);//use the forward reaction
  //                                               edgeReacInfoString.append("\n" + str);
- //                                           }
- //                                           else{
- //                                               String str = getEdgeReactionString(model, edgeID, (PDepReaction)rxn.getReverseReaction(), p_temperature, p_pressure);//use the reverse reaction
+                                            }
+                                            else{
+                                                String str = getEdgeReactionString(model, edgeID, (PDepReaction)rxn.getReverseReaction(), p_temperature, p_pressure);//use the reverse reaction
  //                                               edgeReacInfoString.append("\n" + str);
- //                                           }
+                                            }
                                         }
                                 }
 			}
