@@ -253,7 +253,9 @@ public class FastMasterEqn implements PDepKineticsEstimator {
 
         }
         catch (Exception e) {
-        	// Save bad input to file
+			e.printStackTrace();
+        	System.out.println(e.getMessage());
+			// Save bad input to file
             try {
                 //FileWriter fw = new FileWriter(new File("fame/" + Integer.toString(runCount+1) + "_input.txt"));
                 FileWriter fw = new FileWriter(new File("fame/" + Integer.toString(pdn.getID()) + "_input.txt"));
