@@ -205,6 +205,7 @@ public class JDASSL extends JDAS {
 		getConcentractionFlags(p_reactionModel);
                 //this should be the end of the input file
                 try{
+                    bw.flush();
                     bw.close();
                 }
                 catch (IOException e) {

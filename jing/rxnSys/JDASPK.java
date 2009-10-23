@@ -190,6 +190,7 @@ public class JDASPK extends JDAS {
 	
                 //this should be the end of the input file
                 try{
+                    bw.flush();
                     bw.close();
                 }
                 catch (IOException e) {
