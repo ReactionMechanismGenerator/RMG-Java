@@ -817,24 +817,6 @@ public abstract class JDAS implements DAESolver {
                                 }
 			}
                                         
-                       //6/19/09 gmagoon: original code below; with new P-dep implementation, it would only take into account forward reactions              
-                                        //if (rxn.isEdgeReaction(model)) {
-					//	edgeReactionCounter++;
-					//	String str = getEdgeReactionString(model, edgeID, rxn, p_temperature, p_pressure);
-					//	edgeReacInfoString.append("\n" + str);
-					//}
-                       //a potentially simpler approach based on the original approach (however, it seems like isEdgeReaction may return false even if there are some core products along with edge products):
-//                                        PDepReaction rxnReverse = (PDepReaction)rxn.getReverseReaction();
-//                                        if (rxn.isEdgeReaction(model)) {
-//                                            edgeReactionCounter++;
-//					    String str = getEdgeReactionString(model, edgeID, rxn, p_temperature, p_pressure);
-//					    edgeReacInfoString.append("\n" + str);
-//					}
-//                                        else if (rxnReverse.isEdgeReaction(model)){
-//                                            edgeReactionCounter++;
-//					    String str = getEdgeReactionString(model, edgeID, rxn, p_temperature, p_pressure);
-//					    edgeReacInfoString.append("\n" + str);
-//                                        }
                         //second, consider kLeak of each reaction network so that the validity of each reaction network may be tested
                         //in the original CHEMDIS approach, we included a reaction and pseudospecies for each kleak/P-dep network
                         //with the FAME approach we still consider each P-dep network as a pseudospecies, but we have multiple reactions contributing to this pseudo-species, with each reaction having different reactants
