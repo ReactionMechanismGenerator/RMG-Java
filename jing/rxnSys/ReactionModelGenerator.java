@@ -2478,31 +2478,32 @@ public class ReactionModelGenerator {
 	}
 
 	private void writeEdgeSpecies() {
-		StringBuilder restartFileContent = new StringBuilder();
-		int speciesCount = 0;
-		try{
-			File edgeSpecies = new File ("Restart/edgeSpecies.txt");
-			FileWriter fw = new FileWriter(edgeSpecies);
+		BufferedWriter bw = null;
+		
+        try {
+            bw = new BufferedWriter(new FileWriter("Restart/edgeSpecies.txt"));
 			for(Iterator iter=((CoreEdgeReactionModel)getReactionModel()).getUnreactedSpeciesSet().iterator();iter.hasNext();){
 				Species species = (Species) iter.next();
-				restartFileContent.append(species.getChemkinName() + "\n");
+				bw.write(species.getChemkinName());
+				bw.newLine();
 				int dummyInt = 0;
-				restartFileContent.append(species.getChemGraph().toString(dummyInt) + "\n");
-				//restartFileContent.append(species.getID());
-				//restartFileContent.append( "\n");
-				/*Species species = (Species) iter.next();
-				restartFileContent = restartFileContent + "("+ speciesCount + ") "+species.getChemkinName() + " \n ";// + 0 + " (mol/cm3) \n";
-				restartFileContent = restartFileContent + species.toString(1) + "\n";
-				speciesCount = speciesCount + 1;*/
+				bw.write(species.getChemGraph().toString(dummyInt));
+				bw.newLine();
 			}
-			//restartFileContent += "\nEND";
-			fw.write(restartFileContent.toString());
-			fw.close();
-		}
-		catch (IOException e){
-			System.out.println("Could not write the restart edgespecies file");
-        	System.exit(0);
-		}
+        } catch (FileNotFoundException ex) {
+            ex.printStackTrace();
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        } finally {
+            try {
+                if (bw != null) {
+                    bw.flush();
+                    bw.close();
+                }
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            }
+        }
 	}
 
          //10/25/07 gmagoon: added reaction system and reaction time as parameters and eliminated use of Global.temperature
@@ -2532,170 +2533,201 @@ public class ReactionModelGenerator {
 	}
 
 	private void writeCoreSpecies() {
-
-		StringBuilder restartFileContent = new StringBuilder();
-		int speciesCount = 0;
-		try{
-			File coreSpecies = new File ("Restart/coreSpecies.txt");
-			FileWriter fw = new FileWriter(coreSpecies);
+		BufferedWriter bw = null;
+		
+        try {
+            bw = new BufferedWriter(new FileWriter("Restart/coreSpecies.txt"));
 			for(Iterator iter=getReactionModel().getSpecies();iter.hasNext();){
 				Species species = (Species) iter.next();
-				restartFileContent.append(species.getChemkinName()+"\n");
+				bw.write(species.getChemkinName());
+				bw.newLine();
 				int dummyInt = 0;
-				restartFileContent.append(species.getChemGraph().toString(dummyInt)+"\n");
-				//restartFileContent.append(species.getID());
-				//restartFileContent.append( "\n");//("+ speciesCount + ") "+species.getChemkinName() + " \n ";// + reactionSystem.getPresentConcentration(species) + " (mol/cm3) \n";
-				//restartFileContent = restartFileContent + species.toString(1) + "\n";
-				//speciesCount = speciesCount + 1;
+				bw.write(species.getChemGraph().toString(dummyInt));
+				bw.newLine();
 			}
-			//restartFileContent += "\nEND";
-			fw.write(restartFileContent.toString());
-			fw.close();
-		}
-		catch (IOException e){
-			System.out.println("Could not write the restart corespecies file");
-        	System.exit(0);
-		}
-
+        } catch (FileNotFoundException ex) {
+            ex.printStackTrace();
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        } finally {
+            try {
+                if (bw != null) {
+                    bw.flush();
+                    bw.close();
+                }
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            }
+        }
 	}
 	
 	private void writeCoreReactions() {
-		StringBuilder restartFileContent = new StringBuilder();
-		try{
-			File coreReactions = new File ("Restart/coreReactions.txt");
-			FileWriter fw = new FileWriter(coreReactions);
+		BufferedWriter bw = null;
+		
+        try {
+            bw = new BufferedWriter(new FileWriter("Restart/coreReactions.txt"));
 			CoreEdgeReactionModel cerm = (CoreEdgeReactionModel)getReactionModel();
 			LinkedHashSet allcoreRxns = cerm.core.reaction;
 			for(Iterator iter=allcoreRxns.iterator(); iter.hasNext();){
 				Reaction reaction = (Reaction) iter.next();
-				if (reaction.isForward()) 
-					restartFileContent.append(reaction.toChemkinString(new Temperature(298,"K")) + "\n");
+				if (reaction.isForward()) {
+					bw.write(reaction.toChemkinString(new Temperature(298,"K")));
+					bw.newLine();
+				}
 			}
-			fw.write(restartFileContent.toString());
-			fw.close();
-		}
-		catch (IOException e){
-			System.out.println("Could not write the restart corereactions file");
-        	System.exit(0);
-		}
+        } catch (FileNotFoundException ex) {
+            ex.printStackTrace();
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        } finally {
+            try {
+                if (bw != null) {
+                    bw.flush();
+                    bw.close();
+                }
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            }
+        }
 	}
 
 	private void writeEdgeReactions() {
-		StringBuilder restartFileContent = new StringBuilder();
-		try{
-			File edgeReactions = new File ("Restart/edgeReactions.txt");
-			FileWriter fw = new FileWriter(edgeReactions);
+		BufferedWriter bw = null;
+		
+        try {
+            bw = new BufferedWriter(new FileWriter("Restart/edgeReactions.txt"));
 			CoreEdgeReactionModel cerm = (CoreEdgeReactionModel)getReactionModel();
 			LinkedHashSet alledgeRxns = cerm.edge.reaction;
 			for(Iterator iter=alledgeRxns.iterator(); iter.hasNext();){
 				Reaction reaction = (Reaction) iter.next();
-				if (reaction.isForward())
-					restartFileContent.append(reaction.toChemkinString(new Temperature(298,"K")) + "\n");
-				else if (reaction.getReverseReaction().isForward())
-					restartFileContent.append(reaction.getReverseReaction().toChemkinString(new Temperature(298,"K")) + "\n");
-				else
+				if (reaction.isForward()) {
+					bw.write(reaction.toChemkinString(new Temperature(298,"K")));
+					bw.newLine();
+				} else if (reaction.getReverseReaction().isForward()) {
+					bw.write(reaction.getReverseReaction().toChemkinString(new Temperature(298,"K")));
+					bw.newLine();
+				} else
 					System.out.println("Could not determine forward direction for following rxn: " + reaction.toString());
-				
 			}
-			fw.write(restartFileContent.toString());
-			fw.close();
-		}
-		catch (IOException e){
-			System.out.println("Could not write the restart corereactions file");
-        	System.exit(0);
-		}
+        } catch (FileNotFoundException ex) {
+            ex.printStackTrace();
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        } finally {
+            try {
+                if (bw != null) {
+                    bw.flush();
+                    bw.close();
+                }
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            }
+        }
 	}
 
 	private void writePDepNetworks() {
+		BufferedWriter bw = null;
 		
-		StringBuilder restartFileContent = new StringBuilder();
-		
-		int numFameTemps = PDepRateConstant.getTemperatures().length;
-		int numFamePress = PDepRateConstant.getPressures().length;
-		int numChebyTemps = ChebyshevPolynomials.getNT();
-		int numChebyPress = ChebyshevPolynomials.getNP();
-		int numPlog = PDepArrheniusKinetics.getNumPressures();
-		
-		restartFileContent.append("NumberOfFameTemps: " + numFameTemps + "\n");
-		restartFileContent.append("NumberOfFamePress: " + numFamePress + "\n");
-		restartFileContent.append("NumberOfChebyTemps: " + numChebyTemps + "\n");
-		restartFileContent.append("NumberOfChebyPress: " + numChebyPress + "\n");
-		restartFileContent.append("NumberOfPLogs: " + numPlog + "\n\n");
-		
-		LinkedList allNets = PDepNetwork.getNetworks();
-		
-		try{
-			File pdepnets = new File ("Restart/pdepnetworks.txt");
-			FileWriter fw = new FileWriter(pdepnets);
+        try {
+            bw = new BufferedWriter(new FileWriter("Restart/pdepnetworks.txt"));
+    		int numFameTemps = PDepRateConstant.getTemperatures().length;
+    		int numFamePress = PDepRateConstant.getPressures().length;
+    		int numChebyTemps = ChebyshevPolynomials.getNT();
+    		int numChebyPress = ChebyshevPolynomials.getNP();
+    		int numPlog = PDepArrheniusKinetics.getNumPressures();
+    		
+    		bw.write("NumberOfFameTemps: " + numFameTemps);
+    		bw.newLine();
+    		bw.write("NumberOfFamePress: " + numFamePress);
+    		bw.newLine();
+    		bw.write("NumberOfChebyTemps: " + numChebyTemps);
+    		bw.newLine();
+    		bw.write("NumberOfChebyPress: " + numChebyPress);
+    		bw.newLine();
+    		bw.write("NumberOfPLogs: " + numPlog);
+    		bw.newLine();
+    		bw.newLine();
+    		
+    		LinkedList allNets = PDepNetwork.getNetworks();
+    		
 			int netCounter = 0;
 			for(Iterator iter=allNets.iterator(); iter.hasNext();){
 				PDepNetwork pdepnet = (PDepNetwork) iter.next();
 
 				++netCounter;
-				restartFileContent.append("PDepNetwork #" + netCounter+"\n");
+				bw.write("PDepNetwork #" + netCounter);
+				bw.newLine();
 				
 				// Write netReactionList
 				LinkedList netRxns = pdepnet.getNetReactions();
-				restartFileContent.append("netReactionList:\n");
+				bw.write("netReactionList:");
+				bw.newLine();
 				for (Iterator iter2=netRxns.iterator(); iter2.hasNext();) {
 					
 					PDepReaction currentPDepRxn = (PDepReaction)iter2.next();
-					restartFileContent.append(currentPDepRxn.toString()+"\n");
-					restartFileContent.append(writeRatesAndParameters(currentPDepRxn,numFameTemps,
+					bw.write(currentPDepRxn.toString());
+					bw.newLine();
+					bw.write(writeRatesAndParameters(currentPDepRxn,numFameTemps,
 							numFamePress,numChebyTemps,numChebyPress,numPlog));
 					
 					PDepReaction currentPDepReverseRxn = currentPDepRxn.getReverseReaction();
-					restartFileContent.append(currentPDepReverseRxn.toString()+"\n");
-					restartFileContent.append(writeRatesAndParameters(currentPDepReverseRxn,numFameTemps,
+					bw.write(currentPDepReverseRxn.toString());
+					bw.newLine();
+					bw.write(writeRatesAndParameters(currentPDepReverseRxn,numFameTemps,
 							numFamePress,numChebyTemps,numChebyPress,numPlog));
 
 				}
 				
 				// Write nonincludedReactionList
 				LinkedList nonIncludeRxns = pdepnet.getNonincludedReactions();
-				restartFileContent.append("nonIncludedReactionList:\n");
+				bw.write("nonIncludedReactionList:");
+				bw.newLine();
 				for (Iterator iter2=nonIncludeRxns.iterator(); iter2.hasNext();) {
 					
 					PDepReaction currentPDepRxn = (PDepReaction)iter2.next();
-					restartFileContent.append(currentPDepRxn.toString()+"\n");
-					restartFileContent.append(writeRatesAndParameters(currentPDepRxn,numFameTemps,
+					bw.write(currentPDepRxn.toString());
+					bw.newLine();
+					bw.write(writeRatesAndParameters(currentPDepRxn,numFameTemps,
 							numFamePress,numChebyTemps,numChebyPress,numPlog));
 					
 					PDepReaction currentPDepReverseRxn = currentPDepRxn.getReverseReaction();
-					restartFileContent.append(currentPDepReverseRxn.toString()+"\n");
-					restartFileContent.append(writeRatesAndParameters(currentPDepReverseRxn,numFameTemps,
+					bw.write(currentPDepReverseRxn.toString());
+					bw.newLine();
+					bw.write(writeRatesAndParameters(currentPDepReverseRxn,numFameTemps,
 							numFamePress,numChebyTemps,numChebyPress,numPlog));
 				}
 				
 				// Write pathReactionList
 				LinkedList pathRxns = pdepnet.getPathReactions();
-				restartFileContent.append("pathReactionList:\n");
+				bw.write("pathReactionList:");
+				bw.newLine();
 				for (Iterator iter2=pathRxns.iterator(); iter2.hasNext();) {
 					PDepReaction currentPDepRxn = (PDepReaction)iter2.next();
-					restartFileContent.append(currentPDepRxn.getDirection() + "\t" + currentPDepRxn.toChemkinString(new Temperature(298,"K"))+"\n");
+					bw.write(currentPDepRxn.getDirection() + "\t" + currentPDepRxn.toChemkinString(new Temperature(298,"K")));
+					bw.newLine();
 				}
-				restartFileContent.append("\n");
 				
-				// Write isomerList
-				/*LinkedList isomerList = pdepnet.getIsomers();
-				restartFileContent.append("isomerList:\n");
-				for (Iterator iter2=isomerList.iterator(); iter2.hasNext();) {
-					
-				}*/
-				
-				restartFileContent.append("\n");
-				
+				bw.newLine();
+				bw.newLine();
 			}
-			fw.write(restartFileContent.toString());
-			fw.close();
-		}
-		catch (IOException e){
-			System.out.println("Could not write the restart corereactions file");
-        	System.exit(0);
-		}
+    		
+        } catch (FileNotFoundException ex) {
+            ex.printStackTrace();
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        } finally {
+            try {
+                if (bw != null) {
+                    bw.flush();
+                    bw.close();
+                }
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            }
+        }
 	}
 	
-	public StringBuilder writeRatesAndParameters(PDepReaction pdeprxn, int numFameTemps,
+	public String writeRatesAndParameters(PDepReaction pdeprxn, int numFameTemps,
 			int numFamePress, int numChebyTemps, int numChebyPress, int numPlog) {
 		StringBuilder sb = new StringBuilder();
 		
@@ -2731,7 +2763,7 @@ public class ReactionModelGenerator {
 			sb.append("\n");
 		}
 		
-		return sb;
+		return sb.toString();
 	}
 
 	public LinkedList getTimeStep() {
@@ -3052,9 +3084,7 @@ public LinkedList getSpeciesList() {
 			double[][] rateCoefficients = new double[numFameTs][numFamePs];
 			double[][] chebyPolys = new double[numChebyTs][numChebyPs];
 			Kinetics[] plogKinetics = new Kinetics[numPlogs];
-			
-			
-			
+						
 			String line = ChemParser.readMeaningfulLine(reader);
 			while (line != null) {
 				// line should equal "PDepNetwork #"
