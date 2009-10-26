@@ -529,7 +529,7 @@ public class ChemParser {
      * @param core_edge: String indicating whether the rxn of interest is a "core" or "edge" rxn
      * @return
      */
-    public static Reaction parseRestartReaction(String p_rxnString, int[] coreSpcsIDs, String core_edge) {
+    public static Reaction parseRestartReaction(String p_rxnString, int[] coreSpcsIDs, String core_edge, String eaUnits) {
     	StringTokenizer st = new StringTokenizer(p_rxnString);
     	//	First token is the rxn structure: A+B=C+D
     	//		Note: Up to 3 reactants/products allowed
@@ -585,6 +585,16 @@ public class ChemParser {
     	double rxn_A = Double.parseDouble(st.nextToken());
     	double rxn_n = Double.parseDouble(st.nextToken());
     	double rxn_E = Double.parseDouble(st.nextToken());
+    	
+    	//Convert rxn_E to kcal/mol units
+		if (eaUnits.equals("cal/mol"))
+			rxn_E = rxn_E / 1000;
+		else if (eaUnits.equals("J/mol"))
+			rxn_E = rxn_E / 4.184 / 1000;
+		else if (eaUnits.equals("kJ/mol"))
+			rxn_E = rxn_E / 4.184;
+		else if (eaUnits.equals("Kelvins"))
+			rxn_E = rxn_E * 1.987;
     	
     	//	For now, restart file does not contain uncertainties
     	UncertainDouble uA = new UncertainDouble(rxn_A,0.0,"A");

@@ -2566,6 +2566,11 @@ public class ReactionModelGenerator {
 		
         try {
             bw = new BufferedWriter(new FileWriter("Restart/coreReactions.txt"));
+            
+    		String EaUnits = ArrheniusKinetics.getEaUnits();
+    		bw.write("UnitsOfEa: " + EaUnits);
+    		bw.newLine();
+            
 			CoreEdgeReactionModel cerm = (CoreEdgeReactionModel)getReactionModel();
 			LinkedHashSet allcoreRxns = cerm.core.reaction;
 			for(Iterator iter=allcoreRxns.iterator(); iter.hasNext();){
@@ -2596,6 +2601,11 @@ public class ReactionModelGenerator {
 		
         try {
             bw = new BufferedWriter(new FileWriter("Restart/edgeReactions.txt"));
+            
+    		String EaUnits = ArrheniusKinetics.getEaUnits();
+    		bw.write("UnitsOfEa: " + EaUnits);
+    		bw.newLine();
+            
 			CoreEdgeReactionModel cerm = (CoreEdgeReactionModel)getReactionModel();
 			LinkedHashSet alledgeRxns = cerm.edge.reaction;
 			for(Iterator iter=alledgeRxns.iterator(); iter.hasNext();){
@@ -2635,7 +2645,10 @@ public class ReactionModelGenerator {
     		int numChebyTemps = ChebyshevPolynomials.getNT();
     		int numChebyPress = ChebyshevPolynomials.getNP();
     		int numPlog = PDepArrheniusKinetics.getNumPressures();
+    		String EaUnits = ArrheniusKinetics.getEaUnits();
     		
+    		bw.write("UnitsOfEa: " + EaUnits);
+    		bw.newLine();
     		bw.write("NumberOfFameTemps: " + numFameTemps);
     		bw.newLine();
     		bw.write("NumberOfFamePress: " + numFamePress);
@@ -2906,9 +2919,17 @@ public LinkedList getSpeciesList() {
 			FileReader in = new FileReader("Restart/coreReactions.txt");
 			BufferedReader reader = new BufferedReader(in);
             String line = ChemParser.readMeaningfulLine(reader);
+            
+            // Determine units of Ea
+            StringTokenizer st = new StringTokenizer(line);
+            String tempString = st.nextToken();
+            String EaUnits = st.nextToken();
+            
+            line = ChemParser.readMeaningfulLine(reader);
+            
 			while (line != null) {
 				if (!line.trim().equals("DUP")) {
-					Reaction r = ChemParser.parseRestartReaction(line,coreSpcsIds,"core");
+					Reaction r = ChemParser.parseRestartReaction(line,coreSpcsIds,"core",EaUnits);
 					
 	        		Iterator rxnIter = restartCoreRxns.iterator();
 	        		boolean foundRxn = false;
@@ -2939,9 +2960,17 @@ public LinkedList getSpeciesList() {
 			FileReader in = new FileReader("Restart/edgeReactions.txt");
 			BufferedReader reader = new BufferedReader(in);
             String line = ChemParser.readMeaningfulLine(reader);
+            
+            // Determine units of Ea
+            StringTokenizer st = new StringTokenizer(line);
+            String tempString = st.nextToken();
+            String EaUnits = st.nextToken();
+            
+            line = ChemParser.readMeaningfulLine(reader);
+            
 			while (line != null) {
 				if (!line.trim().equals("DUP")) {
-					Reaction r = ChemParser.parseRestartReaction(line,coreSpcsIds,"edge");
+					Reaction r = ChemParser.parseRestartReaction(line,coreSpcsIds,"edge",EaUnits);
 	
 	        		Iterator rxnIter = restartEdgeRxns.iterator();
 	        		boolean foundRxn = false;
@@ -3067,6 +3096,9 @@ public LinkedList getSpeciesList() {
             
 			StringTokenizer st = new StringTokenizer(ChemParser.readMeaningfulLine(reader));
 			String tempString = st.nextToken();
+			String EaUnits = st.nextToken();
+			st = new StringTokenizer(ChemParser.readMeaningfulLine(reader));
+			tempString = st.nextToken();
 			int numFameTs = Integer.parseInt(st.nextToken());
 			st = new StringTokenizer(ChemParser.readMeaningfulLine(reader));
 			tempString = st.nextToken();
@@ -3158,7 +3190,16 @@ public LinkedList getSpeciesList() {
 							Pressure p = new Pressure(Double.parseDouble(st.nextToken()),"Pa");
 							UncertainDouble dA = new UncertainDouble(Double.parseDouble(st.nextToken()),0.0,"A");
 							UncertainDouble dn = new UncertainDouble(Double.parseDouble(st.nextToken()),0.0,"A");
-							UncertainDouble dE = new UncertainDouble(Double.parseDouble(st.nextToken()),0.0,"A");
+							double Ea = Double.parseDouble(st.nextToken());
+							if (EaUnits.equals("cal/mol"))
+								Ea = Ea / 1000;
+							else if (EaUnits.equals("J/mol"))
+								Ea = Ea / 4.184 / 1000;
+							else if (EaUnits.equals("kJ/mol"))
+								Ea = Ea / 4.184;
+							else if (EaUnits.equals("Kelvins"))
+								Ea = Ea * 1.987;
+							UncertainDouble dE = new UncertainDouble(Ea,0.0,"A");
 							ArrheniusKinetics k = new ArrheniusKinetics(dA, dn, dE, "", 1, "", "");
 							PDepArrheniusKinetics pdepAK = new PDepArrheniusKinetics(i);
 							pdepAK.setKinetics(i, p, k);
@@ -3197,7 +3238,16 @@ public LinkedList getSpeciesList() {
 							Pressure p = new Pressure(Double.parseDouble(st.nextToken()),"Pa");
 							UncertainDouble dA = new UncertainDouble(Double.parseDouble(st.nextToken()),0.0,"A");
 							UncertainDouble dn = new UncertainDouble(Double.parseDouble(st.nextToken()),0.0,"A");
-							UncertainDouble dE = new UncertainDouble(Double.parseDouble(st.nextToken()),0.0,"A");
+							double Ea = Double.parseDouble(st.nextToken());
+							if (EaUnits.equals("cal/mol"))
+								Ea = Ea / 1000;
+							else if (EaUnits.equals("J/mol"))
+								Ea = Ea / 4.184 / 1000;
+							else if (EaUnits.equals("kJ/mol"))
+								Ea = Ea / 4.184;
+							else if (EaUnits.equals("Kelvins"))
+								Ea = Ea * 1.987;
+							UncertainDouble dE = new UncertainDouble(Ea,0.0,"A");
 							ArrheniusKinetics k = new ArrheniusKinetics(dA, dn, dE, "", 1, "", "");
 							PDepArrheniusKinetics pdepAK = new PDepArrheniusKinetics(i);
 							pdepAK.setKinetics(i, p, k);
@@ -3280,7 +3330,16 @@ public LinkedList getSpeciesList() {
 							Pressure p = new Pressure(Double.parseDouble(st.nextToken()),"Pa");
 							UncertainDouble dA = new UncertainDouble(Double.parseDouble(st.nextToken()),0.0,"A");
 							UncertainDouble dn = new UncertainDouble(Double.parseDouble(st.nextToken()),0.0,"A");
-							UncertainDouble dE = new UncertainDouble(Double.parseDouble(st.nextToken()),0.0,"A");
+							double Ea = Double.parseDouble(st.nextToken());
+							if (EaUnits.equals("cal/mol"))
+								Ea = Ea / 1000;
+							else if (EaUnits.equals("J/mol"))
+								Ea = Ea / 4.184 / 1000;
+							else if (EaUnits.equals("kJ/mol"))
+								Ea = Ea / 4.184;
+							else if (EaUnits.equals("Kelvins"))
+								Ea = Ea * 1.987;
+							UncertainDouble dE = new UncertainDouble(Ea,0.0,"A");
 							ArrheniusKinetics k = new ArrheniusKinetics(dA, dn, dE, "", 1, "", "");
 							PDepArrheniusKinetics pdepAK = new PDepArrheniusKinetics(i);
 							pdepAK.setKinetics(i, p, k);
@@ -3319,7 +3378,16 @@ public LinkedList getSpeciesList() {
 							Pressure p = new Pressure(Double.parseDouble(st.nextToken()),"Pa");
 							UncertainDouble dA = new UncertainDouble(Double.parseDouble(st.nextToken()),0.0,"A");
 							UncertainDouble dn = new UncertainDouble(Double.parseDouble(st.nextToken()),0.0,"A");
-							UncertainDouble dE = new UncertainDouble(Double.parseDouble(st.nextToken()),0.0,"A");
+							double Ea = Double.parseDouble(st.nextToken());
+							if (EaUnits.equals("cal/mol"))
+								Ea = Ea / 1000;
+							else if (EaUnits.equals("J/mol"))
+								Ea = Ea / 4.184 / 1000;
+							else if (EaUnits.equals("kJ/mol"))
+								Ea = Ea / 4.184;
+							else if (EaUnits.equals("Kelvins"))
+								Ea = Ea * 1.987;
+							UncertainDouble dE = new UncertainDouble(Ea,0.0,"A");
 							ArrheniusKinetics k = new ArrheniusKinetics(dA, dn, dE, "", 1, "", "");
 							PDepArrheniusKinetics pdepAK = new PDepArrheniusKinetics(i);
 							pdepAK.setKinetics(i, p, k);
@@ -3367,6 +3435,14 @@ public LinkedList getSpeciesList() {
 			    	double rxn_A = Double.parseDouble(st.nextToken());
 			    	double rxn_n = Double.parseDouble(st.nextToken());
 			    	double rxn_E = Double.parseDouble(st.nextToken());
+					if (EaUnits.equals("cal/mol"))
+						rxn_E = rxn_E / 1000;
+					else if (EaUnits.equals("J/mol"))
+						rxn_E = rxn_E / 4.184 / 1000;
+					else if (EaUnits.equals("kJ/mol"))
+						rxn_E = rxn_E / 4.184;
+					else if (EaUnits.equals("Kelvins"))
+						rxn_E = rxn_E * 1.987;
 			    	
 			    	UncertainDouble uA = new UncertainDouble(rxn_A,0.0,"A");
 			    	UncertainDouble un = new UncertainDouble(rxn_n,0.0,"A");
