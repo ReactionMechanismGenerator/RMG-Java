@@ -957,6 +957,9 @@ public class Species {
 		dictionary.putSpecies(spe, false);
         p_chemGraph.setSpecies(spe);
         
+     // DEBUG: Tell console I made this species
+		System.out.println("Created new species: " + spe.getName() + "(" + spe.getID() + ")");
+        
         return spe;
     }
 
