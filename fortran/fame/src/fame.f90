@@ -45,7 +45,6 @@ program fame
 			call densityOfStates(net%isomers(i), net%species, net%E)
 		end if
 	end do
-	
 	! Allocate memory for k(T, P) data
 	allocate( K( 1:size(net%Tlist), 1:size(net%Plist), 1:size(net%isomers), 1:size(net%isomers) ) )
 	

@@ -46,7 +46,7 @@ contains
 		if (.not. allocated(isom%eqDist)) then
 			allocate( isom%eqDist(1:size(E)) )
 		end if
-
+		
 		! Calculate unnormalized eqDist
 		do s = 1, size(E)
 			isom%eqDist(s) = isom%densStates(s) * exp(-E(s) / (R * T))
@@ -165,7 +165,9 @@ contains
 		end if
 		
 		allocate(isom%densStates(1:size(E0)))
-		isom%densStates = 0 * isom%densStates
+		do r = 1, size(E0)
+			isom%densStates(r) = 0.0
+		end do
 		isom%densStates(start:size(E0)) = rho1(1:length) * conv
 		
 		deallocate( rho1 )
@@ -214,9 +216,20 @@ contains
 		if (size(rotFreq) > 0) then
 			allocate( rho(1:N) )
 			rho = calcFreeRotorStates(E, rotFreq, symmNum)
+		! If no free rotors than add an active K-rotor (with arbitrary rotational constant of 1.0)
+		! This also helps to smooth the density of states
+		else
+			allocate( rho(1:N) )
+			do i = 1, size(E)
+				if (E(i) == 0) then
+					rho(i) = 0.0
+				else
+					rho(i) = 1.0 / symmNum / sqrt(1.0 * E(i))
+				end if	
+			end do
 		end if
 		
-        ! Hindered rotors
+		! Hindered rotors
 		if (size(hindFreq) > 0) then
 			do i = 1, size(hindFreq)
 				if (hindFreq(i) > 0 .and. hindBarrier(i) > 0) then
@@ -240,34 +253,6 @@ contains
 			call beyerSwinehart(E, vibFreq, rho)
 		end if
         states = rho
-		
-		! For this approach the density of states must be smooth
-		i = 1
-        do while (i <= size(E) - 1)
-			if (states(i+1) == 0) then
-				j = i + 2
-				found = 1
-				do while (j <= size(E) .and. found == 1)
-					if (states(j) /= 0) then
-						found = 0
-					else
-						j = j + 1
-					end if
-				end do
-				if (found == 0) then
-					do k = i + 1, j - 1	
-						states(k) = (states(j) - states(i)) / (j - i) * (k - i) + states(i)
-					end do
-				else
-					do k = i + 1, size(E)
-						states(k) = states(k-1) * states(k-2) / states(k-3)
-					end do
-				end if
-				i = j
-			else
-				i = i + 1
-			end if
-		end do
 		
 		deallocate( rho0, rho )
 		

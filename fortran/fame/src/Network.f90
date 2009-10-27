@@ -78,7 +78,7 @@ contains
 		! This is to (hopefully) avoid multiple density of states calculations
 		mult = 50
 		done = 0
-		do while (done == 0)
+		do while (done == 0 .and. mult <= 250)
 		
 			Emax = ceiling(Emax0 + mult * 8.314472 * Tmax)
 			
@@ -96,9 +96,18 @@ contains
 				end if
 			end do
 			
-			! If tail of distribution is much lower than the maximum, then we've found bounds for Emax
 			tol = 1e-4
-			if (net%isomers(isom)%eqDist(nE) / value < tol) then
+			if (maxindex == 0) then
+				! Couldn't find a maximum; this suggests an error in the
+				! density of states
+				write (*,*) 'ERROR: Unable to determine maximum of equilibrium distribution.'
+				write (*,*) 'Density of states is:'
+				write (*,*) net%isomers(isom)%densStates
+				write (*,*) 'Equilibrium distribution is:'
+				write (*,*) net%isomers(isom)%eqDist
+				stop
+			elseif (net%isomers(isom)%eqDist(nE) / value < tol) then
+				! If tail of distribution is much lower than the maximum, then we've found bounds for Emax
 				r = nE - 1
 				do while (r > 0 .and. done == 0)
 					if (net%isomers(isom)%eqDist(r) / value > tol) then
@@ -112,9 +121,15 @@ contains
 				mult = mult + 50
 			end if
 			
-			deallocate( net%E, net%isomers(isom)%densStates, net%isomers(isom)%eqDist )
+			deallocate( net%E )
+			deallocate( net%isomers(isom)%densStates )
+			deallocate( net%isomers(isom)%eqDist )
 			
 		end do
+		
+		if (mult > 250) then
+			Emax = Emax0 + 100 * 8.314472 * Tmax
+		end if
 		
 		! Round Emax up to nearest integer
 		Emax = ceiling(Emax)		
