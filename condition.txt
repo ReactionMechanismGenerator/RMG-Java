@@ -5,6 +5,13 @@
 
 Database: RMG_database
 
+//MaxCarbonNumberPerSpecies: 
+//MaxOxygenNumberPerSpecies: 
+//MaxRadicalNumberPerSpecies: 
+//MaxSulfurNumberPerSpecies: 
+//MaxSiliconNumberPerSpecies: 
+//MaxHeavyAtomPerSpecies:
+
 PrimaryThermoLibrary:
 Name: GRIMech3.0
 Location: GRI-Mech3.0
@@ -16,14 +23,7 @@ ReadRestart: no
 WriteRestart: yes
 
 TemperatureModel: Constant (K) 1350
-PressureModel: Constant (atm) 1
-
-//MaxCarbonNumberPerSpecies: 
-//MaxOxygenNumberPerSpecies: 
-//MaxRadicalNumberPerSpecies: 
-//MaxSulfurNumberPerSpecies: 
-//MaxSiliconNumberPerSpecies: 
-//MaxHeavyAtomPerSpecies: 
+PressureModel: Constant (atm) 1 
 
 InitialStatus:
 
