@@ -3506,7 +3506,7 @@ public LinkedList getSpeciesList() {
     	
     	if (readrestart) {
     		readRestartReactions();
-    		readPDepNetworks();
+    		if (PDepNetwork.generateNetworks) readPDepNetworks();
     		allInitialCoreSpecies.addAll(restartCoreSpcs);
     		allInitialCoreRxns.addAll(restartCoreRxns);
     	}
