@@ -48,6 +48,7 @@ public class InvalidUnreactedReactionException extends RuntimeException{
     public  InvalidUnreactedReactionException(String s) {
         //#[ operation InvalidUnreactedReactionException(String) 
         super(s);
+        System.out.println("Unreacted reaction that RMG believes to be invalid: \n" + s);
         //#]
     }
     public  InvalidUnreactedReactionException() {
