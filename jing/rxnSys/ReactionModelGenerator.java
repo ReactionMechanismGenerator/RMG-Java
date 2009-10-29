@@ -1384,9 +1384,9 @@ public class ReactionModelGenerator {
         }
         //9/1/09 gmagoon: if we are using QM, output a file with the CHEMKIN name, the RMG name, the (modified) InChI, and the (modified) InChIKey
         if (ChemGraph.useQM){
-            writeInChIs(getReactionModel());
-            writeDictionary(getReactionModel());
+            writeInChIs(getReactionModel());      
         }
+        writeDictionary(getReactionModel());
         //System.exit(0);
        
 		System.out.println("The model core has " + ((CoreEdgeReactionModel)getReactionModel()).getReactedReactionSet().size() + " reactions and "+ ((CoreEdgeReactionModel)getReactionModel()).getReactedSpeciesSet().size() + " species.");
@@ -1502,9 +1502,9 @@ public class ReactionModelGenerator {
                                 }
                                 //9/1/09 gmagoon: if we are using QM, output a file with the CHEMKIN name, the RMG name, the (modified) InChI, and the (modified) InChIKey
                                 if (ChemGraph.useQM){
-                                     writeInChIs(getReactionModel());
-                                     writeDictionary(getReactionModel());
+                                     writeInChIs(getReactionModel());                    
                                 }
+                                writeDictionary(getReactionModel());
                                 double chemkint = (System.currentTimeMillis()-startTime)/1000/60;
 				
                                 if (writerestart) {
@@ -1778,9 +1778,9 @@ public class ReactionModelGenerator {
                 
         //9/1/09 gmagoon: if we are using QM, output a file with the CHEMKIN name, the RMG name, the (modified) InChI, and the (modified) InChIKey
         if (ChemGraph.useQM){
-            writeInChIs(getReactionModel());
-            writeDictionary(getReactionModel());
+            writeInChIs(getReactionModel());    
         }
+        writeDictionary(getReactionModel());
                 
         System.out.println("Model Generation Completed");
 		
