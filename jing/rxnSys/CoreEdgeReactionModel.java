@@ -296,6 +296,7 @@ public class CoreEdgeReactionModel implements ReactionModel {
 		Iterator rxnIter = reactions.iterator();
 		while (rxnIter.hasNext()){
 			Reaction rxn = (Reaction)rxnIter.next();
+			System.out.println(rxn.getStructure().toString());
 			addUnreactedReaction(rxn);
 		}
     }
