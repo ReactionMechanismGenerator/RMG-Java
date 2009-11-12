@@ -344,7 +344,7 @@ public class FrequencyGroups{//gmagoon 111708: removed "implements GeneralGAPP"
 				2*((Integer) groupCount.get(16)) + 2*((Integer) groupCount.get(17)) +
 				3*((Integer) groupCount.get(18)) + 2*((Integer) groupCount.get(19)) +
 				1*((Integer) groupCount.get(20)) + 4*((Integer) groupCount.get(21)) +
-				1*((Integer) groupCount.get(22)) + 2*((Integer) groupCount.get(23));//gmagoon: updated for Franklin's new code 2/20/09 (Hydrogen group for rings not included)
+				2*((Integer) groupCount.get(22)) + 2*((Integer) groupCount.get(23));//gmagoon: updated for Franklin's new code 2/20/09 (Hydrogen group for rings not included)
 	}
 
 	private void removeFunctionalGroup(LinkedList groupCount) {
