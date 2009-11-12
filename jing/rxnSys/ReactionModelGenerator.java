@@ -3671,7 +3671,7 @@ public LinkedList getSpeciesList() {
         //reactionSystem.setReactionModel(getReactionModel());
 		
 		// We cannot return a system with no core reactions, so if this is a case we must add to the core
-        while (getReactionModel().isEmpty()) {
+        while (getReactionModel().isEmpty()&&!PDepNetwork.hasCoreReactions((CoreEdgeReactionModel) getReactionModel())) {
 			for (Integer i = 0; i < reactionSystemList.size(); i++) {
 				ReactionSystem rs = (ReactionSystem) reactionSystemList.get(i);
 				if (reactionModelEnlarger instanceof RateBasedPDepRME) 
