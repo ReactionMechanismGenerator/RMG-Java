@@ -99,6 +99,7 @@ public abstract class JDAS implements DAESolver {
 	protected double [] conversionSet;
 	protected double endTime;
         protected StringBuilder thermoString = new StringBuilder();
+      //  protected HashMap edgeIDcopy; //added for dot graphs
 	
 	protected JDAS() {
         
@@ -1041,6 +1042,7 @@ public abstract class JDAS implements DAESolver {
 
                             }
                     }
+   //                 edgeIDcopy=edgeID;//added for dot graphs
                 }
                 catch(IOException e) {
                     System.err.println("Problem writing Solver Input File!");

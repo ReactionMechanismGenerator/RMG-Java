@@ -223,6 +223,8 @@ public class JDASSL extends JDAS {
 			startTime = System.currentTimeMillis();
         	
 			idid = solveDAE();
+                        
+ //                       createDotGraphs((CoreEdgeReactionModel)p_reactionModel);
 			
 			if (idid !=1 && idid != 2 && idid != 3)	{
 				System.out.println("The idid from DASPK was "+idid );
@@ -421,5 +423,374 @@ public class JDASSL extends JDAS {
 		super.initializeWorkSpace();
 		//info[4] = 1; //use analytical jacobian
 	}
+        
+//        protected void createDotGraphs(CoreEdgeReactionModel cerm) {
+//            // 1. determine the core-core connectivity (it is assumed all are "regular" non-P-dep reactions
+//            
+//            int n = IDTranslator.size();
+//            int [][] matrix = new int[n][n];
+//            for (int i = 0; i<n; i++){
+//               for (int j = 0; j<n; j++){
+//                    matrix[i][j]=0;
+//                } 
+//            }
+//            
+//            Iterator riter = cerm.getReaction();
+//            while (riter.hasNext()){
+//                //below is based on transferReaction()
+//                    Reaction p_reaction = (Reaction)riter.next();
+//                    int rnum = p_reaction.getReactantNumber();
+//                    int pnum = p_reaction.getProductNumber();
+//
+//                    int [] rid = new int[rnum];
+//                    int index = 0;
+//                    for (Iterator r_iter = p_reaction.getReactants(); r_iter.hasNext(); ) {
+//                            Species s = (Species)r_iter.next();
+//                            rid[index] = getRealID(s);
+//                            index++;
+//                    }
+//
+//                    int [] pid = new int[pnum];
+//                    index = 0;
+//                    for (Iterator p_iter = p_reaction.getProducts(); p_iter.hasNext(); ) {
+//                                    Species s = (Species)p_iter.next();
+//                            pid[index] = getRealID(s);
+//                            index++;
+//                    }
+//                    
+//                   for(int i = 0; i<rid.length; i++){
+//                       for(int j = 0; j < pid.length; j++){
+//                           matrix[rid[i]-1][pid[j]-1]=1;
+//                       }
+//                   }
+//            }
+//            //now we want to "symmetrize" the matrix so we only have one arrow connecting each pair of species; we will only construct upper half
+//           // int [][] matrixTr = new int[n][n];
+//           // for (int i = 0; i<n; i++){
+//           //    for (int j = 0; j<n; j++){
+//           //         matrixTr[i][j]=matrix[j][i];
+//           //     } 
+//           // }
+//            
+//            int [][] matrixNew = new int[n][n];
+//            for (int i = 0; i<n; i++){
+//               for (int j = 0; j<n; j++){
+//                    matrixNew[i][j]=0;
+//                    if(j<i) matrixNew[i][j]=matrix[j][i] + matrix[i][j];
+//                } 
+//            }
+//
+//            matrix = matrixNew;
+//            
+//            // 2. determine the core-edge connectivity
+//            int [][] matrixE = null;
+//            int [][] rid = null;
+//            int [][] pid = null;
+//            int [] nreac = null;
+//            int nEdge = 0;
+//            int nEdgeReacs = 0;
+//            String path = "ODESolver/SolverInput.dat";
+//            File SolverInput = new File(path);
+//            //String path2 = "ODESolver/EdgeReacFlux.dat";
+//            //File erf = new File(path2);
+//            try {
+//        	FileReader fr = new FileReader(SolverInput);
+//        	BufferedReader br = new BufferedReader(fr);
+//              //  FileReader fr2 = new FileReader(erf);
+//        //	BufferedReader br2 = new BufferedReader(fr2);
+//                
+//                String line = br.readLine();
+//                for(int i = 0; i < 21; i++){
+//                    line = br.readLine();
+//                }
+//                //line with nEdgeSpecies, nEdgeReactions
+//                String [] split = line.split(" ");
+//                nEdge = Integer.parseInt(split[0]);
+//                nEdgeReacs = Integer.parseInt(split[1]);
+//               
+//                matrixE = new int[n][nEdge];
+//                for (int i = 0; i<n; i++){
+//                    for (int j = 0; j<nEdge; j++){
+//                        matrixE[i][j]=0;
+//                    } 
+//                }
+//                
+//                rid = new int[nEdgeReacs][3];
+//                pid = new int[nEdgeReacs][3];
+//                nreac = new int[nEdgeReacs];
+//                
+//                line = br.readLine();
+//                for(int m = 0; m < nEdgeReacs; m++){
+//                    line = line.trim();
+//                    split = line.split(" ");
+//                    nreac[m] = Integer.parseInt(split[0]);
+//                    rid[m][0] = Integer.parseInt(split[2]);
+//                    rid[m][1] = Integer.parseInt(split[3]);
+//                    rid[m][2] = Integer.parseInt(split[4]);
+//                    pid[m][0] = Integer.parseInt(split[5]);
+//                    pid[m][1] = Integer.parseInt(split[6]);
+//                    pid[m][2] = Integer.parseInt(split[7]);            
+//                    for(int i = 0; i < 3; i++){
+//                       for(int j = 0; j < 3; j++){                           
+//                           if(rid[m][i]>0 && pid[m][j]> 0) matrixE[rid[m][i]-1][pid[m][j]-1]=1;
+//                       }
+//                    }
+//    
+//                    line = br.readLine();
+//                }
+//                fr.close();
+//                
+//            }
+//            catch (IOException e) {
+//        	String err = "Error in reading Solver Input File! \n";
+//        	err += e.toString();
+//        	e.printStackTrace();
+//        	System.exit(0);
+//            }
+//            
+//            // 3. read in core conc. vs. time
+//            path = "ODESolver/CoreConc.dat";
+//            File f = new File(path);
+//            LinkedList tvec = new LinkedList();
+//            LinkedList concvec = new LinkedList();//list of arrays of concentration
+//            double [] concvecElement = new double [n];
+//            try {
+//        	FileReader fr = new FileReader(f);
+//        	BufferedReader br = new BufferedReader(fr);
+//                
+//                int spe = 0;
+//                double t = 0;
+//                double conc = 0;
+//                
+//                String line = br.readLine();
+//
+//                while(line!=null){
+//                    line = line.trim();
+//                    String [] split = line.split(" ");
+//                    spe = Integer.parseInt(split[0]);
+//                    t = Double.parseDouble(split[1]);
+//                    conc = Double.parseDouble(split[2]);
+//                    
+//                    if (spe==1){
+//                        tvec.add(t);
+//                        if(tvec.size()>1) concvec.add(concvecElement.clone()); //don't add until the second time
+//                    }
+//                    concvecElement[spe-1]=conc;
+//                    
+//                    line = br.readLine();
+//                }
+//                concvec.add(concvecElement.clone());
+//                
+//                fr.close();
+//            }
+//            catch (IOException e) {
+//        	String err = "Error in reading core conc. File! \n";
+//        	err += e.toString();
+//        	e.printStackTrace();
+//        	System.exit(0);
+//            }
+//            
+//            
+//            // 4. read in edge fluxes vs. time
+//            path = "ODESolver/EdgeFlux.dat";
+//            f = new File(path);
+//            LinkedList fluxvec = new LinkedList();//list of arrays of concentration
+//            double [] fluxvecElement = new double [nEdge];
+//            try {
+//        	FileReader fr = new FileReader(f);
+//        	BufferedReader br = new BufferedReader(fr);
+//                
+//                int spe = 0;
+//                double t = 0;
+//                double flux = 0;
+//                
+//                String line = br.readLine();
+//
+//                while(line!=null){
+//                    line = line.trim();
+//                    String [] split = line.split(" ");
+//                    spe = Integer.parseInt(split[0]);
+//                    t = Double.parseDouble(split[1]);
+//                    flux = Double.parseDouble(split[2]);
+//                    
+//                    if (spe==1){
+//                        if(t>0) fluxvec.add(fluxvecElement.clone()); //don't add until the second time
+//                    }
+//                    fluxvecElement[spe-1]=flux;
+//                    
+//                    line = br.readLine();
+//                }
+//                fluxvec.add(fluxvecElement.clone());
+//                
+//                fr.close();
+//            }
+//            catch (IOException e) {
+//        	String err = "Error in reading edge flux File! \n";
+//        	err += e.toString();
+//        	e.printStackTrace();
+//        	System.exit(0);
+//            }
+//            
+//            //4a. read in the edge reaction fluxes
+//            path = "ODESolver/EdgeReacFlux.dat";
+//            f = new File(path);
+//            LinkedList reacfluxvec = new LinkedList();//list of arrays of edge reaction flux
+//            double [] rfvElement = new double [nEdgeReacs];
+//            try {
+//        	FileReader fr = new FileReader(f);
+//        	BufferedReader br = new BufferedReader(fr);
+//                
+//                int reac = 0;
+//                double t = 0;
+//                double flux = 0;
+//                
+//                String line = br.readLine();
+//
+//                while(line!=null){
+//                    line = line.trim();
+//                    String [] split = line.split(" ");
+//                    reac = Integer.parseInt(split[0]);
+//                    t = Double.parseDouble(split[1]);
+//                    flux = Double.parseDouble(split[2]);
+//                    
+//                    if (reac==1){
+//                        if(t>0) reacfluxvec.add(rfvElement.clone()); //don't add until the second time
+//                    }
+//                    rfvElement[reac-1]=flux;
+//                    
+//                    line = br.readLine();
+//                }
+//                reacfluxvec.add(rfvElement.clone());
+//                
+//                fr.close();
+//            }
+//            catch (IOException e) {
+//        	String err = "Error in reading edge reaction flux File! \n";
+//        	err += e.toString();
+//        	e.printStackTrace();
+//        	System.exit(0);
+//            }
+//            
+//            //4aa. make a new matrix with reaction flux weights
+//            
+//
+//            LinkedList matrixE2vec = new LinkedList();//list of arrays of reaction flux
+//            for(int m = 0; m < tvec.size(); m++){
+//                double[][] matrixE2 = new double[n][nEdge];
+//                for (int i = 0; i<n; i++){//zero the matrix
+//                    for (int j = 0; j<nEdge; j++){
+//                        matrixE2[i][j]=0;
+//                    } 
+//                }
+//                double[] rf = (double[])reacfluxvec.get(m);
+//                double[] fl = (double[])fluxvec.get(m);
+//                for(int p = 0; p < nEdgeReacs; p++){
+//                    for(int i = 0; i<3; i++){
+//                       for(int j = 0; j < 3; j++){                           
+//                           if(rid[p][i]>0 && pid[p][j]> 0 && fl[pid[p][j]-1] > 0) matrixE2[rid[p][i]-1][pid[p][j]-1]+=rf[p]/(fl[pid[p][j]-1]*nreac[p]);//includes an "optional" division by number of reactants to make arrow sizes look more "realistic"; in the end, this should give the fraction of the total edge flux from core species
+//                       }
+//                    }
+//                }
+//                matrixE2vec.add(matrixE2);//for some reason, cloning approach used before with matrix initialized outside loop doesn't seem to work for this case (since it is a 2D array?)
+//            }
+//            
+//            // 5. write the dot file
+//            //write a dot file for each time
+//            for(int m = 0; m < tvec.size(); m++){
+//                double t = (Double)tvec.get(m);
+//                double [] fluxvecEl = (double[])fluxvec.get(m);
+//                double [][] matrixE2El = (double[][])matrixE2vec.get(m);
+//                double [] concvecEl = (double[])concvec.get(m); 
+//                // write the input file
+//                String num = "";
+//                if(m<10) num = "0000"+m;
+//                else if(m<100) num = "000"+m;
+//                else if(m<1000) num = "00"+m;
+//                else if(m<10000) num = "0"+m;
+//                else if(m<100000) num = ""+m;
+//                File dotFile = new File("ODESolver/dot"+num+".dot");
+//                try {
+//                        FileWriter fw = new FileWriter(dotFile);
+//                        
+//                        
+//                        fw.write("digraph reaction_network {\n");
+//                        
+//                        //write the core connectivity
+//                        for (int i = 0; i<n; i++){
+//                            for (int j = 0; j<n; j++){
+//                                if(matrix[i][j] > 0) fw.write((i+1) + " -> "+ (j+1)+ "[fontname=\"Arial\", style=\"setlinewidth(1.5)\", arrowsize=0.00 color=\"black\"];\n");//make label size depend on log of concentration
+//                                //else fw.write((i+1) + " -> "+ (j+1)+ "[fontname=\"Arial\", style=\"setlinewidth(0.0)\", arrowsize=0.00 color=\"black\", len=5.0];\n");//use invisible lines
+//                            } 
+//                        }
+//                        //write the core-edge connectivity
+//                        for (int i = 0; i<n; i++){
+//                            for (int j = 0; j<nEdge; j++){
+//                                if(matrixE[i][j]==1) fw.write((i+1) + " -> E"+ (j+1)+ "a[fontname=\"Arial\", style=\"setlinewidth("+(.10+6*(Math.pow(fluxvecEl[j]*matrixE2El[i][j], 0.25)))+")\", arrowsize=0.00 color=\"red\"];\n");
+//                            } 
+//                        }
+//                        //write the (time-dependent) arrows to the edge
+//                        for (int j = 0; j<nEdge; j++){
+//                            fw.write("E"+ (j+1)+ "a -> E" + (j+1)+"[fontname=\"Arial\", style=\"setlinewidth("+(.10+6*(Math.pow(fluxvecEl[j], 0.25)))+")\", arrowsize=" +Math.sqrt(.1+6*fluxvecEl[j])/2 +  " color=\"red\"];\n");
+//                        }
+//                        //write the core nodes
+//                        for (int i = 0; i<n; i++){
+//                            //find the corresponding species:
+//                            Iterator iter = IDTranslator.keySet().iterator();
+//                            int found = 0;
+//                            Species spe = null;
+//                            while (iter.hasNext()&&found==0) {
+//                                spe = (Species)iter.next();
+//                                if((Integer)(IDTranslator.get(spe))==i+1) found = 1;
+//                            }
+//                            String name = spe.getName();
+//                                  
+//                            double fontSize = 10;
+//                            if(concvecEl[i]>1E-24) fontSize = 3*(Math.log10(concvecEl[i])+24)+10.0;//make label size depend on log of concentration
+//                            fw.write((i+1)+"[fontsize="+fontSize/1.5+", width="+(.02+Math.sqrt((fontSize-10)/100))+" height="+(.02+Math.sqrt((fontSize-10)/100))+ ", shape=\"rectangle\", fontcolor = \"black\", label=\""+name.replace("JJ", ":").replace("J", "&bull;")+"\"];\n");//make label size depend on log of concentration
+//                        }
+//                        //make the ancillary edge nodes invisible
+//                        for (int j = 0; j<nEdge; j++){
+//                            //find the corresponding species:
+//                            Iterator iter = edgeIDcopy.keySet().iterator();
+//                            int found = 0;
+//                            Species spe = null;
+//                            while (iter.hasNext()&&found==0) {
+//                                spe = (Species)iter.next();
+//                                if((Integer)(edgeIDcopy.get(spe))==j+1) found = 1;
+//                            }
+//                            String name = spe.getName();
+//                            
+//                            String shape = "shape=\"none\",";
+//                          //  if(fluxvecEl[j] > 1.0) shape="shape=\"circle\", color=\"red\",";//circle the edge node when it exceeds the threshhold
+//                            fw.write("E"+(j+1)+"a[shape=\"point\", width=0.0, height=0.0, label=\"\", color=\"red\"];\n");//make the ancillary edge nodes invisible
+//                            if(fluxvecEl[j] > 1.0) fw.write("E"+(j+1)+"[fontsize=8, fontcolor=\"red\", "+shape+" width=0.0, height=0.0, label=\""+name.replace("JJ", ":").replace("J", "&bull;")+"\"];\n");
+//                            else fw.write("E"+(j+1)+"[fontsize=8, "+shape+" width=0.0, height=0.0, label=\""+name.replace("JJ", ":").replace("J", "&bull;")+"\"];\n");
+//                        }
+//                        //NumberFormat form;
+//                        //form.setMinFractionDigits(2);
+//                        //form.setMaxFractionDigits(2);
+//                        //String str = form.format(t);
+//                        //fw.write("label = \"t = " + t + " sec.\";\n");
+//                        String str = String.format("label = \"t = %3.2G sec.\";\n", t);
+//                        fw.write(str);
+//                        //fw.write("overlap=prism;\n");
+//                        //fw.write("model=circuit;\n");
+//                        fw.write("}\n");
+//                        fw.close();
+//                        String command = "\"c:\\Program Files\\GraphViz2.24\\bin\\\\twopi.exe\" -Tgif -O " + "dot"+num+".dot";
+//                        File runningDir = new File("ODESolver");
+//                        Process dot = Runtime.getRuntime().exec(command, null, runningDir);
+//                        int ev = dot.waitFor();               
+//                } catch (Exception e) {
+//                        System.err.println("Problem writing dot File!");
+//                        e.printStackTrace();
+//                }
+//
+//            }
+//            
+//
+//            
+//            
+//        }
 	
 }
