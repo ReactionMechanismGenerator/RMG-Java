@@ -1261,7 +1261,7 @@ public class QMTP implements GeneralGAPP {
                // File runningdir=new File("c:/Users/User1/Documents/SYMMETRY/");//SYMMETRY program directory
                // String command = "c:/Users/User1/Documents/SYMMETRY/symmetry.exe -final " + finalTol+" c:/Users/User1/Documents/SYMMETRY/symminput.txt";//this seems to be causing an error; cf. , http://forums.sun.com/thread.jspa?forumID=32&threadID=728886 ; therefore, I have switched to use batch file with default tolerance of 0.01
                // Process symmProc = Runtime.getRuntime().exec(command, null, runningdir);
-                if(attemptNumber==1) command = "c:/Users/User1/Documents/SYMMETRY/symmetryDefault.bat";
+                if(attemptNumber==1) command = "c:/Users/User1/Documents/SYMMETRY/symmetryDefault2.bat";//12/1/09 gmagoon: switched to use slightly looser criteria of 0.02 rather than 0.01 to handle methylperoxyl radical result from MOPAC
                 else if (attemptNumber==2) command = "c:/Users/User1/Documents/SYMMETRY/symmetryLoose.bat";//looser criteria (0.1 instead of 0.01) to properly identify C2v group in VBURLMBUVWIEMQ-UHFFFAOYAVmult5 (InChI=1/C3H4O2/c1-3(2,4)5/h1-2H2/mult5) MOPAC result; C2 and sigma were identified with default, but it should be C2 and sigma*2
                 else{
                     System.out.println("Invalid attemptNumber: "+ attemptNumber);
