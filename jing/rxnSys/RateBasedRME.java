@@ -281,8 +281,11 @@ public class RateBasedRME implements ReactionModelEnlarger {
 							flux = 0;
 						else {
 							double conc = status.getConcentration();
-							if (conc<0)
-								throw new NegativeConcentrationException(spe.getName() + ": " + String.valueOf(conc));
+							if (conc<0) {
+								double aTol = ReactionModelGenerator.getAtol();
+								if (Math.abs(conc) < aTol) conc = 0;
+								else throw new NegativeConcentrationException(spe.getName() + ": " + String.valueOf(conc));
+							}
 							flux *= conc;
 						}
 

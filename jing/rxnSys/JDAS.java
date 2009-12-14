@@ -305,7 +305,8 @@ public abstract class JDAS implements DAESolver {
         	System.out.println(String.valueOf(spe.getID()) + '\t' + spe.getName() + '\t' + String.valueOf(conc) + '\t' + String.valueOf(flux));
 
         	if (conc < 0) {
-        		if (Math.abs(conc) < 1.0E-19) conc = 0;
+				double aTol = ReactionModelGenerator.getAtol();
+				if (Math.abs(conc) < aTol) conc = 0;
         		else throw new NegativeConcentrationException("species " + spe.getName() + " has negative conc: " + String.valueOf(conc));
         	}
         	SpeciesStatus ss = new SpeciesStatus(spe, 1, conc, flux);

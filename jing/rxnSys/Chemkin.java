@@ -172,7 +172,8 @@ public  Chemkin() {
       	System.out.println(String.valueOf(spe.getID()) + '\t' + spe.getName() + '\t' + String.valueOf(conc) + '\t' + String.valueOf(flux));
 
       	if (conc < 0) {
-      		if (Math.abs(conc) < 1.0E-25) conc = 0;
+			double aTol = ReactionModelGenerator.getAtol();
+			if (Math.abs(conc) < aTol) conc = 0;
       		else throw new NegativeConcentrationException("species " + spe.getName() + " has negative conc: " + String.valueOf(conc));
       	}
 
@@ -298,7 +299,8 @@ public  Chemkin() {
       		Text amountText = (Text) amountElement.getFirstChild();
       		double thisAmount = Double.parseDouble(amountText.getData());
       		if (thisAmount < 0) {
-      			if (thisAmount < atol) thisAmount = 0;
+				double aTol = ReactionModelGenerator.getAtol();
+				if (Math.abs(thisAmount) < aTol) thisAmount = 0;
       			else throw new NegativeConcentrationException("Negative concentration in reactorOutput.xml: " + thisSpeciesID);
       		}
 

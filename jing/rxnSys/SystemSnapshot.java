@@ -185,7 +185,11 @@ public class SystemSnapshot {
         double total = 0;
         for (Iterator iter = inertGas.values().iterator(); iter.hasNext(); ) {
                 double c = ((Double)iter.next()).doubleValue();
-                if (c < 0) throw new NegativeConcentrationException("InertGas");
+                if (c < 0) {
+    				double aTol = ReactionModelGenerator.getAtol();
+    				if (Math.abs(c) < aTol) c = 0;
+    				else throw new NegativeConcentrationException("InertGas");
+                }
                 total += c;
         }
         return total;
@@ -201,7 +205,11 @@ public class SystemSnapshot {
                 totalMole = getTotalInertGas();
                 for (Iterator iter = getSpeciesStatus(); iter.hasNext(); ) {
                         SpeciesStatus ss = (SpeciesStatus)iter.next();
-                        if (ss.getConcentration()<0) throw new NegativeConcentrationException();
+                        if (ss.getConcentration()<0) {
+            				double aTol = ReactionModelGenerator.getAtol();
+            				if (Math.abs(ss.getConcentration()) < aTol) ss.setConcentration(0.0);
+            				else throw new NegativeConcentrationException();
+                        }
                         totalMole += ss.getConcentration();
                 }
         }

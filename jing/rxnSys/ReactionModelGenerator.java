@@ -66,7 +66,7 @@ public class ReactionModelGenerator {
   //  protected InitialStatus initialStatus;//svp
     protected LinkedList initialStatusList; //10/23/07 gmagoon: changed from initialStatus to initialStatusList
     protected double rtol;//svp
-    protected double atol;
+    protected static double atol;
     protected PrimaryReactionLibrary primaryReactionLibrary;//9/24/07 gmagoon
     protected ReactionModelEnlarger reactionModelEnlarger;//9/24/07 gmagoon
     protected LinkedHashSet speciesSeed;//9/24/07 gmagoon;
@@ -3803,6 +3803,10 @@ public LinkedList getSpeciesList() {
     
     public void setPrimaryThermoLibrary(PrimaryThermoLibrary p_primaryThermoLibrary) {
     	primaryThermoLibrary = p_primaryThermoLibrary;
+    }
+    
+    public static double getAtol(){
+    	return atol;
     }
 }
 /*********************************************************************

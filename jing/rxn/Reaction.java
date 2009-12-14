@@ -39,6 +39,7 @@ import jing.chemParser.*;
 import jing.chem.Species;
 import jing.param.Temperature;
 import jing.rxnSys.NegativeConcentrationException;
+import jing.rxnSys.ReactionModelGenerator;
 import jing.rxnSys.SystemSnapshot;
 
 //## package jing::rxn
@@ -1485,8 +1486,11 @@ public class Reaction {
 			double conc = 0.0;
 			if (ss.getSpeciesStatus(spe) != null)
 				conc = ss.getSpeciesStatus(spe).getConcentration();
-			if (conc < 0)
-	        	throw new NegativeConcentrationException(spe.getName() + ": " + String.valueOf(conc));
+			if (conc < 0) {
+				double aTol = ReactionModelGenerator.getAtol();
+				if (Math.abs(conc) < aTol) conc = 0;
+				else throw new NegativeConcentrationException(spe.getName() + ": " + String.valueOf(conc));
+			}
 			forwardFlux *= conc;
 		}
 		return forwardFlux;

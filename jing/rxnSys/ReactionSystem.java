@@ -277,8 +277,11 @@ public class ReactionSystem {
 					double conc = 0;
 					if (p_systemSnapshot.getSpeciesStatus(spe) != null)
 						conc = (p_systemSnapshot.getSpeciesStatus(spe)).getConcentration();
-					if (conc<0)
-						throw new NegativeConcentrationException(spe.getName() + ": " + String.valueOf(conc));
+					if (conc<0) {
+						double aTol = ReactionModelGenerator.getAtol();
+						if (Math.abs(conc) < aTol) conc = 0;
+						else throw new NegativeConcentrationException(spe.getName() + ": " + String.valueOf(conc));
+					}
 					flux *= conc;
 
 				}
