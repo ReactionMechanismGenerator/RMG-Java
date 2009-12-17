@@ -188,6 +188,8 @@ public class JDASPK extends JDAS {
 		if (autoflag)
 			getAutoEdgeReactionInfo((CoreEdgeReactionModel) p_reactionModel, p_temperature, p_pressure);
 	
+               // Add flags that specify whether the concentrations are constant or not
+		getConcentractionFlags(p_reactionModel);
                 //this should be the end of the input file
                 try{
                     bw.flush();
@@ -536,7 +538,8 @@ public class JDASPK extends JDAS {
                     System.err.println("Problem writing Solver Input File!");
                     e.printStackTrace();
                 }
-                
+        // Add flags that specify whether the concentrations are constant or not
+	getConcentractionFlags(p_reactionModel);        
         //this should be the end of the input file
         try{
             bw.close();
