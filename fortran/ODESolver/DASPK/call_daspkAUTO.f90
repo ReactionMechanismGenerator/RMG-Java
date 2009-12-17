@@ -155,6 +155,9 @@ PROGRAM CALL_DASPKAUTO
 	!	&       /(8.314*TEMPERATURE))
 		END DO
 	END IF
+        ! read constantConcentration data (if flag = 1 then the concentration of that species will not be integrated)
+        ! there is one integer for each species (up to nstate-1), then the last one is for the VOLUME
+        READ(12,*) (ConstantConcentration(I), i=1,nstate)
 ! 6/26/08 gmagoon: if t.ne.0, we are presumably not using AUTO method, since
 ! with AUTO method we would return to zero each time; alternative would be to
 ! also read and write AUTO parameters from/to variables.dat if AUTOFLAG = 1;
@@ -216,6 +219,12 @@ PROGRAM CALL_DASPKAUTO
             read(13) thermo(i)
          end do
          read(13) temperature, pressure
+         
+         !gmagoon: even though concentration flags will be in SolverInput file, it will be simplest to write and read them from variables.dat
+         DO i=1,nstate
+            read(13) ConstantConcentration(i)
+         END DO
+
          close(13)
       END IF
       
@@ -506,7 +515,7 @@ PROGRAM CALL_DASPKAUTO
       END DO
 
       write(15,100) y(NSTATE)
-      CLOSE(16)
+      CLOSE(15)
 
 
 !     write formatted restart data to the file
@@ -561,6 +570,11 @@ PROGRAM CALL_DASPKAUTO
          write(16) thermo(i)
       end do
       write(16) temperature, pressure
+     
+      DO i=1,nstate
+         WRITE(16) ConstantConcentration(i)
+      END DO
+
       close(16)
 
       OPEN(UNIT=17, FILE='RWORK.DAT', FORM='unformatted')

@@ -336,6 +336,13 @@ c      stop
 
 c this is the rate of change of volume
       DEL(NSTATE) = sumyprime*8.314*temperature/pressure/1e-6
+
+      DO I=1,NSTATE
+         IF (constantConcentration(I) .EQ. 1) THEN
+            DEL(I) = 0
+         END IF
+      END DO
+
 c      del(nstate) = 0
 c      write(*,*) sumyprime
       END SUBROUTINE GETFLUX
