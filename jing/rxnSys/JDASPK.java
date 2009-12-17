@@ -524,23 +524,13 @@ public class JDASPK extends JDAS {
                     // if 0:  will integrate the ODE as normal
                     // eg. liquid phase calculations with a constant concentration of O2 (the solubility limit - replenished from the gas phase)
                     // for normal use, this will be a sequence of '0 's
-                    for (Iterator iter = p_reactionModel.getSpecies(); iter.hasNext(); ) {
-                            Species spe = (Species)iter.next();
-                        if (spe.isConstantConcentration())
-                            System.err.println("WARNING. 'ConstantConcentration' option not implemented in DASPK solver. Use DASSL if you need this.");
-                            /*outputString.append("1 ");
-                        else 
-                            outputString.append("0 ");*/
-                    }
-                    // outputString.append("0 \n"); // for liquid EOS or constant volume this should be 1 
+                    getConcentractionFlags(p_reactionModel);        
                 }
                 catch (IOException e) {
                     System.err.println("Problem writing Solver Input File!");
                     e.printStackTrace();
                 }
-        // Add flags that specify whether the concentrations are constant or not
-	getConcentractionFlags(p_reactionModel);        
-        //this should be the end of the input file
+       //this should be the end of the input file
         try{
             bw.close();
         }
