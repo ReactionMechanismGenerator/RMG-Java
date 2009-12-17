@@ -436,17 +436,17 @@ public class JDASPK extends JDAS {
                 setupInputFile();
 	//	outputString = new StringBuilder();
 		Iterator spe_iter = p_reactionModel.getSpecies();
-    	while (spe_iter.hasNext()){
-    		Species spe = (Species)spe_iter.next();
-    		int id = getRealID(spe);
-    	}
-    	double startTime = System.currentTimeMillis();
-		
-		ReactionTime rt = p_beginStatus.getTime();
-        if (!rt.equals(p_beginTime)) throw new InvalidBeginStatusException();
+                while (spe_iter.hasNext()){
+                        Species spe = (Species)spe_iter.next();
+                        int id = getRealID(spe);
+                }
+                double startTime = System.currentTimeMillis();
 
-        double tBegin = p_beginTime.getStandardTime();
-        double tEnd = p_endTime.getStandardTime();
+                        ReactionTime rt = p_beginStatus.getTime();
+                if (!rt.equals(p_beginTime)) throw new InvalidBeginStatusException();
+
+                double tBegin = p_beginTime.getStandardTime();
+                double tEnd = p_endTime.getStandardTime();
 
 		double T = p_temperature.getK();
 		double P = p_pressure.getAtm();
