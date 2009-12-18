@@ -223,7 +223,6 @@ public class JDASPK extends JDAS {
         
 	SystemSnapshot sss = new SystemSnapshot(new ReactionTime(endTime, "sec"), speStatus, p_beginStatus.getTemperature(), p_beginStatus.getPressure());
 	//sss.inertGas = p_beginStatus.inertGas; //gmagoon 6/23/09: copy inertGas information from initialStatus
-      //  sss.inertGas = null;//zero out the inert gas info (in principal, this should already be null, but this is done "just-in-case")
         //total the concentrations of non-inert species
         double totalNonInertConc = totalNonInertConcentrations();
         //calculate the scale factor needed to account for volume change 
