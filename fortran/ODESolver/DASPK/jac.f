@@ -22,12 +22,12 @@
          oloop: DO I=1,NSTATE
             PD(I,I) = PD(I,I) - CJ
             !gmagoon 12/18/09: set rows for equations for constant concentration species equal to all zeroes
-            IF (ConstantConcentration(I) .eq. 1)
+            IF (ConstantConcentration(I) .EQ. 1)
                 iloop: DO J=1,NSTATE
                     PD(I,J) = 0
-                END iloop
+                END DO iloop
             END IF
-         END oloop
+         END DO oloop
 
       ELSE 
          WRITE(*,*) "IJAC NOT EQUAL TO 0", IJAC
