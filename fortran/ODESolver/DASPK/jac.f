@@ -8,7 +8,8 @@
      $     CJ, RPAR(*), DEL(NEQ), AJAC(nstate*nstate)
       INTEGER IPAR(*), SENPAR(*), IJAC, NJAC,IROW(nstate*nstate), 
      $     JCOL(nstate*nstate), IDPWRK(nstate*nstate), IRES, I, J
-
+     
+      IJAC = 1
       IF (IJAC .EQ. 0) THEN
 
          call RESAD(T, Y, YPRIME, CJ, DEL, RPAR, IPAR, SENPAR,
