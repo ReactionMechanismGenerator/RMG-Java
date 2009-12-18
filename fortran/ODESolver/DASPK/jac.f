@@ -20,13 +20,13 @@
          END DO
          
          oloop: DO I=1,NSTATE
-            PD(I,I) = PD(I,I) - CJ
             !gmagoon 12/18/09: set rows for equations for constant concentration species equal to all zeroes
             IF (ConstantConcentration(I) .EQ. 1) THEN
                 iloop: DO J=1,NSTATE
                     PD(I,J) = 0
                 END DO iloop
             END IF
+            PD(I,I) = PD(I,I) - CJ
          END DO oloop
 
       ELSE 
