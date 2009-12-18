@@ -19,15 +19,15 @@
             PD(IROW(I), JCOL(I))= AJAC(I)
          END DO
          
-         DO I=1,NSTATE
+         oloop: DO I=1,NSTATE
             PD(I,I) = PD(I,I) - CJ
             !gmagoon 12/18/09: set rows for equations for constant concentration species equal to all zeroes
             IF (ConstantConcentration(I) .eq. 1)
-                DO J=1,NSTATE
+                iloop: DO J=1,NSTATE
                     PD(I,J) = 0
-                END DO
+                END iloop
             END IF
-         END DO
+         END oloop
 
       ELSE 
          WRITE(*,*) "IJAC NOT EQUAL TO 0", IJAC
