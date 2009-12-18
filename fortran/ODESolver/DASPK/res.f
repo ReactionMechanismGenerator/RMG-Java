@@ -38,8 +38,7 @@ c calculate the res for state variables
          CAll GETFlux(y, DEL, RPAR)
 
 c calculate the res for sensitivity variables
-c         ijac = 0
-         ijac = 1
+         ijac = 0
          tempcj =0
          call jac(t, y, yprime, jacobian, tempcj, rpar, ipar, senpar,
      $        ijac)
