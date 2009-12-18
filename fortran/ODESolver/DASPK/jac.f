@@ -9,7 +9,7 @@
       INTEGER IPAR(*), SENPAR(*), IJAC, NJAC,IROW(nstate*nstate), 
      $     JCOL(nstate*nstate), IDPWRK(nstate*nstate), IRES, I, J
 
-      IF (IJAC .EQ. 0) THEN
+     ! IF (IJAC .EQ. 0) THEN
 
          call RESAD(T, Y, YPRIME, CJ, DEL, RPAR, IPAR, SENPAR,
      $        AJAC, NJAC, IROW, JCOL, IDPWRK)
@@ -29,9 +29,9 @@
             END IF
          END DO oloop
 
-      ELSE 
-         WRITE(*,*) "IJAC NOT EQUAL TO 0", IJAC
-      END IF
+     ! ELSE 
+     !    WRITE(*,*) "IJAC NOT EQUAL TO 0", IJAC
+     ! END IF
 
 
       END SUBROUTINE JAC
