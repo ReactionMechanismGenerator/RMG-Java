@@ -691,7 +691,7 @@ public class JDASPK extends JDAS {
 	@Override
 	protected void initializeWorkSpace() {
 		super.initializeWorkSpace();
-		info[4] = 1; //use analytical jacobian
+		info[4] = 0; //use numerical jacobian
 		if (nParameter != 0) {
 			info[18] = nParameter; //the number of parameters
 			info[19] = 2; //perform senstivity analysis
