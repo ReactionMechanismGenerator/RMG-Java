@@ -9,7 +9,6 @@
       INTEGER IPAR(*), SENPAR(*), IJAC, NJAC,IROW(nstate*nstate), 
      $     JCOL(nstate*nstate), IDPWRK(nstate*nstate), IRES, I, J
      
-      IJAC = 1
       IF (IJAC .EQ. 0) THEN
 
          call RESAD(T, Y, YPRIME, CJ, DEL, RPAR, IPAR, SENPAR,
@@ -24,7 +23,6 @@
             PD(I,I) = PD(I,I) - CJ
             !gmagoon 12/18/09: set rows for equations for constant concentration species equal to all zeroes
             IF (ConstantConcentration(I) .EQ. 1) THEN
-                IJAC = 1
                 iloop: DO J=1,NSTATE
                     PD(I,J) = 0
                 END DO iloop
