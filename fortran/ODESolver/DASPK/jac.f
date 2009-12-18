@@ -23,6 +23,7 @@
             PD(I,I) = PD(I,I) - CJ
             !gmagoon 12/18/09: set rows for equations for constant concentration species equal to all zeroes
             IF (ConstantConcentration(I) .EQ. 1) THEN
+                IJAC = 1
                 iloop: DO J=1,NSTATE
                     PD(I,J) = 0
                 END DO iloop
