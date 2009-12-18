@@ -266,9 +266,6 @@ public class SystemSnapshot {
     //## operation putInertGas(String,double)
     public void putInertGas(String p_name, double p_concentration) {
         //#[ operation putInertGas(String,double)
-        System.out.println(p_name);
-        System.out.println(p_concentration);
-        System.out.println(inertGas);
         inertGas.put(p_name, new Double(p_concentration));
         //#]
     }
