@@ -89,8 +89,8 @@ public class JDASPK extends JDAS {
 
     	for (int i = p_reactionModel.getSpeciesNumber();i<neq;i++){
     		double sens = p_y[i];
-    		int index = i-p_reactionModel.getSpeciesNumber();
-    		senStatus[index] = p_y[i];
+    		int ind = i-p_reactionModel.getSpeciesNumber();
+    		senStatus[ind] = p_y[i];
     	}
     	return senStatus;
     	//#]
