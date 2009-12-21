@@ -738,12 +738,19 @@ PROGRAM CALL_DASPKAUTO
          WRITE(15,*) TIME
          do i=0, nparam
             DO j=1,NSTATE
-               WRITE(15,*) Y(I*nstate+j)/Y(NSTATE)
+               !for concentrations, normalize by volume
+               IF (i .EQ. 0) THEN
+                WRITE(15,*) Y(I*nstate+j)/Y(NSTATE)
+               !for sensitivity coefficients, we must use quotient rule:
+               !Zcj,ki = dcj/dki=d(nj/V)/dki=(V*dnj/dki-nj*dV/dki)/V^2
+               ELSE
+                WRITE(15,*) (Y(NSTATE)*Y(I*nstate+j)-Y(j)*Y(I*nstate+NSTATE))/(Y(NSTATE)**2)
             END DO
          end do
          
          ! 6/26/08 gmagoon: these values are read by RMG as flux; corrected to
          ! include volume changing effects (dV/dt) using quotient rule
+         ! 12/21/09 gmagoon: update: "fluxes" for sensitivity coefficients may not be computed correctly, but I don't believe they are used
          do i=0, nparam
             DO j=1,NSTATE
                !WRITE(15,*) Yprime(I*nstate+j)/Y(NSTATE)
