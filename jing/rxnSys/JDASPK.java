@@ -81,9 +81,9 @@ public class JDASPK extends JDAS {
     //## operation generateSensitivityStatus(ReactionModel,double [],double [],int)
     private double [] generateSensitivityStatus(ReactionModel p_reactionModel, double [] p_y, double [] p_yprime, int p_paraNum) {
     	//#[ operation generateSensitivityStatus(ReactionModel,double [],double [],int)
-    	int neq = p_reactionModel.getSpeciesNumber()*(p_paraNum+1);
-    	if (p_y.length != neq) throw new DynamicSimulatorException();
-    	if (p_yprime.length != neq) throw new DynamicSimulatorException();
+    	int nequ = p_reactionModel.getSpeciesNumber()*(p_paraNum+1);
+    	if (p_y.length != nequ) throw new DynamicSimulatorException();
+    	if (p_yprime.length != nequ) throw new DynamicSimulatorException();
 
     	double [] senStatus = new double[nParameter*nState];
 
