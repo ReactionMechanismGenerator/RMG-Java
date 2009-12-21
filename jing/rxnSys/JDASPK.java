@@ -85,13 +85,12 @@ public class JDASPK extends JDAS {
     	if (p_y.length != nequ) throw new DynamicSimulatorException();
     	if (p_yprime.length != nequ) throw new DynamicSimulatorException();
 
-    	double [] senStatus = new double[nParameter*nState]; //gmagoon 12/21/09: this seems to include volume (nState, rather than nState-1)
+    	double [] senStatus = new double[nParameter*nState]; //gmagoon 12/21/09: this does not include volume and could be shrunk to nParameter*(nState-1)
 
     	for (int i = p_reactionModel.getSpeciesNumber();i<neq;i++){
     		//double sens = p_y[i]; gmagoon 12/21/09: this doesn't seem to be used anywhere
     		int ind = i-p_reactionModel.getSpeciesNumber();
     		senStatus[ind] = p_y[i];
-                System.out.println(ind+ "   " + senStatus[ind]);
     	}
     	return senStatus;
     	//#]
@@ -621,7 +620,7 @@ public class JDASPK extends JDAS {
                                     line = br.readLine();
                                     y[i*nState + j] = Double.parseDouble(line.trim());
                             }
-                            line = br.readLine();
+                            line = br.readLine();//gmagoon 12/21/09: this apparently parses the line containing volume or volume sensitivity
                     }
 
                     for (int i=0; i<nParameter+1; i++){
