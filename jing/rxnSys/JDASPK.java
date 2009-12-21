@@ -87,7 +87,7 @@ public class JDASPK extends JDAS {
 
     	double [] senStatus = new double[nParameter*nState]; //gmagoon 12/21/09: this does not include volume and could be shrunk to nParameter*(nState-1)
 
-    	for (int i = p_reactionModel.getSpeciesNumber();i<neq;i++){
+    	for (int i = p_reactionModel.getSpeciesNumber();i<nequ;i++){
     		//double sens = p_y[i]; gmagoon 12/21/09: this doesn't seem to be used anywhere
     		int ind = i-p_reactionModel.getSpeciesNumber();
     		senStatus[ind] = p_y[i];
