@@ -609,70 +609,70 @@ public class JDASPK extends JDAS {
         	double presentTime = 0;
         	for (int k=0; k<p_numSteps; k++){
         		line = br.readLine();
-            	if (Double.parseDouble(line.trim()) != neq) {
-            		System.out.println("ODESolver didnt generate all species result");
-            		System.exit(0);
-            	}
-            	presentTime = Double.parseDouble(br.readLine().trim());
-            	endT = new ReactionTime(presentTime, "sec");
-            	for (int i=0; i<nParameter+1; i++){
-            		for (int j=0; j<nState; j++) {
-            			line = br.readLine();
-                		y[i*nState + j] = Double.parseDouble(line.trim());
-            		}
-            		line = br.readLine();
-            	}
-            	
-            	for (int i=0; i<nParameter+1; i++){
-            		for (int j=0; j<nState; j++) {
-            			line = br.readLine();
-                		yprime[i*nState + j] = Double.parseDouble(line.trim());
-            		}
-            		line = br.readLine();
-            	}
-            	reactionFlux = new double[rList.size()+thirdBodyList.size()+troeList.size()+lindemannList.size()];
-            	for (int i=0; i<rList.size()+thirdBodyList.size()+troeList.size()+lindemannList.size(); i++){
-            		line = br.readLine();
-            		reactionFlux[i] = Double.parseDouble(line.trim());
-            	}
-            	LinkedHashMap speStatus = new LinkedHashMap();
-                double [] senStatus = new double[nParameter*nState];
-            	
-                System.out.println("After ODE: from " + String.valueOf(beginT.time) + " SEC to " + String.valueOf(endT.time) + "SEC");
-                speStatus = generateSpeciesStatus(p_reactionModel, y, yprime, nParameter);
-                senStatus = generateSensitivityStatus(p_reactionModel,y,yprime,nParameter);
-                SystemSnapshot sss = new SystemSnapshot(endT, speStatus, senStatus, p_beginStatus.getTemperature(), p_beginStatus.getPressure());
-               // sss.inertGas = p_beginStatus.inertGas; //gmagoon 6/23/09: copy inertGas information from initialStatus
-                sss.inertGas = new LinkedHashMap();//zero out the inert gas info (in principal, this should already be null, but this is done "just-in-case")
-                //total the concentrations of non-inert species
-                double totalNonInertConc = totalNonInertConcentrations();
-                //calculate the scale factor needed to account for volume change
-                double inertScaleFactor = 1;
-                if(p_beginStatus.inertGas != null){//8/4/09 gmagoon: make sure inert gas is defined; otherwise, we will have issues with getTotalInertGas() when we start from non-zero time, as jdmo encountered (null-pointer exception)
-                    if(p_beginStatus.getTotalInertGas() > 0){//this check will ensure we don't try to divide by zero; otherwise, we will end up setting new concentration to be 0.0*Infinity=NaN
-                        inertScaleFactor = (p_beginStatus.getTotalMole()- totalNonInertConc)/p_beginStatus.getTotalInertGas();
+                    if (Double.parseDouble(line.trim()) != neq) {
+                            System.out.println("ODESolver didnt generate all species result");
+                            System.exit(0);
                     }
-                
-                    //scale the initial concentrations of the inertGas to account for volume change
-                    for (Iterator iter = p_beginStatus.getInertGas(); iter.hasNext(); ) {
-                        String inertName = (String)iter.next();
-                        double originalInertConc = p_beginStatus.getInertGas(inertName);
-                        sss.putInertGas(inertName, originalInertConc*inertScaleFactor);       
+                    presentTime = Double.parseDouble(br.readLine().trim());
+                    endT = new ReactionTime(presentTime, "sec");
+                    for (int i=0; i<nParameter+1; i++){
+                            for (int j=0; j<nState; j++) {
+                                    line = br.readLine();
+                                    y[i*nState + j] = Double.parseDouble(line.trim());
+                            }
+                            line = br.readLine();
                     }
-                }
-        
-                sss.setIDTranslator(IDTranslator);
-                LinkedList reactionList = new LinkedList();
-                reactionList.addAll(rList);
-                reactionList.addAll(duplicates);
-                reactionList.addAll(thirdBodyList);
-                reactionList.addAll(troeList);
-                reactionList.addAll(lindemannList);
-                sss.setReactionList(reactionList);
-                systemSnapshotList.add(sss);
-                sss.setReactionFlux(reactionFlux);
-            	beginT = endT;
-            	//tEnd = tEnd.add(tStep);
+
+                    for (int i=0; i<nParameter+1; i++){
+                            for (int j=0; j<nState; j++) {
+                                    line = br.readLine();
+                                    yprime[i*nState + j] = Double.parseDouble(line.trim());
+                            }
+                            line = br.readLine();
+                    }
+                    reactionFlux = new double[rList.size()+thirdBodyList.size()+troeList.size()+lindemannList.size()];
+                    for (int i=0; i<rList.size()+thirdBodyList.size()+troeList.size()+lindemannList.size(); i++){
+                            line = br.readLine();
+                            reactionFlux[i] = Double.parseDouble(line.trim());
+                    }
+                    LinkedHashMap speStatus = new LinkedHashMap();
+                    double [] senStatus = new double[nParameter*nState];
+
+                    System.out.println("After ODE: from " + String.valueOf(beginT.time) + " SEC to " + String.valueOf(endT.time) + "SEC");
+                    speStatus = generateSpeciesStatus(p_reactionModel, y, yprime, nParameter);
+                    senStatus = generateSensitivityStatus(p_reactionModel,y,yprime,nParameter);
+                    SystemSnapshot sss = new SystemSnapshot(endT, speStatus, senStatus, p_beginStatus.getTemperature(), p_beginStatus.getPressure());
+                   // sss.inertGas = p_beginStatus.inertGas; //gmagoon 6/23/09: copy inertGas information from initialStatus
+                    sss.inertGas = new LinkedHashMap();//zero out the inert gas info (in principal, this should already be null, but this is done "just-in-case")
+                    //total the concentrations of non-inert species
+                    double totalNonInertConc = totalNonInertConcentrations();
+                    //calculate the scale factor needed to account for volume change
+                    double inertScaleFactor = 1;
+                    if(p_beginStatus.inertGas != null){//8/4/09 gmagoon: make sure inert gas is defined; otherwise, we will have issues with getTotalInertGas() when we start from non-zero time, as jdmo encountered (null-pointer exception)
+                        if(p_beginStatus.getTotalInertGas() > 0){//this check will ensure we don't try to divide by zero; otherwise, we will end up setting new concentration to be 0.0*Infinity=NaN
+                            inertScaleFactor = (p_beginStatus.getTotalMole()- totalNonInertConc)/p_beginStatus.getTotalInertGas();
+                        }
+
+                        //scale the initial concentrations of the inertGas to account for volume change
+                        for (Iterator iter = p_beginStatus.getInertGas(); iter.hasNext(); ) {
+                            String inertName = (String)iter.next();
+                            double originalInertConc = p_beginStatus.getInertGas(inertName);
+                            sss.putInertGas(inertName, originalInertConc*inertScaleFactor);       
+                        }
+                    }
+
+                    sss.setIDTranslator(IDTranslator);
+                    LinkedList reactionList = new LinkedList();
+                    reactionList.addAll(rList);
+                    reactionList.addAll(duplicates);
+                    reactionList.addAll(thirdBodyList);
+                    reactionList.addAll(troeList);
+                    reactionList.addAll(lindemannList);
+                    sss.setReactionList(reactionList);
+                    systemSnapshotList.add(sss);
+                    sss.setReactionFlux(reactionFlux);
+                    beginT = endT;
+                    //tEnd = tEnd.add(tStep);
         	}
         	
         	
