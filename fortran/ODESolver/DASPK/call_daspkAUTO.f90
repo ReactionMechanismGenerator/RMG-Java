@@ -745,6 +745,7 @@ PROGRAM CALL_DASPKAUTO
                !Zcj,ki = dcj/dki=d(nj/V)/dki=(V*dnj/dki-nj*dV/dki)/V^2
                ELSE
                 WRITE(15,*) (Y(NSTATE)*Y(I*nstate+j)-Y(j)*Y(I*nstate+NSTATE))/(Y(NSTATE)**2)
+               END IF
             END DO
          end do
          
