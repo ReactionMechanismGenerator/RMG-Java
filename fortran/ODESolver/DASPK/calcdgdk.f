@@ -27,5 +27,13 @@ c      NSTATE = IPAR(1)
          PD(IROW(I), JCOL(I))= AJAC(I)
       END DO
       
+      !gmagoon 12/21/09: set rows for equations for constant concentration species equal to all zeroes, similar to what was done in jac; I'm not exactly sure what res_rpar does, so I don't really have a good justification for this, but assuming res_rpar calculates dg/dk, then I think this should be accurate
+      oloop: DO I=1,NSTATE
+         IF (ConstantConcentration(I) .EQ. 1) THEN
+             iloop: DO J=1,NPARAM
+                 PD(I,J) = 0
+             END DO iloop
+         END IF
+      END DO oloop
       
       END SUBROUTINE calcdgdk
