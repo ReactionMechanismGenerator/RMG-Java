@@ -68,6 +68,7 @@ public class ReactionSystem {
     protected LibraryReactionGenerator lrg;//9/24/07 gmagoon: moved to ReactionModelGenerator.java; 9/25/07 variable is passed from ReactionModelGenerator
     protected int ind;//10/30/07 gmagoon: added index variable to number different reaction systems; starts at zero; 1/5/09 changed name from index to ind to avoid confusion with local variables used below
     protected String equationOfState; // rwest: could be "Liquid"
+    protected static boolean printAllSens = false;
     // Constructors
 
     //## operation ReactionSystem(TemperatureModel,PressureModel,ReactionModelEnlarger,FinishController,DynamicSimulator,PrimaryReactionLibrary,ReactionGenerator,HashSet,InitialStatus)
@@ -1041,6 +1042,7 @@ public String printLowerBoundConcentrations(LinkedList p_speciesList) {
   //## operation printMostUncertainReactions(LinkedList, LinkedList)
 //svp
       public String printMostUncertainReactions(LinkedList p_speciesList, LinkedList p_importantSpecies){
+        if (printAllSens) p_importantSpecies = p_speciesList; //12/22/09 gmagoon: make the important species equal to all the species if printAllSens is turned on
         //#[ operation printMostUncertainReactions(LinkedList, LinkedList)
         String result = "Reactions contributing most to uncertainty:\n";
         int size = p_speciesList.size();
@@ -1225,6 +1227,8 @@ public String printLowerBoundConcentrations(LinkedList p_speciesList) {
       //svp
       public String printSensitivityCoefficients(LinkedList p_speciesList, LinkedList p_importantSpecies) {
         //#[ operation printSensitivityCoefficients(LinkedList, LinkedList)
+        if (printAllSens) p_importantSpecies = p_speciesList; //12/22/09 gmagoon: make the important species equal to all the species if printAllSens is turned on
+        
         int size = p_speciesList.size();
         int n = 0;
         Iterator iter = getSystemSnapshot();
@@ -1299,6 +1303,8 @@ public String printLowerBoundConcentrations(LinkedList p_speciesList) {
       //svp
       public String printSensitivityToThermo(LinkedList p_speciesList, LinkedList p_importantSpecies) {
         //#[ operation printSensitivityToThermo(LinkedList, LinkedList)
+          if (printAllSens) p_importantSpecies = p_speciesList; //12/22/09 gmagoon: make the important species equal to all the species if printAllSens is turned on
+          
     	  int size = p_speciesList.size();
     	  String result = "Sensitivity to thermo:\n";
     	  int n = 0;

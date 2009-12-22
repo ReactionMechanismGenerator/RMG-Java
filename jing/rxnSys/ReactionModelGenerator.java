@@ -1002,7 +1002,7 @@ public class ReactionModelGenerator {
                                while (!line.equals("END")){
                                  st = new StringTokenizer(line);
                                  String name = st.nextToken();
-                              
+                                 if (name.toUpperCase().equals("ALL")) ReactionSystem.printAllSens = true; //gmagoon 12/22/09: if the line contains the word "all", turn on the flag to print out sensitivity information for everything
                                  species.add(name);
                                  line = ChemParser.readMeaningfulLine(reader);
                                }
