@@ -1042,8 +1042,13 @@ public String printLowerBoundConcentrations(LinkedList p_speciesList) {
   //## operation printMostUncertainReactions(LinkedList, LinkedList)
 //svp
       public String printMostUncertainReactions(LinkedList p_speciesList, LinkedList p_importantSpecies){
-        if (printAllSens) p_importantSpecies = p_speciesList; //12/22/09 gmagoon: make the important species equal to all the species if printAllSens is turned on
         //#[ operation printMostUncertainReactions(LinkedList, LinkedList)
+        if (printAllSens){//12/22/09 gmagoon: make the important species equal to all the species if printAllSens is turned on
+              for (int i = 0; i < p_speciesList.size(); i++) {
+                Species spe = (Species) p_speciesList.get(i);; 
+                p_importantSpecies.add(spe.getName());
+              }
+        }
         String result = "Reactions contributing most to uncertainty:\n";
         int size = p_speciesList.size();
         int n = 0;
@@ -1227,7 +1232,12 @@ public String printLowerBoundConcentrations(LinkedList p_speciesList) {
       //svp
       public String printSensitivityCoefficients(LinkedList p_speciesList, LinkedList p_importantSpecies) {
         //#[ operation printSensitivityCoefficients(LinkedList, LinkedList)
-        if (printAllSens) p_importantSpecies = p_speciesList; //12/22/09 gmagoon: make the important species equal to all the species if printAllSens is turned on
+          if (printAllSens){//12/22/09 gmagoon: make the important species equal to all the species if printAllSens is turned on
+              for (int i = 0; i < p_speciesList.size(); i++) {
+                Species spe = (Species) p_speciesList.get(i);; 
+                p_importantSpecies.add(spe.getName());
+              }
+          }
         
         int size = p_speciesList.size();
         int n = 0;
@@ -1303,7 +1313,12 @@ public String printLowerBoundConcentrations(LinkedList p_speciesList) {
       //svp
       public String printSensitivityToThermo(LinkedList p_speciesList, LinkedList p_importantSpecies) {
         //#[ operation printSensitivityToThermo(LinkedList, LinkedList)
-          if (printAllSens) p_importantSpecies = p_speciesList; //12/22/09 gmagoon: make the important species equal to all the species if printAllSens is turned on
+          if (printAllSens){//12/22/09 gmagoon: make the important species equal to all the species if printAllSens is turned on
+              for (int i = 0; i < p_speciesList.size(); i++) {
+                Species spe = (Species) p_speciesList.get(i);; 
+                p_importantSpecies.add(spe.getName());
+              }
+          }
           
     	  int size = p_speciesList.size();
     	  String result = "Sensitivity to thermo:\n";
@@ -1317,7 +1332,7 @@ public String printLowerBoundConcentrations(LinkedList p_speciesList) {
     		  }
     		  for (int i = 0; i < size; i++) {
     			  Species spe = (Species) p_speciesList.get(i);
-    			  if (!p_importantSpecies.contains(spe.getName()) )
+    			  if (!p_importantSpecies.contains(spe.getName()))
     				  continue;
     			  SpeciesStatus speSta = ss.getSpeciesStatus(spe);
     			  for (int x = 0; x < size; x++){
