@@ -468,7 +468,98 @@ public class TemplateReactionGenerator implements ReactionGenerator {
         //#]
     }
     
-
+    public LinkedHashSet reactSpecificFamily(Species species1, Species species2, String rxnFamilyName) {
+    	LinkedHashSet reaction_set = new LinkedHashSet();
+        // Loop over all the reaction templates to find the one of interest
+        Iterator template_iter = reactionTemplateLibrary.getReactionTemplate();
+        while (template_iter.hasNext()) {
+        	ReactionTemplate current_template = (ReactionTemplate)template_iter.next();
+        	if (current_template.name.equals(rxnFamilyName)) {
+	        	if (current_template.hasOneReactant()) {
+					LinkedHashSet current_reactions = current_template.reactOneReactant(species1);
+					reaction_set.addAll(current_reactions);
+	        	}
+				
+	        	else if (current_template.hasTwoReactants()) {
+	        		StructureTemplate structTemp = current_template.structureTemplate;
+	        		
+	        		LinkedHashSet site1_reactiveSites_sp1 = new LinkedHashSet();
+	        		LinkedHashSet site2_reactiveSites_sp1 = new LinkedHashSet();
+	        		LinkedHashSet site1_reactiveSites_sp2 = new LinkedHashSet();
+	        		LinkedHashSet site2_reactiveSites_sp2 = new LinkedHashSet();
+	        		
+	        		if (!species1.hasResonanceIsomers()) {
+	        			ChemGraph newCoreCG = species1.getChemGraph();
+	        			site1_reactiveSites_sp1 = structTemp.identifyReactedSites(newCoreCG,1);
+	        			site2_reactiveSites_sp1 = structTemp.identifyReactedSites(newCoreCG,2);
+	        			if (!species2.hasResonanceIsomers()) {
+	        				ChemGraph tempCG = species2.getChemGraph();
+	        				ChemGraph oldCoreCG = generateCGcopyIfNecessary(tempCG,newCoreCG);
+	        				if (!site1_reactiveSites_sp1.isEmpty()) site2_reactiveSites_sp2 = structTemp.identifyReactedSites(oldCoreCG,2);
+	        				if (!site2_reactiveSites_sp1.isEmpty()) site1_reactiveSites_sp2 = structTemp.identifyReactedSites(oldCoreCG,1);
+	        				//	React A + B
+	        				LinkedHashSet current_reactions = current_template.reactTwoReactants(newCoreCG,site1_reactiveSites_sp1,oldCoreCG,site2_reactiveSites_sp2);
+	        				reaction_set.addAll(current_reactions);
+	        				//	React B + A
+	        				current_reactions = current_template.reactTwoReactants(oldCoreCG,site1_reactiveSites_sp2,newCoreCG,site2_reactiveSites_sp1);
+	        				reaction_set.addAll(current_reactions);
+	        			} else {
+	        				Iterator coreSpeciesCGIter = species2.getResonanceIsomers();
+	        				while (coreSpeciesCGIter.hasNext()) {
+	        					ChemGraph tempCG = (ChemGraph)coreSpeciesCGIter.next();
+	        					ChemGraph oldCoreCG = generateCGcopyIfNecessary(tempCG,newCoreCG);
+	        					if (!site1_reactiveSites_sp1.isEmpty()) site2_reactiveSites_sp2 = structTemp.identifyReactedSites(oldCoreCG,2);
+	        					if (!site2_reactiveSites_sp1.isEmpty()) site1_reactiveSites_sp2 = structTemp.identifyReactedSites(oldCoreCG,1);
+	        					//	React A + B
+	        					LinkedHashSet current_reactions = current_template.reactTwoReactants(newCoreCG,site1_reactiveSites_sp1,oldCoreCG,site2_reactiveSites_sp2);
+	        					reaction_set.addAll(current_reactions);
+	        					//	React B + A
+	        					current_reactions = current_template.reactTwoReactants(oldCoreCG,site1_reactiveSites_sp2,newCoreCG,site2_reactiveSites_sp1);
+	        					reaction_set.addAll(current_reactions);
+	        				}
+	        			}
+	        		} else {
+	        			Iterator newSpeciesCGIter = species1.getResonanceIsomers();
+	        			while (newSpeciesCGIter.hasNext()) {
+	        				ChemGraph newCoreCG = (ChemGraph)newSpeciesCGIter.next();
+	        				site1_reactiveSites_sp1 = structTemp.identifyReactedSites(newCoreCG,1);
+	        				site2_reactiveSites_sp1 = structTemp.identifyReactedSites(newCoreCG,2);
+	        				if (!species2.hasResonanceIsomers()) {
+	        					ChemGraph tempCG = species2.getChemGraph();
+	        					ChemGraph oldCoreCG = generateCGcopyIfNecessary(tempCG,newCoreCG);
+	        					if (!site1_reactiveSites_sp1.isEmpty()) site2_reactiveSites_sp2 = structTemp.identifyReactedSites(oldCoreCG,2);
+	        					if (!site2_reactiveSites_sp1.isEmpty()) site1_reactiveSites_sp2 = structTemp.identifyReactedSites(oldCoreCG,1);
+	        					//	React A + B
+	        					LinkedHashSet current_reactions = current_template.reactTwoReactants(newCoreCG,site1_reactiveSites_sp1,oldCoreCG,site2_reactiveSites_sp2);
+	        					reaction_set.addAll(current_reactions);
+	        					//	React B + A
+	        					current_reactions = current_template.reactTwoReactants(oldCoreCG,site1_reactiveSites_sp2,newCoreCG,site2_reactiveSites_sp1);
+	        					reaction_set.addAll(current_reactions);
+	        				} else {
+	        					Iterator coreSpeciesCGIter = species2.getResonanceIsomers();
+	        					while (coreSpeciesCGIter.hasNext()) {
+	        						ChemGraph tempCG = (ChemGraph)coreSpeciesCGIter.next();
+	        						ChemGraph oldCoreCG = generateCGcopyIfNecessary(tempCG,newCoreCG);
+	        						if (!site1_reactiveSites_sp1.isEmpty()) site2_reactiveSites_sp2 = structTemp.identifyReactedSites(oldCoreCG,2);
+	        						if (!site2_reactiveSites_sp1.isEmpty()) site1_reactiveSites_sp2 = structTemp.identifyReactedSites(oldCoreCG,1);
+	        						//	React A + B
+	        						LinkedHashSet current_reactions = current_template.reactTwoReactants(newCoreCG,site1_reactiveSites_sp1,oldCoreCG,site2_reactiveSites_sp2);
+	        						reaction_set.addAll(current_reactions);
+	        						//	React B + A
+	        						current_reactions = current_template.reactTwoReactants(oldCoreCG,site1_reactiveSites_sp2,newCoreCG,site2_reactiveSites_sp1);
+	        						reaction_set.addAll(current_reactions);
+	        					}
+	        				}
+	        			}
+	        		}
+	        	}
+        	}
+        }
+		
+        return reaction_set;
+    }
+    
+    
     
     public ChemGraph generateCGcopyIfNecessary(ChemGraph cg1, ChemGraph cg2) {
     	ChemGraph cg_copy = null;

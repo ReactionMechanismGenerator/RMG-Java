@@ -66,6 +66,11 @@ public class PopulateReactions {
 	 * 	the modified Arrhenius parameters and RMG-generated comments) and the second
 	 * 	the list of species (including the ChemGraph) that are involved in the list
 	 * 	of reactions.
+	 * 
+	 *	UPDATE by MRH on 10/Jan/2010 - Fixed 2 bugs:
+	 *		(1) Module did not report the correct A (pre-exponential factor) for reverse
+	 *			reactions (e.g. H+CH4=CH3+H2)
+	 *		(2) Module reported the same reaction multiple times (no dupliate catch)
 	 */
 	public static void main(String[] args) {
 		initializeSystemProperties();
@@ -76,8 +81,7 @@ public class PopulateReactions {
 		//	e.g. H2C*-CH2-CH2-CH3 -> H3C-CH2-*CH-CH3
 		Global.lowTemperature = new Temperature(300,"K");
 		Global.highTemperature = new Temperature(1500,"K");
-		// Define an integer to count the number of sets of duplicate kinetics
-		int numDupKinetics = 0;
+
 		// Define variable 'speciesSet' to store the species contained in the input file
 		LinkedHashSet speciesSet = new LinkedHashSet();
 		// Define variable 'reactions' to store all possible rxns between the species in speciesSet
@@ -110,10 +114,12 @@ public class PopulateReactions {
 				systemTemp = new Temperature(Double.parseDouble(st.nextToken()),ChemParser.removeBrace(st.nextToken()));
 			}
 			Temperature systemTemp_K = new Temperature(systemTemp.getK(),"K");
+			
 			// Creating a new ReactionModelGenerator so I can set the variable temp4BestKinetics
 			ReactionModelGenerator rmg = new ReactionModelGenerator();
 			rmg.setTemp4BestKinetics(systemTemp_K);
 			TemplateReactionGenerator rtLibrary = new TemplateReactionGenerator();
+			
 			listOfReactions += "System Temperature: " + systemTemp_K.getK() + "K\n\n";
 			line = ChemParser.readMeaningfulLine(br_input);
 
@@ -138,7 +144,9 @@ public class PopulateReactions {
         		  return;
         	  }
           }
+          
             line = ChemParser.readMeaningfulLine(br_input);
+            // Read in all of the species in the input file
 			while (line != null) {
 				// The first line of a new species is the user-defined name
 				String speciesName = line;
@@ -156,42 +164,53 @@ public class PopulateReactions {
 				Species species = Species.make(speciesName,cg);
 				// Add the new species to the set of species
 				speciesSet.add(species);
-				// Define a dummy hash set 'new_reactions' to hold the list
-				//	of rxns for the new species against the species seed
-				LinkedHashSet new_reactions = new LinkedHashSet();
-				// React the new species with the set of species (including itself)
-				new_reactions = rtLibrary.react(speciesSet,species);
-				reactions.addAll(new_reactions);
+
 				// Read the next line of the input file
 				line = ChemParser.readMeaningfulLine(br_input);
 			}
-			// Iterate over all rxns, abstracting the necessary information,
-			//	and store the results in the 'listOfReactions' string
+			
+			// React all species with each other
+			reactions = rtLibrary.react(speciesSet);
+			
+			// Some of the reactions may be dupliates of one another 
+			//	(e.g. H+CH4=CH3+H2 as a forward reaction and reverse reaction)
+			//	Create new LinkedHashSet which will store the non-duplicate rxns
+			LinkedHashSet nonDuplicateRxns = new LinkedHashSet();
+			int Counter = 0;
+			
 			Iterator iter_rxns = reactions.iterator();
         	while (iter_rxns.hasNext()){
+        		++Counter;
         		Reaction r = (Reaction)iter_rxns.next();
-        		if (r.hasAdditionalKinetics()) {
-        			++numDupKinetics;
-        			HashSet indiv_rxn = r.getAllKinetics();
-        			for (Iterator iter = indiv_rxn.iterator(); iter.hasNext();) {
-        				Kinetics k_rxn = (Kinetics)iter.next();
-        				if (r.isForward())	listOfReactions += r.toString() + "\t" + updateListOfReactions(k_rxn) + "\tDUP " + numDupKinetics + "\n";
-        				else if (r.isBackward()) listOfReactions += r.getReverseReaction().toString() + "\t" + updateListOfReactions(k_rxn) + "\tDUP " + numDupKinetics + "\n";
-        				else listOfReactions += r.toString() + "\t" + updateListOfReactions(k_rxn) + "\tDUP " + numDupKinetics + "\n";
-        			}
-        		} else {
-        			if (r.isForward()) listOfReactions += r.toString() + "\t" + updateListOfReactions(r.getKinetics());
-        			//else if (r.isBackward()) listOfReactions += r.toString() + "\t" + updateListOfReactions(r.getFittedReverseKinetics(),r.getReactionTemplate().getName());
-        			else if (r.isBackward()) listOfReactions += r.getReverseReaction().toString() + "\t" + updateListOfReactions(r.getReverseReaction().getKinetics());
-        			else listOfReactions += r.toString() + "\t" + updateListOfReactions(r.getKinetics());
+        		
+        		// The first reaction is not a duplicate of any previous reaction
+        		if (Counter == 1) {
+        			nonDuplicateRxns.add(r);
+        			listOfReactions += writeOutputString(r,rtLibrary);
+            		speciesSet.addAll(r.getProductList());
         		}
-
-        		// Add the products of the reactions to the list of species
-        		//	hash set.  The reactants of each reaction are already
-        		//	present.  This list will allow us to generate the graphs
-        		//	for all species involved in rxns.
-        		speciesSet.addAll(r.getProductList());
+        		
+        		// Check whether the current reaction (or its reverse) has the same structure
+        		//	of any reactions already reported in the output
+        		else {
+        			Iterator iterOverNonDup = nonDuplicateRxns.iterator();
+        			boolean dupRxn = false;
+	        		while (iterOverNonDup.hasNext()) {
+	        			Reaction temp_Reaction = (Reaction)iterOverNonDup.next();
+	        			if (r.getStructure() == temp_Reaction.getStructure() || 
+	        					r.getReverseReaction().getStructure() == temp_Reaction.getStructure()) {
+	        				dupRxn = true;
+	        				break;
+	        			}	
+	        		}
+	        		if (!dupRxn) {
+        				nonDuplicateRxns.add(r);
+        				listOfReactions += writeOutputString(r,rtLibrary);
+                		speciesSet.addAll(r.getProductList());
+	        		}
+        		}
 			}
+        	
         	Iterator iter_species = speciesSet.iterator();
         	// Define dummy integer 'i' so our getChemGraph().toString()
         	//	call only returns the graph
@@ -201,6 +220,7 @@ public class PopulateReactions {
         		listOfSpecies += species.getChemkinName() + "\n" +
         			species.getChemGraph().toString(i) + "\n";
         	}
+        	
         	// Write the output files
         	try{
         		File rxns = new File("PopRxnsOutput_rxns.txt");
@@ -252,6 +272,56 @@ public class PopulateReactions {
 			   + "\t" + rxn_k.getEValue() + "\t" + reverseRxnName + ": "
 			   + rxn_k.getSource() + "\t" + rxn_k.getComment() + "\n";
 		return output;
+	}
+	
+	public static String writeOutputString(Reaction r, TemplateReactionGenerator rtLibrary) {
+		String listOfReactions = "";
+		if (r.hasAdditionalKinetics()) {
+			HashSet indiv_rxn = r.getAllKinetics();
+			for (Iterator iter = indiv_rxn.iterator(); iter.hasNext();) {
+				Kinetics k_rxn = (Kinetics)iter.next();
+				if (r.isForward())	listOfReactions += r.toString() + "\t" + updateListOfReactions(k_rxn) + "\tDUP\n";
+				//else if (r.isBackward()) listOfReactions += r.getReverseReaction().toString() + "\t" + updateListOfReactions(k_rxn) + "\tDUP\n";
+				else if (r.isBackward()) {
+					LinkedHashSet reverseReactions = new LinkedHashSet();
+					Iterator iter2 = r.getStructure().getProducts();
+					Species species1 = (Species)iter.next();
+					Species species2 = null;
+					while (iter2.hasNext()) 
+						species2 = (Species)iter2.next();
+					String rxnFamilyName = r.getReverseReaction().getReactionTemplate().getName();
+					reverseReactions = rtLibrary.reactSpecificFamily(species1, species2, rxnFamilyName);
+					for (Iterator iter3 = reverseReactions.iterator(); iter3.hasNext();) {
+						Reaction currentRxn = (Reaction)iter3.next();
+						if (currentRxn.getStructure() == r.getReverseReaction().getStructure())
+							listOfReactions += currentRxn.toString() + "\t" + updateListOfReactions(currentRxn.getKinetics()) + "\tDUP\n"; 
+					}
+					//listOfReactions += r.getReverseReaction().toString() + "\t" + updateListOfReactions(r.getReverseReaction().getKinetics());
+				}
+				else listOfReactions += r.toString() + "\t" + updateListOfReactions(k_rxn) + "\tDUP\n";
+			}
+		} else {
+			if (r.isForward()) listOfReactions += r.toString() + "\t" + updateListOfReactions(r.getKinetics());
+			//else if (r.isBackward()) listOfReactions += r.toString() + "\t" + updateListOfReactions(r.getFittedReverseKinetics(),r.getReactionTemplate().getName());
+			else if (r.isBackward()) {
+				LinkedHashSet reverseReactions = new LinkedHashSet();
+				Iterator iter = r.getStructure().getProducts();
+				Species species1 = (Species)iter.next();
+				Species species2 = null;
+				while (iter.hasNext()) 
+					species2 = (Species)iter.next();
+				String rxnFamilyName = r.getReverseReaction().getReactionTemplate().getName();
+				reverseReactions = rtLibrary.reactSpecificFamily(species1, species2, rxnFamilyName);
+				for (Iterator iter2 = reverseReactions.iterator(); iter2.hasNext();) {
+					Reaction currentRxn = (Reaction)iter2.next();
+					if (currentRxn.getStructure() == r.getReverseReaction().getStructure())
+						listOfReactions += currentRxn.toString() + "\t" + updateListOfReactions(currentRxn.getKinetics()); 
+				}
+				//listOfReactions += r.getReverseReaction().toString() + "\t" + updateListOfReactions(r.getReverseReaction().getKinetics());
+			}
+			else listOfReactions += r.toString() + "\t" + updateListOfReactions(r.getKinetics());
+		}
+		return listOfReactions;
 	}
 
 }
