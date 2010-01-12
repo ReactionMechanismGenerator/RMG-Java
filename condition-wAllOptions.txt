@@ -5,6 +5,13 @@
 // The folder for the "Database" is in reference to $RMG/databases
 Database: RMG_database
 
+//MaxCarbonNumberPerSpecies: 10
+//MaxOxygenNumberPerSpecies: 4
+//MaxRadicalNumberPerSpecies: 2
+//MaxSulfurNumberPerSpecies:
+//MaxSiliconNumberPerSpecies:
+//MaxHeavyAtom:
+
 // There is no limit to the number of PTLs a user may supply.
 // The "Name" of a PTL can have as many tokens as the user prefers.
 // The "Location" of a PTL is in reference to the "Database"/thermo directory
@@ -17,6 +24,10 @@ Name:  RMG old
 Location: primaryThermoLibrary
 END
 
+// Restart options
+ReadRestart: no yes
+WriteRestart: no yes
+
 // Only temperature/pressure model currently supported is "Constant"
 // Units for temperature: K, C, F
 // Units for pressure: atm, bar, Pa, torr
@@ -26,10 +37,6 @@ PressureModel: Constant (atm) 1
 // RMG currently only recognizes "Liquid"
 // *** This option is still under construction ***
 //EquationOfState: Liquid
-
-//MaxCarbonNumberPerSpecies: 10
-//MaxOxygenNumberPerSpecies: 4
-//MaxRadicalNumberPerSpecies: 2
 
 // InChI software must be present in $RMG/software/InChI for this feature to work
 //InChIGeneration: off/on
