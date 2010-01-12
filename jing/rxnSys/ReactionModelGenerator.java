@@ -3169,7 +3169,9 @@ public LinkedList getSpeciesList() {
 						Products = new PDepIsomer(spc);
 					}
 					
+					System.out.println("About to add the following isomer to network: " + Reactants.toString());
 					newNetwork.addIsomer(Reactants);
+					System.out.println("About to add the following isomer to network: " + Products.toString());
 					newNetwork.addIsomer(Products);
 					
 					for (int i=0; i<numFameTs; i++) {
@@ -3309,7 +3311,9 @@ public LinkedList getSpeciesList() {
 						Products = new PDepIsomer(spc);
 					}
 					
+					System.out.println("(2) About to add the following isomer to network: " + Reactants.toString());
 					newNetwork.addIsomer(Reactants);
+					System.out.println("(2) About to add the following isomer to network: " + Products.toString());
 					newNetwork.addIsomer(Products);
 					
 					for (int i=0; i<numFameTs; i++) {
