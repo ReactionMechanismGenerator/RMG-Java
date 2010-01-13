@@ -251,6 +251,14 @@ public class FastMasterEqn implements PDepKineticsEstimator {
             
             int exitValue = fame.waitFor();
 
+			// Clean up i/o streams
+			// This may be needed to release memory, which is especially 
+			// important for FAME since it can easily be called tens of
+			// thousands of times in a single job
+			stdout.close();
+			stderr.close();
+			stdin.close();
+
         }
         catch (Exception e) {
 			e.printStackTrace();
