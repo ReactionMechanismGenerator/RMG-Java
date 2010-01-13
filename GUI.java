@@ -1525,6 +1525,20 @@ public class GUI extends JPanel implements ActionListener {
         	stringMainDatabase = tempString[tempString.length-1];
         	conditionFile += "Database: " + stringMainDatabase + "\r\r";
         }
+        
+        //	Add the user-specified maximum number of carbons, oxygens, and radicals / species
+        if (!maxCarbonNum.getText().equals(""))
+        	conditionFile += "MaxCarbonNumberPerSpecies: " + maxCarbonNum.getText() + "\r";
+        if (!maxOxygenNum.getText().equals(""))
+        	conditionFile += "MaxOxygenNumberPerSpecies: " + maxOxygenNum.getText() + "\r";
+        if (!maxRadicalNum.getText().equals(""))
+        	conditionFile += "MaxRadicalNumberPerSpecies: " + maxRadicalNum.getText() + "\r";
+        if (!maxSulfurNum.getText().equals(""))
+        	conditionFile += "MaxSulfurNumberPerSpecies: " + maxSulfurNum.getText() + "\r";
+        if (!maxSiliconNum.getText().equals(""))
+        	conditionFile += "MaxSiliconNumberPerSpecies: " + maxSiliconNum.getText() + "\r";
+        if (!maxRadicalNum.getText().equals(""))
+        	conditionFile += "MaxHeavyAtomPerSpecies: " + maxHeavyAtom.getText() + "\r";
                 
     	//	Add the name(s)/location(s) of the primary thermo library
         String rmgEnvVar = System.getProperty("RMG.workingDirectory");
@@ -1546,6 +1560,9 @@ public class GUI extends JPanel implements ActionListener {
     		}
 		}
 		conditionFile += "END\r\r";
+		
+		conditionFile += "ReadRestart: " + readRestartOnOff.getSelectedItem() + "\r";
+		conditionFile += "WriteRestart: " + writeRestartOnOff.getSelectedItem() + "\r\r";
         
         //	Add the temperature model, list of temperatures, and units
         conditionFile += "TemperatureModel: " + tempModelCombo.getSelectedItem() +
@@ -1593,14 +1610,6 @@ public class GUI extends JPanel implements ActionListener {
         if (eosCombo.getSelectedItem().equals("Liquid")) {
         	conditionFile += "EquationOfState: Liquid\r";
         }
-        
-        //	Add the user-specified maximum number of carbons, oxygens, and radicals / species
-        if (!maxCarbonNum.getText().equals(""))
-        	conditionFile += "MaxCarbonNumberPerSpecies: " + maxCarbonNum.getText() + "\r";
-        if (!maxOxygenNum.getText().equals(""))
-        	conditionFile += "MaxOxygenNumberPerSpecies: " + maxOxygenNum.getText() + "\r";
-        if (!maxRadicalNum.getText().equals(""))
-        	conditionFile += "MaxRadicalNumberPerSpecies: " + maxRadicalNum.getText() + "\r";
         
         //	Add whether to generate InChIs or not
         if (inchiCombo.getSelectedItem().equals("Yes"))
@@ -2019,6 +2028,24 @@ public class GUI extends JPanel implements ActionListener {
 	        	maxRadicalNum.setText(st.nextToken());
 	        }
 	        
+	        else if (line.startsWith("MaxSulfurNumber")) {
+	        	st = new StringTokenizer(line);
+	        	tempString = st.nextToken();	// Skip over "MaxSulfurNumberPerSpecies"\
+	        	maxSulfurNum.setText(st.nextToken());
+	        }
+	        
+	        else if (line.startsWith("MaxSiliconNumber")) {
+	        	st = new StringTokenizer(line);
+	        	tempString = st.nextToken();	// Skip over "MaxSiliconNumberPerSpecies"\
+	        	maxSiliconNum.setText(st.nextToken());
+	        }
+	        
+	        else if (line.startsWith("MaxHeavyAtom")) {
+	        	st = new StringTokenizer(line);
+	        	tempString = st.nextToken();	// Skip over "MaxHeavyAtomPerSpecies"\
+	        	maxHeavyAtom.setText(st.nextToken());
+	        }
+	        
 	        else if (line.startsWith("InChIGeneration")) {
 		        //	InChI generation
 		        st = new StringTokenizer(line);
@@ -2030,6 +2057,32 @@ public class GUI extends JPanel implements ActionListener {
 		        	inchiCombo.setSelectedItem("No");
 		        } else {
 		        	System.out.println("ERROR: Reading in condition.txt file - Invalid argument for InChIGeneration.  RMG recognizes an argument of 'On' or 'Off', but not " + inchi + ".  GUI does not contain all information present in condition.txt file.");
+		        }
+	        }
+	        
+	        else if (line.toLowerCase().startsWith("readrestart")) {
+	        	st = new StringTokenizer(line);
+	        	tempString = st.nextToken();	// Skip over "ReadRestart:"
+	        	String rRestart = st.nextToken();
+	        	if (rRestart.toLowerCase().equals("yes")) {
+		        	readRestartOnOff.setSelectedItem("Yes");
+		        } else if (rRestart.toLowerCase().equals("no")) {
+		        	readRestartOnOff.setSelectedItem("No");
+		        } else {
+		        	System.out.println("ERROR: Reading in condition.txt file - Invalid argument for ReadRestart.  RMG recognizes an argument of 'Yes' or 'No', but not " + rRestart + ".  GUI does not contain all information present in condition.txt file.");
+		        }
+	        }
+	        
+	        else if (line.toLowerCase().startsWith("writerestart")) {
+	        	st = new StringTokenizer(line);
+	        	tempString = st.nextToken();	// Skip over "WriteRestart:"
+	        	String wRestart = st.nextToken();
+	        	if (wRestart.toLowerCase().equals("yes")) {
+		        	writeRestartOnOff.setSelectedItem("Yes");
+		        } else if (wRestart.toLowerCase().equals("no")) {
+		        	writeRestartOnOff.setSelectedItem("No");
+		        } else {
+		        	System.out.println("ERROR: Reading in condition.txt file - Invalid argument for WriteRestart.  RMG recognizes an argument of 'Yes' or 'No', but not " + wRestart + ".  GUI does not contain all information present in condition.txt file.");
 		        }
 	        }
 	        
@@ -2436,14 +2489,73 @@ public class GUI extends JPanel implements ActionListener {
     	maxRadicalNum.addActionListener(this);
     	maxRadicalNum.setHorizontalAlignment(JTextField.CENTER);
     	
-    	Box maxSpeciesProps = Box.createVerticalBox();
-    	maxSpeciesProps.add(carbonPanel);
-    	maxSpeciesProps.add(oxygenPanel);
-    	maxSpeciesProps.add(radicalPanel);
+    	JPanel sulfurPanel = new JPanel();
+    	sulfurPanel.setBorder(BorderFactory.createEmptyBorder(5,5,5,5));
+    	JLabel maxSulfurLabel = new JLabel("Maximum Sulfur # per species");
+    	sulfurPanel.add(maxSulfurLabel);
+    	sulfurPanel.add(maxSulfurNum = new JTextField());
+    	maxSulfurNum.setPreferredSize(new Dimension(50,25));
+    	maxSulfurNum.addActionListener(this);
+    	maxSulfurNum.setHorizontalAlignment(JTextField.CENTER);
+    	
+    	JPanel siliconPanel = new JPanel();
+    	siliconPanel.setBorder(BorderFactory.createEmptyBorder(5,5,5,5));
+    	JLabel maxSiliconLabel = new JLabel("Maximum Silicon # per species");
+    	siliconPanel.add(maxSiliconLabel);
+    	siliconPanel.add(maxSiliconNum = new JTextField());
+    	maxSiliconNum.setPreferredSize(new Dimension(50,25));
+    	maxSiliconNum.addActionListener(this);
+    	maxSiliconNum.setHorizontalAlignment(JTextField.CENTER);
+    	
+    	JPanel heavyatomPanel = new JPanel();
+    	heavyatomPanel.setBorder(BorderFactory.createEmptyBorder(5,5,5,5));
+    	JLabel maxheavyatomLabel = new JLabel("Maximum Heavy Atoms per species");
+    	heavyatomPanel.add(maxheavyatomLabel);
+    	heavyatomPanel.add(maxHeavyAtom = new JTextField());
+    	maxHeavyAtom.setPreferredSize(new Dimension(50,25));
+    	maxHeavyAtom.addActionListener(this);
+    	maxHeavyAtom.setHorizontalAlignment(JTextField.CENTER);
+    	
+    	Box maxSpeciesProps1 = Box.createVerticalBox();
+    	maxSpeciesProps1.add(carbonPanel);
+    	maxSpeciesProps1.add(oxygenPanel);
+    	maxSpeciesProps1.add(radicalPanel);
+    	
+    	Box maxSpeciesProps2 = Box.createVerticalBox();
+    	maxSpeciesProps2.add(sulfurPanel);
+    	maxSpeciesProps2.add(siliconPanel);
+    	maxSpeciesProps2.add(heavyatomPanel);
+    	
+    	Box maxSpeciesProps = Box.createHorizontalBox();
+    	maxSpeciesProps.add(maxSpeciesProps1);
+    	maxSpeciesProps.add(maxSpeciesProps2);
     	
     	maxPanel.add(maxSpeciesProps);
     	
-    	//	Create the Max carbon/oxygen/radical subpanel
+    	//	Create the restart options subpanel
+    	JPanel restartPanel = new JPanel();
+    	restartPanel.setBorder(BorderFactory.createCompoundBorder(BorderFactory.createTitledBorder("Restart"),
+    			BorderFactory.createEmptyBorder(5,5,5,5)));
+    	//	Populate the subpanel
+    	JPanel readRestartPanel = new JPanel();
+    	readRestartPanel.setBorder(BorderFactory.createEmptyBorder(5,5,5,5));
+    	JLabel readRestartLabel = new JLabel("Read restart files?");
+    	readRestartPanel.add(readRestartLabel);
+    	readRestartPanel.add(readRestartOnOff = new JComboBox(yesnoOptions));
+    	
+    	JPanel writeRestartPanel = new JPanel();
+    	writeRestartPanel.setBorder(BorderFactory.createEmptyBorder(5,5,5,5));
+    	JLabel writeRestartLabel = new JLabel("Write restart files?");
+    	writeRestartPanel.add(writeRestartLabel);
+    	writeRestartPanel.add(writeRestartOnOff = new JComboBox(yesnoOptions));
+    	
+    	Box restartProps = Box.createHorizontalBox();
+    	restartProps.add(readRestartPanel);
+    	restartProps.add(writeRestartPanel);
+    	
+    	restartPanel.add(restartProps);
+    	
+    	//	Create the chemkin options subpanel
     	JPanel chemkinPanel = new JPanel();
     	chemkinPanel.setBorder(BorderFactory.createCompoundBorder(BorderFactory.createTitledBorder("CHEMKIN chem.inp properties"),
     			BorderFactory.createEmptyBorder(5,5,5,5)));
@@ -2484,6 +2596,7 @@ public class GUI extends JPanel implements ActionListener {
     	
     	Box totalOptionsBox = Box.createVerticalBox();
     	
+    	totalOptionsBox.add(restartPanel);
     	totalOptionsBox.add(maxPanel);
     	totalOptionsBox.add(chemkinPanel);
     	totalOptionsBox.add(inchiPanel);
@@ -2631,6 +2744,7 @@ public class GUI extends JPanel implements ActionListener {
     pdepCombo, sdeCombo, pdkmCombo,
     //	Tab : Additional Options
     eosCombo, inchiCombo, chemkinAUnits, chemkinEaUnits, chemkinVerbosity,
+    	readRestartOnOff, writeRestartOnOff,
     //
     chebyTUnits, chebyPUnits;
     
@@ -2646,7 +2760,8 @@ public class GUI extends JPanel implements ActionListener {
     //	Tab3: Error Analysis
     scName,
     //	Tab : Additional Options
-    maxCarbonNum, maxOxygenNum, maxRadicalNum,
+    maxCarbonNum, maxOxygenNum, maxRadicalNum, maxSulfurNum, maxSiliconNum,
+    maxHeavyAtom,
     //
     chebyTMin, chebyTMax, chebyPMin, chebyPMax, chebyTGen, chebyTRep,
     	chebyPGen, chebyPRep;
