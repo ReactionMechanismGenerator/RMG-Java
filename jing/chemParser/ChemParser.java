@@ -1119,6 +1119,69 @@ public class ChemParser {
 
         //#]
     }
+    
+    public static Graph readAdjList(String adjlist){
+    	//Initialize Graph
+    	Graph g = new Graph();
+    	int centralID = -1;
+
+    	// Separate adjacency list into the individual nodes (lines)
+    	String[] eachLine = adjlist.split("[\r]");
+    	
+    	for (int i=0; i<eachLine.length; i++) {
+    		StringTokenizer token = new StringTokenizer(eachLine[i]);
+    		// read in ID
+    		String index = token.nextToken();
+    		if (index.endsWith("."))
+    			index = index.substring(0,index.length()-1);
+    		Integer ID = new Integer(index);
+    		
+    		// read in central ID and/or name
+    		int thisCentralID = -1;
+    		String centralIndex = token.nextToken();
+    		String name;
+    		if (!centralIndex.equals("*"))
+    			name = centralIndex;
+    		else {
+    			if (centralID == -1) centralID = 1;
+    			else centralID++;
+    			thisCentralID = centralID;
+    			name = token.nextToken();
+    		}
+    		
+    		// read in the radical number
+    		String radical = token.nextToken();
+    		Atom atom = (Atom)ChemParser.readChemNodeElement(name,radical);
+    		Node presentNode = null;
+    		
+    		if (thisCentralID>0) presentNode = g.addNodeAt(ID.intValue(),atom,thisCentralID);
+    		else presentNode = g.addNodeAt(ID.intValue(),atom);
+
+    		// read in the bonds connected to present node site
+    		while (token.hasMoreTokens()) {
+    			String bondPair = token.nextToken();
+    			bondPair = removeBrace(bondPair);
+    			
+    			StringTokenizer bondPairToken = new StringTokenizer(bondPair,",");
+    			
+    			Integer nodeID = new Integer(bondPairToken.nextToken());
+    			String bondType = bondPairToken.nextToken();
+    			
+    			Node otherNode = g.getNodeAt(nodeID.intValue());
+    			// (1) if the other node is already in the graph, make/add the bond between those two nodes, otherwise, do nothing
+    			//		wait until the other node added, and then add the arc.
+    			// (2) this requires the adj list should be symetric, say, each bond appears twice. (each node linked by that bond
+    			//      should has the bond recorded in the adjlist of the node.
+    			if (otherNode != null) {
+    				g.addArcBetween(presentNode,Bond.make(bondType),otherNode);
+    			}
+    		}
+    	}
+    	
+    	if (g.isEmpty()) g = null;
+    	else g.identifyFgElement();
+    	return g;
+    }
 
     //## operation readChemNodeElement(String,String)
     public static Object readChemNodeElement(String p_name, String p_radical) throws InvalidGraphFormatException, NullSymbolException {
