@@ -3147,12 +3147,21 @@ public LinkedList getSpeciesList() {
 							String[] indivReacts = reacts.split("[+]");
 							String name = indivReacts[0].trim();
 							Species spc1 = sd.getSpeciesFromChemkinName(name);
+							if (spc1 == null) {
+								spc1 = getSpeciesBySPCName(name,sd);
+							}							
 							name = indivReacts[1].trim();
 							Species spc2 = sd.getSpeciesFromChemkinName(name);
+							if (spc2 == null) {
+								spc2 = getSpeciesBySPCName(name,sd);
+							}	
 							Reactants = new PDepIsomer(spc1,spc2);
 						} else {
 							String name = reacts.trim();
 							Species spc = sd.getSpeciesFromChemkinName(name);
+							if (spc == null) {
+								spc = getSpeciesBySPCName(name,sd);
+							}	
 							Reactants = new PDepIsomer(spc);
 						}
 						
@@ -3162,12 +3171,21 @@ public LinkedList getSpeciesList() {
 							String[] indivProds = prods.split("[+]");
 							String name = indivProds[0].trim();
 							Species spc1 = sd.getSpeciesFromChemkinName(name);
+							if (spc1 == null) {
+								spc1 = getSpeciesBySPCName(name,sd);
+							}	
 							name = indivProds[1].trim();
 							Species spc2 = sd.getSpeciesFromChemkinName(name);
+							if (spc2 == null) {
+								spc2 = getSpeciesBySPCName(name,sd);
+							}	
 							Products = new PDepIsomer(spc1,spc2);
 						} else {
 							String name = prods.trim();
 							Species spc = sd.getSpeciesFromChemkinName(name);
+							if (spc == null) {
+								spc = getSpeciesBySPCName(name,sd);
+							}	
 							Products = new PDepIsomer(spc);
 						}
 						
@@ -3291,12 +3309,21 @@ public LinkedList getSpeciesList() {
 							String[] indivReacts = reacts.split("[+]");
 							String name = indivReacts[0].trim();
 							Species spc1 = sd.getSpeciesFromChemkinName(name);
+							if (spc1 == null) {
+								spc1 = getSpeciesBySPCName(name,sd);
+							}	
 							name = indivReacts[1].trim();
 							Species spc2 = sd.getSpeciesFromChemkinName(name);
+							if (spc2 == null) {
+								spc2 = getSpeciesBySPCName(name,sd);
+							}	
 							Reactants = new PDepIsomer(spc1,spc2);
 						} else {
 							String name = reacts.trim();
 							Species spc = sd.getSpeciesFromChemkinName(name);
+							if (spc == null) {
+								spc = getSpeciesBySPCName(name,sd);
+							}	
 							Reactants = new PDepIsomer(spc);
 						}
 						
@@ -3306,12 +3333,21 @@ public LinkedList getSpeciesList() {
 							String[] indivProds = prods.split("[+]");
 							String name = indivProds[0].trim();
 							Species spc1 = sd.getSpeciesFromChemkinName(name);
+							if (spc1 == null) {
+								spc1 = getSpeciesBySPCName(name,sd);
+							}	
 							name = indivProds[1].trim();
 							Species spc2 = sd.getSpeciesFromChemkinName(name);
+							if (spc2 == null) {
+								spc2 = getSpeciesBySPCName(name,sd);
+							}	
 							Products = new PDepIsomer(spc1,spc2);
 						} else {
 							String name = prods.trim();
 							Species spc = sd.getSpeciesFromChemkinName(name);
+							if (spc == null) {
+								spc = getSpeciesBySPCName(name,sd);
+							}	
 							Products = new PDepIsomer(spc);
 						}
 						
@@ -3495,6 +3531,28 @@ public LinkedList getSpeciesList() {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+    }
+    
+    /**
+     * MRH 14Jan2010
+     * 
+     * getSpeciesBySPCName
+     * 
+     * Input:	String name - Name of species, normally chemical formula followed
+     * 				by "J"s for radicals, and then (#)
+     * 			SpeciesDictionary sd
+     * 
+     * This method was originally written as a complement to the method readPDepNetworks.
+     * jdmo found a bug with the readrestart option.  The bug was that the method was
+     * attempting to add a null species to the Isomer list.  The null species resulted
+     * from searching the SpeciesDictionary by chemkinName (e.g. C4H8OJJ(48)), when the
+     * chemkinName present in the dictionary was SPC(48).
+     * 
+	 */
+    public Species getSpeciesBySPCName(String name, SpeciesDictionary sd) {
+		String[] nameFromNumber = name.split("\\(");
+		String newName = "SPC(" + nameFromNumber[1];
+		return sd.getSpeciesFromChemkinName(newName);
     }
         
     /**
