@@ -538,7 +538,7 @@ public class ChemParser {
     	//	Separate the reactants from the products
     	boolean generateReverse = false;
     	String[] reactsANDprods = null;
-    	reactsANDprods = structure.split("\\=\\>");
+    	reactsANDprods = structure.split("\\=>");
     	// If the length of reactsANDprods = 1, no "=>" token, meaning
     	//	reverse rxn
     	if (reactsANDprods.length == 1) {

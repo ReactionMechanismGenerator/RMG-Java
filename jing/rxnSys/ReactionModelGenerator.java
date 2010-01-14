@@ -3470,7 +3470,7 @@ public LinkedList getSpeciesList() {
 			    	
 			    	//	Separate the reactants from the products
 			    	boolean generateReverse = false;
-			    	String[] reactsANDprods = structure.split("[=>]");
+			    	String[] reactsANDprods = structure.split("\\=>");
 			    	if (reactsANDprods.length == 1) {
 			    		reactsANDprods = structure.split("[=]");
 			    		generateReverse = true;
