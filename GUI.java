@@ -1537,7 +1537,7 @@ public class GUI extends JPanel implements ActionListener {
         	conditionFile += "MaxSulfurNumberPerSpecies: " + maxSulfurNum.getText() + "\r";
         if (!maxSiliconNum.getText().equals(""))
         	conditionFile += "MaxSiliconNumberPerSpecies: " + maxSiliconNum.getText() + "\r";
-        if (!maxRadicalNum.getText().equals(""))
+        if (!maxHeavyAtom.getText().equals(""))
         	conditionFile += "MaxHeavyAtomPerSpecies: " + maxHeavyAtom.getText() + "\r";
                 
     	//	Add the name(s)/location(s) of the primary thermo library
