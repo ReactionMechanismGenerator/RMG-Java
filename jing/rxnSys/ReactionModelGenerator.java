@@ -2853,7 +2853,7 @@ public LinkedList getSpeciesList() {
 				// The first line of a new species is the user-defined name
 				String totalSpeciesName = line;
 				String[] splitString1 = totalSpeciesName.split("[(]");
-				String[] splitString2 = splitString1[1].split("[)]");
+				String[] splitString2 = splitString1[splitString1.length-1].split("[)]");
 				// The remaining lines are the graph
 				Graph g = ChemParser.readChemGraph(reader);
 				// Make the ChemGraph, assuming it does not contain a forbidden structure
@@ -2865,7 +2865,8 @@ public LinkedList getSpeciesList() {
 					System.exit(0);
 				}
 				// Make the species
-				Species species = Species.make(splitString1[0],cg,Integer.parseInt(splitString2[0]));
+				int intLocation = totalSpeciesName.indexOf("(" + splitString2[0] + ")");
+				Species species = Species.make(totalSpeciesName.substring(0,intLocation),cg,Integer.parseInt(splitString2[0]));
 				// Add the new species to the set of species
 				restartCoreSpcs.add(species);
     			/*int species_type = 1; // reacted species
