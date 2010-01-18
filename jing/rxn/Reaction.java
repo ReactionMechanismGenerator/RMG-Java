@@ -1191,16 +1191,31 @@ public class Reaction {
   }
 
 	public String toRestartString(Temperature p_temperature) {
-      //#[ operation toChemkinString()
-	
-      String result = getStructure().toRestartString(hasReverseReaction())+ " "+getStructure().direction + " "+getStructure().redundancy;
-      String k = getKinetics().toChemkinString(calculateHrxn(p_temperature),p_temperature, true);
-      result = result + " " + k;
-
-      return result;
-
-      //#]
-  }
+		/*
+		 * Edited by MRH on 18Jan2010
+		 * 
+		 * Writing restart files was causing a bug in the RMG-generated chem.inp file
+		 * 	For example, H+CH4=CH3+H2 in input file w/HXD13, CH4, and H2
+		 * 	RMG would correctly multiply the A factor by the structure's redundancy
+		 * 		when calculating the rate to place in the ODEsolver input file.  However,
+		 * 		the A reported in the chem.inp file would be the "per event" A.  This was
+		 * 		due to the reaction.toChemkinString() method being called when writing the
+		 * 		Restart coreReactions.txt and edgeReactions.txt files.  At the first point of
+		 * 		writing the chemkinString for this reaction (when it is still an edge reaction),
+		 * 		RMG had not yet computed the redundancy of the structure (as H was not a core
+		 * 		species at the time, but CH3 and H2 were).  When RMG tried to write the chemkinString
+		 * 		for the above reaction, using the correct redundancy, the chemkinString already existed
+		 * 		and thus the toChemkinString() method was exited immediately.
+		 * 	MRH is replacing the reaction.toChemkinString() call with reaction.toRestartString()
+		 * 		when writing the Restart files, to account for this bug.
+		 */
+		
+		String result = getStructure().toRestartString(hasReverseReaction()); //+ " "+getStructure().direction + " "+getStructure().redundancy;
+		// MRH 18Jan2010: Restart files do not look for direction/redundancy
+		String k = getKinetics().toChemkinString(calculateHrxn(p_temperature),p_temperature, true);
+		result = result + " " + k;
+		return result;
+	}
 
   //## operation toFullString()
   public String toFullString() {

@@ -2584,7 +2584,8 @@ public class ReactionModelGenerator {
 			for(Iterator iter=allcoreRxns.iterator(); iter.hasNext();){
 				Reaction reaction = (Reaction) iter.next();
 				if (reaction.isForward()) {
-					bw.write(reaction.toChemkinString(new Temperature(298,"K")));
+					//bw.write(reaction.toChemkinString(new Temperature(298,"K")));
+					bw.write(reaction.toRestartString(new Temperature(298,"K")));
 					bw.newLine();
 				}
 			}
@@ -2619,10 +2620,12 @@ public class ReactionModelGenerator {
 			for(Iterator iter=alledgeRxns.iterator(); iter.hasNext();){
 				Reaction reaction = (Reaction) iter.next();
 				if (reaction.isForward()) {
-					bw.write(reaction.toChemkinString(new Temperature(298,"K")));
+					//bw.write(reaction.toChemkinString(new Temperature(298,"K")));
+					bw.write(reaction.toRestartString(new Temperature(298,"K")));
 					bw.newLine();
 				} else if (reaction.getReverseReaction().isForward()) {
-					bw.write(reaction.getReverseReaction().toChemkinString(new Temperature(298,"K")));
+					//bw.write(reaction.getReverseReaction().toChemkinString(new Temperature(298,"K")));
+					bw.write(reaction.getReverseReaction().toRestartString(new Temperature(298,"K")));
 					bw.newLine();
 				} else
 					System.out.println("Could not determine forward direction for following rxn: " + reaction.toString());

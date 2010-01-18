@@ -489,7 +489,12 @@ public class PDepReaction extends Reaction {
 			return result;
 		}
 		else if (kinetics != null)
-			return super.toChemkinString(t);
+			//return super.toChemkinString(t);
+			// MRH 18Jan2010:
+			//	Changed from toChemkinString(t) to toRestartString(t) to avoid bug in 
+			//		reporting chem.inp file (issue of reporting A(single event) vs.
+			//		A(single event) * (# events)
+			return super.toRestartString(t);
 		else
 			return "";
     
