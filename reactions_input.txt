@@ -1,4 +1,5 @@
 Temperature: 500 (K)
+Solvation: off
 
 QOOH
 1 C 0 {2,S}
