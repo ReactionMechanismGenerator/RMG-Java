@@ -546,14 +546,17 @@ contains
 		
 		! The i/o status flag
 		integer ios, found
-		
+		  
 		ios = 0
 		found = 0
 		do while (ios == 0 .and. found == 0)
 			
 			! Read one line from the file
 			read (*, fmt='(a1024)', iostat=ios), readMeaningfulLine
-	
+			
+			! Print the input line (as a comment) to the output, for debugging
+			WRITE(*,fmt='(A,A)') '#IN: ', trim(readMeaningfulLine)
+		
 			! Skip if comment line
 			if (index(readMeaningfulLine(1:1), '#') /= 0) cycle
 
