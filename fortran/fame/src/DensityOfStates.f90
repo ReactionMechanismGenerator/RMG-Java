@@ -42,7 +42,7 @@ contains
 		dE = E(2) - E(1)
 		
 		R = 8.314472
-	
+						
 		if (.not. allocated(isom%eqDist)) then
 			allocate( isom%eqDist(1:size(E)) )
 		end if
@@ -54,6 +54,13 @@ contains
 		
 		! Normalize eqDist
 		isom%Q = sum(isom%eqDist) * dE			
+		
+		write (*,*) '#DEBUG: Sum of un-normalised equilibrium distribution is:', sum(isom%eqDist)
+		write (*,*) '#DEBUG: Un-normalised Equilibrium distribution is',size(isom%eqDist),'long and starts:',isom%eqDist(1:10)
+		write (*,*) '#DEBUG: Denisty of states is',size(isom%densStates ),'long and starts:',isom%densStates (1:10)
+		write (*,*) '#DEBUG: E grains are',size(E),'long and starts:',E(1:10)
+
+		
 		isom%eqDist = isom%eqDist / sum(isom%eqDist)
 		
 	end subroutine
@@ -88,6 +95,8 @@ contains
 		real(8) Eisom
 		integer start, length
 		integer vibCount, rotCount, hindCount, speCount
+		
+		write (*,*) '#DEBUG: E0 at start of densityOfStates is',size(E0),'long and starts:',E0(1:10)
 		
 		! Conversion factor: cm^-1 per J/mol
 		conv = 1.0 / 6.022e23 / 6.626e-34 / 2.9979e10
@@ -125,6 +134,9 @@ contains
 				do j = 1, nE
 					E(j) = (j - 1) * dE + Emin
 				end do
+				write (*,*) '#DEBUG: Emax:',Emax
+				write (*,*) '#DEBUG: Number of grains for DoS calc:',nE
+				write (*,*) '#DEBUG: Energy grains for DoS calc E  is',size(E),'long and starts:',E(1:10)
         
 				! Create temporary density of states arrays
 				if (.not. allocated(rho1)) allocate( rho1(1:nE) )
@@ -133,7 +145,10 @@ contains
 				! Calculate the density of states for each multimolecular well
 				rho2 = states(E + E(1), spec%spectral%vibFreq, spec%spectral%rotFreq, &
 					spec%spectral%hindFreq, spec%spectral%hindBarrier, spec%spectral%symmNum)
-				
+				write (*,*) '#DEBUG: rho2 is',size(rho2),'long and starts:',rho2(1:10)
+				if (size(rho2)==0) then
+					write (*,*) "#DEBUG: ERROR: didn't calculate rho2 (density of states)"
+				end if
 				if (speCount == 1) then
 					rho1 = rho2
 				else
@@ -144,6 +159,7 @@ contains
 				
 			end if
 		end do
+		write (*,*) '#DEBUG: rho1  is',size(rho1),'long and starts:',rho1(1:10)
 		
 		! Remove intermediate grains used only for density of states estimation
 		rho1(1:size(E0)) = rho1(1:size(rho1):dn)
@@ -169,7 +185,7 @@ contains
 			isom%densStates(r) = 0.0
 		end do
 		isom%densStates(start:size(E0)) = rho1(1:length) * conv
-		
+		write (*,*) '#DEBUG: editing DOS from ',start,'to',size(E0),'which is',length,(size(E0)-start+1),'elements'
 		deallocate( rho1 )
 		
 	end subroutine
@@ -210,6 +226,7 @@ contains
 		N = size(E)
 		dE = E(2) - E(1)
 		
+		write (*,*) '#DEBUG: number of grains N is:', N
 		allocate( rho0(1:N) )
 		
 		! Free rotors
@@ -228,6 +245,7 @@ contains
 				end if	
 			end do
 		end if
+		write (*,*) '#DEBUG: after free rotors, rho is',size(rho),'long and starts:',rho(1:10)
 		
 		! Hindered rotors
 		if (size(hindFreq) > 0) then
@@ -243,6 +261,7 @@ contains
 				end if
 			end do
 		end if
+		write (*,*) '#DEBUG: after hindered rotors, rho is',size(rho),'long and starts:',rho(1:10)
 		
 		! Add vibrational states via Beyer-Swinehart algorithm
 		if (.not. allocated(rho)) then
@@ -252,6 +271,8 @@ contains
 		if (size(vibFreq) > 0) then
 			call beyerSwinehart(E, vibFreq, rho)
 		end if
+		write (*,*) '#DEBUG: after vibrational states, rho is',size(rho),'long and starts:',rho(1:10)
+		
         states = rho
 		
 		deallocate( rho0, rho )
@@ -332,6 +353,10 @@ contains
 		do i = 1, size(rotFreq)
 			if (rotFreq(i) > 0) nRot = nRot + 1
 		end do
+		
+		write (*,*) '#DEBUG: rotFreq:',rotFreq 
+		write (*,*) '#DEBUG: nRot:',nRot 
+		write (*,*) '#DEBUG: size(E):',size(E) 
 		
 		calcFreeRotorStates = 0 * calcFreeRotorStates
 		do i = 1, size(E)

@@ -105,6 +105,9 @@ contains
 				write (*,*) net%isomers(isom)%densStates
 				write (*,*) 'Equilibrium distribution is:'
 				write (*,*) net%isomers(isom)%eqDist
+				deallocate( net%E )
+				deallocate( net%isomers(isom)%densStates )
+				deallocate( net%isomers(isom)%eqDist )
 				stop
 			elseif (net%isomers(isom)%eqDist(nE) / value < tol) then
 				! If tail of distribution is much lower than the maximum, then we've found bounds for Emax
@@ -163,6 +166,9 @@ contains
 			nGrains = nGrains0
 			dE = (Emax - Emin) / (nGrains - 1)
 		end if
+		write (*,*) '#DEBUG: In setEnergyGrains, Emax=',Emax,'Emin=',Emin
+		write (*,*) '#DEBUG: In setEnergyGrains, nGrains0=',nGrains0,'nGrains=',nGrains
+		write (*,*) '#DEBUG: In setEnergyGrains, dE0=',dE0,'dE=',dE
 		
 		if (allocated(net%E)) then
 			deallocate(net%E)
@@ -172,6 +178,8 @@ contains
         do i = 1, nGrains
             net%E(i) = dE * (i - 1) + Emin
         end do
+		
+		write (*,*) '#DEBUG: at end of setEnergyGrains, net%E is',size(net%E),'long and starts:',net%E(1:10)
 	
 	end subroutine
 	
