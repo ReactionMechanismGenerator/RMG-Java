@@ -159,8 +159,8 @@ contains
 		real(8) dE
 		integer i, nGrains
 		
-		if (nGrains == 0) then
-			nGrains = aint((Emax - Emin) / dE) + 1
+		if (nGrains0 == 0) then                      ! nGrains is undefined - assume nGrains0 is desired
+			nGrains = aint((Emax - Emin) / dE0) + 1  ! dE is undefined - assume dE0 is desired
 			dE = dE0
 		else
 			nGrains = nGrains0
