@@ -229,26 +229,44 @@ public class FastMasterEqn implements PDepKineticsEstimator {
 
             BufferedReader stdout = new BufferedReader(new InputStreamReader(fame.getInputStream()));
             BufferedReader stderr = new BufferedReader(new InputStreamReader(fame.getErrorStream()));
-            PrintStream stdin = new PrintStream(new BufferedOutputStream(fame.getOutputStream()), true);
+			PrintStream stdin = new PrintStream(  new BufferedOutputStream( fame.getOutputStream(), 1024), true);
 
-            stdin.print(input);
-
+			stdin.print( input );
+			stdin.flush();
+			if (stdin.checkError()) { // Flush the stream and check its error state.
+				System.out.println("ERROR sending input to fame.exe!!");
+			}
+			stdin.close();
+			
             String line = stdout.readLine().trim();
-            if (line.contains("##############################################")) {
+			
+			// advance to first line that's not for debug purposes
+			while ( line.startsWith("#IN:") || line.contains("#DEBUG:") ) {
+				output += line + "\n";
+				line = stdout.readLine().trim();
+			}
+			
+            if (line.startsWith("#####")) { // correct output begins with ######...
                 output += line + "\n";
                 while ( (line = stdout.readLine()) != null) {
                     output += line + "\n";
                 }
             }
-            else {
+            else { // erroneous output does not begin with ######...
                 // Print FAME stdout and error
+				System.out.println("FAME Error::");
                 System.out.println(line);
+				output += line + "\n";
                 while ( ((line = stdout.readLine()) != null) || ((line = stderr.readLine()) != null) ) {
+					output += line + "\n";
                     System.out.println(line);
                 }
+				// clean up i/o streams (we may be trying again with ModifiedStrongCollision and carrying on)
+				stdout.close();
+				stderr.close();
                 throw new Exception();
             }
-            
+
             int exitValue = fame.waitFor();
 
 			// Clean up i/o streams
@@ -257,25 +275,27 @@ public class FastMasterEqn implements PDepKineticsEstimator {
 			// thousands of times in a single job
 			stdout.close();
 			stderr.close();
-			stdin.close();
-
         }
         catch (Exception e) {
 			e.printStackTrace();
+			
         	System.out.println(e.getMessage());
 			// Save bad input to file
             try {
-                //FileWriter fw = new FileWriter(new File("fame/" + Integer.toString(runCount+1) + "_input.txt"));
                 FileWriter fw = new FileWriter(new File("fame/" + Integer.toString(pdn.getID()) + "_input.txt"));
                 fw.write(input);
                 fw.close();
-				System.out.println("Troublesome FAME file saved to ./fame/" + Integer.toString(pdn.getID()) + "_input.txt");
+				System.out.println("Troublesome FAME input saved to ./fame/" + Integer.toString(pdn.getID()) + "_input.txt");
+                FileWriter fwo = new FileWriter(new File("fame/" + Integer.toString(pdn.getID()) + "_output.txt"));
+                fwo.write(output);
+                fwo.close();
+				System.out.println("Troublesome FAME result saved to ./fame/" + Integer.toString(pdn.getID()) + "_output.txt");
             } catch (IOException ex) {
                 System.out.println("Unable to save FAME input that caused the error.");
                 System.exit(0);
             }
             // If using RS method, fall back to MSC
-			if (mode == Mode.RESERVOIRSTATE) {
+			if (mode == Mode.RESERVOIRSTATE) {  /// mode is not defined if running modified strong collision
 				System.out.println("Falling back to modified strong collision mode for this network.");
 				mode = Mode.STRONGCOLLISION;
 				runPDepCalculation(pdn, rxnSystem, cerm);
