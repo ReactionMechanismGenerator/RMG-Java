@@ -555,7 +555,7 @@ contains
 			read (*, fmt='(a1024)', iostat=ios), readMeaningfulLine
 			
 			! Print the input line (as a comment) to the output, for debugging
-			WRITE(*,fmt='(A,A)') '#IN: ', trim(readMeaningfulLine)
+			! WRITE(*,fmt='(A,A)') '#IN: ', trim(readMeaningfulLine)
 		
 			! Skip if comment line
 			if (index(readMeaningfulLine(1:1), '#') /= 0) cycle
