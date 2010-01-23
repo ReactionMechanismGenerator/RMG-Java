@@ -122,7 +122,7 @@ public class Species {
         calculateLJParameters();
         selectDeltaEDown();
 		generateNASAThermoData();
-        generateSpectroscopicData();
+       // generateSpectroscopicData(); // only get it if you need it!!!
         if (useInChI) InChI = p_chemGraph.getInChI();
         //#]
     }
