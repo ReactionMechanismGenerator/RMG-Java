@@ -296,6 +296,7 @@ contains
 		Z = 0 * Z
 		
 		! Collisional terms in active-state matrix and RHS vectors
+		halfbandwidth = halfbandwidth / nUni
 		do i = 1, nUni
 			do s = nRes(i)+1, size(net%E)
 				do r = max(nRes(i)+1, s - halfbandwidth), min(size(net%E), s + halfbandwidth)
@@ -305,6 +306,7 @@ contains
 					net%isomers(i)%eqDist(1:nRes(i)))
 			end do
 		end do
+		halfbandwidth = halfbandwidth * nUni
 		
 		! Reactive terms in active-state matrix and RHS vectors
 		do n = 1, size(net%reactions)

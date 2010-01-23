@@ -18,7 +18,7 @@ BIN = ../fame.exe
 OBJ = Species.o Isomer.o Reaction.o DensityOfStates.o Network.o Input.o StrongCollision.o ReservoirState.o RateModel.o Output.o fame.o 
 
 # Compiler flags
-CFLAGS = -ftrace=full
+CFLAGS = -ftrace=full -fbounds-check -Wall
 #CFLAGS =
 
 # Linker flags
