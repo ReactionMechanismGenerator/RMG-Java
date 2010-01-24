@@ -19,7 +19,6 @@ OBJ = Species.o Isomer.o Reaction.o DensityOfStates.o Network.o Input.o StrongCo
 
 # Compiler flags
 CFLAGS = -ftrace=full -fbounds-check -Wall
-#CFLAGS =
 
 # Linker flags
 LFLAGS = -L/usr/lib -lpthread -lblas -llapack
@@ -39,7 +38,7 @@ clean:
 # Linker rule
 $(BIN): $(OBJ)
 	$(FORTRAN) $(OBJ) -o $(BIN) $(LFLAGS)
-	touch ../fame_output.txt
+#	touch ../fame_output.txt
 	cp $(BIN) $(RMG)/software/fame/fame.exe
 
 # Compiler rule
