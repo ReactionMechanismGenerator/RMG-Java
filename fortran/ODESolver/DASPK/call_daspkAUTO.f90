@@ -31,6 +31,7 @@ PROGRAM CALL_DASPKAUTO
      INTEGER, DIMENSION(:,:), ALLOCATABLE :: IDEREAC, IDEPROD
      DOUBLE PRECISION, DIMENSION(:), ALLOCATABLE :: KVEC
 
+      IDID = 0 !gmagoon 1/25/10: initialize IDID to zero (no meaning in terms of DASSL idid outputs) to avoid a situation where dassl is never called (and hence IDID is never assigned) due to edge exceeding flux at t=0      
       OPEN (UNIT=12, FILE = 'SolverInput.dat', STATUS = 'OLD')
 
  101  Format(E24.15)
@@ -593,7 +594,7 @@ PROGRAM CALL_DASPKAUTO
 
 
       
-      if (idid .eq. 1 .or. idid .eq. 2 .or. idid .eq. 3) then
+      if (idid .eq. 1 .or. idid .eq. 2 .or. idid .eq. 3 .or. idid .eq. 0) then
          WRITE(*,*) "******ODESOLVER SUCCESSFUL: IDID=",idid
       else
          WRITE(*,*) "******ODESOLVER FAILED : IDID=", idid
