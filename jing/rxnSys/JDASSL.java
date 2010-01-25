@@ -225,10 +225,11 @@ public class JDASSL extends JDAS {
 			idid = solveDAE();
                         
  //                       createDotGraphs((CoreEdgeReactionModel)p_reactionModel);
-			
+
+                        //gmagoon 1/25/09: note that the below lines do not actually use the actual idid, but instead use the 1 returned by readOutputFile; the actual success represented by idid is effectively read in through the Fortran output "ODESOLVER SUCCESSFUL" vs. "ODESOLVER FAILED"
 			if (idid !=1 && idid != 2 && idid != 3)	{
-				System.out.println("The idid from DASPK was "+idid );
-				throw new DynamicSimulatorException("DASPK: SA off.");
+				System.out.println("The idid from DASSL was "+idid );
+				throw new DynamicSimulatorException("DASSL");
         	}
             System.out.println("After ODE: from " + String.valueOf(tBegin) + " SEC to " + String.valueOf(endTime) + "SEC");
 			Global.solvertime = Global.solvertime + (System.currentTimeMillis() - startTime)/1000/60;
