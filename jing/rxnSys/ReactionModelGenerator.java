@@ -874,6 +874,17 @@ public class ReactionModelGenerator {
         		StringTokenizer st = new StringTokenizer(line,":");
         		String temp = st.nextToken();
         		String simulator = st.nextToken().trim();
+                        
+                        //read in non-negative option if it exists: syntax would be something like this: "DynamicSimulator: DASSL: non-negative"
+                        if (st.hasMoreTokens()){
+                            if (st.nextToken().trim().toLowerCase().equals("non-negative")){
+                                if(simulator.toLowerCase().equals("dassl")) JDAS.nonnegative = true;
+                                else{
+                                    System.out.println("Non-negative option is currently only supported for DASSL. Switch to DASSL solver or remove non-negative option.");
+                                    System.exit(0);
+                                }
+                            }
+                        }
         		
 				numConversions = 0;//5/6/08 gmagoon: moved declaration from initializeReactionSystem() to be an attribute so it can be accessed by modelGenerator()
         		//int numConversions = 0;

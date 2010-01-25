@@ -100,6 +100,7 @@ public abstract class JDAS implements DAESolver {
 	protected double endTime;
         protected StringBuilder thermoString = new StringBuilder();
       //  protected HashMap edgeIDcopy; //added for dot graphs
+        protected static boolean nonnegative = false;
 	
 	protected JDAS() {
         
@@ -506,6 +507,7 @@ public abstract class JDAS implements DAESolver {
 		for (int i=0; i<30; i++)
 			info[i] = 0;
 		info[2] = 1; //print out the time steps
+                if (nonnegative) info[9]=1;
 	}
 	
 	protected void initializeConcentrations(SystemSnapshot p_beginStatus, 
