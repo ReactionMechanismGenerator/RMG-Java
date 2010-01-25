@@ -880,7 +880,7 @@ public class ReactionModelGenerator {
                             if (st.nextToken().trim().toLowerCase().equals("non-negative")){
                                 if(simulator.toLowerCase().equals("dassl")) JDAS.nonnegative = true;
                                 else{
-                                    System.out.println("Non-negative option is currently only supported for DASSL. Switch to DASSL solver or remove non-negative option.");
+                                    System.err.println("Non-negative option is currently only supported for DASSL. Switch to DASSL solver or remove non-negative option.");
                                     System.exit(0);
                                 }
                             }
