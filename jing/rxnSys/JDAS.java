@@ -86,8 +86,8 @@ public abstract class JDAS implements DAESolver {
     protected LinkedList troeList ;
     protected LinkedList lindemannList;
 	//protected StringBuilder outputString ;
-        protected BufferedWriter bw;
-        protected FileWriter fw;
+	protected BufferedWriter bw;
+	protected FileWriter fw;
 	protected StringBuilder rString ;
 	protected StringBuilder tbrString;
 	protected StringBuilder troeString;
@@ -98,9 +98,10 @@ public abstract class JDAS implements DAESolver {
 	protected double [] reactionFlux;
 	protected double [] conversionSet;
 	protected double endTime;
-        protected StringBuilder thermoString = new StringBuilder();
-      //  protected HashMap edgeIDcopy; //added for dot graphs
-        protected static boolean nonnegative = false;
+	protected StringBuilder thermoString = new StringBuilder();
+	//protected HashMap edgeIDcopy; //added for dot graphs
+	protected static boolean nonnegative = false;
+
 	
 	protected JDAS() {
         
@@ -295,20 +296,22 @@ public abstract class JDAS implements DAESolver {
         if (p_yprime.length != neq) throw new DynamicSimulatorException();
 
         LinkedHashMap speStatus = new LinkedHashMap();
-
+		System.out.println("Sp.#\tName         \tConcentration \tFlux");
+		
         for (Iterator iter = p_reactionModel.getSpecies(); iter.hasNext(); ) {
         	Species spe = (Species)iter.next();
         	int id = getRealID(spe);
         	if (id>p_y.length) throw new UnknownReactedSpeciesException(spe.getName());
         	double conc = p_y[id-1];
         	double flux = p_yprime[id-1];
-
-        	System.out.println(String.valueOf(spe.getID()) + '\t' + spe.getName() + '\t' + String.valueOf(conc) + '\t' + String.valueOf(flux));
-
+			System.out.println(String.format("%1$4d\t%2$-13s\t%3$ 6E \t%4$ 6E", spe.getID(), spe.getName(), conc, flux));
+			
         	if (conc < 0) {
 				double aTol = ReactionModelGenerator.getAtol();
-				if (Math.abs(conc) < aTol) conc = 0;
-        		else throw new NegativeConcentrationException("species " + spe.getName() + " has negative conc: " + String.valueOf(conc));
+				//if (Math.abs(conc) < aTol) conc = 0;
+        		//else throw new NegativeConcentrationException("Species " + spe.getName() + " has negative conc: " + String.valueOf(conc));
+				if (conc < -100.0 * aTol)
+					throw new NegativeConcentrationException("Species " + spe.getName() + " has negative concentration: " + String.valueOf(conc));
         	}
         	SpeciesStatus ss = new SpeciesStatus(spe, 1, conc, flux);
         	speStatus.put(spe,ss);
@@ -507,7 +510,7 @@ public abstract class JDAS implements DAESolver {
 		for (int i=0; i<30; i++)
 			info[i] = 0;
 		info[2] = 1; //print out the time steps
-                if (nonnegative) info[9]=1;
+		if (nonnegative) info[9]=1; // don't allow negative values
 	}
 	
 	protected void initializeConcentrations(SystemSnapshot p_beginStatus, 
