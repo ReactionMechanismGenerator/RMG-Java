@@ -1652,7 +1652,7 @@ public class ReactionModelGenerator {
 					allTerminated = false;
 					System.out.println("Reaction System "+(i+1)+" has not reached its termination criterion");
 					if (rs.isModelValid()) { 
-						System.out.println("although it seems to be valid (complete), so was not interrupted for that reason");
+						System.out.println("although it seems to be valid (complete), so it was not interrupted for being invalid.");
 						System.out.println("This probably means there was an error with the ODE solver, and we risk entering an endless loop.");
 						System.out.println("Stopping.");
 						throw new Error();
