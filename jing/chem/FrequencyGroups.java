@@ -142,7 +142,8 @@ public class FrequencyGroups{//gmagoon 111708: removed "implements GeneralGAPP"
         }
 		
 		touchOutputFile();
-		
+		  boolean frankieSuccess = false;
+		  int frankieOutputFlag = 0;
 		//call Franklin's code
         try{
             String dir = System.getProperty("RMG.workingDirectory");
@@ -154,15 +155,30 @@ public class FrequencyGroups{//gmagoon 111708: removed "implements GeneralGAPP"
             BufferedReader br = new BufferedReader(isr);
             String line=null;
             while ( (line = br.readLine()) != null) {
-                    line = line.trim();
+				line = line.trim();
+				if (line.contains("Output flag from DQED, IGO ="))
+					frankieOutputFlag =  Integer.parseInt( line.substring(line.length()-1) );
             }
             int exitVal = freqProc.waitFor();
+		
         }
         catch (Exception e) {
             String err = "Error in running frequency estimation process \n";
             err += e.toString();
             e.printStackTrace();
         }
+		  
+		  if (frankieOutputFlag == 4) 
+			  frankieSuccess = true;
+		  if (frankieOutputFlag == 8) 
+			  System.err.println("Frankie exceeded maximum number of iterations");	  
+		  
+		  if (!frankieSuccess) {
+			  System.err.println("Frankie.exe wasn't fully successful: "+ String.format("species %2$d had output flag %1$d",frankieOutputFlag,species.getID() ));
+			  System.err.println(String.format("Saving input file as 'frankie/dat.%d.%d' should you wish to debug.",frankieOutputFlag,species.getID() ));	
+			  franklInput.renameTo( new File(String.format("frankie/dat.%d.%d",frankieOutputFlag,species.getID() )) );			  
+		  }
+
         
          //read in results of Franklin's code into result
         File franklOutput = new File("frankie/rho_input");
