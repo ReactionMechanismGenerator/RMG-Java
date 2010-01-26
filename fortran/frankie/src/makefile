@@ -17,7 +17,7 @@ BIN = frankie.exe
 OBJ = dqed.o calc_freq_code.o 
 
 # Compiler flags
-CFLAGS = -ftrace=full
+CFLAGS = -ftrace=full -fbounds-check -Wall
 
 # Linker flags
 LFLAGS = -L/usr/lib -lpthread
