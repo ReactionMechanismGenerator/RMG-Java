@@ -173,8 +173,10 @@ public  Chemkin() {
 
       	if (conc < 0) {
 			double aTol = ReactionModelGenerator.getAtol();
-			if (Math.abs(conc) < aTol) conc = 0;
-      		else throw new NegativeConcentrationException("species " + spe.getName() + " has negative conc: " + String.valueOf(conc));
+			//if (Math.abs(conc) < aTol) conc = 0;
+      		//else throw new NegativeConcentrationException("species " + spe.getName() + " has negative conc: " + String.valueOf(conc));
+			if (conc < -100.0 * aTol) 
+				throw new NegativeConcentrationException("Species " + spe.getName() + " has negative concentration: " + String.valueOf(conc));
       	}
 
       	SpeciesStatus ss = new SpeciesStatus(spe, 1, conc, flux);
@@ -300,8 +302,10 @@ public  Chemkin() {
       		double thisAmount = Double.parseDouble(amountText.getData());
       		if (thisAmount < 0) {
 				double aTol = ReactionModelGenerator.getAtol();
-				if (Math.abs(thisAmount) < aTol) thisAmount = 0;
-      			else throw new NegativeConcentrationException("Negative concentration in reactorOutput.xml: " + thisSpeciesID);
+				//if (Math.abs(thisAmount) < aTol) thisAmount = 0;
+      			//else throw new NegativeConcentrationException("Negative concentration in reactorOutput.xml: " + thisSpeciesID);
+				if (thisAmount < -100.0 * aTol)
+					throw new NegativeConcentrationException("Species " + thisSpeciesID + " has negative concentration: " + String.valueOf(thisAmount));
       		}
 
       		// get amount (e.g. concentraion) and store in an array list

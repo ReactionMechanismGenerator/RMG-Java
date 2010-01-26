@@ -377,8 +377,10 @@ public class PDepReaction extends Reaction {
 				conc = ss.getSpeciesStatus(spe).getConcentration();
 			if (conc < 0) {
 				double aTol = ReactionModelGenerator.getAtol();
-				if (Math.abs(conc) < aTol) conc = 0;
-				else throw new NegativeConcentrationException(spe.getName() + ": " + String.valueOf(conc));
+				//if (Math.abs(conc) < aTol) conc = 0;
+				//else throw new NegativeConcentrationException(spe.getName() + ": " + String.valueOf(conc));
+				if (conc < -100.0 * aTol)
+					throw new NegativeConcentrationException("Species " + spe.getName() + " has negative concentration: " + String.valueOf(conc));
 			}
 			forwardFlux *= conc;
 		}

@@ -40,15 +40,9 @@ import java.util.*;
 
 //## class NegativeConcentrationException 
 public class NegativeConcentrationException extends RuntimeException{
-    
-    
-    // Constructors
-    
-    //## operation NegativeConcentrationException(String) 
+
     public  NegativeConcentrationException(String s) {
-        //#[ operation NegativeConcentrationException(String) 
         super(s);
-        //#]
     }
     public  NegativeConcentrationException() {
     }

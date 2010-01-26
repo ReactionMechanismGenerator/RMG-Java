@@ -187,8 +187,10 @@ public class SystemSnapshot {
                 double c = ((Double)iter.next()).doubleValue();
                 if (c < 0) {
     				double aTol = ReactionModelGenerator.getAtol();
-    				if (Math.abs(c) < aTol) c = 0;
-    				else throw new NegativeConcentrationException("InertGas");
+    				//if (Math.abs(c) < aTol) c = 0;
+    				//else throw new NegativeConcentrationException("InertGas");
+					if (c < -100.0 * aTol)
+						throw new NegativeConcentrationException("Total inert gas has negative concentration: " + String.valueOf(c));
                 }
                 total += c;
         }
@@ -207,8 +209,10 @@ public class SystemSnapshot {
                         SpeciesStatus ss = (SpeciesStatus)iter.next();
                         if (ss.getConcentration()<0) {
             				double aTol = ReactionModelGenerator.getAtol();
-            				if (Math.abs(ss.getConcentration()) < aTol) ss.setConcentration(0.0);
-            				else throw new NegativeConcentrationException();
+            				//if (Math.abs(ss.getConcentration()) < aTol) ss.setConcentration(0.0);
+            				//else throw new NegativeConcentrationException();
+							if ( ss.getConcentration() < -100.0 * aTol )
+								throw new NegativeConcentrationException("Total inert gas has negative concentration: " + String.valueOf(ss.getConcentration()));
                         }
                         totalMole += ss.getConcentration();
                 }

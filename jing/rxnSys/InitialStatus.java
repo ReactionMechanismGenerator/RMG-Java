@@ -132,8 +132,10 @@ public class InitialStatus extends SystemSnapshot {
 
         	if (conc < 0) {
 				double aTol = ReactionModelGenerator.getAtol();
-				if (Math.abs(conc) < aTol) conc = 0;
-				else throw new NegativeConcentrationException("InertGas");
+				//if (Math.abs(conc) < aTol) conc = 0;
+				//else throw new NegativeConcentrationException("InertGas");
+				if (conc < -100.0 * aTol)
+					throw new NegativeConcentrationException("Inert Gas has negative concentration: " + String.valueOf(conc));
         	}
 
         	if (conc > colliderLimit*totalMole) {
