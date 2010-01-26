@@ -163,7 +163,17 @@ public class PopulateReactions {
 				// Make the species
 				Species species = Species.make(speciesName,cg);
 				// Add the new species to the set of species
+				//int speciesCount = speciesSet.size();
 				speciesSet.add(species);
+				//if (speciesSet.size() != speciesCount+1){
+				//	System.out.println(speciesName);
+				//	Iterator iter=speciesSet.iterator();
+				//	while (iter.hasNext()) {
+				//		Species spcs = (Species)iter.next();
+				//		if (spcs.equals(species))
+				//			System.out.println(spcs.toString());
+				//	}
+				//}
 
 				// Read the next line of the input file
 				line = ChemParser.readMeaningfulLine(br_input);
@@ -197,11 +207,15 @@ public class PopulateReactions {
         			boolean dupRxn = false;
 	        		while (iterOverNonDup.hasNext()) {
 	        			Reaction temp_Reaction = (Reaction)iterOverNonDup.next();
-	        			if (r.getStructure() == temp_Reaction.getStructure() || 
-	        					r.getReverseReaction().getStructure() == temp_Reaction.getStructure()) {
+	        			if (r.getStructure() == temp_Reaction.getStructure()) {
 	        				dupRxn = true;
 	        				break;
-	        			}	
+	        			} else if (r.hasReverseReaction() && temp_Reaction.hasReverseReaction()) {
+	        				if (r.getReverseReaction().getStructure() == temp_Reaction.getReverseReaction().getStructure()) {
+	        					dupRxn = true;
+	        					break;
+	        				}
+	        			}
 	        		}
 	        		if (!dupRxn) {
         				nonDuplicateRxns.add(r);
