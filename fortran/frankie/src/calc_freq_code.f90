@@ -1786,7 +1786,7 @@ SUBROUTINE Case_1(Total_char_freq, Total_harm_osc_freq, HR_params  )
 !  Additional solver options
   iopt(1)=4         ! Set the option to change the value of TOLF
   iopt(2)=1         ! Where in ROPT to look for the new value
-  ropt(1)=1.E-3     ! New value for TOLF
+  ropt(1)=1.E-5     ! New value for TOLF
   iopt(3)=2         ! Change the number of interations
   iopt(4)=1000      ! Maximum number of iterations
   iopt(5)=17        ! Do not allow the flag IGO to return the value IGO=3
@@ -1961,7 +1961,7 @@ SUBROUTINE Case_2(Total_char_freq, Total_harm_osc_freq, HR_params  )
 !  Additional solver options
   iopt(1)=4         ! Set the option to change the value of TOLF
   iopt(2)=1         ! Where in ROPT to look for the new value
-  ropt(1)=1.E-3     ! New value for TOLF
+  ropt(1)=1.E-5     ! New value for TOLF
   iopt(3)=2         ! Change the number of interations
   iopt(4)=1000      ! Maximum number of iterations
   iopt(5)=17        ! Do not allow the flag IGO to return the value IGO=3
@@ -2138,7 +2138,7 @@ SUBROUTINE Case_3(Total_char_freq, Total_harm_osc_freq, HR_params )
 !  Additional solver options
   iopt(1)=4         ! Set the option to change the value of TOLF
   iopt(2)=1         ! Where in ROPT to look for the new value
-  ropt(1)=1.E-3     ! New value for TOLF
+  ropt(1)=1.E-5     ! New value for TOLF
   iopt(3)=2         ! Change the number of interations
   iopt(4)=1000      ! Maximum number of iterations
   iopt(5)=17        ! Do not allow the flag IGO to return the value IGO=3
@@ -2330,7 +2330,7 @@ SUBROUTINE Case_4(Total_char_freq, Total_harm_osc_freq, HR_params  )
 !  Additional solver options
   iopt(1)=4         ! Set the option to change the value of TOLF
   iopt(2)=1         ! Where in ROPT to look for the new value
-  ropt(1)=1.E-3     ! New value for TOLF
+  ropt(1)=1.E-5     ! New value for TOLF
   iopt(3)=2         ! Change the number of interations
   iopt(4)=1000      ! Maximum number of iterations
   iopt(5)=17        ! Do not allow the flag IGO to return the value IGO=3
@@ -2533,7 +2533,7 @@ SUBROUTINE Case_5(Total_char_freq, Total_harm_osc_freq, HR_params )
 !  Additional solver options
   iopt(1)=4         ! Set the option to change the value of TOLF
   iopt(2)=1         ! Where in ROPT to look for the new value
-  ropt(1)=1.E-3     ! New value for TOLF
+  ropt(1)=1.E-5     ! New value for TOLF
   iopt(3)=2         ! Change the number of interations
   iopt(4)=1000      ! Maximum number of iterations
   iopt(5)=17        ! Do not allow the flag IGO to return the value IGO=3
@@ -2746,7 +2746,7 @@ SUBROUTINE Case_6(Total_char_freq, Total_harm_osc_freq, HR_params )
 !  Additional solver options
   iopt(1)=4         ! Set the option to change the value of TOLF
   iopt(2)=1         ! Where in ROPT to look for the new value
-  ropt(1)=1.E-3     ! New value for TOLF
+  ropt(1)=1.E-5     ! New value for TOLF
   iopt(3)=2         ! Change the number of interations
   iopt(4)=1000      ! Maximum number of iterations
   iopt(5)=17        ! Do not allow the flag IGO to return the value IGO=3
@@ -2966,7 +2966,7 @@ SUBROUTINE Case_7(Total_char_freq, Total_harm_osc_freq, HR_params )
 !  Additional solver options
   iopt(1)=4         ! Set the option to change the value of TOLF
   iopt(2)=1         ! Where in ROPT to look for the new value
-  ropt(1)=1.E-3     ! New value for TOLF
+  ropt(1)=1.E-5     ! New value for TOLF
   iopt(3)=2         ! Change the number of interations
   iopt(4)=1000      ! Maximum number of iterations
   iopt(5)=17        ! Do not allow the flag IGO to return the value IGO=3
@@ -3165,7 +3165,7 @@ SUBROUTINE Case_8(Total_char_freq, Total_harm_osc_freq, HR_params )
 !  Additional solver options
   iopt(1)=4         ! Set the option to change the value of TOLF
   iopt(2)=1         ! Where in ROPT to look for the new value
-  ropt(1)=1.E-3     ! New value for TOLF
+  ropt(1)=1.E-5     ! New value for TOLF
   iopt(3)=2         ! Change the number of interations
   iopt(4)=1000      ! Maximum number of iterations
   iopt(5)=17        ! Do not allow the flag IGO to return the value IGO=3
@@ -3347,7 +3347,7 @@ SUBROUTINE Case_9(Total_char_freq, Total_harm_osc_freq, HR_params )
 !  Additional solver options
   iopt(1)=4         ! Set the option to change the value of TOLF
   iopt(2)=1         ! Where in ROPT to look for the new value
-  ropt(1)=1.E-3     ! New value for TOLF
+  ropt(1)=1.E-5     ! New value for TOLF
   iopt(3)=2         ! Change the number of interations
   iopt(4)=1000      ! Maximum number of iterations
   iopt(5)=17        ! Do not allow the flag IGO to return the value IGO=3
@@ -3539,7 +3539,7 @@ SUBROUTINE Case_10(Total_char_freq, Total_harm_osc_freq, HR_params )
 !  Additional solver options
   iopt(1)=4         ! Set the option to change the value of TOLF
   iopt(2)=1         ! Where in ROPT to look for the new value
-  ropt(1)=1.E-3     ! New value for TOLF
+  ropt(1)=1.E-5     ! New value for TOLF
   iopt(3)=2         ! Change the number of interations
   iopt(4)=1000      ! Maximum number of iterations
   iopt(5)=17        ! Do not allow the flag IGO to return the value IGO=3
@@ -3741,7 +3741,7 @@ SUBROUTINE Case_11(Total_char_freq, Total_harm_osc_freq, HR_params )
 !  Additional solver options
   iopt(1)=4         ! Set the option to change the value of TOLF
   iopt(2)=1         ! Where in ROPT to look for the new value
-  ropt(1)=1.E-3     ! New value for TOLF
+  ropt(1)=1.E-5     ! New value for TOLF
   iopt(3)=2         ! Change the number of interations
   iopt(4)=1000      ! Maximum number of iterations
   iopt(5)=17        ! Do not allow the flag IGO to return the value IGO=3
@@ -3955,7 +3955,7 @@ SUBROUTINE Case_12(Total_char_freq, Total_harm_osc_freq, HR_params )
 !  Additional solver options
   iopt(1)=4         ! Set the option to change the value of TOLF
   iopt(2)=1         ! Where in ROPT to look for the new value
-  ropt(1)=1.E-3     ! New value for TOLF
+  ropt(1)=1.E-5     ! New value for TOLF
   iopt(3)=2         ! Change the number of interations
   iopt(4)=1000      ! Maximum number of iterations
   iopt(5)=17        ! Do not allow the flag IGO to return the value IGO=3
@@ -4175,7 +4175,7 @@ SUBROUTINE Case_13(Total_char_freq, Total_harm_osc_freq, HR_params )
 !  Additional solver options
   iopt(1)=4         ! Set the option to change the value of TOLF
   iopt(2)=1         ! Where in ROPT to look for the new value
-  ropt(1)=1.E-3     ! New value for TOLF
+  ropt(1)=1.E-5     ! New value for TOLF
   iopt(3)=2         ! Change the number of interations
   iopt(4)=1000      ! Maximum number of iterations
   iopt(5)=17        ! Do not allow the flag IGO to return the value IGO=3
@@ -4385,7 +4385,7 @@ SUBROUTINE Case_14(Total_char_freq, Total_harm_osc_freq, HR_params )
 !  Additional solver options
   iopt(1)=4         ! Set the option to change the value of TOLF
   iopt(2)=1         ! Where in ROPT to look for the new value
-  ropt(1)=1.E-3     ! New value for TOLF
+  ropt(1)=1.E-5     ! New value for TOLF
   iopt(3)=2         ! Change the number of interations
   iopt(4)=1000      ! Maximum number of iterations
   iopt(5)=17        ! Do not allow the flag IGO to return the value IGO=3
@@ -4585,7 +4585,7 @@ SUBROUTINE Case_15(Total_char_freq, Total_harm_osc_freq, HR_params )
 !  Additional solver options
   iopt(1)=4         ! Set the option to change the value of TOLF
   iopt(2)=1         ! Where in ROPT to look for the new value
-  ropt(1)=1.E-3     ! New value for TOLF
+  ropt(1)=1.E-5     ! New value for TOLF
   iopt(3)=2         ! Change the number of interations
   iopt(4)=1000      ! Maximum number of iterations
   iopt(5)=17        ! Do not allow the flag IGO to return the value IGO=3
@@ -4798,7 +4798,7 @@ SUBROUTINE Case_16(Total_char_freq, Total_harm_osc_freq, HR_params )
 !  Additional solver options
   iopt(1)=4         ! Set the option to change the value of TOLF
   iopt(2)=1         ! Where in ROPT to look for the new value
-  ropt(1)=1.E-3     ! New value for TOLF
+  ropt(1)=1.E-5     ! New value for TOLF
   iopt(3)=2         ! Change the number of interations
   iopt(4)=1000      ! Maximum number of iterations
   iopt(5)=17        ! Do not allow the flag IGO to return the value IGO=3
@@ -5018,7 +5018,7 @@ SUBROUTINE Case_17(Total_char_freq, Total_harm_osc_freq, HR_params )
 !  Additional solver options
   iopt(1)=4         ! Set the option to change the value of TOLF
   iopt(2)=1         ! Where in ROPT to look for the new value
-  ropt(1)=1.E-3     ! New value for TOLF
+  ropt(1)=1.E-5     ! New value for TOLF
   iopt(3)=2         ! Change the number of interations
   iopt(4)=1000      ! Maximum number of iterations
   iopt(5)=17        ! Do not allow the flag IGO to return the value IGO=3
@@ -5250,7 +5250,7 @@ SUBROUTINE Case_18(Total_char_freq, Total_harm_osc_freq, HR_params )
 !  Additional solver options
   iopt(1)=4         ! Set the option to change the value of TOLF
   iopt(2)=1         ! Where in ROPT to look for the new value
-  ropt(1)=1.E-3     ! New value for TOLF
+  ropt(1)=1.E-5     ! New value for TOLF
   iopt(3)=2         ! Change the number of interations
   iopt(4)=1000      ! Maximum number of iterations
   iopt(5)=17        ! Do not allow the flag IGO to return the value IGO=3
@@ -5481,7 +5481,7 @@ SUBROUTINE Case_19(Total_char_freq, Total_harm_osc_freq, HR_params )
 !  Additional solver options
   iopt(1)=4         ! Set the option to change the value of TOLF
   iopt(2)=1         ! Where in ROPT to look for the new value
-  ropt(1)=1.E-3     ! New value for TOLF
+  ropt(1)=1.E-5     ! New value for TOLF
   iopt(3)=2         ! Change the number of interations
   iopt(4)=1000      ! Maximum number of iterations
   iopt(5)=17        ! Do not allow the flag IGO to return the value IGO=3
@@ -5697,7 +5697,7 @@ SUBROUTINE Case_20(Total_char_freq, Total_harm_osc_freq, HR_params  )
 !  Additional solver options
   iopt(1)=4         ! Set the option to change the value of TOLF
   iopt(2)=1         ! Where in ROPT to look for the new value
-  ropt(1)=1.E-3     ! New value for TOLF
+  ropt(1)=1.E-5     ! New value for TOLF
   iopt(3)=2         ! Change the number of interations
   iopt(4)=1000      ! Maximum number of iterations
   iopt(5)=17        ! Do not allow the flag IGO to return the value IGO=3
@@ -5916,7 +5916,7 @@ SUBROUTINE Case_21(Total_char_freq, Total_harm_osc_freq, HR_params )
 !  Additional solver options
   iopt(1)=4         ! Set the option to change the value of TOLF
   iopt(2)=1         ! Where in ROPT to look for the new value
-  ropt(1)=1.E-3     ! New value for TOLF
+  ropt(1)=1.E-5     ! New value for TOLF
   iopt(3)=2         ! Change the number of interations
   iopt(4)=1000      ! Maximum number of iterations
   iopt(5)=17        ! Do not allow the flag IGO to return the value IGO=3
@@ -6146,7 +6146,7 @@ SUBROUTINE Case_22(Total_char_freq, Total_harm_osc_freq, HR_params )
 !  Additional solver options
   iopt(1)=4         ! Set the option to change the value of TOLF
   iopt(2)=1         ! Where in ROPT to look for the new value
-  ropt(1)=1.E-3     ! New value for TOLF
+  ropt(1)=1.E-5     ! New value for TOLF
   iopt(3)=2         ! Change the number of interations
   iopt(4)=1000      ! Maximum number of iterations
   iopt(5)=17        ! Do not allow the flag IGO to return the value IGO=3
@@ -6383,7 +6383,7 @@ SUBROUTINE Case_23(Total_char_freq, Total_harm_osc_freq, HR_params )
 !  Additional solver options
   iopt(1)=4         ! Set the option to change the value of TOLF
   iopt(2)=1         ! Where in ROPT to look for the new value
-  ropt(1)=1.E-3     ! New value for TOLF
+  ropt(1)=1.E-5     ! New value for TOLF
   iopt(3)=2         ! Change the number of interations
   iopt(4)=1000      ! Maximum number of iterations
   iopt(5)=17        ! Do not allow the flag IGO to return the value IGO=3
@@ -6627,7 +6627,7 @@ SUBROUTINE Case_24(Total_char_freq, Total_harm_osc_freq, HR_params )
 !  Additional solver options
   iopt(1)=4         ! Set the option to change the value of TOLF
   iopt(2)=1         ! Where in ROPT to look for the new value
-  ropt(1)=1.E-3     ! New value for TOLF
+  ropt(1)=1.E-5     ! New value for TOLF
   iopt(3)=2         ! Change the number of interations
   iopt(4)=1000      ! Maximum number of iterations
   iopt(5)=17        ! Do not allow the flag IGO to return the value IGO=3
@@ -6875,7 +6875,7 @@ SUBROUTINE Case_25(Total_char_freq, Total_harm_osc_freq, HR_params )
 !  Additional solver options
   iopt(1)=4         ! Set the option to change the value of TOLF
   iopt(2)=1         ! Where in ROPT to look for the new value
-  ropt(1)=1.E-3     ! New value for TOLF
+  ropt(1)=1.E-5     ! New value for TOLF
   iopt(3)=2         ! Change the number of interations
   iopt(4)=1000      ! Maximum number of iterations
   iopt(5)=17        ! Do not allow the flag IGO to return the value IGO=3
@@ -7109,7 +7109,7 @@ SUBROUTINE Case_26(Total_char_freq, Total_harm_osc_freq, HR_params )
 !  Additional solver options
   iopt(1)=4         ! Set the option to change the value of TOLF
   iopt(2)=1         ! Where in ROPT to look for the new value
-  ropt(1)=1.E-3     ! New value for TOLF
+  ropt(1)=1.E-5     ! New value for TOLF
   iopt(3)=2         ! Change the number of interations
   iopt(4)=1000      ! Maximum number of iterations
   iopt(5)=17        ! Do not allow the flag IGO to return the value IGO=3
