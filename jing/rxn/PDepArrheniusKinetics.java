@@ -28,7 +28,7 @@ public class PDepArrheniusKinetics implements PDepKinetics {
 	/**
 	 * The list of Arrhenius kinetics fitted at each pressure.
 	 */
-	private static ArrheniusKinetics[] kinetics;
+	private ArrheniusKinetics[] kinetics;
 	
 	protected static int numPressures = 0;
 
@@ -99,7 +99,7 @@ public class PDepArrheniusKinetics implements PDepKinetics {
     	return numPressures;
     }
     
-    public static ArrheniusKinetics getKinetics(int i) {
+    public ArrheniusKinetics getKinetics(int i) {
     	return kinetics[i];
     }
 
