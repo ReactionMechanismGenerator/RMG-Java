@@ -53,7 +53,8 @@ public class FrequencyEstimator {
 
 	 public static void main(String[] args) {
 
-		initializeSystemProperties();
+//		initializeSystemProperties();
+		 RMG.globalInitializeSystemProperties();
 
 		LinkedList<ChemGraph> graphList = new LinkedList<ChemGraph>();
 
@@ -116,23 +117,6 @@ public class FrequencyEstimator {
 
 	}
 
-	public static void initializeSystemProperties() {
-		String name= "RMG_database";
-		String workingDir = System.getenv("RMG");
-		System.setProperty("RMG.workingDirectory", workingDir);
-		//  System.setProperty("jing.chem.ChemGraph.forbiddenStructureFile",
-		//                     workingDir +
-		//                     "database/forbiddenStructure/forbiddenStructure.txt");
-		System.setProperty("jing.chem.ChemGraph.forbiddenStructureFile", workingDir + "/databases/"+name+"/forbiddenStructure/ForbiddenStructure.txt");
-		System.setProperty("jing.chem.ThermoGAGroupLibrary.pathName", workingDir + "/databases/" + name+"/thermo");
-		System.setProperty("jing.rxn.ReactionTemplateLibrary.pathName", workingDir + "/databases/" + name+"/kinetics/kinetics");
-
-		// System.setProperty("jing.rxn.ReactionTemplateLibrary.pathName",
-		//                     workingDir + "database/kinetics/kinetics");
-		//  System.setProperty("jing.rxnSys.ReactionModelGenerator.conditionFile",
-		//                     workingDir + "database/condition/condition.txt");
-
-	};
 
 }
 

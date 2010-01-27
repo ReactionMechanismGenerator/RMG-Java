@@ -48,7 +48,8 @@ public class Abraham {
 
   //## configuration RMG::RMG
 public static void main(String[] args) {
-  initializeSystemProperties();
+//  initializeSystemProperties();
+	RMG.globalInitializeSystemProperties();
 	LinkedHashSet speciesSet = new LinkedHashSet();
     String abraham_output = "";
     double c=0;
@@ -149,15 +150,5 @@ public static void main(String[] args) {
 System.out.println("Done!\n");
 
 };
-
- public static void initializeSystemProperties() {
-	 String name= "RMG_database";
-	 String workingDir = System.getenv("RMG");
-     System.setProperty("RMG.workingDirectory", workingDir);
-     System.setProperty("jing.chem.ChemGraph.forbiddenStructureFile", workingDir + "/databases/"+name+"/forbiddenStructure/ForbiddenStructure.txt");
-     System.setProperty("jing.chem.ThermoGAGroupLibrary.pathName", workingDir + "/databases/" + name+"/thermo");
-     System.setProperty("jing.rxn.ReactionTemplateLibrary.pathName", workingDir + "/databases/" + name+"/kinetics/kinetics");
- };
-
 
 }

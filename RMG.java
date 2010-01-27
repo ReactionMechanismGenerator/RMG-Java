@@ -146,8 +146,25 @@ public class RMG {
        }
 
     }
+    
+    public static void globalInitializeSystemProperties() {
+    	Locale.setDefault(Locale.US);
+		String name= "RMG_database";
+		String workingDir = System.getenv("RMG");
+		 if (workingDir == null) {
+			 System.err.println("Undefined environment variable RMG.");
+			 System.exit(0);
+		 }
+		System.setProperty("RMG.workingDirectory", workingDir);
+		System.setProperty("jing.chem.ChemGraph.forbiddenStructureFile",workingDir + "/databases/" + name + "/forbiddenStructure/forbiddenStructure.txt");
+		System.setProperty("jing.chem.ThermoGAGroupLibrary.pathName",	workingDir + "/databases/" + name + "/thermo");
+		System.setProperty("jing.rxn.ReactionTemplateLibrary.pathName",	workingDir + "/databases/" + name + "/kinetics");
+    }
 
 	public static void initializeSystemProperties(String inputfile) {
+		globalInitializeSystemProperties();
+		String workingDir = System.getProperty("RMG.workingDirectory");
+		
 	    File f = new File(".");
 	    String dir = f.getAbsolutePath();
 		File therfit = new File("therfit");
@@ -189,12 +206,13 @@ public class RMG {
                     qmfiles.mkdir();
                 }
 		
-		 String workingDir = System.getenv("RMG");
-		 if (workingDir == null) {
-			 System.err.println("Undefined environment variable RMG.");
-			 System.exit(0);
-		 }
-	     System.setProperty("RMG.workingDirectory", workingDir);
+//		 String workingDir = System.getenv("RMG");
+//		 if (workingDir == null) {
+//			 System.err.println("Undefined environment variable RMG.");
+//			 System.exit(0);
+//		 }
+//	     System.setProperty("RMG.workingDirectory", workingDir);
+
 	     System.setProperty("jing.rxnSys.ReactionModelGenerator.conditionFile",inputfile);
 		 try {//svp
              String initialConditionFile = System.getProperty("jing.rxnSys.ReactionModelGenerator.conditionFile");

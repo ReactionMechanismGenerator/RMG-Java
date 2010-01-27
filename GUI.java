@@ -104,8 +104,9 @@ import jing.chemParser.ChemParser;
 
 public class GUI extends JPanel implements ActionListener {
     public static void main(String[] args) {
-    	String workingDir = System.getenv("RMG");
-    	System.setProperty("RMG.workingDirectory", workingDir);
+    	RMG.globalInitializeSystemProperties();
+//    	String workingDir = System.getenv("RMG");
+//    	System.setProperty("RMG.workingDirectory", workingDir);
     	theApp = new GUI();
     	theApp.createAndShowGUI();
     }

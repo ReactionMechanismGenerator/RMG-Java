@@ -14,7 +14,8 @@ import jing.chemUtil.Graph;
 public class AdjList2InChI {
 
 	public static void main(String[] args) {
-		initializeSystemProperties();
+//		initializeSystemProperties();
+		RMG.globalInitializeSystemProperties();
 		String outputString = "";
 		
 		try {
@@ -59,10 +60,5 @@ public class AdjList2InChI {
 		
 	};
 	
-	public static void initializeSystemProperties() {
-		String workingDir = System.getenv("RMG");
-		System.setProperty("RMG.workingDirectory", workingDir);
-		System.setProperty("jing.chem.ChemGraph.forbiddenStructureFile", workingDir + "/databases/RMG_database/forbiddenStructure/ForbiddenStructure.txt");
-	};
 	
 }
