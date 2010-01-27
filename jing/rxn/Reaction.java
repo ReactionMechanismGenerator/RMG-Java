@@ -1474,6 +1474,28 @@ public class Reaction {
 		
 		return rxn;
 	}
+	
+	public String toInChIString() {
+		if (getReactantNumber() == 0 || getProductNumber() == 0)
+			return "";
+		
+		String rxn = "";
+		Species species = (Species) structure.getReactantList().get(0);
+		rxn = rxn + species.getInChI();
+		for (int i = 1; i < getReactantNumber(); i++) {
+			species = (Species) structure.getReactantList().get(i);
+			rxn += " + " + species.getInChI();
+		}
+		rxn += " --> ";
+		species = (Species) structure.getProductList().get(0);
+		rxn = rxn + species.getInChI();
+		for (int i = 1; i < getProductNumber(); i++) {
+			species = (Species) structure.getProductList().get(i);
+			rxn += " + " + species.getInChI();
+		}
+		
+		return rxn;
+	}
 
 	/**
 	 * Calculates the flux of this reaction given the provided system snapshot.
