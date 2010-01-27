@@ -1836,6 +1836,10 @@ public class Species {
         return InChI;
     }
     
+    public void setInChI(String inchi) {
+    	InChI = inchi;
+    }
+    
     public static String getOs() {
     	  String os = "";
     	  if (System.getProperty("os.name").toLowerCase().contains("windows")) {
