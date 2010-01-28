@@ -202,6 +202,23 @@ public class FastMasterEqn implements PDepKineticsEstimator {
 					species.generateSpectroscopicData();
 			}
 		}
+		
+		
+		// Run garbage collection before we submit to FAME to prevent jobs from crashing with large P-Dep networks.
+		// JDM January 22, 2010
+		//if (runTime.freeMemory() < runTime.totalMemory()/3) {
+		if (isomerList.size() >= 10) {
+			// System.out.println("Number of isomers in PDepNetwork to follow: " + isomerList.size());
+			// Find current time BEFORE running garbage collection.
+			// JDM January 27, 2010
+			// System.out.println("Running Time is: " + String.valueOf((System.currentTimeMillis())/1000/60) + " minutes before garbage collection.");
+			Runtime runTime = Runtime.getRuntime();
+			runTime.gc();
+			// Find current time AFTER running garbage collection.
+			// JDM January 27, 2010
+			// System.out.println("Running Time is: " + String.valueOf((System.currentTimeMillis())/1000/60) + " minutes after garbage collection.");
+		}
+		//}
 
 		// Create FAME input files
 		String input = writeInputString(pdn, rxnSystem, speciesList, isomerList, pathReactionList);
@@ -336,6 +353,11 @@ public class FastMasterEqn implements PDepKineticsEstimator {
 				" (" + formula + "): " +
 				pdn.getNetReactions().size() + " included and " +
 				pdn.getNonincludedReactions().size() + " nonincluded net reactions.");
+			// Find time required to run FAME for large networks. 
+			// JDM January 27, 2010
+			// if (isomerList.size() >= 10) {
+			//	System.out.println("Running Time is: " + String.valueOf((System.currentTimeMillis())/1000/60) + " minutes after running fame.");
+			// }
 
 
 		}
@@ -652,8 +674,16 @@ public class FastMasterEqn implements PDepKineticsEstimator {
 	    
 		double Tmin = 0, Tmax = 0, Pmin = 0, Pmax = 0;
 
+		// JWA January 28 2010
+		// Clear the included reactions from the last successful fame execution
 		LinkedList<PDepReaction> netReactionList = pdn.getNetReactions();
 		netReactionList.clear();
+		// Also need to clear the nonincluded reactions - we will regenerate them
+		// based on the new output from fame
+		pdn.getNonincludedReactions().clear();
+		// Below we are going to use netReactionList to temporarily store all
+		// reactions, both included and nonincluded, and will then sort them
+		// into included and nonincluded
 
 		boolean ignoredARate = false;
 
