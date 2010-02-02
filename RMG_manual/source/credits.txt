@@ -1,0 +1,61 @@
+.. _credits:
+
+*******
+Credits
+*******
+ 
+RMG is based upon work supported by the Department of Energy, Office of Basic Energy Sciences through grant DE-FG02-98ER14914 and by the National Science Foundation under Grants No. 0312359 and 0535604.
+
+Project Supervisor:
+
+- Prof. William H. Green (whgreen@mit.edu)
+ 
+Current Developers: (rmg_dev@mit.edu)
+
+- Joshua Allen
+
+- \ C. Franklin Goldsmith
+
+- Michael Harper
+
+- Amrit Jalan
+
+- Gregory Magoon
+
+- Sandeep Sharma
+
+- Dr. Richard West
+
+Original Developer:
+
+- Dr. Jing Song
+
+Previous Developers: 
+
+- Dr. Robert Ashcraft
+
+- Dr. Gregory Beran
+
+- Dr. David M. Matheu
+
+- Sumathy Raman
+
+- Dr. Joanna Yu
+
+- Sarah Petway
+
+- Dr. Paul E. Yelvington
+
+- Dr. John Wen
+
+- Andrew Wong
+
+- Dr. Hsi-Wu Wong
+
+- Kevin Van Geem
+
+RMGVE Developer:
+
+- John Robotham
+
+

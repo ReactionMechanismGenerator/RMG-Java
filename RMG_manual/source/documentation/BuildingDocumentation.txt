@@ -1,0 +1,113 @@
+.. probably only visible to green group members
+
+****************************************
+How to generate these docs, using Python
+****************************************
+This documentation is generated using `Sphinx <http://sphinx.pocoo.org/>`_ so that is the place to look for documentation of syntax etc.
+These instructions are specific to RMG and the Green Group, and describe how to run Sphinx on a shared computer and how to get the documentation source.
+
+On a linux computer such as Rainier
+===================================
+These instructions should get you up and running on a shared computer such as Rainier or Monch without needing a superuser password or anything.
+A bonus side-effect will be that you have the Easy Install package set up correctly, so you can easily get and install other python packages. 
+See http://peak.telecommunity.com/DevCenter/EasyInstall or http://pypi.python.org/pypi/setuptools for more details.
+
+Get the python distribution utils running 
+------------------------------------------
+
+1. Create a file :file:`.pydistutils.cfg` in your home directory
+
+It should contain the following::
+
+ [install]
+ install_lib = ~/lib/python
+ # This next line directs EasyInstall
+ # and the distutils to install scripts in the user's "bin" directory.
+ install_scripts = ~/bin
+
+2. Run the command ``export PYTHONPATH=$HOME'/lib/python/'`` and also add it to your :file:`.bashrc` file for next time you log in.
+
+#. Create the folders :file:`bin`, :file:`lib` and :file:`lib/python` in your home directory
+
+#. Download the EasyInstall bootstrap script from http://peak.telecommunity.com/dist/ez_setup.py  to :file:`~/lib`
+
+#. Change into :file:`~/lib` and run ``$ python ez_setup.py``
+
+
+Get and install sphinx
+----------------------
+#. Type ``easy_install sphinx``
+
+Yes, it's that easy.
+
+Get the source from CVS
+-----------------------
+#. Set up your CVS root by typing ``export CVSROOT=:ext:username@monch.mit.edu:/home/cvs`` 
+   replacing ``username`` with your username
+#. In a sensible location, type ``cvs co RMG_manual``
+
+Compile the documentation
+-------------------------
+#. Inside the :file:`RMG_manual` directory type one of the following:
+
+  * ``make html`` to generate the html web pages
+  * ``make latex`` to generate the latex source (then follow the instructions to build it to pdf)
+  * ``make upload`` to upload the html and pdf to sourceforge
+  * ``make help`` for a list of other options
+
+
+On a Windows computer
+======================
+
+Installing Python on Windows
+-----------------------------
+
+1. Python for Windows may be obtained from
+   http://www.python.org/download/. Although the site lists versions
+   upto Python 3.0, not all of these have the easy_install package
+   available yet. For the moment, I would recommend Python 2.5.4
+
+2. Visit http://pypi.python.org/pypi/setuptools. Download and
+   install the ``setuptools`` executable for your Python version(2.5).
+
+3. Go to the Environmen Variables settings in Windows(``Control
+   Panel-->System-->Advanced System Settings``)  and add the address of
+   the :file:`Scripts` folder in the Python directory to the variable
+   ``Path`` under System Variables. Typically this will be someting
+   like :file:`C:\Python25\Scripts`
+  
+
+Installing Sphinx
+-----------------
+
+1. Visit http://pypi.python.org/pypi/Sphinx and download the
+   Sphinx.egg file for your Python version. Save it in an easily
+   accesible folder.
+
+
+2. Open a command prompt. Type and run ``easy_install <path to the
+   Sphinx.egg file>``
+
+
+Running Sphinx
+-------------- 
+1. Running Sphinx requires you to specify a source directory and a
+   build directory. For our uses, the source directory would be the one
+   containing all the .txt files of the RMG documentation.
+
+#. The build directory is where all the compiled html pages are
+   stored. The location can be chosen as per your convenience.
+
+#. Open a Command Prompt and type ``sphinx-build -b html <path to   
+   source directory> <path to build directory>``. You can now view the
+   html pages created in the build directory which can then be uploaded
+   etc.
+
+
+#. Please refer to http://sphinx.pocoo.org/contents.html for details
+
+Mathematics!
+============
+
+Instructions are at http://sphinx.pocoo.org/latest/ext/math.html
+At the moment the :file:`conf.py` is set up to use the ``sphinx.ext.pngmath`` extension, which means you will need to have both :math:`\textrm{\LaTeX}` and `dvipng <http://savannah.nongnu.org/projects/dvipng/>`_ installed. We may be able to switch to ``sphinx.ext.jsmath`` - give it a go. 

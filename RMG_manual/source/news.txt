@@ -1,0 +1,68 @@
+
+**********************************
+RMG News and Updates
+**********************************
+2009-08-05: RMG 3.1 Released!
+==============================
+RMG version 3.1 has been released. The new release includes a number of improvements and bug fixes, including the following:
+
+- :ref:`PrimaryReactionLibrary <primaryreactionlibrary>` and :ref:`PrimaryThermoLibrary <primarythermolibrary>`  now both behave as reference libraries from which data are taken (in preference to group additivity estimates), when and if the data are needed.
+
+- :ref:`Seed Mechanism <seedmechanism>` allows the mechanism building to start from a seed mechanism, which is included in its entirety before the simulation starts. (This is how :ref:`PrimaryReactionLibrary <primaryreactionlibrary>` behaved in previous releases.)
+
+- New databases: GRIMech 3.0 (PrIMe recommended) thermodynamic and kinetic values are included
+
+- Support for Chemkin's P-Log format for :ref:`k(T,P) reporting <pressuredependence>`  (in addition to Chebyshev format).
+
+- Added additional options for the input file, including:
+
+    - User-specified limits for number of carbon / oxygen / radical per species
+ 
+    - User-specified Chebyshev fitting options
+
+- Changed many dependent Fortran codes to use standard input and output, rather than writing temporary files to disk.
+
+- Reduced run-to-run variations by standardizing the order of averaging of values in the kinetics trees.
+
+- Corrected inconsistencies in edge flux evaluation for pressure-dependent reactions.
+
+- Corrected an error in inert gas normalization for runs with multiple temperatures/pressures
+
+- Fixed DASPK interface
+
+- Fixed bugs in peroxide (ROOR) frequency estimation
+
+- Fixed a bug in the gauche correction database for alkenes
+
+- Fixed issues with duplicate reactions and with Chebyshev fitting in writing CHEMKIN input files
+
+- More frequent garbage collection
+
+Special thanks to Dr. Seyed-Abdolreza Seyed-Reihani and Jeffrey Mo for identifying many of the bugs.
+
+2009-03-05: RMG 3.0 Released!
+==============================
+After nearly two years of development, the RMG team is proud to present the release of RMG version 3.0. New features include:
+
+- Cocurrent generation of a reaction mechanism over multiple temperature and pressure conditions
+
+- Automatic time and conversion stepping when no intermediate points specified
+
+- A new open-source module for handling pressure-dependent reaction networks
+
+- On-the-fly generation of InChI strings for species
+
+- A new graphical user interface for easier RMG input file generation
+
+- Updated RMG Viewer and Editor (RMGVE), including database editing tools
+
+- Thermodynamics estimates for non-cyclic species incorporate certain steric effects (1,5-interactions and gauche interactions)
+
+- Simplified Windows installation
+
+Also including a number of bug fixes, RMG 3.0 is a marked improvement over RMG 2. Find out how to `download RMG <download.html>`_\ .
+
+2007-03-25: RMG 2 Release
+==============================
+RMG 2 has been released. The source code of the software, the manual, and sample initialization files are provided with this release. 
+

@@ -1,0 +1,28 @@
+.. This is the head for the LaTeX file
+
+*****************
+RMG documentation
+*****************
+
+This user manual for RMG |release| was generated on |today|. For the latest version of this documentation, please visit http://rmg.sourceforge.net/
+
+Please also refer to our website for how to cite RMG in published work.
+
+.. toctree::
+   :maxdepth: 1
+
+   introduction
+   ../license
+   installation
+   conditionfile
+   GraphicalUserInterface
+   running
+   analyzing
+   modification
+   thermo
+   theory/index
+   ../credits
+
+.. commented out
+   :ref:`genindex`
+

@@ -1,0 +1,616 @@
+.. _conditionfile:
+
+**********************************
+Creating a Condition File Manually
+**********************************
+
+To run RMG, you must specify the initial conditions and the model generation
+parameters, all of which are contained in a single file, :file:`condition.txt`. 
+The file :file:`condition.txt` can be
+located in any directory, although it is advised that you create a special
+directory for RMG simulations, since each :file:`condition.txt` creates its own
+subdirectories.
+
+The :file:`condition.txt` file should specify the following conditions, in
+order:
+
+#. The main :ref:`database`
+
+#. The name and location of all :ref:`Primary Thermodynamic Libraries <primarythermolibrary>`
+
+#. The :ref:`initial temperature and pressure <initialconditions>` of the system
+
+#. The maximum number of carbons, oxygens, and radicals any one species may have
+
+#. Whether to generate an :ref:`IUPAC International Chemical Identifier (InChI) <InChIgeneration>` for each species
+
+#. The name, concentration, and chemical structure of the reactants
+
+#. The specification and concentration of the inert gas(es)
+
+#. The method to use to estimate :ref:`spectroscopic data <spectroscopicdata>` for each species
+
+#. The :ref:`Pressure dependence <pressuredependence>` model
+
+#. The finish controller
+
+#. The dynamic simulator
+
+#. Sensitivity analysis
+
+#. The name and location of all :ref:`Primary Reaction Libraries <primaryreactionlibrary>`
+
+#. The name and location of all :ref:`Seed Mechanisms <seedmechanism>`
+
+#. The units for the Arrhenius parameters A and Ea (to be reported in the generated chem.inp file)
+
+The name :file:`condition.txt` is variable. As you'll see in
+Section :ref:`running in linux`, you can change the name of the initialization
+file, so long as it remains a :file:`.txt` file.
+
+
+.. _database:
+
+Database
+--------
+
+In the main RMG directory is a directory of databases: :file:`$RMG/databases/`. By
+default, there is one directory within the directory of databases:
+:file:`$RMG/databases/RMG_database`. It is possible, however, to create multiple
+databases. For example, you can copy the entire contents of the default database
+into a new database, :file:`$RMG/databases/my_database`, and change some of the
+values. Unless you have created your own databases, the Database setting should
+be left at the default value::
+
+   Database: RMG_database
+
+
+.. _primarythermolibrary:
+
+Primary Thermo Library
+----------------------
+
+By default, RMG will calculate the thermodynamic properties of the species from
+Benson additivity formulas. In general, the group-additivity results are
+suitably accurate. However, if you would like to override the default settings,
+you may specify the thermodynamic properties of species in the
+primaryThermoLibrary. When a species is specified in the primaryThermoLibrary,
+RMG will automatically use those thermodynamic properties instead of generating
+them from Benson's formulas. Multiple libraries may be created, if so desired.
+The order in which the primary thermo libraries are specified is important: 
+If a species appears in multiple primary thermo libraries, the first instance will
+be used.
+
+Please see Section :ref:`editing thermo database` for details on editing the
+primary thermo library. In general, it is best to leave the PrimaryThermoLibrary
+set to its default value.  In particular, the thermodynamic properties for H and H2
+must be specified in one of the primary thermo libraries.
+
+In addition to the default library, RMG comes with the thermodynamic properties
+of the species in the GRI-Mech 3.0 mechanism [GRIMech3.0]_.  
+
+.. [GRIMech3.0] Gregory P. Smith, David M. Golden, Michael Frenklach, Nigel W. Moriarty, Boris Eiteneer, Mikhail Goldenberg, C. Thomas Bowman, Ronald K. Hanson, Soonho Song, William C. Gardiner, Jr., Vitali V. Lissianski, and Zhiwei Qin http://www.me.berkeley.edu/gri_mech/
+
+This library is located in the 
+:file:`$RMG/databases/RMG_database/thermo` directory.  All "Locations" for the
+PrimaryThermoLibrary field must be with respect to the :file:`$RMG/databases/RMG_database/thermo`
+directory.::
+
+   PrimaryThermoLibrary:
+   Name: Default
+   Location: primaryThermoLibrary
+   Name: GRI-Mech 3.0
+   Location: GRI-Mech3.0
+   END
+
+
+.. _initialconditions:
+
+Initial Conditions
+------------------
+
+The next item in the initialization file is the initial temperature and
+pressure. Currently, RMG can only model constant temperature and pressure systems.
+Future versions will allow for variable temperature and pressure. Please note
+that the temperature and pressure must be accompanied by a unit (in
+parentheses). Suitable temperature units are: K, F, and C. Suitable pressure
+units are: atm, torr, pa, and bar. The following example assumes that the system
+begins at 600 Kelvin and 200 atmospheres::
+
+   TemperatureModel: Constant (K) 600
+   PressureModel: Constant (atm) 200 
+
+You may also list multiple temperature and pressure conditions, as the example below shows::
+
+   TemperatureModel: Constant (K) 600 700 800 900
+   PressureModel: Constant (atm) 1 200 
+
+For cases in which multiple temperatures and pressures are listed, the model generator will simulate the system (still using an isothermal, isobaric model) at all possible combinations of the specified temperatures and pressures. Thus, the resulting reaction mechanism will be valid (within the given error tolerances, estimates, and various other assumptions) at all the conditions specified. (Note, however, that reported concentrations in the :file:`Final_Model.txt` output file will only correspond to the first T/P combination.)
+
+Maximum Number of Atoms/Radicals Per Species
+--------------------------------------------
+
+The next item in the initialization file allows the user to override the maximum
+number of carbons, oxygens, and/or radicals any species in the model may have.  To
+override the default values, the syntax is::
+
+	MaxCarbonNumberPerSpecies: 20
+	MaxOxygenNumberPerSpecies: 6
+	MaxRadicalNumberPerSpecies: 3
+	
+If any of these fields are not present in the :file:`condition.txt` file, RMG will
+use the default values.
+
+.. _InChIgeneration:
+
+InChI Generation
+----------------
+
+The next item in the initialization file is the InChI generation command.
+An InChI, or IUPAC **In**\ ternational **Ch**\ emical **I**\ dentifier, is an unique
+species identifier, with the exception of differing electronic or spin states,
+developed by IUPAC and NIST.  An example of an InChI string (which represents the species
+caffeine) is::
+
+	InChI=1/C8H10N4O2/c1-10-4-9-6-5(10)7(13)12(3)8(14)11(6)2/h4H,1-3H3
+
+The InChI is composed of layers, separated by a forward-slash (/):
+
+#. Chemical formula layer
+
+#. Connectivity layer
+
+#. Hydrogen layer
+
+#. ...
+	
+For the current release, the InChIs are used as another way to represent a
+molecule.  In future releases, the InChIs will link RMG with an online thermochemical
+database: PrIMe, or **Pr**\ ocess **I**\ nformatics **M**\od\ **e**\ l.  The union will
+allow RMG to search for a community-recommended thermochemical data entry (e.g.
+Arrhenius parameters, NASA polynomials) before using estimation techniques.
+
+If this field is turned on, the InChI for each species in the model is located in the :file:`RMG_Dictionary.txt` file.
+
+More information on the InChI project may be found at http://www.iupac.org/inchi/. More information on the PrIMe project may be found at http://primekinetics.org/
+
+To enable the InChI generation, the item should read::
+
+	InChIGeneration: on
+
+To disable the InChI generation, the item should read::
+
+	InChIGeneration: off
+	
+.. _reactants:
+
+Reactants
+---------
+
+The name, concentration, and structure of each reactant must be specified. For
+each reactant, the first line should include the reactant number (e.g. (1)), its
+name (e.g. C2O2), and it's concentration with units (e.g. 4.09e-3 (mol/cm3)).
+Acceptable units for concentration are "mol/cm3", "mol/m3", and "mol/l".  Furthermore,
+RMG will not accept a species name that begins with a number.
+
+The next line defines the reactant structure, described by an adjacency list.
+The :ref:`RMG Viewer and Editor <viewingThermoFGs>` is a useful tool for generating adjacency lists. Please note that you
+may choose the simplified adjacency list in which the hydrogen atoms are omitted
+(shown below)::
+
+ InitialStatus: 
+ (1) CH3OH 4.09e-3 (mol/cm3) 
+ 1  C 0 {2,S} 
+ 2  O 0 {1,S} 
+ (2) O2 1.1E-7 (mol/cm3) 
+ 1  O 0 {2,D} 
+ 2  O 0 {1,D} 
+ END 
+
+
+Please note that the keyword ``END`` must be placed at the end of the
+InitialStatus section. 
+
+If one of the reactants is a resonance isomer, you only need to define one of
+the resonance structures, and RMG will automatically detect the others.
+
+.. this is commented out because it breaks the latex
+ +------------------+----------+---------------------+
+ |                  | Notation | Explanation         |
+ +==================+==========+=====================+
+ | Chemical Element | C        | Carbon atom         |
+ |                  +----------+---------------------+
+ |                  | O        | Oxygen atom         | 
+ |                  +----------+---------------------+
+ |                  | H        | Hydrogen atom       |
+ +------------------+----------+---------------------+
+ | Free Electrons   | 0        | Non-radical         |
+ |                  +----------+---------------------+
+ |                  | 1        | Mono-radical        |
+ |                  +----------+---------------------+
+ |                  | 2        | Bi-radical          |
+ |                  +----------+---------------------+
+ |                  | 2T       | Triplet             |
+ |                  +----------+---------------------+
+ |                  | 2S       | Singlet             |
+ |                  +----------+---------------------+
+ |                  | 3        | Tri-radical         |
+ +------------------+----------+---------------------+
+ | Chemical Bond    | S        | Single Bond         |
+ |                  +----------+---------------------+
+ |                  | D        | Double Bond         |
+ |                  +----------+---------------------+
+ |                  | Dcis     | Cis-double bond     |
+ |                  +----------+---------------------+
+ |                  | Dtrans   | Trans-double bond   |
+ |                  +----------+---------------------+
+ |                  | T        | Triple bond         |
+ |                  +----------+---------------------+
+ |                  | B        | Benzene bond        |
+ +------------------+----------+---------------------+
+
+.. _inertgas:
+
+Inert Gases
+-----------
+
+Following InitialStatus, the initialization file specifies which inert gases, if
+any, are used. Currently RMG can handle four inert gases: |N2|, Ne, He, and Ar. If
+one of the gases is not used, set the concentration to 0.0 (mol/cm3). If no bath
+gas is used, set all concentrations to zero. In the example below, there is no
+nitrogen, the neon and helium are omitted, and the argon concentration is 2.21E-6 (mol/cm3)::
+ 
+  InertGas:
+  N2 0.0 (mol/cm3)
+  Ar 2.21E-6 (mol/cm3)
+  END
+
+.. |N2| replace:: N\ :sub:`2`\ 
+
+Please note that the keyword ``END`` must be placed at the end of the InertGas
+section.
+
+
+.. _spectroscopicdata:
+
+Spectroscopic Data
+------------------
+
+The next item in the initialization file is the method to use to estimate the 
+spectroscopic data (i.e. rovibrational modes) of each species. At present 
+there is only one method available, which utilizes approximate frequencies
+based on functional groups in the molecule when possible, then fits remaining
+degrees of freedom to heat capacity data. This can also be set to off if
+spectroscopic data is not needed (i.e. when pressure dependence is off).
+
+When pressure dependent calculations are not desired, this item should read::
+
+   SpectroscopicDataEstimator: off
+
+
+When pressure dependent calculations are desired, this item should read::
+
+   SpectroscopicDataEstimator: FrequencyGroups
+
+.. _pressuredependence:
+
+Pressure Dependence
+-------------------
+
+This flag is used to specify whether the model should account for pressure 
+dependent rate coefficients. If pressure dependence is not desired, this item
+should read::
+
+	PressureDependence: off
+
+If pressure dependence is desired, this item can take one of two values, based
+on the method used to approximate the pressure-dependent kinetics. There are currently two
+such options: ``ModifiedStrongCollision`` and ``ReservoirState``. The former utilizes
+the modified strong collision approach of Chang, Bozzelli, and Dean [Chang2000]_, 
+and works reasonably well while running more rapidly. The latter 
+utilizes the steady-state/reservoir-state approach of Green and Bhatti [Green2007]_, 
+and is more theoretically sound but more expensive. 
+
+.. note::
+
+	The reservoir state method is currently in an experimental stage. It should work for most small networks; large networks will likely (and automatically) fall back to the modified strong collision method.
+
+To specify the modified strong collision approach, this item should read::
+ 
+	PressureDependence: ModifiedStrongCollision
+
+To specify the reservoir state approach, this item should read::
+ 
+	PressureDependence: ReservoirState
+
+For more information on the two methods, consult the following resources:
+
+.. [Chang2000] A.Y. Chang, J.W. Bozzelli, and A. M. Dean. "Kinetic Analysis of Complex Chemical Activation and Unimolecular Dissociation Reactions using QRRK Theory and the Modified Strong Collision Approximation." *Z. Phys. Chem.* **214** (11), p. 1533-1568 (2000).
+
+.. [Green2007] N.J.B. Green and Z.A. Bhatti. "Steady-State Master Equation Methods." *Phys. Chem. Chem. Phys.* **9**, p. 4275-4290 (2007).
+
+Internally, RMG uses bilinear interpolation as its model for :math:`k(T, P)`. However, there
+are a variety of other models for :math:`k(T, P)` that can be outputted in the Chemkin file. 
+Specification of the desired model requires a line in the condition file to be placed directly
+underneath the previous line: **Note:** This line is not required if pressure dependence is set to
+off.
+
+To disregard all temperature and pressure dependence and simply output the rate at the provided
+temperature and pressure, use the line ::
+
+	PDepKineticsModel: Rate
+
+To use logarithmic interpolation of pressure and Arrhenius interpolation for temperature, use the
+line ::
+
+	PDepKineticsModel: PDepArrhenius
+	
+The auxillary information printed to the Chemkin chem.inp file will have the "PLOG"
+format.  Refer to Section 3.5.3 of the :file:`CHEMKIN_Input.pdf` document and/or 
+Section 3.6.3 of the :file:`CHEMKIN_Theory.pdf` document.  These files are part of
+the CHEMKIN manual.  
+
+To fit a set of Chebyshev polynomials on inverse temperature and logarithmic pressure axes mapped 
+to [-1,1], use the line ::
+
+	PDepKineticsModel: Chebyshev
+	
+The auxillary information printed to the Chemkin chem.inp file will have the "CHEB"
+format.  Refer to Section 3.5.3 of the :file:`CHEMKIN_Input.pdf` document and/or 
+Section 3.6.4 of the :file:`CHEMKIN_Theory.pdf` document.
+If Chebyshev is selected, there are additional optional lines that would be placed beneath that 
+line that specify parameters for the Chebyshev model. The syntax for these lines is ::
+
+	TRange: (K) 300 2000 8 4
+	PRange: (bar) 0.01 100 5 4
+	
+Each line has four parameters: the minimum and maximum temperature/pressure to map to the range
+[-1, 1], the number of temperatures/pressures to generate :math:`k(T, P)` points at before
+fitting, and the number of terms in the Chebyshev polynomial in that dimension. Thus, the example
+above specifies a temperature range of 300-2000 K over which eight temperature points are used,
+and a pressure range of 0.01-100 bar over which five pressure points are used. Therefore forty
+:math:`k(T, P)` points total will be calculated and used to fit the Chebyshev polynomials, which 
+will be of cubic order (i.e. four terms) in temperature and cubic order (i.e. four terms) in 
+pressure.
+
+.. _finishcontroller:
+
+Finish Controller
+-----------------
+
+The Finish Controller defines the termination rules for model growth.
+Additionally, it includes the precision parameters such as reaction time,
+conversion, and error tolerance. The finish controller item should begin
+with a line that contains only ``FinishController:``.
+
+Below the Finish Controller line, you must specify the goal. The goal tells the
+program when to terminate the reaction model expansion. There are two goal
+options: ``ReactionTime`` and ``Conversion``. ``ReactionTime`` must be followed
+by a number and a time unit.  Acceptable units of time are "sec", "min", "hr",
+and "day".  ``Conversion`` must be followed by a reactant
+species name and a number between 0 and 1. 
+
+Beneath the goal, you must specify the error tolerance. Typical values for the
+error tolerance are between 0.0001 and 0.5. A smaller error tolerance generally
+corresponds to a larger model and longer model generation times. In the first example, the reaction will run for 0.001 seconds::
+
+  FinishController:
+  (1) Goal ReactionTime: 0.001 (sec)
+  (2) Error Tolerance: 0.1
+
+In the second example, the reaction will run until 90% of the C\ :sub:`2`\ H\ :sub:`6` reactant is
+consumed and has a much tighter error tolerance::
+
+  FinishController:
+  (1) Goal Conversion: C2H6 0.90
+  (2) Error Tolerance: 0.0001
+
+For the initial model run, it is often preferable to use ``Goal Conversion``
+instead of ``Goal ReactionTime``, since it is difficult to judge *a priori*
+what the reaction time should be.
+
+For a more detailed description on rate-based model enlargement, please consult
+[Susnow1997]_.
+
+
+.. _dynamicsimulator:
+
+Dynamic Simulator
+-----------------
+
+RMG uses the DASSL or DASPK dynamic solver. Future versions of RMG might include the
+CHEMKIN dynamic solver.
+
+The first line beneath the solver should be either ``TimeStep`` or ``Conversions``, depending on whether you chose Goal Conversion or Goal ReactionTime as your finish controller criterion.
+
+The ``TimeStep`` indicates at what time steps RMG should check to see if the model needs to be enlarged. By default the units of time steps is **always** seconds. For example in the example shown below RMG will stop at 0.0001 sec, 0.0002 sec ... and so on to see whether the error tolerance is satisfied::
+
+	DynamicSimulator: DASSL
+	TimeStep: 0.0001 0.0002 0.0004 0.0006 0.0008 0.0009
+
+The other option is to specifiy the Conversions. In this option the conversion of the FinishController species (in this case, C\ :sub:`2`\ H\ :sub:`6`) is monitored and RMG will stop at conversions of 0.1, 0.2, ... and so on to see whether the error tolerance is satisfied::
+
+	DynamicSimulator: DASSL
+	Conversions: 0.1 0.2 0.4 0.6 0.8 0.9
+
+For both ``TimeStep`` or ``Conversions``, in addition to determining when RMG will stop to check whether error tolerances are satisfied, the concentrations and flux at the points specified will be reported in the :file:`Final_Model.txt` file.
+
+If you would not like to specify time steps or conversions, you may have them determined using the "automated time stepping" feature by specifying ``AUTO`` as follows::
+
+    DynamicSimulator: DASSL
+    TimeStep: AUTO
+	
+or::
+
+    DynamicSimulator: DASSL
+    Conversions: AUTO
+	
+The automated time stepping feature is described in greater detail in the Theory and Implementation Details appendix.
+
+The next two lines specify the absolute and relative tolerance for the ODE solver, respectively. Common values for the absolute tolerance are 1e-15 to 1e-25. Relative tolerance
+is usually 1e-4 to 1e-8::
+
+  Atol: 1e-20
+  Rtol: 1e-4
+
+Note: You have the option of using sensitivity analysis only if you have the
+DASPK solver. If you are using DASSL solver then skip the Sensitivity Analysis section.
+
+Sensitivity Analysis
+--------------------
+
+As long as DASPK is chosen for the dynamic solver, RMG can perform sensitivity
+analysis and generate error bars on the concentration profiles. The sensitivity
+analysis is based upon first-order sensitivity coefficients and uncertainties in
+the rate constants. To use the sensitivity analysis, either the first or
+second line must be set to ``on``. If both ``Error bars`` and ``Display
+sensitivity coefficients`` are set to off, then RMG will not perform a
+sensitivity analysis. 
+
+When the option to generate error bars is turned on, RMG calculates the upper
+and lower bounds on the concentration profiles for all core species. These upper
+and lower bounds are generated by the first-order sensitivity equation:
+
+.. math::
+	\ln C_i \left( t,\overrightarrow{k} + \Delta \overrightarrow{k} \right) \approx \ln C_i \left( t,\overrightarrow{k} \right) + \sum_j \frac{\partial \ln C_i}{\partial \ln k_j} \Delta \ln k_j 
+
+where :math:`C_i` is the concentration of the :math:`i^{th}` species, and :math:`\overrightarrow{k}` is
+the vector of rate constants.
+
+If the option to display sensitivity coefficients is turned on, you must specify
+a list of species for which the sensitivities should be displayed. The output
+file will then include the sensitivities of those species with respect to all
+the rate constants, all the heats of formations, and the initial concentrations
+of all the reactants. Additionally, if you choose to display the sensitivity
+coefficients, RMG will print a list of the five reactions that contribute the
+most to the uncertainty in the concentration (for each species selected by the
+user).
+
+Sensitivities to rate constants are normalized sensitivities (:math:`\partial \ln C_i/ \partial \ln k_j`), and
+sensitivities to heats of formation are semi-normalized (:math:`\partial \ln C_i/ \partial \Delta H_f`). The
+contribution of a reaction to the uncertainty is estimated as the product of the
+normalized sensitivity and the uncertainty in the rate constant (:math:`\Delta \ln k`). In the
+following example, RMG will perform a sensitivity analysis. Error bars will be
+generated for all the species, and the sensitivity coefficients will be
+generated for carbon monoxide, carbon dioxide, methane, and water::
+
+ Error bars: On 
+ Display sensitivity coefficients: On 
+ Display sensitivity information for: 
+ CO 
+ CO2 
+ CH4 
+ H2O 
+ END 
+
+
+Please note that the keyword ``END`` must be placed at the end of the Error
+bars section.
+
+.. _primaryreactionlibrary:
+
+Primary Reaction Library
+------------------------
+
+The next section of the :file:`condition.txt` file specifies which, if any, primary
+reaction libraries should be used.  When a reaction is specified in a primary reaction
+library, RMG will use these kinetics instead of the kinetics located in the 
+:file:`RMG_database/kinetics/RxnFamily/rateLibrary.txt` directory.
+
+Currently, the only primary reaction libraries
+included with RMG are: the Leeds' oxidation library and the GRI-Mech 3.0 mechanism
+(w/o the nitrogen-containing species and the lumped C3H7 species). You can specify your own
+primary reaction library in the location section. Please note that the oxidation
+library should not be used for pyrolysis models. In the following example, the
+user has created her own primary reaction library with a few additional reactions
+specific to n-butane, and these reactions are to be used in addition to the
+Leeds' oxidation library::
+
+ PrimaryReactionLibrary:
+ Name: nbutane 
+ Location: RMG_database/primaryReactionLibrary/nbutane 
+ Name: Leeds 
+ Location: RMG_database/SeedMechanisms/combustion_core/version5 
+ END 
+
+If a user wished to use the GRI-Mech 3.0 mechanism as a primary reaction library,
+the syntax is::
+
+	Name: GRI-Mech 3.0
+	Location: RMG_database/SeedMechanisms/GRI-Mech3.0
+
+Please note that the keyword ``END`` must be placed at the end of the Primary
+Reaction Library section. Because the units for the Arrhenius parameters are
+given in each library, the different libraries can have different units.
+Additionally, if the same reaction occurs more than once in the combined
+library, the instance of it from the first library in which it appears is
+the one that gets used.
+
+
+.. _seedmechanism:
+
+Seed Mechanisms
+---------------
+
+The next section of the :file:`condition.txt` file specifies which, if any, 
+Seed Mechanisms should be used.  If a seed mechanism is passed to RMG, every
+species and reaction present in the mechanism will be placed into the core, in
+addition to the species that are listed in the :ref:`reactants` section.
+
+Currently, the only seed mechanisms
+included with RMG are: the Leeds' oxidation library and the GRI-Mech 3.0 mechanism
+(w/o the nitrogen-containing species and the lumped C3H7 species). You can specify your own
+seed mechanism in the location section. Please note that the oxidation
+library should not be used for pyrolysis models. The syntax for the seed mechanisms
+is similar to that of the primary reaction libraries.::
+
+	SeedMechanism:
+	Name: GRI-Mech 3.0
+	Location: RMG_database/SeedMechanisms/GRI-Mech3.0
+	Name: Leeds 
+	Location: RMG_database/SeedMechanisms/combustion_core/version5 
+	END 
+
+Please note that the keyword ``END`` must be placed at the end of the Seed
+Mechanism section. Because the units for the Arrhenius parameters are
+given in each mechanism, the different mechanisms can have different units.
+Additionally, if the same reaction occurs more than once in the combined
+mechanism, the instance of it from the first mechanism in which it appears is
+the one that gets used.
+
+.. note::
+
+	For more information on what files to include in a Primary Reaction Library or
+	Seed Mechanism, visit :ref:`Building a Primary Reaction Library / Seed Mechanism <formatofseedmechanisms>`
+
+.. _chemkinunits:
+
+Chemkin Units
+-------------
+
+The last section of the :file:`condition.txt` file specifies the units for the
+Arrhenius A and Ea parameters reported in the :file:`chem.inp` file.  The acceptable
+units for A are "moles" and "molecules"; the acceptable units for Ea are "kcal/mol",
+"cal/mol", "kJ/mol", "J/mol", and "Kelvins"::
+
+	ChemkinUnits:
+	A: kcal/mol
+	Ea: moles
+	
+Another option available to the user is to specify whether the comments following
+each set of Arrhenius parameters in the :file:`chem.inp` file are concise or verbose.
+The verbose comments describe how the reported A, n, and Ea Arrhenius parameters were
+calculated in the event RMG could not find an exact match for the functional groups.::
+
+	ChemkinUnits:
+	Verbose: on
+	A: kcal/mol
+	Ea: moles
+	
+If the Verbose field is not present, RMG will default to "off".
+
+.. note::
+
+	The :file:`chem.inp` file generated with the Verbose field turned "on" may have
+	a comment that spans hundreds of characters.  These verbose comments may cause
+	the CHEMKIN interpreter to throw an error when running the Pre-Processor.

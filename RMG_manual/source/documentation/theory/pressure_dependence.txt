@@ -1,0 +1,380 @@
+
+
+Pressure Dependence in RMG
+==========================
+
+One of the new features in RMG is the ability to calculate pressure-dependent rate constants.  This appendix provides a brief background on the subject, followed by an explanation of how RMG calculates these rate constants.  For a more detailed description on pressure-dependent rate constants, please consult the excellent texts on unimolecular reaction theory by Gilbert and Smith [Gilbert1990]_;
+Holbrook, Pilling, \& Robertson [Holbrook1996]_ ; and Forst [Forst2003]_.
+
+Consider a molecule in a vibrationally excited state. Under non-pressure dependent conditions, the excess vibrational energy is removed via non-elastic collisions with other molecules, and the rate at which this collisional relaxation occurs is significantly faster than any competing chemical reactions.  Under certain circumstances, however, this is not the case:  The vibrationally excited molecule can either isomerize or dissociate on a time scale competitive with or even faster than the time scale of collisions.  When that occurs, the phenomenological rate constant from the initial molecule to the possible product channels will depend on both temperature and pressure.
+
+Two conditions can cause pressure dependence: low pressures and high temperatures.  The first condition is the simplest, and historically most discussions on the subject of pressure dependence focus on unimolecular reactions at low pressures.  The collision frequency is directly proportional to the pressure, so as the pressure is decreased, the rate of collisional energy transfer decreases.  Eventually the pressure becomes low enough that the rate of chemical reaction becomes faster than the collision rate.
+
+Chemical activation is not limited to these low-pressure cases, however.  Indeed, under the high temperatures of combustion-relevant conditions, many bimolecular reactions at atmospheric pressure will have multiple product channels with pressure-dependent branching ratios.  When two molecules collide, the initial adduct contains excess energy that is rapidly redistributed among the vibrational modes.  As the temperature is increased, a greater percentage of the adduct population is located at higher vibrational energy levels.  As more of the population shifts to higher energy levels, a greater percentage of the population can undergo the isomerization and/or dissociation reactions.  If the temperature is high enough, most of the population will be lost to chemical reaction before it can be collisionally stabilized.
+
+The difficulty, of course, is knowing (i) when a reaction becomes pressure dependent, and (ii) how to quantify the pressure dependence if it occurs.  To answer these questions, we need to solve the master equation.
+
+Formulation of the Master Equation
+----------------------------------
+
+Begin with the number density of species :math:`i` with energy between :math:`E` and :math:`E + dE`, :math:`n_i(E) dE`.  In a chemically activated or pressure-dependent system, the energy-dependent population can undergo the following possibilities:  it can gain or lose energy by colliding with other molecules, it can be formed by the association reaction of the reactants, it can decompose back to the reactants, it can isomerize to form other well species, or it can decompose to form bimolecular products.  Thus, 
+
+.. math::
+	:nowrap:
+	
+	\begin{eqnarray}
+	\frac{d n_i \left(E \right)}{dt} &=& \text{Gain to $n_i \left(E \right)$ via collisional energy transfer from $n_i \left(E^\prime \right)$} \nonumber \\
+	&-& \text{loss from $n_i \left(E \right)$ via collisional energy transfer to all other $n_i \left(E^\prime \right)$} \nonumber \\
+	&+& \text{gain to $n_i \left(E \right)$ via association of reactants $n_R$, $n_m$} \nonumber \\
+	&-& \text{loss from $n_i \left(E \right)$ via decomposition back to reactants $n_R$, $n_m$} \nonumber \\
+	&+& \text{gain to $n_i \left(E \right)$ via isomerization from $n_j \left(E \right)$} \nonumber \\
+	&-& \text{loss from $n_i \left(E \right)$ via isomerization to $n_j \left(E \right)$} \nonumber \\
+	&-& \text{loss from $n_i \left(E \right)$ via decomposition to bimolecular products $p_i$} \nonumber 
+	\end{eqnarray}
+
+Mathematically, we have
+
+.. math::
+	:nowrap:
+	
+	\begin{eqnarray}
+	\frac{ d n_i \left(E\right) }{dt} &=& \omega \int_0^\infty P_i\left(E,E^\prime \right) n_i \left( E^\prime \right) dE^\prime - \omega n_i \left( E \right) \nonumber \\
+	&+& n_R n_m K_{eq} k_{dis} \left( E \right) F_i \left( E \right)\delta_{Rmi} - k_{dis} \left( E \right) n_i \left(E\right)\delta_{Rmi} \nonumber \\
+	&+&  \sum_{j \ne i}^{N_{wells}} k_{ij} \left( E \right) n_j \left( E \right) - \sum_{j \ne i}^{N_{wells}} k_{ji} \left( E \right) n_i \left( E \right) \nonumber \\
+	&-& \sum_{p_j}^{N_{prod}} k_{p_ji} \left( E \right) n_i \left( E \right) \label{eqn:ME}
+	\end{eqnarray}
+
+The corresponding equations for the reactants are:
+
+.. math::
+	:nowrap:
+	
+	\begin{eqnarray}
+	\frac{d n_R }{dt} = \frac{d n_m }{dt} &=& \sum_{i = 1}^{N_{wells}} \delta_{Rmi} \int_{E_{i0}}^\infty k_{dis} \left( E \right) n_i \left( E \right) dE \nonumber \\
+	&-& \sum_{i = 1}^{N_{wells}} \delta_{Rmi} \int_{E_{i0}}^\infty K_{eq}  k_{dis} \left( E \right) F_i\left(E\right) n_R n_m dE  \label{eqn:Rm}
+	\end{eqnarray}
+
+The units of the number density :math:`n_i \left( E \right) dE` are [particle/volume].  :math:`\omega` is the collision frequency [s\ :sup:`-1`], :math:`P_i \left( E, E^\prime \right) dE` is the probability that a particle with energy :math:`E^\prime` will have energy :math:`E` after collision [unitless], :math:`k_{ij}\left(E\right)` is the microcanonical rate constant for the isomerization from well :math:`j` to well :math:`i` [s\ :sup:`-1`], :math:`K_{eq}` is the equilibrium constant between the reactants :math:`R` and :math:`m` and the :math:`i^{th}` well [volume/particle], :math:`k_{dis}\left(E\right)` is the microcanonical rate constant for the dissociation back to the reactants [s\ :sup:`-1`], :math:`\rho_i \left(E \right)` is the density of states [energy\ :sup:`-1`], :math:`Q_i \left(T \right)` is the partition function for the active degrees of freedom [unitless], :math:`n_R` and :math:`n_m` are the number density of the reactants [particle/volume], and :math:`k_{p_ji}\left(E\right)` is the microcanonical rate constant for the dissociation from well :math:`i` to the :math:`j^{th}` product channel [s\ :sup:`-1`].  The delta function :math:`\delta_{Rmi}` is there to ensure that only wells with direct access to the reactants can be formed from or dissociate back to the reactants.  In principle, the energy-dependent populations are a series of delta peaks and not a continuous function; in practice, however, at energy levels relevant for our calculations, the spacing between delta functions is so small that the populations can be approximated by a continuous function.
+
+Simplifying Assumptions and Solution
+------------------------------------
+
+At this point we have :math:`N_{wells} + 2` coupled, non-linear integro-differential equations.  We would prefer a system of linear ODEs. To simply the system of equations, we start with two assumptions:
+
+1. Energy is discretized
+
+2. :math:`n_m` is constant 
+
+The first assumption makes the system of equations numerically tractable; by discretizing the energy, we replace the integrals with summations, which yields :math:`N_{\text{energy levels}} \times N_{\text{wells}} + 2` coupled, non-linear ordinary differential equations.  The second assumption assumes that one of the reactants is in great excess over the other (e.g. a stable species rather than a radical).  This assumption linearizes the system of equations, yielding :math:`N_{\text{energy levels}} \times N_{\text{wells}} + 1` coupled linear ODEs.  Two methods are commonly employed to solve this system of ODEs:  eigenvalue decomposition, and a stochastic method.  For eigenvalue decomposition, the code VariFlex [VariFlex]_ is recommended; for stochastic simulations, the code MultiWell [MultiWell]_ [Barker2001]_ is recommended.
+
+Next, we make two additional assumptions:
+
+3. The :math:`d/dt` is equal to zero
+
+4. :math:`n_R` is constant 
+
+The third assumption assumes that the lifetime of the vibrationally excited intermediates is significantly less than the phenomenologically relevant time scale of the reaction.  This assumption converts the system of ODEs into a single matrix equation of rank :math:`N_{\text{energy levels}} \times N_{\text{wells}} +1`.  The fourth assumption reduces the order of the rank by one, and more importantly it ensures that the matrix equation has a non-zero solution.  Conceptually, it suggests that the reaction could be modeled as a perfectly stirred reactor with a constant inlet stream, rather than as a batch reactor.  With these two additional assumptions, we now have a steady-state master equation.  
+
+In the current implementation we must make one last assumption:
+
+5. The collisional energy transfer, :math:`\omega \int_0^\infty P_i\left(E,E^\prime \right) n_i \left( E^\prime \right) dE^\prime`,  is replaced by a modified strong collision, :math:`\omega \beta`
+
+This final assumption is the most drastic.  It assumes that a certain fraction, $\beta$,  of all collisions will quench the vibrationally excited adducts.  This assumption decouples all the energy levels for a given well, thereby reducing the large matrix equation into :math:`N_{\text{energy levels}}` individual matrix equations of rank :math:`N_{\text{wells}}`.  This approach is similar to the modified-strong collision used in CHEMDIS [CHEMDIS]_. With these five assumptions, the individual equations simply to:
+
+.. math::
+	:nowrap:
+	
+	\begin{eqnarray}
+	S_i \left( E \right)  &=& \left[ \beta \omega  + \sum_{j \ne i}^{N_{wells}} k_{ji} \left( E \right) +  \delta_{Rmi}  k_{dis} \left( E \right)    + \sum_{p_j}^{N_{prod}} k_{p_ji} \left( E \right) \right] n_i \left( E \right)  \nonumber \\
+	& - & \sum_{j \ne i}^{N_{wells}} k_{ij} \left( E \right) n_j \left( E \right)   \label{eqn_MSC} 
+	\end{eqnarray}
+
+where  :math:`S_i \left( E \right) \equiv  K_{eq}  k_{dis} \left( E \right) n_R n_m \delta_{Rmi} \frac{\rho_i \left( E \right) e^{ - \beta E} }{Q_i \left( T \right) }` is the source term, which is the product of the association rate, :math:`K_{eq}  k_{dis} \left( E \right) n_R n_m \delta_{Rmi}`, and the equilibrium energy distribution :math:`\frac{\rho_i \left( E \right) e^{ - \beta E} }{Q_i \left( T \right) }`. 
+
+The terms in square brackets on the right-hand side are the loss channels; these terms appear in the diagonal of the matrix.  The other term on the right-hand side is the gain to a well from the other wells; these rates appear in the off-diagonal positions.  To calculate the phenomenological rate constants, the above equation is solved for each energy level.  The phenomenological rate constant for a particular channel is the dot product of the steady-state population vector and the vector containing the microcanonical rate constant for that channel.
+
+Supporting Equations
+--------------------
+
+Collision Frequency
+~~~~~~~~~~~~~~~~~~~
+
+The collision frequency, :math:`\omega`, is the product of the second-order energy-transfer rate constant and the bath gas concentration.  To simply calculations, it is assumed that the energy transfer rate constant is independent of energy and is equal to the product of the hard-sphere collision limit and the collision integral for a Lennard-Jones potential [Forst2003]_:
+
+.. math::
+	:nowrap:
+	
+	\begin{eqnarray}
+	\omega &=& \pi d^2 \sqrt{\frac{8 k_B T}{\pi \mu} } \Omega \left(T\right) \frac{P}{k_B T} \nonumber \\
+	\Omega \left( T \right) &=& \frac{1.16145}{\left(T^*\right)^{0.14874}} + \frac{0.52487}{\exp \left[ 0.7732 T^*\right]} + \frac{2.16178}{ \exp \left[ 2.437887 \right]} \nonumber \\
+	T^* &=& \frac{k_BT}{\epsilon} \nonumber 
+	\end{eqnarray}
+
+where :math:`d` is the collision diameter, :math:`\mu` is the reduced mass, :math:`\Omega \left( T \right)` is the collision integral, and :math:`\epsilon` is the Lennard-Jones parameter for the depth of the potential.  Note that it is through the collision frequency that the pressure enters the system of equations.
+
+
+Collision Efficiency
+~~~~~~~~~~~~~~~~~~~~
+
+Currently RMG uses a constant collision efficiency of :math:`\beta = 0.38`. In the future a more rigorous formula will be introduced to more accurately capture the temperature dependence of :math:`\beta`.
+
+Microcanonical Rate Constants
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+RMG currently does not have data for individual transition states.  Consequently, it is not possible to calculate the microcanonical rate constants using RRKM theory.  Instead, RMG uses its database of Arrhenius parameters to calculate the microcanonical rate constant using the inverse Laplace transform method.  For more details on the inverse Laplace transform method, please read Forst \cite{Forst} and further references therein.  One benefit of using the inverse Laplace transform method is that all the multiplicative constants will cancel.  Thus, as we will see below in Section \ref{density_of_states}, we do not need to know the rotational constants and symmetry numbers for a molecule.
+
+Given an Arrhenius expression for the high-pressure limit rate constant, the microcanonical rate constant is:
+
+.. math::
+	:nowrap:
+	
+	\begin{eqnarray}
+	k \left( T \right) &=& A e^{-E_a / RT } \nonumber \\
+	k \left( E \right)  &=& \left\{  \begin{array}{ll}  A \dfrac{ \rho \left(E - E_a \right)}{\rho \left(E \right)} & E > E_a \\ 0 &  E \le E_a \end{array} \right. \end{eqnarray}
+
+where :math:`A` is the Arrhenius pre-exponential factor, :math:`E_a` is the Arrhenius activation energy, and :math:`R` is the ideal gas constant.
+
+For modified-Arrhenius equations, the equation above requires some modification.  Specifically, the temperature dependence of the A-factor must be convoluted with the density of states.  This convolution is possible only when the temperature exponent is positive.  For negative temperature exponents, the inverse Laplace transform is not possible.  Instead, the only option is to use an effective A-factor, :math:`A_{eff} = A T^{n}`.  Thus for :math:`n>0`, we have:
+
+.. math::
+	:nowrap:
+	
+	\begin{eqnarray}
+	k \left( T \right) &=& A T^n e^{-E_a / RT } \nonumber \\
+	\phi \left( E \right) &=&  \frac{1}{k_B^n \Gamma \left( n \right) } \int\limits_0^E  \left( E - x \right)^{n-1} \rho \left( x \right) dx \nonumber \\
+	k \left( E \right)  &=& \left\{  \begin{array}{ll}  A \dfrac{ \phi \left(E - E_a \right)}{\rho \left(E \right)} & E > E_a \\ 0 &  E \le E_a \end{array} \right. \nonumber \end{eqnarray}
+
+and for :math:`n<0`, we have:
+
+.. math::
+	:nowrap:
+	
+	\begin{eqnarray}
+	k \left( T \right) &=& A T^n e^{-E_a / RT } \nonumber \\
+	k \left( E \right)  &=& \left\{  \begin{array}{ll}  A_{eff} \dfrac{ \rho \left(E - E_a \right)}{\rho \left(E \right)} & E > E_a \\ 0 &  E \le E_a \end{array} \right. \nonumber \end{eqnarray}
+
+For barrierless reactions, such as radical-radical reactions and radical + O\ :sub:`2` reactions, the activation energy in the Arrhenius expression is often negative.  For these types of reactions, variational transition state theory is required to calculate the microcanonical rate constant; unfortunately, it is impossible for RMG to implement a VTST approach.  Furthermore, because there is no inverse Laplace transform for a positive exponential, The Inverse Laplace method described in the previous two sections must be altered.  At best, RMG has one of two approaches.  In the simplest approach RMG can calculate an effective A-factor from the product of the A-factor and the exponential term:  :math:`A_{eff} = A e^{\left| E_a \right|  /RT}`.  Applying the inverse Laplace transform as before, the microcanonical rate constant will be constant with respect to energy for a standard Arrhenius equation, and it will increase slightly with energy for a modified-Arrhenius equation:
+	
+.. math::
+	:nowrap:
+	
+	\begin{eqnarray}
+	k \left( E \right) = A_{eff}  & & \text{standard Arrhenius} \nonumber \\
+	k \left( E \right) = A_{eff}  \dfrac{ \phi \left(E \right)}{\rho \left(E \right)} & & \text{modified Arrhenius} \nonumber
+	\end{eqnarray}
+
+
+The second method makes use of the fact that the Arrhenius activation energy is relatively small for barrierless reactions (often less than 1 kcal/mol), so it performs a truncated series expansion of the exponential: :math:`e^{\left| E_a \right| \beta} \approx 1 + \left| E_a \right| \beta`.  This approach guarantees that the rate constant will increase with energy.  However, it requires the derivative of the density of states, which must be done numerically.  Applying the inverse Laplace transform to this approach yields:
+	
+.. math::
+	:nowrap:
+	
+	\begin{eqnarray}
+	k \left( E \right) = A  \dfrac{ \rho \left(E \right) + \left|E_a\right|  \frac{ d\rho\left(E\right)}{dE} }{\rho \left(E \right)}  & & \text{standard Arrhenius} \nonumber \\
+	k \left( E \right) = A  \dfrac{ \phi \left(E \right) + \left|E_a\right| \frac{ d\phi\left(E\right)}{dE} }{\rho \left(E \right)}  & & \text{modified Arrhenius} \nonumber
+	\end{eqnarray}
+
+
+
+Density of States Estimation
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+An important quantity to the pressure dependence calculation is the density of states: the number of quantum states per unit energy.  In the master equation, we are interested in the density of states for the active degrees of freedom.  The active degrees of freedom are those degrees of freedom in which the energy of the excited species can be randomized; within RMG, they include the rigid-rotor harmonic-oscillator (RRHO) vibrational frequencies, hindered internal rotors (HR), and the unique one-dimensional external rotation of the molecule (i.e. the K-rotor for a symmetric top approximation).  The translational degrees of freedom and the two degenerate external rotational degrees of freedom are inactive.  Furthermore, RMG assumes that each of these modes is independent.  Thus, just as the partition function for two independent modes is the product of the individual partition functions, the density of states for two independent modes is the convolution integral of the respective density of states:
+
+.. math::
+	:nowrap:
+	
+	\begin{eqnarray}
+	Q_{AB} \left( T \right) &=& Q_A \left( T \right) Q_B \left( T \right) \nonumber \\
+	\rho_{AB} \left(E\right) &=& \mathcal{L}^{-1} \left\{ Q_1 Q_2 \right\} \nonumber \\
+	&=& \int_0^E \rho_A\left( E - x \right) \rho_B \left( x \right) dx \label{convo}
+	\end{eqnarray}
+
+To calculate the density of states, RMG assumes that each molecule may be approximated as a symmetric top, which implies that the non-degenerate rotational mode is an active degree of freedom.  The density of states for this one-dimensional rotor is:
+
+.. math::
+	:nowrap:
+	
+	\begin{eqnarray}
+	\rho_r \left( E \right)  &=& \frac{1}{\sigma} \left( \frac{1}{BE} \right)^{1/2} \label{K_rotor}
+	\end{eqnarray}
+
+where :math:`\sigma` is the rotational symmetry number, and :math:`B` is the rotational constant.  As noted above in the section on microcanonical rate constants, these parameters do not matter, since they will cancel in the inverse Laplace transform method. For internal rotors, the density of states is more complicated, and the calculation method is described as follows.  For simplicity, it is assumed that the potential for internal rotation may be approximated by a single cosine:
+
+.. math::
+	:nowrap:
+
+	\begin{eqnarray}
+	V \left( \theta ; \sigma \right) &=& \frac{1}{2} V_0 \left[ 1 - \cos \left( \sigma \theta \right) \right] \nonumber
+	\end{eqnarray}
+
+where :math:`V_0` is the barrier height, :math:`\theta` is the dihedral angle, and :math:`\sigma` is the number of potential minima (e.g. 3 for a methyl group).  The classical partition function for a hindered rotor is:
+
+.. math::
+	:nowrap:
+
+	\begin{eqnarray}
+	Q_{\text{HR}_{\text{classical}}} &=& \frac{1}{h^2} \int \int e^{-H / k_B T } dq dp \nonumber \\
+	&=& \left( \frac{ \pi k_B T }{\sigma^2 B_r} \right)^2 e^{- V_0 / 2 k_B T} I_0 \left( \frac{V_0}{2 k_B T} \right) \nonumber
+	\end{eqnarray}
+
+where :math:`B_r \equiv 8 \pi^2 h^2 / I_r`, :math:`h` is Planck's constant, :math:`I_r` is the reduced moment of inertia, and :math:`I_0` is the modified Bessel function of the first kind.  The semi-classical approximation for the hindered rotor partition function is classical hindered-rotor partition function multiplied by the ratio of the quantum partition function and the classical partition function for a harmonic oscillator:
+
+.. math::
+	:nowrap:
+
+	\begin{eqnarray}
+	Q_{\text{HR}_{\text{semi}}} &=& Q_{\text{HR}_{\text{classical}}} \frac{ Q_{\text{RRHO}_{\text{quantum}}} }{Q_{\text{RRHO}_{\text{classical}}} } \nonumber \\
+	&=& \left( \frac{ \pi k_B T }{\sigma^2 B} \right)^2 e^{- V_0 / 2 k_B T} I_0 \left( \frac{V_0}{2 k_B T} \right) \frac{ \frac{e^{- \nu / 2 k_B T} }{ 1 - e^{- \nu / k_B T} } }{ \frac{k_B T}{ \nu} } \label{Q_HR}
+	\end{eqnarray}
+
+where the frequency :math:`\nu` is the harmonic oscillator frequency approximation to the bottom of the potential well, and :math:`k_B` is Boltzmann's constant.  According to Knyazev [Knyazev1994]_, the inverse Laplace transform for the hindered rotor partition function is:
+
+.. math::
+	:nowrap:
+
+	\begin{eqnarray}
+	\rho_{\text{HR}_{\text{semi}}} \left( E \right) &=& \left\{ \begin{array}{ll}
+	\dfrac{ 2 \mathbf{K} \left( \sqrt{E / V_0} \right)}{\pi \sigma \sqrt{B_r V_0} } & \text{ for } E < V_0 \nonumber \\
+	\dfrac{ 2 \mathbf{K} \left( \sqrt{V_0 / E} \right)}{\pi \sigma \sqrt{B_r E} } &  \text{ for }  E > V_0  \nonumber
+	\end{array} \right. \label{rho_hr}
+	\end{eqnarray}
+
+where :math:`\mathbf{K}` is the complete elliptical integral of the first kind.  The equation above is calculated for each hindered rotor.  If a molecule has more than one hindered rotor, then the total density of states for hindered rotors is obtained by successively applying the convolution integral.  The density of states for internal rotors and active external rotation is calculated by convoluting the density of states for the active K-rotor with the density of states for all the hindered rotors:
+
+.. math::
+	:nowrap:
+
+	\begin{eqnarray}
+	\rho_{r,HR_{\text{total}}} \left(E\right) &=& \int_0^E \rho_r \left( E - x \right) \rho_{\text{HR}_{\text{total}}} \left( x \right) dx \label{rho_r_hr}
+	\end{eqnarray}
+
+Finally, following the method of Astholz [Astholz1979] [Gilbert1996], we initialize the Beyer-Swinehart algorithm [Beyer1973] with the K-rotor/hindered-rotor density of states.  This algorithm convolutes this with the vibrational modes.  The result is the density of states for all the active degrees of freedom, :math:`\rho \left( E \right)`.
+
+Frequencies and  Barrier Heights
+--------------------------------
+
+To summarize everything up to this point:  Our objective is to calculate pressure dependent rate constants for chemically-activated reactions.  To calculate these rate constants, we must solve the master equation.  In order to solve this system of equations, we need the micro-canonical rate constants for the association, isomerization, and dissociation channels.  These rate constants, in turn, require the density of states for the adducts.  Last but not least, the density of states requires detailed information about the rigid-rotor harmonic-oscillator frequencies as well as hindered rotors parameters.  Normally, these physical parameters would be determined from a 3D model of the molecule.
+
+Unfortunately, RMG does not have access to 3D structure models at this time (although we are working on it).  The current version of RMG represents each molecule solely by its connectivity.  The connectivity diagram for each species is used to calculate the heat capacity at seven temperatures (300, 400, 500, 600, 800, 1000, 1500 K), based upon the group additivity theories developed by Benson [Benson1976]_.
+
+Since the heat capacity is a function of the vibrational and rotational modes, it is possible, in theory, to determine the frequencies and barrier heights from the heat capacity.  In practice, however, this is almost never possible, since the number of unknown vibrational/torsional parameters (\ :math:`3N-6`\ ) will most likely exceed the number of :math:`C_p` values (7).  Consequently, some approximations must be made.  The remainder of this section describes the subroutine that RMG uses to estimate the unknown parameters.
+
+RMG uses a two-step process to estimate the vibrational frequencies and hindered rotor barrier heights.  In the first step, the subroutine will examine the structure of the molecule to determine the types of groups present; it will then use this information to predict most of the vibrational frequencies.  In the second step, the subroutine examines the heat capacity as a function of temperature to determine the barriers to internal rotation and the remaining vibrational frequencies.
+
+Estimating the vibrational frequencies based on the group type
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+What is meant by “group type” is unique to this subroutine.  In principle, however, it is similar to functional groups.  Thus, methyl groups are one group type, as are ethers, peroxides, branched and straight-chain alkyl backbones, etc.  For each type of group, we have compiled a list of corresponding vibrational modes.  To take methyl groups (R-CH3) as an example, there are nine frequencies that are common to methyl groups:  3 C-H stretches, 2 R-C-H bending modes, 2 R-C-H rocking modes, 1 R-C stretch, and 1 umbrella mode.  Each of these modes has an upper and lower limit (for example, the C-H stretch in methyl groups is typically confined between 2750 and 2850 cm\ :sup:`-1`).
+
+For a non-linear molecule with N atoms and R internal rotors, there will be 3N-6-R vibrational modes. The objective of the first part of the subroutine is to determine as many of these RRHO frequencies as possible, as accurately as possible, without determining too many.  If the code determines fewer than 3N-6-R modes, that is ok, because they will be estimated in the second section of the code.  If, however, the code determines more than 3N-6-R modes, there is a serious problem.  To avoid this complication, we have limited the number of modes attributed to each group type so that this situation can never arise.
+
+For each group type, we count both the number of atoms in that group as well as the number of single bonds between heavy atoms in that group (since each of these bonds may contribute one internal rotor).  Thus, we limit the number of modes for each group to 3 :math:`\times` (Number of atoms in group) - (number of single bonds between heavy atoms in group) - 6.  This approach guarantees that the number of RRHO modes is less than 3N-6-R.  By using this method, the first section of the code will predict almost all of the RRHO modes. 
+
+Estimating the vibrational frequencies based on the heat capacity 
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+The second part of the subroutine uses the heat capacity to determine both the remaining unknown vibrational modes as well as the barrier heights of any hindered internal rotors.  Using Benson-type group additivity formulas, RMG will calculate the heat capacity for the molecule at seven temperatures.  At each temperature, the heat capacity can be separated into the contributions from external translation, external rotation, rigid-rotor harmonic-oscillator frequencies (RRHO), and hindered internal rotation (HR):
+
+.. math::
+	:nowrap:
+
+	\begin{eqnarray}
+	C_V^{\text{total}}  &=& C_V^{\text{translation}} + C_V^{\text{rotation}} + \sum_{j = 1}^{3N-6-N_{\text{rotors}}} C_V^{\text{RRHO}}  + \sum_{j = 1}^{N_{\text{rotors}}} C_V^{\text{HR}} \nonumber
+	\end{eqnarray}
+
+The first part of the subroutine should estimate some of the RRHO vibrational frequencies, call it :math:`N_{estimated}`.  The contribution of the estimated frequencies, as well as the contributions from the external translation and rotation, are subtracted from the total heat capacity.  What remains is the heat capacity due to the unknown degrees of freedom (udof): 
+
+.. math::
+	:nowrap:
+
+	\begin{eqnarray}
+	C_V^{\text{udof}} &=&  C_V^{\text{total}} - C_V^{\text{translation}} - C_V^{\text{rotation}} - \sum_{j = 1}^{N_{\text{estimated}}} C_V^{\text{RRHO}} \nonumber \\
+	&=& \sum_{j = 1}^{ N_{\text{remaining}} } C_V^{\text{RRHO}} + \sum_{j = 1}^{N_{\text{rotors}}} C_V^{\text{HR}} \label{CV_udof}
+	\end{eqnarray}
+
+where :math:`N_{\text{remaining}} \equiv 3N-6-N_{\text{rotors}} - N_{\text{estimated}}`.  The formula for the heat capacity for the :math:`i^{th}` rigid-rotor harmonic-oscillator frequency can be found in any text on statistical mechanics [McQuarrie1973]_ [Hill1986]_:
+
+.. math::
+	:nowrap:
+
+	\begin{eqnarray}
+	\frac{C_V^{\text{RRHO}}\left( T; \nu_i \right) }{R} &=& e^{ \nu_i / k_B T} \left( \frac{ \nu_i / k_B T}{ e^{ \nu_i / k_B T} - 1} \right)^2 \label{CV_RRHO}
+	\end{eqnarray}
+
+where :math:`\nu_i` is the vibrational frequency for the :math:`i^{th}` mode.
+
+As we saw in the density of states section, the approximation used for the heat capacity of a hindered internal rotor is more complicated.  Recall the semi-classical partition function for a hindered rotor:
+
+.. math::
+	:nowrap:
+
+	\begin{eqnarray}
+	Q_{\text{HR}_{\text{semi}}} &=& \left( \frac{ \pi k_B T }{\sigma^2 B} \right)^2 e^{- V_0 / 2 k_B T} I_0 \left( \frac{V_0}{2 k_B T} \right) \frac{ \frac{e^{- \nu / 2 k_B T} }{ 1 - e^{- \nu / k_B T} } }{ \frac{k_B T}{ \nu} } \nonumber \\
+	&=&  \left( \frac{V_0 \pi}{2\sigma^2 B} \right)^{1/2} u^{1/2} e^{-u} I_0 \left(u\right) \frac{e^{-\alpha u }}{1 - e^{-2 \alpha u}} 2 \alpha \nonumber 
+	\end{eqnarray}
+
+where :math:`u \equiv V_0 / 2 k_B T`, and :math:`\alpha \equiv  \nu / V_0`.  The frequency :math:`\nu` is the harmonic oscillator frequency approximation to the bottom of the potential well.  The heat capacity for this partition function is:
+
+.. math::
+	:nowrap:
+
+	\begin{align}
+	\frac{C_V^{\text{HR}}\left( T; V_0, \nu \right)}{R} &= \frac{d}{d T} \left( T^2 \frac{d \ln Q_{\text{HR}}}{dT} \right) \nonumber \\
+	&= u^2 \frac{d^2 \ln Q_{\text{HR}}}{d u^2} \nonumber \\
+	&= -\frac{1}{2} + u \left[ u - \frac{ I_1\left(u\right) }{ I_0\left(u\right) } - u \left(  \frac{ I_1\left(u\right) }{ I_0\left(u\right) }\right)^2 \right] + \left( \frac{2 u \alpha e^{- \alpha u} }{1 - e^{-2\alpha u}} \right)^2 \nonumber \\
+	&= -\frac{1}{2} + \frac{V_0}{2 k_B T} \left[ \frac{V_0}{2 k_B T} - \frac{ I_1\left(\frac{V_0}{2 k_B T}\right) }{ I_0\left(\frac{V_0}{2 k_B T}\right) } - \frac{V_0}{2 k_B T} \left(  \frac{ I_1\left(\frac{V_0}{2 k_B T}\right) }{ I_0\left(\frac{V_0}{2 k_B T}\right) }\right)^2 \right] + \left( \frac{\frac{ \nu}{k_B T} e^{- \frac{ \nu}{2 k_B T}} }{1 - e^{-\frac{ \nu }{ k_B T}}} \right)^2 \label{CV_HR}
+	\end{align}
+
+Fortunately, both the symmetry number :math:`\sigma` and the reduced moment of inertia :math:`I_r` do no appear in the expression for the heat capacity.  What remains is the barrier height, :math:`V_0`, and the frequency, :math:`\nu`.  The heat capacity for the unknown degrees of freedom may now be written as:
+
+.. math::
+	:nowrap:
+
+	\begin{eqnarray}
+	C_V^{\text{udof}}\left( T \right) &=& \sum_{i = 1}^{ N_{\text{remaining}} } C_V^{\text{RRHO}}\left( T; \nu_i \right)   + \sum_{j = 1}^{N_{\text{rotors}}} C_V^{\text{HR}}\left( T; V_{0,j}, \nu_j \right) \nonumber
+	\end{eqnarray}
+
+Unfortunately, even if the first part of the subroutine is successful in determining most of the vibrational modes, it is unlikely that it will determine all of them.  Furthermore, since there are only seven heat capacity data, it is  unlikely that all of the remaining parameters can be determined by the second part of the subroutine.  In many cases, either the rigid-rotor harmonic-oscillator frequencies or the hindered rotors (and in some cases both) must be lumped into a single pseudo-frequency or pseudo hindered rotor, respectively:
+
+.. math::
+	:nowrap:
+
+	\begin{eqnarray}
+	\sum_{i = 1}^{N} C_V^{\text{RRHO}}\left( T; \nu_i \right) &\to& N C_V^{\text{RRHO}}\left( T; \nu \right) \nonumber \\
+	\sum_{j = 1}^{N} C_V^{\text{HR}}\left( T; V_{0,j}, \nu_j \right) &\to& N C_V^{\text{HR}}\left( T; V_{0}, \nu \right) \nonumber 
+	\end{eqnarray}
+
+Depending upon the exact number of unknown frequencies and rotors, the code will call 26 possible fitting subroutines.  In order to make the resulting parameters as realistic as possible, there must be physically meaningful constraints.  Thus, the RRHO frequencies are bound between 400 and 4000 cm\ :sub:`-1`.  The HR parameters are less constrained:  the low-temperature frequency is bound between 40 and 600 cm\ :sub:`-1`, and the barrier height is bound between 10 and 10000 cm\ :sub:`-1`.  The fitting procedure is a bounded, constrained least squares fit for a system of highly nonlinear equations, which is a difficult problem to solve.  To accomplish this fitting, we use the publicly available code DQED [DQED]_ [DQED90]_.
+
+
+
+.. [Gilbert1990] \ R. G. Gilbert and S. C. Smith. *Theory of Unimolecular and Recombination Reactions.* First Edition. Oxford, England: Blackwell Scientific (1990).
+   
+.. [Holbrook1996] \ K. A. Holbrook, M. J. Pilling, and S. H. Robertson. *Unimolecular Reactions.* Second Edition. Chichester, England: John Wiley and Sons (1996).
+
+.. [Forst2003] \ W. Forst. *Unimolecular Reactions:  A Concise Introduction.* First Edition. Cambridge, England: Cambridge University Press (2003).
+
+.. [VariFlex] \ S. J. Klippenstein, A. F. Wagner, R. C. Dunbar, D. M. Wardlaw, and J. A. Miller. *VariFlex*. Sandia National Laboratory (2002).
+
+.. [MultiWell] \ J. R. Barker, N. F. Ortiz, J. M. Preses, L. L. Lohr, A. Maranzana, and P. J. Stimac. "MultiWell-2008.3 Software." University of Michigan. http://aoss.engin.umich.edu/multiwell/ (2002).
+
+.. [Barker2001] \ J. R. Barker. "Multiple-well, multiple-path unimolecular reaction systems. I.  MultiWell computer program suite." *Int. J. Chem. Kin.* **33** (4), p. 232-245 (2001).
+
+.. [CHEMDIS] \ A. Y. Chang and J. W. Bozzelli and A. M. Dean. "Kinetic analysis of complex chemical activation and unimolecular dissociation reactions using QRRK theory and the modified strong collision approximation." *Z. Phys. Chem.* **214** (11), p. 1533-1568 (2000).
+
+.. [Knyazev1994] \ V. D. Knyazev, I. A. Dubinsky, I. R. Slagle, and D. Gutman. "Unimolecular Decomposition of t-C4H9 Radical." *J. Phys. Chem.* **98** (20), p. 5279-5289 (1994).
+
+.. [Benson1976] \ S. W. Benson. *Thermochemical Kinetics:  Methods for the Estimation of Thermochemical Data and Rate Parameters.* First Edition. New York, NY: John Wiley and Sons (1976).
+
+.. [McQuarrie1973] \ D. A. McQuarrie. *Statistical Thermodynamics.* First Edition. New York, NY: Harper & Row (1973).
+
+.. [Hill1986] \ T. L. Hill. *An Introduction to Statistical Thermodynamics.* Second Edition. New York, NY: Dover (1986).
+
+.. [DQED] \ R. Hanson and F. Krogh. *DQED*. Sandia National Laboratory. http://www.netlib.org/opt/dqed.f.
+
+.. [DQED90] \ J. Burkardt. *DQED FORTRAN90*. Florida State University. http://people.sc.fsu.edu/~burkardt/f_src/dqed/dqed.html.
+
+.. [Astholz1979] \ D. C. Astholz, J. Troe, and W. Wieters. "Unimolecular processes in vibrationally highly excited cycloheptatrienes.  I.  Thermal isomerization in shock waves." *J. Phys. Chem.* **70** (11), p. 5107-5166 (1979).
+
+.. [Beyer1973] \ T. Beyer and D.F. Swinehart. "Number of multiply-restricted partitions." *Comm. ACM* **16** (6), p. 379-379 (1973).

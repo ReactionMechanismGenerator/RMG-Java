@@ -1,0 +1,91 @@
+.. _introduction:
+
+*******************
+Introduction to RMG
+*******************
+
+RMG is an automatic chemical reaction mechanism generator that constructs 
+kinetic models composed of elementary chemical reaction steps using a general understanding of how molecules react. The model parameters (rate constants 
+and reaction thermodynamics) are estimated using a database and the idea that the 
+behavior of functional groups is somewhat independent of the molecule(s) containing them. The RMG database consists of two parts: kinetic rate rules and 
+thermodynamic group additivity values. 
+
+RMG is an object-oriented program written in Java, which provides a stable, 
+robust programming architecture that is easily extended, modified, and improved. 
+At its core, RMG relies on two fundamental data structures: graphs and trees. The 
+graphs represent the chemical structures, and the trees represent the databases of 
+thermodynamic and kinetic data. Currently, RMG can generate reaction mechanisms for species involving carbon, hydrogen, and oxygen, and its mechanisms 
+can contain many hundreds of species and tens of thousands of reactions. It is 
+also capable of performing first-order sensitivity analysis on the rate constants 
+and species thermodynamics. 
+
+RMG was originally developed by Dr. Jing Song under the guidance of Prof. William 
+Green in the Department of Chemical Engineering at the `Massachusetts Institute 
+of Technology <http://web.mit.edu/>`_. Currently there are several members of the Green group contributing to RMG's ongoing development. A full list of past and present RMG developers can be found on the :ref:`credits` page.
+
+Changes
+-------
+Changes made in RMG 3.1 include the following:
+
+- :ref:`PrimaryReactionLibrary <primaryreactionlibrary>` and :ref:`PrimaryThermoLibrary <primarythermolibrary>`  now both behave as reference libraries from which data are taken (in preference to group additivity estimates), when and if the data are needed.
+
+- :ref:`Seed Mechanism <seedmechanism>` allows the mechanism building to start from a seed mechanism, which is included in its entirety before the simulation starts. (This is how :ref:`PrimaryReactionLibrary <primaryreactionlibrary>` behaved in previous releases.)
+
+- New databases: GRIMech 3.0 and PrIMe-recommended thermodynamic values are included
+
+- Support for Chemkin's P-Log format for :ref:`k(T,P) reporting <pressuredependence>`  (in addition to Chebyshev format).
+
+- Added additional options for the input file, including:
+
+    - User-specified limits for number of carbon / oxygen / radical per species
+ 
+    - User-specified Chebyshev fitting options
+
+- Changed many dependent Fortran codes to use standard input and output, rather than writing temporary files to disk.
+
+- Reduced run-to-run variations by standardizing the order of averaging of values in the kinetics trees.
+
+Bug Fixes:
+
+- Corrected inconsistencies in edge flux evaluation for pressure-dependent reactions.
+
+- Corrected an error in inert gas normalization for runs with multiple temperatures/pressures
+
+- Fixed DASPK interface
+
+- Fixed bugs in peroxide (ROOR) frequency estimation
+
+- Fixed a bug in the gauche correction database for alkenes
+
+- Fixed issues with duplicate reactions and with Chebyshev fitting in writing CHEMKIN input files
+
+- More frequent garbage collection
+
+
+Changes made in RMG 3.0 include the following:
+
+New features:
+
+- Pressure-dependent reaction network generation
+
+- InChI generation
+
+- Graphical user interface for input file generation
+
+- Generation of reaction mechanisms for multiple reaction conditions (T,P)
+
+- Automatic time stepping option
+
+- Updated RMG Viewer and Editor (including database editing tools)
+
+Functionality changes:
+
+- On the first step of mechanism generation, only one species is added, rather than adding all edge species
+
+- Thermodynamics estimates for non-cyclic species incorporate certain steric effects (1,5-interactions and gauche interactions)
+
+Bug fixes:
+
+- Fixed bug in symmetry number generation (previously could be underestimated in certain cases)
+
+- Fixed differential equations to correctly treat cases where total number of moles changes

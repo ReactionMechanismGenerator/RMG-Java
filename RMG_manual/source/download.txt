@@ -1,0 +1,19 @@
+.. _download:
+
+********
+Download
+********
+
+For RMG 3.0, a number of different packages are available.
+
+* Binary package for Linux (i386 only)
+* Source package compatible across all platforms
+* Binary package for Windows (32-bit only)
+* Installer for Windows (32-bit only)
+
+To download them please visit the 
+`Sourceforge download page <http://sourceforge.net/project/showfiles.php?group_id=191843&package_id=225575>`_.
+
+For help installing them, please refer to the :ref:`installation` section of the documentation.
+
+
