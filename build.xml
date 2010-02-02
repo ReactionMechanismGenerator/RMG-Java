@@ -1,14 +1,26 @@
+<!-- ANT build script for RMG -->
 <project name="RMG">
+
     <target name="compile">
-        <javac srcdir="." destdir="."/>
+        <javac srcdir="source/RMG/" destdir="build/RMG/" optimize="true" />
     </target>
     
-    <target name="clean" description="delete all compiled classes">
+    <target name="jar" depends="compile">
+        <jar destfile="bin/RMG.jar" basedir="build/RMG/">
+            <manifest>
+                <attribute name="Main-Class" value="RMG"/>
+            </manifest>
+        </jar>
+    </target>
+
+	<target name="clean" description="delete all compiled classes">
         <delete>
             <fileset dir=".">
-                <include name="**/*.class"/>
-                <include name="*.class"/>
+                <include name="build/RMG/**/*.class"/>
+                <include name="build/RMG/*.class"/>
+                <include name="bin/RMG.jar"/>
             </fileset>
         </delete>
     </target>
+    
 </project>
