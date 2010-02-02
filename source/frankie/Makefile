@@ -1,44 +1,41 @@
-# ==============================================================================
+################################################################################
 #
-# 	Makefile for masterEqn
+#	Makefile for fame
 #
-# ==============================================================================
+################################################################################
 
-# PARAMETERS
-# ----------
+# The directory in which the source files can be found
+$SOURCEDIR=.
 
-# Name of compiler
-FORTRAN = g95
+# The directory in which to place temporary compiled files
+$BUILDDIR=../../build/frankie
 
-# Name of executable
-BIN = frankie.exe
+# The directory in which to place compiled executables and JAR files
+$BINDIR=../../bin
 
-# List of object files in project
-OBJ = dqed.o calc_freq_code.o 
+# The Fortran 90 compiler to use and flags to use when compiling Fortran 90 
+# code
+F90=g95
+F90FLAGS=
 
-# Compiler flags
-CFLAGS = -ftrace=full -fbounds-check -Wall
+LDFLAGS=-lpthread
 
-# Linker flags
-LFLAGS = -L/usr/lib -lpthread
+OBJ=dqed.o calc_freq_code.o
 
-# ==============================================================================
+OBJ=$(patsubst %.o,$(BUILDDIR)/%.o,$(OBJ))
 
-# RULES
-# -----
+################################################################################
 
-# "all" rule
-all: $(BIN)
+$(BINDIR)/frankie.exe: dirs $(OBJ)  
+	$(F90) $(LDFLAGS) $(OBJ) -o $(BINDIR)/frankie.exe
 
-# "clean" rule
-clean: 
-	rm -rf $(OBJ) $(BIN) *.mod
+dirs:
+	mkdir -p $(BUILDDIR)
+	mkdir -p $(BINDIR)
 
-# Linker rule
-$(BIN): $(OBJ)
-	$(FORTRAN) $(OBJ) -o $(BIN) $(LFLAGS)
-	cp $(BIN) $(RMG)/software/frankie/ 
+$(BUILDDIR)/%.o: %.f90
+	$(F90) $(F90FLAGS) -c $< -o $@
 
-# Compiler rule
-%.o: %.f90
-	$(FORTRAN) $(CFLAGS) -c $< -o $@
+clean:
+	rm -rf $(BUILDDIR)
+	rm -rf $(BINDIR)

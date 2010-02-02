@@ -5,18 +5,18 @@
 ################################################################################
 
 # The directory in which the source files can be found
-$SOURCEDIR = source
+$SOURCEDIR=source
 
 # The directory in which to place temporary compiled files
-$BUILDDIR = build
+$BUILDDIR=build
 
 # The directory in which to place compiled executables and JAR files
-$BINDIR = bin
+$BINDIR=bin
 
 # The Fortran 90 compiler to use and flags to use when compiling Fortran 90 
 # code
-F90 = g95
-F90FLAGS = -fbounds-check -Wall
+F90=g95
+F90FLAGS=-fbounds-check -ftrace=full -Wall
 
 ################################################################################
 
@@ -43,30 +43,30 @@ $(BINDIR)/RMG.jar:
 	ant jar
 
 $(BINDIR)/fame.exe:
-	make -C $(SOURCEDIR)/fame
+	make -C $(SOURCEDIR)/fame SOURCEDIR=$(SOURCEDIR)/fame BUILDDIR=$(BUILDDIR)/fame BINDIR=$(BINDIR) F90=$(F90) F90FLAGS=$(F90FLAGS)
 
 $(BINDIR)/frankie.exe:
-	make -C $(SOURCEDIR)/frankie
+	make -C $(SOURCEDIR)/frankie SOURCEDIR=$(SOURCEDIR)/frankie BUILDDIR=$(BUILDDIR)/frankie BINDIR=$(BINDIR) F90=$(F90) F90FLAGS=$(F90FLAGS)
 
 $(BINDIR)/dasslAUTO.exe:
-	make -C $(SOURCEDIR)/dassl
+	make -C $(SOURCEDIR)/dassl SOURCEDIR=$(SOURCEDIR)/dassl BUILDDIR=$(BUILDDIR)/dassl BINDIR=$(BINDIR) F90=$(F90) F90FLAGS=$(F90FLAGS)
 
 $(BINDIR)/daspkAUTO.exe:
-	make -C $(SOURCEDIR)/daspk
+	make -C $(SOURCEDIR)/daspk SOURCEDIR=$(SOURCEDIR)/daspk BUILDDIR=$(BUILDDIR)/daspk BINDIR=$(BINDIR) F90=$(F90) F90FLAGS=$(F90FLAGS)
 
 $(BINDIR)/GATPFit.exe:
-	make -C $(SOURCEDIR)/GATPFit
+	make -C $(SOURCEDIR)/GATPFit SOURCEDIR=$(SOURCEDIR)/GATPFit BUILDDIR=$(BUILDDIR)/GATPFit BINDIR=$(BINDIR) F90=$(F90) F90FLAGS=$(F90FLAGS)
 
 dirs:
 	mkdir -p $(BUILDDIR)
 	mkdir -p $(BINDIR)
 
 clean:
-	make -C $(SOURCEDIR)/fame clean
-	make -C $(SOURCEDIR)/frankie clean
-	make -C $(SOURCEDIR)/dassl clean
-	make -C $(SOURCEDIR)/daspk clean
-	make -C $(SOURCEDIR)/GATPFit clean
+	make -C $(SOURCEDIR)/fame clean SOURCEDIR=$(SOURCEDIR)/fame BUILDDIR=$(BUILDDIR)/fame BINDIR=$(BINDIR) 
+	make -C $(SOURCEDIR)/frankie clean SOURCEDIR=$(SOURCEDIR)/frankie BUILDDIR=$(BUILDDIR)/frankie BINDIR=$(BINDIR) 
+	make -C $(SOURCEDIR)/dassl clean SOURCEDIR=$(SOURCEDIR)/dassl BUILDDIR=$(BUILDDIR)/dassl BINDIR=$(BINDIR) 
+	make -C $(SOURCEDIR)/daspk clean SOURCEDIR=$(SOURCEDIR)/daspk BUILDDIR=$(BUILDDIR)/daspk BINDIR=$(BINDIR) 
+	make -C $(SOURCEDIR)/GATPFit clean SOURCEDIR=$(SOURCEDIR)/GATPFit BUILDDIR=$(BUILDDIR)/GATPFit BINDIR=$(BINDIR) 
 	ant clean
 	rm -rf $(BUILDDIR)
 	rm -rf $(BINDIR)
