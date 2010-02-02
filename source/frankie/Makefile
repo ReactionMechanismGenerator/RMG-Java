@@ -5,13 +5,13 @@
 ################################################################################
 
 # The directory in which the source files can be found
-$SOURCEDIR=.
+SOURCEDIR=.
 
 # The directory in which to place temporary compiled files
-$BUILDDIR=../../build/frankie
+BUILDDIR=../../build/frankie
 
 # The directory in which to place compiled executables and JAR files
-$BINDIR=../../bin
+BINDIR=../../bin
 
 # The Fortran 90 compiler to use and flags to use when compiling Fortran 90 
 # code
@@ -20,9 +20,9 @@ F90FLAGS=
 
 LDFLAGS=-lpthread
 
-OBJ=dqed.o calc_freq_code.o
+OBJ0=dqed.o calc_freq_code.o
 
-OBJ=$(patsubst %.o,$(BUILDDIR)/%.o,$(OBJ))
+OBJ=$(patsubst %.o,$(BUILDDIR)/%.o,$(OBJ0))
 
 ################################################################################
 

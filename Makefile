@@ -5,18 +5,18 @@
 ################################################################################
 
 # The directory in which the source files can be found
-$SOURCEDIR=source
+SOURCEDIR=$(CURDIR)/source
 
 # The directory in which to place temporary compiled files
-$BUILDDIR=build
+BUILDDIR=$(CURDIR)/build
 
 # The directory in which to place compiled executables and JAR files
-$BINDIR=bin
+BINDIR=$(CURDIR)/bin
 
 # The Fortran 90 compiler to use and flags to use when compiling Fortran 90 
 # code
 F90=g95
-F90FLAGS=-fbounds-check -ftrace=full -Wall
+F90FLAGS=-fbounds-check -ftrace=full -fmod=$(BUILDDIR) -Wall
 
 ################################################################################
 
@@ -39,23 +39,24 @@ daspk: dirs $(BINDIR)/daspkAUTO.exe
 GATPFit: dirs $(BINDIR)/GATPFit.exe
 
 $(BINDIR)/RMG.jar:
+	mkdir -p $(BUILDDIR)/RMG
 	ant compile
 	ant jar
 
 $(BINDIR)/fame.exe:
-	make -C $(SOURCEDIR)/fame SOURCEDIR=$(SOURCEDIR)/fame BUILDDIR=$(BUILDDIR)/fame BINDIR=$(BINDIR) F90=$(F90) F90FLAGS=$(F90FLAGS)
+	make -C $(SOURCEDIR)/fame SOURCEDIR=$(SOURCEDIR)/fame BUILDDIR=$(BUILDDIR)/fame BINDIR=$(BINDIR) F90=$(F90) F90FLAGS="$(F90FLAGS)"
 
 $(BINDIR)/frankie.exe:
-	make -C $(SOURCEDIR)/frankie SOURCEDIR=$(SOURCEDIR)/frankie BUILDDIR=$(BUILDDIR)/frankie BINDIR=$(BINDIR) F90=$(F90) F90FLAGS=$(F90FLAGS)
+	make -C $(SOURCEDIR)/frankie SOURCEDIR=$(SOURCEDIR)/frankie BUILDDIR=$(BUILDDIR)/frankie BINDIR=$(BINDIR) F90=$(F90) F90FLAGS="$(F90FLAGS)"
 
 $(BINDIR)/dasslAUTO.exe:
-	make -C $(SOURCEDIR)/dassl SOURCEDIR=$(SOURCEDIR)/dassl BUILDDIR=$(BUILDDIR)/dassl BINDIR=$(BINDIR) F90=$(F90) F90FLAGS=$(F90FLAGS)
+	make -C $(SOURCEDIR)/dassl SOURCEDIR=$(SOURCEDIR)/dassl BUILDDIR=$(BUILDDIR)/dassl BINDIR=$(BINDIR) F90=$(F90) F90FLAGS="$(F90FLAGS)"
 
 $(BINDIR)/daspkAUTO.exe:
-	make -C $(SOURCEDIR)/daspk SOURCEDIR=$(SOURCEDIR)/daspk BUILDDIR=$(BUILDDIR)/daspk BINDIR=$(BINDIR) F90=$(F90) F90FLAGS=$(F90FLAGS)
+	make -C $(SOURCEDIR)/daspk SOURCEDIR=$(SOURCEDIR)/daspk BUILDDIR=$(BUILDDIR)/daspk BINDIR=$(BINDIR) F90=$(F90) F90FLAGS="$(F90FLAGS)"
 
 $(BINDIR)/GATPFit.exe:
-	make -C $(SOURCEDIR)/GATPFit SOURCEDIR=$(SOURCEDIR)/GATPFit BUILDDIR=$(BUILDDIR)/GATPFit BINDIR=$(BINDIR) F90=$(F90) F90FLAGS=$(F90FLAGS)
+	make -C $(SOURCEDIR)/GATPFit SOURCEDIR=$(SOURCEDIR)/GATPFit BUILDDIR=$(BUILDDIR)/GATPFit BINDIR=$(BINDIR) F90=$(F90) F90FLAGS="$(F90FLAGS)"
 
 dirs:
 	mkdir -p $(BUILDDIR)
