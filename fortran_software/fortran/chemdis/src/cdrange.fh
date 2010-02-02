@@ -1,0 +1,21 @@
+c    range common block for chemdis
+      integer nTemps,nPres
+      real*8 temp(mxTPts),pres(mxTPts,mxPPts), rminmult   
+      common /range/Temp,pres,nTemps,nPres, rminmult
+      
+
+
+c $Id$
+c $Author$
+c $Date$
+c $Revision$
+c $Log$
+c Revision 1.1  2007-02-20 23:10:23  sandeeps
+c Initial revision
+c
+c Revision 1.2  2000/07/07 01:03:56  dmmatheu
+c Tom's change ... rminmult (?)
+c
+c Revision 1.1  2000/07/07 01:02:15  dmmatheu
+c Initial revision
+c

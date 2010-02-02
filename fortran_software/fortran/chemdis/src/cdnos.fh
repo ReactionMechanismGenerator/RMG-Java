@@ -1,0 +1,65 @@
+c***********************************************************************
+c dmm 20000310    
+c     This header file should be preceded by cdparams.fh and straightBS
+c     .fh It gives
+c     common blocks and parameters for calculating the number of states,
+c     via the BS approach, and substituted into rhoOfN calculations.
+c
+c     pfflag:  when on, xNOS is being used to evaluate a partition
+c     function, so disregard the width warning in genRhos.f (that the
+c     width of the QRRK/MSC calc is on the order of bsgs)
+c
+c     bsgs:  modified Beyer Sweinhart alg. grain size.  Read in by
+c     cdgets.f, in cm-1.  Default = 10cm-1.
+c
+c     maxBSindex:  maximum index of the density of states vector,
+c     calculated by '3kT' type rule in genRhos.f, for each isomer.
+c
+c     xrhoofn:  density of states vector for each well.  xrhoofn(i,j)
+c     refers to the number of states at energy (i-1)*bsgs for isomer j.
+c
+c     MODIFICATIONS
+c
+c     dmm 20000627 
+c     wellscalcd:  vector holding highest temperature so far for
+c     density of states calculation.  In genRhos.f, when the current
+c     temperature is greater than that stored in wellscalcd, the DOS
+c     vector xrhoofn will be calculated for that well and a new high T
+c     is stored in wellscalcd.  Initialized in InitGenRhos, called from
+c     chemdis2.f.
+c     pey 15Aug04
+c     Reordered common block so it is aligned (Intel compiler was complaining).
+c     
+c***********************************************************************
+
+      logical pfflag
+      real*8 bsgs
+c      real*8 vmin(mxWells)
+      integer maxBSindex(mxWells)
+      real*8 xrhoofn(maxNOS, mxWells)
+      real*8 wellscalcd(mxWells)
+
+c
+c      common /states/ pfflag, bsgs, maxBSindex, xrhoofn, wellscalcd
+      common /states/ bsgs, xrhoofn, wellscalcd, maxBSindex, pfflag
+
+c dmm 20000310
+
+c $Id$
+c $Author$
+c $Date$
+c $Source$
+c $Revision$
+c $Log$
+c Revision 1.1  2007-02-20 23:10:23  sandeeps
+c Initial revision
+c
+c Revision 1.3  2000/06/27 22:14:21  dmmatheu
+c Added wellscalcd, compiles and runs fine.
+c
+c Revision 1.2  2000/03/30 17:58:32  dmmatheu
+c removed vmin, added bsgs
+c
+
+
+

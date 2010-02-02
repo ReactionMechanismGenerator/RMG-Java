@@ -1,0 +1,28 @@
+ RMG-Generated Partial Network 1753                                                                                      
+ Calculating stabilization rate parameters for Well #           1
+ sum of THERM degeneracies =   26.00 nvibs =    26
+lowest frequency =   560.2cm^-1
+ Enot:  44.13  Ezero:  51.82 nsum:  26  w: 0.097  betav: 1.243  Edenom:  89.69
+ At Energy Enot =    44.1	Vibrational Density of States (Rho-Vib) =  8.961E+09
+  301. K: # 1  FE = 1.20E+00  beta = 0.420  omega = 1.39  rks = 1.00 x 1.09E+14
+    FEkT: 7.155E-01  alpha: 1.318E+00  delta1: 1.000E+00  1/delta: 1.000E+00
+  306. K: # 1  FE = 1.20E+00  beta = 0.414  omega = 1.38  rks = 1.00 x 1.08E+14
+    FEkT: 7.295E-01  alpha: 1.318E+00  delta1: 1.000E+00  1/delta: 1.000E+00
+  315. K: # 1  FE = 1.21E+00  beta = 0.403  omega = 1.36  rks = 1.00 x 1.05E+14
+    FEkT: 7.580E-01  alpha: 1.318E+00  delta1: 1.000E+00  1/delta: 1.000E+00
+  330. K: # 1  FE = 1.22E+00  beta = 0.387  omega = 1.33  rks = 1.00 x 1.01E+14
+    FEkT: 8.018E-01  alpha: 1.318E+00  delta1: 1.000E+00  1/delta: 1.000E+00
+  350. K: # 1  FE = 1.24E+00  beta = 0.366  omega = 1.30  rks = 1.00 x 9.60E+13
+    FEkT: 8.617E-01  alpha: 1.318E+00  delta1: 1.000E+00  1/delta: 1.000E+00
+  375. K: # 1  FE = 1.26E+00  beta = 0.341  omega = 1.26  rks = 1.00 x 9.02E+13
+    FEkT: 9.379E-01  alpha: 1.318E+00  delta1: 1.000E+00  1/delta: 1.000E+00
+  403. K: # 1  FE = 1.28E+00  beta = 0.315  omega = 1.23  rks = 1.00 x 8.40E+13
+    FEkT: 1.029E+00  alpha: 1.318E+00  delta1: 1.000E+00  1/delta: 1.000E+00
+  434. K: # 1  FE = 1.31E+00  beta = 0.290  omega = 1.20  rks = 1.00 x 7.80E+13
+    FEkT: 1.130E+00  alpha: 1.318E+00  delta1: 1.000E+00  1/delta: 1.000E+00
+  462. K: # 1  FE = 1.34E+00  beta = 0.268  omega = 1.17  rks = 1.00 x 7.27E+13
+    FEkT: 1.229E+00  alpha: 1.318E+00  delta1: 1.000E+00  1/delta: 1.000E+00
+  485. K: # 1  FE = 1.36E+00  beta = 0.251  omega = 1.15  rks = 1.00 x 6.87E+13
+    FEkT: 1.312E+00  alpha: 1.318E+00  delta1: 1.000E+00  1/delta: 1.000E+00
+  498. K: # 1  FE = 1.37E+00  beta = 0.242  omega = 1.14  rks = 1.00 x 6.66E+13
+    FEkT: 1.360E+00  alpha: 1.318E+00  delta1: 1.000E+00  1/delta: 1.000E+00

@@ -1,0 +1,59 @@
+c    contrl common block for chemdis
+      logical fitGlobal,fitRange,chemact,dissoc, inpwonly, isomers,
+     $      showLine, rkOld, table, oldRho, ASA, ASActrl, noASAstepout,
+     $     nosumisom, absrmin, barker, steady, dEdcm, FrRtRd(mxWells),
+     $     RRKM, XMG, inclks, cheby
+      common /contrl/fitGlobal,fitRange,chemact,dissoc, inpwonly,
+     $     isomers, showLine, rkOld, table, oldRho, ASA, ASActrl,
+     $     noASAstepout, nosumisom, absrmin, barker, steady, dEdcm,
+     $     FrRtRd, RRKM, XMG, inclks, cheby
+
+
+
+      
+
+
+c$Id$
+c$Author$
+c$Date$
+c$Source$
+c$Revision$
+c$Log$
+cRevision 1.1  2007-02-20 23:10:23  sandeeps
+cInitial revision
+c
+cRevision 1.11  2002/03/14 18:46:24  dmmatheu
+cbefore adding XMG control key
+c
+cRevision 1.10  2001/10/19 14:49:47  dmmatheu
+cbefore adding changes to allow 1 k(E) Barker printout to be RRKM ...
+c
+cRevision 1.9  2001/08/08 21:14:27  dmmatheu
+cbefore changes to add FrRtRd
+c
+cRevision 1.8  2001/06/13 14:02:52  dmmatheu
+cAfter changes to turn Barker file outputs on/off, major debug of
+cmxWells and mxProds (zeroing loops of MakeShadow were exceeding array
+cbounds).
+c
+cAdded barker logical variable to this file
+c
+cRevision 1.7  2000/08/17 21:54:38  dmmatheu
+cafter tlada changes, Rmin changes ...
+c
+cRevision 1.6  2000/07/07 01:05:36  dmmatheu
+ctom's changes ... ASActrl, noASAstepout variable
+c
+cRevision 1.4  2000/06/27 18:18:11  dmmatheu
+cBefore ASA addition
+c
+cRevision 1.3  2000/06/23 16:59:26  dmmatheu
+cafter merge w/Tom Lada code
+c
+cRevision 1.2  2000/06/23 16:57:29  dmmatheu
+cbefore merge with Tom Lada code ...
+c
+cRevision 1.1  2000/06/23 16:57:13  dmmatheu
+cInitial revision
+c
+

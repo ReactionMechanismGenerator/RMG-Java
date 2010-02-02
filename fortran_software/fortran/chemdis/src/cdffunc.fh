@@ -1,0 +1,4 @@
+c    FFunc common block for chemdis
+      real*8 FCalc(mxTPts,mxPpts),Pr(mxTPts,mxPPts)
+      common /FFunc/FCalc,Pr
+      

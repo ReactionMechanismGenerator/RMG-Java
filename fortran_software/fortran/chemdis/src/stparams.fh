@@ -1,0 +1,3 @@
+
+      integer mxWells, mxProds, mxChan
+      parameter(mxWells = 10, mxProds = 10, mxChan = 100)

@@ -1,0 +1,25 @@
+<!-- *******
+Reactor Output File Document Type Definition (DTD)
+PEY (15/6/04)
+******* -->
+<!ELEMENT reactoroutput (header, returnmessage, outputvalues?)>
+<!ELEMENT header (title?, description?)>
+<!ELEMENT title (#PCDATA)>
+<!ELEMENT description (#PCDATA)>
+<!ELEMENT returnmessage (#PCDATA)>
+<!ELEMENT outputvalues (time, systemstate)>
+<!ELEMENT time (#PCDATA)>
+   <!ATTLIST time units (sec) #REQUIRED>
+<!ELEMENT systemstate (temperature, pressure, amount+, flux+)>
+<!ELEMENT temperature (#PCDATA)>
+   <!ATTLIST temperature units (K | C) #REQUIRED>
+<!ELEMENT pressure (#PCDATA)>
+   <!ATTLIST pressure units (Pa | atm | bar) #REQUIRED>
+<!ELEMENT amount (#PCDATA)>
+   <!ATTLIST amount units (molPerCm3 | moleFraction) #REQUIRED
+                    speciesid CDATA #REQUIRED
+   >
+<!ELEMENT flux (#PCDATA)>
+   <!ATTLIST flux units (molPerCm3-Sec) #REQUIRED
+                    speciesid CDATA #REQUIRED
+   >

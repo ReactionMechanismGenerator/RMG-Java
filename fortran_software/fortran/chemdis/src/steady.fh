@@ -1,0 +1,11 @@
+
+	integer nWells, nchan
+	character ISname(mxWells)*20, PDname(mxChan)*20
+	real*8 rkact(mxChan), rkmat(mxWells, mxWells)
+	real*8 rkProdv(mxChan), rkProdMat(mxWells, mxChan)
+
+	common /steady1/nWells, nchan, ISname, PDname, rkact, rkmat,
+	1    rkProdv, rkProdMat
+
+
+

@@ -1,0 +1,6 @@
+c    limFit common block for chemdis
+      integer nKFit,nLim(-1:1)
+      logical addTerm
+      real*8 coefLim(mxKFit,-1:1)
+      common /limfit/ coefLim,nKFit,nLim,addTerm
+

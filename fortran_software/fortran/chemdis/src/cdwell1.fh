@@ -1,0 +1,8 @@
+c    well1 common block for chemdis
+      real*8 EWell(mxWells),EProd(mxWells,mxProds),AProd(mxWells,
+     2   mxProds),rNProd(mxWells,mxProds),alphaProd(mxWells,mxProds),
+     3   EIsom(mxWells,mxWells),AIsom(mxWells,mxWells),
+     4   rNIsom(mxWells,mxWells),alphaIsom(mxWells,mxWells),
+     4   Ain,rNin,alphaIn,Ein
+      common /well1/ EWell,EProd,AProd,rNprod,alphaProd,EIsom,AIsom,
+     2   rNIsom,AlphaIsom,Ain,rNin,alphaIn,Ein

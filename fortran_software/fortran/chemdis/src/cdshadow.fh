@@ -1,0 +1,49 @@
+c	common blocks for shadow arrays in ASA algorithm
+c	tal 20000627
+
+c	swell0
+	integer snWells, snProds(mxWells), sinpWell, sinpChan
+	common /swell0/ snWells, snProds, sinpWell, sinpChan
+
+c	swell1
+	real*8 sEProd(mxWells,mxProds), sAProd(mxWells,mxProds),
+     2	       srNProd(mxWells,mxProds), salphaProd(mxWells,mxProds),
+     3	       sEIsom(mxWells,mxWells), sAIsom(mxWells,mxProds),
+     4	       srNIsom(mxWells,mxWells), salphaIsom(mxWells,mxProds)
+	common /swell1/ sEProd, sAProd, srNProd, salphaProd,
+     2		 	sEIsom, sAIsom, srNIsom, salphaIsom
+
+c	sisProp
+	integer snFreqs(mxWells)
+	real*8 ssig(mxWells), sek(mxWells), sfreq(mxWells, mxFreqs),
+     2         sdegen(mxWells, mxFreqs)
+	integer sn1drot(mxWells)
+	common /sisProp/ snfreqs, ssig, sek, sfreq, sdegen, sn1drot
+
+c	slabels
+	character sisName(mxWells)*20, spdName(mxWells, 0:mxProds)*20
+	common /slabels/ sisName, spdName
+
+c	srange
+	integer snTemps, snPres
+	real*8 stemp(mxTPts), spres(mxTPts, mxPPts)
+	common /srange/ snTemps, snPres, stemp, spres
+
+
+
+
+
+c$Id$
+c$Author$
+c$Date$
+c$Source$
+c$Log$
+cRevision 1.1  2007-02-20 23:10:23  sandeeps
+cInitial revision
+c
+cRevision 1.2  2001/09/19 14:46:21  dmmatheu
+cbefore attempt to change to 20 character ISName ...
+c
+cRevision 1.1  2000/06/27 17:54:49  dmmatheu
+cInitial revision
+c

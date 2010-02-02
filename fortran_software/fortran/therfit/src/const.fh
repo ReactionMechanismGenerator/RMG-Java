@@ -1,0 +1,28 @@
+c***********************************************************************
+c  constant block for therfit and intther codes
+c
+c     NTERMS is the number of frequencies/modes
+c     CONST(1) = gas constant conversion factor
+c     CONST(2) = total no. vib. DOF
+c     CONST(3) = 1 if linear molecule, 0 if nonlinear
+c***********************************************************************
+
+      real*8 CONST(3)
+      integer NTERMS
+
+      common/CONST/CONST, NTERMS
+
+
+
+
+C $Id$
+c $Author$
+c $Date$
+c $Log$
+c Revision 1.1  2007-02-20 23:10:22  sandeeps
+c Initial revision
+c
+c Revision 1.1  2000/05/30 17:31:30  dmmatheu
+c Initial revision
+c
+

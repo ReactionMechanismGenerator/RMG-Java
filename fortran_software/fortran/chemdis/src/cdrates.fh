@@ -1,0 +1,8 @@
+c    rates common block for chemdis
+c    low pressure limit: ip = 0; high pressure limit: npres+1
+c    dissoc no-exit isomerization: ip = -1
+      logical noDExit(mxWells)
+      integer nPr(mxWells,0:mxProds),nRKinf(mxWells,0:mxProds)
+      real*8 RK(mxWells,0:mxProds,mxTPts,-1:mxPPts+1)
+      common /rates/RK,nPr,nRKinf,noDExit
+      

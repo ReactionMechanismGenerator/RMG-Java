@@ -1,0 +1,38 @@
+<!-- *******
+Reactor Input File Document Type Definition (DTD)
+PEY (2/4/04)
+note: reaction and thermo have not yet been fully defined
+******* -->
+<!ELEMENT reactorinput (header, inputvalues)>
+<!ELEMENT header (title?, description?)>
+<!ELEMENT title (#PCDATA)>
+<!ELEMENT description (#PCDATA)>
+<!ELEMENT inputvalues (integrationparameters, chemistry?, systemstate)>
+<!ELEMENT integrationparameters (reactortype, starttime, endtime, rtol, atol)>
+<!ELEMENT reactortype (#PCDATA)>
+<!ELEMENT starttime (#PCDATA)>
+   <!ATTLIST starttime units (sec) #REQUIRED>
+<!ELEMENT endtime (#PCDATA)>
+   <!ATTLIST endtime units (sec) #REQUIRED>
+<!ELEMENT rtol (#PCDATA)>
+<!ELEMENT atol (#PCDATA)>
+<!-- *** Remove the ?'s from the next line when chemistry must be included in this file *** -->
+<!ELEMENT chemistry (elementlist?, specieslist?, thermolist?, reactionlist?)> 
+<!ELEMENT elementlist (element*)>
+<!ELEMENT element (#PCDATA)>
+<!ELEMENT specieslist (species*)>
+<!ELEMENT species (#PCDATA)>
+   <!ATTLIST species name CDATA "">
+<!ELEMENT thermolist (thermo*)>
+<!ELEMENT thermo ANY>
+<!ELEMENT reactionlist (reaction*)>
+<!ELEMENT reaction ANY>
+<!ELEMENT systemstate (temperature, pressure, amount+)>
+<!ELEMENT temperature (#PCDATA)>
+   <!ATTLIST temperature units (K | C) #REQUIRED>
+<!ELEMENT pressure (#PCDATA)>
+   <!ATTLIST pressure units (Pa | atm | bar) #REQUIRED>
+<!ELEMENT amount (#PCDATA)>
+   <!ATTLIST amount units (molPerCm3 | moleFraction) #REQUIRED
+                    speciesid CDATA #REQUIRED
+   >

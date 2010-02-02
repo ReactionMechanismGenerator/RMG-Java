@@ -1,0 +1,12 @@
+ RMG-Generated Partial Network 803                                                                                       
+ Calculating stabilization rate parameters for Well #           1
+ sum of THERM degeneracies =   48.00 nvibs =    48
+lowest frequency =   422.6cm^-1
+ Enot:   4.82  Ezero:  91.46 nsum:  48  w: 0.227  betav: 1.760  Edenom:  59.70
+ At Energy Enot =     4.8	Vibrational Density of States (Rho-Vib) =  7.550E+02
+  290. K: # 1  FE = 1.81E+00  beta = 0.323  omega = 1.28  rks = 1.00 x 8.61E+13
+    FEkT: 1.040E+00  alpha: 1.318E+00  delta1: 9.887E-01  1/delta: 1.034E+00
+  350. K: # 1  FE = 2.15E+00  beta = 0.249  omega = 1.19  rks = 1.00 x 6.79E+13
+    FEkT: 1.495E+00  alpha: 1.318E+00  delta1: 9.538E-01  1/delta: 1.134E+00
+  500. K: # 1  FE = 3.87E+00  beta = 0.157  omega = 1.07  rks = 1.00 x 4.58E+13
+    FEkT: 3.843E+00  alpha: 1.318E+00  delta1: 6.758E-01  1/delta: 2.413E+00

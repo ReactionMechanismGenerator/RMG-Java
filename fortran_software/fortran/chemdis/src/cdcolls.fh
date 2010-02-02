@@ -1,0 +1,12 @@
+c    colls declaration block for chemdis
+      integer nColls
+      logical consBeta(mxColls)
+      real*8 xColl(mxColls),rMass2(mxColls),sig2(mxColls),
+     2   ek2(mxColls),deltaE(mxColls),beta(mxColls),
+     3   dEExp(mxColls)
+      common /colls/xColl,rMass2,sig2,ek2,deltaE,beta,
+     2   dEExp,nColls,consBeta
+
+c	asa rmin criteria for dissoc
+	real*8 rdiss
+	common /asadiss/ rdiss

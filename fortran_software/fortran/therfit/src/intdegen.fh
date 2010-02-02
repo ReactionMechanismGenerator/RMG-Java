@@ -1,0 +1,25 @@
+c***********************************************************************
+c     Header file for intd common block
+c***********************************************************************
+
+      integer idg
+      common /intd/idg
+
+
+
+
+
+
+
+
+
+c $Id$
+c $Author$
+c $Date$
+c $Log$
+c Revision 1.1  2007-02-20 23:10:22  sandeeps
+c Initial revision
+c
+c Revision 1.1  2000/05/30 15:29:21  dmmatheu
+c Initial revision
+c

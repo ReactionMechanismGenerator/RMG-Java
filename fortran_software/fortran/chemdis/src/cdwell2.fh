@@ -1,0 +1,8 @@
+c    well2 common block for chemdis
+      integer idpWell(mxWells),iWcMax,iPcMax
+      real*8 ExMin(mxWells),ExMax(mxWells),EbarHP(mxWells),
+     2   EbarLP(mxWells)
+      common /well2/ ExMin,ExMax,EbarHP,EbarLP,     
+     2  iDpWell,iWcMax,iPcMax
+c    end well2 blocks
+
