@@ -293,7 +293,7 @@ public class JDASSL extends JDAS {
 		boolean error = false;
                 try {
 
-                        String[] command = {workingDirectory +  "/software/ODESolver/dasslAUTO.exe"};//5/5/08 gmagoon: changed to call dasslAUTO.exe
+                        String[] command = {workingDirectory +  "/bin/dasslAUTO.exe"};//5/5/08 gmagoon: changed to call dasslAUTO.exe
                                 File runningDir = new File("ODESolver");
 
                                 Process solver = Runtime.getRuntime().exec(command, null, runningDir);
@@ -354,6 +354,7 @@ public class JDASSL extends JDAS {
         
 	private void renameIntermediateFilesAfterRun() {
             File f = new File("ODESolver/RWORK.DAT");
+			System.exit(0);
             File newFile = new File("ODESolver/RWORK_"+index+".DAT");
             if(newFile.exists())
                 newFile.delete();

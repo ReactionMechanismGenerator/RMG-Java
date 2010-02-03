@@ -240,7 +240,7 @@ public class FastMasterEqn implements PDepKineticsEstimator {
 		// FAME system call
 		try {
            	//System.out.println("Running FAME...");
-			String[] command = {dir + "/software/fame/fame.exe"};
+			String[] command = {dir + "/bin/fame.exe"};
            	File runningDir = new File("fame/");
 			Process fame = Runtime.getRuntime().exec(command, null, runningDir);
 

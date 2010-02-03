@@ -143,7 +143,7 @@ public class GATPFit {
         boolean error = false;
         try {
         	 // system call for GATPFit
-        	String[] command = {workingDirectory +  "/software/GATPFit/GATPFit.exe"};
+        	String[] command = {workingDirectory +  "/bin/GATPFit.exe"};
 			File runningDir = new File("GATPFit");
         	Process GATPFit = Runtime.getRuntime().exec(command, null, runningDir);
             

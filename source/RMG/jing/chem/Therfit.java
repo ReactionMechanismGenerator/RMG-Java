@@ -186,7 +186,7 @@ public class Therfit {
         boolean error = false;
 		try {
        	 // system call for therfit
-			String[] command = {workingDirectory + "/software/therfit/therfit.exe"};
+			String[] command = {workingDirectory + "/bin/therfit.exe"};
 			File runningDir = new File(p_directory );//+ "/therfit");// "/software/therfit");
 			Process therfit = Runtime.getRuntime().exec(command, null, runningDir);
 			InputStream is = therfit.getErrorStream();

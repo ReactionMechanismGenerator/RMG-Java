@@ -1160,7 +1160,7 @@ public class Species {
         //while (exitValue != 0) {
             try {
                 if (getOs().toLowerCase().contains("windows")){
-                    String[] command = {workingDirectory + "/software/InChI/cInChI-1",
+                    String[] command = {workingDirectory + "/bin/cInChI-1",
                         "species.mol",
                         "species.txt",
                         "/DoNotAddH", "/FixedH", "/Key"};//6/9/09 gmagoon: added fixed H so tautomers are considered separately; this is apparently not an option for version 1.02 (standard inchi); also added Key option to generate inchikey...this is only available in version 1.02beta or later; therefore, this keyword combination will only work for version 1.02beta (as of now)
@@ -1175,7 +1175,7 @@ public class Species {
                     exitValue = InChI.waitFor();               
                 }
                 else if (getOs().toLowerCase().contains("linux")){
-                    String[] command = {workingDirectory + "/software/InChI/cInChI-1",
+                    String[] command = {workingDirectory + "/bin/cInChI-1",
                         "species.mol",
                         "species.txt",
                         "-DoNotAddH", "-FixedH", "-Key"};
@@ -1190,7 +1190,7 @@ public class Species {
                     exitValue = InChI.waitFor();
                 }
                 else if (getOs().toLowerCase().contains("mac")){
-                    String[] command = {workingDirectory + "/software/InChI/cInChI-1",
+                    String[] command = {workingDirectory + "/bin/cInChI-1",
                         "species.mol",
                         "species.txt",
                         "-DoNotAddH", "-FixedH", "-Key"};
@@ -1462,7 +1462,7 @@ public class Species {
         int exitValue = -1;
         //while (exitValue != 0) {
             try {
-                String[] command = {workingDirectory + "/software/InChI/cInChI-1",
+                String[] command = {workingDirectory + "/bin/cInChI-1",
                         "inchi.txt",
                         "temp.txt",
                         optionsArgument[0]};
@@ -1486,7 +1486,7 @@ public class Species {
         exitValue = -1;
         //while (exitValue != 0) {
             try {
-                String[] command = {workingDirectory + "/software/InChI/cInChI-1",
+                String[] command = {workingDirectory + "/bin/cInChI-1",
                         "temp.txt",
                         "temp.mol",
                         optionsArgument[1]};

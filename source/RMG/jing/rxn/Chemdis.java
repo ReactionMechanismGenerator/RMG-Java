@@ -168,7 +168,7 @@ public class Chemdis implements PDepKineticsEstimator {
 		
 		// Chemdis system call
 		try {
-			String[] command = {dir + "/software/chemdis/chemdis.exe"};
+			String[] command = {dir + "/bin/chemdis.exe"};
 			File runningDir = new File("chemdis");
 			Process chemdis = Runtime.getRuntime().exec(command, null, runningDir);                     
 			InputStream ips = chemdis.getInputStream();

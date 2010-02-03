@@ -273,7 +273,7 @@ public class JDASPK extends JDAS {
 		boolean error = false;
                 try {
 
-                        String[] command = {workingDirectory +  "/software/ODESolver/daspkAUTO.exe"};//5/5/08 gmagoon: changed to call dasslAUTO.exe
+                        String[] command = {workingDirectory +  "/bin/daspkAUTO.exe"};//5/5/08 gmagoon: changed to call dasslAUTO.exe
                                 File runningDir = new File("ODESolver");
 
                                 Process solver = Runtime.getRuntime().exec(command, null, runningDir);
@@ -571,7 +571,7 @@ public class JDASPK extends JDAS {
 		boolean error = false;
         try {
         	 // system call for therfit
-        	String[] command = {workingDirectory +  "/software/ODESolver/daspkAUTO.exe"};
+        	String[] command = {workingDirectory +  "/bin/daspkAUTO.exe"};
 			File runningDir = new File("ODESolver");
 			
 			Process ODESolver = Runtime.getRuntime().exec(command, null, runningDir);

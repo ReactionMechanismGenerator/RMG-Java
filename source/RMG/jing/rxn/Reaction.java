@@ -537,7 +537,7 @@ public class Reaction {
 
       	try {
       	    // system call for fit3p
-      		String[] command = {dir+ "/software/fit3p/fit3pbnd.exe"};
+      		String[] command = {dir+ "/bin/fit3pbnd.exe"};
       		File runningDir = new File("fit3p");
       	    Process fit = Runtime.getRuntime().exec(command, null, runningDir);
       	    int exitValue = fit.waitFor();
@@ -643,7 +643,7 @@ public class Reaction {
 
       	try {
       	    // system call for fit3p
-      		String[] command = {dir+ "/software/fit3p/fit3pbnd.exe"};
+      		String[] command = {dir+ "/bin/fit3pbnd.exe"};
       		File runningDir = new File("fit3p");
       	    Process fit = Runtime.getRuntime().exec(command, null, runningDir);
       	    int exitValue = fit.waitFor();

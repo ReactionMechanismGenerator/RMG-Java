@@ -18,7 +18,7 @@ import jing.chemParser.ChemParser;
 //		The output of this function is a file named adjList_output.txt
 //		which holds a list of adjacency lists, corresponding to the
 //		list of InChI strings.
-//	NOTE: The InChI executable must be located in the $RMG/software/InChI
+//	NOTE: The InChI executable must be located in the $RMG/bin
 //		folder AND must be version 1.01.
 //	Inputs:
 //		- .txt file (of any name) containing list of InChIs
