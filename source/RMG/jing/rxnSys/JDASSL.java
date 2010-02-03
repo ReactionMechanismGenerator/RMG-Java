@@ -354,8 +354,7 @@ public class JDASSL extends JDAS {
         
 	private void renameIntermediateFilesAfterRun() {
             File f = new File("ODESolver/RWORK.DAT");
-			System.exit(0);
-            File newFile = new File("ODESolver/RWORK_"+index+".DAT");
+			File newFile = new File("ODESolver/RWORK_"+index+".DAT");
             if(newFile.exists())
                 newFile.delete();
             boolean renameSuccess = f.renameTo(newFile);

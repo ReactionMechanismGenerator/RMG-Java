@@ -10,3 +10,12 @@ bin/*
 # Temporary intermediate files
 build/*
 
+# Generated RMG output for examples
+examples/*
+!examples/*/condition.txt
+
+# NetBeans project files
+nbproject/*
+nbbuild.xml
+manifest.mf
+dist/*

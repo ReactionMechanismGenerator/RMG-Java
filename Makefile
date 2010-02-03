@@ -17,11 +17,18 @@ BINDIR=$(CURDIR)/bin
 # code
 F90=g95
 F90FLAGS=-fbounds-check -ftrace=full -fmod=$(BUILDDIR) -Wall
+F90FLAGS_NDEBUG=
+#F90=gfortran
+#F90FLAGS=-fbounds-check -fbacktrace -Wall
+#F90FLAGS_NDEBUG=
 
 ################################################################################
 
 # Default is to build those that come complete with the RMG distribution
 base: dirs fame frankie GATPFit dassl RMG
+
+# Make just the complete Fortran dependencies (i.e. not the Java)
+fortran: dirs fame frankie GATPFit dassl
 
 # You can also build everything
 all: dirs fame frankie GATPFit dassl daspk RMG
@@ -50,10 +57,10 @@ $(BINDIR)/frankie.exe:
 	make -C $(SOURCEDIR)/frankie SOURCEDIR=$(SOURCEDIR)/frankie BUILDDIR=$(BUILDDIR)/frankie BINDIR=$(BINDIR) F90=$(F90) F90FLAGS="$(F90FLAGS)"
 
 $(BINDIR)/dasslAUTO.exe:
-	make -C $(SOURCEDIR)/dassl SOURCEDIR=$(SOURCEDIR)/dassl BUILDDIR=$(BUILDDIR)/dassl BINDIR=$(BINDIR) F90=$(F90) F90FLAGS="$(F90FLAGS)"
+	make -C $(SOURCEDIR)/dassl SOURCEDIR=$(SOURCEDIR)/dassl BUILDDIR=$(BUILDDIR)/dassl BINDIR=$(BINDIR) F90=$(F90) F90FLAGS="$(F90FLAGS_NDEBUG)"
 
 $(BINDIR)/daspkAUTO.exe:
-	make -C $(SOURCEDIR)/daspk SOURCEDIR=$(SOURCEDIR)/daspk BUILDDIR=$(BUILDDIR)/daspk BINDIR=$(BINDIR) F90=$(F90) F90FLAGS="$(F90FLAGS)"
+	make -C $(SOURCEDIR)/daspk SOURCEDIR=$(SOURCEDIR)/daspk BUILDDIR=$(BUILDDIR)/daspk BINDIR=$(BINDIR) F90=$(F90) F90FLAGS="$(F90FLAGS_NDEBUG)"
 
 $(BINDIR)/GATPFit.exe:
 	make -C $(SOURCEDIR)/GATPFit SOURCEDIR=$(SOURCEDIR)/GATPFit BUILDDIR=$(BUILDDIR)/GATPFit BINDIR=$(BINDIR) F90=$(F90) F90FLAGS="$(F90FLAGS)"
