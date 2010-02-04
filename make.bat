@@ -1,18 +1,20 @@
-cd "%rmg%"\source\GATPFit\src
-g95 -o GATPFit *.f
-mkdir "%rmg%"\software\GATPFit
-copy GATPFit.exe "%rmg%"\software\GATPFit\GATPFit.exe
-cd "%rmg%"\source\fame
-g95 -o fame src\blas\*.f src\lapack\double\*.f src\lapack\util\*.f src/Simulation.f90 src/Isomer.f90 src/Reaction.f90 src/Input.f90 src/DensityOfStates.f90 src/MasterEqn.f90 src/StrongCollision.f90 src/ReservoirState.f90 src/RateModel.f90 src/fame.f90
-mkdir "%rmg%"\software\fame
-copy fame.exe "%rmg%"\software\fame\fame.exe
-cd "%rmg%"\source\frankie\src
-g95 -o frankie *.f90
-mkdir "%rmg%"\software\frankie
-copy frankie.exe "%rmg%"\software\frankie\frankie.exe
-cd "%rmg%"\source\ODESolver\dassl
-g95 -o dasslAUTO *.f *.f90
-mkdir "%rmg%"\software\ODESolver
-copy dasslAUTO.exe "%rmg%"\software\ODESolver\dasslAUTO.exe
+if "%rmg%"=="" echo The RMG variable is NOT defined!
 
+mkdir "%rmg%"\bin
+
+echo Compiling GATPFit...
+cd "%rmg%"\source\GATPFit
+g95 *.f blas\*.f lapack\double\*.f lapack\util\*.f -o "%rmg%"\bin\GATPFit.exe
+
+echo Compiling fame...
+cd "%rmg%"\source\fame
+g95 Species.f90 Isomer.f90 Reaction.f90 DensityOfStates.f90 Network.f90 Input.f90 StrongCollision.f90 ReservoirState.f90 RateModel.f90 Output.f90 fame.f90 blas\*.f lapack\double\*.f lapack\util\*.f -o "%rmg%"\bin\fame.exe
+
+echo Compiling frankie...
+cd "%rmg%"\source\frankie
+g95 *.f90 -o "%rmg%"\bin\frankie.exe
+
+echo Compiling dassl...
+cd "%rmg%"\source\dassl
+g95 *.f *.f90 -o "%rmg%"\bin\dasslAUTO.exe
 
