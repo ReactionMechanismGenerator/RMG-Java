@@ -16,7 +16,7 @@ BINDIR=../../bin
 # The Fortran 90 compiler to use and flags to use when compiling Fortran 90 
 # code
 F90=g95
-F90FLAGS=
+F90FLAGS=-fmod=$(BUILDDIR) -ftrace=full
 
 LDFLAGS=-lblas -llapack
 
@@ -26,14 +26,12 @@ OBJ=$(patsubst %.o,$(BUILDDIR)/%.o,$(OBJ0))
 
 ################################################################################
 
-$(BINDIR)/GATPFit.exe: dirs $(OBJ)  
+$(BINDIR)/GATPFit.exe: $(OBJ)  
+	mkdir -p $(BINDIR)
 	$(F90) $(LDFLAGS) $(OBJ) -o $(BINDIR)/GATPFit.exe
 
-dirs:
-	mkdir -p $(BUILDDIR)
-	mkdir -p $(BINDIR)
-
 $(BUILDDIR)/%.o: %.f
+	mkdir -p $(BUILDDIR)
 	$(F90) $(F90FLAGS) -c $< -o $@
 
 clean:

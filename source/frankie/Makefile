@@ -1,6 +1,6 @@
 ################################################################################
 #
-#	Makefile for fame
+#	Makefile for frankie
 #
 ################################################################################
 
@@ -16,7 +16,7 @@ BINDIR=../../bin
 # The Fortran 90 compiler to use and flags to use when compiling Fortran 90 
 # code
 F90=g95
-F90FLAGS=
+F90FLAGS=-fmod=$(BUILDDIR) -ftrace=full
 
 LDFLAGS=-lpthread
 
@@ -26,16 +26,14 @@ OBJ=$(patsubst %.o,$(BUILDDIR)/%.o,$(OBJ0))
 
 ################################################################################
 
-$(BINDIR)/frankie.exe: dirs $(OBJ)  
+$(BINDIR)/frankie.exe: $(OBJ)  
+	mkdir -p $(BINDIR)
 	$(F90) $(LDFLAGS) $(OBJ) -o $(BINDIR)/frankie.exe
 
-dirs:
-	mkdir -p $(BUILDDIR)
-	mkdir -p $(BINDIR)
-
 $(BUILDDIR)/%.o: %.f90
+	mkdir -p $(BUILDDIR)
 	$(F90) $(F90FLAGS) -c $< -o $@
 
 clean:
 	rm -rf $(BUILDDIR)
-	rm -rf $(BINDIR)
+	rm -rf $(BINDIR)/frankie.exe
