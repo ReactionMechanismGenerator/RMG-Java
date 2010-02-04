@@ -13,6 +13,9 @@ BUILDDIR=$(CURDIR)/build
 # The directory in which to place compiled executables and JAR files
 BINDIR=$(CURDIR)/bin
 
+# The directory in which to run RMG (used for the test)
+RUNDIR=$(CURDIR)/run
+
 # The Fortran 90 compiler to use and flags to use when compiling Fortran 90 
 # code
 F90=g95
@@ -78,6 +81,13 @@ clean:
 	ant clean
 	rm -rf $(BUILDDIR)
 	rm -rf $(BINDIR)
+	rm -rf $(RUNDIR)
+
+# Run a test case
+test:
+	mkdir -p $(RUNDIR)
+	cp examples/RMG/1,3-hexadiene/condition.txt $(RUNDIR)
+	export RMG=$(CURDIR); cd $(RUNDIR); java -classpath $(BINDIR)/RMG.jar RMG condition.txt | tee RMG.log
 
 help:
 	@echo ""
@@ -86,8 +96,10 @@ help:
 	@echo "Typing \`make\` with no arguments will make all of the executables that come"
 	@echo "completely bundled with RMG (indicated in the list below with an asterisk)."
 	@echo ""
+	@echo "Typing 'make test' will run an example file in the folder 'run'."
+	@echo ""
 	@echo "Typing \`make clean\` will remove all object files, modules, and executables"
-	@echo "for all of the applications."
+	@echo "for all of the applications, and the 'run' folder."
 	@echo ""
 	@echo "Otherwise individual dependencies can be specified using \`make <target>\`"
 	@echo "where <target> is one of:"

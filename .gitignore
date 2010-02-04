@@ -19,3 +19,7 @@ nbproject/*
 nbbuild.xml
 manifest.mf
 dist/*
+
+
+# Folder in which to run RMG
+run/*
