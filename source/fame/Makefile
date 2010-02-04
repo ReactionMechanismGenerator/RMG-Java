@@ -26,14 +26,13 @@ OBJ=$(patsubst %.o,$(BUILDDIR)/%.o,$(OBJ0))
 
 ################################################################################
 
-$(BINDIR)/fame.exe: dirs $(OBJ)  
+$(BINDIR)/fame.exe: $(OBJ)  
+	mkdir -p $(BINDIR)
 	$(F90) $(LDFLAGS) $(OBJ) -o $(BINDIR)/fame.exe
 
-dirs:
-	mkdir -p $(BUILDDIR)
-	mkdir -p $(BINDIR)
 
 $(BUILDDIR)/%.o: %.f90
+	mkdir -p $(BUILDDIR)
 	$(F90) $(F90FLAGS) -c $< -o $@
 
 clean:

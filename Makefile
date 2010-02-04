@@ -19,8 +19,8 @@ RUNDIR=$(CURDIR)/run
 # The Fortran 90 compiler to use and flags to use when compiling Fortran 90 
 # code
 F90=g95
-F90FLAGS=-fbounds-check -ftrace=full -fmod=$(BUILDDIR) -Wall
-F90FLAGS_NDEBUG=
+F90FLAGS= -fbounds-check -ftrace=full -fmod=$(BUILDDIR) -Wall
+F90FLAGS_NDEBUG= -fmod=$(BUILDDIR) -ftrace=full 
 #F90=gfortran
 #F90FLAGS=-fbounds-check -fbacktrace -Wall
 #F90FLAGS_NDEBUG=
@@ -38,35 +38,26 @@ all: dirs fame frankie GATPFit dassl daspk RMG
 
 RMG: dirs $(BINDIR)/RMG.jar
 
-fame: dirs $(BINDIR)/fame.exe
+fame: dirs
+	make -C $(SOURCEDIR)/fame SOURCEDIR=$(SOURCEDIR)/fame BUILDDIR=$(BUILDDIR)/fame BINDIR=$(BINDIR) F90=$(F90) F90FLAGS="$(F90FLAGS)"
 
-frankie: dirs $(BINDIR)/frankie.exe
+frankie: dirs
+	make -C $(SOURCEDIR)/frankie SOURCEDIR=$(SOURCEDIR)/frankie BUILDDIR=$(BUILDDIR)/frankie BINDIR=$(BINDIR) F90=$(F90) F90FLAGS="$(F90FLAGS)"
 
-dassl: dirs $(BINDIR)/dasslAUTO.exe
+dassl: dirs
+	make -C $(SOURCEDIR)/dassl SOURCEDIR=$(SOURCEDIR)/dassl BUILDDIR=$(BUILDDIR)/dassl BINDIR=$(BINDIR) F90=$(F90) F90FLAGS="$(F90FLAGS_NDEBUG)"
 
-daspk: dirs $(BINDIR)/daspkAUTO.exe
+daspk: dirs
+	make -C $(SOURCEDIR)/daspk SOURCEDIR=$(SOURCEDIR)/daspk BUILDDIR=$(BUILDDIR)/daspk BINDIR=$(BINDIR) F90=$(F90) F90FLAGS="$(F90FLAGS_NDEBUG)"
 
-GATPFit: dirs $(BINDIR)/GATPFit.exe
+GATPFit: dirs
+	make -C $(SOURCEDIR)/GATPFit SOURCEDIR=$(SOURCEDIR)/GATPFit BUILDDIR=$(BUILDDIR)/GATPFit BINDIR=$(BINDIR) F90=$(F90) F90FLAGS="$(F90FLAGS)"
+
 
 $(BINDIR)/RMG.jar:
 	mkdir -p $(BUILDDIR)/RMG
 	ant compile
 	ant jar
-
-$(BINDIR)/fame.exe:
-	make -C $(SOURCEDIR)/fame SOURCEDIR=$(SOURCEDIR)/fame BUILDDIR=$(BUILDDIR)/fame BINDIR=$(BINDIR) F90=$(F90) F90FLAGS="$(F90FLAGS)"
-
-$(BINDIR)/frankie.exe:
-	make -C $(SOURCEDIR)/frankie SOURCEDIR=$(SOURCEDIR)/frankie BUILDDIR=$(BUILDDIR)/frankie BINDIR=$(BINDIR) F90=$(F90) F90FLAGS="$(F90FLAGS)"
-
-$(BINDIR)/dasslAUTO.exe:
-	make -C $(SOURCEDIR)/dassl SOURCEDIR=$(SOURCEDIR)/dassl BUILDDIR=$(BUILDDIR)/dassl BINDIR=$(BINDIR) F90=$(F90) F90FLAGS="$(F90FLAGS_NDEBUG)"
-
-$(BINDIR)/daspkAUTO.exe:
-	make -C $(SOURCEDIR)/daspk SOURCEDIR=$(SOURCEDIR)/daspk BUILDDIR=$(BUILDDIR)/daspk BINDIR=$(BINDIR) F90=$(F90) F90FLAGS="$(F90FLAGS_NDEBUG)"
-
-$(BINDIR)/GATPFit.exe:
-	make -C $(SOURCEDIR)/GATPFit SOURCEDIR=$(SOURCEDIR)/GATPFit BUILDDIR=$(BUILDDIR)/GATPFit BINDIR=$(BINDIR) F90=$(F90) F90FLAGS="$(F90FLAGS)"
 
 dirs:
 	mkdir -p $(BUILDDIR)
