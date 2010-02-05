@@ -1115,12 +1115,18 @@ public class ReactionModelGenerator {
 					line = ChemParser.readMeaningfulLine(reader);
 					tempString = line.split("Location: ");
 					String path = tempString[tempString.length-1].trim();
+					line = ChemParser.readMeaningfulLine(reader);
+					tempString = line.split("GenerateReactions: ");
+					String generateStr = tempString[tempString.length-1].trim();
+					boolean generate = (generateStr.equalsIgnoreCase("yes") ||
+						generateStr.equalsIgnoreCase("on") ||
+						generateStr.equalsIgnoreCase("true"));
 					if (numMechs==0) {
-						setSeedMechanism(new SeedMechanism(name, path));
+						setSeedMechanism(new SeedMechanism(name, path, generate));
 						++numMechs; 	
 					}
 					else {
-						getSeedMechanism().appendSeedMechanism(name,path);
+						getSeedMechanism().appendSeedMechanism(name, path, generate);
 						++numMechs;
 					}
 					line = ChemParser.readMeaningfulLine(reader);
@@ -3584,7 +3590,7 @@ public class ReactionModelGenerator {
     	
     	// Add the species from the condition.txt (input) file
     	allInitialCoreSpecies.addAll(getSpeciesSeed());
-    	// Add the species from the seed mechanisms, if they exist
+		// Add the species from the seed mechanisms, if they exist
     	if (hasSeedMechanisms()) {
     		allInitialCoreSpecies.addAll(getSeedMechanism().getSpeciesSet());
     		allInitialCoreRxns.addAll(getSeedMechanism().getReactionSet());
@@ -3603,7 +3609,13 @@ public class ReactionModelGenerator {
 		// Determine initial set of reactions and edge species using only the
 		// species enumerated in the input file and the seed mechanisms as the core
 		if (!readrestart) {
-			LinkedHashSet reactionSet = getReactionGenerator().react(allInitialCoreSpecies);
+			LinkedHashSet reactionSet;
+			if (getSeedMechanism().shouldGenerateReactions()) {
+				reactionSet = getReactionGenerator().react(allInitialCoreSpecies);
+			}
+			else {
+				reactionSet = getReactionGenerator().react(getSpeciesSeed());
+			}
 			reactionSet.addAll(getLibraryReactionGenerator().react(allInitialCoreSpecies));
 			
 	    	// Set initial core-edge reaction model based on above results

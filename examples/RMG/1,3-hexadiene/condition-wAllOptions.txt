@@ -135,11 +135,15 @@ END
 // There is no limit to the number of SMs a user may supply.
 // The "Name" of a SM can have as many tokens as the user prefers.
 // The "Location" of a SM is in reference to the $RMG/databases directory
+// The "GenerateReactions" of a SM tells RMG whether or not to generate
+// reactions from its reaction families to add to the seed reactions
 SeedMechanism:
 //Name: Leeds
 //Location: RMG_database/SeedMechanisms/combustion_core/version5
+//GenerateReactions: yes
 //Name: GRIMech3.0
 //Location: RMG_database/SeedMechanisms/GRI-Mech3.0
+//GenerateReactions: yes
 END
 
 ChemkinUnits:

@@ -67,11 +67,13 @@ public class SeedMechanism {
     
     protected HashMap speciesSet = new HashMap();		//## attribute speciesSet 
     
-    
+    private boolean generateReactions = false;
+
     // Constructors
     
-    public  SeedMechanism(String p_mechName, String p_directoryName) throws IOException {
+    public  SeedMechanism(String p_mechName, String p_directoryName, boolean p_generateReactions) throws IOException {
     	name = p_mechName;
+		generateReactions = p_generateReactions;
         String dir = System.getProperty("RMG.workingDirectory");
         if (dir==null || p_directoryName == null) throw new NullPointerException("RMG " +
         		"does not recognize Seed Mechanism file name");
@@ -83,9 +85,12 @@ public class SeedMechanism {
         }
     }
     
-    public void appendSeedMechanism(String new_mechName, String new_directoryName) throws IOException {
+    public void appendSeedMechanism(String new_mechName, String new_directoryName, boolean p_generateReactions) throws IOException {
     	String dir = System.getProperty("RMG.workingDirectory");
-     	setName(name + "/" + new_mechName);
+     	if (p_generateReactions)
+			setGenerateReactions(p_generateReactions);
+
+		setName(name + "/" + new_mechName);
     	try {
     		read(dir + "/databases/" + new_directoryName);	
     	}
@@ -548,6 +553,14 @@ public class SeedMechanism {
     public LinkedHashSet getReactionSet() {
         return reactionSet;
     }
+
+	public boolean shouldGenerateReactions() {
+		return generateReactions;
+	}
+
+	public void setGenerateReactions(boolean generateReactions) {
+		this.generateReactions = generateReactions;
+	}
     
 }
 
