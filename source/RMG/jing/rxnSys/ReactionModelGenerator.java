@@ -3614,7 +3614,11 @@ public class ReactionModelGenerator {
 				reactionSet = getReactionGenerator().react(allInitialCoreSpecies);
 			}
 			else {
-				reactionSet = getReactionGenerator().react(getSpeciesSeed());
+				reactionSet = new LinkedHashSet();
+				for (Iterator iter = speciesSeed.iterator(); iter.hasNext(); ) {
+					Species spec = (Species) iter.next();
+					reactionSet.addAll(getReactionGenerator().react(allInitialCoreSpecies, spec));
+				}
 			}
 			reactionSet.addAll(getLibraryReactionGenerator().react(allInitialCoreSpecies));
 			

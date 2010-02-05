@@ -562,14 +562,25 @@ included with RMG are: the Leeds' oxidation library and the GRI-Mech 3.0 mechani
 (w/o the nitrogen-containing species and the lumped C3H7 species). You can specify your own
 seed mechanism in the location section. Please note that the oxidation
 library should not be used for pyrolysis models. The syntax for the seed mechanisms
-is similar to that of the primary reaction libraries.::
+is similar to that of the primary reaction libraries, except for the ``GenerateReactions`` 
+line, explained below.::
 
 	SeedMechanism:
 	Name: GRI-Mech 3.0
 	Location: RMG_database/SeedMechanisms/GRI-Mech3.0
+	GenerateReactions: yes
 	Name: Leeds 
 	Location: RMG_database/SeedMechanisms/combustion_core/version5 
+	GenerateReactions: yes
 	END 
+
+There is a new required line in seed mechanisms that controls how RMG adds the
+seed species and reactions to the model core. If set to yes, RMG will use its
+reaction families to react all seed species with one another; the generated
+reactions will supplement the seed reactions. If set to no, RMG will not
+generate reactions of the seed species. In either case, RMG will react the
+species in the condition file with one another and with all species in the
+seed mechanism.
 
 Please note that the keyword ``END`` must be placed at the end of the Seed
 Mechanism section. Because the units for the Arrhenius parameters are
