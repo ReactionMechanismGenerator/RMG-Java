@@ -1,3 +1,4 @@
+echo off
 if "%rmg%"=="" echo The RMG variable is NOT defined!
 
 mkdir "%rmg%"\bin
@@ -16,5 +17,6 @@ g95 *.f90 -o "%rmg%"\bin\frankie.exe
 
 echo Compiling dassl...
 cd "%rmg%"\source\dassl
-g95 *.f *.f90 -o "%rmg%"\bin\dasslAUTO.exe
+g95 call_dasslAUTO.f90 daux.f ddassl.f dlinpk.f getflux.f reaction_flux.f res.f res_daepack.f -o "%rmg%"\bin\dasslAUTO.exe
 
+cd "%rmg%"
