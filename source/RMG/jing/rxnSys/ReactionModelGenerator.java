@@ -3610,7 +3610,7 @@ public class ReactionModelGenerator {
 		// species enumerated in the input file and the seed mechanisms as the core
 		if (!readrestart) {
 			LinkedHashSet reactionSet;
-			if (getSeedMechanism().shouldGenerateReactions()) {
+			if (hasSeedMechanisms() && getSeedMechanism().shouldGenerateReactions()) {
 				reactionSet = getReactionGenerator().react(allInitialCoreSpecies);
 			}
 			else {
