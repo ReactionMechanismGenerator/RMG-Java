@@ -217,13 +217,13 @@ c                READ(*,'(A)')ANS                                        THE0178
                 ELSE                                                    THE01850
                         INPUT='LST'                                     THE01860
                 ENDIF                                                   THE01870
-c	                                                                  THE01940
-c	write(*,*) ' Enter 0 to use default Cp(inf.) for all species'
-c	write(*,*) ' Enter 1 to use specify  Cp(inf.) for some species'
-c	read(*,*) iskip
+c                                                                     THE01940
+c   write(*,*) ' Enter 0 to use default Cp(inf.) for all species'
+c   write(*,*) ' Enter 1 to use specify  Cp(inf.) for some species'
+c   read(*,*) iskip
 c begin pey -- changed value of NEWFIL to make reading NASA fits from RMG easier
 c      NEWFIL=1
-	NEWFIL=0
+    NEWFIL=0
 c end pey
         iskip=0
 4       CONTINUE                                                        THE02920
@@ -264,7 +264,7 @@ c                READ(1,14)NUL                                           THE0312
         TMID=1500.0                                                     THE03270
 
         if(Iccount.eq.0) then
-c	pey added COMMAN to the following argument list
+c   pey added COMMAN to the following argument list
            CALL READIN(SPEC,INPUT,HF298,S298,CPL,T,REF,REF3,IE,NE,PHASE,
      +          NROT,NT,FUNITS,CFLAG,ICOUNT,COMMAN)
 
@@ -287,8 +287,8 @@ C              to its correct value of zero before we get into trouble)
         endif
 
         HOEFAI=0                                                        THE03310
-c	write (*,7621) input
-c 7621	format(1x,' input =',a14)
+c   write (*,7621) input
+c 7621  format(1x,' input =',a14)
         IF(INPUT.EQ.'DONE')GOTO 900                                     THE03400
         IF(FUNITS.EQ.'KJ')THEN                                          THE03410
                 CONST(1)=4.184                                          THE03420
@@ -362,10 +362,10 @@ C               count hindered rotor as 1/2 degree of freedom           THE03960
                         ENDIF                                           THE04080
                 ENDIF                                                   THE04090
 
-c	if the molecule is diatomic, the following if-block overrides the 
-c	user's choice of COMMAN and sets it to EXP. This was observed to
-c	give very bad results in certain cases. Now the user's option
-c	(RMG always uses WILHOI) is perserved. <pey 7/04>
+c   if the molecule is diatomic, the following if-block overrides the 
+c   user's choice of COMMAN and sets it to EXP. This was observed to
+c   give very bad results in certain cases. Now the user's option
+c   (RMG always uses WILHOI) is perserved. <pey 7/04>
 c                                                                        THE04100
 c        IF(NATOM.EQ.2)THEN                                              THE04110
 c                NT1000=0                                                THE04120
@@ -434,31 +434,31 @@ C                                                                       THE04590
                         THI=2000.                                       THE04690
                         GOTO 12987                                      THE04700
                 ENDIF                                                   THE04710
-	if (iskip.eq.0) then 
-c		write(*,*) '  Using all defaults'
-		 go to 1313
-		else
-		endif
-	icp=0
-	write(*,4321) spec(:16)
- 4321	format(1x,'next species is: ',a16)
-	write(*,*)'enter 0 to compute default Cp(Tinf) or 1 to specify'
-	read (*,*) icp
-	if (icp.eq.1) then
-		write(*,6521) SPEC(:16) 
- 6521	format(1x, 'enter T(high), Cp (hIgh) for: ',a16)
-		read(*,*) thigh, cpinfi
+    if (iskip.eq.0) then 
+c       write(*,*) '  Using all defaults'
+         go to 1313
+        else
+        endif
+    icp=0
+    write(*,4321) spec(:16)
+ 4321   format(1x,'next species is: ',a16)
+    write(*,*)'enter 0 to compute default Cp(Tinf) or 1 to specify'
+    read (*,*) icp
+    if (icp.eq.1) then
+        write(*,6521) SPEC(:16) 
+ 6521   format(1x, 'enter T(high), Cp (hIgh) for: ',a16)
+        read(*,*) thigh, cpinfi
 c********option to specify number of vib. and # rot
-		write(*,*) ' enter 0 for default vib or 1 to specify'
-		read(*,*) ivib
-		if(ivib.eq.1) then
-		write(*,*) 'enter # vib. and # int. rot '
-		read(*,*) ns,nrot
-		const(2)=ns-0.5*nrot
-		endif
-	else
-		write(*,*)  ' Using default Cp inf and default vib'
-	endif                                                                        
+        write(*,*) ' enter 0 for default vib or 1 to specify'
+        read(*,*) ivib
+        if(ivib.eq.1) then
+        write(*,*) 'enter # vib. and # int. rot '
+        read(*,*) ns,nrot
+        const(2)=ns-0.5*nrot
+        endif
+    else
+        write(*,*)  ' Using default Cp inf and default vib'
+    endif                                                                        
 C-----------------------------------------------------------------------THE04730
 C                                                                       THE04740
 C          EXTRAPOLATE/FIT INPUT CP DATA                                THE04750
@@ -469,7 +469,7 @@ C-----------------------------------------------------------------------THE04770
 
 c             calculate fits and list to file
 
-c			  Wilhoit polynomial fit
+c             Wilhoit polynomial fit
                 IF (COMMAN.EQ.'WILHOI')THEN                             THE04810
                    CALL WILHOI(NT,CPL,T,CPZERO,CPINFI,A1,B2)
                    write(25,*)
@@ -526,9 +526,9 @@ c     dmm 20000531 end modifications
                    WRITE(25,2540) SPEC(:16)
 2540               FORMAT('--> ',A16,' ---------',
      2                ' HARMONIC OSCIL FIT ------------')
-	if(ivib.eq.1) then
-	write(25,*)'# vib. and # int. rot. specified at run time'
- 	endif	 
+    if(ivib.eq.1) then
+    write(25,*)'# vib. and # int. rot. specified at run time'
+    endif    
                    DO 2560 IVIBE=1,3
                       WRITE(25,2550) IVIBE,B(IVIBE),B(IVIBE+3)
 2550                  FORMAT('       VIBRATIONS #',I1,':  MODES = ',
@@ -554,21 +554,21 @@ c     dmm 20000531 end modifications
                    ENDIF
 c*************************9/14/98***************************************
 c  added printout of only frequency info in chemdis format
-	write(26,2640)  spec(:16)
+    write(26,2640)  spec(:16)
  2640 format(1x, a16)
       write(26,2650) b(4),b(1), b(5), b(2), b(6), b(3)
  2650 format(1x,'3', 3(f7.1,2x,f6.3))          
 c*************************9/14/98***************************************
 
-		if (icp.eq.1) then
+        if (icp.eq.1) then
                    write(25,2595) cpzero,thigh, cpinfi
 2595               format(' (IN CHOSEN UNITS:    Cp(0): ',f6.3,
      2                '   Cp(',f6.0,'): ',f7.3,')')
-		else
+        else
                    write(25,2596) cpzero,cpinfi
 2596               format(' (IN CHOSEN UNITS:    Cp(0): ',f6.3,
      2                '   Cp(inf): ',f7.3,')')
-		endif
+        endif
                    IF(IFLG.EQ.1)THEN
                       COMMAN='EXP'
                       write(25,*)
@@ -879,9 +879,9 @@ C      REMEMBER:  NASA FORMAT  FIRST 7 COEFFICIENTS (HIGH TEMP)         THE07870
 C                              SECOND 7 COEFFICIENTS (LOW TEMP)         THE07880
 C                                                                       THE07890
 12987   CONTINUE                                                        THE07900
-c	begin pey (18may04) change to chemkin format
+c   begin pey (18may04) change to chemkin format
 c      WRITE(54,1010) SPEC(:16),(REF(I),I=1,2),REF3,(IE(I),              THE07910
-	WRITE(54,1010) SPEC(:16),'    ',REF3,(IE(I),
+    WRITE(54,1010) SPEC(:16),'    ',REF3,(IE(I),
 
 c     1NE(I),I=1,4),PHASE,TLO,THI,TMID,NROT,IC1                          THE07920
      1NE(I),I=1,4),PHASE,TLO,THI,TMID,IC1                               THE07920
@@ -890,92 +890,92 @@ c     1NE(I),I=1,4),PHASE,TLO,THI,TMID,NROT,IC1                          THE0792
       WRITE(54,113)F(4),F(5),F(6),F(7),IC4                              THE07950
 c 1010 FORMAT(A10,2A4,A6,4(A2,I3),A1,2F10.3,F9.3,3X,I2,I1)               THE07960
  1010 FORMAT(A16,A4,A4,4(A2,I3),A1,2F10.3,F9.3,5X,I1)                   THE07960
-c	end pey
+c   end pey
   112 FORMAT(5(1PE15.8),I5)                                             THE07970
   113 FORMAT(4(1PE15.8),15X,I5)                                         THE07980
 c
 c *** comparing fits to input values
 c
- 	write(25,2594)
- 2594	format(1x,/,'  HF298 input  HF298 fit  S298 input  S298 fit')  
+    write(25,2594)
+ 2594   format(1x,/,'  HF298 input  HF298 fit  S298 input  S298 fit')  
 C---   WANT TO COMPUTE H AND S AT 298 WITH THE LOW TEMP PARAMETERS      
       Tf=298.                                                            
       H=1.98717*Tf*((((F(5)*Tf/5.+F(4)/4.)*Tf+F(3)/3.)*Tf
      * +F(2)/2.)*Tf+F(1)+F(6)/Tf)                                                   
       Sfit=1.98717*((((F(5)*Tf/4.+F(4)/3.)*Tf+F(3)/2.)*Tf 
      *  +F(2))*Tf+F(1)*DLOG(Tf)+F(7))                                             
-	write(25, 2593) HF298,H,S298,SFIT
- 2593	format(1x,f9.0,4x,f9.0,3x,f7.2,4x,f7.2)
- 2220	write (25,2597)
+    write(25, 2593) HF298,H,S298,SFIT
+ 2593   format(1x,f9.0,4x,f9.0,3x,f7.2,4x,f7.2)
+ 2220   write (25,2597)
  2597 format(1x,/,'  T(K)',5x,'Cp input',3x,'Cp (HOE)',3x,'Delta',
      * 3x,'Cp (poly)',3x,'Delta')
 c
 c *** hoe fit
 c
 c *** if @, no polynomial fit, so skip next section
-	if(cflag.eq.'@') go to 2498
+    if(cflag.eq.'@') go to 2498
 c *** if * or diatomic, no harmonic oscillator fit, so only do poly fit
- 	if(cflag.eq.'*'.or.natom.eq.2.or.(.not.(COMMAN.eq.'HOE'))) then
-		do 2699 it=1,nt
-      			IF (t(it).LE.tmid) THEN
+    if(cflag.eq.'*'.or.natom.eq.2.or.(.not.(COMMAN.eq.'HOE'))) then
+        do 2699 it=1,nt
+                IF (t(it).LE.tmid) THEN
           CPpoly(it)=1.98717*((((F(5)*t(it)+F(4))*t(it)+F(3))*t(it)
      *      +F(2))*t(it)+F(1))         
-			else if (t(it).gt.thi) THEN
-			go to 2498
-  	    		ELSE
+            else if (t(it).gt.thi) THEN
+            go to 2498
+                ELSE
           CPpoly(it)=1.98717*((((F(12)*t(it)+F(11))*t(it)+F(10))*t(it)
      *      +F(9))*t(it)+F(8))        
-	      		ENDIF
-		dif2=cppoly(it) - cpl(it)
-		write(25,2698) t(it), cpl(it), cppoly(it), dif2  
- 2698		format(1x,f7.0,3x,f7.2,20x,  2(3x,f7.2))
- 2699		continue
+                ENDIF
+        dif2=cppoly(it) - cpl(it)
+        write(25,2698) t(it), cpl(it), cppoly(it), dif2  
+ 2698       format(1x,f7.0,3x,f7.2,20x,  2(3x,f7.2))
+ 2699       continue
 c***  end of only poly fit, jump over h.o.e. fit
-		go to 4432 
-		endif
- 2498		continue
+        go to 4432 
+        endif
+ 2498       continue
 c***  start h.o.e. fit comparison
 c*** if * or diatomic, no harmonic oscillator fit, so skip
- 	if(cflag.eq.'*'.or.natom.eq.2) go to 4432
-		do 2599 it=1,nt
-		cphoe(it)=1.987*cpseri(b,t(it))
+    if(cflag.eq.'*'.or.natom.eq.2) go to 4432
+        do 2599 it=1,nt
+        cphoe(it)=1.987*cpseri(b,t(it))
                 dif1=cphoe(it)-cpl(it)
 c***  no poly fit if @, so write h.o.e. comparison only
-		if(cflag.eq.'@') then
-			write(25,2298) t(it), cpl(it), cphoe(it), dif1
- 2298			format(1x,f7.0,3(3x,f7.2))
-			go to 2599
-     		 elseIF (t(it).LE.tmid) THEN
+        if(cflag.eq.'@') then
+            write(25,2298) t(it), cpl(it), cphoe(it), dif1
+ 2298           format(1x,f7.0,3(3x,f7.2))
+            go to 2599
+             elseIF (t(it).LE.tmid) THEN
           CPpoly(it)=1.98717*((((F(5)*t(it)+F(4))*t(it)+F(3))*t(it)
      *      +F(2))*t(it)+F(1))         
-		else if (t(it).gt.thi) THEN
-		go to 2799
-    		  ELSE
+        else if (t(it).gt.thi) THEN
+        go to 2799
+              ELSE
           CPpoly(it)=1.98717*((((F(12)*t(it)+F(11))*t(it)+F(10))*t(it)
      *      +F(9))*t(it)+F(8))        
-    		  ENDIF
-	dif2=cppoly(it) - cpl(it)
-		write(25,2598) t(it), cpl(it), cphoe(it), dif1,
+              ENDIF
+    dif2=cppoly(it) - cpl(it)
+        write(25,2598) t(it), cpl(it), cphoe(it), dif1,
      *  cppoly(it), dif2  
- 2598	format(1x,f7.0, 5(3x,f7.2))
- 2599	continue
- 2799	continue
+ 2598   format(1x,f7.0, 5(3x,f7.2))
+ 2599   continue
+ 2799   continue
 c*****getting high temp values
-	if(thi.le.t(nt)) go to 4432
-	hihoe=1.987*cpseri(b,thi)
-		if(cflag.eq.'@') then
-			write(25,2198) thi,hihoe
- 2198			format(1x,f7.0,13x,f7.2)
-		go to 4432
-		endif	
-		hipoly=1.98717*((((F(12)*thi  +F(11))*thi  +F(10))*thi  
-     *     	 +F(9))*thi  +F(8))
-		write(25,2398) thi, hihoe, hipoly 
- 2398	format(1x,f7.0,13x,f7.2,13x,f7.2)
+    if(thi.le.t(nt)) go to 4432
+    hihoe=1.987*cpseri(b,thi)
+        if(cflag.eq.'@') then
+            write(25,2198) thi,hihoe
+ 2198           format(1x,f7.0,13x,f7.2)
+        go to 4432
+        endif   
+        hipoly=1.98717*((((F(12)*thi  +F(11))*thi  +F(10))*thi  
+     *       +F(9))*thi  +F(8))
+        write(25,2398) thi, hihoe, hipoly 
+ 2398   format(1x,f7.0,13x,f7.2,13x,f7.2)
  4432   ICOUNT=ICOUNT+1                                                   
       GO TO 20                                                          THE08430
   900 CONTINUE                                                          THE08440
-c	begin pey -- don't print END at end of thermo file
+c   begin pey -- don't print END at end of thermo file
 c 1012         FORMAT('END',77(' '))                                     THE08450
 c      IF(NEWFIL.EQ.1)THEN                                               THE08460
 c                JLAST=JOUT+4                                            THE08470
@@ -986,7 +986,7 @@ c                WRITE(54,1012)                                          THE0851
 c        ELSE                                                            THE08520
 c                WRITE(54,1012)                                          THE08530
 c        ENDIF                                                           THE08540
-c	end pey
+c   end pey
 C        CLOSE(1,STATUS='KEEP')                                         THE08550
 C        CLOSE(54,STATUS='KEEP')                                        THE08560
       STOP ' *** Therfit Job Complete ***'
@@ -1115,8 +1115,8 @@ C                                                                       THE09680
 195     CONTINUE                                                        THE09750
                                                                         THE09760
        if(icp.eq.1) then
-		x(1,data)=thigh
-	else	 
+        x(1,data)=thigh
+    else     
                        X(1,DATA)=99999.
         endif                                
                         Y(DATA)=CPINF                                   THE09780
@@ -1868,7 +1868,7 @@ C                                                                       THE16920
       CHARACTER*2 IE(4)                                              
       CHARACTER*4 REF(2),INAME                                       
       CHARACTER*70 TEXT
-	CHARACTER*(*) COMMAN                                              
+    CHARACTER*(*) COMMAN                                              
       REAL*4 RN                                                      
       INTEGER NE(4),IND(70)                                          
       
@@ -1894,9 +1894,9 @@ C**********************************************************************
          T(7)=1500.                                             
 c**** Changed this wretched formatted read to be XMG-friendly DMM
 c     This whole program is an example of what not to do 
-c	Added COMMAN (WILHOI,EXP,or HOE) to list of inputs - PEY 
+c   Added COMMAN (WILHOI,EXP,or HOE) to list of inputs - PEY 
 
-	   READ(1,*) COMMAN
+       READ(1,*) COMMAN
          READ(1,168) SPEC(:16)
  168     format(A16)
          READ(1,*) HF298
@@ -1954,8 +1954,8 @@ c*********terminate input file with END starting in column 1
             WRITE(*,*)'SPECIES NOT PROCESSED'              
             stop                                      
          elseif(nt.gt.29) then
-            write(*,*)'  error:  too many data points'	
-            write(*,*)'  29 max allowed'	
+            write(*,*)'  error:  too many data points'  
+            write(*,*)'  29 max allowed'    
             WRITE(*,*)'SPECIES NOT PROCESSED'              
             stop                                       
          ENDIF                                                   
@@ -2908,7 +2908,7 @@ C     *          OUTPUT:WX=WORKING ARRAY                               *THS09190
 C     *                 A0,A1,A2=STEP SIZES                            *THS09200
 C     *                 F0,F1,F2=LAST VALUES OF F(X)                   *THS09210
 C                                                                       THS09220
-C	Added a catch to prevent infinite loops caused by bad Cp data.
+C   Added a catch to prevent infinite loops caused by bad Cp data.
 C     <pey 2-jul-04>
 C                                                                       THS09230
 C     ******************************************************************THS09240
@@ -2917,7 +2917,7 @@ C     ******************************************************************THS09240
       DIMENSION XO(N),S(N),WX(N)
       external F
 
-	iter = 1
+    iter = 1
 C     WRITE(9,*)'CALL TO SUBROUTINE BOUND'                              THS09280
       SN=0.0                                                            THS09290
       DO 90 I=1,N                                                       THS09300
@@ -2945,10 +2945,10 @@ C     WRITE(9,*)'ANOTHER CALL TO FOFX FROM BOUND:CALC F2'               THS09480
       A1=A2                                                             THS09520
       F0=F1                                                             THS09530
       F1=F2                                                             THS09540
-c	begin pey
-	iter=iter+1
-	if(iter.gt.500) stop 'Therfit Error: Failure in subroutine BOUND'
-c	end pey
+c   begin pey
+    iter=iter+1
+    if(iter.gt.500) stop 'Therfit Error: Failure in subroutine BOUND'
+c   end pey
       GO TO 101                                                         THS09550
   104 A2=A1                                                             THS09560
       A1=A0                                                             THS09570
@@ -2964,10 +2964,10 @@ C     IF(F0.GT.F1) WRITE(9,*)'CALL TO BOUND COMPLETED'                  THS09660
       IF(F0.GT.F1) RETURN                                               THS09670
       STEP=2.*STEP                                                      THS09680
 C     WRITE(9,*)'STEP SIZE IS DOUBLED FOR NEW ATTEMPT AT F0'            THS09690
-c	begin pey
-	iter=iter+1
-	if(iter.gt.500) stop 'Therfit Error: Failure in subroutine BOUND'
-c	end pey
+c   begin pey
+    iter=iter+1
+    if(iter.gt.500) stop 'Therfit Error: Failure in subroutine BOUND'
+c   end pey
       GO TO 104                                                         THS09700
 C                                                                       THS09710
       END                                                               THS09720
@@ -4426,12 +4426,12 @@ c       ENDIF                                                           THS23960
 *       READ(*,*)B                                                      THS24130
       DO 200 I=1,NT                                                     THS24140
       Y(I) = WYOFT(B,T(I),CPZERO,CPINF,CPIN(I))
-	X(I) = T(I)/(T(I)+B)
+    X(I) = T(I)/(T(I)+B)
 200   CONTINUE                                                          THS24160
-c	begin pey (25may04) -- fixed bug in following call to LLSQ
+c   begin pey (25may04) -- fixed bug in following call to LLSQ
 c      CALL LLSQ(T,Y,B1,4,NT,SSR,AVGERR)                                 THS24170
-	CALL LLSQ(X,Y,B1,4,NT,SSR,AVGERR)
-c	end pey
+    CALL LLSQ(X,Y,B1,4,NT,SSR,AVGERR)
+c   end pey
       DO 202 I=1,4                                                      THS24180
 202   A(I)=B1(I)                                                        THS24190
 c       DO 100 I=1,NT                                                    THS24200
