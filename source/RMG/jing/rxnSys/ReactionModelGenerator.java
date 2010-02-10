@@ -498,6 +498,9 @@ public class ReactionModelGenerator {
         				concentration /= 1000000;
         				unit = "mol/cm3";
         			}
+        			else if (unit.equals("molecule/cm3") || unit.equals("molecules/cm3")) {
+        				concentration /= 6.022e23;
+        			}
         			else if (!unit.equals("mole/cm3") && !unit.equals("mol/cm3")) {
         				throw new InvalidUnitException("Species Concentration in condition.txt!");
         			}

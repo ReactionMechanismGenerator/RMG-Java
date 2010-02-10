@@ -152,6 +152,9 @@ public class PrimaryReactionLibrary {
         				else if (unit.compareToIgnoreCase("mol/liter/s") == 0) {
            					A_multiplier = 1e-3;
         				}
+        				else if (unit.compareToIgnoreCase("molecule/cm3/s") == 0) {
+        					A_multiplier = 1/6.022e23;
+        				}
         			}
         			else if (line.startsWith("E")) {
         				StringTokenizer st = new StringTokenizer(line);
@@ -168,7 +171,10 @@ public class PrimaryReactionLibrary {
         				}
         				else if (unit.compareToIgnoreCase("J/mol") == 0) {
            					E_multiplier = 1/4186;
-        				}			
+        				}
+        				else if (unit.compareToIgnoreCase("Kelvin") == 0) {
+        					E_multiplier = 1.987e-3;
+        				}
         			}
         			line = ChemParser.readMeaningfulLine(data);
         		}
