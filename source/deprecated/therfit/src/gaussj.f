@@ -20,7 +20,7 @@
                 endif
               else if (ipiv(k).gt.1) then
 c                pause 'singular matrix in gaussj'
-				idum = 1
+                idum = 1
                 stop 'singular matrix in gaussj'
 
               endif
