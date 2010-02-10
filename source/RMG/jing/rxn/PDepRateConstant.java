@@ -174,7 +174,15 @@ public class PDepRateConstant {
 
 		//if (mode == Mode.INTERPOLATE) {
 
-		int t1 = -1, t2 = -1, p1 = -1, p2 = -1;
+		/*
+		 *  MRH 10Feb2010
+		 *  I am initializing the t1, t2, p1, p2 indices to be zero.
+		 *  In the case of the temperature of interest being equal to
+		 * 	the lowest temperature, t1 would not be re-defined (ditto
+		 * 	for the pressure)
+		 */
+		int t1 = 0, t2 = 0, p1 = 0, p2 = 0;
+		//int t1 = -1, t2 = -1, p1 = -1, p2 = -1;
 		double x = 0.0, x1 = 0.0, x2 = 0.0, y = 0.0, y1 = 0.0, y2 = 0.0;
 		double z11 = 0.0, z12 = 0.0, z21 = 0.0, z22 = 0.0;
 
