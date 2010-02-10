@@ -711,7 +711,9 @@ public class FastMasterEqn implements PDepKineticsEstimator {
 			tkn.nextToken();
 			Pmin = Double.parseDouble(tkn.nextToken());
 			for (int i = 0; i < numPress-2; i++) tkn.nextToken();
-			Pmax = Double.parseDouble(tkn.nextToken());
+			// Added by MRH on 10Feb2010 to handle the case where user only specifies one pressure
+			if (numPress == 1) Pmax = Pmin;
+			else Pmax = Double.parseDouble(tkn.nextToken());
 
 			str = readMeaningfulLine(br);
 			tkn = new StringTokenizer(str);

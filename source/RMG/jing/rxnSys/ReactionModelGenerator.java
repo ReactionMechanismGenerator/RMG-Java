@@ -577,8 +577,12 @@ public class ReactionModelGenerator {
         				inertConc /= 1000000;
         				unit = "mol/cm3";
         			}
+        			else if (unit.equals("molecule/cm3") || unit.equals("molecules/cm3")) {
+        				inertConc /= 6.022e23;
+        				unit = "mol/cm3";
+        			}
         			else if (!unit.equals("mole/cm3") && !unit.equals("mol/cm3")) {
-        				throw new InvalidUnitException("Species Concentration in condition.txt!");
+        				throw new InvalidUnitException("Inert Gas Concentration not recognized: " + unit);
         			}
 					
         			//SystemSnapshot.putInertGas(name,inertConc);
@@ -776,7 +780,64 @@ public class ReactionModelGenerator {
 							}
 						}
 						else if (pDepKinType.toLowerCase().equals("pdeparrhenius"))
-							PDepRateConstant.setMode(PDepRateConstant.Mode.PDEPARRHENIUS);
+							//PDepRateConstant.setMode(PDepRateConstant.Mode.PDEPARRHENIUS);
+						/*
+						 *  Updated by MRH on 10Feb2010
+						 *  	Allow user to specify # of T's/P's solved for in fame &
+						 *  	# of PLOG's to report
+						 */
+						PDepRateConstant.setMode(PDepRateConstant.Mode.PDEPARRHENIUS);
+						line = ChemParser.readMeaningfulLine(reader);
+						if (line.startsWith("TRange")) {
+							st = new StringTokenizer(line);
+							String temp = st.nextToken(); // Should be "TRange:"
+							String TUNITS = ChemParser.removeBrace(st.nextToken());
+							int numT = Integer.parseInt(st.nextToken());
+							Temperature[] listOfTs = new Temperature[numT];
+							int counter = 0;
+							while (st.hasMoreTokens()) {
+								listOfTs[counter] = new Temperature(Double.parseDouble(st.nextToken()),TUNITS);
+								++counter;
+							}
+							if (counter != numT) {
+								System.out.println("Warning in TRange field of PressureDependence:\n" +
+										"The stated number of temperatures is: " + numT + 
+										"but the length of the temperature list is: " + counter);
+							}
+							
+							line = ChemParser.readMeaningfulLine(reader);
+							String PUNITS = "";
+							if (line.startsWith("PRange")) {
+								st = new StringTokenizer(line);
+								temp = st.nextToken(); // Should be "PRange:"
+								PUNITS = ChemParser.removeBrace(st.nextToken());
+								int numP = Integer.parseInt(st.nextToken());
+								Pressure[] listOfPs = new Pressure[numP];
+								counter = 0;
+								while (st.hasMoreTokens()) {
+									listOfPs[counter] = new Pressure(Double.parseDouble(st.nextToken()),PUNITS);
+									++counter;
+								}
+								if (counter != numP) {
+									System.out.println("Warning in PRange field of PressureDependence:\n" +
+											"The stated number of pressures is: " + numT + 
+											"but the length of the pressure list is: " + counter);
+								}
+								FastMasterEqn.setTemperatures(listOfTs);
+								PDepRateConstant.setTemperatures(listOfTs);
+								FastMasterEqn.setPressures(listOfPs);
+								PDepRateConstant.setPressures(listOfPs);
+								PDepArrheniusKinetics.setNumPressures(numP);
+								PDepArrheniusKinetics.setPressures(listOfPs);
+							}
+							else {
+								System.err.println("RMG cannot locate PRange field for PDepArrhenius.");
+								System.exit(0);
+							}
+							
+							line = ChemParser.readMeaningfulLine(reader);
+						}
+						
 						// 6Jul2009-MRH:
 						//	RATE mode reports p-dep rxn kinetics as: A 0.0 0.0
 						//		where A is k(T,P) evaluated at the single temperature
@@ -793,7 +854,8 @@ public class ReactionModelGenerator {
 			}
 			
         	// include species (optional)
-			if (!PDepRateConstant.getMode().name().equals("CHEBYSHEV"))
+			if (!PDepRateConstant.getMode().name().equals("CHEBYSHEV") &&
+					!PDepRateConstant.getMode().name().equals("PDEPARRHENIUS"))
 				line = ChemParser.readMeaningfulLine(reader);
 			if (line.startsWith("IncludeSpecies")) {
 				StringTokenizer st = new StringTokenizer(line);

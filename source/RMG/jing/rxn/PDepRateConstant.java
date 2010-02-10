@@ -207,25 +207,35 @@ public class PDepRateConstant {
 		x1 = 1.0 / temperatures[t1].getK();
 		t2 = t1+1;
 		x2 = 1.0 / temperatures[t2].getK();
-		y1 = Math.log10(pressures[p1].getPa());
-		p2 = p1+1;
-		y2 = Math.log10(pressures[p2].getPa());
 		
-		x = 1.0 / temperature.getK();
-		y = Math.log10(pressure.getPa());
-
-		z11 = Math.log10(rateConstants[t1][p1]);
-		z12 = Math.log10(rateConstants[t1][p2]);
-		z21 = Math.log10(rateConstants[t2][p1]);
-		z22 = Math.log10(rateConstants[t2][p2]);
-
-		rate = (z11 * (x2 - x) * (y2 - y) +
-				z21 * (x - x1) * (y2 - y) +
-				z12 * (x2 - x) * (y - y1) +
-				z22 * (x - x1) * (y - y1)) /
-				((x2 - x1) * (y2 - y1));
-
-		rate = Math.pow(10, rate);
+		if (pressures.length == 1) {
+			x = 1.0 / temperature.getK();
+			double z1 = Math.log10(rateConstants[t1][0]);
+			double z2 = Math.log10(rateConstants[t2][0]);
+			rate = (z2 - z1) * (x - x1) / (x2 - x1) + z1;
+			rate = Math.pow(10,rate);
+		}
+		else {
+			y1 = Math.log10(pressures[p1].getPa());
+			p2 = p1+1;
+			y2 = Math.log10(pressures[p2].getPa());
+			
+			x = 1.0 / temperature.getK();
+			y = Math.log10(pressure.getPa());
+	
+			z11 = Math.log10(rateConstants[t1][p1]);
+			z12 = Math.log10(rateConstants[t1][p2]);
+			z21 = Math.log10(rateConstants[t2][p1]);
+			z22 = Math.log10(rateConstants[t2][p2]);
+	
+			rate = (z11 * (x2 - x) * (y2 - y) +
+					z21 * (x - x1) * (y2 - y) +
+					z12 * (x2 - x) * (y - y1) +
+					z22 * (x - x1) * (y - y1)) /
+					((x2 - x1) * (y2 - y1));
+	
+			rate = Math.pow(10, rate);
+		}
 
 		/*}
 		else if (mode == Mode.CHEBYSHEV && chebyshev != null) {
