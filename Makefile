@@ -78,7 +78,7 @@ clean:
 test:
 	mkdir -p $(RUNDIR)
 	cp examples/RMG/1,3-hexadiene/condition.txt $(RUNDIR)
-	export RMG=$(CURDIR); cd $(RUNDIR); java -classpath $(BINDIR)/RMG.jar RMG condition.txt | tee RMG.log
+	export RMG=$(CURDIR); cd $(RUNDIR); java -jar $(BINDIR)/RMG.jar condition.txt | tee RMG.log
 
 help:
 	@echo ""
