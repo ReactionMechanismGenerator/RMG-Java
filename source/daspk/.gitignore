@@ -1,0 +1,17 @@
+# I don't think we're allowed to distribute these files,
+# which is why they are being excluded from the git repository
+#  (in case we decide to make the repository public later on)
+ddaspk.f
+dbanpre.f
+daux.f
+dilupre.f
+dlinpk.f
+drbdpre.f
+drbgpre.f
+dsensd.f
+dsparsk.f
+adf_dummy.f
+mpi_dummy.f
+
+
+
