@@ -153,7 +153,7 @@ public class PrimaryReactionLibrary {
            					A_multiplier = 1e-3;
         				}
         				else if (unit.compareToIgnoreCase("molecule/cm3/s") == 0) {
-        					A_multiplier = 1/6.022e23;
+        					A_multiplier = 6.022e23;
         				}
         			}
         			else if (line.startsWith("E")) {

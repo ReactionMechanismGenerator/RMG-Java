@@ -36,7 +36,10 @@ fortran: dirs fame frankie GATPFit dassl
 # You can also build everything
 all: dirs fame frankie GATPFit dassl daspk RMG
 
-RMG: dirs $(BINDIR)/RMG.jar
+RMG: dirs 
+	mkdir -p $(BUILDDIR)/RMG
+	ant compile
+	ant jar
 
 fame: dirs
 	make -C $(SOURCEDIR)/fame SOURCEDIR=$(SOURCEDIR)/fame BUILDDIR=$(BUILDDIR)/fame BINDIR=$(BINDIR) F90=$(F90) F90FLAGS="$(F90FLAGS)"
@@ -54,10 +57,7 @@ GATPFit: dirs
 	make -C $(SOURCEDIR)/GATPFit SOURCEDIR=$(SOURCEDIR)/GATPFit BUILDDIR=$(BUILDDIR)/GATPFit BINDIR=$(BINDIR) F90=$(F90) F90FLAGS="$(F90FLAGS)"
 
 
-$(BINDIR)/RMG.jar:
-	mkdir -p $(BUILDDIR)/RMG
-	ant compile
-	ant jar
+
 
 dirs:
 	mkdir -p $(BUILDDIR)
