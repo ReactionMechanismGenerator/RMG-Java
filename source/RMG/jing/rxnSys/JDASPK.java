@@ -312,7 +312,7 @@ public class JDASPK extends JDAS {
 			renameSuccess = f.renameTo(newFile);
                         if (!renameSuccess)
                         {
-                            System.out.println("Renaming of RWORK file(s) failed.");
+                            System.out.println("Renaming of RWORK file(s) failed. renameIntermediateFilesBeforeRun()");
                             System.exit(0);
                         }
                 }
@@ -325,7 +325,7 @@ public class JDASPK extends JDAS {
                     renameSuccess = f.renameTo(newFile);
                     if (!renameSuccess)
                     {
-                        System.out.println("Renaming of IWORK file(s) failed.");
+                        System.out.println("Renaming of IWORK file(s) failed. renameIntermediateFilesBeforeRun()");
                         System.exit(0);
                     }
                 }
@@ -338,7 +338,7 @@ public class JDASPK extends JDAS {
                     renameSuccess = f.renameTo(newFile);
                     if (!renameSuccess)
                     {
-                        System.out.println("Renaming of variables.dat file(s) failed.");
+                        System.out.println("Renaming of variables.dat file(s) failed. renameIntermediateFilesBeforeRun()");
                         System.exit(0);
                     }
                 }
@@ -352,7 +352,7 @@ public class JDASPK extends JDAS {
             boolean renameSuccess = f.renameTo(newFile);
             if (!renameSuccess)
             {
-                System.out.println("Renaming of RWORK file(s) failed. (renameIntermediateFiles())");
+                System.out.println("Renaming of RWORK file(s) failed. (renameIntermediateFilesAfterRun())");
                 System.exit(0);
             }
             
@@ -363,7 +363,7 @@ public class JDASPK extends JDAS {
             renameSuccess = f.renameTo(newFile);
             if (!renameSuccess)
             {
-                System.out.println("Renaming of IWORK file(s) failed. (renameIntermediateFiles())");
+                System.out.println("Renaming of IWORK file(s) failed. (renameIntermediateFilesAfterRun())");
                 System.exit(0);
             }
             
@@ -374,7 +374,7 @@ public class JDASPK extends JDAS {
             renameSuccess = f.renameTo(newFile);
             if (!renameSuccess)
             {
-                System.out.println("Renaming of variables.dat file(s) failed. (renameIntermediateFiles())");
+                System.out.println("Renaming of variables.dat file(s) failed. (renameIntermediateFilesAfterRun())");
                 System.exit(0);
             }
 	}
