@@ -270,7 +270,8 @@ public class JDASPK extends JDAS {
                 renameIntermediateFilesBeforeRun();
 		
 		//run the solver on the input file
-		boolean error = false;
+		boolean silentError = true;//start off assuming there is an error
+
                 try {
 
                         String[] command = {workingDirectory +  "/bin/daspkAUTO.exe"};//5/5/08 gmagoon: changed to call daspkAUTO.exe
@@ -282,15 +283,16 @@ public class JDASPK extends JDAS {
                                 BufferedReader br = new BufferedReader(isr);
                                 String line=null;
                                 while ( (line = br.readLine()) != null) {
-					System.out.println(line);
                                         line = line.trim();
+					silentError = false; //there is actual output from the ODE solver
                                         if (!(line.contains("ODESOLVER SUCCESSFUL"))) {
-                                                System.err.println("Error running the ODESolver: "+line);
-                                                error = true;
-                                        }          
+                                            System.err.println("Error running the ODESolver: "+line);
+                                        }
                                 }
+				if(silentError){
+				    System.err.println("Error: No stdout output from DASPK");
+				}
                         int exitValue = solver.waitFor();
-			System.out.println(exitValue);
                 }
                 catch (Exception e) {
                         String err = "Error in running ODESolver \n";
