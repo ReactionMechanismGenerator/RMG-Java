@@ -2916,7 +2916,7 @@ public class ReactionModelGenerator {
     }
     
     public void readRestartSpecies() {    	
-		// Read in core species
+		// Read in core species -- NOTE code is almost duplicated in Read in edge species (second part of procedure)
 		try {
 			FileReader in = new FileReader("Restart/coreSpecies.txt");
 			BufferedReader reader = new BufferedReader(in);
@@ -2963,7 +2963,7 @@ public class ReactionModelGenerator {
 				// The first line of a new species is the user-defined name
 				String totalSpeciesName = line;
 				String[] splitString1 = totalSpeciesName.split("[(]");
-				String[] splitString2 = splitString1[1].split("[)]");
+				String[] splitString2 = splitString1[splitString1.length-1].split("[)]"); // Change JDM to reflect MRH 2-11-2010
 				// The remaining lines are the graph
 				Graph g = ChemParser.readChemGraph(reader);
 				// Make the ChemGraph, assuming it does not contain a forbidden structure
