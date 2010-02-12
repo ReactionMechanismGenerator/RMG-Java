@@ -273,7 +273,7 @@ public class JDASPK extends JDAS {
 		boolean error = false;
                 try {
 
-                        String[] command = {workingDirectory +  "/bin/daspkAUTO.exe"};//5/5/08 gmagoon: changed to call dasslAUTO.exe
+                        String[] command = {workingDirectory +  "/bin/daspkAUTO.exe"};//5/5/08 gmagoon: changed to call daspkAUTO.exe
                                 File runningDir = new File("ODESolver");
 
                                 Process solver = Runtime.getRuntime().exec(command, null, runningDir);
@@ -282,6 +282,7 @@ public class JDASPK extends JDAS {
                                 BufferedReader br = new BufferedReader(isr);
                                 String line=null;
                                 while ( (line = br.readLine()) != null) {
+					System.out.println(line);
                                         line = line.trim();
                                         if (!(line.contains("ODESOLVER SUCCESSFUL"))) {
                                                 System.err.println("Error running the ODESolver: "+line);
@@ -289,6 +290,7 @@ public class JDASPK extends JDAS {
                                         }          
                                 }
                         int exitValue = solver.waitFor();
+			System.out.println(exitValue);
                 }
                 catch (Exception e) {
                         String err = "Error in running ODESolver \n";
