@@ -677,7 +677,7 @@ public class ChemParser {
 
         for (int i = 0; i < speNum; i++) {
         	String name = st.nextToken().trim();
-        	if (!name.equals("M")) {
+        	if (!name.toUpperCase().equals("M")) {
         		Species spe = (Species)p_speciesSet.getSpeciesFromChemkinName(name);
         		if (spe == null) throw new InvalidStructureException("unknown reactant/product: " + name);
         		reactionSpe.add(spe);
@@ -747,10 +747,14 @@ public class ChemParser {
 
         for (int i = 0; i < speNum; i++) {
         	String name = st.nextToken().trim();
-        	if (!name.equals("M")&&!name.equals("M)")) {//7/29/09 gmagoon: changed this, in consultation with MRH, to accept species that start with M...; previously, species beginning with M were not read as reactants or products
+        	if ((!name.equals("M"))&&(!name.equals("M)"))&&(!name.equals("m"))&&(!name.equals("m)"))) {//7/29/09 gmagoon: changed this, in consultation with MRH, to accept species that start with M...; previously, species beginning with M were not read as reactants or products
 				if (name.endsWith("(")) {
         			name = name.substring(0,name.length()-1).trim();
         		}
+				if (name.endsWith(")")) {
+					String[] tempString = name.split("\\(");
+					name = tempString[0];
+				}
         		Species spe = (Species)p_speciesSet.get(name);
         		if (spe == null) throw new InvalidStructureException("unknown reactant/product: " + name);
         		reactionSpe.add(spe);
