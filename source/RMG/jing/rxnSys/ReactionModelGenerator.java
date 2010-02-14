@@ -3068,7 +3068,7 @@ public class ReactionModelGenerator {
 	        			}
 	        		}
 	        		if (!foundRxn) {
-	        			r.generateReverseReaction();
+	        			if (r.hasReverseReaction()) r.generateReverseReaction();
 	        			restartCoreRxns.add(r);
 	        		}
 				}
