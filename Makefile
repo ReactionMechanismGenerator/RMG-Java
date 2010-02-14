@@ -30,8 +30,11 @@ F90FLAGS_NDEBUG=-fmod=$(BUILDDIR) -ftrace=full
 # Default is to build those that come complete with the RMG distribution
 base: dirs fame frankie GATPFit dassl RMG
 
-# Make just the complete Fortran dependencies (i.e. not the Java)
+# Make just the Fortran dependencies (i.e. not the Java)
 fortran: dirs fame frankie GATPFit dassl
+
+# Make all the Fortran (including DASPK)
+all_fortran: dirs fame frankie GATPFit dassl daspk
 
 # You can also build everything
 all: dirs fame frankie GATPFit dassl daspk RMG

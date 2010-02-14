@@ -240,7 +240,7 @@ public class RMG {
 			System.out.println("#    Dr. Jing Song, Dr. John Wen, Dr. Richard West,            #");
 			System.out.println("#    Andrew Wong, Dr. Hsi-Wu Wong, Dr. Paul E. Yelvington,     #");
 			System.out.println("#    Dr. Joanna Yu                                             #");
-                        System.out.println("#                                                              #");
+            System.out.println("#                                                              #");
 			System.out.println("#  The RMGVE graphical user interface to the RMG database      #");
 			System.out.println("#  was written by John Robotham.                               #");
 			System.out.println("#                                                              #");
