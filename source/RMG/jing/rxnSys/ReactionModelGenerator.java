@@ -1722,7 +1722,7 @@ public class ReactionModelGenerator {
 				if(!terminated){
 					allTerminated = false;
 					System.out.println("Reaction System "+(i+1)+" has not reached its termination criterion");
-					if (rs.isModelValid()) { 
+					if (rs.isModelValid()&& runKillableToPreventInfiniteLoop(intermediateSteps, iterationNumber)) {
 						System.out.println("although it seems to be valid (complete), so it was not interrupted for being invalid.");
 						System.out.println("This probably means there was an error with the ODE solver, and we risk entering an endless loop.");
 						System.out.println("Stopping.");
@@ -3959,6 +3959,22 @@ public class ReactionModelGenerator {
     
     public static double getAtol(){
     	return atol;
+    }
+
+    public boolean runKillableToPreventInfiniteLoop(boolean intermediateSteps, int iterationNumber) {
+	ReactionSystem rs0 = (ReactionSystem)reactionSystemList.get(0);
+	if (!intermediateSteps)//if there are no intermediate steps (for example when using AUTO method), return true;
+	    return true;
+	else if (rs0.finishController.terminationTester instanceof ReactionTimeTT){
+	    if (iterationNumber - 1 > timeStep.size()){ //-1 correction needed since when this is called, iteration number has been incremented
+		return true;
+	    }
+	}
+	else //the case where intermediate conversions are specified
+	    if (iterationNumber -1 > numConversions){ //see above; it is possible there is an off-by-one error here, so further testing will be needed
+		return true;
+	    }
+	return false; //return false if none of the above criteria are met
     }
 }
 /*********************************************************************
