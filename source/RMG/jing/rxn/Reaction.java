@@ -33,6 +33,7 @@ package jing.rxn;
 import java.io.*;
 import jing.chem.*;
 import java.util.*;
+
 import jing.param.*;
 import jing.mathTool.*;
 import jing.chemParser.*;
@@ -1212,9 +1213,22 @@ public class Reaction {
 		
 		String result = getStructure().toRestartString(hasReverseReaction()); //+ " "+getStructure().direction + " "+getStructure().redundancy;
 		// MRH 18Jan2010: Restart files do not look for direction/redundancy
-		String k = getKinetics().toChemkinString(calculateHrxn(p_temperature),p_temperature, true);
-		result = result + " " + k;
-		return result;
+		/*
+		 * MRH 14Feb2010: Handle reactions with multiple kinetics
+		 */
+		String totalResult = "";
+		if (hasAdditionalKinetics()) {
+			HashSet allKinetics = getAllKinetics();
+			for (Iterator kinetics_iter = allKinetics.iterator(); kinetics_iter.hasNext();) {
+				Kinetics kinet = (Kinetics)kinetics_iter.next();
+				totalResult += result + " " + kinet.toChemkinString(calculateHrxn(p_temperature), p_temperature, true) + "\n\tDUP\n";
+			}
+		}
+		else {
+			String k = getKinetics().toChemkinString(calculateHrxn(p_temperature),p_temperature, true);
+			totalResult += result + " " + k;
+		}
+		return totalResult;
 	}
 
   //## operation toFullString()

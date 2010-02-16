@@ -2642,23 +2642,53 @@ public class ReactionModelGenerator {
 	}
 	
 	private void writeCoreReactions() {
-		BufferedWriter bw = null;
+		BufferedWriter bw_rxns = null;
+		BufferedWriter bw_troe = null;
+		BufferedWriter bw_lindemann = null;
+		BufferedWriter bw_thirdbody = null;
 		
         try {
-            bw = new BufferedWriter(new FileWriter("Restart/coreReactions.txt"));
+            bw_rxns = new BufferedWriter(new FileWriter("Restart/coreReactions.txt"));
+            bw_troe = new BufferedWriter(new FileWriter("Restart/troeReactions.txt"));
+            bw_lindemann = new BufferedWriter(new FileWriter("Restart/lindemannReactions.txt"));
+            bw_thirdbody = new BufferedWriter(new FileWriter("Restart/thirdBodyReactions.txt"));
             
     		String EaUnits = ArrheniusKinetics.getEaUnits();
-    		bw.write("UnitsOfEa: " + EaUnits);
-    		bw.newLine();
+    		String AUnits = ArrheniusKinetics.getAUnits();
+    		bw_rxns.write("UnitsOfEa: " + EaUnits);
+    		bw_rxns.newLine();
+    		bw_troe.write("Unit:\nA: mol/cm3/s\nE: " + EaUnits + "\n\nReactions:");
+    		bw_troe.newLine();
+    		bw_lindemann.write("Unit:\nA: mol/cm3/s\nE: " + EaUnits + "\n\nReactions:");
+    		bw_lindemann.newLine();
+    		bw_thirdbody.write("Unit:\nA: mol/cm3/s\nE: " + EaUnits + "\n\nReactions :");
+    		bw_thirdbody.newLine();
             
 			CoreEdgeReactionModel cerm = (CoreEdgeReactionModel)getReactionModel();
 			LinkedHashSet allcoreRxns = cerm.core.reaction;
 			for(Iterator iter=allcoreRxns.iterator(); iter.hasNext();){
 				Reaction reaction = (Reaction) iter.next();
 				if (reaction.isForward()) {
-					//bw.write(reaction.toChemkinString(new Temperature(298,"K")));
-					bw.write(reaction.toRestartString(new Temperature(298,"K")));
-					bw.newLine();
+					if (reaction instanceof TROEReaction) {
+						TROEReaction troeRxn = (TROEReaction) reaction;
+						bw_troe.write(troeRxn.toRestartString(new Temperature(298,"K")));
+						bw_troe.newLine();
+					}
+					else if (reaction instanceof LindemannReaction) {
+						LindemannReaction lindeRxn = (LindemannReaction) reaction;
+						bw_lindemann.write(lindeRxn.toRestartString(new Temperature(298,"K")));
+						bw_lindemann.newLine();
+					}
+					else if (reaction instanceof ThirdBodyReaction) {
+						ThirdBodyReaction tbRxn = (ThirdBodyReaction) reaction;
+						bw_thirdbody.write(tbRxn.toRestartString(new Temperature(298,"K")));
+						bw_thirdbody.newLine();
+					}
+					else {
+						//bw.write(reaction.toChemkinString(new Temperature(298,"K")));
+						bw_rxns.write(reaction.toRestartString(new Temperature(298,"K")));
+						bw_rxns.newLine();
+					}
 				}
 			}
         } catch (FileNotFoundException ex) {
@@ -2667,9 +2697,21 @@ public class ReactionModelGenerator {
             ex.printStackTrace();
         } finally {
             try {
-                if (bw != null) {
-                    bw.flush();
-                    bw.close();
+                if (bw_rxns != null) {
+                    bw_rxns.flush();
+                    bw_rxns.close();
+                }
+                if (bw_troe != null) {
+                    bw_troe.flush();
+                    bw_troe.close();
+                }
+                if (bw_lindemann != null) {
+                    bw_lindemann.flush();
+                    bw_lindemann.close();
+                }
+                if (bw_thirdbody != null) {
+                    bw_thirdbody.flush();
+                    bw_thirdbody.close();
                 }
             } catch (IOException ex) {
                 ex.printStackTrace();
@@ -3026,7 +3068,7 @@ public class ReactionModelGenerator {
 	        			}
 	        		}
 	        		if (!foundRxn) {
-	        			r.generateReverseReaction();
+	        			if (r.hasReverseReaction()) r.generateReverseReaction();
 	        			restartCoreRxns.add(r);
 	        		}
 				}
@@ -3038,6 +3080,24 @@ public class ReactionModelGenerator {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+		
+		try {
+			SeedMechanism.readThirdBodyReactions("Restart/thirdBodyReactions.txt");
+		} catch (IOException e1) {
+			e1.printStackTrace();
+		}
+		try {
+			SeedMechanism.readLindemannReactions("Restart/lindemannReactions.txt");
+		} catch (IOException e1) {
+			e1.printStackTrace();
+		}
+		try {
+			SeedMechanism.readTroeReactions("Restart/troeReactions.txt");
+		} catch (IOException e1) {
+			e1.printStackTrace();
+		}
+		
+		restartCoreRxns.addAll(SeedMechanism.reactionSet);
 		
 		// Read in edge reactions
 		try {

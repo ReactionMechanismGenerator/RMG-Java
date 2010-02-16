@@ -677,7 +677,7 @@ public class ChemParser {
 
         for (int i = 0; i < speNum; i++) {
         	String name = st.nextToken().trim();
-        	if (!name.equals("M")) {
+        	if (!name.toUpperCase().equals("M")) {
         		Species spe = (Species)p_speciesSet.getSpeciesFromChemkinName(name);
         		if (spe == null) throw new InvalidStructureException("unknown reactant/product: " + name);
         		reactionSpe.add(spe);
@@ -747,12 +747,49 @@ public class ChemParser {
 
         for (int i = 0; i < speNum; i++) {
         	String name = st.nextToken().trim();
+        	/*
+        	 * 14Feb2010: MRH adding additional comments
+        	 * 	This if statement exists to catch the "third body term" in the reaction string
+        	 * 		These "M" species are not RMG species, just notation to represent a pdep reaction
+        	 * 	A Lindemann/Troe reaction will have (+m) in the reaction string, thus we check
+        	 * 		if the "name" is equal to "m)" after tokenizing the reaction string using the
+        	 * 		plus "+" character.
+        	 * A 3rdBodyReaction will have +m in the reaction string, thus we also check if the "name"
+        	 * 		is equal to "m" after tokenizing the reaction string.
+        	 */
         	if ((!name.equals("M"))&&(!name.equals("M)"))&&(!name.equals("m"))&&(!name.equals("m)"))) {//7/29/09 gmagoon: changed this, in consultation with MRH, to accept species that start with M...; previously, species beginning with M were not read as reactants or products
 				if (name.endsWith("(")) {
+					/*
+					 * 14Feb2010: MRH adding additional comments
+					 * If the reaction string is from a Lindemann/Troe reaction, the string (+m) will
+					 * 		appear in the reacion string.  When tokenizing the string using "+", A+B(+m)
+					 * 		will capture "A", "B(" and "m)".  We already handle the "m)"; see above.  We
+					 * 		handle the "B(" with this if statement
+					 */
         			name = name.substring(0,name.length()-1).trim();
         		}
+				/*
+				 * 14Feb2010: MRH adding additional comments
+				 * If the species comes from a Restart file, a (#) will be tacked on at the end of
+				 * 	the chemical formula.  We are getting the species using its name (see below) and
+				 * 	the (#) is not part of the name.  Thus, we want to remove the (#) before searching
+				 *  the speciesSet.
+				 * HOWEVER, some species, e.g. CH2(S), have a () that we want to keep.
+				 */
+				if (name.endsWith(")")) {
+					String[] tempString = name.split("\\(");
+					name = tempString[0];
+					for (int numSplits = 1; numSplits < tempString.length; numSplits++) {
+						if (!tempString[numSplits].toLowerCase().equals(tempString[numSplits].toUpperCase())) {
+							name += "(" + tempString[numSplits];
+						}
+					}
+				}
         		Species spe = (Species)p_speciesSet.get(name);
-        		if (spe == null) throw new InvalidStructureException("unknown reactant/product: " + name);
+        		if (spe == null) {
+        			System.out.println("Error in parseReactionSpecies: RMG cannot find the following species in Dictionary: " + name);
+        			throw new InvalidStructureException("unknown reactant/product: " + name);
+        		}
         		reactionSpe.add(spe);
         	}
         }
