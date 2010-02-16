@@ -4025,6 +4025,7 @@ public class ReactionModelGenerator {
 	ReactionSystem rs0 = (ReactionSystem)reactionSystemList.get(0);
 	if (!intermediateSteps)//if there are no intermediate steps (for example when using AUTO method), return true;
 	    return true;
+	//if there are intermediate steps, the run is killable if the iteration number exceeds the number of time steps / conversions
 	else if (rs0.finishController.terminationTester instanceof ReactionTimeTT){
 	    if (iterationNumber - 1 > timeStep.size()){ //-1 correction needed since when this is called, iteration number has been incremented
 		return true;
