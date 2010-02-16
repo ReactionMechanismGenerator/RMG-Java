@@ -4027,8 +4027,6 @@ public class ReactionModelGenerator {
 	    return true;
 	else if (rs0.finishController.terminationTester instanceof ReactionTimeTT){
 	    if (iterationNumber - 1 > timeStep.size()){ //-1 correction needed since when this is called, iteration number has been incremented
-		System.out.println("Debugging line: Iteration number = " + iterationNumber);
-		System.out.println("Debugging line: Time step size = " + timeStep.size());
 		return true;
 	    }
 	}
