@@ -4026,12 +4026,14 @@ public class ReactionModelGenerator {
 	if (!intermediateSteps)//if there are no intermediate steps (for example when using AUTO method), return true;
 	    return true;
 	else if (rs0.finishController.terminationTester instanceof ReactionTimeTT){
-	    if (iterationNumber - 2 > timeStep.size()){ //-1 correction needed since when this is called, iteration number has been incremented
+	    if (iterationNumber - 1 > timeStep.size()){ //-1 correction needed since when this is called, iteration number has been incremented
+		System.out.println("Debugging line: Iteration number = " + iterationNumber);
+		System.out.println("Debugging line: Time step size = " + timeStep.size());
 		return true;
 	    }
 	}
 	else //the case where intermediate conversions are specified
-	    if (iterationNumber - 2 > numConversions){ //see above; it is possible there is an off-by-one error here, so further testing will be needed
+	    if (iterationNumber - 1 > numConversions){ //see above; it is possible there is an off-by-one error here, so further testing will be needed
 		return true;
 	    }
 	return false; //return false if none of the above criteria are met
