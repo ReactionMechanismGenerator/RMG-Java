@@ -202,7 +202,7 @@ public class JDASSL extends JDAS {
 			getAutoEdgeReactionInfo((CoreEdgeReactionModel) p_reactionModel, p_temperature, p_pressure);
         
 		// Add flags that specify whether the concentrations are constant or not
-		getConcentractionFlags(p_reactionModel);
+		getConcentrationFlags(p_reactionModel);
                 //this should be the end of the input file
                 try{
                     bw.flush();

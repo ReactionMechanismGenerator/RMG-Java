@@ -189,7 +189,7 @@ public class JDASPK extends JDAS {
 			getAutoEdgeReactionInfo((CoreEdgeReactionModel) p_reactionModel, p_temperature, p_pressure);
 	
                // Add flags that specify whether the concentrations are constant or not
-		getConcentractionFlags(p_reactionModel);
+		getConcentrationFlags(p_reactionModel);
                 //this should be the end of the input file
                 try{
                     bw.flush();
@@ -527,7 +527,7 @@ public class JDASPK extends JDAS {
                     // if 0:  will integrate the ODE as normal
                     // eg. liquid phase calculations with a constant concentration of O2 (the solubility limit - replenished from the gas phase)
                     // for normal use, this will be a sequence of '0 's
-                    getConcentractionFlags(p_reactionModel);        
+                    getConcentrationFlags(p_reactionModel);        
                 }
                 catch (IOException e) {
                     System.err.println("Problem writing Solver Input File!");
