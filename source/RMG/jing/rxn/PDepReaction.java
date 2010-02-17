@@ -107,6 +107,7 @@ public class PDepReaction extends Reaction {
 		setReactant(reac);
 		setProduct(prod);
 		pDepRate = null;
+		kineticsFromPrimaryReactionLibrary = rxn.isFromPrimaryReactionLibrary();
 	}
 	
 	/**
@@ -126,6 +127,7 @@ public class PDepReaction extends Reaction {
 		setReactant(reac);
 		setProduct(prod);
 		pDepRate = null;
+		kineticsFromPrimaryReactionLibrary = kin.getFromPrimaryReactionLibrary();
 	}
 	
 	/**
