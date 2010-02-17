@@ -1086,6 +1086,15 @@ public abstract class JDAS implements DAESolver {
             //	This variable will determine if the ODESolver assumes constant volume or not.
             boolean setVolumeConstant = false;
             int[] tempVector = new int[p_reactionModel.getSpeciesNumber()];
+	    System.out.println("Debugging line: p_reactionModel.getSpeciesNumber(): "+p_reactionModel.getSpeciesNumber());
+	    System.out.println("Debugging line: IDTranslator.size(): "+IDTranslator.size());
+	    Iterator i = IDTranslator.keySet().iterator();
+	    while (i.hasNext()){
+		Species spec = (Species)i.next();
+		Integer id = (Integer)IDTranslator.get(i);
+		System.out.println("Debugging line: " + spec + " " + id);
+	    }
+
                     for (Iterator iter = p_reactionModel.getSpecies(); iter.hasNext(); ) {
                     Species spe = (Species)iter.next();
                     int id = getRealID(spe);
