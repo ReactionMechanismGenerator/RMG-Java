@@ -1058,7 +1058,7 @@ public abstract class JDAS implements DAESolver {
         
         }
 	
-	public void getConcentractionFlags(ReactionModel p_reactionModel) {
+	public void getConcentrationFlags(ReactionModel p_reactionModel) {
             try{
                     // Add list of flags for constantConcentration
             // one for each species, and a final one for the volume
