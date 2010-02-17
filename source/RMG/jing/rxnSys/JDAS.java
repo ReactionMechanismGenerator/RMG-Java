@@ -505,6 +505,11 @@ public abstract class JDAS implements DAESolver {
         }
         return id.intValue();
     }
+	public boolean IDTranslatorContainsQ(Species p_species){
+	    Integer id = (Integer)IDTranslator.get(p_species);
+	    if (id == null) return false;
+	    else return true;
+	}
 	
 	protected void initializeWorkSpace() {
 		for (int i=0; i<30; i++)
@@ -597,7 +602,7 @@ public abstract class JDAS implements DAESolver {
 				for (int i=0; i<weightMapSize; i++){
 					String name = (String)colliderIter.next();
 					Species spe = SpeciesDictionary.getInstance().getSpeciesFromName(name);
-					if (spe != null){
+					if (spe != null && IDTranslatorContainsQ(spe)){//gmagoon 2/17/10: added check to make sure the collider is in the ID translator as well (i.e. it is in the core); without this check, edge species can pass this test, causing them to be added to the IDTranslator when getRealID is called below
 						colliders[numCollider] = getRealID(spe);
 						efficiency[numCollider] = ((Double)weightMap.get(name)).doubleValue();
 						numCollider++;
@@ -629,7 +634,7 @@ public abstract class JDAS implements DAESolver {
 				for (int i=0; i<weightMapSize; i++){
 					String name = (String)colliderIter.next();
 					Species spe = SpeciesDictionary.getInstance().getSpeciesFromName(name);
-					if (spe != null){
+					if (spe != null && IDTranslatorContainsQ(spe)){//gmagoon 2/17/10: added check to make sure the collider is in the ID translator as well (i.e. it is in the core); without this check, edge species can pass this test, causing them to be added to the IDTranslator when getRealID is called below
 						colliders[numCollider] = getRealID(spe);
 						efficiency[numCollider] = ((Double)weightMap.get(name)).doubleValue();
 						numCollider++;
@@ -655,7 +660,7 @@ public abstract class JDAS implements DAESolver {
 				for (int i=0; i<weightMapSize; i++){
 					String name = (String)colliderIter.next();
 					Species spe = SpeciesDictionary.getInstance().getSpeciesFromName(name);
-					if (spe != null){
+					if (spe != null && IDTranslatorContainsQ(spe)){//gmagoon 2/17/10: added check to make sure the collider is in the ID translator as well (i.e. it is in the core); without this check, edge species can pass this test, causing them to be added to the IDTranslator when getRealID is called below
 						colliders[numCollider] = getRealID(spe);
 						efficiency[numCollider] = ((Double)weightMap.get(name)).doubleValue();
 						numCollider++;
