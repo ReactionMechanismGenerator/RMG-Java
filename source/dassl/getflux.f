@@ -257,7 +257,7 @@ C		keff = kzero * (1/(1+Pr)) * F
 	   END IF
 
          IF (LINDEREACTIONARRAY(20*I+9) .EQ. 1) THEN
-            RRATE = fRATE/LINDEREACTIONRATEARRAY(20*I+5)
+            RRATE = fRATE/LINDEREACTIONRATEARRAY(17*I+5)
          ELSE
             RRATE = 0
          END IF
