@@ -1183,9 +1183,25 @@ public class ReactionModelGenerator {
 					line = ChemParser.readMeaningfulLine(reader);
 					tempString = line.split("GenerateReactions: ");
 					String generateStr = tempString[tempString.length-1].trim();
-					boolean generate = (generateStr.equalsIgnoreCase("yes") ||
+					boolean generate = true;
+					if (generateStr.equalsIgnoreCase("yes") ||
 						generateStr.equalsIgnoreCase("on") ||
-						generateStr.equalsIgnoreCase("true"));
+						generateStr.equalsIgnoreCase("true")){
+						generate = true;
+						System.out.println("Will generate cross-reactions between species in seed mechanism " + name);
+					} else if(generateStr.equalsIgnoreCase("no") ||
+							  generateStr.equalsIgnoreCase("off") ||
+							  generateStr.equalsIgnoreCase("false")) {
+						generate = false;
+						System.out.println("Will NOT initially generate cross-reactions between species in seed mechanism "+ name);
+						System.out.println("This may have unintended consequences");			   
+					}
+					else {
+						System.err.println("Input file invalid");
+						System.err.println("Please include a 'GenerateReactions: yes/no' line for seed mechanism "+name);
+						System.exit(0);
+					}
+										   
 					if (numMechs==0) {
 						setSeedMechanism(new SeedMechanism(name, path, generate));
 						++numMechs; 	
