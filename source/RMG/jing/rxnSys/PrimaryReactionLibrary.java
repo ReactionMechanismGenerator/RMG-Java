@@ -611,7 +611,7 @@ public class PrimaryReactionLibrary {
         	return;
         }
         catch (Exception e) {
-        	System.out.println("RMG did not read the following Seed Mechanism file:" 
+        	System.out.println("RMG did not read the following Primary Reaction Library file:"
         			+ p_lindemannReactionFileName);
         }
     }
