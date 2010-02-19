@@ -61,11 +61,12 @@ import jing.chemParser.*;
 
 public class SeedMechanism {
     
-    protected String name;		//## attribute name 
+    protected static String name;		//## attribute name 
     
-    protected LinkedHashSet reactionSet = new LinkedHashSet();		//## attribute reactionSet 
+    protected static LinkedHashSet reactionSet = new LinkedHashSet();		//## attribute reactionSet 
     
-    protected HashMap speciesSet = new HashMap();		//## attribute speciesSet 
+    protected static HashMap speciesSet = new HashMap();		//## attribute speciesSet 
+    
     
     private boolean generateReactions = false;
 
@@ -265,7 +266,7 @@ public class SeedMechanism {
         }
     }
     
-    public void readThirdBodyReactions(String p_thirdBodyReactionFileName) throws IOException {
+    public static void readThirdBodyReactions(String p_thirdBodyReactionFileName) throws IOException {
         try {
         	FileReader in = new FileReader(p_thirdBodyReactionFileName);
         	BufferedReader data = new BufferedReader(in);
@@ -347,7 +348,7 @@ public class SeedMechanism {
         }
     }
      
-    public void readTroeReactions(String p_troeReactionFileName) throws IOException {
+    public static void readTroeReactions(String p_troeReactionFileName) throws IOException {
         try {
         	FileReader in = new FileReader(p_troeReactionFileName);
         	BufferedReader data = new BufferedReader(in);
@@ -410,7 +411,12 @@ public class SeedMechanism {
         		StringTokenizer st = new StringTokenizer(lowLine, "/");
         		String temp = st.nextToken().trim();
         		String lowString = st.nextToken().trim();
-        		ArrheniusKinetics low = ChemParser.parseSimpleArrheniusKinetics(lowString, A_multiplier, E_multiplier);
+        		/*
+        		 * MRH 17Feb2010:
+        		 * 	The units of the k_zero (LOW) Arrhenius parameters are different from the units of
+        		 * 	k_inf Arrhenius parameters by a factor of cm3/mol, hence the getReactantNumber()+1
+        		 */
+        		ArrheniusKinetics low = ChemParser.parseSimpleArrheniusKinetics(lowString, A_multiplier, E_multiplier, r.getReactantNumber()+1);
         		
         		// parse Troe parameters
         		String troeLine = ChemParser.readMeaningfulLine(data);
@@ -455,7 +461,7 @@ public class SeedMechanism {
         }
     }
     
-    public void readLindemannReactions(String p_lindemannReactionFileName) throws IOException {
+    public static void readLindemannReactions(String p_lindemannReactionFileName) throws IOException {
         try {
         	FileReader in = new FileReader(p_lindemannReactionFileName);
         	BufferedReader data = new BufferedReader(in);
@@ -518,7 +524,12 @@ public class SeedMechanism {
         		StringTokenizer st = new StringTokenizer(lowLine, "/");
         		String temp = st.nextToken().trim();
         		String lowString = st.nextToken().trim();
-        		ArrheniusKinetics low = ChemParser.parseSimpleArrheniusKinetics(lowString, A_multiplier, E_multiplier);
+        		/*
+        		 * MRH 17Feb2010:
+        		 * 	The units of the k_zero (LOW) Arrhenius parameters are different from the units of
+        		 * 	k_inf Arrhenius parameters by a factor of cm3/mol, hence the getReactantNumber()+1
+        		 */
+        		ArrheniusKinetics low = ChemParser.parseSimpleArrheniusKinetics(lowString, A_multiplier, E_multiplier, r.getReactantNumber()+1);
         		
         		LindemannReaction lr = LindemannReaction.make(r,thirdBodyList, low);
 				lr.setKineticsSource("Seed Mechanism: "+ name);

@@ -108,12 +108,10 @@ public class JDASSL extends JDAS {
         //outputString = new StringBuilder();
         //first generate an id for all the species
     	Iterator spe_iter = p_reactionModel.getSpecies();
-    	// Commented out by MRH on 1-Jun-2009:
-    	//	What is the purpose of this while loop?
-//    	while (spe_iter.hasNext()){
-//    		Species spe = (Species)spe_iter.next();
-//    		int id = getRealID(spe);
-//    	}
+    	while (spe_iter.hasNext()){ //gmagoon 021810; this section had been commented out since Jun 2009, but I am restoring it in order to have IDs generated for all the core species; later on, in transferReaction (called from, e.g. generateLindemannReactionList) we may want to check whether a species is in the core, and we do this through IDTranslator, which is the only place we can relatively easily get this information; without this fix, certain colliders may not be considered for Lindemann, Troe, and third-body reactions
+    		Species spe = (Species)spe_iter.next();
+    		int id = getRealID(spe);
+    	}
     	double startTime = System.currentTimeMillis();
 		
 		ReactionTime rt = p_beginStatus.getTime();
@@ -202,7 +200,7 @@ public class JDASSL extends JDAS {
 			getAutoEdgeReactionInfo((CoreEdgeReactionModel) p_reactionModel, p_temperature, p_pressure);
         
 		// Add flags that specify whether the concentrations are constant or not
-		getConcentractionFlags(p_reactionModel);
+		getConcentrationFlags(p_reactionModel);
                 //this should be the end of the input file
                 try{
                     bw.flush();

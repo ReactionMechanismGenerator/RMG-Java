@@ -70,6 +70,12 @@ public class LindemannReaction extends ThirdBodyReaction {
 		return s;
 	}
 	
+	public String toRestartString(Temperature p_temperature) {
+		String s = super.toRestartString(p_temperature)+'\n';
+		s += "LOW/ " + low.toChemkinString(calculateHrxn(p_temperature),p_temperature, false) + " /\n";
+		return s;
+	}
+	
 	public String toChemkinString(Temperature p_temperature, Pressure p_pressure) {
 		String s = super.toChemkinString(p_temperature)+"\n";
 		s += "LOW/ " + low.toChemkinString(calculateHrxn(p_temperature), p_temperature, false) + "/\n";

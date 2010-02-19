@@ -362,7 +362,7 @@ public class ChemParser {
         s.setDirection(1);
 
         // parse kinetics
-        ArrheniusKinetics k = parseSimpleArrheniusKinetics(arrheniusString, p_AMultiplier, p_EMultiplier);
+        ArrheniusKinetics k = parseSimpleArrheniusKinetics(arrheniusString, p_AMultiplier, p_EMultiplier, r.size());
 
         return Reaction.makeReaction(s,k,generateReverse);
         //#]
@@ -407,7 +407,7 @@ public class ChemParser {
 	        s.setDirection(1);
 
 	        // parse kinetics
-	        ArrheniusKinetics k = parseSimpleArrheniusKinetics(arrheniusString, p_AMultiplier, p_EMultiplier);
+	        ArrheniusKinetics k = parseSimpleArrheniusKinetics(arrheniusString, p_AMultiplier, p_EMultiplier, r.size());
 
 	        Reaction forward = Reaction.makeReaction(s,k,generateReverse);
 
@@ -418,7 +418,7 @@ public class ChemParser {
 	        s.setDirection(1);
 
 	        // parse kinetics
-	        ArrheniusKinetics k = parseSimpleArrheniusKinetics(arrheniusString, p_AMultiplier, p_EMultiplier);
+	        ArrheniusKinetics k = parseSimpleArrheniusKinetics(arrheniusString, p_AMultiplier, p_EMultiplier, r.size());
 
 	        //Reaction forward = Reaction.makeReaction(s,k,generateReverse);
 
@@ -473,7 +473,7 @@ public class ChemParser {
 		        s.setDirection(1);
 
 		        // parse kinetics
-		        ArrheniusKinetics k = parseSimpleArrheniusKinetics(arrheniusString, p_AMultiplier, p_EMultiplier);
+		        ArrheniusKinetics k = parseSimpleArrheniusKinetics(arrheniusString, p_AMultiplier, p_EMultiplier, r.size());
 				//s.setRedundancy(redundancy);;
 		        Reaction forward = Reaction.makeReaction(s,k,generateReverse);
 
@@ -484,7 +484,7 @@ public class ChemParser {
 		        s.setDirection(1);
 
 		        // parse kinetics
-		        ArrheniusKinetics k = parseSimpleArrheniusKinetics(arrheniusString, p_AMultiplier, p_EMultiplier);
+		        ArrheniusKinetics k = parseSimpleArrheniusKinetics(arrheniusString, p_AMultiplier, p_EMultiplier, r.size());
 				//s.setRedundancy(redundancy);
 		        //Reaction forward = Reaction.makeReaction(s,k,generateReverse);
 
@@ -497,7 +497,7 @@ public class ChemParser {
 		        s.setDirection(1);
 
 		        // parse kinetics
-		        ArrheniusKinetics k = parseSimpleArrheniusKinetics(arrheniusString, p_AMultiplier, p_EMultiplier);
+		        ArrheniusKinetics k = parseSimpleArrheniusKinetics(arrheniusString, p_AMultiplier, p_EMultiplier, r.size());
 				//s.setRedundancy(redundancy);
 		        return Reaction.makeReaction(s,k,generateReverse);
 			}
@@ -508,7 +508,7 @@ public class ChemParser {
 		        s.setDirection(1);
 
 		        // parse kinetics
-		        ArrheniusKinetics k = parseSimpleArrheniusKinetics(arrheniusString, p_AMultiplier, p_EMultiplier);
+		        ArrheniusKinetics k = parseSimpleArrheniusKinetics(arrheniusString, p_AMultiplier, p_EMultiplier, r.size());
 		        Reaction forwardReaction = Reaction.makeReaction(s,k,generateReverse);
 		        return forwardReaction.getReverseReaction();
 			}
@@ -658,7 +658,7 @@ public class ChemParser {
 
       // parse kinetics
       //ArrheniusKinetics k = parseSimpleArrheniusKinetics(arrheniusString, p_AMultiplier, p_EMultiplier);
-      ArrheniusKinetics k = parsePrimaryArrheniusKinetics(arrheniusString, p_AMultiplier,p_EMultiplier);
+      ArrheniusKinetics k = parsePrimaryArrheniusKinetics(arrheniusString, p_AMultiplier,p_EMultiplier, r.size());
 
       return Reaction.makeReaction(s,k,generateReverse);
       //#]
@@ -677,7 +677,7 @@ public class ChemParser {
 
         for (int i = 0; i < speNum; i++) {
         	String name = st.nextToken().trim();
-        	if (!name.equals("M")) {
+        	if (!name.toUpperCase().equals("M")) {
         		Species spe = (Species)p_speciesSet.getSpeciesFromChemkinName(name);
         		if (spe == null) throw new InvalidStructureException("unknown reactant/product: " + name);
         		reactionSpe.add(spe);
@@ -690,7 +690,17 @@ public class ChemParser {
 
     //## operation parsePrimaryArrheniusKinetics(String)
     //svp
-      public static ArrheniusKinetics parsePrimaryArrheniusKinetics(String p_string, double p_AMultiplier,double p_EMultiplier) {
+    /*
+     * Updated by MRH on 17Feb2010
+     * Until a few days ago, RMG only allowed "A" units of "mol/cm3/s" or "mol/liter/s" when a user
+     * 	supplied a primary reaction library or seed mechanism to RMG.  Very recently, MRH added the
+     * 	option "molecule/cm3/s" for CFG to use.  What MRH was not aware of was that EVERY "A" factor
+     * 	would then be multiplied by Avogadro's #, insteaad of just the bimolecular reactions.
+     * 
+     * 	This update addresses that issue: "A" factors are only multiplied by the "AMultiplier" when
+     * 	the reaction is bimolecular.
+     */
+      public static ArrheniusKinetics parsePrimaryArrheniusKinetics(String p_string, double p_AMultiplier,double p_EMultiplier, int numReacts) {
           //#[ operation parseArrheniusKinetics(String)
           StringTokenizer token = new StringTokenizer(p_string);
           if (token.countTokens() != 6) throw new InvalidKineticsFormatException();
@@ -719,8 +729,20 @@ public class ChemParser {
           double Dn = Double.parseDouble(token.nextToken());
           double DE = Double.parseDouble(token.nextToken());
 
-
-          UncertainDouble ua = new UncertainDouble(A*p_AMultiplier, DA, "Multiplier");
+          UncertainDouble ua;
+          if (numReacts == 1) {
+        	  ua = new UncertainDouble(A, DA, "Multiplier");
+          } else if (numReacts == 2) {
+          	ua = new UncertainDouble(A*p_AMultiplier,1,"Multiplier");
+          } else if (numReacts == 3) {
+          	ua = new UncertainDouble(A*p_AMultiplier*p_AMultiplier,1,"Multiplier");
+          } else {
+        	  ua = null;
+        	  System.err.println("In ChemParser.parseSimpleArrheniusKinetics:\nThe number of " +
+        			  "reactants exceeds three.");
+        	  System.exit(0);
+          }
+          //UncertainDouble ua = new UncertainDouble(A*p_AMultiplier, DA, "Multiplier");
           UncertainDouble un = new UncertainDouble(n, Dn, "Adder");
           UncertainDouble ue = new UncertainDouble(E*p_EMultiplier, DE, "Adder");
 
@@ -747,12 +769,49 @@ public class ChemParser {
 
         for (int i = 0; i < speNum; i++) {
         	String name = st.nextToken().trim();
-        	if (!name.equals("M")&&!name.equals("M)")) {//7/29/09 gmagoon: changed this, in consultation with MRH, to accept species that start with M...; previously, species beginning with M were not read as reactants or products
+        	/*
+        	 * 14Feb2010: MRH adding additional comments
+        	 * 	This if statement exists to catch the "third body term" in the reaction string
+        	 * 		These "M" species are not RMG species, just notation to represent a pdep reaction
+        	 * 	A Lindemann/Troe reaction will have (+m) in the reaction string, thus we check
+        	 * 		if the "name" is equal to "m)" after tokenizing the reaction string using the
+        	 * 		plus "+" character.
+        	 * A 3rdBodyReaction will have +m in the reaction string, thus we also check if the "name"
+        	 * 		is equal to "m" after tokenizing the reaction string.
+        	 */
+        	if ((!name.equals("M"))&&(!name.equals("M)"))&&(!name.equals("m"))&&(!name.equals("m)"))) {//7/29/09 gmagoon: changed this, in consultation with MRH, to accept species that start with M...; previously, species beginning with M were not read as reactants or products
 				if (name.endsWith("(")) {
+					/*
+					 * 14Feb2010: MRH adding additional comments
+					 * If the reaction string is from a Lindemann/Troe reaction, the string (+m) will
+					 * 		appear in the reacion string.  When tokenizing the string using "+", A+B(+m)
+					 * 		will capture "A", "B(" and "m)".  We already handle the "m)"; see above.  We
+					 * 		handle the "B(" with this if statement
+					 */
         			name = name.substring(0,name.length()-1).trim();
         		}
+				/*
+				 * 14Feb2010: MRH adding additional comments
+				 * If the species comes from a Restart file, a (#) will be tacked on at the end of
+				 * 	the chemical formula.  We are getting the species using its name (see below) and
+				 * 	the (#) is not part of the name.  Thus, we want to remove the (#) before searching
+				 *  the speciesSet.
+				 * HOWEVER, some species, e.g. CH2(S), have a () that we want to keep.
+				 */
+				if (name.endsWith(")")) {
+					String[] tempString = name.split("\\(");
+					name = tempString[0];
+					for (int numSplits = 1; numSplits < tempString.length; numSplits++) {
+						if (!tempString[numSplits].toLowerCase().equals(tempString[numSplits].toUpperCase())) {
+							name += "(" + tempString[numSplits];
+						}
+					}
+				}
         		Species spe = (Species)p_speciesSet.get(name);
-        		if (spe == null) throw new InvalidStructureException("unknown reactant/product: " + name);
+        		if (spe == null) {
+        			System.out.println("Error in parseReactionSpecies: RMG cannot find the following species in Dictionary: " + name);
+        			throw new InvalidStructureException("unknown reactant/product: " + name);
+        		}
         		reactionSpe.add(spe);
         	}
         }
@@ -762,7 +821,13 @@ public class ChemParser {
     }
 
     //## operation parseSimpleArrheniusKinetics(String,double,double)
-    public static ArrheniusKinetics parseSimpleArrheniusKinetics(String p_string, double p_AMultiplier, double p_EMultiplier) {
+    /*
+     * MRH 17Feb2010:
+     * 	BUG FIX: All pre-exponential factors, regardless of whether there were one or
+     * 		two reactants, were multiplied by the AMultiplier.  The pre-exponential
+     * 		factor is now altered only for a bimolecular reaction.
+     */
+    public static ArrheniusKinetics parseSimpleArrheniusKinetics(String p_string, double p_AMultiplier, double p_EMultiplier, int numReacts) {
         //#[ operation parseSimpleArrheniusKinetics(String,double,double)
         StringTokenizer token = new StringTokenizer(p_string);
         if (token.countTokens() != 3) throw new InvalidKineticsFormatException();
@@ -772,7 +837,20 @@ public class ChemParser {
         double n = Double.parseDouble(token.nextToken());
         double E = Double.parseDouble(token.nextToken());
 
-        UncertainDouble ua = new UncertainDouble(A*p_AMultiplier, 1, "Multiplier");
+        UncertainDouble ua;
+        if (numReacts == 1) {
+        	ua = new UncertainDouble(A,1,"Multiplier");
+        } else if (numReacts == 2) {
+        	ua = new UncertainDouble(A*p_AMultiplier,1,"Multiplier");
+        } else if (numReacts == 3) {
+        	ua = new UncertainDouble(A*p_AMultiplier*p_AMultiplier,1,"Multiplier");
+        } else {
+        	ua = null;
+        	System.err.println("In ChemParser.parseSimpleArrheniusKinetics:\nThe number of " +
+        			"reactants exceeds three.");
+        	System.exit(0);
+        }
+        //UncertainDouble ua = new UncertainDouble(A*p_AMultiplier, 1, "Multiplier");
         UncertainDouble un = new UncertainDouble(n, 0, "Adder");
         UncertainDouble ue = new UncertainDouble(E*p_EMultiplier, 0, "Adder");
 

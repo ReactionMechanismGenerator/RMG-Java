@@ -505,6 +505,11 @@ public abstract class JDAS implements DAESolver {
         }
         return id.intValue();
     }
+	public boolean IDTranslatorContainsQ(Species p_species){
+	    Integer id = (Integer)IDTranslator.get(p_species);
+	    if (id == null) return false;
+	    else return true;
+	}
 	
 	protected void initializeWorkSpace() {
 		for (int i=0; i<30; i++)
@@ -597,7 +602,7 @@ public abstract class JDAS implements DAESolver {
 				for (int i=0; i<weightMapSize; i++){
 					String name = (String)colliderIter.next();
 					Species spe = SpeciesDictionary.getInstance().getSpeciesFromName(name);
-					if (spe != null){
+					if (spe != null && IDTranslatorContainsQ(spe)){//gmagoon 02/17/10: added check to make sure the collider is in the IDTranslator as well (i.e. it is in the core); without this check, edge species can pass this test, causing them to be added to the IDTranslator when getRealID is called below; 02/18/10 UPDATE: IDTranslator will not contain inert species like Ar, N2 (in any case, they are not tracked explicitly in the ODESolver); BUT, even in original case (before yesterday's change), they would not be found in SpeciesDictionary either ; Bottom line: collider parameters for Ar/N2 will never be used, and as far as I can tell, never have been
 						colliders[numCollider] = getRealID(spe);
 						efficiency[numCollider] = ((Double)weightMap.get(name)).doubleValue();
 						numCollider++;
@@ -629,7 +634,7 @@ public abstract class JDAS implements DAESolver {
 				for (int i=0; i<weightMapSize; i++){
 					String name = (String)colliderIter.next();
 					Species spe = SpeciesDictionary.getInstance().getSpeciesFromName(name);
-					if (spe != null){
+					if (spe != null && IDTranslatorContainsQ(spe)){//gmagoon 2/17/10: added check to make sure the collider is in the ID translator as well (i.e. it is in the core); without this check, edge species can pass this test, causing them to be added to the IDTranslator when getRealID is called below; 02/18/10 UPDATE: IDTranslator will not contain inert species like Ar, N2 (in any case, they are not tracked explicitly in the ODESolver); BUT, even in original case (before yesterday's change), they would not be found in SpeciesDictionary either ; Bottom line: collider parameters for Ar/N2 will never be used, and as far as I can tell, never have been
 						colliders[numCollider] = getRealID(spe);
 						efficiency[numCollider] = ((Double)weightMap.get(name)).doubleValue();
 						numCollider++;
@@ -655,7 +660,7 @@ public abstract class JDAS implements DAESolver {
 				for (int i=0; i<weightMapSize; i++){
 					String name = (String)colliderIter.next();
 					Species spe = SpeciesDictionary.getInstance().getSpeciesFromName(name);
-					if (spe != null){
+					if (spe != null && IDTranslatorContainsQ(spe)){//gmagoon 2/17/10: added check to make sure the collider is in the ID translator as well (i.e. it is in the core); without this check, edge species can pass this test, causing them to be added to the IDTranslator when getRealID is called below; 02/18/10 UPDATE: IDTranslator will not contain inert species like Ar, N2 (in any case, they are not tracked explicitly in the ODESolver); BUT, even in original case (before yesterday's change), they would not be found in SpeciesDictionary either ; Bottom line: collider parameters for Ar/N2 will never be used, and as far as I can tell, never have been
 						colliders[numCollider] = getRealID(spe);
 						efficiency[numCollider] = ((Double)weightMap.get(name)).doubleValue();
 						numCollider++;
@@ -1058,7 +1063,7 @@ public abstract class JDAS implements DAESolver {
         
         }
 	
-	public void getConcentractionFlags(ReactionModel p_reactionModel) {
+	public void getConcentrationFlags(ReactionModel p_reactionModel) {
             try{
                     // Add list of flags for constantConcentration
             // one for each species, and a final one for the volume
@@ -1086,6 +1091,15 @@ public abstract class JDAS implements DAESolver {
             //	This variable will determine if the ODESolver assumes constant volume or not.
             boolean setVolumeConstant = false;
             int[] tempVector = new int[p_reactionModel.getSpeciesNumber()];
+//	    System.out.println("Debugging line: p_reactionModel.getSpeciesNumber(): "+p_reactionModel.getSpeciesNumber());
+//	    System.out.println("Debugging line: IDTranslator.size(): "+IDTranslator.size());
+//	    Iterator j = IDTranslator.keySet().iterator();
+//	    while (j.hasNext()){
+//		Species spec = (Species)j.next();
+//		Integer id = (Integer)IDTranslator.get(j);
+//		System.out.println("Debugging line: " + spec + " " + id);
+//	    }
+
                     for (Iterator iter = p_reactionModel.getSpecies(); iter.hasNext(); ) {
                     Species spe = (Species)iter.next();
                     int id = getRealID(spe);

@@ -779,65 +779,65 @@ public class ReactionModelGenerator {
 								line = ChemParser.readMeaningfulLine(reader);
 							}
 						}
-						else if (pDepKinType.toLowerCase().equals("pdeparrhenius"))
+						else if (pDepKinType.toLowerCase().equals("pdeparrhenius")) {
 							//PDepRateConstant.setMode(PDepRateConstant.Mode.PDEPARRHENIUS);
-						/*
-						 *  Updated by MRH on 10Feb2010
-						 *  	Allow user to specify # of T's/P's solved for in fame &
-						 *  	# of PLOG's to report
-						 */
-						PDepRateConstant.setMode(PDepRateConstant.Mode.PDEPARRHENIUS);
-						line = ChemParser.readMeaningfulLine(reader);
-						if (line.startsWith("TRange")) {
-							st = new StringTokenizer(line);
-							String temp = st.nextToken(); // Should be "TRange:"
-							String TUNITS = ChemParser.removeBrace(st.nextToken());
-							int numT = Integer.parseInt(st.nextToken());
-							Temperature[] listOfTs = new Temperature[numT];
-							int counter = 0;
-							while (st.hasMoreTokens()) {
-								listOfTs[counter] = new Temperature(Double.parseDouble(st.nextToken()),TUNITS);
-								++counter;
-							}
-							if (counter != numT) {
-								System.out.println("Warning in TRange field of PressureDependence:\n" +
-										"The stated number of temperatures is: " + numT + 
-										"but the length of the temperature list is: " + counter);
-							}
-							
+							/*
+							 *  Updated by MRH on 10Feb2010
+							 *  	Allow user to specify # of T's/P's solved for in fame &
+							 *  	# of PLOG's to report
+							 */
+							PDepRateConstant.setMode(PDepRateConstant.Mode.PDEPARRHENIUS);
 							line = ChemParser.readMeaningfulLine(reader);
-							String PUNITS = "";
-							if (line.startsWith("PRange")) {
+							if (line.startsWith("TRange")) {
 								st = new StringTokenizer(line);
-								temp = st.nextToken(); // Should be "PRange:"
-								PUNITS = ChemParser.removeBrace(st.nextToken());
-								int numP = Integer.parseInt(st.nextToken());
-								Pressure[] listOfPs = new Pressure[numP];
-								counter = 0;
+								String temp = st.nextToken(); // Should be "TRange:"
+								String TUNITS = ChemParser.removeBrace(st.nextToken());
+								int numT = Integer.parseInt(st.nextToken());
+								Temperature[] listOfTs = new Temperature[numT];
+								int counter = 0;
 								while (st.hasMoreTokens()) {
-									listOfPs[counter] = new Pressure(Double.parseDouble(st.nextToken()),PUNITS);
+									listOfTs[counter] = new Temperature(Double.parseDouble(st.nextToken()),TUNITS);
 									++counter;
 								}
-								if (counter != numP) {
-									System.out.println("Warning in PRange field of PressureDependence:\n" +
-											"The stated number of pressures is: " + numT + 
-											"but the length of the pressure list is: " + counter);
+								if (counter != numT) {
+									System.out.println("Warning in TRange field of PressureDependence:\n" +
+											"The stated number of temperatures is: " + numT + 
+											"but the length of the temperature list is: " + counter);
 								}
-								FastMasterEqn.setTemperatures(listOfTs);
-								PDepRateConstant.setTemperatures(listOfTs);
-								FastMasterEqn.setPressures(listOfPs);
-								PDepRateConstant.setPressures(listOfPs);
-								PDepArrheniusKinetics.setNumPressures(numP);
-								PDepArrheniusKinetics.setPressures(listOfPs);
+								
+								line = ChemParser.readMeaningfulLine(reader);
+								String PUNITS = "";
+								if (line.startsWith("PRange")) {
+									st = new StringTokenizer(line);
+									temp = st.nextToken(); // Should be "PRange:"
+									PUNITS = ChemParser.removeBrace(st.nextToken());
+									int numP = Integer.parseInt(st.nextToken());
+									Pressure[] listOfPs = new Pressure[numP];
+									counter = 0;
+									while (st.hasMoreTokens()) {
+										listOfPs[counter] = new Pressure(Double.parseDouble(st.nextToken()),PUNITS);
+										++counter;
+									}
+									if (counter != numP) {
+										System.out.println("Warning in PRange field of PressureDependence:\n" +
+												"The stated number of pressures is: " + numT + 
+												"but the length of the pressure list is: " + counter);
+									}
+									FastMasterEqn.setTemperatures(listOfTs);
+									PDepRateConstant.setTemperatures(listOfTs);
+									FastMasterEqn.setPressures(listOfPs);
+									PDepRateConstant.setPressures(listOfPs);
+									PDepArrheniusKinetics.setNumPressures(numP);
+									PDepArrheniusKinetics.setPressures(listOfPs);
+								}
+								else {
+									System.err.println("RMG cannot locate PRange field for PDepArrhenius.");
+									System.exit(0);
+								}
+								
+								line = ChemParser.readMeaningfulLine(reader);
 							}
-							else {
-								System.err.println("RMG cannot locate PRange field for PDepArrhenius.");
-								System.exit(0);
-							}
-							
-							line = ChemParser.readMeaningfulLine(reader);
 						}
-						
 						// 6Jul2009-MRH:
 						//	RATE mode reports p-dep rxn kinetics as: A 0.0 0.0
 						//		where A is k(T,P) evaluated at the single temperature
@@ -1183,9 +1183,25 @@ public class ReactionModelGenerator {
 					line = ChemParser.readMeaningfulLine(reader);
 					tempString = line.split("GenerateReactions: ");
 					String generateStr = tempString[tempString.length-1].trim();
-					boolean generate = (generateStr.equalsIgnoreCase("yes") ||
+					boolean generate = true;
+					if (generateStr.equalsIgnoreCase("yes") ||
 						generateStr.equalsIgnoreCase("on") ||
-						generateStr.equalsIgnoreCase("true"));
+						generateStr.equalsIgnoreCase("true")){
+						generate = true;
+						System.out.println("Will generate cross-reactions between species in seed mechanism " + name);
+					} else if(generateStr.equalsIgnoreCase("no") ||
+							  generateStr.equalsIgnoreCase("off") ||
+							  generateStr.equalsIgnoreCase("false")) {
+						generate = false;
+						System.out.println("Will NOT initially generate cross-reactions between species in seed mechanism "+ name);
+						System.out.println("This may have unintended consequences");			   
+					}
+					else {
+						System.err.println("Input file invalid");
+						System.err.println("Please include a 'GenerateReactions: yes/no' line for seed mechanism "+name);
+						System.exit(0);
+					}
+										   
 					if (numMechs==0) {
 						setSeedMechanism(new SeedMechanism(name, path, generate));
 						++numMechs; 	
@@ -1722,7 +1738,7 @@ public class ReactionModelGenerator {
 				if(!terminated){
 					allTerminated = false;
 					System.out.println("Reaction System "+(i+1)+" has not reached its termination criterion");
-					if (rs.isModelValid()) { 
+					if (rs.isModelValid()&& runKillableToPreventInfiniteLoop(intermediateSteps, iterationNumber)) {
 						System.out.println("although it seems to be valid (complete), so it was not interrupted for being invalid.");
 						System.out.println("This probably means there was an error with the ODE solver, and we risk entering an endless loop.");
 						System.out.println("Stopping.");
@@ -2642,23 +2658,53 @@ public class ReactionModelGenerator {
 	}
 	
 	private void writeCoreReactions() {
-		BufferedWriter bw = null;
+		BufferedWriter bw_rxns = null;
+		BufferedWriter bw_troe = null;
+		BufferedWriter bw_lindemann = null;
+		BufferedWriter bw_thirdbody = null;
 		
         try {
-            bw = new BufferedWriter(new FileWriter("Restart/coreReactions.txt"));
+            bw_rxns = new BufferedWriter(new FileWriter("Restart/coreReactions.txt"));
+            bw_troe = new BufferedWriter(new FileWriter("Restart/troeReactions.txt"));
+            bw_lindemann = new BufferedWriter(new FileWriter("Restart/lindemannReactions.txt"));
+            bw_thirdbody = new BufferedWriter(new FileWriter("Restart/thirdBodyReactions.txt"));
             
     		String EaUnits = ArrheniusKinetics.getEaUnits();
-    		bw.write("UnitsOfEa: " + EaUnits);
-    		bw.newLine();
+    		String AUnits = ArrheniusKinetics.getAUnits();
+    		bw_rxns.write("UnitsOfEa: " + EaUnits);
+    		bw_rxns.newLine();
+    		bw_troe.write("Unit:\nA: mol/cm3/s\nE: " + EaUnits + "\n\nReactions:");
+    		bw_troe.newLine();
+    		bw_lindemann.write("Unit:\nA: mol/cm3/s\nE: " + EaUnits + "\n\nReactions:");
+    		bw_lindemann.newLine();
+    		bw_thirdbody.write("Unit:\nA: mol/cm3/s\nE: " + EaUnits + "\n\nReactions :");
+    		bw_thirdbody.newLine();
             
 			CoreEdgeReactionModel cerm = (CoreEdgeReactionModel)getReactionModel();
 			LinkedHashSet allcoreRxns = cerm.core.reaction;
 			for(Iterator iter=allcoreRxns.iterator(); iter.hasNext();){
 				Reaction reaction = (Reaction) iter.next();
 				if (reaction.isForward()) {
-					//bw.write(reaction.toChemkinString(new Temperature(298,"K")));
-					bw.write(reaction.toRestartString(new Temperature(298,"K")));
-					bw.newLine();
+					if (reaction instanceof TROEReaction) {
+						TROEReaction troeRxn = (TROEReaction) reaction;
+						bw_troe.write(troeRxn.toRestartString(new Temperature(298,"K")));
+						bw_troe.newLine();
+					}
+					else if (reaction instanceof LindemannReaction) {
+						LindemannReaction lindeRxn = (LindemannReaction) reaction;
+						bw_lindemann.write(lindeRxn.toRestartString(new Temperature(298,"K")));
+						bw_lindemann.newLine();
+					}
+					else if (reaction instanceof ThirdBodyReaction) {
+						ThirdBodyReaction tbRxn = (ThirdBodyReaction) reaction;
+						bw_thirdbody.write(tbRxn.toRestartString(new Temperature(298,"K")));
+						bw_thirdbody.newLine();
+					}
+					else {
+						//bw.write(reaction.toChemkinString(new Temperature(298,"K")));
+						bw_rxns.write(reaction.toRestartString(new Temperature(298,"K")));
+						bw_rxns.newLine();
+					}
 				}
 			}
         } catch (FileNotFoundException ex) {
@@ -2667,9 +2713,21 @@ public class ReactionModelGenerator {
             ex.printStackTrace();
         } finally {
             try {
-                if (bw != null) {
-                    bw.flush();
-                    bw.close();
+                if (bw_rxns != null) {
+                    bw_rxns.flush();
+                    bw_rxns.close();
+                }
+                if (bw_troe != null) {
+                    bw_troe.flush();
+                    bw_troe.close();
+                }
+                if (bw_lindemann != null) {
+                    bw_lindemann.flush();
+                    bw_lindemann.close();
+                }
+                if (bw_thirdbody != null) {
+                    bw_thirdbody.flush();
+                    bw_thirdbody.close();
                 }
             } catch (IOException ex) {
                 ex.printStackTrace();
@@ -2916,7 +2974,7 @@ public class ReactionModelGenerator {
     }
     
     public void readRestartSpecies() {    	
-		// Read in core species
+		// Read in core species -- NOTE code is almost duplicated in Read in edge species (second part of procedure)
 		try {
 			FileReader in = new FileReader("Restart/coreSpecies.txt");
 			BufferedReader reader = new BufferedReader(in);
@@ -2963,7 +3021,7 @@ public class ReactionModelGenerator {
 				// The first line of a new species is the user-defined name
 				String totalSpeciesName = line;
 				String[] splitString1 = totalSpeciesName.split("[(]");
-				String[] splitString2 = splitString1[1].split("[)]");
+				String[] splitString2 = splitString1[splitString1.length-1].split("[)]"); // Change JDM to reflect MRH 2-11-2010
 				// The remaining lines are the graph
 				Graph g = ChemParser.readChemGraph(reader);
 				// Make the ChemGraph, assuming it does not contain a forbidden structure
@@ -3026,7 +3084,7 @@ public class ReactionModelGenerator {
 	        			}
 	        		}
 	        		if (!foundRxn) {
-	        			r.generateReverseReaction();
+	        			if (r.hasReverseReaction()) r.generateReverseReaction();
 	        			restartCoreRxns.add(r);
 	        		}
 				}
@@ -3038,6 +3096,24 @@ public class ReactionModelGenerator {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+		
+		try {
+			SeedMechanism.readThirdBodyReactions("Restart/thirdBodyReactions.txt");
+		} catch (IOException e1) {
+			e1.printStackTrace();
+		}
+		try {
+			SeedMechanism.readLindemannReactions("Restart/lindemannReactions.txt");
+		} catch (IOException e1) {
+			e1.printStackTrace();
+		}
+		try {
+			SeedMechanism.readTroeReactions("Restart/troeReactions.txt");
+		} catch (IOException e1) {
+			e1.printStackTrace();
+		}
+		
+		restartCoreRxns.addAll(SeedMechanism.reactionSet);
 		
 		// Read in edge reactions
 		try {
@@ -3959,6 +4035,23 @@ public class ReactionModelGenerator {
     
     public static double getAtol(){
     	return atol;
+    }
+
+    public boolean runKillableToPreventInfiniteLoop(boolean intermediateSteps, int iterationNumber) {
+	ReactionSystem rs0 = (ReactionSystem)reactionSystemList.get(0);
+	if (!intermediateSteps)//if there are no intermediate steps (for example when using AUTO method), return true;
+	    return true;
+	//if there are intermediate steps, the run is killable if the iteration number exceeds the number of time steps / conversions
+	else if (rs0.finishController.terminationTester instanceof ReactionTimeTT){
+	    if (iterationNumber - 1 > timeStep.size()){ //-1 correction needed since when this is called, iteration number has been incremented
+		return true;
+	    }
+	}
+	else //the case where intermediate conversions are specified
+	    if (iterationNumber - 1 > numConversions){ //see above; it is possible there is an off-by-one error here, so further testing will be needed
+		return true;
+	    }
+	return false; //return false if none of the above criteria are met
     }
 }
 /*********************************************************************

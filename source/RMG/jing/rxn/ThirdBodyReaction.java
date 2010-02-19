@@ -156,6 +156,21 @@ public class ThirdBodyReaction extends Reaction {
       //#]
   }
   
+  public StringBuilder formPDepSignForRestart(StringBuilder p_string) {
+      StringTokenizer st = new StringTokenizer(p_string.toString(), "=");
+      StringBuilder s1 = new StringBuilder(st.nextToken());
+      if (this instanceof TROEReaction || this instanceof LindemannReaction)
+    	  s1.append("(+m) = ");
+      else
+    	  s1.append("+m = ");
+      s1.append(st.nextToken());
+      if (this instanceof TROEReaction || this instanceof LindemannReaction)
+    	  s1.append("(+m)");
+      else
+    	  s1.append("+m");
+      return s1;
+  }
+  
   //## operation generateReverseReaction() 
   public void generateReverseReaction() {
       //#[ operation generateReverseReaction() 
@@ -232,6 +247,33 @@ public class ThirdBodyReaction extends Reaction {
   
   public String toChemkinString(Temperature p_temperature, Pressure p_pressure) {
 	  return toChemkinString(p_temperature) + "\n";
+  }
+  
+  public String toRestartString(Temperature t) {
+      StringBuilder s = getStructure().toChemkinString(true);
+      s = formPDepSignForRestart(s);
+      s.append("\t" + getKinetics().toChemkinString(calculateHrxn(t),t,false) + " 0.0 0.0 0.0\n");
+      
+      String tbr = "";
+      // write 3rd-body efficiencies
+      for(Iterator iter = weightMap.keySet().iterator(); iter.hasNext();) {
+      	Object key = iter.next();
+      	double tbe = ((Double)weightMap.get(key)).doubleValue();
+      	String name = key.toString();
+      	Species spe = SpeciesDictionary.getInstance().getSpeciesFromName(name);
+      	if (spe!=null) name = spe.getChemkinName();
+      	if (name.equals("AR")) name = "Ar";
+      	String next = name + "/" + tbe + "/ ";
+//      	if ((tbr.length()+next.length())>=80) {
+//      		s.append(tbr + '\n');
+//      		tbr = "";
+//      	}
+      	tbr += next;
+      
+      }
+      
+      s.append(tbr)	;
+      return s.toString();
   }
   
 }

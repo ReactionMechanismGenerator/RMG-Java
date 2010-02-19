@@ -30,14 +30,18 @@ F90FLAGS_NDEBUG=-fmod=$(BUILDDIR) -ftrace=full
 # Default is to build those that come complete with the RMG distribution
 base: dirs fame frankie GATPFit dassl RMG
 
-# Make just the complete Fortran dependencies (i.e. not the Java)
+# Make just the Fortran dependencies (i.e. not the Java)
 fortran: dirs fame frankie GATPFit dassl
+
+# Make all the Fortran (including DASPK)
+all_fortran: dirs fame frankie GATPFit dassl daspk
 
 # You can also build everything
 all: dirs fame frankie GATPFit dassl daspk RMG
 
 RMG: dirs 
 	mkdir -p $(BUILDDIR)/RMG
+	ant clean # we don't trust ant to spot what needs doing!
 	ant compile
 	ant jar
 
@@ -78,7 +82,7 @@ clean:
 test:
 	mkdir -p $(RUNDIR)
 	cp examples/RMG/1,3-hexadiene/condition.txt $(RUNDIR)
-	export RMG=$(CURDIR); cd $(RUNDIR); java -classpath $(BINDIR)/RMG.jar RMG condition.txt | tee RMG.log
+	export RMG=$(CURDIR); cd $(RUNDIR); java -jar $(BINDIR)/RMG.jar condition.txt | tee RMG.log
 
 help:
 	@echo ""

@@ -189,7 +189,7 @@ public class JDASPK extends JDAS {
 			getAutoEdgeReactionInfo((CoreEdgeReactionModel) p_reactionModel, p_temperature, p_pressure);
 	
                // Add flags that specify whether the concentrations are constant or not
-		getConcentractionFlags(p_reactionModel);
+		getConcentrationFlags(p_reactionModel);
                 //this should be the end of the input file
                 try{
                     bw.flush();
@@ -270,10 +270,11 @@ public class JDASPK extends JDAS {
                 renameIntermediateFilesBeforeRun();
 		
 		//run the solver on the input file
-		boolean error = false;
+		boolean silentError = true;//start off assuming there is an error
+
                 try {
 
-                        String[] command = {workingDirectory +  "/bin/daspkAUTO.exe"};//5/5/08 gmagoon: changed to call dasslAUTO.exe
+                        String[] command = {workingDirectory +  "/bin/daspkAUTO.exe"};//5/5/08 gmagoon: changed to call daspkAUTO.exe
                                 File runningDir = new File("ODESolver");
 
                                 Process solver = Runtime.getRuntime().exec(command, null, runningDir);
@@ -283,11 +284,14 @@ public class JDASPK extends JDAS {
                                 String line=null;
                                 while ( (line = br.readLine()) != null) {
                                         line = line.trim();
+					silentError = false; //there is actual output from the ODE solver
                                         if (!(line.contains("ODESOLVER SUCCESSFUL"))) {
-                                                System.err.println("Error running the ODESolver: "+line);
-                                                error = true;
-                                        }          
+                                            System.err.println("Error running the ODESolver: "+line);
+                                        }
                                 }
+				if(silentError){
+				    System.err.println("Error: No stdout output from DASPK");
+				}
                         int exitValue = solver.waitFor();
                 }
                 catch (Exception e) {
@@ -312,7 +316,7 @@ public class JDASPK extends JDAS {
 			renameSuccess = f.renameTo(newFile);
                         if (!renameSuccess)
                         {
-                            System.out.println("Renaming of RWORK file(s) failed.");
+                            System.out.println("Renaming of RWORK file(s) failed. renameIntermediateFilesBeforeRun()");
                             System.exit(0);
                         }
                 }
@@ -325,7 +329,7 @@ public class JDASPK extends JDAS {
                     renameSuccess = f.renameTo(newFile);
                     if (!renameSuccess)
                     {
-                        System.out.println("Renaming of IWORK file(s) failed.");
+                        System.out.println("Renaming of IWORK file(s) failed. renameIntermediateFilesBeforeRun()");
                         System.exit(0);
                     }
                 }
@@ -338,7 +342,7 @@ public class JDASPK extends JDAS {
                     renameSuccess = f.renameTo(newFile);
                     if (!renameSuccess)
                     {
-                        System.out.println("Renaming of variables.dat file(s) failed.");
+                        System.out.println("Renaming of variables.dat file(s) failed. renameIntermediateFilesBeforeRun()");
                         System.exit(0);
                     }
                 }
@@ -352,7 +356,7 @@ public class JDASPK extends JDAS {
             boolean renameSuccess = f.renameTo(newFile);
             if (!renameSuccess)
             {
-                System.out.println("Renaming of RWORK file(s) failed. (renameIntermediateFiles())");
+                System.out.println("Renaming of RWORK file(s) failed. (renameIntermediateFilesAfterRun())");
                 System.exit(0);
             }
             
@@ -363,7 +367,7 @@ public class JDASPK extends JDAS {
             renameSuccess = f.renameTo(newFile);
             if (!renameSuccess)
             {
-                System.out.println("Renaming of IWORK file(s) failed. (renameIntermediateFiles())");
+                System.out.println("Renaming of IWORK file(s) failed. (renameIntermediateFilesAfterRun())");
                 System.exit(0);
             }
             
@@ -374,7 +378,7 @@ public class JDASPK extends JDAS {
             renameSuccess = f.renameTo(newFile);
             if (!renameSuccess)
             {
-                System.out.println("Renaming of variables.dat file(s) failed. (renameIntermediateFiles())");
+                System.out.println("Renaming of variables.dat file(s) failed. (renameIntermediateFilesAfterRun())");
                 System.exit(0);
             }
 	}
@@ -523,7 +527,7 @@ public class JDASPK extends JDAS {
                     // if 0:  will integrate the ODE as normal
                     // eg. liquid phase calculations with a constant concentration of O2 (the solubility limit - replenished from the gas phase)
                     // for normal use, this will be a sequence of '0 's
-                    getConcentractionFlags(p_reactionModel);        
+                    getConcentrationFlags(p_reactionModel);        
                 }
                 catch (IOException e) {
                     System.err.println("Problem writing Solver Input File!");
