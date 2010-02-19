@@ -634,7 +634,7 @@ public abstract class JDAS implements DAESolver {
 				for (int i=0; i<weightMapSize; i++){
 					String name = (String)colliderIter.next();
 					Species spe = SpeciesDictionary.getInstance().getSpeciesFromName(name);
-					if (spe != null && IDTranslatorContainsQ(spe)){//gmagoon 2/17/10: added check to make sure the collider is in the ID translator as well (i.e. it is in the core); without this check, edge species can pass this test, causing them to be added to the IDTranslator when getRealID is called below
+					if (spe != null && IDTranslatorContainsQ(spe)){//gmagoon 2/17/10: added check to make sure the collider is in the ID translator as well (i.e. it is in the core); without this check, edge species can pass this test, causing them to be added to the IDTranslator when getRealID is called below; 02/18/10 UPDATE: IDTranslator will not contain inert species like Ar, N2 (in any case, they are not tracked explicitly in the ODESolver); BUT, even in original case (before yesterday's change), they would not be found in SpeciesDictionary either ; Bottom line: collider parameters for Ar/N2 will never be used, and as far as I can tell, never have been
 						colliders[numCollider] = getRealID(spe);
 						efficiency[numCollider] = ((Double)weightMap.get(name)).doubleValue();
 						numCollider++;
@@ -660,7 +660,7 @@ public abstract class JDAS implements DAESolver {
 				for (int i=0; i<weightMapSize; i++){
 					String name = (String)colliderIter.next();
 					Species spe = SpeciesDictionary.getInstance().getSpeciesFromName(name);
-					if (spe != null && IDTranslatorContainsQ(spe)){//gmagoon 2/17/10: added check to make sure the collider is in the ID translator as well (i.e. it is in the core); without this check, edge species can pass this test, causing them to be added to the IDTranslator when getRealID is called below
+					if (spe != null && IDTranslatorContainsQ(spe)){//gmagoon 2/17/10: added check to make sure the collider is in the ID translator as well (i.e. it is in the core); without this check, edge species can pass this test, causing them to be added to the IDTranslator when getRealID is called below; 02/18/10 UPDATE: IDTranslator will not contain inert species like Ar, N2 (in any case, they are not tracked explicitly in the ODESolver); BUT, even in original case (before yesterday's change), they would not be found in SpeciesDictionary either ; Bottom line: collider parameters for Ar/N2 will never be used, and as far as I can tell, never have been
 						colliders[numCollider] = getRealID(spe);
 						efficiency[numCollider] = ((Double)weightMap.get(name)).doubleValue();
 						numCollider++;
