@@ -476,7 +476,7 @@ public class ChemGraph implements Matchable {
         while (iter.hasNext()) {
         	Arc arc = (Arc)iter.next();
         	Bond bond = (Bond)arc.getElement();
-        	if (bond.isDouble()) {
+        	if (bond.isDouble()&&!arc.getInCycle()) {//2/22/10 gmagoon: added check to make sure the arc is not in a cycle; hopefully this should prevent infinite recursion errors in getToEndOfAxis caused by cyclic species like cyclic, cumulenic C3 while still preserving the ability to estimate axis symmetry number for "cyclic" cases where the axis is not part of the cycle
         		Iterator neighbor_iter = arc.getNeighbor();
         		Node n1 = (Node)neighbor_iter.next();
         		Node n2 = (Node)neighbor_iter.next();
