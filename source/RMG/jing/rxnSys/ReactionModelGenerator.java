@@ -31,6 +31,7 @@ package jing.rxnSys;
 
 
 import java.io.*;
+
 import jing.rxnSys.ReactionSystem;
 import jing.rxn.*;
 import jing.chem.*;
@@ -242,25 +243,35 @@ public class ReactionModelGenerator {
          	 * MRH 7-Jul-2009
          	 */
 			if (line.startsWith("PrimaryThermoLibrary:")) {
-             	int numPTLs = 0;
-             	line = ChemParser.readMeaningfulLine(reader);
-             	while (!line.equals("END")) {
-             		String[] tempString = line.split("Name: ");
-             		String name = tempString[tempString.length-1].trim();
-					line = ChemParser.readMeaningfulLine(reader);
-					tempString = line.split("Location: ");
-					String path = tempString[tempString.length-1].trim();
-					if (numPTLs==0) {
-                     	setPrimaryThermoLibrary(new PrimaryThermoLibrary(name,path));
-                     	++numPTLs; 	
-					}
-					else {
-                     	getPrimaryThermoLibrary().appendPrimaryThermoLibrary(name,path);
-                     	++numPTLs;
-					}
-					line = ChemParser.readMeaningfulLine(reader);
-             	}
-             	if (numPTLs == 0) setPrimaryThermoLibrary(null);
+				/*
+				 * MRH 27Feb2010:
+				 * Changing the "read in Primary Thermo Library information" code
+				 * 	into it's own method.
+				 * 
+				 * Other modules (e.g. PopulateReactions) will be utilizing the exact code.
+				 * 	Rather than copying and pasting code into other modules, just have
+				 * 	everything call this new method: readAndMakePTL
+				 */
+				readAndMakePTL(reader);
+//             	int numPTLs = 0;
+//             	line = ChemParser.readMeaningfulLine(reader);
+//             	while (!line.equals("END")) {
+//             		String[] tempString = line.split("Name: ");
+//             		String name = tempString[tempString.length-1].trim();
+//					line = ChemParser.readMeaningfulLine(reader);
+//					tempString = line.split("Location: ");
+//					String path = tempString[tempString.length-1].trim();
+//					if (numPTLs==0) {
+//                     	setPrimaryThermoLibrary(new PrimaryThermoLibrary(name,path));
+//                     	++numPTLs; 	
+//					}
+//					else {
+//                     	getPrimaryThermoLibrary().appendPrimaryThermoLibrary(name,path);
+//                     	++numPTLs;
+//					}
+//					line = ChemParser.readMeaningfulLine(reader);
+//             	}
+//             	if (numPTLs == 0) setPrimaryThermoLibrary(null);
 			} else throw new InvalidSymbolException("Error reading condition.txt file: "
 													+ "Could not locate PrimaryThermoLibrary field");
 			line = ChemParser.readMeaningfulLine(reader);
@@ -1129,34 +1140,44 @@ public class ReactionModelGenerator {
         	 * 	including none, as they like.
         	 */        	
         	line = ChemParser.readMeaningfulLine(reader);
-			if (line.startsWith("PrimaryReactionLibrary:")) {                        
-				// GJB modified to allow multiple primary reaction libraries
-				int Ilib = 0;
-				line = ChemParser.readMeaningfulLine(reader);
-				while (!line.equals("END")) {
-					String[] tempString = line.split("Name: ");
-					String name = tempString[tempString.length-1].trim();
-					line = ChemParser.readMeaningfulLine(reader);
-					tempString = line.split("Location: ");
-					String path = tempString[tempString.length-1].trim();
-					if (Ilib==0) {
-						//primaryReactionLibrary = new PrimaryReactionLibrary(name, path);
-						setPrimaryReactionLibrary(new PrimaryReactionLibrary(name, path));//10/14/07 gmagoon: changed to use setPrimaryReactionLibrary
-						Ilib++; 	
-					}
-					else {
-						//primaryReactionLibrary.appendPrimaryReactionLibrary(name,path);
-						getPrimaryReactionLibrary().appendPrimaryReactionLibrary(name,path);//10/14/07 gmagoon: changed to use getPrimaryReactionLibrary; check to make sure this is valid
-						Ilib++;//just in case anybody wants to track how many are processed
-					}
-					line = ChemParser.readMeaningfulLine(reader);
-				}
-				//                	System.out.println("Primary Reaction Libraries in use: " +getPrimaryReactionLibrary().getName());//10/14/07 gmagoon: changed to use getPrimaryReactionLibrary
-				if (Ilib==0) {
-					//primaryReactionLibrary = null;
-					setPrimaryReactionLibrary(null);//10/14/07 gmagoon: changed to use setPrimaryReactionLibrary; check to make sure this is valid
-				}
-				else System.out.println("Primary Reaction Libraries in use: " + getPrimaryReactionLibrary().getName());
+			if (line.startsWith("PrimaryReactionLibrary:")) {
+				/*
+				 * MRH 27Feb2010:
+				 * Changing the "read in Primary Reaction Library information" code
+				 * 	into it's own method.
+				 * 
+				 * Other modules (e.g. PopulateReactions) will be utilizing the exact code.
+				 * 	Rather than copying and pasting code into other modules, just have
+				 * 	everything call this new method: readAndMakePRL
+				 */
+				readAndMakePRL(reader);
+//				// GJB modified to allow multiple primary reaction libraries
+//				int Ilib = 0;
+//				line = ChemParser.readMeaningfulLine(reader);
+//				while (!line.equals("END")) {
+//					String[] tempString = line.split("Name: ");
+//					String name = tempString[tempString.length-1].trim();
+//					line = ChemParser.readMeaningfulLine(reader);
+//					tempString = line.split("Location: ");
+//					String path = tempString[tempString.length-1].trim();
+//					if (Ilib==0) {
+//						//primaryReactionLibrary = new PrimaryReactionLibrary(name, path);
+//						setPrimaryReactionLibrary(new PrimaryReactionLibrary(name, path));//10/14/07 gmagoon: changed to use setPrimaryReactionLibrary
+//						Ilib++; 	
+//					}
+//					else {
+//						//primaryReactionLibrary.appendPrimaryReactionLibrary(name,path);
+//						getPrimaryReactionLibrary().appendPrimaryReactionLibrary(name,path);//10/14/07 gmagoon: changed to use getPrimaryReactionLibrary; check to make sure this is valid
+//						Ilib++;//just in case anybody wants to track how many are processed
+//					}
+//					line = ChemParser.readMeaningfulLine(reader);
+//				}
+//				//                	System.out.println("Primary Reaction Libraries in use: " +getPrimaryReactionLibrary().getName());//10/14/07 gmagoon: changed to use getPrimaryReactionLibrary
+//				if (Ilib==0) {
+//					//primaryReactionLibrary = null;
+//					setPrimaryReactionLibrary(null);//10/14/07 gmagoon: changed to use setPrimaryReactionLibrary; check to make sure this is valid
+//				}
+//				else System.out.println("Primary Reaction Libraries in use: " + getPrimaryReactionLibrary().getName());
 				
 			} else throw new InvalidSymbolException("condition.txt: can't find PrimaryReactionLibrary!");
 			
@@ -4052,6 +4073,53 @@ public class ReactionModelGenerator {
 		return true;
 	    }
 	return false; //return false if none of the above criteria are met
+    }
+    
+    public void readAndMakePRL(BufferedReader reader) throws IOException {
+    	int Ilib = 0;
+    	String line = ChemParser.readMeaningfulLine(reader);
+    	while (!line.equals("END")) {
+			String[] tempString = line.split("Name: ");
+			String name = tempString[tempString.length-1].trim();
+			line = ChemParser.readMeaningfulLine(reader);
+			tempString = line.split("Location: ");
+			String path = tempString[tempString.length-1].trim();
+			if (Ilib==0) {
+				setPrimaryReactionLibrary(new PrimaryReactionLibrary(name, path));
+				Ilib++; 	
+			}
+			else {
+				getPrimaryReactionLibrary().appendPrimaryReactionLibrary(name,path);
+				Ilib++;
+			}
+			line = ChemParser.readMeaningfulLine(reader);
+		}
+		if (Ilib==0) {
+			setPrimaryReactionLibrary(null);
+		}
+		else System.out.println("Primary Reaction Libraries in use: " + getPrimaryReactionLibrary().getName());
+    }
+    
+    public void readAndMakePTL(BufferedReader reader) {
+     	int numPTLs = 0;
+     	String line = ChemParser.readMeaningfulLine(reader);
+     	while (!line.equals("END")) {
+     		String[] tempString = line.split("Name: ");
+     		String name = tempString[tempString.length-1].trim();
+			line = ChemParser.readMeaningfulLine(reader);
+			tempString = line.split("Location: ");
+			String path = tempString[tempString.length-1].trim();
+			if (numPTLs==0) {
+             	setPrimaryThermoLibrary(new PrimaryThermoLibrary(name,path));
+             	++numPTLs; 	
+			}
+			else {
+             	getPrimaryThermoLibrary().appendPrimaryThermoLibrary(name,path);
+             	++numPTLs;
+			}
+			line = ChemParser.readMeaningfulLine(reader);
+     	}
+     	if (numPTLs == 0) setPrimaryThermoLibrary(null);
     }
 }
 /*********************************************************************
