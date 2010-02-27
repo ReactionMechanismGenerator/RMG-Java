@@ -28,6 +28,7 @@
 
 import java.util.*;
 import java.io.*;
+import java.text.SimpleDateFormat;
 
 import jing.chem.*;
 import jing.chemParser.*;
@@ -275,9 +276,13 @@ public class RMG {
 			System.out.println("#                                                              #");
 			System.out.println("################################################################");
 			System.out.println("");
-			Calendar rightNow = GregorianCalendar.getInstance();
-			System.out.println("Current (local) time is: "+ (rightNow.get(Calendar.MONTH)+1)+"/"+rightNow.get(Calendar.DATE)+"/"+rightNow.get(Calendar.YEAR)+ " " + rightNow.get(Calendar.HOUR_OF_DAY)+":"+rightNow.get(Calendar.MINUTE)+":" + rightNow.get(Calendar.SECOND)+ " Offset from UTC: "+ (rightNow.get(Calendar.ZONE_OFFSET)/(60*60*1000)));
-            System.out.println("----------------------------------------------------------------------");
+
+			 SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+			 String formattedDate = formatter.format(new java.util.Date());
+			 // to add timezone information, add 'Z' to the end of the SimpleDateFormat above and uncomment the following line
+			 //formattedDate = formattedDate.substring(0, formattedDate.length()-2)  + ":" + formattedDate.substring(formattedDate.length()-2); // add the colon to the timezone
+			 System.out.println("Current local time is: "+ formattedDate );
+			 System.out.println("----------------------------------------------------------------------");
         	 System.out.println(" User input:");
              System.out.println("----------------------------------------------------------------------");
 
