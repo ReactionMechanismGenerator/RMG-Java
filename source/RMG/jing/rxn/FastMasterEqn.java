@@ -48,6 +48,7 @@ import java.util.logging.Logger;
 import jing.chem.Species;
 import jing.chem.SpectroscopicData;
 import jing.mathTool.UncertainDouble;
+import jing.param.GasConstant;
 import jing.param.Pressure;
 import jing.param.Temperature;
 import jing.rxnSys.CoreEdgeReactionModel;
@@ -100,6 +101,16 @@ public class FastMasterEqn implements PDepKineticsEstimator {
 	
 	private static int numTBasisFuncs = -1;
 	private static int numPBasisFuncs = -1;
+	
+	/**
+	 * The number of grains to use in a fame calculation (written in input file)
+	 */
+	private static int numGrains = 201;
+	/**
+	 * boolean, detailing whether the high-P-limit is greater than all of the
+	 * 	fame-computed k(T,P)
+	 */
+	private static boolean pdepRatesOK = true;
 
 	//==========================================================================
 	//
@@ -361,6 +372,25 @@ public class FastMasterEqn implements PDepKineticsEstimator {
 
 
 		}
+        
+        /*
+         * MRH 26Feb2010:
+         * Checking whether pdep rates exceed the high-P-limit
+         * 
+         * Although fame converges, the computed k(T,P) may exceed the high-P-limit,
+         * 	due to the number of grains being too small.  If any of the pdep rates
+         * 	exceed the high-P-limit by greater than a factor of 2, the "pdepRatesOK" boolean
+         * 	is set to false and fame will be re-executed, using an increased number
+         * 	of grains
+         * After all pdep rates are below the high-P-limit (or the number of grains
+         * 	exceeds 1000), we exit the while loop.  The number of grains is then
+         * 	reset to 201 (which was the standard before)
+         */
+        while (!pdepRatesOK) {
+        	numGrains = numGrains + 200;
+        	runPDepCalculation(pdn, rxnSystem, cerm);
+        }
+        numGrains = 201;
 
 		runCount++;
 
@@ -471,7 +501,7 @@ public class FastMasterEqn implements PDepKineticsEstimator {
 			input += "#		Example: NumGrains 201\n";
 			input += "# 	Option 2: Specifying the grain size in J/mol, kJ/mol, cal/mol, kcal/mol, or cm^-1\n";
 			input += "#		Example: GrainSize J/mol 4.184\n";
-			input += "NumGrains " + Integer.toString(201);
+			input += "NumGrains " + numGrains;
 			input += "\n\n";
 
 			// Collisional transfer probability model to use
@@ -686,6 +716,16 @@ public class FastMasterEqn implements PDepKineticsEstimator {
 		// into included and nonincluded
 
 		boolean ignoredARate = false;
+		/*
+		 * MRH 26Feb2010:
+		 * Checking whether pdep rates exceed the high-P-limit
+		 * 
+		 * This boolean reflects whether all pdep rates are below the high-P-limit.
+		 * 	The variable is initialized to true for each call (in hope of avoiding
+		 * 	any infinite loop scenarios).  If any of the pdep rates exceed the
+		 * 	high-P-limit, the boolean is changed to false (see code below)
+		 */
+		pdepRatesOK = true;
 
 		try {
 
@@ -806,7 +846,79 @@ public class FastMasterEqn implements PDepKineticsEstimator {
 				PDepIsomer reactant = isomerList.get(reac);
 				PDepIsomer product = isomerList.get(prod);
 				PDepReaction rxn = new PDepReaction(reactant, product, pDepRate);
-
+				
+				/*
+				 * MRH 26Feb2010:
+				 * Checking whether pdep rates exceed the high-P-limit
+				 * 
+				 * We grab all of the reactions in the pathReactionList.  These are the
+				 * 	RMG-generated reactions (not chemically-activated reactions) and thus
+				 * 	have "natural" high-P-limit kinetics.
+				 * If the current PDepReaction "rxn"'s structure matches one of the structures
+				 * 	of the PDepReactions located in the pathReactionList, we compare the high-P-limit
+				 * 	kinetics of the pathReactionList (these values either come from the RMG database
+				 * 	or are "fitted" parameters, based on the reverse kinetics + equilibrium constant)
+				 * 	with the k(T,P_max) for each T in the "temperatures" array.  NOTE: Not every "rxn"
+				 * 	will have a match in the pathReactionList.
+				 * If the pdep rate is greater than 2x the high-P-limit, we consider this to be different.
+				 * 	If the number of grains is less than 1000, we set the pdepRatesOK boolean to false,
+				 * 		so that another fame calculation will ensue
+				 * 	If the number of grains exceeds 1000, we continue on with the simulation, but alert the
+				 * 		user of the discrepancy.
+				 * 
+				 * The value of 2 was somewhat randomly chosen by MRH.
+				 * For a toy case of tBuOH pyrolysis (with 1e-6 reaction time and 0.9 error tolerance):
+				 * 	Before code addition:	iC4H8/H2O final concentration = 7.830282E-10, run time < 1 min
+				 * 	2x : 					iC4H8/H2O final concentration = 6.838976E-10, run time ~ 2 min
+				 *  1.5x :					iC4H8/H2O final concentration = 6.555548E-10, run time ~ 4 min
+				 *  1.1x :                  iC4H8/H2O final concentration = 6.555548E-10, run time ~ 10 min
+				 *  
+				 * The value of 2 (for the toy model) seems to be a good balance between speed and accuracy
+				 * 
+				 * P.S. Want to keep the name fame (fast approximate me) instead of having to change to
+				 * 	smame (slow more accurate me).  ;)
+				 *  
+				 */
+				LinkedList pathReactionList = pdn.getPathReactions();
+				for (int numHighPRxns = 0; numHighPRxns < pathReactionList.size(); numHighPRxns++) {
+					PDepReaction rxnWHighPLimit = (PDepReaction)pathReactionList.get(numHighPRxns);
+					if (rxn.getStructure().equals(rxnWHighPLimit.getStructure())) {
+						double A = 0.0, Ea = 0.0, n = 0.0;
+						if (rxnWHighPLimit.isForward()) {
+							Kinetics kin = rxnWHighPLimit.getKinetics();
+							A = kin.getAValue();
+							Ea = kin.getEValue();
+							n = kin.getNValue();
+						}
+						else {
+							Kinetics kin = rxnWHighPLimit.getFittedReverseKinetics();
+							A = kin.getAValue();
+							Ea = kin.getEValue();
+							n = kin.getNValue();
+						}
+						double[][] all_ks = rxn.getPDepRate().getRateConstants();
+						for (int numTemps=0; numTemps<temperatures.length; numTemps++) {
+							double T = temperatures[numTemps].getK();
+							double k_highPlimit = A * Math.pow(T,n) * Math.exp(-Ea/GasConstant.getKcalMolK()/T);
+							if (all_ks[numTemps][pressures.length-1] > 2*k_highPlimit) {
+								if (numGrains > 1000) {
+									System.out.println("Pressure-dependent rate exceeds high-P-limit rate: " +
+										"Number of grains already exceeds 1000.  Continuing RMG simulation " +
+										"with results from current fame run.");
+									break;
+								}
+								else {
+									System.out.println("Pressure-dependent rate exceeds high-P-limit rate: " +
+										"Re-running fame with additional number of grains");
+									pdepRatesOK = false;
+									return false;
+								}
+							}
+						}
+						break;
+					}
+				}
+				
 				// Add net reaction to list
 				netReactionList.add(rxn);
 
