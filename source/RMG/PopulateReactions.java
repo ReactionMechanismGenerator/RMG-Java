@@ -74,6 +74,11 @@ public class PopulateReactions {
 	 */
 	public static void main(String[] args) {
 		initializeSystemProperties();
+		
+		// Creating a new ReactionModelGenerator so I can set the variable temp4BestKinetics
+		//	and call the new readAndMakePTL and readAndMakePRL methods
+		ReactionModelGenerator rmg = new ReactionModelGenerator();
+		
 		// Set Global.lowTemp and Global.highTemp
 		//	The values of the low/highTemp are not used in the function
 		//		(to the best of my knowledge).
@@ -140,6 +145,34 @@ public class PopulateReactions {
           }
           
             line = ChemParser.readMeaningfulLine(br_input);
+            
+            /*
+             * MRH 27Feb:
+             * Allowing PopulateReactions module to read/use Primary Reaction/Thermo Libraries
+             * 
+             * The user does not have to specify any primary reaction / thermo libraries.
+             * 	However, like the input file to RMG, the fields must still be present
+             */
+            if (line.toLowerCase().startsWith("primarythermolibrary")) {
+            	rmg.readAndMakePTL(br_input);
+            }
+            else {
+            	System.err.println("PopulateReactions: Could not locate the PrimaryThermoLibrary field." +
+            			"Line read was: " + line);
+            	System.exit(0);
+            }
+            
+            line = ChemParser.readMeaningfulLine(br_input);
+            if (line.toLowerCase().startsWith("primaryreactionlibrary")) {
+            	rmg.readAndMakePRL(br_input);
+            }
+            else {
+            	System.err.println("PopulateReactions: Could not locate the PrimaryReactionLibrary field." +
+            			"Line read was: " + line);
+            	System.exit(0);
+            }
+            
+            line = ChemParser.readMeaningfulLine(br_input);
             // Read in all of the species in the input file
 			while (line != null) {
 				// The first line of a new species is the user-defined name
@@ -173,8 +206,7 @@ public class PopulateReactions {
 				line = ChemParser.readMeaningfulLine(br_input);
 			}
 			
-			// Creating a new ReactionModelGenerator so I can set the variable temp4BestKinetics
-			ReactionModelGenerator rmg = new ReactionModelGenerator();
+			// Set the user's input temperature
 			rmg.setTemp4BestKinetics(systemTemp_K);
 			TemplateReactionGenerator rtLibrary = new TemplateReactionGenerator();
 			
