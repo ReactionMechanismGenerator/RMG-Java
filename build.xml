@@ -32,7 +32,7 @@
     </tstamp>
     <!-- make default filter file -->
     <concat destfile="${build}/filter">
-      versionhash = .. not in git repository ..
+      versionhash = * Not in git repository *
     </concat>
     <!-- replace with correct filter file if you can -->
     <concat destfile="${build}/filter">
