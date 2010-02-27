@@ -279,7 +279,6 @@ public class RMG {
 
 			 SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZ");
 			 String formattedDate = formatter.format(new java.util.Date());
-			 // to add timezone information, add 'Z' to the end of the SimpleDateFormat above and uncomment the following line
 			 formattedDate = formattedDate.substring(0, formattedDate.length()-2)  + ":" + formattedDate.substring(formattedDate.length()-2); // add the colon to the timezone
 			 System.out.println("Current local time is: "+ formattedDate );
 			 System.out.println("----------------------------------------------------------------------");
