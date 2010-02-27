@@ -30,10 +30,14 @@
     <tstamp>
       <format property="buildtime" pattern="yyyy-MM-dd'T'HH:mm:ss"/>
     </tstamp>
-    <!-- make filter file -->
+    <!-- make default filter file -->
+    <concat destfile="${build}/filter">
+      versionhash = .. not in git repository ..
+    </concat>
+    <!-- replace with correct filter file if you can -->
     <concat destfile="${build}/filter">
       <header>versionhash = </header>
-      <fileset file=".git/refs/heads/master" />
+      <fileset dir="." includes=".git/refs/heads/master" />
     </concat>
     <!-- copy source file with filter -->
     <copy file="${src}/jing/param/VersionInfo.java" 
