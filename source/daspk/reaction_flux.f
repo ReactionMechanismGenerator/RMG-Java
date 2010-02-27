@@ -282,7 +282,7 @@ C     **********************************
          END DO
 
          REACTIONFLUX(I+1+REACTIONSIZE+THIRDBODYREACTIONSIZE
-     $		+LINDEREACTIONSIZE) = FRATE - RRATE
+     $		+TROEREACTIONSIZE) = FRATE - RRATE
 
 
       END DO
