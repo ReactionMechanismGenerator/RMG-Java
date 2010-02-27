@@ -275,7 +275,8 @@ public class RMG {
 			System.out.println("#                                                              #");
 			System.out.println("################################################################");
 			System.out.println("");
-
+			Calendar rightNow = GregorianCalendar.getInstance();
+			System.out.println("Current (local) time is: "+ (rightNow.get(Calendar.MONTH)+1)+"/"+rightNow.get(Calendar.DATE)+"/"+rightNow.get(Calendar.YEAR)+ " " + rightNow.get(Calendar.HOUR_OF_DAY)+":"+rightNow.get(Calendar.MINUTE)+":" + rightNow.get(Calendar.SECOND)+ " Offset from UTC: "+ (rightNow.get(Calendar.ZONE_OFFSET)/(60*60*1000)));
             System.out.println("----------------------------------------------------------------------");
         	 System.out.println(" User input:");
              System.out.println("----------------------------------------------------------------------");
