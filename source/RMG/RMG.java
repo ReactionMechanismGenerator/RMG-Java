@@ -28,6 +28,7 @@
 
 import java.util.*;
 import java.io.*;
+import java.text.SimpleDateFormat;
 
 import jing.chem.*;
 import jing.chemParser.*;
@@ -230,12 +231,15 @@ public class RMG {
 			//System.out.println("#                        5 August 2009                         #");
 			System.out.println("#                                                              #");
 			System.out.println("#                                                              #");
-			System.out.println("#  This java code was compiled by ant at:");
+			System.out.println("#  This java code was compiled by ant at:                      #");
 			System.out.println("#    "+jing.param.VersionInfo.getBuildDate());
-			System.out.println("#  The git hash corresponding to this version is:              #");
+			System.out.println("#  The git hash of the master HEAD when built was:             #");
 			System.out.println("#    "+jing.param.VersionInfo.getVersionHash());
 			System.out.println("#  For details visit:                                          #");	 
-			System.out.println("#  http://github.com/GreenGroup/RMG-Java/commit/"+jing.param.VersionInfo.getVersionHash() ); 
+			if (jing.param.VersionInfo.getVersionHash().startsWith("*") ) // error messages should start with a *
+				System.out.println("#  http://github.com/GreenGroup/RMG-Java/                      #");
+		    else 
+				System.out.println("#  http://github.com/GreenGroup/RMG-Java/tree/"+jing.param.VersionInfo.getVersionHash() ); 
 			//System.out.println("#  To download this specific version, visit:                   #");	 
 			//System.out.println("#   http://github.com/GreenGroup/RMG-Java/archives/"+jing.param.VersionInfo.getVersionHash() ); 
 			System.out.println("#                                                              #");
@@ -273,7 +277,12 @@ public class RMG {
 			System.out.println("################################################################");
 			System.out.println("");
 
-            System.out.println("----------------------------------------------------------------------");
+			 SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+			 String formattedDate = formatter.format(new java.util.Date());
+			 // to add timezone information, add 'Z' to the end of the SimpleDateFormat above and uncomment the following line
+			 //formattedDate = formattedDate.substring(0, formattedDate.length()-2)  + ":" + formattedDate.substring(formattedDate.length()-2); // add the colon to the timezone
+			 System.out.println("Current local time is: "+ formattedDate );
+			 System.out.println("----------------------------------------------------------------------");
         	 System.out.println(" User input:");
              System.out.println("----------------------------------------------------------------------");
 

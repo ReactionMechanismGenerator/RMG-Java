@@ -4,11 +4,11 @@
     <property name="build" location="build/RMG"/>
     
     <target name="compile" depends="versioninfo">
-        <javac srcdir="source/RMG/" destdir="build/RMG/" optimize="true" debug="true" />
+        <javac srcdir="${src}" destdir="${build}" optimize="true" debug="true" />
     </target>
     
     <target name="jar" depends="compile">
-        <jar destfile="bin/RMG.jar" basedir="build/RMG/">
+        <jar destfile="bin/RMG.jar" basedir="${build}">
             <manifest>
                 <attribute name="Main-Class" value="RMG"/>
             </manifest>
@@ -17,10 +17,14 @@
 
 	<target name="clean" description="delete all compiled classes">
         <delete>
+            <fileset dir="${build}">
+                <include name="**/*.class"/>
+                <include name="*.class"/>
+                <include name="filter"/>
+                <include name="jing/param/VersionInfo.java"/>
+            </fileset>
             <fileset dir=".">
-                <include name="build/RMG/**/*.class"/>
-                <include name="build/RMG/*.class"/>
-                <include name="bin/RMG.jar"/>
+              <include name="bin/RMG.jar"/>
             </fileset>
         </delete>
     </target>
@@ -32,7 +36,7 @@
     </tstamp>
     <!-- make default filter file -->
     <concat destfile="${build}/filter">
-      versionhash = .. not in git repository ..
+      versionhash = * Not in git repository *
     </concat>
     <!-- replace with correct filter file if you can -->
     <concat destfile="${build}/filter">

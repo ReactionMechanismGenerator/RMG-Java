@@ -32,10 +32,15 @@ import java.util.*;
 public class VersionInfo {
 	
     public static String getVersionHash() {
-        return  "@versionhash@" ;
+		String versionhash =  "@versionhash@" ;
+		if (versionhash.startsWith("@version")) versionhash = "* Not built with Ant. Unable to determine hash *"; // error messages should start with a *
+		return versionhash;
     }
+	
 	public static String getBuildDate() {
-		return "@builddate@" ;
+		String builddate = "@builddate@" ;
+		if (builddate.startsWith("@build")) builddate = "* Not built with Ant. Unable to determine date *"; // error messages should start with a *
+		return builddate;
 	}
     
 }
