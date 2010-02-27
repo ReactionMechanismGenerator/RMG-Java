@@ -113,13 +113,7 @@ public class PopulateReactions {
 				String dummyString = st.nextToken();	// This token should be "Temperature:"
 				systemTemp = new Temperature(Double.parseDouble(st.nextToken()),ChemParser.removeBrace(st.nextToken()));
 			}
-			Temperature systemTemp_K = new Temperature(systemTemp.getK(),"K");
-			
-			// Creating a new ReactionModelGenerator so I can set the variable temp4BestKinetics
-			ReactionModelGenerator rmg = new ReactionModelGenerator();
-			rmg.setTemp4BestKinetics(systemTemp_K);
-			TemplateReactionGenerator rtLibrary = new TemplateReactionGenerator();
-			
+			Temperature systemTemp_K = new Temperature(systemTemp.getK(),"K");			
 			listOfReactions += "System Temperature: " + systemTemp_K.getK() + "K\n\n";
 			line = ChemParser.readMeaningfulLine(br_input);
 
@@ -178,6 +172,11 @@ public class PopulateReactions {
 				// Read the next line of the input file
 				line = ChemParser.readMeaningfulLine(br_input);
 			}
+			
+			// Creating a new ReactionModelGenerator so I can set the variable temp4BestKinetics
+			ReactionModelGenerator rmg = new ReactionModelGenerator();
+			rmg.setTemp4BestKinetics(systemTemp_K);
+			TemplateReactionGenerator rtLibrary = new TemplateReactionGenerator();
 			
 			// React all species with each other
 			reactions = rtLibrary.react(speciesSet);
