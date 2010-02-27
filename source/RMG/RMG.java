@@ -221,15 +221,29 @@ public class RMG {
                      System.exit(0);
              }
 
-            // Print out RMG header
+			 // Print out RMG header
 			System.out.println("");
 			System.out.println("################################################################");
 			System.out.println("#                                                              #");
 			System.out.println("#              RMG - Reaction Mechanism Generator              #");
-			System.out.println("#                         Version 3.1                          #");
-			System.out.println("#                        5 August 2009                         #");
+			//System.out.println("#                         Version 3.1                          #");
+			//System.out.println("#                        5 August 2009                         #");
+			System.out.println("#                                                              #");
+			System.out.println("#                                                              #");
+			System.out.println("#  This java code was compiled by ant at:");
+			System.out.println("#    "+jing.param.VersionInfo.getBuildDate());
+			System.out.println("#  The git hash corresponding to this version is:              #");
+			System.out.println("#    "+jing.param.VersionInfo.getVersionHash());
+			System.out.println("#  For details visit:                                          #");	 
+			System.out.println("#  http://github.com/GreenGroup/RMG-Java/commit/"+jing.param.VersionInfo.getVersionHash() ); 
+			//System.out.println("#  To download this specific version, visit:                   #");	 
+			//System.out.println("#   http://github.com/GreenGroup/RMG-Java/archives/"+jing.param.VersionInfo.getVersionHash() ); 
+			System.out.println("#                                                              #");
+			System.out.println("#                                                              #");
 			System.out.println("#                                                              #");
 			System.out.println("#                 http://rmg.sourceforge.net/                  #");
+			System.out.println("#                                                              #");
+			System.out.println("#                                                              #");
 			System.out.println("#                                                              #");
 			System.out.println("#  Copyright (c) 2002-2009                                     #");
 			System.out.println("#  Prof. William H. Green and the RMG Team:                    #");
@@ -240,7 +254,7 @@ public class RMG {
 			System.out.println("#    Dr. Jing Song, Dr. John Wen, Dr. Richard West,            #");
 			System.out.println("#    Andrew Wong, Dr. Hsi-Wu Wong, Dr. Paul E. Yelvington,     #");
 			System.out.println("#    Dr. Joanna Yu                                             #");
-            System.out.println("#                                                              #");
+			System.out.println("#                                                              #");
 			System.out.println("#  The RMGVE graphical user interface to the RMG database      #");
 			System.out.println("#  was written by John Robotham.                               #");
 			System.out.println("#                                                              #");

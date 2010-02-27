@@ -1,7 +1,9 @@
 <!-- ANT build script for RMG -->
 <project name="RMG">
-
-    <target name="compile">
+    <property name="src" location="source/RMG"/>
+    <property name="build" location="build/RMG"/>
+    
+    <target name="compile" depends="versioninfo">
         <javac srcdir="source/RMG/" destdir="build/RMG/" optimize="true" debug="true" />
     </target>
     
@@ -22,5 +24,32 @@
             </fileset>
         </delete>
     </target>
+    
+    <target name="versioninfo">
+    <!-- set the time stamp -->   
+    <tstamp>
+      <format property="buildtime" pattern="yyyy-MM-dd'T'HH:mm:ss"/>
+    </tstamp>
+    <!-- make filter file -->
+    <concat destfile="${build}/filter">
+      <header>versionhash = </header>
+      <fileset file=".git/refs/heads/master" />
+    </concat>
+    <!-- copy source file with filter -->
+    <copy file="${src}/jing/param/VersionInfo.java" 
+      toFile="${build}/jing/param/VersionInfo.java"
+      overwrite="true" >
+      <filterset>
+        <filter token="builddate" value="${buildtime}"/>
+        <filtersfile file="${build}/filter"/>
+      </filterset>
+    </copy>
+    <!-- compile the single java file into a class -->
+    <javac srcdir="${build}/jing/param" 
+           destdir="${build}" 
+           includes="VersionInfo.java"
+           optimize="true" debug="true">
+    </javac>  
+  </target>
     
 </project>
