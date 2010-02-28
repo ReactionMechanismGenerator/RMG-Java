@@ -1437,7 +1437,7 @@ public class Species {
         try {
         	inchiFile = new File(inchiDirectory + "/inchi.txt");
         	FileWriter fw = new FileWriter(inchiFile);
-        	fw.write(p_inchi);
+        	fw.write(p_inchi+"\n");//2/19/10 gmagoon: for some reason, InChI now seems to require a new line after the InChI (at least 1.02 beta version); I don't seem to recall this requirement before
         	fw.close();
         } catch (IOException e) {
         	String err = "Error writing inchi.txt file for InChI-to-molFile conversion: ";
