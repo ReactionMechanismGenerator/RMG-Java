@@ -845,7 +845,7 @@ public class Species {
         	dictionary.putSpecies(spe, true);
         	
 			// DEBUG: Tell console I made this species
-			System.out.println("Created new species: " + spe.getName() + "(" + spe.getID() + ")");
+//			System.out.println("Created new species: " + spe.getName() + "(" + spe.getID() + ")");
 
         }
         else {
