@@ -23,6 +23,8 @@ public class InchifyCHEMKIN {
            while (line != null) {
                String[] spl = line.split("\t"); //split on tab
                inchiDict.put(spl[0], spl[2]);//add the chemkin name as key, and InChI as value
+               //inchiDict.put(spl[0], spl[3]);//add the chemkin name as key, and InChIKey as value
+               //inchiDict.put(spl[0], "CC");//add the chemkin name as key, and dummy SMILES as value
                line = inchiDictionaryBR.readLine();
            }
            inchiDictionary.close();
@@ -46,8 +48,13 @@ public class InchifyCHEMKIN {
                String[] spl = line.split(" "); //split on  space
                int len= spl.length;
                //if the last "word" is a 1 and the first word can be found in the dictionary, write a comment line before copying the line; otherwise, just copy the line
-               if (spl[len-1].equals("1")&& inchiDict.containsKey(spl[0])){
+               if (spl[len-1].equals("1")){
+                  if(inchiDict.containsKey(spl[0])){
                    chemkinWriter.write("! [_ SMILES=\""+inchiDict.get(spl[0])+"\" _]\n");
+                  }
+                  else{
+                      chemkinWriter.write("! [_ SMILES=\""+spl[0]+"\" _]\n");
+                  }
                }
                chemkinWriter.write(line+"\n");
                
