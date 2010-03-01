@@ -1,0 +1,32 @@
+// Reactions and modified Arrhenius parameters from:
+//	O Herbinet et al.
+//	"Primary Mechanism of the Thermal Decomposition of Tricyclodecane"
+//	J. Phys. Chem. A 2006, 110, 11298-11314
+
+
+Unit:
+A: mol/cm3/s
+E: kcal/mol
+
+Reactions:
+//JP10=BR1 important for making results more reproducible; adjust according to thermo??; taken from Herbinet et al. p. 11303
+JP10 = BR1							5.0E15		0.0	77.0	0.0	0.0	0.0
+JP10 = BR2							5.0E15		0.0	71.0    0.0	0.0	0.0
+JP10 = BR3							5.0E15		0.0	77.0	0.0	0.0	0.0
+JP10 = BR4							5.0E15		0.0	77.0	0.0	0.0	0.0
+JP10 = BR5							5.0E15		0.0	81.0	0.0	0.0	0.0
+JP10 = BR6							5.0E15		0.0	81.0	0.0	0.0	0.0
+JP10 = BR7							5.0E15		0.0	81.0	0.0	0.0	0.0
+
+//gmagoon 8/7/09: moved Intra_Disproportionation reactions to PRL now that Intra_Disproportionation is recognized by RMG
+BR1 = MA111							1.9E10		1.0	19.85	0.0	0.0	0.0
+BR1 = MA112							9.7E9		1.0	17.75	0.0	0.0	0.0
+//these parameters number are fit by least squares (on log scale) from sum of two contributions (temperature range of 300 to 5000 K used in increments 1 K) (I wonder if RMG will include both contributions if I put the same reaction in twice?); 7/28/09: replaced by two reactions below
+//BR1 = MA110							7.65481E+9      1.11596 7.56982	0.0	0.0	0.0 
+BR1 = MA110							1.9E10		1.0	7.75	0.0	0.0	0.0
+BR1 = MA110							1.9E10		1.0	27.75	0.0	0.0	0.0
+
+//gmagoon 8/28/09: manually adjusted  barriers so BR1 is included in preference to others
+//JP10 = BR2							5.0E15		0.0	79.0    0.0	0.0	0.0
+//JP10 = BR3							5.0E15		0.0	79.0	0.0	0.0	0.0
+//JP10 = BR4							5.0E15		0.0	79.0	0.0	0.0	0.0
