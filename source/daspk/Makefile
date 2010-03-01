@@ -38,6 +38,12 @@ $(BUILDDIR)/%.o: %.f90
 	mkdir -p $(BUILDDIR)
 	$(F90) $(F90FLAGS) -c $< -o $@
 
+# the files in the private folder are not part of the base RMG distribution
+# because we are not licensed to distribute them
+$(BUILDDIR)/%.o: private/%.f
+	mkdir -p $(BUILDDIR)
+	$(F90) $(F90FLAGS) -c $< -o $@
+	
 clean:
 	rm -rf $(BUILDDIR)
 	rm -rf $(BINDIR)/daspkAUTO.exe
