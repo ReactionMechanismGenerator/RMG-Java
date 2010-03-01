@@ -18,7 +18,7 @@ BINDIR=../../bin
 F90=g95
 F90FLAGS=-fmod=$(BUILDDIR) -ftrace=full
 
-LDFLAGS=-lblas -llapack
+LDFLAGS= $(F90_EXTRA_LDFLAGS) -lblas -llapack
 
 OBJ0=lsfp_chem1.o lsfp.f lsfp_nasa.f lsfp_nist1.f lsfp_wilh1.f
 

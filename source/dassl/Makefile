@@ -18,7 +18,7 @@ BINDIR=../../bin
 F90=g95
 F90FLAGS=-fmod=$(BUILDDIR) -ftrace=full
 
-LDFLAGS=
+LDFLAGS= $(F90_EXTRA_LDFLAGS)
 
 OBJ0=ddassl.o daux.o dlinpk.o call_dasslAUTO.o res.o getflux.o res_daepack.o reaction_flux.o
 

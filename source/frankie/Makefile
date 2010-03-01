@@ -18,7 +18,7 @@ BINDIR=../../bin
 F90=g95
 F90FLAGS=-fmod=$(BUILDDIR) -ftrace=full
 
-LDFLAGS=-lpthread
+LDFLAGS= $(F90_EXTRA_LDFLAGS) -lpthread
 
 OBJ0=dqed.o calc_freq_code.o
 
