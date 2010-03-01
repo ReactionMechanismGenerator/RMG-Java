@@ -1,0 +1,155 @@
+//non-ring Joback dictionary; implemented 9/21-22/09 by Greg Magoon
+//molecule should be saturated with H, so there should be no need to consider radicals
+
+ R!H //L0
+ 1  * R!H 0 
+
+ C			// L1 Node: Carbon, no radicals
+ 1  * C 0
+				
+ CH3 //L2
+ 1  * C 0 {2,S} {3,S} {4,S} {5,S}
+ 2    H 0 {1,S}
+ 3    H 0 {1,S}
+ 4    H 0 {1,S}
+ 5    R!H 0 {1,S}
+
+ CsH2
+ 1  * C 0 {2,S} {3,S} {4,S} {5,S}
+ 2    H 0 {1,S}
+ 3    H 0 {1,S}
+ 4    R!H 0 {1,S}
+ 5    R!H 0 {1,S}
+
+ CsH1
+ 1  * C 0 {2,S} {3,S} {4,S} {5,S}
+ 2    H 0 {1,S}
+ 3    R!H 0 {1,S}
+ 4    R!H 0 {1,S}
+ 5    R!H 0 {1,S}
+
+ CsH0
+ 1  * C 0 {2,S} {3,S} {4,S} {5,S}
+ 2    R!H 0 {1,S}
+ 3    R!H 0 {1,S}
+ 4    R!H 0 {1,S}
+ 5    R!H 0 {1,S}
+
+ CdH2
+ 1  * C 0 {2,D} {3,S} {4,S}
+ 2    R!H 0 {1,D}
+ 3    H 0 {1,S}
+ 4    H 0 {1,S}
+
+ COH2	//L3 (formaldehyde: this will be given aldehyde values)
+ 1  * C 0 {2,D} {3,S} {4,S}
+ 2    O 0 {1,D}
+ 3    H 0 {1,S}
+ 4    H 0 {1,S}
+
+ CdH1
+ 1  * C 0 {2,D} {3,S} {4,S}
+ 2    R!H 0 {1,D}
+ 3    R!H 0 {1,S}
+ 4    H 0 {1,S}
+
+ COH1 //L3 (this will be given aldehyde values)
+ 1  * C 0 {2,D} {3,S} {4,S}
+ 2    O 0 {1,D}
+ 3    R!H 0 {1,S}
+ 4    H 0 {1,S}
+
+ HCOOH //L4 (this will be given aldehyde+alcohol values)
+ 1  * C 0 {2,D} {3,S} {4,S}
+ 2    O 0 {1,D}
+ 3    O 0 {1,S} {5,S}
+ 4    H 0 {1,S}
+ 5    H 0 {3,S}
+
+ HCOOR //L4 (this will be given aldehyde+ether values)
+ 1  * C 0 {2,D} {3,S} {4,S}
+ 2    O 0 {1,D}
+ 3    O 0 {1,S} {5,S}
+ 4    H 0 {1,S}
+ 5    R!H 0 {3,S}
+
+ CdH0  
+ 1  * C 0 {2,D} {3,S} {4,S}
+ 2    R!H 0 {1,D}
+ 3    R!H 0 {1,S}
+ 4    R!H 0 {1,S}
+
+ COH0 //L3 (this will be given ketone values)
+ 1  * C 0 {2,D} {3,S} {4,S}
+ 2    O 0 {1,D}
+ 3    R!H 0 {1,S}
+ 4    R!H 0 {1,S}
+
+ RCOOH //L4 (this will be given acid value)
+ 1  * C 0 {2,D} {3,S} {4,S}
+ 2    O 0 {1,D}
+ 3    O 0 {1,S} {5,S}
+ 4    R!H 0 {1,S}
+ 5    H 0 {3,S}
+
+ RCOOR //L4 (this will be given ester value)
+ 1  * C 0 {2,D} {3,S} {4,S}
+ 2    O 0 {1,D}
+ 3    O 0 {1,S} {5,S}
+ 4    R!H 0 {1,S}
+ 5    R!H 0 {3,S}
+
+ Cdd //L2
+ 1  * C 0 {2,D} {3,D}
+ 2    R!H 0 {1,D}
+ 3    R!H 0 {1,D}
+
+//update: in Joback thesis, ketene is separated into =O, =C= and =CH2 groups, so this should not be needed 
+//COd //L3 (turns up in H2CCO and CO2; according to ChemDraw, H2CCO includes the =CH2 group and the C=O non-ring group, so we will set this to zero and put a non-zero value in the corresponding oxygen group (using value for C=O); I'm not sure how CO2 should be treated with Joback method, but this will probably not treat it correctly
+ //1  * C 0 {2,D} {3,D}
+ //2    O 0 {1,D}
+ //3    R!H 0 {1,D}
+
+ CtH1
+ 1  * C 0 {2,T} {3,S}
+ 2    R!H 0 {1,T}
+ 3    H 0 {1,S}
+
+ CtH0
+ 1  * C 0 {2,T} {3,S}
+ 2    R!H 0 {1,T}
+ 3    R!H 0 {1,S}
+
+ O			// L1 Node: Oxygen
+ 1  * O 0
+
+ OH  //L2: alcohol
+ 1  * O 0 {2,S}
+ 2    H 0 {1,S}
+
+ AcidOH //L3: OH in carbonyl (acid); this will be given a value of zero since it is taken into account elsewhere
+ 1  * O 0 {2,S} {3,S}
+ 2    H 0 {1,S}
+ 3    C 0 {1,S} {4,D}
+ 4    O 0 {3,D}
+
+ Ether //L2
+ 1  * O 0 {2,S} {3,S}
+ 2    R!H 0 {1,S}
+ 3    R!H 0 {1,S}
+
+ EsterOxygen //L3: -O- in ester; this will be given a value of zero since it is taken into account elsewhere
+ 1  * O 0 {2,S} {3,S}
+ 2    R!H 0 {1,S}
+ 3    C 0 {1,S} {4,D}
+ 4    O 0 {3,D}
+
+ Carbonyl //L2
+ 1  * O 0 {2,D}
+ 2    R!H 0 {1,D}
+
+ CarbonylCds //L3: carbonyl bonded a C with other bonds single bonds (aldehydes, ethers, adids, ketones); this will be given a value of zero since it will be taken into account elsewhere
+ 1  * O 0 {2,D}
+ 2    C 0 {1,D} {3,S}
+ 3    R 0 {2,S}
+

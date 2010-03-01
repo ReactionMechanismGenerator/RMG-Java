@@ -1,0 +1,31 @@
+//ring Joback tree; cf. Joback Masters thesis (1984, MIT ChemE) and Tester and Modell, p. 567
+//implemented by Greg Magoon: 9/22/09
+
+
+L0: R!H
+	L1: C
+//		L2: CH3
+		L2: CsH2
+		L2: CsH1
+		L2: CsH0
+//		L2: CdH2
+//			L3: COH2
+		L2: CdH1
+//			L3: COH1
+//				L4: HCOOH
+//				L4: HCOOR
+		L2: CdH0
+			L3: COH0
+//				L4: RCOOH
+				L4: RCOOR
+		L2: Cdd
+
+//		L2: CtH1
+		L2: CtH0
+	L1: O
+//		L2: OH
+//			L3: AcidOH
+		L2: Ether
+			L3: EsterOxygen
+//		L2: Carbonyl
+//			L3: CarbonylCds
