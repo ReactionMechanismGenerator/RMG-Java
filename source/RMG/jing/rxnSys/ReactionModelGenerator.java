@@ -4371,6 +4371,10 @@ public class ReactionModelGenerator {
 		}
 		return line;
     }
+    
+    public ReactionModelEnlarger getReactionModelEnlarger() {
+    	return reactionModelEnlarger;
+    }
 }
 /*********************************************************************
  File Path	: RMG\RMG\jing\rxnSys\ReactionModelGenerator.java
