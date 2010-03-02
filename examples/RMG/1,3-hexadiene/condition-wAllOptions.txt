@@ -152,5 +152,6 @@ ChemkinUnits:
 //	to estimate the modified Arrhenius parameters reported.
 //	*** The length of these comments may be too long for the CHEMKIN interpreter to handle ***
 //Verbose: on/off
+//SMILES: on/off
 A: moles/molecules
 Ea: kcal/mol cal/mol kJ/mol J/mol Kelvins

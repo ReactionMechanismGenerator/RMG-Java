@@ -1254,6 +1254,25 @@ public class ReactionModelGenerator {
 					}
 					line = ChemParser.readMeaningfulLine(reader);
 				}
+				/*
+				 * MRH 3MAR2010:
+				 * Adding user option regarding chemkin file
+				 * 
+				 * New field: If user would like the empty SMILES string 
+				 * printed with each species in the thermochemistry portion 
+				 * of the generated chem.inp file
+				 */
+				if (line.toUpperCase().startsWith("SMILES")) {
+					StringTokenizer st = new StringTokenizer(line);
+					String dummyString = st.nextToken(); // Should be "SMILES:"
+					String OnOff = st.nextToken().toLowerCase();
+					if (OnOff.equals("off")) {
+						Chemkin.setSMILES(false);
+					} else if (OnOff.equals("on")) {
+						Chemkin.setSMILES(true);
+					}
+					line = ChemParser.readMeaningfulLine(reader);
+				}
 				if (line.startsWith("A")) {
 					StringTokenizer st = new StringTokenizer(line);
 					String dummyString = st.nextToken(); // Should be "A:"

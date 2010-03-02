@@ -63,6 +63,8 @@ public class Chemkin implements DAESolver {
   protected String reactorType;		//## attribute reactorType
 
   protected double rtol;		//## attribute rtol
+  
+  public static boolean SMILESutility = false;
 
   //protected String thermoHeader = "";
 
@@ -826,6 +828,16 @@ public  Chemkin() {
       	if (spe.getNasaThermoSource() != null) {
       		result.append("!" + spe.getNasaThermoSource() + "\n");
       	}
+      	/*
+      	 * MRH 2MAR2010:
+      	 * Added additional line to thermochemistry portion of chemkin file
+      	 * 
+      	 * Seyed asked the developers to add a line to the species
+      	 * thermochemistry portion of the chem.inp file.  This line holds
+      	 * a blank space for each species SMILES id.
+      	 */
+      	if (SMILESutility)
+      		result.append("![_ SMILES=\" \" _]\n");
       	result.append(spe.getNasaThermoData() + "\n");
 
       }
@@ -998,6 +1010,10 @@ public SystemSnapshot solve(boolean p_initialization, ReactionModel p_reactionMo
 	System.out.println("After ODE: from " + p_beginTime + " to "+ p_endTime);
 	SystemSnapshot result = readReactorOutputFile(p_reactionModel);
 	return result;
+}
+
+public static void setSMILES(boolean yesno) {
+	SMILESutility = yesno;
 }
 
 }
