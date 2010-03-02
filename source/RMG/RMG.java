@@ -233,8 +233,11 @@ public class RMG {
 			System.out.println("#                                                              #");
 			System.out.println("#  This java code was compiled by ant at:                      #");
 			System.out.println("#    "+jing.param.VersionInfo.getBuildDate());
-			System.out.println("#  The git hash of the master HEAD when built was:             #");
+			System.out.println("#  The git repository was on the branch:                       #");
+			System.out.println("#    "+jing.param.VersionInfo.getBranchName());
+			System.out.println("#  And at the commit with the hash:                            #");			 
 			System.out.println("#    "+jing.param.VersionInfo.getVersionHash());
+			System.out.println("#                                                              #");
 			System.out.println("#  For details visit:                                          #");	 
 			if (jing.param.VersionInfo.getVersionHash().startsWith("*") ) // error messages should start with a *
 				System.out.println("#  http://github.com/GreenGroup/RMG-Java/                      #");
