@@ -29,27 +29,81 @@
         </delete>
     </target>
     
-    <target name="versioninfo">
+    
+    <target name="getHash" depends="inGitTest, HEADishashTarget, HEADisrefTarget" unless="inGit">
+      <!-- this target is only executed if you are not in a git repository. 
+         if you ARE in a git repository then instead its dependencies HEADis... will set these params -->
+      <property name="branchname" value="* Not in git repository"/>
+      <property name="githash" value="* Not in git repository"/>
+    </target>
+    
+    <target name="inGitTest" description="Test if inside a git repository">
+      <condition property="inGit">
+        <available file=".git/HEAD" />
+      </condition>
+    </target>
+    <target name="isHEADhashTest" >
+    <!-- if the HEAD contains a hash, then this will set the property HEADishash
+    otherwise the property will remain unset -->
+    <condition property="HEADishash">
+      <length when="equal" length="41">
+      <fileset dir="." includes=".git/HEAD">
+        <containsregexp expression="[0-9a-f]{40}"/>
+      </fileset>
+     </length>
+   </condition>
+    </target>
+    
+     <target name="HEADishashTarget" depends="isHEADhashTest" if="HEADishash">
+      <echo>The HEAD is a hash</echo>
+    <loadfile property="githash" srcFile=".git/HEAD">
+            <filterchain>
+        <striplinebreaks/>
+      </filterchain>
+    </loadfile>
+    <echo>githash = "${githash}"</echo>
+    <property name="branchname" value="Not on a branch"/>
+     </target>
+     
+    <target name="HEADisrefTarget" depends="isHEADhashTest" unless="HEADishash">
+      <echo>The HEAD is a ref</echo>
+    <loadfile property="headpath" srcFile=".git/HEAD" >
+      <filterchain>
+        <replacestring from="ref: " to=""/>
+        <striplinebreaks/>
+      </filterchain>
+    </loadfile>
+    <!-- echo>headpath = "${headpath}"</echo -->
+    <loadfile property="branchname" srcFile=".git/HEAD" >
+      <filterchain>
+        <replacestring from="ref: refs/heads/" to=""/>
+        <striplinebreaks/>
+      </filterchain>
+    </loadfile>
+    <echo>branchname = "${branchname}"</echo>
+
+    <loadfile property="githash" srcFile=".git/${headpath}">
+            <filterchain>
+        <striplinebreaks/>
+      </filterchain>
+    </loadfile>
+    <echo>githash = "${githash}"</echo>
+  
+    </target>
+    
+    <target name="versioninfo" depends="getHash">
     <!-- set the time stamp -->   
     <tstamp>
       <format property="buildtime" pattern="yyyy-MM-dd'T'HH:mm:ss"/>
     </tstamp>
-    <!-- make default filter file -->
-    <concat destfile="${build}/filter">
-      versionhash = * Not in git repository *
-    </concat>
-    <!-- replace with correct filter file if you can -->
-    <concat destfile="${build}/filter">
-      <header>versionhash = </header>
-      <fileset dir="." includes=".git/refs/heads/master" />
-    </concat>
     <!-- copy source file with filter -->
     <copy file="${src}/jing/param/VersionInfo.java" 
       toFile="${build}/jing/param/VersionInfo.java"
       overwrite="true" >
       <filterset>
         <filter token="builddate" value="${buildtime}"/>
-        <filtersfile file="${build}/filter"/>
+        <filter token="branchname" value="${branchname}"/>
+        <filter token="versionhash" value="${githash}"/>
       </filterset>
     </copy>
     <!-- compile the single java file into a class -->
