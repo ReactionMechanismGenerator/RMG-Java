@@ -38,3 +38,4 @@
 21      on      Intra_R_Add_Exocyclic
 22      on      Intra_R_Add_Endocyclic
 23      on      Intra_Disproportionation
+24	on	1,2-Birad_to_alkene
