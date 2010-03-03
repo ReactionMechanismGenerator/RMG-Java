@@ -1833,6 +1833,10 @@ public class Species {
 	}
 	
     public String getInChI() {
+    	if (InChI == null) {
+    		String[] inchiANDinchikey = generateInChI(getChemGraph());
+    		InChI = inchiANDinchikey[0];
+    	}
         return InChI;
     }
     

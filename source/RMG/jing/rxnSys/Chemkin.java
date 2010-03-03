@@ -837,7 +837,7 @@ public  Chemkin() {
       	 * a blank space for each species SMILES id.
       	 */
       	if (SMILESutility)
-      		result.append("![_ SMILES=\" \" _]\n");
+      		result.append("![_ SMILES=\"" + spe.getInChI() + "\" _]\n");
       	result.append(spe.getNasaThermoData() + "\n");
 
       }

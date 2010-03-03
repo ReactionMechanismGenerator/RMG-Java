@@ -1270,6 +1270,7 @@ public class ReactionModelGenerator {
 						Chemkin.setSMILES(false);
 					} else if (OnOff.equals("on")) {
 						Chemkin.setSMILES(true);
+						Species.useInChI = true;
 					}
 					line = ChemParser.readMeaningfulLine(reader);
 				}
