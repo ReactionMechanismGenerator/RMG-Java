@@ -19,3 +19,7 @@ netbeans/*
 
 # Folder in which to run RMG
 run/*
+
+#compiled Fortran modules in fame and frankie source directories
+source/fame/*.mod
+source/frankie/*.mod
