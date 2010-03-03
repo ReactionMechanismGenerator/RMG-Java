@@ -42,16 +42,16 @@
         <available file=".git/HEAD" />
       </condition>
     </target>
-    <target name="isHEADhashTest" >
+    <target name="isHEADhashTest" if="inGit">
     <!-- if the HEAD contains a hash, then this will set the property HEADishash
     otherwise the property will remain unset -->
-    <condition property="HEADishash">
-      <length when="equal" length="41">
-      <fileset dir="." includes=".git/HEAD">
-        <containsregexp expression="[0-9a-f]{40}"/>
-      </fileset>
-     </length>
-   </condition>
+      <condition property="HEADishash">
+        <length when="equal" length="41">
+        <fileset dir="." includes=".git/HEAD">
+          <containsregexp expression="[0-9a-f]{40}"/>
+        </fileset>
+       </length>
+      </condition>
     </target>
     
      <target name="HEADishashTarget" depends="isHEADhashTest" if="HEADishash">
@@ -65,7 +65,7 @@
     <property name="branchname" value="Not on a branch"/>
      </target>
      
-    <target name="HEADisrefTarget" depends="isHEADhashTest" unless="HEADishash">
+    <target name="HEADisrefTarget" depends="isHEADhashTest" unless="HEADishash" if="inGit">
       <echo>The HEAD is a ref</echo>
     <loadfile property="headpath" srcFile=".git/HEAD" >
       <filterchain>
