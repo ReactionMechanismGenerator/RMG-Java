@@ -33,7 +33,9 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
+import java.util.LinkedList;
 import java.util.StringTokenizer;
 
 import jing.chem.ChemGraph;
@@ -42,11 +44,33 @@ import jing.chem.Species;
 import jing.chemParser.ChemParser;
 import jing.chemUtil.Graph;
 import jing.param.Global;
+import jing.param.Pressure;
 import jing.param.Temperature;
+import jing.rxn.BathGas;
+import jing.rxn.FastMasterEqn;
 import jing.rxn.Kinetics;
+import jing.rxn.LibraryReactionGenerator;
+import jing.rxn.PDepKineticsEstimator;
+import jing.rxn.PDepNetwork;
+import jing.rxn.PDepRateConstant;
+import jing.rxn.PDepReaction;
 import jing.rxn.Reaction;
+import jing.rxn.ReactionGenerator;
 import jing.rxn.TemplateReactionGenerator;
+import jing.rxnSys.CoreEdgeReactionModel;
+import jing.rxnSys.DynamicSimulator;
+import jing.rxnSys.FinishController;
+import jing.rxnSys.InitialStatus;
+import jing.rxnSys.PressureModel;
+import jing.rxnSys.PrimaryReactionLibrary;
+import jing.rxnSys.RateBasedPDepRME;
+import jing.rxnSys.RateBasedRME;
+import jing.rxnSys.ReactionModel;
+import jing.rxnSys.ReactionModelEnlarger;
 import jing.rxnSys.ReactionModelGenerator;
+import jing.rxnSys.ReactionSystem;
+import jing.rxnSys.SpeciesStatus;
+import jing.rxnSys.TemperatureModel;
 
 public class PopulateReactions {
 	/**
@@ -173,6 +197,23 @@ public class PopulateReactions {
             }
             
             line = ChemParser.readMeaningfulLine(br_input);
+            BathGas bathgas = null;
+            String inertgasname = "";
+            if (line.toLowerCase().startsWith("spectroscopicdata")) {
+            	rmg.setSpectroscopicDataMode(line);
+            	line = ChemParser.readMeaningfulLine(br_input);
+            	rmg.setPressureDependenceType(line);
+            	line = ChemParser.readMeaningfulLine(br_input);
+            	line = rmg.setPDepKineticsModel(line, br_input);
+            	StringTokenizer bathGas_st = new StringTokenizer(line);
+            	String name = bathGas_st.nextToken();
+            	name = bathGas_st.nextToken();
+            	inertgasname = name;
+            	bathgas = new BathGas(name);
+            }
+            
+            LinkedHashMap dummyLHM = new LinkedHashMap();
+            line = ChemParser.readMeaningfulLine(br_input);
             // Read in all of the species in the input file
 			while (line != null) {
 				// The first line of a new species is the user-defined name
@@ -192,6 +233,8 @@ public class PopulateReactions {
 				// Add the new species to the set of species
 				//int speciesCount = speciesSet.size();
 				speciesSet.add(species);
+    			SpeciesStatus ss = new SpeciesStatus(species,1,1e-12,0);
+    			dummyLHM.put(species, ss);
 				//if (speciesSet.size() != speciesCount+1){
 				//	System.out.println(speciesName);
 				//	Iterator iter=speciesSet.iterator();
@@ -205,6 +248,8 @@ public class PopulateReactions {
 				// Read the next line of the input file
 				line = ChemParser.readMeaningfulLine(br_input);
 			}
+			InitialStatus is = new InitialStatus(dummyLHM,null,null);
+			is.putInertGas(inertgasname,1e-6);
 			
 			// Set the user's input temperature
 			rmg.setTemp4BestKinetics(systemTemp_K);
@@ -212,6 +257,60 @@ public class PopulateReactions {
 			
 			// React all species with each other
 			reactions = rtLibrary.react(speciesSet);
+			
+			/*
+			 * MRH 28Feb
+			 * The next line will use the new PrimaryReactionLibrary
+			 */
+			//reaction.addAll(getLibraryReactionGenerator().react(speciesSet));
+			if (!(rmg.getReactionModelEnlarger() instanceof RateBasedRME))	{
+				CoreEdgeReactionModel cerm = new CoreEdgeReactionModel(speciesSet, reactions);
+				rmg.setReactionModel(cerm);
+				rmg.setReactionGenerator(rtLibrary);
+				
+				ReactionSystem rs = new ReactionSystem(null,
+						null,
+						rmg.getReactionModelEnlarger(),
+						null,
+						null,
+						rmg.getPrimaryReactionLibrary(),
+						rmg.getReactionGenerator(),
+						speciesSet,
+						is,
+						rmg.getReactionModel(),
+						new LibraryReactionGenerator(),
+						0,
+						"Liquid");
+//				rs.set
+				PDepNetwork pdepnetwork = new PDepNetwork();
+				pdepnetwork.reactionModel = rmg.getReactionModel();
+				pdepnetwork.reactionSystem = rs;
+				// If the reaction structure is A + B = C + D, we are not concerned w/pdep
+				Iterator iter = reactions.iterator();
+				LinkedHashSet nonPdepReactions = new LinkedHashSet();
+	        	while (iter.hasNext()){
+	        		Reaction r = (Reaction)iter.next();
+	        		if (r.getReactantNumber() < 2 || r.getProductNumber() < 2){
+						cerm.categorizeReaction(r.getStructure());
+						pdepnetwork = pdepnetwork.addReactionToNetworks(r);
+					}
+	        		else {
+	        			nonPdepReactions.add(r);
+	        		}
+				}
+	        	
+	        	// Run fame calculation
+	        	PDepKineticsEstimator pDepKineticsEstimator = 
+					((RateBasedPDepRME) rmg.getReactionModelEnlarger()).getPDepKineticsEstimator();
+	        	//FastMasterEqn fme = new FastMasterEqn(pDepKineticsEstimator);
+	        	pDepKineticsEstimator.runPDepCalculation(pdepnetwork,rs,cerm);
+	        	
+	        	LinkedList<PDepReaction> indivPDepRxns = pdepnetwork.getPathReactions();
+	        	for (int numPDepRxns=0; numPDepRxns<indivPDepRxns.size(); numPDepRxns++) {
+	        		listOfReactions += writePDepOutputString(indivPDepRxns.get(numPDepRxns));
+	        	}
+	        	reactions = nonPdepReactions;
+			}			
 			
 			// Some of the reactions may be dupliates of one another 
 			//	(e.g. H+CH4=CH3+H2 as a forward reaction and reverse reaction)
@@ -298,6 +397,12 @@ public class PopulateReactions {
 		File GATPFit = new File("GATPFit");
 		ChemParser.deleteDir(GATPFit);
 		GATPFit.mkdir();
+		File frankie = new File("frankie");
+		ChemParser.deleteDir(frankie);
+		frankie.mkdir();
+		File fame = new File("fame");
+		ChemParser.deleteDir(fame);
+		fame.mkdir();
 		
 //		String name= "RMG_database";
 //		String workingDir = System.getenv("RMG");
@@ -369,6 +474,13 @@ public class PopulateReactions {
 			else listOfReactions += r.toString() + "\t" + updateListOfReactions(r.getKinetics());
 		}
 		return listOfReactions;
+	}
+	
+	public static String writePDepOutputString(PDepReaction pdepRxn) {
+		String output = "";
+		// Print reaction string
+		
+		return output;
 	}
 
 }
