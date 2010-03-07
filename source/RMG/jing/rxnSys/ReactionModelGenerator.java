@@ -351,11 +351,19 @@ public class ReactionModelGenerator {
 					presList = new LinkedList();
 					//read first pressure
 					double p = Double.parseDouble(st.nextToken());
+					Pressure pres = new Pressure(p, unit);
+					Global.lowPressure = (Pressure)pres.clone();
+					Global.highPressure = (Pressure)pres.clone();
 					presList.add(new ConstantPM(p, unit));
 					//read remaining temperatures
         			while (st.hasMoreTokens()) {
 						p = Double.parseDouble(st.nextToken());
 						presList.add(new ConstantPM(p, unit));
+						pres = new Pressure(p, unit);
+						if(pres.getBar() < Global.lowPressure.getBar())
+							Global.lowPressure = (Pressure)pres.clone();
+						if(pres.getBar() > Global.lowPressure.getBar())
+							Global.highPressure = (Pressure)pres.clone();
 					}	
         			//Global.pressure = new Pressure(p, unit);
         		}
@@ -4257,6 +4265,10 @@ public class ReactionModelGenerator {
 					}
 					Temperature TMAX = new Temperature(tHigh,TUNITS);
 					ChebyshevPolynomials.setTup(TMAX);
+					if (TMAX.getK() < Global.highTemperature.getK()) 
+						throw new InvalidSymbolException("Chebyshev Tmax is lower than the highest simulation temperature "+Global.highTemperature.toString() );
+					if (TMIN.getK() > Global.lowTemperature.getK()) 
+						throw new InvalidSymbolException("Chebyshev Tmin is higher than the lowest simulation temperature "+Global.lowTemperature.toString() );		
 					int tResolution = Integer.parseInt(st.nextToken());
 					int tbasisFuncs = Integer.parseInt(st.nextToken());
 					if (tbasisFuncs > tResolution) {
@@ -4282,6 +4294,10 @@ public class ReactionModelGenerator {
 							System.exit(0);
 						}
 						PMAX = new Pressure(pHigh,PUNITS);
+						if (PMAX.getPa() < Global.highPressure.getPa()) 
+							throw new InvalidSymbolException("Chebyshev Pmax is lower than the highest simulation pressure "+Global.highPressure.toString() );
+						if (PMIN.getPa() > Global.lowPressure.getPa()) 
+							throw new InvalidSymbolException("Chebyshev Pmin is higher than the lowest simulation pressure "+Global.lowPressure.toString() );							
 						ChebyshevPolynomials.setPup(PMAX);
 						pResolution = Integer.parseInt(st.nextToken());
 						pbasisFuncs = Integer.parseInt(st.nextToken());
