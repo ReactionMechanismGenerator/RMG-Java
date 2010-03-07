@@ -4313,7 +4313,7 @@ public class ReactionModelGenerator {
 					// Set temperatures and pressures to use in PDep kinetics estimation
 					Temperature[] temperatures = new Temperature[tResolution];
 					for (int i=0; i<temperatures.length; i++) {
-						double tempValueTilda = Math.cos((2*(i+1)-1)*Math.PI/(2*temperatures.length));
+						double tempValueTilda = Math.cos(i*Math.PI/(temperatures.length-1)); // roots of a Chebyshev polynomial
 						double tempValue = 2 / (tempValueTilda * ((1/TMAX.getK()) - (1/TMIN.getK())) + (1/TMIN.getK()) + (1/TMAX.getK()));
 						temperatures[temperatures.length-i-1] = new Temperature(tempValue,TUNITS);
 					}
@@ -4322,7 +4322,7 @@ public class ReactionModelGenerator {
 					
 					Pressure[] pressures = new Pressure[pResolution];
 					for (int j=0; j<pressures.length; j++) {
-						double pressValueTilda = Math.cos((2*(j+1)-1)*Math.PI/(2*pressures.length));
+						double pressValueTilda = Math.cos(j*Math.PI/(pressures.length-1)); // roots of a Chebyshev polynomial
 						double pressValue = Math.pow(10,(pressValueTilda*(Math.log10(PMAX.getBar())-Math.log10(PMIN.getBar()))+Math.log10(PMIN.getBar())+Math.log10(PMAX.getBar()))/2);
 						pressures[pressures.length-j-1] = new Pressure(pressValue,PUNITS);
 					}
