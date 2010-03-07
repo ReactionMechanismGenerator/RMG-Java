@@ -4233,7 +4233,7 @@ public class ReactionModelGenerator {
 		}
     }
     
-    public String setPDepKineticsModel(String line, BufferedReader reader) {
+    public String setPDepKineticsModel(String line, BufferedReader reader) throws InvalidSymbolException {
 		StringTokenizer st = new StringTokenizer(line);
 		String name = st.nextToken();
 		String pDepKinType = st.nextToken();
@@ -4253,16 +4253,14 @@ public class ReactionModelGenerator {
 					ChebyshevPolynomials.setTlow(TMIN);
 					double tHigh = Double.parseDouble(st.nextToken());
 					if (tHigh <= tLow) {
-						System.err.println("Tmax is less than or equal to Tmin");
-						System.exit(0);
+						throw new InvalidSymbolException("Chebyshev Tmax is less than or equal to Tmin");
 					}
 					Temperature TMAX = new Temperature(tHigh,TUNITS);
 					ChebyshevPolynomials.setTup(TMAX);
 					int tResolution = Integer.parseInt(st.nextToken());
 					int tbasisFuncs = Integer.parseInt(st.nextToken());
 					if (tbasisFuncs > tResolution) {
-						System.err.println("The number of basis functions cannot exceed the number of grid points");
-						System.exit(0);
+						throw new InvalidSymbolException("The number of basis functions cannot exceed the number of grid points");
 					}
 					FastMasterEqn.setNumTBasisFuncs(tbasisFuncs);
 					line = ChemParser.readMeaningfulLine(reader);
@@ -4288,14 +4286,12 @@ public class ReactionModelGenerator {
 						pResolution = Integer.parseInt(st.nextToken());
 						pbasisFuncs = Integer.parseInt(st.nextToken());
 						if (pbasisFuncs > pResolution) {
-							System.err.println("The number of basis functions cannot exceed the number of grid points");
-							System.exit(0);
+							throw new InvalidSymbolException("The number of basis functions cannot exceed the number of grid points");
 						}
 						FastMasterEqn.setNumPBasisFuncs(pbasisFuncs);
 					}
 					else {
-						System.err.println("RMG cannot locate PRange field for Chebyshev polynomials.");
-						System.exit(0);
+						throw new InvalidSymbolException("RMG cannot locate PRange field for Chebyshev polynomials.");
 					}
 					
 					// Set temperatures and pressures to use in PDep kinetics estimation
@@ -4371,8 +4367,7 @@ public class ReactionModelGenerator {
 						PDepArrheniusKinetics.setPressures(listOfPs);
 					}
 					else {
-						System.err.println("RMG cannot locate PRange field for PDepArrhenius.");
-						System.exit(0);
+						throw new InvalidSymbolException("RMG cannot locate PRange field for PDepArrhenius.");
 					}
 					
 					line = ChemParser.readMeaningfulLine(reader);
