@@ -1237,6 +1237,7 @@ public class Species {
                     
                     BufferedReader stdout = new BufferedReader(new InputStreamReader(InChI.getInputStream()));
                     BufferedReader stderr = new BufferedReader(new InputStreamReader(InChI.getErrorStream()));
+                    PrintStream stdin = new PrintStream(  new BufferedOutputStream( InChI.getOutputStream(), 1024), true);
         			
                     String inchiLine = stdout.readLine().trim();
                     while (inchiLine != null) {
