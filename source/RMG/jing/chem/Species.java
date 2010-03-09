@@ -1182,12 +1182,46 @@ public class Species {
                     File runningDir = new File("InChI");
                     Process InChI = Runtime.getRuntime().exec(command, null, runningDir);
 
-                    InputStream errStream = InChI.getErrorStream();
-                    InputStream inpStream = InChI.getInputStream();
-                    errStream.close();
-                    inpStream.close();
+//                    InputStream errStream = InChI.getErrorStream();
+//                    InputStream inpStream = InChI.getInputStream();
+//                    errStream.close();
+//                    inpStream.close();
+//
+//                    exitValue = InChI.waitFor();
+                    
+                    // Stuff added by MRH on 9MAR2010
+
+                    BufferedReader stdout = new BufferedReader(new InputStreamReader(InChI.getInputStream()));
+                    BufferedReader stderr = new BufferedReader(new InputStreamReader(InChI.getErrorStream()));
+        			PrintStream stdin = new PrintStream(  new BufferedOutputStream( InChI.getOutputStream(), 1024), true);
+
+//        			stdin.print( input );
+//        			stdin.flush();
+//        			if (stdin.checkError()) { // Flush the stream and check its error state.
+//        				System.out.println("ERROR sending input to fame.exe!!");
+//        			}
+//        			stdin.close();
+        			
+                    String inchiLine = stdout.readLine().trim();
+                    while (inchiLine != null) {
+                    	if (line.startsWith("InChI=")) {//changed from InChI to InChI= (to distinguish fro InChIKey
+        	        		InChIstring = line;
+        	        		result[0] = InChIstring;
+        	        		result[1] = "";
+        	        		return result;
+        	        	}
+                    	inchiLine = stdout.readLine().trim();
+                    }
+
 
                     exitValue = InChI.waitFor();
+
+        			// Clean up i/o streams
+        			// This may be needed to release memory, which is especially 
+        			// important for FAME since it can easily be called tens of
+        			// thousands of times in a single job
+        			stdout.close();
+        			stderr.close();
                 }
                 else if (getOs().toLowerCase().contains("mac")){
                     String[] command = {workingDirectory + "/bin/cInChI-1",
