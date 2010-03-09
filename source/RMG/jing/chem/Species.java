@@ -1321,35 +1321,35 @@ public class Species {
              * This portion of code (reading in the species.txt file and searching
              * 	for the InChI and InChIKey) is now obsolete (see code above).
              */
-//        FileReader in = null;
-//		try {
-//			in = new FileReader(inchiDirectory + "/species.txt");
-//		} catch (FileNotFoundException e) {
-//			String err = "Error reading species.txt file in generating InChI for species " + p_chemGraph.chemicalFormula + " : ";
-//			err += e.toString();
-//			System.out.println(err);
-//		}
-//        
-//		if (in != null) {
-//			BufferedReader reader = new BufferedReader(in);
-//	        line = ChemParser.readMeaningfulLine(reader);
-//	        read: while (line != null) {
-//	        	if (line.startsWith("InChI=")) {//changed from InChI to InChI= (to distinguish fro InChIKey
-//	        		InChIstring = line;
-//	        	}
-//	                else if (line.startsWith("InChIKey=")) {//changed from "InChI" to "InChI=" (to distinguish from "InChIKey="
-//	        		InChIKeystring = line.replace("InChIKey=", "");//read in the InChIKey without the preceding "InChIKey="
-//	        		break;
-//	        	}
-//	        	line = ChemParser.readMeaningfulLine(reader);
-//	            }
-//	        result[0]=InChIstring;
-//	        result[1]=InChIKeystring;
-//		}
-//		else {
-//			result[0] = "";
-//			result[1] = "";
-//		}
+        FileReader in = null;
+		try {
+			in = new FileReader(inchiDirectory + "/species.txt");
+		} catch (FileNotFoundException e) {
+			String err = "Error reading species.txt file in generating InChI for species " + p_chemGraph.chemicalFormula + " : ";
+			err += e.toString();
+			System.out.println(err);
+		}
+        
+		if (in != null) {
+			BufferedReader reader = new BufferedReader(in);
+	        line = ChemParser.readMeaningfulLine(reader);
+	        read: while (line != null) {
+	        	if (line.startsWith("InChI=")) {//changed from InChI to InChI= (to distinguish fro InChIKey
+	        		InChIstring = line;
+	        	}
+	                else if (line.startsWith("InChIKey=")) {//changed from "InChI" to "InChI=" (to distinguish from "InChIKey="
+	        		InChIKeystring = line.replace("InChIKey=", "");//read in the InChIKey without the preceding "InChIKey="
+	        		break;
+	        	}
+	        	line = ChemParser.readMeaningfulLine(reader);
+	            }
+	        result[0]=InChIstring;
+	        result[1]=InChIKeystring;
+		}
+		else {
+			result[0] = "";
+			result[1] = "";
+		}
         return result;
 	}
 	
