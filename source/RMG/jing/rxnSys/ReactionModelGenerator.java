@@ -1278,7 +1278,14 @@ public class ReactionModelGenerator {
 						Chemkin.setSMILES(false);
 					} else if (OnOff.equals("on")) {
 						Chemkin.setSMILES(true);
-						Species.useInChI = true;
+						/*
+						 * MRH 9MAR2010:
+						 * MRH decided not to generate an InChI for every new species
+						 * 	during an RMG simulation (especially since it is not used
+						 * 	for anything).  Instead, they will only be generated in the
+						 * 	post-processing, if the user asked for InChIs.
+						 */
+						//Species.useInChI = true;
 					}
 					line = ChemParser.readMeaningfulLine(reader);
 				}

@@ -123,7 +123,17 @@ public class Species {
         selectDeltaEDown();
 		generateNASAThermoData();
        // generateSpectroscopicData(); // only get it if you need it!!!
-        if (useInChI) InChI = p_chemGraph.getInChI();
+		/*
+		 * MRH 9MAR2010:
+		 * Commenting InChI generation when making a new species.
+		 * 
+		 * Presently, the only time an InChI is needed in any RMG "default package"
+		 * 	class is in the post-processing (e.g. write the InChI with the
+		 * 	RMG_Dictionary.txt file, write the InChI with the chem.inp file).
+		 * 	Generating an InChI for every species made slows down RMG and is
+		 * 	unnecessary.  RMG will now only generate InChIs for the core species.
+		 */
+//        if (useInChI) InChI = p_chemGraph.getInChI();
         //#]
     }
 
@@ -1158,23 +1168,96 @@ public class Species {
         //I would have liked to have specified optionsArgument as an array of strings, but I was getting "illegal start of expression" errors in NetBeans IDE
         int exitValue = -1;
         //while (exitValue != 0) {
+        
+        /*
+         * MRH 9MAR2010:
+         * Addressing Issue#13: InChI not working consistently on Linux / Mac
+         * 
+         * Switching how the input/error/output of the "InChI" Process is handled.
+         * MRH has copied the format JWA has used for the fame executable.
+         * InChI now appears to run very consistently on Linux (in the limited types
+         * of jobs I have ran - RMG, AdjList2InChI), in addition to running 
+         * consistently on Windows.
+         * 
+         * Hopefully RW can test the new implementation on Mac
+         */
             try {
                 if (getOs().toLowerCase().contains("windows")){
                     String[] command = {workingDirectory + "/bin/cInChI-1",
                         "species.mol",
-                        "species.txt",
                         "/DoNotAddH", "/FixedH", "/Key"};//6/9/09 gmagoon: added fixed H so tautomers are considered separately; this is apparently not an option for version 1.02 (standard inchi); also added Key option to generate inchikey...this is only available in version 1.02beta or later; therefore, this keyword combination will only work for version 1.02beta (as of now)
                     File runningDir = new File("InChI");
                     Process InChI = Runtime.getRuntime().exec(command, null, runningDir);
 
-                    InputStream errStream = InChI.getErrorStream();
-                    InputStream inpStream = InChI.getInputStream();
-                    errStream.close();
-                    inpStream.close();
+//                    InputStream errStream = InChI.getErrorStream();
+//                    InputStream inpStream = InChI.getInputStream();
+//                    errStream.close();
+//                    inpStream.close();
+//
+//                    exitValue = InChI.waitFor();      
+                    
+                    BufferedReader stdout = new BufferedReader(new InputStreamReader(InChI.getInputStream()));
+                    BufferedReader stderr = new BufferedReader(new InputStreamReader(InChI.getErrorStream()));
+        			PrintStream stdin = new PrintStream(  new BufferedOutputStream( InChI.getOutputStream(), 1024), true);
+        			
+                    String inchiLine = stdout.readLine().trim();
+                    while (inchiLine != null) {
+        	        	if (line.startsWith("InChI=")) {//changed from InChI to InChI= (to distinguish fro InChIKey
+        	        		InChIstring = line;
+        	        	}
+        	        	else if (line.startsWith("InChIKey=")) {//changed from "InChI" to "InChI=" (to distinguish from "InChIKey="
+        	        		InChIKeystring = line.replace("InChIKey=", "");//read in the InChIKey without the preceding "InChIKey="
+        	        		break;
+        	        	}
+        	        	inchiLine = stdout.readLine().trim();
+                    }
+                    result[0]=InChIstring;
+        	        result[1]=InChIKeystring;
 
-                    exitValue = InChI.waitFor();               
+                    exitValue = InChI.waitFor();
+
+        			// Clean up i/o streams
+        			stdout.close();
+        			stderr.close();                    
                 }
                 else if (getOs().toLowerCase().contains("linux")){
+                    String[] command = {workingDirectory + "/bin/cInChI-1",
+                        "species.mol",
+                        "-DoNotAddH", "-FixedH", "-Key"};
+                    File runningDir = new File("InChI");
+                    Process InChI = Runtime.getRuntime().exec(command, null, runningDir);
+
+//                    InputStream errStream = InChI.getErrorStream();
+//                    InputStream inpStream = InChI.getInputStream();
+//                    errStream.close();
+//                    inpStream.close();
+//
+//                    exitValue = InChI.waitFor();
+                    
+                    BufferedReader stdout = new BufferedReader(new InputStreamReader(InChI.getInputStream()));
+                    BufferedReader stderr = new BufferedReader(new InputStreamReader(InChI.getErrorStream()));
+        			
+                    String inchiLine = stdout.readLine().trim();
+                    while (inchiLine != null) {
+        	        	if (line.startsWith("InChI=")) {//changed from InChI to InChI= (to distinguish fro InChIKey
+        	        		InChIstring = line;
+        	        	}
+        	        	else if (line.startsWith("InChIKey=")) {//changed from "InChI" to "InChI=" (to distinguish from "InChIKey="
+        	        		InChIKeystring = line.replace("InChIKey=", "");//read in the InChIKey without the preceding "InChIKey="
+        	        		break;
+        	        	}
+        	        	inchiLine = stdout.readLine().trim();
+                    }
+                    result[0]=InChIstring;
+        	        result[1]=InChIKeystring;
+
+                    exitValue = InChI.waitFor();
+
+        			// Clean up i/o streams
+        			stdout.close();
+        			stderr.close();
+                }
+                else if (getOs().toLowerCase().contains("mac")){
                     String[] command = {workingDirectory + "/bin/cInChI-1",
                         "species.mol",
                         "species.txt",
@@ -1189,54 +1272,28 @@ public class Species {
 //
 //                    exitValue = InChI.waitFor();
                     
-                    // Stuff added by MRH on 9MAR2010
-
                     BufferedReader stdout = new BufferedReader(new InputStreamReader(InChI.getInputStream()));
                     BufferedReader stderr = new BufferedReader(new InputStreamReader(InChI.getErrorStream()));
-        			PrintStream stdin = new PrintStream(  new BufferedOutputStream( InChI.getOutputStream(), 1024), true);
-
-//        			stdin.print( input );
-//        			stdin.flush();
-//        			if (stdin.checkError()) { // Flush the stream and check its error state.
-//        				System.out.println("ERROR sending input to fame.exe!!");
-//        			}
-//        			stdin.close();
         			
                     String inchiLine = stdout.readLine().trim();
                     while (inchiLine != null) {
-                    	if (line.startsWith("InChI=")) {//changed from InChI to InChI= (to distinguish fro InChIKey
+        	        	if (line.startsWith("InChI=")) {//changed from InChI to InChI= (to distinguish fro InChIKey
         	        		InChIstring = line;
-        	        		result[0] = InChIstring;
-        	        		result[1] = "";
-        	        		return result;
         	        	}
-                    	inchiLine = stdout.readLine().trim();
+        	        	else if (line.startsWith("InChIKey=")) {//changed from "InChI" to "InChI=" (to distinguish from "InChIKey="
+        	        		InChIKeystring = line.replace("InChIKey=", "");//read in the InChIKey without the preceding "InChIKey="
+        	        		break;
+        	        	}
+        	        	inchiLine = stdout.readLine().trim();
                     }
-
+                    result[0]=InChIstring;
+        	        result[1]=InChIKeystring;
 
                     exitValue = InChI.waitFor();
 
         			// Clean up i/o streams
-        			// This may be needed to release memory, which is especially 
-        			// important for FAME since it can easily be called tens of
-        			// thousands of times in a single job
         			stdout.close();
         			stderr.close();
-                }
-                else if (getOs().toLowerCase().contains("mac")){
-                    String[] command = {workingDirectory + "/bin/cInChI-1",
-                        "species.mol",
-                        "species.txt",
-                        "-DoNotAddH", "-FixedH", "-Key"};
-                    File runningDir = new File("InChI");
-                    Process InChI = Runtime.getRuntime().exec(command, null, runningDir);
-
-                    InputStream errStream = InChI.getErrorStream();
-                    InputStream inpStream = InChI.getInputStream();
-                    errStream.close();
-                    inpStream.close();
-
-                    exitValue = InChI.waitFor();
                 }
                 
 //                File runningDir = new File("InChI");
@@ -1257,35 +1314,40 @@ public class Species {
         //}
 		
 		// Read in the output of the cINChI-1 executable file (species.txt)
-        FileReader in = null;
-		try {
-			in = new FileReader(inchiDirectory + "/species.txt");
-		} catch (FileNotFoundException e) {
-			String err = "Error reading species.txt file in generating InChI for species " + p_chemGraph.chemicalFormula + " : ";
-			err += e.toString();
-			System.out.println(err);
-		}
-        
-		if (in != null) {
-			BufferedReader reader = new BufferedReader(in);
-	        line = ChemParser.readMeaningfulLine(reader);
-	        read: while (line != null) {
-	        	if (line.startsWith("InChI=")) {//changed from InChI to InChI= (to distinguish fro InChIKey
-	        		InChIstring = line;
-	        	}
-	                else if (line.startsWith("InChIKey=")) {//changed from "InChI" to "InChI=" (to distinguish from "InChIKey="
-	        		InChIKeystring = line.replace("InChIKey=", "");//read in the InChIKey without the preceding "InChIKey="
-	        		break;
-	        	}
-	        	line = ChemParser.readMeaningfulLine(reader);
-	            }
-	        result[0]=InChIstring;
-	        result[1]=InChIKeystring;
-		}
-		else {
-			result[0] = "";
-			result[1] = "";
-		}
+            /*
+             * MRH 9MAR2010:
+             * This portion of code (reading in the species.txt file and searching
+             * 	for the InChI and InChIKey) is now obsolete (see code above).
+             */
+//        FileReader in = null;
+//		try {
+//			in = new FileReader(inchiDirectory + "/species.txt");
+//		} catch (FileNotFoundException e) {
+//			String err = "Error reading species.txt file in generating InChI for species " + p_chemGraph.chemicalFormula + " : ";
+//			err += e.toString();
+//			System.out.println(err);
+//		}
+//        
+//		if (in != null) {
+//			BufferedReader reader = new BufferedReader(in);
+//	        line = ChemParser.readMeaningfulLine(reader);
+//	        read: while (line != null) {
+//	        	if (line.startsWith("InChI=")) {//changed from InChI to InChI= (to distinguish fro InChIKey
+//	        		InChIstring = line;
+//	        	}
+//	                else if (line.startsWith("InChIKey=")) {//changed from "InChI" to "InChI=" (to distinguish from "InChIKey="
+//	        		InChIKeystring = line.replace("InChIKey=", "");//read in the InChIKey without the preceding "InChIKey="
+//	        		break;
+//	        	}
+//	        	line = ChemParser.readMeaningfulLine(reader);
+//	            }
+//	        result[0]=InChIstring;
+//	        result[1]=InChIKeystring;
+//		}
+//		else {
+//			result[0] = "";
+//			result[1] = "";
+//		}
         return result;
 	}
 	
