@@ -1223,6 +1223,7 @@ public class Species {
                 else if (getOs().toLowerCase().contains("linux")){
                     String[] command = {workingDirectory + "/bin/cInChI-1",
                         "species.mol",
+                        "species.txt",
                         "-DoNotAddH", "-FixedH", "-Key"};
                     File runningDir = new File("InChI");
                     Process InChI = Runtime.getRuntime().exec(command, null, runningDir);
