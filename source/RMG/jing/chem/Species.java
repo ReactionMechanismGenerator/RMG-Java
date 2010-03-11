@@ -1236,9 +1236,13 @@ public class Species {
 //
 //                    exitValue = InChI.waitFor();
                     
+                    System.out.println("Before stdout");
                     BufferedReader stdout = new BufferedReader(new InputStreamReader(InChI.getInputStream()));
+                    System.out.println("After stdout / Before stderr");
                     BufferedReader stderr = new BufferedReader(new InputStreamReader(InChI.getErrorStream()));
+                    System.out.println("After stderr / Before stdin");
                     PrintStream stdin = new PrintStream(  new BufferedOutputStream( InChI.getOutputStream(), 1024), true);
+                    System.out.println("After stdin");
         			
 //                    String inchiLine = stdout.readLine().trim();
 //                    while (inchiLine != null) {
