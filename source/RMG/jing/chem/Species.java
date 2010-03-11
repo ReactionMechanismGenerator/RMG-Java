@@ -1180,6 +1180,13 @@ public class Species {
          * consistently on Windows.
          * 
          * Hopefully RW can test the new implementation on Mac
+         * 
+         * NOTE: For Windows, the InChI.waitFor() must follow the .close()
+         * 	methods for the stdout and stderr BufferedReaders.  Otherwise,
+         * 	the RMG simulation gets hung up at the .waitFor() method and
+         * 	is perfecting happy waiting ... causing an infinite runtime.
+         * 
+         * NOTE: For Linux, 
          */
             try {
                 if (getOs().toLowerCase().contains("windows")){
@@ -1209,12 +1216,13 @@ public class Species {
                     
                     BufferedReader stdout = new BufferedReader(new InputStreamReader(InChI.getInputStream()));
                     BufferedReader stderr = new BufferedReader(new InputStreamReader(InChI.getErrorStream()));
-                    
-                    exitValue = InChI.waitFor();
+
 
         			// Clean up i/o streams
         			stdout.close();
         			stderr.close();
+                    
+                    exitValue = InChI.waitFor();
                 }
                 else if (getOs().toLowerCase().contains("mac")){
                     String[] command = {workingDirectory + "/bin/cInChI-1",
