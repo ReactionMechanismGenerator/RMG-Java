@@ -1190,36 +1190,14 @@ public class Species {
                     File runningDir = new File("InChI");
                     Process InChI = Runtime.getRuntime().exec(command, null, runningDir);
 
-                    InputStream errStream = InChI.getErrorStream();
-                    InputStream inpStream = InChI.getInputStream();
-                    errStream.close();
-                    inpStream.close();
+                    BufferedReader stdout = new BufferedReader(new InputStreamReader(InChI.getInputStream()));
+                    BufferedReader stderr = new BufferedReader(new InputStreamReader(InChI.getErrorStream()));
 
-                    exitValue = InChI.waitFor();    
-                    
-//                    BufferedReader stdout = new BufferedReader(new InputStreamReader(InChI.getInputStream()));
-//                    BufferedReader stderr = new BufferedReader(new InputStreamReader(InChI.getErrorStream()));
-//        			PrintStream stdin = new PrintStream(  new BufferedOutputStream( InChI.getOutputStream(), 1024), true);
-//        			
-//                    String inchiLine = stdout.readLine().trim();
-//                    while (inchiLine != null) {
-//        	        	if (line.startsWith("InChI=")) {//changed from InChI to InChI= (to distinguish fro InChIKey
-//        	        		InChIstring = line;
-//        	        	}
-//        	        	else if (line.startsWith("InChIKey=")) {//changed from "InChI" to "InChI=" (to distinguish from "InChIKey="
-//        	        		InChIKeystring = line.replace("InChIKey=", "");//read in the InChIKey without the preceding "InChIKey="
-//        	        		break;
-//        	        	}
-//        	        	inchiLine = stdout.readLine().trim();
-//                    }
-//                    result[0]=InChIstring;
-//        	        result[1]=InChIKeystring;
-//
-//                    exitValue = InChI.waitFor();
-//
-//        			// Clean up i/o streams
-//        			stdout.close();
-//        			stderr.close();                    
+        			// Clean up i/o streams
+        			stdout.close();
+        			stderr.close();
+        			
+                    exitValue = InChI.waitFor();                        
                 }
                 else if (getOs().toLowerCase().contains("linux")){
                     String[] command = {workingDirectory + "/bin/cInChI-1",
@@ -1231,13 +1209,12 @@ public class Species {
                     
                     BufferedReader stdout = new BufferedReader(new InputStreamReader(InChI.getInputStream()));
                     BufferedReader stderr = new BufferedReader(new InputStreamReader(InChI.getErrorStream()));
-//                    PrintStream stdin = new PrintStream(  new BufferedOutputStream( InChI.getOutputStream(), 1024), true);
-                    
-                    exitValue = InChI.waitFor();
 
         			// Clean up i/o streams
         			stdout.close();
         			stderr.close();
+        			
+                    exitValue = InChI.waitFor();
                 }
                 else if (getOs().toLowerCase().contains("mac")){
                     String[] command = {workingDirectory + "/bin/cInChI-1",
@@ -1246,31 +1223,10 @@ public class Species {
                         "-DoNotAddH", "-FixedH", "-Key"};
                     File runningDir = new File("InChI");
                     Process InChI = Runtime.getRuntime().exec(command, null, runningDir);
-
-//                    InputStream errStream = InChI.getErrorStream();
-//                    InputStream inpStream = InChI.getInputStream();
-//                    errStream.close();
-//                    inpStream.close();
-//
-//                    exitValue = InChI.waitFor();
                     
                     BufferedReader stdout = new BufferedReader(new InputStreamReader(InChI.getInputStream()));
                     BufferedReader stderr = new BufferedReader(new InputStreamReader(InChI.getErrorStream()));
         			
-                    String inchiLine = stdout.readLine().trim();
-                    while (inchiLine != null) {
-        	        	if (line.startsWith("InChI=")) {//changed from InChI to InChI= (to distinguish fro InChIKey
-        	        		InChIstring = line;
-        	        	}
-        	        	else if (line.startsWith("InChIKey=")) {//changed from "InChI" to "InChI=" (to distinguish from "InChIKey="
-        	        		InChIKeystring = line.replace("InChIKey=", "");//read in the InChIKey without the preceding "InChIKey="
-        	        		break;
-        	        	}
-        	        	inchiLine = stdout.readLine().trim();
-                    }
-                    result[0]=InChIstring;
-        	        result[1]=InChIKeystring;
-
                     exitValue = InChI.waitFor();
 
         			// Clean up i/o streams
