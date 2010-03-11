@@ -1217,12 +1217,12 @@ public class Species {
                     BufferedReader stdout = new BufferedReader(new InputStreamReader(InChI.getInputStream()));
                     BufferedReader stderr = new BufferedReader(new InputStreamReader(InChI.getErrorStream()));
 
+                    exitValue = InChI.waitFor();
 
         			// Clean up i/o streams
         			stdout.close();
         			stderr.close();
                     
-                    exitValue = InChI.waitFor();
                 }
                 else if (getOs().toLowerCase().contains("mac")){
                     String[] command = {workingDirectory + "/bin/cInChI-1",
@@ -1241,16 +1241,6 @@ public class Species {
         			stdout.close();
         			stderr.close();
                 }
-                
-//                File runningDir = new File("InChI");
-//                Process InChI = Runtime.getRuntime().exec(command, null, runningDir);
-//
-//                InputStream errStream = InChI.getErrorStream();
-//                InputStream inpStream = InChI.getInputStream();
-//                errStream.close();
-//                inpStream.close();
-//
-//                exitValue = InChI.waitFor();
             }
             catch (Exception e) {
                 String err = "Error running cINChI-1: ";
