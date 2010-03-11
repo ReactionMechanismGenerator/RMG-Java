@@ -1228,23 +1228,16 @@ public class Species {
                         "-DoNotAddH", "-FixedH", "-Key"};
                     File runningDir = new File("InChI");
                     Process InChI = Runtime.getRuntime().exec(command, null, runningDir);
-
-                    InputStream errStream = InChI.getErrorStream();
-                    InputStream inpStream = InChI.getInputStream();
-                    errStream.close();
-                    inpStream.close();
-
-                    exitValue = InChI.waitFor();
                     
-//                    BufferedReader stdout = new BufferedReader(new InputStreamReader(InChI.getInputStream()));
-//                    BufferedReader stderr = new BufferedReader(new InputStreamReader(InChI.getErrorStream()));
+                    BufferedReader stdout = new BufferedReader(new InputStreamReader(InChI.getInputStream()));
+                    BufferedReader stderr = new BufferedReader(new InputStreamReader(InChI.getErrorStream()));
 //                    PrintStream stdin = new PrintStream(  new BufferedOutputStream( InChI.getOutputStream(), 1024), true);
-//                    
-//                    exitValue = InChI.waitFor();
-//
-//        			// Clean up i/o streams
-//        			stdout.close();
-//        			stderr.close();
+                    
+                    exitValue = InChI.waitFor();
+
+        			// Clean up i/o streams
+        			stdout.close();
+        			stderr.close();
                 }
                 else if (getOs().toLowerCase().contains("mac")){
                     String[] command = {workingDirectory + "/bin/cInChI-1",
