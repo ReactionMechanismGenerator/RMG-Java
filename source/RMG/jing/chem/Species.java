@@ -1209,12 +1209,12 @@ public class Species {
                     
                     BufferedReader stdout = new BufferedReader(new InputStreamReader(InChI.getInputStream()));
                     BufferedReader stderr = new BufferedReader(new InputStreamReader(InChI.getErrorStream()));
+                    
+                    exitValue = InChI.waitFor();
 
         			// Clean up i/o streams
         			stdout.close();
         			stderr.close();
-        			
-                    exitValue = InChI.waitFor();
                 }
                 else if (getOs().toLowerCase().contains("mac")){
                     String[] command = {workingDirectory + "/bin/cInChI-1",
