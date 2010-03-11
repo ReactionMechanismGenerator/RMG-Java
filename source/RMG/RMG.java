@@ -245,7 +245,7 @@ public class RMG {
 		    else {
 				System.out.println("#    http://github.com/GreenGroup/RMG-Java/tree/"+versionHash.substring(0,6)+"         #" ); 
 				System.out.println("#  To see changes since then visit:                            #");	 
-				System.out.println("#    http://github.com/rwest/RMG-Java/compare/"+versionHash.substring(0,6)+"...master  #");
+				System.out.println("#    http://github.com/GreenGroup/RMG-Java/compare/"+versionHash.substring(0,6)+"...master");
 			//System.out.println("#  To download this specific version, visit:                   #");	 
 			//System.out.println("#   http://github.com/GreenGroup/RMG-Java/archives/"+versionHash.substring(0,6) ); 
 			}
