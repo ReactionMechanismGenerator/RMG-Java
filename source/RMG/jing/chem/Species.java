@@ -1182,7 +1182,6 @@ public class Species {
          * Hopefully RW can test the new implementation on Mac
          */
             try {
-            	System.out.println("This is the operating system: " + getOs());
                 if (getOs().toLowerCase().contains("windows")){
                     String[] command = {workingDirectory + "/bin/cInChI-1",
                         "species.mol",
@@ -1237,14 +1236,10 @@ public class Species {
 //
 //                    exitValue = InChI.waitFor();
                     
-                    System.out.println("Before stdout");
                     BufferedReader stdout = new BufferedReader(new InputStreamReader(InChI.getInputStream()));
-                    System.out.println("After stdout / Before stderr");
                     BufferedReader stderr = new BufferedReader(new InputStreamReader(InChI.getErrorStream()));
-                    System.out.println("After stderr / Before stdin");
                     PrintStream stdin = new PrintStream(  new BufferedOutputStream( InChI.getOutputStream(), 1024), true);
-                    System.out.println("After stdin");
-        			
+                    
 //                    String inchiLine = stdout.readLine().trim();
 //                    while (inchiLine != null) {
 //                    	System.out.println("I'm actually reading the stdout");
