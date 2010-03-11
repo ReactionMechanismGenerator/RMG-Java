@@ -1242,6 +1242,7 @@ public class Species {
         			
                     String inchiLine = stdout.readLine().trim();
                     while (inchiLine != null) {
+                    	System.out.println("I'm actually reading the stdout");
         	        	if (line.startsWith("InChI=")) {//changed from InChI to InChI= (to distinguish fro InChIKey
         	        		InChIstring = line;
         	        	}
