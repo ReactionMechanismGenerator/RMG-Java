@@ -1182,7 +1182,7 @@ public class Species {
          * Hopefully RW can test the new implementation on Mac
          */
             try {
-            	System.out.println(getOs());
+            	System.out.println("This is the operating system: " + getOs());
                 if (getOs().toLowerCase().contains("windows")){
                     String[] command = {workingDirectory + "/bin/cInChI-1",
                         "species.mol",
