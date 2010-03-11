@@ -1240,20 +1240,20 @@ public class Species {
                     BufferedReader stderr = new BufferedReader(new InputStreamReader(InChI.getErrorStream()));
                     PrintStream stdin = new PrintStream(  new BufferedOutputStream( InChI.getOutputStream(), 1024), true);
         			
-                    String inchiLine = stdout.readLine().trim();
-                    while (inchiLine != null) {
-                    	System.out.println("I'm actually reading the stdout");
-        	        	if (line.startsWith("InChI=")) {//changed from InChI to InChI= (to distinguish fro InChIKey
-        	        		InChIstring = line;
-        	        	}
-        	        	else if (line.startsWith("InChIKey=")) {//changed from "InChI" to "InChI=" (to distinguish from "InChIKey="
-        	        		InChIKeystring = line.replace("InChIKey=", "");//read in the InChIKey without the preceding "InChIKey="
-        	        		break;
-        	        	}
-        	        	inchiLine = stdout.readLine().trim();
-                    }
-                    result[0]=InChIstring;
-        	        result[1]=InChIKeystring;
+//                    String inchiLine = stdout.readLine().trim();
+//                    while (inchiLine != null) {
+//                    	System.out.println("I'm actually reading the stdout");
+//        	        	if (line.startsWith("InChI=")) {//changed from InChI to InChI= (to distinguish fro InChIKey
+//        	        		InChIstring = line;
+//        	        	}
+//        	        	else if (line.startsWith("InChIKey=")) {//changed from "InChI" to "InChI=" (to distinguish from "InChIKey="
+//        	        		InChIKeystring = line.replace("InChIKey=", "");//read in the InChIKey without the preceding "InChIKey="
+//        	        		break;
+//        	        	}
+//        	        	inchiLine = stdout.readLine().trim();
+//                    }
+//                    result[0]=InChIstring;
+//        	        result[1]=InChIKeystring;
 
                     exitValue = InChI.waitFor();
 
