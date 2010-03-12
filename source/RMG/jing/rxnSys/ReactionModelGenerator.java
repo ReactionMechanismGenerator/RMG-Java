@@ -505,6 +505,7 @@ public class ReactionModelGenerator {
         				// We're good
         			}
 					speciesnum ++;
+					if (!(st.hasMoreTokens())) throw new InvalidSymbolException("Couldn't find concentration of species: "+name);
         			String conc = st.nextToken();
         			double concentration = Double.parseDouble(conc);
         			String unit = st.nextToken();
