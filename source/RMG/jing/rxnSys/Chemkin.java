@@ -809,7 +809,7 @@ public  Chemkin() {
       // thermoHeader += "7440-59-7                                                                       \n";                                                                               
       // thermoHeader += "He  HF298=0.0 KJ  REF=McBride, Heimel, Ehlers & Gordon "Thermodynamic Properties\n";
       // thermoHeader += "to 6000K ..." NASA SP-3001 1963.                                                \n";                                                
-      thermoHeader += "He REF ELEMENT    L10/90HE 1.   0.   0.   0.G   200.000  6000.000  B   4.00260 1\n";
+      thermoHeader += "He REF ELEMENT    L10/90He  1    0    0    0G   200.000  6000.000 1000.        1\n";
       thermoHeader += " 2.50000000E+00 0.00000000E+00 0.00000000E+00 0.00000000E+00 0.00000000E+00    2\n";
       thermoHeader += "-7.45375000E+02 9.28723974E-01 2.50000000E+00 0.00000000E+00 0.00000000E+00    3\n";
       thermoHeader += " 0.00000000E+00 0.00000000E+00-7.45375000E+02 9.28723974E-01 0.00000000E+00    4\n\n";
