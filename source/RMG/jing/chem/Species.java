@@ -1475,7 +1475,19 @@ public class Species {
         try {
         	inchiFile = new File(inchiDirectory + "/inchi.txt");
         	FileWriter fw = new FileWriter(inchiFile);
-        	fw.write(p_inchi);
+        	/*
+        	 * The following change is suggested by G.Magoon at:
+        	 * http://github.com/gmagoon/RMG-Java/commit/f652decc547d0a5107435d9bc4ca64d11a9bbe7c
+        	 * This fix allows the conversion of InChI --> .mol for InChI v. 1.02beta
+        	 * MRH will check if all other InChI executable operations are still functional,
+        	 * 	and for which versions
+        	 * 
+        	 * Windows: InChI --> .mol and .mol --> InChI work for InChI v. 1.01 &
+        	 * 	v. 1.02beta
+        	 * Linux: 
+        	 */
+        	//fw.write(p_inchi);
+        	fw.write(p_inchi+"\n");
         	fw.close();
         } catch (IOException e) {
         	String err = "Error writing inchi.txt file for InChI-to-molFile conversion: ";
