@@ -120,7 +120,11 @@ public class Temperature {
         return (int)standard;
         //#]
     }
-    
+
+    public String toString() {
+        return String.format("%g K",this.getK() );
+    }
+
     public double getStandard() {
         return standard;
     }

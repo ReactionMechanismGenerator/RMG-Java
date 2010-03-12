@@ -1,0 +1,3 @@
+[submodule "source/daspk/private"]
+	path = source/daspk/private
+	url = ssh://rainier.mit.edu/home/git/daspk_private.git

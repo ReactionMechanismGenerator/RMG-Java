@@ -166,12 +166,13 @@ public class PDepRateConstant {
 	public double calculateRate(Temperature temperature, Pressure pressure) throws Exception {
 		double rate = 0.0;
 
-		if (temperature.getK() < temperatures[0].getK() ||
-				temperature.getK() > temperatures[temperatures.length-1].getK() ||
-				pressure.getBar() < pressures[0].getBar() ||
-				pressure.getBar() > pressures[pressures.length-1].getBar())
-				throw new Exception("Attempted to evaluate a rate coefficient outside the allowed temperature and pressure range.");
-
+		if (temperature.getK() < temperatures[0].getK() || temperature.getK() > temperatures[temperatures.length-1].getK() )
+			throw new Exception(String.format("Tried to evaluate P-dep rate coefficient at T=%.1fK but only valid from %.1f to %.1fK",
+											  temperature.getK(),temperatures[0].getK(),temperatures[temperatures.length-1].getK() ));
+		if (pressure.getBar()  < pressures[0].getBar() || pressure.getBar() > pressures[pressures.length-1].getBar() )
+			throw new Exception(String.format("Tried to evaluate P-dep rate coefficient at P=%.1fbar but only valid from %.1f to %.1fbar",
+											  pressure.getBar(),pressures[0].getBar(),pressures[pressures.length-1].getBar() ));
+		
 		//if (mode == Mode.INTERPOLATE) {
 
 		/*

@@ -343,7 +343,8 @@ public class PDepReaction extends Reaction {
 				k = kinetics.calculateRate(temperature);
 		}
 		catch (Exception e) {
-			System.out.println(e.getMessage());
+			System.err.println(e.getMessage());
+			System.err.println("Reaction: "+this.toChemkinString(temperature, pressure));
 			System.exit(0);
 		}
 

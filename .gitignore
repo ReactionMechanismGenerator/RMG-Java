@@ -19,3 +19,6 @@ netbeans/*
 
 # Folder in which to run RMG
 run/*
+
+# Output of documentation generation
+web/build/*

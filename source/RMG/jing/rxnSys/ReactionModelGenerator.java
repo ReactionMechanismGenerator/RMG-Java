@@ -351,11 +351,19 @@ public class ReactionModelGenerator {
 					presList = new LinkedList();
 					//read first pressure
 					double p = Double.parseDouble(st.nextToken());
+					Pressure pres = new Pressure(p, unit);
+					Global.lowPressure = (Pressure)pres.clone();
+					Global.highPressure = (Pressure)pres.clone();
 					presList.add(new ConstantPM(p, unit));
 					//read remaining temperatures
         			while (st.hasMoreTokens()) {
 						p = Double.parseDouble(st.nextToken());
 						presList.add(new ConstantPM(p, unit));
+						pres = new Pressure(p, unit);
+						if(pres.getBar() < Global.lowPressure.getBar())
+							Global.lowPressure = (Pressure)pres.clone();
+						if(pres.getBar() > Global.lowPressure.getBar())
+							Global.highPressure = (Pressure)pres.clone();
 					}	
         			//Global.pressure = new Pressure(p, unit);
         		}
@@ -1251,6 +1259,26 @@ public class ReactionModelGenerator {
 						ArrheniusKinetics.setVerbose(false);
 					} else if (OnOff.equals("on")) {
 						ArrheniusKinetics.setVerbose(true);
+					}
+					line = ChemParser.readMeaningfulLine(reader);
+				}
+				/*
+				 * MRH 3MAR2010:
+				 * Adding user option regarding chemkin file
+				 * 
+				 * New field: If user would like the empty SMILES string 
+				 * printed with each species in the thermochemistry portion 
+				 * of the generated chem.inp file
+				 */
+				if (line.toUpperCase().startsWith("SMILES")) {
+					StringTokenizer st = new StringTokenizer(line);
+					String dummyString = st.nextToken(); // Should be "SMILES:"
+					String OnOff = st.nextToken().toLowerCase();
+					if (OnOff.equals("off")) {
+						Chemkin.setSMILES(false);
+					} else if (OnOff.equals("on")) {
+						Chemkin.setSMILES(true);
+						Species.useInChI = true;
 					}
 					line = ChemParser.readMeaningfulLine(reader);
 				}
@@ -4213,7 +4241,7 @@ public class ReactionModelGenerator {
 		}
     }
     
-    public String setPDepKineticsModel(String line, BufferedReader reader) {
+    public String setPDepKineticsModel(String line, BufferedReader reader) throws InvalidSymbolException {
 		StringTokenizer st = new StringTokenizer(line);
 		String name = st.nextToken();
 		String pDepKinType = st.nextToken();
@@ -4233,16 +4261,18 @@ public class ReactionModelGenerator {
 					ChebyshevPolynomials.setTlow(TMIN);
 					double tHigh = Double.parseDouble(st.nextToken());
 					if (tHigh <= tLow) {
-						System.err.println("Tmax is less than or equal to Tmin");
-						System.exit(0);
+						throw new InvalidSymbolException("Chebyshev Tmax is less than or equal to Tmin");
 					}
 					Temperature TMAX = new Temperature(tHigh,TUNITS);
 					ChebyshevPolynomials.setTup(TMAX);
+					if (TMAX.getK() < Global.highTemperature.getK()) 
+						throw new InvalidSymbolException("Chebyshev Tmax is lower than the highest simulation temperature "+Global.highTemperature.toString() );
+					if (TMIN.getK() > Global.lowTemperature.getK()) 
+						throw new InvalidSymbolException("Chebyshev Tmin is higher than the lowest simulation temperature "+Global.lowTemperature.toString() );		
 					int tResolution = Integer.parseInt(st.nextToken());
 					int tbasisFuncs = Integer.parseInt(st.nextToken());
 					if (tbasisFuncs > tResolution) {
-						System.err.println("The number of basis functions cannot exceed the number of grid points");
-						System.exit(0);
+						throw new InvalidSymbolException("The number of basis functions cannot exceed the number of grid points");
 					}
 					FastMasterEqn.setNumTBasisFuncs(tbasisFuncs);
 					line = ChemParser.readMeaningfulLine(reader);
@@ -4264,24 +4294,26 @@ public class ReactionModelGenerator {
 							System.exit(0);
 						}
 						PMAX = new Pressure(pHigh,PUNITS);
+						if (PMAX.getPa() < Global.highPressure.getPa()) 
+							throw new InvalidSymbolException("Chebyshev Pmax is lower than the highest simulation pressure "+Global.highPressure.toString() );
+						if (PMIN.getPa() > Global.lowPressure.getPa()) 
+							throw new InvalidSymbolException("Chebyshev Pmin is higher than the lowest simulation pressure "+Global.lowPressure.toString() );							
 						ChebyshevPolynomials.setPup(PMAX);
 						pResolution = Integer.parseInt(st.nextToken());
 						pbasisFuncs = Integer.parseInt(st.nextToken());
 						if (pbasisFuncs > pResolution) {
-							System.err.println("The number of basis functions cannot exceed the number of grid points");
-							System.exit(0);
+							throw new InvalidSymbolException("The number of basis functions cannot exceed the number of grid points");
 						}
 						FastMasterEqn.setNumPBasisFuncs(pbasisFuncs);
 					}
 					else {
-						System.err.println("RMG cannot locate PRange field for Chebyshev polynomials.");
-						System.exit(0);
+						throw new InvalidSymbolException("RMG cannot locate PRange field for Chebyshev polynomials.");
 					}
 					
 					// Set temperatures and pressures to use in PDep kinetics estimation
 					Temperature[] temperatures = new Temperature[tResolution];
 					for (int i=0; i<temperatures.length; i++) {
-						double tempValueTilda = Math.cos((2*(i+1)-1)*Math.PI/(2*temperatures.length));
+						double tempValueTilda = Math.cos(i*Math.PI/(temperatures.length-1)); // roots of a Chebyshev polynomial
 						double tempValue = 2 / (tempValueTilda * ((1/TMAX.getK()) - (1/TMIN.getK())) + (1/TMIN.getK()) + (1/TMAX.getK()));
 						temperatures[temperatures.length-i-1] = new Temperature(tempValue,TUNITS);
 					}
@@ -4290,7 +4322,7 @@ public class ReactionModelGenerator {
 					
 					Pressure[] pressures = new Pressure[pResolution];
 					for (int j=0; j<pressures.length; j++) {
-						double pressValueTilda = Math.cos((2*(j+1)-1)*Math.PI/(2*pressures.length));
+						double pressValueTilda = Math.cos(j*Math.PI/(pressures.length-1)); // roots of a Chebyshev polynomial
 						double pressValue = Math.pow(10,(pressValueTilda*(Math.log10(PMAX.getBar())-Math.log10(PMIN.getBar()))+Math.log10(PMIN.getBar())+Math.log10(PMAX.getBar()))/2);
 						pressures[pressures.length-j-1] = new Pressure(pressValue,PUNITS);
 					}
@@ -4351,8 +4383,7 @@ public class ReactionModelGenerator {
 						PDepArrheniusKinetics.setPressures(listOfPs);
 					}
 					else {
-						System.err.println("RMG cannot locate PRange field for PDepArrhenius.");
-						System.exit(0);
+						throw new InvalidSymbolException("RMG cannot locate PRange field for PDepArrhenius.");
 					}
 					
 					line = ChemParser.readMeaningfulLine(reader);
@@ -4370,6 +4401,10 @@ public class ReactionModelGenerator {
 			throw new InvalidSymbolException("condition.txt: Unknown PDepKinetics = " + pDepKinType);
 		}
 		return line;
+    }
+    
+    public ReactionModelEnlarger getReactionModelEnlarger() {
+    	return reactionModelEnlarger;
     }
 }
 /*********************************************************************

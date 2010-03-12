@@ -18,7 +18,7 @@ BINDIR=../../bin
 F90=g95
 F90FLAGS=-fmod=$(BUILDDIR) -ftrace=full
 
-LDFLAGS=-lpthread -lblas -llapack
+LDFLAGS= $(F90_EXTRA_LDFLAGS) -lpthread -lblas -llapack
 
 OBJ0=Species.o Isomer.o Reaction.o DensityOfStates.o Network.o Input.o StrongCollision.o ReservoirState.o RateModel.o Output.o fame.o 
 

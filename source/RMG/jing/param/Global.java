@@ -43,6 +43,8 @@ public class Global {
         //10/29/07 gmagoon: adding new global temperature variables for the high and low temperatures of the input range
         public static Temperature lowTemperature;
         public static Temperature highTemperature;
+	public static Pressure lowPressure;
+	public static Pressure highPressure;	
         
 	public static double solvertime= 0; //the time taken by just daspk.
 	public static double writeSolverFile = 0;

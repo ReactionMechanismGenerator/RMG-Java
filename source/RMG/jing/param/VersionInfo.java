@@ -31,9 +31,15 @@ import java.util.*;
 
 public class VersionInfo {
 	
+    public static String getBranchName() {
+		String branchname =  "@branchname@" ;
+		if (branchname.startsWith("@branchname")) branchname = "* Not built with Ant. Unable to determine branch *"; // error messages should start with a *
+		return branchname;
+    }
+	
     public static String getVersionHash() {
 		String versionhash =  "@versionhash@" ;
-		if (versionhash.startsWith("@version")) versionhash = "* Not built with Ant. Unable to determine hash *"; // error messages should start with a *
+		if (versionhash.startsWith("@versionhash")) versionhash = "* Not built with Ant. Unable to determine hash *"; // error messages should start with a *
 		return versionhash;
     }
 	

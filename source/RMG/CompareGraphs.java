@@ -36,7 +36,6 @@ import jing.chemParser.ChemParser;
 import jing.chemParser.InvalidGraphFormatException;
 import jing.chemUtil.Graph;
 
-
 public class CompareGraphs {
 
 	 //## configuration RMG::RMG
