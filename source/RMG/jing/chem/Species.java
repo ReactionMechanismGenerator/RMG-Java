@@ -1484,7 +1484,9 @@ public class Species {
         	 * 
         	 * Windows: InChI --> .mol and .mol --> InChI work for InChI v. 1.01 &
         	 * 	v. 1.02beta
-        	 * Linux: 
+        	 * Linux: .mol --> InChI works for both v. 1.01 and 1.02beta;
+        	 * 	InChI --> .mol works only for 1.01 (1.02beta states:
+        	 * 		"Option InChI2Struct is currently not supported (use classic interface)
         	 */
         	//fw.write(p_inchi);
         	fw.write(p_inchi+"\n");
