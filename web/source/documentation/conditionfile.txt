@@ -267,6 +267,11 @@ nitrogen, the neon and helium are omitted, and the argon concentration is 2.21E-
 
 .. |N2| replace:: N\ :sub:`2`\ 
 
+To create valid CHEMKIN files, ensure that any 3rd-body collider molecules used in 
+your Seed Mechanisms or Primary Reaction Libraries are either declared in their 
+species.txt files (if they are reactive) or in this section.
+(i.e. it's a good idea to list all of N2, Ne, He and Ar, even if their concentrations are 0)
+
 Please note that the keyword ``END`` must be placed at the end of the InertGas
 section.
 
