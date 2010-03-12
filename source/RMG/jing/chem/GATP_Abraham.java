@@ -39,20 +39,15 @@ import jing.param.Temperature;
 public class GATP_Abraham implements GeneralAbramGAPP {
 	
     private static GATP_Abraham INSTANCE = new GATP_Abraham();
-    protected static HashMap library;
     protected ThermoGAGroupLibrary thermoLibrary;
-    protected static PrimaryThermoLibrary primaryLibrary;
 	
     // Constructors
 	
     private  GATP_Abraham() {
-        initializeLibrary();
         initGAGroupLibrary();
-        initializePrimaryThermoLibrary();
     }
 	
 	public AbramData generateAbramData(ChemGraph p_chemGraph) {
-		
 		// Generation of Abraham Solute Parameters
 		AbramData result_Abraham= new AbramData();
 		result_Abraham.plus(getABGroup(p_chemGraph));
@@ -180,7 +175,7 @@ public class GATP_Abraham implements GeneralAbramGAPP {
            	node.updateFgElement();
 		}
 		//
-		//         // substrate the enthalphy of H from the result
+		//         // substract the enthalphy of H from the result
 		//         int rad_number = p_chemGraph.getRadicalNumber();
 		//         ThermoGAValue enthalpy_H = new ThermoGAValue(ENTHALPY_HYDROGEN * rad_number, 0,0,0,0,0,0,0,0,0,0,0,null);
 		//         result.minus(enthalpy_H);
@@ -208,31 +203,7 @@ public class GATP_Abraham implements GeneralAbramGAPP {
         thermoLibrary = ThermoGAGroupLibrary.getINSTANCE();
     }
 	
-    public void initializeLibrary() {
-        library = new HashMap();
-        // put in H2
-        ThermoData td_H2 = new ThermoData(0.000,31.233,6.895,6.975,6.994,7.009,7.081,7.219,7.720,0,0,0,"library value for H2");
-        library.put("H2", td_H2);
-		
-        // put in H
-        ThermoData td_H = new ThermoData(52.103,27.419,4.968,4.968,4.968,4.968,4.968,4.968,4.968, 0,0,0,"library value for H radical");
-        library.put("H.",td_H);
-		
-    }
-	
 	protected static GATP_Abraham getINSTANCE() {
         return INSTANCE;
     }
-	
-    public static HashMap getLibrary() {
-        return library;
-    }
-	
-    public static void setLibrary(HashMap p_library) {
-        library = p_library;
-    }
-	
-	public void initializePrimaryThermoLibrary(){//svp
-        primaryLibrary = PrimaryThermoLibrary.getINSTANCE();
-	}
 }

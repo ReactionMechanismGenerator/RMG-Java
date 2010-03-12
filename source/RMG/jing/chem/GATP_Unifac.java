@@ -39,16 +39,12 @@ import jing.param.Temperature;
 public class GATP_Unifac implements GeneralUnifacGAPP {
 	
     private static GATP_Unifac INSTANCE = new GATP_Unifac();
-    protected static HashMap library;
     protected ThermoGAGroupLibrary thermoLibrary;
-    protected static PrimaryThermoLibrary primaryLibrary;
 	
     // Constructors
 	
     private  GATP_Unifac() {
-        //initializeLibrary();
         initGAGroupLibrary();
-        initializePrimaryThermoLibrary();
     }
 	
 	public UnifacData generateUnifacData(ChemGraph p_chemGraph) {
@@ -205,16 +201,4 @@ public class GATP_Unifac implements GeneralUnifacGAPP {
 	protected static GATP_Unifac getINSTANCE() {
         return INSTANCE;
     }
-	
-    public static HashMap getLibrary() {
-        return library;
-    }
-	
-    public static void setLibrary(HashMap p_library) {
-        library = p_library;
-    }
-	
-	public void initializePrimaryThermoLibrary(){
-        primaryLibrary = PrimaryThermoLibrary.getINSTANCE();
-	}
 }
