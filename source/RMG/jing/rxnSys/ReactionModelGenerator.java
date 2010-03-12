@@ -1932,10 +1932,9 @@ public class ReactionModelGenerator {
         if (ChemGraph.useQM){
             writeInChIs(getReactionModel());    
         }
-        writeDictionary(getReactionModel());
 		
+        writeDictionary(getReactionModel());
         System.out.println("Model Generation Completed");
-
         return;
     }
     
