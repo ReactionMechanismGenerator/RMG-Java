@@ -27,6 +27,7 @@
 
 import java.util.*;
 import java.io.*;
+
 import jing.chem.*;
 import jing.chemParser.*;
 import jing.param.*;
@@ -46,15 +47,31 @@ public static void main(String[] args) {
 //
 //          initializeSystemProperties();
 	RMG.globalInitializeSystemProperties();
+	
+	File GATPFit = new File("GATPFit");
+	GATPFit.mkdir();
 
 		LinkedList<ChemGraph> graphList = new LinkedList<ChemGraph>();
 
 		File file = new File(args[0]);
 
-		try {
-
+		try {			
 			BufferedReader reader = new BufferedReader(new FileReader(file));
 
+			/*
+			 * 14MAR2010: Allowing ThermoDataEstimator to read from Primary Reaction Library
+			 */
+			ReactionModelGenerator rmg = new ReactionModelGenerator();
+            String line = ChemParser.readMeaningfulLine(reader);
+            if (line.toLowerCase().startsWith("primarythermolibrary")) {
+            	rmg.readAndMakePTL(reader);
+            }
+            else {
+            	System.err.println("PopulateReactions: Could not locate the PrimaryThermoLibrary field." +
+            			"Line read was: " + line);
+            	System.exit(0);
+            }
+			
 			// Read adjacency lists from file until an exception is thrown
 			Graph g = ChemParser.readChemGraph(reader);
 			while (g != null) {
@@ -95,7 +112,8 @@ public static void main(String[] args) {
 		 chemgraph = spe.getChemGraph();
 		 System.out.println(chemgraph);
          System.out.println("The number of resonance isomers is " + spe.getResonanceIsomersHashSet().size());
-		 System.out.println("The NASA data is \n"+ spe.getNasaThermoData());
+		 System.out.println("The NASA data is \n!"+spe.getNasaThermoSource()+"\n"+ 
+				 spe.getNasaThermoData());
 		 System.out.println("ThermoData is \n" +  chemgraph.getThermoData().toString());
         //int K = chemgraph.getKekule();
         int symm = chemgraph.getSymmetryNumber();

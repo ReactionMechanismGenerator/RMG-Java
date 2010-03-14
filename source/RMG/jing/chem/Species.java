@@ -1970,6 +1970,8 @@ public class Species {
     }
     
     public String getNasaThermoSource() {
+    	if (nasaThermoSource == null)
+    		nasaThermoSource = "Estimated by RMG using Group Additivity";
     	return nasaThermoSource;
     }
 	

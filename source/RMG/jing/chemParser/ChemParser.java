@@ -1127,7 +1127,11 @@ public class ChemParser {
 
         	int centralID = -1;
 
-        	String line = readUncommentLine(p_reader);
+        	/*
+        	 * 14MAR2010: Switched from readUncommentedLine() to readMeaningfulLine()
+        	 */
+        	//String line = readUncommentLine(p_reader);
+        	String line = readMeaningfulLine(p_reader);
 			while (line != null) {
          		StringTokenizer token = new StringTokenizer(line);
         		// read in ID
