@@ -505,6 +505,7 @@ public class ReactionModelGenerator {
         				// We're good
         			}
 					speciesnum ++;
+					if (!(st.hasMoreTokens())) throw new InvalidSymbolException("Couldn't find concentration of species: "+name);
         			String conc = st.nextToken();
         			double concentration = Double.parseDouble(conc);
         			String unit = st.nextToken();
@@ -1931,10 +1932,9 @@ public class ReactionModelGenerator {
         if (ChemGraph.useQM){
             writeInChIs(getReactionModel());    
         }
-        writeDictionary(getReactionModel());
 		
+        writeDictionary(getReactionModel());
         System.out.println("Model Generation Completed");
-
         return;
     }
     
@@ -1993,6 +1993,40 @@ public class ReactionModelGenerator {
 			System.out.println("Could not write RMG_Dictionary.txt");
 			System.exit(0);
         }
+		
+		// If we have solvation on, then every time we write the dictionary, also write the solvation properties
+		if (Species.useSolvation) {
+			writeSolvationProperties(rm);
+		}
+    }
+	
+    private void writeSolvationProperties(ReactionModel rm){
+        //Write core species to RMG_Solvation_Properties.txt
+		CoreEdgeReactionModel cerm = (CoreEdgeReactionModel)rm;
+		StringBuilder result = new StringBuilder();
+		result.append("ChemkinName\tChemicalFormula\tMolecularWeight\tRadius\tDiffusivity\tAbrahamS\tAbrahamB\tAbrahamE\tAbrahamL\tAbrahamA\tChemkinName\n\n");
+		Iterator iter = cerm.getSpecies();
+		while (iter.hasNext()){
+			Species spe = (Species)iter.next();
+			result.append(spe.getChemkinName() + "\t");
+			result.append(spe.getChemGraph().getChemicalFormula()+ "\t");
+			result.append(spe.getMolecularWeight() + "\t");
+			result.append(spe.getChemGraph().getRadius()+ "\t");
+			result.append(spe.getChemGraph().getDiffusivity()+ "\t");
+			result.append(spe.getChemGraph().getAbramData().toString()+ "\t");
+			result.append(spe.getChemkinName() + "\n");
+		}
+		try{
+			File rmgSolvationProperties = new File("RMG_Solvation_Properties.txt");
+			FileWriter fw = new FileWriter(rmgSolvationProperties);
+			fw.write(result.toString() );
+			fw.close();
+		}
+		catch (IOException e) {
+			System.out.println("Could not write RMG_Solvation_Properties.txt");
+			System.exit(0);
+        }
+		
     }
     
     private void parseRestartFiles() {

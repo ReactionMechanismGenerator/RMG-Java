@@ -46,47 +46,18 @@ public class RMG {
 	
     //## configuration RMG::RMG
     public static void main(String[] args) {
-	
-    
- 	long tAtInitialization = System.currentTimeMillis();
-	Global.tAtInitialization = tAtInitialization;
-	
-	initializeSystemProperties(args[0]);
-    ReactionModelGenerator rmg = new ReactionModelGenerator();
+		
+		long tAtInitialization = System.currentTimeMillis();
+		Global.tAtInitialization = tAtInitialization;
+		
+		initializeSystemProperties(args[0]);
+		ReactionModelGenerator rmg = new ReactionModelGenerator();
         
-    // Generate the model!
-    rmg.modelGeneration();
+		// Generate the model!
+		rmg.modelGeneration();
         
-    CoreEdgeReactionModel cerm = (CoreEdgeReactionModel)rmg.getReactionModel();
-	//Write core species to RMG_Dictionary.txt
-	String coreSpecies ="";
-	Iterator iter = cerm.getSpecies();
-	
-	if (Species.useInChI) {
-		while (iter.hasNext()){
-			int i=1;
-			Species spe = (Species) iter.next();
-			coreSpecies = coreSpecies + spe.getChemkinName() + " " + spe.getInChI() + "\n"+spe.getChemGraph().toString(i)+"\n\n";
-		}
-	} else {
-		while (iter.hasNext()){
-			int i=1;
-			Species spe = (Species) iter.next();
-			coreSpecies = coreSpecies + spe.getChemkinName() + "\n"+spe.getChemGraph().toString(i)+"\n\n";
-		}
-	}
-
-	try{
-		File rmgDictionary = new File("RMG_Dictionary.txt");
-		FileWriter fw = new FileWriter(rmgDictionary);
-		fw.write(coreSpecies);
-		fw.close();
-	}
-	catch (IOException e) {
-    	System.out.println("Could not write RMG_Dictionary.txt");
-    	System.exit(0);
-    }
-	
+		CoreEdgeReactionModel cerm = (CoreEdgeReactionModel)rmg.getReactionModel();
+			
 	//rs.reduceModel();
 	//Write the final model output in a separete Final_Model file
 	String finalOutput = "";

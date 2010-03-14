@@ -1189,68 +1189,50 @@ return sn;
         }
         //#]
     }
-
+	
     // Amrit Jalan 05/09/2009
-
-       public ThermoData generateSolvThermoData() throws FailGenerateThermoDataException {
-        //#[ operation generateSolvThermoData()
+	public ThermoData generateSolvThermoData() throws FailGenerateThermoDataException {
         // use GAPP to generate Thermo data
         try {
         	if (SolvationGAPP == null) setDefaultSolvationGAPP();
             solvthermoData = SolvationGAPP.generateSolvThermoData(this);
-        	//thermoData = thermoGAPP.generateThermoData(this);
-            //thermoData = thermoGAPP.generateAbramData(this);
         	return solvthermoData;
         }
         catch (Exception e) {
         	throw new FailGenerateThermoDataException();
         }
-        //#]
     }
-
+	
     public AbramData generateAbramData() throws FailGenerateThermoDataException {
-        //#[ operation generateThermoData()
         // use GAPP to generate Thermo data
         try {
         	if (abramGAPP == null) setDefaultAbramGAPP();
         	abramData = abramGAPP.generateAbramData(this);
-            //thermoData = thermoGAPP.generateAbramData(this);
         	return abramData;
         }
         catch (Exception e) {
         	throw new FailGenerateThermoDataException();
         }
-        //#]
     }
-
-        public UnifacData generateUnifacData() throws FailGenerateThermoDataException {
-        //#[ operation generateThermoData()
-        // use GAPP to generate Thermo data
+	
+	public UnifacData generateUnifacData() throws FailGenerateThermoDataException {
         try {
         	if (unifacGAPP == null) setDefaultUnifacGAPP();
         	unifacData = unifacGAPP.generateUnifacData(this);
-            //thermoData = thermoGAPP.generateAbramData(this);
         	return unifacData;
         }
         catch (Exception e) {
         	throw new FailGenerateThermoDataException();
         }
-        //#]
     }
-
-
-
-
+	
     /**
     Requires:
     Effects: return the Arc between two positions in this ChemGraph
     Modifies:
     */
-    //## operation getArcBetween(int,int)
     public Arc getArcBetween(int p_position1, int p_position2) {
-        //#[ operation getArcBetween(int,int)
         return getGraph().getArcBetween(p_position1,p_position2);
-        //#]
     }
 
     /**
@@ -1734,56 +1716,47 @@ return sn;
     }
 
     /**
-    Added by: Amrit Jalan
-    Effects: calculate the raduis of the chemGraph using UNIFAC Ri values. (UNITSof radius = m)
-    */
-    
+	 Added by: Amrit Jalan
+	 Effects: calculate the raduis of the chemGraph using UNIFAC Ri values. (UNITSof radius = m)
+	 */
     public double getRadius() {
-
+		
         double ri;
-
+		
         if (getCarbonNumber() == 0 && getOxygenNumber() == 0){    // Which means we ar dealing with HJ or H2
-
-                double ri3;
-                ri3 = 21*8.867/88;                              // 8.867 Ang^3 is the volume of a single Hydrogen Atom
-
+			double ri3;
+			ri3 = 21*8.867/88;                              // 8.867 Ang^3 is the volume of a single Hydrogen Atom
             if (getHydrogenNumber() == 1){                        // i.e. we are dealing with the Hydrogen radical
-
                 ri = Math.pow(ri3,0.333) * Math.pow(10,-10);
                 return ri;
             }
-            
             if (getHydrogenNumber() == 2){                        // i.e. we are dealing with the Hydrogen molecule
                 ri3 = 2*ri3;                                      // Assumption: volume of H2 molecule ~ 2 * Volume of H atom
                 ri = Math.pow(ri3,0.333) * Math.pow(10,-10);
                 return ri;                
             }
         }
-
+		
         double Ri=getUnifacData().R;
         ri=3.18*Math.pow(Ri,0.333)*Math.pow(10,-10);   // From Koojiman Ind. Eng. Chem. Res 2002, 41 3326-3328
         return ri;
-   
+		
     }
-
-        /**
-    Added by: Amrit Jalan
-    Effects: calculate the diffusivity of the chemGraph using radii, solvent viscosity and Stokes Einstein. (UNITS m2/sec)
-    */
-
+	
+	/**
+	 Added by: Amrit Jalan
+	 Effects: calculate the diffusivity of the chemGraph using radii, solvent viscosity and Stokes Einstein. (UNITS m2/sec)
+	 */
     public double getDiffusivity() {
-        
-       double speRad=getRadius();
-       double solventViscosity = 0.473*Math.pow(10,-3);
-       double diffusivity;
-       Temperature sysTemp = ReactionModelGenerator.getTemp4BestKinetics();
-       double denom = 132*solventViscosity*speRad/7;
-       diffusivity = 1.381*500* Math.pow(10,-23)/denom;  //sysTemp.getK()
-       return diffusivity;
-        
+		double speRad=getRadius();
+		double solventViscosity = 0.473*Math.pow(10,-3);
+		double diffusivity;
+		Temperature sysTemp = ReactionModelGenerator.getTemp4BestKinetics();
+		double denom = 132*solventViscosity*speRad/7;
+		diffusivity = 1.381*500* Math.pow(10,-23)/denom;  //sysTemp.getK()
+		return diffusivity;
     }
     
-
     /**
     Requires:
     Effects: find out the end of C=C=C... pattern
