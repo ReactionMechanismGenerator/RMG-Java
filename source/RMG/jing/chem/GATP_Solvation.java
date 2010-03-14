@@ -73,20 +73,24 @@ public class GATP_Solvation implements GeneralSolvationGAPP {
 		double L=result_Abraham.L;
 		double A=result_Abraham.A;
 		
-        //Manually specified solvent descriptors (constants here are for decane)
-        double c=0.156;         //-0.12;
-        double s=0;             //0.56;
-        double b=0;             //0.7;
-        double e=-0.143;        //-0.2;
-        double l=0.989;         //0.94;
-        double a=0;             //3.56;
+        //Manually specified solvent descriptors 
+		// (constants here are for dry decane, from from M.H. Abraham et al. / J. Chromatogr. A 1037 (2004) 29–47 )
+        double c = 0.156;
+        double s = 0;
+        double b = 0; 
+        double e = -0.143;
+        double l = 0.989;
+        double a = 0;
 		
-        double logK=c + s*S + b*B + e*E + l*L + a*A;    // Implementation of Abraham Model
-        double deltaG0_octanol=-8.314*298*logK;
-		//       System.out.println("The free energy of solvation in octanol at 298K w/o reference state corrections  = " + deltaG0_octanol +" J/mol for " );
+		// Dry octan-1-ol, from M.H. Abraham et al. / J. Chromatogr. A 1037 (2004) 29–47 
+		// c=-0.120; e=-0.203; s=0.560; a=3.560; b=0.702; l=0.939
+		
+        double logK = c + s*S + b*B + e*E + l*L + a*A;    // Implementation of Abraham Model
+        double deltaG0_decane = -8.314*298*logK;
+		//       System.out.println("The free energy of solvation in decane at 298K w/o reference state corrections  = " + deltaG0_decane +" J/mol for " );
 		
         // Calculation of enthalpy change of solvation using the data obtained above
-        double deltaH0=deltaG0_octanol+(T*deltaS0);
+        double deltaH0=deltaG0_decane+(T*deltaS0);
         deltaS0=deltaS0/4.18;   //unit conversion from J/mol to cal/mol
         deltaH0=deltaH0/4180;   //unit conversion from J/mol to kcal/mol
 		
