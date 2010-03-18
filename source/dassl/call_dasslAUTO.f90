@@ -310,11 +310,37 @@
 	!this variable will track the maxiumum
 	!of rate(i)/Rchar for each edge species i, with respect to time
 	MAXRATIO = 0
+	!initialize HIGHESTRATIO to 0; this variable (a scalar)
+	!tracks the maximum of maxratio; when a new maximum is
+	!attained, the present time step creating the new maximum
+	!will be stored for output from the ODE solver to the Java code
+	HIGHESTRATIO = 0
 	IF (AUTOFLAG.eq.1) THEN
 		CALL EDGEFLUX(EDGEFLAG, Y, YPRIME,THRESH,ESPECIES, &
      &     EREACTIONSIZE,NEREAC,NEPROD,IDEREAC,IDEPROD,KVEC, &
      &     MAXRATIO, NSTATE)
+		!update HIGHESTRATIO and store relevant variables that will be printed
+		!later; note that we cannot exit the do loop once the IF statement is
+		!caught because, even though output variables will be stored properly,
+		!the HIGHESTRATIO will not necessarily have the highest value
+		!note: TOTALREACTIONFLUX apparently tracks integrated flux, not
+		!instantaneous flux, so setting value to be zero here should be OK...
+		!in any case, the result doesn't seem to be used by the Java code
+		DO I=1, EDGESPECIES
+		    IF (MAXRATIO(I) .GT. HIGHESTRATIO) THEN
+			HIGHESTRATIO = MAXRATIO(I)
+			ITER_OUTPT=0
+			TIME_OUTPT=TIME
+			Y_OUTPT = Y
+			YPRIME_OUTPT = YPRIME
+			IWORK_OUTPT = IWORK
+			RWORK_OUTPT = RWORK
+			TOTALREACTIONFLUX_OUTPT = 0
+		    END IF
+		END DO
 	ENDIF
+
+
 
       iter = 0;
       PREVTIME = TIME
@@ -368,6 +394,22 @@
 			CALL EDGEFLUX(EDGEFLAG, Y, YPRIME,THRESH,ESPECIES, &
     		 &     EREACTIONSIZE,NEREAC,NEPROD,IDEREAC,IDEPROD,KVEC, &
 		 &     MAXRATIO, NSTATE)
+		 	!update HIGHESTRATIO and store relevant variables that will be printed
+			!later; note that we cannot exit the do loop once the IF statement is
+			!caught because, even though output variables will be stored properly,
+			!the HIGHESTRATIO will not necessarily have the highest value
+			DO I=1, EDGESPECIES
+			    IF (MAXRATIO(I) .GT. HIGHESTRATIO) THEN
+				HIGHESTRATIO = MAXRATIO(I)
+				ITER_OUTPT=ITER
+				TIME_OUTPT=TIME
+				Y_OUTPT = Y
+				YPRIME_OUTPT = YPRIME
+				IWORK_OUTPT = IWORK
+				RWORK_OUTPT = RWORK
+				TOTALREACTIONFLUX_OUTPT = TOTALREACTIONFLUX
+			    END IF
+			END DO
 		ENDIF
             GO TO 1
          END IF
@@ -378,13 +420,23 @@
       !write(*,*) 'Time-stepping timing: ', (finishT-startT)
      ! write(*,*) (finishT-startT)
 
+      !if we are not using AUTOFLAG, we just want to output the final times
+      IF (AUTOFLAG .NE. 1) THEN
+	ITER_OUTPT=ITER
+	TIME_OUTPT=TIME
+	Y_OUTPT = Y
+	YPRIME_OUTPT = YPRIME
+	IWORK_OUTPT = IWORK
+	RWORK_OUTPT = RWORK
+      END IF
+
       OPEN(UNIT=16, FILE='SolverOutput.dat')
 
-      write(16,*) iter
+      write(16,*) ITER_OUTPT
       WRITE(16,*) NSTATE-1
-      write(16,*) time
+      write(16,*) TIME_OUTPT
       DO I=1,NSTATE-1
-         WRITE(16,*) Y(I)/Y(NSTATE)
+         WRITE(16,*) Y_OUTPT(I)/Y_OUTPT(NSTATE)
       END DO
       
 
@@ -392,29 +444,32 @@
    ! 5/9/08 gmagoon: these values are read by RMG as flux; corrected to
    ! include volume changing effects (dV/dt) using quotient rule
    !      WRITE(16,*) YPRIME(I)/Y(NSTATE)
-          WRITE(16,*) (Y(NSTATE)*YPRIME(I)-Y(I)*YPRIME(NSTATE))/(Y(NSTATE)**2)
+          WRITE(16,*) (Y_OUTPT(NSTATE)*YPRIME_OUTPT(I)-Y_OUTPT(I)*YPRIME_OUTPT(NSTATE))/(Y_OUTPT(NSTATE)**2)
       END DO
 
       DO I=1,REACTIONSIZE+THIRDBODYREACTIONSIZE+TROEREACTIONSIZE+LINDEREACTIONSIZE
-         WRITE(16,*) TOTALREACTIONFLUX(I)
+         WRITE(16,*) TOTALREACTIONFLUX_OUTPT(I)
       END DO
       
-      write(16,*) y(nstate)
+      write(16,*) Y_OUTPT(nstate)
       
       !for autoflag cases, display the final time integrated to,
       !along with pruning information
-      DO I=1, ESPECIES
-	  WRITE(16,*) MAXRATIO(I)
-      END DO
+      IF (AUTOFLAG .EQ. 1) THEN
+	  WRITE(16,*) TIME
+	  DO I=1, ESPECIES
+	      WRITE(16,*) MAXRATIO(I)
+	  END DO
+      END IF
 
       CLOSE(16)
 
       OPEN(UNIT=14, FILE='RWORK.DAT', FORM='UNFORMATTED')
-      WRITE(14) (RWORK(I),I=1,LRW)
+      WRITE(14) (RWORK_OUTPT(I),I=1,LRW)
       CLOSE(14)
 
       OPEN(UNIT=15, FILE='IWORK.DAT', FORM='UNFORMATTED')
-      WRITE(15) (IWORK(I),I=1,LIW)
+      WRITE(15) (IWORK_OUTPT(I),I=1,LIW)
       CLOSE(15)
       
       if (idid .eq. 1 .or. idid .eq. 2 .or. idid .eq. 3 .or. idid .eq. 0) then
