@@ -226,7 +226,7 @@
 	& EREACTIONSIZE, LINDEMAX
       INTEGER NEREAC(EREACTIONSIZE),NEPROD(EREACTIONSIZE)
       INTEGER IDEREAC(EREACTIONSIZE,3), IDEPROD(EREACTIONSIZE,3)
-      DOUBLE PRECISION KVEC(EREACTIONSIZE)
+      DOUBLE PRECISION KVEC(EREACTIONSIZE),MAXRATIO(ESPECIES)
 
       PARAMETER (SPMAX = 1500, RMAX = 100000, TBRMAX=100, TROEMAX=100, &
 	  &    LINDEMAX=100)
@@ -306,10 +306,14 @@
 ! determine EDGEFLAG (-1 if flux threshhold has not been met,
 ! positive integer otherwise)
 	EDGEFLAG = -1
+	!initialize MAXRATIO to a vector of all zeroes;
+	!this variable will track the maxiumum
+	!of rate(i)/Rchar for each edge species i, with respect to time
+	MAXRATIO = 0
 	IF (AUTOFLAG.eq.1) THEN
 		CALL EDGEFLUX(EDGEFLAG, Y, YPRIME,THRESH,ESPECIES, &
      &     EREACTIONSIZE,NEREAC,NEPROD,IDEREAC,IDEPROD,KVEC, &
-     &     NSTATE)
+     &     MAXRATIO, NSTATE)
 	ENDIF
 
       iter = 0;
@@ -363,7 +367,7 @@
 		IF (AUTOFLAG.eq.1) THEN
 			CALL EDGEFLUX(EDGEFLAG, Y, YPRIME,THRESH,ESPECIES, &
     		 &     EREACTIONSIZE,NEREAC,NEPROD,IDEREAC,IDEPROD,KVEC, &
-		 &     NSTATE)
+		 &     MAXRATIO, NSTATE)
 		ENDIF
             GO TO 1
          END IF
@@ -396,6 +400,12 @@
       END DO
       
       write(16,*) y(nstate)
+      
+      !for autoflag cases, display the final time integrated to,
+      !along with pruning information
+      DO I=1, ESPECIES
+	  WRITE(16,*) MAXRATIO(I)
+      END DO
 
       CLOSE(16)
 
@@ -424,14 +434,14 @@
 ! EDGEFLUX also calls RCHAR
 SUBROUTINE EDGEFLUX(EDGEFLAG, Y, YPRIME,THRESH,ESPECIES, &
     		 &     EREACTIONSIZE,NEREAC,NEPROD,IDEREAC,IDEPROD, &
-		&      KVEC, NSTATE)
+		&      KVEC, MAXRATIO, NSTATE)
 	IMPLICIT NONE
 	INTEGER EDGEFLAG, ESPECIES, EREACTIONSIZE, NSTATE, I, J, K
 	DOUBLE PRECISION THRESH, FLUXRC, RFLUX, Y(NSTATE), YPRIME(NSTATE)
 	DOUBLE PRECISION, DIMENSION(:), ALLOCATABLE :: RATE
 	INTEGER NEREAC(EREACTIONSIZE),NEPROD(EREACTIONSIZE)
         INTEGER IDEREAC(EREACTIONSIZE,3), IDEPROD(EREACTIONSIZE,3)
-        DOUBLE PRECISION KVEC(EREACTIONSIZE)
+        DOUBLE PRECISION KVEC(EREACTIONSIZE), MAXRATIO(ESPECIES)
 	
 	ALLOCATE(RATE(ESPECIES))
 	! initialize array to have all zeroes
@@ -444,7 +454,7 @@ SUBROUTINE EDGEFLUX(EDGEFLAG, Y, YPRIME,THRESH,ESPECIES, &
 
 	! calculate the vector of fluxes for each species
 	! by summing contributions from each reaction
-	ILoOP: DO I=1, EREACTIONSIZE
+	ILOOP: DO I=1, EREACTIONSIZE
 	      ! calculate reaction flux by multiplying k
 		! by concentration(s)
 		RFLUX = KVEC(I)
@@ -459,17 +469,18 @@ SUBROUTINE EDGEFLUX(EDGEFLAG, Y, YPRIME,THRESH,ESPECIES, &
 
 
 	! check if any of the edge species fluxes exceed
-	! the threshhold; if so, set edgeflag equal to
-	! the index of the first species found and exit
-	! the loop
-	! 5/7/08 gmagoon: added write statements for debugging purposes
-!	OPEN (UNIT=20, FILE = 'debug.txt')
-!	WRITE(20,*) FLUXRC 
+	! the threshhold and update the MAXRATIO vector
 	FLOOP: DO I=1, ESPECIES
-!		WRITE(20,*) I, RATE(I)
+		!if we reach the termination tolerance,
+		!set EDGEFLAG to a positive value
+		!(in particular, the species ID)
 		IF(RATE(I) .GE. THRESH*FLUXRC) THEN
 		   EDGEFLAG = I
-		   EXIT FLOOP
+		END IF
+		!update the MAXRATIO vector
+		RATIO = RATE(I)/FLUXRC
+		IF(RATIO .GT. MAXRATIO(I)) THEN
+		    MAXRATIO(I) = RATIO
 		END IF
 	END DO FLOOP
 	DEALLOCATE(RATE)
