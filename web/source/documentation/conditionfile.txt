@@ -423,8 +423,9 @@ For a more detailed description on rate-based model enlargement, please consult
 Dynamic Simulator
 -----------------
 
-RMG uses the DASSL or DASPK dynamic solver. Future versions of RMG might include the
-CHEMKIN dynamic solver.
+RMG uses the DASSL or DASPK dynamic solver. DASSL is recommended, as RMG uses
+DASPK in a way that requires the use of the proprietary DAEPACK library, which
+is not distributed with RMG. Future versions of RMG might include the CHEMKIN dynamic solver.
 
 The first line beneath the solver should be either ``TimeStep`` or ``Conversions``, depending on whether you chose Goal Conversion or Goal ReactionTime as your finish controller criterion.
 
@@ -459,14 +460,19 @@ is usually 1e-4 to 1e-8::
   Rtol: 1e-4
 
 Note: You have the option of using sensitivity analysis only if you have the
-DASPK solver. If you are using DASSL solver then skip the Sensitivity Analysis section.
+DASPK solver and the DAEPACK library. If you are using DASSL solver then skip the Sensitivity Analysis section.
 
 Sensitivity Analysis
 --------------------
 
 As long as DASPK is chosen for the dynamic solver, RMG can perform sensitivity
-analysis and generate error bars on the concentration profiles. The sensitivity
-analysis is based upon first-order sensitivity coefficients and uncertainties in
+analysis and generate error bars on the concentration profiles. As mentioned above,
+however, RMG uses DASPK in a way that requires the use of the proprietary library
+DAEPACK (which provides automatic differentiation capabilities for the sensitivity analysis).
+If you do not have access to this library, an alternative is to perform sensitivity analysis
+in CHEMKIN, using the ''chem.inp'' file produced by RMG.
+
+The sensitivity analysis is based upon first-order sensitivity coefficients and uncertainties in
 the rate constants. To use the sensitivity analysis, either the first or
 second line must be set to ``on``. If both ``Error bars`` and ``Display
 sensitivity coefficients`` are set to off, then RMG will not perform a
