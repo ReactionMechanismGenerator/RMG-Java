@@ -404,7 +404,19 @@ public class JDASSL extends JDAS {
         		line = br.readLine();
         		reactionFlux[i] = Double.parseDouble(line.trim());
         	}
-        	
+		//for autoflag cases, there will be additional information which may be used for pruning
+		if(autoflag){
+		    maxEdgeFluxRatio = new double[edgeID.size()];
+		    line=br.readLine();//read volume; (this is actually in the output even if AUTO is off, but is not used)
+		    line=br.readLine();//read the time integrated to
+		    double finalTime = Double.parseDouble(line.trim());
+		    System.out.println("ODE solver integrated to "+ finalTime+" sec.");
+		    for (int i=0; i<edgeID.size(); i++){//read the maximum ratio (edge flux/Rchar) for each edge species
+			line=br.readLine();
+			maxEdgeFluxRatio[i] = Double.parseDouble(line.trim());
+		    }
+		}
+
         }
         catch (IOException e) {
         	String err = "Error in reading Solver Output File! \n";
@@ -750,12 +762,12 @@ public class JDASSL extends JDAS {
 //                        //make the ancillary edge nodes invisible
 //                        for (int j = 0; j<nEdge; j++){
 //                            //find the corresponding species:
-//                            Iterator iter = edgeIDcopy.keySet().iterator();
+//                            Iterator iter = edgeID.keySet().iterator();
 //                            int found = 0;
 //                            Species spe = null;
 //                            while (iter.hasNext()&&found==0) {
 //                                spe = (Species)iter.next();
-//                                if((Integer)(edgeIDcopy.get(spe))==j+1) found = 1;
+//                                if((Integer)(edgeID.get(spe))==j+1) found = 1;
 //                            }
 //                            String name = spe.getName();
 //                            

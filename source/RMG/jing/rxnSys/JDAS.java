@@ -99,7 +99,8 @@ public abstract class JDAS implements DAESolver {
 	protected double [] conversionSet;
 	protected double endTime;
 	protected StringBuilder thermoString = new StringBuilder();
-	//protected HashMap edgeIDcopy; //added for dot graphs
+	protected HashMap edgeID;
+	protected double [] maxEdgeFluxRatio;
 	protected static boolean nonnegative = false;
 
 	
@@ -765,7 +766,7 @@ public abstract class JDAS implements DAESolver {
 		int edgeSpeciesCounter = 0;
 
 		// First use reactions in unreacted reaction set, which is valid for both RateBasedRME and RateBasedPDepRME
-		HashMap edgeID = new HashMap();
+		edgeID = new HashMap();
 		LinkedHashSet ur = model.getUnreactedReactionSet();
 		for (Iterator iur = ur.iterator(); iur.hasNext();) {
 			edgeReactionCounter++;
@@ -1053,7 +1054,6 @@ public abstract class JDAS implements DAESolver {
 
                             }
                     }
-   //                 edgeIDcopy=edgeID;//added for dot graphs
                 }
                 catch(IOException e) {
                     System.err.println("Problem writing Solver Input File!");
