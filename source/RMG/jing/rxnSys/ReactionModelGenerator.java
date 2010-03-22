@@ -109,6 +109,10 @@ public class ReactionModelGenerator {
 	private HashSet specs = new HashSet();
 	//public static native long getCpuTime();
 	//static {System.loadLibrary("cpuTime");}
+
+	protected static double tolerance;//can be interpreted as "coreTol" (vs. edgeTol)
+	protected static double termTol;
+	protected static double edgeTol;
 	
 	//## operation ReactionModelGenerator()
     public  ReactionModelGenerator() {
@@ -935,7 +939,6 @@ public class ReactionModelGenerator {
         		st = new StringTokenizer(line, ":");
         		String temp = st.nextToken();
         		String tol = st.nextToken();
-        		double tolerance;
         		try {
         			if (tol.endsWith("%")) {
         				tolerance = Double.parseDouble(tol.substring(0,tol.length()-1))/100;
@@ -1021,7 +1024,35 @@ public class ReactionModelGenerator {
         			numConversions = i+1;
         		}
         		else throw new InvalidSymbolException("condition.txt: can't find time step for dynamic simulator!");
-				
+
+			//
+			if (temp.startsWith("AUTOPRUNE")){//for the AUTOPRUNE case, read in additional lines for termTol and edgeTol
+			    line = ChemParser.readMeaningfulLine(reader);
+			    if (line.startsWith("TerminationTolerance:")) {
+				    st = new StringTokenizer(line);
+				    temp = st.nextToken();
+				    termTol = Double.parseDouble(st.nextToken());
+			    }
+			    else {
+				    System.out.println("Cannot find TerminationTolerance in condition.txt");
+				    System.exit(0);
+			    }
+			    line = ChemParser.readMeaningfulLine(reader);
+			    if (line.startsWith("PruningTolerance:")) {
+				    st = new StringTokenizer(line);
+				    temp = st.nextToken();
+				    edgeTol = Double.parseDouble(st.nextToken());
+			    }
+			    else {
+				    System.out.println("Cannot find PruningTolerance in condition.txt");
+				    System.exit(0);
+			    }
+			}
+			else if (temp.startsWith("AUTO")){//in the non-autoprune case (i.e. original AUTO functionality), we set the new parameters to values that should reproduce original functionality
+			    termTol = tolerance;
+			    edgeTol = 0;
+			}
+
         		// read in atol
         		
         		line = ChemParser.readMeaningfulLine(reader);
@@ -1088,7 +1119,7 @@ public class ReactionModelGenerator {
 						//6/25/08 gmagoon: changed loop to use i index, and updated DASPK constructor to pass i (mirroring changes to DASSL
 						//6/25/08 gmagoon: updated to pass autoflag and validity tester; this requires FinishController block of input file to be present before DynamicSimulator block, but this requirement may have already existed anyway, particularly in construction of conversion/time step lists; *perhaps we should formalize this requirement by checking to make sure validityTester is not null?
 						for (int i = 0;i < initialStatusList.size();i++) {
-							dynamicSimulatorList.add(new JDASPK(rtol, atol, 0, (InitialStatus)initialStatusList.get(i), i,finishController.getValidityTester(), autoflag));
+							dynamicSimulatorList.add(new JDASPK(rtol, atol, 0, (InitialStatus)initialStatusList.get(i), i,finishController.getValidityTester(), autoflag, termTol));
 						}
 					}
 					species = new LinkedList();
@@ -1116,7 +1147,7 @@ public class ReactionModelGenerator {
 					//11/1/07 gmagoon: changed loop to use i index, and updated DASSL constructor to pass i
 					//5/5/08 gmagoon: updated to pass autoflag and validity tester; this requires FinishController block of input file to be present before DynamicSimulator block, but this requirement may have already existed anyway, particularly in construction of conversion/time step lists; *perhaps we should formalize this requirement by checking to make sure validityTester is not null?
 					for (int i = 0;i < initialStatusList.size();i++) {
-						dynamicSimulatorList.add(new JDASSL(rtol, atol, 0, (InitialStatus)initialStatusList.get(i), i, finishController.getValidityTester(), autoflag));
+						dynamicSimulatorList.add(new JDASSL(rtol, atol, 0, (InitialStatus)initialStatusList.get(i), i, finishController.getValidityTester(), autoflag, termTol));
 					}
         		}
         		else if (simulator.equals("Chemkin")) {
@@ -1571,8 +1602,10 @@ public class ReactionModelGenerator {
 				
 				//writeCoreSpecies();
 				double pt = System.currentTimeMillis();
+				//prune the reaction model (this will only do something in the AUTO case)
+				pruneReactionModel();
 				// ENLARGE THE MODEL!!! (this is where the good stuff happens)
-				enlargeReactionModel();//10/24/07 gmagoon: need to adjust this function
+				enlargeReactionModel();
 				double totalEnlarger = (System.currentTimeMillis() - pt)/1000/60;
 				
 				//PDepNetwork.completeNetwork(reactionSystem.reactionModel.getSpeciesSet());
@@ -4055,6 +4088,36 @@ public class ReactionModelGenerator {
 		
         return;
         //#]
+    }
+
+    public void pruneReactionModel() {
+	HashSet prunableSpecies = new HashSet();
+	JDAS ds0 = (JDAS)((ReactionSystem) reactionSystemList.get(0)).getDynamicSimulator(); //get the first reactionSystem dynamic simulator
+	if (ds0.autoflag){//prune the reaction model if AUTO is being used
+	    Iterator iter = ds0.edgeID.keySet().iterator();//determine the maximum edge flux ratio for each edge species
+	    while(iter.hasNext()){
+		Species spe = (Species)iter.next();
+		Integer id0 = (Integer)ds0.edgeID.get(spe);
+		double maxmaxRatio = ds0.maxEdgeFluxRatio[id0-1];
+		for (Integer i = 1; i < reactionSystemList.size(); i++) {//go through the rest of the reaction systems to see if there are higher max flux ratios
+		    JDAS ds = (JDAS)((ReactionSystem) reactionSystemList.get(i)).getDynamicSimulator();
+		    Integer id = (Integer)ds0.edgeID.get(spe);//in principle, I don't think the IDs in each dynamic simulator will necessarily be the same...determine the ID
+		    if(ds.maxEdgeFluxRatio[id-1] > maxmaxRatio) maxmaxRatio = ds.maxEdgeFluxRatio[id-1];
+		}
+		//if the maximum max edge flux ratio is less than the edge inclusion threshhold, schedule the species for pruning
+		if(maxmaxRatio < edgeTol){
+		    prunableSpecies.add(spe);
+		    System.out.println("Edge species "+spe.getChemkinName() +" has a maximum flux ratio ("+maxmaxRatio+") that is lower than edge inclusion threshhold and the species will be pruned from the edge.");
+		}
+	    }
+	    //now, prunableSpecies has been filled with species that should be pruned from the edge
+
+	    //prune species from the edge
+
+
+
+	}
+        return;
     }
     
     //9/25/07 gmagoon: moved from ReactionSystem.java

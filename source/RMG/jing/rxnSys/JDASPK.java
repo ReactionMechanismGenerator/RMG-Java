@@ -66,16 +66,17 @@ public class JDASPK extends JDAS {
     
 	public JDASPK(double p_rtol, double p_atol, int p_parameterInfor, 
 			InitialStatus p_initialStatus, int p_index, ValidityTester p_vt, 
-			boolean p_autoflag) {
+			boolean p_autoflag, Double p_termTol) {
         super(p_rtol, p_atol, p_parameterInfor, p_initialStatus, p_index, p_vt, 
-			p_autoflag);
+			p_autoflag, p_termTol);
     }
     
     //6/25/08 gmagoon: defined alternate constructor for use with sensitivity analysis (lacks autoflag and validityTester parameters)
     //6/25/08 gmagoon: set autoflag to be false with this constructor (not used for sensitivity analysis)
+    //3/22/10 gmagoon: set termTol=null with this constructor; it should not be used
 	public JDASPK(double p_rtol, double p_atol, int p_parameterInfor, InitialStatus p_initialStatus, int p_index) {
         super(p_rtol, p_atol, p_parameterInfor, p_initialStatus, p_index, null, 
-			false);
+			false, null);
     }
 
     //## operation generateSensitivityStatus(ReactionModel,double [],double [],int)

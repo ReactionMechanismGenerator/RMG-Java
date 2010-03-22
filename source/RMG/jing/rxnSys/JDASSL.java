@@ -68,9 +68,9 @@ public class JDASSL extends JDAS {
     
 	public JDASSL(double p_rtol, double p_atol, int p_parameterInfor, 
 			InitialStatus p_initialStatus, int p_index, ValidityTester p_vt, 
-			boolean p_autoflag) {
+			boolean p_autoflag, Double p_termTol) {
         super(p_rtol, p_atol, p_parameterInfor, p_initialStatus, p_index, p_vt, 
-			p_autoflag);
+			p_autoflag, p_termTol);
     }
 
     // DASSL is not used for sensitivity analysis, so this function shouldn't be needed
