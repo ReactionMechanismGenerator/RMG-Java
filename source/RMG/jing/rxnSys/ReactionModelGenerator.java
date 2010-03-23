@@ -4113,11 +4113,39 @@ public class ReactionModelGenerator {
 	    //now, prunableSpecies has been filled with species that should be pruned from the edge
 
 	    //prune species from the edge
-
-
+	    //remove species from the edge
+	    iter = prunableSpecies.iterator();
+	    while(iter.hasNext()){
+		Species spe = (Species)iter.next();
+		((CoreEdgeReactionModel)getReactionModel()).getUnreactedSpeciesSet().remove(spe);
+	    }
+	    //remove reactions from the edge involving pruned species
+	    iter = ((CoreEdgeReactionModel)getReactionModel()).getUnreactedReactionSet().iterator();
+	    while(iter.hasNext()){
+		Reaction reaction = (Reaction)iter.next();
+		if (reactionPrunableQ(reaction, prunableSpecies)) ((CoreEdgeReactionModel)getReactionModel()).getUnreactedReactionSet().remove(reaction);
+	    }
 
 	}
         return;
+    }
+
+    //determines whether a reaction can be removed; returns true ; cf. categorizeReaction() in CoreEdgeReactionModel
+    //returns true if the reaction involves reactants or products that are in p_prunableSpecies; otherwise returns false
+    public boolean reactionPrunableQ(Reaction p_reaction, HashSet p_prunableSpecies){
+	Iterator iter = p_reaction.getReactants();
+        while (iter.hasNext()) {
+		Species spe = (Species)iter.next();
+        	if (p_prunableSpecies.contains(spe))
+		    return true;
+        }
+        iter = p_reaction.getProducts();
+        while (iter.hasNext()) {
+		Species spe = (Species)iter.next();
+        	if (p_prunableSpecies.contains(spe))
+		    return true;
+        }
+	return false;
     }
     
     //9/25/07 gmagoon: moved from ReactionSystem.java
