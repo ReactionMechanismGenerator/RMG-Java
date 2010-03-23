@@ -4125,6 +4125,38 @@ public class ReactionModelGenerator {
 		Reaction reaction = (Reaction)iter.next();
 		if (reactionPrunableQ(reaction, prunableSpecies)) ((CoreEdgeReactionModel)getReactionModel()).getUnreactedReactionSet().remove(reaction);
 	    }
+	    //remove reactions from PDepNetworks in PDep cases
+	    if (reactionModelEnlarger instanceof RateBasedPDepRME)	{
+		iter = PDepNetwork.getNetworks().iterator();
+		while (iter.hasNext()){
+		    PDepNetwork pdn = (PDepNetwork)iter.next();
+		    //remove path reactions
+		    Iterator rIter = pdn.getPathReactions().iterator();
+		    while(rIter.hasNext()){
+			Reaction reaction = (Reaction)rIter.next();
+			if (reactionPrunableQ(reaction, prunableSpecies)) pdn.getPathReactions().remove(reaction);
+		    }
+		    //remove net reactions
+		    rIter = pdn.getNetReactions().iterator();
+		    while(rIter.hasNext()){
+			Reaction reaction = (Reaction)rIter.next();
+			if (reactionPrunableQ(reaction, prunableSpecies)) pdn.getNetReactions().remove(reaction);
+		    }
+		    //remove isomers
+		    Iterator iIter = pdn.getIsomers().iterator();
+		    while(iIter.hasNext()){
+			PDepIsomer pdi = (PDepIsomer)iIter.next();
+			Iterator isIter = pdi.getSpeciesListIterator();
+			    while(isIter.hasNext()){
+				Species spe = (Species)isIter.next();
+				if (prunableSpecies.contains(spe)) pdn.getIsomers().remove(pdi);
+			    }
+		    }
+		    //remove the entire network if the network has no path or net reactions
+		    if(pdn.getPathReactions().size()==0&&pdn.getNetReactions().size()==0) PDepNetwork.getNetworks().remove(pdn);
+		}
+	    }
+
 
 	}
         return;
