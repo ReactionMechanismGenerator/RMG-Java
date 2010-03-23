@@ -4113,11 +4113,13 @@ public class ReactionModelGenerator {
 	    //now, prunableSpecies has been filled with species that should be pruned from the edge
 
 	    //prune species from the edge
-	    //remove species from the edge
+	    //remove species from the edge and from the species dictionary
 	    iter = prunableSpecies.iterator();
 	    while(iter.hasNext()){
 		Species spe = (Species)iter.next();
 		((CoreEdgeReactionModel)getReactionModel()).getUnreactedSpeciesSet().remove(spe);
+		//SpeciesDictionary.getInstance().getSpeciesSet().remove(spe);
+		SpeciesDictionary.getInstance().remove(spe);
 	    }
 	    //remove reactions from the edge involving pruned species
 	    iter = ((CoreEdgeReactionModel)getReactionModel()).getUnreactedReactionSet().iterator();
@@ -4156,7 +4158,7 @@ public class ReactionModelGenerator {
 		    if(pdn.getPathReactions().size()==0&&pdn.getNetReactions().size()==0) PDepNetwork.getNetworks().remove(pdn);
 		}
 	    }
-
+	    //remove all the species from the Species Dictionary
 
 	}
         return;

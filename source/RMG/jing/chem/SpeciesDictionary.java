@@ -286,6 +286,15 @@ public class SpeciesDictionary {
         if (p_chemGraph != null) dictionary.remove(p_chemGraph);
         //#]
     }
+
+    //remove all the mappings from ChemGraphs to a particular species
+    public void remove(Species p_spe) {
+        Iterator iter = dictionary.keySet().iterator();
+	while(iter.hasNext()){
+	    ChemGraph cg = (ChemGraph)iter.next();
+	    if(p_spe.equals(dictionary.get(cg))) dictionary.remove(cg);
+	}
+    }
     
     //## operation size() 
     public int size() {
