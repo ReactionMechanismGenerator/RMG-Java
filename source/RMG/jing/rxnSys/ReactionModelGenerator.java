@@ -4093,7 +4093,7 @@ public class ReactionModelGenerator {
     public void pruneReactionModel() {
 	HashSet prunableSpecies = new HashSet();
 	JDAS ds0 = (JDAS)((ReactionSystem) reactionSystemList.get(0)).getDynamicSimulator(); //get the first reactionSystem dynamic simulator
-	if (ds0.autoflag){//prune the reaction model if AUTO is being used
+	if (ds0.autoflag && edgeTol>0){//prune the reaction model if AUTO is being used and edgeTol is non-zero (and positive, obviously)
 	    Iterator iter = ds0.edgeID.keySet().iterator();//determine the maximum edge flux ratio for each edge species
 	    while(iter.hasNext()){
 		Species spe = (Species)iter.next();
