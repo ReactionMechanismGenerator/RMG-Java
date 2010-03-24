@@ -880,8 +880,8 @@ public class FastMasterEqn implements PDepKineticsEstimator {
 				 *  
 				 */
 				LinkedList pathReactionList = pdn.getPathReactions();
-				for (int numHighPRxns = 0; numHighPRxns < pathReactionList.size(); numHighPRxns++) {
-					PDepReaction rxnWHighPLimit = (PDepReaction)pathReactionList.get(numHighPRxns);
+				for (int HighPRxNum = 0; HighPRxNum < pathReactionList.size(); HighPRxNum++) {
+					PDepReaction rxnWHighPLimit = (PDepReaction)pathReactionList.get(HighPRxNum);
 					if (rxn.getStructure().equals(rxnWHighPLimit.getStructure())) {
 						double A = 0.0, Ea = 0.0, n = 0.0;
 						if (rxnWHighPLimit.isForward()) {
@@ -889,12 +889,17 @@ public class FastMasterEqn implements PDepKineticsEstimator {
 							A = kin.getAValue();
 							Ea = kin.getEValue();
 							n = kin.getNValue();
+							// While I'm here, and know which reaction was the High-P limit, set the comment in the P-dep reaction 
+							rxn.setComments("High-P Limit: " + kin.getSource().toString() + kin.getComment().toString() );
 						}
 						else {
 							Kinetics kin = rxnWHighPLimit.getFittedReverseKinetics();
 							A = kin.getAValue();
 							Ea = kin.getEValue();
 							n = kin.getNValue();
+							//  While I'm here, and know which reaction was the High-P limit, set the comment in the P-dep reaction 
+							Kinetics fwd_kin = rxnWHighPLimit.getKinetics();
+							rxn.setComments("High-P Limit Reverse: " + fwd_kin.getSource().toString() +fwd_kin.getComment().toString() );
 						}
 						double[][] all_ks = rxn.getPDepRate().getRateConstants();
 						for (int numTemps=0; numTemps<temperatures.length; numTemps++) {
