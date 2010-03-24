@@ -1119,7 +1119,7 @@ public class ReactionModelGenerator {
 						//6/25/08 gmagoon: changed loop to use i index, and updated DASPK constructor to pass i (mirroring changes to DASSL
 						//6/25/08 gmagoon: updated to pass autoflag and validity tester; this requires FinishController block of input file to be present before DynamicSimulator block, but this requirement may have already existed anyway, particularly in construction of conversion/time step lists; *perhaps we should formalize this requirement by checking to make sure validityTester is not null?
 						for (int i = 0;i < initialStatusList.size();i++) {
-							dynamicSimulatorList.add(new JDASPK(rtol, atol, 0, (InitialStatus)initialStatusList.get(i), i,finishController.getValidityTester(), autoflag, termTol));
+							dynamicSimulatorList.add(new JDASPK(rtol, atol, 0, (InitialStatus)initialStatusList.get(i), i,finishController.getValidityTester(), autoflag, termTol, tolerance));
 						}
 					}
 					species = new LinkedList();
@@ -1147,7 +1147,7 @@ public class ReactionModelGenerator {
 					//11/1/07 gmagoon: changed loop to use i index, and updated DASSL constructor to pass i
 					//5/5/08 gmagoon: updated to pass autoflag and validity tester; this requires FinishController block of input file to be present before DynamicSimulator block, but this requirement may have already existed anyway, particularly in construction of conversion/time step lists; *perhaps we should formalize this requirement by checking to make sure validityTester is not null?
 					for (int i = 0;i < initialStatusList.size();i++) {
-						dynamicSimulatorList.add(new JDASSL(rtol, atol, 0, (InitialStatus)initialStatusList.get(i), i, finishController.getValidityTester(), autoflag, termTol));
+						dynamicSimulatorList.add(new JDASSL(rtol, atol, 0, (InitialStatus)initialStatusList.get(i), i, finishController.getValidityTester(), autoflag, termTol, tolerance));
 					}
         		}
         		else if (simulator.equals("Chemkin")) {

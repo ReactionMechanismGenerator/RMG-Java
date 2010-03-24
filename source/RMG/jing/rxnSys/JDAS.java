@@ -102,6 +102,7 @@ public abstract class JDAS implements DAESolver {
 	protected HashMap edgeID;
 	protected double [] maxEdgeFluxRatio;
 	protected double termTol;
+	protected double coreTol;
 	protected static boolean nonnegative = false;
 
 	
@@ -111,7 +112,7 @@ public abstract class JDAS implements DAESolver {
 	
     public JDAS(double p_rtol, double p_atol, int p_parameterInfor, 
 			InitialStatus p_initialStatus, int p_index, ValidityTester p_vt, 
-			boolean p_autoflag, Double p_termTol) {
+			boolean p_autoflag, Double p_termTol, Double p_coreTol) {
         
 		rtol = p_rtol;
         atol = p_atol;
@@ -119,6 +120,7 @@ public abstract class JDAS implements DAESolver {
         validityTester = p_vt;
         autoflag = p_autoflag;
 	termTol = p_termTol;
+	coreTol = p_coreTol;
 
         parameterInfor = p_parameterInfor;
         initialStatus = p_initialStatus;
@@ -902,7 +904,7 @@ public abstract class JDAS implements DAESolver {
                 //write the counter (and tolerance) info and go through a second time, this time writing to the buffered writer
                 try{
                     //edgeSpeciesCounter = edgeID.size();
-                    bw.write("\n" + termTol + "\n" + edgeSpeciesCounter + " " + edgeReactionCounter);
+                    bw.write("\n" + termTol + " " + coreTol + "\n" + edgeSpeciesCounter + " " + edgeReactionCounter);
                     //bw.flush();
                     //	bw.write(edgeReacInfoString);
                     

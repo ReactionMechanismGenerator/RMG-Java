@@ -33,7 +33,7 @@
      &     REACTIONRATEARRAY(5*rmax),&
      &     THIRDBODYREACTIONRATEARRAY(16*Tbrmax),&
      &     TROEREACTIONRATEARRAY(21*TROemax), targetconc, THRESH, &
-	 &     LINDEREACTIONRATEARRAY(17*LINDEMAX)
+	 &    CORETHRESH, LINDEREACTIONRATEARRAY(17*LINDEMAX)
      ! 4/25/08 gmagoon:make auto arrays allocatable and double
      ! precision for KVEC
      INTEGER, DIMENSION(:), ALLOCATABLE :: NEREAC,NEPROD
@@ -117,7 +117,10 @@
 	IF (AUTOFLAG .EQ. 1) THEN
 		! read the threshhold, corresponding to the value
 		! specified in condition.txt input file
-		READ(12,*) THRESH
+	        !CORETHRESH is the threshhold for moving something from edge to core,
+	        !whereas THRESH is the threshhold for terminating the run before the end
+	        !THRESH >= CORETHRESH
+		READ(12,*) THRESH, CORETHRESH
 		! read the number of edge species and edge reactions
 		READ(12,*) ESPECIES, EREACTIONSIZE
 		! allocate memory for arrays
@@ -185,7 +188,7 @@
 
       CALL SOLVEODE(Y, YPRIME, T, TOUT, INFO, RTOL, ATOL, IDID, &
      &     RWORK, IWORK, IMPSPECIES, TARGETCONC, AUTOFLAG, &
-     &     THRESH,ESPECIES,EREACTIONSIZE,NEREAC,NEPROD,IDEREAC, &
+     &     THRESH,CORETHRESH,ESPECIES,EREACTIONSIZE,NEREAC,NEPROD,IDEREAC, &
      &     IDEPROD,KVEC)
 
 ! 4/25/08 gmagoon: deallocate memory from allocatable arrays
@@ -216,7 +219,7 @@
 ! time stepping
       SUBROUTINE SOLVEODE(Y, YPRIME, Time, TOUT, INFO, RTOL, ATOL, &
      &     IDID, RWORK, IWORK, IMPSPECIES, TARGETCONC, AUTOFLAG, &
-     &     THRESH,ESPECIES,EREACTIONSIZE,NEREAC,NEPROD,IDEREAC, &
+     &     THRESH,CORETHRESH,ESPECIES,EREACTIONSIZE,NEREAC,NEPROD,IDEREAC, &
      &     IDEPROD,KVEC)
 
       IMPLICIT NONE
@@ -241,7 +244,7 @@
       DOUBLE PRECISION REACTIONRATEARRAY(5*rmax), &
      &     THIRDBODYREACTIONRATEARRAY(16*Tbrmax), &
      &     TROEREACTIONRATEARRAY(21*TROemax), TEMPERATURE, PRESSURE, &
-     &     THRESH, LINDEREACTIONRATEARRAY(17*LINDEMAX)
+     &     THRESH, CORETHRESH, LINDEREACTIONRATEARRAY(17*LINDEMAX)
 
       COMMON /SIZE/ NSTATE, REACTIONSIZE, THIRDBODYREACTIONSIZE, &
      &     TROEREACTIONSIZE, LINDEREACTIONSIZE
@@ -429,8 +432,14 @@
       !write(*,*) 'Time-stepping timing: ', (finishT-startT)
      ! write(*,*) (finishT-startT)
 
-      !if we are not using AUTOFLAG, we just want to output the final times
-      IF (AUTOFLAG .NE. 1) THEN
+      !if we are not using AUTOFLAG, we just want to output the final times;
+      !another case where we want to use the final time is if the highest ratio
+      !never reaches CORETHRESH...if this is the case, we are "converged",
+      !as we have reached the target time/conversion without exceeding the
+      !core inclusion threshhold, and we therefore want to report the
+      !final state back to the Java code so it will recognize that the
+      !target time/conversion has been reached
+      IF ((AUTOFLAG .NE. 1) .OR. (HIGHESTRATIO .LT. CORETHRESH)) THEN
 	ITER_OUTPT=ITER
 	TIME_OUTPT=TIME
 	Y_OUTPT = Y
