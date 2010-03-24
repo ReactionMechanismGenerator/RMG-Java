@@ -253,7 +253,7 @@
 	 &     LINDEREACTIONRATEARRAY, LINDEREACTIONARRAY
 
       INTEGER  INFO(30), LIW, LRW, IWORK(1541), IPAR(1),IDID, iter, &
-     &     IMPSPECIES, conc, ITER_OUTPT, IWORK_OUTPT(1541)
+     &     IMPSPECIES, conc, ITER_OUTPT, IWORK_OUTPT(1541), COPYQ
       DOUBLE PRECISION Y(NSTATE), YPRIME(NSTATE), Time, TOUT, RTOL, ATOL &
      &     , RWORK(51+9*SPMAX+SPMAX**2), TARGETCONC, Y_OUTPT(NSTATE) &
      &     , YPRIME_OUTPT(NSTATE), TIME_OUTPT  &
@@ -403,19 +403,23 @@
 			!later; note that we cannot exit the do loop once the IF statement is
 			!caught because, even though output variables will be stored properly,
 			!the HIGHESTRATIO will not necessarily have the highest value
+			COPYQ=0
 			DO I=1, ESPECIES
 			    IF (MAXRATIO(I) .GT. HIGHESTRATIO) THEN
 				HIGHESTRATIO = MAXRATIO(I)
-				ITER_OUTPT=ITER
-				TIME_OUTPT=TIME
-				Y_OUTPT = Y
-				YPRIME_OUTPT = YPRIME
-				IWORK_OUTPT = IWORK
-				RWORK_OUTPT = RWORK
-				TOTALREACTIONFLUX_OUTPT = TOTALREACTIONFLUX
+				COPYQ=1 !mark this ODE time step for copying into output variables
 			    END IF
 			END DO
-		ENDIF
+			IF (COPYQ .EQ. 1) THEN
+			    ITER_OUTPT=ITER
+			    TIME_OUTPT=TIME
+			    Y_OUTPT = Y
+			    YPRIME_OUTPT = YPRIME
+			    IWORK_OUTPT = IWORK
+			    RWORK_OUTPT = RWORK
+			    TOTALREACTIONFLUX_OUTPT = TOTALREACTIONFLUX
+			END IF
+		END IF
             GO TO 1
          END IF
       END IF
@@ -532,14 +536,14 @@ SUBROUTINE EDGEFLUX(EDGEFLAG, Y, YPRIME,THRESH,ESPECIES, &
 	! check if any of the edge species fluxes exceed
 	! the threshhold and update the MAXRATIO vector
 	FLOOP: DO I=1, ESPECIES
+		RATIO = RATE(I)/FLUXRC
 		!if we reach the termination tolerance,
 		!set EDGEFLAG to a positive value
 		!(in particular, the species ID)
-		IF(RATE(I) .GE. THRESH*FLUXRC) THEN
+		IF(RATIO .GE. THRESH) THEN
 		   EDGEFLAG = I
 		END IF
 		!update the MAXRATIO vector
-		RATIO = RATE(I)/FLUXRC
 		IF(RATIO .GT. MAXRATIO(I)) THEN
 		    MAXRATIO(I) = RATIO
 		END IF
