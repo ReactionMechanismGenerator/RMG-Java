@@ -4123,43 +4123,71 @@ public class ReactionModelGenerator {
 	    }
 	    //remove reactions from the edge involving pruned species
 	    iter = ((CoreEdgeReactionModel)getReactionModel()).getUnreactedReactionSet().iterator();
+	    HashSet toRemove = new HashSet();
 	    while(iter.hasNext()){
 		Reaction reaction = (Reaction)iter.next();
-		if (reactionPrunableQ(reaction, prunableSpecies)) ((CoreEdgeReactionModel)getReactionModel()).getUnreactedReactionSet().remove(reaction);
+		if (reactionPrunableQ(reaction, prunableSpecies)) toRemove.add(reaction);
+	    }
+	    iter = toRemove.iterator();
+	    while(iter.hasNext()){
+		Reaction reaction = (Reaction)iter.next();
+		((CoreEdgeReactionModel)getReactionModel()).getUnreactedReactionSet().remove(reaction);
 	    }
 	    //remove reactions from PDepNetworks in PDep cases
 	    if (reactionModelEnlarger instanceof RateBasedPDepRME)	{
 		iter = PDepNetwork.getNetworks().iterator();
+		HashSet pdnToRemove = new HashSet();
 		while (iter.hasNext()){
 		    PDepNetwork pdn = (PDepNetwork)iter.next();
 		    //remove path reactions
 		    Iterator rIter = pdn.getPathReactions().iterator();
+		    toRemove = new HashSet();
 		    while(rIter.hasNext()){
 			Reaction reaction = (Reaction)rIter.next();
-			if (reactionPrunableQ(reaction, prunableSpecies)) pdn.getPathReactions().remove(reaction);
+			if (reactionPrunableQ(reaction, prunableSpecies))  toRemove.add(reaction);
+		    }
+		    Iterator iterRem = toRemove.iterator();
+		    while(iterRem.hasNext()){
+			Reaction reaction = (Reaction)iterRem.next();
+			pdn.getPathReactions().remove(reaction);
 		    }
 		    //remove net reactions
 		    rIter = pdn.getNetReactions().iterator();
+		    toRemove = new HashSet();
 		    while(rIter.hasNext()){
 			Reaction reaction = (Reaction)rIter.next();
-			if (reactionPrunableQ(reaction, prunableSpecies)) pdn.getNetReactions().remove(reaction);
+			if (reactionPrunableQ(reaction, prunableSpecies)) toRemove.add(reaction);
+		    }
+		    iterRem = toRemove.iterator();
+		    while(iterRem.hasNext()){
+			Reaction reaction = (Reaction)iterRem.next();
+			pdn.getNetReactions().remove(reaction);
 		    }
 		    //remove isomers
 		    Iterator iIter = pdn.getIsomers().iterator();
+		    toRemove = new HashSet();
 		    while(iIter.hasNext()){
 			PDepIsomer pdi = (PDepIsomer)iIter.next();
 			Iterator isIter = pdi.getSpeciesListIterator();
-			    while(isIter.hasNext()){
+			while(isIter.hasNext()){
 				Species spe = (Species)isIter.next();
-				if (prunableSpecies.contains(spe)) pdn.getIsomers().remove(pdi);
-			    }
+				if (prunableSpecies.contains(spe)&&!toRemove.contains(spe)) toRemove.add(pdi);
+			}
+		    }
+		    iterRem = toRemove.iterator();
+		    while(iterRem.hasNext()){
+			PDepIsomer pdi = (PDepIsomer)iIter.next();
+			pdn.getIsomers().remove(pdi);
 		    }
 		    //remove the entire network if the network has no path or net reactions
-		    if(pdn.getPathReactions().size()==0&&pdn.getNetReactions().size()==0) PDepNetwork.getNetworks().remove(pdn);
+		    if(pdn.getPathReactions().size()==0&&pdn.getNetReactions().size()==0) pdnToRemove.add(pdn);
 		}
-	    }
-	    //remove all the species from the Species Dictionary
-
+		iter = pdnToRemove.iterator();
+		while (iter.hasNext()){
+		    PDepNetwork pdn = (PDepNetwork)iter.next();
+		    PDepNetwork.getNetworks().remove(pdn);
+		}
+	    } 
 	}
         return;
     }
