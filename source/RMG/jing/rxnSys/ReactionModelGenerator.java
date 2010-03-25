@@ -4117,7 +4117,7 @@ public class ReactionModelGenerator {
 		}
 	    }
 	    //now, prunableSpecies has been filled with species that should be pruned from the edge
-
+	    System.out.println("Pruning...");
 	    //prune species from the edge
 	    //remove species from the edge and from the species dictionary
 	    iter = prunableSpecies.iterator();
