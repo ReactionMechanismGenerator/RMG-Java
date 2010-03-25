@@ -616,10 +616,10 @@ PROGRAM CALL_DASPKAUTO
       !, the final time integrated to,
       !along with pruning information
       IF (AUTOFLAG .EQ. 1) THEN
-	  WRITE(16,*) EDGEFLAG
-	  WRITE(16,*) TIME
+	  WRITE(15,*) EDGEFLAG
+	  WRITE(15,*) TIME
 	  DO I=1, ESPECIES
-	      WRITE(16,*) MAXRATIO(I)
+	      WRITE(15,*) MAXRATIO(I)
 	  END DO
       END IF
 
