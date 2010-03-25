@@ -63,24 +63,17 @@ public PrimaryThermoLibrary(HashMap Dictionary, HashMap Library) {
 
 //7-Jul-2009: MRH
 public PrimaryThermoLibrary(String name, String location) {
+	// Create a new PrimaryThermoLibrary.
 	library = new HashMap();
 	dictionary = new HashMap();
-	String thermoDirectory = System.getProperty("jing.chem.ThermoGAGroupLibrary.pathName");
-	String dictionaryFile = thermoDirectory + "/" + location + "/Dictionary.txt";
-	String libraryFile = thermoDirectory + "/" + location + "/Library.txt";
-	try {
-		read(dictionaryFile,libraryFile,name);
-	}
-	catch (IOException e) {
-		System.err.println("RMG cannot read Primary Thermo Library: " + name + "\n" + e.getMessage());
-	}
+	appendPrimaryThermoLibrary(name, location);
 }
 
 //7-Jul-2009: MRH
 public void appendPrimaryThermoLibrary(String name, String path) {
-	String thermoDirectory = System.getProperty("jing.chem.ThermoGAGroupLibrary.pathName");
-	String dictionaryFile = thermoDirectory + "/" + path + "/Dictionary.txt";
-	String libraryFile = thermoDirectory + "/" + path + "/Library.txt";
+	String thermoLibraryDirectory = System.getProperty("jing.chem.ThermoReferenceLibrary.pathName");
+	String dictionaryFile = thermoLibraryDirectory + "/" + path + "/Dictionary.txt";
+	String libraryFile = thermoLibraryDirectory + "/" + path + "/Library.txt";
 	try {
 		read(dictionaryFile, libraryFile, name);
 	}

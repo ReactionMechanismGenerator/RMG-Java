@@ -1171,7 +1171,7 @@ public class ReactionModelGenerator {
 					String name = tempString[tempString.length-1].trim();
 					line = ChemParser.readMeaningfulLine(reader);
 					tempString = line.split("Location: ");
-					String path = tempString[tempString.length-1].trim();
+					String location = tempString[tempString.length-1].trim();
 					line = ChemParser.readMeaningfulLine(reader);
 					tempString = line.split("GenerateReactions: ");
 					String generateStr = tempString[tempString.length-1].trim();
@@ -1193,6 +1193,9 @@ public class ReactionModelGenerator {
 						System.err.println("Please include a 'GenerateReactions: yes/no' line for seed mechanism "+name);
 						System.exit(0);
 					}
+					
+					String path = System.getProperty("jing.rxn.ReactionLibrary.pathName");
+					path += "/" + location;
 										   
 					if (numMechs==0) {
 						setSeedMechanism(new SeedMechanism(name, path, generate));
@@ -4114,7 +4117,10 @@ public class ReactionModelGenerator {
 			String name = tempString[tempString.length-1].trim();
 			line = ChemParser.readMeaningfulLine(reader);
 			tempString = line.split("Location: ");
-			String path = tempString[tempString.length-1].trim();
+			String location = tempString[tempString.length-1].trim();
+			
+			String path = System.getProperty("jing.rxn.ReactionLibrary.pathName");
+			path += "/" + location;
 			if (Ilib==0) {
 				setPrimaryReactionLibrary(new PrimaryReactionLibrary(name, path));
 				Ilib++; 	

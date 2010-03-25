@@ -121,18 +121,27 @@ public class RMG {
     
     public static void globalInitializeSystemProperties() {
     	Locale.setDefault(Locale.US);
-		String name= "RMG_database";
 		String workingDir = System.getenv("RMG");
 		 if (workingDir == null) {
 			 System.err.println("Undefined environment variable RMG.");
 			 System.exit(0);
 		 }
 		System.setProperty("RMG.workingDirectory", workingDir);
-		System.setProperty("jing.chem.ChemGraph.forbiddenStructureFile",workingDir + "/databases/" + name + "/forbiddenStructure/forbiddenStructure.txt");
-		System.setProperty("jing.chem.ThermoGAGroupLibrary.pathName",	workingDir + "/databases/" + name + "/thermo");
-		System.setProperty("jing.rxn.ReactionTemplateLibrary.pathName",	workingDir + "/databases/" + name + "/kinetics");
+		String database_name= "RMG_database";
+		String database_path = workingDir + "/databases/" + database_name;
+		setDatabasePaths(database_path);
     }
 
+	public static void setDatabasePaths(String database_path) {
+		// String database_path = workingDir + "/databases/" + name
+		System.setProperty("jing.chem.ChemGraph.forbiddenStructureFile", database_path +"/ForbiddenStructures.txt");
+		System.setProperty("jing.chem.ThermoGAGroupLibrary.pathName",    database_path +"/thermo_groups");
+		System.setProperty("jing.chem.ThermoReferenceLibrary.pathName",  database_path +"/thermo_libraries");
+		System.setProperty("jing.chem.FrequencyDatabase.pathName",       database_path +"/frequencies_groups");
+		System.setProperty("jing.rxn.ReactionTemplateLibrary.pathName",  database_path +"/kinetics_groups");
+		System.setProperty("jing.rxn.ReactionLibrary.pathName",          database_path +"/kinetics_libraries");
+    }
+	
 	public static void initializeSystemProperties(String inputfile) {
 		globalInitializeSystemProperties();
 		String workingDir = System.getProperty("RMG.workingDirectory");
@@ -279,20 +288,19 @@ public class RMG {
              BufferedReader reader = new BufferedReader(in);
              String line = ChemParser.readMeaningfulLine(reader);
 			 //line = ChemParser.readMeaningfulLine(reader);
-			 
+
              if (line.startsWith("Database")){
-               StringTokenizer st = new StringTokenizer(line);
-               String next = st.nextToken();
-               String name = st.nextToken().trim();
-               System.setProperty("jing.chem.ChemGraph.forbiddenStructureFile", workingDir + "/databases/"+name+"/forbiddenStructure/forbiddenStructure.txt");
-               System.setProperty("jing.chem.ThermoGAGroupLibrary.pathName", workingDir + "/databases/" + name+"/thermo");
-               System.setProperty("jing.rxn.ReactionTemplateLibrary.pathName", workingDir + "/databases/" + name+"/kinetics");
-               System.setProperty("jing.rxn.ReactionLibrary.pathName",workingDir + "/databases/" + name + "/kinetics/reactionLibrary");
-             }
-  }
-  catch (IOException e) {
-     System.err.println("Error in read in reaction system initialization file!");
-}
+				 StringTokenizer st = new StringTokenizer(line);
+				 String next = st.nextToken();
+				 String database_name = st.nextToken().trim();
+				 
+				 String database_path = workingDir + "/databases/" + database_name;
+				 setDatabasePaths(database_path);
+			 }
+	}
+	catch (IOException e) {
+		System.err.println("Error in read in reaction system initialization file!");
+	}
   }
 
 	

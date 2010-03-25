@@ -161,7 +161,6 @@ public class ThermoGAGroupLibrary {
         String rDictionary = directory + "Radical_Dictionary.txt";
         String rTree = directory + "Radical_Tree.txt";
         String rLibrary = directory + "Radical_Library.txt";
-        //String ring = directory + "Ring_Corrections.txt";
         String ringDictionary = directory + "Ring_Dictionary.txt";
         String ringTree = directory + "Ring_Tree.txt";
         String ringLibrary = directory + "Ring_Library.txt";

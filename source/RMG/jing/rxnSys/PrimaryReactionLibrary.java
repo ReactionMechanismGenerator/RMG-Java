@@ -58,30 +58,29 @@ public class PrimaryReactionLibrary {
     
     // Constructors
     
-    public  PrimaryReactionLibrary(String p_libraryName, String p_directoryName) throws IOException {
+    public  PrimaryReactionLibrary(String p_libraryName, String p_directoryPath) throws IOException {
         name = p_libraryName;
-        String dir = System.getProperty("RMG.workingDirectory");
-        if (dir==null || p_directoryName == null) throw new NullPointerException("PrimaryReactionLibrary file name");
+
+        if ( p_directoryPath == null) throw new NullPointerException("PrimaryReactionLibrary directory path");
         try {
-        	read(dir+"/databases/"+p_directoryName);
+        	read(p_directoryPath);
         }
         catch (IOException e) {
-        	throw new IOException("error in read primary library: " + name + '\n' + e.getMessage());
+        	throw new IOException("Error reading Primary Reaction Library: " + name + '\n' + e.getMessage());
         }
     }
     public  PrimaryReactionLibrary() {
     }
     
-    public void appendPrimaryReactionLibrary(String new_p_libraryName, String new_p_directoryName) throws IOException {
+    public void appendPrimaryReactionLibrary(String new_p_libraryName, String p_directoryPath) throws IOException {
     	// Appends the current PRLib with an additional one, allowing the user
     	// to combine separate PRLibs easily.  GJB 10/05.
-    	String dir = System.getProperty("RMG.workingDirectory");
      	setName(name+"/"+new_p_libraryName);
     	try {
-    		read(dir+"/databases/"+new_p_directoryName);	
+    		read(p_directoryPath);	
     	}
         catch (IOException e) {
-        	throw new IOException("error in read primary library: " + new_p_libraryName + '\n' + e.getMessage());
+        	throw new IOException("Error reading Primary Reaction Library: " + new_p_libraryName + '\n' + e.getMessage());
         }
     }
     
