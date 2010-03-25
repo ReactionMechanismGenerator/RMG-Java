@@ -848,13 +848,13 @@ public class GUI extends JPanel implements ActionListener {
     	//	Populate the aTolPanel subpanel
     	JLabel aToleranceLabel = new JLabel("Select absolute tolerance");
     	aTolPanel.add(aToleranceLabel);
-    	aToleranceLabel.setToolTipText("Suggested value = 1E-12");
+    	aToleranceLabel.setToolTipText("Suggested value = 1E-15");
     	
     	aTolPanel.add(aTolerance = new JTextField());
     	aTolerance.setPreferredSize(new Dimension(100,25));
         aTolerance.addActionListener(this);
         aTolerance.setHorizontalAlignment(JTextField.CENTER);
-        aTolerance.setText("1E-12");
+        aTolerance.setText("1E-15");
     	
     	//	Create the DS subpanel: rTolPanel
         JPanel rTolPanel = new JPanel();
@@ -863,13 +863,13 @@ public class GUI extends JPanel implements ActionListener {
         //	Populate the rTolPanel subpanel
         JLabel rToleranceLabel = new JLabel("Select relative tolerance");
         rTolPanel.add(rToleranceLabel);
-        rToleranceLabel.setToolTipText("Suggested value = 1E-3");
+        rToleranceLabel.setToolTipText("Suggested value = 1E-6");
     	
         rTolPanel.add(rTolerance = new JTextField());
     	rTolerance.setPreferredSize(new Dimension(100,25));
         rTolerance.addActionListener(this);
         rTolerance.setHorizontalAlignment(JTextField.CENTER);
-        rTolerance.setText("1E-3");
+        rTolerance.setText("1E-6");
     	
         //	Create the DS subpanel: interConv
         JPanel interConv = new JPanel();
