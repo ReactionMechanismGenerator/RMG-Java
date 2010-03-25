@@ -4092,8 +4092,14 @@ public class ReactionModelGenerator {
 
     public void pruneReactionModel() {
 	HashSet prunableSpecies = new HashSet();
+	//check whether all the reaction systems reached target conversion/time
+	boolean allReachedTarget = true;
+	for (Integer i = 0; i < reactionSystemList.size(); i++) {
+	    JDAS ds = (JDAS)((ReactionSystem) reactionSystemList.get(i)).getDynamicSimulator();
+	    if (!ds.targetReached) allReachedTarget = false;
+	}
 	JDAS ds0 = (JDAS)((ReactionSystem) reactionSystemList.get(0)).getDynamicSimulator(); //get the first reactionSystem dynamic simulator
-	if (ds0.autoflag && edgeTol>0){//prune the reaction model if AUTO is being used and edgeTol is non-zero (and positive, obviously)
+	if (ds0.autoflag && allReachedTarget && edgeTol>0){//prune the reaction model if AUTO is being used, and all reaction systems have reached target time/conversion, and edgeTol is non-zero (and positive, obviously)
 	    Iterator iter = ds0.edgeID.keySet().iterator();//determine the maximum edge flux ratio for each edge species
 	    while(iter.hasNext()){
 		Species spe = (Species)iter.next();

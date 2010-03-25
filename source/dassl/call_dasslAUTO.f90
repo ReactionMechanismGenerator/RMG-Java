@@ -472,9 +472,11 @@
       
       write(16,*) Y_OUTPT(nstate)
       
-      !for autoflag cases, display the final time integrated to,
+      !for autoflag cases, display the edgeflag (if < 0, the ODE solver did not reach the target time/conversion),
+      !, the final time integrated to,
       !along with pruning information
       IF (AUTOFLAG .EQ. 1) THEN
+	  WRITE(16,*) EDGEFLAG
 	  WRITE(16,*) TIME
 	  DO I=1, ESPECIES
 	      WRITE(16,*) MAXRATIO(I)

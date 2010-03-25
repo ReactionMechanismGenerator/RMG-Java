@@ -408,6 +408,14 @@ public class JDASSL extends JDAS {
 		if (autoflag){
 		    maxEdgeFluxRatio = new double[edgeID.size()];
 		    line=br.readLine();//read volume; (this is actually in the output even if AUTO is off, but is not used)
+		    line=br.readLine();//read the edgeflag
+		    Integer edgeflag = Integer.parseInt(line.trim());
+		    if (edgeflag < 0){//if the edgeflag is negative, the ODE solver terminated by reaching the target time/concentration
+			targetReached = true;
+		    }
+		    else{
+			targetReached = false;
+		    }
 		    line=br.readLine();//read the time integrated to
 		    double finalTime = Double.parseDouble(line.trim());
 		    System.out.println("ODE solver integrated to "+ finalTime+" sec.");

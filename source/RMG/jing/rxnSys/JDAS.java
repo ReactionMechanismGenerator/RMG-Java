@@ -104,6 +104,7 @@ public abstract class JDAS implements DAESolver {
 	protected double termTol;
 	protected double coreTol;
 	protected static boolean nonnegative = false;
+	protected boolean targetReached;
 
 	
 	protected JDAS() {
