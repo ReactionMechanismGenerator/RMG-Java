@@ -21,17 +21,17 @@ PROGRAM CALL_DASPKAUTO
       INCLUDE 'reaction.fh'
 
 
-      INTEGER INFO(30), LRW, LIW, I, J, IDID, NSTEPS, IMPSPECIES, numiter, & !gmagoon 6/11/09: fixed comma issue
+      INTEGER INFO(30), LRW, LIW, I, J, IDID, NSTEPS, IMPSPECIES, numiter, & 
      &     AUTOFLAG, ESPECIES, EREACTIONSIZE, SENSFLAG
       DOUBLE PRECISION Y(NEQMAX), YPRIME(NEQMAX), T, TOUT, RTOL, ATOL, &
-     &     THERMO(SPMAX), TARGETCONC(50), THRESH
+     &     THERMO(SPMAX), TARGETCONC(50), THRESH, CORETHRESH
      ! 6/26/08 gmagoon:make auto arrays allocatable and double
      ! precision for KVEC
      INTEGER, DIMENSION(:), ALLOCATABLE :: NEREAC,NEPROD
      INTEGER, DIMENSION(:,:), ALLOCATABLE :: IDEREAC, IDEPROD
      DOUBLE PRECISION, DIMENSION(:), ALLOCATABLE :: KVEC
 
-      IDID = 0 !gmagoon 1/25/10: initialize IDID to zero (no meaning in terms of DASSL idid outputs) to avoid a situation where dassl is never called (and hence IDID is never assigned) due to edge exceeding flux at t=0      
+      IDID = 0 !gmagoon 1/25/10: initialize IDID to zero (no meaning in terms of DASPK idid outputs) to avoid a situation where dassl is never called (and hence IDID is never assigned) due to edge exceeding flux at t=0
       OPEN (UNIT=12, FILE = 'SolverInput.dat', STATUS = 'OLD')
 
  101  Format(E24.15)
@@ -112,9 +112,12 @@ PROGRAM CALL_DASPKAUTO
 ! 6/26/08 gmagoon: if autoFlag = 1, read in additional information 
 ! specific to automatic time stepping
 	IF (AUTOFLAG .EQ. 1) THEN
-		! read the threshhold, corresponding to the value
-		! specified in condition.txt input file
-		READ(12,*) THRESH
+		! read the threshhold, corresponding to the value of
+		! termination tolerance specified in condition.txt input file
+	        !CORETHRESH is the threshhold for moving something from edge to core,
+	        !whereas THRESH is the threshhold for terminating the run before the end
+	        !THRESH >= CORETHRESH
+		READ(12,*) THRESH, CORETHRESH
 		! read the number of edge species and edge reactions
 		READ(12,*) ESPECIES, EREACTIONSIZE
 		! allocate memory for arrays
@@ -250,7 +253,7 @@ PROGRAM CALL_DASPKAUTO
       else
          CALL SOLVEODE(Y, YPRIME, T, TOUT, INFO, RTOL, ATOL, IDID, &
      &        THERMO, IMPSPECIES, TARGETCONC(1),AUTOFLAG, &
-     &     THRESH,ESPECIES,EREACTIONSIZE,NEREAC,NEPROD,IDEREAC, &
+     &     THRESH,CORETHRESH,ESPECIES,EREACTIONSIZE,NEREAC,NEPROD,IDEREAC, &
      &     IDEPROD,KVEC)
       end if
 
@@ -279,7 +282,7 @@ PROGRAM CALL_DASPKAUTO
 
       SUBROUTINE SOLVEODE(Y, YPRIME, Time, TOUT, INFO, RTOL, ATOL,&
      &     IDID, THERMO, IMPSPECIES, TARGETCONC, AUTOFLAG, &
-     &     THRESH,ESPECIES,EREACTIONSIZE,NEREAC,NEPROD,IDEREAC, &
+     &     THRESH,CORETHRESH,ESPECIES,EREACTIONSIZE,NEREAC,NEPROD,IDEREAC, &
      &     IDEPROD,KVEC)
 
       IMPLICIT NONE
@@ -290,14 +293,17 @@ PROGRAM CALL_DASPKAUTO
 
       INTEGER  INFO(30),LIW,LRW, IWORK(41+2*NSTATE), SENPAR(1), IPAR(1),&
      &     IDID, ires, I, J, iter, IMPSPECIES, AUTOFLAG, ESPECIES, &
-	& EREACTIONSIZE, EDGEFLAG
+     &      EREACTIONSIZE, EDGEFLAG, ITER_OUTPT, &
+     &      IWORK_OUTPT(41 + 2*NSTATE), COPYQ
       INTEGER NEREAC(EREACTIONSIZE),NEPROD(EREACTIONSIZE)
       INTEGER IDEREAC(EREACTIONSIZE,3), IDEPROD(EREACTIONSIZE,3)
-      DOUBLE PRECISION KVEC(EREACTIONSIZE)
+      DOUBLE PRECISION KVEC(EREACTIONSIZE),MAXRATIO(ESPECIES),HIGHESTRATIO
 
-      DOUBLE PRECISION Y(NEQ), YPRIME(NEQ), Time, TOUT, RTOL, ATOL, & !gmagoon 6/11/09: fixed space/comma issue
-    &     RWORK(51+9*NEQ+NSTATE**2), THERMO(SPMAX), TFINAL, & !gmagoon 6/11/09: fixed ampersand issue
-    &     TARGETCONC, THRESH
+      DOUBLE PRECISION Y(NEQ), YPRIME(NEQ), Time, TOUT, RTOL, ATOL, & 
+    &     RWORK(51+9*NEQ+NSTATE**2), THERMO(SPMAX), TFINAL, & 
+    &     TARGETCONC, THRESH, CORETHRESH,TARGETCONC, Y_OUTPT(NSTATE), &
+    &     YPRIME_OUTPT(NSTATE), TIME_OUTPT,  &
+    &     RWORK_OUTPT(51 + 9*NEQ + NSTATE**2)
 
       DOUBLE PRECISION RPAR(REACTIONSIZE+THIRDBODYREACTIONSIZE+ &
      &     TROEREACTIONSIZE+LINDEREACTIONSIZE+NSTATE-1), del(neq), CJ, &
@@ -306,7 +312,9 @@ PROGRAM CALL_DASPKAUTO
      &     CURRENTREACTIONFLUX(REACTIONSIZE+THIRDBODYREACTIONSIZE+ &
      &     TROEREACTIONSIZE+LINDEREACTIONSIZE), &
      &     PREVREACTIONFLUX(REACTIONSIZE+THIRDBODYREACTIONSIZE+&
-     &     TROEREACTIONSIZE+LINDEREACTIONSIZE), PREVTIME
+     &     TROEREACTIONSIZE+LINDEREACTIONSIZE), PREVTIME, &
+     &     TOTALREACTIONFLUX_OUTPT(REACTIONSIZE+THIRDBODYREACTIONSIZE+ &
+     &     TROEREACTIONSIZE+LINDEREACTIONSIZE)
 
 
       EXTERNAL RES, JAC, PSOL, G_RES
@@ -389,10 +397,38 @@ PROGRAM CALL_DASPKAUTO
 ! determine EDGEFLAG (-1 if flux threshhold has not been met,
 ! positive integer otherwise)
 	EDGEFLAG = -1
+	!initialize MAXRATIO to a vector of all zeroes;
+	!this variable will track the maxiumum
+	!of rate(i)/Rchar for each edge species i, with respect to time
+	MAXRATIO = 0
+	!initialize HIGHESTRATIO to 0; this variable (a scalar)
+	!tracks the maximum of maxratio; when a new maximum is
+	!attained, the present time step creating the new maximum
+	!will be stored for output from the ODE solver to the Java code
+	HIGHESTRATIO = 0
 	IF (AUTOFLAG.eq.1) THEN
 		CALL EDGEFLUX(EDGEFLAG, Y, YPRIME,THRESH,ESPECIES, &
      &     EREACTIONSIZE,NEREAC,NEPROD,IDEREAC,IDEPROD,KVEC, &
-     &     NSTATE)
+     &     MAXRATIO, NSTATE)
+		!update HIGHESTRATIO and store relevant variables that will be printed
+		!later; note that we cannot exit the do loop once the IF statement is
+		!caught because, even though output variables will be stored properly,
+		!the HIGHESTRATIO will not necessarily have the highest value
+		!note: TOTALREACTIONFLUX apparently tracks integrated flux, not
+		!instantaneous flux, so setting value to be zero here should be OK...
+		!in any case, the result doesn't seem to be used by the Java code
+		DO I=1, ESPECIES
+		    IF (MAXRATIO(I) .GT. HIGHESTRATIO) THEN
+			HIGHESTRATIO = MAXRATIO(I)
+			ITER_OUTPT=0
+			TIME_OUTPT=TIME
+			Y_OUTPT = Y
+			YPRIME_OUTPT = YPRIME
+			IWORK_OUTPT = IWORK
+			RWORK_OUTPT = RWORK
+			TOTALREACTIONFLUX_OUTPT = 0
+		    END IF
+		END DO
 	ENDIF
 
       iter =0
@@ -436,8 +472,28 @@ PROGRAM CALL_DASPKAUTO
 		IF (AUTOFLAG.eq.1) THEN
 			CALL EDGEFLUX(EDGEFLAG, Y, YPRIME,THRESH,ESPECIES, &
     		 &     EREACTIONSIZE,NEREAC,NEPROD,IDEREAC,IDEPROD,KVEC, &
-		 &     NSTATE)
-		ENDIF
+		 &     MAXRATIO, NSTATE)
+			!update HIGHESTRATIO and store relevant variables that will be printed
+			!later; note that we cannot exit the do loop once the IF statement is
+			!caught because, even though output variables will be stored properly,
+			!the HIGHESTRATIO will not necessarily have the highest value
+			COPYQ=0
+			DO I=1, ESPECIES
+			    IF (MAXRATIO(I) .GT. HIGHESTRATIO) THEN
+				HIGHESTRATIO = MAXRATIO(I)
+				COPYQ=1 !mark this ODE time step for copying into output variables
+			    END IF
+			END DO
+			IF (COPYQ .EQ. 1) THEN
+			    ITER_OUTPT=ITER
+			    TIME_OUTPT=TIME
+			    Y_OUTPT = Y
+			    YPRIME_OUTPT = YPRIME
+			    IWORK_OUTPT = IWORK
+			    RWORK_OUTPT = RWORK
+			    TOTALREACTIONFLUX_OUTPT = TOTALREACTIONFLUX
+			END IF
+		END IF
                
                go to 1
             END IF
@@ -476,22 +532,59 @@ PROGRAM CALL_DASPKAUTO
 		IF (AUTOFLAG.eq.1) THEN
 			CALL EDGEFLUX(EDGEFLAG, Y, YPRIME,THRESH,ESPECIES, &
     		 &     EREACTIONSIZE,NEREAC,NEPROD,IDEREAC,IDEPROD,KVEC, &
-		 &     NSTATE)
-		ENDIF
+		 &     MAXRATIO, NSTATE)
+		 	!update HIGHESTRATIO and store relevant variables that will be printed
+			!later; note that we cannot exit the do loop once the IF statement is
+			!caught because, even though output variables will be stored properly,
+			!the HIGHESTRATIO will not necessarily have the highest value
+			COPYQ=0
+			DO I=1, ESPECIES
+			    IF (MAXRATIO(I) .GT. HIGHESTRATIO) THEN
+				HIGHESTRATIO = MAXRATIO(I)
+				COPYQ=1 !mark this ODE time step for copying into output variables
+			    END IF
+			END DO
+			IF (COPYQ .EQ. 1) THEN
+			    ITER_OUTPT=ITER
+			    TIME_OUTPT=TIME
+			    Y_OUTPT = Y
+			    YPRIME_OUTPT = YPRIME
+			    IWORK_OUTPT = IWORK
+			    RWORK_OUTPT = RWORK
+			    TOTALREACTIONFLUX_OUTPT = TOTALREACTIONFLUX
+			END IF
+		END IF
                go to 2
             END IF
          END IF
       END IF
 
+      !if we are not using AUTOFLAG, we just want to output the final times;
+      !another case where we want to use the final time is if the highest ratio
+      !never reaches CORETHRESH...if this is the case, we are "converged",
+      !as we have reached the target time/conversion without exceeding the
+      !core inclusion threshhold, and we therefore want to report the
+      !final state back to the Java code so it will recognize that the
+      !target time/conversion has been reached
+      IF ((AUTOFLAG .NE. 1) .OR. (HIGHESTRATIO .LT. CORETHRESH)) THEN
+	ITER_OUTPT=ITER
+	TIME_OUTPT=TIME
+	Y_OUTPT = Y
+	YPRIME_OUTPT = YPRIME
+	IWORK_OUTPT = IWORK
+	RWORK_OUTPT = RWORK
+	TOTALREACTIONFLUX_OUTPT = TOTALREACTIONFLUX
+      END IF
+
       OPEN(UNIT=15, FILE='SolverOutput.dat')
 
  100  Format(E24.15)
-      write(15,*) iter
+      write(15,*) ITER_OUTPT
       WRITE(15,*) (NSTATE-1)*(nparam+1)      
-      WRITE(15,*) TIME
+      WRITE(15,*) TIME_OUTPT
       do i=0, nparam
          DO j=1,NSTATE
-            WRITE(15,*) Y(I*nstate+j)/Y(NSTATE)
+            WRITE(15,*) Y_OUTPT(I*nstate+j)/Y_OUTPT(NSTATE)
          END DO
       end do
       
@@ -502,33 +595,49 @@ PROGRAM CALL_DASPKAUTO
       do i=0, nparam
          DO j=1,NSTATE
             !WRITE(15,*) Yprime(I*nstate+j)/Y(NSTATE)
-            WRITE(15,*) (Y(NSTATE)*YPRIME(I*nstate+j)-Y(I*nstate+j)*YPRIME(NSTATE))/(Y(NSTATE)**2)
+            WRITE(15,*) (Y_OUTPT(NSTATE)*YPRIME_OUTPT(I*nstate+j)- &
+	     &           Y_OUTPT(I*nstate+j)*YPRIME_OUTPT(NSTATE)) &
+	     &           /(Y_OUTPT(NSTATE)**2)
          END DO
       end do
 
       DO I=1,REACTIONSIZE+THIRDBODYREACTIONSIZE+TROEREACTIONSIZE+LINDEREACTIONSIZE
-         WRITE(15,*) TOTALREACTIONFLUX(I)
+         WRITE(15,*) TOTALREACTIONFLUX_OUTPT(I)
       END DO
       
 
       DO I=1,30
-         WRITE(15,*) INFO(I)
+         WRITE(15,*) INFO(I) !gmagoon 032510: I am assuming this is not modified by ODE solver and that we don't need to keep track of intermediate values this may take on (like we do with Y, YPRIME, etc.)
       END DO
 
-      write(15,100) y(NSTATE)
+      write(15,100) Y_OUTPT(NSTATE)
+
+      !for autoflag cases, display the edgeflag (if < 0, the ODE solver did not reach the target time/conversion),
+      !, the final time integrated to,
+      !along with pruning information
+      IF (AUTOFLAG .EQ. 1) THEN
+	  WRITE(16,*) EDGEFLAG
+	  WRITE(16,*) TIME
+	  DO I=1, ESPECIES
+	      WRITE(16,*) MAXRATIO(I)
+	  END DO
+      END IF
+
       CLOSE(15)
 
-
+!gmagoon 032510: this information should only be used in non-auto cases,
+!but I have modified to use OUTPT variables (which should be the same as
+!"regular" variables in non-auto cases) for consistency
 !     write formatted restart data to the file
       open (unit=16, file='variables.dat', form='unformatted')
       write(16) idid
-      write(16) time
+      write(16) TIME_OUTPT
       write(16) nstate
       write(16) nparam
       write(16) neq
       do i=1, neq
-         write(16) y(i)
-         write(16) yprime(i)
+         write(16) Y_OUTPT(i)
+         write(16) YPRIME_OUTPT(i)
       end do
       write(16) rtol, atol
       do i=1,30
@@ -581,14 +690,14 @@ PROGRAM CALL_DASPKAUTO
       OPEN(UNIT=17, FILE='RWORK.DAT', FORM='unformatted')
       write(17) lrw
       do i=1, lrw
-         WRITE(17) RWORK(I)
+         WRITE(17) RWORK_OUTPT(I)
       end do
       CLOSE(17)
 
       OPEN(UNIT=18, FILE='IWORK.DAT', FORM='unformatted')
       write(18) liw
       do i=1,liw
-         WRITE(18) IWORK(I)
+         WRITE(18) IWORK_OUTPT(I)
       end do
       CLOSE(18)
 
@@ -783,14 +892,14 @@ PROGRAM CALL_DASPKAUTO
 ! EDGEFLUX also calls RCHAR
 SUBROUTINE EDGEFLUX(EDGEFLAG, Y, YPRIME,THRESH,ESPECIES, &
     		 &     EREACTIONSIZE,NEREAC,NEPROD,IDEREAC,IDEPROD, &
-		&      KVEC, NSTATE)
+		&      KVEC, MAXRATIO, NSTATE)
 	IMPLICIT NONE
 	INTEGER EDGEFLAG, ESPECIES, EREACTIONSIZE, NSTATE, I, J, K
 	DOUBLE PRECISION THRESH, FLUXRC, RFLUX, Y(NSTATE), YPRIME(NSTATE)
 	DOUBLE PRECISION, DIMENSION(:), ALLOCATABLE :: RATE
 	INTEGER NEREAC(EREACTIONSIZE),NEPROD(EREACTIONSIZE)
         INTEGER IDEREAC(EREACTIONSIZE,3), IDEPROD(EREACTIONSIZE,3)
-        DOUBLE PRECISION KVEC(EREACTIONSIZE)
+        DOUBLE PRECISION KVEC(EREACTIONSIZE),RATIO, MAXRATIO(ESPECIES)
 	
 	ALLOCATE(RATE(ESPECIES))
 	! initialize array to have all zeroes
@@ -803,7 +912,7 @@ SUBROUTINE EDGEFLUX(EDGEFLAG, Y, YPRIME,THRESH,ESPECIES, &
 
 	! calculate the vector of fluxes for each species
 	! by summing contributions from each reaction
-	ILoOP: DO I=1, EREACTIONSIZE
+	ILOOP: DO I=1, EREACTIONSIZE
 	      ! calculate reaction flux by multiplying k
 		! by concentration(s)
 		RFLUX = KVEC(I)
@@ -818,17 +927,18 @@ SUBROUTINE EDGEFLUX(EDGEFLAG, Y, YPRIME,THRESH,ESPECIES, &
 
 
 	! check if any of the edge species fluxes exceed
-	! the threshhold; if so, set edgeflag equal to
-	! the index of the first species found and exit
-	! the loop
-	! 5/7/08 gmagoon: added write statements for debugging purposes
-!	OPEN (UNIT=20, FILE = 'debug.txt')
-!	WRITE(20,*) FLUXRC 
+	! the threshhold and update the MAXRATIO vector
 	FLOOP: DO I=1, ESPECIES
-!		WRITE(20,*) I, RATE(I)
-		IF(RATE(I) .GE. THRESH*FLUXRC) THEN
+		RATIO = RATE(I)/FLUXRC
+		!if we reach the termination tolerance,
+		!set EDGEFLAG to a positive value
+		!(in particular, the species ID)
+		IF(RATIO .GE. THRESH) THEN
 		   EDGEFLAG = I
-		   EXIT FLOOP
+		END IF
+		!update the MAXRATIO vector
+		IF(RATIO .GT. MAXRATIO(I)) THEN
+		    MAXRATIO(I) = RATIO
 		END IF
 	END DO FLOOP
 	DEALLOCATE(RATE)

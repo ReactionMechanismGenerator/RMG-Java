@@ -73,7 +73,7 @@ public class JDASPK extends JDAS {
     
     //6/25/08 gmagoon: defined alternate constructor for use with sensitivity analysis (lacks autoflag and validityTester parameters)
     //6/25/08 gmagoon: set autoflag to be false with this constructor (not used for sensitivity analysis)
-    //3/22/10 gmagoon: set termTol and coreTol =null with this constructor; it should not be used
+    //3/22/10 gmagoon: set termTol and coreTol =null with this constructor; these variables should not be used
 	public JDASPK(double p_rtol, double p_atol, int p_parameterInfor, InitialStatus p_initialStatus, int p_index) {
         super(p_rtol, p_atol, p_parameterInfor, p_initialStatus, p_index, null, 
 			false, null, null);
@@ -424,6 +424,26 @@ public class JDASPK extends JDAS {
         		line = br.readLine();
         		info[i] = Integer.parseInt(line.trim());
         	}
+		//for autoflag cases, there will be additional information which may be used for pruning
+		if (autoflag){
+		    maxEdgeFluxRatio = new double[edgeID.size()];
+		    line=br.readLine();//read volume; (this is actually in the output even if AUTO is off, but is not used)
+		    line=br.readLine();//read the edgeflag
+		    Integer edgeflag = Integer.parseInt(line.trim());
+		    if (edgeflag < 0){//if the edgeflag is negative, the ODE solver terminated by reaching the target time/concentration
+			targetReached = true;
+		    }
+		    else{
+			targetReached = false;
+		    }
+		    line=br.readLine();//read the time integrated to
+		    double finalTime = Double.parseDouble(line.trim());
+		    System.out.println("ODE solver integrated to "+ finalTime+" sec.");
+		    for (int i=0; i<edgeID.size(); i++){//read the maximum ratio (edge flux/Rchar) for each edge species; note that edgeID only contains species, not P-dep networks, so we will not be reading in all the output from DASSL...only the flux ratio to actual edge species (vs. P-dep network pseudospecies)
+			line=br.readLine();
+			maxEdgeFluxRatio[i] = Double.parseDouble(line.trim());
+		    }
+		}
         	
         }
         catch (IOException e) {
