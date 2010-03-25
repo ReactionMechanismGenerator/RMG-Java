@@ -1923,7 +1923,10 @@ public class GUI extends JPanel implements ActionListener {
 		        //	Path of Database
 		        st = new StringTokenizer(line);
 		        tempString = st.nextToken();	// Skip over "Database:"
-		        databasePath.setText(st.nextToken());
+				tempString = st.nextToken();   // tempString now contains the database directory name
+				String joinedPath = new File(System.getProperty("RMG.workingDirectory"), "databases").toString(); // find the folder containing databases
+				joinedPath = new File(joinedPath, tempString).toString(); // find the path to the database specified
+		        databasePath.setText(joinedPath);  // set the full path, not the shorthand (so that other fields can find it)
 	        }
 	        
 	        else if (line.startsWith("PrimaryThermoLibrary")) {
@@ -2393,6 +2396,7 @@ public class GUI extends JPanel implements ActionListener {
              		tempStringVector = line.split("Location: ");
              		String path = tempStringVector[tempStringVector.length-1].trim();
              		PRLVector smEntry = new PRLVector(smCounter-1,name,path);
+					// need to read in "GenerateReactions:" line
 					tmodelSM.updatePRL(smEntry);
 					line = ChemParser.readMeaningfulLine(reader);
              	}
