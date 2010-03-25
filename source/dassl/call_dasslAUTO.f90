@@ -115,8 +115,8 @@
 ! 4/24/08 gmagoon: if autoFlag = 1, read in additional information 
 ! specific to automatic time stepping
 	IF (AUTOFLAG .EQ. 1) THEN
-		! read the threshhold, corresponding to the value
-		! specified in condition.txt input file
+		! read the threshhold, corresponding to the value of
+		! termination tolerance specified in condition.txt input file
 	        !CORETHRESH is the threshhold for moving something from edge to core,
 	        !whereas THRESH is the threshhold for terminating the run before the end
 	        !THRESH >= CORETHRESH
