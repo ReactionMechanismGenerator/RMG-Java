@@ -90,7 +90,6 @@ public class SeedMechanism {
     	String dir = System.getProperty("RMG.workingDirectory");
      	if (p_generateReactions)
 			setGenerateReactions(p_generateReactions);
-
 		setName(name + "/" + new_mechName);
     	try {
     		read(dir + "/databases/" + new_directoryName);	
@@ -98,9 +97,7 @@ public class SeedMechanism {
         catch (IOException e) {
         	throw new IOException("Error in reading Seed Mechanism: " + new_mechName + '\n' + e.getMessage());
         }
-        //#]
     }
-    
     
     public LinkedHashSet getSpeciesSet() {
         return new LinkedHashSet(speciesSet.values());

@@ -58,9 +58,7 @@ public class PrimaryReactionLibrary {
     
     // Constructors
     
-    //## operation PrimaryReactionLibrary(String,String) 
     public  PrimaryReactionLibrary(String p_libraryName, String p_directoryName) throws IOException {
-        //#[ operation PrimaryReactionLibrary(String,String) 
         name = p_libraryName;
         String dir = System.getProperty("RMG.workingDirectory");
         if (dir==null || p_directoryName == null) throw new NullPointerException("PrimaryReactionLibrary file name");
@@ -70,15 +68,11 @@ public class PrimaryReactionLibrary {
         catch (IOException e) {
         	throw new IOException("error in read primary library: " + name + '\n' + e.getMessage());
         }
-        //#]
     }
     public  PrimaryReactionLibrary() {
     }
     
-    //## operation appendPrimaryReactionLibrary(String, String) 
     public void appendPrimaryReactionLibrary(String new_p_libraryName, String new_p_directoryName) throws IOException {
-    	//#[ operation appendPrimaryReactionLibrary(String, String) 
-
     	// Appends the current PRLib with an additional one, allowing the user
     	// to combine separate PRLibs easily.  GJB 10/05.
     	String dir = System.getProperty("RMG.workingDirectory");
@@ -89,7 +83,6 @@ public class PrimaryReactionLibrary {
         catch (IOException e) {
         	throw new IOException("error in read primary library: " + new_p_libraryName + '\n' + e.getMessage());
         }
-        //#]
     }
     
     
@@ -100,9 +93,7 @@ public class PrimaryReactionLibrary {
         //#]
     }
     
-    //## operation read(String) 
     public void read(String p_directoryName) throws IOException {
-        //#[ operation read(String) 
         try {
         	if (!p_directoryName.endsWith("/")) p_directoryName = p_directoryName + "/";
         	
@@ -121,16 +112,9 @@ public class PrimaryReactionLibrary {
         catch (Exception e) {
         	throw new IOException("Can't read primary reaction library.\n" + e.getMessage());
         }
-        
-        
-        
-        
-        //#]
     }
     
-    //## operation readReactions(String) 
     public void readReactions(String p_reactionFileName) throws IOException {
-        //#[ operation readReactions(String) 
         try {
         	FileReader in = new FileReader(p_reactionFileName);
         	BufferedReader data = new BufferedReader(in);
@@ -216,7 +200,6 @@ public class PrimaryReactionLibrary {
 						currentPRLReactions.add(reverse);
 	        		}
         		}
-        		
         		line = ChemParser.readMeaningfulLine(data);
         	}
         	   
@@ -234,16 +217,9 @@ public class PrimaryReactionLibrary {
         	System.out.println("RMG did not find/read non pressure-dependent reactions (reaction.txt) " +
         			"in the Primary Reaction Library: " + name + "\n" + e.getMessage());
         }
-        
-        
-        
-        
-        //#]
     }
-    
-    //## operation readSpecies(String) 
+
     public void readSpecies(String p_speciesFileName) throws IOException {
-        //#[ operation readSpecies(String) 
         try {
         	FileReader in = new FileReader(p_speciesFileName);
         	BufferedReader data = new BufferedReader(in);
@@ -289,16 +265,9 @@ public class PrimaryReactionLibrary {
         	throw new IOException("RMG did not find/read species (species.txt) " +
         			"in the Primary Reaction Library: " + name + "\n" + e.getMessage());
         }
-        
-        
-        
-        
-        //#]
     }
-    
-    //## operation readThirdBodyReactions(String) 
+
     public void readThirdBodyReactions(String p_thirdBodyReactionFileName) throws IOException {
-        //#[ operation readThirdBodyReactions(String) 
         try {
         	FileReader in = new FileReader(p_thirdBodyReactionFileName);
         	BufferedReader data = new BufferedReader(in);
@@ -387,11 +356,6 @@ public class PrimaryReactionLibrary {
         	System.out.println("RMG did not find/read third body reactions (3rdBodyReactions.txt) " +
         			"in the Primary Reaction Library: " + name + "\n" + e.getMessage());
         }
-        
-        
-        
-        
-        //#]
     }
     
 	   //## operation readTroeReactions(String) 
@@ -516,11 +480,6 @@ public class PrimaryReactionLibrary {
         	System.out.println("RMG did not find/read troe reactions (troeReactions.txt) " +
         			"in the Primary Reaction Library: " + name + "\n" + e.getMessage());
         }
-        
-        
-        
-        
-        //#]
     }
     
     public void readLindemannReactions(String p_lindemannReactionFileName) throws IOException {
@@ -616,11 +575,8 @@ public class PrimaryReactionLibrary {
         }
     }
 	
-    //## operation size() 
     public static int size() {
-        //#[ operation size() 
         return reactionSet.size();
-        //#]
     }
     
     public String getName() {

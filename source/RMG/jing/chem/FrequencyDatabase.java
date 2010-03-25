@@ -47,7 +47,6 @@ public class FrequencyDatabase {
 
     // Constructors
 
-    //## operation FrequencyDatabase()
     private  FrequencyDatabase() {
         freqTree = new HierarchyTree();
         freqDictionary = new HashMap();
@@ -71,9 +70,6 @@ public class FrequencyDatabase {
 
         read(gDictionary,gTree);
 
-
-
-        //#]
     }
 
 
