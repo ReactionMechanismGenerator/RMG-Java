@@ -72,35 +72,30 @@ public class SeedMechanism {
 
     // Constructors
     
-    public  SeedMechanism(String p_mechName, String p_directoryName, boolean p_generateReactions) throws IOException {
+    public  SeedMechanism(String p_mechName, String p_directoryPath, boolean p_generateReactions) throws IOException {
     	name = p_mechName;
 		generateReactions = p_generateReactions;
-        String dir = System.getProperty("RMG.workingDirectory");
-        if (dir==null || p_directoryName == null) throw new NullPointerException("RMG " +
-        		"does not recognize Seed Mechanism file name");
+        if ( p_directoryPath == null) throw new NullPointerException("does not recognize Seed Mechanism directory path");
         try {
-        	read(dir+"/databases/"+p_directoryName);
+        	read(p_directoryPath);
         }
         catch (IOException e) {
         	throw new IOException("Error in reading Seed Mechanism: " + name + '\n' + e.getMessage());
         }
     }
     
-    public void appendSeedMechanism(String new_mechName, String new_directoryName, boolean p_generateReactions) throws IOException {
+    public void appendSeedMechanism(String new_mechName, String new_directoryPath, boolean p_generateReactions) throws IOException {
     	String dir = System.getProperty("RMG.workingDirectory");
      	if (p_generateReactions)
 			setGenerateReactions(p_generateReactions);
-
 		setName(name + "/" + new_mechName);
     	try {
-    		read(dir + "/databases/" + new_directoryName);	
+    		read(new_directoryPath);	
     	}
         catch (IOException e) {
         	throw new IOException("Error in reading Seed Mechanism: " + new_mechName + '\n' + e.getMessage());
         }
-        //#]
     }
-    
     
     public LinkedHashSet getSpeciesSet() {
         return new LinkedHashSet(speciesSet.values());

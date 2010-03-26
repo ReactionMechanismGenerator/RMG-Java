@@ -84,7 +84,8 @@ be used.
 Please see Section :ref:`editing thermo database` for details on editing the
 primary thermo library. In general, it is best to leave the PrimaryThermoLibrary
 set to its default value.  In particular, the thermodynamic properties for H and H2
-must be specified in one of the primary thermo libraries.
+must be specified in one of the primary thermo libraries as they cannot be estimated
+by Benson's method.
 
 In addition to the default library, RMG comes with the thermodynamic properties
 of the species in the GRI-Mech 3.0 mechanism [GRIMech3.0]_.  
@@ -92,8 +93,8 @@ of the species in the GRI-Mech 3.0 mechanism [GRIMech3.0]_.
 .. [GRIMech3.0] Gregory P. Smith, David M. Golden, Michael Frenklach, Nigel W. Moriarty, Boris Eiteneer, Mikhail Goldenberg, C. Thomas Bowman, Ronald K. Hanson, Soonho Song, William C. Gardiner, Jr., Vitali V. Lissianski, and Zhiwei Qin http://www.me.berkeley.edu/gri_mech/
 
 This library is located in the 
-:file:`$RMG/databases/RMG_database/thermo` directory.  All "Locations" for the
-PrimaryThermoLibrary field must be with respect to the :file:`$RMG/databases/RMG_database/thermo`
+:file:`$RMG/databases/RMG_database/thermo_libraries` directory.  All "Locations" for the
+PrimaryThermoLibrary field must be with respect to the :file:`$RMG/databases/RMG_database/thermo_libraries`
 directory.::
 
    PrimaryThermoLibrary:
@@ -526,7 +527,7 @@ Primary Reaction Library
 The next section of the :file:`condition.txt` file specifies which, if any, primary
 reaction libraries should be used.  When a reaction is specified in a primary reaction
 library, RMG will use these kinetics instead of the kinetics located in the 
-:file:`RMG_database/kinetics/RxnFamily/rateLibrary.txt` directory.
+:file:`RMG_database/kinetics_groups/<RxnFamily>/rateLibrary.txt` directory.
 
 Currently, the only primary reaction libraries
 included with RMG are: the Leeds' oxidation library and the GRI-Mech 3.0 mechanism
@@ -539,16 +540,19 @@ Leeds' oxidation library::
 
  PrimaryReactionLibrary:
  Name: nbutane 
- Location: RMG_database/primaryReactionLibrary/nbutane 
+ Location: nbutane 
  Name: Leeds 
- Location: RMG_database/SeedMechanisms/combustion_core/version5 
+ Location: combustion_core/version5 
  END 
 
 If a user wished to use the GRI-Mech 3.0 mechanism as a primary reaction library,
 the syntax is::
 
 	Name: GRI-Mech 3.0
-	Location: RMG_database/SeedMechanisms/GRI-Mech3.0
+	Location: GRI-Mech3.0
+
+The libraries are stored in :file:`$RMG/databases/RMG_database/kinetics_libraries/`
+and the `Location:` should be specified relative to this path.
 
 Please note that the keyword ``END`` must be placed at the end of the Primary
 Reaction Library section. Because the units for the Arrhenius parameters are
@@ -578,12 +582,15 @@ line, explained below.::
 
 	SeedMechanism:
 	Name: GRI-Mech 3.0
-	Location: RMG_database/SeedMechanisms/GRI-Mech3.0
+	Location: GRI-Mech3.0
 	GenerateReactions: yes
 	Name: Leeds 
-	Location: RMG_database/SeedMechanisms/combustion_core/version5 
+	Location: combustion_core/version5 
 	GenerateReactions: yes
 	END 
+
+The seed mechanisms are stored in :file:`$RMG/databases/RMG_database/kinetics_libraries/`
+and the `Location:` should be specified relative to this path.
 
 There is a new required line in seed mechanisms that controls how RMG adds the
 seed species and reactions to the model core. If set to yes, RMG will use its

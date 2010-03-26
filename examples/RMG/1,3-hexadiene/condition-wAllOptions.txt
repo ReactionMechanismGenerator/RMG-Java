@@ -1,8 +1,8 @@
 // This condition.txt file contains every option available to RMG.
 // The fields that have been commented out are not required.
-// 30-Jul-2009 MRH
 
-// The folder for the "Database" is in reference to $RMG/databases
+
+// The folder for the "Database" is relative to $RMG/databases/
 Database: RMG_database
 
 //MaxCarbonNumberPerSpecies: 10
@@ -14,7 +14,7 @@ Database: RMG_database
 
 // There is no limit to the number of PTLs a user may supply.
 // The "Name" of a PTL can have as many tokens as the user prefers.
-// The "Location" of a PTL is in reference to the "Database"/thermo directory
+// The "Location" of a PTL is relative to $RMG/databases/<database>/thermo_libraries/
 // *** At least one PTL should be supplied and it should contain data for H and H2,
 //	since Benson's group additivity cannot handle these ***
 PrimaryThermoLibrary:
@@ -126,23 +126,23 @@ Rtol: 1e-8
 
 // There is no limit to the number of PRLs a user may supply.
 // The "Name" of a PRL can have as many tokens as the user prefers.
-// The "Location" of a PRL is in reference to the $RMG/databases directory
+// The "Location" of a PRL is relative to $RMG/databases/<database>/kinetics_libraries/
 PrimaryReactionLibrary:
 //Name: RMG-example
-//Location: RMG_database/primaryReactionLibrary/Example
+//Location: Example
 END
 
 // There is no limit to the number of SMs a user may supply.
 // The "Name" of a SM can have as many tokens as the user prefers.
-// The "Location" of a SM is in reference to the $RMG/databases directory
+// The "Location" of a SM is relative to $RMG/databases/<database>/kinetics_libraries/
 // The "GenerateReactions" of a SM tells RMG whether or not to generate
 // reactions from its reaction families to add to the seed reactions
 SeedMechanism:
 //Name: Leeds
-//Location: RMG_database/SeedMechanisms/combustion_core/version5
+//Location: combustion_core/version5
 //GenerateReactions: yes
 //Name: GRIMech3.0
-//Location: RMG_database/SeedMechanisms/GRI-Mech3.0
+//Location: GRI-Mech3.0
 //GenerateReactions: yes
 END
 

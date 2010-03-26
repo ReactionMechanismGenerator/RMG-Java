@@ -24,7 +24,7 @@ ASCII file that can be edited to alter the information. This description applies
 to non-radical groups. There are other tree/library/dictionary files for radical
 groups, ring corrections, and other corrections. The nomenclature is different,
 but they would be edited in a similar way. The files of interest are located in
-the directory: :file:`$RMG/database/RMG_database/thermo/`. The three files are
+the directory: :file:`$RMG/database/RMG_database/thermo_groups/`. The three files are
 described below.  
 
 Dictionary File 
@@ -259,7 +259,7 @@ checkmark next to them.  You will receive a message stating whether the edits we
 Viewing the changed thermochemical data
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-To view the thermochemical data that was just edited, open the file from the previous screenshot: :file:`$RMG/database/RMG_database/thermo/Group_Library.txt`.
+To view the thermochemical data that was just edited, open the file from the previous screenshot: :file:`$RMG/database/RMG_database/thermo_groups/Group_Library.txt`.
 Scrolling down to the entry #55, we see the old and new thermochemical data for the functional group "Cds-OdCsH".
 
 .. image:: images/viewThermoEdits.png
@@ -454,7 +454,7 @@ the "edit" button, and then fill in the popup window with the kinetic data.  Aft
 .. image:: images/editKineticTree.png
 
 Close the RMGVE.  A popup window will ask if you want to save the changes you have made.  If you leave the box checked and then open the
-:file:`$RMG/database/RMG_database/kinetics/kinetics/H_Abstraction/rateLibrary.txt` file, you should see that the file has been updated.
+:file:`$RMG/database/RMG_database/kinetics_groups/H_Abstraction/rateLibrary.txt` file, you should see that the file has been updated.
 
 .. image:: images/viewReactionEdits.png
 
@@ -462,6 +462,9 @@ Close the RMGVE.  A popup window will ask if you want to save the changes you ha
 
 Creating a Primary Reaction Library / Seed Mechanism
 ====================================================
+
+Primary reaction libraries and seed mechanisms are all stored in 
+:file:`$RMG/databases/RMG_Database/kinetics_libraries/`
 
 A primary reaction library / seed mechanism may consist of five files:
 
@@ -473,6 +476,7 @@ A primary reaction library / seed mechanism may consist of five files:
 
 The :file:`species.txt` file is **required**.  All other files are optional, and
 if present, must include the Unit declaration and Reaction headings.
+
 
 #. The :file:`species.txt` file is a series of molecular names and connectivity lists,
    analogous to the formats used in the input file :file:`condition.txt`. All species

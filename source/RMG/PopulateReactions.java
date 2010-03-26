@@ -298,13 +298,7 @@ public class PopulateReactions {
 		File GATPFit = new File("GATPFit");
 		ChemParser.deleteDir(GATPFit);
 		GATPFit.mkdir();
-		
-//		String name= "RMG_database";
-//		String workingDir = System.getenv("RMG");
-//		System.setProperty("RMG.workingDirectory", workingDir);
-//		System.setProperty("jing.chem.ChemGraph.forbiddenStructureFile",workingDir + "/databases/" + name + "/forbiddenStructure/forbiddenStructure.txt");
-//		System.setProperty("jing.chem.ThermoGAGroupLibrary.pathName",	workingDir + "/databases/" + name + "/thermo");
-//		System.setProperty("jing.rxn.ReactionTemplateLibrary.pathName",	workingDir + "/databases/" + name + "/kinetics");
+
 	};
 	
 	public static String updateListOfReactions(Kinetics rxn_k) {

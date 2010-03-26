@@ -2172,7 +2172,8 @@ return sn;
         	if (forbiddenStructureFile == null) {
         		System.out.println("undefined system property: jing.chem.ChemGraph.forbiddenStructureFile!");
         		System.out.println("No forbidden structure defined!");
-        		return;
+				throw new IOException("Undefined system property: jing.chem.ChemGraph.forbiddenStructureFile");
+        		//return;
         	}
 
         	FileReader in = new FileReader(forbiddenStructureFile);

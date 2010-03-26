@@ -1144,53 +1144,13 @@ public class ReactionModelGenerator {
         	// read in reaction model enlarger
 			
         	/* Read in the Primary Reaction Library
-        	 * MRH 12-Jun-2009
-        	 * 
-        	 * I've made minor changes to this piece of code.  In particular, I've
-        	 * 	eliminated the on/off flag.  The user can specify as many PRLs,
+        	 *  The user can specify as many PRLs,
         	 * 	including none, as they like.
         	 */        	
         	line = ChemParser.readMeaningfulLine(reader);
 			if (line.startsWith("PrimaryReactionLibrary:")) {
-				/*
-				 * MRH 27Feb2010:
-				 * Changing the "read in Primary Reaction Library information" code
-				 * 	into it's own method.
-				 * 
-				 * Other modules (e.g. PopulateReactions) will be utilizing the exact code.
-				 * 	Rather than copying and pasting code into other modules, just have
-				 * 	everything call this new method: readAndMakePRL
-				 */
 				readAndMakePRL(reader);
-//				// GJB modified to allow multiple primary reaction libraries
-//				int Ilib = 0;
-//				line = ChemParser.readMeaningfulLine(reader);
-//				while (!line.equals("END")) {
-//					String[] tempString = line.split("Name: ");
-//					String name = tempString[tempString.length-1].trim();
-//					line = ChemParser.readMeaningfulLine(reader);
-//					tempString = line.split("Location: ");
-//					String path = tempString[tempString.length-1].trim();
-//					if (Ilib==0) {
-//						//primaryReactionLibrary = new PrimaryReactionLibrary(name, path);
-//						setPrimaryReactionLibrary(new PrimaryReactionLibrary(name, path));//10/14/07 gmagoon: changed to use setPrimaryReactionLibrary
-//						Ilib++; 	
-//					}
-//					else {
-//						//primaryReactionLibrary.appendPrimaryReactionLibrary(name,path);
-//						getPrimaryReactionLibrary().appendPrimaryReactionLibrary(name,path);//10/14/07 gmagoon: changed to use getPrimaryReactionLibrary; check to make sure this is valid
-//						Ilib++;//just in case anybody wants to track how many are processed
-//					}
-//					line = ChemParser.readMeaningfulLine(reader);
-//				}
-//				//                	System.out.println("Primary Reaction Libraries in use: " +getPrimaryReactionLibrary().getName());//10/14/07 gmagoon: changed to use getPrimaryReactionLibrary
-//				if (Ilib==0) {
-//					//primaryReactionLibrary = null;
-//					setPrimaryReactionLibrary(null);//10/14/07 gmagoon: changed to use setPrimaryReactionLibrary; check to make sure this is valid
-//				}
-//				else System.out.println("Primary Reaction Libraries in use: " + getPrimaryReactionLibrary().getName());
-				
-			} else throw new InvalidSymbolException("condition.txt: can't find PrimaryReactionLibrary!");
+			} else throw new InvalidSymbolException("condition.txt: can't find PrimaryReactionLibrary");
 			
 			/*
 			 * Added by MRH 12-Jun-2009
@@ -1211,7 +1171,7 @@ public class ReactionModelGenerator {
 					String name = tempString[tempString.length-1].trim();
 					line = ChemParser.readMeaningfulLine(reader);
 					tempString = line.split("Location: ");
-					String path = tempString[tempString.length-1].trim();
+					String location = tempString[tempString.length-1].trim();
 					line = ChemParser.readMeaningfulLine(reader);
 					tempString = line.split("GenerateReactions: ");
 					String generateStr = tempString[tempString.length-1].trim();
@@ -1233,6 +1193,9 @@ public class ReactionModelGenerator {
 						System.err.println("Please include a 'GenerateReactions: yes/no' line for seed mechanism "+name);
 						System.exit(0);
 					}
+					
+					String path = System.getProperty("jing.rxn.ReactionLibrary.pathName");
+					path += "/" + location;
 										   
 					if (numMechs==0) {
 						setSeedMechanism(new SeedMechanism(name, path, generate));
@@ -4154,13 +4117,16 @@ public class ReactionModelGenerator {
 			String name = tempString[tempString.length-1].trim();
 			line = ChemParser.readMeaningfulLine(reader);
 			tempString = line.split("Location: ");
-			String path = tempString[tempString.length-1].trim();
+			String location = tempString[tempString.length-1].trim();
+			
+			String path = System.getProperty("jing.rxn.ReactionLibrary.pathName");
+			path += "/" + location;
 			if (Ilib==0) {
 				setPrimaryReactionLibrary(new PrimaryReactionLibrary(name, path));
 				Ilib++; 	
 			}
 			else {
-				getPrimaryReactionLibrary().appendPrimaryReactionLibrary(name,path);
+				getPrimaryReactionLibrary().appendPrimaryReactionLibrary(name, path);
 				Ilib++;
 			}
 			line = ChemParser.readMeaningfulLine(reader);

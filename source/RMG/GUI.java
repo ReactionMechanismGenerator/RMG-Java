@@ -26,12 +26,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 
-
-
-/**
- * @author User1
- *
- */
 /* 
  * GUI.java creates a Graphical User Interface (GUI) for Prof.
  * Green's Group's Reaction Mechanism Generator (RMG).  More information
@@ -557,7 +551,7 @@ public class GUI extends JPanel implements ActionListener {
     	//	Populate the "Database" panel
     	JLabel databaseLabel = new JLabel("Choose database");
     	Database.add(databaseLabel);
-    	databaseLabel.setToolTipText("Default = RMG/databases/RMG_database");
+    	databaseLabel.setToolTipText("Default = $RMG/databases/RMG_database");
     	
     	Database.add(databasePath = new JTextField(25));
     	databasePath.setText(System.getProperty("RMG.workingDirectory") + 
@@ -591,7 +585,7 @@ public class GUI extends JPanel implements ActionListener {
         JLabel ptlLocationLabel = new JLabel("Location:");
         ptlLoc.add(ptlLocationLabel);
     	ptlLocationLabel.setToolTipText("Default = " + 
-			"RMG/databases/RMG_database/thermo/primaryThermoLibrary");
+			"RMG/databases/RMG_database/thermo_libraries/primaryThermoLibrary");
     	
     	ptlLoc.add(ptlPath = new JTextField(20));
     	
@@ -646,7 +640,7 @@ public class GUI extends JPanel implements ActionListener {
     	
     	//	Initialize the PTL with the RMG default library
     	//		This library contains H and H2, which cannot be estimated using Benson's group additivity scheme
-		PRLVector initialPTL = new PRLVector(0, "Default_H_H2", databasePath.getText()+"/thermo/primaryThermoLibrary");
+		PRLVector initialPTL = new PRLVector(0, "Default_H_H2", databasePath.getText()+"/thermo_libraries/primaryThermoLibrary");
 		tmodelPTL.updatePRL(initialPTL);
     	
     	//	Create the Primary Reaction Library (PRL) panel
@@ -671,7 +665,7 @@ public class GUI extends JPanel implements ActionListener {
         JLabel prlLocationLabel = new JLabel("Location:");
         prlLoc.add(prlLocationLabel);
     	prlLocationLabel.setToolTipText("Default = " + 
-			"RMG/databases/RMG_database/primaryReactionLibrary/");
+			"RMG/databases/RMG_database/kinetics_libraries/primaryReactionLibrary"); // doesn't exist!
     	
     	prlLoc.add(prlPath = new JTextField(20));
     	
@@ -746,7 +740,7 @@ public class GUI extends JPanel implements ActionListener {
         JLabel smLocationLabel = new JLabel("Location:");
         smLoc.add(smLocationLabel);
     	smLocationLabel.setToolTipText("Default = " + 
-			"RMG/databases/RMG_database/SeedMechanism/combustion_core/version5");
+			"RMG/databases/RMG_database/kinetics_libraries/combustion_core/version5");
     	
     	smLoc.add(smPath = new JTextField(20));
     	
@@ -1439,16 +1433,16 @@ public class GUI extends JPanel implements ActionListener {
 			// If user selects to switch Primary Thermo Library path
 			} else if ("ptlPath".equals(e.getActionCommand())) {
 				File path = null;
-				path = askUserForInput("Select PrimaryThermoLibrary folder", true, databasePath.getText()+"/thermo");
+				path = askUserForInput("Select PrimaryThermoLibrary folder", true, databasePath.getText()+"/thermo_libraries");
 				if (path != null) ptlPath.setText(path.getPath());
 			// If user selects to switch Primary Reaction Library path
 			} else if ("prlPath".equals(e.getActionCommand())) {
 				File path = null;
-				path = askUserForInput("Select PrimaryReactionLibrary folder", true, databasePath.getText()+"/primaryReactionLibrary");
+				path = askUserForInput("Select PrimaryReactionLibrary folder", true, databasePath.getText()+"/kinetics_libraries");
 				if (path != null) prlPath.setText(path.getPath());
 			} else if ("smPath".equals(e.getActionCommand())) {
 				File path = null;
-				path = askUserForInput("Select SeedMechanism folder", true, databasePath.getText()+"/SeedMechanisms");
+				path = askUserForInput("Select SeedMechanism folder", true, databasePath.getText()+"/kinetics_libraries");
 				if (path != null) smPath.setText(path.getPath());
 			}
     	}
@@ -1543,7 +1537,7 @@ public class GUI extends JPanel implements ActionListener {
                 
     	//	Add the name(s)/location(s) of the primary thermo library
         String rmgEnvVar = System.getProperty("RMG.workingDirectory");
-        String ptlReferenceDirectory = rmgEnvVar + "/databases/" + stringMainDatabase + "/thermo/";
+        String ptlReferenceDirectory = rmgEnvVar + "/databases/" + stringMainDatabase + "/thermo_libraries/";
     	conditionFile += "PrimaryThermoLibrary:\r";
 
 		if (tablePTL.getRowCount()==0) {
@@ -1552,7 +1546,7 @@ public class GUI extends JPanel implements ActionListener {
     		for (int k=0; k<tablePTL.getRowCount(); k++) {
     			conditionFile += "Name: " + tablePTL.getValueAt(k,0) + "\r" + "Location: ";
     			String ptlDir = (String)tablePTL.getValueAt(k,1);
-    	        if (ptlDir.startsWith(rmgEnvVar)) {
+    	        if (ptlDir.startsWith(ptlReferenceDirectory)) {
     	        	int startIndex = ptlReferenceDirectory.length();
     	        	conditionFile += ptlDir.substring(startIndex) + "\r";
     	        } else {
@@ -1825,7 +1819,7 @@ public class GUI extends JPanel implements ActionListener {
     	}
     	
         //	Add the name(s)/location(s) of the primary reaction library
-        String prlReferenceDirectory = rmgEnvVar + "/databases/";
+        String prlReferenceDirectory = rmgEnvVar + "/databases/" + stringMainDatabase + "/kinetics_libraries/";
     	conditionFile += "PrimaryReactionLibrary:\r";
 
 		if (tablePRL.getRowCount()==0) {
@@ -1834,7 +1828,7 @@ public class GUI extends JPanel implements ActionListener {
     		for (int k=0; k<tablePRL.getRowCount(); k++) {
     			conditionFile += "Name: " + tablePRL.getValueAt(k,0) + "\r" + "Location: ";
     			String prlDir = (String)tablePRL.getValueAt(k,1);
-    	        if (prlDir.startsWith(rmgEnvVar)) {
+    	        if (prlDir.startsWith(prlReferenceDirectory)) {
     	        	int startIndex = prlReferenceDirectory.length();
     	        	conditionFile += prlDir.substring(startIndex) + "\r";
     	        } else {
@@ -1853,7 +1847,7 @@ public class GUI extends JPanel implements ActionListener {
     		for (int k=0; k<tableSM.getRowCount(); k++) {
     			conditionFile += "Name: " + tableSM.getValueAt(k,0) + "\r" + "Location: ";
     			String smDir = (String)tableSM.getValueAt(k,1);
-    	        if (smDir.startsWith(rmgEnvVar)) {
+    	        if (smDir.startsWith(prlReferenceDirectory)) {
     	        	int startIndex = prlReferenceDirectory.length();
     	        	conditionFile += smDir.substring(startIndex) + "\r";
     	        } else {
