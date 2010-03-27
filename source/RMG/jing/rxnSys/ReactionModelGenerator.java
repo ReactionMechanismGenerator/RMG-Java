@@ -43,7 +43,6 @@ import jing.param.*;
 import jing.chemUtil.*;
 import jing.chemParser.*;
 
-
 //## package jing::rxnSys
 
 //----------------------------------------------------------------------------
@@ -238,6 +237,7 @@ public class ReactionModelGenerator {
             	line = ChemParser.readMeaningfulLine(reader);
             }
 			
+			
          	/*
          	 * Read in the Primary Thermo Library
          	 * MRH 7-Jul-2009
@@ -253,25 +253,6 @@ public class ReactionModelGenerator {
 				 * 	everything call this new method: readAndMakePTL
 				 */
 				readAndMakePTL(reader);
-//             	int numPTLs = 0;
-//             	line = ChemParser.readMeaningfulLine(reader);
-//             	while (!line.equals("END")) {
-//             		String[] tempString = line.split("Name: ");
-//             		String name = tempString[tempString.length-1].trim();
-//					line = ChemParser.readMeaningfulLine(reader);
-//					tempString = line.split("Location: ");
-//					String path = tempString[tempString.length-1].trim();
-//					if (numPTLs==0) {
-//                     	setPrimaryThermoLibrary(new PrimaryThermoLibrary(name,path));
-//                     	++numPTLs; 	
-//					}
-//					else {
-//                     	getPrimaryThermoLibrary().appendPrimaryThermoLibrary(name,path);
-//                     	++numPTLs;
-//					}
-//					line = ChemParser.readMeaningfulLine(reader);
-//             	}
-//             	if (numPTLs == 0) setPrimaryThermoLibrary(null);
 			} else throw new InvalidSymbolException("Error reading condition.txt file: "
 													+ "Could not locate PrimaryThermoLibrary field");
 			line = ChemParser.readMeaningfulLine(reader);
@@ -2289,11 +2270,7 @@ public class ReactionModelGenerator {
 			FileReader fr = new FileReader(includeSpecies);
 			BufferedReader reader = new BufferedReader(fr);
 			String line = ChemParser.readMeaningfulLine(reader);
-			
-			
 			while (line!=null) {
-				
-				
     			StringTokenizer st = new StringTokenizer(line);
     			String index = st.nextToken();
     			String name = null;
@@ -2301,7 +2278,6 @@ public class ReactionModelGenerator {
     			else name = st.nextToken().trim();
 				
     			Graph g = ChemParser.readChemGraph(reader);
-				
 				
     			ChemGraph cg = null;
     			try {
@@ -2316,13 +2292,10 @@ public class ReactionModelGenerator {
        			//speciesSet.put(name, species);
     			speciesSet.add(species);
 				
-				
     			line = ChemParser.readMeaningfulLine(reader);
 				System.out.println(line);
 				
     		}
-			
-			
 		}
 		catch (IOException e){
 			System.out.println("Could not read the included species file");
@@ -2340,8 +2313,8 @@ public class ReactionModelGenerator {
 		try{
 			long initialTime = System.currentTimeMillis();
 			
-			File coreSpecies = new File ("allSpecies.txt");
-			BufferedReader reader = new BufferedReader(new FileReader(coreSpecies));
+			File allSpecies = new File ("allSpecies.txt");
+			BufferedReader reader = new BufferedReader(new FileReader(allSpecies));
 			String line = ChemParser.readMeaningfulLine(reader);
 			int i=0;
 			while (line!=null) {

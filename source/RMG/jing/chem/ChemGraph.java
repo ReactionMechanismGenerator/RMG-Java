@@ -112,28 +112,18 @@ public class ChemGraph implements Matchable {
     protected String InChIKey;
     // Constructors
 
-    //## operation ChemGraph()
     private  ChemGraph() {
-        //#[ operation ChemGraph()
-        //#]
     }
-    //## operation ChemGraph(Graph)
+	
     private  ChemGraph(Graph p_graph) throws ForbiddenStructureException {
-        //#[ operation ChemGraph(Graph)
         graph = p_graph;
-        
        // isAromatic = isAromatic();
 
-		
-		
         if (isForbiddenStructure(p_graph,getRadicalNumber(),getOxygenNumber(),getCarbonNumber()) || getRadicalNumber() > MAX_RADICAL_NUM || getOxygenNumber() > MAX_OXYGEN_NUM || getCycleNumber() > MAX_CYCLE_NUM) {
 		//if (getRadicalNumber() > MAX_RADICAL_NUM || getOxygenNumber() > MAX_OXYGEN_NUM || getCycleNumber() > MAX_CYCLE_NUM) {		        
 			graph = null;
         	throw new ForbiddenStructureException(p_graph.toString());
         }
-
-
-        //#]
     }
 
     /*private boolean isAromatic() {
@@ -991,7 +981,6 @@ return sn;
     */
     //## operation copy(ChemGraph)
     public static ChemGraph copy(ChemGraph p_chemGraph) throws ForbiddenStructureException {
-        //#[ operation copy(ChemGraph)
         try {
         Graph g = Graph.copy(p_chemGraph.getGraph());
 
@@ -1029,7 +1018,6 @@ return sn;
         catch (ForbiddenStructureException e) {
         	throw new ForbiddenStructureException(e.getMessage());
         }
-        //#]
     }
 
     /**
@@ -1910,11 +1898,9 @@ return sn;
     Effects: return true iff this chemGraph contains forbidden structure.
     Modifies:
     */
-    //## operation isForbiddenStructure(Graph)
+	
     public static boolean isForbiddenStructure(Graph p_graph, int radNumber, int oNumber, int cNumber) {
-        //#[ operation isForbiddenStructure(Graph)
-		
-    	
+
 		/*Iterator iter = p_graph.getNodeList();
 		while (iter.hasNext()){
 			Node n = (Node)iter.next();
@@ -1935,7 +1921,6 @@ return sn;
 		}
 		return false;*/
         
-        
         for (Iterator iter = forbiddenStructure.iterator(); iter.hasNext(); ) {
         	FunctionalGroup fg = (FunctionalGroup)iter.next();
         	if (radNumber >= fg.rad_count && oNumber >= fg.O_count && cNumber >= fg.C_count) {
@@ -1946,7 +1931,6 @@ return sn;
         	}
         }
         return false;
-        //#]
     }
 
     /**
