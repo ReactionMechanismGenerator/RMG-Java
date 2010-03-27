@@ -18,6 +18,8 @@ order:
 
 #. The name and location of all :ref:`Primary Thermodynamic Libraries <primarythermolibrary>`
 
+#. Optionally, some additional :ref:`forbidden structures <forbiddenstructures>`
+
 #. The :ref:`initial temperature and pressure <initialconditions>` of the system
 
 #. The maximum number of carbons, oxygens, and radicals any one species may have
@@ -104,6 +106,31 @@ directory.::
    Location: GRI-Mech3.0
    END
 
+
+.. _forbiddenstructures:
+
+Forbidden Structures
+--------------------
+
+It is possible, though not necessary, to specify additional forbidden structures 
+in the condition file. This section should appear after the PrimaryThermoLibrary section.
+Each adjacency list can be a species, as described in the :ref:`reactants` section, but can 
+contain :ref:`wildcards <functionalgrouptable>` as described in the :ref:`adjacencylistnotation` section.
+For example::
+
+ ForbiddenStructures:
+ AdjacentBiradicalCs
+ 1 C 1 {2,S}
+ 2 C 1 {1,S}
+ 
+ AdjacentBiradicalCd
+ 1 C 1 {2,D}
+ 2 C 1 {1,D}
+ 
+ END
+
+Note that each adjacency list must be followed by an empty line, and that the section
+must end (after an empty line) with the word `END`.
 
 .. _initialconditions:
 

@@ -100,6 +100,7 @@ cal/mole-K. The columns are described in the table :ref:`"Library File Definitio
 
 A sample entry can be found in Section :ref:`changingthermodata`.
 
+.. _adjacencylistnotation:
 
 Thermo Database and Adjacency List Notation
 -------------------------------------------
