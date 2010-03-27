@@ -121,18 +121,27 @@ public class RMG {
     
     public static void globalInitializeSystemProperties() {
     	Locale.setDefault(Locale.US);
-		String name= "RMG_database";
 		String workingDir = System.getenv("RMG");
 		 if (workingDir == null) {
 			 System.err.println("Undefined environment variable RMG.");
 			 System.exit(0);
 		 }
 		System.setProperty("RMG.workingDirectory", workingDir);
-		System.setProperty("jing.chem.ChemGraph.forbiddenStructureFile",workingDir + "/databases/" + name + "/forbiddenStructure/forbiddenStructure.txt");
-		System.setProperty("jing.chem.ThermoGAGroupLibrary.pathName",	workingDir + "/databases/" + name + "/thermo");
-		System.setProperty("jing.rxn.ReactionTemplateLibrary.pathName",	workingDir + "/databases/" + name + "/kinetics");
+		String database_name= "RMG_database";
+		String database_path = workingDir + "/databases/" + database_name;
+		setDatabasePaths(database_path);
     }
 
+	public static void setDatabasePaths(String database_path) {
+		// String database_path = workingDir + "/databases/" + name
+		System.setProperty("jing.chem.ChemGraph.forbiddenStructureFile", database_path +"/ForbiddenStructures.txt");
+		System.setProperty("jing.chem.ThermoGAGroupLibrary.pathName",    database_path +"/thermo_groups");
+		System.setProperty("jing.chem.ThermoReferenceLibrary.pathName",  database_path +"/thermo_libraries");
+		System.setProperty("jing.chem.FrequencyDatabase.pathName",       database_path +"/frequencies_groups");
+		System.setProperty("jing.rxn.ReactionTemplateLibrary.pathName",  database_path +"/kinetics_groups");
+		System.setProperty("jing.rxn.ReactionLibrary.pathName",          database_path +"/kinetics_libraries");
+    }
+	
 	public static void initializeSystemProperties(String inputfile) {
 		globalInitializeSystemProperties();
 		String workingDir = System.getProperty("RMG.workingDirectory");
@@ -178,15 +187,10 @@ public class RMG {
                     qmfiles.mkdir();
                 }
 		
-//		 String workingDir = System.getenv("RMG");
-//		 if (workingDir == null) {
-//			 System.err.println("Undefined environment variable RMG.");
-//			 System.exit(0);
-//		 }
-//	     System.setProperty("RMG.workingDirectory", workingDir);
+
 
 	     System.setProperty("jing.rxnSys.ReactionModelGenerator.conditionFile",inputfile);
-		 try {//svp
+		 try {
              String initialConditionFile = System.getProperty("jing.rxnSys.ReactionModelGenerator.conditionFile");
              if (initialConditionFile == null) {
                      System.out.println("undefined system property: jing.rxnSys.ReactionModelGenerator.conditionFile");
@@ -284,35 +288,19 @@ public class RMG {
              BufferedReader reader = new BufferedReader(in);
              String line = ChemParser.readMeaningfulLine(reader);
 			 //line = ChemParser.readMeaningfulLine(reader);
-			 
+
              if (line.startsWith("Database")){
-               StringTokenizer st = new StringTokenizer(line);
-               String next = st.nextToken();
-               String name = st.nextToken().trim();
-               System.setProperty("jing.chem.ChemGraph.forbiddenStructureFile", workingDir + "/databases/"+name+"/forbiddenStructure/forbiddenStructure.txt");
-               System.setProperty("jing.chem.ThermoGAGroupLibrary.pathName", workingDir + "/databases/" + name+"/thermo");
-               System.setProperty("jing.rxn.ReactionTemplateLibrary.pathName", workingDir + "/databases/" + name+"/kinetics");
-               System.setProperty("jing.rxn.ReactionLibrary.pathName",workingDir + "/databases/" + name + "/kinetics/reactionLibrary");
-             }
-             /*
-              * 7-Jul-2009:MRH
-              * 	Commented out reading/setting PrimaryThermoLibrary
-              * 	RMG now allows the user to supply multiple Primary Thermo Libraries
-              * 		(in the same manner as a Primary Reaction Library or Seed Mechanism)
-              * 		in the condition.txt file.
-              */
-//             line = ChemParser.readMeaningfulLine(reader);
-//             if (line.startsWith("PrimaryThermoLibrary")){
-//               StringTokenizer st = new StringTokenizer(line);
-//               String next = st.nextToken();
-//               String name = st.nextToken().trim();
-//               String thermoDirectory = System.getProperty("jing.chem.ThermoGAGroupLibrary.pathName");
-//               System.setProperty("jing.chem.PrimaryThermoLibrary.pathName", thermoDirectory+"/"+name);
-//             }
-  }
-  catch (IOException e) {
-     System.err.println("Error in read in reaction system initialization file!");
-}
+				 StringTokenizer st = new StringTokenizer(line);
+				 String next = st.nextToken();
+				 String database_name = st.nextToken().trim();
+				 
+				 String database_path = workingDir + "/databases/" + database_name;
+				 setDatabasePaths(database_path);
+			 }
+	}
+	catch (IOException e) {
+		System.err.println("Error in read in reaction system initialization file!");
+	}
   }
 
 	

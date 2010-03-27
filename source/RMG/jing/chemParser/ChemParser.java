@@ -1349,6 +1349,9 @@ public class ChemParser {
         		StringTokenizer token = new StringTokenizer(line);
         		// read in ID
         		String index = token.nextToken();
+				if (index.equalsIgnoreCase("END")) {
+					throw new InvalidGraphFormatException("Please leave an empty line after each chemgraph, including before the 'END' string");
+				}
         		if (index.endsWith(".")) {index = index.substring(0,index.length()-1);}
         		Integer ID = new Integer(index);
 
@@ -1410,8 +1413,9 @@ public class ChemParser {
         	else g.identifyFgElement();
         	return g;
         }
-        catch (Exception e) {
-        	throw new IOException(e.getMessage() + '\n' + "Error Line: " + line + '\n');
+        catch (InvalidGraphFormatException e) {
+			System.out.println("Error on line: "+line);
+			throw e;
         }
 
 

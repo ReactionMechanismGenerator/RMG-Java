@@ -112,28 +112,19 @@ public class ChemGraph implements Matchable {
     protected String InChIKey;
     // Constructors
 
-    //## operation ChemGraph()
     private  ChemGraph() {
-        //#[ operation ChemGraph()
-        //#]
     }
-    //## operation ChemGraph(Graph)
+	
     private  ChemGraph(Graph p_graph) throws ForbiddenStructureException {
-        //#[ operation ChemGraph(Graph)
         graph = p_graph;
-        
        // isAromatic = isAromatic();
 
-		
-		
         if (isForbiddenStructure(p_graph,getRadicalNumber(),getOxygenNumber(),getCarbonNumber()) || getRadicalNumber() > MAX_RADICAL_NUM || getOxygenNumber() > MAX_OXYGEN_NUM || getCycleNumber() > MAX_CYCLE_NUM) {
 		//if (getRadicalNumber() > MAX_RADICAL_NUM || getOxygenNumber() > MAX_OXYGEN_NUM || getCycleNumber() > MAX_CYCLE_NUM) {		        
 			graph = null;
-        	throw new ForbiddenStructureException(p_graph.toString());
+			String message = p_graph.toString() + " is forbidden by "+whichForbiddenStructures(p_graph) +"and not allowed.";
+        	throw new ForbiddenStructureException(message);
         }
-
-
-        //#]
     }
 
     /*private boolean isAromatic() {
@@ -991,8 +982,6 @@ return sn;
     */
     //## operation copy(ChemGraph)
     public static ChemGraph copy(ChemGraph p_chemGraph) throws ForbiddenStructureException {
-        //#[ operation copy(ChemGraph)
-        try {
         Graph g = Graph.copy(p_chemGraph.getGraph());
 
         ChemGraph cg = new ChemGraph(g);
@@ -1025,11 +1014,6 @@ return sn;
         }*/
 
         return cg;
-        }
-        catch (ForbiddenStructureException e) {
-        	throw new ForbiddenStructureException(e.getMessage());
-        }
-        //#]
     }
 
     /**
@@ -1910,11 +1894,9 @@ return sn;
     Effects: return true iff this chemGraph contains forbidden structure.
     Modifies:
     */
-    //## operation isForbiddenStructure(Graph)
+	
     public static boolean isForbiddenStructure(Graph p_graph, int radNumber, int oNumber, int cNumber) {
-        //#[ operation isForbiddenStructure(Graph)
-		
-    	
+
 		/*Iterator iter = p_graph.getNodeList();
 		while (iter.hasNext()){
 			Node n = (Node)iter.next();
@@ -1935,7 +1917,6 @@ return sn;
 		}
 		return false;*/
         
-        
         for (Iterator iter = forbiddenStructure.iterator(); iter.hasNext(); ) {
         	FunctionalGroup fg = (FunctionalGroup)iter.next();
         	if (radNumber >= fg.rad_count && oNumber >= fg.O_count && cNumber >= fg.C_count) {
@@ -1946,7 +1927,22 @@ return sn;
         	}
         }
         return false;
-        //#]
+    }
+	
+	
+	// Which forbidden structure forbade this chemgraph?
+	// returns the names of forbidden structures.
+    public static String whichForbiddenStructures(Graph p_graph) {
+		String forbidden_by = "";
+		for (Iterator iter = forbiddenStructure.iterator(); iter.hasNext(); ) {
+        	FunctionalGroup fg = (FunctionalGroup)iter.next();
+	        Graph g = fg.getGraph();
+	        if (p_graph.isSub(g)) {
+	        	forbidden_by += fg.getName() +", ";
+	        }
+        }
+        if (forbidden_by=="") return "no forbidden structures, ";
+		return forbidden_by;
     }
 
     /**
@@ -2159,6 +2155,11 @@ return sn;
 	        //#]
 	    }
 	
+	
+	public static void addForbiddenStructure(FunctionalGroup fg) {
+		forbiddenStructure.add(fg);
+	}
+	
     /**
     Requires:
     Effects: read in forbidden structure for ChemGraph
@@ -2171,8 +2172,9 @@ return sn;
         	String forbiddenStructureFile = System.getProperty("jing.chem.ChemGraph.forbiddenStructureFile");
         	if (forbiddenStructureFile == null) {
         		System.out.println("undefined system property: jing.chem.ChemGraph.forbiddenStructureFile!");
-        		System.out.println("No forbidden structure defined!");
-        		return;
+        		System.out.println("No forbidden structure file defined!");
+				throw new IOException("Undefined system property: jing.chem.ChemGraph.forbiddenStructureFile");
+        		//return;
         	}
 
         	FileReader in = new FileReader(forbiddenStructureFile);

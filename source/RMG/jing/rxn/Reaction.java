@@ -59,7 +59,7 @@ public class Reaction {
 
   protected static double UNIMOLECULAR_RATE_UPPER = 1.0E100;		//## attribute UNIMOLECULAR_RATE_UPPER
 
-  protected String comments = "";		//## attribute comments
+  protected String comments = "No comment";		//## attribute comments
 
   protected Kinetics fittedReverseKinetics = null;		//## attribute fittedReverseKinetics
 

@@ -43,7 +43,6 @@ import jing.param.*;
 import jing.chemUtil.*;
 import jing.chemParser.*;
 
-
 //## package jing::rxnSys
 
 //----------------------------------------------------------------------------
@@ -242,6 +241,7 @@ public class ReactionModelGenerator {
             	line = ChemParser.readMeaningfulLine(reader);
             }
 			
+			
          	/*
          	 * Read in the Primary Thermo Library
          	 * MRH 7-Jul-2009
@@ -257,28 +257,16 @@ public class ReactionModelGenerator {
 				 * 	everything call this new method: readAndMakePTL
 				 */
 				readAndMakePTL(reader);
-//             	int numPTLs = 0;
-//             	line = ChemParser.readMeaningfulLine(reader);
-//             	while (!line.equals("END")) {
-//             		String[] tempString = line.split("Name: ");
-//             		String name = tempString[tempString.length-1].trim();
-//					line = ChemParser.readMeaningfulLine(reader);
-//					tempString = line.split("Location: ");
-//					String path = tempString[tempString.length-1].trim();
-//					if (numPTLs==0) {
-//                     	setPrimaryThermoLibrary(new PrimaryThermoLibrary(name,path));
-//                     	++numPTLs; 	
-//					}
-//					else {
-//                     	getPrimaryThermoLibrary().appendPrimaryThermoLibrary(name,path);
-//                     	++numPTLs;
-//					}
-//					line = ChemParser.readMeaningfulLine(reader);
-//             	}
-//             	if (numPTLs == 0) setPrimaryThermoLibrary(null);
 			} else throw new InvalidSymbolException("Error reading condition.txt file: "
 													+ "Could not locate PrimaryThermoLibrary field");
 			line = ChemParser.readMeaningfulLine(reader);
+			
+			// Extra forbidden structures may be specified after the Primary Thermo Library
+			if (line.startsWith("ForbiddenStructures:")) {
+				readExtraForbiddenStructures(reader);
+				line = ChemParser.readMeaningfulLine(reader);
+			}
+			
 			
  			if (line.toLowerCase().startsWith("readrestart")) {
 				StringTokenizer st = new StringTokenizer(line);
@@ -548,7 +536,7 @@ public class ReactionModelGenerator {
         			}
         			catch (ForbiddenStructureException e) {
         				System.out.println("Forbidden Structure:\n" + e.getMessage());
-        				System.exit(0);
+						throw new InvalidSymbolException("A species in the input file has a forbidden structure.");
         			}
 					//System.out.println(name);
         			Species species = Species.make(name,cg);
@@ -1175,53 +1163,13 @@ public class ReactionModelGenerator {
         	// read in reaction model enlarger
 			
         	/* Read in the Primary Reaction Library
-        	 * MRH 12-Jun-2009
-        	 * 
-        	 * I've made minor changes to this piece of code.  In particular, I've
-        	 * 	eliminated the on/off flag.  The user can specify as many PRLs,
+        	 *  The user can specify as many PRLs,
         	 * 	including none, as they like.
         	 */        	
         	line = ChemParser.readMeaningfulLine(reader);
 			if (line.startsWith("PrimaryReactionLibrary:")) {
-				/*
-				 * MRH 27Feb2010:
-				 * Changing the "read in Primary Reaction Library information" code
-				 * 	into it's own method.
-				 * 
-				 * Other modules (e.g. PopulateReactions) will be utilizing the exact code.
-				 * 	Rather than copying and pasting code into other modules, just have
-				 * 	everything call this new method: readAndMakePRL
-				 */
 				readAndMakePRL(reader);
-//				// GJB modified to allow multiple primary reaction libraries
-//				int Ilib = 0;
-//				line = ChemParser.readMeaningfulLine(reader);
-//				while (!line.equals("END")) {
-//					String[] tempString = line.split("Name: ");
-//					String name = tempString[tempString.length-1].trim();
-//					line = ChemParser.readMeaningfulLine(reader);
-//					tempString = line.split("Location: ");
-//					String path = tempString[tempString.length-1].trim();
-//					if (Ilib==0) {
-//						//primaryReactionLibrary = new PrimaryReactionLibrary(name, path);
-//						setPrimaryReactionLibrary(new PrimaryReactionLibrary(name, path));//10/14/07 gmagoon: changed to use setPrimaryReactionLibrary
-//						Ilib++; 	
-//					}
-//					else {
-//						//primaryReactionLibrary.appendPrimaryReactionLibrary(name,path);
-//						getPrimaryReactionLibrary().appendPrimaryReactionLibrary(name,path);//10/14/07 gmagoon: changed to use getPrimaryReactionLibrary; check to make sure this is valid
-//						Ilib++;//just in case anybody wants to track how many are processed
-//					}
-//					line = ChemParser.readMeaningfulLine(reader);
-//				}
-//				//                	System.out.println("Primary Reaction Libraries in use: " +getPrimaryReactionLibrary().getName());//10/14/07 gmagoon: changed to use getPrimaryReactionLibrary
-//				if (Ilib==0) {
-//					//primaryReactionLibrary = null;
-//					setPrimaryReactionLibrary(null);//10/14/07 gmagoon: changed to use setPrimaryReactionLibrary; check to make sure this is valid
-//				}
-//				else System.out.println("Primary Reaction Libraries in use: " + getPrimaryReactionLibrary().getName());
-				
-			} else throw new InvalidSymbolException("condition.txt: can't find PrimaryReactionLibrary!");
+			} else throw new InvalidSymbolException("condition.txt: can't find PrimaryReactionLibrary");
 			
 			/*
 			 * Added by MRH 12-Jun-2009
@@ -1242,7 +1190,7 @@ public class ReactionModelGenerator {
 					String name = tempString[tempString.length-1].trim();
 					line = ChemParser.readMeaningfulLine(reader);
 					tempString = line.split("Location: ");
-					String path = tempString[tempString.length-1].trim();
+					String location = tempString[tempString.length-1].trim();
 					line = ChemParser.readMeaningfulLine(reader);
 					tempString = line.split("GenerateReactions: ");
 					String generateStr = tempString[tempString.length-1].trim();
@@ -1264,6 +1212,9 @@ public class ReactionModelGenerator {
 						System.err.println("Please include a 'GenerateReactions: yes/no' line for seed mechanism "+name);
 						System.exit(0);
 					}
+					
+					String path = System.getProperty("jing.rxn.ReactionLibrary.pathName");
+					path += "/" + location;
 										   
 					if (numMechs==0) {
 						setSeedMechanism(new SeedMechanism(name, path, generate));
@@ -1431,8 +1382,8 @@ public class ReactionModelGenerator {
 			//    PDepNetwork.setPressureArray(pressureArray);//10/30/07 gmagoon: same for pressure;//UPDATE: commenting out: not needed if updateKLeak is done for one temperature/pressure at a time; 11/1-2/07 restored; 11/6/07 gmagoon: moved before initialization of lrg;
 		}
         catch (IOException e) {
-        	System.err.println("Error in read in reaction system initialization file!");
-        	throw new IOException("Reaction System Initialization: " + e.getMessage());
+        	System.err.println("Error reading reaction system initialization file.");
+        	throw new IOException("Input file error: " + e.getMessage());
         }
     }
     public void setReactionModel(ReactionModel p_ReactionModel) {
@@ -2359,11 +2310,7 @@ public class ReactionModelGenerator {
 			FileReader fr = new FileReader(includeSpecies);
 			BufferedReader reader = new BufferedReader(fr);
 			String line = ChemParser.readMeaningfulLine(reader);
-			
-			
 			while (line!=null) {
-				
-				
     			StringTokenizer st = new StringTokenizer(line);
     			String index = st.nextToken();
     			String name = null;
@@ -2372,13 +2319,13 @@ public class ReactionModelGenerator {
 				
     			Graph g = ChemParser.readChemGraph(reader);
 				
-				
     			ChemGraph cg = null;
     			try {
     				cg = ChemGraph.make(g);
     			}
     			catch (ForbiddenStructureException e) {
     				System.out.println("Forbidden Structure:\n" + e.getMessage());
+					System.out.println("Included species file "+fileName+" contains a forbidden structure.");
     				System.exit(0);
     			}
 				
@@ -2386,16 +2333,13 @@ public class ReactionModelGenerator {
        			//speciesSet.put(name, species);
     			speciesSet.add(species);
 				
-				
     			line = ChemParser.readMeaningfulLine(reader);
 				System.out.println(line);
 				
     		}
-			
-			
 		}
 		catch (IOException e){
-			System.out.println("Could not read the included species file");
+			System.out.println("Could not read the included species file" + fileName);
         	System.exit(0);
 		}
 		return speciesSet;
@@ -2410,8 +2354,8 @@ public class ReactionModelGenerator {
 		try{
 			long initialTime = System.currentTimeMillis();
 			
-			File coreSpecies = new File ("allSpecies.txt");
-			BufferedReader reader = new BufferedReader(new FileReader(coreSpecies));
+			File allSpecies = new File ("allSpecies.txt");
+			BufferedReader reader = new BufferedReader(new FileReader(allSpecies));
 			String line = ChemParser.readMeaningfulLine(reader);
 			int i=0;
 			while (line!=null) {
@@ -2431,6 +2375,7 @@ public class ReactionModelGenerator {
     			}
     			catch (ForbiddenStructureException e) {
     				System.out.println("Forbidden Structure:\n" + e.getMessage());
+					System.out.println("The allSpecies.txt restart file contains a forbidden structure.");
     				System.exit(0);
     			}
     			Species species;
@@ -2446,7 +2391,7 @@ public class ReactionModelGenerator {
     		}
 		}
 		catch (IOException e){
-			System.out.println("Could not read the allSpecies restart file");
+			System.out.println("Could not read the allSpecies restart file.");
         	System.exit(0);
 		}
 		return speciesSet;
@@ -3099,6 +3044,7 @@ public class ReactionModelGenerator {
     }
     
     public void readRestartSpecies() {    	
+		System.out.println("Reading in species from Restart folder");
 		// Read in core species -- NOTE code is almost duplicated in Read in edge species (second part of procedure)
 		try {
 			FileReader in = new FileReader("Restart/coreSpecies.txt");
@@ -3116,7 +3062,7 @@ public class ReactionModelGenerator {
 				try {
 					cg = ChemGraph.make(g);
 				} catch (ForbiddenStructureException e) {
-					System.out.println("Error in reading graph: Graph contains a forbidden structure.\n" + g.toString());
+					System.out.println("Error reading graph: Graph contains a forbidden structure.\n" + g.toString());
 					System.exit(0);
 				}
 				// Make the species
@@ -3154,7 +3100,7 @@ public class ReactionModelGenerator {
 				try {
 					cg = ChemGraph.make(g);
 				} catch (ForbiddenStructureException e) {
-					System.out.println("Error in reading graph: Graph contains a forbidden structure.\n" + g.toString());
+					System.out.println("Error reading graph: Graph contains a forbidden structure.\n" + g.toString());
 					System.exit(0);
 				}
 				// Make the species
@@ -3311,7 +3257,7 @@ public class ReactionModelGenerator {
 				try {
 					cg = ChemGraph.make(g);
 				} catch (ForbiddenStructureException e) {
-					System.out.println("Error in reading graph: Graph contains a forbidden structure.\n" + g.toString());
+					System.out.println("Error reading graph: Graph contains a forbidden structure.\n" + g.toString());
 					System.exit(0);
 				}
 				// Make the species
@@ -3350,7 +3296,7 @@ public class ReactionModelGenerator {
 				try {
 					cg = ChemGraph.make(g);
 				} catch (ForbiddenStructureException e) {
-					System.out.println("Error in reading graph: Graph contains a forbidden structure.\n" + g.toString());
+					System.out.println("Error reading graph: Graph contains a forbidden structure.\n" + g.toString());
 					System.exit(0);
 				}
 				// Make the species
@@ -4313,13 +4259,16 @@ public class ReactionModelGenerator {
 			String name = tempString[tempString.length-1].trim();
 			line = ChemParser.readMeaningfulLine(reader);
 			tempString = line.split("Location: ");
-			String path = tempString[tempString.length-1].trim();
+			String location = tempString[tempString.length-1].trim();
+			
+			String path = System.getProperty("jing.rxn.ReactionLibrary.pathName");
+			path += "/" + location;
 			if (Ilib==0) {
 				setPrimaryReactionLibrary(new PrimaryReactionLibrary(name, path));
 				Ilib++; 	
 			}
 			else {
-				getPrimaryReactionLibrary().appendPrimaryReactionLibrary(name,path);
+				getPrimaryReactionLibrary().appendPrimaryReactionLibrary(name, path);
 				Ilib++;
 			}
 			line = ChemParser.readMeaningfulLine(reader);
@@ -4351,6 +4300,28 @@ public class ReactionModelGenerator {
      	}
      	if (numPTLs == 0) setPrimaryThermoLibrary(null);
     }
+	
+	public void readExtraForbiddenStructures(BufferedReader reader) throws IOException  {
+		System.out.println("Reading extra forbidden structures from input file.");
+     	String line = ChemParser.readMeaningfulLine(reader);
+     	while (!line.equals("END")) {
+			StringTokenizer token = new StringTokenizer(line);
+			String fgname = token.nextToken();
+			Graph fgGraph = null;
+			try {
+				fgGraph = ChemParser.readFGGraph(reader);
+			}
+			catch (InvalidGraphFormatException e) {
+				System.out.println("Invalid functional group in "+fgname);
+				throw new InvalidFunctionalGroupException(fgname + ": " + e.getMessage());
+			}
+			if (fgGraph == null) throw new InvalidFunctionalGroupException(fgname);
+			FunctionalGroup fg = FunctionalGroup.makeForbiddenStructureFG(fgname, fgGraph);
+			ChemGraph.addForbiddenStructure(fg);
+			line = ChemParser.readMeaningfulLine(reader);
+			System.out.println(" Forbidden structure: "+fgname);
+		}
+	}
     
     public void setSpectroscopicDataMode(String line) {
 		StringTokenizer st = new StringTokenizer(line);
