@@ -525,7 +525,7 @@ public class ReactionModelGenerator {
         			}
         			catch (ForbiddenStructureException e) {
         				System.out.println("Forbidden Structure:\n" + e.getMessage());
-        				System.exit(0);
+						throw new InvalidSymbolException("A species in the input file has a forbidden structure.");
         			}
 					//System.out.println(name);
         			Species species = Species.make(name,cg);
@@ -1344,8 +1344,8 @@ public class ReactionModelGenerator {
 			//    PDepNetwork.setPressureArray(pressureArray);//10/30/07 gmagoon: same for pressure;//UPDATE: commenting out: not needed if updateKLeak is done for one temperature/pressure at a time; 11/1-2/07 restored; 11/6/07 gmagoon: moved before initialization of lrg;
 		}
         catch (IOException e) {
-        	System.err.println("Error in read in reaction system initialization file!");
-        	throw new IOException("Reaction System Initialization: " + e.getMessage());
+        	System.err.println("Error reading reaction system initialization file.");
+        	throw new IOException("Input file error: " + e.getMessage());
         }
     }
     public void setReactionModel(ReactionModel p_ReactionModel) {
@@ -2285,6 +2285,7 @@ public class ReactionModelGenerator {
     			}
     			catch (ForbiddenStructureException e) {
     				System.out.println("Forbidden Structure:\n" + e.getMessage());
+					System.out.println("Included species file "+fileName+" contains a forbidden structure.");
     				System.exit(0);
     			}
 				
@@ -2298,7 +2299,7 @@ public class ReactionModelGenerator {
     		}
 		}
 		catch (IOException e){
-			System.out.println("Could not read the included species file");
+			System.out.println("Could not read the included species file" + fileName);
         	System.exit(0);
 		}
 		return speciesSet;
@@ -2334,6 +2335,7 @@ public class ReactionModelGenerator {
     			}
     			catch (ForbiddenStructureException e) {
     				System.out.println("Forbidden Structure:\n" + e.getMessage());
+					System.out.println("The allSpecies.txt restart file contains a forbidden structure.");
     				System.exit(0);
     			}
     			Species species;
@@ -2349,7 +2351,7 @@ public class ReactionModelGenerator {
     		}
 		}
 		catch (IOException e){
-			System.out.println("Could not read the allSpecies restart file");
+			System.out.println("Could not read the allSpecies restart file.");
         	System.exit(0);
 		}
 		return speciesSet;
@@ -3002,6 +3004,7 @@ public class ReactionModelGenerator {
     }
     
     public void readRestartSpecies() {    	
+		System.out.println("Reading in species from Restart folder");
 		// Read in core species -- NOTE code is almost duplicated in Read in edge species (second part of procedure)
 		try {
 			FileReader in = new FileReader("Restart/coreSpecies.txt");
@@ -3019,7 +3022,7 @@ public class ReactionModelGenerator {
 				try {
 					cg = ChemGraph.make(g);
 				} catch (ForbiddenStructureException e) {
-					System.out.println("Error in reading graph: Graph contains a forbidden structure.\n" + g.toString());
+					System.out.println("Error reading graph: Graph contains a forbidden structure.\n" + g.toString());
 					System.exit(0);
 				}
 				// Make the species
@@ -3057,7 +3060,7 @@ public class ReactionModelGenerator {
 				try {
 					cg = ChemGraph.make(g);
 				} catch (ForbiddenStructureException e) {
-					System.out.println("Error in reading graph: Graph contains a forbidden structure.\n" + g.toString());
+					System.out.println("Error reading graph: Graph contains a forbidden structure.\n" + g.toString());
 					System.exit(0);
 				}
 				// Make the species
@@ -3214,7 +3217,7 @@ public class ReactionModelGenerator {
 				try {
 					cg = ChemGraph.make(g);
 				} catch (ForbiddenStructureException e) {
-					System.out.println("Error in reading graph: Graph contains a forbidden structure.\n" + g.toString());
+					System.out.println("Error reading graph: Graph contains a forbidden structure.\n" + g.toString());
 					System.exit(0);
 				}
 				// Make the species
@@ -3253,7 +3256,7 @@ public class ReactionModelGenerator {
 				try {
 					cg = ChemGraph.make(g);
 				} catch (ForbiddenStructureException e) {
-					System.out.println("Error in reading graph: Graph contains a forbidden structure.\n" + g.toString());
+					System.out.println("Error reading graph: Graph contains a forbidden structure.\n" + g.toString());
 					System.exit(0);
 				}
 				// Make the species
