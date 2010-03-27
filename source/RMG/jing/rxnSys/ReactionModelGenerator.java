@@ -257,6 +257,13 @@ public class ReactionModelGenerator {
 													+ "Could not locate PrimaryThermoLibrary field");
 			line = ChemParser.readMeaningfulLine(reader);
 			
+			// Extra forbidden structures may be specified after the Primary Thermo Library
+			if (line.startsWith("ForbiddenStructures:")) {
+				readExtraForbiddenStructures(reader);
+				line = ChemParser.readMeaningfulLine(reader);
+			}
+			
+			
  			if (line.toLowerCase().startsWith("readrestart")) {
 				StringTokenizer st = new StringTokenizer(line);
 				String tempString = st.nextToken();	// "ReadRestart:"
@@ -4134,6 +4141,27 @@ public class ReactionModelGenerator {
      	}
      	if (numPTLs == 0) setPrimaryThermoLibrary(null);
     }
+	
+	public void readExtraForbiddenStructures(BufferedReader reader) throws IOException  {
+		System.out.println("Reading extra forbidden structures from input file.");
+     	String line = ChemParser.readMeaningfulLine(reader);
+     	while (!line.equals("END")) {
+			StringTokenizer token = new StringTokenizer(line);
+			String fgname = token.nextToken();
+			Graph fgGraph = null;
+			try {
+				fgGraph = ChemParser.readFGGraph(reader);
+			}
+			catch (InvalidGraphFormatException e) {
+				throw new InvalidFunctionalGroupException(fgname + ": " + e.getMessage());
+			}
+			if (fgGraph == null) throw new InvalidFunctionalGroupException(fgname);
+			FunctionalGroup fg = FunctionalGroup.makeForbiddenStructureFG(fgname, fgGraph);
+			ChemGraph.addForbiddenStructure(fg);
+			line = ChemParser.readMeaningfulLine(reader);
+			System.out.println(" Forbidden structure: "+fgname);
+		}
+	}
     
     public void setSpectroscopicDataMode(String line) {
 		StringTokenizer st = new StringTokenizer(line);

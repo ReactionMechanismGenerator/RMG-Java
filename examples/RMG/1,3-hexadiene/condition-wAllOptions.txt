@@ -24,6 +24,19 @@ Name:  RMG old
 Location: primaryThermoLibrary
 END
 
+// Forbidden structures are read in from the database.
+// Additional forbidden structures can be specified here like this:
+//ForbiddenStructures:
+//AdjacentBiradicalCs
+//1 C 1 {2,S}
+//2 C 1 {1,S}
+//
+//AdjacentBiradicalCd
+//1 C 1 {2,D}
+//2 C 1 {1,D}
+//
+//END
+
 // Restart options
 ReadRestart: no yes
 WriteRestart: no yes

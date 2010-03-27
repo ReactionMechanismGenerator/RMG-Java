@@ -2155,6 +2155,11 @@ return sn;
 	        //#]
 	    }
 	
+	
+	public static void addForbiddenStructure(FunctionalGroup fg) {
+		forbiddenStructure.add(fg);
+	}
+	
     /**
     Requires:
     Effects: read in forbidden structure for ChemGraph
