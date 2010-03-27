@@ -981,7 +981,6 @@ return sn;
     */
     //## operation copy(ChemGraph)
     public static ChemGraph copy(ChemGraph p_chemGraph) throws ForbiddenStructureException {
-        try {
         Graph g = Graph.copy(p_chemGraph.getGraph());
 
         ChemGraph cg = new ChemGraph(g);
@@ -1014,10 +1013,6 @@ return sn;
         }*/
 
         return cg;
-        }
-        catch (ForbiddenStructureException e) {
-        	throw new ForbiddenStructureException(e.getMessage());
-        }
     }
 
     /**
