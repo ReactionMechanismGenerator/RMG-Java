@@ -1413,8 +1413,9 @@ public class ChemParser {
         	else g.identifyFgElement();
         	return g;
         }
-        catch (Exception e) {
-        	throw new IOException(e.getMessage() + '\n' + "Error Line: " + line + '\n');
+        catch (InvalidGraphFormatException e) {
+			System.out.println("Error on line: "+line);
+			throw e;
         }
 
 

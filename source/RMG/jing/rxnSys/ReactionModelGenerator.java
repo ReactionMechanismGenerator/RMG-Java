@@ -4153,6 +4153,7 @@ public class ReactionModelGenerator {
 				fgGraph = ChemParser.readFGGraph(reader);
 			}
 			catch (InvalidGraphFormatException e) {
+				System.out.println("Invalid functional group in "+fgname);
 				throw new InvalidFunctionalGroupException(fgname + ": " + e.getMessage());
 			}
 			if (fgGraph == null) throw new InvalidFunctionalGroupException(fgname);
