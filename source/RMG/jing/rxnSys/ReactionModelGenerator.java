@@ -4128,7 +4128,7 @@ public class ReactionModelGenerator {
 		    }
 		    iterRem = toRemove.iterator();
 		    while(iterRem.hasNext()){
-			PDepIsomer pdi = (PDepIsomer)iIter.next();
+			PDepIsomer pdi = (PDepIsomer)iterRem.next();
 			pdn.getIsomers().remove(pdi);
 		    }
 		    //remove the entire network if the network has no path or net reactions
