@@ -4051,13 +4051,15 @@ public class ReactionModelGenerator {
 		Species spe = (Species)iter.next();
 		Integer id0 = (Integer)ds0.edgeID.get(spe);
 		double maxmaxRatio = ds0.maxEdgeFluxRatio[id0-1];
+		boolean prunable = ds0.prunableSpecies[id0-1];
 		for (Integer i = 1; i < reactionSystemList.size(); i++) {//go through the rest of the reaction systems to see if there are higher max flux ratios
 		    JDAS ds = (JDAS)((ReactionSystem) reactionSystemList.get(i)).getDynamicSimulator();
 		    Integer id = (Integer)ds0.edgeID.get(spe);//in principle, I don't think the IDs in each dynamic simulator will necessarily be the same...determine the ID
 		    if(ds.maxEdgeFluxRatio[id-1] > maxmaxRatio) maxmaxRatio = ds.maxEdgeFluxRatio[id-1];
+		    if(prunable && !ds.prunableSpecies[id-1]) prunable = false;//I can't imagine a case where this would occur (if the conc. is zero at one condition, it should be zero at all conditions), but it is included for completeness
 		}
-		//if the maximum max edge flux ratio is less than the edge inclusion threshhold, schedule the species for pruning
-		if(maxmaxRatio < edgeTol){
+		//if the maximum max edge flux ratio is less than the edge inclusion threshhold and the species is "prunable" (i.e. it doesn't have any reactions producing it with zero flux), schedule the species for pruning
+		if(maxmaxRatio < edgeTol && prunable){
 		    prunableSpecies.add(spe);
 		    System.out.println("Edge species "+spe.getChemkinName() +" has a maximum flux ratio ("+maxmaxRatio+") that is lower than edge inclusion threshhold and the species will be pruned from the edge.");
 		}

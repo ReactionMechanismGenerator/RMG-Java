@@ -406,6 +406,7 @@ public class JDASSL extends JDAS {
         	}
 		//for autoflag cases, there will be additional information which may be used for pruning
 		if (autoflag){
+		    prunableSpecies = new boolean[edgeID.size()];
 		    maxEdgeFluxRatio = new double[edgeID.size()];
 		    line=br.readLine();//read volume; (this is actually in the output even if AUTO is off, but is not used)
 		    line=br.readLine();//read the edgeflag
@@ -419,8 +420,12 @@ public class JDASSL extends JDAS {
 		    line=br.readLine();//read the time integrated to
 		    double finalTime = Double.parseDouble(line.trim());
 		    System.out.println("ODE solver integrated to "+ finalTime+" sec.");
-		    for (int i=0; i<edgeID.size(); i++){//read the maximum ratio (edge flux/Rchar) for each edge species; note that edgeID only contains species, not P-dep networks, so we will not be reading in all the output from DASSL...only the flux ratio to actual edge species (vs. P-dep network pseudospecies)
-			line = br.readLine().trim();
+		    for (int i=0; i<edgeID.size(); i++){//read the "prunability index" (0 or 1) and maximum ratio (edge flux/Rchar) for each edge species; note that edgeID only contains species, not P-dep networks, so we will not be reading in all the output from DASSL...only the flux ratio to actual edge species (vs. P-dep network pseudospecies)
+			line = br.readLine().trim();//read the prunability index
+			int q = Integer.parseInt(line);
+			if(q > 0) prunableSpecies[i]=true; //q should be 1 or 0
+			else prunableSpecies[i] = false;
+			line = br.readLine().trim();//read the max edge flux ratio
 			if(line.startsWith("+Inf")) maxEdgeFluxRatio[i]=Double.POSITIVE_INFINITY;
 			else maxEdgeFluxRatio[i] = Double.parseDouble(line);
 		    }

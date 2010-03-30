@@ -101,6 +101,7 @@ public abstract class JDAS implements DAESolver {
 	protected StringBuilder thermoString = new StringBuilder();
 	protected HashMap edgeID;
 	protected double [] maxEdgeFluxRatio;
+	protected boolean [] prunableSpecies;
 	protected double termTol;
 	protected double coreTol;
 	protected static boolean nonnegative = false;

@@ -261,6 +261,7 @@
      &     , RWORK(51 + 9*NSTATE + NSTATE**2), TARGETCONC, Y_OUTPT(NSTATE) &
      &     , YPRIME_OUTPT(NSTATE), TIME_OUTPT  &
      &     , RWORK_OUTPT(51 + 9*NSTATE + NSTATE**2)
+     INTEGER PRUNEVEC(ESPECIES),PRUNEVEC_OUTPT(ESPECIES)
 
       DOUBLE PRECISION RPAR(REACTIONSIZE+THIRDBODYREACTIONSIZE+ &
      &     TROEREACTIONSIZE+LINDEREACTIONSIZE),&
@@ -326,7 +327,7 @@
 	IF (AUTOFLAG.eq.1) THEN
 		CALL EDGEFLUX(EDGEFLAG, Y, YPRIME,THRESH,ESPECIES, &
      &     EREACTIONSIZE,NEREAC,NEPROD,IDEREAC,IDEPROD,KVEC, &
-     &     MAXRATIO, NSTATE)
+     &     MAXRATIO,PRUNEVEC,NSTATE)
 		!update HIGHESTRATIO and store relevant variables that will be printed
 		!later; note that we cannot exit the do loop once the IF statement is
 		!caught because, even though output variables will be stored properly,
@@ -344,6 +345,7 @@
 			!IWORK_OUTPT = IWORK
 			!RWORK_OUTPT = RWORK
 			TOTALREACTIONFLUX_OUTPT = 0
+			PRUNEVEC_OUTPT = PRUNEVEC
 		    END IF
 		END DO
 	ENDIF
@@ -401,7 +403,7 @@
 		IF (AUTOFLAG.eq.1) THEN
 			CALL EDGEFLUX(EDGEFLAG, Y, YPRIME,THRESH,ESPECIES, &
     		 &     EREACTIONSIZE,NEREAC,NEPROD,IDEREAC,IDEPROD,KVEC, &
-		 &     MAXRATIO, NSTATE)
+		 &     MAXRATIO,PRUNEVEC,NSTATE)
 		 	!update HIGHESTRATIO and store relevant variables that will be printed
 			!later; note that we cannot exit the do loop once the IF statement is
 			!caught because, even though output variables will be stored properly,
@@ -421,6 +423,7 @@
 			    !IWORK_OUTPT = IWORK
 			    !RWORK_OUTPT = RWORK
 			    TOTALREACTIONFLUX_OUTPT = TOTALREACTIONFLUX
+			    PRUNEVEC_OUTPT = PRUNEVEC
 			END IF
 		END IF
             GO TO 1
@@ -447,6 +450,7 @@
 	!IWORK_OUTPT = IWORK
 	!RWORK_OUTPT = RWORK
 	TOTALREACTIONFLUX_OUTPT = TOTALREACTIONFLUX
+	PRUNEVEC_OUTPT = PRUNEVEC
       END IF
       IWORK_OUTPT = IWORK
       RWORK_OUTPT = RWORK
@@ -481,6 +485,7 @@
 	  WRITE(16,*) EDGEFLAG
 	  WRITE(16,*) TIME
 	  DO I=1, ESPECIES
+	      WRITE(16,*) PRUNEVEC_OUTPT(I)
 	      WRITE(16,*) MAXRATIO(I)
 	  END DO
       END IF
@@ -512,13 +517,14 @@
 ! EDGEFLUX also calls RCHAR
 SUBROUTINE EDGEFLUX(EDGEFLAG, Y, YPRIME,THRESH,ESPECIES, &
     		 &     EREACTIONSIZE,NEREAC,NEPROD,IDEREAC,IDEPROD, &
-		&      KVEC, MAXRATIO, NSTATE)
+		&      KVEC,MAXRATIO,PRUNEVEC,NSTATE)
 	IMPLICIT NONE
 	INTEGER EDGEFLAG, ESPECIES, EREACTIONSIZE, NSTATE, I, J, K
 	DOUBLE PRECISION THRESH, FLUXRC, RFLUX, Y(NSTATE), YPRIME(NSTATE)
 	DOUBLE PRECISION, DIMENSION(:), ALLOCATABLE :: RATE
 	INTEGER NEREAC(EREACTIONSIZE),NEPROD(EREACTIONSIZE)
         INTEGER IDEREAC(EREACTIONSIZE,3), IDEPROD(EREACTIONSIZE,3)
+	INTEGER PRUNEVEC(ESPECIES)
         DOUBLE PRECISION KVEC(EREACTIONSIZE), RATIO, MAXRATIO(ESPECIES)
 	
 	ALLOCATE(RATE(ESPECIES))
@@ -529,6 +535,9 @@ SUBROUTINE EDGEFLUX(EDGEFLAG, Y, YPRIME,THRESH,ESPECIES, &
 
       ! calculate characteristic flux, FLUXRC
 	CALL RCHAR(FLUXRC, Y, YPRIME, NSTATE)
+
+	!initialize PRUNEVEC; at first, assume everything is prunable
+	PRUNEVEC=1
 
 	! calculate the vector of fluxes for each species
 	! by summing contributions from each reaction
@@ -542,6 +551,13 @@ SUBROUTINE EDGEFLUX(EDGEFLAG, Y, YPRIME,THRESH,ESPECIES, &
 		! loop over reaction products, adding RFLUX
 		JLOOP: DO J=1, NEPROD(I)
 			RATE(IDEPROD(I,J))=RATE(IDEPROD(I,J))+ RFLUX
+			!if RFLUX is zero, then presumably one of the
+			!reactant concentrations is zero (it is assumed
+			!that k != 0), and therefore, we don't want to
+			!prune the species yet
+			IF(RFLUX .EQ. 0.0) THEN
+			    PRUNEVEC(IDEPROD(I,J)) = 0
+			END IF
 		END DO JLOOP
 	END DO ILOOP
 
