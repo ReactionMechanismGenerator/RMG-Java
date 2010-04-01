@@ -488,11 +488,6 @@ contains
         ! Normalize eqDist
         isom%Q = sum(isom%eqDist) * dE
 
-        write (1,*) '#DEBUG: Sum of un-normalised equilibrium distribution is:', sum(isom%eqDist)
-        write (1,*) '#DEBUG: Un-normalised Equilibrium distribution is',size(isom%eqDist),'long and starts:',isom%eqDist(1:10)
-        write (1,*) '#DEBUG: Denisty of states is',size(isom%densStates ),'long and starts:',isom%densStates (1:10)
-        write (1,*) '#DEBUG: E grains are',size(E),'long and starts:',E(1:10)
-
         isom%eqDist = isom%eqDist / sum(isom%eqDist)
 
     end subroutine
@@ -809,14 +804,14 @@ contains
 
             Emax = ceiling(Emax0 + mult * 8.314472 * Tmax)
 
-            call network_getEnergyGrains(Emin, Emax, dE, nGrains, Elist)
-            call isomer_getDensityOfStates(net, isom, Elist, nGrains)
-            call isomer_getEqDist(isom, Elist, nGrains, Tmax)
+            call network_getEnergyGrains(Emin, Emax, dE, nE, Elist)
+            call isomer_getDensityOfStates(net, isom, Elist, nE)
+            call isomer_getEqDist(isom, Elist, nE, Tmax)
 
             ! Find maximum of distribution
             maxIndex = 0
             maxValue = 0.0
-            do r = 1, nGrains
+            do r = 1, nE
                 if (isom%eqDist(r) > maxValue) then
                     maxValue = isom%eqDist(r)
                     maxIndex = r
@@ -824,8 +819,8 @@ contains
             end do
 
             ! If tail of distribution is much lower than the maximum, then we've found bounds for Emax
-            if (isom%eqDist(nGrains) / maxValue < tol) then
-                r = nGrains - 1
+            if (isom%eqDist(nE) / maxValue < tol) then
+                r = nE - 1
                 do while (r > maxIndex .and. done == 0)
                     if (isom%eqDist(r) / maxValue > tol) then
                         done = 1
@@ -856,7 +851,9 @@ contains
         end do
 
         ! Return the chosen energy grains
-        call network_getEnergyGrains(Emin, Emax, dE, nE, Elist)
+        call network_getEnergyGrains(Emin, Emax, grainSize, nGrains, Elist)
+
+        write (1,*) '    Using', size(Elist), 'grains of size', Elist(2) - Elist(1), 'J/mol in range 0 to', Emax, 'J/mol'
 
     end subroutine
 

@@ -105,7 +105,7 @@ public class FastMasterEqn implements PDepKineticsEstimator {
 	/**
 	 * The number of grains to use in a fame calculation (written in input file)
 	 */
-	private static int numGrains = 201;
+	private static int numGrains = 251;
 	/**
 	 * boolean, detailing whether the high-P-limit is greater than all of the
 	 * 	fame-computed k(T,P)
@@ -384,13 +384,13 @@ public class FastMasterEqn implements PDepKineticsEstimator {
          * 	of grains
          * After all pdep rates are below the high-P-limit (or the number of grains
          * 	exceeds 1000), we exit the while loop.  The number of grains is then
-         * 	reset to 201 (which was the standard before)
+         * 	reset to 251 (which was the standard before)
          */
         while (!pdepRatesOK) {
         	numGrains = numGrains + 200;
         	runPDepCalculation(pdn, rxnSystem, cerm);
         }
-        numGrains = 201;
+        numGrains = 251;
 
 		runCount++;
 
