@@ -45,6 +45,8 @@ import java.util.ListIterator;
 import java.util.StringTokenizer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import Jama.Matrix;
 import jing.chem.Species;
 import jing.chem.SpectroscopicData;
 import jing.mathTool.UncertainDouble;
@@ -612,13 +614,20 @@ public class FastMasterEqn implements PDepKineticsEstimator {
 				
 				double A = 0.0, Ea = 0.0, n = 0.0;
 				if (rxn.isForward()) {
-					A = rxn.getKinetics().getAValue();
-					Ea = rxn.getKinetics().getEValue();
-					n = rxn.getKinetics().getNValue();
+					Kinetics[] k_array = rxn.getKinetics();
+					Kinetics kin = computeKUsingLeastSquares(k_array);
+					A = kin.getAValue();
+					n = kin.getNValue();
+					Ea = kin.getEValue();
+//					A = rxn.getKinetics().getAValue();
+//					Ea = rxn.getKinetics().getEValue();
+//					n = rxn.getKinetics().getNValue();
 				}
 				else {
 					((Reaction) rxn).generateReverseReaction();
-					Kinetics kin = ((Reaction) rxn).getFittedReverseKinetics();
+					Kinetics[] k_array = ((Reaction)rxn).getFittedReverseKinetics();
+					Kinetics kin = computeKUsingLeastSquares(k_array);
+//					Kinetics kin = ((Reaction) rxn).getFittedReverseKinetics();
 					A = kin.getAValue();
 					Ea = kin.getEValue();
 					n = kin.getNValue();
@@ -885,13 +894,15 @@ public class FastMasterEqn implements PDepKineticsEstimator {
 					if (rxn.getStructure().equals(rxnWHighPLimit.getStructure())) {
 						double A = 0.0, Ea = 0.0, n = 0.0;
 						if (rxnWHighPLimit.isForward()) {
-							Kinetics kin = rxnWHighPLimit.getKinetics();
+							Kinetics[] k_array = rxnWHighPLimit.getKinetics();
+							Kinetics kin = computeKUsingLeastSquares(k_array);
 							A = kin.getAValue();
 							Ea = kin.getEValue();
 							n = kin.getNValue();
 						}
 						else {
-							Kinetics kin = rxnWHighPLimit.getFittedReverseKinetics();
+							Kinetics[] k_array = rxnWHighPLimit.getFittedReverseKinetics();
+							Kinetics kin = computeKUsingLeastSquares(k_array);
 							A = kin.getAValue();
 							Ea = kin.getEValue();
 							n = kin.getNValue();
@@ -1095,6 +1106,47 @@ public class FastMasterEqn implements PDepKineticsEstimator {
 	
 	public static void setNumPBasisFuncs(int m) {
 		numPBasisFuncs = m;
+	}
+	
+	public static Kinetics computeKUsingLeastSquares(Kinetics[] k_array) {
+        /*
+         * MRH 24MAR2010:
+         * 	If the reaction has more than one set of Arrhenius kinetics,
+         * 	sum all kinetics and re-fit for a single set of Arrhenius kinetics
+         */
+		Kinetics k = null;
+        if (k_array.length > 1) {
+        	double[] T = new double[5];
+        	T[0] = 300; T[1] = 600; T[2] = 900; T[3] = 1200; T[4] = 1500;
+        	double[] k_total = new double[5];
+        	for (int numKinetics=0; numKinetics<k_array.length; ++numKinetics) {
+        		for (int numTemperatures=0; numTemperatures<T.length; ++numTemperatures) {
+        			k_total[numTemperatures] += k_array[numKinetics].getAValue() * 
+        			Math.pow(T[numTemperatures], k_array[numKinetics].getNValue()) * 
+        			Math.exp(-k_array[numKinetics].getEValue()/GasConstant.getKcalMolK()/T[numTemperatures]);
+        		}
+        	}
+        	// Construct matrix X and vector y
+        	double[][] y = new double[k_total.length][1];
+        	double[][] X = new double[k_total.length][3];
+        	for (int i=0; i<5; i++) {
+        		y[i][0] = Math.log(k_total[i]);
+        		X[i][0] = 1;
+        		X[i][1] = Math.log(T[i]);
+        		X[i][2] = 1/T[i];
+        	}
+        	// Solve least-squares problem using inv(XT*X)*(XT*y)
+        	Matrix X_matrix = new Matrix(X);
+        	Matrix y_matrix = new Matrix(y);
+        	Matrix b_matrix = X_matrix.solve(y_matrix);
+        	UncertainDouble uA = new UncertainDouble(Math.exp(b_matrix.get(0,0)),0.0,"Adding");
+        	UncertainDouble un = new UncertainDouble(b_matrix.get(1,0),0.0,"Adding");
+        	UncertainDouble uE = new UncertainDouble(-GasConstant.getKcalMolK()*b_matrix.get(2,0),0.0,"Adding");
+        	k = new ArrheniusKinetics(uA,un,uE,"300-1500K",5,"Summation of kinetics","Arrhenius fit to multiple kinetics");
+        } else {
+        	k = k_array[0];
+        }
+        return k;
 	}
 
 }

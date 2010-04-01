@@ -117,7 +117,7 @@ public class PDepReaction extends Reaction {
 	 * @param prod The product PDepIsomer
 	 * @param kin The high-pressure kinetics for the forward reaction
 	 */
-	public PDepReaction(PDepIsomer reac, PDepIsomer prod, Kinetics kin) {
+	public PDepReaction(PDepIsomer reac, PDepIsomer prod, Kinetics[] kin) {
 		super();
 		structure = null;
 		kinetics = kin;
@@ -127,7 +127,7 @@ public class PDepReaction extends Reaction {
 		setReactant(reac);
 		setProduct(prod);
 		pDepRate = null;
-		kineticsFromPrimaryReactionLibrary = kin.getFromPrimaryReactionLibrary();
+		kineticsFromPrimaryReactionLibrary = kin[0].getFromPrimaryReactionLibrary();
 	}
 	
 	/**
@@ -209,7 +209,7 @@ public class PDepReaction extends Reaction {
 	 * kinetics are only valid in the high-pressure limit.
 	 * @return The high-pressure Arrhenius kinetics for the reaction
 	 */
-	public Kinetics getHighPKinetics() {
+	public Kinetics[] getHighPKinetics() {
 		return getKinetics();
 	}
 	
@@ -219,7 +219,7 @@ public class PDepReaction extends Reaction {
 	 * @param kin The new high-pressure Arrhenius kinetics for the reaction
 	 */
 	public void setHighPKinetics(Kinetics kin) {
-		setKinetics(kin);
+		setKinetics(kin,-1);
 	}
 	
 	/** 
@@ -339,8 +339,11 @@ public class PDepReaction extends Reaction {
 		try {
 			if (pDepRate != null)
 				k = pDepRate.calculateRate(temperature, pressure);
-			else if (kinetics != null)
-				k = kinetics.calculateRate(temperature);
+			else if (kinetics != null) {
+				for (int numKinetics=0; numKinetics<kinetics.length; ++numKinetics) {
+					k += kinetics[numKinetics].calculateRate(temperature);
+				}
+			}
 		}
 		catch (Exception e) {
 			System.err.println(e.getMessage());
@@ -499,7 +502,7 @@ public class PDepReaction extends Reaction {
 			//	Changed from toChemkinString(t) to toRestartString(t) to avoid bug in 
 			//		reporting chem.inp file (issue of reporting A(single event) vs.
 			//		A(single event) * (# events)
-			return super.toRestartString(t);
+			return super.toRestartString(t,true);
 		else
 			return "";
     

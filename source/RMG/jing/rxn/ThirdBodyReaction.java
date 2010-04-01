@@ -219,7 +219,9 @@ public class ThirdBodyReaction extends Reaction {
       //#[ operation toChemkinString() 
       StringBuilder s = getStructure().toChemkinString(true);
       s = formPDepSign(s);
-      s.append("\t" + getKinetics().toChemkinString(calculateHrxn(p_temperature),p_temperature, true) + '\n');
+      for (int i=0; i<getKinetics().length; i++) {
+    	  s.append("\t" + getKinetics()[i].toChemkinString(calculateHrxn(p_temperature),p_temperature, true) + '\n');
+      }
       
       String tbr = "";
       // write 3rd-body efficiencies
@@ -252,7 +254,9 @@ public class ThirdBodyReaction extends Reaction {
   public String toRestartString(Temperature t) {
       StringBuilder s = getStructure().toChemkinString(true);
       s = formPDepSignForRestart(s);
-      s.append("\t" + getKinetics().toChemkinString(calculateHrxn(t),t,false) + " 0.0 0.0 0.0\n");
+      for (int i=0; i<getKinetics().length; i++) {
+    	  s.append("\t" + getKinetics()[i].toChemkinString(calculateHrxn(t),t,false) + " 0.0 0.0 0.0\n");
+      }
       
       String tbr = "";
       // write 3rd-body efficiencies

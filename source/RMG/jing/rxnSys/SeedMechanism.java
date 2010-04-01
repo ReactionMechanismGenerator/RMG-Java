@@ -185,8 +185,8 @@ public class SeedMechanism {
         		Reaction r;
         		try {
         			r = ChemParser.parseArrheniusReaction(speciesSet, line, A_multiplier, E_multiplier);
-					r.setKineticsSource("Seed Mechanism: "+ name);
-					r.setKineticsComments(" ");
+					r.setKineticsSource("Seed Mechanism: "+ name,0);
+					r.setKineticsComments(" ",0);
 				}
         		catch (InvalidReactionFormatException e) {
         			throw new InvalidReactionFormatException(line + ": " + e.getMessage());
@@ -198,7 +198,7 @@ public class SeedMechanism {
         		while (prlRxnIter.hasNext()) {
         			Reaction old = (Reaction)prlRxnIter.next();
         			if (old.equals(r)) {
-        				old.addAdditionalKinetics(r.getKinetics(),1);
+        				old.addAdditionalKinetics(r.getKinetics()[0],1);
         				foundRxn = true;
         				break;
         			}
@@ -325,8 +325,8 @@ public class SeedMechanism {
         		HashMap thirdBodyList = ChemParser.parseThirdBodyList(thirdBodyLine);
         		
         		ThirdBodyReaction tbr = ThirdBodyReaction.make(r,thirdBodyList);
-				tbr.setKineticsSource("Seed Mechanism: "+ name);
-				tbr.setKineticsComments(" ");
+				tbr.setKineticsSource("Seed Mechanism: "+ name,0);
+				tbr.setKineticsComments(" ",0);
         		reactionSet.add(tbr);
         		
         		Reaction reverse = tbr.getReverseReaction();
@@ -438,8 +438,8 @@ public class SeedMechanism {
            		}
         		
         		TROEReaction tbr = TROEReaction.make(r,thirdBodyList, low, a, T3star, Tstar, troe7, T2star);
-				tbr.setKineticsSource("Seed Mechanism: "+ name);
-				tbr.setKineticsComments(" ");
+				tbr.setKineticsSource("Seed Mechanism: "+ name,0);
+				tbr.setKineticsComments(" ",0);
 				
         		reactionSet.add(tbr);
         		Reaction reverse = tbr.getReverseReaction();
@@ -532,8 +532,8 @@ public class SeedMechanism {
         		ArrheniusKinetics low = ChemParser.parseSimpleArrheniusKinetics(lowString, A_multiplier, E_multiplier, r.getReactantNumber()+1);
         		
         		LindemannReaction lr = LindemannReaction.make(r,thirdBodyList, low);
-				lr.setKineticsSource("Seed Mechanism: "+ name);
-				lr.setKineticsComments(" ");
+				lr.setKineticsSource("Seed Mechanism: "+ name,0);
+				lr.setKineticsComments(" ",0);
 				
         		reactionSet.add(lr);
         		Reaction reverse = lr.getReverseReaction();

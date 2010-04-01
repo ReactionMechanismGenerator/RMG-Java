@@ -86,7 +86,10 @@ public class TROEReaction extends ThirdBodyReaction {
       
       double M = calculateThirdBodyCoefficient(p_presentStatus);
       double kZero = low.calculateRate(temp,-1);
-      double kInf = getKinetics().calculateRate(temp,-1);
+      double kInf = 0.0;
+      for (int i=0; i<getKinetics().length; i++) {
+    	  kInf += getKinetics()[i].calculateRate(temp,-1);
+      }
       
       double Pr = kZero*M/kInf;
       double T = temp.getK();
@@ -132,7 +135,9 @@ public class TROEReaction extends ThirdBodyReaction {
       TROEReaction r = new TROEReaction();
       r.structure = getStructure().generateReverseStructure();
       r.kinetics = getKinetics();
-      r.comments = "Reverse reaction";
+      for (int i=0; i<r.kinetics.length; i++) {
+    	  r.comments = "Reverse reaction";
+      }
       r.weightMap = weightMap;
 	  r.low = low;
       r.a = a;
@@ -215,7 +220,9 @@ public class TROEReaction extends ThirdBodyReaction {
   public String toString(Temperature p_temperature) {
       //#[ operation toString() 
       String s = getStructure().toChemkinString(true).toString() + '\n';
-      s += "kInf = " + getKinetics().toChemkinString(calculateHrxn(p_temperature),p_temperature, false) + '\n';
+      for (int i=0; i<getKinetics().length; i++) {
+    	  s += "kInf = " + getKinetics()[i].toChemkinString(calculateHrxn(p_temperature),p_temperature, false) + '\n';
+      }
       s += "kZero = " + low.toChemkinString(calculateHrxn(p_temperature),p_temperature, false) + '\n';
       s += "a = " + a + '\t' + "T*** = " + T3star + '\t' + "T* = " + Tstar + '\t';
       if(troe7) s += "T** = " + T2star;

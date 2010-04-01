@@ -57,13 +57,13 @@ public class TemplateReaction extends Reaction {
     // Constructors
     
     //## operation TemplateReaction(Structure,RateConstant,ReactionTemplate) 
-    private  TemplateReaction(Structure p_structure, Kinetics p_kinetics, ReactionTemplate p_template) {
+    private  TemplateReaction(Structure p_structure, Kinetics[] p_kinetics, ReactionTemplate p_template) {
         //#[ operation TemplateReaction(Structure,RateConstant,ReactionTemplate) 
         structure = p_structure;
         kinetics = p_kinetics;
         reactionTemplate = p_template;
         if (kinetics != null)	
-        	kineticsFromPrimaryReactionLibrary = p_kinetics.getFromPrimaryReactionLibrary();
+        	kineticsFromPrimaryReactionLibrary = p_kinetics[0].getFromPrimaryReactionLibrary();
 		
         //#]
     }
@@ -162,7 +162,7 @@ public class TemplateReaction extends Reaction {
 			return rr;
 		}
 		int rNum = fproduct.size();
-		Kinetics k = rRT.findReverseRateConstant(rs);
+		Kinetics[] k = rRT.findReverseRateConstant(rs);
 		if (k == null && rRT.name.equals("R_Recombination")) {
 
 			ChemGraph cg = ((ChemGraph) fproduct.get(0));
@@ -344,7 +344,7 @@ public class TemplateReaction extends Reaction {
     }
     
     public static TemplateReaction makeTemplateReaction(Structure p_structureSp,
-			Kinetics p_kinetics, ReactionTemplate p_template, Structure p_structure) {
+			Kinetics[] p_kinetics, ReactionTemplate p_template, Structure p_structure) {
 		
 		double PT = System.currentTimeMillis();
 		TemplateReaction reaction = p_template.getReactionFromStructure(p_structureSp);
@@ -408,32 +408,39 @@ public class TemplateReaction extends Reaction {
     
     //## operation toString() 
     public String toString(Temperature p_temperature) {
-        //#[ operation toString() 
+        //#[ operation toString()
+    	String totalString = "";
         String s = getStructure().toString()  + '\t';
-        Kinetics k = getKinetics();
-        String kString = k.toChemkinString(calculateHrxn(p_temperature), p_temperature, false);
-       
-        return s + kString;
+        Kinetics[] k = getKinetics();
+        for (int i=0; i<k.length; i++) {
+        	totalString += s + k[i].toChemkinString(calculateHrxn(p_temperature), p_temperature, false);
+        	if (k.length > 1) totalString += "\n";
+        }
+        return totalString;
         
         //#]
     }
     
+    /*
+     * MRH 24MAR2010:
+     * 	Commented out toStringWithReverseReaction method as it is never called
+     */
 	   //## operation toStringWithReveseReaction() 
-    public String toStringWithReveseReaction(Temperature p_temperature) {
-        //#[ operation toStringWithReveseReaction() 
-        TemplateReaction rr = (TemplateReaction)getReverseReaction();
-        if (rr == null) return getStructure().toChemkinString(false).toString() + '\t' + getReactionTemplate().getName() + '\t' + getKinetics().toChemkinString(calculateHrxn(p_temperature), p_temperature, true);
-        else {
-        	TemplateReaction temp = null;
-        	if (isForward()) temp = this;
-        	else if (isBackward()) temp = rr;
-        	else throw new InvalidReactionDirectionException();
-        	
-        	return temp.getStructure().toChemkinString(false).toString() + '\t' + temp.getReactionTemplate().getName() + '\t' + temp.getKinetics().toChemkinString(calculateHrxn(p_temperature), p_temperature, true);
-        }
-        
-        //#]
-    }
+//    public String toStringWithReveseReaction(Temperature p_temperature) {
+//        //#[ operation toStringWithReveseReaction() 
+//        TemplateReaction rr = (TemplateReaction)getReverseReaction();
+//        if (rr == null) return getStructure().toChemkinString(false).toString() + '\t' + getReactionTemplate().getName() + '\t' + getKinetics().toChemkinString(calculateHrxn(p_temperature), p_temperature, true);
+//        else {
+//        	TemplateReaction temp = null;
+//        	if (isForward()) temp = this;
+//        	else if (isBackward()) temp = rr;
+//        	else throw new InvalidReactionDirectionException();
+//        	
+//        	return temp.getStructure().toChemkinString(false).toString() + '\t' + temp.getReactionTemplate().getName() + '\t' + temp.getKinetics().toChemkinString(calculateHrxn(p_temperature), p_temperature, true);
+//        }
+//        
+//        //#]
+//    }
     
     
     public PDepNetwork getPDepNetwork() {

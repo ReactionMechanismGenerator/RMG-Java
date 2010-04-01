@@ -2028,177 +2028,192 @@ public class ReactionModelGenerator {
         }
 		
     }
-    
-    private void parseRestartFiles() {
-		parseAllSpecies();
-		parseCoreSpecies();
-		parseEdgeSpecies();
-		parseAllReactions();
-		parseCoreReactions();
-		
-	}
+
+    /*
+     * MRH 23MAR2010:
+     * 	Commenting out deprecated parseRestartFiles method
+     */
+//    private void parseRestartFiles() {
+//		parseAllSpecies();
+//		parseCoreSpecies();
+//		parseEdgeSpecies();
+//		parseAllReactions();
+//		parseCoreReactions();
+//		
+//	}
 	
 	
+	/*
+	 * MRH 23MAR2010:
+	 * 	Commenting out deprecated parseEdgeReactions method
+	 */	
+//	private void parseEdgeReactions() {
+//		SpeciesDictionary dictionary = SpeciesDictionary.getInstance();
+//		//HasMap speciesMap = dictionary.dictionary;
+//		try{
+//			File coreReactions = new File("Restart/edgeReactions.txt");
+//			FileReader fr = new FileReader(coreReactions);
+//			BufferedReader reader = new BufferedReader(fr);
+//			String line = ChemParser.readMeaningfulLine(reader);
+//			boolean found = false;
+//			LinkedHashSet reactionSet = new LinkedHashSet();
+//			while (line != null){
+//				Reaction reaction = ChemParser.parseEdgeArrheniusReaction(dictionary,line,1,1);
+//				boolean added = reactionSet.add(reaction);
+//				if (!added){
+//					if (reaction.hasResonanceIsomerAsReactant()){
+//						//Structure reactionStructure = reaction.getStructure();
+//						found = getResonanceStructure(reaction,"reactants", reactionSet);
+//					}
+//					if (reaction.hasResonanceIsomerAsProduct() && !found){
+//						//Structure reactionStructure = reaction.getStructure();
+//						found = getResonanceStructure(reaction,"products", reactionSet);
+//					}
+//					
+//					if (!found){
+//						System.out.println("Cannot add reaction "+line+" to the Reaction Edge. All resonance isomers have already been added");
+//						System.exit(0);
+//					}
+//					else found = false;
+//				}
+//				//Reaction reverse = reaction.getReverseReaction();
+//				//if (reverse != null) reactionSet.add(reverse);
+//				line = ChemParser.readMeaningfulLine(reader);
+//			}
+//			((CoreEdgeReactionModel)getReactionModel()).addReactionSet(reactionSet);
+//		}
+//		catch (IOException e){
+//			System.out.println("Could not read the corespecies restart file");
+//        	System.exit(0);
+//		}
+//		
+//	}
 	
-	private void parseEdgeReactions() {
-		SpeciesDictionary dictionary = SpeciesDictionary.getInstance();
-		//HasMap speciesMap = dictionary.dictionary;
-		try{
-			File coreReactions = new File("Restart/edgeReactions.txt");
-			FileReader fr = new FileReader(coreReactions);
-			BufferedReader reader = new BufferedReader(fr);
-			String line = ChemParser.readMeaningfulLine(reader);
-			boolean found = false;
-			LinkedHashSet reactionSet = new LinkedHashSet();
-			while (line != null){
-				Reaction reaction = ChemParser.parseEdgeArrheniusReaction(dictionary,line,1,1);
-				boolean added = reactionSet.add(reaction);
-				if (!added){
-					if (reaction.hasResonanceIsomerAsReactant()){
-						//Structure reactionStructure = reaction.getStructure();
-						found = getResonanceStructure(reaction,"reactants", reactionSet);
-					}
-					if (reaction.hasResonanceIsomerAsProduct() && !found){
-						//Structure reactionStructure = reaction.getStructure();
-						found = getResonanceStructure(reaction,"products", reactionSet);
-					}
-					
-					if (!found){
-						System.out.println("Cannot add reaction "+line+" to the Reaction Edge. All resonance isomers have already been added");
-						System.exit(0);
-					}
-					else found = false;
-				}
-				//Reaction reverse = reaction.getReverseReaction();
-				//if (reverse != null) reactionSet.add(reverse);
-				line = ChemParser.readMeaningfulLine(reader);
-			}
-			((CoreEdgeReactionModel)getReactionModel()).addReactionSet(reactionSet);
-		}
-		catch (IOException e){
-			System.out.println("Could not read the corespecies restart file");
-        	System.exit(0);
-		}
-		
-	}
+	/*
+	 * MRH 23MAR2010:
+	 * 	Commenting out deprecated parseAllSpecies method
+	 */
+//	public void parseCoreReactions() {
+//		SpeciesDictionary dictionary = SpeciesDictionary.getInstance();
+//		int i=1;
+//		//HasMap speciesMap = dictionary.dictionary;
+//		try{
+//			File coreReactions = new File("Restart/coreReactions.txt");
+//			FileReader fr = new FileReader(coreReactions);
+//			BufferedReader reader = new BufferedReader(fr);
+//			String line = ChemParser.readMeaningfulLine(reader);
+//			boolean found = false;
+//			LinkedHashSet reactionSet = new LinkedHashSet();
+//			while (line != null){
+//				Reaction reaction = ChemParser.parseCoreArrheniusReaction(dictionary,line,1,1);//,((CoreEdgeReactionModel)reactionSystem.reactionModel));
+//				boolean added = reactionSet.add(reaction);
+//				if (!added){
+//					if (reaction.hasResonanceIsomerAsReactant()){
+//						//Structure reactionStructure = reaction.getStructure();
+//						found = getResonanceStructure(reaction,"reactants", reactionSet);
+//					}
+//					if (reaction.hasResonanceIsomerAsProduct() && !found){
+//						//Structure reactionStructure = reaction.getStructure();
+//						found = getResonanceStructure(reaction,"products", reactionSet);
+//					}
+//					
+//					if (!found){
+//						System.out.println("Cannot add reaction "+line+" to the Reaction Core. All resonance isomers have already been added");
+//						//System.exit(0);
+//					}
+//					else found = false;
+//				}
+//				
+//				Reaction reverse = reaction.getReverseReaction();
+//				if (reverse != null) {
+//					reactionSet.add(reverse);
+//					//System.out.println(2 + "\t " + line);
+//				}
+//				
+//				//else System.out.println(1 + "\t" + line);
+//				line = ChemParser.readMeaningfulLine(reader);
+//				i=i+1;
+//			}
+//			((CoreEdgeReactionModel)getReactionModel()).addReactedReactionSet(reactionSet);
+//		}
+//		catch (IOException e){
+//			System.out.println("Could not read the coreReactions restart file");
+//        	System.exit(0);
+//		}
+//		
+//	}
 	
-	public void parseCoreReactions() {
-		SpeciesDictionary dictionary = SpeciesDictionary.getInstance();
-		int i=1;
-		//HasMap speciesMap = dictionary.dictionary;
-		try{
-			File coreReactions = new File("Restart/coreReactions.txt");
-			FileReader fr = new FileReader(coreReactions);
-			BufferedReader reader = new BufferedReader(fr);
-			String line = ChemParser.readMeaningfulLine(reader);
-			boolean found = false;
-			LinkedHashSet reactionSet = new LinkedHashSet();
-			while (line != null){
-				Reaction reaction = ChemParser.parseCoreArrheniusReaction(dictionary,line,1,1);//,((CoreEdgeReactionModel)reactionSystem.reactionModel));
-				boolean added = reactionSet.add(reaction);
-				if (!added){
-					if (reaction.hasResonanceIsomerAsReactant()){
-						//Structure reactionStructure = reaction.getStructure();
-						found = getResonanceStructure(reaction,"reactants", reactionSet);
-					}
-					if (reaction.hasResonanceIsomerAsProduct() && !found){
-						//Structure reactionStructure = reaction.getStructure();
-						found = getResonanceStructure(reaction,"products", reactionSet);
-					}
-					
-					if (!found){
-						System.out.println("Cannot add reaction "+line+" to the Reaction Core. All resonance isomers have already been added");
-						//System.exit(0);
-					}
-					else found = false;
-				}
-				
-				Reaction reverse = reaction.getReverseReaction();
-				if (reverse != null) {
-					reactionSet.add(reverse);
-					//System.out.println(2 + "\t " + line);
-				}
-				
-				//else System.out.println(1 + "\t" + line);
-				line = ChemParser.readMeaningfulLine(reader);
-				i=i+1;
-			}
-			((CoreEdgeReactionModel)getReactionModel()).addReactedReactionSet(reactionSet);
-		}
-		catch (IOException e){
-			System.out.println("Could not read the coreReactions restart file");
-        	System.exit(0);
-		}
-		
-	}
-	
-	private void parseAllReactions() {
-		SpeciesDictionary dictionary = SpeciesDictionary.getInstance();
-		int i=1;
-		//HasMap speciesMap = dictionary.dictionary;
-		try{
-			File allReactions = new File("Restart/allReactions.txt");
-			FileReader fr = new FileReader(allReactions);
-			BufferedReader reader = new BufferedReader(fr);
-			String line = ChemParser.readMeaningfulLine(reader);
-			boolean found = false;
-			LinkedHashSet reactionSet = new LinkedHashSet();
-		OuterLoop:
-			while (line != null){
-				Reaction reaction = ChemParser.parseArrheniusReaction(dictionary,line,1,1,((CoreEdgeReactionModel)getReactionModel()));
-				
-				if (((CoreEdgeReactionModel)getReactionModel()).categorizeReaction(reaction)==-1){
-					boolean added = reactionSet.add(reaction);
-					if (!added){
-						found = false;
-						if (reaction.hasResonanceIsomerAsReactant()){
-							//Structure reactionStructure = reaction.getStructure();
-							found = getResonanceStructure(reaction,"reactants", reactionSet);
-						}
-						if (reaction.hasResonanceIsomerAsProduct() && !found){
-							//Structure reactionStructure = reaction.getStructure();
-							found = getResonanceStructure(reaction,"products", reactionSet);
-						}
-						
-						if (!found){
-							Iterator iter = reactionSet.iterator();
-							while (iter.hasNext()){
-								Reaction reacTemp = (Reaction)iter.next();
-								if (reacTemp.equals(reaction)){
-									reactionSet.remove(reacTemp);
-									reactionSet.add(reaction);
-									break;
-								}
-							}
-							
-							//System.out.println("Cannot add reaction "+line+" to the Reaction Core. All resonance isomers have already been added");
-							//System.exit(0);
-						}
-						
-						//else found = false;
-					}
-				}
-				
-				
-				/*Reaction reverse = reaction.getReverseReaction();
-				 if (reverse != null && ((CoreEdgeReactionModel)reactionSystem.reactionModel).isReactedReaction(reaction)) {
-				 reactionSet.add(reverse);
-				 //System.out.println(2 + "\t " + line);
-				 }*/
-				//else System.out.println(1 + "\t" + line);
-				
-				i=i+1;
-				
-				line = ChemParser.readMeaningfulLine(reader);
-			}
-			((CoreEdgeReactionModel)getReactionModel()).addReactionSet(reactionSet);
-		}
-		catch (IOException e){
-			System.out.println("Could not read the corespecies restart file");
-        	System.exit(0);
-		}
-		
-	}
+	/*
+	 * MRH 23MAR2010:
+	 * 	Commenting out deprecated parseAllSpecies method
+	 */
+//	private void parseAllReactions() {
+//		SpeciesDictionary dictionary = SpeciesDictionary.getInstance();
+//		int i=1;
+//		//HasMap speciesMap = dictionary.dictionary;
+//		try{
+//			File allReactions = new File("Restart/allReactions.txt");
+//			FileReader fr = new FileReader(allReactions);
+//			BufferedReader reader = new BufferedReader(fr);
+//			String line = ChemParser.readMeaningfulLine(reader);
+//			boolean found = false;
+//			LinkedHashSet reactionSet = new LinkedHashSet();
+//		OuterLoop:
+//			while (line != null){
+//				Reaction reaction = ChemParser.parseArrheniusReaction(dictionary,line,1,1,((CoreEdgeReactionModel)getReactionModel()));
+//				
+//				if (((CoreEdgeReactionModel)getReactionModel()).categorizeReaction(reaction)==-1){
+//					boolean added = reactionSet.add(reaction);
+//					if (!added){
+//						found = false;
+//						if (reaction.hasResonanceIsomerAsReactant()){
+//							//Structure reactionStructure = reaction.getStructure();
+//							found = getResonanceStructure(reaction,"reactants", reactionSet);
+//						}
+//						if (reaction.hasResonanceIsomerAsProduct() && !found){
+//							//Structure reactionStructure = reaction.getStructure();
+//							found = getResonanceStructure(reaction,"products", reactionSet);
+//						}
+//						
+//						if (!found){
+//							Iterator iter = reactionSet.iterator();
+//							while (iter.hasNext()){
+//								Reaction reacTemp = (Reaction)iter.next();
+//								if (reacTemp.equals(reaction)){
+//									reactionSet.remove(reacTemp);
+//									reactionSet.add(reaction);
+//									break;
+//								}
+//							}
+//							
+//							//System.out.println("Cannot add reaction "+line+" to the Reaction Core. All resonance isomers have already been added");
+//							//System.exit(0);
+//						}
+//						
+//						//else found = false;
+//					}
+//				}
+//				
+//				
+//				/*Reaction reverse = reaction.getReverseReaction();
+//				 if (reverse != null && ((CoreEdgeReactionModel)reactionSystem.reactionModel).isReactedReaction(reaction)) {
+//				 reactionSet.add(reverse);
+//				 //System.out.println(2 + "\t " + line);
+//				 }*/
+//				//else System.out.println(1 + "\t" + line);
+//				
+//				i=i+1;
+//				
+//				line = ChemParser.readMeaningfulLine(reader);
+//			}
+//			((CoreEdgeReactionModel)getReactionModel()).addReactionSet(reactionSet);
+//		}
+//		catch (IOException e){
+//			System.out.println("Could not read the corespecies restart file");
+//        	System.exit(0);
+//		}
+//		
+//	}
 	
 	
 	private boolean getResonanceStructure(Reaction p_Reaction, String rOrP, LinkedHashSet reactionSet) {
@@ -2368,56 +2383,60 @@ public class ReactionModelGenerator {
 		return speciesSet;
 	}
 	
-	public LinkedHashSet parseAllSpecies() {
-		//		String restartFileContent ="";
-		int speciesCount = 0;
-		LinkedHashSet speciesSet = new LinkedHashSet();
-		
-		boolean added;
-		try{
-			long initialTime = System.currentTimeMillis();
-			
-			File coreSpecies = new File ("allSpecies.txt");
-			BufferedReader reader = new BufferedReader(new FileReader(coreSpecies));
-			String line = ChemParser.readMeaningfulLine(reader);
-			int i=0;
-			while (line!=null) {
-				i++;
-    			StringTokenizer st = new StringTokenizer(line);
-    			String index = st.nextToken();
-    			String name = null;
-    			if (!index.startsWith("(")) name = index;
-    			else name = st.nextToken().trim();
-				int ID = getID(name);
-				
-				name = getName(name);
-    			Graph g = ChemParser.readChemGraph(reader);
-    			ChemGraph cg = null;
-    			try {
-    				cg = ChemGraph.make(g);
-    			}
-    			catch (ForbiddenStructureException e) {
-    				System.out.println("Forbidden Structure:\n" + e.getMessage());
-    				System.exit(0);
-    			}
-    			Species species;
-    			if (ID == 0)
-    				species = Species.make(name,cg);
-    			else 
-    				species = Species.make(name,cg,ID);
-    			speciesSet.add(species);
-    			double flux = 0;
-    			int species_type = 1; 
-     			line = ChemParser.readMeaningfulLine(reader);
-     			System.out.println(line);
-    		}
-		}
-		catch (IOException e){
-			System.out.println("Could not read the allSpecies restart file");
-        	System.exit(0);
-		}
-		return speciesSet;
-	}
+	/*
+	 * MRH 23MAR2010:
+	 * 	Commenting out deprecated parseAllSpecies method
+	 */
+//	public LinkedHashSet parseAllSpecies() {
+//		//		String restartFileContent ="";
+//		int speciesCount = 0;
+//		LinkedHashSet speciesSet = new LinkedHashSet();
+//		
+//		boolean added;
+//		try{
+//			long initialTime = System.currentTimeMillis();
+//			
+//			File coreSpecies = new File ("allSpecies.txt");
+//			BufferedReader reader = new BufferedReader(new FileReader(coreSpecies));
+//			String line = ChemParser.readMeaningfulLine(reader);
+//			int i=0;
+//			while (line!=null) {
+//				i++;
+//    			StringTokenizer st = new StringTokenizer(line);
+//    			String index = st.nextToken();
+//    			String name = null;
+//    			if (!index.startsWith("(")) name = index;
+//    			else name = st.nextToken().trim();
+//				int ID = getID(name);
+//				
+//				name = getName(name);
+//    			Graph g = ChemParser.readChemGraph(reader);
+//    			ChemGraph cg = null;
+//    			try {
+//    				cg = ChemGraph.make(g);
+//    			}
+//    			catch (ForbiddenStructureException e) {
+//    				System.out.println("Forbidden Structure:\n" + e.getMessage());
+//    				System.exit(0);
+//    			}
+//    			Species species;
+//    			if (ID == 0)
+//    				species = Species.make(name,cg);
+//    			else 
+//    				species = Species.make(name,cg,ID);
+//    			speciesSet.add(species);
+//    			double flux = 0;
+//    			int species_type = 1; 
+//     			line = ChemParser.readMeaningfulLine(reader);
+//     			System.out.println(line);
+//    		}
+//		}
+//		catch (IOException e){
+//			System.out.println("Could not read the allSpecies restart file");
+//        	System.exit(0);
+//		}
+//		return speciesSet;
+//	}
 	
 	private String getName(String name) {
 		//int id;
@@ -2462,36 +2481,40 @@ public class ReactionModelGenerator {
 		return id;
 	}
 	
-	private void parseEdgeSpecies() {
-		//		String restartFileContent ="";
-		SpeciesDictionary dictionary = SpeciesDictionary.getInstance();
-		try{
-			File edgeSpecies = new File ("Restart/edgeSpecies.txt");
-			FileReader fr = new FileReader(edgeSpecies);
-			BufferedReader reader = new BufferedReader(fr);
-			String line = ChemParser.readMeaningfulLine(reader);
-			//HashSet speciesSet = new HashSet();
-			
-			while (line!=null) {
-				
-    			StringTokenizer st = new StringTokenizer(line);
-    			String index = st.nextToken();
-				int ID = Integer.parseInt(index);
-				Species spe = dictionary.getSpeciesFromID(ID);
-				if (spe == null)
-					System.out.println("There was no species with ID "+ID +" in the species dictionary");
-				//reactionSystem.reactionModel = new CoreEdgeReactionModel();
-				((CoreEdgeReactionModel)getReactionModel()).addUnreactedSpecies(spe);
-				line = ChemParser.readMeaningfulLine(reader);
-			}
-			
-		}
-		catch (IOException e){
-			System.out.println("Could not read the edgepecies restart file");
-        	System.exit(0);
-		}
-		
-	}
+	/*
+	 * MRH 23MAR2010:
+	 * 	Commenting out deprecated parseAllSpecies method
+	 */
+//	private void parseEdgeSpecies() {
+//		//		String restartFileContent ="";
+//		SpeciesDictionary dictionary = SpeciesDictionary.getInstance();
+//		try{
+//			File edgeSpecies = new File ("Restart/edgeSpecies.txt");
+//			FileReader fr = new FileReader(edgeSpecies);
+//			BufferedReader reader = new BufferedReader(fr);
+//			String line = ChemParser.readMeaningfulLine(reader);
+//			//HashSet speciesSet = new HashSet();
+//			
+//			while (line!=null) {
+//				
+//    			StringTokenizer st = new StringTokenizer(line);
+//    			String index = st.nextToken();
+//				int ID = Integer.parseInt(index);
+//				Species spe = dictionary.getSpeciesFromID(ID);
+//				if (spe == null)
+//					System.out.println("There was no species with ID "+ID +" in the species dictionary");
+//				//reactionSystem.reactionModel = new CoreEdgeReactionModel();
+//				((CoreEdgeReactionModel)getReactionModel()).addUnreactedSpecies(spe);
+//				line = ChemParser.readMeaningfulLine(reader);
+//			}
+//			
+//		}
+//		catch (IOException e){
+//			System.out.println("Could not read the edgepecies restart file");
+//        	System.exit(0);
+//		}
+//		
+//	}
 	
 	
 	/*private int calculateAllReactionsinReactionTemplate() {
@@ -2601,69 +2624,77 @@ public class ReactionModelGenerator {
 		
 	}
 	
+    /*
+     * MRH 25MAR2010
+     * This method is no longer used
+     */
 	/*Only write the forward reactions in the model core.
 	 The reverse reactions are generated from the forward reactions.*/
 	//10/25/07 gmagoon: added reaction system and reaction time as parameters and eliminated use of Global.temperature
-	private void writeEdgeReactions(ReactionSystem p_rs, ReactionTime p_time) {
-		StringBuilder restartFileContent =new StringBuilder();
-		int reactionCount = 1;
-		try{
-			File coreSpecies = new File ("Restart/edgeReactions.txt");
-			FileWriter fw = new FileWriter(coreSpecies);
-			for(Iterator iter=((CoreEdgeReactionModel)getReactionModel()).getUnreactedReactionSet().iterator();iter.hasNext();){
-				
-				Reaction reaction = (Reaction) iter.next();
-				//if (reaction.getDirection()==1){
-				//restartFileContent = restartFileContent + "("+ reactionCount + ") "+species.getChemkinName() + "  " + reactionSystem.getPresentConcentration(species) + " (mol/cm3) \n";
-				restartFileContent = restartFileContent.append(reaction.toRestartString(p_rs.getTemperature(p_time)) + "\n");
-				reactionCount = reactionCount + 1;
-				//}
-			}
-			//restartFileContent += "\nEND";
-			fw.write(restartFileContent.toString());
-			fw.close();
-		}
-		catch (IOException e){
-			System.out.println("Could not write the restart edgereactions file");
-        	System.exit(0);
-		}
-		
-	}
+//	private void writeEdgeReactions(ReactionSystem p_rs, ReactionTime p_time) {
+//		StringBuilder restartFileContent =new StringBuilder();
+//		int reactionCount = 1;
+//		try{
+//			File coreSpecies = new File ("Restart/edgeReactions.txt");
+//			FileWriter fw = new FileWriter(coreSpecies);
+//			for(Iterator iter=((CoreEdgeReactionModel)getReactionModel()).getUnreactedReactionSet().iterator();iter.hasNext();){
+//				
+//				Reaction reaction = (Reaction) iter.next();
+//				//if (reaction.getDirection()==1){
+//				//restartFileContent = restartFileContent + "("+ reactionCount + ") "+species.getChemkinName() + "  " + reactionSystem.getPresentConcentration(species) + " (mol/cm3) \n";
+//				restartFileContent = restartFileContent.append(reaction.toRestartString(p_rs.getTemperature(p_time)) + "\n");
+//				reactionCount = reactionCount + 1;
+//				//}
+//			}
+//			//restartFileContent += "\nEND";
+//			fw.write(restartFileContent.toString());
+//			fw.close();
+//		}
+//		catch (IOException e){
+//			System.out.println("Could not write the restart edgereactions file");
+//        	System.exit(0);
+//		}
+//		
+//	}
 	
+    /*
+     * MRH 25MAR2010:
+     * 	This method is no longer used
+     */
 	//10/25/07 gmagoon: added reaction system and reaction time as parameters and eliminated use of Global.temperature
-	private void writeAllReactions(ReactionSystem p_rs, ReactionTime p_time) {
-		StringBuilder restartFileContent = new StringBuilder();
-		int reactionCount = 1;
-		try{
-			File allReactions = new File ("Restart/allReactions.txt");
-			FileWriter fw = new FileWriter(allReactions);
-			for(Iterator iter=getReactionModel().getReaction();iter.hasNext();){
-				
-				Reaction reaction = (Reaction) iter.next();
-				
-				//restartFileContent = restartFileContent + "("+ reactionCount + ") "+species.getChemkinName() + "  " + reactionSystem.getPresentConcentration(species) + " (mol/cm3) \n";
-				restartFileContent = restartFileContent.append(reaction.toRestartString(p_rs.getTemperature(p_time)) + "\n");
-				
-			}
-			
-			for(Iterator iter=((CoreEdgeReactionModel)getReactionModel()).getUnreactedReactionSet().iterator();iter.hasNext();){
-				
-				Reaction reaction = (Reaction) iter.next();
-				//if (reaction.getDirection()==1){
-				//restartFileContent = restartFileContent + "("+ reactionCount + ") "+species.getChemkinName() + "  " + reactionSystem.getPresentConcentration(species) + " (mol/cm3) \n";
-				restartFileContent = restartFileContent.append(reaction.toRestartString(p_rs.getTemperature(p_time)) + "\n");
-				
-			}
-			//restartFileContent += "\nEND";
-			fw.write(restartFileContent.toString());
-			fw.close();
-		}
-		catch (IOException e){
-			System.out.println("Could not write the restart edgereactions file");
-        	System.exit(0);
-		}
-		
-	}
+//	private void writeAllReactions(ReactionSystem p_rs, ReactionTime p_time) {
+//		StringBuilder restartFileContent = new StringBuilder();
+//		int reactionCount = 1;
+//		try{
+//			File allReactions = new File ("Restart/allReactions.txt");
+//			FileWriter fw = new FileWriter(allReactions);
+//			for(Iterator iter=getReactionModel().getReaction();iter.hasNext();){
+//				
+//				Reaction reaction = (Reaction) iter.next();
+//				
+//				//restartFileContent = restartFileContent + "("+ reactionCount + ") "+species.getChemkinName() + "  " + reactionSystem.getPresentConcentration(species) + " (mol/cm3) \n";
+//				restartFileContent = restartFileContent.append(reaction.toRestartString(p_rs.getTemperature(p_time)) + "\n");
+//				
+//			}
+//			
+//			for(Iterator iter=((CoreEdgeReactionModel)getReactionModel()).getUnreactedReactionSet().iterator();iter.hasNext();){
+//				
+//				Reaction reaction = (Reaction) iter.next();
+//				//if (reaction.getDirection()==1){
+//				//restartFileContent = restartFileContent + "("+ reactionCount + ") "+species.getChemkinName() + "  " + reactionSystem.getPresentConcentration(species) + " (mol/cm3) \n";
+//				restartFileContent = restartFileContent.append(reaction.toRestartString(p_rs.getTemperature(p_time)) + "\n");
+//				
+//			}
+//			//restartFileContent += "\nEND";
+//			fw.write(restartFileContent.toString());
+//			fw.close();
+//		}
+//		catch (IOException e){
+//			System.out.println("Could not write the restart edgereactions file");
+//        	System.exit(0);
+//		}
+//		
+//	}
 	
 	private void writeEdgeSpecies() {
 		BufferedWriter bw = null;
@@ -2694,31 +2725,35 @@ public class ReactionModelGenerator {
         }
 	}
 	
+	/*
+	 * MRH 25MAR2010:
+	 * 	This method is no longer used
+	 */
 	//10/25/07 gmagoon: added reaction system and reaction time as parameters and eliminated use of Global.temperature
-	private void writeCoreReactions(ReactionSystem p_rs, ReactionTime p_time) {
-		StringBuilder restartFileContent = new StringBuilder();
-		int reactionCount = 0;
-		try{
-			File coreSpecies = new File ("Restart/coreReactions.txt");
-			FileWriter fw = new FileWriter(coreSpecies);
-			for(Iterator iter=getReactionModel().getReaction();iter.hasNext();){
-				
-				Reaction reaction = (Reaction) iter.next();
-				if (reaction.getDirection()==1){
-					//restartFileContent = restartFileContent + "("+ reactionCount + ") "+species.getChemkinName() + "  " + reactionSystem.getPresentConcentration(species) + " (mol/cm3) \n";
-					restartFileContent = restartFileContent.append(reaction.toRestartString(p_rs.getTemperature(p_time)) + "\n");
-					reactionCount = reactionCount + 1;
-				}
-			}
-			//restartFileContent += "\nEND";
-			fw.write(restartFileContent.toString());
-			fw.close();
-		}
-		catch (IOException e){
-			System.out.println("Could not write the restart corereactions file");
-        	System.exit(0);
-		}
-	}
+//	private void writeCoreReactions(ReactionSystem p_rs, ReactionTime p_time) {
+//		StringBuilder restartFileContent = new StringBuilder();
+//		int reactionCount = 0;
+//		try{
+//			File coreSpecies = new File ("Restart/coreReactions.txt");
+//			FileWriter fw = new FileWriter(coreSpecies);
+//			for(Iterator iter=getReactionModel().getReaction();iter.hasNext();){
+//				
+//				Reaction reaction = (Reaction) iter.next();
+//				if (reaction.getDirection()==1){
+//					//restartFileContent = restartFileContent + "("+ reactionCount + ") "+species.getChemkinName() + "  " + reactionSystem.getPresentConcentration(species) + " (mol/cm3) \n";
+//					restartFileContent = restartFileContent.append(reaction.toRestartString(p_rs.getTemperature(p_time)) + "\n");
+//					reactionCount = reactionCount + 1;
+//				}
+//			}
+//			//restartFileContent += "\nEND";
+//			fw.write(restartFileContent.toString());
+//			fw.close();
+//		}
+//		catch (IOException e){
+//			System.out.println("Could not write the restart corereactions file");
+//        	System.exit(0);
+//		}
+//	}
 	
 	private void writeCoreSpecies() {
 		BufferedWriter bw = null;
@@ -2794,7 +2829,7 @@ public class ReactionModelGenerator {
 					}
 					else {
 						//bw.write(reaction.toChemkinString(new Temperature(298,"K")));
-						bw_rxns.write(reaction.toRestartString(new Temperature(298,"K")));
+						bw_rxns.write(reaction.toRestartString(new Temperature(298,"K"),false));
 						bw_rxns.newLine();
 					}
 				}
@@ -2843,11 +2878,11 @@ public class ReactionModelGenerator {
 				Reaction reaction = (Reaction) iter.next();
 				if (reaction.isForward()) {
 					//bw.write(reaction.toChemkinString(new Temperature(298,"K")));
-					bw.write(reaction.toRestartString(new Temperature(298,"K")));
+					bw.write(reaction.toRestartString(new Temperature(298,"K"),false));
 					bw.newLine();
 				} else if (reaction.getReverseReaction().isForward()) {
 					//bw.write(reaction.getReverseReaction().toChemkinString(new Temperature(298,"K")));
-					bw.write(reaction.getReverseReaction().toRestartString(new Temperature(298,"K")));
+					bw.write(reaction.getReverseReaction().toRestartString(new Temperature(298,"K"),false));
 					bw.newLine();
 				} else
 					System.out.println("Could not determine forward direction for following rxn: " + reaction.toString());
@@ -3170,7 +3205,7 @@ public class ReactionModelGenerator {
 	        		while (rxnIter.hasNext()) {
 	        			Reaction old = (Reaction)rxnIter.next();
 	        			if (old.equals(r)) {
-	        				old.addAdditionalKinetics(r.getKinetics(),1);
+	        				old.addAdditionalKinetics(r.getKinetics()[0],1);
 	        				foundRxn = true;
 	        				break;
 	        			}
@@ -3229,7 +3264,7 @@ public class ReactionModelGenerator {
 	        		while (rxnIter.hasNext()) {
 	        			Reaction old = (Reaction)rxnIter.next();
 	        			if (old.equals(r)) {
-	        				old.addAdditionalKinetics(r.getKinetics(),1);
+	        				old.addAdditionalKinetics(r.getKinetics()[0],1);
 	        				foundRxn = true;
 	        				break;
 	        			}
@@ -3750,7 +3785,8 @@ public class ReactionModelGenerator {
 			    		comments += st.nextToken();
 			    	}
 			    	
-			        ArrheniusKinetics k = new ArrheniusKinetics(uA,un,uE,"",1,"",comments);
+			        ArrheniusKinetics[] k = new ArrheniusKinetics[1];
+			        k[0] = new ArrheniusKinetics(uA,un,uE,"",1,"",comments);
 			        Reaction pathRxn = new Reaction();
 					//				        if (direction == 1)
 					//				        	pathRxn = Reaction.makeReaction(s,k,generateReverse);
@@ -3761,7 +3797,7 @@ public class ReactionModelGenerator {
 			        PDepIsomer Reactants = new PDepIsomer(r);
 			        PDepIsomer Products = new PDepIsomer(p);
 			        PDepReaction pdeppathrxn = new PDepReaction(Reactants,Products,pathRxn);
-			        newNetwork.addReaction(pdeppathrxn);
+			        newNetwork.addReaction(pdeppathrxn,true);
 					
 					line = ChemParser.readMeaningfulLine(reader);					
 				}
