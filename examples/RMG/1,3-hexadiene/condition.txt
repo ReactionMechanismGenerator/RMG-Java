@@ -50,7 +50,7 @@ Ar 0.0e-6 (mol/cm3)
 END
 
 SpectroscopicDataEstimator: FrequencyGroups
-PressureDependence: ModifiedStrongCollision
+PressureDependence: ReservoirState
 PDepKineticsModel: Chebyshev
 
 FinishController:
