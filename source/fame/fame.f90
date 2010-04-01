@@ -10,7 +10,8 @@ program fame
 
     use NetworkModule
     use IOModule
-    
+    use ModelModule
+
     implicit none
 
     type(Network) net
@@ -20,19 +21,19 @@ program fame
     integer :: method, model
     integer, dimension(1:10) :: modelOptions
     real(8), dimension(:,:,:,:), allocatable :: K
-    real(8), dimension(:,:,:,:), allocatable :: chebyshev
+    real(8), dimension(:,:,:,:), allocatable :: chebyshevCoeffs
     type(ArrheniusKinetics), dimension(:,:,:), allocatable :: pDepArrhenius
     integer :: nIsom, nReac, nProd, nGrains, nT, nP
 
-    integer i
+    integer i, j
 
     ! Use unit 1 for logging; file will be called fame.log or fort.1
-    open(unit=1, file='fame.log')
+    open(1, file='fame.log')
 
     ! Log header
 
     ! Read network information (from stdin)
-    write (1,fmt='(A)') 'Reading network information...'
+    write (unit=1,fmt='(A)') 'Reading network information...'
     call readInput(net, Tlist, Plist, grainSize, numGrains, method, model, modelOptions)
     nIsom = 0
     nReac = 0
@@ -69,18 +70,37 @@ program fame
         Elist, nGrains, Tlist, nT, Plist, nP, method, K)
 
     ! Fit interpolation model
-    !write (1,fmt='(A)') 'Fitting interpolation model...'
-    !call network_fitInterpolationModel(net, Tlist, nT, Plist, nP, K, nIsom+nReac+nProd, model, modelOptions)
-
+    allocate( chebyshevCoeffs(1:modelOptions(1), 1:modelOptions(2), 1:nIsom+nReac+nProd, 1:nIsom+nReac+nProd) )
+    allocate( pDepArrhenius(1:nP, 1:nIsom+nReac+nProd, 1:nIsom+nReac+nProd) )
+    if (model == 1) then
+        write (1,fmt='(A)') 'Fitting Chebyshev interpolation model...'
+        do i = 1, nIsom+nReac+nProd
+            do j = 1, nIsom+nReac+nProd
+                if (i /= j) then
+                    call fitChebyshevModel(K(:,:,i,j), Tlist, Plist, modelOptions(1), modelOptions(2), chebyshevCoeffs(:,:,i,j))
+                end if
+            end do
+        end do
+    elseif (model == 2) then
+        write (1,fmt='(A)') 'Fitting PDepArrhenius interpolation model...'
+        do i = 1, nIsom+nReac+nProd
+            do j = 1, nIsom+nReac+nProd
+                if (i /= j) then
+                    call fitPDepArrheniusModel(K(:,:,i,j), Tlist, Plist, pDepArrhenius(:,i,j))
+                end if
+            end do
+        end do
+    end if
+    
     ! Write results (to stdout)
     write (1,fmt='(A)') 'Writing results...'
     call writeOutput(net, nIsom+nReac+nProd, Tlist, nT, Plist, nP, Elist, nGrains, &
-        method, K, model, modelOptions, chebyshev, pDepArrhenius)
+        method, K, model, modelOptions, chebyshevCoeffs, pDepArrhenius)
 
     ! Close log file
     close(1)
 
-    deallocate(K)
+    deallocate(K, chebyshevCoeffs, pDepArrhenius)
 
 end program
 
