@@ -624,15 +624,6 @@ public class FastMasterEqn implements PDepKineticsEstimator {
 					n = kin.getNValue();
 				}
 
-				// Arrhenius parameters
-				if (Ea < 0) {
-					System.out.println("Warning: Adjusted activation energy of reaction " +
-							rxn.toString() + " from " + Double.toString(Ea) +
-							" kcal/mol to 0 kcal/mol for FAME calculation.");
-					Ea = 0;
-				}
-
-
 				input += "# The reaction equation, in the form A + B --> C + D\n";
 				input += rxn.toString() + "\n";
 
@@ -641,7 +632,10 @@ public class FastMasterEqn implements PDepKineticsEstimator {
 				input += Integer.toString(isomerList.indexOf(rxn.getProduct()) + 1) + "\n";
 
 				input += "# Ground-state energy; allowed units are J/mol, kJ/mol, cal/mol, kcal/mol, or cm^-1\n";
-				input += "J/mol " + Double.toString((Ea + rxn.getReactant().calculateH(stdTemp)) * 4184) + "\n";
+				if (Ea < 0.0)
+					input += "J/mol " + Double.toString((rxn.getReactant().calculateH(stdTemp)) * 4184) + "\n";
+				else
+					input += "J/mol " + Double.toString((Ea + rxn.getReactant().calculateH(stdTemp)) * 4184) + "\n";
 
 				input += "# High-pressure-limit kinetics model k(T):\n";
 				input += "#	Option 1: Arrhenius\n";

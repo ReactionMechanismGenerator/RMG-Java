@@ -648,11 +648,21 @@ contains
         real(8), dimension(:), intent(in)	:: 	E
         real(8), dimension(:), intent(out)	:: 	k
 
-        real(8) dE
+        real(8) dE, A, n, Ea
         integer		:: r, s
 
+        ! We can't use a negative activation energy for this method, so we
+        ! put it in the preexponential if it is encountered.
+        A = kinetics%A
+        n = kinetics%n
+        Ea = kinetics%Ea
+        if (Ea < 0) then
+            A = A * exp(-Ea / 8.314472 / T)
+            Ea = 0.0
+        end if
+
         dE = E(2) - E(1)
-        s = floor(kinetics%Ea / dE)
+        s = floor(Ea / dE)
         if (s < 0) s = 0
 
         ! Determine rate coefficients using inverse Laplace transform
@@ -660,7 +670,7 @@ contains
             if (s >= r .or. rho(r) == 0) then
                 k(r) = 0
             else
-                k(r) = kinetics%A * (T ** kinetics%n) * rho(r - s) / rho(r)
+                k(r) = A * (T ** n) * rho(r - s) / rho(r)
             end if
         end do
 
