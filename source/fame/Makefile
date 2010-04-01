@@ -16,8 +16,7 @@ BINDIR=../../bin
 # The Fortran 90 compiler to use and flags to use when compiling Fortran 90 
 # code
 F90=g95
-#F90FLAGS=-fmod=$(BUILDDIR) -ftrace=full
-F90FLAGS=-Wall -fno-second-underscore -O3 -funroll-loops
+F90FLAGS=-fmod=$(BUILDDIR) -ftrace=full
 
 LDFLAGS= $(F90_EXTRA_LDFLAGS) -lpthread -lblas -llapack
 
