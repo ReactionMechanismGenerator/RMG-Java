@@ -335,6 +335,8 @@ contains
 		! Convert density of states from (cm^-1)^-1 to mol/J
 		densStates = densStates / conv
 
+        deallocate(vib, rot, hind)
+
     end subroutine
 
     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -524,6 +526,9 @@ contains
         integer index, i, r
 
         ! Initialize density of states arrays
+        if (.not. allocated(isom%densStates)) then
+            allocate(isom%densStates(1:nGrains))
+        end if
         do r = 1, nGrains
             isom%densStates(r) = 0.0
             densStates(r) = 0.0
@@ -743,6 +748,7 @@ contains
 			dE = dE0
         end if
 
+        if (allocated(Elist)) deallocate(Elist)
         allocate(Elist(1:nGrains))
         do r = 1, nGrains
             Elist(r) = Emin + (r - 1) * dE
@@ -793,7 +799,7 @@ contains
 			Emax = ceiling(Emax0 + mult * 8.314472 * Tmax)
 
 			call network_getEnergyGrains(Emin, Emax, dE, nGrains, Elist)
-			call isomer_getDensityOfStates(net, isom, Elist, nGrains)
+            call isomer_getDensityOfStates(net, isom, Elist, nGrains)
 			call isomer_getEqDist(isom, Elist, nGrains, Tmax)
 
 			! Find maximum of distribution
@@ -900,7 +906,6 @@ contains
         integer, intent(in) :: method
         real(8), dimension(1:nIsom+nReac+nProd,1:nIsom+nReac+nProd), intent(out) :: K
 
-        real(8), dimension(1:nGrains) :: densStates0
         real(8), dimension(1:nIsom,1:nGrains) :: densStates
         real(8), dimension(1:nIsom+nReac+nProd) :: Eres
         real(8), dimension(1:nIsom) :: E0
@@ -974,13 +979,12 @@ contains
             do i = 1, nIsom
                 E0(i) = net%isomers(i)%E0
                 collFreq(i) = net%isomers(i)%collFreq
-                densStates0 = net%isomers(i)%densStates
-                call collisionmatrix(T, P, Elist, collFreq, densStates0, E0(i), dEdown, Mcoll(i,:,:), msg)
+                call collisionMatrix(T, P, Elist, collFreq, net%isomers(i)%densStates, E0(i), dEdown, nGrains, Mcoll(i,:,:), msg)
             end do
-
+            
             call estimateratecoefficients_rs(T, P, Elist, Mcoll, densStates, E0, Eres, &
                 Kij, Fim, Gnj, dEdown, nIsom, nReac, nProd, nGrains, K, msg)
-
+            
         end if
 
         ! Check for validity of phenomenological rate coefficients
@@ -993,6 +997,7 @@ contains
             end do
         end do
         if (invalidRate == 1) then
+            write (*,fmt='(A)') 'ERROR: One ore more rate coefficients not properly estimated. See fame.log for details.'
             write (1,fmt='(A)') 'ERROR: One ore more rate coefficients not properly estimated.'
             write (1,*) 'Temperature =', T, 'K, Pressure =', P, 'Pa, Rates ='
             do i = 1, nIsom+nReac+nProd
