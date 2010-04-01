@@ -57,8 +57,8 @@ module NetworkModule
 
     type Reaction
         character(len=256) :: equation		        ! Chemical reaction equation
-        integer	:: reac                             ! Isomer wells connected to transition state
-        integer	:: prod                             ! Isomer wells connected to transition state
+        integer :: reac                             ! Isomer wells connected to transition state
+        integer :: prod                             ! Isomer wells connected to transition state
         real(8) :: E0                               ! Ground-state electronic + zero-point energy of transition state in kJ/mol
         type(ArrheniusKinetics) :: arrhenius        ! Arrhenius kinetics for high pressure limit
         real(8), dimension(:), allocatable :: kf    ! Microcanonical forward reaction rate in s^-1
@@ -76,11 +76,13 @@ contains
 
     function species_getHeatCapacity(thermo, T) result(Cp)
 
-        type(ThermoData), intent(in)	:: thermo
-        real(8), intent(in)				:: T
+        type(ThermoData), intent(in) :: thermo
+        real(8), intent(in) :: T
         real(8)	Cp
 
         real(8) slope, intercept
+
+        Cp = 0.0
 
         if (T < 298.0) then
             write (0, fmt='(A)') 'Invalid temperature for heat capacity calculation.'
@@ -119,8 +121,8 @@ contains
 
     function species_getEnthalpy(thermo, T) result(H)
 
-        type(ThermoData), intent(in)	:: thermo
-        real(8), intent(in)				:: T
+        type(ThermoData), intent(in) :: thermo
+        real(8), intent(in) :: T
         real(8)	H
 
         real(8) slope, intercept
@@ -196,8 +198,8 @@ contains
 
     function species_getEntropy(thermo, T) result(S)
 
-        type(ThermoData), intent(in)	:: thermo
-        real(8), intent(in)				:: T
+        type(ThermoData), intent(in) :: thermo
+        real(8), intent(in) :: T
         real(8)	S
 
         real(8) slope, intercept
@@ -273,8 +275,8 @@ contains
 
     function species_getFreeEnergy(thermo, T) result(G)
 
-        type(ThermoData), intent(in)	:: thermo
-        real(8), intent(in)				:: T
+        type(ThermoData), intent(in) :: thermo
+        real(8), intent(in) :: T
         real(8)	G
 
         G = species_getEnthalpy(thermo, T) - T * species_getEntropy(thermo, T)
@@ -289,7 +291,7 @@ contains
         real(8), dimension(1:nGrains), intent(out) :: densStates
 
         real(8), dimension(1:nGrains) :: Elist0
-        real(8) Emin, Emax, dE, conv
+        real(8) Emin, dE, conv
 
         real(8), dimension(:), allocatable :: vib
         real(8), dimension(:), allocatable :: rot
@@ -299,16 +301,15 @@ contains
 
         integer i, r
 
-		! Create energies in cm^-1 at which to evaluate the density of states
-		conv = 6.626e-34 * 2.9979e10 * 6.022e23 ! [=] J/mol/cm^-1
-		Emin = minval(Elist) / conv
-		Emax = maxval(Elist) / conv
-		dE = (Elist(2) - Elist(1)) / conv
+        ! Create energies in cm^-1 at which to evaluate the density of states
+        conv = 6.626e-34 * 2.9979e10 * 6.022e23 ! [=] J/mol/cm^-1
+        Emin = minval(Elist) / conv
+        dE = (Elist(2) - Elist(1)) / conv
         do r = 1, nGrains
             Elist0(r) = Emin + (r - 1) * dE
         end do
 
-		! Prepare inputs for density of states function
+        ! Prepare inputs for density of states function
         allocate( vib(1:size(spec%spectral%vibFreq)) )
         do i = 1, size(spec%spectral%vibFreq)
             vib(i) = spec%spectral%vibFreq(i)
@@ -329,11 +330,11 @@ contains
         symm = spec%spectral%symmNum
 
         ! Calculate the density of states
-		call densityOfStates(Elist0, nGrains, vib, size(vib), rot, size(rot), &
+        call densityOfStates(Elist0, nGrains, vib, size(vib), rot, size(rot), &
             hind, size(hind), symm, linear, densStates, msg)
 
-		! Convert density of states from (cm^-1)^-1 to mol/J
-		densStates = densStates / conv
+        ! Convert density of states from (cm^-1)^-1 to mol/J
+        densStates = densStates / conv
 
         deallocate(vib, rot, hind)
 
@@ -344,13 +345,13 @@ contains
     function isomer_getCollisionFrequency(T, P, bathGas, spec) result(collFreq)
 
         ! Provide parameter type-checking
-        real(8), intent(in)	:: T
-        real(8), intent(in)	:: P
+        real(8), intent(in) :: T
+        real(8), intent(in) :: P
         type(GeneralData), intent(in) :: bathGas
         type(GeneralData), intent(in) :: spec
         real(8) :: collFreq
 
-        real(8)		::	kB, collisionIntegral, sigma, eps, mu, gasConc
+        real(8) :: kB, collisionIntegral, sigma, mu, gasConc
 
         collisionIntegral = 1.16145 / T**0.14874 + 0.52487 / exp(0.77320 * T) + 2.16178 / exp(2.43787 * T) &
             -6.435/10000 * T**0.14874 * sin(18.0323 * T**(-0.76830) - 7.27371)
@@ -360,7 +361,7 @@ contains
         gasConc = P / kB / T
         mu = 1 / (1/spec%molWt + 1/bathGas%molWt) / 6.022e23
         sigma = 0.5 * (spec%sigma + bathGas%sigma)
-        eps = 0.5 * (spec%eps + bathGas%eps)
+        !eps = 0.5 * (spec%eps + bathGas%eps)
 
         ! Evaluate collision frequency
         collFreq = collisionIntegral * &
@@ -388,11 +389,11 @@ contains
         E0 = isomer_getActiveSpaceEnergy(isom, reactions)
 
         ! Ensure that the barrier height is sufficiently above the ground state
-		! Otherwise invalid efficiencies are observed
-		if (E0 - isomE0 < 100000) E0 = E0 + 100000
+        ! Otherwise invalid efficiencies are observed
+        if (E0 - isomE0 < 100000) E0 = E0 + 100000
 
-		! Calculate efficiency
-		beta = collisionEfficiency(Elist, nGrains, T, E0, dEdown, densStates)
+        ! Calculate efficiency
+        beta = collisionEfficiency(Elist, nGrains, T, E0, dEdown, densStates)
 
     end function
 
@@ -411,11 +412,11 @@ contains
 
         integer r
 
-		dE = Elist(2) - Elist(1)
+        dE = Elist(2) - Elist(1)
 
-		FeNum = 0
+        FeNum = 0
         FeDen = 0
-		Delta1 = 0
+        Delta1 = 0
         Delta2 = 0
         DeltaN = 0
         Delta = 1
@@ -424,8 +425,8 @@ contains
         do r = 1, nGrains
             val = densStates(r) * exp(-Elist(r) / 8.314472 / T)
             if (Elist(r) > E0) then
-				FeNum = FeNum + val * dE
-				if (FeDen == 0) FeDen = val * 8.314472 * T
+                FeNum = FeNum + val * dE
+                if (FeDen == 0) FeDen = val * 8.314472 * T
             end if
         end do
 
@@ -452,7 +453,7 @@ contains
 
         end if
 
-		if (beta < 0 .or. beta > 1) then
+        if (beta < 0 .or. beta > 1) then
             write (1,*), 'Warning: Invalid collision efficiency', beta, 'calculated at', T, 'K.'
             if (beta < 0) beta = 0
             if (beta > 1) beta = 1
@@ -463,9 +464,9 @@ contains
     subroutine isomer_getEqDist(isom, E, nGrains, T)
 
         integer, intent(in) :: nGrains
-        type(Isomer), intent(inout)				:: isom
-        real(8), dimension(1:nGrains), intent(in)		:: E
-        real(8), intent(in)						:: T
+        type(Isomer), intent(inout) :: isom
+        real(8), dimension(1:nGrains), intent(in) :: E
+        real(8), intent(in) :: T
 
         real(8)	R 					! Gas constant in J mol^-1 K^-1
         integer	s					! Dummy index
@@ -502,7 +503,7 @@ contains
         type(Reaction), dimension(:), intent(in) :: reactions
         real(8) :: Eres
 
-        integer i, r
+        integer r
 
         Eres = 1.0e20
 
@@ -536,14 +537,14 @@ contains
         end do
 
         ! Calculate the density of states for each species, convolving when
-		! multiple species are present
+        ! multiple species are present
         do i = 1, size(isom%species)
             call species_getDensityOfStates(net%species(isom%species(i)), Elist, nGrains, densStates0)
             call convolve(densStates, densStates0, Elist, nGrains)
         end do
 
-		! Shift to appropriate energy grain using E0
-		index = 0
+        ! Shift to appropriate energy grain using E0
+        index = 0
         do r = 1, nGrains
             if (isom%E0 < Elist(r) .and. index == 0) index = r
         end do
@@ -641,15 +642,15 @@ contains
     subroutine reaction_kineticsILT(E0, rho, kinetics, T, E, k)
 
         ! Provide parameter type-checking
-        real(8), intent(in)					::	E0
-        real(8), dimension(:), intent(in)	:: 	rho
-        type(ArrheniusKinetics), intent(in)	::	kinetics
-        real(8), intent(in)					::	T
-        real(8), dimension(:), intent(in)	:: 	E
-        real(8), dimension(:), intent(out)	:: 	k
+        real(8), intent(in) :: E0
+        real(8), dimension(:), intent(in) :: rho
+        type(ArrheniusKinetics), intent(in) :: kinetics
+        real(8), intent(in) :: T
+        real(8), dimension(:), intent(in) :: E
+        real(8), dimension(:), intent(out) :: k
 
         real(8) dE, A, n, Ea
-        integer		:: r, s
+        integer :: r, s
 
         ! We can't use a negative activation energy for this method, so we
         ! put it in the preexponential if it is encountered.
@@ -678,11 +679,11 @@ contains
 
     function reaction_getEquilibriumConstant(reac, prod, T, speciesList) result(Keq)
 
-        type(Isomer), intent(in) 	::	reac
-        type(Isomer), intent(in) 	::	prod
-        real(8), intent(in)			::	T
+        type(Isomer), intent(in) :: reac
+        type(Isomer), intent(in) :: prod
+        real(8), intent(in) :: T
         type(Species), dimension(:), intent(in) :: speciesList
-        real(8) 					:: 	Keq
+        real(8) :: Keq
 
         real(8) dGrxn
         integer i
@@ -745,17 +746,17 @@ contains
             useGrainSize = 1
         else
             ! Choose the tighter constraint
-			useGrainSize = 0
+            useGrainSize = 0
             dE = (Emax - Emin) / (nGrains0 - 1)
             if (dE > dE0) useGrainSize = 1
         end if
 
         if (useGrainSize == 1) then
             nGrains = nGrains0
-			dE = (Emax - Emin) / (nGrains0 - 1)
+            dE = (Emax - Emin) / (nGrains0 - 1)
         else
             nGrains = int((Emax - Emin) / dE0) + 1
-			dE = dE0
+            dE = dE0
         end if
 
         if (allocated(Elist)) deallocate(Elist)
@@ -766,7 +767,7 @@ contains
 
     end subroutine
 
-	subroutine network_determineEnergyGrains(net, nIsom, grainSize, nGrains, Tmax, Elist)
+    subroutine network_determineEnergyGrains(net, nIsom, grainSize, nGrains, Tmax, Elist)
 
         type(Network), intent(in) :: net
         integer, intent(in) :: nIsom
@@ -781,55 +782,55 @@ contains
 
         integer i, r
 
-		! For the purposes of finding the maximum energy we will use 401 grains
-		nE = 401
-		dE = 0.0
+        ! For the purposes of finding the maximum energy we will use 401 grains
+        nE = 401
+        dE = 0.0
 
-		! Determine minimum energy and isomer with minimum ground-state energy
-		isom = net%isomers(1)
+        ! Determine minimum energy and isomer with minimum ground-state energy
+        isom = net%isomers(1)
         do i = 2, nIsom
             if (isom%E0 > net%isomers(i)%E0) isom = net%isomers(i)
         end do
-		Emin = floor(isom%E0)
+        Emin = floor(isom%E0)
 
-		! Determine maximum energy and isomer with maximum ground-state energy
-		isom = net%isomers(1)
+        ! Determine maximum energy and isomer with maximum ground-state energy
+        isom = net%isomers(1)
         do i = 2, nIsom
             if (isom%E0 < net%isomers(i)%E0) isom = net%isomers(i)
         end do
-		Emax0 = isom%E0
+        Emax0 = isom%E0
 
-		! (Try to) purposely overestimate Emax using arbitrary multiplier
-		! This is to (hopefully) avoid multiple density of states calculations
-		mult = 50
-		tol = 1e-8
+        ! (Try to) purposely overestimate Emax using arbitrary multiplier
+        ! This is to (hopefully) avoid multiple density of states calculations
+        mult = 50
+        tol = 1e-8
         done = 0
         do while (done == 0)
 
-			Emax = ceiling(Emax0 + mult * 8.314472 * Tmax)
+            Emax = ceiling(Emax0 + mult * 8.314472 * Tmax)
 
-			call network_getEnergyGrains(Emin, Emax, dE, nGrains, Elist)
+            call network_getEnergyGrains(Emin, Emax, dE, nGrains, Elist)
             call isomer_getDensityOfStates(net, isom, Elist, nGrains)
-			call isomer_getEqDist(isom, Elist, nGrains, Tmax)
+            call isomer_getEqDist(isom, Elist, nGrains, Tmax)
 
-			! Find maximum of distribution
-			maxIndex = 0
-			maxValue = 0.0
-			do r = 1, nGrains
-				if (isom%eqDist(r) > maxValue) then
-					maxValue = isom%eqDist(r)
-					maxIndex = r
+            ! Find maximum of distribution
+            maxIndex = 0
+            maxValue = 0.0
+            do r = 1, nGrains
+                if (isom%eqDist(r) > maxValue) then
+                    maxValue = isom%eqDist(r)
+                    maxIndex = r
                 end if
             end do
 
-			! If tail of distribution is much lower than the maximum, then we've found bounds for Emax
-			if (isom%eqDist(nGrains) / maxValue < tol) then
-				r = nGrains - 1
-				do while (r > 1 .and. done == 0)
-					if (isom%eqDist(r) / maxValue > tol) then
-						done = 1
-					else
-						r = r - 1
+            ! If tail of distribution is much lower than the maximum, then we've found bounds for Emax
+            if (isom%eqDist(nGrains) / maxValue < tol) then
+                r = nGrains - 1
+                do while (r > maxIndex .and. done == 0)
+                    if (isom%eqDist(r) / maxValue > tol) then
+                        done = 1
+                    else
+                        r = r - 1
                     end if
                 end do
 
@@ -848,14 +849,14 @@ contains
                 ! Round Emax up to nearest integer
                 Emax = ceiling(Emax)
 
-			else
-				mult = mult + 50
+            else
+                mult = mult + 50
             end if
 
         end do
 
-		! Return the chosen energy grains
-		call network_getEnergyGrains(Emin, Emax, dE, nE, Elist)
+        ! Return the chosen energy grains
+        call network_getEnergyGrains(Emin, Emax, dE, nE, Elist)
 
     end subroutine
 
@@ -871,7 +872,7 @@ contains
         real(8), dimension(1:nT,1:nP,1:nIsom+nReac+nProd,1:nIsom+nReac+nProd), intent(out) :: K
 
         real(8) T, P
-        integer i, j, u, v, w
+        integer i, u, v, w
 
         do u = 1, nT
 
@@ -949,7 +950,7 @@ contains
         do i = 1, nIsom+nReac+nProd
             Eres(i) = isomer_getActiveSpaceEnergy(i, net%reactions)
         end do
-        
+
         ! Isomerization, dissociation, and association microcanonical rate
         ! coefficients, respectively
         do r = 1, size(net%reactions)
@@ -991,7 +992,7 @@ contains
                 collFreq(i) = net%isomers(i)%collFreq
                 call collisionMatrix(T, P, Elist, collFreq, net%isomers(i)%densStates, E0(i), dEdown, nGrains, Mcoll(i,:,:), msg)
             end do
-            
+
             call estimateratecoefficients_rs(T, P, Elist, Mcoll, densStates, E0, Eres, &
                 Kij, Fim, Gnj, dEdown, nIsom, nReac, nProd, nGrains, K, msg)
 

@@ -22,8 +22,6 @@ contains
         integer, intent(out) :: method, model
         integer, dimension(:) :: modelOptions
 
-        ! The i/o status flag
-        integer ios
         ! The current line of text from stdin
         character(len=1024) line
         character(len=64) units
@@ -203,15 +201,13 @@ contains
     !
     subroutine readReaction(rxn, isomerList)
 
-        type(Reaction), intent(inout)				:: rxn
-        type(Isomer), dimension(:), intent(in)		:: isomerList
+        type(Reaction), intent(inout) :: rxn
+        type(Isomer), dimension(:), intent(in) :: isomerList
 
         character(len=64) units
         character(len=128) token
         character(len=1024) line
-        integer numIsomers
-        integer i, j
-
+        
         ! Read reaction equation
         line = readMeaningfulLine()
         call getFirstToken(line, token)
@@ -286,8 +282,8 @@ contains
     !
     subroutine readIsomer(isom, speciesList)
 
-        type(Isomer), intent(inout)				:: isom
-        type(Species), dimension(:), intent(in)	:: speciesList
+        type(Isomer), intent(inout) :: isom
+        type(Species), dimension(:), intent(in) :: speciesList
 
         character(len=128) token
         character(len=1024) line
@@ -324,7 +320,7 @@ contains
     !
     subroutine readSpecies(spec)
 
-        type(Species), intent(inout)	:: spec
+        type(Species), intent(inout) :: spec
 
         character(len=64) units
         character(len=128) token
@@ -508,12 +504,11 @@ contains
     !
     subroutine readGasParameters(molWt, sigma, eps)
 
-        real(8), intent(out)	:: molWt
-        real(8), intent(out)	:: sigma
-        real(8), intent(out)	:: eps
+        real(8), intent(out) :: molWt
+        real(8), intent(out) :: sigma
+        real(8), intent(out) :: eps
 
         character(len=64) units
-        character(len=128) token
         character(len=1024) line
 
         line = readMeaningfulLine()
@@ -591,8 +586,8 @@ contains
     !
     function toLowercase(string)
 
-        character(len=*), intent(in) 	:: string
-        character(len=len(string)) 		:: toLowercase
+        character(len=*), intent(in) :: string
+        character(len=len(string)) :: toLowercase
 
         character(len=26) lower, upper
         integer i, n
@@ -616,14 +611,13 @@ contains
     !
     subroutine processNumberList(string, units, values)
 
-        character(len=*), intent(inout)			:: string
-        character(len=64), intent(inout)		:: units
-        real(8), dimension(:), allocatable, intent(inout)	:: values
+        character(len=*), intent(inout) :: string
+        character(len=64), intent(inout) :: units
+        real(8), dimension(:), allocatable, intent(inout) :: values
 
         character(len=256) token
-        integer numValues, i, n
-        real(8) value
-
+        integer numValues, n
+        
         call getFirstToken(string, token)
         read(token, *), numValues
 
@@ -641,9 +635,9 @@ contains
 
     subroutine processQuantity(string, units, value)
 
-        character(len=*), intent(inout)			:: string
-        character(len=64), intent(inout)		:: units
-        real(8), intent(inout)					:: value
+        character(len=*), intent(inout) :: string
+        character(len=64), intent(inout) :: units
+        real(8), intent(inout) :: value
 
         character(len=256) token
 
@@ -694,7 +688,7 @@ contains
         method, K, model, modelOptions, chebyshev, pDepArrhenius)
 
         integer :: nConf, nGrains, nT, nP
-        type(Network), intent(in)		:: net
+        type(Network), intent(in) :: net
         real(8), dimension(1:nT), intent(in) :: Tlist
         real(8), dimension(1:nP), intent(in) :: Plist
         real(8), dimension(1:nGrains), intent(in) :: Elist
