@@ -74,11 +74,11 @@ module NetworkModule
 
 contains
 
-    function heatCapacity(thermo, T)
+    function species_getHeatCapacity(thermo, T) result(Cp)
 
         type(ThermoData), intent(in)	:: thermo
         real(8), intent(in)				:: T
-        real(8)	heatCapacity
+        real(8)	Cp
 
         real(8) slope, intercept
 
@@ -86,46 +86,46 @@ contains
             write (0, fmt='(A)') 'Invalid temperature for heat capacity calculation.'
             stop
         elseif (T < 300.0) then
-            heatCapacity = thermo%Cp(1)
+            Cp = thermo%Cp(1)
         elseif (T < 400.0) then
             slope = (thermo%Cp(2) - thermo%Cp(1)) / (400.0 - 300.0)
             intercept = (thermo%Cp(1) * 400.0 - thermo%Cp(2) * 300.0) / (400.0 - 300.0)
-            heatCapacity = intercept + slope * (T - 300.0)
+            Cp = intercept + slope * (T - 300.0)
         elseif (T < 500.0) then
             slope = (thermo%Cp(3) - thermo%Cp(2)) / (500.0 - 400.0)
             intercept = (thermo%Cp(2) * 500.0 - thermo%Cp(3) * 400.0) / (500.0 - 400.0)
-            heatCapacity = intercept + slope * (T - 400.0)
+            Cp = intercept + slope * (T - 400.0)
         elseif (T < 600.0) then
             slope = (thermo%Cp(4) - thermo%Cp(3)) / (600.0 - 500.0)
             intercept = (thermo%Cp(3) * 600.0 - thermo%Cp(4) * 500.0) / (600.0 - 500.0)
-            heatCapacity = intercept + slope * (T - 500.0)
+            Cp = intercept + slope * (T - 500.0)
         elseif (T < 800.0) then
             slope = (thermo%Cp(5) - thermo%Cp(4)) / (800.0 - 600.0)
             intercept = (thermo%Cp(4) * 800.0 - thermo%Cp(5) * 600.0) / (800.0 - 600.0)
-            heatCapacity = intercept + slope * (T - 600.0)
+            Cp = intercept + slope * (T - 600.0)
         elseif (T < 1000.0) then
             slope = (thermo%Cp(6) - thermo%Cp(5)) / (1000.0 - 800.0)
             intercept = (thermo%Cp(5) * 1000.0 - thermo%Cp(6) * 800.0) / (1000.0 - 800.0)
-            heatCapacity = intercept + slope * (T - 800.0)
+            Cp = intercept + slope * (T - 800.0)
         elseif (T < 1500.0) then
             slope = (thermo%Cp(7) - thermo%Cp(6)) / (1500.0 - 1000.0)
             intercept = (thermo%Cp(6) * 1500.0 - thermo%Cp(7) * 1000.0) / (1500.0 - 1000.0)
-            heatCapacity = intercept + slope * (T - 1000.0)
+            Cp = intercept + slope * (T - 1000.0)
         else
-            heatCapacity = thermo%Cp(7)
+            Cp = thermo%Cp(7)
         end if
 
     end function
 
-    function enthalpy(thermo, T)
+    function species_getEnthalpy(thermo, T) result(H)
 
         type(ThermoData), intent(in)	:: thermo
         real(8), intent(in)				:: T
-        real(8)	enthalpy
+        real(8)	H
 
         real(8) slope, intercept
 
-        enthalpy = thermo%H298
+        H = thermo%H298
 
         if (T < 298.0) then
             write (0, fmt='(A)') 'Invalid temperature for enthalpy calculation.'
@@ -136,73 +136,73 @@ contains
             slope = (thermo%Cp(2) - thermo%Cp(1)) / (400.0 - 300.0)
             intercept = (thermo%Cp(1) * 400.0 - thermo%Cp(2) * 300.0) / (400.0 - 300.0)
             if (T < 400.0) then
-                enthalpy = enthalpy + 0.5 * slope * (T**2 - 300.0**2) + intercept * (T - 300.0)
+                H = H + 0.5 * slope * (T**2 - 300.0**2) + intercept * (T - 300.0)
             else
-                enthalpy = enthalpy + 0.5 * slope * (400.0**2 - 300.0**2) + intercept * (400.0 - 300.0)
+                H = H + 0.5 * slope * (400.0**2 - 300.0**2) + intercept * (400.0 - 300.0)
             end if
         end if
         if (T > 400.0) then
             slope = (thermo%Cp(3) - thermo%Cp(2)) / (500.0 - 400.0)
             intercept = (thermo%Cp(2) * 500.0 - thermo%Cp(3) * 400.0) / (500.0 - 400.0)
             if (T < 500.0) then
-                enthalpy = enthalpy + 0.5 * slope * (T**2 - 400.0**2) + intercept * (T - 400.0)
+                H = H + 0.5 * slope * (T**2 - 400.0**2) + intercept * (T - 400.0)
             else
-                enthalpy = enthalpy + 0.5 * slope * (500.0**2 - 400.0**2) + intercept * (500.0 - 400.0)
+                H = H + 0.5 * slope * (500.0**2 - 400.0**2) + intercept * (500.0 - 400.0)
             end if
         end if
         if (T > 500.0) then
             slope = (thermo%Cp(4) - thermo%Cp(3)) / (600.0 - 500.0)
             intercept = (thermo%Cp(3) * 600.0 - thermo%Cp(4) * 500.0) / (600.0 - 500.0)
             if (T < 600.0) then
-                enthalpy = enthalpy + 0.5 * slope * (T**2 - 500.0**2) + intercept * (T - 500.0)
+                H = H + 0.5 * slope * (T**2 - 500.0**2) + intercept * (T - 500.0)
             else
-                enthalpy = enthalpy + 0.5 * slope * (600.0**2 - 500.0**2) + intercept * (600.0 - 500.0)
+                H = H + 0.5 * slope * (600.0**2 - 500.0**2) + intercept * (600.0 - 500.0)
             end if
         end if
         if (T > 600.0) then
             slope = (thermo%Cp(5) - thermo%Cp(4)) / (800.0 - 600.0)
             intercept = (thermo%Cp(4) * 800.0 - thermo%Cp(5) * 600.0) / (800.0 - 600.0)
             if (T < 800.0) then
-                enthalpy = enthalpy + 0.5 * slope * (T**2 - 600.0**2) + intercept * (T - 600.0)
+                H = H + 0.5 * slope * (T**2 - 600.0**2) + intercept * (T - 600.0)
             else
-                enthalpy = enthalpy + 0.5 * slope * (800.0**2 - 600.0**2) + intercept * (800.0 - 600.0)
+                H = H + 0.5 * slope * (800.0**2 - 600.0**2) + intercept * (800.0 - 600.0)
             end if
         end if
         if (T > 800.0) then
             slope = (thermo%Cp(6) - thermo%Cp(5)) / (1000.0 - 800.0)
             intercept = (thermo%Cp(5) * 1000.0 - thermo%Cp(6) * 800.0) / (1000.0 - 800.0)
             if (T < 1000.0) then
-                enthalpy = enthalpy + 0.5 * slope * (T**2 - 800.0**2) + intercept * (T - 800.0)
+                H = H + 0.5 * slope * (T**2 - 800.0**2) + intercept * (T - 800.0)
             else
-                enthalpy = enthalpy + 0.5 * slope * (1000.0**2 - 800.0**2) + intercept * (1000.0 - 800.0)
+                H = H + 0.5 * slope * (1000.0**2 - 800.0**2) + intercept * (1000.0 - 800.0)
             end if
         end if
         if (T > 1000.0) then
             slope = (thermo%Cp(7) - thermo%Cp(6)) / (1500.0 - 1000.0)
             intercept = (thermo%Cp(6) * 1500.0 - thermo%Cp(7) * 1000.0) / (1500.0 - 1000.0)
             if (T < 1500.0) then
-                enthalpy = enthalpy + 0.5 * slope * (T**2 - 1000.0**2) + intercept * (T - 1000.0)
+                H = H + 0.5 * slope * (T**2 - 1000.0**2) + intercept * (T - 1000.0)
             else
-                enthalpy = enthalpy + 0.5 * slope * (1500.0**2 - 1000.0**2) + intercept * (1500.0 - 1000.0)
+                H = H + 0.5 * slope * (1500.0**2 - 1000.0**2) + intercept * (1500.0 - 1000.0)
             end if
         end if
         if (T > 1500.0) then
             slope = (thermo%Cp(7) - thermo%Cp(6)) / (1500.0 - 1000.0)
             intercept = (thermo%Cp(6) * 1500.0 - thermo%Cp(7) * 1000.0) / (1500.0 - 1000.0)
-            enthalpy = enthalpy + 0.5 * slope * (T**2 - 1500.0**2) + intercept * (T - 1500.0)
+            H = H + 0.5 * slope * (T**2 - 1500.0**2) + intercept * (T - 1500.0)
         end if
 
     end function
 
-    function entropy(thermo, T)
+    function species_getEntropy(thermo, T) result(S)
 
         type(ThermoData), intent(in)	:: thermo
         real(8), intent(in)				:: T
-        real(8)	entropy
+        real(8)	S
 
         real(8) slope, intercept
 
-        entropy = thermo%S298
+        S = thermo%S298
 
         if (T < 298.0) then
             write (0, fmt='(A)') 'Invalid temperature for entropy calculation.'
@@ -213,71 +213,71 @@ contains
             slope = (thermo%Cp(2) - thermo%Cp(1)) / (400.0 - 300.0)
             intercept = (thermo%Cp(1) * 400.0 - thermo%Cp(2) * 300.0) / (400.0 - 300.0)
             if (T < 400.0) then
-                entropy = entropy + slope * (T - 300.0) + intercept * log(T / 300.0)
+                S = S + slope * (T - 300.0) + intercept * log(T / 300.0)
             else
-                entropy = entropy + slope * (400.0 - 300.0) + intercept * log(400.0 / 300.0)
+                S = S + slope * (400.0 - 300.0) + intercept * log(400.0 / 300.0)
             end if
         end if
         if (T > 400.0) then
             slope = (thermo%Cp(3) - thermo%Cp(2)) / (500.0 - 400.0)
             intercept = (thermo%Cp(2) * 500.0 - thermo%Cp(3) * 400.0) / (500.0 - 400.0)
             if (T < 500.0) then
-                entropy = entropy + slope * (T - 400.0) + intercept * log(T / 400.0)
+                S = S + slope * (T - 400.0) + intercept * log(T / 400.0)
             else
-                entropy = entropy + slope * (500.0 - 400.0) + intercept * log(500.0 / 400.0)
+                S = S + slope * (500.0 - 400.0) + intercept * log(500.0 / 400.0)
             end if
         end if
         if (T > 500.0) then
             slope = (thermo%Cp(4) - thermo%Cp(3)) / (600.0 - 500.0)
             intercept = (thermo%Cp(3) * 600.0 - thermo%Cp(4) * 500.0) / (600.0 - 500.0)
             if (T < 600.0) then
-                entropy = entropy + slope * (T - 500.0) + intercept * log(T / 500.0)
+                S = S + slope * (T - 500.0) + intercept * log(T / 500.0)
             else
-                entropy = entropy + slope * (600.0 - 500.0) + intercept * log(600.0 / 500.0)
+                S = S + slope * (600.0 - 500.0) + intercept * log(600.0 / 500.0)
             end if
         end if
         if (T > 600.0) then
             slope = (thermo%Cp(5) - thermo%Cp(4)) / (800.0 - 600.0)
             intercept = (thermo%Cp(4) * 800.0 - thermo%Cp(5) * 600.0) / (800.0 - 600.0)
             if (T < 800.0) then
-                entropy = entropy + slope * (T - 600.0) + intercept * log(T / 600.0)
+                S = S + slope * (T - 600.0) + intercept * log(T / 600.0)
             else
-                entropy = entropy + slope * (800.0 - 600.0) + intercept * log(800.0 / 600.0)
+                S = S + slope * (800.0 - 600.0) + intercept * log(800.0 / 600.0)
             end if
         end if
         if (T > 800.0) then
             slope = (thermo%Cp(6) - thermo%Cp(5)) / (1000.0 - 800.0)
             intercept = (thermo%Cp(5) * 1000.0 - thermo%Cp(6) * 800.0) / (1000.0 - 800.0)
             if (T < 1000.0) then
-                entropy = entropy + slope * (T - 800.0) + intercept * log(T / 800.0)
+                S = S + slope * (T - 800.0) + intercept * log(T / 800.0)
             else
-                entropy = entropy + slope * (1000.0 - 800.0) + intercept * log(1000.0 / 800.0)
+                S = S + slope * (1000.0 - 800.0) + intercept * log(1000.0 / 800.0)
             end if
         end if
         if (T > 1000.0) then
             slope = (thermo%Cp(7) - thermo%Cp(6)) / (1500.0 - 1000.0)
             intercept = (thermo%Cp(6) * 1500.0 - thermo%Cp(7) * 1000.0) / (1500.0 - 1000.0)
             if (T < 1500.0) then
-                entropy = entropy + slope * (T - 1000.0) + intercept * log(T / 1000.0)
+                S = S + slope * (T - 1000.0) + intercept * log(T / 1000.0)
             else
-                entropy = entropy + slope * (1500.0 - 1000.0) + intercept * log(1500.0 / 1000.0)
+                S = S + slope * (1500.0 - 1000.0) + intercept * log(1500.0 / 1000.0)
             end if
         end if
         if (T > 1500.0) then
             slope = (thermo%Cp(7) - thermo%Cp(6)) / (1500.0 - 1000.0)
             intercept = (thermo%Cp(6) * 1500.0 - thermo%Cp(7) * 1000.0) / (1500.0 - 1000.0)
-            entropy = entropy + slope * (T - 1500.0) + intercept * log(T / 1500.0)
+            S = S + slope * (T - 1500.0) + intercept * log(T / 1500.0)
         end if
 
     end function
 
-    function freeEnergy(thermo, T)
+    function species_getFreeEnergy(thermo, T) result(G)
 
         type(ThermoData), intent(in)	:: thermo
         real(8), intent(in)				:: T
-        real(8)	freeEnergy
+        real(8)	G
 
-        freeEnergy = enthalpy(thermo, T) - T * entropy(thermo, T)
+        G = species_getEnthalpy(thermo, T) - T * species_getEntropy(thermo, T)
 
     end function
 
