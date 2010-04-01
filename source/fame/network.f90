@@ -776,7 +776,7 @@ contains
         real(8), dimension(:), allocatable, intent(inout) :: Elist
 
         integer nE, done, maxIndex
-        real(8) Emin, Emax0, Emax, dE, mult, maxValue, tol
+        real(8) Emin, Emax0, Emax, dE, mult, maxValue, maxIsomerE0, maxReactionE0, tol
         type(Isomer) isom
 
         integer i, r
@@ -835,14 +835,15 @@ contains
 
                 ! Add difference between isomer ground-state energy and highest
                 ! transition state or isomer energy
-                maxValue = 0.0
+                maxIsomerE0 = 0.0
+                maxReactionE0 = 0.0
                 do r = 1, size(net%isomers)
-                    if (net%isomers(r)%E0 > maxValue) maxValue = net%isomers(r)%E0
+                    if (net%isomers(r)%E0 > maxIsomerE0) maxIsomerE0 = net%isomers(r)%E0
                 end do
                 do r = 1, size(net%reactions)
-                    if (net%reactions(r)%E0 > maxValue) maxValue = net%reactions(r)%E0
+                    if (net%reactions(r)%E0 > maxReactionE0) maxReactionE0 = net%reactions(r)%E0
                 end do
-                Emax = Elist(r) + maxValue - Emax0
+                Emax = Elist(r) + maxIsomerE0 + maxReactionE0 - Emin
 
                 ! Round Emax up to nearest integer
                 Emax = ceiling(Emax)
@@ -948,7 +949,7 @@ contains
         do i = 1, nIsom+nReac+nProd
             Eres(i) = isomer_getActiveSpaceEnergy(i, net%reactions)
         end do
-
+        
         ! Isomerization, dissociation, and association microcanonical rate
         ! coefficients, respectively
         do r = 1, size(net%reactions)
@@ -965,7 +966,6 @@ contains
                 Gnj(i-nIsom,j,:) = net%reactions(r)%kb
             end if
         end do
-
 
         ! Average energy transferred in a deactivating collision
         dEdown = net%bathGas%dEdown
@@ -994,7 +994,7 @@ contains
             
             call estimateratecoefficients_rs(T, P, Elist, Mcoll, densStates, E0, Eres, &
                 Kij, Fim, Gnj, dEdown, nIsom, nReac, nProd, nGrains, K, msg)
-            
+
         end if
 
         ! Check for validity of phenomenological rate coefficients
