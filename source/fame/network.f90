@@ -6,23 +6,23 @@
 !
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
-implicit none
-
-!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-
 module NetworkModule
+
+    implicit none
 
     type GeneralData
         real(8) :: molWt    ! The molecular weight of the bath gas in kg/mol
         real(8) :: sigma    ! The Lennard-Jones sigma parameter of the bath gas in m
         real(8) :: eps      ! The Lennard-Jones epsilon parameter of the bath gas in J
+        real(8) :: dEdown   ! Average energy transferred in a deactivating collision in J/mol
     end type
 
     type SpectralData
-        real(8), dimension(:), allocatable :: vib        ! 1D harmonic oscillator frequencies in cm^-1
-        real(8), dimension(:), allocatable :: rot        ! 1D rigid rotor frequencies in cm^-1
-        real(8), dimension(:,:), allocatable :: hind     ! 1D hindered rotor frequencies and barrier heights in cm^-1
-        integer ::     symm                              ! Symmetry number
+        real(8), dimension(:), allocatable :: vibFreq        ! 1D harmonic oscillator frequencies in cm^-1
+        real(8), dimension(:), allocatable :: rotFreq        ! 1D rigid rotor frequencies in cm^-1
+        real(8), dimension(:), allocatable :: hindFreq       ! 1D hindered rotor frequencies and barrier heights in cm^-1
+        real(8), dimension(:), allocatable :: hindBarrier    ! 1D hindered rotor frequencies and barrier heights in cm^-1
+        integer :: symmNum                                   ! Symmetry number
     end type
 
     type ThermoData
