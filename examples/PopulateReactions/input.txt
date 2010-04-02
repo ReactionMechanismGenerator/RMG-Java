@@ -1,5 +1,6 @@
 Temperature: 1200 (K)
 Solvation: off
+//Verbose: off
 
 PrimaryThermoLibrary:
 Name: PrIMe-recommended
@@ -8,7 +9,7 @@ END
 
 PrimaryReactionLibrary:
 Name: PrIMe-recommended
-Location: RMG_database/SeedMechanisms/GRI-Mech3.0
+Location: GRI-Mech3.0
 END
 
 nC4H10O
