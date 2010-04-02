@@ -903,8 +903,12 @@ public class FastMasterEqn implements PDepKineticsEstimator {
 							Ea = kin.getEValue();
 							n = kin.getNValue();
 							//  While I'm here, and know which reaction was the High-P limit, set the comment in the P-dep reaction 
-							Kinetics fwd_kin = rxnWHighPLimit.getKinetics();
-							rxn.setComments("High-P Limit Reverse: " + fwd_kin.getSource().toString() +fwd_kin.getComment().toString() );
+							Kinetics[] fwd_kin = rxnWHighPLimit.getKinetics();
+							String commentsForForwardKinetics = "";
+							for (int numKs=0; numKs<fwd_kin.length; ++numKs) {
+								commentsForForwardKinetics += "High-P Limit Reverse: " + fwd_kin[numKs].getSource().toString() +fwd_kin[numKs].getComment().toString();
+								if (numKs != fwd_kin.length-1) commentsForForwardKinetics += "\n";
+							}
 						}
 						double[][] all_ks = rxn.getPDepRate().getRateConstants();
 						for (int numTemps=0; numTemps<temperatures.length; numTemps++) {
