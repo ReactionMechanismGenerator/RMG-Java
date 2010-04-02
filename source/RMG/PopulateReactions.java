@@ -43,6 +43,7 @@ import jing.chemParser.ChemParser;
 import jing.chemUtil.Graph;
 import jing.param.Global;
 import jing.param.Temperature;
+import jing.rxn.ArrheniusKinetics;
 import jing.rxn.Kinetics;
 import jing.rxn.Reaction;
 import jing.rxn.TemplateReactionGenerator;
@@ -145,6 +146,20 @@ public class PopulateReactions {
           }
           
             line = ChemParser.readMeaningfulLine(br_input);
+            
+            /*
+             * MRH 2Apr2010:
+             * Allow user the option to print "verbose" comments
+             */
+            if (line.toLowerCase().startsWith("verbose")) {
+            	StringTokenizer st2 = new StringTokenizer(line);
+            	String tempString = st2.nextToken();
+            	tempString = st2.nextToken();
+            	tempString = tempString.toLowerCase();
+            	if (tempString.equals("on") || tempString.equals("true") || tempString.equals("yes"))
+            		ArrheniusKinetics.setVerbose(true);
+            	line = ChemParser.readMeaningfulLine(br_input);
+            }
             
             /*
              * MRH 27Feb:
@@ -298,13 +313,7 @@ public class PopulateReactions {
 		File GATPFit = new File("GATPFit");
 		ChemParser.deleteDir(GATPFit);
 		GATPFit.mkdir();
-		
-//		String name= "RMG_database";
-//		String workingDir = System.getenv("RMG");
-//		System.setProperty("RMG.workingDirectory", workingDir);
-//		System.setProperty("jing.chem.ChemGraph.forbiddenStructureFile",workingDir + "/databases/" + name + "/forbiddenStructure/forbiddenStructure.txt");
-//		System.setProperty("jing.chem.ThermoGAGroupLibrary.pathName",	workingDir + "/databases/" + name + "/thermo");
-//		System.setProperty("jing.rxn.ReactionTemplateLibrary.pathName",	workingDir + "/databases/" + name + "/kinetics");
+
 	};
 	
 	public static String updateListOfReactions(Kinetics rxn_k) {

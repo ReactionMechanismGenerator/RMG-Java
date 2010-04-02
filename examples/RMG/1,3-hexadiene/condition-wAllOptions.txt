@@ -1,8 +1,8 @@
 // This condition.txt file contains every option available to RMG.
 // The fields that have been commented out are not required.
-// 30-Jul-2009 MRH
 
-// The folder for the "Database" is in reference to $RMG/databases
+
+// The folder for the "Database" is relative to $RMG/databases/
 Database: RMG_database
 
 //MaxCarbonNumberPerSpecies: 10
@@ -14,7 +14,7 @@ Database: RMG_database
 
 // There is no limit to the number of PTLs a user may supply.
 // The "Name" of a PTL can have as many tokens as the user prefers.
-// The "Location" of a PTL is in reference to the "Database"/thermo directory
+// The "Location" of a PTL is relative to $RMG/databases/<database>/thermo_libraries/
 // *** At least one PTL should be supplied and it should contain data for H and H2,
 //	since Benson's group additivity cannot handle these ***
 PrimaryThermoLibrary:
@@ -23,6 +23,19 @@ Location: GRI-Mech3.0
 Name:  RMG old
 Location: primaryThermoLibrary
 END
+
+// Forbidden structures are read in from the database.
+// Additional forbidden structures can be specified here like this:
+//ForbiddenStructures:
+//AdjacentBiradicalCs
+//1 C 1 {2,S}
+//2 C 1 {1,S}
+//
+//AdjacentBiradicalCd
+//1 C 1 {2,D}
+//2 C 1 {1,D}
+//
+//END
 
 // Restart options
 ReadRestart: no yes
@@ -92,11 +105,13 @@ END
 SpectroscopicDataEstimator: off/frequencygroups
 PressureDependence: off/reservoirstate/modifiedstrongcollision
 // If PressureDependence field is not set to "off", the PDepKineticsModel field must be present
+// If chebyshev chosen, you can also specify the number of basis functions, e.g. "chebyshev 4 4"
 //PDepKineticsModel: chebyshev/pdeparrhenius/rate
-// If PDepKineticsModel is set to "Chebyshev", the following two fields may be supplied to RMG
-// 	*** If the TRange field is present, the PRange field must also be present ***
-//TRange: (K) 300 2100 8 4
-//PRange: (bar) 0.01 100 5 4
+// You should also specify either a TRange and PRange or a set of Temperatures and Pressures
+//TRange: (K) 300.0 2000.0 8
+//PRange: (bar) 0.01 100.0 5
+//Temperatures: 8 (K) 300.0 400.0 500.0 600.0 800.0 1000.0 1500.0 2000.0
+//Pressures: 5 (bar) 0.01 0.1 1.0 10.0 100.0
 
 // This file is only necessary if one of the species present in the condition.txt file
 //	was labeled as "Unreactive".
@@ -126,23 +141,23 @@ Rtol: 1e-8
 
 // There is no limit to the number of PRLs a user may supply.
 // The "Name" of a PRL can have as many tokens as the user prefers.
-// The "Location" of a PRL is in reference to the $RMG/databases directory
+// The "Location" of a PRL is relative to $RMG/databases/<database>/kinetics_libraries/
 PrimaryReactionLibrary:
 //Name: RMG-example
-//Location: RMG_database/primaryReactionLibrary/Example
+//Location: Example
 END
 
 // There is no limit to the number of SMs a user may supply.
 // The "Name" of a SM can have as many tokens as the user prefers.
-// The "Location" of a SM is in reference to the $RMG/databases directory
+// The "Location" of a SM is relative to $RMG/databases/<database>/kinetics_libraries/
 // The "GenerateReactions" of a SM tells RMG whether or not to generate
 // reactions from its reaction families to add to the seed reactions
 SeedMechanism:
 //Name: Leeds
-//Location: RMG_database/SeedMechanisms/combustion_core/version5
+//Location: combustion_core/version5
 //GenerateReactions: yes
 //Name: GRIMech3.0
-//Location: RMG_database/SeedMechanisms/GRI-Mech3.0
+//Location: GRI-Mech3.0
 //GenerateReactions: yes
 END
 

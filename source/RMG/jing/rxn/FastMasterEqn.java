@@ -107,7 +107,7 @@ public class FastMasterEqn implements PDepKineticsEstimator {
 	/**
 	 * The number of grains to use in a fame calculation (written in input file)
 	 */
-	private static int numGrains = 201;
+	private static int numGrains = 251;
 	/**
 	 * boolean, detailing whether the high-P-limit is greater than all of the
 	 * 	fame-computed k(T,P)
@@ -386,13 +386,13 @@ public class FastMasterEqn implements PDepKineticsEstimator {
          * 	of grains
          * After all pdep rates are below the high-P-limit (or the number of grains
          * 	exceeds 1000), we exit the while loop.  The number of grains is then
-         * 	reset to 201 (which was the standard before)
+         * 	reset to 251 (which was the standard before)
          */
         while (!pdepRatesOK) {
         	numGrains = numGrains + 200;
         	runPDepCalculation(pdn, rxnSystem, cerm);
         }
-        numGrains = 201;
+        numGrains = 251;
 
 		runCount++;
 
@@ -633,15 +633,6 @@ public class FastMasterEqn implements PDepKineticsEstimator {
 					n = kin.getNValue();
 				}
 
-				// Arrhenius parameters
-				if (Ea < 0) {
-					System.out.println("Warning: Adjusted activation energy of reaction " +
-							rxn.toString() + " from " + Double.toString(Ea) +
-							" kcal/mol to 0 kcal/mol for FAME calculation.");
-					Ea = 0;
-				}
-
-
 				input += "# The reaction equation, in the form A + B --> C + D\n";
 				input += rxn.toString() + "\n";
 
@@ -650,7 +641,10 @@ public class FastMasterEqn implements PDepKineticsEstimator {
 				input += Integer.toString(isomerList.indexOf(rxn.getProduct()) + 1) + "\n";
 
 				input += "# Ground-state energy; allowed units are J/mol, kJ/mol, cal/mol, kcal/mol, or cm^-1\n";
-				input += "J/mol " + Double.toString((Ea + rxn.getReactant().calculateH(stdTemp)) * 4184) + "\n";
+				if (Ea < 0.0)
+					input += "J/mol " + Double.toString((rxn.getReactant().calculateH(stdTemp)) * 4184) + "\n";
+				else
+					input += "J/mol " + Double.toString((Ea + rxn.getReactant().calculateH(stdTemp)) * 4184) + "\n";
 
 				input += "# High-pressure-limit kinetics model k(T):\n";
 				input += "#	Option 1: Arrhenius\n";
@@ -889,8 +883,8 @@ public class FastMasterEqn implements PDepKineticsEstimator {
 				 *  
 				 */
 				LinkedList pathReactionList = pdn.getPathReactions();
-				for (int numHighPRxns = 0; numHighPRxns < pathReactionList.size(); numHighPRxns++) {
-					PDepReaction rxnWHighPLimit = (PDepReaction)pathReactionList.get(numHighPRxns);
+				for (int HighPRxNum = 0; HighPRxNum < pathReactionList.size(); HighPRxNum++) {
+					PDepReaction rxnWHighPLimit = (PDepReaction)pathReactionList.get(HighPRxNum);
 					if (rxn.getStructure().equals(rxnWHighPLimit.getStructure())) {
 						double A = 0.0, Ea = 0.0, n = 0.0;
 						if (rxnWHighPLimit.isForward()) {
@@ -899,6 +893,8 @@ public class FastMasterEqn implements PDepKineticsEstimator {
 							A = kin.getAValue();
 							Ea = kin.getEValue();
 							n = kin.getNValue();
+							// While I'm here, and know which reaction was the High-P limit, set the comment in the P-dep reaction 
+							rxn.setComments("High-P Limit: " + kin.getSource().toString() + kin.getComment().toString() );
 						}
 						else {
 							Kinetics[] k_array = rxnWHighPLimit.getFittedReverseKinetics();
@@ -906,6 +902,9 @@ public class FastMasterEqn implements PDepKineticsEstimator {
 							A = kin.getAValue();
 							Ea = kin.getEValue();
 							n = kin.getNValue();
+							//  While I'm here, and know which reaction was the High-P limit, set the comment in the P-dep reaction 
+							Kinetics fwd_kin = rxnWHighPLimit.getKinetics();
+							rxn.setComments("High-P Limit Reverse: " + fwd_kin.getSource().toString() +fwd_kin.getComment().toString() );
 						}
 						double[][] all_ks = rxn.getPDepRate().getRateConstants();
 						for (int numTemps=0; numTemps<temperatures.length; numTemps++) {

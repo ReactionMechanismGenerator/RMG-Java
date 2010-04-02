@@ -43,41 +43,16 @@ import jing.chemParser.*;
 //----------------------------------------------------------------------------
 
 
-//svp, 8/26/05
 //## class PrimaryThermoLibrary
 public class PrimaryThermoLibrary {
-
 protected static HashMap library;
-
 protected static HashMap dictionary;
+private static PrimaryThermoLibrary INSTANCE = new PrimaryThermoLibrary();	//## attribute INSTANCE
 
-private static PrimaryThermoLibrary INSTANCE = new PrimaryThermoLibrary();		//## attribute INSTANCE
 
-//## operation PrimaryThermoLibrary()
 private PrimaryThermoLibrary(){
-  //#[ operation PrimaryThermoLibrary()
   library = new HashMap();
   dictionary = new HashMap();
-
-  /*
-   * 7-Jul-2009: MRH
-   * 	There is no longer a system property PrimaryThermoLibrary.pathName as this
-   * 		implies there is only one PTL.  However, RMG now allows user to pass
-   * 		multiple PTL locations in the condition.txt file
-   */
-//  String directory = System.getProperty("jing.chem.PrimaryThermoLibrary.pathName");
-//  String separator = System.getProperty("file.separator");
-//  String dictionaryFile = directory + "/Dictionary.txt";
-//  String libraryFile = directory + "/Library.txt";
-//  //System.out.println(dictionaryFile);
-//  //System.out.println(libraryFile);
-//  try{
-//    read(dictionaryFile, libraryFile);
-//  }
-//  catch (IOException e){
-//    System.out.println("Can't read primary thermo library files!");
-//  }
-  //#]
 }
 
 // 7-Jul-2009: MRH
@@ -88,24 +63,17 @@ public PrimaryThermoLibrary(HashMap Dictionary, HashMap Library) {
 
 //7-Jul-2009: MRH
 public PrimaryThermoLibrary(String name, String location) {
+	// Create a new PrimaryThermoLibrary.
 	library = new HashMap();
 	dictionary = new HashMap();
-	String thermoDirectory = System.getProperty("jing.chem.ThermoGAGroupLibrary.pathName");
-	String dictionaryFile = thermoDirectory + "/" + location + "/Dictionary.txt";
-	String libraryFile = thermoDirectory + "/" + location + "/Library.txt";
-	try {
-		read(dictionaryFile,libraryFile,name);
-	}
-	catch (IOException e) {
-		System.err.println("RMG cannot read Primary Thermo Library: " + name + "\n" + e.getMessage());
-	}
+	appendPrimaryThermoLibrary(name, location);
 }
 
 //7-Jul-2009: MRH
 public void appendPrimaryThermoLibrary(String name, String path) {
-	String thermoDirectory = System.getProperty("jing.chem.ThermoGAGroupLibrary.pathName");
-	String dictionaryFile = thermoDirectory + "/" + path + "/Dictionary.txt";
-	String libraryFile = thermoDirectory + "/" + path + "/Library.txt";
+	String thermoLibraryDirectory = System.getProperty("jing.chem.ThermoReferenceLibrary.pathName");
+	String dictionaryFile = thermoLibraryDirectory + "/" + path + "/Dictionary.txt";
+	String libraryFile = thermoLibraryDirectory + "/" + path + "/Library.txt";
 	try {
 		read(dictionaryFile, libraryFile, name);
 	}
@@ -276,18 +244,15 @@ public ThermoData getThermoData(Graph p_graph){
 //  //#]
 //}
 
-//## operation read(String, String)
+
+
 public void read(String p_dictionary, String p_library) throws IOException, FileNotFoundException {
-  //#[ operation read(String)
     dictionary = readDictionary(p_dictionary);
     library = readLibrary(p_library, dictionary);
-    //#]
 }
 
 //## operation readDictionary(String)
-//svp
 public HashMap readDictionary(String p_fileName) throws FileNotFoundException, IOException{
-  //#[ operation readDictionary(String)
   try{
     FileReader in = new FileReader(p_fileName);
     BufferedReader data = new BufferedReader(in);
@@ -334,11 +299,9 @@ public HashMap readDictionary(String p_fileName) throws FileNotFoundException, I
 }
 
 
-//## operation readLibrary(String)
-//svp
+
 public HashMap readLibrary(String p_thermoFileName, HashMap p_dictionary) throws IOException {
-//#[ operation readLibrary(String)
-try{
+ try{
   FileReader in = new FileReader(p_thermoFileName);
   BufferedReader data = new BufferedReader(in);
   HashMap library = new HashMap();
@@ -388,11 +351,10 @@ try{
   }
   in.close();
     return library;
-}
-catch (Exception e){
+ }
+ catch (Exception e){
    throw new IOException("Can't read thermo in primary thermo library!");
-}
-//#]
+ }
 }
 
 protected static PrimaryThermoLibrary getINSTANCE() {

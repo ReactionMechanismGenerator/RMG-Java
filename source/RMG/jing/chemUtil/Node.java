@@ -733,7 +733,8 @@ public class Node extends GraphComponent {
       			Bond bond = (Bond)b;
       			if (bond.isSingle()) singleNum++;
       			else if (bond.isDouble()) {
-      				otherEnd[doubleNum] = getOtherNode(arc).getElement();
+					try { otherEnd[doubleNum] = getOtherNode(arc).getElement(); }
+					catch (NullPointerException e) {throw new InvalidBondException();}
       				doubleNum++;
       			}
       			else if (bond.isBenzene()) benzeneNum++;

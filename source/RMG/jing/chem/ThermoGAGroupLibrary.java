@@ -161,12 +161,9 @@ public class ThermoGAGroupLibrary {
         String rDictionary = directory + "Radical_Dictionary.txt";
         String rTree = directory + "Radical_Tree.txt";
         String rLibrary = directory + "Radical_Library.txt";
-//		 begin pey
-        //String ring = directory + "Ring_Corrections.txt";
         String ringDictionary = directory + "Ring_Dictionary.txt";
         String ringTree = directory + "Ring_Tree.txt";
         String ringLibrary = directory + "Ring_Library.txt";
-        // end pey
         String otherLibrary = directory + "Other_Library.txt";
         String otherDictionary = directory + "Other_Dictionary.txt";
         String otherTree = directory + "Other_Tree.txt";
@@ -192,9 +189,6 @@ public class ThermoGAGroupLibrary {
 
         read(gDictionary,gTree,gLibrary,rDictionary,rTree,rLibrary,ringDictionary,ringTree,ringLibrary,otherDictionary,otherLibrary,otherTree,gauDictionary,gauTree,gauLibrary,one5Dictionary,one5Tree,one5Library,AbDictionary,AbTree,AbLibrary,UnDictionary,UnTree,UnLibrary);
 
-
-
-        //#]
     }
 
     //## operation findCorrectionInLibrary(ChemGraph,HashMap)
@@ -454,8 +448,7 @@ public class ThermoGAGroupLibrary {
 
     //## operation read(String,String,String,String,String,String,String,String,String)
 	public void read(String p_groupDictionary, String p_groupTree, String p_groupLibrary, String p_radicalDictionary, String p_radicalTree, String p_radicalLibrary, String p_ringDictionary, String p_ringTree, String p_ringLibrary, String p_otherDictionary, String p_otherLibrary, String p_otherTree, String p_gaucheDictionary, String p_gaucheTree, String p_gaucheLibrary, String p_15Dictionary, String p_15Tree, String p_15Library,String p_abramDictionary,String p_abramTree,String p_abramLibrary,String p_unifacDictionary,String p_unifacTree,String p_unifacLibrary) { //,String p_solventDictionary,String p_solventLibrary) {
-	    // end pey
-	        //#[ operation read(String,String,String,String,String,String,String,String,String)
+
 	        // try {
         
 	        	// step 1: read in GA Groups
@@ -475,12 +468,9 @@ public class ThermoGAGroupLibrary {
                     readRadicalLibrary(p_radicalLibrary);
 
 	        	// step 3: read in Ring Correction
-	                // begin pey
 	                readRingDictionary(p_ringDictionary);
 	                readRingTree(p_ringTree);
                     readRingLibrary(p_ringLibrary);
-	                // System.out.println("tree height = " + ringTree.height());
-	                // end pey
 
 	        	// step 4: read in Other Correction
                     readOtherDictionary(p_otherDictionary);
@@ -510,10 +500,6 @@ public class ThermoGAGroupLibrary {
 	        	throw new ThermoIOException(e.getMessage());
 	        }
 	        */
-
-
-
-	        //#]
 	    }
 
 

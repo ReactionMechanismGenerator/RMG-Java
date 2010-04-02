@@ -43,7 +43,6 @@ import jing.param.*;
 import jing.chemUtil.*;
 import jing.chemParser.*;
 
-
 //## package jing::rxnSys
 
 //----------------------------------------------------------------------------
@@ -238,6 +237,7 @@ public class ReactionModelGenerator {
             	line = ChemParser.readMeaningfulLine(reader);
             }
 			
+			
          	/*
          	 * Read in the Primary Thermo Library
          	 * MRH 7-Jul-2009
@@ -253,28 +253,16 @@ public class ReactionModelGenerator {
 				 * 	everything call this new method: readAndMakePTL
 				 */
 				readAndMakePTL(reader);
-//             	int numPTLs = 0;
-//             	line = ChemParser.readMeaningfulLine(reader);
-//             	while (!line.equals("END")) {
-//             		String[] tempString = line.split("Name: ");
-//             		String name = tempString[tempString.length-1].trim();
-//					line = ChemParser.readMeaningfulLine(reader);
-//					tempString = line.split("Location: ");
-//					String path = tempString[tempString.length-1].trim();
-//					if (numPTLs==0) {
-//                     	setPrimaryThermoLibrary(new PrimaryThermoLibrary(name,path));
-//                     	++numPTLs; 	
-//					}
-//					else {
-//                     	getPrimaryThermoLibrary().appendPrimaryThermoLibrary(name,path);
-//                     	++numPTLs;
-//					}
-//					line = ChemParser.readMeaningfulLine(reader);
-//             	}
-//             	if (numPTLs == 0) setPrimaryThermoLibrary(null);
 			} else throw new InvalidSymbolException("Error reading condition.txt file: "
 													+ "Could not locate PrimaryThermoLibrary field");
 			line = ChemParser.readMeaningfulLine(reader);
+			
+			// Extra forbidden structures may be specified after the Primary Thermo Library
+			if (line.startsWith("ForbiddenStructures:")) {
+				readExtraForbiddenStructures(reader);
+				line = ChemParser.readMeaningfulLine(reader);
+			}
+			
 			
  			if (line.toLowerCase().startsWith("readrestart")) {
 				StringTokenizer st = new StringTokenizer(line);
@@ -544,7 +532,7 @@ public class ReactionModelGenerator {
         			}
         			catch (ForbiddenStructureException e) {
         				System.out.println("Forbidden Structure:\n" + e.getMessage());
-        				System.exit(0);
+						throw new InvalidSymbolException("A species in the input file has a forbidden structure.");
         			}
 					//System.out.println(name);
         			Species species = Species.make(name,cg);
@@ -634,246 +622,12 @@ public class ReactionModelGenerator {
         	}
         	else throw new InvalidSymbolException("condition.txt: can't find SpectroscopicDataEstimator!");
 			
-        	// pressure dependence flag
+        	// pressure dependence and related flags
 			line = ChemParser.readMeaningfulLine(reader);
-        	if (line.toLowerCase().startsWith("pressuredependence:")) {
-        		setPressureDependenceType(line);
-//				StringTokenizer st = new StringTokenizer(line);
-//        		String name = st.nextToken();
-//        		String pDepType = st.nextToken();
-//        		if (pDepType.toLowerCase().equals("modifiedstrongcollision") ||
-//					pDepType.toLowerCase().equals("reservoirstate") ||
-//					pDepType.toLowerCase().equals("chemdis")) {
-//					
-//					reactionModelEnlarger = new RateBasedPDepRME();
-//        			PDepNetwork.generateNetworks = true;
-//					
-//					if (pDepType.toLowerCase().equals("reservoirstate")) {
-//						((RateBasedPDepRME) reactionModelEnlarger).setPDepKineticsEstimator(new FastMasterEqn(FastMasterEqn.Mode.RESERVOIRSTATE));
-//						if (SpectroscopicData.mode == SpectroscopicData.Mode.OFF) {
-//							System.out.println("Warning: Spectroscopic data needed for pressure dependence; switching SpectroscopicDataEstimator to FrequencyGroups.");
-//							SpectroscopicData.mode = SpectroscopicData.Mode.FREQUENCYGROUPS;
-//						}
-//					}
-//					else if (pDepType.toLowerCase().equals("modifiedstrongcollision")) {
-//						((RateBasedPDepRME) reactionModelEnlarger).setPDepKineticsEstimator(new FastMasterEqn(FastMasterEqn.Mode.STRONGCOLLISION));
-//						if (SpectroscopicData.mode == SpectroscopicData.Mode.OFF) {
-//							System.out.println("Warning: Spectroscopic data needed for pressure dependence; switching SpectroscopicDataEstimator to FrequencyGroups.");
-//							SpectroscopicData.mode = SpectroscopicData.Mode.FREQUENCYGROUPS;
-//						}
-//					}
-//					else if (pDepType.toLowerCase().equals("chemdis")) {
-//						((RateBasedPDepRME) reactionModelEnlarger).setPDepKineticsEstimator(new Chemdis());
-//						if (SpectroscopicData.mode != SpectroscopicData.Mode.THREEFREQUENCY) {
-//							System.out.println("Warning: Switching SpectroscopicDataEstimator to three-frequency model.");
-//							SpectroscopicData.mode = SpectroscopicData.Mode.THREEFREQUENCY;
-//						}
-//					}
-//					else {
-//						throw new InvalidSymbolException("condition.txt: Unknown PDepKineticsEstimator = " + pDepType);
-//					}
-//					
-//					// Set temperatures and pressures to use in PDep kinetics estimation
-//					Temperature[] temperatures = new Temperature[8];
-//					temperatures[0] = new Temperature(300, "K");
-//					temperatures[1] = new Temperature(400, "K");
-//					temperatures[2] = new Temperature(600, "K");
-//					temperatures[3] = new Temperature(900, "K");
-//					temperatures[4] = new Temperature(1200, "K");
-//					temperatures[5] = new Temperature(1500, "K");
-//					temperatures[6] = new Temperature(1800, "K");
-//					temperatures[7] = new Temperature(2100, "K");
-//					FastMasterEqn.setTemperatures(temperatures);
-//					PDepRateConstant.setTemperatures(temperatures);
-//					ChebyshevPolynomials.setTlow(temperatures[0]);
-//					ChebyshevPolynomials.setTup(temperatures[7]);
-//					
-//					Pressure[] pressures = new Pressure[5];
-//					pressures[0] = new Pressure(0.01, "bar");
-//					pressures[1] = new Pressure(0.1, "bar");
-//					pressures[2] = new Pressure(1, "bar");
-//					pressures[3] = new Pressure(10, "bar");
-//					pressures[4] = new Pressure(100, "bar");
-//					FastMasterEqn.setPressures(pressures);
-//					PDepRateConstant.setPressures(pressures);
-//					ChebyshevPolynomials.setPlow(pressures[0]);
-//					ChebyshevPolynomials.setPup(pressures[4]);
-//					
-//				}
-//				else if (pDepType.toLowerCase().equals("off")) {
-//					// No pressure dependence
-//					reactionModelEnlarger = new RateBasedRME();
-//        			PDepNetwork.generateNetworks = false;
-//				}
-//				else {
-//					throw new InvalidSymbolException("condition.txt: Unknown PressureDependence = " + pDepType);
-//				}
-			}
-			else throw new InvalidSymbolException("condition.txt: can't find PressureDependence flag!");
-			
-			// pressure dependence flag
-			if (reactionModelEnlarger instanceof RateBasedPDepRME) {
-				line = ChemParser.readMeaningfulLine(reader);
-				if (line.toLowerCase().startsWith("pdepkineticsmodel:")) {
-					line = setPDepKineticsModel(line,reader);
-//					StringTokenizer st = new StringTokenizer(line);
-//					String name = st.nextToken();
-//					String pDepKinType = st.nextToken();
-//					if (pDepKinType.toLowerCase().equals("chebyshev") ||
-//						pDepKinType.toLowerCase().equals("pdeparrhenius") ||
-//						pDepKinType.toLowerCase().equals("rate")) {
-//						
-//						if (pDepKinType.toLowerCase().equals("chebyshev")) {
-//							PDepRateConstant.setMode(PDepRateConstant.Mode.CHEBYSHEV);
-//							line = ChemParser.readMeaningfulLine(reader);
-//							if (line.startsWith("TRange")) {
-//								st = new StringTokenizer(line);
-//								String temp = st.nextToken(); // Should be "TRange:"
-//								String TUNITS = ChemParser.removeBrace(st.nextToken());
-//								double tLow = Double.parseDouble(st.nextToken());
-//								Temperature TMIN = new Temperature(tLow,TUNITS);
-//								ChebyshevPolynomials.setTlow(TMIN);
-//								double tHigh = Double.parseDouble(st.nextToken());
-//								if (tHigh <= tLow) {
-//									System.err.println("Tmax is less than or equal to Tmin");
-//									System.exit(0);
-//								}
-//								Temperature TMAX = new Temperature(tHigh,TUNITS);
-//								ChebyshevPolynomials.setTup(TMAX);
-//								int tResolution = Integer.parseInt(st.nextToken());
-//								int tbasisFuncs = Integer.parseInt(st.nextToken());
-//								if (tbasisFuncs > tResolution) {
-//									System.err.println("The number of basis functions cannot exceed the number of grid points");
-//									System.exit(0);
-//								}
-//								FastMasterEqn.setNumTBasisFuncs(tbasisFuncs);
-//								line = ChemParser.readMeaningfulLine(reader);
-//								String PUNITS = "";
-//								Pressure PMIN = new Pressure();
-//								Pressure PMAX = new Pressure();
-//								int pResolution = 0;
-//								int pbasisFuncs = 0;
-//								if (line.startsWith("PRange")) {
-//									st = new StringTokenizer(line);
-//									temp = st.nextToken(); // Should be "PRange:"
-//									PUNITS = ChemParser.removeBrace(st.nextToken());
-//									double pLow = Double.parseDouble(st.nextToken());
-//									PMIN = new Pressure(pLow,PUNITS);
-//									ChebyshevPolynomials.setPlow(PMIN);
-//									double pHigh = Double.parseDouble(st.nextToken());
-//									if (pHigh <= pLow) {
-//										System.err.println("Pmax is less than or equal to Pmin");
-//										System.exit(0);
-//									}
-//									PMAX = new Pressure(pHigh,PUNITS);
-//									ChebyshevPolynomials.setPup(PMAX);
-//									pResolution = Integer.parseInt(st.nextToken());
-//									pbasisFuncs = Integer.parseInt(st.nextToken());
-//									if (pbasisFuncs > pResolution) {
-//										System.err.println("The number of basis functions cannot exceed the number of grid points");
-//										System.exit(0);
-//									}
-//									FastMasterEqn.setNumPBasisFuncs(pbasisFuncs);
-//								}
-//								else {
-//									System.err.println("RMG cannot locate PRange field for Chebyshev polynomials.");
-//									System.exit(0);
-//								}
-//								
-//								// Set temperatures and pressures to use in PDep kinetics estimation
-//								Temperature[] temperatures = new Temperature[tResolution];
-//								for (int i=0; i<temperatures.length; i++) {
-//									double tempValueTilda = Math.cos((2*(i+1)-1)*Math.PI/(2*temperatures.length));
-//									double tempValue = 2 / (tempValueTilda * ((1/TMAX.getK()) - (1/TMIN.getK())) + (1/TMIN.getK()) + (1/TMAX.getK()));
-//									temperatures[temperatures.length-i-1] = new Temperature(tempValue,TUNITS);
-//								}
-//								FastMasterEqn.setTemperatures(temperatures);
-//								PDepRateConstant.setTemperatures(temperatures);
-//								
-//								Pressure[] pressures = new Pressure[pResolution];
-//								for (int j=0; j<pressures.length; j++) {
-//									double pressValueTilda = Math.cos((2*(j+1)-1)*Math.PI/(2*pressures.length));
-//									double pressValue = Math.pow(10,(pressValueTilda*(Math.log10(PMAX.getBar())-Math.log10(PMIN.getBar()))+Math.log10(PMIN.getBar())+Math.log10(PMAX.getBar()))/2);
-//									pressures[pressures.length-j-1] = new Pressure(pressValue,PUNITS);
-//								}
-//								FastMasterEqn.setPressures(pressures);
-//								PDepRateConstant.setPressures(pressures);
-//								line = ChemParser.readMeaningfulLine(reader);
-//							}
-//						}
-//						else if (pDepKinType.toLowerCase().equals("pdeparrhenius")) {
-//							//PDepRateConstant.setMode(PDepRateConstant.Mode.PDEPARRHENIUS);
-//							/*
-//							 *  Updated by MRH on 10Feb2010
-//							 *  	Allow user to specify # of T's/P's solved for in fame &
-//							 *  	# of PLOG's to report
-//							 */
-//							PDepRateConstant.setMode(PDepRateConstant.Mode.PDEPARRHENIUS);
-//							line = ChemParser.readMeaningfulLine(reader);
-//							if (line.startsWith("TRange")) {
-//								st = new StringTokenizer(line);
-//								String temp = st.nextToken(); // Should be "TRange:"
-//								String TUNITS = ChemParser.removeBrace(st.nextToken());
-//								int numT = Integer.parseInt(st.nextToken());
-//								Temperature[] listOfTs = new Temperature[numT];
-//								int counter = 0;
-//								while (st.hasMoreTokens()) {
-//									listOfTs[counter] = new Temperature(Double.parseDouble(st.nextToken()),TUNITS);
-//									++counter;
-//								}
-//								if (counter != numT) {
-//									System.out.println("Warning in TRange field of PressureDependence:\n" +
-//											"The stated number of temperatures is: " + numT + 
-//											"but the length of the temperature list is: " + counter);
-//								}
-//								
-//								line = ChemParser.readMeaningfulLine(reader);
-//								String PUNITS = "";
-//								if (line.startsWith("PRange")) {
-//									st = new StringTokenizer(line);
-//									temp = st.nextToken(); // Should be "PRange:"
-//									PUNITS = ChemParser.removeBrace(st.nextToken());
-//									int numP = Integer.parseInt(st.nextToken());
-//									Pressure[] listOfPs = new Pressure[numP];
-//									counter = 0;
-//									while (st.hasMoreTokens()) {
-//										listOfPs[counter] = new Pressure(Double.parseDouble(st.nextToken()),PUNITS);
-//										++counter;
-//									}
-//									if (counter != numP) {
-//										System.out.println("Warning in PRange field of PressureDependence:\n" +
-//												"The stated number of pressures is: " + numT + 
-//												"but the length of the pressure list is: " + counter);
-//									}
-//									FastMasterEqn.setTemperatures(listOfTs);
-//									PDepRateConstant.setTemperatures(listOfTs);
-//									FastMasterEqn.setPressures(listOfPs);
-//									PDepRateConstant.setPressures(listOfPs);
-//									PDepArrheniusKinetics.setNumPressures(numP);
-//									PDepArrheniusKinetics.setPressures(listOfPs);
-//								}
-//								else {
-//									System.err.println("RMG cannot locate PRange field for PDepArrhenius.");
-//									System.exit(0);
-//								}
-//								
-//								line = ChemParser.readMeaningfulLine(reader);
-//							}
-//						}
-//						// 6Jul2009-MRH:
-//						//	RATE mode reports p-dep rxn kinetics as: A 0.0 0.0
-//						//		where A is k(T,P) evaluated at the single temperature
-//						//		and pressure given in the condition.txt file
-//						else if (pDepKinType.toLowerCase().equals("rate"))
-//							PDepRateConstant.setMode(PDepRateConstant.Mode.RATE);
-//						
-//					}
-//					else {
-//						throw new InvalidSymbolException("condition.txt: Unknown PDepKinetics = " + pDepKinType);
-//					}
-				}
-				else throw new InvalidSymbolException("condition.txt: can't find PDepKinetics flag!");
-			}
+        	if (line.toLowerCase().startsWith("pressuredependence:"))
+        		line = setPressureDependenceOptions(line,reader);
+			else
+				throw new InvalidSymbolException("condition.txt: can't find PressureDependence flag!");
 			
         	// include species (optional)
 			if (!PDepRateConstant.getMode().name().equals("CHEBYSHEV") &&
@@ -1144,53 +898,13 @@ public class ReactionModelGenerator {
         	// read in reaction model enlarger
 			
         	/* Read in the Primary Reaction Library
-        	 * MRH 12-Jun-2009
-        	 * 
-        	 * I've made minor changes to this piece of code.  In particular, I've
-        	 * 	eliminated the on/off flag.  The user can specify as many PRLs,
+        	 *  The user can specify as many PRLs,
         	 * 	including none, as they like.
         	 */        	
         	line = ChemParser.readMeaningfulLine(reader);
 			if (line.startsWith("PrimaryReactionLibrary:")) {
-				/*
-				 * MRH 27Feb2010:
-				 * Changing the "read in Primary Reaction Library information" code
-				 * 	into it's own method.
-				 * 
-				 * Other modules (e.g. PopulateReactions) will be utilizing the exact code.
-				 * 	Rather than copying and pasting code into other modules, just have
-				 * 	everything call this new method: readAndMakePRL
-				 */
 				readAndMakePRL(reader);
-//				// GJB modified to allow multiple primary reaction libraries
-//				int Ilib = 0;
-//				line = ChemParser.readMeaningfulLine(reader);
-//				while (!line.equals("END")) {
-//					String[] tempString = line.split("Name: ");
-//					String name = tempString[tempString.length-1].trim();
-//					line = ChemParser.readMeaningfulLine(reader);
-//					tempString = line.split("Location: ");
-//					String path = tempString[tempString.length-1].trim();
-//					if (Ilib==0) {
-//						//primaryReactionLibrary = new PrimaryReactionLibrary(name, path);
-//						setPrimaryReactionLibrary(new PrimaryReactionLibrary(name, path));//10/14/07 gmagoon: changed to use setPrimaryReactionLibrary
-//						Ilib++; 	
-//					}
-//					else {
-//						//primaryReactionLibrary.appendPrimaryReactionLibrary(name,path);
-//						getPrimaryReactionLibrary().appendPrimaryReactionLibrary(name,path);//10/14/07 gmagoon: changed to use getPrimaryReactionLibrary; check to make sure this is valid
-//						Ilib++;//just in case anybody wants to track how many are processed
-//					}
-//					line = ChemParser.readMeaningfulLine(reader);
-//				}
-//				//                	System.out.println("Primary Reaction Libraries in use: " +getPrimaryReactionLibrary().getName());//10/14/07 gmagoon: changed to use getPrimaryReactionLibrary
-//				if (Ilib==0) {
-//					//primaryReactionLibrary = null;
-//					setPrimaryReactionLibrary(null);//10/14/07 gmagoon: changed to use setPrimaryReactionLibrary; check to make sure this is valid
-//				}
-//				else System.out.println("Primary Reaction Libraries in use: " + getPrimaryReactionLibrary().getName());
-				
-			} else throw new InvalidSymbolException("condition.txt: can't find PrimaryReactionLibrary!");
+			} else throw new InvalidSymbolException("condition.txt: can't find PrimaryReactionLibrary");
 			
 			/*
 			 * Added by MRH 12-Jun-2009
@@ -1211,7 +925,7 @@ public class ReactionModelGenerator {
 					String name = tempString[tempString.length-1].trim();
 					line = ChemParser.readMeaningfulLine(reader);
 					tempString = line.split("Location: ");
-					String path = tempString[tempString.length-1].trim();
+					String location = tempString[tempString.length-1].trim();
 					line = ChemParser.readMeaningfulLine(reader);
 					tempString = line.split("GenerateReactions: ");
 					String generateStr = tempString[tempString.length-1].trim();
@@ -1233,6 +947,9 @@ public class ReactionModelGenerator {
 						System.err.println("Please include a 'GenerateReactions: yes/no' line for seed mechanism "+name);
 						System.exit(0);
 					}
+					
+					String path = System.getProperty("jing.rxn.ReactionLibrary.pathName");
+					path += "/" + location;
 										   
 					if (numMechs==0) {
 						setSeedMechanism(new SeedMechanism(name, path, generate));
@@ -1400,8 +1117,8 @@ public class ReactionModelGenerator {
 			//    PDepNetwork.setPressureArray(pressureArray);//10/30/07 gmagoon: same for pressure;//UPDATE: commenting out: not needed if updateKLeak is done for one temperature/pressure at a time; 11/1-2/07 restored; 11/6/07 gmagoon: moved before initialization of lrg;
 		}
         catch (IOException e) {
-        	System.err.println("Error in read in reaction system initialization file!");
-        	throw new IOException("Reaction System Initialization: " + e.getMessage());
+        	System.err.println("Error reading reaction system initialization file.");
+        	throw new IOException("Input file error: " + e.getMessage());
         }
     }
     public void setReactionModel(ReactionModel p_ReactionModel) {
@@ -2341,11 +2058,7 @@ public class ReactionModelGenerator {
 			FileReader fr = new FileReader(includeSpecies);
 			BufferedReader reader = new BufferedReader(fr);
 			String line = ChemParser.readMeaningfulLine(reader);
-			
-			
 			while (line!=null) {
-				
-				
     			StringTokenizer st = new StringTokenizer(line);
     			String index = st.nextToken();
     			String name = null;
@@ -2354,13 +2067,13 @@ public class ReactionModelGenerator {
 				
     			Graph g = ChemParser.readChemGraph(reader);
 				
-				
     			ChemGraph cg = null;
     			try {
     				cg = ChemGraph.make(g);
     			}
     			catch (ForbiddenStructureException e) {
     				System.out.println("Forbidden Structure:\n" + e.getMessage());
+					System.out.println("Included species file "+fileName+" contains a forbidden structure.");
     				System.exit(0);
     			}
 				
@@ -2368,16 +2081,13 @@ public class ReactionModelGenerator {
        			//speciesSet.put(name, species);
     			speciesSet.add(species);
 				
-				
     			line = ChemParser.readMeaningfulLine(reader);
 				System.out.println(line);
 				
     		}
-			
-			
 		}
 		catch (IOException e){
-			System.out.println("Could not read the included species file");
+			System.out.println("Could not read the included species file" + fileName);
         	System.exit(0);
 		}
 		return speciesSet;
@@ -3101,6 +2811,7 @@ public class ReactionModelGenerator {
     }
     
     public void readRestartSpecies() {    	
+		System.out.println("Reading in species from Restart folder");
 		// Read in core species -- NOTE code is almost duplicated in Read in edge species (second part of procedure)
 		try {
 			FileReader in = new FileReader("Restart/coreSpecies.txt");
@@ -3118,7 +2829,7 @@ public class ReactionModelGenerator {
 				try {
 					cg = ChemGraph.make(g);
 				} catch (ForbiddenStructureException e) {
-					System.out.println("Error in reading graph: Graph contains a forbidden structure.\n" + g.toString());
+					System.out.println("Error reading graph: Graph contains a forbidden structure.\n" + g.toString());
 					System.exit(0);
 				}
 				// Make the species
@@ -3156,7 +2867,7 @@ public class ReactionModelGenerator {
 				try {
 					cg = ChemGraph.make(g);
 				} catch (ForbiddenStructureException e) {
-					System.out.println("Error in reading graph: Graph contains a forbidden structure.\n" + g.toString());
+					System.out.println("Error reading graph: Graph contains a forbidden structure.\n" + g.toString());
 					System.exit(0);
 				}
 				// Make the species
@@ -3313,7 +3024,7 @@ public class ReactionModelGenerator {
 				try {
 					cg = ChemGraph.make(g);
 				} catch (ForbiddenStructureException e) {
-					System.out.println("Error in reading graph: Graph contains a forbidden structure.\n" + g.toString());
+					System.out.println("Error reading graph: Graph contains a forbidden structure.\n" + g.toString());
 					System.exit(0);
 				}
 				// Make the species
@@ -3352,7 +3063,7 @@ public class ReactionModelGenerator {
 				try {
 					cg = ChemGraph.make(g);
 				} catch (ForbiddenStructureException e) {
-					System.out.println("Error in reading graph: Graph contains a forbidden structure.\n" + g.toString());
+					System.out.println("Error reading graph: Graph contains a forbidden structure.\n" + g.toString());
 					System.exit(0);
 				}
 				// Make the species
@@ -4190,13 +3901,16 @@ public class ReactionModelGenerator {
 			String name = tempString[tempString.length-1].trim();
 			line = ChemParser.readMeaningfulLine(reader);
 			tempString = line.split("Location: ");
-			String path = tempString[tempString.length-1].trim();
+			String location = tempString[tempString.length-1].trim();
+			
+			String path = System.getProperty("jing.rxn.ReactionLibrary.pathName");
+			path += "/" + location;
 			if (Ilib==0) {
 				setPrimaryReactionLibrary(new PrimaryReactionLibrary(name, path));
 				Ilib++; 	
 			}
 			else {
-				getPrimaryReactionLibrary().appendPrimaryReactionLibrary(name,path);
+				getPrimaryReactionLibrary().appendPrimaryReactionLibrary(name, path);
 				Ilib++;
 			}
 			line = ChemParser.readMeaningfulLine(reader);
@@ -4228,6 +3942,28 @@ public class ReactionModelGenerator {
      	}
      	if (numPTLs == 0) setPrimaryThermoLibrary(null);
     }
+	
+	public void readExtraForbiddenStructures(BufferedReader reader) throws IOException  {
+		System.out.println("Reading extra forbidden structures from input file.");
+     	String line = ChemParser.readMeaningfulLine(reader);
+     	while (!line.equals("END")) {
+			StringTokenizer token = new StringTokenizer(line);
+			String fgname = token.nextToken();
+			Graph fgGraph = null;
+			try {
+				fgGraph = ChemParser.readFGGraph(reader);
+			}
+			catch (InvalidGraphFormatException e) {
+				System.out.println("Invalid functional group in "+fgname);
+				throw new InvalidFunctionalGroupException(fgname + ": " + e.getMessage());
+			}
+			if (fgGraph == null) throw new InvalidFunctionalGroupException(fgname);
+			FunctionalGroup fg = FunctionalGroup.makeForbiddenStructureFG(fgname, fgGraph);
+			ChemGraph.addForbiddenStructure(fg);
+			line = ChemParser.readMeaningfulLine(reader);
+			System.out.println(" Forbidden structure: "+fgname);
+		}
+	}
     
     public void setSpectroscopicDataMode(String line) {
 		StringTokenizer st = new StringTokenizer(line);
@@ -4244,239 +3980,231 @@ public class ReactionModelGenerator {
 		}
 		else throw new InvalidSymbolException("condition.txt: Unknown SpectroscopicDataEstimator = " + sdeType);
     }
-    
-    public void setPressureDependenceType(String line) {
+
+	/**
+	 * Sets the pressure dependence options to on or off. If on, checks for
+	 * more options and sets them as well.
+	 * @param line The current line in the condition file; should start with "PressureDependence:"
+	 * @param reader The reader currently being used to parse the condition file
+	 */
+    public String setPressureDependenceOptions(String line, BufferedReader reader) throws InvalidSymbolException {
+
+		// Determine pressure dependence mode
 		StringTokenizer st = new StringTokenizer(line);
-		String name = st.nextToken();
+		String name = st.nextToken(); // Should be "PressureDependence:"
 		String pDepType = st.nextToken();
-		if (pDepType.toLowerCase().equals("modifiedstrongcollision") ||
+		
+		if (pDepType.toLowerCase().equals("off")) {
+			// No pressure dependence
+			reactionModelEnlarger = new RateBasedRME();
+			PDepNetwork.generateNetworks = false;
+
+			line = ChemParser.readMeaningfulLine(reader);
+		}
+		else if (pDepType.toLowerCase().equals("modifiedstrongcollision") ||
 			pDepType.toLowerCase().equals("reservoirstate") ||
 			pDepType.toLowerCase().equals("chemdis")) {
 			
 			reactionModelEnlarger = new RateBasedPDepRME();
 			PDepNetwork.generateNetworks = true;
 			
-			if (pDepType.toLowerCase().equals("reservoirstate")) {
+			// Set pressure dependence method
+			if (pDepType.toLowerCase().equals("reservoirstate"))
 				((RateBasedPDepRME) reactionModelEnlarger).setPDepKineticsEstimator(new FastMasterEqn(FastMasterEqn.Mode.RESERVOIRSTATE));
-				if (SpectroscopicData.mode == SpectroscopicData.Mode.OFF) {
-					System.out.println("Warning: Spectroscopic data needed for pressure dependence; switching SpectroscopicDataEstimator to FrequencyGroups.");
-					SpectroscopicData.mode = SpectroscopicData.Mode.FREQUENCYGROUPS;
-				}
-			}
-			else if (pDepType.toLowerCase().equals("modifiedstrongcollision")) {
+			else if (pDepType.toLowerCase().equals("modifiedstrongcollision"))
 				((RateBasedPDepRME) reactionModelEnlarger).setPDepKineticsEstimator(new FastMasterEqn(FastMasterEqn.Mode.STRONGCOLLISION));
-				if (SpectroscopicData.mode == SpectroscopicData.Mode.OFF) {
-					System.out.println("Warning: Spectroscopic data needed for pressure dependence; switching SpectroscopicDataEstimator to FrequencyGroups.");
-					SpectroscopicData.mode = SpectroscopicData.Mode.FREQUENCYGROUPS;
+			//else if (pDepType.toLowerCase().equals("chemdis"))
+			//	((RateBasedPDepRME) reactionModelEnlarger).setPDepKineticsEstimator(new Chemdis());
+			else
+				throw new InvalidSymbolException("condition.txt: Unknown PressureDependence mode = " + pDepType);
+
+			RateBasedPDepRME pdepModelEnlarger = (RateBasedPDepRME) reactionModelEnlarger;
+			
+			// Turn on spectroscopic data estimation if not already on
+			if (pdepModelEnlarger.getPDepKineticsEstimator() instanceof FastMasterEqn && SpectroscopicData.mode == SpectroscopicData.Mode.OFF) {
+				System.out.println("Warning: Spectroscopic data needed for pressure dependence; switching SpectroscopicDataEstimator to FrequencyGroups.");
+				SpectroscopicData.mode = SpectroscopicData.Mode.FREQUENCYGROUPS;
+			}
+			else if (pdepModelEnlarger.getPDepKineticsEstimator() instanceof Chemdis && SpectroscopicData.mode != SpectroscopicData.Mode.THREEFREQUENCY) {
+				System.out.println("Warning: Switching SpectroscopicDataEstimator to three-frequency model.");
+				SpectroscopicData.mode = SpectroscopicData.Mode.THREEFREQUENCY;
+			}
+
+			// Next line must be PDepKineticsModel
+			line = ChemParser.readMeaningfulLine(reader);
+			if (line.toLowerCase().startsWith("pdepkineticsmodel:")) {
+				
+				st = new StringTokenizer(line);
+				name = st.nextToken();
+				
+				String pDepKinType = st.nextToken();
+				if (pDepKinType.toLowerCase().equals("chebyshev")) {
+					PDepRateConstant.setMode(PDepRateConstant.Mode.CHEBYSHEV);
+					// Default is to cubic order for basis functions
+					FastMasterEqn.setNumTBasisFuncs(4);
+					FastMasterEqn.setNumPBasisFuncs(4);
+				}
+				else if (pDepKinType.toLowerCase().equals("pdeparrhenius"))
+					PDepRateConstant.setMode(PDepRateConstant.Mode.PDEPARRHENIUS);
+				else if (pDepKinType.toLowerCase().equals("rate"))
+					PDepRateConstant.setMode(PDepRateConstant.Mode.RATE);
+				else
+					throw new InvalidSymbolException("condition.txt: Unknown PDepKineticsModel = " + pDepKinType);
+
+				// For Chebyshev polynomials, optionally specify the number of
+				// temperature and pressure basis functions
+				// Such a line would read, e.g.: "PDepKineticsModel: Chebyshev 4 4"
+				if (st.hasMoreTokens() && PDepRateConstant.getMode() == PDepRateConstant.Mode.CHEBYSHEV) {
+					try {
+						int numTBasisFuncs = Integer.parseInt(st.nextToken());
+					int numPBasisFuncs = Integer.parseInt(st.nextToken());
+					FastMasterEqn.setNumTBasisFuncs(numTBasisFuncs);
+					FastMasterEqn.setNumPBasisFuncs(numPBasisFuncs);
+					}
+					catch (NoSuchElementException e) {
+						throw new InvalidSymbolException("condition.txt: Missing number of pressure basis functions for Chebyshev polynomials.");
+					}
+
+				}
+
+			}
+			else 
+				throw new InvalidSymbolException("condition.txt: Missing PDepKineticsModel after PressureDependence line.");
+
+			// Determine temperatures and pressures to use
+			// These can be specified automatically using TRange and PRange or
+			// manually using Temperatures and Pressures
+			Temperature[] temperatures = null;
+			Pressure[] pressures = null;
+			String Tunits = "K";
+			Temperature Tmin = new Temperature(300.0, "K");
+			Temperature Tmax = new Temperature(2000.0, "K");
+			int Tnumber = 8;
+			String Punits = "bar";
+			Pressure Pmin = new Pressure(0.01, "bar");
+			Pressure Pmax = new Pressure(100.0, "bar");
+			int Pnumber = 5;
+
+			// Read next line of input
+			line = ChemParser.readMeaningfulLine(reader);
+			boolean done = !(line.toLowerCase().startsWith("trange:") ||
+				line.toLowerCase().startsWith("prange:") ||
+				line.toLowerCase().startsWith("temperatures:") ||
+				line.toLowerCase().startsWith("pressures:"));
+
+			// Parse lines containing pressure dependence options
+			// Possible options are "TRange:", "PRange:", "Temperatures:", and "Pressures:"
+			// You must specify either TRange or Temperatures and either PRange or Pressures
+			// The order does not matter
+			while (!done) {
+
+				st = new StringTokenizer(line);
+				name = st.nextToken();
+
+				if (line.toLowerCase().startsWith("trange:")) {
+					Tunits = ChemParser.removeBrace(st.nextToken());
+					Tmin = new Temperature(Double.parseDouble(st.nextToken()), Tunits);
+					Tmax = new Temperature(Double.parseDouble(st.nextToken()), Tunits);
+					Tnumber = Integer.parseInt(st.nextToken());
+				}
+				else if (line.toLowerCase().startsWith("prange:")) {
+					Punits = ChemParser.removeBrace(st.nextToken());
+					Pmin = new Pressure(Double.parseDouble(st.nextToken()), Punits);
+					Pmax = new Pressure(Double.parseDouble(st.nextToken()), Punits);
+					Pnumber = Integer.parseInt(st.nextToken());
+				}
+				else if (line.toLowerCase().startsWith("temperatures:")) {
+					Tnumber = Integer.parseInt(st.nextToken());
+					Tunits = ChemParser.removeBrace(st.nextToken());
+					temperatures = new Temperature[Tnumber];
+					for (int i = 0; i < Tnumber; i++) {
+						temperatures[i] = new Temperature(Double.parseDouble(st.nextToken()), Tunits);
+					}
+					Tmin = temperatures[0];
+					Tmax = temperatures[Tnumber-1];
+				}
+				else if (line.toLowerCase().startsWith("pressures:")) {
+					Pnumber = Integer.parseInt(st.nextToken());
+					Punits = ChemParser.removeBrace(st.nextToken());
+					pressures = new Pressure[Pnumber];
+					for (int i = 0; i < Pnumber; i++) {
+						pressures[i] = new Pressure(Double.parseDouble(st.nextToken()), Punits);
+					}
+					Pmin = pressures[0];
+					Pmax = pressures[Pnumber-1];
+				}
+
+				// Read next line of input
+				line = ChemParser.readMeaningfulLine(reader);
+				done = !(line.toLowerCase().startsWith("trange:") ||
+					line.toLowerCase().startsWith("prange:") ||
+					line.toLowerCase().startsWith("temperatures:") ||
+					line.toLowerCase().startsWith("pressures:"));
+
+			}
+
+			// Set temperatures and pressures (if not already set manually)
+			if (temperatures == null) {
+				temperatures = new Temperature[Tnumber];
+				if (PDepRateConstant.getMode() == PDepRateConstant.Mode.CHEBYSHEV) {
+					// Use the Gauss-Chebyshev points
+					// The formula for the Gauss-Chebyshev points was taken from
+					// the Chemkin theory manual
+					for (int i = 1; i <= Tnumber; i++) {
+						double T = -Math.cos((2 * i - 1) * Math.PI / (2 * Tnumber));
+						T = 2.0 / ((1.0/Tmax.getK() - 1.0/Tmin.getK()) * T + 1.0/Tmax.getK() + 1.0/Tmin.getK());
+						temperatures[i-1] = new Temperature(T, "K");
+					}
+				}
+				else {
+					// Distribute equally on a 1/T basis
+					double slope = (1.0/Tmax.getK() - 1.0/Tmin.getK()) / (Tnumber - 1);
+					for (int i = 0; i < Tnumber; i++) {
+						double T = 1.0/(slope * i + 1.0/Tmin.getK());
+						temperatures[i] = new Temperature(T, "K");
+					}
 				}
 			}
-			else if (pDepType.toLowerCase().equals("chemdis")) {
-				((RateBasedPDepRME) reactionModelEnlarger).setPDepKineticsEstimator(new Chemdis());
-				if (SpectroscopicData.mode != SpectroscopicData.Mode.THREEFREQUENCY) {
-					System.out.println("Warning: Switching SpectroscopicDataEstimator to three-frequency model.");
-					SpectroscopicData.mode = SpectroscopicData.Mode.THREEFREQUENCY;
+			if (pressures == null) {
+				pressures = new Pressure[Pnumber];
+				if (PDepRateConstant.getMode() == PDepRateConstant.Mode.CHEBYSHEV) {
+					// Use the Gauss-Chebyshev points
+					// The formula for the Gauss-Chebyshev points was taken from
+					// the Chemkin theory manual
+					for (int i = 1; i <= Pnumber; i++) {
+						double P = -Math.cos((2 * i - 1) * Math.PI / (2 * Pnumber));
+						P = Math.pow(10, 0.5 * ((Math.log10(Pmax.getBar()) - Math.log10(Pmin.getBar())) * P + Math.log10(Pmax.getBar()) + Math.log10(Pmin.getBar())));
+						pressures[i-1] = new Pressure(P, "bar");
+					}
 				}
-			}
-			else {
-				throw new InvalidSymbolException("condition.txt: Unknown PDepKineticsEstimator = " + pDepType);
+				else {
+					// Distribute equally on a log P basis
+					double slope = (Math.log10(Pmax.getBar()) - Math.log10(Pmin.getBar())) / (Pnumber - 1);
+					for (int i = 0; i < Pnumber; i++) {
+						double P = Math.pow(10, slope * i + Math.log10(Pmin.getBar()));
+						pressures[i] = new Pressure(P, "bar");
+					}
+				}
 			}
 			
-			// Set temperatures and pressures to use in PDep kinetics estimation
-			Temperature[] temperatures = new Temperature[8];
-			temperatures[0] = new Temperature(300, "K");
-			temperatures[1] = new Temperature(400, "K");
-			temperatures[2] = new Temperature(600, "K");
-			temperatures[3] = new Temperature(900, "K");
-			temperatures[4] = new Temperature(1200, "K");
-			temperatures[5] = new Temperature(1500, "K");
-			temperatures[6] = new Temperature(1800, "K");
-			temperatures[7] = new Temperature(2100, "K");
 			FastMasterEqn.setTemperatures(temperatures);
 			PDepRateConstant.setTemperatures(temperatures);
-			ChebyshevPolynomials.setTlow(temperatures[0]);
-			ChebyshevPolynomials.setTup(temperatures[7]);
-			
-			Pressure[] pressures = new Pressure[5];
-			pressures[0] = new Pressure(0.01, "bar");
-			pressures[1] = new Pressure(0.1, "bar");
-			pressures[2] = new Pressure(1, "bar");
-			pressures[3] = new Pressure(10, "bar");
-			pressures[4] = new Pressure(100, "bar");
+			PDepRateConstant.setTMin(Tmin);
+			PDepRateConstant.setTMax(Tmax);
+			ChebyshevPolynomials.setTlow(Tmin);
+			ChebyshevPolynomials.setTup(Tmax);
 			FastMasterEqn.setPressures(pressures);
 			PDepRateConstant.setPressures(pressures);
-			ChebyshevPolynomials.setPlow(pressures[0]);
-			ChebyshevPolynomials.setPup(pressures[4]);
-			
-		}
-		else if (pDepType.toLowerCase().equals("off")) {
-			// No pressure dependence
-			reactionModelEnlarger = new RateBasedRME();
-			PDepNetwork.generateNetworks = false;
+			PDepRateConstant.setPMin(Pmin);
+			PDepRateConstant.setPMax(Pmax);
+			ChebyshevPolynomials.setPlow(Pmin);
+			ChebyshevPolynomials.setPup(Pmax);
+
 		}
 		else {
 			throw new InvalidSymbolException("condition.txt: Unknown PressureDependence = " + pDepType);
 		}
-    }
-    
-    public String setPDepKineticsModel(String line, BufferedReader reader) throws InvalidSymbolException {
-		StringTokenizer st = new StringTokenizer(line);
-		String name = st.nextToken();
-		String pDepKinType = st.nextToken();
-		if (pDepKinType.toLowerCase().equals("chebyshev") ||
-			pDepKinType.toLowerCase().equals("pdeparrhenius") ||
-			pDepKinType.toLowerCase().equals("rate")) {
-			
-			if (pDepKinType.toLowerCase().equals("chebyshev")) {
-				PDepRateConstant.setMode(PDepRateConstant.Mode.CHEBYSHEV);
-				line = ChemParser.readMeaningfulLine(reader);
-				if (line.startsWith("TRange")) {
-					st = new StringTokenizer(line);
-					String temp = st.nextToken(); // Should be "TRange:"
-					String TUNITS = ChemParser.removeBrace(st.nextToken());
-					double tLow = Double.parseDouble(st.nextToken());
-					Temperature TMIN = new Temperature(tLow,TUNITS);
-					ChebyshevPolynomials.setTlow(TMIN);
-					double tHigh = Double.parseDouble(st.nextToken());
-					if (tHigh <= tLow) {
-						throw new InvalidSymbolException("Chebyshev Tmax is less than or equal to Tmin");
-					}
-					Temperature TMAX = new Temperature(tHigh,TUNITS);
-					ChebyshevPolynomials.setTup(TMAX);
-					if (TMAX.getK() < Global.highTemperature.getK()) 
-						throw new InvalidSymbolException("Chebyshev Tmax is lower than the highest simulation temperature "+Global.highTemperature.toString() );
-					if (TMIN.getK() > Global.lowTemperature.getK()) 
-						throw new InvalidSymbolException("Chebyshev Tmin is higher than the lowest simulation temperature "+Global.lowTemperature.toString() );		
-					int tResolution = Integer.parseInt(st.nextToken());
-					int tbasisFuncs = Integer.parseInt(st.nextToken());
-					if (tbasisFuncs > tResolution) {
-						throw new InvalidSymbolException("The number of basis functions cannot exceed the number of grid points");
-					}
-					FastMasterEqn.setNumTBasisFuncs(tbasisFuncs);
-					line = ChemParser.readMeaningfulLine(reader);
-					String PUNITS = "";
-					Pressure PMIN = new Pressure();
-					Pressure PMAX = new Pressure();
-					int pResolution = 0;
-					int pbasisFuncs = 0;
-					if (line.startsWith("PRange")) {
-						st = new StringTokenizer(line);
-						temp = st.nextToken(); // Should be "PRange:"
-						PUNITS = ChemParser.removeBrace(st.nextToken());
-						double pLow = Double.parseDouble(st.nextToken());
-						PMIN = new Pressure(pLow,PUNITS);
-						ChebyshevPolynomials.setPlow(PMIN);
-						double pHigh = Double.parseDouble(st.nextToken());
-						if (pHigh <= pLow) {
-							System.err.println("Pmax is less than or equal to Pmin");
-							System.exit(0);
-						}
-						PMAX = new Pressure(pHigh,PUNITS);
-						if (PMAX.getPa() < Global.highPressure.getPa()) 
-							throw new InvalidSymbolException("Chebyshev Pmax is lower than the highest simulation pressure "+Global.highPressure.toString() );
-						if (PMIN.getPa() > Global.lowPressure.getPa()) 
-							throw new InvalidSymbolException("Chebyshev Pmin is higher than the lowest simulation pressure "+Global.lowPressure.toString() );							
-						ChebyshevPolynomials.setPup(PMAX);
-						pResolution = Integer.parseInt(st.nextToken());
-						pbasisFuncs = Integer.parseInt(st.nextToken());
-						if (pbasisFuncs > pResolution) {
-							throw new InvalidSymbolException("The number of basis functions cannot exceed the number of grid points");
-						}
-						FastMasterEqn.setNumPBasisFuncs(pbasisFuncs);
-					}
-					else {
-						throw new InvalidSymbolException("RMG cannot locate PRange field for Chebyshev polynomials.");
-					}
-					
-					// Set temperatures and pressures to use in PDep kinetics estimation
-					Temperature[] temperatures = new Temperature[tResolution];
-					for (int i=0; i<temperatures.length; i++) {
-						double tempValueTilda = Math.cos(i*Math.PI/(temperatures.length-1)); // roots of a Chebyshev polynomial
-						double tempValue = 2 / (tempValueTilda * ((1/TMAX.getK()) - (1/TMIN.getK())) + (1/TMIN.getK()) + (1/TMAX.getK()));
-						temperatures[temperatures.length-i-1] = new Temperature(tempValue,TUNITS);
-					}
-					FastMasterEqn.setTemperatures(temperatures);
-					PDepRateConstant.setTemperatures(temperatures);
-					
-					Pressure[] pressures = new Pressure[pResolution];
-					for (int j=0; j<pressures.length; j++) {
-						double pressValueTilda = Math.cos(j*Math.PI/(pressures.length-1)); // roots of a Chebyshev polynomial
-						double pressValue = Math.pow(10,(pressValueTilda*(Math.log10(PMAX.getBar())-Math.log10(PMIN.getBar()))+Math.log10(PMIN.getBar())+Math.log10(PMAX.getBar()))/2);
-						pressures[pressures.length-j-1] = new Pressure(pressValue,PUNITS);
-					}
-					FastMasterEqn.setPressures(pressures);
-					PDepRateConstant.setPressures(pressures);
-					line = ChemParser.readMeaningfulLine(reader);
-				}
-			}
-			else if (pDepKinType.toLowerCase().equals("pdeparrhenius")) {
-				//PDepRateConstant.setMode(PDepRateConstant.Mode.PDEPARRHENIUS);
-				/*
-				 *  Updated by MRH on 10Feb2010
-				 *  	Allow user to specify # of T's/P's solved for in fame &
-				 *  	# of PLOG's to report
-				 */
-				PDepRateConstant.setMode(PDepRateConstant.Mode.PDEPARRHENIUS);
-				line = ChemParser.readMeaningfulLine(reader);
-				if (line.startsWith("TRange")) {
-					st = new StringTokenizer(line);
-					String temp = st.nextToken(); // Should be "TRange:"
-					String TUNITS = ChemParser.removeBrace(st.nextToken());
-					int numT = Integer.parseInt(st.nextToken());
-					Temperature[] listOfTs = new Temperature[numT];
-					int counter = 0;
-					while (st.hasMoreTokens()) {
-						listOfTs[counter] = new Temperature(Double.parseDouble(st.nextToken()),TUNITS);
-						++counter;
-					}
-					if (counter != numT) {
-						System.out.println("Warning in TRange field of PressureDependence:\n" +
-								"The stated number of temperatures is: " + numT + 
-								"but the length of the temperature list is: " + counter);
-					}
-					
-					line = ChemParser.readMeaningfulLine(reader);
-					String PUNITS = "";
-					if (line.startsWith("PRange")) {
-						st = new StringTokenizer(line);
-						temp = st.nextToken(); // Should be "PRange:"
-						PUNITS = ChemParser.removeBrace(st.nextToken());
-						int numP = Integer.parseInt(st.nextToken());
-						Pressure[] listOfPs = new Pressure[numP];
-						counter = 0;
-						while (st.hasMoreTokens()) {
-							listOfPs[counter] = new Pressure(Double.parseDouble(st.nextToken()),PUNITS);
-							++counter;
-						}
-						if (counter != numP) {
-							System.out.println("Warning in PRange field of PressureDependence:\n" +
-									"The stated number of pressures is: " + numT + 
-									"but the length of the pressure list is: " + counter);
-						}
-						FastMasterEqn.setTemperatures(listOfTs);
-						PDepRateConstant.setTemperatures(listOfTs);
-						FastMasterEqn.setPressures(listOfPs);
-						PDepRateConstant.setPressures(listOfPs);
-						PDepArrheniusKinetics.setNumPressures(numP);
-						PDepArrheniusKinetics.setPressures(listOfPs);
-					}
-					else {
-						throw new InvalidSymbolException("RMG cannot locate PRange field for PDepArrhenius.");
-					}
-					
-					line = ChemParser.readMeaningfulLine(reader);
-				}
-			}
-			// 6Jul2009-MRH:
-			//	RATE mode reports p-dep rxn kinetics as: A 0.0 0.0
-			//		where A is k(T,P) evaluated at the single temperature
-			//		and pressure given in the condition.txt file
-			else if (pDepKinType.toLowerCase().equals("rate"))
-				PDepRateConstant.setMode(PDepRateConstant.Mode.RATE);
-			
-		}
-		else {
-			throw new InvalidSymbolException("condition.txt: Unknown PDepKinetics = " + pDepKinType);
-		}
+
 		return line;
     }
     

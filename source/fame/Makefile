@@ -20,7 +20,7 @@ F90FLAGS=-fmod=$(BUILDDIR) -ftrace=full
 
 LDFLAGS= $(F90_EXTRA_LDFLAGS) -lpthread -lblas -llapack
 
-OBJ0=Species.o Isomer.o Reaction.o DensityOfStates.o Network.o Input.o StrongCollision.o ReservoirState.o RateModel.o Output.o fame.o 
+OBJ0=math.o states.o _modes.o network.o io.o mastereqn.o msc.o rs.o model.o fame.o
 
 OBJ=$(patsubst %.o,$(BUILDDIR)/%.o,$(OBJ0))
 
