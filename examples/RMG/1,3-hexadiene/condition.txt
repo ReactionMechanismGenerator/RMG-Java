@@ -51,7 +51,9 @@ END
 
 SpectroscopicDataEstimator: FrequencyGroups
 PressureDependence: ReservoirState
-PDepKineticsModel: Chebyshev
+PDepKineticsModel: Chebyshev 4 4
+TRange: (K) 300.0 2000.0 8
+PRange: (bar) 0.01 100.0 5
 
 FinishController:
 (1) Goal Conversion: HXD13 0.9
