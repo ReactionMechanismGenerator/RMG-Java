@@ -4154,10 +4154,14 @@ public class ReactionModelGenerator {
 			
 			FastMasterEqn.setTemperatures(temperatures);
 			PDepRateConstant.setTemperatures(temperatures);
+			PDepRateConstant.setTMin(Tmin);
+			PDepRateConstant.setTMax(Tmax);
 			ChebyshevPolynomials.setTlow(Tmin);
 			ChebyshevPolynomials.setTup(Tmax);
 			FastMasterEqn.setPressures(pressures);
 			PDepRateConstant.setPressures(pressures);
+			PDepRateConstant.setPMin(Pmin);
+			PDepRateConstant.setPMax(Pmax);
 			ChebyshevPolynomials.setPlow(Pmin);
 			ChebyshevPolynomials.setPup(Pmax);
 
