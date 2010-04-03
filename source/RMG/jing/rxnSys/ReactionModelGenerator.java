@@ -630,9 +630,15 @@ public class ReactionModelGenerator {
 				throw new InvalidSymbolException("condition.txt: can't find PressureDependence flag!");
 			
         	// include species (optional)
-			if (!PDepRateConstant.getMode().name().equals("CHEBYSHEV") &&
-					!PDepRateConstant.getMode().name().equals("PDEPARRHENIUS"))
-				line = ChemParser.readMeaningfulLine(reader);
+        	/*
+        	 * 
+        	 * MRH 3-APR-2010:
+        	 * This if statement is no longer necessary and was causing an error
+        	 * 	when the PressureDependence field was set to "off"
+        	 */
+//			if (!PDepRateConstant.getMode().name().equals("CHEBYSHEV") &&
+//					!PDepRateConstant.getMode().name().equals("PDEPARRHENIUS"))
+//				line = ChemParser.readMeaningfulLine(reader);
 			if (line.startsWith("IncludeSpecies")) {
 				StringTokenizer st = new StringTokenizer(line);
 				String iS = st.nextToken();
