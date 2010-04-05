@@ -1340,6 +1340,7 @@ public class Reaction {
 		if (p_kinetics == null)
 			return;
 		if (kinetics == null){
+			kinetics = new Kinetics[1];
 			kinetics[0] = p_kinetics;
 			structure.redundancy = 1;
 		}
