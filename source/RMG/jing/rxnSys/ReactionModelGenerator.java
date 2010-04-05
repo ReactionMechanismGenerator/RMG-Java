@@ -1035,6 +1035,29 @@ public class ReactionModelGenerator {
 				    System.out.println("Cannot find PruningTolerance in condition.txt");
 				    System.exit(0);
 			    }
+			    //print header for pruning log (based on restart format)
+			    BufferedWriter bw = null;
+			    try {
+				File f = new File("Pruning/edgeReactions.txt");
+				bw = new BufferedWriter(new FileWriter("Pruning/edgeReactions.txt", true));
+			        String EaUnits = ArrheniusKinetics.getEaUnits();
+				bw.write("UnitsOfEa: " + EaUnits);
+				bw.newLine();
+			    } catch (FileNotFoundException ex) {
+				ex.printStackTrace();
+			    } catch (IOException ex) {
+				ex.printStackTrace();
+			    } finally {
+				try {
+				    if (bw != null) {
+					bw.flush();
+					bw.close();
+				    }
+				} catch (IOException ex) {
+				    ex.printStackTrace();
+				}
+			    }
+
 			}
 			else if (temp.startsWith("AUTO")){//in the non-autoprune case (i.e. original AUTO functionality), we set the new parameters to values that should reproduce original functionality
 			    termTol = tolerance;
@@ -2671,7 +2694,33 @@ public class ReactionModelGenerator {
             }
         }
 	}
-	
+
+	private void writePrunedEdgeSpecies(Species species) {
+		BufferedWriter bw = null;
+
+		try {
+		    bw = new BufferedWriter(new FileWriter("Pruning/edgeSpecies.txt", true));
+		    bw.write(species.getChemkinName());
+		    bw.newLine();
+		    int dummyInt = 0;
+		    bw.write(species.getChemGraph().toString(dummyInt));
+		    bw.newLine();
+		} catch (FileNotFoundException ex) {
+		    ex.printStackTrace();
+		} catch (IOException ex) {
+		    ex.printStackTrace();
+		} finally {
+		    try {
+			if (bw != null) {
+			    bw.flush();
+			    bw.close();
+			}
+		    } catch (IOException ex) {
+			ex.printStackTrace();
+		    }
+		}
+	}
+
 	//10/25/07 gmagoon: added reaction system and reaction time as parameters and eliminated use of Global.temperature
 	private void writeCoreReactions(ReactionSystem p_rs, ReactionTime p_time) {
 		StringBuilder restartFileContent = new StringBuilder();
@@ -2846,6 +2895,39 @@ public class ReactionModelGenerator {
         }
 	}
 	
+	//gmagoon 4/5/10: based on Mike's writeEdgeReactions
+	private void writePrunedEdgeReaction(Reaction reaction) {
+		BufferedWriter bw = null;
+
+		try {
+		    bw = new BufferedWriter(new FileWriter("Pruning/edgeReactions.txt", true));
+
+		    if (reaction.isForward()) {
+			    //bw.write(reaction.toChemkinString(new Temperature(298,"K")));
+			    bw.write(reaction.toRestartString(new Temperature(298,"K")));
+			    bw.newLine();
+		    } else if (reaction.getReverseReaction().isForward()) {
+			    //bw.write(reaction.getReverseReaction().toChemkinString(new Temperature(298,"K")));
+			    bw.write(reaction.getReverseReaction().toRestartString(new Temperature(298,"K")));
+			    bw.newLine();
+		    } else
+			    System.out.println("Could not determine forward direction for following rxn: " + reaction.toString());
+		} catch (FileNotFoundException ex) {
+		    ex.printStackTrace();
+		} catch (IOException ex) {
+		    ex.printStackTrace();
+		} finally {
+		    try {
+			if (bw != null) {
+			    bw.flush();
+			    bw.close();
+			}
+		    } catch (IOException ex) {
+			ex.printStackTrace();
+		    }
+		}
+	}
+
 	private void writePDepNetworks() {
 		BufferedWriter bw = null;
 		
@@ -4071,6 +4153,7 @@ public class ReactionModelGenerator {
 	    iter = prunableSpecies.iterator();
 	    while(iter.hasNext()){
 		Species spe = (Species)iter.next();
+		writePrunedEdgeSpecies(spe);
 		((CoreEdgeReactionModel)getReactionModel()).getUnreactedSpeciesSet().remove(spe);
 		//SpeciesDictionary.getInstance().getSpeciesSet().remove(spe);
 		SpeciesDictionary.getInstance().remove(spe);
@@ -4085,6 +4168,7 @@ public class ReactionModelGenerator {
 	    iter = toRemove.iterator();
 	    while(iter.hasNext()){
 		Reaction reaction = (Reaction)iter.next();
+		writePrunedEdgeReaction(reaction);
 		((CoreEdgeReactionModel)getReactionModel()).getUnreactedReactionSet().remove(reaction);
 	    }
 	    //remove reactions from PDepNetworks in PDep cases

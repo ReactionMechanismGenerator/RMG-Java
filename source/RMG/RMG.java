@@ -173,7 +173,10 @@ public class RMG {
 		File inchi = new File("InChI");
 		ChemParser.deleteDir(inchi);
 		inchi.mkdir();
-		
+		File pruning = new File("Pruning");
+		ChemParser.deleteDir(pruning);
+		pruning.mkdir();
+
                 //6/3/09 gmagoon: create folders for 3D geometries
                 File twoDmol = new File("2Dmolfiles");
 		ChemParser.deleteDir(twoDmol);//this will clear out contents from previous run; I don't necessarily want this, and I may want to only create the folder if it doesn't exist already
