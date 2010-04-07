@@ -408,8 +408,6 @@ public class PopulateReactions {
 	        		}
 				}
 	        	
-	        	cerm.addReactedSpeciesSet(speciesSet);
-	        	
 	        	// Run fame calculation
 	        	PDepKineticsEstimator pDepKineticsEstimator = 
 					((RateBasedPDepRME) rmg.getReactionModelEnlarger()).getPDepKineticsEstimator();
@@ -421,6 +419,10 @@ public class PopulateReactions {
 		        	LinkedList<PDepReaction> indivPDepRxns = pdepnetwork.getNetReactions();
 		        	for (int numPDepRxns=0; numPDepRxns<indivPDepRxns.size(); numPDepRxns++) {
 		        		listOfReactions += indivPDepRxns.get(numPDepRxns).toChemkinString(systemTemp);
+		        	}
+		        	LinkedList<PDepReaction> nonIncludedRxns = pdepnetwork.getNonincludedReactions();
+		        	for (int numNonRxns=0; numNonRxns<nonIncludedRxns.size(); ++numNonRxns) {
+		        		listOfReactions += nonIncludedRxns.get(numNonRxns).toChemkinString(systemTemp);
 		        	}
 	        	}
 	        	reactions = nonPdepReactions;
