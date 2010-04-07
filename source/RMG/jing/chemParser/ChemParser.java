@@ -1667,30 +1667,34 @@ public class ChemParser {
         //#]
     }
 
-    //## operation readUnion(String)
+	
     public static HashSet readUnion(String p_string) throws InvalidUnionFormatException {
-        //#[ operation readUnion(String)
         try {
         	HashSet result = new HashSet();
         	if (p_string == null) return result;
         	p_string = p_string.trim();
         	String prefix = p_string.substring(0,5);
-        	if (prefix.compareToIgnoreCase("union") == 0) {
+        	if (p_string.toLowerCase().startsWith("union")) {
         		p_string = p_string.substring(5,p_string.length());
-        		p_string = ChemParser.removeBrace(p_string);
-        		StringTokenizer token = new StringTokenizer(p_string,",");
-        		while (token.hasMoreTokens()) {
-        			String name = token.nextToken();
-        			name = name.trim();
-        			result.add(name);
-        		}
+			} 
+			else if (p_string.startsWith("OR")) {
+				p_string = p_string.substring(2,p_string.length());
+			}
+			else return result; // which is currently empty
+			
+        	p_string = ChemParser.removeBrace(p_string);
+        	StringTokenizer token = new StringTokenizer(p_string,",");
+        	while (token.hasMoreTokens()) {
+        		String name = token.nextToken();
+        		name = name.trim();
+        		result.add(name);
         	}
+        	
         	return result;
         }
         catch (Exception e) {
         	throw new InvalidUnionFormatException();
         }
-        //#]
     }
 
     //## operation removeBrace(String)
