@@ -1671,8 +1671,7 @@ public class ReactionTemplate {
       		line = ChemParser.readMeaningfulLine(data);
       		if (line == null) break read;
       		line = line.trim();
-      		String prefix = line.substring(0,5);
-      		if (prefix.compareToIgnoreCase("union") == 0) {
+      		if (line.toLowerCase().startsWith("union") || line.startsWith("OR") ) {
       			HashSet union = ChemParser.readUnion(line);
        			unRead.put(fgname,union);
       		}
@@ -1712,13 +1711,6 @@ public class ReactionTemplate {
       catch (Exception e) {
       	throw new IOException(e.getMessage());
       }
-      
-      
-      
-      
-      
-      
-      //#]
   }
   
   //## operation readLibrary(String) 
