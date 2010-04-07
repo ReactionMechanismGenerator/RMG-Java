@@ -288,81 +288,83 @@ public class ReactionModelGenerator {
         	// read temperature model
 			//gmagoon 10/23/07: modified to handle multiple temperatures; note that this requires different formatting of units in condition.txt
         	if (line.startsWith("TemperatureModel:")) {
-        		StringTokenizer st = new StringTokenizer(line);
-        		String name = st.nextToken();
-        		String modelType = st.nextToken();
-        		//String t = st.nextToken();
-        		String unit = st.nextToken();
-				unit = ChemParser.removeBrace(unit);
-        		if (modelType.equals("Constant")) {
-					tempList = new LinkedList();
-					//read first temperature
-					double t = Double.parseDouble(st.nextToken());
-					tempList.add(new ConstantTM(t, unit));
-					Temperature temp = new Temperature(t, unit);//10/29/07 gmagoon: added this line and next two lines to set Global.lowTemperature and Global.highTemperature
-					Global.lowTemperature = (Temperature)temp.clone();
-					Global.highTemperature = (Temperature)temp.clone();
-					//read remaining temperatures
-        			while (st.hasMoreTokens()) {
-						t = Double.parseDouble(st.nextToken());
-						tempList.add(new ConstantTM(t, unit));
-						temp = new Temperature(t,unit);//10/29/07 gmagoon: added this line and next two "if" statements to set Global.lowTemperature and Global.highTemperature
-						if(temp.getK() < Global.lowTemperature.getK())
-							Global.lowTemperature = (Temperature)temp.clone();
-						if(temp.getK() > Global.highTemperature.getK())
-							Global.highTemperature = (Temperature)temp.clone();
-					}
-					// Global.temperature = new Temperature(t,unit);
-        		}
+        		createTModel(line);
+//        		StringTokenizer st = new StringTokenizer(line);
+//        		String name = st.nextToken();
+//        		String modelType = st.nextToken();
+//        		//String t = st.nextToken();
+//        		String unit = st.nextToken();
+//				unit = ChemParser.removeBrace(unit);
+//        		if (modelType.equals("Constant")) {
+//					tempList = new LinkedList();
+//					//read first temperature
+//					double t = Double.parseDouble(st.nextToken());
+//					tempList.add(new ConstantTM(t, unit));
+//					Temperature temp = new Temperature(t, unit);//10/29/07 gmagoon: added this line and next two lines to set Global.lowTemperature and Global.highTemperature
+//					Global.lowTemperature = (Temperature)temp.clone();
+//					Global.highTemperature = (Temperature)temp.clone();
+//					//read remaining temperatures
+//        			while (st.hasMoreTokens()) {
+//						t = Double.parseDouble(st.nextToken());
+//						tempList.add(new ConstantTM(t, unit));
+//						temp = new Temperature(t,unit);//10/29/07 gmagoon: added this line and next two "if" statements to set Global.lowTemperature and Global.highTemperature
+//						if(temp.getK() < Global.lowTemperature.getK())
+//							Global.lowTemperature = (Temperature)temp.clone();
+//						if(temp.getK() > Global.highTemperature.getK())
+//							Global.highTemperature = (Temperature)temp.clone();
+//					}
+//					// Global.temperature = new Temperature(t,unit);
+//        		}
 				//10/23/07 gmagoon: commenting out; further updates needed to get this to work
         		//else if (modelType.equals("Curved")) {
 				//        String t = st.nextToken();
         		//	// add reading curved temperature function here
         		//	temperatureModel = new CurvedTM(new LinkedList());
         		//}
-        		else {
-        			throw new InvalidSymbolException("condition.txt: Unknown TemperatureModel = " + modelType);
-        		}
+//        		else {
+//        			throw new InvalidSymbolException("condition.txt: Unknown TemperatureModel = " + modelType);
+//        		}
         	}
         	else throw new InvalidSymbolException("condition.txt: can't find TemperatureModel!");
 			
         	// read in pressure model
         	line = ChemParser.readMeaningfulLine(reader);
         	if (line.startsWith("PressureModel:")) {
-        		StringTokenizer st = new StringTokenizer(line);
-        		String name = st.nextToken();
-        		String modelType = st.nextToken();
-        		//String p = st.nextToken();
-        		String unit = st.nextToken();
-				unit = ChemParser.removeBrace(unit);
-        		if (modelType.equals("Constant")) {
-					presList = new LinkedList();
-					//read first pressure
-					double p = Double.parseDouble(st.nextToken());
-					Pressure pres = new Pressure(p, unit);
-					Global.lowPressure = (Pressure)pres.clone();
-					Global.highPressure = (Pressure)pres.clone();
-					presList.add(new ConstantPM(p, unit));
-					//read remaining temperatures
-        			while (st.hasMoreTokens()) {
-						p = Double.parseDouble(st.nextToken());
-						presList.add(new ConstantPM(p, unit));
-						pres = new Pressure(p, unit);
-						if(pres.getBar() < Global.lowPressure.getBar())
-							Global.lowPressure = (Pressure)pres.clone();
-						if(pres.getBar() > Global.lowPressure.getBar())
-							Global.highPressure = (Pressure)pres.clone();
-					}	
-        			//Global.pressure = new Pressure(p, unit);
-        		}
-				//10/23/07 gmagoon: commenting out; further updates needed to get this to work
-        		//else if (modelType.equals("Curved")) {
-        		//	// add reading curved pressure function here
-        		//	pressureModel = new CurvedPM(new LinkedList());
-        		//}
-        		else {
-        			throw new InvalidSymbolException("condition.txt: Unknown PressureModel = " + modelType);
-        		}
+        		createPModel(line);
+//        		StringTokenizer st = new StringTokenizer(line);
+//        		String name = st.nextToken();
+//        		String modelType = st.nextToken();
+//        		//String p = st.nextToken();
+//        		String unit = st.nextToken();
+//				unit = ChemParser.removeBrace(unit);
+//        		if (modelType.equals("Constant")) {
+//					presList = new LinkedList();
+//					//read first pressure
+//					double p = Double.parseDouble(st.nextToken());
+//					Pressure pres = new Pressure(p, unit);
+//					Global.lowPressure = (Pressure)pres.clone();
+//					Global.highPressure = (Pressure)pres.clone();
+//					presList.add(new ConstantPM(p, unit));
+//					//read remaining temperatures
+//        			while (st.hasMoreTokens()) {
+//						p = Double.parseDouble(st.nextToken());
+//						presList.add(new ConstantPM(p, unit));
+//						pres = new Pressure(p, unit);
+//						if(pres.getBar() < Global.lowPressure.getBar())
+//							Global.lowPressure = (Pressure)pres.clone();
+//						if(pres.getBar() > Global.lowPressure.getBar())
+//							Global.highPressure = (Pressure)pres.clone();
+//					}	
+//        			//Global.pressure = new Pressure(p, unit);
+//        		}
+//				//10/23/07 gmagoon: commenting out; further updates needed to get this to work
+//        		//else if (modelType.equals("Curved")) {
+//        		//	// add reading curved pressure function here
+//        		//	pressureModel = new CurvedPM(new LinkedList());
+//        		//}
+//        		else {
+//        			throw new InvalidSymbolException("condition.txt: Unknown PressureModel = " + modelType);
+//        		}
         	}
         	else throw new InvalidSymbolException("condition.txt: can't find PressureModel!");
             
@@ -467,138 +469,146 @@ public class ReactionModelGenerator {
         	//LinkedHashSet p_speciesSeed = new LinkedHashSet();//gmagoon 10/4/07: changed to p_speciesSeed
 			//setSpeciesSeed(p_speciesSeed);//gmagoon 10/4/07: added
         	LinkedHashMap speciesSet = new LinkedHashMap();
-        	LinkedHashMap speciesStatus = new LinkedHashMap();
-			int speciesnum = 1;
+        	
+        	/*
+        	 * 7/Apr/2010: MRH
+        	 * 	Neither of these variables are utilized
+        	 */
+//        	LinkedHashMap speciesStatus = new LinkedHashMap();
+//			int speciesnum = 1;
+        	
 			//System.out.println(line);
         	if (line.startsWith("InitialStatus")) {
-        		line = ChemParser.readMeaningfulLine(reader);
-        		while (!line.equals("END")) {
-        			StringTokenizer st = new StringTokenizer(line);
-        			String index = st.nextToken();
-        			String name = null;
-        			if (!index.startsWith("(")) name = index;
-        			else name = st.nextToken();
-					//if (restart) name += "("+speciesnum+")";
-        			// 24Jun2009: MRH
-        			//	Check if the species name begins with a number.
-        			//	If so, terminate the program and inform the user to choose
-        			//		a different name.  This is implemented so that the chem.inp
-        			//		file generated will be valid when run in Chemkin
-        			try {
-        				int doesNameBeginWithNumber = Integer.parseInt(name.substring(0,1));
-        				System.out.println("\nA species name should not begin with a number." +
-										   " Please rename species: " + name + "\n");
-        				System.exit(0);
-        			} catch (NumberFormatException e) {
-        				// We're good
-        			}
-					speciesnum ++;
-					if (!(st.hasMoreTokens())) throw new InvalidSymbolException("Couldn't find concentration of species: "+name);
-        			String conc = st.nextToken();
-        			double concentration = Double.parseDouble(conc);
-        			String unit = st.nextToken();
-        			unit = ChemParser.removeBrace(unit);
-        			if (unit.equals("mole/l") || unit.equals("mol/l") || unit.equals("mole/liter") || unit.equals("mol/liter")) {
-        				concentration /= 1000;
-        				unit = "mol/cm3";
-        			}
-        			else if (unit.equals("mole/m3") || unit.equals("mol/m3")) {
-        				concentration /= 1000000;
-        				unit = "mol/cm3";
-        			}
-        			else if (unit.equals("molecule/cm3") || unit.equals("molecules/cm3")) {
-        				concentration /= 6.022e23;
-        			}
-        			else if (!unit.equals("mole/cm3") && !unit.equals("mol/cm3")) {
-        				throw new InvalidUnitException("Species Concentration in condition.txt!");
-        			}
-					
-        			//GJB to allow "unreactive" species that only follow user-defined library reactions.  
-        			// They will not react according to RMG reaction families 
-					boolean IsReactive = true;
-                    boolean IsConstantConcentration = false;
-					while (st.hasMoreTokens()) {
-						String reactive = st.nextToken().trim();
-						if (reactive.equalsIgnoreCase("unreactive"))
-							IsReactive = false;
-                        if (reactive.equalsIgnoreCase("constantconcentration"))
-                            IsConstantConcentration=true;
-					}
-        			
-        			Graph g = ChemParser.readChemGraph(reader);
-        			ChemGraph cg = null;
-        			try {
-        				cg = ChemGraph.make(g);
-        			}
-        			catch (ForbiddenStructureException e) {
-        				System.out.println("Forbidden Structure:\n" + e.getMessage());
-						throw new InvalidSymbolException("A species in the input file has a forbidden structure.");
-        			}
-					//System.out.println(name);
-        			Species species = Species.make(name,cg);
-        			species.setReactivity(IsReactive); // GJB
-                    species.setConstantConcentration(IsConstantConcentration);
-           			speciesSet.put(name, species);
-        			getSpeciesSeed().add(species);
-        			double flux = 0;
-        			int species_type = 1; // reacted species
-        			SpeciesStatus ss = new SpeciesStatus(species,species_type,concentration,flux);
-        			speciesStatus.put(species, ss);
-        			line = ChemParser.readMeaningfulLine(reader);
-        		}
-				ReactionTime initial = new ReactionTime(0,"S");
-				//10/23/07 gmagoon: modified for handling multiple temperature, pressure conditions; note: concentration within speciesStatus (and list of conversion values) should not need to be modified for each T,P since this is done within isTPCconsistent in ReactionSystem
-				initialStatusList = new LinkedList();
-				for (Iterator iter = tempList.iterator(); iter.hasNext(); ) {
-					TemperatureModel tm = (TemperatureModel)iter.next();
-					for (Iterator iter2 = presList.iterator(); iter2.hasNext(); ){
-						PressureModel pm = (PressureModel)iter2.next();
-						//   LinkedHashMap speStat = (LinkedHashMap)speciesStatus.clone();//10/31/07 gmagoon: trying creating multiple instances of speciesStatus to address issues with concentration normalization (last normalization seems to apply to all)
-						Set ks = speciesStatus.keySet();
-						LinkedHashMap speStat = new LinkedHashMap();
-						for (Iterator iter3 = ks.iterator(); iter3.hasNext();){//11/1/07 gmagoon: perform deep copy; (is there an easier or more elegant way to do this?)
-							SpeciesStatus ssCopy = (SpeciesStatus)speciesStatus.get(iter3.next());
-							speStat.put(ssCopy.getSpecies(),new SpeciesStatus(ssCopy.getSpecies(),ssCopy.getSpeciesType(),ssCopy.getConcentration(),ssCopy.getFlux()));
-						}
-						initialStatusList.add(new InitialStatus(speStat,tm.getTemperature(initial),pm.getPressure(initial)));
-					}
-				}
+        		speciesSet = populateInitialStatusListWithReactiveSpecies(reader);
+//        		line = ChemParser.readMeaningfulLine(reader);
+//        		while (!line.equals("END")) {
+//        			StringTokenizer st = new StringTokenizer(line);
+//        			String index = st.nextToken();
+//        			String name = null;
+//        			if (!index.startsWith("(")) name = index;
+//        			else name = st.nextToken();
+//					//if (restart) name += "("+speciesnum+")";
+//        			// 24Jun2009: MRH
+//        			//	Check if the species name begins with a number.
+//        			//	If so, terminate the program and inform the user to choose
+//        			//		a different name.  This is implemented so that the chem.inp
+//        			//		file generated will be valid when run in Chemkin
+//        			try {
+//        				int doesNameBeginWithNumber = Integer.parseInt(name.substring(0,1));
+//        				System.out.println("\nA species name should not begin with a number." +
+//										   " Please rename species: " + name + "\n");
+//        				System.exit(0);
+//        			} catch (NumberFormatException e) {
+//        				// We're good
+//        			}
+//					speciesnum ++;
+//					if (!(st.hasMoreTokens())) throw new InvalidSymbolException("Couldn't find concentration of species: "+name);
+//        			String conc = st.nextToken();
+//        			double concentration = Double.parseDouble(conc);
+//        			String unit = st.nextToken();
+//        			unit = ChemParser.removeBrace(unit);
+//        			if (unit.equals("mole/l") || unit.equals("mol/l") || unit.equals("mole/liter") || unit.equals("mol/liter")) {
+//        				concentration /= 1000;
+//        				unit = "mol/cm3";
+//        			}
+//        			else if (unit.equals("mole/m3") || unit.equals("mol/m3")) {
+//        				concentration /= 1000000;
+//        				unit = "mol/cm3";
+//        			}
+//        			else if (unit.equals("molecule/cm3") || unit.equals("molecules/cm3")) {
+//        				concentration /= 6.022e23;
+//        			}
+//        			else if (!unit.equals("mole/cm3") && !unit.equals("mol/cm3")) {
+//        				throw new InvalidUnitException("Species Concentration in condition.txt!");
+//        			}
+//					
+//        			//GJB to allow "unreactive" species that only follow user-defined library reactions.  
+//        			// They will not react according to RMG reaction families 
+//					boolean IsReactive = true;
+//                    boolean IsConstantConcentration = false;
+//					while (st.hasMoreTokens()) {
+//						String reactive = st.nextToken().trim();
+//						if (reactive.equalsIgnoreCase("unreactive"))
+//							IsReactive = false;
+//                        if (reactive.equalsIgnoreCase("constantconcentration"))
+//                            IsConstantConcentration=true;
+//					}
+//        			
+//        			Graph g = ChemParser.readChemGraph(reader);
+//        			ChemGraph cg = null;
+//        			try {
+//        				cg = ChemGraph.make(g);
+//        			}
+//        			catch (ForbiddenStructureException e) {
+//        				System.out.println("Forbidden Structure:\n" + e.getMessage());
+//						throw new InvalidSymbolException("A species in the input file has a forbidden structure.");
+//        			}
+//					//System.out.println(name);
+//        			Species species = Species.make(name,cg);
+//        			species.setReactivity(IsReactive); // GJB
+//                    species.setConstantConcentration(IsConstantConcentration);
+//           			speciesSet.put(name, species);
+//        			getSpeciesSeed().add(species);
+//        			double flux = 0;
+//        			int species_type = 1; // reacted species
+//        			SpeciesStatus ss = new SpeciesStatus(species,species_type,concentration,flux);
+//        			speciesStatus.put(species, ss);
+//        			line = ChemParser.readMeaningfulLine(reader);
+//        		}
+//				ReactionTime initial = new ReactionTime(0,"S");
+//				//10/23/07 gmagoon: modified for handling multiple temperature, pressure conditions; note: concentration within speciesStatus (and list of conversion values) should not need to be modified for each T,P since this is done within isTPCconsistent in ReactionSystem
+//				initialStatusList = new LinkedList();
+//				for (Iterator iter = tempList.iterator(); iter.hasNext(); ) {
+//					TemperatureModel tm = (TemperatureModel)iter.next();
+//					for (Iterator iter2 = presList.iterator(); iter2.hasNext(); ){
+//						PressureModel pm = (PressureModel)iter2.next();
+//						//   LinkedHashMap speStat = (LinkedHashMap)speciesStatus.clone();//10/31/07 gmagoon: trying creating multiple instances of speciesStatus to address issues with concentration normalization (last normalization seems to apply to all)
+//						Set ks = speciesStatus.keySet();
+//						LinkedHashMap speStat = new LinkedHashMap();
+//						for (Iterator iter3 = ks.iterator(); iter3.hasNext();){//11/1/07 gmagoon: perform deep copy; (is there an easier or more elegant way to do this?)
+//							SpeciesStatus ssCopy = (SpeciesStatus)speciesStatus.get(iter3.next());
+//							speStat.put(ssCopy.getSpecies(),new SpeciesStatus(ssCopy.getSpecies(),ssCopy.getSpeciesType(),ssCopy.getConcentration(),ssCopy.getFlux()));
+//						}
+//						initialStatusList.add(new InitialStatus(speStat,tm.getTemperature(initial),pm.getPressure(initial)));
+//					}
+//				}
         	}
         	else throw new InvalidSymbolException("condition.txt: can't find InitialStatus!");
 			
         	// read in inert gas concentration
         	line = ChemParser.readMeaningfulLine(reader);
             if (line.startsWith("InertGas:")) {
-           		line = ChemParser.readMeaningfulLine(reader);
-           		while (!line.equals("END")) {
-        	    	StringTokenizer st = new StringTokenizer(line);
-        	    	String name = st.nextToken().trim();
-        			String conc = st.nextToken();
-        			double inertConc = Double.parseDouble(conc);
-        			String unit = st.nextToken();
-        			unit = ChemParser.removeBrace(unit);
-        			if (unit.equals("mole/l") || unit.equals("mol/l") || unit.equals("mole/liter") || unit.equals("mol/liter")) {
-        				inertConc /= 1000;
-        				unit = "mol/cm3";
-        			}
-        			else if (unit.equals("mole/m3") || unit.equals("mol/m3")) {
-        				inertConc /= 1000000;
-        				unit = "mol/cm3";
-        			}
-        			else if (unit.equals("molecule/cm3") || unit.equals("molecules/cm3")) {
-        				inertConc /= 6.022e23;
-        				unit = "mol/cm3";
-        			}
-        			else if (!unit.equals("mole/cm3") && !unit.equals("mol/cm3")) {
-        				throw new InvalidUnitException("Inert Gas Concentration not recognized: " + unit);
-        			}
-					
-        			//SystemSnapshot.putInertGas(name,inertConc);
-					for(Iterator iter=initialStatusList.iterator();iter.hasNext(); ){//6/23/09 gmagoon: needed to change this to accommodate non-static inertConc
-						((InitialStatus)iter.next()).putInertGas(name,inertConc);
-					}
-        	   		line = ChemParser.readMeaningfulLine(reader);
-        		}
+            	populateInitialStatusListWithInertSpecies(reader);
+//           		line = ChemParser.readMeaningfulLine(reader);
+//           		while (!line.equals("END")) {
+//        	    	StringTokenizer st = new StringTokenizer(line);
+//        	    	String name = st.nextToken().trim();
+//        			String conc = st.nextToken();
+//        			double inertConc = Double.parseDouble(conc);
+//        			String unit = st.nextToken();
+//        			unit = ChemParser.removeBrace(unit);
+//        			if (unit.equals("mole/l") || unit.equals("mol/l") || unit.equals("mole/liter") || unit.equals("mol/liter")) {
+//        				inertConc /= 1000;
+//        				unit = "mol/cm3";
+//        			}
+//        			else if (unit.equals("mole/m3") || unit.equals("mol/m3")) {
+//        				inertConc /= 1000000;
+//        				unit = "mol/cm3";
+//        			}
+//        			else if (unit.equals("molecule/cm3") || unit.equals("molecules/cm3")) {
+//        				inertConc /= 6.022e23;
+//        				unit = "mol/cm3";
+//        			}
+//        			else if (!unit.equals("mole/cm3") && !unit.equals("mol/cm3")) {
+//        				throw new InvalidUnitException("Inert Gas Concentration not recognized: " + unit);
+//        			}
+//					
+//        			//SystemSnapshot.putInertGas(name,inertConc);
+//					for(Iterator iter=initialStatusList.iterator();iter.hasNext(); ){//6/23/09 gmagoon: needed to change this to accommodate non-static inertConc
+//						((InitialStatus)iter.next()).putInertGas(name,inertConc);
+//					}
+//        	   		line = ChemParser.readMeaningfulLine(reader);
+//        		}
            	}
         	else throw new InvalidSymbolException("condition.txt: can't find Inert gas concentration!");
 			
@@ -4214,9 +4224,213 @@ public class ReactionModelGenerator {
 		return line;
     }
     
+    public void createTModel(String line) {
+		StringTokenizer st = new StringTokenizer(line);
+		String name = st.nextToken();
+		String modelType = st.nextToken();
+		String unit = st.nextToken();
+		unit = ChemParser.removeBrace(unit);
+		if (modelType.equals("Constant")) {
+			tempList = new LinkedList();
+			//read first temperature
+			double t = Double.parseDouble(st.nextToken());
+			tempList.add(new ConstantTM(t, unit));
+			Temperature temp = new Temperature(t, unit);//10/29/07 gmagoon: added this line and next two lines to set Global.lowTemperature and Global.highTemperature
+			Global.lowTemperature = (Temperature)temp.clone();
+			Global.highTemperature = (Temperature)temp.clone();
+			//read remaining temperatures
+			while (st.hasMoreTokens()) {
+				t = Double.parseDouble(st.nextToken());
+				tempList.add(new ConstantTM(t, unit));
+				temp = new Temperature(t,unit);//10/29/07 gmagoon: added this line and next two "if" statements to set Global.lowTemperature and Global.highTemperature
+				if(temp.getK() < Global.lowTemperature.getK())
+					Global.lowTemperature = (Temperature)temp.clone();
+				if(temp.getK() > Global.highTemperature.getK())
+					Global.highTemperature = (Temperature)temp.clone();
+			}
+		}
+		else {
+			throw new InvalidSymbolException("condition.txt: Unknown TemperatureModel = " + modelType);
+		}
+    }
+    
+    public void createPModel(String line) {
+    	StringTokenizer st = new StringTokenizer(line);
+		String name = st.nextToken();
+		String modelType = st.nextToken();
+		String unit = st.nextToken();
+		unit = ChemParser.removeBrace(unit);
+		if (modelType.equals("Constant")) {
+			presList = new LinkedList();
+			//read first pressure
+			double p = Double.parseDouble(st.nextToken());
+			Pressure pres = new Pressure(p, unit);
+			Global.lowPressure = (Pressure)pres.clone();
+			Global.highPressure = (Pressure)pres.clone();
+			presList.add(new ConstantPM(p, unit));
+			//read remaining temperatures
+			while (st.hasMoreTokens()) {
+				p = Double.parseDouble(st.nextToken());
+				presList.add(new ConstantPM(p, unit));
+				pres = new Pressure(p, unit);
+				if(pres.getBar() < Global.lowPressure.getBar())
+					Global.lowPressure = (Pressure)pres.clone();
+				if(pres.getBar() > Global.lowPressure.getBar())
+					Global.highPressure = (Pressure)pres.clone();
+			}
+		}
+		else {
+			throw new InvalidSymbolException("condition.txt: Unknown PressureModel = " + modelType);
+		}
+    }
+    
+    public LinkedHashMap populateInitialStatusListWithReactiveSpecies(BufferedReader reader) throws IOException {
+    	LinkedHashMap speciesSet = new LinkedHashMap();
+    	LinkedHashMap speciesStatus = new LinkedHashMap();
+		String line = ChemParser.readMeaningfulLine(reader);
+		while (!line.equals("END")) {
+			StringTokenizer st = new StringTokenizer(line);
+			String index = st.nextToken();
+			String name = null;
+			if (!index.startsWith("(")) name = index;
+			else name = st.nextToken();
+			//if (restart) name += "("+speciesnum+")";
+			// 24Jun2009: MRH
+			//	Check if the species name begins with a number.
+			//	If so, terminate the program and inform the user to choose
+			//		a different name.  This is implemented so that the chem.inp
+			//		file generated will be valid when run in Chemkin
+			try {
+				int doesNameBeginWithNumber = Integer.parseInt(name.substring(0,1));
+				System.out.println("\nA species name should not begin with a number." +
+								   " Please rename species: " + name + "\n");
+				System.exit(0);
+			} catch (NumberFormatException e) {
+				// We're good
+			}
+			if (!(st.hasMoreTokens())) throw new InvalidSymbolException("Couldn't find concentration of species: "+name);
+			String conc = st.nextToken();
+			double concentration = Double.parseDouble(conc);
+			String unit = st.nextToken();
+			unit = ChemParser.removeBrace(unit);
+			if (unit.equals("mole/l") || unit.equals("mol/l") || unit.equals("mole/liter") || unit.equals("mol/liter")) {
+				concentration /= 1000;
+				unit = "mol/cm3";
+			}
+			else if (unit.equals("mole/m3") || unit.equals("mol/m3")) {
+				concentration /= 1000000;
+				unit = "mol/cm3";
+			}
+			else if (unit.equals("molecule/cm3") || unit.equals("molecules/cm3")) {
+				concentration /= 6.022e23;
+			}
+			else if (!unit.equals("mole/cm3") && !unit.equals("mol/cm3")) {
+				throw new InvalidUnitException("Species Concentration in condition.txt!");
+			}
+			
+			//GJB to allow "unreactive" species that only follow user-defined library reactions.  
+			// They will not react according to RMG reaction families 
+			boolean IsReactive = true;
+            boolean IsConstantConcentration = false;
+			while (st.hasMoreTokens()) {
+				String reactive = st.nextToken().trim();
+				if (reactive.equalsIgnoreCase("unreactive"))
+					IsReactive = false;
+                if (reactive.equalsIgnoreCase("constantconcentration"))
+                    IsConstantConcentration=true;
+			}
+			
+			Graph g = ChemParser.readChemGraph(reader);
+			ChemGraph cg = null;
+			try {
+				cg = ChemGraph.make(g);
+			}
+			catch (ForbiddenStructureException e) {
+				System.out.println("Forbidden Structure:\n" + e.getMessage());
+				throw new InvalidSymbolException("A species in the input file has a forbidden structure.");
+			}
+			//System.out.println(name);
+			Species species = Species.make(name,cg);
+			species.setReactivity(IsReactive); // GJB
+            species.setConstantConcentration(IsConstantConcentration);
+   			speciesSet.put(name, species);
+			getSpeciesSeed().add(species);
+			double flux = 0;
+			int species_type = 1; // reacted species
+			SpeciesStatus ss = new SpeciesStatus(species,species_type,concentration,flux);
+			speciesStatus.put(species, ss);
+			line = ChemParser.readMeaningfulLine(reader);
+		}
+		ReactionTime initial = new ReactionTime(0,"S");
+		//10/23/07 gmagoon: modified for handling multiple temperature, pressure conditions; note: concentration within speciesStatus (and list of conversion values) should not need to be modified for each T,P since this is done within isTPCconsistent in ReactionSystem
+		initialStatusList = new LinkedList();
+		for (Iterator iter = tempList.iterator(); iter.hasNext(); ) {
+			TemperatureModel tm = (TemperatureModel)iter.next();
+			for (Iterator iter2 = presList.iterator(); iter2.hasNext(); ){
+				PressureModel pm = (PressureModel)iter2.next();
+				//   LinkedHashMap speStat = (LinkedHashMap)speciesStatus.clone();//10/31/07 gmagoon: trying creating multiple instances of speciesStatus to address issues with concentration normalization (last normalization seems to apply to all)
+				Set ks = speciesStatus.keySet();
+				LinkedHashMap speStat = new LinkedHashMap();
+				for (Iterator iter3 = ks.iterator(); iter3.hasNext();){//11/1/07 gmagoon: perform deep copy; (is there an easier or more elegant way to do this?)
+					SpeciesStatus ssCopy = (SpeciesStatus)speciesStatus.get(iter3.next());
+					speStat.put(ssCopy.getSpecies(),new SpeciesStatus(ssCopy.getSpecies(),ssCopy.getSpeciesType(),ssCopy.getConcentration(),ssCopy.getFlux()));
+				}
+				initialStatusList.add(new InitialStatus(speStat,tm.getTemperature(initial),pm.getPressure(initial)));
+			}
+		}
+		
+		return speciesSet;
+    }
+    
+    public void populateInitialStatusListWithInertSpecies(BufferedReader reader) {
+    	String line = ChemParser.readMeaningfulLine(reader);
+   		while (!line.equals("END")) {
+	    	StringTokenizer st = new StringTokenizer(line);
+	    	String name = st.nextToken().trim();
+			String conc = st.nextToken();
+			double inertConc = Double.parseDouble(conc);
+			String unit = st.nextToken();
+			unit = ChemParser.removeBrace(unit);
+			if (unit.equals("mole/l") || unit.equals("mol/l") || unit.equals("mole/liter") || unit.equals("mol/liter")) {
+				inertConc /= 1000;
+				unit = "mol/cm3";
+			}
+			else if (unit.equals("mole/m3") || unit.equals("mol/m3")) {
+				inertConc /= 1000000;
+				unit = "mol/cm3";
+			}
+			else if (unit.equals("molecule/cm3") || unit.equals("molecules/cm3")) {
+				inertConc /= 6.022e23;
+				unit = "mol/cm3";
+			}
+			else if (!unit.equals("mole/cm3") && !unit.equals("mol/cm3")) {
+				throw new InvalidUnitException("Inert Gas Concentration not recognized: " + unit);
+			}
+			
+			//SystemSnapshot.putInertGas(name,inertConc);
+			for(Iterator iter=initialStatusList.iterator();iter.hasNext(); ){//6/23/09 gmagoon: needed to change this to accommodate non-static inertConc
+				((InitialStatus)iter.next()).putInertGas(name,inertConc);
+			}
+	   		line = ChemParser.readMeaningfulLine(reader);
+		}
+    }
+    
     public ReactionModelEnlarger getReactionModelEnlarger() {
     	return reactionModelEnlarger;
     }
+    
+    public LinkedList getTempList() {
+    	return tempList;
+    }
+    
+    public LinkedList getPressList() {
+    	return presList;
+    }
+    
+    public LinkedList getInitialStatusList() {
+    	return initialStatusList;
+    }
+    
 }
 /*********************************************************************
  File Path	: RMG\RMG\jing\rxnSys\ReactionModelGenerator.java

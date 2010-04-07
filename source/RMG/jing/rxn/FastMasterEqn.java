@@ -811,18 +811,14 @@ public class FastMasterEqn implements PDepKineticsEstimator {
 				PDepRateConstant pDepRate = new PDepRateConstant(rates);
 
 				// Chebyshev interpolation model
-				String string4Mike = "";
 				if (model.toLowerCase().contains("chebyshev")) {
 					chebyshev = new double[numChebT][numChebP];
 					for (int t = 0; t < numChebT; t++) {
-						string4Mike += "!CHEB / ";
 						str = readMeaningfulLine(br);
 						tkn = new StringTokenizer(str);
 						for (int p = 0; p < numChebP; p++) {
 							chebyshev[t][p] = Double.parseDouble(tkn.nextToken());
-							string4Mike += chebyshev[t][p] + " ";
 						}
-						string4Mike += " /\n";
 					}
 					pDepRate.setChebyshev(chebyshev);
 				}
@@ -939,7 +935,6 @@ public class FastMasterEqn implements PDepKineticsEstimator {
 					}
 				}
 				
-				System.out.print(rxn.toString() + "\n" + string4Mike);
 				// Add net reaction to list
 				netReactionList.add(rxn);
 
@@ -1157,6 +1152,14 @@ public class FastMasterEqn implements PDepKineticsEstimator {
         	k = k_array[0];
         }
         return k;
+	}
+	
+	public static int getNumTBasisFuncs() {
+		return numTBasisFuncs;
+	}
+	
+	public static int getNumPBasisFuncs() {
+		return numPBasisFuncs;
 	}
 
 }

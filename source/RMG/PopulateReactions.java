@@ -58,6 +58,7 @@ import jing.rxn.PDepReaction;
 import jing.rxn.Reaction;
 import jing.rxn.ReactionGenerator;
 import jing.rxn.TemplateReactionGenerator;
+import jing.rxnSys.ConstantTM;
 import jing.rxnSys.CoreEdgeReactionModel;
 import jing.rxnSys.DynamicSimulator;
 import jing.rxnSys.FinishController;
@@ -96,6 +97,12 @@ public class PopulateReactions {
 	 *		(1) Module did not report the correct A (pre-exponential factor) for reverse
 	 *			reactions (e.g. H+CH4=CH3+H2)
 	 *		(2) Module reported the same reaction multiple times (no dupliate catch)
+	 *
+	 *	UPDATE by MRH on 7/Apr/2010 - Restructured input file + Added pdep options
+	 *		(1) In addition to reporting the non p-dep reaction rates, user will have
+	 *			the option to ask for (all) the p-dep networks.
+	 *		(2) The structure of the input file closely resembles the input file for
+	 *			the RMG module.
 	 */
 	public static void main(String[] args) {
 		initializeSystemProperties();
@@ -103,14 +110,22 @@ public class PopulateReactions {
 		// Creating a new ReactionModelGenerator so I can set the variable temp4BestKinetics
 		//	and call the new readAndMakePTL and readAndMakePRL methods
 		ReactionModelGenerator rmg = new ReactionModelGenerator();
+		rmg.setSpeciesSeed(new LinkedHashSet());
 		
 		// Set Global.lowTemp and Global.highTemp
 		//	The values of the low/highTemp are not used in the function
 		//		(to the best of my knowledge).
 		//	They are necessary for the instances of additionalKinetics, 
 		//	e.g. H2C*-CH2-CH2-CH3 -> H3C-CH2-*CH-CH3
-		Global.lowTemperature = new Temperature(300,"K");
-		Global.highTemperature = new Temperature(1500,"K");
+		/*
+		 * 7Apr2010:
+		 * The input file will now ask the user for a TemperatureModel
+		 * 	and PressureModel (same as the RMG module).  The Global
+		 * 	.lowTemperature and .highTemperature will automatically
+		 * 	be determined
+		 */
+//		Global.lowTemperature = new Temperature(300,"K");
+//		Global.highTemperature = new Temperature(1500,"K");
 
 		// Define variable 'speciesSet' to store the species contained in the input file
 		LinkedHashSet speciesSet = new LinkedHashSet();
@@ -134,64 +149,10 @@ public class PopulateReactions {
 			//	This line should hold the temperature of the system, e.g.
 			//		Temperature: 500 (K)
 			String line = ChemParser.readMeaningfulLine(br_input);
-			Temperature systemTemp = null;
-			if (!line.startsWith("Temperature")) {
-				System.err.println("Error reading input file: Could not locate System Temperature.\n" +
-						"The first line of the input file should read: \"Temperature: Value (Units)\"");
-			} else {
-				StringTokenizer st = new StringTokenizer(line);
-				String dummyString = st.nextToken();	// This token should be "Temperature:"
-				systemTemp = new Temperature(Double.parseDouble(st.nextToken()),ChemParser.removeBrace(st.nextToken()));
-			}
-			Temperature systemTemp_K = new Temperature(systemTemp.getK(),"K");			
-			listOfReactions += "System Temperature: " + systemTemp_K.getK() + "K\n\n";
-			line = ChemParser.readMeaningfulLine(br_input);
-
-            StringTokenizer st = new StringTokenizer(line);
-          // The first line should start with "Solvation", otherwise do nothing and display a message to the user
-          if (st.nextToken().startsWith("Solvation")) {
-        	  line = st.nextToken().toLowerCase();
-        	  // The options for the "Solvation" field are "on" or "off" (as of 18May2009), otherwise do nothing and display a message to the user
-        	  // Note: I use "Species.useInChI" because the "Species.useSolvation" updates were not yet committed.
-
-        	  if (line.equals("on")) {
-        		  Species.useSolvation = true;
-//                  rmg.setUseDiffusion(true);
-        		  listOfReactions += "Solution-phase chemistry!\n\n";
-        	  } else if (line.equals("off")) {
-        		  Species.useSolvation = false;
-//                  rmg.setUseDiffusion(false);
-        		  listOfReactions += "Gas-phase chemistry.\n\n";
-        	  } else {
-
-        		  System.out.println("Error in reading thermo_input.txt file:\nThe field 'Solvation' has the options 'on' or 'off'.");
-        		  return;
-        	  }
-          }
-          
-            line = ChemParser.readMeaningfulLine(br_input);
-            
-            /*
-             * MRH 2Apr2010:
-             * Allow user the option to print "verbose" comments
-             */
-            if (line.toLowerCase().startsWith("verbose")) {
-            	StringTokenizer st2 = new StringTokenizer(line);
-            	String tempString = st2.nextToken();
-            	tempString = st2.nextToken();
-            	tempString = tempString.toLowerCase();
-            	if (tempString.equals("on") || tempString.equals("true") || tempString.equals("yes"))
-            		ArrheniusKinetics.setVerbose(true);
-            	line = ChemParser.readMeaningfulLine(br_input);
-            }
-            
-            /*
-             * MRH 27Feb:
-             * Allowing PopulateReactions module to read/use Primary Reaction/Thermo Libraries
-             * 
-             * The user does not have to specify any primary reaction / thermo libraries.
-             * 	However, like the input file to RMG, the fields must still be present
-             */
+			
+			/*
+			 * Read primary thermo libraries (if they exist)
+			 */
             if (line.toLowerCase().startsWith("primarythermolibrary")) {
             	rmg.readAndMakePTL(br_input);
             }
@@ -200,8 +161,95 @@ public class PopulateReactions {
             			"Line read was: " + line);
             	System.exit(0);
             }
-            
+			
+            /*
+             * Read the temperature model (must be of length one)
+             */
             line = ChemParser.readMeaningfulLine(br_input);
+			rmg.createTModel(line);
+//			Temperature systemTemp = null;
+//			if (!line.startsWith("Temperature")) {
+//				System.err.println("Error reading input file: Could not locate System Temperature.\n" +
+//						"The first line of the input file should read: \"Temperature: Value (Units)\"");
+//			} else {
+//				StringTokenizer st = new StringTokenizer(line);
+//				String dummyString = st.nextToken();	// This token should be "Temperature:"
+//				systemTemp = new Temperature(Double.parseDouble(st.nextToken()),ChemParser.removeBrace(st.nextToken()));
+//			}
+//			Temperature systemTemp_K = new Temperature(systemTemp.getK(),"K");			
+//			listOfReactions += "System Temperature: " + systemTemp_K.getK() + "K\n\n";
+			if (rmg.getTempList().size() > 1) {
+				System.out.println("Please list only one temperature in the TemperatureModel field.");
+				System.exit(0);
+			}
+			
+			/*
+			 * Read the pressure model (must be of length 1)
+			 */
+			line = ChemParser.readMeaningfulLine(br_input);
+			rmg.createPModel(line);
+			if (rmg.getPressList().size() > 1) {
+				System.out.println("Please list only one pressure in the PressureModel field.");
+				System.exit(0);
+			}
+			
+			/*
+			 * Read the solvation field (if present)
+			 */
+			line = ChemParser.readMeaningfulLine(br_input);
+            StringTokenizer st = new StringTokenizer(line);
+            // The first line should start with "Solvation", otherwise do nothing and display a message to the user
+            if (st.nextToken().startsWith("Solvation")) {
+            	line = st.nextToken().toLowerCase();
+            	// The options for the "Solvation" field are "on" or "off" (as of 18May2009), otherwise do nothing and display a message to the user
+            	// Note: I use "Species.useInChI" because the "Species.useSolvation" updates were not yet committed.
+
+            	if (line.equals("on")) {
+            		Species.useSolvation = true;
+            		//                  rmg.setUseDiffusion(true);
+            		listOfReactions += "Solution-phase chemistry!\n\n";
+            	} else if (line.equals("off")) {
+            		Species.useSolvation = false;
+            		//                  rmg.setUseDiffusion(false);
+            		listOfReactions += "Gas-phase chemistry.\n\n";
+            	} else {
+            		System.out.println("Error in reading input.txt file:\nThe field 'Solvation' has the options 'on' or 'off'." +
+            				"\nPopulateReactions does not recognize: " + line);
+            		return;
+            	}
+            	line = ChemParser.readMeaningfulLine(br_input);
+            }
+
+            /*
+             * Read in the species (name, concentration, adjacency list)
+             */
+            if (line.toLowerCase().startsWith("speciesstatus")) {
+            	LinkedHashMap lhm = new LinkedHashMap();
+            	lhm = rmg.populateInitialStatusListWithReactiveSpecies(br_input);
+            	speciesSet.addAll(lhm.values());
+            }
+            
+            /*
+             * Read in the inert gas (name, concentration)
+             */
+            line = ChemParser.readMeaningfulLine(br_input);
+            if (line.toLowerCase().startsWith("bathgas")) {
+            	rmg.populateInitialStatusListWithInertSpecies(br_input);
+            }
+            
+            /*
+             * Read in the p-dep options
+             */
+            line = ChemParser.readMeaningfulLine(br_input);
+            if (line.toLowerCase().startsWith("spectroscopicdata")) {
+            	rmg.setSpectroscopicDataMode(line);
+            	line = ChemParser.readMeaningfulLine(br_input);
+            	line = rmg.setPressureDependenceOptions(line,br_input);
+            }
+            
+            /*
+             * Read primary reaction libraries (if they exist)
+             */
             if (line.toLowerCase().startsWith("primaryreactionlibrary")) {
             	rmg.readAndMakePRL(br_input);
             }
@@ -211,61 +259,109 @@ public class PopulateReactions {
             	System.exit(0);
             }
             
+            /*
+             * MRH 2Apr2010:
+             * Allow user the option to print "verbose" comments
+             */
+            /*
+             * Read in verbosity field (if it exists)
+             */
             line = ChemParser.readMeaningfulLine(br_input);
-            BathGas bathgas = null;
-            String inertgasname = "";
-            if (line.toLowerCase().startsWith("spectroscopicdata")) {
-            	rmg.setSpectroscopicDataMode(line);
-            	line = ChemParser.readMeaningfulLine(br_input);
-            	line = rmg.setPressureDependenceOptions(line,br_input);
-            	StringTokenizer bathGas_st = new StringTokenizer(line);
-            	String name = bathGas_st.nextToken();
-            	name = bathGas_st.nextToken();
-            	inertgasname = name;
-            	bathgas = new BathGas(name);
+            if (line != null && line.toLowerCase().startsWith("verbose")) {
+            	StringTokenizer st2 = new StringTokenizer(line);
+            	String tempString = st2.nextToken();
+            	tempString = st2.nextToken();
+            	tempString = tempString.toLowerCase();
+            	if (tempString.equals("on") || tempString.equals("true") || tempString.equals("yes"))
+            		ArrheniusKinetics.setVerbose(true);
             }
             
-            LinkedHashMap dummyLHM = new LinkedHashMap();
-            line = ChemParser.readMeaningfulLine(br_input);
-            // Read in all of the species in the input file
-			while (line != null) {
-				// The first line of a new species is the user-defined name
-				String speciesName = line;
-				// The remaining lines are the graph
-				Graph g = ChemParser.readChemGraph(br_input);
-				// Make the ChemGraph, assuming it does not contain a forbidden structure
-				ChemGraph cg = null;
-				try {
-					cg = ChemGraph.make(g);
-				} catch (ForbiddenStructureException e) {
-					System.out.println("Error in reading graph: Graph contains a forbidden structure.\n" + g.toString());
-					System.exit(0);
-				}
-				// Make the species
-				Species species = Species.make(speciesName,cg);
-				// Add the new species to the set of species
-				//int speciesCount = speciesSet.size();
-				speciesSet.add(species);
-    			SpeciesStatus ss = new SpeciesStatus(species,1,1e-12,0);
-    			dummyLHM.put(species, ss);
-				//if (speciesSet.size() != speciesCount+1){
-				//	System.out.println(speciesName);
-				//	Iterator iter=speciesSet.iterator();
-				//	while (iter.hasNext()) {
-				//		Species spcs = (Species)iter.next();
-				//		if (spcs.equals(species))
-				//			System.out.println(spcs.toString());
-				//	}
-				//}
-
-				// Read the next line of the input file
-				line = ChemParser.readMeaningfulLine(br_input);
-			}
-			InitialStatus is = new InitialStatus(dummyLHM,null,null);
-			is.putInertGas(inertgasname,1e-6);
+            /*
+             * MRH 27Feb:
+             * Allowing PopulateReactions module to read/use Primary Reaction/Thermo Libraries
+             * 
+             * The user does not have to specify any primary reaction / thermo libraries.
+             * 	However, like the input file to RMG, the fields must still be present
+             */
+//            if (line.toLowerCase().startsWith("primarythermolibrary")) {
+//            	rmg.readAndMakePTL(br_input);
+//            }
+//            else {
+//            	System.err.println("PopulateReactions: Could not locate the PrimaryThermoLibrary field." +
+//            			"Line read was: " + line);
+//            	System.exit(0);
+//            }
+            
+//            line = ChemParser.readMeaningfulLine(br_input);
+//            if (line.toLowerCase().startsWith("primaryreactionlibrary")) {
+//            	rmg.readAndMakePRL(br_input);
+//            }
+//            else {
+//            	System.err.println("PopulateReactions: Could not locate the PrimaryReactionLibrary field." +
+//            			"Line read was: " + line);
+//            	System.exit(0);
+//            }
+            
+//            line = ChemParser.readMeaningfulLine(br_input);
+//            BathGas bathgas = null;
+//            String inertgasname = "";
+//            if (line.toLowerCase().startsWith("spectroscopicdata")) {
+//            	rmg.setSpectroscopicDataMode(line);
+//            	line = ChemParser.readMeaningfulLine(br_input);
+//            	line = rmg.setPressureDependenceOptions(line,br_input);
+//            	if (PDepNetwork.generateNetworks) {
+//	            	StringTokenizer bathGas_st = new StringTokenizer(line);
+//	            	String name = bathGas_st.nextToken();
+//	            	name = bathGas_st.nextToken();
+//	            	inertgasname = name;
+//	            	bathgas = new BathGas(name);
+//	            	line = ChemParser.readMeaningfulLine(br_input);
+//            	}
+//            }
+            
+//            LinkedHashMap dummyLHM = new LinkedHashMap();
+//            
+//            // Read in all of the species in the input file
+//			while (line != null) {
+//				// The first line of a new species is the user-defined name
+//				String speciesName = line;
+//				// The remaining lines are the graph
+//				Graph g = ChemParser.readChemGraph(br_input);
+//				// Make the ChemGraph, assuming it does not contain a forbidden structure
+//				ChemGraph cg = null;
+//				try {
+//					cg = ChemGraph.make(g);
+//				} catch (ForbiddenStructureException e) {
+//					System.out.println("Error in reading graph: Graph contains a forbidden structure.\n" + g.toString());
+//					System.exit(0);
+//				}
+//				// Make the species
+//				Species species = Species.make(speciesName,cg);
+//				// Add the new species to the set of species
+//				//int speciesCount = speciesSet.size();
+//				speciesSet.add(species);
+//    			SpeciesStatus ss = new SpeciesStatus(species,1,1e-12,0);
+//    			dummyLHM.put(species, ss);
+//				//if (speciesSet.size() != speciesCount+1){
+//				//	System.out.println(speciesName);
+//				//	Iterator iter=speciesSet.iterator();
+//				//	while (iter.hasNext()) {
+//				//		Species spcs = (Species)iter.next();
+//				//		if (spcs.equals(species))
+//				//			System.out.println(spcs.toString());
+//				//	}
+//				//}
+//
+//				// Read the next line of the input file
+//				line = ChemParser.readMeaningfulLine(br_input);
+//			}
+//			InitialStatus is = new InitialStatus(dummyLHM,null,null);
+//			is.putInertGas(inertgasname,1e-6);
 			
 			// Set the user's input temperature
-			rmg.setTemp4BestKinetics(systemTemp_K);
+            LinkedList tempList = rmg.getTempList();
+            Temperature systemTemp = ((ConstantTM)tempList.get(0)).getTemperature();
+			rmg.setTemp4BestKinetics(systemTemp);
 			TemplateReactionGenerator rtLibrary = new TemplateReactionGenerator();
 			
 			// React all species with each other
@@ -281,23 +377,23 @@ public class PopulateReactions {
 				rmg.setReactionModel(cerm);
 				rmg.setReactionGenerator(rtLibrary);
 				
-				ReactionSystem rs = new ReactionSystem(null,
-						null,
+				ReactionSystem rs = new ReactionSystem((TemperatureModel)rmg.getTempList().get(0),
+						(PressureModel)rmg.getPressList().get(0),
 						rmg.getReactionModelEnlarger(),
-						null,
+						new FinishController(),
 						null,
 						rmg.getPrimaryReactionLibrary(),
 						rmg.getReactionGenerator(),
 						speciesSet,
-						is,
+						(InitialStatus)rmg.getInitialStatusList().get(0),
 						rmg.getReactionModel(),
 						new LibraryReactionGenerator(),
 						0,
-						"Liquid");
-//				rs.set
-				PDepNetwork pdepnetwork = new PDepNetwork();
-				pdepnetwork.reactionModel = rmg.getReactionModel();
-				pdepnetwork.reactionSystem = rs;
+						"GasPhase");
+				
+				PDepNetwork.reactionModel = rmg.getReactionModel();
+				PDepNetwork.reactionSystem = rs;
+				
 				// If the reaction structure is A + B = C + D, we are not concerned w/pdep
 				Iterator iter = reactions.iterator();
 				LinkedHashSet nonPdepReactions = new LinkedHashSet();
@@ -305,27 +401,32 @@ public class PopulateReactions {
 	        		Reaction r = (Reaction)iter.next();
 	        		if (r.getReactantNumber() < 2 || r.getProductNumber() < 2){
 						cerm.categorizeReaction(r.getStructure());
-						pdepnetwork = pdepnetwork.addReactionToNetworks(r);
+						PDepNetwork.addReactionToNetworks(r);
 					}
 	        		else {
 	        			nonPdepReactions.add(r);
 	        		}
 				}
 	        	
+	        	cerm.addReactedSpeciesSet(speciesSet);
+	        	
 	        	// Run fame calculation
 	        	PDepKineticsEstimator pDepKineticsEstimator = 
 					((RateBasedPDepRME) rmg.getReactionModelEnlarger()).getPDepKineticsEstimator();
-	        	//FastMasterEqn fme = new FastMasterEqn(pDepKineticsEstimator);
-	        	pDepKineticsEstimator.runPDepCalculation(pdepnetwork,rs,cerm);
 	        	
-	        	LinkedList<PDepReaction> indivPDepRxns = pdepnetwork.getPathReactions();
-	        	for (int numPDepRxns=0; numPDepRxns<indivPDepRxns.size(); numPDepRxns++) {
-	        		listOfReactions += writePDepOutputString(indivPDepRxns.get(numPDepRxns));
+	        	for (int numNetworks=0; numNetworks<PDepNetwork.getNetworks().size(); ++numNetworks) {
+	        		PDepNetwork pdepnetwork = PDepNetwork.getNetworks().get(numNetworks);
+		        	pDepKineticsEstimator.runPDepCalculation(pdepnetwork,rs,cerm);
+		        	
+		        	LinkedList<PDepReaction> indivPDepRxns = pdepnetwork.getNetReactions();
+		        	for (int numPDepRxns=0; numPDepRxns<indivPDepRxns.size(); numPDepRxns++) {
+		        		listOfReactions += indivPDepRxns.get(numPDepRxns).toChemkinString(systemTemp);
+		        	}
 	        	}
 	        	reactions = nonPdepReactions;
 			}			
 			
-			// Some of the reactions may be dupliates of one another 
+			// Some of the reactions may be duplicates of one another 
 			//	(e.g. H+CH4=CH3+H2 as a forward reaction and reverse reaction)
 			//	Create new LinkedHashSet which will store the non-duplicate rxns
 			LinkedHashSet nonDuplicateRxns = new LinkedHashSet();
@@ -516,12 +617,6 @@ public class PopulateReactions {
 //		}
 		return listOfReactions;
 	}
-	
-	public static String writePDepOutputString(PDepReaction pdepRxn) {
-		String output = "";
-		// Print reaction string
-		
-		return output;
-	}
+
 
 }
