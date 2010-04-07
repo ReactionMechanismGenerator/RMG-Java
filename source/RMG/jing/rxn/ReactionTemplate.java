@@ -1655,6 +1655,18 @@ public class ReactionTemplate {
       	read: while (line != null) {
       		StringTokenizer token = new StringTokenizer(line);
       		fgname = token.nextToken();
+			
+			if (fgname.toLowerCase().startsWith("others")) {
+				System.out.println("Skipping dictionary definition of group "+fgname+" because its begins with 'others' and that has special meaning.");
+				// gobble up the rest
+				while (line!=null) {
+					line=ChemParser.readUncommentLine(data);
+				}
+				// now get an unblank line
+				line = ChemParser.readMeaningfulLine(data);
+				continue read;
+			}
+			
       		data.mark(10000);
       		line = ChemParser.readMeaningfulLine(data);
       		if (line == null) break read;
