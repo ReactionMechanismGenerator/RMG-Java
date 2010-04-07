@@ -28,38 +28,26 @@
 
 package jing.chem;
 
-
 public class UnifacData extends UnifacGAValue {
-
-        public  UnifacData() {
-        //#[ operation ThermoData()
+	
+	public  UnifacData() {
         super();
-        //#]
     }
-
+	
     public  UnifacData(double R, double Q) {
-        //#[ operation ThermoData(double,double,double,double,double,double,double,double,double,String)
         super(R,Q);
-
-    }      //#]
-
-        //## operation ThermoData(ThermoGAValue)
+		
+    }  
+	
     public  UnifacData(UnifacGAValue p_ga) {
-        //#[ operation ThermoData(ThermoGAValue)
         super(p_ga);
-        //#]
     }
-
-        //## operation plus(ThermoGAValue)
+	
     public void plus(UnifacGAValue p_thermoData) {
-        //#[ operation plus(ThermoGAValue)
         if (p_thermoData == null) return;
-
         R += p_thermoData.R;
         Q += p_thermoData.Q;
-
-        }
-        //#]
-    }
+	}
+}
 
 

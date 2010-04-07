@@ -30,68 +30,44 @@ package jing.chem;
 // Amrit Jalan, April 19, 2009
 /**
  Replicates the functions of ThermoGAvalue for the Abraham Solvation model i.e. defines varibles like S, E, B, V and A
+ Immutable data holds all the Platt's group value.
  */
 
-/**
-Immutable data holds all the Platt's group value.
-*/
-//## class ThermoGAValue
-
-
 public class UnifacGAValue {
-
-    protected double R = 0;		//## attribute R
-
-    protected double Q = 0;		//## attribute Q
-
-// Constructors
-
-    //## operation ThermoGAValue()
+    protected double R = 0;	
+    protected double Q = 0;	
+	
+	// Constructors
+	
     public UnifacGAValue() {
-        //#[ operation ThermoGAValue()
         R = 0;
         Q = 0;
-
-
-        //#]
     }
-
-    //## operation ThermoGAValue(double,double,double,double,double,double,double,double,double,String)
+	
     public  UnifacGAValue(double p_R, double p_Q) {
-        //#[ operation ThermoGAValue(double,double,double,double,double,double,double,double,double,String)
         R = p_R;
         Q = p_Q;
-        
-        //#]
     }
-
-    //## operation ThermoGAValue(String,ThermoGAValue,String)
+	
     public  UnifacGAValue(UnifacGAValue p_ga) {
-        //#[ operation ThermoGAValue(String,ThermoGAValue,String)
         R = p_ga.R;
         Q = p_ga.Q;
-        
-
-        //#]
     }
-
-//## operation toString()
+	
     public String toString() {
-        //#[ operation toString()
         String s = "";
         s = s + String.valueOf(R) + '\t';
         s = s + String.valueOf(Q);
-
+		
         return s;
-        //#]
     }
-
-     protected double getR() {
+	
+	protected double getR() {
         return R;
     }
-
+	
     protected double getQ() {
         return Q;
     }
-
+	
 }

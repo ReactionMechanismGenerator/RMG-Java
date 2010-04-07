@@ -46,47 +46,18 @@ public class RMG {
 	
     //## configuration RMG::RMG
     public static void main(String[] args) {
-	
-    
- 	long tAtInitialization = System.currentTimeMillis();
-	Global.tAtInitialization = tAtInitialization;
-	
-	initializeSystemProperties(args[0]);
-    ReactionModelGenerator rmg = new ReactionModelGenerator();
+		
+		long tAtInitialization = System.currentTimeMillis();
+		Global.tAtInitialization = tAtInitialization;
+		
+		initializeSystemProperties(args[0]);
+		ReactionModelGenerator rmg = new ReactionModelGenerator();
         
-    // Generate the model!
-    rmg.modelGeneration();
+		// Generate the model!
+		rmg.modelGeneration();
         
-    CoreEdgeReactionModel cerm = (CoreEdgeReactionModel)rmg.getReactionModel();
-	//Write core species to RMG_Dictionary.txt
-	String coreSpecies ="";
-	Iterator iter = cerm.getSpecies();
-	
-	if (Species.useInChI) {
-		while (iter.hasNext()){
-			int i=1;
-			Species spe = (Species) iter.next();
-			coreSpecies = coreSpecies + spe.getChemkinName() + " " + spe.getInChI() + "\n"+spe.getChemGraph().toString(i)+"\n\n";
-		}
-	} else {
-		while (iter.hasNext()){
-			int i=1;
-			Species spe = (Species) iter.next();
-			coreSpecies = coreSpecies + spe.getChemkinName() + "\n"+spe.getChemGraph().toString(i)+"\n\n";
-		}
-	}
-
-	try{
-		File rmgDictionary = new File("RMG_Dictionary.txt");
-		FileWriter fw = new FileWriter(rmgDictionary);
-		fw.write(coreSpecies);
-		fw.close();
-	}
-	catch (IOException e) {
-    	System.out.println("Could not write RMG_Dictionary.txt");
-    	System.exit(0);
-    }
-	
+		CoreEdgeReactionModel cerm = (CoreEdgeReactionModel)rmg.getReactionModel();
+			
 	//rs.reduceModel();
 	//Write the final model output in a separete Final_Model file
 	String finalOutput = "";
@@ -150,18 +121,27 @@ public class RMG {
     
     public static void globalInitializeSystemProperties() {
     	Locale.setDefault(Locale.US);
-		String name= "RMG_database";
 		String workingDir = System.getenv("RMG");
 		 if (workingDir == null) {
 			 System.err.println("Undefined environment variable RMG.");
 			 System.exit(0);
 		 }
 		System.setProperty("RMG.workingDirectory", workingDir);
-		System.setProperty("jing.chem.ChemGraph.forbiddenStructureFile",workingDir + "/databases/" + name + "/forbiddenStructure/forbiddenStructure.txt");
-		System.setProperty("jing.chem.ThermoGAGroupLibrary.pathName",	workingDir + "/databases/" + name + "/thermo");
-		System.setProperty("jing.rxn.ReactionTemplateLibrary.pathName",	workingDir + "/databases/" + name + "/kinetics");
+		String database_name= "RMG_database";
+		String database_path = workingDir + "/databases/" + database_name;
+		setDatabasePaths(database_path);
     }
 
+	public static void setDatabasePaths(String database_path) {
+		// String database_path = workingDir + "/databases/" + name
+		System.setProperty("jing.chem.ChemGraph.forbiddenStructureFile", database_path +"/ForbiddenStructures.txt");
+		System.setProperty("jing.chem.ThermoGAGroupLibrary.pathName",    database_path +"/thermo_groups");
+		System.setProperty("jing.chem.ThermoReferenceLibrary.pathName",  database_path +"/thermo_libraries");
+		System.setProperty("jing.chem.FrequencyDatabase.pathName",       database_path +"/frequencies_groups");
+		System.setProperty("jing.rxn.ReactionTemplateLibrary.pathName",  database_path +"/kinetics_groups");
+		System.setProperty("jing.rxn.ReactionLibrary.pathName",          database_path +"/kinetics_libraries");
+    }
+	
 	public static void initializeSystemProperties(String inputfile) {
 		globalInitializeSystemProperties();
 		String workingDir = System.getProperty("RMG.workingDirectory");
@@ -207,15 +187,10 @@ public class RMG {
                     qmfiles.mkdir();
                 }
 		
-//		 String workingDir = System.getenv("RMG");
-//		 if (workingDir == null) {
-//			 System.err.println("Undefined environment variable RMG.");
-//			 System.exit(0);
-//		 }
-//	     System.setProperty("RMG.workingDirectory", workingDir);
+
 
 	     System.setProperty("jing.rxnSys.ReactionModelGenerator.conditionFile",inputfile);
-		 try {//svp
+		 try {
              String initialConditionFile = System.getProperty("jing.rxnSys.ReactionModelGenerator.conditionFile");
              if (initialConditionFile == null) {
                      System.out.println("undefined system property: jing.rxnSys.ReactionModelGenerator.conditionFile");
@@ -235,16 +210,20 @@ public class RMG {
 			System.out.println("#    "+jing.param.VersionInfo.getBuildDate());
 			System.out.println("#  The git repository was on the branch:                       #");
 			System.out.println("#    "+jing.param.VersionInfo.getBranchName());
-			System.out.println("#  And at the commit with the hash:                            #");			 
-			System.out.println("#    "+jing.param.VersionInfo.getVersionHash());
+			System.out.println("#  And at the commit with the hash:                            #");
+			String versionHash=jing.param.VersionInfo.getVersionHash() ;
+			System.out.println("#    "+versionHash+"                  #");
 			System.out.println("#                                                              #");
 			System.out.println("#  For details visit:                                          #");	 
-			if (jing.param.VersionInfo.getVersionHash().startsWith("*") ) // error messages should start with a *
-				System.out.println("#  http://github.com/GreenGroup/RMG-Java/                      #");
-		    else 
-				System.out.println("#  http://github.com/GreenGroup/RMG-Java/tree/"+jing.param.VersionInfo.getVersionHash() ); 
+			if (versionHash.startsWith("*") ) // error messages should start with a *
+				System.out.println("#    http://github.com/GreenGroup/RMG-Java/                    #");
+		    else {
+				System.out.println("#    http://github.com/GreenGroup/RMG-Java/tree/"+versionHash.substring(0,6)+"         #" ); 
+				System.out.println("#  To see changes since then visit:                            #");	 
+				System.out.println("#    http://github.com/GreenGroup/RMG-Java/compare/"+versionHash.substring(0,6)+"...master");
 			//System.out.println("#  To download this specific version, visit:                   #");	 
-			//System.out.println("#   http://github.com/GreenGroup/RMG-Java/archives/"+jing.param.VersionInfo.getVersionHash() ); 
+			//System.out.println("#   http://github.com/GreenGroup/RMG-Java/archives/"+versionHash.substring(0,6) ); 
+			}
 			System.out.println("#                                                              #");
 			System.out.println("#                                                              #");
 			System.out.println("#                                                              #");
@@ -309,35 +288,19 @@ public class RMG {
              BufferedReader reader = new BufferedReader(in);
              String line = ChemParser.readMeaningfulLine(reader);
 			 //line = ChemParser.readMeaningfulLine(reader);
-			 
+
              if (line.startsWith("Database")){
-               StringTokenizer st = new StringTokenizer(line);
-               String next = st.nextToken();
-               String name = st.nextToken().trim();
-               System.setProperty("jing.chem.ChemGraph.forbiddenStructureFile", workingDir + "/databases/"+name+"/forbiddenStructure/forbiddenStructure.txt");
-               System.setProperty("jing.chem.ThermoGAGroupLibrary.pathName", workingDir + "/databases/" + name+"/thermo");
-               System.setProperty("jing.rxn.ReactionTemplateLibrary.pathName", workingDir + "/databases/" + name+"/kinetics");
-               System.setProperty("jing.rxn.ReactionLibrary.pathName",workingDir + "/databases/" + name + "/kinetics/reactionLibrary");
-             }
-             /*
-              * 7-Jul-2009:MRH
-              * 	Commented out reading/setting PrimaryThermoLibrary
-              * 	RMG now allows the user to supply multiple Primary Thermo Libraries
-              * 		(in the same manner as a Primary Reaction Library or Seed Mechanism)
-              * 		in the condition.txt file.
-              */
-//             line = ChemParser.readMeaningfulLine(reader);
-//             if (line.startsWith("PrimaryThermoLibrary")){
-//               StringTokenizer st = new StringTokenizer(line);
-//               String next = st.nextToken();
-//               String name = st.nextToken().trim();
-//               String thermoDirectory = System.getProperty("jing.chem.ThermoGAGroupLibrary.pathName");
-//               System.setProperty("jing.chem.PrimaryThermoLibrary.pathName", thermoDirectory+"/"+name);
-//             }
-  }
-  catch (IOException e) {
-     System.err.println("Error in read in reaction system initialization file!");
-}
+				 StringTokenizer st = new StringTokenizer(line);
+				 String next = st.nextToken();
+				 String database_name = st.nextToken().trim();
+				 
+				 String database_path = workingDir + "/databases/" + database_name;
+				 setDatabasePaths(database_path);
+			 }
+	}
+	catch (IOException e) {
+		System.err.println("Error in read in reaction system initialization file!");
+	}
   }
 
 	

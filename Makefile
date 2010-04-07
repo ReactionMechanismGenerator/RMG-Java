@@ -19,13 +19,13 @@ RUNDIR=$(CURDIR)/run
 # The Fortran 90 compiler to use and flags to use when compiling Fortran 90 
 # code
 F90=g95
-F90FLAGS=-fbounds-check -ftrace=full -fmod=$(BUILDDIR) -Wall
+F90FLAGS=-fbounds-check -ftrace=full -fmod=$(BUILDDIR) -Wall -O3
 F90FLAGS_NDEBUG=-fmod=$(BUILDDIR) -ftrace=full 
 # these are added to the LDFLAGS of the subsidiary makefiles
-#F90_EXTRA_LDFLAGS = -L/home/local/lib -lg2c 
+#F90_EXTRA_LDFLAGS = -L/home/local/lib -lg2c  # required for Monch
 
 #F90=gfortran
-#F90FLAGS=-fbounds-check -fbacktrace -Wall
+#F90FLAGS=-fbounds-check -fbacktrace -Wall -O3
 #F90FLAGS_NDEBUG=-fbacktrace
 
 

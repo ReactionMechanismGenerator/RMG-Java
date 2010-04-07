@@ -48,6 +48,7 @@ import jing.param.Pressure;
 import jing.param.Temperature;
 import jing.rxn.BathGas;
 import jing.rxn.FastMasterEqn;
+import jing.rxn.ArrheniusKinetics;
 import jing.rxn.Kinetics;
 import jing.rxn.LibraryReactionGenerator;
 import jing.rxn.PDepKineticsEstimator;
@@ -171,6 +172,20 @@ public class PopulateReactions {
             line = ChemParser.readMeaningfulLine(br_input);
             
             /*
+             * MRH 2Apr2010:
+             * Allow user the option to print "verbose" comments
+             */
+            if (line.toLowerCase().startsWith("verbose")) {
+            	StringTokenizer st2 = new StringTokenizer(line);
+            	String tempString = st2.nextToken();
+            	tempString = st2.nextToken();
+            	tempString = tempString.toLowerCase();
+            	if (tempString.equals("on") || tempString.equals("true") || tempString.equals("yes"))
+            		ArrheniusKinetics.setVerbose(true);
+            	line = ChemParser.readMeaningfulLine(br_input);
+            }
+            
+            /*
              * MRH 27Feb:
              * Allowing PopulateReactions module to read/use Primary Reaction/Thermo Libraries
              * 
@@ -202,9 +217,7 @@ public class PopulateReactions {
             if (line.toLowerCase().startsWith("spectroscopicdata")) {
             	rmg.setSpectroscopicDataMode(line);
             	line = ChemParser.readMeaningfulLine(br_input);
-            	rmg.setPressureDependenceType(line);
-            	line = ChemParser.readMeaningfulLine(br_input);
-            	line = rmg.setPDepKineticsModel(line, br_input);
+            	line = rmg.setPressureDependenceOptions(line,br_input);
             	StringTokenizer bathGas_st = new StringTokenizer(line);
             	String name = bathGas_st.nextToken();
             	name = bathGas_st.nextToken();
@@ -403,13 +416,6 @@ public class PopulateReactions {
 		File fame = new File("fame");
 		ChemParser.deleteDir(fame);
 		fame.mkdir();
-		
-//		String name= "RMG_database";
-//		String workingDir = System.getenv("RMG");
-//		System.setProperty("RMG.workingDirectory", workingDir);
-//		System.setProperty("jing.chem.ChemGraph.forbiddenStructureFile",workingDir + "/databases/" + name + "/forbiddenStructure/forbiddenStructure.txt");
-//		System.setProperty("jing.chem.ThermoGAGroupLibrary.pathName",	workingDir + "/databases/" + name + "/thermo");
-//		System.setProperty("jing.rxn.ReactionTemplateLibrary.pathName",	workingDir + "/databases/" + name + "/kinetics");
 	};
 	
 	public static String updateListOfReactions(Kinetics rxn_k) {
@@ -428,51 +434,86 @@ public class PopulateReactions {
 	
 	public static String writeOutputString(Reaction r, TemplateReactionGenerator rtLibrary) {
 		String listOfReactions = "";
-		if (r.hasAdditionalKinetics()) {
-			HashSet indiv_rxn = r.getAllKinetics();
-			for (Iterator iter = indiv_rxn.iterator(); iter.hasNext();) {
-				Kinetics k_rxn = (Kinetics)iter.next();
-				if (r.isForward())	listOfReactions += r.toString() + "\t" + updateListOfReactions(k_rxn) + "\tDUP\n";
-				//else if (r.isBackward()) listOfReactions += r.getReverseReaction().toString() + "\t" + updateListOfReactions(k_rxn) + "\tDUP\n";
-				else if (r.isBackward()) {
-					LinkedHashSet reverseReactions = new LinkedHashSet();
-					Iterator iter2 = r.getStructure().getProducts();
-					Species species1 = (Species)iter.next();
-					Species species2 = null;
-					while (iter2.hasNext()) 
-						species2 = (Species)iter2.next();
-					String rxnFamilyName = r.getReverseReaction().getReactionTemplate().getName();
-					reverseReactions = rtLibrary.reactSpecificFamily(species1, species2, rxnFamilyName);
-					for (Iterator iter3 = reverseReactions.iterator(); iter3.hasNext();) {
-						Reaction currentRxn = (Reaction)iter3.next();
-						if (currentRxn.getStructure() == r.getReverseReaction().getStructure())
-							listOfReactions += currentRxn.toString() + "\t" + updateListOfReactions(currentRxn.getKinetics()) + "\tDUP\n"; 
-					}
-					//listOfReactions += r.getReverseReaction().toString() + "\t" + updateListOfReactions(r.getReverseReaction().getKinetics());
-				}
-				else listOfReactions += r.toString() + "\t" + updateListOfReactions(k_rxn) + "\tDUP\n";
+
+		if (r.isForward()) {
+			Kinetics[] allKinetics = r.getKinetics();
+			for (int numKinetics=0; numKinetics<allKinetics.length; ++numKinetics) {
+				listOfReactions += r.toString() + "\t" + updateListOfReactions(allKinetics[numKinetics]);
+				if (allKinetics.length != 1) listOfReactions += "\tDUP\n";
 			}
-		} else {
-			if (r.isForward()) listOfReactions += r.toString() + "\t" + updateListOfReactions(r.getKinetics());
-			//else if (r.isBackward()) listOfReactions += r.toString() + "\t" + updateListOfReactions(r.getFittedReverseKinetics(),r.getReactionTemplate().getName());
-			else if (r.isBackward()) {
-				LinkedHashSet reverseReactions = new LinkedHashSet();
-				Iterator iter = r.getStructure().getProducts();
-				Species species1 = (Species)iter.next();
-				Species species2 = null;
-				while (iter.hasNext()) 
-					species2 = (Species)iter.next();
-				String rxnFamilyName = r.getReverseReaction().getReactionTemplate().getName();
-				reverseReactions = rtLibrary.reactSpecificFamily(species1, species2, rxnFamilyName);
-				for (Iterator iter2 = reverseReactions.iterator(); iter2.hasNext();) {
-					Reaction currentRxn = (Reaction)iter2.next();
-					if (currentRxn.getStructure() == r.getReverseReaction().getStructure())
-						listOfReactions += currentRxn.toString() + "\t" + updateListOfReactions(currentRxn.getKinetics()); 
-				}
-				//listOfReactions += r.getReverseReaction().toString() + "\t" + updateListOfReactions(r.getReverseReaction().getKinetics());
-			}
-			else listOfReactions += r.toString() + "\t" + updateListOfReactions(r.getKinetics());
 		}
+		else if (r.isBackward()) {
+			LinkedHashSet reverseReactions = new LinkedHashSet();
+			Iterator iter2 = r.getStructure().getProducts();
+			Species species1 = (Species)iter2.next();
+			Species species2 = null;
+			while (iter2.hasNext()) 
+				species2 = (Species)iter2.next();
+			String rxnFamilyName = r.getReverseReaction().getReactionTemplate().getName();
+			reverseReactions = rtLibrary.reactSpecificFamily(species1, species2, rxnFamilyName);
+			for (Iterator iter3 = reverseReactions.iterator(); iter3.hasNext();) {
+				Reaction currentRxn = (Reaction)iter3.next();
+				Kinetics[] allKinetics = currentRxn.getKinetics();
+				if (currentRxn.getStructure() == r.getReverseReaction().getStructure()) {
+					for (int numKinetics=0; numKinetics<allKinetics.length; ++numKinetics) {
+						listOfReactions += currentRxn.toString() + "\t" + updateListOfReactions(allKinetics[numKinetics]);
+						if (allKinetics.length != 1) listOfReactions += "\tDUP\n";
+					}
+				} 
+			}
+		}
+		else {
+			Kinetics[] allKinetics = r.getKinetics();
+			for (int numKinetics=0; numKinetics<allKinetics.length; ++numKinetics) {
+				listOfReactions += r.toString() + "\t" + updateListOfReactions(allKinetics[numKinetics]);
+				if (allKinetics.length != 1) listOfReactions += "\tDUP\n";
+			}
+		}
+//		if (r.hasAdditionalKinetics()) {
+//			HashSet indiv_rxn = r.getAllKinetics();
+//			for (Iterator iter = indiv_rxn.iterator(); iter.hasNext();) {
+//				Kinetics k_rxn = (Kinetics)iter.next();
+//				if (r.isForward())	listOfReactions += r.toString() + "\t" + updateListOfReactions(k_rxn) + "\tDUP\n";
+//				//else if (r.isBackward()) listOfReactions += r.getReverseReaction().toString() + "\t" + updateListOfReactions(k_rxn) + "\tDUP\n";
+//				else if (r.isBackward()) {
+//					LinkedHashSet reverseReactions = new LinkedHashSet();
+//					Iterator iter2 = r.getStructure().getProducts();
+//					Species species1 = (Species)iter.next();
+//					Species species2 = null;
+//					while (iter2.hasNext()) 
+//						species2 = (Species)iter2.next();
+//					String rxnFamilyName = r.getReverseReaction().getReactionTemplate().getName();
+//					reverseReactions = rtLibrary.reactSpecificFamily(species1, species2, rxnFamilyName);
+//					for (Iterator iter3 = reverseReactions.iterator(); iter3.hasNext();) {
+//						Reaction currentRxn = (Reaction)iter3.next();
+//						if (currentRxn.getStructure() == r.getReverseReaction().getStructure())
+//							listOfReactions += currentRxn.toString() + "\t" + updateListOfReactions(currentRxn.getKinetics()) + "\tDUP\n"; 
+//					}
+//					//listOfReactions += r.getReverseReaction().toString() + "\t" + updateListOfReactions(r.getReverseReaction().getKinetics());
+//				}
+//				else listOfReactions += r.toString() + "\t" + updateListOfReactions(k_rxn) + "\tDUP\n";
+//			}
+//		} else {
+//			if (r.isForward()) listOfReactions += r.toString() + "\t" + updateListOfReactions(r.getKinetics());
+//			//else if (r.isBackward()) listOfReactions += r.toString() + "\t" + updateListOfReactions(r.getFittedReverseKinetics(),r.getReactionTemplate().getName());
+//			else if (r.isBackward()) {
+//				LinkedHashSet reverseReactions = new LinkedHashSet();
+//				Iterator iter = r.getStructure().getProducts();
+//				Species species1 = (Species)iter.next();
+//				Species species2 = null;
+//				while (iter.hasNext()) 
+//					species2 = (Species)iter.next();
+//				String rxnFamilyName = r.getReverseReaction().getReactionTemplate().getName();
+//				reverseReactions = rtLibrary.reactSpecificFamily(species1, species2, rxnFamilyName);
+//				for (Iterator iter2 = reverseReactions.iterator(); iter2.hasNext();) {
+//					Reaction currentRxn = (Reaction)iter2.next();
+//					if (currentRxn.getStructure() == r.getReverseReaction().getStructure())
+//						listOfReactions += currentRxn.toString() + "\t" + updateListOfReactions(currentRxn.getKinetics()); 
+//				}
+//				//listOfReactions += r.getReverseReaction().toString() + "\t" + updateListOfReactions(r.getReverseReaction().getKinetics());
+//			}
+//			else listOfReactions += r.toString() + "\t" + updateListOfReactions(r.getKinetics());
+//		}
 		return listOfReactions;
 	}
 	

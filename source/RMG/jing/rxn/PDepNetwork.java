@@ -346,14 +346,18 @@ public class PDepNetwork {
 	/**
 	 * Adds a path reaction to the network if it is not already present.
 	 * @param newRxn The path reaction to add
+	 * @param addKinetics: In the event the reaction is already present,
+	 * 		determine whether to add the kinetics to the already present rxn
 	 */
-	public void addReaction(PDepReaction newRxn) {
+	public void addReaction(PDepReaction newRxn, boolean addKinetics) {
 
 		// Check to ensure that reaction is not already present
 		for (ListIterator<PDepReaction> iter = pathReactionList.listIterator(); iter.hasNext(); ) {
 			PDepReaction rxn = iter.next();
-			if (rxn.equals(newRxn))
+			if (rxn.equals(newRxn)) {
+				if (addKinetics) rxn.addAdditionalKinetics(newRxn.getKinetics()[0], 1);
 				return;
+			}
 		}
 
 		// Add reaction
@@ -556,7 +560,7 @@ public class PDepNetwork {
 				for (int i = 0; i < prod_pdn.getIsomers().size(); i++)
 					pdn.addIsomer(prod_pdn.getIsomers().get(i));
 				for (int i = 0; i < prod_pdn.getPathReactions().size(); i++)
-					pdn.addReaction(prod_pdn.getPathReactions().get(i));
+					pdn.addReaction(prod_pdn.getPathReactions().get(i),false);
 				// Also remove the second network from the list of networks
 				networks.remove(prod_pdn);
 			}
@@ -612,7 +616,7 @@ public class PDepNetwork {
 			pdn.addIsomer(productIsomer);
 		}
 		PDepReaction rxn = new PDepReaction(reactantIsomer, productIsomer, reaction);
-		pdn.addReaction(rxn);
+		pdn.addReaction(rxn,false);
 
 		// Fill in partial network if necessary
 		if (reactantIsomer.isCore((CoreEdgeReactionModel) reactionModel) && reactantIsomer.isUnimolecular())

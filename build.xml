@@ -1,79 +1,79 @@
 <!-- ANT build script for RMG -->
 <project name="RMG">
-    <property name="src" location="source/RMG"/>
-    <property name="build" location="build/RMG"/>
-    
-    <target name="compile" depends="versioninfo">
-        <javac srcdir="${src}" destdir="${build}" optimize="true" debug="true" />
-    </target>
-    
-    <target name="jar" depends="compile">
-        <jar destfile="bin/RMG.jar" basedir="${build}">
-            <manifest>
-                <attribute name="Main-Class" value="RMG"/>
-            </manifest>
-        </jar>
-    </target>
-
-	<target name="clean" description="delete all compiled classes">
-        <delete>
-            <fileset dir="${build}">
-                <include name="**/*.class"/>
-                <include name="*.class"/>
-                <include name="filter"/>
-                <include name="jing/param/VersionInfo.java"/>
-            </fileset>
-            <fileset dir=".">
-              <include name="bin/RMG.jar"/>
-            </fileset>
-        </delete>
-    </target>
-    
-    
-    <target name="getHash" depends="inGitTest, HEADishashTarget, HEADisrefTarget" unless="inGit">
-      <!-- this target is only executed if you are not in a git repository. 
-         if you ARE in a git repository then instead its dependencies HEADis... will set these params -->
-      <property name="branchname" value="* Not in git repository"/>
-      <property name="githash" value="* Not in git repository"/>
-    </target>
-    
-    <target name="inGitTest" description="Test if inside a git repository">
-      <condition property="inGit">
-        <available file=".git/HEAD" />
-      </condition>
-    </target>
-    <target name="isHEADhashTest" if="inGit">
+  <property name="src" location="source/RMG"/>
+  <property name="build" location="build/RMG"/>
+  
+  <target name="compile" depends="versioninfo">
+    <javac srcdir="${src}" destdir="${build}" optimize="true" debug="true" />
+  </target>
+  
+  <target name="jar" depends="compile">
+    <jar destfile="bin/RMG.jar" basedir="${build}">
+      <manifest>
+        <attribute name="Main-Class" value="RMG"/>
+      </manifest>
+    </jar>
+  </target>
+  
+  <target name="clean" description="delete all compiled classes">
+    <delete>
+      <fileset dir="${build}">
+        <include name="**/*.class"/>
+        <include name="*.class"/>
+        <include name="filter"/>
+        <include name="jing/param/VersionInfo.java"/>
+      </fileset>
+      <fileset dir=".">
+        <include name="bin/RMG.jar"/>
+      </fileset>
+    </delete>
+  </target>
+  
+  <!-- all the following targets are just to get the Version Info into the log header --> 
+  <target name="getHash" depends="inGitTest, HEADishashTarget, HEADisrefTarget" unless="inGit">
+    <!-- this target is only executed if you are not in a git repository. 
+    If you ARE in a git repository then instead its dependencies 
+    (HEADis...Target) will set these params -->
+    <property name="branchname" value="* Not in git repository"/>
+    <property name="versionhash" value="* Not in git repository"/>
+  </target>
+  
+  <target name="inGitTest" description="Test if inside a git repository">
+    <condition property="inGit">
+      <available file=".git/HEAD" />
+    </condition>
+  </target>
+  <target name="isHEADhashTest" if="inGit">
     <!-- if the HEAD contains a hash, then this will set the property HEADishash
-    otherwise the property will remain unset -->
-      <condition property="HEADishash">
-        <length when="equal" length="41">
+    otherwise the property will remain unset. This only runs if inGit -->
+    <condition property="HEADishash">
+      <length when="equal" length="41">
         <fileset dir="." includes=".git/HEAD">
           <containsregexp expression="[0-9a-f]{40}"/>
         </fileset>
-       </length>
-      </condition>
-    </target>
-    
-     <target name="HEADishashTarget" depends="isHEADhashTest" if="HEADishash">
-      <echo>The HEAD is a hash</echo>
-    <loadfile property="githash" srcFile=".git/HEAD">
-            <filterchain>
+      </length>
+    </condition>
+  </target>
+  
+  <target name="HEADishashTarget" depends="isHEADhashTest" if="HEADishash">
+    <echo>The HEAD is a hash</echo>
+    <loadfile property="versionhash" srcFile=".git/HEAD">
+      <filterchain>
         <striplinebreaks/>
       </filterchain>
     </loadfile>
-    <echo>githash = "${githash}"</echo>
+    <echo>versionhash = "${versionhash}"</echo>
     <property name="branchname" value="Not on a branch"/>
-     </target>
-     
-    <target name="HEADisrefTarget" depends="isHEADhashTest" unless="HEADishash" if="inGit">
-      <echo>The HEAD is a ref</echo>
+  </target>
+  
+  <target name="HEADisrefTarget" depends="isHEADhashTest" unless="HEADishash" if="inGit">
+    <echo>The HEAD is a ref</echo>
     <loadfile property="headpath" srcFile=".git/HEAD" >
       <filterchain>
         <replacestring from="ref: " to=""/>
         <striplinebreaks/>
       </filterchain>
     </loadfile>
-    <!-- echo>headpath = "${headpath}"</echo -->
     <loadfile property="branchname" srcFile=".git/HEAD" >
       <filterchain>
         <replacestring from="ref: refs/heads/" to=""/>
@@ -81,17 +81,16 @@
       </filterchain>
     </loadfile>
     <echo>branchname = "${branchname}"</echo>
-
-    <loadfile property="githash" srcFile=".git/${headpath}">
-            <filterchain>
+    
+    <loadfile property="versionhash" srcFile=".git/${headpath}">
+      <filterchain>
         <striplinebreaks/>
       </filterchain>
     </loadfile>
-    <echo>githash = "${githash}"</echo>
+    <echo>versionhash = "${versionhash}"</echo>
+  </target>
   
-    </target>
-    
-    <target name="versioninfo" depends="getHash">
+  <target name="versioninfo" depends="getHash">
     <!-- set the time stamp -->   
     <tstamp>
       <format property="buildtime" pattern="yyyy-MM-dd'T'HH:mm:ss"/>
@@ -103,15 +102,15 @@
       <filterset>
         <filter token="builddate" value="${buildtime}"/>
         <filter token="branchname" value="${branchname}"/>
-        <filter token="versionhash" value="${githash}"/>
+        <filter token="versionhash" value="${versionhash}"/>
       </filterset>
     </copy>
     <!-- compile the single java file into a class -->
     <javac srcdir="${build}/jing/param" 
-           destdir="${build}" 
-           includes="VersionInfo.java"
-           optimize="true" debug="true">
+      destdir="${build}" 
+      includes="VersionInfo.java"
+      optimize="true" debug="true">
     </javac>  
   </target>
-    
+
 </project>

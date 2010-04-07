@@ -72,35 +72,30 @@ public class SeedMechanism {
 
     // Constructors
     
-    public  SeedMechanism(String p_mechName, String p_directoryName, boolean p_generateReactions) throws IOException {
+    public  SeedMechanism(String p_mechName, String p_directoryPath, boolean p_generateReactions) throws IOException {
     	name = p_mechName;
 		generateReactions = p_generateReactions;
-        String dir = System.getProperty("RMG.workingDirectory");
-        if (dir==null || p_directoryName == null) throw new NullPointerException("RMG " +
-        		"does not recognize Seed Mechanism file name");
+        if ( p_directoryPath == null) throw new NullPointerException("does not recognize Seed Mechanism directory path");
         try {
-        	read(dir+"/databases/"+p_directoryName);
+        	read(p_directoryPath);
         }
         catch (IOException e) {
         	throw new IOException("Error in reading Seed Mechanism: " + name + '\n' + e.getMessage());
         }
     }
     
-    public void appendSeedMechanism(String new_mechName, String new_directoryName, boolean p_generateReactions) throws IOException {
+    public void appendSeedMechanism(String new_mechName, String new_directoryPath, boolean p_generateReactions) throws IOException {
     	String dir = System.getProperty("RMG.workingDirectory");
      	if (p_generateReactions)
 			setGenerateReactions(p_generateReactions);
-
 		setName(name + "/" + new_mechName);
     	try {
-    		read(dir + "/databases/" + new_directoryName);	
+    		read(new_directoryPath);	
     	}
         catch (IOException e) {
         	throw new IOException("Error in reading Seed Mechanism: " + new_mechName + '\n' + e.getMessage());
         }
-        //#]
     }
-    
     
     public LinkedHashSet getSpeciesSet() {
         return new LinkedHashSet(speciesSet.values());
@@ -185,8 +180,8 @@ public class SeedMechanism {
         		Reaction r;
         		try {
         			r = ChemParser.parseArrheniusReaction(speciesSet, line, A_multiplier, E_multiplier);
-					r.setKineticsSource("Seed Mechanism: "+ name);
-					r.setKineticsComments(" ");
+					r.setKineticsSource("Seed Mechanism: "+ name,0);
+					r.setKineticsComments(" ",0);
 				}
         		catch (InvalidReactionFormatException e) {
         			throw new InvalidReactionFormatException(line + ": " + e.getMessage());
@@ -198,7 +193,7 @@ public class SeedMechanism {
         		while (prlRxnIter.hasNext()) {
         			Reaction old = (Reaction)prlRxnIter.next();
         			if (old.equals(r)) {
-        				old.addAdditionalKinetics(r.getKinetics(),1);
+        				old.addAdditionalKinetics(r.getKinetics()[0],1);
         				foundRxn = true;
         				break;
         			}
@@ -325,8 +320,8 @@ public class SeedMechanism {
         		HashMap thirdBodyList = ChemParser.parseThirdBodyList(thirdBodyLine);
         		
         		ThirdBodyReaction tbr = ThirdBodyReaction.make(r,thirdBodyList);
-				tbr.setKineticsSource("Seed Mechanism: "+ name);
-				tbr.setKineticsComments(" ");
+				tbr.setKineticsSource("Seed Mechanism: "+ name,0);
+				tbr.setKineticsComments(" ",0);
         		reactionSet.add(tbr);
         		
         		Reaction reverse = tbr.getReverseReaction();
@@ -438,8 +433,8 @@ public class SeedMechanism {
            		}
         		
         		TROEReaction tbr = TROEReaction.make(r,thirdBodyList, low, a, T3star, Tstar, troe7, T2star);
-				tbr.setKineticsSource("Seed Mechanism: "+ name);
-				tbr.setKineticsComments(" ");
+				tbr.setKineticsSource("Seed Mechanism: "+ name,0);
+				tbr.setKineticsComments(" ",0);
 				
         		reactionSet.add(tbr);
         		Reaction reverse = tbr.getReverseReaction();
@@ -532,8 +527,8 @@ public class SeedMechanism {
         		ArrheniusKinetics low = ChemParser.parseSimpleArrheniusKinetics(lowString, A_multiplier, E_multiplier, r.getReactantNumber()+1);
         		
         		LindemannReaction lr = LindemannReaction.make(r,thirdBodyList, low);
-				lr.setKineticsSource("Seed Mechanism: "+ name);
-				lr.setKineticsComments(" ");
+				lr.setKineticsSource("Seed Mechanism: "+ name,0);
+				lr.setKineticsComments(" ",0);
 				
         		reactionSet.add(lr);
         		Reaction reverse = lr.getReverseReaction();

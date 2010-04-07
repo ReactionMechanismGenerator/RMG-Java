@@ -56,12 +56,10 @@ public class ReactionTemplateLibrary {
     public ReactionTemplateLibrary() {
         reactionTemplate=new LinkedHashSet();
         
-        //#[ operation ReactionTemplateLibrary()
-
         // Get the directory which contains the reaction families
         String kineticsDirectory = System.getProperty("jing.rxn.ReactionTemplateLibrary.pathName");
         if (kineticsDirectory == null) {
-        	System.out.println("undefined system property: jing.rxn.ReactionTemplateLibrary.pathName, exit!");
+        	System.out.println("Undefined system property: jing.rxn.ReactionTemplateLibrary.pathName!");
         	System.exit(0);
         }
         String separator = System.getProperty("file.separator");

@@ -320,203 +320,215 @@ public class ChemParser {
         //#]
     }
 
+    /*
+     * MRH 23MAR2010:
+     * Commented out uncalled parseArrheniusReaction method
+     */
     //## operation parseArrheniusReaction(HashMap,String,double,double)
-    public static Reaction parseCoreArrheniusReaction(SpeciesDictionary p_species, String p_reactionString, double p_AMultiplier, double p_EMultiplier) {
-        //#[ operation parseArrheniusReaction(HashMap,String,double,double)
-        //boolean isReverse = false;
-		if (p_reactionString == null) throw new NullPointerException("parseArrheniusReaction");
+//    public static Reaction parseCoreArrheniusReaction(SpeciesDictionary p_species, String p_reactionString, double p_AMultiplier, double p_EMultiplier) {
+//        //#[ operation parseArrheniusReaction(HashMap,String,double,double)
+//        //boolean isReverse = false;
+//		if (p_reactionString == null) throw new NullPointerException("parseArrheniusReaction");
+//
+//        StringTokenizer st = new StringTokenizer(p_reactionString);
+//        int size = st.countTokens();
+//        if (size < 6 || size > 16) throw new InvalidReactionFormatException();
+//
+//        int cut = size - 3;
+//        String structureString = "";
+//        String arrheniusString = "";
+//
+//        for (int i=0; i<cut-2; i++) {
+//        	structureString = structureString + st.nextToken() + " ";
+//        }
+//		int direction = Integer.parseInt(st.nextToken());
+//		int redundancy = Integer.parseInt(st.nextToken());
+//
+//        for (int i=cut; i<size; i++) {
+//        	arrheniusString = arrheniusString + st.nextToken() + " ";
+//        }
+//
+//        // parse structure string
+//        String sep = extractReactionSeperator(structureString);
+//        boolean generateReverse;
+//
+//        if (sep.equals("=") || sep.equals("<=>")) generateReverse = true;
+//        else if (sep.equals("=>") || sep.equals("->")) generateReverse = false;
+//        else throw new InvalidStructureException("Unknown reaction seperator: " + structureString);
+//
+//        st = new StringTokenizer(structureString,sep);
+//        if (st.countTokens() != 2) throw new InvalidStructureException("Unknown format:" + structureString);
+//
+//        LinkedList r = parseReactionSpecies(p_species, st.nextToken());
+//        LinkedList p = parseReactionSpecies(p_species, st.nextToken());
+//
+//        Structure s = new Structure(r,p);
+//        s.setDirection(1);
+//
+//        // parse kinetics
+//        ArrheniusKinetics k = parseSimpleArrheniusKinetics(arrheniusString, p_AMultiplier, p_EMultiplier, r.size());
+//
+//        return Reaction.makeReaction(s,k,generateReverse);
+//        //#]
+//    }
 
-        StringTokenizer st = new StringTokenizer(p_reactionString);
-        int size = st.countTokens();
-        if (size < 6 || size > 16) throw new InvalidReactionFormatException();
-
-        int cut = size - 3;
-        String structureString = "";
-        String arrheniusString = "";
-
-        for (int i=0; i<cut-2; i++) {
-        	structureString = structureString + st.nextToken() + " ";
-        }
-		int direction = Integer.parseInt(st.nextToken());
-		int redundancy = Integer.parseInt(st.nextToken());
-
-        for (int i=cut; i<size; i++) {
-        	arrheniusString = arrheniusString + st.nextToken() + " ";
-        }
-
-        // parse structure string
-        String sep = extractReactionSeperator(structureString);
-        boolean generateReverse;
-
-        if (sep.equals("=") || sep.equals("<=>")) generateReverse = true;
-        else if (sep.equals("=>") || sep.equals("->")) generateReverse = false;
-        else throw new InvalidStructureException("Unknown reaction seperator: " + structureString);
-
-        st = new StringTokenizer(structureString,sep);
-        if (st.countTokens() != 2) throw new InvalidStructureException("Unknown format:" + structureString);
-
-        LinkedList r = parseReactionSpecies(p_species, st.nextToken());
-        LinkedList p = parseReactionSpecies(p_species, st.nextToken());
-
-        Structure s = new Structure(r,p);
-        s.setDirection(1);
-
-        // parse kinetics
-        ArrheniusKinetics k = parseSimpleArrheniusKinetics(arrheniusString, p_AMultiplier, p_EMultiplier, r.size());
-
-        return Reaction.makeReaction(s,k,generateReverse);
-        //#]
-    }
-
+    /*
+     * MRH 23MAR2010:
+     * 	Commented out uncalled parseArrheniusReaction method
+     */
 //	## operation parseArrheniusReaction(HashMap,String,double,double)
-    public static Reaction parseEdgeArrheniusReaction(SpeciesDictionary p_species, String p_reactionString, double p_AMultiplier, double p_EMultiplier) {
-        //#[ operation parseArrheniusReaction(HashMap,String,double,double)
-        //boolean isReverse = false;
-		if (p_reactionString == null) throw new NullPointerException("parseArrheniusReaction");
+//    public static Reaction parseEdgeArrheniusReaction(SpeciesDictionary p_species, String p_reactionString, double p_AMultiplier, double p_EMultiplier) {
+//        //#[ operation parseArrheniusReaction(HashMap,String,double,double)
+//        //boolean isReverse = false;
+//		if (p_reactionString == null) throw new NullPointerException("parseArrheniusReaction");
+//
+//        StringTokenizer st = new StringTokenizer(p_reactionString);
+//        int size = st.countTokens();
+//        if (size < 4 || size > 14) throw new InvalidReactionFormatException();
+//
+//        int cut = size - 3;
+//        String structureString = "";
+//        String arrheniusString = "";
+//
+//        for (int i=0; i<cut; i++) {
+//        	structureString = structureString + st.nextToken() + " ";
+//        }
+//        for (int i=cut; i<size; i++) {
+//        	arrheniusString = arrheniusString + st.nextToken() + " ";
+//        }
+//
+//        // parse structure string
+//        String sep = extractReactionSeperator(structureString);
+//        boolean generateReverse;
+//
+//        if (sep.equals("=") || sep.equals("<=>")) generateReverse = true;
+//        else if (sep.equals("=>") || sep.equals("->")) generateReverse = false;
+//        else throw new InvalidStructureException("Unknown reaction seperator: " + structureString);
+//
+//        st = new StringTokenizer(structureString,sep);
+//        if (st.countTokens() != 2) throw new InvalidStructureException("Unknown format:" + structureString);
+//
+//        LinkedList r = parseReactionSpecies(p_species, st.nextToken());
+//        LinkedList p = parseReactionSpecies(p_species, st.nextToken());
+//        if (generateReverse){
+//			Structure s = new Structure(p,r);
+//	        s.setDirection(1);
+//
+//	        // parse kinetics
+//	        ArrheniusKinetics k = parseSimpleArrheniusKinetics(arrheniusString, p_AMultiplier, p_EMultiplier, r.size());
+//
+//	        Reaction forward = Reaction.makeReaction(s,k,generateReverse);
+//
+//			return forward.getReverseReaction();
+//        }
+//        else {
+//			Structure s = new Structure(r,p);
+//	        s.setDirection(1);
+//
+//	        // parse kinetics
+//	        ArrheniusKinetics k = parseSimpleArrheniusKinetics(arrheniusString, p_AMultiplier, p_EMultiplier, r.size());
+//
+//	        //Reaction forward = Reaction.makeReaction(s,k,generateReverse);
+//
+//			return Reaction.makeReaction(s,k,generateReverse);
+//        }
+//
+//        //#]
+//    }
 
-        StringTokenizer st = new StringTokenizer(p_reactionString);
-        int size = st.countTokens();
-        if (size < 4 || size > 14) throw new InvalidReactionFormatException();
-
-        int cut = size - 3;
-        String structureString = "";
-        String arrheniusString = "";
-
-        for (int i=0; i<cut; i++) {
-        	structureString = structureString + st.nextToken() + " ";
-        }
-        for (int i=cut; i<size; i++) {
-        	arrheniusString = arrheniusString + st.nextToken() + " ";
-        }
-
-        // parse structure string
-        String sep = extractReactionSeperator(structureString);
-        boolean generateReverse;
-
-        if (sep.equals("=") || sep.equals("<=>")) generateReverse = true;
-        else if (sep.equals("=>") || sep.equals("->")) generateReverse = false;
-        else throw new InvalidStructureException("Unknown reaction seperator: " + structureString);
-
-        st = new StringTokenizer(structureString,sep);
-        if (st.countTokens() != 2) throw new InvalidStructureException("Unknown format:" + structureString);
-
-        LinkedList r = parseReactionSpecies(p_species, st.nextToken());
-        LinkedList p = parseReactionSpecies(p_species, st.nextToken());
-        if (generateReverse){
-			Structure s = new Structure(p,r);
-	        s.setDirection(1);
-
-	        // parse kinetics
-	        ArrheniusKinetics k = parseSimpleArrheniusKinetics(arrheniusString, p_AMultiplier, p_EMultiplier, r.size());
-
-	        Reaction forward = Reaction.makeReaction(s,k,generateReverse);
-
-			return forward.getReverseReaction();
-        }
-        else {
-			Structure s = new Structure(r,p);
-	        s.setDirection(1);
-
-	        // parse kinetics
-	        ArrheniusKinetics k = parseSimpleArrheniusKinetics(arrheniusString, p_AMultiplier, p_EMultiplier, r.size());
-
-	        //Reaction forward = Reaction.makeReaction(s,k,generateReverse);
-
-			return Reaction.makeReaction(s,k,generateReverse);
-        }
-
-        //#]
-    }
-
+    /*
+     * MRH 23MAR2010:
+     * 	Commented out uncalled parseArrheniusReaction method
+     */
 //	## operation parseArrheniusReaction(HashMap,String,double,double)
-    public static Reaction parseArrheniusReaction(SpeciesDictionary p_species, String p_reactionString, double p_AMultiplier, double p_EMultiplier, CoreEdgeReactionModel cerm) {
-        //#[ operation parseArrheniusReaction(HashMap,String,double,double)
-        //boolean isReverse = false;
-		if (p_reactionString == null) throw new NullPointerException("parseArrheniusReaction");
-
-        StringTokenizer st = new StringTokenizer(p_reactionString);
-        int size = st.countTokens();
-        if (size < 6 || size > 16) throw new InvalidReactionFormatException();
-
-        int cut = size - 3;
-        String structureString = "";
-        String arrheniusString = "";
-
-        for (int i=0; i<cut-2; i++) {
-        	structureString = structureString + st.nextToken() + " ";
-        }
-		int direction = Integer.parseInt(st.nextToken());
-		int redundancy = Integer.parseInt(st.nextToken());
-
-        for (int i=cut; i<size; i++) {
-        	arrheniusString = arrheniusString + st.nextToken() + " ";
-        }
-
-        // parse structure string
-        String sep = extractReactionSeperator(structureString);
-        boolean generateReverse;
-
-        if (sep.equals("=") || sep.equals("<=>")) generateReverse = true;
-        else if (sep.equals("=>") || sep.equals("->")) generateReverse = false;
-        else throw new InvalidStructureException("Unknown reaction seperator: " + structureString);
-
-        st = new StringTokenizer(structureString,sep);
-        if (st.countTokens() != 2) throw new InvalidStructureException("Unknown format:" + structureString);
-
-        LinkedList r = parseReactionSpecies(p_species, st.nextToken());
-        LinkedList p = parseReactionSpecies(p_species, st.nextToken());
-		Structure s = new Structure(r,p);
-		int i = cerm.categorizeReaction(s);
-		if (i== -1){
-	        if (generateReverse){
-				s = new Structure(p,r);
-		        s.setDirection(1);
-
-		        // parse kinetics
-		        ArrheniusKinetics k = parseSimpleArrheniusKinetics(arrheniusString, p_AMultiplier, p_EMultiplier, r.size());
-				//s.setRedundancy(redundancy);;
-		        Reaction forward = Reaction.makeReaction(s,k,generateReverse);
-
-				return forward.getReverseReaction();
-	        }
-	        else {
-				s = new Structure(r,p);
-		        s.setDirection(1);
-
-		        // parse kinetics
-		        ArrheniusKinetics k = parseSimpleArrheniusKinetics(arrheniusString, p_AMultiplier, p_EMultiplier, r.size());
-				//s.setRedundancy(redundancy);
-		        //Reaction forward = Reaction.makeReaction(s,k,generateReverse);
-
-				return Reaction.makeReaction(s,k,generateReverse);
-	        }
-		}
-		else if (i==1){
-			if (direction == 1){
-				s = new Structure(r,p);
-		        s.setDirection(1);
-
-		        // parse kinetics
-		        ArrheniusKinetics k = parseSimpleArrheniusKinetics(arrheniusString, p_AMultiplier, p_EMultiplier, r.size());
-				//s.setRedundancy(redundancy);
-		        return Reaction.makeReaction(s,k,generateReverse);
-			}
-
-			if (direction == -1){
-
-				s = new Structure(p,r);
-		        s.setDirection(1);
-
-		        // parse kinetics
-		        ArrheniusKinetics k = parseSimpleArrheniusKinetics(arrheniusString, p_AMultiplier, p_EMultiplier, r.size());
-		        Reaction forwardReaction = Reaction.makeReaction(s,k,generateReverse);
-		        return forwardReaction.getReverseReaction();
-			}
-		}
-
-		return null;
-        //#]
-    }
+//    public static Reaction parseArrheniusReaction(SpeciesDictionary p_species, String p_reactionString, double p_AMultiplier, double p_EMultiplier, CoreEdgeReactionModel cerm) {
+//        //#[ operation parseArrheniusReaction(HashMap,String,double,double)
+//        //boolean isReverse = false;
+//		if (p_reactionString == null) throw new NullPointerException("parseArrheniusReaction");
+//
+//        StringTokenizer st = new StringTokenizer(p_reactionString);
+//        int size = st.countTokens();
+//        if (size < 6 || size > 16) throw new InvalidReactionFormatException();
+//
+//        int cut = size - 3;
+//        String structureString = "";
+//        String arrheniusString = "";
+//
+//        for (int i=0; i<cut-2; i++) {
+//        	structureString = structureString + st.nextToken() + " ";
+//        }
+//		int direction = Integer.parseInt(st.nextToken());
+//		int redundancy = Integer.parseInt(st.nextToken());
+//
+//        for (int i=cut; i<size; i++) {
+//        	arrheniusString = arrheniusString + st.nextToken() + " ";
+//        }
+//
+//        // parse structure string
+//        String sep = extractReactionSeperator(structureString);
+//        boolean generateReverse;
+//
+//        if (sep.equals("=") || sep.equals("<=>")) generateReverse = true;
+//        else if (sep.equals("=>") || sep.equals("->")) generateReverse = false;
+//        else throw new InvalidStructureException("Unknown reaction seperator: " + structureString);
+//
+//        st = new StringTokenizer(structureString,sep);
+//        if (st.countTokens() != 2) throw new InvalidStructureException("Unknown format:" + structureString);
+//
+//        LinkedList r = parseReactionSpecies(p_species, st.nextToken());
+//        LinkedList p = parseReactionSpecies(p_species, st.nextToken());
+//		Structure s = new Structure(r,p);
+//		int i = cerm.categorizeReaction(s);
+//		if (i== -1){
+//	        if (generateReverse){
+//				s = new Structure(p,r);
+//		        s.setDirection(1);
+//
+//		        // parse kinetics
+//		        ArrheniusKinetics k = parseSimpleArrheniusKinetics(arrheniusString, p_AMultiplier, p_EMultiplier, r.size());
+//				//s.setRedundancy(redundancy);;
+//		        Reaction forward = Reaction.makeReaction(s,k,generateReverse);
+//
+//				return forward.getReverseReaction();
+//	        }
+//	        else {
+//				s = new Structure(r,p);
+//		        s.setDirection(1);
+//
+//		        // parse kinetics
+//		        ArrheniusKinetics k = parseSimpleArrheniusKinetics(arrheniusString, p_AMultiplier, p_EMultiplier, r.size());
+//				//s.setRedundancy(redundancy);
+//		        //Reaction forward = Reaction.makeReaction(s,k,generateReverse);
+//
+//				return Reaction.makeReaction(s,k,generateReverse);
+//	        }
+//		}
+//		else if (i==1){
+//			if (direction == 1){
+//				s = new Structure(r,p);
+//		        s.setDirection(1);
+//
+//		        // parse kinetics
+//		        ArrheniusKinetics k = parseSimpleArrheniusKinetics(arrheniusString, p_AMultiplier, p_EMultiplier, r.size());
+//				//s.setRedundancy(redundancy);
+//		        return Reaction.makeReaction(s,k,generateReverse);
+//			}
+//
+//			if (direction == -1){
+//
+//				s = new Structure(p,r);
+//		        s.setDirection(1);
+//
+//		        // parse kinetics
+//		        ArrheniusKinetics k = parseSimpleArrheniusKinetics(arrheniusString, p_AMultiplier, p_EMultiplier, r.size());
+//		        Reaction forwardReaction = Reaction.makeReaction(s,k,generateReverse);
+//		        return forwardReaction.getReverseReaction();
+//			}
+//		}
+//
+//		return null;
+//        //#]
+//    }
     
     /**
      * ChemParser.parseRestartReaction(p_rxnString, coreSpcsIDs, core_edge) method
@@ -612,7 +624,8 @@ public class ChemParser {
     	// Generate the kinetics (assuming a rank of 1 ... as of 7/Sept/2009, the rank
     	//	of Kinetics should not be important at this stage of the mechanism
     	//	generation)
-        ArrheniusKinetics k = new ArrheniusKinetics(uA,un,uE,"",1,"",comments);
+    	ArrheniusKinetics[] k = new ArrheniusKinetics[1];
+        k[0] = new ArrheniusKinetics(uA,un,uE,"",1,"",comments);
         if (storeAsForward)
         	return Reaction.makeReaction(s,k,generateReverse);
         else
@@ -658,7 +671,8 @@ public class ChemParser {
 
       // parse kinetics
       //ArrheniusKinetics k = parseSimpleArrheniusKinetics(arrheniusString, p_AMultiplier, p_EMultiplier);
-      ArrheniusKinetics k = parsePrimaryArrheniusKinetics(arrheniusString, p_AMultiplier,p_EMultiplier, r.size());
+      ArrheniusKinetics[] k = new ArrheniusKinetics[1];
+      k[0] = parsePrimaryArrheniusKinetics(arrheniusString, p_AMultiplier,p_EMultiplier, r.size());
 
       return Reaction.makeReaction(s,k,generateReverse);
       //#]
@@ -1127,7 +1141,11 @@ public class ChemParser {
 
         	int centralID = -1;
 
-        	String line = readUncommentLine(p_reader);
+        	/*
+        	 * 14MAR2010: Switched from readUncommentedLine() to readMeaningfulLine()
+        	 */
+        	//String line = readUncommentLine(p_reader);
+        	String line = readMeaningfulLine(p_reader);
 			while (line != null) {
          		StringTokenizer token = new StringTokenizer(line);
         		// read in ID
@@ -1345,6 +1363,9 @@ public class ChemParser {
         		StringTokenizer token = new StringTokenizer(line);
         		// read in ID
         		String index = token.nextToken();
+				if (index.equalsIgnoreCase("END")) {
+					throw new InvalidGraphFormatException("Please leave an empty line after each chemgraph, including before the 'END' string");
+				}
         		if (index.endsWith(".")) {index = index.substring(0,index.length()-1);}
         		Integer ID = new Integer(index);
 
@@ -1406,8 +1427,9 @@ public class ChemParser {
         	else g.identifyFgElement();
         	return g;
         }
-        catch (Exception e) {
-        	throw new IOException(e.getMessage() + '\n' + "Error Line: " + line + '\n');
+        catch (InvalidGraphFormatException e) {
+			System.out.println("Error on line: "+line);
+			throw e;
         }
 
 

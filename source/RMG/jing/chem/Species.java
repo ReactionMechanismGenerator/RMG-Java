@@ -123,7 +123,17 @@ public class Species {
         selectDeltaEDown();
 		generateNASAThermoData();
        // generateSpectroscopicData(); // only get it if you need it!!!
-        if (useInChI) InChI = p_chemGraph.getInChI();
+		/*
+		 * MRH 9MAR2010:
+		 * Commenting InChI generation when making a new species.
+		 * 
+		 * Presently, the only time an InChI is needed in any RMG "default package"
+		 * 	class is in the post-processing (e.g. write the InChI with the
+		 * 	RMG_Dictionary.txt file, write the InChI with the chem.inp file).
+		 * 	Generating an InChI for every species made slows down RMG and is
+		 * 	unnecessary.  RMG will now only generate InChIs for the core species.
+		 */
+//        if (useInChI) InChI = p_chemGraph.getInChI();
         //#]
     }
 
@@ -1158,6 +1168,26 @@ public class Species {
         //I would have liked to have specified optionsArgument as an array of strings, but I was getting "illegal start of expression" errors in NetBeans IDE
         int exitValue = -1;
         //while (exitValue != 0) {
+        
+        /*
+         * MRH 9MAR2010:
+         * Addressing Issue#13: InChI not working consistently on Linux / Mac
+         * 
+         * Switching how the input/error/output of the "InChI" Process is handled.
+         * MRH has copied the format JWA has used for the fame executable.
+         * InChI now appears to run very consistently on Linux (in the limited types
+         * of jobs I have ran - RMG, AdjList2InChI), in addition to running 
+         * consistently on Windows.
+         * 
+         * Hopefully RW can test the new implementation on Mac
+         * 
+         * NOTE: For Windows, the InChI.waitFor() must follow the .close()
+         * 	methods for the stdout and stderr BufferedReaders.  Otherwise,
+         * 	the RMG simulation gets hung up at the .waitFor() method and
+         * 	is perfecting happy waiting ... causing an infinite runtime.
+         * 
+         * NOTE: For Linux, 
+         */
             try {
                 if (getOs().toLowerCase().contains("windows")){
                     String[] command = {workingDirectory + "/bin/cInChI-1",
@@ -1167,12 +1197,14 @@ public class Species {
                     File runningDir = new File("InChI");
                     Process InChI = Runtime.getRuntime().exec(command, null, runningDir);
 
-                    InputStream errStream = InChI.getErrorStream();
-                    InputStream inpStream = InChI.getInputStream();
-                    errStream.close();
-                    inpStream.close();
+                    BufferedReader stdout = new BufferedReader(new InputStreamReader(InChI.getInputStream()));
+                    BufferedReader stderr = new BufferedReader(new InputStreamReader(InChI.getErrorStream()));
 
-                    exitValue = InChI.waitFor();               
+        			// Clean up i/o streams
+        			stdout.close();
+        			stderr.close();
+        			
+                    exitValue = InChI.waitFor();                        
                 }
                 else if (getOs().toLowerCase().contains("linux")){
                     String[] command = {workingDirectory + "/bin/cInChI-1",
@@ -1181,13 +1213,16 @@ public class Species {
                         "-DoNotAddH", "-FixedH", "-Key"};
                     File runningDir = new File("InChI");
                     Process InChI = Runtime.getRuntime().exec(command, null, runningDir);
-
-                    InputStream errStream = InChI.getErrorStream();
-                    InputStream inpStream = InChI.getInputStream();
-                    errStream.close();
-                    inpStream.close();
+                    
+                    BufferedReader stdout = new BufferedReader(new InputStreamReader(InChI.getInputStream()));
+                    BufferedReader stderr = new BufferedReader(new InputStreamReader(InChI.getErrorStream()));
 
                     exitValue = InChI.waitFor();
+
+        			// Clean up i/o streams
+        			stdout.close();
+        			stderr.close();
+                    
                 }
                 else if (getOs().toLowerCase().contains("mac")){
                     String[] command = {workingDirectory + "/bin/cInChI-1",
@@ -1196,24 +1231,16 @@ public class Species {
                         "-DoNotAddH", "-FixedH", "-Key"};
                     File runningDir = new File("InChI");
                     Process InChI = Runtime.getRuntime().exec(command, null, runningDir);
-
-                    InputStream errStream = InChI.getErrorStream();
-                    InputStream inpStream = InChI.getInputStream();
-                    errStream.close();
-                    inpStream.close();
-
+                    
+                    BufferedReader stdout = new BufferedReader(new InputStreamReader(InChI.getInputStream()));
+                    BufferedReader stderr = new BufferedReader(new InputStreamReader(InChI.getErrorStream()));
+        			
                     exitValue = InChI.waitFor();
+
+        			// Clean up i/o streams
+        			stdout.close();
+        			stderr.close();
                 }
-                
-//                File runningDir = new File("InChI");
-//                Process InChI = Runtime.getRuntime().exec(command, null, runningDir);
-//
-//                InputStream errStream = InChI.getErrorStream();
-//                InputStream inpStream = InChI.getInputStream();
-//                errStream.close();
-//                inpStream.close();
-//
-//                exitValue = InChI.waitFor();
             }
             catch (Exception e) {
                 String err = "Error running cINChI-1: ";
@@ -1223,29 +1250,40 @@ public class Species {
         //}
 		
 		// Read in the output of the cINChI-1 executable file (species.txt)
+            /*
+             * MRH 9MAR2010:
+             * This portion of code (reading in the species.txt file and searching
+             * 	for the InChI and InChIKey) is now obsolete (see code above).
+             */
         FileReader in = null;
 		try {
 			in = new FileReader(inchiDirectory + "/species.txt");
 		} catch (FileNotFoundException e) {
-			String err = "Error reading species.txt file: ";
+			String err = "Error reading species.txt file in generating InChI for species " + p_chemGraph.chemicalFormula + " : ";
 			err += e.toString();
 			System.out.println(err);
 		}
         
-		BufferedReader reader = new BufferedReader(in);
-        line = ChemParser.readMeaningfulLine(reader);
-        read: while (line != null) {
-        	if (line.startsWith("InChI=")) {//changed from InChI to InChI= (to distinguish fro InChIKey
-        		InChIstring = line;
-        	}
-                else if (line.startsWith("InChIKey=")) {//changed from "InChI" to "InChI=" (to distinguish from "InChIKey="
-        		InChIKeystring = line.replace("InChIKey=", "");//read in the InChIKey without the preceding "InChIKey="
-        		break;
-        	}
-        	line = ChemParser.readMeaningfulLine(reader);
-            }
-        result[0]=InChIstring;
-        result[1]=InChIKeystring;
+		if (in != null) {
+			BufferedReader reader = new BufferedReader(in);
+	        line = ChemParser.readMeaningfulLine(reader);
+	        read: while (line != null) {
+	        	if (line.startsWith("InChI=")) {//changed from InChI to InChI= (to distinguish fro InChIKey
+	        		InChIstring = line;
+	        	}
+	                else if (line.startsWith("InChIKey=")) {//changed from "InChI" to "InChI=" (to distinguish from "InChIKey="
+	        		InChIKeystring = line.replace("InChIKey=", "");//read in the InChIKey without the preceding "InChIKey="
+	        		break;
+	        	}
+	        	line = ChemParser.readMeaningfulLine(reader);
+	            }
+	        result[0]=InChIstring;
+	        result[1]=InChIKeystring;
+		}
+		else {
+			result[0] = "";
+			result[1] = "";
+		}
         return result;
 	}
 	
@@ -1437,7 +1475,21 @@ public class Species {
         try {
         	inchiFile = new File(inchiDirectory + "/inchi.txt");
         	FileWriter fw = new FileWriter(inchiFile);
-        	fw.write(p_inchi);
+        	/*
+        	 * The following change is suggested by G.Magoon at:
+        	 * http://github.com/gmagoon/RMG-Java/commit/f652decc547d0a5107435d9bc4ca64d11a9bbe7c
+        	 * This fix allows the conversion of InChI --> .mol for InChI v. 1.02beta
+        	 * MRH will check if all other InChI executable operations are still functional,
+        	 * 	and for which versions
+        	 * 
+        	 * Windows: InChI --> .mol and .mol --> InChI work for InChI v. 1.01 &
+        	 * 	v. 1.02beta
+        	 * Linux: .mol --> InChI works for both v. 1.01 and 1.02beta;
+        	 * 	InChI --> .mol works only for 1.01 (1.02beta states:
+        	 * 		"Option InChI2Struct is currently not supported (use classic interface)
+        	 */
+        	//fw.write(p_inchi);
+        	fw.write(p_inchi+"\n");
         	fw.close();
         } catch (IOException e) {
         	String err = "Error writing inchi.txt file for InChI-to-molFile conversion: ";
@@ -1446,66 +1498,127 @@ public class Species {
         }
 		
         // Call cINChI-1 executable file
+        /*
+         * MRH 11MAR2010:
+         * Making the InChI executable work on Linux
+         * 
+         * NOTE: The Windows and Linux/Mac codes are slightly different (the position of
+         * 	the InChI.waitFor() method.  Getting InChI to work on Windows & Linux is very
+         * 	sensitive to the position of this line.
+         * 
+         * Still need to test on Mac; MRH assumes it will follow Linux.
+         */
         String[] optionsArgument = new String[2];
+        int exitValue = -1;
         if (getOs().toLowerCase().equals("windows")) {
         	optionsArgument[0] = "/InChI2Struct";
         	optionsArgument[1] = "/OutputSDF";
+            String[] command1 = {workingDirectory + "/bin/cInChI-1",
+                    "inchi.txt",
+                    "temp.txt",
+                    optionsArgument[0]};
+            String[] command2 = {workingDirectory + "/bin/cInChI-1",
+            		"temp.txt",
+            		"temp.mol",
+            		optionsArgument[1]};
+            try {
+	            File runningDir = new File("InChI");
+	            Process InChI = Runtime.getRuntime().exec(command1, null, runningDir);
+	            
+	            BufferedReader stdout = new BufferedReader(new InputStreamReader(InChI.getInputStream()));
+	            BufferedReader stderr = new BufferedReader(new InputStreamReader(InChI.getErrorStream()));
+	            // Clean up i/o streams
+	            stdout.close();
+	            stderr.close();  			
+	            exitValue = InChI.waitFor();
+	            
+	            InChI = Runtime.getRuntime().exec(command2, null, runningDir);
+	            
+	            stdout = new BufferedReader(new InputStreamReader(InChI.getInputStream()));
+	            stderr = new BufferedReader(new InputStreamReader(InChI.getErrorStream()));
+	            // Clean up i/o streams
+	            stdout.close();
+	            stderr.close();  			
+	            exitValue = InChI.waitFor();	            
+            }
+            catch (Exception e) {
+                String err = "Error running cInChI-1 while converting InChI to .mol file: ";
+                err += e.toString();
+                System.out.println(err);
+            }
         } else if (getOs().toLowerCase().equals("linux")) {
         	optionsArgument[0] = "-InChI2Struct";
         	optionsArgument[1] = "-OutputSDF";
+            String[] command1 = {workingDirectory + "/bin/cInChI-1",
+                    "inchi.txt",
+                    "temp.txt",
+                    optionsArgument[0]};
+            String[] command2 = {workingDirectory + "/bin/cInChI-1",
+            		"temp.txt",
+            		"temp.mol",
+            		optionsArgument[1]};
+            try {
+	            File runningDir = new File("InChI");
+	            Process InChI = Runtime.getRuntime().exec(command1, null, runningDir);
+	            
+	            BufferedReader stdout = new BufferedReader(new InputStreamReader(InChI.getInputStream()));
+	            BufferedReader stderr = new BufferedReader(new InputStreamReader(InChI.getErrorStream()));
+	            exitValue = InChI.waitFor();
+	            // Clean up i/o streams
+	            stdout.close();
+	            stderr.close();  			
+	            
+	            InChI = Runtime.getRuntime().exec(command2, null, runningDir);
+	            
+	            stdout = new BufferedReader(new InputStreamReader(InChI.getInputStream()));
+	            stderr = new BufferedReader(new InputStreamReader(InChI.getErrorStream()));
+	            exitValue = InChI.waitFor();	
+	            // Clean up i/o streams
+	            stdout.close();
+	            stderr.close();  		            
+            }
+            catch (Exception e) {
+                String err = "Error running cInChI-1 while converting InChI to .mol file: ";
+                err += e.toString();
+                System.out.println(err);
+            }
         } else if (getOs().toLowerCase().equals("mac")) {
         	optionsArgument[0] = "-InChI2Struct";
         	optionsArgument[1] = "-OutputSDF";
+            String[] command1 = {workingDirectory + "/bin/cInChI-1",
+                    "inchi.txt",
+                    "temp.txt",
+                    optionsArgument[0]};
+            String[] command2 = {workingDirectory + "/bin/cInChI-1",
+            		"temp.txt",
+            		"temp.mol",
+            		optionsArgument[1]};
+            try {
+	            File runningDir = new File("InChI");
+	            Process InChI = Runtime.getRuntime().exec(command1, null, runningDir);
+	            
+	            BufferedReader stdout = new BufferedReader(new InputStreamReader(InChI.getInputStream()));
+	            BufferedReader stderr = new BufferedReader(new InputStreamReader(InChI.getErrorStream()));
+	            exitValue = InChI.waitFor();
+	            // Clean up i/o streams
+	            stdout.close();
+	            stderr.close();  			
+	            
+	            InChI = Runtime.getRuntime().exec(command2, null, runningDir);
+	            
+	            stdout = new BufferedReader(new InputStreamReader(InChI.getInputStream()));
+	            stderr = new BufferedReader(new InputStreamReader(InChI.getErrorStream()));
+	            exitValue = InChI.waitFor();	
+	            // Clean up i/o streams
+	            stdout.close();
+	            stderr.close();  		            
+            }
+            catch (Exception e) {
+                String err = "Error running cInChI-1 while converting InChI to .mol file: ";
+                err += e.toString();
+                System.out.println(err);
+            }
         }
-
-
-        int exitValue = -1;
-        //while (exitValue != 0) {
-            try {
-                String[] command = {workingDirectory + "/bin/cInChI-1",
-                        "inchi.txt",
-                        "temp.txt",
-                        optionsArgument[0]};
-                File runningDir = new File("InChI");
-                Process InChI = Runtime.getRuntime().exec(command, null, runningDir);
-
-                InputStream errStream = InChI.getErrorStream();
-                InputStream inpStream = InChI.getInputStream();
-                errStream.close();
-                inpStream.close();
-
-                exitValue = InChI.waitFor();
-            }
-            catch (Exception e) {
-                String err = "Error running cINChI-1: ";
-                err += e.toString();
-                System.out.println(err);
-            }
-        //}
-
-        exitValue = -1;
-        //while (exitValue != 0) {
-            try {
-                String[] command = {workingDirectory + "/bin/cInChI-1",
-                        "temp.txt",
-                        "temp.mol",
-                        optionsArgument[1]};
-                File runningDir = new File("InChI");
-                Process InChI = Runtime.getRuntime().exec(command, null, runningDir);
-
-                InputStream errStream = InChI.getErrorStream();
-                InputStream inpStream = InChI.getInputStream();
-                errStream.close();
-                inpStream.close();
-
-                exitValue = InChI.waitFor();
-            }
-            catch (Exception e) {
-                String err = "Error running cINChI-1: ";
-                err += e.toString();
-                System.out.println(err);
-            }
-        //}
 	}
 	
 	/**
@@ -1857,6 +1970,8 @@ public class Species {
     }
     
     public String getNasaThermoSource() {
+    	if (nasaThermoSource == null)
+    		nasaThermoSource = "Estimated by RMG using Group Additivity";
     	return nasaThermoSource;
     }
 	

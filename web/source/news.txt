@@ -2,6 +2,18 @@
 **********************************
 RMG News and Updates
 **********************************
+
+2010-MM-DD: RMG 3.2 Released!
+==============================
+RMG version 3.2 has been released. The new release includes a number of improvements and bug fixes, including the following:
+
+- The :file:`RMG_Database` folder has been restructured more logically. (:ref:`PrimaryReactionLibrary <primaryreactionlibrary>` and :ref:`Seed Mechanism <seedmechanism>` specifications in condition files will need updating)
+
+- It is possible to specify :ref:`forbidden structures <forbiddenstructures>` in the input file.
+
+- Various error messages have been improved to give more helpful information to the user.
+
+
 2009-08-05: RMG 3.1 Released!
 ==============================
 RMG version 3.1 has been released. The new release includes a number of improvements and bug fixes, including the following:

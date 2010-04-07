@@ -166,92 +166,78 @@ public class PDepRateConstant {
 	public double calculateRate(Temperature temperature, Pressure pressure) throws Exception {
 		double rate = 0.0;
 
-		if (temperature.getK() < temperatures[0].getK() ||
-				temperature.getK() > temperatures[temperatures.length-1].getK() ||
-				pressure.getBar() < pressures[0].getBar() ||
-				pressure.getBar() > pressures[pressures.length-1].getBar())
-				throw new Exception("Attempted to evaluate a rate coefficient outside the allowed temperature and pressure range.");
-
-		//if (mode == Mode.INTERPOLATE) {
-
-		/*
-		 *  MRH 10Feb2010
-		 *  I am initializing the t1, t2, p1, p2 indices to be zero.
-		 *  In the case of the temperature of interest being equal to
-		 * 	the lowest temperature, t1 would not be re-defined (ditto
-		 * 	for the pressure)
-		 */
-		int t1 = 0, t2 = 0, p1 = 0, p2 = 0;
-		//int t1 = -1, t2 = -1, p1 = -1, p2 = -1;
-		double x = 0.0, x1 = 0.0, x2 = 0.0, y = 0.0, y1 = 0.0, y2 = 0.0;
-		double z11 = 0.0, z12 = 0.0, z21 = 0.0, z22 = 0.0;
-
-//		for (int t = 0; t < temperatures.length - 1; t++) {
-//			if (temperatures[t].getK() < temperature.getK() && t1 < 0) {
-//				t1 = t; x1 = 1.0 / temperatures[t1].getK();
-//				t2 = t + 1; x2 = 1.0 / temperatures[t2].getK();
-//			}
-//		}
-//
-//		for (int p = 0; p < pressures.length - 1; p++) {
-//			if (pressures[p].getBar() < pressure.getBar() && p1 < 0) {
-//				p1 = p; y1 = Math.log10(pressures[p1].getPa());
-//				p2 = p + 1; y2 = Math.log10(pressures[p2].getPa());
-//			}
-//		}
+		if (temperature.getK() < TMIN.getK() || temperature.getK() > TMAX.getK() )
+			throw new Exception(String.format("Tried to evaluate P-dep rate coefficient at T=%.1fK but only valid from %.1f to %.1fK",
+											  temperature.getK(),TMIN.getK(),TMAX.getK() ));
+		if (pressure.getBar()  < PMIN.getBar() || pressure.getBar() > PMAX.getBar() )
+			throw new Exception(String.format("Tried to evaluate P-dep rate coefficient at P=%.1fbar but only valid from %.1f to %.1fbar",
+											  pressure.getBar(),PMIN.getBar(),PMAX.getBar() ));
 		
-		for (int t=0; t<temperatures.length-1; t++) {
-			if (temperatures[t].getK() < temperature.getK()) {
-				t1 = t;
+		if (mode == Mode.INTERPOLATE) {
+
+			/*
+			 *  MRH 10Feb2010
+			 *  I am initializing the t1, t2, p1, p2 indices to be zero.
+			 *  In the case of the temperature of interest being equal to
+			 * 	the lowest temperature, t1 would not be re-defined (ditto
+			 * 	for the pressure)
+			 */
+			int t1 = 0, t2 = 0, p1 = 0, p2 = 0;
+			//int t1 = -1, t2 = -1, p1 = -1, p2 = -1;
+			double x = 0.0, x1 = 0.0, x2 = 0.0, y = 0.0, y1 = 0.0, y2 = 0.0;
+			double z11 = 0.0, z12 = 0.0, z21 = 0.0, z22 = 0.0;
+
+			for (int t=0; t<temperatures.length-1; t++) {
+				if (temperatures[t].getK() < temperature.getK()) {
+					t1 = t;
+				}
+			}
+
+			for (int p=0; p<pressures.length-1; p++) {
+				if (pressures[p].getBar() < pressure.getBar()) {
+					p1 = p;
+				}
+			}
+
+			x1 = 1.0 / temperatures[t1].getK();
+			t2 = t1+1;
+			x2 = 1.0 / temperatures[t2].getK();
+
+			if (pressures.length == 1) {
+				x = 1.0 / temperature.getK();
+				double z1 = Math.log10(rateConstants[t1][0]);
+				double z2 = Math.log10(rateConstants[t2][0]);
+				rate = (z2 - z1) * (x - x1) / (x2 - x1) + z1;
+				rate = Math.pow(10,rate);
+			}
+			else {
+				y1 = Math.log10(pressures[p1].getPa());
+				p2 = p1+1;
+				y2 = Math.log10(pressures[p2].getPa());
+
+				x = 1.0 / temperature.getK();
+				y = Math.log10(pressure.getPa());
+
+				z11 = Math.log10(rateConstants[t1][p1]);
+				z12 = Math.log10(rateConstants[t1][p2]);
+				z21 = Math.log10(rateConstants[t2][p1]);
+				z22 = Math.log10(rateConstants[t2][p2]);
+
+				rate = (z11 * (x2 - x) * (y2 - y) +
+						z21 * (x - x1) * (y2 - y) +
+						z12 * (x2 - x) * (y - y1) +
+						z22 * (x - x1) * (y - y1)) /
+						((x2 - x1) * (y2 - y1));
+
+				rate = Math.pow(10, rate);
 			}
 		}
-		
-		for (int p=0; p<pressures.length-1; p++) {
-			if (pressures[p].getBar() < pressure.getBar()) {
-				p1 = p;
-			}
-		}
-
-		x1 = 1.0 / temperatures[t1].getK();
-		t2 = t1+1;
-		x2 = 1.0 / temperatures[t2].getK();
-		
-		if (pressures.length == 1) {
-			x = 1.0 / temperature.getK();
-			double z1 = Math.log10(rateConstants[t1][0]);
-			double z2 = Math.log10(rateConstants[t2][0]);
-			rate = (z2 - z1) * (x - x1) / (x2 - x1) + z1;
-			rate = Math.pow(10,rate);
-		}
-		else {
-			y1 = Math.log10(pressures[p1].getPa());
-			p2 = p1+1;
-			y2 = Math.log10(pressures[p2].getPa());
-			
-			x = 1.0 / temperature.getK();
-			y = Math.log10(pressure.getPa());
-	
-			z11 = Math.log10(rateConstants[t1][p1]);
-			z12 = Math.log10(rateConstants[t1][p2]);
-			z21 = Math.log10(rateConstants[t2][p1]);
-			z22 = Math.log10(rateConstants[t2][p2]);
-	
-			rate = (z11 * (x2 - x) * (y2 - y) +
-					z21 * (x - x1) * (y2 - y) +
-					z12 * (x2 - x) * (y - y1) +
-					z22 * (x - x1) * (y - y1)) /
-					((x2 - x1) * (y2 - y1));
-	
-			rate = Math.pow(10, rate);
-		}
-
-		/*}
 		else if (mode == Mode.CHEBYSHEV && chebyshev != null) {
 			rate = chebyshev.calculateRate(temperature, pressure);
 		}
 		else if (mode == Mode.PDEPARRHENIUS && pDepArrhenius != null) {
 			rate = pDepArrhenius.calculateRate(temperature, pressure);
-		}*/
+		}
 
 		return rate;
 	}

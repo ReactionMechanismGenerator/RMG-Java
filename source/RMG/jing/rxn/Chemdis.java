@@ -39,10 +39,13 @@ import jing.chem.SpeciesDictionary;
 import jing.chem.ThreeFrequencyModel;
 import jing.chemParser.ChemParser;
 import jing.mathTool.MathTool;
+import jing.mathTool.UncertainDouble;
+import jing.param.GasConstant;
 import jing.param.Pressure;
 import jing.param.Temperature;
 import jing.rxnSys.CoreEdgeReactionModel;
 import jing.rxnSys.ReactionSystem;
+import Jama.Matrix;
 
 /**
  * Contains data members and methods for interacting with Chemdis, a pressure-
@@ -264,8 +267,9 @@ public class Chemdis implements PDepKineticsEstimator {
         }
         str = str.substring(0, str.length()-3) + '\n'; 
         
-        Kinetics k = rxn.getKinetics(); 
-        if (k == null) 
+        Kinetics[] k_array = rxn.getKinetics();
+        Kinetics k = FastMasterEqn.computeKUsingLeastSquares(k_array);
+        if (k_array == null) 
 			throw new NullPointerException();
         
         str += Double.toString(k.getAValue()) + '\t';	
@@ -375,15 +379,18 @@ public class Chemdis implements PDepKineticsEstimator {
 			
 			// Get kinetics of entry reaction
         	Kinetics k;
+        	Kinetics[] k_array;
         	if (entryReaction.isForward()) {
-        		k = entryReaction.getKinetics();
+        		k_array = entryReaction.getKinetics();
         	}
         	else {
-        		k = entryReaction.getFittedReverseKinetics();
+        		k_array = entryReaction.getFittedReverseKinetics();
         	}
-        	if (k == null) 
+        	if (k_array== null) 
 				throw new NullPointerException();
         
+        	k = FastMasterEqn.computeKUsingLeastSquares(k_array);
+        	
         	// Write kinetics of entry reaction
 			str += Double.toString(k.getAValue()) + '\t';
         	str += Double.toString(k.getNValue()) + '\t';

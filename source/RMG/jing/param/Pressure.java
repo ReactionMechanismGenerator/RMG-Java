@@ -134,6 +134,10 @@ public class Pressure {
         //#]
     }
     
+    public String toString() {
+        return String.format("%g Bar",this.getBar() );
+    }
+    
     protected double getStandard() {
         return standard;
     }

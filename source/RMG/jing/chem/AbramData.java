@@ -28,41 +28,27 @@
 
 package jing.chem;
 
-
 public class AbramData extends AbrahamGAValue {
-
-        public  AbramData() {
-        //#[ operation ThermoData()
+	public  AbramData() {
         super();
-        //#]
     }
-
+	
     public  AbramData(double S, double B, double E, double V, double A) {
-        //#[ operation ThermoData(double,double,double,double,double,double,double,double,double,String)
         super(S,B,E,V,A);
-
-    }      //#]
-
-        //## operation ThermoData(ThermoGAValue)
+    }     
+	
     public  AbramData(AbrahamGAValue p_ga) {
-        //#[ operation ThermoData(ThermoGAValue)
         super(p_ga);
-        //#]
     }
-
-        //## operation plus(ThermoGAValue)
+	
     public void plus(AbrahamGAValue p_thermoData) {
-        //#[ operation plus(ThermoGAValue)
         if (p_thermoData == null) return;
-
         S += p_thermoData.S;
         B += p_thermoData.B;
         E += p_thermoData.E;
         L += p_thermoData.L;
         A += p_thermoData.A;
-        
-        }
-        //#]
-    }   
+	}
+}   
 
 

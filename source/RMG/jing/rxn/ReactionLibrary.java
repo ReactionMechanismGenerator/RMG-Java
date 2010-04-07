@@ -146,8 +146,8 @@ public class ReactionLibrary {
         		Reaction r;
         		try {
         			r = ChemParser.parseArrheniusReaction(dictionary, line, A_multiplier, E_multiplier);
-					r.kinetics.setComments(" ");
-					r.kinetics.setSource("ReactionLibrary");
+					r.kinetics[0].setComments(" ");
+					r.kinetics[0].setSource("ReactionLibrary");
 				}
         		catch (InvalidReactionFormatException e) {
         			throw new InvalidReactionFormatException(line + ": " + e.getMessage());

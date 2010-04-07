@@ -112,28 +112,19 @@ public class ChemGraph implements Matchable {
     protected String InChIKey;
     // Constructors
 
-    //## operation ChemGraph()
     private  ChemGraph() {
-        //#[ operation ChemGraph()
-        //#]
     }
-    //## operation ChemGraph(Graph)
+	
     private  ChemGraph(Graph p_graph) throws ForbiddenStructureException {
-        //#[ operation ChemGraph(Graph)
         graph = p_graph;
-        
        // isAromatic = isAromatic();
 
-		
-		
         if (isForbiddenStructure(p_graph,getRadicalNumber(),getOxygenNumber(),getCarbonNumber()) || getRadicalNumber() > MAX_RADICAL_NUM || getOxygenNumber() > MAX_OXYGEN_NUM || getCycleNumber() > MAX_CYCLE_NUM) {
 		//if (getRadicalNumber() > MAX_RADICAL_NUM || getOxygenNumber() > MAX_OXYGEN_NUM || getCycleNumber() > MAX_CYCLE_NUM) {		        
 			graph = null;
-        	throw new ForbiddenStructureException(p_graph.toString());
+			String message = p_graph.toString() + " is forbidden by "+whichForbiddenStructures(p_graph) +"and not allowed.";
+        	throw new ForbiddenStructureException(message);
         }
-
-
-        //#]
     }
 
     /*private boolean isAromatic() {
@@ -991,8 +982,6 @@ return sn;
     */
     //## operation copy(ChemGraph)
     public static ChemGraph copy(ChemGraph p_chemGraph) throws ForbiddenStructureException {
-        //#[ operation copy(ChemGraph)
-        try {
         Graph g = Graph.copy(p_chemGraph.getGraph());
 
         ChemGraph cg = new ChemGraph(g);
@@ -1025,11 +1014,6 @@ return sn;
         }*/
 
         return cg;
-        }
-        catch (ForbiddenStructureException e) {
-        	throw new ForbiddenStructureException(e.getMessage());
-        }
-        //#]
     }
 
     /**
@@ -1189,68 +1173,50 @@ return sn;
         }
         //#]
     }
-
+	
     // Amrit Jalan 05/09/2009
-
-       public ThermoData generateSolvThermoData() throws FailGenerateThermoDataException {
-        //#[ operation generateSolvThermoData()
+	public ThermoData generateSolvThermoData() throws FailGenerateThermoDataException {
         // use GAPP to generate Thermo data
         try {
         	if (SolvationGAPP == null) setDefaultSolvationGAPP();
             solvthermoData = SolvationGAPP.generateSolvThermoData(this);
-        	//thermoData = thermoGAPP.generateThermoData(this);
-            //thermoData = thermoGAPP.generateAbramData(this);
         	return solvthermoData;
         }
         catch (Exception e) {
         	throw new FailGenerateThermoDataException();
         }
-        //#]
     }
-
+	
     public AbramData generateAbramData() throws FailGenerateThermoDataException {
-        //#[ operation generateThermoData()
         // use GAPP to generate Thermo data
         try {
         	if (abramGAPP == null) setDefaultAbramGAPP();
         	abramData = abramGAPP.generateAbramData(this);
-            //thermoData = thermoGAPP.generateAbramData(this);
         	return abramData;
         }
         catch (Exception e) {
         	throw new FailGenerateThermoDataException();
         }
-        //#]
     }
-
-        public UnifacData generateUnifacData() throws FailGenerateThermoDataException {
-        //#[ operation generateThermoData()
-        // use GAPP to generate Thermo data
+	
+	public UnifacData generateUnifacData() throws FailGenerateThermoDataException {
         try {
         	if (unifacGAPP == null) setDefaultUnifacGAPP();
         	unifacData = unifacGAPP.generateUnifacData(this);
-            //thermoData = thermoGAPP.generateAbramData(this);
         	return unifacData;
         }
         catch (Exception e) {
         	throw new FailGenerateThermoDataException();
         }
-        //#]
     }
-
-
-
-
+	
     /**
     Requires:
     Effects: return the Arc between two positions in this ChemGraph
     Modifies:
     */
-    //## operation getArcBetween(int,int)
     public Arc getArcBetween(int p_position1, int p_position2) {
-        //#[ operation getArcBetween(int,int)
         return getGraph().getArcBetween(p_position1,p_position2);
-        //#]
     }
 
     /**
@@ -1734,56 +1700,47 @@ return sn;
     }
 
     /**
-    Added by: Amrit Jalan
-    Effects: calculate the raduis of the chemGraph using UNIFAC Ri values. (UNITSof radius = m)
-    */
-    
+	 Added by: Amrit Jalan
+	 Effects: calculate the raduis of the chemGraph using UNIFAC Ri values. (UNITSof radius = m)
+	 */
     public double getRadius() {
-
+		
         double ri;
-
+		
         if (getCarbonNumber() == 0 && getOxygenNumber() == 0){    // Which means we ar dealing with HJ or H2
-
-                double ri3;
-                ri3 = 21*8.867/88;                              // 8.867 Ang^3 is the volume of a single Hydrogen Atom
-
+			double ri3;
+			ri3 = 21*8.867/88;                              // 8.867 Ang^3 is the volume of a single Hydrogen Atom
             if (getHydrogenNumber() == 1){                        // i.e. we are dealing with the Hydrogen radical
-
                 ri = Math.pow(ri3,0.333) * Math.pow(10,-10);
                 return ri;
             }
-            
             if (getHydrogenNumber() == 2){                        // i.e. we are dealing with the Hydrogen molecule
                 ri3 = 2*ri3;                                      // Assumption: volume of H2 molecule ~ 2 * Volume of H atom
                 ri = Math.pow(ri3,0.333) * Math.pow(10,-10);
                 return ri;                
             }
         }
-
+		
         double Ri=getUnifacData().R;
         ri=3.18*Math.pow(Ri,0.333)*Math.pow(10,-10);   // From Koojiman Ind. Eng. Chem. Res 2002, 41 3326-3328
         return ri;
-   
+		
     }
-
-        /**
-    Added by: Amrit Jalan
-    Effects: calculate the diffusivity of the chemGraph using radii, solvent viscosity and Stokes Einstein. (UNITS m2/sec)
-    */
-
+	
+	/**
+	 Added by: Amrit Jalan
+	 Effects: calculate the diffusivity of the chemGraph using radii, solvent viscosity and Stokes Einstein. (UNITS m2/sec)
+	 */
     public double getDiffusivity() {
-        
-       double speRad=getRadius();
-       double solventViscosity = 0.473*Math.pow(10,-3);
-       double diffusivity;
-       Temperature sysTemp = ReactionModelGenerator.getTemp4BestKinetics();
-       double denom = 132*solventViscosity*speRad/7;
-       diffusivity = 1.381*500* Math.pow(10,-23)/denom;  //sysTemp.getK()
-       return diffusivity;
-        
+		double speRad=getRadius();
+		double solventViscosity = 0.473*Math.pow(10,-3);
+		double diffusivity;
+		Temperature sysTemp = ReactionModelGenerator.getTemp4BestKinetics();
+		double denom = 132*solventViscosity*speRad/7;
+		diffusivity = 1.381*500* Math.pow(10,-23)/denom;  //sysTemp.getK()
+		return diffusivity;
     }
     
-
     /**
     Requires:
     Effects: find out the end of C=C=C... pattern
@@ -1937,11 +1894,9 @@ return sn;
     Effects: return true iff this chemGraph contains forbidden structure.
     Modifies:
     */
-    //## operation isForbiddenStructure(Graph)
+	
     public static boolean isForbiddenStructure(Graph p_graph, int radNumber, int oNumber, int cNumber) {
-        //#[ operation isForbiddenStructure(Graph)
-		
-    	
+
 		/*Iterator iter = p_graph.getNodeList();
 		while (iter.hasNext()){
 			Node n = (Node)iter.next();
@@ -1962,7 +1917,6 @@ return sn;
 		}
 		return false;*/
         
-        
         for (Iterator iter = forbiddenStructure.iterator(); iter.hasNext(); ) {
         	FunctionalGroup fg = (FunctionalGroup)iter.next();
         	if (radNumber >= fg.rad_count && oNumber >= fg.O_count && cNumber >= fg.C_count) {
@@ -1973,7 +1927,22 @@ return sn;
         	}
         }
         return false;
-        //#]
+    }
+	
+	
+	// Which forbidden structure forbade this chemgraph?
+	// returns the names of forbidden structures.
+    public static String whichForbiddenStructures(Graph p_graph) {
+		String forbidden_by = "";
+		for (Iterator iter = forbiddenStructure.iterator(); iter.hasNext(); ) {
+        	FunctionalGroup fg = (FunctionalGroup)iter.next();
+	        Graph g = fg.getGraph();
+	        if (p_graph.isSub(g)) {
+	        	forbidden_by += fg.getName() +", ";
+	        }
+        }
+        if (forbidden_by=="") return "no forbidden structures, ";
+		return forbidden_by;
     }
 
     /**
@@ -2186,6 +2155,11 @@ return sn;
 	        //#]
 	    }
 	
+	
+	public static void addForbiddenStructure(FunctionalGroup fg) {
+		forbiddenStructure.add(fg);
+	}
+	
     /**
     Requires:
     Effects: read in forbidden structure for ChemGraph
@@ -2198,8 +2172,9 @@ return sn;
         	String forbiddenStructureFile = System.getProperty("jing.chem.ChemGraph.forbiddenStructureFile");
         	if (forbiddenStructureFile == null) {
         		System.out.println("undefined system property: jing.chem.ChemGraph.forbiddenStructureFile!");
-        		System.out.println("No forbidden structure defined!");
-        		return;
+        		System.out.println("No forbidden structure file defined!");
+				throw new IOException("Undefined system property: jing.chem.ChemGraph.forbiddenStructureFile");
+        		//return;
         	}
 
         	FileReader in = new FileReader(forbiddenStructureFile);

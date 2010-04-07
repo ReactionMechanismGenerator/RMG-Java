@@ -50,8 +50,10 @@ Ar 0.0e-6 (mol/cm3)
 END
 
 SpectroscopicDataEstimator: FrequencyGroups
-PressureDependence: ModifiedStrongCollision
-PDepKineticsModel: Chebyshev
+PressureDependence: ReservoirState
+PDepKineticsModel: Chebyshev 4 4
+TRange: (K) 300.0 2000.0 8
+PRange: (bar) 0.01 100.0 5
 
 FinishController:
 (1) Goal Conversion: HXD13 0.9
@@ -64,15 +66,15 @@ Rtol: 1e-8
 
 PrimaryReactionLibrary:
 //Name: RMG-example
-//Location: RMG_database/primaryReactionLibrary/Example
+//Location: Example
 END
 
 SeedMechanism:
 //Name: Leeds
-//Location: RMG_database/SeedMechanisms/combustion_core/version5
+//Location: combustion_core/version5
 //GenerateReactions: yes
 //Name: GRIMech3.0
-//Location: RMG_database/SeedMechanisms/GRI-Mech3.0
+//Location: GRI-Mech3.0
 //GenerateReactions: yes
 END
 

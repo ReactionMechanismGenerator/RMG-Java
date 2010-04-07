@@ -1,5 +1,6 @@
 Temperature: 1200 (K)
 Solvation: off
+//Verbose: off
 
 PrimaryThermoLibrary:
 //Name: PrIMe-recommended
@@ -7,8 +8,8 @@ PrimaryThermoLibrary:
 END
 
 PrimaryReactionLibrary:
-//Name: PrIMe-recommended
-//Location: RMG_database/SeedMechanisms/GRI-Mech3.0
+Name: PrIMe-recommended
+Location: GRI-Mech3.0
 END
 
 SpectroscopicDataEstimator: off FrequencyGroups
@@ -16,10 +17,9 @@ PressureDependence: off ReservoirState off ModifiedStrongCollision
 PDepKineticsModel: Chebyshev PDepArrhenius
 BathGas: Ar He Ne N2
 
-C5H11J(10)
-1 C 1 {2,S}
-2 C 0 {1,S} {3,S} {4,S}
-3 C 0 {2,S}
-4 C 0 {2,S} {5,S}
-5 C 0 {4,S}
-
+nC4H10O
+1 C 0 {2,S}
+2 C 0 {1,S} {3,S}
+3 C 0 {2,S} {4,S}
+4 C 0 {3,S} {5,S}
+5 O 0 {4,S}
