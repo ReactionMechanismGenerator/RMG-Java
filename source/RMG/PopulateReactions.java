@@ -51,6 +51,7 @@ import jing.rxn.FastMasterEqn;
 import jing.rxn.ArrheniusKinetics;
 import jing.rxn.Kinetics;
 import jing.rxn.LibraryReactionGenerator;
+import jing.rxn.PDepIsomer;
 import jing.rxn.PDepKineticsEstimator;
 import jing.rxn.PDepNetwork;
 import jing.rxn.PDepRateConstant;
@@ -423,6 +424,11 @@ public class PopulateReactions {
 		        	LinkedList<PDepReaction> nonIncludedRxns = pdepnetwork.getNonincludedReactions();
 		        	for (int numNonRxns=0; numNonRxns<nonIncludedRxns.size(); ++numNonRxns) {
 		        		listOfReactions += nonIncludedRxns.get(numNonRxns).toChemkinString(systemTemp);
+		        	}
+		        	LinkedList<PDepIsomer> allpdepisomers = pdepnetwork.getIsomers();
+		        	for (int numIsomers=0; numIsomers<allpdepisomers.size(); ++numIsomers) {
+		        		LinkedList species = allpdepisomers.get(numIsomers).getSpeciesList();
+		        		speciesSet.addAll(species);		        		
 		        	}
 	        	}
 	        	reactions = nonPdepReactions;
