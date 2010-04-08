@@ -417,8 +417,9 @@ public class FastMasterEqn implements PDepKineticsEstimator {
         Temperature stdTemp = new Temperature(298, "K");
 
 		// Collect simulation parameters
-		Temperature temperature = rxnSystem.getPresentTemperature();
-		Pressure pressure = rxnSystem.getPresentPressure();
+        // MRH 28Feb: Commented temperature/pressure lines (variables are never read)
+//		Temperature temperature = rxnSystem.getPresentTemperature();
+//		Pressure pressure = rxnSystem.getPresentPressure();
 		BathGas bathGas = new BathGas(rxnSystem);
 
 		int numChebTempPolys, numChebPressPolys;
@@ -815,8 +816,9 @@ public class FastMasterEqn implements PDepKineticsEstimator {
 					for (int t = 0; t < numChebT; t++) {
 						str = readMeaningfulLine(br);
 						tkn = new StringTokenizer(str);
-						for (int p = 0; p < numChebP; p++)
+						for (int p = 0; p < numChebP; p++) {
 							chebyshev[t][p] = Double.parseDouble(tkn.nextToken());
+						}
 					}
 					pDepRate.setChebyshev(chebyshev);
 				}
@@ -1150,6 +1152,14 @@ public class FastMasterEqn implements PDepKineticsEstimator {
         	k = k_array[0];
         }
         return k;
+	}
+	
+	public static int getNumTBasisFuncs() {
+		return numTBasisFuncs;
+	}
+	
+	public static int getNumPBasisFuncs() {
+		return numPBasisFuncs;
 	}
 
 }
