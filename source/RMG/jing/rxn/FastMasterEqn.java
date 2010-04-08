@@ -911,6 +911,7 @@ public class FastMasterEqn implements PDepKineticsEstimator {
 								commentsForForwardKinetics += "High-P Limit Reverse: " + fwd_kin[numKs].getSource().toString() +fwd_kin[numKs].getComment().toString();
 								if (numKs != fwd_kin.length-1) commentsForForwardKinetics += "\n";
 							}
+							rxn.setComments(commentsForForwardKinetics);
 						}
 						double[][] all_ks = rxn.getPDepRate().getRateConstants();
 						for (int numTemps=0; numTemps<temperatures.length; numTemps++) {
