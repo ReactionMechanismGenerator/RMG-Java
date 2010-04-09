@@ -79,12 +79,14 @@ public class ReactionLibrary {
         String dictionaryFile = directory + "/Dictionary.txt";
         String libraryFile = directory + "/Library.txt";
 			
-			System.out.println("\nReading reaction library from "+directory);
+		System.out.println("\nReading reaction library from "+directory);
         try{
             read(dictionaryFile, libraryFile);
           }
           catch (IOException e){
-            System.out.println("Can't read reaction library files!");
+			  System.out.println("Can't read reaction library files!");
+			  System.out.println(e.getMessage());
+			  System.err.println(e.getMessage());
         }
     }
     

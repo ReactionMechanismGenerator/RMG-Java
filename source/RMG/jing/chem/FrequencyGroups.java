@@ -341,6 +341,7 @@ public class FrequencyGroups{//gmagoon 111708: removed "implements GeneralGAPP"
 		}
 		catch(IOException e) {
 			System.out.println("Error: Unable to touch file \"frankie/rho_input\".");
+			System.out.println(e.getMessage());
 			System.exit(0);
 		}
 		catch(Exception e) {

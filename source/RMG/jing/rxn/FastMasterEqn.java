@@ -1069,6 +1069,7 @@ public class FastMasterEqn implements PDepKineticsEstimator {
 		}
 		catch(IOException e) {
 			System.out.println("Error: Unable to touch file \"fame_output.txt\".");
+			System.out.println(e.getMessage());
 			System.exit(0);
 		}
 		catch(Exception e) {
