@@ -2927,6 +2927,7 @@ public class ReactionModelGenerator {
     		++i;
     	}
     	
+		System.out.println("Reading reactions from Restart folder");
 		// Read in core reactions
 		try {
 			FileReader in = new FileReader("Restart/coreReactions.txt");
