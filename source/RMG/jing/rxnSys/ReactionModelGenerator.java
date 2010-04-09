@@ -1388,11 +1388,26 @@ public class ReactionModelGenerator {
 				double chemkint = (System.currentTimeMillis()-startTime)/1000/60;
 				
 				if (writerestart) {
+					/*
+					 * Rename current restart files:
+					 * 	In the event RMG fails while writing the restart files,
+					 * 	user won't lose any information
+					 */
+					String[] restartFiles = {"Restart/coreReactions.txt", "Restart/coreSpecies.txt",
+							"Restart/edgeReactions.txt", "Restart/edgeSpecies.txt", "Restart/lindemannReactions.txt",
+							"Restart/pdepnetworks.txt", "Restart/thirdBodyReactions.txt", "Restart/troeReactions.txt"};
+					writeBackupRestartFiles(restartFiles);
+					
 					writeCoreSpecies();
 					writeCoreReactions();
 					writeEdgeSpecies();
 					writeEdgeReactions();
 					if (PDepNetwork.generateNetworks == true)	writePDepNetworks();
+					
+					/*
+					 * Remove backup restart files from Restart folder
+					 */
+					removeBackupRestartFiles(restartFiles);
 				}
 				
 				//10/24/07 gmagoon: changed to use reactionSystemList
@@ -4429,6 +4444,20 @@ public class ReactionModelGenerator {
     
     public LinkedList getInitialStatusList() {
     	return initialStatusList;
+    }
+    
+    public void writeBackupRestartFiles(String[] listOfFiles) {
+    	for (int i=0; i<listOfFiles.length; i++) {
+    		File temporaryRestartFile = new File(listOfFiles[i]);
+    		if (temporaryRestartFile.exists()) temporaryRestartFile.renameTo(new File(listOfFiles[i]+"~"));
+    	}
+    }
+    
+    public void removeBackupRestartFiles(String[] listOfFiles) {
+    	for (int i=0; i<listOfFiles.length; i++) {
+    		File temporaryRestartFile = new File(listOfFiles[i]+"~");
+    		temporaryRestartFile.delete();
+    	}
     }
     
 }
