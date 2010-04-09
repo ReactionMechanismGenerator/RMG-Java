@@ -75,6 +75,8 @@ public class ReactionLibrary {
             library=new HashSet();
             dictionary = new HashMap();
         }
+		return; // Not implemented yet.
+		/*
         String directory = System.getProperty("jing.rxn.ReactionLibrary.pathName");
         String dictionaryFile = directory + "/Dictionary.txt";
         String libraryFile = directory + "/Library.txt";
@@ -87,6 +89,7 @@ public class ReactionLibrary {
 			  System.out.println("Can't read reaction library files!");
 			  System.out.println(e.getMessage());
         }
+		 */
     }
     
     
