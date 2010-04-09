@@ -95,6 +95,7 @@ public class PrimaryReactionLibrary {
     public void read(String p_directoryName) throws IOException {
         try {
         	if (!p_directoryName.endsWith("/")) p_directoryName = p_directoryName + "/";
+			System.out.println("Reading Primary Reaction Library from: "+p_directoryName);
         	
             String speciesFile = p_directoryName + "species.txt";
             String reactionFile = p_directoryName + "reactions.txt";
@@ -551,7 +552,7 @@ public class PrimaryReactionLibrary {
         		 */
         		ArrheniusKinetics low = ChemParser.parseSimpleArrheniusKinetics(lowString, A_multiplier, E_multiplier, r.getReactantNumber()+1);        		
         		LindemannReaction lr = LindemannReaction.make(r,thirdBodyList, low);
-				lr.setKineticsSource("Seed Mechanism: "+ name,0);
+				lr.setKineticsSource("Primary Reaction Library: "+ name,0);
 				lr.setKineticsComments(" ",0);
 				
         		reactionSet.add(lr);

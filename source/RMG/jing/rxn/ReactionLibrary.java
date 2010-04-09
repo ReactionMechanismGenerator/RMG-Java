@@ -86,7 +86,6 @@ public class ReactionLibrary {
           catch (IOException e){
 			  System.out.println("Can't read reaction library files!");
 			  System.out.println(e.getMessage());
-			  System.err.println(e.getMessage());
         }
     }
     
