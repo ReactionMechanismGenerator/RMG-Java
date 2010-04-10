@@ -112,6 +112,7 @@ public class ReactionModelGenerator {
 	protected static double tolerance;//can be interpreted as "coreTol" (vs. edgeTol)
 	protected static double termTol;
 	protected static double edgeTol;
+	protected static int minSpeciesForPruning;
 	
 	//## operation ReactionModelGenerator()
     public  ReactionModelGenerator() {
@@ -1035,6 +1036,16 @@ public class ReactionModelGenerator {
 				    System.out.println("Cannot find PruningTolerance in condition.txt");
 				    System.exit(0);
 			    }
+			    line = ChemParser.readMeaningfulLine(reader);
+			    if (line.startsWith("MinSpeciesForPruning:")) {
+				    st = new StringTokenizer(line);
+				    temp = st.nextToken();
+				    minSpeciesForPruning = Integer.parseInt(st.nextToken());
+			    }
+			    else {
+				    System.out.println("Cannot find MinSpeciesForPruning in condition.txt");
+				    System.exit(0);
+			    }
 			    //print header for pruning log (based on restart format)
 			    BufferedWriter bw = null;
 			    try {
@@ -1062,6 +1073,7 @@ public class ReactionModelGenerator {
 			else if (temp.startsWith("AUTO")){//in the non-autoprune case (i.e. original AUTO functionality), we set the new parameters to values that should reproduce original functionality
 			    termTol = tolerance;
 			    edgeTol = 0;
+			    minSpeciesForPruning = 999999;//arbitrary high number (actually, the value here should not matter, since pruning should not be done)
 			}
 
         		// read in atol
@@ -4127,7 +4139,7 @@ public class ReactionModelGenerator {
 	    if (!ds.targetReached) allReachedTarget = false;
 	}
 	JDAS ds0 = (JDAS)((ReactionSystem) reactionSystemList.get(0)).getDynamicSimulator(); //get the first reactionSystem dynamic simulator
-	if (ds0.autoflag && allReachedTarget && edgeTol>0){//prune the reaction model if AUTO is being used, and all reaction systems have reached target time/conversion, and edgeTol is non-zero (and positive, obviously)
+	if (ds0.autoflag && allReachedTarget && edgeTol>0 && (((CoreEdgeReactionModel)reactionModel).getEdge().getSpeciesNumber()+reactionModel.getSpeciesNumber())>= minSpeciesForPruning){//prune the reaction model if AUTO is being used, and all reaction systems have reached target time/conversion, and edgeTol is non-zero (and positive, obviously), and if there are a sufficient number of species in the reaction model (edge + core)
 	    Iterator iter = ds0.edgeID.keySet().iterator();//determine the maximum edge flux ratio for each edge species
 	    while(iter.hasNext()){
 		Species spe = (Species)iter.next();
