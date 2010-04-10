@@ -4217,6 +4217,18 @@ public class ReactionModelGenerator {
 			PDepIsomer pdi = (PDepIsomer)iterRem.next();
 			pdn.getIsomers().remove(pdi);
 		    }
+		    //remove nonincluded reactions
+		    rIter = pdn.getNonincludedReactions().iterator();
+		    toRemove = new HashSet();
+		    while(rIter.hasNext()){
+			Reaction reaction = (Reaction)rIter.next();
+			if (reactionPrunableQ(reaction, prunableSpecies)) toRemove.add(reaction);
+		    }
+		    iterRem = toRemove.iterator();
+		    while(iterRem.hasNext()){
+			Reaction reaction = (Reaction)iterRem.next();
+			pdn.getNonincludedReactions().remove(reaction);
+		    }
 		    //remove the entire network if the network has no path or net reactions
 		    if(pdn.getPathReactions().size()==0&&pdn.getNetReactions().size()==0) pdnToRemove.add(pdn);
 		}
