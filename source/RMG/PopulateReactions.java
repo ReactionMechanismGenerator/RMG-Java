@@ -489,7 +489,7 @@ public class PopulateReactions {
         	while (iter_species.hasNext()) {
         		Species species = (Species)iter_species.next();
         		listOfSpecies += species.getChemkinName() + "\n" +
-        			species.getChemGraph().toString(i) + "\n";
+        			species.getChemGraph().toStringWithoutH(i) + "\n";
         	}
         	
         	// Write the output files
