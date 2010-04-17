@@ -152,6 +152,11 @@ public class PopulateReactions {
 			String line = ChemParser.readMeaningfulLine(br_input);
 			
 			/*
+			 * Read max atom types (if they exist)
+			 */
+			line = rmg.readMaxAtomTypes(line,br_input);
+			
+			/*
 			 * Read primary thermo libraries (if they exist)
 			 */
             if (line.toLowerCase().startsWith("primarythermolibrary")) {
