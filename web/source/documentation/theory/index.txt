@@ -5,7 +5,7 @@ Theory and Implementation Details
 **********************************
 
 A schematic overview of RMG is presented below.
- .. figure:: images/RMGschematic.png
+ .. figure:: images/RMGschematic_030210.png
 	:width: 600 px
 	
 	A schematic overview of RMG
