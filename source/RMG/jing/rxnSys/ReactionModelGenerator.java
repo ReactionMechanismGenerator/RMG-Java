@@ -3967,145 +3967,145 @@ public class ReactionModelGenerator {
     }
 
     public void pruneReactionModel() {
-	HashSet prunableSpecies = new HashSet();
-	//check whether all the reaction systems reached target conversion/time
-	boolean allReachedTarget = true;
-	for (Integer i = 0; i < reactionSystemList.size(); i++) {
-	    JDAS ds = (JDAS)((ReactionSystem) reactionSystemList.get(i)).getDynamicSimulator();
-	    if (!ds.targetReached) allReachedTarget = false;
-	}
-	JDAS ds0 = (JDAS)((ReactionSystem) reactionSystemList.get(0)).getDynamicSimulator(); //get the first reactionSystem dynamic simulator
-	if (ds0.autoflag && allReachedTarget && edgeTol>0 && (((CoreEdgeReactionModel)reactionModel).getEdge().getSpeciesNumber()+reactionModel.getSpeciesNumber())>= minSpeciesForPruning){//prune the reaction model if AUTO is being used, and all reaction systems have reached target time/conversion, and edgeTol is non-zero (and positive, obviously), and if there are a sufficient number of species in the reaction model (edge + core)
-	    Iterator iter = ds0.edgeID.keySet().iterator();//determine the maximum edge flux ratio for each edge species
-	    while(iter.hasNext()){
-		Species spe = (Species)iter.next();
-		Integer id0 = (Integer)ds0.edgeID.get(spe);
-		double maxmaxRatio = ds0.maxEdgeFluxRatio[id0-1];
-		boolean prunable = ds0.prunableSpecies[id0-1];
-		for (Integer i = 1; i < reactionSystemList.size(); i++) {//go through the rest of the reaction systems to see if there are higher max flux ratios
-		    JDAS ds = (JDAS)((ReactionSystem) reactionSystemList.get(i)).getDynamicSimulator();
-		    Integer id = (Integer)ds0.edgeID.get(spe);//in principle, I don't think the IDs in each dynamic simulator will necessarily be the same...determine the ID
-		    if(ds.maxEdgeFluxRatio[id-1] > maxmaxRatio) maxmaxRatio = ds.maxEdgeFluxRatio[id-1];
-		    if(prunable && !ds.prunableSpecies[id-1]) prunable = false;//I can't imagine a case where this would occur (if the conc. is zero at one condition, it should be zero at all conditions), but it is included for completeness
+		HashSet prunableSpecies = new HashSet();
+		//check whether all the reaction systems reached target conversion/time
+		boolean allReachedTarget = true;
+		for (Integer i = 0; i < reactionSystemList.size(); i++) {
+			JDAS ds = (JDAS)((ReactionSystem) reactionSystemList.get(i)).getDynamicSimulator();
+			if (!ds.targetReached) allReachedTarget = false;
 		}
-		//if the maximum max edge flux ratio is less than the edge inclusion threshhold and the species is "prunable" (i.e. it doesn't have any reactions producing it with zero flux), schedule the species for pruning
-		if(maxmaxRatio < edgeTol && prunable){
-		    prunableSpecies.add(spe);
-		    System.out.println("Edge species "+spe.getChemkinName() +" has a maximum flux ratio ("+maxmaxRatio+") that is lower than edge inclusion threshhold and the species will be pruned from the edge.");
-		}
-	    }
-	    //now, prunableSpecies has been filled with species that should be pruned from the edge
-	    System.out.println("Pruning...");
-	    //prune species from the edge
-	    //remove species from the edge and from the species dictionary
-	    iter = prunableSpecies.iterator();
-	    while(iter.hasNext()){
-		Species spe = (Species)iter.next();
-		writePrunedEdgeSpecies(spe);
-		((CoreEdgeReactionModel)getReactionModel()).getUnreactedSpeciesSet().remove(spe);
-		//SpeciesDictionary.getInstance().getSpeciesSet().remove(spe);
-		SpeciesDictionary.getInstance().remove(spe);
-	    }
-	    //remove reactions from the edge involving pruned species
-	    iter = ((CoreEdgeReactionModel)getReactionModel()).getUnreactedReactionSet().iterator();
-	    HashSet toRemove = new HashSet();
-	    while(iter.hasNext()){
-		Reaction reaction = (Reaction)iter.next();
-		if (reactionPrunableQ(reaction, prunableSpecies)) toRemove.add(reaction);
-	    }
-	    iter = toRemove.iterator();
-	    while(iter.hasNext()){
-		Reaction reaction = (Reaction)iter.next();
-		writePrunedEdgeReaction(reaction);
-		((CoreEdgeReactionModel)getReactionModel()).getUnreactedReactionSet().remove(reaction);
-	    }
-	    //remove reactions from PDepNetworks in PDep cases
-	    if (reactionModelEnlarger instanceof RateBasedPDepRME)	{
-		iter = PDepNetwork.getNetworks().iterator();
-		HashSet pdnToRemove = new HashSet();
-		while (iter.hasNext()){
-		    PDepNetwork pdn = (PDepNetwork)iter.next();
-		    //remove path reactions
-		    Iterator rIter = pdn.getPathReactions().iterator();
-		    toRemove = new HashSet();
-		    while(rIter.hasNext()){
-			Reaction reaction = (Reaction)rIter.next();
-			if (reactionPrunableQ(reaction, prunableSpecies))  toRemove.add(reaction);
-		    }
-		    Iterator iterRem = toRemove.iterator();
-		    while(iterRem.hasNext()){
-			Reaction reaction = (Reaction)iterRem.next();
-			pdn.getPathReactions().remove(reaction);
-		    }
-		    //remove net reactions
-		    rIter = pdn.getNetReactions().iterator();
-		    toRemove = new HashSet();
-		    while(rIter.hasNext()){
-			Reaction reaction = (Reaction)rIter.next();
-			if (reactionPrunableQ(reaction, prunableSpecies)) toRemove.add(reaction);
-		    }
-		    iterRem = toRemove.iterator();
-		    while(iterRem.hasNext()){
-			Reaction reaction = (Reaction)iterRem.next();
-			pdn.getNetReactions().remove(reaction);
-		    }
-		    //remove isomers
-		    Iterator iIter = pdn.getIsomers().iterator();
-		    toRemove = new HashSet();
-		    while(iIter.hasNext()){
-			PDepIsomer pdi = (PDepIsomer)iIter.next();
-			Iterator isIter = pdi.getSpeciesListIterator();
-			while(isIter.hasNext()){
-				Species spe = (Species)isIter.next();
-				if (prunableSpecies.contains(spe)&&!toRemove.contains(spe)) toRemove.add(pdi);
+		JDAS ds0 = (JDAS)((ReactionSystem) reactionSystemList.get(0)).getDynamicSimulator(); //get the first reactionSystem dynamic simulator
+		if (ds0.autoflag && allReachedTarget && edgeTol>0 && (((CoreEdgeReactionModel)reactionModel).getEdge().getSpeciesNumber()+reactionModel.getSpeciesNumber())>= minSpeciesForPruning){//prune the reaction model if AUTO is being used, and all reaction systems have reached target time/conversion, and edgeTol is non-zero (and positive, obviously), and if there are a sufficient number of species in the reaction model (edge + core)
+			Iterator iter = ds0.edgeID.keySet().iterator();//determine the maximum edge flux ratio for each edge species
+			while(iter.hasNext()){
+				Species spe = (Species)iter.next();
+				Integer id0 = (Integer)ds0.edgeID.get(spe);
+				double maxmaxRatio = ds0.maxEdgeFluxRatio[id0-1];
+				boolean prunable = ds0.prunableSpecies[id0-1];
+				for (Integer i = 1; i < reactionSystemList.size(); i++) {//go through the rest of the reaction systems to see if there are higher max flux ratios
+					JDAS ds = (JDAS)((ReactionSystem) reactionSystemList.get(i)).getDynamicSimulator();
+					Integer id = (Integer)ds0.edgeID.get(spe);//in principle, I don't think the IDs in each dynamic simulator will necessarily be the same...determine the ID
+					if(ds.maxEdgeFluxRatio[id-1] > maxmaxRatio) maxmaxRatio = ds.maxEdgeFluxRatio[id-1];
+					if(prunable && !ds.prunableSpecies[id-1]) prunable = false;//I can't imagine a case where this would occur (if the conc. is zero at one condition, it should be zero at all conditions), but it is included for completeness
+				}
+				//if the maximum max edge flux ratio is less than the edge inclusion threshhold and the species is "prunable" (i.e. it doesn't have any reactions producing it with zero flux), schedule the species for pruning
+				if(maxmaxRatio < edgeTol && prunable){
+					prunableSpecies.add(spe);
+					System.out.println("Edge species "+spe.getChemkinName() +" has a maximum flux ratio ("+maxmaxRatio+") that is lower than edge inclusion threshhold and the species will be pruned from the edge.");
+				}
 			}
-		    }
-		    iterRem = toRemove.iterator();
-		    while(iterRem.hasNext()){
-			PDepIsomer pdi = (PDepIsomer)iterRem.next();
-			pdn.getIsomers().remove(pdi);
-		    }
-		    //remove nonincluded reactions
-		    rIter = pdn.getNonincludedReactions().iterator();
-		    toRemove = new HashSet();
-		    while(rIter.hasNext()){
-			Reaction reaction = (Reaction)rIter.next();
-			if (reactionPrunableQ(reaction, prunableSpecies)) toRemove.add(reaction);
-		    }
-		    iterRem = toRemove.iterator();
-		    while(iterRem.hasNext()){
-			Reaction reaction = (Reaction)iterRem.next();
-			pdn.getNonincludedReactions().remove(reaction);
-		    }
-		    //remove the entire network if the network has no path or net reactions
-		    if(pdn.getPathReactions().size()==0&&pdn.getNetReactions().size()==0) pdnToRemove.add(pdn);
+			//now, prunableSpecies has been filled with species that should be pruned from the edge
+			System.out.println("Pruning...");
+			//prune species from the edge
+			//remove species from the edge and from the species dictionary
+			iter = prunableSpecies.iterator();
+			while(iter.hasNext()){
+				Species spe = (Species)iter.next();
+				writePrunedEdgeSpecies(spe);
+				((CoreEdgeReactionModel)getReactionModel()).getUnreactedSpeciesSet().remove(spe);
+				//SpeciesDictionary.getInstance().getSpeciesSet().remove(spe);
+				SpeciesDictionary.getInstance().remove(spe);
+			}
+			//remove reactions from the edge involving pruned species
+			iter = ((CoreEdgeReactionModel)getReactionModel()).getUnreactedReactionSet().iterator();
+			HashSet toRemove = new HashSet();
+			while(iter.hasNext()){
+				Reaction reaction = (Reaction)iter.next();
+				if (reactionPrunableQ(reaction, prunableSpecies)) toRemove.add(reaction);
+			}
+			iter = toRemove.iterator();
+			while(iter.hasNext()){
+				Reaction reaction = (Reaction)iter.next();
+				writePrunedEdgeReaction(reaction);
+				((CoreEdgeReactionModel)getReactionModel()).getUnreactedReactionSet().remove(reaction);
+			}
+			//remove reactions from PDepNetworks in PDep cases
+			if (reactionModelEnlarger instanceof RateBasedPDepRME)	{
+				iter = PDepNetwork.getNetworks().iterator();
+				HashSet pdnToRemove = new HashSet();
+				while (iter.hasNext()){
+					PDepNetwork pdn = (PDepNetwork)iter.next();
+					//remove path reactions
+					Iterator rIter = pdn.getPathReactions().iterator();
+					toRemove = new HashSet();
+					while(rIter.hasNext()){
+						Reaction reaction = (Reaction)rIter.next();
+						if (reactionPrunableQ(reaction, prunableSpecies))  toRemove.add(reaction);
+					}
+					Iterator iterRem = toRemove.iterator();
+					while(iterRem.hasNext()){
+						Reaction reaction = (Reaction)iterRem.next();
+						pdn.getPathReactions().remove(reaction);
+					}
+					//remove net reactions
+					rIter = pdn.getNetReactions().iterator();
+					toRemove = new HashSet();
+					while(rIter.hasNext()){
+						Reaction reaction = (Reaction)rIter.next();
+						if (reactionPrunableQ(reaction, prunableSpecies)) toRemove.add(reaction);
+					}
+					iterRem = toRemove.iterator();
+					while(iterRem.hasNext()){
+						Reaction reaction = (Reaction)iterRem.next();
+						pdn.getNetReactions().remove(reaction);
+					}
+					//remove isomers
+					Iterator iIter = pdn.getIsomers().iterator();
+					toRemove = new HashSet();
+					while(iIter.hasNext()){
+						PDepIsomer pdi = (PDepIsomer)iIter.next();
+						Iterator isIter = pdi.getSpeciesListIterator();
+						while(isIter.hasNext()){
+							Species spe = (Species)isIter.next();
+							if (prunableSpecies.contains(spe)&&!toRemove.contains(spe)) toRemove.add(pdi);
+						}
+					}
+					iterRem = toRemove.iterator();
+					while(iterRem.hasNext()){
+						PDepIsomer pdi = (PDepIsomer)iterRem.next();
+						pdn.getIsomers().remove(pdi);
+					}
+					//remove nonincluded reactions
+					rIter = pdn.getNonincludedReactions().iterator();
+					toRemove = new HashSet();
+					while(rIter.hasNext()){
+						Reaction reaction = (Reaction)rIter.next();
+						if (reactionPrunableQ(reaction, prunableSpecies)) toRemove.add(reaction);
+					}
+					iterRem = toRemove.iterator();
+					while(iterRem.hasNext()){
+						Reaction reaction = (Reaction)iterRem.next();
+						pdn.getNonincludedReactions().remove(reaction);
+					}
+					//remove the entire network if the network has no path or net reactions
+					if(pdn.getPathReactions().size()==0&&pdn.getNetReactions().size()==0) pdnToRemove.add(pdn);
+				}
+				iter = pdnToRemove.iterator();
+				while (iter.hasNext()){
+					PDepNetwork pdn = (PDepNetwork)iter.next();
+					PDepNetwork.getNetworks().remove(pdn);
+				}
+			} 
 		}
-		iter = pdnToRemove.iterator();
-		while (iter.hasNext()){
-		    PDepNetwork pdn = (PDepNetwork)iter.next();
-		    PDepNetwork.getNetworks().remove(pdn);
-		}
-	    } 
-	}
         return;
     }
-
+	
     //determines whether a reaction can be removed; returns true ; cf. categorizeReaction() in CoreEdgeReactionModel
     //returns true if the reaction involves reactants or products that are in p_prunableSpecies; otherwise returns false
     public boolean reactionPrunableQ(Reaction p_reaction, HashSet p_prunableSpecies){
-	Iterator iter = p_reaction.getReactants();
+		Iterator iter = p_reaction.getReactants();
         while (iter.hasNext()) {
-		Species spe = (Species)iter.next();
+			Species spe = (Species)iter.next();
         	if (p_prunableSpecies.contains(spe))
-		    return true;
+				return true;
         }
         iter = p_reaction.getProducts();
         while (iter.hasNext()) {
-		Species spe = (Species)iter.next();
+			Species spe = (Species)iter.next();
         	if (p_prunableSpecies.contains(spe))
-		    return true;
+				return true;
         }
-	return false;
+		return false;
     }
     
     //9/25/07 gmagoon: moved from ReactionSystem.java
