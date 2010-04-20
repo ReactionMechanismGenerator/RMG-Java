@@ -5,11 +5,11 @@ mkdir "%rmg%"\bin
 
 echo Compiling GATPFit...
 cd "%rmg%"\source\GATPFit
-g95 *.f blas\*.f lapack\double\*.f lapack\util\*.f -o "%rmg%"\bin\GATPFit.exe
+g95 *.f -L"%rmg%"\bin -lblas -llapack -o "%rmg%"\bin\GATPFit.exe
 
 echo Compiling fame...
 cd "%rmg%"\source\fame
-g95 Species.f90 Isomer.f90 Reaction.f90 DensityOfStates.f90 Network.f90 Input.f90 StrongCollision.f90 ReservoirState.f90 RateModel.f90 Output.f90 fame.f90 blas\*.f lapack\double\*.f lapack\util\*.f -o "%rmg%"\bin\fame.exe
+g95 -O3 math.f90 states.f90 _modes.f90 network.f90 io.f90 mastereqn.f90 msc.f90 rs.f90 model.f90 fame.f90 -L"%rmg%"\bin -lblas -llapack -o "%rmg%"\bin\fame.exe
 
 echo Compiling frankie...
 cd "%rmg%"\source\frankie

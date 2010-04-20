@@ -49,9 +49,17 @@ public class BathGas {
 	public BathGas() {
 		colliders = null;
 	}
+	
+	public BathGas(String inertGas) {
+		HashMap bathGas4PopRxns = new HashMap();
+		bathGas4PopRxns.put(inertGas, new Double(1e-6));
+		setColliders(bathGas4PopRxns);
+		update();
+	}
 
 	public BathGas(ReactionSystem rxnSystem) {
-		colliders = rxnSystem.identifyColliders();
+		if (colliders == null)
+			colliders = rxnSystem.identifyColliders();
 		update();
 	}
 
@@ -78,6 +86,10 @@ public class BathGas {
 	public void setColliders(ReactionSystem rxnSystem) {
 		colliders = rxnSystem.identifyColliders();
 		update();
+	}
+	
+	public void setColliders(HashMap Colliders) {
+		colliders = Colliders;
 	}
 
 	/**

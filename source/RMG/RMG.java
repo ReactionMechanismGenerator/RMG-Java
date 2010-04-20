@@ -148,8 +148,6 @@ public class RMG {
 		
 	    File f = new File(".");
 	    String dir = f.getAbsolutePath();
-		File therfit = new File("therfit");
-		therfit.mkdir();
 		File chemkin = new File("chemkin");
 		chemkin.mkdir();
 		//writeThermoFile();
@@ -159,11 +157,6 @@ public class RMG {
 		GATPFit.mkdir();
 		File ODESolver = new File("ODESolver");
 		ODESolver.mkdir();
-		File fit3p = new File("fit3p");
-		fit3p.mkdir();
-		File chemdis = new File("chemdis");
-		ChemParser.deleteDir(chemdis);
-		chemdis.mkdir();
 		File fame = new File("fame");
 		ChemParser.deleteDir(fame);
 		fame.mkdir();
@@ -176,15 +169,14 @@ public class RMG {
 		File pruning = new File("Pruning");
 		ChemParser.deleteDir(pruning);
 		pruning.mkdir();
-
-                //6/3/09 gmagoon: create folders for 3D geometries
-                File twoDmol = new File("2Dmolfiles");
+		//6/3/09 gmagoon: create folders for 3D geometries
+		File twoDmol = new File("2Dmolfiles");
 		ChemParser.deleteDir(twoDmol);//this will clear out contents from previous run; I don't necessarily want this, and I may want to only create the folder if it doesn't exist already
 		twoDmol.mkdir();
-                File threeDmol = new File("3Dmolfiles");
+		File threeDmol = new File("3Dmolfiles");
 		ChemParser.deleteDir(threeDmol);
 		threeDmol.mkdir();
-                File qmfiles = new File("QMfiles");
+		File qmfiles = new File("QMfiles");
 		//ChemParser.deleteDir(qmfiles);
 		if(!qmfiles.exists()){//create if it doesn't exist; we will not delete files because we want to preserve them between runs to speed things up
                     qmfiles.mkdir();

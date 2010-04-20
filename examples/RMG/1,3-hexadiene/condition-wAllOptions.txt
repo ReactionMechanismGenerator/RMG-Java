@@ -105,11 +105,13 @@ END
 SpectroscopicDataEstimator: off/frequencygroups
 PressureDependence: off/reservoirstate/modifiedstrongcollision
 // If PressureDependence field is not set to "off", the PDepKineticsModel field must be present
+// If chebyshev chosen, you can also specify the number of basis functions, e.g. "chebyshev 4 4"
 //PDepKineticsModel: chebyshev/pdeparrhenius/rate
-// If PDepKineticsModel is set to "Chebyshev", the following two fields may be supplied to RMG
-// 	*** If the TRange field is present, the PRange field must also be present ***
-//TRange: (K) 300 2100 8 4
-//PRange: (bar) 0.01 100 5 4
+// You should also specify either a TRange and PRange or a set of Temperatures and Pressures
+//TRange: (K) 300.0 2000.0 8
+//PRange: (bar) 0.01 100.0 5
+//Temperatures: 8 (K) 300.0 400.0 500.0 600.0 800.0 1000.0 1500.0 2000.0
+//Pressures: 5 (bar) 0.01 0.1 1.0 10.0 100.0
 
 // This file is only necessary if one of the species present in the condition.txt file
 //	was labeled as "Unreactive".

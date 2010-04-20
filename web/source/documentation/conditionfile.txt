@@ -337,16 +337,11 @@ should read::
 	PressureDependence: off
 
 If pressure dependence is desired, this item can take one of two values, based
-on the method used to approximate the pressure-dependent kinetics. There are currently two
-such options: ``ModifiedStrongCollision`` and ``ReservoirState``. The former utilizes
+on the method used to approximate the pressure-dependent kinetics: ``ModifiedStrongCollision`` and ``ReservoirState``. The former utilizes
 the modified strong collision approach of Chang, Bozzelli, and Dean [Chang2000]_, 
 and works reasonably well while running more rapidly. The latter 
 utilizes the steady-state/reservoir-state approach of Green and Bhatti [Green2007]_, 
 and is more theoretically sound but more expensive. 
-
-.. note::
-
-	The reservoir state method is currently in an experimental stage. It should work for most small networks; large networks will likely (and automatically) fall back to the modified strong collision method.
 
 To specify the modified strong collision approach, this item should read::
  
@@ -362,11 +357,8 @@ For more information on the two methods, consult the following resources:
 
 .. [Green2007] N.J.B. Green and Z.A. Bhatti. "Steady-State Master Equation Methods." *Phys. Chem. Chem. Phys.* **9**, p. 4275-4290 (2007).
 
-Internally, RMG uses bilinear interpolation as its model for :math:`k(T, P)`. However, there
-are a variety of other models for :math:`k(T, P)` that can be outputted in the Chemkin file. 
-Specification of the desired model requires a line in the condition file to be placed directly
-underneath the previous line: **Note:** This line is not required if pressure dependence is set to
-off.
+When pressure dependence is on, you must also specify a linear interpolation model to use to evaluate :math:`k(T, P)` and output to the Chemkin file. (This line is not required if pressure dependence is set to
+off.) This line must immediately follow the previous one.
 
 To disregard all temperature and pressure dependence and simply output the rate at the provided
 temperature and pressure, use the line ::
@@ -388,23 +380,28 @@ to [-1,1], use the line ::
 
 	PDepKineticsModel: Chebyshev
 	
+You should also specify the number of temperature and pressure basis functions by adding the appropriate integers. For example, the following specifies that five basis functions in temperature and four in pressure should be used ::
+
+	PDepKineticsModel: Chebyshev 5 4
+
 The auxillary information printed to the Chemkin chem.inp file will have the "CHEB"
 format.  Refer to Section 3.5.3 of the :file:`CHEMKIN_Input.pdf` document and/or 
 Section 3.6.4 of the :file:`CHEMKIN_Theory.pdf` document.
-If Chebyshev is selected, there are additional optional lines that would be placed beneath that 
-line that specify parameters for the Chebyshev model. The syntax for these lines is ::
 
-	TRange: (K) 300 2000 8 4
-	PRange: (bar) 0.01 100 5 4
-	
-Each line has four parameters: the minimum and maximum temperature/pressure to map to the range
-[-1, 1], the number of temperatures/pressures to generate :math:`k(T, P)` points at before
-fitting, and the number of terms in the Chebyshev polynomial in that dimension. Thus, the example
-above specifies a temperature range of 300-2000 K over which eight temperature points are used,
-and a pressure range of 0.01-100 bar over which five pressure points are used. Therefore forty
-:math:`k(T, P)` points total will be calculated and used to fit the Chebyshev polynomials, which 
-will be of cubic order (i.e. four terms) in temperature and cubic order (i.e. four terms) in 
-pressure.
+To generate the :math:`k(T,P)` interpolation model, a set of temperatures and pressures must be used. RMG can do this automatically, but it must be told a few parameters. Following the previous line, you should provide a line to specify the minimum and maximum temperature and number of temperatures to use in the grid, e.g. ::
+
+	TRange: (K) 300.0 2000.0 8
+
+A similar line should follow for pressures::
+
+	PRange: (bar) 0.01 100.0 5
+
+If you prefer, you can also specify the grid of temperatures and pressures manually using lines similar to the following::
+
+	Temperatures: 8 (K) 300.0 400.0 500.0 600.0 800.0 1000.0 1500.0 2000.0
+	Pressures: 5 (bar) 0.01 0.1 1.0 10.0 100.0
+
+You should specify either a ``TRange`` or ``Temperatures`` line and either a ``PRange`` or ``Pressures`` line.
 
 .. _finishcontroller:
 

@@ -45,6 +45,8 @@ import java.util.ListIterator;
 import java.util.StringTokenizer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import Jama.Matrix;
 import jing.chem.Species;
 import jing.chem.SpectroscopicData;
 import jing.mathTool.UncertainDouble;
@@ -105,7 +107,7 @@ public class FastMasterEqn implements PDepKineticsEstimator {
 	/**
 	 * The number of grains to use in a fame calculation (written in input file)
 	 */
-	private static int numGrains = 201;
+	private static int numGrains = 251;
 	/**
 	 * boolean, detailing whether the high-P-limit is greater than all of the
 	 * 	fame-computed k(T,P)
@@ -384,13 +386,13 @@ public class FastMasterEqn implements PDepKineticsEstimator {
          * 	of grains
          * After all pdep rates are below the high-P-limit (or the number of grains
          * 	exceeds 1000), we exit the while loop.  The number of grains is then
-         * 	reset to 201 (which was the standard before)
+         * 	reset to 251 (which was the standard before)
          */
         while (!pdepRatesOK) {
         	numGrains = numGrains + 200;
         	runPDepCalculation(pdn, rxnSystem, cerm);
         }
-        numGrains = 201;
+        numGrains = 251;
 
 		runCount++;
 
@@ -415,8 +417,9 @@ public class FastMasterEqn implements PDepKineticsEstimator {
         Temperature stdTemp = new Temperature(298, "K");
 
 		// Collect simulation parameters
-		Temperature temperature = rxnSystem.getPresentTemperature();
-		Pressure pressure = rxnSystem.getPresentPressure();
+        // MRH 28Feb: Commented temperature/pressure lines (variables are never read)
+//		Temperature temperature = rxnSystem.getPresentTemperature();
+//		Pressure pressure = rxnSystem.getPresentPressure();
 		BathGas bathGas = new BathGas(rxnSystem);
 
 		int numChebTempPolys, numChebPressPolys;
@@ -612,26 +615,24 @@ public class FastMasterEqn implements PDepKineticsEstimator {
 				
 				double A = 0.0, Ea = 0.0, n = 0.0;
 				if (rxn.isForward()) {
-					A = rxn.getKinetics().getAValue();
-					Ea = rxn.getKinetics().getEValue();
-					n = rxn.getKinetics().getNValue();
+					Kinetics[] k_array = rxn.getKinetics();
+					Kinetics kin = computeKUsingLeastSquares(k_array);
+					A = kin.getAValue();
+					n = kin.getNValue();
+					Ea = kin.getEValue();
+//					A = rxn.getKinetics().getAValue();
+//					Ea = rxn.getKinetics().getEValue();
+//					n = rxn.getKinetics().getNValue();
 				}
 				else {
 					((Reaction) rxn).generateReverseReaction();
-					Kinetics kin = ((Reaction) rxn).getFittedReverseKinetics();
+					Kinetics[] k_array = ((Reaction)rxn).getFittedReverseKinetics();
+					Kinetics kin = computeKUsingLeastSquares(k_array);
+//					Kinetics kin = ((Reaction) rxn).getFittedReverseKinetics();
 					A = kin.getAValue();
 					Ea = kin.getEValue();
 					n = kin.getNValue();
 				}
-
-				// Arrhenius parameters
-				if (Ea < 0) {
-					System.out.println("Warning: Adjusted activation energy of reaction " +
-							rxn.toString() + " from " + Double.toString(Ea) +
-							" kcal/mol to 0 kcal/mol for FAME calculation.");
-					Ea = 0;
-				}
-
 
 				input += "# The reaction equation, in the form A + B --> C + D\n";
 				input += rxn.toString() + "\n";
@@ -641,7 +642,10 @@ public class FastMasterEqn implements PDepKineticsEstimator {
 				input += Integer.toString(isomerList.indexOf(rxn.getProduct()) + 1) + "\n";
 
 				input += "# Ground-state energy; allowed units are J/mol, kJ/mol, cal/mol, kcal/mol, or cm^-1\n";
-				input += "J/mol " + Double.toString((Ea + rxn.getReactant().calculateH(stdTemp)) * 4184) + "\n";
+				if (Ea < 0.0)
+					input += "J/mol " + Double.toString((rxn.getReactant().calculateH(stdTemp)) * 4184) + "\n";
+				else
+					input += "J/mol " + Double.toString((Ea + rxn.getReactant().calculateH(stdTemp)) * 4184) + "\n";
 
 				input += "# High-pressure-limit kinetics model k(T):\n";
 				input += "#	Option 1: Arrhenius\n";
@@ -812,8 +816,9 @@ public class FastMasterEqn implements PDepKineticsEstimator {
 					for (int t = 0; t < numChebT; t++) {
 						str = readMeaningfulLine(br);
 						tkn = new StringTokenizer(str);
-						for (int p = 0; p < numChebP; p++)
+						for (int p = 0; p < numChebP; p++) {
 							chebyshev[t][p] = Double.parseDouble(tkn.nextToken());
+						}
 					}
 					pDepRate.setChebyshev(chebyshev);
 				}
@@ -885,7 +890,8 @@ public class FastMasterEqn implements PDepKineticsEstimator {
 					if (rxn.getStructure().equals(rxnWHighPLimit.getStructure())) {
 						double A = 0.0, Ea = 0.0, n = 0.0;
 						if (rxnWHighPLimit.isForward()) {
-							Kinetics kin = rxnWHighPLimit.getKinetics();
+							Kinetics[] k_array = rxnWHighPLimit.getKinetics();
+							Kinetics kin = computeKUsingLeastSquares(k_array);
 							A = kin.getAValue();
 							Ea = kin.getEValue();
 							n = kin.getNValue();
@@ -893,13 +899,19 @@ public class FastMasterEqn implements PDepKineticsEstimator {
 							rxn.setComments("High-P Limit: " + kin.getSource().toString() + kin.getComment().toString() );
 						}
 						else {
-							Kinetics kin = rxnWHighPLimit.getFittedReverseKinetics();
+							Kinetics[] k_array = rxnWHighPLimit.getFittedReverseKinetics();
+							Kinetics kin = computeKUsingLeastSquares(k_array);
 							A = kin.getAValue();
 							Ea = kin.getEValue();
 							n = kin.getNValue();
 							//  While I'm here, and know which reaction was the High-P limit, set the comment in the P-dep reaction 
-							Kinetics fwd_kin = rxnWHighPLimit.getKinetics();
-							rxn.setComments("High-P Limit Reverse: " + fwd_kin.getSource().toString() +fwd_kin.getComment().toString() );
+							Kinetics[] fwd_kin = rxnWHighPLimit.getKinetics();
+							String commentsForForwardKinetics = "";
+							for (int numKs=0; numKs<fwd_kin.length; ++numKs) {
+								commentsForForwardKinetics += "High-P Limit Reverse: " + fwd_kin[numKs].getSource().toString() +fwd_kin[numKs].getComment().toString();
+								if (numKs != fwd_kin.length-1) commentsForForwardKinetics += "\n";
+							}
+							rxn.setComments(commentsForForwardKinetics);
 						}
 						double[][] all_ks = rxn.getPDepRate().getRateConstants();
 						for (int numTemps=0; numTemps<temperatures.length; numTemps++) {
@@ -1057,6 +1069,7 @@ public class FastMasterEqn implements PDepKineticsEstimator {
 		}
 		catch(IOException e) {
 			System.out.println("Error: Unable to touch file \"fame_output.txt\".");
+			System.out.println(e.getMessage());
 			System.exit(0);
 		}
 		catch(Exception e) {
@@ -1100,6 +1113,55 @@ public class FastMasterEqn implements PDepKineticsEstimator {
 	
 	public static void setNumPBasisFuncs(int m) {
 		numPBasisFuncs = m;
+	}
+	
+	public static Kinetics computeKUsingLeastSquares(Kinetics[] k_array) {
+        /*
+         * MRH 24MAR2010:
+         * 	If the reaction has more than one set of Arrhenius kinetics,
+         * 	sum all kinetics and re-fit for a single set of Arrhenius kinetics
+         */
+		Kinetics k = null;
+        if (k_array.length > 1) {
+        	double[] T = new double[5];
+        	T[0] = 300; T[1] = 600; T[2] = 900; T[3] = 1200; T[4] = 1500;
+        	double[] k_total = new double[5];
+        	for (int numKinetics=0; numKinetics<k_array.length; ++numKinetics) {
+        		for (int numTemperatures=0; numTemperatures<T.length; ++numTemperatures) {
+        			k_total[numTemperatures] += k_array[numKinetics].getAValue() * 
+        			Math.pow(T[numTemperatures], k_array[numKinetics].getNValue()) * 
+        			Math.exp(-k_array[numKinetics].getEValue()/GasConstant.getKcalMolK()/T[numTemperatures]);
+        		}
+        	}
+        	// Construct matrix X and vector y
+        	double[][] y = new double[k_total.length][1];
+        	double[][] X = new double[k_total.length][3];
+        	for (int i=0; i<5; i++) {
+        		y[i][0] = Math.log(k_total[i]);
+        		X[i][0] = 1;
+        		X[i][1] = Math.log(T[i]);
+        		X[i][2] = 1/T[i];
+        	}
+        	// Solve least-squares problem using inv(XT*X)*(XT*y)
+        	Matrix X_matrix = new Matrix(X);
+        	Matrix y_matrix = new Matrix(y);
+        	Matrix b_matrix = X_matrix.solve(y_matrix);
+        	UncertainDouble uA = new UncertainDouble(Math.exp(b_matrix.get(0,0)),0.0,"Adding");
+        	UncertainDouble un = new UncertainDouble(b_matrix.get(1,0),0.0,"Adding");
+        	UncertainDouble uE = new UncertainDouble(-GasConstant.getKcalMolK()*b_matrix.get(2,0),0.0,"Adding");
+        	k = new ArrheniusKinetics(uA,un,uE,"300-1500K",5,"Summation of kinetics","Arrhenius fit to multiple kinetics");
+        } else {
+        	k = k_array[0];
+        }
+        return k;
+	}
+	
+	public static int getNumTBasisFuncs() {
+		return numTBasisFuncs;
+	}
+	
+	public static int getNumPBasisFuncs() {
+		return numPBasisFuncs;
 	}
 
 }

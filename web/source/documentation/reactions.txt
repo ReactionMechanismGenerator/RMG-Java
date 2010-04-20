@@ -27,6 +27,10 @@ RMG is still under construction.**  For now, please label the Solvation field "o
 
 	Solvation: off 
 
+This should be followed by PrimaryThermoLibrary and PrimaryReactionLibrary blocks, 
+which should each be terminated with the "END" statement. These blocks can be left 
+empty, if desired.
+
 The next item in the text file are the species of interest.  For each species
 of interest, supply a name and an adjacency list.  The adjacency list should
 have the same syntax used to define a species 
@@ -48,7 +52,13 @@ oxygen could be written as::
 Thus, the total :file:`reactions_input.txt` file looks like::
 
 	Temperature: 1200 (K)
-	Solvation: off 
+	Solvation: off
+
+	PrimaryThermoLibrary:
+	END
+
+	PrimaryReactionLibrary:
+	END
 	
   	nBuOH
 	1 C 0 {2,S}
@@ -64,15 +74,15 @@ Thus, the total :file:`reactions_input.txt` file looks like::
 2. At the command prompt, change to the directory containing the 
 :file:`reactions_input.txt` file and then execute the command ::
 
-	java -classpath "%rmg%"\software\rmg\RMG.jar PopulateReactions reactions_input.txt
+	java -classpath "%rmg%"\bin\RMG.jar PopulateReactions reactions_input.txt
 
 For linux users::
 
-	java -classpath $RMG\software\rmg\RMG.jar PopulateReactions reactions_input.txt
+	java -classpath $RMG/bin/RMG.jar PopulateReactions reactions_input.txt
 
 To have the output written to file instead of to the screen, use the syntax ::
 
-	java -classpath "%rmg%"\software\rmg\RMG.jar PopulateReactions reactions_input.txt > reactions_output.txt
+	java -classpath "%rmg%"\bin\RMG.jar PopulateReactions reactions_input.txt > reactions_output.txt
 
 where ``reactions_output.txt`` is the name of the file to be written.
 

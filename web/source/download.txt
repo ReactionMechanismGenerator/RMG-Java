@@ -17,3 +17,12 @@ To download them please visit the
 For help installing them, please refer to the :ref:`installation` section of the documentation.
 
 
+Latest Developer version
+------------------------
+
+To get the latest development version of the code (the head of the official master branch) you can use either git or SVN for read-only access:
+
+* git clone git://github.com/GreenGroup/RMG-Java.git
+* svn checkout http://svn.github.com/greengroup/RMG-Java.git
+
+If you might want to make changes, a better idea is to create your own account on github.com, fork the official repository (http://github.com/greengroup/RMG-Java/fork), and clone that. There's help at http://help.github.com/

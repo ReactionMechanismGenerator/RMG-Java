@@ -95,6 +95,7 @@ public class PrimaryReactionLibrary {
     public void read(String p_directoryName) throws IOException {
         try {
         	if (!p_directoryName.endsWith("/")) p_directoryName = p_directoryName + "/";
+			System.out.println("Reading Primary Reaction Library from: "+p_directoryName);
         	
             String speciesFile = p_directoryName + "species.txt";
             String reactionFile = p_directoryName + "reactions.txt";
@@ -170,10 +171,10 @@ public class PrimaryReactionLibrary {
         		try {
         			r = ChemParser.parseArrheniusReaction(speciesSet, line, A_multiplier, E_multiplier);
         			r.setIsFromPrimaryReactionLibrary(true);
-        			r.getKinetics().setFromPrimaryReactionLibrary(true);
+        			(r.getKinetics())[0].setFromPrimaryReactionLibrary(true);
         			// Changed source from "Seed Mechanism" to "Primary Reaction Library"
-					r.setKineticsSource("Primary Reaction Library: "+ name);
-					r.setKineticsComments(" ");
+					r.setKineticsSource("Primary Reaction Library: "+ name,0);
+					r.setKineticsComments(" ",0);
 				}
         		catch (InvalidReactionFormatException e) {
         			throw new InvalidReactionFormatException(line + ": " + e.getMessage());
@@ -185,7 +186,7 @@ public class PrimaryReactionLibrary {
         		while (prlRxnIter.hasNext()) {
         			Reaction old = (Reaction)prlRxnIter.next();
         			if (old.equals(r)) {
-        				old.addAdditionalKinetics(r.getKinetics(),1);
+        				old.addAdditionalKinetics(r.getKinetics()[0],1);
         				foundRxn = true;
         				break;
         			}
@@ -326,10 +327,10 @@ public class PrimaryReactionLibrary {
         		
         		ThirdBodyReaction tbr = ThirdBodyReaction.make(r,thirdBodyList);
         		tbr.setIsFromPrimaryReactionLibrary(true);
-        		tbr.getKinetics().setFromPrimaryReactionLibrary(true);
+        		tbr.getKinetics()[0].setFromPrimaryReactionLibrary(true);
         		// Changed source from "Seed Mechanism" to "Primary Reaction Library"
-				tbr.setKineticsSource("Primary Reaction Library: "+ name);
-				tbr.setKineticsComments(" ");
+				tbr.setKineticsSource("Primary Reaction Library: "+ name,0);
+				tbr.setKineticsComments(" ",0);
         		reactionSet.add(tbr);
         		
         		Reaction reverse = tbr.getReverseReaction();
@@ -450,10 +451,10 @@ public class PrimaryReactionLibrary {
         		
         		TROEReaction tbr = TROEReaction.make(r,thirdBodyList, low, a, T3star, Tstar, troe7, T2star);
         		tbr.setIsFromPrimaryReactionLibrary(true);
-        		tbr.getKinetics().setFromPrimaryReactionLibrary(true);
+        		tbr.getKinetics()[0].setFromPrimaryReactionLibrary(true);
         		// Changed source from "Seed Mechanism" to "Primary Reaction Library"
-				tbr.setKineticsSource("Primary Reaction Library: "+ name);
-				tbr.setKineticsComments(" ");
+				tbr.setKineticsSource("Primary Reaction Library: "+ name,0);
+				tbr.setKineticsComments(" ",0);
 				
         		reactionSet.add(tbr);
         		Reaction reverse = tbr.getReverseReaction();
@@ -551,8 +552,8 @@ public class PrimaryReactionLibrary {
         		 */
         		ArrheniusKinetics low = ChemParser.parseSimpleArrheniusKinetics(lowString, A_multiplier, E_multiplier, r.getReactantNumber()+1);        		
         		LindemannReaction lr = LindemannReaction.make(r,thirdBodyList, low);
-				lr.setKineticsSource("Seed Mechanism: "+ name);
-				lr.setKineticsComments(" ");
+				lr.setKineticsSource("Primary Reaction Library: "+ name,0);
+				lr.setKineticsComments(" ",0);
 				
         		reactionSet.add(lr);
         		Reaction reverse = lr.getReverseReaction();

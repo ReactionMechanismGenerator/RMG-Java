@@ -75,17 +75,21 @@ public class ReactionLibrary {
             library=new HashSet();
             dictionary = new HashMap();
         }
+		return; // Not implemented yet.
+		/*
         String directory = System.getProperty("jing.rxn.ReactionLibrary.pathName");
         String dictionaryFile = directory + "/Dictionary.txt";
         String libraryFile = directory + "/Library.txt";
 			
-			System.out.println("\nReading reaction library from "+directory);
+		System.out.println("\nReading reaction library from "+directory);
         try{
             read(dictionaryFile, libraryFile);
           }
           catch (IOException e){
-            System.out.println("Can't read reaction library files!");
+			  System.out.println("Can't read reaction library files!");
+			  System.out.println(e.getMessage());
         }
+		 */
     }
     
     
@@ -146,8 +150,8 @@ public class ReactionLibrary {
         		Reaction r;
         		try {
         			r = ChemParser.parseArrheniusReaction(dictionary, line, A_multiplier, E_multiplier);
-					r.kinetics.setComments(" ");
-					r.kinetics.setSource("ReactionLibrary");
+					r.kinetics[0].setComments(" ");
+					r.kinetics[0].setSource("ReactionLibrary");
 				}
         		catch (InvalidReactionFormatException e) {
         			throw new InvalidReactionFormatException(line + ": " + e.getMessage());

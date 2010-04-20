@@ -252,7 +252,7 @@ public class ReactionTemplate {
   }
   
   //## operation findClosestRateConstant(Collection) 
-  public Kinetics findClosestRateConstant(LinkedList p_matchedPathSet) {
+  public Kinetics[] findClosestRateConstant(LinkedList p_matchedPathSet) {
       //#[ operation findClosestRateConstant(Collection) 
       LinkedHashSet exactTreeNode = new LinkedHashSet();
       LinkedHashSet exactKey = new LinkedHashSet();
@@ -276,7 +276,12 @@ public class ReactionTemplate {
       // find if exact kt exists.  if it does, return it.
       KineticsTemplate kt = kineticsTemplateLibrary.getKineticsTemplate(exactKey);
       int rNum = getReactantNumber();
-      if (kt!=null) return kt.kinetics;
+      if (kt!=null) {
+    	  Kinetics[] k_closest = new Kinetics[1];
+    	  k_closest[0] = kt.kinetics;
+    	  return k_closest;
+//    	  return kt.kinetics;
+      }
       
       Collection allPossibleTreeNodeSet = MathTool.expand(p_matchedPathSet.iterator());
       
@@ -316,7 +321,10 @@ public class ReactionTemplate {
       Kinetics newK = ArrheniusKinetics.average(bestKineticsSet);
       //KineticsTemplate newKT = kineticsTemplateLibrary.addKinetics(exactKey, newK);
       //RateConstant rc = new RateConstant(newKT, bestKineticsTemplateSet, closest);
-      return newK; 
+      Kinetics[] k_closest = new Kinetics[1];
+      k_closest[0] = newK;
+      return k_closest;
+//      return newK; 
       
       
       
@@ -324,7 +332,7 @@ public class ReactionTemplate {
   }
   
   //## operation findExactRateConstant(Collection) 
-  public Kinetics findExactRateConstant(Collection p_matchedPathSet) {
+  public Kinetics[] findExactRateConstant(Collection p_matchedPathSet) {
       //#[ operation findExactRateConstant(Collection) \
 		
       LinkedHashSet fgc = new LinkedHashSet();
@@ -343,7 +351,10 @@ public class ReactionTemplate {
       if (kt==null) return null;
       else {
 			//kt.kinetics.setSource(kt.kinetics.toChemkinString());
-			return kt.kinetics;
+    	  Kinetics[] k_exact = new Kinetics[1];
+    	  k_exact[0] = kt.kinetics;
+    	  return k_exact;
+//			return kt.kinetics;
       }
       
       
@@ -358,7 +369,7 @@ public class ReactionTemplate {
   Modifies:
   */
   //## operation findRateConstant(Structure) 
-  public Kinetics findRateConstant(Structure p_structure) {
+  public Kinetics[] findRateConstant(Structure p_structure) {
 		double pT = System.currentTimeMillis();
 		
   	  /* 
@@ -366,12 +377,12 @@ public class ReactionTemplate {
   	   *	current reaction against that list before attempting
   	   *	to estimate via searching the tree
   	   */
-		Kinetics k = null;
+		Kinetics[] k = null;
   	  if (doesPrimaryReactionLibraryExist()) {
   		  k = getPrimaryReactionRate(p_structure);
   	  }
   	  if (k != null) {
-  		  k.setFromPrimaryReactionLibrary(true);
+  		  k[0].setFromPrimaryReactionLibrary(true);
   		  p_structure.setDirection(getPrimaryReactionDirection(p_structure));
   		  return k;
   	  }
@@ -449,10 +460,10 @@ public class ReactionTemplate {
       	k = findExactRateConstant(fg);
       	if (k==null) {
 				k = findClosestRateConstant(fg);
-				k.setSource(name + " estimate: (" + k.getSource() + ")");
+				k[0].setSource(name + " estimate: (" + k[0].getSource() + ")");
       	}
-      	else k.setSource(name  + " exact: ");
-			k.setComments(comments);
+      	else k[0].setSource(name  + " exact: ");
+			k[0].setComments(comments);
 			Global.RT_findRateConstant += (System.currentTimeMillis()-pT)/1000/60;
       	return k;
       }
@@ -474,7 +485,7 @@ public class ReactionTemplate {
   Modifies:
   */
   //## operation findRateConstant(Structure) 
-  public Kinetics findReverseRateConstant(Structure p_structure) {
+  public Kinetics[] findReverseRateConstant(Structure p_structure) {
 		double pT = System.currentTimeMillis();
       //#[ operation findRateConstant(Structure)
 		
@@ -483,12 +494,12 @@ public class ReactionTemplate {
 	  	   *	current reaction against that list before attempting
 	  	   *	to estimate via searching the tree
 	  	   */
-			Kinetics k = null;
+			Kinetics[] k = null;
 	  	  if (doesPrimaryReactionLibraryExist()) {
 	  		  k = getPrimaryReactionRate(p_structure);
 	  	  }
 	  	  if (k != null) {
-	  		  k.setFromPrimaryReactionLibrary(true);
+	  		  k[0].setFromPrimaryReactionLibrary(true);
 	  		  p_structure.setDirection(1);
 	  		  return k;
 	  	  }
@@ -566,15 +577,15 @@ public class ReactionTemplate {
       	if (k==null) {
       		try{
 				k = findClosestRateConstant(fg);
-				k.setSource(name + " estimate: (" + k.getSource() + ")");
+				k[0].setSource(name + " estimate: (" + k[0].getSource() + ")");
       		}
       		catch (RateConstantNotFoundException e) {
               	return k;
               }
 
       	}
-      	else k.setSource(name  + " exact: ");
-			k.setComments(comments);
+      	else k[0].setSource(name  + " exact: ");
+			k[0].setComments(comments);
 			Global.RT_findRateConstant += (System.currentTimeMillis()-pT)/1000/60;
       	return k;
       }
@@ -598,7 +609,7 @@ public class ReactionTemplate {
    * @param p_structure: Structure of the reaction
    * @return
    */
-  private Kinetics getPrimaryReactionRate(Structure p_structure) {
+  private Kinetics[] getPrimaryReactionRate(Structure p_structure) {
 	  boolean equivReactants = false;
 	  LinkedHashSet primaryRxnLibrary = getPrimaryRxnLibrary();
 	  Iterator iter = primaryRxnLibrary.iterator();
@@ -925,7 +936,7 @@ public class ReactionTemplate {
 				Global.checkReactionReverse = Global.checkReactionReverse + (System.currentTimeMillis()-pt)/1000/60;
   	        if (!rpsame) {
       			Structure structure = new Structure(reactant,product);
-				Kinetics k = findRateConstant(structure);
+				Kinetics[] k = findRateConstant(structure);
 				Structure structureSp = new Structure(reactantSp, productSp);
 				
 				
@@ -942,8 +953,13 @@ public class ReactionTemplate {
 							reactionMap.put(structureSp,r);
 					}
 					else {
-						
-						old_reaction.addAdditionalKinetics(k, redundancy);
+						if (k == null)
+							old_reaction.addAdditionalKinetics(null,redundancy);
+						else {
+							for (int i=0; i<k.length; i++) {
+								old_reaction.addAdditionalKinetics(k[i], redundancy);
+							}
+						}
 						//old_reaction.getStructure().increaseRedundancy(redundancy);
 						structureSp = null;
 						structure = null;
@@ -1110,14 +1126,16 @@ public class ReactionTemplate {
       			Structure structure = new Structure(reactant,product);
 				Structure structureSp = new Structure(reactantSp,productSp);
       			if (structure.equalsAsChemGraph(p_structure)){
-						Kinetics k = findRateConstant(p_structure);
+						Kinetics[] k = findRateConstant(p_structure);
 						structureSp.direction = p_structure.direction;
 						if (reverseReaction == null){
 							reverseReaction = TemplateReaction.makeTemplateReaction(structureSp,k,this,p_structure);
 						}
 						else {
 							//p_structure.increaseRedundancy(redundancy);
-							reverseReaction.addAdditionalKinetics(k,redundancy);
+							for (int i=0; i<k.length; i++) {
+								reverseReaction.addAdditionalKinetics(k[i],redundancy);
+							}
 							//structure = null;
 						}
 							
@@ -1240,7 +1258,7 @@ public class ReactionTemplate {
       	        if (!rpsame) {
           			Structure structure = new Structure(reactant,product);
 					Structure structureSp = new Structure(reactantSp,productSp);
-					Kinetics k = findRateConstant(structure);
+					Kinetics[] k = findRateConstant(structure);
 					structureSp.direction = structure.direction;
           			structure.setRedundancy(redundancy);
   					Reaction old_reaction = (Reaction)reactionMap.get(structureSp);
@@ -1251,8 +1269,14 @@ public class ReactionTemplate {
 							reactionMap.put(structureSp,r);
 						structure = null;
   					}
-  					else { 						
-  						old_reaction.addAdditionalKinetics(k, redundancy);
+  					else {
+  						if (k == null)
+  							old_reaction.addAdditionalKinetics(null, redundancy);
+  						else {
+  							for (int i=0; i<k.length; i++) {
+  								old_reaction.addAdditionalKinetics(k[i], redundancy);
+  							}
+  						}
 						//old_reaction.getStructure().increaseRedundancy(redundancy);
 						structure = null;
   					}
@@ -1446,7 +1470,7 @@ public class ReactionTemplate {
       	        if (!rpsame) {
           			Structure structure = new Structure(reactant,product);
 					Structure structureSp = new Structure(reactantSp,productSp);
-					Kinetics k = findRateConstant(structure);
+					Kinetics[] k = findRateConstant(structure);
 					structureSp.direction = structure.direction;
           			structure.setRedundancy(redundancy);
   					Reaction old_reaction = (Reaction)reactionMap.get(structureSp);
@@ -1457,8 +1481,14 @@ public class ReactionTemplate {
 							reactionMap.put(structureSp,r);
 						structure = null;
   					}
-  					else { 						
-  						old_reaction.addAdditionalKinetics(k, redundancy);
+  					else {
+  						if (k == null)
+  							old_reaction.addAdditionalKinetics(null,redundancy);
+  						else {
+	  						for (int i=0; i<k.length; i++) {
+	  							old_reaction.addAdditionalKinetics(k[i], redundancy);
+	  						}
+  						}
 						//old_reaction.getStructure().increaseRedundancy(redundancy);
 						structure = null;
   					}
@@ -1625,12 +1655,23 @@ public class ReactionTemplate {
       	read: while (line != null) {
       		StringTokenizer token = new StringTokenizer(line);
       		fgname = token.nextToken();
+			
+			if (fgname.toLowerCase().startsWith("others")) {
+				System.out.println("Skipping dictionary definition of group "+fgname+" because its begins with 'others' and that has special meaning.");
+				// gobble up the rest
+				while (line!=null) {
+					line=ChemParser.readUncommentLine(data);
+				}
+				// now get an unblank line
+				line = ChemParser.readMeaningfulLine(data);
+				continue read;
+			}
+			
       		data.mark(10000);
       		line = ChemParser.readMeaningfulLine(data);
       		if (line == null) break read;
       		line = line.trim();
-      		String prefix = line.substring(0,5);
-      		if (prefix.compareToIgnoreCase("union") == 0) {
+      		if (line.toLowerCase().startsWith("union") || line.startsWith("OR") ) {
       			HashSet union = ChemParser.readUnion(line);
        			unRead.put(fgname,union);
       		}
@@ -1670,13 +1711,6 @@ public class ReactionTemplate {
       catch (Exception e) {
       	throw new IOException(e.getMessage());
       }
-      
-      
-      
-      
-      
-      
-      //#]
   }
   
   //## operation readLibrary(String) 

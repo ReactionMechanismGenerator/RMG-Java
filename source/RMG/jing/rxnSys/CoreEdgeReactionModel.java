@@ -488,9 +488,9 @@ public class CoreEdgeReactionModel implements ReactionModel {
 	        		if (!pDepList.contains(r)  ) {
 	        			nonPDepList.add(r);
 	        		}
-	        		else if (r.getStructure().getReactantNumber() == 2 && r.getStructure().getProductNumber() == 2 && !r.hasAdditionalKinetics())
+	        		else if (r.getStructure().getReactantNumber() == 2 && r.getStructure().getProductNumber() == 2 && !r.hasMultipleKinetics())
 	        			duplicates.add(r);
-	        		else if (r.getStructure().getReactantNumber() == 2 && r.getStructure().getProductNumber() == 2 && r.hasAdditionalKinetics())
+	        		else if (r.getStructure().getReactantNumber() == 2 && r.getStructure().getProductNumber() == 2 && r.hasMultipleKinetics())
 	        			nonPDepList.add(r);
 	        	}
 	        }

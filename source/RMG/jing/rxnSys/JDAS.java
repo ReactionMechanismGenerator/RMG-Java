@@ -625,7 +625,10 @@ public abstract class JDAS implements DAESolver {
 				int direction = p_reaction.getDirection();
 				double Keq = p_reaction.calculateKeq(p_temperature);
 				double lowRate = ((TROEReaction)p_reaction).getLow().calculateRate(p_temperature, -1);
-				double highRate = ((TROEReaction)p_reaction).getKinetics().calculateRate(p_temperature, -1);
+				double highRate = 0.0;
+				for (int numKinetics=0; numKinetics<((TROEReaction)p_reaction).getKinetics().length; ++numKinetics) {
+					highRate += ((TROEReaction)p_reaction).getKinetics()[numKinetics].calculateRate(p_temperature, -1);
+				}
 				double inertColliderEfficiency = ((ThirdBodyReaction)p_reaction).calculateThirdBodyCoefficientForInerts(p_beginStatus);
 				boolean troe7 = ((TROEReaction)p_reaction).getTroe7();
 				TROEODEReaction or = new TROEODEReaction(rnum, pnum, rid, pid, direction, Keq, colliders, efficiency, numCollider, inertColliderEfficiency, T2star, T3star, Tstar, a, highRate, lowRate, troe7);
@@ -651,7 +654,10 @@ public abstract class JDAS implements DAESolver {
 				int direction = p_reaction.getDirection();
 				double Keq = p_reaction.calculateKeq(p_temperature);
 				double lowRate = ((LindemannReaction)p_reaction).getLow().calculateRate(p_temperature, -1);
-				double highRate = ((LindemannReaction)p_reaction).getKinetics().calculateRate(p_temperature, -1);
+				double highRate = 0.0;
+				for (int numKinetics=0; numKinetics<((LindemannReaction)p_reaction).getKinetics().length; ++numKinetics) {
+					highRate += ((LindemannReaction)p_reaction).getKinetics()[0].calculateRate(p_temperature, -1);
+				}
 				double inertColliderEfficiency = ((ThirdBodyReaction)p_reaction).calculateThirdBodyCoefficientForInerts(p_beginStatus);
 				LindemannODEReaction or = new LindemannODEReaction(rnum, pnum, rid, pid, direction, Keq, colliders, efficiency, numCollider, inertColliderEfficiency, highRate, lowRate);
 				return or;

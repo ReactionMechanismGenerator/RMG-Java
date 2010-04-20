@@ -193,54 +193,56 @@ public class ReactionModelGenerator {
              *     chemgraph.  The first instance RMG will attempt to make a 
              *     chemgraph is in reading the primary thermo library.
              */
-            if (line.startsWith("MaxCarbonNumber")) {
-            	StringTokenizer st = new StringTokenizer(line);
-            	String dummyString = st.nextToken();	// This should hold "MaxCarbonNumberPerSpecies:"
-            	int maxCNum = Integer.parseInt(st.nextToken());
-            	ChemGraph.setMaxCarbonNumber(maxCNum);
-            	System.out.println("Note: Overriding RMG-defined MAX_CARBON_NUM with user-defined value: " + maxCNum);
-            	line = ChemParser.readMeaningfulLine(reader);
-            }
-            if (line.startsWith("MaxOxygenNumber")) {
-            	StringTokenizer st = new StringTokenizer(line);
-            	String dummyString = st.nextToken();	// This should hold "MaxOxygenNumberPerSpecies:"
-            	int maxONum = Integer.parseInt(st.nextToken());
-            	ChemGraph.setMaxOxygenNumber(maxONum);
-            	System.out.println("Note: Overriding RMG-defined MAX_OXYGEN_NUM with user-defined value: " + maxONum);
-            	line = ChemParser.readMeaningfulLine(reader);
-            }
-            if (line.startsWith("MaxRadicalNumber")) {
-            	StringTokenizer st = new StringTokenizer(line);
-            	String dummyString = st.nextToken();	// This should hold "MaxRadicalNumberPerSpecies:"
-            	int maxRadNum = Integer.parseInt(st.nextToken());
-            	ChemGraph.setMaxRadicalNumber(maxRadNum);
-            	System.out.println("Note: Overriding RMG-defined MAX_RADICAL_NUM with user-defined value: " + maxRadNum);
-            	line = ChemParser.readMeaningfulLine(reader);
-            }
-            if (line.startsWith("MaxSulfurNumber")) {
-            	StringTokenizer st = new StringTokenizer(line);
-            	String dummyString = st.nextToken();	// This should hold "MaxSulfurNumberPerSpecies:"
-            	int maxSNum = Integer.parseInt(st.nextToken());
-            	ChemGraph.setMaxSulfurNumber(maxSNum);
-            	System.out.println("Note: Overriding RMG-defined MAX_SULFUR_NUM with user-defined value: " + maxSNum);
-            	line = ChemParser.readMeaningfulLine(reader);
-            }
-            if (line.startsWith("MaxSiliconNumber")) {
-            	StringTokenizer st = new StringTokenizer(line);
-            	String dummyString = st.nextToken();	// This should hold "MaxSiliconNumberPerSpecies:"
-            	int maxSiNum = Integer.parseInt(st.nextToken());
-            	ChemGraph.setMaxSiliconNumber(maxSiNum);
-            	System.out.println("Note: Overriding RMG-defined MAX_SILICON_NUM with user-defined value: " + maxSiNum);
-            	line = ChemParser.readMeaningfulLine(reader);
-            }
-            if (line.startsWith("MaxHeavyAtom")) {
-            	StringTokenizer st = new StringTokenizer(line);
-            	String dummyString = st.nextToken();	// This should hold "MaxHeavyAtomPerSpecies:"
-            	int maxHANum = Integer.parseInt(st.nextToken());
-            	ChemGraph.setMaxHeavyAtomNumber(maxHANum);
-            	System.out.println("Note: Overriding RMG-defined MAX_HEAVYATOM_NUM with user-defined value: " + maxHANum);
-            	line = ChemParser.readMeaningfulLine(reader);
-            }
+			
+			line = readMaxAtomTypes(line,reader);
+//            if (line.startsWith("MaxCarbonNumber")) {
+//            	StringTokenizer st = new StringTokenizer(line);
+//            	String dummyString = st.nextToken();	// This should hold "MaxCarbonNumberPerSpecies:"
+//            	int maxCNum = Integer.parseInt(st.nextToken());
+//            	ChemGraph.setMaxCarbonNumber(maxCNum);
+//            	System.out.println("Note: Overriding RMG-defined MAX_CARBON_NUM with user-defined value: " + maxCNum);
+//            	line = ChemParser.readMeaningfulLine(reader);
+//            }
+//            if (line.startsWith("MaxOxygenNumber")) {
+//            	StringTokenizer st = new StringTokenizer(line);
+//            	String dummyString = st.nextToken();	// This should hold "MaxOxygenNumberPerSpecies:"
+//            	int maxONum = Integer.parseInt(st.nextToken());
+//            	ChemGraph.setMaxOxygenNumber(maxONum);
+//            	System.out.println("Note: Overriding RMG-defined MAX_OXYGEN_NUM with user-defined value: " + maxONum);
+//            	line = ChemParser.readMeaningfulLine(reader);
+//            }
+//            if (line.startsWith("MaxRadicalNumber")) {
+//            	StringTokenizer st = new StringTokenizer(line);
+//            	String dummyString = st.nextToken();	// This should hold "MaxRadicalNumberPerSpecies:"
+//            	int maxRadNum = Integer.parseInt(st.nextToken());
+//            	ChemGraph.setMaxRadicalNumber(maxRadNum);
+//            	System.out.println("Note: Overriding RMG-defined MAX_RADICAL_NUM with user-defined value: " + maxRadNum);
+//            	line = ChemParser.readMeaningfulLine(reader);
+//            }
+//            if (line.startsWith("MaxSulfurNumber")) {
+//            	StringTokenizer st = new StringTokenizer(line);
+//            	String dummyString = st.nextToken();	// This should hold "MaxSulfurNumberPerSpecies:"
+//            	int maxSNum = Integer.parseInt(st.nextToken());
+//            	ChemGraph.setMaxSulfurNumber(maxSNum);
+//            	System.out.println("Note: Overriding RMG-defined MAX_SULFUR_NUM with user-defined value: " + maxSNum);
+//            	line = ChemParser.readMeaningfulLine(reader);
+//            }
+//            if (line.startsWith("MaxSiliconNumber")) {
+//            	StringTokenizer st = new StringTokenizer(line);
+//            	String dummyString = st.nextToken();	// This should hold "MaxSiliconNumberPerSpecies:"
+//            	int maxSiNum = Integer.parseInt(st.nextToken());
+//            	ChemGraph.setMaxSiliconNumber(maxSiNum);
+//            	System.out.println("Note: Overriding RMG-defined MAX_SILICON_NUM with user-defined value: " + maxSiNum);
+//            	line = ChemParser.readMeaningfulLine(reader);
+//            }
+//            if (line.startsWith("MaxHeavyAtom")) {
+//            	StringTokenizer st = new StringTokenizer(line);
+//            	String dummyString = st.nextToken();	// This should hold "MaxHeavyAtomPerSpecies:"
+//            	int maxHANum = Integer.parseInt(st.nextToken());
+//            	ChemGraph.setMaxHeavyAtomNumber(maxHANum);
+//            	System.out.println("Note: Overriding RMG-defined MAX_HEAVYATOM_NUM with user-defined value: " + maxHANum);
+//            	line = ChemParser.readMeaningfulLine(reader);
+//            }
 			
 			
          	/*
@@ -293,81 +295,83 @@ public class ReactionModelGenerator {
         	// read temperature model
 			//gmagoon 10/23/07: modified to handle multiple temperatures; note that this requires different formatting of units in condition.txt
         	if (line.startsWith("TemperatureModel:")) {
-        		StringTokenizer st = new StringTokenizer(line);
-        		String name = st.nextToken();
-        		String modelType = st.nextToken();
-        		//String t = st.nextToken();
-        		String unit = st.nextToken();
-				unit = ChemParser.removeBrace(unit);
-        		if (modelType.equals("Constant")) {
-					tempList = new LinkedList();
-					//read first temperature
-					double t = Double.parseDouble(st.nextToken());
-					tempList.add(new ConstantTM(t, unit));
-					Temperature temp = new Temperature(t, unit);//10/29/07 gmagoon: added this line and next two lines to set Global.lowTemperature and Global.highTemperature
-					Global.lowTemperature = (Temperature)temp.clone();
-					Global.highTemperature = (Temperature)temp.clone();
-					//read remaining temperatures
-        			while (st.hasMoreTokens()) {
-						t = Double.parseDouble(st.nextToken());
-						tempList.add(new ConstantTM(t, unit));
-						temp = new Temperature(t,unit);//10/29/07 gmagoon: added this line and next two "if" statements to set Global.lowTemperature and Global.highTemperature
-						if(temp.getK() < Global.lowTemperature.getK())
-							Global.lowTemperature = (Temperature)temp.clone();
-						if(temp.getK() > Global.highTemperature.getK())
-							Global.highTemperature = (Temperature)temp.clone();
-					}
-					// Global.temperature = new Temperature(t,unit);
-        		}
+        		createTModel(line);
+//        		StringTokenizer st = new StringTokenizer(line);
+//        		String name = st.nextToken();
+//        		String modelType = st.nextToken();
+//        		//String t = st.nextToken();
+//        		String unit = st.nextToken();
+//				unit = ChemParser.removeBrace(unit);
+//        		if (modelType.equals("Constant")) {
+//					tempList = new LinkedList();
+//					//read first temperature
+//					double t = Double.parseDouble(st.nextToken());
+//					tempList.add(new ConstantTM(t, unit));
+//					Temperature temp = new Temperature(t, unit);//10/29/07 gmagoon: added this line and next two lines to set Global.lowTemperature and Global.highTemperature
+//					Global.lowTemperature = (Temperature)temp.clone();
+//					Global.highTemperature = (Temperature)temp.clone();
+//					//read remaining temperatures
+//        			while (st.hasMoreTokens()) {
+//						t = Double.parseDouble(st.nextToken());
+//						tempList.add(new ConstantTM(t, unit));
+//						temp = new Temperature(t,unit);//10/29/07 gmagoon: added this line and next two "if" statements to set Global.lowTemperature and Global.highTemperature
+//						if(temp.getK() < Global.lowTemperature.getK())
+//							Global.lowTemperature = (Temperature)temp.clone();
+//						if(temp.getK() > Global.highTemperature.getK())
+//							Global.highTemperature = (Temperature)temp.clone();
+//					}
+//					// Global.temperature = new Temperature(t,unit);
+//        		}
 				//10/23/07 gmagoon: commenting out; further updates needed to get this to work
         		//else if (modelType.equals("Curved")) {
 				//        String t = st.nextToken();
         		//	// add reading curved temperature function here
         		//	temperatureModel = new CurvedTM(new LinkedList());
         		//}
-        		else {
-        			throw new InvalidSymbolException("condition.txt: Unknown TemperatureModel = " + modelType);
-        		}
+//        		else {
+//        			throw new InvalidSymbolException("condition.txt: Unknown TemperatureModel = " + modelType);
+//        		}
         	}
         	else throw new InvalidSymbolException("condition.txt: can't find TemperatureModel!");
 			
         	// read in pressure model
         	line = ChemParser.readMeaningfulLine(reader);
         	if (line.startsWith("PressureModel:")) {
-        		StringTokenizer st = new StringTokenizer(line);
-        		String name = st.nextToken();
-        		String modelType = st.nextToken();
-        		//String p = st.nextToken();
-        		String unit = st.nextToken();
-				unit = ChemParser.removeBrace(unit);
-        		if (modelType.equals("Constant")) {
-					presList = new LinkedList();
-					//read first pressure
-					double p = Double.parseDouble(st.nextToken());
-					Pressure pres = new Pressure(p, unit);
-					Global.lowPressure = (Pressure)pres.clone();
-					Global.highPressure = (Pressure)pres.clone();
-					presList.add(new ConstantPM(p, unit));
-					//read remaining temperatures
-        			while (st.hasMoreTokens()) {
-						p = Double.parseDouble(st.nextToken());
-						presList.add(new ConstantPM(p, unit));
-						pres = new Pressure(p, unit);
-						if(pres.getBar() < Global.lowPressure.getBar())
-							Global.lowPressure = (Pressure)pres.clone();
-						if(pres.getBar() > Global.lowPressure.getBar())
-							Global.highPressure = (Pressure)pres.clone();
-					}	
-        			//Global.pressure = new Pressure(p, unit);
-        		}
-				//10/23/07 gmagoon: commenting out; further updates needed to get this to work
-        		//else if (modelType.equals("Curved")) {
-        		//	// add reading curved pressure function here
-        		//	pressureModel = new CurvedPM(new LinkedList());
-        		//}
-        		else {
-        			throw new InvalidSymbolException("condition.txt: Unknown PressureModel = " + modelType);
-        		}
+        		createPModel(line);
+//        		StringTokenizer st = new StringTokenizer(line);
+//        		String name = st.nextToken();
+//        		String modelType = st.nextToken();
+//        		//String p = st.nextToken();
+//        		String unit = st.nextToken();
+//				unit = ChemParser.removeBrace(unit);
+//        		if (modelType.equals("Constant")) {
+//					presList = new LinkedList();
+//					//read first pressure
+//					double p = Double.parseDouble(st.nextToken());
+//					Pressure pres = new Pressure(p, unit);
+//					Global.lowPressure = (Pressure)pres.clone();
+//					Global.highPressure = (Pressure)pres.clone();
+//					presList.add(new ConstantPM(p, unit));
+//					//read remaining temperatures
+//        			while (st.hasMoreTokens()) {
+//						p = Double.parseDouble(st.nextToken());
+//						presList.add(new ConstantPM(p, unit));
+//						pres = new Pressure(p, unit);
+//						if(pres.getBar() < Global.lowPressure.getBar())
+//							Global.lowPressure = (Pressure)pres.clone();
+//						if(pres.getBar() > Global.lowPressure.getBar())
+//							Global.highPressure = (Pressure)pres.clone();
+//					}	
+//        			//Global.pressure = new Pressure(p, unit);
+//        		}
+//				//10/23/07 gmagoon: commenting out; further updates needed to get this to work
+//        		//else if (modelType.equals("Curved")) {
+//        		//	// add reading curved pressure function here
+//        		//	pressureModel = new CurvedPM(new LinkedList());
+//        		//}
+//        		else {
+//        			throw new InvalidSymbolException("condition.txt: Unknown PressureModel = " + modelType);
+//        		}
         	}
         	else throw new InvalidSymbolException("condition.txt: can't find PressureModel!");
             
@@ -472,138 +476,146 @@ public class ReactionModelGenerator {
         	//LinkedHashSet p_speciesSeed = new LinkedHashSet();//gmagoon 10/4/07: changed to p_speciesSeed
 			//setSpeciesSeed(p_speciesSeed);//gmagoon 10/4/07: added
         	LinkedHashMap speciesSet = new LinkedHashMap();
-        	LinkedHashMap speciesStatus = new LinkedHashMap();
-			int speciesnum = 1;
+        	
+        	/*
+        	 * 7/Apr/2010: MRH
+        	 * 	Neither of these variables are utilized
+        	 */
+//        	LinkedHashMap speciesStatus = new LinkedHashMap();
+//			int speciesnum = 1;
+        	
 			//System.out.println(line);
         	if (line.startsWith("InitialStatus")) {
-        		line = ChemParser.readMeaningfulLine(reader);
-        		while (!line.equals("END")) {
-        			StringTokenizer st = new StringTokenizer(line);
-        			String index = st.nextToken();
-        			String name = null;
-        			if (!index.startsWith("(")) name = index;
-        			else name = st.nextToken();
-					//if (restart) name += "("+speciesnum+")";
-        			// 24Jun2009: MRH
-        			//	Check if the species name begins with a number.
-        			//	If so, terminate the program and inform the user to choose
-        			//		a different name.  This is implemented so that the chem.inp
-        			//		file generated will be valid when run in Chemkin
-        			try {
-        				int doesNameBeginWithNumber = Integer.parseInt(name.substring(0,1));
-        				System.out.println("\nA species name should not begin with a number." +
-										   " Please rename species: " + name + "\n");
-        				System.exit(0);
-        			} catch (NumberFormatException e) {
-        				// We're good
-        			}
-					speciesnum ++;
-					if (!(st.hasMoreTokens())) throw new InvalidSymbolException("Couldn't find concentration of species: "+name);
-        			String conc = st.nextToken();
-        			double concentration = Double.parseDouble(conc);
-        			String unit = st.nextToken();
-        			unit = ChemParser.removeBrace(unit);
-        			if (unit.equals("mole/l") || unit.equals("mol/l") || unit.equals("mole/liter") || unit.equals("mol/liter")) {
-        				concentration /= 1000;
-        				unit = "mol/cm3";
-        			}
-        			else if (unit.equals("mole/m3") || unit.equals("mol/m3")) {
-        				concentration /= 1000000;
-        				unit = "mol/cm3";
-        			}
-        			else if (unit.equals("molecule/cm3") || unit.equals("molecules/cm3")) {
-        				concentration /= 6.022e23;
-        			}
-        			else if (!unit.equals("mole/cm3") && !unit.equals("mol/cm3")) {
-        				throw new InvalidUnitException("Species Concentration in condition.txt!");
-        			}
-					
-        			//GJB to allow "unreactive" species that only follow user-defined library reactions.  
-        			// They will not react according to RMG reaction families 
-					boolean IsReactive = true;
-                    boolean IsConstantConcentration = false;
-					while (st.hasMoreTokens()) {
-						String reactive = st.nextToken().trim();
-						if (reactive.equalsIgnoreCase("unreactive"))
-							IsReactive = false;
-                        if (reactive.equalsIgnoreCase("constantconcentration"))
-                            IsConstantConcentration=true;
-					}
-        			
-        			Graph g = ChemParser.readChemGraph(reader);
-        			ChemGraph cg = null;
-        			try {
-        				cg = ChemGraph.make(g);
-        			}
-        			catch (ForbiddenStructureException e) {
-        				System.out.println("Forbidden Structure:\n" + e.getMessage());
-						throw new InvalidSymbolException("A species in the input file has a forbidden structure.");
-        			}
-					//System.out.println(name);
-        			Species species = Species.make(name,cg);
-        			species.setReactivity(IsReactive); // GJB
-                    species.setConstantConcentration(IsConstantConcentration);
-           			speciesSet.put(name, species);
-        			getSpeciesSeed().add(species);
-        			double flux = 0;
-        			int species_type = 1; // reacted species
-        			SpeciesStatus ss = new SpeciesStatus(species,species_type,concentration,flux);
-        			speciesStatus.put(species, ss);
-        			line = ChemParser.readMeaningfulLine(reader);
-        		}
-				ReactionTime initial = new ReactionTime(0,"S");
-				//10/23/07 gmagoon: modified for handling multiple temperature, pressure conditions; note: concentration within speciesStatus (and list of conversion values) should not need to be modified for each T,P since this is done within isTPCconsistent in ReactionSystem
-				initialStatusList = new LinkedList();
-				for (Iterator iter = tempList.iterator(); iter.hasNext(); ) {
-					TemperatureModel tm = (TemperatureModel)iter.next();
-					for (Iterator iter2 = presList.iterator(); iter2.hasNext(); ){
-						PressureModel pm = (PressureModel)iter2.next();
-						//   LinkedHashMap speStat = (LinkedHashMap)speciesStatus.clone();//10/31/07 gmagoon: trying creating multiple instances of speciesStatus to address issues with concentration normalization (last normalization seems to apply to all)
-						Set ks = speciesStatus.keySet();
-						LinkedHashMap speStat = new LinkedHashMap();
-						for (Iterator iter3 = ks.iterator(); iter3.hasNext();){//11/1/07 gmagoon: perform deep copy; (is there an easier or more elegant way to do this?)
-							SpeciesStatus ssCopy = (SpeciesStatus)speciesStatus.get(iter3.next());
-							speStat.put(ssCopy.getSpecies(),new SpeciesStatus(ssCopy.getSpecies(),ssCopy.getSpeciesType(),ssCopy.getConcentration(),ssCopy.getFlux()));
-						}
-						initialStatusList.add(new InitialStatus(speStat,tm.getTemperature(initial),pm.getPressure(initial)));
-					}
-				}
+        		speciesSet = populateInitialStatusListWithReactiveSpecies(reader);
+//        		line = ChemParser.readMeaningfulLine(reader);
+//        		while (!line.equals("END")) {
+//        			StringTokenizer st = new StringTokenizer(line);
+//        			String index = st.nextToken();
+//        			String name = null;
+//        			if (!index.startsWith("(")) name = index;
+//        			else name = st.nextToken();
+//					//if (restart) name += "("+speciesnum+")";
+//        			// 24Jun2009: MRH
+//        			//	Check if the species name begins with a number.
+//        			//	If so, terminate the program and inform the user to choose
+//        			//		a different name.  This is implemented so that the chem.inp
+//        			//		file generated will be valid when run in Chemkin
+//        			try {
+//        				int doesNameBeginWithNumber = Integer.parseInt(name.substring(0,1));
+//        				System.out.println("\nA species name should not begin with a number." +
+//										   " Please rename species: " + name + "\n");
+//        				System.exit(0);
+//        			} catch (NumberFormatException e) {
+//        				// We're good
+//        			}
+//					speciesnum ++;
+//					if (!(st.hasMoreTokens())) throw new InvalidSymbolException("Couldn't find concentration of species: "+name);
+//        			String conc = st.nextToken();
+//        			double concentration = Double.parseDouble(conc);
+//        			String unit = st.nextToken();
+//        			unit = ChemParser.removeBrace(unit);
+//        			if (unit.equals("mole/l") || unit.equals("mol/l") || unit.equals("mole/liter") || unit.equals("mol/liter")) {
+//        				concentration /= 1000;
+//        				unit = "mol/cm3";
+//        			}
+//        			else if (unit.equals("mole/m3") || unit.equals("mol/m3")) {
+//        				concentration /= 1000000;
+//        				unit = "mol/cm3";
+//        			}
+//        			else if (unit.equals("molecule/cm3") || unit.equals("molecules/cm3")) {
+//        				concentration /= 6.022e23;
+//        			}
+//        			else if (!unit.equals("mole/cm3") && !unit.equals("mol/cm3")) {
+//        				throw new InvalidUnitException("Species Concentration in condition.txt!");
+//        			}
+//					
+//        			//GJB to allow "unreactive" species that only follow user-defined library reactions.  
+//        			// They will not react according to RMG reaction families 
+//					boolean IsReactive = true;
+//                    boolean IsConstantConcentration = false;
+//					while (st.hasMoreTokens()) {
+//						String reactive = st.nextToken().trim();
+//						if (reactive.equalsIgnoreCase("unreactive"))
+//							IsReactive = false;
+//                        if (reactive.equalsIgnoreCase("constantconcentration"))
+//                            IsConstantConcentration=true;
+//					}
+//        			
+//        			Graph g = ChemParser.readChemGraph(reader);
+//        			ChemGraph cg = null;
+//        			try {
+//        				cg = ChemGraph.make(g);
+//        			}
+//        			catch (ForbiddenStructureException e) {
+//        				System.out.println("Forbidden Structure:\n" + e.getMessage());
+//						throw new InvalidSymbolException("A species in the input file has a forbidden structure.");
+//        			}
+//					//System.out.println(name);
+//        			Species species = Species.make(name,cg);
+//        			species.setReactivity(IsReactive); // GJB
+//                    species.setConstantConcentration(IsConstantConcentration);
+//           			speciesSet.put(name, species);
+//        			getSpeciesSeed().add(species);
+//        			double flux = 0;
+//        			int species_type = 1; // reacted species
+//        			SpeciesStatus ss = new SpeciesStatus(species,species_type,concentration,flux);
+//        			speciesStatus.put(species, ss);
+//        			line = ChemParser.readMeaningfulLine(reader);
+//        		}
+//				ReactionTime initial = new ReactionTime(0,"S");
+//				//10/23/07 gmagoon: modified for handling multiple temperature, pressure conditions; note: concentration within speciesStatus (and list of conversion values) should not need to be modified for each T,P since this is done within isTPCconsistent in ReactionSystem
+//				initialStatusList = new LinkedList();
+//				for (Iterator iter = tempList.iterator(); iter.hasNext(); ) {
+//					TemperatureModel tm = (TemperatureModel)iter.next();
+//					for (Iterator iter2 = presList.iterator(); iter2.hasNext(); ){
+//						PressureModel pm = (PressureModel)iter2.next();
+//						//   LinkedHashMap speStat = (LinkedHashMap)speciesStatus.clone();//10/31/07 gmagoon: trying creating multiple instances of speciesStatus to address issues with concentration normalization (last normalization seems to apply to all)
+//						Set ks = speciesStatus.keySet();
+//						LinkedHashMap speStat = new LinkedHashMap();
+//						for (Iterator iter3 = ks.iterator(); iter3.hasNext();){//11/1/07 gmagoon: perform deep copy; (is there an easier or more elegant way to do this?)
+//							SpeciesStatus ssCopy = (SpeciesStatus)speciesStatus.get(iter3.next());
+//							speStat.put(ssCopy.getSpecies(),new SpeciesStatus(ssCopy.getSpecies(),ssCopy.getSpeciesType(),ssCopy.getConcentration(),ssCopy.getFlux()));
+//						}
+//						initialStatusList.add(new InitialStatus(speStat,tm.getTemperature(initial),pm.getPressure(initial)));
+//					}
+//				}
         	}
         	else throw new InvalidSymbolException("condition.txt: can't find InitialStatus!");
 			
         	// read in inert gas concentration
         	line = ChemParser.readMeaningfulLine(reader);
             if (line.startsWith("InertGas:")) {
-           		line = ChemParser.readMeaningfulLine(reader);
-           		while (!line.equals("END")) {
-        	    	StringTokenizer st = new StringTokenizer(line);
-        	    	String name = st.nextToken().trim();
-        			String conc = st.nextToken();
-        			double inertConc = Double.parseDouble(conc);
-        			String unit = st.nextToken();
-        			unit = ChemParser.removeBrace(unit);
-        			if (unit.equals("mole/l") || unit.equals("mol/l") || unit.equals("mole/liter") || unit.equals("mol/liter")) {
-        				inertConc /= 1000;
-        				unit = "mol/cm3";
-        			}
-        			else if (unit.equals("mole/m3") || unit.equals("mol/m3")) {
-        				inertConc /= 1000000;
-        				unit = "mol/cm3";
-        			}
-        			else if (unit.equals("molecule/cm3") || unit.equals("molecules/cm3")) {
-        				inertConc /= 6.022e23;
-        				unit = "mol/cm3";
-        			}
-        			else if (!unit.equals("mole/cm3") && !unit.equals("mol/cm3")) {
-        				throw new InvalidUnitException("Inert Gas Concentration not recognized: " + unit);
-        			}
-					
-        			//SystemSnapshot.putInertGas(name,inertConc);
-					for(Iterator iter=initialStatusList.iterator();iter.hasNext(); ){//6/23/09 gmagoon: needed to change this to accommodate non-static inertConc
-						((InitialStatus)iter.next()).putInertGas(name,inertConc);
-					}
-        	   		line = ChemParser.readMeaningfulLine(reader);
-        		}
+            	populateInitialStatusListWithInertSpecies(reader);
+//           		line = ChemParser.readMeaningfulLine(reader);
+//           		while (!line.equals("END")) {
+//        	    	StringTokenizer st = new StringTokenizer(line);
+//        	    	String name = st.nextToken().trim();
+//        			String conc = st.nextToken();
+//        			double inertConc = Double.parseDouble(conc);
+//        			String unit = st.nextToken();
+//        			unit = ChemParser.removeBrace(unit);
+//        			if (unit.equals("mole/l") || unit.equals("mol/l") || unit.equals("mole/liter") || unit.equals("mol/liter")) {
+//        				inertConc /= 1000;
+//        				unit = "mol/cm3";
+//        			}
+//        			else if (unit.equals("mole/m3") || unit.equals("mol/m3")) {
+//        				inertConc /= 1000000;
+//        				unit = "mol/cm3";
+//        			}
+//        			else if (unit.equals("molecule/cm3") || unit.equals("molecules/cm3")) {
+//        				inertConc /= 6.022e23;
+//        				unit = "mol/cm3";
+//        			}
+//        			else if (!unit.equals("mole/cm3") && !unit.equals("mol/cm3")) {
+//        				throw new InvalidUnitException("Inert Gas Concentration not recognized: " + unit);
+//        			}
+//					
+//        			//SystemSnapshot.putInertGas(name,inertConc);
+//					for(Iterator iter=initialStatusList.iterator();iter.hasNext(); ){//6/23/09 gmagoon: needed to change this to accommodate non-static inertConc
+//						((InitialStatus)iter.next()).putInertGas(name,inertConc);
+//					}
+//        	   		line = ChemParser.readMeaningfulLine(reader);
+//        		}
            	}
         	else throw new InvalidSymbolException("condition.txt: can't find Inert gas concentration!");
 			
@@ -627,251 +639,23 @@ public class ReactionModelGenerator {
         	}
         	else throw new InvalidSymbolException("condition.txt: can't find SpectroscopicDataEstimator!");
 			
-        	// pressure dependence flag
+        	// pressure dependence and related flags
 			line = ChemParser.readMeaningfulLine(reader);
-        	if (line.toLowerCase().startsWith("pressuredependence:")) {
-        		setPressureDependenceType(line);
-//				StringTokenizer st = new StringTokenizer(line);
-//        		String name = st.nextToken();
-//        		String pDepType = st.nextToken();
-//        		if (pDepType.toLowerCase().equals("modifiedstrongcollision") ||
-//					pDepType.toLowerCase().equals("reservoirstate") ||
-//					pDepType.toLowerCase().equals("chemdis")) {
-//					
-//					reactionModelEnlarger = new RateBasedPDepRME();
-//        			PDepNetwork.generateNetworks = true;
-//					
-//					if (pDepType.toLowerCase().equals("reservoirstate")) {
-//						((RateBasedPDepRME) reactionModelEnlarger).setPDepKineticsEstimator(new FastMasterEqn(FastMasterEqn.Mode.RESERVOIRSTATE));
-//						if (SpectroscopicData.mode == SpectroscopicData.Mode.OFF) {
-//							System.out.println("Warning: Spectroscopic data needed for pressure dependence; switching SpectroscopicDataEstimator to FrequencyGroups.");
-//							SpectroscopicData.mode = SpectroscopicData.Mode.FREQUENCYGROUPS;
-//						}
-//					}
-//					else if (pDepType.toLowerCase().equals("modifiedstrongcollision")) {
-//						((RateBasedPDepRME) reactionModelEnlarger).setPDepKineticsEstimator(new FastMasterEqn(FastMasterEqn.Mode.STRONGCOLLISION));
-//						if (SpectroscopicData.mode == SpectroscopicData.Mode.OFF) {
-//							System.out.println("Warning: Spectroscopic data needed for pressure dependence; switching SpectroscopicDataEstimator to FrequencyGroups.");
-//							SpectroscopicData.mode = SpectroscopicData.Mode.FREQUENCYGROUPS;
-//						}
-//					}
-//					else if (pDepType.toLowerCase().equals("chemdis")) {
-//						((RateBasedPDepRME) reactionModelEnlarger).setPDepKineticsEstimator(new Chemdis());
-//						if (SpectroscopicData.mode != SpectroscopicData.Mode.THREEFREQUENCY) {
-//							System.out.println("Warning: Switching SpectroscopicDataEstimator to three-frequency model.");
-//							SpectroscopicData.mode = SpectroscopicData.Mode.THREEFREQUENCY;
-//						}
-//					}
-//					else {
-//						throw new InvalidSymbolException("condition.txt: Unknown PDepKineticsEstimator = " + pDepType);
-//					}
-//					
-//					// Set temperatures and pressures to use in PDep kinetics estimation
-//					Temperature[] temperatures = new Temperature[8];
-//					temperatures[0] = new Temperature(300, "K");
-//					temperatures[1] = new Temperature(400, "K");
-//					temperatures[2] = new Temperature(600, "K");
-//					temperatures[3] = new Temperature(900, "K");
-//					temperatures[4] = new Temperature(1200, "K");
-//					temperatures[5] = new Temperature(1500, "K");
-//					temperatures[6] = new Temperature(1800, "K");
-//					temperatures[7] = new Temperature(2100, "K");
-//					FastMasterEqn.setTemperatures(temperatures);
-//					PDepRateConstant.setTemperatures(temperatures);
-//					ChebyshevPolynomials.setTlow(temperatures[0]);
-//					ChebyshevPolynomials.setTup(temperatures[7]);
-//					
-//					Pressure[] pressures = new Pressure[5];
-//					pressures[0] = new Pressure(0.01, "bar");
-//					pressures[1] = new Pressure(0.1, "bar");
-//					pressures[2] = new Pressure(1, "bar");
-//					pressures[3] = new Pressure(10, "bar");
-//					pressures[4] = new Pressure(100, "bar");
-//					FastMasterEqn.setPressures(pressures);
-//					PDepRateConstant.setPressures(pressures);
-//					ChebyshevPolynomials.setPlow(pressures[0]);
-//					ChebyshevPolynomials.setPup(pressures[4]);
-//					
-//				}
-//				else if (pDepType.toLowerCase().equals("off")) {
-//					// No pressure dependence
-//					reactionModelEnlarger = new RateBasedRME();
-//        			PDepNetwork.generateNetworks = false;
-//				}
-//				else {
-//					throw new InvalidSymbolException("condition.txt: Unknown PressureDependence = " + pDepType);
-//				}
-			}
-			else throw new InvalidSymbolException("condition.txt: can't find PressureDependence flag!");
-			
-			// pressure dependence flag
-			if (reactionModelEnlarger instanceof RateBasedPDepRME) {
-				line = ChemParser.readMeaningfulLine(reader);
-				if (line.toLowerCase().startsWith("pdepkineticsmodel:")) {
-					line = setPDepKineticsModel(line,reader);
-//					StringTokenizer st = new StringTokenizer(line);
-//					String name = st.nextToken();
-//					String pDepKinType = st.nextToken();
-//					if (pDepKinType.toLowerCase().equals("chebyshev") ||
-//						pDepKinType.toLowerCase().equals("pdeparrhenius") ||
-//						pDepKinType.toLowerCase().equals("rate")) {
-//						
-//						if (pDepKinType.toLowerCase().equals("chebyshev")) {
-//							PDepRateConstant.setMode(PDepRateConstant.Mode.CHEBYSHEV);
-//							line = ChemParser.readMeaningfulLine(reader);
-//							if (line.startsWith("TRange")) {
-//								st = new StringTokenizer(line);
-//								String temp = st.nextToken(); // Should be "TRange:"
-//								String TUNITS = ChemParser.removeBrace(st.nextToken());
-//								double tLow = Double.parseDouble(st.nextToken());
-//								Temperature TMIN = new Temperature(tLow,TUNITS);
-//								ChebyshevPolynomials.setTlow(TMIN);
-//								double tHigh = Double.parseDouble(st.nextToken());
-//								if (tHigh <= tLow) {
-//									System.err.println("Tmax is less than or equal to Tmin");
-//									System.exit(0);
-//								}
-//								Temperature TMAX = new Temperature(tHigh,TUNITS);
-//								ChebyshevPolynomials.setTup(TMAX);
-//								int tResolution = Integer.parseInt(st.nextToken());
-//								int tbasisFuncs = Integer.parseInt(st.nextToken());
-//								if (tbasisFuncs > tResolution) {
-//									System.err.println("The number of basis functions cannot exceed the number of grid points");
-//									System.exit(0);
-//								}
-//								FastMasterEqn.setNumTBasisFuncs(tbasisFuncs);
-//								line = ChemParser.readMeaningfulLine(reader);
-//								String PUNITS = "";
-//								Pressure PMIN = new Pressure();
-//								Pressure PMAX = new Pressure();
-//								int pResolution = 0;
-//								int pbasisFuncs = 0;
-//								if (line.startsWith("PRange")) {
-//									st = new StringTokenizer(line);
-//									temp = st.nextToken(); // Should be "PRange:"
-//									PUNITS = ChemParser.removeBrace(st.nextToken());
-//									double pLow = Double.parseDouble(st.nextToken());
-//									PMIN = new Pressure(pLow,PUNITS);
-//									ChebyshevPolynomials.setPlow(PMIN);
-//									double pHigh = Double.parseDouble(st.nextToken());
-//									if (pHigh <= pLow) {
-//										System.err.println("Pmax is less than or equal to Pmin");
-//										System.exit(0);
-//									}
-//									PMAX = new Pressure(pHigh,PUNITS);
-//									ChebyshevPolynomials.setPup(PMAX);
-//									pResolution = Integer.parseInt(st.nextToken());
-//									pbasisFuncs = Integer.parseInt(st.nextToken());
-//									if (pbasisFuncs > pResolution) {
-//										System.err.println("The number of basis functions cannot exceed the number of grid points");
-//										System.exit(0);
-//									}
-//									FastMasterEqn.setNumPBasisFuncs(pbasisFuncs);
-//								}
-//								else {
-//									System.err.println("RMG cannot locate PRange field for Chebyshev polynomials.");
-//									System.exit(0);
-//								}
-//								
-//								// Set temperatures and pressures to use in PDep kinetics estimation
-//								Temperature[] temperatures = new Temperature[tResolution];
-//								for (int i=0; i<temperatures.length; i++) {
-//									double tempValueTilda = Math.cos((2*(i+1)-1)*Math.PI/(2*temperatures.length));
-//									double tempValue = 2 / (tempValueTilda * ((1/TMAX.getK()) - (1/TMIN.getK())) + (1/TMIN.getK()) + (1/TMAX.getK()));
-//									temperatures[temperatures.length-i-1] = new Temperature(tempValue,TUNITS);
-//								}
-//								FastMasterEqn.setTemperatures(temperatures);
-//								PDepRateConstant.setTemperatures(temperatures);
-//								
-//								Pressure[] pressures = new Pressure[pResolution];
-//								for (int j=0; j<pressures.length; j++) {
-//									double pressValueTilda = Math.cos((2*(j+1)-1)*Math.PI/(2*pressures.length));
-//									double pressValue = Math.pow(10,(pressValueTilda*(Math.log10(PMAX.getBar())-Math.log10(PMIN.getBar()))+Math.log10(PMIN.getBar())+Math.log10(PMAX.getBar()))/2);
-//									pressures[pressures.length-j-1] = new Pressure(pressValue,PUNITS);
-//								}
-//								FastMasterEqn.setPressures(pressures);
-//								PDepRateConstant.setPressures(pressures);
-//								line = ChemParser.readMeaningfulLine(reader);
-//							}
-//						}
-//						else if (pDepKinType.toLowerCase().equals("pdeparrhenius")) {
-//							//PDepRateConstant.setMode(PDepRateConstant.Mode.PDEPARRHENIUS);
-//							/*
-//							 *  Updated by MRH on 10Feb2010
-//							 *  	Allow user to specify # of T's/P's solved for in fame &
-//							 *  	# of PLOG's to report
-//							 */
-//							PDepRateConstant.setMode(PDepRateConstant.Mode.PDEPARRHENIUS);
-//							line = ChemParser.readMeaningfulLine(reader);
-//							if (line.startsWith("TRange")) {
-//								st = new StringTokenizer(line);
-//								String temp = st.nextToken(); // Should be "TRange:"
-//								String TUNITS = ChemParser.removeBrace(st.nextToken());
-//								int numT = Integer.parseInt(st.nextToken());
-//								Temperature[] listOfTs = new Temperature[numT];
-//								int counter = 0;
-//								while (st.hasMoreTokens()) {
-//									listOfTs[counter] = new Temperature(Double.parseDouble(st.nextToken()),TUNITS);
-//									++counter;
-//								}
-//								if (counter != numT) {
-//									System.out.println("Warning in TRange field of PressureDependence:\n" +
-//											"The stated number of temperatures is: " + numT + 
-//											"but the length of the temperature list is: " + counter);
-//								}
-//								
-//								line = ChemParser.readMeaningfulLine(reader);
-//								String PUNITS = "";
-//								if (line.startsWith("PRange")) {
-//									st = new StringTokenizer(line);
-//									temp = st.nextToken(); // Should be "PRange:"
-//									PUNITS = ChemParser.removeBrace(st.nextToken());
-//									int numP = Integer.parseInt(st.nextToken());
-//									Pressure[] listOfPs = new Pressure[numP];
-//									counter = 0;
-//									while (st.hasMoreTokens()) {
-//										listOfPs[counter] = new Pressure(Double.parseDouble(st.nextToken()),PUNITS);
-//										++counter;
-//									}
-//									if (counter != numP) {
-//										System.out.println("Warning in PRange field of PressureDependence:\n" +
-//												"The stated number of pressures is: " + numT + 
-//												"but the length of the pressure list is: " + counter);
-//									}
-//									FastMasterEqn.setTemperatures(listOfTs);
-//									PDepRateConstant.setTemperatures(listOfTs);
-//									FastMasterEqn.setPressures(listOfPs);
-//									PDepRateConstant.setPressures(listOfPs);
-//									PDepArrheniusKinetics.setNumPressures(numP);
-//									PDepArrheniusKinetics.setPressures(listOfPs);
-//								}
-//								else {
-//									System.err.println("RMG cannot locate PRange field for PDepArrhenius.");
-//									System.exit(0);
-//								}
-//								
-//								line = ChemParser.readMeaningfulLine(reader);
-//							}
-//						}
-//						// 6Jul2009-MRH:
-//						//	RATE mode reports p-dep rxn kinetics as: A 0.0 0.0
-//						//		where A is k(T,P) evaluated at the single temperature
-//						//		and pressure given in the condition.txt file
-//						else if (pDepKinType.toLowerCase().equals("rate"))
-//							PDepRateConstant.setMode(PDepRateConstant.Mode.RATE);
-//						
-//					}
-//					else {
-//						throw new InvalidSymbolException("condition.txt: Unknown PDepKinetics = " + pDepKinType);
-//					}
-				}
-				else throw new InvalidSymbolException("condition.txt: can't find PDepKinetics flag!");
-			}
+        	if (line.toLowerCase().startsWith("pressuredependence:"))
+        		line = setPressureDependenceOptions(line,reader);
+			else
+				throw new InvalidSymbolException("condition.txt: can't find PressureDependence flag!");
 			
         	// include species (optional)
-			if (!PDepRateConstant.getMode().name().equals("CHEBYSHEV") &&
-					!PDepRateConstant.getMode().name().equals("PDEPARRHENIUS"))
-				line = ChemParser.readMeaningfulLine(reader);
+        	/*
+        	 * 
+        	 * MRH 3-APR-2010:
+        	 * This if statement is no longer necessary and was causing an error
+        	 * 	when the PressureDependence field was set to "off"
+        	 */
+//			if (!PDepRateConstant.getMode().name().equals("CHEBYSHEV") &&
+//					!PDepRateConstant.getMode().name().equals("PDEPARRHENIUS"))
+//				line = ChemParser.readMeaningfulLine(reader);
 			if (line.startsWith("IncludeSpecies")) {
 				StringTokenizer st = new StringTokenizer(line);
 				String iS = st.nextToken();
@@ -1674,11 +1458,26 @@ public class ReactionModelGenerator {
 				double chemkint = (System.currentTimeMillis()-startTime)/1000/60;
 				
 				if (writerestart) {
+					/*
+					 * Rename current restart files:
+					 * 	In the event RMG fails while writing the restart files,
+					 * 	user won't lose any information
+					 */
+					String[] restartFiles = {"Restart/coreReactions.txt", "Restart/coreSpecies.txt",
+							"Restart/edgeReactions.txt", "Restart/edgeSpecies.txt", "Restart/lindemannReactions.txt",
+							"Restart/pdepnetworks.txt", "Restart/thirdBodyReactions.txt", "Restart/troeReactions.txt"};
+					writeBackupRestartFiles(restartFiles);
+					
 					writeCoreSpecies();
 					writeCoreReactions();
 					writeEdgeSpecies();
 					writeEdgeReactions();
 					if (PDepNetwork.generateNetworks == true)	writePDepNetworks();
+					
+					/*
+					 * Remove backup restart files from Restart folder
+					 */
+					removeBackupRestartFiles(restartFiles);
 				}
 				
 				//10/24/07 gmagoon: changed to use reactionSystemList
@@ -2047,177 +1846,192 @@ public class ReactionModelGenerator {
         }
 		
     }
-    
-    private void parseRestartFiles() {
-		parseAllSpecies();
-		parseCoreSpecies();
-		parseEdgeSpecies();
-		parseAllReactions();
-		parseCoreReactions();
-		
-	}
+
+    /*
+     * MRH 23MAR2010:
+     * 	Commenting out deprecated parseRestartFiles method
+     */
+//    private void parseRestartFiles() {
+//		parseAllSpecies();
+//		parseCoreSpecies();
+//		parseEdgeSpecies();
+//		parseAllReactions();
+//		parseCoreReactions();
+//		
+//	}
 	
 	
+	/*
+	 * MRH 23MAR2010:
+	 * 	Commenting out deprecated parseEdgeReactions method
+	 */	
+//	private void parseEdgeReactions() {
+//		SpeciesDictionary dictionary = SpeciesDictionary.getInstance();
+//		//HasMap speciesMap = dictionary.dictionary;
+//		try{
+//			File coreReactions = new File("Restart/edgeReactions.txt");
+//			FileReader fr = new FileReader(coreReactions);
+//			BufferedReader reader = new BufferedReader(fr);
+//			String line = ChemParser.readMeaningfulLine(reader);
+//			boolean found = false;
+//			LinkedHashSet reactionSet = new LinkedHashSet();
+//			while (line != null){
+//				Reaction reaction = ChemParser.parseEdgeArrheniusReaction(dictionary,line,1,1);
+//				boolean added = reactionSet.add(reaction);
+//				if (!added){
+//					if (reaction.hasResonanceIsomerAsReactant()){
+//						//Structure reactionStructure = reaction.getStructure();
+//						found = getResonanceStructure(reaction,"reactants", reactionSet);
+//					}
+//					if (reaction.hasResonanceIsomerAsProduct() && !found){
+//						//Structure reactionStructure = reaction.getStructure();
+//						found = getResonanceStructure(reaction,"products", reactionSet);
+//					}
+//					
+//					if (!found){
+//						System.out.println("Cannot add reaction "+line+" to the Reaction Edge. All resonance isomers have already been added");
+//						System.exit(0);
+//					}
+//					else found = false;
+//				}
+//				//Reaction reverse = reaction.getReverseReaction();
+//				//if (reverse != null) reactionSet.add(reverse);
+//				line = ChemParser.readMeaningfulLine(reader);
+//			}
+//			((CoreEdgeReactionModel)getReactionModel()).addReactionSet(reactionSet);
+//		}
+//		catch (IOException e){
+//			System.out.println("Could not read the corespecies restart file");
+//        	System.exit(0);
+//		}
+//		
+//	}
 	
-	private void parseEdgeReactions() {
-		SpeciesDictionary dictionary = SpeciesDictionary.getInstance();
-		//HasMap speciesMap = dictionary.dictionary;
-		try{
-			File coreReactions = new File("Restart/edgeReactions.txt");
-			FileReader fr = new FileReader(coreReactions);
-			BufferedReader reader = new BufferedReader(fr);
-			String line = ChemParser.readMeaningfulLine(reader);
-			boolean found = false;
-			LinkedHashSet reactionSet = new LinkedHashSet();
-			while (line != null){
-				Reaction reaction = ChemParser.parseEdgeArrheniusReaction(dictionary,line,1,1);
-				boolean added = reactionSet.add(reaction);
-				if (!added){
-					if (reaction.hasResonanceIsomerAsReactant()){
-						//Structure reactionStructure = reaction.getStructure();
-						found = getResonanceStructure(reaction,"reactants", reactionSet);
-					}
-					if (reaction.hasResonanceIsomerAsProduct() && !found){
-						//Structure reactionStructure = reaction.getStructure();
-						found = getResonanceStructure(reaction,"products", reactionSet);
-					}
-					
-					if (!found){
-						System.out.println("Cannot add reaction "+line+" to the Reaction Edge. All resonance isomers have already been added");
-						System.exit(0);
-					}
-					else found = false;
-				}
-				//Reaction reverse = reaction.getReverseReaction();
-				//if (reverse != null) reactionSet.add(reverse);
-				line = ChemParser.readMeaningfulLine(reader);
-			}
-			((CoreEdgeReactionModel)getReactionModel()).addReactionSet(reactionSet);
-		}
-		catch (IOException e){
-			System.out.println("Could not read the corespecies restart file");
-        	System.exit(0);
-		}
-		
-	}
+	/*
+	 * MRH 23MAR2010:
+	 * 	Commenting out deprecated parseAllSpecies method
+	 */
+//	public void parseCoreReactions() {
+//		SpeciesDictionary dictionary = SpeciesDictionary.getInstance();
+//		int i=1;
+//		//HasMap speciesMap = dictionary.dictionary;
+//		try{
+//			File coreReactions = new File("Restart/coreReactions.txt");
+//			FileReader fr = new FileReader(coreReactions);
+//			BufferedReader reader = new BufferedReader(fr);
+//			String line = ChemParser.readMeaningfulLine(reader);
+//			boolean found = false;
+//			LinkedHashSet reactionSet = new LinkedHashSet();
+//			while (line != null){
+//				Reaction reaction = ChemParser.parseCoreArrheniusReaction(dictionary,line,1,1);//,((CoreEdgeReactionModel)reactionSystem.reactionModel));
+//				boolean added = reactionSet.add(reaction);
+//				if (!added){
+//					if (reaction.hasResonanceIsomerAsReactant()){
+//						//Structure reactionStructure = reaction.getStructure();
+//						found = getResonanceStructure(reaction,"reactants", reactionSet);
+//					}
+//					if (reaction.hasResonanceIsomerAsProduct() && !found){
+//						//Structure reactionStructure = reaction.getStructure();
+//						found = getResonanceStructure(reaction,"products", reactionSet);
+//					}
+//					
+//					if (!found){
+//						System.out.println("Cannot add reaction "+line+" to the Reaction Core. All resonance isomers have already been added");
+//						//System.exit(0);
+//					}
+//					else found = false;
+//				}
+//				
+//				Reaction reverse = reaction.getReverseReaction();
+//				if (reverse != null) {
+//					reactionSet.add(reverse);
+//					//System.out.println(2 + "\t " + line);
+//				}
+//				
+//				//else System.out.println(1 + "\t" + line);
+//				line = ChemParser.readMeaningfulLine(reader);
+//				i=i+1;
+//			}
+//			((CoreEdgeReactionModel)getReactionModel()).addReactedReactionSet(reactionSet);
+//		}
+//		catch (IOException e){
+//			System.out.println("Could not read the coreReactions restart file");
+//        	System.exit(0);
+//		}
+//		
+//	}
 	
-	public void parseCoreReactions() {
-		SpeciesDictionary dictionary = SpeciesDictionary.getInstance();
-		int i=1;
-		//HasMap speciesMap = dictionary.dictionary;
-		try{
-			File coreReactions = new File("Restart/coreReactions.txt");
-			FileReader fr = new FileReader(coreReactions);
-			BufferedReader reader = new BufferedReader(fr);
-			String line = ChemParser.readMeaningfulLine(reader);
-			boolean found = false;
-			LinkedHashSet reactionSet = new LinkedHashSet();
-			while (line != null){
-				Reaction reaction = ChemParser.parseCoreArrheniusReaction(dictionary,line,1,1);//,((CoreEdgeReactionModel)reactionSystem.reactionModel));
-				boolean added = reactionSet.add(reaction);
-				if (!added){
-					if (reaction.hasResonanceIsomerAsReactant()){
-						//Structure reactionStructure = reaction.getStructure();
-						found = getResonanceStructure(reaction,"reactants", reactionSet);
-					}
-					if (reaction.hasResonanceIsomerAsProduct() && !found){
-						//Structure reactionStructure = reaction.getStructure();
-						found = getResonanceStructure(reaction,"products", reactionSet);
-					}
-					
-					if (!found){
-						System.out.println("Cannot add reaction "+line+" to the Reaction Core. All resonance isomers have already been added");
-						//System.exit(0);
-					}
-					else found = false;
-				}
-				
-				Reaction reverse = reaction.getReverseReaction();
-				if (reverse != null) {
-					reactionSet.add(reverse);
-					//System.out.println(2 + "\t " + line);
-				}
-				
-				//else System.out.println(1 + "\t" + line);
-				line = ChemParser.readMeaningfulLine(reader);
-				i=i+1;
-			}
-			((CoreEdgeReactionModel)getReactionModel()).addReactedReactionSet(reactionSet);
-		}
-		catch (IOException e){
-			System.out.println("Could not read the coreReactions restart file");
-        	System.exit(0);
-		}
-		
-	}
-	
-	private void parseAllReactions() {
-		SpeciesDictionary dictionary = SpeciesDictionary.getInstance();
-		int i=1;
-		//HasMap speciesMap = dictionary.dictionary;
-		try{
-			File allReactions = new File("Restart/allReactions.txt");
-			FileReader fr = new FileReader(allReactions);
-			BufferedReader reader = new BufferedReader(fr);
-			String line = ChemParser.readMeaningfulLine(reader);
-			boolean found = false;
-			LinkedHashSet reactionSet = new LinkedHashSet();
-		OuterLoop:
-			while (line != null){
-				Reaction reaction = ChemParser.parseArrheniusReaction(dictionary,line,1,1,((CoreEdgeReactionModel)getReactionModel()));
-				
-				if (((CoreEdgeReactionModel)getReactionModel()).categorizeReaction(reaction)==-1){
-					boolean added = reactionSet.add(reaction);
-					if (!added){
-						found = false;
-						if (reaction.hasResonanceIsomerAsReactant()){
-							//Structure reactionStructure = reaction.getStructure();
-							found = getResonanceStructure(reaction,"reactants", reactionSet);
-						}
-						if (reaction.hasResonanceIsomerAsProduct() && !found){
-							//Structure reactionStructure = reaction.getStructure();
-							found = getResonanceStructure(reaction,"products", reactionSet);
-						}
-						
-						if (!found){
-							Iterator iter = reactionSet.iterator();
-							while (iter.hasNext()){
-								Reaction reacTemp = (Reaction)iter.next();
-								if (reacTemp.equals(reaction)){
-									reactionSet.remove(reacTemp);
-									reactionSet.add(reaction);
-									break;
-								}
-							}
-							
-							//System.out.println("Cannot add reaction "+line+" to the Reaction Core. All resonance isomers have already been added");
-							//System.exit(0);
-						}
-						
-						//else found = false;
-					}
-				}
-				
-				
-				/*Reaction reverse = reaction.getReverseReaction();
-				 if (reverse != null && ((CoreEdgeReactionModel)reactionSystem.reactionModel).isReactedReaction(reaction)) {
-				 reactionSet.add(reverse);
-				 //System.out.println(2 + "\t " + line);
-				 }*/
-				//else System.out.println(1 + "\t" + line);
-				
-				i=i+1;
-				
-				line = ChemParser.readMeaningfulLine(reader);
-			}
-			((CoreEdgeReactionModel)getReactionModel()).addReactionSet(reactionSet);
-		}
-		catch (IOException e){
-			System.out.println("Could not read the corespecies restart file");
-        	System.exit(0);
-		}
-		
-	}
+	/*
+	 * MRH 23MAR2010:
+	 * 	Commenting out deprecated parseAllSpecies method
+	 */
+//	private void parseAllReactions() {
+//		SpeciesDictionary dictionary = SpeciesDictionary.getInstance();
+//		int i=1;
+//		//HasMap speciesMap = dictionary.dictionary;
+//		try{
+//			File allReactions = new File("Restart/allReactions.txt");
+//			FileReader fr = new FileReader(allReactions);
+//			BufferedReader reader = new BufferedReader(fr);
+//			String line = ChemParser.readMeaningfulLine(reader);
+//			boolean found = false;
+//			LinkedHashSet reactionSet = new LinkedHashSet();
+//		OuterLoop:
+//			while (line != null){
+//				Reaction reaction = ChemParser.parseArrheniusReaction(dictionary,line,1,1,((CoreEdgeReactionModel)getReactionModel()));
+//				
+//				if (((CoreEdgeReactionModel)getReactionModel()).categorizeReaction(reaction)==-1){
+//					boolean added = reactionSet.add(reaction);
+//					if (!added){
+//						found = false;
+//						if (reaction.hasResonanceIsomerAsReactant()){
+//							//Structure reactionStructure = reaction.getStructure();
+//							found = getResonanceStructure(reaction,"reactants", reactionSet);
+//						}
+//						if (reaction.hasResonanceIsomerAsProduct() && !found){
+//							//Structure reactionStructure = reaction.getStructure();
+//							found = getResonanceStructure(reaction,"products", reactionSet);
+//						}
+//						
+//						if (!found){
+//							Iterator iter = reactionSet.iterator();
+//							while (iter.hasNext()){
+//								Reaction reacTemp = (Reaction)iter.next();
+//								if (reacTemp.equals(reaction)){
+//									reactionSet.remove(reacTemp);
+//									reactionSet.add(reaction);
+//									break;
+//								}
+//							}
+//							
+//							//System.out.println("Cannot add reaction "+line+" to the Reaction Core. All resonance isomers have already been added");
+//							//System.exit(0);
+//						}
+//						
+//						//else found = false;
+//					}
+//				}
+//				
+//				
+//				/*Reaction reverse = reaction.getReverseReaction();
+//				 if (reverse != null && ((CoreEdgeReactionModel)reactionSystem.reactionModel).isReactedReaction(reaction)) {
+//				 reactionSet.add(reverse);
+//				 //System.out.println(2 + "\t " + line);
+//				 }*/
+//				//else System.out.println(1 + "\t" + line);
+//				
+//				i=i+1;
+//				
+//				line = ChemParser.readMeaningfulLine(reader);
+//			}
+//			((CoreEdgeReactionModel)getReactionModel()).addReactionSet(reactionSet);
+//		}
+//		catch (IOException e){
+//			System.out.println("Could not read the corespecies restart file");
+//        	System.exit(0);
+//		}
+//		
+//	}
 	
 	
 	private boolean getResonanceStructure(Reaction p_Reaction, String rOrP, LinkedHashSet reactionSet) {
@@ -2380,57 +2194,60 @@ public class ReactionModelGenerator {
 		return speciesSet;
 	}
 	
-	public LinkedHashSet parseAllSpecies() {
-		//		String restartFileContent ="";
-		int speciesCount = 0;
-		LinkedHashSet speciesSet = new LinkedHashSet();
-		
-		boolean added;
-		try{
-			long initialTime = System.currentTimeMillis();
-			
-			File allSpecies = new File ("allSpecies.txt");
-			BufferedReader reader = new BufferedReader(new FileReader(allSpecies));
-			String line = ChemParser.readMeaningfulLine(reader);
-			int i=0;
-			while (line!=null) {
-				i++;
-    			StringTokenizer st = new StringTokenizer(line);
-    			String index = st.nextToken();
-    			String name = null;
-    			if (!index.startsWith("(")) name = index;
-    			else name = st.nextToken().trim();
-				int ID = getID(name);
-				
-				name = getName(name);
-    			Graph g = ChemParser.readChemGraph(reader);
-    			ChemGraph cg = null;
-    			try {
-    				cg = ChemGraph.make(g);
-    			}
-    			catch (ForbiddenStructureException e) {
-    				System.out.println("Forbidden Structure:\n" + e.getMessage());
-					System.out.println("The allSpecies.txt restart file contains a forbidden structure.");
-    				System.exit(0);
-    			}
-    			Species species;
-    			if (ID == 0)
-    				species = Species.make(name,cg);
-    			else 
-    				species = Species.make(name,cg,ID);
-    			speciesSet.add(species);
-    			double flux = 0;
-    			int species_type = 1; 
-     			line = ChemParser.readMeaningfulLine(reader);
-     			System.out.println(line);
-    		}
-		}
-		catch (IOException e){
-			System.out.println("Could not read the allSpecies restart file.");
-        	System.exit(0);
-		}
-		return speciesSet;
-	}
+	/*
+	 * MRH 23MAR2010:
+	 * 	Commenting out deprecated parseAllSpecies method
+	 */
+//	public LinkedHashSet parseAllSpecies() {
+//		//		String restartFileContent ="";
+//		int speciesCount = 0;
+//		LinkedHashSet speciesSet = new LinkedHashSet();
+//		
+//		boolean added;
+//		try{
+//			long initialTime = System.currentTimeMillis();
+//			
+//			File coreSpecies = new File ("allSpecies.txt");
+//			BufferedReader reader = new BufferedReader(new FileReader(coreSpecies));
+//			String line = ChemParser.readMeaningfulLine(reader);
+//			int i=0;
+//			while (line!=null) {
+//				i++;
+//    			StringTokenizer st = new StringTokenizer(line);
+//    			String index = st.nextToken();
+//    			String name = null;
+//    			if (!index.startsWith("(")) name = index;
+//    			else name = st.nextToken().trim();
+//				int ID = getID(name);
+//				
+//				name = getName(name);
+//    			Graph g = ChemParser.readChemGraph(reader);
+//    			ChemGraph cg = null;
+//    			try {
+//    				cg = ChemGraph.make(g);
+//    			}
+//    			catch (ForbiddenStructureException e) {
+//    				System.out.println("Forbidden Structure:\n" + e.getMessage());
+//    				System.exit(0);
+//    			}
+//    			Species species;
+//    			if (ID == 0)
+//    				species = Species.make(name,cg);
+//    			else 
+//    				species = Species.make(name,cg,ID);
+//    			speciesSet.add(species);
+//    			double flux = 0;
+//    			int species_type = 1; 
+//     			line = ChemParser.readMeaningfulLine(reader);
+//     			System.out.println(line);
+//    		}
+//		}
+//		catch (IOException e){
+//			System.out.println("Could not read the allSpecies restart file");
+//        	System.exit(0);
+//		}
+//		return speciesSet;
+//	}
 	
 	private String getName(String name) {
 		//int id;
@@ -2475,36 +2292,40 @@ public class ReactionModelGenerator {
 		return id;
 	}
 	
-	private void parseEdgeSpecies() {
-		//		String restartFileContent ="";
-		SpeciesDictionary dictionary = SpeciesDictionary.getInstance();
-		try{
-			File edgeSpecies = new File ("Restart/edgeSpecies.txt");
-			FileReader fr = new FileReader(edgeSpecies);
-			BufferedReader reader = new BufferedReader(fr);
-			String line = ChemParser.readMeaningfulLine(reader);
-			//HashSet speciesSet = new HashSet();
-			
-			while (line!=null) {
-				
-    			StringTokenizer st = new StringTokenizer(line);
-    			String index = st.nextToken();
-				int ID = Integer.parseInt(index);
-				Species spe = dictionary.getSpeciesFromID(ID);
-				if (spe == null)
-					System.out.println("There was no species with ID "+ID +" in the species dictionary");
-				//reactionSystem.reactionModel = new CoreEdgeReactionModel();
-				((CoreEdgeReactionModel)getReactionModel()).addUnreactedSpecies(spe);
-				line = ChemParser.readMeaningfulLine(reader);
-			}
-			
-		}
-		catch (IOException e){
-			System.out.println("Could not read the edgepecies restart file");
-        	System.exit(0);
-		}
-		
-	}
+	/*
+	 * MRH 23MAR2010:
+	 * 	Commenting out deprecated parseAllSpecies method
+	 */
+//	private void parseEdgeSpecies() {
+//		//		String restartFileContent ="";
+//		SpeciesDictionary dictionary = SpeciesDictionary.getInstance();
+//		try{
+//			File edgeSpecies = new File ("Restart/edgeSpecies.txt");
+//			FileReader fr = new FileReader(edgeSpecies);
+//			BufferedReader reader = new BufferedReader(fr);
+//			String line = ChemParser.readMeaningfulLine(reader);
+//			//HashSet speciesSet = new HashSet();
+//			
+//			while (line!=null) {
+//				
+//    			StringTokenizer st = new StringTokenizer(line);
+//    			String index = st.nextToken();
+//				int ID = Integer.parseInt(index);
+//				Species spe = dictionary.getSpeciesFromID(ID);
+//				if (spe == null)
+//					System.out.println("There was no species with ID "+ID +" in the species dictionary");
+//				//reactionSystem.reactionModel = new CoreEdgeReactionModel();
+//				((CoreEdgeReactionModel)getReactionModel()).addUnreactedSpecies(spe);
+//				line = ChemParser.readMeaningfulLine(reader);
+//			}
+//			
+//		}
+//		catch (IOException e){
+//			System.out.println("Could not read the edgepecies restart file");
+//        	System.exit(0);
+//		}
+//		
+//	}
 	
 	
 	/*private int calculateAllReactionsinReactionTemplate() {
@@ -2614,69 +2435,77 @@ public class ReactionModelGenerator {
 		
 	}
 	
+    /*
+     * MRH 25MAR2010
+     * This method is no longer used
+     */
 	/*Only write the forward reactions in the model core.
 	 The reverse reactions are generated from the forward reactions.*/
 	//10/25/07 gmagoon: added reaction system and reaction time as parameters and eliminated use of Global.temperature
-	private void writeEdgeReactions(ReactionSystem p_rs, ReactionTime p_time) {
-		StringBuilder restartFileContent =new StringBuilder();
-		int reactionCount = 1;
-		try{
-			File coreSpecies = new File ("Restart/edgeReactions.txt");
-			FileWriter fw = new FileWriter(coreSpecies);
-			for(Iterator iter=((CoreEdgeReactionModel)getReactionModel()).getUnreactedReactionSet().iterator();iter.hasNext();){
-				
-				Reaction reaction = (Reaction) iter.next();
-				//if (reaction.getDirection()==1){
-				//restartFileContent = restartFileContent + "("+ reactionCount + ") "+species.getChemkinName() + "  " + reactionSystem.getPresentConcentration(species) + " (mol/cm3) \n";
-				restartFileContent = restartFileContent.append(reaction.toRestartString(p_rs.getTemperature(p_time)) + "\n");
-				reactionCount = reactionCount + 1;
-				//}
-			}
-			//restartFileContent += "\nEND";
-			fw.write(restartFileContent.toString());
-			fw.close();
-		}
-		catch (IOException e){
-			System.out.println("Could not write the restart edgereactions file");
-        	System.exit(0);
-		}
-		
-	}
+//	private void writeEdgeReactions(ReactionSystem p_rs, ReactionTime p_time) {
+//		StringBuilder restartFileContent =new StringBuilder();
+//		int reactionCount = 1;
+//		try{
+//			File coreSpecies = new File ("Restart/edgeReactions.txt");
+//			FileWriter fw = new FileWriter(coreSpecies);
+//			for(Iterator iter=((CoreEdgeReactionModel)getReactionModel()).getUnreactedReactionSet().iterator();iter.hasNext();){
+//				
+//				Reaction reaction = (Reaction) iter.next();
+//				//if (reaction.getDirection()==1){
+//				//restartFileContent = restartFileContent + "("+ reactionCount + ") "+species.getChemkinName() + "  " + reactionSystem.getPresentConcentration(species) + " (mol/cm3) \n";
+//				restartFileContent = restartFileContent.append(reaction.toRestartString(p_rs.getTemperature(p_time)) + "\n");
+//				reactionCount = reactionCount + 1;
+//				//}
+//			}
+//			//restartFileContent += "\nEND";
+//			fw.write(restartFileContent.toString());
+//			fw.close();
+//		}
+//		catch (IOException e){
+//			System.out.println("Could not write the restart edgereactions file");
+//        	System.exit(0);
+//		}
+//		
+//	}
 	
+    /*
+     * MRH 25MAR2010:
+     * 	This method is no longer used
+     */
 	//10/25/07 gmagoon: added reaction system and reaction time as parameters and eliminated use of Global.temperature
-	private void writeAllReactions(ReactionSystem p_rs, ReactionTime p_time) {
-		StringBuilder restartFileContent = new StringBuilder();
-		int reactionCount = 1;
-		try{
-			File allReactions = new File ("Restart/allReactions.txt");
-			FileWriter fw = new FileWriter(allReactions);
-			for(Iterator iter=getReactionModel().getReaction();iter.hasNext();){
-				
-				Reaction reaction = (Reaction) iter.next();
-				
-				//restartFileContent = restartFileContent + "("+ reactionCount + ") "+species.getChemkinName() + "  " + reactionSystem.getPresentConcentration(species) + " (mol/cm3) \n";
-				restartFileContent = restartFileContent.append(reaction.toRestartString(p_rs.getTemperature(p_time)) + "\n");
-				
-			}
-			
-			for(Iterator iter=((CoreEdgeReactionModel)getReactionModel()).getUnreactedReactionSet().iterator();iter.hasNext();){
-				
-				Reaction reaction = (Reaction) iter.next();
-				//if (reaction.getDirection()==1){
-				//restartFileContent = restartFileContent + "("+ reactionCount + ") "+species.getChemkinName() + "  " + reactionSystem.getPresentConcentration(species) + " (mol/cm3) \n";
-				restartFileContent = restartFileContent.append(reaction.toRestartString(p_rs.getTemperature(p_time)) + "\n");
-				
-			}
-			//restartFileContent += "\nEND";
-			fw.write(restartFileContent.toString());
-			fw.close();
-		}
-		catch (IOException e){
-			System.out.println("Could not write the restart edgereactions file");
-        	System.exit(0);
-		}
-		
-	}
+//	private void writeAllReactions(ReactionSystem p_rs, ReactionTime p_time) {
+//		StringBuilder restartFileContent = new StringBuilder();
+//		int reactionCount = 1;
+//		try{
+//			File allReactions = new File ("Restart/allReactions.txt");
+//			FileWriter fw = new FileWriter(allReactions);
+//			for(Iterator iter=getReactionModel().getReaction();iter.hasNext();){
+//				
+//				Reaction reaction = (Reaction) iter.next();
+//				
+//				//restartFileContent = restartFileContent + "("+ reactionCount + ") "+species.getChemkinName() + "  " + reactionSystem.getPresentConcentration(species) + " (mol/cm3) \n";
+//				restartFileContent = restartFileContent.append(reaction.toRestartString(p_rs.getTemperature(p_time)) + "\n");
+//				
+//			}
+//			
+//			for(Iterator iter=((CoreEdgeReactionModel)getReactionModel()).getUnreactedReactionSet().iterator();iter.hasNext();){
+//				
+//				Reaction reaction = (Reaction) iter.next();
+//				//if (reaction.getDirection()==1){
+//				//restartFileContent = restartFileContent + "("+ reactionCount + ") "+species.getChemkinName() + "  " + reactionSystem.getPresentConcentration(species) + " (mol/cm3) \n";
+//				restartFileContent = restartFileContent.append(reaction.toRestartString(p_rs.getTemperature(p_time)) + "\n");
+//				
+//			}
+//			//restartFileContent += "\nEND";
+//			fw.write(restartFileContent.toString());
+//			fw.close();
+//		}
+//		catch (IOException e){
+//			System.out.println("Could not write the restart edgereactions file");
+//        	System.exit(0);
+//		}
+//		
+//	}
 	
 	private void writeEdgeSpecies() {
 		BufferedWriter bw = null;
@@ -2688,7 +2517,7 @@ public class ReactionModelGenerator {
 				bw.write(species.getChemkinName());
 				bw.newLine();
 				int dummyInt = 0;
-				bw.write(species.getChemGraph().toString(dummyInt));
+				bw.write(species.getChemGraph().toStringWithoutH(dummyInt));
 				bw.newLine();
 			}
         } catch (FileNotFoundException ex) {
@@ -2706,7 +2535,7 @@ public class ReactionModelGenerator {
             }
         }
 	}
-
+	
 	private void writePrunedEdgeSpecies(Species species) {
 		BufferedWriter bw = null;
 
@@ -2733,31 +2562,36 @@ public class ReactionModelGenerator {
 		}
 	}
 
+	
+	/*
+	 * MRH 25MAR2010:
+	 * 	This method is no longer used
+	 */
 	//10/25/07 gmagoon: added reaction system and reaction time as parameters and eliminated use of Global.temperature
-	private void writeCoreReactions(ReactionSystem p_rs, ReactionTime p_time) {
-		StringBuilder restartFileContent = new StringBuilder();
-		int reactionCount = 0;
-		try{
-			File coreSpecies = new File ("Restart/coreReactions.txt");
-			FileWriter fw = new FileWriter(coreSpecies);
-			for(Iterator iter=getReactionModel().getReaction();iter.hasNext();){
-				
-				Reaction reaction = (Reaction) iter.next();
-				if (reaction.getDirection()==1){
-					//restartFileContent = restartFileContent + "("+ reactionCount + ") "+species.getChemkinName() + "  " + reactionSystem.getPresentConcentration(species) + " (mol/cm3) \n";
-					restartFileContent = restartFileContent.append(reaction.toRestartString(p_rs.getTemperature(p_time)) + "\n");
-					reactionCount = reactionCount + 1;
-				}
-			}
-			//restartFileContent += "\nEND";
-			fw.write(restartFileContent.toString());
-			fw.close();
-		}
-		catch (IOException e){
-			System.out.println("Could not write the restart corereactions file");
-        	System.exit(0);
-		}
-	}
+//	private void writeCoreReactions(ReactionSystem p_rs, ReactionTime p_time) {
+//		StringBuilder restartFileContent = new StringBuilder();
+//		int reactionCount = 0;
+//		try{
+//			File coreSpecies = new File ("Restart/coreReactions.txt");
+//			FileWriter fw = new FileWriter(coreSpecies);
+//			for(Iterator iter=getReactionModel().getReaction();iter.hasNext();){
+//				
+//				Reaction reaction = (Reaction) iter.next();
+//				if (reaction.getDirection()==1){
+//					//restartFileContent = restartFileContent + "("+ reactionCount + ") "+species.getChemkinName() + "  " + reactionSystem.getPresentConcentration(species) + " (mol/cm3) \n";
+//					restartFileContent = restartFileContent.append(reaction.toRestartString(p_rs.getTemperature(p_time)) + "\n");
+//					reactionCount = reactionCount + 1;
+//				}
+//			}
+//			//restartFileContent += "\nEND";
+//			fw.write(restartFileContent.toString());
+//			fw.close();
+//		}
+//		catch (IOException e){
+//			System.out.println("Could not write the restart corereactions file");
+//        	System.exit(0);
+//		}
+//	}
 	
 	private void writeCoreSpecies() {
 		BufferedWriter bw = null;
@@ -2769,7 +2603,7 @@ public class ReactionModelGenerator {
 				bw.write(species.getChemkinName());
 				bw.newLine();
 				int dummyInt = 0;
-				bw.write(species.getChemGraph().toString(dummyInt));
+				bw.write(species.getChemGraph().toStringWithoutH(dummyInt));
 				bw.newLine();
 			}
         } catch (FileNotFoundException ex) {
@@ -2833,7 +2667,7 @@ public class ReactionModelGenerator {
 					}
 					else {
 						//bw.write(reaction.toChemkinString(new Temperature(298,"K")));
-						bw_rxns.write(reaction.toRestartString(new Temperature(298,"K")));
+						bw_rxns.write(reaction.toRestartString(new Temperature(298,"K"),false));
 						bw_rxns.newLine();
 					}
 				}
@@ -2882,11 +2716,11 @@ public class ReactionModelGenerator {
 				Reaction reaction = (Reaction) iter.next();
 				if (reaction.isForward()) {
 					//bw.write(reaction.toChemkinString(new Temperature(298,"K")));
-					bw.write(reaction.toRestartString(new Temperature(298,"K")));
+					bw.write(reaction.toRestartString(new Temperature(298,"K"),false));
 					bw.newLine();
 				} else if (reaction.getReverseReaction().isForward()) {
 					//bw.write(reaction.getReverseReaction().toChemkinString(new Temperature(298,"K")));
-					bw.write(reaction.getReverseReaction().toRestartString(new Temperature(298,"K")));
+					bw.write(reaction.getReverseReaction().toRestartString(new Temperature(298,"K"),false));
 					bw.newLine();
 				} else
 					System.out.println("Could not determine forward direction for following rxn: " + reaction.toString());
@@ -3221,6 +3055,7 @@ public class ReactionModelGenerator {
     		++i;
     	}
     	
+		System.out.println("Reading reactions from Restart folder");
 		// Read in core reactions
 		try {
 			FileReader in = new FileReader("Restart/coreReactions.txt");
@@ -3243,7 +3078,7 @@ public class ReactionModelGenerator {
 	        		while (rxnIter.hasNext()) {
 	        			Reaction old = (Reaction)rxnIter.next();
 	        			if (old.equals(r)) {
-	        				old.addAdditionalKinetics(r.getKinetics(),1);
+	        				old.addAdditionalKinetics(r.getKinetics()[0],1);
 	        				foundRxn = true;
 	        				break;
 	        			}
@@ -3302,7 +3137,7 @@ public class ReactionModelGenerator {
 	        		while (rxnIter.hasNext()) {
 	        			Reaction old = (Reaction)rxnIter.next();
 	        			if (old.equals(r)) {
-	        				old.addAdditionalKinetics(r.getKinetics(),1);
+	        				old.addAdditionalKinetics(r.getKinetics()[0],1);
 	        				foundRxn = true;
 	        				break;
 	        			}
@@ -3823,7 +3658,8 @@ public class ReactionModelGenerator {
 			    		comments += st.nextToken();
 			    	}
 			    	
-			        ArrheniusKinetics k = new ArrheniusKinetics(uA,un,uE,"",1,"",comments);
+			        ArrheniusKinetics[] k = new ArrheniusKinetics[1];
+			        k[0] = new ArrheniusKinetics(uA,un,uE,"",1,"",comments);
 			        Reaction pathRxn = new Reaction();
 					//				        if (direction == 1)
 					//				        	pathRxn = Reaction.makeReaction(s,k,generateReverse);
@@ -3834,7 +3670,7 @@ public class ReactionModelGenerator {
 			        PDepIsomer Reactants = new PDepIsomer(r);
 			        PDepIsomer Products = new PDepIsomer(p);
 			        PDepReaction pdeppathrxn = new PDepReaction(Reactants,Products,pathRxn);
-			        newNetwork.addReaction(pdeppathrxn);
+			        newNetwork.addReaction(pdeppathrxn,true);
 					
 					line = ChemParser.readMeaningfulLine(reader);					
 				}
@@ -4448,245 +4284,507 @@ public class ReactionModelGenerator {
 		}
 		else throw new InvalidSymbolException("condition.txt: Unknown SpectroscopicDataEstimator = " + sdeType);
     }
-    
-    public void setPressureDependenceType(String line) {
+
+	/**
+	 * Sets the pressure dependence options to on or off. If on, checks for
+	 * more options and sets them as well.
+	 * @param line The current line in the condition file; should start with "PressureDependence:"
+	 * @param reader The reader currently being used to parse the condition file
+	 */
+    public String setPressureDependenceOptions(String line, BufferedReader reader) throws InvalidSymbolException {
+
+		// Determine pressure dependence mode
 		StringTokenizer st = new StringTokenizer(line);
-		String name = st.nextToken();
+		String name = st.nextToken(); // Should be "PressureDependence:"
 		String pDepType = st.nextToken();
-		if (pDepType.toLowerCase().equals("modifiedstrongcollision") ||
+		
+		if (pDepType.toLowerCase().equals("off")) {
+			// No pressure dependence
+			reactionModelEnlarger = new RateBasedRME();
+			PDepNetwork.generateNetworks = false;
+
+			line = ChemParser.readMeaningfulLine(reader);
+		}
+		else if (pDepType.toLowerCase().equals("modifiedstrongcollision") ||
 			pDepType.toLowerCase().equals("reservoirstate") ||
 			pDepType.toLowerCase().equals("chemdis")) {
 			
 			reactionModelEnlarger = new RateBasedPDepRME();
 			PDepNetwork.generateNetworks = true;
 			
-			if (pDepType.toLowerCase().equals("reservoirstate")) {
+			// Set pressure dependence method
+			if (pDepType.toLowerCase().equals("reservoirstate"))
 				((RateBasedPDepRME) reactionModelEnlarger).setPDepKineticsEstimator(new FastMasterEqn(FastMasterEqn.Mode.RESERVOIRSTATE));
-				if (SpectroscopicData.mode == SpectroscopicData.Mode.OFF) {
-					System.out.println("Warning: Spectroscopic data needed for pressure dependence; switching SpectroscopicDataEstimator to FrequencyGroups.");
-					SpectroscopicData.mode = SpectroscopicData.Mode.FREQUENCYGROUPS;
-				}
-			}
-			else if (pDepType.toLowerCase().equals("modifiedstrongcollision")) {
+			else if (pDepType.toLowerCase().equals("modifiedstrongcollision"))
 				((RateBasedPDepRME) reactionModelEnlarger).setPDepKineticsEstimator(new FastMasterEqn(FastMasterEqn.Mode.STRONGCOLLISION));
-				if (SpectroscopicData.mode == SpectroscopicData.Mode.OFF) {
-					System.out.println("Warning: Spectroscopic data needed for pressure dependence; switching SpectroscopicDataEstimator to FrequencyGroups.");
-					SpectroscopicData.mode = SpectroscopicData.Mode.FREQUENCYGROUPS;
+			//else if (pDepType.toLowerCase().equals("chemdis"))
+			//	((RateBasedPDepRME) reactionModelEnlarger).setPDepKineticsEstimator(new Chemdis());
+			else
+				throw new InvalidSymbolException("condition.txt: Unknown PressureDependence mode = " + pDepType);
+
+			RateBasedPDepRME pdepModelEnlarger = (RateBasedPDepRME) reactionModelEnlarger;
+			
+			// Turn on spectroscopic data estimation if not already on
+			if (pdepModelEnlarger.getPDepKineticsEstimator() instanceof FastMasterEqn && SpectroscopicData.mode == SpectroscopicData.Mode.OFF) {
+				System.out.println("Warning: Spectroscopic data needed for pressure dependence; switching SpectroscopicDataEstimator to FrequencyGroups.");
+				SpectroscopicData.mode = SpectroscopicData.Mode.FREQUENCYGROUPS;
+			}
+			else if (pdepModelEnlarger.getPDepKineticsEstimator() instanceof Chemdis && SpectroscopicData.mode != SpectroscopicData.Mode.THREEFREQUENCY) {
+				System.out.println("Warning: Switching SpectroscopicDataEstimator to three-frequency model.");
+				SpectroscopicData.mode = SpectroscopicData.Mode.THREEFREQUENCY;
+			}
+
+			// Next line must be PDepKineticsModel
+			line = ChemParser.readMeaningfulLine(reader);
+			if (line.toLowerCase().startsWith("pdepkineticsmodel:")) {
+				
+				st = new StringTokenizer(line);
+				name = st.nextToken();
+				
+				String pDepKinType = st.nextToken();
+				if (pDepKinType.toLowerCase().equals("chebyshev")) {
+					PDepRateConstant.setMode(PDepRateConstant.Mode.CHEBYSHEV);
+					// Default is to cubic order for basis functions
+					FastMasterEqn.setNumTBasisFuncs(4);
+					FastMasterEqn.setNumPBasisFuncs(4);
+				}
+				else if (pDepKinType.toLowerCase().equals("pdeparrhenius"))
+					PDepRateConstant.setMode(PDepRateConstant.Mode.PDEPARRHENIUS);
+				else if (pDepKinType.toLowerCase().equals("rate"))
+					PDepRateConstant.setMode(PDepRateConstant.Mode.RATE);
+				else
+					throw new InvalidSymbolException("condition.txt: Unknown PDepKineticsModel = " + pDepKinType);
+
+				// For Chebyshev polynomials, optionally specify the number of
+				// temperature and pressure basis functions
+				// Such a line would read, e.g.: "PDepKineticsModel: Chebyshev 4 4"
+				if (st.hasMoreTokens() && PDepRateConstant.getMode() == PDepRateConstant.Mode.CHEBYSHEV) {
+					try {
+						int numTBasisFuncs = Integer.parseInt(st.nextToken());
+					int numPBasisFuncs = Integer.parseInt(st.nextToken());
+					FastMasterEqn.setNumTBasisFuncs(numTBasisFuncs);
+					FastMasterEqn.setNumPBasisFuncs(numPBasisFuncs);
+					}
+					catch (NoSuchElementException e) {
+						throw new InvalidSymbolException("condition.txt: Missing number of pressure basis functions for Chebyshev polynomials.");
+					}
+
+				}
+
+			}
+			else 
+				throw new InvalidSymbolException("condition.txt: Missing PDepKineticsModel after PressureDependence line.");
+
+			// Determine temperatures and pressures to use
+			// These can be specified automatically using TRange and PRange or
+			// manually using Temperatures and Pressures
+			Temperature[] temperatures = null;
+			Pressure[] pressures = null;
+			String Tunits = "K";
+			Temperature Tmin = new Temperature(300.0, "K");
+			Temperature Tmax = new Temperature(2000.0, "K");
+			int Tnumber = 8;
+			String Punits = "bar";
+			Pressure Pmin = new Pressure(0.01, "bar");
+			Pressure Pmax = new Pressure(100.0, "bar");
+			int Pnumber = 5;
+
+			// Read next line of input
+			line = ChemParser.readMeaningfulLine(reader);
+			boolean done = !(line.toLowerCase().startsWith("trange:") ||
+				line.toLowerCase().startsWith("prange:") ||
+				line.toLowerCase().startsWith("temperatures:") ||
+				line.toLowerCase().startsWith("pressures:"));
+
+			// Parse lines containing pressure dependence options
+			// Possible options are "TRange:", "PRange:", "Temperatures:", and "Pressures:"
+			// You must specify either TRange or Temperatures and either PRange or Pressures
+			// The order does not matter
+			while (!done) {
+
+				st = new StringTokenizer(line);
+				name = st.nextToken();
+
+				if (line.toLowerCase().startsWith("trange:")) {
+					Tunits = ChemParser.removeBrace(st.nextToken());
+					Tmin = new Temperature(Double.parseDouble(st.nextToken()), Tunits);
+					Tmax = new Temperature(Double.parseDouble(st.nextToken()), Tunits);
+					Tnumber = Integer.parseInt(st.nextToken());
+				}
+				else if (line.toLowerCase().startsWith("prange:")) {
+					Punits = ChemParser.removeBrace(st.nextToken());
+					Pmin = new Pressure(Double.parseDouble(st.nextToken()), Punits);
+					Pmax = new Pressure(Double.parseDouble(st.nextToken()), Punits);
+					Pnumber = Integer.parseInt(st.nextToken());
+				}
+				else if (line.toLowerCase().startsWith("temperatures:")) {
+					Tnumber = Integer.parseInt(st.nextToken());
+					Tunits = ChemParser.removeBrace(st.nextToken());
+					temperatures = new Temperature[Tnumber];
+					for (int i = 0; i < Tnumber; i++) {
+						temperatures[i] = new Temperature(Double.parseDouble(st.nextToken()), Tunits);
+					}
+					Tmin = temperatures[0];
+					Tmax = temperatures[Tnumber-1];
+				}
+				else if (line.toLowerCase().startsWith("pressures:")) {
+					Pnumber = Integer.parseInt(st.nextToken());
+					Punits = ChemParser.removeBrace(st.nextToken());
+					pressures = new Pressure[Pnumber];
+					for (int i = 0; i < Pnumber; i++) {
+						pressures[i] = new Pressure(Double.parseDouble(st.nextToken()), Punits);
+					}
+					Pmin = pressures[0];
+					Pmax = pressures[Pnumber-1];
+				}
+
+				// Read next line of input
+				line = ChemParser.readMeaningfulLine(reader);
+				done = !(line.toLowerCase().startsWith("trange:") ||
+					line.toLowerCase().startsWith("prange:") ||
+					line.toLowerCase().startsWith("temperatures:") ||
+					line.toLowerCase().startsWith("pressures:"));
+
+			}
+
+			// Set temperatures and pressures (if not already set manually)
+			if (temperatures == null) {
+				temperatures = new Temperature[Tnumber];
+				if (PDepRateConstant.getMode() == PDepRateConstant.Mode.CHEBYSHEV) {
+					// Use the Gauss-Chebyshev points
+					// The formula for the Gauss-Chebyshev points was taken from
+					// the Chemkin theory manual
+					for (int i = 1; i <= Tnumber; i++) {
+						double T = -Math.cos((2 * i - 1) * Math.PI / (2 * Tnumber));
+						T = 2.0 / ((1.0/Tmax.getK() - 1.0/Tmin.getK()) * T + 1.0/Tmax.getK() + 1.0/Tmin.getK());
+						temperatures[i-1] = new Temperature(T, "K");
+					}
+				}
+				else {
+					// Distribute equally on a 1/T basis
+					double slope = (1.0/Tmax.getK() - 1.0/Tmin.getK()) / (Tnumber - 1);
+					for (int i = 0; i < Tnumber; i++) {
+						double T = 1.0/(slope * i + 1.0/Tmin.getK());
+						temperatures[i] = new Temperature(T, "K");
+					}
 				}
 			}
-			else if (pDepType.toLowerCase().equals("chemdis")) {
-				((RateBasedPDepRME) reactionModelEnlarger).setPDepKineticsEstimator(new Chemdis());
-				if (SpectroscopicData.mode != SpectroscopicData.Mode.THREEFREQUENCY) {
-					System.out.println("Warning: Switching SpectroscopicDataEstimator to three-frequency model.");
-					SpectroscopicData.mode = SpectroscopicData.Mode.THREEFREQUENCY;
+			if (pressures == null) {
+				pressures = new Pressure[Pnumber];
+				if (PDepRateConstant.getMode() == PDepRateConstant.Mode.CHEBYSHEV) {
+					// Use the Gauss-Chebyshev points
+					// The formula for the Gauss-Chebyshev points was taken from
+					// the Chemkin theory manual
+					for (int i = 1; i <= Pnumber; i++) {
+						double P = -Math.cos((2 * i - 1) * Math.PI / (2 * Pnumber));
+						P = Math.pow(10, 0.5 * ((Math.log10(Pmax.getBar()) - Math.log10(Pmin.getBar())) * P + Math.log10(Pmax.getBar()) + Math.log10(Pmin.getBar())));
+						pressures[i-1] = new Pressure(P, "bar");
+					}
 				}
-			}
-			else {
-				throw new InvalidSymbolException("condition.txt: Unknown PDepKineticsEstimator = " + pDepType);
+				else {
+					// Distribute equally on a log P basis
+					double slope = (Math.log10(Pmax.getBar()) - Math.log10(Pmin.getBar())) / (Pnumber - 1);
+					for (int i = 0; i < Pnumber; i++) {
+						double P = Math.pow(10, slope * i + Math.log10(Pmin.getBar()));
+						pressures[i] = new Pressure(P, "bar");
+					}
+				}
 			}
 			
-			// Set temperatures and pressures to use in PDep kinetics estimation
-			Temperature[] temperatures = new Temperature[8];
-			temperatures[0] = new Temperature(300, "K");
-			temperatures[1] = new Temperature(400, "K");
-			temperatures[2] = new Temperature(600, "K");
-			temperatures[3] = new Temperature(900, "K");
-			temperatures[4] = new Temperature(1200, "K");
-			temperatures[5] = new Temperature(1500, "K");
-			temperatures[6] = new Temperature(1800, "K");
-			temperatures[7] = new Temperature(2100, "K");
 			FastMasterEqn.setTemperatures(temperatures);
 			PDepRateConstant.setTemperatures(temperatures);
-			ChebyshevPolynomials.setTlow(temperatures[0]);
-			ChebyshevPolynomials.setTup(temperatures[7]);
-			
-			Pressure[] pressures = new Pressure[5];
-			pressures[0] = new Pressure(0.01, "bar");
-			pressures[1] = new Pressure(0.1, "bar");
-			pressures[2] = new Pressure(1, "bar");
-			pressures[3] = new Pressure(10, "bar");
-			pressures[4] = new Pressure(100, "bar");
+			PDepRateConstant.setTMin(Tmin);
+			PDepRateConstant.setTMax(Tmax);
+			ChebyshevPolynomials.setTlow(Tmin);
+			ChebyshevPolynomials.setTup(Tmax);
 			FastMasterEqn.setPressures(pressures);
 			PDepRateConstant.setPressures(pressures);
-			ChebyshevPolynomials.setPlow(pressures[0]);
-			ChebyshevPolynomials.setPup(pressures[4]);
-			
-		}
-		else if (pDepType.toLowerCase().equals("off")) {
-			// No pressure dependence
-			reactionModelEnlarger = new RateBasedRME();
-			PDepNetwork.generateNetworks = false;
+			PDepRateConstant.setPMin(Pmin);
+			PDepRateConstant.setPMax(Pmax);
+			ChebyshevPolynomials.setPlow(Pmin);
+			ChebyshevPolynomials.setPup(Pmax);
+
 		}
 		else {
 			throw new InvalidSymbolException("condition.txt: Unknown PressureDependence = " + pDepType);
 		}
+
+		return line;
     }
     
-    public String setPDepKineticsModel(String line, BufferedReader reader) throws InvalidSymbolException {
+    public void createTModel(String line) {
 		StringTokenizer st = new StringTokenizer(line);
 		String name = st.nextToken();
-		String pDepKinType = st.nextToken();
-		if (pDepKinType.toLowerCase().equals("chebyshev") ||
-			pDepKinType.toLowerCase().equals("pdeparrhenius") ||
-			pDepKinType.toLowerCase().equals("rate")) {
-			
-			if (pDepKinType.toLowerCase().equals("chebyshev")) {
-				PDepRateConstant.setMode(PDepRateConstant.Mode.CHEBYSHEV);
-				line = ChemParser.readMeaningfulLine(reader);
-				if (line.startsWith("TRange")) {
-					st = new StringTokenizer(line);
-					String temp = st.nextToken(); // Should be "TRange:"
-					String TUNITS = ChemParser.removeBrace(st.nextToken());
-					double tLow = Double.parseDouble(st.nextToken());
-					Temperature TMIN = new Temperature(tLow,TUNITS);
-					ChebyshevPolynomials.setTlow(TMIN);
-					double tHigh = Double.parseDouble(st.nextToken());
-					if (tHigh <= tLow) {
-						throw new InvalidSymbolException("Chebyshev Tmax is less than or equal to Tmin");
-					}
-					Temperature TMAX = new Temperature(tHigh,TUNITS);
-					ChebyshevPolynomials.setTup(TMAX);
-					if (TMAX.getK() < Global.highTemperature.getK()) 
-						throw new InvalidSymbolException("Chebyshev Tmax is lower than the highest simulation temperature "+Global.highTemperature.toString() );
-					if (TMIN.getK() > Global.lowTemperature.getK()) 
-						throw new InvalidSymbolException("Chebyshev Tmin is higher than the lowest simulation temperature "+Global.lowTemperature.toString() );		
-					int tResolution = Integer.parseInt(st.nextToken());
-					int tbasisFuncs = Integer.parseInt(st.nextToken());
-					if (tbasisFuncs > tResolution) {
-						throw new InvalidSymbolException("The number of basis functions cannot exceed the number of grid points");
-					}
-					FastMasterEqn.setNumTBasisFuncs(tbasisFuncs);
-					line = ChemParser.readMeaningfulLine(reader);
-					String PUNITS = "";
-					Pressure PMIN = new Pressure();
-					Pressure PMAX = new Pressure();
-					int pResolution = 0;
-					int pbasisFuncs = 0;
-					if (line.startsWith("PRange")) {
-						st = new StringTokenizer(line);
-						temp = st.nextToken(); // Should be "PRange:"
-						PUNITS = ChemParser.removeBrace(st.nextToken());
-						double pLow = Double.parseDouble(st.nextToken());
-						PMIN = new Pressure(pLow,PUNITS);
-						ChebyshevPolynomials.setPlow(PMIN);
-						double pHigh = Double.parseDouble(st.nextToken());
-						if (pHigh <= pLow) {
-							System.err.println("Pmax is less than or equal to Pmin");
-							System.exit(0);
-						}
-						PMAX = new Pressure(pHigh,PUNITS);
-						if (PMAX.getPa() < Global.highPressure.getPa()) 
-							throw new InvalidSymbolException("Chebyshev Pmax is lower than the highest simulation pressure "+Global.highPressure.toString() );
-						if (PMIN.getPa() > Global.lowPressure.getPa()) 
-							throw new InvalidSymbolException("Chebyshev Pmin is higher than the lowest simulation pressure "+Global.lowPressure.toString() );							
-						ChebyshevPolynomials.setPup(PMAX);
-						pResolution = Integer.parseInt(st.nextToken());
-						pbasisFuncs = Integer.parseInt(st.nextToken());
-						if (pbasisFuncs > pResolution) {
-							throw new InvalidSymbolException("The number of basis functions cannot exceed the number of grid points");
-						}
-						FastMasterEqn.setNumPBasisFuncs(pbasisFuncs);
-					}
-					else {
-						throw new InvalidSymbolException("RMG cannot locate PRange field for Chebyshev polynomials.");
-					}
-					
-					// Set temperatures and pressures to use in PDep kinetics estimation
-					Temperature[] temperatures = new Temperature[tResolution];
-					for (int i=0; i<temperatures.length; i++) {
-						double tempValueTilda = Math.cos(i*Math.PI/(temperatures.length-1)); // roots of a Chebyshev polynomial
-						double tempValue = 2 / (tempValueTilda * ((1/TMAX.getK()) - (1/TMIN.getK())) + (1/TMIN.getK()) + (1/TMAX.getK()));
-						temperatures[temperatures.length-i-1] = new Temperature(tempValue,TUNITS);
-					}
-					FastMasterEqn.setTemperatures(temperatures);
-					PDepRateConstant.setTemperatures(temperatures);
-					
-					Pressure[] pressures = new Pressure[pResolution];
-					for (int j=0; j<pressures.length; j++) {
-						double pressValueTilda = Math.cos(j*Math.PI/(pressures.length-1)); // roots of a Chebyshev polynomial
-						double pressValue = Math.pow(10,(pressValueTilda*(Math.log10(PMAX.getBar())-Math.log10(PMIN.getBar()))+Math.log10(PMIN.getBar())+Math.log10(PMAX.getBar()))/2);
-						pressures[pressures.length-j-1] = new Pressure(pressValue,PUNITS);
-					}
-					FastMasterEqn.setPressures(pressures);
-					PDepRateConstant.setPressures(pressures);
-					line = ChemParser.readMeaningfulLine(reader);
-				}
+		String modelType = st.nextToken();
+		String unit = st.nextToken();
+		unit = ChemParser.removeBrace(unit);
+		if (modelType.equals("Constant")) {
+			tempList = new LinkedList();
+			//read first temperature
+			double t = Double.parseDouble(st.nextToken());
+			tempList.add(new ConstantTM(t, unit));
+			Temperature temp = new Temperature(t, unit);//10/29/07 gmagoon: added this line and next two lines to set Global.lowTemperature and Global.highTemperature
+			Global.lowTemperature = (Temperature)temp.clone();
+			Global.highTemperature = (Temperature)temp.clone();
+			//read remaining temperatures
+			while (st.hasMoreTokens()) {
+				t = Double.parseDouble(st.nextToken());
+				tempList.add(new ConstantTM(t, unit));
+				temp = new Temperature(t,unit);//10/29/07 gmagoon: added this line and next two "if" statements to set Global.lowTemperature and Global.highTemperature
+				if(temp.getK() < Global.lowTemperature.getK())
+					Global.lowTemperature = (Temperature)temp.clone();
+				if(temp.getK() > Global.highTemperature.getK())
+					Global.highTemperature = (Temperature)temp.clone();
 			}
-			else if (pDepKinType.toLowerCase().equals("pdeparrhenius")) {
-				//PDepRateConstant.setMode(PDepRateConstant.Mode.PDEPARRHENIUS);
-				/*
-				 *  Updated by MRH on 10Feb2010
-				 *  	Allow user to specify # of T's/P's solved for in fame &
-				 *  	# of PLOG's to report
-				 */
-				PDepRateConstant.setMode(PDepRateConstant.Mode.PDEPARRHENIUS);
-				line = ChemParser.readMeaningfulLine(reader);
-				if (line.startsWith("TRange")) {
-					st = new StringTokenizer(line);
-					String temp = st.nextToken(); // Should be "TRange:"
-					String TUNITS = ChemParser.removeBrace(st.nextToken());
-					int numT = Integer.parseInt(st.nextToken());
-					Temperature[] listOfTs = new Temperature[numT];
-					int counter = 0;
-					while (st.hasMoreTokens()) {
-						listOfTs[counter] = new Temperature(Double.parseDouble(st.nextToken()),TUNITS);
-						++counter;
-					}
-					if (counter != numT) {
-						System.out.println("Warning in TRange field of PressureDependence:\n" +
-								"The stated number of temperatures is: " + numT + 
-								"but the length of the temperature list is: " + counter);
-					}
-					
-					line = ChemParser.readMeaningfulLine(reader);
-					String PUNITS = "";
-					if (line.startsWith("PRange")) {
-						st = new StringTokenizer(line);
-						temp = st.nextToken(); // Should be "PRange:"
-						PUNITS = ChemParser.removeBrace(st.nextToken());
-						int numP = Integer.parseInt(st.nextToken());
-						Pressure[] listOfPs = new Pressure[numP];
-						counter = 0;
-						while (st.hasMoreTokens()) {
-							listOfPs[counter] = new Pressure(Double.parseDouble(st.nextToken()),PUNITS);
-							++counter;
-						}
-						if (counter != numP) {
-							System.out.println("Warning in PRange field of PressureDependence:\n" +
-									"The stated number of pressures is: " + numT + 
-									"but the length of the pressure list is: " + counter);
-						}
-						FastMasterEqn.setTemperatures(listOfTs);
-						PDepRateConstant.setTemperatures(listOfTs);
-						FastMasterEqn.setPressures(listOfPs);
-						PDepRateConstant.setPressures(listOfPs);
-						PDepArrheniusKinetics.setNumPressures(numP);
-						PDepArrheniusKinetics.setPressures(listOfPs);
-					}
-					else {
-						throw new InvalidSymbolException("RMG cannot locate PRange field for PDepArrhenius.");
-					}
-					
-					line = ChemParser.readMeaningfulLine(reader);
-				}
-			}
-			// 6Jul2009-MRH:
-			//	RATE mode reports p-dep rxn kinetics as: A 0.0 0.0
-			//		where A is k(T,P) evaluated at the single temperature
-			//		and pressure given in the condition.txt file
-			else if (pDepKinType.toLowerCase().equals("rate"))
-				PDepRateConstant.setMode(PDepRateConstant.Mode.RATE);
-			
 		}
 		else {
-			throw new InvalidSymbolException("condition.txt: Unknown PDepKinetics = " + pDepKinType);
+			throw new InvalidSymbolException("condition.txt: Unknown TemperatureModel = " + modelType);
 		}
-		return line;
+    }
+    
+    public void createPModel(String line) {
+    	StringTokenizer st = new StringTokenizer(line);
+		String name = st.nextToken();
+		String modelType = st.nextToken();
+		String unit = st.nextToken();
+		unit = ChemParser.removeBrace(unit);
+		if (modelType.equals("Constant")) {
+			presList = new LinkedList();
+			//read first pressure
+			double p = Double.parseDouble(st.nextToken());
+			Pressure pres = new Pressure(p, unit);
+			Global.lowPressure = (Pressure)pres.clone();
+			Global.highPressure = (Pressure)pres.clone();
+			presList.add(new ConstantPM(p, unit));
+			//read remaining temperatures
+			while (st.hasMoreTokens()) {
+				p = Double.parseDouble(st.nextToken());
+				presList.add(new ConstantPM(p, unit));
+				pres = new Pressure(p, unit);
+				if(pres.getBar() < Global.lowPressure.getBar())
+					Global.lowPressure = (Pressure)pres.clone();
+				if(pres.getBar() > Global.lowPressure.getBar())
+					Global.highPressure = (Pressure)pres.clone();
+			}
+		}
+		else {
+			throw new InvalidSymbolException("condition.txt: Unknown PressureModel = " + modelType);
+		}
+    }
+    
+    public LinkedHashMap populateInitialStatusListWithReactiveSpecies(BufferedReader reader) throws IOException {
+    	LinkedHashMap speciesSet = new LinkedHashMap();
+    	LinkedHashMap speciesStatus = new LinkedHashMap();
+		String line = ChemParser.readMeaningfulLine(reader);
+		while (!line.equals("END")) {
+			StringTokenizer st = new StringTokenizer(line);
+			String index = st.nextToken();
+			String name = null;
+			if (!index.startsWith("(")) name = index;
+			else name = st.nextToken();
+			//if (restart) name += "("+speciesnum+")";
+			// 24Jun2009: MRH
+			//	Check if the species name begins with a number.
+			//	If so, terminate the program and inform the user to choose
+			//		a different name.  This is implemented so that the chem.inp
+			//		file generated will be valid when run in Chemkin
+			try {
+				int doesNameBeginWithNumber = Integer.parseInt(name.substring(0,1));
+				System.out.println("\nA species name should not begin with a number." +
+								   " Please rename species: " + name + "\n");
+				System.exit(0);
+			} catch (NumberFormatException e) {
+				// We're good
+			}
+			if (!(st.hasMoreTokens())) throw new InvalidSymbolException("Couldn't find concentration of species: "+name);
+			String conc = st.nextToken();
+			double concentration = Double.parseDouble(conc);
+			String unit = st.nextToken();
+			unit = ChemParser.removeBrace(unit);
+			if (unit.equals("mole/l") || unit.equals("mol/l") || unit.equals("mole/liter") || unit.equals("mol/liter")) {
+				concentration /= 1000;
+				unit = "mol/cm3";
+			}
+			else if (unit.equals("mole/m3") || unit.equals("mol/m3")) {
+				concentration /= 1000000;
+				unit = "mol/cm3";
+			}
+			else if (unit.equals("molecule/cm3") || unit.equals("molecules/cm3")) {
+				concentration /= 6.022e23;
+			}
+			else if (!unit.equals("mole/cm3") && !unit.equals("mol/cm3")) {
+				throw new InvalidUnitException("Species Concentration in condition.txt!");
+			}
+			
+			//GJB to allow "unreactive" species that only follow user-defined library reactions.  
+			// They will not react according to RMG reaction families 
+			boolean IsReactive = true;
+            boolean IsConstantConcentration = false;
+			while (st.hasMoreTokens()) {
+				String reactive = st.nextToken().trim();
+				if (reactive.equalsIgnoreCase("unreactive"))
+					IsReactive = false;
+                if (reactive.equalsIgnoreCase("constantconcentration"))
+                    IsConstantConcentration=true;
+			}
+			
+			Graph g = ChemParser.readChemGraph(reader);
+			ChemGraph cg = null;
+			try {
+				cg = ChemGraph.make(g);
+			}
+			catch (ForbiddenStructureException e) {
+				System.out.println("Forbidden Structure:\n" + e.getMessage());
+				throw new InvalidSymbolException("A species in the input file has a forbidden structure.");
+			}
+			//System.out.println(name);
+			Species species = Species.make(name,cg);
+			species.setReactivity(IsReactive); // GJB
+            species.setConstantConcentration(IsConstantConcentration);
+   			speciesSet.put(name, species);
+			getSpeciesSeed().add(species);
+			double flux = 0;
+			int species_type = 1; // reacted species
+			SpeciesStatus ss = new SpeciesStatus(species,species_type,concentration,flux);
+			speciesStatus.put(species, ss);
+			line = ChemParser.readMeaningfulLine(reader);
+		}
+		ReactionTime initial = new ReactionTime(0,"S");
+		//10/23/07 gmagoon: modified for handling multiple temperature, pressure conditions; note: concentration within speciesStatus (and list of conversion values) should not need to be modified for each T,P since this is done within isTPCconsistent in ReactionSystem
+		initialStatusList = new LinkedList();
+		for (Iterator iter = tempList.iterator(); iter.hasNext(); ) {
+			TemperatureModel tm = (TemperatureModel)iter.next();
+			for (Iterator iter2 = presList.iterator(); iter2.hasNext(); ){
+				PressureModel pm = (PressureModel)iter2.next();
+				//   LinkedHashMap speStat = (LinkedHashMap)speciesStatus.clone();//10/31/07 gmagoon: trying creating multiple instances of speciesStatus to address issues with concentration normalization (last normalization seems to apply to all)
+				Set ks = speciesStatus.keySet();
+				LinkedHashMap speStat = new LinkedHashMap();
+				for (Iterator iter3 = ks.iterator(); iter3.hasNext();){//11/1/07 gmagoon: perform deep copy; (is there an easier or more elegant way to do this?)
+					SpeciesStatus ssCopy = (SpeciesStatus)speciesStatus.get(iter3.next());
+					speStat.put(ssCopy.getSpecies(),new SpeciesStatus(ssCopy.getSpecies(),ssCopy.getSpeciesType(),ssCopy.getConcentration(),ssCopy.getFlux()));
+				}
+				initialStatusList.add(new InitialStatus(speStat,tm.getTemperature(initial),pm.getPressure(initial)));
+			}
+		}
+		
+		return speciesSet;
+    }
+    
+    public void populateInitialStatusListWithInertSpecies(BufferedReader reader) {
+    	String line = ChemParser.readMeaningfulLine(reader);
+   		while (!line.equals("END")) {
+	    	StringTokenizer st = new StringTokenizer(line);
+	    	String name = st.nextToken().trim();
+			String conc = st.nextToken();
+			double inertConc = Double.parseDouble(conc);
+			String unit = st.nextToken();
+			unit = ChemParser.removeBrace(unit);
+			if (unit.equals("mole/l") || unit.equals("mol/l") || unit.equals("mole/liter") || unit.equals("mol/liter")) {
+				inertConc /= 1000;
+				unit = "mol/cm3";
+			}
+			else if (unit.equals("mole/m3") || unit.equals("mol/m3")) {
+				inertConc /= 1000000;
+				unit = "mol/cm3";
+			}
+			else if (unit.equals("molecule/cm3") || unit.equals("molecules/cm3")) {
+				inertConc /= 6.022e23;
+				unit = "mol/cm3";
+			}
+			else if (!unit.equals("mole/cm3") && !unit.equals("mol/cm3")) {
+				throw new InvalidUnitException("Inert Gas Concentration not recognized: " + unit);
+			}
+			
+			//SystemSnapshot.putInertGas(name,inertConc);
+			for(Iterator iter=initialStatusList.iterator();iter.hasNext(); ){//6/23/09 gmagoon: needed to change this to accommodate non-static inertConc
+				((InitialStatus)iter.next()).putInertGas(name,inertConc);
+			}
+	   		line = ChemParser.readMeaningfulLine(reader);
+		}
+    }
+    
+    public String readMaxAtomTypes(String line, BufferedReader reader) {
+        if (line.startsWith("MaxCarbonNumber")) {
+        	StringTokenizer st = new StringTokenizer(line);
+        	String dummyString = st.nextToken();	// This should hold "MaxCarbonNumberPerSpecies:"
+        	int maxCNum = Integer.parseInt(st.nextToken());
+        	ChemGraph.setMaxCarbonNumber(maxCNum);
+        	System.out.println("Note: Overriding RMG-defined MAX_CARBON_NUM with user-defined value: " + maxCNum);
+        	line = ChemParser.readMeaningfulLine(reader);
+        }
+        if (line.startsWith("MaxOxygenNumber")) {
+        	StringTokenizer st = new StringTokenizer(line);
+        	String dummyString = st.nextToken();	// This should hold "MaxOxygenNumberPerSpecies:"
+        	int maxONum = Integer.parseInt(st.nextToken());
+        	ChemGraph.setMaxOxygenNumber(maxONum);
+        	System.out.println("Note: Overriding RMG-defined MAX_OXYGEN_NUM with user-defined value: " + maxONum);
+        	line = ChemParser.readMeaningfulLine(reader);
+        }
+        if (line.startsWith("MaxRadicalNumber")) {
+        	StringTokenizer st = new StringTokenizer(line);
+        	String dummyString = st.nextToken();	// This should hold "MaxRadicalNumberPerSpecies:"
+        	int maxRadNum = Integer.parseInt(st.nextToken());
+        	ChemGraph.setMaxRadicalNumber(maxRadNum);
+        	System.out.println("Note: Overriding RMG-defined MAX_RADICAL_NUM with user-defined value: " + maxRadNum);
+        	line = ChemParser.readMeaningfulLine(reader);
+        }
+        if (line.startsWith("MaxSulfurNumber")) {
+        	StringTokenizer st = new StringTokenizer(line);
+        	String dummyString = st.nextToken();	// This should hold "MaxSulfurNumberPerSpecies:"
+        	int maxSNum = Integer.parseInt(st.nextToken());
+        	ChemGraph.setMaxSulfurNumber(maxSNum);
+        	System.out.println("Note: Overriding RMG-defined MAX_SULFUR_NUM with user-defined value: " + maxSNum);
+        	line = ChemParser.readMeaningfulLine(reader);
+        }
+        if (line.startsWith("MaxSiliconNumber")) {
+        	StringTokenizer st = new StringTokenizer(line);
+        	String dummyString = st.nextToken();	// This should hold "MaxSiliconNumberPerSpecies:"
+        	int maxSiNum = Integer.parseInt(st.nextToken());
+        	ChemGraph.setMaxSiliconNumber(maxSiNum);
+        	System.out.println("Note: Overriding RMG-defined MAX_SILICON_NUM with user-defined value: " + maxSiNum);
+        	line = ChemParser.readMeaningfulLine(reader);
+        }
+        if (line.startsWith("MaxHeavyAtom")) {
+        	StringTokenizer st = new StringTokenizer(line);
+        	String dummyString = st.nextToken();	// This should hold "MaxHeavyAtomPerSpecies:"
+        	int maxHANum = Integer.parseInt(st.nextToken());
+        	ChemGraph.setMaxHeavyAtomNumber(maxHANum);
+        	System.out.println("Note: Overriding RMG-defined MAX_HEAVYATOM_NUM with user-defined value: " + maxHANum);
+        	line = ChemParser.readMeaningfulLine(reader);
+        }
+        return line;
     }
     
     public ReactionModelEnlarger getReactionModelEnlarger() {
     	return reactionModelEnlarger;
     }
+    
+    public LinkedList getTempList() {
+    	return tempList;
+    }
+    
+    public LinkedList getPressList() {
+    	return presList;
+    }
+    
+    public LinkedList getInitialStatusList() {
+    	return initialStatusList;
+    }
+    
+    public void writeBackupRestartFiles(String[] listOfFiles) {
+    	for (int i=0; i<listOfFiles.length; i++) {
+    		File temporaryRestartFile = new File(listOfFiles[i]);
+    		if (temporaryRestartFile.exists()) temporaryRestartFile.renameTo(new File(listOfFiles[i]+"~"));
+    	}
+    }
+    
+    public void removeBackupRestartFiles(String[] listOfFiles) {
+    	for (int i=0; i<listOfFiles.length; i++) {
+    		File temporaryRestartFile = new File(listOfFiles[i]+"~");
+    		temporaryRestartFile.delete();
+    	}
+    }
+    
 }
 /*********************************************************************
  File Path	: RMG\RMG\jing\rxnSys\ReactionModelGenerator.java

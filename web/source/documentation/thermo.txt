@@ -10,8 +10,14 @@ Instructions for Use
 1. Create a text file named :file:`thermo_input.txt` (or some other name of your choice) in any directory that you like.  If a ``GATPFit`` folder does not already exist in this directory, make it using the following command::
 
 	mkdir GATPFit
-	
-  In the text file, create the adjacency list corresponding to the molecule of interest using the same syntax used to define a species in the :file:`condition.txt` input file (see RMG manual). Hydrogens can be omitted for simplicity. For example, the adjacency list for 2,2,4,4-tetramethylpentane could be written as::
+
+The text file should begin with a block to specify a PrimaryThermoLibrary, which may
+be left empty if desired::
+
+	PrimaryThermoLibrary:
+	END
+
+Next, in the text file, create the adjacency list(s) corresponding to the molecule(s) of interest using the same syntax used to define a species in the :file:`condition.txt` input file (see RMG manual). Hydrogens can be omitted for simplicity. For example, the adjacency list for 2,2,4,4-tetramethylpentane could be written as::
 
 	1 C 0 {2,S}
 	2 C 0 {1,S} {3,S} {4,S} {5,S}
@@ -25,11 +31,11 @@ Instructions for Use
 
 2. At the command prompt, change directory to the location of the :file:`thermo_input.txt` file and ``GATPFit`` folder and then execute the command ::
 
-	$ java -classpath "%rmg%"\software\rmg\RMG.jar ThermoDataEstimator thermo_input.txt
+	$ java -classpath "%rmg%"\bin\RMG.jar ThermoDataEstimator thermo_input.txt
 
   To have output written to file instead of to the screen, use the syntax ::
 
-	$ java -classpath "%rmg%"\software\rmg\RMG.jar ThermoDataEstimator thermo_input.txt > thermo_output.txt
+	$ java -classpath "%rmg%"\bin\RMG.jar ThermoDataEstimator thermo_input.txt > thermo_output.txt
 
   where ``thermo_output.txt`` is the name of the file to be written.
 

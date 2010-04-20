@@ -1,19 +1,40 @@
-Temperature: 1200 (K)
-Solvation: off
+// Sample input file for PopulateReactions module
 
 PrimaryThermoLibrary:
-Name: PrIMe-recommended
-Location: GRI-Mech3.0
+//Name: PrIMe-recommended
+//Location: GRI-Mech3.0
 END
 
-PrimaryReactionLibrary:
-Name: PrIMe-recommended
-Location: RMG_database/SeedMechanisms/GRI-Mech3.0
-END
+TemperatureModel: Constant (K) 1200
+PressureModel: Constant (atm) 1
 
-nC4H10O
+//Solvation: off
+
+SpeciesStatus:
+
+nButanol 0.01 (molecule/cm3)
 1 C 0 {2,S}
 2 C 0 {1,S} {3,S}
 3 C 0 {2,S} {4,S}
 4 C 0 {3,S} {5,S}
 5 O 0 {4,S}
+
+CH3 0.01 (molecule/cm3)
+1 C 1
+
+END
+
+BathGas:
+N2 0.99 (molecule/cm3)
+END
+
+SpectroscopicDataEstimator: FrequencyGroups
+PressureDependence: ReservoirState off ModifiedStrongCollision
+PDepKineticsModel: Chebyshev
+
+PrimaryReactionLibrary:
+//Name: PrIMe-recommended
+//Location: GRI-Mech3.0
+END
+
+//Verbose: off
