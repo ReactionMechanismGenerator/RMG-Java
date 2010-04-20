@@ -113,6 +113,7 @@ public class ReactionModelGenerator {
 	protected static double termTol;
 	protected static double edgeTol;
 	protected static int minSpeciesForPruning;
+	protected static int maxEdgeSpeciesAfterPruning;
 	
 	//## operation ReactionModelGenerator()
     public  ReactionModelGenerator() {
@@ -830,6 +831,17 @@ public class ReactionModelGenerator {
 				    System.out.println("Cannot find MinSpeciesForPruning in condition.txt");
 				    System.exit(0);
 			    }
+			    line = ChemParser.readMeaningfulLine(reader);
+			    if (line.startsWith("MaxEdgeSpeciesAfterPruning:")) {
+				    st = new StringTokenizer(line);
+				    temp = st.nextToken();
+				    maxEdgeSpeciesAfterPruning = Integer.parseInt(st.nextToken());
+			    }
+			    else {
+				    System.out.println("Cannot find MaxEdgeSpeciesAfterPruning in condition.txt");
+				    System.exit(0);
+			    }
+
 			    //print header for pruning log (based on restart format)
 			    BufferedWriter bw = null;
 			    try {
@@ -858,6 +870,7 @@ public class ReactionModelGenerator {
 			    termTol = tolerance;
 			    edgeTol = 0;
 			    minSpeciesForPruning = 999999;//arbitrary high number (actually, the value here should not matter, since pruning should not be done)
+				maxEdgeSpeciesAfterPruning = 999999;
 			}
 
         		// read in atol
@@ -3967,7 +3980,8 @@ public class ReactionModelGenerator {
     }
 
     public void pruneReactionModel() {
-		HashSet prunableSpecies = new HashSet();
+		
+		HashMap prunableSpeciesMap = new HashMap();
 		//check whether all the reaction systems reached target conversion/time
 		boolean allReachedTarget = true;
 		for (Integer i = 0; i < reactionSystemList.size(); i++) {
@@ -3975,7 +3989,14 @@ public class ReactionModelGenerator {
 			if (!ds.targetReached) allReachedTarget = false;
 		}
 		JDAS ds0 = (JDAS)((ReactionSystem) reactionSystemList.get(0)).getDynamicSimulator(); //get the first reactionSystem dynamic simulator
-		if (ds0.autoflag && allReachedTarget && edgeTol>0 && (((CoreEdgeReactionModel)reactionModel).getEdge().getSpeciesNumber()+reactionModel.getSpeciesNumber())>= minSpeciesForPruning){//prune the reaction model if AUTO is being used, and all reaction systems have reached target time/conversion, and edgeTol is non-zero (and positive, obviously), and if there are a sufficient number of species in the reaction model (edge + core)
+		//prune the reaction model if AUTO is being used, and all reaction systems have reached target time/conversion, and edgeTol is non-zero (and positive, obviously), and if there are a sufficient number of species in the reaction model (edge + core)
+		
+		if ( ds0.autoflag && 
+		  allReachedTarget && 
+		  edgeTol>0 && 
+		  (((CoreEdgeReactionModel)reactionModel).getEdge().getSpeciesNumber()+reactionModel.getSpeciesNumber())>= minSpeciesForPruning){
+			
+			int numberToBePruned = ((CoreEdgeReactionModel)reactionModel).getEdge().getSpeciesNumber() - maxEdgeSpeciesAfterPruning; 
 			Iterator iter = ds0.edgeID.keySet().iterator();//determine the maximum edge flux ratio for each edge species
 			while(iter.hasNext()){
 				Species spe = (Species)iter.next();
@@ -3989,16 +4010,44 @@ public class ReactionModelGenerator {
 					if(prunable && !ds.prunableSpecies[id-1]) prunable = false;//I can't imagine a case where this would occur (if the conc. is zero at one condition, it should be zero at all conditions), but it is included for completeness
 				}
 				//if the maximum max edge flux ratio is less than the edge inclusion threshhold and the species is "prunable" (i.e. it doesn't have any reactions producing it with zero flux), schedule the species for pruning
-				if(maxmaxRatio < edgeTol && prunable){
-					prunableSpecies.add(spe);
-					System.out.println("Edge species "+spe.getChemkinName() +" has a maximum flux ratio ("+maxmaxRatio+") that is lower than edge inclusion threshhold and the species will be pruned from the edge.");
+				if( prunable){  //  && maxmaxRatio < edgeTol
+					prunableSpeciesMap.put(spe, maxmaxRatio);
+					// at this point prunableSpecies includes ALL prunable species, no matter how large their flux
 				}
 			}
-			//now, prunableSpecies has been filled with species that should be pruned from the edge
+			
+			// sort the prunableSpecies by maxmaxRatio
+			// i.e. sort the map by values
+			List prunableSpeciesList = new LinkedList(prunableSpeciesMap.entrySet());
+			Collections.sort(prunableSpeciesList, new Comparator() {
+							 public int compare(Object o1, Object o2) {
+							 return ((Comparable) ((Map.Entry) (o1)).getValue())
+							 .compareTo(((Map.Entry) (o2)).getValue());
+							 }
+							 });
+			List speciesToPrune = new LinkedList();
+			for (Iterator it = prunableSpeciesList.iterator(); it.hasNext();) {
+				Map.Entry entry = (Map.Entry)it.next();
+				Species spe = (Species)entry.getKey();
+				double maxmaxRatio = (Double)entry.getValue();
+				if (maxmaxRatio < edgeTol)
+				{
+					System.out.println("Edge species "+spe.getChemkinName() +" has a maximum flux ratio ("+maxmaxRatio+") lower than edge inclusion threshhold and will be pruned.");
+					speciesToPrune.add(spe);
+				}
+				else if ( numberToBePruned - speciesToPrune.size() > 0 ) {
+					System.out.println("Edge species "+spe.getChemkinName() +" has a low maximum flux ratio ("+maxmaxRatio+") and will be pruned to reduce the edge size to the maximum ("+maxEdgeSpeciesAfterPruning+").");
+					speciesToPrune.add(spe);					
+				}
+				else break;  // no more to be pruned
+			}
+			
+			
+			//now, speciesToPrune has been filled with species that should be pruned from the edge
 			System.out.println("Pruning...");
 			//prune species from the edge
 			//remove species from the edge and from the species dictionary
-			iter = prunableSpecies.iterator();
+			iter = speciesToPrune.iterator();
 			while(iter.hasNext()){
 				Species spe = (Species)iter.next();
 				writePrunedEdgeSpecies(spe);
@@ -4011,7 +4060,7 @@ public class ReactionModelGenerator {
 			HashSet toRemove = new HashSet();
 			while(iter.hasNext()){
 				Reaction reaction = (Reaction)iter.next();
-				if (reactionPrunableQ(reaction, prunableSpecies)) toRemove.add(reaction);
+				if (reactionPrunableQ(reaction, speciesToPrune)) toRemove.add(reaction);
 			}
 			iter = toRemove.iterator();
 			while(iter.hasNext()){
@@ -4030,7 +4079,7 @@ public class ReactionModelGenerator {
 					toRemove = new HashSet();
 					while(rIter.hasNext()){
 						Reaction reaction = (Reaction)rIter.next();
-						if (reactionPrunableQ(reaction, prunableSpecies))  toRemove.add(reaction);
+						if (reactionPrunableQ(reaction, speciesToPrune))  toRemove.add(reaction);
 					}
 					Iterator iterRem = toRemove.iterator();
 					while(iterRem.hasNext()){
@@ -4042,7 +4091,7 @@ public class ReactionModelGenerator {
 					toRemove = new HashSet();
 					while(rIter.hasNext()){
 						Reaction reaction = (Reaction)rIter.next();
-						if (reactionPrunableQ(reaction, prunableSpecies)) toRemove.add(reaction);
+						if (reactionPrunableQ(reaction, speciesToPrune)) toRemove.add(reaction);
 					}
 					iterRem = toRemove.iterator();
 					while(iterRem.hasNext()){
@@ -4057,7 +4106,7 @@ public class ReactionModelGenerator {
 						Iterator isIter = pdi.getSpeciesListIterator();
 						while(isIter.hasNext()){
 							Species spe = (Species)isIter.next();
-							if (prunableSpecies.contains(spe)&&!toRemove.contains(spe)) toRemove.add(pdi);
+							if (speciesToPrune.contains(spe)&&!toRemove.contains(spe)) toRemove.add(pdi);
 						}
 					}
 					iterRem = toRemove.iterator();
@@ -4070,7 +4119,7 @@ public class ReactionModelGenerator {
 					toRemove = new HashSet();
 					while(rIter.hasNext()){
 						Reaction reaction = (Reaction)rIter.next();
-						if (reactionPrunableQ(reaction, prunableSpecies)) toRemove.add(reaction);
+						if (reactionPrunableQ(reaction, speciesToPrune)) toRemove.add(reaction);
 					}
 					iterRem = toRemove.iterator();
 					while(iterRem.hasNext()){
@@ -4092,7 +4141,7 @@ public class ReactionModelGenerator {
 	
     //determines whether a reaction can be removed; returns true ; cf. categorizeReaction() in CoreEdgeReactionModel
     //returns true if the reaction involves reactants or products that are in p_prunableSpecies; otherwise returns false
-    public boolean reactionPrunableQ(Reaction p_reaction, HashSet p_prunableSpecies){
+    public boolean reactionPrunableQ(Reaction p_reaction, Collection p_prunableSpecies){
 		Iterator iter = p_reaction.getReactants();
         while (iter.hasNext()) {
 			Species spe = (Species)iter.next();
@@ -4108,13 +4157,9 @@ public class ReactionModelGenerator {
 		return false;
     }
     
-    //9/25/07 gmagoon: moved from ReactionSystem.java
-	//## operation hasPrimaryReactionLibrary()
     public boolean hasPrimaryReactionLibrary() {
-        //#[ operation hasPrimaryReactionLibrary()
         if (primaryReactionLibrary == null) return false;
         return (primaryReactionLibrary.size() > 0);
-        //#]
     }
     
     public boolean hasSeedMechanisms() {
