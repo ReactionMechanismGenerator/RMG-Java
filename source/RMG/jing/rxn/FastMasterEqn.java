@@ -896,7 +896,7 @@ public class FastMasterEqn implements PDepKineticsEstimator {
 							Ea = kin.getEValue();
 							n = kin.getNValue();
 							// While I'm here, and know which reaction was the High-P limit, set the comment in the P-dep reaction 
-							rxn.setComments("High-P Limit: " + kin.getSource().toString() + kin.getComment().toString() );
+							rxn.setComments("High-P Limit: " + kin.getSource().toString() + "\n" + kin.getComment().toString() );
 						}
 						else {
 							Kinetics[] k_array = rxnWHighPLimit.getFittedReverseKinetics();
@@ -907,9 +907,10 @@ public class FastMasterEqn implements PDepKineticsEstimator {
 							//  While I'm here, and know which reaction was the High-P limit, set the comment in the P-dep reaction 
 							Kinetics[] fwd_kin = rxnWHighPLimit.getKinetics();
 							String commentsForForwardKinetics = "";
+							if (fwd_kin.length > 1) commentsForForwardKinetics += "Summation of kinetics:\n!";
 							for (int numKs=0; numKs<fwd_kin.length; ++numKs) {
 								commentsForForwardKinetics += "High-P Limit Reverse: " + fwd_kin[numKs].getSource().toString() +fwd_kin[numKs].getComment().toString();
-								if (numKs != fwd_kin.length-1) commentsForForwardKinetics += "\n";
+								if (numKs != fwd_kin.length-1) commentsForForwardKinetics += "\n!";
 							}
 							rxn.setComments(commentsForForwardKinetics);
 						}
@@ -1149,7 +1150,13 @@ public class FastMasterEqn implements PDepKineticsEstimator {
         	UncertainDouble uA = new UncertainDouble(Math.exp(b_matrix.get(0,0)),0.0,"Adding");
         	UncertainDouble un = new UncertainDouble(b_matrix.get(1,0),0.0,"Adding");
         	UncertainDouble uE = new UncertainDouble(-GasConstant.getKcalMolK()*b_matrix.get(2,0),0.0,"Adding");
-        	k = new ArrheniusKinetics(uA,un,uE,"300-1500K",5,"Summation of kinetics","Arrhenius fit to multiple kinetics");
+			String commentsForFittedKinetics = "";
+			for (int numKs=0; numKs<k_array.length; ++numKs) {
+				commentsForFittedKinetics += "!" + k_array[numKs].getSource().toString();
+				if (k_array[numKs].getComment() != null) commentsForFittedKinetics += k_array[numKs].getComment().toString();
+				if (numKs != k_array.length-1) commentsForFittedKinetics += "\n";
+			}
+        	k = new ArrheniusKinetics(uA,un,uE,"300-1500K",5,"Summation of kinetics:",commentsForFittedKinetics);
         } else {
         	k = k_array[0];
         }
