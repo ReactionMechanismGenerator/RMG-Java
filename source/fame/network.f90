@@ -1004,9 +1004,11 @@ contains
                 end if
             end do
         end do
-        if (invalidRate == 1) then
-            write (*,fmt='(A)') 'ERROR: One ore more rate coefficients not properly estimated. See fame.log for details.'
-            write (1,fmt='(A)') 'ERROR: One ore more rate coefficients not properly estimated.'
+        if (invalidRate == 1 .or. msg /= '') then
+            write (*,fmt='(A)') 'ERROR: One or more rate coefficients not properly estimated. See fame.log for details.'
+            write (*,fmt='(A)') 'The message returned was:', msg
+            write (1,fmt='(A)') 'ERROR: One or more rate coefficients not properly estimated.'
+            write (1,fmt='(A)') 'The message returned was:', msg
             write (1,*) 'Temperature =', T, 'K, Pressure =', P, 'Pa, Rates ='
             do i = 1, nIsom+nReac+nProd
                 write (1,*) K(i,:)
