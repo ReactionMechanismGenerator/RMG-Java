@@ -948,6 +948,25 @@ contains
             Eres(i) = isomer_getActiveSpaceEnergy(i, net%reactions)
         end do
 
+		! Zero rate coefficient matrices
+		do r = 1, nGrains
+			do i = 1, nIsom
+				do j = 1, nIsom
+					Kij(i,j,r) = 0.0
+				end do
+			end do
+			do i = 1, nIsom
+				do j = 1, nReac+nProd
+					Gnj(j,i,r) = 0.0
+				end do
+			end do
+			do i = 1, nIsom
+				do j = 1, nReac
+					Fim(i,j,r) = 0.0
+				end do
+			end do
+		end do
+		
         ! Isomerization, dissociation, and association microcanonical rate
         ! coefficients, respectively
         do r = 1, size(net%reactions)
