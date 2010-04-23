@@ -28,6 +28,7 @@ Contents
    reactions
    speciesIDs
    theory/index
+   faq
    ../credits
 
 
