@@ -476,10 +476,9 @@ contains
 
         R = 8.314472
 
-        if (.not. allocated(isom%eqDist)) then
-            allocate( isom%eqDist(1:size(E)) )
-        end if
-
+        if (allocated(isom%eqDist)) deallocate(isom%eqDist)
+        allocate( isom%eqDist(1:size(E)) )
+        
         ! Calculate unnormalized eqDist
         do s = 1, size(E)
             isom%eqDist(s) = isom%densStates(s) * exp(-E(s) / (R * T))
@@ -487,6 +486,14 @@ contains
 
         ! Normalize eqDist
         isom%Q = sum(isom%eqDist) * dE
+        
+        ! Check that we are going to get a sensible result for eqDist
+        ! (i.e. to avoid divide-by-zero error)
+        if (isom%Q == 0.) then
+            write (1,fmt='(A)') 'ERROR: Partition function is zero, which would give NaN for eqDist. Check density of states.'
+            write (*,fmt='(A)') 'ERROR: Partition function is zero, which would give NaN for eqDist. Check density of states.'
+            stop
+        end if
 
         isom%eqDist = isom%eqDist / sum(isom%eqDist)
 
@@ -522,9 +529,8 @@ contains
         integer index, i, r
 
         ! Initialize density of states arrays
-        if (.not. allocated(isom%densStates)) then
-            allocate(isom%densStates(1:nGrains))
-        end if
+        if (allocated(isom%densStates)) deallocate(isom%densStates)
+        allocate(isom%densStates(1:nGrains))
         do r = 1, nGrains
             isom%densStates(r) = 0.0
             densStates(r) = 0.0
@@ -847,6 +853,11 @@ contains
             else
                 mult = mult + 50
             end if
+            
+            ! Deallocate the arrays used for determining the energy grains
+            ! If we haven't found a suitable Emax yet, these arrays will be
+            ! reallocated to a larger size in the next iteration
+            deallocate(isom%densStates, isom%eqDist, Elist)
 
         end do
 
