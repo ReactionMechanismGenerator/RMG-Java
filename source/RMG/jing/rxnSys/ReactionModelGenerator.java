@@ -108,6 +108,7 @@ public class ReactionModelGenerator {
 	private HashSet specs = new HashSet();
 	//public static native long getCpuTime();
 	//static {System.loadLibrary("cpuTime");}
+	public static boolean rerunFame = false;
 	
 	//## operation ReactionModelGenerator()
     public  ReactionModelGenerator() {
@@ -4233,6 +4234,24 @@ public class ReactionModelGenerator {
 			PDepRateConstant.setPMax(Pmax);
 			ChebyshevPolynomials.setPlow(Pmin);
 			ChebyshevPolynomials.setPup(Pmax);
+			
+			/*
+			 * New option for input file: DecreaseGrainSize
+			 * 	User now has the option to re-run fame with additional grains
+			 * 		(smaller grain size) when the p-dep rate exceeds the
+			 * 		high-P-limit rate.
+			 * 	Default value: off
+			 */
+			if (line.toLowerCase().startsWith("decreasegrainsize")) {
+				st = new StringTokenizer(line);
+				String tempString = st.nextToken();	// "DecreaseGrainSize:"
+				tempString = st.nextToken().trim().toLowerCase();
+				if (tempString.equals("on") || tempString.equals("yes") ||
+						tempString.equals("true")) {
+					rerunFame = true;
+				} else rerunFame = false;
+				line = ChemParser.readMeaningfulLine(reader);
+			}
 
 		}
 		else {
@@ -4513,6 +4532,10 @@ public class ReactionModelGenerator {
     		File temporaryRestartFile = new File(listOfFiles[i]+"~");
     		temporaryRestartFile.delete();
     	}
+    }
+    
+    public static boolean rerunFameWithAdditionalGrains() {
+    	return rerunFame;
     }
     
 }
