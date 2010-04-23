@@ -54,6 +54,7 @@ import jing.param.GasConstant;
 import jing.param.Pressure;
 import jing.param.Temperature;
 import jing.rxnSys.CoreEdgeReactionModel;
+import jing.rxnSys.ReactionModelGenerator;
 import jing.rxnSys.ReactionSystem;
 
 /**
@@ -914,26 +915,28 @@ public class FastMasterEqn implements PDepKineticsEstimator {
 							}
 							rxn.setComments(commentsForForwardKinetics);
 						}
-						double[][] all_ks = rxn.getPDepRate().getRateConstants();
-						for (int numTemps=0; numTemps<temperatures.length; numTemps++) {
-							double T = temperatures[numTemps].getK();
-							double k_highPlimit = A * Math.pow(T,n) * Math.exp(-Ea/GasConstant.getKcalMolK()/T);
-							if (all_ks[numTemps][pressures.length-1] > 2*k_highPlimit) {
-								if (numGrains > 1000) {
-									System.out.println("Pressure-dependent rate exceeds high-P-limit rate: " +
-										"Number of grains already exceeds 1000.  Continuing RMG simulation " +
-										"with results from current fame run.");
-									break;
-								}
-								else {
-									System.out.println("Pressure-dependent rate exceeds high-P-limit rate: " +
-										"Re-running fame with additional number of grains");
-									pdepRatesOK = false;
-									return false;
+						if (ReactionModelGenerator.rerunFameWithAdditionalGrains()) {
+							double[][] all_ks = rxn.getPDepRate().getRateConstants();
+							for (int numTemps=0; numTemps<temperatures.length; numTemps++) {
+								double T = temperatures[numTemps].getK();
+								double k_highPlimit = A * Math.pow(T,n) * Math.exp(-Ea/GasConstant.getKcalMolK()/T);
+								if (all_ks[numTemps][pressures.length-1] > 2*k_highPlimit) {
+									if (numGrains > 1000) {
+										System.out.println("Pressure-dependent rate exceeds high-P-limit rate: " +
+											"Number of grains already exceeds 1000.  Continuing RMG simulation " +
+											"with results from current fame run.");
+										break;	// No need to continue checking the rates for this one reaction
+									}
+									else {
+										System.out.println("Pressure-dependent rate exceeds high-P-limit rate: " +
+											"Re-running fame with additional number of grains");
+										pdepRatesOK = false;
+										return false;
+									}
 								}
 							}
+						//break;	// Why did MRH put this break here?
 						}
-						break;
 					}
 				}
 				

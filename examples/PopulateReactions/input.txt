@@ -31,6 +31,7 @@ END
 SpectroscopicDataEstimator: FrequencyGroups
 PressureDependence: ReservoirState off ModifiedStrongCollision
 PDepKineticsModel: Chebyshev
+//DecreaseGrainSize: yes
 
 PrimaryReactionLibrary:
 //Name: PrIMe-recommended

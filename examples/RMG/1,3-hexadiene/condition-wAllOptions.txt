@@ -112,6 +112,9 @@ PressureDependence: off/reservoirstate/modifiedstrongcollision
 //PRange: (bar) 0.01 100.0 5
 //Temperatures: 8 (K) 300.0 400.0 500.0 600.0 800.0 1000.0 1500.0 2000.0
 //Pressures: 5 (bar) 0.01 0.1 1.0 10.0 100.0
+// Specify whether fame calculation should be re-run in the event a pdep rate exceeds the
+//	high-p-limit rate by > 2 (default is off)
+//DecreaseGrainSize: yes
 
 // This file is only necessary if one of the species present in the condition.txt file
 //	was labeled as "Unreactive".
