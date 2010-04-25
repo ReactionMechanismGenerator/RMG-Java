@@ -477,6 +477,18 @@ or::
     Conversions: AUTO
 	
 The automated time stepping feature is described in greater detail in the Theory and Implementation Details appendix.
+When using automated time stepping, it is also possible to perform mechanism generation with pruning of "unimportant" edge species to reduce memory usage. This option is requested by specifying ``AUTOPRUNE`` in place of ``AUTO``. When using ``AUTOPRUNE``, this must be followed by four lines specifying pruning parameters, as the example below shows::
+
+     TerminationTolerance: 1.0E4
+     PruningTolerance: 1.0E-15
+     MinSpeciesForPruning: 1000
+     MaxEdgeSpeciesAfterPruning: 1000 
+
+``TerminationTolerance`` and ``PruningTolerance`` are compared with the same quantity as ``Error Tolerance`` in the ``FinishController`` section (i.e. they are all compared with ratios of edge species flux to characteristic reaction model flux).
+``TerminationTolerance`` indicates how high the edge flux ratio must get to interrupt the simulation (before reaching the ``Goal Conversion`` or ``Goal ReactionTime`` described earlier). Pruning won't occur if the simulation is interrupted before reaching the goal criteria, so set this high to increase pruning opportunities. The value should be greater than or equal to ``Error Tolerance``.
+``PruningTolerance`` indicates how low the edge flux ratio for a species must get before the species is pruned (removed) from the edge (regardless of edge size relative to ``MaxEdgeSpeciesAfterPruning``). The value should be (significantly) lower than ``Error Tolerance``.
+``MinSpeciesForPruning`` indicates the minimum total number of species (edge and core) that must be present for pruning (due to low edge flux ratio relative to ``PruningTolerance``) to occur.
+``MaxEdgeSpeciesAfterPruning`` indicates the upper limit for the size of the edge. Pruning will continue until the edge is at least this small, regardless of ``PruningTolerance`` or ``MinSpeciesForPruning`` (though lowest fluxes are pruned first).
 
 The next two lines specify the absolute and relative tolerance for the ODE solver, respectively. Common values for the absolute tolerance are 1e-15 to 1e-25. Relative tolerance
 is usually 1e-4 to 1e-8::

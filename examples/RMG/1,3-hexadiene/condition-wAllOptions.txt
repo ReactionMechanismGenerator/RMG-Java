@@ -130,6 +130,12 @@ DynamicSimulator: DASSL
 Conversions: AUTO
 // The units for TimeStep are hard-coded into RMG as seconds
 //TimeStep: AUTO
+// if you use AUTOPRUNE the following lines are required
+//Conversions: AUTOPRUNE
+//TerminationTolerance: 1.0E4  // when to interrupt the simulation. Pruning won't occur if the simulation is interrupted, so set this high to increase pruning opportunities.
+//PruningTolerance: 1.0E-15    // relative flux below which species will be pruned regardless of edge size.
+//MinSpeciesForPruning: 1000   // pruning won't uccur if total number of species is below this number
+//MaxEdgeSpeciesAfterPruning: 1000 // pruning will continue until the edge is at least this small, regardless of relative fluxes (though lowest fluxes are pruned first)
 Atol: 1e-18
 Rtol: 1e-8
 

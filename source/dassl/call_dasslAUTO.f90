@@ -33,7 +33,7 @@
      &     REACTIONRATEARRAY(5*rmax),&
      &     THIRDBODYREACTIONRATEARRAY(16*Tbrmax),&
      &     TROEREACTIONRATEARRAY(21*TROemax), targetconc, THRESH, &
-	 &     LINDEREACTIONRATEARRAY(17*LINDEMAX)
+	 &    CORETHRESH, LINDEREACTIONRATEARRAY(17*LINDEMAX)
      ! 4/25/08 gmagoon:make auto arrays allocatable and double
      ! precision for KVEC
      INTEGER, DIMENSION(:), ALLOCATABLE :: NEREAC,NEPROD
@@ -115,9 +115,12 @@
 ! 4/24/08 gmagoon: if autoFlag = 1, read in additional information 
 ! specific to automatic time stepping
 	IF (AUTOFLAG .EQ. 1) THEN
-		! read the threshhold, corresponding to the value
-		! specified in condition.txt input file
-		READ(12,*) THRESH
+		! read the threshhold, corresponding to the value of
+		! termination tolerance specified in condition.txt input file
+	        !CORETHRESH is the threshhold for moving something from edge to core,
+	        !whereas THRESH is the threshhold for terminating the run before the end
+	        !THRESH >= CORETHRESH
+		READ(12,*) THRESH, CORETHRESH
 		! read the number of edge species and edge reactions
 		READ(12,*) ESPECIES, EREACTIONSIZE
 		! allocate memory for arrays
@@ -185,7 +188,7 @@
 
       CALL SOLVEODE(Y, YPRIME, T, TOUT, INFO, RTOL, ATOL, IDID, &
      &     RWORK, IWORK, IMPSPECIES, TARGETCONC, AUTOFLAG, &
-     &     THRESH,ESPECIES,EREACTIONSIZE,NEREAC,NEPROD,IDEREAC, &
+     &     THRESH,CORETHRESH,ESPECIES,EREACTIONSIZE,NEREAC,NEPROD,IDEREAC, &
      &     IDEPROD,KVEC)
 
 ! 4/25/08 gmagoon: deallocate memory from allocatable arrays
@@ -216,7 +219,7 @@
 ! time stepping
       SUBROUTINE SOLVEODE(Y, YPRIME, Time, TOUT, INFO, RTOL, ATOL, &
      &     IDID, RWORK, IWORK, IMPSPECIES, TARGETCONC, AUTOFLAG, &
-     &     THRESH,ESPECIES,EREACTIONSIZE,NEREAC,NEPROD,IDEREAC, &
+     &     THRESH,CORETHRESH,ESPECIES,EREACTIONSIZE,NEREAC,NEPROD,IDEREAC, &
      &     IDEPROD,KVEC)
 
       IMPLICIT NONE
@@ -226,7 +229,8 @@
 	& EREACTIONSIZE, LINDEMAX
       INTEGER NEREAC(EREACTIONSIZE),NEPROD(EREACTIONSIZE)
       INTEGER IDEREAC(EREACTIONSIZE,3), IDEPROD(EREACTIONSIZE,3)
-      DOUBLE PRECISION KVEC(EREACTIONSIZE)
+      DOUBLE PRECISION KVEC(EREACTIONSIZE),MAXRATIO(ESPECIES), &
+	& HIGHESTRATIO
 
       PARAMETER (SPMAX = 1500, RMAX = 100000, TBRMAX=100, TROEMAX=100, &
 	  &    LINDEMAX=100)
@@ -240,7 +244,7 @@
       DOUBLE PRECISION REACTIONRATEARRAY(5*rmax), &
      &     THIRDBODYREACTIONRATEARRAY(16*Tbrmax), &
      &     TROEREACTIONRATEARRAY(21*TROemax), TEMPERATURE, PRESSURE, &
-     &     THRESH, LINDEREACTIONRATEARRAY(17*LINDEMAX)
+     &     THRESH, CORETHRESH, LINDEREACTIONRATEARRAY(17*LINDEMAX)
 
       COMMON /SIZE/ NSTATE, REACTIONSIZE, THIRDBODYREACTIONSIZE, &
      &     TROEREACTIONSIZE, LINDEREACTIONSIZE
@@ -251,10 +255,13 @@
      &     TROEREACTIONARRAY, ConstantConcentration, &
 	 &     LINDEREACTIONRATEARRAY, LINDEREACTIONARRAY
 
-      INTEGER  INFO(30), LIW, LRW, IWORK(*), IPAR(1),IDID, iter, &
-     &     IMPSPECIES, conc
+      INTEGER  INFO(30), LIW, LRW, IWORK(41 + NSTATE), IPAR(1),IDID, iter, &
+     &     IMPSPECIES, conc, ITER_OUTPT, IWORK_OUTPT(41 + NSTATE), COPYQ
       DOUBLE PRECISION Y(NSTATE), YPRIME(NSTATE), Time, TOUT, RTOL, ATOL &
-     &     , RWORK(*), TARGETCONC
+     &     , RWORK(51 + 9*NSTATE + NSTATE**2), TARGETCONC, Y_OUTPT(NSTATE) &
+     &     , YPRIME_OUTPT(NSTATE), TIME_OUTPT  &
+     &     , RWORK_OUTPT(51 + 9*NSTATE + NSTATE**2)
+     INTEGER PRUNEVEC(ESPECIES),PRUNEVEC_OUTPT(ESPECIES)
 
       DOUBLE PRECISION RPAR(REACTIONSIZE+THIRDBODYREACTIONSIZE+ &
      &     TROEREACTIONSIZE+LINDEREACTIONSIZE),&
@@ -263,7 +270,9 @@
      &     CURRENTReactionFlux(REACTIONSIZE+THIRDBODYREACTIONSIZE+ &
      &     TROEREACTIONSIZE+LINDEREACTIONSIZE),&
      &     PREVReactionFlux(REACTIONSIZE+THIRDBODYREACTIONSIZE+&
-     &     TROEREACTIONSIZE+LINDEREACTIONSIZE), PREVTIME
+     &     TROEREACTIONSIZE+LINDEREACTIONSIZE), PREVTIME, &
+     &     TOTALREACTIONFLUX_OUTPT(REACTIONSIZE+THIRDBODYREACTIONSIZE+ &
+     &     TROEREACTIONSIZE+LINDEREACTIONSIZE)
 
       EXTERNAL RES, JAC, GETFLUX
     ! 5/13/08 gmagoon: vars for timing
@@ -306,11 +315,42 @@
 ! determine EDGEFLAG (-1 if flux threshhold has not been met,
 ! positive integer otherwise)
 	EDGEFLAG = -1
+	!initialize MAXRATIO to a vector of all zeroes;
+	!this variable will track the maxiumum
+	!of rate(i)/Rchar for each edge species i, with respect to time
+	MAXRATIO = 0
+	!initialize HIGHESTRATIO to 0; this variable (a scalar)
+	!tracks the maximum of maxratio; when a new maximum is
+	!attained, the present time step creating the new maximum
+	!will be stored for output from the ODE solver to the Java code
+	HIGHESTRATIO = 0
 	IF (AUTOFLAG.eq.1) THEN
 		CALL EDGEFLUX(EDGEFLAG, Y, YPRIME,THRESH,ESPECIES, &
      &     EREACTIONSIZE,NEREAC,NEPROD,IDEREAC,IDEPROD,KVEC, &
-     &     NSTATE)
+     &     MAXRATIO,PRUNEVEC,NSTATE)
+		!update HIGHESTRATIO and store relevant variables that will be printed
+		!later; note that we cannot exit the do loop once the IF statement is
+		!caught because, even though output variables will be stored properly,
+		!the HIGHESTRATIO will not necessarily have the highest value
+		!note: TOTALREACTIONFLUX apparently tracks integrated flux, not
+		!instantaneous flux, so setting value to be zero here should be OK...
+		!in any case, the result doesn't seem to be used by the Java code
+		DO I=1, ESPECIES
+		    IF (MAXRATIO(I) .GT. HIGHESTRATIO) THEN
+			HIGHESTRATIO = MAXRATIO(I)
+			ITER_OUTPT=0
+			TIME_OUTPT=TIME
+			Y_OUTPT = Y
+			YPRIME_OUTPT = YPRIME
+			!IWORK_OUTPT = IWORK
+			!RWORK_OUTPT = RWORK
+			TOTALREACTIONFLUX_OUTPT = 0
+			PRUNEVEC_OUTPT = PRUNEVEC
+		    END IF
+		END DO
 	ENDIF
+
+
 
       iter = 0;
       PREVTIME = TIME
@@ -363,8 +403,29 @@
 		IF (AUTOFLAG.eq.1) THEN
 			CALL EDGEFLUX(EDGEFLAG, Y, YPRIME,THRESH,ESPECIES, &
     		 &     EREACTIONSIZE,NEREAC,NEPROD,IDEREAC,IDEPROD,KVEC, &
-		 &     NSTATE)
-		ENDIF
+		 &     MAXRATIO,PRUNEVEC,NSTATE)
+		 	!update HIGHESTRATIO and store relevant variables that will be printed
+			!later; note that we cannot exit the do loop once the IF statement is
+			!caught because, even though output variables will be stored properly,
+			!the HIGHESTRATIO will not necessarily have the highest value
+			COPYQ=0
+			DO I=1, ESPECIES
+			    IF (MAXRATIO(I) .GT. HIGHESTRATIO) THEN
+				HIGHESTRATIO = MAXRATIO(I)
+				COPYQ=1 !mark this ODE time step for copying into output variables
+			    END IF
+			END DO
+			IF (COPYQ .EQ. 1) THEN
+			    ITER_OUTPT=ITER
+			    TIME_OUTPT=TIME
+			    Y_OUTPT = Y
+			    YPRIME_OUTPT = YPRIME
+			    !IWORK_OUTPT = IWORK
+			    !RWORK_OUTPT = RWORK
+			    TOTALREACTIONFLUX_OUTPT = TOTALREACTIONFLUX
+			    PRUNEVEC_OUTPT = PRUNEVEC
+			END IF
+		END IF
             GO TO 1
          END IF
       END IF
@@ -374,13 +435,33 @@
       !write(*,*) 'Time-stepping timing: ', (finishT-startT)
      ! write(*,*) (finishT-startT)
 
+      !if we are not using AUTOFLAG, we just want to output the final times;
+      !another case where we want to use the final time is if the highest ratio
+      !never reaches CORETHRESH...if this is the case, we are "converged",
+      !as we have reached the target time/conversion without exceeding the
+      !core inclusion threshhold, and we therefore want to report the
+      !final state back to the Java code so it will recognize that the
+      !target time/conversion has been reached
+      IF ((AUTOFLAG .NE. 1) .OR. (HIGHESTRATIO .LT. CORETHRESH)) THEN
+	ITER_OUTPT=ITER
+	TIME_OUTPT=TIME
+	Y_OUTPT = Y
+	YPRIME_OUTPT = YPRIME
+	!IWORK_OUTPT = IWORK
+	!RWORK_OUTPT = RWORK
+	TOTALREACTIONFLUX_OUTPT = TOTALREACTIONFLUX
+	PRUNEVEC_OUTPT = PRUNEVEC
+      END IF
+      IWORK_OUTPT = IWORK
+      RWORK_OUTPT = RWORK
+
       OPEN(UNIT=16, FILE='SolverOutput.dat')
 
-      write(16,*) iter
+      write(16,*) ITER_OUTPT
       WRITE(16,*) NSTATE-1
-      write(16,*) time
+      write(16,*) TIME_OUTPT
       DO I=1,NSTATE-1
-         WRITE(16,*) Y(I)/Y(NSTATE)
+         WRITE(16,*) Y_OUTPT(I)/Y_OUTPT(NSTATE)
       END DO
       
 
@@ -388,23 +469,35 @@
    ! 5/9/08 gmagoon: these values are read by RMG as flux; corrected to
    ! include volume changing effects (dV/dt) using quotient rule
    !      WRITE(16,*) YPRIME(I)/Y(NSTATE)
-          WRITE(16,*) (Y(NSTATE)*YPRIME(I)-Y(I)*YPRIME(NSTATE))/(Y(NSTATE)**2)
+          WRITE(16,*) (Y_OUTPT(NSTATE)*YPRIME_OUTPT(I)-Y_OUTPT(I)*YPRIME_OUTPT(NSTATE))/(Y_OUTPT(NSTATE)**2)
       END DO
 
       DO I=1,REACTIONSIZE+THIRDBODYREACTIONSIZE+TROEREACTIONSIZE+LINDEREACTIONSIZE
-         WRITE(16,*) TOTALREACTIONFLUX(I)
+         WRITE(16,*) TOTALREACTIONFLUX_OUTPT(I)
       END DO
       
-      write(16,*) y(nstate)
+      write(16,*) Y_OUTPT(nstate)
+      
+      !for autoflag cases, display the edgeflag (if < 0, the ODE solver did not reach the target time/conversion),
+      !, the final time integrated to,
+      !along with pruning information
+      IF (AUTOFLAG .EQ. 1) THEN
+	  WRITE(16,*) EDGEFLAG
+	  WRITE(16,*) TIME
+	  DO I=1, ESPECIES
+	      WRITE(16,*) PRUNEVEC_OUTPT(I)
+	      WRITE(16,*) MAXRATIO(I)
+	  END DO
+      END IF
 
       CLOSE(16)
 
       OPEN(UNIT=14, FILE='RWORK.DAT', FORM='UNFORMATTED')
-      WRITE(14) (RWORK(I),I=1,LRW)
+      WRITE(14) (RWORK_OUTPT(I),I=1,LRW)
       CLOSE(14)
 
       OPEN(UNIT=15, FILE='IWORK.DAT', FORM='UNFORMATTED')
-      WRITE(15) (IWORK(I),I=1,LIW)
+      WRITE(15) (IWORK_OUTPT(I),I=1,LIW)
       CLOSE(15)
       
       if (idid .eq. 1 .or. idid .eq. 2 .or. idid .eq. 3 .or. idid .eq. 0) then
@@ -424,14 +517,15 @@
 ! EDGEFLUX also calls RCHAR
 SUBROUTINE EDGEFLUX(EDGEFLAG, Y, YPRIME,THRESH,ESPECIES, &
     		 &     EREACTIONSIZE,NEREAC,NEPROD,IDEREAC,IDEPROD, &
-		&      KVEC, NSTATE)
+		&      KVEC,MAXRATIO,PRUNEVEC,NSTATE)
 	IMPLICIT NONE
 	INTEGER EDGEFLAG, ESPECIES, EREACTIONSIZE, NSTATE, I, J, K
 	DOUBLE PRECISION THRESH, FLUXRC, RFLUX, Y(NSTATE), YPRIME(NSTATE)
 	DOUBLE PRECISION, DIMENSION(:), ALLOCATABLE :: RATE
 	INTEGER NEREAC(EREACTIONSIZE),NEPROD(EREACTIONSIZE)
         INTEGER IDEREAC(EREACTIONSIZE,3), IDEPROD(EREACTIONSIZE,3)
-        DOUBLE PRECISION KVEC(EREACTIONSIZE)
+	INTEGER PRUNEVEC(ESPECIES)
+        DOUBLE PRECISION KVEC(EREACTIONSIZE), RATIO, MAXRATIO(ESPECIES)
 	
 	ALLOCATE(RATE(ESPECIES))
 	! initialize array to have all zeroes
@@ -442,9 +536,12 @@ SUBROUTINE EDGEFLUX(EDGEFLAG, Y, YPRIME,THRESH,ESPECIES, &
       ! calculate characteristic flux, FLUXRC
 	CALL RCHAR(FLUXRC, Y, YPRIME, NSTATE)
 
+	!initialize PRUNEVEC; at first, assume everything is prunable
+	PRUNEVEC=1
+
 	! calculate the vector of fluxes for each species
 	! by summing contributions from each reaction
-	ILoOP: DO I=1, EREACTIONSIZE
+	ILOOP: DO I=1, EREACTIONSIZE
 	      ! calculate reaction flux by multiplying k
 		! by concentration(s)
 		RFLUX = KVEC(I)
@@ -454,22 +551,30 @@ SUBROUTINE EDGEFLUX(EDGEFLAG, Y, YPRIME,THRESH,ESPECIES, &
 		! loop over reaction products, adding RFLUX
 		JLOOP: DO J=1, NEPROD(I)
 			RATE(IDEPROD(I,J))=RATE(IDEPROD(I,J))+ RFLUX
+			!if RFLUX is zero, then presumably one of the
+			!reactant concentrations is zero (it is assumed
+			!that k != 0), and therefore, we don't want to
+			!prune the species yet
+			IF(RFLUX .EQ. 0.0) THEN
+			    PRUNEVEC(IDEPROD(I,J)) = 0
+			END IF
 		END DO JLOOP
 	END DO ILOOP
 
 
 	! check if any of the edge species fluxes exceed
-	! the threshhold; if so, set edgeflag equal to
-	! the index of the first species found and exit
-	! the loop
-	! 5/7/08 gmagoon: added write statements for debugging purposes
-!	OPEN (UNIT=20, FILE = 'debug.txt')
-!	WRITE(20,*) FLUXRC 
+	! the threshhold and update the MAXRATIO vector
 	FLOOP: DO I=1, ESPECIES
-!		WRITE(20,*) I, RATE(I)
-		IF(RATE(I) .GE. THRESH*FLUXRC) THEN
+		RATIO = RATE(I)/FLUXRC
+		!if we reach the termination tolerance,
+		!set EDGEFLAG to a positive value
+		!(in particular, the species ID)
+		IF(RATIO .GE. THRESH) THEN
 		   EDGEFLAG = I
-		   EXIT FLOOP
+		END IF
+		!update the MAXRATIO vector
+		IF(RATIO .GT. MAXRATIO(I)) THEN
+		    MAXRATIO(I) = RATIO
 		END IF
 	END DO FLOOP
 	DEALLOCATE(RATE)

@@ -108,15 +108,18 @@ public class ReactionModelGenerator {
 	private HashSet specs = new HashSet();
 	//public static native long getCpuTime();
 	//static {System.loadLibrary("cpuTime");}
+
 	public static boolean rerunFame = false;
+
+	protected static double tolerance;//can be interpreted as "coreTol" (vs. edgeTol)
+	protected static double termTol;
+	protected static double edgeTol;
+	protected static int minSpeciesForPruning;
+	protected static int maxEdgeSpeciesAfterPruning;
 	
 	//## operation ReactionModelGenerator()
     public  ReactionModelGenerator() {
-        //#[ operation ReactionModelGenerator()
         workingDirectory = System.getProperty("RMG.workingDirectory");
-		
-		
-        //#]
     }
 	
     //## operation initializeReactionSystem()
@@ -708,7 +711,6 @@ public class ReactionModelGenerator {
         		st = new StringTokenizer(line, ":");
         		String temp = st.nextToken();
         		String tol = st.nextToken();
-        		double tolerance;
         		try {
         			if (tol.endsWith("%")) {
         				tolerance = Double.parseDouble(tol.substring(0,tol.length()-1))/100;
@@ -794,7 +796,81 @@ public class ReactionModelGenerator {
         			numConversions = i+1;
         		}
         		else throw new InvalidSymbolException("condition.txt: can't find time step for dynamic simulator!");
-				
+
+			//
+			if (temp.startsWith("AUTOPRUNE")){//for the AUTOPRUNE case, read in additional lines for termTol and edgeTol
+			    line = ChemParser.readMeaningfulLine(reader);
+			    if (line.startsWith("TerminationTolerance:")) {
+				    st = new StringTokenizer(line);
+				    temp = st.nextToken();
+				    termTol = Double.parseDouble(st.nextToken());
+			    }
+			    else {
+				    System.out.println("Cannot find TerminationTolerance in condition.txt");
+				    System.exit(0);
+			    }
+			    line = ChemParser.readMeaningfulLine(reader);
+			    if (line.startsWith("PruningTolerance:")) {
+				    st = new StringTokenizer(line);
+				    temp = st.nextToken();
+				    edgeTol = Double.parseDouble(st.nextToken());
+			    }
+			    else {
+				    System.out.println("Cannot find PruningTolerance in condition.txt");
+				    System.exit(0);
+			    }
+			    line = ChemParser.readMeaningfulLine(reader);
+			    if (line.startsWith("MinSpeciesForPruning:")) {
+				    st = new StringTokenizer(line);
+				    temp = st.nextToken();
+				    minSpeciesForPruning = Integer.parseInt(st.nextToken());
+			    }
+			    else {
+				    System.out.println("Cannot find MinSpeciesForPruning in condition.txt");
+				    System.exit(0);
+			    }
+			    line = ChemParser.readMeaningfulLine(reader);
+			    if (line.startsWith("MaxEdgeSpeciesAfterPruning:")) {
+				    st = new StringTokenizer(line);
+				    temp = st.nextToken();
+				    maxEdgeSpeciesAfterPruning = Integer.parseInt(st.nextToken());
+			    }
+			    else {
+				    System.out.println("Cannot find MaxEdgeSpeciesAfterPruning in condition.txt");
+				    System.exit(0);
+			    }
+
+			    //print header for pruning log (based on restart format)
+			    BufferedWriter bw = null;
+			    try {
+				File f = new File("Pruning/edgeReactions.txt");
+				bw = new BufferedWriter(new FileWriter("Pruning/edgeReactions.txt", true));
+			        String EaUnits = ArrheniusKinetics.getEaUnits();
+				bw.write("UnitsOfEa: " + EaUnits);
+				bw.newLine();
+			    } catch (FileNotFoundException ex) {
+				ex.printStackTrace();
+			    } catch (IOException ex) {
+				ex.printStackTrace();
+			    } finally {
+				try {
+				    if (bw != null) {
+					bw.flush();
+					bw.close();
+				    }
+				} catch (IOException ex) {
+				    ex.printStackTrace();
+				}
+			    }
+
+			}
+			else if (temp.startsWith("AUTO")){//in the non-autoprune case (i.e. original AUTO functionality), we set the new parameters to values that should reproduce original functionality
+			    termTol = tolerance;
+			    edgeTol = 0;
+			    minSpeciesForPruning = 999999;//arbitrary high number (actually, the value here should not matter, since pruning should not be done)
+				maxEdgeSpeciesAfterPruning = 999999;
+			}
+
         		// read in atol
         		
         		line = ChemParser.readMeaningfulLine(reader);
@@ -861,7 +937,7 @@ public class ReactionModelGenerator {
 						//6/25/08 gmagoon: changed loop to use i index, and updated DASPK constructor to pass i (mirroring changes to DASSL
 						//6/25/08 gmagoon: updated to pass autoflag and validity tester; this requires FinishController block of input file to be present before DynamicSimulator block, but this requirement may have already existed anyway, particularly in construction of conversion/time step lists; *perhaps we should formalize this requirement by checking to make sure validityTester is not null?
 						for (int i = 0;i < initialStatusList.size();i++) {
-							dynamicSimulatorList.add(new JDASPK(rtol, atol, 0, (InitialStatus)initialStatusList.get(i), i,finishController.getValidityTester(), autoflag));
+							dynamicSimulatorList.add(new JDASPK(rtol, atol, 0, (InitialStatus)initialStatusList.get(i), i,finishController.getValidityTester(), autoflag, termTol, tolerance));
 						}
 					}
 					species = new LinkedList();
@@ -889,7 +965,7 @@ public class ReactionModelGenerator {
 					//11/1/07 gmagoon: changed loop to use i index, and updated DASSL constructor to pass i
 					//5/5/08 gmagoon: updated to pass autoflag and validity tester; this requires FinishController block of input file to be present before DynamicSimulator block, but this requirement may have already existed anyway, particularly in construction of conversion/time step lists; *perhaps we should formalize this requirement by checking to make sure validityTester is not null?
 					for (int i = 0;i < initialStatusList.size();i++) {
-						dynamicSimulatorList.add(new JDASSL(rtol, atol, 0, (InitialStatus)initialStatusList.get(i), i, finishController.getValidityTester(), autoflag));
+						dynamicSimulatorList.add(new JDASSL(rtol, atol, 0, (InitialStatus)initialStatusList.get(i), i, finishController.getValidityTester(), autoflag, termTol, tolerance));
 					}
         		}
         		else if (simulator.equals("Chemkin")) {
@@ -1307,8 +1383,10 @@ public class ReactionModelGenerator {
 				
 				//writeCoreSpecies();
 				double pt = System.currentTimeMillis();
+				//prune the reaction model (this will only do something in the AUTO case)
+				pruneReactionModel();
 				// ENLARGE THE MODEL!!! (this is where the good stuff happens)
-				enlargeReactionModel();//10/24/07 gmagoon: need to adjust this function
+				enlargeReactionModel();
 				double totalEnlarger = (System.currentTimeMillis() - pt)/1000/60;
 				
 				//PDepNetwork.completeNetwork(reactionSystem.reactionModel.getSpeciesSet());
@@ -2469,6 +2547,33 @@ public class ReactionModelGenerator {
         }
 	}
 	
+	private void writePrunedEdgeSpecies(Species species) {
+		BufferedWriter bw = null;
+
+		try {
+		    bw = new BufferedWriter(new FileWriter("Pruning/edgeSpecies.txt", true));
+		    bw.write(species.getChemkinName());
+		    bw.newLine();
+		    int dummyInt = 0;
+		    bw.write(species.getChemGraph().toString(dummyInt));
+		    bw.newLine();
+		} catch (FileNotFoundException ex) {
+		    ex.printStackTrace();
+		} catch (IOException ex) {
+		    ex.printStackTrace();
+		} finally {
+		    try {
+			if (bw != null) {
+			    bw.flush();
+			    bw.close();
+			}
+		    } catch (IOException ex) {
+			ex.printStackTrace();
+		    }
+		}
+	}
+
+	
 	/*
 	 * MRH 25MAR2010:
 	 * 	This method is no longer used
@@ -2647,6 +2752,39 @@ public class ReactionModelGenerator {
         }
 	}
 	
+	//gmagoon 4/5/10: based on Mike's writeEdgeReactions
+	private void writePrunedEdgeReaction(Reaction reaction) {
+		BufferedWriter bw = null;
+
+		try {
+		    bw = new BufferedWriter(new FileWriter("Pruning/edgeReactions.txt", true));
+
+		    if (reaction.isForward()) {
+			    bw.write(reaction.toChemkinString(new Temperature(298,"K")));
+			   // bw.write(reaction.toRestartString(new Temperature(298,"K")));
+			    bw.newLine();
+		    } else if (reaction.getReverseReaction().isForward()) {
+			    bw.write(reaction.getReverseReaction().toChemkinString(new Temperature(298,"K")));
+			    //bw.write(reaction.getReverseReaction().toRestartString(new Temperature(298,"K")));
+			    bw.newLine();
+		    } else
+			    System.out.println("Could not determine forward direction for following rxn: " + reaction.toString());
+		} catch (FileNotFoundException ex) {
+		    ex.printStackTrace();
+		} catch (IOException ex) {
+		    ex.printStackTrace();
+		} finally {
+		    try {
+			if (bw != null) {
+			    bw.flush();
+			    bw.close();
+			}
+		    } catch (IOException ex) {
+			ex.printStackTrace();
+		    }
+		}
+	}
+
 	private void writePDepNetworks() {
 		BufferedWriter bw = null;
 		
@@ -3838,14 +3976,188 @@ public class ReactionModelGenerator {
         return;
         //#]
     }
+
+    public void pruneReactionModel() {
+		
+		HashMap prunableSpeciesMap = new HashMap();
+		//check whether all the reaction systems reached target conversion/time
+		boolean allReachedTarget = true;
+		for (Integer i = 0; i < reactionSystemList.size(); i++) {
+			JDAS ds = (JDAS)((ReactionSystem) reactionSystemList.get(i)).getDynamicSimulator();
+			if (!ds.targetReached) allReachedTarget = false;
+		}
+		JDAS ds0 = (JDAS)((ReactionSystem) reactionSystemList.get(0)).getDynamicSimulator(); //get the first reactionSystem dynamic simulator
+		//prune the reaction model if AUTO is being used, and all reaction systems have reached target time/conversion, and edgeTol is non-zero (and positive, obviously), and if there are a sufficient number of species in the reaction model (edge + core)
+		
+		if ( ds0.autoflag && 
+		  allReachedTarget && 
+		  edgeTol>0 && 
+		  (((CoreEdgeReactionModel)reactionModel).getEdge().getSpeciesNumber()+reactionModel.getSpeciesNumber())>= minSpeciesForPruning){
+			
+			int numberToBePruned = ((CoreEdgeReactionModel)reactionModel).getEdge().getSpeciesNumber() - maxEdgeSpeciesAfterPruning; 
+			Iterator iter = ds0.edgeID.keySet().iterator();//determine the maximum edge flux ratio for each edge species
+			while(iter.hasNext()){
+				Species spe = (Species)iter.next();
+				Integer id0 = (Integer)ds0.edgeID.get(spe);
+				double maxmaxRatio = ds0.maxEdgeFluxRatio[id0-1];
+				boolean prunable = ds0.prunableSpecies[id0-1];
+				for (Integer i = 1; i < reactionSystemList.size(); i++) {//go through the rest of the reaction systems to see if there are higher max flux ratios
+					JDAS ds = (JDAS)((ReactionSystem) reactionSystemList.get(i)).getDynamicSimulator();
+					Integer id = (Integer)ds0.edgeID.get(spe);//in principle, I don't think the IDs in each dynamic simulator will necessarily be the same...determine the ID
+					if(ds.maxEdgeFluxRatio[id-1] > maxmaxRatio) maxmaxRatio = ds.maxEdgeFluxRatio[id-1];
+					if(prunable && !ds.prunableSpecies[id-1]) prunable = false;//I can't imagine a case where this would occur (if the conc. is zero at one condition, it should be zero at all conditions), but it is included for completeness
+				}
+				//if the maximum max edge flux ratio is less than the edge inclusion threshhold and the species is "prunable" (i.e. it doesn't have any reactions producing it with zero flux), schedule the species for pruning
+				if( prunable){  //  && maxmaxRatio < edgeTol
+					prunableSpeciesMap.put(spe, maxmaxRatio);
+					// at this point prunableSpecies includes ALL prunable species, no matter how large their flux
+				}
+			}
+			
+			// sort the prunableSpecies by maxmaxRatio
+			// i.e. sort the map by values
+			List prunableSpeciesList = new LinkedList(prunableSpeciesMap.entrySet());
+			Collections.sort(prunableSpeciesList, new Comparator() {
+							 public int compare(Object o1, Object o2) {
+							 return ((Comparable) ((Map.Entry) (o1)).getValue())
+							 .compareTo(((Map.Entry) (o2)).getValue());
+							 }
+							 });
+			List speciesToPrune = new LinkedList();
+			for (Iterator it = prunableSpeciesList.iterator(); it.hasNext();) {
+				Map.Entry entry = (Map.Entry)it.next();
+				Species spe = (Species)entry.getKey();
+				double maxmaxRatio = (Double)entry.getValue();
+				if (maxmaxRatio < edgeTol)
+				{
+					System.out.println("Edge species "+spe.getChemkinName() +" has a maximum flux ratio ("+maxmaxRatio+") lower than edge inclusion threshhold and will be pruned.");
+					speciesToPrune.add(spe);
+				}
+				else if ( numberToBePruned - speciesToPrune.size() > 0 ) {
+					System.out.println("Edge species "+spe.getChemkinName() +" has a low maximum flux ratio ("+maxmaxRatio+") and will be pruned to reduce the edge size to the maximum ("+maxEdgeSpeciesAfterPruning+").");
+					speciesToPrune.add(spe);					
+				}
+				else break;  // no more to be pruned
+			}
+			
+			
+			//now, speciesToPrune has been filled with species that should be pruned from the edge
+			System.out.println("Pruning...");
+			//prune species from the edge
+			//remove species from the edge and from the species dictionary
+			iter = speciesToPrune.iterator();
+			while(iter.hasNext()){
+				Species spe = (Species)iter.next();
+				writePrunedEdgeSpecies(spe);
+				((CoreEdgeReactionModel)getReactionModel()).getUnreactedSpeciesSet().remove(spe);
+				//SpeciesDictionary.getInstance().getSpeciesSet().remove(spe);
+				SpeciesDictionary.getInstance().remove(spe);
+			}
+			//remove reactions from the edge involving pruned species
+			iter = ((CoreEdgeReactionModel)getReactionModel()).getUnreactedReactionSet().iterator();
+			HashSet toRemove = new HashSet();
+			while(iter.hasNext()){
+				Reaction reaction = (Reaction)iter.next();
+				if (reactionPrunableQ(reaction, speciesToPrune)) toRemove.add(reaction);
+			}
+			iter = toRemove.iterator();
+			while(iter.hasNext()){
+				Reaction reaction = (Reaction)iter.next();
+				writePrunedEdgeReaction(reaction);
+				((CoreEdgeReactionModel)getReactionModel()).getUnreactedReactionSet().remove(reaction);
+			}
+			//remove reactions from PDepNetworks in PDep cases
+			if (reactionModelEnlarger instanceof RateBasedPDepRME)	{
+				iter = PDepNetwork.getNetworks().iterator();
+				HashSet pdnToRemove = new HashSet();
+				while (iter.hasNext()){
+					PDepNetwork pdn = (PDepNetwork)iter.next();
+					//remove path reactions
+					Iterator rIter = pdn.getPathReactions().iterator();
+					toRemove = new HashSet();
+					while(rIter.hasNext()){
+						Reaction reaction = (Reaction)rIter.next();
+						if (reactionPrunableQ(reaction, speciesToPrune))  toRemove.add(reaction);
+					}
+					Iterator iterRem = toRemove.iterator();
+					while(iterRem.hasNext()){
+						Reaction reaction = (Reaction)iterRem.next();
+						pdn.getPathReactions().remove(reaction);
+					}
+					//remove net reactions
+					rIter = pdn.getNetReactions().iterator();
+					toRemove = new HashSet();
+					while(rIter.hasNext()){
+						Reaction reaction = (Reaction)rIter.next();
+						if (reactionPrunableQ(reaction, speciesToPrune)) toRemove.add(reaction);
+					}
+					iterRem = toRemove.iterator();
+					while(iterRem.hasNext()){
+						Reaction reaction = (Reaction)iterRem.next();
+						pdn.getNetReactions().remove(reaction);
+					}
+					//remove isomers
+					Iterator iIter = pdn.getIsomers().iterator();
+					toRemove = new HashSet();
+					while(iIter.hasNext()){
+						PDepIsomer pdi = (PDepIsomer)iIter.next();
+						Iterator isIter = pdi.getSpeciesListIterator();
+						while(isIter.hasNext()){
+							Species spe = (Species)isIter.next();
+							if (speciesToPrune.contains(spe)&&!toRemove.contains(spe)) toRemove.add(pdi);
+						}
+					}
+					iterRem = toRemove.iterator();
+					while(iterRem.hasNext()){
+						PDepIsomer pdi = (PDepIsomer)iterRem.next();
+						pdn.getIsomers().remove(pdi);
+					}
+					//remove nonincluded reactions
+					rIter = pdn.getNonincludedReactions().iterator();
+					toRemove = new HashSet();
+					while(rIter.hasNext()){
+						Reaction reaction = (Reaction)rIter.next();
+						if (reactionPrunableQ(reaction, speciesToPrune)) toRemove.add(reaction);
+					}
+					iterRem = toRemove.iterator();
+					while(iterRem.hasNext()){
+						Reaction reaction = (Reaction)iterRem.next();
+						pdn.getNonincludedReactions().remove(reaction);
+					}
+					//remove the entire network if the network has no path or net reactions
+					if(pdn.getPathReactions().size()==0&&pdn.getNetReactions().size()==0) pdnToRemove.add(pdn);
+				}
+				iter = pdnToRemove.iterator();
+				while (iter.hasNext()){
+					PDepNetwork pdn = (PDepNetwork)iter.next();
+					PDepNetwork.getNetworks().remove(pdn);
+				}
+			} 
+		}
+        return;
+    }
+	
+    //determines whether a reaction can be removed; returns true ; cf. categorizeReaction() in CoreEdgeReactionModel
+    //returns true if the reaction involves reactants or products that are in p_prunableSpecies; otherwise returns false
+    public boolean reactionPrunableQ(Reaction p_reaction, Collection p_prunableSpecies){
+		Iterator iter = p_reaction.getReactants();
+        while (iter.hasNext()) {
+			Species spe = (Species)iter.next();
+        	if (p_prunableSpecies.contains(spe))
+				return true;
+        }
+        iter = p_reaction.getProducts();
+        while (iter.hasNext()) {
+			Species spe = (Species)iter.next();
+        	if (p_prunableSpecies.contains(spe))
+				return true;
+        }
+		return false;
+    }
     
-    //9/25/07 gmagoon: moved from ReactionSystem.java
-	//## operation hasPrimaryReactionLibrary()
     public boolean hasPrimaryReactionLibrary() {
-        //#[ operation hasPrimaryReactionLibrary()
         if (primaryReactionLibrary == null) return false;
         return (primaryReactionLibrary.size() > 0);
-        //#]
     }
     
     public boolean hasSeedMechanisms() {

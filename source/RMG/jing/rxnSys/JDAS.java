@@ -99,8 +99,13 @@ public abstract class JDAS implements DAESolver {
 	protected double [] conversionSet;
 	protected double endTime;
 	protected StringBuilder thermoString = new StringBuilder();
-	//protected HashMap edgeIDcopy; //added for dot graphs
+	protected HashMap edgeID;
+	protected double [] maxEdgeFluxRatio;
+	protected boolean [] prunableSpecies;
+	protected double termTol;
+	protected double coreTol;
 	protected static boolean nonnegative = false;
+	protected boolean targetReached;
 
 	
 	protected JDAS() {
@@ -109,13 +114,15 @@ public abstract class JDAS implements DAESolver {
 	
     public JDAS(double p_rtol, double p_atol, int p_parameterInfor, 
 			InitialStatus p_initialStatus, int p_index, ValidityTester p_vt, 
-			boolean p_autoflag) {
+			boolean p_autoflag, Double p_termTol, Double p_coreTol) {
         
 		rtol = p_rtol;
         atol = p_atol;
         index = p_index;
         validityTester = p_vt;
         autoflag = p_autoflag;
+	termTol = p_termTol;
+	coreTol = p_coreTol;
 
         parameterInfor = p_parameterInfor;
         initialStatus = p_initialStatus;
@@ -771,7 +778,7 @@ public abstract class JDAS implements DAESolver {
 		int edgeSpeciesCounter = 0;
 
 		// First use reactions in unreacted reaction set, which is valid for both RateBasedRME and RateBasedPDepRME
-		HashMap edgeID = new HashMap();
+		edgeID = new HashMap();
 		LinkedHashSet ur = model.getUnreactedReactionSet();
 		for (Iterator iur = ur.iterator(); iur.hasNext();) {
 			edgeReactionCounter++;
@@ -905,7 +912,7 @@ public abstract class JDAS implements DAESolver {
                 //write the counter (and tolerance) info and go through a second time, this time writing to the buffered writer
                 try{
                     //edgeSpeciesCounter = edgeID.size();
-                    bw.write("\n" + ((RateBasedVT)validityTester).getTolerance() + "\n" + edgeSpeciesCounter + " " + edgeReactionCounter);//***thresh needs to be defined
+                    bw.write("\n" + termTol + " " + coreTol + "\n" + edgeSpeciesCounter + " " + edgeReactionCounter);
                     //bw.flush();
                     //	bw.write(edgeReacInfoString);
                     
@@ -1059,7 +1066,6 @@ public abstract class JDAS implements DAESolver {
 
                             }
                     }
-   //                 edgeIDcopy=edgeID;//added for dot graphs
                 }
                 catch(IOException e) {
                     System.err.println("Problem writing Solver Input File!");
