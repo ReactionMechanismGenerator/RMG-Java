@@ -7,6 +7,8 @@ RMG News and Updates
 ==============================
 RMG version 3.2 has been released. The new release includes a number of improvements and bug fixes, including the following:
 
+Features:
+
 - The :file:`RMG_Database` folder has been restructured more logically. (:ref:`PrimaryReactionLibrary <primaryreactionlibrary>` and :ref:`Seed Mechanism <seedmechanism>` specifications in condition files will need updating)
 
 - More accurate thermodynamic quantities from PM3 calculations for cyclic species based on explicit 3D molecule geometries (provided the user has access to GAUSSIAN03 or MOPAC2009)
@@ -21,6 +23,37 @@ RMG version 3.2 has been released. The new release includes a number of improvem
 
 - Various error messages have been improved to give more helpful information to the user.
 
+- Dictionary.txt will now be written at every iteration, rather than just the final iteration.
+
+- RMG output file includes timestamp and code revision information.
+
+Bug fixes and performance improvements:
+
+- Refinements to values in the database based on literature review.
+
+- Automatic escape from infinite loop.
+
+- Addressed issues that could lead to trying to simulate and empty reaction model in pressure-dependent cases.
+
+- Fixed IWORK/RWORK renaming on Linux platforms.
+
+- Fixed bug producing unneccessary error message (when using AUTO option) suggesting that the ODE solver failed when an edge flux exceeds user-specified tolerances at t=0.
+
+- Fixed DASPK issues, including variables.dat renaming for multiple reaction systems, ability to use constant concentration, reaction flux evaluation for Lindemann reactions, and sensitivity coefficient calculation.
+
+- Improved robustness for "frankie".
+
+- Changed ODE Solver input file writing to use BufferedWriter to ease memory usage issues when using AUTO with large reaction models.
+
+- Fixed a bug in counting pressure-dependent edge reactions with the AUTO method.
+
+- Fixed calculation of Cp(T=0) and Cp(T=Infinity) for monoatomic and linear species.
+
+- Addressed collider issues, including an ArrayOutOfBoundsException associated with colliders and a collider identification issue.
+
+- Addressed infinite recursion error in getToEndOfAxis that could occur with cyclic cumulenic species.
+
+- Fixed syntax for helium thermochemistry in CHEMKIN input file written by RMG.
 
 2009-08-05: RMG 3.1 Released!
 ==============================
