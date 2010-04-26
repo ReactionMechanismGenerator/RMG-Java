@@ -33,6 +33,8 @@ Bug fixes and performance improvements:
 
 - Automatic escape from infinite loop.
 
+- ***Fixed Gauss-Chebyshev points for Chebyshev interpolation***(someone who is more familiar with what was changed: please review and clarify the changes)***
+
 - Addressed issues that could lead to trying to simulate and empty reaction model in pressure-dependent cases.
 
 - Fixed IWORK/RWORK renaming on Linux platforms.
