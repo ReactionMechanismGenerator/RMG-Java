@@ -1001,6 +1001,21 @@ public class ChemParser {
 
         HashMap thirdBodyList = new HashMap();
         StringTokenizer st = new StringTokenizer(p_string, "/");
+        /*
+         * MRH 23APR2010:
+         * Allowing RMG to handle general third-body reactions,
+         * 	e.g. A+M=B+C+M (where no specific third-body colliders are given)
+         * 
+         * The p_string should either contain a list of third-bodies and their
+         * 	collision efficiencies (e.g. H2/2.0/ H2O/15.4/ CO/0.75/ etc.)
+         * OR
+         * the next reaction line (e.g. O+O+M=O2+M)
+         * 
+         * If the former, at least two tokens will exist; if the latter, only
+         * one.  For the latter, we want to skip over the while loop and return
+         * an empty thirdBodyList.
+         */
+        if (st.countTokens() == 1) return thirdBodyList;
         while (st.hasMoreTokens()) {
         	String name = st.nextToken().trim();
         	Double factor = Double.valueOf(st.nextToken().trim());

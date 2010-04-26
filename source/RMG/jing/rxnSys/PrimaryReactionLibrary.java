@@ -99,14 +99,16 @@ public class PrimaryReactionLibrary {
         	
             String speciesFile = p_directoryName + "species.txt";
             String reactionFile = p_directoryName + "reactions.txt";
-            String thirdBodyReactionFile = p_directoryName + "3rdBodyReactions.txt";
-            String troeReactionsFile = p_directoryName + "troeReactions.txt"; 
-            String lindemannReactionsFile = p_directoryName + "lindemannReactions.txt";
+            String pdepreactionFile = p_directoryName + "pdepreactions.txt";
+//            String thirdBodyReactionFile = p_directoryName + "3rdBodyReactions.txt";
+//            String troeReactionsFile = p_directoryName + "troeReactions.txt"; 
+//            String lindemannReactionsFile = p_directoryName + "lindemannReactions.txt";
         	readSpecies(speciesFile);
         	readReactions(reactionFile);
-            readThirdBodyReactions(thirdBodyReactionFile);
-            readTroeReactions(troeReactionsFile);
-            readLindemannReactions(lindemannReactionsFile);
+        	readPdepReactions(pdepreactionFile);
+//            readThirdBodyReactions(thirdBodyReactionFile);
+//            readTroeReactions(troeReactionsFile);
+//            readLindemannReactions(lindemannReactionsFile);
         	return;
         }
         catch (Exception e) {
@@ -340,7 +342,24 @@ public class PrimaryReactionLibrary {
 					reactionSet.add(reverse);
         		}
         		
-        		reactionLine = ChemParser.readMeaningfulLine(data);
+                /*
+                 * MRH 23APR2010:
+                 * Allowing RMG to handle general third-body reactions,
+                 * 	e.g. A+M=B+C+M (where no specific third-body colliders are given)
+                 * 
+                 * The thirdBodyLine should either contain a list of third-bodies and their
+                 * 	collision efficiencies (e.g. H2/2.0/ H2O/15.4/ CO/0.75/ etc.)
+                 * OR
+                 * the next reaction line (e.g. O+O+M=O2+M)
+                 * 
+                 * If the former, the thirdBodyList will not be empty and the next
+                 * reactionLine string needs to be read from the BufferedReader data;
+                 * if the latter, the thirdBodyList will be empty and the next
+                 * reactionLine string has already been read (and is currently
+                 * stored in the thirdBodyLine).
+                 */
+        		if (thirdBodyList.isEmpty()) reactionLine = thirdBodyLine;
+        		else reactionLine = ChemParser.readMeaningfulLine(data);
         	}
         	   
             in.close();
@@ -572,6 +591,169 @@ public class PrimaryReactionLibrary {
         catch (Exception e) {
         	System.out.println("RMG did not read the following Primary Reaction Library file:"
         			+ p_lindemannReactionFileName);
+        }
+    }
+    
+    public void readPdepReactions(String pdepFileName) throws IOException { 
+        try {
+        	FileReader in = new FileReader(pdepFileName);
+        	BufferedReader data = new BufferedReader(in);
+        	
+        	double A_multiplier = 1;
+        	double E_multiplier = 1;
+        	
+        	String line = ChemParser.readMeaningfulLine(data);
+        	if (line.startsWith("Unit")) {
+        		line = ChemParser.readMeaningfulLine(data);
+        		unit: while(!(line.startsWith("Reaction"))) {
+        			if (line.startsWith("A")) {
+        				StringTokenizer st = new StringTokenizer(line);
+        				String temp = st.nextToken();
+        				String unit = st.nextToken().trim();
+        				if (unit.compareToIgnoreCase("mol/cm3/s") == 0) {
+        					A_multiplier = 1;
+        				}
+        				else if (unit.compareToIgnoreCase("mol/liter/s") == 0) {
+           					A_multiplier = 1e-3;
+        				}
+        				else if (unit.compareToIgnoreCase("molecule/cm3/s") == 0) {
+        					A_multiplier = 6.022e23;
+        				}
+        			}
+        			else if (line.startsWith("E")) {
+        				StringTokenizer st = new StringTokenizer(line);
+        				String temp = st.nextToken();
+        				String unit = st.nextToken().trim();
+        				if (unit.compareToIgnoreCase("kcal/mol") == 0) {
+        					E_multiplier = 1;
+        				}
+        				else if (unit.compareToIgnoreCase("cal/mol") == 0) {
+           					E_multiplier = 1e-3;
+        				}
+        				else if (unit.compareToIgnoreCase("kJ/mol") == 0) {
+           					E_multiplier = 1/4.186;
+        				}
+        				else if (unit.compareToIgnoreCase("J/mol") == 0) {
+           					E_multiplier = 1/4186;
+        				}
+        				else if (unit.compareToIgnoreCase("Kelvin") == 0) {
+        					E_multiplier = 1.987e-3;
+        				}
+        			}
+        			line = ChemParser.readMeaningfulLine(data);
+        		}
+        	}
+            
+        	String reactionLine = ChemParser.readMeaningfulLine(data);
+        	read: while (reactionLine != null) {	
+        		Reaction r;
+        		try {
+        			r = ChemParser.parseArrheniusReaction(speciesSet, reactionLine, A_multiplier, E_multiplier);
+        		}
+        		catch (InvalidReactionFormatException e) {
+        			throw new InvalidReactionFormatException(reactionLine + ": " + e.getMessage());
+        		}
+        		if (r == null) throw new InvalidReactionFormatException(reactionLine);
+                
+        		/*
+        		 * Read the next line and determine what to do based on the
+        		 * 	presence/absence of keywords
+        		 */
+        		String nextLine = ChemParser.readMeaningfulLine(data);
+        		boolean continueToReadRxn = true;
+        		
+        		// Initialize all of the possible pdep variables
+        		HashMap thirdBodyList = new HashMap();
+        		ArrheniusKinetics low = new ArrheniusKinetics();
+        		double a = 0.0;
+        		double T3star = 0.0;
+        		double Tstar = 0.0;
+        		double T2star = 0.0;
+        		boolean troe7 = false;
+        		
+        		/*
+        		 * When reading in the auxillary information for the pdep reactions,
+        		 * 	let's not assume the order is fixed (i.e. third-bodies and
+        		 * 	their efficiencies, then lindemann, then troe)
+        		 * The order of the if statement is important as the "troe" and
+        		 * 	"low" lines will also contain a "/"; thus, the elseif contains
+        		 * 	"/" needs to be last.
+        		 */
+        		while (continueToReadRxn) {
+        			if (nextLine == null) {
+        				continueToReadRxn = false;
+        			} else if (nextLine.toLowerCase().contains("troe")) {
+	        			// read in troe parameters
+	            		StringTokenizer st = new StringTokenizer(nextLine, "/");
+	            		String temp = st.nextToken().trim();	// TROE
+	            		String troeString = st.nextToken().trim();	// List of troe parameters
+	            		st = new StringTokenizer(troeString);
+	                    int n = st.countTokens();
+	                    if (n != 3 && n != 4) throw new InvalidKineticsFormatException("Troe parameter number = "+n + " for reaction: " + r.toString());
+	            
+	              		a = Double.parseDouble(st.nextToken().trim());
+	            		T3star = Double.parseDouble(st.nextToken().trim());
+	            		Tstar = Double.parseDouble(st.nextToken().trim());
+
+	            		if (st.hasMoreTokens()) {
+	            			troe7 = true;
+	            			T2star = Double.parseDouble(st.nextToken().trim());
+	               		}
+	            		nextLine = ChemParser.readMeaningfulLine(data);
+	        		} else if (nextLine.toLowerCase().contains("low")) {
+	        			// read in lindemann parameters
+	            		String lowLine = ChemParser.readMeaningfulLine(data);
+	            		StringTokenizer st = new StringTokenizer(lowLine, "/");
+	            		String temp = st.nextToken().trim();	// LOW
+	            		String lowString = st.nextToken().trim();	// Modified Arrhenius parameters
+	            		/*
+	            		 * MRH 17Feb2010:
+	            		 * 	The units of the k_zero (LOW) Arrhenius parameters are different from the units of
+	            		 * 	k_inf Arrhenius parameters by a factor of cm3/mol, hence the getReactantNumber()+1
+	            		 */
+	            		low = ChemParser.parseSimpleArrheniusKinetics(lowString, A_multiplier, E_multiplier, r.getReactantNumber()+1);
+	            		nextLine = ChemParser.readMeaningfulLine(data);
+	        		} else if (nextLine.contains("/")) {
+	        			// read in third body colliders + efficiencies
+	            		String thirdBodyLine = ChemParser.readMeaningfulLine(data);
+	            		thirdBodyList = ChemParser.parseThirdBodyList(thirdBodyLine);
+	            		nextLine = ChemParser.readMeaningfulLine(data);
+	        		} else {
+	        			// the nextLine is a "new" reaction, hence we need to exit the while loop
+	        			continueToReadRxn = false;
+	        		}
+        		}
+        		   
+        		// Make the "troe" reaction
+        		TROEReaction tbr = TROEReaction.make(r,thirdBodyList, low, a, T3star, Tstar, troe7, T2star);
+        		tbr.setIsFromPrimaryReactionLibrary(true);
+        		tbr.getKinetics()[0].setFromPrimaryReactionLibrary(true);
+        		// Changed source from "Seed Mechanism" to "Primary Reaction Library"
+				tbr.setKineticsSource("Primary Reaction Library: "+ name,0);
+				tbr.setKineticsComments(" ",0);
+				
+        		reactionSet.add(tbr);
+        		Reaction reverse = tbr.getReverseReaction();
+				
+        		if (reverse != null) {
+					//reverse.getKinetics().setSource("Seed Mechanism: "+ name);
+					reactionSet.add(reverse);
+        		}
+        		
+        	}
+        	   
+            in.close();
+        	return;
+        }
+        catch (Exception e) {
+//        	throw new IOException("Can't read reaction in primary reaction library: troe reaction list.\n" + e.getMessage());
+			/*
+			 * 25Jun2009-MRH: When reading the Primary Reaction Library, we should not require the user to supply
+			 * 		troe reactions.  In the instance that no "troeReactions.txt" file exists, inform
+			 * 		user of this but continue simulation.
+			 */
+        	System.out.println("RMG did not find/read pressure-dependent reactions (pdepReactions.txt) " +
+        			"in the Primary Reaction Library: " + name + "\n" + e.getMessage());
         }
     }
 	
