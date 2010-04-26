@@ -9,6 +9,14 @@ RMG version 3.2 has been released. The new release includes a number of improvem
 
 - The :file:`RMG_Database` folder has been restructured more logically. (:ref:`PrimaryReactionLibrary <primaryreactionlibrary>` and :ref:`Seed Mechanism <seedmechanism>` specifications in condition files will need updating)
 
+- More accurate thermodynamic quantities from PM3 calculations for cyclic species based on explicit 3D molecule geometries (provided the user has access to GAUSSIAN03 or MOPAC2009)
+
+- New reaction model pruning option to reduce number of edge species and ease memory limitations.
+
+- New non-negativity option for DASSL simulations. This offers a new way of dealing with NegativeConcentrationException cases.
+
+- New reaction family, 1,2-Birad_to_alkene, for interconversion of alkene (triplet) biradicals and singlet alkenes
+
 - It is possible to specify :ref:`forbidden structures <forbiddenstructures>` in the input file.
 
 - Various error messages have been improved to give more helpful information to the user.
