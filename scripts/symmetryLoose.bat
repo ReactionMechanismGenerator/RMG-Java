@@ -1,1 +1,1 @@
-c:/Users/User1/Documents/SYMMETRY/symmetry.exe -final 0.1 c:/Users/User1/Documents/SYMMETRY/symminput.txt
+%RMG%/bin/symmetry.exe -final 0.1 %RMG%/bin/symminput.txt
