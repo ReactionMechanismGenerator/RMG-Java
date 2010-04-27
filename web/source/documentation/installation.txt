@@ -192,3 +192,11 @@ Several dependencies are required to use 3D-geometry-based thermodynamic propert
 6. SYMMETRY (v. 1.15 or later) http://www.cobalt.chem.ucalgary.ca/ps/symmetry/
 7. GAUSSIAN03 and/or MOPAC2009 http://www.gaussian.com/ and http://openmopac.net/downloads.html
 With the exception of GAUSSIAN03 and MOPAC2009, all of the above may be obtained freely and are open-source. In the case of MOPAC2009, the software may be obtained freely for academic, not-for-profit use.
+
+Some notes for installing each of these:
+
+Python: The environment variable PYTHON_CMD should be set (e.g. c:\Python25\python.exe)
+such that typing "python" at the command-line brings up the Python prompt. This should be done
+automatically by the Python installer, and no manual intervention should be required.
+
+

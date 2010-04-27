@@ -372,8 +372,7 @@ public class QMTP implements GeneralGAPP {
         String name = twoDmolFile.getName();
         try{   
             File runningdir=new File(directory);
-            //String command = "c:/Python25/python.exe c:/Python25/distGeomScriptMol.py ";//this should eventually be modified for added generality
-            String command = "c:/Python25/python.exe c:/Python25/distGeomScriptMolLowestEnergyConf.py ";
+            String command = "python "+System.getProperty("RMG.workingDirectory")+"/scripts/distGeomScriptMolLowestEnergyConf.py ";
             String twoDmolpath=twoDmolFile.getPath();
             command=command.concat(twoDmolpath);
             command=command.concat(" ");
@@ -959,7 +958,7 @@ public class QMTP implements GeneralGAPP {
 //        System.out.println("Thermo for " + name + ": "+ result.toString());//print result, at least for debugging purposes
 //        return result;
         
-        String command = "c:/Python25/python.exe c:/Python25/GaussianPM3ParsingScript.py ";//this should eventually be modified for added generality
+        String command = "python "+ System.getProperty("RMG.workingDirectory")+"/scripts/GaussianPM3ParsingScript.py ";
         String logfilepath=directory+"/"+name+".log";
         command=command.concat(logfilepath);
         ThermoData result = getPM3ThermoDataUsingCCLib(name, directory, p_chemGraph, command);
@@ -969,7 +968,7 @@ public class QMTP implements GeneralGAPP {
     
     //parse the results using cclib and return a ThermoData object; name and directory indicate the location of the MOPAC .out file
     public ThermoData parseMopacPM3(String name, String directory, ChemGraph p_chemGraph){
-        String command = "c:/Python25/python.exe c:/Python25/MopacPM3ParsingScript.py ";//this should eventually be modified for added generality
+        String command = "python "+System.getProperty("RMG.workingDirectory")+"/scripts/MopacPM3ParsingScript.py ";
         String logfilepath=directory+"/"+name+".out";
         command=command.concat(logfilepath);
         ThermoData result = getPM3ThermoDataUsingCCLib(name, directory, p_chemGraph, command);
