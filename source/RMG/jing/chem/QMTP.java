@@ -757,8 +757,7 @@ public class QMTP implements GeneralGAPP {
         int flag = 0;
         int successFlag=0;
         try{ 
-            //File runningdir=new File("c:/G03W/");//tests suggest that we need to run from this directory or else l1.exe cannon be found
-            String command = "c:/Users/User1/Documents/MOPAC/MOPAC2009.exe ";//this should eventually be modified for added generality
+            String command = System.getenv("MOPAC_LICENSE")+"MOPAC2009.exe ";
             command=command.concat(directory+"/"+name+".mop ");//specify the input file; space is important
             command=command.concat(directory+"/"+name+".out");//specify the output file
             //Process gaussianProc = Runtime.getRuntime().exec(command, null, runningdir);

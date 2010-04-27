@@ -193,7 +193,7 @@ Several dependencies are required to use 3D-geometry-based thermodynamic propert
 7. GAUSSIAN03 and/or MOPAC2009 http://www.gaussian.com/ and http://openmopac.net/downloads.html
 With the exception of GAUSSIAN03 and MOPAC2009, all of the above may be obtained freely and are open-source. In the case of MOPAC2009, the software may be obtained freely for academic, not-for-profit use.
 
-Some notes for installing each of these:
+Some notes for installing each of these and getting them to work properly with RMG:
 
 Python: The environment variable PYTHON_CMD should be set (e.g. c:\Python25\python.exe)
 such that typing "python" at the command-line brings up the Python prompt. This should be done
@@ -211,3 +211,8 @@ this will not be an issue in version 1.03*)
 SYMMETRY: For Windows, it is recommended that the compiled .exe file available from http://www.cobalt.chem.ucalgary.ca/ps/symmetry/ (via symmdos.zip)
 be used. This file should be copied into RMG's /bin/ directory. On other platforms, you must compile the SYMMETRY.EXE executable yourself
 and place the executable in RMG's /bin/ directory/
+
+MOPAC2009: The environment variable MOPAC_LICENSE should be set (e.g. c:\Users\User1\Documents\MOPAC\).
+This should be done automatically by the MOPAC installer, and no manual intervention should be required.
+
+GAUSSIAN03:
