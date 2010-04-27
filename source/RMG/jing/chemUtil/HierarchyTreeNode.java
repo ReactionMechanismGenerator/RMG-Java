@@ -61,9 +61,8 @@ public class HierarchyTreeNode extends TreeNode {
     
     //## operation HierarchyTreeNode() 
     private  HierarchyTreeNode() {
-        //#[ operation HierarchyTreeNode() 
-        //#]
     }
+	
     /**
     Requires:
     Effects: construct a new HierarchyTreeNode by setting it element as the pass-in Matchable object, and setting it children as the pass-in HashSet object, if all the tree node in the collection satisfies repOk() check and isSub(this) check.  If any of the children is not an instance of HierarchyTreeNode, throw new HierarchyTreeNodeExcption; if any of the children can't pass the repOk() or isSub(this) check, throw InvalidHierarchyRelationException.
@@ -88,11 +87,6 @@ public class HierarchyTreeNode extends TreeNode {
         }
         
         children = p_children;
-        
-        
-        
-        
-        //#]
     }
     /**
     Requires:
@@ -125,11 +119,7 @@ public class HierarchyTreeNode extends TreeNode {
         if (p_child.getDepth() != getDepth()+1) throw new InvalidTreeNodeLevelException(); 
         
         super.addChildren(p_child);
-        
-        
-        
-        
-        //#]
+		
     }
     
     /**
