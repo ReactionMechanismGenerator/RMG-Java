@@ -189,7 +189,7 @@ Several dependencies are required to use 3D-geometry-based thermodynamic propert
 3. RDKit (Q2 2009 or later) http://rdkit.org/
 4. OpenBabel (2.2.0 or later) http://openbabel.org
 5. InChI (1.02beta or 1.03) http://www.iupac.org/inchi/download/index.html
-6. SYMMETRY (v. 1.15 or later) http://www.cobalt.chem.ucalgary.ca/ps/symmetry/
+6. SYMMETRY (v. 1.15 or later) http://www.cobalt.chem.ucalgary.ca/ps/symmetry/ (from Serguei Patchkovskii at the University of Calgary)
 7. GAUSSIAN03 and/or MOPAC2009 http://www.gaussian.com/ and http://openmopac.net/downloads.html
 With the exception of GAUSSIAN03 and MOPAC2009, all of the above may be obtained freely and are open-source. In the case of MOPAC2009, the software may be obtained freely for academic, not-for-profit use.
 
