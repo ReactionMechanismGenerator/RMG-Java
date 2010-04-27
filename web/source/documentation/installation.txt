@@ -179,3 +179,16 @@ downloaded separately. To run the RMGVE just go to the :file:`$RMG/RMGVE`
 directory and execute ``RMGVE 20080101.bat`` on the command
 line.  The RMGVE directly reads the RMG database :file:`$RMG/database/RMG_database` which includes the thermo data and the kinetics data.
 Please refer to :ref:`Using the RMGVE <modification>` to see how to modify the RMG database.
+
+Installation of Dependencies for 3D-geometry-based Thermodynamic Property Calculation
+=====================================================================================
+
+Several dependencies are required to use 3D-geometry-based thermodynamic property calculation features of RMG. These include (recommended versions in parentheses):
+1. Python (2.x, with x=5 or higher) http://www.python.org/
+2. cclib (***)
+3. RDKit (Q2 2009 or later) http://rdkit.org/
+4. OpenBabel (2.2.1 or later) http://openbabel.org
+5. InChI (1.02beta or 1.03) http://www.iupac.org/inchi/download/index.html
+6. SYMMETRY (v. 1.15 or later) http://www.cobalt.chem.ucalgary.ca/ps/symmetry/
+7. GAUSSIAN03 and/or MOPAC2009 http://www.gaussian.com/ and http://openmopac.net/downloads.html
+With the exception of GAUSSIAN03 and MOPAC2009, all of the above may be obtained freely and are open-source. In the case of MOPAC2009, the software may be obtained freely for academic, not-for-profit use.
