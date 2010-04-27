@@ -1269,8 +1269,8 @@ public class QMTP implements GeneralGAPP {
 		    }
                 }
 		else{//in other (non-Windows) cases, where it is compiled from scratch, we should be able to run this directly
-		    if(attemptNumber==1) command = System.getProperty("RMG.workingDirectory")+"/bin/symmetry.exe -final 0.02 " +System.getProperty("RMG.workingDirectory")+"/bin/symminput.txt";//12/1/09 gmagoon: switched to use slightly looser criteria of 0.02 rather than 0.01 to handle methylperoxyl radical result from MOPAC
-		    else if (attemptNumber==2) command = System.getProperty("RMG.workingDirectory")+"/bin/symmetry.exe -final 0.1 " +System.getProperty("RMG.workingDirectory")+"/bin/symminput.txt";//looser criteria (0.1 instead of 0.01) to properly identify C2v group in VBURLMBUVWIEMQ-UHFFFAOYAVmult5 (InChI=1/C3H4O2/c1-3(2,4)5/h1-2H2/mult5) MOPAC result; C2 and sigma were identified with default, but it should be C2 and sigma*2
+		    if(attemptNumber==1) command = System.getProperty("RMG.workingDirectory")+"/bin/SYMMETRY.EXE -final 0.02 " +System.getProperty("RMG.workingDirectory")+"/bin/symminput.txt";//12/1/09 gmagoon: switched to use slightly looser criteria of 0.02 rather than 0.01 to handle methylperoxyl radical result from MOPAC
+		    else if (attemptNumber==2) command = System.getProperty("RMG.workingDirectory")+"/bin/SYMMETRY.EXE -final 0.1 " +System.getProperty("RMG.workingDirectory")+"/bin/symminput.txt";//looser criteria (0.1 instead of 0.01) to properly identify C2v group in VBURLMBUVWIEMQ-UHFFFAOYAVmult5 (InChI=1/C3H4O2/c1-3(2,4)5/h1-2H2/mult5) MOPAC result; C2 and sigma were identified with default, but it should be C2 and sigma*2
 		    else{
 			System.out.println("Invalid attemptNumber: "+ attemptNumber);
 			System.exit(0);
