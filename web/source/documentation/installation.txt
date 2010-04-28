@@ -215,4 +215,5 @@ and place the executable in RMG's /bin/ directory/
 MOPAC2009: The environment variable MOPAC_LICENSE should be set (e.g. c:\Users\User1\Documents\MOPAC\).
 This should be done automatically by the MOPAC installer, and no manual intervention should be required.
 
-GAUSSIAN03:
+GAUSSIAN03: Create a new environment variable called G03DIR and set it to the GAUSSIAN03 directory (e.g. "c:/G03W/")
+NOTE: This must be done manually.

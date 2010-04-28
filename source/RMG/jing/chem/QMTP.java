@@ -687,8 +687,8 @@ public class QMTP implements GeneralGAPP {
         try{ 
             //File runningdir=new File(directory);
             //String command = "c:/G03W/g03.exe ";//this should eventually be modified for added generality
-            File runningdir=new File("c:/G03W/");//tests suggest that we need to run from this directory or else l1.exe cannon be found
-            String command = "c:/G03W/g03.exe ";//this should eventually be modified for added generality
+            File runningdir=new File(System.getenv("G03DIR"));//tests suggest that we need to run from this directory or else l1.exe cannon be found
+            String command = System.getenv("G03DIR")+"/g03.exe ";
             command=command.concat(directory+"/"+name+".gjf ");//specify the input file; space is important
             command=command.concat(directory+"/"+name+".log");//specify the output file
             Process gaussianProc = Runtime.getRuntime().exec(command, null, runningdir);
