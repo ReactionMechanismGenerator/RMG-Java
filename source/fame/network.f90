@@ -290,24 +290,13 @@ contains
         real(8), dimension(1:nGrains), intent(in) :: Elist
         real(8), dimension(1:nGrains), intent(out) :: densStates
 
-        real(8), dimension(1:nGrains) :: Elist0
-        real(8) Emin, dE, conv
-
         real(8), dimension(:), allocatable :: vib
         real(8), dimension(:), allocatable :: rot
         real(8), dimension(:,:), allocatable :: hind
         integer linear, symm
         character(len=128) msg
 
-        integer i, r
-
-        ! Create energies in cm^-1 at which to evaluate the density of states
-        conv = 6.626e-34 * 2.9979e10 * 6.022e23 ! [=] J/mol/cm^-1
-        Emin = minval(Elist) / conv
-        dE = (Elist(2) - Elist(1)) / conv
-        do r = 1, nGrains
-            Elist0(r) = Emin + (r - 1) * dE
-        end do
+        integer i
 
         ! Prepare inputs for density of states function
         allocate( vib(1:size(spec%spectral%vibFreq)) )
@@ -330,11 +319,8 @@ contains
         symm = spec%spectral%symmNum
 
         ! Calculate the density of states
-        call densityOfStates(Elist0, nGrains, vib, size(vib), rot, size(rot), &
+        call densityOfStates(Elist, nGrains, vib, size(vib), rot, size(rot), &
             hind, size(hind), symm, linear, densStates, msg)
-
-        ! Convert density of states from (cm^-1)^-1 to mol/J
-        densStates = densStates / conv
 
         deallocate(vib, rot, hind)
 
