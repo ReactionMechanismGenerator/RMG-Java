@@ -466,7 +466,11 @@ public class PDepNetwork {
 	 * @param ss A system snapshot (T, P, concentrations, etc.) to use to calculate the flux.
 	 * @return The isomer with the largest leak flux
 	 */
-	public PDepIsomer getMaxLeakIsomer(SystemSnapshot ss) {
+	public PDepIsomer getMaxLeakIsomer(SystemSnapshot ss) throws PDepException {
+
+		if (nonincludedReactionList.size() == 0)
+			throw new PDepException("Tried to determine nonincluded isomer with maximum leak flux, but there are no nonincluded reactions, so no isomer can be identified.");
+
 		PDepReaction maxReaction = null;
 		double maxLeak = 0.0;
 		for (ListIterator<PDepReaction> iter = nonincludedReactionList.listIterator(); iter.hasNext(); ) {
@@ -478,14 +482,14 @@ public class PDepNetwork {
 				}
 			}
 		}
-		if (maxReaction == null)
-			return null;
-		else if (!maxReaction.getReactant().getIncluded())
+
+		if (!maxReaction.getReactant().getIncluded())
 			return maxReaction.getReactant();
 		else if (!maxReaction.getProduct().getIncluded())
 			return maxReaction.getProduct();
 		else
-			return null;
+			throw new PDepException("Tried to determine nonincluded isomer with maximum leak flux, but nonincluded reaction with maximum leak flux has no nonincluded isomers.");
+			
 	}
 
 	public String getSpeciesType() {
@@ -495,6 +499,31 @@ public class PDepNetwork {
 				return isomer.getSpecies(0).getName();
 		}
 		return "";
+	}
+
+	public String toString() {
+		String str = "PDepNetwork #" + Integer.toString(id) + ":\n";
+		str += "\tIsomers:\n";
+		for (ListIterator<PDepIsomer> iter = isomerList.listIterator(); iter.hasNext(); ) {
+			PDepIsomer isomer = iter.next();
+			str += "\t\t" + isomer.toString() + "\n";
+		}
+		str += "\tPath reactions:\n";
+		for (ListIterator<PDepReaction> iter = pathReactionList.listIterator(); iter.hasNext(); ) {
+			PDepReaction rxn = iter.next();
+			str += "\t\t" + rxn.toString() + "\n";
+		}
+		str += "\tNet reactions:\n";
+		for (ListIterator<PDepReaction> iter = netReactionList.listIterator(); iter.hasNext(); ) {
+			PDepReaction rxn = iter.next();
+			str += "\t\t" + rxn.toString() + "\n";
+		}
+		str += "\tNonincluded reactions:\n";
+		for (ListIterator<PDepReaction> iter = nonincludedReactionList.listIterator(); iter.hasNext(); ) {
+			PDepReaction rxn = iter.next();
+			str += "\t\t" + rxn.toString() + "\n";
+		}
+		return str;
 	}
 
 	//==========================================================================
