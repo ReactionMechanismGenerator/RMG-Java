@@ -1,5 +1,6 @@
 #uses modified cclib 1.00
 import sys
+sys.path.append(sys.argv[2]+"/source/")#add $RMG/source to the PYTHONPATH so that import statements below work properly
 import logging 
 from cclib.parser import ccopen
 myfile=ccopen(sys.argv[1])
