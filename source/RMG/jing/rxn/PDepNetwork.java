@@ -408,7 +408,10 @@ public class PDepNetwork {
 	 * calculation.
 	 * @param cerm The current core/edge reaction model
 	 */
-	public void updateReactionLists(CoreEdgeReactionModel cerm) {
+	public void updateReactionLists(CoreEdgeReactionModel cerm) throws PDepException {
+
+		// Merge the net reaction and nonincluded reactinon lists together
+		// We will recalculate how to distribute them
 		LinkedList<PDepReaction> reactionList = new LinkedList<PDepReaction>();
 		for (int i = 0; i < netReactionList.size(); i++) {
 			PDepReaction rxn = netReactionList.get(i);
@@ -425,7 +428,7 @@ public class PDepNetwork {
 			PDepReaction forward = reactionList.get(i);
 			PDepReaction reverse = (PDepReaction) forward.getReverseReaction();
 			if (forward == null || reverse == null)
-				return;
+				throw new PDepException("Encountered null reaction while updating PDepNetwork reaction lists.");
 			if (forward.isCoreReaction(cerm) || reverse.isCoreReaction(cerm))
 				netReactionList.add(forward);
 			else if (forward.getReactant().getIncluded() && forward.getProduct().getIncluded())

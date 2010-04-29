@@ -33,6 +33,8 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.ListIterator;
 import java.util.StringTokenizer;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import jing.chem.LennardJones;
 import jing.chem.Species;
 import jing.chem.SpeciesDictionary;
@@ -129,9 +131,15 @@ public class Chemdis implements PDepKineticsEstimator {
 				}
 			}
 		}
-
-		// Update reaction lists (sort into included and nonincluded)
-		pdn.updateReactionLists(cerm);
+		try {
+			// Update reaction lists (sort into included and nonincluded)
+			pdn.updateReactionLists(cerm);
+		}
+		catch (PDepException e) {
+			System.out.println(e.getMessage());
+			e.printStackTrace();
+			System.exit(0);
+		}
 		
         // Reset altered flag
         pdn.setAltered(false);

@@ -967,6 +967,11 @@ public class FastMasterEqn implements PDepKineticsEstimator {
 			pdn.updateReactionLists(cerm);
 
 		}
+		catch (PDepException e) {
+			System.out.println(e.getMessage());
+			e.printStackTrace();
+			System.exit(0);
+		}
 		catch(IOException e) {
 			System.out.println("Error: Unable to read from file \"fame_output.txt\".");
 			System.exit(0);
