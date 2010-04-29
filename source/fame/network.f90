@@ -788,8 +788,11 @@ contains
         dE = 0.0
 
         ! Determine minimum energy and isomer with minimum ground-state energy
+        ! Also check reactant and product channels, in case they represent
+        ! the minimum energy
+        ! if network_shiftToZeroEnergy() has been called, then Emin should be 0
         isom = net%isomers(1)
-        do i = 2, nIsom
+        do i = 2, size(net%isomers)
             if (isom%E0 > net%isomers(i)%E0) isom = net%isomers(i)
         end do
         Emin = floor(isom%E0)
