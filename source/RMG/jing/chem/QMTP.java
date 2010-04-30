@@ -312,7 +312,7 @@ public class QMTP implements GeneralGAPP {
         if (gaussianResultExists || (qmProgram.equals("gaussian03") && !mopacResultExists)){
             result = parseGaussianPM3(name, directory, p_chemGraph);
         }
-        else if (mopacResultExists || qmProgram.equals("mopac")){
+        else if (mopacResultExists || qmProgram.equals("mopac") || qmProgram.equals("both")){
             result = parseMopacPM3(name, directory, p_chemGraph);
         }
         else{
