@@ -226,7 +226,7 @@ public class RMG {
 			System.out.println("#                                                              #");
 			System.out.println("#                                                              #");
 			System.out.println("#                                                              #");
-			System.out.println("#  Copyright (c) 2002-2009                                     #");
+			System.out.println("#  Copyright (c) 2002-2010                                     #");
 			System.out.println("#  Prof. William H. Green and the RMG Team:                    #");
 			System.out.println("#    Joshua Allen, Dr. Robert Ashcraft, Dr. Gregory Beran,     #");
 			System.out.println("#    C. Franklin Goldsmith, Michael Harper, Amrit Jalan,       #");
@@ -247,6 +247,8 @@ public class RMG {
 			System.out.println("#      http://cdk.sourceforge.net/                             #");
 			System.out.println("#    InChI    - Available from IUPAC                           #");
 			System.out.println("#      http://www.iupac.org/inchi/                             #");
+			System.out.println("#    cclib                                                     #");
+			System.out.println("#      http://cclib.sourceforge.net                            #");
 			System.out.println("#                                                              #");
 			System.out.println("#  For more information, including how to properly cite this   #");
 			System.out.println("#  program, see http://rmg.sourceforge.net/.                   #");
