@@ -52,7 +52,7 @@ public class QMTP implements GeneralGAPP {
     public static String qmfolder= "QMFiles/";
     //   protected static HashMap library;		//as above, may be able to move this and associated functions to GeneralGAPP (and possibly change from "x implements y" to "x extends y"), as it is common to both GATP and QMTP
     protected ThermoGAGroupLibrary thermoLibrary; //needed for HBI
-    public static String qmprogram= "mopac";
+    public static String qmprogram= "both";//the qmprogram can be "mopac", "gaussian03", or "both"
     public static boolean usePolar = false; //use polar keyword in MOPAC
     // Constructors
 
@@ -273,7 +273,7 @@ public class QMTP implements GeneralGAPP {
                     //4. run Gaussian
                     successFlag = runGaussian(name, directory);
                 }
-                else if (qmProgram.equals("mopac")){
+                else if (qmProgram.equals("mopac") || qmProgram.equals("both")){
                     
                     maxAttemptNumber = createMopacPM3Input(name, directory, p_3dfile, attemptNumber, InChIaug, multiplicity);
                     successFlag = runMOPAC(name, directory);
@@ -288,7 +288,7 @@ public class QMTP implements GeneralGAPP {
                 }
                 else if(successFlag==0){
                     if(attemptNumber==maxAttemptNumber){//if this is the last possible attempt, and the calculation fails, exit with an error message
-                        if(qmProgram.equals("mopac")){ //if we are running with MOPAC and all keywords fail, try with Gaussian
+                        if(qmProgram.equals("both")){ //if we are running with "both" option and all keywords fail, try with Gaussian
                             qmProgram = "gaussian03";
                             System.out.println("*****Final MOPAC attempt (#" + maxAttemptNumber + ") on species " + name + " ("+InChIaug+") failed. Trying to use Gaussian.");
                             attemptNumber=0;//this needs to be 0 so that when we increment attemptNumber below, it becomes 1 when returning to the beginning of the for loop
