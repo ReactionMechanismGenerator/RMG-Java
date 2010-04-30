@@ -427,8 +427,10 @@ public class PDepNetwork {
 		for (int i = 0; i < reactionList.size(); i++) {
 			PDepReaction forward = reactionList.get(i);
 			PDepReaction reverse = (PDepReaction) forward.getReverseReaction();
-			if (forward == null || reverse == null)
-				throw new PDepException("Encountered null reaction while updating PDepNetwork reaction lists.");
+			if (forward == null)
+				throw new PDepException("Encountered null forward reaction while updating PDepNetwork reaction lists.");
+			else if (reverse == null)
+				throw new PDepException("Encountered null reverse reaction while updating PDepNetwork reaction lists.");
 			if (forward.isCoreReaction(cerm) || reverse.isCoreReaction(cerm))
 				netReactionList.add(forward);
 			else if (forward.getReactant().getIncluded() && forward.getProduct().getIncluded())
