@@ -425,6 +425,9 @@ public class ReactionModelGenerator {
         		String thermoMethod = st.nextToken().toLowerCase();
         		if (thermoMethod.equals("qm")) {
         			ChemGraph.useQM = true;
+					if(st.hasMoreTokens()){//override the default qmprogram ("both") if there are more; current options: "gaussian03" and "mopac" and of course, "both"
+					    QMTP.qmprogram = st.nextToken().toLowerCase();
+					}
 					line=ChemParser.readMeaningfulLine(reader);
 					if(line.startsWith("QMForCyclicsOnly:")){
 						StringTokenizer st2 = new StringTokenizer(line);
