@@ -134,6 +134,15 @@ public class Atom implements ChemNodeElement {
       //#]
   }
 
+  //gmagoon 4/30/10: modified version of getRadicalNumber; same as getRadicalNumber, except it will not count 2S as radical
+  public int getUnpairedRadicalNumber() {
+      //#[ operation getRadicalNumber()
+      if (freeElectron == null) throw new InvalidFreeElectronException();
+      else if (freeElectron.getName().equals("2S")) return 0;
+      else return freeElectron.getOrder();
+      //#]
+  }
+
   //## operation getType()
   public String getType() {
       //#[ operation getType()

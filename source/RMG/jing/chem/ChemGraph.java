@@ -1401,7 +1401,7 @@ return sn;
     public String getModifiedInChIAnew(){
         generateInChI();
         String newInChI=null;
-        int radicalNumber = this.getRadicalNumber();
+        int radicalNumber = this.getUnpairedRadicalNumber();
        // System.out.println("Radical number:"+radicalNumber);//for debugging purposes
         if (radicalNumber == 2){
             newInChI = InChI.concat("/mult3");
@@ -1429,7 +1429,7 @@ return sn;
     public String getModifiedInChIKeyAnew(){
         generateInChI();
         String newInChIKey=null;
-        int radicalNumber = this.getRadicalNumber();
+        int radicalNumber = this.getUnpairedRadicalNumber();
        // System.out.println("Radical number:"+radicalNumber);//for debugging purposes
         if (radicalNumber == 2){
             newInChIKey = InChIKey.concat("mult3");
@@ -1622,6 +1622,17 @@ return sn;
         }
         return radicalNumber;
         //#]
+    }
+
+    //gmagoon 4/30/10: modified version of getRadicalNumber; same as getRadicalNumber, except it will not count 2S as radical
+    public int getUnpairedRadicalNumber() {
+        int radicalNumber = 0;
+        Iterator iter = getNodeList();
+        while (iter.hasNext()) {
+        	Object element = ((Node)(iter.next())).getElement();
+        	radicalNumber += ((Atom)element).getUnpairedRadicalNumber();
+        }
+        return radicalNumber;
     }
     
     public int getSiliconNumber() {
