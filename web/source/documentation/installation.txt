@@ -210,9 +210,7 @@ such that typing "babel" at the command-line produces output (including version 
 automatically by the OpenBabel installer, and no manual intervention should be required.
 
 InChI: Installation of InChI is described above. The InChI executable should be placed
-in the /bin/ RMG directory. (*Note: We have had difficulties with InChI-to-MOL conversion
-with InChI v.1.02beta on Linux (see http://github.com/GreenGroup/RMG-Java/issues#issue/13)...hopefully
-this will not be an issue in version 1.03*)
+in the /bin/ RMG directory.
 
 SYMMETRY: For Windows, it is recommended that the compiled .exe file available from http://www.cobalt.chem.ucalgary.ca/ps/symmetry/ (via symmdos.zip)
 be used. This file should be copied into RMG's /bin/ directory. On other platforms, you must compile the SYMMETRY.EXE executable yourself
