@@ -106,7 +106,7 @@ class MM4(logfileparser.Logfile):
 
 #read energy (in kcal/mol, converted to eV)
 #       Example:     HEAT OF FORMATION (HFN) AT  298.2 K       =       -42.51 KCAL/MOLE
-        if line[0:32] == '     HEAT OF FORMATION (HFN) AT':
+        if line[0:31] == '     HEAT OF FORMATION (HFN) AT':
             if not hasattr(self, "scfenergies"):
                 self.scfenergies = []
             self.scfenergies.append(utils.convertor(self.float(line.split()[-2])/627.5095, "hartree", "eV")) #note conversion from kcal/mol to hartree
@@ -234,7 +234,7 @@ class MM4(logfileparser.Logfile):
 #            59.     (       0.0)    (t/r )
 #            60.     (       0.0)    (t/r )
 
-        if line[1:52] == '             no       Frequency   Symmetry      A(i)':
+        if line[0:52] == '             no       Frequency   Symmetry      A(i)':
 	    blankline = inputfile.next()
             self.updateprogress(inputfile, "Frequency Information", self.fupdate)
       
@@ -242,7 +242,7 @@ class MM4(logfileparser.Logfile):
                 self.vibfreqs = []
 	    line = inputfile.next()
 	    while(line[15:31].find('(') < 0):#terminate once we reach zero frequencies (which include parentheses)
-		    freq = self.float(line[41:53])
+		    freq = self.float(line[15:31])
 		    self.vibfreqs.append(freq)
 		    line = inputfile.next()
 
