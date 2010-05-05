@@ -951,17 +951,27 @@ public class FastMasterEqn implements PDepKineticsEstimator {
 			br.close();
 
 			// Set reverse reactions
-			for (int i = 0; i < netReactionList.size(); i++) {
+			int i = 0;
+			while (i < netReactionList.size()) {
 				PDepReaction rxn1 = netReactionList.get(i);
-				for (int j = 0; j < netReactionList.size(); j++) {
-					PDepReaction rxn2 = netReactionList.get(j);
-					if (rxn1.getReactant().equals(rxn2.getProduct()) &&
-						rxn2.getReactant().equals(rxn1.getProduct())) {
-						rxn1.setReverseReaction(rxn2);
-						rxn2.setReverseReaction(rxn1);
-						netReactionList.remove(rxn2);
+				if (rxn1.getReverseReaction() == null) {
+					boolean found = false;
+					for (int j = 0; j < netReactionList.size(); j++) {
+						PDepReaction rxn2 = netReactionList.get(j);
+						if (rxn1.getReactant().equals(rxn2.getProduct()) &&
+							rxn2.getReactant().equals(rxn1.getProduct())) {
+							rxn1.setReverseReaction(rxn2);
+							rxn2.setReverseReaction(rxn1);
+							netReactionList.remove(rxn2);
+							found = true;
+							break;
+						}
 					}
+					if (!found)
+						throw new PDepException("Unable to identify reverse reaction for " + rxn1.toString() + " after FAME calculation.");
 				}
+				else
+					i++;
 			}
 
 			// Update reaction lists (sort into included and nonincluded)
