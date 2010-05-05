@@ -10,7 +10,7 @@ __revision__ = "$Revision: 814 $"
 #import re
 
 import numpy
-
+import math
 import utils
 import logfileparser
 
@@ -89,7 +89,7 @@ class MM4(logfileparser.Logfile):
             line = inputfile.next()
             while len(line.split()) > 0:
                 broken = line.split()
-                self.inputatoms.append(symbol2int(line[0:10].trim()))
+                self.inputatoms.append(symbol2int(line[0:10].strip()))
                 xc = float(line[17:29])
                 yc = float(line[29:41])
                 zc = float(line[41:53])
@@ -98,9 +98,11 @@ class MM4(logfileparser.Logfile):
 
             self.inputcoords.append(atomcoords)
 
+	    if not hasattr(self, "atomnos"):
+		self.atomnos = numpy.array(self.inputatoms, 'i')
             if not hasattr(self, "natom"):
-                self.atomnos = numpy.array(self.inputatoms, 'i')
                 self.natom = len(self.atomnos)
+
 
 #read energy (in kcal/mol, converted to eV)
 #       Example:     HEAT OF FORMATION (HFN) AT  298.2 K       =       -42.51 KCAL/MOLE
