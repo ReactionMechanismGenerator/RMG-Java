@@ -22,3 +22,6 @@ run/*
 
 # Output of documentation generation
 web/build/*
+
+# Compiled python files
+*.pyc
