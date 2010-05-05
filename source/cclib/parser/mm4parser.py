@@ -121,36 +121,128 @@ class MM4(logfileparser.Logfile):
         
 	  #rotational constants (converted to GHZ)
         #Example:
-
-#          ROTATIONAL CONSTANTS IN CM(-1)
+#         THE MOMENTS OF INERTIA CALCULATED FROM R(g), R(z) VALUES
+#                  (also from R(e), R(alpha), R(s) VALUES)
 #
-#          A =    0.01757641   B =    0.00739763   C =    0.00712013
-        #could also read in moment of inertia, but this should just differ by a constant: rot cons= h/(8*Pi^2*I)
-        #note that the last occurence of this in the thermochemistry section has reduced precision, so we will want to use the 2nd to last instance
-        if line[0:40] == '          ROTATIONAL CONSTANTS IN CM(-1)':
-	    blankline = inputfile.next();
+#         Note: (1) All calculations are based on principle isotopes.
+#               (2) R(z) values include harmonic vibration (Coriolis)
+#                   contribution indicated in parentheses.
+#
+#
+#   (1)  UNIT = 10**(-39) GM*CM**2
+#
+#                    IX                   IY                   IZ
+#
+#   R(e)         5.7724              73.4297              76.0735
+#   R(z)         5.7221(-0.0518)     74.0311(-0.0285)     76.7102(-0.0064)
+#
+#   (2)  UNIT = AU A**2
+#
+#                    IX                   IY                   IZ
+#
+#   R(e)        34.7661             442.2527             458.1757
+#   R(z)        34.4633(-0.3117)    445.8746(-0.1714)    462.0104(-0.0385)
+        #moments of inertia converted into rotational constants via rot cons= h/(8*Pi^2*I)
+	#we will use the equilibrium values (R(e)) in units of 10**-39 GM*CM**2 (these units are less precise (fewer digits) than AU A**2 units but it is simpler as it doesn't require use of Avogadro's number
+        #***even R(e) may include temperature dependent effects, though, and maybe the one I actually want is r(mm4) (not reported)
+	if line[0:33] == '   (1)  UNIT = 10**(-39) GM*CM**2':
+	    dummyline = inputfile.next();
+	    dummyline = inputfile.next();
+	    dummyline = inputfile.next();
             rotinfo=inputfile.next();
             if not hasattr(self, "rotcons"):
                 self.rotcons = []
             broken = rotinfo.split()
-            sol = 29.9792458 #speed of light in vacuum in 10^9 cm/s, cf. http://physics.nist.gov/cgi-bin/cuu/Value?c|search_for=universal_in!
-            a = float(broken[2])*sol 
-            b = float(broken[5])*sol
-            c = float(broken[8])*sol
+	    h = 6.62606896E3 #Planck constant in 10^-37 J-s = 10^-37 kg m^2/s cf. http://physics.nist.gov/cgi-bin/cuu/Value?h#mid
+            a = h/(8*math.pi*math.pi*float(broken[1]))
+            b = h/(8*math.pi*math.pi*float(broken[2]))
+            c = h/(8*math.pi*math.pi*float(broken[3]))
             self.rotcons.append([a, b, c]) 
 
         # Start of the IR/Raman frequency section.
 #Example:
+#0       FUNDAMENTAL NORMAL VIBRATIONAL FREQUENCIES
+#                ( THEORETICALLY  54 VALUES )
+#
+#             Frequency :  in 1/cm
+#             A(i)      :  IR intensity (vs,s,m,w,vw,-- or in 10**6 cm/mole)
+#             A(i) = -- :  IR inactive
+#
+#
+#             no       Frequency   Symmetry      A(i)
+#
+#             1.          2969.6     (Bu  )        s
+#             2.          2969.6     (Bu  )        w
+#             3.          2967.6     (Bu  )        w
+#             4.          2967.6     (Bu  )        s
+#             5.          2931.2     (Au  )       vs
+#             6.          2927.8     (Bg  )       --
+#             7.          2924.9     (Au  )        m
+#             8.          2923.6     (Bg  )       --
+#             9.          2885.8     (Ag  )       --
+#            10.          2883.9     (Bu  )        w
+#            11.          2879.8     (Ag  )       --
+#            12.          2874.6     (Bu  )        w
+#            13.          2869.6     (Ag  )       --
+#            14.          2869.2     (Bu  )        s
+#            15.          1554.4     (Ag  )       --
+#            16.          1494.3     (Bu  )        w
+#            17.          1449.7     (Bg  )       --
+#            18.          1449.5     (Au  )        w
+#            19.          1444.8     (Ag  )       --
+#            20.          1438.5     (Bu  )        w
+#            21.          1421.5     (Ag  )       --
+#            22.          1419.3     (Ag  )       --
+#            23.          1416.5     (Bu  )        w
+#            24.          1398.8     (Bu  )        w
+#            25.          1383.9     (Ag  )       --
+#            26.          1363.7     (Bu  )        m
+#            27.          1346.3     (Ag  )       --
+#            28.          1300.2     (Au  )       vw
+#            29.          1298.7     (Bg  )       --
+#            30.          1283.4     (Bu  )        m
+#            31.          1267.4     (Bg  )       --
+#            32.          1209.6     (Au  )        w
+#            33.          1132.2     (Bg  )       --
+#            34.          1094.4     (Ag  )       --
+#            35.          1063.4     (Bu  )        w
+#            36.          1017.8     (Bu  )        w
+#            37.          1011.6     (Ag  )       --
+#            38.          1004.2     (Au  )        w
+#            39.           990.2     (Ag  )       --
+#            40.           901.8     (Ag  )       --
+#            41.           898.4     (Bg  )       --
+#            42.           875.9     (Bu  )        w
+#	     43.           795.4     (Au  )        w
+#            44.           725.0     (Bg  )       --
+#            45.           699.6     (Au  )        w
+#            46.           453.4     (Bu  )        w
+#            47.           352.1     (Ag  )       --
+#            48.           291.1     (Ag  )       --
+#            49.           235.9     (Au  )       vw
+#            50.           225.2     (Bg  )       --
+#            51.           151.6     (Bg  )       --
+#            52.           147.7     (Bu  )        w
+#            53.           108.0     (Au  )       vw
+#            54.            77.1     (Au  )       vw
+#            55.     (       0.0)    (t/r )
+#            56.     (       0.0)    (t/r )
+#            57.     (       0.0)    (t/r )
+#            58.     (       0.0)    (t/r )
+#            59.     (       0.0)    (t/r )
+#            60.     (       0.0)    (t/r )
 
-        if line[1:10] == 'VIBRATION':
-	    line = inputfile.next()
+        if line[1:52] == '             no       Frequency   Symmetry      A(i)':
+	    blankline = inputfile.next()
             self.updateprogress(inputfile, "Frequency Information", self.fupdate)
       
             if not hasattr(self, 'vibfreqs'):
                 self.vibfreqs = []
-            freq = self.float(line.split()[1])
-            #self.vibfreqs.extend(freqs)
-            self.vibfreqs.append(freq)
+	    line = inputfile.next()
+	    while(line[15:31].find('(') < 0):#terminate once we reach zero frequencies (which include parentheses)
+		    freq = self.float(line[41:53])
+		    self.vibfreqs.append(freq)
+		    line = inputfile.next()
 
 
 if __name__ == "__main__":
