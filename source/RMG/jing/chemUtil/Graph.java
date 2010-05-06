@@ -131,6 +131,12 @@ public class Graph {
         	return arc;
         }
         else {
+        	System.err.println("Error in Graph.addArcBetween() method: " +
+        			"RMG is about to add a bond between atoms " + p_node1.getID() +
+        			" and " + p_node2.getID() + " in the graph presented below.\n" +
+        			"Error most likely occurs because a bond already exists " +
+        			"between these two atoms.\nConsider adding graph to" +
+        			" forbiddenGroups.txt file.\n" + this.toString());
         	throw new PositionOccupiedException("arc");
         }
 
