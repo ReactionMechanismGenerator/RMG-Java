@@ -306,7 +306,7 @@ public class PDepIsomer {
 				Species speciesI = speciesList.get(i);
 				boolean found = false;
 				for (int j = 0; j < isomer.getNumSpecies(); j++) {
-					Species speciesJ = isomer.speciesList.get(i);
+					Species speciesJ = isomer.speciesList.get(j);
 					if (speciesI.equals(speciesJ))
 						found = true;
 				}
