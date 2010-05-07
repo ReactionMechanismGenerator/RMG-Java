@@ -482,7 +482,7 @@ public class QMTP implements GeneralGAPP {
         int maxAttemptNumber=18;//update this if additional keyword options are added or removed
         try{
             File inpKey=new File(directory+"/inputkeywords.txt");
-            String inpKeyStr="%chk="+directory+"\\RMGrunCHKfile.chk\n";
+            String inpKeyStr="%chk="+directory+"/RMGrunCHKfile.chk\n";
             inpKeyStr+="%mem=6MW\n";
             inpKeyStr+="%nproc=1\n";
             if(attemptNumber==-1) inpKeyStr+="# pm3 freq";//keywords for monoatomic case (still need to use freq keyword to get molecular mass)
@@ -523,7 +523,7 @@ public class QMTP implements GeneralGAPP {
         //call the OpenBabel process (note that this requires OpenBabel environment variable)
         try{ 
             File runningdir=new File(directory);
-            String command = "babel -imol "+ p_molfile.getPath()+ " -ogjf " + name+".gjf -xf inputKeywords.txt --title \""+InChIaug+"\"";
+            String command = "babel -imol "+ p_molfile.getPath()+ " -ogjf " + name+".gjf -xf inputkeywords.txt --title \""+InChIaug+"\"";
             Process babelProc = Runtime.getRuntime().exec(command, null, runningdir);
             //read in output
             InputStream is = babelProc.getInputStream();
