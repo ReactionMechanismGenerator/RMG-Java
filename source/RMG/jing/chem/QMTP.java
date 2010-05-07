@@ -49,7 +49,7 @@ public class QMTP implements GeneralGAPP {
     final protected static double ENTHALPY_HYDROGEN = 52.1; //needed for HBI
     private static QMTP INSTANCE = new QMTP();		//## attribute INSTANCE
     protected static PrimaryThermoLibrary primaryLibrary;//Note: may be able to separate this out into GeneralGAPP, as this is common to both GATP and QMTP
-    public static String qmfolder= "QMFiles/";
+    public static String qmfolder= "QMfiles/";
     //   protected static HashMap library;		//as above, may be able to move this and associated functions to GeneralGAPP (and possibly change from "x implements y" to "x extends y"), as it is common to both GATP and QMTP
     protected ThermoGAGroupLibrary thermoLibrary; //needed for HBI
     public static String qmprogram= "both";//the qmprogram can be "mopac", "gaussian03", or "both"
