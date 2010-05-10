@@ -2425,7 +2425,10 @@ return sn;
     public String toStringWithoutH() {
         //#[ operation toStringWithoutH()
         String s = "ChemFormula: " + getChemicalFormula() + '\n';
-        s = s + getGraph().toStringWithoutCentralIDAndH();
+        if (getHeavyAtomNumber() == 0)
+        	s += getGraph().toStringWithoutCentralID();
+        else
+        	s = s + getGraph().toStringWithoutCentralIDAndH();
         return s;
         //#]
     }
@@ -2440,7 +2443,10 @@ return sn;
     public String toStringWithoutH(int i) {
         //#[ operation toStringWithoutH()
         String s = "";//= "ChemFormula: " + getChemicalFormula() + '\n';
-        s = s + getGraph().toStringWithoutCentralIDAndH();
+        if (getHeavyAtomNumber() == 0)
+        	s += getGraph().toStringWithoutCentralID();
+        else
+        	s = s + getGraph().toStringWithoutCentralIDAndH();
         return s;
         //#]
     }
