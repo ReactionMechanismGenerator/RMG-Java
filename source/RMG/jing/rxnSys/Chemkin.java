@@ -773,7 +773,10 @@ public  Chemkin() {
       // write species
       for (Iterator iter = cerm.getSpecies(); iter.hasNext(); ) {
       	Species spe = (Species)iter.next();
-      	result.append('\t' + spe.getChemkinName() + '\n');
+      	if (spe.getChemkinName().startsWith("SPC"))
+      		result.append("\t" + spe.getChemkinName() + "\t!" + spe.getName() + "\n");
+      	else
+      		result.append('\t' + spe.getChemkinName() + '\n');
       }
 
 
