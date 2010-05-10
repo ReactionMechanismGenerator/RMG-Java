@@ -117,6 +117,8 @@ public class ReactionModelGenerator {
 	protected static int minSpeciesForPruning;
 	protected static int maxEdgeSpeciesAfterPruning;
 	
+	public int limitingReactantID = 1;
+	
 	//## operation ReactionModelGenerator()
     public  ReactionModelGenerator() {
         workingDirectory = System.getProperty("RMG.workingDirectory");
@@ -677,6 +679,7 @@ public class ReactionModelGenerator {
         			while (st.hasMoreTokens()) {
         				String name = st.nextToken();
         				Species spe = (Species)speciesSet.get(name);
+        				setLimitingReactantID(spe.getID());
         				if (spe == null) throw new InvalidConversionException("Unknown reactant: " + name);
         				String conv = st.nextToken();
         				double conversion;
@@ -1496,7 +1499,7 @@ public class ReactionModelGenerator {
 					ReactionSystem rs = (ReactionSystem)reactionSystemList.get(i);
 					System.out.println("For reaction system: "+(i+1)+" out of "+reactionSystemList.size());
 					System.out.println("At this time: " + ((ReactionTime)endList.get(i)).toString());
-					Species spe = SpeciesDictionary.getSpeciesFromID(1);
+					Species spe = SpeciesDictionary.getSpeciesFromID(getLimitingReactantID());
 					double conv = rs.getPresentConversion(spe);
 					System.out.print("Conversion of " + spe.getName()  + " is:");
 					System.out.println(conv);
@@ -1658,7 +1661,7 @@ public class ReactionModelGenerator {
 					ReactionSystem rs = (ReactionSystem)reactionSystemList.get(i);
 					System.out.println("For reaction system: "+(i+1)+" out of "+reactionSystemList.size());
 					System.out.println("At this reaction time: " + ((ReactionTime)endList.get(i)).toString());
-					Species spe = SpeciesDictionary.getSpeciesFromID(1);
+					Species spe = SpeciesDictionary.getSpeciesFromID(getLimitingReactantID());
 					double conv = rs.getPresentConversion(spe);
 					System.out.print("Conversion of " + spe.getName()  + " is:");
 					System.out.println(conv);
@@ -4848,6 +4851,14 @@ public class ReactionModelGenerator {
     
     public static boolean rerunFameWithAdditionalGrains() {
     	return rerunFame;
+    }
+    
+    public void setLimitingReactantID(int id) {
+    	limitingReactantID = id;
+    }
+    
+    public int getLimitingReactantID() {
+    	return limitingReactantID;
     }
     
 }
