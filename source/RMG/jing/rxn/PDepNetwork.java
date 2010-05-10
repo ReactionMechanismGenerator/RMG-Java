@@ -408,7 +408,10 @@ public class PDepNetwork {
 	 * calculation.
 	 * @param cerm The current core/edge reaction model
 	 */
-	public void updateReactionLists(CoreEdgeReactionModel cerm) {
+	public void updateReactionLists(CoreEdgeReactionModel cerm) throws PDepException {
+
+		// Merge the net reaction and nonincluded reactinon lists together
+		// We will recalculate how to distribute them
 		LinkedList<PDepReaction> reactionList = new LinkedList<PDepReaction>();
 		for (int i = 0; i < netReactionList.size(); i++) {
 			PDepReaction rxn = netReactionList.get(i);
@@ -424,8 +427,10 @@ public class PDepNetwork {
 		for (int i = 0; i < reactionList.size(); i++) {
 			PDepReaction forward = reactionList.get(i);
 			PDepReaction reverse = (PDepReaction) forward.getReverseReaction();
-			if (forward == null || reverse == null)
-				return;
+			if (forward == null)
+				throw new PDepException("Encountered null forward reaction while updating PDepNetwork reaction lists.");
+			else if (reverse == null)
+				throw new PDepException("Encountered null reverse reaction while updating PDepNetwork reaction lists.");
 			if (forward.isCoreReaction(cerm) || reverse.isCoreReaction(cerm))
 				netReactionList.add(forward);
 			else if (forward.getReactant().getIncluded() && forward.getProduct().getIncluded())
@@ -466,7 +471,11 @@ public class PDepNetwork {
 	 * @param ss A system snapshot (T, P, concentrations, etc.) to use to calculate the flux.
 	 * @return The isomer with the largest leak flux
 	 */
-	public PDepIsomer getMaxLeakIsomer(SystemSnapshot ss) {
+	public PDepIsomer getMaxLeakIsomer(SystemSnapshot ss) throws PDepException {
+
+		if (nonincludedReactionList.size() == 0)
+			throw new PDepException("Tried to determine nonincluded isomer with maximum leak flux, but there are no nonincluded reactions, so no isomer can be identified.");
+
 		PDepReaction maxReaction = null;
 		double maxLeak = 0.0;
 		for (ListIterator<PDepReaction> iter = nonincludedReactionList.listIterator(); iter.hasNext(); ) {
@@ -478,14 +487,14 @@ public class PDepNetwork {
 				}
 			}
 		}
-		if (maxReaction == null)
-			return null;
-		else if (!maxReaction.getReactant().getIncluded())
+
+		if (!maxReaction.getReactant().getIncluded())
 			return maxReaction.getReactant();
 		else if (!maxReaction.getProduct().getIncluded())
 			return maxReaction.getProduct();
 		else
-			return null;
+			throw new PDepException("Tried to determine nonincluded isomer with maximum leak flux, but nonincluded reaction with maximum leak flux has no nonincluded isomers.");
+			
 	}
 
 	public String getSpeciesType() {
@@ -495,6 +504,31 @@ public class PDepNetwork {
 				return isomer.getSpecies(0).getName();
 		}
 		return "";
+	}
+
+	public String toString() {
+		String str = "PDepNetwork #" + Integer.toString(id) + ":\n";
+		str += "\tIsomers:\n";
+		for (ListIterator<PDepIsomer> iter = isomerList.listIterator(); iter.hasNext(); ) {
+			PDepIsomer isomer = iter.next();
+			str += "\t\t" + isomer.toString() + "\n";
+		}
+		str += "\tPath reactions:\n";
+		for (ListIterator<PDepReaction> iter = pathReactionList.listIterator(); iter.hasNext(); ) {
+			PDepReaction rxn = iter.next();
+			str += "\t\t" + rxn.toString() + "\n";
+		}
+		str += "\tNet reactions:\n";
+		for (ListIterator<PDepReaction> iter = netReactionList.listIterator(); iter.hasNext(); ) {
+			PDepReaction rxn = iter.next();
+			str += "\t\t" + rxn.toString() + "\n";
+		}
+		str += "\tNonincluded reactions:\n";
+		for (ListIterator<PDepReaction> iter = nonincludedReactionList.listIterator(); iter.hasNext(); ) {
+			PDepReaction rxn = iter.next();
+			str += "\t\t" + rxn.toString() + "\n";
+		}
+		return str;
 	}
 
 	//==========================================================================

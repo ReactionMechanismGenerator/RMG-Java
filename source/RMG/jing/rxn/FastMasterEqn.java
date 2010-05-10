@@ -306,6 +306,44 @@ public class FastMasterEqn implements PDepKineticsEstimator {
 			// thousands of times in a single job
 			stdout.close();
 			stderr.close();
+
+			// Parse FAME output file and update accordingly
+			if (parseOutputString(output, pdn, rxnSystem, cerm, isomerList)) {
+
+				// Reset altered flag
+				pdn.setAltered(false);
+
+				// Clean up files
+				int id = pdn.getID();
+				/*String path = "fame/";
+				if (id < 10)			path += "000";
+				else if (id < 100)	path += "00";
+				else if (id < 1000)	path += "0";
+				path += Integer.toString(id);
+
+				File input = new File("fame/fame_input.txt");
+				File newInput = new File(path +  "_input.txt");
+				input.renameTo(newInput);
+				File output = new File("fame/fame_output.txt");
+				File newOutput = new File(path +  "_output.txt");
+				output.renameTo(newOutput);*/
+
+				// Write finished indicator to console
+				//System.out.println("FAME execution for network " + Integer.toString(id) + " complete.");
+				String formula = pdn.getSpeciesType();
+				System.out.println("PDepNetwork #" + Integer.toString(id) +
+					" (" + formula + "): " +
+					pdn.getNetReactions().size() + " included and " +
+					pdn.getNonincludedReactions().size() + " nonincluded net reactions.");
+				// Find time required to run FAME for large networks.
+				// JDM January 27, 2010
+				// if (isomerList.size() >= 10) {
+				//	System.out.println("Running Time is: " + String.valueOf((System.currentTimeMillis())/1000/60) + " minutes after running fame.");
+				// }
+
+
+			}
+
         }
         catch (Exception e) {
 			e.printStackTrace();
@@ -338,43 +376,6 @@ public class FastMasterEqn implements PDepKineticsEstimator {
 				System.exit(0);				
 			}
         }
-
-		// Parse FAME output file and update accordingly
-        if (parseOutputString(output, pdn, rxnSystem, cerm, isomerList)) {
-
-			// Reset altered flag
-			pdn.setAltered(false);
-
-			// Clean up files
-			int id = pdn.getID();
-			/*String path = "fame/";
-			if (id < 10)			path += "000";
-			else if (id < 100)	path += "00";
-			else if (id < 1000)	path += "0";
-			path += Integer.toString(id);
-
-			File input = new File("fame/fame_input.txt");
-			File newInput = new File(path +  "_input.txt");
-			input.renameTo(newInput);
-			File output = new File("fame/fame_output.txt");
-			File newOutput = new File(path +  "_output.txt");
-			output.renameTo(newOutput);*/
-
-			// Write finished indicator to console
-			//System.out.println("FAME execution for network " + Integer.toString(id) + " complete.");
-			String formula = pdn.getSpeciesType();
-			System.out.println("PDepNetwork #" + Integer.toString(id) +
-				" (" + formula + "): " +
-				pdn.getNetReactions().size() + " included and " +
-				pdn.getNonincludedReactions().size() + " nonincluded net reactions.");
-			// Find time required to run FAME for large networks. 
-			// JDM January 27, 2010
-			// if (isomerList.size() >= 10) {
-			//	System.out.println("Running Time is: " + String.valueOf((System.currentTimeMillis())/1000/60) + " minutes after running fame.");
-			// }
-
-
-		}
         
         /*
          * MRH 26Feb2010:
@@ -703,7 +704,7 @@ public class FastMasterEqn implements PDepKineticsEstimator {
 	 */
 	public boolean parseOutputString(String output, PDepNetwork pdn,
             ReactionSystem rxnSystem, CoreEdgeReactionModel cerm,
-			LinkedList<PDepIsomer> isomerList) {
+			LinkedList<PDepIsomer> isomerList) throws PDepException {
 
 	    String dir = System.getProperty("RMG.workingDirectory");
 	    
@@ -897,7 +898,7 @@ public class FastMasterEqn implements PDepKineticsEstimator {
 							Ea = kin.getEValue();
 							n = kin.getNValue();
 							// While I'm here, and know which reaction was the High-P limit, set the comment in the P-dep reaction 
-							rxn.setComments("High-P Limit: " + kin.getSource().toString() + "\n" + kin.getComment().toString() );
+							rxn.setComments("High-P Limit: " + kin.getSource().toString() + " " + kin.getComment().toString() );
 						}
 						else {
 							Kinetics[] k_array = rxnWHighPLimit.getFittedReverseKinetics();
@@ -950,22 +951,38 @@ public class FastMasterEqn implements PDepKineticsEstimator {
 			br.close();
 
 			// Set reverse reactions
-			for (int i = 0; i < netReactionList.size(); i++) {
+			int i = 0;
+			while (i < netReactionList.size()) {
 				PDepReaction rxn1 = netReactionList.get(i);
-				for (int j = 0; j < netReactionList.size(); j++) {
-					PDepReaction rxn2 = netReactionList.get(j);
-					if (rxn1.getReactant().equals(rxn2.getProduct()) &&
-						rxn2.getReactant().equals(rxn1.getProduct())) {
-						rxn1.setReverseReaction(rxn2);
-						rxn2.setReverseReaction(rxn1);
-						netReactionList.remove(rxn2);
+				if (rxn1.getReverseReaction() == null) {
+					boolean found = false;
+					for (int j = 0; j < netReactionList.size(); j++) {
+						PDepReaction rxn2 = netReactionList.get(j);
+						if (rxn1.getReactant().equals(rxn2.getProduct()) &&
+							rxn2.getReactant().equals(rxn1.getProduct())) {
+							rxn1.setReverseReaction(rxn2);
+							rxn2.setReverseReaction(rxn1);
+							netReactionList.remove(rxn2);
+							found = true;
+							break;
+						}
 					}
+					if (!found)
+						throw new PDepException("Unable to identify reverse reaction for " + rxn1.toString() + " after FAME calculation.");
 				}
+				else
+					i++;
 			}
 
 			// Update reaction lists (sort into included and nonincluded)
 			pdn.updateReactionLists(cerm);
 
+		}
+		catch (PDepException e) {
+			System.out.println(pdn);
+			System.out.println(e.getMessage());
+			e.printStackTrace();
+			throw new PDepException("Unable to parse FAME output file.");
 		}
 		catch(IOException e) {
 			System.out.println("Error: Unable to read from file \"fame_output.txt\".");
