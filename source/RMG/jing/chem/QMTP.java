@@ -1001,10 +1001,10 @@ public class QMTP implements GeneralGAPP {
 	    InputStream es = cclibProc.getErrorStream();
 	    InputStreamReader esr = new InputStreamReader(es);
             BufferedReader ebr = new BufferedReader(esr);
-	    String error = br.readLine();
+	    String error = ebr.readLine();
 	    while(error!=null){
 		System.err.println(error);
-		error = br.readLine();
+		error = ebr.readLine();
 	    }
 
             String line=null;
