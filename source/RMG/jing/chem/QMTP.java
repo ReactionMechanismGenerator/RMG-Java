@@ -997,6 +997,16 @@ public class QMTP implements GeneralGAPP {
             InputStream is = cclibProc.getInputStream();
             InputStreamReader isr = new InputStreamReader(is);
             BufferedReader br = new BufferedReader(isr);
+
+	    InputStream es = cclibProc.getErrorStream();
+	    InputStreamReader esr = new InputStreamReader(es);
+            BufferedReader ebr = new BufferedReader(esr);
+	    String error = br.readLine();
+	    while(error!=null){
+		System.err.println(error);
+		error = br.readLine();
+	    }
+
             String line=null;
             //example output:
 //            C:\Python25>python.exe GaussianPM3ParsingScript.py TEOS.out
