@@ -372,13 +372,12 @@ public class QMTP implements GeneralGAPP {
         String name = twoDmolFile.getName();
         try{   
             File runningdir=new File(directory);
-            String command = "python "+System.getProperty("RMG.workingDirectory")+"/scripts/distGeomScriptMolLowestEnergyConf.py ";
+            String command = "python \""+System.getProperty("RMG.workingDirectory")+"/scripts/distGeomScriptMolLowestEnergyConf.py\" ";
             String twoDmolpath=twoDmolFile.getPath();
-            command=command.concat(twoDmolpath);
-            command=command.concat(" ");
-            command=command.concat(name+".mol");//this is the target file name; use the same name as the twoDmolFile (but it will be in he 3Dmolfiles folder
-            command=command.concat(" " + numConfAttempts);
-	    command=command.concat(" \"" + System.getenv("RDBASE")+"\"");//pass the $RDBASE environment variable to the script so it can use the approprate directory when importing rdkit
+            command=command.concat("\""+twoDmolpath+"\" ");
+            command=command.concat("\""+name+".mol\" ");//this is the target file name; use the same name as the twoDmolFile (but it will be in he 3Dmolfiles folder
+            command=command.concat(numConfAttempts + " ");
+	    command=command.concat("\"" + System.getenv("RDBASE")+"\"");//pass the $RDBASE environment variable to the script so it can use the approprate directory when importing rdkit
             Process pythonProc = Runtime.getRuntime().exec(command, null, runningdir);
             String killmsg= "Python process for "+twoDmolFile.getName()+" did not complete within 120 seconds, and the process was killed. File was probably not written.";//message to print if the process times out
             Thread timeoutThread = new TimeoutKill(pythonProc, killmsg, 120000L); //create a timeout thread to handle cases where the UFF optimization get's locked up (cf. Ch. 16 of "Ivor Horton's Beginning Java 2: JDK 5 Edition"); once we use the updated version of RDKit, we should be able to get rid of this
@@ -956,7 +955,7 @@ public class QMTP implements GeneralGAPP {
 //        return result;
         
         String command = "python "+ System.getProperty("RMG.workingDirectory")+"/scripts/GaussianPM3ParsingScript.py ";
-        String logfilepath=directory+"/"+name+".log";
+        String logfilepath="\""+directory+"/"+name+".log\"";
         command=command.concat(logfilepath);
 	command=command.concat(" \""+ System.getenv("RMG")+"\"");//this will pass the RMG environment variable to the script (in order to get the appropriate path for importing
         ThermoData result = getPM3ThermoDataUsingCCLib(name, directory, p_chemGraph, command);
@@ -967,7 +966,7 @@ public class QMTP implements GeneralGAPP {
     //parse the results using cclib and return a ThermoData object; name and directory indicate the location of the MOPAC .out file
     public ThermoData parseMopacPM3(String name, String directory, ChemGraph p_chemGraph){
         String command = "python "+System.getProperty("RMG.workingDirectory")+"/scripts/MopacPM3ParsingScript.py ";
-        String logfilepath=directory+"/"+name+".out";
+        String logfilepath="\""+directory+"/"+name+".out\"";
         command=command.concat(logfilepath);
 	command=command.concat(" \""+ System.getenv("RMG")+"\"");//this will pass the RMG environment variable to the script (in order to get the appropriate path for importing
         ThermoData result = getPM3ThermoDataUsingCCLib(name, directory, p_chemGraph, command);
