@@ -958,6 +958,7 @@ public class QMTP implements GeneralGAPP {
         String logfilepath="\""+directory+"/"+name+".log\"";
         command=command.concat(logfilepath);
 	command=command.concat(" \""+ System.getenv("RMG")+"\"");//this will pass the RMG environment variable to the script (in order to get the appropriate path for importing
+	System.out.println(command);//debugging line
         ThermoData result = getPM3ThermoDataUsingCCLib(name, directory, p_chemGraph, command);
         System.out.println("Thermo for " + name + ": "+ result.toString());//print result, at least for debugging purposes
         return result;
