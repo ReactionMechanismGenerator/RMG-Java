@@ -534,7 +534,8 @@ public class QMTP implements GeneralGAPP {
         try{ 
             File runningdir=new File(directory);
             String command = "babel -imol "+ p_molfile.getPath()+ " -ogjf " + name+".gjf -xf inputkeywords.txt --title "+InChIaug;
-            Process babelProc = Runtime.getRuntime().exec(command, null, runningdir);
+            System.out.println(command);//debugging line
+	    Process babelProc = Runtime.getRuntime().exec(command, null, runningdir);
             //read in output
             InputStream is = babelProc.getInputStream();
             InputStreamReader isr = new InputStreamReader(is);
