@@ -703,7 +703,7 @@ public class QMTP implements GeneralGAPP {
         int successFlag=0;
         try{ 
             File runningdir=new File(System.getenv("G03DIR"));//tests suggest that we need to run from this directory or else l1.exe cannon be found
-            String command = System.getenv("G03DIR")+"/g03.exe ";
+            String command = System.getenv("G03DIR")+"/g03 ";
 	    if (System.getProperty("os.name").toLowerCase().contains("windows")){//special windows case where paths can have spaces and are allowed to be surrounded by quotes
 		command=command.concat("\""+directory+"/"+name+".gjf\" ");//specify the input file; space is important
 		command=command.concat("\""+directory+"/"+name+".log\"");//specify the output file
@@ -990,7 +990,8 @@ public class QMTP implements GeneralGAPP {
 	    command=command.concat(logfilepath);
 	    command=command.concat(" "+ System.getenv("RMG")+"/source");//this will pass $RMG/source to the script (in order to get the appropriate path for importing
 	}
-        ThermoData result = getPM3ThermoDataUsingCCLib(name, directory, p_chemGraph, command);
+        System.out.println(command);
+	ThermoData result = getPM3ThermoDataUsingCCLib(name, directory, p_chemGraph, command);
         System.out.println("Thermo for " + name + ": "+ result.toString());//print result, at least for debugging purposes
         return result;
     }
