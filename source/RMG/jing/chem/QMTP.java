@@ -535,7 +535,7 @@ public class QMTP implements GeneralGAPP {
             File runningdir=new File(directory);
 	    String command=null;
 	    if (System.getProperty("os.name").toLowerCase().contains("windows")){//special windows case
-		command = "babel -imol "+ p_molfile.getPath()+ " -ogjf " + name+".gjf -xf inputkeywords.txt --title \""+InChIaug+"\"";
+		command = "babel -imol \""+ p_molfile.getPath()+ "\" -ogjf \"" + name+".gjf\" -xf inputkeywords.txt --title \""+InChIaug+"\"";
 	    }
 	    else{
 		command = "babel -imol "+ p_molfile.getPath()+ " -ogjf " + name+".gjf -xf inputkeywords.txt --title "+InChIaug;
