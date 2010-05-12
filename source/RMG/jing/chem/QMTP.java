@@ -541,7 +541,7 @@ public class QMTP implements GeneralGAPP {
             BufferedReader br = new BufferedReader(isr);
             String line=null;
             while ( (line = br.readLine()) != null) {
-                System.out.println(br);
+                System.out.println(line);
 		//do nothing
             }
             int exitValue = babelProc.waitFor();
