@@ -703,7 +703,7 @@ public class QMTP implements GeneralGAPP {
         int successFlag=0;
         try{ 
             File runningdir=new File(System.getenv("G03DIR"));//tests suggest that we need to run from this directory or else l1.exe cannon be found
-            String command = System.getenv("G03DIR")+"/g03 ";
+            String command = System.getenv("G03DIR")+"/g03.exe ";
 	    if (System.getProperty("os.name").toLowerCase().contains("windows")){//special windows case where paths can have spaces and are allowed to be surrounded by quotes
 		command=command.concat("\""+directory+"/"+name+".gjf\" ");//specify the input file; space is important
 		command=command.concat("\""+directory+"/"+name+".log\"");//specify the output file
