@@ -979,13 +979,15 @@ public class QMTP implements GeneralGAPP {
 //        System.out.println("Thermo for " + name + ": "+ result.toString());//print result, at least for debugging purposes
 //        return result;
         
-        String command = "python "+ System.getProperty("RMG.workingDirectory")+"/scripts/GaussianPM3ParsingScript.py ";
+        String command = null;
         if (System.getProperty("os.name").toLowerCase().contains("windows")){//special windows case where paths can have spaces and are allowed to be surrounded by quotes
+	    command = "python \""+ System.getProperty("RMG.workingDirectory")+"/scripts/GaussianPM3ParsingScript.py\" ";
 	    String logfilepath="\""+directory+"/"+name+".log\"";
 	    command=command.concat(logfilepath);
 	    command=command.concat(" \""+ System.getenv("RMG")+"/source\"");//this will pass $RMG/source to the script (in order to get the appropriate path for importing
 	}
 	else{//non-Windows case
+	    command = "python "+ System.getProperty("RMG.workingDirectory")+"/scripts/GaussianPM3ParsingScript.py ";
 	    String logfilepath=directory+"/"+name+".log";
 	    command=command.concat(logfilepath);
 	    command=command.concat(" "+ System.getenv("RMG")+"/source");//this will pass $RMG/source to the script (in order to get the appropriate path for importing
