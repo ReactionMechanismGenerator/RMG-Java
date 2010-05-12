@@ -534,7 +534,6 @@ public class QMTP implements GeneralGAPP {
         try{ 
             File runningdir=new File(directory);
             String command = "babel -imol "+ p_molfile.getPath()+ " -ogjf " + name+".gjf -xf inputkeywords.txt --title "+InChIaug;
-            System.out.println(command);//debugging line
 	    Process babelProc = Runtime.getRuntime().exec(command, null, runningdir);
             //read in output
             InputStream is = babelProc.getInputStream();
@@ -542,7 +541,6 @@ public class QMTP implements GeneralGAPP {
             BufferedReader br = new BufferedReader(isr);
             String line=null;
             while ( (line = br.readLine()) != null) {
-                System.out.println(line);
 		//do nothing
             }
             int exitValue = babelProc.waitFor();
@@ -978,7 +976,6 @@ public class QMTP implements GeneralGAPP {
 	    command=command.concat(logfilepath);
 	    command=command.concat(" "+ System.getenv("RMG")+"/source");//this will pass $RMG/source to the script (in order to get the appropriate path for importing
 	}
-	System.out.println(command);//debugging line
         ThermoData result = getPM3ThermoDataUsingCCLib(name, directory, p_chemGraph, command);
         System.out.println("Thermo for " + name + ": "+ result.toString());//print result, at least for debugging purposes
         return result;
