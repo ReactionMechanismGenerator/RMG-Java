@@ -1298,8 +1298,8 @@ public class QMTP implements GeneralGAPP {
             String [] lineArray;
             try{ 
                 if (System.getProperty("os.name").toLowerCase().contains("windows")){//the Windows case where the precompiled executable seems to need to be called from a batch script
-		    if(attemptNumber==1) command = System.getProperty("RMG.workingDirectory")+"/scripts/symmetryDefault2.bat "+qmfolder+ "symminput.txt";//12/1/09 gmagoon: switched to use slightly looser criteria of 0.02 rather than 0.01 to handle methylperoxyl radical result from MOPAC
-		    else if (attemptNumber==2) command = System.getProperty("RMG.workingDirectory")+"/scripts/symmetryLoose.bat " +qmfolder+ "symminput.txt";//looser criteria (0.1 instead of 0.01) to properly identify C2v group in VBURLMBUVWIEMQ-UHFFFAOYAVmult5 (InChI=1/C3H4O2/c1-3(2,4)5/h1-2H2/mult5) MOPAC result; C2 and sigma were identified with default, but it should be C2 and sigma*2
+		    if(attemptNumber==1) command = "\""+System.getProperty("RMG.workingDirectory")+"/scripts/symmetryDefault2.bat\" "+qmfolder+ "symminput.txt";//12/1/09 gmagoon: switched to use slightly looser criteria of 0.02 rather than 0.01 to handle methylperoxyl radical result from MOPAC
+		    else if (attemptNumber==2) command = "\""+System.getProperty("RMG.workingDirectory")+"/scripts/symmetryLoose.bat\" " +qmfolder+ "symminput.txt";//looser criteria (0.1 instead of 0.01) to properly identify C2v group in VBURLMBUVWIEMQ-UHFFFAOYAVmult5 (InChI=1/C3H4O2/c1-3(2,4)5/h1-2H2/mult5) MOPAC result; C2 and sigma were identified with default, but it should be C2 and sigma*2
 		    else{
 			System.out.println("Invalid attemptNumber: "+ attemptNumber);
 			System.exit(0);
