@@ -533,7 +533,13 @@ public class QMTP implements GeneralGAPP {
         //call the OpenBabel process (note that this requires OpenBabel environment variable)
         try{ 
             File runningdir=new File(directory);
-            String command = "babel -imol "+ p_molfile.getPath()+ " -ogjf " + name+".gjf -xf inputkeywords.txt --title "+InChIaug;
+	    String command=null;
+	    if (System.getProperty("os.name").toLowerCase().contains("windows")){//special windows case
+		command = "babel -imol "+ p_molfile.getPath()+ " -ogjf " + name+".gjf -xf inputkeywords.txt --title \""+InChIaug+"\"";
+	    }
+	    else{
+		command = "babel -imol "+ p_molfile.getPath()+ " -ogjf " + name+".gjf -xf inputkeywords.txt --title "+InChIaug;
+	    }
 	    Process babelProc = Runtime.getRuntime().exec(command, null, runningdir);
             //read in output
             InputStream is = babelProc.getInputStream();
