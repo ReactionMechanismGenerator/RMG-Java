@@ -700,7 +700,7 @@ public class QMTP implements GeneralGAPP {
             String command = System.getenv("G03DIR")+"/g03 ";
             command=command.concat(directory+"/"+name+".gjf ");//specify the input file; space is important
             command=command.concat(directory+"/"+name+".log");//specify the output file
-            Process gaussianProc = Runtime.getRuntime().exec(command, null, runningdir);
+            Process gaussianProc = Runtime.getRuntime().exec(command);
             //check for errors and display the error if there is one
             InputStream is = gaussianProc.getErrorStream();
             InputStreamReader isr = new InputStreamReader(is);
