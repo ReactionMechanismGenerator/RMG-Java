@@ -957,7 +957,7 @@ public class QMTP implements GeneralGAPP {
         String command = "python "+ System.getProperty("RMG.workingDirectory")+"/scripts/GaussianPM3ParsingScript.py ";
         String logfilepath="\""+directory+"/"+name+".log\"";
         command=command.concat(logfilepath);
-	command=command.concat(" \""+ System.getenv("RMG")+"\"");//this will pass the RMG environment variable to the script (in order to get the appropriate path for importing
+	command=command.concat(" \""+ System.getenv("RMG")+"/source\"");//this will pass $RMG/source to the script (in order to get the appropriate path for importing
 	System.out.println(command);//debugging line
         ThermoData result = getPM3ThermoDataUsingCCLib(name, directory, p_chemGraph, command);
         System.out.println("Thermo for " + name + ": "+ result.toString());//print result, at least for debugging purposes
@@ -969,7 +969,7 @@ public class QMTP implements GeneralGAPP {
         String command = "python "+System.getProperty("RMG.workingDirectory")+"/scripts/MopacPM3ParsingScript.py ";
         String logfilepath="\""+directory+"/"+name+".out\"";
         command=command.concat(logfilepath);
-	command=command.concat(" \""+ System.getenv("RMG")+"\"");//this will pass the RMG environment variable to the script (in order to get the appropriate path for importing
+	command=command.concat(" \""+ System.getenv("RMG")+"/source\"");//this will pass $RMG/source to the script (in order to get the appropriate path for importing
         ThermoData result = getPM3ThermoDataUsingCCLib(name, directory, p_chemGraph, command);
         System.out.println("Thermo for " + name + ": "+ result.toString());//print result, at least for debugging purposes
         return result;
