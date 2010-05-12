@@ -991,8 +991,7 @@ public class QMTP implements GeneralGAPP {
         double rotCons_3 = 0; 
         int gdStateDegen = p_chemGraph.getRadicalNumber()+1;//calculate ground state degeneracy from the number of radicals; this should give the same result as spin multiplicity in Gaussian input file (and output file), but we do not explicitly check this (we could use "mult" which cclib reads in if we wanted to do so); also, note that this is not always correct, as there can apparently be additional spatial degeneracy for non-symmetric linear molecules like OH radical (cf. http://cccbdb.nist.gov/thermo.asp)
         try{   
-            File runningdir=new File(directory);
-            Process cclibProc = Runtime.getRuntime().exec(command, null, runningdir);
+            Process cclibProc = Runtime.getRuntime().exec(command);
             //read the stdout of the process, which should contain the desired information in a particular format
             InputStream is = cclibProc.getInputStream();
             InputStreamReader isr = new InputStreamReader(is);
