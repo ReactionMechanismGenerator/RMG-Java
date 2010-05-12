@@ -712,8 +712,6 @@ public class QMTP implements GeneralGAPP {
 		command=command.concat(directory+"/"+name+".gjf ");//specify the input file; space is important
 		command=command.concat(directory+"/"+name+".log");//specify the output file
 	    }
-	    System.out.println(command);
-	    System.out.println(runningdir);
             Process gaussianProc = Runtime.getRuntime().exec(command, null, runningdir);
             //check for errors and display the error if there is one
             InputStream is = gaussianProc.getErrorStream();
@@ -992,7 +990,6 @@ public class QMTP implements GeneralGAPP {
 	    command=command.concat(logfilepath);
 	    command=command.concat(" "+ System.getenv("RMG")+"/source");//this will pass $RMG/source to the script (in order to get the appropriate path for importing
 	}
-        System.out.println(command);
 	ThermoData result = getPM3ThermoDataUsingCCLib(name, directory, p_chemGraph, command);
         System.out.println("Thermo for " + name + ": "+ result.toString());//print result, at least for debugging purposes
         return result;
