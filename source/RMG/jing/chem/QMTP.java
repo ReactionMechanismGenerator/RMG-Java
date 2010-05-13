@@ -997,13 +997,15 @@ public class QMTP implements GeneralGAPP {
     
     //parse the results using cclib and return a ThermoData object; name and directory indicate the location of the MOPAC .out file
     public ThermoData parseMopacPM3(String name, String directory, ChemGraph p_chemGraph){
-        String command = "python "+System.getProperty("RMG.workingDirectory")+"/scripts/MopacPM3ParsingScript.py ";
+        String command=null;
         if (System.getProperty("os.name").toLowerCase().contains("windows")){//special windows case where paths can have spaces and are allowed to be surrounded by quotes
+	    command = "python \""+System.getProperty("RMG.workingDirectory")+"/scripts/MopacPM3ParsingScript.py\" ";
 	    String logfilepath="\""+directory+"/"+name+".out\"";
 	    command=command.concat(logfilepath);
 	    command=command.concat(" \""+ System.getenv("RMG")+"/source\"");//this will pass $RMG/source to the script (in order to get the appropriate path for importing
 	}
 	else{//non-Windows case
+	    command = "python "+System.getProperty("RMG.workingDirectory")+"/scripts/MopacPM3ParsingScript.py ";
 	    String logfilepath=directory+"/"+name+".out";
 	    command=command.concat(logfilepath);
 	    command=command.concat(" "+ System.getenv("RMG")+"/source");//this will pass $RMG/source to the script (in order to get the appropriate path for importing
