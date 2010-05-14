@@ -49,10 +49,10 @@ public class QMTP implements GeneralGAPP {
     final protected static double ENTHALPY_HYDROGEN = 52.1; //needed for HBI
     private static QMTP INSTANCE = new QMTP();		//## attribute INSTANCE
     protected static PrimaryThermoLibrary primaryLibrary;//Note: may be able to separate this out into GeneralGAPP, as this is common to both GATP and QMTP
-    public static String qmfolder= "QMFiles/";
+    public static String qmfolder= "QMfiles/";
     //   protected static HashMap library;		//as above, may be able to move this and associated functions to GeneralGAPP (and possibly change from "x implements y" to "x extends y"), as it is common to both GATP and QMTP
     protected ThermoGAGroupLibrary thermoLibrary; //needed for HBI
-    public static String qmprogram= "mopac";
+    public static String qmprogram= "both";//the qmprogram can be "mopac", "gaussian03", or "both"
     public static boolean usePolar = false; //use polar keyword in MOPAC
     // Constructors
 
@@ -273,7 +273,7 @@ public class QMTP implements GeneralGAPP {
                     //4. run Gaussian
                     successFlag = runGaussian(name, directory);
                 }
-                else if (qmProgram.equals("mopac")){
+                else if (qmProgram.equals("mopac") || qmProgram.equals("both")){
                     
                     maxAttemptNumber = createMopacPM3Input(name, directory, p_3dfile, attemptNumber, InChIaug, multiplicity);
                     successFlag = runMOPAC(name, directory);
@@ -288,7 +288,7 @@ public class QMTP implements GeneralGAPP {
                 }
                 else if(successFlag==0){
                     if(attemptNumber==maxAttemptNumber){//if this is the last possible attempt, and the calculation fails, exit with an error message
-                        if(qmProgram.equals("mopac")){ //if we are running with MOPAC and all keywords fail, try with Gaussian
+                        if(qmProgram.equals("both")){ //if we are running with "both" option and all keywords fail, try with Gaussian
                             qmProgram = "gaussian03";
                             System.out.println("*****Final MOPAC attempt (#" + maxAttemptNumber + ") on species " + name + " ("+InChIaug+") failed. Trying to use Gaussian.");
                             attemptNumber=0;//this needs to be 0 so that when we increment attemptNumber below, it becomes 1 when returning to the beginning of the for loop
@@ -312,7 +312,7 @@ public class QMTP implements GeneralGAPP {
         if (gaussianResultExists || (qmProgram.equals("gaussian03") && !mopacResultExists)){
             result = parseGaussianPM3(name, directory, p_chemGraph);
         }
-        else if (mopacResultExists || qmProgram.equals("mopac")){
+        else if (mopacResultExists || qmProgram.equals("mopac") || qmProgram.equals("both")){
             result = parseMopacPM3(name, directory, p_chemGraph);
         }
         else{
@@ -372,14 +372,24 @@ public class QMTP implements GeneralGAPP {
         String name = twoDmolFile.getName();
         try{   
             File runningdir=new File(directory);
-            //String command = "c:/Python25/python.exe c:/Python25/distGeomScriptMol.py ";//this should eventually be modified for added generality
-            String command = "c:/Python25/python.exe c:/Python25/distGeomScriptMolLowestEnergyConf.py ";
-            String twoDmolpath=twoDmolFile.getPath();
-            command=command.concat(twoDmolpath);
-            command=command.concat(" ");
-            command=command.concat(name+".mol");//this is the target file name; use the same name as the twoDmolFile (but it will be in he 3Dmolfiles folder
-            command=command.concat(" " + numConfAttempts);
-            Process pythonProc = Runtime.getRuntime().exec(command, null, runningdir);
+	    String command="";
+	    if (System.getProperty("os.name").toLowerCase().contains("windows")){//special windows case where paths can have spaces and are allowed to be surrounded by quotes
+		command = "python \""+System.getProperty("RMG.workingDirectory")+"/scripts/distGeomScriptMolLowestEnergyConf.py\" ";
+		String twoDmolpath=twoDmolFile.getPath();
+		command=command.concat("\""+twoDmolpath+"\" ");
+		command=command.concat("\""+name+".mol\" ");//this is the target file name; use the same name as the twoDmolFile (but it will be in he 3Dmolfiles folder
+		command=command.concat(numConfAttempts + " ");
+		command=command.concat("\"" + System.getenv("RDBASE")+"\"");//pass the $RDBASE environment variable to the script so it can use the approprate directory when importing rdkit
+	    }    
+	    else{//non-Windows case
+		command = "python "+System.getProperty("RMG.workingDirectory")+"/scripts/distGeomScriptMolLowestEnergyConf.py ";
+		String twoDmolpath=twoDmolFile.getPath();
+		command=command.concat(""+twoDmolpath+" ");
+		command=command.concat(name+".mol ");//this is the target file name; use the same name as the twoDmolFile (but it will be in he 3Dmolfiles folder
+		command=command.concat(numConfAttempts + " ");
+		command=command.concat(System.getenv("RDBASE"));//pass the $RDBASE environment variable to the script so it can use the approprate directory when importing rdkit
+	    }
+	    Process pythonProc = Runtime.getRuntime().exec(command, null, runningdir);
             String killmsg= "Python process for "+twoDmolFile.getName()+" did not complete within 120 seconds, and the process was killed. File was probably not written.";//message to print if the process times out
             Thread timeoutThread = new TimeoutKill(pythonProc, killmsg, 120000L); //create a timeout thread to handle cases where the UFF optimization get's locked up (cf. Ch. 16 of "Ivor Horton's Beginning Java 2: JDK 5 Edition"); once we use the updated version of RDKit, we should be able to get rid of this
             timeoutThread.start();//start the thread
@@ -482,7 +492,7 @@ public class QMTP implements GeneralGAPP {
         int maxAttemptNumber=18;//update this if additional keyword options are added or removed
         try{
             File inpKey=new File(directory+"/inputkeywords.txt");
-            String inpKeyStr="%chk="+directory+"\\RMGrunCHKfile.chk\n";
+            String inpKeyStr="%chk="+directory+"/RMGrunCHKfile.chk\n";
             inpKeyStr+="%mem=6MW\n";
             inpKeyStr+="%nproc=1\n";
             if(attemptNumber==-1) inpKeyStr+="# pm3 freq";//keywords for monoatomic case (still need to use freq keyword to get molecular mass)
@@ -523,15 +533,21 @@ public class QMTP implements GeneralGAPP {
         //call the OpenBabel process (note that this requires OpenBabel environment variable)
         try{ 
             File runningdir=new File(directory);
-            String command = "babel -imol "+ p_molfile.getPath()+ " -ogjf " + name+".gjf -xf inputKeywords.txt --title \""+InChIaug+"\"";
-            Process babelProc = Runtime.getRuntime().exec(command, null, runningdir);
+	    String command=null;
+	    if (System.getProperty("os.name").toLowerCase().contains("windows")){//special windows case
+		command = "babel -imol \""+ p_molfile.getPath()+ "\" -ogjf \"" + name+".gjf\" -xf inputkeywords.txt --title \""+InChIaug+"\"";
+	    }
+	    else{
+		command = "babel -imol "+ p_molfile.getPath()+ " -ogjf " + name+".gjf -xf inputkeywords.txt --title "+InChIaug;
+	    }
+	    Process babelProc = Runtime.getRuntime().exec(command, null, runningdir);
             //read in output
             InputStream is = babelProc.getInputStream();
             InputStreamReader isr = new InputStreamReader(is);
             BufferedReader br = new BufferedReader(isr);
             String line=null;
             while ( (line = br.readLine()) != null) {
-                //do nothing
+		//do nothing
             }
             int exitValue = babelProc.waitFor();
         }
@@ -686,13 +702,11 @@ public class QMTP implements GeneralGAPP {
         int flag = 0;
         int successFlag=0;
         try{ 
-            //File runningdir=new File(directory);
-            //String command = "c:/G03W/g03.exe ";//this should eventually be modified for added generality
-            File runningdir=new File("c:/G03W/");//tests suggest that we need to run from this directory or else l1.exe cannon be found
-            String command = "c:/G03W/g03.exe ";//this should eventually be modified for added generality
-            command=command.concat(directory+"/"+name+".gjf ");//specify the input file; space is important
-            command=command.concat(directory+"/"+name+".log");//specify the output file
-            Process gaussianProc = Runtime.getRuntime().exec(command, null, runningdir);
+            String command = "g03 ";
+            command=command.concat(qmfolder+"/"+name+".gjf ");//specify the input file; space is important
+	    command=command.concat(qmfolder+"/"+name+".log");//specify the output file
+	    Process gaussianProc = Runtime.getRuntime().exec(command);
+
             //check for errors and display the error if there is one
             InputStream is = gaussianProc.getErrorStream();
             InputStreamReader isr = new InputStreamReader(is);
@@ -758,11 +772,9 @@ public class QMTP implements GeneralGAPP {
         int flag = 0;
         int successFlag=0;
         try{ 
-            //File runningdir=new File("c:/G03W/");//tests suggest that we need to run from this directory or else l1.exe cannon be found
-            String command = "c:/Users/User1/Documents/MOPAC/MOPAC2009.exe ";//this should eventually be modified for added generality
+            String command = System.getenv("MOPAC_LICENSE")+"MOPAC2009.exe ";
             command=command.concat(directory+"/"+name+".mop ");//specify the input file; space is important
             command=command.concat(directory+"/"+name+".out");//specify the output file
-            //Process gaussianProc = Runtime.getRuntime().exec(command, null, runningdir);
             Process mopacProc = Runtime.getRuntime().exec(command);
             //check for errors and display the error if there is one
             InputStream is = mopacProc.getErrorStream();
@@ -959,19 +971,39 @@ public class QMTP implements GeneralGAPP {
 //        System.out.println("Thermo for " + name + ": "+ result.toString());//print result, at least for debugging purposes
 //        return result;
         
-        String command = "c:/Python25/python.exe c:/Python25/GaussianPM3ParsingScript.py ";//this should eventually be modified for added generality
-        String logfilepath=directory+"/"+name+".log";
-        command=command.concat(logfilepath);
-        ThermoData result = getPM3ThermoDataUsingCCLib(name, directory, p_chemGraph, command);
+        String command = null;
+        if (System.getProperty("os.name").toLowerCase().contains("windows")){//special windows case where paths can have spaces and are allowed to be surrounded by quotes
+	    command = "python \""+ System.getProperty("RMG.workingDirectory")+"/scripts/GaussianPM3ParsingScript.py\" ";
+	    String logfilepath="\""+directory+"/"+name+".log\"";
+	    command=command.concat(logfilepath);
+	    command=command.concat(" \""+ System.getenv("RMG")+"/source\"");//this will pass $RMG/source to the script (in order to get the appropriate path for importing
+	}
+	else{//non-Windows case
+	    command = "python "+ System.getProperty("RMG.workingDirectory")+"/scripts/GaussianPM3ParsingScript.py ";
+	    String logfilepath=directory+"/"+name+".log";
+	    command=command.concat(logfilepath);
+	    command=command.concat(" "+ System.getenv("RMG")+"/source");//this will pass $RMG/source to the script (in order to get the appropriate path for importing
+	}
+	ThermoData result = getPM3ThermoDataUsingCCLib(name, directory, p_chemGraph, command);
         System.out.println("Thermo for " + name + ": "+ result.toString());//print result, at least for debugging purposes
         return result;
     }
     
     //parse the results using cclib and return a ThermoData object; name and directory indicate the location of the MOPAC .out file
     public ThermoData parseMopacPM3(String name, String directory, ChemGraph p_chemGraph){
-        String command = "c:/Python25/python.exe c:/Python25/MopacPM3ParsingScript.py ";//this should eventually be modified for added generality
-        String logfilepath=directory+"/"+name+".out";
-        command=command.concat(logfilepath);
+        String command=null;
+        if (System.getProperty("os.name").toLowerCase().contains("windows")){//special windows case where paths can have spaces and are allowed to be surrounded by quotes
+	    command = "python \""+System.getProperty("RMG.workingDirectory")+"/scripts/MopacPM3ParsingScript.py\" ";
+	    String logfilepath="\""+directory+"/"+name+".out\"";
+	    command=command.concat(logfilepath);
+	    command=command.concat(" \""+ System.getenv("RMG")+"/source\"");//this will pass $RMG/source to the script (in order to get the appropriate path for importing
+	}
+	else{//non-Windows case
+	    command = "python "+System.getProperty("RMG.workingDirectory")+"/scripts/MopacPM3ParsingScript.py ";
+	    String logfilepath=directory+"/"+name+".out";
+	    command=command.concat(logfilepath);
+	    command=command.concat(" "+ System.getenv("RMG")+"/source");//this will pass $RMG/source to the script (in order to get the appropriate path for importing
+	}
         ThermoData result = getPM3ThermoDataUsingCCLib(name, directory, p_chemGraph, command);
         System.out.println("Thermo for " + name + ": "+ result.toString());//print result, at least for debugging purposes
         return result;
@@ -993,12 +1025,12 @@ public class QMTP implements GeneralGAPP {
         double rotCons_3 = 0; 
         int gdStateDegen = p_chemGraph.getRadicalNumber()+1;//calculate ground state degeneracy from the number of radicals; this should give the same result as spin multiplicity in Gaussian input file (and output file), but we do not explicitly check this (we could use "mult" which cclib reads in if we wanted to do so); also, note that this is not always correct, as there can apparently be additional spatial degeneracy for non-symmetric linear molecules like OH radical (cf. http://cccbdb.nist.gov/thermo.asp)
         try{   
-            File runningdir=new File(directory);
-            Process cclibProc = Runtime.getRuntime().exec(command, null, runningdir);
+            Process cclibProc = Runtime.getRuntime().exec(command);
             //read the stdout of the process, which should contain the desired information in a particular format
             InputStream is = cclibProc.getInputStream();
             InputStreamReader isr = new InputStreamReader(is);
             BufferedReader br = new BufferedReader(isr);
+
             String line=null;
             //example output:
 //            C:\Python25>python.exe GaussianPM3ParsingScript.py TEOS.out
@@ -1241,7 +1273,7 @@ public class QMTP implements GeneralGAPP {
         boolean pointGroupFound=false;
         //write the input file
         try {
-            File inputFile=new File("c:/Users/User1/Documents/SYMMETRY/symminput.txt");//SYMMETRY program directory
+            File inputFile=new File(qmfolder+"symminput.txt");//SYMMETRY program directory
             FileWriter fw = new FileWriter(inputFile);
             fw.write(geom);
             fw.close();
@@ -1258,15 +1290,22 @@ public class QMTP implements GeneralGAPP {
             result = "";
             String [] lineArray;
             try{ 
-               // File runningdir=new File("c:/Users/User1/Documents/SYMMETRY/");//SYMMETRY program directory
-               // String command = "c:/Users/User1/Documents/SYMMETRY/symmetry.exe -final " + finalTol+" c:/Users/User1/Documents/SYMMETRY/symminput.txt";//this seems to be causing an error; cf. , http://forums.sun.com/thread.jspa?forumID=32&threadID=728886 ; therefore, I have switched to use batch file with default tolerance of 0.01
-               // Process symmProc = Runtime.getRuntime().exec(command, null, runningdir);
-                if(attemptNumber==1) command = "c:/Users/User1/Documents/SYMMETRY/symmetryDefault2.bat";//12/1/09 gmagoon: switched to use slightly looser criteria of 0.02 rather than 0.01 to handle methylperoxyl radical result from MOPAC
-                else if (attemptNumber==2) command = "c:/Users/User1/Documents/SYMMETRY/symmetryLoose.bat";//looser criteria (0.1 instead of 0.01) to properly identify C2v group in VBURLMBUVWIEMQ-UHFFFAOYAVmult5 (InChI=1/C3H4O2/c1-3(2,4)5/h1-2H2/mult5) MOPAC result; C2 and sigma were identified with default, but it should be C2 and sigma*2
-                else{
-                    System.out.println("Invalid attemptNumber: "+ attemptNumber);
-                    System.exit(0);
+                if (System.getProperty("os.name").toLowerCase().contains("windows")){//the Windows case where the precompiled executable seems to need to be called from a batch script
+		    if(attemptNumber==1) command = "\""+System.getProperty("RMG.workingDirectory")+"/scripts/symmetryDefault2.bat\" "+qmfolder+ "symminput.txt";//12/1/09 gmagoon: switched to use slightly looser criteria of 0.02 rather than 0.01 to handle methylperoxyl radical result from MOPAC
+		    else if (attemptNumber==2) command = "\""+System.getProperty("RMG.workingDirectory")+"/scripts/symmetryLoose.bat\" " +qmfolder+ "symminput.txt";//looser criteria (0.1 instead of 0.01) to properly identify C2v group in VBURLMBUVWIEMQ-UHFFFAOYAVmult5 (InChI=1/C3H4O2/c1-3(2,4)5/h1-2H2/mult5) MOPAC result; C2 and sigma were identified with default, but it should be C2 and sigma*2
+		    else{
+			System.out.println("Invalid attemptNumber: "+ attemptNumber);
+			System.exit(0);
+		    }
                 }
+		else{//in other (non-Windows) cases, where it is compiled from scratch, we should be able to run this directly
+		    if(attemptNumber==1) command = System.getProperty("RMG.workingDirectory")+"/bin/SYMMETRY.EXE -final 0.02 " +qmfolder+ "symminput.txt";//12/1/09 gmagoon: switched to use slightly looser criteria of 0.02 rather than 0.01 to handle methylperoxyl radical result from MOPAC
+		    else if (attemptNumber==2) command = System.getProperty("RMG.workingDirectory")+"/bin/SYMMETRY.EXE -final 0.1 " +qmfolder+ "symminput.txt";//looser criteria (0.1 instead of 0.01) to properly identify C2v group in VBURLMBUVWIEMQ-UHFFFAOYAVmult5 (InChI=1/C3H4O2/c1-3(2,4)5/h1-2H2/mult5) MOPAC result; C2 and sigma were identified with default, but it should be C2 and sigma*2
+		    else{
+			System.out.println("Invalid attemptNumber: "+ attemptNumber);
+			System.exit(0);
+		    }
+		}
                 Process symmProc = Runtime.getRuntime().exec(command);
                 //check for errors and display the error if there is one
                 InputStream is = symmProc.getInputStream();
