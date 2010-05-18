@@ -101,7 +101,7 @@ public class ArrheniusKinetics implements Kinetics {
         int size = p_kSet.size();
         if (size == 0) return null;
                 
-        String type = "ArrehiusKinetics";
+        String type = "ArrheniusKinetics";
         double sum_logA=0;
         double sum_n=0;
         double sum_alpha=0;
