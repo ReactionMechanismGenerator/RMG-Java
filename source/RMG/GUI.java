@@ -1033,6 +1033,17 @@ public class GUI extends JPanel implements ActionListener {
     	pdkmCombo.setEnabled(false);
     	pdkmCombo.setActionCommand("pdkm");
     	
+    	//	Create the "decrease grain size" subpanel
+    	JPanel GrainSize = new JPanel();
+    	GrainSize.setBorder(BorderFactory.createEmptyBorder(5,5,5,5));
+    	JLabel grainsizeLabel = new JLabel("Decrease Grain Size");
+    	GrainSize.add(grainsizeLabel);
+    	GrainSize.add(grainsizeCombo = new JComboBox(yesnoOptions));
+    	grainsizeCombo.setEnabled(false);
+    	grainsizeLabel.setToolTipText("If the pressure-dependent rate > 2*(High-P-Limit rate):" +
+    			" Increase the number of energy steps used in solving the Master Equation" +
+    			" and re-run the fame.exe calculation.");
+    	
     	JPanel Cheby = new JPanel();
     	Cheby.setBorder(BorderFactory.createEmptyBorder(5,5,5,5));
     	
@@ -1134,11 +1145,12 @@ public class GUI extends JPanel implements ActionListener {
     	pDepBox.add(Pdep);
     	pDepBox.add(SDE);
     	pDepBox.add(PDKM);
+    	pDepBox.add(GrainSize);
     	pDepBox.add(Cheby);
     	totalPDep.add(pDepBox);
     	
         JComboBox[] allTab = {pdepCombo, sdeCombo, pdkmCombo, chebyTUnits, chebyPUnits,
-        		chebyTCombo, chebyPCombo};
+        		chebyTCombo, chebyPCombo, grainsizeCombo};
         initializeJCB(allTab);
         
 		JComponent[] pdkmComps = {chebyTMin, chebyTMax, chebyTUnits, chebyTGen, chebyTRep,
@@ -1717,7 +1729,7 @@ public class GUI extends JPanel implements ActionListener {
         String rmgEnvVar = System.getProperty("RMG.workingDirectory");
         String ptlReferenceDirectory_linux = rmgEnvVar + "/databases/" + stringMainDatabase + "/thermo_libraries/";
         String ptlReferenceDirectory_windows = rmgEnvVar + "\\databases\\" + stringMainDatabase + "\\thermo_libraries\\";
-    	conditionFile += "\rPrimaryThermoLibrary:\r";
+    	conditionFile += "\r\rPrimaryThermoLibrary:\r";
 
 		if (tablePTL.getRowCount()==0) {
         	System.out.println("Warning: Writing condition.txt file: Could not read Primary Thermo Library (Thermochemical Libraries tab)");
@@ -1770,7 +1782,7 @@ public class GUI extends JPanel implements ActionListener {
 	        for (int i=0; i<tableFS.getRowCount(); i++) {
 	        	conditionFile += 
 	        		tableFS.getValueAt(i,0) + "\r" +
-	        		tableFS.getValueAt(i,1) + "\r\r";
+	        		tableFS.getValueAt(i,1) + "\r";
 	        }
 	        conditionFile += "END\r\r";
         }
@@ -1854,7 +1866,7 @@ public class GUI extends JPanel implements ActionListener {
 	        		tableInput.getValueAt(i,0) + " " +
 	    			tableInput.getValueAt(i,1) + " (" +
 	    			tableInput.getValueAt(i,2) + ")\r" +
-	    			tableInput.getValueAt(i,4) + "\r\r";
+	    			tableInput.getValueAt(i,4) + "\r";
 	        	} else if (tableInput.getValueAt(i,3).equals("Reactive-User")) {
 	        		unreactiveStatus = true;
 	        		++nonInertCount;
@@ -1862,7 +1874,7 @@ public class GUI extends JPanel implements ActionListener {
 	        		tableInput.getValueAt(i,0) + " " +
 	    			tableInput.getValueAt(i,1) + " (" +
 	    			tableInput.getValueAt(i,2) + ") unreactive\r" +
-	    			tableInput.getValueAt(i,4) + "\r\r";
+	    			tableInput.getValueAt(i,4) + "\r";
 	        	}
 	        }
 	        //	Add the non-inert gas species
@@ -1957,6 +1969,11 @@ public class GUI extends JPanel implements ActionListener {
     	else
     		System.out.println("Pressure information for PDepKineticsModel not supplied:  Using default values.");
     	conditionFile += "\r";
+    	
+    	// Add the "DecreaseGrainSize" field
+    	if (grainsizeCombo.getSelectedItem().equals("Yes")) {
+    		conditionFile += "DecreaseGrainSize: yes\r";
+    	}
     	
     	conditionFile += "\r";
         //	Add the path of the IncludeSpecies.txt file (if present)
@@ -2563,6 +2580,19 @@ public class GUI extends JPanel implements ActionListener {
 	        	chebyPCombo.setSelectedItem("List");
 	        }
 	        
+	        else if (line.toLowerCase().startsWith("decreasegrainsize")) {
+	        	st = new StringTokenizer(line);
+	        	tempString = st.nextToken();	// Skip over "DecreaseGrainSize:"
+	        	String yesno = st.nextToken();
+	        	if (yesno.toLowerCase().equals("yes")) {
+		        	grainsizeCombo.setSelectedItem("Yes");
+		        } else if (yesno.toLowerCase().equals("no")) {
+		        	grainsizeCombo.setSelectedItem("No");
+		        } else {
+		        	System.out.println("ERROR: Reading in condition.txt file - Invalid argument for DecreaseGrainSize.  RMG recognizes an argument of 'Yes' or 'No', but not " + yesno + ".  GUI does not contain all information present in condition.txt file.");
+		        }
+	        }
+	        
 	        else if (line.startsWith("IncludeSpecies")) {
 		        //	IncludeSpecies.txt file (if present)
 	        	st = new StringTokenizer(line);
@@ -3122,7 +3152,7 @@ public class GUI extends JPanel implements ActionListener {
     			
     	}
     	else if ("pDep".equals(event.getActionCommand())) {
-    		JComponent[] pDepComps = {sdeCombo, pdkmCombo};
+    		JComponent[] pDepComps = {sdeCombo, pdkmCombo, grainsizeCombo};
     		JComponent[] pdkmComps = {chebyTMin, chebyTMax, chebyTUnits, chebyTGen, chebyTRep,
     				chebyPMin, chebyPMax, chebyPUnits, chebyPGen, chebyPRep,
     				chebyPCombo, chebyTCombo, chebyP, chebyT};
@@ -3270,7 +3300,7 @@ public class GUI extends JPanel implements ActionListener {
     //	Tab3: Error Analysis
     SpeciesSensName, eBarsCombo, sensCoeffCombo,
     //	Tab4: Dynamic Simulator
-    pdepCombo, sdeCombo, pdkmCombo, chebyTCombo, chebyPCombo,
+    pdepCombo, sdeCombo, pdkmCombo, chebyTCombo, chebyPCombo, grainsizeCombo,
     //	Tab : Additional Options
     eosCombo, inchiCombo, chemkinAUnits, chemkinEaUnits, chemkinVerbosity,
     	readRestartOnOff, writeRestartOnOff, chemkinSMILES,
