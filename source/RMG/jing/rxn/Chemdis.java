@@ -276,7 +276,9 @@ public class Chemdis implements PDepKineticsEstimator {
         str = str.substring(0, str.length()-3) + '\n'; 
         
         Kinetics[] k_array = rxn.getKinetics();
-        Kinetics k = FastMasterEqn.computeKUsingLeastSquares(k_array);
+	Temperature stdtemp = new Temperature(298,"K");
+	double Hrxn = rxn.calculateHrxn(stdtemp);
+        Kinetics k = FastMasterEqn.computeKUsingLeastSquares(k_array, Hrxn);
         if (k_array == null) 
 			throw new NullPointerException();
         
@@ -396,8 +398,11 @@ public class Chemdis implements PDepKineticsEstimator {
         	}
         	if (k_array== null) 
 				throw new NullPointerException();
+
+		Temperature stdtemp = new Temperature(298,"K");
+		double Hrxn = entryReaction.calculateHrxn(stdtemp);
         
-        	k = FastMasterEqn.computeKUsingLeastSquares(k_array);
+        	k = FastMasterEqn.computeKUsingLeastSquares(k_array, Hrxn);//***forward vs. reverse handled correctly?
         	
         	// Write kinetics of entry reaction
 			str += Double.toString(k.getAValue()) + '\t';

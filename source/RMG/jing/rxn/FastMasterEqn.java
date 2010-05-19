@@ -617,33 +617,23 @@ public class FastMasterEqn implements PDepKineticsEstimator {
 				
 				double A = 0.0, Ea = 0.0, n = 0.0;
 				if (rxn.isForward()) {
+					Temperature stdtemp = new Temperature(298,"K");
+					double Hrxn = rxn.calculateHrxn(stdtemp);
 					Kinetics[] k_array = rxn.getKinetics();
-					Kinetics kin = computeKUsingLeastSquares(k_array);
+					Kinetics kin = computeKUsingLeastSquares(k_array, Hrxn);
 					A = kin.getAValue();
 					n = kin.getNValue();
-					if(kin instanceof ArrheniusEPKinetics){
-					    Temperature stdtemp = new Temperature(298,"K");
-					    double Hrxn = rxn.calculateHrxn(stdtemp);
-					    Ea = ((ArrheniusEPKinetics)kin).getEaValue(Hrxn);
-					}
-					else{
-					    Ea = kin.getEValue();
-					}
+					Ea = kin.getEValue();
 				}
 				else {
+					Temperature stdtemp = new Temperature(298,"K");
+					double Hrxn = rxn.calculateHrxn(stdtemp);
 					((Reaction) rxn).generateReverseReaction();
 					Kinetics[] k_array = ((Reaction)rxn).getFittedReverseKinetics();
-					Kinetics kin = computeKUsingLeastSquares(k_array);
+					Kinetics kin = computeKUsingLeastSquares(k_array, Hrxn);//correct to use Hrxn vs. -Hrxn
 //					Kinetics kin = ((Reaction) rxn).getFittedReverseKinetics();
 					A = kin.getAValue();
-					if(kin instanceof ArrheniusEPKinetics){
-					    Temperature stdtemp = new Temperature(298,"K");
-					    double Hrxn = rxn.calculateHrxn(stdtemp);
-					    Ea = ((ArrheniusEPKinetics)kin).getEaValue(Hrxn);//***is this correct, or should I be using -Hrxn (reverse)
-					}
-					else{
-					    Ea = kin.getEValue();
-					}
+					Ea = kin.getEValue();
 					n = kin.getNValue();
 				}
 
@@ -900,11 +890,13 @@ public class FastMasterEqn implements PDepKineticsEstimator {
 				LinkedList pathReactionList = pdn.getPathReactions();
 				for (int HighPRxNum = 0; HighPRxNum < pathReactionList.size(); HighPRxNum++) {
 					PDepReaction rxnWHighPLimit = (PDepReaction)pathReactionList.get(HighPRxNum);
+					Temperature stdtemp = new Temperature(298,"K");
+					double Hrxn = rxnWHighPLimit.calculateHrxn(stdtemp);
 					if (rxn.getStructure().equals(rxnWHighPLimit.getStructure())) {
 						double A = 0.0, Ea = 0.0, n = 0.0;
 						if (rxnWHighPLimit.isForward()) {
 							Kinetics[] k_array = rxnWHighPLimit.getKinetics();
-							Kinetics kin = computeKUsingLeastSquares(k_array);
+							Kinetics kin = computeKUsingLeastSquares(k_array, Hrxn);
 							A = kin.getAValue();
 							Ea = kin.getEValue();
 							n = kin.getNValue();
@@ -913,7 +905,7 @@ public class FastMasterEqn implements PDepKineticsEstimator {
 						}
 						else {
 							Kinetics[] k_array = rxnWHighPLimit.getFittedReverseKinetics();
-							Kinetics kin = computeKUsingLeastSquares(k_array);
+							Kinetics kin = computeKUsingLeastSquares(k_array, Hrxn);
 							A = kin.getAValue();
 							Ea = kin.getEValue();
 							n = kin.getNValue();
@@ -1147,7 +1139,7 @@ public class FastMasterEqn implements PDepKineticsEstimator {
 		numPBasisFuncs = m;
 	}
 	
-	public static Kinetics computeKUsingLeastSquares(Kinetics[] k_array) {
+	public static Kinetics computeKUsingLeastSquares(Kinetics[] k_array, double Hrxn) {
         /*
          * MRH 24MAR2010:
          * 	If the reaction has more than one set of Arrhenius kinetics,
@@ -1160,9 +1152,16 @@ public class FastMasterEqn implements PDepKineticsEstimator {
         	double[] k_total = new double[5];
         	for (int numKinetics=0; numKinetics<k_array.length; ++numKinetics) {
         		for (int numTemperatures=0; numTemperatures<T.length; ++numTemperatures) {
+				double Ea = 0.0;
+				if (k_array[numKinetics] instanceof ArrheniusEPKinetics){
+				    Ea = ((ArrheniusEPKinetics)k_array[numKinetics]).getEaValue(Hrxn);
+				}
+				else{
+				    Ea = k_array[numKinetics].getEValue();
+				}
         			k_total[numTemperatures] += k_array[numKinetics].getAValue() * 
         			Math.pow(T[numTemperatures], k_array[numKinetics].getNValue()) * 
-        			Math.exp(-k_array[numKinetics].getEValue()/GasConstant.getKcalMolK()/T[numTemperatures]);
+        			Math.exp(-Ea/GasConstant.getKcalMolK()/T[numTemperatures]);
         		}
         	}
         	// Construct matrix X and vector y

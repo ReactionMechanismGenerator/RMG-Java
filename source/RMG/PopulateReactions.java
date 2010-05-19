@@ -545,14 +545,14 @@ public class PopulateReactions {
 	public static String updateListOfReactions(Kinetics rxn_k) {
 		String output = rxn_k.getAValue() + "\t" + rxn_k.getNValue()
 			   + "\t" + rxn_k.getEValue() + "\t" + rxn_k.getSource() 
-			   + "\t" + rxn_k.getComment() + "\n";
+			   + "\t" + rxn_k.getComment() + "\n";//****?
 		return output;
 	}
 	
 	public static String updateListOfReactions(Kinetics rxn_k, String reverseRxnName) {
 		String output = rxn_k.getAValue() + "\t" + rxn_k.getNValue()
 			   + "\t" + rxn_k.getEValue() + "\t" + reverseRxnName + ": "
-			   + rxn_k.getSource() + "\t" + rxn_k.getComment() + "\n";
+			   + rxn_k.getSource() + "\t" + rxn_k.getComment() + "\n";//****?
 		return output;
 	}
 	
