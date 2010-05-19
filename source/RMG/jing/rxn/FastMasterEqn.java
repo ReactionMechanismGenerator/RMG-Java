@@ -621,10 +621,14 @@ public class FastMasterEqn implements PDepKineticsEstimator {
 					Kinetics kin = computeKUsingLeastSquares(k_array);
 					A = kin.getAValue();
 					n = kin.getNValue();
-					Ea = kin.getEValue();
-//					A = rxn.getKinetics().getAValue();
-//					Ea = rxn.getKinetics().getEValue();
-//					n = rxn.getKinetics().getNValue();
+					if(kin instanceof ArrheniusEPKinetics){
+					    Temperature stdtemp = new Temperature(298,"K");
+					    double Hrxn = rxn.calculateHrxn(stdtemp);
+					    Ea = ((ArrheniusEPKinetics)kin).getEaValue(Hrxn);
+					}
+					else{
+					    Ea = kin.getEValue();
+					}
 				}
 				else {
 					((Reaction) rxn).generateReverseReaction();
@@ -632,7 +636,14 @@ public class FastMasterEqn implements PDepKineticsEstimator {
 					Kinetics kin = computeKUsingLeastSquares(k_array);
 //					Kinetics kin = ((Reaction) rxn).getFittedReverseKinetics();
 					A = kin.getAValue();
-					Ea = kin.getEValue();
+					if(kin instanceof ArrheniusEPKinetics){
+					    Temperature stdtemp = new Temperature(298,"K");
+					    double Hrxn = rxn.calculateHrxn(stdtemp);
+					    Ea = ((ArrheniusEPKinetics)kin).getEaValue(Hrxn);//***is this correct, or should I be using -Hrxn (reverse)
+					}
+					else{
+					    Ea = kin.getEValue();
+					}
 					n = kin.getNValue();
 				}
 
