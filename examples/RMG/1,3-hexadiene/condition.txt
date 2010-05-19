@@ -19,6 +19,11 @@ Name: RMG-old
 Location: primaryThermoLibrary
 END
 
+PrimaryTransportLibrary:
+Name: GRIMech3.0
+Location: GRI-Mech3.0
+END
+
 ReadRestart: no
 WriteRestart: yes
 

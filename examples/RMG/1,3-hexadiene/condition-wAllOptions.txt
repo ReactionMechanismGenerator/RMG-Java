@@ -24,6 +24,11 @@ Name:  RMG old
 Location: primaryThermoLibrary
 END
 
+PrimaryTransportLibrary:
+Name: GRIMech3.0
+Location: GRI-Mech3.0
+END
+
 // Forbidden structures are read in from the database.
 // Additional forbidden structures can be specified here like this:
 //ForbiddenStructures:
