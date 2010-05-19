@@ -163,7 +163,17 @@ public class PopulateReactions {
             	rmg.readAndMakePTL(br_input);
             }
             else {
-            	System.err.println("PopulateReactions: Could not locate the PrimaryThermoLibrary field." +
+            	System.err.println("PopulateReactions: Could not locate the PrimaryThermoLibrary field.\n" +
+            			"Line read was: " + line);
+            	System.exit(0);
+            }
+            line = ChemParser.readMeaningfulLine(br_input);
+            
+            // Read primary transport library
+            if (line.toLowerCase().startsWith("primarytransportlibrary"))
+            	rmg.readAndMakePTransL(br_input);
+            else {
+            	System.err.println("PopulateReactions: Could not locate the PrimaryTransportLibrary field.\n" +
             			"Line read was: " + line);
             	System.exit(0);
             }

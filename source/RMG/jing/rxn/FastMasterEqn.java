@@ -535,7 +535,7 @@ public class FastMasterEqn implements PDepKineticsEstimator {
 			for (int i = 0; i < speciesList.size(); i++) {
 
 				Species spec = speciesList.get(i);
-				spec.calculateLJParameters();
+				spec.calculateTransportParameters();
 
 				input += "# Species identifier (128 characters or less, no spaces)\n";
 				input += spec.getName() + "(" + Integer.toString(spec.getID()) + ")\n";
@@ -563,8 +563,8 @@ public class FastMasterEqn implements PDepKineticsEstimator {
 				input += "# 	Lennard-Jones sigma parameter; allowed units are m or A\n";
 				input += "# 	Lennard-Jones epsilon parameter; allowed units are J or K\n";
 				input += "u " + Double.toString(spec.getMolecularWeight()) + "\n";
-				input += "m " + Double.toString(spec.getLJ().getSigma() * 1e-10) + "\n";
-				input += "J " + Double.toString(spec.getLJ().getEpsilon() * 1.380665e-23) + "\n";
+				input += "m " + Double.toString(spec.getChemkinTransportData().getSigma() * 1e-10) + "\n";
+				input += "J " + Double.toString(spec.getChemkinTransportData().getEpsilon() * 1.380665e-23) + "\n";
 
 				input += "# Harmonic oscillators; allowed units are Hz and cm^-1\n";
 				SpectroscopicData data = spec.getSpectroscopicData();

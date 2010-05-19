@@ -34,6 +34,7 @@ import java.io.*;
 
 import jing.rxn.*;
 import jing.chem.*;
+
 import java.util.*;
 
 import jing.param.*;
@@ -509,6 +510,8 @@ public  Chemkin() {
 	      }
       }
       
+      writeTransportFile((CoreEdgeReactionModel)p_reactionModel);
+      
       //#]
   }
   
@@ -542,6 +545,8 @@ public  Chemkin() {
       	System.exit(0);
       }
       
+      writeTransportFile((CoreEdgeReactionModel)rs.reactionModel);
+       
       //#]
   }
   
@@ -1035,6 +1040,34 @@ public SystemSnapshot solve(boolean p_initialization, ReactionModel p_reactionMo
 public static void setSMILES(boolean yesno) {
 	SMILESutility = yesno;
 }
+
+	public static void writeTransportFile(CoreEdgeReactionModel cerm) {
+		//Write core species to tran.dat
+		String coreSpecies ="";
+		Iterator iter = cerm.getSpecies();
+		
+		while (iter.hasNext()){
+			Species spe = (Species)iter.next();
+			TransportData lj4species = spe.getChemkinTransportData();
+			String whitespace = "                ";
+			
+			// Write the 6 transport properties
+			coreSpecies += spe.getChemkinName() + whitespace.substring(spe.getChemkinName().length()) +
+				"   " + lj4species.toString() + " ! " + lj4species.getSource() + "\t" + 
+				lj4species.getComment() + "\n";
+		}
+		
+		try {
+			File trandat = new File("chemkin/tran.dat");
+			FileWriter fw = new FileWriter(trandat);
+			fw.write(coreSpecies);
+			fw.close();
+		}
+		catch (IOException e) {
+			System.out.println("Could not write tran.dat");
+			System.exit(0);
+		}
+	}
 
 }
 /*********************************************************************

@@ -71,7 +71,7 @@ public class Species {
     
     protected String InChI = null;	//## attribute InChI
 
-    protected LennardJones LJ;
+    protected TransportData chemkinTransData;
 	protected NASAThermoData nasaThermoData;
 	protected String nasaThermoSource;
     protected ThreeFrequencyModel threeFrequencyModel;
@@ -119,7 +119,7 @@ public class Species {
         } else {
             //findSolvationData();
         }
-        calculateLJParameters();
+        calculateTransportParameters();
         selectDeltaEDown();
 		generateNASAThermoData();
        // generateSpectroscopicData(); // only get it if you need it!!!
@@ -192,23 +192,21 @@ public class Species {
     }
 
     //## operation calculateLJParameters()
-    public void calculateLJParameters() {
-        //#[ operation calculateLJParameters()
+    public void calculateTransportParameters() {
+    	chemkinTransData = getChemGraph().getTransportData();
+    	
         //int cNum = getChemGraph().getCarbonNumber();
-		int cNum = getChemGraph().getHeavyAtomNumber();
-
-        selectLJParametersForSpecialMolecule();
-        if (cNum == 1) LJ = new LennardJones(3.758, 148.6);
-        else if (cNum == 2) LJ = new LennardJones(4.443, 110.7);
-        else if (cNum == 3) LJ = new LennardJones(5.118, 237.1);
-        else if (cNum == 4) LJ = new LennardJones(4.687, 531.4);
-        else if (cNum == 5) LJ = new LennardJones(5.784, 341.1);
-        else LJ = new LennardJones(5.949, 399.3);
+//		int cNum = getChemGraph().getHeavyAtomNumber();
+//
+//        selectLJParametersForSpecialMolecule();
+//        if (cNum == 1) chemkinTransData = new TransportData(3.758, 148.6);
+//        else if (cNum == 2) chemkinTransData = new TransportData(4.443, 110.7);
+//        else if (cNum == 3) chemkinTransData = new TransportData(5.118, 237.1);
+//        else if (cNum == 4) chemkinTransData = new TransportData(4.687, 531.4);
+//        else if (cNum == 5) chemkinTransData = new TransportData(5.784, 341.1);
+//        else chemkinTransData = new TransportData(5.949, 399.3);
 
         return;
-
-
-        //#]
     }
 
     //## operation calculateS(Temperature)
@@ -1019,12 +1017,12 @@ public class Species {
     public void selectLJParametersForSpecialMolecule() {
         //#[ operation selectLJParametersForSpecialMolecule()
         String name = getName();
-        if (name.equals("H2")) LJ = new LennardJones(2.8327, 59.7);
-        else if (name.equals("O2")) LJ = new LennardJones(3.467, 106.7);
-        else if (name.equals("H2O")) LJ = new LennardJones(2.641,809.1);
-        else if (name.equals("H2O2")) LJ = new LennardJones(4.196,289.3);
-        else if (name.equals("CO2")) LJ = new LennardJones(3.941,195.2);
-        else if (name.equals("CO")) LJ = new LennardJones(3.690,91.7);
+        if (name.equals("H2")) chemkinTransData = new TransportData(2.8327, 59.7);
+        else if (name.equals("O2")) chemkinTransData = new TransportData(3.467, 106.7);
+        else if (name.equals("H2O")) chemkinTransData = new TransportData(2.641,809.1);
+        else if (name.equals("H2O2")) chemkinTransData = new TransportData(4.196,289.3);
+        else if (name.equals("CO2")) chemkinTransData = new TransportData(3.941,195.2);
+        else if (name.equals("CO")) chemkinTransData = new TransportData(3.690,91.7);
         return;
         //#]
     }
@@ -1854,19 +1852,15 @@ public class Species {
         return therfitExecuted;
     }
 
-    public LennardJones getLJ() {
-        return LJ;
+    public TransportData getChemkinTransportData() {
+        return chemkinTransData;
     }
 
-    public LennardJones newLJ() {
-        LJ = new LennardJones();
-        return LJ;
+    public TransportData newChemkinTransportData() {
+        chemkinTransData = new TransportData();
+        return chemkinTransData;
     }
-
-    public void deleteLJ() {
-        LJ=null;
-    }
-
+    
     public ThreeFrequencyModel getThreeFrequencyModel() {
         return threeFrequencyModel;
     }
@@ -1886,7 +1880,7 @@ public class Species {
     }
 
 	protected void initRelations() {
-        LJ = newLJ();
+        chemkinTransData = newChemkinTransportData();
     }
 
     public boolean isReactive() {

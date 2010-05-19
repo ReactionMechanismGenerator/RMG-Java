@@ -94,6 +94,7 @@ public class ReactionModelGenerator {
     // This is the new "PrimaryReactionLibrary"
     protected SeedMechanism seedMechanism;
     protected PrimaryThermoLibrary primaryThermoLibrary;
+    protected PrimaryTransportLibrary primaryTransportLibrary;
 	
 	protected boolean restart = false;
 	protected boolean readrestart = false;
@@ -263,6 +264,16 @@ public class ReactionModelGenerator {
 				readAndMakePTL(reader);
 			} else throw new InvalidSymbolException("Error reading condition.txt file: "
 													+ "Could not locate PrimaryThermoLibrary field");
+			line = ChemParser.readMeaningfulLine(reader);
+			
+			/*
+			 * MRH 17-May-2010:
+			 * 	Added primary transport library field
+			 */
+			if (line.toLowerCase().startsWith("primarytransportlibrary")) {
+				readAndMakePTransL(reader);
+			} else throw new InvalidSymbolException("Error reading condition.txt file: "
+					+ "Could not locate PrimaryTransportLibrary field.");
 			line = ChemParser.readMeaningfulLine(reader);
 			
 			// Extra forbidden structures may be specified after the Primary Thermo Library
@@ -1863,6 +1874,7 @@ public class ReactionModelGenerator {
         }
 		
     }
+    
 
     /*
      * MRH 23MAR2010:
@@ -4862,6 +4874,36 @@ public class ReactionModelGenerator {
     
     public int getLimitingReactantID() {
     	return limitingReactantID;
+    }
+    
+    public void readAndMakePTransL(BufferedReader reader) {
+     	int numPTLs = 0;
+     	String line = ChemParser.readMeaningfulLine(reader);
+     	while (!line.equals("END")) {
+     		String[] tempString = line.split("Name: ");
+     		String name = tempString[tempString.length-1].trim();
+			line = ChemParser.readMeaningfulLine(reader);
+			tempString = line.split("Location: ");
+			String path = tempString[tempString.length-1].trim();
+			if (numPTLs==0) {
+             	setPrimaryTransportLibrary(new PrimaryTransportLibrary(name,path));
+             	++numPTLs; 	
+			}
+			else {
+             	getPrimaryTransportLibrary().appendPrimaryTransportLibrary(name,path);
+             	++numPTLs;
+			}
+			line = ChemParser.readMeaningfulLine(reader);
+     	}
+     	if (numPTLs == 0) setPrimaryTransportLibrary(null);
+    }
+    
+    public PrimaryTransportLibrary getPrimaryTransportLibrary() {
+    	return primaryTransportLibrary;
+    }
+    
+    public void setPrimaryTransportLibrary(PrimaryTransportLibrary p_primaryTransportLibrary) {
+    	primaryTransportLibrary = p_primaryTransportLibrary;
     }
     
 }

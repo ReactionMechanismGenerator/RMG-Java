@@ -25,152 +25,42 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 
-
-
 package jing.chem;
-
 
 import java.util.*;
 import jing.param.*;
 import jing.param.Temperature;
 
-//## package jing::chem
-
-//----------------------------------------------------------------------------
-// jing\chem\LJData.java
-//----------------------------------------------------------------------------
-
-/**
-Mutable objects.  Becareful when use this.plus() or this.minus(), this.sum(), since this will be changed after such operations.
-*/
-//## class LJData
 public class LJData extends LJGroupData {
     protected int na;
-//this class is analogous to ThermoData, and was based off of it
-    
+
     // Constructors
-
-    //## operation LJData()
-    public  LJData() {
-        //#[ operation LJData()
+    public LJData() {
         super();
-        //#]
-    }
-    //## operation LJData(double,double,double,double,double,double,double,double,double,String)
-    public  LJData(double dTc, double dPc, double dVc, double dTb,String p_comments,int p_na) {
-        //#[ operation LJData(double,double,double,double,double,double,double,double,double,String)
-        super(dTc, dPc, dVc, dTb, p_comments);
-        na = p_na;
-
-
-
-        //#]
-    }
-    //## operation LJData(ThermoGAValue)
-    public  LJData(LJGroupData p_ga, int p_na) {
-        //#[ operation LJData(ThermoGAValue)
-        super(p_ga);
-        na = p_na;
-        //#]
     }
 
-    //## operation LJData(String, LJData, String)
-    //svp
-    public LJData(String p_name, LJData p_td, String p_comments){
-      //#[ operation LJData(String, LJData, String)
-      super(p_name, p_td, p_comments);
-      //#]
-    }
-    
-    public LJData(String p_name, LJData p_td, String p_comments, String p_source, int p_na) {
-    	super(p_name, p_td, p_comments, p_source);
-        na = p_na;
-    }
-
-
-
-    //## operation copy()
-    public LJData copy() {
-        //#[ operation copy()
-        if (this == null) return null;
-
-        return new LJData(dTc,dPc,dVc,dTb,comments,na);
-
-        //#]
-    }
-
-
-//    //## operation minus(ThermoGAValue)
-//    public void minus(ThermoGAValue p_thermoData) {
-//        //#[ operation minus(ThermoGAValue)
-//        H298 -= p_thermoData.H298;
-//        S298 -= p_thermoData.S298;
-//        Cp300 -= p_thermoData.Cp300;
-//        Cp400 -= p_thermoData.Cp400;
-//        Cp500 -= p_thermoData.Cp500;
-//        Cp600 -= p_thermoData.Cp600;
-//        Cp800 -= p_thermoData.Cp800;
-//        Cp1000 -= p_thermoData.Cp1000;
-//        Cp1500 -= p_thermoData.Cp1500;
-//        dH -= Math.pow(p_thermoData.dH,2);//svp
-//        dS -= Math.pow(p_thermoData.dS,2);//svp
-//        dCp -= Math.pow(p_thermoData.dCp,2);//svp
-//
-//
-//
-//
-//        //#]
-//    }
-//
-//    //## operation multiply(int)
-//    public void multiply(int p_multiplier) {
-//        //#[ operation multiply(int)
-//        if (p_multiplier == 1) return;
-//
-//        H298 *= p_multiplier;
-//        S298 *= p_multiplier;
-//        Cp300 *= p_multiplier;
-//        Cp400 *= p_multiplier;
-//        Cp500 *= p_multiplier;
-//        Cp600 *= p_multiplier;
-//        Cp800 *= p_multiplier;
-//        Cp1000 *= p_multiplier;
-//        Cp1500 *= p_multiplier;
-//        dH *= p_multiplier;//svp
-//        dS *= p_multiplier;//svp
-//        dCp *= p_multiplier;//svp
-//
-//
-//        name = name + "redundancy = " + p_multiplier + '\n';
-//        //#]
-//    }
-
-    //## operation plus(ThermoGAValue)
     public void plus(LJGroupData p_LJData) {
-        //#[ operation plus(ThermoGAValue)
         if (p_LJData == null) return;
 
         dTc += p_LJData.dTc;
         dPc += p_LJData.dPc;
         dVc += p_LJData.dVc;
         dTb += p_LJData.dTb;
+        shapeIndex += p_LJData.shapeIndex;
 
         if (p_LJData.getName() != null) {
-                if (name == null) name = p_LJData.getName() + '\n';
-                else name = name + p_LJData.getName() + '\n';
+        	if (name == null) name = "(" + p_LJData.getName();
+        	else name = name + ", " + p_LJData.getName();
         }
-
-
-
-
-        //#]
     }
 
-    //## operation toString()
     public String toString() {
-        //#[ operation toString()
-        return super.toString();
-        //#]
+        //return super.toString();
+    	return "LJ parameters estimated by RMG:" + 
+    		" Tc=" + String.format("%8.3f", calculateTc()) + "K" +
+    		" Pc=" + String.format("%8.3f", calculatePc()) + "bar" +
+    		" Vc=" + String.format("%8.3f", calculateVc()) + "cm3/mol" +
+    		" Tb=" + String.format("%8.3f", calculateTb()) + "K";
     }
     
     //calculates Tc in K
@@ -193,18 +83,40 @@ public class LJData extends LJGroupData {
         return 198.0 + dTb;
     }
     
-    //calculates omega (accentric factor)
+    //calculates omega (acentric factor)
+    /*
+     * Source:
+     * B.I. Lee and M.G. Kesler;
+     * "A Generalized Thermodynamic Correlation Based on Three-Parameter Corresponding States";
+     * AIChE J., (1975), 21(3), 510-527 
+     * 
+     */
     public double calculateOmega(){
         double f = calculateTb()/calculateTc();
-        return (-1.0*Math.log(calculatePc()/1.01325) -5.927 + 6.096/f + 1.289*Math.log(f) - 0.169*Math.pow(f, 6) ) / ( 15.252 - 15.688/f - 13.472*Math.log(f) + 0.436*Math.pow(f,6));
+        return (-1.0*Math.log(calculatePc()/1.01325) -5.92714 + 6.09648/f + 1.28862*Math.log(f) - 0.169347*Math.pow(f, 6) ) / ( 15.2518 - 15.6875/f - 13.4721*Math.log(f) + 0.43577*Math.pow(f,6));
+        // Equation only valid for f <= 0.8
     }
 
     //calculates sigma in angstroms
+    /*
+     * Source:
+     * L.S. Tee, S. Gotoh, and W.E. Stewart;
+     * "Molecular Parameters for Normal Fluids: The Lennard-Jones 12-6 Potential";
+     * Ind. Eng. Chem., Fundamentals (1966), 5(3), 346-63
+     * Table III: Correlation iii
+     */
     public double calculateSigma(){
         return (2.3442*Math.exp(0.1303*calculateOmega())) * Math.pow(calculateTc()*1.01325/calculatePc(),1.0/3.0);
     }
 
     //calculates epsilon in K
+    /*
+     * Source:
+     * L.S. Tee, S. Gotoh, and W.E. Stewart;
+     * "Molecular Parameters for Normal Fluids: The Lennard-Jones 12-6 Potential";
+     * Ind. Eng. Chem., Fundamentals (1966), 5(3), 346-63
+     * Table III: Correlation iii
+     */
     public double calculateEpsilon(){
         return 0.8109*Math.exp(-0.6228*calculateOmega())*calculateTc();
     }
