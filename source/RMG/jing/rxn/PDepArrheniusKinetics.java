@@ -85,7 +85,7 @@ public class PDepArrheniusKinetics implements PDepKinetics {
 			//	PLOG format does not need "/" between parameters
 			result += " " + Double.toString(kinetics[i].getAValue());
 			result += " " + Double.toString(kinetics[i].getNValue());
-			result += " " + Double.toString(kinetics[i].getEValue());//***
+			result += " " + Double.toString(kinetics[i].getEValue());
 			result += " /\n";
 		}
 		return result;

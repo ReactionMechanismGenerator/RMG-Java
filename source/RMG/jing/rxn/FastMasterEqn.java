@@ -623,14 +623,14 @@ public class FastMasterEqn implements PDepKineticsEstimator {
 					Kinetics kin = computeKUsingLeastSquares(k_array, Hrxn);
 					A = kin.getAValue();
 					n = kin.getNValue();
-					Ea = kin.getEValue();
+					Ea = kin.getEValue();//kin should be ArrheniusKinetics (rather than ArrheniusEPKinetics), so it should be correct to use getEValue here (similarly for other uses in this file)
 				}
 				else {
 					Temperature stdtemp = new Temperature(298,"K");
 					double Hrxn = rxn.calculateHrxn(stdtemp);
 					((Reaction) rxn).generateReverseReaction();
 					Kinetics[] k_array = ((Reaction)rxn).getFittedReverseKinetics();
-					Kinetics kin = computeKUsingLeastSquares(k_array, Hrxn);//correct to use Hrxn vs. -Hrxn
+					Kinetics kin = computeKUsingLeastSquares(k_array, -Hrxn);//gmagoon: I'm not sure, with forward/reverse reactions here whether it is correct to use Hrxn or -Hrxn, but in any case, getFittedReverseKinetics should return an ArrheniusKinetics (not ArrheniusEPKinetics) object, so it will not be used in computeKUsingLeastSquares anyway
 //					Kinetics kin = ((Reaction) rxn).getFittedReverseKinetics();
 					A = kin.getAValue();
 					Ea = kin.getEValue();
@@ -905,7 +905,7 @@ public class FastMasterEqn implements PDepKineticsEstimator {
 						}
 						else {
 							Kinetics[] k_array = rxnWHighPLimit.getFittedReverseKinetics();
-							Kinetics kin = computeKUsingLeastSquares(k_array, Hrxn);
+							Kinetics kin = computeKUsingLeastSquares(k_array, -Hrxn);//gmagoon: I'm not sure, with forward/reverse reactions here whether it is correct to use Hrxn or -Hrxn, but in any case, getFittedReverseKinetics should return an ArrheniusKinetics (not ArrheniusEPKinetics) object, so it will not be used in computeKUsingLeastSquares anyway
 							A = kin.getAValue();
 							Ea = kin.getEValue();
 							n = kin.getNValue();

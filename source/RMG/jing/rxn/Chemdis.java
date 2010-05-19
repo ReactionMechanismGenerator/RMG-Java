@@ -402,8 +402,7 @@ public class Chemdis implements PDepKineticsEstimator {
 		Temperature stdtemp = new Temperature(298,"K");
 		double Hrxn = entryReaction.calculateHrxn(stdtemp);
         
-        	k = FastMasterEqn.computeKUsingLeastSquares(k_array, Hrxn);//***forward vs. reverse handled correctly?
-        	
+        	k = FastMasterEqn.computeKUsingLeastSquares(k_array, Hrxn);
         	// Write kinetics of entry reaction
 			str += Double.toString(k.getAValue()) + '\t';
         	str += Double.toString(k.getNValue()) + '\t';
