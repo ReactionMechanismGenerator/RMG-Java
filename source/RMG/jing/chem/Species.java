@@ -193,7 +193,15 @@ public class Species {
 
     //## operation calculateLJParameters()
     public void calculateTransportParameters() {
-    	chemkinTransData = getChemGraph().getTransportData();
+    	if (hasResonanceIsomers()){
+			Iterator cgIter = getResonanceIsomers();
+			while (cgIter.hasNext()) {
+				ChemGraph cg = (ChemGraph)cgIter.next();
+				chemkinTransData = cg.getTransportData();
+				if (chemkinTransData != null) break;
+			}
+		}
+    	else chemkinTransData = getChemGraph().getTransportData();
     	
         //int cNum = getChemGraph().getCarbonNumber();
 //		int cNum = getChemGraph().getHeavyAtomNumber();
