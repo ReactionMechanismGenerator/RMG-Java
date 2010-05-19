@@ -645,6 +645,92 @@ public class GUI extends JPanel implements ActionListener {
 		PRLVector initialPTL = new PRLVector(0, "Default_H_H2", databasePath.getText()+"/thermo_libraries/primaryThermoLibrary");
 		tmodelPTL.updatePRL(initialPTL);
     	
+		/*
+		 * Primary Transport Library field
+		 */
+    	//	Create the Primary Transport Library (PTransL) panel
+    	JPanel PTransL = new JPanel();
+    	PTransL.setBorder(BorderFactory.createCompoundBorder(BorderFactory.createTitledBorder("Primary Transport Library"),
+    			BorderFactory.createEmptyBorder(5,5,5,5)));
+
+    	//	Create PTransL Name label
+    	JPanel ptranslName = new JPanel();
+    	ptranslName.setBorder(BorderFactory.createEmptyBorder(5,5,5,5));
+    	
+    	//	Populate the label
+    	JLabel ptranslNameLabel = new JLabel("Name:");
+    	ptranslName.add(ptranslNameLabel);
+    	ptranslName.add(ptranslLibName = new JTextField(20));
+
+        //	Create PTransL Location label
+        JPanel ptranslLoc = new JPanel();
+        ptranslLoc.setBorder(BorderFactory.createEmptyBorder(5,5,5,5));
+    	
+        //	Populate the label
+        JLabel ptranslLocationLabel = new JLabel("Location:");
+        ptranslLoc.add(ptranslLocationLabel);
+    	ptranslLocationLabel.setToolTipText("Default = " + 
+			"RMG/databases/RMG_database/transport_libraries/GRI-Mech3.0");
+    	
+    	ptranslLoc.add(ptranslPath = new JTextField(20));
+    	
+    	ptranslLoc.add(ptranslButton = new JButton("Select"));
+    	ChangeButtonListener ptranslAddListenerLib = new ChangeButtonListener();
+    	ptranslButton.addActionListener(ptranslAddListenerLib);
+    	ptranslButton.setActionCommand("ptranslPath");
+
+        //	Create table and scroll panel to store PTransL(s)
+        tablePTransL = new JTable(tmodelPTransL = new MyTableModelPRL());
+    	tablePTransL.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
+    	tablePTransL.setPreferredScrollableViewportSize(new Dimension(700,50));
+        tablePTransL.getColumnModel().getColumn(0).setPreferredWidth(100);
+        tablePTransL.getColumnModel().getColumn(1).setPreferredWidth(600);
+        for (int i=0; i<tablePTransL.getColumnCount(); i++) {
+        	TableColumn column = tablePTransL.getColumnModel().getColumn(i);
+        	column.setCellRenderer(centerTableRenderer);
+        }
+        JScrollPane scrollPTransL = new JScrollPane(tablePTransL);
+    	scrollPTransL.setBorder(BorderFactory.createLoweredBevelBorder());
+
+    	//	Create boxes to display the PTransL table
+    	Box PTransLtable1 = Box.createHorizontalBox();
+    	Box PTransLtable2 = Box.createHorizontalBox();
+    	Box PTransLtable3 = Box.createHorizontalBox();
+    	Box PTransLtable4 = Box.createHorizontalBox();
+    	Box PTransLtable5 = Box.createVerticalBox();
+    	Box PTransLtable6 = Box.createHorizontalBox();
+    	
+    	//	Fill the boxes with the appropriate components of the table
+    	PTransLtable1.add(AddPTransL = new JButton("Add"));
+    	AddButtonListener addListenerPTransL = new AddButtonListener();
+    	AddPTransL.addActionListener(addListenerPTransL);
+    	AddPTransL.setActionCommand("AddPTransL");
+    	AddPTransL.setToolTipText("Press to submit PTransportL Name & Location");
+    	PTransLtable1.setBorder(BorderFactory.createEmptyBorder(10,10,10,10));
+    	
+    	PTransLtable2.add(DeletePTransL = new JButton("Remove"));
+    	DeleteButtonListener deleteListenerPTransL = new DeleteButtonListener();
+    	DeletePTransL.addActionListener(deleteListenerPTransL);
+    	DeletePTransL.setActionCommand("DeletePTransL");
+    	DeletePTransL.setToolTipText("Press to remove PTransportL Name & Location");
+    	
+    	PTransLtable3.add(PTransLtable1);
+    	PTransLtable3.add(PTransLtable2);
+    	PTransLtable4.add(scrollPTransL);
+    	PTransLtable6.add(ptranslName);
+    	PTransLtable6.add(ptranslLoc);
+    	PTransLtable5.add(PTransLtable6);
+    	PTransLtable5.add(PTransLtable3);
+    	PTransLtable5.add(PTransLtable4);
+    	
+    	PTransL.add(PTransLtable5);
+    	
+    	//	Initialize the PTransL with the GRI-Mech 3.0 library
+    	//		This library contains small-molecule chemistry, which cannot be estimated by the Joback group additivity scheme
+		PRLVector initialPTransL = new PRLVector(0, "GRI-Mech 3.0", databasePath.getText()+"/transport_libraries/GRI-Mech3.0");
+		tmodelPTransL.updatePRL(initialPTransL);
+		
+		
     	//	Create the Primary Reaction Library (PRL) panel
     	JPanel PRL = new JPanel();
     	PRL.setBorder(BorderFactory.createCompoundBorder(BorderFactory.createTitledBorder("Primary Reaction Library"),
@@ -810,6 +896,7 @@ public class GUI extends JPanel implements ActionListener {
     	Box TabTotal = Box.createVerticalBox();
     	TabTotal.add(Database);
     	TabTotal.add(PTL);
+    	TabTotal.add(PTransL);
     	TabTotal.add(PRL);
     	TabTotal.add(SM);
     	
@@ -946,6 +1033,17 @@ public class GUI extends JPanel implements ActionListener {
     	pdkmCombo.setEnabled(false);
     	pdkmCombo.setActionCommand("pdkm");
     	
+    	//	Create the "decrease grain size" subpanel
+    	JPanel GrainSize = new JPanel();
+    	GrainSize.setBorder(BorderFactory.createEmptyBorder(5,5,5,5));
+    	JLabel grainsizeLabel = new JLabel("Decrease Grain Size");
+    	GrainSize.add(grainsizeLabel);
+    	GrainSize.add(grainsizeCombo = new JComboBox(yesnoOptions));
+    	grainsizeCombo.setEnabled(false);
+    	grainsizeLabel.setToolTipText("If the pressure-dependent rate > 2*(High-P-Limit rate):" +
+    			" Increase the number of energy steps used in solving the Master Equation" +
+    			" and re-run the fame.exe calculation.");
+    	
     	JPanel Cheby = new JPanel();
     	Cheby.setBorder(BorderFactory.createEmptyBorder(5,5,5,5));
     	
@@ -1047,11 +1145,12 @@ public class GUI extends JPanel implements ActionListener {
     	pDepBox.add(Pdep);
     	pDepBox.add(SDE);
     	pDepBox.add(PDKM);
+    	pDepBox.add(GrainSize);
     	pDepBox.add(Cheby);
     	totalPDep.add(pDepBox);
     	
         JComboBox[] allTab = {pdepCombo, sdeCombo, pdkmCombo, chebyTUnits, chebyPUnits,
-        		chebyTCombo, chebyPCombo};
+        		chebyTCombo, chebyPCombo, grainsizeCombo};
         initializeJCB(allTab);
         
 		JComponent[] pdkmComps = {chebyTMin, chebyTMax, chebyTUnits, chebyTGen, chebyTRep,
@@ -1329,6 +1428,11 @@ public class GUI extends JPanel implements ActionListener {
 				else
 					tmodelFS.deleteRow(highlightRow);
 			}
+			else if ("DeletePTransL".equals(e.getActionCommand())) {
+				int highlightRow = tablePTransL.getSelectedRow();
+				if (highlightRow == -1) System.out.println("Please select a row to delete");
+				else tmodelPTransL.deleteRow(highlightRow);
+			}
 		}
 	}
     
@@ -1478,6 +1582,21 @@ public class GUI extends JPanel implements ActionListener {
 					FSAdjList.setText("");
 				}
 			}
+			else if ("AddPTransL".equals(e.getActionCommand())) {
+				// Extract the information
+				int ptranslInput0 = tmodelPTransL.nextEmptyRow+1;
+				String ptranslInput1 = ptranslLibName.getText();
+				String ptranslInput2 = ptranslPath.getText();
+				// Check that all information is present
+				if (ptranslInput1.equals("") || ptranslInput2.equals("")) {
+					System.out.println("Please input the Name and Location of a Primary Transport Library");
+				} else {
+					PRLVector ptranslEntry = new PRLVector(ptranslInput0, ptranslInput1, ptranslInput2);
+					tmodelPTransL.updatePRL(ptranslEntry);
+					ptranslLibName.setText("");
+    				ptranslPath.setText("");
+				}
+			}
 		}
 	}
     
@@ -1508,6 +1627,10 @@ public class GUI extends JPanel implements ActionListener {
 				File path = null;
 				path = askUserForInput("Select SeedMechanism folder", true, databasePath.getText()+"/kinetics_libraries");
 				if (path != null) smPath.setText(path.getPath());
+			} else if ("ptranslPath".equals(e.getActionCommand())) {
+				File path = null;
+				path = askUserForInput("Select PrimaryTransportLibrary folder", true, databasePath.getText()+"/transport_libraries");
+				if (path != null) ptranslPath.setText(path.getPath());
 			}
     	}
     }
@@ -1606,7 +1729,7 @@ public class GUI extends JPanel implements ActionListener {
         String rmgEnvVar = System.getProperty("RMG.workingDirectory");
         String ptlReferenceDirectory_linux = rmgEnvVar + "/databases/" + stringMainDatabase + "/thermo_libraries/";
         String ptlReferenceDirectory_windows = rmgEnvVar + "\\databases\\" + stringMainDatabase + "\\thermo_libraries\\";
-    	conditionFile += "\rPrimaryThermoLibrary:\r";
+    	conditionFile += "\r\rPrimaryThermoLibrary:\r";
 
 		if (tablePTL.getRowCount()==0) {
         	System.out.println("Warning: Writing condition.txt file: Could not read Primary Thermo Library (Thermochemical Libraries tab)");
@@ -1625,6 +1748,28 @@ public class GUI extends JPanel implements ActionListener {
 		}
 		conditionFile += "END\r\r";
 		
+    	//	Add the name(s)/location(s) of the primary transport library
+        String ptranslReferenceDirectory_linux = rmgEnvVar + "/databases/" + stringMainDatabase + "/transport_libraries/";
+        String ptranslReferenceDirectory_windows = rmgEnvVar + "\\databases\\" + stringMainDatabase + "\\transport_libraries\\";
+    	conditionFile += "PrimaryTransportLibrary:\r";
+
+		if (tablePTransL.getRowCount()==0) {
+        	System.out.println("Warning: Writing condition.txt file: Could not read Primary Transport Library (Thermochemical Libraries tab)");
+		} else {
+    		for (int k=0; k<tablePTransL.getRowCount(); k++) {
+    			conditionFile += "Name: " + tablePTransL.getValueAt(k,0) + "\r" + "Location: ";
+    			String ptranslDir = (String)tablePTransL.getValueAt(k,1);
+    	        if (ptranslDir.toLowerCase().startsWith(ptranslReferenceDirectory_linux.toLowerCase()) ||
+    	        		ptranslDir.toLowerCase().startsWith(ptranslReferenceDirectory_windows.toLowerCase())) {
+    	        	int startIndex = ptranslReferenceDirectory_linux.length();
+    	        	conditionFile += ptranslDir.substring(startIndex) + "\r";
+    	        } else {
+    	        	conditionFile += ptranslDir + "\r";
+    	        }
+    		}
+		}
+		conditionFile += "END\r\r";
+		
 		/*
 		 * 4APR2010
 		 */
@@ -1637,7 +1782,7 @@ public class GUI extends JPanel implements ActionListener {
 	        for (int i=0; i<tableFS.getRowCount(); i++) {
 	        	conditionFile += 
 	        		tableFS.getValueAt(i,0) + "\r" +
-	        		tableFS.getValueAt(i,1) + "\r\r";
+	        		tableFS.getValueAt(i,1) + "\r";
 	        }
 	        conditionFile += "END\r\r";
         }
@@ -1721,7 +1866,7 @@ public class GUI extends JPanel implements ActionListener {
 	        		tableInput.getValueAt(i,0) + " " +
 	    			tableInput.getValueAt(i,1) + " (" +
 	    			tableInput.getValueAt(i,2) + ")\r" +
-	    			tableInput.getValueAt(i,4) + "\r\r";
+	    			tableInput.getValueAt(i,4) + "\r";
 	        	} else if (tableInput.getValueAt(i,3).equals("Reactive-User")) {
 	        		unreactiveStatus = true;
 	        		++nonInertCount;
@@ -1729,7 +1874,7 @@ public class GUI extends JPanel implements ActionListener {
 	        		tableInput.getValueAt(i,0) + " " +
 	    			tableInput.getValueAt(i,1) + " (" +
 	    			tableInput.getValueAt(i,2) + ") unreactive\r" +
-	    			tableInput.getValueAt(i,4) + "\r\r";
+	    			tableInput.getValueAt(i,4) + "\r";
 	        	}
 	        }
 	        //	Add the non-inert gas species
@@ -1824,6 +1969,11 @@ public class GUI extends JPanel implements ActionListener {
     	else
     		System.out.println("Pressure information for PDepKineticsModel not supplied:  Using default values.");
     	conditionFile += "\r";
+    	
+    	// Add the "DecreaseGrainSize" field
+    	if (grainsizeCombo.getSelectedItem().equals("Yes")) {
+    		conditionFile += "DecreaseGrainSize: yes\r";
+    	}
     	
     	conditionFile += "\r";
         //	Add the path of the IncludeSpecies.txt file (if present)
@@ -2030,6 +2180,7 @@ public class GUI extends JPanel implements ActionListener {
     	tmodelInput.clear();
     	tmodelSens.clear();
     	tmodelFS.clear();
+    	tmodelPTransL.clear();
         System.out.println("GUI cannot read in file's header (comments)");
     	
 		//	Read in the .txt file
@@ -2073,6 +2224,23 @@ public class GUI extends JPanel implements ActionListener {
              		String path = tempStringVector[tempStringVector.length-1].trim();
              		PRLVector ptlEntry = new PRLVector(ptlCounter-1,name,path);
 					tmodelPTL.updatePRL(ptlEntry);
+					line = ChemParser.readMeaningfulLine(reader);
+             	}
+	        }
+	        
+	        else if (line.startsWith("PrimaryTransportLibrary")) {
+		        //	Name(s)/Path(s) of PrimaryTransportLibrary
+             	line = ChemParser.readMeaningfulLine(reader);
+             	int ptranslCounter = 0;
+             	while (!line.equals("END")) {
+             		++ptranslCounter;
+             		tempStringVector = line.split("Name: ");
+             		String name = tempStringVector[tempStringVector.length-1].trim();
+             		line = ChemParser.readMeaningfulLine(reader);
+             		tempStringVector = line.split("Location: ");
+             		String path = tempStringVector[tempStringVector.length-1].trim();
+             		PRLVector ptranslEntry = new PRLVector(ptranslCounter-1,name,path);
+					tmodelPTransL.updatePRL(ptranslEntry);
 					line = ChemParser.readMeaningfulLine(reader);
              	}
 	        }
@@ -2410,6 +2578,19 @@ public class GUI extends JPanel implements ActionListener {
 	        	}
 	        	chebyP.setText(Pvalues);
 	        	chebyPCombo.setSelectedItem("List");
+	        }
+	        
+	        else if (line.toLowerCase().startsWith("decreasegrainsize")) {
+	        	st = new StringTokenizer(line);
+	        	tempString = st.nextToken();	// Skip over "DecreaseGrainSize:"
+	        	String yesno = st.nextToken();
+	        	if (yesno.toLowerCase().equals("yes")) {
+		        	grainsizeCombo.setSelectedItem("Yes");
+		        } else if (yesno.toLowerCase().equals("no")) {
+		        	grainsizeCombo.setSelectedItem("No");
+		        } else {
+		        	System.out.println("ERROR: Reading in condition.txt file - Invalid argument for DecreaseGrainSize.  RMG recognizes an argument of 'Yes' or 'No', but not " + yesno + ".  GUI does not contain all information present in condition.txt file.");
+		        }
 	        }
 	        
 	        else if (line.startsWith("IncludeSpecies")) {
@@ -2971,7 +3152,7 @@ public class GUI extends JPanel implements ActionListener {
     			
     	}
     	else if ("pDep".equals(event.getActionCommand())) {
-    		JComponent[] pDepComps = {sdeCombo, pdkmCombo};
+    		JComponent[] pDepComps = {sdeCombo, pdkmCombo, grainsizeCombo};
     		JComponent[] pdkmComps = {chebyTMin, chebyTMax, chebyTUnits, chebyTGen, chebyTRep,
     				chebyPMin, chebyPMax, chebyPUnits, chebyPGen, chebyPRep,
     				chebyPCombo, chebyTCombo, chebyP, chebyT};
@@ -3119,7 +3300,7 @@ public class GUI extends JPanel implements ActionListener {
     //	Tab3: Error Analysis
     SpeciesSensName, eBarsCombo, sensCoeffCombo,
     //	Tab4: Dynamic Simulator
-    pdepCombo, sdeCombo, pdkmCombo, chebyTCombo, chebyPCombo,
+    pdepCombo, sdeCombo, pdkmCombo, chebyTCombo, chebyPCombo, grainsizeCombo,
     //	Tab : Additional Options
     eosCombo, inchiCombo, chemkinAUnits, chemkinEaUnits, chemkinVerbosity,
     	readRestartOnOff, writeRestartOnOff, chemkinSMILES,
@@ -3130,7 +3311,7 @@ public class GUI extends JPanel implements ActionListener {
     //	Tab0: Initialization
     nameFiller, locationFiller, databasePath, prlPath, ptlPath,
     	timeStep, aTolerance, rTolerance, ptlLibName, prlLibName,
-    	smLibName, smPath,
+    	smLibName, smPath, ptranslLibName, ptranslPath,
     //	Tab1: Termination Sequence
     conversion, time, eTolerance,
     //	Tab2: Initial Condition
@@ -3160,6 +3341,7 @@ public class GUI extends JPanel implements ActionListener {
     //	Tab0: Initialization
     AddPRL, DeletePRL, databaseButton, prlButton, ptlButton,
     	AddPTL, DeletePTL, smButton, AddSM, DeleteSM,
+    	ptranslButton, AddPTransL, DeletePTransL,
     //  Tab1: Termination
     //	Tab2: Initial Condition
     AddInput, DeleteInput, isButton,
@@ -3170,7 +3352,7 @@ public class GUI extends JPanel implements ActionListener {
     
     JTable
     //	Tab0: Initialization
-    tablePRL, tablePTL, tableSM,
+    tablePRL, tablePTL, tableSM, tablePTransL,
     //  Tab1: Termination
     //	Tab2: Initial Condition
     tableInput,
@@ -3180,7 +3362,7 @@ public class GUI extends JPanel implements ActionListener {
     tableFS;
     
     //	Tab0: Initialization
-    MyTableModelPRL tmodelPRL, tmodelPTL;
+    MyTableModelPRL tmodelPRL, tmodelPTL, tmodelPTransL;
     MyTableModelSM tmodelSM;
     //  Tab1: Termination
     //	Tab2: Initial Condition
