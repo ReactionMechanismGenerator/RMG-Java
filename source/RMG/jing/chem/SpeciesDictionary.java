@@ -289,11 +289,14 @@ public class SpeciesDictionary {
 		if (p_spe.hasResonanceIsomers()) {
 			Iterator iter = p_spe.getResonanceIsomers();
 			while(iter.hasNext()){
-				remove((ChemGraph)iter.next());
+			    ChemGraph cg = (ChemGraph)iter.next();
+			    cg.setSpecies(null);
+			    remove(cg);
 			}
 		}
 		else {
-			remove( p_spe.getChemGraph() );
+		    p_spe.getChemGraph().setSpecies(null);
+		    remove( p_spe.getChemGraph() );
 		}
 		
     }
