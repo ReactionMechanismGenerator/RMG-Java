@@ -1044,6 +1044,12 @@ public static void setSMILES(boolean yesno) {
 	public static void writeTransportFile(CoreEdgeReactionModel cerm) {
 		//Write core species to tran.dat
 		String coreSpecies ="";
+		// Write the three inert gas species' transport data
+		//	Data comes from CHEMKIN-v4.1.1 manual
+		coreSpecies +=	"Ar                 0   136.500     3.330     0.000     0.000     0.000 !CHEMKIN-v4.1.1\n" +
+						"He                 0    10.200     2.576     0.000     0.000     0.000 !CHEMKIN-v4.1.1\n" +
+						"N2                 1    97.530     3.621     0.000     1.760     4.000 !CHEMKIN-v4.1.1\n";
+		
 		Iterator iter = cerm.getSpecies();
 		
 		while (iter.hasNext()){
