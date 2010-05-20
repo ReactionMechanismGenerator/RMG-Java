@@ -4062,7 +4062,7 @@ public class ReactionModelGenerator {
 			//now, speciesToPrune has been filled with species that should be pruned from the edge
 			System.out.println("Pruning...");
 			//prune species from the edge
-			//remove species from the edge and from the species dictionary
+			//remove species from the edge and from the species dictionary and from edgeID
 			iter = speciesToPrune.iterator();
 			while(iter.hasNext()){
 				Species spe = (Species)iter.next();
@@ -4070,6 +4070,7 @@ public class ReactionModelGenerator {
 				((CoreEdgeReactionModel)getReactionModel()).getUnreactedSpeciesSet().remove(spe);
 				//SpeciesDictionary.getInstance().getSpeciesSet().remove(spe);
 				SpeciesDictionary.getInstance().remove(spe);
+				JDAS.edgeID.remove(spe);
 			}
 			//remove reactions from the edge involving pruned species
 			iter = ((CoreEdgeReactionModel)getReactionModel()).getUnreactedReactionSet().iterator();
