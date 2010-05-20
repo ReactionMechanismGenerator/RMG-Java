@@ -923,6 +923,10 @@ public class GUI extends JPanel implements ActionListener {
     	DS.setBorder(BorderFactory.createCompoundBorder(BorderFactory.createTitledBorder("Dynamic Simulator"),
     			BorderFactory.createEmptyBorder(5,5,5,5)));
     	
+    	JPanel Prune = new JPanel();
+    	Prune.setBorder(BorderFactory.createCompoundBorder(BorderFactory.createTitledBorder("Pruning Options"),
+    			BorderFactory.createEmptyBorder(5,5,5,5)));    	
+    	
     	//	Create the DS subpanel: Solver
     	JPanel dsSolver = new JPanel();
     	dsSolver.setBorder(BorderFactory.createEmptyBorder(5,5,5,5));
@@ -972,22 +976,68 @@ public class GUI extends JPanel implements ActionListener {
         JPanel interConv = new JPanel();
         interConv.setBorder(BorderFactory.createEmptyBorder(5,5,5,5));
         //	Populate the subpanel
-        JLabel multiConvLabel = new JLabel("Intermediate Conversions");
+        JLabel multiConvLabel = new JLabel("Intermediate Conversions/TimeSteps");
         interConv.add(multiConvLabel);
-        multiConvLabel.setToolTipText("Default = AUTO");
-        interConv.add(multiConv = new JTextArea(2,15));
-        multiConv.setText("AUTO");
+        interConv.add(interCombo = new JComboBox(interOptions));
+        interCombo.addActionListener(this);
+        interCombo.setRenderer(centerJComboBoxRenderer);
+        interCombo.setSelectedIndex(1);
+        interCombo.setActionCommand("Pruning");
         
-    	//	Create the DS subpanel: interTS
-    	JPanel interTS = new JPanel();
-    	interTS.setBorder(BorderFactory.createEmptyBorder(5,5,5,5));
-    	//	Populate the subpanel
-        JLabel multiTSLabel = new JLabel("Intermediate Time Steps");
-        interTS.add(multiTSLabel);
-        multiTSLabel.setToolTipText("Default = AUTO");
-        interTS.add(multiTS = new JTextArea(2,15));
-    	multiTS.setEnabled(false);
-    	multiTS.setText("AUTO");
+    	/*
+    	 * Pruning options
+    	 */
+        JPanel indivSteps = new JPanel();
+        indivSteps.setBorder(BorderFactory.createEmptyBorder(5,5,5,5));
+        indivSteps.add(new JLabel("Specific time/conversion steps"));
+        indivSteps.add(textIndivSteps = new JTextField());
+        textIndivSteps.setPreferredSize(new Dimension(100,25));
+        textIndivSteps.setHorizontalAlignment(JTextField.CENTER);
+        textIndivSteps.setEnabled(false);
+        
+        JPanel terminTol = new JPanel();
+        terminTol.setBorder(BorderFactory.createEmptyBorder(5,5,5,5));
+        terminTol.add(new JLabel("Termination Tolerance"));
+        terminTol.add(textTerminTol = new JTextField());
+        textTerminTol.setPreferredSize(new Dimension(100,25));
+        textTerminTol.setHorizontalAlignment(JTextField.CENTER);
+        textTerminTol.setText("1.0E4");
+        textTerminTol.setEnabled(false);
+        
+        JPanel pruneTol = new JPanel();
+        pruneTol.setBorder(BorderFactory.createEmptyBorder(5,5,5,5));
+        pruneTol.add(new JLabel("Pruning tolerance"));
+        pruneTol.add(textPruneTol = new JTextField());
+        textPruneTol.setPreferredSize(new Dimension(100,25));
+        textPruneTol.setHorizontalAlignment(JTextField.CENTER);
+        textPruneTol.setText("1.0E-15");
+        textPruneTol.setEnabled(false);
+        
+        JPanel minSpc4Prune = new JPanel();
+        minSpc4Prune.setBorder(BorderFactory.createEmptyBorder(5,5,5,5));
+        minSpc4Prune.add(new JLabel("Minimum # of species before initiating pruning"));
+        minSpc4Prune.add(textMinSpc = new JTextField());
+        textMinSpc.setPreferredSize(new Dimension(100,25));
+        textMinSpc.setHorizontalAlignment(JTextField.CENTER);
+        textMinSpc.setText("1000");
+        textMinSpc.setEnabled(false);
+        
+        JPanel maxSpcNEdge = new JPanel();
+        maxSpcNEdge.setBorder(BorderFactory.createEmptyBorder(5,5,5,5));
+        maxSpcNEdge.add(new JLabel("Maximum # of species in edge after pruning"));
+        maxSpcNEdge.add(textMaxSpc = new JTextField());
+        textMaxSpc.setPreferredSize(new Dimension(100,25));
+        textMaxSpc.setHorizontalAlignment(JTextField.CENTER);
+        textMaxSpc.setText("1000");
+        textMaxSpc.setEnabled(false);
+        
+    	Box pruningOptionsBox = Box.createVerticalBox();
+    	pruningOptionsBox.add(interConv);
+    	pruningOptionsBox.add(indivSteps);
+    	pruningOptionsBox.add(terminTol);
+    	pruningOptionsBox.add(pruneTol);
+    	pruningOptionsBox.add(minSpc4Prune);
+    	pruningOptionsBox.add(maxSpcNEdge);
     	
     	//	Create boxes for DS panel
         Box ds = Box.createVerticalBox();
@@ -995,9 +1045,14 @@ public class GUI extends JPanel implements ActionListener {
     	ds.add(dsSolver);
     	ds.add(aTolPanel);
     	ds.add(rTolPanel);
-    	ds.add(interConv);
-    	ds.add(interTS);
+    	//ds.add(interConv);    	
     	DS.add(ds);
+    	
+    	Prune.add(pruningOptionsBox);
+    	
+    	Box dsNprune = Box.createHorizontalBox();
+    	dsNprune.add(DS);
+    	dsNprune.add(Prune);
     	
     	// Create the total pressure dependence panel
     	JPanel totalPDep = new JPanel();
@@ -1150,7 +1205,7 @@ public class GUI extends JPanel implements ActionListener {
     	totalPDep.add(pDepBox);
     	
         JComboBox[] allTab = {pdepCombo, sdeCombo, pdkmCombo, chebyTUnits, chebyPUnits,
-        		chebyTCombo, chebyPCombo, grainsizeCombo};
+        		chebyTCombo, chebyPCombo, grainsizeCombo, interCombo};
         initializeJCB(allTab);
         
 		JComponent[] pdkmComps = {chebyTMin, chebyTMax, chebyTUnits, chebyTGen, chebyTRep,
@@ -1159,7 +1214,7 @@ public class GUI extends JPanel implements ActionListener {
 		disableComponents(pdkmComps);
     	
     	Box TabTotal = Box.createVerticalBox();
-    	TabTotal.add(DS);
+    	TabTotal.add(dsNprune);
     	TabTotal.add(totalPDep);    	
     	
     	//	Create the dynamicSimulator panel
@@ -1782,7 +1837,7 @@ public class GUI extends JPanel implements ActionListener {
 	        for (int i=0; i<tableFS.getRowCount(); i++) {
 	        	conditionFile += 
 	        		tableFS.getValueAt(i,0) + "\r" +
-	        		tableFS.getValueAt(i,1) + "\r";
+	        		tableFS.getValueAt(i,1) + "\r\r";
 	        }
 	        conditionFile += "END\r\r";
         }
@@ -1866,7 +1921,7 @@ public class GUI extends JPanel implements ActionListener {
 	        		tableInput.getValueAt(i,0) + " " +
 	    			tableInput.getValueAt(i,1) + " (" +
 	    			tableInput.getValueAt(i,2) + ")\r" +
-	    			tableInput.getValueAt(i,4) + "\r";
+	    			tableInput.getValueAt(i,4) + "\r\r";
 	        	} else if (tableInput.getValueAt(i,3).equals("Reactive-User")) {
 	        		unreactiveStatus = true;
 	        		++nonInertCount;
@@ -1874,7 +1929,7 @@ public class GUI extends JPanel implements ActionListener {
 	        		tableInput.getValueAt(i,0) + " " +
 	    			tableInput.getValueAt(i,1) + " (" +
 	    			tableInput.getValueAt(i,2) + ") unreactive\r" +
-	    			tableInput.getValueAt(i,4) + "\r";
+	    			tableInput.getValueAt(i,4) + "\r\r";
 	        	}
 	        }
 	        //	Add the non-inert gas species
@@ -2029,12 +2084,18 @@ public class GUI extends JPanel implements ActionListener {
         conditionFile += "DynamicSimulator: " + simulatorCombo.getSelectedItem() + "\r";
         if (conversionGoal) {
         	conditionFile += "Conversions:";
-        	if (multiConv.getText().equals("")) {
-            	System.out.println("ERROR: Writing condition.txt file: Could not read list of intermediate conversions (Dynamic Simulator tab)");
-            	return;
+        	if (interCombo.getSelectedItem().equals("AUTO")) {
+        		conditionFile += " AUTO";
+        	}
+        	else if (interCombo.getSelectedItem().equals("AUTOPRUNE")) {
+        		conditionFile += " AUTOPRUNE\r";
+        		conditionFile += "TerminationTolerance: " + textTerminTol.getText() + "\r";
+        		conditionFile += "PruningTolerance: " + textPruneTol.getText() + "\r";
+        		conditionFile += "MinSpeciesForPruning: " + textMinSpc.getText() + "\r";
+        		conditionFile += "MaxEdgeSpeciesAfterPruning: " + textMaxSpc.getText();
         	}
         	else {
-	            String[] convLines = multiConv.getText().split("[\n]");
+	            String[] convLines = textIndivSteps.getText().split("[\n]");
 	            for (int i=0; i<convLines.length; i++) {
 	            	StringTokenizer st = null;
 	            	st = new StringTokenizer(convLines[i]);
@@ -2047,12 +2108,18 @@ public class GUI extends JPanel implements ActionListener {
         	}   
         } else {
         	conditionFile += "TimeStep:";
-        	if (multiTS.getText().equals("")) {
-            	System.out.println("ERROR: Writing condition.txt file: Could not read list of intermediate time steps (Dynamic Simulator tab)");
-            	return;
+        	if (interCombo.getSelectedItem().equals("AUTO")) {
+        		conditionFile += " AUTO";
+        	}
+        	else if (interCombo.getSelectedItem().equals("AUTOPRUNE")) {
+        		conditionFile += " AUTOPRUNE\r";
+        		conditionFile += "TerminationTolerance: " + textTerminTol.getText() + "\r";
+        		conditionFile += "PruningTolerance: " + textPruneTol.getText() + "\r";
+        		conditionFile += "MinSpeciesForPruning: " + textMinSpc.getText() + "\r";
+        		conditionFile += "MaxEdgeSpeciesAfterPruning: " + textMaxSpc.getText();
         	}
         	else {
-	        	String[] tsLines = multiTS.getText().split("[\n]");
+	        	String[] tsLines = textIndivSteps.getText().split("[\n]");
 	            for (int i=0; i<tsLines.length; i++) {
 	            	StringTokenizer st = null;
 	            	st = new StringTokenizer(tsLines[i]);
@@ -2646,10 +2713,19 @@ public class GUI extends JPanel implements ActionListener {
 		        st = new StringTokenizer(line);
 		        String stepName = st.nextToken();	// Skip over Conversions
 		        String steps = st.nextToken();
-		        while (st.hasMoreTokens()) {
-		        	steps += " " + st.nextToken();
+		        if (steps.toLowerCase().equals("auto")) {
+		        	interCombo.setSelectedItem("AUTO");
 		        }
-		        multiConv.setText(steps);
+		        else if (steps.toLowerCase().equals("autoprune")) {
+		        	interCombo.setSelectedItem("AUTOPRUNE");
+		        }
+		        else {
+			        while (st.hasMoreTokens()) {
+			        	steps += " " + st.nextToken();
+			        }
+			        textIndivSteps.setText(steps);
+			        interCombo.setSelectedIndex(0);
+		        }
 	        }
 	        
 	        else if (line.startsWith("TimeStep")) {
@@ -2657,12 +2733,48 @@ public class GUI extends JPanel implements ActionListener {
 		        st = new StringTokenizer(line);
 		        String stepName = st.nextToken();	// Skip over TimeStep
 		        String steps = st.nextToken();
-		        while (st.hasMoreTokens()) {
-		        	steps += " " + st.nextToken();
+		        if (steps.toLowerCase().equals("auto")) {
+		        	interCombo.setSelectedItem("AUTO");
 		        }
-		        multiTS.setText(steps);
+		        else if (steps.toLowerCase().equals("autoprune")) {
+		        	interCombo.setSelectedItem("AUTOPRUNE");
+		        }
+		        else {
+			        while (st.hasMoreTokens()) {
+			        	steps += " " + st.nextToken();
+			        }
+			        textIndivSteps.setText(steps);
+			        interCombo.setSelectedIndex(0);
+		        }
 	        }
 
+	        /*
+	         * Pruning options
+	         */
+	        else if (line.toLowerCase().startsWith("terminationtolerance")) {
+	        	st = new StringTokenizer(line);
+	        	tempString = st.nextToken();	// Skip over TerminationTolerance:
+	        	textTerminTol.setText(st.nextToken());
+	        }
+	        
+	        else if (line.toLowerCase().startsWith("pruningtolerance")) {
+	        	st = new StringTokenizer(line);
+	        	tempString = st.nextToken();	// Skip over PruningTolerance:
+	        	textPruneTol.setText(st.nextToken());
+	        }
+	        
+	        else if (line.toLowerCase().startsWith("minspeciesforpruning")) {
+	        	st = new StringTokenizer(line);
+	        	tempString = st.nextToken();	// Skip over MinSpeciesForPruning:
+	        	textMinSpc.setText(st.nextToken());
+	        }
+	        
+	        else if (line.toLowerCase().startsWith("maxedgespeciesafterpruning")) {
+	        	st = new StringTokenizer(line);
+	        	tempString = st.nextToken();	// Skip over MaxEdgeSpeciesAfterPruning:
+	        	textMaxSpc.setText(st.nextToken());
+	        }
+	        	        
 	        else if (line.startsWith("Atol")) {
 		        //	Absolute tolerance
 		        st = new StringTokenizer(line);
@@ -3117,8 +3229,8 @@ public class GUI extends JPanel implements ActionListener {
     public void actionPerformed(ActionEvent event) {    	
     	//	- If Termination sequence is specified, highlight appropriate boxes
     	if ("GoalofReaction".equals(event.getActionCommand())) {
-    		JComponent[] timeComps = {timeCombo, time, multiTS};
-    		JComponent[] convComps = {SpeciesConvName, conversion, multiConv};
+    		JComponent[] timeComps = {timeCombo, time};
+    		JComponent[] convComps = {SpeciesConvName, conversion};
     		if (controllerCombo.getSelectedItem().equals("ReactionTime")) {
     			enableComponents(timeComps);
     			disableComponents(convComps);
@@ -3247,6 +3359,21 @@ public class GUI extends JPanel implements ActionListener {
 				enableComponents(tmaxminComps);
 			}
     	}
+    	// Pruning options
+    	else if ("Pruning".equals(event.getActionCommand())) {
+    		JComponent[] indivComps = {textIndivSteps};
+    		JComponent[] pruneComps = {textTerminTol, textPruneTol, textMinSpc, textMaxSpc};
+    		if (interCombo.getSelectedItem().equals("AUTO")) {
+    			disableComponents(indivComps);
+    			disableComponents(pruneComps);
+    		} else if (interCombo.getSelectedItem().equals("AUTOPRUNE")) {
+    			disableComponents(indivComps);
+    			enableComponents(pruneComps);
+    		} else {
+    			enableComponents(indivComps);
+    			disableComponents(pruneComps);
+    		}
+    	}
     	//	Save the condition.txt file
     	else if ("saveCondition".equals(event.getActionCommand())) {
     		createConditionFile(false);
@@ -3280,6 +3407,7 @@ public class GUI extends JPanel implements ActionListener {
 	String[] sdeOptions = {"Frequency Groups"}; //"Three Frequency Model"
 	String[] pdkmOptions = {"CHEB", "PLOG", "Rate"};
 	String[] listormaxmin = {"List", "Max/Min"};
+	String[] interOptions = {"Indiv. time steps","AUTO","AUTOPRUNE"};
 	//	Tab : Additional Options
 	String[] AUnitsOptions = {"moles", "molecules"};
 	String[] EaUnitsOptions = {"kcal/mol", "cal/mol", "kJ/mol", "J/mol", "Kelvins"};
@@ -3301,6 +3429,7 @@ public class GUI extends JPanel implements ActionListener {
     SpeciesSensName, eBarsCombo, sensCoeffCombo,
     //	Tab4: Dynamic Simulator
     pdepCombo, sdeCombo, pdkmCombo, chebyTCombo, chebyPCombo, grainsizeCombo,
+    	interCombo,
     //	Tab : Additional Options
     eosCombo, inchiCombo, chemkinAUnits, chemkinEaUnits, chemkinVerbosity,
     	readRestartOnOff, writeRestartOnOff, chemkinSMILES,
@@ -3323,7 +3452,9 @@ public class GUI extends JPanel implements ActionListener {
     maxHeavyAtom, FSName,
     //
     chebyTMin, chebyTMax, chebyPMin, chebyPMax, chebyTGen, chebyTRep,
-    	chebyPGen, chebyPRep, chebyT, chebyP;
+    	chebyPGen, chebyPRep, chebyT, chebyP,
+    //
+    textIndivSteps, textTerminTol, textPruneTol, textMinSpc, textMaxSpc;
     
     JTextArea
     //	Main Panel
@@ -3331,7 +3462,7 @@ public class GUI extends JPanel implements ActionListener {
     //	Tab2: Initial Condition
     speciesAdjList, tempConstant, pressConstant,
     //	Tab4: Dynamic Simulator
-    multiTS, multiConv,
+    
     //	Tab : Additional Options
     FSAdjList;
     
