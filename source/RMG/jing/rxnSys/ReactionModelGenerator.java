@@ -4103,6 +4103,7 @@ public class ReactionModelGenerator {
 					Iterator iterRem = toRemove.iterator();
 					while(iterRem.hasNext()){
 						Reaction reaction = (Reaction)iterRem.next();
+						reaction.setReactionTemplate(null);//remove from ReactionTemplate's reactionDictionaryByStructure
 						pdn.getPathReactions().remove(reaction);
 					}
 					//remove net reactions
@@ -4115,6 +4116,7 @@ public class ReactionModelGenerator {
 					iterRem = toRemove.iterator();
 					while(iterRem.hasNext()){
 						Reaction reaction = (Reaction)iterRem.next();
+						reaction.setReactionTemplate(null);//remove from ReactionTemplate's reactionDictionaryByStructure
 						pdn.getNetReactions().remove(reaction);
 					}
 					//remove isomers
@@ -4143,6 +4145,7 @@ public class ReactionModelGenerator {
 					iterRem = toRemove.iterator();
 					while(iterRem.hasNext()){
 						Reaction reaction = (Reaction)iterRem.next();
+						reaction.setReactionTemplate(null);//remove from ReactionTemplate's reactionDictionaryByStructure
 						pdn.getNonincludedReactions().remove(reaction);
 					}
 					//remove the entire network if the network has no path or net reactions
