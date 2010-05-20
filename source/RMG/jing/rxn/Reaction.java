@@ -1649,6 +1649,10 @@ public class Reaction {
 	public ReactionTemplate getReactionTemplate() {
 		return rxnTemplate;
 	}
+
+	public void setReactionTemplate(ReactionTemplate rt) {
+		rxnTemplate = rt;
+	}
 	
 	public boolean hasMultipleKinetics() {
 		if (getKinetics().length > 1) return true;

@@ -1402,6 +1402,7 @@ public class ReactionModelGenerator {
 				double pt = System.currentTimeMillis();
 				//prune the reaction model (this will only do something in the AUTO case)
 				pruneReactionModel();
+				garbageCollect();
 				// ENLARGE THE MODEL!!! (this is where the good stuff happens)
 				enlargeReactionModel();
 				double totalEnlarger = (System.currentTimeMillis() - pt)/1000/60;
@@ -4082,7 +4083,9 @@ public class ReactionModelGenerator {
 			while(iter.hasNext()){
 				Reaction reaction = (Reaction)iter.next();
 				writePrunedEdgeReaction(reaction);
+				reaction.setReactionTemplate(null);//remove from ReactionTemplate's reactionDictionaryByStructure
 				((CoreEdgeReactionModel)getReactionModel()).getUnreactedReactionSet().remove(reaction);
+				//ReactionTemplate.getReactionDictionaryByStructure().remove(reaction.getStructure());//remove from ReactionTemplate's reactionDictionaryByStructure
 			}
 			//remove reactions from PDepNetworks in PDep cases
 			if (reactionModelEnlarger instanceof RateBasedPDepRME)	{
