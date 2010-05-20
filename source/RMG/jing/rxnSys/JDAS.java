@@ -94,12 +94,12 @@ public abstract class JDAS implements DAESolver {
 	protected StringBuilder lindemannString;
 	protected int index; //11/1/07 gmagoon: adding index to allow appropriate naming of RWORK, IWORK****may need to make similar modification for DASPK?
 	protected ValidityTester validityTester; //5/5/08 gmagoon: adding validityTester and autoflag as attributes needed for "automatic" time stepping
-	protected boolean autoflag;
+	protected static boolean autoflag;
 	protected double [] reactionFlux;
 	protected double [] conversionSet;
 	protected double endTime;
 	protected StringBuilder thermoString = new StringBuilder();
-	protected HashMap edgeID;
+	protected static HashMap edgeID;
 	protected double [] maxEdgeFluxRatio;
 	protected boolean [] prunableSpecies;
 	protected double termTol;

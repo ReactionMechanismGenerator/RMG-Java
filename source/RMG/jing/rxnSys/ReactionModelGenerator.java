@@ -4008,21 +4008,20 @@ public class ReactionModelGenerator {
 		JDAS ds0 = (JDAS)((ReactionSystem) reactionSystemList.get(0)).getDynamicSimulator(); //get the first reactionSystem dynamic simulator
 		//prune the reaction model if AUTO is being used, and all reaction systems have reached target time/conversion, and edgeTol is non-zero (and positive, obviously), and if there are a sufficient number of species in the reaction model (edge + core)
 		
-		if ( ds0.autoflag && 
+		if ( JDAS.autoflag &&
 		  allReachedTarget && 
 		  edgeTol>0 && 
 		  (((CoreEdgeReactionModel)reactionModel).getEdge().getSpeciesNumber()+reactionModel.getSpeciesNumber())>= minSpeciesForPruning){
 			
 			int numberToBePruned = ((CoreEdgeReactionModel)reactionModel).getEdge().getSpeciesNumber() - maxEdgeSpeciesAfterPruning; 
-			Iterator iter = ds0.edgeID.keySet().iterator();//determine the maximum edge flux ratio for each edge species
+			Iterator iter = JDAS.edgeID.keySet().iterator();//determine the maximum edge flux ratio for each edge species
 			while(iter.hasNext()){
 				Species spe = (Species)iter.next();
-				Integer id0 = (Integer)ds0.edgeID.get(spe);
-				double maxmaxRatio = ds0.maxEdgeFluxRatio[id0-1];
-				boolean prunable = ds0.prunableSpecies[id0-1];
+				Integer id = (Integer)JDAS.edgeID.get(spe);
+				double maxmaxRatio = ds0.maxEdgeFluxRatio[id-1];
+				boolean prunable = ds0.prunableSpecies[id-1];
 				for (Integer i = 1; i < reactionSystemList.size(); i++) {//go through the rest of the reaction systems to see if there are higher max flux ratios
 					JDAS ds = (JDAS)((ReactionSystem) reactionSystemList.get(i)).getDynamicSimulator();
-					Integer id = (Integer)ds0.edgeID.get(spe);//in principle, I don't think the IDs in each dynamic simulator will necessarily be the same...determine the ID
 					if(ds.maxEdgeFluxRatio[id-1] > maxmaxRatio) maxmaxRatio = ds.maxEdgeFluxRatio[id-1];
 					if(prunable && !ds.prunableSpecies[id-1]) prunable = false;//I can't imagine a case where this would occur (if the conc. is zero at one condition, it should be zero at all conditions), but it is included for completeness
 				}
