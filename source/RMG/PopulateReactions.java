@@ -478,8 +478,8 @@ public class PopulateReactions {
 	        			if (r.getStructure() == temp_Reaction.getStructure()) {
 	        				dupRxn = true;
 	        				break;
-	        			} else if (r.hasReverseReaction() && temp_Reaction.hasReverseReaction()) {
-	        				if (r.getReverseReaction().getStructure() == temp_Reaction.getReverseReaction().getStructure()) {
+	        			} else if (r.hasReverseReaction()) {
+	        				if (r.getReverseReaction().getStructure() == temp_Reaction.getStructure()) {
 	        					dupRxn = true;
 	        					break;
 	        				}
