@@ -115,7 +115,7 @@ public class ReactionTemplate {
   }
 
   public void removeFromReactionDictionaryByStructure(Structure s) {
-      reactionDictionaryByStructure.remove(s);
+      if(reactionDictionaryByStructure.containsKey(s)) reactionDictionaryByStructure.remove(s);
       return;
   }
   

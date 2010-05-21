@@ -4108,9 +4108,13 @@ public class ReactionModelGenerator {
 						Reaction reaction = (Reaction)iterRem.next();
 						ReactionTemplate rt = reaction.getReactionTemplate();
 						reaction.setReactionTemplate(null);//remove from ReactionTemplate's reactionDictionaryByStructure
-						rt.removeFromReactionDictionaryByStructure(reaction.getStructure());//remove from ReactionTemplate's reactionDictionaryByStructure
-						reaction.getStructure().clearProducts();
-						reaction.getStructure().clearReactants();
+						if(reaction.getStructure() != null){
+						    if(rt!=null){
+							rt.removeFromReactionDictionaryByStructure(reaction.getStructure());//remove from ReactionTemplate's reactionDictionaryByStructure
+						    }
+						    reaction.getStructure().clearProducts();
+						    reaction.getStructure().clearReactants();
+						}
 						pdn.getPathReactions().remove(reaction);
 					}
 					//remove net reactions
@@ -4125,9 +4129,13 @@ public class ReactionModelGenerator {
 						Reaction reaction = (Reaction)iterRem.next();
 						ReactionTemplate rt = reaction.getReactionTemplate();
 						reaction.setReactionTemplate(null);//remove from ReactionTemplate's reactionDictionaryByStructure
-						rt.removeFromReactionDictionaryByStructure(reaction.getStructure());//remove from ReactionTemplate's reactionDictionaryByStructure
-						reaction.getStructure().clearProducts();
-						reaction.getStructure().clearReactants();
+						if(reaction.getStructure() != null){
+						    if(rt!=null){
+							rt.removeFromReactionDictionaryByStructure(reaction.getStructure());//remove from ReactionTemplate's reactionDictionaryByStructure
+						    }
+						    reaction.getStructure().clearProducts();
+						    reaction.getStructure().clearReactants();
+						}
 						pdn.getNetReactions().remove(reaction);
 					}
 					//remove isomers
@@ -4158,9 +4166,13 @@ public class ReactionModelGenerator {
 						Reaction reaction = (Reaction)iterRem.next();
 						ReactionTemplate rt = reaction.getReactionTemplate();
 						reaction.setReactionTemplate(null);//remove from ReactionTemplate's reactionDictionaryByStructure
-						rt.removeFromReactionDictionaryByStructure(reaction.getStructure());//remove from ReactionTemplate's reactionDictionaryByStructure
-						reaction.getStructure().clearProducts();
-						reaction.getStructure().clearReactants();
+						if(reaction.getStructure() != null){
+						    if(rt!=null){
+							rt.removeFromReactionDictionaryByStructure(reaction.getStructure());//remove from ReactionTemplate's reactionDictionaryByStructure
+						    }
+						    reaction.getStructure().clearProducts();
+						    reaction.getStructure().clearReactants();
+						}
 						pdn.getNonincludedReactions().remove(reaction);
 					}
 					//remove the entire network if the network has no path or net reactions
