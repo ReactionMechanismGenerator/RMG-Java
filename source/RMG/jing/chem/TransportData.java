@@ -141,11 +141,11 @@ public class TransportData {
     	 *  The others are assumed values (MRH 17-May-2010)
     	 */
     	return  getShapeIndex() + " " +
-    			String.format("%8.3f", getEpsilon()) + " " +
-    			String.format("%8.3f", getSigma()) + " " +    					
-    			String.format("%8.3f", getDipoleMoment()) + " " +
-    			String.format("%8.3f", getPolarizability()) + " " +
-    			String.format("%8.3f", getRotationalRelaxationCollisionNumber());
+    			String.format("%9.3f", getEpsilon()) + " " +
+    			String.format("%9.3f", getSigma()) + " " +    					
+    			String.format("%9.3f", getDipoleMoment()) + " " +
+    			String.format("%9.3f", getPolarizability()) + " " +
+    			String.format("%9.3f", getRotationalRelaxationCollisionNumber());
     }
 
 	public String getSource() {

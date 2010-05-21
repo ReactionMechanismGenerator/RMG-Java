@@ -195,11 +195,24 @@ public class Species {
     public void calculateTransportParameters() {
     	if (hasResonanceIsomers()){
 			Iterator cgIter = getResonanceIsomers();
+			/*
+			 * TransportData will be found for all resonance structures for a
+			 * 	given species.  The purpose of this while loop is to determine
+			 * 	if one of the resonance structures exists in a primary transport
+			 * 	library.  So, the while loop will continue until:
+			 * 		(a) all resonance structures are exhausted
+			 * 		(b) the chemgraph is found in a primary transport library
+			 * If (a), we want the transportdata of the most stable chemgraph
+			 * 	(for consistency)
+			 * If (b), we want the found transport data
+			 */
 			while (cgIter.hasNext()) {
 				ChemGraph cg = (ChemGraph)cgIter.next();
 				chemkinTransData = cg.getTransportData();
-				if (chemkinTransData != null) break;
+				if (chemkinTransData.fromPrimaryTransportLibrary) break;
 			}
+			if (!chemkinTransData.fromPrimaryTransportLibrary)
+				chemkinTransData = getChemGraph().getTransportData();
 		}
     	else chemkinTransData = getChemGraph().getTransportData();
     	
