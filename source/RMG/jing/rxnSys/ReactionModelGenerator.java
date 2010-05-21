@@ -4083,9 +4083,13 @@ public class ReactionModelGenerator {
 			while(iter.hasNext()){
 				Reaction reaction = (Reaction)iter.next();
 				writePrunedEdgeReaction(reaction);
+				ReactionTemplate rt = reaction.getReactionTemplate();
 				reaction.setReactionTemplate(null);//remove from ReactionTemplate's reactionDictionaryByStructure
+				rt.removeFromReactionDictionaryByStructure(reaction.getStructure());//remove from ReactionTemplate's reactionDictionaryByStructure
+				reaction.getStructure().clearProducts();
+				reaction.getStructure().clearReactants();
+				//reaction.setStructure(null);
 				((CoreEdgeReactionModel)getReactionModel()).getUnreactedReactionSet().remove(reaction);
-				//ReactionTemplate.getReactionDictionaryByStructure().remove(reaction.getStructure());//remove from ReactionTemplate's reactionDictionaryByStructure
 			}
 			//remove reactions from PDepNetworks in PDep cases
 			if (reactionModelEnlarger instanceof RateBasedPDepRME)	{

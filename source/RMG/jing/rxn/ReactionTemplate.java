@@ -113,6 +113,11 @@ public class ReactionTemplate {
       return;     
       //#]
   }
+
+  public void removeFromReactionDictionaryByStructure(Structure s) {
+      reactionDictionaryByStructure.remove(s);
+      return;
+  }
   
   //## operation calculateDepth(HashSet) 
   private static final int calculateDepth(HashSet p_treeNodeSet) {
