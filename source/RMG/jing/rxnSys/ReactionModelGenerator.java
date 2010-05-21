@@ -4138,23 +4138,6 @@ public class ReactionModelGenerator {
 						}
 						pdn.removeFromNetReactionList((PDepReaction)reaction);
 					}
-					//remove isomers
-					Iterator iIter = pdn.getIsomers().iterator();
-					toRemove = new HashSet();
-					while(iIter.hasNext()){
-						PDepIsomer pdi = (PDepIsomer)iIter.next();
-						Iterator isIter = pdi.getSpeciesListIterator();
-						while(isIter.hasNext()){
-							Species spe = (Species)isIter.next();
-							if (speciesToPrune.contains(spe)&&!toRemove.contains(pdi)) toRemove.add(pdi);
-						}
-						if(pdi.getSpeciesList().size()==0 && !toRemove.contains(pdi)) toRemove.add(pdi);//if the pdi doesn't contain any species, schedule it for removal
-					}
-					iterRem = toRemove.iterator();
-					while(iterRem.hasNext()){
-						PDepIsomer pdi = (PDepIsomer)iterRem.next();
-						pdn.getIsomers().remove(pdi);
-					}
 					//remove nonincluded reactions
 					rIter = pdn.getNonincludedReactions().iterator();
 					toRemove = new HashSet();
@@ -4176,6 +4159,23 @@ public class ReactionModelGenerator {
 						}
 						pdn.removeFromNonincludedReactionList((PDepReaction)reaction);
 					}
+					//remove isomers
+					Iterator iIter = pdn.getIsomers().iterator();
+					toRemove = new HashSet();
+					while(iIter.hasNext()){
+						PDepIsomer pdi = (PDepIsomer)iIter.next();
+						Iterator isIter = pdi.getSpeciesListIterator();
+						while(isIter.hasNext()){
+							Species spe = (Species)isIter.next();
+							if (speciesToPrune.contains(spe)&&!toRemove.contains(pdi)) toRemove.add(pdi);
+						}
+						if(pdi.getSpeciesList().size()==0 && !toRemove.contains(pdi)) toRemove.add(pdi);//if the pdi doesn't contain any species, schedule it for removal
+					}
+					iterRem = toRemove.iterator();
+					while(iterRem.hasNext()){
+						PDepIsomer pdi = (PDepIsomer)iterRem.next();
+						pdn.removeFromIsomerList(pdi);
+					}
 					//remove the entire network if the network has no path or net reactions
 					if(pdn.getPathReactions().size()==0&&pdn.getNetReactions().size()==0) pdnToRemove.add(pdn);
 				}
@@ -4192,15 +4192,15 @@ public class ReactionModelGenerator {
     //determines whether a reaction can be removed; returns true ; cf. categorizeReaction() in CoreEdgeReactionModel
     //returns true if the reaction involves reactants or products that are in p_prunableSpecies; otherwise returns false
     public boolean reactionPrunableQ(Reaction p_reaction, Collection p_prunableSpecies){
-		Iterator iter = p_reaction.getReactants();
+	Iterator iter = p_reaction.getReactants();
         while (iter.hasNext()) {
-			Species spe = (Species)iter.next();
+		Species spe = (Species)iter.next();
         	if (p_prunableSpecies.contains(spe))
 				return true;
         }
         iter = p_reaction.getProducts();
         while (iter.hasNext()) {
-			Species spe = (Species)iter.next();
+		Species spe = (Species)iter.next();
         	if (p_prunableSpecies.contains(spe))
 				return true;
         }

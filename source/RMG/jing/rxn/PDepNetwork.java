@@ -285,6 +285,11 @@ public class PDepNetwork {
 		return null;
 	}
 
+	public void removeFromIsomerList(PDepIsomer pdi) {
+		isomerList.remove(pdi);
+		return;
+	}
+
 	/**
 	 * Checks to see if the network contains species as a unimolecular isomer.
 	 * @param species The species to check for
