@@ -212,12 +212,22 @@ public class PDepNetwork {
 		return pathReactionList;
 	}
 
+	public void removeFromPathReactionList(PDepReaction pdr) {
+		pathReactionList.remove(pdr);
+		return;
+	}
+
 	/**
 	 * Returns the list of net reactions (in the core or on the edge).
 	 * @return The list of net reactions
 	 */
 	public LinkedList<PDepReaction> getNetReactions() {
 		return netReactionList;
+	}
+
+	public void removeFromNetReactionList(PDepReaction pdr) {
+		netReactionList.remove(pdr);
+		return;
 	}
 
 	/**
@@ -227,6 +237,11 @@ public class PDepNetwork {
 	 */
 	public LinkedList<PDepReaction> getNonincludedReactions() {
 		return nonincludedReactionList;
+	}
+
+	public void removeFromNonincludedReactionList(PDepReaction pdr) {
+		nonincludedReactionList.remove(pdr);
+		return;
 	}
 
 	/**
