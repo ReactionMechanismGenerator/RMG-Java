@@ -509,6 +509,33 @@ public class PDepReaction extends Reaction {
     
     }
 	
+	public String toRestartString(Temperature t) {
+        if (pDepRate != null) {
+
+			String result = getStructure().toRestartString(true).toString();
+			if (PDepRateConstant.getMode() == PDepRateConstant.Mode.CHEBYSHEV)
+				result = formPDepSign(result);
+			result += '\t' + "1.0E0 0.0 0.0" ;
+			result += "\t!" + getComments().toString()  + '\n';
+			if (PDepRateConstant.getMode() == PDepRateConstant.Mode.CHEBYSHEV)
+				result += pDepRate.getChebyshev().toChemkinString() + '\n';
+			else if (PDepRateConstant.getMode() == PDepRateConstant.Mode.PDEPARRHENIUS)
+				result += pDepRate.getPDepArrheniusKinetics().toChemkinString();
+
+			return result;
+		}
+		else if (kinetics != null)
+			//return super.toChemkinString(t);
+			// MRH 18Jan2010:
+			//	Changed from toChemkinString(t) to toRestartString(t) to avoid bug in 
+			//		reporting chem.inp file (issue of reporting A(single event) vs.
+			//		A(single event) * (# events)
+			return super.toRestartString(t,true);
+		else
+			return "";
+    
+    }
+	
 	// 6Jul2009-MRH:
 	//	This toChemkinString function is identical to the toChemkinString(Temperature)
 	//		function, with the exception of the if(PDep.getMode() == Mode.RATE) statement

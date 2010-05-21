@@ -1240,7 +1240,7 @@ public class Reaction {
 		 * 		when writing the Restart files, to account for this bug.
 		 */
 		
-		String result = getStructure().toRestartString(hasReverseReaction()); //+ " "+getStructure().direction + " "+getStructure().redundancy;
+		String result = getStructure().toRestartString(hasReverseReaction()).toString(); //+ " "+getStructure().direction + " "+getStructure().redundancy;
 		// MRH 18Jan2010: Restart files do not look for direction/redundancy
 		/*
 		 * MRH 14Feb2010: Handle reactions with multiple kinetics

@@ -435,11 +435,11 @@ public class PopulateReactions {
 		        	
 		        	LinkedList<PDepReaction> indivPDepRxns = pdepnetwork.getNetReactions();
 		        	for (int numPDepRxns=0; numPDepRxns<indivPDepRxns.size(); numPDepRxns++) {
-		        		listOfReactions += indivPDepRxns.get(numPDepRxns).toChemkinString(systemTemp);
+		        		listOfReactions += indivPDepRxns.get(numPDepRxns).toRestartString(systemTemp);
 		        	}
 		        	LinkedList<PDepReaction> nonIncludedRxns = pdepnetwork.getNonincludedReactions();
 		        	for (int numNonRxns=0; numNonRxns<nonIncludedRxns.size(); ++numNonRxns) {
-		        		listOfReactions += nonIncludedRxns.get(numNonRxns).toChemkinString(systemTemp);
+		        		listOfReactions += nonIncludedRxns.get(numNonRxns).toRestartString(systemTemp);
 		        	}
 		        	LinkedList<PDepIsomer> allpdepisomers = pdepnetwork.getIsomers();
 		        	for (int numIsomers=0; numIsomers<allpdepisomers.size(); ++numIsomers) {
@@ -478,8 +478,8 @@ public class PopulateReactions {
 	        			if (r.getStructure() == temp_Reaction.getStructure()) {
 	        				dupRxn = true;
 	        				break;
-	        			} else if (r.hasReverseReaction() && temp_Reaction.hasReverseReaction()) {
-	        				if (r.getReverseReaction().getStructure() == temp_Reaction.getReverseReaction().getStructure()) {
+	        			} else if (r.hasReverseReaction()) {
+	        				if (r.getReverseReaction().getStructure() == temp_Reaction.getStructure()) {
 	        					dupRxn = true;
 	        					break;
 	        				}
@@ -499,7 +499,7 @@ public class PopulateReactions {
         	int i = 0;
         	while (iter_species.hasNext()) {
         		Species species = (Species)iter_species.next();
-        		listOfSpecies += species.getChemkinName() + "\n" +
+        		listOfSpecies += species.getName()+"("+species.getID()+")\n" +
         			species.getChemGraph().toStringWithoutH(i) + "\n";
         	}
         	

@@ -617,9 +617,15 @@ public class ChemParser {
     	
     	//	The remaining tokens are comments
     	String comments = "";
-    	while (st.hasMoreTokens()) {
-    		comments += st.nextToken();
+    	if (st.hasMoreTokens()) {
+    		String beginningOfComments = st.nextToken();
+    		int startIndex = p_rxnString.indexOf(beginningOfComments);
+    		comments = p_rxnString.substring(startIndex);
     	}
+    	if (comments.startsWith("!")) comments = comments.substring(1);
+//    	while (st.hasMoreTokens()) {
+//    		comments += st.nextToken();
+//    	}
     	
     	// Generate the kinetics (assuming a rank of 1 ... as of 7/Sept/2009, the rank
     	//	of Kinetics should not be important at this stage of the mechanism
@@ -692,7 +698,7 @@ public class ChemParser {
         for (int i = 0; i < speNum; i++) {
         	String name = st.nextToken().trim();
         	if (!name.toUpperCase().equals("M")) {
-        		Species spe = (Species)p_speciesSet.getSpeciesFromChemkinName(name);
+        		Species spe = (Species)p_speciesSet.getSpeciesFromNameID(name);
         		if (spe == null) throw new InvalidStructureException("unknown reactant/product: " + name);
         		reactionSpe.add(spe);
         	}
