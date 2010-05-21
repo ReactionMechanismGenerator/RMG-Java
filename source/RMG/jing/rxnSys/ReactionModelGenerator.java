@@ -2544,7 +2544,7 @@ public class ReactionModelGenerator {
             bw = new BufferedWriter(new FileWriter("Restart/edgeSpecies.txt"));
 			for(Iterator iter=((CoreEdgeReactionModel)getReactionModel()).getUnreactedSpeciesSet().iterator();iter.hasNext();){
 				Species species = (Species) iter.next();
-				bw.write(species.getChemkinName());
+				bw.write(species.getName()+"("+species.getID()+")");
 				bw.newLine();
 				int dummyInt = 0;
 				bw.write(species.getChemGraph().toStringWithoutH(dummyInt));
@@ -2630,7 +2630,7 @@ public class ReactionModelGenerator {
             bw = new BufferedWriter(new FileWriter("Restart/coreSpecies.txt"));
 			for(Iterator iter=getReactionModel().getSpecies();iter.hasNext();){
 				Species species = (Species) iter.next();
-				bw.write(species.getChemkinName());
+				bw.write(species.getName()+"("+species.getID()+")");
 				bw.newLine();
 				int dummyInt = 0;
 				bw.write(species.getChemGraph().toStringWithoutH(dummyInt));
@@ -2885,7 +2885,7 @@ public class ReactionModelGenerator {
 				bw.newLine();
 				for (Iterator iter2=pathRxns.iterator(); iter2.hasNext();) {
 					PDepReaction currentPDepRxn = (PDepReaction)iter2.next();
-					bw.write(currentPDepRxn.getDirection() + "\t" + currentPDepRxn.toChemkinString(new Temperature(298,"K")));
+					bw.write(currentPDepRxn.getDirection() + "\t" + currentPDepRxn.toRestartString(new Temperature(298,"K")));
 					bw.newLine();
 				}
 				
@@ -3684,9 +3684,15 @@ public class ReactionModelGenerator {
 			    	
 			    	//	The remaining tokens are comments
 			    	String comments = "";
-			    	while (st.hasMoreTokens()) {
-			    		comments += st.nextToken();
+			    	if (st.hasMoreTokens()) {
+			    		String beginningOfComments = st.nextToken();
+			    		int startIndex = line.indexOf(beginningOfComments);
+			    		comments = line.substring(startIndex);
 			    	}
+			    	if (comments.startsWith("!")) comments = comments.substring(1);
+//			    	while (st.hasMoreTokens()) {
+//			    		comments += st.nextToken();
+//			    	}
 			    	
 			        ArrheniusKinetics[] k = new ArrheniusKinetics[1];
 			        k[0] = new ArrheniusKinetics(uA,un,uE,"",1,"",comments);

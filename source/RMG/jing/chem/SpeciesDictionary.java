@@ -179,6 +179,20 @@ public class SpeciesDictionary {
         
         //#]
     }
+    
+    public static Species getSpeciesFromNameID(String p_name) {
+    	if (p_name == null) throw new NullPointerException();
+        
+        Iterator iter = dictionary.values().iterator();
+        while (iter.hasNext()) {
+        	Species spe = (Species)iter.next();
+        	if ((spe.getName()+"("+spe.getID()+")").compareToIgnoreCase(p_name) == 0) {
+        		return spe;
+        	}
+        }
+        
+        return null;
+    }
 	
 	public static Species getSpeciesFromGraph(Graph g) {
 		if (g == null) throw new NullPointerException();

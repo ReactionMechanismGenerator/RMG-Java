@@ -859,7 +859,7 @@ public class Structure {
 
 //	## operation toChemkinString()
 //	## operation toChemkinString()
-	 public String toRestartString(boolean p_includeReverse) {
+	 public StringBuilder toRestartString(boolean p_includeReverse) {
 	        //#[ operation toChemkinString(boolean)
 	        String s="";
 	        int index = 0;
@@ -870,8 +870,8 @@ public class Structure {
 	        while (iter1.hasNext()) {
 	        	index++;
 				Species spe = (Species)iter1.next();
-	        	if (index < r_num) s = s + spe.toChemkinString() + "+";
-	        	else s += spe.toChemkinString();
+	        	if (index < r_num) s = s + spe.getName()+"("+spe.getID()+")" + "+";
+	        	else s += spe.getName()+"("+spe.getID()+")";
 	        }
 	        if (p_includeReverse)
 	        	s += "=";
@@ -883,11 +883,13 @@ public class Structure {
 	        while (iter2.hasNext()) {
 	        	index++;
 				Species spe = (Species)iter2.next();
-	        	if (index < p_num) s = s + spe.toChemkinString() + "+";
-	        	else s += spe.toChemkinString();
+	        	if (index < p_num) s = s + spe.getName()+"("+spe.getID()+")" + "+";
+	        	else s += spe.getName()+"("+spe.getID()+")";
 	        }
 
-	        return s;
+	        StringBuilder sb = new StringBuilder(s);
+	        
+	        return sb;
 	        //#]
 	    }
 
