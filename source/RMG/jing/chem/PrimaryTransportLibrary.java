@@ -189,6 +189,8 @@ public class PrimaryTransportLibrary {
 
 
 	public static TransportData getTransportData(Graph p_graph){
+		if (library == null) return null;
+		
 		TransportData td = (TransportData)library.get(p_graph);
 		if (td != null){
 			return td;
