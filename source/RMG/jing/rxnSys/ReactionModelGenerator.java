@@ -4091,6 +4091,7 @@ public class ReactionModelGenerator {
 				writePrunedEdgeReaction(reaction);
 				ReactionTemplate rt = reaction.getReactionTemplate();
 				reaction.setReactionTemplate(null);//remove from ReactionTemplate's reactionDictionaryByStructure
+				reaction.setReverseReaction(null);
 				rt.removeFromReactionDictionaryByStructure(reaction.getStructure());//remove from ReactionTemplate's reactionDictionaryByStructure
 				reaction.getStructure().clearProducts();
 				reaction.getStructure().clearReactants();
