@@ -92,7 +92,7 @@ public class ReactionModelGenerator {
     //	This temperature is used to select the "best" kinetics from the rxn library
     protected static Temperature temp4BestKinetics; 
     // This is the new "PrimaryReactionLibrary"
-    protected SeedMechanism seedMechanism;
+    protected SeedMechanism seedMechanism = null;
     protected PrimaryThermoLibrary primaryThermoLibrary;
     protected PrimaryTransportLibrary primaryTransportLibrary;
 	
@@ -1030,7 +1030,6 @@ public class ReactionModelGenerator {
 			 */
 			line = ChemParser.readMeaningfulLine(reader);
 			if (line.startsWith("SeedMechanism:")) {
-				int numMechs = 0;
 				line = ChemParser.readMeaningfulLine(reader);
 				while (!line.equals("END")) {                     		
 					String[] tempString = line.split("Name: ");
@@ -1063,17 +1062,13 @@ public class ReactionModelGenerator {
 					String path = System.getProperty("jing.rxn.ReactionLibrary.pathName");
 					path += "/" + location;
 										   
-					if (numMechs==0) {
-						setSeedMechanism(new SeedMechanism(name, path, generate));
-						++numMechs; 	
-					}
-					else {
-						getSeedMechanism().appendSeedMechanism(name, path, generate);
-						++numMechs;
-					}
+					if (getSeedMechanism() == null)
+						setSeedMechanism(new SeedMechanism(name, path, generate, false));
+					else
+						getSeedMechanism().appendSeedMechanism(name, path, generate, false);
 					line = ChemParser.readMeaningfulLine(reader);
 				}
-				if (numMechs != 0)	System.out.println("Seed Mechanisms in use: " + getSeedMechanism().getName());
+				if (getSeedMechanism() != null)	System.out.println("Seed Mechanisms in use: " + getSeedMechanism().getName());
 				else setSeedMechanism(null);
 			} else throw new InvalidSymbolException("Error reading condition.txt file: "
 													+ "Could not locate SeedMechanism field");
@@ -1493,8 +1488,8 @@ public class ReactionModelGenerator {
 					 * 	user won't lose any information
 					 */
 					String[] restartFiles = {"Restart/coreReactions.txt", "Restart/coreSpecies.txt",
-							"Restart/edgeReactions.txt", "Restart/edgeSpecies.txt", "Restart/lindemannReactions.txt",
-							"Restart/pdepnetworks.txt", "Restart/thirdBodyReactions.txt", "Restart/troeReactions.txt"};
+							"Restart/edgeReactions.txt", "Restart/edgeSpecies.txt",
+							"Restart/pdepnetworks.txt", "Restart/pdepreactions.txt"};
 					writeBackupRestartFiles(restartFiles);
 					
 					writeCoreSpecies();
@@ -2654,26 +2649,18 @@ public class ReactionModelGenerator {
 	
 	private void writeCoreReactions() {
 		BufferedWriter bw_rxns = null;
-		BufferedWriter bw_troe = null;
-		BufferedWriter bw_lindemann = null;
-		BufferedWriter bw_thirdbody = null;
+		BufferedWriter bw_pdeprxns = null;
 		
         try {
             bw_rxns = new BufferedWriter(new FileWriter("Restart/coreReactions.txt"));
-            bw_troe = new BufferedWriter(new FileWriter("Restart/troeReactions.txt"));
-            bw_lindemann = new BufferedWriter(new FileWriter("Restart/lindemannReactions.txt"));
-            bw_thirdbody = new BufferedWriter(new FileWriter("Restart/thirdBodyReactions.txt"));
+            bw_pdeprxns = new BufferedWriter(new FileWriter("Restart/pdepreactions.txt"));
             
     		String EaUnits = ArrheniusKinetics.getEaUnits();
     		String AUnits = ArrheniusKinetics.getAUnits();
     		bw_rxns.write("UnitsOfEa: " + EaUnits);
     		bw_rxns.newLine();
-    		bw_troe.write("Unit:\nA: mol/cm3/s\nE: " + EaUnits + "\n\nReactions:");
-    		bw_troe.newLine();
-    		bw_lindemann.write("Unit:\nA: mol/cm3/s\nE: " + EaUnits + "\n\nReactions:");
-    		bw_lindemann.newLine();
-    		bw_thirdbody.write("Unit:\nA: mol/cm3/s\nE: " + EaUnits + "\n\nReactions :");
-    		bw_thirdbody.newLine();
+    		bw_pdeprxns.write("Unit:\nA: mol/cm3/s\nE: " + EaUnits + "\n\nReactions:");
+    		bw_pdeprxns.newLine();
             
 			CoreEdgeReactionModel cerm = (CoreEdgeReactionModel)getReactionModel();
 			LinkedHashSet allcoreRxns = cerm.core.reaction;
@@ -2682,18 +2669,18 @@ public class ReactionModelGenerator {
 				if (reaction.isForward()) {
 					if (reaction instanceof TROEReaction) {
 						TROEReaction troeRxn = (TROEReaction) reaction;
-						bw_troe.write(troeRxn.toRestartString(new Temperature(298,"K")));
-						bw_troe.newLine();
+						bw_pdeprxns.write(troeRxn.toRestartString(new Temperature(298,"K")));
+						bw_pdeprxns.newLine();
 					}
 					else if (reaction instanceof LindemannReaction) {
 						LindemannReaction lindeRxn = (LindemannReaction) reaction;
-						bw_lindemann.write(lindeRxn.toRestartString(new Temperature(298,"K")));
-						bw_lindemann.newLine();
+						bw_pdeprxns.write(lindeRxn.toRestartString(new Temperature(298,"K")));
+						bw_pdeprxns.newLine();
 					}
 					else if (reaction instanceof ThirdBodyReaction) {
 						ThirdBodyReaction tbRxn = (ThirdBodyReaction) reaction;
-						bw_thirdbody.write(tbRxn.toRestartString(new Temperature(298,"K")));
-						bw_thirdbody.newLine();
+						bw_pdeprxns.write(tbRxn.toRestartString(new Temperature(298,"K")));
+						bw_pdeprxns.newLine();
 					}
 					else {
 						//bw.write(reaction.toChemkinString(new Temperature(298,"K")));
@@ -2712,17 +2699,9 @@ public class ReactionModelGenerator {
                     bw_rxns.flush();
                     bw_rxns.close();
                 }
-                if (bw_troe != null) {
-                    bw_troe.flush();
-                    bw_troe.close();
-                }
-                if (bw_lindemann != null) {
-                    bw_lindemann.flush();
-                    bw_lindemann.close();
-                }
-                if (bw_thirdbody != null) {
-                    bw_thirdbody.flush();
-                    bw_thirdbody.close();
+                if (bw_pdeprxns != null) {
+                	bw_pdeprxns.flush();
+                	bw_pdeprxns.close();
                 }
             } catch (IOException ex) {
                 ex.printStackTrace();
@@ -3127,23 +3106,26 @@ public class ReactionModelGenerator {
 			e.printStackTrace();
 		}
 		
+		/*
+		 *  Read in the pdepreactions.txt file:
+		 *  	This file contains third-body, lindemann, and troe reactions
+		 *  	A RMG mechanism would only have these reactions if a user specified
+		 *  		them in a Seed Mechanism, meaning they are core species &
+		 *  		reactions.
+		 *  	Place these reactions in a new Seed Mechanism, using the 
+		 *  		coreSpecies.txt file as the species.txt file.
+		 */
 		try {
-			SeedMechanism.readThirdBodyReactions("Restart/thirdBodyReactions.txt");
-		} catch (IOException e1) {
-			e1.printStackTrace();
-		}
-		try {
-			SeedMechanism.readLindemannReactions("Restart/lindemannReactions.txt");
-		} catch (IOException e1) {
-			e1.printStackTrace();
-		}
-		try {
-			SeedMechanism.readTroeReactions("Restart/troeReactions.txt");
+			String path = System.getProperty("user.dir") +  "/Restart";								   
+			if (getSeedMechanism() == null)
+				setSeedMechanism(new SeedMechanism("Restart", path, false, true));
+			else
+				getSeedMechanism().appendSeedMechanism("Restart", path, false, true);
 		} catch (IOException e1) {
 			e1.printStackTrace();
 		}
 		
-		restartCoreRxns.addAll(SeedMechanism.reactionSet);
+		restartCoreRxns.addAll(getSeedMechanism().getReactionSet());
 		
 		// Read in edge reactions
 		try {
