@@ -561,6 +561,11 @@ public class CoreEdgeReactionModel implements ReactionModel {
         
         //#]
     }
+
+    public void removeFromUnreactedReactionSet(Reaction rxn) {
+        edge.reaction.remove(rxn);
+        return;
+    }
     
     //## operation getUnreactedSpeciesSet() 
     public LinkedHashSet getUnreactedSpeciesSet() {
