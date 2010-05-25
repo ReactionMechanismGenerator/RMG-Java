@@ -4089,27 +4089,68 @@ public class ReactionModelGenerator {
 			while(iter.hasNext()){
 				Reaction reaction = (Reaction)iter.next();
 				writePrunedEdgeReaction(reaction);
+				Reaction reverse = reaction.getReverseReaction();
+				((CoreEdgeReactionModel)reactionModel).removeFromUnreactedReactionSet(reaction);
+				((CoreEdgeReactionModel)reactionModel).removeFromUnreactedReactionSet(reverse);
 				ReactionTemplate rt = reaction.getReactionTemplate();
-				reaction.setReactionTemplate(null);//remove from ReactionTemplate's reactionDictionaryByStructure
+				ReactionTemplate rtr = reverse.getReactionTemplate();
 				rt.removeFromReactionDictionaryByStructure(reaction.getStructure());//remove from ReactionTemplate's reactionDictionaryByStructure
+				rtr.removeFromReactionDictionaryByStructure(reverse.getStructure());
 				reaction.getStructure().clearProducts();
 				reaction.getStructure().clearReactants();
-				((CoreEdgeReactionModel)getReactionModel()).getUnreactedReactionSet().remove(reaction);
+				reverse.getStructure().clearProducts();
+				reverse.getStructure().clearReactants();
+
+				//reaction.setReactionTemplate(null);//remove from ReactionTemplate's reactionDictionaryByStructure
+				//reverse.setReactionTemplate(null);
+				//reaction.setReverseReaction(null);
+				//reverse.setReverseReaction(null);
 			}
 			//remove reactions from PDepNetworks in PDep cases
 			if (reactionModelEnlarger instanceof RateBasedPDepRME)	{
 				iter = PDepNetwork.getNetworks().iterator();
 				HashSet pdnToRemove = new HashSet();
+				HashSet toRemovePath;
+				HashSet toRemoveNet;
+				HashSet toRemoveNonincluded;
+				HashSet toRemoveIsomer;
 				while (iter.hasNext()){
 					PDepNetwork pdn = (PDepNetwork)iter.next();
-					//remove path reactions
+					//identify path reactions to remove
 					Iterator rIter = pdn.getPathReactions().iterator();
-					toRemove = new HashSet();
+					toRemovePath = new HashSet();
 					while(rIter.hasNext()){
 						Reaction reaction = (Reaction)rIter.next();
-						if (reactionPrunableQ(reaction, speciesToPrune))  toRemove.add(reaction);
+						if (reactionPrunableQ(reaction, speciesToPrune))  toRemovePath.add(reaction);
 					}
-					Iterator iterRem = toRemove.iterator();
+					//identify net reactions to remove
+					rIter = pdn.getNetReactions().iterator();
+					toRemoveNet = new HashSet();
+					while(rIter.hasNext()){
+						Reaction reaction = (Reaction)rIter.next();
+						if (reactionPrunableQ(reaction, speciesToPrune)) toRemoveNet.add(reaction);
+					}
+					//identify nonincluded reactions to remove
+					rIter = pdn.getNonincludedReactions().iterator();
+					toRemoveNonincluded = new HashSet();
+					while(rIter.hasNext()){
+						Reaction reaction = (Reaction)rIter.next();
+						if (reactionPrunableQ(reaction, speciesToPrune)) toRemoveNonincluded.add(reaction);
+					}
+					//identify isomers to remove
+					Iterator iIter = pdn.getIsomers().iterator();
+					toRemoveIsomer = new HashSet();
+					while(iIter.hasNext()){
+						PDepIsomer pdi = (PDepIsomer)iIter.next();
+						Iterator isIter = pdi.getSpeciesListIterator();
+						while(isIter.hasNext()){
+							Species spe = (Species)isIter.next();
+							if (speciesToPrune.contains(spe)&&!toRemove.contains(pdi)) toRemoveIsomer.add(pdi);
+						}
+						if(pdi.getSpeciesList().size()==0 && !toRemove.contains(pdi)) toRemoveIsomer.add(pdi);//if the pdi doesn't contain any species, schedule it for removal
+					}
+					//remove path reactions
+					Iterator iterRem = toRemovePath.iterator();
 					while(iterRem.hasNext()){
 						Reaction reaction = (Reaction)iterRem.next();
 						ReactionTemplate rt = reaction.getReactionTemplate();
@@ -4124,13 +4165,7 @@ public class ReactionModelGenerator {
 						pdn.removeFromPathReactionList((PDepReaction)reaction);
 					}
 					//remove net reactions
-					rIter = pdn.getNetReactions().iterator();
-					toRemove = new HashSet();
-					while(rIter.hasNext()){
-						Reaction reaction = (Reaction)rIter.next();
-						if (reactionPrunableQ(reaction, speciesToPrune)) toRemove.add(reaction);
-					}
-					iterRem = toRemove.iterator();
+					iterRem = toRemoveNet.iterator();
 					while(iterRem.hasNext()){
 						Reaction reaction = (Reaction)iterRem.next();
 						ReactionTemplate rt = reaction.getReactionTemplate();
@@ -4139,36 +4174,13 @@ public class ReactionModelGenerator {
 						    if(rt!=null){
 							rt.removeFromReactionDictionaryByStructure(reaction.getStructure());//remove from ReactionTemplate's reactionDictionaryByStructure
 						    }
-						    reaction.getStructure().clearProducts();
-						    reaction.getStructure().clearReactants();
+						    //reaction.getStructure().clearProducts();
+						    //reaction.getStructure().clearReactants();
 						}
 						pdn.removeFromNetReactionList((PDepReaction)reaction);
 					}
-					//remove isomers
-					Iterator iIter = pdn.getIsomers().iterator();
-					toRemove = new HashSet();
-					while(iIter.hasNext()){
-						PDepIsomer pdi = (PDepIsomer)iIter.next();
-						Iterator isIter = pdi.getSpeciesListIterator();
-						while(isIter.hasNext()){
-							Species spe = (Species)isIter.next();
-							if (speciesToPrune.contains(spe)&&!toRemove.contains(pdi)) toRemove.add(pdi);
-						}
-						if(pdi.getSpeciesList().size()==0 && !toRemove.contains(pdi)) toRemove.add(pdi);//if the pdi doesn't contain any species, schedule it for removal
-					}
-					iterRem = toRemove.iterator();
-					while(iterRem.hasNext()){
-						PDepIsomer pdi = (PDepIsomer)iterRem.next();
-						pdn.getIsomers().remove(pdi);
-					}
 					//remove nonincluded reactions
-					rIter = pdn.getNonincludedReactions().iterator();
-					toRemove = new HashSet();
-					while(rIter.hasNext()){
-						Reaction reaction = (Reaction)rIter.next();
-						if (reactionPrunableQ(reaction, speciesToPrune)) toRemove.add(reaction);
-					}
-					iterRem = toRemove.iterator();
+					iterRem = toRemoveNonincluded.iterator();
 					while(iterRem.hasNext()){
 						Reaction reaction = (Reaction)iterRem.next();
 						ReactionTemplate rt = reaction.getReactionTemplate();
@@ -4177,10 +4189,16 @@ public class ReactionModelGenerator {
 						    if(rt!=null){
 							rt.removeFromReactionDictionaryByStructure(reaction.getStructure());//remove from ReactionTemplate's reactionDictionaryByStructure
 						    }
-						    reaction.getStructure().clearProducts();
-						    reaction.getStructure().clearReactants();
+						   // reaction.getStructure().clearProducts();
+						   // reaction.getStructure().clearReactants();
 						}
 						pdn.removeFromNonincludedReactionList((PDepReaction)reaction);
+					}
+					//remove isomers
+					iterRem = toRemoveIsomer.iterator();
+					while(iterRem.hasNext()){
+						PDepIsomer pdi = (PDepIsomer)iterRem.next();
+						pdn.removeFromIsomerList(pdi);
 					}
 					//remove the entire network if the network has no path or net reactions
 					if(pdn.getPathReactions().size()==0&&pdn.getNetReactions().size()==0) pdnToRemove.add(pdn);
@@ -4198,15 +4216,15 @@ public class ReactionModelGenerator {
     //determines whether a reaction can be removed; returns true ; cf. categorizeReaction() in CoreEdgeReactionModel
     //returns true if the reaction involves reactants or products that are in p_prunableSpecies; otherwise returns false
     public boolean reactionPrunableQ(Reaction p_reaction, Collection p_prunableSpecies){
-		Iterator iter = p_reaction.getReactants();
+	Iterator iter = p_reaction.getReactants();
         while (iter.hasNext()) {
-			Species spe = (Species)iter.next();
+		Species spe = (Species)iter.next();
         	if (p_prunableSpecies.contains(spe))
 				return true;
         }
         iter = p_reaction.getProducts();
         while (iter.hasNext()) {
-			Species spe = (Species)iter.next();
+		Species spe = (Species)iter.next();
         	if (p_prunableSpecies.contains(spe))
 				return true;
         }
