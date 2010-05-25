@@ -74,25 +74,25 @@ public class SeedMechanism {
 
     // Constructors
     
-    public  SeedMechanism(String p_mechName, String p_directoryPath, boolean p_generateReactions) throws IOException {
+    public  SeedMechanism(String p_mechName, String p_directoryPath, boolean p_generateReactions, boolean p_fromRestart) throws IOException {
     	name = p_mechName;
 		generateReactions = p_generateReactions;
         if ( p_directoryPath == null) throw new NullPointerException("does not recognize Seed Mechanism directory path");
         try {
-        	read(p_directoryPath);
+        	read(p_directoryPath,p_fromRestart);
         }
         catch (IOException e) {
         	throw new IOException("Error in reading Seed Mechanism: " + name + '\n' + e.getMessage());
         }
     }
     
-    public void appendSeedMechanism(String new_mechName, String new_directoryPath, boolean p_generateReactions) throws IOException {
+    public void appendSeedMechanism(String new_mechName, String new_directoryPath, boolean p_generateReactions, boolean p_fromRestart) throws IOException {
     	String dir = System.getProperty("RMG.workingDirectory");
      	if (p_generateReactions)
 			setGenerateReactions(p_generateReactions);
 		setName(name + "/" + new_mechName);
     	try {
-    		read(new_directoryPath);	
+    		read(new_directoryPath,p_fromRestart);	
     	}
         catch (IOException e) {
         	throw new IOException("Error in reading Seed Mechanism: " + new_mechName + '\n' + e.getMessage());
@@ -103,23 +103,25 @@ public class SeedMechanism {
         return new LinkedHashSet(speciesSet.values());
     }
     
-    public void read(String p_directoryName) throws IOException {
+    public void read(String p_directoryName, boolean p_fromRestart) throws IOException {
         System.out.println("Reading seed mechanism from directory " + p_directoryName);
 		try {
         	if (!p_directoryName.endsWith("/")) p_directoryName = p_directoryName + "/";
         	
-            String speciesFile = p_directoryName + "species.txt";
-            String reactionFile = p_directoryName + "reactions.txt";
-            String pdepreactionFile = p_directoryName + "pdepreactions.txt";
-//            String thirdBodyReactionFile = p_directoryName + "3rdBodyReactions.txt";
-//            String troeReactionsFile = p_directoryName + "troeReactions.txt";
-//            String lindemannReactionsFile = p_directoryName + "lindemannReactions.txt";
-        	readSpecies(speciesFile);
-        	readReactions(reactionFile);
-        	readPdepReactions(pdepreactionFile);
-//            readThirdBodyReactions(thirdBodyReactionFile);
-//            readTroeReactions(troeReactionsFile);
-//            readLindemannReactions(lindemannReactionsFile);
+        	if (!p_fromRestart) {
+	            String speciesFile = p_directoryName + "species.txt";
+	            String reactionFile = p_directoryName + "reactions.txt";
+	            String pdepreactionFile = p_directoryName + "pdepreactions.txt";
+	        	readSpecies(speciesFile);
+	        	readReactions(reactionFile);
+	        	readPdepReactions(pdepreactionFile);
+        	}
+        	else {
+	            String speciesFile = p_directoryName + "coreSpecies.txt";
+	            String pdepreactionFile = p_directoryName + "pdepreactions.txt";
+	        	readSpecies(speciesFile);
+	        	readPdepReactions(pdepreactionFile);
+        	}
         	return;
         }
         catch (Exception e) {
