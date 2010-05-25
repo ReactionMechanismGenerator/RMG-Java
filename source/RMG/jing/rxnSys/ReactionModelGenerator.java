@@ -1284,7 +1284,7 @@ public class ReactionModelGenerator {
         for (Iterator iter = reactionSystemList.iterator(); iter.hasNext(); ) {
             ReactionSystem rs = (ReactionSystem)iter.next();
             if ((reactionModelEnlarger instanceof RateBasedPDepRME)) {//1/2/09 gmagoon and rwest: only call initializePDepNetwork for P-dep cases
-                rs.initializePDepNetwork();
+                if (!restart) rs.initializePDepNetwork();
             }
 			
             ReactionTime init = rs.getInitialReactionTime();
