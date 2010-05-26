@@ -471,15 +471,26 @@ public class PDepNetwork {
 	 */
 	public double getLeakFlux(SystemSnapshot ss) {
 		double rLeak = 0.0;
-		for (ListIterator<PDepReaction> iter = nonincludedReactionList.listIterator(); iter.hasNext(); ) {
-			PDepReaction rxn = iter.next();
-			/*double forwardFlux = rxn.calculateForwardFlux(ss);
-			double reverseFlux = rxn.calculateReverseFlux(ss);
-			System.out.println(rxn.toString() + ": " + forwardFlux + " " + reverseFlux);*/
-			if (rxn.getReactant().getIncluded() && !rxn.getProduct().getIncluded())
+		// If there is only one path reaction (and thus only one nonincluded 
+		// reaction), use the high-pressure limit rate as the flux rather than
+		// the k(T,P) value to ensure that we are considering the maximum
+		// possible flux entering the network
+		if (pathReactionList.size() == 1 && nonincludedReactionList.size() == 1 && netReactionList.size() == 0) {
+			PDepReaction rxn = pathReactionList.get(0);
+			if (!rxn.getProduct().getIncluded())
 				rLeak += rxn.calculateForwardFlux(ss);
-			else if (!rxn.getReactant().getIncluded() && rxn.getProduct().getIncluded())
+			else
 				rLeak += rxn.calculateReverseFlux(ss);
+		}
+		// Otherwise use the set of k(T,P) values
+		else {
+			for (ListIterator<PDepReaction> iter = nonincludedReactionList.listIterator(); iter.hasNext(); ) {
+				PDepReaction rxn = iter.next();
+				if (rxn.getReactant().getIncluded() && !rxn.getProduct().getIncluded())
+					rLeak += rxn.calculateForwardFlux(ss);
+				else if (!rxn.getReactant().getIncluded() && rxn.getProduct().getIncluded())
+					rLeak += rxn.calculateReverseFlux(ss);
+			}
 		}
 		return rLeak;
 	}
