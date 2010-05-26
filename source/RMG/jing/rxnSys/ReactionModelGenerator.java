@@ -1403,6 +1403,8 @@ public class ReactionModelGenerator {
 				//prune the reaction model (this will only do something in the AUTO case)
 				pruneReactionModel();
 				garbageCollect();
+				//System.out.println("After pruning, the model core has " + ((CoreEdgeReactionModel)getReactionModel()).getReactedReactionSet().size() + " reactions and "+ ((CoreEdgeReactionModel)getReactionModel()).getReactedSpeciesSet().size() + " species.");
+				//System.out.println("After pruning, the model edge has " + ((CoreEdgeReactionModel)getReactionModel()).getUnreactedReactionSet().size() + " reactions and "+ ((CoreEdgeReactionModel)getReactionModel()).getUnreactedSpeciesSet().size() + " species.");
 				// ENLARGE THE MODEL!!! (this is where the good stuff happens)
 				enlargeReactionModel();
 				double totalEnlarger = (System.currentTimeMillis() - pt)/1000/60;
@@ -4096,10 +4098,12 @@ public class ReactionModelGenerator {
 				ReactionTemplate rtr = reverse.getReactionTemplate();
 				rt.removeFromReactionDictionaryByStructure(reaction.getStructure());//remove from ReactionTemplate's reactionDictionaryByStructure
 				rtr.removeFromReactionDictionaryByStructure(reverse.getStructure());
-				reaction.getStructure().clearProducts();
-				reaction.getStructure().clearReactants();
-				reverse.getStructure().clearProducts();
-				reverse.getStructure().clearReactants();
+				//reaction.getStructure().clearProducts();
+				//reaction.getStructure().clearReactants();
+				//reverse.getStructure().clearProducts();
+				//reverse.getStructure().clearReactants();
+				reaction.setStructure(null);
+				reverse.setStructure(null);
 
 				//reaction.setReactionTemplate(null);//remove from ReactionTemplate's reactionDictionaryByStructure
 				//reverse.setReactionTemplate(null);

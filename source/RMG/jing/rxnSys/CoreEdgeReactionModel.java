@@ -563,7 +563,10 @@ public class CoreEdgeReactionModel implements ReactionModel {
     }
 
     public void removeFromUnreactedReactionSet(Reaction rxn) {
-        edge.reaction.remove(rxn);
+        boolean success = edge.reaction.remove(rxn);
+	//if (!success){
+	//    System.out.println("Pruning debugging line: "+ rxn);
+	//}
         return;
     }
     
