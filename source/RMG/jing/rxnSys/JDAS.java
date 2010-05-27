@@ -854,55 +854,92 @@ public abstract class JDAS implements DAESolver {
                                 edgeSpeciesCounter++;
                                 tempProdArray[0]=edgeSpeciesCounter;//note that if there are no non-included reactions that have all core reactants for a particular P-dep network, then the ID will be allocated, but not used...hopefully this would not cause problems with the Fortran code
                                 double k = 0.0;
+				boolean allCoreReac=false;
                              //   double k = pdn.getKLeak(index);//index in DASSL should correspond to the same (reactionSystem/TPcondition) index as used by kLeak
                              //   if (!pdn.isActive() && pdn.getIsChemAct()) {
                              //           k = pdn.getEntryReaction().calculateTotalRate(p_temperature);
                              //   }
-                                for (ListIterator<PDepReaction> iter = pdn.getNonincludedReactions().listIterator(); iter.hasNext(); ) {//cf. getLeakFlux in PDepNetwork
-                                    PDepReaction rxn = iter.next();
-                                    int reacCount=0;
-                                    int[] tempReacArray = {0, 0, 0};
-                                    boolean allCoreReac=false;//allCoreReac will be used to track whether all reactant species are in the core
-                                    if (rxn.getReactant().getIncluded() && !rxn.getProduct().getIncluded()){
-                                        k = rxn.calculateRate(p_temperature, p_pressure);
-                                        allCoreReac=true;
-                                        //iterate over the reactants, counting and storing IDs in tempReacArray, up to a maximum of 3 reactants
-                                        for (ListIterator<Species> rIter = rxn.getReactant().getSpeciesListIterator(); rIter.hasNext(); ) {
-                                            reacCount++;
-                                            Species spe = (Species)rIter.next();
-                                            if(model.containsAsReactedSpecies(spe)){
-                                                tempReacArray[reacCount-1]=getRealID(spe);
-                                            }
-                                            else{
-                                                allCoreReac=false;
-                                            }
-                                        }
-                                    }
-                                    else if (!rxn.getReactant().getIncluded() && rxn.getProduct().getIncluded()){
-                                        PDepReaction rxnReverse = (PDepReaction)rxn.getReverseReaction();
-                                        k = rxnReverse.calculateRate(p_temperature, p_pressure);
-                                        allCoreReac=true;
-                                        //iterate over the products, counting and storing IDs in tempReacArray, up to a maximum of 3 reactants
-                                        for (ListIterator<Species> rIter = rxn.getProduct().getSpeciesListIterator(); rIter.hasNext(); ) {
+				if(pdn.getPathReactions().size() == 1 && pdn.getNonincludedReactions().size() == 1 && pdn.getNetReactions().size() == 0){//// If there is only one path reaction (and thus only one nonincluded reaction), use the high-pressure limit rate as the flux rather than the k(T,P) value (cf. PDepNetwork.getLeakFlux())
+				    PDepReaction rxn = pdn.getPathReactions().get(0);
+				    int reacCount=0;
+				    int[] tempReacArray = {0, 0, 0};
+				    allCoreReac=false;//allCoreReac will be used to track whether all reactant species are in the core
+				    if (!rxn.getProduct().getIncluded()){
+					k = rxn.calculateRate(p_temperature, p_pressure);
+					allCoreReac=true;
+					//iterate over the reactants, counting and storing IDs in tempReacArray, up to a maximum of 3 reactants
+					for (ListIterator<Species> rIter = rxn.getReactant().getSpeciesListIterator(); rIter.hasNext(); ) {
+					    reacCount++;
+					    Species spe = (Species)rIter.next();
+					    if(model.containsAsReactedSpecies(spe)){
+						tempReacArray[reacCount-1]=getRealID(spe);
+					    }
+					    else{
+						allCoreReac=false;
+					    }
+					}
+				    }
+				    else{
+					PDepReaction rxnReverse = (PDepReaction)rxn.getReverseReaction();
+					k = rxnReverse.calculateRate(p_temperature, p_pressure);
+					allCoreReac=true;
+					//iterate over the products, counting and storing IDs in tempReacArray, up to a maximum of 3 reactants
+					for (ListIterator<Species> rIter = rxn.getProduct().getSpeciesListIterator(); rIter.hasNext(); ) {
 
-                                            reacCount++;
-                                            Species spe = (Species)rIter.next();
-                                            if(model.containsAsReactedSpecies(spe)){
-                                                tempReacArray[reacCount-1]=getRealID(spe);
-                                            }
-                                            else{
-                                                allCoreReac=false;
-                                            }
-                                        }
-                                    }
-                                    if(allCoreReac){//only consider cases where all reactants are in the core
-                                        edgeReactionCounter++;
-                                        //update the output string with info for kLeak for one PDepNetwork
-//                                        edgeReacInfoString.append("\n" + reacCount + " " + prodCount + " " + tempReacArray[0] + " " + tempReacArray[1] + " " + tempReacArray[2] + " " + tempProdArray[0] + " " + tempProdArray[1] + " " + tempProdArray[2] + " " + k);
-                                    }
-                                    
-                                    
-                                }
+					    reacCount++;
+					    Species spe = (Species)rIter.next();
+					    if(model.containsAsReactedSpecies(spe)){
+						tempReacArray[reacCount-1]=getRealID(spe);
+					    }
+					    else{
+						allCoreReac=false;
+					    }
+					}
+				    }
+				}
+				else{
+				    for (ListIterator<PDepReaction> iter = pdn.getNonincludedReactions().listIterator(); iter.hasNext(); ) {//cf. getLeakFlux in PDepNetwork
+					PDepReaction rxn = iter.next();
+					int reacCount=0;
+					int[] tempReacArray = {0, 0, 0};
+					allCoreReac=false;//allCoreReac will be used to track whether all reactant species are in the core
+					if (rxn.getReactant().getIncluded() && !rxn.getProduct().getIncluded()){
+					    k = rxn.calculateRate(p_temperature, p_pressure);
+					    allCoreReac=true;
+					    //iterate over the reactants, counting and storing IDs in tempReacArray, up to a maximum of 3 reactants
+					    for (ListIterator<Species> rIter = rxn.getReactant().getSpeciesListIterator(); rIter.hasNext(); ) {
+						reacCount++;
+						Species spe = (Species)rIter.next();
+						if(model.containsAsReactedSpecies(spe)){
+						    tempReacArray[reacCount-1]=getRealID(spe);
+						}
+						else{
+						    allCoreReac=false;
+						}
+					    }
+					}
+					else if (!rxn.getReactant().getIncluded() && rxn.getProduct().getIncluded()){
+					    PDepReaction rxnReverse = (PDepReaction)rxn.getReverseReaction();
+					    k = rxnReverse.calculateRate(p_temperature, p_pressure);
+					    allCoreReac=true;
+					    //iterate over the products, counting and storing IDs in tempReacArray, up to a maximum of 3 reactants
+					    for (ListIterator<Species> rIter = rxn.getProduct().getSpeciesListIterator(); rIter.hasNext(); ) {
+
+						reacCount++;
+						Species spe = (Species)rIter.next();
+						if(model.containsAsReactedSpecies(spe)){
+						    tempReacArray[reacCount-1]=getRealID(spe);
+						}
+						else{
+						    allCoreReac=false;
+						}
+					    }
+					}
+				    }
+				}
+				if(allCoreReac){//only consider cases where all reactants are in the core
+				    edgeReactionCounter++;
+				}
 
                         }
 		}
