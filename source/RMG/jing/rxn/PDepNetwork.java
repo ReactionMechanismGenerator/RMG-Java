@@ -410,8 +410,10 @@ public class PDepNetwork {
 
 		for (Iterator iter = reactionSet.iterator(); iter.hasNext(); ) {
 			Reaction rxn = (Reaction) iter.next();
-			if (!contains(rxn))
+			if (!contains(rxn)) {
 				addReactionToNetworks(rxn);
+				((CoreEdgeReactionModel)reactionModel).addReaction(rxn);
+			}
 		}
 
 	}
