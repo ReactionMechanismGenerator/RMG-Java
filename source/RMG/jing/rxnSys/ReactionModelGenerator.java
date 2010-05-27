@@ -1398,6 +1398,8 @@ public class ReactionModelGenerator {
 				//prune the reaction model (this will only do something in the AUTO case)
 				pruneReactionModel();
 				garbageCollect();
+				//System.out.println("After pruning, the model core has " + ((CoreEdgeReactionModel)getReactionModel()).getReactedReactionSet().size() + " reactions and "+ ((CoreEdgeReactionModel)getReactionModel()).getReactedSpeciesSet().size() + " species.");
+				//System.out.println("After pruning, the model edge has " + ((CoreEdgeReactionModel)getReactionModel()).getUnreactedReactionSet().size() + " reactions and "+ ((CoreEdgeReactionModel)getReactionModel()).getUnreactedSpeciesSet().size() + " species.");
 				// ENLARGE THE MODEL!!! (this is where the good stuff happens)
 				enlargeReactionModel();
 				double totalEnlarger = (System.currentTimeMillis() - pt)/1000/60;
@@ -4078,15 +4080,8 @@ public class ReactionModelGenerator {
 				ReactionTemplate rtr = reverse.getReactionTemplate();
 				rt.removeFromReactionDictionaryByStructure(reaction.getStructure());//remove from ReactionTemplate's reactionDictionaryByStructure
 				rtr.removeFromReactionDictionaryByStructure(reverse.getStructure());
-				reaction.getStructure().clearProducts();
-				reaction.getStructure().clearReactants();
-				reverse.getStructure().clearProducts();
-				reverse.getStructure().clearReactants();
-
-				//reaction.setReactionTemplate(null);//remove from ReactionTemplate's reactionDictionaryByStructure
-				//reverse.setReactionTemplate(null);
-				//reaction.setReverseReaction(null);
-				//reverse.setReverseReaction(null);
+				reaction.setStructure(null);
+				reverse.setStructure(null);
 			}
 			//remove reactions from PDepNetworks in PDep cases
 			if (reactionModelEnlarger instanceof RateBasedPDepRME)	{
@@ -4135,46 +4130,70 @@ public class ReactionModelGenerator {
 					Iterator iterRem = toRemovePath.iterator();
 					while(iterRem.hasNext()){
 						Reaction reaction = (Reaction)iterRem.next();
-						ReactionTemplate rt = reaction.getReactionTemplate();
-						reaction.setReactionTemplate(null);//remove from ReactionTemplate's reactionDictionaryByStructure
-						if(reaction.getStructure() != null){
-						    if(rt!=null){
-							rt.removeFromReactionDictionaryByStructure(reaction.getStructure());//remove from ReactionTemplate's reactionDictionaryByStructure
-						    }
-						    reaction.getStructure().clearProducts();
-						    reaction.getStructure().clearReactants();
-						}
+						Reaction reverse = reaction.getReverseReaction();
 						pdn.removeFromPathReactionList((PDepReaction)reaction);
+						pdn.removeFromPathReactionList((PDepReaction)reverse);
+						ReactionTemplate rt = reaction.getReactionTemplate();
+						ReactionTemplate rtr = null;
+						if(reverse!=null){
+						    rtr = reverse.getReactionTemplate();
+						}
+						if(rt!=null){
+						    rt.removeFromReactionDictionaryByStructure(reaction.getStructure());//remove from ReactionTemplate's reactionDictionaryByStructure
+						}
+						if(rtr!=null){
+						    rtr.removeFromReactionDictionaryByStructure(reverse.getStructure());
+						}
+						reaction.setStructure(null);
+						if(reverse!=null){
+						    reverse.setStructure(null);
+						}
 					}
 					//remove net reactions
 					iterRem = toRemoveNet.iterator();
 					while(iterRem.hasNext()){
 						Reaction reaction = (Reaction)iterRem.next();
-						ReactionTemplate rt = reaction.getReactionTemplate();
-						reaction.setReactionTemplate(null);//remove from ReactionTemplate's reactionDictionaryByStructure
-						if(reaction.getStructure() != null){
-						    if(rt!=null){
-							rt.removeFromReactionDictionaryByStructure(reaction.getStructure());//remove from ReactionTemplate's reactionDictionaryByStructure
-						    }
-						    //reaction.getStructure().clearProducts();
-						    //reaction.getStructure().clearReactants();
-						}
+						Reaction reverse = reaction.getReverseReaction();
 						pdn.removeFromNetReactionList((PDepReaction)reaction);
+						pdn.removeFromNetReactionList((PDepReaction)reverse);
+						ReactionTemplate rt = reaction.getReactionTemplate();
+						ReactionTemplate rtr = null;
+						if(reverse!=null){
+						    rtr = reverse.getReactionTemplate();
+						}
+						if(rt!=null){
+						    rt.removeFromReactionDictionaryByStructure(reaction.getStructure());//remove from ReactionTemplate's reactionDictionaryByStructure
+						}
+						if(rtr!=null){
+						    rtr.removeFromReactionDictionaryByStructure(reverse.getStructure());
+						}
+						reaction.setStructure(null);
+						if(reverse!=null){
+						    reverse.setStructure(null);
+						}
 					}
 					//remove nonincluded reactions
 					iterRem = toRemoveNonincluded.iterator();
 					while(iterRem.hasNext()){
 						Reaction reaction = (Reaction)iterRem.next();
-						ReactionTemplate rt = reaction.getReactionTemplate();
-						reaction.setReactionTemplate(null);//remove from ReactionTemplate's reactionDictionaryByStructure
-						if(reaction.getStructure() != null){
-						    if(rt!=null){
-							rt.removeFromReactionDictionaryByStructure(reaction.getStructure());//remove from ReactionTemplate's reactionDictionaryByStructure
-						    }
-						   // reaction.getStructure().clearProducts();
-						   // reaction.getStructure().clearReactants();
-						}
+						Reaction reverse = reaction.getReverseReaction();
 						pdn.removeFromNonincludedReactionList((PDepReaction)reaction);
+						pdn.removeFromNonincludedReactionList((PDepReaction)reverse);
+						ReactionTemplate rt = reaction.getReactionTemplate();
+						ReactionTemplate rtr = null;
+						if(reverse!=null){
+						    rtr = reverse.getReactionTemplate();
+						}
+						if(rt!=null){
+						    rt.removeFromReactionDictionaryByStructure(reaction.getStructure());//remove from ReactionTemplate's reactionDictionaryByStructure
+						}
+						if(rtr!=null){
+						    rtr.removeFromReactionDictionaryByStructure(reverse.getStructure());
+						}
+						reaction.setStructure(null);
+						if(reverse!=null){
+						    reverse.setStructure(null);
+						}
 					}
 					//remove isomers
 					iterRem = toRemoveIsomer.iterator();
