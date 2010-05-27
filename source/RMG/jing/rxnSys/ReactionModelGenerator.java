@@ -4077,11 +4077,20 @@ public class ReactionModelGenerator {
 				((CoreEdgeReactionModel)reactionModel).removeFromUnreactedReactionSet(reaction);
 				((CoreEdgeReactionModel)reactionModel).removeFromUnreactedReactionSet(reverse);
 				ReactionTemplate rt = reaction.getReactionTemplate();
-				ReactionTemplate rtr = reverse.getReactionTemplate();
-				rt.removeFromReactionDictionaryByStructure(reaction.getStructure());//remove from ReactionTemplate's reactionDictionaryByStructure
-				rtr.removeFromReactionDictionaryByStructure(reverse.getStructure());
+				ReactionTemplate rtr = null;
+				if(reverse!=null){
+				    rtr = reverse.getReactionTemplate();
+				}
+				if(rt!=null){
+				    rt.removeFromReactionDictionaryByStructure(reaction.getStructure());//remove from ReactionTemplate's reactionDictionaryByStructure
+				}
+				if(rtr!=null){
+				    rtr.removeFromReactionDictionaryByStructure(reverse.getStructure());
+				}
 				reaction.setStructure(null);
-				reverse.setStructure(null);
+				if(reverse!=null){
+				    reverse.setStructure(null);
+				}
 			}
 			//remove reactions from PDepNetworks in PDep cases
 			if (reactionModelEnlarger instanceof RateBasedPDepRME)	{
