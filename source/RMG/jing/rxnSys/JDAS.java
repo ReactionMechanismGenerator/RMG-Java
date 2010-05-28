@@ -896,6 +896,9 @@ public abstract class JDAS implements DAESolver {
 					    }
 					}
 				    }
+				    if(allCoreReac){//only consider cases where all reactants are in the core
+				        edgeReactionCounter++;
+				    }
 				}
 				else{
 				    for (ListIterator<PDepReaction> iter = pdn.getNonincludedReactions().listIterator(); iter.hasNext(); ) {//cf. getLeakFlux in PDepNetwork
@@ -935,10 +938,10 @@ public abstract class JDAS implements DAESolver {
 						}
 					    }
 					}
+					if(allCoreReac){//only consider cases where all reactants are in the core
+					    edgeReactionCounter++;
+					}
 				    }
-				}
-				if(allCoreReac){//only consider cases where all reactants are in the core
-				    edgeReactionCounter++;
 				}
 
                         }
