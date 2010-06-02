@@ -26,54 +26,10 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 
-
-
-
-
 package jing.chem;
-
-
-
-
 
 import java.util.*;
 
-
-
-//## package jing::chem
-
-
-
-//----------------------------------------------------------------------------
-
-// jing\chem\GeneralGAPP.java
-
-//----------------------------------------------------------------------------
-
-
-
-//## class GeneralGAPP
-
 public interface GeneralAbramGAPP {
-
-
-
-
-
-    //## operation generateThermoData(ChemGraph)
-
-
     AbramData generateAbramData(ChemGraph p_chemGraph);
-
-
-
 }
-
-/*********************************************************************
-
-	File Path	: RMG\RMG\jing\chem\GeneralGAPP.java
-
-*********************************************************************/
-
-
-
