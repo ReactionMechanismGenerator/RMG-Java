@@ -29,25 +29,45 @@
 package jing.chem;
 
 public class AbramData extends AbrahamGAValue {
+	/* Contains AbramGAValue parameters (S,B,E,L,A) and also V, the McGowan's Volume.
+	   If created from an AbrahamGAValue instance, V=0
+	 */
+	public double V = 0 ;
+	
 	public  AbramData() {
         super();
+		V = 0;
     }
 	
-    public  AbramData(double S, double B, double E, double V, double A) {
-        super(S,B,E,V,A);
-    }     
+    public  AbramData(double S, double B, double E, double L, double A) {
+        super(S,B,E,L,A);
+		V=0;
+    }
+	
+	public  AbramData(double S, double B, double E, double L, double A, double p_V) {
+        super(S,B,E,L,A);
+		V = p_V;
+    }   
 	
     public  AbramData(AbrahamGAValue p_ga) {
         super(p_ga);
+		V = 0;
     }
 	
-    public void plus(AbrahamGAValue p_thermoData) {
-        if (p_thermoData == null) return;
-        S += p_thermoData.S;
-        B += p_thermoData.B;
-        E += p_thermoData.E;
-        L += p_thermoData.L;
-        A += p_thermoData.A;
+    public void plus(AbrahamGAValue p_ga) {
+        if (p_ga == null) return;
+        S += p_ga.S;
+        B += p_ga.B;
+        E += p_ga.E;
+        L += p_ga.L;
+        A += p_ga.A;
+	}
+	
+	public String toString() {
+		// Get the parent class's toString() and append the V value.
+		String s = super.toString();
+		s = s + '\t' + String.valueOf(V);
+		return s;
 	}
 }   
 
