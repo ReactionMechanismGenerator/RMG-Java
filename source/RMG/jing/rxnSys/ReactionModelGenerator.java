@@ -1848,7 +1848,7 @@ public class ReactionModelGenerator {
         //Write core species to RMG_Solvation_Properties.txt
 		CoreEdgeReactionModel cerm = (CoreEdgeReactionModel)rm;
 		StringBuilder result = new StringBuilder();
-		result.append("ChemkinName\tChemicalFormula\tMolecularWeight\tRadius\tDiffusivity\tAbrahamS\tAbrahamB\tAbrahamE\tAbrahamL\tAbrahamA\tChemkinName\n\n");
+		result.append("ChemkinName\tChemicalFormula\tMolecularWeight\tRadius\tDiffusivity\tAbrahamS\tAbrahamB\tAbrahamE\tAbrahamL\tAbrahamA\tAbrahamV\tChemkinName\n\n");
 		Iterator iter = cerm.getSpecies();
 		while (iter.hasNext()){
 			Species spe = (Species)iter.next();
