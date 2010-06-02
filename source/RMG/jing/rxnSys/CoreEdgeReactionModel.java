@@ -289,11 +289,22 @@ public class CoreEdgeReactionModel implements ReactionModel {
     	if (p_reaction.hasReverseReaction()) {
 	        if (isUnreactedReaction(p_reaction)) getUnreactedReactionSet().add(p_reaction);
 	        else if (isUnreactedReaction(p_reaction.getReverseReaction())) getUnreactedReactionSet().add(p_reaction.getReverseReaction());
-	        else if (isUnreactedReversiblePathReaction(p_reaction)) getUnreactedReactionSet().add(p_reaction);
+	        else if (isUnreactedReversiblePathReaction(p_reaction))
+			{ 
+				// We need to run isUnreactedReversiblePathReaction() because it
+				// does some work with the reactants and products of the path
+				// reaction
+				// However, we don't want to add the path reaction to the edge,
+				// so we do nothing here
+			}
 	        else throw new InvalidUnreactedReactionException(p_reaction.toString());
     	} else {
     		if (isUnreactedReaction(p_reaction)) getUnreactedReactionSet().add(p_reaction);
-	        else if (isUnreactedIrreversiblePathReaction(p_reaction)) getUnreactedReactionSet().add(p_reaction);
+	        else if (isUnreactedIrreversiblePathReaction(p_reaction))
+			{
+				// Again, don't add a pressure-dependent path reaction to the
+				// edge here
+			}
 	        else throw new InvalidUnreactedReactionException(p_reaction.toString());
     	}
         //#]
