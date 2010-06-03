@@ -583,7 +583,7 @@ public  Chemkin() {
 	  LinkedList duplicates = new LinkedList();
 	  
       CoreEdgeReactionModel cerm = (CoreEdgeReactionModel)p_reactionModel;
-      //first get troe and thirdbodyreactions
+      //first get troe, thirdbody, and Lindemann reactions (from seed mechanism and primary kinetics) and add them to the pDepList
       for (Iterator iter = cerm.getReactionSet().iterator(); iter.hasNext(); ) {
         	Reaction r = (Reaction)iter.next();
         	/*
@@ -599,6 +599,7 @@ public  Chemkin() {
         	}
         }
       
+	 // then get reactions from pressure-dependent networks and add them to pDepList
       for (Iterator iter = PDepNetwork.getNetworks().iterator(); iter.hasNext(); ) {
       	PDepNetwork pdn = (PDepNetwork)iter.next();
       	for (ListIterator pdniter = pdn.getNetReactions().listIterator(); pdniter.hasNext();) {
@@ -615,36 +616,14 @@ public  Chemkin() {
       		}
       	}
       }
-      LinkedList removeReactions = new LinkedList();
+
       for (Iterator iter = p_reactionModel.getReactionSet().iterator(); iter.hasNext(); ) {
       	Reaction r = (Reaction)iter.next();
-      	
-      	boolean presentInPDep = false;
-      	if (r.isForward() && !(r instanceof ThirdBodyReaction) && !(r instanceof TROEReaction) && !(r instanceof LindemannReaction)) {
-      		Iterator r_iter = pDepList.iterator();
-      		while (r_iter.hasNext()){
-      			Reaction pDepr = (Reaction)r_iter.next();
-      			if (pDepr.equals(r)){
-//      				removeReactions.add(pDepr);
-//      				duplicates.add(pDepr);
-//      				if (!r.hasAdditionalKinetics()){
-//      					duplicates.add(r);
-//      					presentInPDep = true;
-//      				}
-      				presentInPDep = true;
-      				nonPDepList.add(r);
-      			}
-      		}
-      		if (!presentInPDep)
-      			nonPDepList.add(r);
+		if (r.isForward() && !(r instanceof ThirdBodyReaction) && !(r instanceof TROEReaction) && !(r instanceof LindemannReaction)) {
+			nonPDepList.add(r);
       	}
       }
-      
-      for (Iterator iter = removeReactions.iterator(); iter.hasNext();){
-    	  Reaction r = (Reaction)iter.next();
-    	  pDepList.remove(r);
-      }
-      
+      // First report pressure dependent reactions
       for (Iterator iter = pDepList.iterator(); iter.hasNext();){
     	  Reaction r = (Reaction)iter.next();
 			// 6Jul2009-MRH:
@@ -652,10 +631,12 @@ public  Chemkin() {
     	  	//		The only PDepKineticsModel that uses the passed pressure is RATE
           result.append(r.toChemkinString(p_beginStatus.getTemperature(),p_beginStatus.getPressure())+"\n");
       }
+	 // Second, report non-pressure-dependent reactions
       for (Iterator iter = nonPDepList.iterator(); iter.hasNext();){
     	  Reaction r = (Reaction)iter.next();
           result.append(r.toChemkinString(p_beginStatus.getTemperature(),p_beginStatus.getPressure())+"\n");
       }
+	 // Third, report duplicate reactions
       for (Iterator iter = duplicates.iterator(); iter.hasNext();){
     	  Reaction r = (Reaction)iter.next();
           result.append(r.toChemkinString(p_beginStatus.getTemperature(),p_beginStatus.getPressure())+"\n\tDUP\n");
