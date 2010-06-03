@@ -1,3 +1,6 @@
 [submodule "source/daspk/private"]
 	path = source/daspk/private
 	url = ssh://rainier.mit.edu/home/git/daspk_private.git
+[submodule "source/MoleCoor"]
+	path = source/MoleCoor
+	url = git://github.com/gmagoon/MoleCoor.git
