@@ -151,6 +151,7 @@ public class RMG {
 	    File f = new File(".");
 	    String dir = f.getAbsolutePath();
 		File chemkin = new File("chemkin");
+		ChemParser.deleteDir(chemkin);
 		chemkin.mkdir();
 		//writeThermoFile();
 		File Restart = new File("Restart");

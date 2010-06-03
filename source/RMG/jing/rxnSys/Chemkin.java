@@ -90,7 +90,7 @@ public class Chemkin implements DAESolver {
       reactorType = p_reactorType;
       
   }
-  private void copyFiles(String string, String string2)  {
+  private static void copyFiles(String string, String string2)  {
 	  File src = new File(string);
 	  File dest = new File(string2);
 	  FileInputStream fin;
@@ -469,51 +469,67 @@ public  Chemkin() {
       result.append(writeChemkinThermo(p_reactionModel));
       Global.chemkinThermo = Global.chemkinThermo + (System.currentTimeMillis() - start)/1000/60;
 	  start = System.currentTimeMillis();
-      result.append(writeChemkinPdepReactions(p_reactionModel, p_beginStatus)); 
+      result.append(writeChemkinPdepReactions(p_reactionModel, p_beginStatus));
 	  Global.chemkinReaction = Global.chemkinReaction + (System.currentTimeMillis() - start)/1000/60;
 
-      String dir = System.getProperty("RMG.workingDirectory");
-      if (!dir.endsWith("/")) dir += "/";
-      dir += "software/reactorModel/";
-      String file = "chemkin/chem.inp";
-
+      //String dir = System.getProperty("RMG.workingDirectory");
+      //if (!dir.endsWith("/")) dir += "/";
+      //dir += "software/reactorModel/";
+	  
+	  // This defines the directory that all the chemkin files will be written to.
+	  // They will also be copied to the "chemkin" directory.
+	  String directory = "chemkin/"+String.valueOf(p_reactionModel.getSpeciesNumber());
+	  // Make directory if it don't exist
+	  File directory_object = new File(directory);
+	  directory_object.mkdirs();
+	  
+      String chemkinFile = directory+"/chem.inp";
       try {
-      	FileWriter fw = new FileWriter(file);
+      	FileWriter fw = new FileWriter(chemkinFile);
       	fw.write(result.toString());
       	fw.close();
       }
       catch (Exception e) {
-      	System.out.println("Error in writing chemkin input file chem.inp!");
+      	System.out.println("Error in writing chemkin input file "+directory+"/chem.inp!");
       	System.out.println(e.getMessage());
       	System.exit(0);
       }
+	  // put a copy of the latest in the root chemkin folder
+	  copyFiles(chemkinFile, "chemkin/chem.inp");
       
-      
+	  // write tableOfRateCoeffs.txt if running with pressure-dependence
       if (PDepRateConstant.getMode() == Mode.CHEBYSHEV ||
     		  PDepRateConstant.getMode() == Mode.PDEPARRHENIUS ||
     		  PDepRateConstant.getMode() == Mode.RATE) {
     	  StringBuilder gridOfRateCoeffs = new StringBuilder();
 	      gridOfRateCoeffs.append(writeGridOfRateCoeffs(p_reactionModel));
-	      String newFile = "chemkin/tableOfRateCoeffs.txt";
+	      String newFile = directory+"/tableOfRateCoeffs.txt";
 	      try {
 	    	  FileWriter fw = new FileWriter(newFile);
 	    	  fw.write(gridOfRateCoeffs.toString());
 	    	  fw.close();
 	      }
 	      catch (Exception e) {
-	    	  System.out.println("Error in writing tableOfRateCoeffs.txt");
+	    	  System.out.println("Error in writing "+newFile);
 	    	  System.out.println(e.getMessage());
 	    	  System.exit(0);
 	      }
+		  // put a copy of the latest in the root chemkin folder
+		  copyFiles(newFile, "chemkin/tableOfRateCoeffs.txt");
       }
       
-      writeTransportFile((CoreEdgeReactionModel)p_reactionModel);
+	  // Write the transport file
+	  String transportFilePath = directory+"/tran.dat";
+      writeTransportFile((CoreEdgeReactionModel)p_reactionModel, transportFilePath);
+	  // put a copy of the latest in the root chemkin folder
+	  copyFiles(transportFilePath, "chemkin/tran.dat");
+	  
   }
   
   public static void writeChemkinInputFile(ReactionSystem rs) {
-      // call the above writeChemkinInputFile method, with the appropriate parameters
+	  // call the above writeChemkinInputFile method, with the appropriate parameters
 	  writeChemkinInputFile(rs.reactionModel, rs.initialStatus);
-  }
+   }
   
 //## operation writeChemkinReactions(ReactionModel, Temperature)
 //10/26/07 gmagoon: changed to take temperature as parameter (it doesn't seem like this method is currently used anywhere)
@@ -922,8 +938,8 @@ public static void setSMILES(boolean yesno) {
 	SMILESutility = yesno;
 }
 
-	public static void writeTransportFile(CoreEdgeReactionModel cerm) {
-		//Write core species to tran.dat
+	public static void writeTransportFile(CoreEdgeReactionModel cerm, String filepath) {
+		//Write core species to filepath (eg. "chemkin/tran.dat")
 		String coreSpecies ="";
 		// Write the three inert gas species' transport data
 		//	Data comes from CHEMKIN-v4.1.1 manual
@@ -945,13 +961,13 @@ public static void setSMILES(boolean yesno) {
 		}
 		
 		try {
-			File trandat = new File("chemkin/tran.dat");
+			File trandat = new File(filepath);
 			FileWriter fw = new FileWriter(trandat);
 			fw.write(coreSpecies);
 			fw.close();
 		}
 		catch (IOException e) {
-			System.out.println("Could not write tran.dat");
+			System.out.println("Could not write "+filepath);
 			System.exit(0);
 		}
 	}
