@@ -516,38 +516,8 @@ public  Chemkin() {
   }
   
   public static void writeChemkinInputFile(ReactionSystem rs) {
-      //#[ operation writeChemkinInputFile(ReactionModel,SystemSnapshot)
-
-      StringBuilder result=new StringBuilder();
-      result.append(writeChemkinHeader());
-	  result.append(writeChemkinElement());
-	  double start = System.currentTimeMillis();
-      result.append(writeChemkinSpecies(rs.reactionModel, rs.initialStatus));
-      result.append(writeChemkinThermo(rs.reactionModel));
-      Global.chemkinThermo = Global.chemkinThermo + (System.currentTimeMillis() - start)/1000/60;
-	  start = System.currentTimeMillis();
-	  result.append(writeChemkinPdepReactions(rs));
-	  Global.chemkinReaction = Global.chemkinReaction + (System.currentTimeMillis() - start)/1000/60;
-
-      String dir = System.getProperty("RMG.workingDirectory");
-      if (!dir.endsWith("/")) dir += "/";
-      dir += "software/reactorModel/";
-      String file = "chemkin/chem.inp";
-
-      try {
-      	FileWriter fw = new FileWriter(file);
-      	fw.write(result.toString());
-      	fw.close();
-      }
-      catch (Exception e) {
-      	System.out.println("Error in writing chemkin input file chem.inp!");
-      	System.out.println(e.getMessage());
-      	System.exit(0);
-      }
-      
-      writeTransportFile((CoreEdgeReactionModel)rs.reactionModel);
-       
-      //#]
+      // call the above writeChemkinInputFile method, with the appropriate parameters
+	  writeChemkinInputFile(rs.reactionModel, rs.initialStatus);
   }
   
 //## operation writeChemkinReactions(ReactionModel)
@@ -583,67 +553,6 @@ public  Chemkin() {
       //#]
   }
 
-  public static String writeChemkinPdepReactions(ReactionSystem rs) {
-      //#[ operation writeChemkinReactions(ReactionModel)
-
-      StringBuilder result = new StringBuilder();
-	  result.append("REACTIONS	KCAL/MOLE\n");
-	  
-	  LinkedList rList = new LinkedList();
-	  LinkedList troeList = new LinkedList();
-	  LinkedList tbrList = new LinkedList();
-	  LinkedList duplicates = new LinkedList();
-	  LinkedList lindeList = new LinkedList();
-	  
-	  if (rs.dynamicSimulator instanceof JDASPK){
-		  rList = ((JDASPK)rs.dynamicSimulator).rList;
-		  troeList = ((JDASPK)rs.dynamicSimulator).troeList;
-		  tbrList = ((JDASPK)rs.dynamicSimulator).thirdBodyList;
-		  duplicates = ((JDASPK)rs.dynamicSimulator).duplicates;
-		  lindeList = ((JDASPK)rs.dynamicSimulator).lindemannList;
-	  }
-	  else if (rs.dynamicSimulator instanceof JDASSL){
-		  rList = ((JDASSL)rs.dynamicSimulator).rList;
-		  troeList = ((JDASSL)rs.dynamicSimulator).troeList;
-		  tbrList = ((JDASSL)rs.dynamicSimulator).thirdBodyList;
-		  duplicates = ((JDASSL)rs.dynamicSimulator).duplicates;
-		  lindeList = ((JDASSL)rs.dynamicSimulator).lindemannList;
-	  }
-	  
-	  
-      
-      for (Iterator iter = rList.iterator(); iter.hasNext();){
-    	  Reaction r = (Reaction)iter.next();
-          //10/26/07 gmagoon: changed to avoid use of Global.temperature; I am using getPresentTemperature for the time being; it is possible that getInitialStatus.getTemperature or something similar may be more appropriate
-          result.append(r.toChemkinString(rs.getPresentTemperature())+"\n");
-    	  //result.append(r.toChemkinString(Global.temperature)+"\n");
-      }
-      for (Iterator iter = troeList.iterator(); iter.hasNext();){
-    	  Reaction r = (Reaction)iter.next();
-          result.append(r.toChemkinString(rs.getPresentTemperature())+"\n");
-    	  //result.append(r.toChemkinString(Global.temperature)+"\n");
-      }
-      for (Iterator iter = tbrList.iterator(); iter.hasNext();){
-    	  Reaction r = (Reaction)iter.next();
-          result.append(r.toChemkinString(rs.getPresentTemperature())+"\n");
-    	  //result.append(r.toChemkinString(Global.temperature)+"\n");
-      }
-      for (Iterator iter = duplicates.iterator(); iter.hasNext();){
-    	  Reaction r = (Reaction)iter.next();
-          result.append(r.toChemkinString(rs.getPresentTemperature())+"\n\tDUP\n");
-    	  //result.append(r.toChemkinString(Global.temperature)+"\n\tDUP\n");
-      }
-      for (Iterator iter = lindeList.iterator(); iter.hasNext();) {
-    	  Reaction r = (Reaction)iter.next();
-    	  result.append(r.toChemkinString(rs.getPresentTemperature())+"\n");
-      }
-
-      result.append("END\n");
-
-      return result.toString();
-
-      //#]
-  }
   
   //## operation writeChemkinReactions(ReactionModel)
  public static String writeChemkinPdepReactions(ReactionModel p_reactionModel, SystemSnapshot p_beginStatus) {
