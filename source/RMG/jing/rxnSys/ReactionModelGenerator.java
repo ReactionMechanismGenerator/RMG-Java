@@ -92,8 +92,9 @@ public class ReactionModelGenerator {
     //	This temperature is used to select the "best" kinetics from the rxn library
     protected static Temperature temp4BestKinetics; 
     // This is the new "PrimaryReactionLibrary"
-    protected SeedMechanism seedMechanism;
+    protected SeedMechanism seedMechanism = null;
     protected PrimaryThermoLibrary primaryThermoLibrary;
+    protected PrimaryTransportLibrary primaryTransportLibrary;
 	
 	protected boolean restart = false;
 	protected boolean readrestart = false;
@@ -116,6 +117,8 @@ public class ReactionModelGenerator {
 	protected static double edgeTol;
 	protected static int minSpeciesForPruning;
 	protected static int maxEdgeSpeciesAfterPruning;
+	
+	public int limitingReactantID = 1;
 	
 	//## operation ReactionModelGenerator()
     public  ReactionModelGenerator() {
@@ -261,6 +264,16 @@ public class ReactionModelGenerator {
 				readAndMakePTL(reader);
 			} else throw new InvalidSymbolException("Error reading condition.txt file: "
 													+ "Could not locate PrimaryThermoLibrary field");
+			line = ChemParser.readMeaningfulLine(reader);
+			
+			/*
+			 * MRH 17-May-2010:
+			 * 	Added primary transport library field
+			 */
+			if (line.toLowerCase().startsWith("primarytransportlibrary")) {
+				readAndMakePTransL(reader);
+			} else throw new InvalidSymbolException("Error reading condition.txt file: "
+					+ "Could not locate PrimaryTransportLibrary field.");
 			line = ChemParser.readMeaningfulLine(reader);
 			
 			// Extra forbidden structures may be specified after the Primary Thermo Library
@@ -680,6 +693,7 @@ public class ReactionModelGenerator {
         			while (st.hasMoreTokens()) {
         				String name = st.nextToken();
         				Species spe = (Species)speciesSet.get(name);
+        				setLimitingReactantID(spe.getID());
         				if (spe == null) throw new InvalidConversionException("Unknown reactant: " + name);
         				String conv = st.nextToken();
         				double conversion;
@@ -1016,7 +1030,6 @@ public class ReactionModelGenerator {
 			 */
 			line = ChemParser.readMeaningfulLine(reader);
 			if (line.startsWith("SeedMechanism:")) {
-				int numMechs = 0;
 				line = ChemParser.readMeaningfulLine(reader);
 				while (!line.equals("END")) {                     		
 					String[] tempString = line.split("Name: ");
@@ -1049,17 +1062,13 @@ public class ReactionModelGenerator {
 					String path = System.getProperty("jing.rxn.ReactionLibrary.pathName");
 					path += "/" + location;
 										   
-					if (numMechs==0) {
-						setSeedMechanism(new SeedMechanism(name, path, generate));
-						++numMechs; 	
-					}
-					else {
-						getSeedMechanism().appendSeedMechanism(name, path, generate);
-						++numMechs;
-					}
+					if (getSeedMechanism() == null)
+						setSeedMechanism(new SeedMechanism(name, path, generate, false));
+					else
+						getSeedMechanism().appendSeedMechanism(name, path, generate, false);
 					line = ChemParser.readMeaningfulLine(reader);
 				}
-				if (numMechs != 0)	System.out.println("Seed Mechanisms in use: " + getSeedMechanism().getName());
+				if (getSeedMechanism() != null)	System.out.println("Seed Mechanisms in use: " + getSeedMechanism().getName());
 				else setSeedMechanism(null);
 			} else throw new InvalidSymbolException("Error reading condition.txt file: "
 													+ "Could not locate SeedMechanism field");
@@ -1275,7 +1284,7 @@ public class ReactionModelGenerator {
         for (Iterator iter = reactionSystemList.iterator(); iter.hasNext(); ) {
             ReactionSystem rs = (ReactionSystem)iter.next();
             if ((reactionModelEnlarger instanceof RateBasedPDepRME)) {//1/2/09 gmagoon and rwest: only call initializePDepNetwork for P-dep cases
-                rs.initializePDepNetwork();
+                if (!restart) rs.initializePDepNetwork();
             }
 			
             ReactionTime init = rs.getInitialReactionTime();
@@ -1333,7 +1342,7 @@ public class ReactionModelGenerator {
             ReactionTime begin = (ReactionTime)beginList.get(i);
             ReactionTime end = (ReactionTime)endList.get(i);
             endList.set(i,rs.solveReactionSystem(begin, end, true, true, true, iterationNumber-1));
-            Chemkin.writeChemkinInputFile(rs);//11/9/07 gmagoon:****temporarily commenting out: there is a NullPointerException in Reaction.toChemkinString when called from writeChemkinPdepReactions; occurs with pre-modified version of RMG as well; //11/12/07 gmagoon: restored; ****this appears to be source of non-Pdep bug
+            Chemkin.writeChemkinInputFile(rs);
             boolean terminated = rs.isReactionTerminated();
             terminatedList.add(terminated);
             if(!terminated)
@@ -1388,6 +1397,9 @@ public class ReactionModelGenerator {
 				double pt = System.currentTimeMillis();
 				//prune the reaction model (this will only do something in the AUTO case)
 				pruneReactionModel();
+				garbageCollect();
+				//System.out.println("After pruning, the model core has " + ((CoreEdgeReactionModel)getReactionModel()).getReactedReactionSet().size() + " reactions and "+ ((CoreEdgeReactionModel)getReactionModel()).getReactedSpeciesSet().size() + " species.");
+				//System.out.println("After pruning, the model edge has " + ((CoreEdgeReactionModel)getReactionModel()).getUnreactedReactionSet().size() + " reactions and "+ ((CoreEdgeReactionModel)getReactionModel()).getUnreactedSpeciesSet().size() + " species.");
 				// ENLARGE THE MODEL!!! (this is where the good stuff happens)
 				enlargeReactionModel();
 				double totalEnlarger = (System.currentTimeMillis() - pt)/1000/60;
@@ -1458,11 +1470,11 @@ public class ReactionModelGenerator {
 				solverMin = solverMin + (System.currentTimeMillis()-startTime)/1000/60;
 				
 				startTime = System.currentTimeMillis();
-				//10/24/07 gmagoon: changed to use reactionSystemList
 				for (Integer i = 0; i<reactionSystemList.size();i++) {
+					// we over-write the chemkin file each time, so only the LAST reaction system is saved
+					// i.e. if you are using RATE for pdep, only the LAST pressure is used.
 					ReactionSystem rs = (ReactionSystem)reactionSystemList.get(i);
-					Chemkin.writeChemkinInputFile(rs);//10/25/07 gmagoon: ***I don't know if this will still work with multiple reaction systems: may want to modify to only write one chemkin input file for all reaction systems //11/9/07 gmagoon:****temporarily commenting out; cf. previous comment; //11/12/07 gmagoon: restored; ****this appears to be source of non-Pdep bug 
-					//Chemkin.writeChemkinInputFile(reactionSystem);
+					Chemkin.writeChemkinInputFile(rs);
 				}
 				//9/1/09 gmagoon: if we are using QM, output a file with the CHEMKIN name, the RMG name, the (modified) InChI, and the (modified) InChIKey
 				if (ChemGraph.useQM){
@@ -1478,8 +1490,8 @@ public class ReactionModelGenerator {
 					 * 	user won't lose any information
 					 */
 					String[] restartFiles = {"Restart/coreReactions.txt", "Restart/coreSpecies.txt",
-							"Restart/edgeReactions.txt", "Restart/edgeSpecies.txt", "Restart/lindemannReactions.txt",
-							"Restart/pdepnetworks.txt", "Restart/thirdBodyReactions.txt", "Restart/troeReactions.txt"};
+							"Restart/edgeReactions.txt", "Restart/edgeSpecies.txt",
+							"Restart/pdepnetworks.txt", "Restart/pdepreactions.txt"};
 					writeBackupRestartFiles(restartFiles);
 					
 					writeCoreSpecies();
@@ -1499,7 +1511,7 @@ public class ReactionModelGenerator {
 					ReactionSystem rs = (ReactionSystem)reactionSystemList.get(i);
 					System.out.println("For reaction system: "+(i+1)+" out of "+reactionSystemList.size());
 					System.out.println("At this time: " + ((ReactionTime)endList.get(i)).toString());
-					Species spe = SpeciesDictionary.getSpeciesFromID(1);
+					Species spe = SpeciesDictionary.getSpeciesFromID(getLimitingReactantID());
 					double conv = rs.getPresentConversion(spe);
 					System.out.print("Conversion of " + spe.getName()  + " is:");
 					System.out.println(conv);
@@ -1661,7 +1673,7 @@ public class ReactionModelGenerator {
 					ReactionSystem rs = (ReactionSystem)reactionSystemList.get(i);
 					System.out.println("For reaction system: "+(i+1)+" out of "+reactionSystemList.size());
 					System.out.println("At this reaction time: " + ((ReactionTime)endList.get(i)).toString());
-					Species spe = SpeciesDictionary.getSpeciesFromID(1);
+					Species spe = SpeciesDictionary.getSpeciesFromID(getLimitingReactantID());
 					double conv = rs.getPresentConversion(spe);
 					System.out.print("Conversion of " + spe.getName()  + " is:");
 					System.out.println(conv);
@@ -1754,10 +1766,11 @@ public class ReactionModelGenerator {
 			}
 			
         }
-        //10/24/07 gmagoon: updated to use reactionSystemList (***see previous comment regarding having one Chemkin input file)
+
         for (Integer i = 0; i<reactionSystemList.size();i++) {
+			// chemkin files are overwritten each loop - only the last gets saved
 			ReactionSystem rs = (ReactionSystem)reactionSystemList.get(i);
-			Chemkin.writeChemkinInputFile(getReactionModel(),rs.getPresentStatus());//11/9/07 gmagoon: temporarily commenting out; see previous comment; this line may not cause a problem because it is different instance of writeChemkinInputFile, but I am commenting out just in case//11/12/07 gmagoon: restored; ****this appears to be source of non-Pdep bug 
+			Chemkin.writeChemkinInputFile(getReactionModel(),rs.getPresentStatus()); 
         }
 		
         //9/1/09 gmagoon: if we are using QM, output a file with the CHEMKIN name, the RMG name, the (modified) InChI, and the (modified) InChIKey
@@ -1836,7 +1849,7 @@ public class ReactionModelGenerator {
         //Write core species to RMG_Solvation_Properties.txt
 		CoreEdgeReactionModel cerm = (CoreEdgeReactionModel)rm;
 		StringBuilder result = new StringBuilder();
-		result.append("ChemkinName\tChemicalFormula\tMolecularWeight\tRadius\tDiffusivity\tAbrahamS\tAbrahamB\tAbrahamE\tAbrahamL\tAbrahamA\tChemkinName\n\n");
+		result.append("ChemkinName\tChemicalFormula\tMolecularWeight\tRadius\tDiffusivity\tAbrahamS\tAbrahamB\tAbrahamE\tAbrahamL\tAbrahamA\tAbrahamV\tChemkinName\n\n");
 		Iterator iter = cerm.getSpecies();
 		while (iter.hasNext()){
 			Species spe = (Species)iter.next();
@@ -1860,6 +1873,7 @@ public class ReactionModelGenerator {
         }
 		
     }
+    
 
     /*
      * MRH 23MAR2010:
@@ -2528,7 +2542,7 @@ public class ReactionModelGenerator {
             bw = new BufferedWriter(new FileWriter("Restart/edgeSpecies.txt"));
 			for(Iterator iter=((CoreEdgeReactionModel)getReactionModel()).getUnreactedSpeciesSet().iterator();iter.hasNext();){
 				Species species = (Species) iter.next();
-				bw.write(species.getChemkinName());
+				bw.write(species.getName()+"("+species.getID()+")");
 				bw.newLine();
 				int dummyInt = 0;
 				bw.write(species.getChemGraph().toStringWithoutH(dummyInt));
@@ -2614,7 +2628,7 @@ public class ReactionModelGenerator {
             bw = new BufferedWriter(new FileWriter("Restart/coreSpecies.txt"));
 			for(Iterator iter=getReactionModel().getSpecies();iter.hasNext();){
 				Species species = (Species) iter.next();
-				bw.write(species.getChemkinName());
+				bw.write(species.getName()+"("+species.getID()+")");
 				bw.newLine();
 				int dummyInt = 0;
 				bw.write(species.getChemGraph().toStringWithoutH(dummyInt));
@@ -2638,26 +2652,18 @@ public class ReactionModelGenerator {
 	
 	private void writeCoreReactions() {
 		BufferedWriter bw_rxns = null;
-		BufferedWriter bw_troe = null;
-		BufferedWriter bw_lindemann = null;
-		BufferedWriter bw_thirdbody = null;
+		BufferedWriter bw_pdeprxns = null;
 		
         try {
             bw_rxns = new BufferedWriter(new FileWriter("Restart/coreReactions.txt"));
-            bw_troe = new BufferedWriter(new FileWriter("Restart/troeReactions.txt"));
-            bw_lindemann = new BufferedWriter(new FileWriter("Restart/lindemannReactions.txt"));
-            bw_thirdbody = new BufferedWriter(new FileWriter("Restart/thirdBodyReactions.txt"));
+            bw_pdeprxns = new BufferedWriter(new FileWriter("Restart/pdepreactions.txt"));
             
     		String EaUnits = ArrheniusKinetics.getEaUnits();
     		String AUnits = ArrheniusKinetics.getAUnits();
     		bw_rxns.write("UnitsOfEa: " + EaUnits);
     		bw_rxns.newLine();
-    		bw_troe.write("Unit:\nA: mol/cm3/s\nE: " + EaUnits + "\n\nReactions:");
-    		bw_troe.newLine();
-    		bw_lindemann.write("Unit:\nA: mol/cm3/s\nE: " + EaUnits + "\n\nReactions:");
-    		bw_lindemann.newLine();
-    		bw_thirdbody.write("Unit:\nA: mol/cm3/s\nE: " + EaUnits + "\n\nReactions :");
-    		bw_thirdbody.newLine();
+    		bw_pdeprxns.write("Unit:\nA: mol/cm3/s\nE: " + EaUnits + "\n\nReactions:");
+    		bw_pdeprxns.newLine();
             
 			CoreEdgeReactionModel cerm = (CoreEdgeReactionModel)getReactionModel();
 			LinkedHashSet allcoreRxns = cerm.core.reaction;
@@ -2666,18 +2672,18 @@ public class ReactionModelGenerator {
 				if (reaction.isForward()) {
 					if (reaction instanceof TROEReaction) {
 						TROEReaction troeRxn = (TROEReaction) reaction;
-						bw_troe.write(troeRxn.toRestartString(new Temperature(298,"K")));
-						bw_troe.newLine();
+						bw_pdeprxns.write(troeRxn.toRestartString(new Temperature(298,"K")));
+						bw_pdeprxns.newLine();
 					}
 					else if (reaction instanceof LindemannReaction) {
 						LindemannReaction lindeRxn = (LindemannReaction) reaction;
-						bw_lindemann.write(lindeRxn.toRestartString(new Temperature(298,"K")));
-						bw_lindemann.newLine();
+						bw_pdeprxns.write(lindeRxn.toRestartString(new Temperature(298,"K")));
+						bw_pdeprxns.newLine();
 					}
 					else if (reaction instanceof ThirdBodyReaction) {
 						ThirdBodyReaction tbRxn = (ThirdBodyReaction) reaction;
-						bw_thirdbody.write(tbRxn.toRestartString(new Temperature(298,"K")));
-						bw_thirdbody.newLine();
+						bw_pdeprxns.write(tbRxn.toRestartString(new Temperature(298,"K")));
+						bw_pdeprxns.newLine();
 					}
 					else {
 						//bw.write(reaction.toChemkinString(new Temperature(298,"K")));
@@ -2696,17 +2702,9 @@ public class ReactionModelGenerator {
                     bw_rxns.flush();
                     bw_rxns.close();
                 }
-                if (bw_troe != null) {
-                    bw_troe.flush();
-                    bw_troe.close();
-                }
-                if (bw_lindemann != null) {
-                    bw_lindemann.flush();
-                    bw_lindemann.close();
-                }
-                if (bw_thirdbody != null) {
-                    bw_thirdbody.flush();
-                    bw_thirdbody.close();
+                if (bw_pdeprxns != null) {
+                	bw_pdeprxns.flush();
+                	bw_pdeprxns.close();
                 }
             } catch (IOException ex) {
                 ex.printStackTrace();
@@ -2869,7 +2867,7 @@ public class ReactionModelGenerator {
 				bw.newLine();
 				for (Iterator iter2=pathRxns.iterator(); iter2.hasNext();) {
 					PDepReaction currentPDepRxn = (PDepReaction)iter2.next();
-					bw.write(currentPDepRxn.getDirection() + "\t" + currentPDepRxn.toChemkinString(new Temperature(298,"K")));
+					bw.write(currentPDepRxn.getDirection() + "\t" + currentPDepRxn.toRestartString(new Temperature(298,"K")));
 					bw.newLine();
 				}
 				
@@ -3111,23 +3109,26 @@ public class ReactionModelGenerator {
 			e.printStackTrace();
 		}
 		
+		/*
+		 *  Read in the pdepreactions.txt file:
+		 *  	This file contains third-body, lindemann, and troe reactions
+		 *  	A RMG mechanism would only have these reactions if a user specified
+		 *  		them in a Seed Mechanism, meaning they are core species &
+		 *  		reactions.
+		 *  	Place these reactions in a new Seed Mechanism, using the 
+		 *  		coreSpecies.txt file as the species.txt file.
+		 */
 		try {
-			SeedMechanism.readThirdBodyReactions("Restart/thirdBodyReactions.txt");
-		} catch (IOException e1) {
-			e1.printStackTrace();
-		}
-		try {
-			SeedMechanism.readLindemannReactions("Restart/lindemannReactions.txt");
-		} catch (IOException e1) {
-			e1.printStackTrace();
-		}
-		try {
-			SeedMechanism.readTroeReactions("Restart/troeReactions.txt");
+			String path = System.getProperty("user.dir") +  "/Restart";								   
+			if (getSeedMechanism() == null)
+				setSeedMechanism(new SeedMechanism("Restart", path, false, true));
+			else
+				getSeedMechanism().appendSeedMechanism("Restart", path, false, true);
 		} catch (IOException e1) {
 			e1.printStackTrace();
 		}
 		
-		restartCoreRxns.addAll(SeedMechanism.reactionSet);
+		restartCoreRxns.addAll(getSeedMechanism().getReactionSet());
 		
 		// Read in edge reactions
 		try {
@@ -3668,9 +3669,15 @@ public class ReactionModelGenerator {
 			    	
 			    	//	The remaining tokens are comments
 			    	String comments = "";
-			    	while (st.hasMoreTokens()) {
-			    		comments += st.nextToken();
+			    	if (st.hasMoreTokens()) {
+			    		String beginningOfComments = st.nextToken();
+			    		int startIndex = line.indexOf(beginningOfComments);
+			    		comments = line.substring(startIndex);
 			    	}
+			    	if (comments.startsWith("!")) comments = comments.substring(1);
+//			    	while (st.hasMoreTokens()) {
+//			    		comments += st.nextToken();
+//			    	}
 			    	
 			        ArrheniusKinetics[] k = new ArrheniusKinetics[1];
 			        k[0] = new ArrheniusKinetics(uA,un,uE,"",1,"",comments);
@@ -3992,21 +3999,20 @@ public class ReactionModelGenerator {
 		JDAS ds0 = (JDAS)((ReactionSystem) reactionSystemList.get(0)).getDynamicSimulator(); //get the first reactionSystem dynamic simulator
 		//prune the reaction model if AUTO is being used, and all reaction systems have reached target time/conversion, and edgeTol is non-zero (and positive, obviously), and if there are a sufficient number of species in the reaction model (edge + core)
 		
-		if ( ds0.autoflag && 
+		if ( JDAS.autoflag &&
 		  allReachedTarget && 
 		  edgeTol>0 && 
 		  (((CoreEdgeReactionModel)reactionModel).getEdge().getSpeciesNumber()+reactionModel.getSpeciesNumber())>= minSpeciesForPruning){
 			
 			int numberToBePruned = ((CoreEdgeReactionModel)reactionModel).getEdge().getSpeciesNumber() - maxEdgeSpeciesAfterPruning; 
-			Iterator iter = ds0.edgeID.keySet().iterator();//determine the maximum edge flux ratio for each edge species
+			Iterator iter = JDAS.edgeID.keySet().iterator();//determine the maximum edge flux ratio for each edge species
 			while(iter.hasNext()){
 				Species spe = (Species)iter.next();
-				Integer id0 = (Integer)ds0.edgeID.get(spe);
-				double maxmaxRatio = ds0.maxEdgeFluxRatio[id0-1];
-				boolean prunable = ds0.prunableSpecies[id0-1];
+				Integer id = (Integer)JDAS.edgeID.get(spe);
+				double maxmaxRatio = ds0.maxEdgeFluxRatio[id-1];
+				boolean prunable = ds0.prunableSpecies[id-1];
 				for (Integer i = 1; i < reactionSystemList.size(); i++) {//go through the rest of the reaction systems to see if there are higher max flux ratios
 					JDAS ds = (JDAS)((ReactionSystem) reactionSystemList.get(i)).getDynamicSimulator();
-					Integer id = (Integer)ds0.edgeID.get(spe);//in principle, I don't think the IDs in each dynamic simulator will necessarily be the same...determine the ID
 					if(ds.maxEdgeFluxRatio[id-1] > maxmaxRatio) maxmaxRatio = ds.maxEdgeFluxRatio[id-1];
 					if(prunable && !ds.prunableSpecies[id-1]) prunable = false;//I can't imagine a case where this would occur (if the conc. is zero at one condition, it should be zero at all conditions), but it is included for completeness
 				}
@@ -4047,7 +4053,7 @@ public class ReactionModelGenerator {
 			//now, speciesToPrune has been filled with species that should be pruned from the edge
 			System.out.println("Pruning...");
 			//prune species from the edge
-			//remove species from the edge and from the species dictionary
+			//remove species from the edge and from the species dictionary and from edgeID
 			iter = speciesToPrune.iterator();
 			while(iter.hasNext()){
 				Species spe = (Species)iter.next();
@@ -4055,6 +4061,7 @@ public class ReactionModelGenerator {
 				((CoreEdgeReactionModel)getReactionModel()).getUnreactedSpeciesSet().remove(spe);
 				//SpeciesDictionary.getInstance().getSpeciesSet().remove(spe);
 				SpeciesDictionary.getInstance().remove(spe);
+				JDAS.edgeID.remove(spe);
 			}
 			//remove reactions from the edge involving pruned species
 			iter = ((CoreEdgeReactionModel)getReactionModel()).getUnreactedReactionSet().iterator();
@@ -4067,65 +4074,142 @@ public class ReactionModelGenerator {
 			while(iter.hasNext()){
 				Reaction reaction = (Reaction)iter.next();
 				writePrunedEdgeReaction(reaction);
-				((CoreEdgeReactionModel)getReactionModel()).getUnreactedReactionSet().remove(reaction);
+				Reaction reverse = reaction.getReverseReaction();
+				((CoreEdgeReactionModel)reactionModel).removeFromUnreactedReactionSet(reaction);
+				((CoreEdgeReactionModel)reactionModel).removeFromUnreactedReactionSet(reverse);
+				ReactionTemplate rt = reaction.getReactionTemplate();
+				ReactionTemplate rtr = null;
+				if(reverse!=null){
+				    rtr = reverse.getReactionTemplate();
+				}
+				if(rt!=null){
+				    rt.removeFromReactionDictionaryByStructure(reaction.getStructure());//remove from ReactionTemplate's reactionDictionaryByStructure
+				}
+				if(rtr!=null){
+				    rtr.removeFromReactionDictionaryByStructure(reverse.getStructure());
+				}
+				reaction.setStructure(null);
+				if(reverse!=null){
+				    reverse.setStructure(null);
+				}
 			}
 			//remove reactions from PDepNetworks in PDep cases
 			if (reactionModelEnlarger instanceof RateBasedPDepRME)	{
 				iter = PDepNetwork.getNetworks().iterator();
 				HashSet pdnToRemove = new HashSet();
+				HashSet toRemovePath;
+				HashSet toRemoveNet;
+				HashSet toRemoveNonincluded;
+				HashSet toRemoveIsomer;
 				while (iter.hasNext()){
 					PDepNetwork pdn = (PDepNetwork)iter.next();
-					//remove path reactions
+					//identify path reactions to remove
 					Iterator rIter = pdn.getPathReactions().iterator();
-					toRemove = new HashSet();
+					toRemovePath = new HashSet();
 					while(rIter.hasNext()){
 						Reaction reaction = (Reaction)rIter.next();
-						if (reactionPrunableQ(reaction, speciesToPrune))  toRemove.add(reaction);
+						if (reactionPrunableQ(reaction, speciesToPrune))  toRemovePath.add(reaction);
 					}
-					Iterator iterRem = toRemove.iterator();
-					while(iterRem.hasNext()){
-						Reaction reaction = (Reaction)iterRem.next();
-						pdn.getPathReactions().remove(reaction);
-					}
-					//remove net reactions
+					//identify net reactions to remove
 					rIter = pdn.getNetReactions().iterator();
-					toRemove = new HashSet();
+					toRemoveNet = new HashSet();
 					while(rIter.hasNext()){
 						Reaction reaction = (Reaction)rIter.next();
-						if (reactionPrunableQ(reaction, speciesToPrune)) toRemove.add(reaction);
+						if (reactionPrunableQ(reaction, speciesToPrune)) toRemoveNet.add(reaction);
 					}
-					iterRem = toRemove.iterator();
-					while(iterRem.hasNext()){
-						Reaction reaction = (Reaction)iterRem.next();
-						pdn.getNetReactions().remove(reaction);
+					//identify nonincluded reactions to remove
+					rIter = pdn.getNonincludedReactions().iterator();
+					toRemoveNonincluded = new HashSet();
+					while(rIter.hasNext()){
+						Reaction reaction = (Reaction)rIter.next();
+						if (reactionPrunableQ(reaction, speciesToPrune)) toRemoveNonincluded.add(reaction);
 					}
-					//remove isomers
+					//identify isomers to remove
 					Iterator iIter = pdn.getIsomers().iterator();
-					toRemove = new HashSet();
+					toRemoveIsomer = new HashSet();
 					while(iIter.hasNext()){
 						PDepIsomer pdi = (PDepIsomer)iIter.next();
 						Iterator isIter = pdi.getSpeciesListIterator();
 						while(isIter.hasNext()){
 							Species spe = (Species)isIter.next();
-							if (speciesToPrune.contains(spe)&&!toRemove.contains(spe)) toRemove.add(pdi);
+							if (speciesToPrune.contains(spe)&&!toRemove.contains(pdi)) toRemoveIsomer.add(pdi);
 						}
+						if(pdi.getSpeciesList().size()==0 && !toRemove.contains(pdi)) toRemoveIsomer.add(pdi);//if the pdi doesn't contain any species, schedule it for removal
 					}
-					iterRem = toRemove.iterator();
-					while(iterRem.hasNext()){
-						PDepIsomer pdi = (PDepIsomer)iterRem.next();
-						pdn.getIsomers().remove(pdi);
-					}
-					//remove nonincluded reactions
-					rIter = pdn.getNonincludedReactions().iterator();
-					toRemove = new HashSet();
-					while(rIter.hasNext()){
-						Reaction reaction = (Reaction)rIter.next();
-						if (reactionPrunableQ(reaction, speciesToPrune)) toRemove.add(reaction);
-					}
-					iterRem = toRemove.iterator();
+					//remove path reactions
+					Iterator iterRem = toRemovePath.iterator();
 					while(iterRem.hasNext()){
 						Reaction reaction = (Reaction)iterRem.next();
-						pdn.getNonincludedReactions().remove(reaction);
+						Reaction reverse = reaction.getReverseReaction();
+						pdn.removeFromPathReactionList((PDepReaction)reaction);
+						pdn.removeFromPathReactionList((PDepReaction)reverse);
+						ReactionTemplate rt = reaction.getReactionTemplate();
+						ReactionTemplate rtr = null;
+						if(reverse!=null){
+						    rtr = reverse.getReactionTemplate();
+						}
+						if(rt!=null){
+						    rt.removeFromReactionDictionaryByStructure(reaction.getStructure());//remove from ReactionTemplate's reactionDictionaryByStructure
+						}
+						if(rtr!=null){
+						    rtr.removeFromReactionDictionaryByStructure(reverse.getStructure());
+						}
+						reaction.setStructure(null);
+						if(reverse!=null){
+						    reverse.setStructure(null);
+						}
+					}
+					//remove net reactions
+					iterRem = toRemoveNet.iterator();
+					while(iterRem.hasNext()){
+						Reaction reaction = (Reaction)iterRem.next();
+						Reaction reverse = reaction.getReverseReaction();
+						pdn.removeFromNetReactionList((PDepReaction)reaction);
+						pdn.removeFromNetReactionList((PDepReaction)reverse);
+						ReactionTemplate rt = reaction.getReactionTemplate();
+						ReactionTemplate rtr = null;
+						if(reverse!=null){
+						    rtr = reverse.getReactionTemplate();
+						}
+						if(rt!=null){
+						    rt.removeFromReactionDictionaryByStructure(reaction.getStructure());//remove from ReactionTemplate's reactionDictionaryByStructure
+						}
+						if(rtr!=null){
+						    rtr.removeFromReactionDictionaryByStructure(reverse.getStructure());
+						}
+						reaction.setStructure(null);
+						if(reverse!=null){
+						    reverse.setStructure(null);
+						}
+					}
+					//remove nonincluded reactions
+					iterRem = toRemoveNonincluded.iterator();
+					while(iterRem.hasNext()){
+						Reaction reaction = (Reaction)iterRem.next();
+						Reaction reverse = reaction.getReverseReaction();
+						pdn.removeFromNonincludedReactionList((PDepReaction)reaction);
+						pdn.removeFromNonincludedReactionList((PDepReaction)reverse);
+						ReactionTemplate rt = reaction.getReactionTemplate();
+						ReactionTemplate rtr = null;
+						if(reverse!=null){
+						    rtr = reverse.getReactionTemplate();
+						}
+						if(rt!=null){
+						    rt.removeFromReactionDictionaryByStructure(reaction.getStructure());//remove from ReactionTemplate's reactionDictionaryByStructure
+						}
+						if(rtr!=null){
+						    rtr.removeFromReactionDictionaryByStructure(reverse.getStructure());
+						}
+						reaction.setStructure(null);
+						if(reverse!=null){
+						    reverse.setStructure(null);
+						}
+					}
+					//remove isomers
+					iterRem = toRemoveIsomer.iterator();
+					while(iterRem.hasNext()){
+						PDepIsomer pdi = (PDepIsomer)iterRem.next();
+						pdn.removeFromIsomerList(pdi);
 					}
 					//remove the entire network if the network has no path or net reactions
 					if(pdn.getPathReactions().size()==0&&pdn.getNetReactions().size()==0) pdnToRemove.add(pdn);
@@ -4143,15 +4227,15 @@ public class ReactionModelGenerator {
     //determines whether a reaction can be removed; returns true ; cf. categorizeReaction() in CoreEdgeReactionModel
     //returns true if the reaction involves reactants or products that are in p_prunableSpecies; otherwise returns false
     public boolean reactionPrunableQ(Reaction p_reaction, Collection p_prunableSpecies){
-		Iterator iter = p_reaction.getReactants();
+	Iterator iter = p_reaction.getReactants();
         while (iter.hasNext()) {
-			Species spe = (Species)iter.next();
+		Species spe = (Species)iter.next();
         	if (p_prunableSpecies.contains(spe))
 				return true;
         }
         iter = p_reaction.getProducts();
         while (iter.hasNext()) {
-			Species spe = (Species)iter.next();
+		Species spe = (Species)iter.next();
         	if (p_prunableSpecies.contains(spe))
 				return true;
         }
@@ -4851,6 +4935,44 @@ public class ReactionModelGenerator {
     
     public static boolean rerunFameWithAdditionalGrains() {
     	return rerunFame;
+    }
+    
+    public void setLimitingReactantID(int id) {
+    	limitingReactantID = id;
+    }
+    
+    public int getLimitingReactantID() {
+    	return limitingReactantID;
+    }
+    
+    public void readAndMakePTransL(BufferedReader reader) {
+     	int numPTLs = 0;
+     	String line = ChemParser.readMeaningfulLine(reader);
+     	while (!line.equals("END")) {
+     		String[] tempString = line.split("Name: ");
+     		String name = tempString[tempString.length-1].trim();
+			line = ChemParser.readMeaningfulLine(reader);
+			tempString = line.split("Location: ");
+			String path = tempString[tempString.length-1].trim();
+			if (numPTLs==0) {
+             	setPrimaryTransportLibrary(new PrimaryTransportLibrary(name,path));
+             	++numPTLs; 	
+			}
+			else {
+             	getPrimaryTransportLibrary().appendPrimaryTransportLibrary(name,path);
+             	++numPTLs;
+			}
+			line = ChemParser.readMeaningfulLine(reader);
+     	}
+     	if (numPTLs == 0) setPrimaryTransportLibrary(null);
+    }
+    
+    public PrimaryTransportLibrary getPrimaryTransportLibrary() {
+    	return primaryTransportLibrary;
+    }
+    
+    public void setPrimaryTransportLibrary(PrimaryTransportLibrary p_primaryTransportLibrary) {
+    	primaryTransportLibrary = p_primaryTransportLibrary;
     }
     
 }

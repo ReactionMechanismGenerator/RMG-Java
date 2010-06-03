@@ -67,7 +67,7 @@ public static void main(String[] args) {
             	rmg.readAndMakePTL(reader);
             }
             else {
-            	System.err.println("PopulateReactions: Could not locate the PrimaryThermoLibrary field." +
+            	System.err.println("ThermoDataEstimator: Could not locate the PrimaryThermoLibrary field." +
             			"Line read was: " + line);
             	System.exit(0);
             }

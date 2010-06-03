@@ -49,6 +49,7 @@ import jing.param.Temperature;
 import jing.rxn.BathGas;
 import jing.rxn.FastMasterEqn;
 import jing.rxn.ArrheniusKinetics;
+import jing.rxn.ArrheniusEPKinetics;
 import jing.rxn.Kinetics;
 import jing.rxn.LibraryReactionGenerator;
 import jing.rxn.PDepIsomer;
@@ -163,7 +164,17 @@ public class PopulateReactions {
             	rmg.readAndMakePTL(br_input);
             }
             else {
-            	System.err.println("PopulateReactions: Could not locate the PrimaryThermoLibrary field." +
+            	System.err.println("PopulateReactions: Could not locate the PrimaryThermoLibrary field.\n" +
+            			"Line read was: " + line);
+            	System.exit(0);
+            }
+            line = ChemParser.readMeaningfulLine(br_input);
+            
+            // Read primary transport library
+            if (line.toLowerCase().startsWith("primarytransportlibrary"))
+            	rmg.readAndMakePTransL(br_input);
+            else {
+            	System.err.println("PopulateReactions: Could not locate the PrimaryTransportLibrary field.\n" +
             			"Line read was: " + line);
             	System.exit(0);
             }
@@ -424,11 +435,11 @@ public class PopulateReactions {
 		        	
 		        	LinkedList<PDepReaction> indivPDepRxns = pdepnetwork.getNetReactions();
 		        	for (int numPDepRxns=0; numPDepRxns<indivPDepRxns.size(); numPDepRxns++) {
-		        		listOfReactions += indivPDepRxns.get(numPDepRxns).toChemkinString(systemTemp);
+		        		listOfReactions += indivPDepRxns.get(numPDepRxns).toRestartString(systemTemp);
 		        	}
 		        	LinkedList<PDepReaction> nonIncludedRxns = pdepnetwork.getNonincludedReactions();
 		        	for (int numNonRxns=0; numNonRxns<nonIncludedRxns.size(); ++numNonRxns) {
-		        		listOfReactions += nonIncludedRxns.get(numNonRxns).toChemkinString(systemTemp);
+		        		listOfReactions += nonIncludedRxns.get(numNonRxns).toRestartString(systemTemp);
 		        	}
 		        	LinkedList<PDepIsomer> allpdepisomers = pdepnetwork.getIsomers();
 		        	for (int numIsomers=0; numIsomers<allpdepisomers.size(); ++numIsomers) {
@@ -467,8 +478,8 @@ public class PopulateReactions {
 	        			if (r.getStructure() == temp_Reaction.getStructure()) {
 	        				dupRxn = true;
 	        				break;
-	        			} else if (r.hasReverseReaction() && temp_Reaction.hasReverseReaction()) {
-	        				if (r.getReverseReaction().getStructure() == temp_Reaction.getReverseReaction().getStructure()) {
+	        			} else if (r.hasReverseReaction()) {
+	        				if (r.getReverseReaction().getStructure() == temp_Reaction.getStructure()) {
 	        					dupRxn = true;
 	        					break;
 	        				}
@@ -488,7 +499,7 @@ public class PopulateReactions {
         	int i = 0;
         	while (iter_species.hasNext()) {
         		Species species = (Species)iter_species.next();
-        		listOfSpecies += species.getChemkinName() + "\n" +
+        		listOfSpecies += species.getName()+"("+species.getID()+")\n" +
         			species.getChemGraph().toStringWithoutH(i) + "\n";
         	}
         	
@@ -532,16 +543,30 @@ public class PopulateReactions {
 		fame.mkdir();
 	};
 	
-	public static String updateListOfReactions(Kinetics rxn_k) {
+	public static String updateListOfReactions(Kinetics rxn_k, double H_rxn) {
+		double Ea = 0.0;
+		if (rxn_k instanceof ArrheniusEPKinetics){
+		    Ea = ((ArrheniusEPKinetics)rxn_k).getEaValue(H_rxn);
+		}
+		else{
+		    Ea = rxn_k.getEValue();
+		}
 		String output = rxn_k.getAValue() + "\t" + rxn_k.getNValue()
-			   + "\t" + rxn_k.getEValue() + "\t" + rxn_k.getSource() 
+			   + "\t" + Ea + "\t" + rxn_k.getSource()
 			   + "\t" + rxn_k.getComment() + "\n";
 		return output;
 	}
 	
-	public static String updateListOfReactions(Kinetics rxn_k, String reverseRxnName) {
+	public static String updateListOfReactions(Kinetics rxn_k, String reverseRxnName, double H_rxn) {
+		double Ea = 0.0;
+		if (rxn_k instanceof ArrheniusEPKinetics){
+		    Ea = ((ArrheniusEPKinetics)rxn_k).getEaValue(H_rxn);
+		}
+		else{
+		    Ea = rxn_k.getEValue();
+		}
 		String output = rxn_k.getAValue() + "\t" + rxn_k.getNValue()
-			   + "\t" + rxn_k.getEValue() + "\t" + reverseRxnName + ": "
+			   + "\t" + Ea + "\t" + reverseRxnName + ": "
 			   + rxn_k.getSource() + "\t" + rxn_k.getComment() + "\n";
 		return output;
 	}
@@ -549,10 +574,13 @@ public class PopulateReactions {
 	public static String writeOutputString(Reaction r, TemplateReactionGenerator rtLibrary) {
 		String listOfReactions = "";
 
+		Temperature stdtemp = new Temperature(298,"K");
+		double Hrxn = r.calculateHrxn(stdtemp);
+
 		if (r.isForward()) {
 			Kinetics[] allKinetics = r.getKinetics();
 			for (int numKinetics=0; numKinetics<allKinetics.length; ++numKinetics) {
-				listOfReactions += r.toString() + "\t" + updateListOfReactions(allKinetics[numKinetics]);
+				listOfReactions += r.toString() + "\t" + updateListOfReactions(allKinetics[numKinetics], Hrxn);
 				if (allKinetics.length != 1) listOfReactions += "\tDUP\n";
 			}
 		}
@@ -570,7 +598,7 @@ public class PopulateReactions {
 				Kinetics[] allKinetics = currentRxn.getKinetics();
 				if (currentRxn.getStructure() == r.getReverseReaction().getStructure()) {
 					for (int numKinetics=0; numKinetics<allKinetics.length; ++numKinetics) {
-						listOfReactions += currentRxn.toString() + "\t" + updateListOfReactions(allKinetics[numKinetics]);
+						listOfReactions += currentRxn.toString() + "\t" + updateListOfReactions(allKinetics[numKinetics], -Hrxn);
 						if (allKinetics.length != 1) listOfReactions += "\tDUP\n";
 					}
 				} 
@@ -579,7 +607,7 @@ public class PopulateReactions {
 		else {
 			Kinetics[] allKinetics = r.getKinetics();
 			for (int numKinetics=0; numKinetics<allKinetics.length; ++numKinetics) {
-				listOfReactions += r.toString() + "\t" + updateListOfReactions(allKinetics[numKinetics]);
+				listOfReactions += r.toString() + "\t" + updateListOfReactions(allKinetics[numKinetics], Hrxn);
 				if (allKinetics.length != 1) listOfReactions += "\tDUP\n";
 			}
 		}

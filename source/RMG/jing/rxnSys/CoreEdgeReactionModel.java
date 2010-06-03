@@ -286,9 +286,27 @@ public class CoreEdgeReactionModel implements ReactionModel {
         //#[ operation addUnreactedReaction(Reaction) 
     	if (p_reaction instanceof PDepReaction)
     		System.out.println(p_reaction);
-        if (isUnreactedReaction(p_reaction)) getUnreactedReactionSet().add(p_reaction);
-        else if (isUnreactedReaction(p_reaction.getReverseReaction())) getUnreactedReactionSet().add(p_reaction.getReverseReaction());
-        else throw new InvalidUnreactedReactionException(p_reaction.toString());
+    	if (p_reaction.hasReverseReaction()) {
+	        if (isUnreactedReaction(p_reaction)) getUnreactedReactionSet().add(p_reaction);
+	        else if (isUnreactedReaction(p_reaction.getReverseReaction())) getUnreactedReactionSet().add(p_reaction.getReverseReaction());
+	        else if (isUnreactedReversiblePathReaction(p_reaction))
+			{ 
+				// We need to run isUnreactedReversiblePathReaction() because it
+				// does some work with the reactants and products of the path
+				// reaction
+				// However, we don't want to add the path reaction to the edge,
+				// so we do nothing here
+			}
+	        else throw new InvalidUnreactedReactionException(p_reaction.toString());
+    	} else {
+    		if (isUnreactedReaction(p_reaction)) getUnreactedReactionSet().add(p_reaction);
+	        else if (isUnreactedIrreversiblePathReaction(p_reaction))
+			{
+				// Again, don't add a pressure-dependent path reaction to the
+				// edge here
+			}
+	        else throw new InvalidUnreactedReactionException(p_reaction.toString());
+    	}
         //#]
     }
     
@@ -561,6 +579,14 @@ public class CoreEdgeReactionModel implements ReactionModel {
         
         //#]
     }
+
+    public void removeFromUnreactedReactionSet(Reaction rxn) {
+        boolean success = edge.reaction.remove(rxn);
+	//if (!success){
+	//    System.out.println("Pruning debugging line: "+ rxn);
+	//}
+        return;
+    }
     
     //## operation getUnreactedSpeciesSet() 
     public LinkedHashSet getUnreactedSpeciesSet() {
@@ -606,6 +632,85 @@ public class CoreEdgeReactionModel implements ReactionModel {
         //#[ operation isUnreactedReaction(Reaction) 
         return (categorizeReaction(p_reaction) == -1) ;
         //#]
+    }
+    
+    /*
+     * isUnreactedReversiblePathReaction() method:
+     * 
+     * In a pdepnetwork, suppose we have A+B=C (where A and B are core
+     * 	species and C is an edge species).  If the leak flux from this
+     * 	network is the largest "edge" flux in the reaction model, the
+     * 	reactions of C will be explored.  Imagine C=D and C=E+F are two
+     * 	such reactions formed from C.  If we try to add C=D (or C=E+F)
+     * 	to the unreacted reaction set, RMG will throw an error.
+     * 
+     * The reason for this is that both hypothetical reactions are "edge"
+     * 	species going to "edge" species, which would never occur in the
+     * 	normaly RMG algorithm.
+     * 
+     * The categorizeReaction() method will return 0
+     */
+    public boolean isUnreactedReversiblePathReaction(Reaction p_reaction) {
+    	int categorizeForwardRxn = categorizeReaction(p_reaction);
+    	int categorizeReverseRxn = categorizeReaction(p_reaction.getReverseReaction());
+    	if (categorizeForwardRxn == 0 && categorizeReverseRxn == 0) {
+    		/*
+    		 *  Loop over the reactants and label all non-"Reacted" and 
+    		 *  	non-"Unreacted" species as "Unreacted" 
+    		 */    		
+            Iterator iter = p_reaction.getStructure().getReactants();
+            while (iter.hasNext()) {
+            	Species spe = (Species)iter.next();
+            	if (!contains(spe)) {
+            		// new unreacted species
+            		addUnreactedSpecies(spe);
+            	}
+            }
+            /*
+             *	Loop over the products 
+             */
+            iter = p_reaction.getStructure().getProducts();
+            while (iter.hasNext()) {
+            	Species spe = (Species)iter.next();
+            	if (!contains(spe)) {
+            		// new unreacted species
+            		addUnreactedSpecies(spe);
+            	}
+            }
+    		return true;
+    	}
+    	else return false;
+    }
+    
+    public boolean isUnreactedIrreversiblePathReaction(Reaction p_reaction) {
+    	int categorizeForwardRxn = categorizeReaction(p_reaction);
+    	if (categorizeForwardRxn == 0) {
+    		/*
+    		 *  Loop over the reactants and label all non-"Reacted" and 
+    		 *  	non-"Unreacted" species as "Unreacted" 
+    		 */    		
+            Iterator iter = p_reaction.getStructure().getReactants();
+            while (iter.hasNext()) {
+            	Species spe = (Species)iter.next();
+            	if (!contains(spe)) {
+            		// new unreacted species
+            		addUnreactedSpecies(spe);
+            	}
+            }
+            /*
+             *	Loop over the products 
+             */
+            iter = p_reaction.getStructure().getProducts();
+            while (iter.hasNext()) {
+            	Species spe = (Species)iter.next();
+            	if (!contains(spe)) {
+            		// new unreacted species
+            		addUnreactedSpecies(spe);
+            	}
+            }
+    		return true;
+    	}
+    	else return false;
     }
     
     //## operation mergeBasedOnReactedSpecies(CoreEdgeReactionModel,CoreEdgeReactionModel) 

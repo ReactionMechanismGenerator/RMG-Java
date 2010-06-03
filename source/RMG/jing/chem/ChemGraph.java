@@ -105,6 +105,8 @@ public class ChemGraph implements Matchable {
     protected GeneralAbramGAPP abramGAPP;
     protected GeneralUnifacGAPP unifacGAPP;
     protected ThermoData solvthermoData;
+    protected TransportData transportData;
+    protected GATransportP transportGAPP;    
 
     protected boolean fromprimarythermolibrary = false;
     protected boolean isAromatic = false;
@@ -1173,6 +1175,12 @@ return sn;
         }
         //#]
     }
+    
+    public TransportData generateTransportData() {
+    	if (transportGAPP == null) setDefaultTransportGAPP();
+    	transportData = transportGAPP.generateTransportData(this);
+    	return transportData;
+    }
 	
     // Amrit Jalan 05/09/2009
 	public ThermoData generateSolvThermoData() throws FailGenerateThermoDataException {
@@ -1686,6 +1694,11 @@ return sn;
         }
         return thermoData;
         //#]
+    }
+    
+    public TransportData getTransportData() {
+        if (transportData == null) generateTransportData();
+        return transportData;
     }
 
         //## operation getThermoData()
@@ -2376,6 +2389,11 @@ return sn;
         return;
         //#]
     }
+    
+    public void setDefaultTransportGAPP() {
+        transportGAPP = GATransportP.getINSTANCE();
+        return;
+    }
 
     public void setDefaultSolvationGAPP() {
         //#[ operation setDefaultThermoGAPP()
@@ -2436,7 +2454,10 @@ return sn;
     public String toStringWithoutH() {
         //#[ operation toStringWithoutH()
         String s = "ChemFormula: " + getChemicalFormula() + '\n';
-        s = s + getGraph().toStringWithoutCentralIDAndH();
+        if (getHeavyAtomNumber() == 0)
+        	s += getGraph().toStringWithoutCentralID();
+        else
+        	s = s + getGraph().toStringWithoutCentralIDAndH();
         return s;
         //#]
     }
@@ -2451,7 +2472,10 @@ return sn;
     public String toStringWithoutH(int i) {
         //#[ operation toStringWithoutH()
         String s = "";//= "ChemFormula: " + getChemicalFormula() + '\n';
-        s = s + getGraph().toStringWithoutCentralIDAndH();
+        if (getHeavyAtomNumber() == 0)
+        	s += getGraph().toStringWithoutCentralID();
+        else
+        	s = s + getGraph().toStringWithoutCentralIDAndH();
         return s;
         //#]
     }

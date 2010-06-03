@@ -25,135 +25,46 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 
-
 package jing.chem;
-//import jing.chem.*;
 
-
-import java.util.*;
-
-//## package jing::chem
-
-//----------------------------------------------------------------------------
-// based on jing\chem\ThermoGAValue.java
-//----------------------------------------------------------------------------
-
-/**
-Immutable data holds Joback group values.
-*/
-//## class ThermoGAValue
 public class LJGroupData {
 
     protected double dTc = 0;		
     protected double dPc = 0;  
     protected double dVc = 0;
     protected double dTb = 0;
-
-
-    protected String comments = null;		//## attribute comments
-
-    protected String name = null;		//## attribute name
-    
+    protected int shapeIndex = 0;
+    protected String comments = null;
+    protected String name = null;
     protected String source = null;
 
 
     // Constructors
-
-    //## operation ThermoGAValue()
     public  LJGroupData() {
         dTc = 0;		
         dPc = 0;  
         dVc = 0;
         dTb = 0;
-
-
-
-        //#]
+        shapeIndex = 0;
     }
-    //## operation ThermoGAValue(double,double,double,double,double,double,double,double,double,String)
-    public  LJGroupData(double p_dTc, double p_dPc, double p_dVc, double p_dTb,String p_comments) {
-        //#[ operation ThermoGAValue(double,double,double,double,double,double,double,double,double,String)
+    
+    public  LJGroupData(double p_dTc, double p_dPc, double p_dVc, double p_dTb, int p_shape, String p_comments) {
         dTc = p_dTc;
         dPc = p_dPc;
         dVc = p_dVc;
         dTb = p_dTb;
+        shapeIndex = p_shape;
         comments = p_comments;
-
-
-
-        //#]
     }
-    //## operation ThermoGAValue(String,ThermoGAValue,String)
+
     public  LJGroupData(String p_name, LJGroupData p_ga, String p_comments) {
-        //#[ operation ThermoGAValue(String,ThermoGAValue,String)
         dTc = p_ga.dTc;
         dPc = p_ga.dPc;
         dVc = p_ga.dVc;
         dTb = p_ga.dTb;
+        shapeIndex = p_ga.shapeIndex;
         comments = p_comments;
         name = p_name;
-
-
-
-        //#]
-    }
-    
-    public LJGroupData(String p_name, LJGroupData p_ga, String p_comments, String p_source) {
-        dTc = p_ga.dTc;
-        dPc = p_ga.dPc;
-        dVc = p_ga.dVc;
-        dTb = p_ga.dTb;
-        comments = p_comments;
-        name = p_name;
-        source = p_source;
-
-	}    
-    
-    //## operation ThermoGAValue(ThermoGAValue)
-    public  LJGroupData(LJGroupData p_ga) {
-        //#[ operation ThermoGAValue(ThermoGAValue)
-        dTc = p_ga.dTc;
-        dPc = p_ga.dPc;
-        dVc = p_ga.dVc;
-        dTb = p_ga.dTb;
-        comments = p_ga.comments;
-        name = p_ga.name;
-
-
-        //#]
-    }
-
-    //## operation toString()
-    public String toString() {
-        //#[ operation toString()
-        String s = "";
-        s = s + String.valueOf(dTc) + '\t';
-        s = s + String.valueOf(dPc) + '\t';
-        s = s + String.valueOf(dVc) + '\t';
-        s = s + String.valueOf(dTb);
-
-        return s;
-        //#]
-    }
-
-    protected double getdTc() {
-        return dTc;
-    }
-
-    protected double getdPc() {
-        return dPc;
-    }
-
-    protected double getdVc() {
-        return dVc;
-    }
-
-    protected double getdTb() {
-        return dTb;
-    }
-
-    public String getComments() {
-        return comments;
     }
 
     public String getName() {

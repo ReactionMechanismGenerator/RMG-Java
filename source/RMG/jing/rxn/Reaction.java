@@ -1202,22 +1202,9 @@ public class Reaction {
   
   
   public String toChemkinString(Temperature p_temperature, Pressure p_pressure) {
-	  if (ChemkinString != null)
-		  return ChemkinString;
-	  	StringBuilder result = new StringBuilder();
-      	StringBuilder strucString = getStructure().toChemkinString(hasReverseReaction());
-		Temperature stdtemp = new Temperature(298,"K");
-		double Hrxn = calculateHrxn(stdtemp);
-		Kinetics[] allKinetics = getKinetics();
-		for (int numKinetics=0; numKinetics<allKinetics.length; ++numKinetics) {
-			String k = allKinetics[numKinetics].toChemkinString(Hrxn,p_temperature,true);
-			if (allKinetics.length == 1)
-				result.append(strucString + " " + k);
-			else
-				result.append(strucString + " " + k + "\nDUP\n");
-		}		
-		ChemkinString = result.toString();
-		return result.toString();
+	  // For certain PDep cases it's helpful to be able to call this with a temperature and pressure
+	  // but usually (and in this case) the pressure is irrelevant, so we just call the above toChemkinString(Temperature) method:
+	  return toChemkinString(p_temperature);
   }
 
 	public String toRestartString(Temperature p_temperature, boolean pathReaction) {
@@ -1240,7 +1227,7 @@ public class Reaction {
 		 * 		when writing the Restart files, to account for this bug.
 		 */
 		
-		String result = getStructure().toRestartString(hasReverseReaction()); //+ " "+getStructure().direction + " "+getStructure().redundancy;
+		String result = getStructure().toRestartString(hasReverseReaction()).toString(); //+ " "+getStructure().direction + " "+getStructure().redundancy;
 		// MRH 18Jan2010: Restart files do not look for direction/redundancy
 		/*
 		 * MRH 14Feb2010: Handle reactions with multiple kinetics
@@ -1648,6 +1635,10 @@ public class Reaction {
 	
 	public ReactionTemplate getReactionTemplate() {
 		return rxnTemplate;
+	}
+
+	public void setReactionTemplate(ReactionTemplate rt) {
+		rxnTemplate = rt;
 	}
 	
 	public boolean hasMultipleKinetics() {

@@ -179,6 +179,20 @@ public class SpeciesDictionary {
         
         //#]
     }
+    
+    public static Species getSpeciesFromNameID(String p_name) {
+    	if (p_name == null) throw new NullPointerException();
+        
+        Iterator iter = dictionary.values().iterator();
+        while (iter.hasNext()) {
+        	Species spe = (Species)iter.next();
+        	if ((spe.getName()+"("+spe.getID()+")").compareToIgnoreCase(p_name) == 0) {
+        		return spe;
+        	}
+        }
+        
+        return null;
+    }
 	
 	public static Species getSpeciesFromGraph(Graph g) {
 		if (g == null) throw new NullPointerException();
@@ -275,32 +289,30 @@ public class SpeciesDictionary {
         cache.add(p_species); // add to the end of the list
         if (cache.size() > 2) 
             cache.remove(); // remove from the front of the list
-        
-        
-        //#]
+
     }
     
     //## operation remove(ChemGraph) 
     public void remove(ChemGraph p_chemGraph) {
-        //#[ operation remove(ChemGraph) 
         if (p_chemGraph != null) dictionary.remove(p_chemGraph);
-        //#]
+		// why don't we waint to throw an exception if we have a null pointer?
     }
-
+	
     //remove all the mappings from ChemGraphs to a particular species
     public void remove(Species p_spe) {
-        Iterator iter = dictionary.keySet().iterator();
-	HashSet toRemove = new HashSet();
-	while(iter.hasNext()){
-	    ChemGraph cg = (ChemGraph)iter.next();
-	    if(p_spe.equals(dictionary.get(cg))) toRemove.add(cg);//"schedule" the ChemGraph for removal
-	}
-	//actually remove the elements
-	iter = toRemove.iterator();
-	while(iter.hasNext()){
-	    ChemGraph cg = (ChemGraph)iter.next();
-	    dictionary.remove(cg);
-	}
+		if (p_spe.hasResonanceIsomers()) {
+			Iterator iter = p_spe.getResonanceIsomers();
+			while(iter.hasNext()){
+			    ChemGraph cg = (ChemGraph)iter.next();
+			    cg.setSpecies(null);
+			    remove(cg);
+			}
+		}
+		else {
+		    p_spe.getChemGraph().setSpecies(null);
+		    remove( p_spe.getChemGraph() );
+		}
+		
     }
     
     //## operation size() 

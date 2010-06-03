@@ -645,6 +645,92 @@ public class GUI extends JPanel implements ActionListener {
 		PRLVector initialPTL = new PRLVector(0, "Default_H_H2", databasePath.getText()+"/thermo_libraries/primaryThermoLibrary");
 		tmodelPTL.updatePRL(initialPTL);
     	
+		/*
+		 * Primary Transport Library field
+		 */
+    	//	Create the Primary Transport Library (PTransL) panel
+    	JPanel PTransL = new JPanel();
+    	PTransL.setBorder(BorderFactory.createCompoundBorder(BorderFactory.createTitledBorder("Primary Transport Library"),
+    			BorderFactory.createEmptyBorder(5,5,5,5)));
+
+    	//	Create PTransL Name label
+    	JPanel ptranslName = new JPanel();
+    	ptranslName.setBorder(BorderFactory.createEmptyBorder(5,5,5,5));
+    	
+    	//	Populate the label
+    	JLabel ptranslNameLabel = new JLabel("Name:");
+    	ptranslName.add(ptranslNameLabel);
+    	ptranslName.add(ptranslLibName = new JTextField(20));
+
+        //	Create PTransL Location label
+        JPanel ptranslLoc = new JPanel();
+        ptranslLoc.setBorder(BorderFactory.createEmptyBorder(5,5,5,5));
+    	
+        //	Populate the label
+        JLabel ptranslLocationLabel = new JLabel("Location:");
+        ptranslLoc.add(ptranslLocationLabel);
+    	ptranslLocationLabel.setToolTipText("Default = " + 
+			"RMG/databases/RMG_database/transport_libraries/GRI-Mech3.0");
+    	
+    	ptranslLoc.add(ptranslPath = new JTextField(20));
+    	
+    	ptranslLoc.add(ptranslButton = new JButton("Select"));
+    	ChangeButtonListener ptranslAddListenerLib = new ChangeButtonListener();
+    	ptranslButton.addActionListener(ptranslAddListenerLib);
+    	ptranslButton.setActionCommand("ptranslPath");
+
+        //	Create table and scroll panel to store PTransL(s)
+        tablePTransL = new JTable(tmodelPTransL = new MyTableModelPRL());
+    	tablePTransL.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
+    	tablePTransL.setPreferredScrollableViewportSize(new Dimension(700,50));
+        tablePTransL.getColumnModel().getColumn(0).setPreferredWidth(100);
+        tablePTransL.getColumnModel().getColumn(1).setPreferredWidth(600);
+        for (int i=0; i<tablePTransL.getColumnCount(); i++) {
+        	TableColumn column = tablePTransL.getColumnModel().getColumn(i);
+        	column.setCellRenderer(centerTableRenderer);
+        }
+        JScrollPane scrollPTransL = new JScrollPane(tablePTransL);
+    	scrollPTransL.setBorder(BorderFactory.createLoweredBevelBorder());
+
+    	//	Create boxes to display the PTransL table
+    	Box PTransLtable1 = Box.createHorizontalBox();
+    	Box PTransLtable2 = Box.createHorizontalBox();
+    	Box PTransLtable3 = Box.createHorizontalBox();
+    	Box PTransLtable4 = Box.createHorizontalBox();
+    	Box PTransLtable5 = Box.createVerticalBox();
+    	Box PTransLtable6 = Box.createHorizontalBox();
+    	
+    	//	Fill the boxes with the appropriate components of the table
+    	PTransLtable1.add(AddPTransL = new JButton("Add"));
+    	AddButtonListener addListenerPTransL = new AddButtonListener();
+    	AddPTransL.addActionListener(addListenerPTransL);
+    	AddPTransL.setActionCommand("AddPTransL");
+    	AddPTransL.setToolTipText("Press to submit PTransportL Name & Location");
+    	PTransLtable1.setBorder(BorderFactory.createEmptyBorder(10,10,10,10));
+    	
+    	PTransLtable2.add(DeletePTransL = new JButton("Remove"));
+    	DeleteButtonListener deleteListenerPTransL = new DeleteButtonListener();
+    	DeletePTransL.addActionListener(deleteListenerPTransL);
+    	DeletePTransL.setActionCommand("DeletePTransL");
+    	DeletePTransL.setToolTipText("Press to remove PTransportL Name & Location");
+    	
+    	PTransLtable3.add(PTransLtable1);
+    	PTransLtable3.add(PTransLtable2);
+    	PTransLtable4.add(scrollPTransL);
+    	PTransLtable6.add(ptranslName);
+    	PTransLtable6.add(ptranslLoc);
+    	PTransLtable5.add(PTransLtable6);
+    	PTransLtable5.add(PTransLtable3);
+    	PTransLtable5.add(PTransLtable4);
+    	
+    	PTransL.add(PTransLtable5);
+    	
+    	//	Initialize the PTransL with the GRI-Mech 3.0 library
+    	//		This library contains small-molecule chemistry, which cannot be estimated by the Joback group additivity scheme
+		PRLVector initialPTransL = new PRLVector(0, "GRI-Mech 3.0", databasePath.getText()+"/transport_libraries/GRI-Mech3.0");
+		tmodelPTransL.updatePRL(initialPTransL);
+		
+		
     	//	Create the Primary Reaction Library (PRL) panel
     	JPanel PRL = new JPanel();
     	PRL.setBorder(BorderFactory.createCompoundBorder(BorderFactory.createTitledBorder("Primary Reaction Library"),
@@ -810,6 +896,7 @@ public class GUI extends JPanel implements ActionListener {
     	Box TabTotal = Box.createVerticalBox();
     	TabTotal.add(Database);
     	TabTotal.add(PTL);
+    	TabTotal.add(PTransL);
     	TabTotal.add(PRL);
     	TabTotal.add(SM);
     	
@@ -835,6 +922,10 @@ public class GUI extends JPanel implements ActionListener {
     	JPanel DS = new JPanel();
     	DS.setBorder(BorderFactory.createCompoundBorder(BorderFactory.createTitledBorder("Dynamic Simulator"),
     			BorderFactory.createEmptyBorder(5,5,5,5)));
+    	
+    	JPanel Prune = new JPanel();
+    	Prune.setBorder(BorderFactory.createCompoundBorder(BorderFactory.createTitledBorder("Pruning Options"),
+    			BorderFactory.createEmptyBorder(5,5,5,5)));    	
     	
     	//	Create the DS subpanel: Solver
     	JPanel dsSolver = new JPanel();
@@ -885,22 +976,68 @@ public class GUI extends JPanel implements ActionListener {
         JPanel interConv = new JPanel();
         interConv.setBorder(BorderFactory.createEmptyBorder(5,5,5,5));
         //	Populate the subpanel
-        JLabel multiConvLabel = new JLabel("Intermediate Conversions");
+        JLabel multiConvLabel = new JLabel("Intermediate Conversions/TimeSteps");
         interConv.add(multiConvLabel);
-        multiConvLabel.setToolTipText("Default = AUTO");
-        interConv.add(multiConv = new JTextArea(2,15));
-        multiConv.setText("AUTO");
+        interConv.add(interCombo = new JComboBox(interOptions));
+        interCombo.addActionListener(this);
+        interCombo.setRenderer(centerJComboBoxRenderer);
+        interCombo.setSelectedIndex(1);
+        interCombo.setActionCommand("Pruning");
         
-    	//	Create the DS subpanel: interTS
-    	JPanel interTS = new JPanel();
-    	interTS.setBorder(BorderFactory.createEmptyBorder(5,5,5,5));
-    	//	Populate the subpanel
-        JLabel multiTSLabel = new JLabel("Intermediate Time Steps");
-        interTS.add(multiTSLabel);
-        multiTSLabel.setToolTipText("Default = AUTO");
-        interTS.add(multiTS = new JTextArea(2,15));
-    	multiTS.setEnabled(false);
-    	multiTS.setText("AUTO");
+    	/*
+    	 * Pruning options
+    	 */
+        JPanel indivSteps = new JPanel();
+        indivSteps.setBorder(BorderFactory.createEmptyBorder(5,5,5,5));
+        indivSteps.add(new JLabel("Specific time/conversion steps"));
+        indivSteps.add(textIndivSteps = new JTextField());
+        textIndivSteps.setPreferredSize(new Dimension(100,25));
+        textIndivSteps.setHorizontalAlignment(JTextField.CENTER);
+        textIndivSteps.setEnabled(false);
+        
+        JPanel terminTol = new JPanel();
+        terminTol.setBorder(BorderFactory.createEmptyBorder(5,5,5,5));
+        terminTol.add(new JLabel("Termination Tolerance"));
+        terminTol.add(textTerminTol = new JTextField());
+        textTerminTol.setPreferredSize(new Dimension(100,25));
+        textTerminTol.setHorizontalAlignment(JTextField.CENTER);
+        textTerminTol.setText("1.0E4");
+        textTerminTol.setEnabled(false);
+        
+        JPanel pruneTol = new JPanel();
+        pruneTol.setBorder(BorderFactory.createEmptyBorder(5,5,5,5));
+        pruneTol.add(new JLabel("Pruning tolerance"));
+        pruneTol.add(textPruneTol = new JTextField());
+        textPruneTol.setPreferredSize(new Dimension(100,25));
+        textPruneTol.setHorizontalAlignment(JTextField.CENTER);
+        textPruneTol.setText("1.0E-15");
+        textPruneTol.setEnabled(false);
+        
+        JPanel minSpc4Prune = new JPanel();
+        minSpc4Prune.setBorder(BorderFactory.createEmptyBorder(5,5,5,5));
+        minSpc4Prune.add(new JLabel("Minimum # of species before initiating pruning"));
+        minSpc4Prune.add(textMinSpc = new JTextField());
+        textMinSpc.setPreferredSize(new Dimension(100,25));
+        textMinSpc.setHorizontalAlignment(JTextField.CENTER);
+        textMinSpc.setText("1000");
+        textMinSpc.setEnabled(false);
+        
+        JPanel maxSpcNEdge = new JPanel();
+        maxSpcNEdge.setBorder(BorderFactory.createEmptyBorder(5,5,5,5));
+        maxSpcNEdge.add(new JLabel("Maximum # of species in edge after pruning"));
+        maxSpcNEdge.add(textMaxSpc = new JTextField());
+        textMaxSpc.setPreferredSize(new Dimension(100,25));
+        textMaxSpc.setHorizontalAlignment(JTextField.CENTER);
+        textMaxSpc.setText("1000");
+        textMaxSpc.setEnabled(false);
+        
+    	Box pruningOptionsBox = Box.createVerticalBox();
+    	pruningOptionsBox.add(interConv);
+    	pruningOptionsBox.add(indivSteps);
+    	pruningOptionsBox.add(terminTol);
+    	pruningOptionsBox.add(pruneTol);
+    	pruningOptionsBox.add(minSpc4Prune);
+    	pruningOptionsBox.add(maxSpcNEdge);
     	
     	//	Create boxes for DS panel
         Box ds = Box.createVerticalBox();
@@ -908,9 +1045,14 @@ public class GUI extends JPanel implements ActionListener {
     	ds.add(dsSolver);
     	ds.add(aTolPanel);
     	ds.add(rTolPanel);
-    	ds.add(interConv);
-    	ds.add(interTS);
+    	//ds.add(interConv);    	
     	DS.add(ds);
+    	
+    	Prune.add(pruningOptionsBox);
+    	
+    	Box dsNprune = Box.createHorizontalBox();
+    	dsNprune.add(DS);
+    	dsNprune.add(Prune);
     	
     	// Create the total pressure dependence panel
     	JPanel totalPDep = new JPanel();
@@ -945,6 +1087,17 @@ public class GUI extends JPanel implements ActionListener {
     	PDKM.add(pdkmCombo = new JComboBox(pdkmOptions));
     	pdkmCombo.setEnabled(false);
     	pdkmCombo.setActionCommand("pdkm");
+    	
+    	//	Create the "decrease grain size" subpanel
+    	JPanel GrainSize = new JPanel();
+    	GrainSize.setBorder(BorderFactory.createEmptyBorder(5,5,5,5));
+    	JLabel grainsizeLabel = new JLabel("Decrease Grain Size");
+    	GrainSize.add(grainsizeLabel);
+    	GrainSize.add(grainsizeCombo = new JComboBox(yesnoOptions));
+    	grainsizeCombo.setEnabled(false);
+    	grainsizeLabel.setToolTipText("If the pressure-dependent rate > 2*(High-P-Limit rate):" +
+    			" Increase the number of energy steps used in solving the Master Equation" +
+    			" and re-run the fame.exe calculation.");
     	
     	JPanel Cheby = new JPanel();
     	Cheby.setBorder(BorderFactory.createEmptyBorder(5,5,5,5));
@@ -1047,11 +1200,12 @@ public class GUI extends JPanel implements ActionListener {
     	pDepBox.add(Pdep);
     	pDepBox.add(SDE);
     	pDepBox.add(PDKM);
+    	pDepBox.add(GrainSize);
     	pDepBox.add(Cheby);
     	totalPDep.add(pDepBox);
     	
         JComboBox[] allTab = {pdepCombo, sdeCombo, pdkmCombo, chebyTUnits, chebyPUnits,
-        		chebyTCombo, chebyPCombo};
+        		chebyTCombo, chebyPCombo, grainsizeCombo, interCombo};
         initializeJCB(allTab);
         
 		JComponent[] pdkmComps = {chebyTMin, chebyTMax, chebyTUnits, chebyTGen, chebyTRep,
@@ -1060,7 +1214,7 @@ public class GUI extends JPanel implements ActionListener {
 		disableComponents(pdkmComps);
     	
     	Box TabTotal = Box.createVerticalBox();
-    	TabTotal.add(DS);
+    	TabTotal.add(dsNprune);
     	TabTotal.add(totalPDep);    	
     	
     	//	Create the dynamicSimulator panel
@@ -1329,6 +1483,11 @@ public class GUI extends JPanel implements ActionListener {
 				else
 					tmodelFS.deleteRow(highlightRow);
 			}
+			else if ("DeletePTransL".equals(e.getActionCommand())) {
+				int highlightRow = tablePTransL.getSelectedRow();
+				if (highlightRow == -1) System.out.println("Please select a row to delete");
+				else tmodelPTransL.deleteRow(highlightRow);
+			}
 		}
 	}
     
@@ -1478,6 +1637,21 @@ public class GUI extends JPanel implements ActionListener {
 					FSAdjList.setText("");
 				}
 			}
+			else if ("AddPTransL".equals(e.getActionCommand())) {
+				// Extract the information
+				int ptranslInput0 = tmodelPTransL.nextEmptyRow+1;
+				String ptranslInput1 = ptranslLibName.getText();
+				String ptranslInput2 = ptranslPath.getText();
+				// Check that all information is present
+				if (ptranslInput1.equals("") || ptranslInput2.equals("")) {
+					System.out.println("Please input the Name and Location of a Primary Transport Library");
+				} else {
+					PRLVector ptranslEntry = new PRLVector(ptranslInput0, ptranslInput1, ptranslInput2);
+					tmodelPTransL.updatePRL(ptranslEntry);
+					ptranslLibName.setText("");
+    				ptranslPath.setText("");
+				}
+			}
 		}
 	}
     
@@ -1508,6 +1682,10 @@ public class GUI extends JPanel implements ActionListener {
 				File path = null;
 				path = askUserForInput("Select SeedMechanism folder", true, databasePath.getText()+"/kinetics_libraries");
 				if (path != null) smPath.setText(path.getPath());
+			} else if ("ptranslPath".equals(e.getActionCommand())) {
+				File path = null;
+				path = askUserForInput("Select PrimaryTransportLibrary folder", true, databasePath.getText()+"/transport_libraries");
+				if (path != null) ptranslPath.setText(path.getPath());
 			}
     	}
     }
@@ -1606,7 +1784,7 @@ public class GUI extends JPanel implements ActionListener {
         String rmgEnvVar = System.getProperty("RMG.workingDirectory");
         String ptlReferenceDirectory_linux = rmgEnvVar + "/databases/" + stringMainDatabase + "/thermo_libraries/";
         String ptlReferenceDirectory_windows = rmgEnvVar + "\\databases\\" + stringMainDatabase + "\\thermo_libraries\\";
-    	conditionFile += "\rPrimaryThermoLibrary:\r";
+    	conditionFile += "\r\rPrimaryThermoLibrary:\r";
 
 		if (tablePTL.getRowCount()==0) {
         	System.out.println("Warning: Writing condition.txt file: Could not read Primary Thermo Library (Thermochemical Libraries tab)");
@@ -1620,6 +1798,28 @@ public class GUI extends JPanel implements ActionListener {
     	        	conditionFile += ptlDir.substring(startIndex) + "\r";
     	        } else {
     	        	conditionFile += ptlDir + "\r";
+    	        }
+    		}
+		}
+		conditionFile += "END\r\r";
+		
+    	//	Add the name(s)/location(s) of the primary transport library
+        String ptranslReferenceDirectory_linux = rmgEnvVar + "/databases/" + stringMainDatabase + "/transport_libraries/";
+        String ptranslReferenceDirectory_windows = rmgEnvVar + "\\databases\\" + stringMainDatabase + "\\transport_libraries\\";
+    	conditionFile += "PrimaryTransportLibrary:\r";
+
+		if (tablePTransL.getRowCount()==0) {
+        	System.out.println("Warning: Writing condition.txt file: Could not read Primary Transport Library (Thermochemical Libraries tab)");
+		} else {
+    		for (int k=0; k<tablePTransL.getRowCount(); k++) {
+    			conditionFile += "Name: " + tablePTransL.getValueAt(k,0) + "\r" + "Location: ";
+    			String ptranslDir = (String)tablePTransL.getValueAt(k,1);
+    	        if (ptranslDir.toLowerCase().startsWith(ptranslReferenceDirectory_linux.toLowerCase()) ||
+    	        		ptranslDir.toLowerCase().startsWith(ptranslReferenceDirectory_windows.toLowerCase())) {
+    	        	int startIndex = ptranslReferenceDirectory_linux.length();
+    	        	conditionFile += ptranslDir.substring(startIndex) + "\r";
+    	        } else {
+    	        	conditionFile += ptranslDir + "\r";
     	        }
     		}
 		}
@@ -1825,6 +2025,11 @@ public class GUI extends JPanel implements ActionListener {
     		System.out.println("Pressure information for PDepKineticsModel not supplied:  Using default values.");
     	conditionFile += "\r";
     	
+    	// Add the "DecreaseGrainSize" field
+    	if (grainsizeCombo.getSelectedItem().equals("Yes")) {
+    		conditionFile += "DecreaseGrainSize: yes\r";
+    	}
+    	
     	conditionFile += "\r";
         //	Add the path of the IncludeSpecies.txt file (if present)
         if (unreactiveStatus) {
@@ -1879,12 +2084,18 @@ public class GUI extends JPanel implements ActionListener {
         conditionFile += "DynamicSimulator: " + simulatorCombo.getSelectedItem() + "\r";
         if (conversionGoal) {
         	conditionFile += "Conversions:";
-        	if (multiConv.getText().equals("")) {
-            	System.out.println("ERROR: Writing condition.txt file: Could not read list of intermediate conversions (Dynamic Simulator tab)");
-            	return;
+        	if (interCombo.getSelectedItem().equals("AUTO")) {
+        		conditionFile += " AUTO";
+        	}
+        	else if (interCombo.getSelectedItem().equals("AUTOPRUNE")) {
+        		conditionFile += " AUTOPRUNE\r";
+        		conditionFile += "TerminationTolerance: " + textTerminTol.getText() + "\r";
+        		conditionFile += "PruningTolerance: " + textPruneTol.getText() + "\r";
+        		conditionFile += "MinSpeciesForPruning: " + textMinSpc.getText() + "\r";
+        		conditionFile += "MaxEdgeSpeciesAfterPruning: " + textMaxSpc.getText();
         	}
         	else {
-	            String[] convLines = multiConv.getText().split("[\n]");
+	            String[] convLines = textIndivSteps.getText().split("[\n]");
 	            for (int i=0; i<convLines.length; i++) {
 	            	StringTokenizer st = null;
 	            	st = new StringTokenizer(convLines[i]);
@@ -1897,12 +2108,18 @@ public class GUI extends JPanel implements ActionListener {
         	}   
         } else {
         	conditionFile += "TimeStep:";
-        	if (multiTS.getText().equals("")) {
-            	System.out.println("ERROR: Writing condition.txt file: Could not read list of intermediate time steps (Dynamic Simulator tab)");
-            	return;
+        	if (interCombo.getSelectedItem().equals("AUTO")) {
+        		conditionFile += " AUTO";
+        	}
+        	else if (interCombo.getSelectedItem().equals("AUTOPRUNE")) {
+        		conditionFile += " AUTOPRUNE\r";
+        		conditionFile += "TerminationTolerance: " + textTerminTol.getText() + "\r";
+        		conditionFile += "PruningTolerance: " + textPruneTol.getText() + "\r";
+        		conditionFile += "MinSpeciesForPruning: " + textMinSpc.getText() + "\r";
+        		conditionFile += "MaxEdgeSpeciesAfterPruning: " + textMaxSpc.getText();
         	}
         	else {
-	        	String[] tsLines = multiTS.getText().split("[\n]");
+	        	String[] tsLines = textIndivSteps.getText().split("[\n]");
 	            for (int i=0; i<tsLines.length; i++) {
 	            	StringTokenizer st = null;
 	            	st = new StringTokenizer(tsLines[i]);
@@ -2030,6 +2247,7 @@ public class GUI extends JPanel implements ActionListener {
     	tmodelInput.clear();
     	tmodelSens.clear();
     	tmodelFS.clear();
+    	tmodelPTransL.clear();
         System.out.println("GUI cannot read in file's header (comments)");
     	
 		//	Read in the .txt file
@@ -2073,6 +2291,23 @@ public class GUI extends JPanel implements ActionListener {
              		String path = tempStringVector[tempStringVector.length-1].trim();
              		PRLVector ptlEntry = new PRLVector(ptlCounter-1,name,path);
 					tmodelPTL.updatePRL(ptlEntry);
+					line = ChemParser.readMeaningfulLine(reader);
+             	}
+	        }
+	        
+	        else if (line.startsWith("PrimaryTransportLibrary")) {
+		        //	Name(s)/Path(s) of PrimaryTransportLibrary
+             	line = ChemParser.readMeaningfulLine(reader);
+             	int ptranslCounter = 0;
+             	while (!line.equals("END")) {
+             		++ptranslCounter;
+             		tempStringVector = line.split("Name: ");
+             		String name = tempStringVector[tempStringVector.length-1].trim();
+             		line = ChemParser.readMeaningfulLine(reader);
+             		tempStringVector = line.split("Location: ");
+             		String path = tempStringVector[tempStringVector.length-1].trim();
+             		PRLVector ptranslEntry = new PRLVector(ptranslCounter-1,name,path);
+					tmodelPTransL.updatePRL(ptranslEntry);
 					line = ChemParser.readMeaningfulLine(reader);
              	}
 	        }
@@ -2412,6 +2647,19 @@ public class GUI extends JPanel implements ActionListener {
 	        	chebyPCombo.setSelectedItem("List");
 	        }
 	        
+	        else if (line.toLowerCase().startsWith("decreasegrainsize")) {
+	        	st = new StringTokenizer(line);
+	        	tempString = st.nextToken();	// Skip over "DecreaseGrainSize:"
+	        	String yesno = st.nextToken();
+	        	if (yesno.toLowerCase().equals("yes")) {
+		        	grainsizeCombo.setSelectedItem("Yes");
+		        } else if (yesno.toLowerCase().equals("no")) {
+		        	grainsizeCombo.setSelectedItem("No");
+		        } else {
+		        	System.out.println("ERROR: Reading in condition.txt file - Invalid argument for DecreaseGrainSize.  RMG recognizes an argument of 'Yes' or 'No', but not " + yesno + ".  GUI does not contain all information present in condition.txt file.");
+		        }
+	        }
+	        
 	        else if (line.startsWith("IncludeSpecies")) {
 		        //	IncludeSpecies.txt file (if present)
 	        	st = new StringTokenizer(line);
@@ -2465,10 +2713,19 @@ public class GUI extends JPanel implements ActionListener {
 		        st = new StringTokenizer(line);
 		        String stepName = st.nextToken();	// Skip over Conversions
 		        String steps = st.nextToken();
-		        while (st.hasMoreTokens()) {
-		        	steps += " " + st.nextToken();
+		        if (steps.toLowerCase().equals("auto")) {
+		        	interCombo.setSelectedItem("AUTO");
 		        }
-		        multiConv.setText(steps);
+		        else if (steps.toLowerCase().equals("autoprune")) {
+		        	interCombo.setSelectedItem("AUTOPRUNE");
+		        }
+		        else {
+			        while (st.hasMoreTokens()) {
+			        	steps += " " + st.nextToken();
+			        }
+			        textIndivSteps.setText(steps);
+			        interCombo.setSelectedIndex(0);
+		        }
 	        }
 	        
 	        else if (line.startsWith("TimeStep")) {
@@ -2476,12 +2733,48 @@ public class GUI extends JPanel implements ActionListener {
 		        st = new StringTokenizer(line);
 		        String stepName = st.nextToken();	// Skip over TimeStep
 		        String steps = st.nextToken();
-		        while (st.hasMoreTokens()) {
-		        	steps += " " + st.nextToken();
+		        if (steps.toLowerCase().equals("auto")) {
+		        	interCombo.setSelectedItem("AUTO");
 		        }
-		        multiTS.setText(steps);
+		        else if (steps.toLowerCase().equals("autoprune")) {
+		        	interCombo.setSelectedItem("AUTOPRUNE");
+		        }
+		        else {
+			        while (st.hasMoreTokens()) {
+			        	steps += " " + st.nextToken();
+			        }
+			        textIndivSteps.setText(steps);
+			        interCombo.setSelectedIndex(0);
+		        }
 	        }
 
+	        /*
+	         * Pruning options
+	         */
+	        else if (line.toLowerCase().startsWith("terminationtolerance")) {
+	        	st = new StringTokenizer(line);
+	        	tempString = st.nextToken();	// Skip over TerminationTolerance:
+	        	textTerminTol.setText(st.nextToken());
+	        }
+	        
+	        else if (line.toLowerCase().startsWith("pruningtolerance")) {
+	        	st = new StringTokenizer(line);
+	        	tempString = st.nextToken();	// Skip over PruningTolerance:
+	        	textPruneTol.setText(st.nextToken());
+	        }
+	        
+	        else if (line.toLowerCase().startsWith("minspeciesforpruning")) {
+	        	st = new StringTokenizer(line);
+	        	tempString = st.nextToken();	// Skip over MinSpeciesForPruning:
+	        	textMinSpc.setText(st.nextToken());
+	        }
+	        
+	        else if (line.toLowerCase().startsWith("maxedgespeciesafterpruning")) {
+	        	st = new StringTokenizer(line);
+	        	tempString = st.nextToken();	// Skip over MaxEdgeSpeciesAfterPruning:
+	        	textMaxSpc.setText(st.nextToken());
+	        }
+	        	        
 	        else if (line.startsWith("Atol")) {
 		        //	Absolute tolerance
 		        st = new StringTokenizer(line);
@@ -2936,8 +3229,8 @@ public class GUI extends JPanel implements ActionListener {
     public void actionPerformed(ActionEvent event) {    	
     	//	- If Termination sequence is specified, highlight appropriate boxes
     	if ("GoalofReaction".equals(event.getActionCommand())) {
-    		JComponent[] timeComps = {timeCombo, time, multiTS};
-    		JComponent[] convComps = {SpeciesConvName, conversion, multiConv};
+    		JComponent[] timeComps = {timeCombo, time};
+    		JComponent[] convComps = {SpeciesConvName, conversion};
     		if (controllerCombo.getSelectedItem().equals("ReactionTime")) {
     			enableComponents(timeComps);
     			disableComponents(convComps);
@@ -2971,7 +3264,7 @@ public class GUI extends JPanel implements ActionListener {
     			
     	}
     	else if ("pDep".equals(event.getActionCommand())) {
-    		JComponent[] pDepComps = {sdeCombo, pdkmCombo};
+    		JComponent[] pDepComps = {sdeCombo, pdkmCombo, grainsizeCombo};
     		JComponent[] pdkmComps = {chebyTMin, chebyTMax, chebyTUnits, chebyTGen, chebyTRep,
     				chebyPMin, chebyPMax, chebyPUnits, chebyPGen, chebyPRep,
     				chebyPCombo, chebyTCombo, chebyP, chebyT};
@@ -3066,6 +3359,21 @@ public class GUI extends JPanel implements ActionListener {
 				enableComponents(tmaxminComps);
 			}
     	}
+    	// Pruning options
+    	else if ("Pruning".equals(event.getActionCommand())) {
+    		JComponent[] indivComps = {textIndivSteps};
+    		JComponent[] pruneComps = {textTerminTol, textPruneTol, textMinSpc, textMaxSpc};
+    		if (interCombo.getSelectedItem().equals("AUTO")) {
+    			disableComponents(indivComps);
+    			disableComponents(pruneComps);
+    		} else if (interCombo.getSelectedItem().equals("AUTOPRUNE")) {
+    			disableComponents(indivComps);
+    			enableComponents(pruneComps);
+    		} else {
+    			enableComponents(indivComps);
+    			disableComponents(pruneComps);
+    		}
+    	}
     	//	Save the condition.txt file
     	else if ("saveCondition".equals(event.getActionCommand())) {
     		createConditionFile(false);
@@ -3099,6 +3407,7 @@ public class GUI extends JPanel implements ActionListener {
 	String[] sdeOptions = {"Frequency Groups"}; //"Three Frequency Model"
 	String[] pdkmOptions = {"CHEB", "PLOG", "Rate"};
 	String[] listormaxmin = {"List", "Max/Min"};
+	String[] interOptions = {"Indiv. time steps","AUTO","AUTOPRUNE"};
 	//	Tab : Additional Options
 	String[] AUnitsOptions = {"moles", "molecules"};
 	String[] EaUnitsOptions = {"kcal/mol", "cal/mol", "kJ/mol", "J/mol", "Kelvins"};
@@ -3119,7 +3428,8 @@ public class GUI extends JPanel implements ActionListener {
     //	Tab3: Error Analysis
     SpeciesSensName, eBarsCombo, sensCoeffCombo,
     //	Tab4: Dynamic Simulator
-    pdepCombo, sdeCombo, pdkmCombo, chebyTCombo, chebyPCombo,
+    pdepCombo, sdeCombo, pdkmCombo, chebyTCombo, chebyPCombo, grainsizeCombo,
+    	interCombo,
     //	Tab : Additional Options
     eosCombo, inchiCombo, chemkinAUnits, chemkinEaUnits, chemkinVerbosity,
     	readRestartOnOff, writeRestartOnOff, chemkinSMILES,
@@ -3130,7 +3440,7 @@ public class GUI extends JPanel implements ActionListener {
     //	Tab0: Initialization
     nameFiller, locationFiller, databasePath, prlPath, ptlPath,
     	timeStep, aTolerance, rTolerance, ptlLibName, prlLibName,
-    	smLibName, smPath,
+    	smLibName, smPath, ptranslLibName, ptranslPath,
     //	Tab1: Termination Sequence
     conversion, time, eTolerance,
     //	Tab2: Initial Condition
@@ -3142,7 +3452,9 @@ public class GUI extends JPanel implements ActionListener {
     maxHeavyAtom, FSName,
     //
     chebyTMin, chebyTMax, chebyPMin, chebyPMax, chebyTGen, chebyTRep,
-    	chebyPGen, chebyPRep, chebyT, chebyP;
+    	chebyPGen, chebyPRep, chebyT, chebyP,
+    //
+    textIndivSteps, textTerminTol, textPruneTol, textMinSpc, textMaxSpc;
     
     JTextArea
     //	Main Panel
@@ -3150,7 +3462,7 @@ public class GUI extends JPanel implements ActionListener {
     //	Tab2: Initial Condition
     speciesAdjList, tempConstant, pressConstant,
     //	Tab4: Dynamic Simulator
-    multiTS, multiConv,
+    
     //	Tab : Additional Options
     FSAdjList;
     
@@ -3160,6 +3472,7 @@ public class GUI extends JPanel implements ActionListener {
     //	Tab0: Initialization
     AddPRL, DeletePRL, databaseButton, prlButton, ptlButton,
     	AddPTL, DeletePTL, smButton, AddSM, DeleteSM,
+    	ptranslButton, AddPTransL, DeletePTransL,
     //  Tab1: Termination
     //	Tab2: Initial Condition
     AddInput, DeleteInput, isButton,
@@ -3170,7 +3483,7 @@ public class GUI extends JPanel implements ActionListener {
     
     JTable
     //	Tab0: Initialization
-    tablePRL, tablePTL, tableSM,
+    tablePRL, tablePTL, tableSM, tablePTransL,
     //  Tab1: Termination
     //	Tab2: Initial Condition
     tableInput,
@@ -3180,7 +3493,7 @@ public class GUI extends JPanel implements ActionListener {
     tableFS;
     
     //	Tab0: Initialization
-    MyTableModelPRL tmodelPRL, tmodelPTL;
+    MyTableModelPRL tmodelPRL, tmodelPTL, tmodelPTransL;
     MyTableModelSM tmodelSM;
     //  Tab1: Termination
     //	Tab2: Initial Condition

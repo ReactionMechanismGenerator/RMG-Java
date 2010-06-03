@@ -306,6 +306,44 @@ public class FastMasterEqn implements PDepKineticsEstimator {
 			// thousands of times in a single job
 			stdout.close();
 			stderr.close();
+
+			// Parse FAME output file and update accordingly
+			if (parseOutputString(output, pdn, rxnSystem, cerm, isomerList)) {
+
+				// Reset altered flag
+				pdn.setAltered(false);
+
+				// Clean up files
+				int id = pdn.getID();
+				/*String path = "fame/";
+				if (id < 10)			path += "000";
+				else if (id < 100)	path += "00";
+				else if (id < 1000)	path += "0";
+				path += Integer.toString(id);
+
+				File input = new File("fame/fame_input.txt");
+				File newInput = new File(path +  "_input.txt");
+				input.renameTo(newInput);
+				File output = new File("fame/fame_output.txt");
+				File newOutput = new File(path +  "_output.txt");
+				output.renameTo(newOutput);*/
+
+				// Write finished indicator to console
+				//System.out.println("FAME execution for network " + Integer.toString(id) + " complete.");
+				String formula = pdn.getSpeciesType();
+				System.out.println("PDepNetwork #" + Integer.toString(id) +
+					" (" + formula + "): " +
+					pdn.getNetReactions().size() + " included and " +
+					pdn.getNonincludedReactions().size() + " nonincluded net reactions.");
+				// Find time required to run FAME for large networks.
+				// JDM January 27, 2010
+				// if (isomerList.size() >= 10) {
+				//	System.out.println("Running Time is: " + String.valueOf((System.currentTimeMillis())/1000/60) + " minutes after running fame.");
+				// }
+
+
+			}
+
         }
         catch (Exception e) {
 			e.printStackTrace();
@@ -338,43 +376,6 @@ public class FastMasterEqn implements PDepKineticsEstimator {
 				System.exit(0);				
 			}
         }
-
-		// Parse FAME output file and update accordingly
-        if (parseOutputString(output, pdn, rxnSystem, cerm, isomerList)) {
-
-			// Reset altered flag
-			pdn.setAltered(false);
-
-			// Clean up files
-			int id = pdn.getID();
-			/*String path = "fame/";
-			if (id < 10)			path += "000";
-			else if (id < 100)	path += "00";
-			else if (id < 1000)	path += "0";
-			path += Integer.toString(id);
-
-			File input = new File("fame/fame_input.txt");
-			File newInput = new File(path +  "_input.txt");
-			input.renameTo(newInput);
-			File output = new File("fame/fame_output.txt");
-			File newOutput = new File(path +  "_output.txt");
-			output.renameTo(newOutput);*/
-
-			// Write finished indicator to console
-			//System.out.println("FAME execution for network " + Integer.toString(id) + " complete.");
-			String formula = pdn.getSpeciesType();
-			System.out.println("PDepNetwork #" + Integer.toString(id) +
-				" (" + formula + "): " +
-				pdn.getNetReactions().size() + " included and " +
-				pdn.getNonincludedReactions().size() + " nonincluded net reactions.");
-			// Find time required to run FAME for large networks. 
-			// JDM January 27, 2010
-			// if (isomerList.size() >= 10) {
-			//	System.out.println("Running Time is: " + String.valueOf((System.currentTimeMillis())/1000/60) + " minutes after running fame.");
-			// }
-
-
-		}
         
         /*
          * MRH 26Feb2010:
@@ -534,7 +535,7 @@ public class FastMasterEqn implements PDepKineticsEstimator {
 			for (int i = 0; i < speciesList.size(); i++) {
 
 				Species spec = speciesList.get(i);
-				spec.calculateLJParameters();
+				spec.calculateTransportParameters();
 
 				input += "# Species identifier (128 characters or less, no spaces)\n";
 				input += spec.getName() + "(" + Integer.toString(spec.getID()) + ")\n";
@@ -562,8 +563,8 @@ public class FastMasterEqn implements PDepKineticsEstimator {
 				input += "# 	Lennard-Jones sigma parameter; allowed units are m or A\n";
 				input += "# 	Lennard-Jones epsilon parameter; allowed units are J or K\n";
 				input += "u " + Double.toString(spec.getMolecularWeight()) + "\n";
-				input += "m " + Double.toString(spec.getLJ().getSigma() * 1e-10) + "\n";
-				input += "J " + Double.toString(spec.getLJ().getEpsilon() * 1.380665e-23) + "\n";
+				input += "m " + Double.toString(spec.getChemkinTransportData().getSigma() * 1e-10) + "\n";
+				input += "J " + Double.toString(spec.getChemkinTransportData().getEpsilon() * 1.380665e-23) + "\n";
 
 				input += "# Harmonic oscillators; allowed units are Hz and cm^-1\n";
 				SpectroscopicData data = spec.getSpectroscopicData();
@@ -616,19 +617,20 @@ public class FastMasterEqn implements PDepKineticsEstimator {
 				
 				double A = 0.0, Ea = 0.0, n = 0.0;
 				if (rxn.isForward()) {
+					Temperature stdtemp = new Temperature(298,"K");
+					double Hrxn = rxn.calculateHrxn(stdtemp);
 					Kinetics[] k_array = rxn.getKinetics();
-					Kinetics kin = computeKUsingLeastSquares(k_array);
+					Kinetics kin = computeKUsingLeastSquares(k_array, Hrxn);
 					A = kin.getAValue();
 					n = kin.getNValue();
-					Ea = kin.getEValue();
-//					A = rxn.getKinetics().getAValue();
-//					Ea = rxn.getKinetics().getEValue();
-//					n = rxn.getKinetics().getNValue();
+					Ea = kin.getEValue();//kin should be ArrheniusKinetics (rather than ArrheniusEPKinetics), so it should be correct to use getEValue here (similarly for other uses in this file)
 				}
 				else {
+					Temperature stdtemp = new Temperature(298,"K");
+					double Hrxn = rxn.calculateHrxn(stdtemp);
 					((Reaction) rxn).generateReverseReaction();
 					Kinetics[] k_array = ((Reaction)rxn).getFittedReverseKinetics();
-					Kinetics kin = computeKUsingLeastSquares(k_array);
+					Kinetics kin = computeKUsingLeastSquares(k_array, -Hrxn);//gmagoon: I'm not sure, with forward/reverse reactions here whether it is correct to use Hrxn or -Hrxn, but in any case, getFittedReverseKinetics should return an ArrheniusKinetics (not ArrheniusEPKinetics) object, so it will not be used in computeKUsingLeastSquares anyway
 //					Kinetics kin = ((Reaction) rxn).getFittedReverseKinetics();
 					A = kin.getAValue();
 					Ea = kin.getEValue();
@@ -703,7 +705,7 @@ public class FastMasterEqn implements PDepKineticsEstimator {
 	 */
 	public boolean parseOutputString(String output, PDepNetwork pdn,
             ReactionSystem rxnSystem, CoreEdgeReactionModel cerm,
-			LinkedList<PDepIsomer> isomerList) {
+			LinkedList<PDepIsomer> isomerList) throws PDepException {
 
 	    String dir = System.getProperty("RMG.workingDirectory");
 	    
@@ -888,20 +890,22 @@ public class FastMasterEqn implements PDepKineticsEstimator {
 				LinkedList pathReactionList = pdn.getPathReactions();
 				for (int HighPRxNum = 0; HighPRxNum < pathReactionList.size(); HighPRxNum++) {
 					PDepReaction rxnWHighPLimit = (PDepReaction)pathReactionList.get(HighPRxNum);
+					Temperature stdtemp = new Temperature(298,"K");
+					double Hrxn = rxnWHighPLimit.calculateHrxn(stdtemp);
 					if (rxn.getStructure().equals(rxnWHighPLimit.getStructure())) {
 						double A = 0.0, Ea = 0.0, n = 0.0;
 						if (rxnWHighPLimit.isForward()) {
 							Kinetics[] k_array = rxnWHighPLimit.getKinetics();
-							Kinetics kin = computeKUsingLeastSquares(k_array);
+							Kinetics kin = computeKUsingLeastSquares(k_array, Hrxn);
 							A = kin.getAValue();
 							Ea = kin.getEValue();
 							n = kin.getNValue();
 							// While I'm here, and know which reaction was the High-P limit, set the comment in the P-dep reaction 
-							rxn.setComments("High-P Limit: " + kin.getSource().toString() + "\n" + kin.getComment().toString() );
+							rxn.setComments("High-P Limit: " + kin.getSource().toString() + " " + kin.getComment().toString() );
 						}
 						else {
 							Kinetics[] k_array = rxnWHighPLimit.getFittedReverseKinetics();
-							Kinetics kin = computeKUsingLeastSquares(k_array);
+							Kinetics kin = computeKUsingLeastSquares(k_array, -Hrxn);//gmagoon: I'm not sure, with forward/reverse reactions here whether it is correct to use Hrxn or -Hrxn, but in any case, getFittedReverseKinetics should return an ArrheniusKinetics (not ArrheniusEPKinetics) object, so it will not be used in computeKUsingLeastSquares anyway
 							A = kin.getAValue();
 							Ea = kin.getEValue();
 							n = kin.getNValue();
@@ -950,22 +954,38 @@ public class FastMasterEqn implements PDepKineticsEstimator {
 			br.close();
 
 			// Set reverse reactions
-			for (int i = 0; i < netReactionList.size(); i++) {
+			int i = 0;
+			while (i < netReactionList.size()) {
 				PDepReaction rxn1 = netReactionList.get(i);
-				for (int j = 0; j < netReactionList.size(); j++) {
-					PDepReaction rxn2 = netReactionList.get(j);
-					if (rxn1.getReactant().equals(rxn2.getProduct()) &&
-						rxn2.getReactant().equals(rxn1.getProduct())) {
-						rxn1.setReverseReaction(rxn2);
-						rxn2.setReverseReaction(rxn1);
-						netReactionList.remove(rxn2);
+				if (rxn1.getReverseReaction() == null) {
+					boolean found = false;
+					for (int j = 0; j < netReactionList.size(); j++) {
+						PDepReaction rxn2 = netReactionList.get(j);
+						if (rxn1.getReactant().equals(rxn2.getProduct()) &&
+							rxn2.getReactant().equals(rxn1.getProduct())) {
+							rxn1.setReverseReaction(rxn2);
+							rxn2.setReverseReaction(rxn1);
+							netReactionList.remove(rxn2);
+							found = true;
+							break;
+						}
 					}
+					if (!found)
+						throw new PDepException("Unable to identify reverse reaction for " + rxn1.toString() + " after FAME calculation.");
 				}
+				else
+					i++;
 			}
 
 			// Update reaction lists (sort into included and nonincluded)
 			pdn.updateReactionLists(cerm);
 
+		}
+		catch (PDepException e) {
+			System.out.println(pdn);
+			System.out.println(e.getMessage());
+			e.printStackTrace();
+			throw new PDepException("Unable to parse FAME output file.");
 		}
 		catch(IOException e) {
 			System.out.println("Error: Unable to read from file \"fame_output.txt\".");
@@ -1119,7 +1139,7 @@ public class FastMasterEqn implements PDepKineticsEstimator {
 		numPBasisFuncs = m;
 	}
 	
-	public static Kinetics computeKUsingLeastSquares(Kinetics[] k_array) {
+	public static Kinetics computeKUsingLeastSquares(Kinetics[] k_array, double Hrxn) {
         /*
          * MRH 24MAR2010:
          * 	If the reaction has more than one set of Arrhenius kinetics,
@@ -1132,9 +1152,16 @@ public class FastMasterEqn implements PDepKineticsEstimator {
         	double[] k_total = new double[5];
         	for (int numKinetics=0; numKinetics<k_array.length; ++numKinetics) {
         		for (int numTemperatures=0; numTemperatures<T.length; ++numTemperatures) {
+				double Ea = 0.0;
+				if (k_array[numKinetics] instanceof ArrheniusEPKinetics){
+				    Ea = ((ArrheniusEPKinetics)k_array[numKinetics]).getEaValue(Hrxn);
+				}
+				else{
+				    Ea = k_array[numKinetics].getEValue();
+				}
         			k_total[numTemperatures] += k_array[numKinetics].getAValue() * 
         			Math.pow(T[numTemperatures], k_array[numKinetics].getNValue()) * 
-        			Math.exp(-k_array[numKinetics].getEValue()/GasConstant.getKcalMolK()/T[numTemperatures]);
+        			Math.exp(-Ea/GasConstant.getKcalMolK()/T[numTemperatures]);
         		}
         	}
         	// Construct matrix X and vector y

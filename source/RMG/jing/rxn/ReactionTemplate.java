@@ -110,13 +110,13 @@ public class ReactionTemplate {
       Structure s = p_templateReaction.getStructure();
       reactionDictionaryByStructure.put(s,p_templateReaction);
       
-      return;
-      
-      
-      
-      
-      
+      return;     
       //#]
+  }
+
+  public void removeFromReactionDictionaryByStructure(Structure s) {
+      if(reactionDictionaryByStructure.containsKey(s)) reactionDictionaryByStructure.remove(s);
+      return;
   }
   
   //## operation calculateDepth(HashSet) 

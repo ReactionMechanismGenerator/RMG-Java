@@ -32,6 +32,7 @@ import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import jing.chem.Species;
 import jing.param.Temperature;
+import jing.rxn.PDepException;
 import jing.rxn.PDepIsomer;
 import jing.rxn.PDepKineticsEstimator;
 import jing.rxn.PDepNetwork;
@@ -264,11 +265,19 @@ public class RateBasedPDepRME implements ReactionModelEnlarger {
 
 				PDepNetwork maxNetwork = (PDepNetwork) object;
 
-				PDepIsomer isomer = maxNetwork.getMaxLeakIsomer(ps);
-				System.out.println("\nAdd a new included Species: " + isomer.toString() +
-						" to network " + maxNetwork.getID());
+				try {
+					PDepIsomer isomer = maxNetwork.getMaxLeakIsomer(ps);
+					System.out.println("\nAdd a new included Species: " + isomer.toString() +
+							" to network " + maxNetwork.getID());
 
-				maxNetwork.makeIsomerIncluded(isomer);
+					maxNetwork.makeIsomerIncluded(isomer);
+				}
+				catch (PDepException e) {
+					e.printStackTrace();
+					System.out.println(e.getMessage());
+					System.out.println(maxNetwork.toString());
+					System.exit(0);
+				}
 
 			}
 			else

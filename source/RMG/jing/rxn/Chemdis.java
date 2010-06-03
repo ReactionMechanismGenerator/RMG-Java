@@ -33,7 +33,9 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.ListIterator;
 import java.util.StringTokenizer;
-import jing.chem.LennardJones;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import jing.chem.TransportData;
 import jing.chem.Species;
 import jing.chem.SpeciesDictionary;
 import jing.chem.ThreeFrequencyModel;
@@ -129,9 +131,15 @@ public class Chemdis implements PDepKineticsEstimator {
 				}
 			}
 		}
-
-		// Update reaction lists (sort into included and nonincluded)
-		pdn.updateReactionLists(cerm);
+		try {
+			// Update reaction lists (sort into included and nonincluded)
+			pdn.updateReactionLists(cerm);
+		}
+		catch (PDepException e) {
+			System.out.println(e.getMessage());
+			e.printStackTrace();
+			System.exit(0);
+		}
 		
         // Reset altered flag
         pdn.setAltered(false);
@@ -268,7 +276,9 @@ public class Chemdis implements PDepKineticsEstimator {
         str = str.substring(0, str.length()-3) + '\n'; 
         
         Kinetics[] k_array = rxn.getKinetics();
-        Kinetics k = FastMasterEqn.computeKUsingLeastSquares(k_array);
+	Temperature stdtemp = new Temperature(298,"K");
+	double Hrxn = rxn.calculateHrxn(stdtemp);
+        Kinetics k = FastMasterEqn.computeKUsingLeastSquares(k_array, Hrxn);
         if (k_array == null) 
 			throw new NullPointerException();
         
@@ -388,9 +398,11 @@ public class Chemdis implements PDepKineticsEstimator {
         	}
         	if (k_array== null) 
 				throw new NullPointerException();
+
+		Temperature stdtemp = new Temperature(298,"K");
+		double Hrxn = entryReaction.calculateHrxn(stdtemp);
         
-        	k = FastMasterEqn.computeKUsingLeastSquares(k_array);
-        	
+        	k = FastMasterEqn.computeKUsingLeastSquares(k_array, Hrxn);
         	// Write kinetics of entry reaction
 			str += Double.toString(k.getAValue()) + '\t';
         	str += Double.toString(k.getNValue()) + '\t';
@@ -411,7 +423,7 @@ public class Chemdis implements PDepKineticsEstimator {
         
 		// Write Lennard-Jones parameters
 		str += "PARAMETERS\n";
-        LennardJones lj = pdn.getIsomers().get(0).getSpecies(0).getLJ();
+        TransportData lj = pdn.getIsomers().get(0).getSpecies(0).getChemkinTransportData();
         str += MathTool.formatDouble(lj.getSigma(), 10, 2) + '\t' + MathTool.formatDouble(lj.getEpsilon(), 10, 2) + '\n';
         
 		// Write mean change in energy for deactivating collision
@@ -443,7 +455,7 @@ public class Chemdis implements PDepKineticsEstimator {
         		double conc = ((Double) colliders.get(spe)).doubleValue();
         		double mf = conc/totalConc;
         		str += Double.toString(mf) + '\t' + Double.toString(spe.getMolecularWeight()) + '\t';
-        		lj = spe.getLJ();
+        		lj = spe.getChemkinTransportData();
         		str += Double.toString(lj.getSigma()) + '\t' + Double.toString(lj.getEpsilon()) + '\t';
         		dEdown = spe.getDeltaEDown();
         		if (dEdown == 0) {
@@ -456,17 +468,17 @@ public class Chemdis implements PDepKineticsEstimator {
         		String name = (String)key;
         		double MW = 0.0;
         		if (name.equals("Ar") || name.equals("AR")) {
-        			lj = new LennardJones();
+        			lj = new TransportData();
         			dEdown = 374.0;
         			MW = 39.95;
         		}
         		else if (name.equals("N2")) {
-        			lj = new LennardJones();
+        			lj = new TransportData();
         			dEdown = 461.0;
         			MW = 28.01;
         		}
         		else if (name.equals("He") || name.equals("HE")) {
-        			lj = new LennardJones();
+        			lj = new TransportData();
         			dEdown = 291.0;
         			MW = 4.00;
         		}

@@ -301,20 +301,28 @@ public class PDepIsomer {
 	public boolean equals(PDepIsomer isomer) {
 		if (getNumSpecies() != isomer.getNumSpecies())
 			return false;
-		else {
-			for (int i = 0; i < getNumSpecies(); i++) {
-				Species speciesI = speciesList.get(i);
-				boolean found = false;
-				for (int j = 0; j < isomer.getNumSpecies(); j++) {
-					Species speciesJ = isomer.speciesList.get(i);
-					if (speciesI.equals(speciesJ))
-						found = true;
-				}
-				if (!found)
-					return false;
+
+		// We make a copy of the species list of the second isomer so that we
+		// can ensure that A + B does not match B + B by removing each match
+		// so that it cannot be reused
+		LinkedList<Species> speciesList2 = new LinkedList<Species>(isomer.speciesList);
+
+		for (int i = 0; i < getNumSpecies(); i++) {
+			Species speciesI = speciesList.get(i);
+			int index2 = -1;
+			for (int j = 0; j < speciesList2.size(); j++) {
+				Species speciesJ = speciesList2.get(j);
+				if (speciesI.equals(speciesJ))
+					index2 = j;
 			}
-			return true;
+			if (index2 == -1)
+				return false;
+			else
+				speciesList2.remove(index2);
 		}
+
+		return true;
+		
 	}
 
 	/**

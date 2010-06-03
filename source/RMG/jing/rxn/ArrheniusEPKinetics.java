@@ -68,7 +68,7 @@ public class ArrheniusEPKinetics extends ArrheniusKinetics {
 	///////////////////////////////////////
 	
 	public String toChemkinString(double p_Hrxn, Temperature p_temperature, boolean includeComments){
-		double Ea = E.getValue() + alpha.getValue()*p_Hrxn;
+		double Ea = getEaValue(p_Hrxn);
 		// If reported Arrhenius Ea value was computed using Evans-Polanyi relationship,
 		//	inform user (in chem.inp file) of what deltaHrxn(T) was used.
 		if ((int)alpha.getValue() != 0) {
@@ -86,22 +86,20 @@ public class ArrheniusEPKinetics extends ArrheniusKinetics {
 				
 		formatString[1] = new Double(getNValue());
 		
-//		formatString[2] = new Double(Ea);
-		tempDouble = E.getValue();
 		if (EaUnits.equals("kcal/mol")) {
-			formatString[2] = tempDouble;
+			formatString[2] = Ea;
 		}
 		else if (EaUnits.equals("cal/mol")) {
-			formatString[2] = tempDouble * 1000.0;
+			formatString[2] = Ea * 1000.0;
 		}
 		else if (EaUnits.equals("kJ/mol")) {
-			formatString[2] = tempDouble * 4.184;
+			formatString[2] = Ea * 4.184;
 		}
 		else if (EaUnits.equals("J/mol")) {
-			formatString[2] = tempDouble * 4184.0;
+			formatString[2] = Ea * 4184.0;
 		}
 		else if (EaUnits.equals("Kelvins")) {
-			formatString[2] = tempDouble / 1.987e-3;
+			formatString[2] = Ea / 1.987e-3;
 		}
 		
 		formatString[3] = source; formatString[4] = comment;
@@ -165,6 +163,10 @@ public class ArrheniusEPKinetics extends ArrheniusKinetics {
     
     public UncertainDouble getAlpha() {
         return alpha;
+    }
+    //gmagoon 05/19/10: it looks like in rest of code, Hrxn at 298 K is used, so this temperature should be used elsewhere for consistency
+    public double getEaValue(double p_Hrxn) {
+        return E.getValue()+alpha.getValue()*p_Hrxn;
     }
     
 }

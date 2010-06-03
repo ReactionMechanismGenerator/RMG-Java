@@ -449,9 +449,8 @@ public class ThermoGAGroupLibrary {
     //## operation read(String,String,String,String,String,String,String,String,String)
 	public void read(String p_groupDictionary, String p_groupTree, String p_groupLibrary, String p_radicalDictionary, String p_radicalTree, String p_radicalLibrary, String p_ringDictionary, String p_ringTree, String p_ringLibrary, String p_otherDictionary, String p_otherLibrary, String p_otherTree, String p_gaucheDictionary, String p_gaucheTree, String p_gaucheLibrary, String p_15Dictionary, String p_15Tree, String p_15Library,String p_abramDictionary,String p_abramTree,String p_abramLibrary,String p_unifacDictionary,String p_unifacTree,String p_unifacLibrary) { //,String p_solventDictionary,String p_solventLibrary) {
 
-	        // try {
-        
 	        	// step 1: read in GA Groups
+					System.out.println("Reading thermochemistry groups");
                     // read thermo functional Group dictionary
                     readGroupDictionary(p_groupDictionary);
                     // read thermo functional Group tree structure
@@ -460,6 +459,7 @@ public class ThermoGAGroupLibrary {
                     readGroupLibrary(p_groupLibrary);
 
 	        	// step 2: read in Radical Corrections
+					System.out.println("Reading radical correction groups");
                     // read radical dictionary
                     readRadicalDictionary(p_radicalDictionary);
                     // read radical tree
@@ -468,16 +468,19 @@ public class ThermoGAGroupLibrary {
                     readRadicalLibrary(p_radicalLibrary);
 
 	        	// step 3: read in Ring Correction
+					System.out.println("Reading ring correction groups");
 	                readRingDictionary(p_ringDictionary);
 	                readRingTree(p_ringTree);
                     readRingLibrary(p_ringLibrary);
 
 	        	// step 4: read in Other Correction
+					System.out.println("Reading other correction groups");
                     readOtherDictionary(p_otherDictionary);
                     readOtherLibrary(p_otherLibrary);
                     readOtherTree(p_otherTree);
 
                 // step 5: read in Gauche and 15 Correction libraries
+					System.out.println("Reading gauche and 1/5 correction groups");
                     readGaucheDictionary(p_gaucheDictionary);
                     readGaucheTree(p_gaucheTree);
                     readGaucheLibrary(p_gaucheLibrary);
@@ -487,19 +490,15 @@ public class ThermoGAGroupLibrary {
 
                 // Added by Amrit Jalan
                     // Definitions of Platts dictionary, library and tree for Abraham Model Implementation
+					System.out.println("Reading Abraham solvation groups");
                     readAbrahamDictionary(p_abramDictionary);
                     readAbrahamTree(p_abramTree);
                     readAbrahamLibrary(p_abramLibrary);
-
+					System.out.println("Reading UNIFAC solvation groups");
                     readUnifacDictionary(p_unifacDictionary);
                     readUnifacTree(p_unifacTree);
                     readUnifacLibrary(p_unifacLibrary);
 
-	        /*}
-	        catch (Exception e) {
-	        	throw new ThermoIOException(e.getMessage());
-	        }
-	        */
 	    }
 
 
@@ -519,7 +518,6 @@ public class ThermoGAGroupLibrary {
 
     //## operation readGroupLibrary(String)
     public void readGroupLibrary(String p_fileName) {
-        //#[ operation readGroupLibrary(String)
         try {
         	groupLibrary = readStandardLibrary(p_fileName, groupDictionary);
         	return;
@@ -528,16 +526,10 @@ public class ThermoGAGroupLibrary {
         	System.err.println("Can't read Group Library!");
         	System.exit(0);
         }
-
-
-
-
-        //#]
     }
 
     //## operation readGroupTree(String)
     public void readGroupTree(String p_fileName) {
-        //#[ operation readGroupTree(String)
         try {
         	groupTree = readStandardTree(p_fileName,groupDictionary,0);
         }
@@ -546,15 +538,10 @@ public class ThermoGAGroupLibrary {
         	System.err.println("Error: " + e.getMessage());
         	System.exit(0);
         }
-
-
-
-        //#]
     }
 
     //## operation readOtherDictionary(String)
     public void readOtherDictionary(String p_fileName) {
-        //#[ operation readOtherDictionary(String)
         try {
         	otherDictionary = readStandardDictionary(p_fileName);
         	return;
@@ -563,12 +550,10 @@ public class ThermoGAGroupLibrary {
         	System.err.println("Error in read other dictionary!");
         	System.exit(0);
         }
-        //#]
     }
 
     //## operation readOtherLibrary(String)
     public void readOtherLibrary(String p_fileName) {
-        //#[ operation readOtherLibrary(String)
         try {
         	otherLibrary = readStandardLibrary(p_fileName, otherDictionary);
         	return;
@@ -577,16 +562,10 @@ public class ThermoGAGroupLibrary {
         	System.err.println("Can't read Other Library!");
         	System.exit(0);
         }
-
-
-
-
-        //#]
     }
 
     //## operation readOtherTree(String)
     public void readOtherTree(String p_fileName) {
-        //#[ operation readOtherTree(String)
         try {
         	otherTree = readStandardTree(p_fileName,otherDictionary,0);
         }
@@ -595,10 +574,6 @@ public class ThermoGAGroupLibrary {
         	System.err.println("Error: " + e.getMessage());
         	System.exit(0);
         }
-
-
-
-        //#]
     }
     
     //2/5/09 gmagoon: new functions for gauche and 1,5 correction reading (based on analogs for regular values, e.g. readGroupDictionary)
@@ -611,7 +586,6 @@ public class ThermoGAGroupLibrary {
         	System.err.println("Error in read gauche dictionary!");
         	System.exit(0);
         }
-        //#]
     }
 
     public void readGaucheLibrary(String p_fileName) {
@@ -623,11 +597,6 @@ public class ThermoGAGroupLibrary {
         	System.err.println("Can't read gauche library!");
         	System.exit(0);
         }
-
-
-
-
-        //#]
     }
 
     public void readGaucheTree(String p_fileName) {
@@ -639,13 +608,9 @@ public class ThermoGAGroupLibrary {
         	System.err.println("Error: " + e.getMessage());
         	System.exit(0);
         }
-
-
-
-        //#]
     }
 
-        public void readAbrahamDictionary(String p_fileName) {
+	public void readAbrahamDictionary(String p_fileName) {
         try {
         	abramDictionary = readStandardDictionary(p_fileName);
         	return;
@@ -654,10 +619,9 @@ public class ThermoGAGroupLibrary {
         	System.err.println("Error in read Abraham dictionary!");
         	System.exit(0);
         }
-        //#]
     }
 
-        public void readUnifacDictionary(String p_fileName) {
+	public void readUnifacDictionary(String p_fileName) {
         try {
         	unifacDictionary = readStandardDictionary(p_fileName);
         	return;
@@ -666,11 +630,9 @@ public class ThermoGAGroupLibrary {
         	System.err.println("Error in read Unifac dictionary!");
         	System.exit(0);
         }
-        //#]
     }
 
-
-            public void readAbrahamLibrary(String p_fileName) {
+	public void readAbrahamLibrary(String p_fileName) {
         try {
         	abramLibrary = readAbramLibrary(p_fileName, abramDictionary);
         	return;
@@ -679,11 +641,9 @@ public class ThermoGAGroupLibrary {
         	System.err.println("Can't read Abraham library!");
         	System.exit(0);
         }
-
-        //#]
     }
 
-        public void readUnifacLibrary(String p_fileName) {
+	public void readUnifacLibrary(String p_fileName) {
         try {
         	unifacLibrary = readUNIFACLibrary(p_fileName, unifacDictionary);
         	return;
@@ -692,11 +652,9 @@ public class ThermoGAGroupLibrary {
         	System.err.println("Can't read Unifac library!");
         	System.exit(0);
         }
-
-        //#]
     }
 
-              public void readAbrahamTree(String p_fileName) {
+	public void readAbrahamTree(String p_fileName) {
         try {
         	abramTree = readStandardTree(p_fileName,abramDictionary,0);
         }
@@ -705,13 +663,9 @@ public class ThermoGAGroupLibrary {
         	System.err.println("Error: " + e.getMessage());
         	System.exit(0);
         }
-
-
-
-        //#]
     }
 
-              public void readUnifacTree(String p_fileName) {
+	public void readUnifacTree(String p_fileName) {
         try {
         	unifacTree = readStandardTree(p_fileName,unifacDictionary,0);
         }
@@ -720,10 +674,6 @@ public class ThermoGAGroupLibrary {
         	System.err.println("Error: " + e.getMessage());
         	System.exit(0);
         }
-
-
-
-        //#]
     }
 
         //public void readSolventDictionary(String p_fileName) {
@@ -751,7 +701,7 @@ public class ThermoGAGroupLibrary {
         //#]
     //}
 
-        public void read15Dictionary(String p_fileName) {
+	public void read15Dictionary(String p_fileName) {
         try {
         	oneFiveDictionary = readStandardDictionary(p_fileName);
         	return;
@@ -760,7 +710,6 @@ public class ThermoGAGroupLibrary {
         	System.err.println("Error in read 1,5 dictionary!");
         	System.exit(0);
         }
-        //#]
     }
 
     public void read15Library(String p_fileName) {
@@ -772,11 +721,6 @@ public class ThermoGAGroupLibrary {
         	System.err.println("Can't read 1,5 library!");
         	System.exit(0);
         }
-
-
-
-
-        //#]
     }
 
     public void read15Tree(String p_fileName) {
@@ -788,15 +732,10 @@ public class ThermoGAGroupLibrary {
         	System.err.println("Error: " + e.getMessage());
         	System.exit(0);
         }
-
-
-
-        //#]
     }
 
     //## operation readRadicalDictionary(String)
     public void readRadicalDictionary(String p_fileName) {
-        //#[ operation readRadicalDictionary(String)
         try {
         	radicalDictionary = readStandardDictionary(p_fileName);
         	return;
@@ -805,12 +744,10 @@ public class ThermoGAGroupLibrary {
         	System.err.println("Error in read radical dictionary!\n" + e.getMessage());
         	System.exit(0);
         }
-        //#]
     }
 
     //## operation readRadicalLibrary(String)
     public void readRadicalLibrary(String p_fileName) {
-        //#[ operation readRadicalLibrary(String)
         try {
         	radicalLibrary = readStandardLibrary(p_fileName, radicalDictionary);
         	return;
@@ -819,16 +756,10 @@ public class ThermoGAGroupLibrary {
         	System.err.println("Can't read radical Library!");
         	System.exit(0);
         }
-
-
-
-
-        //#]
     }
 
     //## operation readRadicalTree(String)
     public void readRadicalTree(String p_fileName) {
-        //#[ operation readRadicalTree(String)
          try {
         	radicalTree = readStandardTree(p_fileName,radicalDictionary,0);
         }
@@ -837,15 +768,10 @@ public class ThermoGAGroupLibrary {
         	System.err.println("Error: " + e.getMessage());
         	System.exit(0);
         }
-
-
-
-        //#]
     }
 
     //## operation readRingLibrary(String)
 	public void readRingDictionary(String p_fileName) {
-        //#[ operation readRingDictionary(String)
         try {
                 ringDictionary = readStandardDictionary(p_fileName);
                 return;
@@ -854,12 +780,10 @@ public class ThermoGAGroupLibrary {
                 System.err.println("Error in read ring dictionary!\n" + e.getMessage());
                 System.exit(0);
         }
-        //#]
     }
 
     //## operation readRingTree(String)
     public void readRingTree(String p_fileName) {
-        //#[ operation readRingTree(String)
          try {
                 ringTree = readStandardTree(p_fileName,ringDictionary,0);
         }
@@ -868,36 +792,26 @@ public class ThermoGAGroupLibrary {
                 System.err.println("Error: " + e.getMessage());
                 System.exit(0);
         }
-        //#]
     }
 
 // end pey
 
     //## operation readRingLibrary(String)
     public void readRingLibrary(String p_fileName) {
-        //#[ operation readRingLibrary(String)
         try {
-                // begin pey
-        	// readStandardCorrectionLibrary(p_fileName, ringLibrary);
-                ringLibrary = readStandardLibrary(p_fileName, ringDictionary);
-                // end pey
+			ringLibrary = readStandardLibrary(p_fileName, ringDictionary);
         	return;
         }
         catch (Exception e) {
         	System.err.println("Can't read Ring Correction Library!");
-                // begin pey
-                System.err.println("Error: " + e);
+			System.err.println("Error: " + e);
         	System.exit(0);
-                // end pey
         }
-
-        //#]
     }
 
 
     //## operation readStandardCorrectionLibrary(String,HashMap)
     protected void readStandardCorrectionLibrary(String p_fileName, HashMap p_library) throws IOException {
-        //#[ operation readStandardCorrectionLibrary(String,HashMap)
         try {
                 FileReader in = new FileReader(p_fileName);
                 BufferedReader data = new BufferedReader(in);
@@ -945,14 +859,6 @@ public class ThermoGAGroupLibrary {
         catch (IOException e) {
                 throw new IOException();
         }
-
-
-
-
-
-
-
-        //#]
     }
 
 
@@ -1018,13 +924,11 @@ public class ThermoGAGroupLibrary {
         catch (IOException e) {
                 throw new IOException(p_fileName + ": " + e.getMessage());
         }
-        //#]
     }
 
 
     //## operation readStandardLibrary(String,HashMap)
     protected HashMap readStandardLibrary(String p_fileName, HashMap p_dictionary) throws IOException {
-        //#[ operation readStandardLibrary(String,HashMap)
         try {
                 FileReader in = new FileReader(p_fileName);
                 BufferedReader data = new BufferedReader(in);
@@ -1114,14 +1018,6 @@ public class ThermoGAGroupLibrary {
         catch (IOException e) {
                 throw new IOException();
         }
-
-
-
-
-
-
-
-        //#]
     }
 
     //## operation readAbramLibrary(String,HashMap)
@@ -1216,19 +1112,10 @@ public class ThermoGAGroupLibrary {
         catch (IOException e) {
                 throw new IOException();
         }
-
-
-
-
-
-
-
-        //#]
     }
 
     //## operation readAbramLibrary(String,HashMap)
     protected HashMap readUNIFACLibrary(String p_fileName, HashMap p_dictionary) throws IOException {
-        //#[ operation readStandardLibrary(String,HashMap)
         try {
                 FileReader in = new FileReader(p_fileName);
                 BufferedReader data = new BufferedReader(in);
@@ -1318,14 +1205,6 @@ public class ThermoGAGroupLibrary {
         catch (IOException e) {
                 throw new IOException();
         }
-
-
-
-
-
-
-
-        //#]
     }
 
 
@@ -1351,10 +1230,6 @@ public class ThermoGAGroupLibrary {
         catch (IOException e) {
         	throw new IOException(p_fileName);
         }
-
-
-
-        //#]
     }
 
     protected static ThermoGAGroupLibrary getINSTANCE() {

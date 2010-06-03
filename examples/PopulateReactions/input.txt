@@ -5,6 +5,11 @@ PrimaryThermoLibrary:
 //Location: GRI-Mech3.0
 END
 
+PrimaryTransportLibrary:
+Name: GRI-Mech-3
+Location: GRI-Mech3.0
+END
+
 TemperatureModel: Constant (K) 1200
 PressureModel: Constant (atm) 1
 

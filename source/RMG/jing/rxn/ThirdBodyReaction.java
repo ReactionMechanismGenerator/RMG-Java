@@ -252,7 +252,7 @@ public class ThirdBodyReaction extends Reaction {
   }
   
   public String toRestartString(Temperature t) {
-      StringBuilder s = getStructure().toChemkinString(true);
+      StringBuilder s = getStructure().toRestartString(true);
       s = formPDepSignForRestart(s);
       for (int i=0; i<getKinetics().length; i++) {
     	  s.append("\t" + getKinetics()[i].toChemkinString(calculateHrxn(t),t,false) + " 0.0 0.0 0.0\n");

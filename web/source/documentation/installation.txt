@@ -195,15 +195,15 @@ With the exception of GAUSSIAN03 and MOPAC2009, all of the above may be obtained
 
 Below are some notes for each of these and instructions on getting them to work properly with RMG:
 
-Python: The environment variable PYTHON_CMD should be set (e.g. c:\Python25\python.exe)
-such that typing "python" at the command-line brings up the Python prompt. This should be done
-automatically by the Python installer, and no manual intervention should be required.
+Python: You should add the Python installation directory to the PATH environment variable such that
+typing "python" at the command-line brings up the Python prompt. NOTE: This will probably need to be done manually.
 
 cclib: Modified portions of the source code for cclib 1.0 (http://cclib.sourceforge.net/) are included in the /source/cclib/ directory (licensed under LGPL 2.1).
 No action should be required on the part of the user.
 
 RDKit: The typical installation process for RDKit should set the RDBASE environment variable
 and no further action on the part of the user should be required.
+Note: If installing from the Windows binaries, you will also need to install numpy and set environment variables as described at http://code.google.com/p/rdkit/wiki/InstallingOnWindows .
 
 OpenBabel: The OpenBabel installation directory (e.g. C:\Program Files\OpenBabel-2.2.0) should be added to the PATH environment variable
 such that typing "babel" at the command-line produces output (including version information) from OpenBabel. This should be done
@@ -219,5 +219,5 @@ and place the executable in RMG's /bin/ directory.
 MOPAC2009: The environment variable MOPAC_LICENSE should be set (e.g. c:\Users\User1\Documents\MOPAC\).
 This should be done automatically by the MOPAC installer, and no manual intervention should be required.
 
-GAUSSIAN03: Create a new environment variable called G03DIR and set it to the GAUSSIAN03 directory (e.g. "c:/G03W/")
-NOTE: This must be done manually.
+GAUSSIAN03: Add the GAUSSIAN03 directory (e.g. "c:/G03W/") to the PATH environment variable.
+NOTE: This will typically need to be done manually.

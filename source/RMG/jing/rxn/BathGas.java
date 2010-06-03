@@ -29,7 +29,6 @@ package jing.rxn;
 
 import java.util.HashMap;
 import java.util.Iterator;
-import jing.chem.LennardJones;
 import jing.chem.Species;
 import jing.rxnSys.ReactionSystem;
 
@@ -126,8 +125,8 @@ public class BathGas {
 
 				molWt += mf * spe.getMolecularWeight();
 				expDownParam += mf * spe.getDeltaEDown();
-				ljSigma += mf * spe.getLJ().getSigma();
-				ljEpsilon += mf * spe.getLJ().getEpsilon();
+				ljSigma += mf * spe.getChemkinTransportData().getSigma();
+				ljEpsilon += mf * spe.getChemkinTransportData().getEpsilon();
 			}
 			else if (key instanceof String) {
 				String name = (String) key;
