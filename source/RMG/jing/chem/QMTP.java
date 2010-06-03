@@ -52,7 +52,7 @@ public class QMTP implements GeneralGAPP {
     public static String qmfolder= "QMfiles/";
     //   protected static HashMap library;		//as above, may be able to move this and associated functions to GeneralGAPP (and possibly change from "x implements y" to "x extends y"), as it is common to both GATP and QMTP
     protected ThermoGAGroupLibrary thermoLibrary; //needed for HBI
-    public static String qmprogram= "both";//the qmprogram can be "mopac", "gaussian03", or "both"
+    public static String qmprogram= "both";//the qmprogram can be "mopac", "gaussian03", "both" (MOPAC and Gaussian), or "mm4"
     public static boolean usePolar = false; //use polar keyword in MOPAC
     // Constructors
 
@@ -219,10 +219,14 @@ public class QMTP implements GeneralGAPP {
    
     public ThermoData generateQMThermoData(ChemGraph p_chemGraph){
         //if there is no data in the libraries, calculate the result based on QM or MM calculations; the below steps will be generalized later to allow for other quantum mechanics packages, etc.
-        //String qmProgram="gaussian03";
-        //String qmProgram="mopac";
         String qmProgram = qmprogram;
-        String qmMethod="pm3"; //may eventually want to pass this to various functions to choose which "sub-function" to call
+	String qmMethod = "";
+	if(qmProgram.equals("mm4")){
+	    qmMethod = "mm4";
+	}
+	else{
+	    qmMethod="pm3"; //may eventually want to pass this to various functions to choose which "sub-function" to call
+	}
         
         ThermoData result = new ThermoData();
         
@@ -232,93 +236,117 @@ public class QMTP implements GeneralGAPP {
         String directory = qmfolder;
         File dir=new File(directory);
         directory = dir.getAbsolutePath();//this and previous three lines get the absolute path for the directory
-        //first, check to see if the result already exists and the job terminated successfully
-        boolean gaussianResultExists = successfulGaussianResultExistsQ(name,directory,InChIaug);
-        boolean mopacResultExists = successfulMopacResultExistsQ(name,directory,InChIaug);
-        if(!gaussianResultExists && !mopacResultExists){//if a successful result doesn't exist from previous run (or from this run), run the calculation; if a successful result exists, we will skip directly to parsing the file
-            //1. create a 2D file
-            //use the absolute path for directory, so we can easily reference from other directories in command-line paths
-            //can't use RMG.workingDirectory, since this basically holds the RMG environment variable, not the workingDirectory
-            directory = "2Dmolfiles/";
-            dir=new File(directory);
-            directory = dir.getAbsolutePath();
-            molFile p_2dfile = new molFile(name, directory, p_chemGraph);
-            molFile p_3dfile = new molFile();//it seems this must be initialized, so we initialize to empty object
-            //2. convert from 2D to 3D using RDKit if the 2D molfile is for a molecule with 2 or more atoms
-            int atoms = p_chemGraph.getAtomNumber();
-            if(atoms > 1){
-                int distGeomAttempts=1;
-                if(atoms > 3){//this check prevents the number of attempts from being negative
-                    distGeomAttempts = 5*(p_chemGraph.getAtomNumber()-3); //number of conformer attempts is just a linear scaling with molecule size, due to time considerations; in practice, it is probably more like 3^(n-3) or something like that
-                }
-                p_3dfile = embed3D(p_2dfile, distGeomAttempts);
-            }
-             //3. create the Gaussian input file
-            directory = qmfolder;
-            dir=new File(directory);
-            directory = dir.getAbsolutePath();//this and previous three lines get the absolute path for the directory
-            int attemptNumber=1;//counter for attempts using different keywords
-            int successFlag=0;//flag for success of Gaussian run; 0 means it failed, 1 means it succeeded
-            int maxAttemptNumber=1;
-            int multiplicity = p_chemGraph.getRadicalNumber()+1; //multiplicity = radical number + 1
-            while(successFlag==0 && attemptNumber <= maxAttemptNumber){
-                //IF block to check which program to use
-                if (qmProgram.equals("gaussian03")){
-                    if(p_chemGraph.getAtomNumber() > 1){
-                        maxAttemptNumber = createGaussianPM3Input(name, directory, p_3dfile, attemptNumber, InChIaug, multiplicity);
-                    }
-                    else{
-                        maxAttemptNumber = createGaussianPM3Input(name, directory, p_2dfile, -1, InChIaug, multiplicity);//use -1 for attemptNumber for monoatomic case
-                    }
-                    //4. run Gaussian
-                    successFlag = runGaussian(name, directory);
-                }
-                else if (qmProgram.equals("mopac") || qmProgram.equals("both")){
-                    
-                    maxAttemptNumber = createMopacPM3Input(name, directory, p_3dfile, attemptNumber, InChIaug, multiplicity);
-                    successFlag = runMOPAC(name, directory);
-                }
-                else{
-                    System.out.println("Unsupported quantum chemistry program");
-                    System.exit(0);
-                }
-                //new IF block to check success
-                if(successFlag==1){
-                    System.out.println("Attempt #"+attemptNumber + " on species " + name + " ("+InChIaug+") succeeded.");
-                }
-                else if(successFlag==0){
-                    if(attemptNumber==maxAttemptNumber){//if this is the last possible attempt, and the calculation fails, exit with an error message
-                        if(qmProgram.equals("both")){ //if we are running with "both" option and all keywords fail, try with Gaussian
-                            qmProgram = "gaussian03";
-                            System.out.println("*****Final MOPAC attempt (#" + maxAttemptNumber + ") on species " + name + " ("+InChIaug+") failed. Trying to use Gaussian.");
-                            attemptNumber=0;//this needs to be 0 so that when we increment attemptNumber below, it becomes 1 when returning to the beginning of the for loop
-                            maxAttemptNumber=1;
-                        }
-                        else{
-                            System.out.println("*****Final attempt (#" + maxAttemptNumber + ") on species " + name + " ("+InChIaug+") failed.");
-                            System.out.print(p_chemGraph.toString());
-                        //    System.exit(0);
-                            return new ThermoData(1000,0,0,0,0,0,0,0,0,0,0,0,"failed calculation");
-                        }
-                    }
-                    System.out.println("*****Attempt #"+attemptNumber + " on species " + name + " ("+InChIaug+") failed. Will attempt a new keyword.");
-                    attemptNumber++;//try again with new keyword
-                }
-            }
-            
+	if(qmMethod.equals("pm3")){
+	    //first, check to see if the result already exists and the job terminated successfully
+	    boolean gaussianResultExists = successfulGaussianResultExistsQ(name,directory,InChIaug);
+	    boolean mopacResultExists = successfulMopacResultExistsQ(name,directory,InChIaug);
+	    if(!gaussianResultExists && !mopacResultExists){//if a successful result doesn't exist from previous run (or from this run), run the calculation; if a successful result exists, we will skip directly to parsing the file
+		 //steps 1 and 2: create 2D and 3D mole files
+		molFile p_3dfile = create3Dmolfile(name, p_chemGraph);
+		 //3. create the Gaussian or MOPAC input file
+		directory = qmfolder;
+		dir=new File(directory);
+		directory = dir.getAbsolutePath();//this and previous three lines get the absolute path for the directory
+		int attemptNumber=1;//counter for attempts using different keywords
+		int successFlag=0;//flag for success of Gaussian run; 0 means it failed, 1 means it succeeded
+		int maxAttemptNumber=1;
+		int multiplicity = p_chemGraph.getRadicalNumber()+1; //multiplicity = radical number + 1
+		while(successFlag==0 && attemptNumber <= maxAttemptNumber){
+		    //IF block to check which program to use
+		    if (qmProgram.equals("gaussian03")){
+			if(p_chemGraph.getAtomNumber() > 1){
+			    maxAttemptNumber = createGaussianPM3Input(name, directory, p_3dfile, attemptNumber, InChIaug, multiplicity);
+			}
+			else{
+			    maxAttemptNumber = createGaussianPM3Input(name, directory, p_3dfile, -1, InChIaug, multiplicity);//use -1 for attemptNumber for monoatomic case
+			}
+			//4. run Gaussian
+			successFlag = runGaussian(name, directory);
+		    }
+		    else if (qmProgram.equals("mopac") || qmProgram.equals("both")){
 
-        }
-        //5. parse QM output and record as thermo data (function includes symmetry/point group calcs, etc.); if both Gaussian and MOPAC results exist, Gaussian result is used
-        if (gaussianResultExists || (qmProgram.equals("gaussian03") && !mopacResultExists)){
-            result = parseGaussianPM3(name, directory, p_chemGraph);
-        }
-        else if (mopacResultExists || qmProgram.equals("mopac") || qmProgram.equals("both")){
-            result = parseMopacPM3(name, directory, p_chemGraph);
-        }
-        else{
-            System.out.println("Unexpected situation in QMTP thermo estimation");
-            System.exit(0);
-        }
+			maxAttemptNumber = createMopacPM3Input(name, directory, p_3dfile, attemptNumber, InChIaug, multiplicity);
+			successFlag = runMOPAC(name, directory);
+		    }
+		    else{
+			System.out.println("Unsupported quantum chemistry program");
+			System.exit(0);
+		    }
+		    //new IF block to check success
+		    if(successFlag==1){
+			System.out.println("Attempt #"+attemptNumber + " on species " + name + " ("+InChIaug+") succeeded.");
+		    }
+		    else if(successFlag==0){
+			if(attemptNumber==maxAttemptNumber){//if this is the last possible attempt, and the calculation fails, exit with an error message
+			    if(qmProgram.equals("both")){ //if we are running with "both" option and all keywords fail, try with Gaussian
+				qmProgram = "gaussian03";
+				System.out.println("*****Final MOPAC attempt (#" + maxAttemptNumber + ") on species " + name + " ("+InChIaug+") failed. Trying to use Gaussian.");
+				attemptNumber=0;//this needs to be 0 so that when we increment attemptNumber below, it becomes 1 when returning to the beginning of the for loop
+				maxAttemptNumber=1;
+			    }
+			    else{
+				System.out.println("*****Final attempt (#" + maxAttemptNumber + ") on species " + name + " ("+InChIaug+") failed.");
+				System.out.print(p_chemGraph.toString());
+			        System.exit(0);
+			//	return new ThermoData(1000,0,0,0,0,0,0,0,0,0,0,0,"failed calculation");
+			    }
+			}
+			System.out.println("*****Attempt #"+attemptNumber + " on species " + name + " ("+InChIaug+") failed. Will attempt a new keyword.");
+			attemptNumber++;//try again with new keyword
+		    }
+		}
+
+
+	    }
+	    //5. parse QM output and record as thermo data (function includes symmetry/point group calcs, etc.); if both Gaussian and MOPAC results exist, Gaussian result is used
+	    if (gaussianResultExists || (qmProgram.equals("gaussian03") && !mopacResultExists)){
+		result = parseGaussianPM3(name, directory, p_chemGraph);
+	    }
+	    else if (mopacResultExists || qmProgram.equals("mopac") || qmProgram.equals("both")){
+		result = parseMopacPM3(name, directory, p_chemGraph);
+	    }
+	    else{
+		System.out.println("Unexpected situation in QMTP thermo estimation");
+		System.exit(0);
+	    }
+	}
+	else{//mm4 case
+	    //first, check to see if the result already exists and the job terminated successfully
+	    boolean mm4ResultExists = successfulMM4ResultExistsQ(name,directory,InChIaug);
+	    if(!mm4ResultExists){//if a successful result doesn't exist from previous run (or from this run), run the calculation; if a successful result exists, we will skip directly to parsing the file
+		 //steps 1 and 2: create 2D and 3D mole files
+		molFile p_3dfile = create3Dmolfile(name, p_chemGraph);
+		 //3. create the MM4 input file
+		directory = qmfolder;
+		dir=new File(directory);
+		directory = dir.getAbsolutePath();//this and previous three lines get the absolute path for the directory
+		int attemptNumber=1;//counter for attempts using different keywords
+		int successFlag=0;//flag for success of MM4 run; 0 means it failed, 1 means it succeeded
+		int maxAttemptNumber=1;
+		int multiplicity = p_chemGraph.getRadicalNumber()+1; //multiplicity = radical number + 1
+		while(successFlag==0 && attemptNumber <= maxAttemptNumber){
+		    maxAttemptNumber = createMM4Input(name, directory, p_3dfile, attemptNumber, InChIaug, multiplicity);
+		    //4. run MM4
+		    successFlag = runMM4(name, directory);
+		    //new IF block to check success
+		    if(successFlag==1){
+			System.out.println("Attempt #"+attemptNumber + " on species " + name + " ("+InChIaug+") succeeded.");
+		    }
+		    else if(successFlag==0){
+			if(attemptNumber==maxAttemptNumber){//if this is the last possible attempt, and the calculation fails, exit with an error message
+				System.out.println("*****Final attempt (#" + maxAttemptNumber + ") on species " + name + " ("+InChIaug+") failed.");
+				System.out.print(p_chemGraph.toString());
+			        System.exit(0);
+				//return new ThermoData(1000,0,0,0,0,0,0,0,0,0,0,0,"failed calculation");
+			}
+			System.out.println("*****Attempt #"+attemptNumber + " on species " + name + " ("+InChIaug+") failed. Will attempt a new keyword.");
+			attemptNumber++;//try again with new keyword
+		    }
+		}
+	    }
+	    //5. parse MM4 output and record as thermo data (function includes symmetry/point group calcs, etc.); if both Gaussian and MOPAC results exist, Gaussian result is used
+	    result = parseMM4(name, directory, p_chemGraph);
+	}
         
         return result;
     }
@@ -361,7 +389,33 @@ public class QMTP implements GeneralGAPP {
 //        ThermoData td_H = new ThermoData(52.103,27.419,4.968,4.968,4.968,4.968,4.968,4.968,4.968, 0,0,0,"library value for H radical");
 //        library.put("H.",td_H);
 //    }
-//    
+//
+    //creates a 3D molFile; for monoatomic species, it just returns the 2D molFile
+    public molFile create3Dmolfile(String name, ChemGraph p_chemGraph){
+	//1. create a 2D file
+	//use the absolute path for directory, so we can easily reference from other directories in command-line paths
+	//can't use RMG.workingDirectory, since this basically holds the RMG environment variable, not the workingDirectory
+	String directory = "2Dmolfiles/";
+	File dir=new File(directory);
+	directory = dir.getAbsolutePath();
+	molFile p_2dfile = new molFile(name, directory, p_chemGraph);
+	molFile p_3dfile = new molFile();//it seems this must be initialized, so we initialize to empty object
+	//2. convert from 2D to 3D using RDKit if the 2D molfile is for a molecule with 2 or more atoms
+	int atoms = p_chemGraph.getAtomNumber();
+	if(atoms > 1){
+	    int distGeomAttempts=1;
+	    if(atoms > 3){//this check prevents the number of attempts from being negative
+		distGeomAttempts = 5*(p_chemGraph.getAtomNumber()-3); //number of conformer attempts is just a linear scaling with molecule size, due to time considerations; in practice, it is probably more like 3^(n-3) or something like that
+	    }
+	    p_3dfile = embed3D(p_2dfile, distGeomAttempts);
+	    return p_3dfile;
+	}
+	else{
+	    return p_2dfile;
+	}
+
+
+    }
     //embed a molecule in 3D, using RDKit
     public molFile embed3D(molFile twoDmolFile, int numConfAttempts){
     //convert to 3D MOL file using RDKit script
