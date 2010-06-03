@@ -531,38 +531,18 @@ public  Chemkin() {
 	  writeChemkinInputFile(rs.reactionModel, rs.initialStatus);
    }
   
-//## operation writeChemkinReactions(ReactionModel, Temperature)
-//10/26/07 gmagoon: changed to take temperature as parameter (it doesn't seem like this method is currently used anywhere)
-  public static String writeChemkinReactions(ReactionModel p_reactionModel, Temperature p_temperature) {
-      StringBuilder result = new StringBuilder();
-	  result.append("REACTIONS	KCAL/MOLE\n");
-      CoreEdgeReactionModel cerm = (CoreEdgeReactionModel)p_reactionModel;
-
-      
-      LinkedHashSet all = cerm.getReactedReactionSet();
-	  
-      HashSet hs = new HashSet();
-      int numfor = 0;
-      int numrev = 0;
-      int numdup = 0;
-      int numnorev = 0;
-      for (Iterator iter = all.iterator(); iter.hasNext(); ) {
-      	Reaction rxn = (Reaction)iter.next();
-      	if (rxn.isForward()) {
-            result.append(" " + rxn.toChemkinString(p_temperature) + "\n");
-      	}
-      }
-     
-      result.append("END\n");
-
-      return result.toString();
-  }
 
 //## operation writeChemkinPdepReactions(ReactionModel, SystemSnapshot)
  public static String writeChemkinPdepReactions(ReactionModel p_reactionModel, SystemSnapshot p_beginStatus) {
-
+	 /* 
+	  Writes all reactions, not just the P-dep ones.
+	  Returns the result as a string.
+	  
+	  First p-dep (troe, thirdbody, lindemann, and from pdep networks)
+	  Then non-p-dep
+	  Finally duplicates
+	  */
       StringBuilder result = new StringBuilder();
-//      result.append("REACTIONS	KCAL/MOLE\n");
 
       String reactionHeader = "";
       String units4Ea = ArrheniusKinetics.getEaUnits();
