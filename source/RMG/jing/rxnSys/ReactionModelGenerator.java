@@ -1342,7 +1342,7 @@ public class ReactionModelGenerator {
             ReactionTime begin = (ReactionTime)beginList.get(i);
             ReactionTime end = (ReactionTime)endList.get(i);
             endList.set(i,rs.solveReactionSystem(begin, end, true, true, true, iterationNumber-1));
-            Chemkin.writeChemkinInputFile(rs);//11/9/07 gmagoon:****temporarily commenting out: there is a NullPointerException in Reaction.toChemkinString when called from writeChemkinPdepReactions; occurs with pre-modified version of RMG as well; //11/12/07 gmagoon: restored; ****this appears to be source of non-Pdep bug
+            Chemkin.writeChemkinInputFile(rs);
             boolean terminated = rs.isReactionTerminated();
             terminatedList.add(terminated);
             if(!terminated)
@@ -1470,11 +1470,11 @@ public class ReactionModelGenerator {
 				solverMin = solverMin + (System.currentTimeMillis()-startTime)/1000/60;
 				
 				startTime = System.currentTimeMillis();
-				//10/24/07 gmagoon: changed to use reactionSystemList
 				for (Integer i = 0; i<reactionSystemList.size();i++) {
+					// we over-write the chemkin file each time, so only the LAST reaction system is saved
+					// i.e. if you are using RATE for pdep, only the LAST pressure is used.
 					ReactionSystem rs = (ReactionSystem)reactionSystemList.get(i);
-					Chemkin.writeChemkinInputFile(rs);//10/25/07 gmagoon: ***I don't know if this will still work with multiple reaction systems: may want to modify to only write one chemkin input file for all reaction systems //11/9/07 gmagoon:****temporarily commenting out; cf. previous comment; //11/12/07 gmagoon: restored; ****this appears to be source of non-Pdep bug 
-					//Chemkin.writeChemkinInputFile(reactionSystem);
+					Chemkin.writeChemkinInputFile(rs);
 				}
 				//9/1/09 gmagoon: if we are using QM, output a file with the CHEMKIN name, the RMG name, the (modified) InChI, and the (modified) InChIKey
 				if (ChemGraph.useQM){
@@ -1766,10 +1766,11 @@ public class ReactionModelGenerator {
 			}
 			
         }
-        //10/24/07 gmagoon: updated to use reactionSystemList (***see previous comment regarding having one Chemkin input file)
+
         for (Integer i = 0; i<reactionSystemList.size();i++) {
+			// chemkin files are overwritten each loop - only the last gets saved
 			ReactionSystem rs = (ReactionSystem)reactionSystemList.get(i);
-			Chemkin.writeChemkinInputFile(getReactionModel(),rs.getPresentStatus());//11/9/07 gmagoon: temporarily commenting out; see previous comment; this line may not cause a problem because it is different instance of writeChemkinInputFile, but I am commenting out just in case//11/12/07 gmagoon: restored; ****this appears to be source of non-Pdep bug 
+			Chemkin.writeChemkinInputFile(getReactionModel(),rs.getPresentStatus()); 
         }
 		
         //9/1/09 gmagoon: if we are using QM, output a file with the CHEMKIN name, the RMG name, the (modified) InChI, and the (modified) InChIKey

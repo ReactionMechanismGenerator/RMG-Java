@@ -461,8 +461,6 @@ public  Chemkin() {
 
   //## operation writeChemkinInputFile(ReactionModel,SystemSnapshot)
   public static void writeChemkinInputFile(final ReactionModel p_reactionModel, SystemSnapshot p_beginStatus) {
-      //#[ operation writeChemkinInputFile(ReactionModel,SystemSnapshot)
-
       StringBuilder result=new StringBuilder();
       result.append(writeChemkinHeader());
 	  result.append(writeChemkinElement());
@@ -471,8 +469,7 @@ public  Chemkin() {
       result.append(writeChemkinThermo(p_reactionModel));
       Global.chemkinThermo = Global.chemkinThermo + (System.currentTimeMillis() - start)/1000/60;
 	  start = System.currentTimeMillis();
-      result.append(writeChemkinPdepReactions(p_reactionModel, p_beginStatus)); //10/26/07 gmagoon: changed to pass p_beginStatus
-	  //result.append(writeChemkinPdepReactions(p_reactionModel));
+      result.append(writeChemkinPdepReactions(p_reactionModel, p_beginStatus)); 
 	  Global.chemkinReaction = Global.chemkinReaction + (System.currentTimeMillis() - start)/1000/60;
 
       String dir = System.getProperty("RMG.workingDirectory");
@@ -511,8 +508,6 @@ public  Chemkin() {
       }
       
       writeTransportFile((CoreEdgeReactionModel)p_reactionModel);
-      
-      //#]
   }
   
   public static void writeChemkinInputFile(ReactionSystem rs) {
@@ -520,10 +515,9 @@ public  Chemkin() {
 	  writeChemkinInputFile(rs.reactionModel, rs.initialStatus);
   }
   
-//## operation writeChemkinReactions(ReactionModel)
+//## operation writeChemkinReactions(ReactionModel, Temperature)
 //10/26/07 gmagoon: changed to take temperature as parameter (it doesn't seem like this method is currently used anywhere)
   public static String writeChemkinReactions(ReactionModel p_reactionModel, Temperature p_temperature) {
-      //#[ operation writeChemkinReactions(ReactionModel)
       StringBuilder result = new StringBuilder();
 	  result.append("REACTIONS	KCAL/MOLE\n");
       CoreEdgeReactionModel cerm = (CoreEdgeReactionModel)p_reactionModel;
@@ -539,30 +533,22 @@ public  Chemkin() {
       for (Iterator iter = all.iterator(); iter.hasNext(); ) {
       	Reaction rxn = (Reaction)iter.next();
       	if (rxn.isForward()) {
-            result.append(" " + rxn.toChemkinString(p_temperature) + "\n");//10/26/07 gmagoon: changed to avoid use of Global.temperature
-      	//	result.append(" " + rxn.toChemkinString(Global.temperature) + "\n");
-      		
+            result.append(" " + rxn.toChemkinString(p_temperature) + "\n");
       	}
-      	
       }
      
       result.append("END\n");
 
       return result.toString();
-
-      //#]
   }
 
-  
-  //## operation writeChemkinReactions(ReactionModel)
+//## operation writeChemkinPdepReactions(ReactionModel, SystemSnapshot)
  public static String writeChemkinPdepReactions(ReactionModel p_reactionModel, SystemSnapshot p_beginStatus) {
-      //#[ operation writeChemkinReactions(ReactionModel)
 
       StringBuilder result = new StringBuilder();
 //      result.append("REACTIONS	KCAL/MOLE\n");
 
       String reactionHeader = "";
-      
       String units4Ea = ArrheniusKinetics.getEaUnits();
       if (units4Ea.equals("cal/mol")) reactionHeader = "CAL/MOL\t";
       else if (units4Ea.equals("kcal/mol")) reactionHeader = "KCAL/MOL\t";
@@ -648,25 +634,19 @@ public  Chemkin() {
 			// 6Jul2009-MRH:
 			//	Pass both system temperature and pressure to function toChemkinString.
     	  	//		The only PDepKineticsModel that uses the passed pressure is RATE
-          result.append(r.toChemkinString(p_beginStatus.getTemperature(),p_beginStatus.getPressure())+"\n");//10/26/07 gmagoon: eliminating use of Global.temperature; **** I use beginStatus here, which may or may not be appropriate
-    	  //result.append(r.toChemkinString(Global.temperature)+"\n");
+          result.append(r.toChemkinString(p_beginStatus.getTemperature(),p_beginStatus.getPressure())+"\n");
       }
       for (Iterator iter = nonPDepList.iterator(); iter.hasNext();){
     	  Reaction r = (Reaction)iter.next();
           result.append(r.toChemkinString(p_beginStatus.getTemperature(),p_beginStatus.getPressure())+"\n");
-    	  //result.append(r.toChemkinString(Global.temperature)+"\n");
       }
       for (Iterator iter = duplicates.iterator(); iter.hasNext();){
     	  Reaction r = (Reaction)iter.next();
           result.append(r.toChemkinString(p_beginStatus.getTemperature(),p_beginStatus.getPressure())+"\n\tDUP\n");
-    	  //result.append(r.toChemkinString(Global.temperature)+"\n\tDUP\n");
       }
 
       result.append("END\n");
-
       return result.toString();
-
-      //#]
   }
 
   //## operation writeChemkinSpecies(ReactionModel,SystemSnapshot)
@@ -693,13 +673,8 @@ public  Chemkin() {
       		result.append('\t' + spe.getChemkinName() + '\n');
       }
 
-
       result.append("END\n");
-
-
       return result.toString();
-
-      //#]
   }
 
   //## operation writeChemkinThermo(ReactionModel)
@@ -781,8 +756,6 @@ public  Chemkin() {
       result.append("\n");
 
       return result.toString();
-
-      //#]
   }
   
 
@@ -835,7 +808,6 @@ public  Chemkin() {
           result.append("\n");
       }
       return result.toString();
-      
   }
 
   //## operation writeReactorInputFile(ReactionModel,ReactionTime,ReactionTime,SystemSnapshot)
