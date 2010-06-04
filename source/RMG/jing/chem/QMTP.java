@@ -1161,11 +1161,22 @@ public class QMTP implements GeneralGAPP {
 	    command=command.concat(logfilepath);
 	    command=command.concat(" "+ System.getenv("RMG")+"/source");//this will pass $RMG/source to the script (in order to get the appropriate path for importing
 	}
-	ThermoData result = getPM3ThermoDataUsingCCLib(name, directory, p_chemGraph, command);
+	ThermoData result = getPM3MM4ThermoDataUsingCCLib(name, directory, p_chemGraph, command);
         System.out.println("Thermo for " + name + ": "+ result.toString());//print result, at least for debugging purposes
         return result;
     }
-    
+
+    //parse the results using cclib and return a ThermoData object; name and directory indicate the location of the MM4 .mm4out file
+    public ThermoData parseMM4(String name, String directory, ChemGraph p_chemGraph){
+	String command = "python "+System.getProperty("RMG.workingDirectory")+"/scripts/MM4ParsingScript.py ";
+	String logfilepath=directory+"/"+name+".mm4out";
+	command=command.concat(logfilepath);
+	command=command.concat(" "+ System.getenv("RMG")+"/source");//this will pass $RMG/source to the script (in order to get the appropriate path for importing
+        ThermoData result = getPM3MM4ThermoDataUsingCCLib(name, directory, p_chemGraph, command);
+        System.out.println("Thermo for " + name + ": "+ result.toString());//print result, at least for debugging purposes
+        return result;
+    }
+
     //parse the results using cclib and return a ThermoData object; name and directory indicate the location of the MOPAC .out file
     public ThermoData parseMopacPM3(String name, String directory, ChemGraph p_chemGraph){
         String command=null;
@@ -1181,13 +1192,13 @@ public class QMTP implements GeneralGAPP {
 	    command=command.concat(logfilepath);
 	    command=command.concat(" "+ System.getenv("RMG")+"/source");//this will pass $RMG/source to the script (in order to get the appropriate path for importing
 	}
-        ThermoData result = getPM3ThermoDataUsingCCLib(name, directory, p_chemGraph, command);
+        ThermoData result = getPM3MM4ThermoDataUsingCCLib(name, directory, p_chemGraph, command);
         System.out.println("Thermo for " + name + ": "+ result.toString());//print result, at least for debugging purposes
         return result;
     }
     
     //separated from parseMopacPM3, since the function was originally based off of parseGaussianPM3 and was very similar (differences being command and logfilepath variables);
-    public ThermoData getPM3ThermoDataUsingCCLib(String name, String directory, ChemGraph p_chemGraph, String command){
+    public ThermoData getPM3MM4ThermoDataUsingCCLib(String name, String directory, ChemGraph p_chemGraph, String command){
         //parse the Mopac file using cclib
         int natoms = 0; //number of atoms from Mopac file; in principle, this should agree with number of chemGraph atoms
         ArrayList atomicNumber = new ArrayList(); //vector of atomic numbers (integers) (apparently Vector is thread-safe; cf. http://answers.yahoo.com/question/index?qid=20081214065127AArZDT3; ...should I be using this instead?)
@@ -1305,11 +1316,11 @@ public class QMTP implements GeneralGAPP {
             System.exit(0);
         } 
    
-        ThermoData result = calculateThermoFromPM3Calc(natoms, atomicNumber, x_coor, y_coor, z_coor, energy, molmass, freqs, rotCons_1, rotCons_2, rotCons_3, gdStateDegen);
+        ThermoData result = calculateThermoFromPM3MM4Calc(natoms, atomicNumber, x_coor, y_coor, z_coor, energy, molmass, freqs, rotCons_1, rotCons_2, rotCons_3, gdStateDegen);
         return result;
     }
-    //returns a thermo result, given results from quantum calculation (originally, this was in parseGaussianPM3 function
-    public ThermoData calculateThermoFromPM3Calc(int natoms, ArrayList atomicNumber, ArrayList x_coor, ArrayList y_coor, ArrayList z_coor, double energy, double molmass, ArrayList freqs, double rotCons_1, double rotCons_2, double rotCons_3, int gdStateDegen){
+    //returns a thermo result, given results from quantum PM3 calculation or MM4 calculation (originally, this was in parseGaussianPM3 function
+    public ThermoData calculateThermoFromPM3MM4Calc(int natoms, ArrayList atomicNumber, ArrayList x_coor, ArrayList y_coor, ArrayList z_coor, double energy, double molmass, ArrayList freqs, double rotCons_1, double rotCons_2, double rotCons_3, int gdStateDegen){
         //determine point group using the SYMMETRY Program
         String geom = natoms + "\n";
         for(int i=0; i < natoms; i++){
