@@ -60,9 +60,14 @@ public class GATP_Abraham implements GeneralAbramGAPP {
 	
 	public double getMcGowanVolume(ChemGraph p_chemGraph) {
 		// Get the McGowan's Volume
-		// All volumes are in cm^3/mol
+		// Returned volumes are in cm^3/mol/100 (see note below)
 		// See Table 2 in Abraham & McGowan, Chromatographia Vol. 23, No. 4, p. 243. April 1987
 		// doi: 10.1007/BF02311772
+		// 
+		// "V is scaled to have similar values to the other 
+		// descriptors by division by 100 and has units of (cm3mol−1/100)."
+		// the contibutions in this function are in cm3/mol, and the division by 100 is done at the very end.
+		
 		double Vtot = 0;
 		double thisV = 0;
 		Iterator iter = p_chemGraph.getNodeList();
@@ -97,7 +102,7 @@ public class GATP_Abraham implements GeneralAbramGAPP {
 			Arc arc = (Arc)iter.next();
 			Vtot = Vtot - 6.56;
 		}
-		return Vtot;
+		return Vtot/100;  // division by 100 to get units correct.
 	}
 	
 	public AbrahamGAValue getABGroup(ChemGraph p_chemGraph) {
