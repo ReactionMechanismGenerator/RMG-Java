@@ -362,34 +362,6 @@ public class QMTP implements GeneralGAPP {
 
       }
       
-//          //## operation getFromLibrary(String)
-//    public ThermoData getFromLibrary(String p_chemicalFormula) {
-//        //#[ operation getFromLibrary(String)
-//        return (ThermoData)library.get(p_chemicalFormula);
-//        //#]
-//    }
-//    
-//    public static HashMap getLibrary() {
-//        return library;
-//    }
-//    
-//    //6/2/09 gmagoon: doesn't seem like this function is ever used for GATP
-//    public static void setLibrary(HashMap p_library) {
-//        library = p_library;
-//    }
-//    
-//
-//    public void initializeLibrary() {
-//        library = new HashMap();
-//        // put in H2
-//        ThermoData td_H2 = new ThermoData(0.000,31.233,6.895,6.975,6.994,7.009,7.081,7.219,7.720,0,0,0,"library value for H2");
-//        library.put("H2", td_H2);
-//
-//        // put in H
-//        ThermoData td_H = new ThermoData(52.103,27.419,4.968,4.968,4.968,4.968,4.968,4.968,4.968, 0,0,0,"library value for H radical");
-//        library.put("H.",td_H);
-//    }
-//
     //creates a 3D molFile; for monoatomic species, it just returns the 2D molFile
     public molFile create3Dmolfile(String name, ChemGraph p_chemGraph){
 	//1. create a 2D file
