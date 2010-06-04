@@ -626,9 +626,6 @@ public class QMTP implements GeneralGAPP {
 	    inpKeyStr+="exit\n";
 	    FileWriter fw = new FileWriter(inpKey);
             fw.write(inpKeyStr);
-	    inpKey.setWritable(true);
-	    inpKey.setExecutable(true);
-	    System.out.println(inpKey.setExecutable(true));
             fw.close();
         }
         catch(Exception e){
@@ -886,7 +883,8 @@ public class QMTP implements GeneralGAPP {
 	    File runningDirectory = new File(qmfolder);
             String command=name+".com";
 	    File script = new File(command);
-	    System.out.println(script.canExecute());
+	    script.setExecutable(true);
+	    System.out.println(script.setExecutable(true));
 	    Process mm4Proc = Runtime.getRuntime().exec(command, null, runningDirectory);
 
             //check for errors and display the error if there is one
