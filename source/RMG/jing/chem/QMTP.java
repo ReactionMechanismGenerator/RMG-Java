@@ -42,7 +42,6 @@ import java.io.IOException;
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.nio.file.attribute.PosixFilePermissions;
 
 //quantum mechanics thermo property estimator; analog of GATP
 public class QMTP implements GeneralGAPP {
@@ -609,12 +608,9 @@ public class QMTP implements GeneralGAPP {
         int maxAttemptNumber=3;//update this if additional keyword options are added or removed
         try{
 	    //create batch file with executable permissions: cf. http://java.sun.com/docs/books/tutorial/essential/io/fileAttr.html#posix
-            Path filePath = new Path(directory+"/"+name+".com");
-	    Set<PosixFilePermission> perms = PosixFilePermissions.fromString("rwxrwxrwx");
-	    FileAttribute<Set<PosixFilePermission>> attr = PosixFilePermissions.asFileAttribute(perms);
-	    filePath.createFile(attr);
-	    File inpKey=new File(filePath);
-
+            File inpKey = new File(directory+"/"+name+".com");
+	    inpKey.setWritable(true);
+	    inpKey.setExecutable(true);
             String inpKeyStr="#! /bin/csh\n";
             inpKeyStr+="cp "+name+".mm4 CPD.MM4\n";
             inpKeyStr+="cp $MM4_DATDIR/BLANK.DAT PARA.MM4\n";
