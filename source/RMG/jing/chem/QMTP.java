@@ -871,6 +871,75 @@ public class QMTP implements GeneralGAPP {
         
         return successFlag;
     }
+
+        //name and directory are the name and directory for the input (and output) file;
+    //input script is assumed to be preexisting and have the .com suffix
+    //returns an integer indicating success or failure of the calculation: 1 for success, 0 for failure
+    public int runMM4(String name, String directory){
+        int flag = 0;
+        int successFlag=0;
+        try{
+	    File runningDirectory = new File(qmfolder);
+            String command=qmfolder+"/"+name+".com";
+	    Process mm4Proc = Runtime.getRuntime().exec(command, null, runningDirectory);
+
+            //check for errors and display the error if there is one
+            InputStream is = mm4Proc.getErrorStream();
+            InputStreamReader isr = new InputStreamReader(is);
+            BufferedReader br = new BufferedReader(isr);
+            String line=null;
+            while ( (line = br.readLine()) != null) {
+                    line = line.trim();
+                    System.err.println(line);
+                    flag=1;
+            }
+            //if there was an error, indicate that an error was obtained
+            if(flag==1){
+                System.out.println("MM4 process received error (see above) on " + name);
+            }
+            int exitValue = mm4Proc.waitFor();
+        }
+        catch(Exception e){
+            String err = "Error in running MM4 process \n";
+            err += e.toString();
+            e.printStackTrace();
+            System.exit(0);
+        }
+        //look in the output file to check for the successful termination of the MM4 calculation (cf. successfulMM4ResultExistsQ)
+        File file = new File(directory+"/"+name+".mm4out");
+	int failureFlag=1;//flag (1 or 0) indicating whether the MM4 job failed
+	//int failureOverrideFlag=0;//flag (1 or 0) to override success as measured by failureFlag
+        if(file.exists()){//if the file exists, do further checks; otherwise, we will skip to final statement and return false
+            try{
+                FileReader in = new FileReader(file);
+                BufferedReader reader = new BufferedReader(in);
+                String line=reader.readLine();
+                while(line!=null){
+                    String trimLine= line.trim();
+                    if (trimLine.equals("STATISTICAL THERMODYNAMICS ANALYSIS")){
+                       failureFlag = 0;
+                    }
+                 //   else if (trimLine.endsWith("IMAGINARY FREQUENCIES")){
+                 //     //  System.out.println("*****Imaginary freqencies found:");
+                 //       failureOverrideFlag=1;
+                 //   }
+                    line=reader.readLine();
+                }
+            }
+            catch(Exception e){
+                String err = "Error in reading MM4 output file \n";
+                err += e.toString();
+                e.printStackTrace();
+                System.exit(0);
+            }
+	}
+        //if the failure flag is still 0, the process should have been successful
+        //if(failureOverrideFlag==1) failureFlag=1; //job will be considered a failure if there are imaginary frequencies or if job terminates to to excess time/cycles
+        //if the failure flag is 0 and there are no negative frequencies, the process should have been successful
+        if (failureFlag==0) successFlag=1;
+
+        return successFlag;
+    }
     
     //name and directory are the name and directory for the input (and output) file;
     //input is assumed to be preexisting and have the .mop suffix
@@ -939,7 +1008,7 @@ public class QMTP implements GeneralGAPP {
                 }
             }
             catch(Exception e){
-                String err = "Error in reading preexisting MOPAC output file \n";
+                String err = "Error in reading MOPAC output file \n";
                 err += e.toString();
                 e.printStackTrace();
                 System.exit(0);
@@ -1740,13 +1809,13 @@ public class QMTP implements GeneralGAPP {
     public boolean successfulMM4ResultExistsQ(String name, String directory, String InChIaug){
         //part of the code is taken from analogous code for MOPAC (first ~half) and Gaussian (second ~half)
         //look in the output file to check for the successful termination of the calculation (assumed to be successful if "description of vibrations appears)
-        File file = new File(directory+"/"+name+".mm4out");
-        if(file.exists()){//if the file exists, do further checks; otherwise, we will skip to final statement and return false
-            int failureFlag=1;//flag (1 or 0) indicating whether the MM4 job failed
-            //int failureOverrideFlag=0;//flag (1 or 0) to override success as measured by failureFlag
-            int InChIMatch=0;//flag (1 or 0) indicating whether the InChI in the file matches InChIaug; this can only be 1 if InChIFound is also 1;
-            int InChIFound=0;//flag (1 or 0) indicating whether an InChI was found in the log file
-            int InChIPartialMatch=0;//flag (1 or 0) indicating whether the InChI in the log file is a substring of the InChI in RMG's memory
+        int failureFlag=1;//flag (1 or 0) indicating whether the MM4 job failed
+	//int failureOverrideFlag=0;//flag (1 or 0) to override success as measured by failureFlag
+	File file = new File(directory+"/"+name+".mm4out");
+        int InChIMatch=0;//flag (1 or 0) indicating whether the InChI in the file matches InChIaug; this can only be 1 if InChIFound is also 1;
+        int InChIFound=0;//flag (1 or 0) indicating whether an InChI was found in the log file
+        int InChIPartialMatch=0;//flag (1 or 0) indicating whether the InChI in the log file is a substring of the InChI in RMG's memory
+	if(file.exists()){//if the file exists, do further checks; otherwise, we will skip to final statement and return false
             String logFileInChI="";
             try{
                 FileReader in = new FileReader(file);
