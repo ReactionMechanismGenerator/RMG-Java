@@ -609,8 +609,6 @@ public class QMTP implements GeneralGAPP {
         try{
 	    //create batch file with executable permissions: cf. http://java.sun.com/docs/books/tutorial/essential/io/fileAttr.html#posix
             File inpKey = new File(directory+"/"+name+".com");
-	    inpKey.setWritable(true);
-	    inpKey.setExecutable(true);
             String inpKeyStr="#! /bin/csh\n";
             inpKeyStr+="cp "+name+".mm4 CPD.MM4\n";
             inpKeyStr+="cp $MM4_DATDIR/BLANK.DAT PARA.MM4\n";
@@ -628,6 +626,9 @@ public class QMTP implements GeneralGAPP {
 	    inpKeyStr+="exit\n";
 	    FileWriter fw = new FileWriter(inpKey);
             fw.write(inpKeyStr);
+	    inpKey.setWritable(true);
+	    inpKey.setExecutable(true);
+	    System.out.println(inpKey.setExecutable(true));
             fw.close();
         }
         catch(Exception e){
@@ -884,6 +885,8 @@ public class QMTP implements GeneralGAPP {
         try{
 	    File runningDirectory = new File(qmfolder);
             String command=name+".com";
+	    File script = new File(command);
+	    System.out.println(script.canExecute());
 	    Process mm4Proc = Runtime.getRuntime().exec(command, null, runningDirectory);
 
             //check for errors and display the error if there is one
