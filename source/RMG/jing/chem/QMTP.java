@@ -880,7 +880,7 @@ public class QMTP implements GeneralGAPP {
         int successFlag=0;
         try{
 	    File runningDirectory = new File(qmfolder);
-            String command=qmfolder+"/"+name+".com";
+            String command=qmfolder+name+".com";
 	    Process mm4Proc = Runtime.getRuntime().exec(command, null, runningDirectory);
 
             //check for errors and display the error if there is one
