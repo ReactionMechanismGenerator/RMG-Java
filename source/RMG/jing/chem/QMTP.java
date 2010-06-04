@@ -613,6 +613,88 @@ public class QMTP implements GeneralGAPP {
         }
         return maxAttemptNumber;
     }
+
+    //creates MM4 input file and MM4 batch file in directory with filenames name.mm4 and name.com, respectively using MoleCoor
+    //attemptNumber determines which keywords to try
+    //the function returns the maximum number of keywords that can be attempted; this will be the same throughout the evaluation of the code, so it may be more appropriate to have this as a "constant" attribute of some sort
+    public int createMM4Input(String name, String directory, molFile p_molfile, int attemptNumber, String InChIaug, int multiplicity){
+        //Step 1: write the script for MM4 batch operation
+//	Example script file:
+//	#! /bin/csh
+//	cp testEthylene.mm4 CPD.MM4
+//	cp $MM4_DATDIR/BLANK.DAT PARA.MM4
+//	cp $MM4_DATDIR/CONST.MM4 .
+//	$MM4_EXEDIR/mm4 <<%
+//	1
+//	2
+//	0
+//	%
+//	mv TAPE4.MM4 testEthyleneBatch.out
+//	mv TAPE9.MM4 testEthyleneBatch.opt
+//	exit
+
+        int maxAttemptNumber=3;//update this if additional keyword options are added or removed
+        try{
+            File inpKey=new File(directory+"/"+name+".com");
+            String inpKeyStr="#! /bin/csh\n";
+            inpKeyStr+="cp "+name+".mm4 CPD.MM4\n";
+            inpKeyStr+="cp $MM4_DATDIR/BLANK.DAT PARA.MM4\n";
+	    inpKeyStr+="cp $MM4_DATDIR/CONST.MM4 .\n";
+	    inpKeyStr+="$MM4_EXEDIR/mm4 <<%\n";
+	    inpKeyStr+="1\n";//read from first line of .mm4 file
+            if(attemptNumber==1) inpKeyStr+="2\n"; //Block-Diagonal Method then Full-Matrix Method
+            else if(attemptNumber==2) inpKeyStr+="3\n"; //Full-Matrix Method only
+            else if(attemptNumber==3) inpKeyStr+="1\n"; //Block-Diagonal Method; I'm not sure this would actually work, but I guess it is worth a shot
+            else throw new Exception();//this point should not be reached
+            inpKeyStr+="0\n";//terminate the job
+	    inpKeyStr+="%\n";
+	    inpKeyStr+="mv TAPE4.MM4 "+name+".mm4out\n";
+	    inpKeyStr+="mv TAPE9.MM4 "+name+".mm4opt\n";
+	    inpKeyStr+="exit\n";
+	    FileWriter fw = new FileWriter(inpKey);
+            fw.write(inpKeyStr);
+            fw.close();
+        }
+        catch(Exception e){
+            String err = "Error in writing MM4 script file\n";
+            err += e.toString();
+            e.printStackTrace();
+            System.exit(0);
+        }
+
+        //Step 2: call the MoleCoor process to create the MM4 input file from the mole file
+        try{
+            File runningdir=new File(directory);
+	    //this will only be run on Linux so we don't have to worry about Linux vs. Windows issues
+	    String command = "python "+System.getenv("RMG")+"/scripts/MM4InputFileMaker.py ";
+	    //first argument: input file path
+	    command=command.concat(p_molfile.getPath() + " ");
+	    //second argument: output path
+	    String logfilepath=directory+"/"+name+".mm4out";
+	    command=command.concat(logfilepath+ " ");
+	    //third argument: molecule name (the augmented InChI)
+	    command=command.concat(InChIaug+ " ");
+	    //fourth argument: PYTHONPATH
+	    command=command.concat(System.getenv("RMG")+"/source/MoleCoor");//this will pass $RMG/source/MoleCoor to the script (in order to get the appropriate path for importing
+	    Process molecoorProc = Runtime.getRuntime().exec(command, null, runningdir);
+            //read in output
+            InputStream is = molecoorProc.getInputStream();
+            InputStreamReader isr = new InputStreamReader(is);
+            BufferedReader br = new BufferedReader(isr);
+            String line=null;
+            while ( (line = br.readLine()) != null) {
+		//do nothing
+            }
+            int exitValue = molecoorProc.waitFor();
+        }
+        catch(Exception e){
+            String err = "Error in running MoleCoor MOL to .MM4 process \n";
+            err += e.toString();
+            e.printStackTrace();
+            System.exit(0);
+        }
+        return maxAttemptNumber;
+    }
     
     //returns the extra Mopac keywords to use for radical species, given the spin multiplicity (radical number + 1)
     public String getMopacRadicalString(int multiplicity){
