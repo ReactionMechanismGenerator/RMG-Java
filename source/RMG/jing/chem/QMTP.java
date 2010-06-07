@@ -404,6 +404,7 @@ public class QMTP implements GeneralGAPP {
 		String twoDmolpath=twoDmolFile.getPath();
 		command=command.concat("\""+twoDmolpath+"\" ");
 		command=command.concat("\""+name+".mol\" ");//this is the target file name; use the same name as the twoDmolFile (but it will be in he 3Dmolfiles folder
+		command=command.concat("\""+name+".cmol\" ");//this is the target file name for crude coordinates (corresponding to the minimum energy conformation based on UFF refinement); use the same name as the twoDmolFile (but it will be in he 3Dmolfiles folder) and have suffix .cmol
 		command=command.concat(numConfAttempts + " ");
 		command=command.concat("\"" + System.getenv("RDBASE")+"\"");//pass the $RDBASE environment variable to the script so it can use the approprate directory when importing rdkit
 	    }    
@@ -412,6 +413,7 @@ public class QMTP implements GeneralGAPP {
 		String twoDmolpath=twoDmolFile.getPath();
 		command=command.concat(""+twoDmolpath+" ");
 		command=command.concat(name+".mol ");//this is the target file name; use the same name as the twoDmolFile (but it will be in he 3Dmolfiles folder
+		command=command.concat(name+".cmol ");//this is the target file name for crude coordinates (corresponding to the minimum energy conformation based on UFF refinement); use the same name as the twoDmolFile (but it will be in he 3Dmolfiles folder) and have suffix .cmol
 		command=command.concat(numConfAttempts + " ");
 		command=command.concat(System.getenv("RDBASE"));//pass the $RDBASE environment variable to the script so it can use the approprate directory when importing rdkit
 	    }
