@@ -877,7 +877,6 @@ public class QMTP implements GeneralGAPP {
     //input script is assumed to be preexisting and have the .com suffix
     //returns an integer indicating success or failure of the calculation: 1 for success, 0 for failure
     public int runMM4(String name, String directory){
-        int flag = 0;
         int successFlag=0;
         try{
 	    File runningDirectory = new File(qmfolder);
@@ -887,20 +886,6 @@ public class QMTP implements GeneralGAPP {
 	    script.setExecutable(true);
 	    Process mm4Proc = Runtime.getRuntime().exec(command, null, runningDirectory);
 
-            //check for errors and display the error if there is one
-            InputStream is = mm4Proc.getErrorStream();
-            InputStreamReader isr = new InputStreamReader(is);
-            BufferedReader br = new BufferedReader(isr);
-            String line=null;
-            while ( (line = br.readLine()) != null) {
-                    line = line.trim();
-                    System.err.println(line);
-                    flag=1;
-            }
-            //if there was an error, indicate that an error was obtained
-            if(flag==1){
-                System.out.println("MM4 process received error (see above) on " + name);
-            }
             int exitValue = mm4Proc.waitFor();
         }
         catch(Exception e){
