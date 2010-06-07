@@ -649,8 +649,6 @@ public class QMTP implements GeneralGAPP {
 	    command=command.concat(InChIaug+ " ");
 	    //fourth argument: PYTHONPATH
 	    command=command.concat(System.getenv("RMG")+"/source/MoleCoor");//this will pass $RMG/source/MoleCoor to the script (in order to get the appropriate path for importing
-	    System.out.println(command);
-	    System.out.println(runningdir);
 	    Process molecoorProc = Runtime.getRuntime().exec(command, null, runningdir);
             //read in output
             InputStream is = molecoorProc.getInputStream();
