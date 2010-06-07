@@ -1845,7 +1845,7 @@ public class QMTP implements GeneralGAPP {
                        failureFlag = 0;
                     }
                     else if (trimLine.endsWith("imaginary frequencies,")){//read the number of imaginary frequencies and make sure it is zero
-                        String[] split = trimLine.split(",\\s+");
+                        String[] split = trimLine.split("\\s+");
 			if (Integer.parseInt(split[3])>0){
 			    System.out.println("*****Imaginary freqencies found:");
 			    failureOverrideFlag=1;
