@@ -1989,6 +1989,10 @@ public class Species {
     		nasaThermoSource = "Estimated by RMG using Group Additivity";
     	return nasaThermoSource;
     }
+    
+    public boolean equals(Species species) {
+    	return this.getChemGraph().equals(species.getChemGraph());
+    }
 	
 }
 /*********************************************************************

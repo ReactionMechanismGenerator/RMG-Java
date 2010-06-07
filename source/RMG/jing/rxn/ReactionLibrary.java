@@ -60,7 +60,7 @@ public class ReactionLibrary {
     
     protected HashMap dictionary;
     
-    protected HashSet library;
+    protected HashSet library; 
     
     // Constructors
     
@@ -75,11 +75,11 @@ public class ReactionLibrary {
             library=new HashSet();
             dictionary = new HashMap();
         }
-		return; // Not implemented yet.
-		/*
-        String directory = System.getProperty("jing.rxn.ReactionLibrary.pathName");
+		
+        String directory = System.getProperty("RMG.workingDirectory");
         String dictionaryFile = directory + "/Dictionary.txt";
         String libraryFile = directory + "/Library.txt";
+        //String pdeplibraryFile = directory + "/PdepLibrary.txt";
 			
 		System.out.println("\nReading reaction library from "+directory);
         try{
@@ -89,7 +89,7 @@ public class ReactionLibrary {
 			  System.out.println("Can't read reaction library files!");
 			  System.out.println(e.getMessage());
         }
-		 */
+		 
     }
     
     
@@ -164,15 +164,17 @@ public class ReactionLibrary {
         		
         		library.add(fLR);
         		
-        		Reaction reverse = r.getReverseReaction();
-				LibraryReaction rLR = LibraryReaction.makeLibraryReaction(reverse);
-				
-        		if (rLR != null) {
-        			reactants.addAll(reverse.getReactantList());
-					library.add(rLR);
-					fLR.setReverseReaction(rLR);
-					rLR.setReverseReaction(fLR);						
-			    }
+        		if (r.hasReverseReaction()) {
+	        		Reaction reverse = r.getReverseReaction();
+					LibraryReaction rLR = LibraryReaction.makeLibraryReaction(reverse);
+					
+	        		if (rLR != null) {
+	        			reactants.addAll(reverse.getReactantList());
+						library.add(rLR);
+						fLR.setReverseReaction(rLR);
+						rLR.setReverseReaction(fLR);						
+				    }
+        		}
         		
         		line = ChemParser.readMeaningfulLine(data);
         	}
@@ -181,7 +183,7 @@ public class ReactionLibrary {
         	return;
         }
         catch (Exception e) {
-        	throw new IOException("Can't read reaction in primary reaction library.\n" + e.getMessage());
+        	throw new IOException("Can't read reaction in New Reaction library.\n" + e.getMessage());
         }
         
     }
@@ -221,7 +223,7 @@ public class ReactionLibrary {
 		    	      }
 		    	      else{
 		    	        Species oldGraph = (Species)old;
-		    	        if (!oldGraph.equals(graph)) {
+		    	        if (!oldGraph.getChemGraph().getGraph().equals(graph)) {
 		    	          System.out.println("Can't replace graph in Reaction Library!");
 		    	          System.exit(0);
 		    	        }
@@ -231,7 +233,7 @@ public class ReactionLibrary {
 					System.err.println("The graph \n" + graph.toString() + " is not valid");
 					e.printStackTrace();
 				} catch (ForbiddenStructureException e) {
-					System.err.println("The graph \n" + graph.toString() + " is not a forbidden structure");
+					System.err.println("The graph \n" + graph.toString() + " is a forbidden structure");
 					e.printStackTrace();
 				}	
         		

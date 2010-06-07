@@ -3781,18 +3781,36 @@ public class ReactionModelGenerator {
 		// species enumerated in the input file and the seed mechanisms as the core
 		if (!readrestart) {
 			LinkedHashSet reactionSet;
+			
+			// If Seed Mechanism is present and Generate Reaction is set on  
 			if (hasSeedMechanisms() && getSeedMechanism().shouldGenerateReactions()) {
-				reactionSet = getReactionGenerator().react(allInitialCoreSpecies);
+				//reactionSet = getReactionGenerator().react(allInitialCoreSpecies);
+				reactionSet = getLibraryReactionGenerator().react(allInitialCoreSpecies);
+				reactionSet.addAll(getReactionGenerator().react(allInitialCoreSpecies));
 			}
+			
 			else {
-				reactionSet = new LinkedHashSet();
-				for (Iterator iter = speciesSeed.iterator(); iter.hasNext(); ) {
+				reactionSet = new LinkedHashSet();	
+				
+				System.out.println("Initial Core Species RModG"+allInitialCoreSpecies);
+				
+				LinkedHashSet tempnewReactionSet = getLibraryReactionGenerator().react(allInitialCoreSpecies);
+				System.out.println("Reaction Set Found from LRG RModG"+tempnewReactionSet);
+				
+				// Adds Reactions Found in Library Reaction Generator to Reaction Set
+				reactionSet.addAll(getLibraryReactionGenerator().react(allInitialCoreSpecies));
+				System.out.println("Current Reaction Set after LRG"+reactionSet);
+				
+				// Generates Reaction from the Reaction Generator and adds them to Reaction Set
+					for (Iterator iter = speciesSeed.iterator(); iter.hasNext(); ) {
 					Species spec = (Species) iter.next();
 					reactionSet.addAll(getReactionGenerator().react(allInitialCoreSpecies, spec));
 				}
 			}
-			reactionSet.addAll(getLibraryReactionGenerator().react(allInitialCoreSpecies));
 			
+			System.out.println("Current Reaction Set after RModG + LRG"+reactionSet);
+			
+		
 	    	// Set initial core-edge reaction model based on above results
 			if (reactionModelEnlarger instanceof RateBasedRME)	{
 				Iterator iter = reactionSet.iterator();

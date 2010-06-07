@@ -140,11 +140,23 @@ public class RateBasedRME implements ReactionModelEnlarger {
 
 					// generate new reaction set
 					startTime = System.currentTimeMillis();
-					LinkedHashSet newReactionSet = ((ReactionSystem) p_reactionSystemList.get(i)).getReactionGenerator().react(cerm.getReactedSpeciesSet(), (Species) nextList.get(i));
-					newReactionSet.addAll(((ReactionSystem) p_reactionSystemList.get(i)).lrg.react(cerm.getReactedSpeciesSet(), (Species) nextList.get(i)));
-					//LinkedHashSet newReactionSet = p_reactionSystem.getReactionGenerator().react(cerm.getReactedSpeciesSet(),next);
-					//newReactionSet.addAll(p_reactionSystem.lrg.react(cerm.getReactedSpeciesSet(),next));
-
+					
+					// shamel : Reordering so that Species List is first reacted by Library Reaction Generator and then sent to RMG Model Generator 
+					
+					System.out.println("Reacted Species"+cerm.getReactedSpeciesSet());
+					
+					// Prints out what reactions were found in Library Reaction Generator
+					LinkedHashSet tempnewReactionSet = ((ReactionSystem) p_reactionSystemList.get(i)).lrg.react(cerm.getReactedSpeciesSet(), (Species) nextList.get(i));
+					System.out.println("Reaction Set Found from LRG "+tempnewReactionSet);
+					
+					// Add reactions found in Library Reaction Generator to Reaction Set
+					LinkedHashSet newReactionSet =((ReactionSystem) p_reactionSystemList.get(i)).lrg.react(cerm.getReactedSpeciesSet(), (Species) nextList.get(i));
+					
+					// Calls in Reaction Model Generator and adds it to Reaction Set ( if duplicate reaction is found it is not added I think ) 
+					System.out.println("Generating Reactions By Calling ReactionGenerator ... ");
+					newReactionSet.addAll(((ReactionSystem) p_reactionSystemList.get(i)).getReactionGenerator().react(cerm.getReactedSpeciesSet(), (Species) nextList.get(i)));
+					
+					
 					double enlargeTime = (System.currentTimeMillis() - startTime) / 1000 / 60;
 
 
