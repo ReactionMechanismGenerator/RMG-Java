@@ -881,11 +881,9 @@ public class QMTP implements GeneralGAPP {
         int successFlag=0;
         try{
 	    File runningDirectory = new File(qmfolder);
-            String command=qmfolder+name+".com";
-	    File script = new File(command);
-	    File inpFile = new File("symminput.txt");
+            String command=name+".com";
+	    File script = new File(qmfolder+command);
 	    System.out.println(script.exists());
-	    System.out.println(inpFile.exists());
 	    script.setExecutable(true);
 	    System.out.println(script.setExecutable(true));
 	    Process mm4Proc = Runtime.getRuntime().exec(command, null, runningDirectory);
