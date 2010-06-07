@@ -912,7 +912,7 @@ public class QMTP implements GeneralGAPP {
         //look in the output file to check for the successful termination of the MM4 calculation (cf. successfulMM4ResultExistsQ)
         File file = new File(directory+"/"+name+".mm4out");
 	int failureFlag=1;//flag (1 or 0) indicating whether the MM4 job failed
-	//int failureOverrideFlag=0;//flag (1 or 0) to override success as measured by failureFlag
+	int failureOverrideFlag=0;//flag (1 or 0) to override success as measured by failureFlag
         if(file.exists()){//if the file exists, do further checks; otherwise, we will skip to final statement and return false
             try{
                 FileReader in = new FileReader(file);
@@ -923,10 +923,13 @@ public class QMTP implements GeneralGAPP {
                     if (trimLine.equals("STATISTICAL THERMODYNAMICS ANALYSIS")){
                        failureFlag = 0;
                     }
-                 //   else if (trimLine.endsWith("IMAGINARY FREQUENCIES")){
-                 //     //  System.out.println("*****Imaginary freqencies found:");
-                 //       failureOverrideFlag=1;
-                 //   }
+                    else if (trimLine.endsWith("imaginary frequencies,")){//read the number of imaginary frequencies and make sure it is zero
+                        String[] split = trimLine.split(",\\s+");
+			if (Integer.parseInt(split[3])>0){
+			    System.out.println("*****Imaginary freqencies found:");
+			    failureOverrideFlag=1;
+			}
+                    }
                     line=reader.readLine();
                 }
             }
@@ -938,7 +941,7 @@ public class QMTP implements GeneralGAPP {
             }
 	}
         //if the failure flag is still 0, the process should have been successful
-        //if(failureOverrideFlag==1) failureFlag=1; //job will be considered a failure if there are imaginary frequencies or if job terminates to to excess time/cycles
+        if(failureOverrideFlag==1) failureFlag=1; //job will be considered a failure if there are imaginary frequencies or if job terminates to to excess time/cycles
         //if the failure flag is 0 and there are no negative frequencies, the process should have been successful
         if (failureFlag==0) successFlag=1;
 
@@ -1825,7 +1828,7 @@ public class QMTP implements GeneralGAPP {
         //part of the code is taken from analogous code for MOPAC (first ~half) and Gaussian (second ~half)
         //look in the output file to check for the successful termination of the calculation (assumed to be successful if "description of vibrations appears)
         int failureFlag=1;//flag (1 or 0) indicating whether the MM4 job failed
-	//int failureOverrideFlag=0;//flag (1 or 0) to override success as measured by failureFlag
+	int failureOverrideFlag=0;//flag (1 or 0) to override success as measured by failureFlag
 	File file = new File(directory+"/"+name+".mm4out");
         int InChIMatch=0;//flag (1 or 0) indicating whether the InChI in the file matches InChIaug; this can only be 1 if InChIFound is also 1;
         int InChIFound=0;//flag (1 or 0) indicating whether an InChI was found in the log file
@@ -1841,10 +1844,13 @@ public class QMTP implements GeneralGAPP {
                     if (trimLine.equals("STATISTICAL THERMODYNAMICS ANALYSIS")){
                        failureFlag = 0;
                     }
-                 //   else if (trimLine.endsWith("IMAGINARY FREQUENCIES")){
-                 //     //  System.out.println("*****Imaginary freqencies found:");
-                 //       failureOverrideFlag=1;
-                 //   }
+                    else if (trimLine.endsWith("imaginary frequencies,")){//read the number of imaginary frequencies and make sure it is zero
+                        String[] split = trimLine.split(",\\s+");
+			if (Integer.parseInt(split[3])>0){
+			    System.out.println("*****Imaginary freqencies found:");
+			    failureOverrideFlag=1;
+			}
+                    }
                     else if(trimLine.startsWith("InChI=")){
                         logFileInChI = line.trim();//output files should take up to about 60 (?) characters of the name in the input file
                         InChIFound=1;
@@ -1860,7 +1866,7 @@ public class QMTP implements GeneralGAPP {
                 e.printStackTrace();
                 System.exit(0);
             }
-           // if(failureOverrideFlag==1) failureFlag=1; //job will be considered a failure if there are imaginary frequencies or if job terminates to to excess time/cycles
+            if(failureOverrideFlag==1) failureFlag=1; //job will be considered a failure if there are imaginary frequencies or if job terminates to to excess time/cycles
             //if the failure flag is still 0, the process should have been successful
             if (failureFlag==0&&InChIMatch==1){
                 System.out.println("Pre-existing successful MM4 result for " + name + " ("+InChIaug+") has been found. This log file will be used.");
