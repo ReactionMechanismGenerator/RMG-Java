@@ -607,7 +607,8 @@ public class QMTP implements GeneralGAPP {
 //	mv TAPE9.MM4 testEthyleneBatch.opt
 //	exit
 
-        int maxAttemptNumber=3;//update this if additional keyword options are added or removed
+	int scriptAttempts = 3;//the number of script permutations available; update as additional options are added
+        int maxAttemptNumber=2*scriptAttempts;//we will try a second time with crude coordinates if the UFF refined coordinates do not work
         try{
 	    //create batch file with executable permissions: cf. http://java.sun.com/docs/books/tutorial/essential/io/fileAttr.html#posix
             File inpKey = new File(directory+"/"+name+".com");
@@ -617,9 +618,9 @@ public class QMTP implements GeneralGAPP {
 	    inpKeyStr+="cp $MM4_DATDIR/CONST.MM4 .\n";
 	    inpKeyStr+="$MM4_EXEDIR/mm4 <<%\n";
 	    inpKeyStr+="1\n";//read from first line of .mm4 file
-            if(attemptNumber==1) inpKeyStr+="2\n"; //Block-Diagonal Method then Full-Matrix Method
-            else if(attemptNumber==2) inpKeyStr+="3\n"; //Full-Matrix Method only
-            else if(attemptNumber==3) inpKeyStr+="1\n"; //Block-Diagonal Method; I'm not sure this would actually work, but I guess it is worth a shot
+            if(attemptNumber%scriptAttempts==1) inpKeyStr+="2\n"; //Block-Diagonal Method then Full-Matrix Method
+            else if(attemptNumber%scriptAttempts==2) inpKeyStr+="3\n"; //Full-Matrix Method only
+            else if(attemptNumber%scriptAttempts==0) inpKeyStr+="1\n"; //Block-Diagonal Method; I'm not sure this would actually work, but I guess it is worth a shot
             else throw new Exception();//this point should not be reached
             inpKeyStr+="0\n";//terminate the job
 	    inpKeyStr+="%\n";
@@ -642,8 +643,13 @@ public class QMTP implements GeneralGAPP {
             File runningdir=new File(directory);
 	    //this will only be run on Linux so we don't have to worry about Linux vs. Windows issues
 	    String command = "python "+System.getenv("RMG")+"/scripts/MM4InputFileMaker.py ";
-	    //first argument: input file path
-	    command=command.concat(p_molfile.getPath() + " ");
+	    //first argument: input file path; for the first attempts, we will use UFF refined coordinates; if that doesn't work, (e.g. case of cyclopropene, InChI=1/C3H4/c1-2-3-1/h1-2H,3H2 OOXWYYGXTJLWHA-UHFFFAOYAJ) we will try crude coordinates (.cmol suffix)
+	    if(attemptNumber<=scriptAttempts){
+		command=command.concat(p_molfile.getPath() + " ");
+	    }
+	    else{
+		command=command.concat(p_molfile.getCrudePath() + " ");
+	    }
 	    //second argument: output path
 	    String inpfilepath=directory+"/"+name+".mm4";
 	    command=command.concat(inpfilepath+ " ");
