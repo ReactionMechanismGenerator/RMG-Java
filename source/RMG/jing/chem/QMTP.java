@@ -883,6 +883,7 @@ public class QMTP implements GeneralGAPP {
 	    File runningDirectory = new File(qmfolder);
             String command=name+".com";
 	    File script = new File(qmfolder+command);
+	    command = "./"+command;
 	    System.out.println(script.exists());
 	    script.setExecutable(true);
 	    System.out.println(script.setExecutable(true));
