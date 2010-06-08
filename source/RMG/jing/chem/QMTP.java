@@ -896,16 +896,23 @@ public class QMTP implements GeneralGAPP {
 	    Process mm4Proc = Runtime.getRuntime().exec(command, null, runningDirectory);
 
 	    //check for errors and display the error if there is one
-	    InputStream is = mm4Proc.getErrorStream();
+//	    InputStream is = mm4Proc.getErrorStream();
+//	    InputStreamReader isr = new InputStreamReader(is);
+//	    BufferedReader br = new BufferedReader(isr);
+//	    String line=null;
+//	    while ( (line = br.readLine()) != null) {
+//		line = line.trim();
+//		if(!line.equals("STOP   statement executed")){//string listed here seems to be typical
+//		    System.err.println(line);
+//		    flag=1;
+//		}
+//	    }
+	    InputStream is = mm4Proc.getInputStream();
 	    InputStreamReader isr = new InputStreamReader(is);
 	    BufferedReader br = new BufferedReader(isr);
 	    String line=null;
 	    while ( (line = br.readLine()) != null) {
-		line = line.trim();
-		if(!line.equals("STOP   statement executed")){//string listed here seems to be typical
-		    System.err.println(line);
-		    flag=1;
-		}
+		System.out.println(line);
 	    }
 	    //if there was an error, indicate that an error was obtained
 	    if(flag==1){
