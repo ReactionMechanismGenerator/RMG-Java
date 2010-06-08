@@ -886,7 +886,7 @@ public class QMTP implements GeneralGAPP {
     //returns an integer indicating success or failure of the calculation: 1 for success, 0 for failure
     public int runMM4(String name, String directory){
         int successFlag=0;
-        int flag = 0;
+        //int flag = 0;
 	try{
 	    File runningDirectory = new File(qmfolder);
             String command=name+".com";
@@ -912,12 +912,12 @@ public class QMTP implements GeneralGAPP {
 	    BufferedReader br = new BufferedReader(isr);
 	    String line=null;
 	    while ( (line = br.readLine()) != null) {
-		System.out.println(line);
+		//do nothing
 	    }
 	    //if there was an error, indicate that an error was obtained
-	    if(flag==1){
-		System.out.println("MM4 process received error (see above) on " + name);
-	    }
+//	    if(flag==1){
+//		System.out.println("MM4 process received error (see above) on " + name);
+//	    }
 
 
             int exitValue = mm4Proc.waitFor();
