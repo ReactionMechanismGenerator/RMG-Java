@@ -942,6 +942,10 @@ public class QMTP implements GeneralGAPP {
 			    failureOverrideFlag=1;
 			}
                     }
+		    else if (trimLine.contains("             0.0     (fir )")){
+			    System.out.println("*****Zero freqencies found:");
+			    failureOverrideFlag=1;
+		    }
                     line=reader.readLine();
                 }
             }
@@ -1863,6 +1867,10 @@ public class QMTP implements GeneralGAPP {
 			    failureOverrideFlag=1;
 			}
                     }
+		    else if (trimLine.contains("             0.0     (fir )")){
+			    System.out.println("*****Zero freqencies found:");
+			    failureOverrideFlag=1;
+		    }
                     else if(trimLine.startsWith("InChI=")){
                         logFileInChI = line.trim();//output files should take up to about 60 (?) characters of the name in the input file
                         InChIFound=1;
