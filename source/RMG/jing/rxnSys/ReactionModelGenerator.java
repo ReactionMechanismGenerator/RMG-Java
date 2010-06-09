@@ -816,6 +816,10 @@ public class ReactionModelGenerator {
 
 			//
 			if (temp.startsWith("AUTOPRUNE")){//for the AUTOPRUNE case, read in additional lines for termTol and edgeTol
+			    if(reactionModelEnlarger instanceof RateBasedPDepRME){
+				System.out.println("Use of pruning with pressure-dependence is not supported. Turn off pruning and/or pressure-dependence options in condition file.");
+				System.exit(0);
+			    }
 			    line = ChemParser.readMeaningfulLine(reader);
 			    if (line.startsWith("TerminationTolerance:")) {
 				    st = new StringTokenizer(line);
