@@ -404,7 +404,7 @@ public class PopulateReactions {
 						speciesSet,
 						(InitialStatus)rmg.getInitialStatusList().get(0),
 						rmg.getReactionModel(),
-						new LibraryReactionGenerator(),
+						rmg.getLibraryReactionGenerator(),
 						0,
 						"GasPhase");
 				

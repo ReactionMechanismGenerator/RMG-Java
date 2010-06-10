@@ -51,11 +51,9 @@ public class LibraryReactionGenerator implements ReactionGenerator {
     
     protected ReactionLibrary reactionLibrary;
     
-    // Constructors
     
-    public  LibraryReactionGenerator() {
-        //Call in the instance of reaction Library
-        reactionLibrary = ReactionLibrary.getINSTANCE();       
+    public LibraryReactionGenerator(ReactionLibrary p_reactionlibrary) {
+    	reactionLibrary = p_reactionlibrary;
     }
     
     /**
@@ -66,23 +64,16 @@ public class LibraryReactionGenerator implements ReactionGenerator {
     Now, we will use the second definition.
     
     Why not the First ? As the other reactants might neither be  edge nor core species, hence that reaction is not considered for time being
-
-    */
-    // Argument HashSetp_speciesSeed : 
-    /**
-    pass-in species as key to search the proper reaction.
-    */
-    // Argument LibraryReactionp_libraryReaction : 
-    /**
-    the pass-in structure of a library reaction.
-    */
+    **/
     
-    private boolean match_reactants(LinkedHashSet p_speciesSeed, LibraryReaction p_libraryReaction) {
+    
+    private boolean match_reactants(LinkedHashSet p_speciesSeed, Reaction p_libraryReaction) {
     	/*
     	 * This function will run through the Species Set and find "true" for those reactions in which all the reactants or all the  products 
     	 * are present in the Species Set  
     	 */
-        
+    
+    	// Iterator to iterate over all reactants of the current library reaction
     	Iterator iter_reactants = p_libraryReaction.getReactants();
         
        int count_reactants =0; // Counter for No of Reactants in Reaction
@@ -139,8 +130,7 @@ public class LibraryReactionGenerator implements ReactionGenerator {
         
     /**
     Search all the reaction in the itsReactionLibrary.  If a library reaction has a species in the pass-in SpeciesList, add this reaction into present ReactionSystem.  Return the final ReactionSystem, when the search for checking all the library reactions are done.
-    */
-    // Argument HashSetp_speciesSeed : 
+    */ 
     /**
     the species involved in reaction system.
     */
@@ -150,21 +140,22 @@ public class LibraryReactionGenerator implements ReactionGenerator {
     	LinkedHashSet reaction_set = new LinkedHashSet();
         
     	// Check whether Reaction Library is OK or empty or the Species Set is Empty
+    	
         if (!reactionLibrary.repOk() || reactionLibrary.isEmpty() || p_speciesSeed.size()==0) {
         	return reaction_set;
         }
         
         // Algorithm for search reaction library to find out proper library reactions                                                  
-        LibraryReaction current_reaction;
+        Reaction current_reaction; 
         
-        
-        Iterator iter = ReactionLibrary.getINSTANCE().getLibraryReaction();
+        Iterator iter = reactionLibrary.getLibraryReaction();
         
         // Run through all the reactions in current instance of Reaction Library
         while (iter.hasNext()) {
         	
-        	// Cast it into a Reaction ( i.e pick the reaction )
-        	current_reaction = (LibraryReaction)iter.next();
+        	// Cast it into a  Reaction ( i.e pick the reaction )
+        	// As Reaction type encompasses all types i.e Library Reaction, Template Reaction 
+        	current_reaction = (Reaction)iter.next();
         	
         	// check if the reaction in reaction library is a library reaction, if it is not, return an empty reaction system
         	

@@ -825,11 +825,14 @@ public class Reaction {
       //#]
   }
 
-  //## operation getComments()
+  
+
+ 
+  
   public String getComments() {
-      //#[ operation getComments()
+     
       return comments;
-      //#]
+     
   }
 
   //## operation getDirection()
@@ -906,6 +909,30 @@ public class Reaction {
   public void setKineticsComments(String p_string, int num_k){
 	  kinetics[num_k].setComments(p_string);
   }
+  
+  
+  // shamel: Added this function 6/10/2010, to get Kinetics Source to identify duplicates 
+  // in Reaction Library, Seed Mech and Template Reaction with Library Reaction feature
+  
+  public String getKineticsSource(int num_k){
+	  // The num_k is the number for different kinetics stored for one type of reaction but formed due to different families
+	  // Check if the kinetics exits
+	  if (kinetics != null) {
+		  // Check if the "source" string is not null
+		  if(!kinetics[num_k].getSource().equals(null)){
+			  return kinetics[num_k].getSource();  
+		  }
+		  else{
+			  // This is mostly done for case of H Abstraction where forward kinetic source is null
+			  //we might need to check if this "source" is also null (Can be source of Bug)
+			  return this.reverseReaction.kinetics[num_k].getSource();  
+		  }
+	  } else
+		  // Returns Source as null when there are no Kinetics at all!
+		  return null;
+	  
+  }
+  
   
   public void setKineticsSource(String p_string, int num_k){
 	  kinetics[num_k].setSource(p_string);
@@ -1302,6 +1329,8 @@ public class Reaction {
   public void setComments(String p_comments) {
       comments = p_comments;
   }
+  
+  
 
   /**
    * Returns the reverse reaction of this reaction. If there is no reverse reaction present
