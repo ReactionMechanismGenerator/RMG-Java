@@ -125,9 +125,9 @@ public class ReactionLibrary {
  			System.out.println("Reading New Reaction Library from: "+p_directoryName);
          	
  			 
-             String dictionaryFile = p_directoryName + "Dictionary.txt";
-             String libraryFile = p_directoryName + "Library.txt";
-             String pdeplibraryFile = p_directoryName + "PdepLibrary.txt";
+             String dictionaryFile = p_directoryName + "species.txt";
+             String libraryFile = p_directoryName + "reaction.txt";
+             String pdeplibraryFile = p_directoryName + "pdepreaction.txt";
             // Read in Dictionary File, species list
              readDictionary(dictionaryFile);
             // Read in Non Pdep Reactions  
