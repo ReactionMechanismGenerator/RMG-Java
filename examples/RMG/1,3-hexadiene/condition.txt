@@ -74,6 +74,12 @@ PrimaryReactionLibrary:
 //Location: Example
 END
 
+ReactionLibrary:
+//Name: GRIMech3.0
+//Location: GRI-Mech3.0
+END
+
+
 SeedMechanism:
 //Name: Leeds
 //Location: combustion_core/version5
