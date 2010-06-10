@@ -3940,7 +3940,7 @@ public class ReactionModelGenerator {
        	// Reaction Library or Template Reaction
        	
        	String source = current_reaction.getKineticsSource(0);
-       	System.out.println("Source"+source);
+       	//System.out.println("Source"+source);
        	
        	if (source == null){
        		// If source is null I am assuming that its not a Reaction from Reaction Library or Seed Mechanism

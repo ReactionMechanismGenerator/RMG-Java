@@ -919,7 +919,7 @@ public class Reaction {
 	  // Check if the kinetics exits
 	  if (kinetics != null) {
 		  // Check if the "source" string is not null
-		  if(!kinetics[num_k].getSource().equals(null)){
+		  if(kinetics[num_k].getSource() != null){
 			  return kinetics[num_k].getSource();  
 		  }
 		  else{
