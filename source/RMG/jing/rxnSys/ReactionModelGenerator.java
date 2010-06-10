@@ -2859,10 +2859,14 @@ public class ReactionModelGenerator {
 													 numFamePress,numChebyTemps,numChebyPress,numPlog));
 					
 					PDepReaction currentPDepReverseRxn = currentPDepRxn.getReverseReaction();
-					bw.write(currentPDepReverseRxn.toString());
-					bw.newLine();
-					bw.write(writeRatesAndParameters(currentPDepReverseRxn,numFameTemps,
-													 numFamePress,numChebyTemps,numChebyPress,numPlog));
+					// Not all net PDepReactions are reversible, so we must test for this
+					if (currentPDepReverseRxn != null) {
+						bw.write(currentPDepReverseRxn.toString());
+						bw.newLine();
+						bw.write(writeRatesAndParameters(currentPDepReverseRxn,numFameTemps,
+														 numFamePress,numChebyTemps,numChebyPress,numPlog));
+					}
+					
 				}
 				
 				// Write pathReactionList
