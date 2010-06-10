@@ -54,6 +54,8 @@ public class QMTP implements GeneralGAPP {
     protected ThermoGAGroupLibrary thermoLibrary; //needed for HBI
     public static String qmprogram= "both";//the qmprogram can be "mopac", "gaussian03", "both" (MOPAC and Gaussian), or "mm4"
     public static boolean usePolar = false; //use polar keyword in MOPAC
+    public static boolean useCanTherm = false; //whether to use CanTherm in MM4 cases for interpreting output via force-constant matrix; this will hopefully avoid zero frequency issues
+    public static boolean useHindRot = false;//whether to use HinderedRotor scans with MM4 (requires useCanTherm=true)
     // Constructors
 
     //## operation QMTP()
@@ -345,7 +347,8 @@ public class QMTP implements GeneralGAPP {
 		}
 	    }
 	    //5. parse MM4 output and record as thermo data (function includes symmetry/point group calcs, etc.); if both Gaussian and MOPAC results exist, Gaussian result is used
-	    result = parseMM4(name, directory, p_chemGraph);
+	    if(!useCanTherm) result = parseMM4(name, directory, p_chemGraph);
+	    else result = parseMM4withForceMat(name, directory, p_chemGraph);
 	}
         
         return result;
@@ -607,7 +610,7 @@ public class QMTP implements GeneralGAPP {
 //	mv TAPE9.MM4 testEthyleneBatch.opt
 //	exit
 
-	int scriptAttempts = 3;//the number of script permutations available; update as additional options are added
+	int scriptAttempts = 2;//the number of script permutations available; update as additional options are added
         int maxAttemptNumber=2*scriptAttempts;//we will try a second time with crude coordinates if the UFF refined coordinates do not work
         try{
 	    //create batch file with executable permissions: cf. http://java.sun.com/docs/books/tutorial/essential/io/fileAttr.html#posix
@@ -618,14 +621,26 @@ public class QMTP implements GeneralGAPP {
 	    inpKeyStr+="cp $MM4_DATDIR/CONST.MM4 .\n";
 	    inpKeyStr+="$MM4_EXEDIR/mm4 <<%\n";
 	    inpKeyStr+="1\n";//read from first line of .mm4 file
-            if(attemptNumber%scriptAttempts==1) inpKeyStr+="2\n"; //Block-Diagonal Method then Full-Matrix Method
-            else if(attemptNumber%scriptAttempts==2) inpKeyStr+="3\n"; //Full-Matrix Method only
-            else if(attemptNumber%scriptAttempts==0) inpKeyStr+="1\n"; //Block-Diagonal Method; I'm not sure this would actually work, but I guess it is worth a shot
-            else throw new Exception();//this point should not be reached
+	    if (!useCanTherm){
+		if(attemptNumber%scriptAttempts==1) inpKeyStr+="2\n"; //Block-Diagonal Method then Full-Matrix Method
+		else if(attemptNumber%scriptAttempts==2) inpKeyStr+="3\n"; //Full-Matrix Method only
+		else throw new Exception();//this point should not be reached
+		inpKeyStr+="\n";//<RETURN> for temperature
+		inpKeyStr+="4\n";//unofficial option 4 for vibrational eigenvector printout to generate Cartesian force constant matrix in FORCE.MAT file
+		inpKeyStr+="0\n";//no vibrational amplitude printout
+	    }
+	    else{//CanTherm case: write the FORCE.MAT file
+		if(attemptNumber%scriptAttempts==1) inpKeyStr+="4\n"; //Block-Diagonal Method then Full-Matrix Method
+		else if(attemptNumber%scriptAttempts==2) inpKeyStr+="5\n"; //Full-Matrix Method only
+		else throw new Exception();//this point should not be reached
+	    }
             inpKeyStr+="0\n";//terminate the job
 	    inpKeyStr+="%\n";
 	    inpKeyStr+="mv TAPE4.MM4 "+name+".mm4out\n";
 	    inpKeyStr+="mv TAPE9.MM4 "+name+".mm4opt\n";
+	    if(useCanTherm){
+		inpKeyStr+="mv FORCE.MAT "+name+".fmat\n";
+	    }
 	    inpKeyStr+="exit\n";
 	    FileWriter fw = new FileWriter(inpKey);
             fw.write(inpKeyStr);
@@ -950,8 +965,13 @@ public class QMTP implements GeneralGAPP {
 			}
                     }
 		    else if (trimLine.contains("             0.0     (fir )")){
+			if (useCanTherm){//zero frequencies are only acceptable when CanTherm is used
+			    System.out.println("*****Warning: zero freqencies found (values lower than 7.7 cm^-1 are rounded to zero in MM4 output); CanTherm should hopefully correct this:");
+			}
+			else{
 			    System.out.println("*****Zero freqencies found:");
 			    failureOverrideFlag=1;
+			}
 		    }
                     line=reader.readLine();
                 }
@@ -1203,6 +1223,142 @@ public class QMTP implements GeneralGAPP {
 	command=command.concat(logfilepath);
 	command=command.concat(" "+ System.getenv("RMG")+"/source");//this will pass $RMG/source to the script (in order to get the appropriate path for importing
         ThermoData result = getPM3MM4ThermoDataUsingCCLib(name, directory, p_chemGraph, command);
+        System.out.println("Thermo for " + name + ": "+ result.toString());//print result, at least for debugging purposes
+        return result;
+    }
+
+    //parse the results using cclib and CanTherm and return a ThermoData object; name and directory indicate the location of the MM4 .mm4out file
+    public ThermoData parseMM4withForceMat(String name, String directory, ChemGraph p_chemGraph){
+	//1. parse the MM4 file with cclib to get atomic number vector and geometry
+	String command = "python "+System.getProperty("RMG.workingDirectory")+"/scripts/MM4ParsingScript.py ";
+	String logfilepath=directory+"/"+name+".mm4out";
+	command=command.concat(logfilepath);
+	command=command.concat(" "+ System.getenv("RMG")+"/source");//this will pass $RMG/source to the script (in order to get the appropriate path for importing
+        ///////////beginning of block taken from the bulk of getPM3MM4ThermoDataUsingCCLib////////////
+	//parse the file using cclib
+        int natoms = 0; //number of atoms from Mopac file; in principle, this should agree with number of chemGraph atoms
+        ArrayList atomicNumber = new ArrayList(); //vector of atomic numbers (integers) (apparently Vector is thread-safe; cf. http://answers.yahoo.com/question/index?qid=20081214065127AArZDT3; ...should I be using this instead?)
+        ArrayList x_coor = new ArrayList(); //vectors of x-, y-, and z-coordinates (doubles) (Angstroms) (in order corresponding to above atomic numbers)
+        ArrayList y_coor = new ArrayList();
+        ArrayList z_coor = new ArrayList();
+        double energy = 0; // energy (Hf298) in Hartree
+        double molmass = 0; //molecular mass in amu
+        ArrayList freqs = new ArrayList(); //list of frequencies in units of cm^-1
+        double rotCons_1 = 0;//rotational constants in (1/s)
+        double rotCons_2 = 0;
+        double rotCons_3 = 0; 
+        int gdStateDegen = p_chemGraph.getRadicalNumber()+1;//calculate ground state degeneracy from the number of radicals; this should give the same result as spin multiplicity in Gaussian input file (and output file), but we do not explicitly check this (we could use "mult" which cclib reads in if we wanted to do so); also, note that this is not always correct, as there can apparently be additional spatial degeneracy for non-symmetric linear molecules like OH radical (cf. http://cccbdb.nist.gov/thermo.asp)
+        try{   
+            Process cclibProc = Runtime.getRuntime().exec(command);
+            //read the stdout of the process, which should contain the desired information in a particular format
+            InputStream is = cclibProc.getInputStream();
+            InputStreamReader isr = new InputStreamReader(is);
+            BufferedReader br = new BufferedReader(isr);
+
+            String line=null;
+            //example output:
+//            C:\Python25>python.exe GaussianPM3ParsingScript.py TEOS.out
+//            33
+//            [ 6  6  8 14  8  6  6  8  6  6  8  6  6  1  1  1  1  1  1  1  1  1  1  1  1
+//              1  1  1  1  1  1  1  1]
+//            [[ 2.049061 -0.210375  3.133106]
+//             [ 1.654646  0.321749  1.762752]
+//             [ 0.359284 -0.110429  1.471465]
+//             [-0.201871 -0.013365 -0.12819 ]
+//             [ 0.086307  1.504918 -0.82893 ]
+//             [-0.559186  2.619928 -0.284003]
+//             [-0.180246  3.839463 -1.113029]
+//             [ 0.523347 -1.188305 -1.112765]
+//             [ 1.857584 -1.018167 -1.495088]
+//             [ 2.375559 -2.344392 -2.033403]
+//             [-1.870397 -0.297297 -0.075427]
+//             [-2.313824 -1.571765  0.300245]
+//             [-3.83427  -1.535927  0.372171]
+//             [ 1.360346  0.128852  3.917699]
+//             [ 2.053945 -1.307678  3.160474]
+//             [ 3.055397  0.133647  3.403037]
+//             [ 1.677262  1.430072  1.750899]
+//             [ 2.372265 -0.029237  0.985204]
+//             [-0.245956  2.754188  0.771433]
+//             [-1.656897  2.472855 -0.287156]
+//             [-0.664186  4.739148 -0.712606]
+//             [-0.489413  3.734366 -2.161038]
+//             [ 0.903055  4.016867 -1.112198]
+//             [ 1.919521 -0.229395 -2.269681]
+//             [ 2.474031 -0.680069 -0.629949]
+//             [ 2.344478 -3.136247 -1.273862]
+//             [ 1.786854 -2.695974 -2.890647]
+//             [ 3.41648  -2.242409 -2.365094]
+//             [-1.884889 -1.858617  1.28054 ]
+//             [-1.976206 -2.322432 -0.440995]
+//             [-4.284706 -1.26469  -0.591463]
+//             [-4.225999 -2.520759  0.656131]
+//             [-4.193468 -0.809557  1.112677]]
+//            -14.1664924726
+//            [    9.9615    18.102     27.0569    31.8459    39.0096    55.0091
+//                66.4992    80.4552    86.4912   123.3551   141.6058   155.5448
+//               159.4747   167.0013   178.5676   207.3738   237.3201   255.3487
+//               264.5649   292.867    309.4248   344.6503   434.8231   470.2074
+//               488.9717   749.1722   834.257    834.6594   837.7292   839.6352
+//               887.9767   892.9538   899.5374   992.1851  1020.6164  1020.8671
+//              1028.3897  1046.7945  1049.1768  1059.4704  1065.1505  1107.4001
+//              1108.1567  1109.0466  1112.6677  1122.7785  1124.4315  1128.4163
+//              1153.3438  1167.6705  1170.9627  1174.9613  1232.1826  1331.8459
+//              1335.3932  1335.8677  1343.9556  1371.37    1372.8127  1375.5428
+//              1396.0344  1402.4082  1402.7554  1403.2463  1403.396   1411.6946
+//              1412.2456  1412.3519  1414.5982  1415.3613  1415.5698  1415.7993
+//              1418.5409  2870.7446  2905.3132  2907.0361  2914.1662  2949.2646
+//              2965.825   2967.7667  2971.5223  3086.3849  3086.3878  3086.6448
+//              3086.687   3089.2274  3089.4105  3089.4743  3089.5841  3186.0753
+//              3186.1375  3186.3511  3186.365 ]
+//            [ 0.52729  0.49992  0.42466]
+//note: above example has since been updated to print molecular mass; also frequency and atomic number format has been updated
+            String [] stringArray;
+            natoms = Integer.parseInt(br.readLine());//read line 1: number of atoms
+            stringArray = br.readLine().replace("[", "").replace("]","").trim().split(",\\s+");//read line 2: the atomic numbers (first removing braces)
+           // line = br.readLine().replace("[", "").replace("]","");//read line 2: the atomic numbers (first removing braces)
+           // StringTokenizer st = new StringTokenizer(line); //apprently the stringTokenizer class is deprecated, but I am having trouble getting the regular expressions to work properly
+            for(int i=0; i < natoms; i++){
+               // atomicNumber.add(i,Integer.parseInt(stringArray[i]));
+                atomicNumber.add(i,Integer.parseInt(stringArray[i]));
+            }
+            for(int i=0; i < natoms; i++){
+                stringArray = br.readLine().replace("[", "").replace("]","").trim().split("\\s+");//read line 3+: coordinates for atom i; used /s+ for split; using spaces with default limit of 0 was giving empty string
+                x_coor.add(i,Double.parseDouble(stringArray[0]));
+                y_coor.add(i,Double.parseDouble(stringArray[1]));
+                z_coor.add(i,Double.parseDouble(stringArray[2]));
+            }
+            energy = Double.parseDouble(br.readLine());//read next line: energy
+            molmass = Double.parseDouble(br.readLine());//read next line: molecular mass (in amu)
+            if (natoms>1){//read additional info for non-monoatomic species
+                stringArray = br.readLine().replace("[", "").replace("]","").trim().split(",\\s+");//read next line: frequencies
+                for(int i=0; i < stringArray.length; i++){
+                    freqs.add(i,Double.parseDouble(stringArray[i]));
+                }
+                stringArray = br.readLine().replace("[", "").replace("]","").trim().split("\\s+");//read next line rotational constants (converting from GHz to Hz in the process)
+                rotCons_1 = Double.parseDouble(stringArray[0])*1000000000;
+                rotCons_2 = Double.parseDouble(stringArray[1])*1000000000;
+                rotCons_3 = Double.parseDouble(stringArray[2])*1000000000;
+            }
+            while ( (line = br.readLine()) != null) {
+                //do nothing (there shouldn't be any more information, but this is included to get all the output)
+            }
+            int exitValue = cclibProc.waitFor();
+        }
+        catch (Exception e) {
+            String err = "Error in running ccLib Python process \n";
+            err += e.toString();
+            e.printStackTrace();
+            System.exit(0);
+        }
+	///////////end of block taken from the bulk of getPM3MM4ThermoDataUsingCCLib////////////
+	//2. compute H0;  note that we will pass H0 to CanTherm by H0=H298(harmonicMM4)-(H298-H0)harmonicMM4, where harmonicMM4 values come from cclib parsing and since it is enthalpy, it should not be NaN due to zero frequencies
+	//3. write CanTherm input file
+	//4. call CanTherm
+	//5. read in CanTherm output
+	//6. correct the output for symmetry number (everything has been assumed to be one) : useHindRot=true case: use ChemGraph symmetry number; otherwise, we use SYMMETRY
+
+	ThermoData result = getPM3MM4ThermoDataUsingCCLib(name, directory, p_chemGraph, command);
         System.out.println("Thermo for " + name + ": "+ result.toString());//print result, at least for debugging purposes
         return result;
     }
@@ -1875,8 +2031,13 @@ public class QMTP implements GeneralGAPP {
 			}
                     }
 		    else if (trimLine.contains("             0.0     (fir )")){
+			if (useCanTherm){//zero frequencies are only acceptable when CanTherm is used
+			    System.out.println("*****Warning: zero freqencies found (values lower than 7.7 cm^-1 are rounded to zero in MM4 output); CanTherm should hopefully correct this:");
+			}
+			else{
 			    System.out.println("*****Zero freqencies found:");
 			    failureOverrideFlag=1;
+			}
 		    }
                     else if(trimLine.startsWith("InChI=")){
                         logFileInChI = line.trim();//output files should take up to about 60 (?) characters of the name in the input file
