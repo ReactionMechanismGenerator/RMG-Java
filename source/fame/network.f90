@@ -625,7 +625,7 @@ contains
 
         end if
 
-        !write (*,*) rxn%isomerList(1), rxn%isomerList(2), rxn%kf(nGrains), rxn%kb(nGrains)
+        !write (*,*) rxn%reac, rxn%prod, rxn%kf(nGrains), rxn%kb(nGrains)
 
     end subroutine
 

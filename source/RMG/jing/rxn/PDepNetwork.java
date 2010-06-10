@@ -621,10 +621,14 @@ public class PDepNetwork {
 			Species product = (Species) reaction.getProductList().get(0);
 			for (ListIterator<PDepNetwork> iter = networks.listIterator(); iter.hasNext(); ) {
 				PDepNetwork n = iter.next();
-				if (n.contains(reactant))
-					reac_pdn = n;
-				if (n.contains(product))
-					prod_pdn = n;
+				if (n.contains(reactant)) {
+					if (n.getIsomer(reactant).getIncluded())
+						reac_pdn = n;
+				}
+				if (n.contains(product)) {
+					if (n.getIsomer(product).getIncluded())
+						prod_pdn = n;
+				}
 			}
 
 			if (reac_pdn != null && prod_pdn != null && reac_pdn != prod_pdn) {
@@ -664,8 +668,10 @@ public class PDepNetwork {
 			Species reactant = (Species) reaction.getReactantList().get(0);
 			for (ListIterator<PDepNetwork> iter = networks.listIterator(); iter.hasNext(); ) {
 				PDepNetwork n = iter.next();
-				if (n.contains(reactant))
-					pdn = n;
+				if (n.contains(reactant)) {
+					if (n.getIsomer(reactant).getIncluded())
+						pdn = n;
+				}
 			}
 		}
 
