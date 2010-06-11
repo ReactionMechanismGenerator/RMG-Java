@@ -59,6 +59,7 @@ import jing.rxn.PDepRateConstant;
 import jing.rxn.PDepReaction;
 import jing.rxn.Reaction;
 import jing.rxn.ReactionGenerator;
+import jing.rxn.ReactionLibrary;
 import jing.rxn.TemplateReactionGenerator;
 import jing.rxnSys.ConstantTM;
 import jing.rxnSys.CoreEdgeReactionModel;
@@ -270,11 +271,23 @@ public class PopulateReactions {
             if (line.toLowerCase().startsWith("primaryreactionlibrary")) {
             	rmg.readAndMakePRL(br_input);
             }
-            else {
-            	System.err.println("PopulateReactions: Could not locate the PrimaryReactionLibrary field." +
-            			"Line read was: " + line);
-            	System.exit(0);
+                        
+           else {
+              	System.err.println("PopulateReactions: Could not locate the PrimaryReactionLibrary field." +
+             			"Line read was: " + line);
+             	System.exit(0);
+             }
+            
+            line = ChemParser.readMeaningfulLine(br_input);
+            if (line.toLowerCase().startsWith("reactionlibrary")) {
+            	rmg.readAndMakeReactionLibrary(br_input);
             }
+            else {
+              	System.err.println("PopulateReactions: Could not locate the ReactionLibrary field." +
+             			"Line read was: " + line);
+             	System.exit(0);
+             }
+            
             
             /*
              * MRH 2Apr2010:
@@ -380,10 +393,14 @@ public class PopulateReactions {
             Temperature systemTemp = ((ConstantTM)tempList.get(0)).getTemperature();
 			rmg.setTemp4BestKinetics(systemTemp);
 			TemplateReactionGenerator rtLibrary = new TemplateReactionGenerator();
-			
+			ReactionLibrary  RL = rmg.getReactionLibrary();
+			LibraryReactionGenerator lrg1 =new LibraryReactionGenerator(RL);
 			// React all species with each other
-			reactions = rtLibrary.react(speciesSet);
+			//reactions = rtLibrary.react(speciesSet);
 			
+			reactions = lrg1.react(speciesSet);
+			System.out.println("Reactions From LRG"+reactions);
+			reactions.addAll(rtLibrary.react(speciesSet));
 			/*
 			 * MRH 28Feb
 			 * The next line will use the new PrimaryReactionLibrary
@@ -487,6 +504,7 @@ public class PopulateReactions {
 	        		}
 	        		if (!dupRxn) {
         				nonDuplicateRxns.add(r);
+        				// If Reaction is Not a Library Reaction
         				listOfReactions += writeOutputString(r,rtLibrary);
                 		speciesSet.addAll(r.getProductList());
 	        		}
@@ -576,7 +594,24 @@ public class PopulateReactions {
 
 		Temperature stdtemp = new Temperature(298,"K");
 		double Hrxn = r.calculateHrxn(stdtemp);
-
+		
+		// If r Reaction is from Reaction Library add it to list of reaction append its kinetics and return
+        String source = r.getKineticsSource(0);
+        if (source == null){
+    		// If source is null I am assuming that its not a Reaction from Reaction Library or Seed Mechanism
+    		source = "TemplateReaction:";
+    	}
+        StringTokenizer st = new StringTokenizer(source,":");
+    	String reaction_type = st.nextToken();
+    	if (reaction_type.equals("ReactionLibrary") ){
+    		Kinetics[] allKinetics = r.getKinetics();
+			for (int numKinetics=0; numKinetics<allKinetics.length; ++numKinetics) {
+				listOfReactions += r.toString() + "\t" + updateListOfReactions(allKinetics[numKinetics], Hrxn);
+				if (allKinetics.length != 1) listOfReactions += "\tDUP\n";
+			}
+		return 	listOfReactions;
+       	}
+        
 		if (r.isForward()) {
 			Kinetics[] allKinetics = r.getKinetics();
 			for (int numKinetics=0; numKinetics<allKinetics.length; ++numKinetics) {

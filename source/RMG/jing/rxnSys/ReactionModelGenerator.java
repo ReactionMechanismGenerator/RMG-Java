@@ -4589,7 +4589,7 @@ public class ReactionModelGenerator {
 			line = ChemParser.readMeaningfulLine(reader);
 		}
 		if (Ilib==0) {
-			setPrimaryReactionLibrary(null);
+			setReactionLibrary(null);
 		}
 		else System.out.println("New Reaction Libraries in use: " + getReactionLibrary().getName());
     }

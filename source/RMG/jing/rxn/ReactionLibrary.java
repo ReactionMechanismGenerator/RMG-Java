@@ -334,7 +334,6 @@ public class ReactionLibrary {
         			"in the Reaction Library: "  + "\n" + e.getMessage());
         }
 
-    	
     }
     
     
