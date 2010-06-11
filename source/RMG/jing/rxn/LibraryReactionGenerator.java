@@ -88,7 +88,8 @@ public class LibraryReactionGenerator implements ReactionGenerator {
         	
         	// Check if species is present in Species Set 
         	if(p_speciesSeed.contains(spe)){
-        		System.out.println("Found a Species Match"+spe);
+        		// shamel: 6/11/2010 Line for me to debug
+        		//System.out.println("Found a Species Match"+spe);
         		count_reactantcontainedinseed = count_reactantcontainedinseed +1;
         	}
         	

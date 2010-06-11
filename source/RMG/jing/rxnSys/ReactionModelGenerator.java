@@ -4026,9 +4026,11 @@ public class ReactionModelGenerator {
        	        		
    	}
    	
-   	// Print out the dupreaction set
-   	System.out.println("dupreaction_set" + dupreaction_set);
-   	
+   	// Print out the dupreaction set if not empty
+   	if(!dupreaction_set.isEmpty()){
+    	System.out.println("dupreaction_set" + dupreaction_set);
+    	}
+   	   	
    	// Return the duplicate reaction set
    	return dupreaction_set;
    }
