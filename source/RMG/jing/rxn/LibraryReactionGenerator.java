@@ -141,7 +141,7 @@ public class LibraryReactionGenerator implements ReactionGenerator {
         
     	// Check whether Reaction Library is OK or empty or the Species Set is Empty
     	
-        if (!reactionLibrary.repOk() || reactionLibrary.isEmpty() || p_speciesSeed.size()==0) {
+        if (reactionLibrary == null || !reactionLibrary.repOk() || reactionLibrary.isEmpty() || p_speciesSeed.size()==0) {
         	return reaction_set;
         }
         

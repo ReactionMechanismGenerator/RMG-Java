@@ -384,6 +384,7 @@ public class RateBasedRME implements ReactionModelEnlarger {
     	}
     	
     	// Print out the dupreaction set
+    	
     	System.out.println("dupreaction_set" + dupreaction_set);
     	
     	// Return the duplicate reaction set
