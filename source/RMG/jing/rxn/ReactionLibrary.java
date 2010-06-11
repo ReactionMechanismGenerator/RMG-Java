@@ -92,7 +92,6 @@ public class ReactionLibrary {
         	throw new IOException("Error reading New Reaction Library: " + name + '\n' + e.getMessage());
         }
         
-        
     }
     
      public  ReactionLibrary() {
@@ -126,8 +125,8 @@ public class ReactionLibrary {
          	
  			 
              String dictionaryFile = p_directoryName + "species.txt";
-             String libraryFile = p_directoryName + "reaction.txt";
-             String pdeplibraryFile = p_directoryName + "pdepreaction.txt";
+             String libraryFile = p_directoryName + "reactions.txt";
+             String pdeplibraryFile = p_directoryName + "pdepreactions.txt";
             // Read in Dictionary File, species list
              readDictionary(dictionaryFile);
             // Read in Non Pdep Reactions  
@@ -139,13 +138,9 @@ public class ReactionLibrary {
          catch (Exception e) {
          	throw new IOException("Can't read New reaction library.\n" + e.getMessage());
          }
-         
-         
      }
 
-          
-   
-    
+
     public void readPdepReactions(String pdepFileName) throws IOException {
     	// shamel As of 6/10/2010 This function is EXACTLY like the seed mechanism function
     	// Created by M.R.Harper and I am keeping  some of his comments below which will match with 
@@ -335,7 +330,7 @@ public class ReactionLibrary {
 			 * 		troe reactions.  In the instance that no "troeReactions.txt" file exists, inform
 			 * 		user of this but continue simulation.
 			 */
-        	System.out.println("RMG did not find/read pressure-dependent reactions (PdepLibrary.txt) " +
+        	System.out.println("RMG did not find/read pressure-dependent reactions ("+pdepFileName+") " +
         			"in the Reaction Library: "  + "\n" + e.getMessage());
         }
 
@@ -445,9 +440,6 @@ public class ReactionLibrary {
         			+ p_reactionFileName);
         }
     }
-
-    
-    
     
     private HashMap readDictionary(String p_fileName) throws FileNotFoundException, IOException{
     	  //Function to read in dictionary file
@@ -542,7 +534,6 @@ public class ReactionLibrary {
         }
         
         return true;
-        //#]
     }
 
     /**
@@ -552,19 +543,12 @@ public class ReactionLibrary {
     */
     
     public boolean isEmpty() {
-        
         return (size() == 0);
-        
-        
-        
-        
     }
     
     
     public void removeLibraryReaction(LibraryReaction p_LibraryReaction) {
-        
         library.remove(p_LibraryReaction);
-        
     }
     
  
