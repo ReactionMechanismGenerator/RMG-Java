@@ -440,68 +440,52 @@ public class ReactionLibrary {
         }
     }
     
-    private HashMap readDictionary(String p_fileName) throws FileNotFoundException, IOException{
-    	  //Function to read in dictionary file
-    	  try{
-    	    FileReader in = new FileReader(p_fileName);
-    	    BufferedReader data = new BufferedReader(in);
-
-    	    String line = ChemParser.readMeaningfulLine(data);
-
-    	    read: while(line != null){
-    	      StringTokenizer st = new StringTokenizer(line);
-    	      String name = st.nextToken();
-
-    	      data.mark(10000);
-    	      line = ChemParser.readMeaningfulLine(data);
-    	      if (line == null) break read;
-    	      line = line.trim();
-    	      data.reset();
-    	      Graph graph = null;
-
-    	        graph = ChemParser.readChemGraph(data);
-    	        if (graph == null) throw new InvalidChemGraphException(name);
-        		ChemGraph cg ;
-        		Species spe  ;
-				try {
-					cg = ChemGraph.make(graph);
-					spe = Species.make(name, cg);
-					
-					Object old = dictionary.get(name);
-		    	      if (old == null){
-		    	        dictionary.put(name, spe);
-		    	      }
-		    	      else{
-		    	        Species oldGraph = (Species)old;
-		    	        if (!oldGraph.getChemGraph().getGraph().equals(graph)) {
-		    	          System.out.println("Can't replace graph in Reaction Library!");
-		    	          System.exit(0);
-		    	        }
-		    	    }
-					
-				} catch (InvalidChemGraphException e) {
-					System.err.println("The graph \n" + graph.toString() + " is not valid");
-					e.printStackTrace();
-				} catch (ForbiddenStructureException e) {
-					System.err.println("The graph \n" + graph.toString() + " is a forbidden structure");
-					e.printStackTrace();
-				}	
-        		
-    	      
-    	      line = ChemParser.readMeaningfulLine(data);
-    	    }
-    	    in.close();
-    	    return dictionary;
-    	  }
-    	  catch (FileNotFoundException e){
-    	      throw new FileNotFoundException(p_fileName);
-    	  }
-    	  catch (IOException e){
-    	    throw new IOException(p_fileName + ":" + e.getMessage());
-    	  }
-    	  
-    	}
     
+    public void readDictionary(String p_speciesFileName) throws IOException {
+    	// shamel As of 6/11/2010 This function is EXACTLY like the seed mechanism function
+    	// Created by M.R.Harper and I am keeping  some of his comments below which will match with 
+    	// seed mechanism function
+    
+        try {
+        	FileReader in = new FileReader(p_speciesFileName);
+        	BufferedReader data = new BufferedReader(in);
+        	
+        	// step 1: read in structure
+        	String line = ChemParser.readMeaningfulLine(data);
+        	read: while (line != null) {
+        		// Allow unreactive species
+        		StringTokenizer st = new StringTokenizer(line);
+				String name = st.nextToken().trim();
+				boolean IsReactive = true;
+				if (st.hasMoreTokens()) {
+					String reactive = st.nextToken().trim();
+					if ( reactive.equalsIgnoreCase("unreactive") ) IsReactive = false;
+				}
+            	Graph graph;
+        		try {
+        			graph = ChemParser.readChemGraph(data);
+					if (graph == null) throw new IOException("Graph was null");
+        		}
+        		catch (IOException e) {
+        			throw new InvalidChemGraphException("Cannot read species '" + name + "': " + e.getMessage());
+        		}
+				ChemGraph cg = ChemGraph.make(graph);	
+        		Species spe = Species.make(name, cg);
+        		//  Turn off reactivity if necessary, but don't let code turn it on
+        		// again if was already set as unreactive from input file
+        		if(IsReactive==false) spe.setReactivity(IsReactive);
+        		dictionary.put(name, spe);
+        		line = ChemParser.readMeaningfulLine(data);
+        	}
+        	   
+            in.close();
+        	return;
+        }
+        catch (Exception e) {
+			throw new IOException("RMG cannot read the \"species.txt\" file in the Seed Mechanism\n" + e.getMessage());
+        }
+    }
+
  
     // clearLibraryReaction() 
     public void clearLibraryReaction() {
