@@ -79,7 +79,7 @@ program fame
     if (model == 1) then
         write (1,fmt='(A)') 'Fitting Chebyshev interpolation model...'
         do i = 1, nIsom+nReac+nProd
-            do j = 1, nIsom+nReac+nProd
+            do j = 1, nIsom+nReac
                 if (i /= j) then
                     call fitChebyshevModel(K(:,:,i,j), Tlist, Plist, modelOptions(1), modelOptions(2), chebyshevCoeffs(:,:,i,j))
                 end if
@@ -88,7 +88,7 @@ program fame
     elseif (model == 2) then
         write (1,fmt='(A)') 'Fitting PDepArrhenius interpolation model...'
         do i = 1, nIsom+nReac+nProd
-            do j = 1, nIsom+nReac+nProd
+            do j = 1, nIsom+nReac
                 if (i /= j) then
                     call fitPDepArrheniusModel(K(:,:,i,j), Tlist, Plist, pDepArrhenius(:,i,j))
                 end if
