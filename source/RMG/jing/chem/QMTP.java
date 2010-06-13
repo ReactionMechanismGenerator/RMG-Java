@@ -1353,11 +1353,83 @@ public class QMTP implements GeneralGAPP {
         }
 	///////////end of block taken from the bulk of getPM3MM4ThermoDataUsingCCLib////////////
 	//2. compute H0;  note that we will pass H0 to CanTherm by H0=H298(harmonicMM4)-(H298-H0)harmonicMM4, where harmonicMM4 values come from cclib parsing and since it is enthalpy, it should not be NaN due to zero frequencies
+	//*** to be written
 	//3. write CanTherm input file
+	String canInp = "ThermoMM4\n";//***special MM4 treatment in CanTherm;
+	canInp += "Trange 300 100 13\n";//temperatures from 300 to 1500 in increments of 100
+	canInp += "Scale: 1.0\n";//scale factor of 1
+	canInp += "Mol 1\n";
+	if(p_chemGraph.getAtomNumber()==1) canInp += "ATOM\n";
+	else if (p_chemGraph.isLinear()) canInp+="LINEAR\n";
+	else canInp+="NONLINEAR\n";
+	canInp += "GEOM File " + name+".mm4ou\n";//geometry file; ***special MM4 treatment in CanTherm; another option would be to use mm4opt file, but CanTherm code would need to be modified accordingly
+	canInp += "FORCEC File "+name+".fmat\n";//force constant file; ***special MM4 treatment in CanTherm
+	canInp += "ENERGY "+ energy +" MM4\n";//***special MM4 treatment in CanTherm
+	canInp+="EXTSYM 1\n";//use external symmetry of 1; it will be corrected for below
+	canInp+="NELEC 1\n";//multiplicity = 1; all cases we consider will be non-radicals
+	if(!useHindRot) canInp += "ROTORS 0\n";//do not consider hindered rotors
+	else{
+	    //this section still needs to be written
+	    canInp+="";
+	}
+	try{
+            File canFile=new File(directory+"/"+name+".can");
+            FileWriter fw = new FileWriter(canFile);
+            fw.write(canInp);
+            fw.close();
+        }
+        catch(Exception e){
+            String err = "Error in writing CanTherm input \n";
+            err += e.toString();
+            e.printStackTrace();
+            System.exit(0);
+        }
 	//4. call CanTherm
-	//5. read in CanTherm output
-	//6. correct the output for symmetry number (everything has been assumed to be one) : useHindRot=true case: use ChemGraph symmetry number; otherwise, we use SYMMETRY
+	try{
+	    File runningDirectory = new File(qmfolder);
+            String canCommand="python " + System.getenv("RMG")+"/source/CanTherm/CanTherm.py"+name+".can";
+	    Process canProc = Runtime.getRuntime().exec(canCommand, null, runningDirectory);
 
+	    InputStream is = canProc.getInputStream();
+	    InputStreamReader isr = new InputStreamReader(is);
+	    BufferedReader br = new BufferedReader(isr);
+	    String line=null;
+	    while ( (line = br.readLine()) != null) {
+		//do nothing
+	    }
+
+            int exitValue = canProc.waitFor();
+        }
+        catch(Exception e){
+            String err = "Error in running CanTherm process \n";
+            err += e.toString();
+            e.printStackTrace();
+            System.exit(0);
+        }
+	//5. read in CanTherm output
+	try{
+            File outFile=new File(directory+"/cantherm.out");
+            FileReader in = new FileReader(outFile);
+            BufferedReader reader = new BufferedReader(in);
+            String line=reader.readLine();
+                while(line!=null){
+		    line=reader.readLine();//****needs to be updated once I figure out what output looks like
+		}
+        }
+        catch(Exception e){
+            String err = "Error in reading CanTherm output \n";
+            err += e.toString();
+            e.printStackTrace();
+            System.exit(0);
+        }
+	//6. correct the output for symmetry number (everything has been assumed to be one) : useHindRot=true case: use ChemGraph symmetry number; otherwise, we use SYMMETRY
+	//*** to be written
+	if(!useHindRot){
+
+	}
+	else{
+
+	}
 	ThermoData result = getPM3MM4ThermoDataUsingCCLib(name, directory, p_chemGraph, command);
         System.out.println("Thermo for " + name + ": "+ result.toString());//print result, at least for debugging purposes
         return result;
