@@ -4,3 +4,6 @@
 [submodule "source/MoleCoor"]
 	path = source/MoleCoor
 	url = git://github.com/gmagoon/MoleCoor.git
+[submodule "source/CanTherm"]
+	path = source/CanTherm
+	url = git://github.com/gmagoon/CanTherm.git
