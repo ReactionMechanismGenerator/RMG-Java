@@ -1355,15 +1355,15 @@ public class QMTP implements GeneralGAPP {
 	//2. compute H0;  note that we will pass H0 to CanTherm by H0=H298(harmonicMM4)-(H298-H0)harmonicMM4, where harmonicMM4 values come from cclib parsing and since it is enthalpy, it should not be NaN due to zero frequencies
 	//*** to be written
 	//3. write CanTherm input file
-	String canInp = "ThermoMM4\n";//***special MM4 treatment in CanTherm;
+	String canInp = "Thermo\n";
 	canInp += "Trange 300 100 13\n";//temperatures from 300 to 1500 in increments of 100
 	canInp += "Scale: 1.0\n";//scale factor of 1
 	canInp += "Mol 1\n";
 	if(p_chemGraph.getAtomNumber()==1) canInp += "ATOM\n";
 	else if (p_chemGraph.isLinear()) canInp+="LINEAR\n";
 	else canInp+="NONLINEAR\n";
-	canInp += "GEOM File " + name+".mm4ou\n";//geometry file; ***special MM4 treatment in CanTherm; another option would be to use mm4opt file, but CanTherm code would need to be modified accordingly
-	canInp += "FORCEC File "+name+".fmat\n";//force constant file; ***special MM4 treatment in CanTherm
+	canInp += "GEOM MM4File " + name+".mm4out\n";//geometry file; ***special MM4 treatment in CanTherm; another option would be to use mm4opt file, but CanTherm code would need to be modified accordingly
+	canInp += "FORCEC MM4File "+name+".fmat\n";//force constant file; ***special MM4 treatment in CanTherm
 	canInp += "ENERGY "+ energy +" MM4\n";//***special MM4 treatment in CanTherm
 	canInp+="EXTSYM 1\n";//use external symmetry of 1; it will be corrected for below
 	canInp+="NELEC 1\n";//multiplicity = 1; all cases we consider will be non-radicals
@@ -1387,7 +1387,7 @@ public class QMTP implements GeneralGAPP {
 	//4. call CanTherm
 	try{
 	    File runningDirectory = new File(qmfolder);
-            String canCommand="python " + System.getenv("RMG")+"/source/CanTherm/CanTherm.py"+name+".can";
+            String canCommand="python " + System.getenv("RMG")+"/source/CanTherm/source/CanTherm.py"+name+".can";
 	    Process canProc = Runtime.getRuntime().exec(canCommand, null, runningDirectory);
 
 	    InputStream is = canProc.getInputStream();
@@ -1407,6 +1407,7 @@ public class QMTP implements GeneralGAPP {
             System.exit(0);
         }
 	//5. read in CanTherm output
+	double S298 = 0;
 	try{
             File outFile=new File(directory+"/cantherm.out");
             FileReader in = new FileReader(outFile);
@@ -1423,12 +1424,19 @@ public class QMTP implements GeneralGAPP {
             System.exit(0);
         }
 	//6. correct the output for symmetry number (everything has been assumed to be one) : useHindRot=true case: use ChemGraph symmetry number; otherwise, we use SYMMETRY
-	//*** to be written
 	if(!useHindRot){
-
+	    double R = 1.9872; //ideal gas constant in cal/mol-K (does this appear elsewhere in RMG, so I don't need to reuse it?)
+	    //determine point group using the SYMMETRY Program
+	    String geom = natoms + "\n";
+	    for(int i=0; i < natoms; i++){
+		geom += atomicNumber.get(i) + " "+ x_coor.get(i) + " " + y_coor.get(i) + " " +z_coor.get(i) + "\n";
+	    }
+	    String pointGroup = determinePointGroupUsingSYMMETRYProgram(geom);
+	    double sigmaCorr = getSigmaCorr(pointGroup);
+	    S298+= R*sigmaCorr;
 	}
 	else{
-
+	    //***to be written
 	}
 	ThermoData result = getPM3MM4ThermoDataUsingCCLib(name, directory, p_chemGraph, command);
         System.out.println("Thermo for " + name + ": "+ result.toString());//print result, at least for debugging purposes
@@ -1600,7 +1608,49 @@ public class QMTP implements GeneralGAPP {
         if (pointGroup.equals("Cinfv")||pointGroup.equals("Dinfh")) linearity=true;//determine linearity from 3D-geometry; changed to correctly consider linear ketene radical case
         //we will use number of atoms from above (alternatively, we could use the chemGraph); this is needed to test whether the species is monoatomic
         double Hf298, S298, Cp300, Cp400, Cp500, Cp600, Cp800, Cp1000, Cp1500;
-        double sigmaCorr=0;//statistical correction for S in dimensionless units (divided by R)
+	double sigmaCorr = getSigmaCorr(pointGroup);
+        Hf298 = energy*Hartree_to_kcal;
+        S298 = R*Math.log(gdStateDegen)+R*(3./2.*Math.log(2.*Math.PI*molmass/(1000.*Na*Math.pow(h,2.)))+5./2.*Math.log(k*298.15)-Math.log(100000.)+5./2.);//electronic + translation; note use of 10^5 Pa for standard pressure; also note that molecular mass needs to be divided by 1000 for kg units
+        Cp300 = 5./2.*R;
+        Cp400 = 5./2.*R;
+        Cp500 = 5./2.*R;
+        Cp600 = 5./2.*R;
+        Cp800 = 5./2.*R;
+        Cp1000 = 5./2.*R;
+        Cp1500 = 5./2.*R;
+        if(natoms>1){//include statistical correction and rotational (without symmetry number, vibrational contributions if species is polyatomic
+            if(linearity){//linear case
+                //determine the rotational constant (note that one of the rotcons will be zero)
+                double rotCons;
+                if(rotCons_1 > 0.0001) rotCons = rotCons_1;
+                else rotCons = rotCons_2;
+                S298 += R*sigmaCorr+R*(Math.log(k*298.15/(h*rotCons))+1)+R*calcVibS(freqs, 298.15, h, k, c);
+                Cp300 += R + R*calcVibCp(freqs, 300., h, k, c); 
+                Cp400 += R + R*calcVibCp(freqs, 400., h, k, c);
+                Cp500 += R + R*calcVibCp(freqs, 500., h, k, c);
+                Cp600 += R + R*calcVibCp(freqs, 600., h, k, c);
+                Cp800 += R + R*calcVibCp(freqs, 800., h, k, c);
+                Cp1000 += R + R*calcVibCp(freqs, 1000., h, k, c);
+                Cp1500 += R + R*calcVibCp(freqs, 1500., h, k, c);
+            }
+            else{//nonlinear case
+                S298 += R*sigmaCorr+R*(3./2.*Math.log(k*298.15/h)-1./2.*Math.log(rotCons_1*rotCons_2*rotCons_3/Math.PI)+3./2.)+R*calcVibS(freqs, 298.15, h, k, c);
+                Cp300 += 3./2.*R + R*calcVibCp(freqs, 300., h, k, c);
+                Cp400 += 3./2.*R + R*calcVibCp(freqs, 400., h, k, c);
+                Cp500 += 3./2.*R + R*calcVibCp(freqs, 500., h, k, c);
+                Cp600 += 3./2.*R + R*calcVibCp(freqs, 600., h, k, c);
+                Cp800 += 3./2.*R + R*calcVibCp(freqs, 800., h, k, c);
+                Cp1000 += 3./2.*R + R*calcVibCp(freqs, 1000., h, k, c);
+                Cp1500 += 3./2.*R + R*calcVibCp(freqs, 1500., h, k, c);
+            }
+        }
+        ThermoData result = new ThermoData(Hf298,S298,Cp300,Cp400,Cp500,Cp600,Cp800,Cp1000,Cp1500,5,1,1,"PM3 calculation");//this includes rough estimates of uncertainty
+        return result;
+    }
+
+    //gets the statistical correction for S in dimensionless units (divided by R)
+    public double getSigmaCorr(String pointGroup){
+        double sigmaCorr=0;
         //determine statistical correction factor for 1. external rotational symmetry (affects rotational partition function) and 2. chirality (will add R*ln2 to entropy) based on point group
         //ref: http://cccbdb.nist.gov/thermo.asp
         //assumptions below for Sn, T, Th, O, I seem to be in line with expectations based on order reported at: http://en.wikipedia.org/w/index.php?title=List_of_character_tables_for_chemically_important_3D_point_groups&oldid=287261611 (assuming order = symmetry number * 2 (/2 if chiral))...this appears to be true for all point groups I "know" to be correct
@@ -1667,46 +1717,9 @@ public class QMTP implements GeneralGAPP {
             System.out.println("Unrecognized point group: "+ pointGroup);
             System.exit(0);
         }
-        Hf298 = energy*Hartree_to_kcal;
-        S298 = R*Math.log(gdStateDegen)+R*(3./2.*Math.log(2.*Math.PI*molmass/(1000.*Na*Math.pow(h,2.)))+5./2.*Math.log(k*298.15)-Math.log(100000.)+5./2.);//electronic + translation; note use of 10^5 Pa for standard pressure; also note that molecular mass needs to be divided by 1000 for kg units
-        Cp300 = 5./2.*R;
-        Cp400 = 5./2.*R;
-        Cp500 = 5./2.*R;
-        Cp600 = 5./2.*R;
-        Cp800 = 5./2.*R;
-        Cp1000 = 5./2.*R;
-        Cp1500 = 5./2.*R;
-        if(natoms>1){//include statistical correction and rotational (without symmetry number, vibrational contributions if species is polyatomic
-            if(linearity){//linear case
-                //determine the rotational constant (note that one of the rotcons will be zero)
-                double rotCons;
-                if(rotCons_1 > 0.0001) rotCons = rotCons_1;
-                else rotCons = rotCons_2;
-                S298 += R*sigmaCorr+R*(Math.log(k*298.15/(h*rotCons))+1)+R*calcVibS(freqs, 298.15, h, k, c);
-                Cp300 += R + R*calcVibCp(freqs, 300., h, k, c); 
-                Cp400 += R + R*calcVibCp(freqs, 400., h, k, c);
-                Cp500 += R + R*calcVibCp(freqs, 500., h, k, c);
-                Cp600 += R + R*calcVibCp(freqs, 600., h, k, c);
-                Cp800 += R + R*calcVibCp(freqs, 800., h, k, c);
-                Cp1000 += R + R*calcVibCp(freqs, 1000., h, k, c);
-                Cp1500 += R + R*calcVibCp(freqs, 1500., h, k, c);
-            }
-            else{//nonlinear case
-                S298 += R*sigmaCorr+R*(3./2.*Math.log(k*298.15/h)-1./2.*Math.log(rotCons_1*rotCons_2*rotCons_3/Math.PI)+3./2.)+R*calcVibS(freqs, 298.15, h, k, c);
-                Cp300 += 3./2.*R + R*calcVibCp(freqs, 300., h, k, c);
-                Cp400 += 3./2.*R + R*calcVibCp(freqs, 400., h, k, c);
-                Cp500 += 3./2.*R + R*calcVibCp(freqs, 500., h, k, c);
-                Cp600 += 3./2.*R + R*calcVibCp(freqs, 600., h, k, c);
-                Cp800 += 3./2.*R + R*calcVibCp(freqs, 800., h, k, c);
-                Cp1000 += 3./2.*R + R*calcVibCp(freqs, 1000., h, k, c);
-                Cp1500 += 3./2.*R + R*calcVibCp(freqs, 1500., h, k, c);
-            }
-        }
-        ThermoData result = new ThermoData(Hf298,S298,Cp300,Cp400,Cp500,Cp600,Cp800,Cp1000,Cp1500,5,1,1,"PM3 calculation");//this includes rough estimates of uncertainty
-        return result;
-    }
-    
-    
+	
+	return sigmaCorr;
+}
     
     
     //determine the point group using the SYMMETRY program (http://www.cobalt.chem.ucalgary.ca/ps/symmetry/)
