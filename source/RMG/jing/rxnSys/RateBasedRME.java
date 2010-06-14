@@ -256,6 +256,9 @@ public class RateBasedRME implements ReactionModelEnlarger {
             // Remove the duplicate reaction from reaction set
                reaction_set.removeAll(dupreaction_set);
             
+            // If duplicate reaction set was not empty 
+               if(!dupreaction_set.isEmpty()){
+  
             // Add current reaction to duplicate set and from among this choose reaction according to
             // following hierarchy Seed > Reaction Library > Template. Add that reaction to the newreaction_set
                
@@ -267,6 +270,12 @@ public class RateBasedRME implements ReactionModelEnlarger {
                
             // Add all the Reactions to be kept to new_reaction set     
                newreaction_set.addAll(reaction_toadd);
+               }
+               else{
+            	   // If no duplicate reaction was found add the current reaction to the newreaction set
+            	   newreaction_set.add(current_reaction);
+               }
+               
                
             // Need to change iterate over counter here 
                iter_reaction =reaction_set.iterator();

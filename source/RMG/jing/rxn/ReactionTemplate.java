@@ -627,7 +627,8 @@ public class ReactionTemplate {
 				  return rxn.getKinetics();
 			  }
 		  }
-	  }
+		
+   }
 	  return null;
   }
   
