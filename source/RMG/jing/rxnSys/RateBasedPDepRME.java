@@ -238,6 +238,15 @@ public class RateBasedPDepRME implements ReactionModelEnlarger {
 					cerm.moveFromUnreactedToReactedSpecies(maxSpecies);
 					cerm.moveFromUnreactedToReactedReaction();
 
+					// Adding a species to the core automatically makes it included in all networks it is contained in
+					for (Iterator iter = PDepNetwork.getNetworks().iterator(); iter.hasNext(); ) {
+						PDepNetwork pdn = (PDepNetwork) iter.next();
+						if (pdn.contains(maxSpecies)) {
+							PDepIsomer isom = pdn.getIsomer(maxSpecies);
+							isom.setIncluded(true);
+						}
+					}
+
 					// Generate new reaction set; partition into core and edge
 					LinkedHashSet newReactionSet = rxnSystem.getReactionGenerator().react(cerm.getReactedSpeciesSet(),maxSpecies);
 					newReactionSet.addAll(rxnSystem.getLibraryReactionGenerator().react(cerm.getReactedSpeciesSet(),maxSpecies));
