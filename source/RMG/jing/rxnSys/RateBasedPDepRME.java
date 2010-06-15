@@ -279,7 +279,16 @@ public class RateBasedPDepRME implements ReactionModelEnlarger {
 					System.out.println("\nAdd a new included Species: " + isomer.toString() +
 							" to network " + maxNetwork.getID());
 
-					maxNetwork.makeIsomerIncluded(isomer);
+					// Making a species included in one network automatically makes it included in all networks it is contained in
+					for (Iterator iter = PDepNetwork.getNetworks().iterator(); iter.hasNext(); ) {
+						PDepNetwork pdn = (PDepNetwork) iter.next();
+						if (pdn.contains(isomer.getSpecies(0))) {
+							PDepIsomer isom = pdn.getIsomer(isomer.getSpecies(0));
+							maxNetwork.makeIsomerIncluded(isomer);
+						}
+					}
+
+					//maxNetwork.makeIsomerIncluded(isomer);
 				}
 				catch (PDepException e) {
 					e.printStackTrace();
