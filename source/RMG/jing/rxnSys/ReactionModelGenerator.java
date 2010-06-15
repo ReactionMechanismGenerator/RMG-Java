@@ -67,7 +67,7 @@ public class ReactionModelGenerator {
     protected LinkedList initialStatusList; //10/23/07 gmagoon: changed from initialStatus to initialStatusList
     protected double rtol;//svp
     protected static double atol;
-    protected PrimaryReactionLibrary primaryReactionLibrary;//9/24/07 gmagoon
+    protected PrimaryKineticLibrary primaryKineticLibrary;//9/24/07 gmagoon
     protected ReactionLibrary ReactionLibrary;
     protected ReactionModelEnlarger reactionModelEnlarger;//9/24/07 gmagoon
     protected LinkedHashSet speciesSeed;//9/24/07 gmagoon;
@@ -149,7 +149,7 @@ public class ReactionModelGenerator {
         	//DynamicSimulator dynamicSimulator = null;//10/27/07 gmagoon: commented out and replaced with following line
 			LinkedList dynamicSimulatorList = new LinkedList();
         	//PrimaryReactionLibrary primaryReactionLibrary = null;//10/14/07 gmagoon: see below
-			setPrimaryReactionLibrary(null);//10/14/07 gmagoon: changed to use setPrimaryReactionLibrary
+			setPrimaryKineticLibrary(null);//10/14/07 gmagoon: changed to use setPrimaryReactionLibrary
         	double [] conversionSet = new double[50];
 			String line = ChemParser.readMeaningfulLine(reader);
         	/*if (line.startsWith("Restart")){
@@ -1014,14 +1014,14 @@ public class ReactionModelGenerator {
 			
         	// read in reaction model enlarger
 			
-        	/* Read in the Primary Reaction Library
-        	 *  The user can specify as many PRLs,
+        	/* Read in the Primary Kinetic Library
+        	 *  The user can specify as many PKLs,
         	 * 	including none, as they like.
         	 */        	
         	line = ChemParser.readMeaningfulLine(reader);
-			if (line.startsWith("PrimaryReactionLibrary:")) {
-				readAndMakePRL(reader);
-			} else throw new InvalidSymbolException("condition.txt: can't find PrimaryReactionLibrary");
+			if (line.startsWith("PrimaryKineticLibrary:")) {
+				readAndMakePKL(reader);
+			} else throw new InvalidSymbolException("condition.txt: can't find PrimaryKineticLibrary");
 			
 			// Reaction Library 
 			line = ChemParser.readMeaningfulLine(reader);
@@ -1228,7 +1228,7 @@ public class ReactionModelGenerator {
 					
 					FinishController fc = new FinishController(finishController.getTerminationTester(), finishController.getValidityTester());//10/31/07 gmagoon: changed to create new finishController instance in each case (apparently, the finish controller becomes associated with reactionSystem in setFinishController within ReactionSystem); alteratively, could use clone, but might need to change FinishController to be "cloneable"
 					// FinishController fc = new FinishController(termTestCopy, finishController.getValidityTester());
-					reactionSystemList.add(new ReactionSystem(tm, pm, reactionModelEnlarger, fc, ds, getPrimaryReactionLibrary(), getReactionGenerator(), getSpeciesSeed(), is, getReactionModel(),lrg, i, equationOfState)); 
+					reactionSystemList.add(new ReactionSystem(tm, pm, reactionModelEnlarger, fc, ds, getPrimaryKineticLibrary(), getReactionGenerator(), getSpeciesSeed(), is, getReactionModel(),lrg, i, equationOfState)); 
 					i++;//10/30/07 gmagoon: added
 					System.out.println("Created reaction system "+i+"\n");
 				}
@@ -4044,18 +4044,18 @@ public class ReactionModelGenerator {
    }
 
 
-	//## operation initializeCoreEdgeModelWithPRL()
+	
     //9/24/07 gmagoon: moved from ReactionSystem.java
-    public void initializeCoreEdgeModelWithPRL() {
-        //#[ operation initializeCoreEdgeModelWithPRL()
-        initializeCoreEdgeModelWithoutPRL();
+    public void initializeCoreEdgeModelWithPKL() {
+        
+        initializeCoreEdgeModelWithoutPKL();
 		
         CoreEdgeReactionModel cerm = (CoreEdgeReactionModel)getReactionModel();
 		
-        LinkedHashSet primarySpeciesSet = getPrimaryReactionLibrary().getSpeciesSet(); //10/14/07 gmagoon: changed to use getPrimaryReactionLibrary
-        LinkedHashSet primaryReactionSet = getPrimaryReactionLibrary().getReactionSet();
+        LinkedHashSet primarySpeciesSet = getPrimaryKineticLibrary().getSpeciesSet(); //10/14/07 gmagoon: changed to use getPrimaryReactionLibrary
+        LinkedHashSet primaryKineticSet = getPrimaryKineticLibrary().getReactionSet();
         cerm.addReactedSpeciesSet(primarySpeciesSet);
-        cerm.addPrimaryReactionSet(primaryReactionSet);
+        cerm.addPrimaryKineticSet(primaryKineticSet);
 		
         LinkedHashSet newReactions = getReactionGenerator().react(cerm.getReactedSpeciesSet());
         
@@ -4082,10 +4082,10 @@ public class ReactionModelGenerator {
         //#]
     }
 	
-    //## operation initializeCoreEdgeModelWithoutPRL()
+    
     //9/24/07 gmagoon: moved from ReactionSystem.java
-    protected void initializeCoreEdgeModelWithoutPRL() {
-        //#[ operation initializeCoreEdgeModelWithoutPRL()
+    protected void initializeCoreEdgeModelWithoutPKL() {
+       
 		
 		CoreEdgeReactionModel cerm = new CoreEdgeReactionModel(new LinkedHashSet(getSpeciesSeed()));
 		setReactionModel(cerm);
@@ -4452,9 +4452,9 @@ public class ReactionModelGenerator {
 		return false;
     }
     
-    public boolean hasPrimaryReactionLibrary() {
-        if (primaryReactionLibrary == null) return false;
-        return (primaryReactionLibrary.size() > 0);
+    public boolean hasPrimaryKineticLibrary() {
+        if (primaryKineticLibrary == null) return false;
+        return (primaryKineticLibrary.size() > 0);
     }
     
     public boolean hasSeedMechanisms() {
@@ -4463,13 +4463,13 @@ public class ReactionModelGenerator {
     }
     
     //9/25/07 gmagoon: moved from ReactionSystem.java
-    public PrimaryReactionLibrary getPrimaryReactionLibrary() {
-        return primaryReactionLibrary;
+    public PrimaryKineticLibrary getPrimaryKineticLibrary() {
+        return primaryKineticLibrary;
     }
 	
     //9/25/07 gmagoon: moved from ReactionSystem.java
-    public void setPrimaryReactionLibrary(PrimaryReactionLibrary p_PrimaryReactionLibrary) {
-        primaryReactionLibrary = p_PrimaryReactionLibrary;
+    public void setPrimaryKineticLibrary(PrimaryKineticLibrary p_PrimaryKineticLibrary) {
+        primaryKineticLibrary = p_PrimaryKineticLibrary;
     }
     
     public ReactionLibrary getReactionLibrary() {
@@ -4547,7 +4547,7 @@ public class ReactionModelGenerator {
 	return false; //return false if none of the above criteria are met
     }
     
-    public void readAndMakePRL(BufferedReader reader) throws IOException {
+    public void readAndMakePKL(BufferedReader reader) throws IOException {
     	int Ilib = 0;
     	String line = ChemParser.readMeaningfulLine(reader);
     	while (!line.equals("END")) {
@@ -4560,19 +4560,19 @@ public class ReactionModelGenerator {
 			String path = System.getProperty("jing.rxn.ReactionLibrary.pathName");
 			path += "/" + location;
 			if (Ilib==0) {
-				setPrimaryReactionLibrary(new PrimaryReactionLibrary(name, path));
+				setPrimaryKineticLibrary(new PrimaryKineticLibrary(name, path));
 				Ilib++; 	
 			}
 			else {
-				getPrimaryReactionLibrary().appendPrimaryReactionLibrary(name, path);
+				getPrimaryKineticLibrary().appendPrimaryKineticLibrary(name, path);
 				Ilib++;
 			}
 			line = ChemParser.readMeaningfulLine(reader);
 		}
 		if (Ilib==0) {
-			setPrimaryReactionLibrary(null);
+			setPrimaryKineticLibrary(null);
 		}
-		else System.out.println("Primary Reaction Libraries in use: " + getPrimaryReactionLibrary().getName());
+		else System.out.println("Primary Kinetic Libraries in use: " + getPrimaryKineticLibrary().getName());
     }
     
 

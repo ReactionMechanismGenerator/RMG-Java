@@ -92,9 +92,9 @@ public interface Kinetics {
 	
 	void setComments(String p_string);
 	
-	void setFromPrimaryReactionLibrary(boolean p_boolean);
+	void setFromPrimaryKineticLibrary(boolean p_boolean);
 	
-	boolean getFromPrimaryReactionLibrary();
+	boolean getFromPrimaryKineticLibrary();
     
     //## operation multiply(double) 
     Kinetics multiply(double p_multiple);

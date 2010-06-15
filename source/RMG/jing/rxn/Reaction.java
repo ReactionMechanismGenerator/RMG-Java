@@ -77,7 +77,7 @@ public class Reaction {
   protected String ChemkinString = null;
   protected boolean ratesForKineticsAndAdditionalKineticsCross = false; //10/29/07 gmagoon: added variable to keep track of whether both rate constants are maximum for some temperature in the temperature range
   
-  protected boolean kineticsFromPrimaryReactionLibrary = false;
+  protected boolean kineticsFromPrimaryKineticLibrary = false;
   protected ReactionTemplate rxnTemplate;
   // Constructors
 
@@ -194,7 +194,7 @@ public class Reaction {
 	 *  If the kinetics were estimated by RMG, the pre-exponential factor must
 	 *  	be multiplied by the "redundancy" (# of events)
 	 */
-	if (kineticsFromPrimaryReactionLibrary) {
+	if (kineticsFromPrimaryKineticLibrary) {
 		Kinetics[] k_All = kinetics;
 		for (int numKinetics=0; numKinetics<kinetics.length; numKinetics++) {
 			Kinetics k = k_All[numKinetics];
@@ -879,7 +879,7 @@ public class Reaction {
 	   * 		The Arrhenius parameters would be for the overall decomposition of CH4,
 	   * 		not for each carbon-hydrogen bond fission
 	   */
-	  if (isFromPrimaryReactionLibrary()) {
+	  if (isFromPrimaryKineticLibrary()) {
 		  return kinetics;
 	  }
       if (isForward()) {
@@ -1658,12 +1658,12 @@ public class Reaction {
 			return 0.0;
 	}
 	
-	public boolean isFromPrimaryReactionLibrary() {
-		return kineticsFromPrimaryReactionLibrary;
+	public boolean isFromPrimaryKineticLibrary() {
+		return kineticsFromPrimaryKineticLibrary;
 	}
 	
-	public void setIsFromPrimaryReactionLibrary(boolean p_boolean) {
-		kineticsFromPrimaryReactionLibrary = p_boolean;
+	public void setIsFromPrimaryKineticLibrary(boolean p_boolean) {
+		kineticsFromPrimaryKineticLibrary = p_boolean;
 	}
 	
 	public ReactionTemplate getReactionTemplate() {

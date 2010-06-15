@@ -68,7 +68,7 @@ public class ArrheniusKinetics implements Kinetics {
      * 		it first checks if the rxn/structure of interest has kinetics
      * 		from a PRL.  If so, it will use those numbers.
      */
-    protected boolean fromPrimaryReactionLibrary;
+    protected boolean fromPrimaryKineticLibrary;
     
     protected static boolean verbose = false;
     
@@ -379,12 +379,12 @@ public class ArrheniusKinetics implements Kinetics {
 		comment = p_comments;
 	}
 	
-	public void setFromPrimaryReactionLibrary(boolean p_boolean) {
-		fromPrimaryReactionLibrary = p_boolean;
+	public void setFromPrimaryKineticLibrary(boolean p_boolean) {
+		fromPrimaryKineticLibrary = p_boolean;
 	}
 	
-	public boolean getFromPrimaryReactionLibrary() {
-		return fromPrimaryReactionLibrary;
+	public boolean getFromPrimaryKineticLibrary() {
+		return fromPrimaryKineticLibrary;
 	}
 	
 	public static void setVerbose(boolean p_boolean) {

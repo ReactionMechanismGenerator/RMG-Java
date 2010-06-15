@@ -35,7 +35,7 @@ import jing.chem.*;
 import java.util.*;
 
 import jing.param.*;
-import jing.rxnSys.PrimaryReactionLibrary;
+import jing.rxnSys.PrimaryKineticLibrary;
 import jing.rxnSys.ReactionModelGenerator;
 import jing.mathTool.*;
 import jing.chemUtil.*;
@@ -378,12 +378,12 @@ public class ReactionTemplate {
   	   *	to estimate via searching the tree
   	   */
 		Kinetics[] k = null;
-  	  if (doesPrimaryReactionLibraryExist()) {
-  		  k = getPrimaryReactionRate(p_structure);
+  	  if (doesPrimaryKineticLibraryExist()) {
+  		  k = getPrimaryKineticRate(p_structure);
   	  }
   	  if (k != null) {
-  		  k[0].setFromPrimaryReactionLibrary(true);
-  		  p_structure.setDirection(getPrimaryReactionDirection(p_structure));
+  		  k[0].setFromPrimaryKineticLibrary(true);
+  		  p_structure.setDirection(getPrimaryKineticDirection(p_structure));
   		  return k;
   	  }
 		
@@ -495,11 +495,11 @@ public class ReactionTemplate {
 	  	   *	to estimate via searching the tree
 	  	   */
 			Kinetics[] k = null;
-	  	  if (doesPrimaryReactionLibraryExist()) {
-	  		  k = getPrimaryReactionRate(p_structure);
+	  	  if (doesPrimaryKineticLibraryExist()) {
+	  		  k = getPrimaryKineticRate(p_structure);
 	  	  }
 	  	  if (k != null) {
-	  		  k[0].setFromPrimaryReactionLibrary(true);
+	  		  k[0].setFromPrimaryKineticLibrary(true);
 	  		  p_structure.setDirection(1);
 	  		  return k;
 	  	  }
@@ -609,10 +609,10 @@ public class ReactionTemplate {
    * @param p_structure: Structure of the reaction
    * @return
    */
-  private Kinetics[] getPrimaryReactionRate(Structure p_structure) {
+  private Kinetics[] getPrimaryKineticRate(Structure p_structure) {
 	  boolean equivReactants = false;
-	  LinkedHashSet primaryRxnLibrary = getPrimaryRxnLibrary();
-	  Iterator iter = primaryRxnLibrary.iterator();
+	  LinkedHashSet primaryKinLibrary = getPrimaryKinLibrary();
+	  Iterator iter = primaryKinLibrary.iterator();
 	  LinkedList p_reactants = p_structure.getReactantList();
 	  LinkedList p_products = p_structure.getProductList();
 	  while (iter.hasNext()) {
@@ -623,7 +623,7 @@ public class ReactionTemplate {
 			  LinkedList products = rxn.getProductList();
 			  if (Structure.isSpeciesListEquivalentToChemGraphListAsGraphs(products,p_products)) {
 				  if (rxn instanceof ThirdBodyReaction || rxn instanceof TROEReaction || rxn instanceof LindemannReaction)
-					  System.out.println("RMG is only utilizing the high-pressure limit parameters for PRL reaction: " + rxn.toString());
+					  System.out.println("RMG is only utilizing the high-pressure limit parameters for PKL reaction: " + rxn.toString());
 				  return rxn.getKinetics();
 			  }
 		  }
@@ -632,10 +632,10 @@ public class ReactionTemplate {
 	  return null;
   }
   
-  private int getPrimaryReactionDirection(Structure p_structure) {
+  private int getPrimaryKineticDirection(Structure p_structure) {
 	  boolean equivReactants = false;
-	  LinkedHashSet primaryRxnLibrary = getPrimaryRxnLibrary();
-	  Iterator iter = primaryRxnLibrary.iterator();
+	  LinkedHashSet primaryKinLibrary = getPrimaryKinLibrary();
+	  Iterator iter = primaryKinLibrary.iterator();
 	  LinkedList p_reactants = p_structure.getReactantList();
 	  LinkedList p_products = p_structure.getProductList();
 	  while (iter.hasNext()) {
@@ -646,7 +646,7 @@ public class ReactionTemplate {
 			  LinkedList products = rxn.getProductList();
 			  if (Structure.isSpeciesListEquivalentToChemGraphListAsGraphs(products,p_products)) {
 				  if (rxn instanceof ThirdBodyReaction || rxn instanceof TROEReaction || rxn instanceof LindemannReaction)
-					  System.out.println("RMG is only utilizing the high-pressure limit parameters for PRL reaction: " + rxn.toString());
+					  System.out.println("RMG is only utilizing the high-pressure limit parameters for PKL reaction: " + rxn.toString());
 				  return rxn.getStructure().direction;
 			  }
 		  }
@@ -780,12 +780,6 @@ public class ReactionTemplate {
       //#]
   }
   
-  //## operation getReactionSetFromReactant(LinkedList) 
-  /*public HashSet getReactionSetFromReactant(LinkedList p_reactant) {
-      //#[ operation getReactionSetFromReactant(LinkedList) 
-      return (HashSet)reactionDictionaryByReactant.get(p_reactant);
-      //#]
-  }*/
   
   //## operation hasOneReactant() 
   public boolean hasOneReactant() {
@@ -2022,12 +2016,12 @@ public class ReactionTemplate {
       structureTemplate = p_StructureTemplate;
   }
   
-  public LinkedHashSet getPrimaryRxnLibrary(){
-      return PrimaryReactionLibrary.getReactionSet();
+  public LinkedHashSet getPrimaryKinLibrary(){
+      return PrimaryKineticLibrary.getReactionSet();
   }
   
-  public boolean doesPrimaryReactionLibraryExist() {
-	  if (PrimaryReactionLibrary.size() != 0) return true;
+  public boolean doesPrimaryKineticLibraryExist() {
+	  if (PrimaryKineticLibrary.size() != 0) return true;
 	  else return false;
   }
   

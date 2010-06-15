@@ -67,7 +67,7 @@ import jing.rxnSys.DynamicSimulator;
 import jing.rxnSys.FinishController;
 import jing.rxnSys.InitialStatus;
 import jing.rxnSys.PressureModel;
-import jing.rxnSys.PrimaryReactionLibrary;
+import jing.rxnSys.PrimaryKineticLibrary;
 import jing.rxnSys.RateBasedPDepRME;
 import jing.rxnSys.RateBasedRME;
 import jing.rxnSys.ReactionModel;
@@ -268,12 +268,12 @@ public class PopulateReactions {
             /*
              * Read primary reaction libraries (if they exist)
              */
-            if (line.toLowerCase().startsWith("primaryreactionlibrary")) {
-            	rmg.readAndMakePRL(br_input);
+            if (line.toLowerCase().startsWith("primarykineticlibrary")) {
+            	rmg.readAndMakePKL(br_input);
             }
                         
            else {
-              	System.err.println("PopulateReactions: Could not locate the PrimaryReactionLibrary field." +
+              	System.err.println("PopulateReactions: Could not locate the PrimaryKineticLibrary field." +
              			"Line read was: " + line);
              	System.exit(0);
              }
@@ -416,7 +416,7 @@ public class PopulateReactions {
 						rmg.getReactionModelEnlarger(),
 						new FinishController(),
 						null,
-						rmg.getPrimaryReactionLibrary(),
+						rmg.getPrimaryKineticLibrary(),
 						rmg.getReactionGenerator(),
 						speciesSet,
 						(InitialStatus)rmg.getInitialStatusList().get(0),

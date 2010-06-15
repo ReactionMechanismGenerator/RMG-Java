@@ -44,7 +44,7 @@ import jing.chemParser.ChemParser;
 import jing.chemParser.InvalidReactionFormatException;
 import jing.chemUtil.Graph;
 import jing.mathTool.UncertainDouble;
-import jing.rxnSys.PrimaryReactionLibrary;
+import jing.rxnSys.PrimaryKineticLibrary;
 import jing.rxnSys.SeedMechanism;
 
 //## package jing::rxn 
