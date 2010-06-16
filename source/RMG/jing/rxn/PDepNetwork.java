@@ -527,7 +527,9 @@ public class PDepNetwork {
 			}
 		}
 
-		if (!maxReaction.getReactant().getIncluded())
+		if (maxReaction == null)
+			throw new PDepException("Tried to determine nonincluded isomer with maximum leak flux, but no suitable nonincluded reaction has been found.");
+		else if (!maxReaction.getReactant().getIncluded())
 			return maxReaction.getReactant();
 		else if (!maxReaction.getProduct().getIncluded())
 			return maxReaction.getProduct();
