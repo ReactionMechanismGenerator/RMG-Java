@@ -279,16 +279,30 @@ public class RateBasedPDepRME implements ReactionModelEnlarger {
 					System.out.println("\nAdd a new included Species: " + isomer.toString() +
 							" to network " + maxNetwork.getID());
 
-					// Making a species included in one network automatically makes it included in all networks it is contained in
+					// Making a species included in one network automatically
+					// makes it included in all networks it is contained in
+					// Therefore we need to merge all networks containing that
+					// species as a unimolecular isomer together
+					LinkedList<PDepNetwork> networksToRemove = new LinkedList<PDepNetwork>();
 					for (Iterator iter = PDepNetwork.getNetworks().iterator(); iter.hasNext(); ) {
 						PDepNetwork pdn = (PDepNetwork) iter.next();
-						if (pdn.contains(isomer.getSpecies(0))) {
-							PDepIsomer isom = pdn.getIsomer(isomer.getSpecies(0));
-							maxNetwork.makeIsomerIncluded(isomer);
+						if (pdn.contains(isomer.getSpecies(0)) && pdn != maxNetwork) {
+							for (int j = 0; j < pdn.getIsomers().size(); j++)
+								maxNetwork.addIsomer(pdn.getIsomers().get(j));
+							for (int j = 0; j < pdn.getPathReactions().size(); j++)
+								maxNetwork.addReaction(pdn.getPathReactions().get(j),false);
+							networksToRemove.add(pdn);
 						}
 					}
+					for (Iterator iter = networksToRemove.iterator(); iter.hasNext(); ) {
+						PDepNetwork pdn = (PDepNetwork) iter.next();
+						PDepNetwork.getNetworks().remove(pdn);
+					}
 
-					//maxNetwork.makeIsomerIncluded(isomer);
+					// Make the isomer included
+					// This will cause any other reactions of the form
+					// isomer -> products that don't yet exist to be created
+					maxNetwork.makeIsomerIncluded(isomer);
 				}
 				catch (PDepException e) {
 					e.printStackTrace();
