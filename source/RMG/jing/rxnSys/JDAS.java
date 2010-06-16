@@ -781,10 +781,12 @@ public abstract class JDAS implements DAESolver {
 		edgeID = new HashMap();
 		LinkedHashSet ur = model.getUnreactedReactionSet();
 		for (Iterator iur = ur.iterator(); iur.hasNext();) {
-			edgeReactionCounter++;
 			Reaction r = (Reaction) iur.next();
-			String str = getEdgeReactionString(model, edgeID, r, p_temperature, p_pressure);//this line is needed even when not writing to file because it will update edgeID
-//			edgeReacInfoString.append("\n" + str);
+			if(((CoreEdgeReactionModel)model).reactantsInCoreQ(r.getStructure())){
+			    edgeReactionCounter++;
+			    String str = getEdgeReactionString(model, edgeID, r, p_temperature, p_pressure);//this line is needed even when not writing to file because it will update edgeID
+//			    edgeReacInfoString.append("\n" + str);
+			}
 		}
                 edgeSpeciesCounter = edgeID.size();//update edge species counter (this will be important for the case of non-P-dep operation)
 		// For the case where validityTester is RateBasedPDepVT (assumed to also be directly associated with use of RateBasedPDepRME), consider two additional types of reactions
@@ -967,10 +969,13 @@ public abstract class JDAS implements DAESolver {
                     edgeID = new HashMap();
                     ur = model.getUnreactedReactionSet();
                     for (Iterator iur = ur.iterator(); iur.hasNext();) {
-                            edgeReactionCounter++;
-                            Reaction r = (Reaction) iur.next();
-                            String str = getEdgeReactionString(model, edgeID, r, p_temperature, p_pressure);
-                            bw.write("\n" + str);
+			Reaction r = (Reaction) iur.next();
+			if(((CoreEdgeReactionModel)model).reactantsInCoreQ(r.getStructure())){
+			    edgeReactionCounter++;
+			    String str = getEdgeReactionString(model, edgeID, r, p_temperature, p_pressure);//this line is needed even when not writing to file because it will update edgeID
+			    bw.write("\n" + str);
+			}
+                            
                     }
                     edgeSpeciesCounter = edgeID.size();//update edge species counter (this will be important for the case of non-P-dep operation)
                     // For the case where validityTester is RateBasedPDepVT (assumed to also be directly associated with use of RateBasedPDepRME), consider two additional types of reactions
