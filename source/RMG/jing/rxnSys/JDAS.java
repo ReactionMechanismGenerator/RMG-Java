@@ -883,18 +883,20 @@ public abstract class JDAS implements DAESolver {
 				    }
 				    else{
 					PDepReaction rxnReverse = (PDepReaction)rxn.getReverseReaction();
-					k = rxnReverse.calculateRate(p_temperature, p_pressure);
-					allCoreReac=true;
-					//iterate over the products, counting and storing IDs in tempReacArray, up to a maximum of 3 reactants
-					for (ListIterator<Species> rIter = rxn.getProduct().getSpeciesListIterator(); rIter.hasNext(); ) {
+					if(rxnReverse!=null){
+					    k = rxnReverse.calculateRate(p_temperature, p_pressure);
+					    allCoreReac=true;
+					    //iterate over the products, counting and storing IDs in tempReacArray, up to a maximum of 3 reactants
+					    for (ListIterator<Species> rIter = rxn.getProduct().getSpeciesListIterator(); rIter.hasNext(); ) {
 
-					    reacCount++;
-					    Species spe = (Species)rIter.next();
-					    if(model.containsAsReactedSpecies(spe)){
-						tempReacArray[reacCount-1]=getRealID(spe);
-					    }
-					    else{
-						allCoreReac=false;
+						reacCount++;
+						Species spe = (Species)rIter.next();
+						if(model.containsAsReactedSpecies(spe)){
+						    tempReacArray[reacCount-1]=getRealID(spe);
+						}
+						else{
+						    allCoreReac=false;
+						}
 					    }
 					}
 				    }
@@ -1090,18 +1092,20 @@ public abstract class JDAS implements DAESolver {
 				    }
 				    else{
 					PDepReaction rxnReverse = (PDepReaction)rxn.getReverseReaction();
-					k = rxnReverse.calculateRate(p_temperature, p_pressure);
-					allCoreReac=true;
-					//iterate over the products, counting and storing IDs in tempReacArray, up to a maximum of 3 reactants
-					for (ListIterator<Species> rIter = rxn.getProduct().getSpeciesListIterator(); rIter.hasNext(); ) {
+					if(rxnReverse!=null){
+					    k = rxnReverse.calculateRate(p_temperature, p_pressure);
+					    allCoreReac=true;
+					    //iterate over the products, counting and storing IDs in tempReacArray, up to a maximum of 3 reactants
+					    for (ListIterator<Species> rIter = rxn.getProduct().getSpeciesListIterator(); rIter.hasNext(); ) {
 
-					    reacCount++;
-					    Species spe = (Species)rIter.next();
-					    if(model.containsAsReactedSpecies(spe)){
-						tempReacArray[reacCount-1]=getRealID(spe);
-					    }
-					    else{
-						allCoreReac=false;
+						reacCount++;
+						Species spe = (Species)rIter.next();
+						if(model.containsAsReactedSpecies(spe)){
+						    tempReacArray[reacCount-1]=getRealID(spe);
+						}
+						else{
+						    allCoreReac=false;
+						}
 					    }
 					}
 				    }
