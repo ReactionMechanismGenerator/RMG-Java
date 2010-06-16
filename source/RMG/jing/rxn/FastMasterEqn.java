@@ -312,7 +312,10 @@ public class FastMasterEqn implements PDepKineticsEstimator {
 			}
 			stdin.close();
 			
-            String line = stdout.readLine().trim();
+            String line = stdout.readLine();
+			if (line == null)
+				throw new PDepException("FAME output file is empty; FAME job was likely unsuccessful.");
+			line = line.trim();
 			
 			// advance to first line that's not for debug purposes
 			while ( line.startsWith("#IN:") || line.contains("#DEBUG:") ) {
