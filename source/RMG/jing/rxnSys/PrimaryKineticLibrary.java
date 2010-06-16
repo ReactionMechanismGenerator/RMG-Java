@@ -172,7 +172,7 @@ public class PrimaryKineticLibrary {
         			r = ChemParser.parseArrheniusReaction(speciesSet, line, A_multiplier, E_multiplier);
         			r.setIsFromPrimaryKineticLibrary(true);
         			(r.getKinetics())[0].setFromPrimaryKineticLibrary(true);
-        			// Changed source from "Seed Mechanism" to "Primary Reaction Library"
+        			// Changed source from "Seed Mechanism" to "Primary Kinetic Library"
 					r.setKineticsSource("Primary Kinetic Library: "+ name,0);
 					r.setKineticsComments(" ",0);
 				}
@@ -256,7 +256,7 @@ public class PrimaryKineticLibrary {
         	return;
         }
         catch (Exception e) {
-//        	throw new IOException("Can't read the species in primary reaction library: " + '\n' + e.getMessage());
+
         	/*
         	 * 25Jun2009-MRH: When reading the Primary Kinetic Library, it IS NECESSARY 
         	 * 		to have a species file.  In the instance that no "species.txt" file exists,
@@ -328,7 +328,7 @@ public class PrimaryKineticLibrary {
         		ThirdBodyReaction tbr = ThirdBodyReaction.make(r,thirdBodyList);
         		tbr.setIsFromPrimaryKineticLibrary(true);
         		tbr.getKinetics()[0].setFromPrimaryKineticLibrary(true);
-        		// Changed source from "Seed Mechanism" to "Primary Reaction Library"
+        		// Changed source from "Seed Mechanism" to "Primary Kinetic Library"
 				tbr.setKineticsSource("Primary Kinetic Library: "+ name,0);
 				tbr.setKineticsComments(" ",0);
         		reactionSet.add(tbr);
@@ -364,14 +364,13 @@ public class PrimaryKineticLibrary {
         	return;
         }
         catch (Exception e) {
-//        	throw new IOException("Can't read reaction in primary reaction library.\n" + e.getMessage());
 			/*
 			 * 25Jun2009-MRH: When reading the Primary Reaction Library, we should not require the user to supply
 			 * 		third body reactions.  In the instance that no "3rdBodyReactions.txt" file exists, inform
 			 * 		user of this but continue simulation.
 			 */
         	System.out.println("RMG did not find/read third body reactions (3rdBodyReactions.txt) " +
-        			"in the Primary Reaction Library: " + name + "\n" + e.getMessage());
+        			"in the Primary Kinetic Library: " + name + "\n" + e.getMessage());
         }
     }
     
@@ -469,7 +468,7 @@ public class PrimaryKineticLibrary {
         		TROEReaction tbr = TROEReaction.make(r,thirdBodyList, low, a, T3star, Tstar, troe7, T2star);
         		tbr.setIsFromPrimaryKineticLibrary(true);
         		tbr.getKinetics()[0].setFromPrimaryKineticLibrary(true);
-        		// Changed source from "Seed Mechanism" to "Primary Reaction Library"
+        		// Changed source from "Seed Mechanism" to "Primary Kinetic Library"
 				tbr.setKineticsSource("Primary Kinetic Library: "+ name,0);
 				tbr.setKineticsComments(" ",0);
 				
@@ -488,7 +487,7 @@ public class PrimaryKineticLibrary {
         	return;
         }
         catch (Exception e) {
-//        	throw new IOException("Can't read reaction in primary reaction library: troe reaction list.\n" + e.getMessage());
+
 			/*
 			 * 25Jun2009-MRH: When reading the Primary Kinetics Library, we should not require the user to supply
 			 * 		troe reactions.  In the instance that no "troeReactions.txt" file exists, inform
@@ -724,10 +723,10 @@ public class PrimaryKineticLibrary {
 //        		   
 //        		// Make the "troe" reaction
 //        		TROEReaction tbr = TROEReaction.make(r,thirdBodyList, low, a, T3star, Tstar, troe7, T2star);
-//        		tbr.setIsFromPrimaryReactionLibrary(true);
-//        		tbr.getKinetics()[0].setFromPrimaryReactionLibrary(true);
-//        		// Changed source from "Seed Mechanism" to "Primary Reaction Library"
-//				tbr.setKineticsSource("Primary Reaction Library: "+ name,0);
+//        		tbr.setIsFromPrimaryKineticLibrary(true);
+//        		tbr.getKinetics()[0].setFromPrimaryKineticLibrary(true);
+//        		// Changed source from "Seed Mechanism" to "Primary Kinetic Library"
+//				tbr.setKineticsSource("Primary Kinetic Library: "+ name,0);
 //				tbr.setKineticsComments(" ",0);
 //				
 //        		reactionSet.add(tbr);
@@ -745,14 +744,14 @@ public class PrimaryKineticLibrary {
 //        	return;
 //        }
 //        catch (Exception e) {
-////        	throw new IOException("Can't read reaction in primary reaction library: troe reaction list.\n" + e.getMessage());
+////        	throw new IOException("Can't read reaction in primary kinetic library: troe reaction list.\n" + e.getMessage());
 //			/*
-//			 * 25Jun2009-MRH: When reading the Primary Reaction Library, we should not require the user to supply
+//			 * 25Jun2009-MRH: When reading the Primary Kinetic Library, we should not require the user to supply
 //			 * 		troe reactions.  In the instance that no "troeReactions.txt" file exists, inform
 //			 * 		user of this but continue simulation.
 //			 */
 //        	System.out.println("RMG did not find/read pressure-dependent reactions (pdepReactions.txt) " +
-//        			"in the Primary Reaction Library: " + name + "\n" + e.getMessage());
+//        			"in the Primary Kinetic Library: " + name + "\n" + e.getMessage());
 //        }
 //    }
 	
@@ -928,7 +927,7 @@ public class PrimaryKineticLibrary {
         catch (Exception e) {
 //        	throw new IOException("Can't read reaction in primary kinetic library: troe reaction list.\n" + e.getMessage());
 			/*
-			 * 25Jun2009-MRH: When reading the Primary Reaction Library, we should not require the user to supply
+			 * 25Jun2009-MRH: When reading the Primary Kinetic Library, we should not require the user to supply
 			 * 		troe reactions.  In the instance that no "troeReactions.txt" file exists, inform
 			 * 		user of this but continue simulation.
 			 */
@@ -955,6 +954,6 @@ public class PrimaryKineticLibrary {
     
 }
 /*********************************************************************
-	File Path	: RMG\RMG\jing\rxnSys\PrimaryReactionLibrary.java
+	File Path	: RMG\RMG\jing\rxnSys\PrimaryKineticLibrary.java
 *********************************************************************/
 

@@ -235,7 +235,7 @@ public class RateBasedRME implements ReactionModelEnlarger {
     public LinkedHashSet RemoveDuplicateReac(LinkedHashSet reaction_set){
     	
     	 // Get the reactants and products of a reaction and check with other reaction if both reactants and products
-    	 // match - delete duplicate entry, give preference to Seed Mechanism > Reaction Library > Primary Reaction Library > Reaction Template 
+    	 // match - delete duplicate entry, give preference to Seed Mechanism > Reaction Library >  Reaction Template 
     	 // this information might be available from the comments 
     	
     	LinkedHashSet newreaction_set = new LinkedHashSet();

@@ -85,7 +85,7 @@ public class Species {
 	protected SpectroscopicData spectroscopicData;
 	
     // Flag to tag certain species as library only... i.e. we won't try them against RMG templates.
-    // They will only react as defined in the primary reaction library.   GJB
+    // They will only react as defined in the primary kinetic library.   GJB
     protected boolean IsReactive = true; 
     
     // flag to tag certain species as having a constant concentration 

@@ -102,7 +102,7 @@ public class CoreEdgeReactionModel implements ReactionModel {
     
     
     public void addPrimaryKineticSet(LinkedHashSet p_reactionSet) {
-        //#[ operation addPrimaryReactionSet(HashSet) 
+        
         for (Iterator iter = p_reactionSet.iterator(); iter.hasNext(); ) {
         	Reaction rxn = (Reaction)iter.next();
         	int rxnType = categorizeReaction(rxn);

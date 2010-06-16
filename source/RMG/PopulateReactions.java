@@ -266,7 +266,7 @@ public class PopulateReactions {
             }
             
             /*
-             * Read primary reaction libraries (if they exist)
+             * Read primary kinetic libraries (if they exist)
              */
             if (line.toLowerCase().startsWith("primarykineticlibrary")) {
             	rmg.readAndMakePKL(br_input);
@@ -308,9 +308,9 @@ public class PopulateReactions {
             
             /*
              * MRH 27Feb:
-             * Allowing PopulateReactions module to read/use Primary Reaction/Thermo Libraries
+             * Allowing PopulateReactions module to read/use Primary Kinetic/Thermo Libraries
              * 
-             * The user does not have to specify any primary reaction / thermo libraries.
+             * The user does not have to specify any primary kinetic / thermo libraries.
              * 	However, like the input file to RMG, the fields must still be present
              */
 //            if (line.toLowerCase().startsWith("primarythermolibrary")) {
@@ -323,11 +323,11 @@ public class PopulateReactions {
 //            }
             
 //            line = ChemParser.readMeaningfulLine(br_input);
-//            if (line.toLowerCase().startsWith("primaryreactionlibrary")) {
-//            	rmg.readAndMakePRL(br_input);
+//            if (line.toLowerCase().startsWith("primarykineticlibrary")) {
+//            	rmg.readAndMakePKL(br_input);
 //            }
 //            else {
-//            	System.err.println("PopulateReactions: Could not locate the PrimaryReactionLibrary field." +
+//            	System.err.println("PopulateReactions: Could not locate the PrimaryKineticLibrary field." +
 //            			"Line read was: " + line);
 //            	System.exit(0);
 //            }
@@ -403,7 +403,7 @@ public class PopulateReactions {
 			reactions.addAll(rtLibrary.react(speciesSet));
 			/*
 			 * MRH 28Feb
-			 * The next line will use the new PrimaryReactionLibrary
+			 * The next line will use the new PrimaryKineticLibrary
 			 */
 			//reaction.addAll(getLibraryReactionGenerator().react(speciesSet));
 			if (!(rmg.getReactionModelEnlarger() instanceof RateBasedRME))	{

@@ -71,14 +71,14 @@ public class ReactionSystem {
     protected static boolean printAllSens = false;
     // Constructors
 
-    //## operation ReactionSystem(TemperatureModel,PressureModel,ReactionModelEnlarger,FinishController,DynamicSimulator,PrimaryReactionLibrary,ReactionGenerator,HashSet,InitialStatus)
+    //## operation ReactionSystem(TemperatureModel,PressureModel,ReactionModelEnlarger,FinishController,DynamicSimulator,PrimaryKineticLibrary,ReactionGenerator,HashSet,InitialStatus)
     //9/24/07 gmagoon: reactionModel changed to parameter passed to class; setReactionModel method removed; 10/4/07: this was incorrect; setReactionModel restored
-    //9/25/07 gmagoon: removed primaryReactionLibrary from parameters
+    //9/25/07 gmagoon: removed primaryKineticLibrary from parameters
     public  ReactionSystem(TemperatureModel p_temperatureModel, PressureModel p_pressureModel, ReactionModelEnlarger p_reactionModelEnlarger, FinishController p_finishController, DynamicSimulator p_dynamicSimulator, PrimaryKineticLibrary p_primaryKineticLibrary, ReactionGenerator p_reactionGenerator, LinkedHashSet p_speciesSeed, InitialStatus p_initialStatus, ReactionModel p_reactionModel, LibraryReactionGenerator p_libraryReactionGenerator, int p_index, String p_equationOfState) {
         {
             systemSnapshot=new LinkedList();
         }
-        //#[ operation ReactionSystem(TemperatureModel,PressureModel,ReactionModelEnlarger,FinishController,DynamicSimulator,PrimaryReactionLibrary,ReactionGenerator,HashSet,InitialStatus)
+        //#[ operation ReactionSystem(TemperatureModel,PressureModel,ReactionModelEnlarger,FinishController,DynamicSimulator,PrimaryKineticLibrary,ReactionGenerator,HashSet,InitialStatus)
         temperatureModel = p_temperatureModel;
         pressureModel = p_pressureModel;
         setFinishController(p_finishController);
@@ -507,11 +507,11 @@ public class ReactionSystem {
     }
 
 //9/25/07 gmagoon: moved to ReactionModelGenerator.java    
-//    //## operation hasPrimaryReactionLibrary()
-//    public boolean hasPrimaryReactionLibrary() {
-//        //#[ operation hasPrimaryReactionLibrary()
-//        if (primaryReactionLibrary == null) return false;
-//        return (primaryReactionLibrary.size() > 0);
+//    //## operation hasPrimaryKineticLibrary()
+//    public boolean hasPrimaryKineticLibrary() {
+//        //#[ operation hasPrimaryKineticLibrary()
+//        if (primaryKineticLibrary == null) return false;
+//        return (primaryKineticLibrary.size() > 0);
 //        //#]
 //    }
 

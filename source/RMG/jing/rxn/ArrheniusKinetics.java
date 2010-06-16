@@ -63,7 +63,7 @@ public class ArrheniusKinetics implements Kinetics {
     
     protected String source;		//## attribute source 
     /*
-     * 29Jun2009-MRH: Added fromPrimaryReactionLibrary attribute
+     * 29Jun2009-MRH: Added fromPrimaryKineticLibrary attribute
      * 	When RMG computes total rate or ask for kinetics for a given rxn,
      * 		it first checks if the rxn/structure of interest has kinetics
      * 		from a PRL.  If so, it will use those numbers.

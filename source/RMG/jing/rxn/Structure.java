@@ -722,8 +722,8 @@ public class Structure {
      *
      *		This function is primarily used to determine if a just formed
      *		rxn is equivalent to any of the rxns stored in the primary
-     *		reaction libraries.  The p_list1 contains all of the structures
-     *		stored in the primary rxn library; these have already been
+     *		kinetic libraries.  The p_list1 contains all of the structures
+     *		stored in the primary kin library; these have already been
      *		added to the core of the mechanism, thus the structure contains
      *		reactants/products whose entries are species.  The p_list2
      *		contains the just formed structure; this is still in the edge

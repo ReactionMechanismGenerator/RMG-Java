@@ -324,7 +324,7 @@ public class ReactionLibrary {
         	return;
         }
         catch (Exception e) {
-//        	throw new IOException("Can't read reaction in primary reaction library: troe reaction list.\n" + e.getMessage());
+
 			/*
 			 * 25Jun2009-MRH: When reading the Primary Reaction Library, we should not require the user to supply
 			 * 		troe reactions.  In the instance that no "troeReactions.txt" file exists, inform

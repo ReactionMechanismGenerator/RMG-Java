@@ -535,7 +535,7 @@ public class GUI extends JPanel implements ActionListener {
 		 	* The time steps for integration
 		 	* The absolute tolerance
 		 	* The relative tolerance
-		- The primary reaction library
+		- The primary kinetic library
 			* Name
 			* Location
     */
@@ -731,12 +731,12 @@ public class GUI extends JPanel implements ActionListener {
 		tmodelPTransL.updatePRL(initialPTransL);
 		
 		
-    	//	Create the Primary Reaction Library (PRL) panel
+    	//	Create the Primary Kinetic Library (PKL) panel
     	JPanel PRL = new JPanel();
-    	PRL.setBorder(BorderFactory.createCompoundBorder(BorderFactory.createTitledBorder("Primary Reaction Library"),
+    	PRL.setBorder(BorderFactory.createCompoundBorder(BorderFactory.createTitledBorder("Primary Kinetic Library"),
     			BorderFactory.createEmptyBorder(5,5,5,5)));
 
-    	//	Create PRL Name label
+    	//	Create PKL Name label
     	JPanel prlName = new JPanel();
     	prlName.setBorder(BorderFactory.createEmptyBorder(5,5,5,5));
     	
@@ -753,7 +753,7 @@ public class GUI extends JPanel implements ActionListener {
         JLabel prlLocationLabel = new JLabel("Location:");
         prlLoc.add(prlLocationLabel);
     	prlLocationLabel.setToolTipText("Default = " + 
-			"RMG/databases/RMG_database/kinetics_libraries/primaryReactionLibrary"); // doesn't exist!
+			"RMG/databases/RMG_database/kinetics_libraries/primaryKineticLibrary"); // doesn't exist!
     	
     	prlLoc.add(prlPath = new JTextField(20));
     	
@@ -1493,7 +1493,7 @@ public class GUI extends JPanel implements ActionListener {
     
     class AddButtonListener implements ActionListener {
 		public void actionPerformed(ActionEvent e) {
-			// IF the user adds a primary reaction library ...
+			// IF the user adds a primary kinetic library ...
 			if ("AddPRL".equals(e.getActionCommand())) {
 				// Extract the information
 				int prlInput0 = tmodelPRL.nextEmptyRow+1;
@@ -1501,7 +1501,7 @@ public class GUI extends JPanel implements ActionListener {
 				String prlInput2 = prlPath.getText();
 				// Check that all information is present
 				if (prlInput1.equals("") || prlInput2.equals("")) {
-					System.out.println("Please input the Name and Location of a Primary Reaction Library");
+					System.out.println("Please input the Name and Location of a Primary Kinetic Library");
 				} else {
 					PRLVector prlEntry = new PRLVector(prlInput0, prlInput1, prlInput2);
 					tmodelPRL.updatePRL(prlEntry);
@@ -1673,10 +1673,10 @@ public class GUI extends JPanel implements ActionListener {
 				File path = null;
 				path = askUserForInput("Select PrimaryThermoLibrary folder", true, databasePath.getText()+"/thermo_libraries");
 				if (path != null) ptlPath.setText(path.getPath());
-			// If user selects to switch Primary Reaction Library path
+			// If user selects to switch Primary Kinetic Library path
 			} else if ("prlPath".equals(e.getActionCommand())) {
 				File path = null;
-				path = askUserForInput("Select PrimaryReactionLibrary folder", true, databasePath.getText()+"/kinetics_libraries");
+				path = askUserForInput("Select PrimaryKineticLibrary folder", true, databasePath.getText()+"/kinetics_libraries");
 				if (path != null) prlPath.setText(path.getPath());
 			} else if ("smPath".equals(e.getActionCommand())) {
 				File path = null;
@@ -2164,13 +2164,13 @@ public class GUI extends JPanel implements ActionListener {
     		}
     	}
     	
-        //	Add the name(s)/location(s) of the primary reaction library
+        //	Add the name(s)/location(s) of the primary kinetic library
         String prlReferenceDirectory_linux = rmgEnvVar + "/databases/" + stringMainDatabase + "/kinetics_libraries/";
         String prlReferenceDirectory_windows = rmgEnvVar + "\\databases\\" + stringMainDatabase + "\\kinetics_libraries\\";
-    	conditionFile += "PrimaryReactionLibrary:\r";
+    	conditionFile += "PrimaryKineticLibrary:\r";
 
 		if (tablePRL.getRowCount()==0) {
-        	System.out.println("Warning: Writing condition.txt file: Could not read Primary Reaction Library (Thermochemical Libraries tab)");
+        	System.out.println("Warning: Writing condition.txt file: Could not read Primary Kinetic Library (Thermochemical Libraries tab)");
 		} else {
     		for (int k=0; k<tablePRL.getRowCount(); k++) {
     			conditionFile += "Name: " + tablePRL.getValueAt(k,0) + "\r" + "Location: ";
@@ -2186,7 +2186,7 @@ public class GUI extends JPanel implements ActionListener {
 		}
 		conditionFile += "END\r\r";
 		
-        //	Add the name(s)/location(s) of the primary reaction library
+        //	Add the name(s)/location(s) of the primary kinetic library
     	conditionFile += "SeedMechanism:\r";
 
 		if (tableSM.getRowCount()==0) {
@@ -2831,8 +2831,8 @@ public class GUI extends JPanel implements ActionListener {
 	        	}
 	        }
 	        
-	        else if (line.startsWith("PrimaryReactionLibrary")) {
-		        //	Name(s)/Path(s) of PrimaryReactionLibrary
+	        else if (line.startsWith("PrimaryKineticLibrary")) {
+		        
              	line = ChemParser.readMeaningfulLine(reader);
              	int prlCounter = 0;
              	while (!line.equals("END")) {

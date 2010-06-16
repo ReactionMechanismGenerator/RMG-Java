@@ -490,7 +490,7 @@ public class ReactionTemplate {
       //#[ operation findRateConstant(Structure)
 		
 	  	  /* 
-	  	   *If a primary reaction library exists, check the
+	  	   *If a primary kinetic library exists, check the
 	  	   *	current reaction against that list before attempting
 	  	   *	to estimate via searching the tree
 	  	   */

@@ -41,7 +41,7 @@ import jing.chemParser.*;
 
 /**
  * This is a new class called SeedMechanism.  SeedMechanism is the same class
- * as the old PrimaryReactionLibrary, just with a new (and more appropriate)
+ * as the old PrimaryKineticLibrary, just with a new (and more appropriate)
  * name.  RMG will automatically include every species and reaction contained
  * in a Seed Mechanism.  Furthermore, the user has the option to pass multiple
  * Seed Mechanisms to RMG.  In the event of a duplicate species/reaction, RMG
@@ -52,7 +52,7 @@ import jing.chemParser.*;
  */
 
 /*
- * Comments from old PrimaryReactionLibrary:
+ * Comments from old PrimaryKineticLibrary:
  * 
  * This is the primary reaction set that any reaction system has to include 
  * into its model.  For example, in combustion system, we build a primary small 
@@ -726,9 +726,9 @@ public class SeedMechanism {
         	return;
         }
         catch (Exception e) {
-//        	throw new IOException("Can't read reaction in primary reaction library: troe reaction list.\n" + e.getMessage());
+
 			/*
-			 * 25Jun2009-MRH: When reading the Primary Reaction Library, we should not require the user to supply
+			 * 25Jun2009-MRH: When reading the Primary Kinetic Library, we should not require the user to supply
 			 * 		troe reactions.  In the instance that no "troeReactions.txt" file exists, inform
 			 * 		user of this but continue simulation.
 			 */

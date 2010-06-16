@@ -92,7 +92,7 @@ public class ReactionModelGenerator {
     // 24Jun2009 MRH: variable stores the first temperature encountered in the condition.txt file
     //	This temperature is used to select the "best" kinetics from the rxn library
     protected static Temperature temp4BestKinetics; 
-    // This is the new "PrimaryReactionLibrary"
+    
     protected SeedMechanism seedMechanism = null;
     protected PrimaryThermoLibrary primaryThermoLibrary;
     protected PrimaryTransportLibrary primaryTransportLibrary;
@@ -148,7 +148,7 @@ public class ReactionModelGenerator {
         	FinishController finishController = null;
         	//DynamicSimulator dynamicSimulator = null;//10/27/07 gmagoon: commented out and replaced with following line
 			LinkedList dynamicSimulatorList = new LinkedList();
-        	//PrimaryReactionLibrary primaryReactionLibrary = null;//10/14/07 gmagoon: see below
+        	
 			setPrimaryKineticLibrary(null);//10/14/07 gmagoon: changed to use setPrimaryReactionLibrary
         	double [] conversionSet = new double[50];
 			String line = ChemParser.readMeaningfulLine(reader);
@@ -1035,7 +1035,7 @@ public class ReactionModelGenerator {
 			 * Added by MRH 12-Jun-2009
 			 * 
 			 * The SeedMechanism acts almost exactly as the old
-			 * 	PrimaryReactionLibrary did.  Whatever is in the SeedMechanism
+			 * 	PrimaryKineticLibrary did.  Whatever is in the SeedMechanism
 			 * 	will be placed in the core at the beginning of the simulation.
 			 * 	The user can specify as many seed mechanisms as they like, with
 			 * 	the priority (in the case of duplicates) given to the first
@@ -1158,7 +1158,7 @@ public class ReactionModelGenerator {
 			
         	in.close();
 			
-			//11/6/07 gmagoon: initializing temperatureArray and pressureArray before libraryReactionGenerator is initialized (initialization calls PDepNetwork and performs initializekLeak); UPDATE: moved after initialStatusList initialization (in case primaryReactionLibrary calls the similar pdep functions
+			//11/6/07 gmagoon: initializing temperatureArray and pressureArray before libraryReactionGenerator is initialized (initialization calls PDepNetwork and performs initializekLeak); UPDATE: moved after initialStatusList initialization (in case primaryKineticLibrary calls the similar pdep functions
 			//                LinkedList temperatureArray = new LinkedList();
 			//                LinkedList pressureArray = new LinkedList();
 			//                Iterator iterIS = initialStatusList.iterator();
@@ -1195,7 +1195,7 @@ public class ReactionModelGenerator {
         		setTemp4BestKinetics(t);
         		break;
         	}
-			setReactionGenerator(new TemplateReactionGenerator()); //11/4/07 gmagoon: moved from modelGeneration; mysteriously, moving this later moves "Father" lines up in output at runtime, immediately after condition file (as in original code); previously, these Father lines were just before "Can't read primary reaction library files!"
+			setReactionGenerator(new TemplateReactionGenerator()); //11/4/07 gmagoon: moved from modelGeneration; mysteriously, moving this later moves "Father" lines up in output at runtime, immediately after condition file (as in original code); previously, these Father lines were just before "Can't read primary kinetic library files!"
 			lrg = new LibraryReactionGenerator(ReactionLibrary);//10/10/07 gmagoon: moved from modelGeneration (sequence lrg increases species id, and the different sequence was causing problems as main species id was 6 instead of 1); //10/31/07 gmagoon: restored this line from 10/10/07 backup: somehow it got lost along the way; 11/5/07 gmagoon: changed to use "lrg =" instead of setLibraryReactionGenerator
 			//10/24/07 gmagoon: updated to use multiple reactionSystem variables
 			reactionSystemList = new LinkedList();
@@ -3878,7 +3878,7 @@ public class ReactionModelGenerator {
     public LinkedHashSet RemoveDuplicateReac(LinkedHashSet reaction_set){
     	
    	 // Get the reactants and products of a reaction and check with other reaction if both reactants and products
-   	 // match - delete duplicate entry, give preference to Seed Mechanism > Reaction Library > Primary Reaction Library > Reaction Template 
+   	 // match - delete duplicate entry, give preference to Seed Mechanism > Reaction Library >  Reaction Template 
    	 // this information might be available from the comments 
    	
    	LinkedHashSet newreaction_set = new LinkedHashSet();
@@ -4158,8 +4158,8 @@ public class ReactionModelGenerator {
 		System.out.println("\nInitializing core-edge reaction model");
 		// setSpeciesSeed(new LinkedHashSet());//10/4/07 gmagoon:moved from initializeReactionSystem; later moved to modelGeneration()
         //#[ operation initializeCoreEdgeReactionModel()
-		//        if (hasPrimaryReactionLibrary()) initializeCoreEdgeModelWithPRL();
-		//        else initializeCoreEdgeModelWithoutPRL();
+		//        if (hasPrimaryKineticLibrary()) initializeCoreEdgeModelWithPKL();
+		//        else initializeCoreEdgeModelWithoutPKL();
 		/*
 		 * MRH 12-Jun-2009
 		 * 

@@ -188,7 +188,7 @@ public class Reaction {
 	/*
 	 * MRH 18MAR2010:
 	 * Changing the structure of a reaction's kinetics
-	 * 	If the kinetics are from a primary reaction library, we assume the user
+	 * 	If the kinetics are from a primary kinetic library, we assume the user
 	 * 		has supplied the total pre-exponential factor for the reaction (and
 	 * 		not the per-event pre-exponential facor).
 	 *  If the kinetics were estimated by RMG, the pre-exponential factor must
