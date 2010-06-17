@@ -781,10 +781,12 @@ public abstract class JDAS implements DAESolver {
 		edgeID = new HashMap();
 		LinkedHashSet ur = model.getUnreactedReactionSet();
 		for (Iterator iur = ur.iterator(); iur.hasNext();) {
-			edgeReactionCounter++;
 			Reaction r = (Reaction) iur.next();
-			String str = getEdgeReactionString(model, edgeID, r, p_temperature, p_pressure);//this line is needed even when not writing to file because it will update edgeID
-//			edgeReacInfoString.append("\n" + str);
+			if(((CoreEdgeReactionModel)model).reactantsInCoreQ(r.getStructure())){
+			    edgeReactionCounter++;
+			    String str = getEdgeReactionString(model, edgeID, r, p_temperature, p_pressure);//this line is needed even when not writing to file because it will update edgeID
+//			    edgeReacInfoString.append("\n" + str);
+			}
 		}
                 edgeSpeciesCounter = edgeID.size();//update edge species counter (this will be important for the case of non-P-dep operation)
 		// For the case where validityTester is RateBasedPDepVT (assumed to also be directly associated with use of RateBasedPDepRME), consider two additional types of reactions
@@ -881,18 +883,20 @@ public abstract class JDAS implements DAESolver {
 				    }
 				    else{
 					PDepReaction rxnReverse = (PDepReaction)rxn.getReverseReaction();
-					k = rxnReverse.calculateRate(p_temperature, p_pressure);
-					allCoreReac=true;
-					//iterate over the products, counting and storing IDs in tempReacArray, up to a maximum of 3 reactants
-					for (ListIterator<Species> rIter = rxn.getProduct().getSpeciesListIterator(); rIter.hasNext(); ) {
+					if(rxnReverse!=null){
+					    k = rxnReverse.calculateRate(p_temperature, p_pressure);
+					    allCoreReac=true;
+					    //iterate over the products, counting and storing IDs in tempReacArray, up to a maximum of 3 reactants
+					    for (ListIterator<Species> rIter = rxn.getProduct().getSpeciesListIterator(); rIter.hasNext(); ) {
 
-					    reacCount++;
-					    Species spe = (Species)rIter.next();
-					    if(model.containsAsReactedSpecies(spe)){
-						tempReacArray[reacCount-1]=getRealID(spe);
-					    }
-					    else{
-						allCoreReac=false;
+						reacCount++;
+						Species spe = (Species)rIter.next();
+						if(model.containsAsReactedSpecies(spe)){
+						    tempReacArray[reacCount-1]=getRealID(spe);
+						}
+						else{
+						    allCoreReac=false;
+						}
 					    }
 					}
 				    }
@@ -967,10 +971,13 @@ public abstract class JDAS implements DAESolver {
                     edgeID = new HashMap();
                     ur = model.getUnreactedReactionSet();
                     for (Iterator iur = ur.iterator(); iur.hasNext();) {
-                            edgeReactionCounter++;
-                            Reaction r = (Reaction) iur.next();
-                            String str = getEdgeReactionString(model, edgeID, r, p_temperature, p_pressure);
-                            bw.write("\n" + str);
+			Reaction r = (Reaction) iur.next();
+			if(((CoreEdgeReactionModel)model).reactantsInCoreQ(r.getStructure())){
+			    edgeReactionCounter++;
+			    String str = getEdgeReactionString(model, edgeID, r, p_temperature, p_pressure);//this line is needed even when not writing to file because it will update edgeID
+			    bw.write("\n" + str);
+			}
+                            
                     }
                     edgeSpeciesCounter = edgeID.size();//update edge species counter (this will be important for the case of non-P-dep operation)
                     // For the case where validityTester is RateBasedPDepVT (assumed to also be directly associated with use of RateBasedPDepRME), consider two additional types of reactions
@@ -1085,18 +1092,20 @@ public abstract class JDAS implements DAESolver {
 				    }
 				    else{
 					PDepReaction rxnReverse = (PDepReaction)rxn.getReverseReaction();
-					k = rxnReverse.calculateRate(p_temperature, p_pressure);
-					allCoreReac=true;
-					//iterate over the products, counting and storing IDs in tempReacArray, up to a maximum of 3 reactants
-					for (ListIterator<Species> rIter = rxn.getProduct().getSpeciesListIterator(); rIter.hasNext(); ) {
+					if(rxnReverse!=null){
+					    k = rxnReverse.calculateRate(p_temperature, p_pressure);
+					    allCoreReac=true;
+					    //iterate over the products, counting and storing IDs in tempReacArray, up to a maximum of 3 reactants
+					    for (ListIterator<Species> rIter = rxn.getProduct().getSpeciesListIterator(); rIter.hasNext(); ) {
 
-					    reacCount++;
-					    Species spe = (Species)rIter.next();
-					    if(model.containsAsReactedSpecies(spe)){
-						tempReacArray[reacCount-1]=getRealID(spe);
-					    }
-					    else{
-						allCoreReac=false;
+						reacCount++;
+						Species spe = (Species)rIter.next();
+						if(model.containsAsReactedSpecies(spe)){
+						    tempReacArray[reacCount-1]=getRealID(spe);
+						}
+						else{
+						    allCoreReac=false;
+						}
 					    }
 					}
 				    }
