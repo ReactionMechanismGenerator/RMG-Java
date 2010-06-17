@@ -9,6 +9,8 @@ bin/*
 
 # Temporary intermediate files
 build/*
+# ..and on Windows:
+*.mod
 
 # Generated RMG output for examples
 examples/*

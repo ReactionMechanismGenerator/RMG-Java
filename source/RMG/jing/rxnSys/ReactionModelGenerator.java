@@ -816,6 +816,10 @@ public class ReactionModelGenerator {
 
 			//
 			if (temp.startsWith("AUTOPRUNE")){//for the AUTOPRUNE case, read in additional lines for termTol and edgeTol
+			    if(reactionModelEnlarger instanceof RateBasedPDepRME){
+				System.out.println("Use of pruning with pressure-dependence is not supported. Turn off pruning and/or pressure-dependence options in condition file.");
+				System.exit(0);
+			    }
 			    line = ChemParser.readMeaningfulLine(reader);
 			    if (line.startsWith("TerminationTolerance:")) {
 				    st = new StringTokenizer(line);
@@ -2855,10 +2859,14 @@ public class ReactionModelGenerator {
 													 numFamePress,numChebyTemps,numChebyPress,numPlog));
 					
 					PDepReaction currentPDepReverseRxn = currentPDepRxn.getReverseReaction();
-					bw.write(currentPDepReverseRxn.toString());
-					bw.newLine();
-					bw.write(writeRatesAndParameters(currentPDepReverseRxn,numFameTemps,
-													 numFamePress,numChebyTemps,numChebyPress,numPlog));
+					// Not all net PDepReactions are reversible, so we must test for this
+					if (currentPDepReverseRxn != null) {
+						bw.write(currentPDepReverseRxn.toString());
+						bw.newLine();
+						bw.write(writeRatesAndParameters(currentPDepReverseRxn,numFameTemps,
+														 numFamePress,numChebyTemps,numChebyPress,numPlog));
+					}
+					
 				}
 				
 				// Write pathReactionList

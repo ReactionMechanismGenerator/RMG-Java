@@ -490,6 +490,8 @@ When using automated time stepping, it is also possible to perform mechanism gen
 ``MinSpeciesForPruning`` indicates the minimum total number of species (edge and core) that must be present for pruning (due to low edge flux ratio relative to ``PruningTolerance`` or due to ``MaxEdgeSpeciesAfterPruning``) to occur.
 ``MaxEdgeSpeciesAfterPruning`` indicates the upper limit for the size of the edge. Pruning will continue until the edge is at least this small, regardless of ``PruningTolerance`` (though lowest fluxes are pruned first).
 
+When using pruning, RMG will not prune unless all reaction systems reach the goal reaction time or conversion without first exceeding the termination tolerance. Therefore, you may find that RMG is not pruning even though the model edge size exceeds ``MaxEdgeSpeciesAfterPruning``. In order to increase the likelihood of pruning in such cases, you can try increasing ``TerminationTolerance`` to an arbitrarily high value. Alternatively, if you are using a conversion goal, because reaction systems may reach equilibrium below the goal conversion, it may be helpful to reduce the goal conversion or switch to a goal reaction time.
+
 The next two lines specify the absolute and relative tolerance for the ODE solver, respectively. Common values for the absolute tolerance are 1e-15 to 1e-25. Relative tolerance
 is usually 1e-4 to 1e-8::
 

@@ -449,16 +449,22 @@ public class PDepNetwork {
 		for (int i = 0; i < reactionList.size(); i++) {
 			PDepReaction forward = reactionList.get(i);
 			PDepReaction reverse = (PDepReaction) forward.getReverseReaction();
-			if (forward == null)
-				throw new PDepException("Encountered null forward reaction while updating PDepNetwork reaction lists.");
-			else if (reverse == null)
-				throw new PDepException("Encountered null reverse reaction while updating PDepNetwork reaction lists.");
-			if (forward.isCoreReaction(cerm) || reverse.isCoreReaction(cerm))
-				netReactionList.add(forward);
-			else if (forward.getReactant().getIncluded() && forward.getProduct().getIncluded())
-				netReactionList.add(forward);
-			else
-				nonincludedReactionList.add(forward);
+			if (reverse != null) {
+				if (forward.isCoreReaction(cerm) || reverse.isCoreReaction(cerm))
+					netReactionList.add(forward);
+				else if (forward.getReactant().getIncluded() && forward.getProduct().getIncluded())
+					netReactionList.add(forward);
+				else
+					nonincludedReactionList.add(forward);
+			}
+			else {
+				if (forward.isCoreReaction(cerm))
+					netReactionList.add(forward);
+				else if (forward.getReactant().getIncluded() && forward.getProduct().getIncluded())
+					netReactionList.add(forward);
+				else
+					nonincludedReactionList.add(forward);
+			}
 		}
 	}
 
@@ -521,7 +527,9 @@ public class PDepNetwork {
 			}
 		}
 
-		if (!maxReaction.getReactant().getIncluded())
+		if (maxReaction == null)
+			throw new PDepException("Tried to determine nonincluded isomer with maximum leak flux, but no suitable nonincluded reaction has been found.");
+		else if (!maxReaction.getReactant().getIncluded())
 			return maxReaction.getReactant();
 		else if (!maxReaction.getProduct().getIncluded())
 			return maxReaction.getProduct();
@@ -615,10 +623,14 @@ public class PDepNetwork {
 			Species product = (Species) reaction.getProductList().get(0);
 			for (ListIterator<PDepNetwork> iter = networks.listIterator(); iter.hasNext(); ) {
 				PDepNetwork n = iter.next();
-				if (n.contains(reactant))
-					reac_pdn = n;
-				if (n.contains(product))
-					prod_pdn = n;
+				if (n.contains(reactant)) {
+					if (n.getIsomer(reactant).getIncluded())
+						reac_pdn = n;
+				}
+				if (n.contains(product)) {
+					if (n.getIsomer(product).getIncluded())
+						prod_pdn = n;
+				}
 			}
 
 			if (reac_pdn != null && prod_pdn != null && reac_pdn != prod_pdn) {
@@ -658,8 +670,10 @@ public class PDepNetwork {
 			Species reactant = (Species) reaction.getReactantList().get(0);
 			for (ListIterator<PDepNetwork> iter = networks.listIterator(); iter.hasNext(); ) {
 				PDepNetwork n = iter.next();
-				if (n.contains(reactant))
-					pdn = n;
+				if (n.contains(reactant)) {
+					if (n.getIsomer(reactant).getIncluded())
+						pdn = n;
+				}
 			}
 		}
 

@@ -369,18 +369,14 @@ public class CoreEdgeReactionModel implements ReactionModel {
     //## operation categorizeReaction(Reaction) 
     public int categorizeReaction(Structure p_structure) {
         //#[ operation categorizeReaction(Reaction) 
-		if (p_structure == null)
-			throw new NullPointerException();
-			
-        Iterator iter = p_structure.getReactants();
-        while (iter.hasNext()) {
-			Species spe = (Species)iter.next();
-        	if (!containsAsReactedSpecies(spe)) 
-        		return 0;
-        }
+	if (p_structure == null) throw new NullPointerException();
+	
+	if (!reactantsInCoreQ(p_structure)){
+	    return 0;
+	}
         
         int type = 1;
-        iter = p_structure.getProducts();
+        Iterator iter = p_structure.getProducts();
         while (iter.hasNext()) {
 			Species spe = (Species)iter.next();
         	if (!contains(spe)) {
@@ -395,6 +391,16 @@ public class CoreEdgeReactionModel implements ReactionModel {
         
         return type;
         //#]
+    }
+
+    public boolean reactantsInCoreQ(Structure p_structure){
+	Iterator iter = p_structure.getReactants();
+        while (iter.hasNext()) {
+			Species spe = (Species)iter.next();
+        	if (!containsAsReactedSpecies(spe))
+        		return false;
+        }
+	return true;
     }
     
     //## operation contains(Reaction) 

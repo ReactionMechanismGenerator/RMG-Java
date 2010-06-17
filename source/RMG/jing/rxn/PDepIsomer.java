@@ -164,7 +164,7 @@ public class PDepIsomer {
 	 */
 	@Override
 	public String toString() {
-		return getSpeciesNames();
+		return getSpeciesNames() + " (included =" + Boolean.toString(getIncluded()) + ")";
 	}
 
 	/**
