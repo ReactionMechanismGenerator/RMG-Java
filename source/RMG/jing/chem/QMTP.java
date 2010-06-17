@@ -1384,10 +1384,19 @@ public class QMTP implements GeneralGAPP {
             e.printStackTrace();
             System.exit(0);
         }
-	//4. call CanTherm
+	//4 and 5. call CanTherm and read in output
+	Double Hf298 = null;
+	Double S298 = null;
+	Double Cp300 = null;
+	Double Cp400 = null;
+	Double Cp500 = null;
+	Double Cp600 = null;
+	Double Cp800 = null;
+	Double Cp1000 = null;
+	Double Cp1500 = null;
 	try{
 	    File runningDirectory = new File(qmfolder);
-            String canCommand="python " + System.getenv("RMG")+"/source/CanTherm/source/CanTherm.py"+name+".can";
+            String canCommand="python " + System.getenv("RMG")+"/source/CanTherm/source/CanTherm.py "+name+".can";
 	    Process canProc = Runtime.getRuntime().exec(canCommand, null, runningDirectory);
 
 	    InputStream is = canProc.getInputStream();
@@ -1395,30 +1404,24 @@ public class QMTP implements GeneralGAPP {
 	    BufferedReader br = new BufferedReader(isr);
 	    String line=null;
 	    while ( (line = br.readLine()) != null) {
-		//do nothing
+		if(line.startsWith("reading Geometry from the file")){
+		     String[] split = br.readLine().trim().split("\\s+");
+		     Hf298 = Double.parseDouble(split[0]);
+		     S298 = Double.parseDouble(split[1]);
+		     Cp300 = Double.parseDouble(split[2]);
+		     Cp400 = Double.parseDouble(split[3]);
+		     Cp500 = Double.parseDouble(split[4]);
+		     Cp600 = Double.parseDouble(split[5]);
+		     Cp800 = Double.parseDouble(split[7]);
+		     Cp1000 = Double.parseDouble(split[9]);
+		     Cp1500 = Double.parseDouble(split[14]);
+		}
 	    }
 
             int exitValue = canProc.waitFor();
         }
         catch(Exception e){
             String err = "Error in running CanTherm process \n";
-            err += e.toString();
-            e.printStackTrace();
-            System.exit(0);
-        }
-	//5. read in CanTherm output
-	double S298 = 0;
-	try{
-            File outFile=new File(directory+"/cantherm.out");
-            FileReader in = new FileReader(outFile);
-            BufferedReader reader = new BufferedReader(in);
-            String line=reader.readLine();
-                while(line!=null){
-		    line=reader.readLine();//****needs to be updated once I figure out what output looks like
-		}
-        }
-        catch(Exception e){
-            String err = "Error in reading CanTherm output \n";
             err += e.toString();
             e.printStackTrace();
             System.exit(0);
@@ -1438,7 +1441,7 @@ public class QMTP implements GeneralGAPP {
 	else{
 	    //***to be written
 	}
-	ThermoData result = getPM3MM4ThermoDataUsingCCLib(name, directory, p_chemGraph, command);
+	ThermoData result = new ThermoData(Hf298,S298,Cp300,Cp400,Cp500,Cp600,Cp800,Cp1000,Cp1500,3,1,1,"MM4 calculation; includes CanTherm analysis of force-constant matrix");//this includes rough estimates of uncertainty
         System.out.println("Thermo for " + name + ": "+ result.toString());//print result, at least for debugging purposes
         return result;
     }
@@ -1644,7 +1647,7 @@ public class QMTP implements GeneralGAPP {
                 Cp1500 += 3./2.*R + R*calcVibCp(freqs, 1500., h, k, c);
             }
         }
-        ThermoData result = new ThermoData(Hf298,S298,Cp300,Cp400,Cp500,Cp600,Cp800,Cp1000,Cp1500,5,1,1,"PM3 calculation");//this includes rough estimates of uncertainty
+        ThermoData result = new ThermoData(Hf298,S298,Cp300,Cp400,Cp500,Cp600,Cp800,Cp1000,Cp1500,5,1,1,"PM3 or MM4 calculation");//this includes rough estimates of uncertainty
         return result;
     }
 
