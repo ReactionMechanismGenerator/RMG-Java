@@ -383,6 +383,15 @@ public class ReactionTemplate {
   	  }
   	  if (k != null) {
   		  k[0].setFromPrimaryReactionLibrary(true);
+  		  String currentSource = k[0].getSource();
+  		  if (this.direction == -1) {
+  			  if (!currentSource.contains(this.reverseReactionTemplate.name))
+  				  k[0].setSource(this.reverseReactionTemplate.name+": "+k[0].getSource());
+  		  }
+  		  else	{
+  			  if (!currentSource.contains(this.name))
+  				  k[0].setSource(this.name+": "+k[0].getSource());
+  		  }
   		  p_structure.setDirection(getPrimaryReactionDirection(p_structure));
   		  return k;
   	  }
@@ -500,6 +509,15 @@ public class ReactionTemplate {
 	  	  }
 	  	  if (k != null) {
 	  		  k[0].setFromPrimaryReactionLibrary(true);
+	  		  String currentSource = k[0].getSource();
+	  		  if (this.direction == -1) {
+	  			  if (!currentSource.contains(this.reverseReactionTemplate.name))
+	  				  k[0].setSource(this.reverseReactionTemplate.name+": "+k[0].getSource());
+	  		  }
+	  		  else	{
+	  			  if (!currentSource.contains(this.name))
+	  				  k[0].setSource(this.name+": "+k[0].getSource());
+	  		  }
 	  		  p_structure.setDirection(1);
 	  		  return k;
 	  	  }
