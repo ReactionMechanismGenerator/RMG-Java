@@ -54,7 +54,7 @@ public class QMTP implements GeneralGAPP {
     protected ThermoGAGroupLibrary thermoLibrary; //needed for HBI
     public static String qmprogram= "both";//the qmprogram can be "mopac", "gaussian03", "both" (MOPAC and Gaussian), or "mm4"
     public static boolean usePolar = false; //use polar keyword in MOPAC
-    public static boolean useCanTherm = false; //whether to use CanTherm in MM4 cases for interpreting output via force-constant matrix; this will hopefully avoid zero frequency issues
+    public static boolean useCanTherm = true; //whether to use CanTherm in MM4 cases for interpreting output via force-constant matrix; this will hopefully avoid zero frequency issues
     public static boolean useHindRot = false;//whether to use HinderedRotor scans with MM4 (requires useCanTherm=true)
     // Constructors
 
