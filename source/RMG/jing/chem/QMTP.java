@@ -1358,7 +1358,7 @@ public class QMTP implements GeneralGAPP {
 	//*** to be written
 	//3. write CanTherm input file
 	String canInp = "Calculation: Thermo\n";
-	canInp += "Trange 300 100 13\n";//temperatures from 300 to 1500 in increments of 100
+	canInp += "Trange: 300 100 13\n";//temperatures from 300 to 1500 in increments of 100
 	canInp += "Scale: 1.0\n";//scale factor of 1
 	canInp += "Mol 1\n";
 	if(p_chemGraph.getAtomNumber()==1) canInp += "ATOM\n";
