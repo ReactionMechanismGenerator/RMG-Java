@@ -942,11 +942,13 @@ public class FastMasterEqn implements PDepKineticsEstimator {
 				 *  
 				 */
 				LinkedList pathReactionList = pdn.getPathReactions();
+				boolean foundHighPLimitRxn = false;
 				for (int HighPRxNum = 0; HighPRxNum < pathReactionList.size(); HighPRxNum++) {
 					PDepReaction rxnWHighPLimit = (PDepReaction)pathReactionList.get(HighPRxNum);
 					Temperature stdtemp = new Temperature(298,"K");
 					double Hrxn = rxnWHighPLimit.calculateHrxn(stdtemp);
 					if (rxn.getStructure().equals(rxnWHighPLimit.getStructure())) {
+						foundHighPLimitRxn = true;
 						double A = 0.0, Ea = 0.0, n = 0.0;
 						if (rxnWHighPLimit.isForward()) {
 							Kinetics[] k_array = rxnWHighPLimit.getKinetics();
@@ -955,7 +957,8 @@ public class FastMasterEqn implements PDepKineticsEstimator {
 							Ea = kin.getEValue();
 							n = kin.getNValue();
 							// While I'm here, and know which reaction was the High-P limit, set the comment in the P-dep reaction 
-							rxn.setComments("High-P Limit: " + kin.getSource().toString() + " " + kin.getComment().toString() );
+							rxn.setComments("NetReaction from PDepNetwork #" + Integer.toString(pdn.getID()) + " (" + pdn.getSpeciesType() + ")" + 
+									" High-P Limit: " + kin.getSource().toString() + " " + kin.getComment().toString() );
 						}
 						else {
 							Kinetics[] k_array = rxnWHighPLimit.getFittedReverseKinetics();
@@ -971,7 +974,8 @@ public class FastMasterEqn implements PDepKineticsEstimator {
 								commentsForForwardKinetics += "High-P Limit Reverse: " + fwd_kin[numKs].getSource().toString() +fwd_kin[numKs].getComment().toString();
 								if (numKs != fwd_kin.length-1) commentsForForwardKinetics += "\n!";
 							}
-							rxn.setComments(commentsForForwardKinetics);
+							rxn.setComments("NetReaction from PDepNetwork #" + Integer.toString(pdn.getID()) + " (" + pdn.getSpeciesType() + ")" +
+									" " + commentsForForwardKinetics);
 						}
 						if (ReactionModelGenerator.rerunFameWithAdditionalGrains()) {
 							double[][] all_ks = rxn.getPDepRate().getRateConstants();
@@ -996,6 +1000,10 @@ public class FastMasterEqn implements PDepKineticsEstimator {
 						//break;	// Why did MRH put this break here?
 						}
 					}
+				}
+				// If not found, we have a "nonIncluded" (pressure-dependent) reaction
+				if (!foundHighPLimitRxn) {
+					rxn.setComments("NetReaction from PDepNetwork #" + Integer.toString(pdn.getID()) + " (" + pdn.getSpeciesType() + ")");
 				}
 				
 				// Add net reaction to list
