@@ -625,14 +625,14 @@ public class QMTP implements GeneralGAPP {
 		if(attemptNumber%scriptAttempts==1) inpKeyStr+="2\n"; //Block-Diagonal Method then Full-Matrix Method
 		else if(attemptNumber%scriptAttempts==0) inpKeyStr+="3\n"; //Full-Matrix Method only
 		else throw new Exception();//this point should not be reached
-		inpKeyStr+="\n";//<RETURN> for temperature
-		inpKeyStr+="4\n";//unofficial option 4 for vibrational eigenvector printout to generate Cartesian force constant matrix in FORCE.MAT file
-		inpKeyStr+="0\n";//no vibrational amplitude printout
 	    }
 	    else{//CanTherm case: write the FORCE.MAT file
 		if(attemptNumber%scriptAttempts==1) inpKeyStr+="4\n"; //Block-Diagonal Method then Full-Matrix Method
 		else if(attemptNumber%scriptAttempts==0) inpKeyStr+="5\n"; //Full-Matrix Method only
 		else throw new Exception();//this point should not be reached
+		inpKeyStr+="\n";//<RETURN> for temperature
+		inpKeyStr+="4\n";//unofficial option 4 for vibrational eigenvector printout to generate Cartesian force constant matrix in FORCE.MAT file
+		inpKeyStr+="0\n";//no vibrational amplitude printout
 	    }
             inpKeyStr+="0\n";//terminate the job
 	    inpKeyStr+="%\n";
