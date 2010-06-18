@@ -1374,6 +1374,7 @@ public class QMTP implements GeneralGAPP {
 	    //this section still needs to be written
 	    canInp+="";
 	}
+	canInp+="0\n";//no bond-additivity corrections
 	try{
             File canFile=new File(directory+"/"+name+".can");
             FileWriter fw = new FileWriter(canFile);
