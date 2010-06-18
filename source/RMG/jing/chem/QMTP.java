@@ -1355,7 +1355,7 @@ public class QMTP implements GeneralGAPP {
 	//2. compute H0;  note that we will pass H0 to CanTherm by H0=H298(harmonicMM4)-(H298-H0)harmonicMM4, where harmonicMM4 values come from cclib parsing and since it is enthalpy, it should not be NaN due to zero frequencies
 	//*** to be written
 	//3. write CanTherm input file
-	String canInp = "Thermo\n";
+	String canInp = "Calculation: Thermo\n";
 	canInp += "Trange 300 100 13\n";//temperatures from 300 to 1500 in increments of 100
 	canInp += "Scale: 1.0\n";//scale factor of 1
 	canInp += "Mol 1\n";
