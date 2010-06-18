@@ -29,7 +29,6 @@
 
 package jing.chem;
 
-
 import java.io.*;
 import java.util.*;
 import jing.chemUtil.*;
@@ -67,38 +66,24 @@ public class ThermoGAGroupLibrary {
     Note: this kind of tree is different with the kinetics tree.  In kinetics tree, tree nodes are FunctionalGroup or FunctionalGroupCollection.  In thermo tree, tree nodes are Nodes with connectivity,
     */
     protected HierarchyTree groupTree;		//## attribute groupTree
-
     protected HashMap otherDictionary;		//## attribute otherDictionary
-
     protected HashMap otherLibrary;		//## attribute otherLibrary
-
     protected HierarchyTree otherTree;		//## attribute otherTree
-
     protected HashMap radicalDictionary;		//## attribute radicalDictionary
-
     protected HashMap radicalLibrary;		//## attribute radicalLibrary
-
     protected HierarchyTree radicalTree;		//## attribute radicalTree
-
-	   // begin pey
     protected HierarchyTree ringTree;
     protected HashMap ringDictionary;
- // end pey
-
-    protected HashMap ringLibrary;		//## attribute ringLibrary
-    
+    protected HashMap ringLibrary;		//## attribute ringLibrary    
     protected HashMap gaucheDictionary;		
     protected HashMap gaucheLibrary;		
     protected HierarchyTree gaucheTree;	
-    
     protected HashMap oneFiveDictionary;		
     protected HashMap oneFiveLibrary;		
     protected HierarchyTree oneFiveTree;	
-
     protected HashMap abramDictionary;
     protected HashMap abramLibrary;
     protected HierarchyTree abramTree;
-
     protected HashMap unifacDictionary;
     protected HashMap unifacLibrary;
     protected HierarchyTree unifacTree;
@@ -109,18 +94,18 @@ public class ThermoGAGroupLibrary {
 
     //## operation ThermoGAGroupLibrary()
     private  ThermoGAGroupLibrary() {
-        //#[ operation ThermoGAGroupLibrary()
         groupTree = new HierarchyTree();
         groupDictionary = new HashMap();
         groupLibrary = new HashMap();
+
         radicalTree = new HierarchyTree();
         radicalDictionary = new HashMap();
         radicalLibrary = new HashMap();
+
         ringLibrary = new HashMap();
-//		 begin pey
         ringDictionary = new HashMap();
         ringTree = new HierarchyTree();
-        // end pey
+
         otherLibrary = new HashMap();
         otherDictionary = new HashMap();
         otherTree = new HierarchyTree();
@@ -488,16 +473,18 @@ public class ThermoGAGroupLibrary {
                     read15Tree(p_15Tree);
                     read15Library(p_15Library);
 
-                // Added by Amrit Jalan
-                    // Definitions of Platts dictionary, library and tree for Abraham Model Implementation
-					System.out.println("Reading Abraham solvation groups");
-                    readAbrahamDictionary(p_abramDictionary);
-                    readAbrahamTree(p_abramTree);
-                    readAbrahamLibrary(p_abramLibrary);
-					System.out.println("Reading UNIFAC solvation groups");
-                    readUnifacDictionary(p_unifacDictionary);
-                    readUnifacTree(p_unifacTree);
-                    readUnifacLibrary(p_unifacLibrary);
+		if (Species.useSolvation) {
+			// Definitions of Platts dictionary, library and tree for Abraham Model Implementation
+			System.out.println("Reading Abraham solvation groups");
+			readAbrahamDictionary(p_abramDictionary);
+			readAbrahamTree(p_abramTree);
+			readAbrahamLibrary(p_abramLibrary);
+			System.out.println("Reading UNIFAC solvation groups");
+			readUnifacDictionary(p_unifacDictionary);
+			readUnifacTree(p_unifacTree);
+			readUnifacLibrary(p_unifacLibrary);
+		}
+
 
 	    }
 
