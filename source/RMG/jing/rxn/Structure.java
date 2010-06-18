@@ -713,7 +713,7 @@ public class Structure {
     }
     
     /**
-     *	isSpeciesListEquivalentToChemGraphListAsGraphs.java
+     *	isSpeciesListEquivalentToChemGraphListAsChemGraphs.java
      *		Compares a list of species to a list of chemgraphs and determines
      *		if the lists are equivalent.
      *
@@ -722,38 +722,64 @@ public class Structure {
      *
      *		This function is primarily used to determine if a just formed
      *		rxn is equivalent to any of the rxns stored in the primary
-     *		reaction libraries.  The p_list1 contains all of the structures
-     *		stored in the primary rxn library; these have already been
-     *		added to the core of the mechanism, thus the structure contains
-     *		reactants/products whose entries are species.  The p_list2
-     *		contains the just formed structure; this is still in the edge
-     *		of the model and thus its entries are chemgraphs.
+     *		reaction libraries.
      **/
-    public static boolean isSpeciesListEquivalentToChemGraphListAsGraphs(LinkedList p_list1, LinkedList p_list2) {
+    public static boolean isSpeciesListEquivalentToChemGraphListAsChemGraphs(LinkedList p_list1, LinkedList p_list2) {
         if (p_list1.size() != p_list2.size()) return false;
 
-        boolean found = false;
-
         LinkedList templist = (LinkedList)(p_list2.clone());
+        
+        // For each element in the FIRST list
         for (Iterator iter1 = p_list1.iterator(); iter1.hasNext();) {
+            boolean matchFound = false;
+        	// Grab the element
 			Species sp1 = (Species)iter1.next();	// This list contains species
-			Graph g1 = sp1.getChemGraph().getGraph();
-        	found = false;
-        	for (Iterator iter2 = templist.iterator(); iter2.hasNext();) {
-				ChemGraph cg2 = (ChemGraph)iter2.next();	// This list contains chemgraphs
-				Graph g2 = cg2.getGraph();
-        		if (g1.isEquivalent(g2)) {
-        			// If the two graphs are equivalent, remove the current
-        			//	chemgraph from the Iterator iter2 so we no longer
-        			//	try to match that chemgraph
-        			found = true;
-        			iter2.remove();
-        			break;
-        		}
-        	}
-        	// If we could not match the species' graph against
-        	//	any of the chemgraphs' graph, the list is not equivalent
-        	if (!found) return false;
+			
+			/*
+			 * If the species has resonance isomers, iterate over all
+			 * 	chemgraphs and check if one of them matches the just-formed
+			 * 	chemgraph (this chemgraph will be equal to the "mostStable"
+			 * 	chemgraph, as computed by RMG.
+			 */
+			if (sp1.hasResonanceIsomers()) {
+				for (Iterator iter2 = templist.iterator(); iter2.hasNext();) {
+					ChemGraph cg2 = (ChemGraph)iter2.next();	// This list contains chemgraphs
+					Iterator resonanceIsomerIter = sp1.getResonanceIsomers();
+					while (resonanceIsomerIter.hasNext()) {
+						ChemGraph cg1 = (ChemGraph)resonanceIsomerIter.next();
+							if (cg1.equals(cg2)) {
+								// If the two chemgraphs are equivalent, remove the current
+								//	chemgraph from the Iterator iter2 so we no longer
+								//	try to match that chemgraph
+								matchFound = true;
+								iter2.remove();
+								break;	// while loop
+							}
+						}
+					if (matchFound) break; // for loop
+				}
+				// If we could not match the species' chemgraph against
+				//	any of the chemgraphs' graph, the list is not equivalent
+				if (!matchFound) return false;
+			} 
+			
+			else {
+				ChemGraph cg1 = sp1.getChemGraph();
+	        	for (Iterator iter2 = templist.iterator(); iter2.hasNext();) {
+					ChemGraph cg2 = (ChemGraph)iter2.next();	// This list contains chemgraphs
+	        		if (cg1.equals(cg2)) {
+	        			// If the two chemgraphs are equivalent, remove the current
+	        			//	chemgraph from the Iterator iter2 so we no longer
+	        			//	try to match that chemgraph
+	        			matchFound = true;
+	        			iter2.remove();
+	        			break;
+	        		}
+	        	}
+	        	// If we could not match the species' chemgraph against
+	        	//	any of the chemgraphs' graph, the list is not equivalent
+	        	if (!matchFound) return false;
+			}
         }
 
         // If we found a match for all entries in the list, the
