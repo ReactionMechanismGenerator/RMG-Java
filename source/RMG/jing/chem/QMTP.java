@@ -1353,6 +1353,8 @@ public class QMTP implements GeneralGAPP {
         }
 	///////////end of block taken from the bulk of getPM3MM4ThermoDataUsingCCLib////////////
 	//2. compute H0;  note that we will pass H0 to CanTherm by H0=H298(harmonicMM4)-(H298-H0)harmonicMM4, where harmonicMM4 values come from cclib parsing and since it is enthalpy, it should not be NaN due to zero frequencies
+	double Hartree_to_kcal = 627.5095; //conversion from Hartree to kcal/mol taken from Gaussian thermo white paper
+	energy *= Hartree_to_kcal;//convert from Hartree to kcal/mol
 	//*** to be written
 	//3. write CanTherm input file
 	String canInp = "Calculation: Thermo\n";
