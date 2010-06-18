@@ -480,11 +480,6 @@ public class ReactionTemplate {
 			Global.RT_findRateConstant += (System.currentTimeMillis()-pT)/1000/60;
 			return null;
       }
-      
-      
-      
-      
-      //#]
   }
   
   
@@ -512,11 +507,11 @@ public class ReactionTemplate {
 	  		  String currentSource = k[0].getSource();
 	  		  if (this.direction == -1) {
 	  			  if (!currentSource.contains(this.reverseReactionTemplate.name))
-	  				  k[0].setSource(this.reverseReactionTemplate.name+": "+k[0].getSource());
+	  				  k[0].setSource(this.reverseReactionTemplate.name+" "+k[0].getSource());
 	  		  }
 	  		  else	{
 	  			  if (!currentSource.contains(this.name))
-	  				  k[0].setSource(this.name+": "+k[0].getSource());
+	  				  k[0].setSource(this.name+" "+k[0].getSource());
 	  		  }
 	  		  p_structure.setDirection(1);
 	  		  return k;
