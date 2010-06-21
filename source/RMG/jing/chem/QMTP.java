@@ -1407,7 +1407,7 @@ public class QMTP implements GeneralGAPP {
 	    BufferedReader br = new BufferedReader(isr);
 	    String line=null;
 	    while ( (line = br.readLine()) != null) {
-		if(line.startsWith("reading Geometry from the file")){
+		if(line.startsWith("MM4  Energy:")){
 		     String[] split = br.readLine().trim().split("\\s+");
 		     Hf298 = Double.parseDouble(split[0]);
 		     S298 = Double.parseDouble(split[1]);
