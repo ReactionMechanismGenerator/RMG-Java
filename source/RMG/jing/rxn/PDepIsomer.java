@@ -107,6 +107,30 @@ public class PDepIsomer {
 		included = (speList.size() > 1);
 	}
 	
+	/**
+	 * Constructor for unimolecular isomers, read in from Restart files.
+	 * @param species The species the isomer represents.
+	 * @param included Whether the isomer is included or notIncluded 
+	 */
+	public PDepIsomer(Species species, boolean p_included) {
+		speciesList = new LinkedList<Species>();
+		speciesList.add(species);
+		included = p_included;
+	}
+	
+	/**
+	 * Constructor for bimolecular isomers, read in from Restart file.
+	 * @param species1 The first species the isomer represents.
+	 * @param species2 The second species the isomer represents.
+	 * @param included Whether the isomer is included or notIncluded
+	 */
+	public PDepIsomer(Species species1, Species species2, boolean p_included) {
+		speciesList = new LinkedList<Species>();
+		speciesList.add(species1);
+		speciesList.add(species2);
+		included = p_included;
+	}
+	
 	//==========================================================================
 	//
 	//	Accessors
