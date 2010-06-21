@@ -69,10 +69,16 @@ Conversions: AUTO
 Atol: 1e-18
 Rtol: 1e-8
 
-PrimaryReactionLibrary:
+PrimaryKineticLibrary:
 //Name: RMG-example
 //Location: Example
 END
+
+ReactionLibrary:
+//Name: GRIMech3.0
+//Location: GRI-Mech3.0
+END
+
 
 SeedMechanism:
 //Name: Leeds

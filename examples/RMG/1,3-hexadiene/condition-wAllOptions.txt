@@ -156,9 +156,17 @@ Rtol: 1e-8
 // There is no limit to the number of PRLs a user may supply.
 // The "Name" of a PRL can have as many tokens as the user prefers.
 // The "Location" of a PRL is relative to $RMG/databases/<database>/kinetics_libraries/
-PrimaryReactionLibrary:
+PrimaryKineticLibrary:
 //Name: RMG-example
 //Location: Example
+END
+
+// There is no limit to the number of RLs a user may supply.
+// The "Name" of a RL can have as many tokens as the user prefers.
+// The "Location" of a RL is relative to $RMG/databases/<database>/kinetics_libraries/
+ReactionLibrary:
+//Name: GRIMech3.0
+//Location: GRI-Mech3.0
 END
 
 // There is no limit to the number of SMs a user may supply.

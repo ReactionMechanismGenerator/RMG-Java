@@ -100,13 +100,13 @@ public class CoreEdgeReactionModel implements ReactionModel {
 		}
 	}
     
-    //## operation addPrimaryReactionSet(HashSet) 
-    public void addPrimaryReactionSet(LinkedHashSet p_reactionSet) {
-        //#[ operation addPrimaryReactionSet(HashSet) 
+    
+    public void addPrimaryKineticSet(LinkedHashSet p_reactionSet) {
+        
         for (Iterator iter = p_reactionSet.iterator(); iter.hasNext(); ) {
         	Reaction rxn = (Reaction)iter.next();
         	int rxnType = categorizeReaction(rxn);
-        	// here the same reaction has been generated from template, we need to remove that one, and then add the one from PRL
+        	// here the same reaction has been generated from template, we need to remove that one, and then add the one from PKL
         	if (rxnType == 1) {
         		if (containsAsReactedReaction(rxn)) {
         			// remove the present one

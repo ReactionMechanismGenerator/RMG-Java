@@ -722,7 +722,7 @@ public class Structure {
      *
      *		This function is primarily used to determine if a just formed
      *		rxn is equivalent to any of the rxns stored in the primary
-     *		reaction libraries.
+     *		kinetic libraries.
      **/
     public static boolean isSpeciesListEquivalentToChemGraphListAsChemGraphs(LinkedList p_list1, LinkedList p_list2) {
         if (p_list1.size() != p_list2.size()) return false;

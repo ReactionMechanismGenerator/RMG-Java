@@ -58,7 +58,7 @@ public class ReactionSystem {
     protected FinishController finishController;
     protected InitialStatus initialStatus;
     protected PressureModel pressureModel;
-    protected PrimaryReactionLibrary primaryReactionLibrary;//10/14/07 gmagoon: restored (I had commented out)
+    protected PrimaryKineticLibrary primaryKineticLibrary;//10/14/07 gmagoon: restored (I had commented out)
     protected ReactionGenerator reactionGenerator;//10/9/07 gmagoon: uncommented out for use in RateBasedPDepRME (I had commented out a week or two ago)
     protected ReactionModel reactionModel;
     protected ReactionModelEnlarger reactionModelEnlarger;
@@ -71,14 +71,14 @@ public class ReactionSystem {
     protected static boolean printAllSens = false;
     // Constructors
 
-    //## operation ReactionSystem(TemperatureModel,PressureModel,ReactionModelEnlarger,FinishController,DynamicSimulator,PrimaryReactionLibrary,ReactionGenerator,HashSet,InitialStatus)
+    //## operation ReactionSystem(TemperatureModel,PressureModel,ReactionModelEnlarger,FinishController,DynamicSimulator,PrimaryKineticLibrary,ReactionGenerator,HashSet,InitialStatus)
     //9/24/07 gmagoon: reactionModel changed to parameter passed to class; setReactionModel method removed; 10/4/07: this was incorrect; setReactionModel restored
-    //9/25/07 gmagoon: removed primaryReactionLibrary from parameters
-    public  ReactionSystem(TemperatureModel p_temperatureModel, PressureModel p_pressureModel, ReactionModelEnlarger p_reactionModelEnlarger, FinishController p_finishController, DynamicSimulator p_dynamicSimulator, PrimaryReactionLibrary p_primaryReactionLibrary, ReactionGenerator p_reactionGenerator, LinkedHashSet p_speciesSeed, InitialStatus p_initialStatus, ReactionModel p_reactionModel, LibraryReactionGenerator p_libraryReactionGenerator, int p_index, String p_equationOfState) {
+    //9/25/07 gmagoon: removed primaryKineticLibrary from parameters
+    public  ReactionSystem(TemperatureModel p_temperatureModel, PressureModel p_pressureModel, ReactionModelEnlarger p_reactionModelEnlarger, FinishController p_finishController, DynamicSimulator p_dynamicSimulator, PrimaryKineticLibrary p_primaryKineticLibrary, ReactionGenerator p_reactionGenerator, LinkedHashSet p_speciesSeed, InitialStatus p_initialStatus, ReactionModel p_reactionModel, LibraryReactionGenerator p_libraryReactionGenerator, int p_index, String p_equationOfState) {
         {
             systemSnapshot=new LinkedList();
         }
-        //#[ operation ReactionSystem(TemperatureModel,PressureModel,ReactionModelEnlarger,FinishController,DynamicSimulator,PrimaryReactionLibrary,ReactionGenerator,HashSet,InitialStatus)
+        //#[ operation ReactionSystem(TemperatureModel,PressureModel,ReactionModelEnlarger,FinishController,DynamicSimulator,PrimaryKineticLibrary,ReactionGenerator,HashSet,InitialStatus)
         temperatureModel = p_temperatureModel;
         pressureModel = p_pressureModel;
         setFinishController(p_finishController);
@@ -86,7 +86,7 @@ public class ReactionSystem {
         reactionModelEnlarger = p_reactionModelEnlarger;
         initialStatus = p_initialStatus;
         dynamicSimulator = p_dynamicSimulator;
-        primaryReactionLibrary = p_primaryReactionLibrary;//10/14/07 gmagoon: restored (I had commented out)
+        primaryKineticLibrary = p_primaryKineticLibrary;//10/14/07 gmagoon: restored (I had commented out)
         reactionGenerator = p_reactionGenerator; //10/4/07 gmagoon: no longer needed here;//10/9/07 gmagoon needed in RateBasedPDepRME
         originalReactant = p_speciesSeed;
         lrg = p_libraryReactionGenerator;
@@ -507,11 +507,11 @@ public class ReactionSystem {
     }
 
 //9/25/07 gmagoon: moved to ReactionModelGenerator.java    
-//    //## operation hasPrimaryReactionLibrary()
-//    public boolean hasPrimaryReactionLibrary() {
-//        //#[ operation hasPrimaryReactionLibrary()
-//        if (primaryReactionLibrary == null) return false;
-//        return (primaryReactionLibrary.size() > 0);
+//    //## operation hasPrimaryKineticLibrary()
+//    public boolean hasPrimaryKineticLibrary() {
+//        //#[ operation hasPrimaryKineticLibrary()
+//        if (primaryKineticLibrary == null) return false;
+//        return (primaryKineticLibrary.size() > 0);
 //        //#]
 //    }
 
