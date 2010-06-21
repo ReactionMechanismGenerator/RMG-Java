@@ -258,7 +258,18 @@ public class RateBasedPDepRME implements ReactionModelEnlarger {
 							}
 						}
 					}
-					if (network != null) network.getIsomer(maxSpecies).setIncluded(true);
+					if (network != null) {
+						network.getIsomer(maxSpecies).setIncluded(true);
+						try {
+							network.updateReactionLists(cerm);
+						} catch (PDepException e) {
+							e.printStackTrace();
+							System.out.println(e.getMessage());
+							System.err.println("WARNING: Attempt to update reaction list failed " +
+									"for the following network:\n" + network.toString());
+							System.exit(0);
+						}
+					}
 
 					// Generate new reaction set; partition into core and edge
 					LinkedHashSet newReactionSet = rxnSystem.getReactionGenerator().react(cerm.getReactedSpeciesSet(),maxSpecies);
@@ -310,6 +321,7 @@ public class RateBasedPDepRME implements ReactionModelEnlarger {
 					// This will cause any other reactions of the form
 					// isomer -> products that don't yet exist to be created
 					maxNetwork.makeIsomerIncluded(isomer);
+					maxNetwork.updateReactionLists(cerm);
 				}
 				catch (PDepException e) {
 					e.printStackTrace();
