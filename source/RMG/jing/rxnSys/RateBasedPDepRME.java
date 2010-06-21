@@ -278,11 +278,16 @@ public class RateBasedPDepRME implements ReactionModelEnlarger {
 					// Generate new reaction set; partition into core and edge
 					LinkedHashSet newReactionSet_nodup;
 					if(rxnSystem.getLibraryReactionGenerator()!= null){
+						// Iterate through the reaction template				
 						LinkedHashSet newReactionSet = rxnSystem.getReactionGenerator().react(cerm.getReactedSpeciesSet(),maxSpecies);
+						// Iterate through the Reaction Library and find all reactions which include the species being considered
 						newReactionSet.addAll(rxnSystem.getLibraryReactionGenerator().react(cerm.getReactedSpeciesSet(),maxSpecies));
+						// To remove the duplicates that are found in Reaction Library and Reaction Template
+						// Preference given to Reaction Library over Template Reaction 
 					newReactionSet_nodup = RemoveDuplicateReac(newReactionSet);
 					}
 					else{
+						// When no Reaction Library is present
 					newReactionSet_nodup = rxnSystem.getReactionGenerator().react(cerm.getReactedSpeciesSet(),maxSpecies);
 					}
 					

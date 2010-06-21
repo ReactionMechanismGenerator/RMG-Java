@@ -336,12 +336,14 @@ public class PDepIsomer {
 	public LinkedHashSet generatePaths(ReactionSystem rxnSystem) {
 		if (!isUnimolecular())
 			return new LinkedHashSet();
-		//LinkedHashSet reactionSet = ((TemplateReactionGenerator) rxnSystem.getReactionGenerator()).generatePdepReactions(getSpecies(0));
-		//reactionSet.addAll(((LibraryReactionGenerator) rxnSystem.getLibraryReactionGenerator()).generatePdepReactions(getSpecies(0)));
 		
 		if(rxnSystem.getLibraryReactionGenerator()!= null){
+			// First iterate through the Reaction Library and find all reactions which include the species being considered
 		LinkedHashSet reactionSet = ((LibraryReactionGenerator) rxnSystem.getLibraryReactionGenerator()).generatePdepReactions(getSpecies(0));
+		// Iterate through the reaction template
 		reactionSet.addAll(((TemplateReactionGenerator) rxnSystem.getReactionGenerator()).generatePdepReactions(getSpecies(0)));
+		// To remove the duplicates that are found in Reaction Library and Reaction Template
+		// Preference given to Reaction Library over Template Reaction 
 		LinkedHashSet newReactionSet_nodup = RemoveDuplicateReac(reactionSet);
 		System.out.println("Reaction Set For PdepIsomer "+newReactionSet_nodup);
 		return newReactionSet_nodup;
