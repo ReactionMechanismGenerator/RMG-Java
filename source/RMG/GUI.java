@@ -3264,14 +3264,16 @@ public class GUI extends JPanel implements ActionListener {
     			
     	}
     	else if ("pDep".equals(event.getActionCommand())) {
-    		JComponent[] pDepComps = {sdeCombo, pdkmCombo, grainsizeCombo};
+    		JComponent[] pDepComps = {pdkmCombo, grainsizeCombo};
     		JComponent[] pdkmComps = {chebyTMin, chebyTMax, chebyTUnits, chebyTGen, chebyTRep,
     				chebyPMin, chebyPMax, chebyPUnits, chebyPGen, chebyPRep,
     				chebyPCombo, chebyTCombo, chebyP, chebyT};
     		if (pdepCombo.getSelectedItem().equals("off")) {
+    			sdeCombo.setSelectedItem("off");
     			disableComponents(pDepComps);
     			disableComponents(pdkmComps);
     		} else {
+    			sdeCombo.setSelectedItem("Frequency Groups");
     			enableComponents(pDepComps);
     			enableComponents(pdkmComps);
     			JComponent[] tlistComps = {chebyT};
@@ -3404,7 +3406,7 @@ public class GUI extends JPanel implements ActionListener {
 	//	Tab4: Dynamic Simulator
 	String[] pdepOptions = {"off", "Reservoir State", "Modified Strong Collision"};
 	String[] simOptions = {"DASSL", "DASPK"}; //"CHEMKIN"
-	String[] sdeOptions = {"Frequency Groups"}; //"Three Frequency Model"
+	String[] sdeOptions = {"off","Frequency Groups"}; //"Three Frequency Model"
 	String[] pdkmOptions = {"CHEB", "PLOG", "Rate"};
 	String[] listormaxmin = {"List", "Max/Min"};
 	String[] interOptions = {"Indiv. time steps","AUTO","AUTOPRUNE"};
