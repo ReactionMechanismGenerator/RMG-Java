@@ -1403,7 +1403,7 @@ public class QMTP implements GeneralGAPP {
 	    Process canProc = Runtime.getRuntime().exec(canCommand, null, runningDirectory);
 	    System.out.println(canCommand);
 	    System.out.println(runningDirectory);
-	    InputStream is = canProc.getErrorStream();
+	    InputStream is = canProc.getInputStream();
 	    InputStreamReader isr = new InputStreamReader(is);
 	    BufferedReader br = new BufferedReader(isr);
 	    String line=null;
