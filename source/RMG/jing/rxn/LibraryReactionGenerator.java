@@ -185,8 +185,15 @@ public class LibraryReactionGenerator implements ReactionGenerator {
     public LinkedHashSet generatePdepReactions(Species p_species){
     	LinkedHashSet speciesSet = new LinkedHashSet();
     	speciesSet.add(p_species);
-    	LinkedHashSet reactionSet = react(speciesSet);
-    	
+    	LinkedHashSet reactionSet = react(speciesSet); 
+    	// Iterate through reaction set and for a lindemann / TROE / Third body reaction print out
+    	// Reaction and a warning saying only using the high pressure limit rate 
+    	Iterator iter_reaction = reactionSet.iterator();
+    	while (iter_reaction.hasNext()){
+    		Reaction rxn =(Reaction)iter_reaction.next();
+    		if (rxn instanceof ThirdBodyReaction || rxn instanceof TROEReaction || rxn instanceof LindemannReaction)
+    			System.out.println("RMG is only utilizing the high-pressure limit parameters for PRL reaction: " + rxn.toString());
+    	}
         return reactionSet;
     }
     
