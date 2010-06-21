@@ -1401,17 +1401,13 @@ public class QMTP implements GeneralGAPP {
 	    File runningDirectory = new File(qmfolder);
             String canCommand="python " + System.getenv("RMG")+"/source/CanTherm/source/CanTherm.py "+name+".can";
 	    Process canProc = Runtime.getRuntime().exec(canCommand, null, runningDirectory);
-	    System.out.println(canCommand);
-	    System.out.println(runningDirectory);
 	    InputStream is = canProc.getInputStream();
 	    InputStreamReader isr = new InputStreamReader(is);
 	    BufferedReader br = new BufferedReader(isr);
 	    String line=null;
 	    while ( (line = br.readLine()) != null) {
-		System.out.println(line);
 		if(line.startsWith("MM4  Energy:")){
 		     String[] split = br.readLine().trim().split("\\s+");
-		     System.out.println(split[0]);
 		     Hf298 = Double.parseDouble(split[0]);
 		     S298 = Double.parseDouble(split[1]);
 		     Cp300 = Double.parseDouble(split[2]);
