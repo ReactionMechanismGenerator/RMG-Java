@@ -29,7 +29,7 @@ help:
 	@echo "  linkcheck to check all external links for integrity"
 	@echo "  upload    to upload to Sourceforge"
 	@echo "  sitemap   update the google sitemap"
-	@echo "  all       update, clean, html, latex, sitemap, upload"
+	@echo "  all       clean, html, latex, sitemap, upload"
 
 
 all: html latex sitemap upload

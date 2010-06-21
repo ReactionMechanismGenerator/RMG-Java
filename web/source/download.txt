@@ -4,15 +4,15 @@
 Download
 ********
 
-For RMG 3.0, a number of different packages are available.
+For RMG 3.2, a number of different packages are available.
 
 * Binary package for Linux (i386 only)
 * Source package compatible across all platforms
 * Binary package for Windows (32-bit only)
 * Installer for Windows (32-bit only)
 
-To download them please visit the 
-`Sourceforge download page <http://sourceforge.net/project/showfiles.php?group_id=191843&package_id=225575>`_.
+Download them from the
+`Sourceforge download page HERE! <http://sourceforge.net/project/showfiles.php?group_id=191843&package_id=225575>`_.
 
 For help installing them, please refer to the :ref:`installation` section of the documentation.
 
@@ -20,9 +20,16 @@ For help installing them, please refer to the :ref:`installation` section of the
 Latest Developer version
 ------------------------
 
-To get the latest development version of the code (the head of the official master branch) you can use either git or SVN for read-only access:
+To get the latest development version of the source code (the head of the official master branch) 
+you can download a snapshot from 
+http://github.com/GreenGroup/RMG-Java/archives/master
+or use either git or SVN for read-only access:
 
 * git clone git://github.com/GreenGroup/RMG-Java.git
 * svn checkout http://svn.github.com/greengroup/RMG-Java.git
 
-If you might want to make changes, a better idea is to create your own account on github.com, fork the official repository (http://github.com/greengroup/RMG-Java/fork), and clone that. There's help at http://help.github.com/
+If you might want to make changes, a better idea is to create your own account on github.com, 
+fork the official repository (http://github.com/greengroup/RMG-Java/fork), and clone that. 
+There's help at http://help.github.com/
+
+For help compiling, please refer to the :ref:`compiling_from_source` section of the documentation.

@@ -25,17 +25,23 @@ condition file :file:`hexane_pyro.txt`.
 #. Run the following Java command to launch the program 
    (all one line)::
 
-    $ java -Xmx500m -classpath $RMG/software/rmg/RMG.jar RMG hexane_pyro.txt > output &
-  
-When RMG is started, it creates ten subdirectories in the directory containing the condition file: :file:`therfit`, :file:`chemkin`, :file:`fame`, :file:`chemdis`, :file:`fit3p`, :file:`frankie`, 
-:file:`GATPFit`, :file:`ODESolver`, :file:`InChI` and :file:`Restart`.
+    $ java -Xmx500m -classpath $RMG/bin/RMG.jar RMG hexane_pyro.txt > output.log &
 
-In this example, all of the output from RMG is piped to a file output. The ``> output`` 
-part of the command is optional but recommended. Please note that the
-Java option ``-Xmx500m`` is hardware specific. In this example, we assume that
+When RMG is started, it creates ten subdirectories in the directory containing
+the condition file: :file:`therfit`, :file:`chemkin`, :file:`fame`,
+:file:`chemdis`, :file:`fit3p`, :file:`frankie`, :file:`GATPFit`,
+:file:`ODESolver`, :file:`InChI` and :file:`Restart`.
+
+In this example, all of the output from RMG is piped to a file :file:`output.log`. The ``> output`` 
+part of the command is optional but recommended.
+The Java option ``-Xmx500m`` is hardware specific. In this example, we assume that
 we can allot five hundred megabytes of memory for Java Virtual Machine running
-RMG; please consult a guide to Java for more information. To see the content of
-the output file as it is being generated, use the command:  ``$ tail -f output``.
+RMG; please consult a guide to Java for more information. 
+On unix systems we recommend allocating less than half of your available virtual memory, because of 
+the way the Java Virtual Machine forks processes.
+
+To see the content of
+the output file as it is being generated, use the command:  ``$ tail -f output.log``.
 
 
 .. _runninginwindows:
@@ -46,7 +52,7 @@ Running RMG from the Command Line in Windows
 To run RMG in Windows: Open a DOS-prompt, change the current working directory to the directory with the condition file, and run the following Java command to launch the program.  In this example, the condition file is located in a (new) folder named conditionFiles::
 
 	cd "%rmg%"\conditionFiles
-	java -Xmx500m -jar "%rmg%"\software\rmg\RMG.jar condition.txt
+	java -Xmx500m -jar "%rmg%"\bin\RMG.jar condition.txt
 	
 .. note::
 

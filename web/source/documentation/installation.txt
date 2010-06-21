@@ -29,13 +29,17 @@ A Windows installer is also provided. The user has the option of installing all 
 
 Whether you install a binary or a source package, you will need:
 
-* **The Java SE Runtime Environment (JRE), version 6.** This is available from http://java.sun.com/javase/downloads/index.jsp.
+The Java SE Runtime Environment (JRE), version 6.
+	This is available from http://java.sun.com/javase/downloads/index.jsp.
 
 To generate InChIs and to convert from InChIs/.mol files to adjacency lists you will need:
 
-* **The IUPAC International Chemical Identifier InChI version 1 (software version 1.01).**  This is available from http://www.iupac.org/inchi/download/index.html
+The IUPAC International Chemical Identifier InChI version 1 (software version 1.01).
+	This is available from http://www.iupac.org/inchi/download/index.html
 
 Additional information about the advanced RMG features and the third-party software required to install them can be found in the following section. 
+
+.. _compiling_from_source:
 
 Compiling RMG from Source
 =========================
@@ -43,20 +47,33 @@ Compiling RMG from Source
 Compilation Prerequisites
 --------------------------
 
-To build a functional version of RMG you will need the following:
+To build a functional version of RMG from source you will need the following:
 
-* **The Java SE Development Kit (JDK), version 6.** This is available from http://java.sun.com/javase/downloads/index.jsp.
-* **The Differential Algebraic System Solver (DASSL).** This is available in the public domain from http://www.cs.ucsb.edu/~cse/software.html.
-* **A Fortran 90 compiler.** We recommend the free g95 compiler, available from http://www.g95.org/.
-* **A Fortran 77 compiler.** The g95 compiler can successfully build the Fortran 77 source code as well.
-* **The Basic Linear Algebra Subprograms (BLAS).** This is present in most Linux distributions, and is also available from http://www.netlib.org/blas/. Although only the BLAS source code is required, we recommend installing the full package if possible.
-* **The Linear Algebra PACKage (LAPACK).** This is present in most Linux distributions, and is also available from http://www.netlib.org/lapack/. Although only the LAPACK source code is required, we recommend installing the full package if possible.
+The Java SE Development Kit (JDK), version 6.
+	This is available from http://java.sun.com/javase/downloads/index.jsp.
+
+The Differential Algebraic System Solver (DASSL).
+	This is available in the public domain from http://www.cs.ucsb.edu/~cse/software.html.
+
+A Fortran 90 compiler.
+	We recommend the free g95 compiler, available from http://www.g95.org/.
+
+A Fortran 77 compiler.
+	The g95 compiler can successfully build the Fortran 77 source code as well.
+
+The Basic Linear Algebra Subprograms (BLAS).
+	This is present in most Linux distributions, and is also available from http://www.netlib.org/blas/. Although only the BLAS source code is required, we recommend installing the full package if possible.
+
+The Linear Algebra PACKage (LAPACK).
+	This is present in most Linux distributions, and is also available from http://www.netlib.org/lapack/. Although only the LAPACK source code is required, we recommend installing the full package if possible.
 
 Although not required, we also recommend that you obtain:
 
-* **GNU make.** This controls the generation of Fortran executables, and is present in most Linux distributions. More information can be found at http://www.gnu.org/software/make/. 
+GNU make.
+	This controls the generation of Fortran executables, and is present in most Linux distributions. More information can be found at http://www.gnu.org/software/make/. 
 
-* **Apache Ant.** This controls the generation of Java executables. More information can be found at http://ant.apache.org/. 
+Apache Ant.
+	This controls the generation of Java executables. More information can be found at http://ant.apache.org/. 
 
 .. To perform sensitivity analysis on the models generated, you will also need:
 
@@ -65,7 +82,8 @@ Although not required, we also recommend that you obtain:
 
 To generate InChIs and to convert from InChIs/.mol files to adjacency lists you will need:
 
-* **The IUPAC International Chemical Identifier InChI version 1 (software version 1.01).**  This is available from http://www.iupac.org/inchi/download/index.html
+The IUPAC International Chemical Identifier InChI version 1 (software version 1.01).
+	This is available from http://www.iupac.org/inchi/download/index.html
 
 .. _linuxinstallation:
 
@@ -88,7 +106,7 @@ To install RMG on a Linux computer:
 		
   To avoid typing this line each time, append it to your :file:`~/.bashrc` (bash shell) or :file:`~/.cshrc` (C shell) file.
 
-3. Obtain the source code. Download the file :file:`rmg-3.0-linux-i386.tar.gz` or :file:`rmg-3.0-source.tar.gz`, ungzip and untar it, and move its contents to the :file:`$RMG` directory. ::
+3. Obtain the source code (See :ref:`download`). Download the file :file:`rmg-3.0-linux-i386.tar.gz` or :file:`rmg-3.0-source.tar.gz`, ungzip and untar it, and move its contents to the :file:`$RMG` directory. ::
 
 	$ tar -xvzf rmg-3.0-source.tar.gz
 	$ mv rmg3/* $RMG
@@ -157,7 +175,7 @@ To install RMG on a Windows computer:
 
    * Click OK twice to confirm the change.
 
-3. Obtain the source code. Download the file :file:`rmg-3.0-win32-i386.zip` or :file:`rmg-3.0-source.tar.gz`, decompress it, and move its contents to the :file:`%RMG%` directory.
+3. Obtain the source code (See :ref:`download`). Download the file :file:`rmg-3.0-win32-i386.zip` or :file:`rmg-3.0-source.tar.gz`, decompress it, and move its contents to the :file:`%RMG%` directory.
 
 Step 4 is only required if you are working with the source package. Binary packages are available for several platforms and will already contain the compiled executables.
 
@@ -184,6 +202,7 @@ Installation of Dependencies for 3D-geometry-based Thermodynamic Property Calcul
 =====================================================================================
 
 Several dependencies are required to use 3D-geometry-based thermodynamic property calculation features of RMG. These include (recommended versions in parentheses):
+
 1. Python (2.x, with x=5 or higher) http://www.python.org/
 2. cclib (see below)
 3. RDKit (Q2 2009 or later) http://rdkit.org/
@@ -191,33 +210,42 @@ Several dependencies are required to use 3D-geometry-based thermodynamic propert
 5. InChI (1.02beta or 1.03) http://www.iupac.org/inchi/download/index.html
 6. SYMMETRY (v. 1.15 or later) http://www.cobalt.chem.ucalgary.ca/ps/symmetry/ (from Serguei Patchkovskii at the University of Calgary)
 7. GAUSSIAN03 and/or MOPAC2009 http://www.gaussian.com/ and http://openmopac.net/downloads.html
+
 With the exception of GAUSSIAN03 and MOPAC2009, all of the above may be obtained freely and are open-source. In the case of MOPAC2009, the software may be obtained freely for academic, not-for-profit use.
 
 Below are some notes for each of these and instructions on getting them to work properly with RMG:
 
-Python: You should add the Python installation directory to the PATH environment variable such that
-typing "python" at the command-line brings up the Python prompt. NOTE: This will probably need to be done manually.
+Python
+	You should add the Python installation directory to the PATH environment variable such that
+	typing "python" at the command-line brings up the Python prompt. NOTE: This will probably need to be done manually.
 
-cclib: Modified portions of the source code for cclib 1.0 (http://cclib.sourceforge.net/) are included in the /source/cclib/ directory (licensed under LGPL 2.1).
-No action should be required on the part of the user.
+cclib
+	Modified portions of the source code for cclib 1.0 (http://cclib.sourceforge.net/) are included in the /source/cclib/ directory (licensed under LGPL 2.1).
+	No action should be required on the part of the user.
 
-RDKit: The typical installation process for RDKit should set the RDBASE environment variable
-and no further action on the part of the user should be required.
-Note: If installing from the Windows binaries, you will also need to install numpy and set environment variables as described at http://code.google.com/p/rdkit/wiki/InstallingOnWindows .
+RDKit
+	The typical installation process for RDKit should set the RDBASE environment variable
+	and no further action on the part of the user should be required.
+	Note: If installing from the Windows binaries, you will also need to install numpy and set environment variables as described at http://code.google.com/p/rdkit/wiki/InstallingOnWindows .
 
-OpenBabel: The OpenBabel installation directory (e.g. C:\Program Files\OpenBabel-2.2.0) should be added to the PATH environment variable
-such that typing "babel" at the command-line produces output (including version information) from OpenBabel. This should be done
-automatically by the OpenBabel installer, and no manual intervention should be required.
+OpenBabel
+	The OpenBabel installation directory (e.g. C:\Program Files\OpenBabel-2.2.0) should be added to the PATH environment variable
+	such that typing "babel" at the command-line produces output (including version information) from OpenBabel. This should be done
+	automatically by the OpenBabel installer, and no manual intervention should be required.
 
-InChI: Installation of InChI is described above. The InChI executable should be placed
-in the /bin/ RMG directory.
+InChI
+	Installation of InChI is described above. The InChI executable should be placed
+	in the /bin/ RMG directory.
 
-SYMMETRY: For Windows, it is recommended that the compiled .exe file available from http://www.cobalt.chem.ucalgary.ca/ps/symmetry/ (via symmdos.zip)
-be used. This file should be copied into RMG's /bin/ directory. On other platforms, you must compile the SYMMETRY.EXE executable yourself
-and place the executable in RMG's /bin/ directory.
+SYMMETRY
+	For Windows, it is recommended that the compiled .exe file available from http://www.cobalt.chem.ucalgary.ca/ps/symmetry/ (via symmdos.zip)
+	be used. This file should be copied into RMG's /bin/ directory. On other platforms, you must compile the SYMMETRY.EXE executable yourself
+	and place the executable in RMG's /bin/ directory.
 
-MOPAC2009: The environment variable MOPAC_LICENSE should be set (e.g. c:\Users\User1\Documents\MOPAC\).
-This should be done automatically by the MOPAC installer, and no manual intervention should be required.
+MOPAC2009
+	The environment variable MOPAC_LICENSE should be set (e.g. c:\Users\User1\Documents\MOPAC\).
+	This should be done automatically by the MOPAC installer, and no manual intervention should be required.
 
-GAUSSIAN03: Add the GAUSSIAN03 directory (e.g. "c:/G03W/") to the PATH environment variable.
-NOTE: This will typically need to be done manually.
+GAUSSIAN03
+	Add the GAUSSIAN03 directory (e.g. "c:/G03W/") to the PATH environment variable.
+	NOTE: This will typically need to be done manually.
