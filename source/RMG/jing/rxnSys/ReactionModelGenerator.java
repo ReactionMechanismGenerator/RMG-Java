@@ -4441,6 +4441,24 @@ public class ReactionModelGenerator {
 			reactionModelEnlarger = new RateBasedRME();
 			PDepNetwork.generateNetworks = false;
 
+			/*
+			 * If the Spectroscopic Data Estimator field is set to "Frequency Groups,"
+			 * 	terminate the RMG job and inform the user to either:
+			 * 		a) Set the Spectroscopic Data Estimator field to "off," OR
+			 * 		b) Select a pressure-dependent model
+			 * 
+			 * Before, RMG would read in "Frequency Groups" with no pressure-dependence
+			 * 	and carry on.  However, the calculated frequencies would not be stored /
+			 * 	reported (plus increase the runtime), so no point in calculating them.
+			 */
+			
+			if (SpectroscopicData.mode != SpectroscopicData.mode.OFF) {
+				System.err.println("Terminating RMG simulation: User requested frequency estimation, " +
+						"yet no pressure-dependence.\nSUGGESTION: Set the " +
+						"SpectroscopicDataEstimator field in the input file to 'off'.");
+				System.exit(0);
+			}
+			
 			line = ChemParser.readMeaningfulLine(reader);
 		}
 		else if (pDepType.toLowerCase().equals("modifiedstrongcollision") ||
