@@ -364,17 +364,27 @@ public class PDepIsomer {
 		if(rxnSystem.getLibraryReactionGenerator()!= null){
 			// First iterate through the Reaction Library and find all reactions which include the species being considered
 		LinkedHashSet reactionSet = ((LibraryReactionGenerator) rxnSystem.getLibraryReactionGenerator()).generatePdepReactions(getSpecies(0));
+		System.out.println("Reaction Set Found from Reaction Library "+reactionSet);
+		
 		// Iterate through the reaction template
 		reactionSet.addAll(((TemplateReactionGenerator) rxnSystem.getReactionGenerator()).generatePdepReactions(getSpecies(0)));
+		
 		// To remove the duplicates that are found in Reaction Library and Reaction Template
 		// Preference given to Reaction Library over Template Reaction 
+		
 		LinkedHashSet newReactionSet_nodup = RemoveDuplicateReac(reactionSet);
-		System.out.println("Reaction Set For PdepIsomer "+newReactionSet_nodup);
+		
+		// shamel 6/22/2010 Suppressed output , line is only for debugging
+		//System.out.println("Reaction Set For PdepIsomer "+newReactionSet_nodup);
+		
 		return newReactionSet_nodup;
 	    }
 		else{
 			LinkedHashSet reactionSet = ((TemplateReactionGenerator) rxnSystem.getReactionGenerator()).generatePdepReactions(getSpecies(0));
-			System.out.println("Reaction Set For PdepIsomer "+reactionSet);
+			
+			// shamel 6/22/2010 Suppressed output , line is only for debugging
+			//System.out.println("Reaction Set For PdepIsomer "+reactionSet);
+			
 			return reactionSet;
 		}
 	}

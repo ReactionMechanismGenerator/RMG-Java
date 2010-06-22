@@ -3646,13 +3646,15 @@ public class ReactionModelGenerator {
 			
 			// If Seed Mechanism is present and Generate Reaction is set on  
 			if (hasSeedMechanisms() && getSeedMechanism().shouldGenerateReactions()) {
-				//reactionSet = getReactionGenerator().react(allInitialCoreSpecies);
+				
 				reactionSet_withdup = getLibraryReactionGenerator().react(allInitialCoreSpecies);
 				reactionSet_withdup.addAll(getReactionGenerator().react(allInitialCoreSpecies));
 				
 				// Removing Duplicates instances of reaction if present 
 				 reactionSet = RemoveDuplicateReac(reactionSet_withdup);
-				System.out.println("Current Reaction Set after RModG + LRG and Removing Dups"+reactionSet);
+				 
+				// shamel 6/22/2010 Suppressed output , line is only for debugging
+				//System.out.println("Current Reaction Set after RModG + LRG and Removing Dups"+reactionSet);
 			}
 			
 			else {
@@ -3661,11 +3663,13 @@ public class ReactionModelGenerator {
 				//System.out.println("Initial Core Species RModG"+allInitialCoreSpecies);
 				
 				LinkedHashSet tempnewReactionSet = getLibraryReactionGenerator().react(allInitialCoreSpecies);
-				System.out.println("Reaction Set Found from LRG "+tempnewReactionSet);
+				System.out.println("Reaction Set Found from Reaction Library "+tempnewReactionSet);
 				
 				// Adds Reactions Found in Library Reaction Generator to Reaction Set
 				reactionSet_withdup.addAll(getLibraryReactionGenerator().react(allInitialCoreSpecies));
-				System.out.println("Current Reaction Set after LRG"+reactionSet_withdup);
+				
+				// shamel 6/22/2010 Suppressed output , line is only for debugging
+				//System.out.println("Current Reaction Set after LRG"+reactionSet_withdup);
 				
 				// Generates Reaction from the Reaction Generator and adds them to Reaction Set
 					for (Iterator iter = speciesSeed.iterator(); iter.hasNext(); ) {
@@ -3673,7 +3677,9 @@ public class ReactionModelGenerator {
 					reactionSet_withdup.addAll(getReactionGenerator().react(allInitialCoreSpecies, spec));
 				}
 					reactionSet = RemoveDuplicateReac(reactionSet_withdup);
-					System.out.println("Current Reaction Set after RModG + LRG and Removing Dups"+reactionSet);
+					
+					// shamel 6/22/2010 Suppressed output , line is only for debugging
+					//System.out.println("Current Reaction Set after RModG + LRG and Removing Dups"+reactionSet);
 			}
 			
 			
@@ -4453,7 +4459,7 @@ public class ReactionModelGenerator {
 		if (Ilib==0) {
 			setReactionLibrary(null);
 		}
-		else System.out.println("New Reaction Libraries in use: " + getReactionLibrary().getName());
+		else System.out.println("Reaction Libraries in use: " + getReactionLibrary().getName());
     }
     
     

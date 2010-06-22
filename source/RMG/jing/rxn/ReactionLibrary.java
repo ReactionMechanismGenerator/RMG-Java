@@ -83,13 +83,13 @@ public class ReactionLibrary {
         name = p_libraryName;
         
         // Check if directory path is given/exists
-        if ( p_directoryPath == null) throw new NullPointerException("New ReactionLibrary directory path");
+        if ( p_directoryPath == null) throw new NullPointerException("Reaction Library directory path");
         try {
         	read(p_directoryPath,p_libraryName);
         }
         catch (IOException e) {
         	// Throws error if cant read in Reaction Library Path
-        	throw new IOException("Error reading New Reaction Library: " + name + '\n' + e.getMessage());
+        	throw new IOException("Error reading Reaction Library: " + name + '\n' + e.getMessage());
         }
         
     }
@@ -110,7 +110,7 @@ public class ReactionLibrary {
      		read(p_directoryPath,new_p_libraryName);	
      	}
          catch (IOException e) {
-         	throw new IOException("Error reading New Reaction Library: " + new_p_libraryName + '\n' + e.getMessage());
+         	throw new IOException("Error reading Reaction Library: " + new_p_libraryName + '\n' + e.getMessage());
          }
      }
      
@@ -121,7 +121,7 @@ public class ReactionLibrary {
     	 
          try {
          	if (!p_directoryName.endsWith("/")) p_directoryName = p_directoryName + "/";
- 			System.out.println("Reading New Reaction Library from: "+p_directoryName);
+ 			System.out.println("Reading Reaction Library from: "+p_directoryName);
          	
  			 
              String dictionaryFile = p_directoryName + "species.txt";
@@ -136,7 +136,7 @@ public class ReactionLibrary {
          	return;
          }
          catch (Exception e) {
-         	throw new IOException("Can't read New reaction library.\n" + e.getMessage());
+         	throw new IOException("Can't read Reaction library.\n" + e.getMessage());
          }
      }
 
@@ -435,7 +435,7 @@ public class ReactionLibrary {
         	return;
         }
         catch (Exception e) {
-        	System.out.println("RMG did not read the following New Reaction Library file: " 
+        	System.out.println("RMG did not read the following Reaction Library file: " 
         			+ p_reactionFileName);
         }
     }
@@ -482,7 +482,7 @@ public class ReactionLibrary {
         	return;
         }
         catch (Exception e) {
-			throw new IOException("RMG cannot read the \"species.txt\" file in the Seed Mechanism\n" + e.getMessage());
+			throw new IOException("RMG cannot read the \"species.txt\" file in the Reaction Library\n" + e.getMessage());
         }
     }
 

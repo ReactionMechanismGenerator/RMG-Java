@@ -278,20 +278,25 @@ public class RateBasedPDepRME implements ReactionModelEnlarger {
 					// Generate new reaction set; partition into core and edge
 					LinkedHashSet newReactionSet_nodup;
 					if(rxnSystem.getLibraryReactionGenerator().getReactionLibrary() != null){
-						// Iterate through the reaction template				
-						LinkedHashSet newReactionSet = rxnSystem.getReactionGenerator().react(cerm.getReactedSpeciesSet(),maxSpecies);
+						
 						// Iterate through the Reaction Library and find all reactions which include the species being considered
-						newReactionSet.addAll(rxnSystem.getLibraryReactionGenerator().react(cerm.getReactedSpeciesSet(),maxSpecies));
+						LinkedHashSet newReactionSet = rxnSystem.getLibraryReactionGenerator().react(cerm.getReactedSpeciesSet(),maxSpecies);
+						System.out.println("Reaction Set Found from Reaction Library "+newReactionSet);
+						
+						// Iterate through the reaction template
+						newReactionSet.addAll(rxnSystem.getReactionGenerator().react(cerm.getReactedSpeciesSet(),maxSpecies));
+						
 						// To remove the duplicates that are found in Reaction Library and Reaction Template
 						// Preference given to Reaction Library over Template Reaction 
+						
 					newReactionSet_nodup = RemoveDuplicateReac(newReactionSet);
 					}
 					else{
 						// When no Reaction Library is present
 					newReactionSet_nodup = rxnSystem.getReactionGenerator().react(cerm.getReactedSpeciesSet(),maxSpecies);
 					}
-					
-					System.out.println("Reaction Set For Pdep PdepRME "+newReactionSet_nodup);
+					// shamel 6/22/2010 Suppressed output , line is only for debugging
+					// System.out.println("Reaction Set For Pdep PdepRME "+newReactionSet_nodup);
 					
 					Iterator rxnIter = newReactionSet_nodup.iterator();
 					while (rxnIter.hasNext()){
