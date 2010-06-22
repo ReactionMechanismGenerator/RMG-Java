@@ -382,18 +382,7 @@ public class ReactionTemplate {
   		  k = getPrimaryKineticRate(p_structure);
   	  }
   	  if (k != null) {
-  		  for (int numK=0; numK<k.length; numK++) {	  		  
-	  		  k[numK].setFromPrimaryKineticLibrary(true);
-	  		  String currentSource = k[numK].getSource();
-	  		  if (this.direction == -1) {
-	  			  if (!currentSource.contains(this.reverseReactionTemplate.name))
-	  				  k[numK].setSource(this.reverseReactionTemplate.name+" "+k[numK].getSource());
-	  		  }
-	  		  else	{
-	  			  if (!currentSource.contains(this.name))
-	  				  k[numK].setSource(this.name+" "+k[numK].getSource());
-	  		  }
-  		  }
+  		  setRateCoefficientSource(k);
   		  p_structure.setDirection(getPrimaryKineticDirection(p_structure));
   		  return k;
   	  }
@@ -505,18 +494,7 @@ public class ReactionTemplate {
 	  		  k = getPrimaryKineticRate(p_structure);
 	  	  }
 	  	  if (k != null) {
-	  		  for (int numK=0; numK<k.length; numK++) {
-		  		  k[numK].setFromPrimaryKineticLibrary(true);
-		  		  String currentSource = k[numK].getSource();
-		  		  if (this.direction == -1) {
-		  			  if (!currentSource.contains(this.reverseReactionTemplate.name))
-		  				  k[numK].setSource(this.reverseReactionTemplate.name+" "+k[numK].getSource());
-		  		  }
-		  		  else	{
-		  			  if (!currentSource.contains(this.name))
-		  				  k[numK].setSource(this.name+" "+k[numK].getSource());
-		  		  }
-	  		  }
+	  		  setRateCoefficientSource(k);
 	  		  p_structure.setDirection(1);
 	  		  return k;
 	  	  }
@@ -610,11 +588,21 @@ public class ReactionTemplate {
 			Global.RT_findRateConstant += (System.currentTimeMillis()-pT)/1000/60;
 			return null;
       }
-      
-      
-      
-      
-      //#]
+  }
+  
+  public void setRateCoefficientSource(Kinetics[] k) {
+	  for (int numK=0; numK<k.length; numK++) {
+  		  k[numK].setFromPrimaryKineticLibrary(true);
+  		  String currentSource = k[numK].getSource();
+  		  if (this.direction == -1) {
+  			  if (!currentSource.contains(this.reverseReactionTemplate.name))
+  				  k[numK].setSource(this.reverseReactionTemplate.name+" "+k[numK].getSource());
+  		  }
+  		  else	{
+  			  if (!currentSource.contains(this.name))
+  				  k[numK].setSource(this.name+" "+k[numK].getSource());
+  		  }
+	  }
   }
   
   /**
