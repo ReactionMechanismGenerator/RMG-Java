@@ -197,6 +197,10 @@ public class LibraryReactionGenerator implements ReactionGenerator {
         return reactionSet;
     }
     
+    public ReactionLibrary getReactionLibrary() {
+    	return reactionLibrary;
+    }
+    
 }
 /*********************************************************************
 	File Path	: RMG\RMG\jing\rxn\LibraryReactionGenerator.java
