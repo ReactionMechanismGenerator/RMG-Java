@@ -387,11 +387,11 @@ public class ReactionTemplate {
 	  		  String currentSource = k[numK].getSource();
 	  		  if (this.direction == -1) {
 	  			  if (!currentSource.contains(this.reverseReactionTemplate.name))
-	  				  k[numK].setSource(this.reverseReactionTemplate.name+": "+k[numK].getSource());
+	  				  k[numK].setSource(this.reverseReactionTemplate.name+" "+k[numK].getSource());
 	  		  }
 	  		  else	{
 	  			  if (!currentSource.contains(this.name))
-	  				  k[numK].setSource(this.name+": "+k[numK].getSource());
+	  				  k[numK].setSource(this.name+" "+k[numK].getSource());
 	  		  }
   		  }
   		  p_structure.setDirection(getPrimaryKineticDirection(p_structure));
