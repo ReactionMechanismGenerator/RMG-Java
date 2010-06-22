@@ -40,19 +40,18 @@ Get and install sphinx
 
 Yes, it's that easy.
 
-Get the source from CVS
+Get the source from Git
 -----------------------
-#. Set up your CVS root by typing ``export CVSROOT=:ext:username@monch.mit.edu:/home/cvs`` 
-   replacing ``username`` with your username
-#. In a sensible location, type ``cvs co RMG_manual``
+The documentation is stored alongside the RMG source code in the same git repository.
+Check the :file:`/web/` directory.
 
 Compile the documentation
 -------------------------
-#. Inside the :file:`RMG_manual` directory type one of the following:
+#. Inside the :file:`web` directory type one of the following:
 
   * ``make html`` to generate the html web pages
   * ``make latex`` to generate the latex source (then follow the instructions to build it to pdf)
-  * ``make upload`` to upload the html and pdf to sourceforge
+  * ``make upload`` to upload the html and pdf to sourceforge (may need Richard's secret keys, or edit the makefile)
   * ``make help`` for a list of other options
 
 
@@ -65,7 +64,7 @@ Installing Python on Windows
 1. Python for Windows may be obtained from
    http://www.python.org/download/. Although the site lists versions
    upto Python 3.0, not all of these have the easy_install package
-   available yet. For the moment, I would recommend Python 2.5.4
+   available yet. For the moment, I would recommend Python 2.5.x or 2.6.x
 
 2. Visit http://pypi.python.org/pypi/setuptools. Download and
    install the ``setuptools`` executable for your Python version(2.5).
@@ -80,10 +79,13 @@ Installing Python on Windows
 Installing Sphinx
 -----------------
 
+1. Open a command prompt. Type and run ``easy_install sphinx``. 
+
+That should be all! If not, try this instead
+
 1. Visit http://pypi.python.org/pypi/Sphinx and download the
    Sphinx.egg file for your Python version. Save it in an easily
    accesible folder.
-
 
 2. Open a command prompt. Type and run ``easy_install <path to the
    Sphinx.egg file>``
@@ -103,8 +105,13 @@ Running Sphinx
    html pages created in the build directory which can then be uploaded
    etc.
 
-
 #. Please refer to http://sphinx.pocoo.org/contents.html for details
+
+Or, **the easier version**: 
+
+1. Just double-click on the :file:`build_html.bat` batch file
+   that is in your documentation's root folder. This will build the html and open it 
+   in your default web browser.
 
 Mathematics!
 ============
