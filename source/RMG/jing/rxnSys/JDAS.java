@@ -831,14 +831,18 @@ public abstract class JDAS implements DAESolver {
                                         }
                                         //write the string for the reaction with an edge product (it has been assumed above that only one side will have an edge species (although both sides of the reaction could have a core species))
                                         if(edgeReaction){
-                                            edgeReactionCounter++;
                                             if(forwardFlag){
-                                                String str = getEdgeReactionString(model, edgeID, rxn, p_temperature, p_pressure);//use the forward reaction
+                                                edgeReactionCounter++;
+						String str = getEdgeReactionString(model, edgeID, rxn, p_temperature, p_pressure);//use the forward reaction
  //                                               edgeReacInfoString.append("\n" + str);
                                             }
                                             else{
-                                                String str = getEdgeReactionString(model, edgeID, (PDepReaction)rxn.getReverseReaction(), p_temperature, p_pressure);//use the reverse reaction
- //                                               edgeReacInfoString.append("\n" + str);
+						PDepReaction rxn_r = (PDepReaction)rxn.getReverseReaction();
+						if(rxn_r != null){//make sure the reverse is not null
+						    edgeReactionCounter++;
+						    String str = getEdgeReactionString(model, edgeID, rxn_r, p_temperature, p_pressure);//use the reverse reaction
+     //                                               edgeReacInfoString.append("\n" + str);
+						}
                                             }
                                         }
                                 }
@@ -1022,15 +1026,19 @@ public abstract class JDAS implements DAESolver {
                                             }
                                             //write the string for the reaction with an edge product (it has been assumed above that only one side will have an edge species (although both sides of the reaction could have a core species))
                                             if(edgeReaction){
-                                                edgeReactionCounter++;
-                                                if(forwardFlag){
-                                                    String str = getEdgeReactionString(model, edgeID, rxn, p_temperature, p_pressure);//use the forward reaction
-                                                    bw.write("\n" + str);
-                                                }
-                                                else{
-                                                    String str = getEdgeReactionString(model, edgeID, (PDepReaction)rxn.getReverseReaction(), p_temperature, p_pressure);//use the reverse reaction
-                                                    bw.write("\n" + str);
-                                                }
+						if(forwardFlag){
+						    edgeReactionCounter++;
+						    String str = getEdgeReactionString(model, edgeID, rxn, p_temperature, p_pressure);//use the forward reaction
+						    bw.write("\n" + str);
+						}
+						else{
+						    PDepReaction rxn_r = (PDepReaction)rxn.getReverseReaction();
+						    if(rxn_r != null){//make sure the reverse is not null
+							edgeReactionCounter++;
+							String str = getEdgeReactionString(model, edgeID, rxn_r, p_temperature, p_pressure);//use the reverse reaction
+							bw.write("\n" + str);
+						    }
+						}
                                             }
                                     }
                             }
