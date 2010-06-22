@@ -412,7 +412,20 @@ public class PDepNetwork {
 			Reaction rxn = (Reaction) iter.next();
 			if (!contains(rxn)) {
 				addReactionToNetworks(rxn);
-				((CoreEdgeReactionModel)reactionModel).addReaction(rxn);
+				/*
+				 * The reactions (of form A --> B or A --> C + D) could form
+				 * 	a species that is not otherwise in the edge of the
+				 * 	CoreEdgeReactionModel.
+				 * We want to leave all of the reactions alone (i.e. not add
+				 * 	them to the core OR edge) but need to check whether any
+				 * 	of the new species should be added to the edge.
+				 */
+				LinkedList rxnProducts = rxn.getProductList();
+				for (int numProds=0; numProds<rxnProducts.size(); numProds++) {
+					if (!((CoreEdgeReactionModel)reactionModel).containsAsReactedSpecies((Species)rxnProducts.get(numProds)))
+						if (!((CoreEdgeReactionModel)reactionModel).containsAsUnreactedSpecies((Species)rxnProducts.get(numProds)))
+							((CoreEdgeReactionModel)reactionModel).addUnreactedSpecies((Species)rxnProducts.get(numProds));
+				}
 			}
 		}
 
