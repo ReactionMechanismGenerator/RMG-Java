@@ -3279,7 +3279,6 @@ public class ReactionModelGenerator {
     }
     
     public void readPDepNetworks() {
-    	SpeciesDictionary sd = SpeciesDictionary.getInstance();
     	LinkedList allNetworks = PDepNetwork.getNetworks(); 
     	
     	try {
@@ -3323,151 +3322,26 @@ public class ReactionModelGenerator {
 					while (!line.toLowerCase().startsWith("nonincludedreactionlist")) {
 						
 						// Read in the forward rxn
-						String[] reactsANDprods = line.split("\\-->");
+						//	Assumes all netReactions are reversible
+						String[] reactsANDprods = line.split("\\<=>");
 						
-						PDepIsomer Reactants = null;
-						String reacts = reactsANDprods[0].trim();
-						if (reacts.contains("+")) {
-							String[] indivReacts = reacts.split("[+]");
-							String name = indivReacts[0].trim();
-							Species spc1 = sd.getSpeciesFromChemkinName(name);
-							if (spc1 == null) {
-								spc1 = getSpeciesBySPCName(name,sd);
-							}							
-							name = indivReacts[1].trim();
-							Species spc2 = sd.getSpeciesFromChemkinName(name);
-							if (spc2 == null) {
-								spc2 = getSpeciesBySPCName(name,sd);
-							}	
-							Reactants = new PDepIsomer(spc1,spc2);
-						} else {
-							String name = reacts.trim();
-							Species spc = sd.getSpeciesFromChemkinName(name);
-							if (spc == null) {
-								spc = getSpeciesBySPCName(name,sd);
-							}	
-							Reactants = new PDepIsomer(spc);
-						}
-						
-						PDepIsomer Products = null;
-						String prods = reactsANDprods[1].trim();
-						if (prods.contains("+")) {
-							String[] indivProds = prods.split("[+]");
-							String name = indivProds[0].trim();
-							Species spc1 = sd.getSpeciesFromChemkinName(name);
-							if (spc1 == null) {
-								spc1 = getSpeciesBySPCName(name,sd);
-							}	
-							name = indivProds[1].trim();
-							Species spc2 = sd.getSpeciesFromChemkinName(name);
-							if (spc2 == null) {
-								spc2 = getSpeciesBySPCName(name,sd);
-							}	
-							Products = new PDepIsomer(spc1,spc2);
-						} else {
-							String name = prods.trim();
-							Species spc = sd.getSpeciesFromChemkinName(name);
-							if (spc == null) {
-								spc = getSpeciesBySPCName(name,sd);
-							}	
-							Products = new PDepIsomer(spc);
-						}
-						
+						PDepIsomer Reactants = parseIsomerFromRestartFile(reactsANDprods[0].trim());
+						PDepIsomer Products =  parseIsomerFromRestartFile(reactsANDprods[1].trim());
+
 						newNetwork.addIsomer(Reactants);
 						newNetwork.addIsomer(Products);
 						
-						for (int i=0; i<numFameTs; i++) {
-							st = new StringTokenizer(ChemParser.readMeaningfulLine(reader));
-							for (int j=0; j<numFamePs; j++) {
-								rateCoefficients[i][j] = Double.parseDouble(st.nextToken());
-							}
-						}
-						
-						PDepRateConstant pdepk = null;
-						if (numChebyTs > 0) {
-							for (int i=0; i<numChebyTs; i++) {
-								st = new StringTokenizer(ChemParser.readMeaningfulLine(reader));
-								for (int j=0; j<numChebyPs; j++) {
-									chebyPolys[i][j] = Double.parseDouble(st.nextToken());
-								}
-							}
-							ChebyshevPolynomials chebyshev = new ChebyshevPolynomials(numChebyTs,
-																					  ChebyshevPolynomials.getTlow(), ChebyshevPolynomials.getTup(),
-																					  numChebyPs, ChebyshevPolynomials.getPlow(), ChebyshevPolynomials.getPup(),
-																					  chebyPolys);
-							pdepk = new PDepRateConstant(rateCoefficients,chebyshev);
-						} else if (numPlogs > 0) {
-							for (int i=0; i<numPlogs; i++) {
-								st = new StringTokenizer(ChemParser.readMeaningfulLine(reader));
-								Pressure p = new Pressure(Double.parseDouble(st.nextToken()),"Pa");
-								UncertainDouble dA = new UncertainDouble(Double.parseDouble(st.nextToken()),0.0,"A");
-								UncertainDouble dn = new UncertainDouble(Double.parseDouble(st.nextToken()),0.0,"A");
-								double Ea = Double.parseDouble(st.nextToken());
-								if (EaUnits.equals("cal/mol"))
-									Ea = Ea / 1000;
-								else if (EaUnits.equals("J/mol"))
-									Ea = Ea / 4.184 / 1000;
-								else if (EaUnits.equals("kJ/mol"))
-									Ea = Ea / 4.184;
-								else if (EaUnits.equals("Kelvins"))
-									Ea = Ea * 1.987;
-								UncertainDouble dE = new UncertainDouble(Ea,0.0,"A");
-								ArrheniusKinetics k = new ArrheniusKinetics(dA, dn, dE, "", 1, "", "");
-								PDepArrheniusKinetics pdepAK = new PDepArrheniusKinetics(i);
-								pdepAK.setKinetics(i, p, k);
-								pdepk = new PDepRateConstant(rateCoefficients,pdepAK);
-							}
-						}
-						
+						rateCoefficients = parseRateCoeffsFromRestartFile(numFameTs,numFamePs,reader);
+						PDepRateConstant pdepk = parsePDepRateConstantFromRestartFile(reader,numChebyTs,numChebyPs,rateCoefficients,numPlogs,EaUnits);											
 						PDepReaction forward = new PDepReaction(Reactants, Products, pdepk);
 						
 						// Read in the reverse reaction
 						line = ChemParser.readMeaningfulLine(reader);
 						
-						for (int i=0; i<numFameTs; i++) {
-							st = new StringTokenizer(ChemParser.readMeaningfulLine(reader));
-							for (int j=0; j<numFamePs; j++) {
-								rateCoefficients[i][j] = Double.parseDouble(st.nextToken());
-							}
-						}
-						
-						pdepk = null;
-						if (numChebyTs > 0) {
-							for (int i=0; i<numChebyTs; i++) {
-								st = new StringTokenizer(ChemParser.readMeaningfulLine(reader));
-								for (int j=0; j<numChebyPs; j++) {
-									chebyPolys[i][j] = Double.parseDouble(st.nextToken());
-								}
-							}
-							ChebyshevPolynomials chebyshev = new ChebyshevPolynomials(numChebyTs,
-																					  ChebyshevPolynomials.getTlow(), ChebyshevPolynomials.getTup(),
-																					  numChebyPs, ChebyshevPolynomials.getPlow(), ChebyshevPolynomials.getPup(),
-																					  chebyPolys);
-							pdepk = new PDepRateConstant(rateCoefficients,chebyshev);
-						} else if (numPlogs > 0) {
-							for (int i=0; i<numPlogs; i++) {
-								st = new StringTokenizer(ChemParser.readMeaningfulLine(reader));
-								Pressure p = new Pressure(Double.parseDouble(st.nextToken()),"Pa");
-								UncertainDouble dA = new UncertainDouble(Double.parseDouble(st.nextToken()),0.0,"A");
-								UncertainDouble dn = new UncertainDouble(Double.parseDouble(st.nextToken()),0.0,"A");
-								double Ea = Double.parseDouble(st.nextToken());
-								if (EaUnits.equals("cal/mol"))
-									Ea = Ea / 1000;
-								else if (EaUnits.equals("J/mol"))
-									Ea = Ea / 4.184 / 1000;
-								else if (EaUnits.equals("kJ/mol"))
-									Ea = Ea / 4.184;
-								else if (EaUnits.equals("Kelvins"))
-									Ea = Ea * 1.987;
-								UncertainDouble dE = new UncertainDouble(Ea,0.0,"A");
-								ArrheniusKinetics k = new ArrheniusKinetics(dA, dn, dE, "", 1, "", "");
-								PDepArrheniusKinetics pdepAK = new PDepArrheniusKinetics(i);
-								pdepAK.setKinetics(i, p, k);
-								pdepk = new PDepRateConstant(rateCoefficients,pdepAK);
-							}
-						}
-						
+						rateCoefficients = parseRateCoeffsFromRestartFile(numFameTs,numFamePs,reader); 
+						pdepk = parsePDepRateConstantFromRestartFile(reader,numChebyTs,numChebyPs,rateCoefficients,numPlogs,EaUnits);
 						PDepReaction reverse = new PDepReaction(Products, Reactants, pdepk);
+						
 						reverse.setReverseReaction(forward);
 						forward.setReverseReaction(reverse);
 						
@@ -3486,152 +3360,40 @@ public class ReactionModelGenerator {
 						
 						// Read in the forward rxn
 						String[] reactsANDprods = line.split("\\-->");
+						/*
+						 * Determine if nonIncludedReaction is reversible or irreversible
+						 */
+						boolean reactionIsReversible = true;
+						if (reactsANDprods.length == 2)
+							reactionIsReversible = false;
+						else
+							reactsANDprods = line.split("\\<=>");
 						
-						PDepIsomer Reactants = null;
-						String reacts = reactsANDprods[0].trim();
-						if (reacts.contains("+")) {
-							String[] indivReacts = reacts.split("[+]");
-							String name = indivReacts[0].trim();
-							Species spc1 = sd.getSpeciesFromChemkinName(name);
-							if (spc1 == null) {
-								spc1 = getSpeciesBySPCName(name,sd);
-							}	
-							name = indivReacts[1].trim();
-							Species spc2 = sd.getSpeciesFromChemkinName(name);
-							if (spc2 == null) {
-								spc2 = getSpeciesBySPCName(name,sd);
-							}	
-							Reactants = new PDepIsomer(spc1,spc2);
-						} else {
-							String name = reacts.trim();
-							Species spc = sd.getSpeciesFromChemkinName(name);
-							if (spc == null) {
-								spc = getSpeciesBySPCName(name,sd);
-							}	
-							Reactants = new PDepIsomer(spc);
-						}
-						
-						PDepIsomer Products = null;
-						String prods = reactsANDprods[1].trim();
-						if (prods.contains("+")) {
-							String[] indivProds = prods.split("[+]");
-							String name = indivProds[0].trim();
-							Species spc1 = sd.getSpeciesFromChemkinName(name);
-							if (spc1 == null) {
-								spc1 = getSpeciesBySPCName(name,sd);
-							}	
-							name = indivProds[1].trim();
-							Species spc2 = sd.getSpeciesFromChemkinName(name);
-							if (spc2 == null) {
-								spc2 = getSpeciesBySPCName(name,sd);
-							}	
-							Products = new PDepIsomer(spc1,spc2);
-						} else {
-							String name = prods.trim();
-							Species spc = sd.getSpeciesFromChemkinName(name);
-							if (spc == null) {
-								spc = getSpeciesBySPCName(name,sd);
-							}	
-							Products = new PDepIsomer(spc);
-						}
+						PDepIsomer Reactants = parseIsomerFromRestartFile(reactsANDprods[0].trim());
+						PDepIsomer Products =  parseIsomerFromRestartFile(reactsANDprods[1].trim());
 						
 						newNetwork.addIsomer(Reactants);
 						newNetwork.addIsomer(Products);
 						
-						for (int i=0; i<numFameTs; i++) {
-							st = new StringTokenizer(ChemParser.readMeaningfulLine(reader));
-							for (int j=0; j<numFamePs; j++) {
-								rateCoefficients[i][j] = Double.parseDouble(st.nextToken());
-							}
-						}
-						
-						PDepRateConstant pdepk = null;
-						if (numChebyTs > 0) {
-							for (int i=0; i<numChebyTs; i++) {
-								st = new StringTokenizer(ChemParser.readMeaningfulLine(reader));
-								for (int j=0; j<numChebyPs; j++) {
-									chebyPolys[i][j] = Double.parseDouble(st.nextToken());
-								}
-							}
-							ChebyshevPolynomials chebyshev = new ChebyshevPolynomials(numChebyTs,
-																					  ChebyshevPolynomials.getTlow(), ChebyshevPolynomials.getTup(),
-																					  numChebyPs, ChebyshevPolynomials.getPlow(), ChebyshevPolynomials.getPup(),
-																					  chebyPolys);
-							pdepk = new PDepRateConstant(rateCoefficients,chebyshev);
-						} else if (numPlogs > 0) {
-							for (int i=0; i<numPlogs; i++) {
-								st = new StringTokenizer(ChemParser.readMeaningfulLine(reader));
-								Pressure p = new Pressure(Double.parseDouble(st.nextToken()),"Pa");
-								UncertainDouble dA = new UncertainDouble(Double.parseDouble(st.nextToken()),0.0,"A");
-								UncertainDouble dn = new UncertainDouble(Double.parseDouble(st.nextToken()),0.0,"A");
-								double Ea = Double.parseDouble(st.nextToken());
-								if (EaUnits.equals("cal/mol"))
-									Ea = Ea / 1000;
-								else if (EaUnits.equals("J/mol"))
-									Ea = Ea / 4.184 / 1000;
-								else if (EaUnits.equals("kJ/mol"))
-									Ea = Ea / 4.184;
-								else if (EaUnits.equals("Kelvins"))
-									Ea = Ea * 1.987;
-								UncertainDouble dE = new UncertainDouble(Ea,0.0,"A");
-								ArrheniusKinetics k = new ArrheniusKinetics(dA, dn, dE, "", 1, "", "");
-								PDepArrheniusKinetics pdepAK = new PDepArrheniusKinetics(i);
-								pdepAK.setKinetics(i, p, k);
-								pdepk = new PDepRateConstant(rateCoefficients,pdepAK);
-							}
-						}
-						
+						rateCoefficients = parseRateCoeffsFromRestartFile(numFameTs,numFamePs,reader);
+						PDepRateConstant pdepk = parsePDepRateConstantFromRestartFile(reader,numChebyTs,numChebyPs,rateCoefficients,numPlogs,EaUnits);											
 						PDepReaction forward = new PDepReaction(Reactants, Products, pdepk);
 						
 						// Read in the reverse reaction
-						line = ChemParser.readMeaningfulLine(reader);
-						
-						for (int i=0; i<numFameTs; i++) {
-							st = new StringTokenizer(ChemParser.readMeaningfulLine(reader));
-							for (int j=0; j<numFamePs; j++) {
-								rateCoefficients[i][j] = Double.parseDouble(st.nextToken());
-							}
+						if (reactionIsReversible) {
+							line = ChemParser.readMeaningfulLine(reader);
+							
+							rateCoefficients = parseRateCoeffsFromRestartFile(numFameTs,numFamePs,reader);
+							pdepk = parsePDepRateConstantFromRestartFile(reader,numChebyTs,numChebyPs,rateCoefficients,numPlogs,EaUnits);											
+							
+							PDepReaction reverse = new PDepReaction(Products, Reactants, pdepk);
+							reverse.setReverseReaction(forward);
+							forward.setReverseReaction(reverse);
 						}
-						
-						pdepk = null;
-						if (numChebyTs > 0) {
-							for (int i=0; i<numChebyTs; i++) {
-								st = new StringTokenizer(ChemParser.readMeaningfulLine(reader));
-								for (int j=0; j<numChebyPs; j++) {
-									chebyPolys[i][j] = Double.parseDouble(st.nextToken());
-								}
-							}
-							ChebyshevPolynomials chebyshev = new ChebyshevPolynomials(numChebyTs,
-																					  ChebyshevPolynomials.getTlow(), ChebyshevPolynomials.getTup(),
-																					  numChebyPs, ChebyshevPolynomials.getPlow(), ChebyshevPolynomials.getPup(),
-																					  chebyPolys);
-							pdepk = new PDepRateConstant(rateCoefficients,chebyshev);
-						} else if (numPlogs > 0) {
-							for (int i=0; i<numPlogs; i++) {
-								st = new StringTokenizer(ChemParser.readMeaningfulLine(reader));
-								Pressure p = new Pressure(Double.parseDouble(st.nextToken()),"Pa");
-								UncertainDouble dA = new UncertainDouble(Double.parseDouble(st.nextToken()),0.0,"A");
-								UncertainDouble dn = new UncertainDouble(Double.parseDouble(st.nextToken()),0.0,"A");
-								double Ea = Double.parseDouble(st.nextToken());
-								if (EaUnits.equals("cal/mol"))
-									Ea = Ea / 1000;
-								else if (EaUnits.equals("J/mol"))
-									Ea = Ea / 4.184 / 1000;
-								else if (EaUnits.equals("kJ/mol"))
-									Ea = Ea / 4.184;
-								else if (EaUnits.equals("Kelvins"))
-									Ea = Ea * 1.987;
-								UncertainDouble dE = new UncertainDouble(Ea,0.0,"A");
-								ArrheniusKinetics k = new ArrheniusKinetics(dA, dn, dE, "", 1, "", "");
-								PDepArrheniusKinetics pdepAK = new PDepArrheniusKinetics(i);
-								pdepAK.setKinetics(i, p, k);
-								pdepk = new PDepRateConstant(rateCoefficients,pdepAK);
-							}
+						else {
+							PDepReaction reverse = null;
+							forward.setReverseReaction(reverse);
 						}
-						
-						PDepReaction reverse = new PDepReaction(Products, Reactants, pdepk);
-						reverse.setReverseReaction(forward);
-						forward.setReverseReaction(reverse);
 						
 						nonincludeRxns.add(forward);
 						
@@ -3660,7 +3422,7 @@ public class ReactionModelGenerator {
 			    		generateReverse = true;
 			    	}
 			    	
-			    	sd = SpeciesDictionary.getInstance();
+			    	SpeciesDictionary sd = SpeciesDictionary.getInstance();
 			        LinkedList r = ChemParser.parseReactionSpecies(sd, reactsANDprods[0]);
 			        LinkedList p = ChemParser.parseReactionSpecies(sd, reactsANDprods[1]);
 					
@@ -3722,6 +3484,96 @@ public class ReactionModelGenerator {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+    }
+    
+    public PDepIsomer parseIsomerFromRestartFile(String p_string) {
+    	SpeciesDictionary sd = SpeciesDictionary.getInstance();
+    	
+    	PDepIsomer isomer = null;
+		if (p_string.contains("+")) {
+			String[] indivReacts = p_string.split("[+]");
+			String name = indivReacts[0].trim();
+			Species spc1 = sd.getSpeciesFromChemkinName(name);
+			if (spc1 == null) {
+				spc1 = getSpeciesBySPCName(name,sd);
+			}
+			name = indivReacts[1].trim();
+			String[] nameANDincluded = name.split("\\(included =");
+			Species spc2 = sd.getSpeciesFromChemkinName(nameANDincluded[0].trim());
+			if (spc2 == null) {
+				spc2 = getSpeciesBySPCName(name,sd);
+			}
+			boolean isIncluded = Boolean.parseBoolean(nameANDincluded[1].substring(0,nameANDincluded[1].length()-1));
+			isomer = new PDepIsomer(spc1,spc2,isIncluded);
+		} else {
+			String name = p_string.trim();
+			/*
+			 * Separate the (included =boolean) portion of the string
+			 * 	from the name of the Isomer
+			 */
+			String[] nameANDincluded = name.split("\\(included =");
+			Species spc = sd.getSpeciesFromChemkinName(nameANDincluded[0].trim());
+			if (spc == null) {
+				spc = getSpeciesBySPCName(name,sd);
+			}
+			boolean isIncluded = Boolean.parseBoolean(nameANDincluded[1].substring(0,nameANDincluded[1].length()-1)); 
+			isomer = new PDepIsomer(spc,isIncluded);
+		}
+		
+		return isomer;
+    }
+    
+    public double[][] parseRateCoeffsFromRestartFile(int numFameTs, int numFamePs, BufferedReader reader) {
+    	double[][] rateCoefficients = new double[numFameTs][numFamePs];
+		for (int i=0; i<numFameTs; i++) {
+			StringTokenizer st = new StringTokenizer(ChemParser.readMeaningfulLine(reader));
+			for (int j=0; j<numFamePs; j++) {
+				rateCoefficients[i][j] = Double.parseDouble(st.nextToken());
+			}
+		}
+		return rateCoefficients;
+    }
+    
+    public PDepRateConstant parsePDepRateConstantFromRestartFile(BufferedReader reader, 
+    		int numChebyTs, int numChebyPs, double[][] rateCoefficients, 
+    		int numPlogs, String EaUnits) {
+    	PDepRateConstant pdepk = null;
+		if (numChebyTs > 0) {
+			double chebyPolys[][] = new double[numChebyTs][numChebyPs];
+			for (int i=0; i<numChebyTs; i++) {
+				StringTokenizer st = new StringTokenizer(ChemParser.readMeaningfulLine(reader));
+				for (int j=0; j<numChebyPs; j++) {
+					chebyPolys[i][j] = Double.parseDouble(st.nextToken());
+				}
+			}
+			ChebyshevPolynomials chebyshev = new ChebyshevPolynomials(numChebyTs,
+																	  ChebyshevPolynomials.getTlow(), ChebyshevPolynomials.getTup(),
+																	  numChebyPs, ChebyshevPolynomials.getPlow(), ChebyshevPolynomials.getPup(),
+																	  chebyPolys);
+			pdepk = new PDepRateConstant(rateCoefficients,chebyshev);
+		} else if (numPlogs > 0) {
+			for (int i=0; i<numPlogs; i++) {
+				StringTokenizer st = new StringTokenizer(ChemParser.readMeaningfulLine(reader));
+				Pressure p = new Pressure(Double.parseDouble(st.nextToken()),"Pa");
+				UncertainDouble dA = new UncertainDouble(Double.parseDouble(st.nextToken()),0.0,"A");
+				UncertainDouble dn = new UncertainDouble(Double.parseDouble(st.nextToken()),0.0,"A");
+				double Ea = Double.parseDouble(st.nextToken());
+				if (EaUnits.equals("cal/mol"))
+					Ea = Ea / 1000;
+				else if (EaUnits.equals("J/mol"))
+					Ea = Ea / 4.184 / 1000;
+				else if (EaUnits.equals("kJ/mol"))
+					Ea = Ea / 4.184;
+				else if (EaUnits.equals("Kelvins"))
+					Ea = Ea * 1.987;
+				UncertainDouble dE = new UncertainDouble(Ea,0.0,"A");
+				ArrheniusKinetics k = new ArrheniusKinetics(dA, dn, dE, "", 1, "", "");
+				PDepArrheniusKinetics pdepAK = new PDepArrheniusKinetics(i);
+				pdepAK.setKinetics(i, p, k);
+				pdepk = new PDepRateConstant(rateCoefficients,pdepAK);
+			}
+		}
+		return pdepk;
     }
     
     /**

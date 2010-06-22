@@ -322,8 +322,17 @@ public class PDepReaction extends Reaction {
 	public String toString() {
 		if (reactant == null || product == null)
 			return "";
-		else
-			return (reactant.toString() + " --> " + product.toString());
+		else {
+			/*
+			 * Distinguish between reversible and irreversible pdep reactions
+			 * 	In particular, this is important when writing/reading
+			 * 	Restart/pdepnetworks.txt file
+			 */
+			if (this.getReverseReaction() == null)
+				return (reactant.toString() + " --> " + product.toString());
+			else
+				return (reactant.toString() + " <=> " + product.toString());
+		}
 	}
 	
 	/**
