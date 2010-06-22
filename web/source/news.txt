@@ -3,7 +3,7 @@
 RMG News and Updates
 **********************************
 
-2010-MM-DD: RMG 3.2 Released!
+2010-06-DD: RMG 3.2 Released!
 ==============================
 RMG version 3.2 has been released. The new release includes a number of improvements and bug fixes, including the following:
 
@@ -12,6 +12,10 @@ Features:
 - The :file:`RMG_Database` folder has been restructured more logically. (:ref:`PrimaryReactionLibrary <primaryreactionlibrary>` and :ref:`Seed Mechanism <seedmechanism>` specifications in condition files will need updating)
 
 - More accurate thermodynamic quantities from PM3 calculations for cyclic species based on explicit 3D molecule geometries (provided the user has access to GAUSSIAN03 or MOPAC2009)
+
+- Transport property estimation
+
+- New Primary Reaction Library option for including reactions not  (old Primary Reaction Library has been renamed to Primary Kinetics Library)
 
 - New reaction model pruning option to reduce number of edge species and ease memory limitations.
 
@@ -25,9 +29,17 @@ Features:
 
 - Dictionary.txt will now be written at every iteration, rather than just the final iteration.
 
+- CHEMKIN input files from each iteration are saved to separate folders
+
 - RMG output file includes timestamp and code revision information.
 
 Bug fixes and performance improvements:
+
+- Treatment of molecular oxygen has changed significantly, including support for both triplet ground state and singlet; oxygen should now be specified in biradical form rather than the O=O form used previously
+
+- Various improvements to pressure-dependent network enlargement algorithm
+
+- Fixed writing of reactions with Evans-Polanyi parameters to CHEMKIN input file
 
 - Refinements to values in the database based on literature review.
 
