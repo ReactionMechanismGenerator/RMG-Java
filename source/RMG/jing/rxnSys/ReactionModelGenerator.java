@@ -3493,13 +3493,13 @@ public class ReactionModelGenerator {
 		if (p_string.contains("+")) {
 			String[] indivReacts = p_string.split("[+]");
 			String name = indivReacts[0].trim();
-			Species spc1 = sd.getSpeciesFromChemkinName(name);
+			Species spc1 = sd.getSpeciesFromNameID(name);
 			if (spc1 == null) {
 				spc1 = getSpeciesBySPCName(name,sd);
 			}
 			name = indivReacts[1].trim();
 			String[] nameANDincluded = name.split("\\(included =");
-			Species spc2 = sd.getSpeciesFromChemkinName(nameANDincluded[0].trim());
+			Species spc2 = sd.getSpeciesFromNameID(nameANDincluded[0].trim());
 			if (spc2 == null) {
 				spc2 = getSpeciesBySPCName(name,sd);
 			}
@@ -3512,7 +3512,7 @@ public class ReactionModelGenerator {
 			 * 	from the name of the Isomer
 			 */
 			String[] nameANDincluded = name.split("\\(included =");
-			Species spc = sd.getSpeciesFromChemkinName(nameANDincluded[0].trim());
+			Species spc = sd.getSpeciesFromNameID(nameANDincluded[0].trim());
 			if (spc == null) {
 				spc = getSpeciesBySPCName(name,sd);
 			}
