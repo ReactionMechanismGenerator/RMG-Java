@@ -382,15 +382,17 @@ public class ReactionTemplate {
   		  k = getPrimaryKineticRate(p_structure);
   	  }
   	  if (k != null) {
-  		  k[0].setFromPrimaryKineticLibrary(true);
-  		  String currentSource = k[0].getSource();
-  		  if (this.direction == -1) {
-  			  if (!currentSource.contains(this.reverseReactionTemplate.name))
-  				  k[0].setSource(this.reverseReactionTemplate.name+": "+k[0].getSource());
-  		  }
-  		  else	{
-  			  if (!currentSource.contains(this.name))
-  				  k[0].setSource(this.name+": "+k[0].getSource());
+  		  for (int numK=0; numK<k.length; numK++) {	  		  
+	  		  k[numK].setFromPrimaryKineticLibrary(true);
+	  		  String currentSource = k[numK].getSource();
+	  		  if (this.direction == -1) {
+	  			  if (!currentSource.contains(this.reverseReactionTemplate.name))
+	  				  k[numK].setSource(this.reverseReactionTemplate.name+": "+k[numK].getSource());
+	  		  }
+	  		  else	{
+	  			  if (!currentSource.contains(this.name))
+	  				  k[numK].setSource(this.name+": "+k[numK].getSource());
+	  		  }
   		  }
   		  p_structure.setDirection(getPrimaryKineticDirection(p_structure));
   		  return k;
@@ -503,15 +505,17 @@ public class ReactionTemplate {
 	  		  k = getPrimaryKineticRate(p_structure);
 	  	  }
 	  	  if (k != null) {
-	  		  k[0].setFromPrimaryKineticLibrary(true);
-	  		  String currentSource = k[0].getSource();
-	  		  if (this.direction == -1) {
-	  			  if (!currentSource.contains(this.reverseReactionTemplate.name))
-	  				  k[0].setSource(this.reverseReactionTemplate.name+" "+k[0].getSource());
-	  		  }
-	  		  else	{
-	  			  if (!currentSource.contains(this.name))
-	  				  k[0].setSource(this.name+" "+k[0].getSource());
+	  		  for (int numK=0; numK<k.length; numK++) {
+		  		  k[numK].setFromPrimaryKineticLibrary(true);
+		  		  String currentSource = k[numK].getSource();
+		  		  if (this.direction == -1) {
+		  			  if (!currentSource.contains(this.reverseReactionTemplate.name))
+		  				  k[numK].setSource(this.reverseReactionTemplate.name+" "+k[numK].getSource());
+		  		  }
+		  		  else	{
+		  			  if (!currentSource.contains(this.name))
+		  				  k[numK].setSource(this.name+" "+k[numK].getSource());
+		  		  }
 	  		  }
 	  		  p_structure.setDirection(1);
 	  		  return k;
