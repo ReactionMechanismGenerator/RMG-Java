@@ -79,7 +79,7 @@ public class SeedMechanism {
 		generateReactions = p_generateReactions;
         if ( p_directoryPath == null) throw new NullPointerException("does not recognize Seed Mechanism directory path");
         try {
-        	read(p_directoryPath,p_fromRestart);
+        	read(p_directoryPath,p_fromRestart,p_mechName);
         }
         catch (IOException e) {
         	throw new IOException("Error in reading Seed Mechanism: " + name + '\n' + e.getMessage());
@@ -92,7 +92,7 @@ public class SeedMechanism {
 			setGenerateReactions(p_generateReactions);
 		setName(name + "/" + new_mechName);
     	try {
-    		read(new_directoryPath,p_fromRestart);	
+    		read(new_directoryPath,p_fromRestart,new_mechName);	
     	}
         catch (IOException e) {
         	throw new IOException("Error in reading Seed Mechanism: " + new_mechName + '\n' + e.getMessage());
@@ -103,7 +103,7 @@ public class SeedMechanism {
         return new LinkedHashSet(speciesSet.values());
     }
     
-    public void read(String p_directoryName, boolean p_fromRestart) throws IOException {
+    public void read(String p_directoryName, boolean p_fromRestart, String seedMechName) throws IOException {
         System.out.println("Reading seed mechanism from directory " + p_directoryName);
 		try {
         	if (!p_directoryName.endsWith("/")) p_directoryName = p_directoryName + "/";
@@ -113,14 +113,14 @@ public class SeedMechanism {
 	            String reactionFile = p_directoryName + "reactions.txt";
 	            String pdepreactionFile = p_directoryName + "pdepreactions.txt";
 	        	readSpecies(speciesFile);
-	        	readReactions(reactionFile);
-	        	readPdepReactions(pdepreactionFile);
+	        	readReactions(reactionFile,seedMechName);
+	        	readPdepReactions(pdepreactionFile,seedMechName);
         	}
         	else {
 	            String speciesFile = p_directoryName + "coreSpecies.txt";
 	            String pdepreactionFile = p_directoryName + "pdepreactions.txt";
 	        	readSpecies(speciesFile);
-	        	readPdepReactions(pdepreactionFile);
+	        	readPdepReactions(pdepreactionFile,seedMechName);
         	}
         	return;
         }
@@ -131,7 +131,7 @@ public class SeedMechanism {
     }
     
 
-    public void readReactions(String p_reactionFileName) throws IOException {
+    public void readReactions(String p_reactionFileName, String p_name) throws IOException {
         try {
         	FileReader in = new FileReader(p_reactionFileName);
         	BufferedReader data = new BufferedReader(in);
@@ -186,7 +186,7 @@ public class SeedMechanism {
         		Reaction r;
         		try {
         			r = ChemParser.parseArrheniusReaction(speciesSet, line, A_multiplier, E_multiplier);
-					r.setKineticsSource("Seed Mechanism: "+ name,0);
+					r.setKineticsSource("Seed Mechanism: "+ p_name,0);
 					r.setKineticsComments(" ",0);
 				}
         		catch (InvalidReactionFormatException e) {
@@ -267,296 +267,7 @@ public class SeedMechanism {
         }
     }
     
-    public static void readThirdBodyReactions(String p_thirdBodyReactionFileName) throws IOException {
-        try {
-        	FileReader in = new FileReader(p_thirdBodyReactionFileName);
-        	BufferedReader data = new BufferedReader(in);
-        	
-        	double A_multiplier = 1;
-        	double E_multiplier = 1;
-        	
-        	String line = ChemParser.readMeaningfulLine(data);
-        	if (line.startsWith("Unit")) {
-        		line = ChemParser.readMeaningfulLine(data);
-        		unit: while(!(line.startsWith("Reaction"))) {
-        			if (line.startsWith("A")) {
-        				StringTokenizer st = new StringTokenizer(line);
-        				String temp = st.nextToken();
-        				String unit = st.nextToken().trim();
-        				if (unit.compareToIgnoreCase("mol/cm3/s") == 0) {
-        					A_multiplier = 1;
-        				}
-        				else if (unit.compareToIgnoreCase("mol/liter/s") == 0) {
-           					A_multiplier = 1e-3;
-        				}
-        			}
-        			else if (line.startsWith("E")) {
-        				StringTokenizer st = new StringTokenizer(line);
-        				String temp = st.nextToken();
-        				String unit = st.nextToken().trim();
-        				if (unit.compareToIgnoreCase("kcal/mol") == 0) {
-        					E_multiplier = 1;
-        				}
-        				else if (unit.compareToIgnoreCase("cal/mol") == 0) {
-           					E_multiplier = 1e-3;
-        				}
-        				else if (unit.compareToIgnoreCase("kJ/mol") == 0) {
-           					E_multiplier = 1/4.186;
-        				}
-        				else if (unit.compareToIgnoreCase("J/mol") == 0) {
-           					E_multiplier = 1/4186;
-        				}			
-        			}
-        			line = ChemParser.readMeaningfulLine(data);
-        		}
-        	}
-            
-        	String reactionLine = ChemParser.readMeaningfulLine(data);
-        	read: while (reactionLine != null) {	
-        		Reaction r;
-        		try {
-        			r = ChemParser.parseArrheniusReaction(speciesSet, reactionLine, A_multiplier, E_multiplier);
-        		}
-        		catch (InvalidReactionFormatException e) {
-        			throw new InvalidReactionFormatException(reactionLine + ": " + e.getMessage());
-        		}
-        		if (r == null) throw new InvalidReactionFormatException(reactionLine);
-        
-        		String thirdBodyLine = ChemParser.readMeaningfulLine(data);
-        		HashMap thirdBodyList = ChemParser.parseThirdBodyList(thirdBodyLine);
-        		
-        		ThirdBodyReaction tbr = ThirdBodyReaction.make(r,thirdBodyList);
-				tbr.setKineticsSource("Seed Mechanism: "+ name,0);
-				tbr.setKineticsComments(" ",0);
-        		reactionSet.add(tbr);
-        		
-        		Reaction reverse = tbr.getReverseReaction();
-				
-        		if (reverse != null) {
-					//reverse.getKinetics().setSource("Seed Mechanism: "+ name);
-					reactionSet.add(reverse);
-        		}
-        		
-        		reactionLine = ChemParser.readMeaningfulLine(data);
-        	}
-        	   
-            in.close();
-        	return;
-        }
-        catch (Exception e) {
-        	System.out.println("RMG did not read the following Seed Mechanism file:" 
-        			+ p_thirdBodyReactionFileName);
-        }
-    }
-     
-    public static void readTroeReactions(String p_troeReactionFileName) throws IOException {
-        try {
-        	FileReader in = new FileReader(p_troeReactionFileName);
-        	BufferedReader data = new BufferedReader(in);
-        	
-        	double A_multiplier = 1;
-        	double E_multiplier = 1;
-        	
-        	String line = ChemParser.readMeaningfulLine(data);
-        	if (line.startsWith("Unit")) {
-        		line = ChemParser.readMeaningfulLine(data);
-        		unit: while(!(line.startsWith("Reaction"))) {
-        			if (line.startsWith("A")) {
-        				StringTokenizer st = new StringTokenizer(line);
-        				String temp = st.nextToken();
-        				String unit = st.nextToken().trim();
-        				if (unit.compareToIgnoreCase("mol/cm3/s") == 0) {
-        					A_multiplier = 1;
-        				}
-        				else if (unit.compareToIgnoreCase("mol/liter/s") == 0) {
-           					A_multiplier = 1e-3;
-        				}
-        			}
-        			else if (line.startsWith("E")) {
-        				StringTokenizer st = new StringTokenizer(line);
-        				String temp = st.nextToken();
-        				String unit = st.nextToken().trim();
-        				if (unit.compareToIgnoreCase("kcal/mol") == 0) {
-        					E_multiplier = 1;
-        				}
-        				else if (unit.compareToIgnoreCase("cal/mol") == 0) {
-           					E_multiplier = 1e-3;
-        				}
-        				else if (unit.compareToIgnoreCase("kJ/mol") == 0) {
-           					E_multiplier = 1/4.186;
-        				}
-        				else if (unit.compareToIgnoreCase("J/mol") == 0) {
-           					E_multiplier = 1/4186;
-        				}			
-        			}
-        			line = ChemParser.readMeaningfulLine(data);
-        		}
-        	}
-            
-        	String reactionLine = ChemParser.readMeaningfulLine(data);
-        	read: while (reactionLine != null) {	
-        		Reaction r;
-        		try {
-        			r = ChemParser.parseArrheniusReaction(speciesSet, reactionLine, A_multiplier, E_multiplier);
-        		}
-        		catch (InvalidReactionFormatException e) {
-        			throw new InvalidReactionFormatException(reactionLine + ": " + e.getMessage());
-        		}
-        		if (r == null) throw new InvalidReactionFormatException(reactionLine);
-                
-        		String thirdBodyLine = ChemParser.readMeaningfulLine(data);
-        		HashMap thirdBodyList = ChemParser.parseThirdBodyList(thirdBodyLine);
-        		
-        		// parse the K at low limit
-        		String lowLine = ChemParser.readMeaningfulLine(data);
-        		StringTokenizer st = new StringTokenizer(lowLine, "/");
-        		String temp = st.nextToken().trim();
-        		String lowString = st.nextToken().trim();
-        		/*
-        		 * MRH 17Feb2010:
-        		 * 	The units of the k_zero (LOW) Arrhenius parameters are different from the units of
-        		 * 	k_inf Arrhenius parameters by a factor of cm3/mol, hence the getReactantNumber()+1
-        		 */
-        		ArrheniusKinetics low = ChemParser.parseSimpleArrheniusKinetics(lowString, A_multiplier, E_multiplier, r.getReactantNumber()+1);
-        		
-        		// parse Troe parameters
-        		String troeLine = ChemParser.readMeaningfulLine(data);
-        		st = new StringTokenizer(troeLine, "/");
-        		temp = st.nextToken().trim();
-        		String troeString = st.nextToken().trim();
-        		st = new StringTokenizer(troeString);
-                int n = st.countTokens();
-                if (n != 3 && n != 4) throw new InvalidKineticsFormatException("Troe parameter number = "+n);
-        
-          		double a = Double.parseDouble(st.nextToken().trim());
-        		double T3star = Double.parseDouble(st.nextToken().trim());
-        		double Tstar = Double.parseDouble(st.nextToken().trim());
-        		boolean troe7 = false;
-        		double T2star = 0;
-        		if (st.hasMoreTokens()) {
-        			troe7 = true;
-        			T2star = Double.parseDouble(st.nextToken().trim());
-           		}
-        		
-        		TROEReaction tbr = TROEReaction.make(r,thirdBodyList, low, a, T3star, Tstar, troe7, T2star);
-				tbr.setKineticsSource("Seed Mechanism: "+ name,0);
-				tbr.setKineticsComments(" ",0);
-				
-        		reactionSet.add(tbr);
-        		Reaction reverse = tbr.getReverseReaction();
-				
-        		if (reverse != null) {
-					//reverse.getKinetics().setSource("Seed Mechanism: "+ name);
-					reactionSet.add(reverse);
-        		}
-        		
-        		reactionLine = ChemParser.readMeaningfulLine(data);
-        	}
-        	   
-            in.close();
-        	return;
-        }
-        catch (Exception e) {
-        	System.out.println("RMG did not read the following Seed Mechanism file:" 
-        			+ p_troeReactionFileName);
-        }
-    }
-    
-    public static void readLindemannReactions(String p_lindemannReactionFileName) throws IOException {
-        try {
-        	FileReader in = new FileReader(p_lindemannReactionFileName);
-        	BufferedReader data = new BufferedReader(in);
-        	
-        	double A_multiplier = 1;
-        	double E_multiplier = 1;
-        	
-        	String line = ChemParser.readMeaningfulLine(data);
-        	if (line.startsWith("Unit")) {
-        		line = ChemParser.readMeaningfulLine(data);
-        		unit: while(!(line.startsWith("Reaction"))) {
-        			if (line.startsWith("A")) {
-        				StringTokenizer st = new StringTokenizer(line);
-        				String temp = st.nextToken();
-        				String unit = st.nextToken().trim();
-        				if (unit.compareToIgnoreCase("mol/cm3/s") == 0) {
-        					A_multiplier = 1;
-        				}
-        				else if (unit.compareToIgnoreCase("mol/liter/s") == 0) {
-           					A_multiplier = 1e-3;
-        				}
-        			}
-        			else if (line.startsWith("E")) {
-        				StringTokenizer st = new StringTokenizer(line);
-        				String temp = st.nextToken();
-        				String unit = st.nextToken().trim();
-        				if (unit.compareToIgnoreCase("kcal/mol") == 0) {
-        					E_multiplier = 1;
-        				}
-        				else if (unit.compareToIgnoreCase("cal/mol") == 0) {
-           					E_multiplier = 1e-3;
-        				}
-        				else if (unit.compareToIgnoreCase("kJ/mol") == 0) {
-           					E_multiplier = 1/4.186;
-        				}
-        				else if (unit.compareToIgnoreCase("J/mol") == 0) {
-           					E_multiplier = 1/4186;
-        				}			
-        			}
-        			line = ChemParser.readMeaningfulLine(data);
-        		}
-        	}
-            
-        	String reactionLine = ChemParser.readMeaningfulLine(data);
-        	read: while (reactionLine != null) {	
-        		Reaction r;
-        		try {
-        			r = ChemParser.parseArrheniusReaction(speciesSet, reactionLine, A_multiplier, E_multiplier);
-        		}
-        		catch (InvalidReactionFormatException e) {
-        			throw new InvalidReactionFormatException(reactionLine + ": " + e.getMessage());
-        		}
-        		if (r == null) throw new InvalidReactionFormatException(reactionLine);
-                
-        		String thirdBodyLine = ChemParser.readMeaningfulLine(data);
-        		HashMap thirdBodyList = ChemParser.parseThirdBodyList(thirdBodyLine);
-        		
-        		// parse the K at low limit
-        		String lowLine = ChemParser.readMeaningfulLine(data);
-        		StringTokenizer st = new StringTokenizer(lowLine, "/");
-        		String temp = st.nextToken().trim();
-        		String lowString = st.nextToken().trim();
-        		/*
-        		 * MRH 17Feb2010:
-        		 * 	The units of the k_zero (LOW) Arrhenius parameters are different from the units of
-        		 * 	k_inf Arrhenius parameters by a factor of cm3/mol, hence the getReactantNumber()+1
-        		 */
-        		ArrheniusKinetics low = ChemParser.parseSimpleArrheniusKinetics(lowString, A_multiplier, E_multiplier, r.getReactantNumber()+1);
-        		
-        		LindemannReaction lr = LindemannReaction.make(r,thirdBodyList, low);
-				lr.setKineticsSource("Seed Mechanism: "+ name,0);
-				lr.setKineticsComments(" ",0);
-				
-        		reactionSet.add(lr);
-        		Reaction reverse = lr.getReverseReaction();
-				
-        		if (reverse != null) {
-					//reverse.getKinetics().setSource("Seed Mechanism: "+ name);
-					reactionSet.add(reverse);
-        		}
-        		
-        		reactionLine = ChemParser.readMeaningfulLine(data);
-        	}
-        	   
-            in.close();
-        	return;
-        }
-        catch (Exception e) {
-        	System.out.println("RMG did not read the following Seed Mechanism file:" 
-        			+ p_lindemannReactionFileName);
-        }
-    }
-    
-    public void readPdepReactions(String pdepFileName) throws IOException { 
+    public void readPdepReactions(String pdepFileName, String p_name) throws IOException { 
         try {
         	FileReader in = new FileReader(pdepFileName);
         	BufferedReader data = new BufferedReader(in);
@@ -697,7 +408,7 @@ public class SeedMechanism {
         			if (low.getAValue() == 0.0) {
         				// thirdbody reaction
                 		ThirdBodyReaction tbr = ThirdBodyReaction.make(r,thirdBodyList);
-        				tbr.setKineticsSource("Seed Mechanism: "+ name,0);
+        				tbr.setKineticsSource("Seed Mechanism: "+ p_name,0);
         				tbr.setKineticsComments(" ",0);
         				reactionSet.add(tbr);
                 		Reaction reverse = tbr.getReverseReaction();
@@ -705,7 +416,7 @@ public class SeedMechanism {
         			} else {
         				// lindemann reaction
                 		LindemannReaction tbr = LindemannReaction.make(r,thirdBodyList,low);
-        				tbr.setKineticsSource("Seed Mechanism: "+ name,0);
+        				tbr.setKineticsSource("Seed Mechanism: "+ p_name,0);
         				tbr.setKineticsComments(" ",0);
         				reactionSet.add(tbr);
                 		Reaction reverse = tbr.getReverseReaction();
@@ -714,7 +425,7 @@ public class SeedMechanism {
         		} else {
         			// troe reaction
             		TROEReaction tbr = TROEReaction.make(r,thirdBodyList, low, a, T3star, Tstar, troe7, T2star);
-    				tbr.setKineticsSource("Seed Mechanism: "+ name,0);
+    				tbr.setKineticsSource("Seed Mechanism: "+ p_name,0);
     				tbr.setKineticsComments(" ",0);
     				reactionSet.add(tbr);
             		Reaction reverse = tbr.getReverseReaction();

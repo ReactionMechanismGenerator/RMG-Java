@@ -85,7 +85,7 @@ public class ReactionLibrary {
         // Check if directory path is given/exists
         if ( p_directoryPath == null) throw new NullPointerException("New ReactionLibrary directory path");
         try {
-        	read(p_directoryPath);
+        	read(p_directoryPath,p_libraryName);
         }
         catch (IOException e) {
         	// Throws error if cant read in Reaction Library Path
@@ -107,14 +107,14 @@ public class ReactionLibrary {
       	setName(name+"/"+new_p_libraryName);
       	// Read in the directory path
      	try {
-     		read(p_directoryPath);	
+     		read(p_directoryPath,new_p_libraryName);	
      	}
          catch (IOException e) {
          	throw new IOException("Error reading New Reaction Library: " + new_p_libraryName + '\n' + e.getMessage());
          }
      }
      
-     public void read(String p_directoryName) throws IOException {
+     public void read(String p_directoryName, String p_name) throws IOException {
     	 // Reads in the directory and creates the Dictionary and Library
     	 // The Library is composed of Pdep and Non Pdep Reactions
     	 // shamel 6/10/2010 can handle only Lindemann, TROE and Third Body form
@@ -130,9 +130,9 @@ public class ReactionLibrary {
             // Read in Dictionary File, species list
              readDictionary(dictionaryFile);
             // Read in Non Pdep Reactions  
-         	readLibrary(libraryFile);
+         	readLibrary(libraryFile,p_name);
          	// Read in Pdep Reactions
-         	readPdepReactions(pdeplibraryFile);
+         	readPdepReactions(pdeplibraryFile,p_name);
          	return;
          }
          catch (Exception e) {
@@ -141,7 +141,7 @@ public class ReactionLibrary {
      }
 
 
-    public void readPdepReactions(String pdepFileName) throws IOException {
+    public void readPdepReactions(String pdepFileName, String p_name) throws IOException {
     	// shamel As of 6/10/2010 This function is EXACTLY like the seed mechanism function
     	// Created by M.R.Harper and I am keeping  some of his comments below which will match with 
     	// seed mechanism function
@@ -295,7 +295,7 @@ public class ReactionLibrary {
         			if (low.getAValue() == 0.0) {
         				// thirdbody reaction
                 		ThirdBodyReaction tbr = ThirdBodyReaction.make(r,thirdBodyList);
-        				tbr.setKineticsSource("ReactionLibrary: " + name,0);
+        				tbr.setKineticsSource("ReactionLibrary: " + p_name,0);
         				tbr.setKineticsComments(" ",0);
         				library.add(tbr);
                 		Reaction reverse = tbr.getReverseReaction();
@@ -303,7 +303,7 @@ public class ReactionLibrary {
         			} else {
         				// lindemann reaction
                 		LindemannReaction tbr = LindemannReaction.make(r,thirdBodyList,low);
-        				tbr.setKineticsSource("ReactionLibrary: " + name,0);
+        				tbr.setKineticsSource("ReactionLibrary: " + p_name,0);
         				tbr.setKineticsComments(" ",0);
         				library.add(tbr);
                 		Reaction reverse = tbr.getReverseReaction();
@@ -312,7 +312,7 @@ public class ReactionLibrary {
         		} else {
         			// troe reaction
             		TROEReaction tbr = TROEReaction.make(r,thirdBodyList, low, a, T3star, Tstar, troe7, T2star);
-    				tbr.setKineticsSource("ReactionLibrary: " + name,0);
+    				tbr.setKineticsSource("ReactionLibrary: " + p_name,0);
     				tbr.setKineticsComments(" ",0);
     				library.add(tbr);
             		Reaction reverse = tbr.getReverseReaction();
@@ -339,7 +339,7 @@ public class ReactionLibrary {
     
     
     
-    public void readLibrary(String p_reactionFileName) throws IOException {
+    public void readLibrary(String p_reactionFileName, String p_name) throws IOException {
     	// shamel As of 6/10/2010 This function is EXACTLY like the seed mechanism function
     	// Created by M.R.Harper and I am keeping  some of his comments below which will match with 
     	// seed mechanism function
@@ -400,7 +400,7 @@ public class ReactionLibrary {
         		Reaction r;
         		try {
         			r = ChemParser.parseArrheniusReaction(dictionary, line, A_multiplier, E_multiplier);
-					r.setKineticsSource("ReactionLibrary: "+ name,0);
+					r.setKineticsSource("ReactionLibrary: "+ p_name,0);
 					r.setKineticsComments(" ",0);
 				}
         		catch (InvalidReactionFormatException e) {
