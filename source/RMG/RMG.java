@@ -197,27 +197,27 @@ public class RMG {
 
 			 // Print out RMG header
 			System.out.println("");
-			System.out.println("################################################################");
-			System.out.println("#                                                              #");
-			System.out.println("#              RMG - Reaction Mechanism Generator              #");
+			System.out.println("######################################################################");
+			System.out.println("#                                                                    #");
+			System.out.println("#              RMG - Reaction Mechanism Generator                    #");
 			//System.out.println("#                         Version 3.1                          #");
 			//System.out.println("#                        5 August 2009                         #");
-			System.out.println("#                                                              #");
-			System.out.println("#                                                              #");
-			System.out.println("#  This java code was compiled by ant at:                      #");
+			System.out.println("#                                                                    #");
+			System.out.println("#                                                                    #");
+			System.out.println("#  This java code was compiled by ant at:                            #");
 			System.out.println("#    "+jing.param.VersionInfo.getBuildDate());
-			System.out.println("#  The git repository was on the branch:                       #");
+			System.out.println("#  The git repository was on the branch:                             #");
 			System.out.println("#    "+jing.param.VersionInfo.getBranchName());
-			System.out.println("#  And at the commit with the hash:                            #");
+			System.out.println("#  And at the commit with the hash:                                  #");
 			String versionHash=jing.param.VersionInfo.getVersionHash() ;
-			System.out.println("#    "+versionHash+"                  #");
-			System.out.println("#                                                              #");
-			System.out.println("#  For details visit:                                          #");	 
+			System.out.println("#    "+versionHash);
+			System.out.println("#                                                                    #");
+			System.out.println("#  For details visit:                                                #");	 
 			if (versionHash.startsWith("*") ) // error messages should start with a *
-				System.out.println("#    http://github.com/GreenGroup/RMG-Java/                    #");
+				System.out.println("#    http://github.com/GreenGroup/RMG-Java/                          #");
 		    else {
 				System.out.println("#    http://github.com/GreenGroup/RMG-Java/tree/"+versionHash.substring(0,6)+"         #" ); 
-				System.out.println("#  To see changes since then visit:                            #");	 
+				System.out.println("#  To see changes since then visit:                              #");	 
 				System.out.println("#    http://github.com/GreenGroup/RMG-Java/compare/"+versionHash.substring(0,6)+"...master");
 			//System.out.println("#  To download this specific version, visit:                   #");	 
 			//System.out.println("#   http://github.com/GreenGroup/RMG-Java/archives/"+versionHash.substring(0,6) ); 
