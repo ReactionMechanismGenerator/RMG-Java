@@ -1566,6 +1566,7 @@ public class ReactionTemplate {
       	if (reverseRTName != null && reverseRTName.compareToIgnoreCase("none")!=0) {
       		System.out.println("Generating reverse template: "+reverseRTName);
       		reverseReactionTemplate = generateReverseReactionTemplate(reverseRTName);
+      		reverseReactionTemplate.forbiddenStructures = forbiddenStructures;
       	}
       }
       catch (Exception e) {
