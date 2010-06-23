@@ -1374,9 +1374,7 @@ public class ReactionModelGenerator {
         writeDictionary(getReactionModel());
         //System.exit(0);
 		
-		System.out.println("The model core has " + ((CoreEdgeReactionModel)getReactionModel()).getReactedReactionSet().size() + " reactions and "+ ((CoreEdgeReactionModel)getReactionModel()).getReactedSpeciesSet().size() + " species.");
-		System.out.println("The model edge has " + ((CoreEdgeReactionModel)getReactionModel()).getUnreactedReactionSet().size() + " reactions and "+ ((CoreEdgeReactionModel)getReactionModel()).getUnreactedSpeciesSet().size() + " species.");
-		
+		printModelSize();
 		
 		StringBuilder print_info = Global.diagnosticInfo;
 		print_info.append("\nMolecule \t Flux\t\tTime\t \t\t \t Core \t \t Edge \t \t memory\n");
@@ -1411,8 +1409,9 @@ public class ReactionModelGenerator {
 				//prune the reaction model (this will only do something in the AUTO case)
 				pruneReactionModel();
 				garbageCollect();
-				//System.out.println("After pruning, the model core has " + ((CoreEdgeReactionModel)getReactionModel()).getReactedReactionSet().size() + " reactions and "+ ((CoreEdgeReactionModel)getReactionModel()).getReactedSpeciesSet().size() + " species.");
-				//System.out.println("After pruning, the model edge has " + ((CoreEdgeReactionModel)getReactionModel()).getUnreactedReactionSet().size() + " reactions and "+ ((CoreEdgeReactionModel)getReactionModel()).getUnreactedSpeciesSet().size() + " species.");
+				//System.out.println("After pruning:");
+				//printModelSize();
+
 				// ENLARGE THE MODEL!!! (this is where the good stuff happens)
 				enlargeReactionModel();
 				double totalEnlarger = (System.currentTimeMillis() - pt)/1000/60;
@@ -1531,28 +1530,7 @@ public class ReactionModelGenerator {
 				}
 				
 			    System.out.println("Running Time is: " + String.valueOf((System.currentTimeMillis()-tAtInitialization)/1000/60) + " minutes.");
-				System.out.println("The model edge has " + ((CoreEdgeReactionModel)getReactionModel()).getUnreactedReactionSet().size() + " reactions and "+ ((CoreEdgeReactionModel)getReactionModel()).getUnreactedSpeciesSet().size() + " species.");
-				//10/24/07 gmagoon: note: all reaction systems should use the same core, but I will display for each reactionSystem for testing purposes:
-				for (Integer i = 0; i<reactionSystemList.size();i++) {
-					ReactionSystem rs = (ReactionSystem)reactionSystemList.get(i);
-					System.out.println("For reaction system: "+(i+1)+" out of "+reactionSystemList.size());
-					if (rs.getDynamicSimulator() instanceof JDASPK){
-						JDASPK solver = (JDASPK)rs.getDynamicSimulator();
-						System.out.println("The model core has " + solver.getReactionSize() + " reactions and "+ ((CoreEdgeReactionModel)getReactionModel()).getReactedSpeciesSet().size() + " species.");
-					}
-					else{
-						JDASSL solver = (JDASSL)rs.getDynamicSimulator();
-						System.out.println("The model core has " + solver.getReactionSize() + " reactions and "+ ((CoreEdgeReactionModel)getReactionModel()).getReactedSpeciesSet().size() + " species.");
-					}
-				}
-				// if (reactionSystem.getDynamicSimulator() instanceof JDASPK){
-				//	JDASPK solver = (JDASPK)reactionSystem.getDynamicSimulator();
-				//	System.out.println("The model core has " + solver.getReactionSize() + " reactions and "+ ((CoreEdgeReactionModel)getReactionModel()).getReactedSpeciesSet().size() + " species.");
-				//}
-				//else{
-				//	JDASSL solver = (JDASSL)reactionSystem.getDynamicSimulator();
-				//	System.out.println("The model core has " + solver.getReactionSize() + " reactions and "+ ((CoreEdgeReactionModel)getReactionModel()).getReactedSpeciesSet().size() + " species.");
-				//}
+				printModelSize();
 				
 				startTime = System.currentTimeMillis();
 				double mU = memoryUsed();
@@ -1711,29 +1689,8 @@ public class ReactionModelGenerator {
 				 System.out.print("Free memory: ");
 				 System.out.println(runTime.freeMemory());
 				 */
-				
-				//10/24/07 gmagoon: note: all reaction systems should use the same core, but I will display for each reactionSystem for testing purposes:
-        		for (Integer i = 0; i<reactionSystemList.size();i++) {
-        			ReactionSystem rs = (ReactionSystem)reactionSystemList.get(i);
-        			System.out.println("For reaction system: "+(i+1)+" out of "+reactionSystemList.size());
-        			if (rs.getDynamicSimulator() instanceof JDASPK){
-        				JDASPK solver = (JDASPK)rs.getDynamicSimulator();
-        				System.out.println("The model core has " + solver.getReactionSize() + " reactions and "+ ((CoreEdgeReactionModel)getReactionModel()).getReactedSpeciesSet().size() + " species.");
-        			}
-        			else{
-        				JDASSL solver = (JDASSL)rs.getDynamicSimulator();
-        				System.out.println("The model core has " + solver.getReactionSize() + " reactions and "+ ((CoreEdgeReactionModel)getReactionModel()).getReactedSpeciesSet().size() + " species.");
-                        System.out.println("(although rs.getReactionModel().getReactionNumber() returns "+rs.getReactionModel().getReactionNumber()+")");
-        			}
-        		}
-				//        		if (reactionSystem.getDynamicSimulator() instanceof JDASPK){
-				//					JDASPK solver = (JDASPK)reactionSystem.getDynamicSimulator();
-				//					System.out.println("The model core has " + solver.getReactionSize() + " reactions and "+ ((CoreEdgeReactionModel)getReactionModel()).getReactedSpeciesSet().size() + " species.");
-				//        		}
-				//				else{
-				//					JDASSL solver = (JDASSL)reactionSystem.getDynamicSimulator();
-				//					System.out.println("The model core has " + solver.getReactionSize() + " reactions and "+ ((CoreEdgeReactionModel)getReactionModel()).getReactedSpeciesSet().size() + " species.");
-				//      		}
+
+				printModelSize();
 				
         	}
 			vTester = vTester + (System.currentTimeMillis()-startTime)/1000/60;//5/6/08 gmagoon: for case where intermediateSteps = false, this will use startTime declared just before intermediateSteps loop, and will only include termination testing, but no validity testing
@@ -5119,7 +5076,45 @@ public class ReactionModelGenerator {
     public void setPrimaryTransportLibrary(PrimaryTransportLibrary p_primaryTransportLibrary) {
     	primaryTransportLibrary = p_primaryTransportLibrary;
     }
-    
+
+	/**
+	 * Print the current numbers of core and edge species and reactions to the
+	 * console.
+	 */
+	public void printModelSize() {
+
+		CoreEdgeReactionModel cerm = (CoreEdgeReactionModel) getReactionModel();
+		
+		int numberOfCoreSpecies = cerm.getReactedSpeciesSet().size();
+		int numberOfEdgeSpecies = cerm.getUnreactedSpeciesSet().size();
+		int numberOfCoreReactions = 0;
+		int numberOfEdgeReactions = 0;
+
+		double count = 0.0;
+		for (Iterator iter = cerm.getReactedReactionSet().iterator(); iter.hasNext(); ) {
+			Reaction rxn = (Reaction) iter.next();
+			if (rxn.hasReverseReaction()) count += 0.5;
+			else                          count += 1;
+		}
+		numberOfCoreReactions = (int) Math.round(count);
+
+		count = 0.0;
+		for (Iterator iter = cerm.getUnreactedReactionSet().iterator(); iter.hasNext(); ) {
+			Reaction rxn = (Reaction) iter.next();
+			if (rxn.hasReverseReaction()) count += 0.5;
+			else                          count += 1;
+		}
+		numberOfEdgeReactions = (int) Math.round(count);
+
+		if (reactionModelEnlarger instanceof RateBasedPDepRME) {
+			numberOfCoreReactions += PDepNetwork.getNumCoreReactions(cerm);
+			numberOfEdgeReactions += PDepNetwork.getNumEdgeReactions(cerm);
+		}
+
+		System.out.println("The model core has " + Integer.toString(numberOfCoreReactions) + " reactions and "+ Integer.toString(numberOfCoreSpecies) + " species.");
+		System.out.println("The model edge has " + Integer.toString(numberOfEdgeReactions) + " reactions and "+ Integer.toString(numberOfEdgeSpecies) + " species.");
+
+	}
 }
 /*********************************************************************
  File Path	: RMG\RMG\jing\rxnSys\ReactionModelGenerator.java

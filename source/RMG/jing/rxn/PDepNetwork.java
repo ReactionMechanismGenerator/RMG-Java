@@ -791,4 +791,34 @@ public class PDepNetwork {
 		return coreReactions;
 	}
 
+	/**
+	 * Counts the number of edge reactions that are hidden amongst those
+	 * net reactions which are found in the pressure-dependent networks.
+	 * @param cerm The current core/edge reaction model
+	 * @return The number of edge reactions found
+	 */
+	public static int getNumEdgeReactions(CoreEdgeReactionModel cerm) {
+		return getEdgeReactions(cerm).size();
+	}
+	/**
+	 * Returns the edge reactions that are hidden amongst those
+	 * net reactions which are found in the pressure-dependent networks.
+	 * @param cerm The current core/edge reaction model
+	 * @return The list of edge reactions found
+	 */
+	public static LinkedList<PDepReaction> getEdgeReactions(CoreEdgeReactionModel cerm) {
+		LinkedList<PDepReaction> edgeReactions = new LinkedList<PDepReaction>();
+		for (ListIterator<PDepNetwork> iter0 = networks.listIterator(); iter0.hasNext(); ) {
+			PDepNetwork pdn = iter0.next();
+			for (ListIterator<PDepReaction> iter = pdn.getNetReactions().listIterator(); iter.hasNext(); ) {
+				PDepReaction rxn = iter.next();
+				if (rxn.getReactant().getIncluded() && rxn.getProduct().getIncluded()) {
+					if (rxn.isEdgeReaction(cerm) && !edgeReactions.contains(rxn))
+						edgeReactions.add(rxn);
+				}
+			}
+		}
+		return edgeReactions;
+	}
+
 }
