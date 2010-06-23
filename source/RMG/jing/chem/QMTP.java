@@ -56,6 +56,12 @@ public class QMTP implements GeneralGAPP {
     public static boolean usePolar = false; //use polar keyword in MOPAC
     public static boolean useCanTherm = true; //whether to use CanTherm in MM4 cases for interpreting output via force-constant matrix; this will hopefully avoid zero frequency issues
     public static boolean useHindRot = false;//whether to use HinderedRotor scans with MM4 (requires useCanTherm=true)
+    public static double R = 1.9872; //ideal gas constant in cal/mol-K (does this appear elsewhere in RMG, so I don't need to reuse it?)
+    public static double Hartree_to_kcal = 627.5095; //conversion from Hartree to kcal/mol taken from Gaussian thermo white paper
+    public static double Na = 6.02214179E23;//Avagadro's number; cf. http://physics.nist.gov/cgi-bin/cuu/Value?na|search_for=physchem_in!
+    public static double k = 1.3806504E-23;//Boltzmann's constant in J/K; cf. http://physics.nist.gov/cgi-bin/cuu/Value?na|search_for=physchem_in!
+    public static double h = 6.62606896E-34;//Planck's constant in J-s; cf. http://physics.nist.gov/cgi-bin/cuu/Value?h|search_for=universal_in!
+    public static double c = 299792458. *100;//speed of light in vacuum in cm/s, cf. http://physics.nist.gov/cgi-bin/cuu/Value?c|search_for=universal_in!
     // Constructors
 
     //## operation QMTP()
@@ -1352,10 +1358,18 @@ public class QMTP implements GeneralGAPP {
             System.exit(0);
         }
 	///////////end of block taken from the bulk of getPM3MM4ThermoDataUsingCCLib////////////
-	//2. compute H0;  note that we will pass H0 to CanTherm by H0=Hf298(harmonicMM4)-(H298-H0)harmonicMM4, where harmonicMM4 values come from cclib parsing and since it is enthalpy, it should not be NaN due to zero frequencies
-	double Hartree_to_kcal = 627.5095; //conversion from Hartree to kcal/mol taken from Gaussian thermo white paper
+	//2. compute H0/E0;  note that we will compute H0 for CanTherm by H0=Hf298(harmonicMM4)-(H298-H0)harmonicMM4, where harmonicMM4 values come from cclib parsing;  298.16 K is the standard temperature used by MM4; also note that Hthermal should include the R*T contribution (R*298.16 (enthalpy vs. energy difference)) and H0=E0 (T=0)
+	double T_MM4 = 298.16;
 	energy *= Hartree_to_kcal;//convert from Hartree to kcal/mol
-	//*** to be written
+	double Hthermal = 5./2.*R*T_MM4/1000.;//enthalpy vs. energy difference(RT)+translation(3/2*R*T) contribution to thermal energy
+	//rotational contribution
+	if(p_chemGraph.getAtomNumber()==1) Hthermal += 0.0;
+	else if (p_chemGraph.isLinear()) Hthermal += R*T_MM4/1000.;
+	else Hthermal += 3./2.*R*T_MM4/1000;
+	//vibrational contribution
+	if(p_chemGraph.getAtomNumber()!=1)Hthermal+=R*calcVibH(freqs, T_MM4, h, k, c)/1000.;
+	energy = energy - Hthermal;
+	System.out.println("Hthermal = "+Hthermal);//line to check accuracy
 	//3. write CanTherm input file
 	String canInp = "Calculation: Thermo\n";
 	canInp += "Trange: 300 100 13\n";//temperatures from 300 to 1500 in increments of 100
@@ -1430,7 +1444,6 @@ public class QMTP implements GeneralGAPP {
         }
 	//6. correct the output for symmetry number (everything has been assumed to be one) : useHindRot=true case: use ChemGraph symmetry number; otherwise, we use SYMMETRY
 	if(!useHindRot){
-	    double R = 1.9872; //ideal gas constant in cal/mol-K (does this appear elsewhere in RMG, so I don't need to reuse it?)
 	    //determine point group using the SYMMETRY Program
 	    String geom = natoms + "\n";
 	    for(int i=0; i < natoms; i++){
@@ -1601,13 +1614,6 @@ public class QMTP implements GeneralGAPP {
         String pointGroup = determinePointGroupUsingSYMMETRYProgram(geom);
         
         //calculate thermo quantities using stat. mech. equations        
-        double R = 1.9872; //ideal gas constant in cal/mol-K (does this appear elsewhere in RMG, so I don't need to reuse it?)
-        double Hartree_to_kcal = 627.5095; //conversion from Hartree to kcal/mol taken from Gaussian thermo white paper
-        double Na = 6.02214179E23;//Avagadro's number; cf. http://physics.nist.gov/cgi-bin/cuu/Value?na|search_for=physchem_in!
-        double k = 1.3806504E-23;//Boltzmann's constant in J/K; cf. http://physics.nist.gov/cgi-bin/cuu/Value?na|search_for=physchem_in!
-        double h = 6.62606896E-34;//Planck's constant in J-s; cf. http://physics.nist.gov/cgi-bin/cuu/Value?h|search_for=universal_in!
-        double c = 299792458. *100;//speed of light in vacuum in cm/s, cf. http://physics.nist.gov/cgi-bin/cuu/Value?c|search_for=universal_in!
-
         //boolean linearity = p_chemGraph.isLinear();//determine linearity (perhaps it would be more appropriate to determine this from point group?)
         boolean linearity = false;
         if (pointGroup.equals("Cinfv")||pointGroup.equals("Dinfh")) linearity=true;//determine linearity from 3D-geometry; changed to correctly consider linear ketene radical case
@@ -1837,6 +1843,25 @@ public class QMTP implements GeneralGAPP {
             
         return Cpcontrib;
     }
+
+    //gmagoon 6/23/10
+    //calculate the vibrational contribution (divided by R, units of K) at temperature, T, in Kelvin to Hthermal (ZPE not included)
+    //p_freqs in cm^-1; c in cm/s; k in J/K; h in J-s
+    //we need to ignore zero frequencies, as MM4 does, to avoid dividing by zero; based on equation for Ev in http://www.gaussian.com/g_whitepap/thermo.htm; however, we ignore zero point contribution to be consistent with the input that CanTherm currently takes
+    public double calcVibH(ArrayList p_freqs, double p_T, double h, double k, double c){
+        double Hcontrib = 0;
+        double dr;
+        for(int i=0; i < p_freqs.size(); i++){
+            double freq = (Double)p_freqs.get(i);
+	    if(freq > 0.0){//ignore zero frequencies as MM4 does
+		dr = h*c*freq/(k*p_T); //frequently used dimensionless ratio
+		Hcontrib = Hcontrib + dr*p_T/(Math.exp(dr) - 1.);
+	    }
+        }
+
+        return Hcontrib;
+    }
+
     
     //determine the QM filename (element 0) and augmented InChI (element 1) for a ChemGraph
     //QM filename is InChIKey appended with mult3, mult4, mult5, or mult6 for multiplicities of 3 or higher
