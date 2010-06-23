@@ -2848,10 +2848,15 @@ public class ReactionModelGenerator {
 													 numFamePress,numChebyTemps,numChebyPress,numPlog));
 					
 					PDepReaction currentPDepReverseRxn = currentPDepRxn.getReverseReaction();
-					bw.write(currentPDepReverseRxn.toString());
-					bw.newLine();
-					bw.write(writeRatesAndParameters(currentPDepReverseRxn,numFameTemps,
-													 numFamePress,numChebyTemps,numChebyPress,numPlog));
+					// Not all netReactions are reversible
+					if (currentPDepReverseRxn != null) {
+						bw.write(currentPDepReverseRxn.toString());
+						bw.newLine();
+						bw.write(writeRatesAndParameters(currentPDepReverseRxn,numFameTemps,
+														 numFamePress,numChebyTemps,numChebyPress,numPlog));
+					} else {
+						System.out.println("Irreversible netReaction: " + currentPDepRxn.toString());
+					}
 					
 				}
 				
@@ -2868,7 +2873,7 @@ public class ReactionModelGenerator {
 													 numFamePress,numChebyTemps,numChebyPress,numPlog));
 					
 					PDepReaction currentPDepReverseRxn = currentPDepRxn.getReverseReaction();
-					// Not all net PDepReactions are reversible, so we must test for this
+					// Not all nonIncludedReactions are reversible
 					if (currentPDepReverseRxn != null) {
 						bw.write(currentPDepReverseRxn.toString());
 						bw.newLine();
@@ -3322,8 +3327,15 @@ public class ReactionModelGenerator {
 					while (!line.toLowerCase().startsWith("nonincludedreactionlist")) {
 						
 						// Read in the forward rxn
-						//	Assumes all netReactions are reversible
-						String[] reactsANDprods = line.split("\\<=>");
+						String[] reactsANDprods = line.split("\\-->");
+						/*
+						 * Determine if netReaction is reversible or irreversible
+						 */
+						boolean reactionIsReversible = true;
+						if (reactsANDprods.length == 2)
+							reactionIsReversible = false;
+						else
+							reactsANDprods = line.split("\\<=>");
 						
 						PDepIsomer Reactants = parseIsomerFromRestartFile(reactsANDprods[0].trim());
 						PDepIsomer Products =  parseIsomerFromRestartFile(reactsANDprods[1].trim());
@@ -3334,16 +3346,22 @@ public class ReactionModelGenerator {
 						rateCoefficients = parseRateCoeffsFromRestartFile(numFameTs,numFamePs,reader);
 						PDepRateConstant pdepk = parsePDepRateConstantFromRestartFile(reader,numChebyTs,numChebyPs,rateCoefficients,numPlogs,EaUnits);											
 						PDepReaction forward = new PDepReaction(Reactants, Products, pdepk);
-						
+
 						// Read in the reverse reaction
-						line = ChemParser.readMeaningfulLine(reader);
-						
-						rateCoefficients = parseRateCoeffsFromRestartFile(numFameTs,numFamePs,reader); 
-						pdepk = parsePDepRateConstantFromRestartFile(reader,numChebyTs,numChebyPs,rateCoefficients,numPlogs,EaUnits);
-						PDepReaction reverse = new PDepReaction(Products, Reactants, pdepk);
-						
-						reverse.setReverseReaction(forward);
-						forward.setReverseReaction(reverse);
+						if (reactionIsReversible) {
+							line = ChemParser.readMeaningfulLine(reader);
+							
+							rateCoefficients = parseRateCoeffsFromRestartFile(numFameTs,numFamePs,reader);
+							pdepk = parsePDepRateConstantFromRestartFile(reader,numChebyTs,numChebyPs,rateCoefficients,numPlogs,EaUnits);											
+							
+							PDepReaction reverse = new PDepReaction(Products, Reactants, pdepk);
+							reverse.setReverseReaction(forward);
+							forward.setReverseReaction(reverse);
+						}
+						else {
+							PDepReaction reverse = null;
+							forward.setReverseReaction(reverse);
+						}
 						
 						netRxns.add(forward);
 						
