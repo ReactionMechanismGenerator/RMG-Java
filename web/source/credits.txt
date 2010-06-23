@@ -12,19 +12,19 @@ Project Supervisor:
  
 Current Developers: (rmg_dev@mit.edu)
 
-- Joshua Allen
+- Joshua W. Allen
 
-- Dr. C. Franklin Goldsmith
-
-- Michael Harper
+- Michael R. Harper
 
 - Amrit Jalan
 
-- Gregory Magoon
+- Gregory R. Magoon
 
-- Sandeep Sharma
+- Shamel S. Merchant
 
-- Dr. Richard West
+- Jeffrey D. Mo
+
+- Dr. Richard H. West
 
 Original Developer:
 
@@ -32,9 +32,13 @@ Original Developer:
 
 Previous Developers: 
 
-- Dr. Robert Ashcraft
+- Dr. C. Franklin Goldsmith
 
-- Dr. Gregory Beran
+- Dr. Sandeep Sharma
+
+- Dr. Robert W. Ashcraft
+
+- Dr. Gregory J. Beran
 
 - Dr. David M. Matheu
 
@@ -52,7 +56,7 @@ Previous Developers:
 
 - Dr. Hsi-Wu Wong
 
-- Kevin Van Geem
+- Prof. Kevin M. Van Geem
 
 RMGVE Developer:
 

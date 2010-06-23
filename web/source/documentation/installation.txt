@@ -106,9 +106,9 @@ To install RMG on a Linux computer:
 		
   To avoid typing this line each time, append it to your :file:`~/.bashrc` (bash shell) or :file:`~/.cshrc` (C shell) file.
 
-3. Obtain the source code (See :ref:`download`). Download the file :file:`rmg-3.0-linux-i386.tar.gz` or :file:`rmg-3.0-source.tar.gz`, ungzip and untar it, and move its contents to the :file:`$RMG` directory. ::
+3. Obtain the source code (See :ref:`download`). Download the file :file:`rmg-3.2-linux-i386.tar.gz` or :file:`rmg-3.2-source.tar.gz`, ungzip and untar it, and move its contents to the :file:`$RMG` directory. ::
 
-	$ tar -xvzf rmg-3.0-source.tar.gz
+	$ tar -xvzf rmg-3.2-source.tar.gz
 	$ mv rmg3/* $RMG
 
 Step 4 is only required if you are working with the source package. Binary packages are available for several platforms and will already contain the compiled executables.
@@ -121,7 +121,6 @@ Step 4 is only required if you are working with the source package. Binary packa
   If you only wish to compile the RMG Java code, you can do so by typing::
 
 	$ cd $RMG
-	$ ant compile
 	$ ant jar
 
 At this stage you will have a functional version of RMG. The remaining steps are only required to enable some advanced features.
@@ -175,15 +174,17 @@ To install RMG on a Windows computer:
 
    * Click OK twice to confirm the change.
 
-3. Obtain the source code (See :ref:`download`). Download the file :file:`rmg-3.0-win32-i386.zip` or :file:`rmg-3.0-source.tar.gz`, decompress it, and move its contents to the :file:`%RMG%` directory.
+3. Obtain the source code (See :ref:`download`). Download the file :file:`rmg-3.2-win32-i386.zip` or :file:`rmg-3.2-source.tar.gz`, decompress it, and move its contents to the :file:`%RMG%` directory.
 
-Step 4 is only required if you are working with the source package. Binary packages are available for several platforms and will already contain the compiled executables.
+Steps 4 and 5 are only required if you are working with the source package. Binary packages are available for several platforms and will already contain the compiled executables.
 
-4. Compile the programs. If you are working with the source package, you will need to compile RMG and its supporting Fortran programs. The easiest way to do the latter is to execute the file :file:`make.bat` in the :file:`%rmg%` directory. The batch script does not compile the RMG source; for this you will need ant.
+4. Obtain BLAS and LAPACK DLL files. You can create these yourself by downloading the BLAS and LAPACK sources, or you can download them from our `GitHub downloads <http://github.com/GreenGroup/RMG-Java/downloads>`_ page.
+
+5. Compile the programs. If you are working with the source package, you will need to compile RMG and its supporting Fortran programs. The easiest way to do the latter is to execute the file :file:`make.bat` in the :file:`%rmg%` directory. The batch script does not compile the RMG source; for this you will need ant.
 
 The next few steps are required only if you want RMG to be able to generate InChIs for the species present in the reaction mechanism.
    
-5. Download the InChI version 1 (software version 1.01) source code and Application Program Interface (API) from `IUPAC <http://www.iupac.org/inchi/download/index.html>`_ and unzip the file. Navigate to the :file:`InChI-1-API\\cInChI\\vc6_project\\Release` folder. Copy the executable file :file:`cInChI-1.exe` and paste it in the :file:`"%rmg%"\\software\\InChI` folder.
+6. Download the InChI version 1 (software version 1.01) source code and Application Program Interface (API) from `IUPAC <http://www.iupac.org/inchi/download/index.html>`_ and unzip the file. Navigate to the :file:`InChI-1-API\\cInChI\\vc6_project\\Release` folder. Copy the executable file :file:`cInChI-1.exe` and paste it in the :file:`"%rmg%"\\software\\InChI` folder.
 	
 You are now ready to generate InChIs in RMG.
 

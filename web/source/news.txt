@@ -43,9 +43,13 @@ Bug fixes and performance improvements:
 
 - Refinements to values in the database based on literature review.
 
-- Automatic escape from infinite loop.
+- No longer falls into infinite loop when the simulation results in an invalid model but RMG cannot identify a suitable action to take to enlarge the model.
 
-- ***Fixed Gauss-Chebyshev points for Chebyshev interpolation***(someone who is more familiar with what was changed: please review and clarify the changes)***
+- Reservoir state method for evaluating pressure-dependent rate coefficients has been vetted and is now the recommended method for publication-quality models. The modified strong collision method remains available for preliminary exploration of reaction models.
+
+- Pressure-dependence algorithm now defaults to an appropriate grid of temperatures and pressures based on the chosen interpolation model (e.g. Gauss-Chebyshev grid for Chebyshev polynomial model).
+
+- Fixed several bugs relating to enlarging of partial pressure-dependent networks.
 
 - Addressed issues that could lead to trying to simulate and empty reaction model in pressure-dependent cases.
 
@@ -55,7 +59,7 @@ Bug fixes and performance improvements:
 
 - Fixed DASPK issues, including variables.dat renaming for multiple reaction systems, ability to use constant concentration, reaction flux evaluation for Lindemann reactions, and sensitivity coefficient calculation.
 
-- Improved robustness for "frankie".
+- Improved robustness for frequency estimation code ("frankie").
 
 - Changed ODE Solver input file writing to use BufferedWriter to ease memory usage issues when using AUTO with large reaction models.
 
@@ -68,6 +72,8 @@ Bug fixes and performance improvements:
 - Addressed infinite recursion error in getToEndOfAxis that could occur with cyclic cumulenic species.
 
 - Fixed syntax for helium thermochemistry in CHEMKIN input file written by RMG.
+
+- Fixed bugs in counting of core and edge reactions caused by pressure-dependent reactions and irreversible reactions.
 
 2009-08-05: RMG 3.1 Released!
 ==============================
