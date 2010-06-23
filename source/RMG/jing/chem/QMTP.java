@@ -1369,7 +1369,6 @@ public class QMTP implements GeneralGAPP {
 	//vibrational contribution
 	if(p_chemGraph.getAtomNumber()!=1)Hthermal+=R*calcVibH(freqs, T_MM4, h, k, c)/1000.;
 	energy = energy - Hthermal;
-	System.out.println("Hthermal = "+Hthermal);//line to check accuracy
 	//3. write CanTherm input file
 	String canInp = "Calculation: Thermo\n";
 	canInp += "Trange: 300 100 13\n";//temperatures from 300 to 1500 in increments of 100
@@ -1847,7 +1846,7 @@ public class QMTP implements GeneralGAPP {
     //gmagoon 6/23/10
     //calculate the vibrational contribution (divided by R, units of K) at temperature, T, in Kelvin to Hthermal (ZPE not included)
     //p_freqs in cm^-1; c in cm/s; k in J/K; h in J-s
-    //we need to ignore zero frequencies, as MM4 does, to avoid dividing by zero; based on equation for Ev in http://www.gaussian.com/g_whitepap/thermo.htm; however, we ignore zero point contribution to be consistent with the input that CanTherm currently takes
+    //we need to ignore zero frequencies, as MM4 does, to avoid dividing by zero; based on equation for Ev in http://www.gaussian.com/g_whitepap/thermo.htm; however, we ignore zero point contribution to be consistent with the input that CanTherm currently takes; note, however, that this could introduce some small inaccuracies, as the frequencies may be slightly different in CanTherm vs. MM4, particularly for a frequency < 7.7 cm^-1 (treated as zero in MM4)
     public double calcVibH(ArrayList p_freqs, double p_T, double h, double k, double c){
         double Hcontrib = 0;
         double dr;
