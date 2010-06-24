@@ -163,25 +163,7 @@ public class SeedMechanism {
         		}
         		if (r == null) throw new InvalidReactionFormatException(line);
         		
-        		Iterator prlRxnIter = localReactions.iterator();
-        		boolean foundRxn = false;
-        		while (prlRxnIter.hasNext()) {
-        			Reaction old = (Reaction)prlRxnIter.next();
-        			if (old.equals(r)) {
-        				old.addAdditionalKinetics(r.getKinetics()[0],1);
-        				foundRxn = true;
-        				break;
-        			}
-        		}
-        		if (!foundRxn) {
-        			localReactions.add(r);
-	        		Reaction reverse = r.getReverseReaction();
-					
-	        		if (reverse != null) {
-						//reverse.getKinetics().setSource("Seed Mechanism: " + name);
-						localReactions.add(reverse);
-	        		}
-        		}
+        		localReactions = updateReactionList(r,localReactions,true);
         		
         		line = ChemParser.readMeaningfulLine(data);
         	}
@@ -460,6 +442,29 @@ public class SeedMechanism {
     		}
     	}
     	return multipliers;
+	}
+	
+	public LinkedHashSet updateReactionList(Reaction r, LinkedHashSet listOfRxns, boolean generateReverse) {
+		Iterator allRxnsIter = listOfRxns.iterator();
+		boolean foundRxn = false;
+		while (allRxnsIter.hasNext()) {
+			Reaction old = (Reaction)allRxnsIter.next();
+			if (old.equals(r)) {
+				old.addAdditionalKinetics(r.getKinetics()[0],1);
+				foundRxn = true;
+				break;
+			}
+		}
+		if (!foundRxn) {
+			listOfRxns.add(r);
+			if (generateReverse) {
+	    		Reaction reverse = r.getReverseReaction();
+	    		if (reverse != null) {
+					listOfRxns.add(reverse);
+	    		}
+			}
+		}
+		return listOfRxns;
 	}
     
 }
