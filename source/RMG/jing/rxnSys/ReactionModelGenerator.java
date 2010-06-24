@@ -291,6 +291,7 @@ public class ReactionModelGenerator {
 				if (tempString.toLowerCase().equals("yes")) {
 					readrestart = true;
 					readRestartSpecies();
+		    		readRestartReactions();
 				} else readrestart = false;				
 				line = ChemParser.readMeaningfulLine(reader);
 			} else throw new InvalidSymbolException("Cannot locate ReadRestart field");
@@ -662,6 +663,8 @@ public class ReactionModelGenerator {
 			else
 				throw new InvalidSymbolException("condition.txt: can't find PressureDependence flag!");
 			
+        	if (readrestart) if (PDepNetwork.generateNetworks) readPDepNetworks();
+        	
         	// include species (optional)
         	/*
         	 * 
@@ -3022,8 +3025,13 @@ public class ReactionModelGenerator {
 					System.out.println("Error reading graph: Graph contains a forbidden structure.\n" + g.toString());
 					System.exit(0);
 				}
+				// Rewrite the species name ... with the exception of the (#)
+				String speciesName = splitString1[0];
+				for (int numTokens=1; numTokens<splitString1.length-1; ++numTokens) {
+					speciesName += "(" + splitString1[numTokens];
+				}
 				// Make the species
-				Species species = Species.make(splitString1[0],cg,Integer.parseInt(splitString2[0]));
+				Species species = Species.make(speciesName,cg,Integer.parseInt(splitString2[0]));
 				// Add the new species to the set of species
 				restartEdgeSpcs.add(species);
 				line = ChemParser.readMeaningfulLine(reader);
@@ -3589,8 +3597,6 @@ public class ReactionModelGenerator {
     	LinkedHashSet allInitialCoreRxns = new LinkedHashSet();
     	
     	if (readrestart) {
-    		readRestartReactions();
-    		if (PDepNetwork.generateNetworks) readPDepNetworks();
     		allInitialCoreSpecies.addAll(restartCoreSpcs);
     		allInitialCoreRxns.addAll(restartCoreRxns);
     	}
