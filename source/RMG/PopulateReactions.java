@@ -109,6 +109,12 @@ public class PopulateReactions {
 	 */
 	public static void main(String[] args) {
 		initializeSystemProperties();
+		try {
+			ChemGraph.readForbiddenStructure();
+		} catch (IOException e1) {
+			System.err.println("PopulateReactions cannot locate forbiddenStructures.txt file");
+			e1.printStackTrace();
+		}
 		
 		// Creating a new ReactionModelGenerator so I can set the variable temp4BestKinetics
 		//	and call the new readAndMakePTL and readAndMakePRL methods
