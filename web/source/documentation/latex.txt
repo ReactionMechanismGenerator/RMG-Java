@@ -16,6 +16,7 @@ Please also refer to our website for how to cite RMG in published work.
    installation
    conditionfile
    GraphicalUserInterface
+   examples
    running
    analyzing
    modification
