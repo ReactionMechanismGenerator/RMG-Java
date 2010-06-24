@@ -75,6 +75,8 @@ Bug fixes and performance improvements:
 
 - Fixed bugs in counting of core and edge reactions caused by pressure-dependent reactions and irreversible reactions.
 
+- Primary Kinetics Library now correctly identifies matches for in molecules with multiple resonance forms
+
 2009-08-05: RMG 3.1 Released!
 ==============================
 RMG version 3.1 has been released. The new release includes a number of improvements and bug fixes, including the following:

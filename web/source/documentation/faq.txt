@@ -75,3 +75,22 @@ compiling in Windows has been tricky in our experience.
 Hopefully, DASSL will meet your needs as it should provide all the functionality
 of DASPK, with the exception of sensitivity analysis (which you could do in
 Chemkin with the final model).
+
+.. _Q6:
+During the RMG run, I see the warning: "Frankie exceeded maximum number of iterations...". Is this normal?
+================================================================================================================================================================================
+This occurs when the optimization algorithm for the frequency estimation code
+"Frankie" fails to converge. In these cases, the frequencies (used to calculate
+density of states in master equation calculations to account for pressure dependence)
+may not be as accurate as they could be. It is typical for some fraction of Frankie
+jobs to fail in this fashion.
+
+.. _Q7:
+During the RMG run, I see the warning: "fitted Er < 0 ...". Is this normal?
+================================================================================================================================================================================
+This occurs when the fitted activation energy for reverse reaction rate coefficients
+(based on equilibrium considerations) turns out to be negative. In these cases, the
+activation energy for the reverse reaction is adjusted to zero, with corresponding
+adjustment to the A-factor to ensure accurate equilibrium constant is maintained.
+It is typical for some fraction of the large number of reactions considered to
+produce this output.

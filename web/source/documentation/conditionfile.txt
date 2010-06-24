@@ -503,6 +503,8 @@ is usually 1e-4 to 1e-8::
 Note: You have the option of using sensitivity analysis only if you have the
 DASPK solver and the DAEPACK library. If you are using DASSL solver then skip the Sensitivity Analysis section.
 
+One option when dealing with NegativeConcentrationException issues is to use the "non-negative" option with DASSL. This option is requested with the line "DynamicSimulator: DASSL: non-negative". See the FAQ for further details.
+
 Sensitivity Analysis
 --------------------
 
