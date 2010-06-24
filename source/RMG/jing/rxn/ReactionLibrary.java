@@ -59,13 +59,13 @@ This is a super user-defined reaction library.  Here, "super" means that all the
  
 public class ReactionLibrary {
     
-    private static ReactionLibrary INSTANCE = new ReactionLibrary();		//attribute INSTANCE 
+    private static ReactionLibrary INSTANCE = new ReactionLibrary(); 
     
     protected HashMap dictionary = new HashMap();
     
-    protected HashSet library = new HashSet();
+    protected LinkedHashSet library = new LinkedHashSet();
     
-    protected String name;		//attribute name
+    protected String name;
     
     // Constructors
     
@@ -83,7 +83,7 @@ public class ReactionLibrary {
         name = p_libraryName;
         
         // Check if directory path is given/exists
-        if ( p_directoryPath == null) throw new NullPointerException("Reaction Library directory path");
+        if ( p_directoryPath == null) throw new NullPointerException("RMG cannot locate Reaction Library: directory path is null");
         try {
         	read(p_directoryPath,p_libraryName);
         }
@@ -119,6 +119,9 @@ public class ReactionLibrary {
     	 // The Library is composed of Pdep and Non Pdep Reactions
     	 // shamel 6/10/2010 can handle only Lindemann, TROE and Third Body form
     	 
+    	 // MRH making some changes to remove duplicate code in 
+    	 //	PrimaryKineticsLibrary / ReactionLibrary 
+    	 
          try {
          	if (!p_directoryName.endsWith("/")) p_directoryName = p_directoryName + "/";
  			System.out.println("Reading Reaction Library from: "+p_directoryName);
@@ -127,366 +130,19 @@ public class ReactionLibrary {
              String dictionaryFile = p_directoryName + "species.txt";
              String libraryFile = p_directoryName + "reactions.txt";
              String pdeplibraryFile = p_directoryName + "pdepreactions.txt";
-            // Read in Dictionary File, species list
-             readDictionary(dictionaryFile);
-            // Read in Non Pdep Reactions  
-         	readLibrary(libraryFile,p_name);
-         	// Read in Pdep Reactions
-         	readPdepReactions(pdeplibraryFile,p_name);
-         	return;
+             
+             SeedMechanism sm = new SeedMechanism();
+             dictionary.putAll(sm.readSpecies(dictionaryFile,p_name,"ReactionLibrary: "));
+             library.addAll(sm.readReactions(libraryFile,p_name,dictionary,"ReactionLibrary: ",false));
+             library.addAll(sm.readPdepReactions(pdeplibraryFile,p_name,dictionary,"ReactionLibrary: ",false));
+            
+             return;
          }
          catch (Exception e) {
          	throw new IOException("Can't read Reaction library.\n" + e.getMessage());
          }
      }
-
-
-    public void readPdepReactions(String pdepFileName, String p_name) throws IOException {
-    	// shamel As of 6/10/2010 This function is EXACTLY like the seed mechanism function
-    	// Created by M.R.Harper and I am keeping  some of his comments below which will match with 
-    	// seed mechanism function
-    	
-    	// To read in Pdep Reactions
-    	try {
-    		// Read in the file name
-        	FileReader in = new FileReader(pdepFileName);
-        	// Buffer the file
-        	BufferedReader data = new BufferedReader(in);
-        	
-        	double A_multiplier = 1;
-        	double E_multiplier = 1;
-        	
-        	// Here we want the Reaction Library to be in certain form -- as standard library form in RMG. The
-        	// first line must begin with units followed by Reaction
-        	
-        	String line = ChemParser.readMeaningfulLine(data);
-        	if (line.startsWith("Unit")) {
-        		line = ChemParser.readMeaningfulLine(data);
-        		unit: while(!(line.startsWith("Reaction"))) {
-        			if (line.startsWith("A")) {
-        				// To get units of Arrehnius Constant and get correct conversion multiplier
-        				StringTokenizer st = new StringTokenizer(line);
-        				String temp = st.nextToken();
-        				String unit = st.nextToken().trim();
-        				if (unit.compareToIgnoreCase("mol/cm3/s") == 0) {
-        					A_multiplier = 1;
-        				}
-        				else if (unit.compareToIgnoreCase("mol/liter/s") == 0) {
-           					A_multiplier = 1e-3;
-        				}
-        				else if (unit.compareToIgnoreCase("molecule/cm3/s") == 0) {
-        					A_multiplier = 6.022e23;
-        				}
-        			}
-        			else if (line.startsWith("E")) {
-        				// To grab E and get correct conversion multiplier
-        				StringTokenizer st = new StringTokenizer(line);
-        				String temp = st.nextToken();
-        				String unit = st.nextToken().trim();
-        				if (unit.compareToIgnoreCase("kcal/mol") == 0) {
-        					E_multiplier = 1;
-        				}
-        				else if (unit.compareToIgnoreCase("cal/mol") == 0) {
-           					E_multiplier = 1e-3;
-        				}
-        				else if (unit.compareToIgnoreCase("kJ/mol") == 0) {
-           					E_multiplier = 1/4.186;
-        				}
-        				else if (unit.compareToIgnoreCase("J/mol") == 0) {
-           					E_multiplier = 1/4186;
-        				}
-        				else if (unit.compareToIgnoreCase("Kelvin") == 0) {
-        					E_multiplier = 1.987e-3;
-        				}
-        			}
-        			line = ChemParser.readMeaningfulLine(data);
-        		}
-        	}
-            
-        	String nextLine = ChemParser.readMeaningfulLine(data);
-        	read: while (nextLine != null) {	
-        		Reaction r;
-        		try {
-        			// To grab the reaction from the pdeplibrary file
-        			r = ChemParser.parseArrheniusReaction(dictionary, nextLine, A_multiplier, E_multiplier);
-        		}
-        		catch (InvalidReactionFormatException e) {
-        			throw new InvalidReactionFormatException(nextLine + ": " + e.getMessage());
-        		}
-        		if (r == null) throw new InvalidReactionFormatException(nextLine);
-                
-        		/*
-        		 * Read the next line and determine what to do based on the
-        		 * 	presence/absence of keywords
-        		 */
-        		nextLine = ChemParser.readMeaningfulLine(data);
-        		boolean continueToReadRxn = true;
-        		
-        		// Initialize all of the possible pdep variables
-        		HashMap thirdBodyList = new HashMap();
-        		UncertainDouble uA = new UncertainDouble(0.0, 0.0, "Adder");
-        		UncertainDouble un = new UncertainDouble(0.0, 0.0, "Adder");
-        		UncertainDouble uE = new UncertainDouble(0.0, 0.0, "Adder");
-        		ArrheniusKinetics low = new ArrheniusKinetics(uA, un, uE, "", 0, "", "");
-        		double a = 0.0;
-        		double T3star = 0.0;
-        		double Tstar = 0.0;
-        		double T2star = 0.0;
-        		boolean troe7 = false;
-        		
-        		/*
-        		 * When reading in the auxillary information for the pdep reactions,
-        		 * 	let's not assume the order is fixed (i.e. third-bodies and
-        		 * 	their efficiencies, then lindemann, then troe)
-        		 * The order of the if statement is important as the "troe" and
-        		 * 	"low" lines will also contain a "/"; thus, the elseif contains
-        		 * 	"/" needs to be last.
-        		 */
-        		while (continueToReadRxn) {
-        			if (nextLine == null) {
-        				continueToReadRxn = false;
-        			} else if (nextLine.toLowerCase().contains("troe")) {
-	        			// read in troe parameters
-	            		StringTokenizer st = new StringTokenizer(nextLine, "/");
-	            		String temp = st.nextToken().trim();	// TROE
-	            		String troeString = st.nextToken().trim();	// List of troe parameters
-	            		st = new StringTokenizer(troeString);
-	                    int n = st.countTokens();
-	                    if (n != 3 && n != 4) throw new InvalidKineticsFormatException("Troe parameter number = "+n + " for reaction: " + r.toString());
-	            
-	              		a = Double.parseDouble(st.nextToken().trim());
-	            		T3star = Double.parseDouble(st.nextToken().trim());
-	            		Tstar = Double.parseDouble(st.nextToken().trim());
-
-	            		if (st.hasMoreTokens()) {
-	            			troe7 = true;
-	            			T2star = Double.parseDouble(st.nextToken().trim());
-	               		}
-	            		nextLine = ChemParser.readMeaningfulLine(data);
-	        		} else if (nextLine.toLowerCase().contains("low")) {
-	        			// read in lindemann parameters
-	            		StringTokenizer st = new StringTokenizer(nextLine, "/");
-	            		String temp = st.nextToken().trim();	// LOW
-	            		String lowString = st.nextToken().trim();	// Modified Arrhenius parameters
-	            		/*
-	            		 * MRH 17Feb2010:
-	            		 * 	The units of the k_zero (LOW) Arrhenius parameters are different from the units of
-	            		 * 	k_inf Arrhenius parameters by a factor of cm3/mol, hence the getReactantNumber()+1
-	            		 */
-	            		low = ChemParser.parseSimpleArrheniusKinetics(lowString, A_multiplier, E_multiplier, r.getReactantNumber()+1);
-	            		nextLine = ChemParser.readMeaningfulLine(data);
-	        		} else if (nextLine.contains("/")) {
-	        			// read in third body colliders + efficiencies
-	            		thirdBodyList = ChemParser.parseThirdBodyList(nextLine);
-	            		nextLine = ChemParser.readMeaningfulLine(data);
-	        		} else {
-	        			// the nextLine is a "new" reaction, hence we need to exit the while loop
-	        			continueToReadRxn = false;
-	        		}
-        		}
-        		   
-        		/*
-        		 * Make the pdep reaction, according to which parameters
-        		 * 	are present
-        		 */
-        		
-        		if ((a==0.0) && (T3star==0.0) && (Tstar==0.0)) {
-        			// Not a troe reaction
-        			if (low.getAValue() == 0.0) {
-        				// thirdbody reaction
-                		ThirdBodyReaction tbr = ThirdBodyReaction.make(r,thirdBodyList);
-        				tbr.setKineticsSource("ReactionLibrary: " + p_name,0);
-        				tbr.setKineticsComments(" ",0);
-        				library.add(tbr);
-                		Reaction reverse = tbr.getReverseReaction();
-        				if (reverse != null) library.add(reverse);
-        			} else {
-        				// lindemann reaction
-                		LindemannReaction tbr = LindemannReaction.make(r,thirdBodyList,low);
-        				tbr.setKineticsSource("ReactionLibrary: " + p_name,0);
-        				tbr.setKineticsComments(" ",0);
-        				library.add(tbr);
-                		Reaction reverse = tbr.getReverseReaction();
-        				if (reverse != null) library.add(reverse);
-        			}
-        		} else {
-        			// troe reaction
-            		TROEReaction tbr = TROEReaction.make(r,thirdBodyList, low, a, T3star, Tstar, troe7, T2star);
-    				tbr.setKineticsSource("ReactionLibrary: " + p_name,0);
-    				tbr.setKineticsComments(" ",0);
-    				library.add(tbr);
-            		Reaction reverse = tbr.getReverseReaction();
-    				if (reverse != null) library.add(reverse);
-        		}
-        	}
-        	   
-            in.close();
-        	return;
-        }
-        catch (Exception e) {
-
-			/*
-			 * 25Jun2009-MRH: When reading the Primary Reaction Library, we should not require the user to supply
-			 * 		troe reactions.  In the instance that no "troeReactions.txt" file exists, inform
-			 * 		user of this but continue simulation.
-			 */
-        	System.out.println("RMG did not find/read pressure-dependent reactions ("+pdepFileName+") " +
-        			"in the Reaction Library: "  + "\n" + e.getMessage());
-        }
-
-    }
     
-    
-    
-    
-    public void readLibrary(String p_reactionFileName, String p_name) throws IOException {
-    	// shamel As of 6/10/2010 This function is EXACTLY like the seed mechanism function
-    	// Created by M.R.Harper and I am keeping  some of his comments below which will match with 
-    	// seed mechanism function
-    	
-    	// To read in Non Pdep Reactions
-    	
-        try {
-        	FileReader in = new FileReader(p_reactionFileName);
-        	BufferedReader data = new BufferedReader(in);
-        	
-        	double A_multiplier = 1;
-        	double E_multiplier = 1;
-        	
-        	String line = ChemParser.readMeaningfulLine(data);
-        	if (line.startsWith("Unit")) {
-        		line = ChemParser.readMeaningfulLine(data);
-        		unit: while(!(line.startsWith("Reaction"))) {
-        			if (line.startsWith("A")) {
-        				StringTokenizer st = new StringTokenizer(line);
-        				String temp = st.nextToken();
-        				String unit = st.nextToken().trim();
-        				if (unit.compareToIgnoreCase("mol/cm3/s") == 0) {
-        					A_multiplier = 1;
-        				}
-        				else if (unit.compareToIgnoreCase("mol/liter/s") == 0) {
-           					A_multiplier = 1e-3;
-        				}
-        				else if (unit.compareToIgnoreCase("molecule/cm3/s") == 0) {
-        					A_multiplier = 6.022e23;
-        				}
-        			}
-        			else if (line.startsWith("E")) {
-        				StringTokenizer st = new StringTokenizer(line);
-        				String temp = st.nextToken();
-        				String unit = st.nextToken().trim();
-        				if (unit.compareToIgnoreCase("kcal/mol") == 0) {
-        					E_multiplier = 1;
-        				}
-        				else if (unit.compareToIgnoreCase("cal/mol") == 0) {
-           					E_multiplier = 1e-3;
-        				}
-        				else if (unit.compareToIgnoreCase("kJ/mol") == 0) {
-           					E_multiplier = 1/4.186;
-        				}
-        				else if (unit.compareToIgnoreCase("J/mol") == 0) {
-           					E_multiplier = 1/4186;
-        				}
-        				else if (unit.compareToIgnoreCase("Kelvin") == 0) {
-        					E_multiplier = 1.987e-3;
-        				}
-        			}
-        			line = ChemParser.readMeaningfulLine(data);
-        		}
-        	}
-            
-        	line = ChemParser.readMeaningfulLine(data);
-        	read: while (line != null) {
-        		Reaction r;
-        		try {
-        			r = ChemParser.parseArrheniusReaction(dictionary, line, A_multiplier, E_multiplier);
-					r.setKineticsSource("ReactionLibrary: "+ p_name,0);
-					r.setKineticsComments(" ",0);
-				}
-        		catch (InvalidReactionFormatException e) {
-        			throw new InvalidReactionFormatException(line + ": " + e.getMessage());
-        		}
-        		if (r == null) throw new InvalidReactionFormatException(line);
-        		
-        		Iterator prlRxnIter = library.iterator();
-        		boolean foundRxn = false;
-        		while (prlRxnIter.hasNext()) {
-        			Reaction old = (Reaction)prlRxnIter.next();
-        			if (old.equals(r)) {
-        				old.addAdditionalKinetics(r.getKinetics()[0],1);
-        				foundRxn = true;
-        				break;
-        			}
-        		}
-        		if (!foundRxn) {
-        			library.add(r);
-	        		Reaction reverse = r.getReverseReaction();
-					
-	        		if (reverse != null) {
-						//reverse.getKinetics().setSource("Seed Mechanism: " + name);
-						library.add(reverse);
-	        		}
-        		}
-        		
-        		line = ChemParser.readMeaningfulLine(data);
-        	}
-        	   
-            in.close();
-        	return;
-        }
-        catch (Exception e) {
-        	System.out.println("RMG did not read the following Reaction Library file: " 
-        			+ p_reactionFileName);
-        }
-    }
-    
-    
-    public void readDictionary(String p_speciesFileName) throws IOException {
-    	// shamel As of 6/11/2010 This function is EXACTLY like the seed mechanism function
-    	// Created by M.R.Harper and I am keeping  some of his comments below which will match with 
-    	// seed mechanism function
-    
-        try {
-        	FileReader in = new FileReader(p_speciesFileName);
-        	BufferedReader data = new BufferedReader(in);
-        	
-        	// step 1: read in structure
-        	String line = ChemParser.readMeaningfulLine(data);
-        	read: while (line != null) {
-        		// Allow unreactive species
-        		StringTokenizer st = new StringTokenizer(line);
-				String name = st.nextToken().trim();
-				boolean IsReactive = true;
-				if (st.hasMoreTokens()) {
-					String reactive = st.nextToken().trim();
-					if ( reactive.equalsIgnoreCase("unreactive") ) IsReactive = false;
-				}
-            	Graph graph;
-        		try {
-        			graph = ChemParser.readChemGraph(data);
-					if (graph == null) throw new IOException("Graph was null");
-        		}
-        		catch (IOException e) {
-        			throw new InvalidChemGraphException("Cannot read species '" + name + "': " + e.getMessage());
-        		}
-				ChemGraph cg = ChemGraph.make(graph);	
-        		Species spe = Species.make(name, cg);
-        		//  Turn off reactivity if necessary, but don't let code turn it on
-        		// again if was already set as unreactive from input file
-        		if(IsReactive==false) spe.setReactivity(IsReactive);
-        		dictionary.put(name, spe);
-        		line = ChemParser.readMeaningfulLine(data);
-        	}
-        	   
-            in.close();
-        	return;
-        }
-        catch (Exception e) {
-			throw new IOException("RMG cannot read the \"species.txt\" file in the Reaction Library\n" + e.getMessage());
-        }
-    }
-
- 
     // clearLibraryReaction() 
     public void clearLibraryReaction() {
      
