@@ -1,0 +1,9 @@
+.. _examples:
+
+**********************************
+Example Condition Files
+**********************************
+
+This is our first example. Somebody should write something wise about it:
+
+.. literalinclude:: ../../../examples/RMG/1,3-hexadiene/condition.txt
