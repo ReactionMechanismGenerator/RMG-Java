@@ -233,8 +233,8 @@ may choose the simplified adjacency list in which the hydrogen atoms are omitted
  1  C 0 {2,S} 
  2  O 0 {1,S} 
  (2) O2 1.1E-7 (mol/cm3) 
- 1  O 0 {2,D} 
- 2  O 0 {1,D} 
+ 1  O 1 {2,S} 
+ 2  O 1 {1,S} 
  END 
 
 
@@ -243,6 +243,8 @@ InitialStatus section.
 
 If one of the reactants is a resonance isomer, you only need to define one of
 the resonance structures, and RMG will automatically detect the others.
+
+**Please represent molecular oxygen, O2, as shown above.**  This is a deviation from previous versions of RMG.  For more, please see this discussion on :ref:`representing oxygen <oxygen>`.
 
 .. this is commented out because it breaks the latex
  +------------------+----------+---------------------+

@@ -5,7 +5,7 @@ FAQ (Frequently-Asked Questions)
 ********************************
 
 .. _Q1:
-I encounter a NegativeConcentrationException ("Exception in thread "main"  jing.rxnSys.NegativeConcentrationException"...), causing the RMG run to fail. How should I procede?
+I encounter a NegativeConcentrationException ("Exception in thread "main"  jing.rxnSys.NegativeConcentrationException"...), causing the RMG run to fail. How should I proceed?
 ==============================================================================================================================================================================
 The issue here is that the ODE simulator reached a slightly negative concentration, which RMG consequently interpreted as erroneous and stopped. It is basically a numerical
 artifact, as the equations should not allow a negative concentration. There are two options for dealing with this:
@@ -77,7 +77,7 @@ Chemkin with the final model).
 
 .. _Q6:
 During the RMG run, I see the warning: "Frankie exceeded maximum number of iterations...". Is this normal?
-================================================================================================================================================================================
+============================================================================================================
 This occurs when the optimization algorithm for the frequency estimation code
 "Frankie" fails to converge. In these cases, the frequencies (used to calculate
 density of states in master equation calculations to account for pressure dependence)
@@ -86,10 +86,17 @@ jobs to fail in this fashion.
 
 .. _Q7:
 During the RMG run, I see the warning: "fitted Er < 0 ...". Is this normal?
-================================================================================================================================================================================
+===============================================================================
 This occurs when the fitted activation energy for reverse reaction rate coefficients
 (based on equilibrium considerations) turns out to be negative. In these cases, the
 activation energy for the reverse reaction is adjusted to zero, with corresponding
 adjustment to the A-factor to ensure accurate equilibrium constant is maintained.
 It is typical for some fraction of the large number of reactions considered to
 produce this output.
+
+.. _Q8:
+
+How do I represent molecular oxygen?
+====================================
+Please represent molecular oxygen as a biradical with a single bond between the 
+two oxygen atoms.  For more information, please see :ref:`Representing oxygen <oxygen>`.
