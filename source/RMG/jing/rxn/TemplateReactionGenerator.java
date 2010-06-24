@@ -68,89 +68,16 @@ public class TemplateReactionGenerator implements ReactionGenerator {
     */
     //## operation react(HashSet) 
     public LinkedHashSet react(LinkedHashSet p_speciesSeed) {
-        //#[ operation react(HashSet) 
-        if (p_speciesSeed.size() == 0) {
-        	return null;
-        }
-        
-        LinkedHashSet reaction_set = new LinkedHashSet();
-        //LinkedHashSet species_set = new LinkedHashSet();
-        
-        // add here the algorithm to generate reaction
-        // loop over all the reaction template to find any possible match between the species seed set and the reaction template library
-        Iterator template_iter = reactionTemplateLibrary.getReactionTemplate();
-        while (template_iter.hasNext()) {
-        	ReactionTemplate current_template = (ReactionTemplate)template_iter.next();
-        	/*
-        	 * Added by MRH on 15-Jun-2009
-        	 * Display more information to the user:
-        	 * 	This println command informs the user which rxn family template
-        	 *		the new seed species is reacting against
-        	 */
-        	System.out.println("Reacting the species given in the input file: " + current_template.name);
-        	// the reaction template has only one reactant, we only need to loop over the whole species seed set to find a match
-//        	System.out.println(current_template.name);
-        	if (current_template.hasOneReactant()) {
-        		Iterator species_iter1 = p_speciesSeed.iterator();
-        		while (species_iter1.hasNext()) {
-        			Species first_reactant = (Species)species_iter1.next();
-        			if (first_reactant.isReactive()) {
-        				LinkedHashSet current_reactions = current_template.reactOneReactant(first_reactant);
-        				first_reactant.addPdepPaths(current_reactions);
-        				reaction_set.addAll(current_reactions);
-        			}
-    				Runtime runTime = Runtime.getRuntime();
-    				if (runTime.freeMemory() < runTime.totalMemory()/3) {
-    					runTime.gc();
-    				}
-    				//System.out.println("Free memory: " + runTime.freeMemory());        			
-        		}                                
-        	}
-        	// the reaction template has two reactants, we need to check all the possible combination of two species
-        	else if (current_template.hasTwoReactants()) {
-				
-        		Iterator species_iter1 = p_speciesSeed.iterator();
-        		while (species_iter1.hasNext()) {
-        			Species first_reactant = (Species)species_iter1.next();
-        			if (first_reactant.isReactive()) {
-        				Iterator species_iter2 = p_speciesSeed.iterator();
-        				while (species_iter2.hasNext()) {
-        					Species second_reactant = (Species)species_iter2.next();
-        					if (second_reactant.isReactive()) {
- 		       					LinkedHashSet current_reactions = current_template.reactTwoReactants(first_reactant,second_reactant);
-        						reaction_set.addAll(current_reactions);
-        					}
-        				}
-        				Runtime runTime = Runtime.getRuntime();
-        				if (runTime.freeMemory() < runTime.totalMemory()/3) {
-        					runTime.gc();
-        				}
-        				//System.out.println("Free memory: " + runTime.freeMemory());
-        			}
-        		}
-        	}
-        }
-        
-        //PDepNetwork.completeNetwork(p_speciesSeed);
-		Runtime runTime = Runtime.getRuntime();
-		System.out.print("Memory used: ");
-		System.out.println(runTime.totalMemory());
-		System.out.print("Free memory: ");
-		System.out.println(runTime.freeMemory());
-		if (runTime.freeMemory() < runTime.totalMemory()/3) {
-			runTime.gc();
-			System.out.println("After garbage collection:");
-			System.out.print("Memory used: ");
-			System.out.println(runTime.totalMemory());
-			System.out.print("Free memory: ");
-			System.out.println(runTime.freeMemory());
-		}
-
-        return reaction_set;
-        
-        
-        
-        //#]
+    	LinkedHashSet allReactions = new LinkedHashSet();
+    	LinkedHashSet allSpecies = new LinkedHashSet();
+    	// Iterate over all species in the LinkedHashSet
+    	for (Iterator speciesIter = p_speciesSeed.iterator(); speciesIter.hasNext();) {
+    		// Grab the current species, add it to the "core", and react it against the "core"
+    		Species currentSpecies = (Species)speciesIter.next();
+    		allSpecies.add(currentSpecies);
+    		allReactions.addAll(react(allSpecies,currentSpecies));
+    	}
+    	return allReactions;
     }
     
     public LinkedHashSet generatePdepReactions(Species p_species){
