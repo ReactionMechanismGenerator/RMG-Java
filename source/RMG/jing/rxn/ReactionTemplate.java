@@ -1318,73 +1318,7 @@ public class ReactionTemplate {
       return reaction_set;
       //#]
   }
-  
-  //## operation reactTwoReactants(Species,Species) 
-  public LinkedHashSet reactTwoReactants(Species p_reactant1, Species p_reactant2) {
-      //#[ operation reactTwoReactants(Species,Species) 
-      LinkedList r = new LinkedList();
-      r.add(p_reactant1);
-      r.add(p_reactant2);
-      /*HashSet reaction = getReactionSetFromReactant(r);
-      if (reaction != null) return reaction;*/
-      
-      LinkedHashSet reaction = new LinkedHashSet();
-      
-      boolean RI1 = p_reactant1.hasResonanceIsomers();
-      boolean RI2 = p_reactant2.hasResonanceIsomers();
-      
-      if (!RI1 && !RI2) {
-      	// react the main structre
-      	ChemGraph rg1 = p_reactant1.getChemGraph();
-      	ChemGraph rg2 = p_reactant2.getChemGraph();
-      	reaction = reactTwoReactants(rg1,rg2);
-      }
-      else if (!RI1 && RI2) {
-      	ChemGraph rg1 = p_reactant1.getChemGraph();
-      	Iterator iter = p_reactant2.getResonanceIsomers();
-      	// react the resonance isomers
-      	while (iter.hasNext()) {
-      		ChemGraph rg2 = (ChemGraph)iter.next();
-      		LinkedHashSet more = reactTwoReactants(rg1,rg2);
-      		reaction.addAll(more);
-      	}
-			
-      }
-      else if (RI1 && !RI2) {
-      	ChemGraph rg2 = p_reactant2.getChemGraph();
-      	Iterator iter = p_reactant1.getResonanceIsomers();
-      	// react the resonance isomers
-      	while (iter.hasNext()) {
-      		ChemGraph rg1 = (ChemGraph)iter.next();
-      		LinkedHashSet more = reactTwoReactants(rg1,rg2);
-      		reaction.addAll(more);
-      	}
-      }
-      else {
-      	Iterator iter1 = p_reactant1.getResonanceIsomers();
-      	while (iter1.hasNext()) {
-      		ChemGraph rg1 = (ChemGraph)iter1.next();
-      		Iterator iter2 = p_reactant2.getResonanceIsomers();
-      		while (iter2.hasNext()) {
-      			ChemGraph rg2 = (ChemGraph)iter2.next();
-      			LinkedHashSet more = reactTwoReactants(rg1,rg2);
-      			reaction.addAll(more);
-      		}
-      	}
-      }
-      // put int reactionDictionaryByReactant
-      //reactionDictionaryByReactant.put(r,reaction);
-      
-      // return the reaction set
-      return reaction;
-      
-      
-      
-      
-      
-      //#]
-  }
-  
+ 
   /**
    * reactTwoReactants
    * 	17-Jun-2009 MRH
