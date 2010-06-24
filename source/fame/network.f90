@@ -290,24 +290,21 @@ contains
         real(8), dimension(1:nGrains), intent(in) :: Elist
         real(8), dimension(1:nGrains), intent(out) :: densStates
 
-        real(8), dimension(:), allocatable :: vib
-        real(8), dimension(:), allocatable :: rot
-        real(8), dimension(:,:), allocatable :: hind
+        real(8), dimension(1:size(spec%spectral%vibFreq)) :: vib
+        real(8), dimension(1:size(spec%spectral%rotFreq)) :: rot
+        real(8), dimension(1:size(spec%spectral%hindFreq), 1:2) :: hind
         integer linear, symm
         character(len=128) msg
 
         integer i
 
         ! Prepare inputs for density of states function
-        allocate( vib(1:size(spec%spectral%vibFreq)) )
-        do i = 1, size(spec%spectral%vibFreq)
+		do i = 1, size(spec%spectral%vibFreq)
             vib(i) = spec%spectral%vibFreq(i)
         end do
-        allocate( rot(1:size(spec%spectral%rotFreq)) )
-        do i = 1, size(spec%spectral%rotFreq)
+		do i = 1, size(spec%spectral%rotFreq)
             rot(i) = spec%spectral%rotFreq(i)
         end do
-        allocate( hind(1:size(spec%spectral%hindFreq), 1:2) )
         do i = 1, size(spec%spectral%hindFreq)
             hind(i,1) = spec%spectral%hindFreq(i)
             hind(i,2) = spec%spectral%hindBarrier(i)
@@ -321,8 +318,6 @@ contains
         ! Calculate the density of states
         call densityOfStates(Elist, nGrains, vib, size(vib), rot, size(rot), &
             hind, size(hind), symm, linear, densStates, msg)
-
-        deallocate(vib, rot, hind)
 
     end subroutine
 
