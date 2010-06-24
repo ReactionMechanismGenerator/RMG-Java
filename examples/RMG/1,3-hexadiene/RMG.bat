@@ -1,4 +1,4 @@
-echo off
+@echo off
 
 REM RMG 3.2 Windows batch script for RMG execution
 REM Put me in the directory containing the condition file and double-click to run RMG.

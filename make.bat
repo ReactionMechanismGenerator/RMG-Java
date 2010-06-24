@@ -1,4 +1,5 @@
-echo off
+@echo off
+
 if not defined RMG (
 echo Error: RMG variable not defined; please set to the location of your RMG installation.
 goto end

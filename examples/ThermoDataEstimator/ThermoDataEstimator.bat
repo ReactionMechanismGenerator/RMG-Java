@@ -10,13 +10,13 @@ goto end
 )
 
 if not exist input.txt (
-echo Error: input.txt not found. Please create an PopulateReactions input file before running.
+echo Error: input.txt not found. Please create an ThermoDataEstimator input file before running.
 goto end
 )
 
-echo Running PopulateReactions...
-java -Xmx500m -classpath %RMG%\bin\RMG.jar PopulateReactions input.txt > RMG.log 2>&1 &
-echo PopulateReactions job completed.
+echo Running ThermoDataEstimator...
+java -Xmx500m -classpath %RMG%\bin\RMG.jar ThermoDataEstimator input.txt > RMG.log 2>&1 &
+echo ThermoDataEstimator job completed.
 
 :end
 pause
