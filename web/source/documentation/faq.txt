@@ -59,8 +59,7 @@ if you're focusing on the species decomposition.
 4) If you are running RMG with pressure dependence, consider trying the less accurate
 (but faster) ModifiedStrongCollision option.
 
-5) (This is for the RMG-Java version located at github) If you are using a Seed
-Mechanism, set the GenerateReactions field to off.
+5) If you are using a Seed Mechanism, set the GenerateReactions field to off.
 
 .. _Q5:
 
