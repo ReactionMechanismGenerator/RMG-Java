@@ -4,6 +4,15 @@
 Example Condition Files
 **********************************
 
+Minimal Example
+========================
+
+This is a minimal example and should run quickly. It does not include any 
+calculation of pressure-dependent reaction rates.
+
+.. literalinclude:: ../../../examples/RMG/minimal/condition.txt
+
+
 1,3-hexadiene pyrolysis
 ========================
 
