@@ -16,6 +16,10 @@ order:
 
 #. The main :ref:`database`
 
+#. Any restrictions on the number of atoms / radicals for all generated species
+
+#. The name and location of all :ref:`Primary Transport Libraries <primarytransportlibrary>`
+
 #. The name and location of all :ref:`Primary Thermodynamic Libraries <primarythermolibrary>`
 
 #. Optionally, some additional :ref:`forbidden structures <forbiddenstructures>`
@@ -69,6 +73,29 @@ be left at the default value::
    Database: RMG_database
 
 
+.. _speciesRestrictions:
+
+Species Restrictions
+--------------------
+
+By default, RMG will allow no more than 30 carbon atoms in any given species (other such default restrictions are:
+no more than 10 oxygen atoms, no more than 10 radicals, no more than 100 heavy-atoms, etc.).  If you would like to
+change the default settings, the syntax is as follows ::
+
+   MaxCarbonNumberPerSpecies: 100
+   MaxOxygenNumberPerSpecies: 30
+   MaxRadicalNumberPerSpecies: 10
+   MaxSulfurNumberPerSpecies: 10
+   MaxSiliconNumberPerSpecies: 10
+   MaxHeavyAtomPerSpecies: 100
+
+A "Heavy Atom" is defined in RMG as a non-hydrogen atom.  Each of these fields is optional; the default values
+for all fields are listed here.
+
+Changing the default values of these fields, in particular, lowering the maximum value per species, may help you
+if your simulations are running out of memory.  Also, changing the default settings of these fields could be 
+beneficial if you are only concerned with the decomposition of the initial species.
+   
 .. _primarythermolibrary:
 
 Primary Thermo Library
@@ -109,6 +136,38 @@ directory.::
    END
 
 
+.. _primarytransportlibrary:
+
+Primary Transport Library
+-------------------------
+
+By default, RMG will estiamte the transport properties (Lennard-Jones sigma and epsilon parameters) of a species from
+empirical correlations described by Tee et al. [Tee]_; these correlations are functions of the acentric factor, the critical
+temperature, and the critical pressure.  The acentric factor is estimated using the empirical correlation described by Lee
+et al. [Lee]_, which itself is a function of the critical pressure, the critical temperature, and the boiling temperature.
+The critical properties and boiling point are estimated using the Joback group-additivity scheme [Joback]_, [Reid]_.
+
+.. [Tee] L.S. Tee, S. Gotoh, and W.E. Stewart; "Molecular Parameters for Normal Fluids: The Lennard-Jones 12-6 Potential"; Ind. Eng. Chem., Fundamentals (1966), 5(3), 346-63 Table III: Correlation iii
+.. [Lee] B.I. Lee and M.G. Kesler; "A Generalized Thermodynamic Correlation Based on Three-Parameter Corresponding States"; AIChE J., (1975), 21(3), 510-527
+.. [Reid] R.C. Reid, J.M. Prausnitz and B.E. Poling; "The Properties of Gases and Liquids" 4th ed. McGraw-Hill, New York, NY, 1987
+.. [Joback] K.G. Joback; Master's thesis, Chemical Engineering Department, Massachusetts Institute of Technology, Cambridge, MA, 1984
+	 
+If you would like to override the default settings, you may specify the transport properties of species in the
+PrimaryTransportLibrary.  Similar to the PrimaryThermoLibrary, RMG will automatically use those transport properties 
+instead of estimating them using the methods described above.  Multiple libraries may be created, if so desired.
+The order in which the primary transport libraries are specified is important: If a species appears in multiple primary 
+transport libraries, the first instance will be used.
+
+RMG comes with the transport properties of the species in the GRI-Mech 3.0 mechanism [GRIMech3.0]_.  This library is located in the
+:file:`$RMG/databases/RMG_database/transport_libraries` directory.  All "Locations" for the
+PrimaryTransportLibrary field must be with respect to the :file:`$RMG/databases/RMG_database/transport_libraries` directory. ::
+
+   PrimaryTransportLibrary:
+   Name: GRI-Mech 3.0
+   Location: GRI-Mech3.0
+   END
+
+   
 .. _forbiddenstructures:
 
 Forbidden Structures
