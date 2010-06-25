@@ -62,7 +62,7 @@ PRange: (bar) 0.01 100.0 5
 
 FinishController:
 (1) Goal Conversion: HXD13 0.9
-(2) Error Tolerance: 0.1
+(2) Error Tolerance: 0.5
 
 DynamicSimulator: DASSL
 Conversions: AUTO
