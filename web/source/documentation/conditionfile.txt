@@ -16,7 +16,7 @@ order:
 
 #. The main :ref:`database`
 
-#. Any restrictions on the number of atoms / radicals for all generated species
+#. Any :ref:`restrictions <speciesRestrictions>` on the number of atoms / radicals for all generated species
 
 #. The name and location of all :ref:`Primary Transport Libraries <primarytransportlibrary>`
 

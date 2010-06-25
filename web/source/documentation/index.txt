@@ -33,8 +33,6 @@ Contents
    faq
    ../credits
 
-
-
 ..   BuildingDocumentation
 	Indices and tables
 	==================
