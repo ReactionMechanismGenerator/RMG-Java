@@ -10,8 +10,9 @@ Questions
 
 How do I represent molecular oxygen?
 ====================================
-Please represent molecular oxygen as a biradical with a single bond between the 
-two oxygen atoms.  ::
+
+Use the ground electronic state of molecular oxygen, which contains a single
+bond and a diradical. The adjacency list should be ::
 
   (1) O2 0.1 (mol/cm3)
   1 O 1 {2,S}
