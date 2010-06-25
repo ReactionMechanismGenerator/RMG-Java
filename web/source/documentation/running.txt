@@ -57,5 +57,26 @@ To run RMG in Windows: Open a DOS-prompt, change the current working directory t
 .. note::
 
 	The name of the input file does not have to be :file:`condition.txt`
+	
+Running RMG using Batch Scripts in Windows
+==========================================
+
+As of version 3.2, several batch scripts have been provided to make running RMG on Windows more straightforward. These can be found along with the example condition files in the ``examples`` directory. There are currently three such scripts:
+
+* ``RMG.bat`` - For running general RMG mechanism generation jobs
+
+* ``PopulateReactions.bat`` - For generating possible reactions and kinetics of a set of species
+
+* ``ThermoDataEstimator.bat`` - For estimating the thermodynamics of a set of species
+
+The easiest way to use them is:
+
+1. Create the condition or input file for the job you wish to run. For general RMG jobs this file should be named ``condition.txt``. For other jobs this file should be named ``input.txt``. 
+
+2. Copy the batch script corresponding to the job you wish to run to the folder containing the condition file. For best results, this folder should only contain the condition file and the batch script at this step. The batch script will happily overwrite existing files if they correspond to files created by RMG, including the results of a previous RMG run.
+
+3. Double-click the batch script to start the job. A console window will appear. After a few seconds a line of text should appear that tells you the job has been started. If RMG is not setup correctly, an error message will appear instead telling you what needs to be done. As the job runs, output will be sent to the file ``RMG.log`` in the same directory as the condition file.
+
+4. Close the console window when the job is finished. The batch script will print a line of text when the job is completed. This line of text does not reflect whether or not the job was successful; check the tail of ``RMG.log`` for that information.
 
 .. % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
