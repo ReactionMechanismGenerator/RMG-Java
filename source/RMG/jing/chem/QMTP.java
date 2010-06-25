@@ -297,8 +297,8 @@ public class QMTP implements GeneralGAPP {
                         else{
                             System.out.println("*****Final attempt (#" + maxAttemptNumber + ") on species " + name + " ("+InChIaug+") failed.");
                             System.out.print(p_chemGraph.toString());
-                        //    System.exit(0);
-                            return new ThermoData(1000,0,0,0,0,0,0,0,0,0,0,0,"failed calculation");
+                            System.exit(0);
+                        //    return new ThermoData(1000,0,0,0,0,0,0,0,0,0,0,0,"failed calculation");
                         }
                     }
                     System.out.println("*****Attempt #"+attemptNumber + " on species " + name + " ("+InChIaug+") failed. Will attempt a new keyword.");
