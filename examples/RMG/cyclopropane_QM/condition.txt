@@ -1,0 +1,91 @@
+//This is an example illustrating the use of on-the-fly thermo
+//calculations. Gaussian03 is used to estimate thermodynamic
+//properties of cyclic species, like cyclopropane. In particular,
+//the semi-empirical PM3 method, with RRHO treatment of partition
+//functions is used. Without this feature, RMG would try to estimate
+//thermodynamic properties of cyclic species using the typical Benson
+//groups, and would only apply an appropriate ad hoc ring correction
+//if it is in Ring_Library.txt. The example should take roughly 45
+//minutes to run and requires several additional dependencies, as
+//described in the documentation.
+
+Database: RMG_database
+
+//MaxCarbonNumberPerSpecies: 
+//MaxOxygenNumberPerSpecies: 
+//MaxRadicalNumberPerSpecies: 
+//MaxSulfurNumberPerSpecies: 
+//MaxSiliconNumberPerSpecies: 
+//MaxHeavyAtomPerSpecies:
+
+PrimaryThermoLibrary:
+Name: GRIMech3.0
+Location: GRI-Mech3.0
+Name: RMG-old
+Location: primaryThermoLibrary
+END
+
+PrimaryTransportLibrary:
+Name: GRIMech3.0
+Location: GRI-Mech3.0
+END
+
+ReadRestart: no
+WriteRestart: no
+
+TemperatureModel: Constant (K) 1350
+PressureModel: Constant (atm) 1 
+
+ThermoMethod: QM Gaussian03
+QMForCyclicsOnly: on
+MaxRadNumForQM: 0
+
+InitialStatus:
+
+(1) Cyclopropane 6.829e-4 (mol/cm3)
+1 C 0 {2,S} {3,S}
+2 C 0 {1,S} {3,S}
+3 C 0 {1,S} {2,S}
+
+END
+
+InertGas:
+N2 0.8797 (mol/cm3)
+Ar 0.0e-6 (mol/cm3)
+END
+
+SpectroscopicDataEstimator: off FrequencyGroups
+PressureDependence: off ModifiedStrongCollision
+//PDepKineticsModel: Chebyshev
+
+FinishController:
+(1) Goal Conversion: Cyclopropane 0.9
+(2) Error Tolerance: 0.1
+
+DynamicSimulator: DASSL
+Conversions: AUTO
+Atol: 1e-18
+Rtol: 1e-8
+
+PrimaryKineticLibrary:
+//Name: RMG-example
+//Location: Example
+END
+
+ReactionLibrary:
+//Name: RMG-example
+//Location: RMG_database/primaryReactionLibrary/Example
+END
+
+SeedMechanism:
+//Name: Leeds
+//Location: RMG_database/SeedMechanisms/combustion_core/version5
+//GenerateReactions: yes
+//Name: GRIMech3.0
+//Location: RMG_database/SeedMechanisms/GRI-Mech3.0
+//GenerateReactions: yes
+END
+
+ChemkinUnits:
+A: moles
+Ea: kcal/mol

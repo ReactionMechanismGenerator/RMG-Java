@@ -3,6 +3,9 @@
 //a oxidation mechanism. Also the sensitivity analysis section is missing 
 //because we are using the dassl solver.
 
+//This example should take roughly 15-20 minutes to run to completion.
+
+
 Database: RMG_database
 
 //MaxCarbonNumberPerSpecies: 
