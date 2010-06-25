@@ -17,6 +17,7 @@ Please also refer to our website for how to cite RMG in published work.
    conditionfile
    examples
    GraphicalUserInterface
+   kinetics_libraries
    running
    analyzing
    modification

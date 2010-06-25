@@ -22,6 +22,7 @@ Contents
    conditionfile
    examples
    GraphicalUserInterface
+   kinetics_libraries
    running
    analyzing
    modification
