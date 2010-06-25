@@ -157,10 +157,7 @@ public class TemplateReactionGenerator implements ReactionGenerator {
 				if (current_template.hasOneReactant()) {
 	        		
 					LinkedHashSet current_reactions = current_template.reactOneReactant(newCoreSpecies);
-					for (Iterator currentRxnIter = current_reactions.iterator(); currentRxnIter.hasNext();) {
-						Reaction r = (Reaction)currentRxnIter.next();
-						reaction_set = sm.updateReactionList(r, reaction_set, false);
-					}
+					reaction_set.addAll(current_reactions);
 					singleReaction = singleReaction + ((System.currentTimeMillis()-startTime)/1000/60);
 	        		
 	        	}
