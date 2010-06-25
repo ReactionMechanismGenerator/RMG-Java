@@ -27,11 +27,13 @@ Features:
 
 - Various error messages have been improved to give more helpful information to the user.
 
-- Dictionary.txt will now be written at every iteration, rather than just the final iteration.
+- :file:`RMG_Dictionary.txt` will now be written at every iteration, rather than just the final iteration.
 
 - CHEMKIN input files from each iteration are saved to separate folders
 
 - RMG output file includes timestamp and code revision information.
+
+- RMG stores :file:`Restart` files.  The reading-in of these files allows RMG to restore the conditions (species, reactions, pressure-dependent networks, etc.) of a converged mechanism without having to re-run the entire simulation from scratch.
 
 Bug fixes and performance improvements:
 
@@ -51,7 +53,7 @@ Bug fixes and performance improvements:
 
 - Fixed several bugs relating to enlarging of partial pressure-dependent networks.
 
-- Addressed issues that could lead to trying to simulate and empty reaction model in pressure-dependent cases.
+- Addressed issues that could lead to trying to simulate an empty reaction model in pressure-dependent cases.
 
 - Fixed IWORK/RWORK renaming on Linux platforms.
 
@@ -75,7 +77,9 @@ Bug fixes and performance improvements:
 
 - Fixed bugs in counting of core and edge reactions caused by pressure-dependent reactions and irreversible reactions.
 
-- Primary Kinetics Library now correctly identifies matches for in molecules with multiple resonance forms
+- Primary Kinetics Library now correctly identifies matches for molecules with multiple resonance forms
+
+- Updated how RMG internally stores kinetics.  In particular, RMG can now recognize and store kinetics for a given structure (e.g. A --> B + C) from multiple reaction families (i.e. different Transition States).
 
 2009-08-05: RMG 3.1 Released!
 ==============================
