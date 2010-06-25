@@ -15,7 +15,7 @@ Features:
 
 - Transport property estimation
 
-- New Primary Reaction Library option for including reactions not  (old Primary Reaction Library has been renamed to Primary Kinetics Library)
+- New Primary Reaction Library option for considering (but not forcing) reactions not automatically identified by RMG's reaction templates (old Primary Reaction Library has been renamed to Primary Kinetics Library)
 
 - New reaction model pruning option to reduce number of edge species and ease memory limitations.
 
@@ -35,7 +35,7 @@ Features:
 
 Bug fixes and performance improvements:
 
-- Treatment of molecular oxygen has changed significantly, including support for both triplet ground state and singlet; oxygen should now be specified in biradical form rather than the O=O form used previously
+- Treatment of molecular oxygen has changed significantly, including support for both triplet ground state and singlet; oxygen should now be specified in biradical form rather than the O=O form used previously; see :ref:`"Representing oxygen" <oxygen>` for details
 
 - Various improvements to pressure-dependent network enlargement algorithm
 
