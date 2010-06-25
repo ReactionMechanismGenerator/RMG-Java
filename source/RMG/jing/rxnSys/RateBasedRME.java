@@ -148,17 +148,17 @@ public class RateBasedRME implements ReactionModelEnlarger {
 					//System.out.println("Reacted Species"+cerm.getReactedSpeciesSet());
 					
 					// Prints out what reactions were found in Library Reaction Generator
-					LinkedHashSet tempnewReactionSet = ((ReactionSystem) p_reactionSystemList.get(i)).lrg.react(cerm.getReactedSpeciesSet(), (Species) nextList.get(i));
+					LinkedHashSet tempnewReactionSet = ((ReactionSystem) p_reactionSystemList.get(i)).lrg.react(cerm.getReactedSpeciesSet(), (Species) nextList.get(i),"All");
 					System.out.println("Reaction Set Found from Reaction Library "+tempnewReactionSet);
 					
 					// Add reactions found in Library Reaction Generator to Reaction Set
-					LinkedHashSet newReactionSet =((ReactionSystem) p_reactionSystemList.get(i)).lrg.react(cerm.getReactedSpeciesSet(), (Species) nextList.get(i));
+					LinkedHashSet newReactionSet =((ReactionSystem) p_reactionSystemList.get(i)).lrg.react(cerm.getReactedSpeciesSet(), (Species) nextList.get(i),"All");
 					
 					// Calls in Reaction Model Generator and adds it to Reaction Set ( if duplicate reaction is found it is not added I think ) 
 					System.out.println("Generating Reactions By Calling ReactionGenerator ... ");
 					
 					// Add reactions found from reaction template to current reaction set
-					newReactionSet.addAll(((ReactionSystem) p_reactionSystemList.get(i)).getReactionGenerator().react(cerm.getReactedSpeciesSet(), (Species) nextList.get(i)));
+					newReactionSet.addAll(((ReactionSystem) p_reactionSystemList.get(i)).getReactionGenerator().react(cerm.getReactedSpeciesSet(), (Species) nextList.get(i),"All"));
 					
 					// shamel 6/22/2010 Suppressed output , line is only for debugging
 					//System.out.println("Reaction Set Found after LRG + ReactionGenerator call "+newReactionSet);

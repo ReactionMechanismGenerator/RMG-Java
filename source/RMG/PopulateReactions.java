@@ -629,11 +629,13 @@ public class PopulateReactions {
 			LinkedHashSet reverseReactions = new LinkedHashSet();
 			Iterator iter2 = r.getStructure().getProducts();
 			Species species1 = (Species)iter2.next();
-			Species species2 = null;
+			Species species2 = species1;
 			while (iter2.hasNext()) 
 				species2 = (Species)iter2.next();
 			String rxnFamilyName = r.getReverseReaction().getReactionTemplate().getName();
-			reverseReactions = rtLibrary.reactSpecificFamily(species1, species2, rxnFamilyName);
+			LinkedHashSet speciesHashSet = new LinkedHashSet();
+			speciesHashSet.add(species1);
+			reverseReactions = rtLibrary.react(speciesHashSet, species2, rxnFamilyName);
 			for (Iterator iter3 = reverseReactions.iterator(); iter3.hasNext();) {
 				Reaction currentRxn = (Reaction)iter3.next();
 				Kinetics[] allKinetics = currentRxn.getKinetics();

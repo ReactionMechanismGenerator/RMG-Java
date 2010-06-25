@@ -280,11 +280,11 @@ public class RateBasedPDepRME implements ReactionModelEnlarger {
 					if(rxnSystem.getLibraryReactionGenerator().getReactionLibrary() != null){
 						
 						// Iterate through the Reaction Library and find all reactions which include the species being considered
-						LinkedHashSet newReactionSet = rxnSystem.getLibraryReactionGenerator().react(cerm.getReactedSpeciesSet(),maxSpecies);
+						LinkedHashSet newReactionSet = rxnSystem.getLibraryReactionGenerator().react(cerm.getReactedSpeciesSet(),maxSpecies,"All");
 						System.out.println("Reaction Set Found from Reaction Library "+newReactionSet);
 						
 						// Iterate through the reaction template
-						newReactionSet.addAll(rxnSystem.getReactionGenerator().react(cerm.getReactedSpeciesSet(),maxSpecies));
+						newReactionSet.addAll(rxnSystem.getReactionGenerator().react(cerm.getReactedSpeciesSet(),maxSpecies,"All"));
 						
 						// To remove the duplicates that are found in Reaction Library and Reaction Template
 						// Preference given to Reaction Library over Template Reaction 
@@ -293,7 +293,7 @@ public class RateBasedPDepRME implements ReactionModelEnlarger {
 					}
 					else{
 						// When no Reaction Library is present
-					newReactionSet_nodup = rxnSystem.getReactionGenerator().react(cerm.getReactedSpeciesSet(),maxSpecies);
+					newReactionSet_nodup = rxnSystem.getReactionGenerator().react(cerm.getReactedSpeciesSet(),maxSpecies,"All");
 					}
 					// shamel 6/22/2010 Suppressed output , line is only for debugging
 					// System.out.println("Reaction Set For Pdep PdepRME "+newReactionSet_nodup);

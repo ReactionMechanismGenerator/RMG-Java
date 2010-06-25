@@ -3655,7 +3655,7 @@ public class ReactionModelGenerator {
 				// Generates Reaction from the Reaction Generator and adds them to Reaction Set
 					for (Iterator iter = speciesSeed.iterator(); iter.hasNext(); ) {
 					Species spec = (Species) iter.next();
-					reactionSet_withdup.addAll(getReactionGenerator().react(allInitialCoreSpecies, spec));
+					reactionSet_withdup.addAll(getReactionGenerator().react(allInitialCoreSpecies, spec,"All"));
 				}
 					reactionSet = RemoveDuplicateReac(reactionSet_withdup);
 					

@@ -175,7 +175,7 @@ public class LibraryReactionGenerator implements ReactionGenerator {
     }
     
      
-    public LinkedHashSet react(LinkedHashSet p_speciesSet, Species p_species) {
+    public LinkedHashSet react(LinkedHashSet p_speciesSet, Species p_species, String p_rxnFamilyName) {
                if (!p_speciesSet.contains(p_species)) p_speciesSet.add(p_species);
         LinkedHashSet species = (LinkedHashSet)p_speciesSet.clone();
         
