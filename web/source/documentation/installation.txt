@@ -14,8 +14,8 @@ License Requirements
 RMG is intended to be an open source program, available to the general public
 free of charge. The primary RMG code is distributed under the terms of the 
 `MIT/X11 License <http://www.opensource.org/licenses/mit-license.php>`_. Although many of RMG's dependencies are also available under
-compatible open source licenses, there remain a few dependencies with more
-restrictive licences. **It is the user's
+compatible open source licenses, there remain a few dependencies with 
+:ref:`more restrictive licences <license>`.  **It is the user's
 responsibility to ensure these licenses have been obtained.**
 
 .. _installrequirements:
@@ -23,9 +23,17 @@ responsibility to ensure these licenses have been obtained.**
 Installation of Binary Package
 ==============================
 
-Multiple binary releases are available from `the RMG website <../download.html>`_\ , including Windows 32-bit and Linux x86. The binary packages provides all of the executables necessary for a functional RMG, although some advanced features require additional third-party applications. To install the binary packages, follow steps 1-3 in the source section for your operating system.
+Multiple binary releases are available from `the RMG website
+<../download.html>`_\ , including Windows 32-bit and Linux x86. The binary
+packages provides all of the executables necessary for a functional RMG,
+although some advanced features require additional third-party applications. To
+install the binary packages, follow steps 1-3 in the source section for your
+operating system (:ref:`linuxinstallation` or :ref:`windowsinstallation`).
 
-A Windows installer is also provided. The user has the option of installing all or part of the binaries, source, documentation, and examples. The installer will automatically set the ``RMG`` system variable to the installation directory.
+A Windows installer is also provided. The user has the option of installing all
+or part of the binaries, source, documentation, and examples. The installer
+will automatically set the ``RMG`` system variable to the installation
+directory.
 
 Whether you install a binary or a source package, you will need:
 

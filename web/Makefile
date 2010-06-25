@@ -32,7 +32,7 @@ help:
 	@echo "  all       clean, html, latex, sitemap, upload"
 
 
-all: html latex sitemap upload
+all: clean html latex sitemap upload
 
 clean:
 	-rm -rf build/*

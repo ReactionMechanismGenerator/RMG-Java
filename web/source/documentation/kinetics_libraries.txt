@@ -4,6 +4,17 @@
 Kinetics Libraries
 **********************************
 
+The seed mechanisms are stored in :file:`$RMG/databases/RMG_database/kinetics_libraries/`
+
+
+Currently, the reaction library that are included in RMG are: the Leeds' oxidation library 
+the GRI-Mech 3.0 mechanism (w/o the nitrogen-containing species and the lumped C3H7 species)
+and the Glarborg combustion mechanism for C1 - C3 species.
+
+GRI-Mech 3.0
+============
+GRI-Mech 3.0 mechanism (w/o the nitrogen-containing species and the lumped C3H7 species)
+
 
 Glarborg
 =========

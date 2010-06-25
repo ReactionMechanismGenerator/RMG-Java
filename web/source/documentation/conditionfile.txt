@@ -587,11 +587,10 @@ kinetic libraries should be used.  When a reaction is specified in a primary kin
 library, RMG will use these kinetics instead of the kinetics located in the 
 :file:`RMG_database/kinetics_groups/<RxnFamily>/rateLibrary.txt` directory.
 
-Currently, the only primary kinetic libraries
-included with RMG are: the Leeds' oxidation library and the GRI-Mech 3.0 mechanism
-(w/o the nitrogen-containing species and the lumped C3H7 species). You can specify your own
-primary kinetic library in the location section. Please note that the oxidation
-library should not be used for pyrolysis models. In the following example, the
+For details of the kinetics libraries included with RMG that can be used as a primary kinetic library,
+see :ref:`kinetics_libraries`.
+You can specify your own
+primary kinetic library in the location section.  In the following example, the
 user has created her own primary kinetic library with a few additional reactions
 specific to n-butane, and these reactions are to be used in addition to the
 Leeds' oxidation library::
@@ -615,13 +614,14 @@ and the `Location:` should be specified relative to this path.
 Please note that the keyword ``END`` must be placed at the end of the Primary
 Kinetic Library section. Because the units for the Arrhenius parameters are
 given in each library, the different libraries can have different units.
-Additionally, if the same reaction occurs more than once in the combined
+
+If the same reaction occurs more than once in the combined
 library, the instance of it from the first library in which it appears is
 the one that gets used.
 
-.. note::
-	In previous version this feature was called "PrimaryReactionLibrary" it has been
-	renamed to "PrimaryKineticLibrary" to better represent its functionality
+.. versionchanged:: 3.2
+	In previous versions this feature was called "PrimaryReactionLibrary" it has been
+	renamed to "PrimaryKineticLibrary" to better represent its functionality.
 
 .. _reactionlibrary:
 
@@ -637,18 +637,18 @@ wants to consider while building the mechanism but do not match any of RMG templ
 In Reaction Library unlike the seed mechanism these reactions do not need to be included 
 in the core from the start.  
 
-Currently, the reaction library that are included in RMG are: the Leeds' oxidation library 
-the GRI-Mech 3.0 mechanism (w/o the nitrogen-containing species and the lumped C3H7 species)
-and the Glarborg combustion mechanism for C1 - C3 species. You can specify your own
-reaction library in the location section.In the following example, the user has created 
+For details of the kinetics libraries included with RMG that can be used as a reaction library,
+see :ref:`kinetics_libraries`.
+You can specify your own
+reaction library in the location section. In the following example, the user has created 
 a reaction library with a few additional reactions specific to n-butane, and these reactions 
-are to be used in addition to the Glarborg C3_light library::
+are to be used in addition to the Glarborg C3 library::
 
 	ReactionLibrary:
 	Name: nbutane 
 	Location: nbutane 
 	Name: Glarborg 
-	Location: Glarborg/C3_light 
+	Location: Glarborg/C3
 	END 	
 
 The reaction library are stored in :file:`$RMG/databases/RMG_database/kinetics_libraries/`
@@ -677,9 +677,10 @@ Seed Mechanisms should be used.  If a seed mechanism is passed to RMG, every
 species and reaction present in the mechanism will be placed into the core, in
 addition to the species that are listed in the :ref:`reactants` section.
 
-Currently, the only seed mechanisms
-included with RMG are: the Leeds' oxidation library and the GRI-Mech 3.0 mechanism
-(w/o the nitrogen-containing species and the lumped C3H7 species). You can specify your own
+For details of the kinetics libraries included with RMG that can be used as a seed mechanism,
+see :ref:`kinetics_libraries`.
+
+You can specify your own
 seed mechanism in the location section. Please note that the oxidation
 library should not be used for pyrolysis models. The syntax for the seed mechanisms
 is similar to that of the primary reaction libraries, except for the ``GenerateReactions`` 
@@ -697,10 +698,10 @@ line, explained below.::
 The seed mechanisms are stored in :file:`$RMG/databases/RMG_database/kinetics_libraries/`
 and the `Location:` should be specified relative to this path.
 
-There is a new required line in seed mechanisms that controls how RMG adds the
-seed species and reactions to the model core. If set to yes, RMG will use its
+There is a new required ``GenerateReactions`` line in seed mechanisms that controls how RMG adds the
+seed species and reactions to the model core. If set to ``yes``, RMG will use its
 reaction families to react all seed species with one another; the generated
-reactions will supplement the seed reactions. If set to no, RMG will not
+reactions will supplement the seed reactions. If set to ``no``, RMG will not
 generate reactions of the seed species. In either case, RMG will react the
 species in the condition file with one another and with all species in the
 seed mechanism.
