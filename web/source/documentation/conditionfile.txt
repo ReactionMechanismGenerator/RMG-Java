@@ -22,23 +22,23 @@ order:
 
 #. The :ref:`initial temperature and pressure <initialconditions>` of the system
 
-#. The maximum number of carbons, oxygens, and radicals any one species may have
+#. The :ref:`maximum number <maximumatomcounts>` of carbons, oxygens, and radicals any one species may have
 
 #. Whether to generate an :ref:`IUPAC International Chemical Identifier (InChI) <InChIgeneration>` for each species
 
-#. The name, concentration, and chemical structure of the reactants
+#. The name, concentration, and chemical structure of the :ref:`reactants <reactants>`
 
-#. The specification and concentration of the inert gas(es)
+#. The specification and concentration of the :ref:`inert gas(es) <inertgas>`
 
 #. The method to use to estimate :ref:`spectroscopic data <spectroscopicdata>` for each species
 
 #. The :ref:`Pressure dependence <pressuredependence>` model
 
-#. The finish controller
+#. The :ref:`finish controller <finishcontroller>`
 
-#. The dynamic simulator
+#. The :ref:`dynamic simulator <dynamicsimulator>`
 
-#. Sensitivity analysis
+#. :ref:`Sensitivity analysis <sensitivity>` settings
 
 #. The name and location of all :ref:`Primary Kinetic Libraries <primarykineticlibrary>`
 
@@ -46,7 +46,7 @@ order:
 
 #. The name and location of all :ref:`Seed Mechanisms <seedmechanism>`
 
-#. The units for the Arrhenius parameters A and Ea (to be reported in the generated chem.inp file)
+#. The :ref:`units <chemkinunits>` for the Arrhenius parameters A and Ea (to be reported in the generated chem.inp file)
 
 The name :file:`condition.txt` is variable. As you'll see in
 Section :ref:`running in linux`, you can change the name of the initialization
@@ -157,6 +157,9 @@ You may also list multiple temperature and pressure conditions, as the example b
 
 For cases in which multiple temperatures and pressures are listed, the model generator will simulate the system (still using an isothermal, isobaric model) at all possible combinations of the specified temperatures and pressures. Thus, the resulting reaction mechanism will be valid (within the given error tolerances, estimates, and various other assumptions) at all the conditions specified. (Note, however, that reported concentrations in the :file:`Final_Model.txt` output file will only correspond to the first T/P combination.)
 
+
+.. _maximumatomcounts:
+
 Maximum Number of Atoms/Radicals Per Species
 --------------------------------------------
 
@@ -218,24 +221,27 @@ Reactants
 ---------
 
 The name, concentration, and structure of each reactant must be specified. For
-each reactant, the first line should include the reactant number (e.g. (1)), its
-name (e.g. C2O2), and it's concentration with units (e.g. 4.09e-3 (mol/cm3)).
+each reactant, the first line should include the reactant number (e.g. ``(1)``), its
+name (e.g. ``C2O2``), and it's concentration with units (e.g. ``4.09e-3 (mol/cm3)``).
 Acceptable units for concentration are "mol/cm3", "mol/m3", and "mol/l".  Furthermore,
 RMG will not accept a species name that begins with a number.
 
 The next line defines the reactant structure, described by an adjacency list.
-The :ref:`RMG Viewer and Editor <viewingThermoFGs>` is a useful tool for generating adjacency lists. Please note that you
-may choose the simplified adjacency list in which the hydrogen atoms are omitted
-(shown below)::
+The :ref:`RMG Viewer and Editor <viewingThermoFGs>` is a useful tool for
+generating adjacency lists. Please note that you may choose the simplified
+adjacency list in which the hydrogen atoms are omitted (shown below)::
 
- InitialStatus: 
- (1) CH3OH 4.09e-3 (mol/cm3) 
- 1  C 0 {2,S} 
- 2  O 0 {1,S} 
- (2) O2 1.1E-7 (mol/cm3) 
- 1  O 1 {2,S} 
- 2  O 1 {1,S} 
- END 
+ InitialStatus:
+
+ (1) CH3OH 4.09e-3 (mol/cm3)
+ 1  C 0 {2,S}
+ 2  O 0 {1,S}
+
+ (2) O2 1.1E-7 (mol/cm3)
+ 1  O 1 {2,S}
+ 2  O 1 {1,S}
+
+ END
 
 
 Please note that the keyword ``END`` must be placed at the end of the
@@ -244,7 +250,12 @@ InitialStatus section.
 If one of the reactants is a resonance isomer, you only need to define one of
 the resonance structures, and RMG will automatically detect the others.
 
-**Please represent molecular oxygen, O2, as shown above.**  This is a deviation from previous versions of RMG.  For more, please see this discussion on :ref:`representing oxygen <oxygen>`.
+**Represent molecular oxygen**, |O2|, **as shown above.** This is a deviation
+from versions of the RMG database prior to RMG 3.2. For more detail, please see this discussion on
+:ref:`representing oxygen <oxygen>`.
+
+.. |O2| replace:: O\ :sub:`2`\ 
+
 
 .. this is commented out because it breaks the latex
  +------------------+----------+---------------------+
@@ -507,6 +518,9 @@ DASPK solver and the DAEPACK library. If you are using DASSL solver then skip th
 
 One option when dealing with NegativeConcentrationException issues is to use the "non-negative" option with DASSL. This option is requested with the line "DynamicSimulator: DASSL: non-negative". See the FAQ for further details.
 
+
+.. _sensitivity:
+
 Sensitivity Analysis
 --------------------
 
@@ -714,8 +728,8 @@ units for A are "moles" and "molecules"; the acceptable units for Ea are "kcal/m
 "cal/mol", "kJ/mol", "J/mol", and "Kelvins"::
 
 	ChemkinUnits:
-	A: kcal/mol
-	Ea: moles
+	A: moles
+	Ea: kcal/mol
 	
 Another option available to the user is to specify whether the comments following
 each set of Arrhenius parameters in the :file:`chem.inp` file are concise or verbose.
@@ -724,8 +738,8 @@ calculated in the event RMG could not find an exact match for the functional gro
 
 	ChemkinUnits:
 	Verbose: on
-	A: kcal/mol
-	Ea: moles
+	A: moles
+	Ea: kcal/mol
 	
 If the Verbose field is not present, RMG will default to "off".
 

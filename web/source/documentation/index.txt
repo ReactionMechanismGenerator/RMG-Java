@@ -20,8 +20,8 @@ Contents
    introduction
    installation
    conditionfile
-   GraphicalUserInterface
    examples
+   GraphicalUserInterface
    running
    analyzing
    modification

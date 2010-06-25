@@ -4,32 +4,38 @@
 Representing oxygen
 *******************
 
-When constructing a mechanism that involves molecular oxygen, **please
-represent ground state oxygen as the single-bonded triplet form,**
-:math:`^3\Delta^-_g`. Note that this is a departure from previous versions of
-RMG.::
+When constructing a mechanism that involves molecular oxygen, 
+**represent ground state oxygen as the single-bonded triplet form,**
+:math:`^3\Delta^-_g`::
 
   (1) O2 0.1 (mol/cm3)
   1 O 1 {2,S}
   2 O 1 {1,S}
 
-The traditional double-bonded Lewis dot structure representation of oxygen now
-represents the more stable of the singlet states, :math:`\mbox{}^1\Sigma_g`;
-the other singlet state, :math:`^1\Sigma^+_g`, is not considered by RMG.::
+The traditional double-bonded Lewis dot structure representation of oxygen::
 
   (1) O2 0.1 (mol/cm3)
   1 O 0 {2,D}
   2 O 0 {1,D}
 
-Previous versions of RMG were ambiguous as to the treatment of oxygen, with
-both ChemGraphs above representing ground-state oxygen. While this modification
-has not been fully tested, we believe that it accurately includes and makes
-consistent all of the oxygen-related chemistry that was present in RMG
-databases.
+now
+represents the more stable of the singlet states, :math:`\mbox{}^1\Sigma_g`;
+the other singlet state, :math:`^1\Sigma^+_g`, is not considered by RMG.
 
 Conversion between singlet and triplet forms is possible through the primary
 reaction library OxygenSingTrip; the reactions involved are very slow, however,
-and are likely to be absent from any mechanisms generated. At this point, no
+and are likely to be absent from any mechanisms generated. At this point, no other
 reactions of singlet oxygen have been included in RMG.
 
-Again, **please represent ground-state oxygen as a single-bonded biradical species**.
+Previous versions of RMG databases were ambiguous as to the treatment of
+oxygen, with both ChemGraphs above representing ground-state oxygen. The
+database provided with RMG 3.2 has been modified to make all of the
+oxygen-related chemistry that was present in RMG databases consistent with the
+single-bonded biradical representation.
+
+Again, **please represent ground-state oxygen as a single-bonded biradical species**::
+
+  (1) O2 0.1 (mol/cm3)
+  1 O 1 {2,S}
+  2 O 1 {1,S}
+

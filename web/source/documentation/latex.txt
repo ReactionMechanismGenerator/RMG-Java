@@ -15,11 +15,12 @@ Please also refer to our website for how to cite RMG in published work.
    ../license
    installation
    conditionfile
-   GraphicalUserInterface
    examples
+   GraphicalUserInterface
    running
    analyzing
    modification
+   oxygen
    thermo
    theory/index
    ../credits
