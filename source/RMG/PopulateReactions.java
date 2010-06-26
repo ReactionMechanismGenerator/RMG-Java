@@ -638,8 +638,8 @@ public class PopulateReactions {
 			reverseReactions = rtLibrary.react(speciesHashSet, species2, rxnFamilyName);
 			for (Iterator iter3 = reverseReactions.iterator(); iter3.hasNext();) {
 				Reaction currentRxn = (Reaction)iter3.next();
-				Kinetics[] allKinetics = currentRxn.getKinetics();
 				if (currentRxn.getStructure() == r.getReverseReaction().getStructure()) {
+					Kinetics[] allKinetics = currentRxn.getKinetics();
 					for (int numKinetics=0; numKinetics<allKinetics.length; ++numKinetics) {
 						listOfReactions += currentRxn.toString() + "\t" + updateListOfReactions(allKinetics[numKinetics], -Hrxn);
 						if (allKinetics.length != 1) listOfReactions += "\tDUP\n";
