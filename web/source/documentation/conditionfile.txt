@@ -733,13 +733,13 @@ Reaction Library
 ------------------------
 
 The next section of the :file:`condition.txt` file specifies which, if any,
-Reaction Library should be used. When a reaction library is specified, RMG will first
+Reaction Libraries should be used. When a reaction library is specified, RMG will first
 use the reaction library to generate all the relevant reactions for the species 
 in the core before going through the reaction templates. This feature can be used as a 
-Primary Kinetic Library, in addition to specifying those reactions which the user 
-wants to consider while building the mechanism but do not otherwise match any of RMG templates. 
+Primary Kinetic Library, in addition to specifying reactions that the user 
+wants to consider while building the mechanism but that do not otherwise match any of RMG reaction family templates. 
 Unlike the Seed Mechanism, reactions present in a Reaction Library will not be included 
-in the core automaticaly from the start.  
+in the core automatically from the start.  
 
 For details of the kinetics libraries included with RMG that can be used as a reaction library,
 see :ref:`kinetics_libraries`.
