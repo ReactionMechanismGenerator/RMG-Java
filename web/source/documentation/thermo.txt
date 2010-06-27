@@ -25,9 +25,9 @@ Next, in the text file, create the adjacency list(s) corresponding to the molecu
 	8 C 0 {6,S}
 	9 C 0 {6,S}
 
-2. At the command prompt, change directory to the location of the :file:`input.txt` file and then execute the command ::
+2. At the command prompt, change directory to the location of the :file:`input.txt` file and then, if you are using a unix-based operating system, execute the command ::
 
-	 $ java -classpath "%rmg%"\bin\RMG.jar ThermoDataEstimator thermo_input.txt > RMG.log
+	 $ java -classpath $RMG/bin/RMG.jar ThermoDataEstimator input.txt > RMG.log
 
    Or if you are using Windows operating system you can instead run the batch file :file:`ThermoDataEstimator.bat`. Either double-click it or at the command propmpt type::
 
@@ -40,3 +40,4 @@ Next, in the text file, create the adjacency list(s) corresponding to the molecu
 	ΔH\ :sub:`f,298` S\ :sub:`298` C\ :sub:`p,300` C\ :sub:`p,400` C\ :sub:`p,500` C\ :sub:`p,600` C\ :sub:`p,800` C\ :sub:`p,1000` C\ :sub:`p,1500`
 
   Units are kcal/mol for ΔH\ :sub:`f,298` and cal/mol*K for the other quantities (entropy and heat capacity). The symmetry number (including contributions from internal rotations) will also be displayed.
+

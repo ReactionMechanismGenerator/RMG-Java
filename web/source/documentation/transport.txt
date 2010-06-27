@@ -33,7 +33,12 @@ using the same syntax used to define a species in the :file:`condition.txt` inpu
 	9 C 0 {6,S}
 
 2. At the command prompt, change directory to the location of the :file:`input.txt` file 
-and then execute the command ::
+and then, if you are using a unix-based operating system, execute the command ::
+
+	 $ java -classpath $RMG/bin/RMG.jar TransportDataEstimator input.txt > RMG.log
+
+If you are using a Windows operating system you can instead run the batch file :file:`TransportDataEstimator.bat`. 
+Either double-click it or at the command propmpt type::
 
 	> TransportDataEstimator.bat
 
