@@ -27,7 +27,11 @@ Next, in the text file, create the adjacency list(s) corresponding to the molecu
 
 2. At the command prompt, change directory to the location of the :file:`input.txt` file and then execute the command ::
 
-	> ThermoDataEstimator.bat
+	 $ java -classpath "%rmg%"\bin\RMG.jar ThermoDataEstimator thermo_input.txt > RMG.log
+
+   Or if you are using Windows operating system you can instead run the batch file :file:`ThermoDataEstimator.bat`. Either double-click it or at the command propmpt type::
+
+     > ThermoDataEstimator.bat
 
   The output of the program will automatically be written to :file:`RMG.log`
 
