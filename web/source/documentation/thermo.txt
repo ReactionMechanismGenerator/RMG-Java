@@ -8,12 +8,12 @@ Instructions for Use
 --------------------
 
 1. Create a text file named :file:`input.txt` in any directory that you like.  
-The text file should begin with a block to specify a PrimaryThermoLibrary, which may be left empty if desired::
+   The text file should begin with a block to specify a PrimaryThermoLibrary, which may be left empty if desired::
 
 	PrimaryThermoLibrary:
 	END
 
-Next, in the text file, create the adjacency list(s) corresponding to the molecule(s) of interest using the same syntax used to define a species in the :file:`condition.txt` input file (see RMG manual). Hydrogens can be omitted for simplicity. For example, the adjacency list for 2,2,4,4-tetramethylpentane could be written as::
+   Next, in the text file, create the adjacency list(s) corresponding to the molecule(s) of interest using the same syntax used to define a species in the :file:`condition.txt` input file (see RMG manual). Hydrogens can be omitted for simplicity. For example, the adjacency list for 2,2,4,4-tetramethylpentane could be written as::
 
 	1 C 0 {2,S}
 	2 C 0 {1,S} {3,S} {4,S} {5,S}
@@ -39,5 +39,5 @@ Next, in the text file, create the adjacency list(s) corresponding to the molecu
 
 	ΔH\ :sub:`f,298` S\ :sub:`298` C\ :sub:`p,300` C\ :sub:`p,400` C\ :sub:`p,500` C\ :sub:`p,600` C\ :sub:`p,800` C\ :sub:`p,1000` C\ :sub:`p,1500`
 
-  Units are kcal/mol for ΔH\ :sub:`f,298` and cal/mol*K for the other quantities (entropy and heat capacity). The symmetry number (including contributions from internal rotations) will also be displayed.
+   Units are kcal/mol for ΔH\ :sub:`f,298` and cal/mol*K for the other quantities (entropy and heat capacity). The symmetry number (including contributions from internal rotations) will also be displayed.
 
