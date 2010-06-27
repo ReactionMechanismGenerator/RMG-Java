@@ -471,7 +471,7 @@ Creating a Primary Kinetic Library / Reaction Library / Seed Mechanism
 Reaction libraries and seed mechanisms are all stored in 
 :file:`$RMG/databases/RMG_database/kinetics_libraries/`
 
-A primary kinetic library / reaction library / seed mechanism may consist of five files:
+A primary kinetic library / reaction library / seed mechanism may consist of three files:
 
 	* :file:`species.txt`
 	* :file:`reactions.txt`
