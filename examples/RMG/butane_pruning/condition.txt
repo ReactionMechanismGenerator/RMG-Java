@@ -62,13 +62,13 @@ PressureDependence: off
 //PDepKineticsModel: Chebyshev
 
 FinishController:
-(1) Goal Conversion: C4H10 0.9
+(1) Goal Conversion: C4H10 0.7
 (2) Error Tolerance: 0.1
 
 DynamicSimulator: DASSL
 //Conversions: AUTO
 Conversions: AUTOPRUNE
-TerminationTolerance: 10
+TerminationTolerance: 1000
 PruningTolerance: 1.0E-18
 MinSpeciesForPruning: 1000
 MaxEdgeSpeciesAfterPruning: 10000
