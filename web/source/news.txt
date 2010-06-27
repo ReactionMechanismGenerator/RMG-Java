@@ -3,7 +3,7 @@
 RMG News and Updates
 **********************************
 
-2010-06-DD: RMG 3.2 Released!
+2010-06-27: RMG 3.2 Released!
 ==============================
 RMG version 3.2 has been released. The new release includes a number of improvements and bug fixes, including the following:
 
