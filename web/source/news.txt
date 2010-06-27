@@ -79,8 +79,6 @@ Bug fixes and performance improvements:
 
 - Primary Kinetics Library now correctly identifies matches for molecules with multiple resonance forms
 
-- Updated how RMG internally stores kinetics.  In particular, RMG can now recognize and store kinetics for a given structure (e.g. A --> B + C) from multiple reaction families (i.e. different Transition States).
-
 2009-08-05: RMG 3.1 Released!
 ==============================
 RMG version 3.1 has been released. The new release includes a number of improvements and bug fixes, including the following:

@@ -31,7 +31,6 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
@@ -39,15 +38,9 @@ import java.util.LinkedList;
 import java.util.StringTokenizer;
 
 import jing.chem.ChemGraph;
-import jing.chem.ForbiddenStructureException;
 import jing.chem.Species;
 import jing.chemParser.ChemParser;
-import jing.chemUtil.Graph;
-import jing.param.Global;
-import jing.param.Pressure;
 import jing.param.Temperature;
-import jing.rxn.BathGas;
-import jing.rxn.FastMasterEqn;
 import jing.rxn.ArrheniusKinetics;
 import jing.rxn.ArrheniusEPKinetics;
 import jing.rxn.Kinetics;
@@ -55,26 +48,19 @@ import jing.rxn.LibraryReactionGenerator;
 import jing.rxn.PDepIsomer;
 import jing.rxn.PDepKineticsEstimator;
 import jing.rxn.PDepNetwork;
-import jing.rxn.PDepRateConstant;
 import jing.rxn.PDepReaction;
 import jing.rxn.Reaction;
-import jing.rxn.ReactionGenerator;
 import jing.rxn.ReactionLibrary;
 import jing.rxn.TemplateReactionGenerator;
 import jing.rxnSys.ConstantTM;
 import jing.rxnSys.CoreEdgeReactionModel;
-import jing.rxnSys.DynamicSimulator;
 import jing.rxnSys.FinishController;
 import jing.rxnSys.InitialStatus;
 import jing.rxnSys.PressureModel;
-import jing.rxnSys.PrimaryKineticLibrary;
 import jing.rxnSys.RateBasedPDepRME;
 import jing.rxnSys.RateBasedRME;
-import jing.rxnSys.ReactionModel;
-import jing.rxnSys.ReactionModelEnlarger;
 import jing.rxnSys.ReactionModelGenerator;
 import jing.rxnSys.ReactionSystem;
-import jing.rxnSys.SpeciesStatus;
 import jing.rxnSys.TemperatureModel;
 
 public class PopulateReactions {
@@ -638,8 +624,8 @@ public class PopulateReactions {
 			reverseReactions = rtLibrary.react(speciesHashSet, species2, rxnFamilyName);
 			for (Iterator iter3 = reverseReactions.iterator(); iter3.hasNext();) {
 				Reaction currentRxn = (Reaction)iter3.next();
-				Kinetics[] allKinetics = currentRxn.getKinetics();
 				if (currentRxn.getStructure() == r.getReverseReaction().getStructure()) {
+					Kinetics[] allKinetics = currentRxn.getKinetics();
 					for (int numKinetics=0; numKinetics<allKinetics.length; ++numKinetics) {
 						listOfReactions += currentRxn.toString() + "\t" + updateListOfReactions(allKinetics[numKinetics], -Hrxn);
 						if (allKinetics.length != 1) listOfReactions += "\tDUP\n";
