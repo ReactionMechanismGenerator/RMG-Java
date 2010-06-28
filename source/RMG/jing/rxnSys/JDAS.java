@@ -121,8 +121,12 @@ public abstract class JDAS implements DAESolver {
         index = p_index;
         validityTester = p_vt;
         autoflag = p_autoflag;
-	termTol = p_termTol;
-	coreTol = p_coreTol;
+	if(p_termTol!=null){
+	    termTol = p_termTol;
+	}
+	if(p_coreTol!=null){
+	    coreTol = p_coreTol;
+	}
 
         parameterInfor = p_parameterInfor;
         initialStatus = p_initialStatus;
