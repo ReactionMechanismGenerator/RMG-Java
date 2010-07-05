@@ -272,7 +272,7 @@ public class ReactionSystem {
 				flux = r.getRateConstant(p_temperature);//10/26/07 gmagoon: changed to pass temperature
 				// flux = r.getRateConstant();
 			}
-			if (flux > 0) {
+			if (flux >= 0) {
 				for (Iterator rIter=r.getReactants(); rIter.hasNext();) {
 					Species spe = (Species)rIter.next();
 					double conc = 0;
