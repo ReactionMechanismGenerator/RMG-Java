@@ -4,40 +4,42 @@
 FAQ (Frequently-Asked Questions)
 ********************************
 
-.. _Q1:
-I encounter a NegativeConcentrationException ("Exception in thread "main"  jing.rxnSys.NegativeConcentrationException"...), causing the RMG run to fail. How should I procede?
-==============================================================================================================================================================================
-The issue here is that the ODE simulator reached a slightly negative concentration, which RMG consequently interpreted as erroneous and stopped. It is basically a numerical
-artifact, as the equations should not allow a negative concentration. There are two options for dealing with this:
-1) Play around with the value for Atol in the DynamicSimulator block in your
-condition file...for example, maybe try tightening it (i.e. reduce the value) by a few orders of
-magnitude.
-2) Specify the non-negativity option (introduced in version 3.2). (This could cause other solver errors, so use this as a last-resort.)
-To use this option with the DASSL solver, specify non-negative in the condition.txt input file as follows: "DynamicSimulator:
-DASSL: non-negative".
+Questions
+---------
 
-.. _Q2:
-During the RMG run, I see the warning: "Negative Steady State populations encountered during reservoir state method, falling back to Modified Strong Collision". Is this normal?
-================================================================================================================================================================================
-This is a normal numerical error in the matrix algebra. It occurs sometimes
-with the reservoir state method due to the larger size of the matrices. RMG
-recovers from the error by trying the Modified Strong Collision method.
+
+How do I represent molecular oxygen?
+====================================
+
+Use the ground electronic state of molecular oxygen, which contains a single
+bond and a diradical. The adjacency list should be ::
+
+  (1) O2 0.1 (mol/cm3)
+  1 O 1 {2,S}
+  2 O 1 {1,S}
+
+For more information, please see :ref:`Representing oxygen <oxygen>`.
 
 .. _Q3:
-My RMG run runs out of memory (e.g. "Exception in thread "main" java.lang.OutOfMemoryError: Java heap space"). How should I proceed?
+
+My RMG run runs out of memory. How should I proceed?
 ====================================================================================================================================
+This type of error will probably look something like ``Exception in thread "main" java.lang.OutOfMemoryError: Java heap space``.
 Species take up a large amount of memory, and when the combined edge plus core gets into the range of tens of thousands
 of species, the run will typically crash even with around 1500 MB of RAM.
 If you haven't already done so, we recommend allocating as much memory as possible
-when executing the RMG job (for example, using the option -Xmx1600m will allocate 1600 MB of memory). If this still fails, there are several additional options:
+when executing the RMG job (for example, using the option -Xmx1600m will allocate 1600 MB of memory. See the section on :ref:`running RMG <running>`). If this still fails, there are several additional options:
+
 1) Use the pruning feature introduced in RMG 3.2.
+
 2) Use tighter bounds for MaxCarbonNumber, MaxRadicalNumber, etc. as appropriate for your system.
-By reducing these values, RMG will generate fewer edge species. The idea is to intelligently choose the bounds to
-exclude species that shouldn't be relevant for your particular system.
+   By reducing these values, RMG will generate fewer edge species. The idea is to intelligently choose the bounds to
+   exclude species that shouldn't be relevant for your particular system.
+
 3) Relax the error tolerance (i.e. make it larger). RMG keeps expanding the reaction mechanism
-until the flux to 'edge' species is below the tolerance you specify. Increasing this tolerance
-means RMG will build a smaller mechanism (though it may be
-missing some important reaction pathways). For more details see http://rmg.sourceforge.net/documentation/theory/enlarger.html and the reference on that page.
+   until the flux to 'edge' species is below the tolerance you specify. Increasing this tolerance
+   means RMG will build a smaller mechanism (though it may be
+   missing some important reaction pathways). For more details see http://rmg.sourceforge.net/documentation/theory/enlarger.html and the reference on that page.
 
 .. _Q4:
 
@@ -47,20 +49,19 @@ Getting RMG to converge in a reasonable time, especially for large starting spec
 have seen mechanism generation runs as long as ~10 days. During this time, RMG is running hundreds of reaction model simulations and considering tens of thousands of species, and perhaps over a million possible reactions. As such, it can be inconvenient to have it running for a long time on your personal single-core machine or laptop. So, if you have access to a computing cluster where you can run RMG, that can ease the burden. Some "tricks" that could be helpful in reducing time requirements for model generation (in no particular order):
 
 1) Relax the error tolerance (i.e. make it larger). RMG keeps expanding the reaction mechanism
-until the flux to 'edge' species is below the tolerance you specify. Increasing this tolerance
-means RMG will stop sooner; it will take less time, but the model will be smaller and may be
-missing some important reaction pathways. For more details see http://rmg.sourceforge.net/documentation/theory/enlarger.html and the reference on that page.
-
+   until the flux to 'edge' species is below the tolerance you specify. Increasing this tolerance
+   means RMG will stop sooner; it will take less time, but the model will be smaller and may be
+   missing some important reaction pathways. For more details see http://rmg.sourceforge.net/documentation/theory/enlarger.html and the reference on that page.
+   
 2) Setting the maximum number of carbons (or oxygens, heavy atoms, etc.) in a species,
-if you're focusing on the species decomposition.
+   if you're focusing on the species decomposition.
 
 3) Run RMG for a single temperature / pressure (TemperatureModel, PressureModel).
 
 4) If you are running RMG with pressure dependence, consider trying the less accurate
-(but faster) ModifiedStrongCollision option.
+   (but faster) ModifiedStrongCollision option.
 
-5) (This is for the RMG-Java version located at github) If you are using a Seed
-Mechanism, set the GenerateReactions field to off.
+5) If you are using a Seed Mechanism, set the GenerateReactions field to off.
 
 .. _Q5:
 
@@ -75,3 +76,48 @@ compiling in Windows has been tricky in our experience.
 Hopefully, DASSL will meet your needs as it should provide all the functionality
 of DASPK, with the exception of sensitivity analysis (which you could do in
 Chemkin with the final model).
+
+.. _Q6:
+
+During the RMG run, I see the warning: "Frankie exceeded maximum number of iterations...". Is this normal?
+============================================================================================================
+This occurs when the optimization algorithm for the frequency estimation code
+"Frankie" fails to converge. In these cases, the frequencies (used to calculate
+density of states in master equation calculations to account for pressure dependence)
+may not be as accurate as they could be. It is typical for some fraction of Frankie
+jobs to fail in this fashion.
+
+.. _Q7:
+
+During the RMG run, I see the warning: "fitted Er < 0 ...". Is this normal?
+===============================================================================
+This occurs when the fitted activation energy for reverse reaction rate coefficients
+(based on equilibrium considerations) turns out to be negative. In these cases, the
+activation energy for the reverse reaction is adjusted to zero, with corresponding
+adjustment to the A-factor to ensure accurate equilibrium constant is maintained.
+It is typical for some fraction of the large number of reactions considered to
+produce this output.
+
+.. _Q8:
+
+I encounter a NegativeConcentrationException, causing the RMG run to fail. How should I proceed?
+==============================================================================================================================================================================
+The error message will read something like ``Exception in thread "main"  jing.rxnSys.NegativeConcentrationException...``.
+The issue here is that the ODE simulator reached a slightly negative concentration, which RMG consequently interpreted as erroneous and stopped. It is basically a numerical
+artifact, as the equations should not allow a negative concentration. There are two options for dealing with this:
+
+1. Play around with the value for Atol in the DynamicSimulator block in your
+   condition file...for example, maybe try tightening it (i.e. reduce the value) by a few orders of
+   magnitude.
+
+2. Specify the non-negativity option (introduced in version 3.2). (This could cause other solver errors, so use this as a last-resort.)
+   To use this option with the DASSL solver, specify non-negative in the condition.txt input file as follows: "DynamicSimulator:
+   DASSL: non-negative".
+
+.. _Q2:
+
+During the RMG run, I see the warning: "Negative Steady State populations encountered during reservoir state method, falling back to Modified Strong Collision". Is this normal?
+================================================================================================================================================================================
+This is a normal numerical error in the matrix algebra. It occurs sometimes
+with the reservoir state method due to the larger size of the matrices. RMG
+recovers from the error by trying the Modified Strong Collision method.

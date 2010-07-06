@@ -1,0 +1,58 @@
+*******************************************
+Estimating Species Transport Properties
+*******************************************
+
+The ``TransportDataEstimator`` utility produces group additivity-based transport property estimates - in particular,
+the Lennard-Jones sigma and epsilon parameters - without running RMG. As with the transport estimates used by RMG, 
+the ``TransportDataEstimator`` utility bases its estimates on group values located in the RMG database.
+
+Instructions for Use
+--------------------
+
+1. Create a text file named :file:`input.txt` in any directory that you like.  
+   The text file should begin with a block to specify a PrimaryTransportLibrary, 
+   which may be left empty if desired::
+
+	PrimaryTransportLibrary:
+	END
+
+   Next, in the text file, create the adjacency list(s) corresponding to the molecule(s) of interest 
+   using the same syntax used to define a species in the :file:`condition.txt` input file 
+   (see RMG manual). Hydrogens can be omitted for simplicity. For example, the adjacency list for 
+   2,2,4,4-tetramethylpentane could be written as::
+
+	Tetramethylpentane_2244
+	1 C 0 {2,S}
+	2 C 0 {1,S} {3,S} {4,S} {5,S}
+	3 C 0 {2,S}
+	4 C 0 {2,S}
+	5 C 0 {2,S} {6,S}
+	6 C 0 {5,S} {7,S} {8,S} {9,S}
+	7 C 0 {6,S}
+	8 C 0 {6,S}
+	9 C 0 {6,S}
+
+2. At the command prompt, change directory to the location of the :file:`input.txt` file 
+   and then, if you are using a unix-based operating system, execute the command ::
+   
+	 $ java -classpath $RMG/bin/RMG.jar TransportDataEstimator input.txt > RMG.log
+   
+   If you are using a Windows operating system you can instead run the batch file :file:`TransportDataEstimator.bat`. 
+   Either double-click it or at the command propmpt type::
+
+   > TransportDataEstimator.bat
+
+   The program's output is automatically written to :file:`tran.dat`
+
+3. The program will read RMG's transport database, count groups, and output the species estimated
+   transport properties in CHEMKIN format.
+
+The first entry is the species name (as supplied by you, assuming the number of characters is 
+less than 16).  The next entry is the RMG estimate on whether the species is an atom (0), linear (1),
+or nonlinear (2).  The next two entries are the RMG estimates for the Lennard-Jones epsilon and
+sigma parameters; the units of epsilon are Kelvin while the units of sigma are Angstroms.  The next
+three entries - the dipole moment, polarizability, and rotational relaxation collision number at
+298 K - are default values and are not estimated by RMG; these entries are included so that the
+output :file:`tran.dat` is CHEMKIN-readable.  All remaining information is comments regarding
+how RMG estimated the Lennard-Jones properties, including the estimated critical properties and
+which groups in the RMG_databases/transport_groups were matched.

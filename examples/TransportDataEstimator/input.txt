@@ -1,0 +1,30 @@
+PrimaryTransportLibrary:
+//Name: GRI-Mech-3.0
+//Location: GRI-Mech3.0
+END
+
+Allene
+1 C 0 {2,D}
+2 C 0 {1,D} {3,D}
+3 C 0 {2,D}
+
+Cyclopentane
+1 C 0 {5,S} {2,S}
+2 C 0 {1,S} {3,S}
+3 C 0 {2,S} {4,S}
+4 C 0 {3,S} {5,S}
+5 C 0 {4,S} {1,S}
+
+Acetone
+1 O 0 {2,D}
+2 C 0 {1,D} {3,S} {4,S}
+3 C 0 {2,S} 
+4 C 0 {2,S}
+
+Formaldehyde
+1 C 0 {2,D}
+2 O 0 {1,D}
+
+Oxygen
+1 O 0 {2,D}
+2 O 0 {1,D}

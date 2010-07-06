@@ -1,0 +1,51 @@
+.. _examples:
+
+**********************************
+Example Condition Files
+**********************************
+
+Minimal Example
+========================
+
+This is a minimal example and should run quickly. It does not include any 
+calculation of pressure-dependent reaction rates.
+
+.. literalinclude:: ../../../examples/RMG/minimal/condition.txt
+
+
+1,3-hexadiene pyrolysis
+========================
+
+This is our first example. Somebody should write something wise about it:
+
+.. literalinclude:: ../../../examples/RMG/1,3-hexadiene/condition.txt
+
+
+Butane oxidation with pruning
+=============================
+
+This example illustrates the use of pruning, as well
+as multiple reaction conditions. The example should
+take at least several hours to run and may require allocation
+of a large amount of memory (e.g. 1500 MB) to complete:
+
+.. literalinclude:: ../../../examples/RMG/butane_pruning/condition.txt
+
+
+Quantum mechanics calculations
+================================
+
+This is an example illustrating the use of on-the-fly thermo
+calculations. Gaussian03 is used to estimate thermodynamic
+properties of cyclic species, like cyclopropane. In particular,
+the semi-empirical PM3 method, with RRHO treatment of partition
+functions is used. Without this feature, RMG would try to estimate
+thermodynamic properties of cyclic species using the typical Benson
+groups, and would only apply an appropriate ad hoc ring correction
+if it is in Ring_Library.txt. The example should take roughly 45
+minutes to run and requires several additional dependencies, as
+described in the documentation.
+
+.. literalinclude:: ../../../examples/RMG/cyclopropane_QM/condition.txt
+
+

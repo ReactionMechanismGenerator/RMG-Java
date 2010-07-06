@@ -7,17 +7,13 @@ The ``ThermoDataEstimator`` utility produces group additivity-based thermochemis
 Instructions for Use
 --------------------
 
-1. Create a text file named :file:`thermo_input.txt` (or some other name of your choice) in any directory that you like.  If a ``GATPFit`` folder does not already exist in this directory, make it using the following command::
-
-	mkdir GATPFit
-
-The text file should begin with a block to specify a PrimaryThermoLibrary, which may
-be left empty if desired::
+1. Create a text file named :file:`input.txt` in any directory that you like.  
+   The text file should begin with a block to specify a PrimaryThermoLibrary, which may be left empty if desired::
 
 	PrimaryThermoLibrary:
 	END
 
-Next, in the text file, create the adjacency list(s) corresponding to the molecule(s) of interest using the same syntax used to define a species in the :file:`condition.txt` input file (see RMG manual). Hydrogens can be omitted for simplicity. For example, the adjacency list for 2,2,4,4-tetramethylpentane could be written as::
+   Next, in the text file, create the adjacency list(s) corresponding to the molecule(s) of interest using the same syntax used to define a species in the :file:`condition.txt` input file (see RMG manual). Hydrogens can be omitted for simplicity. For example, the adjacency list for 2,2,4,4-tetramethylpentane could be written as::
 
 	1 C 0 {2,S}
 	2 C 0 {1,S} {3,S} {4,S} {5,S}
@@ -29,18 +25,19 @@ Next, in the text file, create the adjacency list(s) corresponding to the molecu
 	8 C 0 {6,S}
 	9 C 0 {6,S}
 
-2. At the command prompt, change directory to the location of the :file:`thermo_input.txt` file and ``GATPFit`` folder and then execute the command ::
+2. At the command prompt, change directory to the location of the :file:`input.txt` file and then, if you are using a unix-based operating system, execute the command ::
 
-	$ java -classpath "%rmg%"\bin\RMG.jar ThermoDataEstimator thermo_input.txt
+	 $ java -classpath $RMG/bin/RMG.jar ThermoDataEstimator input.txt > RMG.log
 
-  To have output written to file instead of to the screen, use the syntax ::
+   Or if you are using Windows operating system you can instead run the batch file :file:`ThermoDataEstimator.bat`. Either double-click it or at the command propmpt type::
 
-	$ java -classpath "%rmg%"\bin\RMG.jar ThermoDataEstimator thermo_input.txt > thermo_output.txt
+     > ThermoDataEstimator.bat
 
-  where ``thermo_output.txt`` is the name of the file to be written.
+  The output of the program will automatically be written to :file:`RMG.log`
 
 3. The program will read RMG's thermodynamics database, count groups, and output the NASA polynomials in CHEMKIN format, as well as another set of values labeled ThermoData. The format for ThermoData is
 
-	ΔH\ :sub:`f,298` S\ :sub:`298` C\ :sub:`p,300` C\ :sub:`p,300` C\ :sub:`p,400` C\ :sub:`p,600` C\ :sub:`p,800` C\ :sub:`p,1000` C\ :sub:`p,1500`
+	ΔH\ :sub:`f,298` S\ :sub:`298` C\ :sub:`p,300` C\ :sub:`p,400` C\ :sub:`p,500` C\ :sub:`p,600` C\ :sub:`p,800` C\ :sub:`p,1000` C\ :sub:`p,1500`
 
-  Units are kcal/mol for ΔH\ :sub:`f,298` and cal/mol*K for the other quantities (entropy and heat capacity). The symmetry number (including contributions from internal rotations) will also be displayed.
+   Units are kcal/mol for ΔH\ :sub:`f,298` and cal/mol*K for the other quantities (entropy and heat capacity). The symmetry number (including contributions from internal rotations) will also be displayed.
+

@@ -3,6 +3,9 @@
 //a oxidation mechanism. Also the sensitivity analysis section is missing 
 //because we are using the dassl solver.
 
+//This example should take roughly 15-20 minutes to run to completion.
+
+
 Database: RMG_database
 
 //MaxCarbonNumberPerSpecies: 
@@ -62,17 +65,23 @@ PRange: (bar) 0.01 100.0 5
 
 FinishController:
 (1) Goal Conversion: HXD13 0.9
-(2) Error Tolerance: 0.1
+(2) Error Tolerance: 0.5
 
 DynamicSimulator: DASSL
 Conversions: AUTO
 Atol: 1e-18
 Rtol: 1e-8
 
-PrimaryReactionLibrary:
+PrimaryKineticLibrary:
 //Name: RMG-example
 //Location: Example
 END
+
+ReactionLibrary:
+//Name: GRIMech3.0
+//Location: GRI-Mech3.0
+END
+
 
 SeedMechanism:
 //Name: Leeds

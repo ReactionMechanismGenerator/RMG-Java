@@ -58,7 +58,7 @@ public interface ReactionGenerator {
 	LinkedHashSet react(LinkedHashSet p_speciesseed);
     
     //## operation react(HashSet,Species) 
-	LinkedHashSet react(LinkedHashSet p_speciesSet, Species p_species);
+	LinkedHashSet react(LinkedHashSet p_speciesSet, Species p_species, String p_rxnFamilyName);
     
 }
 /*********************************************************************

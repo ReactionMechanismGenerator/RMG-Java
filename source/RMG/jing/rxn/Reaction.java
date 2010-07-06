@@ -55,6 +55,7 @@ Immutable objects.
 //## class Reaction
 public class Reaction {
 
+  protected static double TRIMOLECULAR_RATE_UPPER = 1.0E100;
   protected static double BIMOLECULAR_RATE_UPPER = 1.0E100;		//## attribute BIMOLECULAR_RATE_UPPER
 
   protected static double UNIMOLECULAR_RATE_UPPER = 1.0E100;		//## attribute UNIMOLECULAR_RATE_UPPER
@@ -76,7 +77,7 @@ public class Reaction {
   protected String ChemkinString = null;
   protected boolean ratesForKineticsAndAdditionalKineticsCross = false; //10/29/07 gmagoon: added variable to keep track of whether both rate constants are maximum for some temperature in the temperature range
   
-  protected boolean kineticsFromPrimaryReactionLibrary = false;
+  protected boolean kineticsFromPrimaryKineticLibrary = false;
   protected ReactionTemplate rxnTemplate;
   // Constructors
 
@@ -187,13 +188,13 @@ public class Reaction {
 	/*
 	 * MRH 18MAR2010:
 	 * Changing the structure of a reaction's kinetics
-	 * 	If the kinetics are from a primary reaction library, we assume the user
+	 * 	If the kinetics are from a primary kinetic library, we assume the user
 	 * 		has supplied the total pre-exponential factor for the reaction (and
 	 * 		not the per-event pre-exponential facor).
 	 *  If the kinetics were estimated by RMG, the pre-exponential factor must
 	 *  	be multiplied by the "redundancy" (# of events)
 	 */
-	if (kineticsFromPrimaryReactionLibrary) {
+	if (kineticsFromPrimaryKineticLibrary) {
 		Kinetics[] k_All = kinetics;
 		for (int numKinetics=0; numKinetics<kinetics.length; numKinetics++) {
 			Kinetics k = k_All[numKinetics];
@@ -469,6 +470,9 @@ public class Reaction {
       else if (getReactantNumber() == 1) {
       	if (rate > UNIMOLECULAR_RATE_UPPER) return false;
       }
+	  else if (getReactantNumber() == 3) {
+		  if (rate > TRIMOLECULAR_RATE_UPPER) return false;
+	  }
       else throw new InvalidReactantNumberException();
 
       return true;
@@ -825,11 +829,14 @@ public class Reaction {
       //#]
   }
 
-  //## operation getComments()
+  
+
+ 
+  
   public String getComments() {
-      //#[ operation getComments()
+     
       return comments;
-      //#]
+     
   }
 
   //## operation getDirection()
@@ -872,7 +879,7 @@ public class Reaction {
 	   * 		The Arrhenius parameters would be for the overall decomposition of CH4,
 	   * 		not for each carbon-hydrogen bond fission
 	   */
-	  if (isFromPrimaryReactionLibrary()) {
+	  if (isFromPrimaryKineticLibrary()) {
 		  return kinetics;
 	  }
       if (isForward()) {
@@ -906,6 +913,30 @@ public class Reaction {
   public void setKineticsComments(String p_string, int num_k){
 	  kinetics[num_k].setComments(p_string);
   }
+  
+  
+  // shamel: Added this function 6/10/2010, to get Kinetics Source to identify duplicates 
+  // in Reaction Library, Seed Mech and Template Reaction with Library Reaction feature
+  
+  public String getKineticsSource(int num_k){
+	  // The num_k is the number for different kinetics stored for one type of reaction but formed due to different families
+	  // Check if the kinetics exits
+	  if (kinetics != null) {
+		  // Check if the "source" string is not null
+		  if(kinetics[num_k].getSource() != null){
+			  return kinetics[num_k].getSource();  
+		  }
+		  else{
+			  // This is mostly done for case of H Abstraction where forward kinetic source is null
+			  //we might need to check if this "source" is also null (Can be source of Bug)
+			  return this.reverseReaction.kinetics[num_k].getSource();  
+		  }
+	  } else
+		  // Returns Source as null when there are no Kinetics at all!
+		  return null;
+	  
+  }
+  
   
   public void setKineticsSource(String p_string, int num_k){
 	  kinetics[num_k].setSource(p_string);
@@ -1202,22 +1233,9 @@ public class Reaction {
   
   
   public String toChemkinString(Temperature p_temperature, Pressure p_pressure) {
-	  if (ChemkinString != null)
-		  return ChemkinString;
-	  	StringBuilder result = new StringBuilder();
-      	StringBuilder strucString = getStructure().toChemkinString(hasReverseReaction());
-		Temperature stdtemp = new Temperature(298,"K");
-		double Hrxn = calculateHrxn(stdtemp);
-		Kinetics[] allKinetics = getKinetics();
-		for (int numKinetics=0; numKinetics<allKinetics.length; ++numKinetics) {
-			String k = allKinetics[numKinetics].toChemkinString(Hrxn,p_temperature,true);
-			if (allKinetics.length == 1)
-				result.append(strucString + " " + k);
-			else
-				result.append(strucString + " " + k + "\nDUP\n");
-		}		
-		ChemkinString = result.toString();
-		return result.toString();
+	  // For certain PDep cases it's helpful to be able to call this with a temperature and pressure
+	  // but usually (and in this case) the pressure is irrelevant, so we just call the above toChemkinString(Temperature) method:
+	  return toChemkinString(p_temperature);
   }
 
 	public String toRestartString(Temperature p_temperature, boolean pathReaction) {
@@ -1315,6 +1333,8 @@ public class Reaction {
   public void setComments(String p_comments) {
       comments = p_comments;
   }
+  
+  
 
   /**
    * Returns the reverse reaction of this reaction. If there is no reverse reaction present
@@ -1638,12 +1658,12 @@ public class Reaction {
 			return 0.0;
 	}
 	
-	public boolean isFromPrimaryReactionLibrary() {
-		return kineticsFromPrimaryReactionLibrary;
+	public boolean isFromPrimaryKineticLibrary() {
+		return kineticsFromPrimaryKineticLibrary;
 	}
 	
-	public void setIsFromPrimaryReactionLibrary(boolean p_boolean) {
-		kineticsFromPrimaryReactionLibrary = p_boolean;
+	public void setIsFromPrimaryKineticLibrary(boolean p_boolean) {
+		kineticsFromPrimaryKineticLibrary = p_boolean;
 	}
 	
 	public ReactionTemplate getReactionTemplate() {

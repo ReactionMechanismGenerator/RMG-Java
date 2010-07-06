@@ -23,7 +23,7 @@ program fame
     real(8), dimension(:,:,:,:), allocatable :: K
     real(8), dimension(:,:,:,:), allocatable :: chebyshevCoeffs
     type(ArrheniusKinetics), dimension(:,:,:), allocatable :: pDepArrhenius
-    integer :: nIsom, nReac, nProd, nGrains, nT, nP
+    integer :: nIsom, nReac, nProd, nGrains, nT, nP, done
 
     integer i, j
 
@@ -38,11 +38,15 @@ program fame
     nIsom = 0
     nReac = 0
     nProd = 0
+    done = 0
     do i = 1, size(net%isomers)
         if (size(net%isomers(i)%species) > 1) then
+            done = 1
             nReac = nReac + 1
-        else
+        elseif (done == 0) then
             nIsom = nIsom + 1
+        else
+            nProd = nProd + 1
         end if
     end do
     nT = size(Tlist)
@@ -75,7 +79,7 @@ program fame
     if (model == 1) then
         write (1,fmt='(A)') 'Fitting Chebyshev interpolation model...'
         do i = 1, nIsom+nReac+nProd
-            do j = 1, nIsom+nReac+nProd
+            do j = 1, nIsom+nReac
                 if (i /= j) then
                     call fitChebyshevModel(K(:,:,i,j), Tlist, Plist, modelOptions(1), modelOptions(2), chebyshevCoeffs(:,:,i,j))
                 end if
@@ -84,7 +88,7 @@ program fame
     elseif (model == 2) then
         write (1,fmt='(A)') 'Fitting PDepArrhenius interpolation model...'
         do i = 1, nIsom+nReac+nProd
-            do j = 1, nIsom+nReac+nProd
+            do j = 1, nIsom+nReac
                 if (i /= j) then
                     call fitPDepArrheniusModel(K(:,:,i,j), Tlist, Plist, pDepArrhenius(:,i,j))
                 end if
@@ -94,7 +98,7 @@ program fame
     
     ! Write results (to stdout)
     write (1,fmt='(A)') 'Writing results...'
-    call writeOutput(net, nIsom+nReac+nProd, Tlist, nT, Plist, nP, Elist, nGrains, &
+    call writeOutput(net, nIsom, nReac, nProd, Tlist, nT, Plist, nP, Elist, nGrains, &
         method, K, model, modelOptions, chebyshevCoeffs, pDepArrhenius)
 
     ! Close log file

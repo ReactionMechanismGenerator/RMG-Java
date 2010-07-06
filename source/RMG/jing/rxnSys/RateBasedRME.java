@@ -38,6 +38,7 @@ import java.util.*;
 import jing.param.*;
 import jing.rxn.NegativeRateException;
 import jing.rxn.Reaction;
+import jing.rxn.Structure;
 import jing.rxn.TemplateReaction;
 import jing.chem.ChemGraph;
 import jing.chem.Species;
@@ -140,16 +141,44 @@ public class RateBasedRME implements ReactionModelEnlarger {
 
 					// generate new reaction set
 					startTime = System.currentTimeMillis();
-					LinkedHashSet newReactionSet = ((ReactionSystem) p_reactionSystemList.get(i)).getReactionGenerator().react(cerm.getReactedSpeciesSet(), (Species) nextList.get(i));
-					newReactionSet.addAll(((ReactionSystem) p_reactionSystemList.get(i)).lrg.react(cerm.getReactedSpeciesSet(), (Species) nextList.get(i)));
-					//LinkedHashSet newReactionSet = p_reactionSystem.getReactionGenerator().react(cerm.getReactedSpeciesSet(),next);
-					//newReactionSet.addAll(p_reactionSystem.lrg.react(cerm.getReactedSpeciesSet(),next));
-
+					
+					// shamel : Reordering so that Species List is first reacted by Library Reaction Generator and then sent to RMG Model Generator 
+					
+					//shamel: 6/10/2010 These lines are for my debugging will remove them later on
+					//System.out.println("Reacted Species"+cerm.getReactedSpeciesSet());
+					
+					// Prints out what reactions were found in Library Reaction Generator
+					LinkedHashSet tempnewReactionSet = ((ReactionSystem) p_reactionSystemList.get(i)).lrg.react(cerm.getReactedSpeciesSet(), (Species) nextList.get(i),"All");
+					System.out.println("Reaction Set Found from Reaction Library "+tempnewReactionSet);
+					
+					// Add reactions found in Library Reaction Generator to Reaction Set
+					LinkedHashSet newReactionSet =((ReactionSystem) p_reactionSystemList.get(i)).lrg.react(cerm.getReactedSpeciesSet(), (Species) nextList.get(i),"All");
+					
+					// Calls in Reaction Model Generator and adds it to Reaction Set ( if duplicate reaction is found it is not added I think ) 
+					System.out.println("Generating Reactions By Calling ReactionGenerator ... ");
+					
+					// Add reactions found from reaction template to current reaction set
+					newReactionSet.addAll(((ReactionSystem) p_reactionSystemList.get(i)).getReactionGenerator().react(cerm.getReactedSpeciesSet(), (Species) nextList.get(i),"All"));
+					
+					// shamel 6/22/2010 Suppressed output , line is only for debugging
+					//System.out.println("Reaction Set Found after LRG + ReactionGenerator call "+newReactionSet);
+					
+					
+					// Remove Duplicate entrys from reaction set i.e same reaction might be coming from seed/reaction library and reaction template
+					// Same means == same family and not same structure coming from different families
+					
+					LinkedHashSet newReactionSet_nodup = RemoveDuplicateReac(newReactionSet);
+					
+					// shamel 6/22/2010 Suppressed output , line is only for debugging
+					//System.out.println("Reaction Set Found after LRG + ReactionGenerator call and Removing Dups"+newReactionSet_nodup);
+					
+					
 					double enlargeTime = (System.currentTimeMillis() - startTime) / 1000 / 60;
 
 
 
 					startTime = System.currentTimeMillis();
+					
 					/* // we can't read in the restart files, so for now there's no point in writing them!
 					StringBuilder restartFileContent= new StringBuilder();
 					try{
@@ -181,22 +210,190 @@ public class RateBasedRME implements ReactionModelEnlarger {
 
 					// partition the reaction set into reacted reaction set and unreacted reaction set
 					// update the corresponding core and edge model of CoreEdgeReactionModel
-					cerm.addReactionSet(newReactionSet);
-
+					
+					cerm.addReactionSet(newReactionSet_nodup);
 
 				}
 			}
 		}
         
 
-        //String return_string;
         return;
         
         
-        //#]
+
     }
     
-	public boolean presentInIncludedSpecies(Species p_species){
+    public LinkedHashSet RemoveDuplicateReac(LinkedHashSet reaction_set){
+    	
+    	 // Get the reactants and products of a reaction and check with other reaction if both reactants and products
+    	 // match - delete duplicate entry, give preference to Seed Mechanism > Reaction Library >  Reaction Template 
+    	 // this information might be available from the comments 
+    	
+    	LinkedHashSet newreaction_set = new LinkedHashSet();
+    	
+    	Iterator iter_reaction =reaction_set.iterator();
+    	
+    	Reaction current_reaction;
+    	
+    	while(iter_reaction.hasNext()){
+    		// Cast it into a  Reaction ( i.e pick the reaction )
+        	current_reaction = (Reaction)iter_reaction.next();
+        	
+        	// To remove current reaction from reaction_set
+        	reaction_set.remove(current_reaction);
+        	
+        	// Match Current Reaction with the reaction set and if a duplicate reaction is found remove that reaction 
+               LinkedHashSet dupreaction_set = dupreaction(reaction_set,current_reaction);
+            // Remove the duplicate reaction from reaction set
+               reaction_set.removeAll(dupreaction_set);
+            
+            // If duplicate reaction set was not empty 
+               if(!dupreaction_set.isEmpty()){
+  
+            // Add current reaction to duplicate set and from among this choose reaction according to
+            // following hierarchy Seed > Reaction Library > Template. Add that reaction to the newreaction_set
+               
+            // Add current_reaction to duplicate set 
+               dupreaction_set.add(current_reaction);
+            
+            // Get Reaction according to hierarchy
+               LinkedHashSet reaction_toadd = reaction_add(dupreaction_set);
+               
+            // Add all the Reactions to be kept to new_reaction set     
+               newreaction_set.addAll(reaction_toadd);
+               }
+               else{
+            	   // If no duplicate reaction was found add the current reaction to the newreaction set
+            	   newreaction_set.add(current_reaction);
+               }
+               
+               
+            // Need to change iterate over counter here 
+               iter_reaction =reaction_set.iterator();
+        	}
+    	return newreaction_set;
+    }
+   
+    
+    public LinkedHashSet reaction_add(LinkedHashSet reaction_set){
+    	
+    	Reaction current_reaction;
+    	
+    	Iterator iter_reaction = reaction_set.iterator();
+    	
+    	LinkedHashSet reaction_seedset = new LinkedHashSet();
+    	
+    	LinkedHashSet reaction_rlset = new LinkedHashSet();
+    	
+    	LinkedHashSet reaction_trset = new LinkedHashSet();
+    	
+    	
+    	while(iter_reaction.hasNext()){
+    		// Cast it into a  Reaction ( i.e pick the reaction )
+        	current_reaction = (Reaction)iter_reaction.next();
+        	
+        	// As I cant call the instance test as I have casted my reaction as a Reaction 
+        	// I will use the source (comments) to find whether a reaction is from Seed Mechanism
+        	// Reaction Library or Template Reaction
+        	
+        	String source = current_reaction.getKineticsSource(0);
+        	//System.out.println("Source"+source);
+        	
+        	if (source == null){
+        		// If source is null I am assuming that its not a Reaction from Reaction Library or Seed Mechanism
+        		source = "TemplateReaction:";
+        	}
+        	
+        	// To grab the First word from the source of the comment
+        	// As we have Reaction_Type:, we will use : as our string tokenizer
+        	StringTokenizer st = new StringTokenizer(source,":");
+        	String reaction_type = st.nextToken();
+        	
+        	// shamel: Cant think of more elegant way for now
+        	// Splitting the set into Reactions from Seed Mechanism/Reaction Library and otherwise Template Reaction
+        	if (reaction_type.equals( "SeedMechanism")){
+        		// Add to seed mechanism set
+        		reaction_seedset.add(current_reaction);
+        	}        	
+        	else if (reaction_type.equals("ReactionLibrary") ){
+        		// Add to reaction library set
+        		reaction_rlset.add(current_reaction);
+        	}
+        	else{
+        		// Add to template reaction set
+        		reaction_trset.add(current_reaction);
+        	}
+        		
+        	
+        	
+    	}
+    	 if(!reaction_seedset.isEmpty()){
+    		 // shamel: 6/10/2010 Debug lines
+    		 //System.out.println("Reaction Set Being Returned"+reaction_seedset);
+    		 return reaction_seedset;
+    	 }
+    	 else if(!reaction_rlset.isEmpty()){
+    		 //System.out.println("Reaction Set Being Returned in RatebasedRME"+reaction_rlset);
+    		 return reaction_rlset;
+    	 }
+    	 else{
+    		 //System.out.println("Reaction Set Being Returned"+reaction_trset); 
+    		return reaction_trset; 
+    	 }
+    	
+    }
+    
+
+    
+    public LinkedHashSet dupreaction(LinkedHashSet reaction_set, Reaction test_reaction){
+    	// Iterate over the reaction set and find if a duplicate reaction exist for the the test reaction 
+ 
+    	LinkedHashSet dupreaction_set = new LinkedHashSet();	
+    	
+    	Iterator iter_reaction =reaction_set.iterator();
+    	
+    	Reaction current_reaction;
+    	
+    	// we will test if reaction are equal by structure test here, structure dosent require kinetics
+    	
+    	// Get Structure of test reaction
+    	Structure test_reactionstructure = test_reaction.getStructure();
+    	
+    	// Get reverse structure of test reaction
+    	Structure test_reactionstructure_rev = test_reactionstructure.generateReverseStructure();
+    	
+    	   	    	
+    	while(iter_reaction.hasNext()){
+    		// Cast it into a  Reaction ( i.e pick the reaction )
+        	current_reaction = (Reaction)iter_reaction.next();
+        	
+        	// Get Structure of current reaction to be tested for equality to test reaction
+        	Structure current_reactionstructure = current_reaction.getStructure();
+        	
+        	// Check if Current Reaction Structure matches the Fwd Structure of Test Reaction
+        	if(current_reactionstructure.equals(test_reactionstructure)){
+        		dupreaction_set.add(current_reaction);
+        	}
+        	
+        	// Check if Current Reaction Structure matches the Reverse Structure of Test Reaction
+        	if(current_reactionstructure.equals(test_reactionstructure_rev)){
+        		dupreaction_set.add(current_reaction);
+        	}
+        	
+        	        		
+    	}
+    	
+    	// Print out the dupreaction set if not empty
+    	if(!dupreaction_set.isEmpty()){
+    	System.out.println("dupreaction_set" + dupreaction_set);
+    	}
+    	// Return the duplicate reaction set
+    	return dupreaction_set;
+    }
+    
+    
+    public boolean presentInIncludedSpecies(Species p_species){
 		Iterator iter = includeSpecies.iterator();
 		while (iter.hasNext()){
 			Species spe = (Species)iter.next();

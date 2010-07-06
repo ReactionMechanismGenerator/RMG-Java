@@ -29,18 +29,18 @@ package jing.chem;
 
 // Amrit Jalan, April 19, 2009
 /**
- Replicates the functions of ThermoGAvalue for the Abraham Solvation model i.e. defines varibles like S, E, B, V and A
+ Replicates the functions of ThermoGAvalue for the Abraham Solvation model i.e. defines varibles like S, B, E, L and A
  Immutable data holds all the Platt's group value.
  */
 
 
 public class AbrahamGAValue {
 	
-	public  double S = 0;		//## attribute S
+	public double S = 0;		//## attribute S
 	public double B = 0;		//## attribute B
-	public  double E = 0;		//## attribute E
-	public  double L = 0;		//## attribute L
-	public double A= 0;      //## attribute A
+	public double E = 0;		//## attribute E
+	public double L = 0;		//## attribute L
+	public double A = 0;      //## attribute A
 	
 	
 	
@@ -59,7 +59,7 @@ public class AbrahamGAValue {
         B = p_B;
         E = p_E;
         L = p_L;
-        A=  p_A;
+        A = p_A;
     }
 	
     public  AbrahamGAValue(AbrahamGAValue p_ga) {
@@ -67,7 +67,7 @@ public class AbrahamGAValue {
         B = p_ga.B;
         E = p_ga.E;
         L = p_ga.L;
-        A=  p_ga.A;
+        A = p_ga.A;
     }
 	
 	//## operation toString()

@@ -789,6 +789,7 @@ public class ChemParser {
 
         for (int i = 0; i < speNum; i++) {
         	String name = st.nextToken().trim();
+        	String origname = name;
         	/*
         	 * 14Feb2010: MRH adding additional comments
         	 * 	This if statement exists to catch the "third body term" in the reaction string
@@ -809,6 +810,7 @@ public class ChemParser {
 					 * 		handle the "B(" with this if statement
 					 */
         			name = name.substring(0,name.length()-1).trim();
+        			origname = name;
         		}
 				/*
 				 * 14Feb2010: MRH adding additional comments
@@ -829,8 +831,11 @@ public class ChemParser {
 				}
         		Species spe = (Species)p_speciesSet.get(name);
         		if (spe == null) {
-        			System.out.println("Error in parseReactionSpecies: RMG cannot find the following species in Dictionary: " + name);
-        			throw new InvalidStructureException("unknown reactant/product: " + name);
+        			spe = (Species)p_speciesSet.get(origname);
+        			if (spe == null) {
+        				System.out.println("Error in parseReactionSpecies: RMG cannot find the following species in Dictionary: " + name);
+        				throw new InvalidStructureException("unknown reactant/product: " + name);
+        			}
         		}
         		reactionSpe.add(spe);
         	}

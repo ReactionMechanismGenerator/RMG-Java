@@ -1,0 +1,51 @@
+.. _kinetics_libraries:
+
+**********************************
+Kinetics Libraries
+**********************************
+
+The seed mechanisms are stored in :file:`$RMG/databases/RMG_database/kinetics_libraries/`
+
+
+Currently, the reaction library that are included in RMG are: the Leeds' oxidation library 
+the GRI-Mech 3.0 mechanism (w/o the nitrogen-containing species and the lumped C3H7 species)
+and the Glarborg combustion mechanism for C1 - C3 species.
+
+GRI-Mech 3.0
+============
+GRI-Mech 3.0 mechanism (w/o the nitrogen-containing species and the lumped C3H7 species)
+
+
+Glarborg
+=========
+
+RMG provides the option to use the rate coefficients in the master chemical
+mechanism developed by Peter Glarborg and coworkers at the Technical University
+of Denmark. The data are in the directory databases/kinetic_libraries/Glarborg.
+Within this directory are four subdirectories -- C0, C1, C2, and C3 -- where
+the index refers to the carbon number. The mechanisms are hierarchical in
+nature, so the contents of C0 are contained in C1, C1 in C2, and so forth. The
+C0 and C1 mechanisms include many small molecule reactions that would not
+necessarily fit the reaction families of RMG; consequently, they are useful
+Seed Mechanisms. The C2 and C3 mechanisms are optimized for high-temperature
+oxidation, and many of the species in the C2 and C3 mechanisms are relevant
+only for high-temperature chemistry. Therefore, if you are developing a
+mechanism for low- or moderate-temperature oxidation, it is suggested that you
+use C2 or C3 as a Primary Kinetic Library, rather than a Seed Mechanism.
+Details of the mechanism can be obtained in these three papers and references
+therein.
+
+“Experimental measurements and kinetic modeling of CO/H-2/O-2/NO, conversion at high pressure.”
+Rasmussen CL, Hanson J, Marshall P, Glarborg P
+IJCK, 2008, 40, 8, 454-480 DOI: 10.1002/kin.20327 
+
+“Experimental Measurements and Kinetic Modeling of CH4/O-2 and CH4/C2H6/O-2 Conversion at High Pressure.”
+Rasmussen CL, Jakobsen JG, Glarborg P
+IJCK, 2008, 40, 12, 778-807
+DOI: 10.1002/kin.20352
+
+“Experimental and kinetic modeling study of C2H4 oxidation at high pressure.”
+Lopez JG, Rasmussen CL, Alzueta MU, Gao Y, Marshall P, Glarborg P
+Proc. Comb. Inst. 2009, 32, 367-375
+DOI: 10.1016/j.proci.2008.06.188
+

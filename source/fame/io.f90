@@ -28,7 +28,7 @@ contains
         ! String for tokens
         character(len=256) token
         ! Numbers of species, isomers, and reactions
-        integer numSpecies, numIsomers, numReactions
+        integer numSpecies, numIsomers, numReactants, numProducts, numReactions
         ! Counters for loops
         integer i
 
@@ -170,8 +170,18 @@ contains
         call getFirstToken(line, token)
         read(token, *), numIsomers
         write (1,fmt=*) "Found", numIsomers, "isomers"
-        allocate( net%isomers(1:numIsomers) )
-        do i = 1, numIsomers
+        line = readMeaningfulLine()
+        call getFirstToken(line, token)
+        read(token, *), numReactants
+        write (1,fmt=*) "Found", numReactants, "reactants"
+        line = readMeaningfulLine()
+        call getFirstToken(line, token)
+        read(token, *), numProducts
+        write (1,fmt=*) "Found", numProducts, "products"
+        
+        
+        allocate( net%isomers(1:numIsomers+numReactants+numProducts) )
+        do i = 1, numIsomers+numReactants+numProducts
             call readIsomer(net%isomers(i), net%species)
             if (size(net%isomers(i)%species) == 1) then
                 write (1,fmt=*) "    Isomer", i, "is", net%isomers(i)%species(1)
@@ -684,19 +694,19 @@ contains
 
     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
-    subroutine writeOutput(net, nConf, Tlist, nT, Plist, nP, Elist, nGrains, &
+    subroutine writeOutput(net, nIsom, nReac, nProd, Tlist, nT, Plist, nP, Elist, nGrains, &
         method, K, model, modelOptions, chebyshev, pDepArrhenius)
 
-        integer :: nConf, nGrains, nT, nP
+        integer :: nIsom, nReac, nProd, nGrains, nT, nP
         type(Network), intent(in) :: net
         real(8), dimension(1:nT), intent(in) :: Tlist
         real(8), dimension(1:nP), intent(in) :: Plist
         real(8), dimension(1:nGrains), intent(in) :: Elist
         integer, intent(in) :: method, model
-        real(8), dimension(1:nT,1:nP,1:nConf,1:nConf), intent(in) :: K
+        real(8), dimension(1:nT,1:nP,1:nIsom+nReac+nProd,1:nIsom+nReac+nProd), intent(in) :: K
         integer, dimension(1:10), intent(in) :: modelOptions
         real(8), dimension(:,:,:,:), intent(in) :: chebyshev
-        type(ArrheniusKinetics), dimension(1:nP,1:nConf,1:nConf), intent(in) :: pDepArrhenius
+        type(ArrheniusKinetics), dimension(1:nP,1:nIsom+nReac+nProd,1:nIsom+nReac+nProd), intent(in) :: pDepArrhenius
 
         character(len=64) fmtStr
         integer i, j, t, p
@@ -744,7 +754,11 @@ contains
         write (*, fmt='(A)'), ''
         ! Number of isomers
         write (*, fmt='(A)'), '# The number of isomers in the network'
-        write (*, *), size(net%isomers)
+        write (*, *), nIsom
+        write (*, fmt='(A)'), '# The number of reactant channels in the network'
+        write (*, *), nReac
+        write (*, fmt='(A)'), '# The number of product channels in the network'
+        write (*, *), nProd
         write (*, fmt='(A)'), ''
         ! Number of reactions
         write (*, fmt='(A)'), '# The number of reactions in the network'
@@ -752,12 +766,12 @@ contains
         write (*, fmt='(A)'), ''
         ! Number of k(T, P) values
         write (*, fmt='(A)'), '# The number of phenomenological rate coefficients in the network'
-        write (*, *), (size(net%isomers) * (size(net%isomers) - 1))
+        write (*, *), ((nIsom+nReac+nProd)*(nIsom+nReac-1))
         write (*, fmt='(A)'), ''
 
         ! The phenomenological rate coefficients
-        do j = 1, nConf
-            do i = 1, nConf
+        do j = 1, nIsom+nReac
+            do i = 1, nIsom+nReac+nProd
                 if (i /= j) then
                     write (*, fmt='(A)'), '# The reactant and product isomers'
                     write (*,*), j, i

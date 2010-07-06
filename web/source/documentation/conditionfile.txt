@@ -16,35 +16,41 @@ order:
 
 #. The main :ref:`database`
 
+#. Any :ref:`restrictions <speciesRestrictions>` on the number of atoms / radicals for all generated species
+
 #. The name and location of all :ref:`Primary Thermodynamic Libraries <primarythermolibrary>`
+
+#. The name and location of all :ref:`Primary Transport Libraries <primarytransportlibrary>`
 
 #. Optionally, some additional :ref:`forbidden structures <forbiddenstructures>`
 
-#. The :ref:`initial temperature and pressure <initialconditions>` of the system
+#. Whether :ref:`Restart <restart>` files should be written or read
 
-#. The maximum number of carbons, oxygens, and radicals any one species may have
+#. The :ref:`initial temperature and pressure <initialconditions>` of the system
 
 #. Whether to generate an :ref:`IUPAC International Chemical Identifier (InChI) <InChIgeneration>` for each species
 
-#. The name, concentration, and chemical structure of the reactants
+#. The name, concentration, and chemical structure of the :ref:`reactants <reactants>`
 
-#. The specification and concentration of the inert gas(es)
+#. The specification and concentration of the :ref:`inert gas(es) <inertgas>`
 
 #. The method to use to estimate :ref:`spectroscopic data <spectroscopicdata>` for each species
 
 #. The :ref:`Pressure dependence <pressuredependence>` model
 
-#. The finish controller
+#. The :ref:`finish controller <finishcontroller>`
 
-#. The dynamic simulator
+#. The :ref:`dynamic simulator <dynamicsimulator>`
 
-#. Sensitivity analysis
+#. :ref:`Sensitivity analysis <sensitivity>` settings
 
-#. The name and location of all :ref:`Primary Reaction Libraries <primaryreactionlibrary>`
+#. The name and location of all :ref:`Primary Kinetic Libraries <primarykineticlibrary>`
+
+#. The name and location of all :ref:`Reaction Libraries <reactionlibrary>`
 
 #. The name and location of all :ref:`Seed Mechanisms <seedmechanism>`
 
-#. The units for the Arrhenius parameters A and Ea (to be reported in the generated chem.inp file)
+#. The :ref:`units <chemkinunits>` for the Arrhenius parameters A and Ea (to be reported in the generated chem.inp file)
 
 The name :file:`condition.txt` is variable. As you'll see in
 Section :ref:`running in linux`, you can change the name of the initialization
@@ -67,6 +73,29 @@ be left at the default value::
    Database: RMG_database
 
 
+.. _speciesRestrictions:
+
+Species Restrictions
+--------------------
+
+By default, RMG will allow no more than 30 carbon atoms in any given species (other such default restrictions are:
+no more than 10 oxygen atoms, no more than 10 radicals, no more than 100 heavy-atoms, etc.).  If you would like to
+change the default settings, the syntax is as follows ::
+
+   MaxCarbonNumberPerSpecies: 100
+   MaxOxygenNumberPerSpecies: 30
+   MaxRadicalNumberPerSpecies: 10
+   MaxSulfurNumberPerSpecies: 10
+   MaxSiliconNumberPerSpecies: 10
+   MaxHeavyAtomPerSpecies: 100
+
+A "Heavy Atom" is defined in RMG as a non-hydrogen atom.  Each of these fields is optional; the default values
+for all fields are listed here.
+
+Changing the default values of these fields, in particular, lowering the maximum value per species, may help you
+if your simulations are running out of memory.  Also, changing the default settings of these fields could be 
+beneficial if you are only concerned with the decomposition of the initial species.
+   
 .. _primarythermolibrary:
 
 Primary Thermo Library
@@ -107,13 +136,45 @@ directory.::
    END
 
 
+.. _primarytransportlibrary:
+
+Primary Transport Library
+-------------------------
+
+By default, RMG will estiamte the transport properties (Lennard-Jones sigma and epsilon parameters) of a species from
+empirical correlations described by Tee et al. [Tee]_; these correlations are functions of the acentric factor, the critical
+temperature, and the critical pressure.  The acentric factor is estimated using the empirical correlation described by Lee
+et al. [Lee]_, which itself is a function of the critical pressure, the critical temperature, and the boiling temperature.
+The critical properties and boiling point are estimated using the Joback group-additivity scheme [Joback]_, [Reid]_.
+
+.. [Tee] L.S. Tee, S. Gotoh, and W.E. Stewart; "Molecular Parameters for Normal Fluids: The Lennard-Jones 12-6 Potential"; Ind. Eng. Chem., Fundamentals (1966), 5(3), 346-63 Table III: Correlation iii
+.. [Lee] B.I. Lee and M.G. Kesler; "A Generalized Thermodynamic Correlation Based on Three-Parameter Corresponding States"; AIChE J., (1975), 21(3), 510-527
+.. [Reid] R.C. Reid, J.M. Prausnitz and B.E. Poling; "The Properties of Gases and Liquids" 4th ed. McGraw-Hill, New York, NY, 1987
+.. [Joback] K.G. Joback; Master's thesis, Chemical Engineering Department, Massachusetts Institute of Technology, Cambridge, MA, 1984
+	 
+If you would like to override the default settings, you may specify the transport properties of species in the
+PrimaryTransportLibrary.  Similar to the PrimaryThermoLibrary, RMG will automatically use those transport properties 
+instead of estimating them using the methods described above.  Multiple libraries may be created, if so desired.
+The order in which the primary transport libraries are specified is important: If a species appears in multiple primary 
+transport libraries, the first instance will be used.
+
+RMG comes with the transport properties of the species in the GRI-Mech 3.0 mechanism [GRIMech3.0]_.  This library is located in the
+:file:`$RMG/databases/RMG_database/transport_libraries` directory.  All "Locations" for the
+PrimaryTransportLibrary field must be with respect to the :file:`$RMG/databases/RMG_database/transport_libraries` directory. ::
+
+   PrimaryTransportLibrary:
+   Name: GRI-Mech 3.0
+   Location: GRI-Mech3.0
+   END
+
+   
 .. _forbiddenstructures:
 
 Forbidden Structures
 --------------------
 
 It is possible, though not necessary, to specify additional forbidden structures 
-in the condition file. This section should appear after the PrimaryThermoLibrary section.
+in the condition file. This section should appear after the PrimaryTransportLibrary section.
 Each adjacency list can be a species, as described in the :ref:`reactants` section, but can 
 contain :ref:`wildcards <functionalgrouptable>` as described in the :ref:`adjacencylistnotation` section.
 For example::
@@ -131,6 +192,49 @@ For example::
 
 Note that each adjacency list must be followed by an empty line, and that the section
 must end (after an empty line) with the word `END`.
+
+.. _restart:
+
+Restart Files
+-------------
+
+The next two items pertain to the reading and writing of "Restart" files.  
+
+For the baseball fans out there: Imagine a baseball game is in the top of the 5th inning, but the game is
+suspended (and later cancelled) due to bad weather.  In baseball, the game would need to be
+re-played, starting from the first inning (unless it's the world series, and then play will
+resume where it left off on the following day).  RMG's Restart files fall under the latter
+condition: Imagine you have a terminated RMG simulation, and would like to pick up where you
+left off.  Instead of having to re-run every aspect of the previous mechanism, you can supply RMG
+with the Restart files and RMG can more quickly restore the desired mechanism conditions.
+
+The Restart files contain
+information regarding all species and reaction in the mechanism and are written after every 
+successful ODE time step.  These files are written in the :file:`Restart` folder within the working
+directory.  The files are ::
+
+    ``coreSpecies.txt`` : The name and connectivity of every species present in the model's core
+	``coreReaction.txt`` : The structure, kinetics, and comments for every high-P limit reaction present in the model's core
+    ``edgeSpecies.txt`` : The name and connectivity of every species present in the model's edge
+	``edgeReaction.txt`` : The structure, kinetics, and comments for every high-P limit reaction present in the model's edge
+	``pdepreactions.txt`` : The structure, high-P limit kinetics, fall-off parameters, and comments for every pressure-dependent reaction in the model, which was specified by the user in a Reaction Library or Seed Mechanism
+	``pdepnetworks.txt`` : The structure, high-P limit kinetics, fall-off parameters, and comments for every pressure-dependent reaction in the model, which was generated by RMG
+	
+These files may be used for a variety of reasons, including::
+
+     Having more detailed information on the model's edge species and reactions
+	 As a Seed Mechanism, in constructing reaction mechanisms valid at multiple equivalence ratios
+	 As "Restart" files, in hopes of restoring the conditions of a terminated simulation
+	 
+To write the files ::
+
+    ReadRestart: no
+	WriteRestart: yes
+	
+To read the files (Note: the :file:`Restart` folder must be present in the working directory)::
+
+    ReadRestart: yes
+	WriteRestart: no
 
 .. _initialconditions:
 
@@ -155,19 +259,6 @@ You may also list multiple temperature and pressure conditions, as the example b
 
 For cases in which multiple temperatures and pressures are listed, the model generator will simulate the system (still using an isothermal, isobaric model) at all possible combinations of the specified temperatures and pressures. Thus, the resulting reaction mechanism will be valid (within the given error tolerances, estimates, and various other assumptions) at all the conditions specified. (Note, however, that reported concentrations in the :file:`Final_Model.txt` output file will only correspond to the first T/P combination.)
 
-Maximum Number of Atoms/Radicals Per Species
---------------------------------------------
-
-The next item in the initialization file allows the user to override the maximum
-number of carbons, oxygens, and/or radicals any species in the model may have.  To
-override the default values, the syntax is::
-
-	MaxCarbonNumberPerSpecies: 20
-	MaxOxygenNumberPerSpecies: 6
-	MaxRadicalNumberPerSpecies: 3
-	
-If any of these fields are not present in the :file:`condition.txt` file, RMG will
-use the default values.
 
 .. _InChIgeneration:
 
@@ -216,24 +307,27 @@ Reactants
 ---------
 
 The name, concentration, and structure of each reactant must be specified. For
-each reactant, the first line should include the reactant number (e.g. (1)), its
-name (e.g. C2O2), and it's concentration with units (e.g. 4.09e-3 (mol/cm3)).
-Acceptable units for concentration are "mol/cm3", "mol/m3", and "mol/l".  Furthermore,
-RMG will not accept a species name that begins with a number.
+each reactant, the first line should include the reactant's 
+name (e.g. ``C2O2``) and it's concentration with units (e.g. ``4.09e-3 (mol/cm3)``).
+Acceptable units for concentration are "mol/cm3", "mol/m3", and "mol/l".  Please note,
+RMG will **not** accept a species name that begins with a number.
 
 The next line defines the reactant structure, described by an adjacency list.
-The :ref:`RMG Viewer and Editor <viewingThermoFGs>` is a useful tool for generating adjacency lists. Please note that you
-may choose the simplified adjacency list in which the hydrogen atoms are omitted
-(shown below)::
+The :ref:`RMG Viewer and Editor <viewingThermoFGs>` is a useful tool for
+generating adjacency lists. Please note that you may choose the simplified
+adjacency list in which the hydrogen atoms are omitted (shown below)::
 
- InitialStatus: 
- (1) CH3OH 4.09e-3 (mol/cm3) 
- 1  C 0 {2,S} 
- 2  O 0 {1,S} 
- (2) O2 1.1E-7 (mol/cm3) 
- 1  O 0 {2,D} 
- 2  O 0 {1,D} 
- END 
+ InitialStatus:
+
+ CH3OH 4.09e-3 (mol/cm3)
+ 1  C 0 {2,S}
+ 2  O 0 {1,S}
+
+ O2 1.1E-7 (mol/cm3)
+ 1  O 1 {2,S}
+ 2  O 1 {1,S}
+
+ END
 
 
 Please note that the keyword ``END`` must be placed at the end of the
@@ -241,6 +335,13 @@ InitialStatus section.
 
 If one of the reactants is a resonance isomer, you only need to define one of
 the resonance structures, and RMG will automatically detect the others.
+
+**Represent molecular oxygen**, |O2|, **as shown above.** This is a deviation
+from versions of the RMG database prior to RMG 3.2. For more detail, please see this discussion on
+:ref:`representing oxygen <oxygen>`.
+
+.. |O2| replace:: O\ :sub:`2`\ 
+
 
 .. this is commented out because it breaks the latex
  +------------------+----------+---------------------+
@@ -296,7 +397,7 @@ nitrogen, the neon and helium are omitted, and the argon concentration is 2.21E-
 .. |N2| replace:: N\ :sub:`2`\ 
 
 To create valid CHEMKIN files, ensure that any 3rd-body collider molecules used in 
-your Seed Mechanisms or Primary Reaction Libraries are either declared in their 
+your Seed Mechanisms or Reaction Libraries are either declared in their 
 species.txt files (if they are reactive) or in this section.
 (i.e. it's a good idea to list all of N2, Ne, He and Ar, even if their concentrations are 0)
 
@@ -403,6 +504,24 @@ If you prefer, you can also specify the grid of temperatures and pressures manua
 
 You should specify either a ``TRange`` or ``Temperatures`` line and either a ``PRange`` or ``Pressures`` line.
 
+Lastly, you also need to specify information regarding the number of energy grains to use
+when solving the Master Equation.  The default value is 250; this was selected to balance the speed
+and accuracy of the Master Equation solver method.  However, for some pressure-dependent networks,
+this number of energy grains will result in the pressure-dependent :math:`k(T, P)` being greater than
+the high-P limit.  The default option in RMG is to print a warning message in the output file, stating
+this phenomenom, and then to continue the simulation.  If you would prefer RMG to increase the
+number of energy grains and resolve the Master Equation, add the following line ::
+
+    DecreaseGrainSize: yes
+
+If this field is turned on, RMG will increase the number of energy grains for the given pressure-dependent
+network until the computed :math:`k(T, P)` is less than the high-P limit or until the number
+of energy grains exceeds 1000.  Please note, the runtime of a RMG simulation with this field turned
+on will be longer than one with this field turned off.  Furthermore, note specifying this field in the
+input file is the same as ::
+
+    DecreaseGrainSize: no
+
 .. _finishcontroller:
 
 Finish Controller
@@ -490,6 +609,8 @@ When using automated time stepping, it is also possible to perform mechanism gen
 ``MinSpeciesForPruning`` indicates the minimum total number of species (edge and core) that must be present for pruning (due to low edge flux ratio relative to ``PruningTolerance`` or due to ``MaxEdgeSpeciesAfterPruning``) to occur.
 ``MaxEdgeSpeciesAfterPruning`` indicates the upper limit for the size of the edge. Pruning will continue until the edge is at least this small, regardless of ``PruningTolerance`` (though lowest fluxes are pruned first).
 
+When using pruning, RMG will not prune unless all reaction systems reach the goal reaction time or conversion without first exceeding the termination tolerance. Therefore, you may find that RMG is not pruning even though the model edge size exceeds ``MaxEdgeSpeciesAfterPruning``. In order to increase the likelihood of pruning in such cases, you can try increasing ``TerminationTolerance`` to an arbitrarily high value. Alternatively, if you are using a conversion goal, because reaction systems may reach equilibrium below the goal conversion, it may be helpful to reduce the goal conversion or switch to a goal reaction time.
+
 The next two lines specify the absolute and relative tolerance for the ODE solver, respectively. Common values for the absolute tolerance are 1e-15 to 1e-25. Relative tolerance
 is usually 1e-4 to 1e-8::
 
@@ -498,6 +619,11 @@ is usually 1e-4 to 1e-8::
 
 Note: You have the option of using sensitivity analysis only if you have the
 DASPK solver and the DAEPACK library. If you are using DASSL solver then skip the Sensitivity Analysis section.
+
+One option when dealing with NegativeConcentrationException issues is to use the "non-negative" option with DASSL. This option is requested with the line "DynamicSimulator: DASSL: non-negative". See the FAQ for further details.
+
+
+.. _sensitivity:
 
 Sensitivity Analysis
 --------------------
@@ -555,33 +681,32 @@ generated for carbon monoxide, carbon dioxide, methane, and water::
 Please note that the keyword ``END`` must be placed at the end of the Error
 bars section.
 
-.. _primaryreactionlibrary:
+.. _primarykineticlibrary:
 
-Primary Reaction Library
+Primary Kinetic Library
 ------------------------
 
 The next section of the :file:`condition.txt` file specifies which, if any, primary
-reaction libraries should be used.  When a reaction is specified in a primary reaction
+kinetic libraries should be used.  When a reaction is specified in a primary kinetic
 library, RMG will use these kinetics instead of the kinetics located in the 
 :file:`RMG_database/kinetics_groups/<RxnFamily>/rateLibrary.txt` directory.
 
-Currently, the only primary reaction libraries
-included with RMG are: the Leeds' oxidation library and the GRI-Mech 3.0 mechanism
-(w/o the nitrogen-containing species and the lumped C3H7 species). You can specify your own
-primary reaction library in the location section. Please note that the oxidation
-library should not be used for pyrolysis models. In the following example, the
-user has created her own primary reaction library with a few additional reactions
+For details of the kinetics libraries included with RMG that can be used as a primary kinetic library,
+see :ref:`kinetics_libraries`.
+You can specify your own
+primary kinetic library in the location section.  In the following example, the
+user has created her own primary kinetic library with a few additional reactions
 specific to n-butane, and these reactions are to be used in addition to the
 Leeds' oxidation library::
 
- PrimaryReactionLibrary:
+ PrimaryKineticLibrary:
  Name: nbutane 
  Location: nbutane 
  Name: Leeds 
  Location: combustion_core/version5 
  END 
 
-If a user wished to use the GRI-Mech 3.0 mechanism as a primary reaction library,
+If a user wished to use the GRI-Mech 3.0 mechanism as a primary kinetic library,
 the syntax is::
 
 	Name: GRI-Mech 3.0
@@ -591,12 +716,63 @@ The libraries are stored in :file:`$RMG/databases/RMG_database/kinetics_librarie
 and the `Location:` should be specified relative to this path.
 
 Please note that the keyword ``END`` must be placed at the end of the Primary
-Reaction Library section. Because the units for the Arrhenius parameters are
+Kinetic Library section. Because the units for the Arrhenius parameters are
 given in each library, the different libraries can have different units.
-Additionally, if the same reaction occurs more than once in the combined
+
+If the same reaction occurs more than once in the combined
 library, the instance of it from the first library in which it appears is
 the one that gets used.
 
+.. versionchanged:: 3.2
+	In previous versions this feature was called "PrimaryReactionLibrary" it has been
+	renamed to "PrimaryKineticLibrary" to better represent its functionality.
+
+.. _reactionlibrary:
+
+Reaction Library
+------------------------
+
+The next section of the :file:`condition.txt` file specifies which, if any,
+Reaction Libraries should be used. When a reaction library is specified, RMG will first
+use the reaction library to generate all the relevant reactions for the species 
+in the core before going through the reaction templates. This feature can be used as a 
+Primary Kinetic Library, in addition to specifying reactions that the user 
+wants to consider while building the mechanism but that do not otherwise match any of RMG reaction family templates. 
+Unlike the Seed Mechanism, reactions present in a Reaction Library will not be included 
+in the core automatically from the start.  
+
+For details of the kinetics libraries included with RMG that can be used as a reaction library,
+see :ref:`kinetics_libraries`.
+You can specify your own
+reaction library in the location section. In the following example, the user has created 
+a reaction library with a few additional reactions specific to n-butane, and these reactions 
+are to be used in addition to the Glarborg C3 library::
+
+	ReactionLibrary:
+	Name: nbutane 
+	Location: nbutane 
+	Name: Glarborg 
+	Location: Glarborg/C3
+	END 	
+
+The reaction libraries are stored in :file:`$RMG/databases/RMG_database/kinetics_libraries/`
+and the `Location:` should be specified relative to this path.
+
+Please note that the keyword ``END`` must be placed at the end of the Reaction Library
+section. Because the units for the Arrhenius parameters are
+given in each mechanism, the different mechanisms can have different units.
+
+.. note::
+	While using a Reaction Library the user must be careful enough to provide 
+	all instances of a particular reaction in the library file, as RMG will 
+	ignore all reactions generated by its templates.  For example, suppose you supply the
+	Reaction Library with butyl_1 --> butyl_2.  Although RMG would find two unique
+	instances of this reaction (via a three- and four-member cyclic Transition State),
+	RMG would only use the rate supplied by you in generating the mechanism.
+
+	In the case the user has specified a reaction as irreversible, RMG will
+	ignore all instances it generates even if they are reversible.	
+	
 
 .. _seedmechanism:
 
@@ -608,9 +784,10 @@ Seed Mechanisms should be used.  If a seed mechanism is passed to RMG, every
 species and reaction present in the mechanism will be placed into the core, in
 addition to the species that are listed in the :ref:`reactants` section.
 
-Currently, the only seed mechanisms
-included with RMG are: the Leeds' oxidation library and the GRI-Mech 3.0 mechanism
-(w/o the nitrogen-containing species and the lumped C3H7 species). You can specify your own
+For details of the kinetics libraries included with RMG that can be used as a seed mechanism,
+see :ref:`kinetics_libraries`.
+
+You can specify your own
 seed mechanism in the location section. Please note that the oxidation
 library should not be used for pyrolysis models. The syntax for the seed mechanisms
 is similar to that of the primary reaction libraries, except for the ``GenerateReactions`` 
@@ -628,10 +805,10 @@ line, explained below.::
 The seed mechanisms are stored in :file:`$RMG/databases/RMG_database/kinetics_libraries/`
 and the `Location:` should be specified relative to this path.
 
-There is a new required line in seed mechanisms that controls how RMG adds the
-seed species and reactions to the model core. If set to yes, RMG will use its
+There is a new required ``GenerateReactions`` line in seed mechanisms that controls how RMG adds the
+seed species and reactions to the model core. If set to ``yes``, RMG will use its
 reaction families to react all seed species with one another; the generated
-reactions will supplement the seed reactions. If set to no, RMG will not
+reactions will supplement the seed reactions. If set to ``no``, RMG will not
 generate reactions of the seed species. In either case, RMG will react the
 species in the condition file with one another and with all species in the
 seed mechanism.
@@ -645,8 +822,8 @@ the one that gets used.
 
 .. note::
 
-	For more information on what files to include in a Primary Reaction Library or
-	Seed Mechanism, visit :ref:`Building a Primary Reaction Library / Seed Mechanism <formatofseedmechanisms>`
+	For more information on what files to include in a Primary Kinetic / Reaction Library or
+	Seed Mechanism, visit :ref:`Building a Primary Kinetc Library / Reaction Library / Seed Mechanism <formatofseedmechanisms>`
 
 .. _chemkinunits:
 
@@ -659,8 +836,8 @@ units for A are "moles" and "molecules"; the acceptable units for Ea are "kcal/m
 "cal/mol", "kJ/mol", "J/mol", and "Kelvins"::
 
 	ChemkinUnits:
-	A: kcal/mol
-	Ea: moles
+	A: moles
+	Ea: kcal/mol
 	
 Another option available to the user is to specify whether the comments following
 each set of Arrhenius parameters in the :file:`chem.inp` file are concise or verbose.
@@ -669,8 +846,8 @@ calculated in the event RMG could not find an exact match for the functional gro
 
 	ChemkinUnits:
 	Verbose: on
-	A: kcal/mol
-	Ea: moles
+	A: moles
+	Ea: kcal/mol
 	
 If the Verbose field is not present, RMG will default to "off".
 

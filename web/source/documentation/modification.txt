@@ -24,7 +24,7 @@ ASCII file that can be edited to alter the information. This description applies
 to non-radical groups. There are other tree/library/dictionary files for radical
 groups, ring corrections, and other corrections. The nomenclature is different,
 but they would be edited in a similar way. The files of interest are located in
-the directory: :file:`$RMG/database/RMG_database/thermo_groups/`. The three files are
+the directory: :file:`$RMG/databases/RMG_database/thermo_groups/`. The three files are
 described below.  
 
 Dictionary File 
@@ -113,7 +113,7 @@ below. New functional group elements cannot be added to RMG in a simple way, as
 they must be hard-coded into the RMG software with the appropriate properties.
 
 If you examine the file :file:`Group_Dictionary.txt`, you will see that these groups
-are used extensively, even more so that the actual atoms C, H, or O. You will
+are used extensively, even more so than the actual atoms C, H, or O. You will
 also see that groups can be defined using a bracketed notation, which simply
 means that either atom/functional group element will generate this node. For
 example::
@@ -163,7 +163,7 @@ Viewing a Thermo Functional Group in the RMGVE
 ----------------------------------------------
 
 Open the RMG Viewer & Editor (RMGVE) by running the :file:`RMGVE 20080101.bat` file.
-If your RMG database is located in the :file:`$RMG\database\RMG_database` folder, the following
+If your RMG database is located in the :file:`$RMG\databases\RMG_database` folder, the following
 login screen should appear.
 
 .. image:: images/loginScreen.png
@@ -260,7 +260,7 @@ checkmark next to them.  You will receive a message stating whether the edits we
 Viewing the changed thermochemical data
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-To view the thermochemical data that was just edited, open the file from the previous screenshot: :file:`$RMG/database/RMG_database/thermo_groups/Group_Library.txt`.
+To view the thermochemical data that was just edited, open the file from the previous screenshot: :file:`$RMG/databases/RMG_database/thermo_groups/Group_Library.txt`.
 Scrolling down to the entry #55, we see the old and new thermochemical data for the functional group "Cds-OdCsH".
 
 .. image:: images/viewThermoEdits.png
@@ -364,9 +364,9 @@ Push the "Reaction recipe" button.  Your screen should look like the following s
 Looking at the "H_Abstraction reaction recipe" window: The first non-commented line shows the generic reaction: ``X_H + Y_rad_birad -> X_rad + Y_H``.
 The next uncommented line informs RMG how to handle the reverse reaction.  Some common occurences you will find include:
 
-	- "thermo_consistence": RMG will use the equilibrium constant to compute the reverse reaction rate
+	- "thermo_consistence": RMG may use the forward reaction rates stored in the <rxnFamilyName> folder.  This nomenclature is only used when the forward and reverse reaction templates are the same (e.g. H_Abstraction and intra_H_migration)
 	- "none": RMG assumes the reaction is irreversible
-	- "(f\_): <rxnFamilyName>": RMG may use the forward reaction rates stored in the <rxnFamilyName> folder
+	- "(f\_): <rxnFamilyName>": RMG will use the numbers stored in the rateLibrary.txt file for the forward reaction, and will use microscopic reversibility to compute the reverse reaction rate
 
 The next set of uncommented lines describes the changes in the reacting molecules', "X_H" and "Y_rad_birad", connectivity graphs to form the products, 
 "X_rad" and "Y_H".  For the "H_Abstraction" reaction family, a single bond ("S") is broken between atoms "1" and "2" and a single bond ("S") is formed between
@@ -396,9 +396,9 @@ Returning to the "Dataset viewer" window, click the "Tree/library" button.  The 
 		a linear relationship between the activation energy (Ea) and the enthalpy of 
 		reaction (delHr) is sometimes observed and can be expressed as:
 		
-		Ea = C1 + a*delHr
+		Ea = E0 + a*delHr
 		
-		where C1 and a are empirically-derived constants.  For RMG, we assume C1 = 0.
+		where E0 and a are empirically-derived constants.
 	
 	#. dA, dn, da, dE0: These columns contain the error for the Arrhenius parameters and Evans-Polanyi coefficient.  If the number is reported with a star (*) in front of it, this represents a multiplicative error; else, the error is additive.
 	
@@ -443,8 +443,12 @@ Notice that RMG contains 4 different sets of kinetic data for this reaction.  Th
 		
 		- ...
 
-For RMG's reaction library, the order in which the reactions appear in the :file:`rateLibrary.txt` file is significant.  RMG will use the kinetic data
-for the first instance of the reaction of interest that it finds.  If you click on one of the 4 reaction rates, you'll notice that the RMGVE gives
+For RMG's reaction library, the order in which the reactions appear in the :file:`rateLibrary.txt` file is significant.  
+In the instance when multiple rates are found for the same sets of nodes, RMG will first eliminate those rates whose valid
+temperature range does not contain the simulated temperature.  Next, RMG will find the rate with the lowest rank.  In the event
+multiple kinetic rates have the same Rank and their valid temperature range contains the temperature of interest, RMG will
+use the kinetics from whichever instance was read in first (i.e. is closer to the top of the file).
+If you click on one of the 4 reaction rates, you'll notice that the RMGVE gives
 you the option of "edit"ing or "delete"ing the entry (as it did for the Thermo library) but it also gives you the option to "move up" or "move down"
 the reaction rate.
 
@@ -455,25 +459,23 @@ the "edit" button, and then fill in the popup window with the kinetic data.  Aft
 .. image:: images/editKineticTree.png
 
 Close the RMGVE.  A popup window will ask if you want to save the changes you have made.  If you leave the box checked and then open the
-:file:`$RMG/database/RMG_database/kinetics_groups/H_Abstraction/rateLibrary.txt` file, you should see that the file has been updated.
+:file:`$RMG/databases/RMG_database/kinetics_groups/H_Abstraction/rateLibrary.txt` file, you should see that the file has been updated.
 
 .. image:: images/viewReactionEdits.png
 
 .. _formatofseedmechanisms:
 
-Creating a Primary Reaction Library / Seed Mechanism
-====================================================
+Creating a Primary Kinetic Library / Reaction Library / Seed Mechanism
+==============================================================================
 
-Primary reaction libraries and seed mechanisms are all stored in 
-:file:`$RMG/databases/RMG_Database/kinetics_libraries/`
+Reaction libraries and seed mechanisms are all stored in 
+:file:`$RMG/databases/RMG_database/kinetics_libraries/`
 
-A primary reaction library / seed mechanism may consist of five files:
+A primary kinetic library / reaction library / seed mechanism may consist of three files:
 
 	* :file:`species.txt`
 	* :file:`reactions.txt`
-	* :file:`3rdBodyReactions.txt` 
-	* :file:`lindemannReactions.txt`
-	* :file:`troeReactions.txt`
+	* :file:`pdepreactions.txt` 
 
 The :file:`species.txt` file is **required**.  All other files are optional, and
 if present, must include the Unit declaration and Reaction headings.
@@ -481,7 +483,7 @@ if present, must include the Unit declaration and Reaction headings.
 
 #. The :file:`species.txt` file is a series of molecular names and connectivity lists,
    analogous to the formats used in the input file :file:`condition.txt`. All species
-   present in the four remaining files must be given a structure in :file:`species.txt`. The
+   present in the two remaining files must be given a structure in :file:`species.txt`. The
    structure should have the same format as the adjacency list shown in :ref:`Creating a condition file<conditionFile>`. 
    Please note that the names that are used in the reaction library will be
    those used throughout the mechanism. In this manner, the user can adopt a
@@ -510,61 +512,50 @@ if present, must include the Unit declaration and Reaction headings.
 	O2 + CO = CO2 + O 1.26E13 0.00 196.90 *1.7 0 0
 
 
-#. The :file:`3rdBodyReaction.txt` file lists reactions involving a
-   third body (bath gas). A sample file, with a 3rd-body reaction, is listed below.
-   The first line defines the reaction using the same format as in :file:`reactions.txt`.
-   The next line lists collision efficiencies for various bath-gas species
+#. The :file:`pdepreaction.txt` file defines pressure-dependent reactions.  The type of
+   pressure-dependence RMG currently handles is: reactions with a third-body (bath gas),
+   Lindemann expressions, and Troe expresions.  A sample file, is listed below.
+   
+   The first line defines the reaction using the same format as in :file:`reactions.txt`.  The notable
+   exception is the presence of the (+m) or +M in the reaction line.
+   
+   The next (optional) line lists collision efficiencies for various bath-gas species
    that scale the concentrations of particular species when calculating the total
-   bath gas concentration. In the example below, CH4 is particularly effective
-   as a 3rd body, and its effective concentration is tripled.::
+   bath gas concentration.  In the example below, CH4 is particularly effective
+   as a 3rd body, and its effective concentration is tripled.  If a species is not 
+   included in the list, the default collision efficiency is one. ::
 
-	// Define the units
-	// Units allowed for A are: "mol/liter/s" or "mol/cm3/s"
-	// Units allowed for E are: "kcal/mol", "cal/mol", "kJ/mol", or "J/mol"
+	   // Define the units
+	   // Units allowed for A are: "mol/liter/s" or "mol/cm3/s"
+	   // Units allowed for E are: "kcal/mol", "cal/mol", "kJ/mol", or "J/mol"
 	
-	Unit:
-	A: mol/cm3/s
-	E: kJ/mol
+	   Unit:
+	   A: mol/cm3/s
+	   E: kJ/mol
 	
-	Reactions:
-	CO + O + M = CO2 + M 1.54E15 0.00 12.56 *1.2 0 0
-	N2/0.4/ O2/0.4/ CO/0.75/ CO2/1.5/ H2O/6.5/ CH4/3.0/ C2H6/3.0/ AR/0.35/
-	//	the first line defines the reaction and Arrhenius parameters,
-	//	while the second gives the scaling factors for different bath gas species
-	//	which contribute to [M].
+	   Reactions:
+	   CO + O + M = CO2 + M 1.54E15 0.00 12.56 *1.2 0 0
+	   N2/0.4/ O2/0.4/ CO/0.75/ CO2/1.5/ H2O/6.5/ CH4/3.0/ C2H6/3.0/ AR/0.35/
+	   //	the first line defines the reaction and Arrhenius parameters,
+	   //	while the second gives the scaling factors for different bath gas species
+	   //	which contribute to [M].
 
-#. The :file:`lindemannReaction.txt` file allows specifying pressure-dependent
-   reactions, according to the Lindemann expression.  The format of each reaction
-   is the same as is used by CHEMKIN.  For example::
+   The next (optional) line specifies the low-pressure limit Arrhenius parameters,
+   in the order A, n, Ea, as used in a Lindemann-type expression. ::
+	
+	   O + CO (+M) <=> CO2 (+M)	1.800E+10     .000    2385.00	0.0	0.0	0.0
+	   H2/2.00/ O2/6.00/ H2O/6.00/ CH4/2.00/ CO/1.50/ CO2/3.50/ C2H6/3.00/ Ar/ .50/ 
+	   LOW/ 6.020E+14     .000    3000.00/
+	   //	the first two lines are similar to the third-body reaction format
+	   //	the next line specifies the low pressure limit Arrhenius parameters
+	
+   The final (optional) line specifies the Troe parameters, in the order of a, T***, T*, and T**.
+   Note: The T** star parameter is optional. ::
    
-	Unit:
-	A: mol/cm3/s
-	E: cal/mol
-	
-	Reactions:
-	O + CO (+M) <=> CO2 (+M)	1.800E+10     .000    2385.00	0.0	0.0	0.0
-	H2/2.00/ O2/6.00/ H2O/6.00/ CH4/2.00/ CO/1.50/ CO2/3.50/ C2H6/3.00/ Ar/ .50/ 
-	LOW/ 6.020E+14     .000    3000.00/
-	
-	//	the first two lines are similar to the 3rdBodyReaction.txt format
-	//	the next line specifies the low pressure limit Arrhenius parameters
-   
-
-#. The :file:`troeReactions.txt` file allows specifying pressure-dependent 
-   reactions according to the Troe expression.  The format of each
-   reaction is the same as is used by CHEMKIN. For example::
-
-	Unit:
-	A: mol/cm3/s
-	E: kJ/mol
-	
-	Reactions:
-	C2H2 + H (+M) = C2H3 (+M) 8.43E12 0.00 10.81 *1.2 0 0
-	N2/0.4/ O2/0.4/ CO/0.75/ CO2/1.5/ H2O/6.5/ CH4/3.0/ C2H6/3.0/ AR/0.35/
-	LOW / 3.43E18 0.0 6.15 /
-	TROE / 1 1 1 1231 /
-	
-	//	the first three lines are similar to the lindemannReaction.txt format
-	//	the next line specifies the 3 or 4 Troe parameters
-	//	in the order: a, T***, T*, T** (the last parameter is optional).
-
+	   C2H2 + H (+M) = C2H3 (+M) 8.43E12 0.00 10.81 *1.2 0 0
+	   N2/0.4/ O2/0.4/ CO/0.75/ CO2/1.5/ H2O/6.5/ CH4/3.0/ C2H6/3.0/ AR/0.35/
+	   LOW / 3.43E18 0.0 6.15 /
+	   TROE / 1 1 1 1231 /
+	   //	the first three lines are similar to the Lindemann reaction format
+	   //	the next line specifies the 3 or 4 Troe parameters
+	   //	in the order: a, T***, T*, T** (the last parameter is optional).

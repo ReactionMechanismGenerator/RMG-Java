@@ -410,8 +410,23 @@ public class PDepNetwork {
 
 		for (Iterator iter = reactionSet.iterator(); iter.hasNext(); ) {
 			Reaction rxn = (Reaction) iter.next();
-			if (!contains(rxn))
+			if (!contains(rxn)) {
 				addReactionToNetworks(rxn);
+				/*
+				 * The reactions (of form A --> B or A --> C + D) could form
+				 * 	a species that is not otherwise in the edge of the
+				 * 	CoreEdgeReactionModel.
+				 * We want to leave all of the reactions alone (i.e. not add
+				 * 	them to the core OR edge) but need to check whether any
+				 * 	of the new species should be added to the edge.
+				 */
+				LinkedList rxnProducts = rxn.getProductList();
+				for (int numProds=0; numProds<rxnProducts.size(); numProds++) {
+					if (!((CoreEdgeReactionModel)reactionModel).containsAsReactedSpecies((Species)rxnProducts.get(numProds)))
+						if (!((CoreEdgeReactionModel)reactionModel).containsAsUnreactedSpecies((Species)rxnProducts.get(numProds)))
+							((CoreEdgeReactionModel)reactionModel).addUnreactedSpecies((Species)rxnProducts.get(numProds));
+				}
+			}
 		}
 
 	}
@@ -447,16 +462,22 @@ public class PDepNetwork {
 		for (int i = 0; i < reactionList.size(); i++) {
 			PDepReaction forward = reactionList.get(i);
 			PDepReaction reverse = (PDepReaction) forward.getReverseReaction();
-			if (forward == null)
-				throw new PDepException("Encountered null forward reaction while updating PDepNetwork reaction lists.");
-			else if (reverse == null)
-				throw new PDepException("Encountered null reverse reaction while updating PDepNetwork reaction lists.");
-			if (forward.isCoreReaction(cerm) || reverse.isCoreReaction(cerm))
-				netReactionList.add(forward);
-			else if (forward.getReactant().getIncluded() && forward.getProduct().getIncluded())
-				netReactionList.add(forward);
-			else
-				nonincludedReactionList.add(forward);
+			if (reverse != null) {
+				if (forward.isCoreReaction(cerm) || reverse.isCoreReaction(cerm))
+					netReactionList.add(forward);
+				else if (forward.getReactant().getIncluded() && forward.getProduct().getIncluded())
+					netReactionList.add(forward);
+				else
+					nonincludedReactionList.add(forward);
+			}
+			else {
+				if (forward.isCoreReaction(cerm))
+					netReactionList.add(forward);
+				else if (forward.getReactant().getIncluded() && forward.getProduct().getIncluded())
+					netReactionList.add(forward);
+				else
+					nonincludedReactionList.add(forward);
+			}
 		}
 	}
 
@@ -471,15 +492,26 @@ public class PDepNetwork {
 	 */
 	public double getLeakFlux(SystemSnapshot ss) {
 		double rLeak = 0.0;
-		for (ListIterator<PDepReaction> iter = nonincludedReactionList.listIterator(); iter.hasNext(); ) {
-			PDepReaction rxn = iter.next();
-			/*double forwardFlux = rxn.calculateForwardFlux(ss);
-			double reverseFlux = rxn.calculateReverseFlux(ss);
-			System.out.println(rxn.toString() + ": " + forwardFlux + " " + reverseFlux);*/
-			if (rxn.getReactant().getIncluded() && !rxn.getProduct().getIncluded())
+		// If there is only one path reaction (and thus only one nonincluded 
+		// reaction), use the high-pressure limit rate as the flux rather than
+		// the k(T,P) value to ensure that we are considering the maximum
+		// possible flux entering the network
+		if (pathReactionList.size() == 1 && nonincludedReactionList.size() == 1 && netReactionList.size() == 0) {
+			PDepReaction rxn = pathReactionList.get(0);
+			if (!rxn.getProduct().getIncluded())
 				rLeak += rxn.calculateForwardFlux(ss);
-			else if (!rxn.getReactant().getIncluded() && rxn.getProduct().getIncluded())
+			else
 				rLeak += rxn.calculateReverseFlux(ss);
+		}
+		// Otherwise use the set of k(T,P) values
+		else {
+			for (ListIterator<PDepReaction> iter = nonincludedReactionList.listIterator(); iter.hasNext(); ) {
+				PDepReaction rxn = iter.next();
+				if (rxn.getReactant().getIncluded() && !rxn.getProduct().getIncluded())
+					rLeak += rxn.calculateForwardFlux(ss);
+				else if (!rxn.getReactant().getIncluded() && rxn.getProduct().getIncluded())
+					rLeak += rxn.calculateReverseFlux(ss);
+			}
 		}
 		return rLeak;
 	}
@@ -508,7 +540,9 @@ public class PDepNetwork {
 			}
 		}
 
-		if (!maxReaction.getReactant().getIncluded())
+		if (maxReaction == null)
+			throw new PDepException("Tried to determine nonincluded isomer with maximum leak flux, but no suitable nonincluded reaction has been found.");
+		else if (!maxReaction.getReactant().getIncluded())
 			return maxReaction.getReactant();
 		else if (!maxReaction.getProduct().getIncluded())
 			return maxReaction.getProduct();
@@ -602,10 +636,14 @@ public class PDepNetwork {
 			Species product = (Species) reaction.getProductList().get(0);
 			for (ListIterator<PDepNetwork> iter = networks.listIterator(); iter.hasNext(); ) {
 				PDepNetwork n = iter.next();
-				if (n.contains(reactant))
-					reac_pdn = n;
-				if (n.contains(product))
-					prod_pdn = n;
+				if (n.contains(reactant)) {
+					if (n.getIsomer(reactant).getIncluded())
+						reac_pdn = n;
+				}
+				if (n.contains(product)) {
+					if (n.getIsomer(product).getIncluded())
+						prod_pdn = n;
+				}
 			}
 
 			if (reac_pdn != null && prod_pdn != null && reac_pdn != prod_pdn) {
@@ -645,8 +683,10 @@ public class PDepNetwork {
 			Species reactant = (Species) reaction.getReactantList().get(0);
 			for (ListIterator<PDepNetwork> iter = networks.listIterator(); iter.hasNext(); ) {
 				PDepNetwork n = iter.next();
-				if (n.contains(reactant))
-					pdn = n;
+				if (n.contains(reactant)) {
+					if (n.getIsomer(reactant).getIncluded())
+						pdn = n;
+				}
 			}
 		}
 
@@ -749,6 +789,36 @@ public class PDepNetwork {
 			}
 		}
 		return coreReactions;
+	}
+
+	/**
+	 * Counts the number of edge reactions that are hidden amongst those
+	 * net reactions which are found in the pressure-dependent networks.
+	 * @param cerm The current core/edge reaction model
+	 * @return The number of edge reactions found
+	 */
+	public static int getNumEdgeReactions(CoreEdgeReactionModel cerm) {
+		return getEdgeReactions(cerm).size();
+	}
+	/**
+	 * Returns the edge reactions that are hidden amongst those
+	 * net reactions which are found in the pressure-dependent networks.
+	 * @param cerm The current core/edge reaction model
+	 * @return The list of edge reactions found
+	 */
+	public static LinkedList<PDepReaction> getEdgeReactions(CoreEdgeReactionModel cerm) {
+		LinkedList<PDepReaction> edgeReactions = new LinkedList<PDepReaction>();
+		for (ListIterator<PDepNetwork> iter0 = networks.listIterator(); iter0.hasNext(); ) {
+			PDepNetwork pdn = iter0.next();
+			for (ListIterator<PDepReaction> iter = pdn.getNetReactions().listIterator(); iter.hasNext(); ) {
+				PDepReaction rxn = iter.next();
+				if (rxn.getReactant().getIncluded() && rxn.getProduct().getIncluded()) {
+					if (rxn.isEdgeReaction(cerm) && !edgeReactions.contains(rxn))
+						edgeReactions.add(rxn);
+				}
+			}
+		}
+		return edgeReactions;
 	}
 
 }

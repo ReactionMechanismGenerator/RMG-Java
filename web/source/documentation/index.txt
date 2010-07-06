@@ -20,18 +20,19 @@ Contents
    introduction
    installation
    conditionfile
+   examples
    GraphicalUserInterface
+   kinetics_libraries
    running
    analyzing
    modification
    thermo
+   transport
    reactions
    speciesIDs
    theory/index
    faq
    ../credits
-
-
 
 ..   BuildingDocumentation
 	Indices and tables
