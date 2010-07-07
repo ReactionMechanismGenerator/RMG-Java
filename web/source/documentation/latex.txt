@@ -15,10 +15,13 @@ Please also refer to our website for how to cite RMG in published work.
    ../license
    installation
    conditionfile
+   examples
    GraphicalUserInterface
+   kinetics_libraries
    running
    analyzing
    modification
+   oxygen
    thermo
    theory/index
    ../credits

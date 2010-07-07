@@ -38,9 +38,12 @@ PressureDependence: ReservoirState off ModifiedStrongCollision
 PDepKineticsModel: Chebyshev
 //DecreaseGrainSize: yes
 
-PrimaryReactionLibrary:
+PrimaryKineticLibrary:
 //Name: PrIMe-recommended
 //Location: GRI-Mech3.0
+END
+
+ReactionLibrary:
 END
 
 //Verbose: off

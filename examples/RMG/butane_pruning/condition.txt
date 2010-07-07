@@ -1,0 +1,102 @@
+//tracks the consumption of Butane in presence of O2.
+
+//This example illustrates the use of pruning, as well
+//as multiple reaction conditions. The example should
+//take at least several hours to run and may require allocation
+//of a large amount of memory (e.g. 1500 MB) to complete.
+
+Database: RMG_database
+
+//MaxCarbonNumberPerSpecies: 
+//MaxOxygenNumberPerSpecies: 
+//MaxRadicalNumberPerSpecies: 
+//MaxSulfurNumberPerSpecies: 
+//MaxSiliconNumberPerSpecies: 
+//MaxHeavyAtomPerSpecies:
+
+PrimaryThermoLibrary:
+Name: GRIMech3.0
+Location: GRI-Mech3.0
+Name: RMG-old
+Location: primaryThermoLibrary
+END
+
+PrimaryTransportLibrary:
+Name: GRIMech3.0
+Location: GRI-Mech3.0
+END
+
+ForbiddenStructures:
+
+
+END
+
+ReadRestart: no
+WriteRestart: yes
+
+TemperatureModel: Constant (K) 800 1000 2000 
+PressureModel: Constant (atm)  20 30 40   
+
+InitialStatus:
+
+(1) C4H10 1 (mol/cm3)
+1 C 0 {2,S}
+2 C 0 {1,S} {3,S}
+3 C 0 {2,S} {4,S}
+4 C 0 {3,S}
+
+(2) O2 6.5 (mol/cm3)
+1 O 1 {2,S}
+2 O 1 {1,S}
+
+END
+
+InertGas:
+N2 24.399 (mol/cm3)
+Ar 0 (mol/cm3)
+END
+
+SpectroscopicDataEstimator: off
+PressureDependence: off
+//PressureDependence: ModifiedStrongCollision
+//PDepKineticsModel: Chebyshev
+
+FinishController:
+(1) Goal Conversion: C4H10 0.7
+(2) Error Tolerance: 0.1
+
+DynamicSimulator: DASSL
+//Conversions: AUTO
+Conversions: AUTOPRUNE
+TerminationTolerance: 1000
+PruningTolerance: 1.0E-18
+MinSpeciesForPruning: 1000
+MaxEdgeSpeciesAfterPruning: 10000
+Atol: 1e-18
+Rtol: 1e-8
+
+PrimaryKineticLibrary:
+//Name: RMG-example
+//Location: RMG_database/primaryReactionLibrary/Example
+END
+
+ReactionLibrary:
+
+END
+
+SeedMechanism:
+//Name: Leeds
+//Location: RMG_database/SeedMechanisms/combustion_core/version5
+//GenerateReactions: yes
+Name: GRIMech3.0
+Location: GRI-Mech3.0
+GenerateReactions: yes
+//Name: Glarborg
+//Location: RMG_database\SeedMechanisms\Glarborg\C3_light
+//GenerateReactions: yes
+
+END
+
+ChemkinUnits:
+A: moles
+Ea: kcal/mol

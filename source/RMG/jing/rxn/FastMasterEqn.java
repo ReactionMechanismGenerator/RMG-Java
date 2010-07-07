@@ -200,11 +200,54 @@ public class FastMasterEqn implements PDepKineticsEstimator {
 
 		// Determine wells and reactions; skip if no reactions in network
 		LinkedList<Species> speciesList = pdn.getSpeciesList();
-		LinkedList<PDepIsomer> isomerList = pdn.getIsomers();
 		LinkedList<PDepReaction> pathReactionList = pdn.getPathReactions();
 		if (pathReactionList.size() == 0) {
 			System.out.println("Warning: Empty pressure-dependent network detected. Skipping.");
 			return;
+		}
+
+		// Sort isomers such that the order is:
+		//	1. Explored unimolecular isomers
+		//	2. Bimolecular reactant/product channels
+		//	3. Unexplored unimolecular isomers (treated as product channels)
+		LinkedList<PDepIsomer> isomerList = new LinkedList<PDepIsomer>();
+		int nIsom = 0, nReac = 0, nProd = 0;
+		for (int i = 0; i < pdn.getIsomers().size(); i++) {
+			PDepIsomer isom = pdn.getIsomers().get(i);
+			if (isom.isUnimolecular() && isom.getIncluded())
+				isomerList.add(isom);
+		}
+		nIsom = isomerList.size();
+		if (nIsom == 0) {
+			// We need at least one unimolecular isomer in order to perform a
+			// P-dep calculation
+			for (int i = 0; i < pdn.getIsomers().size(); i++) {
+				PDepIsomer isom = pdn.getIsomers().get(i);
+				if (isom.isUnimolecular() && !isom.getIncluded())
+					isomerList.add(isom);
+			}
+			nIsom = isomerList.size();
+			for (int i = 0; i < pdn.getIsomers().size(); i++) {
+				PDepIsomer isom = pdn.getIsomers().get(i);
+				if (isom.isMultimolecular())
+					isomerList.add(isom);
+			}
+			nReac = isomerList.size() - nIsom;
+			nProd = 0;
+		}
+		else {
+			for (int i = 0; i < pdn.getIsomers().size(); i++) {
+				PDepIsomer isom = pdn.getIsomers().get(i);
+				if (isom.isMultimolecular())
+					isomerList.add(isom);
+			}
+			nReac = isomerList.size() - nIsom;
+			for (int i = 0; i < pdn.getIsomers().size(); i++) {
+				PDepIsomer isom = pdn.getIsomers().get(i);
+				if (isom.isUnimolecular() && !isom.getIncluded())
+					isomerList.add(isom);
+			}
+			nProd = isomerList.size() - nIsom - nReac;
 		}
 
 		// Make sure all species have spectroscopic data
@@ -235,7 +278,7 @@ public class FastMasterEqn implements PDepKineticsEstimator {
 		//}
 
 		// Create FAME input files
-		String input = writeInputString(pdn, rxnSystem, speciesList, isomerList, pathReactionList);
+		String input = writeInputString(pdn, rxnSystem, speciesList, isomerList, pathReactionList, nIsom, nReac, nProd);
         String output = "";
 
 		// DEBUG only: Write input file
@@ -269,7 +312,18 @@ public class FastMasterEqn implements PDepKineticsEstimator {
 			}
 			stdin.close();
 			
-            String line = stdout.readLine().trim();
+			String line;
+			try {
+				line = stdout.readLine().trim();
+			}
+			catch (NullPointerException e) {
+				System.out.println("Stderr:");
+				String errline = null;
+				while((errline = stderr.readLine()) != null){
+				    System.out.println(errline);
+				}
+				throw new PDepException("FAME output file is empty; FAME job was likely unsuccessful.");
+			}
 			
 			// advance to first line that's not for debug purposes
 			while ( line.startsWith("#IN:") || line.contains("#DEBUG:") ) {
@@ -412,7 +466,8 @@ public class FastMasterEqn implements PDepKineticsEstimator {
 	public String writeInputString(PDepNetwork pdn, ReactionSystem rxnSystem,
 			LinkedList<Species> speciesList,
 			LinkedList<PDepIsomer> isomerList,
-			LinkedList<PDepReaction> pathReactionList) {
+			LinkedList<PDepReaction> pathReactionList,
+			int nIsom, int nReac, int nProd) {
 
 		String input = "";
 
@@ -592,7 +647,11 @@ public class FastMasterEqn implements PDepKineticsEstimator {
 			}
 			
 			input += "# The number of isomers in the network (minimum of 2)\n";
-			input += Integer.toString(isomerList.size()) + "\n";
+			input += Integer.toString(nIsom) + "\n";
+			input += "# The number of reactant channels in the network\n";
+			input += Integer.toString(nReac) + "\n";
+			input += "# The number of product channels in the network\n";
+			input += Integer.toString(nProd) + "\n";
 			input += "\n";
 
 			for (int i = 0; i < isomerList.size(); i++) {
@@ -776,6 +835,10 @@ public class FastMasterEqn implements PDepKineticsEstimator {
 
 			str = readMeaningfulLine(br);
 			int numIsomers = Integer.parseInt(str);
+			str = readMeaningfulLine(br);
+			int numReactants = Integer.parseInt(str);
+			str = readMeaningfulLine(br);
+			int numProducts = Integer.parseInt(str);
 
 			str = readMeaningfulLine(br);
 			int numReactions = Integer.parseInt(str);
@@ -888,11 +951,13 @@ public class FastMasterEqn implements PDepKineticsEstimator {
 				 *  
 				 */
 				LinkedList pathReactionList = pdn.getPathReactions();
+				boolean foundHighPLimitRxn = false;
 				for (int HighPRxNum = 0; HighPRxNum < pathReactionList.size(); HighPRxNum++) {
 					PDepReaction rxnWHighPLimit = (PDepReaction)pathReactionList.get(HighPRxNum);
 					Temperature stdtemp = new Temperature(298,"K");
 					double Hrxn = rxnWHighPLimit.calculateHrxn(stdtemp);
 					if (rxn.getStructure().equals(rxnWHighPLimit.getStructure())) {
+						foundHighPLimitRxn = true;
 						double A = 0.0, Ea = 0.0, n = 0.0;
 						if (rxnWHighPLimit.isForward()) {
 							Kinetics[] k_array = rxnWHighPLimit.getKinetics();
@@ -901,7 +966,8 @@ public class FastMasterEqn implements PDepKineticsEstimator {
 							Ea = kin.getEValue();
 							n = kin.getNValue();
 							// While I'm here, and know which reaction was the High-P limit, set the comment in the P-dep reaction 
-							rxn.setComments("High-P Limit: " + kin.getSource().toString() + " " + kin.getComment().toString() );
+							rxn.setComments("NetReaction from PDepNetwork #" + Integer.toString(pdn.getID()) + " (" + pdn.getSpeciesType() + ")" + 
+									" High-P Limit: " + kin.getSource().toString() + " " + kin.getComment().toString() );
 						}
 						else {
 							Kinetics[] k_array = rxnWHighPLimit.getFittedReverseKinetics();
@@ -917,7 +983,8 @@ public class FastMasterEqn implements PDepKineticsEstimator {
 								commentsForForwardKinetics += "High-P Limit Reverse: " + fwd_kin[numKs].getSource().toString() +fwd_kin[numKs].getComment().toString();
 								if (numKs != fwd_kin.length-1) commentsForForwardKinetics += "\n!";
 							}
-							rxn.setComments(commentsForForwardKinetics);
+							rxn.setComments("NetReaction from PDepNetwork #" + Integer.toString(pdn.getID()) + " (" + pdn.getSpeciesType() + ")" +
+									" " + commentsForForwardKinetics);
 						}
 						if (ReactionModelGenerator.rerunFameWithAdditionalGrains()) {
 							double[][] all_ks = rxn.getPDepRate().getRateConstants();
@@ -942,6 +1009,10 @@ public class FastMasterEqn implements PDepKineticsEstimator {
 						//break;	// Why did MRH put this break here?
 						}
 					}
+				}
+				// If not found, we have a "nonIncluded" (pressure-dependent) reaction
+				if (!foundHighPLimitRxn) {
+					rxn.setComments("NetReaction from PDepNetwork #" + Integer.toString(pdn.getID()) + " (" + pdn.getSpeciesType() + ")");
 				}
 				
 				// Add net reaction to list
@@ -970,8 +1041,10 @@ public class FastMasterEqn implements PDepKineticsEstimator {
 							break;
 						}
 					}
-					if (!found)
-						throw new PDepException("Unable to identify reverse reaction for " + rxn1.toString() + " after FAME calculation.");
+					if (!found) {
+						rxn1.setReverseReaction(null);
+						i++;
+					}
 				}
 				else
 					i++;

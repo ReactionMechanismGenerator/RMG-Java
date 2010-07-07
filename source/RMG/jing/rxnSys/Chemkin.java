@@ -90,7 +90,7 @@ public class Chemkin implements DAESolver {
       reactorType = p_reactorType;
       
   }
-  private void copyFiles(String string, String string2)  {
+  private static void copyFiles(String string, String string2)  {
 	  File src = new File(string);
 	  File dest = new File(string2);
 	  FileInputStream fin;
@@ -461,8 +461,6 @@ public  Chemkin() {
 
   //## operation writeChemkinInputFile(ReactionModel,SystemSnapshot)
   public static void writeChemkinInputFile(final ReactionModel p_reactionModel, SystemSnapshot p_beginStatus) {
-      //#[ operation writeChemkinInputFile(ReactionModel,SystemSnapshot)
-
       StringBuilder result=new StringBuilder();
       result.append(writeChemkinHeader());
 	  result.append(writeChemkinElement());
@@ -471,189 +469,82 @@ public  Chemkin() {
       result.append(writeChemkinThermo(p_reactionModel));
       Global.chemkinThermo = Global.chemkinThermo + (System.currentTimeMillis() - start)/1000/60;
 	  start = System.currentTimeMillis();
-      result.append(writeChemkinPdepReactions(p_reactionModel, p_beginStatus)); //10/26/07 gmagoon: changed to pass p_beginStatus
-	  //result.append(writeChemkinPdepReactions(p_reactionModel));
+      result.append(writeChemkinPdepReactions(p_reactionModel, p_beginStatus));
 	  Global.chemkinReaction = Global.chemkinReaction + (System.currentTimeMillis() - start)/1000/60;
 
-      String dir = System.getProperty("RMG.workingDirectory");
-      if (!dir.endsWith("/")) dir += "/";
-      dir += "software/reactorModel/";
-      String file = "chemkin/chem.inp";
-
+      //String dir = System.getProperty("RMG.workingDirectory");
+      //if (!dir.endsWith("/")) dir += "/";
+      //dir += "software/reactorModel/";
+	  
+	  // This defines the directory that all the chemkin files will be written to.
+	  // They will also be copied to the "chemkin" directory.
+	  String directory = "chemkin/"+String.valueOf(p_reactionModel.getSpeciesNumber());
+	  // Make directory if it don't exist
+	  File directory_object = new File(directory);
+	  directory_object.mkdirs();
+	  
+      String chemkinFile = directory+"/chem.inp";
       try {
-      	FileWriter fw = new FileWriter(file);
+      	FileWriter fw = new FileWriter(chemkinFile);
       	fw.write(result.toString());
       	fw.close();
       }
       catch (Exception e) {
-      	System.out.println("Error in writing chemkin input file chem.inp!");
+      	System.out.println("Error in writing chemkin input file "+directory+"/chem.inp!");
       	System.out.println(e.getMessage());
       	System.exit(0);
       }
+	  // put a copy of the latest in the root chemkin folder
+	  copyFiles(chemkinFile, "chemkin/chem.inp");
       
-      
+	  // write tableOfRateCoeffs.txt if running with pressure-dependence
       if (PDepRateConstant.getMode() == Mode.CHEBYSHEV ||
     		  PDepRateConstant.getMode() == Mode.PDEPARRHENIUS ||
     		  PDepRateConstant.getMode() == Mode.RATE) {
     	  StringBuilder gridOfRateCoeffs = new StringBuilder();
 	      gridOfRateCoeffs.append(writeGridOfRateCoeffs(p_reactionModel));
-	      String newFile = "chemkin/tableOfRateCoeffs.txt";
+	      String newFile = directory+"/tableOfRateCoeffs.txt";
 	      try {
 	    	  FileWriter fw = new FileWriter(newFile);
 	    	  fw.write(gridOfRateCoeffs.toString());
 	    	  fw.close();
 	      }
 	      catch (Exception e) {
-	    	  System.out.println("Error in writing tableOfRateCoeffs.txt");
+	    	  System.out.println("Error in writing "+newFile);
 	    	  System.out.println(e.getMessage());
 	    	  System.exit(0);
 	      }
+		  // put a copy of the latest in the root chemkin folder
+		  copyFiles(newFile, "chemkin/tableOfRateCoeffs.txt");
       }
       
-      writeTransportFile((CoreEdgeReactionModel)p_reactionModel);
-      
-      //#]
+	  // Write the transport file
+	  String transportFilePath = directory+"/tran.dat";
+      writeTransportFile((CoreEdgeReactionModel)p_reactionModel, transportFilePath);
+	  // put a copy of the latest in the root chemkin folder
+	  copyFiles(transportFilePath, "chemkin/tran.dat");
+	  
   }
   
   public static void writeChemkinInputFile(ReactionSystem rs) {
-      //#[ operation writeChemkinInputFile(ReactionModel,SystemSnapshot)
-
-      StringBuilder result=new StringBuilder();
-      result.append(writeChemkinHeader());
-	  result.append(writeChemkinElement());
-	  double start = System.currentTimeMillis();
-      result.append(writeChemkinSpecies(rs.reactionModel, rs.initialStatus));
-      result.append(writeChemkinThermo(rs.reactionModel));
-      Global.chemkinThermo = Global.chemkinThermo + (System.currentTimeMillis() - start)/1000/60;
-	  start = System.currentTimeMillis();
-	  result.append(writeChemkinPdepReactions(rs));
-	  Global.chemkinReaction = Global.chemkinReaction + (System.currentTimeMillis() - start)/1000/60;
-
-      String dir = System.getProperty("RMG.workingDirectory");
-      if (!dir.endsWith("/")) dir += "/";
-      dir += "software/reactorModel/";
-      String file = "chemkin/chem.inp";
-
-      try {
-      	FileWriter fw = new FileWriter(file);
-      	fw.write(result.toString());
-      	fw.close();
-      }
-      catch (Exception e) {
-      	System.out.println("Error in writing chemkin input file chem.inp!");
-      	System.out.println(e.getMessage());
-      	System.exit(0);
-      }
-      
-      writeTransportFile((CoreEdgeReactionModel)rs.reactionModel);
-       
-      //#]
-  }
+	  // call the above writeChemkinInputFile method, with the appropriate parameters
+	  writeChemkinInputFile(rs.reactionModel, rs.initialStatus);
+   }
   
-//## operation writeChemkinReactions(ReactionModel)
-//10/26/07 gmagoon: changed to take temperature as parameter (it doesn't seem like this method is currently used anywhere)
-  public static String writeChemkinReactions(ReactionModel p_reactionModel, Temperature p_temperature) {
-      //#[ operation writeChemkinReactions(ReactionModel)
-      StringBuilder result = new StringBuilder();
-	  result.append("REACTIONS	KCAL/MOLE\n");
-      CoreEdgeReactionModel cerm = (CoreEdgeReactionModel)p_reactionModel;
 
-      
-      LinkedHashSet all = cerm.getReactedReactionSet();
-	  
-      HashSet hs = new HashSet();
-      int numfor = 0;
-      int numrev = 0;
-      int numdup = 0;
-      int numnorev = 0;
-      for (Iterator iter = all.iterator(); iter.hasNext(); ) {
-      	Reaction rxn = (Reaction)iter.next();
-      	if (rxn.isForward()) {
-            result.append(" " + rxn.toChemkinString(p_temperature) + "\n");//10/26/07 gmagoon: changed to avoid use of Global.temperature
-      	//	result.append(" " + rxn.toChemkinString(Global.temperature) + "\n");
-      		
-      	}
-      	
-      }
-     
-      result.append("END\n");
-
-      return result.toString();
-
-      //#]
-  }
-
-  public static String writeChemkinPdepReactions(ReactionSystem rs) {
-      //#[ operation writeChemkinReactions(ReactionModel)
-
-      StringBuilder result = new StringBuilder();
-	  result.append("REACTIONS	KCAL/MOLE\n");
-	  
-	  LinkedList rList = new LinkedList();
-	  LinkedList troeList = new LinkedList();
-	  LinkedList tbrList = new LinkedList();
-	  LinkedList duplicates = new LinkedList();
-	  LinkedList lindeList = new LinkedList();
-	  
-	  if (rs.dynamicSimulator instanceof JDASPK){
-		  rList = ((JDASPK)rs.dynamicSimulator).rList;
-		  troeList = ((JDASPK)rs.dynamicSimulator).troeList;
-		  tbrList = ((JDASPK)rs.dynamicSimulator).thirdBodyList;
-		  duplicates = ((JDASPK)rs.dynamicSimulator).duplicates;
-		  lindeList = ((JDASPK)rs.dynamicSimulator).lindemannList;
-	  }
-	  else if (rs.dynamicSimulator instanceof JDASSL){
-		  rList = ((JDASSL)rs.dynamicSimulator).rList;
-		  troeList = ((JDASSL)rs.dynamicSimulator).troeList;
-		  tbrList = ((JDASSL)rs.dynamicSimulator).thirdBodyList;
-		  duplicates = ((JDASSL)rs.dynamicSimulator).duplicates;
-		  lindeList = ((JDASSL)rs.dynamicSimulator).lindemannList;
-	  }
-	  
-	  
-      
-      for (Iterator iter = rList.iterator(); iter.hasNext();){
-    	  Reaction r = (Reaction)iter.next();
-          //10/26/07 gmagoon: changed to avoid use of Global.temperature; I am using getPresentTemperature for the time being; it is possible that getInitialStatus.getTemperature or something similar may be more appropriate
-          result.append(r.toChemkinString(rs.getPresentTemperature())+"\n");
-    	  //result.append(r.toChemkinString(Global.temperature)+"\n");
-      }
-      for (Iterator iter = troeList.iterator(); iter.hasNext();){
-    	  Reaction r = (Reaction)iter.next();
-          result.append(r.toChemkinString(rs.getPresentTemperature())+"\n");
-    	  //result.append(r.toChemkinString(Global.temperature)+"\n");
-      }
-      for (Iterator iter = tbrList.iterator(); iter.hasNext();){
-    	  Reaction r = (Reaction)iter.next();
-          result.append(r.toChemkinString(rs.getPresentTemperature())+"\n");
-    	  //result.append(r.toChemkinString(Global.temperature)+"\n");
-      }
-      for (Iterator iter = duplicates.iterator(); iter.hasNext();){
-    	  Reaction r = (Reaction)iter.next();
-          result.append(r.toChemkinString(rs.getPresentTemperature())+"\n\tDUP\n");
-    	  //result.append(r.toChemkinString(Global.temperature)+"\n\tDUP\n");
-      }
-      for (Iterator iter = lindeList.iterator(); iter.hasNext();) {
-    	  Reaction r = (Reaction)iter.next();
-    	  result.append(r.toChemkinString(rs.getPresentTemperature())+"\n");
-      }
-
-      result.append("END\n");
-
-      return result.toString();
-
-      //#]
-  }
-  
-  //## operation writeChemkinReactions(ReactionModel)
+//## operation writeChemkinPdepReactions(ReactionModel, SystemSnapshot)
  public static String writeChemkinPdepReactions(ReactionModel p_reactionModel, SystemSnapshot p_beginStatus) {
-      //#[ operation writeChemkinReactions(ReactionModel)
-
+	 /* 
+	  Writes all reactions, not just the P-dep ones.
+	  Returns the result as a string.
+	  
+	  First p-dep (troe, thirdbody, lindemann, and from pdep networks)
+	  Then non-p-dep
+	  Finally duplicates
+	  */
       StringBuilder result = new StringBuilder();
-//      result.append("REACTIONS	KCAL/MOLE\n");
 
       String reactionHeader = "";
-      
       String units4Ea = ArrheniusKinetics.getEaUnits();
       if (units4Ea.equals("cal/mol")) reactionHeader = "CAL/MOL\t";
       else if (units4Ea.equals("kcal/mol")) reactionHeader = "KCAL/MOL\t";
@@ -672,7 +563,7 @@ public  Chemkin() {
 	  LinkedList duplicates = new LinkedList();
 	  
       CoreEdgeReactionModel cerm = (CoreEdgeReactionModel)p_reactionModel;
-      //first get troe and thirdbodyreactions
+      //first get troe, thirdbody, and Lindemann reactions (from seed mechanism and primary kinetics) and add them to the pDepList
       for (Iterator iter = cerm.getReactionSet().iterator(); iter.hasNext(); ) {
         	Reaction r = (Reaction)iter.next();
         	/*
@@ -688,6 +579,7 @@ public  Chemkin() {
         	}
         }
       
+	 // then get reactions from pressure-dependent networks and add them to pDepList
       for (Iterator iter = PDepNetwork.getNetworks().iterator(); iter.hasNext(); ) {
       	PDepNetwork pdn = (PDepNetwork)iter.next();
       	for (ListIterator pdniter = pdn.getNetReactions().listIterator(); pdniter.hasNext();) {
@@ -704,60 +596,34 @@ public  Chemkin() {
       		}
       	}
       }
-      LinkedList removeReactions = new LinkedList();
+
       for (Iterator iter = p_reactionModel.getReactionSet().iterator(); iter.hasNext(); ) {
       	Reaction r = (Reaction)iter.next();
-      	
-      	boolean presentInPDep = false;
-      	if (r.isForward() && !(r instanceof ThirdBodyReaction) && !(r instanceof TROEReaction) && !(r instanceof LindemannReaction)) {
-      		Iterator r_iter = pDepList.iterator();
-      		while (r_iter.hasNext()){
-      			Reaction pDepr = (Reaction)r_iter.next();
-      			if (pDepr.equals(r)){
-//      				removeReactions.add(pDepr);
-//      				duplicates.add(pDepr);
-//      				if (!r.hasAdditionalKinetics()){
-//      					duplicates.add(r);
-//      					presentInPDep = true;
-//      				}
-      				presentInPDep = true;
-      				nonPDepList.add(r);
-      			}
-      		}
-      		if (!presentInPDep)
-      			nonPDepList.add(r);
+		if (r.isForward() && !(r instanceof ThirdBodyReaction) && !(r instanceof TROEReaction) && !(r instanceof LindemannReaction)) {
+			nonPDepList.add(r);
       	}
       }
-      
-      for (Iterator iter = removeReactions.iterator(); iter.hasNext();){
-    	  Reaction r = (Reaction)iter.next();
-    	  pDepList.remove(r);
-      }
-      
+      // First report pressure dependent reactions
       for (Iterator iter = pDepList.iterator(); iter.hasNext();){
     	  Reaction r = (Reaction)iter.next();
 			// 6Jul2009-MRH:
 			//	Pass both system temperature and pressure to function toChemkinString.
     	  	//		The only PDepKineticsModel that uses the passed pressure is RATE
-          result.append(r.toChemkinString(p_beginStatus.getTemperature(),p_beginStatus.getPressure())+"\n");//10/26/07 gmagoon: eliminating use of Global.temperature; **** I use beginStatus here, which may or may not be appropriate
-    	  //result.append(r.toChemkinString(Global.temperature)+"\n");
+          result.append(r.toChemkinString(p_beginStatus.getTemperature(),p_beginStatus.getPressure())+"\n");
       }
+	 // Second, report non-pressure-dependent reactions
       for (Iterator iter = nonPDepList.iterator(); iter.hasNext();){
     	  Reaction r = (Reaction)iter.next();
           result.append(r.toChemkinString(p_beginStatus.getTemperature(),p_beginStatus.getPressure())+"\n");
-    	  //result.append(r.toChemkinString(Global.temperature)+"\n");
       }
+	 // Third, report duplicate reactions
       for (Iterator iter = duplicates.iterator(); iter.hasNext();){
     	  Reaction r = (Reaction)iter.next();
           result.append(r.toChemkinString(p_beginStatus.getTemperature(),p_beginStatus.getPressure())+"\n\tDUP\n");
-    	  //result.append(r.toChemkinString(Global.temperature)+"\n\tDUP\n");
       }
 
       result.append("END\n");
-
       return result.toString();
-
-      //#]
   }
 
   //## operation writeChemkinSpecies(ReactionModel,SystemSnapshot)
@@ -784,13 +650,8 @@ public  Chemkin() {
       		result.append('\t' + spe.getChemkinName() + '\n');
       }
 
-
       result.append("END\n");
-
-
       return result.toString();
-
-      //#]
   }
 
   //## operation writeChemkinThermo(ReactionModel)
@@ -872,8 +733,6 @@ public  Chemkin() {
       result.append("\n");
 
       return result.toString();
-
-      //#]
   }
   
 
@@ -926,7 +785,6 @@ public  Chemkin() {
           result.append("\n");
       }
       return result.toString();
-      
   }
 
   //## operation writeReactorInputFile(ReactionModel,ReactionTime,ReactionTime,SystemSnapshot)
@@ -1041,8 +899,8 @@ public static void setSMILES(boolean yesno) {
 	SMILESutility = yesno;
 }
 
-	public static void writeTransportFile(CoreEdgeReactionModel cerm) {
-		//Write core species to tran.dat
+	public static void writeTransportFile(CoreEdgeReactionModel cerm, String filepath) {
+		//Write core species to filepath (eg. "chemkin/tran.dat")
 		String coreSpecies ="";
 		// Write the three inert gas species' transport data
 		//	Data comes from CHEMKIN-v4.1.1 manual
@@ -1064,13 +922,13 @@ public static void setSMILES(boolean yesno) {
 		}
 		
 		try {
-			File trandat = new File("chemkin/tran.dat");
+			File trandat = new File(filepath);
 			FileWriter fw = new FileWriter(trandat);
 			fw.write(coreSpecies);
 			fw.close();
 		}
 		catch (IOException e) {
-			System.out.println("Could not write tran.dat");
+			System.out.println("Could not write "+filepath);
 			System.exit(0);
 		}
 	}

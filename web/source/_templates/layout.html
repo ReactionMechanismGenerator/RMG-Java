@@ -11,6 +11,14 @@
   {%- endif %}
 {% endblock %}
 
+{%- block sidebartoc %}
+{%- if display_toc %}
+  <h3><a href="{{ pathto('documentation/index') }}">{{ _('Documentation Contents') }}</a></h3>
+  {{ toc }}
+{%- endif %}
+{%- endblock %}{#{{ pathto(master_doc) }}#}
+          
+          
 {%- if not customsidebar %}
 	{%- set customsidebar = 'commonSidebarContent.html' %}
 {%- endif %}

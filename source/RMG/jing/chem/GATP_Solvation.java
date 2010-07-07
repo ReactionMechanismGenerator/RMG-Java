@@ -44,23 +44,23 @@ public class GATP_Solvation implements GeneralSolvationGAPP {
     }
 	
 	public ThermoData generateSolvThermoData(ChemGraph p_chemGraph) {
-		double r_solute=p_chemGraph.getRadius();
-		double r_solvent; r_solvent=3.498*Math.pow(10,-10);// 3.311;  // Manually assigned solvent radius [=] meter Calculated using Connolly solvent excluded volume from Chem3dPro
-		double r_cavity=r_solute+r_solvent;                    // Cavity radius [=] Angstrom
-		double rho; rho=0.00309*Math.pow(10,30);  //0.00381;   // number density of solvent [=] molecules/Angstrom^3   Value here is for decane using density =0.73 g/cm3
-		double parameter_y=(88/21)*rho*Math.pow(r_solvent, 3);  // Parameter y from Ashcraft Thesis Refer pg no. 60
+		double r_solute=p_chemGraph.getRadius();               // Returns VdW radius in meter
+		double r_solvent; r_solvent=3.498e-10;// 3.311;        // Manually assigned solvent radius [=] meter Calculated using Connolly solvent excluded volume from Chem3dPro
+		double r_cavity=r_solute+r_solvent;                    // Cavity radius [=] meter
+		double rho; rho=3.09e27;  //0.00381;                   // number density of solvent [=] molecules/m^3   Value here is for decane using density =0.73 g/cm3
+		double parameter_y=4.1887902*rho*Math.pow(r_solvent, 3);  // Parameter y from Ashcraft Thesis Refer pg no. 60. (4/3)*pi*rho*r^3
 		double parameter_ymod=parameter_y/(1-parameter_y);     // parameter_ymod= y/(1-y) Defined for convenience
 		double R=8.314;                                        // Gas constant units J/mol K
 		double T=298;                                          // Standard state temperature
 		
-		// Definitions of K0, K1 and K2 correspond to those for K0', K1' and K2' respectively from Ashcraft's Thesis
-		double K0= -R*(-Math.log(1-parameter_y)+(4.5*Math.pow(parameter_ymod, 2)));
-		double K1= (R*0.5/r_solvent)*((6*parameter_ymod)+(18*Math.pow(parameter_ymod, 2)));
-		double K2= -(R*0.25/Math.pow(r_solvent,2))*((12*parameter_ymod)+(18*Math.pow(parameter_ymod, 2)));
+		// Definitions of K0, K1 and K2 correspond to those for K0', K1' and K2' respectively from Ashcraft's Thesis (-d/dT of K0,K1,K2)
+		double K0= -R*(-Math.log(1-parameter_y)+(4.5*parameter_ymod*parameter_ymod));
+		double K1= (R*0.5/r_solvent)*((6*parameter_ymod)+(18*parameter_ymod*parameter_ymod));
+		double K2= -(R*0.25/(r_solvent*r_solvent))*((12*parameter_ymod)+(18*parameter_ymod*parameter_ymod));
 		
 		// Basic definition of entropy change of solvation from Ashcfrat's Thesis
 		double deltaS0;
-		deltaS0=K0+(K1*r_cavity)+(K2*Math.pow(r_cavity,2));
+		deltaS0=K0+(K1*r_cavity)+(K2*r_cavity*r_cavity);
 		
 		// Generation of Abraham Solute Parameters
 		AbramData result_Abraham= new AbramData();

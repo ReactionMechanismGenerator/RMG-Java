@@ -290,24 +290,21 @@ contains
         real(8), dimension(1:nGrains), intent(in) :: Elist
         real(8), dimension(1:nGrains), intent(out) :: densStates
 
-        real(8), dimension(:), allocatable :: vib
-        real(8), dimension(:), allocatable :: rot
-        real(8), dimension(:,:), allocatable :: hind
+        real(8), dimension(1:size(spec%spectral%vibFreq)) :: vib
+        real(8), dimension(1:size(spec%spectral%rotFreq)) :: rot
+        real(8), dimension(1:size(spec%spectral%hindFreq), 1:2) :: hind
         integer linear, symm
         character(len=128) msg
 
         integer i
 
         ! Prepare inputs for density of states function
-        allocate( vib(1:size(spec%spectral%vibFreq)) )
-        do i = 1, size(spec%spectral%vibFreq)
+		do i = 1, size(spec%spectral%vibFreq)
             vib(i) = spec%spectral%vibFreq(i)
         end do
-        allocate( rot(1:size(spec%spectral%rotFreq)) )
-        do i = 1, size(spec%spectral%rotFreq)
+		do i = 1, size(spec%spectral%rotFreq)
             rot(i) = spec%spectral%rotFreq(i)
         end do
-        allocate( hind(1:size(spec%spectral%hindFreq), 1:2) )
         do i = 1, size(spec%spectral%hindFreq)
             hind(i,1) = spec%spectral%hindFreq(i)
             hind(i,2) = spec%spectral%hindBarrier(i)
@@ -321,8 +318,6 @@ contains
         ! Calculate the density of states
         call densityOfStates(Elist, nGrains, vib, size(vib), rot, size(rot), &
             hind, size(hind), symm, linear, densStates, msg)
-
-        deallocate(vib, rot, hind)
 
     end subroutine
 
@@ -541,9 +536,12 @@ contains
 
     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
-    subroutine reaction_calculateMicrocanonicalRates(rxn, T, E, nE, isomerList, speciesList)
+    subroutine reaction_calculateMicrocanonicalRates(rxn, T, E, nE, isomerList, speciesList, nIsom, nReac, nProd)
 
         integer, intent(in) :: nE
+        integer, intent(in) :: nIsom
+        integer, intent(in) :: nReac
+        integer, intent(in) :: nProd
         type(Reaction), intent(inout) :: rxn
         real(8), intent(in) :: T
         real(8), dimension(1:nE), intent(in) :: E
@@ -567,7 +565,7 @@ contains
         reac = isomerList(rxn%reac)
         prod = isomerList(rxn%prod)
 
-        if (size(reac%species) == 1 .and. size(prod%species) == 1) then
+        if (rxn%reac <= nIsom .and. rxn%prod <= nIsom) then
 
             ! Calculate forward rate coefficient via inverse Laplace transform
             call reaction_kineticsILT(rxn%E0 - reac%E0, reac%densStates, &
@@ -584,7 +582,7 @@ contains
                 end if
             end do
 
-        elseif (size(reac%species) == 1 .and. size(prod%species) > 1) then
+        elseif (rxn%reac <= nIsom .and. rxn%prod > nIsom) then
 
             ! Calculate forward rate coefficient via inverse Laplace transform
             call reaction_kineticsILT(rxn%E0 - reac%E0, reac%densStates, &
@@ -600,7 +598,7 @@ contains
                     reac%densStates(r) * exp(-E(r) / 8.314472 / T) / reac%Q * dE
             end do
 
-        elseif (size(reac%species) > 1 .and. size(prod%species) == 1) then
+        elseif (rxn%reac > nIsom .and. rxn%prod <= nIsom) then
 
             ! Convert to dissocation so that a similar algorithm to above can be used
             reac = isomerList(rxn%prod)
@@ -622,7 +620,7 @@ contains
 
         end if
 
-        !write (*,*) rxn%isomerList(1), rxn%isomerList(2), rxn%kf(nGrains), rxn%kb(nGrains)
+        !write (*,*) rxn%reac, rxn%prod, rxn%kf(nGrains), rxn%kb(nGrains)
 
     end subroutine
 
@@ -882,7 +880,8 @@ contains
 
             ! Calculate microcanonical rate coefficients at the current conditions
             do w = 1, size(net%reactions)
-                call reaction_calculateMicrocanonicalRates(net%reactions(w), T, Elist, nGrains, net%isomers, net%species)
+                call reaction_calculateMicrocanonicalRates(net%reactions(w), T, Elist, nGrains, net%isomers, net%species, &
+                    nIsom, nReac, nProd)
             end do
 
             do v = 1, nP
@@ -1013,7 +1012,7 @@ contains
                 Kij, Fim, Gnj, dEdown, nIsom, nReac, nProd, nGrains, K, msg)
 
         end if
-
+        
         ! Check for validity of phenomenological rate coefficients
         invalidRate = 0
         do i = 1, nIsom+nReac+nProd

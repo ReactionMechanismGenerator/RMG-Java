@@ -1,0 +1,57 @@
+//tracks the decomposition of pure ethane, without any pressure-dependent reactions.
+
+Database: RMG_database
+
+PrimaryThermoLibrary:
+Name: RMG-minimal
+Location: primaryThermoLibrary
+END
+
+PrimaryTransportLibrary:
+Name: GRIMech3.0
+Location: GRI-Mech3.0
+END
+
+ReadRestart: no
+WriteRestart: no
+
+TemperatureModel: Constant (K) 1350
+PressureModel: Constant (atm) 1 
+
+InitialStatus:
+
+(1) C2H6 1.0 (mol/cm3)
+1 C 0 {2,S}
+2 C 0 {1,S}
+
+END
+
+InertGas:
+N2 0.0 (mol/cm3)
+Ar 0.0 (mol/cm3)
+END
+
+SpectroscopicDataEstimator: off
+PressureDependence: off
+
+FinishController:
+(1) Goal Conversion: C2H6 0.9
+(2) Error Tolerance: 0.1
+
+DynamicSimulator: DASSL
+Conversions: AUTO
+Atol: 1e-18
+Rtol: 1e-8
+
+PrimaryKineticLibrary:
+END
+
+ReactionLibrary:
+END
+
+SeedMechanism:
+END
+
+ChemkinUnits:
+A: moles
+Ea: kcal/mol

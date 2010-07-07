@@ -25,13 +25,76 @@ of Technology <http://web.mit.edu/>`_. Currently there are several members of th
 
 Changes
 -------
+
 Changes in RMG 3.2 include the following:
 
 - The :file:`RMG_Database` folder has been restructured more logically. (:ref:`PrimaryReactionLibrary <primaryreactionlibrary>` and :ref:`Seed Mechanism <seedmechanism>` specifications in condition files will need updating)
 
+- More accurate thermodynamic quantities from PM3 calculations for cyclic species based on explicit 3D molecule geometries (provided the user has access to GAUSSIAN03 or MOPAC2009)
+
+- Transport property estimation
+
+- New Reaction Library option for considering (but not forcing) reactions not automatically identified by RMG's reaction templates (The old Primary Reaction Library has been renamed to Primary Kinetic Library.)
+
+- New reaction model pruning option to reduce number of edge species and ease memory limitations.
+
+- New non-negativity option for DASSL simulations. This offers a new way of dealing with NegativeConcentrationException cases.
+
+- New reaction family, 1,2-Birad_to_alkene, for interconversion of alkene (triplet) biradicals and singlet alkenes
+
 - It is possible to specify :ref:`forbidden structures <forbiddenstructures>` in the input file.
 
 - Various error messages have been improved to give more helpful information to the user.
+
+- :file:`RMG_Dictionary.txt` will now be written at every iteration, rather than just the final iteration.
+
+- CHEMKIN input files from each iteration are saved to separate folders
+
+- RMG output file includes timestamp and code revision information.
+
+- RMG stores :file:`Restart` files.  The reading-in of these files allows RMG to restore the conditions (species, reactions, pressure-dependent networks, etc.) of a converged mechanism without having to re-run the entire simulation from scratch.
+
+- Treatment of molecular oxygen has changed significantly, including support for both triplet ground state and singlet; oxygen should now be specified in biradical form rather than the O=O form used previously; see :ref:`"Representing oxygen" <oxygen>` for details
+
+- Various improvements to pressure-dependent network enlargement algorithm
+
+- Fixed writing of reactions with Evans-Polanyi parameters to CHEMKIN input file
+
+- Refinements to values in the database based on literature review.
+
+- No longer falls into infinite loop when the simulation results in an invalid model but RMG cannot identify a suitable action to take to enlarge the model.
+
+- Reservoir state method for evaluating pressure-dependent rate coefficients has been vetted and is now the recommended method for publication-quality models. The modified strong collision method remains available for preliminary exploration of reaction models.
+
+- Pressure-dependence algorithm now defaults to an appropriate grid of temperatures and pressures based on the chosen interpolation model (e.g. Gauss-Chebyshev grid for Chebyshev polynomial model).
+
+- Fixed several bugs relating to enlarging of partial pressure-dependent networks.
+
+- Addressed issues that could lead to trying to simulate an empty reaction model in pressure-dependent cases.
+
+- Fixed IWORK/RWORK renaming on Linux platforms.
+
+- Fixed bug producing unneccessary error message (when using AUTO option) suggesting that the ODE solver failed when an edge flux exceeds user-specified tolerances at t=0.
+
+- Fixed DASPK issues, including variables.dat renaming for multiple reaction systems, ability to use constant concentration, reaction flux evaluation for Lindemann reactions, and sensitivity coefficient calculation.
+
+- Improved robustness for frequency estimation code ("frankie").
+
+- Changed ODE Solver input file writing to use BufferedWriter to ease memory usage issues when using AUTO with large reaction models.
+
+- Fixed a bug in counting pressure-dependent edge reactions with the AUTO method.
+
+- Fixed calculation of Cp(T=0) and Cp(T=Infinity) for monoatomic and linear species.
+
+- Addressed collider issues, including an ArrayOutOfBoundsException associated with colliders and a collider identification issue.
+
+- Addressed infinite recursion error in getToEndOfAxis that could occur with cyclic cumulenic species.
+
+- Fixed syntax for helium thermochemistry in CHEMKIN input file written by RMG.
+
+- Fixed bugs in counting of core and edge reactions caused by pressure-dependent reactions and irreversible reactions.
+
+- Primary Kinetics Library now correctly identifies matches for molecules with multiple resonance forms
 
 Changes made in RMG 3.1 include the following:
 

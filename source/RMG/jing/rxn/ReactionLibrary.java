@@ -43,6 +43,9 @@ import jing.chem.Species;
 import jing.chemParser.ChemParser;
 import jing.chemParser.InvalidReactionFormatException;
 import jing.chemUtil.Graph;
+import jing.mathTool.UncertainDouble;
+import jing.rxnSys.PrimaryKineticLibrary;
+import jing.rxnSys.SeedMechanism;
 
 //## package jing::rxn 
 
@@ -53,14 +56,16 @@ import jing.chemUtil.Graph;
 /**
 This is a super user-defined reaction library.  Here, "super" means that all the library reactions whose reactant(s)/product(s) appears in the reaction system will be included in the final reaction system model.  Also, the kinetics in this library has the higher priority than the kinetics in our default reaction/kinetics template.  So, be careful when make this ReactionLibrary.  we will include things in this library without any checking.  But, if there is an alternative kinetics we find in our kinetics template, we will output it to warn user.
 */
-//## class ReactionLibrary 
+ 
 public class ReactionLibrary {
     
-    private static ReactionLibrary INSTANCE = new ReactionLibrary();		//## attribute INSTANCE 
+    private static ReactionLibrary INSTANCE = new ReactionLibrary(); 
     
-    protected HashMap dictionary;
+    protected HashMap dictionary = new HashMap();
     
-    protected HashSet library;
+    protected LinkedHashSet library = new LinkedHashSet();
+    
+    protected String name;
     
     // Constructors
     
@@ -69,201 +74,87 @@ public class ReactionLibrary {
     Effects: this is the only constructor in this singleton reaction library.  it is protected, which means no user can construct it.  the construction should go through instance() method to check if there is only one instance of this class.
     Modifies: itsLibraryReaction
     */
-    //## operation ReactionLibrary() 
-    private  ReactionLibrary() {
-        {
-            library=new HashSet();
-            dictionary = new HashMap();
-        }
-		return; // Not implemented yet.
-		/*
-        String directory = System.getProperty("jing.rxn.ReactionLibrary.pathName");
-        String dictionaryFile = directory + "/Dictionary.txt";
-        String libraryFile = directory + "/Library.txt";
-			
-		System.out.println("\nReading reaction library from "+directory);
-        try{
-            read(dictionaryFile, libraryFile);
-          }
-          catch (IOException e){
-			  System.out.println("Can't read reaction library files!");
-			  System.out.println(e.getMessage());
-        }
-		 */
-    }
     
-    
-    private void read(String p_dictionary, String p_library) throws IOException, FileNotFoundException {
-    	  //#[ operation read(String)
-    	    dictionary = readDictionary(p_dictionary);
-    	    readLibrary(p_library);
-    	    //#]
-    }
-    
-    private void readLibrary(String p_reactionFileName) throws IOException {
-        //#[ operation readReactions(String) 
+    public  ReactionLibrary(String p_libraryName, String p_directoryPath) throws IOException {
+    	// Called by readANDMakeReaction Library when it reads the first folder mentioned in condition file in Reaction Library 
+    	// section
+    	
+    	// Picks the library name in condition file which needs to be attached to the library reactions
+        name = p_libraryName;
+        
+        // Check if directory path is given/exists
+        if ( p_directoryPath == null) throw new NullPointerException("RMG cannot locate Reaction Library: directory path is null");
         try {
-        	FileReader in = new FileReader(p_reactionFileName);
-        	BufferedReader data = new BufferedReader(in);
-        	
-        	double A_multiplier = 1;
-        	double E_multiplier = 1;
-        	
-        	String line = ChemParser.readMeaningfulLine(data);
-        	if (line.startsWith("Unit")) {
-        		line = ChemParser.readMeaningfulLine(data);
-        		unit: while(!(line.startsWith("Reaction"))) {
-        			if (line.startsWith("A")) {
-        				StringTokenizer st = new StringTokenizer(line);
-        				String temp = st.nextToken();
-        				String unit = st.nextToken().trim();
-        				if (unit.compareToIgnoreCase("mol/cm3/s") == 0) {
-        					A_multiplier = 1;
-        				}
-        				else if (unit.compareToIgnoreCase("mol/liter/s") == 0) {
-           					A_multiplier = 1e-3;
-        				}
-        			}
-        			else if (line.startsWith("E")) {
-        				StringTokenizer st = new StringTokenizer(line);
-        				String temp = st.nextToken();
-        				String unit = st.nextToken().trim();
-        				if (unit.compareToIgnoreCase("kcal/mol") == 0) {
-        					E_multiplier = 1;
-        				}
-        				else if (unit.compareToIgnoreCase("cal/mol") == 0) {
-           					E_multiplier = 1e-3;
-        				}
-        				else if (unit.compareToIgnoreCase("kJ/mol") == 0) {
-           					E_multiplier = 1/4.186;
-        				}
-        				else if (unit.compareToIgnoreCase("J/mol") == 0) {
-           					E_multiplier = 1/4186;
-        				}			
-        			}
-        			line = ChemParser.readMeaningfulLine(data);
-        		}
-        	}
-            
-        	line = ChemParser.readMeaningfulLine(data);
-        	read: while (line != null) {
-        		Reaction r;
-        		try {
-        			r = ChemParser.parseArrheniusReaction(dictionary, line, A_multiplier, E_multiplier);
-					r.kinetics[0].setComments(" ");
-					r.kinetics[0].setSource("ReactionLibrary");
-				}
-        		catch (InvalidReactionFormatException e) {
-        			throw new InvalidReactionFormatException(line + ": " + e.getMessage());
-        		}
-        		if (r == null) throw new InvalidReactionFormatException(line);
-        		
-        		HashSet reactants = new HashSet();
-        		reactants.addAll(r.getReactantList());
-        		LibraryReaction fLR = LibraryReaction.makeLibraryReaction(r);
-        		
-        		library.add(fLR);
-        		
-        		Reaction reverse = r.getReverseReaction();
-				LibraryReaction rLR = LibraryReaction.makeLibraryReaction(reverse);
-				
-        		if (rLR != null) {
-        			reactants.addAll(reverse.getReactantList());
-					library.add(rLR);
-					fLR.setReverseReaction(rLR);
-					rLR.setReverseReaction(fLR);						
-			    }
-        		
-        		line = ChemParser.readMeaningfulLine(data);
-        	}
-        	   
-            in.close();
-        	return;
+        	read(p_directoryPath,p_libraryName);
         }
-        catch (Exception e) {
-        	throw new IOException("Can't read reaction in primary reaction library.\n" + e.getMessage());
+        catch (IOException e) {
+        	// Throws error if cant read in Reaction Library Path
+        	throw new IOException("Error reading Reaction Library: " + name + '\n' + e.getMessage());
         }
         
     }
     
+     public  ReactionLibrary() {
+      // This might be not called anywhere is this Redundant? CHECK 
+     }
+     
+        
+     public void appendReactionLibrary(String new_p_libraryName, String p_directoryPath) throws IOException {
+     	// Appends the current Reaction Library with an additional one, allowing the user
+     	// to combine separate Reaction Library easily. 
+    	 
+    	// Adds additional new name to Reaction Library  
+      	setName(name+"/"+new_p_libraryName);
+      	// Read in the directory path
+     	try {
+     		read(p_directoryPath,new_p_libraryName);	
+     	}
+         catch (IOException e) {
+         	throw new IOException("Error reading Reaction Library: " + new_p_libraryName + '\n' + e.getMessage());
+         }
+     }
+     
+     public void read(String p_directoryName, String p_name) throws IOException {
+    	 // Reads in the directory and creates the Dictionary and Library
+    	 // The Library is composed of Pdep and Non Pdep Reactions
+    	 // shamel 6/10/2010 can handle only Lindemann, TROE and Third Body form
+    	 
+    	 // MRH making some changes to remove duplicate code in 
+    	 //	PrimaryKineticsLibrary / ReactionLibrary 
+    	 
+         try {
+         	if (!p_directoryName.endsWith("/")) p_directoryName = p_directoryName + "/";
+ 			System.out.println("Reading Reaction Library from: "+p_directoryName);
+         	
+ 			 
+             String dictionaryFile = p_directoryName + "species.txt";
+             String libraryFile = p_directoryName + "reactions.txt";
+             String pdeplibraryFile = p_directoryName + "pdepreactions.txt";
+             
+             SeedMechanism sm = new SeedMechanism();
+             dictionary.putAll(sm.readSpecies(dictionaryFile,p_name,"ReactionLibrary: "));
+             library.addAll(sm.readReactions(libraryFile,p_name,dictionary,"ReactionLibrary: ",false));
+             library.addAll(sm.readPdepReactions(pdeplibraryFile,p_name,dictionary,"ReactionLibrary: ",false));
+            
+             return;
+         }
+         catch (Exception e) {
+         	throw new IOException("Can't read Reaction library.\n" + e.getMessage());
+         }
+     }
     
-    
-    private HashMap readDictionary(String p_fileName) throws FileNotFoundException, IOException{
-    	  //#[ operation readDictionary(String)
-    	  try{
-    	    FileReader in = new FileReader(p_fileName);
-    	    BufferedReader data = new BufferedReader(in);
-
-    	    String line = ChemParser.readMeaningfulLine(data);
-
-    	    read: while(line != null){
-    	      StringTokenizer st = new StringTokenizer(line);
-    	      String name = st.nextToken();
-
-    	      data.mark(10000);
-    	      line = ChemParser.readMeaningfulLine(data);
-    	      if (line == null) break read;
-    	      line = line.trim();
-    	      data.reset();
-    	      Graph graph = null;
-
-    	        graph = ChemParser.readChemGraph(data);
-    	        if (graph == null) throw new InvalidChemGraphException(name);
-        		ChemGraph cg ;
-        		Species spe  ;
-				try {
-					cg = ChemGraph.make(graph);
-					spe = Species.make(name, cg);
-					
-					Object old = dictionary.get(name);
-		    	      if (old == null){
-		    	        dictionary.put(name, spe);
-		    	      }
-		    	      else{
-		    	        Species oldGraph = (Species)old;
-		    	        if (!oldGraph.equals(graph)) {
-		    	          System.out.println("Can't replace graph in Reaction Library!");
-		    	          System.exit(0);
-		    	        }
-		    	    }
-					
-				} catch (InvalidChemGraphException e) {
-					System.err.println("The graph \n" + graph.toString() + " is not valid");
-					e.printStackTrace();
-				} catch (ForbiddenStructureException e) {
-					System.err.println("The graph \n" + graph.toString() + " is not a forbidden structure");
-					e.printStackTrace();
-				}	
-        		
-    	      
-    	      line = ChemParser.readMeaningfulLine(data);
-    	    }
-    	    in.close();
-    	    return dictionary;
-    	  }
-    	  catch (FileNotFoundException e){
-    	      throw new FileNotFoundException(p_fileName);
-    	  }
-    	  catch (IOException e){
-    	    throw new IOException(p_fileName + ":" + e.getMessage());
-    	  }
-    	  //#]
-    	}
-    
- 
-    //## operation clearLibraryReaction() 
+    // clearLibraryReaction() 
     public void clearLibraryReaction() {
-        //#[ operation clearLibraryReaction() 
+     
         library.clear();
-        //#]
-    }
+         }
     
-        //## operation getLibraryReaction() 
+        // getLibraryReaction() 
     public Iterator getLibraryReaction() {
-        //#[ operation getLibraryReaction() 
+        
         Iterator iter=library.iterator();
         return iter;
-        //#]
+        
     }
     
         /**
@@ -271,9 +162,9 @@ public class ReactionLibrary {
     Effects: check if all the library reaction in this reaction library are valid
     Modifies:
     */
-    //## operation repOk() 
+    
     public boolean repOk() {
-        //#[ operation repOk() 
+    
         Iterator iter = getLibraryReaction();
         Reaction reaction;
         while (iter.hasNext()) {
@@ -282,7 +173,6 @@ public class ReactionLibrary {
         }
         
         return true;
-        //#]
     }
 
     /**
@@ -290,21 +180,14 @@ public class ReactionLibrary {
     Effects: check if this reaction library is empty.  if it is, return true; otherwise, return false;
     Modifies:
     */
-    //## operation isEmpty() 
+    
     public boolean isEmpty() {
-        //#[ operation isEmpty() 
         return (size() == 0);
-        
-        
-        
-        //#]
     }
     
-    //## operation removeLibraryReaction(LibraryReaction) 
+    
     public void removeLibraryReaction(LibraryReaction p_LibraryReaction) {
-        //#[ operation removeLibraryReaction(LibraryReaction) 
         library.remove(p_LibraryReaction);
-        //#]
     }
     
  
@@ -313,18 +196,30 @@ public class ReactionLibrary {
     Effects: return the size of itsLibraryReaction.
     Modifies:
     */
-    //## operation size() 
+    
     public int size() {
-        //#[ operation size() 
+    
         return library.size();
-        //#]
+    
     }
     
-    protected static ReactionLibrary getINSTANCE() {
-        return INSTANCE;
+    // shamel Asof 6/10/2010 this method is not needed
+    //public static ReactionLibrary getINSTANCE() {
+    //    return INSTANCE;
+   // }
+    
+   
+    public String getName() {
+        return name;
     }
     
-}
+    public void setName(String p_name) {
+        name = p_name;
+    }
+    
+    
+}    
+
 /*********************************************************************
 	File Path	: RMG\RMG\jing\rxn\ReactionLibrary.java
 *********************************************************************/

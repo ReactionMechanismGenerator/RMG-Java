@@ -18,7 +18,7 @@ Extensible libraries
 	Ability to include reaction models on top of the provided reaction families.
 
 Pressure-dependent reaction networks. 
-	Dissociation and combination reactions have the potential to have rate coefficients that are dependent on both temperature and pressure, and RMG is able to estimate both for networks of arbitrary complexity with a bounded error.
+	Dissociation, combination, and isomerization reactions have the potential to have rate coefficients that are dependent on both temperature and pressure, and RMG is able to estimate both for networks of arbitrary complexity with a bounded error.
 	
 Simultaneous mechanism generation for several conditions.
 	Concurrent generation of a reaction mechanism over multiple temperature and pressure conditions. 
@@ -32,6 +32,11 @@ Manual and automatic time and conversion stepping.
 
 InChI strings
 	On-the-fly generation of InChI strings for species.
+
+Transport properties estimation using group additivity
+	The Lennard-Jones sigma and epsilon parameters are estimated using empirical correlations (based on a species' critical properties and acentric factor).
+	The critical properties are estimated using a group-additivity approach; the acentric factor is also estimated using empirical correlations.
+	A standalone application for estimating these parameters is provided, and the output is stored in CHEMKIN-readable format.
 
 GUIs
 	Graphical user interfaces for easily generating input files and editing the databases.

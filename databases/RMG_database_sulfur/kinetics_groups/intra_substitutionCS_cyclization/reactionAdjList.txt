@@ -11,7 +11,7 @@
 
 XSYJ -> SY + XJ
 
-thermo_consistence
+forward
 reverse(f26): Ring_Opening_bySradical
 
 Actions 1
