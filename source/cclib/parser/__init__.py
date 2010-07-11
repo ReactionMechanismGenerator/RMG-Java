@@ -21,6 +21,7 @@ from jaguarparser import Jaguar
 from molproparser import Molpro
 from orcaparser import ORCA
 from mopacparser import Mopac
+from mm4parser import MM4
 
 # This allow users to type:
 #         from cclib.parser import ccopen

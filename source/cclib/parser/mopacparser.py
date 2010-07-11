@@ -53,10 +53,9 @@ class Mopac(logfileparser.Logfile):
             if hasattr(self, "natom"):
                 assert self.natom == natom
             else:
-                # I wonder whether this code will ever be executed.
                 self.natom = natom
         
-        # Extract the atomic numbers and coordinates from the input orientation
+        # Extract the atomic numbers and coordinates from the optimized geometry
         # note that cartesian coordinates section occurs multiple times in the file, and we want to end up using the last instance
         # also, note that the section labeled cartesian coordinates doesn't have as many decimal places as the one used here
         # Example 1 (not used):
