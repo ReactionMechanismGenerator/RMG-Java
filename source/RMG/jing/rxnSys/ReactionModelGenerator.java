@@ -91,8 +91,12 @@ public class ReactionModelGenerator {
     protected String equationOfState;
     // 24Jun2009 MRH: variable stores the first temperature encountered in the condition.txt file
     //	This temperature is used to select the "best" kinetics from the rxn library
-    protected static Temperature temp4BestKinetics; 
-    
+    protected static Temperature temp4BestKinetics;
+
+    // Added by AJ on July 12, 2010
+    protected static boolean useDiffusion;
+    //
+
     protected SeedMechanism seedMechanism = null;
     protected PrimaryThermoLibrary primaryThermoLibrary;
     protected PrimaryTransportLibrary primaryTransportLibrary;
@@ -430,6 +434,28 @@ public class ReactionModelGenerator {
         		else throw new InvalidSymbolException("condition.txt: Unknown solvation flag: " + solvationOnOff);
         		line = ChemParser.readMeaningfulLine(reader, true);
         	}
+
+            // Read in Diffusion effects
+            // If 'Diffusion' is 'on' then override the settings made by the solvation flag and sets solvation 'on'
+            if (line.startsWith("Diffusion:")) {
+        		StringTokenizer st = new StringTokenizer(line);
+        		String name = st.nextToken();
+        		String diffusionOnOff = st.nextToken().toLowerCase();
+        		if (diffusionOnOff.equals("on")) {
+        			Species.useSolvation = true;
+                    setUseDiffusion(true);
+        		} else if (diffusionOnOff.equals("off")) {
+        			setUseDiffusion(false);
+        		}
+        		else throw new InvalidSymbolException("condition.txt: Unknown diffusion flag: " + diffusionOnOff);
+        	}
+
+            /* AJ 12JULY2010:
+             * Right now we do not want RMG to throw an exception if it cannot find a diffusion flag
+             */
+             //else throw new InvalidSymbolException("condition.txt: Cannot find diffusion flag.");
+
+            line = ChemParser.readMeaningfulLine(reader);//read in reactants or thermo line
 			
 			//line = ChemParser.readMeaningfulLine(reader);//read in reactants or thermo line
 			// Read in optional QM thermo  generation
@@ -2908,7 +2934,15 @@ public class ReactionModelGenerator {
 	public LinkedList getTimeStep() {
         return timeStep;
     }
-	
+
+    public static boolean getUseDiffusion() {
+    	return useDiffusion;
+    }
+
+    public void setUseDiffusion(Boolean p_boolean) {
+    	useDiffusion = p_boolean;
+    }
+
     public void setTimeStep(ReactionTime p_timeStep) {
         if (timeStep == null)
         	timeStep = new LinkedList();
