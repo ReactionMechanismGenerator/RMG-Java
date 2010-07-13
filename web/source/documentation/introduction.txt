@@ -26,6 +26,12 @@ of Technology <http://web.mit.edu/>`_. Currently there are several members of th
 Changes
 -------
 
+RMG 3.2.1 is a minor bug-fix release. Changes since 3.2 include the following:
+
+- Fix pressure-dependence bug with multiple reaction systems that could lead to "PDepException: Tried to determine nonincluded isomer with maximum leak flux, but there are no nonincluded reactions, so no isomer can be identified" error.
+
+- More detailed error message when failing to read a reaction library, primary kinetic library, or seed mechanism.
+
 Changes in RMG 3.2 include the following:
 
 - The :file:`RMG_Database` folder has been restructured more logically. (:ref:`PrimaryReactionLibrary <primaryreactionlibrary>` and :ref:`Seed Mechanism <seedmechanism>` specifications in condition files will need updating)

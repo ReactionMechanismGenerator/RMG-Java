@@ -3,6 +3,15 @@
 RMG News and Updates
 **********************************
 
+
+RMG 3.2.1 Released
+==================
+RMG 3.2.1 is a minor bug-fix release. Changes since 3.2 include the following:
+
+- Fix pressure-dependence bug with multiple reaction systems that could lead to "PDepException: Tried to determine nonincluded isomer with maximum leak flux, but there are no nonincluded reactions, so no isomer can be identified" error.
+
+- More detailed error message when failing to read a reaction library, primary kinetic library, or seed mechanism.
+
 2010-06-27: RMG 3.2 Released!
 ==============================
 RMG version 3.2 has been released. The new release includes a number of improvements and bug fixes, including the following:
