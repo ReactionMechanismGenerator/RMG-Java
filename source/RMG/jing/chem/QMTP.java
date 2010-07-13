@@ -338,6 +338,14 @@ public class QMTP implements GeneralGAPP {
 		    //new IF block to check success
 		    if(successFlag==1){
 			System.out.println("Attempt #"+attemptNumber + " on species " + name + " ("+InChIaug+") succeeded.");
+			//run rotor calculations if necessary
+			int rotors = p_chemGraph.getInternalRotor();
+			if(useHindRot && rotors > 0){
+			    //we should re-run scans even if pre-existing scans exist because atom numbering may change from case to case; a better solution would be to check for stored CanTherm output and use that if available
+			    System.out.println("Running rotor scans on "+name+"...");
+			    //createMM4RotorInput(name, directory, InChIaug, multiplicity);//we don't worry about checking InChI here; if there is an InChI mismatch it should be caught
+			    //runMM4Rotor(name, directory, rotors);
+			}
 		    }
 		    else if(successFlag==0){
 			if(attemptNumber==maxAttemptNumber){//if this is the last possible attempt, and the calculation fails, exit with an error message
@@ -351,7 +359,7 @@ public class QMTP implements GeneralGAPP {
 		    }
 		}
 	    }
-	    //5. parse MM4 output and record as thermo data (function includes symmetry/point group calcs, etc.); if both Gaussian and MOPAC results exist, Gaussian result is used
+	    //5. parse MM4 output and record as thermo data (function includes symmetry/point group calcs, etc.)
 	    if(!useCanTherm) result = parseMM4(name, directory, p_chemGraph);
 	    else result = parseMM4withForceMat(name, directory, p_chemGraph);
 	}
@@ -1397,10 +1405,28 @@ public class QMTP implements GeneralGAPP {
 	canInp += "ENERGY "+ energy +" MM4\n";//***special MM4 treatment in CanTherm
 	canInp+="EXTSYM 1\n";//use external symmetry of 1; it will be corrected for below
 	canInp+="NELEC 1\n";//multiplicity = 1; all cases we consider will be non-radicals
-	if(!useHindRot) canInp += "ROTORS 0\n";//do not consider hindered rotors
+	int rotors = p_chemGraph.getInternalRotor();
+	String rotInput = null;
+	if(!useHindRot || rotors==0) canInp += "ROTORS 0\n";//do not consider hindered rotors
 	else{
 	    //this section still needs to be written
-	    canInp+="";
+	    int rotorCount = 0;
+	    canInp+="ROTORS "+rotors+ " "+name+".rot\n";
+	    rotInput = "L1: 1 2 3\n";
+	    LinkedHashMap rotorInfo = p_chemGraph.getInternalRotorInformation();
+	    Iterator iter = rotorInfo.keySet().iterator();
+	    while(iter.hasNext()){
+		rotorCount++;
+		int[] rotorAtoms = (int[])iter.next();
+		LinkedHashSet rotatingGroup = (LinkedHashSet)rotorInfo.get(rotorAtoms);
+		Iterator iterGroup = rotatingGroup.iterator();
+		rotInput += "L2: 1 "+rotorAtoms[0]+ " "+ rotorAtoms[1];//uses a symmetry number of 1; this will be taken into account elsewhere
+		while (iterGroup.hasNext()){//print the atoms associated with rotorAtom 2
+		    rotInput+= " "+(Integer)iterGroup.next();
+		}
+		rotInput += "\n";
+		canInp+="POTENTIAL separable file " + name + ".rot"+rotorCount;//potential files will be named as name.rotn
+	    }
 	}
 	canInp+="0\n";//no bond-additivity corrections
 	try{
@@ -1408,6 +1434,12 @@ public class QMTP implements GeneralGAPP {
             FileWriter fw = new FileWriter(canFile);
             fw.write(canInp);
             fw.close();
+	    if(rotInput !=null){//write the rotor information
+		File rotFile=new File(directory+"/"+name+".rot");
+		FileWriter fwr = new FileWriter(rotFile);
+		fwr.write(rotInput);
+		fwr.close();
+	    }
         }
         catch(Exception e){
             String err = "Error in writing CanTherm input \n";
@@ -1456,19 +1488,21 @@ public class QMTP implements GeneralGAPP {
             e.printStackTrace();
             System.exit(0);
         }
-	//6. correct the output for symmetry number (everything has been assumed to be one) : useHindRot=true case: use ChemGraph symmetry number; otherwise, we use SYMMETRY
-	if(!useHindRot){
-	    //determine point group using the SYMMETRY Program
-	    String geom = natoms + "\n";
-	    for(int i=0; i < natoms; i++){
-		geom += atomicNumber.get(i) + " "+ x_coor.get(i) + " " + y_coor.get(i) + " " +z_coor.get(i) + "\n";
-	    }
-	    String pointGroup = determinePointGroupUsingSYMMETRYProgram(geom);
-	    double sigmaCorr = getSigmaCorr(pointGroup);
-	    S298+= R*sigmaCorr;
+	//6. correct the output for symmetry number (everything has been assumed to be one) : useHindRot=true case (or no rotors): use ChemGraph symmetry number; otherwise, we use SYMMETRY
+	//determine point group using the SYMMETRY Program
+	String geom = natoms + "\n";
+	for(int i=0; i < natoms; i++){
+	    geom += atomicNumber.get(i) + " "+ x_coor.get(i) + " " + y_coor.get(i) + " " +z_coor.get(i) + "\n";
+	}
+	String pointGroup = determinePointGroupUsingSYMMETRYProgram(geom);
+	double sigmaCorrSYMM = getSigmaCorr(pointGroup);
+	if(!useHindRot || rotors==0){
+	    S298+= R*sigmaCorrSYMM;
 	}
 	else{
-	    //***to be written
+	    double sigmaCorrGRAPH = -Math.log(p_chemGraph.getSymmetryNumber());
+	    S298+= R*sigmaCorrGRAPH;
+	    //to add: compute difference between RRHO and hindered rotor thermo values, taking the difference in symmetry number for entropy; the idea is that the harmonic value will be read in from canTherm (except for symmetry number considerations)
 	}
 	ThermoData result = new ThermoData(Hf298,S298,Cp300,Cp400,Cp500,Cp600,Cp800,Cp1000,Cp1500,3,1,1,"MM4 calculation; includes CanTherm analysis of force-constant matrix");//this includes rough estimates of uncertainty
         System.out.println("Thermo for " + name + ": "+ result.toString());//print result, at least for debugging purposes
