@@ -925,9 +925,10 @@ public class QMTP implements GeneralGAPP {
 	try{
 	    File runningDirectory = new File(qmfolder);
             String command=name+".com";
-	    File script = new File(qmfolder+command);
-	    command = "./"+command;
-	    script.setExecutable(true);
+	   // File script = new File(qmfolder+command);
+	   // command = "./"+command;
+	   // script.setExecutable(true);
+	    command = "csh "+ command;
 	    Process mm4Proc = Runtime.getRuntime().exec(command, null, runningDirectory);
 
 	    //check for errors and display the error if there is one
