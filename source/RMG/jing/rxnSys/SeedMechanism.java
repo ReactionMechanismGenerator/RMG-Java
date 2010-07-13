@@ -173,7 +173,8 @@ public class SeedMechanism {
         }
         catch (Exception e) {
         	System.out.println("RMG did not read the following " + source + p_name + " file: " 
-        			+ p_reactionFileName);
+        			+ p_reactionFileName + " because " + e.getMessage() );
+			e.printStackTrace();
         	return null;
         }
     }
