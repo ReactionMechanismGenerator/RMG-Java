@@ -279,21 +279,31 @@ public class RateBasedPDepRME implements ReactionModelEnlarger {
 					LinkedHashSet newReactionSet_nodup;
 					if(rxnSystem.getLibraryReactionGenerator().getReactionLibrary() != null){
 						
-						// Iterate through the Reaction Library and find all reactions which include the species being considered
-						LinkedHashSet newReactionSet = rxnSystem.getLibraryReactionGenerator().react(cerm.getReactedSpeciesSet(),maxSpecies,"All");
-						System.out.println("Reaction Set Found from Reaction Library "+newReactionSet);
+						System.out.println("Checking Reaction Library "+rxnSystem.getLibraryReactionGenerator().getReactionLibrary().getName()+" for reactions of "+maxSpecies.getName()+" with the core.");
+						// At this point the core (cerm.getReactedSpeciesSet()) already contains maxSpecies, so we can just react the entire core.
+						LinkedHashSet newReactionSet = rxnSystem.getLibraryReactionGenerator().react(cerm.getReactedSpeciesSet());
+						//LinkedHashSet newReactionSet = rxnSystem.getLibraryReactionGenerator().react(cerm.getReactedSpeciesSet(),maxSpecies,"All");
 						
-						// Iterate through the reaction template
+						// Report only those that contain the new species (maxSpecies)
+						Iterator ReactionIter = newReactionSet.iterator();
+						while(ReactionIter.hasNext()){
+							Reaction current_reaction = (Reaction)ReactionIter.next();
+							if (current_reaction.contains(maxSpecies)) {
+								System.out.println("Library Reaction: " + current_reaction.toString() );
+							}
+						}
+						
+						System.out.println("Generating reactions using reaction family templates.");
+						// Iterate through the reaction templates
 						newReactionSet.addAll(rxnSystem.getReactionGenerator().react(cerm.getReactedSpeciesSet(),maxSpecies,"All"));
 						
 						// To remove the duplicates that are found in Reaction Library and Reaction Template
 						// Preference given to Reaction Library over Template Reaction 
-						
-					newReactionSet_nodup = RemoveDuplicateReac(newReactionSet);
+						newReactionSet_nodup = RemoveDuplicateReac(newReactionSet);
 					}
 					else{
 						// When no Reaction Library is present
-					newReactionSet_nodup = rxnSystem.getReactionGenerator().react(cerm.getReactedSpeciesSet(),maxSpecies,"All");
+						newReactionSet_nodup = rxnSystem.getReactionGenerator().react(cerm.getReactedSpeciesSet(),maxSpecies,"All");
 					}
 					// shamel 6/22/2010 Suppressed output , line is only for debugging
 					// System.out.println("Reaction Set For Pdep PdepRME "+newReactionSet_nodup);

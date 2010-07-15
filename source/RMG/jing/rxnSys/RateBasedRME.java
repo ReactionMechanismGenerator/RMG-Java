@@ -84,7 +84,7 @@ public class RateBasedRME implements ReactionModelEnlarger {
         
         //10/30/07 gmagoon: iterate over reaction systems that are not valid 
 		LinkedList nextList = new LinkedList();
-		double startTime = System.currentTimeMillis();//note: moved before a couple of lines, but I expect it to have negligible effect on timing
+		double startTime = System.currentTimeMillis();
 		for (Integer i = 0; i < p_reactionSystemList.size(); i++) {
 			if (!(Boolean) p_validList.get(i)) {
 				PresentStatus ps = ((ReactionSystem) p_reactionSystemList.get(i)).getPresentStatus();
@@ -109,60 +109,66 @@ public class RateBasedRME implements ReactionModelEnlarger {
 		//10/30/07 gmagoon: add species from nextList
 		for (Integer i = 0; i < p_reactionSystemList.size(); i++) {
 			if (!(Boolean) p_validList.get(i)) {
-				if (cerm.containsAsReactedSpecies((Species) nextList.get(i))) //throw new InvalidNextCandidateSpeciesException();
+				Species newCoreSpecies = (Species) nextList.get(i);
+				if (cerm.containsAsReactedSpecies(newCoreSpecies)) //throw new InvalidNextCandidateSpeciesException();
 				{
-					System.out.println("Species is already present in reaction model");//10/30/07 gmagoon: preliminary message; should probably be refined in future
+					System.out.println("Species " + newCoreSpecies.getName() + "(" +
+									   Integer.toString(newCoreSpecies.getID()) +
+									   ") is already present in reaction model");
 				} else {
 					
 					double findSpeciesTime = (System.currentTimeMillis() - startTime) / 1000 / 60;
 
-					Species species = (Species) nextList.get(i);
+					
 					
 					//Global.diagnosticInfo.append(next.getChemkinName() + "\t" + maxflux + "\t" + ((RateBasedVT) ((ReactionSystem) p_reactionSystemList.get(i)).finishController.validityTester).Rmin + "\t" + findSpeciesTime + "\t");
 					System.out.print("\nAdd a new reacted Species:");
-					System.out.println(species.getName());
+					System.out.println(newCoreSpecies.getName());
 					Temperature temp = new Temperature(298, "K");
-					double H = species.calculateH(temp);
-					double S = species.calculateS(temp);
-					double G = species.calculateG(temp);
-					double Cp = species.calculateCp(temp);
+					double H = newCoreSpecies.calculateH(temp);
+					double S = newCoreSpecies.calculateS(temp);
+					double G = newCoreSpecies.calculateG(temp);
+					double Cp = newCoreSpecies.calculateCp(temp);
 					System.out.println("Thermo of species at 298K (H, S, G, Cp, respectively)\t" + String.valueOf(H) + '\t' + String.valueOf(S) + '\t' + String.valueOf(G) + '\t' + String.valueOf(Cp));
-			
-					
-					cerm.moveFromUnreactedToReactedSpecies(species);
+
+					cerm.moveFromUnreactedToReactedSpecies(newCoreSpecies);
 					cerm.moveFromUnreactedToReactedReaction();
-					//10/30/07 gmagoon: note subsequent lines were previously outside of else block (and it probably didn't matter then), but now I think they belong in else block
+					
 					Global.moveUnreactedToReacted = (System.currentTimeMillis() - startTime) / 1000 / 60;
 
 					// add species status to reaction system
-					SpeciesStatus speciesStatus = new SpeciesStatus(species, 1, 0.0, 0.0); // (species, type (reacted=1), concentration, flux)
+					SpeciesStatus speciesStatus = new SpeciesStatus(newCoreSpecies, 1, 0.0, 0.0); // (species, type (reacted=1), concentration, flux)
 					PresentStatus ps = ((ReactionSystem) p_reactionSystemList.get(i)).getPresentStatus();
 					ps.putSpeciesStatus(speciesStatus);
 
 					// generate new reaction set
 					startTime = System.currentTimeMillis();
 					
-					// shamel : Reordering so that Species List is first reacted by Library Reaction Generator and then sent to RMG Model Generator 
+					// Species List is first reacted by Library Reaction Generator and then sent to RMG Model Generator 
 					
-					//shamel: 6/10/2010 These lines are for my debugging will remove them later on
-					//System.out.println("Reacted Species"+cerm.getReactedSpeciesSet());
+					// Check Reaction Library
+					ReactionSystem rxnSystem = (ReactionSystem) p_reactionSystemList.get(i);
+					System.out.println("Checking Reaction Library "+rxnSystem.getLibraryReactionGenerator().getReactionLibrary().getName()+" for reactions of "+newCoreSpecies.getName()+" with the core.");
+					// At this point the core (cerm.getReactedSpeciesSet()) already contains newCoreSpecies, so we can just react the entire core.
+					LinkedHashSet newReactionSet = rxnSystem.getLibraryReactionGenerator().react(cerm.getReactedSpeciesSet());
+					//LinkedHashSet newReactionSet = rxnSystem.getLibraryReactionGenerator().react(cerm.getReactedSpeciesSet(),newCoreSpecies,"All");
 					
-					// Prints out what reactions were found in Library Reaction Generator
-					LinkedHashSet tempnewReactionSet = ((ReactionSystem) p_reactionSystemList.get(i)).lrg.react(cerm.getReactedSpeciesSet(), (Species) nextList.get(i),"All");
-					System.out.println("Reaction Set Found from Reaction Library "+tempnewReactionSet);
-					
-					// Add reactions found in Library Reaction Generator to Reaction Set
-					LinkedHashSet newReactionSet =((ReactionSystem) p_reactionSystemList.get(i)).lrg.react(cerm.getReactedSpeciesSet(), (Species) nextList.get(i),"All");
+					// Report only those that contain the new species (newCoreSpecies)
+					Iterator ReactionIter = newReactionSet.iterator();
+					while(ReactionIter.hasNext()){
+						Reaction current_reaction = (Reaction)ReactionIter.next();
+						if (current_reaction.contains(newCoreSpecies)) {
+							System.out.println("Library Reaction: " + current_reaction.toString() );
+						}
+					}
 					
 					// Calls in Reaction Model Generator and adds it to Reaction Set ( if duplicate reaction is found it is not added I think ) 
-					System.out.println("Generating Reactions By Calling ReactionGenerator ... ");
-					
+					System.out.println("Generating reactions using reaction family templates.");
 					// Add reactions found from reaction template to current reaction set
-					newReactionSet.addAll(((ReactionSystem) p_reactionSystemList.get(i)).getReactionGenerator().react(cerm.getReactedSpeciesSet(), (Species) nextList.get(i),"All"));
+					newReactionSet.addAll(((ReactionSystem) p_reactionSystemList.get(i)).getReactionGenerator().react(cerm.getReactedSpeciesSet(), newCoreSpecies, "All"));
 					
 					// shamel 6/22/2010 Suppressed output , line is only for debugging
 					//System.out.println("Reaction Set Found after LRG + ReactionGenerator call "+newReactionSet);
-					
 					
 					// Remove Duplicate entrys from reaction set i.e same reaction might be coming from seed/reaction library and reaction template
 					// Same means == same family and not same structure coming from different families
@@ -174,36 +180,7 @@ public class RateBasedRME implements ReactionModelEnlarger {
 					
 					
 					double enlargeTime = (System.currentTimeMillis() - startTime) / 1000 / 60;
-
-
-
 					startTime = System.currentTimeMillis();
-					
-					/* // we can't read in the restart files, so for now there's no point in writing them!
-					StringBuilder restartFileContent= new StringBuilder();
-					try{
-					File allReactions = new File ("Restart/allReactions.txt");
-					FileWriter fw = new FileWriter(allReactions, true);
-					//Species species = (Species) iter.next();
-					for(Iterator iter=newReactionSet.iterator();iter.hasNext();){
-
-					Reaction reaction = (Reaction) iter.next();
-					if (cerm.categorizeReaction(reaction)==-1)
-					restartFileContent.append(reaction.toRestartString(((ReactionSystem)p_reactionSystemList.get(i)).getPresentTemperature()) + "\n");//10/30/07 gmagoon: changed to avoid use of Global.temperature
-					//restartFileContent.append(reaction.toRestartString(Global.temperature) + "\n");
-
-					}
-
-					//restartFileContent += "\nEND";
-					fw.write(restartFileContent.toString());
-					fw.close();
-					}
-					catch (IOException e){
-					System.out.println("Could not write the added Reactions to the allReactions file");
-					System.exit(0);
-					}
-					 */
-
 					double restartTime = (System.currentTimeMillis() - startTime) / 1000 / 60;
 
 					Global.diagnosticInfo.append(Global.moveUnreactedToReacted + "\t" + enlargeTime + "\t" + restartTime + "\t");
