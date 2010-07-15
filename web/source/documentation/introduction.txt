@@ -32,6 +32,10 @@ RMG 3.2.1 is a minor bug-fix release. Changes since 3.2 include the following:
 
 - More detailed error message when failing to read a reaction library, primary kinetic library, or seed mechanism.
 
+- Clearer log messages when adding reactions from a Reaction Library
+
+- Restart jobs should now be possible with Quantum Mechanics thermochemistry estimation
+
 Changes in RMG 3.2 include the following:
 
 - The :file:`RMG_Database` folder has been restructured more logically. (:ref:`PrimaryReactionLibrary <primaryreactionlibrary>` and :ref:`Seed Mechanism <seedmechanism>` specifications in condition files will need updating)
