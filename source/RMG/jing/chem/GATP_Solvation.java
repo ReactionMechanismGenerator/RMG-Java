@@ -92,7 +92,8 @@ public class GATP_Solvation implements GeneralSolvationGAPP {
 		
 
         double logK = c_g + s_g*S + b_g*B + e_g*E + l_g*L + a_g*A;    // Implementation of Abraham Model for calculation of partition coefficient
-        double deltaG0 = -8.314*298*logK;
+        double deltaG0 = -8.314*298*logK;                             // J/mol
+        deltaG0 = deltaG0/4180;                                       // conversion from kJ/mol to kcal/mol
 		// System.out.println("The free energy of solvation in decane at 298K w/o reference state corrections  = " + deltaG0_decane +" J/mol for " );
 
     /* AJ 16JULY 2010 (Mintz method for calculation of solution phase enthalpy
@@ -107,8 +108,10 @@ public class GATP_Solvation implements GeneralSolvationGAPP {
         double l_h = -9.279;
         double a_h = 0;
 
-        double deltaH0 = c_g + s_g*S + b_g*B + e_g*E + l_g*L + a_g*A;    // Implementation of Abraham Model for calculation of partition coefficient
-        double deltaS0 = (deltaH0-deltaG0)/T;
+        double deltaH0 = c_g + s_g*S + b_g*B + e_g*E + l_g*L + a_g*A;    // Implementation of Mintz model for calculation of solution phase enthalpy (kJ/mol)
+        deltaH0=deltaH0/4.18;                                            // Conversion from kJ/mol to kcal/mol
+        double deltaS0 = (deltaH0-deltaG0)/T;                            // kcal/mol/K
+        deltaS0=deltaS0*1000;                                             // conversion from kcal/mol/K to cal/mol/K
 
 		// Generation of Gas Phase data to add to the solution phase quantities
 		ThermoData solvationCorrection = new ThermoData(deltaH0, deltaS0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,"Solvation correction");
