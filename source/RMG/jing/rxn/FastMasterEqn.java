@@ -180,10 +180,16 @@ public class FastMasterEqn implements PDepKineticsEstimator {
 			if (allMonatomic)
 				shouldContinue = false;
 		}
-		// No update needed if network is only two wells and one reaction (?)
-		/*if (pdn.getUniIsomers().size() + pdn.getMultiIsomers().size() == 2 &&
-				pdn.getPathReactions().size() == 1)
-			shouldContinue = false;*/
+
+		// No update needed if network is only two wells and one reaction
+		boolean noIncludedIsomers = true;
+		for (ListIterator iter = pdn.getIsomers().listIterator(); iter.hasNext(); ) {
+			PDepIsomer isomer = (PDepIsomer) iter.next();
+			if (isomer.isUnimolecular() && isomer.getIncluded())
+				noIncludedIsomers = false;
+		}
+		if (pdn.getIsomers().size() == 2 && pdn.getPathReactions().size() == 1 && noIncludedIsomers)
+			shouldContinue = false;
 
 		if (!shouldContinue)
 		{
@@ -192,6 +198,7 @@ public class FastMasterEqn implements PDepKineticsEstimator {
 			net.clear();
 			for (int i = 0; i < paths.size(); i++)
 				net.add(paths.get(i));*/
+			pdn.setAltered(false);
 			return;
 		}
 
