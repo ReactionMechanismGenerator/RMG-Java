@@ -821,4 +821,27 @@ public class PDepNetwork {
 		return edgeReactions;
 	}
 
+	/**
+	 * Check whether or not a given species is an included (fully explored)
+	 * unimolecular isomer in any currently-existing network.
+	 * @param species The species to check for included status
+	 * @return true if the species is included in any existing network, false if not
+	 */
+	public static boolean isSpeciesIncludedInAnyNetwork(Species species) {
+		for (Iterator iter = networks.iterator(); iter.hasNext(); ) {
+			PDepNetwork network = (PDepNetwork) iter.next();
+			if (network.contains(species)) {
+				PDepIsomer isomer = network.getIsomer(species);
+				if (isomer.isUnimolecular() && isomer.getIncluded())
+					// We've identified a network wherein the species exists as
+					// a unimolecular isomer, and that its path reactions have
+					// been fully explored
+					// This satisfies all of the conditions, so we return true
+					return true;
+			}
+		}
+		// No suitable match for all conditions was found, so we return false
+		return false;
+	}
+
 }
