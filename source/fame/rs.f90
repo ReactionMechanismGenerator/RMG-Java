@@ -484,7 +484,7 @@ subroutine activeStateBanded(T, P, E, Mcoll, densStates, Kij, Fim, Gnj, dEdown, 
     ! Determine bandwidth (at which transfer probabilities are so low that they can be truncated
     ! with negligible error)
     dE = E(2) - E(1)
-    halfbandwidth = ceiling(16 * dEdown / dE) * nIsom
+    halfbandwidth = ceiling(8 * max(dEdown, 8.314472 * T) / dE) * nIsom
     bandwidth = 2 * halfbandwidth + 1
 
     ! Create and zero active-state matrix and RHS vectors

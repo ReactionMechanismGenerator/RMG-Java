@@ -563,21 +563,8 @@ public class PopulateReactions {
 		}
 		String output = rxn_k.getAValue() + "\t" + rxn_k.getNValue()
 			   + "\t" + Ea + "\t" + rxn_k.getSource()
-			   + "\t" + rxn_k.getComment() + "\n";
-		return output;
-	}
-	
-	public static String updateListOfReactions(Kinetics rxn_k, String reverseRxnName, double H_rxn) {
-		double Ea = 0.0;
-		if (rxn_k instanceof ArrheniusEPKinetics){
-		    Ea = ((ArrheniusEPKinetics)rxn_k).getEaValue(H_rxn);
-		}
-		else{
-		    Ea = rxn_k.getEValue();
-		}
-		String output = rxn_k.getAValue() + "\t" + rxn_k.getNValue()
-			   + "\t" + Ea + "\t" + reverseRxnName + ": "
-			   + rxn_k.getSource() + "\t" + rxn_k.getComment() + "\n";
+			   + "\t" + rxn_k.getComment() 
+			   + "\tdeltaHrxn(T=298K) = " + H_rxn + " kcal/mol\n";
 		return output;
 	}
 	

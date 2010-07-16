@@ -16,7 +16,7 @@ program fame
 
     type(Network) net
     real(8), dimension(:), allocatable :: Tlist, Plist, Elist
-    real(8) :: grainSize
+    real(8) :: grainSize, Tmin, Tmax, Pmin, Pmax
     integer :: numGrains
     integer :: method, model
     integer, dimension(1:10) :: modelOptions
@@ -34,7 +34,8 @@ program fame
 
     ! Read network information (from stdin)
     write (unit=1,fmt='(A)') 'Reading network information...'
-    call readInput(net, Tlist, Plist, grainSize, numGrains, method, model, modelOptions)
+    call readInput(net, Tlist, Plist, Tmin, Tmax, Pmin, Pmax, &
+        grainSize, numGrains, method, model, modelOptions)
     nIsom = 0
     nReac = 0
     nProd = 0
@@ -81,7 +82,8 @@ program fame
         do i = 1, nIsom+nReac+nProd
             do j = 1, nIsom+nReac
                 if (i /= j) then
-                    call fitChebyshevModel(K(:,:,i,j), Tlist, Plist, modelOptions(1), modelOptions(2), chebyshevCoeffs(:,:,i,j))
+                    call fitChebyshevModel(K(:,:,i,j), Tlist, Plist, Tmin, Tmax, &
+                        Pmin, Pmax, modelOptions(1), modelOptions(2), chebyshevCoeffs(:,:,i,j))
                 end if
             end do
         end do

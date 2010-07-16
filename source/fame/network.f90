@@ -416,6 +416,7 @@ contains
         else
 
             Fe = FeNum / FeDen
+            if (Fe > 1000000) Fe = 1000000
             do r = 1, nGrains
                 val = densStates(r) * exp(-Elist(r) / 8.314472 / T)
                 if (Elist(r) < E0) then

@@ -1279,6 +1279,18 @@ public class Graph {
         //#]
     }
 
+    //return a LinkedHashSet of the node IDs
+    public LinkedHashSet getNodeIDs() {
+        Iterator iter = nodeList.values().iterator();
+	LinkedHashSet ids = new LinkedHashSet();
+	while(iter.hasNext()){
+	    Node n = (Node)iter.next();
+	    ids.add(n.getID());
+	}
+
+        return ids;
+    }
+
     /**
     Return the iterator over the node collection
     */

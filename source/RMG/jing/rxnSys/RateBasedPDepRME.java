@@ -279,21 +279,31 @@ public class RateBasedPDepRME implements ReactionModelEnlarger {
 					LinkedHashSet newReactionSet_nodup;
 					if(rxnSystem.getLibraryReactionGenerator().getReactionLibrary() != null){
 						
-						// Iterate through the Reaction Library and find all reactions which include the species being considered
-						LinkedHashSet newReactionSet = rxnSystem.getLibraryReactionGenerator().react(cerm.getReactedSpeciesSet(),maxSpecies,"All");
-						System.out.println("Reaction Set Found from Reaction Library "+newReactionSet);
+						System.out.println("Checking Reaction Library "+rxnSystem.getLibraryReactionGenerator().getReactionLibrary().getName()+" for reactions of "+maxSpecies.getName()+" with the core.");
+						// At this point the core (cerm.getReactedSpeciesSet()) already contains maxSpecies, so we can just react the entire core.
+						LinkedHashSet newReactionSet = rxnSystem.getLibraryReactionGenerator().react(cerm.getReactedSpeciesSet());
+						//LinkedHashSet newReactionSet = rxnSystem.getLibraryReactionGenerator().react(cerm.getReactedSpeciesSet(),maxSpecies,"All");
 						
-						// Iterate through the reaction template
+						// Report only those that contain the new species (maxSpecies)
+						Iterator ReactionIter = newReactionSet.iterator();
+						while(ReactionIter.hasNext()){
+							Reaction current_reaction = (Reaction)ReactionIter.next();
+							if (current_reaction.contains(maxSpecies)) {
+								System.out.println("Library Reaction: " + current_reaction.toString() );
+							}
+						}
+						
+						System.out.println("Generating reactions using reaction family templates.");
+						// Iterate through the reaction templates
 						newReactionSet.addAll(rxnSystem.getReactionGenerator().react(cerm.getReactedSpeciesSet(),maxSpecies,"All"));
 						
 						// To remove the duplicates that are found in Reaction Library and Reaction Template
 						// Preference given to Reaction Library over Template Reaction 
-						
-					newReactionSet_nodup = RemoveDuplicateReac(newReactionSet);
+						newReactionSet_nodup = RemoveDuplicateReac(newReactionSet);
 					}
 					else{
 						// When no Reaction Library is present
-					newReactionSet_nodup = rxnSystem.getReactionGenerator().react(cerm.getReactedSpeciesSet(),maxSpecies,"All");
+						newReactionSet_nodup = rxnSystem.getReactionGenerator().react(cerm.getReactedSpeciesSet(),maxSpecies,"All");
 					}
 					// shamel 6/22/2010 Suppressed output , line is only for debugging
 					// System.out.println("Reaction Set For Pdep PdepRME "+newReactionSet_nodup);
@@ -315,45 +325,48 @@ public class RateBasedPDepRME implements ReactionModelEnlarger {
 			else if (object instanceof PDepNetwork) {
 
 				PDepNetwork maxNetwork = (PDepNetwork) object;
-
-				try {
-					PDepIsomer isomer = maxNetwork.getMaxLeakIsomer(ps);
-					System.out.println("\nAdd a new included Species: " + isomer.toString() +
-							" to network " + maxNetwork.getID());
-
-					// Making a species included in one network automatically
-					// makes it included in all networks it is contained in
-					// Therefore we need to merge all networks containing that
-					// species as a unimolecular isomer together
-					LinkedList<PDepNetwork> networksToRemove = new LinkedList<PDepNetwork>();
-					for (Iterator iter = PDepNetwork.getNetworks().iterator(); iter.hasNext(); ) {
-						PDepNetwork pdn = (PDepNetwork) iter.next();
-						if (pdn.contains(isomer.getSpecies(0)) && pdn != maxNetwork) {
-							for (int j = 0; j < pdn.getIsomers().size(); j++)
-								maxNetwork.addIsomer(pdn.getIsomers().get(j));
-							for (int j = 0; j < pdn.getPathReactions().size(); j++)
-								maxNetwork.addReaction(pdn.getPathReactions().get(j),false);
-							networksToRemove.add(pdn);
+				if ( maxNetwork.getAltered() ) {
+					System.out.println("\nNetwork " + maxNetwork.getID() + " has been altered already this step, so will not be expanded until next step.");
+				}
+				else {
+					try {
+						PDepIsomer isomer = maxNetwork.getMaxLeakIsomer(ps);
+						System.out.println("\nAdd a new included Species: " + isomer.toString() +
+										   " to network " + maxNetwork.getID());
+						
+						// Making a species included in one network automatically
+						// makes it included in all networks it is contained in
+						// Therefore we need to merge all networks containing that
+						// species as a unimolecular isomer together
+						LinkedList<PDepNetwork> networksToRemove = new LinkedList<PDepNetwork>();
+						for (Iterator iter = PDepNetwork.getNetworks().iterator(); iter.hasNext(); ) {
+							PDepNetwork pdn = (PDepNetwork) iter.next();
+							if (pdn.contains(isomer.getSpecies(0)) && pdn != maxNetwork) {
+								for (int j = 0; j < pdn.getIsomers().size(); j++)
+									maxNetwork.addIsomer(pdn.getIsomers().get(j));
+								for (int j = 0; j < pdn.getPathReactions().size(); j++)
+									maxNetwork.addReaction(pdn.getPathReactions().get(j),false);
+								networksToRemove.add(pdn);
+							}
 						}
+						for (Iterator iter = networksToRemove.iterator(); iter.hasNext(); ) {
+							PDepNetwork pdn = (PDepNetwork) iter.next();
+							PDepNetwork.getNetworks().remove(pdn);
+						}
+						
+						// Make the isomer included
+						// This will cause any other reactions of the form
+						// isomer -> products that don't yet exist to be created
+						maxNetwork.makeIsomerIncluded(isomer);
+						maxNetwork.updateReactionLists(cerm);
 					}
-					for (Iterator iter = networksToRemove.iterator(); iter.hasNext(); ) {
-						PDepNetwork pdn = (PDepNetwork) iter.next();
-						PDepNetwork.getNetworks().remove(pdn);
+					catch (PDepException e) {
+						e.printStackTrace();
+						System.out.println(e.getMessage());
+						System.out.println(maxNetwork.toString());
+						System.exit(0);
 					}
-
-					// Make the isomer included
-					// This will cause any other reactions of the form
-					// isomer -> products that don't yet exist to be created
-					maxNetwork.makeIsomerIncluded(isomer);
-					maxNetwork.updateReactionLists(cerm);
 				}
-				catch (PDepException e) {
-					e.printStackTrace();
-					System.out.println(e.getMessage());
-					System.out.println(maxNetwork.toString());
-					System.exit(0);
-				}
-
 			}
 			else
 				continue;

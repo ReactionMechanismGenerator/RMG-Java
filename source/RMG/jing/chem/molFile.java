@@ -46,6 +46,10 @@ public class molFile {
     public String getPath(){
         return directory+"/"+name+".mol";
     }
+
+    public String getCrudePath(){
+        return directory+"/"+name+".cmol";
+    }
     
     public String getName(){
         return name;

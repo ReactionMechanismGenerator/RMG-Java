@@ -182,7 +182,7 @@ public class ChemParser {
         String TRange = token.nextToken();
 
         double A = Double.parseDouble(token.nextToken());
-        if (A<0) throw new NegativeAException("A (<0):" + String.valueOf(A));
+        if (A<0) throw new NegativeAException("Negative A:" + String.valueOf(A));
         double n = Double.parseDouble(token.nextToken());
         double alpha = Double.parseDouble(token.nextToken());
         double E = Double.parseDouble(token.nextToken());
@@ -274,7 +274,7 @@ public class ChemParser {
         String TRange = token.nextToken();
 
         double A = Double.parseDouble(token.nextToken());
-        if (A<0) throw new NegativeAException("A (<0):" + String.valueOf(A));
+        if (A<0) throw new NegativeAException("Negative A:" + String.valueOf(A));
         double n = Double.parseDouble(token.nextToken());
         double E = Double.parseDouble(token.nextToken());
 
@@ -726,7 +726,7 @@ public class ChemParser {
           if (token.countTokens() != 6) throw new InvalidKineticsFormatException();
 
           double A = Double.parseDouble(token.nextToken());
-          if (A<0) throw new NegativeAException("A (<0):" + String.valueOf(A));
+          if (A<0) throw new NegativeAException("Negative A:" + String.valueOf(A));
           double n = Double.parseDouble(token.nextToken());
           double E = Double.parseDouble(token.nextToken());
 
@@ -858,7 +858,7 @@ public class ChemParser {
         if (token.countTokens() != 3) throw new InvalidKineticsFormatException();
 
         double A = Double.parseDouble(token.nextToken());
-        if (A<0) throw new NegativeAException("A (<0):" + String.valueOf(A));
+        if (A<0) throw new NegativeAException("Negative A:" + String.valueOf(A));
         double n = Double.parseDouble(token.nextToken());
         double E = Double.parseDouble(token.nextToken());
 

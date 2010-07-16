@@ -2518,7 +2518,7 @@ public class ReactionModelGenerator {
 				bw.write(species.getName()+"("+species.getID()+")");
 				bw.newLine();
 				int dummyInt = 0;
-				bw.write(species.getChemGraph().toStringWithoutH(dummyInt));
+				bw.write(species.getChemGraph().toString(dummyInt));
 				bw.newLine();
 			}
         } catch (FileNotFoundException ex) {
@@ -2604,7 +2604,7 @@ public class ReactionModelGenerator {
 				bw.write(species.getName()+"("+species.getID()+")");
 				bw.newLine();
 				int dummyInt = 0;
-				bw.write(species.getChemGraph().toStringWithoutH(dummyInt));
+				bw.write(species.getChemGraph().toString(dummyInt));
 				bw.newLine();
 			}
         } catch (FileNotFoundException ex) {

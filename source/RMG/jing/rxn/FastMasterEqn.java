@@ -519,8 +519,10 @@ public class FastMasterEqn implements PDepKineticsEstimator {
 			input += "# The temperatures at which to estimate k(T, P)\n";
 			input += "# 	First item is the number of temperatures \n";
 			input += "#	Second item is the units; options are K, C, F, or R\n";
+			input += "#	Next comes the minimum and maximum temperatures in the specified units\n";
 			input += "#	Remaining items are the temperature values in the specified units\n";
-			input += Integer.toString(temperatures.length) + " K\n";
+			input += Integer.toString(temperatures.length) + " K ";
+			input += Double.toString(PDepRateConstant.getTMin().getK()) + " " + Double.toString(PDepRateConstant.getTMax().getK()) + "\n";
 			for (int i = 0; i < temperatures.length; i++)
 				input += Double.toString(temperatures[i].getK()) + "\n";
 			input += "\n";
@@ -529,8 +531,10 @@ public class FastMasterEqn implements PDepKineticsEstimator {
 			input += "# The pressures at which to estimate k(T, P)\n";
 			input += "# 	First item is the number of pressures \n";
 			input += "#	Second item is the units; options are bar, atm, Pa, or torr\n";
+			input += "#	Next comes the minimum and maximum pressures in the specified units\n";
 			input += "#	Remaining items are the temperature values in the specified units\n";
-			input += Integer.toString(pressures.length) + " Pa\n";
+			input += Integer.toString(pressures.length) + " Pa ";
+			input += Double.toString(PDepRateConstant.getPMin().getPa()) + " " + Double.toString(PDepRateConstant.getPMax().getPa()) + "\n";
 			for (int i = 0; i < pressures.length; i++)
 				input += Double.toString(pressures[i].getPa()) + "\n";
 			input += "\n";
