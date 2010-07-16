@@ -287,6 +287,22 @@ public class PDepRateConstant {
 		TMAX = t;
 	}
 	
+	public static Pressure getPMin() {
+		return PMIN;
+	}
+
+	public static Pressure getPMax() {
+		return PMAX;
+	}
+
+	public static Temperature getTMin() {
+		return TMIN;
+	}
+
+	public static Temperature getTMax() {
+		return TMAX;
+	}
+
 	public double[][] getRateConstants() {
 		return rateConstants;
 	}

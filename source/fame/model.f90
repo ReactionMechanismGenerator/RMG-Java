@@ -37,11 +37,12 @@ contains
     !		nChebT - Number of temperatures to use to fit Chebyshev polynomials
     !		nChebP - Number of pressures to use to fit Chebyshev polynomials
     !		alpha - Matrix of coefficients.
-    subroutine fitChebyshevModel(K, Tlist, Plist, nChebT, nChebP, alpha)
+    subroutine fitChebyshevModel(K, Tlist, Plist, Tmin, Tmax, Pmin, Pmax, nChebT, nChebP, alpha)
 
         real(8), dimension(:,:), intent(in) :: K
         real(8), dimension(:), intent(in) :: Tlist
         real(8), dimension(:), intent(in) :: Plist
+        real(8), intent(in) :: Tmin, Tmax, Pmin, Pmax
         integer, intent(in) :: nChebT
         integer, intent(in) :: nChebP
         real(8), dimension(:,:), intent(inout) :: alpha
@@ -53,7 +54,6 @@ contains
         real(8), dimension(:,:), allocatable :: b
 
         integer nT, nP, t, p, t1, p1, t2, p2
-        real(8) Tmax, Tmin, Pmax, Pmin
         real(8) phiT, phiP
 
         ! Variables for BLAS and LAPACK
@@ -68,12 +68,6 @@ contains
 
         allocate( Tred(1:nT), Pred(1:nP) )
         allocate( A(1:nT*nP, 1:nChebT*nChebP), b(1:nT*nP,1) )
-
-        ! Determine temperature and pressure ranges
-        Tmax = maxval(Tlist)
-        Tmin = minval(Tlist)
-        Pmax = maxval(Plist)
-        Pmin = minval(Plist)
 
         ! Calculate reduced temperatures and pressures
         do t = 1, nT
