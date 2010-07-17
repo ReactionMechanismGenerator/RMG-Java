@@ -343,7 +343,7 @@ public class QMTP implements GeneralGAPP {
 			if(useHindRot && rotors > 0){
 			    //we should re-run scans even if pre-existing scans exist because atom numbering may change from case to case; a better solution would be to check for stored CanTherm output and use that if available
 			    System.out.println("Running rotor scans on "+name+"...");
-			    //createMM4RotorInput(name, directory, InChIaug, multiplicity);//we don't worry about checking InChI here; if there is an InChI mismatch it should be caught
+			    createMM4RotorInput(name, directory, p_chemGraph);//we don't worry about checking InChI here; if there is an InChI mismatch it should be caught
 			    //runMM4Rotor(name, directory, rotors);
 			}
 		    }
@@ -712,7 +712,137 @@ public class QMTP implements GeneralGAPP {
         }
         return maxAttemptNumber;
     }
+
+    //creates MM4 rotor input file and MM4 batch file in directory with filenames name.mm4 and name.com, respectively using MoleCoor
+    //attemptNumber determines which keywords to try
+    //the function returns the maximum number of keywords that can be attempted; this will be the same throughout the evaluation of the code, so it may be more appropriate to have this as a "constant" attribute of some sort
+    public void createMM4RotorInput(String name, String directory, ChemGraph p_chemgraph){
+	//read in the optimized coordinates from the completed "normal" MM4 job; this will be used as a template for the rotor input files
+	String mm4optContents = "";
+	try{
+	    FileReader mm4opt = new FileReader(directory+"/"+name+".mm4opt");
+	    BufferedReader reader = new BufferedReader(mm4opt);
+	    String line=reader.readLine();
+	    while(line!=null){
+		mm4optContents+=line;
+		line=reader.readLine();
+	    }
+	    mm4opt.close();
+	}
+	catch(Exception e){
+		String err = "Error in reading .mm4opt file\n";
+		err += e.toString();
+		e.printStackTrace();
+		System.exit(0);
+	}
+	String[] lines = mm4optContents.split("[\\r?\\n]+");//split by newlines, excluding blank lines; cf. http://stackoverflow.com/questions/454908/split-java-string-by-new-line
+	int indexForFirstAtom = lines.length - p_chemgraph.getAtomNumber();//assumes the last line is for the last atom
+	lines[1]=lines[1].substring(78)+" 2";//take the first 78 characters of line 2, and append the option number for the NDRIVE option; in other words, we are replacing the NDRIVE=0 option with the desired option number
+	//reconstruct mm4optContents
+	mm4optContents = "";
+	for(int j=0; j<lines.length;j++){
+	    mm4optContents +=lines[j];
+	}
+	//iterate over all the rotors in the molecule
+	int i = 0;//rotor index
+	LinkedHashMap rotorInfo = p_chemgraph.getInternalRotorInformation();
+	Iterator iter = rotorInfo.keySet().iterator();
+	while(iter.hasNext()){
+	    i++;
+	    int[] rotorAtoms = (int[])iter.next();
+	    try{
+		//write one script file for each rotor
+		//Step 1: write the script for MM4 batch operation
+//	Example script file:
+//	#! /bin/csh
+//	cp testEthylene.mm4 CPD.MM4
+//	cp $MM4_DATDIR/BLANK.DAT PARA.MM4
+//	cp $MM4_DATDIR/CONST.MM4 .
+//	$MM4_EXEDIR/mm4 <<%
+//	1
+//	2
+//	0
+//	%
+//	mv TAPE4.MM4 testEthyleneBatch.out
+//	mv TAPE9.MM4 testEthyleneBatch.opt
+//	exit
+		//create batch file with executable permissions: cf. http://java.sun.com/docs/books/tutorial/essential/io/fileAttr.html#posix
+		File inpKey = new File(directory+"/"+name+".com"+i);
+		String inpKeyStr="#! /bin/csh\n";
+		inpKeyStr+="cp "+name+".mm4rot"+i+" CPD.MM4\n";
+		inpKeyStr+="cp $MM4_DATDIR/BLANK.DAT PARA.MM4\n";
+		inpKeyStr+="cp $MM4_DATDIR/CONST.MM4 .\n";
+		inpKeyStr+="$MM4_EXEDIR/mm4 <<%\n";
+		inpKeyStr+="1\n";//read from first line of .mm4 file
+		inpKeyStr+="2\n"; //Block-Diagonal Method then Full-Matrix Method
+		//else if(attemptNumber%scriptAttempts==0) inpKeyStr+="3\n"; //Full-Matrix Method only
+
+		inpKeyStr+="0\n";//terminate the job
+		inpKeyStr+="%\n";
+		inpKeyStr+="mv TAPE4.MM4 "+name+".mm4rotout"+i+"\n";
+		inpKeyStr+="mv TAPE9.MM4 "+name+".mm4rotopt"+i+"\n";
+		inpKeyStr+="exit\n";
+		FileWriter fw = new FileWriter(inpKey);
+		fw.write(inpKeyStr);
+		fw.close();
+	    }
+	    catch(Exception e){
+		String err = "Error in writing MM4 script files\n";
+		err += e.toString();
+		e.printStackTrace();
+		System.exit(0);
+	    }
+
+	    //Step 2: create the MM4 rotor job input file for rotor i, using the output file from the "normal" MM4 job as a template
+	    //Step 2a: find the dihedral angle for the minimized conformation (we need to start at the minimum energy conformation because CanTherm assumes that theta=0 is the minimum
+	    //extract the lines for dihedral atoms
+	    String dihedral1s = lines[indexForFirstAtom+rotorAtoms[0]-1];
+	    String atom1s = lines[indexForFirstAtom+rotorAtoms[1]-1].trim();
+	    String atom2s = lines[indexForFirstAtom+rotorAtoms[2]-1].trim();
+	    String dihedral2s = lines[indexForFirstAtom+rotorAtoms[3]-1].trim();
+	    //extract the x,y,z coordinates for each atom
+	    double[] dihedral1 = {Double.parseDouble(dihedral1s.substring(0,10)),Double.parseDouble(dihedral1s.substring(10,20)),Double.parseDouble(dihedral1s.substring(20,30))};
+	    double[] atom1 = {Double.parseDouble(atom1s.substring(0,10)),Double.parseDouble(atom1s.substring(10,20)),Double.parseDouble(atom1s.substring(20,30))};
+	    double[] atom2 = {Double.parseDouble(atom2s.substring(0,10)),Double.parseDouble(atom2s.substring(10,20)),Double.parseDouble(atom2s.substring(20,30))};
+	    double[] dihedral2 = {Double.parseDouble(dihedral2s.substring(0,10)),Double.parseDouble(dihedral2s.substring(10,20)),Double.parseDouble(dihedral2s.substring(20,30))};
+	    //determine the dihedral angle
+	    double dihedral = calculateDihedral(dihedral1,atom1,atom2,dihedral2);
+	    //eventually, when problems arise due to collinear atoms (both arguments to atan2 are zero) we can iterate over other atom combinations (with atoms in each piece determined by the corresponding value in rotorInfo for atom2 and the complement of these (full set = p_chemgraph.getNodeIDs()) for atom1) until they are not collinear
+	    //Step 2b: write the file for rotor i
+	    try{
+		FileWriter mm4roti = new FileWriter(directory+"/"+name+".mm4rot"+i);
+		mm4roti.write(mm4optContents+"\n"+"\n");
+		mm4roti.close();
+	    }
+	    catch(Exception e){
+		String err = "Error in writing MM4 rotor input file\n";
+		err += e.toString();
+		e.printStackTrace();
+		System.exit(0);
+	    }
+	}
+        return;
+    }
     
+    //given x,y,z (cartesian) coordinates for dihedral1 atom, (rotor) atom 1, (rotor) atom 2, and dihedral2 atom, calculates the dihedral angle (in degrees, between +180 and -180) using the atan2 formula at http://en.wikipedia.org/w/index.php?title=Dihedral_angle&oldid=373614697
+    public double calculateDihedral(double[] dihedral1, double[] atom1, double[] atom2, double[] dihedral2){
+	//calculate the vectors between the atoms
+	double[] b1 = {atom1[0]-dihedral1[0], atom1[1]-dihedral1[1], atom1[2]-dihedral1[2]};
+	double[] b2 = {atom2[0]-atom1[0], atom2[1]-atom1[1], atom2[2]-atom1[2]};
+	double[] b3 = {dihedral2[0]-atom2[0], dihedral2[1]-atom2[1], dihedral2[2]-atom2[2]};
+	//calculate norm of b2
+	double normb2 = Math.sqrt(b2[0]*b2[0]+b2[1]*b2[1]+b2[2]*b2[2]);
+	//calculate necessary cross products
+	double[] b1xb2 = {b1[1]*b2[2]-b1[2]*b2[1], b2[0]*b1[2]-b1[0]*b2[2], b1[0]*b2[1]-b1[1]*b2[0]};
+	double[] b2xb3 = {b2[1]*b3[2]-b2[2]*b3[1], b3[0]*b2[2]-b2[0]*b3[2], b2[0]*b3[1]-b2[1]*b3[0]};
+	//compute arguments for atan2 function (includes dot products)
+	double y = normb2*(b1[0]*b2xb3[0]+b1[1]*b2xb3[1]+b1[2]*b2xb3[2]);//|b2|*b1.(b2xb3)
+	double x = b1xb2[0]*b2xb3[0]+b1xb2[1]*b2xb3[1]+b1xb2[2]*b2xb3[2];//(b1xb2).(b2xb3)
+	double dihedral = Math.atan2(y, x);
+	//return dihedral*180.0/Math.PI;//converts from radians to degrees
+	return Math.toDegrees(dihedral);//converts from radians to degrees
+    }
+
     //returns the extra Mopac keywords to use for radical species, given the spin multiplicity (radical number + 1)
     public String getMopacRadicalString(int multiplicity){
         if(multiplicity==1) return "";
@@ -1411,7 +1541,7 @@ public class QMTP implements GeneralGAPP {
 	else{
 	    //this section still needs to be written
 	    int rotorCount = 0;
-	    canInp+="ROTORS "+rotors+ " "+name+".rot\n";
+	    canInp+="ROTORS "+rotors+ " "+name+".rotinfo\n";
 	    rotInput = "L1: 1 2 3\n";
 	    LinkedHashMap rotorInfo = p_chemGraph.getInternalRotorInformation();
 	    Iterator iter = rotorInfo.keySet().iterator();
@@ -1420,12 +1550,12 @@ public class QMTP implements GeneralGAPP {
 		int[] rotorAtoms = (int[])iter.next();
 		LinkedHashSet rotatingGroup = (LinkedHashSet)rotorInfo.get(rotorAtoms);
 		Iterator iterGroup = rotatingGroup.iterator();
-		rotInput += "L2: 1 "+rotorAtoms[0]+ " "+ rotorAtoms[1];//uses a symmetry number of 1; this will be taken into account elsewhere
+		rotInput += "L2: 1 "+rotorAtoms[1]+ " "+ rotorAtoms[2];//uses a symmetry number of 1; this will be taken into account elsewhere
 		while (iterGroup.hasNext()){//print the atoms associated with rotorAtom 2
 		    rotInput+= " "+(Integer)iterGroup.next();
 		}
 		rotInput += "\n";
-		canInp+="POTENTIAL separable file " + name + ".rot"+rotorCount;//potential files will be named as name.rotn
+		canInp+="POTENTIAL separable file " + name + ".rot"+rotorCount;//***note we need to convert units of energy to Hartree; potential files will be named as name.rotn
 	    }
 	}
 	canInp+="0\n";//no bond-additivity corrections
@@ -1435,7 +1565,7 @@ public class QMTP implements GeneralGAPP {
             fw.write(canInp);
             fw.close();
 	    if(rotInput !=null){//write the rotor information
-		File rotFile=new File(directory+"/"+name+".rot");
+		File rotFile=new File(directory+"/"+name+".rotinfo");
 		FileWriter fwr = new FileWriter(rotFile);
 		fwr.write(rotInput);
 		fwr.close();
