@@ -52,7 +52,7 @@ public class QMTP implements GeneralGAPP {
     public static String qmfolder= "QMfiles/";
     //   protected static HashMap library;		//as above, may be able to move this and associated functions to GeneralGAPP (and possibly change from "x implements y" to "x extends y"), as it is common to both GATP and QMTP
     protected ThermoGAGroupLibrary thermoLibrary; //needed for HBI
-    public static String qmprogram= "both";//the qmprogram can be "mopac", "gaussian03", "both" (MOPAC and Gaussian), or "mm4"
+    public static String qmprogram= "both";//the qmprogram can be "mopac", "gaussian03", "both" (MOPAC and Gaussian), or "mm4"/"mm4hr"
     public static boolean usePolar = false; //use polar keyword in MOPAC
     public static boolean useCanTherm = true; //whether to use CanTherm in MM4 cases for interpreting output via force-constant matrix; this will hopefully avoid zero frequency issues
     public static boolean useHindRot = false;//whether to use HinderedRotor scans with MM4 (requires useCanTherm=true)
@@ -230,8 +230,9 @@ public class QMTP implements GeneralGAPP {
         //if there is no data in the libraries, calculate the result based on QM or MM calculations; the below steps will be generalized later to allow for other quantum mechanics packages, etc.
         String qmProgram = qmprogram;
 	String qmMethod = "";
-	if(qmProgram.equals("mm4")){
+	if(qmProgram.equals("mm4")||qmProgram.equals("mm4hr")){
 	    qmMethod = "mm4";
+	    if(qmProgram.equals("mm4hr")) useHindRot=true;
 	}
 	else{
 	    qmMethod="pm3"; //may eventually want to pass this to various functions to choose which "sub-function" to call
@@ -1604,6 +1605,8 @@ public class QMTP implements GeneralGAPP {
 	    //this section still needs to be written
 	    int rotorCount = 0;
 	    canInp+="ROTORS "+rotors+ " "+name+".rotinfo\n";
+	    canInp+="POTENTIAL separable mm4files\n";//***special MM4 treatment in canTherm;
+	    String rotNumbersLine=""+stericEnergy;//the line that will contain V0 (kcal/mol), and all the dihedral minima (degrees)
 	    rotInput = "L1: 1 2 3\n";
 	    LinkedHashMap rotorInfo = p_chemGraph.getInternalRotorInformation();
 	    Iterator iter = rotorInfo.keySet().iterator();
@@ -1617,8 +1620,10 @@ public class QMTP implements GeneralGAPP {
 		    rotInput+= " "+(Integer)iterGroup.next();
 		}
 		rotInput += "\n";
-		canInp+="POTENTIAL separable file " + name + ".rot"+rotorCount;//***note we need to convert units of energy to Hartree; potential files will be named as name.rotn
+		canInp+=" "+ name + ".mm4rotopt"+rotorCount;// potential files will be named as name.mm4rotopti
+		rotNumbersLine+=" "+dihedralMinima[rotorCount-1];
 	    }
+	    canInp+="\n"+rotNumbersLine+"\n";
 	}
 	canInp+="0\n";//no bond-additivity corrections
 	try{
