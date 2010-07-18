@@ -245,6 +245,14 @@ class MM4(logfileparser.Logfile):
 		    freq = self.float(line[15:31])
 		    self.vibfreqs.append(freq)
 		    line = inputfile.next()
+	#parsing of final steric energy in eV (for purposes of providing a baseline for possible subsequent hindered rotor calculations)
+	#example line:"    FINAL STERIC ENERGY IS                0.8063 KCAL/MOL."
+	if line[6:28] == 'FINAL STERIC ENERGY IS':
+            stericenergy = utils.convertor(self.float(line.split()[4])/627.5095, "hartree", "eV") #note conversion from kcal/mol to hartree
+	    if hasattr(self, "stericenergy"):
+                assert self.stericenergy == stericenergy #check that subsequent occurences match the original value
+            else:
+                self.stericenergy = stericenergy
 
 
 if __name__ == "__main__":

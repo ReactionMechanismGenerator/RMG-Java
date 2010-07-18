@@ -62,6 +62,7 @@ public class QMTP implements GeneralGAPP {
     public static double k = 1.3806504E-23;//Boltzmann's constant in J/K; cf. http://physics.nist.gov/cgi-bin/cuu/Value?na|search_for=physchem_in!
     public static double h = 6.62606896E-34;//Planck's constant in J-s; cf. http://physics.nist.gov/cgi-bin/cuu/Value?h|search_for=universal_in!
     public static double c = 299792458. *100;//speed of light in vacuum in cm/s, cf. http://physics.nist.gov/cgi-bin/cuu/Value?c|search_for=universal_in!
+    public static double deltaTheta=5.0;//degree increment for rotor scans when using useHindRot
     // Constructors
 
     //## operation QMTP()
@@ -237,6 +238,7 @@ public class QMTP implements GeneralGAPP {
 	}
         
         ThermoData result = new ThermoData();
+	double[] dihedralMinima = null;
         
         String [] InChInames = getQMFileName(p_chemGraph);//determine the filename (InChIKey) and InChI with appended info for triplets, etc.
         String name = InChInames[0];
@@ -343,8 +345,8 @@ public class QMTP implements GeneralGAPP {
 			if(useHindRot && rotors > 0){
 			    //we should re-run scans even if pre-existing scans exist because atom numbering may change from case to case; a better solution would be to check for stored CanTherm output and use that if available
 			    System.out.println("Running rotor scans on "+name+"...");
-			    createMM4RotorInput(name, directory, p_chemGraph);//we don't worry about checking InChI here; if there is an InChI mismatch it should be caught
-			    //runMM4Rotor(name, directory, rotors);
+			    dihedralMinima = createMM4RotorInput(name, directory, p_chemGraph, rotors);//we don't worry about checking InChI here; if there is an InChI mismatch it should be caught
+			    runMM4Rotor(name, directory, rotors);
 			}
 		    }
 		    else if(successFlag==0){
@@ -361,7 +363,7 @@ public class QMTP implements GeneralGAPP {
 	    }
 	    //5. parse MM4 output and record as thermo data (function includes symmetry/point group calcs, etc.)
 	    if(!useCanTherm) result = parseMM4(name, directory, p_chemGraph);
-	    else result = parseMM4withForceMat(name, directory, p_chemGraph);
+	    else result = parseMM4withForceMat(name, directory, p_chemGraph, dihedralMinima);
 	}
         
         return result;
@@ -713,12 +715,12 @@ public class QMTP implements GeneralGAPP {
         return maxAttemptNumber;
     }
 
-    //creates MM4 rotor input file and MM4 batch file in directory with filenames name.mm4 and name.com, respectively using MoleCoor
-    //attemptNumber determines which keywords to try
-    //the function returns the maximum number of keywords that can be attempted; this will be the same throughout the evaluation of the code, so it may be more appropriate to have this as a "constant" attribute of some sort
-    public void createMM4RotorInput(String name, String directory, ChemGraph p_chemgraph){
+    //creates MM4 rotor input file and MM4 batch file in directory with filenames name.mm4roti and name.comi, respectively
+    //the function returns the set of rotor dihedral angles for the minimum energy conformation
+    public double[] createMM4RotorInput(String name, String directory, ChemGraph p_chemgraph, int rotors){
 	//read in the optimized coordinates from the completed "normal" MM4 job; this will be used as a template for the rotor input files
 	String mm4optContents = "";
+	double[] dihedralMinima = new double[rotors];
 	try{
 	    FileReader mm4opt = new FileReader(directory+"/"+name+".mm4opt");
 	    BufferedReader reader = new BufferedReader(mm4opt);
@@ -774,8 +776,8 @@ public class QMTP implements GeneralGAPP {
 		inpKeyStr+="cp $MM4_DATDIR/CONST.MM4 .\n";
 		inpKeyStr+="$MM4_EXEDIR/mm4 <<%\n";
 		inpKeyStr+="1\n";//read from first line of .mm4 file
-		inpKeyStr+="2\n"; //Block-Diagonal Method then Full-Matrix Method
-		//else if(attemptNumber%scriptAttempts==0) inpKeyStr+="3\n"; //Full-Matrix Method only
+		inpKeyStr+="3\n"; //Full-Matrix Method only
+		//inpKeyStr+="2\n"; //Block-Diagonal Method then Full-Matrix Method
 
 		inpKeyStr+="0\n";//terminate the job
 		inpKeyStr+="%\n";
@@ -806,12 +808,17 @@ public class QMTP implements GeneralGAPP {
 	    double[] atom2 = {Double.parseDouble(atom2s.substring(0,10)),Double.parseDouble(atom2s.substring(10,20)),Double.parseDouble(atom2s.substring(20,30))};
 	    double[] dihedral2 = {Double.parseDouble(dihedral2s.substring(0,10)),Double.parseDouble(dihedral2s.substring(10,20)),Double.parseDouble(dihedral2s.substring(20,30))};
 	    //determine the dihedral angle
-	    double dihedral = calculateDihedral(dihedral1,atom1,atom2,dihedral2);
+	    dihedralMinima[i-1] = calculateDihedral(dihedral1,atom1,atom2,dihedral2);
+	    //double dihedral = calculateDihedral(dihedral1,atom1,atom2,dihedral2);
+	    //if (dihedral < 0) dihedral = dihedral + 360;//make sure dihedral is positive; this will save an extra character in the limited space for specifying starting and ending angles
 	    //eventually, when problems arise due to collinear atoms (both arguments to atan2 are zero) we can iterate over other atom combinations (with atoms in each piece determined by the corresponding value in rotorInfo for atom2 and the complement of these (full set = p_chemgraph.getNodeIDs()) for atom1) until they are not collinear
+
 	    //Step 2b: write the file for rotor i
 	    try{
 		FileWriter mm4roti = new FileWriter(directory+"/"+name+".mm4rot"+i);
-		mm4roti.write(mm4optContents+"\n"+"\n");
+		//mm4roti.write(mm4optContents+"\n"+String.format("  %3d  %3d  %3d  %3d     %5f.1%5f.1%5f.1", rotorAtoms[0],rotorAtoms[1],rotorAtoms[2],rotorAtoms[3], dihedral, dihedral + 360.0 - deltaTheta, deltaTheta)+"\n");//deltaTheta should be less than 100 degrees so that dihedral-deltaTheta still fits
+		//mm4roti.write(mm4optContents+"\n"+String.format("  %3d  %3d  %3d  %3d     %5f.1%5f.1%5f.1", rotorAtoms[0],rotorAtoms[1],rotorAtoms[2],rotorAtoms[3], dihedral, dihedral - deltaTheta, deltaTheta)+"\n");//deltaTheta should be less than 100 degrees so that dihedral-deltaTheta still fits
+		mm4roti.write(mm4optContents+"\n"+String.format("  %3d  %3d  %3d  %3d     %5f.1%5f.1%5f.1", rotorAtoms[0],rotorAtoms[1],rotorAtoms[2],rotorAtoms[3], 0.0, 360.0-deltaTheta, deltaTheta)+"\n");//M1, M2, M3, M4, START, FINISH, DIFF (as described in MM4 manual); //this would require miminum to be stored and used to adjust actual angles before sending to CanTherm
 		mm4roti.close();
 	    }
 	    catch(Exception e){
@@ -821,7 +828,7 @@ public class QMTP implements GeneralGAPP {
 		System.exit(0);
 	    }
 	}
-        return;
+        return dihedralMinima;
     }
     
     //given x,y,z (cartesian) coordinates for dihedral1 atom, (rotor) atom 1, (rotor) atom 2, and dihedral2 atom, calculates the dihedral angle (in degrees, between +180 and -180) using the atan2 formula at http://en.wikipedia.org/w/index.php?title=Dihedral_angle&oldid=373614697
@@ -1149,6 +1156,57 @@ public class QMTP implements GeneralGAPP {
 
         return successFlag;
     }
+
+    //name and directory are the name and directory for the input (and output) file;
+    //input script is assumed to be preexisting and have the .comi suffix where i is a number between 1 and rotors
+    public void runMM4Rotor(String name, String directory, int rotors){
+	 for(int j=1;j<=rotors;j++){
+	    try{
+		File runningDirectory = new File(qmfolder);
+		String command=name+".com"+j;
+	       // File script = new File(qmfolder+command);
+	       // command = "./"+command;
+	       // script.setExecutable(true);
+		command = "csh "+ command;
+		Process mm4Proc = Runtime.getRuntime().exec(command, null, runningDirectory);
+
+		//check for errors and display the error if there is one
+    //	    InputStream is = mm4Proc.getErrorStream();
+    //	    InputStreamReader isr = new InputStreamReader(is);
+    //	    BufferedReader br = new BufferedReader(isr);
+    //	    String line=null;
+    //	    while ( (line = br.readLine()) != null) {
+    //		line = line.trim();
+    //		if(!line.equals("STOP   statement executed")){//string listed here seems to be typical
+    //		    System.err.println(line);
+    //		    flag=1;
+    //		}
+    //	    }
+		InputStream is = mm4Proc.getInputStream();
+		InputStreamReader isr = new InputStreamReader(is);
+		BufferedReader br = new BufferedReader(isr);
+		String line=null;
+		while ( (line = br.readLine()) != null) {
+		    //do nothing
+		}
+		//if there was an error, indicate that an error was obtained
+    //	    if(flag==1){
+    //		System.out.println("MM4 process received error (see above) on " + name);
+    //	    }
+
+
+		int exitValue = mm4Proc.waitFor();
+	    }
+	    catch(Exception e){
+		String err = "Error in running MM4 rotor process \n";
+		err += e.toString();
+		e.printStackTrace();
+		System.exit(0);
+	    }
+	}
+
+        return;
+    }
     
     //name and directory are the name and directory for the input (and output) file;
     //input is assumed to be preexisting and have the .mop suffix
@@ -1387,13 +1445,14 @@ public class QMTP implements GeneralGAPP {
     }
 
     //parse the results using cclib and CanTherm and return a ThermoData object; name and directory indicate the location of the MM4 .mm4out file
-    public ThermoData parseMM4withForceMat(String name, String directory, ChemGraph p_chemGraph){
+    public ThermoData parseMM4withForceMat(String name, String directory, ChemGraph p_chemGraph, double[] dihedralMinima){
 	//1. parse the MM4 file with cclib to get atomic number vector and geometry
 	String command = "python "+System.getProperty("RMG.workingDirectory")+"/scripts/MM4ParsingScript.py ";
 	String logfilepath=directory+"/"+name+".mm4out";
 	command=command.concat(logfilepath);
 	command=command.concat(" "+ System.getenv("RMG")+"/source");//this will pass $RMG/source to the script (in order to get the appropriate path for importing
-        ///////////beginning of block taken from the bulk of getPM3MM4ThermoDataUsingCCLib////////////
+        command=command.concat(" 1");//option to print stericenergy before molar mass (this will only be used in useHindRot cases, but it is always read in with this function
+	///////////beginning of block taken from the bulk of getPM3MM4ThermoDataUsingCCLib////////////
 	//parse the file using cclib
         int natoms = 0; //number of atoms from Mopac file; in principle, this should agree with number of chemGraph atoms
         ArrayList atomicNumber = new ArrayList(); //vector of atomic numbers (integers) (apparently Vector is thread-safe; cf. http://answers.yahoo.com/question/index?qid=20081214065127AArZDT3; ...should I be using this instead?)
@@ -1402,6 +1461,7 @@ public class QMTP implements GeneralGAPP {
         ArrayList z_coor = new ArrayList();
         double energy = 0; // energy (Hf298) in Hartree
         double molmass = 0; //molecular mass in amu
+	double stericEnergy = 0;//steric energy in Hartree
         ArrayList freqs = new ArrayList(); //list of frequencies in units of cm^-1
         double rotCons_1 = 0;//rotational constants in (1/s)
         double rotCons_2 = 0;
@@ -1471,7 +1531,7 @@ public class QMTP implements GeneralGAPP {
 //              3086.687   3089.2274  3089.4105  3089.4743  3089.5841  3186.0753
 //              3186.1375  3186.3511  3186.365 ]
 //            [ 0.52729  0.49992  0.42466]
-//note: above example has since been updated to print molecular mass; also frequency and atomic number format has been updated
+//note: above example has since been updated to print molecular mass and steric energy; also frequency and atomic number format has been updated
             String [] stringArray;
             natoms = Integer.parseInt(br.readLine());//read line 1: number of atoms
             stringArray = br.readLine().replace("[", "").replace("]","").trim().split(",\\s+");//read line 2: the atomic numbers (first removing braces)
@@ -1488,7 +1548,8 @@ public class QMTP implements GeneralGAPP {
                 z_coor.add(i,Double.parseDouble(stringArray[2]));
             }
             energy = Double.parseDouble(br.readLine());//read next line: energy
-            molmass = Double.parseDouble(br.readLine());//read next line: molecular mass (in amu)
+            stericEnergy = Double.parseDouble(br.readLine());//read next line: steric energy (in Hartree)
+	    molmass = Double.parseDouble(br.readLine());//read next line: molecular mass (in amu)
             if (natoms>1){//read additional info for non-monoatomic species
                 stringArray = br.readLine().replace("[", "").replace("]","").trim().split(",\\s+");//read next line: frequencies
                 for(int i=0; i < stringArray.length; i++){
@@ -1514,6 +1575,7 @@ public class QMTP implements GeneralGAPP {
 	//2. compute H0/E0;  note that we will compute H0 for CanTherm by H0=Hf298(harmonicMM4)-(H298-H0)harmonicMM4, where harmonicMM4 values come from cclib parsing;  298.16 K is the standard temperature used by MM4; also note that Hthermal should include the R*T contribution (R*298.16 (enthalpy vs. energy difference)) and H0=E0 (T=0)
 	double T_MM4 = 298.16;
 	energy *= Hartree_to_kcal;//convert from Hartree to kcal/mol
+	stericEnergy *= Hartree_to_kcal;//convert from Hartree to kcal/mol
 	double Hthermal = 5./2.*R*T_MM4/1000.;//enthalpy vs. energy difference(RT)+translation(3/2*R*T) contribution to thermal energy
 	//rotational contribution
 	if(p_chemGraph.getAtomNumber()==1) Hthermal += 0.0;
