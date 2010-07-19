@@ -442,7 +442,7 @@ public class ReactionModelGenerator {
         		String name = st.nextToken();
         		String diffusionOnOff = st.nextToken().toLowerCase();
         		if (diffusionOnOff.equals("on")) {
-        			Species.useSolvation = true;
+        			//Species.useSolvation = true;
                     setUseDiffusion(true);
         		} else if (diffusionOnOff.equals("off")) {
         			setUseDiffusion(false);
