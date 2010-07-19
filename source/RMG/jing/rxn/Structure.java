@@ -64,6 +64,12 @@ public class Structure {
     protected LinkedList products;
     protected LinkedList reactants;
 
+    /* AJ 16JULY2010
+     * Read in the solvation flag from the Species class file. This flag will be used to modify the equilibrium constant calculation
+     * in the solution phase.
+     */
+    boolean solvation_Keq = Species.useSolvation;
+
     // Constructors
 
     //## operation Structure(LinkedList,LinkedList)
@@ -186,10 +192,17 @@ public class Structure {
         double T = p_temperature.getStandard();
         double R = GasConstant.getKcalMolK();
         Keq = Math.exp(-DG/R/T);
-        int deltaN = getDeltaN();
-        Keq *= Math.pow(GasConstant.getCCAtmMolK()*p_temperature.getK(),-deltaN);
+
+        /* AJ 16JULY2010
+         * If solvation is being used, the equilibrium constant is calculared as Keq = exp(-deltaG/RT) assuming the solution
+         * phase standard state concentration to be 1M.
+         */
+        if (!solvation_Keq) {
+            int deltaN = getDeltaN();
+            Keq *= Math.pow(GasConstant.getCCAtmMolK()*p_temperature.getK(),-deltaN);
+        }
         return Keq;
-        //#]
+        
     }
 
     //## operation calculateKeqLowerBound(Temperature)
@@ -222,10 +235,17 @@ public class Structure {
         double T = p_temperature.getStandard();
         double R = GasConstant.getKcalMolK();
         Keq = Math.exp(-DG/R/T);
-        int deltaN = getDeltaN();
-        Keq *= Math.pow(GasConstant.getCCAtmMolK()*p_temperature.getK(),-deltaN);
+
+        /* AJ 16JULY2010
+         * If solvation is being used, the equilibrium constant is calculared as Keq = exp(-deltaG/RT) assuming the solution
+         * phase standard state concentration to be 1M.
+         */
+        if (!solvation_Keq) {
+            int deltaN = getDeltaN();
+            Keq *= Math.pow(GasConstant.getCCAtmMolK()*p_temperature.getK(),-deltaN);
+        }
         return Keq;
-        //#]
+
       }
 
       //## operation calculateKeqUpperBound(Temperature)
@@ -258,10 +278,21 @@ public class Structure {
           double T = p_temperature.getStandard();
           double R = GasConstant.getKcalMolK();
           Keq = Math.exp(-DG/R/T);
-          int deltaN = getDeltaN();
-          Keq *= Math.pow(GasConstant.getCCAtmMolK()*p_temperature.getK(),-deltaN);
-          return Keq;
-          //#]
+
+        /* AJ 16JULY2010
+         * If solvation is being used, the equilibrium constant is calculared as Keq = exp(-deltaG/RT) assuming the solution
+         * phase standard state concentration to be 1M=0.001 mol/cc.
+         */
+        if (!solvation_Keq) {
+            int deltaN = getDeltaN();
+            Keq *= Math.pow(GasConstant.getCCAtmMolK()*p_temperature.getK(),-deltaN);
+        }
+        else {
+            int deltaN = getDeltaN();
+            Keq *= Math.pow(0.001,-deltaN);
+        }
+        return Keq;
+
         }
 
 
