@@ -237,7 +237,8 @@ public class Reaction {
             if (numReacts == 1 && numProds == 1) {
 
                 keff = rate;
-                setKineticsComments(getComments() + "Diffusive limits do not apply ",0);
+                
+                setKineticsComments(getComments() + "\t" + "Diffusive limits do not apply " + "\t" + "Keq =" + calculateKeq(p_temperature),0);
 
                 return keff;
             }
@@ -253,11 +254,9 @@ public class Reaction {
                     //if (!getKinetics().getComment().endsWith("Diffusion limited")){
                 DiffFactor = keff/rate;
 
-                setKineticsComments(getComments() + "Diffusion factor = " + DiffFactor,0);
                 
-                //setKineticsComments(getKinetics().getComment() + " " + "Keq =" + calculateKeq(p_temperature));
-                    //}
-                //}
+                setKineticsComments(getComments() + "\t"  + "Diffusion factor = " + DiffFactor + "\t" + "Keq =" + calculateKeq(p_temperature),0);
+
                 return keff;
             }
             else if (numReacts == 2 && numProds == 1) {
@@ -272,12 +271,8 @@ public class Reaction {
                     //if (!getKinetics().getComment().endsWith("Diffusion limited")){
                 DiffFactor = keff/rate;
 
-                setKineticsComments(getComments() + "Diffusion factor = " + DiffFactor,0);
-                //setKineticsComments(getKinetics().getComment() + "Diffusion factor = " + DiffFactor);
-                //setKineticsComments(getKinetics().getComment() + " " + "Keq =" + calculateKeq(p_temperature));
+                setKineticsComments(getComments() + "\t"  + "Diffusion factor = " + DiffFactor + "\t" + "Keq =" + calculateKeq(p_temperature),0);
 
-                    //}
-                //}
                 return keff;
 
             }
@@ -295,12 +290,9 @@ public class Reaction {
                     //if (keff/k_forw < 0.2){
                         //if (!getKinetics().getComment().endsWith("Diffusion limited")) {
                     DiffFactor = keff/rate;
-                    setKineticsComments(getComments() + "Diffusion factor = " + DiffFactor,0);
                     
-                    //setKineticsComments(getKinetics().getComment() + "Diffusion factor = " + DiffFactor);
-                    //setKineticsComments(getKinetics().getComment() + " " + "Keq =" + calculateKeq(p_temperature));
-                        //}
-                    //}
+                    setKineticsComments(getComments() + "\t"  + "Diffusion factor = " + DiffFactor + "\t" + "Keq =" + calculateKeq(p_temperature),0);
+                    
                     return keff;
                 }
                 else if (deltaHrxn>0){ // Reverse reaction is exothermic and the corresponding diffusion limit should be used
@@ -312,21 +304,16 @@ public class Reaction {
                     //if (keff/k_chem < 0.2){
                         //if (!getKinetics().getComment().endsWith("Diffusion limited")) {
                     DiffFactor = keff/rate;
+                    
+                    setKineticsComments(getComments() + "\t" + "Diffusion factor = " + DiffFactor + "\t" + "Keq =" + calculateKeq(p_temperature),0);
 
-                    setKineticsComments(getComments() + "Diffusion factor = " + DiffFactor,0);
-
-                    //setKineticsComments(getKinetics().getComment() + "Diffusion factor = " + DiffFactor);
-                    //setKineticsComments(getKinetics().getComment() + " " + "Keq =" + calculateKeq(p_temperature));
-
-                       // }
-                    //}
                     return keff;
                 }
 
             }
 
         }
-        //setKineticsComments(getKinetics().getComment() + " " + "Keq =" + calculateKeq(p_temperature));
+        setKineticsComments(getComments() + "\t" + "Keq =" + calculateKeq(p_temperature),0);
       	return rate;
 
 
