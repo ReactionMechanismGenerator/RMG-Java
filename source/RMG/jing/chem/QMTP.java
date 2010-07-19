@@ -1602,7 +1602,6 @@ public class QMTP implements GeneralGAPP {
 	String rotInput = null;
 	if(!useHindRot || rotors==0) canInp += "ROTORS 0\n";//do not consider hindered rotors
 	else{
-	    //this section still needs to be written
 	    int rotorCount = 0;
 	    canInp+="ROTORS "+rotors+ " "+name+".rotinfo\n";
 	    canInp+="POTENTIAL separable mm4files\n";//***special MM4 treatment in canTherm;
