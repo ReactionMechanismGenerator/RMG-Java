@@ -360,7 +360,8 @@ public class Reaction {
       }
 
       double kdiff;
-      kdiff = (88/7)*(d[0] + d[1])*(r[0] + r[1]) * 6.023 * Math.pow(10,29);     // units of r[i]=m; d[1]=m2/sec; kdiff=cm3/mole sec
+      kdiff = (88/7)*(d[0] + d[1])*(r[0] + r[1]) * 6.023e29;     // units of r[i]=m; d[1]=m2/sec; 
+kdiff=cm3/mole sec
       return kdiff;
   }
 
