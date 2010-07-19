@@ -727,7 +727,7 @@ public class QMTP implements GeneralGAPP {
 	    BufferedReader reader = new BufferedReader(mm4opt);
 	    String line=reader.readLine();
 	    while(line!=null){
-		mm4optContents+=line;
+		mm4optContents+=line+"\n";
 		line=reader.readLine();
 	    }
 	    mm4opt.close();
