@@ -193,14 +193,9 @@ public class Structure {
         double R = GasConstant.getKcalMolK();
         Keq = Math.exp(-DG/R/T);
 
-        /* AJ 16JULY2010
-         * If solvation is being used, the equilibrium constant is calculared as Keq = exp(-deltaG/RT) assuming the solution
-         * phase standard state concentration to be 1M.
-         */
-        if (!solvation_Keq) {
-            int deltaN = getDeltaN();
-            Keq *= Math.pow(GasConstant.getCCAtmMolK()*p_temperature.getK(),-deltaN);
-        }
+        int deltaN = getDeltaN();
+        Keq *= Math.pow(GasConstant.getCCAtmMolK()*p_temperature.getK(),-deltaN);
+        
         return Keq;
         
     }
@@ -236,14 +231,9 @@ public class Structure {
         double R = GasConstant.getKcalMolK();
         Keq = Math.exp(-DG/R/T);
 
-        /* AJ 16JULY2010
-         * If solvation is being used, the equilibrium constant is calculared as Keq = exp(-deltaG/RT) assuming the solution
-         * phase standard state concentration to be 1M.
-         */
-        if (!solvation_Keq) {
-            int deltaN = getDeltaN();
-            Keq *= Math.pow(GasConstant.getCCAtmMolK()*p_temperature.getK(),-deltaN);
-        }
+        int deltaN = getDeltaN();
+        Keq *= Math.pow(GasConstant.getCCAtmMolK()*p_temperature.getK(),-deltaN);
+
         return Keq;
 
       }
@@ -279,18 +269,9 @@ public class Structure {
           double R = GasConstant.getKcalMolK();
           Keq = Math.exp(-DG/R/T);
 
-        /* AJ 16JULY2010
-         * If solvation is being used, the equilibrium constant is calculared as Keq = exp(-deltaG/RT) assuming the solution
-         * phase standard state concentration to be 1M=0.001 mol/cc.
-         */
-        if (!solvation_Keq) {
-            int deltaN = getDeltaN();
-            Keq *= Math.pow(GasConstant.getCCAtmMolK()*p_temperature.getK(),-deltaN);
-        }
-        else {
-            int deltaN = getDeltaN();
-            Keq *= Math.pow(0.001,-deltaN);
-        }
+        int deltaN = getDeltaN();
+        Keq *= Math.pow(GasConstant.getCCAtmMolK()*p_temperature.getK(),-deltaN);
+
         return Keq;
 
         }
