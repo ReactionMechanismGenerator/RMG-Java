@@ -853,20 +853,20 @@ return sn;
 				Graph sideA = (Graph)pieces.getFirst();
 				Graph sideB = (Graph)pieces.getLast();
 				//look for the piece that has node2
-				if(sideA.contains(n2)){
+				if(sideA.getNodeIDs().contains(n2.getID())){
 				    Node dihedral1 = (Node)sideB.getNodeAt(n1.getID()).getNeighbor().next();//get a neighboring node
 				    Node dihedral2 = (Node)sideA.getNodeAt(n2.getID()).getNeighbor().next();//get a neighboring node
 				    int[] rotorAtoms = {dihedral1.getID(), n1.getID(), n2.getID(), dihedral2.getID()};
 				    rotorInfo.put(rotorAtoms, sideA.getNodeIDs());
 				}
-				else if (sideB.contains(n2)){
+				else if (sideB.getNodeIDs().contains(n2.getID())){
 				    Node dihedral1 = (Node)sideA.getNodeAt(n1.getID()).getNeighbor().next();//get a neighboring node
 				    Node dihedral2 = (Node)sideB.getNodeAt(n2.getID()).getNeighbor().next();//get a neighboring node
 				    int[] rotorAtoms = {dihedral1.getID(), n1.getID(), n2.getID(), dihedral2.getID()};
 				    rotorInfo.put(rotorAtoms, sideB.getNodeIDs());
 				}
 				else{
-				    System.out.println("Error in getInternalRotorInformation(): Cannot find node "+ n2.getID()+" after splitting from "+ n1.getID() +" in the following graph: "+ g.toString());
+				    System.out.println("Error in getInternalRotorInformation(): Cannot find node "+ n2.getID()+" after splitting from "+ n1.getID() +" in the following graph:\n"+ g.toString());
 				    System.exit(0);
 				}
         		}
