@@ -1217,6 +1217,7 @@ return sn;
 			throw e;
 		}
         catch (Exception e) {
+		e.printStackTrace();
         	throw new FailGenerateThermoDataException();
         }
         //#]
