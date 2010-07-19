@@ -847,9 +847,8 @@ return sn;
         		if (!n1.isLeaf() && !n2.isLeaf()) {
         			//rotor++;
 				//above here is the rotor identification algorithm; below here is the code that stores the necessary information about the rotor
-				
 				Graph f=Graph.copy(g);//copy the graph so we don't modify the original
-				f.removeArc(a);//this should separate the graph into disconnected pieces (unless it is part of a cycle; if it is part of a cycle, however, this section of code shouldn't be reached)
+				f.removeArc(f.getArcBetween(n1.getID(), n2.getID()));//this should separate the graph into disconnected pieces (unless it is part of a cycle; if it is part of a cycle, however, this section of code shouldn't be reached)
 				LinkedList pieces = f.partition();//partition into the two separate graphs
 				Graph sideA = (Graph)pieces.getFirst();
 				Graph sideB = (Graph)pieces.getLast();
