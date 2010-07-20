@@ -946,12 +946,14 @@ return sn;
        //#[ operation calculateSymmetryNumber()
        try {
          getGraph().formSSSR();//svp
+	 System.out.println(this.toString());
                int sn = 1;
                Iterator iter = getNodeList();
                while (iter.hasNext()) {
                        Node node = (Node)iter.next();
                        if (!node.getInCycle()){//svp
                         sn *= calculateAtomSymmetryNumber(node);
+			System.out.println("Atom symmetry number for " + node.getID()+":"+calculateAtomSymmetryNumber(node));
                         }
 
                }
@@ -960,12 +962,15 @@ return sn;
                        Arc arc = (Arc)iter.next();
                        if (!arc.getInCycle()){//svp
                        sn *= calculateBondSymmetryNumber(arc);
+		       System.out.println("Bond symmetry number for " + arc.toString()+":"+calculateBondSymmetryNumber(arc));
                      }
 
                }
                sn *= calculateAxisSymmetryNumber();
+	       System.out.println("Axis symmetry number:"+calculateAxisSymmetryNumber());
                if (!isAcyclic()) {//svp
                 sn *= calculateCyclicSymmetryNumber();
+		System.out.println("Cyclic symmetry number:"+calculateCyclicSymmetryNumber());
               }
 
                symmetryNumber = sn;
