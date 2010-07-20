@@ -1620,7 +1620,7 @@ public class QMTP implements GeneralGAPP {
 		    if(id != rotorAtoms[2]) rotInput+= " "+id;//don't print atom2
 		}
 		rotInput += "\n";
-		canInp+=" "+ name + ".mm4rotopt"+rotorCount;// potential files will be named as name.mm4rotopti
+		canInp+=name + ".mm4rotopt"+rotorCount+" ";// potential files will be named as name.mm4rotopti
 		rotNumbersLine+=" "+dihedralMinima[rotorCount-1];
 	    }
 	    canInp+="\n"+rotNumbersLine+"\n";
