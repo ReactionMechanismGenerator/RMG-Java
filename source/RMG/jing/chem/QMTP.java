@@ -366,7 +366,10 @@ public class QMTP implements GeneralGAPP {
 	    }
 	    //5. parse MM4 output and record as thermo data (function includes symmetry/point group calcs, etc.)
 	    if(!useCanTherm) result = parseMM4(name, directory, p_chemGraph);
-	    else result = parseCanThermFile(name, directory, p_chemGraph, qmdata);
+	    else{
+		if (qmdata==null) qmdata = getQMDataWithCClib(name, directory, p_chemGraph, true);//get qmdata if it is null (i.e. if a pre-existing successful result exists and it wasn't read in above)
+		result = parseCanThermFile(name, directory, p_chemGraph, qmdata);
+	    }
 	}
         
         return result;
