@@ -38,3 +38,9 @@
 21      on      Intra_R_Add_Endocyclic
 22      on      1,2-Birad_to_alkene
 23      off      Intra_Disproportionation
+24	  off	     1,2_shiftS
+25	  off	     intra_substitutionCS_cyclization
+26	  off	     intra_substitutionCS_isomerization
+27	  off	     intra_substitutionS_cyclization
+28	  off      intra_substitutionS_isomerization
+29	  off      SubstitutionS
