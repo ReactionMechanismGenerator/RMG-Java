@@ -820,10 +820,6 @@ public class ReactionModelGenerator {
 
 			//
 			if (temp.startsWith("AUTOPRUNE")){//for the AUTOPRUNE case, read in additional lines for termTol and edgeTol
-			    if(reactionModelEnlarger instanceof RateBasedPDepRME){
-				System.out.println("Use of pruning with pressure-dependence is not supported. Turn off pruning and/or pressure-dependence options in condition file.");
-				System.exit(0);
-			    }
 			    line = ChemParser.readMeaningfulLine(reader);
 			    if (line.startsWith("TerminationTolerance:")) {
 				    st = new StringTokenizer(line);
@@ -4071,7 +4067,22 @@ public class ReactionModelGenerator {
 					// at this point prunableSpecies includes ALL prunable species, no matter how large their flux
 				}
 			}
-			
+
+			// Pressure dependence only: Species that are included in any
+			// PDepNetwork are not eligible for pruning, so they must be removed
+			// from the map of prunable species
+			if (reactionModelEnlarger instanceof RateBasedPDepRME) {
+				LinkedList speciesToRemove = new LinkedList();
+				for (iter = prunableSpeciesMap.keySet().iterator(); iter.hasNext(); ) {
+					Species spec = (Species) iter.next();
+					if (PDepNetwork.isSpeciesIncludedInAnyNetwork(spec))
+						speciesToRemove.add(spec);
+				}
+				for (iter = speciesToRemove.iterator(); iter.hasNext(); ) {
+					prunableSpeciesMap.remove(iter.next());
+				}
+			}
+
 			// sort the prunableSpecies by maxmaxRatio
 			// i.e. sort the map by values
 			List prunableSpeciesList = new LinkedList(prunableSpeciesMap.entrySet());

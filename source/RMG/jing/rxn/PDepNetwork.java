@@ -496,7 +496,7 @@ public class PDepNetwork {
 		// reaction), use the high-pressure limit rate as the flux rather than
 		// the k(T,P) value to ensure that we are considering the maximum
 		// possible flux entering the network
-		if (pathReactionList.size() == 1 && nonincludedReactionList.size() == 1 && netReactionList.size() == 0) {
+		if (pathReactionList.size() == 1 && netReactionList.size() == 0) {
 			PDepReaction rxn = pathReactionList.get(0);
 			if (!rxn.getProduct().getIncluded())
 				rLeak += rxn.calculateForwardFlux(ss);
@@ -525,8 +525,17 @@ public class PDepNetwork {
 	 */
 	public PDepIsomer getMaxLeakIsomer(SystemSnapshot ss) throws PDepException {
 
-		if (nonincludedReactionList.size() == 0)
+		if (nonincludedReactionList.size() == 0) {
+			if (pathReactionList.size() == 1 && isomerList.size() == 2) {
+				PDepIsomer isomer1 = isomerList.get(0);
+				PDepIsomer isomer2 = isomerList.get(1);
+				if (isomer1.isUnimolecular() && !isomer1.getIncluded())
+					return isomer1;
+				else if (isomer2.isUnimolecular() && !isomer2.getIncluded())
+					return isomer2;
+			}
 			throw new PDepException("Tried to determine nonincluded isomer with maximum leak flux, but there are no nonincluded reactions, so no isomer can be identified.");
+		}
 
 		PDepReaction maxReaction = null;
 		double maxLeak = 0.0;
@@ -819,6 +828,29 @@ public class PDepNetwork {
 			}
 		}
 		return edgeReactions;
+	}
+
+	/**
+	 * Check whether or not a given species is an included (fully explored)
+	 * unimolecular isomer in any currently-existing network.
+	 * @param species The species to check for included status
+	 * @return true if the species is included in any existing network, false if not
+	 */
+	public static boolean isSpeciesIncludedInAnyNetwork(Species species) {
+		for (Iterator iter = networks.iterator(); iter.hasNext(); ) {
+			PDepNetwork network = (PDepNetwork) iter.next();
+			if (network.contains(species)) {
+				PDepIsomer isomer = network.getIsomer(species);
+				if (isomer.isUnimolecular() && isomer.getIncluded())
+					// We've identified a network wherein the species exists as
+					// a unimolecular isomer, and that its path reactions have
+					// been fully explored
+					// This satisfies all of the conditions, so we return true
+					return true;
+			}
+		}
+		// No suitable match for all conditions was found, so we return false
+		return false;
 	}
 
 }

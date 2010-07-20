@@ -49,6 +49,7 @@ class ccData(object):
         scfenergies -- molecular electronic energies after SCF (Hartree-Fock, DFT) (array[1], eV)
         scftargets -- targets for convergence of the SCF (array[2])
         scfvalues -- current values for convergence of the SCF (list of arrays[2])
+        stericenergy -- final steric energy (for MM4 calculations)
         vibdisps -- cartesian displacement vectors (array[3], delta angstrom)
         vibfreqs -- vibrational frequencies (array[1], 1/cm)
         vibirs -- IR intensities (array[1], km/mol)
@@ -79,7 +80,7 @@ class ccData(object):
                           'hessian', 'homos',
                           'mocoeffs', 'moenergies', 'molmass', 'mosyms', 'mpenergies', 'mult',
                           'natom', 'nbasis', 'nmo', 'nocoeffs', 'rotcons', 'rotsymm',
-                          'scfenergies', 'scftargets', 'scfvalues',
+                          'scfenergies', 'scftargets', 'scfvalues', 'stericenergy',
                           'vibdisps', 'vibfreqs', 'vibirs', 'vibramans', 'vibsyms']
 
         # The expected types for all supported attributes.
@@ -118,6 +119,7 @@ class ccData(object):
                             "scfenergies":    numpy.ndarray,
                             "scftargets":     numpy.ndarray,
                             "scfvalues":      list,
+                            "stericenergy":   float,
                             "vibdisps":       numpy.ndarray,
                             "vibfreqs":       numpy.ndarray,
                             "vibirs":         numpy.ndarray,

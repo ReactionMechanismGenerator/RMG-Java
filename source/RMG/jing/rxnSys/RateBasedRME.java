@@ -148,7 +148,7 @@ public class RateBasedRME implements ReactionModelEnlarger {
 					
 					// Check Reaction Library
 					ReactionSystem rxnSystem = (ReactionSystem) p_reactionSystemList.get(i);
-					System.out.println("Checking Reaction Library "+rxnSystem.getLibraryReactionGenerator().getReactionLibrary().getName()+" for reactions of "+newCoreSpecies.getName()+" with the core.");
+					System.out.println("Checking Reaction Library for reactions of "+newCoreSpecies.getName()+" with the core.");
 					// At this point the core (cerm.getReactedSpeciesSet()) already contains newCoreSpecies, so we can just react the entire core.
 					LinkedHashSet newReactionSet = rxnSystem.getLibraryReactionGenerator().react(cerm.getReactedSpeciesSet());
 					//LinkedHashSet newReactionSet = rxnSystem.getLibraryReactionGenerator().react(cerm.getReactedSpeciesSet(),newCoreSpecies,"All");

@@ -832,7 +832,8 @@ return sn;
     }
 
     //uses same algorithm as calculate internal rotor, but stores the two atoms involved in the rotor and all the atoms on one side of the rotor (specifically, the side corresponding to the 2nd atom of the rotor)
-    //the information is returned in a LinkedHashMap where the Key is an array of [atom1 atom2] and the value is a Collection of atoms IDs associated with atom2
+    //the information is returned in a LinkedHashMap where the Key is an array of [atom0 atom1 atom2 atom3] (with atom1 and atom2 being the "rotor atoms" and the others being the dihedral atoms) and the value is a Collection of atoms IDs associated with atom2
+    //note that at this stage, there is no check to make sure that the dihedral atoms are not collinear
     public LinkedHashMap getInternalRotorInformation(){
 	LinkedHashMap rotorInfo = new LinkedHashMap();
 	Graph g = getGraph();
@@ -846,21 +847,26 @@ return sn;
         		if (!n1.isLeaf() && !n2.isLeaf()) {
         			//rotor++;
 				//above here is the rotor identification algorithm; below here is the code that stores the necessary information about the rotor
-				int[] rotorAtoms = {n1.getID(), n2.getID()};
 				Graph f=Graph.copy(g);//copy the graph so we don't modify the original
-				f.removeArc(a);//this should separate the graph into disconnected pieces (unless it is part of a cycle; if it is part of a cycle, however, this section of code shouldn't be reached)
-				LinkedList pieces = f.partition();//partition into the two separate graphs
+				f.removeArc(f.getArcBetween(n1.getID(), n2.getID()));//this should separate the graph into disconnected pieces (unless it is part of a cycle; if it is part of a cycle, however, this section of code shouldn't be reached)
+				LinkedList pieces = f.partitionWithPreservedIDs();//partition into the two separate graphs
 				Graph sideA = (Graph)pieces.getFirst();
 				Graph sideB = (Graph)pieces.getLast();
 				//look for the piece that has node2
-				if(sideA.contains(n2)){
+				if(sideA.getNodeIDs().contains(n2.getID())){
+				    Node dihedral1 = (Node)sideB.getNodeAt(n1.getID()).getNeighboringNodes().iterator().next();//get a neighboring node
+				    Node dihedral2 = (Node)sideA.getNodeAt(n2.getID()).getNeighboringNodes().iterator().next();//get a neighboring node
+				    int[] rotorAtoms = {dihedral1.getID(), n1.getID(), n2.getID(), dihedral2.getID()};
 				    rotorInfo.put(rotorAtoms, sideA.getNodeIDs());
 				}
-				else if (sideB.contains(n2)){
+				else if (sideB.getNodeIDs().contains(n2.getID())){
+				    Node dihedral1 = (Node)sideA.getNodeAt(n1.getID()).getNeighboringNodes().iterator().next();//get a neighboring node
+				    Node dihedral2 = (Node)sideB.getNodeAt(n2.getID()).getNeighboringNodes().iterator().next();//get a neighboring node
+				    int[] rotorAtoms = {dihedral1.getID(), n1.getID(), n2.getID(), dihedral2.getID()};
 				    rotorInfo.put(rotorAtoms, sideB.getNodeIDs());
 				}
 				else{
-				    System.out.println("Error in getInternalRotorInformation(): Cannot find node "+ n2.getID()+" after splitting from "+ n1.getID() +" in the following graph: "+ g.toString());
+				    System.out.println("Error in getInternalRotorInformation(): Cannot find node "+ n2.getID()+" after splitting from "+ n1.getID() +" in the following graph:\n"+ g.toString());
 				    System.exit(0);
 				}
         		}
@@ -1210,6 +1216,7 @@ return sn;
 			throw e;
 		}
         catch (Exception e) {
+		e.printStackTrace();
         	throw new FailGenerateThermoDataException();
         }
         //#]
