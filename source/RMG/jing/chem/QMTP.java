@@ -744,7 +744,7 @@ public class QMTP implements GeneralGAPP {
 	//reconstruct mm4optContents
 	mm4optContents = "";
 	for(int j=0; j<lines.length;j++){
-	    mm4optContents +=lines[j];
+	    mm4optContents +=lines[j]+"\n";
 	}
 	//iterate over all the rotors in the molecule
 	int i = 0;//rotor index
@@ -819,7 +819,7 @@ public class QMTP implements GeneralGAPP {
 		FileWriter mm4roti = new FileWriter(directory+"/"+name+".mm4rot"+i);
 		//mm4roti.write(mm4optContents+"\n"+String.format("  %3d  %3d  %3d  %3d     %5f.1%5f.1%5f.1", rotorAtoms[0],rotorAtoms[1],rotorAtoms[2],rotorAtoms[3], dihedral, dihedral + 360.0 - deltaTheta, deltaTheta)+"\n");//deltaTheta should be less than 100 degrees so that dihedral-deltaTheta still fits
 		//mm4roti.write(mm4optContents+"\n"+String.format("  %3d  %3d  %3d  %3d     %5f.1%5f.1%5f.1", rotorAtoms[0],rotorAtoms[1],rotorAtoms[2],rotorAtoms[3], dihedral, dihedral - deltaTheta, deltaTheta)+"\n");//deltaTheta should be less than 100 degrees so that dihedral-deltaTheta still fits
-		mm4roti.write(mm4optContents+"\n"+String.format("  %3d  %3d  %3d  %3d     %5f.1%5f.1%5f.1", rotorAtoms[0],rotorAtoms[1],rotorAtoms[2],rotorAtoms[3], 0.0, 360.0-deltaTheta, deltaTheta)+"\n");//M1, M2, M3, M4, START, FINISH, DIFF (as described in MM4 manual); //this would require miminum to be stored and used to adjust actual angles before sending to CanTherm
+		mm4roti.write(mm4optContents+String.format("  %3d  %3d  %3d  %3d     %5f.1%5f.1%5f.1", rotorAtoms[0],rotorAtoms[1],rotorAtoms[2],rotorAtoms[3], 0.0, 360.0-deltaTheta, deltaTheta)+"\n");//M1, M2, M3, M4, START, FINISH, DIFF (as described in MM4 manual); //this would require miminum to be stored and used to adjust actual angles before sending to CanTherm
 		mm4roti.close();
 	    }
 	    catch(Exception e){
@@ -1616,7 +1616,8 @@ public class QMTP implements GeneralGAPP {
 		Iterator iterGroup = rotatingGroup.iterator();
 		rotInput += "L2: 1 "+rotorAtoms[1]+ " "+ rotorAtoms[2];//uses a symmetry number of 1; this will be taken into account elsewhere
 		while (iterGroup.hasNext()){//print the atoms associated with rotorAtom 2
-		    rotInput+= " "+(Integer)iterGroup.next();
+		    Integer id = (Integer)iterGroup.next();
+		    if(id != rotorAtoms[2]) rotInput+= " "+id;//don't print atom2
 		}
 		rotInput += "\n";
 		canInp+=" "+ name + ".mm4rotopt"+rotorCount;// potential files will be named as name.mm4rotopti
