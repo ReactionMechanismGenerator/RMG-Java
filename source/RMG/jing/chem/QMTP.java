@@ -800,9 +800,9 @@ public class QMTP implements GeneralGAPP {
 	    //Step 2a: find the dihedral angle for the minimized conformation (we need to start at the minimum energy conformation because CanTherm assumes that theta=0 is the minimum
 	    //extract the lines for dihedral atoms
 	    String dihedral1s = lines[indexForFirstAtom+rotorAtoms[0]-1];
-	    String atom1s = lines[indexForFirstAtom+rotorAtoms[1]-1].trim();
-	    String atom2s = lines[indexForFirstAtom+rotorAtoms[2]-1].trim();
-	    String dihedral2s = lines[indexForFirstAtom+rotorAtoms[3]-1].trim();
+	    String atom1s = lines[indexForFirstAtom+rotorAtoms[1]-1];
+	    String atom2s = lines[indexForFirstAtom+rotorAtoms[2]-1];
+	    String dihedral2s = lines[indexForFirstAtom+rotorAtoms[3]-1];
 	    //extract the x,y,z coordinates for each atom
 	    double[] dihedral1 = {Double.parseDouble(dihedral1s.substring(0,10)),Double.parseDouble(dihedral1s.substring(10,20)),Double.parseDouble(dihedral1s.substring(20,30))};
 	    double[] atom1 = {Double.parseDouble(atom1s.substring(0,10)),Double.parseDouble(atom1s.substring(10,20)),Double.parseDouble(atom1s.substring(20,30))};
