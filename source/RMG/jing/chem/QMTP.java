@@ -740,7 +740,7 @@ public class QMTP implements GeneralGAPP {
 	}
 	String[] lines = mm4optContents.split("[\\r?\\n]+");//split by newlines, excluding blank lines; cf. http://stackoverflow.com/questions/454908/split-java-string-by-new-line
 	int indexForFirstAtom = lines.length - p_chemgraph.getAtomNumber();//assumes the last line is for the last atom
-	lines[1]=lines[1].substring(78)+" 2";//take the first 78 characters of line 2, and append the option number for the NDRIVE option; in other words, we are replacing the NDRIVE=0 option with the desired option number
+	lines[1]=lines[1].substring(0,78)+" 2";//take the first 78 characters of line 2, and append the option number for the NDRIVE option; in other words, we are replacing the NDRIVE=0 option with the desired option number
 	//reconstruct mm4optContents
 	mm4optContents = "";
 	for(int j=0; j<lines.length;j++){
@@ -817,9 +817,9 @@ public class QMTP implements GeneralGAPP {
 	    //Step 2b: write the file for rotor i
 	    try{
 		FileWriter mm4roti = new FileWriter(directory+"/"+name+".mm4rot"+i);
-		//mm4roti.write(mm4optContents+"\n"+String.format("  %3d  %3d  %3d  %3d     %5f.1%5f.1%5f.1", rotorAtoms[0],rotorAtoms[1],rotorAtoms[2],rotorAtoms[3], dihedral, dihedral + 360.0 - deltaTheta, deltaTheta)+"\n");//deltaTheta should be less than 100 degrees so that dihedral-deltaTheta still fits
-		//mm4roti.write(mm4optContents+"\n"+String.format("  %3d  %3d  %3d  %3d     %5f.1%5f.1%5f.1", rotorAtoms[0],rotorAtoms[1],rotorAtoms[2],rotorAtoms[3], dihedral, dihedral - deltaTheta, deltaTheta)+"\n");//deltaTheta should be less than 100 degrees so that dihedral-deltaTheta still fits
-		mm4roti.write(mm4optContents+String.format("  %3d  %3d  %3d  %3d     %5f.1%5f.1%5f.1", rotorAtoms[0],rotorAtoms[1],rotorAtoms[2],rotorAtoms[3], 0.0, 360.0-deltaTheta, deltaTheta)+"\n");//M1, M2, M3, M4, START, FINISH, DIFF (as described in MM4 manual); //this would require miminum to be stored and used to adjust actual angles before sending to CanTherm
+		//mm4roti.write(mm4optContents+"\n"+String.format("  %3d  %3d  %3d  %3d     %5.1f%5.1f%5.1f", rotorAtoms[0],rotorAtoms[1],rotorAtoms[2],rotorAtoms[3], dihedral, dihedral + 360.0 - deltaTheta, deltaTheta)+"\n");//deltaTheta should be less than 100 degrees so that dihedral-deltaTheta still fits
+		//mm4roti.write(mm4optContents+"\n"+String.format("  %3d  %3d  %3d  %3d     %5.1f%5.1f%5.1f", rotorAtoms[0],rotorAtoms[1],rotorAtoms[2],rotorAtoms[3], dihedral, dihedral - deltaTheta, deltaTheta)+"\n");//deltaTheta should be less than 100 degrees so that dihedral-deltaTheta still fits
+		mm4roti.write(mm4optContents+String.format("  %3d  %3d  %3d  %3d     %5.1f%5.1f%5.1f", rotorAtoms[0],rotorAtoms[1],rotorAtoms[2],rotorAtoms[3], 0.0, 360.0-deltaTheta, deltaTheta)+"\n");//M1, M2, M3, M4, START, FINISH, DIFF (as described in MM4 manual); //this would require miminum to be stored and used to adjust actual angles before sending to CanTherm
 		mm4roti.close();
 	    }
 	    catch(Exception e){
