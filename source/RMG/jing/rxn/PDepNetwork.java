@@ -382,6 +382,9 @@ public class PDepNetwork {
 
 		// Add reaction
 		pathReactionList.add(newRxn);
+		
+		// Mark network as changed so that updated rates can be determined
+		altered = true;
 	}
 
 	/**

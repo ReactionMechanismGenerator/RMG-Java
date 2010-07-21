@@ -25,8 +25,9 @@ program fame
     type(ArrheniusKinetics), dimension(:,:,:), allocatable :: pDepArrhenius
     integer :: nIsom, nReac, nProd, nGrains, nT, nP, done
 
-    integer i, j
-
+    integer i, j, t, p
+    character(len=64) fmtStr
+    
     ! Use unit 1 for logging; file will be called fame.log or fort.1
     open(1, file='fame.log')
     open(2, file='input.txt')
@@ -75,35 +76,54 @@ program fame
     call network_calculateRateCoefficients(net, nIsom, nReac, nProd, &
         Elist, nGrains, Tlist, nT, Plist, nP, method, K)
 
+    ! Write results (to stdout)
+    write (1,fmt='(A)') 'Writing results header...'
+    call writeOutputIntro(net, nIsom, nReac, nProd, Tlist, nT, Plist, nP, Elist, nGrains, &
+        method, K, model, modelOptions, chebyshevCoeffs, pDepArrhenius)
+
     ! Fit interpolation model
     allocate( chebyshevCoeffs(1:modelOptions(1), 1:modelOptions(2), 1:nIsom+nReac+nProd, 1:nIsom+nReac+nProd) )
     allocate( pDepArrhenius(1:nP, 1:nIsom+nReac+nProd, 1:nIsom+nReac+nProd) )
     if (model == 1) then
-        write (1,fmt='(A)') 'Fitting Chebyshev interpolation model...'
-        do i = 1, nIsom+nReac+nProd
-            do j = 1, nIsom+nReac
-                if (i /= j) then
-                    call fitChebyshevModel(K(:,:,i,j), Tlist, Plist, Tmin, Tmax, &
-                        Pmin, Pmax, modelOptions(1), modelOptions(2), chebyshevCoeffs(:,:,i,j))
-                end if
-            end do
-        end do
+        write (1,fmt='(A)') 'Fitting Chebyshev interpolation models...'
     elseif (model == 2) then
-        write (1,fmt='(A)') 'Fitting PDepArrhenius interpolation model...'
-        do i = 1, nIsom+nReac+nProd
-            do j = 1, nIsom+nReac
-                if (i /= j) then
-                    call fitPDepArrheniusModel(K(:,:,i,j), Tlist, Plist, pDepArrhenius(:,i,j))
-                end if
-            end do
-        end do
+        write (1,fmt='(A)') 'Fitting PDepArrhenius interpolation models...'
     end if
     
-    ! Write results (to stdout)
-    write (1,fmt='(A)') 'Writing results...'
-    call writeOutput(net, nIsom, nReac, nProd, Tlist, nT, Plist, nP, Elist, nGrains, &
-        method, K, model, modelOptions, chebyshevCoeffs, pDepArrhenius)
-
+    ! The phenomenological rate coefficients
+    do j = 1, nIsom+nReac
+        do i = 1, nIsom+nReac+nProd
+            if (i /= j) then
+                write (*, fmt='(A)'), '# The reactant and product isomers'
+                write (*,*), j, i
+                write (*, fmt='(A)'), '# Table of phenomenological rate coefficients'
+                write (fmtStr,*), '(A8,', nP, 'ES14.2E2)'
+                write (*, fmtStr), 'T \ P', Plist
+                write (fmtStr,*), '(F8.1,', nP, 'ES14.4E3)'
+                do t = 1, nT
+                    write (*, fmt=fmtStr), Tlist(t), K(t,:,i,j)
+                end do
+                if (model == 1) then
+                    call fitChebyshevModel(K(:,:,i,j), Tlist, Plist, Tmin, Tmax, &
+                        Pmin, Pmax, modelOptions(1), modelOptions(2), chebyshevCoeffs(:,:,i,j))
+                    write (*, fmt='(A)'), '# The fitted Chebyshev polynomial model'
+                    write (fmtStr,*), '(', modelOptions(1), 'ES14.4E3)'
+                    do t = 1, modelOptions(1)
+                        write (*,fmt=fmtStr), chebyshevCoeffs(t,:,i,j)
+                    end do
+                elseif (model == 2) then
+                    call fitPDepArrheniusModel(K(:,:,i,j), Tlist, Plist, pDepArrhenius(:,i,j))
+                    write (*, fmt='(A)'), '# The fitted pressure-dependent Arrhenius model'
+                    do p = 1, nP
+                        write (*, fmt='(ES8.2E2,ES14.4E3,F14.4,F10.4)'), Plist(p), &
+                            pDepArrhenius(p,i,j)%A, pDepArrhenius(p,i,j)%Ea, pDepArrhenius(p,i,j)%n
+                    end do
+                end if
+                write (*, fmt='(A)'), ''
+            end if
+        end do
+    end do
+    
     ! Close log file
     close(1)
     close(2)

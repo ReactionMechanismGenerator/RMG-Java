@@ -252,8 +252,8 @@ public class RateBasedPDepRME implements ReactionModelEnlarger {
 						PDepNetwork pdn = (PDepNetwork) iter.next();
 						if (pdn.contains(maxSpecies)) {
 							if (network == null)
-								network = pdn;
-							else {
+								network = pdn;  // first pdn to contain maxSpecies
+							else {  // second or later pdn to contain maxSpecies. merge it with network
 								for (int j = 0; j < pdn.getIsomers().size(); j++)
 								network.addIsomer(pdn.getIsomers().get(j));
 								for (int j = 0; j < pdn.getPathReactions().size(); j++)
@@ -303,6 +303,7 @@ public class RateBasedPDepRME implements ReactionModelEnlarger {
 					}
 					else{
 						// When no Reaction Library is present
+						System.out.println("Generating reactions using reaction family templates.");
 						newReactionSet_nodup = rxnSystem.getReactionGenerator().react(cerm.getReactedSpeciesSet(),maxSpecies,"All");
 					}
 					// shamel 6/22/2010 Suppressed output , line is only for debugging
