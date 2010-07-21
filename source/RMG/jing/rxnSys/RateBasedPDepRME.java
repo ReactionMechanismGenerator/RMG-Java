@@ -252,8 +252,8 @@ public class RateBasedPDepRME implements ReactionModelEnlarger {
 						PDepNetwork pdn = (PDepNetwork) iter.next();
 						if (pdn.contains(maxSpecies)) {
 							if (network == null)
-								network = pdn;
-							else {
+								network = pdn;  // first pdn to contain maxSpecies
+							else {  // second or later pdn to contain maxSpecies. merge it with network
 								for (int j = 0; j < pdn.getIsomers().size(); j++)
 								network.addIsomer(pdn.getIsomers().get(j));
 								for (int j = 0; j < pdn.getPathReactions().size(); j++)
