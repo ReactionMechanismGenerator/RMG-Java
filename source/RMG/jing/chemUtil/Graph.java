@@ -1723,6 +1723,72 @@ public class Graph {
         //#]
     }
 
+    //same as partition, above, except the node IDs are preserved
+    //highestNodeID is NOT guaranteed to be stored correctly
+        /**
+    If this graph is connected, do nothing; if the graph is not connected, partioning the graph into a list of graphs.<br>
+    <b>Modifies</b><br>this
+    */
+    //## operation partition()
+    public LinkedList partitionWithPreservedIDs() throws NotPartitionedException {
+        //#[ operation partition()
+        LinkedList result = new LinkedList();
+
+        if (isEmpty()) {
+        	return result;
+        }
+
+        setVisited(false);
+        Iterator iter = getNodeList();
+        deepFirstSearch((Node)iter.next());
+
+        while (true) {
+        	Graph newGraph = new Graph();
+        	int centralID, highestCentralID=-1, lowestCentralID=10000;
+        	Iterator iter1 = nodeList.keySet().iterator();
+        	while (iter1.hasNext()) {
+        		Integer ID = (Integer)iter1.next();
+        		Node n = (Node)nodeList.get(ID);
+        		if (n.isVisited()) {
+        			centralID = n.getCentralID().intValue();
+        			if (centralID >= 0) {
+        				if (highestCentralID<centralID) highestCentralID = centralID;
+        				if (lowestCentralID>centralID) lowestCentralID = centralID;
+        	 		}
+        			iter1.remove();
+        			if (centralID >= 0) centralNode.remove(n.getCentralID());
+        			n.setID(ID);
+        			n.setCentralID(centralID);
+        			newGraph.nodeList.put(n.getID(),n);
+        			if (centralID >= 0) newGraph.centralNode.put(n.getCentralID(),n);
+        		}
+        	}
+        	newGraph.highestNodeID = this.highestNodeID;//this will be correct for one of the resulting "pieces" but not for the others; in any case
+        	newGraph.highestCentralID = highestCentralID;
+        	newGraph.lowestCentralID = lowestCentralID;
+
+        	Iterator iter2 = getArcList();
+        	while (iter2.hasNext()) {
+        		Arc a = (Arc)iter2.next();
+        		if (a.isVisited()) {
+        			newGraph.arcList.add(a);
+        			iter2.remove();
+         		}
+        	}
+        	result.add(newGraph);
+
+        	if (nodeList.isEmpty()) break;
+        	iter = getNodeList();
+        	deepFirstSearch((Node)iter.next());
+        }
+
+        if (result.size() == 0) {
+        	throw new NotPartitionedException();
+        }
+        else return result;
+        //#]
+    }
+
     /**
     Clear central node list, and reform it according to centralID information of node in the graph<br>
     <b>Modifies</b><br>this.centralNodeList
