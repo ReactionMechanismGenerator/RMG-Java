@@ -584,8 +584,8 @@ contains
             ! Read one line from the file
             read (*, fmt='(a1024)', iostat=ios), line
 
-            ! Print the input line (as a comment) to the output, for debugging
-            ! WRITE(*,fmt='(A,A)') '#IN: ', trim(line)
+            ! Print the input line to the 'input.txt' output, for debugging
+            write(2,fmt='(A)') trim(line)
 
             ! Skip if comment line
             if (index(line(1:1), '#') /= 0) cycle
