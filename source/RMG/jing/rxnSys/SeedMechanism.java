@@ -371,7 +371,7 @@ public class SeedMechanism {
 			 */
         	System.out.println("RMG did not find/read pressure-dependent reactions (pdepreactions.txt) " +
         			"in the " + source + p_name + "\n" + e.getMessage());
-        	return null;
+        	return new LinkedHashSet();
         }
     }
 	
