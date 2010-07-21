@@ -289,14 +289,14 @@ public class FastMasterEqn implements PDepKineticsEstimator {
         String output = "";
 
 		// DEBUG only: Write input file
-		/*try {
+		try {
 			FileWriter fw = new FileWriter(new File("fame/" + Integer.toString(pdn.getID()) + "_input.txt"));
 			fw.write(input);
 			fw.close();
 		} catch (IOException ex) {
 			System.out.println("Unable to write FAME input file.");
 			System.exit(0);
-		}*/
+		}//*/
 
 		// Touch FAME output file
 		//touchOutputFile(); //no longer needed with standard input/output
