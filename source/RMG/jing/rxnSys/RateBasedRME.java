@@ -146,12 +146,14 @@ public class RateBasedRME implements ReactionModelEnlarger {
 					
 					// Species List is first reacted by Library Reaction Generator and then sent to RMG Model Generator 
 					
-					// Check Reaction Library
+					
+					LinkedHashSet newReactionSet_nodup;
 					ReactionSystem rxnSystem = (ReactionSystem) p_reactionSystemList.get(i);
-					System.out.println("Checking Reaction Library for reactions of "+newCoreSpecies.getName()+" with the core.");
+					// Check Reaction Library
+				if(rxnSystem.getLibraryReactionGenerator().getReactionLibrary() != null){
+					System.out.println("Checking Reaction Library "+rxnSystem.getLibraryReactionGenerator().getReactionLibrary().getName()+" for reactions of "+newCoreSpecies.getName()+" with the core.");
 					// At this point the core (cerm.getReactedSpeciesSet()) already contains newCoreSpecies, so we can just react the entire core.
 					LinkedHashSet newReactionSet = rxnSystem.getLibraryReactionGenerator().react(cerm.getReactedSpeciesSet());
-					//LinkedHashSet newReactionSet = rxnSystem.getLibraryReactionGenerator().react(cerm.getReactedSpeciesSet(),newCoreSpecies,"All");
 					
 					// Report only those that contain the new species (newCoreSpecies)
 					Iterator ReactionIter = newReactionSet.iterator();
@@ -161,7 +163,7 @@ public class RateBasedRME implements ReactionModelEnlarger {
 							System.out.println("Library Reaction: " + current_reaction.toString() );
 						}
 					}
-					
+
 					// Calls in Reaction Model Generator and adds it to Reaction Set ( if duplicate reaction is found it is not added I think ) 
 					System.out.println("Generating reactions using reaction family templates.");
 					// Add reactions found from reaction template to current reaction set
@@ -173,7 +175,14 @@ public class RateBasedRME implements ReactionModelEnlarger {
 					// Remove Duplicate entrys from reaction set i.e same reaction might be coming from seed/reaction library and reaction template
 					// Same means == same family and not same structure coming from different families
 					
-					LinkedHashSet newReactionSet_nodup = RemoveDuplicateReac(newReactionSet);
+					newReactionSet_nodup = RemoveDuplicateReac(newReactionSet);
+
+				}
+				else{
+					// When no Reaction Library is present
+					System.out.println("Generating reactions using reaction family templates.");
+					newReactionSet_nodup = rxnSystem.getReactionGenerator().react(cerm.getReactedSpeciesSet(),newCoreSpecies,"All");
+				}
 					
 					// shamel 6/22/2010 Suppressed output , line is only for debugging
 					//System.out.println("Reaction Set Found after LRG + ReactionGenerator call and Removing Dups"+newReactionSet_nodup);

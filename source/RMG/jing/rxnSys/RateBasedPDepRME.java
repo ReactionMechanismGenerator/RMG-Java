@@ -303,6 +303,7 @@ public class RateBasedPDepRME implements ReactionModelEnlarger {
 					}
 					else{
 						// When no Reaction Library is present
+						System.out.println("Generating reactions using reaction family templates.");
 						newReactionSet_nodup = rxnSystem.getReactionGenerator().react(cerm.getReactedSpeciesSet(),maxSpecies,"All");
 					}
 					// shamel 6/22/2010 Suppressed output , line is only for debugging
