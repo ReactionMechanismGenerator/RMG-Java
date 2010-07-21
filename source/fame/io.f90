@@ -746,7 +746,7 @@ contains
 
     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
-    subroutine writeOutput(net, nIsom, nReac, nProd, Tlist, nT, Plist, nP, Elist, nGrains, &
+    subroutine writeOutputIntro(net, nIsom, nReac, nProd, Tlist, nT, Plist, nP, Elist, nGrains, &
         method, K, model, modelOptions, chebyshev, pDepArrhenius)
 
         integer :: nIsom, nReac, nProd, nGrains, nT, nP
@@ -759,9 +759,6 @@ contains
         integer, dimension(1:10), intent(in) :: modelOptions
         real(8), dimension(:,:,:,:), intent(in) :: chebyshev
         type(ArrheniusKinetics), dimension(1:nP,1:nIsom+nReac+nProd,1:nIsom+nReac+nProd), intent(in) :: pDepArrhenius
-
-        character(len=64) fmtStr
-        integer i, j, t, p
 
         ! Header
         write (*, fmt='(A)'), '################################################################################'
@@ -820,37 +817,6 @@ contains
         write (*, fmt='(A)'), '# The number of phenomenological rate coefficients in the network'
         write (*, *), ((nIsom+nReac+nProd)*(nIsom+nReac-1))
         write (*, fmt='(A)'), ''
-
-        ! The phenomenological rate coefficients
-        do j = 1, nIsom+nReac
-            do i = 1, nIsom+nReac+nProd
-                if (i /= j) then
-                    write (*, fmt='(A)'), '# The reactant and product isomers'
-                    write (*,*), j, i
-                    write (*, fmt='(A)'), '# Table of phenomenological rate coefficients'
-                    write (fmtStr,*), '(A8,', nP, 'ES14.2E2)'
-                    write (*, fmtStr), 'T \ P', Plist
-                    write (fmtStr,*), '(F8.1,', nP, 'ES14.4E3)'
-                    do t = 1, nT
-                        write (*, fmt=fmtStr), Tlist(t), K(t,:,i,j)
-                    end do
-                    if (model == 1) then
-                        write (*, fmt='(A)'), '# The fitted Chebyshev polynomial model'
-                        write (fmtStr,*), '(', modelOptions(1), 'ES14.4E3)'
-                        do t = 1, modelOptions(1)
-                            write (*,fmt=fmtStr), chebyshev(t,:,i,j)
-                        end do
-                    elseif (model == 2) then
-                        write (*, fmt='(A)'), '# The fitted pressure-dependent Arrhenius model'
-                        do p = 1, nP
-                            write (*, fmt='(ES8.2E2,ES14.4E3,F14.4,F10.4)'), Plist(p), &
-                                pDepArrhenius(p,i,j)%A, pDepArrhenius(p,i,j)%Ea, pDepArrhenius(p,i,j)%n
-                        end do
-                    end if
-                    write (*, fmt='(A)'), ''
-                end if
-            end do
-        end do
 
     end subroutine
 
