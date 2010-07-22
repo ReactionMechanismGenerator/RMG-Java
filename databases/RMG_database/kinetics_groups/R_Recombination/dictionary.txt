@@ -264,3 +264,209 @@ O_rad/OneDe
 O2_birad
 1 * O 1 {2,S}
 2 O 1 {1,S}
+
+// Radicals C and S, Aaron Vandeputte, August 3rd 2009	
+
+CsJ-SsHH
+1  * C 1 {2,S} {3,S} {4,S}
+2    Ss 0 {1,S}
+3    H 0 {1,S}
+4    H 0 {1,S}
+
+CsJ-CSH
+1  * C 1 {2,S} {3,S} {4,S}
+2    C 0 {1,S}
+3    Ss 0 {1,S}
+4    H 0 {1,S}
+
+CsJ-CsSsH
+1  * C 1 {2,S} {3,S} {4,S}
+2    Cs 0 {1,S}
+3    Ss 0 {1,S}
+4    H 0 {1,S}
+
+CsJ-CdSsH
+1  * C 1 {2,S} {3,S} {4,S}
+2    Cd 0 {1,S} {5,D}
+3    Ss 0 {1,S}
+4    H 0 {1,S}
+5    C 0 {2,D}
+
+CsJ-CtSsH
+1  * C 1 {2,S} {3,S} {4,S}
+2    Ct 0 {1,S}
+3    Ss 0 {1,S}
+4    H 0 {1,S}
+
+CsJ-CbSsH
+1  * C 1 {2,S} {3,S} {4,S}
+2    Cb 0 {1,S}
+3    Ss 0 {1,S}
+4    H 0 {1,S}
+
+CsJ-C=SSsH
+1  * C 1 {2,S} {3,S} {4,S}
+2    Cd 0 {1,S} {5,D}
+3    Ss 0 {1,S}
+4    H 0 {1,S}
+5    Sd 0 {2,D}
+
+CsJ-SsSsH
+1  * C 1 {2,S} {3,S} {4,S}
+2    Ss 0 {1,S}
+3    Ss 0 {1,S}
+4    H 0 {1,S}
+
+CsJ-CCS
+1  * C 1 {2,S} {3,S} {4,S}
+2    C 0 {1,S}
+3    C 0 {1,S}
+4    Ss 0 {1,S}
+
+CsJ-CsCsSs
+1  * C 1 {2,S} {3,S} {4,S}
+2    Cs 0 {1,S}
+3    Cs 0 {1,S}
+4    Ss 0 {1,S}
+
+CsJ-CsCdSs
+1  * C 1 {2,S} {3,S} {4,S}
+2    Cs 0 {1,S}
+3    Cd 0 {1,S} {5,D}
+4    Ss 0 {1,S}
+5    C 0 {3,D}
+
+CsJ-CsCtSs
+1  * C 1 {2,S} {3,S} {4,S}
+2    Cs 0 {1,S}
+3    Ct 0 {1,S}
+4    Ss 0 {1,S}
+
+CsJ-CsCbSs
+1  * C 1 {2,S} {3,S} {4,S}
+2    Cs 0 {1,S}
+3    Cb 0 {1,S}
+4    Ss 0 {1,S}
+
+CsJ-CsC=SSs
+1  * C 1 {2,S} {3,S} {4,S}
+2    Cs 0 {1,S}
+3    Cd 0 {1,S} {5,D}
+4    Ss 0 {1,S}
+5    Sd 0 {3,D}
+
+CsJ-CSS
+1  * C 1 {2,S} {3,S} {4,S}
+2    C 0 {1,S}
+3    Ss 0 {1,S}
+4    Ss 0 {1,S}
+
+CsJ-CsSsSs
+1  * C 1 {2,S} {3,S} {4,S}
+2    Cs 0 {1,S}
+3    Ss 0 {1,S}
+4    Ss 0 {1,S}
+
+CsJ-CdSsSs
+1  * C 1 {2,S} {3,S} {4,S}
+2    Cd 0 {1,S} {5,D}
+3    Ss 0 {1,S}
+4    Ss 0 {1,S}
+5    C 0 {2,D}
+
+CsJ-CtSsSs
+1  * C 1 {2,S} {3,S} {4,S}
+2    Ct 0 {1,S}
+3    Ss 0 {1,S}
+4    Ss 0 {1,S}
+
+CsJ-CbSsSs
+1  * C 1 {2,S} {3,S} {4,S}
+2    Cb 0 {1,S}
+3    Ss 0 {1,S}
+4    Ss 0 {1,S}
+
+CsJ-C=SSsSs
+1  * C 1 {2,S} {3,S} {4,S}
+2    Cd 0 {1,S} {5,D}
+3    Ss 0 {1,S}
+4    Ss 0 {1,S}
+5    Sd 0 {2,D}
+
+CsJ-SsSsSs
+1  * C 1 {2,S} {3,S} {4,S}
+2    Ss 0 {1,S}
+3    Ss 0 {1,S}
+4    Ss 0 {1,S}
+
+CdsJ-Ss
+1 * Cd 1 {2,S}
+2   Ss 0 {1,S}
+
+C=SJ
+1  * Cd 1 {2,D} {3,S}
+2    Sd 0 {1,D}
+3    R  0 {1,S}
+
+C=SJ-H
+1  * Cd 1 {2,S} {3,D}
+2    H 0 {1,S}
+3    Sd 0 {1,D}
+
+C=SJ-C
+1  * Cd 1 {2,S} {3,D}
+2    C 0 {1,S}
+3    Sd 0 {1,D}
+
+C=SJ-Cs
+1  * Cd 1 {2,S} {3,D}
+2    Cs 0 {1,S}
+3    Sd 0 {1,D}
+
+C=SJ-Ss
+1  * Cd 1 {2,S} {3,D}
+2    Ss 0 {1,S}
+3    Sd 0 {1,D}
+
+S_rad
+Union {SJ, SJJ}
+
+SJ
+1  * Ss 1
+
+SJ-H
+1  * Ss 1 {2,S}
+2    H 0 {1,S}
+
+SJ-C
+1  * Ss 1 {2,S}
+2    C 0 {1,S}
+
+SJ-Cs
+1  * Ss 1 {2,S}
+2    Cs 0 {1,S}
+
+SJ-Cd
+1  * Ss 1 {2,S}
+2    Cd 0 {1,S} {3,D}
+3    C 0 {2,D}
+
+SJ-Ct
+1  * Ss 1 {2,S}
+2    Ct 0 {1,S}
+
+SJ-Cb
+1  * Ss 1 {2,S}
+2    Cb 0 {1,S}
+
+SJ-C=S
+1  * Ss 1 {2,S}
+2    Cd 0 {1,S} {3,D}
+3    Sd 0 {2,D}
+
+SJ-Ss
+1  * Ss 1 {2,S}
+2    Ss 0 {1,S}
+
+SJJ
+1 * S 2				
