@@ -476,6 +476,7 @@ public class PopulateReactions {
     		// We will get the forward reaction 
     		if(r.isBackward()){
     			r = r.getReverseReaction();
+    			Hrxn = -Hrxn; // Reversing the heat of reaction
     		}
     		Kinetics[] allKinetics = getReactionKinetics(r);
 			for (int numKinetics=0; numKinetics<allKinetics.length; ++numKinetics) {
