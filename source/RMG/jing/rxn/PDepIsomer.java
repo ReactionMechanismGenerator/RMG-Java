@@ -364,8 +364,10 @@ public class PDepIsomer {
 		if(rxnSystem.getLibraryReactionGenerator()!= null){
 			// First iterate through the Reaction Library and find all reactions which include the species being considered
 		LinkedHashSet reactionSet = ((LibraryReactionGenerator) rxnSystem.getLibraryReactionGenerator()).generatePdepReactions(getSpecies(0));
-		System.out.println("Reaction Set Found from Reaction Library "+reactionSet);
-		
+		if(!reactionSet.isEmpty()){
+			System.out.println("Reaction Set Found from Reaction Library "+reactionSet);
+		}
+				
 		// Iterate through the reaction template
 		reactionSet.addAll(((TemplateReactionGenerator) rxnSystem.getReactionGenerator()).generatePdepReactions(getSpecies(0)));
 		

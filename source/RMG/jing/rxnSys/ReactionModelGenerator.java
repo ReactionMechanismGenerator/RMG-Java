@@ -3640,7 +3640,9 @@ public class ReactionModelGenerator {
 				//System.out.println("Initial Core Species RModG"+allInitialCoreSpecies);
 				
 				LinkedHashSet tempnewReactionSet = getLibraryReactionGenerator().react(allInitialCoreSpecies);
+				if(!tempnewReactionSet.isEmpty()){
 				System.out.println("Reaction Set Found from Reaction Library "+tempnewReactionSet);
+				}
 				
 				// Adds Reactions Found in Library Reaction Generator to Reaction Set
 				reactionSet_withdup.addAll(getLibraryReactionGenerator().react(allInitialCoreSpecies));
