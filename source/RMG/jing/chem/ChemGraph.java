@@ -454,10 +454,10 @@ public class ChemGraph implements Matchable {
     }
 
     //takes the fragments and corresponding rotor nodes for each side of the rotor
-    public int calculateRotorSymmetryNumber(Node p_node1, Graph frag1, Node p_node2, Graph frag2) {
+    public int calculateRotorSymmetryNumber(Node p_node1, Node p_node2) {
 	//first calculate the symmetry number for each fragment
-	int frag1sn=calculateRotorFragmentSymmetryNumber(p_node1,frag1);//will return 1, 2, or 3
-	int frag2sn=calculateRotorFragmentSymmetryNumber(p_node2,frag2);//will return 1, 2, or 3
+	int frag1sn=calculateRotorFragmentSymmetryNumber(p_node1);//will return 1, 2, or 3
+	int frag2sn=calculateRotorFragmentSymmetryNumber(p_node2);//will return 1, 2, or 3
 	if(frag1sn==3 || frag2sn==3){
 	    if(frag1sn==3){
 		if(frag2sn==3) return 3; //example: ethane
@@ -488,7 +488,7 @@ public class ChemGraph implements Matchable {
     //returns 1, 2, or 3 based on the rotor fragment and rotor node passed in
     //code is based off of calculateAtomSymmetryNumber as the idea is similar, but we must be able to handle incomplete fragments, triple bonds, and aromatic structures
     //code does not handle radicals at present
-    public int calculateRotorFragmentSymmetryNumber(Node p_node, Graph frag) {
+    public int calculateRotorFragmentSymmetryNumber(Node p_node) {
 
 	Atom atom = (Atom)p_node.getElement();
         Iterator neighbor_iter = p_node.getNeighbor();
@@ -936,17 +936,18 @@ return sn;
 				LinkedList pieces = f.partitionWithPreservedIDs();//partition into the two separate graphs
 				Graph sideA = (Graph)pieces.getFirst();
 				Graph sideB = (Graph)pieces.getLast();
+				int rotorSym = calculateRotorSymmetryNumber(n1,n2);
 				//look for the piece that has node2
 				if(sideA.getNodeIDs().contains(n2.getID())){
 				    Node dihedral1 = (Node)sideB.getNodeAt(n1.getID()).getNeighboringNodes().iterator().next();//get a neighboring node
 				    Node dihedral2 = (Node)sideA.getNodeAt(n2.getID()).getNeighboringNodes().iterator().next();//get a neighboring node
-				    int[] rotorAtoms = {dihedral1.getID(), n1.getID(), n2.getID(), dihedral2.getID()};
+				    int[] rotorAtoms = {dihedral1.getID(), n1.getID(), n2.getID(), dihedral2.getID(), rotorSym};
 				    rotorInfo.put(rotorAtoms, sideA.getNodeIDs());
 				}
 				else if (sideB.getNodeIDs().contains(n2.getID())){
 				    Node dihedral1 = (Node)sideA.getNodeAt(n1.getID()).getNeighboringNodes().iterator().next();//get a neighboring node
 				    Node dihedral2 = (Node)sideB.getNodeAt(n2.getID()).getNeighboringNodes().iterator().next();//get a neighboring node
-				    int[] rotorAtoms = {dihedral1.getID(), n1.getID(), n2.getID(), dihedral2.getID()};
+				    int[] rotorAtoms = {dihedral1.getID(), n1.getID(), n2.getID(), dihedral2.getID(), rotorSym};
 				    rotorInfo.put(rotorAtoms, sideB.getNodeIDs());
 				}
 				else{
