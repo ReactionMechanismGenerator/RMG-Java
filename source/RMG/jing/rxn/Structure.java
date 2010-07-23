@@ -831,6 +831,33 @@ public class Structure {
         }
 
         // add other checkings
+        /*
+         * MRH 22JUL2010: Checking whether reaction balances
+         */
+        int numC=0; int numH=0; int numO=0; int numS=0; int numSi=0;
+        LinkedList reactants = getReactantList();
+        for (int i=0; i<reactants.size(); i++) {
+        	ChemGraph cg = ((Species)reactants.get(i)).getChemGraph();
+        	numC += cg.getCarbonNumber();
+        	numH += cg.getHydrogenNumber();
+        	numO += cg.getOxygenNumber();
+        	numS += cg.getSulfurNumber();
+        	numSi += cg.getSiliconNumber();
+        }
+        LinkedList products = getProductList();
+        for (int j=0; j<products.size(); j++) {
+        	ChemGraph cg = ((Species)products.get(j)).getChemGraph();
+        	numC -= cg.getCarbonNumber();
+        	numH -= cg.getHydrogenNumber();
+        	numO -= cg.getOxygenNumber();
+        	numS -= cg.getSulfurNumber();
+        	numSi -= cg.getSiliconNumber();
+        }
+        if (numC!=0 || numH!=0 || numO!=0 || numS!=0 || numSi!=0) {
+        	System.out.println("Reaction is not balanced: " + toString());
+        	return false;
+        }
+        
         return true;
 
         //#]

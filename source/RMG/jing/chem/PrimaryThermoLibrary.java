@@ -95,7 +95,6 @@ public HashMap readLibrary(String p_thermoFileName, HashMap p_dictionary, String
 	try{
 		FileReader in = new FileReader(p_thermoFileName);
 		BufferedReader data = new BufferedReader(in);
-		HashMap tempLibrary = new HashMap();
 		String line = ChemParser.readMeaningfulLine(data);
 		while (line != null){
 			StringTokenizer token = new StringTokenizer(line);
@@ -116,17 +115,16 @@ public HashMap readLibrary(String p_thermoFileName, HashMap p_dictionary, String
 				ThermoData newThermoData = new ThermoData(name, thermoData, comments, source + " (Species ID: " + name + ")");
 				Graph g = (Graph)dictionary.get(name);
 				if (g != null) {
-					Object old = tempLibrary.get(g);
+					Object old = library.get(g);
 					if (old == null){
-						tempLibrary.put(g, newThermoData);
 						library.put(g, newThermoData);
 					}
 					else {
 						ThermoData oldThermoData = (ThermoData)old;
 						if (!oldThermoData.equals(newThermoData)) {
-				            System.out.println("Duplicate thermo data (same graph, different name) in " + source);
-				            System.out.println("\tIgnoring thermo data for species: " + newThermoData.getName());
-				            System.out.println("\tStill storing thermo data for species: " + oldThermoData.getName());
+				            System.out.println("Duplicate thermo data (same graph, same name) in " + source);
+				            System.out.println("\tIgnoring thermo data for species: " + newThermoData.getName() + " from thermo_library " + source);
+				            System.out.println("\tStill storing thermo data for species: " + oldThermoData.getName() + " from thermo_library " + oldThermoData.source);
 						}
 					}
 				}
@@ -183,6 +181,9 @@ public HashMap readDictionary(String p_fileName, String source) throws FileNotFo
 	        Graph oldGraph = (Graph)old;
 	        if (!oldGraph.equals(graph)) {
 	          System.out.println("Can't replace graph in primary thermo library!");
+	          System.out.println("The species name '" + name + "' is given multiple times");
+	          System.out.println("in the thermo library '" + source + "', yet has");
+	          System.out.println("different graphs");
 	          System.exit(0);
 	        }
 
