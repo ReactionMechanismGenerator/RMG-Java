@@ -85,7 +85,7 @@ public class PDepArrheniusKinetics implements PDepKinetics {
 			//	PLOG format does not need "/" between parameters
 			result += " " + Double.toString(kinetics[i].getAValue());
 			result += " " + Double.toString(kinetics[i].getNValue());
-			result += " " + Double.toString(kinetics[i].getEValue());
+			result += " " + Double.toString(kinetics[i].getEValue()*1000);
 			result += " /\n";
 		}
 		return result;
@@ -105,6 +105,10 @@ public class PDepArrheniusKinetics implements PDepKinetics {
     
     public static void setPressures(Pressure[] ListOfPressures) {
     	pressures = ListOfPressures;
+    }
+    
+    public Pressure getPressures(int i) {
+    	return pressures[i];
     }
 
 }
