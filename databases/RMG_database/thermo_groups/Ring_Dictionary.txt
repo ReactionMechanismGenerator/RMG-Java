@@ -1182,3 +1182,140 @@ methylenecyclopentane
 5  Cs 0 {4,S} {1,S}
 6  Cd 0 {1,D}
 
+// Sulfur containing rings
+// Added by Aäron Vandeputte August 25th 2009
+
+
+// Three membered rings
+
+thiirene
+1 * S 0 {2,S} {3,S}
+2 C 0 {1,S} {3,D}
+3 C 0 {1,S} {2,D}
+
+thiirane
+1 * S 0 {2,S} {3,S}
+2 C 0 {1,S} {3,S}
+3 C 0 {1,S} {2,S}
+
+dithiirane
+1 * S 0 {2,S} {3,S}
+2 S 0 {1,S} {3,S}
+3 C 0 {1,S} {2,S}
+
+trithiirane
+1 * S 0 {2,S} {3,S}
+2 S 0 {1,S} {3,S}
+3 S 0 {1,S} {2,S}
+
+
+
+// Four membered rings
+
+
+
+thietane
+1 * S 0 {2,S} {4,S}
+2 C 0 {1,S} {3,S}
+3 C 0 {2,S} {4,S}
+4 C 0 {1,S} {3,S}
+
+1,2-dithietane
+1 * S 0 {2,S} {4,S}
+2 S 0 {1,S} {3,S}
+3 C 0 {2,S} {4,S}
+4 C 0 {1,S} {3,S}
+
+1,3-dithietane
+1 * S 0 {2,S} {4,S}
+2 C 0 {1,S} {3,S}
+3 S 0 {2,S} {4,S}
+4 C 0 {1,S} {3,S}
+
+trithietane
+1 * S 0 {2,S} {4,S}
+2 S 0 {1,S} {3,S}
+3 S 0 {2,S} {4,S}
+4 C 0 {1,S} {3,S}
+
+tetrathietane
+1 * S 0 {2,S} {4,S}
+2 S 0 {1,S} {3,S}
+3 S 0 {2,S} {4,S}
+4 S 0 {1,S} {3,S}
+
+
+
+// Five membered rings
+
+
+
+thiolane
+1 * S 0 {2,S} {5,S}
+2 C 0 {1,S} {3,S}
+3 C 0 {2,S} {4,S}
+4 C 0 {3,S} {5,S}
+5 C 0 {1,S} {4,S}
+
+2,3-dihydrothiophene
+1 * S 0 {2,S} {5,S}
+2 Cd 0 {1,S} {3,D}
+3 Cd 0 {2,D} {4,S}
+4 C 0 {3,S} {5,S}
+5 C 0 {1,S} {4,S}
+
+2,5-dihydrothiophene
+1 * S 0 {2,S} {5,S}
+2 C 0 {1,S} {3,S}
+3 Cd 0 {2,S} {4,D}
+4 Cd 0 {3,D} {5,S}
+5 C 0 {1,S} {4,S}
+
+thiophene
+1 * S 0 {2,S} {5,S}
+2 Cd 0 {1,S} {3,D}
+3 Cd 0 {2,D} {4,S}
+4 Cd 0 {3,S} {5,D}
+5 Cd 0 {1,S} {4,D}
+
+1,2-dithiolane
+1 * S 0 {2,S} {5,S}
+2 S 0 {1,S} {3,S}
+3 C 0 {2,S} {4,S}
+4 C 0 {3,S} {5,S}
+5 C 0 {1,S} {4,S}
+
+1,3-dithiolane
+1 * S 0 {2,S} {5,S}
+2 C 0 {1,S} {3,S}
+3 S 0 {2,S} {4,S}
+4 C 0 {3,S} {5,S}
+5 C 0 {1,S} {4,S}
+
+1,2,3-trithiolane
+1 * S 0 {2,S} {5,S}
+2 S 0 {1,S} {3,S}
+3 S 0 {2,S} {4,S}
+4 C 0 {3,S} {5,S}
+5 C 0 {1,S} {4,S}
+
+1,2,4-trithiolane
+1 * S 0 {2,S} {5,S}
+2 S 0 {1,S} {3,S}
+3 C 0 {2,S} {4,S}
+4 S 0 {3,S} {5,S}
+5 C 0 {1,S} {4,S}
+
+tetrathiolane
+1 * S 0 {2,S} {5,S}
+2 S 0 {1,S} {3,S}
+3 S 0 {2,S} {4,S}
+4 S 0 {3,S} {5,S}
+5 C 0 {1,S} {4,S}
+
+pentathiolane
+1 * S 0 {2,S} {5,S}
+2 S 0 {1,S} {3,S}
+3 S 0 {2,S} {4,S}
+4 S 0 {3,S} {5,S}
+5 S 0 {1,S} {4,S}
