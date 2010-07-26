@@ -3531,6 +3531,7 @@ public class ReactionModelGenerator {
 																	  chebyPolys);
 			pdepk = new PDepRateConstant(rateCoefficients,chebyshev);
 		} else if (numPlogs > 0) {
+			PDepArrheniusKinetics pdepAK = new PDepArrheniusKinetics(numPlogs);
 			for (int i=0; i<numPlogs; i++) {
 				StringTokenizer st = new StringTokenizer(ChemParser.readMeaningfulLine(reader));
 				Pressure p = new Pressure(Double.parseDouble(st.nextToken()),"Pa");
@@ -3547,7 +3548,6 @@ public class ReactionModelGenerator {
 					Ea = Ea * 1.987;
 				UncertainDouble dE = new UncertainDouble(Ea,0.0,"A");
 				ArrheniusKinetics k = new ArrheniusKinetics(dA, dn, dE, "", 1, "", "");
-				PDepArrheniusKinetics pdepAK = new PDepArrheniusKinetics(i);
 				pdepAK.setKinetics(i, p, k);
 				pdepk = new PDepRateConstant(rateCoefficients,pdepAK);
 			}
