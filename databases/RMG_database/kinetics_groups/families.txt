@@ -44,3 +44,5 @@
 27	  off	     intra_substitutionS_cyclization
 28	  off      intra_substitutionS_isomerization
 29	  off      SubstitutionS
+30	  off      H_Abstraction_A
+31	  off      R_Addition_MultipleBond_A		
