@@ -288,18 +288,24 @@ public class FastMasterEqn implements PDepKineticsEstimator {
 		String input = writeInputString(pdn, rxnSystem, speciesList, isomerList, pathReactionList, nIsom, nReac, nProd);
         StringBuilder output = new StringBuilder(4096); // of several I tested the smallest FAME output was 2609 characters, but best to use 2^n
 
+		
+		int id = pdn.getID();
+		
 		// DEBUG only: Write input file
 		try {
-			FileWriter fw = new FileWriter(new File("fame/" + Integer.toString(pdn.getID()) + "_input.txt"));
+			String path = "fame/";
+			if (id < 10)        path += "000";
+			else if (id < 100)  path += "00";
+			else if (id < 1000) path += "0";
+			path += Integer.toString(id);
+			path += "_input.txt";
+			FileWriter fw = new FileWriter(new File(path));
 			fw.write(input);
 			fw.close();
 		} catch (IOException ex) {
 			System.out.println("Unable to write FAME input file.");
 			System.exit(0);
-		}//*/
-
-		// Touch FAME output file
-		//touchOutputFile(); //no longer needed with standard input/output
+		}
 
 		// FAME system call
 		try {
@@ -374,21 +380,6 @@ public class FastMasterEqn implements PDepKineticsEstimator {
 				// Reset altered flag
 				pdn.setAltered(false);
 
-				// Clean up files
-				int id = pdn.getID();
-				/*String path = "fame/";
-				if (id < 10)			path += "000";
-				else if (id < 100)	path += "00";
-				else if (id < 1000)	path += "0";
-				path += Integer.toString(id);
-
-				File input = new File("fame/fame_input.txt");
-				File newInput = new File(path +  "_input.txt");
-				input.renameTo(newInput);
-				File output = new File("fame/fame_output.txt");
-				File newOutput = new File(path +  "_output.txt");
-				output.renameTo(newOutput);*/
-
 				// Write finished indicator to console
 				//System.out.println("FAME execution for network " + Integer.toString(id) + " complete.");
 				String formula = pdn.getSpeciesType();
@@ -401,8 +392,6 @@ public class FastMasterEqn implements PDepKineticsEstimator {
 				// if (isomerList.size() >= 10) {
 				//	System.out.println("Running Time is: " + String.valueOf((System.currentTimeMillis())/1000/60) + " minutes after running fame.");
 				// }
-
-
 			}
 
         }
