@@ -286,7 +286,7 @@ public class FastMasterEqn implements PDepKineticsEstimator {
 
 		// Create FAME input files
 		String input = writeInputString(pdn, rxnSystem, speciesList, isomerList, pathReactionList, nIsom, nReac, nProd);
-        String output = "";
+        StringBuffer output = new StringBuffer(2620); // of several I tested, the smallest FAME output was 2609 characters.
 
 		// DEBUG only: Write input file
 		/*try {
@@ -324,33 +324,33 @@ public class FastMasterEqn implements PDepKineticsEstimator {
 				line = stdout.readLine().trim();
 			}
 			catch (NullPointerException e) {
-				System.out.println("Stderr:");
+				System.out.println("FAME Stderr:");
 				String errline = null;
 				while((errline = stderr.readLine()) != null){
 				    System.out.println(errline);
 				}
-				throw new PDepException("FAME output file is empty; FAME job was likely unsuccessful.");
+				throw new PDepException("FAME reported an error; FAME job was likely unsuccessful.");
 			}
 			
 			// advance to first line that's not for debug purposes
 			while ( line.startsWith("#IN:") || line.contains("#DEBUG:") ) {
-				output += line + "\n";
+				output.append(line).append("\n");
 				line = stdout.readLine().trim();
 			}
 			
             if (line.startsWith("#####")) { // correct output begins with ######...
-                output += line + "\n";
+                output.append(line).append("\n");
                 while ( (line = stdout.readLine()) != null) {
-                    output += line + "\n";
+                    output.append(line).append("\n");
                 }
             }
             else { // erroneous output does not begin with ######...
                 // Print FAME stdout and error
 				System.out.println("FAME Error::");
                 System.out.println(line);
-				output += line + "\n";
+				output.append(line).append("\n");
                 while ( ((line = stdout.readLine()) != null) || ((line = stderr.readLine()) != null) ) {
-					output += line + "\n";
+					output.append(line).append("\n");
                     System.out.println(line);
                 }
 				// clean up i/o streams (we may be trying again with ModifiedStrongCollision and carrying on)
@@ -369,7 +369,7 @@ public class FastMasterEqn implements PDepKineticsEstimator {
 			stderr.close();
 
 			// Parse FAME output file and update accordingly
-			if (parseOutputString(output, pdn, rxnSystem, cerm, isomerList)) {
+			if (parseOutputString(output.toString(), pdn, rxnSystem, cerm, isomerList)) {
 
 				// Reset altered flag
 				pdn.setAltered(false);
@@ -417,7 +417,7 @@ public class FastMasterEqn implements PDepKineticsEstimator {
                 fw.close();
 				System.out.println("Troublesome FAME input saved to ./fame/" + Integer.toString(pdn.getID()) + "_input.txt");
                 FileWriter fwo = new FileWriter(new File("fame/" + Integer.toString(pdn.getID()) + "_output.txt"));
-                fwo.write(output);
+                fwo.write(output.toString());
                 fwo.close();
 				System.out.println("Troublesome FAME result saved to ./fame/" + Integer.toString(pdn.getID()) + "_output.txt");
             } catch (IOException ex) {
