@@ -85,7 +85,14 @@ public class PDepArrheniusKinetics implements PDepKinetics {
 			//	PLOG format does not need "/" between parameters
 			result += " " + Double.toString(kinetics[i].getAValue());
 			result += " " + Double.toString(kinetics[i].getNValue());
-			result += " " + Double.toString(kinetics[i].getEValue()*1000);
+			double Ea_in_kcalmol = kinetics[i].getEValue();
+			double Ea = 0.0;
+			if (ArrheniusKinetics.getEaUnits().equals("kcal/mol"))		Ea = Ea_in_kcalmol;
+			else if (ArrheniusKinetics.getEaUnits().equals("cal/mol"))	Ea = Ea_in_kcalmol * 1000.0;
+			else if (ArrheniusKinetics.getEaUnits().equals("kJ/mol"))	Ea = Ea_in_kcalmol * 4.184;
+			else if (ArrheniusKinetics.getEaUnits().equals("J/mol"))	Ea = Ea_in_kcalmol * 4184.0;
+			else if (ArrheniusKinetics.getEaUnits().equals("Kelvins"))	Ea = Ea_in_kcalmol / 1.987e-3;
+			result += " " + Double.toString(Ea);
 			result += " /\n";
 		}
 		return result;
@@ -105,6 +112,10 @@ public class PDepArrheniusKinetics implements PDepKinetics {
     
     public static void setPressures(Pressure[] ListOfPressures) {
     	pressures = ListOfPressures;
+    }
+    
+    public void setRateCoefficients(ArrheniusKinetics[] ListOfKinetics) {
+    	kinetics = ListOfKinetics;
     }
     
     public Pressure getPressures(int i) {
