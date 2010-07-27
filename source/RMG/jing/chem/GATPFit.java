@@ -61,7 +61,8 @@ public class GATPFit {
 		String workingDirectory = System.getProperty("RMG.workingDirectory");
         // write species name
         String ls = System.getProperty("line.separator");
-        String result = "SPEC " + species.getChemkinName() + ls;
+        StringBuilder result = new StringBuilder(1024);
+		result.append( "SPEC " + species.getChemkinName() + ls );
 
         // write the element
         ChemGraph cg = species.getChemGraph();
@@ -83,57 +84,57 @@ public class GATPFit {
 //        	System.err.println("Species contains more than four unique elements.");
 //        }
         
-		result += "ELEM C " + MathTool.formatInteger(Cn,3,"L") + ls;
-		result += "ELEM H " + MathTool.formatInteger(Hn,3,"L") + ls;
-        if (On>0) result += "ELEM O " + MathTool.formatInteger(On,3,"L") + ls;
-        if (Sin>0) result += "ELEM Si " + MathTool.formatInteger(Sin,3,"L") + ls;
-        if (Sn>0) result += "ELEM S " + MathTool.formatInteger(Sn,3,"L") + ls;
+		result.append( "ELEM C " + MathTool.formatInteger(Cn,3,"L") + ls );
+		result.append( "ELEM H " + MathTool.formatInteger(Hn,3,"L") + ls );
+        if (On>0) result.append( "ELEM O " + MathTool.formatInteger(On,3,"L") + ls );
+        if (Sin>0) result.append( "ELEM Si " + MathTool.formatInteger(Sin,3,"L") + ls );
+        if (Sn>0) result.append( "ELEM S " + MathTool.formatInteger(Sn,3,"L") + ls );
         
-        /*if (Cn>0) result += "ELEM C " + MathTool.formatInteger(Cn,3,"L") + ls;
-        if (Hn>0) result += "ELEM H " + MathTool.formatInteger(Hn,3,"L") + ls;
-        if (On>0) result += "ELEM O " + MathTool.formatInteger(On,3,"L") + ls;*/
+        /*if (Cn>0) result.append( "ELEM C " + MathTool.formatInteger(Cn,3,"L") + ls );
+        if (Hn>0) result.append( "ELEM H " + MathTool.formatInteger(Hn,3,"L") + ls );
+        if (On>0) result.append( "ELEM O " + MathTool.formatInteger(On,3,"L") + ls );*/
 		
-//		result += "ELEM C " + MathTool.formatInteger(Cn,3,"L") + ls;
-//        result += "ELEM H " + MathTool.formatInteger(Hn,3,"L") + ls;
-//        result += "ELEM O " + MathTool.formatInteger(On,3,"L") + ls;
+//		result.append( "ELEM C " + MathTool.formatInteger(Cn,3,"L") + ls );
+//        result.append( "ELEM H " + MathTool.formatInteger(Hn,3,"L") + ls );
+//        result.append( "ELEM O " + MathTool.formatInteger(On,3,"L") + ls );
 		
         // write H and S at 298
         ThermoData td = species.getThermoData();
-		result += "H298 " + Double.toString(td.getH298()) + "\n";
-		result += "S298 " + Double.toString(td.getS298()) + "\n";
-		result += "DLTH " + Double.toString(td.getH298()) + "\n";
-		result += "MWEI " + Double.toString(species.getMolecularWeight()) + "\n";
+		result.append( "H298 " + Double.toString(td.getH298()) + "\n" );
+		result.append( "S298 " + Double.toString(td.getS298()) + "\n" );
+		result.append( "DLTH " + Double.toString(td.getH298()) + "\n" );
+		result.append( "MWEI " + Double.toString(species.getMolecularWeight()) + "\n" );
 		
-		//result += "H298 " + MathTool.formatDouble(td.getH298(), 10, 2).trim() + ls;
-        //result += "S298 " + MathTool.formatDouble(td.getS298(), 10, 2).trim() + ls;
-        //result += "DLTH " + MathTool.formatDouble(td.getH298(), 10, 2).trim() + ls;
+		//result.append( "H298 " + MathTool.formatDouble(td.getH298(), 10, 2).trim() + ls );
+        //result.append( "S298 " + MathTool.formatDouble(td.getS298(), 10, 2).trim() + ls );
+        //result.append( "DLTH " + MathTool.formatDouble(td.getH298(), 10, 2).trim() + ls );
         // write MW, temperature, ouput format, etc
-        //result += "MWEI " + MathTool.formatDouble(species.getMolecularWeight(), 6, 1).trim() + ls;
-        result += "TEMP 1000.0" + ls;
-		result += "TMIN 300.0"+ls;
-		result += "TMAX 5000.0" + ls;
-        result += "CHEM" + ls;
-        result += "TEM2 2000.0" + ls;
-		if (species.getChemGraph().isLinear())  result += "LINEAR" + ls;
-		else result += "NONLINEAR" + ls;
-        result += String.valueOf(cg.getAtomNumber()) + ls;
-        result += String.valueOf(species.getInternalRotor()) + ls;
-		result += "TECP 300 " + Double.toString(td.Cp300) + "\n";
-		result += "TECP 400 " + Double.toString(td.Cp400) + "\n";
-		result += "TECP 500 " + Double.toString(td.Cp500) + "\n";
-		result += "TECP 600 " + Double.toString(td.Cp600) + "\n";
-		result += "TECP 800 " + Double.toString(td.Cp800) + "\n";
-		result += "TECP 1000 " + Double.toString(td.Cp1000) + "\n";
-		result += "TECP 1500 " + Double.toString(td.Cp1500) + "\n";
+        //result.append( "MWEI " + MathTool.formatDouble(species.getMolecularWeight(), 6, 1).trim() + ls );
+        result.append( "TEMP 1000.0" + ls );
+		result.append( "TMIN 300.0"+ls );
+		result.append( "TMAX 5000.0" + ls );
+        result.append( "CHEM" + ls );
+        result.append( "TEM2 2000.0" + ls );
+		if (species.getChemGraph().isLinear())  result.append( "LINEAR" + ls );
+		else result.append( "NONLINEAR" + ls );
+        result.append( String.valueOf(cg.getAtomNumber()) + ls );
+        result.append( String.valueOf(species.getInternalRotor()) + ls );
+		result.append( "TECP 300 " + Double.toString(td.Cp300) + "\n" );
+		result.append( "TECP 400 " + Double.toString(td.Cp400) + "\n" );
+		result.append( "TECP 500 " + Double.toString(td.Cp500) + "\n" );
+		result.append( "TECP 600 " + Double.toString(td.Cp600) + "\n" );
+		result.append( "TECP 800 " + Double.toString(td.Cp800) + "\n" );
+		result.append( "TECP 1000 " + Double.toString(td.Cp1000) + "\n" );
+		result.append( "TECP 1500 " + Double.toString(td.Cp1500) + "\n" );
 		
-		//result += "TECP 300 " + MathTool.formatDouble(td.Cp300,10,2).trim() + ls;
-		//result += "TECP 400 " + MathTool.formatDouble(td.Cp400,10,2).trim() + ls;
-		//result += "TECP 500 " + MathTool.formatDouble(td.Cp500,10,2).trim() + ls;
-		//result += "TECP 600 " + MathTool.formatDouble(td.Cp600,10,2).trim() + ls;
-		//result += "TECP 800 " + MathTool.formatDouble(td.Cp800,10,2).trim() + ls;
-		//result += "TECP 1000 " + MathTool.formatDouble(td.Cp1000,10,2).trim() +ls;
-		//result += "TECP 1500 " + MathTool.formatDouble(td.Cp1500,10,2).trim() + ls;
-		result += "END" + ls;
+		//result.append( "TECP 300 " + MathTool.formatDouble(td.Cp300,10,2).trim() + ls );
+		//result.append( "TECP 400 " + MathTool.formatDouble(td.Cp400,10,2).trim() + ls );
+		//result.append( "TECP 500 " + MathTool.formatDouble(td.Cp500,10,2).trim() + ls );
+		//result.append( "TECP 600 " + MathTool.formatDouble(td.Cp600,10,2).trim() + ls );
+		//result.append( "TECP 800 " + MathTool.formatDouble(td.Cp800,10,2).trim() + ls );
+		//result.append( "TECP 1000 " + MathTool.formatDouble(td.Cp1000,10,2).trim() +ls );
+		//result.append( "TECP 1500 " + MathTool.formatDouble(td.Cp1500,10,2).trim() + ls );
+		result.append( "END" + ls );
 
         // finished writing text for input file, now save result to INPUT.txt
         String GATPFit_input_name = null;
@@ -152,7 +153,7 @@ public class GATPFit {
             BufferedReader error_stream = new BufferedReader(new InputStreamReader(error_buff));
             BufferedOutputStream bufferout = new BufferedOutputStream(GATPFit.getOutputStream());
             PrintWriter commandInput = new PrintWriter((new OutputStreamWriter(bufferout)), true);
-            commandInput.write(result);
+            commandInput.write(result.toString());
             commandInput.close();
             
             String errline = error_stream.readLine();
@@ -171,7 +172,7 @@ public class GATPFit {
             
             String line = data.readLine();
             if (line==null) {
-                System.out.print(result);
+                System.out.print(result.toString());
                 throw new GATPFitException("no output from GATPFit");
             }
             line = data.readLine(); // skip first line (just says "The Chemkin polynomical coefficients calculated:")
@@ -196,7 +197,7 @@ public class GATPFit {
             try {
                 GATPFit_input = new File(GATPFit_input_name);
                 FileWriter fw = new FileWriter(GATPFit_input);
-                fw.write(result);
+                fw.write(result.toString());
                 fw.close();
         	}
             catch (IOException e2) {
@@ -212,7 +213,7 @@ public class GATPFit {
 		GATPFit_input = new File(GATPFit_input_name);
 		try {
 			FileWriter fw = new FileWriter(GATPFit_input);
-			fw.write(result);
+			fw.write(result.toString());
 			fw.close();		
 		}
 		catch (IOException e2) {

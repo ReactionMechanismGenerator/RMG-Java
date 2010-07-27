@@ -1006,7 +1006,7 @@ public class ChemParser {
 
 
     //## operation parseThirdBodyList(String)
-    public static HashMap parseThirdBodyList(String p_string) {
+    public static HashMap parseThirdBodyList(String p_string, HashMap speciesList) {
         //#[ operation parseThirdBodyList(String)
         if (p_string == null) throw new NullPointerException("read third body factor");
 
@@ -1029,6 +1029,23 @@ public class ChemParser {
         if (st.countTokens() == 1) return thirdBodyList;
         while (st.hasMoreTokens()) {
         	String name = st.nextToken().trim();
+        	/*
+        	 * When reading in third-bodies, RMG needs to recognize that these species
+        	 * 	names may have changed, i.e. CH4 is now CH4(1)
+        	 * This is straightforward, except for the "inert gas" species - 
+        	 * 	N2, He, Ne, and Ar - because the chemgraphs should be supplied
+        	 * 	in the dictionary.txt file
+        	 */
+        	if (!name.toLowerCase().equals("n2") && !name.toLowerCase().equals("ar") && !name.toLowerCase().equals("he") && !name.toLowerCase().equals("ne")) {
+        		Species species = (Species)speciesList.get(name);
+        		if (species == null) {
+        			System.out.println("Error in reading third-body colliders: ");
+        			System.out.println("The species '" + name + "' is not defined in the species.txt file.");
+        			System.out.println("Terminating RMG run");
+        			System.exit(0);
+        		}
+        		name = species.getChemkinName();
+        	}
         	Double factor = Double.valueOf(st.nextToken().trim());
             thirdBodyList.put(name, factor);
         }

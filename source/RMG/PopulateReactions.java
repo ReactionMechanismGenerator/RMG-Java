@@ -177,17 +177,7 @@ public class PopulateReactions {
              */
             line = ChemParser.readMeaningfulLine(br_input);
 			rmg.createTModel(line);
-//			Temperature systemTemp = null;
-//			if (!line.startsWith("Temperature")) {
-//				System.err.println("Error reading input file: Could not locate System Temperature.\n" +
-//						"The first line of the input file should read: \"Temperature: Value (Units)\"");
-//			} else {
-//				StringTokenizer st = new StringTokenizer(line);
-//				String dummyString = st.nextToken();	// This token should be "Temperature:"
-//				systemTemp = new Temperature(Double.parseDouble(st.nextToken()),ChemParser.removeBrace(st.nextToken()));
-//			}
-//			Temperature systemTemp_K = new Temperature(systemTemp.getK(),"K");			
-//			listOfReactions += "System Temperature: " + systemTemp_K.getK() + "K\n\n";
+
 			if (rmg.getTempList().size() > 1) {
 				System.out.println("Please list only one temperature in the TemperatureModel field.");
 				System.exit(0);
@@ -280,11 +270,6 @@ public class PopulateReactions {
              	System.exit(0);
              }
             
-            
-            /*
-             * MRH 2Apr2010:
-             * Allow user the option to print "verbose" comments
-             */
             /*
              * Read in verbosity field (if it exists)
              */
@@ -297,88 +282,6 @@ public class PopulateReactions {
             	if (tempString.equals("on") || tempString.equals("true") || tempString.equals("yes"))
             		ArrheniusKinetics.setVerbose(true);
             }
-            
-            /*
-             * MRH 27Feb:
-             * Allowing PopulateReactions module to read/use Primary Kinetic/Thermo Libraries
-             * 
-             * The user does not have to specify any primary kinetic / thermo libraries.
-             * 	However, like the input file to RMG, the fields must still be present
-             */
-//            if (line.toLowerCase().startsWith("primarythermolibrary")) {
-//            	rmg.readAndMakePTL(br_input);
-//            }
-//            else {
-//            	System.err.println("PopulateReactions: Could not locate the PrimaryThermoLibrary field." +
-//            			"Line read was: " + line);
-//            	System.exit(0);
-//            }
-            
-//            line = ChemParser.readMeaningfulLine(br_input);
-//            if (line.toLowerCase().startsWith("primarykineticlibrary")) {
-//            	rmg.readAndMakePKL(br_input);
-//            }
-//            else {
-//            	System.err.println("PopulateReactions: Could not locate the PrimaryKineticLibrary field." +
-//            			"Line read was: " + line);
-//            	System.exit(0);
-//            }
-            
-//            line = ChemParser.readMeaningfulLine(br_input);
-//            BathGas bathgas = null;
-//            String inertgasname = "";
-//            if (line.toLowerCase().startsWith("spectroscopicdata")) {
-//            	rmg.setSpectroscopicDataMode(line);
-//            	line = ChemParser.readMeaningfulLine(br_input);
-//            	line = rmg.setPressureDependenceOptions(line,br_input);
-//            	if (PDepNetwork.generateNetworks) {
-//	            	StringTokenizer bathGas_st = new StringTokenizer(line);
-//	            	String name = bathGas_st.nextToken();
-//	            	name = bathGas_st.nextToken();
-//	            	inertgasname = name;
-//	            	bathgas = new BathGas(name);
-//	            	line = ChemParser.readMeaningfulLine(br_input);
-//            	}
-//            }
-            
-//            LinkedHashMap dummyLHM = new LinkedHashMap();
-//            
-//            // Read in all of the species in the input file
-//			while (line != null) {
-//				// The first line of a new species is the user-defined name
-//				String speciesName = line;
-//				// The remaining lines are the graph
-//				Graph g = ChemParser.readChemGraph(br_input);
-//				// Make the ChemGraph, assuming it does not contain a forbidden structure
-//				ChemGraph cg = null;
-//				try {
-//					cg = ChemGraph.make(g);
-//				} catch (ForbiddenStructureException e) {
-//					System.out.println("Error in reading graph: Graph contains a forbidden structure.\n" + g.toString());
-//					System.exit(0);
-//				}
-//				// Make the species
-//				Species species = Species.make(speciesName,cg);
-//				// Add the new species to the set of species
-//				//int speciesCount = speciesSet.size();
-//				speciesSet.add(species);
-//    			SpeciesStatus ss = new SpeciesStatus(species,1,1e-12,0);
-//    			dummyLHM.put(species, ss);
-//				//if (speciesSet.size() != speciesCount+1){
-//				//	System.out.println(speciesName);
-//				//	Iterator iter=speciesSet.iterator();
-//				//	while (iter.hasNext()) {
-//				//		Species spcs = (Species)iter.next();
-//				//		if (spcs.equals(species))
-//				//			System.out.println(spcs.toString());
-//				//	}
-//				//}
-//
-//				// Read the next line of the input file
-//				line = ChemParser.readMeaningfulLine(br_input);
-//			}
-//			InitialStatus is = new InitialStatus(dummyLHM,null,null);
-//			is.putInertGas(inertgasname,1e-6);
 			
 			// Set the user's input temperature
             LinkedList tempList = rmg.getTempList();
@@ -387,11 +290,10 @@ public class PopulateReactions {
 			TemplateReactionGenerator rtLibrary = new TemplateReactionGenerator();
 			ReactionLibrary  RL = rmg.getReactionLibrary();
 			LibraryReactionGenerator lrg1 =new LibraryReactionGenerator(RL);
-			// React all species with each other
-			//reactions = rtLibrary.react(speciesSet);
-			
+			// Add all reactions found from LRG
 			reactions = lrg1.react(speciesSet);
 			System.out.println("Reactions From LRG"+reactions);
+			// Add all reactions found from RMG template reaction generator
 			reactions.addAll(rtLibrary.react(speciesSet));
 			/*
 			 * MRH 28Feb
@@ -583,7 +485,12 @@ public class PopulateReactions {
         StringTokenizer st = new StringTokenizer(source,":");
     	String reaction_type = st.nextToken();
     	if (reaction_type.equals("ReactionLibrary") ){
-    		Kinetics[] allKinetics = r.getKinetics();
+    		// We will get the forward reaction 
+    		if(r.isBackward()){
+    			r = r.getReverseReaction();
+    			Hrxn = -Hrxn; // Reversing the heat of reaction
+    		}
+    		Kinetics[] allKinetics = getReactionKinetics(r);
 			for (int numKinetics=0; numKinetics<allKinetics.length; ++numKinetics) {
 				listOfReactions += r.toString() + "\t" + updateListOfReactions(allKinetics[numKinetics], Hrxn);
 				if (allKinetics.length != 1) listOfReactions += "\tDUP\n";
@@ -627,52 +534,24 @@ public class PopulateReactions {
 				if (allKinetics.length != 1) listOfReactions += "\tDUP\n";
 			}
 		}
-//		if (r.hasAdditionalKinetics()) {
-//			HashSet indiv_rxn = r.getAllKinetics();
-//			for (Iterator iter = indiv_rxn.iterator(); iter.hasNext();) {
-//				Kinetics k_rxn = (Kinetics)iter.next();
-//				if (r.isForward())	listOfReactions += r.toString() + "\t" + updateListOfReactions(k_rxn) + "\tDUP\n";
-//				//else if (r.isBackward()) listOfReactions += r.getReverseReaction().toString() + "\t" + updateListOfReactions(k_rxn) + "\tDUP\n";
-//				else if (r.isBackward()) {
-//					LinkedHashSet reverseReactions = new LinkedHashSet();
-//					Iterator iter2 = r.getStructure().getProducts();
-//					Species species1 = (Species)iter.next();
-//					Species species2 = null;
-//					while (iter2.hasNext()) 
-//						species2 = (Species)iter2.next();
-//					String rxnFamilyName = r.getReverseReaction().getReactionTemplate().getName();
-//					reverseReactions = rtLibrary.reactSpecificFamily(species1, species2, rxnFamilyName);
-//					for (Iterator iter3 = reverseReactions.iterator(); iter3.hasNext();) {
-//						Reaction currentRxn = (Reaction)iter3.next();
-//						if (currentRxn.getStructure() == r.getReverseReaction().getStructure())
-//							listOfReactions += currentRxn.toString() + "\t" + updateListOfReactions(currentRxn.getKinetics()) + "\tDUP\n"; 
-//					}
-//					//listOfReactions += r.getReverseReaction().toString() + "\t" + updateListOfReactions(r.getReverseReaction().getKinetics());
-//				}
-//				else listOfReactions += r.toString() + "\t" + updateListOfReactions(k_rxn) + "\tDUP\n";
-//			}
-//		} else {
-//			if (r.isForward()) listOfReactions += r.toString() + "\t" + updateListOfReactions(r.getKinetics());
-//			//else if (r.isBackward()) listOfReactions += r.toString() + "\t" + updateListOfReactions(r.getFittedReverseKinetics(),r.getReactionTemplate().getName());
-//			else if (r.isBackward()) {
-//				LinkedHashSet reverseReactions = new LinkedHashSet();
-//				Iterator iter = r.getStructure().getProducts();
-//				Species species1 = (Species)iter.next();
-//				Species species2 = null;
-//				while (iter.hasNext()) 
-//					species2 = (Species)iter.next();
-//				String rxnFamilyName = r.getReverseReaction().getReactionTemplate().getName();
-//				reverseReactions = rtLibrary.reactSpecificFamily(species1, species2, rxnFamilyName);
-//				for (Iterator iter2 = reverseReactions.iterator(); iter2.hasNext();) {
-//					Reaction currentRxn = (Reaction)iter2.next();
-//					if (currentRxn.getStructure() == r.getReverseReaction().getStructure())
-//						listOfReactions += currentRxn.toString() + "\t" + updateListOfReactions(currentRxn.getKinetics()); 
-//				}
-//				//listOfReactions += r.getReverseReaction().toString() + "\t" + updateListOfReactions(r.getReverseReaction().getKinetics());
-//			}
-//			else listOfReactions += r.toString() + "\t" + updateListOfReactions(r.getKinetics());
-//		}
+
+
 		return listOfReactions;
+	}
+
+	private static Kinetics[] getReactionKinetics(Reaction r) {
+		Kinetics[] allKinetics;
+		if (r.isForward()) {
+			 allKinetics = r.getKinetics();
+		}
+		else if (r.isBackward()) {
+			 allKinetics =r.getFittedReverseKinetics();
+		}
+		else {
+			 allKinetics = r.getKinetics();
+		}
+		
+		return allKinetics;
 	}
 
 
