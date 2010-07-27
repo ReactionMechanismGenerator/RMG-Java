@@ -270,6 +270,18 @@ public class PopulateReactions {
              	System.exit(0);
              }
             
+            /*
+             * Read in verbosity field (if it exists)
+             */
+            line = ChemParser.readMeaningfulLine(br_input);
+            if (line != null && line.toLowerCase().startsWith("verbose")) {
+            	StringTokenizer st2 = new StringTokenizer(line);
+            	String tempString = st2.nextToken();
+            	tempString = st2.nextToken();
+            	tempString = tempString.toLowerCase();
+            	if (tempString.equals("on") || tempString.equals("true") || tempString.equals("yes"))
+            		ArrheniusKinetics.setVerbose(true);
+            }
 			
 			// Set the user's input temperature
             LinkedList tempList = rmg.getTempList();
