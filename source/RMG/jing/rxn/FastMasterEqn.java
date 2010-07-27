@@ -286,8 +286,9 @@ public class FastMasterEqn implements PDepKineticsEstimator {
 
 		// Create FAME input files
 		String input = writeInputString(pdn, rxnSystem, speciesList, isomerList, pathReactionList, nIsom, nReac, nProd);
-        StringBuilder output = new StringBuilder(4096); // of several I tested the smallest FAME output was 2609 characters, but best to use 2^n
-
+        
+		// Only used in the case of an error: 
+		StringBuilder output = new StringBuilder();
 		
 		int id = pdn.getID();
 		
@@ -340,17 +341,12 @@ public class FastMasterEqn implements PDepKineticsEstimator {
 			
 			// advance to first line that's not for debug purposes
 			while ( line.startsWith("#IN:") || line.contains("#DEBUG:") ) {
-				output.append(line).append("\n");
+				//output.append(line).append("\n");
 				line = stdout.readLine().trim();
 			}
 			
-            if (line.startsWith("#####")) { // correct output begins with ######...
-                output.append(line).append("\n");
-                while ( (line = stdout.readLine()) != null) {
-                    output.append(line).append("\n");
-                }
-            }
-            else { // erroneous output does not begin with ######...
+            if (!line.startsWith("#####")) { // correct output begins with ######...
+			    // erroneous output does not begin with ######...
                 // Print FAME stdout and error
 				System.out.println("FAME Error::");
                 System.out.println(line);
@@ -365,26 +361,23 @@ public class FastMasterEqn implements PDepKineticsEstimator {
                 throw new Exception();
             }
 
-            int exitValue = fame.waitFor();
-
 			// Clean up i/o streams
 			// This may be needed to release memory, which is especially 
 			// important for FAME since it can easily be called tens of
 			// thousands of times in a single job
-			stdout.close();
 			stderr.close();
 
 			// Parse FAME output file and update accordingly
-			if (parseOutputString(output.toString(), pdn, rxnSystem, cerm, isomerList)) {
+			if (parseOutputStream(stdout, pdn, rxnSystem, cerm, isomerList)) {
 
 				// Reset altered flag
 				pdn.setAltered(false);
-
+				
 				// Write finished indicator to console
 				//System.out.println("FAME execution for network " + Integer.toString(id) + " complete.");
 				String formula = pdn.getSpeciesType();
 				System.out.println("PDepNetwork #" + Integer.toString(id) +
-					" (" + formula + "): " +
+					" (" + formula + ") solved: " +
 					pdn.getNetReactions().size() + " included and " +
 					pdn.getNonincludedReactions().size() + " nonincluded net reactions.");
 				// Find time required to run FAME for large networks.
@@ -393,7 +386,7 @@ public class FastMasterEqn implements PDepKineticsEstimator {
 				//	System.out.println("Running Time is: " + String.valueOf((System.currentTimeMillis())/1000/60) + " minutes after running fame.");
 				// }
 			}
-
+			int exitValue = fame.waitFor();
         }
         catch (Exception e) {
 			e.printStackTrace();
@@ -762,7 +755,7 @@ public class FastMasterEqn implements PDepKineticsEstimator {
 	 * @param cerm The current core/edge reaction model
 	 * @param isomerList The set of isomers in the network
 	 */
-	public boolean parseOutputString(String output, PDepNetwork pdn,
+	public boolean parseOutputStream(BufferedReader br, PDepNetwork pdn,
             ReactionSystem rxnSystem, CoreEdgeReactionModel cerm,
 			LinkedList<PDepIsomer> isomerList) throws PDepException {
 
@@ -794,8 +787,6 @@ public class FastMasterEqn implements PDepKineticsEstimator {
 		pdepRatesOK = true;
 
 		try {
-
-			BufferedReader br = new BufferedReader(new StringReader(output));
 
 			String str = "";
 			StringTokenizer tkn;
@@ -1021,7 +1012,7 @@ public class FastMasterEqn implements PDepKineticsEstimator {
 
 			}
 
-			// Close file when finished
+			// Close stream when finished
 			br.close();
 
 			// Set reverse reactions
