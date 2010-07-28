@@ -209,7 +209,6 @@ L1: RJ2		// biradicals
 				L6: AllylJ2_t
 				L6: AllylJ2_s
 		L4: CsJ2_S
-		L4: C=SJ2
 	L3: CdJ2	
 		L4: CCdJ2
 			L5: CCdJ2_t

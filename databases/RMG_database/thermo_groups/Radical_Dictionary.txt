@@ -839,10 +839,6 @@ CsJ2_S
 2    C 0 {1,S}
 3    C 0 {1,S}
 
-C=SJ2
-1 * C 2 {2,D}
-2 Sd 0 {1,D}
-
 CdJ2
 1  * {Cd,CO} 2 
 
@@ -1127,7 +1123,7 @@ CdJ2-Sd_s
 2   Sd 0 {1,D} 
 
 CdJ2-Sd_t
-1 * Cd 2s {2,D}
+1 * Cd 2t {2,D}
 2   Sd 0 {1,D} 
 
 SJ2

@@ -15649,7 +15649,7 @@
  Ss-CdCt
  1  * Ss 0 {2,S} {3,S}
  2    Cd 0 {1,S}
- 3    CO 0 {1,S}
+ 3    Ct 0 {1,S}
 
  Ss-C=SCt                                          
  1  * Ss 0 {2,S} {3,S}
