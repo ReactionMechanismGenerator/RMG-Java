@@ -1486,7 +1486,7 @@ public class QMTP implements GeneralGAPP {
 	canInp += "GEOM MM4File " + name+".mm4out\n";//geometry file; ***special MM4 treatment in CanTherm; another option would be to use mm4opt file, but CanTherm code would need to be modified accordingly
 	canInp += "FORCEC MM4File "+name+".fmat\n";//force constant file; ***special MM4 treatment in CanTherm
 	canInp += "ENERGY "+ energy +" MM4\n";//***special MM4 treatment in CanTherm
-	canInp+="EXTSYMCORR "+sigmaCorr+"\n";//***special MM4 treatment in CanTherm; traditional EXTSYM integer replaced by EXTSYMCORR double, representing the dimentionless (deltaS/R) correction to entropy due to external symmetry AND chirality (vs. EXTSYM which only considers external symmetry)
+	canInp+="EXTSYM "+Math.exp(-sigmaCorr)+"\n";//***modified treatment in CanTherm; traditional EXTSYM integer replaced by EXTSYM double, to allow fractional values that take chirality into account
 	canInp+="NELEC 1\n";//multiplicity = 1; all cases we consider will be non-radicals
 	int rotors = p_chemGraph.getInternalRotor();
 	String rotInput = null;
