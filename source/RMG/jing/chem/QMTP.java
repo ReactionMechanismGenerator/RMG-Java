@@ -367,8 +367,8 @@ public class QMTP implements GeneralGAPP {
 	    //5. parse MM4 output and record as thermo data (function includes symmetry/point group calcs, etc.)
 	    if(!useCanTherm) result = parseMM4(name, directory, p_chemGraph);
 	    else{
-		if (qmdata==null) qmdata = getQMDataWithCClib(name, directory, p_chemGraph, true);//get qmdata if it is null (i.e. if a pre-existing successful result exists and it wasn't read in above)
-		result = parseCanThermFile(name, directory, p_chemGraph, qmdata);
+		//if (qmdata==null) qmdata = getQMDataWithCClib(name, directory, p_chemGraph, true);//get qmdata if it is null (i.e. if a pre-existing successful result exists and it wasn't read in above)
+		result = parseCanThermFile(name, directory, p_chemGraph);
 	    }
 	}
         
@@ -1472,6 +1472,10 @@ public class QMTP implements GeneralGAPP {
 	if(p_chemGraph.getAtomNumber()!=1)Hthermal+=R*calcVibH(freqs, T_MM4, h, k, c)/1000.;
 	energy = energy - Hthermal;
 	//3. write CanTherm input file
+	//determine point group using the SYMMETRY Program
+	String geom = qmdata.getSYMMETRYinput();
+	String pointGroup = determinePointGroupUsingSYMMETRYProgram(geom);
+	double sigmaCorr = getSigmaCorr(pointGroup);
 	String canInp = "Calculation: Thermo\n";
 	canInp += "Trange: 300 100 13\n";//temperatures from 300 to 1500 in increments of 100
 	canInp += "Scale: 1.0\n";//scale factor of 1
@@ -1482,7 +1486,7 @@ public class QMTP implements GeneralGAPP {
 	canInp += "GEOM MM4File " + name+".mm4out\n";//geometry file; ***special MM4 treatment in CanTherm; another option would be to use mm4opt file, but CanTherm code would need to be modified accordingly
 	canInp += "FORCEC MM4File "+name+".fmat\n";//force constant file; ***special MM4 treatment in CanTherm
 	canInp += "ENERGY "+ energy +" MM4\n";//***special MM4 treatment in CanTherm
-	canInp+="EXTSYM 1\n";//use external symmetry of 1; it will be corrected for below
+	canInp+="EXTSYM "+Math.exp(-sigmaCorr)+"\n";//***modified treatment in CanTherm; traditional EXTSYM integer replaced by EXTSYM double, to allow fractional values that take chirality into account
 	canInp+="NELEC 1\n";//multiplicity = 1; all cases we consider will be non-radicals
 	int rotors = p_chemGraph.getInternalRotor();
 	String rotInput = null;
@@ -1500,7 +1504,7 @@ public class QMTP implements GeneralGAPP {
 		int[] rotorAtoms = (int[])iter.next();
 		LinkedHashSet rotatingGroup = (LinkedHashSet)rotorInfo.get(rotorAtoms);
 		Iterator iterGroup = rotatingGroup.iterator();
-		rotInput += "L2: 1 "+rotorAtoms[1]+ " "+ rotorAtoms[2];//uses a symmetry number of 1; this will be taken into account elsewhere
+		rotInput += "L2: " + rotorAtoms[4] +" "+rotorAtoms[1]+ " "+ rotorAtoms[2];//note: rotorAtoms[4] is the rotorSymmetry number as estimated by calculateRotorSymmetryNumber; this will be taken into account elsewhere
 		while (iterGroup.hasNext()){//print the atoms associated with rotorAtom 2
 		    Integer id = (Integer)iterGroup.next();
 		    if(id != rotorAtoms[2]) rotInput+= " "+id;//don't print atom2
@@ -1554,8 +1558,8 @@ public class QMTP implements GeneralGAPP {
         return qmdata;
     }
 
-    public ThermoData parseCanThermFile(String name, String directory, ChemGraph p_chemGraph, QMData qmdata){
-	//5 and 6. read CanTherm output and correct the output for symmetry number (everything has been assumed to be one) : useHindRot=true case (or no rotors): use ChemGraph symmetry number; otherwise, we use SYMMETRY
+    public ThermoData parseCanThermFile(String name, String directory, ChemGraph p_chemGraph){
+	//5. read CanTherm output
 	Double Hf298 = null;
 	Double S298 = null;
 	Double Cp300 = null;
@@ -1591,19 +1595,7 @@ public class QMTP implements GeneralGAPP {
             e.printStackTrace();
             System.exit(0);
         }
-	//determine point group using the SYMMETRY Program
-	String geom = qmdata.getSYMMETRYinput();
-	String pointGroup = determinePointGroupUsingSYMMETRYProgram(geom);
-	double sigmaCorrSYMM = getSigmaCorr(pointGroup);
-	int rotors = p_chemGraph.getInternalRotor();
-	if(!useHindRot || rotors==0){
-	    S298+= R*sigmaCorrSYMM;
-	}
-	else{
-	    double sigmaCorrGRAPH = -Math.log(p_chemGraph.getSymmetryNumber());
-	    S298+= R*sigmaCorrGRAPH;
-	    //to add: compute difference between RRHO and hindered rotor thermo values, taking the difference in symmetry number for entropy; the idea is that the harmonic value will be read in from canTherm (except for symmetry number considerations)
-	}
+
 	ThermoData result = new ThermoData(Hf298,S298,Cp300,Cp400,Cp500,Cp600,Cp800,Cp1000,Cp1500,3,1,1,"MM4 calculation; includes CanTherm analysis of force-constant matrix");//this includes rough estimates of uncertainty
         System.out.println("Thermo for " + name + ": "+ result.toString());//print result, at least for debugging purposes
 
