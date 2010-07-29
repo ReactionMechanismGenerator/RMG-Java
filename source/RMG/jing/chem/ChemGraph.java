@@ -936,17 +936,22 @@ return sn;
 				LinkedList pieces = f.partitionWithPreservedIDs();//partition into the two separate graphs
 				Graph sideA = (Graph)pieces.getFirst();
 				Graph sideB = (Graph)pieces.getLast();
-				int rotorSym = calculateRotorSymmetryNumber(n1,n2);
 				//look for the piece that has node2
 				if(sideA.getNodeIDs().contains(n2.getID())){
-				    Node dihedral1 = (Node)sideB.getNodeAt(n1.getID()).getNeighboringNodes().iterator().next();//get a neighboring node
-				    Node dihedral2 = (Node)sideA.getNodeAt(n2.getID()).getNeighboringNodes().iterator().next();//get a neighboring node
+				    Node atom1 = sideB.getNodeAt(n1.getID());
+				    Node atom2 = sideA.getNodeAt(n2.getID());
+				    Node dihedral1 = (Node)atom1.getNeighboringNodes().iterator().next();//get a neighboring node
+				    Node dihedral2 = (Node)atom2.getNeighboringNodes().iterator().next();//get a neighboring node
+				    int rotorSym = calculateRotorSymmetryNumber(atom1,atom2);
 				    int[] rotorAtoms = {dihedral1.getID(), n1.getID(), n2.getID(), dihedral2.getID(), rotorSym};
 				    rotorInfo.put(rotorAtoms, sideA.getNodeIDs());
 				}
 				else if (sideB.getNodeIDs().contains(n2.getID())){
-				    Node dihedral1 = (Node)sideA.getNodeAt(n1.getID()).getNeighboringNodes().iterator().next();//get a neighboring node
-				    Node dihedral2 = (Node)sideB.getNodeAt(n2.getID()).getNeighboringNodes().iterator().next();//get a neighboring node
+				    Node atom1 = sideA.getNodeAt(n1.getID());
+				    Node atom2 = sideB.getNodeAt(n2.getID());
+				    Node dihedral1 = (Node)atom1.getNeighboringNodes().iterator().next();//get a neighboring node
+				    Node dihedral2 = (Node)atom2.getNeighboringNodes().iterator().next();//get a neighboring node
+				    int rotorSym = calculateRotorSymmetryNumber(atom1,atom2);
 				    int[] rotorAtoms = {dihedral1.getID(), n1.getID(), n2.getID(), dihedral2.getID(), rotorSym};
 				    rotorInfo.put(rotorAtoms, sideB.getNodeIDs());
 				}
