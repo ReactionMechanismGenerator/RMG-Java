@@ -58,7 +58,7 @@ public class TransportGALibrary {
 
         String directory = System.getProperty("jing.chem.LJDatabase.pathName");
         if (directory == null) {
-        	System.out.println("undefined system property: LJDatabase.pathName, exit!");
+        	System.out.println("undefined system property: jing.chem.LJDatabase.pathName, exit!");
         	System.exit(0);
         }
 
