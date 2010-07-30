@@ -31,7 +31,7 @@ public class inchiDictionaryReader {
     public static void main(String[] args) {
          String workingDir = System.getenv("RMG");
          System.setProperty("RMG.workingDirectory", workingDir);
-         System.setProperty("jing.chem.LJDatabase.pathName", workingDir + "\\databases\\RMG_database\\transport_groups");
+         System.setProperty("jing.chem.LJDatabase.pathName", workingDir + "/databases/RMG_database/transport_groups");
          
          //gmagoon 2/19/10: created inchiDictionaryReader from old commented out code and existing code in DictionaryReader; inchiDictionaryReader should be used with extreme caution for biradicals and higher (see comment in DictionaryReader.java)
          
