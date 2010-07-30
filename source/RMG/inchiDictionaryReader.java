@@ -31,7 +31,7 @@ public class inchiDictionaryReader {
     public static void main(String[] args) {
          String workingDir = System.getenv("RMG");
          System.setProperty("RMG.workingDirectory", workingDir);
-         System.setProperty("LJDatabase.pathName", workingDir + "\\databases\\RMG_database\\Joback");
+         //System.setProperty("LJDatabase.pathName", workingDir + "\\databases\\RMG_database\\Joback");
          
          //gmagoon 2/19/10: created inchiDictionaryReader from old commented out code and existing code in DictionaryReader; inchiDictionaryReader should be used with extreme caution for biradicals and higher (see comment in DictionaryReader.java)
          
@@ -79,8 +79,9 @@ public class inchiDictionaryReader {
         Global.maxRadNumForQM = 9999;
         QMTP.qmfolder = "DictionaryQMFiles/";
         //QMTP.qmprogram = "gaussian03";
-        QMTP.qmprogram = "mopac";
-        QMTP.usePolar = true;
+        //QMTP.qmprogram = "mopac";
+	QMTP.qmprogram = "mm4hr";
+        //QMTP.usePolar = true;
         
          //2. calculate the thermo using QMTP with no HBI; include non-ring species; (primaryThermoLibrary species will still not be included); for triplets, use guess=mix and use gaussian?
           try {
