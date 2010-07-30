@@ -99,17 +99,17 @@ public class inchiDictionaryReader {
                     //System.out.println(spe.getName());
                             
                     //calculate and display Lennard-Jones estimates based on Joback correlations for critical properties
-                    LJGroups LJGAPP=LJGroups.getINSTANCE();
-                    LJData ljdata = LJGAPP.generateLJData(chemgraph);
-                    System.out.println("Sums (dTc, dPc, dVc, dTb): " + ljdata.toString());
-                    System.out.println("Tc (K) = " + ljdata.calculateTc());
-                    System.out.println("Pc (bar) = " + ljdata.calculatePc());
-                    System.out.println("Vc (cc/mol) = " + ljdata.calculateVc());
-                    System.out.println("Tb (K) = " + ljdata.calculateTb());
-                    System.out.println("omega = " + ljdata.calculateOmega());
-                    System.out.println("sigma (Angstroms) = " + ljdata.calculateSigma());
-                    System.out.println("epsilon (K) = " + ljdata.calculateEpsilon());
-                    System.out.println("\n\n");
+                   // LJGroups LJGAPP=LJGroups.getINSTANCE();
+                   // LJData ljdata = LJGAPP.generateLJData(chemgraph);
+                   // System.out.println("Sums (dTc, dPc, dVc, dTb): " + ljdata.toString());
+                   // System.out.println("Tc (K) = " + ljdata.calculateTc());
+                   // System.out.println("Pc (bar) = " + ljdata.calculatePc());
+                   // System.out.println("Vc (cc/mol) = " + ljdata.calculateVc());
+                   // System.out.println("Tb (K) = " + ljdata.calculateTb());
+                   // System.out.println("omega = " + ljdata.calculateOmega());
+                   // System.out.println("sigma (Angstroms) = " + ljdata.calculateSigma());
+                   // System.out.println("epsilon (K) = " + ljdata.calculateEpsilon());
+                    //System.out.println("\n\n");
                      /*
                       *	Following line added by MRH on 10Aug2009:
                       *		After the species is made, the chemgraph is not necessarily the same
