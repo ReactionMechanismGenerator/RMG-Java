@@ -503,8 +503,12 @@ public class PDepNetwork {
 			PDepReaction rxn = pathReactionList.get(0);
 			if (!rxn.getProduct().getIncluded())
 				rLeak += rxn.calculateForwardFlux(ss);
-			else
+			else if (!rxn.getReactant().getIncluded())
 				rLeak += rxn.calculateReverseFlux(ss);
+            else
+                // If both the reactant and the product are included, then the 
+                // leak flux is zero
+                rLeak = 0.0;
 		}
 		// Otherwise use the set of k(T,P) values
 		else {
