@@ -1494,7 +1494,7 @@ public class QMTP implements GeneralGAPP {
 	else{
 	    int rotorCount = 0;
 	    canInp+="ROTORS "+rotors+ " "+name+".rotinfo\n";
-	    canInp+="POTENTIAL separable mm4files\n";//***special MM4 treatment in canTherm;
+	    canInp+="POTENTIAL separable mm4files_inertia\n";//***special MM4 treatment in canTherm;
 	    String rotNumbersLine=""+stericEnergy;//the line that will contain V0 (kcal/mol), and all the dihedral minima (degrees)
 	    rotInput = "L1: 1 2 3\n";
 	    LinkedHashMap rotorInfo = p_chemGraph.getInternalRotorInformation();
