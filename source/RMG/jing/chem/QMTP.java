@@ -1463,8 +1463,7 @@ public class QMTP implements GeneralGAPP {
 	double energy = qmdata.energy;
 	double stericEnergy = qmdata.stericEnergy;
 	ArrayList freqs = qmdata.freqs;
-	//2. compute H0/E0;  note that we will compute H0 for CanTherm by H0=Hf298(harmonicMM4)-(H298-H0)harmonicMM4, where harmonicMM4 values come from cclib parsing;  298.16 K is the standard temperature used by MM4; also note that Hthermal should include the R*T contribution (R*298.16 (enthalpy vs. energy difference)) and H0=E0 (T=0)
-	if (forceRRHO) name = name + "_RRHO"; //"_RRHO" will be appended to InChIKey for RRHO calcs (though we want to use unmodified name in getQMDataWithCClib above
+	//2. compute H0/E0;  note that we will compute H0 for CanTherm by H0=Hf298(harmonicMM4)-(H298-H0)harmonicMM4, where harmonicMM4 values come from cclib parsing;  298.16 K is the standard temperature used by MM4; also note that Hthermal should include the R*T contribution (R*298.16 (enthalpy vs. energy difference)) and H0=E0 (T=0)	
 	double T_MM4 = 298.16;
 	energy *= Hartree_to_kcal;//convert from Hartree to kcal/mol
 	stericEnergy *= Hartree_to_kcal;//convert from Hartree to kcal/mol
@@ -1490,6 +1489,7 @@ public class QMTP implements GeneralGAPP {
 	else canInp+="NONLINEAR\n";
 	canInp += "GEOM MM4File " + name+".mm4out\n";//geometry file; ***special MM4 treatment in CanTherm; another option would be to use mm4opt file, but CanTherm code would need to be modified accordingly
 	canInp += "FORCEC MM4File "+name+".fmat\n";//force constant file; ***special MM4 treatment in CanTherm
+	if (forceRRHO) name = name + "_RRHO"; //"_RRHO" will be appended to InChIKey for RRHO calcs (though we want to use unmodified name in getQMDataWithCClib above, and in GEOM and FORCEC sections
 	canInp += "ENERGY "+ energy +" MM4\n";//***special MM4 treatment in CanTherm
 	canInp+="EXTSYM "+Math.exp(-sigmaCorr)+"\n";//***modified treatment in CanTherm; traditional EXTSYM integer replaced by EXTSYM double, to allow fractional values that take chirality into account
 	canInp+="NELEC 1\n";//multiplicity = 1; all cases we consider will be non-radicals
