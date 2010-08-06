@@ -363,7 +363,7 @@ public class QMTP implements GeneralGAPP {
 		}
 		if(useCanTherm){
 		    performCanThermCalcs(name, directory, p_chemGraph, dihedralMinima, false);
-		    if (p_chemGraph.getInternalRotor()>0) performCanThermCalcs(name+"_RRHO", directory, p_chemGraph, dihedralMinima, true);//calculate RRHO case for comparison
+		    if (p_chemGraph.getInternalRotor()>0) performCanThermCalcs(name, directory, p_chemGraph, dihedralMinima, true);//calculate RRHO case for comparison
 		}
 
 	    }
@@ -1464,6 +1464,7 @@ public class QMTP implements GeneralGAPP {
 	double stericEnergy = qmdata.stericEnergy;
 	ArrayList freqs = qmdata.freqs;
 	//2. compute H0/E0;  note that we will compute H0 for CanTherm by H0=Hf298(harmonicMM4)-(H298-H0)harmonicMM4, where harmonicMM4 values come from cclib parsing;  298.16 K is the standard temperature used by MM4; also note that Hthermal should include the R*T contribution (R*298.16 (enthalpy vs. energy difference)) and H0=E0 (T=0)
+	if (forceRRHO) name = name + "_RRHO"; //"_RRHO" will be appended to InChIKey for RRHO calcs (though we want to use unmodified name in getQMDataWithCClib above
 	double T_MM4 = 298.16;
 	energy *= Hartree_to_kcal;//convert from Hartree to kcal/mol
 	stericEnergy *= Hartree_to_kcal;//convert from Hartree to kcal/mol
