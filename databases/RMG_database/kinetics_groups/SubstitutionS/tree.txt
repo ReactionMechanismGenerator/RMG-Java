@@ -233,6 +233,9 @@ L1: S-RR
 // Radical tree, see also H abstraction reactions
 
 L1: YJ
+	L2: Y_2centeradjbirad
+		L3: O2b
+		L3: C2b
 	L2: HJ
 	L2: CJ
 		L3: CsJ
@@ -347,15 +350,12 @@ L1: YJ
 				L5: CO_rad/NonDe
 				L5: CO_rad/OneDe
 		
-		L3: C2b
-		
 	L2: O_rad
 		L3: O_pri_rad
 		L3: O_sec_rad
 			L4: O_rad/NonDeC
 			L4: O_rad/NonDeO
 			L4: O_rad/OneDe
-		L3: O2b
 
      	L2: Y_1centerbirad
            	//L3: CO_birad
