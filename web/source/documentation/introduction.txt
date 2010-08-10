@@ -26,6 +26,25 @@ of Technology <http://web.mit.edu/>`_. Currently there are several members of th
 Changes
 -------
 
+RMG 3.2.1 is a minor bug-fix release. Changes since 3.2 include the following:
+
+- Better handling of pressure-dependent reaction network expansion when multiple reaction systems are used by restricting to one expansion per iteration. This could lead to "PDepException: Tried to determine nonincluded isomer with maximum leak flux, but there are no nonincluded reactions, so no isomer can be identified" errors.
+
+
+- Pruning with pressure-dependence on is now enabled. Only species that have not been explored in any pressure-dependent reaction network are eligible for pruning.
+
+- Only run pressure-dependence calculation when necessary: when one or more fully explored unimolecular isomer wells are present. This makes pressure-dependent mode run much faster.
+
+- Many minor but important bugs fixed in pressure dependence module: subscript errors, etc.
+
+- More detailed error messages when failing to read a reaction library, primary kinetic library, or seed mechanism.
+
+- Some improved kinetics rate rules in the hydrogen abstraction reaction family.
+
+- Clearer log messages when adding reactions from a Reaction Library
+
+- Restart jobs should now be possible with Quantum Mechanics thermochemistry estimation
+
 Changes in RMG 3.2 include the following:
 
 - The :file:`RMG_Database` folder has been restructured more logically. (:ref:`PrimaryReactionLibrary <primaryreactionlibrary>` and :ref:`Seed Mechanism <seedmechanism>` specifications in condition files will need updating)
