@@ -827,11 +827,11 @@ contains
                 ! transition state or isomer energy
                 maxIsomerE0 = 0.0
                 maxReactionE0 = 0.0
-                do r = 1, size(net%isomers)
-                    if (net%isomers(r)%E0 > maxIsomerE0) maxIsomerE0 = net%isomers(r)%E0
+                do i = 1, size(net%isomers)
+                    if (net%isomers(i)%E0 > maxIsomerE0) maxIsomerE0 = net%isomers(i)%E0
                 end do
-                do r = 1, size(net%reactions)
-                    if (net%reactions(r)%E0 > maxReactionE0) maxReactionE0 = net%reactions(r)%E0
+                do i = 1, size(net%reactions)
+                    if (net%reactions(i)%E0 > maxReactionE0) maxReactionE0 = net%reactions(i)%E0
                 end do
                 Emax = Elist(r) + maxIsomerE0 + maxReactionE0 - Emin
 
