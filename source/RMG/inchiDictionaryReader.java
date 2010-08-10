@@ -57,8 +57,9 @@ public class inchiDictionaryReader {
             //	Write the InChI and adjacency list to the listOfAdjList string
             String [] splitString = line.trim().split("\\s+");
             String inChI = splitString[2];
+	    String molname = splitString[1];
             String validInChI= inChI.replaceAll("/mult\\d+", "");
-            listOfAdjLists += inChI + "\n";
+            listOfAdjLists += molname + "\n";
             listOfAdjLists += Species.inchi2AdjList(validInChI) + "\n\n";
             line = ChemParser.readMeaningfulLine(input_reader);
         }
@@ -75,8 +76,8 @@ public class inchiDictionaryReader {
 	}
 
         ChemGraph.useQM = true;
-        ChemGraph.useQMonCyclicsOnly = false;
-        Global.maxRadNumForQM = 9999;
+        ChemGraph.useQMonCyclicsOnly = true;
+        Global.maxRadNumForQM = 0;
         QMTP.qmfolder = "DictionaryQMFiles/";
         //QMTP.qmprogram = "gaussian03";
         //QMTP.qmprogram = "mopac";
@@ -86,17 +87,21 @@ public class inchiDictionaryReader {
          //2. calculate the thermo using QMTP with no HBI; include non-ring species; (primaryThermoLibrary species will still not be included); for triplets, use guess=mix and use gaussian?
           try {
             FileReader in = new FileReader("inchiDictionaryAdjList.txt");
+	    FileWriter out = new FileWriter("thermo.txt");
             //FileReader in = new FileReader("RMG_Dictionary.txt");
             BufferedReader data = new BufferedReader(in);
+	    BufferedWriter thermo = new BufferedWriter(out);
             line = ChemParser.readMeaningfulLine(data);	
             // While more InChIs remain
             while (line != null) {
                 System.out.println(line);//print the name of the molecule
+		String moleculeName = line.trim();
                 Graph g = ChemParser.readChemGraph(data);
                 System.out.println(g);
                 if(!line.equals("InChI=1/H")&&!line.startsWith("HJ(")&&!line.startsWith("H(")){//{for some reason, H does not seem to work in Gaussian, even manually, without freq keyword; not sure about why MOPAC fails
                     ChemGraph chemgraph = ChemGraph.make(g);
-                    Species spe = Species.make("molecule",chemgraph);
+                    Species spe = Species.make(moleculeName,chemgraph);
+		    thermo.write(moleculeName+ " "+ chemgraph.getThermoData().toString()+"\n");
                     //System.out.println(spe.getName());
                             
                     //calculate and display Lennard-Jones estimates based on Joback correlations for critical properties
@@ -127,11 +132,12 @@ public class inchiDictionaryReader {
                       */
 
                     // chemgraph = spe.getChemGraph();
-                    // chemgraph.getThermoData();
+                    
                 }
                 line = ChemParser.readMeaningfulLine(data);
             }
             in.close();
+	    out.close();
  }
  catch (FileNotFoundException e) {
    System.err.println("File was not found!\n");
