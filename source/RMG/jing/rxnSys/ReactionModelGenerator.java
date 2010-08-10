@@ -2810,8 +2810,6 @@ public class ReactionModelGenerator {
 						bw.newLine();
 						bw.write(writeRatesAndParameters(currentPDepReverseRxn,numFameTemps,
 														 numFamePress,numChebyTemps,numChebyPress,numPlog));
-					} else {
-						System.out.println("Irreversible netReaction: " + currentPDepRxn.toString());
 					}
 					
 				}
