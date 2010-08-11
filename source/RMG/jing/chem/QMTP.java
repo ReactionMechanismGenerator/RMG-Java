@@ -749,7 +749,9 @@ public class QMTP implements GeneralGAPP {
 	}
 	String[] lines = mm4optContents.split("[\\r?\\n]+");//split by newlines, excluding blank lines; cf. http://stackoverflow.com/questions/454908/split-java-string-by-new-line
 	int indexForFirstAtom = lines.length - p_chemgraph.getAtomNumber();//assumes the last line is for the last atom
-	lines[1]=lines[1].substring(0,78)+" 2";//take the first 78 characters of line 2, and append the option number for the NDRIVE option; in other words, we are replacing the NDRIVE=0 option with the desired option number
+	int flag = 0;//flag to indicate whether there is a "line 1a" with pi system information
+	if (lines[1].startsWith("T")||lines[1].startsWith("F")) flag = 1;//pi system information is indicated by the second line beginning with T's and potentially F's
+	lines[1+flag]=lines[1+flag].substring(0,78)+" 2";//take the first 78 characters of line 2 (or 3 if it is a pi-system compound), and append the option number for the NDRIVE option; in other words, we are replacing the NDRIVE=0 option with the desired option number
 	//reconstruct mm4optContents
 	mm4optContents = "";
 	for(int j=0; j<lines.length;j++){
