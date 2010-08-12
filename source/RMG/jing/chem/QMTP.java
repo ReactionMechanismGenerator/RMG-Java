@@ -730,14 +730,18 @@ public class QMTP implements GeneralGAPP {
     public double[] createMM4RotorInput(String name, String directory, ChemGraph p_chemgraph, int rotors){
 	//read in the optimized coordinates from the completed "normal" MM4 job; this will be used as a template for the rotor input files
 	String mm4optContents = "";
+	int indexForFirstAtom=-1;
+	int lineIndex=0;
 	double[] dihedralMinima = new double[rotors];
 	try{
 	    FileReader mm4opt = new FileReader(directory+"/"+name+".mm4opt");
 	    BufferedReader reader = new BufferedReader(mm4opt);
 	    String line=reader.readLine();
 	    while(line!=null){
+		if(indexForFirstAtom<0 && line.substring(39,40).equals(")")) indexForFirstAtom=lineIndex;//store the location of the first atom coordinate
 		mm4optContents+=line+"\n";
 		line=reader.readLine();
+		lineIndex++;
 	    }
 	    mm4opt.close();
 	}
@@ -748,7 +752,6 @@ public class QMTP implements GeneralGAPP {
 		System.exit(0);
 	}
 	String[] lines = mm4optContents.split("[\\r?\\n]+");//split by newlines, excluding blank lines; cf. http://stackoverflow.com/questions/454908/split-java-string-by-new-line
-	int indexForFirstAtom = lines.length - p_chemgraph.getAtomNumber();//assumes the last line is for the last atom
 	int flag = 0;//flag to indicate whether there is a "line 1a" with pi system information
 	if (lines[1].startsWith("T")||lines[1].startsWith("F")) flag = 1;//pi system information is indicated by the second line beginning with T's and potentially F's
 	lines[1+flag]=lines[1+flag].substring(0,78)+" 2";//take the first 78 characters of line 2 (or 3 if it is a pi-system compound), and append the option number for the NDRIVE option; in other words, we are replacing the NDRIVE=0 option with the desired option number
