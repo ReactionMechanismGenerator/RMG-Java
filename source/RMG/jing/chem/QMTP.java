@@ -738,7 +738,7 @@ public class QMTP implements GeneralGAPP {
 	    BufferedReader reader = new BufferedReader(mm4opt);
 	    String line=reader.readLine();
 	    while(line!=null){
-		if(indexForFirstAtom<0 && line.substring(39,40).equals(")")) indexForFirstAtom=lineIndex;//store the location of the first atom coordinate
+		if(indexForFirstAtom<0 && line.length()>=40 && line.substring(39,40).equals(")")) indexForFirstAtom=lineIndex;//store the location of the first atom coordinate
 		mm4optContents+=line+"\n";
 		line=reader.readLine();
 		lineIndex++;
