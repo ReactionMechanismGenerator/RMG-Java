@@ -52,11 +52,6 @@ public class ChemElement {
   protected String name;		//## attribute name
 
   /**
-  Number of protons
-  */
-  protected int proton;		//## attribute proton
-
-  /**
   Valency of the atom
   */
   protected double valency;		//## attribute valency
@@ -80,10 +75,9 @@ public class ChemElement {
   Modifies:
   */
   //## operation ChemElement(String,int,double,double)
-  private  ChemElement(String p_name, int p_proton, double p_valency, double p_weight) {
+  private  ChemElement(String p_name, double p_valency, double p_weight) {
       //#[ operation ChemElement(String,int,double,double)
         name = p_name;
-        proton = p_proton;
         valency = p_valency;
         weight = p_weight;
 
@@ -103,24 +97,24 @@ public class ChemElement {
       ChemElement ChemElement = null;
 
       if (p_name.equals("C")) {
-      	ChemElement = new ChemElement("C",6,4,12);
+      	ChemElement = new ChemElement("C",4,12);
       }
       else if (p_name.equals("Cl")){//svp
-        ChemElement = new ChemElement("Cl",17,1,35.5);
+        ChemElement = new ChemElement("Cl",1,35.5);
       }
       else if (p_name.equals("H")) {
-      	ChemElement = new ChemElement("H",1,1,1);
+      	ChemElement = new ChemElement("H",1,1);
       }
       else if (p_name.equals("O")) {
-      	ChemElement = new ChemElement("O",8,2,16);
+      	ChemElement = new ChemElement("O",2,16);
       }
       // Added by MRH on 18-Jun-2009
       //	Hardcoding Si and S into RMG-java
       else if (p_name.equals("Si")) {
-    	  ChemElement = new ChemElement("Si",14,4,28.086);
+    	  ChemElement = new ChemElement("Si",4,28.086);
       }
       else if (p_name.equals("S")) {
-    	  ChemElement = new ChemElement("S",16,2,32.064);
+    	  ChemElement = new ChemElement("S",2,32.064);
       }
       else {
       	throw new UnknownSymbolException("ChemElement");
@@ -133,13 +127,6 @@ public class ChemElement {
   public String getName() {
       //#[ operation getName()
       return name;
-      //#]
-  }
-
-  //## operation getProton()
-  public int getProton() {
-      //#[ operation getProton()
-      return proton;
       //#]
   }
 
