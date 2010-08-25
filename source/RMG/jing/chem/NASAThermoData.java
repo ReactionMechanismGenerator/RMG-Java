@@ -202,14 +202,14 @@ public class NASAThermoData {
 		  double [] a = new double[7];
 		  a=lowTemperatureCoefficients;
 		  Cp = a[0] + a[1]*T + a[2]*T*T + a[3]*T*T*T + a[4]*T*T*T*T;
-		  Cp = Cp * T;
+		  Cp = Cp * GasConstant.getCalMolK();
 		  return Cp;
 	  }
 	  else if (T < highTemperature){
 		  double [] a = new double[7];
 		  a=highTemperatureCoefficients;
 		  Cp = a[0] + a[1]*T + a[2]*T*T + a[3]*T*T*T + a[4]*T*T*T*T;
-		  Cp = Cp * T;
+		  Cp = Cp * GasConstant.getCalMolK();
 		  return Cp;
 	  }
 	  else throw new TemperatureOutOfRangeException();
