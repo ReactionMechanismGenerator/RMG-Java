@@ -23,3 +23,7 @@ Arrhenius_EP
 823.		R3OOH_SS	Cs_rad_intra		300-1500	7.50E+10	0		0		15.250	0		0		0		0		5		Curran's [8] estimation in reaction type 19, QOOH = cyclic ether + OH
 824.		R4OOH_SSS	Cs_rad_intra		300-1500	9.38E+09	0		0		7.000	0		0		0		0		5		Curran's [8] estimation in reaction type 19, QOOH = cyclic ether + OH
 825.		R5OOH_SSSS	Cs_rad_intra		300-1500	1.17E+09	0		0		1.800	0		0		0		0		5		Curran's [8] estimation in reaction type 19, QOOH = cyclic ether + OH
+826.        R5OOH_SSSSCO C_pri_rad_intra       300-1500    1.27E+08    0.77    0       18.73	0		0		0		0		5       CBS-QB3 Including treatment of hindered rotor (SSM)   
+827.		R2OOH_SCO	C_pri_rad_intra		300-1500	1.9E+17     -1.1    0       27.2	0		0		0		0		5       CBS-QB3 Including treatment for hindered rotor, VTST Calculation (CFG & JWA) 
+828.        R4OOH_SSSCO C_pri_rad_intra       300-1500    1.27E+08    0.77    0       18.73	0		0		0		0		0 		Estimate (Same as 5 memebered ring)
+829.        R3OOH_SSCO C_pri_rad_intra       300-1500    1.27E+08    0.77    0       18.73	0		0		0		0		0       Estimate (Same as 5 memebered ring)
