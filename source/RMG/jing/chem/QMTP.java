@@ -321,7 +321,6 @@ public class QMTP implements GeneralGAPP {
 	    }
 	}
 	else{//mm4 case
-	    QMData qmdata = null;
 	    //first, check to see if the result already exists and the job terminated successfully
 	    boolean mm4ResultExists = successfulMM4ResultExistsQ(name,directory,InChIaug);
 	    if(!mm4ResultExists){//if a successful result doesn't exist from previous run (or from this run), run the calculation; if a successful result exists, we will skip directly to parsing the file
@@ -362,13 +361,18 @@ public class QMTP implements GeneralGAPP {
 			attemptNumber++;//try again with new keyword
 		    }
 		}
-		if(useCanTherm) qmdata = performCanThermCalcs(name, directory, p_chemGraph, dihedralMinima);
+		if(useCanTherm){
+		    performCanThermCalcs(name, directory, p_chemGraph, dihedralMinima, false);
+		    if (p_chemGraph.getInternalRotor()>0) performCanThermCalcs(name, directory, p_chemGraph, dihedralMinima, true);//calculate RRHO case for comparison
+		}
+
 	    }
 	    //5. parse MM4 output and record as thermo data (function includes symmetry/point group calcs, etc.)
 	    if(!useCanTherm) result = parseMM4(name, directory, p_chemGraph);
 	    else{
-		if (qmdata==null) qmdata = getQMDataWithCClib(name, directory, p_chemGraph, true);//get qmdata if it is null (i.e. if a pre-existing successful result exists and it wasn't read in above)
-		result = parseCanThermFile(name, directory, p_chemGraph, qmdata);
+		//if (qmdata==null) qmdata = getQMDataWithCClib(name, directory, p_chemGraph, true);//get qmdata if it is null (i.e. if a pre-existing successful result exists and it wasn't read in above)
+		result = parseCanThermFile(name, directory, p_chemGraph);
+		if (p_chemGraph.getInternalRotor()>0) parseCanThermFile(name+"_RRHO", directory, p_chemGraph);//print the RRHO result for comparison
 	    }
 	}
         
@@ -726,14 +730,18 @@ public class QMTP implements GeneralGAPP {
     public double[] createMM4RotorInput(String name, String directory, ChemGraph p_chemgraph, int rotors){
 	//read in the optimized coordinates from the completed "normal" MM4 job; this will be used as a template for the rotor input files
 	String mm4optContents = "";
+	int indexForFirstAtom=-1;
+	int lineIndex=0;
 	double[] dihedralMinima = new double[rotors];
 	try{
 	    FileReader mm4opt = new FileReader(directory+"/"+name+".mm4opt");
 	    BufferedReader reader = new BufferedReader(mm4opt);
 	    String line=reader.readLine();
 	    while(line!=null){
+		if(indexForFirstAtom<0 && line.length()>=40 && line.substring(35,40).equals("(  1)")) indexForFirstAtom=lineIndex;//store the location of the first atom coordinate
 		mm4optContents+=line+"\n";
 		line=reader.readLine();
+		lineIndex++;
 	    }
 	    mm4opt.close();
 	}
@@ -744,8 +752,9 @@ public class QMTP implements GeneralGAPP {
 		System.exit(0);
 	}
 	String[] lines = mm4optContents.split("[\\r?\\n]+");//split by newlines, excluding blank lines; cf. http://stackoverflow.com/questions/454908/split-java-string-by-new-line
-	int indexForFirstAtom = lines.length - p_chemgraph.getAtomNumber();//assumes the last line is for the last atom
-	lines[1]=lines[1].substring(0,78)+" 2";//take the first 78 characters of line 2, and append the option number for the NDRIVE option; in other words, we are replacing the NDRIVE=0 option with the desired option number
+	int flag = 0;//flag to indicate whether there is a "line 1a" with pi system information
+	if (lines[1].startsWith("T")||lines[1].startsWith("F")) flag = 1;//pi system information is indicated by the second line beginning with T's and potentially F's
+	lines[1+flag]=lines[1+flag].substring(0,78)+" 2";//take the first 78 characters of line 2 (or 3 if it is a pi-system compound), and append the option number for the NDRIVE option; in other words, we are replacing the NDRIVE=0 option with the desired option number
 	//reconstruct mm4optContents
 	mm4optContents = "";
 	for(int j=0; j<lines.length;j++){
@@ -1452,14 +1461,14 @@ public class QMTP implements GeneralGAPP {
 
     //parse the results using cclib and CanTherm and return a ThermoData object; name and directory indicate the location of the MM4 .mm4out file
     //formerly known as parseMM4withForceMat
-    public QMData performCanThermCalcs(String name, String directory, ChemGraph p_chemGraph, double[] dihedralMinima){
+    public QMData performCanThermCalcs(String name, String directory, ChemGraph p_chemGraph, double[] dihedralMinima, boolean forceRRHO){
 	//1. parse the MM4 file with cclib to get atomic number vector and geometry
 	QMData qmdata = getQMDataWithCClib(name, directory, p_chemGraph, true);
 	//unpack the needed results
 	double energy = qmdata.energy;
 	double stericEnergy = qmdata.stericEnergy;
 	ArrayList freqs = qmdata.freqs;
-	//2. compute H0/E0;  note that we will compute H0 for CanTherm by H0=Hf298(harmonicMM4)-(H298-H0)harmonicMM4, where harmonicMM4 values come from cclib parsing;  298.16 K is the standard temperature used by MM4; also note that Hthermal should include the R*T contribution (R*298.16 (enthalpy vs. energy difference)) and H0=E0 (T=0)
+	//2. compute H0/E0;  note that we will compute H0 for CanTherm by H0=Hf298(harmonicMM4)-(H298-H0)harmonicMM4, where harmonicMM4 values come from cclib parsing;  298.16 K is the standard temperature used by MM4; also note that Hthermal should include the R*T contribution (R*298.16 (enthalpy vs. energy difference)) and H0=E0 (T=0)	
 	double T_MM4 = 298.16;
 	energy *= Hartree_to_kcal;//convert from Hartree to kcal/mol
 	stericEnergy *= Hartree_to_kcal;//convert from Hartree to kcal/mol
@@ -1472,6 +1481,10 @@ public class QMTP implements GeneralGAPP {
 	if(p_chemGraph.getAtomNumber()!=1)Hthermal+=R*calcVibH(freqs, T_MM4, h, k, c)/1000.;
 	energy = energy - Hthermal;
 	//3. write CanTherm input file
+	//determine point group using the SYMMETRY Program
+	String geom = qmdata.getSYMMETRYinput();
+	String pointGroup = determinePointGroupUsingSYMMETRYProgram(geom);
+	double sigmaCorr = getSigmaCorr(pointGroup);
 	String canInp = "Calculation: Thermo\n";
 	canInp += "Trange: 300 100 13\n";//temperatures from 300 to 1500 in increments of 100
 	canInp += "Scale: 1.0\n";//scale factor of 1
@@ -1481,16 +1494,17 @@ public class QMTP implements GeneralGAPP {
 	else canInp+="NONLINEAR\n";
 	canInp += "GEOM MM4File " + name+".mm4out\n";//geometry file; ***special MM4 treatment in CanTherm; another option would be to use mm4opt file, but CanTherm code would need to be modified accordingly
 	canInp += "FORCEC MM4File "+name+".fmat\n";//force constant file; ***special MM4 treatment in CanTherm
+	if (forceRRHO) name = name + "_RRHO"; //"_RRHO" will be appended to InChIKey for RRHO calcs (though we want to use unmodified name in getQMDataWithCClib above, and in GEOM and FORCEC sections
 	canInp += "ENERGY "+ energy +" MM4\n";//***special MM4 treatment in CanTherm
-	canInp+="EXTSYM 1\n";//use external symmetry of 1; it will be corrected for below
+	canInp+="EXTSYM "+Math.exp(-sigmaCorr)+"\n";//***modified treatment in CanTherm; traditional EXTSYM integer replaced by EXTSYM double, to allow fractional values that take chirality into account
 	canInp+="NELEC 1\n";//multiplicity = 1; all cases we consider will be non-radicals
 	int rotors = p_chemGraph.getInternalRotor();
 	String rotInput = null;
-	if(!useHindRot || rotors==0) canInp += "ROTORS 0\n";//do not consider hindered rotors
+	if(!useHindRot || rotors==0 || forceRRHO) canInp += "ROTORS 0\n";//do not consider hindered rotors
 	else{
 	    int rotorCount = 0;
 	    canInp+="ROTORS "+rotors+ " "+name+".rotinfo\n";
-	    canInp+="POTENTIAL separable mm4files\n";//***special MM4 treatment in canTherm;
+	    canInp+="POTENTIAL separable mm4files_inertia\n";//***special MM4 treatment in canTherm;
 	    String rotNumbersLine=""+stericEnergy;//the line that will contain V0 (kcal/mol), and all the dihedral minima (degrees)
 	    rotInput = "L1: 1 2 3\n";
 	    LinkedHashMap rotorInfo = p_chemGraph.getInternalRotorInformation();
@@ -1500,7 +1514,7 @@ public class QMTP implements GeneralGAPP {
 		int[] rotorAtoms = (int[])iter.next();
 		LinkedHashSet rotatingGroup = (LinkedHashSet)rotorInfo.get(rotorAtoms);
 		Iterator iterGroup = rotatingGroup.iterator();
-		rotInput += "L2: 1 "+rotorAtoms[1]+ " "+ rotorAtoms[2];//uses a symmetry number of 1; this will be taken into account elsewhere
+		rotInput += "L2: " + rotorAtoms[4] +" "+rotorAtoms[1]+ " "+ rotorAtoms[2];//note: rotorAtoms[4] is the rotorSymmetry number as estimated by calculateRotorSymmetryNumber; this will be taken into account elsewhere
 		while (iterGroup.hasNext()){//print the atoms associated with rotorAtom 2
 		    Integer id = (Integer)iterGroup.next();
 		    if(id != rotorAtoms[2]) rotInput+= " "+id;//don't print atom2
@@ -1554,8 +1568,8 @@ public class QMTP implements GeneralGAPP {
         return qmdata;
     }
 
-    public ThermoData parseCanThermFile(String name, String directory, ChemGraph p_chemGraph, QMData qmdata){
-	//5 and 6. read CanTherm output and correct the output for symmetry number (everything has been assumed to be one) : useHindRot=true case (or no rotors): use ChemGraph symmetry number; otherwise, we use SYMMETRY
+    public ThermoData parseCanThermFile(String name, String directory, ChemGraph p_chemGraph){
+	//5. read CanTherm output
 	Double Hf298 = null;
 	Double S298 = null;
 	Double Cp300 = null;
@@ -1591,19 +1605,7 @@ public class QMTP implements GeneralGAPP {
             e.printStackTrace();
             System.exit(0);
         }
-	//determine point group using the SYMMETRY Program
-	String geom = qmdata.getSYMMETRYinput();
-	String pointGroup = determinePointGroupUsingSYMMETRYProgram(geom);
-	double sigmaCorrSYMM = getSigmaCorr(pointGroup);
-	int rotors = p_chemGraph.getInternalRotor();
-	if(!useHindRot || rotors==0){
-	    S298+= R*sigmaCorrSYMM;
-	}
-	else{
-	    double sigmaCorrGRAPH = -Math.log(p_chemGraph.getSymmetryNumber());
-	    S298+= R*sigmaCorrGRAPH;
-	    //to add: compute difference between RRHO and hindered rotor thermo values, taking the difference in symmetry number for entropy; the idea is that the harmonic value will be read in from canTherm (except for symmetry number considerations)
-	}
+
 	ThermoData result = new ThermoData(Hf298,S298,Cp300,Cp400,Cp500,Cp600,Cp800,Cp1000,Cp1500,3,1,1,"MM4 calculation; includes CanTherm analysis of force-constant matrix");//this includes rough estimates of uncertainty
         System.out.println("Thermo for " + name + ": "+ result.toString());//print result, at least for debugging purposes
 

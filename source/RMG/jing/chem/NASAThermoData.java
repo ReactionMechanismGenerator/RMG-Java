@@ -193,30 +193,7 @@ public class NASAThermoData {
 		  
 		  
   }
-  
-  public double calculateCp(Temperature temp){
-	  double T = temp.getK();
-	  double Cp;
-	  if (T < 298) throw new TemperatureOutOfRangeException();
-	  else if (T < middleTemperature){
-		  double [] a = new double[7];
-		  a=lowTemperatureCoefficients;
-		  Cp = a[0] + a[1]*T + a[2]*T*T + a[3]*T*T*T + a[4]*T*T*T*T;
-		  Cp = Cp * T;
-		  return Cp;
-	  }
-	  else if (T < highTemperature){
-		  double [] a = new double[7];
-		  a=highTemperatureCoefficients;
-		  Cp = a[0] + a[1]*T + a[2]*T*T + a[3]*T*T*T + a[4]*T*T*T*T;
-		  Cp = Cp * T;
-		  return Cp;
-	  }
-	  else throw new TemperatureOutOfRangeException();
-		  
-		  
-  }
-  
+   
 //## operation calculateG(Temperature)
   public double calculateFreeEnergy(Temperature p_temperature) {
       //#[ operation calculateG(Temperature)

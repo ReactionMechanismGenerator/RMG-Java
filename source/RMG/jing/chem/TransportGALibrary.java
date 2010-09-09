@@ -58,7 +58,7 @@ public class TransportGALibrary {
 
         String directory = System.getProperty("jing.chem.LJDatabase.pathName");
         if (directory == null) {
-        	System.out.println("undefined system property: LJDatabase.pathName, exit!");
+        	System.out.println("undefined system property: jing.chem.LJDatabase.pathName, exit!");
         	System.exit(0);
         }
 
@@ -149,7 +149,7 @@ public class TransportGALibrary {
         	return;
         }
         catch (Exception e) {
-        	System.err.println("Can't read nonring_Dictionary for transport properties!");
+        	System.err.println("Can't read nonring_Dictionary ("+p_fileName+") for transport properties!");
         	System.exit(0);
         }
     }
@@ -160,7 +160,7 @@ public class TransportGALibrary {
         	return;
         }
         catch (Exception e) {
-        	System.err.println("Can't read nonring_Library for transport properties!");
+        	System.err.println("Can't read nonring_Library ("+p_fileName+") for transport properties!");
         	System.exit(0);
         }
     }
@@ -170,7 +170,7 @@ public class TransportGALibrary {
         	groupTree = readStandardTree(p_fileName,groupDictionary,0);
         }
         catch (Exception e) {
-        	System.err.println("Can't read nonring_Tree for transport properties!");
+        	System.err.println("Can't read nonring_Tree ("+p_fileName+") for transport properties!");
         	System.err.println("Error: " + e.getMessage());
         	System.exit(0);
         }
@@ -183,7 +183,7 @@ public class TransportGALibrary {
         	return;
         }
         catch (Exception e) {
-                System.err.println("Can't read ring_Dictionary for transport properties!\n" + e.getMessage());
+                System.err.println("Can't read ring_Dictionary ("+p_fileName+") for transport properties!\n" + e.getMessage());
                 System.exit(0);
         }
     }
@@ -193,7 +193,7 @@ public class TransportGALibrary {
     		ringTree = readStandardTree(p_fileName,ringDictionary,0);
     	}
     	catch (Exception e) {
-                System.err.println("Can't read ring_Tree for transport properties!");
+                System.err.println("Can't read ring_Tree ("+p_fileName+") for transport properties!");
                 System.err.println("Error: " + e.getMessage());
                 System.exit(0);
         }

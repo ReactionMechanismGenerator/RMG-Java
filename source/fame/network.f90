@@ -56,7 +56,7 @@ module NetworkModule
     end type
 
     type Reaction
-        character(len=256) :: equation		        ! Chemical reaction equation
+        character(len=256) :: equation              ! Chemical reaction equation
         integer :: reac                             ! Isomer wells connected to transition state
         integer :: prod                             ! Isomer wells connected to transition state
         real(8) :: E0                               ! Ground-state electronic + zero-point energy of transition state in kJ/mol
@@ -78,7 +78,7 @@ contains
 
         type(ThermoData), intent(in) :: thermo
         real(8), intent(in) :: T
-        real(8)	Cp
+        real(8) Cp
 
         real(8) slope, intercept
 
@@ -123,7 +123,7 @@ contains
 
         type(ThermoData), intent(in) :: thermo
         real(8), intent(in) :: T
-        real(8)	H
+        real(8) H
 
         real(8) slope, intercept
 
@@ -200,7 +200,7 @@ contains
 
         type(ThermoData), intent(in) :: thermo
         real(8), intent(in) :: T
-        real(8)	S
+        real(8) S
 
         real(8) slope, intercept
 
@@ -277,7 +277,7 @@ contains
 
         type(ThermoData), intent(in) :: thermo
         real(8), intent(in) :: T
-        real(8)	G
+        real(8) G
 
         G = species_getEnthalpy(thermo, T) - T * species_getEntropy(thermo, T)
 
@@ -299,10 +299,10 @@ contains
         integer i
 
         ! Prepare inputs for density of states function
-		do i = 1, size(spec%spectral%vibFreq)
+        do i = 1, size(spec%spectral%vibFreq)
             vib(i) = spec%spectral%vibFreq(i)
         end do
-		do i = 1, size(spec%spectral%rotFreq)
+        do i = 1, size(spec%spectral%rotFreq)
             rot(i) = spec%spectral%rotFreq(i)
         end do
         do i = 1, size(spec%spectral%hindFreq)
@@ -450,8 +450,8 @@ contains
         real(8), dimension(1:nGrains), intent(in) :: E
         real(8), intent(in) :: T
 
-        real(8)	R 					! Gas constant in J mol^-1 K^-1
-        integer	s					! Dummy index
+        real(8) R                   ! Gas constant in J mol^-1 K^-1
+        integer s                   ! Dummy index
         real(8) dE
 
         dE = E(2) - E(1)
@@ -827,11 +827,11 @@ contains
                 ! transition state or isomer energy
                 maxIsomerE0 = 0.0
                 maxReactionE0 = 0.0
-                do r = 1, size(net%isomers)
-                    if (net%isomers(r)%E0 > maxIsomerE0) maxIsomerE0 = net%isomers(r)%E0
+                do i = 1, size(net%isomers)
+                    if (net%isomers(i)%E0 > maxIsomerE0) maxIsomerE0 = net%isomers(i)%E0
                 end do
-                do r = 1, size(net%reactions)
-                    if (net%reactions(r)%E0 > maxReactionE0) maxReactionE0 = net%reactions(r)%E0
+                do i = 1, size(net%reactions)
+                    if (net%reactions(i)%E0 > maxReactionE0) maxReactionE0 = net%reactions(i)%E0
                 end do
                 Emax = Elist(r) + maxIsomerE0 + maxReactionE0 - Emin
 
@@ -948,25 +948,25 @@ contains
             Eres(i) = isomer_getActiveSpaceEnergy(i, net%reactions)
         end do
 
-		! Zero rate coefficient matrices
-		do r = 1, nGrains
-			do i = 1, nIsom
-				do j = 1, nIsom
-					Kij(i,j,r) = 0.0
-				end do
-			end do
-			do i = 1, nIsom
-				do j = 1, nReac+nProd
-					Gnj(j,i,r) = 0.0
-				end do
-			end do
-			do i = 1, nIsom
-				do j = 1, nReac
-					Fim(i,j,r) = 0.0
-				end do
-			end do
-		end do
-		
+        ! Zero rate coefficient matrices
+        do r = 1, nGrains
+            do i = 1, nIsom
+                do j = 1, nIsom
+                    Kij(i,j,r) = 0.0
+                end do
+            end do
+            do i = 1, nIsom
+                do j = 1, nReac+nProd
+                    Gnj(j,i,r) = 0.0
+                end do
+            end do
+            do i = 1, nIsom
+                do j = 1, nReac
+                    Fim(i,j,r) = 0.0
+                end do
+            end do
+        end do
+        
         ! Isomerization, dissociation, and association microcanonical rate
         ! coefficients, respectively
         do r = 1, size(net%reactions)

@@ -23,11 +23,13 @@ F90FLAGS=-fbounds-check -ftrace=full -fmod=$(BUILDDIR) -Wall -O3
 F90FLAGS_NDEBUG=-fmod=$(BUILDDIR) -ftrace=full 
 # these are added to the LDFLAGS of the subsidiary makefiles
 #F90_EXTRA_LDFLAGS = -L/home/local/lib -lg2c  # required for Monch
-#F90_EXTRA_LDFLAGS = -framework vecLib  # for optimized blas and lapack on MacOS X, if they're not found automatically
+#F90_EXTRA_LDFLAGS =  -framework vecLIB # for optimized blas and lapack on MacOS X, if they're not found automatically
 
 #F90=gfortran
 #F90FLAGS=-fbounds-check -fbacktrace -Wall -O3
 #F90FLAGS_NDEBUG=-fbacktrace
+#F90=gfortran
+#F90FLAGS = -ffpe-trap=invalid,zero,overflow -ftrapv -fbounds-check -ggdb -J""$(BUILDDIR)"" -Wall -O3 
 
 
 ################################################################################

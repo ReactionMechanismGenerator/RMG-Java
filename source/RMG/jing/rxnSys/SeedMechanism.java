@@ -32,6 +32,8 @@ package jing.rxnSys;
 import java.io.*;
 
 import jing.mathTool.UncertainDouble;
+import jing.param.Pressure;
+import jing.param.Temperature;
 import jing.rxn.*;
 import jing.chem.*;
 import java.util.*;
@@ -70,6 +72,8 @@ public class SeedMechanism {
     protected HashMap speciesSet = new HashMap(); 
     
     private boolean generateReactions = false;
+    
+    public LinkedList allPdepNetworks = new LinkedList();
 
     // Constructors
     
@@ -223,6 +227,7 @@ public class SeedMechanism {
     
     public LinkedHashSet readPdepReactions(String pdepFileName, String p_name, HashMap allSpecies, String source, boolean pkl) throws IOException {
     	LinkedHashSet localReactions = new LinkedHashSet();
+		LinkedList pdepNetworks = getPDepNetworks();
         try {
         	FileReader in = new FileReader(pdepFileName);
         	BufferedReader data = new BufferedReader(in);
@@ -260,6 +265,9 @@ public class SeedMechanism {
         		double Tstar = 0.0;
         		double T2star = 0.0;
         		boolean troe7 = false;
+        		int numPLOGs = 0;
+        		PDepArrheniusKinetics pdepkineticsPLOG = new PDepArrheniusKinetics(numPLOGs);
+        		
         		
         		/*
         		 * When reading in the auxillary information for the pdep reactions,
@@ -268,6 +276,10 @@ public class SeedMechanism {
         		 * The order of the if statement is important as the "troe" and
         		 * 	"low" lines will also contain a "/"; thus, the elseif contains
         		 * 	"/" needs to be last.
+        		 */
+        		/*
+        		 * Additions by MRH on 26JUL2010:
+        		 * 	Allowing RMG to read-in PLOG and CHEB formatting
         		 */
         		while (continueToReadRxn) {
         			if (nextLine == null) {
@@ -302,6 +314,100 @@ public class SeedMechanism {
 	            		 */
 	            		low = ChemParser.parseSimpleArrheniusKinetics(lowString, A_multiplier, E_multiplier, r.getReactantNumber()+1);
 	            		nextLine = ChemParser.readMeaningfulLine(data);
+	        		} else if (nextLine.contains("CHEB")) {
+        				// Read in the Tmin/Tmax and Pmin/Pmax information
+        				StringTokenizer st_cheb = new StringTokenizer(nextLine,"/");
+        				String nextToken = st_cheb.nextToken(); // Should be TCHEB or PCHEB
+        				StringTokenizer st_minmax = new StringTokenizer(st_cheb.nextToken());
+        				double Tmin = 0.0; double Tmax = 0.0; double Pmin = 0.0; double Pmax = 0.0;
+        				if (nextToken.trim().equals("TCHEB")) {
+        					Tmin = Double.parseDouble(st_minmax.nextToken());
+        					Tmax = Double.parseDouble(st_minmax.nextToken());
+        				} else {
+        					Pmin = Double.parseDouble(st_minmax.nextToken());
+        					Pmax = Double.parseDouble(st_minmax.nextToken());
+        				}
+        				nextToken = st_cheb.nextToken(); // Should be PCHEB or TCHEB
+        				st_minmax = new StringTokenizer(st_cheb.nextToken());
+        				if (nextToken.trim().equals("TCHEB")) {
+        					Tmin = Double.parseDouble(st_minmax.nextToken());
+        					Tmax = Double.parseDouble(st_minmax.nextToken());
+        				} else {
+        					Pmin = Double.parseDouble(st_minmax.nextToken());
+        					Pmax = Double.parseDouble(st_minmax.nextToken());
+        				}
+        				// Read in the N/M values (number of polynomials in the Temp and Press domain)
+        				nextLine = ChemParser.readMeaningfulLine(data);
+        				st_cheb = new StringTokenizer(nextLine,"/");
+        				nextToken = st_cheb.nextToken(); // Should be CHEB
+        				st_minmax = new StringTokenizer(st_cheb.nextToken());
+        				int numN = Integer.parseInt(st_minmax.nextToken());
+        				int numM = Integer.parseInt(st_minmax.nextToken());
+        				// Read in the coefficients
+        				nextLine = ChemParser.readMeaningfulLine(data);
+        				double[] unorderedChebyCoeffs = new double[numN*numM];
+        				int chebyCoeffCounter = 0;
+        				while (nextLine != null && nextLine.contains("CHEB")) {
+        					st_cheb = new StringTokenizer(nextLine,"/");
+        					nextToken = st_cheb.nextToken(); // Should be CHEB
+        					st_minmax = new StringTokenizer(st_cheb.nextToken());
+        					while (st_minmax.hasMoreTokens()) {
+        						unorderedChebyCoeffs[chebyCoeffCounter] = Double.parseDouble(st_minmax.nextToken());
+        						++chebyCoeffCounter;
+        					}
+        					nextLine = ChemParser.readMeaningfulLine(data);
+        				}
+        				// Order the chebyshev coefficients
+        				double[][] chebyCoeffs = new double[numN][numM];
+        				for (int numRows=0; numRows<numN; numRows++) {
+        					for (int numCols=0; numCols<numM; numCols++) {
+        						chebyCoeffs[numRows][numCols] = unorderedChebyCoeffs[numM*numRows+numCols];
+        					}
+        				}
+        				// Make the ChebyshevPolynomials, PDepReaction, and add to list of PDepReactions
+        				ChebyshevPolynomials coeffs = new ChebyshevPolynomials(
+        						numN,new Temperature(Tmin,"K"),new Temperature(Tmax,"K"),
+        						numM,new Pressure(Pmin,"bar"),new Pressure(Pmax,"bar"),
+        						chebyCoeffs);
+	        			PDepIsomer reactants = new PDepIsomer(r.getStructure().getReactantList());
+	        			PDepIsomer products = new PDepIsomer(r.getStructure().getProductList());
+	        			PDepRateConstant pdepRC = new PDepRateConstant(coeffs);
+	        			PDepReaction pdeprxn = new PDepReaction(reactants,products,pdepRC);
+	        			allPdepNetworks.add(pdeprxn);
+	        			continueToReadRxn = false;
+	        		} else if (nextLine.contains("PLOG")) {
+	        			while (nextLine != null && nextLine.contains("PLOG")) {
+		        			// Increase the PLOG counter
+		        			++numPLOGs;
+		        			// Store the previous PLOG information in temporary arrays
+		        			Pressure[] previousPressures = new Pressure[numPLOGs];
+		        			ArrheniusKinetics[] previousKinetics = new ArrheniusKinetics[numPLOGs];
+		        			for (int previousNumPLOG=0; previousNumPLOG<numPLOGs-1; ++previousNumPLOG) {
+		        				previousPressures[previousNumPLOG] = pdepkineticsPLOG.getPressures(previousNumPLOG);
+		        				previousKinetics[previousNumPLOG] = pdepkineticsPLOG.getKinetics(previousNumPLOG);
+		        			}
+		        			// Read in the new PLOG information, and add this to the temporary array
+		        			PDepArrheniusKinetics newpdepkinetics = parsePLOGline(nextLine);
+		        			previousPressures[numPLOGs-1] = newpdepkinetics.getPressures(0);
+		        			previousKinetics[numPLOGs-1] = newpdepkinetics.getKinetics(0);
+		        			// Re-initialize pdepkinetics and populate with stored information
+		        			pdepkineticsPLOG = new PDepArrheniusKinetics(numPLOGs);
+		        			pdepkineticsPLOG.setPressures(previousPressures);
+		        			pdepkineticsPLOG.setRateCoefficients(previousKinetics);
+		        			// Read the next line
+		        			nextLine = ChemParser.readMeaningfulLine(data);
+	        			}
+	        			// Make the PDepReaction
+	        			PDepIsomer reactants = new PDepIsomer(r.getStructure().getReactantList());
+	        			PDepIsomer products = new PDepIsomer(r.getStructure().getProductList());
+	        			PDepRateConstant pdepRC = new PDepRateConstant(pdepkineticsPLOG);
+	        			PDepReaction pdeprxn = new PDepReaction(reactants,products,pdepRC);
+	        			// Add to the list of PDepReactions
+	        			allPdepNetworks.add(pdeprxn);
+	        			// Re-initialize the pdepkinetics variable
+	            		numPLOGs = 0;
+	            		pdepkineticsPLOG = new PDepArrheniusKinetics(numPLOGs);
+	            		continueToReadRxn = false;
 	        		} else if (nextLine.contains("/")) {
 	        			// read in third body colliders + efficiencies
 	            		thirdBodyList = ChemParser.parseThirdBodyList(nextLine,allSpecies);
@@ -466,6 +572,34 @@ public class SeedMechanism {
 			}
 		}
 		return listOfRxns;
+	}
+	
+	public PDepArrheniusKinetics parsePLOGline(String line) {
+		PDepRateConstant pdepk = new PDepRateConstant();
+		
+		// Delimit the PLOG line by "/"
+		StringTokenizer st_slash = new StringTokenizer(line,"/");
+		String dummyString = st_slash.nextToken();
+		// Delimit the data of the PLOG line by whitespace
+		StringTokenizer st = new StringTokenizer(st_slash.nextToken());
+		
+		// If reading a chemkin plog line, pressure MUST be in atmospheres
+		Pressure p = new Pressure(Double.parseDouble(st.nextToken().trim()),"atm");
+		UncertainDouble dA = new UncertainDouble(Double.parseDouble(st.nextToken().trim()),0.0,"A");
+		UncertainDouble dn = new UncertainDouble(Double.parseDouble(st.nextToken().trim()),0.0,"A");
+		double Ea = Double.parseDouble(st.nextToken().trim());
+		// If reading a chemkin plog line, Ea MUST be in cal/mol
+		Ea = Ea / 1000;
+		UncertainDouble dE = new UncertainDouble(Ea,0.0,"A");
+		ArrheniusKinetics k = new ArrheniusKinetics(dA, dn, dE, "", 1, "", "");
+		PDepArrheniusKinetics pdepAK = new PDepArrheniusKinetics(1);
+		pdepAK.setKinetics(0, p, k);
+		
+		return pdepAK;
+	}
+	
+	public LinkedList getPDepNetworks() {
+		return allPdepNetworks;
 	}
     
 }

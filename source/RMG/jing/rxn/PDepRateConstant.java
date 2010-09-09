@@ -128,6 +128,18 @@ public class PDepRateConstant {
 		chebyshev = null;
 		pDepArrhenius = plogKinetics;
 	}
+	
+	public PDepRateConstant(PDepArrheniusKinetics plogKinetics) {
+		rateConstants = null;
+		chebyshev = null;
+		pDepArrhenius = plogKinetics;
+	}
+	
+	public PDepRateConstant(ChebyshevPolynomials chebyPols) {
+		rateConstants = null;
+		chebyshev = chebyPols;
+		pDepArrhenius = null;
+	}
 
 	//==========================================================================
 	//

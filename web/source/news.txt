@@ -3,8 +3,27 @@
 RMG News and Updates
 **********************************
 
+
+2010-08-10: RMG 3.2.1 Released
+==============================
+
+RMG 3.2.1 is a minor bug-fix release. Changes since 3.2 include the following:
+
+- Better handling of pressure-dependent reaction network expansion when multiple reaction systems are used by restricting to one expansion per iteration.
+
+- Pruning with pressure-dependence on is now enabled.
+
+- Only run pressure-dependence calculation when necessary (i.e. when one or more fully explored unimolecular isomer wells are present).
+
+- Many minor but important bugs fixed in pressure dependence module.
+
+- More detailed error messages when failing to read a reaction library, primary kinetic library, or seed mechanism.
+
+- Some improved kinetics rate rules in the hydrogen abstraction reaction family.
+
 2010-06-27: RMG 3.2 Released!
 ==============================
+
 RMG version 3.2 has been released. The new release includes a number of improvements and bug fixes, including the following:
 
 Features:

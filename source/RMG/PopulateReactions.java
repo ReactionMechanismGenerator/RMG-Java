@@ -132,7 +132,7 @@ public class PopulateReactions {
 		//	modified Arrhenius parameters, and source/comments) and the list of
 		//	species (including the chemkin name and graph), respectively
 		String listOfReactions = "Arrhenius 'A' parameter has units of: mol,cm3,s\n" +
-			"Arrhenius 'n' parameter is unitless\n" +
+			"Arrhenius 'n' parameter is unitless and assumes Tref = 1K\n" +
 			"Arrhenius 'E' parameter has units of: kcal/mol\n\n";
 		String listOfSpecies = "";
 		
@@ -288,19 +288,26 @@ public class PopulateReactions {
             Temperature systemTemp = ((ConstantTM)tempList.get(0)).getTemperature();
 			rmg.setTemp4BestKinetics(systemTemp);
 			TemplateReactionGenerator rtLibrary = new TemplateReactionGenerator();
+			
+			// Check Reaction Library
 			ReactionLibrary  RL = rmg.getReactionLibrary();
 			LibraryReactionGenerator lrg1 =new LibraryReactionGenerator(RL);
-			// Add all reactions found from LRG
 			reactions = lrg1.react(speciesSet);
-			System.out.println("Reactions From LRG"+reactions);
+			if ( RL != null ){
+				System.out.println("Checking Reaction Library "+RL.getName()+" for reactions.");
+				Iterator ReactionIter = reactions.iterator();
+				while(ReactionIter.hasNext()){
+					Reaction current_reaction = (Reaction)ReactionIter.next();
+					System.out.println("Library Reaction: " +current_reaction.toString() );
+				}
+			}
+
 			// Add all reactions found from RMG template reaction generator
-			reactions.addAll(rtLibrary.react(speciesSet));
-			/*
-			 * MRH 28Feb
-			 * The next line will use the new PrimaryKineticLibrary
-			 */
-			//reaction.addAll(getLibraryReactionGenerator().react(speciesSet));
+			reactions.addAll(rtLibrary.react(speciesSet));				
+			
+
 			if (!(rmg.getReactionModelEnlarger() instanceof RateBasedRME))	{
+				// NOT an instance of RateBasedRME therefore assume RateBasedPDepRME and we're doing pressure dependence
 				CoreEdgeReactionModel cerm = new CoreEdgeReactionModel(speciesSet, reactions);
 				rmg.setReactionModel(cerm);
 				rmg.setReactionGenerator(rtLibrary);
@@ -484,6 +491,7 @@ public class PopulateReactions {
     	}
         StringTokenizer st = new StringTokenizer(source,":");
     	String reaction_type = st.nextToken();
+		// Reactions from Reaction Libraries:
     	if (reaction_type.equals("ReactionLibrary") ){
     		// We will get the forward reaction 
     		if(r.isBackward()){
@@ -495,9 +503,10 @@ public class PopulateReactions {
 				listOfReactions += r.toString() + "\t" + updateListOfReactions(allKinetics[numKinetics], Hrxn);
 				if (allKinetics.length != 1) listOfReactions += "\tDUP\n";
 			}
-		return 	listOfReactions;
+			return 	listOfReactions;
        	}
         
+		// Reactions NOT from Reaction Libraries are from Templates:
 		if (r.isForward()) {
 			Kinetics[] allKinetics = r.getKinetics();
 			for (int numKinetics=0; numKinetics<allKinetics.length; ++numKinetics) {
