@@ -84,8 +84,8 @@ contains
 
         Cp = 0.0
 
-        if (T < 298.0) then
-            write (0, fmt='(A)') 'Invalid temperature for heat capacity calculation.'
+        if (T < 280.0) then
+            write (0, fmt='(A)') 'Invalid temperature for heat capacity calculation. (Tmin = 280K)'
             stop
         elseif (T < 300.0) then
             Cp = thermo%Cp(1)
@@ -129,11 +129,16 @@ contains
 
         H = thermo%H298
 
-        if (T < 298.0) then
-            write (0, fmt='(A)') 'Invalid temperature for enthalpy calculation.'
+        if (T < 280.0) then
+            write (0, fmt='(A)') 'Invalid temperature for enthalpy calculation. (Tmin = 280K)'
             stop
         end if
-
+        
+        if (T < 300.0) then
+            H = H + thermo%Cp(1) * (T - 298.0)
+        else
+            H = H + thermo%Cp(1) * (300.0 - 298.0)
+        end if
         if (T > 300.0) then
             slope = (thermo%Cp(2) - thermo%Cp(1)) / (400.0 - 300.0)
             intercept = (thermo%Cp(1) * 400.0 - thermo%Cp(2) * 300.0) / (400.0 - 300.0)
@@ -206,11 +211,17 @@ contains
 
         S = thermo%S298
 
-        if (T < 298.0) then
-            write (0, fmt='(A)') 'Invalid temperature for entropy calculation.'
+        if (T < 280.0) then
+            write (0, fmt='(A)') 'Invalid temperature for entropy calculation. (Tmin = 280K)'
             stop
         end if
 
+        if (T < 300.0) then
+            S = S + thermo%Cp(1) * log(T / 298.0)
+        else
+            S = S + thermo%Cp(1) * log(300.0 / 298.0)
+        end if
+        
         if (T > 300.0) then
             slope = (thermo%Cp(2) - thermo%Cp(1)) / (400.0 - 300.0)
             intercept = (thermo%Cp(1) * 400.0 - thermo%Cp(2) * 300.0) / (400.0 - 300.0)
