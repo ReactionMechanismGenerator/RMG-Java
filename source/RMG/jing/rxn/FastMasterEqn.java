@@ -1017,7 +1017,9 @@ public class FastMasterEqn implements PDepKineticsEstimator {
 
 			// Set reverse reactions
 			int i = 0;
-			while (i < netReactionList.size()) {
+            Temperature T = temperatures[0];
+            Pressure P = pressures[pressures.length/2];
+            while (i < netReactionList.size()) {
 				PDepReaction rxn1 = netReactionList.get(i);
 				if (rxn1.getReverseReaction() == null) {
 					boolean found = false;
@@ -1027,9 +1029,15 @@ public class FastMasterEqn implements PDepKineticsEstimator {
 							rxn2.getReactant().equals(rxn1.getProduct())) {
 							rxn1.setReverseReaction(rxn2);
 							rxn2.setReverseReaction(rxn1);
-							netReactionList.remove(rxn2);
-							found = true;
-							break;
+                            // Remove the reaction with the smaller rate constant
+                            // This *should* be the exothermic direction
+                            // We use the lowest temperature and middle pressure for this calculation
+                            if (rxn1.calculateRate(T, P) > rxn2.calculateRate(T, P))
+                            	netReactionList.remove(rxn2);
+                            else
+                            	netReactionList.remove(rxn1);
+                            found = true;
+                            break;
 						}
 					}
 					if (!found) {
