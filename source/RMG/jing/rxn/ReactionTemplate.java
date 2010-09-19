@@ -401,18 +401,28 @@ public class ReactionTemplate {
       	boolean thermoConsistence = true;
       	// in H abstraction, we allow biradical abstract H from a molecule, but the reverse is now allowed
       	// therefore, such H abs reactions will be all set as forward reaction
-      	if (name.equals("H_Abstraction")) {
-      		Iterator iter = p_structure.reactants.iterator();
-      		while (iter.hasNext()) {
-      			ChemGraph cg = (ChemGraph)iter.next();
-      			int rNum = cg.getRadicalNumber();
-      			if (rNum >= 2) {
-      				thermoConsistence = false;
-      				reactants = p_structure.reactants;
-      				p_structure.setDirection(1);
-      			}
-      		}
-      	}
+      	/*
+      	 * 18-SEPT-2010
+      	 * Recently, members of the Green Group have been having difficulty getting RMG-generated
+      	 * 	mechanisms to converge in PREMIX (CHEMKIN model).  One reason for these numerical issues
+      	 * 	is due to small K_eq (thus, when computing k_rev = k_f / K_eq, we are dividing by a very
+      	 * 	small number, potentially, for very endothermic reactions).  To help avoid these issues,
+      	 * 	I am removing the reaction family specific rules for H_Abstraction and intra_H_migration
+      	 * 	so that the reaction will always be written in the exothermic direction.
+      	 * MRH (mrharper@mit.edu) 
+      	 */
+//      	if (name.equals("H_Abstraction")) {
+//      		Iterator iter = p_structure.reactants.iterator();
+//      		while (iter.hasNext()) {
+//      			ChemGraph cg = (ChemGraph)iter.next();
+//      			int rNum = cg.getRadicalNumber();
+//      			if (rNum >= 2) {
+//      				thermoConsistence = false;
+//      				reactants = p_structure.reactants;
+//      				p_structure.setDirection(1);
+//      			}
+//      		}
+//      	}
       
           if (thermoConsistence) {
       		Temperature T = new Temperature(298, "K");
@@ -429,20 +439,20 @@ public class ReactionTemplate {
       			p_structure.setDirection(-1);
       		}
       		// for intra h migration, set the ROO. as the forward
-        		if (name.equals("intra_H_migration")) {
-              ChemGraph rcg = (ChemGraph)(p_structure.getReactants().next());
-          	HashSet rrad = rcg.getRadicalNode();
-           	Atom rra = (Atom)( (Node) ( (rrad.iterator()).next())).getElement();
-              ChemGraph pcg = (ChemGraph)(p_structure.getProducts().next());
-            	HashSet prad = pcg.getRadicalNode();
-             	Atom pra = (Atom)( (Node) ( (prad.iterator()).next())).getElement();
-              if (rra.isOxygen() && pra.isCarbon()) {
-              	p_structure.setDirection(1);
-               	reactants = p_structure.reactants;
-              }
-              else if (pra.isOxygen() && rra.isCarbon())
-                  p_structure.setDirection(-1);
-              }
+//        		if (name.equals("intra_H_migration")) {
+//              ChemGraph rcg = (ChemGraph)(p_structure.getReactants().next());
+//          	HashSet rrad = rcg.getRadicalNode();
+//           	Atom rra = (Atom)( (Node) ( (rrad.iterator()).next())).getElement();
+//              ChemGraph pcg = (ChemGraph)(p_structure.getProducts().next());
+//            	HashSet prad = pcg.getRadicalNode();
+//             	Atom pra = (Atom)( (Node) ( (prad.iterator()).next())).getElement();
+//              if (rra.isOxygen() && pra.isCarbon()) {
+//              	p_structure.setDirection(1);
+//               	reactants = p_structure.reactants;
+//              }
+//              else if (pra.isOxygen() && rra.isCarbon())
+//                  p_structure.setDirection(-1);
+//              }
       
       	}
       }
@@ -512,18 +522,18 @@ public class ReactionTemplate {
       	boolean thermoConsistence = true;
       	// in H abstraction, we allow biradical abstract H from a molecule, but the reverse is now allowed
       	// therefore, such H abs reactions will be all set as forward reaction
-      	if (name.equals("H_Abstraction")) {
-      		Iterator iter = p_structure.reactants.iterator();
-      		while (iter.hasNext()) {
-      			ChemGraph cg = (ChemGraph)iter.next();
-      			int rNum = cg.getRadicalNumber();
-      			if (rNum >= 2) {
-      				thermoConsistence = false;
-      				reactants = p_structure.reactants;
-      				p_structure.setDirection(1);
-      			}
-      		}
-      	}
+//      	if (name.equals("H_Abstraction")) {
+//      		Iterator iter = p_structure.reactants.iterator();
+//      		while (iter.hasNext()) {
+//      			ChemGraph cg = (ChemGraph)iter.next();
+//      			int rNum = cg.getRadicalNumber();
+//      			if (rNum >= 2) {
+//      				thermoConsistence = false;
+//      				reactants = p_structure.reactants;
+//      				p_structure.setDirection(1);
+//      			}
+//      		}
+//      	}
       
           if (thermoConsistence) {
       		Temperature T = new Temperature(298, "K");
@@ -540,20 +550,20 @@ public class ReactionTemplate {
       			p_structure.setDirection(-1);
       		}
       		// for intra h migration, set the ROO. as the forward
-        		if (name.equals("intra_H_migration")) {
-              ChemGraph rcg = (ChemGraph)(p_structure.getReactants().next());
-          	HashSet rrad = rcg.getRadicalNode();
-           	Atom rra = (Atom)( (Node) ( (rrad.iterator()).next())).getElement();
-              ChemGraph pcg = (ChemGraph)(p_structure.getProducts().next());
-            	HashSet prad = pcg.getRadicalNode();
-             	Atom pra = (Atom)( (Node) ( (prad.iterator()).next())).getElement();
-              if (rra.isOxygen() && pra.isCarbon()) {
-              	p_structure.setDirection(1);
-               	reactants = p_structure.reactants;
-              }
-              else if (pra.isOxygen() && rra.isCarbon())
-                  p_structure.setDirection(-1);
-              }
+//        		if (name.equals("intra_H_migration")) {
+//              ChemGraph rcg = (ChemGraph)(p_structure.getReactants().next());
+//          	HashSet rrad = rcg.getRadicalNode();
+//           	Atom rra = (Atom)( (Node) ( (rrad.iterator()).next())).getElement();
+//              ChemGraph pcg = (ChemGraph)(p_structure.getProducts().next());
+//            	HashSet prad = pcg.getRadicalNode();
+//             	Atom pra = (Atom)( (Node) ( (prad.iterator()).next())).getElement();
+//              if (rra.isOxygen() && pra.isCarbon()) {
+//              	p_structure.setDirection(1);
+//               	reactants = p_structure.reactants;
+//              }
+//              else if (pra.isOxygen() && rra.isCarbon())
+//                  p_structure.setDirection(-1);
+//              }
       
       	}
       }
