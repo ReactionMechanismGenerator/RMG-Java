@@ -43,7 +43,7 @@ public class CompareGraphs {
     	File funcGroups = new File ("FunctionalGroups.txt");
     	try{
     		BufferedReader reader = new BufferedReader(new FileReader(funcGroups));
-    		String line = ChemParser.readMeaningfulLine(reader);
+    		String line = ChemParser.readMeaningfulLine(reader, true);
     		String fgname1 = line;
     		Graph fgGraph1 = null;
   			try {
@@ -54,7 +54,7 @@ public class CompareGraphs {
   			}
   			FunctionalGroup fg1 = FunctionalGroup.make(fgname1, fgGraph1);
   			
-  			line = ChemParser.readMeaningfulLine(reader);
+  			line = ChemParser.readMeaningfulLine(reader, true);
     		String fgname2 = line;
     		Graph fgGraph2 = null;
   			try {

@@ -22,7 +22,7 @@ public class AdjList2InChI {
 			FileReader in = new FileReader(args[0]);
 			BufferedReader data = new BufferedReader(in);
 			
-			String line = ChemParser.readMeaningfulLine(data);
+			String line = ChemParser.readMeaningfulLine(data, true);
 			while (line != null) {
 				String speciesName = line;
 				Graph g = ChemParser.readChemGraph(data);
@@ -35,7 +35,7 @@ public class AdjList2InChI {
 				}
 				String[] inchiStrings = Species.generateInChI(cg);
 				outputString += speciesName + "\t" + inchiStrings[0] + "\n";
-				line = ChemParser.readMeaningfulLine(data);
+				line = ChemParser.readMeaningfulLine(data, true);
 			}
 			in.close();
 		}

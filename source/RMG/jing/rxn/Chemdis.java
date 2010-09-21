@@ -520,8 +520,8 @@ public class Chemdis implements PDepKineticsEstimator {
         	FileReader in = new FileReader(chemdis_output);
         	BufferedReader data = new BufferedReader(in);
         
-        	String line = ChemParser.readMeaningfulLine(data);
-        	line = ChemParser.readMeaningfulLine(data);
+        	String line = ChemParser.readMeaningfulLine(data, true);
+        	line = ChemParser.readMeaningfulLine(data, true);
         	line = line.trim();
         	int rNum = 0;
         	if (line.startsWith("CHEMACT")) {
@@ -565,9 +565,9 @@ public class Chemdis implements PDepKineticsEstimator {
         	int nT = 7; 
         	int nP = 4;
         	
-        	line = ChemParser.readMeaningfulLine(data);
+        	line = ChemParser.readMeaningfulLine(data, true);
         	if (line.startsWith("Temperature range")) {
-        		line = ChemParser.readMeaningfulLine(data);
+        		line = ChemParser.readMeaningfulLine(data, true);
         		st = new StringTokenizer(line);
         		String tL = st.nextToken().trim();
         		String tH = st.nextToken().trim();
@@ -579,9 +579,9 @@ public class Chemdis implements PDepKineticsEstimator {
         		System.exit(0);  	
         	}
                                                  
-        	line = ChemParser.readMeaningfulLine(data);
+        	line = ChemParser.readMeaningfulLine(data, true);
         	if (line.startsWith("Pressure range")) {
-        		line = ChemParser.readMeaningfulLine(data);
+        		line = ChemParser.readMeaningfulLine(data, true);
         		st = new StringTokenizer(line);
         		String pL = st.nextToken().trim();
         		String pH = st.nextToken().trim();
@@ -593,7 +593,7 @@ public class Chemdis implements PDepKineticsEstimator {
         		System.exit(0);  	
         	}
         	
-        	line = ChemParser.readMeaningfulLine(data);
+        	line = ChemParser.readMeaningfulLine(data, true);
         	while (!line.startsWith("END")) {
         		line = line.trim();
         		LinkedList product = new LinkedList();
@@ -629,7 +629,7 @@ public class Chemdis implements PDepKineticsEstimator {
         		// read chebyshev polynomial
         		double [][] alpha = new double[nT][nP];
         		for (int i = 0; i < nT; i++) {
-        			line = ChemParser.readMeaningfulLine(data);
+        			line = ChemParser.readMeaningfulLine(data, true);
         			st = new StringTokenizer(line);
         			for (int j = 0; j < nP; j++) {
         				String a = st.nextToken().trim();
@@ -647,7 +647,7 @@ public class Chemdis implements PDepKineticsEstimator {
         		PDepReaction rxn = new PDepReaction(entryIsomer, productIsomer, rate);
         		reactionList.add(rxn);
 				
-        		line = ChemParser.readMeaningfulLine(data);
+        		line = ChemParser.readMeaningfulLine(data, true);
         		
         	}
         	in.close();

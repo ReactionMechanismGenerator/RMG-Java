@@ -48,7 +48,7 @@ public class IdentifyMatchesSites {
 	    	File funcGroups = new File ("IdentifySites.txt");
 	    	try{
 	    		BufferedReader reader = new BufferedReader(new FileReader(funcGroups));
-	    		String line = ChemParser.readMeaningfulLine(reader);
+	    		String line = ChemParser.readMeaningfulLine(reader, true);
 	    		String fgname1 = line;
 	    		Graph fgGraph1 = null;
 	  			try {
@@ -59,7 +59,7 @@ public class IdentifyMatchesSites {
 	  			}
 	  			FunctionalGroup fg1 = FunctionalGroup.make(fgname1, fgGraph1);
 	  			
-	  			line = ChemParser.readMeaningfulLine(reader);
+	  			line = ChemParser.readMeaningfulLine(reader, true);
 	    		
 	  			String fgname2 = line;
 	    		Graph Graph2 = null;

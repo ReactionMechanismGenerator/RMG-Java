@@ -150,7 +150,7 @@ public class SeedMechanism {
         	double A_multiplier = multipliers[0];
         	double E_multiplier = multipliers[1];
             
-        	String line = ChemParser.readMeaningfulLine(data);
+        	String line = ChemParser.readMeaningfulLine(data, true);
         	read: while (line != null) {
         		Reaction r;
         		try {
@@ -169,7 +169,7 @@ public class SeedMechanism {
         		
         		localReactions = updateReactionList(r,localReactions,true);
         		
-        		line = ChemParser.readMeaningfulLine(data);
+        		line = ChemParser.readMeaningfulLine(data, true);
         	}
         	   
             in.close();
@@ -190,7 +190,7 @@ public class SeedMechanism {
         	BufferedReader data = new BufferedReader(in);
         	
         	// step 1: read in structure
-        	String line = ChemParser.readMeaningfulLine(data);
+        	String line = ChemParser.readMeaningfulLine(data, true);
         	read: while (line != null) {
         		// GJB allow unreactive species
         		StringTokenizer st = new StringTokenizer(line);
@@ -214,7 +214,7 @@ public class SeedMechanism {
         		// again if was already set as unreactive from input file
         		if(IsReactive==false) spe.setReactivity(IsReactive);
         		localSpecies.put(name, spe);
-        		line = ChemParser.readMeaningfulLine(data);
+        		line = ChemParser.readMeaningfulLine(data, true);
         	}
         	   
             in.close();
@@ -236,7 +236,7 @@ public class SeedMechanism {
         	double A_multiplier = multipliers[0];
         	double E_multiplier = multipliers[1];
             
-        	String nextLine = ChemParser.readMeaningfulLine(data);
+        	String nextLine = ChemParser.readMeaningfulLine(data, true);
         	read: while (nextLine != null) {	
         		Reaction r;
         		try {
@@ -251,7 +251,7 @@ public class SeedMechanism {
         		 * Read the next line and determine what to do based on the
         		 * 	presence/absence of keywords
         		 */
-        		nextLine = ChemParser.readMeaningfulLine(data);
+        		nextLine = ChemParser.readMeaningfulLine(data, true);
         		boolean continueToReadRxn = true;
         		
         		// Initialize all of the possible pdep variables
@@ -301,7 +301,7 @@ public class SeedMechanism {
 	            			troe7 = true;
 	            			T2star = Double.parseDouble(st.nextToken().trim());
 	               		}
-	            		nextLine = ChemParser.readMeaningfulLine(data);
+	            		nextLine = ChemParser.readMeaningfulLine(data, true);
 	        		} else if (nextLine.toLowerCase().contains("low")) {
 	        			// read in lindemann parameters
 	            		StringTokenizer st = new StringTokenizer(nextLine, "/");
@@ -313,7 +313,7 @@ public class SeedMechanism {
 	            		 * 	k_inf Arrhenius parameters by a factor of cm3/mol, hence the getReactantNumber()+1
 	            		 */
 	            		low = ChemParser.parseSimpleArrheniusKinetics(lowString, A_multiplier, E_multiplier, r.getReactantNumber()+1);
-	            		nextLine = ChemParser.readMeaningfulLine(data);
+	            		nextLine = ChemParser.readMeaningfulLine(data, true);
 	        		} else if (nextLine.contains("CHEB")) {
         				// Read in the Tmin/Tmax and Pmin/Pmax information
         				StringTokenizer st_cheb = new StringTokenizer(nextLine,"/");
@@ -337,14 +337,14 @@ public class SeedMechanism {
         					Pmax = Double.parseDouble(st_minmax.nextToken());
         				}
         				// Read in the N/M values (number of polynomials in the Temp and Press domain)
-        				nextLine = ChemParser.readMeaningfulLine(data);
+        				nextLine = ChemParser.readMeaningfulLine(data, true);
         				st_cheb = new StringTokenizer(nextLine,"/");
         				nextToken = st_cheb.nextToken(); // Should be CHEB
         				st_minmax = new StringTokenizer(st_cheb.nextToken());
         				int numN = Integer.parseInt(st_minmax.nextToken());
         				int numM = Integer.parseInt(st_minmax.nextToken());
         				// Read in the coefficients
-        				nextLine = ChemParser.readMeaningfulLine(data);
+        				nextLine = ChemParser.readMeaningfulLine(data, true);
         				double[] unorderedChebyCoeffs = new double[numN*numM];
         				int chebyCoeffCounter = 0;
         				while (nextLine != null && nextLine.contains("CHEB")) {
@@ -355,7 +355,7 @@ public class SeedMechanism {
         						unorderedChebyCoeffs[chebyCoeffCounter] = Double.parseDouble(st_minmax.nextToken());
         						++chebyCoeffCounter;
         					}
-        					nextLine = ChemParser.readMeaningfulLine(data);
+        					nextLine = ChemParser.readMeaningfulLine(data, true);
         				}
         				// Order the chebyshev coefficients
         				double[][] chebyCoeffs = new double[numN][numM];
@@ -395,7 +395,7 @@ public class SeedMechanism {
 		        			pdepkineticsPLOG.setPressures(previousPressures);
 		        			pdepkineticsPLOG.setRateCoefficients(previousKinetics);
 		        			// Read the next line
-		        			nextLine = ChemParser.readMeaningfulLine(data);
+		        			nextLine = ChemParser.readMeaningfulLine(data, true);
 	        			}
 	        			// Make the PDepReaction
 	        			PDepIsomer reactants = new PDepIsomer(r.getStructure().getReactantList());
@@ -411,7 +411,7 @@ public class SeedMechanism {
 	        		} else if (nextLine.contains("/")) {
 	        			// read in third body colliders + efficiencies
 	            		thirdBodyList = ChemParser.parseThirdBodyList(nextLine,allSpecies);
-	            		nextLine = ChemParser.readMeaningfulLine(data);
+	            		nextLine = ChemParser.readMeaningfulLine(data, true);
 	        		} else {
 	        			// the nextLine is a "new" reaction, hence we need to exit the while loop
 	        			continueToReadRxn = false;
@@ -507,9 +507,9 @@ public class SeedMechanism {
 	
 	public double[] parseReactionRateUnits(BufferedReader data) {
 		double[] multipliers = new double[2];
-    	String line = ChemParser.readMeaningfulLine(data);
+    	String line = ChemParser.readMeaningfulLine(data, true);
     	if (line.startsWith("Unit")) {
-    		line = ChemParser.readMeaningfulLine(data);
+    		line = ChemParser.readMeaningfulLine(data, true);
     		unit: while(!(line.startsWith("Reaction"))) {
     			if (line.startsWith("A")) {
     				StringTokenizer st = new StringTokenizer(line);
@@ -545,7 +545,7 @@ public class SeedMechanism {
     					multipliers[1] = 1.987e-3;
     				}
     			}
-    			line = ChemParser.readMeaningfulLine(data);
+    			line = ChemParser.readMeaningfulLine(data, true);
     		}
     	}
     	return multipliers;

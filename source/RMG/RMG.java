@@ -286,7 +286,7 @@ public class RMG {
              
              FileReader in = new FileReader(initialConditionFile);
              BufferedReader reader = new BufferedReader(in);
-             String line = ChemParser.readMeaningfulLine(reader);
+             String line = ChemParser.readMeaningfulLine(reader, true);
 			 //line = ChemParser.readMeaningfulLine(reader);
 
              if (line.startsWith("Database")){

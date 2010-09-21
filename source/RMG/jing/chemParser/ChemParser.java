@@ -1188,7 +1188,7 @@ public class ChemParser {
         	 * 14MAR2010: Switched from readUncommentedLine() to readMeaningfulLine()
         	 */
         	//String line = readUncommentLine(p_reader);
-        	String line = readMeaningfulLine(p_reader);
+        	String line = readMeaningfulLine(p_reader, true);
 			while (line != null) {
          		StringTokenizer token = new StringTokenizer(line);
         		// read in ID
@@ -1490,7 +1490,7 @@ public class ChemParser {
         	BufferedReader reader = new BufferedReader(in);
         	HashSet fgList = new HashSet();
 
-        	String line = readMeaningfulLine(reader);
+        	String line = readMeaningfulLine(reader, true);
 
         	while (line != null) {
         		StringTokenizer st = new StringTokenizer(line);
@@ -1620,8 +1620,12 @@ public class ChemParser {
     Modifies: p_reader
     */
     //## operation readMeaningfulLine(BufferedReader)
-    public static String readMeaningfulLine(BufferedReader p_reader) {
-        //#[ operation readMeaningfulLine(BufferedReader)
+    /*
+     * 21-SEPT-2010
+     * Adding an additional input argument for readMeaningfulLine: boolean toTrimOrNotToTrim
+     * MRH 
+     */
+    public static String readMeaningfulLine(BufferedReader p_reader, boolean toTrimOrNotToTrim) {
         if (p_reader == null) return null;
 
         String line = null;
@@ -1630,7 +1634,7 @@ public class ChemParser {
         	do {
         		line = p_reader.readLine();
         		if (line == null) return null;
-        		line = line.trim();
+        		if (toTrimOrNotToTrim)	line = line.trim();
         	} while (line.startsWith("//") || line.length() == 0);
 
         	return line;
@@ -1638,7 +1642,6 @@ public class ChemParser {
         catch (IOException e) {
         	return null;
         }
-        //#]
     }
 
     /**
@@ -1655,7 +1658,7 @@ public class ChemParser {
         	BufferedReader reader = new BufferedReader(in);
         	HashSet speciesList = new HashSet();
 
-        	String line = readMeaningfulLine(reader);
+        	String line = readMeaningfulLine(reader, true);
         	while (line != null) {
         		StringTokenizer st = new StringTokenizer(line);
         		String name = st.nextToken();
@@ -1664,7 +1667,7 @@ public class ChemParser {
         		ChemGraph cg = ChemGraph.make(g);
         		Species spe = Species.make(name,cg);
         		speciesList.add(spe);
-        		line = readMeaningfulLine(reader);
+        		line = readMeaningfulLine(reader, true);
         	}
         	if (speciesList.isEmpty()) speciesList = null;
         	return speciesList;

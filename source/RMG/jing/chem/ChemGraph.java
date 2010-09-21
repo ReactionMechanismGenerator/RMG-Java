@@ -2364,7 +2364,7 @@ return sn;
         	BufferedReader data = new BufferedReader(in);
 
         	// step 1: read in structure
-        	String line = ChemParser.readMeaningfulLine(data);
+        	String line = ChemParser.readMeaningfulLine(data, true);
         	read: while (line != null) {
         		StringTokenizer token = new StringTokenizer(line);
         		String fgname = token.nextToken();
@@ -2381,7 +2381,7 @@ return sn;
 
         		forbiddenStructure.add(fg);
 
-        		line = ChemParser.readMeaningfulLine(data);
+        		line = ChemParser.readMeaningfulLine(data, true);
         	}
 
             in.close();

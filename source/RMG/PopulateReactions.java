@@ -143,7 +143,7 @@ public class PopulateReactions {
 			// Read in the first line of the input file
 			//	This line should hold the temperature of the system, e.g.
 			//		Temperature: 500 (K)
-			String line = ChemParser.readMeaningfulLine(br_input);
+			String line = ChemParser.readMeaningfulLine(br_input, true);
 			
 			/*
 			 * Read max atom types (if they exist)
@@ -161,7 +161,7 @@ public class PopulateReactions {
             			"Line read was: " + line);
             	System.exit(0);
             }
-            line = ChemParser.readMeaningfulLine(br_input);
+            line = ChemParser.readMeaningfulLine(br_input, true);
             
             // Read primary transport library
             if (line.toLowerCase().startsWith("primarytransportlibrary"))
@@ -175,7 +175,7 @@ public class PopulateReactions {
             /*
              * Read the temperature model (must be of length one)
              */
-            line = ChemParser.readMeaningfulLine(br_input);
+            line = ChemParser.readMeaningfulLine(br_input, true);
 			rmg.createTModel(line);
 
 			if (rmg.getTempList().size() > 1) {
@@ -186,7 +186,7 @@ public class PopulateReactions {
 			/*
 			 * Read the pressure model (must be of length 1)
 			 */
-			line = ChemParser.readMeaningfulLine(br_input);
+			line = ChemParser.readMeaningfulLine(br_input, true);
 			rmg.createPModel(line);
 			if (rmg.getPressList().size() > 1) {
 				System.out.println("Please list only one pressure in the PressureModel field.");
@@ -196,7 +196,7 @@ public class PopulateReactions {
 			/*
 			 * Read the solvation field (if present)
 			 */
-			line = ChemParser.readMeaningfulLine(br_input);
+			line = ChemParser.readMeaningfulLine(br_input, true);
             StringTokenizer st = new StringTokenizer(line);
             // The first line should start with "Solvation", otherwise do nothing and display a message to the user
             if (st.nextToken().startsWith("Solvation")) {
@@ -217,7 +217,7 @@ public class PopulateReactions {
             				"\nPopulateReactions does not recognize: " + line);
             		return;
             	}
-            	line = ChemParser.readMeaningfulLine(br_input);
+            	line = ChemParser.readMeaningfulLine(br_input, true);
             }
 
             /*
@@ -232,7 +232,7 @@ public class PopulateReactions {
             /*
              * Read in the inert gas (name, concentration)
              */
-            line = ChemParser.readMeaningfulLine(br_input);
+            line = ChemParser.readMeaningfulLine(br_input, true);
             if (line.toLowerCase().startsWith("bathgas")) {
             	rmg.populateInitialStatusListWithInertSpecies(br_input);
             }
@@ -240,10 +240,10 @@ public class PopulateReactions {
             /*
              * Read in the p-dep options
              */
-            line = ChemParser.readMeaningfulLine(br_input);
+            line = ChemParser.readMeaningfulLine(br_input, true);
             if (line.toLowerCase().startsWith("spectroscopicdata")) {
             	rmg.setSpectroscopicDataMode(line);
-            	line = ChemParser.readMeaningfulLine(br_input);
+            	line = ChemParser.readMeaningfulLine(br_input, true);
             	line = rmg.setPressureDependenceOptions(line,br_input);
             }
             
@@ -260,7 +260,7 @@ public class PopulateReactions {
              	System.exit(0);
              }
             
-            line = ChemParser.readMeaningfulLine(br_input);
+            line = ChemParser.readMeaningfulLine(br_input, true);
             if (line.toLowerCase().startsWith("reactionlibrary")) {
             	rmg.readAndMakeReactionLibrary(br_input);
             }
@@ -273,7 +273,7 @@ public class PopulateReactions {
             /*
              * Read in verbosity field (if it exists)
              */
-            line = ChemParser.readMeaningfulLine(br_input);
+            line = ChemParser.readMeaningfulLine(br_input, true);
             if (line != null && line.toLowerCase().startsWith("verbose")) {
             	StringTokenizer st2 = new StringTokenizer(line);
             	String tempString = st2.nextToken();

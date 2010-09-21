@@ -71,7 +71,7 @@ public class ReactionTemplateLibrary {
             FileReader in = new FileReader(familiesPath);
         	BufferedReader data = new BufferedReader(in);
 
-        	String line = ChemParser.readMeaningfulLine(data);
+        	String line = ChemParser.readMeaningfulLine(data, true);
         	while (line != null) {
 
                 // Tokenize string into its component tokens
@@ -97,7 +97,7 @@ public class ReactionTemplateLibrary {
                     System.out.println("\nSkipping reaction family \"" + forward + "\"");
                 }
 
-        		line = ChemParser.readMeaningfulLine(data);
+        		line = ChemParser.readMeaningfulLine(data, true);
         	}
 
             in.close();

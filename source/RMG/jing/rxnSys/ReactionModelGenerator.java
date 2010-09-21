@@ -151,7 +151,7 @@ public class ReactionModelGenerator {
         	
 			setPrimaryKineticLibrary(null);//10/14/07 gmagoon: changed to use setPrimaryReactionLibrary
         	double [] conversionSet = new double[50];
-			String line = ChemParser.readMeaningfulLine(reader);
+			String line = ChemParser.readMeaningfulLine(reader, true);
         	/*if (line.startsWith("Restart")){
 			 StringTokenizer st = new StringTokenizer(line);
 			 String token = st.nextToken();
@@ -172,7 +172,7 @@ public class ReactionModelGenerator {
 			//line = ChemParser.readMeaningfulLine(reader);
 			
 			if (line.startsWith("Database")){//svp
-                line = ChemParser.readMeaningfulLine(reader);
+                line = ChemParser.readMeaningfulLine(reader, true);
 			}
 			else throw new InvalidSymbolException("Can't find database!");
 			//              if (line.startsWith("PrimaryThermoLibrary")){//svp
@@ -265,7 +265,7 @@ public class ReactionModelGenerator {
 				readAndMakePTL(reader);
 			} else throw new InvalidSymbolException("Error reading condition.txt file: "
 													+ "Could not locate PrimaryThermoLibrary field");
-			line = ChemParser.readMeaningfulLine(reader);
+			line = ChemParser.readMeaningfulLine(reader, true);
 			
 			/*
 			 * MRH 17-May-2010:
@@ -275,12 +275,12 @@ public class ReactionModelGenerator {
 				readAndMakePTransL(reader);
 			} else throw new InvalidSymbolException("Error reading condition.txt file: "
 					+ "Could not locate PrimaryTransportLibrary field.");
-			line = ChemParser.readMeaningfulLine(reader);
+			line = ChemParser.readMeaningfulLine(reader, true);
 			
 			// Extra forbidden structures may be specified after the Primary Thermo Library
 			if (line.startsWith("ForbiddenStructures:")) {
 				readExtraForbiddenStructures(reader);
-				line = ChemParser.readMeaningfulLine(reader);
+				line = ChemParser.readMeaningfulLine(reader, true);
 			}
 			
 			
@@ -293,7 +293,7 @@ public class ReactionModelGenerator {
 					readRestartSpecies();
 		    		readRestartReactions();
 				} else readrestart = false;				
-				line = ChemParser.readMeaningfulLine(reader);
+				line = ChemParser.readMeaningfulLine(reader, true);
 			} else throw new InvalidSymbolException("Cannot locate ReadRestart field");
 			
 			if (line.toLowerCase().startsWith("writerestart")) {
@@ -303,7 +303,7 @@ public class ReactionModelGenerator {
 				if (tempString.toLowerCase().equals("yes"))
 					writerestart = true;
 				else writerestart = false;
-				line = ChemParser.readMeaningfulLine(reader);
+				line = ChemParser.readMeaningfulLine(reader, true);
 			} else throw new InvalidSymbolException("Cannot locate WriteRestart field");
 			
         	// read temperature model
@@ -349,7 +349,7 @@ public class ReactionModelGenerator {
         	else throw new InvalidSymbolException("condition.txt: can't find TemperatureModel!");
 			
         	// read in pressure model
-        	line = ChemParser.readMeaningfulLine(reader);
+        	line = ChemParser.readMeaningfulLine(reader, true);
         	if (line.startsWith("PressureModel:")) {
         		createPModel(line);
 //        		StringTokenizer st = new StringTokenizer(line);
@@ -392,7 +392,7 @@ public class ReactionModelGenerator {
             // after PressureModel comes an optional line EquationOfState
             // if "EquationOfState: Liquid" is found then initial concentrations are assumed to be correct
             // if it is ommited, then initial concentrations are normalised to ensure PV=NRT (ideal gas law)
-            line = ChemParser.readMeaningfulLine(reader);
+            line = ChemParser.readMeaningfulLine(reader, true);
             if (line.startsWith("EquationOfState")) {
                 StringTokenizer st = new StringTokenizer(line);
         		String name = st.nextToken();
@@ -401,7 +401,7 @@ public class ReactionModelGenerator {
                     equationOfState="Liquid";
                     System.out.println("Equation of state: Liquid. Relying on concentrations in input file to get density correct; not checking PV=NRT");
                 }
-                line = ChemParser.readMeaningfulLine(reader);
+                line = ChemParser.readMeaningfulLine(reader, true);
             }
 			
         	// Read in InChI generation
@@ -415,7 +415,7 @@ public class ReactionModelGenerator {
         			Species.useInChI = false;
         		}
         		else throw new InvalidSymbolException("condition.txt: Unknown InChIGeneration flag: " + inchiOnOff);
-        		line = ChemParser.readMeaningfulLine(reader);
+        		line = ChemParser.readMeaningfulLine(reader, true);
         	}
 			
             // Read in Solvation effects
@@ -429,7 +429,7 @@ public class ReactionModelGenerator {
         			Species.useSolvation = false;
         		}
         		else throw new InvalidSymbolException("condition.txt: Unknown solvation flag: " + solvationOnOff);
-        		line = ChemParser.readMeaningfulLine(reader);
+        		line = ChemParser.readMeaningfulLine(reader, true);
         	}
 			
 			//line = ChemParser.readMeaningfulLine(reader);//read in reactants or thermo line
@@ -443,7 +443,7 @@ public class ReactionModelGenerator {
 					if(st.hasMoreTokens()){//override the default qmprogram ("both") if there are more; current options: "gaussian03" and "mopac" and of course, "both"
 					    QMTP.qmprogram = st.nextToken().toLowerCase();
 					}
-					line=ChemParser.readMeaningfulLine(reader);
+					line=ChemParser.readMeaningfulLine(reader, true);
 					if(line.startsWith("QMForCyclicsOnly:")){
 						StringTokenizer st2 = new StringTokenizer(line);
 						String nameCyc = st2.nextToken();
@@ -456,7 +456,7 @@ public class ReactionModelGenerator {
 						System.out.println("condition.txt: Can't find 'QMForCyclicsOnly:' field");
 						System.exit(0);
 					}
-					line=ChemParser.readMeaningfulLine(reader);
+					line=ChemParser.readMeaningfulLine(reader, true);
 					if(line.startsWith("MaxRadNumForQM:")){
 						StringTokenizer st3 = new StringTokenizer(line);
 						String nameRadNum = st3.nextToken();
@@ -468,7 +468,7 @@ public class ReactionModelGenerator {
 						System.exit(0);
 					}
         		}//otherwise, the flag useQM will remain false by default and the traditional group additivity approach will be used
-				line = ChemParser.readMeaningfulLine(reader);//read in reactants
+				line = ChemParser.readMeaningfulLine(reader, true);//read in reactants
 			}
             
 			//            // Read in Solvation effects
@@ -600,7 +600,7 @@ public class ReactionModelGenerator {
         	else throw new InvalidSymbolException("condition.txt: can't find InitialStatus!");
 			
         	// read in inert gas concentration
-        	line = ChemParser.readMeaningfulLine(reader);
+        	line = ChemParser.readMeaningfulLine(reader, true);
             if (line.startsWith("InertGas:")) {
             	populateInitialStatusListWithInertSpecies(reader);
 //           		line = ChemParser.readMeaningfulLine(reader);
@@ -637,7 +637,7 @@ public class ReactionModelGenerator {
         	else throw new InvalidSymbolException("condition.txt: can't find Inert gas concentration!");
 			
         	// read in spectroscopic data estimator
-			line = ChemParser.readMeaningfulLine(reader);
+			line = ChemParser.readMeaningfulLine(reader, true);
         	if (line.startsWith("SpectroscopicDataEstimator:")) {
         		setSpectroscopicDataMode(line);
 //        		StringTokenizer st = new StringTokenizer(line);
@@ -657,7 +657,7 @@ public class ReactionModelGenerator {
         	else throw new InvalidSymbolException("condition.txt: can't find SpectroscopicDataEstimator!");
 			
         	// pressure dependence and related flags
-			line = ChemParser.readMeaningfulLine(reader);
+			line = ChemParser.readMeaningfulLine(reader, true);
         	if (line.toLowerCase().startsWith("pressuredependence:"))
         		line = setPressureDependenceOptions(line,reader);
 			else
@@ -681,12 +681,12 @@ public class ReactionModelGenerator {
 				String fileName = st.nextToken();
 				HashSet includeSpecies = readIncludeSpecies(fileName);
 				((RateBasedRME)reactionModelEnlarger).addIncludeSpecies(includeSpecies);
-				line = ChemParser.readMeaningfulLine(reader);
+				line = ChemParser.readMeaningfulLine(reader, true);
 			}
 			
 			// read in finish controller
         	if (line.startsWith("FinishController")) {
-        		line = ChemParser.readMeaningfulLine(reader);
+        		line = ChemParser.readMeaningfulLine(reader, true);
         		StringTokenizer st = new StringTokenizer(line);
         		String index = st.nextToken();
         		String goal = st.nextToken();
@@ -728,7 +728,7 @@ public class ReactionModelGenerator {
         			throw new InvalidSymbolException("condition.txt: Unknown FinishController = " + type);
         		}
 				
-        		line = ChemParser.readMeaningfulLine(reader);
+        		line = ChemParser.readMeaningfulLine(reader, true);
         		st = new StringTokenizer(line, ":");
         		String temp = st.nextToken();
         		String tol = st.nextToken();
@@ -752,7 +752,7 @@ public class ReactionModelGenerator {
         	else throw new InvalidSymbolException("condition.txt: can't find FinishController!");
 			
         	// read in dynamic simulator
-        	line = ChemParser.readMeaningfulLine(reader);
+        	line = ChemParser.readMeaningfulLine(reader, true);
         	if (line.startsWith("DynamicSimulator")) {
         		StringTokenizer st = new StringTokenizer(line,":");
         		String temp = st.nextToken();
@@ -773,7 +773,7 @@ public class ReactionModelGenerator {
         		//int numConversions = 0;
 				boolean autoflag = false;//5/2/08 gmagoon: updating the following if/else-if block to consider input where we want to check model validity within the ODE solver at each time step; this will be indicated by the use of a string beginning with "AUTO" after the "TimeStep" or "Conversions" line
         		// read in time step
-        		line = ChemParser.readMeaningfulLine(reader);
+        		line = ChemParser.readMeaningfulLine(reader, true);
         		if (line.startsWith("TimeStep:") && finishController.terminationTester instanceof ReactionTimeTT) {
         			st = new StringTokenizer(line);
         			temp = st.nextToken();
@@ -820,7 +820,7 @@ public class ReactionModelGenerator {
 
 			//
 			if (temp.startsWith("AUTOPRUNE")){//for the AUTOPRUNE case, read in additional lines for termTol and edgeTol
-			    line = ChemParser.readMeaningfulLine(reader);
+			    line = ChemParser.readMeaningfulLine(reader, true);
 			    if (line.startsWith("TerminationTolerance:")) {
 				    st = new StringTokenizer(line);
 				    temp = st.nextToken();
@@ -830,7 +830,7 @@ public class ReactionModelGenerator {
 				    System.out.println("Cannot find TerminationTolerance in condition.txt");
 				    System.exit(0);
 			    }
-			    line = ChemParser.readMeaningfulLine(reader);
+			    line = ChemParser.readMeaningfulLine(reader, true);
 			    if (line.startsWith("PruningTolerance:")) {
 				    st = new StringTokenizer(line);
 				    temp = st.nextToken();
@@ -840,7 +840,7 @@ public class ReactionModelGenerator {
 				    System.out.println("Cannot find PruningTolerance in condition.txt");
 				    System.exit(0);
 			    }
-			    line = ChemParser.readMeaningfulLine(reader);
+			    line = ChemParser.readMeaningfulLine(reader, true);
 			    if (line.startsWith("MinSpeciesForPruning:")) {
 				    st = new StringTokenizer(line);
 				    temp = st.nextToken();
@@ -850,7 +850,7 @@ public class ReactionModelGenerator {
 				    System.out.println("Cannot find MinSpeciesForPruning in condition.txt");
 				    System.exit(0);
 			    }
-			    line = ChemParser.readMeaningfulLine(reader);
+			    line = ChemParser.readMeaningfulLine(reader, true);
 			    if (line.startsWith("MaxEdgeSpeciesAfterPruning:")) {
 				    st = new StringTokenizer(line);
 				    temp = st.nextToken();
@@ -894,7 +894,7 @@ public class ReactionModelGenerator {
 
         		// read in atol
         		
-        		line = ChemParser.readMeaningfulLine(reader);
+        		line = ChemParser.readMeaningfulLine(reader, true);
         		if (line.startsWith("Atol:")) {
         			st = new StringTokenizer(line);
         			temp = st.nextToken();
@@ -904,7 +904,7 @@ public class ReactionModelGenerator {
 				
         		// read in rtol
         		
-        		line = ChemParser.readMeaningfulLine(reader);
+        		line = ChemParser.readMeaningfulLine(reader, true);
         		if (line.startsWith("Rtol:")) {
         			st = new StringTokenizer(line);
         			temp = st.nextToken();
@@ -919,7 +919,7 @@ public class ReactionModelGenerator {
 				if (simulator.equals("DASPK")) {
 					paraInfor = 0;//svp
 					// read in SA
-					line = ChemParser.readMeaningfulLine(reader);
+					line = ChemParser.readMeaningfulLine(reader, true);
 					if (line.startsWith("Error bars")) {//svp
 						st = new StringTokenizer(line,":");
 						temp = st.nextToken();
@@ -938,7 +938,7 @@ public class ReactionModelGenerator {
 					}
 					
 					else throw new InvalidSymbolException("condition.txt: can't find SA information!");
-					line = ChemParser.readMeaningfulLine(reader);
+					line = ChemParser.readMeaningfulLine(reader, true);
 					if (line.startsWith("Display sensitivity coefficients")){//svp
 						st = new StringTokenizer(line,":");
 						temp = st.nextToken();
@@ -962,17 +962,17 @@ public class ReactionModelGenerator {
 						}
 					}
 					species = new LinkedList();
-					line = ChemParser.readMeaningfulLine(reader);
+					line = ChemParser.readMeaningfulLine(reader, true);
 					
 					if (line.startsWith("Display sensitivity information") ){
-						line = ChemParser.readMeaningfulLine(reader);
+						line = ChemParser.readMeaningfulLine(reader, true);
 						System.out.println(line);
 						while (!line.equals("END")){
 							st = new StringTokenizer(line);
 							String name = st.nextToken();
 							if (name.toUpperCase().equals("ALL")) ReactionSystem.printAllSens = true; //gmagoon 12/22/09: if the line contains the word "all", turn on the flag to print out sensitivity information for everything
 							species.add(name);
-							line = ChemParser.readMeaningfulLine(reader);
+							line = ChemParser.readMeaningfulLine(reader, true);
 						}
 					}
 					
@@ -990,7 +990,7 @@ public class ReactionModelGenerator {
 					}
         		}
         		else if (simulator.equals("Chemkin")) {
-        			line = ChemParser.readMeaningfulLine(reader);
+        			line = ChemParser.readMeaningfulLine(reader, true);
         			if (line.startsWith("ReactorType")) {
         				st = new StringTokenizer(line, ":");
         				temp = st.nextToken();
@@ -1017,13 +1017,13 @@ public class ReactionModelGenerator {
         	 *  The user can specify as many PKLs,
         	 * 	including none, as they like.
         	 */        	
-        	line = ChemParser.readMeaningfulLine(reader);
+        	line = ChemParser.readMeaningfulLine(reader, true);
 			if (line.startsWith("PrimaryKineticLibrary:")) {
 				readAndMakePKL(reader);
 			} else throw new InvalidSymbolException("condition.txt: can't find PrimaryKineticLibrary");
 			
 			// Reaction Library 
-			line = ChemParser.readMeaningfulLine(reader);
+			line = ChemParser.readMeaningfulLine(reader, true);
 			if (line.startsWith("ReactionLibrary:")) {
 				readAndMakeReactionLibrary(reader);
 			} else throw new InvalidSymbolException("condition.txt: can't find ReactionLibrary");
@@ -1040,16 +1040,16 @@ public class ReactionModelGenerator {
 			 * 	the priority (in the case of duplicates) given to the first
 			 * 	instance.  There is no on/off flag.
 			 */
-			line = ChemParser.readMeaningfulLine(reader);
+			line = ChemParser.readMeaningfulLine(reader, true);
 			if (line.startsWith("SeedMechanism:")) {
-				line = ChemParser.readMeaningfulLine(reader);
+				line = ChemParser.readMeaningfulLine(reader, true);
 				while (!line.equals("END")) {                     		
 					String[] tempString = line.split("Name: ");
 					String name = tempString[tempString.length-1].trim();
-					line = ChemParser.readMeaningfulLine(reader);
+					line = ChemParser.readMeaningfulLine(reader, true);
 					tempString = line.split("Location: ");
 					String location = tempString[tempString.length-1].trim();
-					line = ChemParser.readMeaningfulLine(reader);
+					line = ChemParser.readMeaningfulLine(reader, true);
 					tempString = line.split("GenerateReactions: ");
 					String generateStr = tempString[tempString.length-1].trim();
 					boolean generate = true;
@@ -1078,16 +1078,16 @@ public class ReactionModelGenerator {
 						setSeedMechanism(new SeedMechanism(name, path, generate, false));
 					else
 						getSeedMechanism().appendSeedMechanism(name, path, generate, false);
-					line = ChemParser.readMeaningfulLine(reader);
+					line = ChemParser.readMeaningfulLine(reader, true);
 				}
 				if (getSeedMechanism() != null)	System.out.println("Seed Mechanisms in use: " + getSeedMechanism().getName());
 				else setSeedMechanism(null);
 			} else throw new InvalidSymbolException("Error reading condition.txt file: "
 													+ "Could not locate SeedMechanism field");
 			
-			line = ChemParser.readMeaningfulLine(reader);
+			line = ChemParser.readMeaningfulLine(reader, true);
 			if (line.startsWith("ChemkinUnits")) {
-				line = ChemParser.readMeaningfulLine(reader);
+				line = ChemParser.readMeaningfulLine(reader, true);
 				if (line.startsWith("Verbose:")) {
 					StringTokenizer st = new StringTokenizer(line);
 					String dummyString = st.nextToken();
@@ -1097,7 +1097,7 @@ public class ReactionModelGenerator {
 					} else if (OnOff.equals("on")) {
 						ArrheniusKinetics.setVerbose(true);
 					}
-					line = ChemParser.readMeaningfulLine(reader);
+					line = ChemParser.readMeaningfulLine(reader, true);
 				}
 				/*
 				 * MRH 3MAR2010:
@@ -1124,7 +1124,7 @@ public class ReactionModelGenerator {
 						 */
 						//Species.useInChI = true;
 					}
-					line = ChemParser.readMeaningfulLine(reader);
+					line = ChemParser.readMeaningfulLine(reader, true);
 				}
 				if (line.startsWith("A")) {
 					StringTokenizer st = new StringTokenizer(line);
@@ -1138,7 +1138,7 @@ public class ReactionModelGenerator {
 					}
 				} else throw new InvalidSymbolException("Error reading condition.txt file: "
 														+ "Could not locate Chemkin units A field.");
-				line = ChemParser.readMeaningfulLine(reader);
+				line = ChemParser.readMeaningfulLine(reader, true);
 				if (line.startsWith("Ea")) {
 					StringTokenizer st = new StringTokenizer(line);
 					String dummyString = st.nextToken(); // Should be "Ea:"
@@ -2103,7 +2103,7 @@ public class ReactionModelGenerator {
 			File coreSpecies = new File ("Restart/coreSpecies.txt");
 			FileReader fr = new FileReader(coreSpecies);
 			BufferedReader reader = new BufferedReader(fr);
-			String line = ChemParser.readMeaningfulLine(reader);
+			String line = ChemParser.readMeaningfulLine(reader, true);
 			//HashSet speciesSet = new HashSet();
 			//			if (reactionSystem == null){//10/24/07 gmagoon: commenting out since contents of if was already commented out anyway
 			//				//ReactionSystem reactionSystem = new ReactionSystem();
@@ -2119,7 +2119,7 @@ public class ReactionModelGenerator {
 					System.out.println("There was no species with ID "+ID +" in the species dictionary");
 				
 				((CoreEdgeReactionModel)getReactionModel()).addReactedSpecies(spe);
-				line = ChemParser.readMeaningfulLine(reader);
+				line = ChemParser.readMeaningfulLine(reader, true);
 			}
 			
 		}
@@ -2155,7 +2155,7 @@ public class ReactionModelGenerator {
 			File includeSpecies = new File (fileName);
 			FileReader fr = new FileReader(includeSpecies);
 			BufferedReader reader = new BufferedReader(fr);
-			String line = ChemParser.readMeaningfulLine(reader);
+			String line = ChemParser.readMeaningfulLine(reader, true);
 			while (line!=null) {
     			StringTokenizer st = new StringTokenizer(line);
     			String index = st.nextToken();
@@ -2179,7 +2179,7 @@ public class ReactionModelGenerator {
        			//speciesSet.put(name, species);
     			speciesSet.add(species);
 				
-    			line = ChemParser.readMeaningfulLine(reader);
+    			line = ChemParser.readMeaningfulLine(reader, true);
 				System.out.println(line);
 				
     		}
@@ -2965,7 +2965,7 @@ public class ReactionModelGenerator {
 		try {
 			FileReader in = new FileReader("Restart/coreSpecies.txt");
 			BufferedReader reader = new BufferedReader(in);
-            String line = ChemParser.readMeaningfulLine(reader);
+            String line = ChemParser.readMeaningfulLine(reader, true);
 			while (line != null) {
 				// The first line of a new species is the user-defined name
 				String totalSpeciesName = line;
@@ -2991,7 +2991,7 @@ public class ReactionModelGenerator {
 				 SpeciesStatus ss = new SpeciesStatus(species,species_type,y[i],yprime[i]);
 				 speciesStatus[i].put(species, ss);
 				 }*/
-				line = ChemParser.readMeaningfulLine(reader);
+				line = ChemParser.readMeaningfulLine(reader, true);
 			}
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
@@ -3003,7 +3003,7 @@ public class ReactionModelGenerator {
 		try {
 			FileReader in = new FileReader("Restart/edgeSpecies.txt");
 			BufferedReader reader = new BufferedReader(in);
-            String line = ChemParser.readMeaningfulLine(reader);
+            String line = ChemParser.readMeaningfulLine(reader, true);
 			while (line != null) {
 				// The first line of a new species is the user-defined name
 				String totalSpeciesName = line;
@@ -3028,7 +3028,7 @@ public class ReactionModelGenerator {
 				Species species = Species.make(speciesName,cg,Integer.parseInt(splitString2[0]));
 				// Add the new species to the set of species
 				restartEdgeSpcs.add(species);
-				line = ChemParser.readMeaningfulLine(reader);
+				line = ChemParser.readMeaningfulLine(reader, true);
 			}
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
@@ -3053,14 +3053,14 @@ public class ReactionModelGenerator {
 		try {
 			FileReader in = new FileReader("Restart/coreReactions.txt");
 			BufferedReader reader = new BufferedReader(in);
-            String line = ChemParser.readMeaningfulLine(reader);
+            String line = ChemParser.readMeaningfulLine(reader, true);
             
             // Determine units of Ea
             StringTokenizer st = new StringTokenizer(line);
             String tempString = st.nextToken();
             String EaUnits = st.nextToken();
             
-            line = ChemParser.readMeaningfulLine(reader);
+            line = ChemParser.readMeaningfulLine(reader, true);
             
 			while (line != null) {
 				if (!line.trim().equals("DUP")) {
@@ -3082,7 +3082,7 @@ public class ReactionModelGenerator {
 	        		}
 				}
 				
-				line = ChemParser.readMeaningfulLine(reader);
+				line = ChemParser.readMeaningfulLine(reader, true);
 			}
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
@@ -3115,14 +3115,14 @@ public class ReactionModelGenerator {
 		try {
 			FileReader in = new FileReader("Restart/edgeReactions.txt");
 			BufferedReader reader = new BufferedReader(in);
-            String line = ChemParser.readMeaningfulLine(reader);
+            String line = ChemParser.readMeaningfulLine(reader, true);
             
             // Determine units of Ea
             StringTokenizer st = new StringTokenizer(line);
             String tempString = st.nextToken();
             String EaUnits = st.nextToken();
             
-            line = ChemParser.readMeaningfulLine(reader);
+            line = ChemParser.readMeaningfulLine(reader, true);
             
 			while (line != null) {
 				if (!line.trim().equals("DUP")) {
@@ -3144,7 +3144,7 @@ public class ReactionModelGenerator {
 	        		}
 				}
 				
-				line = ChemParser.readMeaningfulLine(reader);
+				line = ChemParser.readMeaningfulLine(reader, true);
 			}
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
@@ -3159,8 +3159,8 @@ public class ReactionModelGenerator {
 		try {
 			FileReader in = new FileReader("Restart/coreSpecies.txt");
 			BufferedReader reader = new BufferedReader(in);
-            Integer numRxnSystems = Integer.parseInt(ChemParser.readMeaningfulLine(reader));
-            String line = ChemParser.readMeaningfulLine(reader);
+            Integer numRxnSystems = Integer.parseInt(ChemParser.readMeaningfulLine(reader, true));
+            String line = ChemParser.readMeaningfulLine(reader, true);
 			while (line != null) {
 				// The first line of a new species is the user-defined name
 				String totalSpeciesName = line;
@@ -3169,7 +3169,7 @@ public class ReactionModelGenerator {
 				double y = 0.0;
 				double yprime = 0.0;
 				for (int j=0; j<numRxnSystems; j++) {
-					StringTokenizer st = new StringTokenizer(ChemParser.readMeaningfulLine(reader));
+					StringTokenizer st = new StringTokenizer(ChemParser.readMeaningfulLine(reader, true));
 					if (j == i) {
 						y = Double.parseDouble(st.nextToken());
 						yprime = Double.parseDouble(st.nextToken());
@@ -3192,7 +3192,7 @@ public class ReactionModelGenerator {
     			int species_type = 1; // reacted species
     			SpeciesStatus ss = new SpeciesStatus(species,species_type,y,yprime);
     			speciesStatus.put(species, ss);
-				line = ChemParser.readMeaningfulLine(reader);
+				line = ChemParser.readMeaningfulLine(reader, true);
 			}
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
@@ -3208,7 +3208,7 @@ public class ReactionModelGenerator {
 		try {
 			FileReader in = new FileReader("Restart/coreSpecies.txt");
 			BufferedReader reader = new BufferedReader(in);
-            String line = ChemParser.readMeaningfulLine(reader);
+            String line = ChemParser.readMeaningfulLine(reader, true);
 			while (line != null) {
 				// The first line of a new species is the user-defined name
 				String totalSpeciesName = line;
@@ -3232,7 +3232,7 @@ public class ReactionModelGenerator {
 	    			SpeciesStatus ss = new SpeciesStatus(species,1,0.0,0.0);
 	    			is.putSpeciesStatus(ss);
 				}
-				line = ChemParser.readMeaningfulLine(reader);
+				line = ChemParser.readMeaningfulLine(reader, true);
 			}
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
@@ -3249,22 +3249,22 @@ public class ReactionModelGenerator {
 			FileReader in = new FileReader("Restart/pdepnetworks.txt");
 			BufferedReader reader = new BufferedReader(in);
             
-			StringTokenizer st = new StringTokenizer(ChemParser.readMeaningfulLine(reader));
+			StringTokenizer st = new StringTokenizer(ChemParser.readMeaningfulLine(reader, true));
 			String tempString = st.nextToken();
 			String EaUnits = st.nextToken();
-			st = new StringTokenizer(ChemParser.readMeaningfulLine(reader));
+			st = new StringTokenizer(ChemParser.readMeaningfulLine(reader, true));
 			tempString = st.nextToken();
 			int numFameTs = Integer.parseInt(st.nextToken());
-			st = new StringTokenizer(ChemParser.readMeaningfulLine(reader));
+			st = new StringTokenizer(ChemParser.readMeaningfulLine(reader, true));
 			tempString = st.nextToken();
 			int numFamePs = Integer.parseInt(st.nextToken());
-			st = new StringTokenizer(ChemParser.readMeaningfulLine(reader));
+			st = new StringTokenizer(ChemParser.readMeaningfulLine(reader, true));
 			tempString = st.nextToken();
 			int numChebyTs = Integer.parseInt(st.nextToken());
-			st = new StringTokenizer(ChemParser.readMeaningfulLine(reader));
+			st = new StringTokenizer(ChemParser.readMeaningfulLine(reader, true));
 			tempString = st.nextToken();
 			int numChebyPs = Integer.parseInt(st.nextToken());
-			st = new StringTokenizer(ChemParser.readMeaningfulLine(reader));
+			st = new StringTokenizer(ChemParser.readMeaningfulLine(reader, true));
 			tempString = st.nextToken();
 			int numPlogs = Integer.parseInt(st.nextToken());
 			
@@ -3272,14 +3272,14 @@ public class ReactionModelGenerator {
 			double[][] chebyPolys = new double[numChebyTs][numChebyPs];
 			Kinetics[] plogKinetics = new Kinetics[numPlogs];
 			
-			String line = ChemParser.readMeaningfulLine(reader);	// line should be "PDepNetwork #"
+			String line = ChemParser.readMeaningfulLine(reader, true);	// line should be "PDepNetwork #"
 			while (line != null) {
-				line = ChemParser.readMeaningfulLine(reader);	// line should now be "netReactionList:"
+				line = ChemParser.readMeaningfulLine(reader, true);	// line should now be "netReactionList:"
 				PDepNetwork newNetwork = new PDepNetwork();
 				LinkedList netRxns = newNetwork.getNetReactions();
 				LinkedList nonincludeRxns = newNetwork.getNonincludedReactions();
 				
-				line = ChemParser.readMeaningfulLine(reader);	// line is either data or "nonIncludedReactionList"
+				line = ChemParser.readMeaningfulLine(reader, true);	// line is either data or "nonIncludedReactionList"
 				
 				// If line is "nonincludedreactionlist", we need to skip over this while loop
 				if (!line.toLowerCase().startsWith("nonincludedreactionlist")) {
@@ -3308,7 +3308,7 @@ public class ReactionModelGenerator {
 
 						// Read in the reverse reaction
 						if (reactionIsReversible) {
-							line = ChemParser.readMeaningfulLine(reader);
+							line = ChemParser.readMeaningfulLine(reader, true);
 							
 							rateCoefficients = parseRateCoeffsFromRestartFile(numFameTs,numFamePs,reader);
 							pdepk = parsePDepRateConstantFromRestartFile(reader,numChebyTs,numChebyPs,rateCoefficients,numPlogs,EaUnits);											
@@ -3324,12 +3324,12 @@ public class ReactionModelGenerator {
 						
 						netRxns.add(forward);
 						
-						line = ChemParser.readMeaningfulLine(reader);
+						line = ChemParser.readMeaningfulLine(reader, true);
 					}
 				}
 				// This loop ends once line == "nonIncludedReactionList"
 				
-				line = ChemParser.readMeaningfulLine(reader);	// line is either data or "pathReactionList"
+				line = ChemParser.readMeaningfulLine(reader, true);	// line is either data or "pathReactionList"
 				
 				if (!line.toLowerCase().startsWith("pathreactionList")) {
 					
@@ -3358,7 +3358,7 @@ public class ReactionModelGenerator {
 						
 						// Read in the reverse reaction
 						if (reactionIsReversible) {
-							line = ChemParser.readMeaningfulLine(reader);
+							line = ChemParser.readMeaningfulLine(reader, true);
 							
 							rateCoefficients = parseRateCoeffsFromRestartFile(numFameTs,numFamePs,reader);
 							pdepk = parsePDepRateConstantFromRestartFile(reader,numChebyTs,numChebyPs,rateCoefficients,numPlogs,EaUnits);											
@@ -3374,12 +3374,12 @@ public class ReactionModelGenerator {
 						
 						nonincludeRxns.add(forward);
 						
-						line = ChemParser.readMeaningfulLine(reader);
+						line = ChemParser.readMeaningfulLine(reader, true);
 					}
 				}
 				// This loop ends once line == "pathReactionList"
 				
-				line = ChemParser.readMeaningfulLine(reader);	// line is either data or "PDepNetwork #_" or null (end of file)
+				line = ChemParser.readMeaningfulLine(reader, true);	// line is either data or "PDepNetwork #_" or null (end of file)
 				
 				while (line != null && !line.toLowerCase().startsWith("pdepnetwork")) {
 					
@@ -3449,7 +3449,7 @@ public class ReactionModelGenerator {
 			        PDepReaction pdeppathrxn = new PDepReaction(Reactants,Products,pathRxn);
 			        newNetwork.addReaction(pdeppathrxn,true);
 					
-					line = ChemParser.readMeaningfulLine(reader);					
+					line = ChemParser.readMeaningfulLine(reader, true);					
 				}
 				
 				PDepNetwork.getNetworks().add(newNetwork);
@@ -3503,7 +3503,7 @@ public class ReactionModelGenerator {
     public double[][] parseRateCoeffsFromRestartFile(int numFameTs, int numFamePs, BufferedReader reader) {
     	double[][] rateCoefficients = new double[numFameTs][numFamePs];
 		for (int i=0; i<numFameTs; i++) {
-			StringTokenizer st = new StringTokenizer(ChemParser.readMeaningfulLine(reader));
+			StringTokenizer st = new StringTokenizer(ChemParser.readMeaningfulLine(reader, true));
 			for (int j=0; j<numFamePs; j++) {
 				rateCoefficients[i][j] = Double.parseDouble(st.nextToken());
 			}
@@ -3518,7 +3518,7 @@ public class ReactionModelGenerator {
 		if (numChebyTs > 0) {
 			double chebyPolys[][] = new double[numChebyTs][numChebyPs];
 			for (int i=0; i<numChebyTs; i++) {
-				StringTokenizer st = new StringTokenizer(ChemParser.readMeaningfulLine(reader));
+				StringTokenizer st = new StringTokenizer(ChemParser.readMeaningfulLine(reader, true));
 				for (int j=0; j<numChebyPs; j++) {
 					chebyPolys[i][j] = Double.parseDouble(st.nextToken());
 				}
@@ -3531,7 +3531,7 @@ public class ReactionModelGenerator {
 		} else if (numPlogs > 0) {
 			PDepArrheniusKinetics pdepAK = new PDepArrheniusKinetics(numPlogs);
 			for (int i=0; i<numPlogs; i++) {
-				StringTokenizer st = new StringTokenizer(ChemParser.readMeaningfulLine(reader));
+				StringTokenizer st = new StringTokenizer(ChemParser.readMeaningfulLine(reader, true));
 				Pressure p = new Pressure(Double.parseDouble(st.nextToken()),"Pa");
 				UncertainDouble dA = new UncertainDouble(Double.parseDouble(st.nextToken()),0.0,"A");
 				UncertainDouble dn = new UncertainDouble(Double.parseDouble(st.nextToken()),0.0,"A");
@@ -4232,11 +4232,11 @@ public class ReactionModelGenerator {
     
     public void readAndMakePKL(BufferedReader reader) throws IOException {
     	int Ilib = 0;
-    	String line = ChemParser.readMeaningfulLine(reader);
+    	String line = ChemParser.readMeaningfulLine(reader, true);
     	while (!line.equals("END")) {
 			String[] tempString = line.split("Name: ");
 			String name = tempString[tempString.length-1].trim();
-			line = ChemParser.readMeaningfulLine(reader);
+			line = ChemParser.readMeaningfulLine(reader, true);
 			tempString = line.split("Location: ");
 			String location = tempString[tempString.length-1].trim();
 			
@@ -4250,7 +4250,7 @@ public class ReactionModelGenerator {
 				getPrimaryKineticLibrary().appendPrimaryKineticLibrary(name, path);
 				Ilib++;
 			}
-			line = ChemParser.readMeaningfulLine(reader);
+			line = ChemParser.readMeaningfulLine(reader, true);
 		}
 		if (Ilib==0) {
 			setPrimaryKineticLibrary(null);
@@ -4261,11 +4261,11 @@ public class ReactionModelGenerator {
 
     public void readAndMakeReactionLibrary(BufferedReader reader) throws IOException {
     	int Ilib = 0;
-    	String line = ChemParser.readMeaningfulLine(reader);
+    	String line = ChemParser.readMeaningfulLine(reader, true);
     	while (!line.equals("END")) {
 			String[] tempString = line.split("Name: ");
 			String name = tempString[tempString.length-1].trim();
-			line = ChemParser.readMeaningfulLine(reader);
+			line = ChemParser.readMeaningfulLine(reader, true);
 			tempString = line.split("Location: ");
 			String location = tempString[tempString.length-1].trim();
 			
@@ -4279,7 +4279,7 @@ public class ReactionModelGenerator {
 				getReactionLibrary().appendReactionLibrary(name, path);
 				Ilib++;
 			}
-			line = ChemParser.readMeaningfulLine(reader);
+			line = ChemParser.readMeaningfulLine(reader, true);
 		}
 		if (Ilib==0) {
 			setReactionLibrary(null);
@@ -4291,11 +4291,11 @@ public class ReactionModelGenerator {
     
     public void readAndMakePTL(BufferedReader reader) {
      	int numPTLs = 0;
-     	String line = ChemParser.readMeaningfulLine(reader);
+     	String line = ChemParser.readMeaningfulLine(reader, true);
      	while (!line.equals("END")) {
      		String[] tempString = line.split("Name: ");
      		String name = tempString[tempString.length-1].trim();
-			line = ChemParser.readMeaningfulLine(reader);
+			line = ChemParser.readMeaningfulLine(reader, true);
 			tempString = line.split("Location: ");
 			String path = tempString[tempString.length-1].trim();
 			if (numPTLs==0) {
@@ -4306,14 +4306,14 @@ public class ReactionModelGenerator {
              	getPrimaryThermoLibrary().appendPrimaryThermoLibrary(name,path);
              	++numPTLs;
 			}
-			line = ChemParser.readMeaningfulLine(reader);
+			line = ChemParser.readMeaningfulLine(reader, true);
      	}
      	if (numPTLs == 0) setPrimaryThermoLibrary(null);
     }
 	
 	public void readExtraForbiddenStructures(BufferedReader reader) throws IOException  {
 		System.out.println("Reading extra forbidden structures from input file.");
-     	String line = ChemParser.readMeaningfulLine(reader);
+     	String line = ChemParser.readMeaningfulLine(reader, true);
      	while (!line.equals("END")) {
 			StringTokenizer token = new StringTokenizer(line);
 			String fgname = token.nextToken();
@@ -4328,7 +4328,7 @@ public class ReactionModelGenerator {
 			if (fgGraph == null) throw new InvalidFunctionalGroupException(fgname);
 			FunctionalGroup fg = FunctionalGroup.makeForbiddenStructureFG(fgname, fgGraph);
 			ChemGraph.addForbiddenStructure(fg);
-			line = ChemParser.readMeaningfulLine(reader);
+			line = ChemParser.readMeaningfulLine(reader, true);
 			System.out.println(" Forbidden structure: "+fgname);
 		}
 	}
@@ -4385,7 +4385,7 @@ public class ReactionModelGenerator {
 				System.exit(0);
 			}
 			
-			line = ChemParser.readMeaningfulLine(reader);
+			line = ChemParser.readMeaningfulLine(reader, true);
 		}
 		else if (pDepType.toLowerCase().equals("modifiedstrongcollision") ||
 			pDepType.toLowerCase().equals("reservoirstate") ||
@@ -4417,7 +4417,7 @@ public class ReactionModelGenerator {
 			}
 
 			// Next line must be PDepKineticsModel
-			line = ChemParser.readMeaningfulLine(reader);
+			line = ChemParser.readMeaningfulLine(reader, true);
 			if (line.toLowerCase().startsWith("pdepkineticsmodel:")) {
 				
 				st = new StringTokenizer(line);
@@ -4472,7 +4472,7 @@ public class ReactionModelGenerator {
 			int Pnumber = 5;
 
 			// Read next line of input
-			line = ChemParser.readMeaningfulLine(reader);
+			line = ChemParser.readMeaningfulLine(reader, true);
 			boolean done = !(line.toLowerCase().startsWith("trange:") ||
 				line.toLowerCase().startsWith("prange:") ||
 				line.toLowerCase().startsWith("temperatures:") ||
@@ -4521,7 +4521,7 @@ public class ReactionModelGenerator {
 				}
 
 				// Read next line of input
-				line = ChemParser.readMeaningfulLine(reader);
+				line = ChemParser.readMeaningfulLine(reader, true);
 				done = !(line.toLowerCase().startsWith("trange:") ||
 					line.toLowerCase().startsWith("prange:") ||
 					line.toLowerCase().startsWith("temperatures:") ||
@@ -4601,7 +4601,7 @@ public class ReactionModelGenerator {
 						tempString.equals("true")) {
 					rerunFame = true;
 				} else rerunFame = false;
-				line = ChemParser.readMeaningfulLine(reader);
+				line = ChemParser.readMeaningfulLine(reader, true);
 			}
 
 		}
@@ -4675,7 +4675,7 @@ public class ReactionModelGenerator {
     public LinkedHashMap populateInitialStatusListWithReactiveSpecies(BufferedReader reader) throws IOException {
     	LinkedHashMap speciesSet = new LinkedHashMap();
     	LinkedHashMap speciesStatus = new LinkedHashMap();
-		String line = ChemParser.readMeaningfulLine(reader);
+		String line = ChemParser.readMeaningfulLine(reader, true);
 		while (!line.equals("END")) {
 			StringTokenizer st = new StringTokenizer(line);
 			String index = st.nextToken();
@@ -4747,7 +4747,7 @@ public class ReactionModelGenerator {
 			int species_type = 1; // reacted species
 			SpeciesStatus ss = new SpeciesStatus(species,species_type,concentration,flux);
 			speciesStatus.put(species, ss);
-			line = ChemParser.readMeaningfulLine(reader);
+			line = ChemParser.readMeaningfulLine(reader, true);
 		}
 		ReactionTime initial = new ReactionTime(0,"S");
 		//10/23/07 gmagoon: modified for handling multiple temperature, pressure conditions; note: concentration within speciesStatus (and list of conversion values) should not need to be modified for each T,P since this is done within isTPCconsistent in ReactionSystem
@@ -4771,7 +4771,7 @@ public class ReactionModelGenerator {
     }
     
     public void populateInitialStatusListWithInertSpecies(BufferedReader reader) {
-    	String line = ChemParser.readMeaningfulLine(reader);
+    	String line = ChemParser.readMeaningfulLine(reader, true);
    		while (!line.equals("END")) {
 	    	StringTokenizer st = new StringTokenizer(line);
 	    	String name = st.nextToken().trim();
@@ -4799,7 +4799,7 @@ public class ReactionModelGenerator {
 			for(Iterator iter=initialStatusList.iterator();iter.hasNext(); ){//6/23/09 gmagoon: needed to change this to accommodate non-static inertConc
 				((InitialStatus)iter.next()).putInertGas(name,inertConc);
 			}
-	   		line = ChemParser.readMeaningfulLine(reader);
+	   		line = ChemParser.readMeaningfulLine(reader, true);
 		}
     }
     
@@ -4810,7 +4810,7 @@ public class ReactionModelGenerator {
         	int maxCNum = Integer.parseInt(st.nextToken());
         	ChemGraph.setMaxCarbonNumber(maxCNum);
         	System.out.println("Note: Overriding RMG-defined MAX_CARBON_NUM with user-defined value: " + maxCNum);
-        	line = ChemParser.readMeaningfulLine(reader);
+        	line = ChemParser.readMeaningfulLine(reader, true);
         }
         if (line.startsWith("MaxOxygenNumber")) {
         	StringTokenizer st = new StringTokenizer(line);
@@ -4818,7 +4818,7 @@ public class ReactionModelGenerator {
         	int maxONum = Integer.parseInt(st.nextToken());
         	ChemGraph.setMaxOxygenNumber(maxONum);
         	System.out.println("Note: Overriding RMG-defined MAX_OXYGEN_NUM with user-defined value: " + maxONum);
-        	line = ChemParser.readMeaningfulLine(reader);
+        	line = ChemParser.readMeaningfulLine(reader, true);
         }
         if (line.startsWith("MaxRadicalNumber")) {
         	StringTokenizer st = new StringTokenizer(line);
@@ -4826,7 +4826,7 @@ public class ReactionModelGenerator {
         	int maxRadNum = Integer.parseInt(st.nextToken());
         	ChemGraph.setMaxRadicalNumber(maxRadNum);
         	System.out.println("Note: Overriding RMG-defined MAX_RADICAL_NUM with user-defined value: " + maxRadNum);
-        	line = ChemParser.readMeaningfulLine(reader);
+        	line = ChemParser.readMeaningfulLine(reader, true);
         }
         if (line.startsWith("MaxSulfurNumber")) {
         	StringTokenizer st = new StringTokenizer(line);
@@ -4834,7 +4834,7 @@ public class ReactionModelGenerator {
         	int maxSNum = Integer.parseInt(st.nextToken());
         	ChemGraph.setMaxSulfurNumber(maxSNum);
         	System.out.println("Note: Overriding RMG-defined MAX_SULFUR_NUM with user-defined value: " + maxSNum);
-        	line = ChemParser.readMeaningfulLine(reader);
+        	line = ChemParser.readMeaningfulLine(reader, true);
         }
         if (line.startsWith("MaxSiliconNumber")) {
         	StringTokenizer st = new StringTokenizer(line);
@@ -4842,7 +4842,7 @@ public class ReactionModelGenerator {
         	int maxSiNum = Integer.parseInt(st.nextToken());
         	ChemGraph.setMaxSiliconNumber(maxSiNum);
         	System.out.println("Note: Overriding RMG-defined MAX_SILICON_NUM with user-defined value: " + maxSiNum);
-        	line = ChemParser.readMeaningfulLine(reader);
+        	line = ChemParser.readMeaningfulLine(reader, true);
         }
         if (line.startsWith("MaxHeavyAtom")) {
         	StringTokenizer st = new StringTokenizer(line);
@@ -4850,7 +4850,7 @@ public class ReactionModelGenerator {
         	int maxHANum = Integer.parseInt(st.nextToken());
         	ChemGraph.setMaxHeavyAtomNumber(maxHANum);
         	System.out.println("Note: Overriding RMG-defined MAX_HEAVYATOM_NUM with user-defined value: " + maxHANum);
-        	line = ChemParser.readMeaningfulLine(reader);
+        	line = ChemParser.readMeaningfulLine(reader, true);
         }
         return line;
     }
@@ -4899,11 +4899,11 @@ public class ReactionModelGenerator {
     
     public void readAndMakePTransL(BufferedReader reader) {
      	int numPTLs = 0;
-     	String line = ChemParser.readMeaningfulLine(reader);
+     	String line = ChemParser.readMeaningfulLine(reader, true);
      	while (!line.equals("END")) {
      		String[] tempString = line.split("Name: ");
      		String name = tempString[tempString.length-1].trim();
-			line = ChemParser.readMeaningfulLine(reader);
+			line = ChemParser.readMeaningfulLine(reader, true);
 			tempString = line.split("Location: ");
 			String path = tempString[tempString.length-1].trim();
 			if (numPTLs==0) {
@@ -4914,7 +4914,7 @@ public class ReactionModelGenerator {
              	getPrimaryTransportLibrary().appendPrimaryTransportLibrary(name,path);
              	++numPTLs;
 			}
-			line = ChemParser.readMeaningfulLine(reader);
+			line = ChemParser.readMeaningfulLine(reader, true);
      	}
      	if (numPTLs == 0) setPrimaryTransportLibrary(null);
     }

@@ -224,13 +224,13 @@ public class TransportGALibrary {
         	HashMap dictionary = new HashMap();
         	HashMap unRead = new HashMap();
         	
-        	String line = ChemParser.readMeaningfulLine(data);
+        	String line = ChemParser.readMeaningfulLine(data, true);
         	
         	read: while (line != null) {
         		StringTokenizer st = new StringTokenizer(line);
         		String fgname = st.nextToken();
         		data.mark(10000);
-        		line = ChemParser.readMeaningfulLine(data);
+        		line = ChemParser.readMeaningfulLine(data, true);
         		if (line == null) break read;
         		line = line.trim();
         		String prefix = line.substring(0,5);
@@ -259,7 +259,7 @@ public class TransportGALibrary {
         				if (!oldFG.equals(fg)) throw new ReplaceFunctionalGroupException(fgname);
         			}
         		}
-        		line = ChemParser.readMeaningfulLine(data);
+        		line = ChemParser.readMeaningfulLine(data, true);
         	}
 
         	while (!unRead.isEmpty()) {
@@ -285,7 +285,7 @@ public class TransportGALibrary {
         	BufferedReader data = new BufferedReader(in);
         	HashMap library = new HashMap();
         	
-            String line = ChemParser.readMeaningfulLine(data);
+            String line = ChemParser.readMeaningfulLine(data, true);
             while (line != null) {
             	// step 1: read in index and name
             	StringTokenizer token = new StringTokenizer(line);
@@ -332,7 +332,7 @@ public class TransportGALibrary {
             			throw new ReplaceThermoGAValueException();
             		}
             	}
-            	line = ChemParser.readMeaningfulLine(data);
+            	line = ChemParser.readMeaningfulLine(data, true);
             }
 
 

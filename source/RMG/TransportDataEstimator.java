@@ -32,7 +32,7 @@ public class TransportDataEstimator {
 
             // Read in the Primary Transport Library, if it exists
 			ReactionModelGenerator rmg = new ReactionModelGenerator();
-            String line = ChemParser.readMeaningfulLine(reader);
+            String line = ChemParser.readMeaningfulLine(reader, true);
             if (line.toLowerCase().startsWith("primarytransportlibrary")) {
             	rmg.readAndMakePTransL(reader);
             }
@@ -42,7 +42,7 @@ public class TransportDataEstimator {
             	System.exit(0);
             }
             
-            line = ChemParser.readMeaningfulLine(reader);
+            line = ChemParser.readMeaningfulLine(reader, true);
             
             while (line != null) {
             	String speciesName = line;
@@ -63,7 +63,7 @@ public class TransportDataEstimator {
             	transportProperties += " ! " + lj4species.getSource() + "\t" + lj4species.getComment() + "\n";
             	
             	// (Attempt to) Read next line of input file
-            	line = ChemParser.readMeaningfulLine(reader);
+            	line = ChemParser.readMeaningfulLine(reader, true);
             }
 			
 

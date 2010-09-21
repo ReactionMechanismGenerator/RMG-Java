@@ -62,7 +62,7 @@ public static void main(String[] args) {
 			 * 14MAR2010: Allowing ThermoDataEstimator to read from Primary Reaction Library
 			 */
 			ReactionModelGenerator rmg = new ReactionModelGenerator();
-            String line = ChemParser.readMeaningfulLine(reader);
+            String line = ChemParser.readMeaningfulLine(reader, true);
             if (line.toLowerCase().startsWith("primarythermolibrary")) {
             	rmg.readAndMakePTL(reader);
             }

@@ -65,7 +65,7 @@ public static void main(String[] args) {
           BufferedReader data = new BufferedReader(in);
 
           // Read the first line of Abraham_input.txt
-          String line = ChemParser.readMeaningfulLine(data);
+          String line = ChemParser.readMeaningfulLine(data, true);
           StringTokenizer st = new StringTokenizer(line);
 
           // The first line should start with "SolventParameters", otherwise do nothing and display a message to the user
@@ -84,7 +84,7 @@ public static void main(String[] args) {
 
 
           // Read in the ChemGraphs and compute their thermo, while there are ChemGraphs to read in
-        	  line = ChemParser.readMeaningfulLine(data);
+        	  line = ChemParser.readMeaningfulLine(data, true);
         	  while (line != null) {
         		  String speciesName = line;
         		  Graph g = ChemParser.readChemGraph(data);
@@ -97,7 +97,7 @@ public static void main(String[] args) {
         		  }
         		  Species species = Species.make(speciesName,cg);
         		  speciesSet.add(species);
-        		  line = ChemParser.readMeaningfulLine(data);
+        		  line = ChemParser.readMeaningfulLine(data, true);
         	  }
 
           in.close();

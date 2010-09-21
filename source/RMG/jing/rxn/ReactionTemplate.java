@@ -1388,12 +1388,12 @@ public class ReactionTemplate {
       	String fgname = null;
       
       	// step 1: read in structure
-      	String line = ChemParser.readMeaningfulLine(data);
+      	String line = ChemParser.readMeaningfulLine(data, true);
       	read: while (line != null) {
       		StringTokenizer token = new StringTokenizer(line);
       		fgname = token.nextToken();
       		data.mark(10000);
-      		line = ChemParser.readMeaningfulLine(data);
+      		line = ChemParser.readMeaningfulLine(data, true);
       		if (line == null) break read;
       		line = line.trim();
       		String prefix = line.substring(0,5);
@@ -1423,7 +1423,7 @@ public class ReactionTemplate {
       				if (!oldFG.equals(fg)) throw new ReplaceFunctionalGroupException(fgname);
       			}
               }
-      		line = ChemParser.readMeaningfulLine(data);
+      		line = ChemParser.readMeaningfulLine(data, true);
       	}
       
       	while (!unRead.isEmpty()) {
@@ -1458,7 +1458,7 @@ public class ReactionTemplate {
       	String fgname = null;
       
       	// step 1: read in structure
-      	String line = ChemParser.readMeaningfulLine(data);
+      	String line = ChemParser.readMeaningfulLine(data, true);
       	read: while (line != null) {
       		StringTokenizer token = new StringTokenizer(line);
       		fgname = token.nextToken();
@@ -1470,12 +1470,12 @@ public class ReactionTemplate {
 					line=ChemParser.readUncommentLine(data);
 				}
 				// now get an unblank line
-				line = ChemParser.readMeaningfulLine(data);
+				line = ChemParser.readMeaningfulLine(data, true);
 				continue read;
 			}
 			
       		data.mark(10000);
-      		line = ChemParser.readMeaningfulLine(data);
+      		line = ChemParser.readMeaningfulLine(data, true);
       		if (line == null) break read;
       		line = line.trim();
       		if (line.toLowerCase().startsWith("union") || line.startsWith("OR") ) {
@@ -1504,7 +1504,7 @@ public class ReactionTemplate {
       				if (!oldFG.equals(fg)) throw new ReplaceFunctionalGroupException(fgname);
       			}
               }
-      		line = ChemParser.readMeaningfulLine(data);
+      		line = ChemParser.readMeaningfulLine(data, true);
       	}
       
       	while (!unRead.isEmpty()) {
@@ -1528,7 +1528,7 @@ public class ReactionTemplate {
       	BufferedReader data = new BufferedReader(in);
       
       	// step 1: read in kinetics format
-      	String line = ChemParser.readMeaningfulLine(data);
+      	String line = ChemParser.readMeaningfulLine(data, true);
       	if (line == null) throw new InvalidKineticsFormatException();
       	String format;
       	if (line.compareToIgnoreCase("Arrhenius") == 0) format = "Arrhenius";
@@ -1541,7 +1541,7 @@ public class ReactionTemplate {
       	int treeNum = getReactantTreeNumber();
       	int reactantNum = getReactantNumber();
       	int keyNum = Math.max(treeNum,reactantNum);
-      	line = ChemParser.readMeaningfulLine(data);
+      	line = ChemParser.readMeaningfulLine(data, true);
       	while (line != null) {
               StringTokenizer token = new StringTokenizer(line);
               String ID = token.nextToken();
@@ -1585,7 +1585,7 @@ public class ReactionTemplate {
           	 */
           	Temperature firstTempEncountered = ReactionModelGenerator.getTemp4BestKinetics();
       		kineticsTemplateLibrary.addKinetics(fgc,k,firstTempEncountered);
-      		line = ChemParser.readMeaningfulLine(data);
+      		line = ChemParser.readMeaningfulLine(data, true);
        	}
       
           in.close();
@@ -1606,7 +1606,7 @@ public class ReactionTemplate {
       	BufferedReader data = new BufferedReader(in);
       
       	// step 1: read in structure
-      	String line = ChemParser.readMeaningfulLine(data);
+      	String line = ChemParser.readMeaningfulLine(data, true);
       	if (line == null) throw new InvalidReactionAdjListFormatException();
       
       	StringTokenizer token = new StringTokenizer(line);
@@ -1648,7 +1648,7 @@ public class ReactionTemplate {
       	structureTemplate = new StructureTemplate(r1,r2);
       
           // step 3 read in direction and corresponding infor about reverse and thermo consisitence
-          line = ChemParser.readMeaningfulLine(data);
+          line = ChemParser.readMeaningfulLine(data, true);
           line = line.trim();
           int direction = 0;
           if (line.compareToIgnoreCase("forward")==0)	direction = 1;
@@ -1658,7 +1658,7 @@ public class ReactionTemplate {
       
           if (direction == 1) {
           	// read in reverse reaction family's name
-          	line = ChemParser.readMeaningfulLine(data).trim();
+          	line = ChemParser.readMeaningfulLine(data, true).trim();
           	StringTokenizer dst = new StringTokenizer(line,":");
           	String sign = dst.nextToken().trim();
           	if (!sign.startsWith("reverse")) throw new InvalidReactionAdjListFormatException("Unknown reverse reaction family name!");
@@ -1668,10 +1668,10 @@ public class ReactionTemplate {
       	// step 4: read in actions in reaction template
       	reactionAdjList = new ReactionAdjList(reactantNum,productNum);
       	while (line != null) {
-      		while (!line.startsWith("Action")) line = ChemParser.readMeaningfulLine(data);
+      		while (!line.startsWith("Action")) line = ChemParser.readMeaningfulLine(data, true);
       		LinkedList actions = ChemParser.readActions(data);
       		reactionAdjList.setActions(actions);
-      		line = ChemParser.readMeaningfulLine(data);
+      		line = ChemParser.readMeaningfulLine(data, true);
       	}
       	in.close();
       	return reverseRT;

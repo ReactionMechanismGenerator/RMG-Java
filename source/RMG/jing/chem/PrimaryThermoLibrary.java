@@ -95,7 +95,7 @@ public HashMap readLibrary(String p_thermoFileName, HashMap p_dictionary, String
 	try{
 		FileReader in = new FileReader(p_thermoFileName);
 		BufferedReader data = new BufferedReader(in);
-		String line = ChemParser.readMeaningfulLine(data);
+		String line = ChemParser.readMeaningfulLine(data, true);
 		while (line != null){
 			StringTokenizer token = new StringTokenizer(line);
 			String name = token.nextToken();
@@ -135,7 +135,7 @@ public HashMap readLibrary(String p_thermoFileName, HashMap p_dictionary, String
 					System.out.println(name + ": "+thermo);
 				}
 			}
-			line = ChemParser.readMeaningfulLine(data);
+			line = ChemParser.readMeaningfulLine(data, true);
 		}
 		in.close();
 	    return library;
@@ -151,14 +151,14 @@ public HashMap readDictionary(String p_fileName, String source) throws FileNotFo
 	    FileReader in = new FileReader(p_fileName);
 	    BufferedReader data = new BufferedReader(in);
 
-	    String line = ChemParser.readMeaningfulLine(data);
+	    String line = ChemParser.readMeaningfulLine(data, true);
 
 	    read: while(line != null){
 	      StringTokenizer st = new StringTokenizer(line);
 	      String name = st.nextToken();
 
 	      data.mark(10000);
-	      line = ChemParser.readMeaningfulLine(data);
+	      line = ChemParser.readMeaningfulLine(data, true);
 	      if (line == null) break read;
 	      line = line.trim();
 	      data.reset();
@@ -188,7 +188,7 @@ public HashMap readDictionary(String p_fileName, String source) throws FileNotFo
 	        }
 
 	      }
-	      line = ChemParser.readMeaningfulLine(data);
+	      line = ChemParser.readMeaningfulLine(data, true);
 	    }
 	    in.close();
 	    return dictionary;
@@ -258,14 +258,14 @@ public HashMap readDictionary(String p_fileName) throws FileNotFoundException, I
     FileReader in = new FileReader(p_fileName);
     BufferedReader data = new BufferedReader(in);
 
-    String line = ChemParser.readMeaningfulLine(data);
+    String line = ChemParser.readMeaningfulLine(data, true);
 
     read: while(line != null){
       StringTokenizer st = new StringTokenizer(line);
       String name = st.nextToken();
 
       data.mark(10000);
-      line = ChemParser.readMeaningfulLine(data);
+      line = ChemParser.readMeaningfulLine(data, true);
       if (line == null) break read;
       line = line.trim();
       data.reset();
@@ -285,7 +285,7 @@ public HashMap readDictionary(String p_fileName) throws FileNotFoundException, I
         }
 
       }
-      line = ChemParser.readMeaningfulLine(data);
+      line = ChemParser.readMeaningfulLine(data, true);
     }
     in.close();
     return dictionary;
@@ -306,7 +306,7 @@ public HashMap readLibrary(String p_thermoFileName, HashMap p_dictionary) throws
   FileReader in = new FileReader(p_thermoFileName);
   BufferedReader data = new BufferedReader(in);
   HashMap library = new HashMap();
-  String line = ChemParser.readMeaningfulLine(data);
+  String line = ChemParser.readMeaningfulLine(data, true);
   while (line != null){
     StringTokenizer token = new StringTokenizer(line);
     String name = token.nextToken();
@@ -348,7 +348,7 @@ public HashMap readLibrary(String p_thermoFileName, HashMap p_dictionary) throws
         System.out.println(name + ": "+thermo);
       }
     }
-    line = ChemParser.readMeaningfulLine(data);
+    line = ChemParser.readMeaningfulLine(data, true);
   }
   in.close();
     return library;
