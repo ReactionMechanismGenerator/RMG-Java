@@ -97,7 +97,6 @@ public class ReactionModelGenerator {
     protected PrimaryThermoLibrary primaryThermoLibrary;
     protected PrimaryTransportLibrary primaryTransportLibrary;
 	
-	protected boolean restart = false;
 	protected boolean readrestart = false;
 	protected boolean writerestart = false;
 	
@@ -1296,7 +1295,7 @@ public class ReactionModelGenerator {
         for (Iterator iter = reactionSystemList.iterator(); iter.hasNext(); ) {
             ReactionSystem rs = (ReactionSystem)iter.next();
             if ((reactionModelEnlarger instanceof RateBasedPDepRME)) {//1/2/09 gmagoon and rwest: only call initializePDepNetwork for P-dep cases
-                if (!restart) rs.initializePDepNetwork();
+                if (!readrestart) rs.initializePDepNetwork();
             }
 			
             ReactionTime init = rs.getInitialReactionTime();
@@ -3451,6 +3450,8 @@ public class ReactionModelGenerator {
 					
 					line = ChemParser.readMeaningfulLine(reader, true);					
 				}
+				
+				newNetwork.setAltered(false);
 				
 				PDepNetwork.getNetworks().add(newNetwork);
 				
