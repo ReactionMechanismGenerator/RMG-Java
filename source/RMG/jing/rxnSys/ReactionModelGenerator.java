@@ -3685,6 +3685,92 @@ public class ReactionModelGenerator {
 				}
 			}
 		}
+		/*
+		 * 22-SEPT-2010	
+		 * ELSE:
+		 * 		If reading in restart files, at the very least, we should react
+		 * 		all species present in the input file (speciesSeed) with all of
+		 * 		the coreSpecies.  Before, when the following else statement was
+		 * 		not present, we would completely skip this step.  Thus, RMG would
+		 * 		come to the first ODE solve, integrate to a very large time, and
+		 * 		conclude that the model was both valid and terminated, thereby
+		 * 		not adding any new reactions to the core regardless of the
+		 * 		conditions stated in the input file.
+		 * EXAMPLE:
+		 * 		A user runs RMG for iso-octane with Restart turned on.  The
+		 * 		simulation converges and now the user would like to add a small
+		 * 		amount of 1-butanol to the input file, while reading in from the
+		 * 		Restart files.  What should happen, at the very least, is 1-butanol
+		 * 		reacts with the other species present in the input file and with 
+		 * 		the already-known coreSpecies.  This will, at a minimum, add these
+		 * 		reactions to the core.  Whether the model remains validated and
+		 * 		terminated depends on the conditions stated in the input file.
+		 * MRH (mrharper@mit.edu)
+		 */
+		
+		else {
+			LinkedHashSet reactionSet_withdup;
+			LinkedHashSet reactionSet;
+			
+			/*
+			 *  If the user has specified a Seed Mechanism, and that the cross reactions
+			 *  	should be generated, generate those here
+			 *  NOTE: Since the coreSpecies from the Restart files are treated as a Seed
+			 *  	Mechanism, MRH is inclined to comment out the following lines.  Depending
+			 *  	on how large the Seed Mechanism and/or Restart files are, RMG could get
+			 *  	"stuck" cross-reacting hundreds of species against each other.
+			 */
+//			if (hasSeedMechanisms() && getSeedMechanism().shouldGenerateReactions()) {
+//				reactionSet_withdup = getLibraryReactionGenerator().react(getSeedMechanism().getSpeciesSet());
+//				reactionSet_withdup.addAll(getReactionGenerator().react(getSeedMechanism().getSpeciesSet()));
+//				reactionSet = getLibraryReactionGenerator().RemoveDuplicateReac(reactionSet_withdup);
+//			}
+			/*
+			 * 	If not, react the species present in the input file against any
+			 * 		reaction libraries, and then against all RMG-defined reaction
+			 * 		families
+			 */
+//			else {
+				reactionSet_withdup = new LinkedHashSet();	
+				LinkedHashSet tempnewReactionSet = getLibraryReactionGenerator().react(speciesSeed);
+				if (!tempnewReactionSet.isEmpty()) {
+					System.out.println("Reaction Set Found from Reaction Library "+tempnewReactionSet);
+				}
+				
+				// Adds Reactions Found in Library Reaction Generator to Reaction Set
+				reactionSet_withdup.addAll(tempnewReactionSet);
+				
+				// Generates Reaction from the Reaction Generator and adds them to Reaction Set
+				for (Iterator iter = speciesSeed.iterator(); iter.hasNext(); ) {
+					Species spec = (Species) iter.next();
+					reactionSet_withdup.addAll(getReactionGenerator().react(allInitialCoreSpecies,spec,"All"));
+				}
+				reactionSet = getLibraryReactionGenerator().RemoveDuplicateReac(reactionSet_withdup);
+//			}
+		
+	    	// Set initial core-edge reaction model based on above results
+			if (reactionModelEnlarger instanceof RateBasedRME)	{
+				Iterator iter = reactionSet.iterator();
+	        	while (iter.hasNext()){
+	        		Reaction r = (Reaction)iter.next();
+	        		cerm.addReaction(r);
+				}
+			}
+			else {
+	    		// Only keep the reactions involving bimolecular reactants and bimolecular products
+				Iterator iter = reactionSet.iterator();
+	        	while (iter.hasNext()){
+	        		Reaction r = (Reaction)iter.next();
+	        		if (r.getReactantNumber() > 1 && r.getProductNumber() > 1){
+	        			cerm.addReaction(r);
+	        		}
+					else {
+						cerm.categorizeReaction(r.getStructure());
+						PDepNetwork.addReactionToNetworks(r);
+					}
+				}
+			}
+		}
 		
         for (Integer i = 0; i < reactionSystemList.size(); i++) {
 			ReactionSystem rs = (ReactionSystem) reactionSystemList.get(i);
