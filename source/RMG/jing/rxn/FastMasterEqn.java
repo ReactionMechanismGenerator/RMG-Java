@@ -312,6 +312,8 @@ public class FastMasterEqn implements PDepKineticsEstimator {
 			else if (id < 100)  path += "00";
 			else if (id < 1000) path += "0";
 			path += Integer.toString(id);
+			path += "_";
+			path += Integer.toString(nIsom);
 			path += "_input.txt";
 			FileWriter fw = new FileWriter(new File(path));
 			fw.write(input);
