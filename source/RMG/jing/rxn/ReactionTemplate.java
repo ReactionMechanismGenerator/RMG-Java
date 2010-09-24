@@ -410,19 +410,25 @@ public class ReactionTemplate {
       	 * 	I am removing the reaction family specific rules for H_Abstraction and intra_H_migration
       	 * 	so that the reaction will always be written in the exothermic direction.
       	 * MRH (mrharper@mit.edu) 
+      	 * 
+      	 * 24-SEPT-2010
+      	 * Restoring the "if one species has more than one radical, automatically
+      	 * 	assign it as the reactants".  It seems RMG's rate coefficient estimates
+      	 * 	for R. + HOO. --> .OO. + RH are not very accurate (ignition delays
+      	 * 	change drastically, running the same condition.txt file).
       	 */
-//      	if (name.equals("H_Abstraction")) {
-//      		Iterator iter = p_structure.reactants.iterator();
-//      		while (iter.hasNext()) {
-//      			ChemGraph cg = (ChemGraph)iter.next();
-//      			int rNum = cg.getRadicalNumber();
-//      			if (rNum >= 2) {
-//      				thermoConsistence = false;
-//      				reactants = p_structure.reactants;
-//      				p_structure.setDirection(1);
-//      			}
-//      		}
-//      	}
+      	if (name.equals("H_Abstraction")) {
+      		Iterator iter = p_structure.reactants.iterator();
+      		while (iter.hasNext()) {
+      			ChemGraph cg = (ChemGraph)iter.next();
+      			int rNum = cg.getRadicalNumber();
+      			if (rNum >= 2) {
+      				thermoConsistence = false;
+      				reactants = p_structure.reactants;
+      				p_structure.setDirection(1);
+      			}
+      		}
+      	}
       
           if (thermoConsistence) {
       		Temperature T = new Temperature(298, "K");
@@ -522,18 +528,18 @@ public class ReactionTemplate {
       	boolean thermoConsistence = true;
       	// in H abstraction, we allow biradical abstract H from a molecule, but the reverse is now allowed
       	// therefore, such H abs reactions will be all set as forward reaction
-//      	if (name.equals("H_Abstraction")) {
-//      		Iterator iter = p_structure.reactants.iterator();
-//      		while (iter.hasNext()) {
-//      			ChemGraph cg = (ChemGraph)iter.next();
-//      			int rNum = cg.getRadicalNumber();
-//      			if (rNum >= 2) {
-//      				thermoConsistence = false;
-//      				reactants = p_structure.reactants;
-//      				p_structure.setDirection(1);
-//      			}
-//      		}
-//      	}
+      	if (name.equals("H_Abstraction")) {
+      		Iterator iter = p_structure.reactants.iterator();
+      		while (iter.hasNext()) {
+      			ChemGraph cg = (ChemGraph)iter.next();
+      			int rNum = cg.getRadicalNumber();
+      			if (rNum >= 2) {
+      				thermoConsistence = false;
+      				reactants = p_structure.reactants;
+      				p_structure.setDirection(1);
+      			}
+      		}
+      	}
       
           if (thermoConsistence) {
       		Temperature T = new Temperature(298, "K");
