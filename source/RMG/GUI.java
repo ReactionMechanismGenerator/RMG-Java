@@ -2263,7 +2263,7 @@ public class GUI extends JPanel implements ActionListener {
 			System.out.println(err);
 		}
 		BufferedReader reader = new BufferedReader(in);
-        String line = ChemParser.readMeaningfulLine(reader);
+        String line = ChemParser.readMeaningfulLine(reader, true);
         read: while (line != null) {
 	        // Populate the GUI with as much information as possible
 	        
@@ -2283,35 +2283,35 @@ public class GUI extends JPanel implements ActionListener {
 	        
 	        else if (line.startsWith("PrimaryThermoLibrary")) {
 		        //	Name(s)/Path(s) of PrimaryThermoLibrary
-             	line = ChemParser.readMeaningfulLine(reader);
+             	line = ChemParser.readMeaningfulLine(reader, true);
              	int ptlCounter = 0;
              	while (!line.equals("END")) {
              		++ptlCounter;
              		tempStringVector = line.split("Name: ");
              		String name = tempStringVector[tempStringVector.length-1].trim();
-             		line = ChemParser.readMeaningfulLine(reader);
+             		line = ChemParser.readMeaningfulLine(reader, true);
              		tempStringVector = line.split("Location: ");
              		String path = tempStringVector[tempStringVector.length-1].trim();
              		PRLVector ptlEntry = new PRLVector(ptlCounter-1,name,path);
 					tmodelPTL.updatePRL(ptlEntry);
-					line = ChemParser.readMeaningfulLine(reader);
+					line = ChemParser.readMeaningfulLine(reader, true);
              	}
 	        }
 	        
 	        else if (line.startsWith("PrimaryTransportLibrary")) {
 		        //	Name(s)/Path(s) of PrimaryTransportLibrary
-             	line = ChemParser.readMeaningfulLine(reader);
+             	line = ChemParser.readMeaningfulLine(reader, true);
              	int ptranslCounter = 0;
              	while (!line.equals("END")) {
              		++ptranslCounter;
              		tempStringVector = line.split("Name: ");
              		String name = tempStringVector[tempStringVector.length-1].trim();
-             		line = ChemParser.readMeaningfulLine(reader);
+             		line = ChemParser.readMeaningfulLine(reader, true);
              		tempStringVector = line.split("Location: ");
              		String path = tempStringVector[tempStringVector.length-1].trim();
              		PRLVector ptranslEntry = new PRLVector(ptranslCounter-1,name,path);
 					tmodelPTransL.updatePRL(ptranslEntry);
-					line = ChemParser.readMeaningfulLine(reader);
+					line = ChemParser.readMeaningfulLine(reader, true);
              	}
 	        }
 	        
@@ -2480,7 +2480,7 @@ public class GUI extends JPanel implements ActionListener {
 		        String conc = "";
 		        String unit = "";
 		        String reactivity = "";
-		        line = ChemParser.readMeaningfulLine(reader); 
+		        line = ChemParser.readMeaningfulLine(reader, true); 
 		        while (!line.startsWith("END")) {
 		        	if (line.startsWith("(")) {
 		        		++numSpecies;
@@ -2497,7 +2497,7 @@ public class GUI extends JPanel implements ActionListener {
 		        		adjList += line + "\r";
 		        	}
 		        	
-		        	line = ChemParser.readMeaningfulLine(reader);
+		        	line = ChemParser.readMeaningfulLine(reader, true);
 
 		        	if (line.startsWith("(") || line.startsWith("END")) {
 		        		ICVector icEntry = new ICVector(numSpecies-1,name,conc,unit.substring(1,unit.length()-1),reactivity,adjList);
@@ -2515,7 +2515,7 @@ public class GUI extends JPanel implements ActionListener {
 		        String unit = "";
 		        String reactivity = "";
 		        String adjList = "";
-	        	line = ChemParser.readMeaningfulLine(reader);
+	        	line = ChemParser.readMeaningfulLine(reader, true);
 		        while (!line.startsWith("END")) {
 		    		++numSpecies;
 		    		st = new StringTokenizer(line);
@@ -2528,7 +2528,7 @@ public class GUI extends JPanel implements ActionListener {
 		    			tmodelInput.updateIC(icEntry);
 		    		} else
 		    			System.out.println("Warning: Could not read in one of the inert gas species: " + name + ".  The Inert Gas options are 'N2', 'Ar', 'He', and 'Ne' (case sensitive)");
-		    		line = ChemParser.readMeaningfulLine(reader);
+		    		line = ChemParser.readMeaningfulLine(reader, true);
 		        }
 	        }
 	        
@@ -2824,51 +2824,51 @@ public class GUI extends JPanel implements ActionListener {
 	        
 	        else if (line.startsWith("Display sensitivity information")) {
 		        //	Sensitivity coefficients (if present)
-	        	line = ChemParser.readMeaningfulLine(reader);
+	        	line = ChemParser.readMeaningfulLine(reader, true);
 	        	numSpecies = 0;
 	        	while (!line.startsWith("END")) {
 	        		++numSpecies;
 	        		SensVector sensEntry = new SensVector(numSpecies-1,line);
 	    			tmodelSens.updateSens(sensEntry);
-	    			line = ChemParser.readMeaningfulLine(reader);
+	    			line = ChemParser.readMeaningfulLine(reader, true);
 	        	}
 	        }
 	        
 	        else if (line.startsWith("PrimaryKineticLibrary")) {
 		        
-             	line = ChemParser.readMeaningfulLine(reader);
+             	line = ChemParser.readMeaningfulLine(reader, true);
              	int prlCounter = 0;
              	while (!line.equals("END")) {
              		++prlCounter;
              		tempStringVector = line.split("Name: ");
              		String name = tempStringVector[tempStringVector.length-1].trim();
-             		line = ChemParser.readMeaningfulLine(reader);
+             		line = ChemParser.readMeaningfulLine(reader, true);
              		tempStringVector = line.split("Location: ");
              		String path = tempStringVector[tempStringVector.length-1].trim();
              		PRLVector prlEntry = new PRLVector(prlCounter-1,name,path);
 					tmodelPRL.updatePRL(prlEntry);
-					line = ChemParser.readMeaningfulLine(reader);
+					line = ChemParser.readMeaningfulLine(reader, true);
              	}
 	        }
 	        
 	        else if (line.startsWith("SeedMechanism")) {
 		        //	Name(s)/Path(s) of SeedMechanism
-             	line = ChemParser.readMeaningfulLine(reader);
+             	line = ChemParser.readMeaningfulLine(reader, true);
              	int smCounter = 0;
              	while (!line.equals("END")) {
              		++smCounter;
              		tempStringVector = line.split("Name: ");
              		String name = tempStringVector[tempStringVector.length-1].trim();
-             		line = ChemParser.readMeaningfulLine(reader);
+             		line = ChemParser.readMeaningfulLine(reader, true);
              		tempStringVector = line.split("Location: ");
              		String path = tempStringVector[tempStringVector.length-1].trim();
-             		line = ChemParser.readMeaningfulLine(reader);
+             		line = ChemParser.readMeaningfulLine(reader, true);
              		tempStringVector = line.split("GenerateReactions: ");
              		String react = tempStringVector[tempStringVector.length-1].trim();
              		SMVector smEntry = new SMVector(smCounter-1,name,react,path);
 					// need to read in "GenerateReactions:" line
 					tmodelSM.updateSM(smEntry);
-					line = ChemParser.readMeaningfulLine(reader);
+					line = ChemParser.readMeaningfulLine(reader, true);
              	}
 	        }
 	        
@@ -2923,7 +2923,7 @@ public class GUI extends JPanel implements ActionListener {
 		        String adjList = "";
 		        String name = "";
 		        int numForbidStructs = 0;
-		        line = ChemParser.readMeaningfulLine(reader);
+		        line = ChemParser.readMeaningfulLine(reader, true);
 		        while (!line.startsWith("END")) {
         			try {
         				int doesLineBeginWithNumber = Integer.parseInt(line.substring(0,1));
@@ -2933,7 +2933,7 @@ public class GUI extends JPanel implements ActionListener {
         				++numForbidStructs;
         			}
 		        	
-		        	line = ChemParser.readMeaningfulLine(reader);
+		        	line = ChemParser.readMeaningfulLine(reader, true);
 
 		        	if (line.startsWith("END")) {
 		        		FSVector fsEntry = new FSVector(numForbidStructs,name,adjList);
@@ -2956,7 +2956,7 @@ public class GUI extends JPanel implements ActionListener {
 	        	if (!line.startsWith("FinishController") & !line.startsWith("ChemkinUnits"))
 	        		System.out.println("Warning: Reading in condition.txt file - Interpreter does not recognize the following line: " + line);
 
-	    	line = ChemParser.readMeaningfulLine(reader);
+	    	line = ChemParser.readMeaningfulLine(reader, true);
         }
     }
     

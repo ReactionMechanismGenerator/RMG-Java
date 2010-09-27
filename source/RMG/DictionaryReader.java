@@ -88,7 +88,7 @@ public class DictionaryReader {
             //FileReader in = new FileReader("inchiDictionaryAdjList.txt");
             FileReader in = new FileReader("RMG_Dictionary.txt");
             BufferedReader data = new BufferedReader(in);
-            String line = ChemParser.readMeaningfulLine(data);	
+            String line = ChemParser.readMeaningfulLine(data, true);	
             // While more InChIs remain
             while (line != null) {
                 System.out.println(line);//print the name of the molecule
@@ -129,7 +129,7 @@ public class DictionaryReader {
                     // chemgraph = spe.getChemGraph();
                     // chemgraph.getThermoData();
                 }
-                line = ChemParser.readMeaningfulLine(data);
+                line = ChemParser.readMeaningfulLine(data, true);
             }
             in.close();
  }

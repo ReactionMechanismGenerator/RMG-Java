@@ -47,7 +47,7 @@ public class inchiDictionaryReader {
         
         // Read in the list of InChIs, line-by-line
 	BufferedReader input_reader = new BufferedReader(input_file);
-	String line = ChemParser.readMeaningfulLine(input_reader);	
+	String line = ChemParser.readMeaningfulLine(input_reader, true);	
         // While more InChIs remain
 	while (line != null) {
             //	Convert the InChI to an adjacency list
@@ -58,7 +58,7 @@ public class inchiDictionaryReader {
             String validInChI= inChI.replaceAll("/mult\\d+", "");
             listOfAdjLists += molname + "\n";
             listOfAdjLists += Species.inchi2AdjList(validInChI) + "\n\n";
-            line = ChemParser.readMeaningfulLine(input_reader);
+            line = ChemParser.readMeaningfulLine(input_reader, true);
         }
         // Write the output file adjList_output.txt
 	try {
@@ -88,7 +88,7 @@ public class inchiDictionaryReader {
             //FileReader in = new FileReader("RMG_Dictionary.txt");
             BufferedReader data = new BufferedReader(in);
 	    BufferedWriter thermo = new BufferedWriter(out);
-            line = ChemParser.readMeaningfulLine(data);	
+            line = ChemParser.readMeaningfulLine(data, true);	
             // While more InChIs remain
             while (line != null) {
                 System.out.println(line);//print the name of the molecule
@@ -131,7 +131,7 @@ public class inchiDictionaryReader {
                     // chemgraph = spe.getChemGraph();
                     
                 }
-                line = ChemParser.readMeaningfulLine(data);
+                line = ChemParser.readMeaningfulLine(data, true);
             }
             in.close();
 	    out.close();

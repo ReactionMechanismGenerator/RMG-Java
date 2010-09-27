@@ -164,7 +164,20 @@ public class FastMasterEqn implements PDepKineticsEstimator {
 	public void runPDepCalculation(PDepNetwork pdn, ReactionSystem rxnSystem,
 			CoreEdgeReactionModel cerm) {
 
-		// No update needed if network is not altered
+        // If, for some unknown reason, the isomer list for the network is
+        // empty, then generate it here using the path reactions
+        LinkedList<PDepIsomer> isomerList0 = pdn.getIsomers();
+		if (isomerList0.size() == 0) {
+            for (int i = 0; i < pdn.getPathReactions().size(); i++) {
+                PDepReaction rxn = pdn.getPathReactions().get(i);
+                if (!isomerList0.contains(rxn.getReactant()))
+                    isomerList0.add(rxn.getReactant());
+                if (!isomerList0.contains(rxn.getProduct()))
+                    isomerList0.add(rxn.getProduct());
+            }
+        }
+        
+        // No update needed if network is not altered
 		if (pdn.getAltered() == false)
 			return;
 
@@ -299,6 +312,8 @@ public class FastMasterEqn implements PDepKineticsEstimator {
 			else if (id < 100)  path += "00";
 			else if (id < 1000) path += "0";
 			path += Integer.toString(id);
+			path += "_";
+			path += Integer.toString(nIsom);
 			path += "_input.txt";
 			FileWriter fw = new FileWriter(new File(path));
 			fw.write(input);

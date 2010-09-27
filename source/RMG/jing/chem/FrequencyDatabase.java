@@ -151,13 +151,13 @@ public class FrequencyDatabase {
             HashMap dictionary = new HashMap();
             HashMap unRead = new HashMap();
 
-                 String line = ChemParser.readMeaningfulLine(data);
+                 String line = ChemParser.readMeaningfulLine(data, true);
 
                 read: while (line != null) {
                         StringTokenizer st = new StringTokenizer(line);
                         String fgname = st.nextToken();
                     data.mark(10000);
-                        line = ChemParser.readMeaningfulLine(data);
+                        line = ChemParser.readMeaningfulLine(data, true);
                         if (line == null) break read;
                         line = line.trim();
                         String prefix = line.substring(0,5);
@@ -187,7 +187,7 @@ public class FrequencyDatabase {
                                 }
 						}
 //System.out.println(line);
-                        line = ChemParser.readMeaningfulLine(data);
+                        line = ChemParser.readMeaningfulLine(data, true);
                 }
 
                 while (!unRead.isEmpty()) {

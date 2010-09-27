@@ -84,7 +84,7 @@ public class PrimaryTransportLibrary {
 			FileReader in = new FileReader(p_transportFileName);
 			BufferedReader data = new BufferedReader(in);
 			HashMap tempLibrary = new HashMap();
-			String line = ChemParser.readMeaningfulLine(data);
+			String line = ChemParser.readMeaningfulLine(data, true);
 			while (line != null){
 				StringTokenizer token = new StringTokenizer(line);
 				String name = token.nextToken();
@@ -126,7 +126,7 @@ public class PrimaryTransportLibrary {
 						System.out.println(name + ": "+thermo);
 					}
 				}
-				line = ChemParser.readMeaningfulLine(data);
+				line = ChemParser.readMeaningfulLine(data, true);
 			}
 			in.close();
 		    return library;
@@ -141,14 +141,14 @@ public class PrimaryTransportLibrary {
 			FileReader in = new FileReader(p_fileName);
 			BufferedReader data = new BufferedReader(in);
 
-			String line = ChemParser.readMeaningfulLine(data);
+			String line = ChemParser.readMeaningfulLine(data, true);
 			
 			read: while(line != null){
 				StringTokenizer st = new StringTokenizer(line);
 				String name = st.nextToken();
 				
 				data.mark(10000);
-				line = ChemParser.readMeaningfulLine(data);
+				line = ChemParser.readMeaningfulLine(data, true);
 				if (line == null) break read;
 				line = line.trim();
 				data.reset();
@@ -174,7 +174,7 @@ public class PrimaryTransportLibrary {
 						System.exit(0);
 					}
 				}
-				line = ChemParser.readMeaningfulLine(data);
+				line = ChemParser.readMeaningfulLine(data, true);
 			}
 			in.close();
 			return dictionary;
