@@ -86,14 +86,14 @@ public class Therfit {
         	FileReader in = new FileReader(therfit_output);
         	BufferedReader data = new BufferedReader(in);
 
-        	String line = ChemParser.readMeaningfulLine(data);
+        	String line = ChemParser.readMeaningfulLine(data, true);
         	if (!line.startsWith(species.getChemkinName())) {
         		System.out.println("Wrong output from therfit!");
         		System.exit(0);
         	}
 
         	int index = 0;
-        	line = ChemParser.readMeaningfulLine(data);
+        	line = ChemParser.readMeaningfulLine(data, true);
         	while (line != null) {
         		line = line.trim();
         		if (line.startsWith("VIBRATION")) {
@@ -111,7 +111,7 @@ public class Therfit {
         	        frequency[index] = Double.parseDouble(freq);
         	        index++;
         	    }
-        		line = ChemParser.readMeaningfulLine(data);
+        		line = ChemParser.readMeaningfulLine(data, true);
         	}
 
         	in.close();

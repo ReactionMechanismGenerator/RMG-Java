@@ -58,7 +58,7 @@ public class InChI2AdjList {
         
 		// Read in the list of InChIs, line-by-line
 		BufferedReader input_reader = new BufferedReader(input_file);
-		String p_inchi = ChemParser.readMeaningfulLine(input_reader);
+		String p_inchi = ChemParser.readMeaningfulLine(input_reader, true);
 		
 		// While more InChIs remain
 		while (p_inchi != null) {
@@ -71,7 +71,7 @@ public class InChI2AdjList {
 				listOfAdjLists += Species.inchi2AdjList(st.nextToken()) + "\n\n";
 			else
 				listOfAdjLists += Species.inchi2AdjList(name) + "\n\n";
-			p_inchi = ChemParser.readMeaningfulLine(input_reader);
+			p_inchi = ChemParser.readMeaningfulLine(input_reader, true);
 		}
 		
 		// Write the output file adjList_output.txt

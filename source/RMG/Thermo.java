@@ -63,7 +63,7 @@ public static void main(String[] args) {
           BufferedReader data = new BufferedReader(in);
           
           // Read the first line of thermo_input.txt
-          String line = ChemParser.readMeaningfulLine(data);
+          String line = ChemParser.readMeaningfulLine(data, true);
           StringTokenizer st = new StringTokenizer(line);
           // The first line should start with "Solvation", otherwise do nothing and display a message to the user
           if (st.nextToken().startsWith("Solvation")) {
@@ -81,7 +81,7 @@ public static void main(String[] args) {
         		  return;
         	  }
               // Read in the temperature of the system
-              line = ChemParser.readMeaningfulLine(data);
+              line = ChemParser.readMeaningfulLine(data, true);
               st = new StringTokenizer(line);
               if (!st.nextToken().startsWith("Temperature")) {
                   System.out.println("Error in reading thermo_input.txt file:\n The field 'Temperature' should follow the 'Solvation' field.");
@@ -92,7 +92,7 @@ public static void main(String[] args) {
               thermo_output += "System Temperature = " + systemTemp.getK() + "K" + "\n";
 
         	  // Read in the ChemGraphs and compute their thermo, while there are ChemGraphs to read in
-        	  line = ChemParser.readMeaningfulLine(data);
+        	  line = ChemParser.readMeaningfulLine(data, true);
         	  while (line != null) {
         		  String speciesName = line;
         		  Graph g = ChemParser.readChemGraph(data);
@@ -105,7 +105,7 @@ public static void main(String[] args) {
         		  }
         		  Species species = Species.make(speciesName,cg);
         		  speciesSet.add(species);
-        		  line = ChemParser.readMeaningfulLine(data);
+        		  line = ChemParser.readMeaningfulLine(data, true);
         	  }
           } else
         	  System.out.println("Error in reading thermo_input.txt file:\nThe first line must read 'Solvation: on/off'.");

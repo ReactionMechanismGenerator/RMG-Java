@@ -1285,7 +1285,7 @@ public class Species {
         
 		if (in != null) {
 			BufferedReader reader = new BufferedReader(in);
-	        line = ChemParser.readMeaningfulLine(reader);
+	        line = ChemParser.readMeaningfulLine(reader, true);
 	        read: while (line != null) {
 	        	if (line.startsWith("InChI=")) {//changed from InChI to InChI= (to distinguish fro InChIKey
 	        		InChIstring = line;
@@ -1294,7 +1294,7 @@ public class Species {
 	        		InChIKeystring = line.replace("InChIKey=", "");//read in the InChIKey without the preceding "InChIKey="
 	        		break;
 	        	}
-	        	line = ChemParser.readMeaningfulLine(reader);
+	        	line = ChemParser.readMeaningfulLine(reader, true);
 	            }
 	        result[0]=InChIstring;
 	        result[1]=InChIKeystring;
@@ -1657,16 +1657,16 @@ public class Species {
 		}
         
 		BufferedReader reader = new BufferedReader(in);
-		String line = ChemParser.readMeaningfulLine(reader);
+		String line = ChemParser.readMeaningfulLine(reader, true);
 		
 		while (!line.toUpperCase().endsWith("V2000")) {
-			line = ChemParser.readMeaningfulLine(reader);
+			line = ChemParser.readMeaningfulLine(reader, true);
 		}
 		
 		String molFile = "";
 		while (line != null) {
 			molFile += line + "\r";
-			line = ChemParser.readMeaningfulLine(reader);
+			line = ChemParser.readMeaningfulLine(reader, true);
 		}
 		
 		// Determine how many lines are in the .mol file
