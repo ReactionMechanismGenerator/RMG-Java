@@ -219,7 +219,8 @@ public class JDASSL extends JDAS {
         Global.solverPrepossesor = Global.solverPrepossesor + (System.currentTimeMillis() - startTime)/1000/60;
 		if (nParameter==0) {
 			startTime = System.currentTimeMillis();
-        	
+			
+        	createSpeciesProfilesOutputFile((CoreEdgeReactionModel)p_reactionModel);
 			idid = solveDAE();
                         
  //                       createDotGraphs((CoreEdgeReactionModel)p_reactionModel);
@@ -447,6 +448,33 @@ public class JDASSL extends JDAS {
 	protected void initializeWorkSpace() {
 		super.initializeWorkSpace();
 		//info[4] = 1; //use analytical jacobian
+	}
+	
+	void createSpeciesProfilesOutputFile(CoreEdgeReactionModel cerm) {
+		// This creates the 'SpeciesProfiles.txt' and writes the header line
+		// ready for dasslAUTO.exe (see call_dasslAUTO.f90) to write to it
+		File SpeciesProfilesFile = new File("ODESolver/SpeciesProfiles.txt");
+		try {
+			FileWriter fw = new FileWriter(SpeciesProfilesFile);
+			fw.write("Time(s)\t");
+			int n = IDTranslator.size();
+			for (int i = 0; i<n; i++){
+				//find the corresponding species:
+				Iterator iter = IDTranslator.keySet().iterator();
+				Species spe = null;
+				while (iter.hasNext()) {
+					spe = (Species)iter.next();
+					if((Integer)(IDTranslator.get(spe))==i+1) break;
+				}
+				String name = spe.getName();
+				fw.write(name + "\t");
+			}
+			fw.write("\n");
+			fw.close();
+		} catch (IOException e) {
+			System.err.println("Problem creating ODESolver/SpeciesProfiles.txt");
+			e.printStackTrace();
+		}
 	}
         
 //        protected void createDotGraphs(CoreEdgeReactionModel cerm) {

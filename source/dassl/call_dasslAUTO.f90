@@ -375,7 +375,9 @@
          conc = -1
       END IF
 	
-
+    ! open 'SpeciesProfiles.txt' output file to append to
+    OPEN(UNIT=17, FILE='SpeciesProfiles.txt', ACCESS = 'APPEND')
+    
 ! 4/24/08 gmagoon: added criteria that edgeflag = -1 for loop to
 ! continue; calls to DASSL will stop once EDGEFLAG takes on a
 ! different value
@@ -430,9 +432,16 @@
 			    CORESTORED = 1
 			END IF
 		END IF
+
+            ! save time and concentrations to 'SpeciesProfiles.txt'
+            WRITE(17,1700) TIME, ( Y(I)/Y(NSTATE), I=1, NSTATE-1)
+1700        FORMAT(99999(G12.5,'	')) ! there should be a tab character between the quotes
+
             GO TO 1
          END IF
       END IF
+      CLOSE(17) ! close 'SpeciesProfiles.txt'
+      
       !5/13/08 gmagoon: added timing (see above)
      ! call system_clock(count_1T, count_rateT, count_maxT)
      ! finishT = count_1T * 1.0 / count_rateT
