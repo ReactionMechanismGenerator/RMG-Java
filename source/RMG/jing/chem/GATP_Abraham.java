@@ -50,7 +50,7 @@ public class GATP_Abraham implements GeneralAbramGAPP {
 	public AbramData generateAbramData(ChemGraph p_chemGraph) {
 		// Generation of Abraham Solute Parameters
 		AbramData result_Abraham= new AbramData();
-		// get the Group-Additive parameters (SBELA)
+		// get the Group-Additive parameters (S,B,E,L,A)
 		result_Abraham.plus(getABGroup(p_chemGraph));
 		// get the McGowan Volume
 		result_Abraham.V = getMcGowanVolume(p_chemGraph);
