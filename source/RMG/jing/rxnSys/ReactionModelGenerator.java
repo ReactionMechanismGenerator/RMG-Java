@@ -455,7 +455,7 @@ public class ReactionModelGenerator {
              */
              //else throw new InvalidSymbolException("condition.txt: Cannot find diffusion flag.");
 
-            line = ChemParser.readMeaningfulLine(reader);//read in reactants or thermo line
+            line = ChemParser.readMeaningfulLine(reader,true);//read in reactants or thermo line
 			
 			//line = ChemParser.readMeaningfulLine(reader);//read in reactants or thermo line
 			// Read in optional QM thermo  generation
