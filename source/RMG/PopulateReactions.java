@@ -351,7 +351,8 @@ public class PopulateReactions {
 	        		PDepNetwork pdepnetwork = PDepNetwork.getNetworks().get(numNetworks);
 	        		LinkedList isomers = pdepnetwork.getIsomers();
 	        		for (int numIsomers=0; numIsomers<isomers.size(); ++numIsomers) {
-	        			pdepnetwork.makeIsomerIncluded((PDepIsomer) isomers.get(numIsomers));
+	        			PDepIsomer currentIsomer = (PDepIsomer)isomers.get(numIsomers);
+	        			if (currentIsomer.getNumSpecies() == 2)	pdepnetwork.makeIsomerIncluded(currentIsomer);
 	        		}
 		        	pDepKineticsEstimator.runPDepCalculation(pdepnetwork,rs,cerm);
 		        	
