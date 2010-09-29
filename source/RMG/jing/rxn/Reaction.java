@@ -311,6 +311,23 @@ public class Reaction {
                 }
 
             }
+                else if (numReacts == 2 && numProds == 3) {
+
+                double k_forw = rate;
+                LinkedList reactantsInForwRxn = structure.reactants;
+                double k_forw_diff = calculatediff(reactantsInForwRxn);
+                double k_forw_eff = k_forw*k_forw_diff/(k_forw + k_forw_diff);
+
+                keff = k_forw_eff;
+                //if (keff/k_forw < 0.2){
+                    //if (!getKinetics().getComment().endsWith("Diffusion limited")){
+                DiffFactor = keff/rate;
+
+                setKineticsComments(getComments() + "\t"  + "Diffusion factor = " + DiffFactor + "\t" + "Keq =" + calculateKeq(p_temperature),0);
+
+                return keff;
+
+            }
 
         }
         setKineticsComments(getComments() + "\t" + "Keq =" + calculateKeq(p_temperature),0);
