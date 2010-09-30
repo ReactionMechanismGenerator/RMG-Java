@@ -448,14 +448,13 @@ public class ReactionModelGenerator {
         			setUseDiffusion(false);
         		}
         		else throw new InvalidSymbolException("condition.txt: Unknown diffusion flag: " + diffusionOnOff);
+        		line = ChemParser.readMeaningfulLine(reader,true);//read in reactants or thermo line
         	}
 
             /* AJ 12JULY2010:
              * Right now we do not want RMG to throw an exception if it cannot find a diffusion flag
              */
              //else throw new InvalidSymbolException("condition.txt: Cannot find diffusion flag.");
-
-            line = ChemParser.readMeaningfulLine(reader,true);//read in reactants or thermo line
 			
 			//line = ChemParser.readMeaningfulLine(reader);//read in reactants or thermo line
 			// Read in optional QM thermo  generation
