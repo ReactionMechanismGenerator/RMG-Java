@@ -39,15 +39,6 @@ import jing.rxnSys.*;
 import jing.mathTool.*;
 
 
-/**
- * <p>Title: </p>
- * <p>Description: </p>
- * <p>Copyright: Copyright (c) 2003</p>
- * <p>Company: </p>
- * @author not attributable
- * @version 1.0
- */
-
 public class Thermo {
 
   //## configuration RMG::RMG
@@ -72,10 +63,11 @@ public static void main(String[] args) {
         	  // Note: I use "Species.useInChI" because the "Species.useSolvation" updates were not yet committed.
         	  if (line.equals("on")) {
         		  Species.useInChI = true;
-        		  thermo_output += "Solution-phase chemistry!\n\n";
+                  Species.useSolvation = true;
+        		  thermo_output += "Solution-phase Thermochemistry!\n\n";
         	  } else if (line.equals("off")) {
         		  Species.useInChI = false;
-        		  thermo_output += "Gas-phase chemistry.\n\n";
+        		  thermo_output += "Gas-phase Thermochemistry.\n\n";
         	  } else {
         		  System.out.println("Error in reading thermo_input.txt file:\nThe field 'Solvation' has the options 'on' or 'off'.");
         		  return;
@@ -111,16 +103,23 @@ public static void main(String[] args) {
         	  System.out.println("Error in reading thermo_input.txt file:\nThe first line must read 'Solvation: on/off'.");
 
           in.close();
-          
-          thermo_output += "Order of entries: Name (read from thermo_input.txt) H(T) S(T) G(T) Radius\n" +
-          	"Units of H & G: kcal/mol\nUnits of S cal/mol/K\n" + "Units of Radius: Angstrom\n\n";
+          thermo_output += "Name" + "\t" + "E"+ "\t" + "S"+ "\t" + "A"+ "\t" + "B"+ "\t" + "L"+ "\t" + "V" + "\t" + "UNIFAC_radius" + "\n";
+          //thermo_output += "Order of entries: Name (read from thermo_input.txt) H(T) S(T) G(T) Radius\n" +
+          //	"Units of H & G: kcal/mol\nUnits of S cal/mol/K\n" + "Units of Radius: Meter\n\n";
           
           Iterator iter = speciesSet.iterator();       
           while (iter.hasNext()){
         	  Species spe = (Species)iter.next();
-        	  thermo_output += spe.getName() + "\t" + spe.calculateH(systemTemp) + "\t" +
-                      spe.calculateS(systemTemp) + "\t" + 
-                      spe.calculateG(systemTemp) + "\n";// +  spe.getChemGraph().getRadius() + "\n";
+        	  //thermo_output += spe.getName() + "\t" + spe.calculateH(systemTemp) + "\t" +
+              //        spe.calculateS(systemTemp) + "\t" +
+              //        spe.calculateG(systemTemp) + "\t" + spe.getChemGraph().getRadius() + "\n";
+             //thermo_output += spe.getName() + "\t" + spe.getChemGraph().calculateH(systemTemp) + "\t" +
+             //         spe.getChemGraph().calculateS(systemTemp) + "\t" +
+             //         spe.getChemGraph().calculateG(systemTemp) + "\t" + spe.getChemGraph().getRadius() + "\n";
+              thermo_output += spe.getName() + "\t" + spe.getChemGraph().getAbramData().E + "\t" + spe.getChemGraph().getAbramData().S + "\t" +
+                      spe.getChemGraph().getAbramData().A+ "\t" + spe.getChemGraph().getAbramData().B + "\t"
+                      + spe.getChemGraph().getAbramData().L+ "\t" + spe.getChemGraph().getAbramData().V + "\t" + spe.getChemGraph().getRadius() + "\n";
+
           }
           
           try {
@@ -136,7 +135,7 @@ public static void main(String[] args) {
 //		 System.out.println("The number of resonance isomers is " + spe.getResonanceIsomersHashSet().size());
 //		 System.out.println("The NASA data is \n"+ spe.getNasaThermoData());
 //		 System.out.println("ThermoData is \n" +  spe.getChemGraph().getThermoData().toString());
-//         System.out.println("AbramData is \n" +  spe.getChemGraph().getAbramData().toString());
+ //       System.out.println("AbramData is \n" +  spe.getChemGraph().getAbramData().toString());
 //         System.out.println("UnifacData is \n" +  spe.getChemGraph().getUnifacData().toString());
 //        //int K = chemgraph.getKekule();
 //        int symm = chemgraph.getSymmetryNumber();
@@ -150,7 +149,7 @@ public static void main(String[] args) {
 //		 System.out.println("The NASA data is \n"+ spe.getNasaThermoData());
 //		 System.out.println("ThermoData is \n" +  spe.getChemGraph().getThermoData().toString());
 //         System.out.println("Solvation ThermoData is \n" +  spe.getChemGraph().getSolvationData().toString());
-//         System.out.println("AbramData is \n" +  spe.getChemGraph().getAbramData().toString());
+        // System.out.println("AbramData is \n" +  spe.getChemGraph().getAbramData().toString());
 //         System.out.println("UnifacData is \n" +  spe.getChemGraph().getUnifacData().toString());
 //        //int K = chemgraph.getKekule();
 //        int symm = chemgraph.getSymmetryNumber();

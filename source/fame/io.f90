@@ -267,7 +267,13 @@ contains
 
             line = readMeaningfulLine()
             call processQuantity(line, units, rxn%arrhenius%A)
-            if (index(units(1:4), 's^-1') == 0) then
+            if (index(units(1:4), 's^-1') /= 0) then
+                rxn%arrhenius%A = rxn%arrhenius%A
+            elseif (index(units(1:9), 'm^3/mol*s') /= 0) then
+                rxn%arrhenius%A = rxn%arrhenius%A
+            elseif (index(units(1:10), 'cm^3/mol*s') /= 0) then
+                rxn%arrhenius%A = rxn%arrhenius%A * 1.0e-6
+            else
                 write (0, fmt='(a)') 'Invalid units for Arrhenius preexponential.'
                 stop
             end if

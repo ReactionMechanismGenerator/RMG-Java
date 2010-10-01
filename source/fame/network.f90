@@ -563,7 +563,9 @@ contains
         type(Isomer) :: reac, prod
         integer nGrains, r
         real(8) dE, Keq
-
+        type(ArrheniusKinetics) :: arrhenius
+        real(8), dimension(1:23) :: Tlist0
+        
         nGrains = size(E)
         dE = E(2) - E(1)
 
@@ -616,9 +618,15 @@ contains
             reac = isomerList(rxn%prod)
             prod = isomerList(rxn%reac)
 
+            ! Fit modified Arrhenius expression in reverse direction
+            do r = 1, 23
+                Tlist0(r) = 1.0/(0.000125 * (r-1) + 0.0005)
+            end do
+            arrhenius = reaction_fitReverseKinetics(rxn, Tlist0, 23, speciesList, isomerList)
+
             ! Calculate forward rate coefficient via inverse Laplace transform
             call reaction_kineticsILT(rxn%E0 - reac%E0, reac%densStates, &
-                rxn%arrhenius, T, E, rxn%kb)
+                arrhenius, T, E, rxn%kb)
 
             ! Calculate equilibrium constant
             Keq = reaction_getEquilibriumConstant(reac, prod, T, speciesList)
@@ -693,11 +701,52 @@ contains
         do i = 1, size(prod%species)
             dGrxn = dGrxn + species_getFreeEnergy(speciesList(prod%species(i))%thermo, T)
         end do
-
+        
         ! Determine Ka
         Keq = exp(-dGrxn / 8.314472 / T)
         ! Determine Kc
         Keq = Keq * (100000.0 / 8.314472 / T)**(size(prod%species) - size(reac%species))
+
+    end function
+
+    function reaction_fitReverseKinetics(rxn, Tlist, nT, speciesList, isomerList) result(arrhenius)
+
+        integer, intent(in) :: nT
+        type(Reaction), intent(in) :: rxn
+        real(8), dimension(1:nT), intent(in) :: Tlist
+        type(Species), dimension(:), intent(in) :: speciesList
+        type(Isomer), dimension(:), intent(in) :: isomerList
+        type(ArrheniusKinetics) :: arrhenius
+
+        real(8), dimension(1:nT,1:3) :: A
+        real(8), dimension(1:nT) :: b
+        
+        real(8) Keq
+        integer i
+        
+        real(8), dimension(1:64) :: work
+        integer info
+
+        do i = 1, nT
+            A(i,1) = 1.0
+            A(i,2) = log(Tlist(i))
+            A(i,3) = -1.0 / 8.314472 / Tlist(i)
+
+            Keq = reaction_getEquilibriumConstant( &
+                isomerList(rxn%reac), isomerList(rxn%prod), Tlist(i), speciesList)
+            b(i) = rxn%arrhenius%A * Tlist(i) ** rxn%arrhenius%n * exp(-rxn%arrhenius%Ea / 8.314472 / Tlist(i))
+            b(i) = log(b(i) / Keq)
+        end do
+
+        call DGELS('N', nT, 3, 1, A, nT, b, nT, work, 64, info )
+        if (info /= 0) then
+            write (*,*) "Error fitting reverse kinetics!"
+            stop
+        end if
+
+        arrhenius%A = exp(b(1))
+        arrhenius%n = b(2)
+        arrhenius%Ea = b(3)
 
     end function
 

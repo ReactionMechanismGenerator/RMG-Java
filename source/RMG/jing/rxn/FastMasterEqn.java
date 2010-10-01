@@ -682,27 +682,18 @@ public class FastMasterEqn implements PDepKineticsEstimator {
 				
 				PDepReaction rxn = pathReactionList.get(i);
 				
-				double A = 0.0, Ea = 0.0, n = 0.0;
-				if (rxn.isForward()) {
-					Temperature stdtemp = new Temperature(298,"K");
-					double Hrxn = rxn.calculateHrxn(stdtemp);
-					Kinetics[] k_array = rxn.getKinetics();
-					Kinetics kin = computeKUsingLeastSquares(k_array, Hrxn);
-					A = kin.getAValue();
-					n = kin.getNValue();
-					Ea = kin.getEValue();//kin should be ArrheniusKinetics (rather than ArrheniusEPKinetics), so it should be correct to use getEValue here (similarly for other uses in this file)
-				}
-				else {
-					Temperature stdtemp = new Temperature(298,"K");
-					double Hrxn = rxn.calculateHrxn(stdtemp);
-					((Reaction) rxn).generateReverseReaction();
-					Kinetics[] k_array = ((Reaction)rxn).getFittedReverseKinetics();
-					Kinetics kin = computeKUsingLeastSquares(k_array, -Hrxn);//gmagoon: I'm not sure, with forward/reverse reactions here whether it is correct to use Hrxn or -Hrxn, but in any case, getFittedReverseKinetics should return an ArrheniusKinetics (not ArrheniusEPKinetics) object, so it will not be used in computeKUsingLeastSquares anyway
-//					Kinetics kin = ((Reaction) rxn).getFittedReverseKinetics();
-					A = kin.getAValue();
-					Ea = kin.getEValue();
-					n = kin.getNValue();
-				}
+				// The reaction must be in the direction for which we are using the kinetics
+                if (!rxn.isForward())
+                    throw new PDepException("Encountered a path reaction that was not a forward reaction!");
+
+                double A = 0.0, Ea = 0.0, n = 0.0;
+				Temperature stdtemp = new Temperature(298,"K");
+                double Hrxn = rxn.calculateHrxn(stdtemp);
+                Kinetics[] k_array = rxn.getKinetics();
+                Kinetics kin = computeKUsingLeastSquares(k_array, Hrxn);
+                A = kin.getAValue();
+                n = kin.getNValue();
+                Ea = kin.getEValue();//kin should be ArrheniusKinetics (rather than ArrheniusEPKinetics), so it should be correct to use getEValue here (similarly for other uses in this file)
 
 				input.append( "# The reaction equation, in the form A + B --> C + D\n" );
 				input.append( rxn.toString() + "\n" );
@@ -726,7 +717,7 @@ public class FastMasterEqn implements PDepKineticsEstimator {
 				if (rxn.getReactant().isUnimolecular())
 					input.append( "s^-1 " + Double.toString(A) + "\n" );
 				else if (rxn.getReactant().isMultimolecular())
-					input.append( "cm^3/mol*s " + Double.toString(A) + "\n" );
+					input.append( "m^3/mol*s " + Double.toString(A * 1.0e-6) + "\n" );
 				input.append( "J/mol " + Double.toString(Ea * 4184) + "\n" );
 				input.append( Double.toString(n) + "\n" );
 
