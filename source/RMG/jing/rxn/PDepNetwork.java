@@ -725,7 +725,14 @@ public class PDepNetwork {
 			productIsomer = new PDepIsomer(reaction.getProductList());
 			pdn.addIsomer(productIsomer);
 		}
-		PDepReaction rxn = new PDepReaction(reactantIsomer, productIsomer, reaction);
+        // Always add the reaction in the direction for which we have the kinetics
+        PDepReaction rxn = null;
+        if (reaction.isForward()) {
+            rxn = new PDepReaction(reactantIsomer, productIsomer, reaction);
+        }
+        else {
+            rxn = new PDepReaction(productIsomer, reactantIsomer, reaction.getReverseReaction());
+        }
 		pdn.addReaction(rxn,false);
 
 		// Fill in partial network if necessary
