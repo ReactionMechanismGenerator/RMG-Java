@@ -330,7 +330,9 @@ public class Reaction {
             }
 
         }
-        setKineticsComments(getComments() + "\t" + "Keq =" + calculateKeq(p_temperature),0);
+//        for (int numKinetics=0; numKinetics<k_All.length; ++numKinetics) {
+//        	setKineticsComments(k_All[numKinetics].getComment() + "\t" + "Keq(T=298K) =" + calculateKeq(p_temperature),numKinetics);
+//        }
       	return rate;
 
 
