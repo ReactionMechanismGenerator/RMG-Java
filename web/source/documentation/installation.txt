@@ -154,11 +154,11 @@ The next few steps are required only if you want RMG to be able to generate InCh
 
 5. Download the InChI version 1 (software version 1.01) source code and Application Program Interface (API).
 
-6.	Change to the :file:`InChI-1-API/cInChI/gcc_makefile` directory and execute the makefile.  Copy the resulting executable :file:`cInChI-1.exe` to the :file:`$RMG/software/InChI` folder. ::
+6.	Change to the :file:`InChI-1-API/cInChI/gcc_makefile` directory and execute the makefile.  Copy the resulting executable :file:`cInChI-1.exe` to the :file:`$RMG/bin` folder. ::
 
 	$ cd InChI-1-API/cInChI/gcc_makefile
 	$ make
-	$ cp cInChI-1 $RMG/software/InChI
+	$ cp cInChI-1 $RMG/bin
 	
 You are now ready to generate InChIs in RMG.
 
@@ -192,7 +192,7 @@ Steps 4 and 5 are only required if you are working with the source package. Bina
 
 The next few steps are required only if you want RMG to be able to generate InChIs for the species present in the reaction mechanism.
    
-6. Download the InChI version 1 (software version 1.01) source code and Application Program Interface (API) from `IUPAC <http://www.iupac.org/inchi/download/index.html>`_ and unzip the file. Navigate to the :file:`InChI-1-API\\cInChI\\vc6_project\\Release` folder. Copy the executable file :file:`cInChI-1.exe` and paste it in the :file:`"%rmg%"\\software\\InChI` folder.
+6. Download the InChI version 1 (software version 1.01) source code and Application Program Interface (API) from `IUPAC <http://www.iupac.org/inchi/download/index.html>`_ and unzip the file. Navigate to the :file:`InChI-1-API\\cInChI\\vc6_project\\Release` folder. Copy the executable file :file:`cInChI-1.exe` and paste it in the :file:`"%rmg%"\\bin` folder.
 	
 You are now ready to generate InChIs in RMG.
 
