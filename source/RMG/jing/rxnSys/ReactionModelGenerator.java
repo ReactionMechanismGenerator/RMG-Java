@@ -4894,7 +4894,7 @@ public class ReactionModelGenerator {
     	String line = ChemParser.readMeaningfulLine(reader, true);
    		while (!line.equals("END")) {
 	    	StringTokenizer st = new StringTokenizer(line);
-	    	String name = st.nextToken().trim();
+	    	String name = st.nextToken().trim().toUpperCase();
 			String conc = st.nextToken();
 			double inertConc = Double.parseDouble(conc);
 			String unit = st.nextToken();
