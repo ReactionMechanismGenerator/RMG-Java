@@ -3480,6 +3480,8 @@ public class ReactionModelGenerator {
 			        PDepIsomer Products = new PDepIsomer(p);
 			        PDepReaction pdeppathrxn = new PDepReaction(Reactants,Products,pathRxn);
 			        newNetwork.addReaction(pdeppathrxn,true);
+			        newNetwork.addIsomer(Reactants);
+					newNetwork.addIsomer(Products);
 					
 					line = ChemParser.readMeaningfulLine(reader, true);					
 				}
