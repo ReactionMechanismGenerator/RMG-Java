@@ -40,6 +40,7 @@ module NetworkModule
     end type
 
     type Isomer
+        character(len=256) :: name                          ! Isomer name
         integer, dimension(:), allocatable :: species       ! List of indices to species in the well
         real(8), dimension(:), allocatable :: densStates    ! Density of states in mol/J
         real(8) :: E0                                       ! Ground state energy in J/mol
@@ -931,7 +932,7 @@ contains
         integer i, j, u, v, w
 
         integer invalidRate, invalidRates
-
+        
         do u = 1, nT
 
             T = Tlist(u)
@@ -982,7 +983,7 @@ contains
                             write (1,fmt='(A)') 'ERROR: One or more rate coefficients not properly estimated.'
                             invalidRates = 1
                         end if
-                        write (1,fmt='(A,I5,A,I5)') 'Reactant isomer =', j, '   Product isomer = ', i
+                        write (1,fmt='(A)') trim(net%isomers(j)%name)//' -> '//trim(net%isomers(i)%name)
                         do u = 1, nT
                             write (1,fmt=*) K(u,:,i,j)
                         end do
