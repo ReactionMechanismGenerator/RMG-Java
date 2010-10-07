@@ -3480,6 +3480,8 @@ public class ReactionModelGenerator {
 			        PDepIsomer Products = new PDepIsomer(p);
 			        PDepReaction pdeppathrxn = new PDepReaction(Reactants,Products,pathRxn);
 			        newNetwork.addReaction(pdeppathrxn,true);
+			        newNetwork.addIsomer(Reactants);
+					newNetwork.addIsomer(Products);
 					
 					line = ChemParser.readMeaningfulLine(reader, true);					
 				}
@@ -4894,7 +4896,7 @@ public class ReactionModelGenerator {
     	String line = ChemParser.readMeaningfulLine(reader, true);
    		while (!line.equals("END")) {
 	    	StringTokenizer st = new StringTokenizer(line);
-	    	String name = st.nextToken().trim();
+	    	String name = st.nextToken().trim().toUpperCase();
 			String conc = st.nextToken();
 			double inertConc = Double.parseDouble(conc);
 			String unit = st.nextToken();

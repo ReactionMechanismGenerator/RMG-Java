@@ -734,82 +734,160 @@ public class GUI extends JPanel implements ActionListener {
 		
 		
     	//	Create the Primary Kinetic Library (PKL) panel
-    	JPanel PRL = new JPanel();
-    	PRL.setBorder(BorderFactory.createCompoundBorder(BorderFactory.createTitledBorder("Primary Kinetic Library"),
+    	JPanel PKL = new JPanel();
+    	PKL.setBorder(BorderFactory.createCompoundBorder(BorderFactory.createTitledBorder("Primary Kinetic Library"),
     			BorderFactory.createEmptyBorder(5,5,5,5)));
-    	PRL.setToolTipText("Override RMG's algorithm to compute a reaction's rate coefficient");
+    	PKL.setToolTipText("Override RMG's algorithm to compute a reaction's rate coefficient");
 
     	//	Create PKL Name label
-    	JPanel prlName = new JPanel();
-    	prlName.setBorder(BorderFactory.createEmptyBorder(5,5,5,5));
+    	JPanel pklName = new JPanel();
+    	pklName.setBorder(BorderFactory.createEmptyBorder(5,5,5,5));
     	
     	//	Populate the label
-    	JLabel prlNameLabel = new JLabel("Name:");
-    	prlName.add(prlNameLabel);
-    	prlName.add(prlLibName = new JTextField(20));
+    	JLabel pklNameLabel = new JLabel("Name:");
+    	pklName.add(pklNameLabel);
+    	pklName.add(pklLibName = new JTextField(20));
 
-        //	Create PRL Location label
-        JPanel prlLoc = new JPanel();
-        prlLoc.setBorder(BorderFactory.createEmptyBorder(5,5,5,5));
+        //	Create PKL Location label
+        JPanel pklLoc = new JPanel();
+        pklLoc.setBorder(BorderFactory.createEmptyBorder(5,5,5,5));
     	
         //	Populate the label
-        JLabel prlLocationLabel = new JLabel("Location:");
-        prlLoc.add(prlLocationLabel);
-    	prlLocationLabel.setToolTipText("Default = " + 
-			"RMG/databases/RMG_database/kinetics_libraries/primaryKineticLibrary"); // doesn't exist!
+        JLabel pklLocationLabel = new JLabel("Location:");
+        pklLoc.add(pklLocationLabel);
+    	pklLocationLabel.setToolTipText("Default = " + 
+			"RMG/databases/RMG_database/kinetics_libraries/"); // doesn't exist!
     	
-    	prlLoc.add(prlPath = new JTextField(20));
+    	pklLoc.add(pklPath = new JTextField(20));
     	
-    	prlLoc.add(prlButton = new JButton("Select"));
-    	ChangeButtonListener prlAddListenerLib = new ChangeButtonListener();
-    	prlButton.addActionListener(prlAddListenerLib);
-    	prlButton.setActionCommand("prlPath");
+    	pklLoc.add(pklButton = new JButton("Select"));
+    	ChangeButtonListener pklAddListenerLib = new ChangeButtonListener();
+    	pklButton.addActionListener(pklAddListenerLib);
+    	pklButton.setActionCommand("pklPath");
 
-        //	Create table and scroll panel to store PRL(s)
-        tablePRL = new JTable(tmodelPRL = new MyTableModelPRL());
-    	tablePRL.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
-    	tablePRL.setPreferredScrollableViewportSize(new Dimension(700,50));
-        tablePRL.getColumnModel().getColumn(0).setPreferredWidth(100);
-        tablePRL.getColumnModel().getColumn(1).setPreferredWidth(600);
-        for (int i=0; i<tablePRL.getColumnCount(); i++) {
-        	TableColumn column = tablePRL.getColumnModel().getColumn(i);
+        //	Create table and scroll panel to store PKL(s)
+        tablePKL = new JTable(tmodelPKL = new MyTableModelPRL());
+    	tablePKL.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
+    	tablePKL.setPreferredScrollableViewportSize(new Dimension(700,50));
+        tablePKL.getColumnModel().getColumn(0).setPreferredWidth(100);
+        tablePKL.getColumnModel().getColumn(1).setPreferredWidth(600);
+        for (int i=0; i<tablePKL.getColumnCount(); i++) {
+        	TableColumn column = tablePKL.getColumnModel().getColumn(i);
         	column.setCellRenderer(centerTableRenderer);
         }
-        JScrollPane scrollPRL = new JScrollPane(tablePRL);
-    	scrollPRL.setBorder(BorderFactory.createLoweredBevelBorder());
+        JScrollPane scrollPKL = new JScrollPane(tablePKL);
+    	scrollPKL.setBorder(BorderFactory.createLoweredBevelBorder());
 
-    	//	Create boxes to display the PRL table
-    	Box PRLtable1 = Box.createHorizontalBox();
-    	Box PRLtable2 = Box.createHorizontalBox();
-    	Box PRLtable3 = Box.createHorizontalBox();
-    	Box PRLtable4 = Box.createHorizontalBox();
-    	Box PRLtable5 = Box.createVerticalBox();
-    	Box PRLtable6 = Box.createHorizontalBox();
+    	//	Create boxes to display the PKL table
+    	Box PKLtable1 = Box.createHorizontalBox();
+    	Box PKLtable2 = Box.createHorizontalBox();
+    	Box PKLtable3 = Box.createHorizontalBox();
+    	Box PKLtable4 = Box.createHorizontalBox();
+    	Box PKLtable5 = Box.createVerticalBox();
+    	Box PKLtable6 = Box.createHorizontalBox();
     	
     	//	Fill the boxes with the appropriate components of the table
-    	PRLtable1.add(AddPRL = new JButton("Add"));
-    	AddButtonListener addListenerPRL = new AddButtonListener();
-    	AddPRL.addActionListener(addListenerPRL);
-    	AddPRL.setActionCommand("AddPRL");
-    	AddPRL.setToolTipText("Press to submit PRL Name & Location");
-    	PRLtable1.setBorder(BorderFactory.createEmptyBorder(10,10,10,10));
+    	PKLtable1.add(AddPKL = new JButton("Add"));
+    	AddButtonListener addListenerPKL = new AddButtonListener();
+    	AddPKL.addActionListener(addListenerPKL);
+    	AddPKL.setActionCommand("AddPKL");
+    	AddPKL.setToolTipText("Press to submit PKL Name & Location");
+    	PKLtable1.setBorder(BorderFactory.createEmptyBorder(10,10,10,10));
     	
-    	PRLtable2.add(DeletePRL = new JButton("Remove"));
-    	DeleteButtonListener deleteListenerPRL = new DeleteButtonListener();
-    	DeletePRL.addActionListener(deleteListenerPRL);
-    	DeletePRL.setActionCommand("DeletePRL");
-    	DeletePRL.setToolTipText("Press to remove PRL Name & Location");
+    	PKLtable2.add(DeletePKL = new JButton("Remove"));
+    	DeleteButtonListener deleteListenerPKL = new DeleteButtonListener();
+    	DeletePKL.addActionListener(deleteListenerPKL);
+    	DeletePKL.setActionCommand("DeletePKL");
+    	DeletePKL.setToolTipText("Press to remove PKL Name & Location");
     	
-    	PRLtable3.add(PRLtable1);
-    	PRLtable3.add(PRLtable2);
-    	PRLtable4.add(scrollPRL);
-    	PRLtable6.add(prlName);
-    	PRLtable6.add(prlLoc);
-    	PRLtable5.add(PRLtable6);
-    	PRLtable5.add(PRLtable3);
-    	PRLtable5.add(PRLtable4);
+    	PKLtable3.add(PKLtable1);
+    	PKLtable3.add(PKLtable2);
+    	PKLtable4.add(scrollPKL);
+    	PKLtable6.add(pklName);
+    	PKLtable6.add(pklLoc);
+    	PKLtable5.add(PKLtable6);
+    	PKLtable5.add(PKLtable3);
+    	PKLtable5.add(PKLtable4);
     	
-    	PRL.add(PRLtable5);
+    	PKL.add(PKLtable5);
+    	
+    	//	Create the Reaction Library (RL) panel
+    	JPanel RL = new JPanel();
+    	RL.setBorder(BorderFactory.createCompoundBorder(BorderFactory.createTitledBorder("Reaction Library"),
+    			BorderFactory.createEmptyBorder(5,5,5,5)));
+    	RL.setToolTipText("Augment RMG's defined reaction families with specific reactions and rate coefficients");
+
+    	//	Create PRL Name label
+    	JPanel rlName = new JPanel();
+    	rlName.setBorder(BorderFactory.createEmptyBorder(5,5,5,5));
+    	
+    	//	Populate the label
+    	JLabel rlNameLabel = new JLabel("Name:");
+    	rlName.add(rlNameLabel);
+    	rlName.add(rlLibName = new JTextField(20));
+
+        //	Create RL Location label
+        JPanel rlLoc = new JPanel();
+        rlLoc.setBorder(BorderFactory.createEmptyBorder(5,5,5,5));
+    	
+        //	Populate the label
+        JLabel rlLocationLabel = new JLabel("Location:");
+        rlLoc.add(rlLocationLabel);
+    	rlLocationLabel.setToolTipText("Default = " + 
+			"RMG/databases/RMG_database/kinetics_libraries/"); // doesn't exist!
+    	
+    	rlLoc.add(rlPath = new JTextField(20));
+    	
+    	rlLoc.add(rlButton = new JButton("Select"));
+    	ChangeButtonListener rlAddListenerLib = new ChangeButtonListener();
+    	rlButton.addActionListener(rlAddListenerLib);
+    	rlButton.setActionCommand("rlPath");
+
+        //	Create table and scroll panel to store RL(s)
+        tableRL = new JTable(tmodelRL = new MyTableModelPRL());
+    	tableRL.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
+    	tableRL.setPreferredScrollableViewportSize(new Dimension(700,50));
+        tableRL.getColumnModel().getColumn(0).setPreferredWidth(100);
+        tableRL.getColumnModel().getColumn(1).setPreferredWidth(600);
+        for (int i=0; i<tableRL.getColumnCount(); i++) {
+        	TableColumn column = tableRL.getColumnModel().getColumn(i);
+        	column.setCellRenderer(centerTableRenderer);
+        }
+        JScrollPane scrollRL = new JScrollPane(tableRL);
+    	scrollRL.setBorder(BorderFactory.createLoweredBevelBorder());
+
+    	//	Create boxes to display the RL table
+    	Box RLtable1 = Box.createHorizontalBox();
+    	Box RLtable2 = Box.createHorizontalBox();
+    	Box RLtable3 = Box.createHorizontalBox();
+    	Box RLtable4 = Box.createHorizontalBox();
+    	Box RLtable5 = Box.createVerticalBox();
+    	Box RLtable6 = Box.createHorizontalBox();
+    	
+    	//	Fill the boxes with the appropriate components of the table
+    	RLtable1.add(AddRL = new JButton("Add"));
+    	AddButtonListener addListenerRL = new AddButtonListener();
+    	AddRL.addActionListener(addListenerRL);
+    	AddRL.setActionCommand("AddRL");
+    	AddRL.setToolTipText("Press to submit RL Name & Location");
+    	RLtable1.setBorder(BorderFactory.createEmptyBorder(10,10,10,10));
+    	
+    	RLtable2.add(DeleteRL = new JButton("Remove"));
+    	DeleteButtonListener deleteListenerRL = new DeleteButtonListener();
+    	DeleteRL.addActionListener(deleteListenerPKL);
+    	DeleteRL.setActionCommand("DeleteRL");
+    	DeleteRL.setToolTipText("Press to remove RL Name & Location");
+    	
+    	RLtable3.add(RLtable1);
+    	RLtable3.add(RLtable2);
+    	RLtable4.add(scrollRL);
+    	RLtable6.add(rlName);
+    	RLtable6.add(rlLoc);
+    	RLtable5.add(RLtable6);
+    	RLtable5.add(RLtable3);
+    	RLtable5.add(RLtable4);
+    	
+    	RL.add(RLtable5);
     	
     	//	Create the Seed Mechanism (SM) panel
     	JPanel SM = new JPanel();
@@ -862,7 +940,7 @@ public class GUI extends JPanel implements ActionListener {
         JScrollPane scrollSM = new JScrollPane(tableSM);
     	scrollSM.setBorder(BorderFactory.createLoweredBevelBorder());
 
-    	//	Create boxes to display the PRL table
+    	//	Create boxes to display the PKL table
     	Box SMtable1 = Box.createHorizontalBox();
     	Box SMtable2 = Box.createHorizontalBox();
     	Box SMtable3 = Box.createHorizontalBox();
@@ -901,7 +979,8 @@ public class GUI extends JPanel implements ActionListener {
     	TabTotal.add(Database);
     	TabTotal.add(PTL);
     	TabTotal.add(PTransL);
-    	TabTotal.add(PRL);
+    	TabTotal.add(PKL);
+    	TabTotal.add(RL);
     	TabTotal.add(SM);
     	
         JComboBox[] allTab = {smCombo};
@@ -1445,12 +1524,18 @@ public class GUI extends JPanel implements ActionListener {
       
     class DeleteButtonListener implements ActionListener {
 		public void actionPerformed(ActionEvent e) {
-			if ("DeletePRL".equals(e.getActionCommand())) {
-				int highlightRow = tablePRL.getSelectedRow();
+			if ("DeletePKL".equals(e.getActionCommand())) {
+				int highlightRow = tablePKL.getSelectedRow();
 				if (highlightRow == -1) {
 					System.out.println("Please select a row to delete");
 				} else
-					tmodelPRL.deleteRow(highlightRow);
+					tmodelPKL.deleteRow(highlightRow);
+			} else if ("DeleteRL".equals(e.getActionCommand())) {
+				int highlightRow = tableRL.getSelectedRow();
+				if (highlightRow == -1) {
+					System.out.println("Please select a row to delete");
+				} else
+					tmodelRL.deleteRow(highlightRow);
 			} else if ("DeleteInput".equals(e.getActionCommand())) {
 				int highlightRow = tableInput.getSelectedRow();
 				if (highlightRow == -1) {
@@ -1497,19 +1582,33 @@ public class GUI extends JPanel implements ActionListener {
     class AddButtonListener implements ActionListener {
 		public void actionPerformed(ActionEvent e) {
 			// IF the user adds a primary kinetic library ...
-			if ("AddPRL".equals(e.getActionCommand())) {
+			if ("AddPKL".equals(e.getActionCommand())) {
 				// Extract the information
-				int prlInput0 = tmodelPRL.nextEmptyRow+1;
-				String prlInput1 = prlLibName.getText();
-				String prlInput2 = prlPath.getText();
+				int pklInput0 = tmodelPKL.nextEmptyRow+1;
+				String pklInput1 = pklLibName.getText();
+				String pklInput2 = pklPath.getText();
 				// Check that all information is present
-				if (prlInput1.equals("") || prlInput2.equals("")) {
+				if (pklInput1.equals("") || pklInput2.equals("")) {
 					System.out.println("Please input the Name and Location of a Primary Kinetic Library");
 				} else {
-					PRLVector prlEntry = new PRLVector(prlInput0, prlInput1, prlInput2);
-					tmodelPRL.updatePRL(prlEntry);
-					prlLibName.setText("");
-    				prlPath.setText("");
+					PRLVector prlEntry = new PRLVector(pklInput0, pklInput1, pklInput2);
+					tmodelPKL.updatePRL(prlEntry);
+					pklLibName.setText("");
+    				pklPath.setText("");
+				}
+			} else if ("AddRL".equals(e.getActionCommand())) {
+				// Extract the information
+				int rlInput0 = tmodelRL.nextEmptyRow+1;
+				String rlInput1 = rlLibName.getText();
+				String rlInput2 = rlPath.getText();
+				// Check that all information is present
+				if (rlInput1.equals("") || rlInput2.equals("")) {
+					System.out.println("Please input the Name and Location of a Reaction Library");
+				} else {
+					PRLVector rlEntry = new PRLVector(rlInput0, rlInput1, rlInput2);
+					tmodelRL.updatePRL(rlEntry);
+					rlLibName.setText("");
+    				rlPath.setText("");
 				}
 			} else if ("AddPTL".equals(e.getActionCommand())) {
 				// Extract the information
@@ -1677,10 +1776,14 @@ public class GUI extends JPanel implements ActionListener {
 				path = askUserForInput("Select PrimaryThermoLibrary folder", true, databasePath.getText()+"/thermo_libraries");
 				if (path != null) ptlPath.setText(path.getPath());
 			// If user selects to switch Primary Kinetic Library path
-			} else if ("prlPath".equals(e.getActionCommand())) {
+			} else if ("pklPath".equals(e.getActionCommand())) {
 				File path = null;
 				path = askUserForInput("Select PrimaryKineticLibrary folder", true, databasePath.getText()+"/kinetics_libraries");
-				if (path != null) prlPath.setText(path.getPath());
+				if (path != null) pklPath.setText(path.getPath());
+			} else if ("rlPath".equals(e.getActionCommand())) {
+				File path = null;
+				path = askUserForInput("Select ReactionLibrary folder", true, databasePath.getText()+"/kinetics_libraries");
+				if (path != null) rlPath.setText(path.getPath());
 			} else if ("smPath".equals(e.getActionCommand())) {
 				File path = null;
 				path = askUserForInput("Select SeedMechanism folder", true, databasePath.getText()+"/kinetics_libraries");
@@ -2172,12 +2275,12 @@ public class GUI extends JPanel implements ActionListener {
         String prlReferenceDirectory_windows = rmgEnvVar + "\\databases\\" + stringMainDatabase + "\\kinetics_libraries\\";
     	conditionFile += "PrimaryKineticLibrary:\r";
 
-		if (tablePRL.getRowCount()==0) {
+		if (tablePKL.getRowCount()==0) {
         	System.out.println("Warning: Writing condition.txt file: Could not read Primary Kinetic Library (Thermochemical Libraries tab)");
 		} else {
-    		for (int k=0; k<tablePRL.getRowCount(); k++) {
-    			conditionFile += "Name: " + tablePRL.getValueAt(k,0) + "\r" + "Location: ";
-    			String prlDir = (String)tablePRL.getValueAt(k,1);
+    		for (int k=0; k<tablePKL.getRowCount(); k++) {
+    			conditionFile += "Name: " + tablePKL.getValueAt(k,0) + "\r" + "Location: ";
+    			String prlDir = (String)tablePKL.getValueAt(k,1);
     	        if (prlDir.toLowerCase().startsWith(prlReferenceDirectory_linux.toLowerCase()) ||
     	        		prlDir.toLowerCase().startsWith(prlReferenceDirectory_windows.toLowerCase())) {
     	        	int startIndex = prlReferenceDirectory_linux.length();
@@ -2189,7 +2292,27 @@ public class GUI extends JPanel implements ActionListener {
 		}
 		conditionFile += "END\r\r";
 		
-        //	Add the name(s)/location(s) of the primary kinetic library
+        //	Add the name(s)/location(s) of the reaction library
+    	conditionFile += "ReactionLibrary:\r";
+
+		if (tableRL.getRowCount()==0) {
+        	System.out.println("Warning: Writing condition.txt file: Could not read Reaction Library (Thermochemical Libraries tab)");
+		} else {
+    		for (int k=0; k<tableRL.getRowCount(); k++) {
+    			conditionFile += "Name: " + tableRL.getValueAt(k,0) + "\r" + "Location: ";
+    			String rlDir = (String)tableRL.getValueAt(k,1);
+    	        if (rlDir.toLowerCase().startsWith(prlReferenceDirectory_linux.toLowerCase()) ||
+    	        		rlDir.toLowerCase().startsWith(prlReferenceDirectory_windows.toLowerCase())) {
+    	        	int startIndex = prlReferenceDirectory_linux.length();
+    	        	conditionFile += rlDir.substring(startIndex) + "\r";
+    	        } else {
+    	        	conditionFile += rlDir + "\r";
+    	        }
+    		}
+		}
+		conditionFile += "END\r\r";
+		
+        //	Add the name(s)/location(s) of the seed mechanism
     	conditionFile += "SeedMechanism:\r";
 
 		if (tableSM.getRowCount()==0) {
@@ -2245,7 +2368,8 @@ public class GUI extends JPanel implements ActionListener {
     public void openConditionFile(File filePath) {
     	int numSpecies = 0;
     	tmodelPTL.clear();
-    	tmodelPRL.clear();
+    	tmodelPKL.clear();
+    	tmodelRL.clear();
     	tmodelSM.clear();
     	tmodelInput.clear();
     	tmodelSens.clear();
@@ -2846,7 +2970,24 @@ public class GUI extends JPanel implements ActionListener {
              		tempStringVector = line.split("Location: ");
              		String path = tempStringVector[tempStringVector.length-1].trim();
              		PRLVector prlEntry = new PRLVector(prlCounter-1,name,path);
-					tmodelPRL.updatePRL(prlEntry);
+					tmodelPKL.updatePRL(prlEntry);
+					line = ChemParser.readMeaningfulLine(reader, true);
+             	}
+	        }
+	        
+	        else if (line.startsWith("ReactionLibrary")) {
+		        
+             	line = ChemParser.readMeaningfulLine(reader, true);
+             	int prlCounter = 0;
+             	while (!line.equals("END")) {
+             		++prlCounter;
+             		tempStringVector = line.split("Name: ");
+             		String name = tempStringVector[tempStringVector.length-1].trim();
+             		line = ChemParser.readMeaningfulLine(reader, true);
+             		tempStringVector = line.split("Location: ");
+             		String path = tempStringVector[tempStringVector.length-1].trim();
+             		PRLVector prlEntry = new PRLVector(prlCounter-1,name,path);
+					tmodelRL.updatePRL(prlEntry);
 					line = ChemParser.readMeaningfulLine(reader, true);
              	}
 	        }
@@ -3443,9 +3584,9 @@ public class GUI extends JPanel implements ActionListener {
     
     JTextField
     //	Tab0: Initialization
-    nameFiller, locationFiller, databasePath, prlPath, ptlPath,
-    	timeStep, aTolerance, rTolerance, ptlLibName, prlLibName,
-    	smLibName, smPath, ptranslLibName, ptranslPath,
+    nameFiller, locationFiller, databasePath, pklPath, rlPath, ptlPath,
+    	timeStep, aTolerance, rTolerance, ptlLibName, pklLibName, rlLibName,
+    	smLibName, smPath, ptranslLibName, ptranslPath, pklName,
     //	Tab1: Termination Sequence
     conversion, time, eTolerance,
     //	Tab2: Initial Condition
@@ -3475,9 +3616,10 @@ public class GUI extends JPanel implements ActionListener {
     //	Main panel
     save, saveAndRun,
     //	Tab0: Initialization
-    AddPRL, DeletePRL, databaseButton, prlButton, ptlButton,
+    AddPKL, DeletePKL, databaseButton, pklButton, rlButton, ptlButton,
     	AddPTL, DeletePTL, smButton, AddSM, DeleteSM,
     	ptranslButton, AddPTransL, DeletePTransL,
+    	AddRL, DeleteRL,
     //  Tab1: Termination
     //	Tab2: Initial Condition
     AddInput, DeleteInput, isButton,
@@ -3488,7 +3630,7 @@ public class GUI extends JPanel implements ActionListener {
     
     JTable
     //	Tab0: Initialization
-    tablePRL, tablePTL, tableSM, tablePTransL,
+    tablePKL, tableRL, tablePTL, tableSM, tablePTransL,
     //  Tab1: Termination
     //	Tab2: Initial Condition
     tableInput,
@@ -3498,7 +3640,7 @@ public class GUI extends JPanel implements ActionListener {
     tableFS;
     
     //	Tab0: Initialization
-    MyTableModelPRL tmodelPRL, tmodelPTL, tmodelPTransL;
+    MyTableModelPRL tmodelPKL, tmodelRL, tmodelPTL, tmodelPTransL;
     MyTableModelSM tmodelSM;
     //  Tab1: Termination
     //	Tab2: Initial Condition

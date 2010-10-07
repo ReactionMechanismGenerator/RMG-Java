@@ -57,6 +57,10 @@ To run RMG in Windows: Open a DOS-prompt, change the current working directory t
 .. note::
 
 	The name of the input file does not have to be :file:`condition.txt`
+
+To save the output and error messages to a log file append ``> RMG.log 2>&1 &`` e.g.::
+
+	java -Xmx500m -jar "%rmg%"\bin\RMG.jar condition.txt > RMG.log 2>&1 &
 	
 Running RMG using Batch Scripts in Windows
 ==========================================
@@ -78,5 +82,9 @@ The easiest way to use them is:
 3. Double-click the batch script to start the job. A console window will appear. After a few seconds a line of text should appear that tells you the job has been started. If RMG is not setup correctly, an error message will appear instead telling you what needs to be done. As the job runs, output will be sent to the file ``RMG.log`` in the same directory as the condition file.
 
 4. Close the console window when the job is finished. The batch script will print a line of text when the job is completed. This line of text does not reflect whether or not the job was successful; check the tail of ``RMG.log`` for that information.
+
+.. note::
+
+	You can edit the batch script file using a program like Notepad if you want to change thing like the filenames or memory allocation.
 
 .. % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
