@@ -1429,8 +1429,12 @@ public class ReactionModelGenerator {
 				
 				//writeCoreSpecies();
 				double pt = System.currentTimeMillis();
+				// Grab all species from primary kinetics / reaction libraries
+				//	WE CANNOT PRUNE THESE SPECIES
+				HashMap unprunableSpecies = getPrimaryKineticLibrary().speciesSet;
+				unprunableSpecies.putAll(getReactionLibrary().getDictionary());
 				//prune the reaction model (this will only do something in the AUTO case)
-				pruneReactionModel();
+				pruneReactionModel(unprunableSpecies);
 				garbageCollect();
 				//System.out.println("After pruning:");
 				//printModelSize();
@@ -3987,7 +3991,7 @@ public class ReactionModelGenerator {
         //#]
     }
 
-    public void pruneReactionModel() {
+    public void pruneReactionModel(HashMap unprunableSpecies) {
 		
 		HashMap prunableSpeciesMap = new HashMap();
 		//check whether all the reaction systems reached target conversion/time
@@ -4075,7 +4079,11 @@ public class ReactionModelGenerator {
 				writePrunedEdgeSpecies(spe);
 				((CoreEdgeReactionModel)getReactionModel()).getUnreactedSpeciesSet().remove(spe);
 				//SpeciesDictionary.getInstance().getSpeciesSet().remove(spe);
-				SpeciesDictionary.getInstance().remove(spe);
+				if (!unprunableSpecies.containsKey(spe)) SpeciesDictionary.getInstance().remove(spe);
+				else System.out.println("Pruning Message: Not removing the following species " +
+						"from the SpeciesDictionary\nas it is present in a Primary Kinetic / Reaction" +
+						" Library\nThe species will still be removed from the Edge of the " +
+						"Reaction Mechanism\n" + spe.toString());
 				JDAS.edgeID.remove(spe);
 			}
 			//remove reactions from the edge involving pruned species

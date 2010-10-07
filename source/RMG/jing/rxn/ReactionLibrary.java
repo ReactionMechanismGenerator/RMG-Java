@@ -217,6 +217,10 @@ public class ReactionLibrary {
         name = p_name;
     }
     
+    public HashMap getDictionary() {
+    	return dictionary;
+    }
+    
     
 }    
 
