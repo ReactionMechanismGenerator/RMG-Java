@@ -928,7 +928,9 @@ contains
         real(8), dimension(1:nT,1:nP,1:nIsom+nReac+nProd,1:nIsom+nReac+nProd), intent(out) :: K
 
         real(8) T, P
-        integer i, u, v, w
+        integer i, j, u, v, w
+
+        integer invalidRate, invalidRates
 
         do u = 1, nT
 
@@ -958,10 +960,37 @@ contains
                 ! Determine phenomenological rate coefficients
                 call network_applyApproximateMethod(net, nIsom, nReac, nProd, Elist, nGrains, T, P, method, K(u,v,:,:))
 
-
             end do
 
         end do
+
+        ! Check for validity of phenomenological rate coefficients
+        invalidRates = 0
+        do i = 1, nIsom+nReac+nProd
+            do j = 1, nIsom+nReac
+                if (i /= j) then
+                    invalidRate = 0
+                    do u = 1, nT
+                        do v = 1, nP
+                            if (K(u,v,i,j) <= 0) invalidRate = 1
+                        end do
+                    end do
+                    if (invalidRate /= 0) then
+                        if (invalidRates == 0) then
+                            write (*,fmt='(A)') 'ERROR: One or more rate coefficients not properly estimated.'
+                            write (*,fmt='(A)') 'See fame.log for details.'
+                            write (1,fmt='(A)') 'ERROR: One or more rate coefficients not properly estimated.'
+                            invalidRates = 1
+                        end if
+                        write (1,fmt='(A,I5,A,I5)') 'Reactant isomer =', j, '   Product isomer = ', i
+                        do u = 1, nT
+                            write (1,fmt=*) K(u,:,i,j)
+                        end do
+                    end if
+                end if
+            end do
+        end do
+        if (invalidRates /= 0) stop
 
     end subroutine
 
@@ -987,8 +1016,6 @@ contains
 
         real(8) dE, dEdown
         character(len=128) :: msg
-
-        integer invalidRate
 
         integer i, j, r
 
@@ -1073,17 +1100,8 @@ contains
                 Kij, Fim, Gnj, dEdown, nIsom, nReac, nProd, nGrains, K, msg)
 
         end if
-        
-        ! Check for validity of phenomenological rate coefficients
-        invalidRate = 0
-        do i = 1, nIsom+nReac+nProd
-            do j = 1, nIsom+nReac
-                if (i /= j) then
-                    if (K(i,j) <= 0) invalidRate = 1
-                end if
-            end do
-        end do
-        if (invalidRate == 1 .or. msg /= '') then
+
+        if (msg /= '') then
             write (*,fmt='(A)') 'ERROR: One or more rate coefficients not properly estimated. See fame.log for details.'
             write (*,fmt='(A)') 'The message returned was:', msg
             write (1,fmt='(A)') 'ERROR: One or more rate coefficients not properly estimated.'
