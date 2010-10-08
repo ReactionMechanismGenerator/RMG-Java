@@ -335,6 +335,8 @@ public class RateBasedPDepRME implements ReactionModelEnlarger {
 						System.out.println("\nAdd a new included Species: " + isomer.toString() +
 										   " to network " + maxNetwork.getID());
 						
+						// Debug by Mike
+						System.out.println("Here's the # of networks: " + PDepNetwork.getNetworks().size());
 						// Making a species included in one network automatically
 						// makes it included in all networks it is contained in
 						// Therefore we need to merge all networks containing that
@@ -360,6 +362,7 @@ public class RateBasedPDepRME implements ReactionModelEnlarger {
 						// isomer -> products that don't yet exist to be created
 						maxNetwork.makeIsomerIncluded(isomer);
 						maxNetwork.updateReactionLists(cerm);
+						System.out.println("Here's the # of networks: " + PDepNetwork.getNetworks().size());
 					}
 					catch (PDepException e) {
 						e.printStackTrace();
