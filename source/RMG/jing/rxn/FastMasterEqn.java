@@ -225,6 +225,9 @@ public class FastMasterEqn implements PDepKineticsEstimator {
 			System.out.println("Warning: Empty pressure-dependent network detected. Skipping.");
 			return;
 		}
+		
+		System.out.println("Solving PDepNetwork #" + Integer.toString(pdn.getID()) +
+						   " (" + pdn.getSpeciesType() + ")");
 
 		// Sort isomers such that the order is:
 		//	1. Explored unimolecular isomers

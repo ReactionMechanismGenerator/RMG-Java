@@ -90,27 +90,28 @@ public class Chemkin implements DAESolver {
       reactorType = p_reactorType;
       
   }
+
   private static void copyFiles(String string, String string2)  {
+	  // Copy file named 'string' to file named 'string2' using a buffered stream.
 	  File src = new File(string);
 	  File dest = new File(string2);
-	  FileInputStream fin;
+	  InputStream fin = null;
+	  OutputStream fout = null;
 	  try {
-		  fin = new FileInputStream(src);
-		  FileOutputStream fout = new FileOutputStream (dest);
+		  fin = new BufferedInputStream(new FileInputStream(src));
+		  fout = new BufferedOutputStream(new FileOutputStream (dest));
 		  int c;
 		  while ((c = fin.read()) >= 0) 
 			  fout.write(c);
 		  fin.close();
 		  fout.close();
 	  } catch (FileNotFoundException e) {
-		  // TODO Auto-generated catch block
 		  e.printStackTrace();
-	}catch (IOException e){
+	  } catch (IOException e){
 		e.printStackTrace();
-	}
-
-		
+	  } 
   }
+
 public  Chemkin() {
   }
 
