@@ -1431,8 +1431,13 @@ public class ReactionModelGenerator {
 				double pt = System.currentTimeMillis();
 				// Grab all species from primary kinetics / reaction libraries
 				//	WE CANNOT PRUNE THESE SPECIES
-				HashMap unprunableSpecies = getPrimaryKineticLibrary().speciesSet;
-				unprunableSpecies.putAll(getReactionLibrary().getDictionary());
+				HashMap unprunableSpecies = new HashMap();
+				if (getPrimaryKineticLibrary() != null) {
+					unprunableSpecies.putAll(getPrimaryKineticLibrary().speciesSet);
+				}
+				if (getReactionLibrary() != null) {
+					unprunableSpecies.putAll(getReactionLibrary().getDictionary());
+				}
 				//prune the reaction model (this will only do something in the AUTO case)
 				pruneReactionModel(unprunableSpecies);
 				garbageCollect();
@@ -4079,7 +4084,8 @@ public class ReactionModelGenerator {
 				writePrunedEdgeSpecies(spe);
 				((CoreEdgeReactionModel)getReactionModel()).getUnreactedSpeciesSet().remove(spe);
 				//SpeciesDictionary.getInstance().getSpeciesSet().remove(spe);
-				if (!unprunableSpecies.containsKey(spe)) SpeciesDictionary.getInstance().remove(spe);
+				if (!unprunableSpecies.containsValue(spe))
+					SpeciesDictionary.getInstance().remove(spe);
 				else System.out.println("Pruning Message: Not removing the following species " +
 						"from the SpeciesDictionary\nas it is present in a Primary Kinetic / Reaction" +
 						" Library\nThe species will still be removed from the Edge of the " +
@@ -4111,6 +4117,9 @@ public class ReactionModelGenerator {
 				if(rtr!=null){
 				    rtr.removeFromReactionDictionaryByStructure(reverse.getStructure());
 				}
+				if ((reaction.isForward() && reaction.getKineticsSource(0).contains("Library")) ||
+						(reaction.isBackward() && reaction.getReverseReaction().getKineticsSource(0).contains("ReactionLibrary")))
+					continue;
 				reaction.setStructure(null);
 				if(reverse!=null){
 				    reverse.setStructure(null);
