@@ -4118,7 +4118,7 @@ public class ReactionModelGenerator {
 				    rtr.removeFromReactionDictionaryByStructure(reverse.getStructure());
 				}
 				if ((reaction.isForward() && reaction.getKineticsSource(0).contains("Library")) ||
-						(reaction.isBackward() && reaction.getReverseReaction().getKineticsSource(0).contains("ReactionLibrary")))
+						(reaction.isBackward() && reaction.getReverseReaction().getKineticsSource(0).contains("Library")))
 					continue;
 				reaction.setStructure(null);
 				if(reverse!=null){
@@ -4186,6 +4186,9 @@ public class ReactionModelGenerator {
 						if(rtr!=null){
 						    rtr.removeFromReactionDictionaryByStructure(reverse.getStructure());
 						}
+						if ((reaction.isForward() && reaction.getKineticsSource(0).contains("Library")) ||
+								(reaction.isBackward() && reaction.getReverseReaction().getKineticsSource(0).contains("Library")))
+							continue;
 						reaction.setStructure(null);
 						if(reverse!=null){
 						    reverse.setStructure(null);
