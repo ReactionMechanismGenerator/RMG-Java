@@ -231,7 +231,6 @@ public class ThirdBodyReaction extends Reaction {
       	String name = key.toString();
       	Species spe = SpeciesDictionary.getInstance().getSpeciesFromName(name);
       	if (spe!=null) name = spe.getChemkinName();
-      	if (name.equals("AR")) name = "Ar";
       	String next = name + "/" + tbe + "/ ";
       	if ((tbr.length()+next.length())>=80) {
       		s.append(tbr + '\n');
@@ -266,7 +265,6 @@ public class ThirdBodyReaction extends Reaction {
       	String name = key.toString();
       	Species spe = SpeciesDictionary.getInstance().getSpeciesFromName(name);
       	if (spe!=null) name = spe.getChemkinName();
-      	if (name.equals("AR")) name = "Ar";
       	String next = name + "/" + tbe + "/ ";
 //      	if ((tbr.length()+next.length())>=80) {
 //      		s.append(tbr + '\n');
