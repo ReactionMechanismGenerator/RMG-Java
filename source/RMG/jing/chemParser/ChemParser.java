@@ -1034,10 +1034,15 @@ public class ChemParser {
         	 * 	names may have changed, i.e. CH4 is now CH4(1)
         	 * This is straightforward, except for the "inert gas" species - 
         	 * 	N2, He, Ne, and Ar - because the chemgraphs should be supplied
-        	 * 	in the dictionary.txt file
+        	 * 	in the dictionary.txt file.
+			 The inert species are all translated to be capitalized as: N2, Ar, He, Ne
         	 */
-        	if (!name.toLowerCase().equals("n2") && !name.toLowerCase().equals("ar") && !name.toLowerCase().equals("he") && !name.toLowerCase().equals("ne")) {
-        		Species species = (Species)speciesList.get(name);
+			if (name.toLowerCase().equals("n2")) { name = "N2"; }
+			else if (name.toLowerCase().equals("ar")) { name = "Ar"; }
+			else if (name.toLowerCase().equals("he")) { name = "He"; }
+			else if (name.toLowerCase().equals("ne")) { name = "Ne"; }
+			else {
+				Species species = (Species)speciesList.get(name);
         		if (species == null) {
         			System.out.println("Error in reading third-body colliders: ");
         			System.out.println("The species '" + name + "' is not defined in the species.txt file.");
