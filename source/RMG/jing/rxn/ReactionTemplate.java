@@ -414,7 +414,7 @@ public class ReactionTemplate {
       	 * 24-SEPT-2010
       	 * Restoring the "if one species has more than one radical, automatically
       	 * 	assign it as the reactants".  It seems RMG's rate coefficient estimates
-      	 * 	for R. + HOO. --> .OO. + RH are not very accurate (ignition delays
+      	 * 	for the R. + HOO. --> .OO. + RH direction are not very accurate (ignition delays
       	 * 	change drastically, running the same condition.txt file).
       	 */
       	if (name.equals("H_Abstraction")) {
@@ -445,21 +445,27 @@ public class ReactionTemplate {
       			p_structure.setDirection(-1);
       		}
       		// for intra h migration, set the ROO. as the forward
-//        		if (name.equals("intra_H_migration")) {
-//              ChemGraph rcg = (ChemGraph)(p_structure.getReactants().next());
-//          	HashSet rrad = rcg.getRadicalNode();
-//           	Atom rra = (Atom)( (Node) ( (rrad.iterator()).next())).getElement();
-//              ChemGraph pcg = (ChemGraph)(p_structure.getProducts().next());
-//            	HashSet prad = pcg.getRadicalNode();
-//             	Atom pra = (Atom)( (Node) ( (prad.iterator()).next())).getElement();
-//              if (rra.isOxygen() && pra.isCarbon()) {
-//              	p_structure.setDirection(1);
-//               	reactants = p_structure.reactants;
-//              }
-//              else if (pra.isOxygen() && rra.isCarbon())
-//                  p_structure.setDirection(-1);
-//              }
-      
+			/*
+			 I think the reason for this is that our rate estimates 
+			 for migration from OH to C. are worse than from CH to O.
+			 (i.e. entirely missing and estimated by inappopriate averaging).
+			 This is a property of the current database and probably shouldn't be
+			 hard-coded like this, but for now I'll leave it. -- rwest 
+			*/
+        		if (name.equals("intra_H_migration")) {
+              ChemGraph rcg = (ChemGraph)(p_structure.getReactants().next());
+          	HashSet rrad = rcg.getRadicalNode();
+           	Atom rra = (Atom)( (Node) ( (rrad.iterator()).next())).getElement();
+              ChemGraph pcg = (ChemGraph)(p_structure.getProducts().next());
+            	HashSet prad = pcg.getRadicalNode();
+             	Atom pra = (Atom)( (Node) ( (prad.iterator()).next())).getElement();
+              if (rra.isOxygen() && pra.isCarbon()) {
+              	p_structure.setDirection(1);
+               	reactants = p_structure.reactants;
+              }
+              else if (pra.isOxygen() && rra.isCarbon())
+                  p_structure.setDirection(-1);
+              }
       	}
       }
       else {
@@ -556,20 +562,23 @@ public class ReactionTemplate {
       			p_structure.setDirection(-1);
       		}
       		// for intra h migration, set the ROO. as the forward
-//        		if (name.equals("intra_H_migration")) {
-//              ChemGraph rcg = (ChemGraph)(p_structure.getReactants().next());
-//          	HashSet rrad = rcg.getRadicalNode();
-//           	Atom rra = (Atom)( (Node) ( (rrad.iterator()).next())).getElement();
-//              ChemGraph pcg = (ChemGraph)(p_structure.getProducts().next());
-//            	HashSet prad = pcg.getRadicalNode();
-//             	Atom pra = (Atom)( (Node) ( (prad.iterator()).next())).getElement();
-//              if (rra.isOxygen() && pra.isCarbon()) {
-//              	p_structure.setDirection(1);
-//               	reactants = p_structure.reactants;
-//              }
-//              else if (pra.isOxygen() && rra.isCarbon())
-//                  p_structure.setDirection(-1);
-//              }
+			  /*
+			   I think the reason for this is as described above where this code is duplicated.
+			   */
+        		if (name.equals("intra_H_migration")) {
+              ChemGraph rcg = (ChemGraph)(p_structure.getReactants().next());
+          	HashSet rrad = rcg.getRadicalNode();
+           	Atom rra = (Atom)( (Node) ( (rrad.iterator()).next())).getElement();
+              ChemGraph pcg = (ChemGraph)(p_structure.getProducts().next());
+            	HashSet prad = pcg.getRadicalNode();
+             	Atom pra = (Atom)( (Node) ( (prad.iterator()).next())).getElement();
+              if (rra.isOxygen() && pra.isCarbon()) {
+              	p_structure.setDirection(1);
+               	reactants = p_structure.reactants;
+              }
+              else if (pra.isOxygen() && rra.isCarbon())
+                  p_structure.setDirection(-1);
+              }
       
       	}
       }

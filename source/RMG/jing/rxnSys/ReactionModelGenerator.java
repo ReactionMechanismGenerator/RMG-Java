@@ -4013,7 +4013,10 @@ public class ReactionModelGenerator {
 		  edgeTol>0 && 
 		  (((CoreEdgeReactionModel)reactionModel).getEdge().getSpeciesNumber()+reactionModel.getSpeciesNumber())>= minSpeciesForPruning){
 			
-			int numberToBePruned = ((CoreEdgeReactionModel)reactionModel).getEdge().getSpeciesNumber() - maxEdgeSpeciesAfterPruning; 
+			int numberToBePruned = ((CoreEdgeReactionModel)reactionModel).getEdge().getSpeciesNumber() - maxEdgeSpeciesAfterPruning;
+			System.out.println("PDep Pruning DEBUG:\nThe number of species in the model's edge, before pruning: " + ((CoreEdgeReactionModel)reactionModel).getEdge().getSpeciesNumber());
+			System.out.println("PDep Pruning DEBUG:\nRMG thinks the following number of species" + 
+					" needs to be pruned: " + numberToBePruned);
 			Iterator iter = JDAS.edgeID.keySet().iterator();//determine the maximum edge flux ratio for each edge species
 			while(iter.hasNext()){
 				Species spe = (Species)iter.next();
@@ -4031,6 +4034,9 @@ public class ReactionModelGenerator {
 					// at this point prunableSpecies includes ALL prunable species, no matter how large their flux
 				}
 			}
+			
+			System.out.println("PDep Pruning DEBUG:\nRMG has marked the following number of species" +
+					" to be pruned, before checking against explored (included) species: " + prunableSpeciesMap.size());
 
 			// Pressure dependence only: Species that are included in any
 			// PDepNetwork are not eligible for pruning, so they must be removed
@@ -4046,6 +4052,9 @@ public class ReactionModelGenerator {
 					prunableSpeciesMap.remove(iter.next());
 				}
 			}
+			
+			System.out.println("PDep Pruning DEBUG:\nRMG now has marked the following number of species" +
+					" to be pruned, after checking against explored (included) species: " + prunableSpeciesMap.size());
 
 			// sort the prunableSpecies by maxmaxRatio
 			// i.e. sort the map by values
@@ -4057,6 +4066,8 @@ public class ReactionModelGenerator {
 							 }
 							 });
 			List speciesToPrune = new LinkedList();
+			int belowThreshold = 0;
+			int lowMaxFlux = 0;
 			for (Iterator it = prunableSpeciesList.iterator(); it.hasNext();) {
 				Map.Entry entry = (Map.Entry)it.next();
 				Species spe = (Species)entry.getKey();
@@ -4065,14 +4076,20 @@ public class ReactionModelGenerator {
 				{
 					System.out.println("Edge species "+spe.getChemkinName() +" has a maximum flux ratio ("+maxmaxRatio+") lower than edge inclusion threshhold and will be pruned.");
 					speciesToPrune.add(spe);
+					++belowThreshold;
 				}
 				else if ( numberToBePruned - speciesToPrune.size() > 0 ) {
 					System.out.println("Edge species "+spe.getChemkinName() +" has a low maximum flux ratio ("+maxmaxRatio+") and will be pruned to reduce the edge size to the maximum ("+maxEdgeSpeciesAfterPruning+").");
-					speciesToPrune.add(spe);					
+					speciesToPrune.add(spe);
+					++lowMaxFlux;
 				}
 				else break;  // no more to be pruned
 			}
 			
+			System.out.println("PDep Pruning DEBUG:\nRMG has marked the following number of species" +
+					" to be pruned due to max flux ratio lower than threshold: " + belowThreshold);
+			System.out.println("PDep Pruning DEBUG:\nRMG has marked the following number of species" +
+					" to be pruned due to low max flux ratio : " + lowMaxFlux);
 			
 			//now, speciesToPrune has been filled with species that should be pruned from the edge
 			System.out.println("Pruning...");
@@ -4256,6 +4273,7 @@ public class ReactionModelGenerator {
 				}
 			} 
 		}
+		System.out.println("PDep Pruning DEBUG:\nThe number of species in the model's edge, after pruning: " + ((CoreEdgeReactionModel)reactionModel).getEdge().getSpeciesNumber());
         return;
     }
 	
