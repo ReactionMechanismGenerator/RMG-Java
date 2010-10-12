@@ -1046,14 +1046,6 @@ public class ChemParser {
         		}
         		name = species.getChemkinName();
         	}
-        	/*
-        	 * ELSE, the name read in is either N2, AR, HE, or NE
-        	 * 	To be consistent with the chem.inp output, make all of these
-        	 * 	third-body gases uppercase
-        	 */
-        	else {
-        		name = name.toUpperCase();
-        	}
         	Double factor = Double.valueOf(st.nextToken().trim());
             thirdBodyList.put(name, factor);
         }
