@@ -456,7 +456,7 @@ public  Chemkin() {
   //## operation writeChemkinElement()
   public static  String writeChemkinElement() {
       //#[ operation writeChemkinElement()
-      return "ELEMENTS H C O N NE AR HE Si S END\n";
+      return "ELEMENTS H C O N Ne Ar He Si S END\n";
       //#]
   }
 
@@ -682,7 +682,7 @@ public  Chemkin() {
       thermoHeader += "! The rest of the species are estimated by RMG (http://rmg.mit.edu/)            \n";
       // thermoHeader += "! Ar HF298=0.  REF=C.E. Moore 'Atomic Energy Levels' NSRDS-NBS 35 (1971) p.211  \n";
       // thermoHeader += "! NASA Glen (former Lewis) Research Center   (1988)                             \n";
-      thermoHeader += "AR                L 6/88AR  1               G   200.000  6000.000 1000.        1\n";
+      thermoHeader += "Ar                L 6/88Ar  1               G   200.000  6000.000 1000.        1\n";
       thermoHeader += " 0.25000000E+01 0.00000000E+00 0.00000000E+00 0.00000000E+00 0.00000000E+00    2\n";
       thermoHeader += "-0.74537500E+03 0.43796749E+01 0.25000000E+01 0.00000000E+00 0.00000000E+00    3\n";
       thermoHeader += " 0.00000000E+00 0.00000000E+00-0.74537500E+03 0.43796749E+01                   4\n";
@@ -693,14 +693,14 @@ public  Chemkin() {
       thermoHeader += " 2.43530612E-09-1.40881235E-12-1.04697628E+03 2.96747038E+00                   4\n";
       // thermoHeader += "!Ne    HF298= 0.0 KJ REF=McBride, Heimel, Ehlers & Gordon                       \n";
       // thermoHeader += "!                'Thermodynamic Properties to 6000 K...' NASA SP-3001  (1963)   \n";
-      thermoHeader += "NE                L10/90NE  1               G    200.0   6000.00  1000.0       1\n";
+      thermoHeader += "Ne                L10/90Ne  1               G    200.0   6000.00  1000.0       1\n";
       thermoHeader += " 0.25000000E+01 0.00000000E+00 0.00000000E+00 0.00000000E+00 0.00000000E+00    2\n";
       thermoHeader += "-0.74537500E+03 0.33553227E+01 0.25000000E+01 0.00000000E+00 0.00000000E+00    3\n";
       thermoHeader += " 0.00000000E+00 0.00000000E+00-0.74537498E+03 0.33553227E+01                   4\n";
       // thermoHeader += "7440-59-7                                                                       \n";                                                                               
       // thermoHeader += "He  HF298=0.0 KJ  REF=McBride, Heimel, Ehlers & Gordon "Thermodynamic Properties\n";
       // thermoHeader += "to 6000K ..." NASA SP-3001 1963.                                                \n";                                                
-      thermoHeader += "HE REF ELEMENT          HE  1               G   200.000  6000.000 1000.        1\n";
+      thermoHeader += "He REF ELEMENT          He  1               G   200.000  6000.000 1000.        1\n";
       thermoHeader += " 2.50000000E+00 0.00000000E+00 0.00000000E+00 0.00000000E+00 0.00000000E+00    2\n";
       thermoHeader += "-7.45375000E+02 9.28723974E-01 2.50000000E+00 0.00000000E+00 0.00000000E+00    3\n";
       thermoHeader += " 0.00000000E+00 0.00000000E+00-7.45375000E+02 9.28723974E-01 0.00000000E+00    4\n\n";
@@ -905,8 +905,8 @@ public static void setSMILES(boolean yesno) {
 		String coreSpecies ="";
 		// Write the three inert gas species' transport data
 		//	Data comes from CHEMKIN-v4.1.1 manual
-		coreSpecies +=	"AR                 0   136.500     3.330     0.000     0.000     0.000 !CHEMKIN-v4.1.1\n" +
-						"HE                 0    10.200     2.576     0.000     0.000     0.000 !CHEMKIN-v4.1.1\n" +
+		coreSpecies +=	"Ar                 0   136.500     3.330     0.000     0.000     0.000 !CHEMKIN-v4.1.1\n" +
+						"He                 0    10.200     2.576     0.000     0.000     0.000 !CHEMKIN-v4.1.1\n" +
 						"N2                 1    97.530     3.621     0.000     1.760     4.000 !CHEMKIN-v4.1.1\n";
 		
 		Iterator iter = cerm.getSpecies();
