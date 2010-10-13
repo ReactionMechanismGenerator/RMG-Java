@@ -1013,10 +1013,10 @@ public class Species {
 
     //## operation selectDeltaEDown()
     public void selectDeltaEDown() {
-        //#[ operation selectDeltaEDown()
+        // Doing this by species name is a really bad idea.
         String name = getName();
 
-        if (name.equals("AR")) deltaEDown = 374.0;
+        if (name.equals("Ar")) deltaEDown = 374.0;
         else if (name.equals("H2")) deltaEDown = 224.0;
         else if (name.equals("O2")) deltaEDown = 517.0;
         else if (name.equals("N2")) deltaEDown = 461.0;
@@ -1029,9 +1029,6 @@ public class Species {
 
         return;
 
-
-
-        //#]
     }
 
     //## operation selectLJParametersForSpecialMolecule()
@@ -1113,11 +1110,6 @@ public class Species {
         	}
         }
         return s;
-
-
-
-
-        //#]
     }
 
 	public String toStringWithoutH(int i) {
@@ -1137,11 +1129,6 @@ public class Species {
         	}
         }*/
         return s;
-
-
-
-
-        //#]
     }
 	
 	// Convert ChemGraph (p_chemGraph) to String (InChIstring)
