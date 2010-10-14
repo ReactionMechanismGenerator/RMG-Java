@@ -75,6 +75,16 @@ program fame
     call network_calculateRateCoefficients(net, nIsom, nReac, nProd, &
         Elist, nGrains, Tlist, nT, Plist, nP, method, K)
 
+    ! Adjust units of k(T,P) values to combinations of cm^3, mol, and s
+    ! Prior to this point FAME has been thinking in terms of m^3, mol, and s,
+    ! but RMG thinks in terms of cm^3, mol, and s
+    ! This particularly affects net reactions of the form A + B -> products,
+    ! which would be off by 10^6 without this
+    write (1,fmt='(A)') 'Converting phenomenological rate coefficients to cm^3, mol, and s...'
+    do i = 1, nIsom+nReac+nProd
+        K(:,:,:,i) = K(:,:,:,i) * 1.0e6 ** (size(net%isomers(i)%species) - 1)
+    end do
+
     ! Write results (to stdout)
     write (1,fmt='(A)') 'Writing results header...'
     call writeOutputIntro(net, nIsom, nReac, nProd, Tlist, nT, Plist, nP, Elist, nGrains, &
