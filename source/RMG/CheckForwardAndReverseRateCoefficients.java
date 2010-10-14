@@ -231,7 +231,7 @@ public class CheckForwardAndReverseRateCoefficients {
 					}
 					// Calculate G_RT
 					if (rmgRate || chebyshevRate) {
-						double[] Keq = new double[T.length];
+						double[] logKeq = new double[T.length];
 						String outputString = "";
 						for (int iii=0; iii<T.length; iii++) {
 							double H_RT = 0; double S_R = 0; int coeffsCounter = 0;
@@ -266,9 +266,9 @@ public class CheckForwardAndReverseRateCoefficients {
 										coeffs[prodsIndex[numProds]][coeffsCounter+11]*Temperature*Temperature*Temperature*Temperature/4 + 
 										coeffs[prodsIndex[numProds]][coeffsCounter+13];
 							}
-							Keq[iii] = Math.log10(Math.exp(1))*(-H_RT + S_R) + (numP-numR)*Math.log(Pressure[0]/82.06/Temperature);
-//							if (logk[iii] - Keq[iii] > 20 && numP==1) System.out.println("logkr > 20 at T=" + T[iii] + "K for " + shortRxnString);
-//							else if (logk[iii] - Keq[iii] > 30) System.out.println("logkr > 30 at T=" + T[iii] + "K for " + shortRxnString);
+							logKeq[iii] = Math.log10(Math.exp(1))*(-H_RT + S_R) + (numP-numR)*Math.log10(Pressure[0]/82.06/Temperature);
+//							if (logk[iii] - logKeq[iii] > 20 && numP==1) System.out.println("logkr > 20 at T=" + T[iii] + "K for " + shortRxnString);
+//							else if (logk[iii] - logKeq[iii] > 30) System.out.println("logkr > 30 at T=" + T[iii] + "K for " + shortRxnString);
 							// Check if Ea is sensible
 //							if (rmgRate && iii==T.length-1) {
 //								double deltaHrxn = H_RT * R * T[iii];
@@ -279,7 +279,7 @@ public class CheckForwardAndReverseRateCoefficients {
 						}
 						String output = "";
 						for (int iii=0; iii<T.length; iii++) {
-							output += (logk[iii] - Keq[iii]) + "\t";
+							output += (logk[iii] - logKeq[iii]) + "\t";
 						}
 						System.out.println(output + shortRxnString);
 					}
