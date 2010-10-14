@@ -76,6 +76,16 @@ program fame
     call network_calculateRateCoefficients(net, nIsom, nReac, nProd, &
         Elist, nGrains, Tlist, nT, Plist, nP, method, K)
 
+    ! Adjust units of k(T,P) values to combinations of cm^3, mol, and s
+    ! Prior to this point FAME has been thinking in terms of m^3, mol, and s,
+    ! but RMG thinks in terms of cm^3, mol, and s
+    ! This particularly affects net reactions of the form A + B -> products,
+    ! which would be off by 10^6 without this
+    write (1,fmt='(A)') 'Converting phenomenological rate coefficients to cm^3, mol, and s...'
+    do i = 1, nIsom+nReac+nProd
+        K(:,:,:,i) = K(:,:,:,i) * 1.0e6 ** (size(net%isomers(i)%species) - 1)
+    end do
+
     ! Write results (to stdout)
     write (1,fmt='(A)') 'Writing results header...'
     call writeOutputIntro(net, nIsom, nReac, nProd, Tlist, nT, Plist, nP, Elist, nGrains, &
@@ -96,7 +106,7 @@ program fame
             if (i /= j) then
                 write (*, fmt='(A)'), '# The reactant and product isomers'
                 write (*,*), j, i
-                write (*, fmt='(A)'), '# Table of phenomenological rate coefficients'
+                write (*, fmt='(A)'), '# Table of phenomenological rate coefficients (cm3, mol, s)'
                 write (fmtStr,*), '(A8,', nP, 'ES14.2E2)'
                 write (*, fmtStr), 'T \ P', Plist
                 write (fmtStr,*), '(F8.1,', nP, 'ES14.4E3)'
@@ -106,14 +116,14 @@ program fame
                 if (model == 1) then
                     call fitChebyshevModel(K(:,:,i,j), Tlist, Plist, Tmin, Tmax, &
                         Pmin, Pmax, modelOptions(1), modelOptions(2), chebyshevCoeffs(:,:,i,j))
-                    write (*, fmt='(A)'), '# The fitted Chebyshev polynomial model'
+                    write (*, fmt='(A)'), '# The fitted Chebyshev polynomial model (cm3, mol, s)'
                     write (fmtStr,*), '(', modelOptions(1), 'ES14.4E3)'
                     do t = 1, modelOptions(1)
                         write (*,fmt=fmtStr), chebyshevCoeffs(t,:,i,j)
                     end do
                 elseif (model == 2) then
                     call fitPDepArrheniusModel(K(:,:,i,j), Tlist, Plist, pDepArrhenius(:,i,j))
-                    write (*, fmt='(A)'), '# The fitted pressure-dependent Arrhenius model'
+                    write (*, fmt='(A)'), '# The fitted pressure-dependent Arrhenius model (cm3, mol, s)'
                     do p = 1, nP
                         write (*, fmt='(ES8.2E2,ES14.4E3,F14.4,F10.4)'), Plist(p), &
                             pDepArrhenius(p,i,j)%A, pDepArrhenius(p,i,j)%Ea, pDepArrhenius(p,i,j)%n

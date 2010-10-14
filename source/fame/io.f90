@@ -197,11 +197,7 @@ contains
         allocate( net%isomers(1:numIsomers+numReactants+numProducts) )
         do i = 1, numIsomers+numReactants+numProducts
             call readIsomer(net%isomers(i), net%species)
-            if (size(net%isomers(i)%species) == 1) then
-                write (1,fmt=*) "    Isomer", i, "is", net%isomers(i)%species(1)
-            else
-                write (1,fmt=*) "    Isomer", i, "is", net%isomers(i)%species(1), "and", net%isomers(i)%species(2)
-            end if
+            write (1,fmt=*) "    Isomer", i, "is ", net%isomers(i)%name
         end do
 
         ! Read reactions
@@ -302,6 +298,9 @@ contains
             stop
         end if
 
+        ! Set equation
+        rxn%equation = trim(isomerList(rxn%reac)%name)//' -> '//trim(isomerList(rxn%prod)%name)
+
     end subroutine
 
     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -338,7 +337,12 @@ contains
             end do
         end do
 
-
+        ! Generate name string
+        if (size(isom%species) == 1) then
+            isom%name = trim(speciesList(isom%species(1))%name)
+        else
+            isom%name = trim(speciesList(isom%species(1))%name)//' + '//trim(speciesList(isom%species(2))%name)
+        end if
 
     end subroutine
 

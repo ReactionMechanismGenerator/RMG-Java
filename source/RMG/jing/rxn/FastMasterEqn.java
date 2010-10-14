@@ -1024,6 +1024,12 @@ public class FastMasterEqn implements PDepKineticsEstimator {
 			// Close stream when finished
 			br.close();
 
+            // If we ignored a rate coefficient from the FAME output for any
+            // reason, then fail the FAME job
+            if (ignoredARate) {
+                throw new PDepException("One or more rate coefficients from the FAME output was ignored, possibly due to a NaN or Inf rate.");
+            }
+
 			// Set reverse reactions
 			int i = 0;
             Temperature T = temperatures[0];
@@ -1050,9 +1056,14 @@ public class FastMasterEqn implements PDepKineticsEstimator {
 						}
 					}
 					if (!found) {
-						rxn1.setReverseReaction(null);
-						i++;
-					}
+                        // Irreversible reactions are okay for included isomer -> nonincluded isomer only
+                        if (rxn1.getReactant().getIncluded() && !rxn1.getProduct().getIncluded()) {
+                            rxn1.setReverseReaction(null);
+                            i++;
+                        }
+                        // Otherwise raise an exception
+                        else throw new PDepException("Unable to identify reverse reaction for " + rxn1.toString() + " after FAME calculation.");
+                    }
 				}
 				else
 					i++;
