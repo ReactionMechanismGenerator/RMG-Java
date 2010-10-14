@@ -4023,20 +4023,21 @@ public class ReactionModelGenerator {
 				Integer id = (Integer)JDAS.edgeID.get(spe);
 				double maxmaxRatio = ds0.maxEdgeFluxRatio[id-1];
 				boolean prunable = ds0.prunableSpecies[id-1];
-				for (Integer i = 1; i < reactionSystemList.size(); i++) {//go through the rest of the reaction systems to see if there are higher max flux ratios
+				//go through the rest of the reaction systems to see if there are higher max flux ratios
+				for (Integer i = 1; i < reactionSystemList.size(); i++) {
 					JDAS ds = (JDAS)((ReactionSystem) reactionSystemList.get(i)).getDynamicSimulator();
 					if(ds.maxEdgeFluxRatio[id-1] > maxmaxRatio) maxmaxRatio = ds.maxEdgeFluxRatio[id-1];
-					if(prunable && !ds.prunableSpecies[id-1]) prunable = false;//I can't imagine a case where this would occur (if the conc. is zero at one condition, it should be zero at all conditions), but it is included for completeness
+					if(!ds.prunableSpecies[id-1]) prunable = false;// probably redundant: if the conc. is zero in one system, it should be zero in all systems, but it is included for completeness
 				}
-				//if the maximum max edge flux ratio is less than the edge inclusion threshhold and the species is "prunable" (i.e. it doesn't have any reactions producing it with zero flux), schedule the species for pruning
-				if( prunable){  //  && maxmaxRatio < edgeTol
+				//if the species is "prunable" (i.e. it doesn't have any reactions producing it with zero flux), add it to the prunableSpeciesMap
+				if( prunable){
 					prunableSpeciesMap.put(spe, maxmaxRatio);
-					// at this point prunableSpecies includes ALL prunable species, no matter how large their flux
 				}
 			}
+			// at this point prunableSpeciesMap includes ALL prunable species, no matter how large their flux
 			
 			System.out.println("PDep Pruning DEBUG:\nRMG has marked the following number of species" +
-					" to be pruned, before checking against explored (included) species: " + prunableSpeciesMap.size());
+					" as prunable, before checking against explored (included) species: " + prunableSpeciesMap.size());
 
 			// Pressure dependence only: Species that are included in any
 			// PDepNetwork are not eligible for pruning, so they must be removed
@@ -4053,8 +4054,8 @@ public class ReactionModelGenerator {
 				}
 			}
 			
-			System.out.println("PDep Pruning DEBUG:\nRMG now has marked the following number of species" +
-					" to be pruned, after checking against explored (included) species: " + prunableSpeciesMap.size());
+			System.out.println("PDep Pruning DEBUG:\nRMG now reduced the number of prunable species," +
+					" after checking against explored (included) species, to: " + prunableSpeciesMap.size());
 
 			// sort the prunableSpecies by maxmaxRatio
 			// i.e. sort the map by values
