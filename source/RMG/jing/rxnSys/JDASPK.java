@@ -440,14 +440,21 @@ public class JDASPK extends JDAS {
 		    line=br.readLine();//read the time integrated to
 		    double finalTime = Double.parseDouble(line.trim());
 		    System.out.println("ODE solver integrated to "+ finalTime+" sec.");
-		    for (int i=0; i<edgeID.size(); i++){//read the "prunability index" (0 or 1) and maximum ratio (edge flux/Rchar) for each edge species; note that edgeID only contains species, not P-dep networks, so we will not be reading in all the output from DASSL...only the flux ratio to actual edge species (vs. P-dep network pseudospecies)
-			line = br.readLine().trim();//read the prunability index
-			int q = Integer.parseInt(line);
-			if(q > 0) prunableSpecies[i]=true; //q should be 1 or 0
-			else prunableSpecies[i] = false;
-			line = br.readLine().trim();//read the max edge flux ratio
-			if(line.startsWith("+Inf")) maxEdgeFluxRatio[i]=Double.POSITIVE_INFINITY;
-			else maxEdgeFluxRatio[i] = Double.parseDouble(line);
+			// read the "prunability index" (0 or 1) and maximum ratio (edge flux/Rchar) for each edge species; 
+			// note that edgeID only contains species, not P-dep networks, so we will not be reading in all the output from DASSL,
+			// only the flux ratio to actual edge species (vs. P-dep network pseudospecies)
+		    for (int i=0; i<edgeID.size(); i++){
+				line = br.readLine().trim(); //read the prunability index
+				int q = Integer.parseInt(line); //q should be 1 or 0
+				if (q == 1) {prunableSpecies[i]=true;}
+				else if (q == 0) {prunableSpecies[i] = false;}
+				else {
+					System.out.println("Misread solver output file - prunable species index should be 0 or 1, not "+q);
+					System.exit(0);
+				}
+				line = br.readLine().trim();//read the max edge flux ratio
+				if(line.startsWith("+Inf")) maxEdgeFluxRatio[i]=Double.POSITIVE_INFINITY;
+				else maxEdgeFluxRatio[i] = Double.parseDouble(line);
 		    }
 		}
         	
