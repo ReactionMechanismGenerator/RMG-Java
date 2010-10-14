@@ -85,8 +85,8 @@ public class CheckForwardAndReverseRateCoefficients {
 			while (st.hasMoreTokens()) {
 				String nextToken = st.nextToken().toLowerCase();
 				if (nextToken.equals("kcal/mol")) R = 1.987e-3;
-				else if (nextToken.equals("kj/mol")) R = 4.184e-3;
-				else if (nextToken.equals("j/mol")) R = 4.184;
+				else if (nextToken.equals("kj/mol")) R = 8.314e-3;
+				else if (nextToken.equals("j/mol")) R = 8.314;
 			}
 			// next line should have kinetic info
 			line = ChemParser.readMeaningfulLine(br_thermodat, true);
