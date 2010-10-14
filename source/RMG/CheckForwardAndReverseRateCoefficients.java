@@ -266,7 +266,7 @@ public class CheckForwardAndReverseRateCoefficients {
 										coeffs[prodsIndex[numProds]][coeffsCounter+11]*Temperature*Temperature*Temperature*Temperature/4 + 
 										coeffs[prodsIndex[numProds]][coeffsCounter+13];
 							}
-							logKeq[iii] = Math.log10(Math.exp(1))*(-H_RT + S_R) + (numP-numR)*Math.log10(Pressure[0]/82.06/Temperature);
+							logKeq[iii] = Math.log10(Math.exp(1))*(-H_RT + S_R) + (numP-numR)*Math.log10(1.0/82.06/Temperature);
 //							if (logk[iii] - logKeq[iii] > 20 && numP==1) System.out.println("logkr > 20 at T=" + T[iii] + "K for " + shortRxnString);
 //							else if (logk[iii] - logKeq[iii] > 30) System.out.println("logkr > 30 at T=" + T[iii] + "K for " + shortRxnString);
 							// Check if Ea is sensible
