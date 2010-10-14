@@ -236,7 +236,7 @@ public class CheckForwardAndReverseRateCoefficients {
 						for (int iii=0; iii<T.length; iii++) {
 							double H_RT = 0; double S_R = 0; int coeffsCounter = 0;
 							double Temperature = T[iii];
-							if (Temperature > 1000.0) coeffsCounter = 0;
+							if (Temperature < 1000.0) coeffsCounter = 0;
 							else coeffsCounter = -7;
 							for (int numReacts=0; numReacts<numR; numReacts++) {
 								H_RT -= coeffs[reactsIndex[numReacts]][coeffsCounter+7] + 
