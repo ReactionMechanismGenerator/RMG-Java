@@ -105,7 +105,7 @@ program fame
             if (i /= j) then
                 write (*, fmt='(A)'), '# The reactant and product isomers'
                 write (*,*), j, i
-                write (*, fmt='(A)'), '# Table of phenomenological rate coefficients'
+                write (*, fmt='(A)'), '# Table of phenomenological rate coefficients (cm3, mol, s)'
                 write (fmtStr,*), '(A8,', nP, 'ES14.2E2)'
                 write (*, fmtStr), 'T \ P', Plist
                 write (fmtStr,*), '(F8.1,', nP, 'ES14.4E3)'
@@ -115,14 +115,14 @@ program fame
                 if (model == 1) then
                     call fitChebyshevModel(K(:,:,i,j), Tlist, Plist, Tmin, Tmax, &
                         Pmin, Pmax, modelOptions(1), modelOptions(2), chebyshevCoeffs(:,:,i,j))
-                    write (*, fmt='(A)'), '# The fitted Chebyshev polynomial model'
+                    write (*, fmt='(A)'), '# The fitted Chebyshev polynomial model (cm3, mol, s)'
                     write (fmtStr,*), '(', modelOptions(1), 'ES14.4E3)'
                     do t = 1, modelOptions(1)
                         write (*,fmt=fmtStr), chebyshevCoeffs(t,:,i,j)
                     end do
                 elseif (model == 2) then
                     call fitPDepArrheniusModel(K(:,:,i,j), Tlist, Plist, pDepArrhenius(:,i,j))
-                    write (*, fmt='(A)'), '# The fitted pressure-dependent Arrhenius model'
+                    write (*, fmt='(A)'), '# The fitted pressure-dependent Arrhenius model (cm3, mol, s)'
                     do p = 1, nP
                         write (*, fmt='(ES8.2E2,ES14.4E3,F14.4,F10.4)'), Plist(p), &
                             pDepArrhenius(p,i,j)%A, pDepArrhenius(p,i,j)%Ea, pDepArrhenius(p,i,j)%n
