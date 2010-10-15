@@ -162,7 +162,7 @@ public class Graph {
                 Atom atom = (Atom)node.getElement();
                 int val = (int)atom.getValency();
 
-                int bondOrder = 0;
+                double bondOrder = 0;
                 Iterator neighbor_iter = node.getNeighbor();
                 while (neighbor_iter.hasNext()) {
                         Arc arc = (Arc)neighbor_iter.next();
@@ -171,7 +171,7 @@ public class Graph {
                 }
                 if (bondOrder > val) throw new InvalidConnectivityException();
                 else if (bondOrder < val) {
-                        addedH.put(node, new Integer(val-bondOrder));
+                        addedH.put(node, new Integer((int) (val-bondOrder)));
                 }
         }
         //Graph g = getGraph();
