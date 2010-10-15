@@ -865,10 +865,6 @@ public abstract class JDAS implements DAESolver {
                                 tempProdArray[0]=edgeSpeciesCounter;//note that if there are no non-included reactions that have all core reactants for a particular P-dep network, then the ID will be allocated, but not used...hopefully this would not cause problems with the Fortran code
                                 double k = 0.0;
 				boolean allCoreReac=false;
-                             //   double k = pdn.getKLeak(index);//index in DASSL should correspond to the same (reactionSystem/TPcondition) index as used by kLeak
-                             //   if (!pdn.isActive() && pdn.getIsChemAct()) {
-                             //           k = pdn.getEntryReaction().calculateTotalRate(p_temperature);
-                             //   }
 				if(pdn.getPathReactions().size() == 1 && pdn.getNonincludedReactions().size() == 1 && pdn.getNetReactions().size() == 0){//// If there is only one path reaction (and thus only one nonincluded reaction), use the high-pressure limit rate as the flux rather than the k(T,P) value (cf. PDepNetwork.getLeakFlux())
 				    PDepReaction rxn = pdn.getPathReactions().get(0);
 				    int reacCount=0;
@@ -1046,25 +1042,6 @@ public abstract class JDAS implements DAESolver {
                                             }
                                     }
                             }
-
-                           //6/19/09 gmagoon: original code below; with new P-dep implementation, it would only take into account forward reactions              
-                                            //if (rxn.isEdgeReaction(model)) {
-                                            //	edgeReactionCounter++;
-                                            //	String str = getEdgeReactionString(model, edgeID, rxn, p_temperature, p_pressure);
-                                            //	edgeReacInfoString.append("\n" + str);
-                                            //}
-                           //a potentially simpler approach based on the original approach (however, it seems like isEdgeReaction may return false even if there are some core products along with edge products):
-    //                                        PDepReaction rxnReverse = (PDepReaction)rxn.getReverseReaction();
-    //                                        if (rxn.isEdgeReaction(model)) {
-    //                                            edgeReactionCounter++;
-    //					    String str = getEdgeReactionString(model, edgeID, rxn, p_temperature, p_pressure);
-    //					    edgeReacInfoString.append("\n" + str);
-    //					}
-    //                                        else if (rxnReverse.isEdgeReaction(model)){
-    //                                            edgeReactionCounter++;
-    //					    String str = getEdgeReactionString(model, edgeID, rxn, p_temperature, p_pressure);
-    //					    edgeReacInfoString.append("\n" + str);
-    //                                        }
                             //second, consider kLeak of each reaction network so that the validity of each reaction network may be tested
                             //in the original CHEMDIS approach, we included a reaction and pseudospecies for each kleak/P-dep network
                             //with the FAME approach we still consider each P-dep network as a pseudospecies, but we have multiple reactions contributing to this pseudo-species, with each reaction having different reactants
@@ -1078,10 +1055,6 @@ public abstract class JDAS implements DAESolver {
                                 tempProdArray[0]=edgeSpeciesCounter;//note that if there are no non-included reactions that have all core reactants for a particular P-dep network, then the ID will be allocated, but not used...hopefully this would not cause problems with the Fortran code
                                 double k = 0.0;
 				boolean allCoreReac=false;
-                             //   double k = pdn.getKLeak(index);//index in DASSL should correspond to the same (reactionSystem/TPcondition) index as used by kLeak
-                             //   if (!pdn.isActive() && pdn.getIsChemAct()) {
-                             //           k = pdn.getEntryReaction().calculateTotalRate(p_temperature);
-                             //   }
 				if(pdn.getPathReactions().size() == 1 && pdn.getNonincludedReactions().size() == 1 && pdn.getNetReactions().size() == 0){//// If there is only one path reaction (and thus only one nonincluded reaction), use the high-pressure limit rate as the flux rather than the k(T,P) value (cf. PDepNetwork.getLeakFlux())
 				    PDepReaction rxn = pdn.getPathReactions().get(0);
 				    int reacCount=0;
