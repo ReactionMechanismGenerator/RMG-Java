@@ -30,7 +30,6 @@ program fame
     
     ! Use unit 1 for logging; file will be called fame.log or fort.1
     open(1, file='fame.log')
-    open(2, file='input.txt')
 
     ! Log header
 
@@ -136,7 +135,6 @@ program fame
     
     ! Close log file
     close(1)
-    close(2)
 
     deallocate(K, chebyshevCoeffs, pDepArrhenius)
 
