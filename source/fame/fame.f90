@@ -124,13 +124,15 @@ program fame
             invalidRate = 0
             do t = 1, nT
                 do p = 1, nP
-                    if (K(t,p,prod,reac) <= 0) invalidRate = 1
+                    if (K(t,p,prod,reac) <= 0) then
+                        !K(t,p,prod,reac) = 10**(-300)
+                        invalidRate = 1
+                    end if
                 end do
             end do
             if (invalidRate /= 0) then
-                write (*,fmt='(A)') 'ERROR: One or more rate coefficients not properly estimated.'
-                write (*,fmt='(A)') 'See fame.log for details.'
-                write (1,fmt='(A)') 'ERROR: One or more rate coefficients not properly estimated.'
+                write (1,fmt='(A)') 'Warning: One or more k(T,P) values for a net reaction was zero.'
+                write (1,fmt='(A)') 'These have been set to 1e-300 to allow for k(T,P) interpolation model fitting.'
                 write (1,fmt='(A)') trim(net%isomers(reac)%name)//' -> '//trim(net%isomers(prod)%name)
                 do t = 1, nT
                     write (1,fmt=*) K(t,:,prod,reac)
