@@ -1,8 +1,8 @@
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !
-!	fame.f90
+!   fame.f90
 !
-!	Copyright (c) 2008-2009 by Josh Allen.
+!   Copyright (c) 2008-2009 by Josh Allen.
 !
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
@@ -25,9 +25,11 @@ program fame
     type(ArrheniusKinetics), dimension(:,:,:), allocatable :: pDepArrhenius
     integer :: nIsom, nReac, nProd, nGrains, nT, nP, done
 
-    integer i, j, t, p
+    integer i, j, t, p, reac, prod
     character(len=64) fmtStr
-    
+
+    integer invalidRate
+
     ! Use unit 1 for logging; file will be called fame.log or fort.1
     open(1, file='fame.log')
 
@@ -62,7 +64,7 @@ program fame
     write (1,fmt='(A)') 'Determining energy grains...'
     call network_determineEnergyGrains(net, nIsom, grainSize, numGrains, maxval(Tlist), Elist)
     nGrains = size(Elist)
-    
+
     ! Calculate density of states for all isomers in network
     write (1,fmt='(A)') 'Calculating densities of states...'
     do i = 1, nIsom
@@ -98,41 +100,74 @@ program fame
     elseif (model == 2) then
         write (1,fmt='(A)') 'Fitting PDepArrhenius interpolation models...'
     end if
-    
+
     ! The phenomenological rate coefficients
-    do j = 1, nIsom+nReac
-        do i = 1, nIsom+nReac+nProd
-            if (i /= j) then
-                write (*, fmt='(A)'), '# The reactant and product isomers'
-                write (*,*), j, i
-                write (*, fmt='(A)'), '# Table of phenomenological rate coefficients (cm3, mol, s)'
-                write (fmtStr,*), '(A8,', nP, 'ES14.2E2)'
-                write (*, fmtStr), 'T \ P', Plist
-                write (fmtStr,*), '(F8.1,', nP, 'ES14.4E3)'
-                do t = 1, nT
-                    write (*, fmt=fmtStr), Tlist(t), K(t,:,i,j)
-                end do
-                if (model == 1) then
-                    call fitChebyshevModel(K(:,:,i,j), Tlist, Plist, Tmin, Tmax, &
-                        Pmin, Pmax, modelOptions(1), modelOptions(2), chebyshevCoeffs(:,:,i,j))
-                    write (*, fmt='(A)'), '# The fitted Chebyshev polynomial model (cm3, mol, s)'
-                    write (fmtStr,*), '(', modelOptions(1), 'ES14.4E3)'
-                    do t = 1, modelOptions(1)
-                        write (*,fmt=fmtStr), chebyshevCoeffs(t,:,i,j)
-                    end do
-                elseif (model == 2) then
-                    call fitPDepArrheniusModel(K(:,:,i,j), Tlist, Plist, pDepArrhenius(:,i,j))
-                    write (*, fmt='(A)'), '# The fitted pressure-dependent Arrhenius model (cm3, mol, s)'
-                    do p = 1, nP
-                        write (*, fmt='(ES8.2E2,ES14.4E3,F14.4,F10.4)'), Plist(p), &
-                            pDepArrhenius(p,i,j)%A, pDepArrhenius(p,i,j)%Ea, pDepArrhenius(p,i,j)%n
-                    end do
-                end if
-                write (*, fmt='(A)'), ''
+    ! The phenomenological rate coefficients
+    ! Note that, although we have generated the k(T,P) values in both
+    ! directions, we only need them in one direction (the other comes from
+    ! equilibrium)
+    ! Thus, we will only save the faster direction as output
+    do j = 1, nIsom+nReac+nProd
+        do i = 1, j-1
+            ! Decide which direction to save
+            if (i > nIsom+nReac .and. j > nIsom+nReac) then
+                ! Reaction is product channel -> product channel, which by
+                ! definition has zero rate, so we skip it
+                exit
+            elseif (sum(K(:,:,i,j) - K(:,:,j,i)) > 0) then
+                reac = j; prod = i
+            else
+                reac = i; prod = j
             end if
+            
+            ! Check for validity of phenomenological rate coefficients
+            invalidRate = 0
+            do t = 1, nT
+                do p = 1, nP
+                    if (K(t,p,prod,reac) <= 0) invalidRate = 1
+                end do
+            end do
+            if (invalidRate /= 0) then
+                write (*,fmt='(A)') 'ERROR: One or more rate coefficients not properly estimated.'
+                write (*,fmt='(A)') 'See fame.log for details.'
+                write (1,fmt='(A)') 'ERROR: One or more rate coefficients not properly estimated.'
+                write (1,fmt='(A)') trim(net%isomers(reac)%name)//' -> '//trim(net%isomers(prod)%name)
+                do t = 1, nT
+                    write (1,fmt=*) K(t,:,prod,reac)
+                end do
+                stop
+            end if
+            
+            write (*, fmt='(A)'), '# The reactant and product isomers'
+            write (*,*), reac, prod
+            write (*, fmt='(A)'), '# Table of phenomenological rate coefficients (cm3, mol, s)'
+            write (fmtStr,*), '(A8,', nP, 'ES14.2E2)'
+            write (*, fmtStr), 'T \ P', Plist
+            write (fmtStr,*), '(F8.1,', nP, 'ES14.4E3)'
+            do t = 1, nT
+                write (*, fmt=fmtStr), Tlist(t), K(t,:,prod,reac)
+            end do
+            if (model == 1) then
+                call fitChebyshevModel(K(:,:,prod,reac), Tlist, Plist, Tmin, Tmax, &
+                    Pmin, Pmax, modelOptions(1), modelOptions(2), chebyshevCoeffs(:,:,prod,reac))
+                write (*, fmt='(A)'), '# The fitted Chebyshev polynomial model (cm3, mol, s)'
+                write (fmtStr,*), '(', modelOptions(1), 'ES14.4E3)'
+                do t = 1, modelOptions(1)
+                    write (*,fmt=fmtStr), chebyshevCoeffs(t,:,prod,reac)
+                end do
+            elseif (model == 2) then
+                call fitPDepArrheniusModel(K(:,:,prod,reac), Tlist, Plist, pDepArrhenius(:,prod,reac))
+                write (*, fmt='(A)'), '# The fitted pressure-dependent Arrhenius model (cm3, mol, s)'
+                do p = 1, nP
+                    write (*, fmt='(ES8.2E2,ES14.4E3,F14.4,F10.4)'), Plist(p), &
+                        pDepArrhenius(p,prod,reac)%A, pDepArrhenius(p,prod,reac)%Ea, pDepArrhenius(p,prod,reac)%n
+                end do
+            end if
+            write (*, fmt='(A)'), ''
+
         end do
     end do
-    
+
     ! Close log file
     close(1)
 
