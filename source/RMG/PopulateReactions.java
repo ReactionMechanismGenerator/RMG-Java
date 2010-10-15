@@ -376,7 +376,7 @@ public class PopulateReactions {
 			        		for (int numSpecies=0; numSpecies<species.size(); ++numSpecies) {
 			        			Species currentSpec = (Species)species.get(numSpecies);
 			        			if (!allSpeciesInNetwork.contains(currentSpec)) {
-			        				listOfReactions += "!\t" + String.format(formatSpeciesName,currentSpec.getName()) + currentSpec.getThermoData().toString() + currentSpec.getThermoData().getComments() + "\n";
+			        				listOfReactions += "!\t" + String.format(formatSpeciesName,currentSpec.getName()+"("+currentSpec.getID()+")") + currentSpec.getThermoData().toString() + currentSpec.getThermoData().getComments() + "\n";
 			        				allSpeciesInNetwork.add(currentSpec);
 			        			}
 			        		}
@@ -388,7 +388,7 @@ public class PopulateReactions {
 			        	for (int numPathRxns=0; numPathRxns<pathRxns.size(); numPathRxns++) {
 			        		Kinetics[] currentKinetics = pathRxns.get(numPathRxns).getKinetics();
 			        		for (int numKinetics=0; numKinetics<currentKinetics.length; ++numKinetics) {
-			        			listOfReactions += "!\t" + String.format(formatRxnName,pathRxns.get(numPathRxns).getStructure().toString()) + 
+			        			listOfReactions += "!\t" + String.format(formatRxnName,pathRxns.get(numPathRxns).getStructure().toRestartString(true)) + 
 			        				currentKinetics[numKinetics].toChemkinString(pathRxns.get(numPathRxns).calculateHrxn(new Temperature(298.0,"K")), new Temperature(298.0,"K"), false) + "\n";
 			        		}
 			        	}
