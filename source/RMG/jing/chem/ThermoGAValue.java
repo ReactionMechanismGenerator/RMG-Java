@@ -30,6 +30,7 @@
 package jing.chem;
 
 
+import java.text.DecimalFormat;
 import java.util.*;
 
 //## package jing::chem
@@ -189,16 +190,17 @@ public class ThermoGAValue {
     //## operation toString()
     public String toString() {
         //#[ operation toString()
+    	DecimalFormat twoDForm = new DecimalFormat("####.##");
         String s = "";
-        s = s + String.valueOf(H298) + '\t';
-        s = s + String.valueOf(S298) + '\t';
-        s = s + String.valueOf(Cp300) + '\t';
-        s = s + String.valueOf(Cp400) + '\t';
-        s = s + String.valueOf(Cp500) + '\t';
-        s = s + String.valueOf(Cp600) + '\t';
-        s = s + String.valueOf(Cp800) + '\t';
-        s = s + String.valueOf(Cp1000) + '\t';
-        s = s + String.valueOf(Cp1500);
+        s = s + Double.valueOf(twoDForm.format(H298)) + '\t';
+        s = s + Double.valueOf(twoDForm.format(S298)) + '\t';
+        s = s + Double.valueOf(twoDForm.format(Cp300)) + '\t';
+        s = s + Double.valueOf(twoDForm.format(Cp400)) + '\t';
+        s = s + Double.valueOf(twoDForm.format(Cp500)) + '\t';
+        s = s + Double.valueOf(twoDForm.format(Cp600)) + '\t';
+        s = s + Double.valueOf(twoDForm.format(Cp800)) + '\t';
+        s = s + Double.valueOf(twoDForm.format(Cp1000)) + '\t';
+        s = s + Double.valueOf(twoDForm.format(Cp1500)) + '\t';
 
         return s;
         //#]

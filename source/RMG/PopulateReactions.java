@@ -43,6 +43,7 @@ import jing.chemParser.ChemParser;
 import jing.param.Temperature;
 import jing.rxn.ArrheniusKinetics;
 import jing.rxn.ArrheniusEPKinetics;
+import jing.rxn.BathGas;
 import jing.rxn.Kinetics;
 import jing.rxn.LibraryReactionGenerator;
 import jing.rxn.PDepIsomer;
@@ -102,6 +103,8 @@ public class PopulateReactions {
 			e1.printStackTrace();
 		}
 		
+		ArrheniusEPKinetics.setAUnits("moles");
+		ArrheniusEPKinetics.setEaUnits("cal/mol");
 		// Creating a new ReactionModelGenerator so I can set the variable temp4BestKinetics
 		//	and call the new readAndMakePTL and readAndMakePRL methods
 		ReactionModelGenerator rmg = new ReactionModelGenerator();
@@ -131,9 +134,9 @@ public class PopulateReactions {
 		//	These strings will hold the list of rxns (including the structure,
 		//	modified Arrhenius parameters, and source/comments) and the list of
 		//	species (including the chemkin name and graph), respectively
-		String listOfReactions = "Arrhenius 'A' parameter has units of: mol,cm3,s\n" +
+		String listOfReactions = "Arrhenius 'A' parameter has units of: " + ArrheniusEPKinetics.getAUnits() + ",cm3,s\n" +
 			"Arrhenius 'n' parameter is unitless and assumes Tref = 1K\n" +
-			"Arrhenius 'E' parameter has units of: kcal/mol\n\n";
+			"Arrhenius 'E' parameter has units of: " + ArrheniusEPKinetics.getEaUnits() + "\n\n";
 		String listOfSpecies = "";
 		
 		// Open and read the input file
@@ -347,7 +350,10 @@ public class PopulateReactions {
 	        	PDepKineticsEstimator pDepKineticsEstimator = 
 					((RateBasedPDepRME) rmg.getReactionModelEnlarger()).getPDepKineticsEstimator();
 	        	
+	        	BathGas bathGas = new BathGas(rs);
 	        	for (int numNetworks=0; numNetworks<PDepNetwork.getNetworks().size(); ++numNetworks) {
+	        		LinkedHashSet allSpeciesInNetwork = new LinkedHashSet();
+	        		
 	        		PDepNetwork pdepnetwork = PDepNetwork.getNetworks().get(numNetworks);
 	        		LinkedList isomers = pdepnetwork.getIsomers();
 	        		for (int numIsomers=0; numIsomers<isomers.size(); ++numIsomers) {
@@ -356,18 +362,45 @@ public class PopulateReactions {
 	        		}
 		        	pDepKineticsEstimator.runPDepCalculation(pdepnetwork,rs,cerm);
 		        	
-		        	LinkedList<PDepReaction> indivPDepRxns = pdepnetwork.getNetReactions();
-		        	for (int numPDepRxns=0; numPDepRxns<indivPDepRxns.size(); numPDepRxns++) {
-		        		listOfReactions += indivPDepRxns.get(numPDepRxns).toRestartString(systemTemp);
-		        	}
-		        	LinkedList<PDepReaction> nonIncludedRxns = pdepnetwork.getNonincludedReactions();
-		        	for (int numNonRxns=0; numNonRxns<nonIncludedRxns.size(); ++numNonRxns) {
-		        		listOfReactions += nonIncludedRxns.get(numNonRxns).toRestartString(systemTemp);
-		        	}
-		        	LinkedList<PDepIsomer> allpdepisomers = pdepnetwork.getIsomers();
-		        	for (int numIsomers=0; numIsomers<allpdepisomers.size(); ++numIsomers) {
-		        		LinkedList species = allpdepisomers.get(numIsomers).getSpeciesList();
-		        		speciesSet.addAll(species);		        		
+		        	if (pdepnetwork.getNetReactions().size() > 0) {
+			        	String formatSpeciesName = "%1$-16s\t";
+		        		listOfReactions += "!PDepNetwork\n" + 
+	        				"!\tdeltaEdown = " + bathGas.getExpDownParam() + " kJ/mol\n" +
+	        				"!\tbathgas MW = " + bathGas.getMolecularWeight() + " amu\n" +
+	        				"!\tbathgas LJ sigma = " + bathGas.getLJSigma() + " meters\n" +
+	        				"!\tbathgas LJ epsilon = " + bathGas.getLJEpsilon() + " Joules\n" +
+	        				"!Here are the species and their thermochemistry:\n";
+			        	LinkedList<PDepIsomer> allpdepisomers = pdepnetwork.getIsomers();
+			        	for (int numIsomers=0; numIsomers<allpdepisomers.size(); ++numIsomers) {
+			        		LinkedList species = allpdepisomers.get(numIsomers).getSpeciesList();
+			        		for (int numSpecies=0; numSpecies<species.size(); ++numSpecies) {
+			        			Species currentSpec = (Species)species.get(numSpecies);
+			        			if (!allSpeciesInNetwork.contains(currentSpec)) {
+			        				listOfReactions += "!\t" + String.format(formatSpeciesName,currentSpec.getName()) + currentSpec.getThermoData().toString() + currentSpec.getThermoData().getComments() + "\n";
+			        				allSpeciesInNetwork.add(currentSpec);
+			        			}
+			        		}
+			        		speciesSet.addAll(species);		        		
+			        	}
+			        	String formatRxnName = "%1$-32s\t";
+			        	listOfReactions += "!Here are the path reactions and their high-P limit kinetics:\n";
+			        	LinkedList<PDepReaction> pathRxns = pdepnetwork.getPathReactions();
+			        	for (int numPathRxns=0; numPathRxns<pathRxns.size(); numPathRxns++) {
+			        		Kinetics[] currentKinetics = pathRxns.get(numPathRxns).getKinetics();
+			        		for (int numKinetics=0; numKinetics<currentKinetics.length; ++numKinetics) {
+			        			listOfReactions += "!\t" + String.format(formatRxnName,pathRxns.get(numPathRxns).getStructure().toString()) + 
+			        				currentKinetics[numKinetics].toChemkinString(pathRxns.get(numPathRxns).calculateHrxn(new Temperature(298.0,"K")), new Temperature(298.0,"K"), false) + "\n";
+			        		}
+			        	}
+			        	listOfReactions += "\n";
+			        	LinkedList<PDepReaction> indivPDepRxns = pdepnetwork.getNetReactions();
+			        	for (int numPDepRxns=0; numPDepRxns<indivPDepRxns.size(); numPDepRxns++) {
+			        		listOfReactions += indivPDepRxns.get(numPDepRxns).toRestartString(systemTemp);
+			        	}
+			        	LinkedList<PDepReaction> nonIncludedRxns = pdepnetwork.getNonincludedReactions();
+			        	for (int numNonRxns=0; numNonRxns<nonIncludedRxns.size(); ++numNonRxns) {
+			        		listOfReactions += nonIncludedRxns.get(numNonRxns).toRestartString(systemTemp);
+			        	}
 		        	}
 	        	}
 	        	reactions = nonPdepReactions;

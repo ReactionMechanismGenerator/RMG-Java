@@ -105,10 +105,10 @@ public class ArrheniusEPKinetics extends ArrheniusKinetics {
 		formatString[3] = source; formatString[4] = comment;
 		
 		if (includeComments){
-			return String.format("%1.7e \t %2.5f \t %3.5f \t !%s  %s", formatString);
+			return String.format("%1.7e \t %2.5f \t %1.7e \t !%s  %s", formatString);
 		}
 		else
-			return String.format("%1.7e \t %2.5f \t %3.5f \t ", formatString);
+			return String.format("%1.7e \t %2.5f \t %1.7e \t ", formatString);
 		
 		//return String.valueOf(getAValue()) + '\t' + String.valueOf(getNValue()) + '\t' + Ea + "\t!" + source + " "+comment;
         
