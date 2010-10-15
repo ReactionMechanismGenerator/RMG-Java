@@ -22,7 +22,7 @@ contains
         real(8), intent(out) :: grainSize
         integer, intent(out) :: numGrains
         integer, intent(out) :: method, model
-        integer, dimension(:) :: modelOptions
+        integer, dimension(:), intent(inout) :: modelOptions
 
         ! The current line of text from stdin
         character(len=1024) line
@@ -825,7 +825,7 @@ contains
         write (*, fmt='(A)'), ''
         ! Number of k(T, P) values
         write (*, fmt='(A)'), '# The number of phenomenological rate coefficients in the network'
-        write (*, *), ((nIsom+nReac)*(nIsom+nReac+nProd-1))
+        write (*, *), ((nIsom+nReac)*(nIsom+nReac-1)/2 + (nProd)*(nIsom+nReac))
         write (*, fmt='(A)'), ''
 
     end subroutine

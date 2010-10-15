@@ -931,8 +931,6 @@ contains
         real(8) T, P
         integer i, j, u, v, w
 
-        integer invalidRate, invalidRates
-        
         do u = 1, nT
 
             T = Tlist(u)
@@ -964,34 +962,6 @@ contains
             end do
 
         end do
-
-        ! Check for validity of phenomenological rate coefficients
-        invalidRates = 0
-        do i = 1, nIsom+nReac+nProd
-            do j = 1, nIsom+nReac
-                if (i /= j) then
-                    invalidRate = 0
-                    do u = 1, nT
-                        do v = 1, nP
-                            if (K(u,v,i,j) <= 0) invalidRate = 1
-                        end do
-                    end do
-                    if (invalidRate /= 0) then
-                        if (invalidRates == 0) then
-                            write (*,fmt='(A)') 'ERROR: One or more rate coefficients not properly estimated.'
-                            write (*,fmt='(A)') 'See fame.log for details.'
-                            write (1,fmt='(A)') 'ERROR: One or more rate coefficients not properly estimated.'
-                            invalidRates = 1
-                        end if
-                        write (1,fmt='(A)') trim(net%isomers(j)%name)//' -> '//trim(net%isomers(i)%name)
-                        do u = 1, nT
-                            write (1,fmt=*) K(u,:,i,j)
-                        end do
-                    end if
-                end if
-            end do
-        end do
-        if (invalidRates /= 0) stop
 
     end subroutine
 

@@ -348,6 +348,8 @@ public class PDepReaction extends Reaction {
 		try {
 			if (pDepRate != null)
 				k = pDepRate.calculateRate(temperature, pressure);
+            else if (hasReverseReaction() && pDepReverse.pDepRate != null)
+                k = pDepReverse.calculateRate(temperature, pressure) / pDepReverse.calculateKeq(temperature);
 			else if (kinetics != null) {
 				for (int numKinetics=0; numKinetics<kinetics.length; ++numKinetics) {
 					k += kinetics[numKinetics].calculateRate(temperature);
@@ -410,8 +412,26 @@ public class PDepReaction extends Reaction {
 	 * @return The determined reaction flux
 	 */
 	public double calculateReverseFlux(SystemSnapshot ss) {
-		if (pDepReverse != null)
-			return pDepReverse.calculateForwardFlux(ss);
+		if (pDepReverse != null) {
+            Temperature T = ss.getTemperature();
+            Pressure P = ss.getPressure();
+            double reverseFlux = calculateRate(T, P) / calculateKeq(T);
+            for (ListIterator<Species> iter = product.getSpeciesListIterator(); iter.hasNext(); ) {
+                Species spe = iter.next();
+                double conc = 0.0;
+                if (ss.getSpeciesStatus(spe) != null)
+                    conc = ss.getSpeciesStatus(spe).getConcentration();
+                if (conc < 0) {
+                    double aTol = ReactionModelGenerator.getAtol();
+                    //if (Math.abs(conc) < aTol) conc = 0;
+                    //else throw new NegativeConcentrationException(spe.getName() + ": " + String.valueOf(conc));
+                    if (conc < -100.0 * aTol)
+                        throw new NegativeConcentrationException("Species " + spe.getName() + " has negative concentration: " + String.valueOf(conc));
+                }
+                reverseFlux *= conc;
+            }
+            return reverseFlux;
+        }
 		else
 			return 0.0;
 	}
@@ -448,6 +468,7 @@ public class PDepReaction extends Reaction {
 	public void generateReverseReaction() {
         if (pDepRate != null) {
 			PDepReaction r = new PDepReaction(product, reactant, pDepRate);
+            r.setPDepRateConstant(null);
 			setReverseReaction(r);
 			r.setReverseReaction(this);
 		}
