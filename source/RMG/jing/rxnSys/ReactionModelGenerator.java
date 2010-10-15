@@ -2836,15 +2836,6 @@ public class ReactionModelGenerator {
 					bw.write(writeRatesAndParameters(currentPDepRxn,numFameTemps,
 													 numFamePress,numChebyTemps,numChebyPress,numPlog));
 					
-					PDepReaction currentPDepReverseRxn = currentPDepRxn.getReverseReaction();
-					// Not all netReactions are reversible
-					if (currentPDepReverseRxn != null) {
-						bw.write(currentPDepReverseRxn.toString());
-						bw.newLine();
-						bw.write(writeRatesAndParameters(currentPDepReverseRxn,numFameTemps,
-														 numFamePress,numChebyTemps,numChebyPress,numPlog));
-					}
-					
 				}
 				
 				// Write nonincludedReactionList
