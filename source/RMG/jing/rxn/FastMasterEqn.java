@@ -917,7 +917,13 @@ public class FastMasterEqn implements PDepKineticsEstimator {
 				PDepIsomer reactant = isomerList.get(reac);
 				PDepIsomer product = isomerList.get(prod);
 				PDepReaction rxn = new PDepReaction(reactant, product, pDepRate);
-				
+
+                // Create the reverse net reaction if applicable
+                if (product.getIncluded())
+                    rxn.generateReverseReaction();
+                else
+                    rxn.setReverseReaction(null);
+                
 				/*
 				 * MRH 26Feb2010:
 				 * Checking whether pdep rates exceed the high-P-limit
@@ -1029,45 +1035,6 @@ public class FastMasterEqn implements PDepKineticsEstimator {
             if (ignoredARate) {
                 throw new PDepException("One or more rate coefficients from the FAME output was ignored, possibly due to a NaN or Inf rate.");
             }
-
-			// Set reverse reactions
-			int i = 0;
-            Temperature T = temperatures[0];
-            Pressure P = pressures[pressures.length/2];
-            while (i < netReactionList.size()) {
-				PDepReaction rxn1 = netReactionList.get(i);
-				if (rxn1.getReverseReaction() == null) {
-					boolean found = false;
-					for (int j = 0; j < netReactionList.size(); j++) {
-						PDepReaction rxn2 = netReactionList.get(j);
-						if (rxn1.getReactant().equals(rxn2.getProduct()) &&
-							rxn2.getReactant().equals(rxn1.getProduct())) {
-							rxn1.setReverseReaction(rxn2);
-							rxn2.setReverseReaction(rxn1);
-                            // Remove the reaction with the smaller rate constant
-                            // This *should* be the exothermic direction
-                            // We use the lowest temperature and middle pressure for this calculation
-                            if (rxn1.calculateRate(T, P) > rxn2.calculateRate(T, P))
-                            	netReactionList.remove(rxn2);
-                            else
-                            	netReactionList.remove(rxn1);
-                            found = true;
-                            break;
-						}
-					}
-					if (!found) {
-                        // Irreversible reactions are okay for included isomer -> nonincluded isomer only
-                        if (rxn1.getReactant().getIncluded() && !rxn1.getProduct().getIncluded()) {
-                            rxn1.setReverseReaction(null);
-                            i++;
-                        }
-                        // Otherwise raise an exception
-                        else throw new PDepException("Unable to identify reverse reaction for " + rxn1.toString() + " after FAME calculation.");
-                    }
-				}
-				else
-					i++;
-			}
 
 			// Update reaction lists (sort into included and nonincluded)
 			pdn.updateReactionLists(cerm);
