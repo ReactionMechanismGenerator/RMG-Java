@@ -387,7 +387,7 @@ public class JDASSL extends JDAS {
         	line = br.readLine();
         	
         	if (Double.parseDouble(line.trim()) != neq) {
-        		System.out.println("ODESolver didnt generate all species result");
+        		System.out.println("ODESolver didnt generate all species results");
         		System.exit(0);
         	}
         	endTime = Double.parseDouble(br.readLine().trim());
