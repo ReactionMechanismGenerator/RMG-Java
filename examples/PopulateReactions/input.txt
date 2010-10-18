@@ -1,7 +1,9 @@
 // Sample input file for PopulateReactions module
 
 PrimaryThermoLibrary:
-//Name: PrIMe-recommended
+Name: RMG_Default
+Location: primaryThermoLibrary
+//Name: GRI-Mech3.0
 //Location: GRI-Mech3.0
 END
 
