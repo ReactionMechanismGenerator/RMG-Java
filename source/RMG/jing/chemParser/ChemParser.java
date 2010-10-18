@@ -660,6 +660,7 @@ public class ChemParser {
 
       // parse structure string
       String sep = extractReactionSeperator(structureString);
+	  if (sep == null) throw new InvalidReactionFormatException("Couldn't find reaction separator (=,<=>,=>,->). Did you forget the spaces?");
       boolean generateReverse;
 
       if (sep.equals("=") || sep.equals("<=>")) generateReverse = true;
