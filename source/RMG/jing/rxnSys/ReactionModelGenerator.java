@@ -3340,12 +3340,8 @@ public class ReactionModelGenerator {
 
 						// Read in the reverse reaction
 						if (reactionIsReversible) {
-							line = ChemParser.readMeaningfulLine(reader, true);
-							
-							rateCoefficients = parseRateCoeffsFromRestartFile(numFameTs,numFamePs,reader);
-							pdepk = parsePDepRateConstantFromRestartFile(reader,numChebyTs,numChebyPs,rateCoefficients,numPlogs,EaUnits);											
-							
-							PDepReaction reverse = new PDepReaction(Products, Reactants, pdepk);
+							PDepReaction reverse = new PDepReaction(Products, Reactants, new PDepRateConstant());
+							reverse.setPDepRateConstant(null);
 							reverse.setReverseReaction(forward);
 							forward.setReverseReaction(reverse);
 						}
@@ -3390,12 +3386,8 @@ public class ReactionModelGenerator {
 						
 						// Read in the reverse reaction
 						if (reactionIsReversible) {
-							line = ChemParser.readMeaningfulLine(reader, true);
-							
-							rateCoefficients = parseRateCoeffsFromRestartFile(numFameTs,numFamePs,reader);
-							pdepk = parsePDepRateConstantFromRestartFile(reader,numChebyTs,numChebyPs,rateCoefficients,numPlogs,EaUnits);											
-							
-							PDepReaction reverse = new PDepReaction(Products, Reactants, pdepk);
+							PDepReaction reverse = new PDepReaction(Products, Reactants, new PDepRateConstant());
+							reverse.setPDepRateConstant(null);
 							reverse.setReverseReaction(forward);
 							forward.setReverseReaction(reverse);
 						}
