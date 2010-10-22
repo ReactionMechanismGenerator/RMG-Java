@@ -659,7 +659,7 @@ public class ReactionModelGenerator {
 //        		}
            	}
         	else throw new InvalidSymbolException("condition.txt: can't find Inert gas concentration!");
-			
+            
         	// read in spectroscopic data estimator
 			line = ChemParser.readMeaningfulLine(reader, true);
         	if (line.startsWith("SpectroscopicDataEstimator:")) {
@@ -1233,27 +1233,30 @@ public class ReactionModelGenerator {
 				//DynamicSimulator ds = (DynamicSimulator)iter4.next();
 				for (Iterator iter2 = presList.iterator(); iter2.hasNext(); ){
 					PressureModel pm = (PressureModel)iter2.next();
-					InitialStatus is = (InitialStatus)iter3.next();//10/31/07 gmagoon: moved from outer "for loop""
-					DynamicSimulator ds = (DynamicSimulator)iter4.next();
-					// temperatureArray.add(tm.getTemperature(is.getTime()));//10/30/07 gmagoon: added; //10/31/07 added .getTemperature(is.getTime()); 11/6/07 gmagoon: moved before initialization of lrg;
-					// pressureArray.add(pm.getPressure(is.getTime()));//10/30/07 gmagoon: added//UPDATE: commenting out: not needed if updateKLeak is done for one temperature/pressure at a time;11/1-2/07 restored with .getTemperature(is.getTime()) added;11/6/07 gmagoon: moved before initialization of lrg;
-					//11/1/07 gmagoon: trying to make a deep copy of terminationTester when it is instance of ConversionTT
-					//UPDATE: actually, I don't think this deep copy was necessary; original case with FinishController fc = new FinishController(finishController.getTerminationTester(), finishController.getValidityTester()) is probably OK; (in any case, this didn't do completetly deep copy (references to speciesConversion element in LinkedList were the same);
-					// TerminationTester termTestCopy;
-					// if (finishController.getTerminationTester() instanceof ConversionTT){
-					//    ConversionTT termTest = (ConversionTT)finishController.getTerminationTester();
-					//     LinkedList spcCopy = (LinkedList)(termTest.getSpeciesGoalConversionSetList().clone());
-					//     termTestCopy = new ConversionTT(spcCopy);
-					// }
-					// else{
-					//     termTestCopy = finishController.getTerminationTester();
-					// }
-					
-					FinishController fc = new FinishController(finishController.getTerminationTester(), finishController.getValidityTester());//10/31/07 gmagoon: changed to create new finishController instance in each case (apparently, the finish controller becomes associated with reactionSystem in setFinishController within ReactionSystem); alteratively, could use clone, but might need to change FinishController to be "cloneable"
-					// FinishController fc = new FinishController(termTestCopy, finishController.getValidityTester());
-					reactionSystemList.add(new ReactionSystem(tm, pm, reactionModelEnlarger, fc, ds, getPrimaryKineticLibrary(), getReactionGenerator(), getSpeciesSeed(), is, getReactionModel(),lrg, i, equationOfState)); 
-					i++;//10/30/07 gmagoon: added
-					System.out.println("Created reaction system "+i+"\n");
+					for (int numConcList=0; numConcList<initialStatusList.size()/tempList.size()/presList.size(); ++numConcList) {
+//						InitialStatus is = (InitialStatus)iter3.next();//10/31/07 gmagoon: moved from outer "for loop""
+						InitialStatus is = (InitialStatus)initialStatusList.get(i);						DynamicSimulator ds = (DynamicSimulator)iter4.next();
+						// temperatureArray.add(tm.getTemperature(is.getTime()));//10/30/07 gmagoon: added; //10/31/07 added .getTemperature(is.getTime()); 11/6/07 gmagoon: moved before initialization of lrg;
+						// pressureArray.add(pm.getPressure(is.getTime()));//10/30/07 gmagoon: added//UPDATE: commenting out: not needed if updateKLeak is done for one temperature/pressure at a time;11/1-2/07 restored with .getTemperature(is.getTime()) added;11/6/07 gmagoon: moved before initialization of lrg;
+						//11/1/07 gmagoon: trying to make a deep copy of terminationTester when it is instance of ConversionTT
+						//UPDATE: actually, I don't think this deep copy was necessary; original case with FinishController fc = new FinishController(finishController.getTerminationTester(), finishController.getValidityTester()) is probably OK; (in any case, this didn't do completetly deep copy (references to speciesConversion element in LinkedList were the same);
+						// TerminationTester termTestCopy;
+						// if (finishController.getTerminationTester() instanceof ConversionTT){
+						//    ConversionTT termTest = (ConversionTT)finishController.getTerminationTester();
+						//     LinkedList spcCopy = (LinkedList)(termTest.getSpeciesGoalConversionSetList().clone());
+						//     termTestCopy = new ConversionTT(spcCopy);
+						// }
+						// else{
+						//     termTestCopy = finishController.getTerminationTester();
+						// }
+						
+						FinishController fc = new FinishController(finishController.getTerminationTester(), finishController.getValidityTester());//10/31/07 gmagoon: changed to create new finishController instance in each case (apparently, the finish controller becomes associated with reactionSystem in setFinishController within ReactionSystem); alteratively, could use clone, but might need to change FinishController to be "cloneable"
+						// FinishController fc = new FinishController(termTestCopy, finishController.getValidityTester());
+						reactionSystemList.add(new ReactionSystem(tm, pm, reactionModelEnlarger, fc, ds, getPrimaryKineticLibrary(), getReactionGenerator(), getSpeciesSeed(), is, getReactionModel(),lrg, i, equationOfState)); 
+						i++;//10/30/07 gmagoon: added
+						System.out.println("Created reaction system "+i+"\n");
+						System.out.println((initialStatusList.get(i-1)).toString() + "\n");
+					}
 				}
 			}
 			//    PDepNetwork.setTemperatureArray(temperatureArray);//10/30/07 gmagoon: passing temperatureArray to PDepNetwork; 11/6/07 gmagoon: moved before initialization of lrg;
@@ -4819,6 +4822,7 @@ public class ReactionModelGenerator {
     public LinkedHashMap populateInitialStatusListWithReactiveSpecies(BufferedReader reader) throws IOException {
     	LinkedHashMap speciesSet = new LinkedHashMap();
     	LinkedHashMap speciesStatus = new LinkedHashMap();
+    	int numSpeciesStatus = 0;
 		String line = ChemParser.readMeaningfulLine(reader, true);
 		while (!line.equals("END")) {
 			StringTokenizer st = new StringTokenizer(line);
@@ -4845,6 +4849,21 @@ public class ReactionModelGenerator {
 			// The next token will be the concentration units
 			String unit = st.nextToken();
 			unit = ChemParser.removeBrace(unit);
+			
+			// Read in the graph (and make the species) before we parse all of the concentrations
+			//	Will store each SpeciesStatus (NXM where N is the # of species and M is the # of
+			//	concentrations) in a LinkedHashMap, with a (int) counter as the unique key
+			Graph g = ChemParser.readChemGraph(reader);
+			ChemGraph cg = null;
+			try {
+				cg = ChemGraph.make(g);
+			}
+			catch (ForbiddenStructureException e) {
+				System.out.println("Forbidden Structure:\n" + e.getMessage());
+				throw new InvalidSymbolException("A species in the input file has a forbidden structure.");
+			}
+			//System.out.println(name);
+			Species species = Species.make(name,cg);
 			
 			// The remaining tokens are either:
 			//		The desired concentrations
@@ -4879,27 +4898,18 @@ public class ReactionModelGenerator {
 						throw new InvalidUnitException("Species Concentration in condition.txt!");
 					}
 				}
+				// Make a SpeciesStatus and store it in the LinkedHashMap
+//				double flux = 0;
+//				int species_type = 1; // reacted species
+				SpeciesStatus ss = new SpeciesStatus(species,1,concentration,0.0);
+				speciesStatus.put(numSpeciesStatus, ss);
+				++numSpeciesStatus;
 			}			
 			
-			Graph g = ChemParser.readChemGraph(reader);
-			ChemGraph cg = null;
-			try {
-				cg = ChemGraph.make(g);
-			}
-			catch (ForbiddenStructureException e) {
-				System.out.println("Forbidden Structure:\n" + e.getMessage());
-				throw new InvalidSymbolException("A species in the input file has a forbidden structure.");
-			}
-			//System.out.println(name);
-			Species species = Species.make(name,cg);
 			species.setReactivity(IsReactive); // GJB
             species.setConstantConcentration(IsConstantConcentration);
    			speciesSet.put(name, species);
 			getSpeciesSeed().add(species);
-			double flux = 0;
-			int species_type = 1; // reacted species
-			SpeciesStatus ss = new SpeciesStatus(species,species_type,concentration,flux);
-			speciesStatus.put(species, ss);
 			line = ChemParser.readMeaningfulLine(reader, true);
 		}
 		ReactionTime initial = new ReactionTime(0,"S");
@@ -4910,13 +4920,18 @@ public class ReactionModelGenerator {
 			for (Iterator iter2 = presList.iterator(); iter2.hasNext(); ){
 				PressureModel pm = (PressureModel)iter2.next();
 				//   LinkedHashMap speStat = (LinkedHashMap)speciesStatus.clone();//10/31/07 gmagoon: trying creating multiple instances of speciesStatus to address issues with concentration normalization (last normalization seems to apply to all)
-				Set ks = speciesStatus.keySet();
-				LinkedHashMap speStat = new LinkedHashMap();
-				for (Iterator iter3 = ks.iterator(); iter3.hasNext();){//11/1/07 gmagoon: perform deep copy; (is there an easier or more elegant way to do this?)
-					SpeciesStatus ssCopy = (SpeciesStatus)speciesStatus.get(iter3.next());
-					speStat.put(ssCopy.getSpecies(),new SpeciesStatus(ssCopy.getSpecies(),ssCopy.getSpeciesType(),ssCopy.getConcentration(),ssCopy.getFlux()));
+//				Set ks = speciesStatus.keySet();
+//				for (Iterator iter3 = ks.iterator(); iter3.hasNext();){//11/1/07 gmagoon: perform deep copy; (is there an easier or more elegant way to do this?)
+				int reactionSystemCounter = 0;
+				for (int totalConcs=0; totalConcs<numSpeciesStatus/speciesSet.size(); ++totalConcs) {
+					LinkedHashMap speStat = new LinkedHashMap();
+					for (int totalSpecs=0; totalSpecs<speciesSet.size(); ++totalSpecs) {
+						SpeciesStatus ssCopy = (SpeciesStatus)speciesStatus.get(totalConcs+totalSpecs*numSpeciesStatus/speciesSet.size());
+						String blah = ssCopy.getSpecies().getName();
+						speStat.put(ssCopy.getSpecies(),new SpeciesStatus(ssCopy.getSpecies(),ssCopy.getSpeciesType(),ssCopy.getConcentration(),ssCopy.getFlux()));
+					}
+					initialStatusList.add(new InitialStatus(speStat,tm.getTemperature(initial),pm.getPressure(initial)));
 				}
-				initialStatusList.add(new InitialStatus(speStat,tm.getTemperature(initial),pm.getPressure(initial)));
 			}
 		}
 		
@@ -4935,6 +4950,7 @@ public class ReactionModelGenerator {
 			
 			// The remaining tokens are concentrations
 			double inertConc = 0.0;
+			int counter = 0;
 			while (st.hasMoreTokens()) {
 				String conc = st.nextToken();
 				inertConc = Double.parseDouble(conc);
@@ -4954,12 +4970,18 @@ public class ReactionModelGenerator {
 				else if (!unit.equals("mole/cm3") && !unit.equals("mol/cm3")) {
 					throw new InvalidUnitException("Inert Gas Concentration not recognized: " + unit);
 				}
+				//SystemSnapshot.putInertGas(name,inertConc);
+//				for(Iterator iter=initialStatusList.iterator();iter.hasNext(); ){//6/23/09 gmagoon: needed to change this to accommodate non-static inertConc
+//					((InitialStatus)iter.next()).putInertGas(name,inertConc);
+//				}
+				int numberOfDiffTP = tempList.size() * presList.size();
+				for (int isIndex=counter; isIndex<initialStatusList.size(); isIndex+=initialStatusList.size()/numberOfDiffTP) {
+					InitialStatus is = ((InitialStatus)initialStatusList.get(isIndex));
+					((InitialStatus)initialStatusList.get(isIndex)).putInertGas(name,inertConc);
+				}
+				++counter;
 			}
 			
-			//SystemSnapshot.putInertGas(name,inertConc);
-			for(Iterator iter=initialStatusList.iterator();iter.hasNext(); ){//6/23/09 gmagoon: needed to change this to accommodate non-static inertConc
-				((InitialStatus)iter.next()).putInertGas(name,inertConc);
-			}
 	   		line = ChemParser.readMeaningfulLine(reader, true);
 		}
     }
