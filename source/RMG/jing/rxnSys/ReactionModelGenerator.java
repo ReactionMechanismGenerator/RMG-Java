@@ -4841,36 +4841,45 @@ public class ReactionModelGenerator {
 				// We're good
 			}
 			if (!(st.hasMoreTokens())) throw new InvalidSymbolException("Couldn't find concentration of species: "+name);
-			String conc = st.nextToken();
-			double concentration = Double.parseDouble(conc);
+			
+			// The next token will be the concentration units
 			String unit = st.nextToken();
 			unit = ChemParser.removeBrace(unit);
-			if (unit.equals("mole/l") || unit.equals("mol/l") || unit.equals("mole/liter") || unit.equals("mol/liter")) {
-				concentration /= 1000;
-				unit = "mol/cm3";
-			}
-			else if (unit.equals("mole/m3") || unit.equals("mol/m3")) {
-				concentration /= 1000000;
-				unit = "mol/cm3";
-			}
-			else if (unit.equals("molecule/cm3") || unit.equals("molecules/cm3")) {
-				concentration /= 6.022e23;
-			}
-			else if (!unit.equals("mole/cm3") && !unit.equals("mol/cm3")) {
-				throw new InvalidUnitException("Species Concentration in condition.txt!");
-			}
 			
+			// The remaining tokens are either:
+			//		The desired concentrations
+			//		The flag "unreactive"
+			//		The flag "constantconcentration"
 			//GJB to allow "unreactive" species that only follow user-defined library reactions.  
 			// They will not react according to RMG reaction families 
 			boolean IsReactive = true;
             boolean IsConstantConcentration = false;
+			
+            double concentration = 0.0;
 			while (st.hasMoreTokens()) {
 				String reactive = st.nextToken().trim();
 				if (reactive.equalsIgnoreCase("unreactive"))
 					IsReactive = false;
-                if (reactive.equalsIgnoreCase("constantconcentration"))
+				else if (reactive.equalsIgnoreCase("constantconcentration"))
                     IsConstantConcentration=true;
-			}
+				else {
+					concentration = Double.parseDouble(reactive);
+					if (unit.equals("mole/l") || unit.equals("mol/l") || unit.equals("mole/liter") || unit.equals("mol/liter")) {
+						concentration /= 1000;
+						unit = "mol/cm3";
+					}
+					else if (unit.equals("mole/m3") || unit.equals("mol/m3")) {
+						concentration /= 1000000;
+						unit = "mol/cm3";
+					}
+					else if (unit.equals("molecule/cm3") || unit.equals("molecules/cm3")) {
+						concentration /= 6.022e23;
+					}
+					else if (!unit.equals("mole/cm3") && !unit.equals("mol/cm3")) {
+						throw new InvalidUnitException("Species Concentration in condition.txt!");
+					}
+				}
+			}			
 			
 			Graph g = ChemParser.readChemGraph(reader);
 			ChemGraph cg = null;
@@ -4919,24 +4928,32 @@ public class ReactionModelGenerator {
    		while (!line.equals("END")) {
 	    	StringTokenizer st = new StringTokenizer(line);
 	    	String name = st.nextToken().trim();
-			String conc = st.nextToken();
-			double inertConc = Double.parseDouble(conc);
+	    	
+	    	// The next token is the units of concentration
 			String unit = st.nextToken();
 			unit = ChemParser.removeBrace(unit);
-			if (unit.equals("mole/l") || unit.equals("mol/l") || unit.equals("mole/liter") || unit.equals("mol/liter")) {
-				inertConc /= 1000;
-				unit = "mol/cm3";
-			}
-			else if (unit.equals("mole/m3") || unit.equals("mol/m3")) {
-				inertConc /= 1000000;
-				unit = "mol/cm3";
-			}
-			else if (unit.equals("molecule/cm3") || unit.equals("molecules/cm3")) {
-				inertConc /= 6.022e23;
-				unit = "mol/cm3";
-			}
-			else if (!unit.equals("mole/cm3") && !unit.equals("mol/cm3")) {
-				throw new InvalidUnitException("Inert Gas Concentration not recognized: " + unit);
+			
+			// The remaining tokens are concentrations
+			double inertConc = 0.0;
+			while (st.hasMoreTokens()) {
+				String conc = st.nextToken();
+				inertConc = Double.parseDouble(conc);
+		
+				if (unit.equals("mole/l") || unit.equals("mol/l") || unit.equals("mole/liter") || unit.equals("mol/liter")) {
+					inertConc /= 1000;
+					unit = "mol/cm3";
+				}
+				else if (unit.equals("mole/m3") || unit.equals("mol/m3")) {
+					inertConc /= 1000000;
+					unit = "mol/cm3";
+				}
+				else if (unit.equals("molecule/cm3") || unit.equals("molecules/cm3")) {
+					inertConc /= 6.022e23;
+					unit = "mol/cm3";
+				}
+				else if (!unit.equals("mole/cm3") && !unit.equals("mol/cm3")) {
+					throw new InvalidUnitException("Inert Gas Concentration not recognized: " + unit);
+				}
 			}
 			
 			//SystemSnapshot.putInertGas(name,inertConc);
