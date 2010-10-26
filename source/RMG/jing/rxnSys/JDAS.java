@@ -869,7 +869,7 @@ public abstract class JDAS implements DAESolver {
                              //   if (!pdn.isActive() && pdn.getIsChemAct()) {
                              //           k = pdn.getEntryReaction().calculateTotalRate(p_temperature);
                              //   }
-				if(pdn.getPathReactions().size() == 1 && pdn.getNonincludedReactions().size() == 1 && pdn.getNetReactions().size() == 0){//// If there is only one path reaction (and thus only one nonincluded reaction), use the high-pressure limit rate as the flux rather than the k(T,P) value (cf. PDepNetwork.getLeakFlux())
+				if(pdn.getPathReactions().size() == 1 && pdn.getNetReactions().size() == 0){//// If there is only one path reaction (and thus only one nonincluded reaction), use the high-pressure limit rate as the flux rather than the k(T,P) value (cf. PDepNetwork.getLeakFlux())
 				    PDepReaction rxn = pdn.getPathReactions().get(0);
 				    int reacCount=0;
 				    int[] tempReacArray = {0, 0, 0};
@@ -1082,7 +1082,7 @@ public abstract class JDAS implements DAESolver {
                              //   if (!pdn.isActive() && pdn.getIsChemAct()) {
                              //           k = pdn.getEntryReaction().calculateTotalRate(p_temperature);
                              //   }
-				if(pdn.getPathReactions().size() == 1 && pdn.getNonincludedReactions().size() == 1 && pdn.getNetReactions().size() == 0){//// If there is only one path reaction (and thus only one nonincluded reaction), use the high-pressure limit rate as the flux rather than the k(T,P) value (cf. PDepNetwork.getLeakFlux())
+				if(pdn.getPathReactions().size() == 1 && pdn.getNetReactions().size() == 0){//// If there is only one path reaction (and thus only one nonincluded reaction), use the high-pressure limit rate as the flux rather than the k(T,P) value (cf. PDepNetwork.getLeakFlux())
 				    PDepReaction rxn = pdn.getPathReactions().get(0);
 				    int reacCount=0;
 				    int[] tempReacArray = {0, 0, 0};
