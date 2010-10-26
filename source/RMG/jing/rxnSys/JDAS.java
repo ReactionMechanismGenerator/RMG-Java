@@ -898,7 +898,7 @@ public abstract class JDAS implements DAESolver {
                 PDepNetwork pdn = (PDepNetwork) iter1.next();
                 double k = 0.0;
                 boolean allCoreReac = false;
-                if (pdn.getPathReactions().size() == 1 && pdn.getNonincludedReactions().size() == 1 && pdn.getNetReactions().size() == 0) {//// If there is only one path reaction (and thus only one nonincluded reaction), use the high-pressure limit rate as the flux rather than the k(T,P) value (cf. PDepNetwork.getLeakFlux())
+                if (pdn.getPathReactions().size() == 1 && pdn.getNetReactions().size() == 0) {// If there is only one path reaction and no net reactions (i.e. the network is A + B --> C*), use the high-pressure limit rate as the flux rather than the k(T,P) value (cf. PDepNetwork.getLeakFlux())
                     PDepReaction rxn = pdn.getPathReactions().get(0);
                     allCoreReac = false;//allCoreReac will be used to track whether all reactant species are in the core
                     if (!rxn.getProduct().getIncluded()) {
@@ -1082,7 +1082,7 @@ public abstract class JDAS implements DAESolver {
                     PDepNetwork pdn = (PDepNetwork) iter1.next();
                     double k = 0.0;
                     boolean allCoreReac = false;
-                    if (pdn.getPathReactions().size() == 1 && pdn.getNonincludedReactions().size() == 1 && pdn.getNetReactions().size() == 0) {//// If there is only one path reaction (and thus only one nonincluded reaction), use the high-pressure limit rate as the flux rather than the k(T,P) value (cf. PDepNetwork.getLeakFlux())
+                    if (pdn.getPathReactions().size() == 1 && pdn.getNetReactions().size() == 0) {// If there is only one path reaction and no net reactions (i.e. the network is A + B --> C*), use the high-pressure limit rate as the flux rather than the k(T,P) value (cf. PDepNetwork.getLeakFlux())
                         PDepReaction rxn = pdn.getPathReactions().get(0);
                         allCoreReac = false;//allCoreReac will be used to track whether all reactant species are in the core
                         if (!rxn.getProduct().getIncluded()) {
