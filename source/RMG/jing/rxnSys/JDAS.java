@@ -820,8 +820,6 @@ public abstract class JDAS implements DAESolver {
                 edgeReactionCounter++;
                 String str = getEdgeReactionString(model, edgeID, r, p_temperature, p_pressure, 0);//this line is needed even when not writing to file because it will update edgeID
 //			    edgeReacInfoString.append("\n" + str);
-            } else {
-                System.out.println("DEBUG: Edge reaction with non-core reactants: " + r);
             }
         }
         edgeSpeciesCounter = edgeID.size();//update edge species counter (this will be important for the case of non-P-dep operation)
@@ -882,8 +880,6 @@ public abstract class JDAS implements DAESolver {
                                 //                                               edgeReacInfoString.append("\n" + str);
                             }
                         }
-                    } else {
-                        System.out.println("DEBUG: Edge reaction with non-core reactants: " + rxn);
                     }
                 }
             }
@@ -915,8 +911,6 @@ public abstract class JDAS implements DAESolver {
                             ////update the output string with info for kLeak for one PDepNetwork
                             String str = getEdgeReactionString(model, edgeLeakID, rxn, p_temperature, p_pressure, edgeID.size());//use the forward reaction
                             //bw.write("\n" + str);
-                        } else {
-                            System.out.println("DEBUG: Edge reaction with non-core reactants: " + rxn);
                         }
                     } else {
                         PDepReaction rxnReverse = (PDepReaction) rxn.getReverseReaction();
@@ -935,8 +929,6 @@ public abstract class JDAS implements DAESolver {
                             ////update the output string with info for kLeak for one PDepNetwork
                             String str = getEdgeReactionString(model, edgeLeakID, rxnReverse, p_temperature, p_pressure, edgeID.size());//use the reverse reaction
                             //bw.write("\n" + str);
-                        } else {
-                            System.out.println("DEBUG: Edge reaction with non-core reactants: " + rxnReverse);
                         }
                     }
                 } else {
@@ -957,8 +949,6 @@ public abstract class JDAS implements DAESolver {
                                 ////update the output string with info for kLeak for one PDepNetwork
                                 String str = getEdgeReactionString(model, edgeLeakID, rxn, p_temperature, p_pressure, edgeID.size());//use the forward reaction
                                 //bw.write("\n" + str);
-                            } else {
-                                System.out.println("DEBUG: Edge reaction with non-core reactants: " + rxn);
                             }
                         } else if (!rxn.getReactant().getIncluded() && rxn.getProduct().getIncluded()) {
                             PDepReaction rxnReverse = (PDepReaction) rxn.getReverseReaction();
@@ -975,8 +965,6 @@ public abstract class JDAS implements DAESolver {
                                 ////update the output string with info for kLeak for one PDepNetwork
                                 String str = getEdgeReactionString(model, edgeLeakID, rxnReverse, p_temperature, p_pressure, edgeID.size());//use the reverse reaction
                                 //bw.write("\n" + str);
-                            } else {
-                                System.out.println("DEBUG: Edge reaction with non-core reactants: " + rxnReverse);
                             }
                         }
                     }
