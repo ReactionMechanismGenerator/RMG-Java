@@ -107,14 +107,29 @@ public class RateBasedPDepRME implements ReactionModelEnlarger {
 		
 		CoreEdgeReactionModel cerm = (CoreEdgeReactionModel) rm;
 		
-		// Iterate over reaction systems, enlarging each individually
-		LinkedList updateList = new LinkedList();
-        for (int i = 0; i < rxnSystemList.size(); i++) {
+		// Lists of species to add to the core or to explore in PDepNetworks
+        // These lists will be of the same length as rxnSystemList, and will
+        // contain null where there is no corresponding species; this is done
+        // so that we know which reaction system corresponds with each update
+        // (although it doesn't matter very much, since they all share the same
+        // model core and edge anyway)
+        // They should also not contain duplicates, i.e. each candidate species
+        // should only appear in one of the two lists, and only once in that
+        // list; since adding to core is a superset of making included, species
+        // that would be in both lists are placed in coreUpdateList
+        LinkedList coreUpdateList = new LinkedList();
+        LinkedList leakUpdateList = new LinkedList();
+        
+        // Iterate over reaction systems, enlarging each individually
+		for (int i = 0; i < rxnSystemList.size(); i++) {
 			
 			// Don't need to enlarge if the system is already valid
-			if ((Boolean) validList.get(i))
-				continue;
-				
+			if ((Boolean) validList.get(i)) {
+				coreUpdateList.add(null);
+                leakUpdateList.add(null);
+                continue;
+            }
+            
 			ReactionSystem rxnSystem = (ReactionSystem) rxnSystemList.get(i);
                         PresentStatus ps = rxnSystem.getPresentStatus();
 
@@ -171,22 +186,51 @@ public class RateBasedPDepRME implements ReactionModelEnlarger {
 			System.out.println("Unreacted species " + maxSpecies.getName() + " has highest flux: " + String.valueOf(maxFlux));
 			System.out.println("Unreacted species " + maxLeakSpecies.getName() + " has highest leak flux: " + String.valueOf(maxLeakFlux));
 
-			//if (maxFlux > Rmin)
+            //if (maxFlux > Rmin)
 			if (maxFlux > maxLeakFlux && maxFlux > Rmin) {
-				if (!updateList.contains(maxSpecies))
-                    addSpeciesToCore(maxSpecies, cerm, rxnSystem);
-			}
+				if (!coreUpdateList.contains(maxSpecies))
+                    coreUpdateList.add(maxSpecies);
+                else
+                    coreUpdateList.add(null);
+                leakUpdateList.add(null);
+            }
 			else if (maxLeakFlux > Rmin) {
-				if (!updateList.contains(maxLeakSpecies))
-                    makeSpeciesIncluded(maxLeakSpecies, cerm, rxnSystem);
-			}
-			
-            // Add the species to the list of updated species so we don't try
-            // to update it again
-            updateList.add(null);
+				if (!leakUpdateList.contains(maxLeakSpecies))
+                    leakUpdateList.add(maxLeakSpecies);
+                else
+                    leakUpdateList.add(null);
+                coreUpdateList.add(null);
+            }
 
-		}
+        }
 
+        // Check that species don't exist in both coreUpdateList and leakUpdateList
+        // If any are in both lists, then remove from leakUpdateList
+        for (int i = 0; i < rxnSystemList.size(); i++) {
+            if (leakUpdateList.get(i) != null && coreUpdateList.contains(leakUpdateList.get(i)))
+                leakUpdateList.set(i, null);
+        }
+
+        // Make sure we're about to do something to the reaction model
+        boolean found = false;
+        for (int i = 0; i < rxnSystemList.size(); i++) {
+            if (coreUpdateList.get(i) != null || leakUpdateList.get(i) != null)
+                found = true;
+        }
+        if (!found) {
+            System.out.println("Could not find any species to add to core or leak species to explore. Stopping to avoid infinite loop.");
+            System.exit(0);
+        }
+        
+        // Update the reaction model
+        for (int i = 0; i < rxnSystemList.size(); i++) {
+            // Add species to core
+            if (coreUpdateList.get(i) != null)
+                addSpeciesToCore((Species) coreUpdateList.get(i), cerm, (ReactionSystem) rxnSystemList.get(i));
+            // Explore species in networks
+            else if (leakUpdateList.get(i) != null)
+                makeSpeciesIncluded((Species) leakUpdateList.get(i), cerm, (ReactionSystem) rxnSystemList.get(i));
+        }
     }
 
     public void addSpeciesToCore(Species maxSpecies, CoreEdgeReactionModel cerm, ReactionSystem rxnSystem) {
