@@ -462,16 +462,6 @@ public  Chemkin() {
 
   //## operation writeChemkinInputFile(ReactionModel,SystemSnapshot)
   public static void writeChemkinInputFile(final ReactionModel p_reactionModel, SystemSnapshot p_beginStatus) {
-      StringBuilder result=new StringBuilder();
-      result.append(writeChemkinHeader());
-	  result.append(writeChemkinElement());
-	  double start = System.currentTimeMillis();
-      result.append(writeChemkinSpecies(p_reactionModel, p_beginStatus));
-      result.append(writeChemkinThermo(p_reactionModel));
-      Global.chemkinThermo = Global.chemkinThermo + (System.currentTimeMillis() - start)/1000/60;
-	  start = System.currentTimeMillis();
-      result.append(writeChemkinPdepReactions(p_reactionModel, p_beginStatus));
-	  Global.chemkinReaction = Global.chemkinReaction + (System.currentTimeMillis() - start)/1000/60;
 
       //String dir = System.getProperty("RMG.workingDirectory");
       //if (!dir.endsWith("/")) dir += "/";
@@ -485,16 +475,33 @@ public  Chemkin() {
 	  directory_object.mkdirs();
 	  
       String chemkinFile = directory+"/chem.inp";
-      try {
-      	FileWriter fw = new FileWriter(chemkinFile);
-      	fw.write(result.toString());
-      	fw.close();
+      
+      BufferedWriter bufferedWriter = null;
+      try {          
+          //Construct the BufferedWriter object
+          bufferedWriter = new BufferedWriter(new FileWriter(chemkinFile));
+          //Start writing to the output stream
+          bufferedWriter.write(writeChemkinHeader());
+          bufferedWriter.write(writeChemkinElement());
+          bufferedWriter.write(writeChemkinSpecies(p_reactionModel, p_beginStatus));
+          bufferedWriter.write(writeChemkinThermo(p_reactionModel));
+          bufferedWriter = writeChemkinPdepReactions(p_reactionModel, p_beginStatus,bufferedWriter);
+      } catch (FileNotFoundException ex) {
+          ex.printStackTrace();
+      } catch (IOException ex) {
+          ex.printStackTrace();
+      } finally {
+          //Close the BufferedWriter
+          try {
+              if (bufferedWriter != null) {
+                  bufferedWriter.flush();
+                  bufferedWriter.close();
+              }
+          } catch (IOException ex) {
+              ex.printStackTrace();
+          }
       }
-      catch (Exception e) {
-      	System.out.println("Error in writing chemkin input file "+directory+"/chem.inp!");
-      	System.out.println(e.getMessage());
-      	System.exit(0);
-      }
+      
 	  // put a copy of the latest in the root chemkin folder
 	  copyFiles(chemkinFile, "chemkin/chem.inp");
       
@@ -502,19 +509,27 @@ public  Chemkin() {
       if (PDepRateConstant.getMode() == Mode.CHEBYSHEV ||
     		  PDepRateConstant.getMode() == Mode.PDEPARRHENIUS ||
     		  PDepRateConstant.getMode() == Mode.RATE) {
-    	  StringBuilder gridOfRateCoeffs = new StringBuilder();
-	      gridOfRateCoeffs.append(writeGridOfRateCoeffs(p_reactionModel));
 	      String newFile = directory+"/tableOfRateCoeffs.txt";
+	      BufferedWriter bw = null;
 	      try {
-	    	  FileWriter fw = new FileWriter(newFile);
-	    	  fw.write(gridOfRateCoeffs.toString());
-	    	  fw.close();
+	    	  bw = new BufferedWriter(new FileWriter(newFile));
+		      bw = writeGridOfRateCoeffs(p_reactionModel,bw);
+	      } catch (FileNotFoundException ex) {
+	          ex.printStackTrace();
+	      } catch (IOException ex) {
+	          ex.printStackTrace();
+	      } finally {
+	          //Close the BufferedWriter
+	          try {
+	              if (bw != null) {
+	                  bw.flush();
+	                  bw.close();
+	              }
+	          } catch (IOException ex) {
+	              ex.printStackTrace();
+	          }
 	      }
-	      catch (Exception e) {
-	    	  System.out.println("Error in writing "+newFile);
-	    	  System.out.println(e.getMessage());
-	    	  System.exit(0);
-	      }
+
 		  // put a copy of the latest in the root chemkin folder
 		  copyFiles(newFile, "chemkin/tableOfRateCoeffs.txt");
       }
@@ -534,7 +549,7 @@ public  Chemkin() {
   
 
 //## operation writeChemkinPdepReactions(ReactionModel, SystemSnapshot)
- public static String writeChemkinPdepReactions(ReactionModel p_reactionModel, SystemSnapshot p_beginStatus) {
+ public static BufferedWriter writeChemkinPdepReactions(ReactionModel p_reactionModel, SystemSnapshot p_beginStatus, BufferedWriter bufferedWriter) throws IOException {
 	 /* 
 	  Writes all reactions, not just the P-dep ones.
 	  Returns the result as a string.
@@ -543,7 +558,6 @@ public  Chemkin() {
 	  Then non-p-dep
 	  Finally duplicates
 	  */
-      StringBuilder result = new StringBuilder();
 
       String reactionHeader = "";
       String units4Ea = ArrheniusKinetics.getEaUnits();
@@ -557,7 +571,7 @@ public  Chemkin() {
       if (units4A.equals("moles")) reactionHeader += "MOLES\n";
       else if (units4A.equals("molecules")) reactionHeader += "MOLECULES\n";
 	  
-      result.append("REACTIONS\t" + reactionHeader);
+      bufferedWriter.write("REACTIONS\t" + reactionHeader);
       
 	  LinkedList pDepList = new LinkedList();
 	  LinkedList nonPDepList = new LinkedList();
@@ -610,21 +624,21 @@ public  Chemkin() {
 			// 6Jul2009-MRH:
 			//	Pass both system temperature and pressure to function toChemkinString.
     	  	//		The only PDepKineticsModel that uses the passed pressure is RATE
-          result.append(r.toChemkinString(p_beginStatus.getTemperature(),p_beginStatus.getPressure())+"\n");
+    	  bufferedWriter.write(r.toChemkinString(p_beginStatus.getTemperature(),p_beginStatus.getPressure())+"\n");
       }
 	 // Second, report non-pressure-dependent reactions
       for (Iterator iter = nonPDepList.iterator(); iter.hasNext();){
     	  Reaction r = (Reaction)iter.next();
-          result.append(r.toChemkinString(p_beginStatus.getTemperature(),p_beginStatus.getPressure())+"\n");
+    	  bufferedWriter.write(r.toChemkinString(p_beginStatus.getTemperature(),p_beginStatus.getPressure())+"\n");
       }
 	 // Third, report duplicate reactions
       for (Iterator iter = duplicates.iterator(); iter.hasNext();){
     	  Reaction r = (Reaction)iter.next();
-          result.append(r.toChemkinString(p_beginStatus.getTemperature(),p_beginStatus.getPressure())+"\n\tDUP\n");
+    	  bufferedWriter.write(r.toChemkinString(p_beginStatus.getTemperature(),p_beginStatus.getPressure())+"\n\tDUP\n");
       }
 
-      result.append("END\n");
-      return result.toString();
+      bufferedWriter.write("END\n");
+      return bufferedWriter;
   }
 
   //## operation writeChemkinSpecies(ReactionModel,SystemSnapshot)
@@ -737,9 +751,7 @@ public  Chemkin() {
   }
   
 
-  public static String writeGridOfRateCoeffs(ReactionModel p_reactionModel) {
-	  
-      StringBuilder result = new StringBuilder();
+  public static BufferedWriter writeGridOfRateCoeffs(ReactionModel p_reactionModel, BufferedWriter bufferedWriter) throws IOException {
 	  
 	  LinkedList pDepList = new LinkedList();
       CoreEdgeReactionModel cerm = (CoreEdgeReactionModel)p_reactionModel;
@@ -766,26 +778,26 @@ public  Chemkin() {
       
       for (int i=0; i<numTemps; i++) {
     	  for (int j=0; j<numPress; j++) {
-    		  result.append("T="+tempsUsedInFame[i].getK()+"K,P="+pressUsedInFame[j].getBar()+"bar\t");
+    		  bufferedWriter.write("T="+tempsUsedInFame[i].getK()+"K,P="+pressUsedInFame[j].getBar()+"bar\t");
     	  }
-    	  result.append("\n");
+    	  bufferedWriter.write("\n");
       }
-      result.append("\n");
+      bufferedWriter.write("\n");
       
       for (Iterator iter = pDepList.iterator(); iter.hasNext();){
     	  PDepReaction r = (PDepReaction)iter.next();
-    	  result.append(r.toString()+"\n");
+    	  bufferedWriter.write(r.toString()+"\n");
     	  double[][] rates = new double[numTemps][numPress];
     	  rates = r.getPDepRate().getRateConstants();
     	  for (int i=0; i<numTemps; i++) {
     		  for (int j=0; j<numPress; j++) {
-    			  result.append(rates[i][j] + "\t");
+    			  bufferedWriter.write(rates[i][j] + "\t");
     		  }
-    		  result.append("\n");
+    		  bufferedWriter.write("\n");
     	  }
-          result.append("\n");
+    	  bufferedWriter.write("\n");
       }
-      return result.toString();
+      return bufferedWriter;
   }
 
   //## operation writeReactorInputFile(ReactionModel,ReactionTime,ReactionTime,SystemSnapshot)
