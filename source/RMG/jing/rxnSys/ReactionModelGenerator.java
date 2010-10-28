@@ -1772,11 +1772,10 @@ public class ReactionModelGenerator {
 			
         }
 
-        for (Integer i = 0; i<reactionSystemList.size();i++) {
-			// chemkin files are overwritten each loop - only the last gets saved
-			ReactionSystem rs = (ReactionSystem)reactionSystemList.get(i);
-			Chemkin.writeChemkinInputFile(getReactionModel(),rs.getPresentStatus()); 
-        }
+        // All of the reaction systems are the same, so just write the chemkin
+        //	file for the first reaction system
+		ReactionSystem rs = (ReactionSystem)reactionSystemList.get(0);
+		Chemkin.writeChemkinInputFile(getReactionModel(),rs.getPresentStatus()); 
 		
         //9/1/09 gmagoon: if we are using QM, output a file with the CHEMKIN name, the RMG name, the (modified) InChI, and the (modified) InChIKey
         if (ChemGraph.useQM){
