@@ -35,7 +35,7 @@ PressureModel: Constant (atm) 1
 
 InitialStatus:
 
-(1) HXD13 6.829e-4 (mol/cm3)
+HXD13 (mol/cm3) 6.829e-4
 1 C 0 {2,D}
 2 C 0 {1,D} {3,S}
 3 C 0 {2,S} {4,D}
@@ -43,18 +43,18 @@ InitialStatus:
 5 C 0 {4,S} {6,S}
 6 C 0 {5,S} 
 
-(3) CH4 0.104 (mol/cm3)
+CH4 (mol/cm3) 0.104
 1 C 0
 
-(6) H2 1.56e-2 (mol/cm3)
+H2 (mol/cm3) 1.56e-2
 1 H 0 {2,S}
 2 H 0 {1,S}
 
 END
 
 InertGas:
-N2 0.8797 (mol/cm3)
-Ar 0.0e-6 (mol/cm3)
+N2 (mol/cm3) 0.8797
+Ar (mol/cm3) 0.0e-6
 END
 
 SpectroscopicDataEstimator: FrequencyGroups

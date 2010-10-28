@@ -399,6 +399,21 @@ public class SystemSnapshot {
 	public double[] getUnreactedSpeciesFlux() {
 		return unreactedSpeciesFlux;
 	}
+	
+	public String toString() {
+		String output = "";
+		output += "Temperature=" + temperature.getK() + "K\n";
+		output += "Pressure=" + pressure.getAtm() + "atm\n";
+		for (Iterator iter=getSpeciesStatus(); iter.hasNext();) {
+			SpeciesStatus ss = (SpeciesStatus)iter.next();
+			output += ss.getSpecies().getName() + " " + ss.getConcentration() + "\n";
+			}
+		for (Iterator iter=getInertGas(); iter.hasNext();) {
+			String name = iter.next().toString();
+			output += name + " " + inertGas.get(name) + "\n";
+			}
+		return output;
+	}
 
 }
 /*********************************************************************
