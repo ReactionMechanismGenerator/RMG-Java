@@ -294,7 +294,7 @@ PROGRAM CALL_DASPKAUTO
       INTEGER  INFO(30),LIW,LRW, IWORK(41+2*NSTATE), SENPAR(1), IPAR(1),&
      &     IDID, ires, I, J, iter, IMPSPECIES, AUTOFLAG, ESPECIES, &
      &      EREACTIONSIZE, EDGEFLAG, ITER_OUTPT, &
-     &      IWORK_OUTPT(41 + 2*NSTATE), COPYQ
+     &      IWORK_OUTPT(41 + 2*NSTATE), EDGEFLAGCORE, CORESTORED
       INTEGER NEREAC(EREACTIONSIZE),NEPROD(EREACTIONSIZE)
       INTEGER IDEREAC(EREACTIONSIZE,3), IDEPROD(EREACTIONSIZE,3)
       DOUBLE PRECISION KVEC(EREACTIONSIZE),MAXRATIO(ESPECIES),HIGHESTRATIO
@@ -305,7 +305,7 @@ PROGRAM CALL_DASPKAUTO
     &     YPRIME_OUTPT(NSTATE), TIME_OUTPT,  &
     &     RWORK_OUTPT(51 + 9*NEQ + NSTATE**2)
 
-      INTEGER PRUNEVEC(ESPECIES),PRUNEVEC_OUTPT(ESPECIES)
+      INTEGER PRUNEVEC(ESPECIES)
 
       DOUBLE PRECISION RPAR(REACTIONSIZE+THIRDBODYREACTIONSIZE+ &
      &     TROEREACTIONSIZE+LINDEREACTIONSIZE+NSTATE-1), del(neq), CJ, &
@@ -396,9 +396,12 @@ PROGRAM CALL_DASPKAUTO
       end if
 
 ! 6/26/08 gmagoon: call EdgeFlux if AUTOFLAG is 1 to
-! determine EDGEFLAG (-1 if flux threshhold has not been met,
+! determine EDGEFLAG and EDGEFLAGCORE (-1 if flux threshhold has not yet been met,
 ! positive integer otherwise)
 	EDGEFLAG = -1
+	EDGEFLAGCORE = -1
+	!initialize flag CORESTORED to -1 indicating that the output values (when core inclusion threshold is exceeded) have not been stored yet; this will be set to 1 once the values are stored
+	CORESTORED = -1
 	!initialize MAXRATIO to a vector of all zeroes;
 	!this variable will track the maxiumum
 	!of rate(i)/Rchar for each edge species i, with respect to time
@@ -409,29 +412,35 @@ PROGRAM CALL_DASPKAUTO
 	!will be stored for output from the ODE solver to the Java code
 	HIGHESTRATIO = 0
 	IF (AUTOFLAG.eq.1) THEN
-		CALL EDGEFLUX(EDGEFLAG, Y, YPRIME,THRESH,ESPECIES, &
+		CALL EDGEFLUX(EDGEFLAG,EDGEFLAGCORE,Y,YPRIME,THRESH,CORETHRESH,ESPECIES, &
      &     EREACTIONSIZE,NEREAC,NEPROD,IDEREAC,IDEPROD,KVEC, &
      &     MAXRATIO,PRUNEVEC,NSTATE)
-		!update HIGHESTRATIO and store relevant variables that will be printed
-		!later; note that we cannot exit the do loop once the IF statement is
-		!caught because, even though output variables will be stored properly,
-		!the HIGHESTRATIO will not necessarily have the highest value
-		!note: TOTALREACTIONFLUX apparently tracks integrated flux, not
-		!instantaneous flux, so setting value to be zero here should be OK...
-		!in any case, the result doesn't seem to be used by the Java code
+		!update HIGHESTRATIO
+		!note that we cannot exit the do loop once the IF statement is
+		!caught because the HIGHESTRATIO will not necessarily have the highest value
 		DO I=1, ESPECIES
 		    IF (MAXRATIO(I) .GT. HIGHESTRATIO) THEN
 			HIGHESTRATIO = MAXRATIO(I)
-			ITER_OUTPT=0
-			TIME_OUTPT=TIME
-			Y_OUTPT = Y
-			YPRIME_OUTPT = YPRIME
-			!IWORK_OUTPT = IWORK
-			!RWORK_OUTPT = RWORK
-			TOTALREACTIONFLUX_OUTPT = 0
-			PRUNEVEC_OUTPT = PRUNEVEC
 		    END IF
 		END DO
+		!when core flux threshold is exceeded for the first time, store the values for output
+		!we want to use the first point of exceeding the core inclusion threshold
+		!(aka error tolerance) to determine which species to add to the core
+		!note: TOTALREACTIONFLUX apparently tracks integrated flux, not
+		!instantaneous flux, so setting value to be zero here should be OK...
+		!in any case, the result doesn't seem to be used by the Java code
+		IF(EDGEFLAGCORE .GT. 0 .AND. CORESTORED .EQ. -1) THEN
+		    ITER_OUTPT=0
+		    TIME_OUTPT=TIME
+		    Y_OUTPT = Y
+		    YPRIME_OUTPT = YPRIME
+		    !IWORK_OUTPT = IWORK
+		    !RWORK_OUTPT = RWORK
+		    TOTALREACTIONFLUX_OUTPT = 0
+		    !PRUNEVEC_OUTPT = PRUNEVEC !note that we do not copy prunevec for the output value; this will be based on the final time integrated to (in case core threshold, but not termination threshold, is exceeded at t=0...it is ok to prune species that have zero flux at t=0
+		    CORESTORED = 1
+		END IF
+
 	ENDIF
 
       iter =0
@@ -473,21 +482,17 @@ PROGRAM CALL_DASPKAUTO
                ! 6/26/08 gmagoon: call EdgeFlux if AUTOFLAG is 1 to
                ! determine EDGEFLAG 
 		IF (AUTOFLAG.eq.1) THEN
-			CALL EDGEFLUX(EDGEFLAG, Y, YPRIME,THRESH,ESPECIES, &
+			CALL EDGEFLUX(EDGEFLAG,EDGEFLAGCORE,Y,YPRIME,THRESH,CORETHRESH,ESPECIES, &
     		 &     EREACTIONSIZE,NEREAC,NEPROD,IDEREAC,IDEPROD,KVEC, &
 		 &     MAXRATIO,PRUNEVEC,NSTATE)
-			!update HIGHESTRATIO and store relevant variables that will be printed
-			!later; note that we cannot exit the do loop once the IF statement is
-			!caught because, even though output variables will be stored properly,
-			!the HIGHESTRATIO will not necessarily have the highest value
-			COPYQ=0
+			!update HIGHESTRATIO
 			DO I=1, ESPECIES
 			    IF (MAXRATIO(I) .GT. HIGHESTRATIO) THEN
 				HIGHESTRATIO = MAXRATIO(I)
-				COPYQ=1 !mark this ODE time step for copying into output variables
 			    END IF
 			END DO
-			IF (COPYQ .EQ. 1) THEN
+			!when core flux threshold is exceeded for the first time, store the values for output
+			IF(EDGEFLAGCORE .GT. 0 .AND. CORESTORED .EQ. -1) THEN
 			    ITER_OUTPT=ITER
 			    TIME_OUTPT=TIME
 			    Y_OUTPT = Y
@@ -495,7 +500,7 @@ PROGRAM CALL_DASPKAUTO
 			    !IWORK_OUTPT = IWORK
 			    !RWORK_OUTPT = RWORK
 			    TOTALREACTIONFLUX_OUTPT = TOTALREACTIONFLUX
-			    PRUNEVEC_OUTPT = PRUNEVEC
+			    CORESTORED=1
 			END IF
 		END IF
                
@@ -534,21 +539,17 @@ PROGRAM CALL_DASPKAUTO
                ! 6/26/08 gmagoon: call EdgeFlux if AUTOFLAG is 1 to
                ! determine EDGEFLAG 
 		IF (AUTOFLAG.eq.1) THEN
-			CALL EDGEFLUX(EDGEFLAG, Y, YPRIME,THRESH,ESPECIES, &
+			CALL EDGEFLUX(EDGEFLAG,EDGEFLAGCORE,Y,YPRIME,THRESH,CORETHRESH,ESPECIES, &
     		 &     EREACTIONSIZE,NEREAC,NEPROD,IDEREAC,IDEPROD,KVEC, &
 		 &     MAXRATIO,PRUNEVEC,NSTATE)
-		 	!update HIGHESTRATIO and store relevant variables that will be printed
-			!later; note that we cannot exit the do loop once the IF statement is
-			!caught because, even though output variables will be stored properly,
-			!the HIGHESTRATIO will not necessarily have the highest value
-			COPYQ=0
+		 	!update HIGHESTRATIO
 			DO I=1, ESPECIES
 			    IF (MAXRATIO(I) .GT. HIGHESTRATIO) THEN
 				HIGHESTRATIO = MAXRATIO(I)
-				COPYQ=1 !mark this ODE time step for copying into output variables
 			    END IF
 			END DO
-			IF (COPYQ .EQ. 1) THEN
+			!when core flux threshold is exceeded for the first time, store the values for output
+			IF(EDGEFLAGCORE .GT. 0 .AND. CORESTORED .EQ. -1) THEN
 			    ITER_OUTPT=ITER
 			    TIME_OUTPT=TIME
 			    Y_OUTPT = Y
@@ -556,7 +557,7 @@ PROGRAM CALL_DASPKAUTO
 			    !IWORK_OUTPT = IWORK
 			    !RWORK_OUTPT = RWORK
 			    TOTALREACTIONFLUX_OUTPT = TOTALREACTIONFLUX
-			    PRUNEVEC_OUTPT = PRUNEVEC
+			    CORESTORED=1
 			END IF
 		END IF
                go to 2
@@ -571,7 +572,8 @@ PROGRAM CALL_DASPKAUTO
       !core inclusion threshhold, and we therefore want to report the
       !final state back to the Java code so it will recognize that the
       !target time/conversion has been reached
-      IF ((AUTOFLAG .NE. 1) .OR. (HIGHESTRATIO .LT. CORETHRESH)) THEN
+      !in either case, CORESTORED should be -1
+      IF (CORESTORED .EQ. -1) THEN
 	ITER_OUTPT=ITER
 	TIME_OUTPT=TIME
 	Y_OUTPT = Y
@@ -579,7 +581,6 @@ PROGRAM CALL_DASPKAUTO
 	!IWORK_OUTPT = IWORK
 	!RWORK_OUTPT = RWORK
 	TOTALREACTIONFLUX_OUTPT = TOTALREACTIONFLUX
-	PRUNEVEC_OUTPT = PRUNEVEC
       END IF
       IWORK_OUTPT = IWORK
       RWORK_OUTPT = RWORK
@@ -627,7 +628,7 @@ PROGRAM CALL_DASPKAUTO
 	  WRITE(15,*) EDGEFLAG
 	  WRITE(15,*) TIME
 	  DO I=1, ESPECIES
-	      WRITE(15,*) PRUNEVEC_OUTPT(I)
+	      WRITE(15,*) PRUNEVEC(I)
 	      WRITE(15,*) MAXRATIO(I)
 	  END DO
       END IF
@@ -895,16 +896,20 @@ PROGRAM CALL_DASPKAUTO
             
 ! 6/26/08 gmagoon: adding subroutines EDGEFLUX and RCHAR
 
-! EDGEFLUX determines whether threshhold flux has been
-! reached by any species; if so, EDGEFLAG is set to a
-! value besides -1; otherwise, EDGEFLAG remains -1;
+! EDGEFLUX determines whether core or termination threshhold flux has been
+! reached by any species; if so, EDGEFLAGCORE and EDGEFLAG, respectively, are set to a
+! positive value corresponding to the offending species ID;
+! otherwise, these values remain at whatever they were when passed to the function
 ! EDGEFLUX also calls RCHAR
-SUBROUTINE EDGEFLUX(EDGEFLAG, Y, YPRIME,THRESH,ESPECIES, &
+! when edgeflux exceeds core threshold, edgeflagcore is set to the offending species ID
+! if edgeflux also exceeds the termination threshold flux, edgeflag is set to the offending species ID
+
+SUBROUTINE EDGEFLUX(EDGEFLAG,EDGEFLAGCORE,Y,YPRIME,THRESH,CORETHRESH,ESPECIES, &
     		 &     EREACTIONSIZE,NEREAC,NEPROD,IDEREAC,IDEPROD, &
 		&      KVEC, MAXRATIO,PRUNEVEC,NSTATE)
 	IMPLICIT NONE
-	INTEGER EDGEFLAG, ESPECIES, EREACTIONSIZE, NSTATE, I, J, K
-	DOUBLE PRECISION THRESH, FLUXRC, RFLUX, Y(NSTATE), YPRIME(NSTATE)
+	INTEGER EDGEFLAG, EDGEFLAGCORE, ESPECIES, EREACTIONSIZE, NSTATE, I, J, K
+	DOUBLE PRECISION THRESH,CORETHRESH,FLUXRC, RFLUX, Y(NSTATE), YPRIME(NSTATE)
 	DOUBLE PRECISION, DIMENSION(:), ALLOCATABLE :: RATE
 	INTEGER NEREAC(EREACTIONSIZE),NEPROD(EREACTIONSIZE)
         INTEGER IDEREAC(EREACTIONSIZE,3), IDEPROD(EREACTIONSIZE,3)
@@ -950,11 +955,14 @@ SUBROUTINE EDGEFLUX(EDGEFLAG, Y, YPRIME,THRESH,ESPECIES, &
 	! the threshhold and update the MAXRATIO vector
 	FLOOP: DO I=1, ESPECIES
 		RATIO = RATE(I)/FLUXRC
-		!if we reach the termination tolerance,
-		!set EDGEFLAG to a positive value
-		!(in particular, the species ID)
-		IF(RATIO .GE. THRESH) THEN
-		   EDGEFLAG = I
+		!if we reach the error tolerance (aka core tolerance),
+		!set EDGEFLAGCORE to the species ID
+		!if we also reach the termination tolerance, set EDGEFLAG to the species ID
+		IF (RATIO .GE. CORETHRESH) THEN
+		    EDGEFLAGCORE = I
+		    IF(RATIO .GE. THRESH) THEN
+			EDGEFLAG = I
+		    END IF
 		END IF
 		!update the MAXRATIO vector
 		IF(RATIO .GT. MAXRATIO(I)) THEN
