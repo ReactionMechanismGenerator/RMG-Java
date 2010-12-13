@@ -84,6 +84,9 @@ public class ThermoGAGroupLibrary {
     protected HashMap abramDictionary;
     protected HashMap abramLibrary;
     protected HierarchyTree abramTree;
+    protected HashMap abramradDictionary;
+    protected HashMap abramradLibrary;
+    protected HierarchyTree abramradTree;
     protected HashMap unifacDictionary;
     protected HashMap unifacLibrary;
     protected HierarchyTree unifacTree;
@@ -121,6 +124,10 @@ public class ThermoGAGroupLibrary {
         abramLibrary= new HashMap();
         abramDictionary=new HashMap();
         abramTree=new HierarchyTree();
+
+        abramradLibrary= new HashMap();
+        abramradDictionary=new HashMap();
+        abramradTree=new HierarchyTree();
 
         unifacLibrary= new HashMap();
         unifacDictionary=new HashMap();
@@ -165,6 +172,11 @@ public class ThermoGAGroupLibrary {
         String AbTree=directory+"Abraham_Tree.txt";
         String AbLibrary=directory+"Abraham_Library.txt";
 
+        //Added by Amrit Jalan on December 13, 2010
+        String AbradDictionary=directory+"Abraham_Radical_Dictionary.txt";
+        String AbradTree=directory+"Abraham_Radical_Tree.txt";
+        String AbradLibrary=directory+"Abraham_Radical_Library.txt";
+        
         String UnDictionary=directory+"Unifac_Dictionary.txt";
         String UnTree=directory+"Unifac_Tree.txt";
         String UnLibrary=directory+"Unifac_Library.txt";
@@ -172,7 +184,7 @@ public class ThermoGAGroupLibrary {
         //String solventdict=directory+"Solvent_Dictionary.txt";
         //String solventlib=directory+"Solvent_Library.txt";
 
-        read(gDictionary,gTree,gLibrary,rDictionary,rTree,rLibrary,ringDictionary,ringTree,ringLibrary,otherDictionary,otherLibrary,otherTree,gauDictionary,gauTree,gauLibrary,one5Dictionary,one5Tree,one5Library,AbDictionary,AbTree,AbLibrary,UnDictionary,UnTree,UnLibrary);
+        read(gDictionary,gTree,gLibrary,rDictionary,rTree,rLibrary,ringDictionary,ringTree,ringLibrary,otherDictionary,otherLibrary,otherTree,gauDictionary,gauTree,gauLibrary,one5Dictionary,one5Tree,one5Library,AbDictionary,AbTree,AbLibrary,UnDictionary,UnTree,UnLibrary,AbradDictionary,AbradTree,AbradLibrary);
 
     }
 
@@ -408,6 +420,26 @@ public class ThermoGAGroupLibrary {
         return null;
     }
 
+   //Added by Amrit Jalan on December 13, 2010
+    public AbrahamGAValue findAbrahamradGroup(ChemGraph p_chemGraph) throws MultipleGroupFoundException, InvalidCenterTypeException {
+        //#[ operation findRadicalGroup(ChemGraph)
+        if (p_chemGraph == null) return null;
+
+        Stack stack = abramradTree.findMatchedPath(p_chemGraph);
+        p_chemGraph.getGraph().resetMatchedGC();
+        if (stack == null) return null;
+
+        while (!stack.empty()) {
+        	HierarchyTreeNode node = (HierarchyTreeNode)stack.pop();
+        	Matchable fg = (Matchable)node.getElement();
+        	AbrahamGAValue ga = (AbrahamGAValue)abramradLibrary.get(fg);
+        	if (ga != null) return ga;
+        }
+
+        return null;
+
+       }
+
         public UnifacGAValue findUnifacGroup(ChemGraph p_chemGraph) throws MultipleGroupFoundException, InvalidCenterTypeException {
         //#[ operation findGAGroup(ChemGraph)
         if (p_chemGraph == null) return null;
@@ -432,7 +464,7 @@ public class ThermoGAGroupLibrary {
 
 
     //## operation read(String,String,String,String,String,String,String,String,String)
-	public void read(String p_groupDictionary, String p_groupTree, String p_groupLibrary, String p_radicalDictionary, String p_radicalTree, String p_radicalLibrary, String p_ringDictionary, String p_ringTree, String p_ringLibrary, String p_otherDictionary, String p_otherLibrary, String p_otherTree, String p_gaucheDictionary, String p_gaucheTree, String p_gaucheLibrary, String p_15Dictionary, String p_15Tree, String p_15Library,String p_abramDictionary,String p_abramTree,String p_abramLibrary,String p_unifacDictionary,String p_unifacTree,String p_unifacLibrary) { //,String p_solventDictionary,String p_solventLibrary) {
+	public void read(String p_groupDictionary, String p_groupTree, String p_groupLibrary, String p_radicalDictionary, String p_radicalTree, String p_radicalLibrary, String p_ringDictionary, String p_ringTree, String p_ringLibrary, String p_otherDictionary, String p_otherLibrary, String p_otherTree, String p_gaucheDictionary, String p_gaucheTree, String p_gaucheLibrary, String p_15Dictionary, String p_15Tree, String p_15Library,String p_abramDictionary,String p_abramTree,String p_abramLibrary,String p_unifacDictionary,String p_unifacTree,String p_unifacLibrary,String p_abramradDictionary,String p_abramradTree,String p_abramradLibrary) { //,String p_solventDictionary,String p_solventLibrary) {
 
 	        	// step 1: read in GA Groups
 					System.out.println("Reading thermochemistry groups");
@@ -479,7 +511,13 @@ public class ThermoGAGroupLibrary {
 			readAbrahamDictionary(p_abramDictionary);
 			readAbrahamTree(p_abramTree);
 			readAbrahamLibrary(p_abramLibrary);
-			System.out.println("Reading UNIFAC solvation groups");
+
+			System.out.println("Reading Abraham radical solvation groups");
+			readAbrahamradDictionary(p_abramradDictionary);
+			readAbrahamradTree(p_abramradTree);
+			readAbrahamradLibrary(p_abramradLibrary);
+
+           	System.out.println("Reading UNIFAC solvation groups");
 			readUnifacDictionary(p_unifacDictionary);
 			readUnifacTree(p_unifacTree);
 			readUnifacLibrary(p_unifacLibrary);
@@ -608,6 +646,18 @@ public class ThermoGAGroupLibrary {
         }
     }
 
+    //Added by Amrit Jalan on December 13, 2010
+    	public void readAbrahamradDictionary(String p_fileName) {
+        try {
+        	abramradDictionary = readStandardDictionary(p_fileName);
+        	return;
+        }
+        catch (Exception e) {
+        	System.err.println("Error in read Abraham Radical dictionary!");
+        	System.exit(0);
+        }
+    }
+
 	public void readUnifacDictionary(String p_fileName) {
         try {
         	unifacDictionary = readStandardDictionary(p_fileName);
@@ -622,6 +672,18 @@ public class ThermoGAGroupLibrary {
 	public void readAbrahamLibrary(String p_fileName) {
         try {
         	abramLibrary = readAbramLibrary(p_fileName, abramDictionary);
+        	return;
+        }
+        catch (Exception e) {
+        	System.err.println("Can't read Abraham library!");
+        	System.exit(0);
+        }
+    }
+
+        //Added by Amrit Jalan on December 13, 2010
+    	public void readAbrahamradLibrary(String p_fileName) {
+        try {
+        	abramradLibrary = readAbramLibrary(p_fileName, abramradDictionary);
         	return;
         }
         catch (Exception e) {
@@ -647,6 +709,18 @@ public class ThermoGAGroupLibrary {
         }
         catch (Exception e) {
         	System.err.println("Can't read Abraham tree file!");
+        	System.err.println("Error: " + e.getMessage());
+        	System.exit(0);
+        }
+    }
+
+        //Added by Amrit Jalan on December 13, 2010
+    	public void readAbrahamradTree(String p_fileName) {
+        try {
+        	abramradTree = readStandardTree(p_fileName,abramradDictionary,0);
+        }
+        catch (Exception e) {
+        	System.err.println("Can't read Abraham Radical tree file!");
         	System.err.println("Error: " + e.getMessage());
         	System.exit(0);
         }
