@@ -164,8 +164,8 @@ public class CheckForwardAndReverseRateCoefficients {
 						}
 //						System.out.println(output + rxnString);
 						for (int k=0; k<T.length; k++) {
-							if (logk[k] > 20 && numR==1) System.out.println("logkf = " + logk[k] + " at T=" + T[k] + "K for " + rxnString);
-							else if (logk[k] > 20) System.out.println("logkf = " + logk[k] + " at T=" + T[k] + "K for " + rxnString);
+							if (logk[k] > 20 && numR==1) System.out.format("logkf = %4.2f at T = %4.0fK for %s\n", logk[k], T[k], rxnString);
+							else if (logk[k] > 20) System.out.format("logkf = %4.2f at T = %4.0fK for %s\n", logk[k], T[k], rxnString);
 						}
 					}
 					else if (line.contains("(+m)")) {
@@ -218,8 +218,8 @@ public class CheckForwardAndReverseRateCoefficients {
 //						System.out.println(output + shortRxnString);
 						for (int k=0; k<T.length; k++) {
 							logk[k] = Math.log10(A * Math.pow(T[k],n) * Math.exp(-E/R/T[k]));
-							if (logk[k] > 20 && numR==1) System.out.println("logkf = " + logk[k] + " at T=" + T[k] + "K for " + shortRxnString);
-							else if (logk[k] > 20) System.out.println("logkf = " + logk[k] + " at T=" + T[k] + "K for " + shortRxnString);
+							if (logk[k] > 20 && numR==1) System.out.format("logkf = %4.2f at T = %4.0fK for %s\n", logk[k], T[k], shortRxnString);
+							else if (logk[k] > 20) System.out.format("logkf = %4.2f at T = %4.0fK for %s\n", logk[k], T[k], shortRxnString);
 						}
 						String[] reactsANDprods = shortRxnString.split("=");
 						// Determine the reactants
@@ -267,8 +267,8 @@ public class CheckForwardAndReverseRateCoefficients {
 										coeffs[prodsIndex[numProds]][coeffsCounter+13];
 							}
 							logKeq[iii] = Math.log10(Math.exp(1))*(-H_RT + S_R) + (numP-numR)*Math.log10(1.0/82.06/Temperature);
-							if (logk[iii] - logKeq[iii] > 20 && numP==1) System.out.println("logkr = " + (logk[iii]-logKeq[iii]) + " at T=" + T[iii] + "K for " + shortRxnString);
-							else if (logk[iii] - logKeq[iii] > 20) System.out.println("logkr = " + (logk[iii]-logKeq[iii]) + " at T=" + T[iii] + "K for " + shortRxnString);
+							if (logk[iii] - logKeq[iii] > 20 && numP==1) System.out.format("logkr = %4.2f at T = %4.0fK for %s\n", (logk[iii]-logKeq[iii]), T[iii], shortRxnString);
+							else if (logk[iii] - logKeq[iii] > 20) System.out.format("logkr = %4.2f at T = %4.0fK for %s\n", (logk[iii]-logKeq[iii]), T[iii], shortRxnString);
 							// Check if Ea is sensible
 //							if (rmgRate && iii==T.length-1) {
 //								double deltaHrxn = H_RT * R * T[iii];
