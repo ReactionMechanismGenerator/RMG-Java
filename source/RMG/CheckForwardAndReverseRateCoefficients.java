@@ -91,6 +91,7 @@ public class CheckForwardAndReverseRateCoefficients {
 			// next line should have kinetic info
 			line = ChemParser.readMeaningfulLine(br_thermodat, true);
 			while (line != null && !line.equals("END")) {
+				boolean reversible = true;
 				if (!line.startsWith("!")&& !line.toLowerCase().contains("low") && !line.toLowerCase().contains("troe") && !line.toLowerCase().contains("dup") && !line.toLowerCase().contains("plog") && !line.contains("CHEB")) {
 					String rxnString = "";
 					int[] reactsIndex = new int[3];
@@ -207,6 +208,7 @@ public class CheckForwardAndReverseRateCoefficients {
 						shortRxnString = line;
 						st = new StringTokenizer(line);
 						shortRxnString = st.nextToken();
+						if (shortRxnString.contains("=>")) reversible = false;
 						A = Double.parseDouble(st.nextToken());
 						n = Double.parseDouble(st.nextToken());
 						E = Double.parseDouble(st.nextToken());
@@ -267,8 +269,10 @@ public class CheckForwardAndReverseRateCoefficients {
 										coeffs[prodsIndex[numProds]][coeffsCounter+13];
 							}
 							logKeq[iii] = Math.log10(Math.exp(1))*(-H_RT + S_R) + (numP-numR)*Math.log10(1.0/82.06/Temperature);
-							if (logk[iii] - logKeq[iii] > 20 && numP==1) System.out.format("logkr = %4.2f at T = %4.0fK for %s\n", (logk[iii]-logKeq[iii]), T[iii], shortRxnString);
-							else if (logk[iii] - logKeq[iii] > 20) System.out.format("logkr = %4.2f at T = %4.0fK for %s\n", (logk[iii]-logKeq[iii]), T[iii], shortRxnString);
+							if (reversible) {
+								if (logk[iii] - logKeq[iii] > 20 && numP==1) System.out.format("logkr = %4.2f at T = %4.0fK for %s\n", (logk[iii]-logKeq[iii]), T[iii], shortRxnString);
+								else if (logk[iii] - logKeq[iii] > 20) System.out.format("logkr = %4.2f at T = %4.0fK for %s\n", (logk[iii]-logKeq[iii]), T[iii], shortRxnString);
+							}
 							// Check if Ea is sensible
 //							if (rmgRate && iii==T.length-1) {
 //								double deltaHrxn = H_RT * R * T[iii];
