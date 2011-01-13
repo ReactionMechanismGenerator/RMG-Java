@@ -207,6 +207,8 @@ directory and execute ``RMGVE 20080101.bat`` on the command
 line.  The RMGVE directly reads the RMG database :file:`$RMG/database/RMG_database` which includes the thermo data and the kinetics data.
 Please refer to :ref:`Using the RMGVE <modification>` to see how to modify the RMG database.
 
+.. _qmdependencies:
+
 Installation of Dependencies for 3D-geometry-based Thermodynamic Property Calculation
 =====================================================================================
 

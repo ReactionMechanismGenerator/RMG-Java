@@ -30,6 +30,8 @@ order:
 
 #. Whether to generate an :ref:`IUPAC International Chemical Identifier (InChI) <InChIgeneration>` for each species
 
+#. (Optional) parameters for performing on-the-fly :ref:`quantum calculations <qm>` as a substitute for group additivity
+
 #. The name, concentration, and chemical structure of the :ref:`reactants <reactants>`
 
 #. The specification and concentration of the :ref:`inert gas(es) <inertgas>`
@@ -300,6 +302,41 @@ To enable the InChI generation, the item should read::
 To disable the InChI generation, the item should read::
 
 	InChIGeneration: off
+
+.. _qm:
+
+On-the-fly Quantum Calculations
+-------------------------------
+
+The next section is optional and specifies parameters for on-the-fly quantum mechanics (QM) calculations for estimating thermodynamic parameters.
+If the user does not have the needed `dependencies <../installation.html#qmdependencies>`_\ or wishes to use the
+group additivity approach for estimation of all unknown thermodynamic parameters, this section should be omitted.
+The first line in this block should be something like ::
+
+	ThermoMethod: QM gaussian03
+
+The second field in the first line is optional and specifies the QM program to use. Options
+include "mopac", "gaussian03", or "both" (the default if this field is omitted).
+The "both" option requests that RMG first try to use MOPAC and if all MOPAC attempts
+for a particular species are unsuccessful, then it will try Gaussian03.
+
+The next line determines whether RMG will use QM calculations for all species or just cyclic ones::
+
+	QMForCyclicsOnly: on
+
+It is often desireable to run with this option on, as the QM calculations can be time-consuming
+and may be less accurate than group-additivity for acyclic species, whereas they are more likely to improve accuracy for cyclic species.
+
+Finally, the user must specify the maximum radical number for species that will be fed to the QM program::
+
+	MaxRadNumForQM: 0
+
+For molecules with more radicals than the value specified here, QM calculations
+will be performed on the saturated molecule (with added hydrogens) and hydrogen bond increment (HBI)
+corrections will be applied, similar to the approach used with group additivity. It is recommended that
+this value be left at 0 (zero), as it has been found that radicals tend to be difficult for the PM3
+implementations to handle robustly, and errors or significant inaccuracies (particularly for biradicals)
+are more likely.
 	
 .. _reactants:
 

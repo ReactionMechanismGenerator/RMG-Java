@@ -63,12 +63,12 @@ PressureModel: Constant (atm) 1
 // *** This option is still under construction ***
 //Solvation: off/on
 
-// RMG currently only recognizes "QM"
+// RMG currently only recognizes "QM", bracketed field is optional and defaults to "both"
 // *** This option is still under construction ***
-//ThermoMethod: QM
+//ThermoMethod: QM [gaussian03/mopac/both/mm4/mm4hr]
 // If previous field is on and set to "QM", the next two fields are required
 //QMForCyclicsOnly: on/off
-//MaxRadNum4QM: 4
+//MaxRadNumForQM: 0
 
 InitialStatus:
 
