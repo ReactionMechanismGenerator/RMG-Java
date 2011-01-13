@@ -64,6 +64,7 @@ public class ArrheniusEPKinetics extends ArrheniusKinetics {
 	// which means that if we imagine 
 	//   Ea = Eo + alpha * Hrxn
 	// then getEValue() returns Eo NOT Ea
+	// (notice the additional method getEaValue() which does return Ea)
 	// but we DO redefine toChemkinString to return the Ea
 	///////////////////////////////////////
 	
@@ -71,8 +72,11 @@ public class ArrheniusEPKinetics extends ArrheniusKinetics {
 		double Ea = getEaValue(p_Hrxn);
 		// If reported Arrhenius Ea value was computed using Evans-Polanyi relationship,
 		//	inform user (in chem.inp file) of what deltaHrxn(T) was used.
-		if ((int)alpha.getValue() != 0) {
+		if ((double)alpha.getValue() != 0.0) {
 			comment += " (Ea computed using deltaHrxn(T=298K) of " + p_Hrxn + " kcal/mol)";
+		}
+		if (Ea < p_Hrxn) {
+			comment += String.format("Warning: Ea=%.1f < dHrxn(298K)=%.1f by %.1f kcal/mol",Ea, p_Hrxn, p_Hrxn-Ea);
 		}
 		Object [] formatString = new Object[5];
 		
