@@ -409,6 +409,7 @@ public class FastMasterEqn implements PDepKineticsEstimator {
 				//	System.out.println("Running Time is: " + String.valueOf((System.currentTimeMillis())/1000/60) + " minutes after running fame.");
 				// }
 			}
+			stdout.close(); // close all output streams so the fame process terminates and we get past the following line:
 			int exitValue = fame.waitFor();
         }
         catch (Exception e) {
@@ -767,6 +768,7 @@ public class FastMasterEqn implements PDepKineticsEstimator {
 	/**
 	 * Parses a FAME output file and updates the reaction network and system
 	 * accordingly.
+	 * @param br The BufferedReader containing the stream that is to be parsed. THIS IS LEFT OPEN. 
 	 * @param pdn The pressure-dependent reaction network of interest
 	 * @param rxnSystem The reaction system of interest
 	 * @param cerm The current core/edge reaction model
@@ -1005,22 +1007,22 @@ public class FastMasterEqn implements PDepKineticsEstimator {
 							for (int numTemps=0; numTemps<temperatures.length; numTemps++) {
 								double T = temperatures[numTemps].getK();
 								double k_highPlimit = A * Math.pow(T,n) * Math.exp(-Ea/GasConstant.getKcalMolK()/T);
-								if (all_ks[numTemps][pressures.length-1] > 2*k_highPlimit) {
+								double over_high_P_factor = all_ks[numTemps][pressures.length-1] / k_highPlimit;
+								if (over_high_P_factor > 2) {
+									System.out.println("Pressure-dependent rate exceeds high-P-limit rate" +
+										String.format(" by factor of %.1f at %.0fK %.1fBar.",over_high_P_factor, T, Pmax*1e-5 ));
 									if (numGrains > 1000) {
-										System.out.println("Pressure-dependent rate exceeds high-P-limit rate: " +
-											"Number of grains already exceeds 1000.  Continuing RMG simulation " +
-											"with results from current fame run.");
+										System.out.println("Number of grains already exceeds 1000. " +
+											"Continuing RMG simulation with results from current fame run.");
 										break;	// No need to continue checking the rates for this one reaction
 									}
 									else {
-										System.out.println("Pressure-dependent rate exceeds high-P-limit rate: " +
-											"Re-running fame with additional number of grains");
+										System.out.println("Re-running fame with additional number of grains.");
 										pdepRatesOK = false;
 										return false;
 									}
 								}
 							}
-						//break;	// Why did MRH put this break here?
 						}
 					}
 				}
@@ -1033,9 +1035,6 @@ public class FastMasterEqn implements PDepKineticsEstimator {
 				netReactionList.add(rxn);
 
 			}
-
-			// Close stream when finished
-			br.close();
 
             // If we ignored a rate coefficient from the FAME output for any
             // reason, then fail the FAME job
