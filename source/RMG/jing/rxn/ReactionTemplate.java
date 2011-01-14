@@ -532,7 +532,7 @@ public class ReactionTemplate {
 	  	  }
 	  	  if (k != null) {
 	  		  setRateCoefficientSource(k);
-	  		  p_structure.setDirection(1);
+	  		  p_structure.setDirection(getPrimaryKineticDirection(p_structure));
 	  		  return k;
 	  	  }
 		
