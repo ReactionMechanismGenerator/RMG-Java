@@ -512,142 +512,20 @@ public class ReactionTemplate {
   }
 
   /**
-  Requires:
-  Effects: call itsKineticsTemplateLibrary.findKinetics() to find out the kinetics for the structure, return the found kinetics or null if nothing is found.
-  Modifies:
+   In commit 030ff4bd577e8ace9b4f2e023f4a8faf641bb9b2 the function findReverseRateConstant()
+   was added. It was entire copy of findRateConstant() with one line wrapped in a try/catch block
+   returning null on exception. Since then, the two functions, maintained separately, have diverged
+   a little by mistake. Now, this findReverseRateConstant function just calls the findRateConstant() function.
   */
-  //## operation findRateConstant(Structure) 
   public Kinetics[] findReverseRateConstant(Structure p_structure) {
-		double pT = System.currentTimeMillis();
-      //#[ operation findRateConstant(Structure)
-		
-	  	  /* 
-	  	   *If a primary kinetic library exists, check the
-	  	   *	current reaction against that list before attempting
-	  	   *	to estimate via searching the tree
-	  	   */
-			Kinetics[] k = null;
-	  	  if (doesPrimaryKineticLibraryExist()) {
-	  		  k = getPrimaryKineticRate(p_structure);
-	  	  }
-	  	  if (k != null) {
-	  		  setRateCoefficientSource(k);
-	  		  p_structure.setDirection(getPrimaryKineticDirection(p_structure));
-	  		  return k;
-	  	  }
-		
-      // look for kinetics in kinetics template libarry
-      LinkedList reactants = null;
-      if (isForward()) {
-      	p_structure.setDirection(1);
-      	reactants = p_structure.reactants;
-      }
-      else if (isBackward()) {
-      	p_structure.setDirection(-1);
-      }
-      else if (isNeutral()) {
-      	boolean thermoConsistence = true;
-      	// in H abstraction, we allow biradical abstract H from a molecule, but the reverse is not allowed
-      	// therefore, such H abs reactions will be all set as forward reaction
-	    // (unless the reverse is also a biradical)
-		  if (name.equals("H_Abstraction")) {
-			  boolean polyRadicalReactant = false;
-			  boolean polyRadicalProduct = false;
-			  
-			  Iterator iter = p_structure.reactants.iterator();
-			  while (iter.hasNext()) {
-				  ChemGraph cg = (ChemGraph)iter.next();
-				  int rNum = cg.getRadicalNumber();
-				  if (rNum >= 2) polyRadicalReactant = true;
-			  }
-			  iter = p_structure.products.iterator();
-			  while (iter.hasNext()) {
-				  ChemGraph cg = (ChemGraph)iter.next();
-				  int rNum = cg.getRadicalNumber();
-				  if (rNum >= 2) polyRadicalProduct = true;
-			  }
-			  // If both reactants and products have polyradical species
-			  // then let the exothermic direction win, otherwise
-			  // make sure the polyradical is a reactant.
-			  if (polyRadicalReactant && polyRadicalProduct) {
-				  thermoConsistence = true;
-			  }
-			  else if (polyRadicalReactant) {
-				  thermoConsistence = false;
-				  reactants = p_structure.reactants;
-				  p_structure.setDirection(1);
-			  }
-			  else if (polyRadicalProduct) {
-				  thermoConsistence = false;
-				  p_structure.setDirection(-1);
-			  }
-		  }
-      
-          if (thermoConsistence) {
-      		Temperature T = new Temperature(298, "K");
-      		// to avoid calculation error's effect, lower the threshold for forward reaction
-      		//if (p_structure.calculateKeq(T)>0.999)  {
-      		/*if (p_structure.calculateKeq(T)>0.999 && p_structure.calculateKeq(T) <1.001) {
-      			System.out.println(p_structure.toChemkinString(true));
-      		}*/
-      		if (p_structure.calculateKeq(T)>0.999) {
-      			p_structure.setDirection(1);
-      	 		reactants = p_structure.reactants;
-      		}
-      		else {
-      			p_structure.setDirection(-1);
-      		}
-			  // for intra h migration, set the ROO. as the forward
-			  /*
-			   I think the reason for this is as described above where this code is duplicated.
-			   */
-			  if (name.equals("intra_H_migration")) {
-				  ChemGraph rcg = (ChemGraph)(p_structure.getReactants().next());
-				  HashSet rrad = rcg.getRadicalNode();
-				  Atom rra = (Atom)( (Node) ( (rrad.iterator()).next())).getElement();
-				  ChemGraph pcg = (ChemGraph)(p_structure.getProducts().next());
-				  HashSet prad = pcg.getRadicalNode();
-				  Atom pra = (Atom)( (Node) ( (prad.iterator()).next())).getElement();
-				  if (rra.isOxygen() && pra.isCarbon()) {
-					  p_structure.setDirection(1);
-					  reactants = p_structure.reactants;
-				  }
-				  else if (pra.isOxygen() && rra.isCarbon())
-					  p_structure.setDirection(-1);
-              }
-		  }
-      }
-      else {
-      	throw new InvalidReactionTemplateDirectionException();
-      }
-      
-      if (p_structure.isForward()) {
-      	LinkedList fg = structureTemplate.getMatchedFunctionalGroup(reactants);
-			if (fg == null) {
-				Global.RT_findRateConstant += (System.currentTimeMillis()-pT)/1000/60;
-				return null;
-			}
-			String comments = getKineticsComments(fg);
-      	k = findExactRateConstant(fg);
-      	if (k==null) {
-      		try{
-				k = findClosestRateConstant(fg);
-				k[0].setSource(name + " estimate: (" + k[0].getSource() + ")");
-      		}
-      		catch (RateConstantNotFoundException e) {
-              	return k;
-              }
-
-      	}
-      	else k[0].setSource(name  + " exact: ");
-			k[0].setComments(comments);
-			Global.RT_findRateConstant += (System.currentTimeMillis()-pT)/1000/60;
-      	return k;
-      }
-      else {
-			Global.RT_findRateConstant += (System.currentTimeMillis()-pT)/1000/60;
-			return null;
-      }
+	  Kinetics[] k = null;
+	  try{
+		  k = findRateConstant(p_structure);
+	  }
+	  catch (RateConstantNotFoundException e) {
+		  return k;
+	  }
+	  return k;
   }
   
   public void setRateCoefficientSource(Kinetics[] k) {
