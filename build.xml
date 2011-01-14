@@ -4,7 +4,7 @@
   <property name="build" location="build/RMG"/>
   
   <target name="compile" depends="versioninfo">
-    <javac srcdir="${src}" destdir="${build}" optimize="true" debug="true" />
+    <javac srcdir="${src}" destdir="${build}" optimize="true" debug="true" includeantruntime="false" />
   </target>
   
   <target name="jar" depends="compile">
@@ -109,7 +109,7 @@
     <javac srcdir="${build}/jing/param" 
       destdir="${build}" 
       includes="VersionInfo.java"
-      optimize="true" debug="true">
+      optimize="true" debug="true" includeantruntime="false">
     </javac>  
   </target>
 
