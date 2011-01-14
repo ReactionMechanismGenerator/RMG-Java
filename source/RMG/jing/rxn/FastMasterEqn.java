@@ -461,7 +461,8 @@ public class FastMasterEqn implements PDepKineticsEstimator {
          * 	reset to 251 (which was the standard before)
          */
         while (!pdepRatesOK) {
-        	numGrains = numGrains + 200;
+        	// runPDepCalculation will increase numGrains if it is going to set pdepRatesOK=false.
+			// and will set pdepRatesOK=true if numGrains > 1000.
         	runPDepCalculation(pdn, rxnSystem, cerm);
         }
         numGrains = 251;
@@ -1004,25 +1005,15 @@ public class FastMasterEqn implements PDepKineticsEstimator {
 						}
 						if (ReactionModelGenerator.rerunFameWithAdditionalGrains()) {
 							double[][] all_ks = rxn.getPDepRate().getRateConstants();
-							for (int numTemps=0; numTemps<temperatures.length; numTemps++) {
-								double T = temperatures[numTemps].getK();
+								double T = temperatures[0].getK();  // lowest temperature will have the highest over_high_P_factor.
 								double k_highPlimit = A * Math.pow(T,n) * Math.exp(-Ea/GasConstant.getKcalMolK()/T);
-								double over_high_P_factor = all_ks[numTemps][pressures.length-1] / k_highPlimit;
+								double over_high_P_factor = all_ks[0][pressures.length-1] / k_highPlimit;
 								if (over_high_P_factor > 2) {
-									System.out.println("Pressure-dependent rate exceeds high-P-limit rate" +
-										String.format(" by factor of %.1f at %.0fK %.1fBar.",over_high_P_factor, T, Pmax*1e-5 ));
-									if (numGrains > 1000) {
-										System.out.println("Number of grains already exceeds 1000. " +
-											"Continuing RMG simulation with results from current fame run.");
-										break;	// No need to continue checking the rates for this one reaction
-									}
-									else {
-										System.out.println("Re-running fame with additional number of grains.");
-										pdepRatesOK = false;
-										return false;
-									}
+									System.out.println("For reaction "+rxn.toString());
+									System.out.println(String.format("Pressure-dependent rate coefficient at %.0fK %.1fBar " +
+											"exceeds high-P-limit rate  by factor of %.1f .", T, Pmax*1e-5,over_high_P_factor));
+									pdepRatesOK = false;
 								}
-							}
 						}
 					}
 				}
@@ -1057,9 +1048,21 @@ public class FastMasterEqn implements PDepKineticsEstimator {
 			System.exit(0);
 		}
 		
+		if (!pdepRatesOK) {
+			if (numGrains > 1000) {
+				System.out.println("Number of grains already exceeds 1000. " +
+								   "Continuing with results from current fame run.");
+				pdepRatesOK = true; // this function is called inside a while(!pdepRatesOK) loop.
+			}
+			else {
+				numGrains = numGrains + 250;
+				System.out.println(String.format("Re-running fame with %d grains.",numGrains));
+				return false;
+			}
+		}
 		return true;
     }
-
+	
 	/**
 	 * Determines the maximum energy grain to use in the calculation. The
 	 * maximum energy grain is chosen to be 25 * R * T above the highest
