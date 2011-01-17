@@ -4897,13 +4897,13 @@ public class ReactionModelGenerator {
 						throw new InvalidUnitException("Species Concentration in condition.txt!");
 					}
 				}
+			}
 				// Make a SpeciesStatus and store it in the LinkedHashMap
 //				double flux = 0;
 //				int species_type = 1; // reacted species
-				SpeciesStatus ss = new SpeciesStatus(species,1,concentration,0.0);
-				speciesStatus.put(numSpeciesStatus, ss);
-				++numSpeciesStatus;
-			}			
+			SpeciesStatus ss = new SpeciesStatus(species,1,concentration,0.0);
+			speciesStatus.put(numSpeciesStatus, ss);
+			++numSpeciesStatus;		
 			
 			species.setReactivity(IsReactive); // GJB
             species.setConstantConcentration(IsConstantConcentration);
