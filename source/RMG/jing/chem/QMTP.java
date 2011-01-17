@@ -1044,6 +1044,7 @@ public class QMTP implements GeneralGAPP {
         //look in the output file to check for the successful termination of the Gaussian calculation
         //failed jobs will contain the a line beginning with " Error termination" near the end of the file
         int failureFlag=0;
+	int completeFlag = 0;
         String errorLine = "";//string to store the error
         try{
             FileReader in = new FileReader(directory+"/"+name+".log");
@@ -1061,6 +1062,11 @@ public class QMTP implements GeneralGAPP {
                         failureFlag=1;
                     }
                 }
+		else if (line.startsWith(" Normal termination of Gaussian 03 at")){//check for completion notice at end of file
+		    if (reader.readLine()==null){//the above line will occur once in the middle of most files (except for monatomic species), but the following line is non-critical (e.g. "Link1:  Proceeding to internal job step number  2.") so reading over this line should not cause a problem
+			completeFlag=1;
+		    }
+		}
                 line=reader.readLine();
             }
         }
@@ -1070,6 +1076,8 @@ public class QMTP implements GeneralGAPP {
             e.printStackTrace();
             System.exit(0);
         }
+	//if the complete flag is still 0, the process did not complete and is a failure
+	if (completeFlag==0) failureFlag=1;
         //if the failure flag is still 0, the process should have been successful
         if (failureFlag==0) successFlag=1;
         
@@ -2036,7 +2044,8 @@ public class QMTP implements GeneralGAPP {
             int InChIMatch=0;//flag (1 or 0) indicating whether the InChI in the file matches InChIaug; this can only be 1 if InChIFound is also 1;
             int InChIFound=0;//flag (1 or 0) indicating whether an InChI was found in the log file
             int InChIPartialMatch=0;//flag (1 or 0) indicating whether the InChI in the log file is a substring of the InChI in RMG's memory
-            String logFileInChI="";
+            int completeFlag=0;
+	    String logFileInChI="";
             try{
                 FileReader in = new FileReader(file);
                 BufferedReader reader = new BufferedReader(in);
@@ -2058,7 +2067,12 @@ public class QMTP implements GeneralGAPP {
                         if(logFileInChI.equals(InChIaug)) InChIMatch=1;
                         else if(InChIaug.startsWith(logFileInChI)) InChIPartialMatch=1;
                     }
-                    line=reader.readLine();
+		    else if (line.startsWith(" Normal termination of Gaussian 03 at")){//check for completion notice at end of file
+			if (reader.readLine()==null){//the above line will occur once in the middle of most files (except for monatomic species), but the following line is non-critical (e.g. "Link1:  Proceeding to internal job step number  2.") so reading over this line should not cause a problem
+			    completeFlag=1;
+			}
+		    }
+		    line=reader.readLine();
                 }
             }
             catch(Exception e){
@@ -2067,6 +2081,8 @@ public class QMTP implements GeneralGAPP {
                 e.printStackTrace();
                 System.exit(0);
             }
+	    //if the complete flag is still 0, the process did not complete and is a failure
+	    if (completeFlag==0) failureFlag=1;
             //if the failure flag is still 0, the process should have been successful
             if (failureFlag==0&&InChIMatch==1){
                 System.out.println("Pre-existing successful quantum result for " + name + " ("+InChIaug+") has been found. This log file will be used.");
