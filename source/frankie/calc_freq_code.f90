@@ -1155,7 +1155,7 @@ SUBROUTINE Bond_avg_8x3_2_1 (Number_of_bonds, &
   INTEGER                                      :: i,j, k
 
   IF (Number_of_bonds == 0 ) THEN
-     predicted_frequencies = (/ 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0 /) 
+     ! predicted_frequencies has DIMENSION(0) so we can't assign anything to it
   
   ELSEIF (Number_of_bonds == 1) THEN
      call linspace(typical_frequencies(1),typical_frequencies(2), &
@@ -1201,7 +1201,7 @@ SUBROUTINE Bond_avg_5x2_1 (Number_of_bonds, &
   INTEGER                                      :: i,j, k
 
   IF (Number_of_bonds == 0 ) THEN
-     predicted_frequencies = (/ 0.0, 0.0, 0.0, 0.0, 0.0 /) 
+     ! predicted_frequencies has DIMENSION(0) so we can't assign anything to it
   
   ELSEIF (Number_of_bonds == 1) THEN
      predicted_frequencies(1) = typical_frequencies(1)
@@ -1240,7 +1240,7 @@ SUBROUTINE Bond_avg_3x2_1 (Number_of_bonds, &
   INTEGER                                      :: i,j, k
 
   IF (Number_of_bonds == 0 ) THEN
-     predicted_frequencies = (/ 0.0, 0.0, 0.0 /) 
+     ! predicted_frequencies has DIMENSION(0) so we can't assign anything to it
   
   ELSEIF (Number_of_bonds == 1) THEN
      predicted_frequencies(1) = typical_frequencies(1)
@@ -1271,7 +1271,7 @@ SUBROUTINE Bond_avg_7x2_1 (Number_of_bonds, &
   INTEGER                                      :: i,j, k
 
   IF (Number_of_bonds == 0 ) THEN
-     predicted_frequencies = (/ 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0 /) 
+     !! predicted_frequencies has DIMENSION(0) so we can't assign anything to it
   
   ELSEIF (Number_of_bonds == 1) THEN
      predicted_frequencies(1) = typical_frequencies(1)
@@ -1318,7 +1318,7 @@ SUBROUTINE Bond_avg_5x1 (Number_of_bonds, &
   INTEGER                                      :: i,j, k
 
   IF (Number_of_bonds == 0 ) THEN
-     predicted_frequencies = (/ 0.0, 0.0, 0.0, 0.0, 0.0 /) 
+     ! predicted_frequencies has DIMENSION(0) so we can't assign anything to it
   
   ELSEIF (Number_of_bonds == 1) THEN
 
@@ -1362,7 +1362,7 @@ SUBROUTINE Bond_avg_3x1 (Number_of_bonds, &
   INTEGER                                      :: i,j, k
 
   IF (Number_of_bonds == 0 ) THEN
-     predicted_frequencies = (/ 0.0, 0.0, 0.0 /) 
+     ! predicted_frequencies has DIMENSION(0) so we can't assign anything to it
   
   ELSEIF (Number_of_bonds == 1) THEN
 
@@ -1400,7 +1400,7 @@ SUBROUTINE Bond_avg_6x2_2_1 (Number_of_bonds, &
 
   IF (Number_of_bonds == 0 ) THEN
 !     WRITE (*,*) 'N = 0'
-     predicted_frequencies = (/ 0.0, 0.0, 0.0, 0.0, 0.0, 0.0 /) 
+     ! predicted_frequencies has DIMENSION(0) so we can't assign anything to it
   
  ELSEIF (Number_of_bonds == 1) THEN
 
@@ -1441,7 +1441,7 @@ SUBROUTINE Bond_avg_4x1 (Number_of_bonds, &
   INTEGER                                      :: i,j, k
 
   IF (Number_of_bonds == 0 ) THEN
-     predicted_frequencies = (/ 0.0, 0.0, 0.0, 0.0 /) 
+     ! predicted_frequencies has DIMENSION(0) so we can't assign anything to it
   
   ELSEIF (Number_of_bonds == 1) THEN
 
@@ -1484,7 +1484,7 @@ SUBROUTINE Bond_avg_5x2_2_1 (Number_of_bonds, &
 
   IF (Number_of_bonds == 0 ) THEN
 !     WRITE (*,*) 'N = 0'
-     predicted_frequencies = (/ 0.0, 0.0, 0.0, 0.0, 0.0 /) 
+     ! predicted_frequencies has DIMENSION(0) so we can't assign anything to it
   
  ELSEIF (Number_of_bonds == 1) THEN
 
@@ -1521,7 +1521,7 @@ SUBROUTINE Bond_avg_6x2_1 (Number_of_bonds, &
   INTEGER                                      :: i,j, k
 
   IF (Number_of_bonds == 0 ) THEN
-     predicted_frequencies = (/ 0.0, 0.0, 0.0, 0.0, 0.0, 0.0 /) 
+     ! predicted_frequencies has DIMENSION(0) so we can't assign anything to it
   
   ELSEIF (Number_of_bonds == 1) THEN
      predicted_frequencies(1) = typical_frequencies(1)
@@ -1564,7 +1564,7 @@ SUBROUTINE Bond_avg_2x1 (Number_of_bonds, &
   INTEGER                                      :: i,j, k
 
   IF (Number_of_bonds == 0 ) THEN
-     predicted_frequencies = (/ 0.0, 0.0 /) 
+     ! predicted_frequencies has DIMENSION(0) so we can't assign anything to it
   
   ELSEIF (Number_of_bonds == 1) THEN
 
@@ -1595,7 +1595,7 @@ SUBROUTINE Bond_avg_1x1 (Number_of_bonds, &
   INTEGER                                      :: i,j, k
 
   IF (Number_of_bonds == 0 ) THEN
-     predicted_frequencies = (/ 0.0 /) 
+     ! predicted_frequencies has DIMENSION(0) so we can't assign anything to it
   
   ELSEIF (Number_of_bonds == 1) THEN
 
@@ -1622,7 +1622,7 @@ SUBROUTINE Bond_avg_4x2_1 (Number_of_bonds, &
   INTEGER                                      :: i,j, k
 
   IF (Number_of_bonds == 0 ) THEN
-     predicted_frequencies = (/ 0.0, 0.0, 0.0, 0.0 /) 
+     ! predicted_frequencies has DIMENSION(0) so we can't assign anything to it
   
   ELSEIF (Number_of_bonds == 1) THEN
      predicted_frequencies(1) = typical_frequencies(1)
