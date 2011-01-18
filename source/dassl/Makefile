@@ -20,11 +20,15 @@ BINDIR=../../bin
 
 F90=gfortran
 # --fpe-trap=underflow,overflow causes problems at least with fame. Maybe a bug in gcc? (Maybe a bug in fame.)
-F90FLAGS = -ffpe-trap=invalid,zero -ftrapv -fbounds-check -frange-check \
+F90FLAGS = -ffpe-trap=invalid,zero -ftrapv -frange-check \
            -ggdb -J""$(BUILDDIR)"" -O3  -Wall -Wno-unused $(backtrace)
 # if gfortran>4.3 then add -fbacktrace (it's not supported in earlier versions)
 backtrace = $(shell gfortran --version 2>/dev/zero|grep -iqs '^GNU Fortran.* [4-9]\.[3-9]\.[0-9]' && echo "-fbacktrace")
-F90FLAGS += -Wtabs # Don't warn about tab characters, although this breaks the Fortran standard.
+
+# Special flags for dassl d*.f files
+# Don't check for bounds on arrays beacuse dlinpk breaks them on purpose.
+# Don't warn about tab characters
+DASSL_FFLAGS = -fno-bounds-check -Wtabs
 
 LDFLAGS= $(F90_EXTRA_LDFLAGS)
 
@@ -37,6 +41,11 @@ OBJ=$(patsubst %.o,$(BUILDDIR)/%.o,$(OBJ0))
 $(BINDIR)/dasslAUTO.exe: $(OBJ)  
 	mkdir -p $(BINDIR)
 	$(F90) $(LDFLAGS) $(OBJ) -o $(BINDIR)/dasslAUTO.exe
+
+# only .f files that begin with a d (eg. daux.f, dassl.f, dlinpk.f)
+$(BUILDDIR)/d%.o: d%.f
+	mkdir -p $(BUILDDIR)
+	$(F90) $(F90FLAGS) $(DASSL_FFLAGS) -c $< -o $@
 
 $(BUILDDIR)/%.o: %.f
 	mkdir -p $(BUILDDIR)

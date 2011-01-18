@@ -24,7 +24,11 @@ F90FLAGS = -ffpe-trap=invalid,zero -ftrapv -fbounds-check -frange-check \
            -ggdb -J""$(BUILDDIR)"" -O3  -Wall -Wno-unused $(backtrace)
 # if gfortran>4.3 then add -fbacktrace (it's not supported in earlier versions)
 backtrace = $(shell gfortran --version 2>/dev/zero|grep -iqs '^GNU Fortran.* [4-9]\.[3-9]\.[0-9]' && echo "-fbacktrace")
-F90FLAGS += -Wtabs # Don't warn about tab characters, although this breaks the Fortran standard.
+
+# Special flags for daspk files
+# Don't check for bounds on arrays beacuse dlinpk breaks them on purpose.
+# Don't warn about tab characters or uninitialized variables.
+DASPK_FFLAGS = -fno-bounds-check -Wtabs -Wno-uninitialized
 
 LDFLAGS= $(F90_EXTRA_LDFLAGS) -lblas -llapack -ldaepack
 
@@ -48,10 +52,11 @@ $(BUILDDIR)/%.o: %.f90
 
 # the files in the private folder are not part of the base RMG distribution
 # because we are not licensed to distribute them
+# NB. they are also compiled with extra special flags
 $(BUILDDIR)/%.o: private/%.f
 	mkdir -p $(BUILDDIR)
-	$(F90) $(F90FLAGS) -c $< -o $@
-	
+	$(F90) $(F90FLAGS) $(DASPK_FFLAGS) -c $< -o $@
+
 clean:
 	rm -rf $(BUILDDIR)
 	rm -rf $(BINDIR)/daspkAUTO.exe
