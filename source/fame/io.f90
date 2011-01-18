@@ -656,7 +656,7 @@ contains
         read(token, *), numValues
 
         call getFirstToken(string, token)
-        units = token
+        units = token(1:64)
 
         allocate(values(1:numValues))
         do n = 1, numValues
@@ -688,7 +688,7 @@ contains
         read(token, *), numValues
 
         call getFirstToken(string, token)
-        units = token
+        units = token(1:64)
 
         call getFirstToken(string, token)
         read(token, *), Nmin
@@ -714,7 +714,7 @@ contains
         character(len=256) token
 
         call getFirstToken(string, token)
-        units = token
+        units = token(1:64)
 
         call getFirstToken(string, token)
         read(token, *), value
