@@ -181,17 +181,17 @@ c         write(*,*) temperature
          LOGF = LOGFCENT/(1 + INSIDE**2)
          F = 10**LOGF
 
-C	 9-Jul-2009: MRH
-C	 For unimolecular/recombination rxns, effective rate constant is
-C		keff = kinf * (Pr/(1+Pr)) * F
-C	 For chemically-activated bimolecular rxns, effective rate constant is
-C		keff = kzero * (1/(1+Pr)) * F
-	   IF (TROEREACTIONARRAY(I*21+1) .GT. 1 .AND.
-     $		TROEREACTIONARRAY(I*21+2) .GT. 1) THEN
-	      FRATE = LOWRATE * (1/(1+PR)) * F
-	   ELSE
-	      FRATE = RATE * (PR/(1+PR)) * F
-	   END IF
+C      9-Jul-2009: MRH
+C      For unimolecular/recombination rxns, effective rate constant is
+C           keff = kinf * (Pr/(1+Pr)) * F
+C      For chemically-activated bimolecular rxns, effective rate constant is
+C           keff = kzero * (1/(1+Pr)) * F
+         IF (TROEREACTIONARRAY(I*21+1) .GT. 1 .AND.
+     $            TROEREACTIONARRAY(I*21+2) .GT. 1) THEN
+            FRATE = LOWRATE * (1/(1+PR)) * F
+         ELSE
+            FRATE = RATE * (PR/(1+PR)) * F
+         END IF
 
          IF (TROEREACTIONARRAY(21*I+9) .EQ. 1) THEN
             RRATE = fRATE/TROEREACTIONRATEARRAY(21*I+5)
@@ -244,17 +244,17 @@ c         write(*,*) temperature
 
          PR = LOWRATE * M/RATE
 
-C	 9-Jul-2009: MRH
-C	 For unimolecular/recombination rxns, effective rate constant is
-C		keff = kinf * (Pr/(1+Pr)) * F
-C	 For chemically-activated bimolecular rxns, effective rate constant is
-C		keff = kzero * (1/(1+Pr)) * F
-	   IF (LINDEREACTIONARRAY(I*20+1) .GT. 1 .AND.
-     $		LINDEREACTIONARRAY(I*20+2) .GT. 1) THEN
-	      FRATE = LOWRATE * (1/(1+PR))
-	   ELSE
-	      FRATE = RATE * (PR/(1+PR))
-	   END IF
+C      9-Jul-2009: MRH
+C      For unimolecular/recombination rxns, effective rate constant is
+C           keff = kinf * (Pr/(1+Pr)) * F
+C      For chemically-activated bimolecular rxns, effective rate constant is
+C           keff = kzero * (1/(1+Pr)) * F
+         IF (LINDEREACTIONARRAY(I*20+1) .GT. 1 .AND.
+     $            LINDEREACTIONARRAY(I*20+2) .GT. 1) THEN
+            FRATE = LOWRATE * (1/(1+PR))
+         ELSE
+            FRATE = RATE * (PR/(1+PR))
+         END IF
 
          IF (LINDEREACTIONARRAY(20*I+9) .EQ. 1) THEN
             RRATE = fRATE/LINDEREACTIONRATEARRAY(17*I+5)

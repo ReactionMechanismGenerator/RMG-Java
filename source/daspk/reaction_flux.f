@@ -16,7 +16,7 @@ C     ************************************************
 
 
       DO I=1,REACTIONSIZE+THIRDBODYREACTIONSIZE+TROEREACTIONSIZE+
-     $	LINDEREACTIONSIZE
+     $      LINDEREACTIONSIZE
          reactionflux(I) = 0
       END DO
 
@@ -193,11 +193,11 @@ c         write(*,*) temperature
          LOGF = LOGFCENT/(1 + INSIDE**2)
          F = 10**LOGF
 
-	   IF (RNUM .GT. 1 .AND. PNUM .GT. 1) THEN
-	      FRATE = LOWRATE * (1/(1+PR)) * F
-	   ELSE
-	      FRATE = RATE * (PR/(1+PR)) * F
-	   END IF
+         IF (RNUM .GT. 1 .AND. PNUM .GT. 1) THEN
+            FRATE = LOWRATE * (1/(1+PR)) * F
+         ELSE
+            FRATE = RATE * (PR/(1+PR)) * F
+         END IF
 
          IF (TROEREACTIONARRAY(21*I+9) .EQ. 1) THEN
             RRATE = fRATE/KEQ
@@ -258,13 +258,13 @@ c         write(*,*) temperature
 
          PR = LOWRATE * M/RATE
 
-	   IF (RNUM .GT. 1 .AND. PNUM .GT. 1) THEN
-	      FRATE = LOWRATE * (1/(1+PR))
-	   ELSE
-	      FRATE = RATE * (PR/(1+PR))
-	   END IF
+         IF (RNUM .GT. 1 .AND. PNUM .GT. 1) THEN
+            FRATE = LOWRATE * (1/(1+PR))
+         ELSE
+            FRATE = RATE * (PR/(1+PR))
+         END IF
          
-	   IF (LINDEREACTIONARRAY(20*I+9) .EQ. 1) THEN
+         IF (LINDEREACTIONARRAY(20*I+9) .EQ. 1) THEN
             RRATE = fRATE/KEQ
          ELSE
             RRATE = 0
@@ -282,7 +282,7 @@ C     **********************************
          END DO
 
          REACTIONFLUX(I+1+REACTIONSIZE+THIRDBODYREACTIONSIZE
-     $		+TROEREACTIONSIZE) = FRATE - RRATE
+     $            +TROEREACTIONSIZE) = FRATE - RRATE
 
 
       END DO
