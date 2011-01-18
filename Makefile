@@ -34,6 +34,11 @@ F90FLAGS = -ffpe-trap=invalid,zero -ftrapv -fbounds-check -frange-check \
 backtrace = $(shell gfortran --version 2>/dev/zero|grep -iqs '^GNU Fortran.* [4-9]\.[3-9]\.[0-9]' && echo "-fbacktrace")
 F90FLAGS_NDEBUG = $(F90FLAGS) # used for dassl and daspk
 
+# call as `make MACOS=true` if you want MacOS X 10.6+ 64-bit intel core2 features.
+ifdef MACOS
+F90FLAGS +=  -arch x86_64 -march=core2
+F90_EXTRA_LDFLAGS +=  -framework vecLIB
+endif
 ################################################################################
 
 # Default is to build those that come complete with the RMG distribution
