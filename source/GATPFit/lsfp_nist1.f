@@ -93,6 +93,7 @@ C
 C
 C FIND 'Tint' and 'Tint1' in sample data
 C
+      MARK1 = 0
       DO I=1,M-1
         IF (TEMP1(I) .GT. Tint) THEN
            MARK1=I-1
