@@ -27,8 +27,8 @@ RUNDIR=$(CURDIR)/run
 #F90_EXTRA_LDFLAGS =  -framework vecLIB # for optimized blas and lapack on MacOS X, if they're not found automatically
 
 F90=gfortran
-# --fpe-trap=underflow,overflow causes problems at least with fame. Maybe a bug in gcc? (Maybe a bug in fame.)
-F90FLAGS = -ffpe-trap=invalid,zero -ftrapv -fbounds-check -frange-check \
+# --fpe-trap=invalid,zero,underflow,overflow causes problems at least with fame. Maybe a bug in gcc? (Maybe a bug in fame.)
+F90FLAGS = -ftrapv -fbounds-check -frange-check \
            -ggdb -J""$(BUILDDIR)"" -O3  -Wall -Wno-unused $(backtrace)
 # if gfortran>4.3 then add -fbacktrace (it's not supported in earlier versions)
 backtrace = $(shell gfortran --version 2>/dev/zero|grep -iqs '^GNU Fortran.* [4-9]\.[3-9]\.[0-9]' && echo "-fbacktrace")
