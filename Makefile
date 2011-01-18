@@ -29,7 +29,7 @@ RUNDIR=$(CURDIR)/run
 F90=gfortran
 # --fpe-trap=underflow,overflow causes problems at least with fame. Maybe a bug in gcc? (Maybe a bug in fame.)
 F90FLAGS = -ffpe-trap=invalid,zero -ftrapv -fbounds-check -frange-check \
-           -ggdb -J""$(BUILDDIR)"" -O3  -Wall -Wno-unused -Wno-tabs $(backtrace)
+           -ggdb -J""$(BUILDDIR)"" -O3  -Wall -Wno-unused $(backtrace)
 # if gfortran>4.3 then add -fbacktrace (it's not supported in earlier versions)
 backtrace = $(shell gfortran --version 2>/dev/zero|grep -iqs '^GNU Fortran.* [4-9]\.[3-9]\.[0-9]' && echo "-fbacktrace")
 F90FLAGS_NDEBUG = $(F90FLAGS) # used for dassl and daspk
