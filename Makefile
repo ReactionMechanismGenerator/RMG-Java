@@ -21,17 +21,17 @@ RUNDIR=$(CURDIR)/run
 #F90=g95
 #F90FLAGS=-fbounds-check -ftrace=full -fmod=$(BUILDDIR) -Wall -O3
 #F90FLAGS_NDEBUG=-fmod=$(BUILDDIR) -ftrace=full 
+
 # these are added to the LDFLAGS of the subsidiary makefiles
 #F90_EXTRA_LDFLAGS = -L/home/local/lib -lg2c  # required for Monch
 #F90_EXTRA_LDFLAGS =  -framework vecLIB # for optimized blas and lapack on MacOS X, if they're not found automatically
 
 F90=gfortran
 F90FLAGS = -ffpe-trap=invalid,zero,overflow -ftrapv -fbounds-check -frange-check \
-           -ggdb -J""$(BUILDDIR)"" -O3  -Wall -Wno-unused 
-# no warnings: -W
-# all warnings: -Wall
-# if gfortran>4.3 then add -fbacktrace
-F90FLAGS_NDEBUG=
+           -ggdb -J""$(BUILDDIR)"" -O3  -Wall -Wno-unused -Wno-tabs $(backtrace)
+# if gfortran>4.3 then add -fbacktrace (it's not supported in earlier versions)
+backtrace = $(shell gfortran --version 2>/dev/zero|grep -iqs '^GNU Fortran.* [4-9]\.[3-9]\.[0-9]' && echo "-fbacktrace")
+F90FLAGS_NDEBUG = $(F90FLAGS) # used for dassl and daspk
 
 ################################################################################
 
@@ -67,9 +67,6 @@ daspk: dirs
 
 GATPFit: dirs
 	make -C $(SOURCEDIR)/GATPFit SOURCEDIR=$(SOURCEDIR)/GATPFit BUILDDIR=$(BUILDDIR)/GATPFit BINDIR=$(BINDIR) F90=$(F90) F90FLAGS="$(F90FLAGS)" F90_EXTRA_LDFLAGS="$(F90_EXTRA_LDFLAGS)"
-
-
-
 
 dirs:
 	mkdir -p $(BUILDDIR)
