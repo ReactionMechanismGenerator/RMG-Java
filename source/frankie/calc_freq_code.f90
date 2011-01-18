@@ -7658,7 +7658,7 @@ IMPLICIT NONE
      WRITE(*,*) 'Nonlinear molecule'
      trans_rot_cp_to_cv = 4.0
      N_vib = 3 * (N_atoms) - 6 - (N_rot) - (degeneracy)
-	 IF (N_vib < 0) THEN
+     IF (N_vib < 0) THEN
         WRITE(*,*) 'Something is wrong.  The system is over specified.'
         WRITE(*,*) 'Either reduce the number of rotors or reduce the number of bond types.'
         WRITE(*,*) 'Program will now exit to avoid crashing.'
