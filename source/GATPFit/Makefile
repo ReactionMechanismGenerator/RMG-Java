@@ -15,12 +15,20 @@ BINDIR=../../bin
 
 # The Fortran 90 compiler to use and flags to use when compiling Fortran 90 
 # code
-F90=g95
-F90FLAGS=-fmod=$(BUILDDIR) -ftrace=full
+#F90=g95
+#F90FLAGS=-fmod=$(BUILDDIR) -ftrace=full
+
+F90=gfortran
+F90FLAGS = -ffpe-trap=invalid,zero,overflow -ftrapv -fbounds-check -frange-check \
+           -ggdb -J""$(BUILDDIR)"" -O3  -Wall -Wno-unused
+# no warnings: -W
+# all warnings: -Wall
+# if gfortran>4.3 then add -fbacktrace
+F90FLAGS_NDEBUG =
 
 LDFLAGS= $(F90_EXTRA_LDFLAGS) -lblas -llapack
 
-OBJ0=lsfp_chem1.o lsfp.f lsfp_nasa.f lsfp_nist1.f lsfp_wilh1.f
+OBJ0=lsfp_chem1.o lsfp.o lsfp_nasa.o lsfp_nist1.o lsfp_wilh1.o
 
 OBJ=$(patsubst %.o,$(BUILDDIR)/%.o,$(OBJ0))
 
