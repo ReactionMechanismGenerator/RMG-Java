@@ -123,8 +123,8 @@ public class ChemGraph implements Matchable {
 
         if (isForbiddenStructure(p_graph,getRadicalNumber(),getOxygenNumber(),getCarbonNumber()) || getRadicalNumber() > MAX_RADICAL_NUM || getOxygenNumber() > MAX_OXYGEN_NUM || getCycleNumber() > MAX_CYCLE_NUM) {
 		//if (getRadicalNumber() > MAX_RADICAL_NUM || getOxygenNumber() > MAX_OXYGEN_NUM || getCycleNumber() > MAX_CYCLE_NUM) {		        
+			String message = p_graph.toString() + " is forbidden by "+whichForbiddenStructures(p_graph, getRadicalNumber(), getOxygenNumber(), getCycleNumber()) +"and not allowed.";
 			graph = null;
-			String message = p_graph.toString() + " is forbidden by "+whichForbiddenStructures(p_graph) +"and not allowed.";
         	throw new ForbiddenStructureException(message);
         }
     }
@@ -2115,7 +2115,7 @@ return sn;
 	
 	// Which forbidden structure forbade this chemgraph?
 	// returns the names of forbidden structures.
-    public static String whichForbiddenStructures(Graph p_graph) {
+    public static String whichForbiddenStructures(Graph p_graph, int radNumber, int oxygenNumber, int cycleNumber) {
 		String forbidden_by = "";
 		for (Iterator iter = forbiddenStructure.iterator(); iter.hasNext(); ) {
         	FunctionalGroup fg = (FunctionalGroup)iter.next();
@@ -2124,7 +2124,16 @@ return sn;
 	        	forbidden_by += fg.getName() +", ";
 	        }
         }
-        if (forbidden_by=="") return "no forbidden structures, ";
+        if (forbidden_by=="") {
+        	if (radNumber > MAX_RADICAL_NUM)
+        		return "the maximum number of radicals per species (check the condition.txt file), ";
+        	else if (oxygenNumber > MAX_OXYGEN_NUM)
+        		return "the maximum number of oxygens per species (check the condition.txt file), ";
+        	else if (cycleNumber > MAX_CYCLE_NUM)
+        		return "the maximum number of cycles per species (check the condition.txt file), ";
+        	else
+        		return "no forbidden structures, ";
+        }
 		return forbidden_by;
     }
 
