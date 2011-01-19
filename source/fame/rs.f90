@@ -105,6 +105,15 @@ Kij, Fim, Gnj, dEdown, nIsom, nReac, nProd, nGrains, K, msg)
         bres(i) = sum(eqDist(i,1:nRes(i)))
     end do
 
+    ! Zero pseudo-steady state vector array
+    do i = 1, nIsom
+        do n = 1, nIsom+nReac
+            do r = nRes(i), nGrains
+                pa(r,n,i) = 0.0
+            end do
+        end do
+    end do
+
     ! Determine pseudo-steady state populations of active state
     if (nIsom == 1) then
         ! Not worth it to call banded solver when only one well

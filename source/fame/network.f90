@@ -308,16 +308,20 @@ contains
         integer linear, symm
         character(len=128) msg
 
-        integer i
+        integer Nvib, Nrot, Nhind, i
+
+        Nvib = size(spec%spectral%vibFreq)
+        Nrot = size(spec%spectral%rotFreq)
+        Nhind = size(spec%spectral%hindFreq)
 
         ! Prepare inputs for density of states function
-        do i = 1, size(spec%spectral%vibFreq)
+        do i = 1, Nvib
             vib(i) = spec%spectral%vibFreq(i)
         end do
-        do i = 1, size(spec%spectral%rotFreq)
+        do i = 1, Nrot
             rot(i) = spec%spectral%rotFreq(i)
         end do
-        do i = 1, size(spec%spectral%hindFreq)
+        do i = 1, Nhind
             hind(i,1) = spec%spectral%hindFreq(i)
             hind(i,2) = spec%spectral%hindBarrier(i)
         end do
@@ -328,8 +332,8 @@ contains
         symm = spec%spectral%symmNum
 
         ! Calculate the density of states
-        call densityOfStates(Elist, nGrains, vib, size(vib), rot, size(rot), &
-            hind, size(hind), symm, linear, densStates, msg)
+        call densityOfStates(Elist, nGrains, vib, Nvib, rot, Nrot, &
+            hind, Nhind, symm, linear, densStates, msg)
 
     end subroutine
 
