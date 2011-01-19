@@ -16,7 +16,7 @@
   </target>
   
   <target name="clean" description="delete all compiled classes">
-    <delete>
+    <delete failonerror="false">
       <fileset dir="${build}">
         <include name="**/*.class"/>
         <include name="*.class"/>

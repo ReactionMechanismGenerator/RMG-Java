@@ -137,7 +137,7 @@ program fame
                 do t = 1, nT
                     write (1,fmt=*) K(t,:,prod,reac)
                 end do
-                stop
+                go to 99
             end if
             
             write (*, fmt='(A)'), '# The reactant and product isomers'
@@ -171,7 +171,7 @@ program fame
     end do
 
     ! Close log file
-    close(1)
+99  close(1)
 
     deallocate(K, chebyshevCoeffs, pDepArrhenius)
 

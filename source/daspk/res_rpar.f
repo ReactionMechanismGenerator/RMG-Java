@@ -19,8 +19,8 @@ C     -   GENERATED: Wed Jan 31 02:09:44 2007
       parameter(tbrmax=50)
       integer troemax
       parameter(troemax=50)
-	integer lindemax
-	parameter(lindemax=50)
+      integer lindemax
+      parameter(lindemax=50)
       integer i
       integer j
       integer k
@@ -29,7 +29,7 @@ C     -   GENERATED: Wed Jan 31 02:09:44 2007
       integer nstate
       double precision pressure
       integer troereactionsize
-	integer lindereactionsize
+      integer lindereactionsize
       integer ires
       double precision cj
       integer ijac
@@ -49,9 +49,9 @@ C     -   GENERATED: Wed Jan 31 02:09:44 2007
      $     troereactionsize+lindereactionsize+nstate-1)
       integer reactionarray
       integer troereactionarray
-	integer lindereactionarray
+      integer lindereactionarray
       double precision troereactionratearray
-	double precision lindereactionratearray
+      double precision lindereactionratearray
       common /size/ nstate,neq,nparam,reactionsize,troereactionsize,
      $   thirdbodyreactionsize,lindereactionsize
       common /reac/ reactionratearray(5*rmax),
@@ -83,7 +83,7 @@ C     Active variable offsets and counters
       integer reactionratearrayoft
       integer thirdbodyreactionratearrayoft
       integer troereactionratearrayoft
-	integer lindereactionratearrayoft
+      integer lindereactionratearrayoft
       integer temperatureoft
       integer pressureoft
       integer zzzindx
@@ -102,7 +102,7 @@ C     Variable offsets for COMMON BLOCK reac
       reactionratearrayoft=0
       thirdbodyreactionratearrayoft=reactionratearrayoft+(5*rmax)
       troereactionratearrayoft=thirdbodyreactionratearrayoft+(16*tbrmax)
-	lindereactionratearrayoft=troereactionratearrayoft+(21*troemax)
+      lindereactionratearrayoft=troereactionratearrayoft+(21*troemax)
       temperatureoft=lindereactionratearrayoft+(17*lindemax)
       pressureoft=temperatureoft+1
 C     Number of independent and dependent variables.
@@ -178,8 +178,8 @@ C     Done
       parameter(tbrmax=50)
       integer troemax
       parameter(troemax=50)
-	integer lindemax
-	parameter(lindemax=50)
+      integer lindemax
+      parameter(lindemax=50)
       integer numcollider
       double precision logpr
       double precision lowrate
@@ -197,7 +197,7 @@ C     Done
       double precision pressure
       double precision pr
       integer troereactionsize
-	integer lindereactionsize
+      integer lindereactionsize
       double precision dg
       integer thirdbodyreactionsize
       integer nparam
@@ -230,9 +230,9 @@ C     Done
       double precision rpar(*)
       integer reactionarray
       integer troereactionarray
-	integer lindereactionarray
+      integer lindereactionarray
       double precision troereactionratearray
-	double precision lindereactionratearray
+      double precision lindereactionratearray
       common /size/ nstate,neq,nparam,reactionsize,troereactionsize,
      $   thirdbodyreactionsize,lindereactionsize
       common /reac/ reactionratearray(5*rmax),
@@ -275,7 +275,7 @@ C     Active variable offsets and counters
       integer reactionratearrayoft
       integer thirdbodyreactionratearrayoft
       integer troereactionratearrayoft
-	integer lindereactionratearrayoft
+      integer lindereactionratearrayoft
       integer temperatureoft
       integer pressureoft
       integer thermooft
@@ -341,7 +341,7 @@ C     Variable offsets for COMMON BLOCK reac
       reactionratearrayoft=0
       thirdbodyreactionratearrayoft=reactionratearrayoft+(5*rmax)
       troereactionratearrayoft=thirdbodyreactionratearrayoft+(16*tbrmax)
-	lindereactionratearrayoft=troereactionratearrayoft+(21*troemax)
+      lindereactionratearrayoft=troereactionratearrayoft+(21*troemax)
       temperatureoft=lindereactionratearrayoft+(17*lindemax)
       pressureoft=temperatureoft+1
 C     
@@ -840,8 +840,8 @@ C
          f=zzzv3
          call DSVM1(foft+1,2,zzzvbar2,logfoft+1,2)
 C     
-	   IF (RNUM .GT. 1 .AND. PNUM .GT. 1) THEN
-	      zzzv4=1+pr
+         IF (RNUM .GT. 1 .AND. PNUM .GT. 1) THEN
+            zzzv4=1+pr
             zzzv5=1.0d0/zzzv4
             zzzv6=lowrate*zzzv5
             zzzv8=zzzv6*f
@@ -854,8 +854,8 @@ C
             frate=zzzv8
             call DSVM3(frateoft+1,2,zzzvbar7,foft+1,2,zzzvbar2,
      $         proft+1,2,zzzvbar1,lowrateoft+1,2)
-	   ELSE
-	      zzzv4=1+pr
+         ELSE
+            zzzv4=1+pr
             zzzv5=pr/zzzv4
             zzzv6=rate*zzzv5
             zzzv8=zzzv6*f
@@ -868,7 +868,7 @@ C
             frate=zzzv8
             call DSVM3(frateoft+1,2,zzzvbar7,foft+1,2,zzzvbar2,
      $      proft+1,2,zzzvbar1,rateoft+1,2)
-	   END IF
+         END IF
 
          zzzv4=1+pr
          zzzv5=pr/zzzv4
@@ -1031,27 +1031,27 @@ C
          call DSVM3(proft+1,2,zzzvbar4,rateoft+1,2,zzzvbar2,moft+1,2,
      $      zzzvbar1,lowrateoft+1,2)
 C     
-	   IF (RNUM .GT. 1 .AND. PNUM .GT. 1) THEN
+         IF (RNUM .GT. 1 .AND. PNUM .GT. 1) THEN
             zzzv4=1+pr
             zzzv5=1.0d0/zzzv4
             zzzvbar5=lowrate
             zzzvbar4=-zzzv5/zzzv4*zzzvbar5
             zzzvbar2=zzzvbar4
             zzzvbar1=zzzv5
-	      frate=zzzv5*zzzvbar5
+            frate=zzzv5*zzzvbar5
             call DSVM2(frateoft+1,2,zzzvbar2,proft+1,2,
      $         zzzvbar1,lowrateoft+1,2)
-	   ELSE
+         ELSE
             zzzv4=1+pr
             zzzv5=pr/zzzv4
             zzzvbar5=rate
             zzzvbar4=-zzzv5/zzzv4*zzzvbar5
             zzzvbar2=1.0d0/zzzv4*zzzvbar5+zzzvbar4
             zzzvbar1=zzzv5
-	      frate=zzzv5*zzzvbar5
+            frate=zzzv5*zzzvbar5
             call DSVM2(frateoft+1,2,zzzvbar2,proft+1,2,
      $         zzzvbar1,rateoft+1,2)
-	   END IF
+         END IF
 C     
          if(lindereactionarray(20*i+9)==1) then
             zzzv3=frate/keq

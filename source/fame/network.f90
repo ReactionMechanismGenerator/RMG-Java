@@ -543,7 +543,7 @@ contains
         do r = 1, nGrains
             if (isom%E0 < Elist(r) .and. index == 0) index = r
         end do
-        isom%densStates(index:nGrains) = densStates(1:nGrains-index)
+        isom%densStates(index:nGrains) = densStates(1:nGrains-index+1)
 
     end subroutine
 
