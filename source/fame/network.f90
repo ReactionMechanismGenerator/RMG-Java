@@ -988,7 +988,7 @@ contains
         real(8) dE, dEdown
         character(len=128) :: msg
 
-        integer i, j, r
+        integer i, j, r, s
 
         write(1,*) 'Applying method at', T, 'K,', P/1e5, 'bar...'
 
@@ -1000,12 +1000,19 @@ contains
             densStates(i,:) = net%isomers(i)%densStates * dE / net%isomers(i)%Q
         end do
 
-
         ! Active-state energy of each isomer
         do i = 1, nIsom+nReac+nProd
             Eres(i) = isomer_getActiveSpaceEnergy(i, net%reactions)
         end do
 
+        ! Zero collision matrix    
+        do i = 1, nIsom
+            do r = 1, Ngrains
+                do s = 1, Ngrains
+                    Mcoll(i,r,s) = 0.0
+                end do
+            end do
+        end do
         ! Zero rate coefficient matrices
         do r = 1, nGrains
             do i = 1, nIsom
