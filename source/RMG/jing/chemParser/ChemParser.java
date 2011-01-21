@@ -559,13 +559,10 @@ public class ChemParser {
     	UncertainDouble un = new UncertainDouble(rxn_n,0.0,"A");
     	UncertainDouble uE = new UncertainDouble(rxn_E,0.0,"A");    	
     	
-    	//	The remaining tokens are comments
-    	String comments = "";
-    	if (st.hasMoreTokens()) {
-    		String beginningOfComments = st.nextToken();
-    		int startIndex = p_rxnString.indexOf(beginningOfComments);
-    		comments = p_rxnString.substring(startIndex);
-    	}
+    	//	The remaining tokens are comments, which may start with a !
+        String comments = "";
+        while (st.hasMoreTokens())
+			comments += st.nextToken() + " ";		
     	if (comments.startsWith("!")) comments = comments.substring(1);
 
     	
