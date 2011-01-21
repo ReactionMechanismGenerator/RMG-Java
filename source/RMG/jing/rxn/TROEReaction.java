@@ -69,12 +69,8 @@ public class TROEReaction extends ThirdBodyReaction {
   public double calculateRate(SystemSnapshot p_presentStatus) {
       //#[ operation calculateRate(SystemSnapshot) 
       Temperature temp = p_presentStatus.getTemperature();
-      
-      //Kinetics k = getKinetics();
-      //double rate = k.calculateRate(temp, calculateHrxn(temp));
       double rate = super.calculateTotalRate(temp);
       rate *= calculateTroeFallOff(p_presentStatus);
-      
       return rate;
       //#]
   }

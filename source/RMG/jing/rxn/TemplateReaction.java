@@ -64,9 +64,8 @@ public class TemplateReaction extends Reaction {
         reactionTemplate = p_template;
         if (kinetics != null)	
         	kineticsFromPrimaryKineticLibrary = p_kinetics[0].getFromPrimaryKineticLibrary();
-		
-        //#]
     }
+
     public  TemplateReaction() {
     }
     

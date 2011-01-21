@@ -89,8 +89,6 @@ public class ArrheniusKinetics implements Kinetics {
         source = p_source;
         comment = p_comment;
         
-        
-        //#]
     }
     public  ArrheniusKinetics() {
     }
@@ -234,9 +232,7 @@ public class ArrheniusKinetics implements Kinetics {
         //if (E.getValue() < 0) throw new NegativeEnergyBarrierException();        
         double rate = A.getValue() * Math.pow(T, n.getValue()) * Math.exp(-E.getValue()/R/T);
         return rate;
-        
-        
-        //#]
+
     }
 	
 	public boolean equals(Kinetics p_k){

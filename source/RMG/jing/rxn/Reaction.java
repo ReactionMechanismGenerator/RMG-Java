@@ -335,17 +335,6 @@ public class Reaction {
 //        }
       	return rate;
 
-
-//  		Iterator kineticIter = getAllKinetics().iterator();
-//      	while (kineticIter.hasNext()){
-//      		Kinetics k = (Kinetics)kineticIter.next();
-//			if (k instanceof ArrheniusEPKinetics)
-//				rate = rate + k.calculateRate(p_temperature,Hrxn);
-//			else
-//				rate = rate + k.calculateRate(p_temperature);
-//      	}
-//
-//      	return rate;
   	}
   	else if (isBackward()){
   		Reaction r = getReverseReaction();
@@ -355,9 +344,9 @@ public class Reaction {
   	else {
   		throw new InvalidReactionDirectionException();
   	}
-
   }
-
+	
+	//## operation calculatediff(LinkedList)
     public double calculatediff(LinkedList p_struct) {
 
       if (p_struct.size()!=2){
@@ -630,8 +619,6 @@ public class Reaction {
       //#[ operation contains(Species)
       if (containsAsReactant(p_species) || containsAsProduct(p_species)) return true;
       else return false;
-
-
       //#]
   }
 
@@ -671,17 +658,11 @@ public class Reaction {
   public boolean equals(Object p_reaction) {
       //#[ operation equals(Object)
       if (this == p_reaction) return true;
-
       if (!(p_reaction instanceof Reaction)) return false;
-
       Reaction r = (Reaction)p_reaction;
-
       if (!getStructure().equals(r.getStructure())) return false;
-
       return true;
 
-
-      //#]
   }
 
 /*  
@@ -912,9 +893,7 @@ public class Reaction {
       	fittedReverseKinetics = null;
       }
       else {
-    //double temp = 715;
-    //    double temp = 298.15; //10/29/07 gmagoon: Sandeep made change to temp = 298 on his computer locally
-    //    double temp = 1350; //11/6/07 gmagoon:**** changed to actual temperature in my condition file to create agreement with old version; apparently, choice of temp has large effect; //11/9/07 gmagoon: commented out
+		  //double temp = 715;
           double temp = 298.15; //11/9/07 gmagoon: restored use of 298.15 per discussion with Sandeep
           //double temp = Global.temperature.getK();
     	Kinetics[] k = getKinetics();
@@ -1051,9 +1030,6 @@ public class Reaction {
       else 
 		  throw new InvalidReactionDirectionException(structure.toString());
 
-
-
-      //#]
   }
 
   public void setKineticsComments(String p_string, int num_k){

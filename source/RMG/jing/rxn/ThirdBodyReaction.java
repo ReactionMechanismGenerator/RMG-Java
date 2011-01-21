@@ -58,14 +58,10 @@ public class ThirdBodyReaction extends Reaction {
   
   //## operation calculateRate(SystemSnapshot) 
   public double calculateRate(SystemSnapshot p_systemSnapshot) {
-      //#[ operation calculateRate(SystemSnapshot) 
       Temperature temp = p_systemSnapshot.getTemperature();
-      //Kinetics k = getKinetics();
-      //double rate = k.calculateRate(temp, calculateHrxn(temp));
       double rate = super.calculateTotalRate(temp);
       rate *= calculateThirdBodyCoefficient(p_systemSnapshot);
       return rate;
-      //#]
   }
   
   public HashMap getWeightMap(){

@@ -50,12 +50,10 @@ public class ArrheniusEPKinetics extends ArrheniusKinetics {
     
     //## operation ArrheniusEPKinetics(UncertainDouble,UncertainDouble,UncertainDouble,UncertainDouble,String,int,String,String) 
     public  ArrheniusEPKinetics(UncertainDouble p_A, UncertainDouble p_n, UncertainDouble p_alpha, UncertainDouble p_E, String p_TRange, int p_rank, String p_source, String p_comment) {
-        //#[ operation ArrheniusEPKinetics(UncertainDouble,UncertainDouble,UncertainDouble,UncertainDouble,String,int,String,String) 
         super(p_A, p_n, p_E, p_TRange, p_rank, p_source, p_comment);
         alpha = p_alpha;
-        
-        //#]
     }
+	
     public  ArrheniusEPKinetics() {
     }
 	
@@ -113,14 +111,11 @@ public class ArrheniusEPKinetics extends ArrheniusKinetics {
 		}
 		else
 			return String.format("%1.7e \t %2.5f \t %1.7e \t ", formatString);
-		
-		//return String.valueOf(getAValue()) + '\t' + String.valueOf(getNValue()) + '\t' + Ea + "\t!" + source + " "+comment;
         
 	}
 	
     //## operation calculateRate(Temperature,double) 
     public double calculateRate(Temperature p_temperature, double p_Hrxn) {
-        //#[ operation calculateRate(Temperature,double) 
         double T = p_temperature.getStandard();
         double R = GasConstant.getKcalMolK();
         
@@ -128,8 +123,6 @@ public class ArrheniusEPKinetics extends ArrheniusKinetics {
         //if (Ea<0) throw new NegativeEnergyBarrierException();
         double rate = A.getValue() * Math.pow(T, n.getValue()) * Math.exp(-Ea/R/T);
         return rate;
-        
-        //#]
     }
     
     //## operation getAlphaUncertainty() 

@@ -63,13 +63,10 @@ public class ChemParser {
 
     //## operation ChemParser()
     private  ChemParser() {
-        //#[ operation ChemParser()
-        //#]
     }
 
     //## operation extractReactionSeperator(String)
     public static final String extractReactionSeperator(String p_string) {
-        //#[ operation extractReactionSeperator(String)
         if (p_string == null) throw new NullPointerException();
 
         StringTokenizer st = new StringTokenizer(p_string);
@@ -81,7 +78,6 @@ public class ChemParser {
         	else if (s.equals("->")) return "->";
         }
         return null;
-        //#]
     }
 
     /**
@@ -97,26 +93,14 @@ public class ChemParser {
                 }
             }
         }
-    
         // The directory is now empty so delete it
         return dir.delete();
     }
     
-    // Argument Stringp_name :
-    /**
-    the name of union
-    */
-    // Argument HashMapp_unRead :
-    /**
-    the map including all the union, each mapping maps the unread union group's name with their union components' names.
-    */
-    // Argument HashMapp_dictionary :
-    /**
-    The real dicationary where we can find the graph information from the name.
-    */
-    //## operation findUnion(String,HashMap,HashMap)
+    // Argument Stringp_name : the name of union
+    // Argument HashMapp_unRead : the map including all the union, each mapping maps the unread union group's name with their union components' names.
+    // Argument HashMapp_dictionary : The real dicationary where we can find the graph information from the name.
     public static void findUnion(String p_name, HashMap p_unRead, HashMap p_dictionary) {
-        //#[ operation findUnion(String,HashMap,HashMap)
         FunctionalGroupCollection fgc = new FunctionalGroupCollection(p_name);
 
         // get the union set according to the p_name
@@ -136,15 +120,10 @@ public class ChemParser {
         p_dictionary.put(p_name,fgc);
         p_unRead.remove(p_name);
         return;
-
-
-
-        //#]
     }
 
-    //## operation parseArrheniusEPKinetics(String)
+	
     /**
-     * Input parameters updated by MRH on 8-Jun-2009
      * 	This function is called when reading a kinetics Library.txt file,
      * 	if the kinetics tag is Arrhenius_EP.  As of today, all rxn families
      * 	in the RMG database are labeled Arrhenius_EP.  Instead of passing only
@@ -156,22 +135,12 @@ public class ChemParser {
      *  nodes associated with this data entry (e.g. 1 for Beta_Scission, 2 for 
      *  H_Abstraction, 3 for Diels_Alder_Addition, etc.).
      *  
-     *  The output is of type ArrheniusEPKinetics.  The difference is that the
-     *  "comments" and "source" fields are no longer null.  The "source" contains
+     *  The output is of type ArrheniusEPKinetics.  The "source" contains
      *  the set of nodes associated with this data, and the "comments" are
      *  the end-of-line comments, hopefully denoting where this data came from.
      **/
     public static ArrheniusEPKinetics parseArrheniusEPKinetics(String p_string, int p_keyNum) {
-        //#[ operation parseArrheniusEPKinetics(String)
         StringTokenizer token = new StringTokenizer(p_string);
-        //if (token.countTokens() != 10) throw new InvalidKineticsFormatException();
-        /*
-         * If statement commented out by MRH on 8-Jun-2009
-         * 	The if statement existed because RMG was looking for 10 tokens:
-         * 		(Trange, A, n, alpha, E0, dA, dn, dalpha, dE0, and Rank).
-         * 		RMG now has no limit on the number of tokens, which allows
-         * 		a RMG user/developer to put comments after the rank
-         */
         String dummyCounter = token.nextToken();	// This should be the #. associated with the data
         // Set the source of this data as the set of nodes
         String source = "";
@@ -219,24 +188,15 @@ public class ChemParser {
         while (token.hasMoreTokens())
 			comments += token.nextToken() + " ";
 
-		/*if (token.hasMoreTokens()) {
-	        String beginningOfComments = token.nextToken();
-	        String[] splitString = p_string.split(beginningOfComments);
-	        comments = beginningOfComments + splitString[1];
-        }*/
         ArrheniusEPKinetics k = new ArrheniusEPKinetics(ua, un, ualpha, ue, TRange, rank, source, comments);
-//        ArrheniusEPKinetics k = new ArrheniusEPKinetics(ua, un, ualpha, ue, TRange, rank, null, null);
 
         return k;
 
-
-
-        //#]
     }
 
     //## operation parseArrheniusKinetics(String)
     /**
-     * Input parameters updated by MRH on 11-Jun-2009
+     * 
      * 	This function is called when reading a kinetics Library.txt file,
      * 	if the kinetics tag is Arrhenius.  As of today, no rxn families
      * 	in the RMG database are labeled Arrhenius.  Instead of passing only
@@ -248,22 +208,12 @@ public class ChemParser {
      *  nodes associated with this data entry (e.g. 1 for Beta_Scission, 2 for 
      *  H_Abstraction, 3 for Diels_Alder_Addition, etc.).
      *  
-     *  The output is of type ArrheniusKinetics.  The difference is that the
-     *  "comments" and "source" fields are no longer null.  The "source" contains
+     *  The output is of type ArrheniusKinetics.  The "source" contains
      *  the set of nodes associated with this data, and the "comments" are
      *  the end-of-line comments, hopefully denoting where this data came from.
      **/
     public static ArrheniusKinetics parseArrheniusKinetics(String p_string, int p_keyNum) {
-        //#[ operation parseArrheniusKinetics(String)
         StringTokenizer token = new StringTokenizer(p_string);
-        /*
-         * If statement commented out by MRH on 11-Jun-2009
-         * 	The if statement existed because RMG was looking for 8 tokens:
-         * 		(Trange, A, n, Ea, dA, dn, dEa, and Rank).
-         * 		RMG now has no limit on the number of tokens, which allows
-         * 		a RMG user/developer to put comments after the rank
-         */
-//        if (token.countTokens() != 8) throw new InvalidKineticsFormatException();
         String dummyCounter = token.nextToken();	// This should be the #. associated with the data
         // Set the source of this data as the set of nodes
         String source = "";
@@ -305,19 +255,13 @@ public class ChemParser {
 
         // Set the comments of this data to whatever (if anything) follows the rank
         String comments = "";
-        if (token.hasMoreTokens()) {
-	        String beginningOfComments = token.nextToken();
-	        String[] splitString = p_string.split(beginningOfComments);
-	        comments = beginningOfComments + splitString[1];
-        }
+        while (token.hasMoreTokens())
+			comments += token.nextToken() + " ";
+
         ArrheniusKinetics k = new ArrheniusKinetics(ua, un, ue, TRange, rank, source, comments);
-//        ArrheniusKinetics k = new ArrheniusKinetics(ua, un, ue, TRange, rank, null, null);
 
         return k;
 
-
-
-        //#]
     }
 
     /*
@@ -623,9 +567,7 @@ public class ChemParser {
     		comments = p_rxnString.substring(startIndex);
     	}
     	if (comments.startsWith("!")) comments = comments.substring(1);
-//    	while (st.hasMoreTokens()) {
-//    		comments += st.nextToken();
-//    	}
+
     	
     	// Generate the kinetics (assuming a rank of 1 ... as of 7/Sept/2009, the rank
     	//	of Kinetics should not be important at this stage of the mechanism
@@ -771,9 +713,6 @@ public class ChemParser {
 
           return k;
 
-
-
-          //#]
       }
 
 
@@ -843,7 +782,6 @@ public class ChemParser {
         }
 
         return reactionSpe;
-        //#]
     }
 
     //## operation parseSimpleArrheniusKinetics(String,double,double)
@@ -884,9 +822,6 @@ public class ChemParser {
 
         return k;
 
-
-
-        //#]
     }
 
     //## operation parseThermoFromLibrary(String)
@@ -982,7 +917,6 @@ public class ChemParser {
 
         //## operation parseAbrahamGAValue(String)
     public static UnifacGAValue parseUnifacGAValue(String p_string) {
-        //#[ operation parseThermoGAValue(String)
         String s = p_string.trim();
         StringTokenizer token = new StringTokenizer(s);
 
@@ -995,14 +929,7 @@ public class ChemParser {
 
         return new UnifacGAValue(R,Q);
 
-
-
-
-        //#]
     }
-
-
-
 
 
 
@@ -1142,14 +1069,10 @@ public class ChemParser {
         }
         return action;
 
-
-
-        //#]
     }
 
     //## operation readBond(String)
     public static Object readBond(String p_name) throws InvalidGraphFormatException {
-        //#[ operation readBond(String)
         String bondType = removeBrace(p_name);
         StringTokenizer bondToken = new StringTokenizer(bondType, ",");
         int bondNum = bondToken.countTokens();
@@ -1176,10 +1099,6 @@ public class ChemParser {
         	throw new InvalidGraphFormatException("bond: " + bondType);
         }
 
-
-
-
-        //#]
     }
 
     //## operation readChemGraph(BufferedReader)

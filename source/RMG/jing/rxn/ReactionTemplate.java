@@ -1484,22 +1484,8 @@ public class ReactionTemplate {
               	}
                   else fgc.add(fg);
       		}
-      		// read in the
-      		/*
-      		 * Commented out by MRH 15-Jun-2009
-      		 * 	We used to pass only the TRange, modified Arrhenius parameters,
-      		 * 		their uncertainties, and the data's rank to parseArrheniusKinetics.
-      		 * 		Now, pass the entire line of data, so that any comments
-      		 * 		written after the rank may be read in 
-      		 */
-//              String kinetics = token.nextToken();
-//              while (token.hasMoreTokens()) {
-//              	kinetics = kinetics + " " + token.nextToken();
-//              }
+      		// read in the kinetics
       		Kinetics k;
-//      		if (format.equals("Arrhenius")) k = ChemParser.parseArrheniusKinetics(kinetics);
-//      		else if (format.equals("Arrhenius_EP")) k = ChemParser.parseArrheniusEPKinetics(kinetics);
-//      		else throw new InvalidKineticsFormatException("Invalid rate constant format: " + kinetics);
       		if (format.equals("Arrhenius")) k = ChemParser.parseArrheniusKinetics(line,keyNum);
       		else if (format.equals("Arrhenius_EP")) k = ChemParser.parseArrheniusEPKinetics(line,keyNum);
       		else throw new InvalidKineticsFormatException("Invalid rate constant format: " + line);

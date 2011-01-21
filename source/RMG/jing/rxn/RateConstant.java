@@ -109,8 +109,6 @@ public class RateConstant {
     public String printKey() {
         //#[ operation printKey() 
         return kineticsTemplate.printKey();
-        
-        
         //#]
     }
     
@@ -118,8 +116,6 @@ public class RateConstant {
     public boolean repOk() {
         //#[ operation repOk() 
         return kineticsTemplate.repOk();
-        
-        
         //#]
     }
     
