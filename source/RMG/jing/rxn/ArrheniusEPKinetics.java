@@ -57,72 +57,16 @@ public class ArrheniusEPKinetics extends ArrheniusKinetics {
     public  ArrheniusEPKinetics() {
     }
 	
-	///////////////////////////////////////
-	// Notice that we don't redefine getEValue() here but instead inherit it from ArrheniusKinetics
-	// which means that if we imagine 
-	//   Ea = Eo + alpha * Hrxn
-	// then getEValue() returns Eo NOT Ea
-	// (notice the additional method getEaValue() which does return Ea)
-	// but we DO redefine toChemkinString to return the Ea
-	///////////////////////////////////////
-	
+	//## operation toChemkinString(double, Temperature, boolean)
 	public String toChemkinString(double p_Hrxn, Temperature p_temperature, boolean includeComments){
-		double Ea = getEaValue(p_Hrxn);
-		// If reported Arrhenius Ea value was computed using Evans-Polanyi relationship,
-		//	inform user (in chem.inp file) of what deltaHrxn(T) was used.
-		if ((double)alpha.getValue() != 0.0) {
-			comment += String.format(" (Ea computed using dHrxn(298K)=%.1f kcal/mol and alpha=%.2f)", p_Hrxn, alpha.getValue() );
-		}
-		if (Ea < p_Hrxn) {
-			comment += String.format("Warning: Ea=%.1f < dHrxn(298K)=%.1f by %.1f kcal/mol",Ea, p_Hrxn, p_Hrxn-Ea);
-		}
-		Object [] formatString = new Object[5];
-		
-//		formatString[0] = new Double(getAValue());
-    	double tempDouble = new Double(getAValue());
-    	if (AUnits.equals("moles")) {
-    		formatString[0] = tempDouble;
-    	} else if (AUnits.equals("molecules")) {
-    		formatString[0] = tempDouble / 6.022e23;
-    	}
-				
-		formatString[1] = new Double(getNValue());
-		
-		if (EaUnits.equals("kcal/mol")) {
-			formatString[2] = Ea;
-		}
-		else if (EaUnits.equals("cal/mol")) {
-			formatString[2] = Ea * 1000.0;
-		}
-		else if (EaUnits.equals("kJ/mol")) {
-			formatString[2] = Ea * 4.184;
-		}
-		else if (EaUnits.equals("J/mol")) {
-			formatString[2] = Ea * 4184.0;
-		}
-		else if (EaUnits.equals("Kelvins")) {
-			formatString[2] = Ea / 1.987e-3;
-		}
-		
-		formatString[3] = source; formatString[4] = comment;
-		
-		if (includeComments){
-			return String.format("%1.7e \t %2.5f \t %1.7e \t !%s  %s", formatString);
-		}
-		else
-			return String.format("%1.7e \t %2.5f \t %1.7e \t ", formatString);
-        
+		ArrheniusKinetics arrhenius = fixBarrier(p_Hrxn);
+		return arrhenius.toChemkinString(p_Hrxn, p_temperature, includeComments);
 	}
 	
     //## operation calculateRate(Temperature,double) 
     public double calculateRate(Temperature p_temperature, double p_Hrxn) {
-        double T = p_temperature.getStandard();
-        double R = GasConstant.getKcalMolK();
-        
-        double Ea = E.getValue() + alpha.getValue()*p_Hrxn;
-        //if (Ea<0) throw new NegativeEnergyBarrierException();
-        double rate = A.getValue() * Math.pow(T, n.getValue()) * Math.exp(-Ea/R/T);
-        return rate;
+        ArrheniusKinetics arrhenius = fixBarrier(p_Hrxn);
+        return arrhenius.calculateRate(p_temperature);
     }
     
     //## operation getAlphaUncertainty() 
@@ -161,9 +105,14 @@ public class ArrheniusEPKinetics extends ArrheniusKinetics {
     public UncertainDouble getAlpha() {
         return alpha;
     }
-    //gmagoon 05/19/10: it looks like in rest of code, Hrxn at 298 K is used, so this temperature should be used elsewhere for consistency
-    public double getEaValue(double p_Hrxn) {
-        return E.getValue()+alpha.getValue()*p_Hrxn;
+
+	public double getEValue() {
+		throw new InvalidKineticsTypeException("Convert ArrheniusEPKinetics to ArrheniusKinetics with fixBarrier(Hrxn).");
+	}
+    
+	public double getEaValue(double p_Hrxn) {
+        ArrheniusKinetics arrhenius = fixBarrier(p_Hrxn);
+		return arrhenius.getEValue();
     }
 	
 	public ArrheniusKinetics fixBarrier(double p_Hrxn){
