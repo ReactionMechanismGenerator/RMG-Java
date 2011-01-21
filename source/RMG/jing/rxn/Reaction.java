@@ -211,7 +211,10 @@ public class Reaction {
 	else if (isForward()){
 		Kinetics[] k_All = kinetics;
 		for (int numKinetics=0; numKinetics<kinetics.length; numKinetics++) {
-			Kinetics k = k_All[numKinetics].multiply(structure.redundancy);
+			Kinetics k = k_All[numKinetics];
+			if ((int)structure.redundancy != 1){
+				k = k.multiply(structure.redundancy);
+			}
 			rate += k.calculateRate(p_temperature,Hrxn);
 		}
 
@@ -1003,6 +1006,7 @@ public class Reaction {
 	  }
       if (isForward()) {
       	int red = structure.getRedundancy();
+		  if (red==1) return kinetics; // Don't waste time multiplying by 1
       	Kinetics[] kinetics2return = new Kinetics[kinetics.length];
       	for (int numKinetics=0; numKinetics<kinetics.length; ++numKinetics) {
       		kinetics2return[numKinetics] = kinetics[numKinetics].multiply(red);
