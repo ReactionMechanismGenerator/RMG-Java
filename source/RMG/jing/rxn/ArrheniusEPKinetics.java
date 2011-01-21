@@ -73,7 +73,7 @@ public class ArrheniusEPKinetics extends ArrheniusKinetics {
 		// If reported Arrhenius Ea value was computed using Evans-Polanyi relationship,
 		//	inform user (in chem.inp file) of what deltaHrxn(T) was used.
 		if ((double)alpha.getValue() != 0.0) {
-			comment += " (Ea computed using deltaHrxn(T=298K) of " + p_Hrxn + " kcal/mol)";
+			comment += String.format(" (Ea computed using dHrxn(298K)=%.1f kcal/mol and alpha=%.2f)", p_Hrxn, alpha.getValue() );
 		}
 		if (Ea < p_Hrxn) {
 			comment += String.format("Warning: Ea=%.1f < dHrxn(298K)=%.1f by %.1f kcal/mol",Ea, p_Hrxn, p_Hrxn-Ea);
