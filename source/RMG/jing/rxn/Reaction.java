@@ -204,10 +204,7 @@ public class Reaction {
 		Kinetics[] k_All = kinetics;
 		for (int numKinetics=0; numKinetics<kinetics.length; numKinetics++) {
 			Kinetics k = k_All[numKinetics];
-			if (k instanceof ArrheniusEPKinetics)
-				rate += k.calculateRate(p_temperature,Hrxn);
-			else
-				rate += k.calculateRate(p_temperature);
+			rate += k.calculateRate(p_temperature,Hrxn);
 		}
 		return rate;
 	}
@@ -215,10 +212,7 @@ public class Reaction {
 		Kinetics[] k_All = kinetics;
 		for (int numKinetics=0; numKinetics<kinetics.length; numKinetics++) {
 			Kinetics k = k_All[numKinetics].multiply(structure.redundancy);
-			if (k instanceof ArrheniusEPKinetics)
-				rate += k.calculateRate(p_temperature,Hrxn);
-			else
-				rate += k.calculateRate(p_temperature);
+			rate += k.calculateRate(p_temperature,Hrxn);
 		}
 
     /* Diffusion limits added by AJ on July 12, 2010

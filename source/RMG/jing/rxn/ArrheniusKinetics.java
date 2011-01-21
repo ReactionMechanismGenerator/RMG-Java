@@ -211,19 +211,11 @@ public class ArrheniusKinetics implements Kinetics {
     
     //## operation calculateRate(Temperature,double) 
     public double calculateRate(Temperature p_temperature, double p_Hrxn) {
-        //#[ operation calculateRate(Temperature,double) 
-        double T = p_temperature.getStandard();
-        double R = GasConstant.getKcalMolK();
-        
-        //if (E.getValue() < 0) throw new NegativeEnergyBarrierException();        
-        double rate = A.getValue() * Math.pow(T, n.getValue()) * Math.exp(-E.getValue()/R/T);
-        return rate;
-        
-        
-        //#]
+		// ignore the Hrxn because we don't need it.
+        return calculateRate(p_temperature);
     }
 	
-//	## operation calculateRate(Temperature,double) 
+	//## operation calculateRate(Temperature) 
     public double calculateRate(Temperature p_temperature) {
         //#[ operation calculateRate(Temperature,double) 
         double T = p_temperature.getStandard();
