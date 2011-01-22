@@ -259,6 +259,25 @@ public class ArrheniusKinetics implements Kinetics {
         return n.getValue();
         //#]
     }
+	
+	public ArrheniusKinetics fixBarrier(double p_Hrxn){
+		// Return an ArrheniusKinetics object with a corrected barrier.
+		double Ea = E.getValue();
+		String newComment = getComment();
+		
+		if (p_Hrxn>0 && Ea<p_Hrxn){
+			// Reaction is endothermic and the barrier is less than the endothermicity.
+			newComment += String.format("Warning: Ea raised by %.1f from %.1f to dHrxn(298K)=%.1f kcal/mol",p_Hrxn-Ea, Ea, p_Hrxn );
+			UncertainDouble newEa = E.plus((p_Hrxn-Ea));
+			Ea = p_Hrxn;
+			ArrheniusKinetics newK = new ArrheniusKinetics(getA(),getN(),newEa,getTRange(),getRank(),getSource(),newComment);
+			return newK;
+		}
+		else {
+			// return it without changes.
+			return this;
+		}
+	}
     
     //## operation multiply(double) 
     public Kinetics multiply(double p_multiple) {

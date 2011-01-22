@@ -488,10 +488,12 @@ public class ReactionTemplate {
 		  Global.RT_findRateConstant += (System.currentTimeMillis()-pT)/1000/60;
 		  
 		  // fix rate constant here
+		  double Hrxn = p_structure.calculateHrxn(new Temperature(298, "K"));
+		  ArrheniusKinetics k_fixed = kf.fixBarrier(Hrxn);
 		  
 		  // We must return a list (with one element).
 		  k = new Kinetics[1];
-		  k[0] = kf;
+		  k[0] = k_fixed;
 		  return k;
       }
       else {

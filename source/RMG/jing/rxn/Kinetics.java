@@ -109,6 +109,8 @@ public interface Kinetics {
     String toString();
 	
 	boolean equals(Kinetics p_k);
+	
+	ArrheniusKinetics fixBarrier(double p_Hrxn);
     
 }
 /*********************************************************************

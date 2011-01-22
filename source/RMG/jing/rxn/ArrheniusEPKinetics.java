@@ -165,7 +165,37 @@ public class ArrheniusEPKinetics extends ArrheniusKinetics {
     public double getEaValue(double p_Hrxn) {
         return E.getValue()+alpha.getValue()*p_Hrxn;
     }
-    
+	
+	public ArrheniusKinetics fixBarrier(double p_Hrxn){
+		// create a new ArrheniusKinetics object with a corrected barrier and return it.
+		double al = alpha.getValue();
+		double Eo = E.getValue();
+        double Ea = Eo + al * p_Hrxn;
+		
+		UncertainDouble newEa = getE();
+		String newComment = getComment();
+		
+		if (al != 0.0){
+			newComment += String.format("Ea computed using Evans-Polanyi dHrxn(298K)=%.1f kcal/mol and alpha=%.2f", p_Hrxn, al );
+			newEa = newEa.plus((UncertainDouble)getAlpha().multiply(p_Hrxn));
+		}
+
+		if (Eo>0 && Ea<0) {
+			// Negative barrier estimated by Evans-Polanyi, despite positive intrinsic barrier.
+			newComment += String.format("Warning: Ea raised from %.f kcal/mol to 0.0", Ea);
+			newEa = newEa.plus((-Ea));
+			Ea = 0.0;
+		}
+		if (p_Hrxn>0 && Ea<p_Hrxn){
+			// Reaction is endothermic and the barrier is less than the endothermicity.
+			newComment += String.format("Warning: Ea raised by %.1f from %.1f to dHrxn(298K)=%.1f kcal/mol",p_Hrxn-Ea, Ea, p_Hrxn );
+			newEa = newEa.plus((p_Hrxn-Ea));
+			Ea = p_Hrxn;
+		}
+		assert (Ea == newEa.getValue()) : String.format("Something wrong with Ea calculation. %e != %e",Ea,newEa.getValue());
+        ArrheniusKinetics newK = new ArrheniusKinetics(getA(),getN(),newEa,getTRange(),getRank(),getSource(),newComment);
+        return newK;
+	}
 }
 /*********************************************************************
 	File Path	: RMG\RMG\jing\rxn\ArrheniusEPKinetics.java
