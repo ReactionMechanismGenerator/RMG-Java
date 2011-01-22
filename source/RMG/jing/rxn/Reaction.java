@@ -1336,7 +1336,7 @@ public class Reaction {
 	  if (ChemkinString != null)
 		  return ChemkinString;
 	  	StringBuilder result = new StringBuilder();
-      	StringBuilder strucString = getStructure().toChemkinString(hasReverseReaction());
+      	String strucString = String.format("%-52s",getStructure().toChemkinString(hasReverseReaction()));
 		Temperature stdtemp = new Temperature(298,"K");
 		double Hrxn = calculateHrxn(stdtemp);
 		Kinetics[] allKinetics = getKinetics();
@@ -1378,7 +1378,7 @@ public class Reaction {
 		 * 		when writing the Restart files, to account for this bug.
 		 */
 		
-		String result = getStructure().toRestartString(hasReverseReaction()).toString(); //+ " "+getStructure().direction + " "+getStructure().redundancy;
+		String result = String.format("%-52s",getStructure().toRestartString(hasReverseReaction())); //+ " "+getStructure().direction + " "+getStructure().redundancy;
 		// MRH 18Jan2010: Restart files do not look for direction/redundancy
 		/*
 		 * MRH 14Feb2010: Handle reactions with multiple kinetics
