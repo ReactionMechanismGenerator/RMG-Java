@@ -599,20 +599,22 @@ public class ReactionTemplate {
   }
 
   private String getKineticsComments(Collection p_matchedPathSet) {
-		StringBuilder comment = new StringBuilder();
-		for (Iterator iter = p_matchedPathSet.iterator(); iter.hasNext();) {
+	  StringBuilder comment = new StringBuilder("[ ");
+	  for (Iterator iter = p_matchedPathSet.iterator(); iter.hasNext();) {
       	Stack s = (Stack)iter.next();
       	HierarchyTreeNode node = (HierarchyTreeNode)s.peek();
-      	if (node.hasDummyChild()) comment.append((node.getDummyChild().getName()+"    "));
+      	if (node.hasDummyChild()) comment.append((node.getDummyChild().getName() + " , "));
       	else {
       		if (node.getElement() instanceof FunctionalGroup)
-      			comment.append(((FunctionalGroup)node.getElement()).getName() + "     ");
+      			comment.append(((FunctionalGroup)node.getElement()).getName() + " , ");
       		else
-      			comment.append(((FunctionalGroupCollection)node.getElement()).getName() + "     ");
+      			comment.append(((FunctionalGroupCollection)node.getElement()).getName() + " , ");
       	}
-      }
-		return comment.toString();
-	}
+	  }
+	  comment.delete(comment.length()-2, comment.length()); // remove the final comma
+	  comment.append("]");
+	  return comment.toString();
+  }
 
 	//## operation findUnion(String,HashMap) 
   private void findUnion(String p_name, HashMap p_unRead) {
