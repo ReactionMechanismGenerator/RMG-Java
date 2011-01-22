@@ -252,7 +252,7 @@ public class ReactionTemplate {
   }
   
   //## operation findClosestRateConstant(Collection) 
-  public Kinetics[] findClosestRateConstant(LinkedList p_matchedPathSet) {
+  public Kinetics findClosestRateConstant(LinkedList p_matchedPathSet) {
       //#[ operation findClosestRateConstant(Collection) 
       LinkedHashSet exactTreeNode = new LinkedHashSet();
       LinkedHashSet exactKey = new LinkedHashSet();
@@ -277,10 +277,7 @@ public class ReactionTemplate {
       KineticsTemplate kt = kineticsTemplateLibrary.getKineticsTemplate(exactKey);
       int rNum = getReactantNumber();
       if (kt!=null) {
-    	  Kinetics[] k_closest = new Kinetics[1];
-    	  k_closest[0] = kt.kinetics;
-    	  return k_closest;
-//    	  return kt.kinetics;
+    	  return kt.kinetics;
       }
       
       Collection allPossibleTreeNodeSet = MathTool.expand(p_matchedPathSet.iterator());
@@ -319,20 +316,12 @@ public class ReactionTemplate {
       
       // get averaged k with the closest distance
       Kinetics newK = ArrheniusKinetics.average(bestKineticsSet);
-      //KineticsTemplate newKT = kineticsTemplateLibrary.addKinetics(exactKey, newK);
-      //RateConstant rc = new RateConstant(newKT, bestKineticsTemplateSet, closest);
-      Kinetics[] k_closest = new Kinetics[1];
-      k_closest[0] = newK;
-      return k_closest;
-//      return newK; 
+      return newK; 
       
-      
-      
-      //#]
   }
   
   //## operation findExactRateConstant(Collection) 
-  public Kinetics[] findExactRateConstant(Collection p_matchedPathSet) {
+  public Kinetics findExactRateConstant(Collection p_matchedPathSet) {
       //#[ operation findExactRateConstant(Collection) \
 		
       LinkedHashSet fgc = new LinkedHashSet();
@@ -349,14 +338,7 @@ public class ReactionTemplate {
       KineticsTemplate kt = kineticsTemplateLibrary.getKineticsTemplate(fgc);
       
       if (kt==null) return null;
-      else {
-			//kt.kinetics.setSource(kt.kinetics.toChemkinString());
-    	  Kinetics[] k_exact = new Kinetics[1];
-    	  k_exact[0] = kt.kinetics;
-    	  return k_exact;
-//			return kt.kinetics;
-      }
-
+      else return kt.kinetics;
   }
   
   /**
@@ -489,20 +471,27 @@ public class ReactionTemplate {
       }
       
       if (p_structure.isForward()) {
+		  Kinetics kf = null;
 		  LinkedList fg = structureTemplate.getMatchedFunctionalGroup(reactants);
 		  if (fg == null) {
 			  Global.RT_findRateConstant += (System.currentTimeMillis()-pT)/1000/60;
 			  return null;
 		  }
 		  String comments = getKineticsComments(fg);
-		  k = findExactRateConstant(fg);
-		  if (k==null) {
-			  k = findClosestRateConstant(fg);
-			  k[0].setSource(name + " estimate: (" + k[0].getSource() + ")");
+		  kf = findExactRateConstant(fg);
+		  if (kf==null) {
+			  kf = findClosestRateConstant(fg);
+			  kf.setSource(name + " estimate: (" + kf.getSource() + ")");
 		  }
-		  else k[0].setSource(name  + " exact: ");
-		  k[0].setComments(comments);
+		  else kf.setSource(name  + " exact: ");
+		  kf.setComments(comments);
 		  Global.RT_findRateConstant += (System.currentTimeMillis()-pT)/1000/60;
+		  
+		  // fix rate constant here
+		  
+		  // We must return a list (with one element).
+		  k = new Kinetics[1];
+		  k[0] = kf;
 		  return k;
       }
       else {
