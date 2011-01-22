@@ -263,11 +263,13 @@ public class ArrheniusKinetics implements Kinetics {
 	public ArrheniusKinetics fixBarrier(double p_Hrxn){
 		// Return an ArrheniusKinetics object with a corrected barrier.
 		double Ea = E.getValue();
-		String newComment = getComment();
 		
 		if (p_Hrxn>0 && Ea<p_Hrxn){
 			// Reaction is endothermic and the barrier is less than the endothermicity.
-			newComment += String.format("Warning: Ea raised by %.1f from %.1f to dHrxn(298K)=%.1f kcal/mol",p_Hrxn-Ea, Ea, p_Hrxn );
+			String newComment = getComment();
+			String warning = String.format("Ea raised by %.1f from %.1f to dHrxn(298K)=%.1f kcal/mol",p_Hrxn-Ea, Ea, p_Hrxn );
+			System.out.println(warning);
+			newComment += " Warning: " + warning;
 			UncertainDouble newEa = E.plus((p_Hrxn-Ea));
 			Ea = p_Hrxn;
 			ArrheniusKinetics newK = new ArrheniusKinetics(getA(),getN(),newEa,getTRange(),getRank(),getSource(),newComment);
@@ -332,10 +334,10 @@ public class ArrheniusKinetics implements Kinetics {
 		{
 			formatString[3] = source;
 			formatString[4] = comment;
-    		return String.format("%1.3e \t %2.2f \t %3.2f \t !%s  %s", formatString);
+    		return String.format("%1.3e \t %2.2f \t %3.2f \t!%s  %s", formatString);
     	}
 		else
-    		return String.format("%1.3e \t %2.2f \t %3.2f \t ", formatString);
+    		return String.format("%1.3e \t %2.2f \t %3.2f", formatString);
 
     }
    
