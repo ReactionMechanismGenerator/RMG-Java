@@ -969,12 +969,13 @@ public class FastMasterEqn implements PDepKineticsEstimator {
 				 */
 				LinkedList pathReactionList = pdn.getPathReactions();
 				boolean foundHighPLimitRxn = false;
+				Temperature stdtemp = new Temperature(298,"K");
+				double Hrxn;
 				for (int HighPRxNum = 0; HighPRxNum < pathReactionList.size(); HighPRxNum++) {
 					PDepReaction rxnWHighPLimit = (PDepReaction)pathReactionList.get(HighPRxNum);
-					Temperature stdtemp = new Temperature(298,"K");
-					double Hrxn = rxnWHighPLimit.calculateHrxn(stdtemp);
 					if (rxn.getStructure().equals(rxnWHighPLimit.getStructure())) {
 						foundHighPLimitRxn = true;
+						Hrxn = rxnWHighPLimit.calculateHrxn(stdtemp);
 						double A = 0.0, Ea = 0.0, n = 0.0;
 						if (rxnWHighPLimit.isForward()) {
 							Kinetics[] k_array = rxnWHighPLimit.getKinetics();
