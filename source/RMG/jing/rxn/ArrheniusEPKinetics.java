@@ -133,7 +133,7 @@ public class ArrheniusEPKinetics extends ArrheniusKinetics {
 
 		if (Eo>0 && Ea<0) {
 			// Negative barrier estimated by Evans-Polanyi, despite positive intrinsic barrier.
-			warning = String.format("Ea raised from %.f kcal/mol to 0.0.", Ea);
+			warning = String.format("Ea raised from %.1f kcal/mol to 0.0.", Ea);
 			newComment += " Warning: " + warning;
 			System.out.println(warning);
 			newEa = newEa.plus((-Ea));
