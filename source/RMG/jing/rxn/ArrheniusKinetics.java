@@ -259,6 +259,27 @@ public class ArrheniusKinetics implements Kinetics {
         return n.getValue();
         //#]
     }
+	
+	public ArrheniusKinetics fixBarrier(double p_Hrxn){
+		// Return an ArrheniusKinetics object with a corrected barrier.
+		double Ea = E.getValue();
+		
+		if (p_Hrxn>0 && Ea<p_Hrxn){
+			// Reaction is endothermic and the barrier is less than the endothermicity.
+			String newComment = getComment();
+			String warning = String.format("Ea raised by %.1f from %.1f to dHrxn(298K)=%.1f kcal/mol",p_Hrxn-Ea, Ea, p_Hrxn );
+			System.out.println(warning);
+			newComment += " Warning: " + warning;
+			UncertainDouble newEa = E.plus((p_Hrxn-Ea));
+			Ea = p_Hrxn;
+			ArrheniusKinetics newK = new ArrheniusKinetics(getA(),getN(),newEa,getTRange(),getRank(),getSource(),newComment);
+			return newK;
+		}
+		else {
+			// return it without changes.
+			return this;
+		}
+	}
     
     //## operation multiply(double) 
     public Kinetics multiply(double p_multiple) {
@@ -280,9 +301,9 @@ public class ArrheniusKinetics implements Kinetics {
     //## operation toChemkinString() 
     public String toChemkinString(double Hrxn, Temperature p_temperature, boolean includeComments) {
         //#[ operation toChemkinString() 
+		
     	Object [] formatString = new Object[5];
 		
-//    	formatString[0] = new Double(getAValue());
     	double tempDouble = new Double(getAValue());
     	if (AUnits.equals("moles")) {
     		formatString[0] = tempDouble;
@@ -292,33 +313,32 @@ public class ArrheniusKinetics implements Kinetics {
 		
 		formatString[1] = new Double(getNValue());
 		
-//		formatString[2] = new Double(E.getValue());
-		tempDouble = E.getValue();
+		double Ea = E.getValue();
 		if (EaUnits.equals("kcal/mol")) {
-			formatString[2] = tempDouble;
+			formatString[2] = Ea;
 		}
 		else if (EaUnits.equals("cal/mol")) {
-			formatString[2] = tempDouble * 1000.0;
+			formatString[2] = Ea * 1000.0;
 		}
 		else if (EaUnits.equals("kJ/mol")) {
-			formatString[2] = tempDouble * 4.184;
+			formatString[2] = Ea * 4.184;
 		}
 		else if (EaUnits.equals("J/mol")) {
-			formatString[2] = tempDouble * 4184.0;
+			formatString[2] = Ea * 4184.0;
 		}
 		else if (EaUnits.equals("Kelvins")) {
-			formatString[2] = tempDouble / 1.987e-3;
+			formatString[2] = Ea / 1.987e-3;
 		}
-		
-		formatString[3] = source; formatString[4] = comment;
-		
+				
     	if (includeComments)
-    		return String.format("%1.3e \t %2.2f \t %3.2f \t !%s  %s", formatString);
-    	else
-    		return String.format("%1.3e \t %2.2f \t %3.2f \t ", formatString);
-    	
-        //String.valueOf(getAValue()) + '\t' + String.valueOf(getNValue()) + '\t' + String.valueOf(getEValue() + "\t!" + source + " "+comment);
-        //#]
+		{
+			formatString[3] = source;
+			formatString[4] = comment;
+    		return String.format("%1.3e \t %2.2f \t %3.2f \t!%s  %s", formatString);
+    	}
+		else
+    		return String.format("%1.3e \t %2.2f \t %3.2f", formatString);
+
     }
    
     //## operation toString() 

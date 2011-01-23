@@ -130,10 +130,32 @@ public class UncertainDouble {
     public UncertainDouble plus(double p_adder) {
         //#[ operation plus(double) 
         return new UncertainDouble(value+p_adder,uncertainty,type);
-        
-        
         //#]
     }
+	
+	//## operation plus(UncertainDouble)
+    public UncertainDouble plus(UncertainDouble p_adder) {
+		double newUncertainty = getAddingUncertainty() + p_adder.getAddingUncertainty();
+		double newValue = value + p_adder.getValue();
+        return new UncertainDouble(newValue,newUncertainty,"Adder");
+
+    }
+	
+	//## operation getAddingUncertainty()
+    public double getAddingUncertainty() {
+		// return the uncertainty in an adding type
+		// i.e. if it's a multiplying type, subtract one and multiply it by 'value'.
+		// This exaggerates how low the lower bound will be.
+		// (e.g. 10*/2 will become 10+-10.
+		if (isAddingUncertainty()) {
+			return getUncertainty();
+		}
+		else if (isMultiplyingUncertainty()){
+			return getUncertainty() * ((double)getValue() - 1.0);
+		}
+		else throw new InvalidUncertaintyTypeException();
+    }
+	
     
     //## operation toString() 
     public String toString() {

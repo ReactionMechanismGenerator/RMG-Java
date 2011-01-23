@@ -969,12 +969,13 @@ public class FastMasterEqn implements PDepKineticsEstimator {
 				 */
 				LinkedList pathReactionList = pdn.getPathReactions();
 				boolean foundHighPLimitRxn = false;
+				Temperature stdtemp = new Temperature(298,"K");
+				double Hrxn;
 				for (int HighPRxNum = 0; HighPRxNum < pathReactionList.size(); HighPRxNum++) {
 					PDepReaction rxnWHighPLimit = (PDepReaction)pathReactionList.get(HighPRxNum);
-					Temperature stdtemp = new Temperature(298,"K");
-					double Hrxn = rxnWHighPLimit.calculateHrxn(stdtemp);
 					if (rxn.getStructure().equals(rxnWHighPLimit.getStructure())) {
 						foundHighPLimitRxn = true;
+						Hrxn = rxnWHighPLimit.calculateHrxn(stdtemp);
 						double A = 0.0, Ea = 0.0, n = 0.0;
 						if (rxnWHighPLimit.isForward()) {
 							Kinetics[] k_array = rxnWHighPLimit.getKinetics();
@@ -1220,16 +1221,11 @@ public class FastMasterEqn implements PDepKineticsEstimator {
         	double[] k_total = new double[5];
         	for (int numKinetics=0; numKinetics<k_array.length; ++numKinetics) {
         		for (int numTemperatures=0; numTemperatures<T.length; ++numTemperatures) {
-				double Ea = 0.0;
-				if (k_array[numKinetics] instanceof ArrheniusEPKinetics){
-				    Ea = ((ArrheniusEPKinetics)k_array[numKinetics]).getEaValue(Hrxn);
-				}
-				else{
-				    Ea = k_array[numKinetics].getEValue();
-				}
+					double Ea = 0.0;
+					Ea = ((ArrheniusKinetics)k_array[numKinetics]).getEValue();
         			k_total[numTemperatures] += k_array[numKinetics].getAValue() * 
-        			Math.pow(T[numTemperatures], k_array[numKinetics].getNValue()) * 
-        			Math.exp(-Ea/GasConstant.getKcalMolK()/T[numTemperatures]);
+						Math.pow(T[numTemperatures], k_array[numKinetics].getNValue()) * 
+						Math.exp(-Ea/GasConstant.getKcalMolK()/T[numTemperatures]);
         		}
         	}
         	// Construct matrix X and vector y
