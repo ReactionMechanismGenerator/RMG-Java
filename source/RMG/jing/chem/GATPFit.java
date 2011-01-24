@@ -111,8 +111,9 @@ public class GATPFit {
         // write MW, temperature, ouput format, etc
         //result.append( "MWEI " + MathTool.formatDouble(species.getMolecularWeight(), 6, 1).trim() + ls );
         result.append( "TEMP 1000.0" + ls );
-		result.append( "TMIN 300.0"+ls );
-		result.append( "TMAX 5000.0" + ls );
+	        //note:the TMIN and TMAX values below only affect the valid range in the CHEMKIN output file; the points used to deteremine the NASA-to-Wilhoit fit are determined independently inside the GATPFit fortran code (see https://github.com/GreenGroup/RMG-Java/issues#issue/18)
+		result.append( "TMIN 1.0"+ls );
+		result.append( "TMAX 6000.0" + ls );
         result.append( "CHEM" + ls );
         result.append( "TEM2 2000.0" + ls );
 		if (species.getChemGraph().isLinear())  result.append( "LINEAR" + ls );
