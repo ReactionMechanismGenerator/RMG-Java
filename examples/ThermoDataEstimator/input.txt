@@ -1,6 +1,6 @@
 PrimaryThermoLibrary:
-//Name:
-//Location:
+Name: RMG-minimal
+Location: primaryThermoLibrary
 END
 
 1 C 0 {2,S}
