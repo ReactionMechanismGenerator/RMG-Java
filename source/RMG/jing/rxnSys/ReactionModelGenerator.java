@@ -123,6 +123,7 @@ public class ReactionModelGenerator {
 	protected static int maxEdgeSpeciesAfterPruning;
 	
 	public int limitingReactantID = 1;
+	public int numberOfEquivalenceRatios = 0;
 	
 	//## operation ReactionModelGenerator()
     public  ReactionModelGenerator() {
@@ -4863,6 +4864,7 @@ public class ReactionModelGenerator {
 			}
 			//System.out.println(name);
 			Species species = Species.make(name,cg);
+			int numConcentrations = 0;	// The number of concentrations read-in for each species
 			
 			// The remaining tokens are either:
 			//		The desired concentrations
@@ -4896,14 +4898,26 @@ public class ReactionModelGenerator {
 					else if (!unit.equals("mole/cm3") && !unit.equals("mol/cm3")) {
 						throw new InvalidUnitException("Species Concentration in condition.txt!");
 					}
+					SpeciesStatus ss = new SpeciesStatus(species,1,concentration,0.0);
+					speciesStatus.put(numSpeciesStatus, ss);
+					++numSpeciesStatus;
+					++numConcentrations;
 				}
+			}
+			// Check if the number of concentrations read in is consistent with all previous
+			//	concentration counts.  The first time this function is called, the variable
+			//	numberOfEquivalenceRatios will be initialized.
+			boolean goodToGo = areTheNumberOfConcentrationsConsistent(numConcentrations);
+			if (!goodToGo) {
+				System.out.println("\n\nThe number of concentrations (" + numConcentrations + ") supplied for species " + species.getName() +
+						"\nis not consistent with the number of concentrations (" + numberOfEquivalenceRatios + ") " +
+						"supplied for all previously read-in species \n\n" +
+						"Terminating RMG simulation.");
+				System.exit(0);
 			}
 				// Make a SpeciesStatus and store it in the LinkedHashMap
 //				double flux = 0;
-//				int species_type = 1; // reacted species
-			SpeciesStatus ss = new SpeciesStatus(species,1,concentration,0.0);
-			speciesStatus.put(numSpeciesStatus, ss);
-			++numSpeciesStatus;		
+//				int species_type = 1; // reacted species	
 			
 			species.setReactivity(IsReactive); // GJB
             species.setConstantConcentration(IsConstantConcentration);
@@ -4950,6 +4964,7 @@ public class ReactionModelGenerator {
 			// The remaining tokens are concentrations
 			double inertConc = 0.0;
 			int counter = 0;
+			int numberOfConcentrations = 0;
 			while (st.hasMoreTokens()) {
 				String conc = st.nextToken();
 				inertConc = Double.parseDouble(conc);
@@ -4979,6 +4994,19 @@ public class ReactionModelGenerator {
 					((InitialStatus)initialStatusList.get(isIndex)).putInertGas(name,inertConc);
 				}
 				++counter;
+				++numberOfConcentrations;
+			}
+			
+			// Check if the number of concentrations read in is consistent with all previous
+			//	concentration counts.  The first time this function is called, the variable
+			//	numberOfEquivalenceRatios will be initialized.
+			boolean goodToGo = areTheNumberOfConcentrationsConsistent(numberOfConcentrations);
+			if (!goodToGo) {
+				System.out.println("\n\nThe number of concentrations (" + numberOfConcentrations + ") supplied for species " + name +
+						"\nis not consistent with the number of concentrations (" + numberOfEquivalenceRatios + ") " +
+						"supplied for all previously read-in species \n\n" +
+						"Terminating RMG simulation.");
+				System.exit(0);
 			}
 			
 	   		line = ChemParser.readMeaningfulLine(reader, true);
@@ -5146,6 +5174,15 @@ public class ReactionModelGenerator {
 		System.out.println("The model core has " + Integer.toString(numberOfCoreReactions) + " reactions and "+ Integer.toString(numberOfCoreSpecies) + " species.");
 		System.out.println("The model edge has " + Integer.toString(numberOfEdgeReactions) + " reactions and "+ Integer.toString(numberOfEdgeSpecies) + " species.");
 
+	}
+	
+	public boolean areTheNumberOfConcentrationsConsistent(int number) {
+		if (numberOfEquivalenceRatios == 0) numberOfEquivalenceRatios = number;
+		else {
+			if (number == numberOfEquivalenceRatios) return true;
+			else return false;
+		}
+		return true;
 	}
 }
 /*********************************************************************
