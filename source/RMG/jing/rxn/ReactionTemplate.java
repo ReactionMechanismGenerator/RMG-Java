@@ -395,6 +395,11 @@ public class ReactionTemplate {
       	 * 	for the R. + HOO. --> .OO. + RH direction are not very accurate (ignition delays
       	 * 	change drastically, running the same condition.txt file).
       	 */
+		/* 17-JAN-2011
+		 * Once again removing the "H_Abstraction" code so that the exothermic direction is always favored.
+		 * The observation of 24-SEPT-2010 that the ignition delays change drastically could have been due
+		 * to some other change.
+		 
       	if (name.equals("H_Abstraction")) {
 			boolean polyRadicalReactant = false;
 			boolean polyRadicalProduct = false;
@@ -427,6 +432,7 @@ public class ReactionTemplate {
 				p_structure.setDirection(-1);
 			}
       	}
+		 */
       
           if (thermoConsistence) {
       		Temperature T = new Temperature(298, "K");
