@@ -10,7 +10,7 @@ goto end
 )
 
 if not exist input.txt (
-echo Error: input.txt not found. Please create an ThermoDataEstimator input file before running.
+echo Error: input.txt not found. Please create an TransportDataEstimator input file before running.
 goto end
 )
 

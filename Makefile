@@ -20,8 +20,8 @@ RUNDIR=$(CURDIR)/run
 # Call with 'make F90=g95' if you want to use g95 
 # or 'make F90=gfortran' for GNU Fortran (recommended)
 # Here we set the default
-F90=g95
-#F90=gfortran
+#F90=g95
+F90=gfortran
 
 ifeq ($(F90),g95)
 F90FLAGS = -fbounds-check -ftrace=full -fmod=$(BUILDDIR) -Wall -O3
@@ -41,7 +41,7 @@ F90FLAGS_NDEBUG = $(F90FLAGS) # used for dassl and daspk
 
 # call as `make MACOS=true F90=gfortran` if you want MacOS X 10.6+ 64-bit intel core2 features
 ifdef MACOS
-F90FLAGS +=  -arch x86_64 -march=core2
+F90FLAGS += -arch x86_64 -march=core2
 F90_EXTRA_LDFLAGS +=  -framework vecLIB
 endif
 
@@ -105,7 +105,8 @@ clean:
 test:
 	mkdir -p $(RUNDIR)
 	cp examples/RMG/1,3-hexadiene/condition.txt $(RUNDIR)
-	export RMG=$(CURDIR); cd $(RUNDIR); java -jar $(BINDIR)/RMG.jar condition.txt | tee RMG.log
+	export RMG=$(CURDIR); cd $(RUNDIR); java -jar $(BINDIR)/RMG.jar condition.txt  2>&1 | tee RMG.log
+	echo "Results saved to $(RUNDIR)/RMG.log"
 
 help:
 	@echo ""

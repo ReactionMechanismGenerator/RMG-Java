@@ -17,8 +17,8 @@ BINDIR=../../bin
 # Call with 'make F90=g95' if you want to use g95 
 # or 'make F90=gfortran' for GNU Fortran (recommended)
 # Here we set the default
-F90=g95
-#F90=gfortran
+#F90=g95
+F90=gfortran
 
 ifeq ($(F90),g95)
 F90FLAGS = -fmod=$(BUILDDIR) -ftrace=full   # used for dassl and daspk
