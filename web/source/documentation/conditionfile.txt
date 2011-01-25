@@ -624,12 +624,16 @@ The ``TimeStep`` indicates at what time steps RMG should check to see if the mod
 	DynamicSimulator: DASSL
 	TimeStep: 0.0001 0.0002 0.0004 0.0006 0.0008 0.0009
 
-The other option is to specifiy the Conversions. In this option the conversion of the FinishController species (in this case, C\ :sub:`2`\ H\ :sub:`6`) is monitored and RMG will stop at conversions of 0.1, 0.2, ... and so on to see whether the error tolerance is satisfied::
+The other option is to specify the Conversions. In this option the conversion of the FinishController species (in this case, C\ :sub:`2`\ H\ :sub:`6`) is monitored and RMG will stop at conversions of 0.1, 0.2, ... and so on to see whether the error tolerance is satisfied::
 
 	DynamicSimulator: DASSL
 	Conversions: 0.1 0.2 0.4 0.6 0.8 0.9
 
 For both ``TimeStep`` or ``Conversions``, in addition to determining when RMG will stop to check whether error tolerances are satisfied, the concentrations and flux at the points specified will be reported in the :file:`Final_Model.txt` file.
+
+Note that if conversion or time steps are specified this way, RMG only checks
+for model validity at those points and not in between. It is therefore
+advisable to use the automatic stepping option described next.
 
 If you would not like to specify time steps or conversions, you may have them determined using the "automated time stepping" feature by specifying ``AUTO`` as follows::
 
@@ -641,7 +645,10 @@ or::
     DynamicSimulator: DASSL
     Conversions: AUTO
 	
-The automated time stepping feature is described in greater detail in the Theory and Implementation Details appendix.
+The automated time stepping feature is described in greater detail in the Theory and Implementation Details :ref:`appendix <auto-time-stepping>`.
+
+.. _pruning:
+
 When using automated time stepping, it is also possible to perform mechanism generation with pruning of "unimportant" edge species to reduce memory usage. This option is requested by specifying ``AUTOPRUNE`` in place of ``AUTO``. When using ``AUTOPRUNE``, this must be followed by four lines specifying pruning parameters, as the example below shows::
 
      TerminationTolerance: 1.0E4
@@ -666,7 +673,7 @@ is usually 1e-4 to 1e-8::
 Note: You have the option of using sensitivity analysis only if you have the
 DASPK solver and the DAEPACK library. If you are using DASSL solver then skip the Sensitivity Analysis section.
 
-One option when dealing with NegativeConcentrationException issues is to use the "non-negative" option with DASSL. This option is requested with the line "DynamicSimulator: DASSL: non-negative". See the FAQ for further details.
+One option when dealing with NegativeConcentrationException issues is to use the "non-negative" option with DASSL. This option is requested with the line ``DynamicSimulator: DASSL: non-negative``. See the FAQ for further details.
 
 
 .. _sensitivity:

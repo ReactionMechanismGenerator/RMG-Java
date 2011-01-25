@@ -1,3 +1,4 @@
+.. _auto-time-stepping:
 
 Automated Time Stepping
 =======================
