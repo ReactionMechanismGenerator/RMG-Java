@@ -1,0 +1,46 @@
+.. _troubleshooting:
+
+********************************
+Troubleshooting and Known Issues
+********************************
+
+
+Known issues
+============
+
+Results differ from machine to machine.
+---------------------------------------
+
+The ODE solver (DASSL) will return slightly different results depending on the
+Fortran compiler, the compilation options, the machine architecture, etc. This
+is not a mistake, as all the results will be within the requested precision
+(:ref:`ATOL and RTOL <atol-rtol>`). However, in instances where two reaction
+fluxes have similar or identical rates, the small difference can lead to a
+different decision being made regarding which species to add to the core or
+which pressure-dependent network to explore next.
+
+Results differ from run to run.
+-------------------------------
+
+If you run the same input file twice on the same computer, the resulting
+chemistry should be the same. However, when a species with several isomers is
+created there is no guarantee that they will be numbered the same way.
+Therefore the species numbers (and hence names) will differ from run to run.
+This will make the log files and chemkin files look different.
+
+
+Job freezes for a long time while running Fame.
+-----------------------------------------------
+
+Sometimes a pressure-dependent network calculation in Fame can have a very
+large output. When this output stretches to tens of megabytes, sometimes it
+can block the pipe through which the Fame program (written in Fortran) and the
+RMG program (in Java) communicate. When the computer is running low on memory
+this can be especially troublesome. On some computers the job has been known
+to freeze for tens of hours. The only sure way to avoid this is to build a
+smaller model: use a higher termination criterion.
+
+Troubleshooting
+===============
+
+Put common error messages here.

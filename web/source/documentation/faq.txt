@@ -4,6 +4,8 @@
 FAQ (Frequently-Asked Questions)
 ********************************
 
+See also the :ref:`troubleshooting` section.
+
 Questions
 ---------
 

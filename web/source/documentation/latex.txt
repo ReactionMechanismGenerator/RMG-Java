@@ -24,6 +24,8 @@ Please also refer to our website for how to cite RMG in published work.
    oxygen
    thermo
    theory/index
+   faq
+   troubleshooting
    ../credits
 
 .. commented out
