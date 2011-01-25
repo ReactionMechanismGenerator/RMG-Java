@@ -523,6 +523,43 @@ public class PDepNetwork {
 		return rLeak;
 	}
 
+    public static double[] getSpeciesLeakFluxes(SystemSnapshot ss, CoreEdgeReactionModel cerm) {
+
+        int len = cerm.getMaxSpeciesID() + 1;
+		double[] leakFlux = new double[len];
+		for (int n = 0; n < len; n++)
+            leakFlux[n] = 0.0;
+
+        for (ListIterator<PDepNetwork> iter0 = networks.listIterator(); iter0.hasNext(); ) {
+            PDepNetwork pdn = iter0.next();
+
+            // If there is only one path reaction (and thus only one nonincluded
+            // reaction), use the high-pressure limit rate as the flux rather than
+            // the k(T,P) value to ensure that we are considering the maximum
+            // possible flux entering the network
+            if (pdn.getPathReactions().size() == 1 && pdn.getNetReactions().size() == 0) {
+                PDepReaction rxn = pdn.getPathReactions().get(0);
+                if (!rxn.getProduct().getIncluded())
+                    leakFlux[rxn.getProduct().getSpecies(0).getID()] += rxn.calculateForwardFlux(ss);
+                else if (!rxn.getReactant().getIncluded())
+                    leakFlux[rxn.getReactant().getSpecies(0).getID()] += rxn.calculateReverseFlux(ss);
+            }
+            // Otherwise use the set of k(T,P) values
+            else {
+                for (ListIterator<PDepReaction> iter = pdn.getNonincludedReactions().listIterator(); iter.hasNext(); ) {
+                    PDepReaction rxn = iter.next();
+                    if (rxn.getReactant().getIncluded() && !rxn.getProduct().getIncluded())
+                        leakFlux[rxn.getProduct().getSpecies(0).getID()] += rxn.calculateForwardFlux(ss);
+                    else if (!rxn.getReactant().getIncluded() && rxn.getProduct().getIncluded())
+                        leakFlux[rxn.getReactant().getSpecies(0).getID()] += rxn.calculateReverseFlux(ss);
+                }
+            }
+        }
+
+        return leakFlux;
+
+    }
+
 	/**
 	 * Calculates the isomer with the largest leak flux for this network. The
 	 * reaction with the maximum flux is used to select the isomer. This isomer

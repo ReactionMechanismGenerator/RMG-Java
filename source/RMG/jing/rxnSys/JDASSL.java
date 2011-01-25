@@ -387,7 +387,7 @@ public class JDASSL extends JDAS {
         	line = br.readLine();
         	
         	if (Double.parseDouble(line.trim()) != neq) {
-        		System.out.println("ODESolver didnt generate all species result");
+        		System.out.println("ODESolver didnt generate all species results");
         		System.exit(0);
         	}
         	endTime = Double.parseDouble(br.readLine().trim());
@@ -407,8 +407,8 @@ public class JDASSL extends JDAS {
         	}
 		//for autoflag cases, there will be additional information which may be used for pruning
 		if (autoflag){
-		    prunableSpecies = new boolean[edgeID.size()];
-		    maxEdgeFluxRatio = new double[edgeID.size()];
+		    prunableSpecies = new boolean[edgeID.size()+edgeLeakID.size()];
+		    maxEdgeFluxRatio = new double[edgeID.size()+edgeLeakID.size()];
 		    line=br.readLine();//read volume; (this is actually in the output even if AUTO is off, but is not used)
 		    line=br.readLine();//read the edgeflag
 		    Integer edgeflag = Integer.parseInt(line.trim());
@@ -421,11 +421,9 @@ public class JDASSL extends JDAS {
 		    }
 		    line=br.readLine();//read the time integrated to
 		    double finalTime = Double.parseDouble(line.trim());
-			// read the "prunability index" (0 or 1) and maximum ratio (edge flux/Rchar) for each edge species; 
-			// note that edgeID only contains species, not P-dep networks, so we will not be reading in all the output from DASSL,
-			// only the flux ratio to actual edge species (vs. P-dep network pseudospecies)
+		    // read the "prunability index" (0 or 1) and maximum ratio (edge flux/Rchar) for each edge species; vector index + 1 corresponds to ID value in edgeID and edgeLeakID
 		    System.out.println("ODE solver integrated to "+ finalTime+" sec.");
-		    for (int i=0; i<edgeID.size(); i++){
+		    for (int i=0; i<(edgeID.size()+edgeLeakID.size()); i++){
 				line = br.readLine().trim(); //read the prunability index
 				int q = Integer.parseInt(line); //q should be 1 or 0
 				if (q == 1) { prunableSpecies[i] = true; } 

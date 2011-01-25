@@ -4018,6 +4018,47 @@ public class ReactionModelGenerator {
 					prunableSpeciesMap.put(spe, maxmaxRatio);
 				}
 			}
+			//repeat with the edgeLeakID; if a species appears in both lists, it will be prunable only if it is prunable in both cases, and the sum of maximum edgeFlux + maximum edgeLeakFlux (for each reaction system) will be considered; this will be a conservative overestimate of maximum (edgeFlux+edgeLeakFlux)
+			iter = JDAS.edgeLeakID.keySet().iterator();
+			while(iter.hasNext()){
+				Species spe = (Species)iter.next();
+				Integer id = (Integer)JDAS.edgeLeakID.get(spe);
+				//check whether the same species is in edgeID
+				if(JDAS.edgeID.containsKey(spe)){//the species exists in edgeID
+				    if(prunableSpeciesMap.containsKey(spe)){//the species was determined to be "prunable" based on edgeID
+					Integer idEdge=(Integer)JDAS.edgeID.get(spe);
+					double maxmaxRatio = ds0.maxEdgeFluxRatio[id-1]+ds0.maxEdgeFluxRatio[idEdge-1];
+					boolean prunable = ds0.prunableSpecies[id-1];
+					//go through the rest of the reaction systems to see if there are higher max flux ratios
+					for (Integer i = 1; i < reactionSystemList.size(); i++) {
+						JDAS ds = (JDAS)((ReactionSystem) reactionSystemList.get(i)).getDynamicSimulator();
+						if(ds.maxEdgeFluxRatio[id-1]+ds.maxEdgeFluxRatio[idEdge-1] > maxmaxRatio) maxmaxRatio = ds.maxEdgeFluxRatio[id-1]+ds.maxEdgeFluxRatio[idEdge-1];
+						if(!ds.prunableSpecies[id-1]) prunable = false;// probably redundant: if the conc. is zero in one system, it should be zero in all systems, but it is included for completeness
+					}
+					if( prunable){//if the species is "prunable" (i.e. it doesn't have any reactions producing it with zero flux), replace with the newly determined maxmaxRatio
+						prunableSpeciesMap.remove(spe);
+						prunableSpeciesMap.put(spe, maxmaxRatio);
+					}
+					else{//otherwise, the species is not prunable in both edgeID and edgeLeakID and should be removed from the prunable species map
+						prunableSpeciesMap.remove(spe);
+					}
+				    }
+				}
+				else{//the species is new
+				    double maxmaxRatio = ds0.maxEdgeFluxRatio[id-1];
+				    boolean prunable = ds0.prunableSpecies[id-1];
+				    //go through the rest of the reaction systems to see if there are higher max flux ratios
+				    for (Integer i = 1; i < reactionSystemList.size(); i++) {
+					    JDAS ds = (JDAS)((ReactionSystem) reactionSystemList.get(i)).getDynamicSimulator();
+					    if(ds.maxEdgeFluxRatio[id-1] > maxmaxRatio) maxmaxRatio = ds.maxEdgeFluxRatio[id-1];
+					    if(!ds.prunableSpecies[id-1]) prunable = false;// probably redundant: if the conc. is zero in one system, it should be zero in all systems, but it is included for completeness
+				    }
+				    //if the species is "prunable" (i.e. it doesn't have any reactions producing it with zero flux), add it to the prunableSpeciesMap
+				    if( prunable){
+					    prunableSpeciesMap.put(spe, maxmaxRatio);
+				    }
+				}
+			}
 			// at this point prunableSpeciesMap includes ALL prunable species, no matter how large their flux
 			
 			System.out.println("PDep Pruning DEBUG:\nRMG has marked the following number of species" +
