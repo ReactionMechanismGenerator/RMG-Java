@@ -7,7 +7,6 @@ FAQ (Frequently-Asked Questions)
 Questions
 ---------
 
-
 How do I represent molecular oxygen?
 ====================================
 
@@ -24,11 +23,15 @@ For more information, please see :ref:`Representing oxygen <oxygen>`.
 
 My RMG run runs out of memory. How should I proceed?
 ====================================================================================================================================
-This type of error will probably look something like ``Exception in thread "main" java.lang.OutOfMemoryError: Java heap space``.
-Species take up a large amount of memory, and when the combined edge plus core gets into the range of tens of thousands
-of species, the run will typically crash even with around 1500 MB of RAM.
-If you haven't already done so, we recommend allocating as much memory as possible
-when executing the RMG job (for example, using the option -Xmx1600m will allocate 1600 MB of memory. See the section on :ref:`running RMG <running>`). If this still fails, there are several additional options:
+This type of error will probably look something like ``Exception in thread
+"main" java.lang.OutOfMemoryError: Java heap space``. Species take up a large
+amount of memory, and when the combined edge plus core gets into the range of
+tens of thousands of species, the run will typically crash even with around
+1500 MB of RAM. If you haven't already done so, we recommend allocating as
+much memory as possible when executing the RMG job (for example, using the
+option -Xmx1600m will allocate 1600 MB of memory. See the section on
+:ref:`running RMG <running>`). If this still fails, there are several
+additional options:
 
 1) Use the pruning feature introduced in RMG 3.2.
 
@@ -45,8 +48,16 @@ when executing the RMG job (for example, using the option -Xmx1600m will allocat
 
 RMG has been running for multiple days and hasn't finished. Is there any way to make it run faster?
 ===================================================================================================
-Getting RMG to converge in a reasonable time, especially for large starting species, can be tricky. Depending on the options specified, the RMG developers
-have seen mechanism generation runs as long as ~10 days. During this time, RMG is running hundreds of reaction model simulations and considering tens of thousands of species, and perhaps over a million possible reactions. As such, it can be inconvenient to have it running for a long time on your personal single-core machine or laptop. So, if you have access to a computing cluster where you can run RMG, that can ease the burden. Some "tricks" that could be helpful in reducing time requirements for model generation (in no particular order):
+Getting RMG to converge in a reasonable time, especially for large starting
+species, can be tricky. Depending on the options specified, the RMG developers
+have seen mechanism generation runs as long as ~10 days. During this time, RMG
+is running hundreds of reaction model simulations and considering tens of
+thousands of species, and perhaps over a million possible reactions. As such,
+it can be inconvenient to have it running for a long time on your personal
+single-core machine or laptop. So, if you have access to a computing cluster
+where you can run RMG, that can ease the burden. Some "tricks" that could be
+helpful in reducing time requirements for model generation (in no particular
+order):
 
 1) Relax the error tolerance (i.e. make it larger). RMG keeps expanding the reaction mechanism
    until the flux to 'edge' species is below the tolerance you specify. Increasing this tolerance
@@ -102,9 +113,12 @@ produce this output.
 
 I encounter a NegativeConcentrationException, causing the RMG run to fail. How should I proceed?
 ==============================================================================================================================================================================
-The error message will read something like ``Exception in thread "main"  jing.rxnSys.NegativeConcentrationException...``.
-The issue here is that the ODE simulator reached a slightly negative concentration, which RMG consequently interpreted as erroneous and stopped. It is basically a numerical
-artifact, as the equations should not allow a negative concentration. There are two options for dealing with this:
+The error message will read something like ``Exception in thread "main"
+jing.rxnSys.NegativeConcentrationException...``. The issue here is that the
+ODE simulator reached a slightly negative concentration, which RMG
+consequently interpreted as erroneous and stopped. It is basically a numerical
+artifact, as the equations should not allow a negative concentration. There
+are two options for dealing with this:
 
 1. Play around with the value for Atol in the DynamicSimulator block in your
    condition file...for example, maybe try tightening it (i.e. reduce the value) by a few orders of
