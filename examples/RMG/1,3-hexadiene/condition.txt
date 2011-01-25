@@ -18,7 +18,7 @@ Database: RMG_database
 PrimaryThermoLibrary:
 Name: GRIMech3.0
 Location: GRI-Mech3.0
-Name: RMG-old
+Name: RMG-minimal
 Location: primaryThermoLibrary
 END
 
