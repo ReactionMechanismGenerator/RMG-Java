@@ -47,6 +47,7 @@ ReadRestart: no yes
 WriteRestart: no yes
 
 // Only temperature/pressure model currently supported is "Constant"
+// Several temperatures and pressures may be specified.
 // Units for temperature: K, C, F
 // Units for pressure: atm, bar, Pa, torr
 TemperatureModel: Constant (K) 1350
@@ -74,13 +75,14 @@ InitialStatus:
 
 // A species' name cannot begin with a number
 // Concentration units available: mol/cm3, mol/m3, mol/l
+// Several concentrations may be specified, but all species must have the same number.
 // The following options may follow a species' concentration units:
 //	Unreactive: This species will not react against RMG's rxn families.
 //		Furthermore, a file named IncludeSpecies.txt must be supplied by the user
 //	ConstantConcentration: This species concentration will remain fixed throughout the simulation
 //		*** This option is still under construction ***
 
-HXD13 (mol/cm3) 6.829e-4
+HXD13 (mol/cm3)    6.829e-4   
 1 C 0 {2,D}
 2 C 0 {1,D} {3,S}
 3 C 0 {2,S} {4,D}
@@ -88,10 +90,10 @@ HXD13 (mol/cm3) 6.829e-4
 5 C 0 {4,S} {6,S}
 6 C 0 {5,S} 
 
-CH4 (mol/cm3) 0.104
+CH4 (mol/cm3)      0.104    
 1 C 0
 
-H2 (mol/cm3) 1.56e-2
+H2 (mol/cm3)     1.56e-2
 1 H 0 {2,S}
 2 H 0 {1,S}
 
@@ -101,10 +103,11 @@ END
 // However, RMG only has the Lennard-Jones parameters for N2, Ar, and He
 //	hard-coded into BathGas.java.  Furthermore, RMG only reports the
 //	thermo for N2, Ar, and Ne in the chem.inp file
-// The concentration units available are the same as before
+// The concentration units available are the same as before.
+// The number of concentrations must match the reactant species in the previous section.
 InertGas:
-N2 (mol/cm3) 0.8797
-Ar (mol/cm3) 0.0e-6
+N2 (mol/cm3)    0.8797
+Ar (mol/cm3)    0.0e-6
 END
 
 SpectroscopicDataEstimator: off/frequencygroups

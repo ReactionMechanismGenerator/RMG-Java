@@ -39,21 +39,21 @@ PressureModel: Constant (atm)  20 30 40
 
 InitialStatus:
 
-(1) C4H10 1 (mol/cm3)
+(1) C4H10 (mol/cm3)   1     2
 1 C 0 {2,S}
 2 C 0 {1,S} {3,S}
 3 C 0 {2,S} {4,S}
 4 C 0 {3,S}
 
-(2) O2 6.5 (mol/cm3)
+(2) O2 (mol/cm3)     6.5   5.5
 1 O 1 {2,S}
 2 O 1 {1,S}
 
 END
 
 InertGas:
-N2 24.399 (mol/cm3)
-Ar 0 (mol/cm3)
+N2  (mol/cm3)     24.399  24.399
+Ar  (mol/cm3)        0      0
 END
 
 SpectroscopicDataEstimator: off
