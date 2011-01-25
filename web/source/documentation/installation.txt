@@ -35,12 +35,13 @@ or part of the binaries, source, documentation, and examples. The installer
 will automatically set the ``RMG`` system variable to the installation
 directory.
 
+
 Whether you install a binary or a source package, you will need:
 
 The Java SE Runtime Environment (JRE), version 6.
 	This is available from http://java.sun.com/javase/downloads/index.jsp.
 
-To generate InChIs and to convert from InChIs/.mol files to adjacency lists you will need:
+Optionally, to generate InChIs and to convert from InChIs/.mol files to adjacency lists you will need:
 
 The IUPAC International Chemical Identifier InChI version 1 (software version 1.01).
 	This is available from http://www.iupac.org/inchi/download/index.html
@@ -64,31 +65,38 @@ The Differential Algebraic System Solver (DASSL).
 	This is available in the public domain from http://www.cs.ucsb.edu/~cse/software.html.
 
 A Fortran 90 compiler.
-	We recommend the free g95 compiler, available from http://www.g95.org/.
+	We recommend gfortran from the free GNU Compiler Collection, http://gcc.gnu.org/wiki/GFortran.
+	The free g95 compiler, available from http://www.g95.org/, is also known to work.
 
 A Fortran 77 compiler.
-	The g95 compiler can successfully build the Fortran 77 source code as well.
+	Both the above Fortran 90 compilers can successfully build the Fortran 77 source code as well.
 
 The Basic Linear Algebra Subprograms (BLAS).
-	This is present in most Linux distributions, and is also available from http://www.netlib.org/blas/. Although only the BLAS source code is required, we recommend installing the full package if possible.
-
+	This is present in most Linux distributions, and is also available from http://www.netlib.org/blas/.
+	Although only the BLAS source code is required, we recommend installing the full package if possible.
+	An optimized version is included in MacOS X. We provide a 32-bit Windows DLL at https://github.com/GreenGroup/RMG-Java/downloads.
+	
 The Linear Algebra PACKage (LAPACK).
-	This is present in most Linux distributions, and is also available from http://www.netlib.org/lapack/. Although only the LAPACK source code is required, we recommend installing the full package if possible.
+	This is present in most Linux distributions, and is also available from http://www.netlib.org/lapack/. 
+	Although only the LAPACK source code is required, we recommend installing the full package if possible.
+	An optimized version is included in MacOS X. We provide a 32-bit Windows DLL at https://github.com/GreenGroup/RMG-Java/downloads.
 
 Although not required, we also recommend that you obtain:
 
 GNU make.
-	This controls the generation of Fortran executables, and is present in most Linux distributions. More information can be found at http://www.gnu.org/software/make/. 
+	This controls the generation of Fortran executables, and is present in most Linux distributions.
+	More information can be found at http://www.gnu.org/software/make/. 
 
 Apache Ant.
-	This controls the generation of Java executables. More information can be found at http://ant.apache.org/. 
+	This controls the generation of Java executables.
+	More information can be found at http://ant.apache.org/. 
 
 .. To perform sensitivity analysis on the models generated, you will also need:
 
 .. * **The Large Scale Differential Algebraic Equation Solver with Sensitivity Analysis (DASPK), version 3.1.** DASPK 3.1 is *subject to copyright restrictions*, but available for research purposes from http://www.cs.ucsb.edu/~cse/software.html.
 .. * **The Differential Algebraic Equation PACKage (DAEPACK) library file.** This can be obtained with the JACOBIAN software, which can be obtained at no cost for registered acadamic users from http://www.numericatech.com/academia.htm.
 
-To generate InChIs and to convert from InChIs/.mol files to adjacency lists you will need:
+Optionally, to generate InChIs and to convert from InChIs/.mol files to adjacency lists you will need:
 
 The IUPAC International Chemical Identifier InChI version 1 (software version 1.01).
 	This is available from http://www.iupac.org/inchi/download/index.html
