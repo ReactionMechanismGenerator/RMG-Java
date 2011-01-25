@@ -2819,12 +2819,10 @@ public class ReactionModelGenerator {
     		
     		LinkedList allNets = PDepNetwork.getNetworks();
     		
-			int netCounter = 0;
 			for(Iterator iter=allNets.iterator(); iter.hasNext();){
 				PDepNetwork pdepnet = (PDepNetwork) iter.next();
 				
-				++netCounter;
-				bw.write("PDepNetwork #" + netCounter);
+				bw.write("PDepNetwork #" + pdepnet.getID());
 				bw.newLine();
 				
 				// Write netReactionList
