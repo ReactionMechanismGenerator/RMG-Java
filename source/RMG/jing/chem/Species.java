@@ -337,7 +337,7 @@ public class Species {
         //#[ operation findStablestThermoData()
         double H = chemGraph.getThermoData().getH298();
         ChemGraph stablest = chemGraph;
-        if (resonanceIsomers != null) {
+        if (!resonanceIsomers.isEmpty()) {
         	Iterator iter = resonanceIsomers.iterator();
         	while (iter.hasNext()) {
         		ChemGraph g = (ChemGraph)iter.next();
