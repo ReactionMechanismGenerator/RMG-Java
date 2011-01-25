@@ -13,18 +13,18 @@ Launching the Graphical User Interface
 ======================================
 
 First, change to the directory where you want the output files to be stored; for
-the following example, we will store the output in the directory ``rmgRun``, located
+the following example, we will store the output in the directory ``run``, located
 in the $RMG directory.
 
 For Linux users, run the following commands to launch the GUI::
 
-	cd $RMG/rmgRun
+	cd $RMG/run
 	java -Xmx500m -classpath $RMG/software/rmg/RMG.jar GUI > output &
 
 For Windows users, run the following commands to launch the GUI::
 
-	cd "%rmg%"\rmgRun
-	java -Xmx500m -classpath "%rmg%"\software\rmg\RMG.jar GUI > output &
+	cd "%rmg%\run"
+	java -Xmx500m -classpath "%rmg%\software\rmg\RMG.jar" GUI > output &
 
 .. _tabInitialCondition:
 
@@ -113,8 +113,8 @@ This tab of the GUI allows the user to enter the location of the thermochemical 
 
 The default location of the :ref:`Main Database <database>` is the :file:`RMG/database/RMG_database` folder.  We recommend to use the default settings.
 
-The default location of the :ref:`Primary Thermo Library <primarythermolibrary>` is the :file:`RMG/database/RMG_database/thermo/PrimaryThermoLibrary` folder.
-We recommend to include this default primary thermo library.  To add additional primary thermo libraries:
+The default location of the :ref:`Primary Thermo Library <primarythermolibrary>` is the :file:`RMG/database/RMG_database/thermo_libraries/primaryThermoLibrary` folder.
+We recommend to include at least this default primary thermochemistry library.  To add additional primary thermo libraries:
 Supply a Name, select the directory by pressing the "Select" button, and then push "Add".
 
 To add a :ref:`Primary Reaction Library <primaryreactionlibrary>` or :ref:`Seed Mechanism <seedmechanism>`:
