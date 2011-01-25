@@ -345,9 +345,15 @@ Reactants
 
 The name, concentration, and structure of each reactant must be specified. For
 each reactant, the first line should include the reactant's 
-name (e.g. ``C2O2``) and it's concentration with units (e.g. ``4.09e-3 (mol/cm3)``).
+name (e.g. ``C2O2``) and it's concentration(s) preceded by units (e.g. ``(mol/cm3) 4.09e-3 ``).
 Acceptable units for concentration are "mol/cm3", "mol/m3", and "mol/l".  Please note,
 RMG will **not** accept a species name that begins with a number.
+
+Like with the initial conditions, it is possible to set multiple starting
+concentrations, separated by spaces. RMG will create reaction systems for each
+combination of temperature, pressure, and starting concentration. You must
+enter the same number of starting concentrations for each species, including
+the :ref:`inertgas`  described in the next section.
 
 The next line defines the reactant structure, described by an adjacency list.
 The :ref:`RMG Viewer and Editor <viewingThermoFGs>` is a useful tool for
@@ -356,11 +362,11 @@ adjacency list in which the hydrogen atoms are omitted (shown below)::
 
  InitialStatus:
 
- CH3OH 4.09e-3 (mol/cm3)
+ CH3OH (mol/cm3)   4.09e-3
  1  C 0 {2,S}
  2  O 0 {1,S}
 
- O2 1.1E-7 (mol/cm3)
+ O2  (mol/cm3)     1.1E-7
  1  O 1 {2,S}
  2  O 1 {1,S}
 
@@ -422,13 +428,13 @@ Inert Gases
 
 Following InitialStatus, the initialization file specifies which inert gases, if
 any, are used. Currently RMG can handle four inert gases: |N2|, Ne, He, and Ar. If
-one of the gases is not used, set the concentration to 0.0 (mol/cm3). If no bath
+one of the gases is not used, set the concentration to ``(mol/cm3) 0.0``. If no bath
 gas is used, set all concentrations to zero. In the example below, there is no
 nitrogen, the neon and helium are omitted, and the argon concentration is 2.21E-6 (mol/cm3)::
  
   InertGas:
-  N2 0.0 (mol/cm3)
-  Ar 2.21E-6 (mol/cm3)
+  N2  (mol/cm3)     0.0 
+  Ar  (mol/cm3)    2.21E-6
   END
 
 .. |N2| replace:: N\ :sub:`2`\ 
@@ -437,6 +443,9 @@ To create valid CHEMKIN files, ensure that any 3rd-body collider molecules used 
 your Seed Mechanisms or Reaction Libraries are either declared in their 
 species.txt files (if they are reactive) or in this section.
 (i.e. it's a good idea to list all of N2, Ne, He and Ar, even if their concentrations are 0)
+
+The number of concentrations must correspond to the number of concentrations 
+specified in the preceding :ref:`reactants` section.
 
 Please note that the keyword ``END`` must be placed at the end of the InertGas
 section.
