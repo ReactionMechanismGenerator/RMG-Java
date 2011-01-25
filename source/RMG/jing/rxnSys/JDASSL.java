@@ -416,7 +416,6 @@ public class JDASSL extends JDAS {
 			targetReached = true;
 		    }
 		    else{
-			System.out.println("DEBUG: DASSL Fortran code found that edge entity "+ edgeflag+ " exceeded the model enlargement criterion.");
 			targetReached = false;
 		    }
 		    line=br.readLine();//read the time integrated to

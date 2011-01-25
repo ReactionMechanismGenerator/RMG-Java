@@ -884,7 +884,6 @@ public abstract class JDAS implements DAESolver {
                 }
             }
 
-
             //second, consider kLeak of each reaction network so that the validity of each reaction network may be tested
             //in the original CHEMDIS approach, we included a reaction and pseudospecies for each kleak/P-dep network
             //with the FAME approach we still group all the wells from separate networks together in a new construct, edgeLeakID, analogous to edge ID
