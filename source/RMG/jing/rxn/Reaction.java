@@ -1688,17 +1688,17 @@ public class Reaction {
 		
 		String rxn = "";
 		Species species = (Species) structure.getReactantList().get(0);
-		rxn = rxn + species.getName() + "(" + Integer.toString(species.getID()) + ")";
+		rxn = rxn + species.getFullName() ;
 		for (int i = 1; i < getReactantNumber(); i++) {
 			species = (Species) structure.getReactantList().get(i);
-			rxn += " + " + species.getName() + "(" + Integer.toString(species.getID()) + ")";
+			rxn += " + " + species.getFullName() ;
 		}
 		rxn += " --> ";
 		species = (Species) structure.getProductList().get(0);
-		rxn = rxn + species.getName() + "(" + Integer.toString(species.getID()) + ")";
+		rxn = rxn + species.getFullName() ;
 		for (int i = 1; i < getProductNumber(); i++) {
 			species = (Species) structure.getProductList().get(i);
-			rxn += " + " + species.getName() + "(" + Integer.toString(species.getID()) + ")";
+			rxn += " + " + species.getFullName() ;
 		}
 		
 		return rxn;

@@ -614,7 +614,7 @@ public class FastMasterEqn implements PDepKineticsEstimator {
 				spec.calculateTransportParameters();
 
 				input.append( "# Species identifier (128 characters or less, no spaces)\n" );
-				input.append( spec.getName() + "(" + Integer.toString(spec.getID()) + ")\n" );
+				input.append( spec.getFullName() + "\n" );
 
 				input.append( "# Ground-state energy; allowed units are J/mol, kJ/mol, cal/mol, kcal/mol, or cm^-1\n" );
 				input.append( "J/mol " + Double.toString(spec.calculateH(stdTemp) * 4184) + "\n" );
@@ -682,7 +682,7 @@ public class FastMasterEqn implements PDepKineticsEstimator {
 				input.append( Integer.toString(isomer.getNumSpecies()) );
 				for (int j = 0; j < isomer.getNumSpecies(); j++) {
 					Species spec = isomer.getSpecies(j);
-					input.append( " " + spec.getName() + "(" + Integer.toString(spec.getID()) + ")" );
+					input.append( " " + spec.getFullName() );
 				}
 				input.append( "\n\n" );
 			}

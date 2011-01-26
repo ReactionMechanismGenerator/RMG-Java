@@ -690,7 +690,7 @@ public class ReactionSystem {
 
         for (Iterator iter = speSet.iterator(); iter.hasNext(); ) {
         	Species spe = (Species)iter.next();
-        	System.out.println(spe.getName()+"("+String.valueOf(spe.getID())+"): " + spe.getThermoData().toString());
+        	System.out.println(spe.getFullName()+": " + spe.getThermoData().toString());
         }
 
 

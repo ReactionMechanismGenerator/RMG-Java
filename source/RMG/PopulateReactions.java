@@ -376,7 +376,7 @@ public class PopulateReactions {
 			        		for (int numSpecies=0; numSpecies<species.size(); ++numSpecies) {
 			        			Species currentSpec = (Species)species.get(numSpecies);
 			        			if (!allSpeciesInNetwork.contains(currentSpec)) {
-			        				listOfReactions += "!\t" + String.format(formatSpeciesName,currentSpec.getName()+"("+currentSpec.getID()+")") + currentSpec.getThermoData().toString() + currentSpec.getThermoData().getComments() + "\n";
+			        				listOfReactions += "!\t" + String.format(formatSpeciesName,currentSpec.getFullName()) + currentSpec.getThermoData().toString() + currentSpec.getThermoData().getComments() + "\n";
 			        				allSpeciesInNetwork.add(currentSpec);
 			        			}
 			        		}
@@ -456,7 +456,7 @@ public class PopulateReactions {
         	int i = 0;
         	while (iter_species.hasNext()) {
         		Species species = (Species)iter_species.next();
-        		listOfSpecies += species.getName()+"("+species.getID()+")\n" +
+        		listOfSpecies += species.getFullName()+"\n" +
         			species.getChemGraph().toStringWithoutH(i) + "\n";
         	}
         	

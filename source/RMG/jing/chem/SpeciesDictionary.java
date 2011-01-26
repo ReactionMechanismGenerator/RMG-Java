@@ -186,7 +186,7 @@ public class SpeciesDictionary {
         Iterator iter = dictionary.values().iterator();
         while (iter.hasNext()) {
         	Species spe = (Species)iter.next();
-        	if ((spe.getName()+"("+spe.getID()+")").compareToIgnoreCase(p_name) == 0) {
+        	if ((spe.getFullName()).compareToIgnoreCase(p_name) == 0) {
         		return spe;
         	}
         }

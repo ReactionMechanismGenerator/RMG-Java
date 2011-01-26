@@ -2547,7 +2547,7 @@ public class ReactionModelGenerator {
             bw = new BufferedWriter(new FileWriter("Restart/edgeSpecies.txt"));
 			for(Iterator iter=((CoreEdgeReactionModel)getReactionModel()).getUnreactedSpeciesSet().iterator();iter.hasNext();){
 				Species species = (Species) iter.next();
-				bw.write(species.getName()+"("+species.getID()+")");
+				bw.write(species.getFullName());
 				bw.newLine();
 				int dummyInt = 0;
 				bw.write(species.getChemGraph().toString(dummyInt));
@@ -2633,7 +2633,7 @@ public class ReactionModelGenerator {
             bw = new BufferedWriter(new FileWriter("Restart/coreSpecies.txt"));
 			for(Iterator iter=getReactionModel().getSpecies();iter.hasNext();){
 				Species species = (Species) iter.next();
-				bw.write(species.getName()+"("+species.getID()+")");
+				bw.write(species.getFullName());
 				bw.newLine();
 				int dummyInt = 0;
 				bw.write(species.getChemGraph().toString(dummyInt));

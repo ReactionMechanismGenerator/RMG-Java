@@ -727,11 +727,21 @@ public class Species {
 
 		therfitExecuted = (threeFrequencyModel != null);
     }
-
+	
+	//## operation getFullName()
+	public String getFullName() {
+		// get the full name with the ID appended.
+		// the chemkin name is a shortened version of this
+		if (addID){
+			return String.format("%s(%d)",getName(),getID());
+		}
+		else
+			return getName();
+	}
+	
+	//## operation getChemkinName()
 	  public String getChemkinName() {
-	        //#[ operation getChemkinName()
-		  if (addID){
-			  String chemkinName = getName() + "(" + getID() + ")";
+			  String chemkinName = getFullName();
 			  /* Updated by MRH on 1-Jun-2008
 			  	If statement used to check if chemkinName length was greater than 16
 			  	I've changed it to length 10.  Chemkin format dictates that any 
@@ -746,11 +756,7 @@ public class Species {
 			  
 		        if (chemkinName.length() > 10) chemkinName = "SPC(" + getID() + ")";
 		        return chemkinName;
-		  }
-		  else
-			  return getName();
 
-	        //#]
 	    }
 
     //## operation getInternalRotor()
@@ -874,7 +880,7 @@ public class Species {
         	dictionary.putSpecies(spe, true);
         	
 			// DEBUG: Tell console I made this species
-			System.out.println("Created new species: " + spe.getName() + "(" + spe.getID() + ")");
+			System.out.println("Created new species: " + spe.getFullName() );
 
         }
         else {
@@ -987,7 +993,7 @@ public class Species {
         p_chemGraph.setSpecies(spe);
         
      // DEBUG: Tell console I made this species
-		System.out.println("Created new species: " + spe.getName() + "(" + spe.getID() + ")");
+		System.out.println("Created new species: " + spe.getFullName() );
         
         return spe;
     }

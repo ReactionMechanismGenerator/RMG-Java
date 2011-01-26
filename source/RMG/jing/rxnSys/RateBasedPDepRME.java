@@ -243,7 +243,7 @@ public class RateBasedPDepRME implements ReactionModelEnlarger {
 
         // Add a species to the core
         System.out.print("\nAdd a new reacted Species to the core: ");
-        System.out.println(maxSpecies.getChemkinName());
+        System.out.println(maxSpecies.getFullName());
         System.out.println(maxSpecies.toStringWithoutH());
         Temperature temp = new Temperature(715, "K");
         double H = maxSpecies.calculateH(temp);
@@ -253,9 +253,8 @@ public class RateBasedPDepRME implements ReactionModelEnlarger {
         System.out.println("Thermo of species at 715K (H, S, G, Cp, respectively)\t" + String.valueOf(H) + '\t' + String.valueOf(S) + '\t' + String.valueOf(G) + '\t' + String.valueOf(Cp));
 
         if (cerm.containsAsReactedSpecies(maxSpecies))
-            System.out.println("Species " + maxSpecies.getName() + "(" +
-                    Integer.toString(maxSpecies.getID()) +
-                    ") is already present in reaction model");
+            System.out.println("Species " + maxSpecies.getFullName() +
+                    " is already present in reaction model");
         else {
 
             // Move the species and appropriate reactions from the edge to the core

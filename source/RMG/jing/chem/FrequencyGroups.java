@@ -80,8 +80,8 @@ public class FrequencyGroups{//gmagoon 111708: removed "implements GeneralGAPP"
 
                     int nFreq = 3 * atoms - 5 - rotor - degeneracy - linearity;
                     if (nFreq < 0) {
-                            System.out.println(species.getName() + "(" + Integer.toString(species.getID()) +
-                                    ") is overspecified: " +
+                            System.out.println(species.getFullName() +
+                                    " is overspecified: " +
                                             Integer.toString(degeneracy) + " harmonic oscillators and " +
                                             Integer.toString(rotor) + " internal rotors are specified, but only " +
                                             Integer.toString(3 * atoms - 5 - linearity) + " modes are allowed.");
@@ -191,7 +191,7 @@ public class FrequencyGroups{//gmagoon 111708: removed "implements GeneralGAPP"
 			// If the output file is empty, then an error occurred
 			if (franklOutput.length() == 0)
 				throw new IOException("Error: FrequencyGroups estimation for " + 
-						species.getName() + "(" + Integer.toString(species.getID()) + ") failed.");
+						species.getFullName() + " failed.");
             
 			// Read information about molecule (numuber of atoms, number of rotors, linearity)
 			atoms = Integer.parseInt(br.readLine().trim());
@@ -259,7 +259,7 @@ public class FrequencyGroups{//gmagoon 111708: removed "implements GeneralGAPP"
         }
         
 		// Rename input and output files
-		/*String newName = species.getName()+"("+String.valueOf(species.getID())+")";
+		/*String newName = species.getFullName();
         File f = new File("frankie/dat");
 		File newFile = new File("frankie/"+newName+"_input");
 		f.renameTo(newFile);
