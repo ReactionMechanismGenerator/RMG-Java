@@ -41,6 +41,7 @@ import java.io.IOException;
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import jing.rxnSys.Logger;
 
 public class FrequencyGroups{//gmagoon 111708: removed "implements GeneralGAPP"
 
@@ -171,11 +172,11 @@ public class FrequencyGroups{//gmagoon 111708: removed "implements GeneralGAPP"
 		  if (frankieOutputFlag == 4) 
 			  frankieSuccess = true;
 		  if (frankieOutputFlag == 8) 
-			  System.err.println("Frankie exceeded maximum number of iterations");	  
+			  Logger.verbose("Frankie exceeded maximum number of iterations");
 		  
 		  if (!frankieSuccess) {
-			  System.err.println("Frankie.exe wasn't fully successful: "+ String.format("species %2$d had output flag %1$d",frankieOutputFlag,species.getID() ));
-			  System.err.println(String.format("Saving input file as 'frankie/dat.%d.%d' should you wish to debug.",frankieOutputFlag,species.getID() ));	
+			  Logger.verbose("Frankie.exe wasn't fully successful: "+ String.format("species %2$d had output flag %1$d",frankieOutputFlag,species.getID() ));
+			  Logger.verbose(String.format("Saving input file as 'frankie/dat.%d.%d' should you wish to debug.",frankieOutputFlag,species.getID() ));
 			  franklInput.renameTo( new File(String.format("frankie/dat.%d.%d",frankieOutputFlag,species.getID() )) );			  
 		  }
 

@@ -526,7 +526,7 @@ public class ReactionSystem {
     //## operation initializePDepNetwork()
     public void initializePDepNetwork() {
         if (!(reactionModelEnlarger instanceof RateBasedPDepRME)) {
-			System.out.println("ERROR: Reaction model enlarger is not pressure-dependent!");
+			Logger.critical("ERROR: Reaction model enlarger is not pressure-dependent!");
 			System.exit(0);
 		}
 		
@@ -535,7 +535,9 @@ public class ReactionSystem {
 		PDepKineticsEstimator pDepKineticsEstimator = 
 				((RateBasedPDepRME) reactionModelEnlarger).getPDepKineticsEstimator();
 		
-		LinkedList pdnList = new LinkedList(PDepNetwork.getNetworks());
+		Logger.info("");
+
+        LinkedList pdnList = new LinkedList(PDepNetwork.getNetworks());
 		for (Iterator iter = pdnList.iterator(); iter.hasNext(); ) {
         	PDepNetwork pdn = (PDepNetwork)iter.next();
         	if (pdn.getAltered()) {

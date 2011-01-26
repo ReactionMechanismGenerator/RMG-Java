@@ -89,17 +89,8 @@ public class TemplateReactionGenerator implements ReactionGenerator {
         	// the reaction template has only one reactant, we only need to loop over the whole species seed set to find a match
         	double startTime = System.currentTimeMillis();
 			if (current_template.hasOneReactant()) {
-	        	/*
-	        	 * Added by MRH on 15-Jun-2009
-	        	 * Display more information to the user:
-	        	 * 	This println command informs the user which rxn family template
-	        	 *		the species is reacting against
-	        	 */
-	        	System.out.println("Generating pressure dependent network for " + p_species.getChemkinName() + ": " + current_template.name);
-        		
 				LinkedHashSet current_reactions = current_template.reactOneReactant(p_species);
 				pdepReactionSet.addAll(current_reactions);
-				
         	}
         }
 		Runtime runTime = Runtime.getRuntime();

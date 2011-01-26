@@ -43,8 +43,6 @@ import java.text.DecimalFormat;
 import java.util.LinkedList;
 import java.util.ListIterator;
 import java.util.StringTokenizer;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import Jama.Matrix;
 import jing.chem.Species;
@@ -56,6 +54,7 @@ import jing.param.Temperature;
 import jing.rxnSys.CoreEdgeReactionModel;
 import jing.rxnSys.ReactionModelGenerator;
 import jing.rxnSys.ReactionSystem;
+import jing.rxnSys.Logger;
 
 /**
  * Used to estimate pressure-dependent rate coefficients k(T, P) for a
@@ -222,12 +221,11 @@ public class FastMasterEqn implements PDepKineticsEstimator {
 		LinkedList<Species> speciesList = pdn.getSpeciesList();
 		LinkedList<PDepReaction> pathReactionList = pdn.getPathReactions();
 		if (pathReactionList.size() == 0) {
-			System.out.println("Warning: Empty pressure-dependent network detected. Skipping.");
+			Logger.warning("Empty pressure-dependent network detected. Skipping.");
 			return;
 		}
 		
-		System.out.println("Solving PDepNetwork #" + Integer.toString(pdn.getID()) +
-						   " (" + pdn.getSpeciesType() + ")");
+		Logger.info("Solving PDepNetwork #" + Integer.toString(pdn.getID()) + " (" + pdn.getSpeciesType() + ")");
 
 		// Sort isomers such that the order is:
 		//	1. Explored unimolecular isomers
@@ -288,18 +286,10 @@ public class FastMasterEqn implements PDepKineticsEstimator {
 		// JDM January 22, 2010
 		//if (runTime.freeMemory() < runTime.totalMemory()/3) {
 		if (isomerList.size() >= 10) {
-			// System.out.println("Number of isomers in PDepNetwork to follow: " + isomerList.size());
-			// Find current time BEFORE running garbage collection.
-			// JDM January 27, 2010
-			// System.out.println("Running Time is: " + String.valueOf((System.currentTimeMillis())/1000/60) + " minutes before garbage collection.");
 			Runtime runTime = Runtime.getRuntime();
 			runTime.gc();
-			// Find current time AFTER running garbage collection.
-			// JDM January 27, 2010
-			// System.out.println("Running Time is: " + String.valueOf((System.currentTimeMillis())/1000/60) + " minutes after garbage collection.");
 		}
-		//}
-
+		
 		// Create FAME input files
 		String input = writeInputString(pdn, rxnSystem, speciesList, isomerList, pathReactionList, nIsom, nReac, nProd);
         
@@ -322,14 +312,13 @@ public class FastMasterEqn implements PDepKineticsEstimator {
 			fw.write(input);
 			fw.close();
 		} catch (IOException ex) {
-			System.out.println("Unable to write FAME input file.");
+			Logger.warning("Unable to write FAME input file.");
 			System.exit(0);
 		}
 
 		// FAME system call
 		try {
-           	//System.out.println("Running FAME...");
-			String[] command = {dir + "/bin/fame.exe"};
+           	String[] command = {dir + "/bin/fame.exe"};
            	File runningDir = new File("fame/");
 			Process fame = Runtime.getRuntime().exec(command, null, runningDir);
 			if (fame == null) throw new PDepException("Couldn't start FAME process.");
@@ -340,7 +329,7 @@ public class FastMasterEqn implements PDepKineticsEstimator {
 			stdin.print( input );
 			stdin.flush();
 			if (stdin.checkError()) { // Flush the stream and check its error state.
-				System.out.println("ERROR sending input to fame.exe");
+				Logger.error("Error sending input to fame.exe");
 			}
 			stdin.close();
 			
@@ -349,10 +338,10 @@ public class FastMasterEqn implements PDepKineticsEstimator {
 				line = stdout.readLine().trim();
 			}
 			catch (NullPointerException e) {
-				System.out.println("FAME Stderr:");
+				Logger.verbose("FAME Stderr:");
 				String errline = null;
 				while((errline = stderr.readLine()) != null){
-				    System.out.println(errline);
+				    Logger.verbose(errline);
 				}
 				throw new PDepException("FAME reported an error; FAME job was likely unsuccessful.");
 			}
@@ -371,12 +360,12 @@ public class FastMasterEqn implements PDepKineticsEstimator {
 				// correct output begins with ######...
 			    // erroneous output does not begin with ######...
                 // Print FAME stdout and error
-				System.out.println("FAME Error::");
-                System.out.println(line);
+				Logger.verbose("FAME Error:");
+                Logger.verbose(line);
 				output.append(line).append("\n");
                 while ( ((line = stdout.readLine()) != null) || ((line = stderr.readLine()) != null) ) {
 					output.append(line).append("\n");
-                    System.out.println(line);
+                    Logger.verbose(line);
                 }
 				// clean up i/o streams (we may be trying again with ModifiedStrongCollision and carrying on)
 				stdout.close();
@@ -397,52 +386,46 @@ public class FastMasterEqn implements PDepKineticsEstimator {
 				pdn.setAltered(false);
 				
 				// Write finished indicator to console
-				//System.out.println("FAME execution for network " + Integer.toString(id) + " complete.");
 				String formula = pdn.getSpeciesType();
-				System.out.println("PDepNetwork #" + Integer.toString(id) +
+				Logger.verbose("PDepNetwork #" + Integer.toString(id) +
 					" (" + formula + ") solved: " +
 					pdn.getNetReactions().size() + " included and " +
 					pdn.getNonincludedReactions().size() + " nonincluded net reactions.");
-				// Find time required to run FAME for large networks.
-				// JDM January 27, 2010
-				// if (isomerList.size() >= 10) {
-				//	System.out.println("Running Time is: " + String.valueOf((System.currentTimeMillis())/1000/60) + " minutes after running fame.");
-				// }
 			}
 			stdout.close(); // close all output streams so the fame process terminates and we get past the following line:
 			int exitValue = fame.waitFor();
         }
         catch (Exception e) {
 			e.printStackTrace();
-        	System.out.println(e.getMessage());
+        	Logger.error(e.getMessage());
 			if (e.getCause() == null){
-				System.out.println("No cause for this exception! Could be because of insufficient memory,");
-				System.out.println("and not actually a problem with FAME or the input files!! Try pruning.");
+				Logger.info("No cause for this exception! Could be because of insufficient memory,");
+				Logger.info("and not actually a problem with FAME or the input files!! Try pruning.");
 			}
 			// Save bad input to file
             try {
                 FileWriter fw = new FileWriter(new File("fame/" + Integer.toString(pdn.getID()) + "_input.txt"));
                 fw.write(input);
                 fw.close();
-				System.out.println("Troublesome FAME input saved to ./fame/" + Integer.toString(pdn.getID()) + "_input.txt");
+				Logger.info("Troublesome FAME input saved to ./fame/" + Integer.toString(pdn.getID()) + "_input.txt");
                 FileWriter fwo = new FileWriter(new File("fame/" + Integer.toString(pdn.getID()) + "_output.txt"));
                 fwo.write(output.toString());
                 fwo.close();
-				System.out.println("Troublesome FAME result saved to ./fame/" + Integer.toString(pdn.getID()) + "_output.txt");
+				Logger.info("Troublesome FAME result saved to ./fame/" + Integer.toString(pdn.getID()) + "_output.txt");
             } catch (IOException ex) {
-                System.out.println("Unable to save FAME input that caused the error.");
+                Logger.info("Unable to save FAME input that caused the error.");
                 System.exit(0);
             }
             // If using RS method, fall back to MSC
 			if (mode == Mode.RESERVOIRSTATE) {  /// mode is not defined if running modified strong collision
-				System.out.println("Falling back to modified strong collision mode for this network.");
+				Logger.info("Falling back to modified strong collision mode for this network.");
 				mode = Mode.STRONGCOLLISION;
 				runPDepCalculation(pdn, rxnSystem, cerm);
 				mode = Mode.RESERVOIRSTATE;
 				return;
 			}
 			else {
-				System.out.println("Error running FAME.");
+				Logger.critical("Error running FAME.");
 				System.exit(0);				
 			}
         }
@@ -739,11 +722,11 @@ public class FastMasterEqn implements PDepKineticsEstimator {
 
 		}
 		catch(IndexOutOfBoundsException e) {
-			System.out.println("Error: IndexOutOfBoundsException thrown.");
+			Logger.error("Error: IndexOutOfBoundsException thrown.");
 			e.printStackTrace(System.out);
 		}
 		catch(Exception e) {
-			System.out.println(e.getMessage());
+			Logger.error(e.getMessage());
 			e.printStackTrace(System.out);
 		}
 
@@ -1010,8 +993,8 @@ public class FastMasterEqn implements PDepKineticsEstimator {
 								double k_highPlimit = A * Math.pow(T,n) * Math.exp(-Ea/GasConstant.getKcalMolK()/T);
 								double over_high_P_factor = all_ks[0][pressures.length-1] / k_highPlimit;
 								if (over_high_P_factor > 2) {
-									System.out.println("For reaction "+rxn.toString());
-									System.out.println(String.format("Pressure-dependent rate coefficient at %.0fK %.1fBar " +
+									Logger.info("For reaction "+rxn.toString());
+									Logger.info(String.format("Pressure-dependent rate coefficient at %.0fK %.1fBar " +
 											"exceeds high-P-limit rate  by factor of %.1f .", T, Pmax*1e-5,over_high_P_factor));
 									pdepRatesOK = false;
 								}
@@ -1039,25 +1022,25 @@ public class FastMasterEqn implements PDepKineticsEstimator {
 
 		}
 		catch (PDepException e) {
-			System.out.println(pdn);
-			System.out.println(e.getMessage());
+			Logger.verbose(pdn.toString());
+			Logger.error(e.getMessage());
 			e.printStackTrace();
 			throw new PDepException("Unable to parse FAME output file.");
 		}
 		catch(IOException e) {
-			System.out.println("Error: Unable to read from file \"fame_output.txt\".");
+			Logger.error("Unable to read from file \"fame_output.txt\".");
 			System.exit(0);
 		}
 		
 		if (!pdepRatesOK) {
 			if (numGrains > 1000) {
-				System.out.println("Number of grains already exceeds 1000. " +
+				Logger.info("Number of grains already exceeds 1000. " +
 								   "Continuing with results from current fame run.");
 				pdepRatesOK = true; // this function is called inside a while(!pdepRatesOK) loop.
 			}
 			else {
 				numGrains = numGrains + 250;
-				System.out.println(String.format("Re-running fame with %d grains.",numGrains));
+				Logger.info(String.format("Re-running fame with %d grains.",numGrains));
 				return false;
 			}
 		}
@@ -1161,12 +1144,12 @@ public class FastMasterEqn implements PDepKineticsEstimator {
 			output.createNewFile();
 		}
 		catch(IOException e) {
-			System.out.println("Error: Unable to touch file \"fame_output.txt\".");
-			System.out.println(e.getMessage());
+			Logger.error("Unable to touch file \"fame_output.txt\".");
+			Logger.error(e.getMessage());
 			System.exit(0);
 		}
 		catch(Exception e) {
-			System.out.println(e.getMessage());
+			Logger.error(e.getMessage());
 		}
 	}
 
