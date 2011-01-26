@@ -55,6 +55,8 @@ public class RMG {
         
         try {
 
+            // Record the time at which RMG was started (so we can periodically
+            // print the elapsed time)
             long tAtInitialization = System.currentTimeMillis();
             Global.tAtInitialization = tAtInitialization;
 		
@@ -161,48 +163,38 @@ public class RMG {
 		System.setProperty("jing.rxn.ReactionLibrary.pathName",            database_path +"/kinetics_libraries");
         System.setProperty("jing.chem.SolventLibrary.pathName",            database_path +"/thermo_libraries");
     }
-	
+
+    /**
+     * Create a folder in the current (working) directory, deleting the
+     * existing folder and its contents if desired.
+     * @param name The name of the folder to create
+     * @param deleteExisting true to delete the existing folder (and its contents!), false to preserve it
+     */
+    public static void createFolder(String name, boolean deleteExisting) {
+        File folder = new File(name);
+		if (deleteExisting)
+            ChemParser.deleteDir(folder);
+        if (!folder.exists())
+            folder.mkdir();
+    }
+
 	public static void initializeSystemProperties(String inputfile) {
 		globalInitializeSystemProperties();
 		
-	    File f = new File(".");
-	    String dir = f.getAbsolutePath();
-		File chemkin = new File("chemkin");
-		ChemParser.deleteDir(chemkin);
-		chemkin.mkdir();
-		//writeThermoFile();
-		File Restart = new File("Restart");
-		Restart.mkdir();
-		File GATPFit = new File("GATPFit");
-		GATPFit.mkdir();
-		File ODESolver = new File("ODESolver");
-		ODESolver.mkdir();
-		File fame = new File("fame");
-		ChemParser.deleteDir(fame);
-		fame.mkdir();
-		File frankie = new File("frankie");
-		ChemParser.deleteDir(frankie);
-		frankie.mkdir();
-		File inchi = new File("InChI");
-		ChemParser.deleteDir(inchi);
-		inchi.mkdir();
-		File pruning = new File("Pruning");
-		ChemParser.deleteDir(pruning);
-		pruning.mkdir();
-		//6/3/09 gmagoon: create folders for 3D geometries
-		File twoDmol = new File("2Dmolfiles");
-		ChemParser.deleteDir(twoDmol);//this will clear out contents from previous run; I don't necessarily want this, and I may want to only create the folder if it doesn't exist already
-		twoDmol.mkdir();
-		File threeDmol = new File("3Dmolfiles");
-		ChemParser.deleteDir(threeDmol);
-		threeDmol.mkdir();
-		File qmfiles = new File("QMfiles");
-		//ChemParser.deleteDir(qmfiles);
-		if(!qmfiles.exists()){//create if it doesn't exist; we will not delete files because we want to preserve them between runs to speed things up
-                    qmfiles.mkdir();
-                }
-		
-
+	    // Create the working folders for various RMG components
+        // Note that some of these folders are only used when their 
+        // corresponding features are activated in the condition file
+        createFolder("chemkin", true);
+        createFolder("Restart", true);
+        createFolder("GATPFit", true);
+        createFolder("ODESolver", true);
+        createFolder("fame", true);
+        createFolder("frankie", true);
+        createFolder("InChI", true);
+        createFolder("Pruning", true);
+        createFolder("2Dmolfiles", true);   // Not sure if we should be deleting this
+        createFolder("3Dmolfiles", true);   // Not sure if we should be deleting this
+        createFolder("QMfiles", false);     // Preserving QM files between runs will speed things up considerably
 
 	     System.setProperty("jing.rxnSys.ReactionModelGenerator.conditionFile",inputfile);
 		 try {
