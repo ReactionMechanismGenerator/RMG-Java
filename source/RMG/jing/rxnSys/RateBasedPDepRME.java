@@ -186,22 +186,28 @@ public class RateBasedPDepRME implements ReactionModelEnlarger {
 			System.out.println("Unreacted species " + maxSpecies.getName() + " has highest flux: " + String.valueOf(maxFlux));
 			System.out.println("Unreacted species " + maxLeakSpecies.getName() + " has highest leak flux: " + String.valueOf(maxLeakFlux));
 
-            //if (maxFlux > Rmin)
+            
 			if (maxFlux > maxLeakFlux && maxFlux > Rmin) {
+				// Flux is greater than leakFlux, and big enough to matter.
 				if (!coreUpdateList.contains(maxSpecies))
                     coreUpdateList.add(maxSpecies);
                 else
                     coreUpdateList.add(null);
                 leakUpdateList.add(null);
             }
-			else if (maxLeakFlux > Rmin) {
+			else if (maxLeakFlux > Rmin) { 
+				// leakFlux is greater than Flux, and big enough to matter.
 				if (!leakUpdateList.contains(maxLeakSpecies))
                     leakUpdateList.add(maxLeakSpecies);
                 else
                     leakUpdateList.add(null);
                 coreUpdateList.add(null);
             }
-
+			else { 
+				// neither leakFlux nor Flux is big enough to matter
+				leakUpdateList.add(null);
+				coreUpdateList.add(null);
+			}
         }
 
         // Check that species don't exist in both coreUpdateList and leakUpdateList
@@ -236,7 +242,7 @@ public class RateBasedPDepRME implements ReactionModelEnlarger {
     public void addSpeciesToCore(Species maxSpecies, CoreEdgeReactionModel cerm, ReactionSystem rxnSystem) {
 
         // Add a species to the core
-        System.out.print("\nAdd a new reacted Species: ");
+        System.out.print("\nAdd a new reacted Species to the core: ");
         System.out.println(maxSpecies.getChemkinName());
         System.out.println(maxSpecies.toStringWithoutH());
         Temperature temp = new Temperature(715, "K");
