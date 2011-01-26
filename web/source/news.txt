@@ -6,7 +6,15 @@ RMG News and Updates
 2011-01-28: RMG 3.3 Released!
 ===============================
 
-RMG version 3.3 has been released.
+RMG version 3.3 has been released. Changes since 3.2.1 include the following:
+
+- An option to specify multiple initial compositions (in addition to multiple temperatures and pressures) has been added
+
+- The model enlargement algorithm with pressure-dependence has been changed (note: additional changes to this code are planned for future releases)
+
+- Pruning with pressure-dependence is fixed
+
+- MM4 thermochemistry option alternative to (experimental feature, requires separate access to MM4 software)
 
 
 

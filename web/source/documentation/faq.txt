@@ -23,7 +23,7 @@ For more information, please see :ref:`Representing oxygen <oxygen>`.
 
 .. _Q3:
 
-My RMG run runs out of memory. How should I proceed?
+My RMG run runs out of memory. How should I procede?
 ====================================================================================================================================
 This type of error will probably look something like ``Exception in thread
 "main" java.lang.OutOfMemoryError: Java heap space``. Species take up a large
