@@ -43,4 +43,9 @@ smaller model: use a higher termination criterion.
 Troubleshooting
 ===============
 
-Put common error messages here.
+*****Final attempt (#36) on species ____ failed.
+------------------------------------------------
+
+With QMTP: if after "Final attempt" it still fails, and reports the chemgraph of the species that failed,
+take this chemgraph and either provide thermochemistry for it in a primaryThermoLibrary, or else
+add it to your ForbiddenStructures section of your condition file or database.
