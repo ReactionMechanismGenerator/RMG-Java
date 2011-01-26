@@ -30,7 +30,8 @@ package jing.rxnSys;
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 
 /**
  * The Logger class encapsulating logging functionality for RMG.
@@ -77,6 +78,12 @@ public class Logger {
             System.out.println("Unable to open file \"RMG.log\" for logging.");
             System.exit(0);
         }
+
+        // Print an initialization timestamp
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        info("RMG execution initiated at " + sdf.format(Calendar.getInstance().getTime()));
+        info("");
+
     }
 
     /**
@@ -84,6 +91,11 @@ public class Logger {
      * successful, the program will abort.
      */
     public static void finish() {
+        // Print a termination timestamp
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        info("");
+        info("RMG execution terminated at " + sdf.format(Calendar.getInstance().getTime()));
+
         try {
             // Close the log file (throws IOException if unsuccessful)
             logFile.close();

@@ -47,7 +47,10 @@ public class RMG {
     //## configuration RMG::RMG
     public static void main(String[] args) {
 		
-		long tAtInitialization = System.currentTimeMillis();
+		// Initialize the logger
+        Logger.initialize();
+        
+        long tAtInitialization = System.currentTimeMillis();
 		Global.tAtInitialization = tAtInitialization;
 		
 		initializeSystemProperties(args[0]);
@@ -117,6 +120,9 @@ public class RMG {
             }
        }
 
+       // Finish the logger
+       Logger.finish();
+       
     }
     
     public static void globalInitializeSystemProperties() {
