@@ -80,6 +80,11 @@ public class Logger {
             System.exit(0);
         }
 
+        // Set stderr to redirect to stdout
+        // At the moment RMG's errors and warnings need to be placed in the
+        // context of when they occur, so this is necessary
+        System.setErr(System.out);
+
         // Print an initialization timestamp
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         info("RMG execution initiated at " + sdf.format(Calendar.getInstance().getTime()));
