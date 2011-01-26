@@ -4000,7 +4000,7 @@ public class ReactionModelGenerator {
 			int numberToBePruned = ((CoreEdgeReactionModel)reactionModel).getEdge().getSpeciesNumber() - maxEdgeSpeciesAfterPruning;
 			//System.out.println("PDep Pruning DEBUG:\nThe number of species in the model's edge, before pruning: " + ((CoreEdgeReactionModel)reactionModel).getEdge().getSpeciesNumber());
 			//System.out.println("PDep Pruning DEBUG:\nRMG thinks the following number of species" +
-					" needs to be pruned: " + numberToBePruned);
+			//		" needs to be pruned: " + numberToBePruned);
 			Iterator iter = JDAS.edgeID.keySet().iterator();//determine the maximum edge flux ratio for each edge species
 			while(iter.hasNext()){
 				Species spe = (Species)iter.next();
