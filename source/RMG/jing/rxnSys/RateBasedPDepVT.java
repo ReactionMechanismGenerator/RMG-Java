@@ -72,7 +72,7 @@ public class RateBasedPDepVT extends RateBasedVT {
         for (Iterator iter = cerm.getUnreactedSpeciesSet().iterator(); iter.hasNext(); ) {
 	    Species us = (Species) iter.next();
             if (leakFlux[us.getID()] > Rmin) {
-                System.out.println("Leak flux exceeded largest permitted flux for convergence (tolerance="+tolerance+"): " + Rmin);
+                Logger.info("Leak flux exceeded largest permitted flux for convergence (tolerance="+tolerance+"): " + Rmin);
                 return false;
             }
         }

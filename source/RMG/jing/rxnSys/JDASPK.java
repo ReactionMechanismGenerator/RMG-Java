@@ -439,7 +439,7 @@ public class JDASPK extends JDAS {
 		    }
 		    line=br.readLine();//read the time integrated to
 		    double finalTime = Double.parseDouble(line.trim());
-		    System.out.println("ODE solver integrated to "+ finalTime+" sec.");
+		    Logger.info(String.format("ODE solver integrated to %10.3e s", finalTime));
 			// read the "prunability index" (0 or 1) and maximum ratio (edge flux/Rchar) for each edge species; vector index + 1 corresponds to ID value in edgeID and edgeLeakID
 		    for (int i=0; i<(edgeID.size()+edgeLeakID.size()); i++){
 				line = br.readLine().trim(); //read the prunability index
@@ -447,7 +447,7 @@ public class JDASPK extends JDAS {
 				if (q == 1) {prunableSpecies[i]=true;}
 				else if (q == 0) {prunableSpecies[i] = false;}
 				else {
-					System.out.println("Misread solver output file - prunable species index should be 0 or 1, not "+q);
+					Logger.critical("Misread solver output file - prunable species index should be 0 or 1, not "+q);
 					System.exit(0);
 				}
 				line = br.readLine().trim();//read the max edge flux ratio
@@ -674,7 +674,7 @@ public class JDASPK extends JDAS {
                     LinkedHashMap speStatus = new LinkedHashMap();
                     double [] senStatus = new double[nParameter*nState];
 
-                    System.out.println("After ODE: from " + String.valueOf(beginT.time) + " SEC to " + String.valueOf(endT.time) + "SEC");
+                    Logger.info(String.format("After ODE: from %10.4e s to %10.4e s", beginT.time, endT.time));
                     speStatus = generateSpeciesStatus(p_reactionModel, y, yprime, nParameter);
                     senStatus = generateSensitivityStatus(p_reactionModel,y,yprime,nParameter);
                     SystemSnapshot sss = new SystemSnapshot(endT, speStatus, senStatus, p_beginStatus.getTemperature(), p_beginStatus.getPressure());

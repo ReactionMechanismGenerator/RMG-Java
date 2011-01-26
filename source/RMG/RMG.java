@@ -150,7 +150,7 @@ public class RMG {
             file.write(rs.returnReactionFlux() + "\n");
             long end = System.currentTimeMillis();
             double min = (end - tAtInitialization) / 1.0E3 / 60.0;
-            file.write("Running Time is: " + String.valueOf(min) + " minutes.");
+            file.write(String.format("Running time: %.3f min", + min));
 
         }
     }

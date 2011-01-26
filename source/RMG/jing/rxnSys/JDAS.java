@@ -318,7 +318,7 @@ public abstract class JDAS implements DAESolver {
         }
 
         LinkedHashMap speStatus = new LinkedHashMap();
-        System.out.println("Sp.#\tName         \tConcentration \tFlux");
+        Logger.info(String.format("%-8s%-16s %-16s       %-16s", "Sp. #", "Name", "Concentration", "Flux"));
 
         for (Iterator iter = p_reactionModel.getSpecies(); iter.hasNext();) {
             Species spe = (Species) iter.next();
@@ -328,7 +328,7 @@ public abstract class JDAS implements DAESolver {
             }
             double conc = p_y[id - 1];
             double flux = p_yprime[id - 1];
-            System.out.println(String.format("%1$4d\t%2$-13s\t%3$ 6E \t%4$ 6E", spe.getID(), spe.getFullName(), conc, flux));
+            Logger.info(String.format("%1$4d    %2$-13s      %3$ 10.4E   %4$ 10.4E", spe.getID(), spe.getFullName(), conc, flux));
 
             if (conc < 0) {
                 double aTol = ReactionModelGenerator.getAtol();

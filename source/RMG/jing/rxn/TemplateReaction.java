@@ -36,6 +36,7 @@ import jing.chemUtil.Node;
 
 import java.util.*;
 import jing.param.*;
+import jing.rxnSys.Logger;
 import jing.rxnSys.SystemSnapshot;
 
 //## package jing::rxn 
@@ -360,7 +361,7 @@ public class TemplateReaction extends Reaction {
 			// Create a new reaction.
 			reaction = new TemplateReaction(p_structureSp, p_kinetics, p_template);
 			// DEBUG: Tell console I made this reaction
-			System.out.println("Created new reaction: " + reaction.toString());
+			Logger.info("Created new " + p_template.getName() + " reaction: " + reaction.toString());
 
 			if (reaction.isBackward()) {
 				

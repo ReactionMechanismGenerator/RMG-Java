@@ -1317,6 +1317,9 @@ public class ReactionModelGenerator {
 		}
         
         initializeCoreEdgeReactionModel();//10/4/07 gmagoon: moved before initializeReactionSystem; 11/3-4/07 gmagoon: probably reverted on or before 10/10/07
+
+        printModelSize();
+        
         //10/24/07 gmagoon: changed to use reactionSystemList
 		//       LinkedList initList = new LinkedList();//10/25/07 gmagoon: moved these variables to apply to entire class
 		//       LinkedList beginList = new LinkedList();
@@ -1420,8 +1423,6 @@ public class ReactionModelGenerator {
         writeDictionary(getReactionModel());
         //System.exit(0);
 		
-		printModelSize();
-		
 		StringBuilder print_info = Global.diagnosticInfo;
 		print_info.append("\nMolecule \t Flux\t\tTime\t \t\t \t Core \t \t Edge \t \t memory\n");
 		
@@ -1470,6 +1471,7 @@ public class ReactionModelGenerator {
 				// ENLARGE THE MODEL!!! (this is where the good stuff happens)
 				enlargeReactionModel();
 				double totalEnlarger = (System.currentTimeMillis() - pt)/1000/60;
+				printModelSize();
 				
 				//PDepNetwork.completeNetwork(reactionSystem.reactionModel.getSpeciesSet());
 				//10/24/07 gmagoon: changed to use reactionSystemList
@@ -1576,23 +1578,24 @@ public class ReactionModelGenerator {
 				}
 				
 				//10/24/07 gmagoon: changed to use reactionSystemList
+                Logger.info("");
 				for (Integer i = 0; i<reactionSystemList.size();i++) {
 					ReactionSystem rs = (ReactionSystem)reactionSystemList.get(i);
-					System.out.println("For reaction system: "+(i+1)+" out of "+reactionSystemList.size());
-					System.out.println("At this time: " + ((ReactionTime)endList.get(i)).toString());
+					Logger.info(String.format("For reaction system: %d out of %d", i+1, reactionSystemList.size()));
+					Logger.info(String.format("At this time: %10.4e s", ((ReactionTime)endList.get(i)).getTime()));
 					Species spe = SpeciesDictionary.getSpeciesFromID(getLimitingReactantID());
 					double conv = rs.getPresentConversion(spe);
-					System.out.print("Conversion of " + spe.getFullName()  + " is:");
-					System.out.println(conv);
+					Logger.info(String.format("Conversion of %s is: %-10.4g", spe.getFullName(), conv));
 				}
-				
-			    System.out.println("Running Time is: " + String.valueOf((System.currentTimeMillis()-tAtInitialization)/1000/60) + " minutes.");
-				printModelSize();
+				Logger.info("");
+
+			    Logger.info(String.format("Running time: %.3f min", + (System.currentTimeMillis()-tAtInitialization)/1000./60.));
 				printMemoryUsed();
 
 				startTime = System.currentTimeMillis();
 				double mU = Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory();
-				double gc = (System.currentTimeMillis()-startTime)/1000/60;
+				Logger.info("");
+                double gc = (System.currentTimeMillis()-startTime)/1000./60.;
 				
 				startTime = System.currentTimeMillis();
 				//10/24/07 gmagoon: updating to use reactionSystemList
@@ -1690,55 +1693,21 @@ public class ReactionModelGenerator {
 				terminatedList.set(i,terminated);
 				if(!terminated){
 					allTerminated = false;
-					System.out.println("Reaction System "+(i+1)+" has not reached its termination criterion");
+					Logger.error("Reaction System "+(i+1)+" has not reached its termination criterion");
 					if (rs.isModelValid()&& runKillableToPreventInfiniteLoop(intermediateSteps, iterationNumber)) {
-						System.out.println("although it seems to be valid (complete), so it was not interrupted for being invalid.");
-						System.out.println("This probably means there was an error with the ODE solver, and we risk entering an endless loop.");
-						System.out.println("Stopping.");
+						Logger.info("although it seems to be valid (complete), so it was not interrupted for being invalid.");
+						Logger.info("This probably means there was an error with the ODE solver, and we risk entering an endless loop.");
+						Logger.info("Stopping.");
 						throw new Error();
 					}
 				}
 			}
-			//     //10/24/07 gmagoon: changed to use reactionSystemList
-			//     allTerminated = true;
-			//     allValid = true;
-			//  	for (Integer i = 0; i<reactionSystemList.size();i++) {
-            //        ReactionSystem rs = (ReactionSystem)reactionSystemList.get(i);
-            //        boolean terminated = rs.isReactionTerminated();
-            //        terminatedList.set(i,terminated);
-            //        if(!terminated)
-            //            allTerminated = false;
-            //        boolean valid = rs.isModelValid();     
-            //        validList.set(i,valid);
-            //        if(!valid)
-            //            allValid = false;
-            //    }
-            //    //terminated = reactionSystem.isReactionTerminated();
-            //    //valid = reactionSystem.isModelValid();
 			
 			//10/24/07 gmagoon: changed to use reactionSystemList, allValid	
         	if (allValid) {
-				//10/24/07 gmagoon: changed to use reactionSystemList
-				for (Integer i = 0; i<reactionSystemList.size();i++) {
-					ReactionSystem rs = (ReactionSystem)reactionSystemList.get(i);
-					System.out.println("For reaction system: "+(i+1)+" out of "+reactionSystemList.size());
-					System.out.println("At this reaction time: " + ((ReactionTime)endList.get(i)).toString());
-					Species spe = SpeciesDictionary.getSpeciesFromID(getLimitingReactantID());
-					double conv = rs.getPresentConversion(spe);
-					System.out.print("Conversion of " + spe.getFullName()  + " is:");
-					System.out.println(conv);
-				}
-        		//System.out.println("At this time: " + end.toString());
-        		//Species spe = SpeciesDictionary.getSpeciesFromID(1);
-        		//double conv = reactionSystem.getPresentConversion(spe);
-        		//System.out.print("current conversion = ");
-        		//System.out.println(conv);
-				
-        		printMemoryUsed();
-				
-				printModelSize();
-				
-        	}
+                Logger.info("Model generation completed!");
+                printModelSize();
+            }
 			vTester = vTester + (System.currentTimeMillis()-startTime)/1000/60;//5/6/08 gmagoon: for case where intermediateSteps = false, this will use startTime declared just before intermediateSteps loop, and will only include termination testing, but no validity testing
         }
         
@@ -1796,8 +1765,6 @@ public class ReactionModelGenerator {
         }
 		
         writeDictionary(getReactionModel());
-        System.out.println("Model Generation Completed");
-        return;
     }
     
     //9/1/09 gmagoon: this function writes a "dictionary" with Chemkin name, RMG name, (modified) InChI, and InChIKey
@@ -2184,15 +2151,12 @@ public class ReactionModelGenerator {
 	public static void printMemoryUsed(){
 		garbageCollect();
 		Runtime rT = Runtime.getRuntime();
-		long uM, tM, fM;
-		tM = rT.totalMemory();
-		fM = rT.freeMemory();
+		double uM, tM, fM;
+		tM = rT.totalMemory() / 1.0e6;
+		fM = rT.freeMemory() / 1.0e6;
 		uM = tM - fM;
-		System.out.println("After garbage collection:");
-		System.out.print("Memory used: ");
-		System.out.println(uM);
-		System.out.print("Free memory: ");
-		System.out.println(fM);
+		Logger.debug("After garbage collection:");
+        Logger.info(String.format("Memory used: %.2f MB / %.2f MB (%.2f%%)", uM, tM, uM / tM * 100.));
 	}
 	
 	private HashSet readIncludeSpecies(String fileName) {
@@ -3957,22 +3921,7 @@ public class ReactionModelGenerator {
     //9/24/07 gmagoon: moved from ReactionSystem.java
     public void initializeCoreEdgeReactionModel() {
 		Logger.info("Initializing core-edge reaction model");
-		// setSpeciesSeed(new LinkedHashSet());//10/4/07 gmagoon:moved from initializeReactionSystem; later moved to modelGeneration()
-        //#[ operation initializeCoreEdgeReactionModel()
-		//        if (hasPrimaryKineticLibrary()) initializeCoreEdgeModelWithPKL();
-		//        else initializeCoreEdgeModelWithoutPKL();
-		/*
-		 * MRH 12-Jun-2009
-		 * 
-		 * I've lumped the initializeCoreEdgeModel w/ and w/o a seed mechanism
-		 * 	(which used to be the PRL) into one function.  Before, RMG would
-		 * 	complete one iteration (construct the edge species/rxns) before adding
-		 * 	the seed mechanism to the rxn, thereby possibly estimating kinetic
-		 * 	parameters for a rxn that exists in a seed mechanism
-		 */
 		initializeCoreEdgeModel();
-		
-        //#]
     }
     
     //9/24/07 gmagoon: copied from ReactionSystem.java
@@ -3991,9 +3940,10 @@ public class ReactionModelGenerator {
     public void enlargeReactionModel() {
         //#[ operation enlargeReactionModel()
         if (reactionModelEnlarger == null) throw new NullPointerException("ReactionModelEnlarger");
-		System.out.println("\nEnlarging reaction model");
+        Logger.info("");
+        Logger.info("Enlarging reaction model");
         reactionModelEnlarger.enlargeReactionModel(reactionSystemList, reactionModel, validList);
-		
+
         return;
         //#]
     }
@@ -5288,8 +5238,9 @@ public class ReactionModelGenerator {
 			numberOfEdgeReactions += PDepNetwork.getNumEdgeReactions(cerm);
 		}
 
-		System.out.println("The model core has " + Integer.toString(numberOfCoreReactions) + " reactions and "+ Integer.toString(numberOfCoreSpecies) + " species.");
-		System.out.println("The model edge has " + Integer.toString(numberOfEdgeReactions) + " reactions and "+ Integer.toString(numberOfEdgeSpecies) + " species.");
+		Logger.info("");
+        Logger.info("The model core has " + Integer.toString(numberOfCoreReactions) + " reactions and "+ Integer.toString(numberOfCoreSpecies) + " species.");
+		Logger.info("The model edge has " + Integer.toString(numberOfEdgeReactions) + " reactions and "+ Integer.toString(numberOfEdgeSpecies) + " species.");
 
 	}
 	

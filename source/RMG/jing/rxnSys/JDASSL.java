@@ -230,7 +230,7 @@ public class JDASSL extends JDAS {
 				System.out.println("The idid from DASSL was "+idid );
 				throw new DynamicSimulatorException("DASSL");
         	}
-            System.out.println("After ODE: from " + String.valueOf(tBegin) + " SEC to " + String.valueOf(endTime) + "SEC");
+            Logger.info(String.format("After ODE: from %10.4e s to %10.4e s", tBegin, endTime));
 			Global.solvertime = Global.solvertime + (System.currentTimeMillis() - startTime)/1000/60;
 			startTime = System.currentTimeMillis();
         	speStatus = generateSpeciesStatus(p_reactionModel, y, yprime, 0);
@@ -421,14 +421,14 @@ public class JDASSL extends JDAS {
 		    line=br.readLine();//read the time integrated to
 		    double finalTime = Double.parseDouble(line.trim());
 		    // read the "prunability index" (0 or 1) and maximum ratio (edge flux/Rchar) for each edge species; vector index + 1 corresponds to ID value in edgeID and edgeLeakID
-		    System.out.println("ODE solver integrated to "+ finalTime+" sec.");
-		    for (int i=0; i<(edgeID.size()+edgeLeakID.size()); i++){
+		    Logger.info(String.format("ODE solver integrated to %9.3e s", finalTime));
+			for (int i=0; i<(edgeID.size()+edgeLeakID.size()); i++){
 				line = br.readLine().trim(); //read the prunability index
 				int q = Integer.parseInt(line); //q should be 1 or 0
 				if (q == 1) { prunableSpecies[i] = true; } 
 				else if (q == 0) { prunableSpecies[i] = false; }
 				else {
-					System.out.println("Misread solver output file - prunable species index should be 0 or 1, not "+q);
+					Logger.critical("Misread solver output file - prunable species index should be 0 or 1, not "+q);
 					System.exit(0);
 				}
 				line = br.readLine().trim();//read the max edge flux ratio

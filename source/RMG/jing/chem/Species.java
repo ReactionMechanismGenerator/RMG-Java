@@ -881,7 +881,7 @@ public class Species {
         	dictionary.putSpecies(spe, true);
         	
 			// DEBUG: Tell console I made this species
-			Logger.verbose("Created new species: " + spe.getFullName() );
+			Logger.info("Created new species: " + spe.getFullName() );
 
         }
         else {
@@ -994,7 +994,7 @@ public class Species {
         p_chemGraph.setSpecies(spe);
         
      // DEBUG: Tell console I made this species
-		Logger.verbose("Created new species: " + spe.getFullName() );
+		Logger.info("Created new species: " + spe.getFullName() );
         
         return spe;
     }

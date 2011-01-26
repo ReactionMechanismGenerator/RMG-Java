@@ -1496,7 +1496,8 @@ public String printLowerBoundConcentrations(LinkedList p_speciesList) {
 
 
         if (!beginStatus.getTime().equals(p_beginTime)) throw new InvalidBeginStatusException();
-		System.out.println("Solving reaction system...");
+		Logger.info("");
+        Logger.info("Solving reaction system...");
         SystemSnapshot present = getDynamicSimulator().solve(p_initialization, getReactionModel(), p_reactionChanged, beginStatus, p_beginTime, p_endTime,t,p, p_conditionChanged, finishController.terminationTester, iterationNum, nonpdep_from_seed);
 
         appendUnreactedSpeciesStatus(present, t);
@@ -1522,7 +1523,8 @@ public String printLowerBoundConcentrations(LinkedList p_speciesList) {
 
 
         if (!beginStatus.getTime().equals(p_beginTime)) throw new InvalidBeginStatusException();
-		System.out.println("Solving reaction system...");
+		Logger.info("");
+        Logger.info("Solving reaction system...");
         LinkedList sS = ((JDASPK)getDynamicSimulator()).solveSEN(p_initialization, getReactionModel(), p_reactionChanged, beginStatus, p_beginTime, p_endTime,t,p, p_conditionChanged, finishController.terminationTester, nonpdep_from_seed);
 
         for (int i=0; i< sS.size(); i++){
