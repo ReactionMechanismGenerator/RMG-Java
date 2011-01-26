@@ -395,9 +395,9 @@ public class PDepReaction extends Reaction {
 			if (conc < 0) {
 				double aTol = ReactionModelGenerator.getAtol();
 				//if (Math.abs(conc) < aTol) conc = 0;
-				//else throw new NegativeConcentrationException(spe.getName() + ": " + String.valueOf(conc));
+				//else throw new NegativeConcentrationException(spe.getFullName() + ": " + String.valueOf(conc));
 				if (conc < -100.0 * aTol)
-					throw new NegativeConcentrationException("Species " + spe.getName() + " has negative concentration: " + String.valueOf(conc));
+					throw new NegativeConcentrationException("Species " + spe.getFullName() + " has negative concentration: " + String.valueOf(conc));
 			}
 			forwardFlux *= conc;
 		}
@@ -424,9 +424,9 @@ public class PDepReaction extends Reaction {
                 if (conc < 0) {
                     double aTol = ReactionModelGenerator.getAtol();
                     //if (Math.abs(conc) < aTol) conc = 0;
-                    //else throw new NegativeConcentrationException(spe.getName() + ": " + String.valueOf(conc));
+                    //else throw new NegativeConcentrationException(spe.getFullName() + ": " + String.valueOf(conc));
                     if (conc < -100.0 * aTol)
-                        throw new NegativeConcentrationException("Species " + spe.getName() + " has negative concentration: " + String.valueOf(conc));
+                        throw new NegativeConcentrationException("Species " + spe.getFullName() + " has negative concentration: " + String.valueOf(conc));
                 }
                 reverseFlux *= conc;
             }

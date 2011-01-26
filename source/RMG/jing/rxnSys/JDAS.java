@@ -320,18 +320,18 @@ public abstract class JDAS implements DAESolver {
             Species spe = (Species) iter.next();
             int id = getRealID(spe);
             if (id > p_y.length) {
-                throw new UnknownReactedSpeciesException(spe.getName());
+                throw new UnknownReactedSpeciesException(spe.getFullName());
             }
             double conc = p_y[id - 1];
             double flux = p_yprime[id - 1];
-            System.out.println(String.format("%1$4d\t%2$-13s\t%3$ 6E \t%4$ 6E", spe.getID(), spe.getName(), conc, flux));
+            System.out.println(String.format("%1$4d\t%2$-13s\t%3$ 6E \t%4$ 6E", spe.getID(), spe.getFullName(), conc, flux));
 
             if (conc < 0) {
                 double aTol = ReactionModelGenerator.getAtol();
                 //if (Math.abs(conc) < aTol) conc = 0;
-                //else throw new NegativeConcentrationException("Species " + spe.getName() + " has negative conc: " + String.valueOf(conc));
+                //else throw new NegativeConcentrationException("Species " + spe.getFullName() + " has negative conc: " + String.valueOf(conc));
                 if (conc < -100.0 * aTol) {
-                    throw new NegativeConcentrationException("Species " + spe.getName() + " has negative concentration: " + String.valueOf(conc));
+                    throw new NegativeConcentrationException("Species " + spe.getFullName() + " has negative concentration: " + String.valueOf(conc));
                 }
             }
             SpeciesStatus ss = new SpeciesStatus(spe, 1, conc, flux);
@@ -575,7 +575,7 @@ public abstract class JDAS implements DAESolver {
 
                 Species spe = ss.getSpecies();
                 int id = getRealID(spe);
-                //System.out.println(String.valueOf(spe.getID()) + '\t' + spe.getName() + '\t' + String.valueOf(conc) + '\t' + String.valueOf(flux));
+                //System.out.println(String.valueOf(spe.getID()) + '\t' + spe.getFullName() + '\t' + String.valueOf(conc) + '\t' + String.valueOf(flux));
 
                 y[id - 1] = conc;
                 yprime[id - 1] = flux;

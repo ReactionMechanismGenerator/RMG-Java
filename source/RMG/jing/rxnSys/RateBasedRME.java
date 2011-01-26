@@ -122,7 +122,7 @@ public class RateBasedRME implements ReactionModelEnlarger {
 					
 					//Global.diagnosticInfo.append(next.getChemkinName() + "\t" + maxflux + "\t" + ((RateBasedVT) ((ReactionSystem) p_reactionSystemList.get(i)).finishController.validityTester).Rmin + "\t" + findSpeciesTime + "\t");
 					System.out.print("\nAdd a new reacted Species:");
-					System.out.println(newCoreSpecies.getName());
+					System.out.println(newCoreSpecies.getFullName());
 					Temperature temp = new Temperature(298, "K");
 					double H = newCoreSpecies.calculateH(temp);
 					double S = newCoreSpecies.calculateS(temp);
@@ -150,7 +150,7 @@ public class RateBasedRME implements ReactionModelEnlarger {
 					ReactionSystem rxnSystem = (ReactionSystem) p_reactionSystemList.get(i);
 					// Check Reaction Library
 				if(rxnSystem.getLibraryReactionGenerator().getReactionLibrary() != null){
-					System.out.println("Checking Reaction Library "+rxnSystem.getLibraryReactionGenerator().getReactionLibrary().getName()+" for reactions of "+newCoreSpecies.getName()+" with the core.");
+					System.out.println("Checking Reaction Library "+rxnSystem.getLibraryReactionGenerator().getReactionLibrary().getName()+" for reactions of "+newCoreSpecies.getFullName()+" with the core.");
 					// At this point the core (cerm.getReactedSpeciesSet()) already contains newCoreSpecies, so we can just react the entire core.
 					LinkedHashSet newReactionSet = rxnSystem.getLibraryReactionGenerator().react(cerm.getReactedSpeciesSet());
 					
@@ -300,9 +300,9 @@ public class RateBasedRME implements ReactionModelEnlarger {
 							if (conc<0) {
 								double aTol = ReactionModelGenerator.getAtol();
 								//if (Math.abs(conc) < aTol) conc = 0;
-								//else throw new NegativeConcentrationException(spe.getName() + ": " + String.valueOf(conc));
+								//else throw new NegativeConcentrationException(spe.getFullName() + ": " + String.valueOf(conc));
 								if (conc < -100.0 * aTol)
-									throw new NegativeConcentrationException("Species " + spe.getName() + " has negative concentration: " + String.valueOf(conc));
+									throw new NegativeConcentrationException("Species " + spe.getFullName() + " has negative concentration: " + String.valueOf(conc));
 							}
 							flux *= conc;
 						}
@@ -323,7 +323,7 @@ public class RateBasedRME implements ReactionModelEnlarger {
 		
         System.out.print("Time: ");
         System.out.println(p_presentStatus.getTime());
-        System.out.println("Unreacted species " + maxSpecies.getName() + " has highest flux: " + String.valueOf(maxFlux));
+        System.out.println("Unreacted species " + maxSpecies.getFullName() + " has highest flux: " + String.valueOf(maxFlux));
 		System.out.println("The total number of unreacted reactions with this species is "+reactionWithSpecies+". Significant ones are:");
 		Iterator reactionIter = significantReactions.keySet().iterator();
 		while (reactionIter.hasNext()){

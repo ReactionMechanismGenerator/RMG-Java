@@ -244,7 +244,7 @@ public class ReactionSystem {
 //                                                    if (p_systemSnapshot.getSpeciesStatus(spe) != null)
 //                                                             conc = (p_systemSnapshot.getSpeciesStatus(spe)).getConcentration();
 //                                            if (conc<0)
-//                                                    throw new NegativeConcentrationException(spe.getName() + ": " + String.valueOf(conc));
+//                                                    throw new NegativeConcentrationException(spe.getFullName() + ": " + String.valueOf(conc));
 //                                        flux *= conc;
 //
 //                                    }
@@ -281,9 +281,9 @@ public class ReactionSystem {
 					if (conc<0) {
 						double aTol = ReactionModelGenerator.getAtol();
 						//if (Math.abs(conc) < aTol) conc = 0;
-						//else throw new NegativeConcentrationException(spe.getName() + ": " + String.valueOf(conc));
+						//else throw new NegativeConcentrationException(spe.getFullName() + ": " + String.valueOf(conc));
 						if (conc < -100.0 * aTol)
-							throw new NegativeConcentrationException("Species " + spe.getName() + " has negative concentration: " + String.valueOf(conc));
+							throw new NegativeConcentrationException("Species " + spe.getFullName() + " has negative concentration: " + String.valueOf(conc));
 					}
 					flux *= conc;
 
@@ -392,7 +392,7 @@ public class ReactionSystem {
         	}
         }
 
-        System.out.println("The main pathway to generate " + p_species.getName() + " is ");
+        System.out.println("The main pathway to generate " + p_species.getFullName() + " is ");
         System.out.println(maxReaction);
         System.out.println("The max flux is " + String.valueOf(maxFlux));
 
@@ -584,7 +584,7 @@ public class ReactionSystem {
         double maxFlux = 0;
         Reaction maxReaction = null;
 
-        System.out.println("the consumption paths for " + p_species.getName());
+        System.out.println("the consumption paths for " + p_species.getFullName());
         for (Iterator iter = p_reactionList.iterator(); iter.hasNext(); ) {
         	Reaction rxn = (Reaction)iter.next();
         	if (rxn.containsAsReactant(p_species)) {
@@ -614,7 +614,7 @@ public class ReactionSystem {
 
         	}
         }
-        System.out.println("the formationtion paths for " + p_species.getName());
+        System.out.println("the formationtion paths for " + p_species.getFullName());
         for (Iterator iter = p_reactionList.iterator(); iter.hasNext(); ) {
         	Reaction rxn = (Reaction)iter.next();
         	if (rxn.containsAsProduct(p_species)) {

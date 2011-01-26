@@ -183,8 +183,8 @@ public class RateBasedPDepRME implements ReactionModelEnlarger {
 			System.out.print("Time: ");
 			System.out.println(ps.getTime());
 			System.out.println("Rmin: " + String.valueOf(Rmin));
-			System.out.println("Unreacted species " + maxSpecies.getName() + " has highest flux: " + String.valueOf(maxFlux));
-			System.out.println("Unreacted species " + maxLeakSpecies.getName() + " has highest leak flux: " + String.valueOf(maxLeakFlux));
+			System.out.println("Unreacted species " + maxSpecies.getFullName() + " has highest flux: " + String.valueOf(maxFlux));
+			System.out.println("Unreacted species " + maxLeakSpecies.getFullName() + " has highest leak flux: " + String.valueOf(maxLeakFlux));
 
             
 			if (maxFlux > maxLeakFlux && maxFlux > Rmin) {
@@ -298,7 +298,7 @@ public class RateBasedPDepRME implements ReactionModelEnlarger {
             LinkedHashSet newReactionSet_nodup;
             if(rxnSystem.getLibraryReactionGenerator().getReactionLibrary() != null){
 
-                System.out.println("Checking Reaction Library "+rxnSystem.getLibraryReactionGenerator().getReactionLibrary().getName()+" for reactions of "+maxSpecies.getName()+" with the core.");
+                System.out.println("Checking Reaction Library "+rxnSystem.getLibraryReactionGenerator().getReactionLibrary().getName()+" for reactions of "+maxSpecies.getFullName()+" with the core.");
                 // At this point the core (cerm.getReactedSpeciesSet()) already contains maxSpecies, so we can just react the entire core.
                 LinkedHashSet newReactionSet = rxnSystem.getLibraryReactionGenerator().react(cerm.getReactedSpeciesSet());
                 //LinkedHashSet newReactionSet = rxnSystem.getLibraryReactionGenerator().react(cerm.getReactedSpeciesSet(),maxSpecies,"All");

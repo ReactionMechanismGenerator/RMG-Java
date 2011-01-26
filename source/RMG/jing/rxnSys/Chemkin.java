@@ -173,14 +173,14 @@ public  Chemkin() {
       	double conc = ((Double)p_speciesConc.get(i)).doubleValue();
       	double flux = ((Double)p_speciesFlux.get(i)).doubleValue();
 
-      	System.out.println(String.valueOf(spe.getID()) + '\t' + spe.getName() + '\t' + String.valueOf(conc) + '\t' + String.valueOf(flux));
+      	System.out.println(String.valueOf(spe.getID()) + '\t' + spe.getFullName() + '\t' + String.valueOf(conc) + '\t' + String.valueOf(flux));
 
       	if (conc < 0) {
 			double aTol = ReactionModelGenerator.getAtol();
 			//if (Math.abs(conc) < aTol) conc = 0;
-      		//else throw new NegativeConcentrationException("species " + spe.getName() + " has negative conc: " + String.valueOf(conc));
+      		//else throw new NegativeConcentrationException("species " + spe.getFullName() + " has negative conc: " + String.valueOf(conc));
 			if (conc < -100.0 * aTol) 
-				throw new NegativeConcentrationException("Species " + spe.getName() + " has negative concentration: " + String.valueOf(conc));
+				throw new NegativeConcentrationException("Species " + spe.getFullName() + " has negative concentration: " + String.valueOf(conc));
       	}
 
       	SpeciesStatus ss = new SpeciesStatus(spe, 1, conc, flux);
@@ -660,7 +660,7 @@ public  Chemkin() {
       for (Iterator iter = cerm.getSpecies(); iter.hasNext(); ) {
       	Species spe = (Species)iter.next();
       	if (spe.getChemkinName().startsWith("SPC"))
-      		result.append("\t" + spe.getChemkinName() + "\t!" + spe.getName() + "\n");
+      		result.append("\t" + spe.getChemkinName() + "\t! " + spe.getFullName() + "\n");
       	else
       		result.append('\t' + spe.getChemkinName() + '\n');
       }

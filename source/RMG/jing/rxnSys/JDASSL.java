@@ -471,7 +471,7 @@ public class JDASSL extends JDAS {
 					spe = (Species)iter.next();
 					if((Integer)(IDTranslator.get(spe))==i+1) break;
 				}
-				String name = spe.getName();
+				String name = spe.getFullName();
 				fw.write(name + "\t");
 			}
 			fw.write("\n");

@@ -324,7 +324,7 @@ public class CoreEdgeReactionModel implements ReactionModel {
         //#[ operation addUnreactedSpecies(Species) 
         if (containsAsReactedSpecies(p_species)) {
         	// this is not a unreacted species
-        	System.out.println("This is a reacted species " + p_species.getName());
+        	System.out.println("This is a reacted species " + p_species.getFullName());
         	System.out.println("Can't add it into unreacted species set!");
         }
         else {
@@ -341,7 +341,7 @@ public class CoreEdgeReactionModel implements ReactionModel {
 			Species species = (Species)speciesIter.next();
 			if (containsAsReactedSpecies(species)) {
 	        	// this is not a unreacted species
-	        	System.out.println("This is a reacted species " + species.getName());
+	        	System.out.println("This is a reacted species " + species.getFullName());
 	        	System.out.println("Can't add it into unreacted species set!");
 	        }
 	        else {
@@ -797,7 +797,7 @@ public class CoreEdgeReactionModel implements ReactionModel {
         	getReactedSpeciesSet().add(p_species);
         	return;
         }
-        else throw new InvalidCoreEdgeRelationException(p_species.getName());
+        else throw new InvalidCoreEdgeRelationException(p_species.getFullName());
         //#]
     }
     
@@ -839,7 +839,7 @@ public class CoreEdgeReactionModel implements ReactionModel {
         System.out.println("SpeciesID\tNamw\tH298\tS298\tCp300\tCp400\tCp500\tCp600\tCp800\tCp1000\tCp1500");
         for (int i=0; i<sortedSpeList.size(); i++) {
         	Species spe = (Species)sortedSpeList.get(i);
-        	System.out.println(String.valueOf(spe.getID()) + '\t' + spe.getName() + '\t' + spe.getThermoData().toString());
+        	System.out.println(String.valueOf(spe.getID()) + '\t' + spe.getFullName() + '\t' + spe.getThermoData().toString());
         }*/
         
         LinkedList nonPDepList = new LinkedList();
@@ -926,7 +926,7 @@ public class CoreEdgeReactionModel implements ReactionModel {
         System.out.println("SpeciesID\tNamw\tH298\tS298\tCp300\tCp400\tCp500\tCp600\tCp800\tCp1000\tCp1500");
         for (int i=0; i<sortedSpeList.size(); i++) {
         	Species spe = (Species)sortedSpeList.get(i);
-        	System.out.println(String.valueOf(spe.getID()) + '\t' + spe.getName() + '\t' + spe.getThermoData().toString());
+        	System.out.println(String.valueOf(spe.getID()) + '\t' + spe.getFullName() + '\t' + spe.getThermoData().toString());
         }*/
         
         LinkedList nonPDepList = new LinkedList();

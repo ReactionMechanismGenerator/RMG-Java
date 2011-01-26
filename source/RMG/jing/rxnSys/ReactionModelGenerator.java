@@ -1561,7 +1561,7 @@ public class ReactionModelGenerator {
 					System.out.println("At this time: " + ((ReactionTime)endList.get(i)).toString());
 					Species spe = SpeciesDictionary.getSpeciesFromID(getLimitingReactantID());
 					double conv = rs.getPresentConversion(spe);
-					System.out.print("Conversion of " + spe.getName()  + " is:");
+					System.out.print("Conversion of " + spe.getFullName()  + " is:");
 					System.out.println(conv);
 				}
 				
@@ -1702,7 +1702,7 @@ public class ReactionModelGenerator {
 					System.out.println("At this reaction time: " + ((ReactionTime)endList.get(i)).toString());
 					Species spe = SpeciesDictionary.getSpeciesFromID(getLimitingReactantID());
 					double conv = rs.getPresentConversion(spe);
-					System.out.print("Conversion of " + spe.getName()  + " is:");
+					System.out.print("Conversion of " + spe.getFullName()  + " is:");
 					System.out.println(conv);
 				}
         		//System.out.println("At this time: " + end.toString());
