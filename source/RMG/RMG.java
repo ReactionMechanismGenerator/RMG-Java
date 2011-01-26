@@ -50,74 +50,82 @@ public class RMG {
 		// Initialize the logger
         Logger.initialize();
         
-        long tAtInitialization = System.currentTimeMillis();
-		Global.tAtInitialization = tAtInitialization;
+        try {
+
+            long tAtInitialization = System.currentTimeMillis();
+            Global.tAtInitialization = tAtInitialization;
 		
-		initializeSystemProperties(args[0]);
-		ReactionModelGenerator rmg = new ReactionModelGenerator();
-        
-		// Generate the model!
-		rmg.modelGeneration();
-        
-		CoreEdgeReactionModel cerm = (CoreEdgeReactionModel)rmg.getReactionModel();
-			
-	//rs.reduceModel();
-	//Write the final model output in a separete Final_Model file
-	String finalOutput = "";
-	//finalOutput = finalOutput + "\n\\\\\\\\\\\\\\\\\\\\\\\\\\    Final Reaction Model Output    \\\\\\\\\\\\\\\\\\\\\\\\\\";
-    //finalOutput = finalOutput +"\n"+ cerm.returnPDepModel(rs.getPresentStatus())+"\n";
-	
-	//finalOutput = finalOutput + "Model Edge:";
-	//finalOutput = finalOutput + cerm.getEdge().getSpeciesNumber()+" ";
-	//finalOutput = finalOutput + " Species; ";
-	//finalOutput = finalOutput + cerm.getEdge().getReactionNumber()+" ";
-	//finalOutput = finalOutput + " Reactions.";
+		    initializeSystemProperties(args[0]);
+            ReactionModelGenerator rmg = new ReactionModelGenerator();
 
-       LinkedList speList = new LinkedList(rmg.getReactionModel().getSpeciesSet());
+            // Generate the model!
+            rmg.modelGeneration();
 
-       //11/2/07 gmagoon: changing to loop over all reaction systems
-       LinkedList rsList = rmg.getReactionSystemList();
-       for(int i=0; i < rsList.size(); i++){
-            ReactionSystem rs = (ReactionSystem)rsList.get(i);
-            finalOutput = finalOutput + "Reaction system " + (i+1) + " of " + rsList.size() + "\n";//11/4/07 gmagoon: fixing "off by one" error
-            finalOutput = finalOutput + "\\\\\\\\\\\\\\\\\\\\\\\\\\\\    Concentration Profile Output    \\\\\\\\\\\\\\\\\\\\\\\\\\";
-            finalOutput = finalOutput +"\n"+ rs.returnConcentrationProfile(speList)+"\n";
-            if (rmg.getError()){//svp
+            CoreEdgeReactionModel cerm = (CoreEdgeReactionModel)rmg.getReactionModel();
+
+            //rs.reduceModel();
+            //Write the final model output in a separete Final_Model file
+            String finalOutput = "";
+            //finalOutput = finalOutput + "\n\\\\\\\\\\\\\\\\\\\\\\\\\\    Final Reaction Model Output    \\\\\\\\\\\\\\\\\\\\\\\\\\";
+            //finalOutput = finalOutput +"\n"+ cerm.returnPDepModel(rs.getPresentStatus())+"\n";
+
+            //finalOutput = finalOutput + "Model Edge:";
+            //finalOutput = finalOutput + cerm.getEdge().getSpeciesNumber()+" ";
+            //finalOutput = finalOutput + " Species; ";
+            //finalOutput = finalOutput + cerm.getEdge().getReactionNumber()+" ";
+            //finalOutput = finalOutput + " Reactions.";
+
+            LinkedList speList = new LinkedList(rmg.getReactionModel().getSpeciesSet());
+
+            //11/2/07 gmagoon: changing to loop over all reaction systems
+            LinkedList rsList = rmg.getReactionSystemList();
+            for (int i = 0; i < rsList.size(); i++) {
+                ReactionSystem rs = (ReactionSystem) rsList.get(i);
+                finalOutput = finalOutput + "Reaction system " + (i + 1) + " of " + rsList.size() + "\n";//11/4/07 gmagoon: fixing "off by one" error
+                finalOutput = finalOutput + "\\\\\\\\\\\\\\\\\\\\\\\\\\\\    Concentration Profile Output    \\\\\\\\\\\\\\\\\\\\\\\\\\";
+                finalOutput = finalOutput + "\n" + rs.returnConcentrationProfile(speList) + "\n";
+                if (rmg.getError()) {//svp
                     finalOutput = finalOutput + "\n";
-                    finalOutput = finalOutput + "Upper Bounds:"+"\n";
-                    finalOutput = finalOutput + rs.printUpperBoundConcentrations(speList)+"\n";
-                    finalOutput = finalOutput + "Lower Bounds:"+"\n";
-                    finalOutput = finalOutput + rs.printLowerBoundConcentrations(speList)+"\n";
-        }
-            finalOutput = finalOutput + "\\\\\\\\\\\\\\\\\\\\\\\\\\\\    Mole Fraction Profile Output    \\\\\\\\\\\\\\\\\\\\\\\\\\";
-            finalOutput = finalOutput +"\n"+ rs.returnMoleFractionProfile(speList)+"\n";
-        finalOutput = finalOutput + rs.printOrderedReactions() + "\n";
-        if (rmg.getSensitivity()){//svp
-              LinkedList importantSpecies = rmg.getSpeciesList();
-                      finalOutput = finalOutput + "Sensitivity Analysis:";
-                      finalOutput = finalOutput + rs.printSensitivityCoefficients(speList, importantSpecies)+"\n";
-                      finalOutput = finalOutput + "\n";
-                      finalOutput = finalOutput + rs.printSensitivityToThermo(speList, importantSpecies)+"\n";
-                      finalOutput = finalOutput + "\n";
-                      finalOutput = finalOutput + rs.printMostUncertainReactions(speList, importantSpecies)+"\n\n";
+                    finalOutput = finalOutput + "Upper Bounds:" + "\n";
+                    finalOutput = finalOutput + rs.printUpperBoundConcentrations(speList) + "\n";
+                    finalOutput = finalOutput + "Lower Bounds:" + "\n";
+                    finalOutput = finalOutput + rs.printLowerBoundConcentrations(speList) + "\n";
+                }
+                finalOutput = finalOutput + "\\\\\\\\\\\\\\\\\\\\\\\\\\\\    Mole Fraction Profile Output    \\\\\\\\\\\\\\\\\\\\\\\\\\";
+                finalOutput = finalOutput + "\n" + rs.returnMoleFractionProfile(speList) + "\n";
+                finalOutput = finalOutput + rs.printOrderedReactions() + "\n";
+                if (rmg.getSensitivity()) {//svp
+                    LinkedList importantSpecies = rmg.getSpeciesList();
+                    finalOutput = finalOutput + "Sensitivity Analysis:";
+                    finalOutput = finalOutput + rs.printSensitivityCoefficients(speList, importantSpecies) + "\n";
+                    finalOutput = finalOutput + "\n";
+                    finalOutput = finalOutput + rs.printSensitivityToThermo(speList, importantSpecies) + "\n";
+                    finalOutput = finalOutput + "\n";
+                    finalOutput = finalOutput + rs.printMostUncertainReactions(speList, importantSpecies) + "\n\n";
 
-            }
-            finalOutput = finalOutput + rs.returnReactionFlux() + "\n";
-            long end = System.currentTimeMillis();
-            double min = (end-tAtInitialization)/1E3/60;
-            finalOutput = finalOutput +"Running Time is: " + String.valueOf(min) + " minutes.";
+                }
+                finalOutput = finalOutput + rs.returnReactionFlux() + "\n";
+                long end = System.currentTimeMillis();
+                double min = (end - tAtInitialization) / 1E3 / 60;
+                finalOutput = finalOutput + "Running Time is: " + String.valueOf(min) + " minutes.";
 
 
-            try{
+                try {
                     File finalmodel = new File("Final_Model.txt");
                     FileWriter fw = new FileWriter(finalmodel);
                     fw.write(finalOutput);
                     fw.close();
-            }
-            catch (IOException e) {
-            System.out.println("Could not write Final_Model.txt");
-            System.exit(0);
-            }
+                } catch (IOException e) {
+                    System.out.println("Could not write Final_Model.txt");
+                    System.exit(0);
+                }
+           }
+
+       }
+       catch (Exception e) {
+           // Any unhandled exception will land here
+           // We assume that these were critial errors
+           Logger.critical(e.getMessage());
        }
 
        // Finish the logger
