@@ -102,18 +102,8 @@ public class TemplateReactionGenerator implements ReactionGenerator {
         	}
         }
 		Runtime runTime = Runtime.getRuntime();
-		System.out.print("Memory used: ");
-		System.out.println(runTime.totalMemory());
-		System.out.print("Free memory: ");
-		System.out.println(runTime.freeMemory());
-		if (runTime.freeMemory() < runTime.totalMemory()/3) {
+		if (runTime.freeMemory() < runTime.totalMemory()/3)
 			runTime.gc();
-			System.out.println("After garbage collection:");
-			System.out.print("Memory used: ");
-			System.out.println(runTime.totalMemory());
-			System.out.print("Free memory: ");
-			System.out.println(runTime.freeMemory());
-		}
 		
         return pdepReactionSet;
     }
@@ -267,18 +257,8 @@ public class TemplateReactionGenerator implements ReactionGenerator {
 		//PDepNetwork.completeNetwork(p_species);
 		
 		Runtime runTime = Runtime.getRuntime();
-		System.out.print("Memory used: ");
-		System.out.println(runTime.totalMemory());
-		System.out.print("Free memory: ");
-		System.out.println(runTime.freeMemory());
-		if (runTime.freeMemory() < runTime.totalMemory()/3) {
+		if (runTime.freeMemory() < runTime.totalMemory()/3) 
 			runTime.gc();
-			System.out.println("After garbage collection:");
-			System.out.print("Memory used: ");
-			System.out.println(runTime.totalMemory());
-			System.out.print("Free memory: ");
-			System.out.println(runTime.freeMemory());
-		}
 		
 //		double t = (System.currentTimeMillis()-pT)/1000/60;
 //        Global.RT_reactTwoReactants += t;

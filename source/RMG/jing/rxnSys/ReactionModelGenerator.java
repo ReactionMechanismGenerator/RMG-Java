@@ -1567,9 +1567,10 @@ public class ReactionModelGenerator {
 				
 			    System.out.println("Running Time is: " + String.valueOf((System.currentTimeMillis()-tAtInitialization)/1000/60) + " minutes.");
 				printModelSize();
-				
+				printMemoryUsed();
+
 				startTime = System.currentTimeMillis();
-				double mU = memoryUsed();
+				double mU = Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory();
 				double gc = (System.currentTimeMillis()-startTime)/1000/60;
 				
 				startTime = System.currentTimeMillis();
@@ -1711,21 +1712,8 @@ public class ReactionModelGenerator {
         		//System.out.print("current conversion = ");
         		//System.out.println(conv);
 				
-        		Runtime runTime = Runtime.getRuntime();
-        		System.out.print("Memory used: ");
-        		System.out.println(runTime.totalMemory());
-        		System.out.print("Free memory: ");
-        		System.out.println(runTime.freeMemory());
+        		printMemoryUsed();
 				
-        		//runTime.gc();
-				/* if we're not calling runTime.gc() then don't bother printing this:
-				 System.out.println("After garbage collection:");
-				 System.out.print("Memory used: ");
-				 System.out.println(runTime.totalMemory());
-				 System.out.print("Free memory: ");
-				 System.out.println(runTime.freeMemory());
-				 */
-
 				printModelSize();
 				
         	}
@@ -2169,7 +2157,7 @@ public class ReactionModelGenerator {
 		System.gc();
 	}
 	
-	public static long memoryUsed(){
+	public static void printMemoryUsed(){
 		garbageCollect();
 		Runtime rT = Runtime.getRuntime();
 		long uM, tM, fM;
@@ -2178,11 +2166,9 @@ public class ReactionModelGenerator {
 		uM = tM - fM;
 		System.out.println("After garbage collection:");
 		System.out.print("Memory used: ");
-		System.out.println(tM);
+		System.out.println(uM);
 		System.out.print("Free memory: ");
 		System.out.println(fM);
-		
-		return uM;
 	}
 	
 	private HashSet readIncludeSpecies(String fileName) {
