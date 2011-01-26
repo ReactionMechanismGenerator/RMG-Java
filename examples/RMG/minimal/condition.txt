@@ -20,7 +20,7 @@ PressureModel: Constant (atm) 1
 
 InitialStatus:
 
-(1) C2H6 (mol/cm3) 1.0 
+C2H6 (mol/cm3) 1.0 
 1 C 0 {2,S}
 2 C 0 {1,S}
 
