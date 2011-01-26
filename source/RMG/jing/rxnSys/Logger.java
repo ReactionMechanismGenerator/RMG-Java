@@ -32,6 +32,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import jing.param.VersionInfo;
 
 /**
  * The Logger class encapsulating logging functionality for RMG.
@@ -217,6 +218,66 @@ public class Logger {
      */
     public static void debug(String message) {
         log(DEBUG, message);
+    }
+
+    /**
+     * Logs a header containing information about RMG.
+     */
+    public static void logHeader() {
+
+        String versionHash = VersionInfo.getVersionHash();
+
+        info("######################################################################");
+        info("#                                                                    #");
+        info("#                 RMG - Reaction Mechanism Generator                 #");
+        info("#                                                                    #");
+        info("#                    http://rmg.sourceforge.net/                     #");
+        info("#                                                                    #");
+        info("#  This java code was compiled by ant at:                            #");
+        info(String.format("#    %-60s    #", VersionInfo.getBuildDate()));
+        info("#  The git repository was on the branch:                             #");
+        info(String.format("#    %-60s    #", VersionInfo.getBranchName()));
+        info("#  And at the commit with the hash:                                  #");
+        info(String.format("#    %-60s    #", VersionInfo.getVersionHash()));
+        info("#                                                                    #");
+        info("#  For details visit:                                                #");
+        if (versionHash.startsWith("*")) // error messages should start with a *
+            info("#    http://github.com/GreenGroup/RMG-Java/                          #");
+        else {
+            info(String.format("#    http://github.com/GreenGroup/RMG-Java/tree/%-17s    #", versionHash.substring(0,6)));
+            info("#  To see changes since then visit:                                  #");
+            info(String.format("#    http://github.com/GreenGroup/RMG-Java/compare/%-6s...master   #", versionHash.substring(0,6)));
+        }
+        info("#                                                                    #");
+        info("#  Copyright (c) 2002-2010                                           #");
+        info("#  Prof. William H. Green and the RMG Team:                          #");
+        info("#    Joshua W. Allen, Dr. Robert W. Ashcraft, Dr. Gregory J. Beran,  #");
+        info("#    Dr. C. Franklin Goldsmith, Michael R. Harper, Amrit Jalan,      #");
+        info("#    Gregory R. Magoon, Dr. David M. Matheu, Shamel S. Merchant,     #");
+        info("#    Jeffrey D. Mo, Sarah Petway, Sumathy Raman, Dr. Sandeep Sharma, #");
+        info("#    Dr. Kevin M. Van Geem, Dr. Jing Song, Dr. John Wen,             #");
+        info("#    Dr. Richard H. West, Andrew Wong, Dr. Hsi-Wu Wong,              #");
+        info("#    Dr. Paul E. Yelvington, Dr. Joanna Yu                           #");
+        info("#                                                                    #");
+        info("#  The RMGVE graphical user interface to the RMG database            #");
+        info("#  was written by John Robotham.                                     #");
+        info("#                                                                    #");
+        info("#  This software package incorporates parts of the following         #");
+        info("#  software packages:                                                #");
+        info("#    DASSL    - Written by Prof. Linda Petzold et al                 #");
+        info("#      http://www.cs.ucsb.edu/~cse/software.html                     #");
+        info("#    CDK      - Written by Prof. Cristoph Steinbeck et al            #");
+        info("#      http://cdk.sourceforge.net/                                   #");
+        info("#    InChI    - Available from IUPAC                                 #");
+        info("#      http://www.iupac.org/inchi/                                   #");
+        info("#    cclib                                                           #");
+        info("#      http://cclib.sourceforge.net                                  #");
+        info("#                                                                    #");
+        info("#  For more information, including how to properly cite this         #");
+        info("#  program, see http://rmg.sourceforge.net/.                         #");
+        info("#                                                                    #");
+        info("######################################################################");
+        info("");
     }
 
 }

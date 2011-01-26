@@ -49,6 +49,9 @@ public class RMG {
 		
 		// Initialize the logger
         Logger.initialize();
+
+        // Log the RMG header
+        Logger.logHeader();
         
         try {
 
@@ -208,70 +211,6 @@ public class RMG {
                      System.out.println("undefined system property: jing.rxnSys.ReactionModelGenerator.conditionFile");
                      System.exit(0);
              }
-
-			 // Print out RMG header
-			System.out.println("");
-			System.out.println("######################################################################");
-			System.out.println("#                                                                    #");
-			System.out.println("#              RMG - Reaction Mechanism Generator                    #");
-			//System.out.println("#                         Version 3.1                          #");
-			//System.out.println("#                        5 August 2009                         #");
-			System.out.println("#                                                                    #");
-			System.out.println("#                                                                    #");
-			System.out.println("#  This java code was compiled by ant at:                            #");
-			System.out.println("#    "+jing.param.VersionInfo.getBuildDate());
-			System.out.println("#  The git repository was on the branch:                             #");
-			System.out.println("#    "+jing.param.VersionInfo.getBranchName());
-			System.out.println("#  And at the commit with the hash:                                  #");
-			String versionHash=jing.param.VersionInfo.getVersionHash() ;
-			System.out.println("#    "+versionHash);
-			System.out.println("#                                                                    #");
-			System.out.println("#  For details visit:                                                #");	 
-			if (versionHash.startsWith("*") ) // error messages should start with a *
-				System.out.println("#    http://github.com/GreenGroup/RMG-Java/                          #");
-		    else {
-				System.out.println("#    http://github.com/GreenGroup/RMG-Java/tree/"+versionHash.substring(0,6)+"         #" ); 
-				System.out.println("#  To see changes since then visit:                              #");	 
-				System.out.println("#    http://github.com/GreenGroup/RMG-Java/compare/"+versionHash.substring(0,6)+"...master");
-			//System.out.println("#  To download this specific version, visit:                   #");	 
-			//System.out.println("#   http://github.com/GreenGroup/RMG-Java/archives/"+versionHash.substring(0,6) ); 
-			}
-			System.out.println("#                                                                    #");
-			System.out.println("#                                                                    #");
-			System.out.println("#                                                                    #");
-			System.out.println("#                 http://rmg.sourceforge.net/                        #");
-			System.out.println("#                                                                    #");
-			System.out.println("#                                                                    #");
-			System.out.println("#                                                                    #");
-			System.out.println("#  Copyright (c) 2002-2010                                           #");
-			System.out.println("#  Prof. William H. Green and the RMG Team:                          #");
-			System.out.println("#    Joshua W. Allen, Dr. Robert W. Ashcraft, Dr. Gregory J. Beran,  #");
-			System.out.println("#    Dr. C. Franklin Goldsmith, Michael R. Harper, Amrit Jalan,      #");
-			System.out.println("#    Gregory R. Magoon, Dr. David M. Matheu, Shamel S. Merchant,     #");
-			System.out.println("#    Jeffrey D. Mo, Sarah Petway, Sumathy Raman, Dr. Sandeep Sharma, #");
-			System.out.println("#    Dr. Kevin M. Van Geem, Dr. Jing Song, Dr. John Wen,             #");
-			System.out.println("#    Dr. Richard H. West, Andrew Wong, Dr. Hsi-Wu Wong,              #");
-			System.out.println("#    Dr. Paul E. Yelvington, Dr. Joanna Yu                           #");
-			System.out.println("#                                                                    #");
-			System.out.println("#  The RMGVE graphical user interface to the RMG database            #");
-			System.out.println("#  was written by John Robotham.                                     #");
-			System.out.println("#                                                                    #");
-			System.out.println("#  This software package incorporates parts of the following         #");
-			System.out.println("#  software packages:                                                #");
-			System.out.println("#    DASSL    - Written by Prof. Linda Petzold et al                 #");
-			System.out.println("#      http://www.cs.ucsb.edu/~cse/software.html                     #");
-			System.out.println("#    CDK      - Written by Prof. Cristoph Steinbeck et al            #");
-			System.out.println("#      http://cdk.sourceforge.net/                                   #");
-			System.out.println("#    InChI    - Available from IUPAC                                 #");
-			System.out.println("#      http://www.iupac.org/inchi/                                   #");
-			System.out.println("#    cclib                                                           #");
-			System.out.println("#      http://cclib.sourceforge.net                                  #");
-			System.out.println("#                                                                    #");
-			System.out.println("#  For more information, including how to properly cite this         #");
-			System.out.println("#  program, see http://rmg.sourceforge.net/.                         #");
-			System.out.println("#                                                                    #");
-			System.out.println("######################################################################");
-			System.out.println("");
 
 			 SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
 			 String formattedDate = formatter.format(new java.util.Date());
