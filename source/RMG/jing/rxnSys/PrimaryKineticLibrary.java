@@ -93,7 +93,7 @@ public class PrimaryKineticLibrary {
     public void read(String p_directoryName, String p_name) throws IOException {
         try {
         	if (!p_directoryName.endsWith("/")) p_directoryName = p_directoryName + "/";
-			System.out.println("Reading Primary Kinetic Library from: "+p_directoryName);
+			Logger.info("Reading Primary Kinetic Library from: "+p_directoryName);
         	
             String speciesFile = p_directoryName + "species.txt";
             String reactionFile = p_directoryName + "reactions.txt";

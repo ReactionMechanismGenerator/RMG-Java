@@ -1269,10 +1269,10 @@ public class ReactionModelGenerator {
 						
 						FinishController fc = new FinishController(finishController.getTerminationTester(), finishController.getValidityTester());//10/31/07 gmagoon: changed to create new finishController instance in each case (apparently, the finish controller becomes associated with reactionSystem in setFinishController within ReactionSystem); alteratively, could use clone, but might need to change FinishController to be "cloneable"
 						// FinishController fc = new FinishController(termTestCopy, finishController.getValidityTester());
-						reactionSystemList.add(new ReactionSystem(tm, pm, reactionModelEnlarger, fc, ds, getPrimaryKineticLibrary(), getReactionGenerator(), getSpeciesSeed(), is, getReactionModel(),lrg, i, equationOfState)); 
 						i++;//10/30/07 gmagoon: added
-						System.out.println("Created reaction system "+i+"\n");
-						System.out.println((initialStatusList.get(i-1)).toString() + "\n");
+						Logger.info("Creating reaction system "+i);
+						reactionSystemList.add(new ReactionSystem(tm, pm, reactionModelEnlarger, fc, ds, getPrimaryKineticLibrary(), getReactionGenerator(), getSpeciesSeed(), is, getReactionModel(),lrg, i, equationOfState));
+						Logger.info((initialStatusList.get(i-1)).toString() + "\n");
 					}
 				}
 			}
@@ -1283,6 +1283,8 @@ public class ReactionModelGenerator {
         	System.err.println("Error reading reaction system initialization file.");
         	throw new IOException("Input file error: " + e.getMessage());
         }
+
+        Logger.info("");
     }
     public void setReactionModel(ReactionModel p_ReactionModel) {
         reactionModel = p_ReactionModel;
@@ -3684,7 +3686,7 @@ public class ReactionModelGenerator {
 				
 				LinkedHashSet tempnewReactionSet = getLibraryReactionGenerator().react(allInitialCoreSpecies);
 				if(!tempnewReactionSet.isEmpty()){
-				System.out.println("Reaction Set Found from Reaction Library "+tempnewReactionSet);
+				Logger.info("Reaction Set Found from Reaction Library "+tempnewReactionSet);
 				}
 				
 				// Adds Reactions Found in Library Reaction Generator to Reaction Set
@@ -3778,7 +3780,7 @@ public class ReactionModelGenerator {
 				reactionSet_withdup = new LinkedHashSet();	
 				LinkedHashSet tempnewReactionSet = getLibraryReactionGenerator().react(speciesSeed);
 				if (!tempnewReactionSet.isEmpty()) {
-					System.out.println("Reaction Set Found from Reaction Library "+tempnewReactionSet);
+					Logger.info("Reaction Set Found from Reaction Library "+tempnewReactionSet);
 				}
 				
 				// Adds Reactions Found in Library Reaction Generator to Reaction Set
@@ -3954,7 +3956,7 @@ public class ReactionModelGenerator {
     //## operation initializeCoreEdgeReactionModel()
     //9/24/07 gmagoon: moved from ReactionSystem.java
     public void initializeCoreEdgeReactionModel() {
-		System.out.println("\nInitializing core-edge reaction model");
+		Logger.info("Initializing core-edge reaction model");
 		// setSpeciesSeed(new LinkedHashSet());//10/4/07 gmagoon:moved from initializeReactionSystem; later moved to modelGeneration()
         //#[ operation initializeCoreEdgeReactionModel()
 		//        if (hasPrimaryKineticLibrary()) initializeCoreEdgeModelWithPKL();
@@ -4875,7 +4877,7 @@ public class ReactionModelGenerator {
     }
     
     public LinkedHashMap populateInitialStatusListWithReactiveSpecies(BufferedReader reader) throws IOException {
-    	LinkedHashMap speciesSet = new LinkedHashMap();
+        LinkedHashMap speciesSet = new LinkedHashMap();
     	LinkedHashMap speciesStatus = new LinkedHashMap();
     	int numSpeciesStatus = 0;
 		String line = ChemParser.readMeaningfulLine(reader, true);

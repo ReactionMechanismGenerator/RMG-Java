@@ -34,6 +34,7 @@ import java.io.*;
 import java.util.*;
 import jing.chemParser.ChemParser;
 import jing.param.Temperature;
+import jing.rxnSys.Logger;
 
 //## package jing::rxn 
 
@@ -65,6 +66,8 @@ public class ReactionTemplateLibrary {
         String separator = System.getProperty("file.separator");
         if (!kineticsDirectory.endsWith(separator)) kineticsDirectory = kineticsDirectory + separator;
 
+        Logger.info("Reading kinetics database from " + kineticsDirectory);
+
         // Read the file families.txt
         try {
         	System.out.println("\nReading kinetics groups database from: " + kineticsDirectory + "\n");
@@ -95,23 +98,21 @@ public class ReactionTemplateLibrary {
                     if (reverse_rt != null) addReactionTemplate(reverse_rt);
                 }
                 else {
-                    System.out.println("\nSkipping reaction family \"" + forward + "\"");
+                    Logger.info("Skipping reaction family: " + forward);
                 }
 
         		line = ChemParser.readMeaningfulLine(data, true);
         	}
 
             in.close();
-        	return;
         }
         catch (IOException e) {
         	System.out.println(e.getMessage());
             System.exit(0);
         }
-        
-        /*if (!kineticsDirectory.endsWith(separator)) kineticsDirectory = kineticsDirectory + separator;
-	      System.out.println("\nReading kinetics database from "+kineticsDirectory);        
-        read(kineticsDirectory);*/
+
+        Logger.info("");
+
     }
     
     //## operation isEmpty() 

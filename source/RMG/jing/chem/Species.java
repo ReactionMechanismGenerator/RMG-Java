@@ -40,6 +40,7 @@ import jing.chemParser.*;
 import jing.chemUtil.Node;
 import jing.param.Global;
 import jing.param.Temperature;
+import jing.rxnSys.Logger;
 
 //## package jing::chem
 
@@ -880,7 +881,7 @@ public class Species {
         	dictionary.putSpecies(spe, true);
         	
 			// DEBUG: Tell console I made this species
-			System.out.println("Created new species: " + spe.getFullName() );
+			Logger.verbose("Created new species: " + spe.getFullName() );
 
         }
         else {
@@ -907,7 +908,7 @@ public class Species {
 				}
 			}
 			else {
-				System.out.println("Cannot make species which has a chemgraph: "+p_chemGraph.toString());
+				Logger.error("Cannot make species which has a chemgraph: "+p_chemGraph.toString());
 				System.exit(0);
 			}
         }
@@ -993,7 +994,7 @@ public class Species {
         p_chemGraph.setSpecies(spe);
         
      // DEBUG: Tell console I made this species
-		System.out.println("Created new species: " + spe.getFullName() );
+		Logger.verbose("Created new species: " + spe.getFullName() );
         
         return spe;
     }

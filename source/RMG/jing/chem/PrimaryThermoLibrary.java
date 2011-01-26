@@ -85,7 +85,7 @@ public void appendPrimaryThermoLibrary(String name, String path) {
 //7-Jul-2009: MRH
 public void read(String p_dictionary, String p_library, String p_name) throws IOException, FileNotFoundException {
 	String source = "Primary Thermo Library: " + p_name;
-	System.out.println("Reading " + source);
+	Logger.info("Reading " + source);
 	dictionary = readDictionary(p_dictionary, source);
 	library = readLibrary(p_library, dictionary, source);
 }

@@ -32,6 +32,7 @@ import java.util.*;
 
 import jing.chemUtil.*;
 import jing.chemParser.*;
+import jing.rxnSys.Logger;
 
 /**
  * PrimaryTransportLibrary.java
@@ -74,10 +75,10 @@ public class PrimaryTransportLibrary {
 
 	public void read(String p_dictionary, String p_library, String p_name) throws IOException, FileNotFoundException {
 		String source = "Primary Transport Library: " + p_name;
-		System.out.println("Reading " + source);
+		Logger.info("Reading " + source);
 		dictionary = readDictionary(p_dictionary, source);
 		library = readLibrary(p_library, dictionary, source);
-	}
+    }
 
 	public HashMap readLibrary(String p_transportFileName, HashMap p_dictionary, String source) throws IOException {
 		try{

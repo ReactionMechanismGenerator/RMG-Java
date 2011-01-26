@@ -109,7 +109,7 @@ public class SeedMechanism {
     }
     
     public void read(String p_directoryName, boolean p_fromRestart, String seedMechName) throws IOException {
-        System.out.println("Reading seed mechanism from directory " + p_directoryName);
+        Logger.info("Reading seed mechanism from directory " + p_directoryName);
     	HashMap localSpecies = null;
     	LinkedHashSet localReactions = null;
 		try {

@@ -96,11 +96,11 @@ public class ReactionSystem {
 		
         
         if (equationOfState=="Liquid") {
-            System.out.println("Liquid phase: Not checking C=P/RT; assuming concentrations are specified correctly");
+            Logger.info("    Liquid phase: Not checking C=P/RT; assuming concentrations are specified correctly");
         }
 		else if (!checkInitialConsistency()) {
-        	System.out.println("Initial composition was not consistent: C = P/RT was not satisfied!");
-        	System.out.println("The concentrations have been renormalized.");
+        	Logger.info("    Initial composition was not consistent: C = P/RT was not satisfied!");
+        	Logger.info("    The concentrations have been renormalized.");
         	//System.exit(-1);
         }
 
