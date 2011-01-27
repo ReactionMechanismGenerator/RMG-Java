@@ -361,6 +361,9 @@ public class RateBasedPDepRME implements ReactionModelEnlarger {
                         System.out.println("\nNetwork " + network.getID() + " has been altered already this step, so will not be expanded until next step.");
                         return;
                     }
+                } else {
+                	System.out.println("Isomer " + species.toString() + " is in network #" + network.getID() +
+                			", but is not unimolecular AND nonIncluded,\n\tso RMG will not remove this network.");
                 }
 			}
 		}
