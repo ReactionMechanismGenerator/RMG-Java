@@ -67,6 +67,7 @@ public class ReactionTemplateLibrary {
 
         // Read the file families.txt
         try {
+        	System.out.println("\nReading kinetics groups database from: " + kineticsDirectory + "\n");
         	String familiesPath = kineticsDirectory + "families.txt";
             FileReader in = new FileReader(familiesPath);
         	BufferedReader data = new BufferedReader(in);
