@@ -259,6 +259,11 @@ You may also list multiple temperature and pressure conditions, as the example b
    TemperatureModel: Constant (K) 600 700 800 900
    PressureModel: Constant (atm) 1 200 
 
+The intervals between the supplied values do not have to be equal, i.e. the following is an equally valid 
+TemperatureModel field::
+	
+	TemperatureModel: Constant (K) 600 700 900 1500
+	
 For cases in which multiple temperatures and pressures are listed, the model generator will simulate the system (still using an isothermal, isobaric model) at all possible combinations of the specified temperatures and pressures. Thus, the resulting reaction mechanism will be valid (within the given error tolerances, estimates, and various other assumptions) at all the conditions specified. (Note, however, that reported concentrations in the :file:`Final_Model.txt` output file will only correspond to the first T/P combination.)
 
 
