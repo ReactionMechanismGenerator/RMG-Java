@@ -722,8 +722,8 @@ public class ReactionModelGenerator {
         			while (st.hasMoreTokens()) {
         				String name = st.nextToken();
         				Species spe = (Species)speciesSet.get(name);
+        				if (spe == null) throw new InvalidConversionException("Unknown reactant in 'Goal Conversion' field of input file : " + name);
         				setLimitingReactantID(spe.getID());
-        				if (spe == null) throw new InvalidConversionException("Unknown reactant: " + name);
         				String conv = st.nextToken();
         				double conversion;
         				try {
