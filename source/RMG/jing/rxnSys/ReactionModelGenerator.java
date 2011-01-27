@@ -1318,8 +1318,6 @@ public class ReactionModelGenerator {
         
         initializeCoreEdgeReactionModel();//10/4/07 gmagoon: moved before initializeReactionSystem; 11/3-4/07 gmagoon: probably reverted on or before 10/10/07
 
-        printModelSize();
-        
         //10/24/07 gmagoon: changed to use reactionSystemList
 		//       LinkedList initList = new LinkedList();//10/25/07 gmagoon: moved these variables to apply to entire class
 		//       LinkedList beginList = new LinkedList();
@@ -1396,6 +1394,10 @@ public class ReactionModelGenerator {
 				rs.appendUnreactedSpeciesStatus((InitialStatus)initialStatusList.get(i), rs.getPresentTemperature());
 	        }
         }
+
+        printModelSize();
+        Logger.info(String.format("Running time: %.3f min", + (System.currentTimeMillis()-Global.tAtInitialization)/1000./60.));
+        printMemoryUsed();
         
         //10/24/07 gmagoon: note: each element of for loop could be done in parallel if desired; some modifications would be needed
         for (Integer i = 0; i<reactionSystemList.size();i++) {
@@ -1444,8 +1446,6 @@ public class ReactionModelGenerator {
 		System.out.println("Species dictionary size: "+dictionary.size());
 		//boolean reactionChanged = false;//10/24/07 gmagoon: I don't know if this is even required, but I will change to use reactionChangedList (I put analogous line of code for list in above for loop); update: yes, it is required; I had been thinking of conditionChangedList
 		
-		double tAtInitialization = Global.tAtInitialization;
-		
 		//10/24/07: changed to use allTerminated and allValid	
         // step 2: iteratively grow reaction system
         while (!allTerminated || !allValid) {
@@ -1471,7 +1471,6 @@ public class ReactionModelGenerator {
 				// ENLARGE THE MODEL!!! (this is where the good stuff happens)
 				enlargeReactionModel();
 				double totalEnlarger = (System.currentTimeMillis() - pt)/1000/60;
-				printModelSize();
 				
 				//PDepNetwork.completeNetwork(reactionSystem.reactionModel.getSpeciesSet());
 				//10/24/07 gmagoon: changed to use reactionSystemList
@@ -1483,7 +1482,11 @@ public class ReactionModelGenerator {
 					//reactionSystem.initializePDepNetwork();
 				}  
 				
-				pt = System.currentTimeMillis();
+				printModelSize();
+                Logger.info(String.format("Running time: %.3f min", + (System.currentTimeMillis()-Global.tAtInitialization)/1000./60.));
+				printMemoryUsed();
+
+                pt = System.currentTimeMillis();
 				//10/24/07 gmagoon: changed to use reactionSystemList
 				for (Iterator iter = reactionSystemList.iterator(); iter.hasNext(); ) {
 					ReactionSystem rs = (ReactionSystem)iter.next();
@@ -1589,10 +1592,7 @@ public class ReactionModelGenerator {
 				}
 				Logger.info("");
 
-			    Logger.info(String.format("Running time: %.3f min", + (System.currentTimeMillis()-tAtInitialization)/1000./60.));
-				printMemoryUsed();
-
-				startTime = System.currentTimeMillis();
+			    startTime = System.currentTimeMillis();
 				double mU = Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory();
 				Logger.info("");
                 double gc = (System.currentTimeMillis()-startTime)/1000./60.;
