@@ -1360,8 +1360,7 @@ public class Species {
 		
 		int mRad = 1;
 		int radCount = 0;
-		// Assume the species does not contain > 4 radicals
-		int maxRad = 4;
+		int maxRad = ChemGraph.MAX_RADICAL_NUM;
 		int[] radLocation = new int[maxRad];
 		int[] radType = new int[maxRad];
 		for (int numRads=0; numRads<(atomCount-1); numRads++) {
