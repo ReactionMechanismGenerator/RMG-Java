@@ -323,7 +323,10 @@ The first line in this block should be something like ::
 The second field in the first line is optional and specifies the QM program to use. Options
 include "mopac", "gaussian03", or "both" (the default if this field is omitted).
 The "both" option requests that RMG first try to use MOPAC and if all MOPAC attempts
-for a particular species are unsuccessful, then it will try Gaussian03.
+for a particular species are unsuccessful, then it will try Gaussian03. In all three cases, these will use PM3 calculations. Two experimental options
+are "mm4" and "mm4hr", and require the MM4 force field program; the former uses mm4 with the rigid-rotor, harmonic oscillator
+(RRHO) approximation, while the latter does rotor scans to treat rotor modes. It has been found that this approach generally works reasonably well, but
+currently fails to give accurate results for cyclic C3 species and may be less robust than the PM3 options.
 
 The next line determines whether RMG will use QM calculations for all species or just cyclic ones::
 
