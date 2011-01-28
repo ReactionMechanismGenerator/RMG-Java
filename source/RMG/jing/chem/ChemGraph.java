@@ -1547,21 +1547,8 @@ return sn;
         String newInChI=null;
         int radicalNumber = this.getUnpairedRadicalNumber();
        // System.out.println("Radical number:"+radicalNumber);//for debugging purposes
-        if (radicalNumber == 2){
-            newInChI = InChI.concat("/mult3");
-        }
-        else if (radicalNumber == 3){
-            newInChI = InChI.concat("/mult4");
-        }
-        else if (radicalNumber == 4){
-            newInChI = InChI.concat("/mult5");
-        }
-        else if (radicalNumber == 5){
-            newInChI = InChI.concat("/mult6");
-        }
-        else if (radicalNumber > 5){
-            System.out.println("Unexpectedly high multiplicity ("+ (radicalNumber+1)+ ") for " + InChI);
-            System.exit(0);
+        if (radicalNumber >= 2){
+            newInChI = InChI.concat("/mult"+(radicalNumber+1));
         }
         else{
             newInChI = InChI;
@@ -1575,21 +1562,8 @@ return sn;
         String newInChIKey=null;
         int radicalNumber = this.getUnpairedRadicalNumber();
        // System.out.println("Radical number:"+radicalNumber);//for debugging purposes
-        if (radicalNumber == 2){
-            newInChIKey = InChIKey.concat("mult3");
-        }
-        else if (radicalNumber == 3){
-            newInChIKey = InChIKey.concat("mult4");
-        }
-        else if (radicalNumber == 4){
-            newInChIKey = InChIKey.concat("mult5");
-        }
-        else if (radicalNumber == 5){
-            newInChIKey = InChIKey.concat("mult6");
-        }
-        else if (radicalNumber > 5){
-            System.out.println("Unexpectedly high multiplicity ("+ (radicalNumber+1)+ ") for " + InChI);
-            System.exit(0);
+        if (radicalNumber >= 2){
+            newInChIKey = InChIKey.concat("mult"+(radicalNumber+1));
         }
         else{
             newInChIKey= InChIKey;
