@@ -1069,6 +1069,7 @@ public class QMTP implements GeneralGAPP {
 		}
                 line=reader.readLine();
             }
+	    in.close();
         }
         catch(Exception e){
             String err = "Error in reading Gaussian log file \n";
@@ -1164,6 +1165,7 @@ public class QMTP implements GeneralGAPP {
 		    }
                     line=reader.readLine();
                 }
+		in.close();
             }
             catch(Exception e){
                 String err = "Error in reading MM4 output file \n";
@@ -1296,6 +1298,7 @@ public class QMTP implements GeneralGAPP {
                     }
                     line=reader.readLine();
                 }
+		in.close();
             }
             catch(Exception e){
                 String err = "Error in reading MOPAC output file \n";
@@ -2074,6 +2077,7 @@ public class QMTP implements GeneralGAPP {
 		    }
 		    line=reader.readLine();
                 }
+		in.close();
             }
             catch(Exception e){
                 String err = "Error in reading preexisting Gaussian log file \n";
@@ -2204,6 +2208,7 @@ public class QMTP implements GeneralGAPP {
                     }
                     line=reader.readLine();
                 }
+		in.close();
             }
             catch(Exception e){
                 String err = "Error in reading preexisting MOPAC output file \n";
@@ -2333,6 +2338,7 @@ public class QMTP implements GeneralGAPP {
                     }
                     line=reader.readLine();
                 }
+		in.close();
             }
             catch(Exception e){
                 String err = "Error in reading preexisting MM4 output file \n";
