@@ -5034,7 +5034,7 @@ public class ReactionModelGenerator {
         	String dummyString = st.nextToken();	// This should hold "MaxCarbonNumberPerSpecies:"
         	int maxCNum = Integer.parseInt(st.nextToken());
         	ChemGraph.setMaxCarbonNumber(maxCNum);
-        	Logger.info("Note: Overriding RMG-defined MAX_CARBON_NUM with user-defined value: " + maxCNum);
+        	Logger.info("Note: Overriding default MAX_CARBON_NUM with user-defined value: " + maxCNum);
         	line = ChemParser.readMeaningfulLine(reader, true);
         }
         if (line.startsWith("MaxOxygenNumber")) {
@@ -5042,7 +5042,7 @@ public class ReactionModelGenerator {
         	String dummyString = st.nextToken();	// This should hold "MaxOxygenNumberPerSpecies:"
         	int maxONum = Integer.parseInt(st.nextToken());
         	ChemGraph.setMaxOxygenNumber(maxONum);
-        	Logger.info("Note: Overriding RMG-defined MAX_OXYGEN_NUM with user-defined value: " + maxONum);
+        	Logger.info("Note: Overriding default MAX_OXYGEN_NUM with user-defined value: " + maxONum);
         	line = ChemParser.readMeaningfulLine(reader, true);
         }
         if (line.startsWith("MaxRadicalNumber")) {
@@ -5050,7 +5050,7 @@ public class ReactionModelGenerator {
         	String dummyString = st.nextToken();	// This should hold "MaxRadicalNumberPerSpecies:"
         	int maxRadNum = Integer.parseInt(st.nextToken());
         	ChemGraph.setMaxRadicalNumber(maxRadNum);
-        	Logger.info("Note: Overriding RMG-defined MAX_RADICAL_NUM with user-defined value: " + maxRadNum);
+        	Logger.info("Note: Overriding default MAX_RADICAL_NUM with user-defined value: " + maxRadNum);
         	line = ChemParser.readMeaningfulLine(reader, true);
         }
         if (line.startsWith("MaxSulfurNumber")) {
@@ -5058,7 +5058,7 @@ public class ReactionModelGenerator {
         	String dummyString = st.nextToken();	// This should hold "MaxSulfurNumberPerSpecies:"
         	int maxSNum = Integer.parseInt(st.nextToken());
         	ChemGraph.setMaxSulfurNumber(maxSNum);
-        	Logger.info("Note: Overriding RMG-defined MAX_SULFUR_NUM with user-defined value: " + maxSNum);
+        	Logger.info("Note: Overriding default MAX_SULFUR_NUM with user-defined value: " + maxSNum);
         	line = ChemParser.readMeaningfulLine(reader, true);
         }
         if (line.startsWith("MaxSiliconNumber")) {
@@ -5066,7 +5066,7 @@ public class ReactionModelGenerator {
         	String dummyString = st.nextToken();	// This should hold "MaxSiliconNumberPerSpecies:"
         	int maxSiNum = Integer.parseInt(st.nextToken());
         	ChemGraph.setMaxSiliconNumber(maxSiNum);
-        	Logger.info("Note: Overriding RMG-defined MAX_SILICON_NUM with user-defined value: " + maxSiNum);
+        	Logger.info("Note: Overriding default MAX_SILICON_NUM with user-defined value: " + maxSiNum);
         	line = ChemParser.readMeaningfulLine(reader, true);
         }
         if (line.startsWith("MaxHeavyAtom")) {
@@ -5074,7 +5074,15 @@ public class ReactionModelGenerator {
         	String dummyString = st.nextToken();	// This should hold "MaxHeavyAtomPerSpecies:"
         	int maxHANum = Integer.parseInt(st.nextToken());
         	ChemGraph.setMaxHeavyAtomNumber(maxHANum);
-        	Logger.info("Note: Overriding RMG-defined MAX_HEAVYATOM_NUM with user-defined value: " + maxHANum);
+        	Logger.info("Note: Overriding default MAX_HEAVYATOM_NUM with user-defined value: " + maxHANum);
+        	line = ChemParser.readMeaningfulLine(reader, true);
+        }
+        if (line.startsWith("MaxCycleNumber")) {
+        	StringTokenizer st = new StringTokenizer(line);
+        	String dummyString = st.nextToken();	// This should hold "MaxCycleNumberPerSpecies:"
+        	int maxCycleNum = Integer.parseInt(st.nextToken());
+        	ChemGraph.setMaxCycleNumber(maxCycleNum);
+        	Logger.info("Note: Overriding default MAX_CYCLE_NUM with user-defined value: " + maxCycleNum);
         	line = ChemParser.readMeaningfulLine(reader, true);
         }
         return line;

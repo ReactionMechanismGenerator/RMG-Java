@@ -1,16 +1,16 @@
 // This condition.txt file contains every option available to RMG.
 // The fields that have been commented out are not required.
 
-
 // The folder for the "Database" is relative to $RMG/databases/
 Database: RMG_database
 
-//MaxCarbonNumberPerSpecies: 10
-//MaxOxygenNumberPerSpecies: 4
-//MaxRadicalNumberPerSpecies: 2
-//MaxSulfurNumberPerSpecies:
-//MaxSiliconNumberPerSpecies:
-//MaxHeavyAtom:
+//MaxCarbonNumberPerSpecies:     30
+//MaxOxygenNumberPerSpecies:     10
+//MaxRadicalNumberPerSpecies:    10
+//MaxSulfurNumberPerSpecies:     10
+//MaxSiliconNumberPerSpecies:    10
+//MaxHeavyAtomNumberPerSpecies: 100
+//MaxCycleNumberPerSpecies:      10
 
 // There is no limit to the number of PTLs a user may supply.
 // The "Name" of a PTL can have as many tokens as the user prefers.

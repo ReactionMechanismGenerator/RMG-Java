@@ -59,7 +59,6 @@ public class ChemGraph implements Matchable {
     Maximal radical number allowed in a ChemGraph.
     */
     protected static int MAX_RADICAL_NUM = 10;		//## attribute MAX_RADICAL_NUM
-    
     protected static int MAX_SILICON_NUM = 10;
     protected static int MAX_SULFUR_NUM = 10;
     
@@ -2743,6 +2742,9 @@ return sn;
     	MAX_HEAVYATOM_NUM = maxHANumber;
     }
     
+    public static void setMaxCycleNumber(int maxCycleNumber) {
+    	MAX_CYCLE_NUM = maxCycleNumber;
+    }
     public int getHeavyAtomNumber() {
     	return getCarbonNumber() + getOxygenNumber() + getSulfurNumber() + getSiliconNumber();
     }
