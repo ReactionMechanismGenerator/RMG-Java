@@ -2275,7 +2275,6 @@ return sn;
 			
 			ChemGraph cg  = null;
 			if (cg == null){
-				try {
 		        	cg = new ChemGraph(p_graph);
 					if (!hasHydrogen)
 						cg.addMissingHydrogen();
@@ -2290,11 +2289,6 @@ return sn;
 		        	}
 					//cgd.putSpecies(cg);
 		        }
-		        catch (ForbiddenStructureException e) {
-		        	throw new ForbiddenStructureException(e.getMessage());
-		        }
-			}
-			
 			return cg;
 
 	        //#]
