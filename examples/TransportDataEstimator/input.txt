@@ -1,6 +1,6 @@
 PrimaryTransportLibrary:
 Name: RMG-minimal
-Location: primaryThermoLibrary
+Location: primaryTransportLibrary
 END
 
 Allene
