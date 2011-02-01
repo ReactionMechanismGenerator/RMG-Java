@@ -33,9 +33,7 @@ import jing.chemParser.*;
 import jing.param.*;
 import jing.chemUtil.*;
 //import bondGroups.*;
-import jing.rxn.*;
 import jing.rxnSys.*;
-import jing.mathTool.*;
 
 
 public class ThermoDataEstimator {//gmagoon 7/24/09: based off of Thermo.java rev. 1.6; this performs original functionality described in the manual
