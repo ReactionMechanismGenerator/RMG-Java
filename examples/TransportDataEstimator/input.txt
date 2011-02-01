@@ -1,3 +1,5 @@
+Database: RMG_database
+
 PrimaryTransportLibrary:
 Name: RMG-minimal
 Location: primaryTransportLibrary

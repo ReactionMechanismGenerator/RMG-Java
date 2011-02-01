@@ -58,11 +58,21 @@ public static void main(String[] args) {
 		try {			
 			BufferedReader reader = new BufferedReader(new FileReader(file));
 
+                        String line = ChemParser.readMeaningfulLine(reader, true);
+                        if (line.toLowerCase().startsWith("database")) {
+                            RMG.extractAndSetDatabasePath(line);
+                        }
+                        else {
+                            System.err.println("ThermoDataEstimator: Could not"
+                                    + " locate the Database field");
+                            System.exit(0);
+                        }
+
 			/*
 			 * 14MAR2010: Allowing ThermoDataEstimator to read from Primary Reaction Library
 			 */
 			ReactionModelGenerator rmg = new ReactionModelGenerator();
-            String line = ChemParser.readMeaningfulLine(reader, true);
+            line = ChemParser.readMeaningfulLine(reader, true);
             if (line.toLowerCase().startsWith("primarythermolibrary")) {
             	rmg.readAndMakePTL(reader);
             }

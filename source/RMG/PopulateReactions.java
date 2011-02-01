@@ -143,10 +143,22 @@ public class PopulateReactions {
 		try {
 			FileReader fr_input = new FileReader(args[0]);
 			BufferedReader br_input = new BufferedReader(fr_input);
+
+                        // Read in the Database field
+                        String line = ChemParser.readMeaningfulLine(br_input, true);
+                        if (line.toLowerCase().startsWith("database")) {
+                            RMG.extractAndSetDatabasePath(line);
+                        }
+                        else {
+                            System.err.println("PopulateReactions: Could not"
+                                    + " locate the Database field");
+                            System.exit(0);
+                        }
+
 			// Read in the first line of the input file
 			//	This line should hold the temperature of the system, e.g.
 			//		Temperature: 500 (K)
-			String line = ChemParser.readMeaningfulLine(br_input, true);
+			line = ChemParser.readMeaningfulLine(br_input, true);
 			
 			/*
 			 * Read max atom types (if they exist)

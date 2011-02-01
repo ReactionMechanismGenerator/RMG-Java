@@ -146,7 +146,6 @@ public class RMG {
 	
 	public static void initializeSystemProperties(String inputfile) {
 		globalInitializeSystemProperties();
-		String workingDir = System.getProperty("RMG.workingDirectory");
 		
 	    File f = new File(".");
 	    String dir = f.getAbsolutePath();
@@ -290,18 +289,22 @@ public class RMG {
 			 //line = ChemParser.readMeaningfulLine(reader);
 
              if (line.startsWith("Database")){
-				 StringTokenizer st = new StringTokenizer(line);
-				 String next = st.nextToken();
-				 String database_name = st.nextToken().trim();
-				 
-				 String database_path = workingDir + "/databases/" + database_name;
-				 setDatabasePaths(database_path);
+                 extractAndSetDatabasePath(line);
 			 }
 	}
 	catch (IOException e) {
 		System.err.println("Error in read in reaction system initialization file!");
 	}
   }
+
+        public static void extractAndSetDatabasePath(String line) {
+            StringTokenizer st = new StringTokenizer(line);
+            String next = st.nextToken();
+            String database_name = st.nextToken().trim();
+            String workingDir = System.getProperty("RMG.workingDirectory");
+            String database_path = workingDir + "/databases/" + database_name;
+            setDatabasePaths(database_path);
+        }
 
 	
 	/* this function is not used, has not been maintained, and is now out of date.
