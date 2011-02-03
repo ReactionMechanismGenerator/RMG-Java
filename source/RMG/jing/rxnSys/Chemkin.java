@@ -415,9 +415,9 @@ public  Chemkin() {
   }
 
   //## operation solve(boolean,ReactionModel,boolean,SystemSnapshot,ReactionTime,ReactionTime,boolean)
-  public SystemSnapshot solve(boolean p_initialization, ReactionModel p_reactionModel, boolean p_reactionChanged, SystemSnapshot p_beginStatus, final ReactionTime p_beginTime, ReactionTime p_endTime, boolean p_conditionChanged) {
+  public SystemSnapshot solve(boolean p_initialization, ReactionModel p_reactionModel, boolean p_reactionChanged, SystemSnapshot p_beginStatus, final ReactionTime p_beginTime, ReactionTime p_endTime, boolean p_conditionChanged, LinkedHashSet nonpdep_from_seed) {
       //#[ operation solve(boolean,ReactionModel,boolean,SystemSnapshot,ReactionTime,ReactionTime,boolean)
-      writeChemkinInputFile(p_reactionModel, p_beginStatus);
+      writeChemkinInputFile(p_reactionModel, p_beginStatus, nonpdep_from_seed);
       runChemkin();
       checkChemkinMessage();
 
@@ -461,7 +461,7 @@ public  Chemkin() {
   }
 
   //## operation writeChemkinInputFile(ReactionModel,SystemSnapshot)
-  public static void writeChemkinInputFile(final ReactionModel p_reactionModel, SystemSnapshot p_beginStatus) {
+  public static void writeChemkinInputFile(final ReactionModel p_reactionModel, SystemSnapshot p_beginStatus, LinkedHashSet nonpdep_from_seed) {
 
       //String dir = System.getProperty("RMG.workingDirectory");
       //if (!dir.endsWith("/")) dir += "/";
@@ -485,7 +485,7 @@ public  Chemkin() {
           bufferedWriter.write(writeChemkinElement());
           bufferedWriter.write(writeChemkinSpecies(p_reactionModel, p_beginStatus));
           bufferedWriter.write(writeChemkinThermo(p_reactionModel));
-          bufferedWriter = writeChemkinPdepReactions(p_reactionModel, p_beginStatus,bufferedWriter);
+          bufferedWriter = writeChemkinPdepReactions(p_reactionModel, p_beginStatus,bufferedWriter,nonpdep_from_seed);
       } catch (FileNotFoundException ex) {
           ex.printStackTrace();
       } catch (IOException ex) {
@@ -542,14 +542,14 @@ public  Chemkin() {
 	  
   }
   
-  public static void writeChemkinInputFile(ReactionSystem rs) {
+  public static void writeChemkinInputFile(ReactionSystem rs, LinkedHashSet nonpdep_from_seed) {
 	  // call the above writeChemkinInputFile method, with the appropriate parameters
-	  writeChemkinInputFile(rs.reactionModel, rs.initialStatus);
+	  writeChemkinInputFile(rs.reactionModel, rs.initialStatus, nonpdep_from_seed);
    }
   
 
 //## operation writeChemkinPdepReactions(ReactionModel, SystemSnapshot)
- public static BufferedWriter writeChemkinPdepReactions(ReactionModel p_reactionModel, SystemSnapshot p_beginStatus, BufferedWriter bufferedWriter) throws IOException {
+ public static BufferedWriter writeChemkinPdepReactions(ReactionModel p_reactionModel, SystemSnapshot p_beginStatus, BufferedWriter bufferedWriter, LinkedHashSet nonpdep_from_seed) throws IOException {
 	 /* 
 	  Writes all reactions, not just the P-dep ones.
 	  Returns the result as a string.
@@ -606,7 +606,8 @@ public  Chemkin() {
       		if (rxn.getReverseReaction() == null)
       			rxn.generateReverseReaction();
       		
-      		if (!rxn.reactantEqualsProduct() && !pDepList.contains(rxn) && !pDepList.contains(rxn.getReverseReaction()) )  {
+      		if (!rxn.reactantEqualsProduct() && !pDepList.contains(rxn) && !pDepList.contains(rxn.getReverseReaction()) &&
+                        !nonpdep_from_seed.contains(rxn) && !nonpdep_from_seed.contains(rxn.getReverseReaction()))  {
       			pDepList.add(rxn);
       		}
       	}
@@ -894,7 +895,7 @@ public  Chemkin() {
   }
   
   
-public SystemSnapshot solve(boolean p_initialization, ReactionModel p_reactionModel, boolean p_reactionChanged, SystemSnapshot p_beginStatus, ReactionTime p_beginTime, ReactionTime p_endTime, Temperature p_temperature, Pressure p_pressure, boolean p_conditionChanged, TerminationTester tt, int iternum) {
+public SystemSnapshot solve(boolean p_initialization, ReactionModel p_reactionModel, boolean p_reactionChanged, SystemSnapshot p_beginStatus, ReactionTime p_beginTime, ReactionTime p_endTime, Temperature p_temperature, Pressure p_pressure, boolean p_conditionChanged, TerminationTester tt, int iternum, LinkedHashSet nonpdep_from_seed) {
 	
 	//writeChemkinInputFile(p_reactionModel, p_beginStatus);
 	
