@@ -1291,6 +1291,14 @@ public class Species {
 	            }
 	        result[0]=InChIstring;
 	        result[1]=InChIKeystring;
+		try {
+			reader.close();
+			in.close();
+		} catch (Exception e) {
+			String err = "Error closing InChI output reader for " + p_chemGraph.chemicalFormula + " : ";
+			err += e.toString();
+			System.out.println(err);
+		}
 		}
 		else {
 			result[0] = "";
