@@ -69,9 +69,10 @@ public class RateBasedPDepVT extends RateBasedVT {
 
         CoreEdgeReactionModel cerm = (CoreEdgeReactionModel) p_reactionSystem.getReactionModel();
         double[] leakFlux = PDepNetwork.getSpeciesLeakFluxes(ps, cerm);
-        for (int i = 1; i <= cerm.getMaxSpeciesID(); i++) {
-            if (leakFlux[i] > Rmin) {
-                System.out.println("Exceeded largest permitted flux for convergence (tolerance="+tolerance+"): " + Rmin);
+        for (Iterator iter = cerm.getUnreactedSpeciesSet().iterator(); iter.hasNext(); ) {
+	    Species us = (Species) iter.next();
+            if (leakFlux[us.getID()] > Rmin) {
+                System.out.println("Leak flux exceeded largest permitted flux for convergence (tolerance="+tolerance+"): " + Rmin);
                 return false;
             }
         }
