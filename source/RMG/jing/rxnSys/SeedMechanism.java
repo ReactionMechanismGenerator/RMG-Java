@@ -410,7 +410,7 @@ public class SeedMechanism {
                                     continueToReadRxn = false;
                                 } else if (nextLine.contains("/")) {
                                     // read in third body colliders + efficiencies
-                                    thirdBodyList = ChemParser.parseThirdBodyList(nextLine,allSpecies);
+                                    thirdBodyList.putAll(ChemParser.parseThirdBodyList(nextLine,allSpecies));
                                     nextLine = ChemParser.readMeaningfulLine(data, true);
                                 } else {
                                     // the nextLine is a "new" reaction, hence we need to exit the while loop
