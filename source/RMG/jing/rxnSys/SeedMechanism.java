@@ -475,9 +475,9 @@ public class SeedMechanism {
 			 * 		troe reactions.  In the instance that no "troeReactions.txt" file exists, inform
 			 * 		user of this but continue simulation.
 			 */
-        	System.out.println("RMG did not find/read pressure-dependent reactions (pdepreactions.txt) " +
-        			"in the " + source + p_name + "\n" + e.getMessage());
-        	return new LinkedHashSet();
+        	System.err.println("RMG could not find, or read in its entirety, the pressure-dependent reactions file (pdepreactions.txt)" +
+        			"\n\tin the " + source + p_name + "\n" + e.getMessage());
+        	return null;
         }
     }
 	
