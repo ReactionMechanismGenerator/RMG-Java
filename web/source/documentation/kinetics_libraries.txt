@@ -6,14 +6,24 @@ Kinetics Libraries
 
 The seed mechanisms are stored in :file:`$RMG/databases/RMG_database/kinetics_libraries/`
 
-
-Currently, the reaction library that are included in RMG are: the Leeds' oxidation library 
-the GRI-Mech 3.0 mechanism (w/o the nitrogen-containing species and the lumped C3H7 species)
-and the Glarborg combustion mechanism for C1 - C3 species.
+Currently, the reaction libraries that are included in RMG are::
+	
+	the Leeds' oxidation library
+	the GRI-Mech 3.0 mechanism (w/o the nitrogen-containing species and the lumped C3H7 species)
+	the Glarborg combustion mechanism for C1 - C3 species.
 
 GRI-Mech 3.0
 ============
-GRI-Mech 3.0 mechanism (w/o the nitrogen-containing species and the lumped C3H7 species)
+The species and reactions contained in the GRI-Mech3.0 directory are those reported
+in the GRI-Mech 3.0 mechanism, with the exception of the following species (and any
+reaction they participate in)::
+	
+	Any nitrogen-containing species
+	C3H7
+
+RMG cannot currently handle nitrogen atoms, and the C3H7 species in the GRI-Mech 3.0
+mechanism is a lumped species, meant to represent n- and iso-propyl radical; RMG
+treats these two isomers as separate species.
 
 
 Glarborg
@@ -32,6 +42,21 @@ oxidation, and many of the species in the C2 and C3 mechanisms are relevant
 only for high-temperature chemistry. Therefore, if you are developing a
 mechanism for low- or moderate-temperature oxidation, it is suggested that you
 use C2 or C3 as a Primary Kinetic Library, rather than a Seed Mechanism.
+
+.. note::
+
+	One set of kinetics in the Glarborg kinetic_library has been changed:
+	**HO2 + OH = H2O + O2**.  The reason for the change is Glarborg uses the 
+	summation of three sets	of modified Arrhenius parameters to reproduce their
+	recommended rate coefficient.  However, one of the temperature-independent
+	pre-exponential ("A") factors is negative, which neither RMG nor CHEMKIN
+	can parse properly.  Instead, the kinetics of Baulch et al. 
+	have been included.
+
+"Evaluated kinetic data for combustion modelling.  Supplement I"
+D.L. Baulch, C.J. Cobos, R.A. Cox, P. Frank, G. Hayman, Th. Just, J.A. Kerr, T. Murrells, M.J. Pilling, J. Troe, R.W. Walker, J. Warnatz
+J. Phys. Chem. Ref. Data 23 (1994) 847-1033
+
 Details of the mechanism can be obtained in these three papers and references
 therein.
 
