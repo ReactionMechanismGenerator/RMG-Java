@@ -19,12 +19,12 @@ in the $RMG directory.
 For Linux users, run the following commands to launch the GUI::
 
 	cd $RMG/run
-	java -Xmx500m -classpath $RMG/software/rmg/RMG.jar GUI > output &
+	java -Xmx500m -classpath $RMG/bin/RMG.jar GUI > output &
 
 For Windows users, run the following commands to launch the GUI::
 
 	cd "%rmg%\run"
-	java -Xmx500m -classpath "%rmg%\software\rmg\RMG.jar" GUI > output &
+	java -Xmx500m -classpath "%rmg%\bin\RMG.jar" GUI > output &
 
 .. _tabInitialCondition:
 
