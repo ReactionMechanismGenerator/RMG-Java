@@ -179,6 +179,7 @@ public class Reaction {
   	double rate =0;
 	Temperature stdtemp = new Temperature(298,"K");
 	double Hrxn = calculateHrxn(stdtemp);
+	Temperature sys_temp = ReactionModelGenerator.getTemp4BestKinetics();
 
     /* AJ 12JULY2010:
      * Added diffusive limits from previous RMG version by replacing function calculateTotalRate
@@ -232,12 +233,9 @@ public class Reaction {
             double DiffFactor = 0.0;
 
             if (numReacts == 1 && numProds == 1) {
-
                 keff = rate;
-                
-                setKineticsComments(getComments() + "\t" + "Diffusive limits do not apply " + "\t" + "Keq =" + calculateKeq(p_temperature),0);
-
-                return keff;
+                rate = keff;
+				DiffFactor = 1;
             }
             else if (numReacts == 1 && numProds == 2) {
 
@@ -247,14 +245,8 @@ public class Reaction {
                 double k_back_eff= k_back*k_back_diff/(k_back + k_back_diff);
 
                 keff = k_back_eff*calculateKeq(p_temperature);
-                //if (keff/k_chem < 0.2){
-                    //if (!getKinetics().getComment().endsWith("Diffusion limited")){
                 DiffFactor = keff/rate;
-
-                
-                setKineticsComments(getComments() + "\t"  + "Diffusion factor = " + DiffFactor + "\t" + "Keq =" + calculateKeq(p_temperature),0);
-
-                return keff;
+                rate = keff;
             }
             else if (numReacts == 2 && numProds == 1) {
 
@@ -264,51 +256,34 @@ public class Reaction {
                 double k_forw_eff = k_forw*k_forw_diff/(k_forw + k_forw_diff);
 
                 keff = k_forw_eff;
-                //if (keff/k_forw < 0.2){
-                    //if (!getKinetics().getComment().endsWith("Diffusion limited")){
                 DiffFactor = keff/rate;
-
-                setKineticsComments(getComments() + "\t"  + "Diffusion factor = " + DiffFactor + "\t" + "Keq =" + calculateKeq(p_temperature),0);
-
-                return keff;
-
+                rate = keff;        
             }
             else if (numReacts == 2 && numProds == 2) {
-                //Temperature stdTemp = new Temperature(298, "K");
-                double deltaHrxn = structure.calculateHrxn(p_temperature);
-                //setKineticsComments(getKinetics().getComment() + "Diffusion limited");
 
-                if (deltaHrxn<0){   // Forward reaction is exothermic hence the corresponding diffusion limit applies
+                double rxn_Keq = structure.calculateKeq(p_temperature);
+                double deltaHrxn = structure.calculateHrxn(p_temperature);
+
+                if (rxn_Keq>1){   // Forward reaction is exothermic hence the corresponding diffusion limit applies
                     double k_forw = rate;
                     LinkedList reactantsInForwRxn = structure.reactants;
                     double k_forw_diff = calculatediff(reactantsInForwRxn);
                     double k_forw_eff = k_forw*k_forw_diff/(k_forw + k_forw_diff);
                     keff = k_forw_eff;
-                    //if (keff/k_forw < 0.2){
-                        //if (!getKinetics().getComment().endsWith("Diffusion limited")) {
                     DiffFactor = keff/rate;
-                    
-                    setKineticsComments(getComments() + "\t"  + "Diffusion factor = " + DiffFactor + "\t" + "Keq =" + calculateKeq(p_temperature),0);
-                    
-                    return keff;
+                    rate = keff;
                 }
-                else if (deltaHrxn>0){ // Reverse reaction is exothermic and the corresponding diffusion limit should be used
+                else if (rxn_Keq<1){ // Reverse reaction is exothermic and the corresponding diffusion limit should be used
                     double k_back = rate / calculateKeq(p_temperature);
                     LinkedList reactantsInBackRxn = structure.products;
-                    double k_back_diff= calculatediff(reactantsInBackRxn);
-                    double k_back_eff= k_back*k_back_diff/(k_back + k_back_diff);
-                    keff = k_back_eff*calculateKeq(p_temperature);
-                    //if (keff/k_chem < 0.2){
-                        //if (!getKinetics().getComment().endsWith("Diffusion limited")) {
+                    double k_back_diff = calculatediff(reactantsInBackRxn);
+                    double k_back_eff = k_back*k_back_diff/(k_back + k_back_diff);
+                    keff = k_back_eff * calculateKeq(p_temperature);
                     DiffFactor = keff/rate;
-                    
-                    setKineticsComments(getComments() + "\t" + "Diffusion factor = " + DiffFactor + "\t" + "Keq =" + calculateKeq(p_temperature),0);
-
-                    return keff;
+                    rate = keff;
                 }
-
             }
-                else if (numReacts == 2 && numProds == 3) {
+			else if (numReacts == 2 && numProds == 3) {
 
                 double k_forw = rate;
                 LinkedList reactantsInForwRxn = structure.reactants;
@@ -316,21 +291,22 @@ public class Reaction {
                 double k_forw_eff = k_forw*k_forw_diff/(k_forw + k_forw_diff);
 
                 keff = k_forw_eff;
-                //if (keff/k_forw < 0.2){
-                    //if (!getKinetics().getComment().endsWith("Diffusion limited")){
                 DiffFactor = keff/rate;
-
-                setKineticsComments(getComments() + "\t"  + "Diffusion factor = " + DiffFactor + "\t" + "Keq =" + calculateKeq(p_temperature),0);
-
-                return keff;
-
+                rate = keff;
             }
-
-        }
-//        for (int numKinetics=0; numKinetics<k_All.length; ++numKinetics) {
-//        	setKineticsComments(k_All[numKinetics].getComment() + "\t" + "Keq(T=298K) =" + calculateKeq(p_temperature),numKinetics);
-//        }
-      	return rate;
+			// Add comments only if the temperature at which the function has been called corresponds to the system temperature specified in the condition file
+			// And if they haven't already been added
+			if (p_temperature.getK()==sys_temp.getK()){
+				String oldComments = k_All[0].getComment();
+				if (!oldComments.contains("Diffusion")) {
+					if (numReacts == 1 && numProds == 1)
+						oldComments += " Unimolecular: no diffusion limitation.";
+					String newComments = oldComments + String.format(" Diffusion factor=%.3g, rate=%.3g, Keq=%.3g, at T=%.0fK.", DiffFactor, rate, calculateKeq(p_temperature), p_temperature.getK());
+					setKineticsComments(newComments,0);
+				}
+			}
+		}
+       return rate;
 
   	}
   	else if (isBackward()){
