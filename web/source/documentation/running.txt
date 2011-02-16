@@ -11,7 +11,7 @@ Running RMG from the Command Line in Linux
 ==========================================
 
 This section assumes that RMG is already installed according to the directions
-in Section :ref:`linux installation`. Additionally, it is assumed that you have
+in Section :ref:`Linux installation <linuxinstallation>`. Additionally, it is assumed that you have
 created a directory (either in your home directory or elsewhere) in which the
 initialization file :file:`condition.txt` has been placed. In the example, we
 assume that we have created a directory :file:`/hexane_pyro`, which contains the
@@ -27,10 +27,10 @@ condition file :file:`hexane_pyro.txt`.
 
     $ java -Xmx500m -classpath $RMG/bin/RMG.jar RMG hexane_pyro.txt > output.log &
 
-When RMG is started, it creates ten subdirectories in the directory containing
-the condition file: :file:`therfit`, :file:`chemkin`, :file:`fame`,
-:file:`chemdis`, :file:`fit3p`, :file:`frankie`, :file:`GATPFit`,
-:file:`ODESolver`, :file:`InChI` and :file:`Restart`.
+When RMG is started, it creates 11 subdirectories in the directory containing
+the condition file: :file:`2Dmolfiles`, :file:`3Dmolfiles`, :file:`chemkin`,
+:file:`fame`, :file:`frankie`, :file:`GATPFit`, :file:`InChI`,
+:file:`ODESolver`, :file:`Pruning`, :file:`QMfiles` and :file:`Restart`.
 
 In this example, all of the output from RMG is piped to a file :file:`output.log`. The ``> output`` 
 part of the command is optional but recommended.
