@@ -8,7 +8,7 @@ and .mol files to adjacency lists.
 
 .. note::
 
-	The InChI executable must be present in the ``%rmg%\software\InChI`` directory 
+	The InChI executable must be present in the ``%rmg%\bin`` directory 
 	for the InChI2AdjList and AdjList2InChI modules to function.
 
 InChI2AdjList
@@ -31,7 +31,7 @@ An example of the :file:`listOfInChIs.txt` file is::
 Running the following command will generate a file (:file:`adjList_output.txt`)
 which contains a list of species, in the form of adjacency lists::
 
-	java -classpath "%rmg%"\software\rmg\RMG.jar InChI2AdjList listOfInChIs.txt
+	java -classpath "%rmg%"\bin\RMG.jar InChI2AdjList listOfInChIs.txt
 
 Mol2AdjList
 -----------
@@ -61,7 +61,7 @@ you like (for the purpose of this example, we'll create a file named
 Passing the location of this .mol file to the Mol2AdjList console, using the
 following command, generates the adjacency list in a file named :file:`adjList.txt`::
 
-	java -classpath "%rmg%"\software\rmg\RMG.jar Mol2AdjList temp.mol > adjList.txt
+	java -classpath "%rmg%"\bin\RMG.jar Mol2AdjList temp.mol > adjList.txt
 
 AdjList2InChI
 -------------
@@ -93,4 +93,4 @@ An example of the :file:`listOfAdjLists.txt` file is::
 Running the following command will generate a file (:file:`inchi_output.txt`)
 which contains a list of InChIs, identified by the name given in the input file::
 
-	java -classpath "%rmg%"\software\rmg\RMG.jar AdjList2InChI listOfAdjLists.txt
+	java -classpath "%rmg%"\bin\RMG.jar AdjList2InChI listOfAdjLists.txt
