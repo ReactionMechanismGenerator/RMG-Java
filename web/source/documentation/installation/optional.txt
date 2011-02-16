@@ -3,20 +3,24 @@
 Optional advanced features
 ****************************
 
+Additional information about the advanced RMG features and the third-party software required to install them can be found in the following sections. 
+
+.. _installing_inchi:
 
 InChI generation
 ===================
 
-Optionally, to generate InChIs and to convert from InChIs/.mol files to adjacency lists you will need:
+Optionally, to generate InChIs (see :ref:`InChIgeneration`) and to convert from InChIs/.mol files to adjacency lists you will need:
 
 The IUPAC International Chemical Identifier InChI version 1 (software version 1.01).
     This is available from http://www.iupac.org/inchi/download/index.html
 
-.. note::  This version conflicts with the instructions in :ref:`qmdependencies`.
+.. note::  This version conflicts with the instructions in :ref:`installing_qm`.
 
 
-Additional information about the advanced RMG features and the third-party software required to install them can be found in the following section. 
 
+
+.. _installing_daspk:
 
 Sensitivity analysis
 ========================
@@ -26,7 +30,7 @@ The next few steps are required only if you want RMG to be able to perform sensi
 6. Obtain the DAEPACK library file. Make a symbolic link of the library file in a directory in your library file search path, e.g. :file:`/usr/lib`. 
 
 7. Download daspk31.tgz and untar it using the command ``$ tar -zxvf daspk31.tgz``. Copy all the source files (:file:`*.f` files) from the untarred directories :file:`ad_solver`,
-  :file:`preconds` and :file:`solver` into the directory :file:`$RMG/software/ODESolver/daspk`. Change to the directory :file:`$RMG/software/ODESolver`and execute the makefile with the ``daspk`` option. Copy the resulting executable, :file:`daspkAUTO.exe`, to :file:`$RMG/software/ODESolver/daspkAUTO.exe` if this is not already done. ::
+:file:`preconds` and :file:`solver` into the directory :file:`$RMG/software/ODESolver/daspk`. Change to the directory :file:`$RMG/software/ODESolver`and execute the makefile with the ``daspk`` option. Copy the resulting executable, :file:`daspkAUTO.exe`, to :file:`$RMG/software/ODESolver/daspkAUTO.exe` if this is not already done. ::
 
     $ tar -xvzf daspk31.tgz
     $ mv ad_solver/*.f $RMG/software/ODESolver/daspk
@@ -39,12 +43,10 @@ The next few steps are required only if you want RMG to be able to perform sensi
 You are now ready to run RMG with sensitivity analysis support.
 
 
-
-.. _qmdependencies:
+.. _installing_qm:
 
 3D-geometry-based Thermodynamic Property Calculation
-=====================================================================================
-
+=========================================================
 Several dependencies are required to use 3D-geometry-based thermodynamic property calculation features of RMG,
 including either GAUSSIAN03 or MOPAC2009.
 With the exception of GAUSSIAN03 and MOPAC2009, all of these may be obtained freely and are open-source. 
