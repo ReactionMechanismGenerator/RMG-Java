@@ -5184,6 +5184,8 @@ public class ReactionModelGenerator {
 		double count = 0.0;
 		for (Iterator iter = cerm.getReactedReactionSet().iterator(); iter.hasNext(); ) {
 			Reaction rxn = (Reaction) iter.next();
+            // The model core stores reactions in both directions
+            // To avoid double-counting we must count each of these as 1/2
 			if (rxn.hasReverseReaction()) count += 0.5;
 			else                          count += 1;
 		}
@@ -5192,8 +5194,9 @@ public class ReactionModelGenerator {
 		count = 0.0;
 		for (Iterator iter = cerm.getUnreactedReactionSet().iterator(); iter.hasNext(); ) {
 			Reaction rxn = (Reaction) iter.next();
-			if (rxn.hasReverseReaction()) count += 0.5;
-			else                          count += 1;
+            // The model edge stores reactions in only one direction, so each
+            // edge reaction counts as 1
+            count += 1;
 		}
 		numberOfEdgeReactions = (int) Math.round(count);
 
