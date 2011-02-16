@@ -15,7 +15,7 @@ How do I represent molecular oxygen?
 Use the ground electronic state of molecular oxygen, which contains a single
 bond and a diradical. The adjacency list should be ::
 
-  (1) O2 0.1 (mol/cm3)
+  O2 0.1 (mol/cm3)
   1 O 1 {2,S}
   2 O 1 {1,S}
 
@@ -35,7 +35,7 @@ option -Xmx1600m will allocate 1600 MB of memory. See the section on
 :ref:`running RMG <running>`). If this still fails, there are several
 additional options:
 
-1) Use the pruning feature introduced in RMG 3.2.
+1) Use the :ref:`pruning <pruning>` feature introduced in RMG 3.2.
 
 2) Use tighter bounds for MaxCarbonNumber, MaxRadicalNumber, etc. as appropriate for your system.
    By reducing these values, RMG will generate fewer edge species. The idea is to intelligently choose the bounds to
@@ -44,7 +44,7 @@ additional options:
 3) Relax the error tolerance (i.e. make it larger). RMG keeps expanding the reaction mechanism
    until the flux to 'edge' species is below the tolerance you specify. Increasing this tolerance
    means RMG will build a smaller mechanism (though it may be
-   missing some important reaction pathways). For more details see http://rmg.sourceforge.net/documentation/theory/enlarger.html and the reference on that page.
+   missing some important reaction pathways). For more details see :ref:`ratebasedmodelenlarger` and the reference on that page.
 
 .. _Q4:
 
@@ -64,7 +64,7 @@ order):
 1) Relax the error tolerance (i.e. make it larger). RMG keeps expanding the reaction mechanism
    until the flux to 'edge' species is below the tolerance you specify. Increasing this tolerance
    means RMG will stop sooner; it will take less time, but the model will be smaller and may be
-   missing some important reaction pathways. For more details see http://rmg.sourceforge.net/documentation/theory/enlarger.html and the reference on that page.
+   missing some important reaction pathways. For more details see :ref:`ratebasedmodelenlarger` and the reference on that page.
    
 2) Setting the maximum number of carbons (or oxygens, heavy atoms, etc.) in a species,
    if you're focusing on the species decomposition.
@@ -122,7 +122,7 @@ consequently interpreted as erroneous and stopped. It is basically a numerical
 artifact, as the equations should not allow a negative concentration. There
 are two options for dealing with this:
 
-1. Play around with the value for Atol in the DynamicSimulator block in your
+1. Play around with the value for Atol in the :ref:`dynamicsimulator` block in your
    condition file...for example, maybe try tightening it (i.e. reduce the value) by a few orders of
    magnitude.
 
