@@ -29,7 +29,7 @@ Instructions for Use
 
 	 $ java -classpath $RMG/bin/RMG.jar ThermoDataEstimator input.txt > RMG.log
 
-   Or if you are using Windows operating system you can instead run the batch file :file:`ThermoDataEstimator.bat`. Either double-click it or at the command propmpt type::
+   Or if you are using a Windows operating system you can instead run the batch file :file:`ThermoDataEstimator.bat`. Either double-click it or at the command propmpt type::
 
      > ThermoDataEstimator.bat
 
