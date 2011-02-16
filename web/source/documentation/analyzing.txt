@@ -112,7 +112,7 @@ Generally, there are five outputs from RMG (six if pressure-dependence is turned
 #. :file:`tableOfRateCoeffs.txt` (located in :file:`$RMG/chemkin`).  If pressure-dependence was turned on, an additional
    file will be stored in :file:`$RMG/chemkin`.  This file contains the computed k(T,P) for all reactions present in the
    mechanism, for each temperature and pressure requested by the user in the :file:`condition.txt` file.  These rate coefficients were
-   used to computed the reported Chebyshev or PLOG pressure-dependent rates reported in the :file:`chem.inp` file.
+   used to compute the reported Chebyshev or PLOG pressure-dependent rate coefficients reported in the :file:`chem.inp` file.
 
 .. _viewrmgve:
 
