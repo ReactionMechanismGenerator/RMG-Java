@@ -1,0 +1,75 @@
+// autoxidation of octane
+
+
+Database: RMG_database
+
+PrimaryThermoLibrary:
+Name: GRIMech3.0
+Location: GRI-Mech3.0
+Name: RMG-minimal
+Location: primaryThermoLibrary
+END
+
+PrimaryTransportLibrary:
+Name: GRIMech3.0
+Location: GRI-Mech3.0
+END
+
+ReadRestart: no
+WriteRestart: no
+
+TemperatureModel: Constant (K) 500
+PressureModel: Constant (atm) 1 
+
+/// THESE ARE THE IMPORTANT PARTS FOR LIQUID SIMULATIONS
+EquationOfState: Liquid
+Solvation: on octane
+Diffusion: on 1.0e-3
+
+InitialStatus:
+
+Octane (mol/cm3) 6.154e-3 
+1 C 0 {3,S} 
+2 C 0 {4,S} 
+3 C 0 {1,S} {5,S} 
+4 C 0 {2,S} {6,S} 
+5 C 0 {3,S} {7,S} 
+6 C 0 {4,S} {8,S} 
+7 C 0 {5,S} {8,S} 
+8 C 0 {6,S} {7,S} 
+
+O2 (mol/cm3) 4.953e-6  ConstantConcentration
+1 O 1 {2,S}
+2 O 1 {1,S}
+
+END
+
+InertGas:
+N2 (mol/cm3) 0.0
+Ar (mol/cm3) 0.0
+END
+
+SpectroscopicDataEstimator: off
+PressureDependence: off
+
+FinishController:
+(1) Goal ReactionTime:  10 (min)
+(2) Error Tolerance: 0.1
+
+DynamicSimulator: DASSL
+TimeStep: AUTO
+Atol: 1e-18
+Rtol: 1e-8
+
+PrimaryKineticLibrary:
+END
+
+ReactionLibrary:
+END
+
+SeedMechanism:
+END
+
+ChemkinUnits:
+A: moles
+Ea: kcal/mol
