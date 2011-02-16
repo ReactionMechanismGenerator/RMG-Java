@@ -57,7 +57,7 @@ order:
 #. The :ref:`units <chemkinunits>` for the Arrhenius parameters A and Ea (to be reported in the generated chem.inp file)
 
 The name :file:`condition.txt` is variable. As you'll see in
-Section :ref:`running in linux`, you can change the name of the initialization
+Section :ref:`runninginlinux`, you can change the name of the initialization
 file, so long as it remains a :file:`.txt` file.
 
 
@@ -122,7 +122,7 @@ The order in which the primary thermo libraries are specified is important:
 If a species appears in multiple primary thermo libraries, the first instance will
 be used.
 
-Please see Section :ref:`editing thermo database` for details on editing the
+Please see Section :ref:`editingthermodatabase` for details on editing the
 primary thermo library. In general, it is best to leave the PrimaryThermoLibrary
 set to its default value.  In particular, the thermodynamic properties for H and H2
 must be specified in one of the primary thermo libraries as they cannot be estimated
