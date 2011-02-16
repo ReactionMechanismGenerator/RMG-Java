@@ -1,3 +1,4 @@
+.. _ratebasedmodelenlarger:
 
 Rate-Based Model Enlarger
 =========================
