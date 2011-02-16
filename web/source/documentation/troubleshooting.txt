@@ -4,6 +4,26 @@
 Troubleshooting and Known Issues
 ********************************
 
+Getting help
+============
+
+If the tips on this page don't solve your problem, there are several ways 
+you can ask for help, and we encourage you to do so. If we don't hear what
+our users have trouble with, we can't improve the software.
+
+Users mailing list
+    There is an `RMG-Users mailing list <https://lists.sourceforge.net/lists/listinfo/rmg-users>`_ hosted by soureforge that you are welcome to join and/or email.
+
+Developers mailing list
+    The developers can be reached quickly by emailing `rmg_dev@mit.edu`.
+    We welcome your questions.
+
+Issue Tracker
+    The developers use an `issue tracker <https://github.com/GreenGroup/RMG-Java/issues/>`_
+    at https://github.com/GreenGroup/RMG-Java/issues/ to keep track of issues.
+    Feel free to open an issue there. If searching for issues other people have had, be sure 
+    to check the `closed issues <https://github.com/GreenGroup/RMG-Java/issues/closed>`_ too.
+    
 
 Known issues
 ============
