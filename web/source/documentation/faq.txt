@@ -32,7 +32,17 @@ tens of thousands of species, the run will typically crash even with around
 1500 MB of RAM. If you haven't already done so, we recommend allocating as
 much memory as possible when executing the RMG job (for example, using the
 option -Xmx1600m will allocate 1600 MB of memory. See the section on
-:ref:`running RMG <running>`). If this still fails, there are several
+:ref:`running RMG <running>`).
+
+.. note:: 
+  The way Java creates subprocesses (e.g. for running the ODE solver DASSL or
+  Pressure-Dependence solver FAME) it allocates the process with the same amount
+  of memory as the main program. If you had you heap set to 1GB then it will
+  allocate another 1GB for the sub-process to run. Therefore you shouldn't set
+  the ``-Xmx`` amount to more than half of your available memory, or you will
+  run out of memory when starting one of the subprocesses.
+
+If this still fails, there are several
 additional options:
 
 1) Use the :ref:`pruning <pruning>` feature introduced in RMG 3.2.
