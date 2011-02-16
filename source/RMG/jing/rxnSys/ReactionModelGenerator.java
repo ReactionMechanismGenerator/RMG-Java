@@ -100,6 +100,8 @@ public class ReactionModelGenerator {
     protected SeedMechanism seedMechanism = null;
     protected PrimaryThermoLibrary primaryThermoLibrary;
     protected PrimaryTransportLibrary primaryTransportLibrary;
+
+    protected PrimaryAbrahamLibrary primaryAbrahamLibrary;
 	
 	protected boolean readrestart = false;
 	protected boolean writerestart = false;
@@ -5165,13 +5167,32 @@ public class ReactionModelGenerator {
      	}
      	if (numPTLs == 0) setPrimaryTransportLibrary(null);
     }
-    
+
+    //Added by Amrit Jalan on December 21, 2010
+    public void readAndMakePAL() {
+     	
+     		String name = "primaryAbrahamLibrary";
+			String path = "primaryAbrahamLibrary";
+
+            setPrimaryAbrahamLibrary(new PrimaryAbrahamLibrary(name,path));
+           	getPrimaryAbrahamLibrary().appendPrimaryAbrahamLibrary(name,path);
+                 	
+    }
+
     public PrimaryTransportLibrary getPrimaryTransportLibrary() {
     	return primaryTransportLibrary;
     }
     
     public void setPrimaryTransportLibrary(PrimaryTransportLibrary p_primaryTransportLibrary) {
     	primaryTransportLibrary = p_primaryTransportLibrary;
+    }
+
+    
+    public PrimaryAbrahamLibrary getPrimaryAbrahamLibrary() {
+    	return primaryAbrahamLibrary;
+    }
+    public void setPrimaryAbrahamLibrary(PrimaryAbrahamLibrary p_primaryAbrahamLibrary) {
+    	primaryAbrahamLibrary = p_primaryAbrahamLibrary;
     }
 
 	/**

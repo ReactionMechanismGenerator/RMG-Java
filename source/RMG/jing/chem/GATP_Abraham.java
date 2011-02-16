@@ -40,6 +40,7 @@ public class GATP_Abraham implements GeneralAbramGAPP {
 	
     private static GATP_Abraham INSTANCE = new GATP_Abraham();
     protected ThermoGAGroupLibrary thermoLibrary;
+    protected static PrimaryAbrahamLibrary primaryLibrary;
 	
     // Constructors
 	
@@ -48,6 +49,15 @@ public class GATP_Abraham implements GeneralAbramGAPP {
     }
 	
 	public AbramData generateAbramData(ChemGraph p_chemGraph) {
+
+        AbramData abram_result = primaryLibrary.getAbrahamData(p_chemGraph.getGraph());
+    	// If the chemgraph was found in a primary transport library,
+    	//		return the results
+    	if (abram_result != null) {
+    		//p_chemGraph.fromprimarytranslibrary = true;
+    		return abram_result;
+    	}
+
 		// Generation of Abraham Solute Parameters
 		AbramData result_Abraham= new AbramData();
 		// get the Group-Additive parameters (S,B,E,L,A)
