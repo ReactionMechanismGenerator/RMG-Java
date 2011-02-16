@@ -1,0 +1,72 @@
+.. _liquids:
+
+********************
+Liquid Phase Systems
+********************
+
+To simulate liquids in RMG requires three components.
+
+
+After the ``PressureModel`` line in the :file:`condition.txt` input file, add a section like this::
+
+    EquationOfState: Liquid
+    Solvation: on octane
+    Diffusion: on 1.0e-3
+
+
+Equation of state
+------------------
+The first statement
+``EquationOfState: Liquid``
+will have two effects:
+
+#. disable the ideal gas law renormalization and instead rely on the concentrations you specified in the input file to initialize the system.
+#. prevent the volume from changing when there is a net stoichiometry change due to a chemical reaction (A = B + C). 
+
+
+Solvation thermochemistry
+--------------------------
+
+The next correction for liquids is solvation effects on the thermochemistry. 
+The statement ``Solvation: on <solvent>`` turns this on, and specifies the solvent parameters to use.
+Parameters are provided for the following solvents: 
+acetonitrile
+benzene
+butanol
+carbontet
+chloroform
+cyclohexane
+decane
+dibutylether
+dichloroethane
+dimethylformamide
+dimethylsulfoxide
+dodecane
+ethanol
+ethylacetate
+heptane
+hexadecane
+hexane
+isooctane
+nonane
+octane
+octanol
+pentane
+toluene
+undecane
+water.
+
+
+Diffusion-limited kinetics
+---------------------------
+The next correction for liquid-phase reactions is to ensure that bimolecular reactions do not exceed their diffusion limits.
+The diffusivity is estimated for each species using a Stokes-Einstein hard sphere model.
+The viscosity of the solvent is specified in units of Pa.s using the command
+``Diffusion: on <viscosity>``
+
+To build accurate models of liquid phase chemical reactions you will also want to modify your kinetics libraries.
+
+
+This is a minimal example condition file:
+
+.. literalinclude:: ../../../examples/RMG/liquidphase/condition.txt

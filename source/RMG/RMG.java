@@ -142,6 +142,7 @@ public class RMG {
 		System.setProperty("jing.chem.TransportReferenceLibrary.pathName", database_path +"/transport_libraries");
 		System.setProperty("jing.rxn.ReactionTemplateLibrary.pathName",    database_path +"/kinetics_groups");
 		System.setProperty("jing.rxn.ReactionLibrary.pathName",            database_path +"/kinetics_libraries");
+        System.setProperty("jing.chem.SolventLibrary.pathName",            database_path +"/thermo_libraries");
     }
 	
 	public static void initializeSystemProperties(String inputfile) {
