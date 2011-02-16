@@ -289,6 +289,7 @@ InChI Generation
 Field is **Optional**
 
 The next item in the initialization file is the InChI generation command.
+To use it you will need to :ref:`install the InChI software <installing_inchi>`.
 An InChI, or IUPAC **In**\ ternational **Ch**\ emical **I**\ dentifier, is an unique
 species identifier, with the exception of differing electronic or spin states,
 developed by IUPAC and NIST.  An example of an InChI string (which represents the species
@@ -332,7 +333,7 @@ On-the-fly Quantum Calculations
 Field is **Optional**
 
 The next section is optional and specifies parameters for on-the-fly quantum mechanics (QM) calculations for estimating thermodynamic parameters.
-If the user does not have the needed `dependencies <../installation.html#qmdependencies>`_\ or wishes to use the
+If the user does not have the needed :ref:`dependencies <installing_qm>` or wishes to use the
 group additivity approach for estimation of all unknown thermodynamic parameters, this section should be omitted.
 The first line in this block should be something like ::
 
@@ -373,7 +374,7 @@ Field is **Required**
 
 The name, concentration, and structure of each reactant must be specified. For
 each reactant, the first line should include the reactant's 
-name (e.g. ``C2O2``) and it's concentration(s) preceded by units (e.g. ``(mol/cm3) 4.09e-3 ``).
+name (e.g. ``C2O2``) and it's concentration(s) preceded by units (e.g. ``(mol/cm3) 4.09e-3``).
 Acceptable units for concentration are "mol/cm3", "mol/m3", and "mol/l".  Please note,
 RMG will **not** accept a species name that begins with a number.
 
@@ -665,7 +666,9 @@ Field is **Required**
 
 RMG uses the DASSL or DASPK dynamic solver. DASSL is recommended, as RMG uses
 DASPK in a way that requires the use of the proprietary DAEPACK library, which
-is not distributed with RMG. Future versions of RMG might include the CHEMKIN dynamic solver.
+is not distributed with RMG (see :ref:`installation instructions <installing_daspk>` for details).
+
+.. Future versions of RMG might include the CHEMKIN dynamic solver.
 
 The first line beneath the solver should be either ``TimeStep`` or ``Conversions``, depending on whether you chose Goal Conversion or Goal ReactionTime as your finish controller criterion.
 
@@ -699,8 +702,13 @@ The automated time stepping feature is described in greater detail in the Theory
 
 .. _pruning:
 
+Pruning
+~~~~~~~~
+
 When using automated time stepping, it is also possible to perform mechanism generation with pruning of "unimportant" edge species to reduce memory usage. This option is requested by specifying ``AUTOPRUNE`` in place of ``AUTO``. When using ``AUTOPRUNE``, this must be followed by four lines specifying pruning parameters, as the example below shows::
 
+     DynamicSimulator: DASSL
+     TimeStep: AUTOPRUNE
      TerminationTolerance: 1.0E4
      PruningTolerance: 1.0E-15
      MinSpeciesForPruning: 1000
@@ -715,6 +723,9 @@ When using automated time stepping, it is also possible to perform mechanism gen
 When using pruning, RMG will not prune unless all reaction systems reach the goal reaction time or conversion without first exceeding the termination tolerance. Therefore, you may find that RMG is not pruning even though the model edge size exceeds ``MaxEdgeSpeciesAfterPruning``. In order to increase the likelihood of pruning in such cases, you can try increasing ``TerminationTolerance`` to an arbitrarily high value. Alternatively, if you are using a conversion goal, because reaction systems may reach equilibrium below the goal conversion, it may be helpful to reduce the goal conversion or switch to a goal reaction time.
 
 .. _atol-rtol:
+
+Simulator Tolerances
+~~~~~~~~~~~~~~~~~~~~~
 
 Fields are **Required**
 
@@ -737,10 +748,10 @@ Sensitivity Analysis
 
 Field is **Optional**
 
-As long as DASPK is chosen for the dynamic solver, RMG can perform sensitivity
+If DASPK is chosen for the dynamic solver, RMG can perform sensitivity
 analysis and generate error bars on the concentration profiles. As mentioned above,
 however, RMG uses DASPK in a way that requires the use of the proprietary library
-DAEPACK (which provides automatic differentiation capabilities for the sensitivity analysis).
+DAEPACK which provides automatic differentiation capabilities for the sensitivity analysis (see :ref:`installation instructions <installing_daspk>` for details).
 If you do not have access to this library, an alternative is to perform sensitivity analysis
 in CHEMKIN, using the ''chem.inp'' file produced by RMG.
 
@@ -795,7 +806,7 @@ bars section.
 Primary Kinetic Library
 ------------------------
 
-Field is **Required**
+Field is **Required** but can be empty.
 
 The next section of the :file:`condition.txt` file specifies which, if any, primary
 kinetic libraries should be used.  When a reaction is specified in a primary kinetic
@@ -847,7 +858,7 @@ the one that gets used.
 Reaction Library
 ------------------------
 
-Field is **Required**
+Field is **Required** but can be empty.
 
 The next section of the :file:`condition.txt` file specifies which, if any,
 Reaction Libraries should be used. When a reaction library is specified, RMG will first
@@ -896,7 +907,7 @@ given in each mechanism, the different mechanisms can have different units.
 Seed Mechanisms
 ---------------
 
-Field is: **Required**
+Field is: **Required** but can be empty.
 
 The next section of the :file:`condition.txt` file specifies which, if any, 
 Seed Mechanisms should be used.  If a seed mechanism is passed to RMG, every
@@ -942,7 +953,7 @@ the one that gets used.
 .. note::
 
 	For more information on what files to include in a Primary Kinetic / Reaction Library or
-	Seed Mechanism, visit :ref:`Building a Primary Kinetc Library / Reaction Library / Seed Mechanism <formatofseedmechanisms>`
+	Seed Mechanism, visit :ref:`Building a Primary Kinetic Library / Reaction Library / Seed Mechanism <formatofseedmechanisms>`
 
 .. _chemkinunits:
 

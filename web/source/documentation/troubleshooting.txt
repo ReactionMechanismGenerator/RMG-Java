@@ -57,18 +57,22 @@ large output. When this output stretches to tens of megabytes, sometimes it
 can block the pipe through which the Fame program (written in Fortran) and the
 RMG program (in Java) communicate. When the computer is running low on memory
 this can be especially troublesome. On some computers the job has been known
-to freeze for tens of hours. The only sure way to avoid this is to build a
-smaller model: use a higher termination criterion.
+to freeze for tens of hours. The symptom is the job pauses, although the task
+manager of the computer suggests not a lot is happening.
+The only sure way to avoid this is to build a smaller model: use a higher
+termination criterion.
 
 Troubleshooting
 ===============
 
-*****Final attempt (#36) on species ____ failed.
+Final attempt (#36) on species ____ failed.
 ------------------------------------------------
 
 With QMTP: if after "Final attempt" it still fails, and reports the chemgraph of the species that failed,
 take this chemgraph and either provide thermochemistry for it in a primaryThermoLibrary, or else
 add it to your ForbiddenStructures section of your condition file or database.
+
+
 
 Other Tips
 ===================

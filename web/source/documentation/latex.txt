@@ -13,7 +13,7 @@ Please also refer to our website for how to cite RMG in published work.
 
    introduction
    ../license
-   installation
+   installation/index
    conditionfile
    examples
    GraphicalUserInterface
