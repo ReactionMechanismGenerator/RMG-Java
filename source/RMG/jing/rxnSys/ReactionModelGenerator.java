@@ -2827,7 +2827,9 @@ public class ReactionModelGenerator {
 					
 					PDepReaction currentPDepReverseRxn = currentPDepRxn.getReverseReaction();
 					// Not all nonIncludedReactions are reversible
-					if (currentPDepReverseRxn != null) {
+                                        // (MRH FEB-16-2011) ... and not all reverse reactions
+                                        //  have pressure-dependent rate coefficients (apparently)
+					if (currentPDepReverseRxn != null && currentPDepReverseRxn.getPDepRate() != null) {
 						bw.write(currentPDepReverseRxn.toString());
 						bw.newLine();
 						bw.write(writeRatesAndParameters(currentPDepReverseRxn,numFameTemps,
