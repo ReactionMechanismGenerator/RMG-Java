@@ -34,6 +34,7 @@ import java.util.*;
 import jing.chemUtil.*;
 import jing.chemParser.*;
 import jing.chemUtil.HierarchyTree;
+import jing.rxnSys.Logger;
 
 //## package jing::chem
 
@@ -138,14 +139,14 @@ public class ThermoGAGroupLibrary {
 
         String directory = System.getProperty("jing.chem.ThermoGAGroupLibrary.pathName");
         if (directory == null) {
-        	System.out.println("undefined system property: jing.chem.ThermoGAGroupLibrary.pathName, exit!");
+        	Logger.critical("undefined system property: jing.chem.ThermoGAGroupLibrary.pathName, exit!");
         	System.exit(0);
         }
 
         String separator = System.getProperty("file.separator");
         if (!directory.endsWith(separator)) directory = directory + separator;
 			
-			System.out.println("\nReading thermo database from "+directory);
+			Logger.info("\nReading thermo database from "+directory);
 
         String gDictionary = directory + "Group_Dictionary.txt";
         String gTree = directory + "Group_Tree.txt";
@@ -467,7 +468,7 @@ public class ThermoGAGroupLibrary {
 	public void read(String p_groupDictionary, String p_groupTree, String p_groupLibrary, String p_radicalDictionary, String p_radicalTree, String p_radicalLibrary, String p_ringDictionary, String p_ringTree, String p_ringLibrary, String p_otherDictionary, String p_otherLibrary, String p_otherTree, String p_gaucheDictionary, String p_gaucheTree, String p_gaucheLibrary, String p_15Dictionary, String p_15Tree, String p_15Library,String p_abramDictionary,String p_abramTree,String p_abramLibrary,String p_unifacDictionary,String p_unifacTree,String p_unifacLibrary,String p_abramradDictionary,String p_abramradTree,String p_abramradLibrary) { //,String p_solventDictionary,String p_solventLibrary) {
 
 	        	// step 1: read in GA Groups
-					System.out.println("Reading thermochemistry groups");
+					Logger.info("Reading thermochemistry groups");
                     // read thermo functional Group dictionary
                     readGroupDictionary(p_groupDictionary);
                     // read thermo functional Group tree structure
@@ -476,7 +477,7 @@ public class ThermoGAGroupLibrary {
                     readGroupLibrary(p_groupLibrary);
 
 	        	// step 2: read in Radical Corrections
-					System.out.println("Reading radical correction groups");
+					Logger.info("Reading radical correction groups");
                     // read radical dictionary
                     readRadicalDictionary(p_radicalDictionary);
                     // read radical tree
@@ -485,19 +486,19 @@ public class ThermoGAGroupLibrary {
                     readRadicalLibrary(p_radicalLibrary);
 
 	        	// step 3: read in Ring Correction
-					System.out.println("Reading ring correction groups");
+					Logger.info("Reading ring correction groups");
 	                readRingDictionary(p_ringDictionary);
 	                readRingTree(p_ringTree);
                     readRingLibrary(p_ringLibrary);
 
 	        	// step 4: read in Other Correction
-					System.out.println("Reading other correction groups");
+					Logger.info("Reading other correction groups");
                     readOtherDictionary(p_otherDictionary);
                     readOtherLibrary(p_otherLibrary);
                     readOtherTree(p_otherTree);
 
                 // step 5: read in Gauche and 15 Correction libraries
-					System.out.println("Reading gauche and 1/5 correction groups");
+					Logger.info("Reading gauche and 1/5 correction groups");
                     readGaucheDictionary(p_gaucheDictionary);
                     readGaucheTree(p_gaucheTree);
                     readGaucheLibrary(p_gaucheLibrary);
@@ -507,18 +508,18 @@ public class ThermoGAGroupLibrary {
 
 		if (Species.useSolvation) {
 			// Definitions of Platts dictionary, library and tree for Abraham Model Implementation
-			System.out.println("Reading Abraham solvation groups");
+			Logger.info("Reading Abraham solvation groups");
 			readAbrahamDictionary(p_abramDictionary);
 			readAbrahamTree(p_abramTree);
 			readAbrahamLibrary(p_abramLibrary);
 
-			System.out.println("Reading Abraham radical solvation groups");
+			Logger.info("Reading Abraham radical solvation groups");
 			readAbrahamradDictionary(p_abramradDictionary);
 			readAbrahamradTree(p_abramradTree);
 			readAbrahamradLibrary(p_abramradLibrary);
 
 			/* We no longer need UNIFAC groups, and loading them reports some errors, so let's not bother.
-           	System.out.println("Reading UNIFAC solvation groups");
+			Logger.info("Reading UNIFAC solvation groups");
 			readUnifacDictionary(p_unifacDictionary);
 			readUnifacTree(p_unifacTree);
 			readUnifacLibrary(p_unifacLibrary);

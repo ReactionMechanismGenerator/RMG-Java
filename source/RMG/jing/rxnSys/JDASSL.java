@@ -193,7 +193,7 @@ public class JDASSL extends JDAS {
         }
         catch (IOException e) {
         	System.err.println("Problem writing Solver Input File!");
-                e.printStackTrace();
+                Logger.logStackTrace(e);
         }
         //4/30/08 gmagoon: code for providing edge reaction info to DASSL in cases if the automatic time stepping flag is set to true
 		if (autoflag)
@@ -209,7 +209,7 @@ public class JDASSL extends JDAS {
                 }
                 catch (IOException e) {
                     System.err.println("Problem closing Solver Input File!");
-                    e.printStackTrace();
+                    Logger.logStackTrace(e);
 		}
         int idid=0;
         LinkedHashMap speStatus = new LinkedHashMap();
@@ -227,10 +227,10 @@ public class JDASSL extends JDAS {
 
                         //gmagoon 1/25/09: note that the below lines do not actually use the actual idid, but instead use the 1 returned by readOutputFile; the actual success represented by idid is effectively read in through the Fortran output "ODESOLVER SUCCESSFUL" vs. "ODESOLVER FAILED"
 			if (idid !=1 && idid != 2 && idid != 3)	{
-				System.out.println("The idid from DASSL was "+idid );
+				Logger.debug("The idid from DASSL was "+idid );
 				throw new DynamicSimulatorException("DASSL");
         	}
-            System.out.println("After ODE: from " + String.valueOf(tBegin) + " SEC to " + String.valueOf(endTime) + "SEC");
+            Logger.info(String.format("After ODE: from %10.4e s to %10.4e s", tBegin, endTime));
 			Global.solvertime = Global.solvertime + (System.currentTimeMillis() - startTime)/1000/60;
 			startTime = System.currentTimeMillis();
         	speStatus = generateSpeciesStatus(p_reactionModel, y, yprime, 0);
@@ -282,7 +282,7 @@ public class JDASSL extends JDAS {
 //			fw.close();
 //		} catch (IOException e) {
 //			System.err.println("Problem writing Solver Input File!");
-//			e.printStackTrace();
+//			Logger.logStackTrace(e);
 //		}
 		
 		// Rename RWORK and IWORK files if they exist
@@ -312,7 +312,7 @@ public class JDASSL extends JDAS {
                 catch (Exception e) {
                         String err = "Error in running ODESolver \n";
                         err += e.toString();
-                        e.printStackTrace();
+                        Logger.logStackTrace(e);
                         System.exit(0);
                 }
 
@@ -331,7 +331,7 @@ public class JDASSL extends JDAS {
 			renameSuccess = f.renameTo(newFile);
                         if (!renameSuccess)
                         {
-                            System.out.println("Renaming of RWORK file(s) failed.");
+                            Logger.critical("Renaming of RWORK file(s) failed.");
                             System.exit(0);
                         }
                 }
@@ -344,7 +344,7 @@ public class JDASSL extends JDAS {
                     renameSuccess = f.renameTo(newFile);
                     if (!renameSuccess)
                     {
-                        System.out.println("Renaming of IWORK file(s) failed.");
+                        Logger.critical("Renaming of IWORK file(s) failed.");
                         System.exit(0);
                     }
                 }
@@ -359,7 +359,7 @@ public class JDASSL extends JDAS {
             boolean renameSuccess = f.renameTo(newFile);
             if (!renameSuccess)
             {
-                System.out.println("Renaming of RWORK file(s) failed. (renameIntermediateFiles())");
+                Logger.critical("Renaming of RWORK file(s) failed. (renameIntermediateFiles())");
                 System.exit(0);
             }
             
@@ -370,7 +370,7 @@ public class JDASSL extends JDAS {
             renameSuccess = f.renameTo(newFile);
             if (!renameSuccess)
             {
-                System.out.println("Renaming of IWORK file(s) failed. (renameIntermediateFiles())");
+                Logger.critical("Renaming of IWORK file(s) failed. (renameIntermediateFiles())");
                 System.exit(0);
             }
 	}
@@ -387,7 +387,7 @@ public class JDASSL extends JDAS {
         	line = br.readLine();
         	
         	if (Double.parseDouble(line.trim()) != neq) {
-        		System.out.println("ODESolver didnt generate all species results");
+        		Logger.critical("ODESolver didnt generate all species results");
         		System.exit(0);
         	}
         	endTime = Double.parseDouble(br.readLine().trim());
@@ -421,14 +421,14 @@ public class JDASSL extends JDAS {
 		    line=br.readLine();//read the time integrated to
 		    double finalTime = Double.parseDouble(line.trim());
 		    // read the "prunability index" (0 or 1) and maximum ratio (edge flux/Rchar) for each edge species; vector index + 1 corresponds to ID value in edgeID and edgeLeakID
-		    System.out.println("ODE solver integrated to "+ finalTime+" sec.");
-		    for (int i=0; i<(edgeID.size()+edgeLeakID.size()); i++){
+		    Logger.info(String.format("ODE solver integrated to %9.3e s", finalTime));
+			for (int i=0; i<(edgeID.size()+edgeLeakID.size()); i++){
 				line = br.readLine().trim(); //read the prunability index
 				int q = Integer.parseInt(line); //q should be 1 or 0
 				if (q == 1) { prunableSpecies[i] = true; } 
 				else if (q == 0) { prunableSpecies[i] = false; }
 				else {
-					System.out.println("Misread solver output file - prunable species index should be 0 or 1, not "+q);
+					Logger.critical("Misread solver output file - prunable species index should be 0 or 1, not "+q);
 					System.exit(0);
 				}
 				line = br.readLine().trim();//read the max edge flux ratio
@@ -441,7 +441,7 @@ public class JDASSL extends JDAS {
         catch (IOException e) {
         	String err = "Error in reading Solver Output File! \n";
         	err += e.toString();
-        	e.printStackTrace();
+        	Logger.logStackTrace(e);
         	System.exit(0);
         }
         SolverOutput.delete();
@@ -478,7 +478,7 @@ public class JDASSL extends JDAS {
 			fw.close();
 		} catch (IOException e) {
 			System.err.println("Problem creating ODESolver/SpeciesProfiles.txt");
-			e.printStackTrace();
+			Logger.logStackTrace(e);
 		}
 	}
         
@@ -602,7 +602,7 @@ public class JDASSL extends JDAS {
 //            catch (IOException e) {
 //        	String err = "Error in reading Solver Input File! \n";
 //        	err += e.toString();
-//        	e.printStackTrace();
+//        	Logger.logStackTrace(e);
 //        	System.exit(0);
 //            }
 //            
@@ -644,7 +644,7 @@ public class JDASSL extends JDAS {
 //            catch (IOException e) {
 //        	String err = "Error in reading core conc. File! \n";
 //        	err += e.toString();
-//        	e.printStackTrace();
+//        	Logger.logStackTrace(e);
 //        	System.exit(0);
 //            }
 //            
@@ -685,7 +685,7 @@ public class JDASSL extends JDAS {
 //            catch (IOException e) {
 //        	String err = "Error in reading edge flux File! \n";
 //        	err += e.toString();
-//        	e.printStackTrace();
+//        	Logger.logStackTrace(e);
 //        	System.exit(0);
 //            }
 //            
@@ -725,7 +725,7 @@ public class JDASSL extends JDAS {
 //            catch (IOException e) {
 //        	String err = "Error in reading edge reaction flux File! \n";
 //        	err += e.toString();
-//        	e.printStackTrace();
+//        	Logger.logStackTrace(e);
 //        	System.exit(0);
 //            }
 //            
@@ -841,7 +841,7 @@ public class JDASSL extends JDAS {
 //                        int ev = dot.waitFor();               
 //                } catch (Exception e) {
 //                        System.err.println("Problem writing dot File!");
-//                        e.printStackTrace();
+//                        Logger.logStackTrace(e);
 //                }
 //
 //            }

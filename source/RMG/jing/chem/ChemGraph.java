@@ -39,6 +39,7 @@ import jing.chemUtil.Node;
 import jing.chemUtil.Graph;
 import jing.param.Global;
 import jing.param.Temperature;
+import jing.rxnSys.Logger;
 import jing.rxnSys.ReactionModelGenerator;
 
 //## package jing::chem
@@ -247,7 +248,7 @@ public class ChemGraph implements Matchable {
                result = ChemGraph.copy(p_chemGraph);
        }
        catch (Exception e) {
-               System.out.println(e.getMessage());
+               Logger.critical(e.getMessage());
                System.exit(0);
        }
 
@@ -494,7 +495,7 @@ public class ChemGraph implements Matchable {
         Iterator neighbor_iter = p_node.getNeighbor();
         FGElement fge = (FGElement)p_node.getFgElement();
 	if(atom.isRadical()){
-	    System.out.println("Error: calculateRotorFragmentSymmetryNumber() does not support radical sites");
+	    Logger.critical("calculateRotorFragmentSymmetryNumber() does not support radical sites");
 	    System.exit(0);
 	}
         // if no neighbor or only one neighbor, sigma = 1, return 1;
@@ -956,7 +957,7 @@ return sn;
 				    rotorInfo.put(rotorAtoms, sideB.getNodeIDs());
 				}
 				else{
-				    System.out.println("Error in getInternalRotorInformation(): Cannot find node "+ n2.getID()+" after splitting from "+ n1.getID() +" in the following graph:\n"+ g.toString());
+				    Logger.critical("Error in getInternalRotorInformation(): Cannot find node "+ n2.getID()+" after splitting from "+ n1.getID() +" in the following graph:\n"+ g.toString());
 				    System.exit(0);
 				}
         		}
@@ -1306,7 +1307,7 @@ return sn;
 			throw e;
 		}
         catch (Exception e) {
-		e.printStackTrace();
+		Logger.logStackTrace(e);
         	throw new FailGenerateThermoDataException();
         }
         //#]
@@ -2347,8 +2348,8 @@ return sn;
         try {
         	String forbiddenStructureFile = System.getProperty("jing.chem.ChemGraph.forbiddenStructureFile");
         	if (forbiddenStructureFile == null) {
-        		System.out.println("undefined system property: jing.chem.ChemGraph.forbiddenStructureFile!");
-        		System.out.println("No forbidden structure file defined!");
+        		Logger.error("Undefined system property: jing.chem.ChemGraph.forbiddenStructureFile!");
+        		Logger.error("No forbidden structure file defined!");
 				throw new IOException("Undefined system property: jing.chem.ChemGraph.forbiddenStructureFile");
         		//return;
         	}

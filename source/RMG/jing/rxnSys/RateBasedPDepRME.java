@@ -149,7 +149,7 @@ public class RateBasedPDepRME implements ReactionModelEnlarger {
 				if (us.getID() < unreactedSpeciesFlux.length)
 					flux[us.getID()] = unreactedSpeciesFlux[us.getID()];
 				else
-					System.out.println("Warning: Attempted to read unreacted species flux for " +
+					Logger.warning("Attempted to read unreacted species flux for " +
 							us.getName() + "(" + us.getID() + "), but there are only " +
 							unreactedSpeciesFlux.length + " fluxes.");
 			}
@@ -180,12 +180,10 @@ public class RateBasedPDepRME implements ReactionModelEnlarger {
 			if (maxLeakSpecies == null) throw new NullPointerException();
 
 			// Output results of above calculations to console
-			System.out.print("Time: ");
-			System.out.println(ps.getTime());
-			System.out.println("Rmin: " + String.valueOf(Rmin));
-			System.out.println("Unreacted species " + maxSpecies.getFullName() + " has highest flux: " + String.valueOf(maxFlux));
-			System.out.println("Unreacted species " + maxLeakSpecies.getFullName() + " has highest leak flux: " + String.valueOf(maxLeakFlux));
-
+            Logger.info(String.format("Time: %10.4e s", ps.getTime().getTime()));
+			Logger.info(String.format("Rmin: %10.4e mol/cm^3*s", Rmin));
+			Logger.info(String.format("Edge species %s has highest flux: %10.4e mol/cm^3*s (%.6f)", maxSpecies.getFullName(), maxFlux, maxFlux / Rmin));
+            Logger.info(String.format("Edge species %s has highest leak flux: %10.4e mol/cm^3*s (%.6f)", maxLeakSpecies.getFullName(), maxLeakFlux, maxLeakFlux / Rmin));
             
 			if (maxFlux > maxLeakFlux && maxFlux > Rmin) {
 				// Flux is greater than leakFlux, and big enough to matter.
@@ -224,7 +222,7 @@ public class RateBasedPDepRME implements ReactionModelEnlarger {
                 found = true;
         }
         if (!found) {
-            System.out.println("Could not find any species to add to core or leak species to explore. Stopping to avoid infinite loop.");
+            Logger.critical("Could not find any species to add to core or leak species to explore. Stopping to avoid infinite loop.");
             System.exit(0);
         }
         
@@ -242,18 +240,16 @@ public class RateBasedPDepRME implements ReactionModelEnlarger {
     public void addSpeciesToCore(Species maxSpecies, CoreEdgeReactionModel cerm, ReactionSystem rxnSystem) {
 
         // Add a species to the core
-        System.out.print("\nAdd a new reacted Species to the core: ");
-        System.out.println(maxSpecies.getFullName());
-        System.out.println(maxSpecies.toStringWithoutH());
+        Logger.info("\nAdd a new species to the model core: " + maxSpecies.getFullName());
         Temperature temp = new Temperature(715, "K");
         double H = maxSpecies.calculateH(temp);
         double S = maxSpecies.calculateS(temp);
         double G = maxSpecies.calculateG(temp);
         double Cp = maxSpecies.calculateCp(temp);
-        System.out.println("Thermo of species at 715K (H, S, G, Cp, respectively)\t" + String.valueOf(H) + '\t' + String.valueOf(S) + '\t' + String.valueOf(G) + '\t' + String.valueOf(Cp));
+        Logger.debug("Thermo of species at 715K (H, S, G, Cp, respectively)\t" + String.valueOf(H) + '\t' + String.valueOf(S) + '\t' + String.valueOf(G) + '\t' + String.valueOf(Cp));
 
         if (cerm.containsAsReactedSpecies(maxSpecies))
-            System.out.println("Species " + maxSpecies.getFullName() +
+            Logger.info("Species " + maxSpecies.getFullName() +
                     " is already present in reaction model");
         else {
 
@@ -286,9 +282,9 @@ public class RateBasedPDepRME implements ReactionModelEnlarger {
                 try {
                     network.updateReactionLists(cerm);
                 } catch (PDepException e) {
-                    e.printStackTrace();
-                    System.out.println(e.getMessage());
-                    System.err.println("WARNING: Attempt to update reaction list failed " +
+                    Logger.logStackTrace(e);
+                    Logger.error(e.getMessage());
+                    Logger.error("Attempt to update reaction list failed " +
                             "for the following network:\n" + network.toString());
                     System.exit(0);
                 }
@@ -298,7 +294,7 @@ public class RateBasedPDepRME implements ReactionModelEnlarger {
             LinkedHashSet newReactionSet_nodup;
             if(rxnSystem.getLibraryReactionGenerator().getReactionLibrary() != null){
 
-                System.out.println("Checking Reaction Library "+rxnSystem.getLibraryReactionGenerator().getReactionLibrary().getName()+" for reactions of "+maxSpecies.getFullName()+" with the core.");
+                Logger.info("Checking Reaction Library "+rxnSystem.getLibraryReactionGenerator().getReactionLibrary().getName()+" for reactions of "+maxSpecies.getFullName()+" with the core.");
                 // At this point the core (cerm.getReactedSpeciesSet()) already contains maxSpecies, so we can just react the entire core.
                 LinkedHashSet newReactionSet = rxnSystem.getLibraryReactionGenerator().react(cerm.getReactedSpeciesSet());
                 //LinkedHashSet newReactionSet = rxnSystem.getLibraryReactionGenerator().react(cerm.getReactedSpeciesSet(),maxSpecies,"All");
@@ -308,11 +304,11 @@ public class RateBasedPDepRME implements ReactionModelEnlarger {
                 while(ReactionIter.hasNext()){
                     Reaction current_reaction = (Reaction)ReactionIter.next();
                     if (current_reaction.contains(maxSpecies)) {
-                        System.out.println("Library Reaction: " + current_reaction.toString() );
+                        Logger.info("Library Reaction: " + current_reaction.toString() );
                     }
                 }
 
-                System.out.println("Generating reactions using reaction family templates.");
+                Logger.info("Generating reactions using reaction family templates.");
                 // Iterate through the reaction templates
                 newReactionSet.addAll(rxnSystem.getReactionGenerator().react(cerm.getReactedSpeciesSet(),maxSpecies,"All"));
 
@@ -322,7 +318,7 @@ public class RateBasedPDepRME implements ReactionModelEnlarger {
             }
             else{
                 // When no Reaction Library is present
-                System.out.println("Generating reactions using reaction family templates.");
+                Logger.info("Generating reactions using reaction family templates.");
                 newReactionSet_nodup = rxnSystem.getReactionGenerator().react(cerm.getReactedSpeciesSet(),maxSpecies,"All");
             }
             // shamel 6/22/2010 Suppressed output , line is only for debugging
@@ -341,11 +337,13 @@ public class RateBasedPDepRME implements ReactionModelEnlarger {
 
         }
         
-        System.out.println("");
+        Logger.info("");
 
     }
 
     public void makeSpeciesIncluded(Species species, CoreEdgeReactionModel cerm, ReactionSystem rxnSystem) {
+
+        Logger.info("\nAdd a new included species: " + species.getFullName());
 
         LinkedList<PDepNetwork> networksToRemove = new LinkedList<PDepNetwork>();
         
@@ -358,11 +356,11 @@ public class RateBasedPDepRME implements ReactionModelEnlarger {
 				if (isomer.isUnimolecular() && !isomer.getIncluded()) {
                     networksToRemove.add(network);
                     if (network.getAltered()) {
-                        System.out.println("\nNetwork " + network.getID() + " has been altered already this step, so will not be expanded until next step.");
+                        Logger.info("\nNetwork " + network.getID() + " has been altered already this step, so will not be expanded until next step.");
                         return;
                     }
                 } else {
-                	System.out.println("Isomer " + species.toString() + " is in network #" + network.getID() +
+                	Logger.info("Isomer " + species.toString() + " is in network #" + network.getID() +
                 			", but is not unimolecular AND nonIncluded,\n\tso RMG will not remove this network.");
                 }
 			}
@@ -374,8 +372,6 @@ public class RateBasedPDepRME implements ReactionModelEnlarger {
 
         try {
 
-            // Debug by Mike
-            System.out.println("Here's the # of networks: " + PDepNetwork.getNetworks().size());
             // Making a species included in one network automatically
             // makes it included in all networks it is contained in
             // Therefore we need to merge all networks containing that
@@ -390,16 +386,14 @@ public class RateBasedPDepRME implements ReactionModelEnlarger {
             // isomer -> products that don't yet exist to be created
             maxNetwork.makeIsomerIncluded(maxNetwork.getIsomer(species));
             maxNetwork.updateReactionLists(cerm);
-            System.out.println("Here's the # of networks: " + PDepNetwork.getNetworks().size());
         }
         catch (PDepException e) {
-            e.printStackTrace();
-            System.out.println(e.getMessage());
-            System.out.println(maxNetwork.toString());
+            Logger.logStackTrace(e);
+            Logger.error(e.getMessage());
+            Logger.verbose(maxNetwork.toString());
             System.exit(0);
         }
 
-        System.out.println("");
     }
    
 }

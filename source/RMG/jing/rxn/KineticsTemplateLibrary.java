@@ -36,6 +36,7 @@ import java.util.*;
 import jing.mathTool.*;
 import jing.param.Temperature;
 import jing.chemUtil.*;
+import jing.rxnSys.Logger;
 
 //## package jing::rxn 
 
@@ -78,7 +79,7 @@ public class KineticsTemplateLibrary {
         		}
         		if (iter.hasNext()) s = s + " + ";
         	}
-					System.out.println(" Multiple values found for: " + s + ". Ignoring " + p_kinetics.getTRange() +"K data with A="+p_kinetics.getAValue());
+					Logger.verbose("    Multiple values found for: " + s + ". Ignoring " + p_kinetics.getTRange() +"K data with A="+p_kinetics.getAValue());
         	return old;
         }
         else {
@@ -122,10 +123,10 @@ public class KineticsTemplateLibrary {
         	// If new kinetics data has a rank of 0, we do not want to replace the
         	//	old data with the new data
         	if (p_kinetics.getRank() == 0) return old;
-//			System.out.println(" Multiple values found for: " + constructNodeEntryString(p_fgc) + ". Ignoring " + p_kinetics.getTRange() +"K data with A="+p_kinetics.getAValue());
+//			Logger.verbose(" Multiple values found for: " + constructNodeEntryString(p_fgc) + ". Ignoring " + p_kinetics.getTRange() +"K data with A="+p_kinetics.getAValue());
         	// Print to screen that multiple kinetic parameters have been found for
         	//	the same set of nodes
-			System.out.println(" Multiple sets of Arrhenius parameters found for: " + constructNodeEntryString(p_fgc) + ".");
+			Logger.verbose("    Multiple sets of Arrhenius parameters found for: " + constructNodeEntryString(p_fgc) + ".");
         	//	Check if the reaction system temperature falls within the current Kinetics valid temperature range
         	String tRangeOld = old.getKinetics().getTRange();
         	String tRangeNew = p_kinetics.getTRange();
@@ -141,7 +142,7 @@ public class KineticsTemplateLibrary {
         				removeKineticsTemplate(old);
         	        	KineticsTemplate kt = new KineticsTemplate(p_fgc,p_kinetics);
         	        	addKineticsTemplate(kt);
-        	        	System.out.println("   Replacing Kinetics for " + constructNodeEntryString(p_fgc) +
+        	        	Logger.verbose("    Replacing Kinetics for " + constructNodeEntryString(p_fgc) +
         	        			": From " + old.getKinetics().getTRange() + "K data with A=" + old.getKinetics().getAValue() +
         	        			" to " + p_kinetics.getTRange() + "K data with A=" + p_kinetics.getAValue());
         	        	return kt;
@@ -156,7 +157,7 @@ public class KineticsTemplateLibrary {
     				removeKineticsTemplate(old);
     	        	KineticsTemplate kt = new KineticsTemplate(p_fgc,p_kinetics);
     	        	addKineticsTemplate(kt);
-    	        	System.out.println("   Replacing Kinetics for " + constructNodeEntryString(p_fgc) +
+    	        	Logger.verbose("    Replacing Kinetics for " + constructNodeEntryString(p_fgc) +
     	        			": From " + old.getKinetics().getTRange() + "K data with A=" + old.getKinetics().getAValue() +
     	        			" to " + p_kinetics.getTRange() + "K data with A=" + p_kinetics.getAValue());
     	        	return kt;
@@ -168,10 +169,10 @@ public class KineticsTemplateLibrary {
         				removeKineticsTemplate(old);
         	        	KineticsTemplate kt = new KineticsTemplate(p_fgc,p_kinetics);
         	        	addKineticsTemplate(kt);
-                		System.out.println("  System temperature " + p_temp.getK() + 
+                		Logger.verbose("    System temperature " + p_temp.getK() +
                     			"K not within valid Temperature Range (" + p_kinetics.getTRange() +
                     			"K) for node: " + constructNodeEntryString(p_fgc));
-        	        	System.out.println("   Replacing Kinetics for " + constructNodeEntryString(p_fgc) +
+        	        	Logger.verbose("    Replacing Kinetics for " + constructNodeEntryString(p_fgc) +
         	        			": From " + old.getKinetics().getTRange() + "K data with A=" + old.getKinetics().getAValue() +
         	        			" to " + p_kinetics.getTRange() + "K data with A=" + p_kinetics.getAValue());
         	        	return kt;
@@ -182,7 +183,7 @@ public class KineticsTemplateLibrary {
         else {
         	String tRange = p_kinetics.getTRange();
         	if (!determineIfTempWithinValidTempRange(p_temp,tRange)) {
-        		System.out.println("  System temperature " + p_temp.getK() + 
+        		Logger.verbose("    System temperature " + p_temp.getK() +
         			"K not within valid Temperature Range (" + p_kinetics.getTRange() +
         			"K) for node: " + constructNodeEntryString(p_fgc));
         	}

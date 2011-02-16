@@ -42,6 +42,7 @@ import jing.chemUtil.*;
 import jing.chemParser.*;
 import jing.chem.Species;
 import jing.chem.ChemGraph;
+import jing.rxnSys.Logger;
 
 //## package jing::rxn 
 
@@ -573,7 +574,7 @@ public class ReactionTemplate {
 			  LinkedList products_asdefinedinPRL = rxn.getProductList();
 			  if (Structure.isSpeciesListEquivalentToChemGraphListAsChemGraphs(products_asdefinedinPRL,products_asdefinedbyRMG)) {
 				  if (rxn instanceof ThirdBodyReaction || rxn instanceof TROEReaction || rxn instanceof LindemannReaction)
-					  System.out.println("RMG is only utilizing the high-pressure limit parameters for PKL reaction: " + rxn.toString());
+					  Logger.info("RMG is only utilizing the high-pressure limit parameters for PKL reaction: " + rxn.toString());
 				  return rxn.getKinetics();
 			  }
 		  }
@@ -596,7 +597,7 @@ public class ReactionTemplate {
 			  LinkedList products = rxn.getProductList();
 			  if (Structure.isSpeciesListEquivalentToChemGraphListAsChemGraphs(products,p_products)) {
 				  if (rxn instanceof ThirdBodyReaction || rxn instanceof TROEReaction || rxn instanceof LindemannReaction)
-					  System.out.println("RMG is only utilizing the high-pressure limit parameters for PKL reaction: " + rxn.toString());
+					  Logger.info("RMG is only utilizing the high-pressure limit parameters for PKL reaction: " + rxn.toString());
 				  return rxn.getStructure().direction;
 			  }
 		  }
@@ -1271,7 +1272,7 @@ public class ReactionTemplate {
       }
       
       setName(p_reactionTemplateName);
-      System.out.println("Reading forwards template:   "+p_reactionTemplateName);
+      Logger.info("Reading forward template:   "+p_reactionTemplateName);
       
       String ReactionAdjListName = directoryName + "reactionAdjList.txt";
       String DictionaryName = directoryName + "dictionary.txt";
@@ -1287,7 +1288,7 @@ public class ReactionTemplate {
       	readLibrary(LibraryName);
       	fillKineticsBottomToTop();
       	if (reverseRTName != null && reverseRTName.compareToIgnoreCase("none")!=0) {
-      		System.out.println("Generating reverse template: "+reverseRTName);
+      		Logger.info("Generating reverse template: "+reverseRTName);
       		reverseReactionTemplate = generateReverseReactionTemplate(reverseRTName);
       		reverseReactionTemplate.forbiddenStructures = forbiddenStructures;
       	}
@@ -1362,7 +1363,7 @@ public class ReactionTemplate {
       	return;
       }
       catch (Exception e) {
-    	  System.out.println("Failed to read forbiddenStructures file");
+    	  Logger.error("Failed to read forbiddenStructures file");
       	//throw new IOException(e.getMessage());
       }
       
@@ -1391,7 +1392,7 @@ public class ReactionTemplate {
       		fgname = token.nextToken();
 			
 			if (fgname.toLowerCase().startsWith("others")) {
-				System.out.println("Skipping dictionary definition of group "+fgname+" because its begins with 'others' and that has special meaning.");
+				Logger.verbose("    Skipping dictionary definition of group "+fgname+" because its begins with 'others' and that has special meaning.");
 				// gobble up the rest
 				while (line!=null) {
 					line=ChemParser.readUncommentLine(data);

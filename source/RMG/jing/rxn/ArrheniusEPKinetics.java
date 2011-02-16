@@ -33,6 +33,7 @@ package jing.rxn;
 import java.util.*;
 import jing.param.*;
 import jing.mathTool.UncertainDouble;
+import jing.rxnSys.Logger;
 
 //## package jing::rxn 
 
@@ -127,7 +128,7 @@ public class ArrheniusEPKinetics extends ArrheniusKinetics {
 		if (al != 0.0){
 			warning = String.format("Ea computed using Evans-Polanyi dHrxn(298K)=%.1f kcal/mol and alpha=%.2f.", p_Hrxn, al );
 			newComment += " " + warning;
-			System.out.println(warning);
+			Logger.info(warning);
 			newEa = newEa.plus((UncertainDouble)getAlpha().multiply(p_Hrxn));
 		}
 
@@ -135,7 +136,7 @@ public class ArrheniusEPKinetics extends ArrheniusKinetics {
 			// Negative barrier estimated by Evans-Polanyi, despite positive intrinsic barrier.
 			warning = String.format("Ea raised from %.1f kcal/mol to 0.0.", Ea);
 			newComment += " Warning: " + warning;
-			System.out.println(warning);
+			Logger.info(warning);
 			newEa = newEa.plus((-Ea));
 			Ea = 0.0;
 		}
@@ -143,7 +144,7 @@ public class ArrheniusEPKinetics extends ArrheniusKinetics {
 			// Reaction is endothermic and the barrier is less than the endothermicity.
 			warning = String.format("Ea raised by %.1f from %.1f to dHrxn(298K)=%.1f kcal/mol.",p_Hrxn-Ea, Ea, p_Hrxn );
 			newComment += " Warning: " + warning;
-			System.out.println(warning);
+			Logger.info(warning);
 			newEa = newEa.plus((p_Hrxn-Ea));
 			Ea = p_Hrxn;
 		}

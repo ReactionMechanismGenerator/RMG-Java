@@ -35,6 +35,7 @@ import java.util.*;
 import jing.chemUtil.*;
 import jing.chemParser.*;
 import jing.chemUtil.HierarchyTree;
+import jing.rxnSys.Logger;
 
 public class FrequencyDatabase {
 
@@ -53,13 +54,13 @@ public class FrequencyDatabase {
         
 		String directory = System.getProperty("jing.chem.FrequencyDatabase.pathName");
         if (directory == null) {
-        	System.out.println("undefined system property: jing.chem.FrequencyDatabase.pathName, exit!");
+        	Logger.critical("undefined system property: jing.chem.FrequencyDatabase.pathName, exit!");
         	System.exit(0);
         }
 
         String separator = System.getProperty("file.separator");
         if (!directory.endsWith(separator)) directory = directory + separator;
-        System.out.println("\nReading frequency database from "+directory);
+        Logger.info("\nReading frequency database from "+directory);
 
         String gDictionary = directory + "Dictionary.txt";
         String gTree = directory + "Tree.txt";

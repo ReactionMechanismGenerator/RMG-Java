@@ -109,7 +109,7 @@ public class SeedMechanism {
     }
     
     public void read(String p_directoryName, boolean p_fromRestart, String seedMechName) throws IOException {
-        System.out.println("Reading seed mechanism from directory " + p_directoryName);
+        Logger.info("Reading seed mechanism from directory " + p_directoryName);
     	HashMap localSpecies = null;
     	LinkedHashSet localReactions = null;
 		try {
@@ -176,9 +176,9 @@ public class SeedMechanism {
         	return localReactions;
         }
         catch (Exception e) {
-        	System.out.println("RMG did not read the following " + source + p_name + " file: " 
+        	Logger.error("RMG did not read the following " + source + p_name + " file: "
         			+ p_reactionFileName + " because " + e.getMessage() );
-			e.printStackTrace();
+			Logger.logStackTrace(e);
         	return null;
         }
     }

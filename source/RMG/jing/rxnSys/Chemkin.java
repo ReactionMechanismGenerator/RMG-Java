@@ -106,9 +106,9 @@ public class Chemkin implements DAESolver {
 		  fin.close();
 		  fout.close();
 	  } catch (FileNotFoundException e) {
-		  e.printStackTrace();
+		  Logger.logStackTrace(e);
 	  } catch (IOException e){
-		e.printStackTrace();
+		Logger.logStackTrace(e);
 	  } 
   }
 
@@ -137,17 +137,17 @@ public  Chemkin() {
       		return;
       	}
       	else if (line.startsWith("WARNING...THERE IS AN ERROR IN THE LINKING FILE")) {
-      		System.out.println("Error in chemkin linking to reactor!");
+      		Logger.critical("Error in chemkin linking to reactor!");
       		System.exit(0);
       	}
       	else {
-      		System.out.println("Unknown message in chem.message!");
+      		Logger.critical("Unknown message in chem.message!");
       		System.exit(0);
       	}
        }
        catch (Exception e) {
-       	System.out.println("Can't read chem.message!");
-       	System.out.println(e.getMessage());
+       	Logger.critical("Can't read chem.message!");
+       	Logger.critical(e.getMessage());
        	System.exit(0);
        }
 
@@ -173,7 +173,7 @@ public  Chemkin() {
       	double conc = ((Double)p_speciesConc.get(i)).doubleValue();
       	double flux = ((Double)p_speciesFlux.get(i)).doubleValue();
 
-      	System.out.println(String.valueOf(spe.getID()) + '\t' + spe.getFullName() + '\t' + String.valueOf(conc) + '\t' + String.valueOf(flux));
+      	Logger.info(String.valueOf(spe.getID()) + '\t' + spe.getFullName() + '\t' + String.valueOf(conc) + '\t' + String.valueOf(flux));
 
       	if (conc < 0) {
 			double aTol = ReactionModelGenerator.getAtol();
@@ -245,8 +245,8 @@ public  Chemkin() {
       	String returnmessage = returnmessageText.toString();
 	returnmessage=returnmessage.trim();
       	if (!returnmessage.contains("SUCCESSFULLY COMPLETED RUN.")) {
-      		System.out.println("External reactor model failed!");
-      		System.out.println("Reactor model error message: " + returnmessage);
+      		Logger.critical("External reactor model failed!");
+      		Logger.critical("Reactor model error message: " + returnmessage);
       		System.exit(0);
       	}
 
@@ -344,7 +344,7 @@ public  Chemkin() {
       	return ss;
       }
       catch (Exception e) {
-      	System.out.println("Error reading reactor model output: " + e.getMessage());
+      	Logger.critical("Error reading reactor model output: " + e.getMessage());
       	System.exit(0);
       	return null;
 
@@ -376,8 +376,8 @@ public  Chemkin() {
           int exitValue = chemkin.waitFor();
       }
       catch (Exception e) {
-      	System.out.println("Error in running chemkin!");
-      	System.out.println(e.getMessage());
+      	Logger.critical("Error in running chemkin!");
+      	Logger.critical(e.getMessage());
       	System.exit(0);
       }
 
@@ -406,8 +406,8 @@ public  Chemkin() {
           int exitValue = reactor.waitFor();
       }
       catch (Exception e) {
-      	System.out.println("Error in running reactor!");
-      	System.out.println(e.getMessage());
+      	Logger.critical("Error in running reactor!");
+      	Logger.critical(e.getMessage());
       	System.exit(0);
       }
 
@@ -423,7 +423,7 @@ public  Chemkin() {
 
       writeReactorInputFile(p_reactionModel,p_beginTime, p_endTime, p_beginStatus);
       runReactor();
-      System.out.println("After ODE: from " + p_beginTime + " to " + p_endTime);
+      Logger.info("After ODE: from " + p_beginTime + " to " + p_endTime);
       SystemSnapshot result = readReactorOutputFile(p_reactionModel);
       return result;
       //#]
@@ -487,9 +487,9 @@ public  Chemkin() {
           bufferedWriter.write(writeChemkinThermo(p_reactionModel));
           bufferedWriter = writeChemkinPdepReactions(p_reactionModel, p_beginStatus,bufferedWriter,nonpdep_from_seed);
       } catch (FileNotFoundException ex) {
-          ex.printStackTrace();
+          Logger.logStackTrace(ex);
       } catch (IOException ex) {
-          ex.printStackTrace();
+          Logger.logStackTrace(ex);
       } finally {
           //Close the BufferedWriter
           try {
@@ -498,7 +498,7 @@ public  Chemkin() {
                   bufferedWriter.close();
               }
           } catch (IOException ex) {
-              ex.printStackTrace();
+              Logger.logStackTrace(ex);
           }
       }
       
@@ -515,9 +515,9 @@ public  Chemkin() {
 	    	  bw = new BufferedWriter(new FileWriter(newFile));
 		      bw = writeGridOfRateCoeffs(p_reactionModel,bw);
 	      } catch (FileNotFoundException ex) {
-	          ex.printStackTrace();
+	          Logger.logStackTrace(ex);
 	      } catch (IOException ex) {
-	          ex.printStackTrace();
+	          Logger.logStackTrace(ex);
 	      } finally {
 	          //Close the BufferedWriter
 	          try {
@@ -526,7 +526,7 @@ public  Chemkin() {
 	                  bw.close();
 	              }
 	          } catch (IOException ex) {
-	              ex.printStackTrace();
+	              Logger.logStackTrace(ex);
 	          }
 	      }
 
@@ -861,8 +861,8 @@ public  Chemkin() {
       	return true;
       }
       catch (Exception e) {
-      	System.out.println("Error in writing reactorInput.xml!");
-      	System.out.println(e.getMessage());
+      	Logger.error("Error in writing reactorInput.xml!");
+      	Logger.error(e.getMessage());
       	return false;
       }
 
@@ -904,7 +904,7 @@ public SystemSnapshot solve(boolean p_initialization, ReactionModel p_reactionMo
 	
 	writeReactorInputFile(p_reactionModel, p_beginTime, p_endTime, p_beginStatus);
 	runReactor();
-	System.out.println("After ODE: from " + p_beginTime + " to "+ p_endTime);
+	Logger.info("After ODE: from " + p_beginTime + " to "+ p_endTime);
 	SystemSnapshot result = readReactorOutputFile(p_reactionModel);
 	return result;
 }
@@ -942,7 +942,7 @@ public static void setSMILES(boolean yesno) {
 			fw.close();
 		}
 		catch (IOException e) {
-			System.out.println("Could not write "+filepath);
+			Logger.critical("Could not write "+filepath);
 			System.exit(0);
 		}
 	}

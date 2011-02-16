@@ -39,6 +39,7 @@ import jing.chem.GATPFitException;
 import jing.mathTool.*;
 import jing.param.Temperature;
 import jing.mathTool.UncertainDouble;
+import jing.rxnSys.Logger;
 
 //## package jing::rxn 
 
@@ -268,7 +269,7 @@ public class ArrheniusKinetics implements Kinetics {
 			// Reaction is endothermic and the barrier is less than the endothermicity.
 			String newComment = getComment();
 			String warning = String.format("Ea raised by %.1f from %.1f to dHrxn(298K)=%.1f kcal/mol",p_Hrxn-Ea, Ea, p_Hrxn );
-			System.out.println(warning);
+			Logger.info(warning);
 			newComment += " Warning: " + warning;
 			UncertainDouble newEa = E.plus((p_Hrxn-Ea));
 			Ea = p_Hrxn;

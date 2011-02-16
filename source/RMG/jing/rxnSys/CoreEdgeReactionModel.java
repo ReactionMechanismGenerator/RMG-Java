@@ -324,8 +324,8 @@ public class CoreEdgeReactionModel implements ReactionModel {
         //#[ operation addUnreactedSpecies(Species) 
         if (containsAsReactedSpecies(p_species)) {
         	// this is not a unreacted species
-        	System.out.println("This is a reacted species " + p_species.getFullName());
-        	System.out.println("Can't add it into unreacted species set!");
+        	Logger.warning("This is a reacted species " + p_species.getFullName());
+        	Logger.warning("Can't add it into unreacted species set!");
         }
         else {
         	getUnreactedSpeciesSet().add(p_species);
@@ -341,8 +341,8 @@ public class CoreEdgeReactionModel implements ReactionModel {
 			Species species = (Species)speciesIter.next();
 			if (containsAsReactedSpecies(species)) {
 	        	// this is not a unreacted species
-	        	System.out.println("This is a reacted species " + species.getFullName());
-	        	System.out.println("Can't add it into unreacted species set!");
+	        	Logger.warning("This is a reacted species " + species.getFullName());
+	        	Logger.warning("Can't add it into unreacted species set!");
 	        }
 	        else {
 	        	getUnreactedSpeciesSet().add(species);

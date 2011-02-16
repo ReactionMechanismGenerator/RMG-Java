@@ -32,6 +32,7 @@ import java.util.*;
 import jing.chemUtil.*;
 import jing.chemParser.*;
 import jing.chemUtil.HierarchyTree;
+import jing.rxnSys.Logger;
 
 public class TransportGALibrary {
 
@@ -58,14 +59,14 @@ public class TransportGALibrary {
 
         String directory = System.getProperty("jing.chem.LJDatabase.pathName");
         if (directory == null) {
-        	System.out.println("undefined system property: jing.chem.LJDatabase.pathName, exit!");
+        	Logger.critical("undefined system property: jing.chem.LJDatabase.pathName, exit!");
         	System.exit(0);
         }
 
         String separator = System.getProperty("file.separator");
         if (!directory.endsWith(separator)) directory = directory + separator;
 
-        System.out.println("\nReading Lennard-Jones database from "+directory);
+        Logger.info("\nReading Lennard-Jones database from "+directory);
 
         String gDictionary = directory + "nonring_Dictionary.txt";
         String gTree = directory + "nonring_Tree.txt";
@@ -77,6 +78,9 @@ public class TransportGALibrary {
         // end pey
 
         read(gDictionary,gTree,gLibrary,ringDictionary,ringTree,ringLibrary);
+
+        Logger.info("");
+
     }
 
     /**

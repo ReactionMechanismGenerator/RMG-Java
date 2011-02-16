@@ -35,6 +35,7 @@ import java.util.*;
 import jing.chem.Species;
 import jing.param.Global;
 import jing.param.Temperature;
+import jing.rxnSys.Logger;
 
 //## package jing::rxn 
 
@@ -88,17 +89,8 @@ public class TemplateReactionGenerator implements ReactionGenerator {
         	// the reaction template has only one reactant, we only need to loop over the whole species seed set to find a match
         	double startTime = System.currentTimeMillis();
 			if (current_template.hasOneReactant()) {
-	        	/*
-	        	 * Added by MRH on 15-Jun-2009
-	        	 * Display more information to the user:
-	        	 * 	This println command informs the user which rxn family template
-	        	 *		the species is reacting against
-	        	 */
-	        	System.out.println("Generating pressure dependent network for " + p_species.getChemkinName() + ": " + current_template.name);
-        		
 				LinkedHashSet current_reactions = current_template.reactOneReactant(p_species);
 				pdepReactionSet.addAll(current_reactions);
-				
         	}
         }
 		Runtime runTime = Runtime.getRuntime();
@@ -140,7 +132,7 @@ public class TemplateReactionGenerator implements ReactionGenerator {
 	        	 * 	This println command informs the user which rxn family template
 	        	 *		the new core species is reacting against
 	        	 */
-	        	System.out.println("Reacting " + newCoreSpecies.getChemkinName() + " with the core: " + current_template.name);
+	        	Logger.verbose("Reacting " + newCoreSpecies.getChemkinName() + " with the core: " + current_template.name);
 	        	
 	        	// the reaction template has only one reactant, we only need to loop over the whole species seed set to find a match
 	        	double startTime = System.currentTimeMillis();
@@ -276,7 +268,7 @@ public class TemplateReactionGenerator implements ReactionGenerator {
 			try {
 				cg_copy = ChemGraph.copy(cg2);
 			} catch (ForbiddenStructureException e) {
-				System.out.println("Forbidden Structure encountered in react(): " + e.toString());
+				Logger.error("Forbidden Structure encountered in react(): " + e.toString());
 			}
 		} else return cg1;
 		return cg_copy;

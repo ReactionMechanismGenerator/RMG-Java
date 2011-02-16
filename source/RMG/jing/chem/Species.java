@@ -40,6 +40,7 @@ import jing.chemParser.*;
 import jing.chemUtil.Node;
 import jing.param.Global;
 import jing.param.Temperature;
+import jing.rxnSys.Logger;
 
 //## package jing::chem
 
@@ -433,10 +434,10 @@ public class Species {
 
 					   } catch (InvalidChemGraphException e) {
 						  // TODO Auto-generated catch block
-						  e.printStackTrace();
+						  Logger.logStackTrace(e);
 					   } catch (ForbiddenStructureException e) {
 						  // TODO Auto-generated catch block
-						  e.printStackTrace();
+						  Logger.logStackTrace(e);
 					   }
         			}
         			
@@ -880,7 +881,7 @@ public class Species {
         	dictionary.putSpecies(spe, true);
         	
 			// DEBUG: Tell console I made this species
-			System.out.println("Created new species: " + spe.getFullName() );
+			Logger.info("Created new species: " + spe.getFullName() );
 
         }
         else {
@@ -907,7 +908,7 @@ public class Species {
 				}
 			}
 			else {
-				System.out.println("Cannot make species which has a chemgraph: "+p_chemGraph.toString());
+				Logger.error("Cannot make species which has a chemgraph: "+p_chemGraph.toString());
 				System.exit(0);
 			}
         }
@@ -993,7 +994,7 @@ public class Species {
         p_chemGraph.setSpecies(spe);
         
      // DEBUG: Tell console I made this species
-		System.out.println("Created new species: " + spe.getFullName() );
+		Logger.info("Created new species: " + spe.getFullName() );
         
         return spe;
     }
@@ -1165,7 +1166,7 @@ public class Species {
         } catch (IOException e) {
         	String err = "Error writing species.mol file for InChI generation: ";
         	err += e.toString();
-        	System.out.println(err);
+        	Logger.error(err);
         }
         
         // Call cINChI-1 executable file
@@ -1257,7 +1258,7 @@ public class Species {
             catch (Exception e) {
                 String err = "Error running cINChI-1: ";
                 err += e.toString();
-                System.out.println(err);
+                Logger.error(err);
             }
         //}
 		
@@ -1273,7 +1274,7 @@ public class Species {
 		} catch (FileNotFoundException e) {
 			String err = "Error reading species.txt file in generating InChI for species " + p_chemGraph.chemicalFormula + " : ";
 			err += e.toString();
-			System.out.println(err);
+			Logger.error(err);
 		}
         
 		if (in != null) {
@@ -1297,7 +1298,7 @@ public class Species {
 		} catch (Exception e) {
 			String err = "Error closing InChI output reader for " + p_chemGraph.chemicalFormula + " : ";
 			err += e.toString();
-			System.out.println(err);
+			Logger.error(err);
 		}
 		}
 		else {
@@ -1513,7 +1514,7 @@ public class Species {
         } catch (IOException e) {
         	String err = "Error writing inchi.txt file for InChI-to-molFile conversion: ";
         	err += e.toString();
-        	System.out.println(err);
+        	Logger.error(err);
         }
 		
         // Call cINChI-1 executable file
@@ -1563,7 +1564,7 @@ public class Species {
             catch (Exception e) {
                 String err = "Error running cInChI-1 while converting InChI to .mol file: ";
                 err += e.toString();
-                System.out.println(err);
+                Logger.error(err);
             }
         } else if (getOs().toLowerCase().equals("linux")) {
         	optionsArgument[0] = "-InChI2Struct";
@@ -1599,7 +1600,7 @@ public class Species {
             catch (Exception e) {
                 String err = "Error running cInChI-1 while converting InChI to .mol file: ";
                 err += e.toString();
-                System.out.println(err);
+                Logger.error(err);
             }
         } else if (getOs().toLowerCase().equals("mac")) {
         	optionsArgument[0] = "-InChI2Struct";
@@ -1635,7 +1636,7 @@ public class Species {
             catch (Exception e) {
                 String err = "Error running cInChI-1 while converting InChI to .mol file: ";
                 err += e.toString();
-                System.out.println(err);
+                Logger.error(err);
             }
         }
 	}
@@ -1653,7 +1654,7 @@ public class Species {
 			in = new FileReader(filePath);
 		} catch (FileNotFoundException e) {
 			String err = "Error reading .mol file: " + e.toString();
-			System.out.println(err);
+			Logger.error(err);
 		}
         
 		BufferedReader reader = new BufferedReader(in);
@@ -1827,7 +1828,7 @@ public class Species {
 			 */
                         //update gmagoon 9/14/09: CHG is now allowed: see above; update 2: I returned to original case due to difficulties with handling adjacent biradicals
 			else {
-				System.out.println("Ignoring unknown M flag " + RAD + " for " + inchi);
+				Logger.info("Ignoring unknown M flag " + RAD + " for " + inchi);
 			}      
 		}
 		

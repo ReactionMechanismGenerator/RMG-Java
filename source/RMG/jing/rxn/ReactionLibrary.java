@@ -44,6 +44,7 @@ import jing.chemParser.ChemParser;
 import jing.chemParser.InvalidReactionFormatException;
 import jing.chemUtil.Graph;
 import jing.mathTool.UncertainDouble;
+import jing.rxnSys.Logger;
 import jing.rxnSys.PrimaryKineticLibrary;
 import jing.rxnSys.SeedMechanism;
 
@@ -124,7 +125,7 @@ public class ReactionLibrary {
     	 
          try {
          	if (!p_directoryName.endsWith("/")) p_directoryName = p_directoryName + "/";
- 			System.out.println("Reading Reaction Library from: "+p_directoryName);
+ 			Logger.info("Reading Reaction Library from: "+p_directoryName);
          	
  			 
              String dictionaryFile = p_directoryName + "species.txt";
