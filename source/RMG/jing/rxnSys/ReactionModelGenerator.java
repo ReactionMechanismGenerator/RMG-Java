@@ -97,11 +97,14 @@ public class ReactionModelGenerator {
     protected static boolean useDiffusion;
     //
 
+    protected static boolean useSolvation;
     protected SeedMechanism seedMechanism = null;
     protected PrimaryThermoLibrary primaryThermoLibrary;
     protected PrimaryTransportLibrary primaryTransportLibrary;
 
     protected PrimaryAbrahamLibrary primaryAbrahamLibrary;
+    protected static SolventData solvent;
+    protected SolventLibrary solventLibrary;
 	
 	protected boolean readrestart = false;
 	protected boolean writerestart = false;
@@ -430,8 +433,15 @@ public class ReactionModelGenerator {
         		String name = st.nextToken();
         		String solvationOnOff = st.nextToken().toLowerCase();
         		if (solvationOnOff.equals("on")) {
-        			Species.useSolvation = true;
-        		} else if (solvationOnOff.equals("off")) {
+        			setUseSolvation(true);
+                    Species.useSolvation = true;
+                    readAndMakePAL();
+                    String solventname = st.nextToken().toLowerCase();
+                    readAndMakeSL(solventname);
+					System.out.println(String.format(
+						"Using solvation corrections to thermochemsitry with solvent properties of %s",solventname));
+        		} else if (solvationOnOff.startsWith("off")) {
+                    setUseSolvation(false);
         			Species.useSolvation = false;
         		}
         		else throw new InvalidSymbolException("condition.txt: Unknown solvation flag: " + solvationOnOff);
@@ -2933,8 +2943,16 @@ public class ReactionModelGenerator {
     	return useDiffusion;
     }
 
+    public static boolean getUseSolvation() {
+        return useSolvation;
+    }
+
     public void setUseDiffusion(Boolean p_boolean) {
     	useDiffusion = p_boolean;
+    }
+
+    public void setUseSolvation(Boolean p_boolean) {
+    	useSolvation = p_boolean;
     }
 
     public void setTimeStep(ReactionTime p_timeStep) {
@@ -5179,6 +5197,17 @@ public class ReactionModelGenerator {
                  	
     }
 
+    public void readAndMakeSL(String solventname) {
+
+     		String name = "SolventLibrary";
+			String path = "SolventLibrary";
+
+            setSolventLibrary(new SolventLibrary(name,path)); // the constructor with (name,path) reads in the library at construction time.
+			SolventData solvent = getSolventLibrary().getSolventData(solventname);
+            setSolvent(solvent);
+    }
+
+   
     public PrimaryTransportLibrary getPrimaryTransportLibrary() {
     	return primaryTransportLibrary;
     }
@@ -5191,9 +5220,26 @@ public class ReactionModelGenerator {
     public PrimaryAbrahamLibrary getPrimaryAbrahamLibrary() {
     	return primaryAbrahamLibrary;
     }
+    
+    public static SolventData getSolvent() {
+    	return solvent;
+    }
+
+    public SolventLibrary getSolventLibrary() {
+    	return solventLibrary;
+    }
+
     public void setPrimaryAbrahamLibrary(PrimaryAbrahamLibrary p_primaryAbrahamLibrary) {
     	primaryAbrahamLibrary = p_primaryAbrahamLibrary;
     }
+
+    public void setSolventLibrary(SolventLibrary p_solventLibrary) {
+    	solventLibrary = p_solventLibrary;
+    }
+
+    public void setSolvent(SolventData p_solvent) {
+    	solvent = p_solvent;
+        }
 
 	/**
 	 * Print the current numbers of core and edge species and reactions to the
