@@ -1307,7 +1307,7 @@ return sn;
 			throw e;
 		}
         catch (Exception e) {
-		e.printStackTrace();
+		Logger.logStackTrace(e);
         	throw new FailGenerateThermoDataException();
         }
         //#]

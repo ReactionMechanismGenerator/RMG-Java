@@ -42,6 +42,7 @@ import java.io.IOException;
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import jing.rxnSys.Logger;
 
 //quantum mechanics thermo property estimator; analog of GATP
 public class QMTP implements GeneralGAPP {
@@ -473,7 +474,7 @@ public class QMTP implements GeneralGAPP {
         catch (Exception e) {
             String err = "Error in running RDKit Python process \n";
             err += e.toString();
-            e.printStackTrace();
+            Logger.logStackTrace(e);
             System.exit(0);
         }
         
@@ -532,7 +533,7 @@ public class QMTP implements GeneralGAPP {
 //            catch (Exception e) {
 //                String err = "Error in running InChI process \n";
 //                err += e.toString();
-//                e.printStackTrace();
+//                Logger.logStackTrace(e);
 //                System.exit(0);
 //            }
 //        }
@@ -586,7 +587,7 @@ public class QMTP implements GeneralGAPP {
         catch(Exception e){
             String err = "Error in writing inputkeywords.txt \n";
             err += e.toString();
-            e.printStackTrace();
+            Logger.logStackTrace(e);
             System.exit(0);
         }
         
@@ -624,7 +625,7 @@ public class QMTP implements GeneralGAPP {
         catch(Exception e){
             String err = "Error in running OpenBabel MOL to GJF process \n";
             err += e.toString();
-            e.printStackTrace();
+            Logger.logStackTrace(e);
             System.exit(0);
         }
         return maxAttemptNumber;
@@ -688,7 +689,7 @@ public class QMTP implements GeneralGAPP {
         catch(Exception e){
             String err = "Error in writing MM4 script file\n";
             err += e.toString();
-            e.printStackTrace();
+            Logger.logStackTrace(e);
             System.exit(0);
         }
 
@@ -728,7 +729,7 @@ public class QMTP implements GeneralGAPP {
         catch(Exception e){
             String err = "Error in running MoleCoor MOL to .MM4 process \n";
             err += e.toString();
-            e.printStackTrace();
+            Logger.logStackTrace(e);
             System.exit(0);
         }
         return maxAttemptNumber;
@@ -758,7 +759,7 @@ public class QMTP implements GeneralGAPP {
 	catch(Exception e){
 		String err = "Error in reading .mm4opt file\n";
 		err += e.toString();
-		e.printStackTrace();
+		Logger.logStackTrace(e);
 		System.exit(0);
 	}
 	String[] lines = mm4optContents.split("[\\r?\\n]+");//split by newlines, excluding blank lines; cf. http://stackoverflow.com/questions/454908/split-java-string-by-new-line
@@ -816,7 +817,7 @@ public class QMTP implements GeneralGAPP {
 	    catch(Exception e){
 		String err = "Error in writing MM4 script files\n";
 		err += e.toString();
-		e.printStackTrace();
+		Logger.logStackTrace(e);
 		System.exit(0);
 	    }
 
@@ -849,7 +850,7 @@ public class QMTP implements GeneralGAPP {
 	    catch(Exception e){
 		String err = "Error in writing MM4 rotor input file\n";
 		err += e.toString();
-		e.printStackTrace();
+		Logger.logStackTrace(e);
 		System.exit(0);
 	    }
 	}
@@ -970,7 +971,7 @@ public class QMTP implements GeneralGAPP {
         catch(Exception e){
             String err = "Error in writing inputkeywords.txt \n";
             err += e.toString();
-            e.printStackTrace();
+            Logger.logStackTrace(e);
             System.exit(0);
         }
         
@@ -1014,7 +1015,7 @@ public class QMTP implements GeneralGAPP {
         catch(Exception e){
             String err = "Error in running OpenBabel MOL to MOP process \n";
             err += e.toString();
-            e.printStackTrace();
+            Logger.logStackTrace(e);
             System.exit(0);
         }
         return maxAttemptNumber;
@@ -1054,7 +1055,7 @@ public class QMTP implements GeneralGAPP {
         catch(Exception e){
             String err = "Error in running Gaussian process \n";
             err += e.toString();
-            e.printStackTrace();
+            Logger.logStackTrace(e);
             System.exit(0);
         }
         //look in the output file to check for the successful termination of the Gaussian calculation
@@ -1091,7 +1092,7 @@ public class QMTP implements GeneralGAPP {
         catch(Exception e){
             String err = "Error in reading Gaussian log file \n";
             err += e.toString();
-            e.printStackTrace();
+            Logger.logStackTrace(e);
             System.exit(0);
         }
 	//if the complete flag is still 0, the process did not complete and is a failure
@@ -1150,7 +1151,7 @@ public class QMTP implements GeneralGAPP {
         catch(Exception e){
             String err = "Error in running MM4 process \n";
             err += e.toString();
-            e.printStackTrace();
+            Logger.logStackTrace(e);
             System.exit(0);
         }
         //look in the output file to check for the successful termination of the MM4 calculation (cf. successfulMM4ResultExistsQ)
@@ -1191,7 +1192,7 @@ public class QMTP implements GeneralGAPP {
             catch(Exception e){
                 String err = "Error in reading MM4 output file \n";
                 err += e.toString();
-                e.printStackTrace();
+                Logger.logStackTrace(e);
                 System.exit(0);
             }
 	}
@@ -1249,7 +1250,7 @@ public class QMTP implements GeneralGAPP {
 	    catch(Exception e){
 		String err = "Error in running MM4 rotor process \n";
 		err += e.toString();
-		e.printStackTrace();
+		Logger.logStackTrace(e);
 		System.exit(0);
 	    }
 	}
@@ -1291,7 +1292,7 @@ public class QMTP implements GeneralGAPP {
         catch(Exception e){
             String err = "Error in running MOPAC process \n";
             err += e.toString();
-            e.printStackTrace();
+            Logger.logStackTrace(e);
             System.exit(0);
         }
         //look in the output file to check for the successful termination of the calculation (this is a trimmed down version of what appears in successfulMOPACResultExistsQ (it doesn't have the InChI check)
@@ -1331,7 +1332,7 @@ public class QMTP implements GeneralGAPP {
             catch(Exception e){
                 String err = "Error in reading MOPAC output file \n";
                 err += e.toString();
-                e.printStackTrace();
+                Logger.logStackTrace(e);
                 System.exit(0);
             }
         }
@@ -1461,7 +1462,7 @@ public class QMTP implements GeneralGAPP {
 //        catch (Exception e) {
 //            String err = "Error in running ccLib Python process \n";
 //            err += e.toString();
-//            e.printStackTrace();
+//            Logger.logStackTrace(e);
 //            System.exit(0);
 //        } 
 //   
@@ -1580,7 +1581,7 @@ public class QMTP implements GeneralGAPP {
         catch(Exception e){
             String err = "Error in writing CanTherm input \n";
             err += e.toString();
-            e.printStackTrace();
+            Logger.logStackTrace(e);
             System.exit(0);
         }
 	//4 call CanTherm 
@@ -1604,7 +1605,7 @@ public class QMTP implements GeneralGAPP {
         catch(Exception e){
             String err = "Error in running CanTherm process \n";
             err += e.toString();
-            e.printStackTrace();
+            Logger.logStackTrace(e);
             System.exit(0);
         }
         return qmdata;
@@ -1645,7 +1646,7 @@ public class QMTP implements GeneralGAPP {
 	catch(Exception e){
             String err = "Error in reading CanTherm .canout file \n";
             err += e.toString();
-            e.printStackTrace();
+            Logger.logStackTrace(e);
             System.exit(0);
         }
 
@@ -1793,7 +1794,7 @@ public class QMTP implements GeneralGAPP {
         catch (Exception e) {
             String err = "Error in running ccLib Python process \n";
             err += e.toString();
-            e.printStackTrace();
+            Logger.logStackTrace(e);
             System.exit(0);
         } 
    
@@ -1993,7 +1994,7 @@ public class QMTP implements GeneralGAPP {
             catch(Exception e){
                 String err = "Error in running point group calculation process using SYMMETRY \n";
                 err += e.toString();
-                e.printStackTrace();
+                Logger.logStackTrace(e);
                 System.exit(0);
             }
             //check for a recognized point group
@@ -2121,7 +2122,7 @@ public class QMTP implements GeneralGAPP {
             catch(Exception e){
                 String err = "Error in reading preexisting Gaussian log file \n";
                 err += e.toString();
-                e.printStackTrace();
+                Logger.logStackTrace(e);
                 System.exit(0);
             }
 	    //if the complete flag is still 0, the process did not complete and is a failure
@@ -2152,7 +2153,7 @@ public class QMTP implements GeneralGAPP {
                         catch(Exception e){
                             String err = "Error in reading preexisting Gaussian gjf file \n";
                             err += e.toString();
-                            e.printStackTrace();
+                            Logger.logStackTrace(e);
                             System.exit(0);
                         }
                         if(inputFileInChI.equals(InChIaug)){
@@ -2255,7 +2256,7 @@ public class QMTP implements GeneralGAPP {
             catch(Exception e){
                 String err = "Error in reading preexisting MOPAC output file \n";
                 err += e.toString();
-                e.printStackTrace();
+                Logger.logStackTrace(e);
                 System.exit(0);
             }
             if(failureOverrideFlag==1) failureFlag=1; //job will be considered a failure if there are imaginary frequencies or if job terminates to to excess time/cycles
@@ -2286,7 +2287,7 @@ public class QMTP implements GeneralGAPP {
                     catch(Exception e){
                         String err = "Error in reading preexisting MOPAC input file \n";
                         err += e.toString();
-                        e.printStackTrace();
+                        Logger.logStackTrace(e);
                         System.exit(0);
                     }
                     if(inputFileInChI.equals(InChIaug)){
@@ -2388,7 +2389,7 @@ public class QMTP implements GeneralGAPP {
             catch(Exception e){
                 String err = "Error in reading preexisting MM4 output file \n";
                 err += e.toString();
-                e.printStackTrace();
+                Logger.logStackTrace(e);
                 System.exit(0);
             }
             if(failureOverrideFlag==1) failureFlag=1; //job will be considered a failure if there are imaginary frequencies or if job terminates to to excess time/cycles
@@ -2414,7 +2415,7 @@ public class QMTP implements GeneralGAPP {
                         catch(Exception e){
                             String err = "Error in reading preexisting MM4 .mm4 file \n";
                             err += e.toString();
-                            e.printStackTrace();
+                            Logger.logStackTrace(e);
                             System.exit(0);
                         }
                         if(inputFileInChI.equals(InChIaug)){
@@ -2584,7 +2585,7 @@ public class QMTP implements GeneralGAPP {
 //        catch (Exception e) {
 //            String err = "Error in running ccLib Python process \n";
 //            err += e.toString();
-//            e.printStackTrace();
+//            Logger.logStackTrace(e);
 //            System.exit(0);
 //        } 
 //       
@@ -2728,7 +2729,7 @@ public class QMTP implements GeneralGAPP {
         catch (Exception e) {
             String err = "Error in running ccLib Python process \n";
             err += e.toString();
-            e.printStackTrace();
+            Logger.logStackTrace(e);
             System.exit(0);
         }
 	//package up the result

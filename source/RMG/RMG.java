@@ -102,7 +102,7 @@ public class RMG {
        catch (Exception e) {
            // Any unhandled exception will land here
            // We assume that these were critical errors
-           e.printStackTrace();
+           Logger.logStackTrace(e);
            Logger.critical(e.getMessage());
        }
 

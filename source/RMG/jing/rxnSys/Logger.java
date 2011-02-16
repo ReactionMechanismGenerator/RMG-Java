@@ -226,6 +226,18 @@ public class Logger {
     }
 
     /**
+     * Log the current stack trace to both the console and the log file.
+     */
+    public static void logStackTrace(Throwable e) {
+        String message = e.toString() + "\n";
+        StackTraceElement[] stackTrace = e.getStackTrace();
+        for (int index = 0; index < stackTrace.length; index++) {
+            message += "    at " + stackTrace[index].toString() + "\n";
+        }
+        info(message);
+    }
+
+    /**
      * Logs a header containing information about RMG.
      */
     public static void logHeader() {

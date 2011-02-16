@@ -183,7 +183,7 @@ public class JDASPK extends JDAS {
         }
         catch (IOException e) {
             System.err.println("Problem writing Solver Input File!");
-            e.printStackTrace();
+            Logger.logStackTrace(e);
         }
 		///4/30/08 gmagoon: code for providing edge reaction info to DASPK in cases if the automatic time stepping flag is set to true
 		if (autoflag)
@@ -199,7 +199,7 @@ public class JDASPK extends JDAS {
                 }
                 catch (IOException e) {
                     System.err.println("Problem closing Solver Input File!");
-                    e.printStackTrace();
+                    Logger.logStackTrace(e);
 		}
         int idid=0;
         LinkedHashMap speStatus = new LinkedHashMap();
@@ -264,7 +264,7 @@ public class JDASPK extends JDAS {
 //			fw.close();
 //		} catch (IOException e) {
 //			System.err.println("Problem writing Solver Input File!");
-//			e.printStackTrace();
+//			Logger.logStackTrace(e);
 //		}
 		
 		// Rename RWORK and IWORK files if they exist
@@ -298,7 +298,7 @@ public class JDASPK extends JDAS {
                 catch (Exception e) {
                         String err = "Error in running ODESolver \n";
                         err += e.toString();
-                        e.printStackTrace();
+                        Logger.logStackTrace(e);
                         System.exit(0);
                 }
 
@@ -460,7 +460,7 @@ public class JDASPK extends JDAS {
         catch (IOException e) {
         	String err = "Error in reading Solver Output File! \n";
         	err += e.toString();
-        	e.printStackTrace();
+        	Logger.logStackTrace(e);
         	System.exit(0);
         }
         
@@ -563,7 +563,7 @@ public class JDASPK extends JDAS {
                 }
                 catch (IOException e) {
                     System.err.println("Problem writing Solver Input File!");
-                    e.printStackTrace();
+                    Logger.logStackTrace(e);
                 }
        //this should be the end of the input file
         try{
@@ -571,7 +571,7 @@ public class JDASPK extends JDAS {
         }
         catch (IOException e) {
             System.err.println("Problem closing Solver Input File!");
-            e.printStackTrace();
+            Logger.logStackTrace(e);
         }
         int idid=0;
         
@@ -600,7 +600,7 @@ public class JDASPK extends JDAS {
 	//		fw.close();
 	//	} catch (IOException e) {
 	//		System.err.println("Problem writing Solver Input File!");
-        //			e.printStackTrace();
+        //			Logger.logStackTrace(e);
 	//	}
 		Global.writeSolverFile +=(System.currentTimeMillis()-startTime)/1000/60;
 		//run the solver on the input file
@@ -631,7 +631,7 @@ public class JDASPK extends JDAS {
         catch (Exception e) {
         	String err = "Error in running ODESolver \n";
         	err += e.toString();
-        	e.printStackTrace();
+        	Logger.logStackTrace(e);
         	System.exit(0);
         }
         
@@ -716,7 +716,7 @@ public class JDASPK extends JDAS {
         catch (IOException e) {
         	String err = "Error in reading Solver Output File! \n";
         	err += e.toString();
-        	e.printStackTrace();
+        	Logger.logStackTrace(e);
         	System.exit(0);
         }
         Global.readSolverFile += (System.currentTimeMillis() - startTime)/1000/60;

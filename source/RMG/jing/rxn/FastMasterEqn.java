@@ -396,7 +396,7 @@ public class FastMasterEqn implements PDepKineticsEstimator {
 			int exitValue = fame.waitFor();
         }
         catch (Exception e) {
-			e.printStackTrace();
+			Logger.logStackTrace(e);
         	Logger.error(e.getMessage());
 			if (e.getCause() == null){
 				Logger.info("No cause for this exception! Could be because of insufficient memory,");
@@ -723,11 +723,11 @@ public class FastMasterEqn implements PDepKineticsEstimator {
 		}
 		catch(IndexOutOfBoundsException e) {
 			Logger.error("Error: IndexOutOfBoundsException thrown.");
-			e.printStackTrace(System.out);
+			Logger.logStackTrace(e);
 		}
 		catch(Exception e) {
 			Logger.error(e.getMessage());
-			e.printStackTrace(System.out);
+			Logger.logStackTrace(e);
 		}
 
         return input.toString();
@@ -1024,7 +1024,7 @@ public class FastMasterEqn implements PDepKineticsEstimator {
 		catch (PDepException e) {
 			Logger.verbose(pdn.toString());
 			Logger.error(e.getMessage());
-			e.printStackTrace();
+			Logger.logStackTrace(e);
 			throw new PDepException("Unable to parse FAME output file.");
 		}
 		catch(IOException e) {

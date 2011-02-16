@@ -139,7 +139,7 @@ public class FrequencyGroups{//gmagoon 111708: removed "implements GeneralGAPP"
         }
         catch (IOException e) {
             System.err.println("Problem writing frequency estimation input file!");
-            e.printStackTrace();
+            Logger.logStackTrace(e);
         }
 		
 		touchOutputFile();
@@ -166,7 +166,7 @@ public class FrequencyGroups{//gmagoon 111708: removed "implements GeneralGAPP"
         catch (Exception e) {
             String err = "Error in running frequency estimation process \n";
             err += e.toString();
-            e.printStackTrace();
+            Logger.logStackTrace(e);
         }
 		  
 		  if (frankieOutputFlag == 4) 
@@ -251,12 +251,12 @@ public class FrequencyGroups{//gmagoon 111708: removed "implements GeneralGAPP"
         catch (IOException e) {
                 Logger.critical("Problem reading frequency estimation output file!");
 				Logger.critical(e.getMessage());
-                e.printStackTrace();
+                Logger.logStackTrace(e);
 				System.exit(0);
         }
 		catch (NullPointerException e) {
                 Logger.error("Problem reading frequency estimation output file!");
-                e.printStackTrace();           
+                Logger.logStackTrace(e);           
         }
         
 		// Rename input and output files

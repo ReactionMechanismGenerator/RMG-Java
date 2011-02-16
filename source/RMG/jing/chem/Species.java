@@ -434,10 +434,10 @@ public class Species {
 
 					   } catch (InvalidChemGraphException e) {
 						  // TODO Auto-generated catch block
-						  e.printStackTrace();
+						  Logger.logStackTrace(e);
 					   } catch (ForbiddenStructureException e) {
 						  // TODO Auto-generated catch block
-						  e.printStackTrace();
+						  Logger.logStackTrace(e);
 					   }
         			}
         			

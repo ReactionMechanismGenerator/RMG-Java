@@ -193,7 +193,7 @@ public class JDASSL extends JDAS {
         }
         catch (IOException e) {
         	System.err.println("Problem writing Solver Input File!");
-                e.printStackTrace();
+                Logger.logStackTrace(e);
         }
         //4/30/08 gmagoon: code for providing edge reaction info to DASSL in cases if the automatic time stepping flag is set to true
 		if (autoflag)
@@ -209,7 +209,7 @@ public class JDASSL extends JDAS {
                 }
                 catch (IOException e) {
                     System.err.println("Problem closing Solver Input File!");
-                    e.printStackTrace();
+                    Logger.logStackTrace(e);
 		}
         int idid=0;
         LinkedHashMap speStatus = new LinkedHashMap();
@@ -282,7 +282,7 @@ public class JDASSL extends JDAS {
 //			fw.close();
 //		} catch (IOException e) {
 //			System.err.println("Problem writing Solver Input File!");
-//			e.printStackTrace();
+//			Logger.logStackTrace(e);
 //		}
 		
 		// Rename RWORK and IWORK files if they exist
@@ -312,7 +312,7 @@ public class JDASSL extends JDAS {
                 catch (Exception e) {
                         String err = "Error in running ODESolver \n";
                         err += e.toString();
-                        e.printStackTrace();
+                        Logger.logStackTrace(e);
                         System.exit(0);
                 }
 
@@ -441,7 +441,7 @@ public class JDASSL extends JDAS {
         catch (IOException e) {
         	String err = "Error in reading Solver Output File! \n";
         	err += e.toString();
-        	e.printStackTrace();
+        	Logger.logStackTrace(e);
         	System.exit(0);
         }
         SolverOutput.delete();
@@ -478,7 +478,7 @@ public class JDASSL extends JDAS {
 			fw.close();
 		} catch (IOException e) {
 			System.err.println("Problem creating ODESolver/SpeciesProfiles.txt");
-			e.printStackTrace();
+			Logger.logStackTrace(e);
 		}
 	}
         
@@ -602,7 +602,7 @@ public class JDASSL extends JDAS {
 //            catch (IOException e) {
 //        	String err = "Error in reading Solver Input File! \n";
 //        	err += e.toString();
-//        	e.printStackTrace();
+//        	Logger.logStackTrace(e);
 //        	System.exit(0);
 //            }
 //            
@@ -644,7 +644,7 @@ public class JDASSL extends JDAS {
 //            catch (IOException e) {
 //        	String err = "Error in reading core conc. File! \n";
 //        	err += e.toString();
-//        	e.printStackTrace();
+//        	Logger.logStackTrace(e);
 //        	System.exit(0);
 //            }
 //            
@@ -685,7 +685,7 @@ public class JDASSL extends JDAS {
 //            catch (IOException e) {
 //        	String err = "Error in reading edge flux File! \n";
 //        	err += e.toString();
-//        	e.printStackTrace();
+//        	Logger.logStackTrace(e);
 //        	System.exit(0);
 //            }
 //            
@@ -725,7 +725,7 @@ public class JDASSL extends JDAS {
 //            catch (IOException e) {
 //        	String err = "Error in reading edge reaction flux File! \n";
 //        	err += e.toString();
-//        	e.printStackTrace();
+//        	Logger.logStackTrace(e);
 //        	System.exit(0);
 //            }
 //            
@@ -841,7 +841,7 @@ public class JDASSL extends JDAS {
 //                        int ev = dot.waitFor();               
 //                } catch (Exception e) {
 //                        System.err.println("Problem writing dot File!");
-//                        e.printStackTrace();
+//                        Logger.logStackTrace(e);
 //                }
 //
 //            }

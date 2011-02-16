@@ -911,9 +911,9 @@ public class ReactionModelGenerator {
 				bw.write("UnitsOfEa: " + EaUnits);
 				bw.newLine();
 			    } catch (FileNotFoundException ex) {
-				ex.printStackTrace();
+				Logger.logStackTrace(ex);
 			    } catch (IOException ex) {
-				ex.printStackTrace();
+				Logger.logStackTrace(ex);
 			    } finally {
 				try {
 				    if (bw != null) {
@@ -921,7 +921,7 @@ public class ReactionModelGenerator {
 					bw.close();
 				    }
 				} catch (IOException ex) {
-				    ex.printStackTrace();
+				    Logger.logStackTrace(ex);
 				}
 			    }
 
@@ -2528,9 +2528,9 @@ public class ReactionModelGenerator {
 				bw.newLine();
 			}
         } catch (FileNotFoundException ex) {
-            ex.printStackTrace();
+            Logger.logStackTrace(ex);
         } catch (IOException ex) {
-            ex.printStackTrace();
+            Logger.logStackTrace(ex);
         } finally {
             try {
                 if (bw != null) {
@@ -2538,7 +2538,7 @@ public class ReactionModelGenerator {
                     bw.close();
                 }
             } catch (IOException ex) {
-                ex.printStackTrace();
+                Logger.logStackTrace(ex);
             }
         }
 	}
@@ -2554,9 +2554,9 @@ public class ReactionModelGenerator {
 		    bw.write(species.getChemGraph().toString(dummyInt));
 		    bw.newLine();
 		} catch (FileNotFoundException ex) {
-		    ex.printStackTrace();
+		    Logger.logStackTrace(ex);
 		} catch (IOException ex) {
-		    ex.printStackTrace();
+		    Logger.logStackTrace(ex);
 		} finally {
 		    try {
 			if (bw != null) {
@@ -2564,7 +2564,7 @@ public class ReactionModelGenerator {
 			    bw.close();
 			}
 		    } catch (IOException ex) {
-			ex.printStackTrace();
+			Logger.logStackTrace(ex);
 		    }
 		}
 	}
@@ -2614,9 +2614,9 @@ public class ReactionModelGenerator {
 				bw.newLine();
 			}
         } catch (FileNotFoundException ex) {
-            ex.printStackTrace();
+            Logger.logStackTrace(ex);
         } catch (IOException ex) {
-            ex.printStackTrace();
+            Logger.logStackTrace(ex);
         } finally {
             try {
                 if (bw != null) {
@@ -2624,7 +2624,7 @@ public class ReactionModelGenerator {
                     bw.close();
                 }
             } catch (IOException ex) {
-                ex.printStackTrace();
+                Logger.logStackTrace(ex);
             }
         }
 	}
@@ -2672,9 +2672,9 @@ public class ReactionModelGenerator {
 				}
 			}
         } catch (FileNotFoundException ex) {
-            ex.printStackTrace();
+            Logger.logStackTrace(ex);
         } catch (IOException ex) {
-            ex.printStackTrace();
+            Logger.logStackTrace(ex);
         } finally {
             try {
                 if (bw_rxns != null) {
@@ -2686,7 +2686,7 @@ public class ReactionModelGenerator {
                 	bw_pdeprxns.close();
                 }
             } catch (IOException ex) {
-                ex.printStackTrace();
+                Logger.logStackTrace(ex);
             }
         }
 	}
@@ -2717,9 +2717,9 @@ public class ReactionModelGenerator {
 					Logger.warning("Could not determine forward direction for following rxn: " + reaction.toString());
 			}
         } catch (FileNotFoundException ex) {
-            ex.printStackTrace();
+            Logger.logStackTrace(ex);
         } catch (IOException ex) {
-            ex.printStackTrace();
+            Logger.logStackTrace(ex);
         } finally {
             try {
                 if (bw != null) {
@@ -2727,7 +2727,7 @@ public class ReactionModelGenerator {
                     bw.close();
                 }
             } catch (IOException ex) {
-                ex.printStackTrace();
+                Logger.logStackTrace(ex);
             }
         }
 	}
@@ -2750,9 +2750,9 @@ public class ReactionModelGenerator {
 		    } else
 			    Logger.warning("Could not determine forward direction for following rxn: " + reaction.toString());
 		} catch (FileNotFoundException ex) {
-		    ex.printStackTrace();
+		    Logger.logStackTrace(ex);
 		} catch (IOException ex) {
-		    ex.printStackTrace();
+		    Logger.logStackTrace(ex);
 		} finally {
 		    try {
 			if (bw != null) {
@@ -2760,7 +2760,7 @@ public class ReactionModelGenerator {
 			    bw.close();
 			}
 		    } catch (IOException ex) {
-			ex.printStackTrace();
+			Logger.logStackTrace(ex);
 		    }
 		}
 	}
@@ -2851,9 +2851,9 @@ public class ReactionModelGenerator {
 			}
     		
         } catch (FileNotFoundException ex) {
-            ex.printStackTrace();
+            Logger.logStackTrace(ex);
         } catch (IOException ex) {
-            ex.printStackTrace();
+            Logger.logStackTrace(ex);
         } finally {
             try {
                 if (bw != null) {
@@ -2861,7 +2861,7 @@ public class ReactionModelGenerator {
                     bw.close();
                 }
             } catch (IOException ex) {
-                ex.printStackTrace();
+                Logger.logStackTrace(ex);
             }
         }
 	}
@@ -3009,9 +3009,9 @@ public class ReactionModelGenerator {
 				line = ChemParser.readMeaningfulLine(reader, true);
 			}
 		} catch (FileNotFoundException e) {
-			e.printStackTrace();
+			Logger.logStackTrace(e);
 		} catch (IOException e) {
-			e.printStackTrace();
+			Logger.logStackTrace(e);
 		}
 		
 		// Read in edge species
@@ -3046,9 +3046,9 @@ public class ReactionModelGenerator {
 				line = ChemParser.readMeaningfulLine(reader, true);
 			}
 		} catch (FileNotFoundException e) {
-			e.printStackTrace();
+			Logger.logStackTrace(e);
 		} catch (IOException e) {
-			e.printStackTrace();
+			Logger.logStackTrace(e);
 		}
 		
     }
@@ -3100,9 +3100,9 @@ public class ReactionModelGenerator {
 				line = ChemParser.readMeaningfulLine(reader, true);
 			}
 		} catch (FileNotFoundException e) {
-			e.printStackTrace();
+			Logger.logStackTrace(e);
 		} catch (IOException e) {
-			e.printStackTrace();
+			Logger.logStackTrace(e);
 		}
 		
 		/*
@@ -3121,7 +3121,7 @@ public class ReactionModelGenerator {
 			else
 				getSeedMechanism().appendSeedMechanism("Restart", path, false, true);
 		} catch (IOException e1) {
-			e1.printStackTrace();
+            Logger.logStackTrace(e1);
 		}
 		
 		restartCoreRxns.addAll(getSeedMechanism().getReactionSet());
@@ -3162,9 +3162,9 @@ public class ReactionModelGenerator {
 				line = ChemParser.readMeaningfulLine(reader, true);
 			}
 		} catch (FileNotFoundException e) {
-			e.printStackTrace();
+			Logger.logStackTrace(e);
 		} catch (IOException e) {
-			e.printStackTrace();
+			Logger.logStackTrace(e);
 		}
     }
     
@@ -3210,9 +3210,9 @@ public class ReactionModelGenerator {
 				line = ChemParser.readMeaningfulLine(reader, true);
 			}
 		} catch (FileNotFoundException e) {
-			e.printStackTrace();
+			Logger.logStackTrace(e);
 		} catch (IOException e) {
-			e.printStackTrace();
+			Logger.logStackTrace(e);
 		}
 		
 		return speciesStatus;
@@ -3250,9 +3250,9 @@ public class ReactionModelGenerator {
 				line = ChemParser.readMeaningfulLine(reader, true);
 			}
 		} catch (FileNotFoundException e) {
-			e.printStackTrace();
+			Logger.logStackTrace(e);
 		} catch (IOException e) {
-			e.printStackTrace();
+			Logger.logStackTrace(e);
 		}
 		
     }
@@ -3468,9 +3468,9 @@ public class ReactionModelGenerator {
 			}
 			
 		} catch (FileNotFoundException e) {
-			e.printStackTrace();
+			Logger.logStackTrace(e);
 		} catch (IOException e) {
-			e.printStackTrace();
+			Logger.logStackTrace(e);
 		}
     }
     

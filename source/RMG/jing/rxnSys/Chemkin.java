@@ -106,9 +106,9 @@ public class Chemkin implements DAESolver {
 		  fin.close();
 		  fout.close();
 	  } catch (FileNotFoundException e) {
-		  e.printStackTrace();
+		  Logger.logStackTrace(e);
 	  } catch (IOException e){
-		e.printStackTrace();
+		Logger.logStackTrace(e);
 	  } 
   }
 
@@ -487,9 +487,9 @@ public  Chemkin() {
           bufferedWriter.write(writeChemkinThermo(p_reactionModel));
           bufferedWriter = writeChemkinPdepReactions(p_reactionModel, p_beginStatus,bufferedWriter,nonpdep_from_seed);
       } catch (FileNotFoundException ex) {
-          ex.printStackTrace();
+          Logger.logStackTrace(ex);
       } catch (IOException ex) {
-          ex.printStackTrace();
+          Logger.logStackTrace(ex);
       } finally {
           //Close the BufferedWriter
           try {
@@ -498,7 +498,7 @@ public  Chemkin() {
                   bufferedWriter.close();
               }
           } catch (IOException ex) {
-              ex.printStackTrace();
+              Logger.logStackTrace(ex);
           }
       }
       
@@ -515,9 +515,9 @@ public  Chemkin() {
 	    	  bw = new BufferedWriter(new FileWriter(newFile));
 		      bw = writeGridOfRateCoeffs(p_reactionModel,bw);
 	      } catch (FileNotFoundException ex) {
-	          ex.printStackTrace();
+	          Logger.logStackTrace(ex);
 	      } catch (IOException ex) {
-	          ex.printStackTrace();
+	          Logger.logStackTrace(ex);
 	      } finally {
 	          //Close the BufferedWriter
 	          try {
@@ -526,7 +526,7 @@ public  Chemkin() {
 	                  bw.close();
 	              }
 	          } catch (IOException ex) {
-	              ex.printStackTrace();
+	              Logger.logStackTrace(ex);
 	          }
 	      }
 

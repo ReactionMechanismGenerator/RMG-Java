@@ -282,7 +282,7 @@ public class RateBasedPDepRME implements ReactionModelEnlarger {
                 try {
                     network.updateReactionLists(cerm);
                 } catch (PDepException e) {
-                    e.printStackTrace();
+                    Logger.logStackTrace(e);
                     Logger.error(e.getMessage());
                     Logger.error("Attempt to update reaction list failed " +
                             "for the following network:\n" + network.toString());
@@ -388,7 +388,7 @@ public class RateBasedPDepRME implements ReactionModelEnlarger {
             maxNetwork.updateReactionLists(cerm);
         }
         catch (PDepException e) {
-            e.printStackTrace();
+            Logger.logStackTrace(e);
             Logger.error(e.getMessage());
             Logger.verbose(maxNetwork.toString());
             System.exit(0);

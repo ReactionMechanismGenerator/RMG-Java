@@ -1155,7 +1155,7 @@ public abstract class JDAS implements DAESolver {
             edgeSpeciesCounter = edgeID.size() + edgeLeakID.size();//this line is not needed here, but it is included for consistency with the first pass
         } catch (IOException e) {
             System.err.println("Problem writing Solver Input File!");
-            e.printStackTrace();
+            Logger.logStackTrace(e);
         }
 
 
@@ -1224,7 +1224,7 @@ public abstract class JDAS implements DAESolver {
             }
         } catch (IOException e) {
             System.err.println("Problem writing Solver Input File!");
-            e.printStackTrace();
+            Logger.logStackTrace(e);
         }
 
     }
@@ -1248,7 +1248,7 @@ public abstract class JDAS implements DAESolver {
             //                fw.close();
         } catch (IOException e) {
             System.err.println("Problem creating Solver Input File!");
-            e.printStackTrace();
+            Logger.logStackTrace(e);
         }
     }
 }
