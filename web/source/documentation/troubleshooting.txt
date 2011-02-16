@@ -62,6 +62,72 @@ manager of the computer suggests not a lot is happening.
 The only sure way to avoid this is to build a smaller model: use a higher
 termination criterion.
 
+RMG does not recognize kinetics from multiple reaction family templates for the same structure
+---------------------------------------------------------------------------------------------------
+
+A "structure" is defined in RMG by a list of the reaction's reactants and products,
+e.g., A <=> B or A <=> B + C.  RMG can predict different pathways for the same structure,
+i.e. there are multiple ways for "A" to react to "B".  Some examples
+
+	1) n-butyl (.CH2-CH2-CH2-CH3) <=> iso-butyl (CH3-.CH-CH2-CH3)
+		In this example, RMG will find two pathways between reactant and product:
+		the three- and four-membered cyclic transition state.  RMG estimates
+		kinetics for each pathway and considers both in its mechanism generation
+		algorithm.
+		
+		This materializes in the RMG output (particularly, the :file:`chem.inp` file)
+		in the following manner (for pressure-dependent simulations)::
+			
+			C4H9-1(1)(+m)=C4H9-2(2)(+m)                         	1.0E0 0.0 0.0	!NetReaction from PDepNetwork #1 (C4H9-1) High-P Limit: Summation of kinetics: !intra_H_migration estimate: (Average:)[ Others-R2H_S , C_rad_out_2H , Cs_H_out_H/(NonDeC/Cs) ]
+			!intra_H_migration exact: [ Others-R3H_SS , C_rad_out_2H , Cs_H_out_H/NonDeC ]
+		
+		For pressure-independent simulations, the :file:`chem.inp` will represent the multiple pathways
+		in this manner::
+		
+			C4H9-1(1)=C4H9-2(2)                                  1.180e+10 	 0.82 	 35.10 	!intra_H_migration exact:   [ Others-R3H_SS , C_rad_out_2H , Cs_H_out_H/NonDeC ]
+			DUP
+			C4H9-1(1)=C4H9-2(2)                                  1.938e+10 	 0.89 	 35.80 	!intra_H_migration estimate: (Average:)  [ Others-R2H_S , C_rad_out_2H , Cs_H_out_H/(NonDeC/Cs) ]
+			DUP
+		
+	
+	2) iso-propyl (CH3-.CH-CH3) + O2 <=> HO2 + propene
+		In this example, RMG will find the chemical-activation route (i-C3H7 + O2 <--> .OOCH(CH3)2 <--> HOOCH(.CH2)(CH3) <--> HO2 + C3H6)
+		and the pressure-independent route (via the Disproportionation reaction family template).
+		These distinct kinetics materialize in the :file:`chem.inp` (for pressure-dependent simulations) in the following manner::
+		
+			iC3H7(1)+O2(2)(+m)=C3H6(4)+HO2(3)(+m)               	1.0E0 0.0 0.0	!NetReaction from PDepNetwork #5 (adduct)
+			TCHEB / 300.0 2000.0 /	PCHEB / 0.009869232667160128 98.69232667160128 /
+			CHEB / 4	4 /
+			CHEB / 1.1842000e+01 -6.3021000e-01 -1.3307000e-01 -1.8047000e-03 /
+			CHEB / 6.3958000e-01 7.1487000e-01 1.1880000e-01 -1.4505000e-02 /
+			CHEB / 1.0687000e-01 -5.1396000e-03 3.1099000e-02 1.5790000e-02 /
+			CHEB / 1.7064000e-02 -7.5091000e-02 -8.5661000e-03 2.2822000e-03 /
+
+			O2(2)+iC3H7(1)=HO2(3)+C3H6(4)                        1.270e+11 	 0.00 	 0.00 	!Disproportionation exact:   [ O2_birad , Cmethyl_Csrad ]
+
+	3) C2H4 + .CH2-CH2-OH <=> .CH2-CH2-CH2-CH2-OH
+		In this example, RMG can match this structure to two different reaction family templates:
+		R_Addition_MultipleBond (where the C2H4 corresponds to .\ **C**\ H2-\ **C**\ H2-CH2-CH2-OH in the product) and 
+		1,3_Insertion_ROR (where the C2H4 corresponds to .CH2-\ **C**\ H2-\ **C**\ H2-CH2-OH in the product).  However, since the kinetics arise from
+		different reaction family templates, RMG will currently only utilize the first set found in
+		its mechanism generation algorithm (the other will be treated as a unwanted duplicate reaction
+		and discarded).
+		
+		In a normal RMG run (with all reaction family templates turned on), the R_Addition_MultipleBond reaction family template will be found::
+		
+			C2H4(1)+SPC(2)=SPC(3)                                3.980e+03 	 2.44 	 5.37 	!R_Addition_MultipleBond exact:   [ Cd/H2_Cd/H2 , C_rad/H2/Cs ]
+			
+		Turning off the R_Addition_MultipleBond reaction family template will produce this alternative result::
+		
+			C2H4(1)+SPC(2)=SPC(3)                                1.304e+03 	 2.92 	 44.63 	!1,3_Insertion_ROR estimate: (Average:)  [ Cd/unsub_Cd/unsub , R_OH ]
+			
+		In this case, RMG (luckily) utilizes the faster of the two kinetics.  However, this is **NOT**
+		guaranteed: RMG uses the first kinetics instance found and ignores all other kinetics from
+		different reaction family templates for the same structure.
+		
+While examples #1 and #2 are currently handled correctly in RMG, example #3 is not (only one instance of the
+B + C <=> A will be used in the simulation and reported in the output files).
+
 Troubleshooting
 ===============
 
