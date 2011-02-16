@@ -1,0 +1,5 @@
+.. _installation_mac:
+
+*************************
+Installing on MacOS X
+*************************

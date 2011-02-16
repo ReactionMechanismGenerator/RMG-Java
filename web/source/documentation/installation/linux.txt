@@ -1,0 +1,62 @@
+.. _installation_linux:
+
+*************************
+Installing on Linux
+*************************
+
+Dependencies
+------------------
+
+.. _linuxinstallation:
+
+Compiling from source
+-----------------------
+
+To install RMG on a Linux computer:  
+
+1. Create the directory in which you want to install RMG. For the purposes of this document, we will set the directory to :file:`/usr/local/rmg`. Depending on where you choose to install RMG, you may need superuser privileges. ::
+
+    $ mkdir /usr/local/rmg
+
+2. Set the RMG environment variable as the directory created in the first step. In a bash shell you would type, for our example, ::
+    
+    $ export RMG=/usr/local/rmg
+
+  In a C shell you would type, for our example, ::
+    
+    $ setenv RMG /usr/local/rmg
+
+  To avoid typing this line each time, append it to your :file:`~/.bashrc` (bash shell) or :file:`~/.cshrc` (C shell) file.
+
+3. Obtain the source code (See :ref:`download`). Download the file :file:`rmg-3.2-linux-i386.tar.gz` or :file:`rmg-3.2-source.tar.gz`, ungzip and untar it, and move its contents to the :file:`$RMG` directory. ::
+
+    $ tar -xvzf rmg-3.2-source.tar.gz
+    $ mv rmg3/* $RMG
+
+Step 4 is only required if you are working with the source package. Binary packages are available for several platforms and will already contain the compiled executables.
+
+4. Compile the programs. If you are working with the source package, you will need to compile RMG and its supporting Fortran programs. To do this, change to the directory :file:`$RMG` and execute the makefile. The make script will compile four programs: fame, frankie, DASSL, and GATPFit. It will then call the ant build script to compile RMG itself. ::
+
+    $ cd $RMG
+    $ make
+    
+  If you only wish to compile the RMG Java code, you can do so by typing::
+
+    $ cd $RMG
+    $ ant jar
+
+At this stage you will have a functional version of RMG. The remaining steps are only required to enable some advanced features.
+
+
+
+The next few steps are required only if you want RMG to be able to generate InChIs for the species present in the reaction mechanism.
+
+5. Download the InChI version 1 (software version 1.01) source code and Application Program Interface (API).
+
+6.  Change to the :file:`InChI-1-API/cInChI/gcc_makefile` directory and execute the makefile.  Copy the resulting executable :file:`cInChI-1.exe` to the :file:`$RMG/bin` folder. ::
+
+    $ cd InChI-1-API/cInChI/gcc_makefile
+    $ make
+    $ cp cInChI-1 $RMG/bin
+    
+You are now ready to generate InChIs in RMG.

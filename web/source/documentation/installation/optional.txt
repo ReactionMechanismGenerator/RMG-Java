@@ -1,0 +1,98 @@
+.. _installation_optional:
+
+Optional advanced features
+****************************
+
+
+InChI generation
+===================
+
+Optionally, to generate InChIs and to convert from InChIs/.mol files to adjacency lists you will need:
+
+The IUPAC International Chemical Identifier InChI version 1 (software version 1.01).
+    This is available from http://www.iupac.org/inchi/download/index.html
+
+.. note::  This version conflicts with the instructions in :ref:`qmdependencies`.
+
+
+Additional information about the advanced RMG features and the third-party software required to install them can be found in the following section. 
+
+
+Sensitivity analysis
+========================
+
+The next few steps are required only if you want RMG to be able to perform sensitivity analysis on the models generated. Currently RMG uses DASPK3.1 (see Section :ref:`installrequirements`) to perform sensitivity analysis. Analytical Jacobian and partial derivatives with respect to rates of reactions and Gibbs free energy of molecules are generated using the automated differentiator of DAEPACK. 
+
+6. Obtain the DAEPACK library file. Make a symbolic link of the library file in a directory in your library file search path, e.g. :file:`/usr/lib`. 
+
+7. Download daspk31.tgz and untar it using the command ``$ tar -zxvf daspk31.tgz``. Copy all the source files (:file:`*.f` files) from the untarred directories :file:`ad_solver`,
+  :file:`preconds` and :file:`solver` into the directory :file:`$RMG/software/ODESolver/daspk`. Change to the directory :file:`$RMG/software/ODESolver`and execute the makefile with the ``daspk`` option. Copy the resulting executable, :file:`daspkAUTO.exe`, to :file:`$RMG/software/ODESolver/daspkAUTO.exe` if this is not already done. ::
+
+    $ tar -xvzf daspk31.tgz
+    $ mv ad_solver/*.f $RMG/software/ODESolver/daspk
+    $ mv preconds/*.f $RMG/software/ODESolver/daspk
+    $ mv solver/*.f $RMG/software/ODESolver/daspk
+    $ cd $RMG/software/ODESolver
+    $ make daspk
+    $ cp daspkAUTO.exe $RMG/software/ODESolver/daspkAUTO.exe
+   
+You are now ready to run RMG with sensitivity analysis support.
+
+
+
+.. _qmdependencies:
+
+3D-geometry-based Thermodynamic Property Calculation
+=====================================================================================
+
+Several dependencies are required to use 3D-geometry-based thermodynamic property calculation features of RMG,
+including either GAUSSIAN03 or MOPAC2009.
+With the exception of GAUSSIAN03 and MOPAC2009, all of these may be obtained freely and are open-source. 
+In the case of MOPAC2009, the software may be obtained freely for academic, not-for-profit use.
+
+Below are some notes for each of these and instructions on getting them to work properly with RMG (recommended versions in parentheses):
+
+Python
+    (2.x, with x=5 or higher) http://www.python.org/
+    You should add the Python installation directory to the PATH environment variable such that
+    typing "python" at the command-line brings up the Python prompt. NOTE: This will probably need to be done manually.
+
+cclib
+    Modified portions of the source code for cclib 1.0 (http://cclib.sourceforge.net/) are included in the /source/cclib/ directory (licensed under LGPL 2.1).
+    No action should be required on the part of the user.
+
+RDKit
+    (Q2 2009 or later) http://rdkit.org/
+    The typical installation process for RDKit should set the RDBASE environment variable
+    and no further action on the part of the user should be required.
+    Note: If installing from the Windows binaries, you will also need to install numpy and set environment variables as described at http://code.google.com/p/rdkit/wiki/InstallingOnWindows .
+
+OpenBabel
+    (2.2.0 or later) http://openbabel.org
+    The OpenBabel installation directory (e.g. C:\Program Files\OpenBabel-2.2.0) should be added to the PATH environment variable
+    such that typing "babel" at the command-line produces output (including version information) from OpenBabel. This should be done
+    automatically by the OpenBabel installer, and no manual intervention should be required.
+
+InChI
+    (1.02beta or 1.03) http://www.iupac.org/inchi/download/index.html
+    Installation of InChI is described above. The InChI executable should be placed
+    in the /bin/ RMG directory.
+
+SYMMETRY
+    (v. 1.15 or later) http://www.cobalt.chem.ucalgary.ca/ps/symmetry/ (from Serguei Patchkovskii at the University of Calgary)
+    For Windows, it is recommended that the compiled .exe file available from http://www.cobalt.chem.ucalgary.ca/ps/symmetry/ (via symmdos.zip)
+    be used. This file should be copied into RMG's /bin/ directory. On other platforms, you must compile the SYMMETRY.EXE executable yourself
+    and place the executable in RMG's /bin/ directory.
+
+MOPAC2009
+    http://openmopac.net/downloads.html
+    The environment variable MOPAC_LICENSE should be set (e.g. c:\Users\User1\Documents\MOPAC\).
+    This should be done automatically by the MOPAC installer, and no manual intervention should be required.
+    The software may be obtained freely for academic, not-for-profit use.
+    You either need this or GAUSSIAN03.
+
+GAUSSIAN03
+    http://www.gaussian.com/  
+    Add the GAUSSIAN03 directory (e.g. "c:/G03W/") to the PATH environment variable.
+    NOTE: This will typically need to be done manually.
+    You either need this or MOPAC2009
