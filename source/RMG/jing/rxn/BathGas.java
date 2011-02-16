@@ -30,6 +30,7 @@ package jing.rxn;
 import java.util.HashMap;
 import java.util.Iterator;
 import jing.chem.Species;
+import jing.rxnSys.Logger;
 import jing.rxnSys.ReactionSystem;
 
 /**
@@ -190,12 +191,12 @@ public class BathGas {
 				ljEpsilon += mf * 35.7;	// Units of Kelvin (actually epsilon/boltzmann constant)
 				}
 				else {
-					System.out.println("unknown colliders: " + name);
+					Logger.critical("Unknown colliders: " + name);
 					System.exit(0);
 				}
 			}
 			else {
-				System.out.println("unknown colliders: " + key.toString());
+				Logger.critical("Unknown colliders: " + key.toString());
 				System.exit(0);
 			}
 		}

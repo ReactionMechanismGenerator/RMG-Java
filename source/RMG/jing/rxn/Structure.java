@@ -38,6 +38,7 @@ import jing.chem.Species;
 import jing.chem.ChemGraph;
 import jing.chemUtil.Graph;
 import jing.param.Temperature;
+import jing.rxnSys.Logger;
 
 //## package jing::rxn
 
@@ -866,7 +867,7 @@ public class Structure {
         	numSi -= cg.getSiliconNumber();
         }
         if (numC!=0 || numH!=0 || numO!=0 || numS!=0 || numSi!=0) {
-        	System.out.println("Reaction is not balanced: " + toString());
+        	Logger.error("Reaction is not balanced: " + toString());
         	return false;
         }
         
@@ -935,8 +936,8 @@ public class Structure {
 	        while (iter1.hasNext()) {
 	        	index++;
 				Species spe = (Species)iter1.next();
-	        	if (index < r_num) s = s + spe.getName()+"("+spe.getID()+")" + "+";
-	        	else s += spe.getName()+"("+spe.getID()+")";
+	        	if (index < r_num) s = s + spe.getFullName() + "+";
+	        	else s += spe.getFullName();
 	        }
 	        if (p_includeReverse)
 	        	s += "=";
@@ -948,8 +949,8 @@ public class Structure {
 	        while (iter2.hasNext()) {
 	        	index++;
 				Species spe = (Species)iter2.next();
-	        	if (index < p_num) s = s + spe.getName()+"("+spe.getID()+")" + "+";
-	        	else s += spe.getName()+"("+spe.getID()+")";
+	        	if (index < p_num) s = s + spe.getFullName() + "+";
+	        	else s += spe.getFullName();
 	        }
 
 	        StringBuilder sb = new StringBuilder(s);

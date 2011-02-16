@@ -111,7 +111,22 @@ public class FunctionalGroupCollection implements Matchable {
     public boolean isSubAtCentralNodes(Matchable p_functional) {
         //#[ operation isSubAtCentralNodes(Matchable) 
         if (this == p_functional) return false;
-        if (!(p_functional instanceof FunctionalGroupCollection)) return false;
+        if (!(p_functional instanceof FunctionalGroupCollection)) {
+        	boolean found = false;
+        	Iterator iter1 = functionalGroups.iterator();
+        	while (iter1.hasNext()) {
+        		FunctionalGroup fg1 = (FunctionalGroup)iter1.next();
+        		if (fg1.equals(p_functional) || fg1.isSubAtCentralNodes(p_functional)) {
+        			found = true;
+        		}
+        		else {
+        			found = false;
+        			break;
+        		}
+        	}
+        	if (!found) return false;
+        	return true;
+        }        	
         
         Collection c1 = functionalGroups;
         Collection c2 = ((FunctionalGroupCollection)p_functional).functionalGroups;

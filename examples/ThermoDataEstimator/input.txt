@@ -1,3 +1,5 @@
+Database: RMG_database
+
 PrimaryThermoLibrary:
 Name: RMG-minimal
 Location: primaryThermoLibrary

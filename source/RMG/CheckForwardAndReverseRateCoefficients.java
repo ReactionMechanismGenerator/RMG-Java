@@ -1,6 +1,9 @@
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.StringTokenizer;
 
 import jing.chemParser.ChemParser;
@@ -15,11 +18,15 @@ public class CheckForwardAndReverseRateCoefficients {
 	
 	public static void main(String args[]) {
 		// Temperature is assumed to have units in Kelvin
+                StringBuilder reverseRateCoefficients = new StringBuilder();
+                String temperatureString = "";
 		double[] T = new double [10];
 		for (int i=0; i<10; i++) {
 			double temp = (1000.0/3000.0) + ((double)i/9.0) * (1000.0/300.0 - 1000.0/3000.0);
 			T[i] = 1000.0 / temp;
+                        temperatureString +=  Double.toString(T[i])+"\t";
 		}
+                reverseRateCoefficients.append(temperatureString+"\n");
 		
 //		double[] T = {614.0,614.0,614.0,614.0,614.0,629.0,643.0,678.0,713.0,749.0,784.0,854.0,930.0,1010.0,1100.0,1250.0,1350.0,1440.0,1510.0,1570.0,1640.0,1790.0,1970.0,2030.0,2090.0,2110.0,2130.0,2170.0,2180.0,2210.0,2220.0,2220.0,2220.0,2220.0,2210.0,2210.0,2210.0,2200.0,2190.0,2180.0,2170.0,2160.0,2150.0,2150.0,2140.0,2140.0,2140.0,2140.0,2130.0,2130.0,2130.0,2120.0,2120.0,2120.0,2120.0,2110.0,2110.0,2110.0,2110.0,2110.0,2100.0,2100.0,2100.0,2090.0,2080.0,2080.0,2070.0,2060.0,2050.0,2050.0,2040.0,2030.0,2030.0,2020.0,2010.0,2000.0,2000.0,1990.0,1980.0,1970.0,1970.0,1960.0,1950.0,1950.0,1950.0,1950.0,1950.0,1950.0,1950.0,1950.0,1950.0,1950.0,1950.0,1950.0,1950.0,1950.0,1950.0,1950.0,1950.0,1950.0,1950.0,1950.0,1950.0,1950.0,1950.0,1950.0,1950.0,1950.0,1950.0,1950.0,1950.0,1950.0,1950.0,1950.0,1950.0,1950.0,1950.0,1950.0};
 //		double[] T = {681.0,681.0,681.0,681.0,681.0,681.0,681.0,681.0,681.0,681.0,681.0,681.0,681.0,681.0,681.0,681.0,681.0,681.0,681.0,681.0,681.0,681.0,681.0,681.0,681.0,681.0,681.0,681.0,681.0,681.0,681.0,681.0,681.0,681.0,681.0,681.0,681.0,681.0,681.0,682.0,683.0,684.0,687.0,693.0,703.0,712.0,730.0,749.0,767.0,786.0,823.0,860.0,897.0,934.0,1000.0,1060.0,1120.0,1170.0,1230.0,1320.0,1370.0,1410.0,1440.0,1480.0,1550.0,1660.0,1760.0,1850.0,1920.0,1960.0,2060.0,2110.0,2150.0,2200.0,2240.0,2260.0,2260.0,2250.0,2250.0,2240.0,2240.0,2230.0,2220.0,2210.0,2200.0,2190.0,2180.0,2180.0,2180.0,2180.0,2180.0,2180.0,2170.0,2170.0,2170.0,2170.0,2170.0,2170.0,2160.0,2160.0,2150.0,2150.0,2140.0,2140.0,2130.0,2130.0,2120.0,2120.0,2110.0,2110.0,2100.0,2100.0,2090.0,2090.0,2080.0,2080.0,2070.0,2070.0,2060.0,2050.0,2050.0,2040.0,2030.0,2030.0,2020.0,2010.0,2010.0,2000.0,2000.0,2000.0,2000.0,2000.0,2000.0,2000.0,2000.0,2000.0,2000.0,2000.0,2000.0,2000.0,2000.0,2000.0,2000.0,2000.0,2000.0,2000.0,2000.0,2000.0,2000.0,2000.0,2000.0,2000.0,2000.0,2000.0,2000.0,2000.0,2000.0,2000.0,2000.0,2000.0,2000.0,2000.0,2000.0};
@@ -293,6 +300,7 @@ public class CheckForwardAndReverseRateCoefficients {
 							output += (logk[iii] - logKeq[iii]) + "\t";
 						}
 //						System.out.println(output + shortRxnString);
+                                                reverseRateCoefficients.append(output + shortRxnString + "\n");
 					}
 				}
 				line = ChemParser.readMeaningfulLine(br_thermodat, true);
@@ -300,6 +308,17 @@ public class CheckForwardAndReverseRateCoefficients {
 		} catch (FileNotFoundException e) {
 			System.err.println("File was not found: " + args[0] + "\n");
 		}
+
+                try {
+        		File reversek = new File("reverseRateCoefficients.txt");
+        		FileWriter fw_rxns = new FileWriter(reversek);
+        		fw_rxns.write(reverseRateCoefficients.toString());
+        		fw_rxns.close();
+        	}
+        	catch (IOException e) {
+                    System.out.println("Could not write reverseRateCoefficients.txt files");
+                    System.exit(0);
+                }
 	}
 	
 	public static int[] determineSpeciesIndex(String reactsORprods) {

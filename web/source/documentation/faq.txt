@@ -15,7 +15,7 @@ How do I represent molecular oxygen?
 Use the ground electronic state of molecular oxygen, which contains a single
 bond and a diradical. The adjacency list should be ::
 
-  O2 0.1 (mol/cm3)
+  O2 (mol/cm3) 0.1 
   1 O 1 {2,S}
   2 O 1 {1,S}
 

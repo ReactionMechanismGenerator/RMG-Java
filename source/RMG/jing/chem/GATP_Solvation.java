@@ -34,6 +34,7 @@ import jing.param.*;
 import jing.chemUtil.*;
 import jing.mathTool.*;
 import jing.param.Temperature;
+import jing.rxnSys.*;
 
 public class GATP_Solvation implements GeneralSolvationGAPP {
 	
@@ -45,23 +46,6 @@ public class GATP_Solvation implements GeneralSolvationGAPP {
 	
 	public ThermoData generateSolvThermoData(ChemGraph p_chemGraph) {
         
-        //double r_solute=p_chemGraph.getRadius();               // Returns VdW radius in meter
-		//double r_solvent; r_solvent=3.498e-10;// 3.311;        // Manually assigned solvent radius [=] meter Calculated using Connolly solvent excluded volume from Chem3dPro
-		//double r_cavity=r_solute+r_solvent;                    // Cavity radius [=] meter
-		//double rho; rho=3.09e27;  //0.00381;                   // number density of solvent [=] molecules/m^3   Value here is for decane using density =0.73 g/cm3
-		//double parameter_y=4.1887902*rho*Math.pow(r_solvent, 3);  // Parameter y from Ashcraft Thesis Refer pg no. 60. (4/3)*pi*rho*r^3
-		//double parameter_ymod=parameter_y/(1-parameter_y);     // parameter_ymod= y/(1-y) Defined for convenience
-		
-		// Definitions of K0, K1 and K2 correspond to those for K0', K1' and K2' respectively from Ashcraft's Thesis (-d/dT of K0,K1,K2)
-//		double K0= -R*(-Math.log(1-parameter_y)+(4.5*parameter_ymod*parameter_ymod));
-//		double K1= (R*0.5/r_solvent)*((6*parameter_ymod)+(18*parameter_ymod*parameter_ymod));
-//		double K2= -(R*0.25/(r_solvent*r_solvent))*((12*parameter_ymod)+(18*parameter_ymod*parameter_ymod));
-//
-		// Basic definition of entropy change of solvation from Ashcfrat's Thesis
-//		double deltaS0;
-//		deltaS0=K0+(K1*r_cavity)+(K2*r_cavity*r_cavity);
-
-
     /* AJ 16JULY2010
      * The Pierotti method has now been replaced with the method of MIntz et al. based on some recent comparisons between the 2 methods
      */
@@ -80,33 +64,30 @@ public class GATP_Solvation implements GeneralSolvationGAPP {
 		double L=result_Abraham.L;
 		double A=result_Abraham.A;
         double V=result_Abraham.V;
-		
-        //Manually specified solvent descriptors for free energy calculation
-		// (constants here are for dry decane, from from M.H. Abraham et al. / J. Chromatogr. A 1037 (2004) 29–47 )
-        double c_g = 0.156;
-        double s_g = 0;
-        double b_g = 0;
-        double e_g = -0.143;
-        double l_g = 0.989;
-        double a_g = 0;
-		
+	
+		SolventData solvent = ReactionModelGenerator.getSolvent();
+        String solventname = solvent.name;
+        double c_g = solvent.c_g;
+        double e_g = solvent.e_g;
+        double s_g = solvent.s_g;
+        double a_g = solvent.a_g;
+        double b_g = solvent.b_g;
+        double l_g = solvent.l_g;
 
-        double logK = c_g + s_g*S + b_g*B + e_g*E + l_g*L + a_g*A;    // Implementation of Abraham Model for calculation of partition coefficient
-        double deltaG0 = -8.314*298*logK;                             // J/mol
+		double logK = c_g + s_g*S + b_g*B + e_g*E + l_g*L + a_g*A;    // Implementation of Abraham Model for calculation of partition coefficient
+        double deltaG0 = -8.314*298*2.303*logK;                             // J/mol
         deltaG0 = deltaG0/4180;                                       // conversion from kJ/mol to kcal/mol
 		// System.out.println("The free energy of solvation in decane at 298K w/o reference state corrections  = " + deltaG0_decane +" J/mol for " );
 
     /* AJ 16JULY 2010 (Mintz method for calculation of solution phase enthalpy
      */
 
-        // Manually specified solvent descriptors for enthalpy calculations
-		// (constants here are for alkanes, from from C. Mintz et al. / J. Chromatogr. A 1037 (2004) 29–47 )
-        double c_h = -6.708;
-        double s_h = 0;
-        double b_h = 0;
-        double e_h = 2.999;
-        double l_h = -9.279;
-        double a_h = 0;
+        double c_h = solvent.c_h;
+        double e_h = solvent.e_h;
+        double s_h = solvent.s_h;
+        double a_h = solvent.a_h;
+        double b_h = solvent.b_h;
+        double l_h = solvent.l_h;
 
         double deltaH0 = c_g + s_g*S + b_g*B + e_g*E + l_g*L + a_g*A;    // Implementation of Mintz model for calculation of solution phase enthalpy (kJ/mol)
         deltaH0=deltaH0/4.18;                                            // Conversion from kJ/mol to kcal/mol

@@ -198,7 +198,7 @@ public class GATP implements GeneralGAPP {
            			}
            		}
            		else {
-          			System.err.println("Error: Radical detected after satuation!");
+          			System.err.println("Error: Radical detected after saturation!");
            		}
            	}
         }
@@ -228,7 +228,7 @@ public class GATP implements GeneralGAPP {
            		result.plus(thisGAValue);
             }
 
-            //recover the satuated site for next radical site calculation
+            //recover the saturated site for next radical site calculation
           	node.setElement(old);
           	node.updateFeElement();
            	for (int j=0;j<HNum;j++) {

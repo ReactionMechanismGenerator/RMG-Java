@@ -96,11 +96,11 @@ public class ReactionSystem {
 		
         
         if (equationOfState=="Liquid") {
-            System.out.println("Liquid phase: Not checking C=P/RT; assuming concentrations are specified correctly");
+            Logger.info("    Liquid phase: Not checking C=P/RT; assuming concentrations are specified correctly");
         }
 		else if (!checkInitialConsistency()) {
-        	System.out.println("Initial composition was not consistent: C = P/RT was not satisfied!");
-        	System.out.println("The concentrations have been renormalized.");
+        	Logger.info("    Initial composition was not consistent: C = P/RT was not satisfied!");
+        	Logger.info("    The concentrations have been renormalized.");
         	//System.exit(-1);
         }
 
@@ -244,7 +244,7 @@ public class ReactionSystem {
 //                                                    if (p_systemSnapshot.getSpeciesStatus(spe) != null)
 //                                                             conc = (p_systemSnapshot.getSpeciesStatus(spe)).getConcentration();
 //                                            if (conc<0)
-//                                                    throw new NegativeConcentrationException(spe.getName() + ": " + String.valueOf(conc));
+//                                                    throw new NegativeConcentrationException(spe.getFullName() + ": " + String.valueOf(conc));
 //                                        flux *= conc;
 //
 //                                    }
@@ -281,9 +281,9 @@ public class ReactionSystem {
 					if (conc<0) {
 						double aTol = ReactionModelGenerator.getAtol();
 						//if (Math.abs(conc) < aTol) conc = 0;
-						//else throw new NegativeConcentrationException(spe.getName() + ": " + String.valueOf(conc));
+						//else throw new NegativeConcentrationException(spe.getFullName() + ": " + String.valueOf(conc));
 						if (conc < -100.0 * aTol)
-							throw new NegativeConcentrationException("Species " + spe.getName() + " has negative concentration: " + String.valueOf(conc));
+							throw new NegativeConcentrationException("Species " + spe.getFullName() + " has negative concentration: " + String.valueOf(conc));
 					}
 					flux *= conc;
 
@@ -392,9 +392,9 @@ public class ReactionSystem {
         	}
         }
 
-        System.out.println("The main pathway to generate " + p_species.getName() + " is ");
-        System.out.println(maxReaction);
-        System.out.println("The max flux is " + String.valueOf(maxFlux));
+        Logger.info("The main pathway to generate " + p_species.getFullName() + " is ");
+        Logger.info(maxReaction.toString());
+        Logger.info("The max flux is " + String.valueOf(maxFlux));
 
         return maxReaction;
 
@@ -526,7 +526,7 @@ public class ReactionSystem {
     //## operation initializePDepNetwork()
     public void initializePDepNetwork() {
         if (!(reactionModelEnlarger instanceof RateBasedPDepRME)) {
-			System.out.println("ERROR: Reaction model enlarger is not pressure-dependent!");
+			Logger.critical("ERROR: Reaction model enlarger is not pressure-dependent!");
 			System.exit(0);
 		}
 		
@@ -535,7 +535,9 @@ public class ReactionSystem {
 		PDepKineticsEstimator pDepKineticsEstimator = 
 				((RateBasedPDepRME) reactionModelEnlarger).getPDepKineticsEstimator();
 		
-		LinkedList pdnList = new LinkedList(PDepNetwork.getNetworks());
+		Logger.info("");
+
+        LinkedList pdnList = new LinkedList(PDepNetwork.getNetworks());
 		for (Iterator iter = pdnList.iterator(); iter.hasNext(); ) {
         	PDepNetwork pdn = (PDepNetwork)iter.next();
         	if (pdn.getAltered()) {
@@ -584,7 +586,7 @@ public class ReactionSystem {
         double maxFlux = 0;
         Reaction maxReaction = null;
 
-        System.out.println("the consumption paths for " + p_species.getName());
+        System.out.println("the consumption paths for " + p_species.getFullName());
         for (Iterator iter = p_reactionList.iterator(); iter.hasNext(); ) {
         	Reaction rxn = (Reaction)iter.next();
         	if (rxn.containsAsReactant(p_species)) {
@@ -614,7 +616,7 @@ public class ReactionSystem {
 
         	}
         }
-        System.out.println("the formationtion paths for " + p_species.getName());
+        System.out.println("the formationtion paths for " + p_species.getFullName());
         for (Iterator iter = p_reactionList.iterator(); iter.hasNext(); ) {
         	Reaction rxn = (Reaction)iter.next();
         	if (rxn.containsAsProduct(p_species)) {
@@ -672,10 +674,10 @@ public class ReactionSystem {
         		flux *= concentration;
         	}
         	if (flux>1E-7) {
-        		System.out.println(rxn.toString() + "\t" + String.valueOf(flux) + '\t' + String.valueOf(rxn.calculateHrxn(t)) + '\t' + String.valueOf(rxn.calculateKeq(t)));
+        		Logger.info(rxn.toString() + "\t" + String.valueOf(flux) + '\t' + String.valueOf(rxn.calculateHrxn(t)) + '\t' + String.valueOf(rxn.calculateKeq(t)));
         		for (double temp = 400; temp<1200; temp = temp + 50) {
         			double rate = rxn.calculateTotalRate(new Temperature(temp,"K"));
-        			System.out.println("Temp = " + String.valueOf(temp) + "\tRate = " + String.valueOf(rate));
+        			Logger.info("Temp = " + String.valueOf(temp) + "\tRate = " + String.valueOf(rate));
         		}
         		for (Iterator rIter = rxn.getReactants(); rIter.hasNext(); ) {
         			Species spe = ((ChemGraph)rIter.next()).getSpecies();
@@ -690,7 +692,7 @@ public class ReactionSystem {
 
         for (Iterator iter = speSet.iterator(); iter.hasNext(); ) {
         	Species spe = (Species)iter.next();
-        	System.out.println(spe.getName()+"("+String.valueOf(spe.getID())+"): " + spe.getThermoData().toString());
+        	Logger.info(spe.getFullName()+": " + spe.getThermoData().toString());
         }
 
 
@@ -1000,7 +1002,7 @@ public String printLowerBoundConcentrations(LinkedList p_speciesList) {
 				if (i < ss.reactionFlux.length)
 					output.append( ss.reactionFlux[index] + "\t");
 				else {
-					System.out.println("Warning: Size of reaction set does not match number of reaction fluxes. Expected reaction flux missing.");
+					Logger.warning("Size of reaction set does not match number of reaction fluxes. Expected reaction flux missing.");
 					output.append("\n");
 					return output.toString();
 				}
@@ -1478,7 +1480,7 @@ public String printLowerBoundConcentrations(LinkedList p_speciesList) {
 
     //## operation solveReactionSystem(ReactionTime,ReactionTime,boolean,boolean,boolean)
     //9/24/07 gmagoon: added p_reactionModel as parameter; subsequently removed
-    public ReactionTime solveReactionSystem(ReactionTime p_beginTime, ReactionTime p_endTime, boolean p_initialization, boolean p_reactionChanged, boolean p_conditionChanged, int iterationNum) {
+    public ReactionTime solveReactionSystem(ReactionTime p_beginTime, ReactionTime p_endTime, boolean p_initialization, boolean p_reactionChanged, boolean p_conditionChanged, int iterationNum, LinkedHashSet nonpdep_from_seed) {
  
         //#[ operation solveReactionSystem(ReactionTime,ReactionTime,boolean,boolean,boolean)
         Temperature t = getTemperatureModel().getTemperature(p_beginTime);
@@ -1496,8 +1498,9 @@ public String printLowerBoundConcentrations(LinkedList p_speciesList) {
 
 
         if (!beginStatus.getTime().equals(p_beginTime)) throw new InvalidBeginStatusException();
-		System.out.println("Solving reaction system...");
-        SystemSnapshot present = getDynamicSimulator().solve(p_initialization, getReactionModel(), p_reactionChanged, beginStatus, p_beginTime, p_endTime,t,p, p_conditionChanged, finishController.terminationTester, iterationNum);
+		Logger.info("");
+        Logger.info("Solving reaction system...");
+        SystemSnapshot present = getDynamicSimulator().solve(p_initialization, getReactionModel(), p_reactionChanged, beginStatus, p_beginTime, p_endTime,t,p, p_conditionChanged, finishController.terminationTester, iterationNum, nonpdep_from_seed);
 
         appendUnreactedSpeciesStatus(present, t);
 
@@ -1506,7 +1509,7 @@ public String printLowerBoundConcentrations(LinkedList p_speciesList) {
         //#]
     }
 
-    public void solveReactionSystemwithSEN(ReactionTime p_beginTime, ReactionTime p_endTime, boolean p_initialization, boolean p_reactionChanged, boolean p_conditionChanged) {
+    public void solveReactionSystemwithSEN(ReactionTime p_beginTime, ReactionTime p_endTime, boolean p_initialization, boolean p_reactionChanged, boolean p_conditionChanged, LinkedHashSet nonpdep_from_seed) {
     	Temperature t = getTemperatureModel().getTemperature(p_beginTime);
         Pressure p = getPressureModel().getPressure(p_beginTime);
 
@@ -1522,8 +1525,9 @@ public String printLowerBoundConcentrations(LinkedList p_speciesList) {
 
 
         if (!beginStatus.getTime().equals(p_beginTime)) throw new InvalidBeginStatusException();
-		System.out.println("Solving reaction system...");
-        LinkedList sS = ((JDASPK)getDynamicSimulator()).solveSEN(p_initialization, getReactionModel(), p_reactionChanged, beginStatus, p_beginTime, p_endTime,t,p, p_conditionChanged, finishController.terminationTester);
+		Logger.info("");
+        Logger.info("Solving reaction system...");
+        LinkedList sS = ((JDASPK)getDynamicSimulator()).solveSEN(p_initialization, getReactionModel(), p_reactionChanged, beginStatus, p_beginTime, p_endTime,t,p, p_conditionChanged, finishController.terminationTester, nonpdep_from_seed);
 
         for (int i=0; i< sS.size(); i++){
         	systemSnapshot.add(sS.get(i));

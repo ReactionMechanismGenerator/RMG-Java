@@ -39,6 +39,7 @@ import jing.mathTool.*;
 import jing.chemParser.*;
 import jing.chem.Species;
 import jing.param.Temperature;
+import jing.rxnSys.Logger;
 import jing.rxnSys.NegativeConcentrationException;
 import jing.rxnSys.ReactionModelGenerator;
 import jing.rxnSys.SystemSnapshot;
@@ -179,6 +180,7 @@ public class Reaction {
   	double rate =0;
 	Temperature stdtemp = new Temperature(298,"K");
 	double Hrxn = calculateHrxn(stdtemp);
+	Temperature sys_temp = ReactionModelGenerator.getTemp4BestKinetics();
 
     /* AJ 12JULY2010:
      * Added diffusive limits from previous RMG version by replacing function calculateTotalRate
@@ -232,12 +234,9 @@ public class Reaction {
             double DiffFactor = 0.0;
 
             if (numReacts == 1 && numProds == 1) {
-
                 keff = rate;
-                
-                setKineticsComments(getComments() + "\t" + "Diffusive limits do not apply " + "\t" + "Keq =" + calculateKeq(p_temperature),0);
-
-                return keff;
+                rate = keff;
+				DiffFactor = 1;
             }
             else if (numReacts == 1 && numProds == 2) {
 
@@ -247,14 +246,8 @@ public class Reaction {
                 double k_back_eff= k_back*k_back_diff/(k_back + k_back_diff);
 
                 keff = k_back_eff*calculateKeq(p_temperature);
-                //if (keff/k_chem < 0.2){
-                    //if (!getKinetics().getComment().endsWith("Diffusion limited")){
                 DiffFactor = keff/rate;
-
-                
-                setKineticsComments(getComments() + "\t"  + "Diffusion factor = " + DiffFactor + "\t" + "Keq =" + calculateKeq(p_temperature),0);
-
-                return keff;
+                rate = keff;
             }
             else if (numReacts == 2 && numProds == 1) {
 
@@ -264,51 +257,34 @@ public class Reaction {
                 double k_forw_eff = k_forw*k_forw_diff/(k_forw + k_forw_diff);
 
                 keff = k_forw_eff;
-                //if (keff/k_forw < 0.2){
-                    //if (!getKinetics().getComment().endsWith("Diffusion limited")){
                 DiffFactor = keff/rate;
-
-                setKineticsComments(getComments() + "\t"  + "Diffusion factor = " + DiffFactor + "\t" + "Keq =" + calculateKeq(p_temperature),0);
-
-                return keff;
-
+                rate = keff;        
             }
             else if (numReacts == 2 && numProds == 2) {
-                //Temperature stdTemp = new Temperature(298, "K");
-                double deltaHrxn = structure.calculateHrxn(p_temperature);
-                //setKineticsComments(getKinetics().getComment() + "Diffusion limited");
 
-                if (deltaHrxn<0){   // Forward reaction is exothermic hence the corresponding diffusion limit applies
+                double rxn_Keq = structure.calculateKeq(p_temperature);
+                double deltaHrxn = structure.calculateHrxn(p_temperature);
+
+                if (rxn_Keq>1){   // Forward reaction is exothermic hence the corresponding diffusion limit applies
                     double k_forw = rate;
                     LinkedList reactantsInForwRxn = structure.reactants;
                     double k_forw_diff = calculatediff(reactantsInForwRxn);
                     double k_forw_eff = k_forw*k_forw_diff/(k_forw + k_forw_diff);
                     keff = k_forw_eff;
-                    //if (keff/k_forw < 0.2){
-                        //if (!getKinetics().getComment().endsWith("Diffusion limited")) {
                     DiffFactor = keff/rate;
-                    
-                    setKineticsComments(getComments() + "\t"  + "Diffusion factor = " + DiffFactor + "\t" + "Keq =" + calculateKeq(p_temperature),0);
-                    
-                    return keff;
+                    rate = keff;
                 }
-                else if (deltaHrxn>0){ // Reverse reaction is exothermic and the corresponding diffusion limit should be used
+                else if (rxn_Keq<1){ // Reverse reaction is exothermic and the corresponding diffusion limit should be used
                     double k_back = rate / calculateKeq(p_temperature);
                     LinkedList reactantsInBackRxn = structure.products;
-                    double k_back_diff= calculatediff(reactantsInBackRxn);
-                    double k_back_eff= k_back*k_back_diff/(k_back + k_back_diff);
-                    keff = k_back_eff*calculateKeq(p_temperature);
-                    //if (keff/k_chem < 0.2){
-                        //if (!getKinetics().getComment().endsWith("Diffusion limited")) {
+                    double k_back_diff = calculatediff(reactantsInBackRxn);
+                    double k_back_eff = k_back*k_back_diff/(k_back + k_back_diff);
+                    keff = k_back_eff * calculateKeq(p_temperature);
                     DiffFactor = keff/rate;
-                    
-                    setKineticsComments(getComments() + "\t" + "Diffusion factor = " + DiffFactor + "\t" + "Keq =" + calculateKeq(p_temperature),0);
-
-                    return keff;
+                    rate = keff;
                 }
-
             }
-                else if (numReacts == 2 && numProds == 3) {
+			else if (numReacts == 2 && numProds == 3) {
 
                 double k_forw = rate;
                 LinkedList reactantsInForwRxn = structure.reactants;
@@ -316,21 +292,22 @@ public class Reaction {
                 double k_forw_eff = k_forw*k_forw_diff/(k_forw + k_forw_diff);
 
                 keff = k_forw_eff;
-                //if (keff/k_forw < 0.2){
-                    //if (!getKinetics().getComment().endsWith("Diffusion limited")){
                 DiffFactor = keff/rate;
-
-                setKineticsComments(getComments() + "\t"  + "Diffusion factor = " + DiffFactor + "\t" + "Keq =" + calculateKeq(p_temperature),0);
-
-                return keff;
-
+                rate = keff;
             }
-
-        }
-//        for (int numKinetics=0; numKinetics<k_All.length; ++numKinetics) {
-//        	setKineticsComments(k_All[numKinetics].getComment() + "\t" + "Keq(T=298K) =" + calculateKeq(p_temperature),numKinetics);
-//        }
-      	return rate;
+			// Add comments only if the temperature at which the function has been called corresponds to the system temperature specified in the condition file
+			// And if they haven't already been added
+			if (p_temperature.getK()==sys_temp.getK()){
+				String oldComments = k_All[0].getComment();
+				if (!oldComments.contains("Diffusion")) {
+					if (numReacts == 1 && numProds == 1)
+						oldComments += " Unimolecular: no diffusion limitation.";
+					String newComments = oldComments + String.format(" Diffusion factor=%.3g, rate=%.3g, Keq=%.3g, at T=%.0fK.", DiffFactor, rate, calculateKeq(p_temperature), p_temperature.getK());
+					setKineticsComments(newComments,0);
+				}
+			}
+		}
+       return rate;
 
   	}
   	else if (isBackward()){
@@ -347,7 +324,7 @@ public class Reaction {
     public double calculatediff(LinkedList p_struct) {
 
       if (p_struct.size()!=2){
-          System.out.println("Cannot compute diffusive limit if number of reactants is not equal to 2");
+          Logger.warning("Cannot compute diffusive limit if number of reactants is not equal to 2");
       }
 
       // Array containing the radii of the two species passed in p_struct
@@ -1276,45 +1253,45 @@ public class Reaction {
   public boolean repOk() {
       //#[ operation repOk()
       if (!structure.repOk()) {
-      	System.out.println("Invalid Reaction Structure:" + structure.toString());
+      	Logger.error("Invalid Reaction Structure:" + structure.toString());
       	return false;
       }
 
       if (!isForward() && !isBackward()) {
-      	System.out.println("Invalid Reaction Direction: " + String.valueOf(getDirection()));
+      	Logger.error("Invalid Reaction Direction: " + String.valueOf(getDirection()));
       	return false;
       }
       if (isBackward() && reverseReaction == null) {
-      	System.out.println("Backward Reaction without a reversed reaction defined!");
+      	Logger.error("Backward Reaction without a reversed reaction defined!");
       	return false;
       }
 
       /*if (!getRateConstant().repOk()) {
-      	System.out.println("Invalid Rate Constant: " + getRateConstant().toString());
+      	Logger.error("Invalid Rate Constant: " + getRateConstant().toString());
       	return false;
       }*/
 
       Kinetics[] allKinetics = getKinetics();
       for (int numKinetics=0; numKinetics<allKinetics.length; ++numKinetics) {
 	      if (!allKinetics[numKinetics].repOk()) {
-	      	System.out.println("Invalid Kinetics: " + allKinetics[numKinetics].toString());
+	      	Logger.error("Invalid Kinetics: " + allKinetics[numKinetics].toString());
 	      	return false;
 	      }
       }
 
       if (!checkRateRange()) {
-      	System.out.println("reaction rate is higher than the upper rate limit!");
-      	System.out.println(getStructure().toString());
+      	Logger.error("reaction rate is higher than the upper rate limit!");
+      	Logger.info(getStructure().toString());
       	Temperature tup = new Temperature(1500,"K");
       	if (isForward()) {
-      		System.out.println("k(T=1500) = " + String.valueOf(calculateTotalRate(tup)));
+      		Logger.info("k(T=1500) = " + String.valueOf(calculateTotalRate(tup)));
       	}
       	else {
-      		System.out.println("k(T=1500) = " + String.valueOf(calculateTotalRate(tup)));
-      		System.out.println("Keq(T=1500) = " + String.valueOf(calculateKeq(tup)));
-      		System.out.println("krev(T=1500) = " + String.valueOf(getReverseReaction().calculateTotalRate(tup)));
+      		Logger.info("k(T=1500) = " + String.valueOf(calculateTotalRate(tup)));
+      		Logger.info("Keq(T=1500) = " + String.valueOf(calculateKeq(tup)));
+      		Logger.info("krev(T=1500) = " + String.valueOf(getReverseReaction().calculateTotalRate(tup)));
       	}
-      	System.out.println(getKinetics());
+      	Logger.info(getKinetics().toString());
       	return false;
       }
       return true;
@@ -1688,17 +1665,17 @@ public class Reaction {
 		
 		String rxn = "";
 		Species species = (Species) structure.getReactantList().get(0);
-		rxn = rxn + species.getName() + "(" + Integer.toString(species.getID()) + ")";
+		rxn = rxn + species.getFullName() ;
 		for (int i = 1; i < getReactantNumber(); i++) {
 			species = (Species) structure.getReactantList().get(i);
-			rxn += " + " + species.getName() + "(" + Integer.toString(species.getID()) + ")";
+			rxn += " + " + species.getFullName() ;
 		}
 		rxn += " --> ";
 		species = (Species) structure.getProductList().get(0);
-		rxn = rxn + species.getName() + "(" + Integer.toString(species.getID()) + ")";
+		rxn = rxn + species.getFullName() ;
 		for (int i = 1; i < getProductNumber(); i++) {
 			species = (Species) structure.getProductList().get(i);
-			rxn += " + " + species.getName() + "(" + Integer.toString(species.getID()) + ")";
+			rxn += " + " + species.getFullName() ;
 		}
 		
 		return rxn;
@@ -1755,9 +1732,9 @@ public class Reaction {
 			if (conc < 0) {
 				double aTol = ReactionModelGenerator.getAtol();
 				//if (Math.abs(conc) < aTol) conc = 0;
-				//else throw new NegativeConcentrationException(spe.getName() + ": " + String.valueOf(conc));
+				//else throw new NegativeConcentrationException(spe.getFullName() + ": " + String.valueOf(conc));
 				if (conc < -100.0 * aTol)
-					throw new NegativeConcentrationException("Species " + spe.getName() + " has negative concentration: " + String.valueOf(conc));
+					throw new NegativeConcentrationException("Species " + spe.getFullName() + " has negative concentration: " + String.valueOf(conc));
 			}
 			forwardFlux *= conc;
 		}

@@ -30,9 +30,21 @@ public class TransportDataEstimator {
 		try {
 			BufferedReader reader = new BufferedReader(new FileReader(new File(args[0])));
 
-            // Read in the Primary Transport Library, if it exists
 			ReactionModelGenerator rmg = new ReactionModelGenerator();
             String line = ChemParser.readMeaningfulLine(reader, true);
+
+            // Read in the Database field
+            if (line.toLowerCase().startsWith("database")) {
+                RMG.extractAndSetDatabasePath(line);
+            }
+            else {
+                System.err.println("TransportDataEstimator: Could not"
+                        + " locate the Database field");
+                System.exit(0);
+            }
+            line = ChemParser.readMeaningfulLine(reader, true);
+
+            // Read in the Primary Transport Library, if it exists
             if (line.toLowerCase().startsWith("primarytransportlibrary")) {
             	rmg.readAndMakePTransL(reader);
             }

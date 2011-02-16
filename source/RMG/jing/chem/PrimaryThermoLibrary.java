@@ -85,7 +85,7 @@ public void appendPrimaryThermoLibrary(String name, String path) {
 //7-Jul-2009: MRH
 public void read(String p_dictionary, String p_library, String p_name) throws IOException, FileNotFoundException {
 	String source = "Primary Thermo Library: " + p_name;
-	System.out.println("Reading " + source);
+	Logger.info("Reading " + source);
 	dictionary = readDictionary(p_dictionary, source);
 	library = readLibrary(p_library, dictionary, source);
 }
@@ -122,9 +122,9 @@ public HashMap readLibrary(String p_thermoFileName, HashMap p_dictionary, String
 					else {
 						ThermoData oldThermoData = (ThermoData)old;
 						if (!oldThermoData.equals(newThermoData)) {
-				            System.out.println("Duplicate thermo data (same graph, same name) in " + source);
-				            System.out.println("\tIgnoring thermo data for species: " + newThermoData.getName() + " from thermo_library " + source);
-				            System.out.println("\tStill storing thermo data for species: " + oldThermoData.getName() + " from thermo_library " + oldThermoData.source);
+				            Logger.debug("Duplicate thermo data (same graph, same name) in " + source);
+				            Logger.debug("\tIgnoring thermo data for species: " + newThermoData.getName() + " from thermo_library " + source);
+				            Logger.debug("\tStill storing thermo data for species: " + oldThermoData.getName() + " from thermo_library " + oldThermoData.source);
 						}
 					}
 				}
@@ -132,7 +132,7 @@ public HashMap readLibrary(String p_thermoFileName, HashMap p_dictionary, String
 			catch (NumberFormatException e) {
 				Object o = p_dictionary.get(thermo);
 				if (o == null) {
-					System.out.println(name + ": "+thermo);
+					Logger.error(name + ": "+thermo);
 				}
 			}
 			line = ChemParser.readMeaningfulLine(data, true);
@@ -173,17 +173,17 @@ public HashMap readDictionary(String p_fileName, String source) throws FileNotFo
 	          if (td == null){
 	          	dictionary.put(name, graph);
 	          } else {
-	        	  System.out.println("Ignoring species " + name + 
+	        	  Logger.debug("Ignoring species " + name +
 	        			  " -- Graph already exists in user-defined " + td.source);
 	          }
 	      }
 	      else{
 	        Graph oldGraph = (Graph)old;
 	        if (!oldGraph.equals(graph)) {
-	          System.out.println("Can't replace graph in primary thermo library!");
-	          System.out.println("The species name '" + name + "' is given multiple times");
-	          System.out.println("in the thermo library '" + source + "', yet has");
-	          System.out.println("different graphs");
+	          Logger.critical("Can't replace graph in primary thermo library!");
+	          Logger.info("The species name '" + name + "' is given multiple times");
+	          Logger.info("in the thermo library '" + source + "', yet has");
+	          Logger.info("different graphs");
 	          System.exit(0);
 	        }
 
@@ -280,7 +280,7 @@ public HashMap readDictionary(String p_fileName) throws FileNotFoundException, I
       else{
         Graph oldGraph = (Graph)old;
         if (!oldGraph.equals(graph)) {
-          System.out.println("Can't replace graph in primary thermo library!");
+          Logger.critical("Can't replace graph in primary thermo library!");
           System.exit(0);
         }
 
@@ -332,9 +332,9 @@ public HashMap readLibrary(String p_thermoFileName, HashMap p_dictionary) throws
         else{
           ThermoData oldThermoData = (ThermoData)old;
           if (!oldThermoData.equals(newThermoData)) {
-            System.out.println("Can't replace thermoData in primary thermo library!");
-            System.out.println("old thermodata:"+oldThermoData.getName());
-            System.out.println("new thermodata:"+newThermoData.getName());
+            Logger.critical("Can't replace thermoData in primary thermo library!");
+            Logger.info("old thermodata:"+oldThermoData.getName());
+            Logger.info("new thermodata:"+newThermoData.getName());
             System.exit(0);
           }
 
@@ -345,7 +345,7 @@ public HashMap readLibrary(String p_thermoFileName, HashMap p_dictionary) throws
     catch (NumberFormatException e){
       Object o = p_dictionary.get(thermo);
       if (o == null){
-        System.out.println(name + ": "+thermo);
+        Logger.error(name + ": "+thermo);
       }
     }
     line = ChemParser.readMeaningfulLine(data, true);

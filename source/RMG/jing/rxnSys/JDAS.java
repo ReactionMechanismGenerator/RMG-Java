@@ -93,6 +93,7 @@ public abstract class JDAS implements DAESolver {
     protected double endTime;
     protected StringBuilder thermoString = new StringBuilder();
     protected static HashMap edgeID;
+    protected static HashMap edgeLeakID;
     protected double[] maxEdgeFluxRatio;
     protected boolean[] prunableSpecies;
     protected double termTol;
@@ -142,7 +143,8 @@ public abstract class JDAS implements DAESolver {
     }
 
     public StringBuilder generatePDepODEReactionList(ReactionModel p_reactionModel,
-            SystemSnapshot p_beginStatus, Temperature p_temperature, Pressure p_pressure) {
+            SystemSnapshot p_beginStatus, Temperature p_temperature, Pressure p_pressure,
+            LinkedHashSet nonpdep_from_seed) {
 
         StringBuilder rString = new StringBuilder();
         StringBuilder arrayString = new StringBuilder();
@@ -154,7 +156,7 @@ public abstract class JDAS implements DAESolver {
         LinkedList nonPDepList = new LinkedList();
         LinkedList pDepList = new LinkedList();
 
-        generatePDepReactionList(p_reactionModel, p_beginStatus, p_temperature, p_pressure, nonPDepList, pDepList);
+        generatePDepReactionList(p_reactionModel, p_beginStatus, p_temperature, p_pressure, nonPDepList, pDepList, nonpdep_from_seed);
 
         int size = nonPDepList.size() + pDepList.size() + duplicates.size();
 
@@ -259,7 +261,7 @@ public abstract class JDAS implements DAESolver {
 
     public void generatePDepReactionList(ReactionModel p_reactionModel,
             SystemSnapshot p_beginStatus, Temperature p_temperature, Pressure p_pressure,
-            LinkedList nonPDepList, LinkedList pDepList) {
+            LinkedList nonPDepList, LinkedList pDepList, LinkedHashSet nonpdep_from_seed) {
 
         CoreEdgeReactionModel cerm = (CoreEdgeReactionModel) p_reactionModel;
 
@@ -274,7 +276,10 @@ public abstract class JDAS implements DAESolver {
                 rxn.generateReverseReaction();
             }
 
-            if (!rxn.reactantEqualsProduct() && !troeList.contains(rxn) && !troeList.contains(rxn.getReverseReaction()) && !thirdBodyList.contains(rxn) && !thirdBodyList.contains(rxn.getReverseReaction()) && !lindemannList.contains(rxn) && !lindemannList.contains(rxn.getReverseReaction())) {
+            if (!rxn.reactantEqualsProduct() && !troeList.contains(rxn) && !troeList.contains(rxn.getReverseReaction()) &&
+                    !thirdBodyList.contains(rxn) && !thirdBodyList.contains(rxn.getReverseReaction()) &&
+                    !lindemannList.contains(rxn) && !lindemannList.contains(rxn.getReverseReaction()) &&
+                    !nonpdep_from_seed.contains(rxn) && !nonpdep_from_seed.contains(rxn.getReverseReaction())) {
                 if (!pDepList.contains(rxn) && !pDepList.contains(rxn.getReverseReaction())) {
                     pDepList.add(rxn);
                 } else if (pDepList.contains(rxn) && !pDepList.contains(rxn.getReverseReaction())) {
@@ -313,24 +318,24 @@ public abstract class JDAS implements DAESolver {
         }
 
         LinkedHashMap speStatus = new LinkedHashMap();
-        System.out.println("Sp.#\tName         \tConcentration \tFlux");
+        Logger.info(String.format("%-8s%-16s %-16s       %-16s", "Sp. #", "Name", "Concentration", "Flux"));
 
         for (Iterator iter = p_reactionModel.getSpecies(); iter.hasNext();) {
             Species spe = (Species) iter.next();
             int id = getRealID(spe);
             if (id > p_y.length) {
-                throw new UnknownReactedSpeciesException(spe.getName());
+                throw new UnknownReactedSpeciesException(spe.getFullName());
             }
             double conc = p_y[id - 1];
             double flux = p_yprime[id - 1];
-            System.out.println(String.format("%1$4d\t%2$-13s\t%3$ 6E \t%4$ 6E", spe.getID(), spe.getName(), conc, flux));
+            Logger.info(String.format("%1$4d    %2$-13s      %3$ 10.4E   %4$ 10.4E", spe.getID(), spe.getFullName(), conc, flux));
 
             if (conc < 0) {
                 double aTol = ReactionModelGenerator.getAtol();
                 //if (Math.abs(conc) < aTol) conc = 0;
-                //else throw new NegativeConcentrationException("Species " + spe.getName() + " has negative conc: " + String.valueOf(conc));
+                //else throw new NegativeConcentrationException("Species " + spe.getFullName() + " has negative conc: " + String.valueOf(conc));
                 if (conc < -100.0 * aTol) {
-                    throw new NegativeConcentrationException("Species " + spe.getName() + " has negative concentration: " + String.valueOf(conc));
+                    throw new NegativeConcentrationException("Species " + spe.getFullName() + " has negative concentration: " + String.valueOf(conc));
                 }
             }
             SpeciesStatus ss = new SpeciesStatus(spe, 1, conc, flux);
@@ -574,7 +579,7 @@ public abstract class JDAS implements DAESolver {
 
                 Species spe = ss.getSpecies();
                 int id = getRealID(spe);
-                //System.out.println(String.valueOf(spe.getID()) + '\t' + spe.getName() + '\t' + String.valueOf(conc) + '\t' + String.valueOf(flux));
+                //System.out.println(String.valueOf(spe.getID()) + '\t' + spe.getFullName() + '\t' + String.valueOf(conc) + '\t' + String.valueOf(flux));
 
                 y[id - 1] = conc;
                 yprime[id - 1] = flux;
@@ -751,10 +756,10 @@ public abstract class JDAS implements DAESolver {
         return rtol;
     }
 
-    public String getEdgeReactionString(CoreEdgeReactionModel model, HashMap edgeID,
-            Reaction r, Temperature temperature, Pressure pressure) {
+    public String getEdgeReactionString(CoreEdgeReactionModel model, HashMap IDmap,
+            Reaction r, Temperature temperature, Pressure pressure, int offset) {
 
-        int edgeSpeciesCounter = edgeID.size();
+        int edgeSpeciesCounter = IDmap.size() + offset;
 
         // Find the rate coefficient
         double k;
@@ -782,11 +787,11 @@ public abstract class JDAS implements DAESolver {
                 Species spe = (Species) pIter.next();
                 if (model.containsAsUnreactedSpecies(spe)) {
                     prodCount++;
-                    Integer id = (Integer) edgeID.get(spe);
+                    Integer id = (Integer) IDmap.get(spe);
                     if (id == null) {
                         edgeSpeciesCounter++;
                         id = new Integer(edgeSpeciesCounter);
-                        edgeID.put(spe, id);
+                        IDmap.put(spe, id);
                     }
                     tempProdArray[prodCount - 1] = id;
                 }
@@ -811,12 +816,13 @@ public abstract class JDAS implements DAESolver {
 
         // First use reactions in unreacted reaction set, which is valid for both RateBasedRME and RateBasedPDepRME
         edgeID = new HashMap();
+        edgeLeakID = new HashMap();
         LinkedHashSet ur = model.getUnreactedReactionSet();
         for (Iterator iur = ur.iterator(); iur.hasNext();) {
             Reaction r = (Reaction) iur.next();
             if (((CoreEdgeReactionModel) model).reactantsInCoreQ(r.getStructure())) {
                 edgeReactionCounter++;
-                String str = getEdgeReactionString(model, edgeID, r, p_temperature, p_pressure);//this line is needed even when not writing to file because it will update edgeID
+                String str = getEdgeReactionString(model, edgeID, r, p_temperature, p_pressure, 0);//this line is needed even when not writing to file because it will update edgeID
 //			    edgeReacInfoString.append("\n" + str);
             }
         }
@@ -868,13 +874,13 @@ public abstract class JDAS implements DAESolver {
                     if (edgeReaction) {
                         if (forwardFlag) {
                             edgeReactionCounter++;
-                            String str = getEdgeReactionString(model, edgeID, rxn, p_temperature, p_pressure);//use the forward reaction
+                            String str = getEdgeReactionString(model, edgeID, rxn, p_temperature, p_pressure, 0);//use the forward reaction
                             //                                               edgeReacInfoString.append("\n" + str);
                         } else {
                             PDepReaction rxn_r = (PDepReaction) rxn.getReverseReaction();
                             if (rxn_r != null) {//make sure the reverse is not null
                                 edgeReactionCounter++;
-                                String str = getEdgeReactionString(model, edgeID, rxn_r, p_temperature, p_pressure);//use the reverse reaction
+                                String str = getEdgeReactionString(model, edgeID, rxn_r, p_temperature, p_pressure, 0);//use the reverse reaction
                                 //                                               edgeReacInfoString.append("\n" + str);
                             }
                         }
@@ -884,93 +890,40 @@ public abstract class JDAS implements DAESolver {
 
             //second, consider kLeak of each reaction network so that the validity of each reaction network may be tested
             //in the original CHEMDIS approach, we included a reaction and pseudospecies for each kleak/P-dep network
-            //with the FAME approach we still consider each P-dep network as a pseudospecies, but we have multiple reactions contributing to this pseudo-species, with each reaction having different reactants
+            //with the FAME approach we still group all the wells from separate networks together in a new construct, edgeLeakID, analogous to edge ID
+            //edgeLeakID may include some of the same species as edgeID, as well as some new species
+            //the IDs used in edgeID and edgeLeakID will be consecutive; i.e. edgeID will go from 1 to N and edgeFluxID will go from N+1 to N+M
             edgeSpeciesCounter = edgeID.size();//above functions use getEdgeReactionString, which only uses edgeSpeciesCounter locally; we need to update it for the current context
             for (Iterator iter1 = PDepNetwork.getNetworks().iterator(); iter1.hasNext();) {
                 PDepNetwork pdn = (PDepNetwork) iter1.next();
-                //account for pseudo-edge species product by incrementing the edgeSpeciesCounter and storing the ID in the tempProdArray; each of these ID's will occur once and only once; thus, note that the corresponding PDepNetwork is NOT stored to the HashMap
-                int prodCount = 1;//prodCount will not be modified as each PDepNetwork will be treated as a pseudo-edge species product
-                int[] tempProdArray = {0, 0, 0};
-                edgeSpeciesCounter++;
-                tempProdArray[0] = edgeSpeciesCounter;//note that if there are no non-included reactions that have all core reactants for a particular P-dep network, then the ID will be allocated, but not used...hopefully this would not cause problems with the Fortran code
                 double k = 0.0;
                 boolean allCoreReac = false;
-                //   double k = pdn.getKLeak(index);//index in DASSL should correspond to the same (reactionSystem/TPcondition) index as used by kLeak
-                //   if (!pdn.isActive() && pdn.getIsChemAct()) {
-                //           k = pdn.getEntryReaction().calculateTotalRate(p_temperature);
-                //   }
-                if (pdn.getPathReactions().size() == 1 && pdn.getNetReactions().size() == 0) {//// If there is only one path reaction (and thus only one nonincluded reaction), use the high-pressure limit rate as the flux rather than the k(T,P) value (cf. PDepNetwork.getLeakFlux())
+                if (pdn.getPathReactions().size() == 1 && pdn.getNetReactions().size() == 0) {// If there is only one path reaction and no net reactions (i.e. the network is A + B --> C*), use the high-pressure limit rate as the flux rather than the k(T,P) value (cf. PDepNetwork.getLeakFlux())
                     PDepReaction rxn = pdn.getPathReactions().get(0);
-                    int reacCount = 0;
-                    int[] tempReacArray = {0, 0, 0};
                     allCoreReac = false;//allCoreReac will be used to track whether all reactant species are in the core
                     if (!rxn.getProduct().getIncluded()) {
-                        k = rxn.calculateRate(p_temperature, p_pressure);
                         allCoreReac = true;
                         //iterate over the reactants, counting and storing IDs in tempReacArray, up to a maximum of 3 reactants
                         for (ListIterator<Species> rIter = rxn.getReactant().getSpeciesListIterator(); rIter.hasNext();) {
-                            reacCount++;
                             Species spe = (Species) rIter.next();
-                            if (model.containsAsReactedSpecies(spe)) {
-                                tempReacArray[reacCount - 1] = getRealID(spe);
-                            } else {
+                            if (!model.containsAsReactedSpecies(spe)) {
                                 allCoreReac = false;
                             }
+                        }
+                        if (allCoreReac) {//only consider cases where all reactants are in the core
+                            edgeReactionCounter++;
+                            ////update the output string with info for kLeak for one PDepNetwork
+                            String str = getEdgeReactionString(model, edgeLeakID, rxn, p_temperature, p_pressure, edgeID.size());//use the forward reaction
+                            //bw.write("\n" + str);
                         }
                     } else {
                         PDepReaction rxnReverse = (PDepReaction) rxn.getReverseReaction();
                         if (rxnReverse != null) {
-                            k = rxnReverse.calculateRate(p_temperature, p_pressure);
                             allCoreReac = true;
                             //iterate over the products, counting and storing IDs in tempReacArray, up to a maximum of 3 reactants
                             for (ListIterator<Species> rIter = rxn.getProduct().getSpeciesListIterator(); rIter.hasNext();) {
-
-                                reacCount++;
                                 Species spe = (Species) rIter.next();
-                                if (model.containsAsReactedSpecies(spe)) {
-                                    tempReacArray[reacCount - 1] = getRealID(spe);
-                                } else {
-                                    allCoreReac = false;
-                                }
-                            }
-                        }
-                    }
-                    if (allCoreReac) {//only consider cases where all reactants are in the core
-                        edgeReactionCounter++;
-                        ////update the output string with info for kLeak for one PDepNetwork
-                        //bw.write("\n" + reacCount + " " + prodCount + " " + tempReacArray[0] + " " + tempReacArray[1] + " " + tempReacArray[2] + " " + tempProdArray[0] + " " + tempProdArray[1] + " " + tempProdArray[2] + " " + k);
-                    }
-                } else {
-                    for (ListIterator<PDepReaction> iter = pdn.getNonincludedReactions().listIterator(); iter.hasNext();) {//cf. getLeakFlux in PDepNetwork
-                        PDepReaction rxn = iter.next();
-                        int reacCount = 0;
-                        int[] tempReacArray = {0, 0, 0};
-                        allCoreReac = false;//allCoreReac will be used to track whether all reactant species are in the core
-                        if (rxn.getReactant().getIncluded() && !rxn.getProduct().getIncluded()) {
-                            k = rxn.calculateRate(p_temperature, p_pressure);
-                            allCoreReac = true;
-                            //iterate over the reactants, counting and storing IDs in tempReacArray, up to a maximum of 3 reactants
-                            for (ListIterator<Species> rIter = rxn.getReactant().getSpeciesListIterator(); rIter.hasNext();) {
-                                reacCount++;
-                                Species spe = (Species) rIter.next();
-                                if (model.containsAsReactedSpecies(spe)) {
-                                    tempReacArray[reacCount - 1] = getRealID(spe);
-                                } else {
-                                    allCoreReac = false;
-                                }
-                            }
-                        } else if (!rxn.getReactant().getIncluded() && rxn.getProduct().getIncluded()) {
-                            PDepReaction rxnReverse = (PDepReaction) rxn.getReverseReaction();
-                            k = rxnReverse.calculateRate(p_temperature, p_pressure);
-                            allCoreReac = true;
-                            //iterate over the products, counting and storing IDs in tempReacArray, up to a maximum of 3 reactants
-                            for (ListIterator<Species> rIter = rxn.getProduct().getSpeciesListIterator(); rIter.hasNext();) {
-
-                                reacCount++;
-                                Species spe = (Species) rIter.next();
-                                if (model.containsAsReactedSpecies(spe)) {
-                                    tempReacArray[reacCount - 1] = getRealID(spe);
-                                } else {
+                                if (!model.containsAsReactedSpecies(spe)) {
                                     allCoreReac = false;
                                 }
                             }
@@ -978,13 +931,51 @@ public abstract class JDAS implements DAESolver {
                         if (allCoreReac) {//only consider cases where all reactants are in the core
                             edgeReactionCounter++;
                             ////update the output string with info for kLeak for one PDepNetwork
-                            //bw.write("\n" + reacCount + " " + prodCount + " " + tempReacArray[0] + " " + tempReacArray[1] + " " + tempReacArray[2] + " " + tempProdArray[0] + " " + tempProdArray[1] + " " + tempProdArray[2] + " " + k);
+                            String str = getEdgeReactionString(model, edgeLeakID, rxnReverse, p_temperature, p_pressure, edgeID.size());//use the reverse reaction
+                            //bw.write("\n" + str);
+                        }
+                    }
+                } else {
+                    for (ListIterator<PDepReaction> iter = pdn.getNonincludedReactions().listIterator(); iter.hasNext();) {//cf. getLeakFlux in PDepNetwork
+                        PDepReaction rxn = iter.next();
+                        allCoreReac = false;//allCoreReac will be used to track whether all reactant species are in the core
+                        if (rxn.getReactant().getIncluded() && !rxn.getProduct().getIncluded()) {
+                            allCoreReac = true;
+                            //iterate over the reactants, counting and storing IDs in tempReacArray, up to a maximum of 3 reactants
+                            for (ListIterator<Species> rIter = rxn.getReactant().getSpeciesListIterator(); rIter.hasNext();) {
+                                Species spe = (Species) rIter.next();
+                                if (!model.containsAsReactedSpecies(spe)) {
+                                    allCoreReac = false;
+                                }
+                            }
+                            if (allCoreReac) {//only consider cases where all reactants are in the core
+                                edgeReactionCounter++;
+                                ////update the output string with info for kLeak for one PDepNetwork
+                                String str = getEdgeReactionString(model, edgeLeakID, rxn, p_temperature, p_pressure, edgeID.size());//use the forward reaction
+                                //bw.write("\n" + str);
+                            }
+                        } else if (!rxn.getReactant().getIncluded() && rxn.getProduct().getIncluded()) {
+                            PDepReaction rxnReverse = (PDepReaction) rxn.getReverseReaction();
+                            allCoreReac = true;
+                            //iterate over the products, counting and storing IDs in tempReacArray, up to a maximum of 3 reactants
+                            for (ListIterator<Species> rIter = rxn.getProduct().getSpeciesListIterator(); rIter.hasNext();) {
+                                Species spe = (Species) rIter.next();
+                                if (!model.containsAsReactedSpecies(spe)) {
+                                    allCoreReac = false;
+                                }
+                            }
+                            if (allCoreReac) {//only consider cases where all reactants are in the core
+                                edgeReactionCounter++;
+                                ////update the output string with info for kLeak for one PDepNetwork
+                                String str = getEdgeReactionString(model, edgeLeakID, rxnReverse, p_temperature, p_pressure, edgeID.size());//use the reverse reaction
+                                //bw.write("\n" + str);
+                            }
                         }
                     }
                 }
-
             }
         }
+        edgeSpeciesCounter = edgeID.size() + edgeLeakID.size();
 
 
 
@@ -1000,12 +991,13 @@ public abstract class JDAS implements DAESolver {
 
             // First use reactions in unreacted reaction set, which is valid for both RateBasedRME and RateBasedPDepRME
             edgeID = new HashMap();
+            edgeLeakID = new HashMap();
             ur = model.getUnreactedReactionSet();
             for (Iterator iur = ur.iterator(); iur.hasNext();) {
                 Reaction r = (Reaction) iur.next();
                 if (((CoreEdgeReactionModel) model).reactantsInCoreQ(r.getStructure())) {
                     edgeReactionCounter++;
-                    String str = getEdgeReactionString(model, edgeID, r, p_temperature, p_pressure);//this line is needed even when not writing to file because it will update edgeID
+                    String str = getEdgeReactionString(model, edgeID, r, p_temperature, p_pressure, 0);//this line is needed even when not writing to file because it will update edgeID
                     bw.write("\n" + str);
                 }
 
@@ -1058,13 +1050,13 @@ public abstract class JDAS implements DAESolver {
                         if (edgeReaction) {
                             if (forwardFlag) {
                                 edgeReactionCounter++;
-                                String str = getEdgeReactionString(model, edgeID, rxn, p_temperature, p_pressure);//use the forward reaction
+                                String str = getEdgeReactionString(model, edgeID, rxn, p_temperature, p_pressure, 0);//use the forward reaction
                                 bw.write("\n" + str);
                             } else {
                                 PDepReaction rxn_r = (PDepReaction) rxn.getReverseReaction();
                                 if (rxn_r != null) {//make sure the reverse is not null
                                     edgeReactionCounter++;
-                                    String str = getEdgeReactionString(model, edgeID, rxn_r, p_temperature, p_pressure);//use the reverse reaction
+                                    String str = getEdgeReactionString(model, edgeID, rxn_r, p_temperature, p_pressure, 0);//use the reverse reaction
                                     bw.write("\n" + str);
                                 }
                             }
@@ -1072,130 +1064,98 @@ public abstract class JDAS implements DAESolver {
                     }
                 }
 
-                //6/19/09 gmagoon: original code below; with new P-dep implementation, it would only take into account forward reactions
-                //if (rxn.isEdgeReaction(model)) {
-                //	edgeReactionCounter++;
-                //	String str = getEdgeReactionString(model, edgeID, rxn, p_temperature, p_pressure);
-                //	edgeReacInfoString.append("\n" + str);
-                //}
-                //a potentially simpler approach based on the original approach (however, it seems like isEdgeReaction may return false even if there are some core products along with edge products):
-                //                                        PDepReaction rxnReverse = (PDepReaction)rxn.getReverseReaction();
-                //                                        if (rxn.isEdgeReaction(model)) {
-                //                                            edgeReactionCounter++;
-                //					    String str = getEdgeReactionString(model, edgeID, rxn, p_temperature, p_pressure);
-                //					    edgeReacInfoString.append("\n" + str);
-                //					}
-                //                                        else if (rxnReverse.isEdgeReaction(model)){
-                //                                            edgeReactionCounter++;
-                //					    String str = getEdgeReactionString(model, edgeID, rxn, p_temperature, p_pressure);
-                //					    edgeReacInfoString.append("\n" + str);
-                //                                        }
                 //second, consider kLeak of each reaction network so that the validity of each reaction network may be tested
                 //in the original CHEMDIS approach, we included a reaction and pseudospecies for each kleak/P-dep network
-                //with the FAME approach we still consider each P-dep network as a pseudospecies, but we have multiple reactions contributing to this pseudo-species, with each reaction having different reactants
+                //with the FAME approach we still group all the wells from separate networks together in a new construct, edgeLeakID, analogous to edge ID
+                //edgeLeakID may include some of the same species as edgeID, as well as some new species
+                //the IDs used in edgeID and edgeLeakID will be consecutive; i.e. edgeID will go from 1 to N and edgeFluxID will go from N+1 to N+M
                 edgeSpeciesCounter = edgeID.size();//above functions use getEdgeReactionString, which only uses edgeSpeciesCounter locally; we need to update it for the current context
                 for (Iterator iter1 = PDepNetwork.getNetworks().iterator(); iter1.hasNext();) {
                     PDepNetwork pdn = (PDepNetwork) iter1.next();
-                    //account for pseudo-edge species product by incrementing the edgeSpeciesCounter and storing the ID in the tempProdArray; each of these ID's will occur once and only once; thus, note that the corresponding PDepNetwork is NOT stored to the HashMap
-                    int prodCount = 1;//prodCount will not be modified as each PDepNetwork will be treated as a pseudo-edge species product
-                    int[] tempProdArray = {0, 0, 0};
-                    edgeSpeciesCounter++;
-                    tempProdArray[0] = edgeSpeciesCounter;//note that if there are no non-included reactions that have all core reactants for a particular P-dep network, then the ID will be allocated, but not used...hopefully this would not cause problems with the Fortran code
                     double k = 0.0;
                     boolean allCoreReac = false;
-                    //   double k = pdn.getKLeak(index);//index in DASSL should correspond to the same (reactionSystem/TPcondition) index as used by kLeak
-                    //   if (!pdn.isActive() && pdn.getIsChemAct()) {
-                    //           k = pdn.getEntryReaction().calculateTotalRate(p_temperature);
-                    //   }
-                    if (pdn.getPathReactions().size() == 1 && pdn.getNetReactions().size() == 0) {//// If there is only one path reaction (and thus only one nonincluded reaction), use the high-pressure limit rate as the flux rather than the k(T,P) value (cf. PDepNetwork.getLeakFlux())
+                    if (pdn.getPathReactions().size() == 1 && pdn.getNetReactions().size() == 0) {// If there is only one path reaction and no net reactions (i.e. the network is A + B --> C*), use the high-pressure limit rate as the flux rather than the k(T,P) value (cf. PDepNetwork.getLeakFlux())
                         PDepReaction rxn = pdn.getPathReactions().get(0);
-                        int reacCount = 0;
-                        int[] tempReacArray = {0, 0, 0};
                         allCoreReac = false;//allCoreReac will be used to track whether all reactant species are in the core
                         if (!rxn.getProduct().getIncluded()) {
-                            k = rxn.calculateRate(p_temperature, p_pressure);
                             allCoreReac = true;
                             //iterate over the reactants, counting and storing IDs in tempReacArray, up to a maximum of 3 reactants
                             for (ListIterator<Species> rIter = rxn.getReactant().getSpeciesListIterator(); rIter.hasNext();) {
-                                reacCount++;
                                 Species spe = (Species) rIter.next();
-                                if (model.containsAsReactedSpecies(spe)) {
-                                    tempReacArray[reacCount - 1] = getRealID(spe);
-                                } else {
+                                if (!model.containsAsReactedSpecies(spe)) {
                                     allCoreReac = false;
                                 }
+                            }
+                            if (allCoreReac) {//only consider cases where all reactants are in the core
+                                edgeReactionCounter++;
+                                ////update the output string with info for kLeak for one PDepNetwork
+                                String str = getEdgeReactionString(model, edgeLeakID, rxn, p_temperature, p_pressure, edgeID.size());//use the forward reaction
+                                bw.write("\n" + str);
                             }
                         } else {
                             PDepReaction rxnReverse = (PDepReaction) rxn.getReverseReaction();
                             if (rxnReverse != null) {
-                                k = rxnReverse.calculateRate(p_temperature, p_pressure);
                                 allCoreReac = true;
                                 //iterate over the products, counting and storing IDs in tempReacArray, up to a maximum of 3 reactants
                                 for (ListIterator<Species> rIter = rxn.getProduct().getSpeciesListIterator(); rIter.hasNext();) {
-
-                                    reacCount++;
                                     Species spe = (Species) rIter.next();
-                                    if (model.containsAsReactedSpecies(spe)) {
-                                        tempReacArray[reacCount - 1] = getRealID(spe);
-                                    } else {
-                                        allCoreReac = false;
-                                    }
-                                }
-                            }
-                        }
-                        if (allCoreReac) {//only consider cases where all reactants are in the core
-                            edgeReactionCounter++;
-                            //update the output string with info for kLeak for one PDepNetwork
-                            bw.write("\n" + reacCount + " " + prodCount + " " + tempReacArray[0] + " " + tempReacArray[1] + " " + tempReacArray[2] + " " + tempProdArray[0] + " " + tempProdArray[1] + " " + tempProdArray[2] + " " + k);
-                        }
-                    } else {
-                        for (ListIterator<PDepReaction> iter = pdn.getNonincludedReactions().listIterator(); iter.hasNext();) {//cf. getLeakFlux in PDepNetwork
-                            PDepReaction rxn = iter.next();
-                            int reacCount = 0;
-                            int[] tempReacArray = {0, 0, 0};
-                            allCoreReac = false;//allCoreReac will be used to track whether all reactant species are in the core
-                            if (rxn.getReactant().getIncluded() && !rxn.getProduct().getIncluded()) {
-                                k = rxn.calculateRate(p_temperature, p_pressure);
-                                allCoreReac = true;
-                                //iterate over the reactants, counting and storing IDs in tempReacArray, up to a maximum of 3 reactants
-                                for (ListIterator<Species> rIter = rxn.getReactant().getSpeciesListIterator(); rIter.hasNext();) {
-                                    reacCount++;
-                                    Species spe = (Species) rIter.next();
-                                    if (model.containsAsReactedSpecies(spe)) {
-                                        tempReacArray[reacCount - 1] = getRealID(spe);
-                                    } else {
-                                        allCoreReac = false;
-                                    }
-                                }
-                            } else if (!rxn.getReactant().getIncluded() && rxn.getProduct().getIncluded()) {
-                                PDepReaction rxnReverse = (PDepReaction) rxn.getReverseReaction();
-                                k = rxnReverse.calculateRate(p_temperature, p_pressure);
-                                allCoreReac = true;
-                                //iterate over the products, counting and storing IDs in tempReacArray, up to a maximum of 3 reactants
-                                for (ListIterator<Species> rIter = rxn.getProduct().getSpeciesListIterator(); rIter.hasNext();) {
-
-                                    reacCount++;
-                                    Species spe = (Species) rIter.next();
-                                    if (model.containsAsReactedSpecies(spe)) {
-                                        tempReacArray[reacCount - 1] = getRealID(spe);
-                                    } else {
+                                    if (!model.containsAsReactedSpecies(spe)) {
                                         allCoreReac = false;
                                     }
                                 }
                             }
                             if (allCoreReac) {//only consider cases where all reactants are in the core
                                 edgeReactionCounter++;
-                                //update the output string with info for kLeak for one PDepNetwork
-                                bw.write("\n" + reacCount + " " + prodCount + " " + tempReacArray[0] + " " + tempReacArray[1] + " " + tempReacArray[2] + " " + tempProdArray[0] + " " + tempProdArray[1] + " " + tempProdArray[2] + " " + k);
+                                ////update the output string with info for kLeak for one PDepNetwork
+                                String str = getEdgeReactionString(model, edgeLeakID, rxnReverse, p_temperature, p_pressure, edgeID.size());//use the reverse reaction
+                                bw.write("\n" + str);
+                            }
+                        }
+                    } else {
+                        for (ListIterator<PDepReaction> iter = pdn.getNonincludedReactions().listIterator(); iter.hasNext();) {//cf. getLeakFlux in PDepNetwork
+                            PDepReaction rxn = iter.next();
+                            allCoreReac = false;//allCoreReac will be used to track whether all reactant species are in the core
+                            if (rxn.getReactant().getIncluded() && !rxn.getProduct().getIncluded()) {
+                                allCoreReac = true;
+                                //iterate over the reactants, counting and storing IDs in tempReacArray, up to a maximum of 3 reactants
+                                for (ListIterator<Species> rIter = rxn.getReactant().getSpeciesListIterator(); rIter.hasNext();) {
+                                    Species spe = (Species) rIter.next();
+                                    if (!model.containsAsReactedSpecies(spe)) {
+                                        allCoreReac = false;
+                                    }
+                                }
+                                if (allCoreReac) {//only consider cases where all reactants are in the core
+                                    edgeReactionCounter++;
+                                    ////update the output string with info for kLeak for one PDepNetwork
+                                    String str = getEdgeReactionString(model, edgeLeakID, rxn, p_temperature, p_pressure, edgeID.size());//use the forward reaction
+                                    bw.write("\n" + str);
+                                }
+                            } else if (!rxn.getReactant().getIncluded() && rxn.getProduct().getIncluded()) {
+                                PDepReaction rxnReverse = (PDepReaction) rxn.getReverseReaction();
+                                allCoreReac = true;
+                                //iterate over the products, counting and storing IDs in tempReacArray, up to a maximum of 3 reactants
+                                for (ListIterator<Species> rIter = rxn.getProduct().getSpeciesListIterator(); rIter.hasNext();) {
+                                    Species spe = (Species) rIter.next();
+                                    if (!model.containsAsReactedSpecies(spe)) {
+                                        allCoreReac = false;
+                                    }
+                                }
+                                if (allCoreReac) {//only consider cases where all reactants are in the core
+                                    edgeReactionCounter++;
+                                    ////update the output string with info for kLeak for one PDepNetwork
+                                    String str = getEdgeReactionString(model, edgeLeakID, rxnReverse, p_temperature, p_pressure, edgeID.size());//use the reverse reaction
+                                    bw.write("\n" + str);
+                                }
                             }
                         }
                     }
 
                 }
             }
+            edgeSpeciesCounter = edgeID.size() + edgeLeakID.size();//this line is not needed here, but it is included for consistency with the first pass
         } catch (IOException e) {
             System.err.println("Problem writing Solver Input File!");
-            e.printStackTrace();
+            Logger.logStackTrace(e);
         }
 
 
@@ -1264,7 +1224,7 @@ public abstract class JDAS implements DAESolver {
             }
         } catch (IOException e) {
             System.err.println("Problem writing Solver Input File!");
-            e.printStackTrace();
+            Logger.logStackTrace(e);
         }
 
     }
@@ -1288,7 +1248,7 @@ public abstract class JDAS implements DAESolver {
             //                fw.close();
         } catch (IOException e) {
             System.err.println("Problem creating Solver Input File!");
-            e.printStackTrace();
+            Logger.logStackTrace(e);
         }
     }
 }

@@ -33,7 +33,7 @@ public class Global {
 	public static double RT_identifyReactedSites = 0;
 	public static double RT_reactChemGraph = 0;
 	public static double RT_findRateConstant = 0;
-	public static double tAtInitialization;
+	public static long tAtInitialization;
 	public static double makeSpecies = 0;
 	public static double checkReactionReverse = 0;
 	public static double makeTR = 0;

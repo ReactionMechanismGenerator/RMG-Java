@@ -20,15 +20,15 @@ PressureModel: Constant (atm) 1
 
 InitialStatus:
 
-(1) C2H6 1.0 (mol/cm3)
+C2H6 (mol/cm3) 1.0 
 1 C 0 {2,S}
 2 C 0 {1,S}
 
 END
 
 InertGas:
-N2 0.0 (mol/cm3)
-Ar 0.0 (mol/cm3)
+N2 (mol/cm3) 0.0 
+Ar (mol/cm3) 0.0 
 END
 
 SpectroscopicDataEstimator: off

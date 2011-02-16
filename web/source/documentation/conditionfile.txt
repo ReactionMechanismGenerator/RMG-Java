@@ -28,6 +28,8 @@ order:
 
 #. The :ref:`initial temperature and pressure <initialconditions>` of the system
 
+#. Commands for :ref:`liquid phase <liquids>` systems
+
 #. Whether to generate an :ref:`IUPAC International Chemical Identifier (InChI) <InChIgeneration>` for each species
 
 #. (Optional) parameters for performing on-the-fly :ref:`quantum calculations <qm>` as a substitute for group additivity

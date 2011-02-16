@@ -3,6 +3,7 @@ package jing.chem;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import jing.rxnSys.Logger;
 
 //6/3/09 gmagoon: molFile class to store and perform operations on molFiles
 //may eventually want to have a super class threeDGeom and say "public class molFile extends threeDGeom {"
@@ -32,7 +33,7 @@ public class molFile {
         } catch (IOException e) {
             String err = "Error writing " + directory+name+".mol";
             err += e.toString();
-            System.out.println(err);
+            Logger.error(err);
         }
         
     }

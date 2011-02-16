@@ -47,7 +47,7 @@ public interface DynamicSimulator {
     //void clean();
 
     //## operation solve(boolean,ReactionModel,boolean,SystemSnapshot,ReactionTime,ReactionTime,Temperature,Pressure,boolean)
-    SystemSnapshot solve(boolean p_initialization, ReactionModel p_reactionModel, boolean p_reactionChanged, SystemSnapshot p_beginStatus, ReactionTime p_beginTime, ReactionTime p_endTime, Temperature p_temperature, Pressure p_pressure,boolean p_conditionChanged, TerminationTester tt, int p_iterationNum);
+    SystemSnapshot solve(boolean p_initialization, ReactionModel p_reactionModel, boolean p_reactionChanged, SystemSnapshot p_beginStatus, ReactionTime p_beginTime, ReactionTime p_endTime, Temperature p_temperature, Pressure p_pressure,boolean p_conditionChanged, TerminationTester tt, int p_iterationNum, LinkedHashSet nonpdep_from_seed);
 
     void addConversion(double [] p_conversion, int p_numConversiosn);
     double[] getConversion();

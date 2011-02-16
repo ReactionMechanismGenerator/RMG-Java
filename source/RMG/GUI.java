@@ -68,9 +68,7 @@ import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JFileChooser;
-import javax.swing.JFormattedTextField;
 import javax.swing.JLabel;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
@@ -80,6 +78,7 @@ import javax.swing.JTextField;
 import javax.swing.ListCellRenderer;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumn;
+import javax.swing.text.JTextComponent;
 
 import java.awt.Dimension;
 import java.awt.GridLayout;
@@ -1959,16 +1958,7 @@ public class GUI extends JPanel implements ActionListener {
         	return;
         }
         else {
-        	String[] tempLines = tempConstant.getText().split("[\n]");
-        	StringTokenizer st = null;
-        	for (int i=0; i<tempLines.length; i++) {
-	        	st = new StringTokenizer(tempLines[i]);
-	        	while (st.hasMoreTokens()) {
-	        		String line = st.nextToken();
-	        		if (line.endsWith(",")) line = line.substring(0,line.length()-1).trim();
-	        		conditionFile += " " + line;
-	        	}
-	        }
+        	conditionFile += extractListOfValuesFromGUIInput(tempConstant);
         }
         conditionFile += "\r";
         
@@ -1980,16 +1970,7 @@ public class GUI extends JPanel implements ActionListener {
         	return;
         }
         else {
-	        String[] pressLines = pressConstant.getText().split("[\n]");
-	        StringTokenizer st = null;
-	        for (int i=0; i<pressLines.length; i++) {
-	        	st = new StringTokenizer(pressLines[i]);
-	        	while (st.hasMoreTokens()) {
-	        		String line = st.nextToken();
-	        		if (line.endsWith(",")) line = line.substring(0,line.length()-1).trim();
-	        		conditionFile += " " + line;
-	        	}
-	        }
+        	conditionFile += extractListOfValuesFromGUIInput(pressConstant);
         }
         conditionFile += "\r\r";
         
@@ -2005,9 +1986,18 @@ public class GUI extends JPanel implements ActionListener {
         //	Add whether to turn solvation on or not
         
         //	Add whether to run on-the-fly quantum jobs or not
+        if (thermomethod.getSelectedItem().equals("QM")) {
+        	conditionFile += "ThermoMethod: QM " + qmSoftware.getSelectedItem().toString() + "\r" +
+        					 "QMForCyclicsOnly: ";
+        	if (cyclicsOnly.getSelectedItem().equals("Yes")) {
+        		conditionFile += "on";
+        	} else {
+        		conditionFile += "off";
+        	}
+        	conditionFile += "\rMaxRadNumForQM: " + maxRadNumQM.getText() + "\r\r";
+        }
         
         //	Determine if each species is reactive, unreactive, or inert
-        int nonInertCount = 0;
         boolean unreactiveStatus = false;
         String reactiveSpecies = "";
         String inertSpecies = "";
@@ -2018,23 +2008,22 @@ public class GUI extends JPanel implements ActionListener {
         else {
 	        for (int i=0; i<tableInput.getRowCount(); i++) {
 	        	if (tableInput.getValueAt(i,3).equals("Inert")) {
-	        		inertSpecies += tableInput.getValueAt(i,0) + " " +
-	        			tableInput.getValueAt(i,1) + " (" +
-	        			tableInput.getValueAt(i,2) + ")\r";
+	        		inertSpecies += tableInput.getValueAt(i,0) + " (" +
+	        			tableInput.getValueAt(i,2) + ")" +
+	        			extractListOfValuesFromGUIInput(tableInput.getValueAt(i,1)) + "\r";
 	        	} else if (tableInput.getValueAt(i,3).equals("Reactive-RMG")) {
-	        		++nonInertCount;
-	        		reactiveSpecies += "(" + nonInertCount + ") " +
-	        		tableInput.getValueAt(i,0) + " " +
-	    			tableInput.getValueAt(i,1) + " (" +
-	    			tableInput.getValueAt(i,2) + ")\r" +
+	        		reactiveSpecies += 
+	        		tableInput.getValueAt(i,0) + " (" +
+	    			tableInput.getValueAt(i,2) + ")" +
+	    			extractListOfValuesFromGUIInput(tableInput.getValueAt(i,1)) + "\r" +
 	    			tableInput.getValueAt(i,4) + "\r\r";
 	        	} else if (tableInput.getValueAt(i,3).equals("Reactive-User")) {
 	        		unreactiveStatus = true;
-	        		++nonInertCount;
-	        		reactiveSpecies += "(" + nonInertCount + ") " +
-	        		tableInput.getValueAt(i,0) + " " +
-	    			tableInput.getValueAt(i,1) + " (" +
-	    			tableInput.getValueAt(i,2) + ") unreactive\r" +
+	        		reactiveSpecies += 
+	        		tableInput.getValueAt(i,0) + " (" +
+	    			tableInput.getValueAt(i,2) + ")" +
+	    			extractListOfValuesFromGUIInput(tableInput.getValueAt(i,1)) +
+	    			" unreactive\r" +
 	    			tableInput.getValueAt(i,4) + "\r\r";
 	        	}
 	        }
@@ -2557,6 +2546,41 @@ public class GUI extends JPanel implements ActionListener {
 		        }
 	        }
 	        
+	        else if (line.startsWith("ThermoMethod")) {
+	        	st = new StringTokenizer(line);
+	        	tempString = st.nextToken();	// Skip over "ThermoMethod:"
+	        	String method = st.nextToken();
+	        	if (method.toLowerCase().equals("qm")) {
+	        		thermomethod.setSelectedItem("QM");
+	        	} else {
+	        		thermomethod.setSelectedItem("Group Additivity");
+	        	}
+	        	qmSoftware.setSelectedItem("Both");
+	        	if (st.hasMoreTokens()) {
+	        		method = st.nextToken().toLowerCase();
+	        		if (method.equals("gaussian03")) qmSoftware.setSelectedItem("Gaussian03");
+	        		else if (method.equals("mopac")) qmSoftware.setSelectedItem("MOPAC");
+	        		else if (method.equals("both"))  qmSoftware.setSelectedItem("Both");
+	        		else System.out.println("GUI did not recognize the software package option " + method + " supplied to the ThermoMethod field.");
+	        	}
+	        }
+	        
+	        else if (line.startsWith("QMForCyclicsOnly")) {
+	        	st = new StringTokenizer(line);
+	        	tempString = st.nextToken();	// Skip over "QMForCyclicsOnly:"
+	        	String yesno = st.nextToken();
+	        	if (yesno.toLowerCase().equals("on"))
+	        		cyclicsOnly.setSelectedItem("Yes");
+	        	else
+	        		cyclicsOnly.setSelectedItem("No");
+	        }
+	        
+	        else if (line.startsWith("MaxRadNumForQM")) {
+	        	st = new StringTokenizer(line);
+	        	tempString = st.nextToken();	// Skip over "MaxRadNumForQM:"
+	        	maxRadNumQM.setText(st.nextToken());
+	        }
+	        
 	        else if (line.toLowerCase().startsWith("readrestart")) {
 	        	st = new StringTokenizer(line);
 	        	tempString = st.nextToken();	// Skip over "ReadRestart:"
@@ -2606,16 +2630,17 @@ public class GUI extends JPanel implements ActionListener {
 		        String reactivity = "";
 		        line = ChemParser.readMeaningfulLine(reader, true); 
 		        while (!line.startsWith("END")) {
-		        	if (line.startsWith("(")) {
+		        	if (line.contains("(")) {
 		        		++numSpecies;
 		        		st = new StringTokenizer(line);
-		        		tempString = st.nextToken();	// Skip over (#)
 		        		name = st.nextToken();
-		        		conc = st.nextToken();
 		        		unit = st.nextToken();
+		        		conc = "";
 		        		reactivity = "Reactive-RMG";
-		        		if (st.hasMoreTokens()) {
-		        			reactivity = "Reactive-User";
+		        		while (st.hasMoreTokens()) {
+		        			String temporaryString = st.nextToken();
+		        			if (temporaryString.equals("unreactive")) reactivity = "Reactive-User";
+		        			else conc += temporaryString + " ";
 		        		}
 		        	} else {
 		        		adjList += line + "\r";
@@ -2623,7 +2648,7 @@ public class GUI extends JPanel implements ActionListener {
 		        	
 		        	line = ChemParser.readMeaningfulLine(reader, true);
 
-		        	if (line.startsWith("(") || line.startsWith("END")) {
+		        	if (line.contains("(") || line.startsWith("END")) {
 		        		ICVector icEntry = new ICVector(numSpecies-1,name,conc,unit.substring(1,unit.length()-1),reactivity,adjList);
 		    			tmodelInput.updateIC(icEntry);
 		        		adjList = "";
@@ -2644,8 +2669,9 @@ public class GUI extends JPanel implements ActionListener {
 		    		++numSpecies;
 		    		st = new StringTokenizer(line);
 		    		name = st.nextToken();
-		    		conc = st.nextToken();
 		    		unit = st.nextToken();
+		    		conc = "";
+		    		while (st.hasMoreTokens()) conc += st.nextToken() + " ";
 		    		reactivity = "Inert";
 		    		if (name.equals("Ar") || name.equals("Ne") || name.equals("N2") || name.equals("He")) {
 		    			ICVector icEntry = new ICVector(numSpecies-1,name,conc,unit.substring(1,unit.length()-1),reactivity,adjList);
@@ -3101,6 +3127,25 @@ public class GUI extends JPanel implements ActionListener {
         }
     }
     
+    public String extractListOfValuesFromGUIInput(Object guiInput) {
+    	String string2return = "";
+    	String[] tempLines = null;
+    	if (guiInput instanceof JTextComponent)
+    		tempLines = ((JTextComponent) guiInput).getText().split("[\n]");
+    	else if (guiInput instanceof String)
+    		tempLines = ((String) guiInput).split("[\n]");
+    	StringTokenizer st = null;
+    	for (int i=0; i<tempLines.length; i++) {
+        	st = new StringTokenizer(tempLines[i]);
+        	while (st.hasMoreTokens()) {
+        		String line = st.nextToken();
+        		if (line.endsWith(",")) line = line.substring(0,line.length()-1).trim();
+        		string2return += " " + line;
+        	}
+        }
+    	return string2return;
+    }
+    
     public JComponent createTabOptions() {
     	//	Create cellrenderers for JComboBox/JTable - CENTER text
     	ListCellRenderer centerJComboBoxRenderer = new CenterJCBRenderer();
@@ -3255,6 +3300,46 @@ public class GUI extends JPanel implements ActionListener {
     	
     	chemkinPanel.add(chemkinProps);
     	
+    	//	Create the thermomethod_QM options subpanel
+    	JPanel qmPanel = new JPanel();
+    	qmPanel.setBorder(BorderFactory.createCompoundBorder(BorderFactory.createTitledBorder("QM thermo method"),
+    			BorderFactory.createEmptyBorder(5,5,5,5)));
+    	//	Populate the subpanel
+    	JPanel thermomethodPanel = new JPanel();
+    	thermomethodPanel.setBorder(BorderFactory.createEmptyBorder(5,5,5,5));
+    	JLabel thermomethodLabel = new JLabel("Method for estimating thermo:");
+    	thermomethodPanel.add(thermomethodLabel);
+    	thermomethodPanel.add(thermomethod = new JComboBox(thermomethodOptions));
+    	thermomethodPanel.add(qmSoftware = new JComboBox(softwareOptions));
+    	thermomethod.setActionCommand("QM");
+        thermomethod.addActionListener(this);
+        qmSoftware.addActionListener(this);
+        qmSoftware.setEnabled(false);
+    	
+    	JPanel thermocyclicsPanel = new JPanel();
+    	thermocyclicsPanel.setBorder(BorderFactory.createEmptyBorder(5,5,5,5));
+    	JLabel thermocyclicsLabel = new JLabel("Use QM only for cyclic species?");
+    	thermocyclicsPanel.add(thermocyclicsLabel);
+    	thermocyclicsPanel.add(cyclicsOnly = new JComboBox(yesnoOptions));
+    	cyclicsOnly.addActionListener(this);
+    	cyclicsOnly.setEnabled(false);
+    	
+    	JPanel thermoMaxRadPanel = new JPanel();
+    	thermoMaxRadPanel.setBorder(BorderFactory.createEmptyBorder(5,5,5,5));
+    	JLabel thermoMaxRadLabel = new JLabel("Maximum radicals for QM species:");
+    	thermoMaxRadPanel.add(thermoMaxRadLabel);
+    	thermoMaxRadPanel.add(maxRadNumQM = new JTextField());
+    	maxRadNumQM.setPreferredSize(new Dimension (75,25));
+    	maxRadNumQM.setHorizontalAlignment(JTextField.CENTER);
+    	maxRadNumQM.setEnabled(false);
+    	
+    	Box qmProps = Box.createVerticalBox();
+    	qmProps.add(thermomethodPanel);
+    	qmProps.add(thermocyclicsPanel);
+    	qmProps.add(thermoMaxRadPanel);
+    	
+    	qmPanel.add(qmProps);
+    	
     	//	Create the Equation Of State (EOS) subpanel
     	JPanel EOS = new JPanel();
     	EOS.setBorder(BorderFactory.createCompoundBorder(BorderFactory.createTitledBorder("Equation of State"),
@@ -3333,20 +3418,24 @@ public class GUI extends JPanel implements ActionListener {
     	Box totalOptionsBox = Box.createVerticalBox();
     	Box horizontalBox1 = Box.createHorizontalBox();
     	Box verticalBox1 = Box.createVerticalBox();
+    	Box verticalBox2 = Box.createVerticalBox();
     	
     	totalOptionsBox.add(restartPanel);
     	totalOptionsBox.add(maxPanel);
-    	horizontalBox1.add(chemkinPanel);
+    	verticalBox1.add(chemkinPanel);
     	verticalBox1.add(inchiPanel);
-    	verticalBox1.add(EOS);
+    	verticalBox2.add(qmPanel);
+    	verticalBox2.add(EOS);
     	horizontalBox1.add(verticalBox1);
+    	horizontalBox1.add(verticalBox2);
     	totalOptionsBox.add(horizontalBox1);
     	totalOptionsBox.add(forbiddenStructures);
     	
     	Options.add(totalOptionsBox);
     	
         JComboBox[] allTab = {eosCombo, inchiCombo, chemkinAUnits, 
-        		chemkinEaUnits, chemkinVerbosity, chemkinSMILES};
+        		chemkinEaUnits, chemkinVerbosity, chemkinSMILES, thermomethod,
+        		cyclicsOnly, qmSoftware};
         initializeJCB(allTab);
     	
     	JScrollPane scrolltab = new JScrollPane(Options);
@@ -3520,6 +3609,14 @@ public class GUI extends JPanel implements ActionListener {
     			disableComponents(pruneComps);
     		}
     	}
+    	// QM options
+    	else if ("QM".equals(event.getActionCommand())) {
+    		JComponent[] qmComps = {qmSoftware,cyclicsOnly,maxRadNumQM};
+    		if (thermomethod.getSelectedItem().equals("QM")) {
+    			enableComponents(qmComps);
+    		} else
+    			disableComponents(qmComps);
+    	}
     	//	Save the condition.txt file
     	else if ("saveCondition".equals(event.getActionCommand())) {
     		createConditionFile(false);
@@ -3558,6 +3655,8 @@ public class GUI extends JPanel implements ActionListener {
 	String[] AUnitsOptions = {"moles", "molecules"};
 	String[] EaUnitsOptions = {"kcal/mol", "cal/mol", "kJ/mol", "J/mol", "Kelvins"};
 	String[] eosOptions = {"Ideal Gas"}; // "Liquid"
+	String[] thermomethodOptions = {"Group Additivity", "QM"};
+	String[] softwareOptions = {"Gaussian03", "MOPAC", "Both"};
 		
 	JPanel
 	//	Main Panel
@@ -3578,7 +3677,8 @@ public class GUI extends JPanel implements ActionListener {
     	interCombo,
     //	Tab : Additional Options
     eosCombo, inchiCombo, chemkinAUnits, chemkinEaUnits, chemkinVerbosity,
-    	readRestartOnOff, writeRestartOnOff, chemkinSMILES,
+    	readRestartOnOff, writeRestartOnOff, chemkinSMILES, thermomethod,
+    	qmSoftware, cyclicsOnly,
     //
     chebyTUnits, chebyPUnits;
     
@@ -3595,7 +3695,7 @@ public class GUI extends JPanel implements ActionListener {
     scName,
     //	Tab : Additional Options
     maxCarbonNum, maxOxygenNum, maxRadicalNum, maxSulfurNum, maxSiliconNum,
-    maxHeavyAtom, FSName,
+    maxHeavyAtom, FSName, maxRadNumQM,
     //
     chebyTMin, chebyTMax, chebyPMin, chebyPMax, chebyTGen, chebyTRep,
     	chebyPGen, chebyPRep, chebyT, chebyP,

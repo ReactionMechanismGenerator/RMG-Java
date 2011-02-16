@@ -1,5 +1,7 @@
 // Sample input file for PopulateReactions module
 
+Database: RMG_database
+
 PrimaryThermoLibrary:
 Name: RMG_Default
 Location: primaryThermoLibrary

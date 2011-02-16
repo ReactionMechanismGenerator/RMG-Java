@@ -104,7 +104,7 @@ public class RateBasedVT implements ValidityTester {
         	Species s = (Species)iter.next();
         	if (ps.unreactedSpeciesFlux[s.getID()] > Rmin) 
             {
-                System.out.println("Exceeded largest permitted flux for convergence (tolerance="+tolerance+"): " + Rmin);
+                Logger.info("Exceeded largest permitted flux for convergence (tolerance="+tolerance+"): " + Rmin);
                 return false;
             }
         	
