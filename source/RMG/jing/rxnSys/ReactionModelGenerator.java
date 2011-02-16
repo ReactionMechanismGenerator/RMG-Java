@@ -400,8 +400,8 @@ public class ReactionModelGenerator {
             if (line.startsWith("EquationOfState")) {
                 StringTokenizer st = new StringTokenizer(line);
         		String name = st.nextToken();
-        		String eosType = st.nextToken();
-                if (eosType.equals("Liquid")) {
+        		String eosType = st.nextToken().toLowerCase();
+                if (eosType.equals("liquid")) {
                     equationOfState="Liquid";
                     System.out.println("Equation of state: Liquid. Relying on concentrations in input file to get density correct; not checking PV=NRT");
                 }
@@ -456,8 +456,8 @@ public class ReactionModelGenerator {
              * Right now we do not want RMG to throw an exception if it cannot find a diffusion flag
              */
              //else throw new InvalidSymbolException("condition.txt: Cannot find diffusion flag.");
-			
-			//line = ChemParser.readMeaningfulLine(reader);//read in reactants or thermo line
+
+			// Should have already read in reactants or thermo line into variable 'line'
 			// Read in optional QM thermo  generation
         	if (line.startsWith("ThermoMethod:")) {
         		StringTokenizer st = new StringTokenizer(line);
@@ -4914,7 +4914,12 @@ public class ReactionModelGenerator {
 				else if (reactive.equalsIgnoreCase("constantconcentration"))
                     IsConstantConcentration=true;
 				else {
-					concentration = Double.parseDouble(reactive);
+					try {
+						concentration = Double.parseDouble(reactive);
+					} catch (NumberFormatException e) {
+						System.out.println(String.format("Unable to read concentration value '%s'. Check syntax of input line '%s'.",reactive,line));
+						throw e;
+					}
 					if (unit.equals("mole/l") || unit.equals("mol/l") || unit.equals("mole/liter") || unit.equals("mol/liter")) {
 						concentration /= 1000;
 						unit = "mol/cm3";
@@ -4927,6 +4932,7 @@ public class ReactionModelGenerator {
 						concentration /= 6.022e23;
 					}
 					else if (!unit.equals("mole/cm3") && !unit.equals("mol/cm3")) {
+						System.out.println(String.format("Unable to read concentration units '%s'. Check syntax of input line '%s'.",unit,line));
 						throw new InvalidUnitException("Species Concentration in condition.txt!");
 					}
 					SpeciesStatus ss = new SpeciesStatus(species,1,concentration,0.0);
