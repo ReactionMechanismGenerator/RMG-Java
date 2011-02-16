@@ -128,6 +128,29 @@ i.e. there are multiple ways for "A" to react to "B".  Some examples
 While examples #1 and #2 are currently handled correctly in RMG, example #3 is not (only one instance of the
 B + C <=> A will be used in the simulation and reported in the output files).
 
+.. _irreversiblekinetics:
+
+RMG "Primary Kinetic Libraries" and "Reaction Libraries" do not handle irreversible reactions properly
+--------------------------------------------------------------------------------------------------------
+
+If a reaction is specified as irreversible in a "Primary Kinetic Library" or "Reaction Library,"
+RMG will read in the reaction's structure and kinetics properly.  For example, suppose the reaction
+C2H5 => C2H4 + H were supplied in a "Primary Kinetic Library".  If a user supplied an input file
+to RMG with C2H5 in the condition file, RMG would run C2H5 against all RMG-defined reaction family
+templates.  One of these templates would be R_Addition_MultipleBond; the reverse reaction family
+template (Beta_Scission) of which would find C2H5 = C2H4 + H.  Thus, RMG would assign the kinetics supplied
+by the user in the "Primary Kinetic Library" to this reaction, instead of estimating it by 
+traversing the kinetics tree.
+
+However, the RMG reaction family template "Beta_Scission" is defined as reversible and thus RMG will
+also construct the reaction C2H4 + H => C2H5; the kinetics are computed through equilibrium.  As of now,
+RMG cannot recognize that the user requested the reaction to be irreversible, so the mechanism
+generation algorithm will consider the reaction to be reversible.  All RMG output files will thus
+report this reaction as reversible.
+
+The user is advised **NOT** to supply irreversible reactions in any "Primary Kinetic Library" or any
+"Reaction Library".
+
 Troubleshooting
 ===============
 

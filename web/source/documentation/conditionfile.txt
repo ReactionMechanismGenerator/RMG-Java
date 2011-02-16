@@ -851,6 +851,10 @@ If the same reaction occurs more than once in the combined
 library, the instance of it from the first library in which it appears is
 the one that gets used.
 
+.. note::
+	RMG will not handle irreversible reactions correctly, if supplied in a Primary
+	Kinetic Library, see :ref:`irreversiblekinetics`.
+
 .. versionchanged:: 3.2
 	In previous versions this feature was called "PrimaryReactionLibrary" it has been
 	renamed to "PrimaryKineticLibrary" to better represent its functionality.
@@ -900,8 +904,8 @@ given in each mechanism, the different mechanisms can have different units.
 	instances of this reaction (via a three- and four-member cyclic Transition State),
 	RMG would only use the rate coefficient supplied by you in generating the mechanism.
 
-	In the case the user has specified a reaction as irreversible, RMG will
-	ignore all instances it generates even if they are reversible.	
+	RMG will not handle irreversible reactions correctly, if supplied in a Reaction
+	Library, see :ref:`irreversiblekinetics`.
 	
 
 .. _seedmechanism:
