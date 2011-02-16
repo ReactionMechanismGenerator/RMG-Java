@@ -139,6 +139,26 @@ take this chemgraph and either provide thermochemistry for it in a primaryThermo
 add it to your ForbiddenStructures section of your condition file or database.
 
 
+Error with the ODE solver
+----------------------------
+You may see this at the end of your log file::
+
+ Reaction System 3 has not reached its termination criterion
+ although it seems to be valid (complete), so it was not interrupted for being invalid.
+ This probably means there was an error with the ODE solver, and we risk entering an endless loop.
+ Stopping.
+
+If you scroll further up you will probably find that at least one of your
+reaction system simulations stopped with an error report from the ODE solver.
+This can happen if the system of differential equations becomes too stiff,
+and/or your error tolerances (ATOL and RTOL) for the solver are inappropriate.
+Try modifying them (either up or down), or use a looser termination criterion,
+or less extreme reaction system conditions. If RMG has nothing to do (all the
+systems have either converged or failed) then it would try running the
+simulations again without expanding the model, with the same result; to avoid
+an infinite loop, it stops with this message. The good news is, this only
+causes RMG to stop running if all the reaction systems that solved
+successfully have already converged and met their termination criteria.
 
 Other Tips
 ===================
