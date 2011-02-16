@@ -10,9 +10,12 @@ Instructions for Use
 --------------------
 
 1. Create a text file named :file:`input.txt` in any directory that you like.  
-   The text file should begin with a block to specify a PrimaryTransportLibrary, 
+   The text file should begin with a block to specify the desired Database.  
+   The next field should be the PrimaryTransportLibrary, 
    which may be left empty if desired::
 
+	Database: RMG_database
+	
 	PrimaryTransportLibrary:
 	END
 
