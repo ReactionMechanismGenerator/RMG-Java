@@ -4,26 +4,80 @@
 Installing on Windows
 *************************
 
-Installer Package (easiest method)
+You can find the installer package or source files on the `Downloading RMG
+<downloading.html>`_\ page.  
+
+
+Installer Package (Easiest Method)
 ===================================
 
-Multiple binary releases are available from `the RMG website
-<../download.html>`_\ , including Windows 32-bit and Linux x86. The binary
-packages provides all of the executables necessary for a functional RMG,
-although some advanced features require additional third-party applications. To
-install the binary packages, follow steps 1-3 in the source section for your
-operating system (:ref:`linuxinstallation` or :ref:`windowsinstallation`).
+1. Download the windows installer .exe file from the `Downloading RMG
+<downloading.html>`_\ page.  
 
-A Windows installer is also provided. The user has the option of installing all
-or part of the binaries, source, documentation, and examples. The installer
-will automatically set the ``RMG`` system variable to the installation
-directory.
+2. Open the .exe executable file.  When prompted to install to a folder, we suggest keeping the installation folder set
+to the default ``C:\RMG-Java\`` or installing to a directory not under ``C:\Program Files\`` in order to avoid complications 
+with administrative access in Windows.
+
+3. You are now ready to use RMG by clicking on the RMG-gui icon.  You can also use RMG through the command prompt.   
+For more information on how to run RMG, see the `documentation
+<../index.html>`_\ page.  
 
 
-Whether you install a binary or a source package, you will need:
 
-The Java SE Runtime Environment (JRE), version 6.
-    This is available from http://java.sun.com/javase/downloads/index.jsp.
+
+
+
+.. _compiling_from_source:
+
+Compiling from Source
+=========================
+
+To get the source files, see the `Downloading RMG <downloading.html>`_\ page.  
+
+To build a functional version of RMG from source you will need to do the following:
+
+1. Install the following prerequisite programs:
+
+Java SE Development Kit (JDK), version 6.
+    Install the program, available from http://java.sun.com/javase/downloads/index.jsp.
+
+G95 Fortran Compiler
+    Install the free g95 compiler, available from http://www.g95.org/
+	
+Apache Ant.
+    This controls the generation of Java executables.
+    Obtain from http://ant.apache.org/.   Unzip binary distribution into folder of choice.
+
+2. Create the directory in which you want to install RMG. We recommend avoiding the `C:\Program Files\` directory to avoid complications
+with admnistrative access in Windows during the installation.  
+ 
+3. Set environment variables for ``RMG``, ``JAVA_HOME``, and ``ANT_HOME``, using the installation directories for each, respectively.   To set environment variables in windows:
+   * Go to ``Start --> Control Panel --> System`` (may need to switch to Classic Control Panel view). Click on the ``Advanced`` tab, then click on ``Environment Variables``.
+
+   * In the lower half of the ``Environment Variables`` window for System variables, click ``New``.
+
+   * In the ``New System Variable`` window, in the ``Variable`` name field, type the environment variable name (i.e. ``JAVA_HOME``). In the ``Variable`` value field, type the directory in which it was installed.
+
+   * Click OK twice to confirm the change.
+   
+   
+3.  Edit the path.  To do so  
+   * Go to ``Start --> Control Panel --> System`` (may need to switch to Classic Control Panel view). Click on the ``Advanced`` tab, then click on ``Environment Variables``.
+
+   * In the upper half of the ``Environment Variables`` window for User variables, select ``PATH`` and then click the ``Edit`` button.
+
+   * Add ``%ANT_HOME%\bin`` to the variable value field after your other paths, separating them with a ``;``.  
+   
+   * Click OK twice to confirm the change.
+
+4. Obtain the source code (See :ref:`installation_downloading`), decompress the zip file, and move its contents to the :file:`%RMG%` directory you created in step 2.
+
+5. Download Basic Linear Algebra Subprograms (BLAS) and Linear Algebra PACKage (LAPACK) DLL files from https://github.com/GreenGroup/RMG-Java/downloads.  Create a subdirectory under the main `%RMG%` installation directory called `bin`.  Move `blas.dll` and `lapack.dll` to this subdirectory.
+
+6. Compile the programs. The easiest way to do the latter is to execute the file :file:`make.bat` in the :file:`%RMG%` directory through the command prompt. The batch script does not compile the RMG source; for this you will need ant.  
+After the batch script is done running, type ``ant jar`` into the command prompt to compile the RMG source.  At the end of installation the screen should display ``BUILD SUCCESSFUL``.
+
+7.  You are now ready to use RMG.  To install advanced (optional) features, see the `optional features <optional.html>`_\ page.  
 
 
 
@@ -40,94 +94,20 @@ Please refer to :ref:`Using the RMGVE <modification>` to see how to modify the R
 
 
 
-.. _compiling_from_source:
-
-Compiling from Source
-=========================
-
-To get the source, see :ref:`installation_source`.
-
-Compilation Prerequisites
---------------------------
-
-To build a functional version of RMG from source you will need the following:
-
-The Java SE Development Kit (JDK), version 6.
-    This is available from http://java.sun.com/javase/downloads/index.jsp.
-
-The Differential Algebraic System Solver (DASSL).
-    This is available in the public domain from http://www.cs.ucsb.edu/~cse/software.html.
-
-A Fortran 90 compiler.
-    We recommend gfortran from the free GNU Compiler Collection, http://gcc.gnu.org/wiki/GFortran.
-    The free g95 compiler, available from http://www.g95.org/, is also known to work.
-
-A Fortran 77 compiler.
-    Both the above Fortran 90 compilers can successfully build the Fortran 77 source code as well.
-
-The Basic Linear Algebra Subprograms (BLAS).
-    This is present in most Linux distributions, and is also available from http://www.netlib.org/blas/.
-    Although only the BLAS source code is required, we recommend installing the full package if possible.
-    An optimized version is included in MacOS X. We provide a 32-bit Windows DLL at https://github.com/GreenGroup/RMG-Java/downloads.
-    
-The Linear Algebra PACKage (LAPACK).
-    This is present in most Linux distributions, and is also available from http://www.netlib.org/lapack/. 
-    Although only the LAPACK source code is required, we recommend installing the full package if possible.
-    An optimized version is included in MacOS X. We provide a 32-bit Windows DLL at https://github.com/GreenGroup/RMG-Java/downloads.
-
-Although not required, we also recommend that you obtain:
-
-GNU make.
-    This controls the generation of Fortran executables, and is present in most Linux distributions.
-    More information can be found at http://www.gnu.org/software/make/. 
-
-Apache Ant.
-    This controls the generation of Java executables.
-    More information can be found at http://ant.apache.org/. 
-
-.. To perform sensitivity analysis on the models generated, you will also need:
-
-.. * **The Large Scale Differential Algebraic Equation Solver with Sensitivity Analysis (DASPK), version 3.1.** DASPK 3.1 is *subject to copyright restrictions*, but available for research purposes from http://www.cs.ucsb.edu/~cse/software.html.
-.. * **The Differential Algebraic Equation PACKage (DAEPACK) library file.** This can be obtained with the JACOBIAN software, which can be obtained at no cost for registered acadamic users from http://www.numericatech.com/academia.htm.
-
-Optionally, to generate InChIs and to convert from InChIs/.mol files to adjacency lists you will need:
-
-The IUPAC International Chemical Identifier InChI version 1 (software version 1.01).
-    This is available from http://www.iupac.org/inchi/download/index.html
-
-
-.. _windowsinstallation:
-
-Windows Installation
---------------------
-
-To install RMG on a Windows computer:  
-
-1. Create the directory in which you want to install RMG. Depending on where you choose to install RMG, you may need administrator privileges. 
-
-2. Set the RMG environment variable as the directory created in the first step.
-    
-   * Go to ``Start --> Control Panel --> System`` (may need to switch to Classic Control Panel view). Click on the ``Advanced`` tab, then click on ``Environment Variables``.
-
-   * In the lower half of the ``Environment Variables`` window (System variables), click ``New``.
-
-   * In the ``New System Variable`` window, in the ``Variable`` name field, type ``RMG``. In the ``Variable`` value field, type the directory in which RMG was installed.
-
-   * Click OK twice to confirm the change.
-
-3. Obtain the source code (See :ref:`download`). Download the file :file:`rmg-3.2-win32-i386.zip` or :file:`rmg-3.2-source.tar.gz`, decompress it, and move its contents to the :file:`%RMG%` directory.
-
-Steps 4 and 5 are only required if you are working with the source package. Binary packages are available for several platforms and will already contain the compiled executables.
-
-4. Obtain BLAS and LAPACK DLL files. You can create these yourself by downloading the BLAS and LAPACK sources, or you can download them from our `GitHub downloads <http://github.com/GreenGroup/RMG-Java/downloads>`_ page.
-
-5. Compile the programs. If you are working with the source package, you will need to compile RMG and its supporting Fortran programs. The easiest way to do the latter is to execute the file :file:`make.bat` in the :file:`%rmg%` directory. The batch script does not compile the RMG source; for this you will need ant.
-
+InChI
+-------------------
 The next few steps are required only if you want RMG to be able to generate InChIs for the species present in the reaction mechanism.
    
-6. Download the InChI version 1 (software version 1.01) source code and Application Program Interface (API) from `IUPAC <http://www.iupac.org/inchi/download/index.html>`_ and unzip the file. Navigate to the :file:`InChI-1-API\\cInChI\\vc6_project\\Release` folder. Copy the executable file :file:`cInChI-1.exe` and paste it in the :file:`"%rmg%"\\bin` folder.
+Download the InChI version 1 (software version 1.01) source code and Application Program Interface (API) from `IUPAC <http://www.iupac.org/inchi/download/index.html>`_ and unzip the file. Navigate to the :file:`InChI-1-API\\cInChI\\vc6_project\\Release` folder. Copy the executable file :file:`cInChI-1.exe` and paste it in the :file:`"%rmg%"\\bin` folder.
     
 You are now ready to generate InChIs in RMG.
 
 
 
+
+   
+   
+.. To perform sensitivity analysis on the models generated, you will also need:
+
+.. * **The Large Scale Differential Algebraic Equation Solver with Sensitivity Analysis (DASPK), version 3.1.** DASPK 3.1 is *subject to copyright restrictions*, but available for research purposes from http://www.cs.ucsb.edu/~cse/software.html.
+.. * **The Differential Algebraic Equation PACKage (DAEPACK) library file.** This can be obtained with the JACOBIAN software, which can be obtained at no cost for registered acadamic users from http://www.numericatech.com/academia.htm.
