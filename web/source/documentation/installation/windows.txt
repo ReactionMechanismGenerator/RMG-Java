@@ -4,7 +4,6 @@
 Installing on Windows
 *************************
 
-
 Installer Package (easiest method)
 ===================================
 
