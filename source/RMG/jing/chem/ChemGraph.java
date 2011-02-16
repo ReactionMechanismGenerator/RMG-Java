@@ -1835,28 +1835,31 @@ return sn;
 
     /**
 	 Added by: Amrit Jalan
-	 Effects: calculate the raduis of the chemGraph using UNIFAC Ri values. (UNITSof radius = m)
+	 Effects: calculate the raduis of the chemGraph using Abraham V values. (UNITS of radius = m)
 	 */
     public double getRadius() {
 		
         double ri;
-		
         if (getCarbonNumber() == 0 && getOxygenNumber() == 0){    // Which means we ar dealing with HJ or H2
 			double ri3;
-			ri3 = 21*8.867/88;                              // 8.867 Ang^3 is the volume of a single Hydrogen Atom
+			ri3 = 8.867 / 4.1887902;                            // 8.867 Ang^3 is the volume of a single Hydrogen Atom. 4.1887902 is 4pi/3
             if (getHydrogenNumber() == 1){                        // i.e. we are dealing with the Hydrogen radical
-                ri = Math.pow(ri3,0.333) * Math.pow(10,-10);
+                ri = Math.pow(ri3,0.333333) * 1.0e-10;
                 return ri;
             }
             if (getHydrogenNumber() == 2){                        // i.e. we are dealing with the Hydrogen molecule
                 ri3 = 2*ri3;                                      // Assumption: volume of H2 molecule ~ 2 * Volume of H atom
-                ri = Math.pow(ri3,0.333) * Math.pow(10,-10);
+                ri = Math.pow(ri3,0.333333) * 1.0e-10;
                 return ri;                
             }
         }
 		
-        double Ri=getUnifacData().R;
-        ri=3.18*Math.pow(Ri,0.333)*Math.pow(10,-10);   // From Koojiman Ind. Eng. Chem. Res 2002, 41 3326-3328
+        double solute_V = getAbramData().V;  //Units: cm3/100/mol
+        double volume = solute_V * 100 / 6.023e23; //Units: cm3/molecule
+        double ri3 = volume / 4.1887902 ;       // Units: cm3   (4.1887902 is 4pi/3)
+        ri = Math.pow(ri3,0.333333)*0.01;   //Returns the solute radius in 'm'
+//        double Ri=getUnifacData().R;
+//        ri=3.18*Math.pow(Ri,0.333333)*1.0e-10;   // From Koojiman Ind. Eng. Chem. Res 2002, 41 3326-3328
         return ri;
 		
     }

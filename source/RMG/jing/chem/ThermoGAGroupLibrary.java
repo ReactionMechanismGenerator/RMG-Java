@@ -517,10 +517,12 @@ public class ThermoGAGroupLibrary {
 			readAbrahamradTree(p_abramradTree);
 			readAbrahamradLibrary(p_abramradLibrary);
 
+			/* We no longer need UNIFAC groups, and loading them reports some errors, so let's not bother.
            	System.out.println("Reading UNIFAC solvation groups");
 			readUnifacDictionary(p_unifacDictionary);
 			readUnifacTree(p_unifacTree);
 			readUnifacLibrary(p_unifacLibrary);
+			*/
 		}
 
 
