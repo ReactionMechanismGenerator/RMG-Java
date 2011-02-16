@@ -69,3 +69,19 @@ Troubleshooting
 With QMTP: if after "Final attempt" it still fails, and reports the chemgraph of the species that failed,
 take this chemgraph and either provide thermochemistry for it in a primaryThermoLibrary, or else
 add it to your ForbiddenStructures section of your condition file or database.
+
+Other Tips
+===================
+
+To create valid CHEMKIN files, ensure that any 3rd-body collider molecules
+used in your Seed Mechanisms or Reaction Libraries are either declared in
+their species.txt files (if they are reactive) or in the :ref:`inertgas`
+section of the input file. (i.e. it's a good idea to list all of N2, Ne, He
+and Ar, even if their concentrations are 0).
+
+The CHEMKIN input file :file:`chem.inp` generated with the :ref`Verbose field
+<chemkinunits>`_ turned "on" may have a comment that spans hundreds of
+characters. These verbose comments may cause the CHEMKIN interpreter to fail
+when running the Pre-Processor.
+
+
