@@ -14,7 +14,7 @@ RMG - Reaction Mechanism Generator
 	news
 	
 	license
-	documentation/download
+	documentation/installation/download
 	
 	documentation/index
 	
