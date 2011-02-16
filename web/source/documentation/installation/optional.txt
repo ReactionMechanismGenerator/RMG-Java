@@ -17,6 +17,16 @@ The IUPAC International Chemical Identifier InChI version 1 (software version 1.
 
 .. note::  This version conflicts with the instructions in :ref:`installing_qm`.
 
+After downloading and unpacking the InChI source code, change to the 
+:file:`InChI-1-API/cInChI/gcc_makefile` directory and execute the makefile.
+Copy the resulting executable :file:`cInChI-1.exe` to the :file:`$RMG/bin` 
+folder. ::
+
+    $ cd InChI-1-API/cInChI/gcc_makefile
+    $ make
+    $ cp cInChI-1 $RMG/bin
+    
+You are now ready to generate InChIs in RMG.
 
 
 
