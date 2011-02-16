@@ -31,7 +31,7 @@ public class DictionaryReader {
     public static void main(String[] args) {
          String workingDir = System.getenv("RMG");
          System.setProperty("RMG.workingDirectory", workingDir);
-         System.setProperty("LJDatabase.pathName", workingDir + "\\databases\\RMG_database\\Joback");
+         System.setProperty("jing.chem.LJDatabase.pathName", workingDir + "/databases/RMG_database/transport_groups");
          
          //block below was commented out and name was changed from inchiDictionaryReader to DictionaryReader after I realized biradicals on adjacent were causing difficulty
          
@@ -102,7 +102,7 @@ public class DictionaryReader {
                     //calculate and display Lennard-Jones estimates based on Joback correlations for critical properties
                     GATransportP LJGAPP=GATransportP.getINSTANCE();
                     TransportData ljdata = LJGAPP.generateTransportData(chemgraph);
-                    System.out.println("Sums (dTc, dPc, dVc, dTb): " + ljdata.toString());
+                    System.out.println("Sums (dTc, dPc, dVc, dTb): " + ljdata.getGAData().deltaToString());
                     System.out.println("Tc (K) = " + ljdata.getGAData().calculateTc());
                     System.out.println("Pc (bar) = " + ljdata.getGAData().calculatePc());
                     System.out.println("Vc (cc/mol) = " + ljdata.getGAData().calculateVc());

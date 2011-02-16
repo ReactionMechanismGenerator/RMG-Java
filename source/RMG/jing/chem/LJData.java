@@ -62,6 +62,18 @@ public class LJData extends LJGroupData {
     		" Vc=" + String.format("%8.3f", calculateVc()) + "cm3/mol" +
     		" Tb=" + String.format("%8.3f", calculateTb()) + "K";
     }
+
+    public String deltaToString() {
+
+        String s = "";
+        s = s + String.valueOf(dTc) + '\t';
+        s = s + String.valueOf(dPc) + '\t';
+        s = s + String.valueOf(dVc) + '\t';
+        s = s + String.valueOf(dTb);
+
+        return s;
+        //#]
+    }
     
     //calculates Tc in K
     public double calculateTc() {
