@@ -70,7 +70,7 @@ corresponding to the level in the tree. A sample is given below::
 
 
 Note that the indentation is not necessary because it is the "``Lx:``" that the
-computer reads, but is very helpful in making these files human readable.
+software reads, but is very helpful in making these files human readable.
 
 Library File 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -125,12 +125,12 @@ example::
 
 In this example, the second "element" is actually either Cd or CO. The reason
 that either Cd or CO will generate the same node is because both fall under the
-more general Cd definition, which is a carbon atom with one double and two
+more general definition, which is a carbon atom with one double and two
 single bonds. This can also be useful if there is a secondary effect and all
 that matters is that there is a π-bond present, but the fact that it is C=O or
 C=C does not matter. This is not used very much in the thermo database, but
 occurs much more in the kinetics databases where radical delocalization can play
-a major role in determining the rate constant of a reaction. A table of the
+a major role in determining the rate coefficient of a reaction. A table of the
 possible functional groups can be seen in the table :ref:`"Functional Group Elements" <functionalgrouptable>`.
 
 
@@ -163,7 +163,7 @@ Viewing a Thermo Functional Group in the RMGVE
 ----------------------------------------------
 
 Open the RMG Viewer & Editor (RMGVE) by running the :file:`RMGVE 20080101.bat` file.
-If your RMG database is located in the :file:`$RMG\databases\RMG_database` folder, the following
+If your RMG database is located in the :file:`$RMG\\databases\\RMG_database` folder, the following
 login screen should appear.
 
 .. image:: images/loginScreen.png
@@ -206,7 +206,7 @@ Editing the Data for an Existing Thermo Functional Group
 --------------------------------------------------------
 
 A leaf in the thermochemistry tree may be **edited** using the RMG Viewer & Editor (RMGVE).  For instructions on how to add a leaf 
-to a thermochemistry tree, please refer to the section below entitled "Adding Additional Nodes to the Thermo Database".
+to a thermochemistry tree, please refer to the section :ref:`addnodes`.
 
 Returning to the "Dataset viewer" window, notice the "Tree/library" button has been enabled.  Click on this button to show
 the data for the highlighted thermo family.  After some re-arranging of the windows, the screen should look as follows.
@@ -298,6 +298,8 @@ redundancy will not create any problems within RMG, but it is simply unnecessary
 Please be aware that version control may be a significant issue with the databases and should be addressed early to ensure consistency within the group.
 
 
+.. _addnodes:
+
 Adding Additional Nodes to the Thermo Database
 ----------------------------------------------
 
@@ -364,9 +366,9 @@ Push the "Reaction recipe" button.  Your screen should look like the following s
 Looking at the "H_Abstraction reaction recipe" window: The first non-commented line shows the generic reaction: ``X_H + Y_rad_birad -> X_rad + Y_H``.
 The next uncommented line informs RMG how to handle the reverse reaction.  Some common occurences you will find include:
 
-	- "thermo_consistence": RMG may use the forward reaction rates stored in the <rxnFamilyName> folder.  This nomenclature is only used when the forward and reverse reaction templates are the same (e.g. H_Abstraction and intra_H_migration)
+	- "thermo_consistence": RMG may use the forward reaction rate coefficients stored in the <rxnFamilyName> folder.  This nomenclature is only used when the forward and reverse reaction templates are the same (e.g. H_Abstraction and intra_H_migration)
 	- "none": RMG assumes the reaction is irreversible
-	- "(f\_): <rxnFamilyName>": RMG will use the numbers stored in the rateLibrary.txt file for the forward reaction, and will use microscopic reversibility to compute the reverse reaction rate
+	- "(f\_): <rxnFamilyName>": RMG will use the numbers stored in the rateLibrary.txt file for the forward reaction, and will use microscopic reversibility to compute the reverse reaction rate coefficient
 
 The next set of uncommented lines describes the changes in the reacting molecules', "X_H" and "Y_rad_birad", connectivity graphs to form the products, 
 "X_rad" and "Y_H".  For the "H_Abstraction" reaction family, a single bond ("S") is broken between atoms "1" and "2" and a single bond ("S") is formed between
@@ -378,7 +380,7 @@ your screen should look like the following snapshot
 .. image:: images/viewReactionRecipeSpecies.png
 
 Looking at "C/H/Cs3" and "Adjacency List" windows reveals the identity of atoms "1" and "2".  Looking at the "Adjacency List" window, notice the atoms that have
-the ``#*`` notation between the counting index and the elemental symbol.  The number before the ``*`` corresponds to the number in the reaction recipe.  The atoms
+the ``*#`` notation between the counting index and the elemental symbol.  The number after the ``*`` corresponds to the number in the reaction recipe.  The atoms
 of interest are also shown in blue in the "C/H/Cs3" window.
 
 Editing a Reaction Family using the RMGVE
@@ -406,7 +408,7 @@ Returning to the "Dataset viewer" window, click the "Tree/library" button.  The 
 	
 	#. Notes: This column contains notes on where the kinetic data came from.  The reaction library is not as well-documented as the thermo library.
 
-Suppose we want to add a reaction rate to RMG for the following reaction::
+Suppose we want to add a reaction rate coefficient to RMG for the following reaction::
 
 	H3C-CH2-CH3 + *CH3 = H3C-*CH-CH3 + CH4
 	
@@ -433,9 +435,9 @@ Your screen should look something like the following
 
 Notice that RMG contains 4 different sets of kinetic data for this reaction.  There are two explanation for this:
 
- #. The reaction rates all pertain to the same reaction: The different values could pertain to experimental vs. theoretical values or differing basis sets in the theoretical calculations (e.g. using an ab initio quantum chemistry sofware package)
+ #. The reaction rate coefficients all pertain to the same reaction: The different values could pertain to experimental vs. theoretical values or differing basis sets in the theoretical calculations (e.g. using an ab initio quantum chemistry sofware package)
 	
- #. The reaction rates pertain to different reactions: Notice that the "X_H" leaf is only defined as "C/H2/NonDeC".  Thus, one of the reaction rates could correspond to the methyl radical abstracting a Hydrogen atom from:
+ #. The reaction rate coefficients pertain to different reactions: Notice that the "X_H" leaf is only defined as "C/H2/NonDeC".  Thus, one of the reaction rates could correspond to the methyl radical abstracting a Hydrogen atom from:
 	
 		- propane to form the iso-propyl radical
 		
@@ -444,12 +446,12 @@ Notice that RMG contains 4 different sets of kinetic data for this reaction.  Th
 		- ...
 
 For RMG's reaction library, the order in which the reactions appear in the :file:`rateLibrary.txt` file is significant.  
-In the instance when multiple rates are found for the same sets of nodes, RMG will first eliminate those rates whose valid
-temperature range does not contain the simulated temperature.  Next, RMG will find the rate with the lowest rank.  In the event
+In the instance when multiple rate coefficients are found for the same sets of nodes, RMG will first eliminate those rate coefficients whose valid
+temperature range does not contain the simulated temperature.  Next, RMG will find the rate coefficient with the lowest rank.  In the event
 multiple kinetic rates have the same Rank and their valid temperature range contains the temperature of interest, RMG will
 use the kinetics from whichever instance was read in first (i.e. is closer to the top of the file).
 If you click on one of the 4 reaction rates, you'll notice that the RMGVE gives
-you the option of "edit"ing or "delete"ing the entry (as it did for the Thermo library) but it also gives you the option to "move up" or "move down"
+you the option of edit[ing] or delete[ing] the entry (as it did for the Thermo library) but it also gives you the option to "move up" or "move down"
 the reaction rate.
 
 We can also add a new entry, by pushing the "add" button.  For example, let's suppose we have the following modified Arrhenius parameters for the
@@ -486,10 +488,10 @@ if present, must include the Unit declaration and Reaction headings.
    present in the two remaining files must be given a structure in :file:`species.txt`. The
    structure should have the same format as the adjacency list shown in :ref:`Creating a condition file<conditionFile>`. 
    Please note that the names that are used in the reaction library will be
-   those used throughout the mechanism. In this manner, the user can adopt a
+   used throughout the mechanism. In this manner, the user can adopt a
    preferred nomenclature for individual species.
 
-#. The :file:`reactions.txt` file defines the standard non pressure-dependent reaction. The file
+#. The :file:`reactions.txt` file defines the standard high-pressure limit reaction kinetics. The file
    has the structure shown in the following sample. Comments are denoted with
    "``//``" and are ignored by the RMG parser.::
 
