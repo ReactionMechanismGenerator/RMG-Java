@@ -66,7 +66,7 @@ public class RateBasedRME implements ReactionModelEnlarger {
 			includeSpecies = p_includeSpecies;
 		}
 		else {
-			System.out.println("IncludeSpecies have already been added!!");
+			Logger.critical("IncludeSpecies have already been added!!");
 			System.exit(0);
 		}
 			
@@ -112,7 +112,7 @@ public class RateBasedRME implements ReactionModelEnlarger {
 				Species newCoreSpecies = (Species) nextList.get(i);
 				if (cerm.containsAsReactedSpecies(newCoreSpecies)) //throw new InvalidNextCandidateSpeciesException();
 				{
-					System.out.println("Species " + newCoreSpecies.getFullName() +
+					Logger.warning("Species " + newCoreSpecies.getFullName() +
 									   " is already present in reaction model");
 				} else {
 					
@@ -258,7 +258,7 @@ public class RateBasedRME implements ReactionModelEnlarger {
         }
 		
 		if (maxIncludedSpecies != null){
-			System.out.println("Instead of "+maxSpecies.toChemkinString()+" with flux "+ maxFlux + " "+ maxIncludedSpecies.toChemkinString() +" with flux " + maxIncludedFlux);
+			Logger.info("Instead of "+maxSpecies.toChemkinString()+" with flux "+ maxFlux + " "+ maxIncludedSpecies.toChemkinString() +" with flux " + maxIncludedFlux);
 			maxFlux = maxIncludedFlux;
 			maxSpecies = maxIncludedSpecies;
 			includeSpecies.remove(maxIncludedSpecies);

@@ -268,7 +268,7 @@ public class TemplateReactionGenerator implements ReactionGenerator {
 			try {
 				cg_copy = ChemGraph.copy(cg2);
 			} catch (ForbiddenStructureException e) {
-				System.out.println("Forbidden Structure encountered in react(): " + e.toString());
+				Logger.error("Forbidden Structure encountered in react(): " + e.toString());
 			}
 		} else return cg1;
 		return cg_copy;

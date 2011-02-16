@@ -143,7 +143,7 @@ public class ReactionModelGenerator {
         try {
         	String initialConditionFile = System.getProperty("jing.rxnSys.ReactionModelGenerator.conditionFile");
         	if (initialConditionFile == null) {
-        		System.out.println("undefined system property: jing.rxnSys.ReactionModelGenerator.conditionFile");
+        		Logger.critical("undefined system property: jing.rxnSys.ReactionModelGenerator.conditionFile");
         		System.exit(0);
         	}
 			//double sandeep = getCpuTime();
@@ -409,7 +409,7 @@ public class ReactionModelGenerator {
         		String eosType = st.nextToken().toLowerCase();
                 if (eosType.equals("liquid")) {
                     equationOfState="Liquid";
-                    System.out.println("Equation of state: Liquid. Relying on concentrations in input file to get density correct; not checking PV=NRT");
+                    Logger.info("Equation of state: Liquid. Relying on concentrations in input file to get density correct; not checking PV=NRT");
                 }
                 line = ChemParser.readMeaningfulLine(reader, true);
             }
@@ -494,7 +494,7 @@ public class ReactionModelGenerator {
 						}
 					}
 					else{
-						System.out.println("condition.txt: Can't find 'QMForCyclicsOnly:' field");
+						Logger.critical("condition.txt: Can't find 'QMForCyclicsOnly:' field");
 						System.exit(0);
 					}
 					line=ChemParser.readMeaningfulLine(reader, true);
@@ -505,7 +505,7 @@ public class ReactionModelGenerator {
 						
 					}
 					else{
-						System.out.println("condition.txt: Can't find 'MaxRadNumForQM:' field");
+						Logger.critical("condition.txt: Can't find 'MaxRadNumForQM:' field");
 						System.exit(0);
 					}
         		}//otherwise, the flag useQM will remain false by default and the traditional group additivity approach will be used
@@ -868,7 +868,7 @@ public class ReactionModelGenerator {
 				    termTol = Double.parseDouble(st.nextToken());
 			    }
 			    else {
-				    System.out.println("Cannot find TerminationTolerance in condition.txt");
+				    Logger.critical("Cannot find TerminationTolerance in condition.txt");
 				    System.exit(0);
 			    }
 			    line = ChemParser.readMeaningfulLine(reader, true);
@@ -878,7 +878,7 @@ public class ReactionModelGenerator {
 				    edgeTol = Double.parseDouble(st.nextToken());
 			    }
 			    else {
-				    System.out.println("Cannot find PruningTolerance in condition.txt");
+				    Logger.critical("Cannot find PruningTolerance in condition.txt");
 				    System.exit(0);
 			    }
 			    line = ChemParser.readMeaningfulLine(reader, true);
@@ -888,7 +888,7 @@ public class ReactionModelGenerator {
 				    minSpeciesForPruning = Integer.parseInt(st.nextToken());
 			    }
 			    else {
-				    System.out.println("Cannot find MinSpeciesForPruning in condition.txt");
+				    Logger.critical("Cannot find MinSpeciesForPruning in condition.txt");
 				    System.exit(0);
 			    }
 			    line = ChemParser.readMeaningfulLine(reader, true);
@@ -898,7 +898,7 @@ public class ReactionModelGenerator {
 				    maxEdgeSpeciesAfterPruning = Integer.parseInt(st.nextToken());
 			    }
 			    else {
-				    System.out.println("Cannot find MaxEdgeSpeciesAfterPruning in condition.txt");
+				    Logger.critical("Cannot find MaxEdgeSpeciesAfterPruning in condition.txt");
 				    System.exit(0);
 			    }
 
@@ -1007,7 +1007,7 @@ public class ReactionModelGenerator {
 					
 					if (line.startsWith("Display sensitivity information") ){
 						line = ChemParser.readMeaningfulLine(reader, true);
-						System.out.println(line);
+						Logger.info(line);
 						while (!line.equals("END")){
 							st = new StringTokenizer(line);
 							String name = st.nextToken();
@@ -1098,13 +1098,13 @@ public class ReactionModelGenerator {
 						generateStr.equalsIgnoreCase("on") ||
 						generateStr.equalsIgnoreCase("true")){
 						generate = true;
-						System.out.println("Will generate cross-reactions between species in seed mechanism " + name);
+						Logger.info("Will generate cross-reactions between species in seed mechanism " + name);
 					} else if(generateStr.equalsIgnoreCase("no") ||
 							  generateStr.equalsIgnoreCase("off") ||
 							  generateStr.equalsIgnoreCase("false")) {
 						generate = false;
-						System.out.println("Will NOT initially generate cross-reactions between species in seed mechanism "+ name);
-						System.out.println("This may have unintended consequences");			   
+						Logger.info("Will NOT initially generate cross-reactions between species in seed mechanism "+ name);
+						Logger.info("This may have unintended consequences");
 					}
 					else {
 						System.err.println("Input file invalid");
@@ -1121,7 +1121,7 @@ public class ReactionModelGenerator {
 						getSeedMechanism().appendSeedMechanism(name, path, generate, false);
 					line = ChemParser.readMeaningfulLine(reader, true);
 				}
-				if (getSeedMechanism() != null)	System.out.println("Seed Mechanisms in use: " + getSeedMechanism().getName());
+				if (getSeedMechanism() != null)	Logger.info("Seed Mechanisms in use: " + getSeedMechanism().getName());
 				else setSeedMechanism(null);
 			} else throw new InvalidSymbolException("Error reading condition.txt file: "
 													+ "Could not locate SeedMechanism field");
@@ -1443,7 +1443,7 @@ public class ReactionModelGenerator {
 		
 		//System.exit(0);
 		SpeciesDictionary dictionary = SpeciesDictionary.getInstance();
-		System.out.println("Species dictionary size: "+dictionary.size());
+		Logger.debug("Species dictionary size: "+dictionary.size());
 		//boolean reactionChanged = false;//10/24/07 gmagoon: I don't know if this is even required, but I will change to use reactionChangedList (I put analogous line of code for list in above for loop); update: yes, it is required; I had been thinking of conditionChangedList
 		
 		//10/24/07: changed to use allTerminated and allValid	
@@ -1715,7 +1715,7 @@ public class ReactionModelGenerator {
         
 		
         if (paraInfor != 0){
-			System.out.println("Model Generation performed. Now generating sensitivity data.");
+			Logger.info("Model Generation performed. Now generating sensitivity data.");
 			//10/24/07 gmagoon: updated to use reactionSystemList
 			LinkedList dynamicSimulator2List = new LinkedList();
 			for (Integer i = 0; i<reactionSystemList.size();i++) {
@@ -1785,8 +1785,8 @@ public class ReactionModelGenerator {
 			fw.close();
 		}
 		catch (Exception e) {
-			System.out.println("Error in writing InChI file inchiDictionary.txt!");
-			System.out.println(e.getMessage());
+			Logger.critical("Error in writing InChI file inchiDictionary.txt!");
+			Logger.critical(e.getMessage());
 			System.exit(0);
 		}
     }
@@ -1819,7 +1819,7 @@ public class ReactionModelGenerator {
 			fw.close();
 		}
 		catch (IOException e) {
-			System.out.println("Could not write RMG_Dictionary.txt");
+			Logger.critical("Could not write RMG_Dictionary.txt");
 			System.exit(0);
         }
 		
@@ -1852,7 +1852,7 @@ public class ReactionModelGenerator {
 			fw.close();
 		}
 		catch (IOException e) {
-			System.out.println("Could not write RMG_Solvation_Properties.txt");
+			Logger.critical("Could not write RMG_Solvation_Properties.txt");
 			System.exit(0);
         }
 		
@@ -2131,7 +2131,7 @@ public class ReactionModelGenerator {
 				int ID = Integer.parseInt(index);
 				Species spe = dictionary.getSpeciesFromID(ID);
 				if (spe == null)
-					System.out.println("There was no species with ID "+ID +" in the species dictionary");
+					Logger.warning("There was no species with ID "+ID +" in the species dictionary");
 				
 				((CoreEdgeReactionModel)getReactionModel()).addReactedSpecies(spe);
 				line = ChemParser.readMeaningfulLine(reader, true);
@@ -2139,7 +2139,7 @@ public class ReactionModelGenerator {
 			
 		}
 		catch (IOException e){
-			System.out.println("Could not read the corespecies restart file");
+			Logger.critical("Could not read the corespecies restart file");
         	System.exit(0);
 		}
 		
@@ -2180,8 +2180,8 @@ public class ReactionModelGenerator {
     				cg = ChemGraph.make(g);
     			}
     			catch (ForbiddenStructureException e) {
-    				System.out.println("Forbidden Structure:\n" + e.getMessage());
-					System.out.println("Included species file "+fileName+" contains a forbidden structure.");
+    				Logger.info("Forbidden Structure:\n" + e.getMessage());
+					Logger.critical("Included species file "+fileName+" contains a forbidden structure.");
     				System.exit(0);
     			}
 				
@@ -2190,12 +2190,12 @@ public class ReactionModelGenerator {
     			speciesSet.add(species);
 				
     			line = ChemParser.readMeaningfulLine(reader, true);
-				System.out.println(line);
+				Logger.info(line);
 				
     		}
 		}
 		catch (IOException e){
-			System.out.println("Could not read the included species file" + fileName);
+			Logger.critical("Could not read the included species file" + fileName);
         	System.exit(0);
 		}
 		return speciesSet;
@@ -2355,7 +2355,7 @@ public class ReactionModelGenerator {
 	        fw.close();
 		}
 		catch (IOException e) {
-        	System.out.println("Cannot write enlarger file");
+        	Logger.critical("Cannot write enlarger file");
         	System.exit(0);
         }
 	}
@@ -2369,7 +2369,7 @@ public class ReactionModelGenerator {
 	        fw.close();
 		}
 		catch (IOException e) {
-        	System.out.println("Cannot write diagnosis file");
+        	Logger.critical("Cannot write diagnosis file");
         	System.exit(0);
         }
 		
@@ -2714,7 +2714,7 @@ public class ReactionModelGenerator {
 					bw.write(reaction.getReverseReaction().toRestartString(new Temperature(298,"K"),false));
 					bw.newLine();
 				} else
-					System.out.println("Could not determine forward direction for following rxn: " + reaction.toString());
+					Logger.warning("Could not determine forward direction for following rxn: " + reaction.toString());
 			}
         } catch (FileNotFoundException ex) {
             ex.printStackTrace();
@@ -2748,7 +2748,7 @@ public class ReactionModelGenerator {
 			    //bw.write(reaction.getReverseReaction().toRestartString(new Temperature(298,"K")));
 			    bw.newLine();
 		    } else
-			    System.out.println("Could not determine forward direction for following rxn: " + reaction.toString());
+			    Logger.warning("Could not determine forward direction for following rxn: " + reaction.toString());
 		} catch (FileNotFoundException ex) {
 		    ex.printStackTrace();
 		} catch (IOException ex) {
@@ -2975,7 +2975,7 @@ public class ReactionModelGenerator {
     }
     
     public void readRestartSpecies() {    	
-		System.out.println("Reading in species from Restart folder");
+		Logger.info("Reading in species from Restart folder");
 		// Read in core species -- NOTE code is almost duplicated in Read in edge species (second part of procedure)
 		try {
 			FileReader in = new FileReader("Restart/coreSpecies.txt");
@@ -2993,7 +2993,7 @@ public class ReactionModelGenerator {
 				try {
 					cg = ChemGraph.make(g);
 				} catch (ForbiddenStructureException e) {
-					System.out.println("Error reading graph: Graph contains a forbidden structure.\n" + g.toString());
+					Logger.critical("Error reading graph: Graph contains a forbidden structure.\n" + g.toString());
 					System.exit(0);
 				}
 				// Make the species
@@ -3031,7 +3031,7 @@ public class ReactionModelGenerator {
 				try {
 					cg = ChemGraph.make(g);
 				} catch (ForbiddenStructureException e) {
-					System.out.println("Error reading graph: Graph contains a forbidden structure.\n" + g.toString());
+					Logger.critical("Error reading graph: Graph contains a forbidden structure.\n" + g.toString());
 					System.exit(0);
 				}
 				// Rewrite the species name ... with the exception of the (#)
@@ -3063,7 +3063,7 @@ public class ReactionModelGenerator {
     		++i;
     	}
     	
-		System.out.println("Reading reactions from Restart folder");
+		Logger.info("Reading reactions from Restart folder");
 		// Read in core reactions
 		try {
 			FileReader in = new FileReader("Restart/coreReactions.txt");
@@ -3197,7 +3197,7 @@ public class ReactionModelGenerator {
 				try {
 					cg = ChemGraph.make(g);
 				} catch (ForbiddenStructureException e) {
-					System.out.println("Error reading graph: Graph contains a forbidden structure.\n" + g.toString());
+					Logger.critical("Error reading graph: Graph contains a forbidden structure.\n" + g.toString());
 					System.exit(0);
 				}
 				// Make the species
@@ -3236,7 +3236,7 @@ public class ReactionModelGenerator {
 				try {
 					cg = ChemGraph.make(g);
 				} catch (ForbiddenStructureException e) {
-					System.out.println("Error reading graph: Graph contains a forbidden structure.\n" + g.toString());
+					Logger.critical("Error reading graph: Graph contains a forbidden structure.\n" + g.toString());
 					System.exit(0);
 				}
 				// Make the species
@@ -4068,12 +4068,12 @@ public class ReactionModelGenerator {
 				double maxmaxRatio = (Double)entry.getValue();
 				if (maxmaxRatio < edgeTol)
 				{
-					System.out.println("Edge species "+spe.getChemkinName() +" has a maximum flux ratio ("+maxmaxRatio+") lower than edge inclusion threshhold and will be pruned.");
+					Logger.info("Edge species "+spe.getChemkinName() +" has a maximum flux ratio ("+maxmaxRatio+") lower than edge inclusion threshhold and will be pruned.");
 					speciesToPrune.add(spe);
 					++belowThreshold;
 				}
 				else if ( numberToBePruned - speciesToPrune.size() > 0 ) {
-					System.out.println("Edge species "+spe.getChemkinName() +" has a low maximum flux ratio ("+maxmaxRatio+") and will be pruned to reduce the edge size to the maximum ("+maxEdgeSpeciesAfterPruning+").");
+					Logger.info("Edge species "+spe.getChemkinName() +" has a low maximum flux ratio ("+maxmaxRatio+") and will be pruned to reduce the edge size to the maximum ("+maxEdgeSpeciesAfterPruning+").");
 					speciesToPrune.add(spe);
 					++lowMaxFlux;
 				}
@@ -4086,7 +4086,7 @@ public class ReactionModelGenerator {
 			//		" to be pruned due to low max flux ratio : " + lowMaxFlux);
 			
 			//now, speciesToPrune has been filled with species that should be pruned from the edge
-			System.out.println("Pruning...");
+			Logger.info("Pruning...");
 			//prune species from the edge
 			//remove species from the edge and from the species dictionary and from edgeID
 			iter = speciesToPrune.iterator();
@@ -4097,7 +4097,7 @@ public class ReactionModelGenerator {
 				//SpeciesDictionary.getInstance().getSpeciesSet().remove(spe);
 				if (!unprunableSpecies.containsValue(spe))
 					SpeciesDictionary.getInstance().remove(spe);
-				else System.out.println("Pruning Message: Not removing the following species " +
+				else Logger.info("Pruning Message: Not removing the following species " +
 						"from the SpeciesDictionary\nas it is present in a Primary Kinetic / Reaction" +
 						" Library\nThe species will still be removed from the Edge of the " +
 						"Reaction Mechanism\n" + spe.toString());
@@ -4409,7 +4409,7 @@ public class ReactionModelGenerator {
 		if (Ilib==0) {
 			setPrimaryKineticLibrary(null);
 		}
-		else System.out.println("Primary Kinetic Libraries in use: " + getPrimaryKineticLibrary().getName());
+		else Logger.info("Primary Kinetic Libraries in use: " + getPrimaryKineticLibrary().getName());
     }
     
 
@@ -4438,7 +4438,7 @@ public class ReactionModelGenerator {
 		if (Ilib==0) {
 			setReactionLibrary(null);
 		}
-		else System.out.println("Reaction Libraries in use: " + getReactionLibrary().getName());
+		else Logger.info("Reaction Libraries in use: " + getReactionLibrary().getName());
     }
     
     
@@ -4466,7 +4466,7 @@ public class ReactionModelGenerator {
     }
 	
 	public void readExtraForbiddenStructures(BufferedReader reader) throws IOException  {
-		System.out.println("Reading extra forbidden structures from input file.");
+		Logger.info("Reading extra forbidden structures from input file.");
      	String line = ChemParser.readMeaningfulLine(reader, true);
      	while (!line.equals("END")) {
 			StringTokenizer token = new StringTokenizer(line);
@@ -4476,14 +4476,14 @@ public class ReactionModelGenerator {
 				fgGraph = ChemParser.readFGGraph(reader);
 			}
 			catch (InvalidGraphFormatException e) {
-				System.out.println("Invalid functional group in "+fgname);
+				Logger.error("Invalid functional group in "+fgname);
 				throw new InvalidFunctionalGroupException(fgname + ": " + e.getMessage());
 			}
 			if (fgGraph == null) throw new InvalidFunctionalGroupException(fgname);
 			FunctionalGroup fg = FunctionalGroup.makeForbiddenStructureFG(fgname, fgGraph);
 			ChemGraph.addForbiddenStructure(fg);
 			line = ChemParser.readMeaningfulLine(reader, true);
-			System.out.println(" Forbidden structure: "+fgname);
+			Logger.debug(" Forbidden structure: "+fgname);
 		}
 	}
     
@@ -4562,11 +4562,11 @@ public class ReactionModelGenerator {
 			
 			// Turn on spectroscopic data estimation if not already on
 			if (pdepModelEnlarger.getPDepKineticsEstimator() instanceof FastMasterEqn && SpectroscopicData.mode == SpectroscopicData.Mode.OFF) {
-				System.out.println("Warning: Spectroscopic data needed for pressure dependence; switching SpectroscopicDataEstimator to FrequencyGroups.");
+				Logger.warning("Spectroscopic data needed for pressure dependence; switching SpectroscopicDataEstimator to FrequencyGroups.");
 				SpectroscopicData.mode = SpectroscopicData.Mode.FREQUENCYGROUPS;
 			}
 			else if (pdepModelEnlarger.getPDepKineticsEstimator() instanceof Chemdis && SpectroscopicData.mode != SpectroscopicData.Mode.THREEFREQUENCY) {
-				System.out.println("Warning: Switching SpectroscopicDataEstimator to three-frequency model.");
+				Logger.warning("Switching SpectroscopicDataEstimator to three-frequency model.");
 				SpectroscopicData.mode = SpectroscopicData.Mode.THREEFREQUENCY;
 			}
 
@@ -4845,7 +4845,7 @@ public class ReactionModelGenerator {
 			//		file generated will be valid when run in Chemkin
 			try {
 				int doesNameBeginWithNumber = Integer.parseInt(name.substring(0,1));
-				System.out.println("\nA species name should not begin with a number." +
+				Logger.critical("\nA species name should not begin with a number." +
 								   " Please rename species: " + name + "\n");
 				System.exit(0);
 			} catch (NumberFormatException e) {
@@ -4866,7 +4866,7 @@ public class ReactionModelGenerator {
 				cg = ChemGraph.make(g);
 			}
 			catch (ForbiddenStructureException e) {
-				System.out.println("Forbidden Structure:\n" + e.getMessage());
+				Logger.error("Forbidden Structure:\n" + e.getMessage());
 				throw new InvalidSymbolException("A species in the input file has a forbidden structure.");
 			}
 			//System.out.println(name);
@@ -4922,7 +4922,7 @@ public class ReactionModelGenerator {
 			//	numberOfEquivalenceRatios will be initialized.
 			boolean goodToGo = areTheNumberOfConcentrationsConsistent(numConcentrations);
 			if (!goodToGo) {
-				System.out.println("\n\nThe number of concentrations (" + numConcentrations + ") supplied for species " + species.getName() +
+				Logger.critical("\n\nThe number of concentrations (" + numConcentrations + ") supplied for species " + species.getName() +
 						"\nis not consistent with the number of concentrations (" + numberOfEquivalenceRatios + ") " +
 						"supplied for all previously read-in species \n\n" +
 						"Terminating RMG simulation.");
@@ -5015,7 +5015,7 @@ public class ReactionModelGenerator {
 			//	numberOfEquivalenceRatios will be initialized.
 			boolean goodToGo = areTheNumberOfConcentrationsConsistent(numberOfConcentrations);
 			if (!goodToGo) {
-				System.out.println("\n\nThe number of concentrations (" + numberOfConcentrations + ") supplied for species " + name +
+				Logger.critical("\n\nThe number of concentrations (" + numberOfConcentrations + ") supplied for species " + name +
 						"\nis not consistent with the number of concentrations (" + numberOfEquivalenceRatios + ") " +
 						"supplied for all previously read-in species \n\n" +
 						"Terminating RMG simulation.");
@@ -5032,7 +5032,7 @@ public class ReactionModelGenerator {
         	String dummyString = st.nextToken();	// This should hold "MaxCarbonNumberPerSpecies:"
         	int maxCNum = Integer.parseInt(st.nextToken());
         	ChemGraph.setMaxCarbonNumber(maxCNum);
-        	System.out.println("Note: Overriding RMG-defined MAX_CARBON_NUM with user-defined value: " + maxCNum);
+        	Logger.info("Note: Overriding RMG-defined MAX_CARBON_NUM with user-defined value: " + maxCNum);
         	line = ChemParser.readMeaningfulLine(reader, true);
         }
         if (line.startsWith("MaxOxygenNumber")) {
@@ -5040,7 +5040,7 @@ public class ReactionModelGenerator {
         	String dummyString = st.nextToken();	// This should hold "MaxOxygenNumberPerSpecies:"
         	int maxONum = Integer.parseInt(st.nextToken());
         	ChemGraph.setMaxOxygenNumber(maxONum);
-        	System.out.println("Note: Overriding RMG-defined MAX_OXYGEN_NUM with user-defined value: " + maxONum);
+        	Logger.info("Note: Overriding RMG-defined MAX_OXYGEN_NUM with user-defined value: " + maxONum);
         	line = ChemParser.readMeaningfulLine(reader, true);
         }
         if (line.startsWith("MaxRadicalNumber")) {
@@ -5048,7 +5048,7 @@ public class ReactionModelGenerator {
         	String dummyString = st.nextToken();	// This should hold "MaxRadicalNumberPerSpecies:"
         	int maxRadNum = Integer.parseInt(st.nextToken());
         	ChemGraph.setMaxRadicalNumber(maxRadNum);
-        	System.out.println("Note: Overriding RMG-defined MAX_RADICAL_NUM with user-defined value: " + maxRadNum);
+        	Logger.info("Note: Overriding RMG-defined MAX_RADICAL_NUM with user-defined value: " + maxRadNum);
         	line = ChemParser.readMeaningfulLine(reader, true);
         }
         if (line.startsWith("MaxSulfurNumber")) {
@@ -5056,7 +5056,7 @@ public class ReactionModelGenerator {
         	String dummyString = st.nextToken();	// This should hold "MaxSulfurNumberPerSpecies:"
         	int maxSNum = Integer.parseInt(st.nextToken());
         	ChemGraph.setMaxSulfurNumber(maxSNum);
-        	System.out.println("Note: Overriding RMG-defined MAX_SULFUR_NUM with user-defined value: " + maxSNum);
+        	Logger.info("Note: Overriding RMG-defined MAX_SULFUR_NUM with user-defined value: " + maxSNum);
         	line = ChemParser.readMeaningfulLine(reader, true);
         }
         if (line.startsWith("MaxSiliconNumber")) {
@@ -5064,7 +5064,7 @@ public class ReactionModelGenerator {
         	String dummyString = st.nextToken();	// This should hold "MaxSiliconNumberPerSpecies:"
         	int maxSiNum = Integer.parseInt(st.nextToken());
         	ChemGraph.setMaxSiliconNumber(maxSiNum);
-        	System.out.println("Note: Overriding RMG-defined MAX_SILICON_NUM with user-defined value: " + maxSiNum);
+        	Logger.info("Note: Overriding RMG-defined MAX_SILICON_NUM with user-defined value: " + maxSiNum);
         	line = ChemParser.readMeaningfulLine(reader, true);
         }
         if (line.startsWith("MaxHeavyAtom")) {
@@ -5072,7 +5072,7 @@ public class ReactionModelGenerator {
         	String dummyString = st.nextToken();	// This should hold "MaxHeavyAtomPerSpecies:"
         	int maxHANum = Integer.parseInt(st.nextToken());
         	ChemGraph.setMaxHeavyAtomNumber(maxHANum);
-        	System.out.println("Note: Overriding RMG-defined MAX_HEAVYATOM_NUM with user-defined value: " + maxHANum);
+        	Logger.info("Note: Overriding RMG-defined MAX_HEAVYATOM_NUM with user-defined value: " + maxHANum);
         	line = ChemParser.readMeaningfulLine(reader, true);
         }
         return line;

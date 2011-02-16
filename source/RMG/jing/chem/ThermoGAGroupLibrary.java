@@ -139,7 +139,7 @@ public class ThermoGAGroupLibrary {
 
         String directory = System.getProperty("jing.chem.ThermoGAGroupLibrary.pathName");
         if (directory == null) {
-        	System.out.println("undefined system property: jing.chem.ThermoGAGroupLibrary.pathName, exit!");
+        	Logger.critical("undefined system property: jing.chem.ThermoGAGroupLibrary.pathName, exit!");
         	System.exit(0);
         }
 

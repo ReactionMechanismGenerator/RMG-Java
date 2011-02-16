@@ -37,6 +37,7 @@ import jing.chem.FGAtom;
 import jing.chemParser.*;
 import jing.chem.FGElement;
 import jing.chem.FreeElectron;
+import jing.rxnSys.Logger;
 
 //## package jing::chemUtil
 
@@ -727,7 +728,7 @@ public class Node extends GraphComponent {
       			Arc arc = (Arc)iter.next();
       			Object b = arc.getElement();
       			if (!(b instanceof Bond)) {
-      				System.out.println("encounter bond list during fgelement generation!!");
+      				Logger.critical("encounter bond list during fgelement generation!!");
       				System.exit(0);
       			}
       			Bond bond = (Bond)b;
@@ -915,7 +916,7 @@ public class Node extends GraphComponent {
       			Arc arc = (Arc)iter.next();
       			Object b = arc.getElement();
       			if (!(b instanceof Bond)) {
-      				System.out.println("encounter bond list during fgelement generation!!");
+      				Logger.critical("encounter bond list during fgelement generation!!");
       				System.exit(0);
       			}
       			Bond bond = (Bond)b;

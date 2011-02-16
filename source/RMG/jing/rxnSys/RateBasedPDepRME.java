@@ -149,7 +149,7 @@ public class RateBasedPDepRME implements ReactionModelEnlarger {
 				if (us.getID() < unreactedSpeciesFlux.length)
 					flux[us.getID()] = unreactedSpeciesFlux[us.getID()];
 				else
-					System.out.println("Warning: Attempted to read unreacted species flux for " +
+					Logger.warning("Attempted to read unreacted species flux for " +
 							us.getName() + "(" + us.getID() + "), but there are only " +
 							unreactedSpeciesFlux.length + " fluxes.");
 			}
@@ -222,7 +222,7 @@ public class RateBasedPDepRME implements ReactionModelEnlarger {
                 found = true;
         }
         if (!found) {
-            System.out.println("Could not find any species to add to core or leak species to explore. Stopping to avoid infinite loop.");
+            Logger.critical("Could not find any species to add to core or leak species to explore. Stopping to avoid infinite loop.");
             System.exit(0);
         }
         
@@ -337,7 +337,7 @@ public class RateBasedPDepRME implements ReactionModelEnlarger {
 
         }
         
-        System.out.println("");
+        Logger.info("");
 
     }
 
@@ -360,7 +360,7 @@ public class RateBasedPDepRME implements ReactionModelEnlarger {
                         return;
                     }
                 } else {
-                	System.out.println("Isomer " + species.toString() + " is in network #" + network.getID() +
+                	Logger.info("Isomer " + species.toString() + " is in network #" + network.getID() +
                 			", but is not unimolecular AND nonIncluded,\n\tso RMG will not remove this network.");
                 }
 			}

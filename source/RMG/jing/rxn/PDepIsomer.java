@@ -38,6 +38,7 @@ import jing.chem.Species;
 import jing.chem.SpeciesDictionary;
 import jing.param.Temperature;
 import jing.rxnSys.CoreEdgeReactionModel;
+import jing.rxnSys.Logger;
 import jing.rxnSys.ReactionSystem;
 
 /**
@@ -365,7 +366,7 @@ public class PDepIsomer {
 			// First iterate through the Reaction Library and find all reactions which include the species being considered
 		LinkedHashSet reactionSet = ((LibraryReactionGenerator) rxnSystem.getLibraryReactionGenerator()).generatePdepReactions(getSpecies(0));
 		if(!reactionSet.isEmpty()){
-			System.out.println("Reaction Set Found from Reaction Library "+reactionSet);
+			Logger.info("Reaction Set Found from Reaction Library "+reactionSet);
 		}
 				
 		// Iterate through the reaction template
@@ -377,7 +378,7 @@ public class PDepIsomer {
 		LinkedHashSet newReactionSet_nodup = rxnSystem.getLibraryReactionGenerator().RemoveDuplicateReac(reactionSet);
 		
 		// shamel 6/22/2010 Suppressed output , line is only for debugging
-		//System.out.println("Reaction Set For PdepIsomer "+newReactionSet_nodup);
+		//Logger.debug("Reaction Set For PdepIsomer "+newReactionSet_nodup);
 		
 		return newReactionSet_nodup;
 	    }
@@ -385,7 +386,7 @@ public class PDepIsomer {
 			LinkedHashSet reactionSet = ((TemplateReactionGenerator) rxnSystem.getReactionGenerator()).generatePdepReactions(getSpecies(0));
 			
 			// shamel 6/22/2010 Suppressed output , line is only for debugging
-			//System.out.println("Reaction Set For PdepIsomer "+reactionSet);
+			//Logger.debug("Reaction Set For PdepIsomer "+reactionSet);
 			
 			return reactionSet;
 		}

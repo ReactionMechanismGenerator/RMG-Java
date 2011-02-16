@@ -81,20 +81,20 @@ public class FrequencyGroups{//gmagoon 111708: removed "implements GeneralGAPP"
 
                     int nFreq = 3 * atoms - 5 - rotor - degeneracy - linearity;
                     if (nFreq < 0) {
-                            System.out.println(species.getFullName() +
+                            Logger.debug(species.getFullName() +
                                     " is overspecified: " +
                                             Integer.toString(degeneracy) + " harmonic oscillators and " +
                                             Integer.toString(rotor) + " internal rotors are specified, but only " +
                                             Integer.toString(3 * atoms - 5 - linearity) + " modes are allowed.");
                             // If possible, turn off internal rotors until the number of fitted frequencies is zero
                             if (nFreq + rotor >= 0) {
-                                    System.out.println("Turning off " + Integer.toString(Math.abs(nFreq)) + 
+                                    Logger.debug("Turning off " + Integer.toString(Math.abs(nFreq)) +
                                                     " internal rotors.");
                                     rotor += nFreq;
                             }
                             else {
                                     // Turn off functional groups until the system is underspecified
-                                    System.out.println("Turning off functional groups to make problem underspecified.");
+                                    Logger.debug("Turning off functional groups to make problem underspecified.");
                                     while (nFreq < 0) {
                                             removeFunctionalGroup(groupCount);
                                             degeneracy = getDegeneracy(groupCount);
@@ -249,13 +249,13 @@ public class FrequencyGroups{//gmagoon 111708: removed "implements GeneralGAPP"
 			fr.close();
         }
         catch (IOException e) {
-                System.err.println("Problem reading frequency estimation output file!");
-				System.out.println(e.getMessage());
+                Logger.critical("Problem reading frequency estimation output file!");
+				Logger.critical(e.getMessage());
                 e.printStackTrace();
 				System.exit(0);
         }
 		catch (NullPointerException e) {
-                System.err.println("Problem reading frequency estimation output file!");
+                Logger.error("Problem reading frequency estimation output file!");
                 e.printStackTrace();           
         }
         
@@ -341,12 +341,12 @@ public class FrequencyGroups{//gmagoon 111708: removed "implements GeneralGAPP"
 			output.createNewFile();
 		}
 		catch(IOException e) {
-			System.out.println("Error: Unable to touch file \"frankie/rho_input\".");
-			System.out.println(e.getMessage());
+			Logger.critical("Error: Unable to touch file \"frankie/rho_input\".");
+			Logger.critical(e.getMessage());
 			System.exit(0);
 		}
 		catch(Exception e) {
-			System.out.println(e.getMessage());
+			Logger.error(e.getMessage());
 		}
 	}
 

@@ -39,6 +39,7 @@ import jing.mathTool.*;
 import jing.chemParser.*;
 import jing.chem.Species;
 import jing.param.Temperature;
+import jing.rxnSys.Logger;
 import jing.rxnSys.NegativeConcentrationException;
 import jing.rxnSys.ReactionModelGenerator;
 import jing.rxnSys.SystemSnapshot;
@@ -323,7 +324,7 @@ public class Reaction {
     public double calculatediff(LinkedList p_struct) {
 
       if (p_struct.size()!=2){
-          System.out.println("Cannot compute diffusive limit if number of reactants is not equal to 2");
+          Logger.warning("Cannot compute diffusive limit if number of reactants is not equal to 2");
       }
 
       // Array containing the radii of the two species passed in p_struct
@@ -1252,45 +1253,45 @@ public class Reaction {
   public boolean repOk() {
       //#[ operation repOk()
       if (!structure.repOk()) {
-      	System.out.println("Invalid Reaction Structure:" + structure.toString());
+      	Logger.error("Invalid Reaction Structure:" + structure.toString());
       	return false;
       }
 
       if (!isForward() && !isBackward()) {
-      	System.out.println("Invalid Reaction Direction: " + String.valueOf(getDirection()));
+      	Logger.error("Invalid Reaction Direction: " + String.valueOf(getDirection()));
       	return false;
       }
       if (isBackward() && reverseReaction == null) {
-      	System.out.println("Backward Reaction without a reversed reaction defined!");
+      	Logger.error("Backward Reaction without a reversed reaction defined!");
       	return false;
       }
 
       /*if (!getRateConstant().repOk()) {
-      	System.out.println("Invalid Rate Constant: " + getRateConstant().toString());
+      	Logger.error("Invalid Rate Constant: " + getRateConstant().toString());
       	return false;
       }*/
 
       Kinetics[] allKinetics = getKinetics();
       for (int numKinetics=0; numKinetics<allKinetics.length; ++numKinetics) {
 	      if (!allKinetics[numKinetics].repOk()) {
-	      	System.out.println("Invalid Kinetics: " + allKinetics[numKinetics].toString());
+	      	Logger.error("Invalid Kinetics: " + allKinetics[numKinetics].toString());
 	      	return false;
 	      }
       }
 
       if (!checkRateRange()) {
-      	System.out.println("reaction rate is higher than the upper rate limit!");
-      	System.out.println(getStructure().toString());
+      	Logger.error("reaction rate is higher than the upper rate limit!");
+      	Logger.info(getStructure().toString());
       	Temperature tup = new Temperature(1500,"K");
       	if (isForward()) {
-      		System.out.println("k(T=1500) = " + String.valueOf(calculateTotalRate(tup)));
+      		Logger.info("k(T=1500) = " + String.valueOf(calculateTotalRate(tup)));
       	}
       	else {
-      		System.out.println("k(T=1500) = " + String.valueOf(calculateTotalRate(tup)));
-      		System.out.println("Keq(T=1500) = " + String.valueOf(calculateKeq(tup)));
-      		System.out.println("krev(T=1500) = " + String.valueOf(getReverseReaction().calculateTotalRate(tup)));
+      		Logger.info("k(T=1500) = " + String.valueOf(calculateTotalRate(tup)));
+      		Logger.info("Keq(T=1500) = " + String.valueOf(calculateKeq(tup)));
+      		Logger.info("krev(T=1500) = " + String.valueOf(getReverseReaction().calculateTotalRate(tup)));
       	}
-      	System.out.println(getKinetics());
+      	Logger.info(getKinetics().toString());
       	return false;
       }
       return true;

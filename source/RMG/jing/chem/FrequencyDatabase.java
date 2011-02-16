@@ -54,7 +54,7 @@ public class FrequencyDatabase {
         
 		String directory = System.getProperty("jing.chem.FrequencyDatabase.pathName");
         if (directory == null) {
-        	System.out.println("undefined system property: jing.chem.FrequencyDatabase.pathName, exit!");
+        	Logger.critical("undefined system property: jing.chem.FrequencyDatabase.pathName, exit!");
         	System.exit(0);
         }
 

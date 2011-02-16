@@ -574,7 +574,7 @@ public class ReactionTemplate {
 			  LinkedList products_asdefinedinPRL = rxn.getProductList();
 			  if (Structure.isSpeciesListEquivalentToChemGraphListAsChemGraphs(products_asdefinedinPRL,products_asdefinedbyRMG)) {
 				  if (rxn instanceof ThirdBodyReaction || rxn instanceof TROEReaction || rxn instanceof LindemannReaction)
-					  System.out.println("RMG is only utilizing the high-pressure limit parameters for PKL reaction: " + rxn.toString());
+					  Logger.info("RMG is only utilizing the high-pressure limit parameters for PKL reaction: " + rxn.toString());
 				  return rxn.getKinetics();
 			  }
 		  }
@@ -597,7 +597,7 @@ public class ReactionTemplate {
 			  LinkedList products = rxn.getProductList();
 			  if (Structure.isSpeciesListEquivalentToChemGraphListAsChemGraphs(products,p_products)) {
 				  if (rxn instanceof ThirdBodyReaction || rxn instanceof TROEReaction || rxn instanceof LindemannReaction)
-					  System.out.println("RMG is only utilizing the high-pressure limit parameters for PKL reaction: " + rxn.toString());
+					  Logger.info("RMG is only utilizing the high-pressure limit parameters for PKL reaction: " + rxn.toString());
 				  return rxn.getStructure().direction;
 			  }
 		  }
@@ -1363,7 +1363,7 @@ public class ReactionTemplate {
       	return;
       }
       catch (Exception e) {
-    	  System.out.println("Failed to read forbiddenStructures file");
+    	  Logger.error("Failed to read forbiddenStructures file");
       	//throw new IOException(e.getMessage());
       }
       

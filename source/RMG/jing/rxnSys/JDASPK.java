@@ -212,10 +212,10 @@ public class JDASPK extends JDAS {
         	//idid = solveDAE(p_initialization, reactionList, p_reactionChanged, thirdBodyReactionList, troeReactionList, nState, y, yprime, tBegin, tEnd, this.rtol, this.atol, T, P);
         idid = solveDAE();
         if (idid !=1 && idid != 2 && idid != 3)	{
-        	System.out.println("The idid from DASPK was "+idid );
+        	Logger.debug("The idid from DASPK was "+idid );
         	throw new DynamicSimulatorException("DASPK: SA off.");
         }
-        System.out.println("After ODE: from " + String.valueOf(tBegin) + " SEC to " + String.valueOf(endTime) + "SEC");
+        Logger.info("After ODE: from " + String.valueOf(tBegin) + " SEC to " + String.valueOf(endTime) + "SEC");
         Global.solvertime = Global.solvertime + (System.currentTimeMillis() - startTime)/1000/60;
         startTime = System.currentTimeMillis();
         speStatus = generateSpeciesStatus(p_reactionModel, y, yprime, 0);
@@ -317,7 +317,7 @@ public class JDASPK extends JDAS {
 			renameSuccess = f.renameTo(newFile);
                         if (!renameSuccess)
                         {
-                            System.out.println("Renaming of RWORK file(s) failed. renameIntermediateFilesBeforeRun()");
+                            Logger.critical("Renaming of RWORK file(s) failed. renameIntermediateFilesBeforeRun()");
                             System.exit(0);
                         }
                 }
@@ -330,7 +330,7 @@ public class JDASPK extends JDAS {
                     renameSuccess = f.renameTo(newFile);
                     if (!renameSuccess)
                     {
-                        System.out.println("Renaming of IWORK file(s) failed. renameIntermediateFilesBeforeRun()");
+                        Logger.critical("Renaming of IWORK file(s) failed. renameIntermediateFilesBeforeRun()");
                         System.exit(0);
                     }
                 }
@@ -343,7 +343,7 @@ public class JDASPK extends JDAS {
                     renameSuccess = f.renameTo(newFile);
                     if (!renameSuccess)
                     {
-                        System.out.println("Renaming of variables.dat file(s) failed. renameIntermediateFilesBeforeRun()");
+                        Logger.critical("Renaming of variables.dat file(s) failed. renameIntermediateFilesBeforeRun()");
                         System.exit(0);
                     }
                 }
@@ -357,7 +357,7 @@ public class JDASPK extends JDAS {
             boolean renameSuccess = f.renameTo(newFile);
             if (!renameSuccess)
             {
-                System.out.println("Renaming of RWORK file(s) failed. (renameIntermediateFilesAfterRun())");
+                Logger.critical("Renaming of RWORK file(s) failed. (renameIntermediateFilesAfterRun())");
                 System.exit(0);
             }
             
@@ -368,7 +368,7 @@ public class JDASPK extends JDAS {
             renameSuccess = f.renameTo(newFile);
             if (!renameSuccess)
             {
-                System.out.println("Renaming of IWORK file(s) failed. (renameIntermediateFilesAfterRun())");
+                Logger.critical("Renaming of IWORK file(s) failed. (renameIntermediateFilesAfterRun())");
                 System.exit(0);
             }
             
@@ -379,7 +379,7 @@ public class JDASPK extends JDAS {
             renameSuccess = f.renameTo(newFile);
             if (!renameSuccess)
             {
-                System.out.println("Renaming of variables.dat file(s) failed. (renameIntermediateFilesAfterRun())");
+                Logger.critical("Renaming of variables.dat file(s) failed. (renameIntermediateFilesAfterRun())");
                 System.exit(0);
             }
 	}
@@ -396,7 +396,7 @@ public class JDASPK extends JDAS {
         	Global.solverIterations = Integer.parseInt(line.trim());
         	line = br.readLine();
         	if (Double.parseDouble(line.trim()) != neq) {
-        		System.out.println("ODESolver didnt generate all species result");
+        		Logger.critical("ODESolver didnt generate all species result");
         		System.exit(0);
         	}
         	endTime = Double.parseDouble(br.readLine().trim());
@@ -646,7 +646,7 @@ public class JDASPK extends JDAS {
         	for (int k=0; k<p_numSteps; k++){
         		line = br.readLine();
                     if (Double.parseDouble(line.trim()) != neq) {
-                            System.out.println("ODESolver didnt generate all species result");
+                            Logger.critical("ODESolver didnt generate all species result");
                             System.exit(0);
                     }
                     presentTime = Double.parseDouble(br.readLine().trim());

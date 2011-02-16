@@ -60,7 +60,7 @@ public class ReactionTemplateLibrary {
         // Get the directory which contains the reaction families
         String kineticsDirectory = System.getProperty("jing.rxn.ReactionTemplateLibrary.pathName");
         if (kineticsDirectory == null) {
-        	System.out.println("Undefined system property: jing.rxn.ReactionTemplateLibrary.pathName!");
+        	Logger.critical("Undefined system property: jing.rxn.ReactionTemplateLibrary.pathName!");
         	System.exit(0);
         }
         String separator = System.getProperty("file.separator");
@@ -70,7 +70,7 @@ public class ReactionTemplateLibrary {
 
         // Read the file families.txt
         try {
-        	System.out.println("\nReading kinetics groups database from: " + kineticsDirectory + "\n");
+        	Logger.info("\nReading kinetics groups database from: " + kineticsDirectory + "\n");
         	String familiesPath = kineticsDirectory + "families.txt";
             FileReader in = new FileReader(familiesPath);
         	BufferedReader data = new BufferedReader(in);
@@ -107,7 +107,7 @@ public class ReactionTemplateLibrary {
             in.close();
         }
         catch (IOException e) {
-        	System.out.println(e.getMessage());
+        	Logger.critical(e.getMessage());
             System.exit(0);
         }
 

@@ -392,9 +392,9 @@ public class ReactionSystem {
         	}
         }
 
-        System.out.println("The main pathway to generate " + p_species.getFullName() + " is ");
-        System.out.println(maxReaction);
-        System.out.println("The max flux is " + String.valueOf(maxFlux));
+        Logger.info("The main pathway to generate " + p_species.getFullName() + " is ");
+        Logger.info(maxReaction.toString());
+        Logger.info("The max flux is " + String.valueOf(maxFlux));
 
         return maxReaction;
 
@@ -674,10 +674,10 @@ public class ReactionSystem {
         		flux *= concentration;
         	}
         	if (flux>1E-7) {
-        		System.out.println(rxn.toString() + "\t" + String.valueOf(flux) + '\t' + String.valueOf(rxn.calculateHrxn(t)) + '\t' + String.valueOf(rxn.calculateKeq(t)));
+        		Logger.info(rxn.toString() + "\t" + String.valueOf(flux) + '\t' + String.valueOf(rxn.calculateHrxn(t)) + '\t' + String.valueOf(rxn.calculateKeq(t)));
         		for (double temp = 400; temp<1200; temp = temp + 50) {
         			double rate = rxn.calculateTotalRate(new Temperature(temp,"K"));
-        			System.out.println("Temp = " + String.valueOf(temp) + "\tRate = " + String.valueOf(rate));
+        			Logger.info("Temp = " + String.valueOf(temp) + "\tRate = " + String.valueOf(rate));
         		}
         		for (Iterator rIter = rxn.getReactants(); rIter.hasNext(); ) {
         			Species spe = ((ChemGraph)rIter.next()).getSpecies();
@@ -692,7 +692,7 @@ public class ReactionSystem {
 
         for (Iterator iter = speSet.iterator(); iter.hasNext(); ) {
         	Species spe = (Species)iter.next();
-        	System.out.println(spe.getFullName()+": " + spe.getThermoData().toString());
+        	Logger.info(spe.getFullName()+": " + spe.getThermoData().toString());
         }
 
 
@@ -1002,7 +1002,7 @@ public String printLowerBoundConcentrations(LinkedList p_speciesList) {
 				if (i < ss.reactionFlux.length)
 					output.append( ss.reactionFlux[index] + "\t");
 				else {
-					System.out.println("Warning: Size of reaction set does not match number of reaction fluxes. Expected reaction flux missing.");
+					Logger.warning("Size of reaction set does not match number of reaction fluxes. Expected reaction flux missing.");
 					output.append("\n");
 					return output.toString();
 				}

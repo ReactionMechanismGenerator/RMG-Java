@@ -227,7 +227,7 @@ public class JDASSL extends JDAS {
 
                         //gmagoon 1/25/09: note that the below lines do not actually use the actual idid, but instead use the 1 returned by readOutputFile; the actual success represented by idid is effectively read in through the Fortran output "ODESOLVER SUCCESSFUL" vs. "ODESOLVER FAILED"
 			if (idid !=1 && idid != 2 && idid != 3)	{
-				System.out.println("The idid from DASSL was "+idid );
+				Logger.debug("The idid from DASSL was "+idid );
 				throw new DynamicSimulatorException("DASSL");
         	}
             Logger.info(String.format("After ODE: from %10.4e s to %10.4e s", tBegin, endTime));
@@ -331,7 +331,7 @@ public class JDASSL extends JDAS {
 			renameSuccess = f.renameTo(newFile);
                         if (!renameSuccess)
                         {
-                            System.out.println("Renaming of RWORK file(s) failed.");
+                            Logger.critical("Renaming of RWORK file(s) failed.");
                             System.exit(0);
                         }
                 }
@@ -344,7 +344,7 @@ public class JDASSL extends JDAS {
                     renameSuccess = f.renameTo(newFile);
                     if (!renameSuccess)
                     {
-                        System.out.println("Renaming of IWORK file(s) failed.");
+                        Logger.critical("Renaming of IWORK file(s) failed.");
                         System.exit(0);
                     }
                 }
@@ -359,7 +359,7 @@ public class JDASSL extends JDAS {
             boolean renameSuccess = f.renameTo(newFile);
             if (!renameSuccess)
             {
-                System.out.println("Renaming of RWORK file(s) failed. (renameIntermediateFiles())");
+                Logger.critical("Renaming of RWORK file(s) failed. (renameIntermediateFiles())");
                 System.exit(0);
             }
             
@@ -370,7 +370,7 @@ public class JDASSL extends JDAS {
             renameSuccess = f.renameTo(newFile);
             if (!renameSuccess)
             {
-                System.out.println("Renaming of IWORK file(s) failed. (renameIntermediateFiles())");
+                Logger.critical("Renaming of IWORK file(s) failed. (renameIntermediateFiles())");
                 System.exit(0);
             }
 	}
@@ -387,7 +387,7 @@ public class JDASSL extends JDAS {
         	line = br.readLine();
         	
         	if (Double.parseDouble(line.trim()) != neq) {
-        		System.out.println("ODESolver didnt generate all species results");
+        		Logger.critical("ODESolver didnt generate all species results");
         		System.exit(0);
         	}
         	endTime = Double.parseDouble(br.readLine().trim());
