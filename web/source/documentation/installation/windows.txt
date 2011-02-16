@@ -5,14 +5,14 @@ Installing on Windows
 *************************
 
 You can find the installer package or source files on the `Downloading RMG
-<downloading.html>`_\ page.  
+<downloading.html>`_ page.  
 
 
 Installer Package (Easiest Method)
 ===================================
 
 1. Download the windows installer .exe file from the `Downloading RMG
-<downloading.html>`_\ page.  
+<downloading.html>`_ page.  
 
 2. Open the .exe executable file.  When prompted to install to a folder, we suggest keeping the installation folder set
 to the default ``C:\RMG-Java\`` or installing to a directory not under ``C:\Program Files\`` in order to avoid complications 
@@ -20,7 +20,7 @@ with administrative access in Windows.
 
 3. You are now ready to use RMG by clicking on the RMG-gui icon.  You can also use RMG through the command prompt.   
 For more information on how to run RMG, see the `documentation
-<../index.html>`_\ page.  
+<../index.html>`_ page.  
 
 
 
@@ -32,7 +32,7 @@ For more information on how to run RMG, see the `documentation
 Compiling from Source
 =========================
 
-To get the source files, see the `Downloading RMG <downloading.html>`_\ page.  
+To get the source files, see the `Downloading RMG <downloading.html>`_ page.  
 
 To build a functional version of RMG from source you will need to do the following:
 
@@ -48,7 +48,7 @@ Apache Ant.
     This controls the generation of Java executables.
     Obtain from http://ant.apache.org/.   Unzip binary distribution into folder of choice.
 
-2. Create the directory in which you want to install RMG. We recommend avoiding the `C:\Program Files\` directory to avoid complications
+2. Create the directory in which you want to install RMG. We recommend avoiding the ``C:\Program Files\`` directory to avoid complications
 with admnistrative access in Windows during the installation.  
  
 3. Set environment variables for ``RMG``, ``JAVA_HOME``, and ``ANT_HOME``, using the installation directories for each, respectively.   To set environment variables in windows:
@@ -77,7 +77,7 @@ with admnistrative access in Windows during the installation.
 6. Compile the programs. The easiest way to do the latter is to execute the file :file:`make.bat` in the :file:`%RMG%` directory through the command prompt. The batch script does not compile the RMG source; for this you will need ant.  
 After the batch script is done running, type ``ant jar`` into the command prompt to compile the RMG source.  At the end of installation the screen should display ``BUILD SUCCESSFUL``.
 
-7.  You are now ready to use RMG.  To install advanced (optional) features, see the `optional features <optional.html>`_\ page.  
+7.  You are now ready to use RMG.  To install advanced (optional) features, see the `optional features <optional.html>`_ page.  
 
 
 
