@@ -19,8 +19,43 @@ then you'll have to compile it yourself.
 Compiling from source
 -----------------------------
 
+Windows
+~~~~~~~~
+
+You will need the `Java Development Kit (JDK) <http://www.oracle.com/technetwork/java/javase/downloads/index.html>`_, 
+the `BLAS and LAPACK libraries <http://github.com/GreenGroup/RMG-Java/downloads>`_,
+and `Apache ant <http://ant.apache.org/>`_. 
+You will also need a Fortran compiler, such as `g95 <http://www.g95.org/>`_
+or gfortran from `MinGW <http://www.mingw.org/>`_.
+
+Once you've cloned the repository, you must set the ``RMG`` environment
+variable to the location of your checked out copy. We recommend a path like
+``C:\RMG``, with no spaces and outside of any folders Windows places 
+administrative restrictions on (e.g. ``C:\Program Files``). You may also need
+to set environment variables for Java and ant. Once this is done, simply run
+the ``make.bat`` file in the top-level directory to build the Fortran codes,
+then ``ant jar`` from a command prompt to build the Java code.
+
+More information is available in the documentation_.
+
 Linux
 ~~~~~
+
+You will need the Java Development Kit (JDK), the BLAS and LAPACK libraries,
+GNU make, Apache ant, and a Fortran compiler (e.g. gfortran). Many popular 
+Linux distributions either come with these already installed or provide them
+in their regular software package repositories.
+
+The quick-start instructions in full::
+
+$ git clone git://github.com/GreenGroup/RMG-Java.git
+$ cd RMG-Java
+$ make
+$ make test
+$ echo "export RMG=`pwd`" >> ~/.bashrc
+
+For more, refer to the documentation_.
+
 
 Mac
 ~~~~~
@@ -35,16 +70,14 @@ One nice way to get gfortran is to install homebrew_ then then type `brew instal
 .. _gfortran: http://r.research.att.com/tools/
 .. _homebrew: http://mxcl.github.com/homebrew/
 
-The quick-start instructions in full:
+The quick-start instructions in full::
 
-#. git clone git://github.com/GreenGroup/RMG-Java.git
-#. cd RMG-Java
-#. make MACOS=true
-#. make test
-#. echo "export RMG=`pwd`" >> ~/.bashrc
+$ git clone git://github.com/GreenGroup/RMG-Java.git
+$ cd RMG-Java
+$ make MACOS=true
+$ make test
+$ echo "export RMG=`pwd`" >> ~/.bashrc
 
 For more, refer to the documentation_.
 
 
-Windows
-~~~~~~~~
