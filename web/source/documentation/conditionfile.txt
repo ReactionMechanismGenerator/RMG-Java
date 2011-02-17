@@ -599,6 +599,8 @@ You should specify either a ``TRange`` or ``Temperatures`` line and either a ``P
 	CHEMKIN will terminate a simulation when the simulated temperature exceeds the largest allowed temperature for
 	the Chebyshev polynomials (the values of all system variables will be returned as "NaN").
 
+.. _numberofgrains:
+
 Lastly, you also need to specify information regarding the number of energy grains to use
 when solving the Master Equation.  The default value is 250; this was selected to balance the speed
 and accuracy of the Master Equation solver method.  However, for some pressure-dependent networks,
