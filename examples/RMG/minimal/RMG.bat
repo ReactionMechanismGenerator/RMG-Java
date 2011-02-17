@@ -45,7 +45,7 @@ goto end
 )
 
 echo Running RMG...
-java -Xmx500m -classpath "%RMG%\bin\RMG.jar" RMG condition.txt > RMG.log 2>&1 &
+java -Xmx500m -classpath "%RMG%\bin\RMG.jar" RMG condition.txt
 echo RMG job completed.
 
 :end
