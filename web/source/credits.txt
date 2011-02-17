@@ -14,6 +14,10 @@ Current Developers: (rmg_dev@mit.edu)
 
 - Joshua W. Allen
 
+- Caleb A. Class
+
+- Connie W. Gao
+
 - Michael R. Harper
 
 - Amrit Jalan
@@ -62,4 +66,16 @@ RMGVE Developer:
 
 - John Robotham
 
+Special thanks for helpful error reports:
 
+- Rajesh D. Parmar
+
+- Dr. Seyed-Abdolreza Seyed-Reihani
+
+- Dr. Yu Shi
+
+- Dr. Yushi Suzuki
+
+- Aäron Vandeputte
+
+- Dr. Stijn Vranckx
