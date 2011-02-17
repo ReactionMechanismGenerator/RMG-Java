@@ -63,6 +63,9 @@ public class Logger {
 
     /** The object representing the log file. */
     private static BufferedWriter logFile = null;
+	
+	/** The newline character to use. */
+	private static String newLine = System.getProperty("line.separator");
 
     /**
      * Initialize the logger. The log file will be opened; if this is not
@@ -163,7 +166,7 @@ public class Logger {
         // Print the log message to the file
         try {
             if (logFile != null && fileLevel >= level)
-                logFile.write(message + "\n");
+                logFile.write(message + newLine);
         }
         catch (IOException e) {
             // What should we do here?
