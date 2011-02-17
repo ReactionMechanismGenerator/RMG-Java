@@ -183,8 +183,8 @@ an infinite loop, it stops with this message. The good news is, this only
 causes RMG to stop running if all the reaction systems that solved
 successfully have already converged and met their termination criteria.
 
-Other Tips
-===================
+Making valid CHEMKIN files
+===========================
 
 To create valid CHEMKIN files, ensure that any 3rd-body collider molecules
 used in your Seed Mechanisms or Reaction Libraries are either declared in
@@ -192,9 +192,15 @@ their species.txt files (if they are reactive) or in the :ref:`inertgas`
 section of the input file. (i.e. it's a good idea to list all of N2, Ne, He
 and Ar, even if their concentrations are 0).
 
-The CHEMKIN input file :file:`chem.inp` generated with the :ref`Verbose field
-<chemkinunits>`_ turned "on" may have a comment that spans hundreds of
+The CHEMKIN input file :file:`chem.inp` generated with the :ref:`Verbose
+<chemkinunits>` option turned "on" may have a comment that spans hundreds of
 characters. These verbose comments may cause the CHEMKIN interpreter to fail
 when running the Pre-Processor.
 
+When running RMG on Windows it is possible that the :file:`chem.inp` file will
+contain a mixture of linux and windows `line endings
+<http://en.wikipedia.org/wiki/Newline>`_\ . This can be a problem, for example
+if you want to read the chemkin file using `Cantera
+<http://code.google.com/p/cantera/>`_\ . Convert the line endings using a
+program like dos2unix.
 
