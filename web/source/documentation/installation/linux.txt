@@ -17,34 +17,29 @@ dependencies is your distribution's software package managing software, as
 suitable software packages are usually available via your distribution's
 online repository, if not already installed.
 
-**Java SE Development Kit (JDK)**
-    
+Java SE Development Kit (JDK)
     Version 6 of the 
     `official implementation <http://www.oracle.com/technetwork/java/javase/downloads/index.html>`_
     from Oracle (previously Sun Microsystems) is known to work;
     `OpenJDK <http://openjdk.java.net/>`_ may also work but has not been tested
     by the RMG team.
     
-**A Fortran compiler**
-
+A Fortran compiler
     We recommend `gfortran <http://gcc.gnu.org/wiki/GFortran>`_ from the free 
     GNU Compiler Collection. `g95 <http://www.g95.org/>`_ is another free 
     compiler that is known to work, but is less likely to be available within 
     your distribution's package repository.
     
-**The Basic Linear Algebra Subprograms (BLAS) and Linear Algebra PACKage (LAPACK)**
-
+The Basic Linear Algebra Subprograms (BLAS) and Linear Algebra PACKage (LAPACK)
     You may need to install the development version of these packages in order
     to obtain the correct type of libraries for RMG to link to. BLAS and LAPACK
     may already be installed, as they are used in many common applications.
 
-**GNU make**
-
+GNU make
     The provided build scripts have the form of Makefiles that are executed by
     `GNU make <http://www.gnu.org/software/make/>`_.
 
-**Apache Ant**
-
+Apache Ant
     `ant <http://ant.apache.org/>`_ is used to generate Java executables.
 
 
