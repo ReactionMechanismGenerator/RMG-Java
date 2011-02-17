@@ -4,9 +4,7 @@
 License
 *******
 
-RMG is intended to be an open source program, available to the general public free of charge. The primary RMG code is distributed under the terms of the `MIT/X11 License <http://www.opensource.org/licenses/mit-license.php>`_\ , reproduced below. Although many of RMG's dependencies are also available under compatible open source licenses, there remain a few dependencies with more restrictive licenses. **It is the user's responsibility to ensure these licenses have been obtained.** 
-
-.. admonition:: RMG License Agreement
+RMG is intended to be an open source program, available to the general public free of charge. The primary RMG code is distributed under the terms of the `MIT/X11 License <http://www.opensource.org/licenses/mit-license.php>`_\ , reproduced below. Although many of RMG's dependencies are also available under compatible open source licenses, there remain a few dependencies with more restrictive licenses. **It is the user's responsibility to ensure these licenses have been obtained.** ::
 
 	Copyright (c) 2002-2009 William H. Green and the RMG Team
 
@@ -28,9 +26,7 @@ RMG is intended to be an open source program, available to the general public fr
 	OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 	SOFTWARE.
 
-The FAME module for pressure dependent calculations uses `LAPACK <http://www.netlib.org/lapack/>`_, which has the following license:
-
-.. admonition:: LAPACK License Agreement
+The FAME module for pressure dependent calculations uses `LAPACK <http://www.netlib.org/lapack/>`_, which has the following license::
 
 	Copyright (c) 1992-2008 The University of Tennessee.  All rights reserved.
 	
@@ -62,9 +58,8 @@ The FAME module for pressure dependent calculations uses `LAPACK <http://www.net
 	(INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 	OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-The contents of source/cclib/ are modified portions of cclib 1.0 (http://cclib.sourceforge.net) and form a software library available under the terms of the LGPL:
+The contents of source/cclib/ are modified portions of cclib 1.0 (http://cclib.sourceforge.net) and form a software library available under the terms of the LGPL::
 
-.. admonition:: LGPL 2.1 License Agreement
 			  GNU LESSER GENERAL PUBLIC LICENSE
 			       Version 2.1, February 1999
 

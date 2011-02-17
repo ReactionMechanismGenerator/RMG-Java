@@ -73,7 +73,7 @@ Installing Python on Windows
    Panel-->System-->Advanced System Settings``)  and add the address of
    the :file:`Scripts` folder in the Python directory to the variable
    ``Path`` under System Variables. Typically this will be someting
-   like :file:`C:\Python25\Scripts`
+   like :file:`C:\\Python25\\Scripts`
   
 
 Installing Sphinx

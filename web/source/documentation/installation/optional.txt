@@ -1,0 +1,129 @@
+.. _installation_optional:
+
+Optional Advanced Features
+**************************
+
+RMG has a number of additional features available which enable advanced
+functionality but require additional installation steps. The following sections
+discuss the additional features available in RMG and the dependencies and
+installation procedures for each.
+
+
+
+.. _installing_inchi:
+
+InChI Generation
+================
+
+RMG can be configured to work with the IUPAC International Chemical Identifier 
+(InChI) format for representing molecules. When InChI support is enabled, RMG
+can :ref:`generate InChI strings <InChIgeneration>` for molecules and convert 
+from InChI strings and/or .mol files to the adjacency list format. To enable 
+InChI support you must download and install the following:
+
+**The IUPAC International Chemical Identifier InChI version 1**
+
+    Version 1.02beta is required. This is available from 
+    http://www.iupac.org/inchi/download/index.html.
+
+After downloading and unpacking the InChI source code, change to the 
+:file:`InChI-1-API/cInChI/gcc_makefile` directory and execute the makefile.
+Copy the resulting executable :file:`cInChI-1.exe` to the :file:`$RMG/bin` 
+folder. ::
+
+    $ cd InChI-1-API/cInChI/gcc_makefile
+    $ make
+    $ cp cInChI-1 $RMG/bin
+    
+You are now ready to generate InChIs in RMG.
+
+
+
+.. _installing_daspk:
+
+Sensitivity Analysis
+====================
+
+RMG can optionally perform sensitivity analysis on the reaction models it
+generates. Currently RMG uses DASPK 3.1 to perform sensitivity analysis. 
+Analytical Jacobian and partial derivatives with respect to rates of reactions 
+and Gibbs free energy of molecules are generated using the automated 
+differentiator of DAEPACK. 
+
+1. Make sure the DAEPACK library file is in a location where the Fortran linker
+   can find it. On Linux, you can either make a symbolic link of the library 
+   file in a directory in your library file search path, e.g. :file:`/usr/lib`,
+   or add the path containing the library to the ``LD_LIBRARY_PATH`` environment
+   variable.
+   
+2. Compile DASPK using the command ::
+
+   $ cd $RMG
+   $ make daspk
+   
+You are now ready to run RMG with sensitivity analysis support.
+
+
+
+.. _installing_qm:
+
+3D-geometry-based Thermodynamic Property Calculation
+====================================================
+
+RMG can optionally use quantum chemistry calculations to estimate the
+thermodynamic properties of the species it generates. This feature requires
+several additional dependencies, including *either* the Gaussian 03 or 
+MOPAC 2009 quantum chemistry package. These dependencies are:
+
+**Python**
+    
+    Version 2.5, 2.6, or 2.7 of `Python <http://www.python.org/>`_ is 
+    recommended. On Windows you will probably need to manually add the 
+    directory containing the python binary to the ``PATH`` environment 
+    variable.
+
+**NumPy**
+
+    Version 1.3.0 or later of `NumPy <http://numpy.scipy.org/>`_ is required.
+
+**RDKit**
+
+    Version Q2 2009 or later of `RDKit <http://rdkit.org/>`_ is required.
+    The typical installation process for RDKit should set the RDBASE environment variable
+    and no further action on the part of the user should be required.
+    On Windows you will also need to set environment variables as described `here <http://code.google.com/p/rdkit/wiki/InstallingOnWindows>`_.
+
+**OpenBabel**
+
+    Version 2.2.0 or later of `OpenBabel <http://openbabel.org/>`_ is required.
+    On Windows the OpenBabel installer should update the ``PATH`` environment
+    variable automatically.
+
+**InChI**
+
+    Version 1.02beta is required. Installation instructions are as
+    given :ref:`here <installing_inchi>`. Don't forget to place the InChI
+    executable in the ``$RMG/bin`` directory.
+    
+**SYMMETRY**
+
+    Version 1.15 or later of `SYMMETRY <http://www.cobalt.chem.ucalgary.ca/ps/symmetry/>`_
+    is required. The ``SYMMETRY.EXE`` executable should be placed in the 
+    ``$RMG/bin`` directory. A binary executable is available for Windows. 
+
+**MOPAC 2009**
+
+    Available at http://openmopac.net/downloads.html. On Windows the installer 
+    should set the ``MOPAC_LICENSE`` environment variable automatically. MOPAC
+    may be obtained freely for academic, not-for-profit use. You only need to
+    install one of MOPAC 2009 or Gaussian 03.
+
+**Gaussian 03**
+
+    The Gaussian web site is http://www.gaussian.com/. On Windows you will
+    likely need to manually update the ``PATH`` environment variable to include
+    the Gaussian installation directory.
+
+A modified version of `cclib <http://cclib.sourceforge.net/>`_ based on the 
+cclib 1.0 release is also included with RMG; you do not need to download this
+separately.

@@ -1,0 +1,134 @@
+.. _installation_windows:
+
+*********************
+Installing on Windows
+*********************
+
+This section is for users who wish to install RMG on computers running a
+Windows operating system. RMG is known to work on Windows XP, Windows Vista,
+and Windows 7. There are two methods of installing RMG on windows: an
+automatic installer (recommended) or a source package. You can find both of 
+these on the `Downloading RMG <downloading.html>`_ page.
+
+Installer Package (Easiest Method)
+==================================
+
+1. Download the Windows installer file from the `Downloading RMG
+   <downloading.html>`_ page.
+
+2. Run the installer file and follow the setup instructions. We recommend that
+   you install to the default installation directory ``C:\RMG`` to (1) avoid
+   spaces in the installation path and (2) avoid issues with administrative
+   access, particularly in Windows Vista and Windows 7.
+
+   The installer will install a complete set of binaries, source code, database,
+   documentation, and examples by default. You can optionally choose not to
+   install one or more of these things if you prefer. Only the binaries and
+   database are required to run RMG.
+
+   When the installation is complete, you are ready to use RMG.
+   
+3. To test that RMG is working, you can try to run one of the examples, such as 
+   the "minimal" example. The easiest way to do this is to double-click the
+   ``RMG.bat`` file found in the folder containing the example.
+   
+Now that you have a working version of RMG, you may wish to install some of the
+:ref:`optional features <installation_optional>`. Once you are ready to run
+RMG, continue to learning how to create RMG input files, either 
+:ref:`by hand <conditionfile>` or via the 
+:ref:`graphical user interface <GraphicalUserInterface>`.
+
+
+
+.. _compiling_from_source:
+
+Compiling from Source
+=====================
+
+If you wish to compile RMG yourself, you will need to install a number of
+dependencies, described below.
+
+Java SE Development Kit (JDK)
+    You can download the `official implementation <http://www.oracle.com/technetwork/java/javase/downloads/index.html>`_
+    from Oracle (previously Sun Microsystems). We recommend Java SE Version 6.
+    
+A Fortran compiler
+    On Windows the easiest Fortran compiler to install is `g95 <http://www.g95.org/>`_.
+    The `gfortran <http://gcc.gnu.org/wiki/GFortran>`_ compiler from the GNU
+    Compiler Collection (installable via `MinGW <http://www.mingw.org/>`_) is
+    also known to work.
+    
+The Basic Linear Algebra Subprograms (BLAS) and Linear Algebra PACKage (LAPACK)
+    The easiest way to do this is to download our generic 32-bit DLL files for 
+    BLAS and LAPACK from http://github.com/GreenGroup/RMG-Java/downloads.
+    These should be sufficient for most users.
+
+Apache Ant
+    `ant <http://ant.apache.org/>`_ is used to generate Java executables.
+
+The procedure is as follows:
+
+1. Obtain the source package using one of the methods described on the
+   `Downloading RMG <downloading.html>`_ page.  
+
+2. Unpack and move the source package contents to your desired installation
+   directory. We recommend avoiding paths containing spaces and paths to
+   folders that Windows places administrative access restrictions on. Something
+   simple like ``C:\RMG`` works best.
+
+3. Set the ``RMG`` environment variable to the path of the RMG installation
+   directory.
+   
+   * Go to ``Start --> Control Panel --> System`` (may need to switch to Classic Control Panel view). Click on the ``Advanced`` tab, then click on ``Environment Variables``.
+
+   * In the lower half of the ``Environment Variables`` window for System variables, click ``New``.
+
+   * In the ``New System Variable`` window, in the ``Variable`` name field, type the environment variable name (i.e. ``JAVA_HOME``). In the ``Variable`` value field, type the directory in which it was installed.
+
+   * Click OK twice to confirm the change.
+   
+   If they aren't already set, you will need to also set the ``JAVA_HOME`` and 
+   ``ANT_HOME`` environment variables to the installation directories for Java
+   and ant, respectively, as well as add the folders containing the Java and ant
+   binaries to the ``PATH`` environment variable.
+
+4. Place the BLAS and LAPACK DLL files (``blas.dll`` and ``lapack.dll``) in the
+   ``%RMG%\bin`` directory. You may need to create this directory manually.
+
+5. Compile the programs. The easiest way to do the latter is to execute the 
+   file :file:`make.bat` in the :file:`%RMG%` directory, either through the 
+   command prompt or simply by double-clicking it. 
+   
+   This batch script does not compile the Java source; for this you must run the 
+   command ``ant jar`` at the command prompt. If the Java source is compiled
+   successfully, you will see ``BUILD SUCCESSFUL`` at the end of the console
+   output.
+   
+   You should now have the files ``RMG.jar``, ``fame.exe``, ``frankie.exe``,
+   ``GATPFit.exe``, and ``dasslAUTO.exe`` in your ``%RMG%\bin`` directory.
+   If these are present, then you have successfully compiled RMG.
+   
+6. To test that RMG is working, you can try to run one of the examples, such as 
+   the "minimal" example. The easiest way to do this is to double-click the
+   ``RMG.bat`` file found in the folder containing the example.
+   
+Now that you have a working version of RMG, you may wish to install some of the
+:ref:`optional features <installation_optional>`. Once you are ready to run
+RMG, continue to learning how to create RMG input files, either 
+:ref:`by hand <conditionfile>` or via the 
+:ref:`graphical user interface <GraphicalUserInterface>`.
+
+
+
+RMG Viewer/Editor (RMGVE) 
+-------------------------
+
+The RMG Viewer/Editor (RMGVE) is an accompanying software which can be used for viewing
+the database of RMG and also the models generated by RMG.  The RMGVE is
+present along with RMG in the ``%RMG%\RMGVE`` directory and need not be
+downloaded separately. To run the RMGVE just go to the ``%RMG%\RMGVE``
+directory and execute ``RMGVE 20080101.bat`` on the command
+line.  The RMGVE directly reads the RMG database ``%RMG%\database\RMG_database`` which includes the thermo data and the kinetics data.
+Please refer to :ref:`Using the RMGVE <modification>` to see how to modify the RMG database.
+
+

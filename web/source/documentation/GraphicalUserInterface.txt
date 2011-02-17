@@ -13,18 +13,18 @@ Launching the Graphical User Interface
 ======================================
 
 First, change to the directory where you want the output files to be stored; for
-the following example, we will store the output in the directory ``rmgRun``, located
+the following example, we will store the output in the directory ``run``, located
 in the $RMG directory.
 
 For Linux users, run the following commands to launch the GUI::
 
-	cd $RMG/rmgRun
-	java -Xmx500m -classpath $RMG/software/rmg/RMG.jar GUI > output &
+	cd $RMG/run
+	java -Xmx500m -classpath $RMG/bin/RMG.jar GUI > output &
 
 For Windows users, run the following commands to launch the GUI::
 
-	cd "%rmg%"\rmgRun
-	java -Xmx500m -classpath "%rmg%"\software\rmg\RMG.jar GUI > output &
+	cd "%rmg%\run"
+	java -Xmx500m -classpath "%rmg%\bin\RMG.jar" GUI > output &
 
 .. _tabInitialCondition:
 
@@ -44,11 +44,11 @@ Reactants and Inert Gases
 For each species, a "Name," "Concentration," "Units," and "Reactivity" must be
 specified.  The three options for "Reactivity" are:
 
-- "Inert" - a species for which RMG will not build a reaction mechanism for
+- "Inert" - a species for which RMG will not build a reaction mechanism
 
-- "Reactive-User" - a species for which RMG will build a mechanism for, but only according to the list of reactions the user has provided
+- "Reactive-User" - a species for which RMG will build a mechanism, but only according to the list of reactions the user has provided
 
-- "Reactive-RMG" - a species for which RMG will build a mechanism for, according to the reaction family templates located in the :file:`RMG_database/kinetics` folder
+- "Reactive-RMG" - a species for which RMG will build a mechanism, according to the reaction family templates located in the :file:`RMG_database/kinetics` folder
  	
 If the species is selected as "Inert", no structural information for the
 molecule is necessary.  RMG only recognizes the following Inerts: N2, He, Ne, Ar.
@@ -70,7 +70,7 @@ An equally valid adjacency list for methane (with the Hydrogen atoms removed) is
 	1 C 0
 
 If the user knows the InChI of the molecule (and the InChI executable is located
-in the :file:`RMG/software/InChI` folder), the GUI will convert the InChI to an adjacency
+in the :file:`RMG/bin/` folder), the GUI will convert the InChI to an adjacency
 list upon pushing the "Add" button.  If using either InChI software version 1.01 or software version 1.02beta, the InChI for methane is::
 
 	InChI=1/CH4/h1H4
@@ -79,7 +79,7 @@ However, if using the InChI software version 1.02 for Standard InChI/InChIKey, t
 
 	InChI=1S/CH4/h1H4
 
-Please make sure the InChI you pass to the RMG GUI is consistent with the InChI version located in the ``$RMG\software\InChI`` folder.  
+Please make sure the InChI you pass to the RMG GUI is consistent with the InChI version located in the ``$RMG\bin\`` folder.  
 Upon pushing the "Add" button, if neither an adjacency list nor InChI have been provided, the GUI will ask the user for the location of the .mol file associated
 with this species.  If the InChI executable is in the proper folder, the GUI will convert the .mol file to an adjacency list.
 
@@ -102,32 +102,41 @@ with a blank space or a return carriage.
 
 .. _tabThermochemicalLibraries:
 
-The "Thermochemical Libraries" tab
-==================================
+The "Species/Reactions Libraries" tab
+=====================================
 
 .. figure:: images/tab_thermochemLibraries.png
 
-	Thermochemical Libraries tab
+	Species/Reactions Libraries tab
 
 This tab of the GUI allows the user to enter the location of the thermochemical libraries RMG will use in building the model.
 
 The default location of the :ref:`Main Database <database>` is the :file:`RMG/database/RMG_database` folder.  We recommend to use the default settings.
 
-The default location of the :ref:`Primary Thermo Library <primarythermolibrary>` is the :file:`RMG/database/RMG_database/thermo/PrimaryThermoLibrary` folder.
-We recommend to include this default primary thermo library.  To add additional primary thermo libraries:
+The default location of the :ref:`Primary Thermo Library <primarythermolibrary>` is the :file:`RMG/database/RMG_database/thermo_libraries/primaryThermoLibrary` folder.
+We recommend to include at least this default primary thermochemistry library.  To add additional primary thermo libraries:
 Supply a Name, select the directory by pressing the "Select" button, and then push "Add".
 
-To add a :ref:`Primary Reaction Library <primaryreactionlibrary>` or :ref:`Seed Mechanism <seedmechanism>`:
+The default :ref:`Primary Transport Library <primarytransportlibrary>` 
+is the transport properties reported in the GRI-Mech 3.0 mechanism.  If running a
+pressure-dependent simulation, we recommend including a library that contains small
+molecules, i.e. C0-C2 species, as the RMG group-additivity approach is more accurate for
+larger molecules.
+
+To add a :ref:`Primary Kinetics Library <primarykineticlibrary>`, 
+a :ref:`Primary Reaction Library <primaryreactionlibrary>`, or a
+:ref:`Seed Mechanism <seedmechanism>`:
 Supply a Name, select the directory by pressing the "Select" button, and then push "Add".
 
 .. note::
 
-	The order of the "Primary Thermo Libraries", "Primary Reaction Libraries", and
-	"Seed Mechanisms" in the tables are important.  The	order established in the 
+	The order of the "Primary Thermo Libraries", "Primary Transport Library",
+	"Primary Kinetics Libraries", "Primary Reaction Library", and
+	"Seed Mechanisms" in the tables is important.  The order established in the 
 	table will be conserved when writing the :file:`condition.txt` file.  
-	For any reactions that appear in multiple "Primary Reaction Libraries" (or 
+	For any reactions that appear in multiple "Primary Kinetics Libraries" (or 
 	"Seed Mechanisms"), RMG will use the information contained in the first 
-	"Primary Reaction Library" (or "Seed Mechanism") and ignore all others.  
+	"Primary Kinetics Library" (or "Seed Mechanism") and ignore all others.  
 	Similarly, for any species that appear in multiple "Primary Thermo Libraries",
 	RMG will use the information contained in the first "Primary Thermo Library"
 	and ignore all others.
@@ -166,6 +175,7 @@ The "Dynamic Simulator" tab
 This tab of the GUI allows the user to specify options for: 
 
 * :ref:`the ODE solver <dynamicsimulator>`
+* :ref:`pruning <pruning>`
 * :ref:`building a pressure dependent mechanism <pressuredependence>`
 
 The ODE Solver
@@ -177,13 +187,17 @@ or conversions for RMG to check whether the reaction mechanism needs to be enlar
 We recommend using the automatic time stepping, which is invoked by typing "AUTO"
 in the "Intermediate" time/conversion fields.
 
-The "Intermediate Conversions" field will be enabled (and the "Intermediate Time
-Steps" field will be disabled) if the "Termination Goal" was chosen as
-"Conversion" on the :ref:`Termination <tabTermination>` tab.
-
 .. note::
 
-	If the user specifies "Intermediate Time Steps," the values must have units of Seconds.
+	If the user specifies "Intermediate Time Steps," the values for the "Specific time steps" 
+	field must have units of Seconds.
+
+Pruning
+-------
+
+The user may enable the pruning options by selecting "AUTOPRUNE" in the "Intermediate
+Conversions/TimeSteps" field.  More information for each field in the "Pruning Options"
+portion of the GUI is located :ref:`here <pruning>`
 
 The pressure dependence model
 -----------------------------
@@ -196,7 +210,7 @@ The user must specify a :ref:`pressure dependence model <pressuredependence>`.  
 
 If the user specifies a pressure dependent model, the "Spectroscopic Data Estimator" 
 and "PDep Kinetics Model" fields will be enabled.  The only option for the
-"Spectroscopic Data Estimator" are:
+"Spectroscopic Data Estimator" is:
 
 * Frequency Groups
 
@@ -206,9 +220,13 @@ The options for the "PDep Kinetics Model" are:
 * PLOG - resulting in Modified Arrhenius parameters at different pressures as auxiliary information for pressure-dependent reactions
 * Rate - resulting in no auxiliary information and modified Arrhenius parameters of A 0.0 0.0, where A = k(T,P)
 
-If CHEB is selected as the "PDep Kinetics Model", the fields near the bottom of this tab
+If CHEB or PLOG is selected as the "PDep Kinetics Model", the fields near the bottom of this tab
 will become enabled.  These fields are optional.  However, if data is entered into any of
 the eight fields, all eight fields must be filled.
+
+The user may also select whether additional energy grains should be included in
+solving the Master Equation (for pressure-dependent reactions) in the case the 
+calculated k(T,P) is greater than the high-pressure limit rate coefficient.
 
 
 .. _tabAdditionalOptions:
@@ -222,6 +240,13 @@ The "Additional Options" tab
 	
 This tab allows the user to specify additional (and usually optional) information to RMG.
 
+Restart files
+-------------
+
+The user may choose to read and/or write :ref:`Restart <restart>` files.  If the
+"Read restart files" option is turned on, a :file:`Restart` folder must be present
+in the working directory.
+
 Species properties
 ------------------
 
@@ -230,8 +255,11 @@ The user may choose to override any of the following species properties, by ente
 * Maximum carbon number per species
 * Maximum oxygen number per species
 * Maximum radical number per species
+* Maximum sulfur number per species
+* Maximum silicon number per species
+* Maximum heavy atom (defined as non-hydrogen atoms) per species
 
-The user has the option to enter data for none, one, two, or all three of these fields.  If left blank,
+The user has the option to enter data for any combination of these fields.  If left blank,
 RMG will use the default values.
 
 CHEMKIN chem.inp properties
@@ -242,21 +270,35 @@ The next set of fields allow the user to specify the units of the Arrhenius para
 if they want the concise or verbose comments for each reaction in the :file:`chem.inp` file.
 Refer to :ref:`Chemkin options <chemkinunits>` for more details.
 
-Optional fields
----------------
+Quantum mechanics
+-----------------
 
-Some optional fields the user may change are:
+If the user wishes to compute species thermochemistry using something other than
+group additivity, e.g. :ref:`quantum mechanics <qm>`, select "QM" from the drop-down
+menu and the remaining fields will become active.
 
-* Equation of State
-* InChI generation
-	
+InChI generation
+----------------
+
 The user may also choose to turn off/on the generation of :ref:`InChIs <InChIgeneration>`.  If the user
-chooses to turn InChI generation on, the InChI executable (v 1.01) must be located in the :file:`RMG/software/InChI` folder.
+chooses to turn InChI generation on, the InChI executable (v 1.01) must be located in the :file:`RMG/bin` folder.
 
-The user currently has only one option for the "Equation of State":
+Equation of State
+-----------------
+
+The user currently has only one option for the "Equation of State" field:
 
 * Ideal Gas
 
+Forbidden Structures
+--------------------
+
+If the user wishes to specify any forbidden structures, e.g. any alkene (see below),
+a user-defined name and the associated adjacency list must be supplied.::
+	
+	Any_Alkene
+	1 C 0 {2,D}
+	2 C 0 {1,D}
 
 .. _tabSensitivityAnalysis:
 

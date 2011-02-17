@@ -10,9 +10,12 @@ Instructions for Use
 --------------------
 
 1. Create a text file named :file:`input.txt` in any directory that you like.  
-   The text file should begin with a block to specify a PrimaryTransportLibrary, 
+   The text file should begin with a block to specify the desired Database.  
+   The next field should be the PrimaryTransportLibrary, 
    which may be left empty if desired::
 
+	Database: RMG_database
+	
 	PrimaryTransportLibrary:
 	END
 
@@ -55,4 +58,4 @@ three entries - the dipole moment, polarizability, and rotational relaxation col
 298 K - are default values and are not estimated by RMG; these entries are included so that the
 output :file:`tran.dat` is CHEMKIN-readable.  All remaining information is comments regarding
 how RMG estimated the Lennard-Jones properties, including the estimated critical properties and
-which groups in the RMG_databases/transport_groups were matched.
+which groups in the :file:`RMG_databases/transport_groups` were matched.

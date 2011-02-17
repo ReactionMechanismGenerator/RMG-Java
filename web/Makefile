@@ -97,12 +97,12 @@ linkcheck:
 
 sitemap:
 	cd sitemap_gen; python sitemap_gen.py --config=config.xml
-	
-	
+
+
 upload:
 	@echo "Uploading to SourceForge.net..."
 	$(REMOVEAPPLEJUNK)
-	rsync -rtza --rsh=ssh build/html/* rhw27,rmg@web.sourceforge.net:htdocs/
-	rsync -rtza --rsh=ssh build/latex/*.pdf rhw27,rmg@web.sourceforge.net:htdocs/
+	rsync -rtza --rsh=ssh build/html/* rhw27,rmg@web.sourceforge.net:htdocs/3.3-rc1/
+	rsync -rtza --rsh=ssh build/latex/*.pdf rhw27,rmg@web.sourceforge.net:htdocs/3.3-rc1/
 	#scp -r build/html/* athena.dialup.mit.edu:www/RMG/
 	#scp build/latex/*.pdf athena.dialup.mit.edu:www/RMG/

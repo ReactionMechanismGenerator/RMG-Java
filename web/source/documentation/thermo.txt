@@ -8,8 +8,11 @@ Instructions for Use
 --------------------
 
 1. Create a text file named :file:`input.txt` in any directory that you like.  
-   The text file should begin with a block to specify a PrimaryThermoLibrary, which may be left empty if desired::
+   The text file should begin with a block to specify the desired Database.  
+   The next field should be the PrimaryThermoLibrary, which may be left empty if desired::
 
+	Database: RMG_database
+	
 	PrimaryThermoLibrary:
 	END
 
@@ -29,7 +32,7 @@ Instructions for Use
 
 	 $ java -classpath $RMG/bin/RMG.jar ThermoDataEstimator input.txt > RMG.log
 
-   Or if you are using Windows operating system you can instead run the batch file :file:`ThermoDataEstimator.bat`. Either double-click it or at the command propmpt type::
+   Or if you are using a Windows operating system you can instead run the batch file :file:`ThermoDataEstimator.bat`. Either double-click it or at the command propmpt type::
 
      > ThermoDataEstimator.bat
 

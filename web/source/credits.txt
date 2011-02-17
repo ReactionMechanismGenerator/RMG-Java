@@ -14,6 +14,10 @@ Current Developers: (rmg_dev@mit.edu)
 
 - Joshua W. Allen
 
+- Caleb A. Class
+
+- Connie W. Gao
+
 - Michael R. Harper
 
 - Amrit Jalan
@@ -42,7 +46,7 @@ Previous Developers:
 
 - Dr. David M. Matheu
 
-- Sumathy Raman
+- Dr. Sumathy Raman
 
 - Dr. Joanna Yu
 
@@ -62,4 +66,16 @@ RMGVE Developer:
 
 - John Robotham
 
+Special thanks for helpful error reports:
 
+- Rajesh D. Parmar
+
+- Dr. Seyed-Abdolreza Seyed-Reihani
+
+- Dr. Yu Shi
+
+- Dr. Yushi Suzuki
+
+- Aaron Vandeputte
+
+- Dr. Stijn Vranckx

@@ -41,6 +41,7 @@ The quick-start instructions in full:
 #. cd RMG-Java
 #. make MACOS=true
 #. make test
+#. echo "export RMG=`pwd`" >> ~/.bashrc
 
 For more, refer to the documentation_.
 

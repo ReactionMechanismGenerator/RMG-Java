@@ -1,0 +1,37 @@
+.. _installation:
+
+****************************
+Getting and Installing RMG
+****************************
+
+.. index:: DASSL, DASPK, DAEPACK, requirements, license
+
+.. _licenserequirements:
+
+License Requirements
+====================
+
+RMG is intended to be an open source program, available to the general public
+free of charge. The primary RMG code is distributed under the terms of the 
+`MIT/X11 License <http://www.opensource.org/licenses/mit-license.php>`_. 
+Although many of RMG's dependencies are also available under
+compatible open source licenses, there remain a few dependencies with 
+:ref:`more restrictive licences <license>`.  It is the user's
+responsibility to ensure these licenses have been obtained.
+
+Installation instructions
+==============================
+
+.. toctree::
+   :maxdepth: 2
+
+   downloading
+   windows
+   linux
+   mac
+   optional
+
+
+
+
+

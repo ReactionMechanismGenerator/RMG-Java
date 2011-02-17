@@ -15,14 +15,15 @@ Generally, there are five outputs from RMG (six if pressure-dependence is turned
 
 #. :file:`output.txt`.  This is a large file that shows the many steps RMG went
    through to build the model, including the addition of each new species,
-   concentrations and fluxes at all of the reported integration time steps, and
+   concentrations and fluxes at all of the reported integration time steps for each reaction system, and
    generally the details as RMG builds the mechanism. It is useful for debugging if
-   a problem occurs, but other output files are better if all you care about is the
+   a problem occurs, but other output files are better if all you are concerned about is the
    final model and its behavior. This file also lists the input file at the
    beginning.
 
 #. :file:`Final_Model.txt`.  As its name would imply, this file contains the details of the final model created by RMG.   
-   This file reports the concentration and mole fraction profiles of all "core" species, based on the time step information 
+   This file reports the concentration and mole fraction profiles of all "core" species in the first Reaction System
+   (combination of Pressure, Temperature, and Concentrations), based on the time step information 
    (the "TimeStep" or "Conversions" field) provided in the :file:`condition.txt` file.  This data can easily be pasted into a 
    spreadsheeting program for analysis and plotting.
    
@@ -42,9 +43,9 @@ Generally, there are five outputs from RMG (six if pressure-dependence is turned
 #. :file:`chem.inp` (located in :file:`$RMG/chemkin`).  This file contains the CHEMKIN model and associated thermodynamic data. The file
    lists the elements, species, thermodynamics data (in NASA-7 polynomial form), and reactions (without N2, Ar, He, or Ne) for the model.
    
-   If a species thermochemistry came from a Primary Reaction Library, a comment will
-   precede the NASA-7 polynomial, stating which Primary Reaction Library it came from
-   and the name of the species as identified in the Primary Reaction Library.  For example::
+   If a species thermochemistry came from a Primary Thermo Library, a comment will
+   precede the NASA-7 polynomial, stating which Primary Thermo Library it came from
+   and the name of the species as identified in the Primary Thermo Library.  For example::
    
    		!Primary Thermo Library: GRIMech3.0 (Species ID: s00009193)
 		CH4(2)                  C   1H   4          G   300.000  5000.000   995.043    1
@@ -53,7 +54,7 @@ Generally, there are five outputs from RMG (six if pressure-dependence is turned
 		-2.01605036E-08 6.08817863E-12-1.00975312E+04 1.65214016E+00                   4
 	
    This comment informs the user the species thermochemistry came from the species
-   labeled "s00009193" in the GRIMech3.0 Primary Reaction Library.
+   labeled "s00009193" in the GRIMech3.0 Primary Thermo Library.
 	
    A comment follows each reaction in the :file:`chem.inp` file.  The comments are
    usually of the following two forms::
@@ -93,7 +94,7 @@ Generally, there are five outputs from RMG (six if pressure-dependence is turned
    on, the file will also contain the InChI representation for each molecule.  This file allows
    the user to see a graphical representation of all species in the model. Typically
    the user will copy this file to an appropriate directory so that it can be read
-   by the RMGVE (See Section :ref:`view rmgve` for further details).
+   by the RMGVE (See Section :ref:`viewrmgve` for further details).
 
 #. :file:`tran.dat` (located in :file:`$RMG/chemkin`).  This file contains the estimated transport properties for all "core" 
    species in the mechanism.  The source of each species' transport data is listed at the end of the line, for example::
@@ -110,8 +111,20 @@ Generally, there are five outputs from RMG (six if pressure-dependence is turned
    
 #. :file:`tableOfRateCoeffs.txt` (located in :file:`$RMG/chemkin`).  If pressure-dependence was turned on, an additional
    file will be stored in :file:`$RMG/chemkin`.  This file contains the computed k(T,P) for all reactions present in the
-   mechanism, for each temperature and pressure requested by the user in the :file:`condition.txt` file.  These rates were
-   used to computed the reported Chebyshev or PLOG pressure-dependent rates reported in the :file:`chem.inp` file.
+   mechanism, for each temperature and pressure requested by the user in the :file:`condition.txt` file.  These rate coefficients were
+   used to compute the reported Chebyshev or PLOG pressure-dependent rate coefficients reported in the :file:`chem.inp` file.
+
+#. :file:`SpeciesProfiles.txt` (located in :file:`$RMG/ODESolver`).
+   This is a tab-separated text file (suitable for opening in a spreadsheet
+   like Excel) containing the concentration of each species (moles per cm\
+   :sup:`3`\ ) as a function of time (seconds). There is an entry for every
+   timestep of the ODE solver. This is particularly useful when running with
+   AUTO timesteps in the :ref:`dynamicsimulator`. Because the file is replaced
+   every time the ODE solver runs, at the end of running RMG it will
+   contain the results from the last reaction system if multiple reaction
+   systems have been defined (e.g. at different :ref:`initial conditions
+   <initialconditions>`\ ). 
+
 
 .. _viewrmgve:
 

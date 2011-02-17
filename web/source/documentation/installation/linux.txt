@@ -1,0 +1,105 @@
+.. _installation_linux:
+
+*******************
+Installing on Linux
+*******************
+
+This section is for users who wish to install RMG on Linux and other Unix-like
+systems. RMG should successfully run on a variety of distributions, including
+`Ubuntu <http://www.ubuntu.com/>`_.
+
+Dependencies
+------------
+
+To install RMG on a Linux-based system, you must first install the following
+dependencies. In general, the first place you should go to install these
+dependencies is your distribution's software package managing software, as
+suitable software packages are usually available via your distribution's
+online repository, if not already installed.
+
+Java SE Development Kit (JDK)
+    Version 6 of the 
+    `official implementation <http://www.oracle.com/technetwork/java/javase/downloads/index.html>`_
+    from Oracle (previously Sun Microsystems) is known to work;
+    `OpenJDK <http://openjdk.java.net/>`_ may also work but has not been tested
+    by the RMG team.
+    
+A Fortran compiler
+    We recommend `gfortran <http://gcc.gnu.org/wiki/GFortran>`_ from the free 
+    GNU Compiler Collection. `g95 <http://www.g95.org/>`_ is another free 
+    compiler that is known to work, but is less likely to be available within 
+    your distribution's package repository.
+    
+The Basic Linear Algebra Subprograms (BLAS) and Linear Algebra PACKage (LAPACK)
+    You may need to install the development version of these packages in order
+    to obtain the correct type of libraries for RMG to link to. BLAS and LAPACK
+    may already be installed, as they are used in many common applications.
+
+GNU make
+    The provided build scripts have the form of Makefiles that are executed by
+    `GNU make <http://www.gnu.org/software/make/>`_.
+
+Apache Ant
+    `ant <http://ant.apache.org/>`_ is used to generate Java executables.
+
+
+Compiling From Source
+---------------------
+
+#. If you have not already done so, download RMG using one of the methods
+   described on the :ref:`downloading RMG <installation_downloading>` page.
+
+#. Unpack the RMG source code (if necessary) and move it to the desired 
+   installation directory. Depending on where you choose to install RMG, you 
+   may need superuser privileges to do this.
+
+#. Set the ``RMG`` environment variable to the path of your desired installation
+   directory. As an example, let us say you placed the RMG package files at 
+   ``/usr/local/rmg``. If you are using a bash shell, use the command ::
+    
+   $ export RMG=/usr/local/rmg
+
+   If you are using a C shell, use the command, ::
+    
+   $ setenv RMG /usr/local/rmg
+   
+   To avoid typing this line each time, append it to your :file:`~/.bashrc` 
+   (bash shell) or :file:`~/.cshrc` (C shell) file. This will cause the ``RMG``
+   variable to be automatically set each time you initialize a terminal in the
+   future.
+
+#. From the root of the RMG installation directory, run ``make`` to compile
+   RMG. This will compile all of the Fortran dependencies and the main Java
+   executable. ::
+   
+   $ cd $RMG
+   $ make
+    
+   Without any options, ``make`` will assume that you are using ``gfortran`` as
+   your compiler. If you are using ``g95`` instead, use this version of the
+   ``make`` command instead::
+   
+   $ make F90=g95
+   
+   You can also compile the Java code independently by running the following
+   from the root RMG installation directory::
+   
+   $ ant jar
+
+   If all of the above steps were completed successfully, then you should have a
+   working version of RMG ready for use. You should see several executables and
+   one JAR file appear in the ``$RMG/bin`` folder.
+  
+#. To test that RMG is working, you can try to run one of the examples, such as 
+   the "minimal" example, via commands similar to ::
+   
+   $ cd $RMG/examples/RMG/minimal
+   $ java -jar $RMG/bin/RMG.jar condition.txt
+   
+Now that you have a working version of RMG, you may wish to install some of the
+:ref:`optional features <installation_optional>`. Once you are ready to run
+RMG, continue to learning how to create RMG input files, either 
+:ref:`by hand <conditionfile>` or via the 
+:ref:`graphical user interface <GraphicalUserInterface>`.
+
+

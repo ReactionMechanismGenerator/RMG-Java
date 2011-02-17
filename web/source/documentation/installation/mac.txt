@@ -1,0 +1,108 @@
+.. _installation_mac:
+
+*************************
+Installing on MacOS X
+*************************
+
+This section is for users who wish to install RMG on `MacOS X 10.6 (Snow Leopard) <store.apple.com/snow-leopard>`_.
+Other versions of MacOS X will be similar, but have not been tested.
+
+Dependencies
+------------
+
+To install RMG on a MacOS X system, you must first install the following
+
+MacOS XCode Developer Tools
+    These are included on the install DVD that came with your Mac, or you can
+    download them from Apple at http://developer.apple.com/technologies/tools/
+    (after free registration). This includes all the build tools you will
+    need, and versions of the BLAS and LAPACK optimized for high performance
+    vector and numerical computing.
+    
+A Fortran compiler
+    We recommend `gfortran <http://gcc.gnu.org/wiki/GFortran>`_ from the free
+    GNU Compiler Collection. One nice way to get gfortran is to install the
+    `homebrew <http://mxcl.github.com/homebrew/>`_ package manager, then then
+    type ``brew install gfortran`` in a terminal. Alternatively, get the
+    version from http://r.research.att.com/tools/ (`download universal binary
+    <http://r.research.att.com/gfortran-4.2.3.dmg>`_).
+    
+    `g95 <http://www.g95.org/>`_ is another free 
+    compiler that is known to work, if you prefer.
+
+
+Compiling From Source
+---------------------
+
+.. note:: Quick start for impatient people::
+
+   $ git clone git://github.com/GreenGroup/RMG-Java.git
+   $ cd RMG-Java
+   $ git checkout 3.3
+   $ make MACOS=true
+   $ make test
+   $ echo "export RMG=`pwd`" >> ~/.bashrc
+
+More detailed instructions:
+
+#. If you have not already done so, download the RMG source code using one
+   of the methods described on the :ref:`downloading RMG
+   <installation_downloading>` page.
+
+#. Unpack the RMG source code (if necessary) and move it to the desired 
+   installation directory, such as an :file:`RMG-Java` directory inside
+   your Home directory.
+
+#. Set the ``RMG`` environment variable to the path of your desired
+   installation directory. As an example, let us say you placed the RMG
+   package files at :file:`/Users/yourname/RMG-Java`. Open a `Terminal
+   <http://macapper.com/2007/03/08/the-terminal-an-introduction/>`_ window and
+   type the command ::
+    
+   $ export RMG=/Users/yourname/RMG-Java
+   
+   To avoid typing this line each time you open a Terminal window, append it to your :file:`~/.bashrc` 
+   file, by typing::
+   
+   $ echo "export RMG=/Users/yourname/RMG-Java" >> ~/.bashrc
+   
+   This will cause the ``RMG``
+   variable to be automatically set each time you start a Terminal window in the
+   future.
+
+#. From the root of the RMG installation directory, run ``make MACOS=true`` to compile
+   RMG. This will compile all of the Fortran dependencies and the main Java
+   executable. ::
+   
+   $ cd $RMG
+   $ make MACOS=true
+    
+   If you are using ``g95`` instead of ``gfortran``, use this version of the
+   ``make`` command instead::
+   
+   $ make F90=g95
+   
+   You can also compile the Java code independently by running the following
+   from the root RMG installation directory::
+   
+   $ ant jar
+
+   If all of the above steps were completed successfully, then you should have a
+   working version of RMG ready for use. You should see several executables and
+   one JAR file appear in the ``$RMG/bin`` folder.
+  
+#. To test that RMG is working, simply type::
+
+   $ make test
+
+   Or you can try to run one of the other examples, such as 
+   the "minimal" example, via commands similar to ::
+   
+   $ cd $RMG/examples/RMG/minimal
+   $ java -jar $RMG/bin/RMG.jar condition.txt
+   
+Now that you have a working version of RMG, you may wish to install some of the
+:ref:`optional features <installation_optional>`. Once you are ready to run
+RMG, continue to learning how to create RMG input files, either 
+:ref:`by hand <conditionfile>` or via the 
+:ref:`graphical user interface <GraphicalUserInterface>`.

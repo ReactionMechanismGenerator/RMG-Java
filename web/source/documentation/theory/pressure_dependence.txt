@@ -118,10 +118,12 @@ Collision Efficiency
 
 Currently RMG uses a constant collision efficiency of :math:`\beta = 0.38`. In the future a more rigorous formula will be introduced to more accurately capture the temperature dependence of :math:`\beta`.
 
+.. _microcanonical:
+
 Microcanonical Rate Constants
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-RMG currently does not have data for individual transition states.  Consequently, it is not possible to calculate the microcanonical rate constants using RRKM theory.  Instead, RMG uses its database of Arrhenius parameters to calculate the microcanonical rate constant using the inverse Laplace transform method.  For more details on the inverse Laplace transform method, please read Forst \cite{Forst} and further references therein.  One benefit of using the inverse Laplace transform method is that all the multiplicative constants will cancel.  Thus, as we will see below in Section \ref{density_of_states}, we do not need to know the rotational constants and symmetry numbers for a molecule.
+RMG currently does not have data for individual transition states.  Consequently, it is not possible to calculate the microcanonical rate constants using RRKM theory.  Instead, RMG uses its database of Arrhenius parameters to calculate the microcanonical rate constant using the inverse Laplace transform method.  For more details on the inverse Laplace transform method, please read Forst \cite{Forst} and further references therein.  One benefit of using the inverse Laplace transform method is that all the multiplicative constants will cancel.  Thus, as we will see below in Section :ref:`densityofstates`, we do not need to know the rotational constants and symmetry numbers for a molecule.
 
 Given an Arrhenius expression for the high-pressure limit rate constant, the microcanonical rate constant is:
 
@@ -153,7 +155,7 @@ and for :math:`n<0`, we have:
 	k \left( T \right) &=& A T^n e^{-E_a / RT } \nonumber \\
 	k \left( E \right)  &=& \left\{  \begin{array}{ll}  A_{eff} \dfrac{ \rho \left(E - E_a \right)}{\rho \left(E \right)} & E > E_a \\ 0 &  E \le E_a \end{array} \right. \nonumber \end{eqnarray}
 
-For barrierless reactions, such as radical-radical reactions and radical + O\ :sub:`2` reactions, the activation energy in the Arrhenius expression is often negative.  For these types of reactions, variational transition state theory is required to calculate the microcanonical rate constant; unfortunately, it is impossible for RMG to implement a VTST approach.  Furthermore, because there is no inverse Laplace transform for a positive exponential, The Inverse Laplace method described in the previous two sections must be altered.  At best, RMG has one of two approaches.  In the simplest approach RMG can calculate an effective A-factor from the product of the A-factor and the exponential term:  :math:`A_{eff} = A e^{\left| E_a \right|  /RT}`.  Applying the inverse Laplace transform as before, the microcanonical rate constant will be constant with respect to energy for a standard Arrhenius equation, and it will increase slightly with energy for a modified-Arrhenius equation:
+For barrierless reactions, such as radical-radical reactions and radical + O\ :sub:`2` reactions, the activation energy in the Arrhenius expression is often negative.  For these types of reactions, variational transition state theory is required to calculate the microcanonical rate constant; unfortunately, it is impossible for RMG to implement a VTST approach.  Furthermore, because there is no inverse Laplace transform for a positive exponential, the Inverse Laplace method described in the previous two sections must be altered.  At best, RMG has one of two approaches.  In the simplest approach RMG can calculate an effective A-factor from the product of the A-factor and the exponential term:  :math:`A_{eff} = A e^{\left| E_a \right|  /RT}`.  Applying the inverse Laplace transform as before, the microcanonical rate constant will be constant with respect to energy for a standard Arrhenius equation, and it will increase slightly with energy for a modified-Arrhenius equation:
 	
 .. math::
 	:nowrap:
@@ -175,6 +177,7 @@ The second method makes use of the fact that the Arrhenius activation energy is 
 	\end{eqnarray}
 
 
+.. _densityofstates:
 
 Density of States Estimation
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -199,7 +202,7 @@ To calculate the density of states, RMG assumes that each molecule may be approx
 	\rho_r \left( E \right)  &=& \frac{1}{\sigma} \left( \frac{1}{BE} \right)^{1/2} \label{K_rotor}
 	\end{eqnarray}
 
-where :math:`\sigma` is the rotational symmetry number, and :math:`B` is the rotational constant.  As noted above in the section on microcanonical rate constants, these parameters do not matter, since they will cancel in the inverse Laplace transform method. For internal rotors, the density of states is more complicated, and the calculation method is described as follows.  For simplicity, it is assumed that the potential for internal rotation may be approximated by a single cosine:
+where :math:`\sigma` is the rotational symmetry number, and :math:`B` is the rotational constant.  As noted above in the section on :ref:`microcanonical`, these parameters do not matter, since they will cancel in the inverse Laplace transform method. For internal rotors, the density of states is more complicated, and the calculation method is described as follows.  For simplicity, it is assumed that the potential for internal rotation may be approximated by a single cosine:
 
 .. math::
 	:nowrap:
@@ -251,7 +254,7 @@ where :math:`\mathbf{K}` is the complete elliptical integral of the first kind. 
 
 Finally, following the method of Astholz [Astholz1979] [Gilbert1996], we initialize the Beyer-Swinehart algorithm [Beyer1973] with the K-rotor/hindered-rotor density of states.  This algorithm convolutes this with the vibrational modes.  The result is the density of states for all the active degrees of freedom, :math:`\rho \left( E \right)`.
 
-Frequencies and  Barrier Heights
+Frequencies and Barrier Heights
 --------------------------------
 
 To summarize everything up to this point:  Our objective is to calculate pressure dependent rate constants for chemically-activated reactions.  To calculate these rate constants, we must solve the master equation.  In order to solve this system of equations, we need the micro-canonical rate constants for the association, isomerization, and dissociation channels.  These rate constants, in turn, require the density of states for the adducts.  Last but not least, the density of states requires detailed information about the rigid-rotor harmonic-oscillator frequencies as well as hindered rotors parameters.  Normally, these physical parameters would be determined from a 3D model of the molecule.
@@ -304,7 +307,7 @@ where :math:`N_{\text{remaining}} \equiv 3N-6-N_{\text{rotors}} - N_{\text{estim
 
 where :math:`\nu_i` is the vibrational frequency for the :math:`i^{th}` mode.
 
-As we saw in the density of states section, the approximation used for the heat capacity of a hindered internal rotor is more complicated.  Recall the semi-classical partition function for a hindered rotor:
+As we saw in the :ref:`densityofstates` section, the approximation used for the heat capacity of a hindered internal rotor is more complicated.  Recall the semi-classical partition function for a hindered rotor:
 
 .. math::
 	:nowrap:
@@ -345,7 +348,7 @@ Unfortunately, even if the first part of the subroutine is successful in determi
 	\sum_{j = 1}^{N} C_V^{\text{HR}}\left( T; V_{0,j}, \nu_j \right) &\to& N C_V^{\text{HR}}\left( T; V_{0}, \nu \right) \nonumber 
 	\end{eqnarray}
 
-Depending upon the exact number of unknown frequencies and rotors, the code will call 26 possible fitting subroutines.  In order to make the resulting parameters as realistic as possible, there must be physically meaningful constraints.  Thus, the RRHO frequencies are bound between 400 and 4000 cm\ :sub:`-1`.  The HR parameters are less constrained:  the low-temperature frequency is bound between 40 and 600 cm\ :sub:`-1`, and the barrier height is bound between 10 and 10000 cm\ :sub:`-1`.  The fitting procedure is a bounded, constrained least squares fit for a system of highly nonlinear equations, which is a difficult problem to solve.  To accomplish this fitting, we use the publicly available code DQED [DQED]_ [DQED90]_.
+Depending upon the exact number of unknown frequencies and rotors, the code will call 26 possible fitting subroutines.  In order to make the resulting parameters as realistic as possible, there must be physically meaningful constraints.  Thus, the RRHO frequencies are bound between 400 and 4000 cm\ :sup:`-1`.  The HR parameters are less constrained:  the low-temperature frequency is bound between 40 and 600 cm\ :sup:`-1`, and the barrier height is bound between 10 and 10000 cm\ :sup:`-1`.  The fitting procedure is a bounded, constrained least squares fit for a system of highly nonlinear equations, which is a difficult problem to solve.  To accomplish this fitting, we use the publicly available code DQED [DQED]_ [DQED90]_.
 
 
 
