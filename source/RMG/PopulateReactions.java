@@ -388,7 +388,7 @@ public class PopulateReactions {
 			        		for (int numSpecies=0; numSpecies<species.size(); ++numSpecies) {
 			        			Species currentSpec = (Species)species.get(numSpecies);
 			        			if (!allSpeciesInNetwork.contains(currentSpec)) {
-			        				listOfReactions += "!\t" + String.format(formatSpeciesName,currentSpec.getFullName()) + currentSpec.getThermoData().toString() + currentSpec.getThermoData().getComments() + "\n";
+			        				listOfReactions += "!\t" + String.format(formatSpeciesName,currentSpec.getFullName()) + currentSpec.getThermoData().toString() + currentSpec.getThermoData().getSource() + "\n";
 			        				allSpeciesInNetwork.add(currentSpec);
 			        			}
 			        		}

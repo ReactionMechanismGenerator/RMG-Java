@@ -282,6 +282,11 @@ public class ThermoGAValue {
         return name;
     }
 
+    public String getSource() {
+        if (source == null) return "Estimated by Group Additivity";
+        return source;
+    }
+
 }
 /*********************************************************************
         File Path	: RMG\RMG\jing\chem\ThermoGAValue.java
