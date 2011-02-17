@@ -11,9 +11,9 @@ reaction library templates.
 Different usages for this module:
 
 1) Determine if the RMG reaction family templates can form your reaction of interest.
-If not, this reaction would be an ideal candidate to place in a :ref:`reactionlibrary`.
+If not, this reaction would be an ideal candidate to place in a :ref:`primaryReactionlibrary`.
 
-2) Determine if RMG is properly parsing your :ref:`primarykineticlibrary` and/or :ref:`reactionlibrary`
+2) Determine if RMG is properly parsing your :ref:`primarykineticlibrary` and/or :ref:`primaryReactionlibrary`
 without having to run an entire RMG simulation.
 
 3) Obtain more detailed comments for RMG-generated kinetics.  Suppose you ran a RMG

@@ -70,6 +70,12 @@ release = '3.3.0-rc1'
 # for source files.
 exclude_trees = []
 
+# List of files and file patterns, relative to source directory, that should
+# not be checked if they are included in any toctree.
+exclude_patterns = [
+    'documentation/BuildingDocumentation.txt',
+]
+
 # The reST default role (used for this markup: `text`) to use for all documents.
 #default_role = None
 

@@ -124,14 +124,14 @@ molecules, i.e. C0-C2 species, as the RMG group-additivity approach is more accu
 larger molecules.
 
 To add a :ref:`Primary Kinetics Library <primarykineticlibrary>`, 
-a :ref:`Reaction Library <reactionlibrary>`, or a
+a :ref:`Primary Reaction Library <primaryreactionlibrary>`, or a
 :ref:`Seed Mechanism <seedmechanism>`:
 Supply a Name, select the directory by pressing the "Select" button, and then push "Add".
 
 .. note::
 
 	The order of the "Primary Thermo Libraries", "Primary Transport Library",
-	"Primary Kinetics Libraries", "Reaction Library", and
+	"Primary Kinetics Libraries", "Primary Reaction Library", and
 	"Seed Mechanisms" in the tables is important.  The order established in the 
 	table will be conserved when writing the :file:`condition.txt` file.  
 	For any reactions that appear in multiple "Primary Kinetics Libraries" (or 

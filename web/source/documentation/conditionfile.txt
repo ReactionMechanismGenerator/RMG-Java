@@ -50,7 +50,7 @@ order:
 
 #. The name and location of all :ref:`Primary Kinetic Libraries <primarykineticlibrary>`
 
-#. The name and location of all :ref:`Reaction Libraries <reactionlibrary>`
+#. The name and location of all :ref:`Primary Reaction Libraries <primaryreactionlibrary>`
 
 #. The name and location of all :ref:`Seed Mechanisms <seedmechanism>`
 
@@ -861,9 +861,9 @@ the one that gets used.
 	In previous versions this feature was called "PrimaryReactionLibrary" it has been
 	renamed to "PrimaryKineticLibrary" to better represent its functionality.
 
-.. _reactionlibrary:
+.. _primaryreactionlibrary:
 
-Reaction Library
+Primary Reaction Library
 ------------------------
 
 Field is **Required** but can be empty.

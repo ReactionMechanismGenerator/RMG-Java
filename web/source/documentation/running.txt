@@ -11,7 +11,7 @@ Running RMG from the Command Line in Linux
 ==========================================
 
 This section assumes that RMG is already installed according to the directions
-in Section :ref:`Linux installation <linuxinstallation>`. Additionally, it is assumed that you have
+in Section :ref:`Linux installation <installation_linux>`. Additionally, it is assumed that you have
 created a directory (either in your home directory or elsewhere) in which the
 initialization file :file:`condition.txt` has been placed. In the example, we
 assume that we have created a directory :file:`/hexane_pyro`, which contains the

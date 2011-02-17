@@ -76,6 +76,6 @@ Special thanks for helpful error reports:
 
 - Dr. Yushi Suzuki
 
-- Aäron Vandeputte
+- Aaron Vandeputte
 
 - Dr. Stijn Vranckx
