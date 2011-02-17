@@ -154,7 +154,7 @@ public class GUI extends JPanel implements ActionListener {
         save.addActionListener(this);
     	save.setActionCommand("saveCondition");
     	save.setToolTipText("Press to save file");
-        comments.add(saveAndRun = new JButton("Save and Run"));
+        comments.add(saveAndRun = new JButton("Save and Run condition.txt"));
         saveAndRun.addActionListener(this);
     	saveAndRun.setActionCommand("runCondition");
     	saveAndRun.setToolTipText("Press to save and run file");
