@@ -105,8 +105,8 @@ clean:
 test:
 	mkdir -p $(RUNDIR)
 	cp examples/RMG/1,3-hexadiene/condition.txt $(RUNDIR)
-	export RMG=$(CURDIR); cd $(RUNDIR); java -jar $(BINDIR)/RMG.jar condition.txt  2>&1 | tee RMG.log
-	echo "Results saved to $(RUNDIR)/RMG.log"
+	export RMG=$(CURDIR); cd $(RUNDIR); java -jar $(BINDIR)/RMG.jar condition.txt
+	echo "Results saved to $(RUNDIR)"
 
 help:
 	@echo ""
