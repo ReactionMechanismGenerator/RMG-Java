@@ -266,13 +266,14 @@ public class Logger {
             info(String.format("#    http://github.com/GreenGroup/RMG-Java/compare/%-6s...master   #", versionHash.substring(0,6)));
         }
         info("#                                                                    #");
-        info("#  Copyright (c) 2002-2010                                           #");
+        info("#  Copyright (c) 2002-2011                                           #");
         info("#  Prof. William H. Green and the RMG Team:                          #");
         info("#    Joshua W. Allen, Dr. Robert W. Ashcraft, Dr. Gregory J. Beran,  #");
-        info("#    Dr. C. Franklin Goldsmith, Michael R. Harper, Amrit Jalan,      #");
-        info("#    Gregory R. Magoon, Dr. David M. Matheu, Shamel S. Merchant,     #");
-        info("#    Jeffrey D. Mo, Sarah Petway, Sumathy Raman, Dr. Sandeep Sharma, #");
-        info("#    Dr. Kevin M. Van Geem, Dr. Jing Song, Dr. John Wen,             #");
+        info("#    Caleb A. Class, Connie W. Gao, Dr. C. Franklin Goldsmith,       #");
+        info("#    Michael R. Harper, Amrit Jalan, Gregory R. Magoon,              #");
+        info("#    Dr. David M. Matheu, Shamel S. Merchant, Jeffrey D. Mo,         #");
+        info("#    Sarah Petway, Sumathy Raman, Dr. Sandeep Sharma,                #");
+        info("#    Prof. Kevin M. Van Geem, Dr. Jing Song, Dr. John Wen,           #");
         info("#    Dr. Richard H. West, Andrew Wong, Dr. Hsi-Wu Wong,              #");
         info("#    Dr. Paul E. Yelvington, Dr. Joanna Yu                           #");
         info("#                                                                    #");
