@@ -1,51 +1,72 @@
 .. _installation_downloading:
 
-*************************
+***************
 Downloading RMG
-*************************
+***************
 
 Windows Installer Package
-==========================
+=========================
 
-Download RMG 3.2.1 (or earlier versions) from the
-`Sourceforge download page <http://sourceforge.net/project/showfiles.php?group_id=191843&package_id=225575>`_.
+An installer is available for Windows users which provides RMG binaries and
+source code and automatically performs other installation tasks. This is the
+easiest method for RMG installation on Windows. Get the Windows installer
+at
 
-For RMG 3.2.1, several different packages are available:
+.. admonition:: Download
 
- `Installer for Windows <http://sourceforge.net/projects/rmg/files/rmg/RMG%203.2.1/rmg-3.2.1-win32-setup.exe/download>`_ (32-bit only)
+    `RMG 3.3 Installer for Windows <http://sourceforge.net/projects/rmg/files/rmg/RMG%203.3/rmg-3.3-win32-setup.exe/download>`_ (32-bit only)
 
-For help installing them, please refer to the :ref:`installation` section of the documentation.
+The installer provides a 32-bit version of RMG. You must compile RMG yourself 
+to obtain 64-bit versions of the binaries.
 
+For help with the installation on Windows, please refer to the 
+:ref:`installation_windows` section.
 
 Source Code
-==========================
+===========
 
-
-For help compiling, please refer to the :ref:`installation` section of the documentation.
-
+There are three ways of obtaining the RMG source package. For all cases,
+installation instructions are available for 
+:ref:`Windows <installation_windows>`, :ref:`Linux <installation_linux>`,
+and :ref:`Mac OS <installation_mac>`.
 
 Stable Release
----------------
+--------------
 
-* `Source package <http://sourceforge.net/projects/rmg/files/rmg/RMG%203.2.1/rmg-3.2.1-source.tar.gz/download>`_ compatible across all platforms
+A tarball of the most recent stable release can be downloaded here:
 
+.. admonition:: Download
+
+    `RMG 3.3 Source Package <http://sourceforge.net/projects/rmg/files/rmg/RMG%203.3/rmg-3.3-source.tar.gz/download>`_ (all platforms)
+   
+The above package is suitable for all platforms.
 
 Latest Snapshot
 ---------------
 
-To get the latest development version of the source code (the head of the official master branch) 
-you can download a snapshot from 
-http://github.com/GreenGroup/RMG-Java/archives/master
+The RMG development repository is publicly available on GitHub at
+
+   http://github.com/GreenGroup/RMG-Java/
+
+To get the latest development version of the source code -- in git parlance,
+the head of the official master branch -- you can download a snapshot from
+
+   http://github.com/GreenGroup/RMG-Java/archives/master
 
 Version Control
 ---------------
 
-or use either git or SVN for read-only access:
+If you'd like to stay up-to-date with the latest development version as it
+evolves, you can use either git or subversion to checkout the latest version
+from our official repository. For git (recommended), use the command ::
 
-* git clone git://github.com/GreenGroup/RMG-Java.git
-* svn checkout \http://svn.github.com/greengroup/RMG-Java.git
+$ git clone git://github.com/GreenGroup/RMG-Java.git
 
+For subversion, use the command ::
 
-If you might want to make changes, a better idea is to create your own account on github.com, 
-fork the official repository (http://github.com/greengroup/RMG-Java), and clone that. 
-There's help at http://help.github.com/
+$ svn checkout http://svn.github.com/greengroup/RMG-Java.git
+
+This gives you read-only access. If you might want to make changes, a better 
+idea is to create your own account on `GitHub <http://github.com/>`_, fork 
+the official repository, and clone from your fork. More information on how to
+do this is available at http://help.github.com/.
