@@ -111,7 +111,7 @@ public class GUIWindow extends JFrame {
             }
 			else if (event.getActionCommand().equals("About RMG")) {
 				JOptionPane.showMessageDialog(theApp, 
-						"RMG v3.2\n\nCopyright (c) 2002-2010.\n" +
+						"RMG v3.3\n\nCopyright (c) 2002-2011.\n" +
 						"Prof. William H. Green and the RMG Team\n" +
 						"http://github.com/GreenGroup/RMG-Java\n"+
 						"rmg_dev@mit.edu",
