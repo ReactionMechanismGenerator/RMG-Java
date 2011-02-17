@@ -79,8 +79,10 @@ public class GUIWindow extends JFrame {
 
 		// Construct the Help drop-down menu
 		JMenuItem aboutItem = helpMenu.add("About RMG");
+                JMenuItem onlineManual = helpMenu.add("Online Manual");
 		aboutItem.addActionListener(new MenuListener("Help"));
 		aboutItem.setAccelerator(KeyStroke.getKeyStroke('H',CTRL_DOWN_MASK));
+                onlineManual.addActionListener(new MenuListener("Manual"));
 		
 		menuBar.add(fileMenu);			// Add the File menu
         menuBar.add(runMenu);           // Add the Run menu
@@ -117,6 +119,11 @@ public class GUIWindow extends JFrame {
 						"rmg_dev@mit.edu",
 						"About RMG", JOptionPane.INFORMATION_MESSAGE);
 			}
+                        else if (event.getActionCommand().equals("Online Manual")) {
+                            JOptionPane.showMessageDialog(theApp,
+						"http://rmg.sourceforge.net/documentation/index.html",
+						"Link to the online RMG documentation", JOptionPane.INFORMATION_MESSAGE);
+                        }
 		}
 		
 		String selection;
