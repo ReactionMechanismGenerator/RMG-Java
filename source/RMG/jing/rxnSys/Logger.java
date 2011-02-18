@@ -146,6 +146,9 @@ public class Logger {
         if (consoleLevel < level && fileLevel < level)
             return;
 
+        // Replace all "\n" with the proper platform end-of-line character
+        message = message.replaceAll("\n", newLine);
+
         // Prefix the message if an error or warning
         if (level == CRITICAL)
             message = "CRITICAL: " + message;
