@@ -12,7 +12,7 @@ PAPEROPT_a4     = -D latex_paper_size=a4
 PAPEROPT_letter = -D latex_paper_size=letter
 ALLSPHINXOPTS   = -d $(BUILDDIR)/doctrees $(PAPEROPT_$(PAPER)) $(SPHINXOPTS) source
 
-.PHONY: help clean html dirhtml singlehtml pickle json htmlhelp qthelp devhelp epub latex latexpdf text man changes linkcheck doctest
+.PHONY: help clean html dirhtml singlehtml pickle json htmlhelp qthelp devhelp epub latex latexpdf text man changes linkcheck doctest sitemap upload all
 
 help:
 	@echo "Please use \`make <target>' where <target> is one of"
@@ -32,7 +32,9 @@ help:
 	@echo "  changes    to make an overview of all changed/added/deprecated items"
 	@echo "  linkcheck  to check all external links for integrity"
 	@echo "  doctest    to run all doctests embedded in the documentation (if enabled)"
-
+	@echo "  upload    to upload to Sourceforge"
+	@echo "  sitemap   update the google sitemap"
+	@echo "  all       clean, html, latexpdf, sitemap, upload"
 clean:
 	-rm -rf $(BUILDDIR)/*
 
@@ -128,3 +130,21 @@ doctest:
 	$(SPHINXBUILD) -b doctest $(ALLSPHINXOPTS) $(BUILDDIR)/doctest
 	@echo "Testing of doctests in the sources finished, look at the " \
 	      "results in $(BUILDDIR)/doctest/output.txt."
+
+#macro
+REMOVEAPPLEJUNK = find source/ -iname "._*" -exec rm {} \;
+
+sitemap:
+	cd sitemap_gen; python sitemap_gen.py --config=config.xml
+
+upload:
+	@echo "Uploading to SourceForge.net..."
+	$(REMOVEAPPLEJUNK)
+	rsync -rtza --rsh=ssh build/html/* rhw27,rmg@web.sourceforge.net:htdocs/
+	rsync -rtza --rsh=ssh build/latex/*.pdf rhw27,rmg@web.sourceforge.net:htdocs/
+	#scp -r build/html/* athena.dialup.mit.edu:www/RMG/
+	#scp build/latex/*.pdf athena.dialup.mit.edu:www/RMG/
+
+all: clean html latexpdf sitemap upload
+
+
