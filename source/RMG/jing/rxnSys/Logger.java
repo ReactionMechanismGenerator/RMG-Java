@@ -272,7 +272,7 @@ public class Logger {
         info("#  Copyright (c) 2002-2011                                           #");
         info("#  Prof. William H. Green and the RMG Team:                          #");
         info("#    Joshua W. Allen, Dr. Robert W. Ashcraft, Dr. Gregory J. Beran,  #");
-        info("#    Caleb A. Class, Connie W. Gao, Dr. C. Franklin Goldsmith,       #");
+        info("#    Caleb A. Class, Connie Gao, Dr. C. Franklin Goldsmith,          #");
         info("#    Michael R. Harper, Amrit Jalan, Gregory R. Magoon,              #");
         info("#    Dr. David M. Matheu, Shamel S. Merchant, Jeffrey D. Mo,         #");
         info("#    Sarah Petway, Sumathy Raman, Dr. Sandeep Sharma,                #");
