@@ -25,7 +25,7 @@ condition file :file:`hexane_pyro.txt`.
 #. Run the following Java command to launch the program 
    (all one line)::
 
-    $ java -Xmx500m -classpath $RMG/bin/RMG.jar RMG hexane_pyro.txt > output.log &
+    $ java -Xmx500m -classpath $RMG/bin/RMG.jar RMG hexane_pyro.txt
 
 When RMG is started, it creates 11 subdirectories in the directory containing
 the condition file: :file:`2Dmolfiles`, :file:`3Dmolfiles`, :file:`chemkin`,
@@ -56,11 +56,9 @@ To run RMG in Windows: Open a DOS-prompt, change the current working directory t
 	
 .. note::
 
-	The name of the input file does not have to be :file:`condition.txt`
+	The name of the input file does not have to be :file:`condition.txt`.
 
-To save the output and error messages to a log file append ``> RMG.log 2>&1 &`` e.g.::
-
-	java -Xmx500m -jar "%rmg%"\bin\RMG.jar condition.txt > RMG.log 2>&1 &
+A log file containing the same information printed to the console, plus additional details, is automatically saved for you to ``RMG.log`` in the same directory as the condition file. Redirection of stdout to a file is no longer required.
 	
 Running RMG using Batch Scripts in Windows
 ==========================================
