@@ -22,8 +22,9 @@ Generally, there are five outputs from RMG (six if pressure-dependence is turned
    beginning.
 
 #. :file:`Final_Model.txt`.  As its name would imply, this file contains the details of the final model created by RMG.   
-   This file reports the concentration and mole fraction profiles of all "core" species in the first Reaction System
-   (combination of Pressure, Temperature, and Concentrations), based on the time step information 
+   For each Reaction System (combination of Temperature, Pressure, and Concentration) specified by the user, the following information is available:
+   
+   The concentration and mole fraction profiles of all "core" species, based on the time step information 
    (the "TimeStep" or "Conversions" field) provided in the :file:`condition.txt` file.  This data can easily be pasted into a 
    spreadsheeting program for analysis and plotting.
    

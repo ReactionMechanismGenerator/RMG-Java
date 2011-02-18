@@ -148,11 +148,13 @@ public class RMG {
 
             }
             file.write(rs.returnReactionFlux() + "\n");
-            long end = System.currentTimeMillis();
-            double min = (end - tAtInitialization) / 1.0E3 / 60.0;
-            file.write(String.format("Running time: %.3f min", + min));
 
         }
+        // Write how long the simulation took, and then close the file
+        long end = System.currentTimeMillis();
+        double min = (end - tAtInitialization) / 1.0E3 / 60.0;
+        file.write(String.format("Running time: %.3f min", + min));
+        file.close();
     }
 
     public static void globalInitializeSystemProperties() {
