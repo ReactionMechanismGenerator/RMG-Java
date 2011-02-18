@@ -123,7 +123,7 @@ Currently RMG uses a constant collision efficiency of :math:`\beta = 0.38`. In t
 Microcanonical Rate Constants
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-RMG currently does not have data for individual transition states.  Consequently, it is not possible to calculate the microcanonical rate constants using RRKM theory.  Instead, RMG uses its database of Arrhenius parameters to calculate the microcanonical rate constant using the inverse Laplace transform method.  For more details on the inverse Laplace transform method, please read Forst \cite{Forst} and further references therein.  One benefit of using the inverse Laplace transform method is that all the multiplicative constants will cancel.  Thus, as we will see below in Section :ref:`densityofstates`, we do not need to know the rotational constants and symmetry numbers for a molecule.
+RMG currently does not have data for individual transition states.  Consequently, it is not possible to calculate the microcanonical rate constants using RRKM theory.  Instead, RMG uses its database of Arrhenius parameters to calculate the microcanonical rate constant using the inverse Laplace transform method.  For more details on the inverse Laplace transform method, please read Forst [Forst2003]_ and further references therein.  One benefit of using the inverse Laplace transform method is that all the multiplicative constants will cancel.  Thus, as we will see below in Section :ref:`densityofstates`, we do not need to know the rotational constants and symmetry numbers for a molecule.
 
 Given an Arrhenius expression for the high-pressure limit rate constant, the microcanonical rate constant is:
 
