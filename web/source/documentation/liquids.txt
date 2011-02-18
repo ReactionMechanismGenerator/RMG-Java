@@ -28,6 +28,10 @@ Solvation thermochemistry
 --------------------------
 
 The next correction for liquids is solvation effects on the thermochemistry. 
+The method used is described briefly in 
+"Building Models of Liquid Phase Kinetics and Separation: Hydrocarbon Autoxidation", Richard H. West, Amrit Jalan, and William H. Green,
+`AIChE Annual Meeting <http://aiche.confex.com/aiche/2010/webprogram/Paper200216.html>`_, 2010 (`download pdf <http://web.mit.edu/rwest/www/Richard%20West%20AIChE%20Extended%20Abstract%20153g.pdf>`_)
+
 The statement ``Solvation: on <solvent>`` turns this on, and specifies the solvent parameters to use.
 Parameters are provided for the following solvents: 
 acetonitrile
@@ -67,6 +71,8 @@ The viscosity of the solvent is specified in units of Pa.s using the command
 To build accurate models of liquid phase chemical reactions you will also want to modify your kinetics libraries.
 
 
-This is a minimal example condition file:
+Example liquid-phase condition file
+-------------------------------------
+This is an example of a small condition file for a liquid-phase system:
 
 .. literalinclude:: ../../../examples/RMG/liquidphase/condition.txt

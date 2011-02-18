@@ -44,7 +44,7 @@ thermodynamic properties of cyclic species using the typical Benson
 groups, and would only apply an appropriate ad hoc ring correction
 if it is in Ring_Library.txt. The example should take roughly 45
 minutes to run and requires several additional dependencies, as
-described in the documentation.
+described in the :ref:`installation documentation <installing_qm>`.
 
 .. literalinclude:: ../../../examples/RMG/cyclopropane_QM/condition.txt
 
