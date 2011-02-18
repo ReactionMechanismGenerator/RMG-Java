@@ -379,6 +379,9 @@ each reactant, the first line should include the reactant's
 name (e.g. ``C2O2``) and it's concentration(s) preceded by units (e.g. ``(mol/cm3) 4.09e-3``).
 Acceptable units for concentration are "mol/cm3", "mol/m3", and "mol/l".  Please note,
 RMG will **not** accept a species name that begins with a number.
+Be warned that names longer than about 6 characters will be replaced with "SPC(#)"
+in the Chemkin file due to the maximum length of a reaction string in Chemkin,
+so keep your names short!
 
 Like with the initial conditions, it is possible to set multiple starting
 concentrations, separated by spaces. RMG will create reaction systems for each
@@ -403,7 +406,6 @@ adjacency list in which the hydrogen atoms are omitted (shown below)::
 
  END
 
-
 Please note that the keyword ``END`` must be placed at the end of the
 InitialStatus section. 
 
@@ -415,6 +417,23 @@ from versions of the RMG database prior to RMG 3.2. For more detail, please see 
 :ref:`representing oxygen <oxygen>`.
 
 .. |O2| replace:: O\ :sub:`2`\ 
+
+
+Maintaining a species at constant concentration
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Adding the text ``ConstantConcentration`` after a species's initial
+concentration(s) in the condition file ensures that the concentration of the
+species remains unchanged during the simulation. This can be used for
+generating kinetic models in liquid phase experiments where gases (e.g.
+oxygen) are bubbled through the substrate at constant pressure, so that any
+consumption due to reactions is replenished externally::
+
+ O2 (mol/cm3) 4.09e-3  ConstantConcentration
+ 1  O 1 {2,S}
+ 2  O 1 {1,S}
+ 
+.. we should also document the 'unreactive' flag, but I'm not sure what it does.
 
 
 .. this is commented out because it breaks the latex
