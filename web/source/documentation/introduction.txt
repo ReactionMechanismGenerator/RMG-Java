@@ -26,6 +26,30 @@ of Technology <http://web.mit.edu/>`_. Currently there are several members of th
 Changes
 -------
 
+RMG 3.3 includes a few new features and many bugfixes. Changes since 3.2.1 include the following:
+
+.. note:: There have been several significant changes to the condition file syntax in RMG 3.3. Condition files created for earlier versions of RMG will not work with RMG 3.3. Please refer to :ref:`conditionfile` for more information on the new syntax.
+
+- Support for simulating :ref:`liquid-phase systems <liquids>`, including solvation thermochemistry and diffusion-limited kinetics
+
+- Correct negative activation energies predicted by kinetics estimation rules
+
+- An option to specify multiple initial compositions (in addition to multiple temperatures and pressures) has been added
+
+- Intermediate concentrations are :ref:`written to file <rmgoutput>` during AUTO runs
+
+- The model enlargement algorithm with pressure-dependence now uses species leak fluxes instead of network leak fluxes
+
+- Pruning with pressure-dependence is now working
+
+- Experimental support for :ref:`MM4 calculations for thermochemistry estimation <qm>` (requires separate access to MM4 software)
+
+- Cleaner, easier-to-read log information automatically and concurrently printed to the console and saved to file
+
+- Several refinements and bugfixes to the pressure dependence functionality
+
+- A number of various database updates and fixes
+
 RMG 3.2.1 is a minor bug-fix release. Changes since 3.2 include the following:
 
 - Better handling of pressure-dependent reaction network expansion when multiple reaction systems are used by restricting to one expansion per iteration. This could lead to "PDepException: Tried to determine nonincluded isomer with maximum leak flux, but there are no nonincluded reactions, so no isomer can be identified" errors.
