@@ -15,10 +15,19 @@ public class CheckForwardAndReverseRateCoefficients {
 	static double[][] coeffs = new double[400][14];
 	static int numR = 0;
 	static int numP = 0;
+        static StringBuilder reverseRateCoefficients = new StringBuilder();
 	
 	public static void main(String args[]) {
+            // Specify (immediately) to the user what the class assumes
+            System.out.println("The CheckForwardAndReverseRateCoefficients class makes the following assumptions:\n" +
+                    "\t1) The thermodynamics data for each species (NASA-7 polynomials) is contained in the input file\n" +
+                    "\t2) There are <= 400 species in the entire mechanism\n" +
+                    "\t3) Pressure-dependent reactions, with Chebyshev polynomial (CHEB) or pressure-dependent Arrhenius parameters (PLOG)\n" +
+                    "\t\thave a 1.0\t0.0\t0.0 string in the reaction string line (i.e. A+B(+m)=C(+m) 1.0\t0.0\t0.0\n" +
+                    "\t4) Reverse rate coefficients are calculated for all high-P limit reactions and\n" +
+                    "\t\tfor pressure-dependent reactions with CHEB or PLOG pressure-dependent kinetics only\n");
+
 		// Temperature is assumed to have units in Kelvin
-                StringBuilder reverseRateCoefficients = new StringBuilder();
                 String temperatureString = "";
 		double[] T = new double [10];
 		for (int i=0; i<10; i++) {
@@ -111,73 +120,101 @@ public class CheckForwardAndReverseRateCoefficients {
 					double[] logk = new double[T.length];
 					boolean chebyshevRate = false;
 					boolean rmgRate = false;
+                                        boolean plogRate = false;
 					// Find all Chebyshev rate coefficients
 					if (line.contains("1.0E0 0.0 0.0")) {
-						chebyshevRate = true;
 						st = new StringTokenizer(line);
 						rxnString = st.nextToken();
 						shortRxnString = rxnString;
 						String[] reactsANDprods = rxnString.split("=");
-						// Determine the reactants
-						reactsIndex = determineSpeciesIndex(reactsANDprods[0].substring(0,reactsANDprods[0].length()-4));
-						numR = determineNumberOfSpecies(reactsANDprods[0].substring(0,reactsANDprods[0].length()-4));
-						// Determine the products
-						prodsIndex = determineSpeciesIndex(reactsANDprods[1].substring(0,reactsANDprods[1].length()-4));
-						numP = determineNumberOfSpecies(reactsANDprods[1].substring(0,reactsANDprods[1].length()-4));
-						line = ChemParser.readUncommentLine(br_thermodat);	// TCHEB & PCHEB info
-						while (line.startsWith("!")) {
-							line = ChemParser.readUncommentLine(br_thermodat);
-						}
-						StringTokenizer st_cheb = new StringTokenizer(line,"/");
-						String currentToken = st_cheb.nextToken(); // TCHEB
-						StringTokenizer st_values = new StringTokenizer(st_cheb.nextToken());
-						double Tmin = Double.parseDouble(st_values.nextToken());
-						double Tmax = Double.parseDouble(st_values.nextToken());
-						double[] Ttilda = computeTtilda(T,Tmin,Tmax);
-						currentToken = st_cheb.nextToken(); // PCHEB
-						st_values = new StringTokenizer(st_cheb.nextToken());
-						double Pmin = Double.parseDouble(st_values.nextToken());
-						double Pmax = Double.parseDouble(st_values.nextToken());
-						double[] Ptilda = computePtilda(Pressure,Pmin,Pmax);
-						line = ChemParser.readUncommentLine(br_thermodat);	// # of basis set info
-						st_cheb = new StringTokenizer(line,"/");
-						currentToken = st_cheb.nextToken();
-						st_values = new StringTokenizer(st_cheb.nextToken());
-						int nT = Integer.parseInt(st_values.nextToken());
-						int nP = Integer.parseInt(st_values.nextToken());
-						// Extract the coefficients
-						double[] coeffs = new double[nT*nP];
-						int coeffCounter = 0;
-						while (coeffCounter < nT*nP) {
-							line = ChemParser.readUncommentLine(br_thermodat);
-							String[] splitSlashes = line.split("/");
-							StringTokenizer st_coeffs = new StringTokenizer(splitSlashes[1]);
-							while (st_coeffs.hasMoreTokens()) {
-								coeffs[coeffCounter] = Double.parseDouble(st_coeffs.nextToken().trim());
-								++coeffCounter;
-							}
-						}
-						double[][] phiT = computephi(Ttilda,nT);
-						double[][] phiP = computephi(Ptilda,nP);
-						// Compute k(T,P)
-						for (int k=0; k<T.length; k++) {
-							for (int i=0; i<nT; i++) {
-								for (int j=0; j<nP; j++) {
-									logk[k] += coeffs[i*nP+j] * phiT[i][k] * phiP[j][0];
-								}
-							}
-						}
-						String output = "";
-						for (int k=0; k<T.length; k++) {
-							output += logk[k] + "\t";
-						}
-//						System.out.println(output + rxnString);
-						for (int k=0; k<T.length; k++) {
-							if (logk[k] > 20 && numR==1) 
-								System.out.format("logkf = %4.2f at T = %4.0fK for %s\n", logk[k], T[k], fullRxnString);
-							else if (logk[k] > 20) 
-								System.out.format("logkf = %4.2f at T = %4.0fK for %s\n", logk[k], T[k], fullRxnString);
-						}
+                                                if (shortRxnString.contains("(+m)")) {
+                                                    chebyshevRate = true;
+                                                    // Determine the reactants
+                                                    reactsIndex = determineSpeciesIndex(reactsANDprods[0].substring(0,reactsANDprods[0].length()-4));
+                                                    numR = determineNumberOfSpecies(reactsANDprods[0].substring(0,reactsANDprods[0].length()-4));
+                                                    // Determine the products
+                                                    prodsIndex = determineSpeciesIndex(reactsANDprods[1].substring(0,reactsANDprods[1].length()-4));
+                                                    numP = determineNumberOfSpecies(reactsANDprods[1].substring(0,reactsANDprods[1].length()-4));
+                                                    line = ChemParser.readUncommentLine(br_thermodat);	// TCHEB & PCHEB info
+                                                    while (line.startsWith("!")) {
+                                                            line = ChemParser.readUncommentLine(br_thermodat);
+                                                    }
+                                                    StringTokenizer st_cheb = new StringTokenizer(line,"/");
+                                                    String currentToken = st_cheb.nextToken(); // TCHEB
+                                                    StringTokenizer st_values = new StringTokenizer(st_cheb.nextToken());
+                                                    double Tmin = Double.parseDouble(st_values.nextToken());
+                                                    double Tmax = Double.parseDouble(st_values.nextToken());
+                                                    double[] Ttilda = computeTtilda(T,Tmin,Tmax);
+                                                    currentToken = st_cheb.nextToken(); // PCHEB
+                                                    st_values = new StringTokenizer(st_cheb.nextToken());
+                                                    double Pmin = Double.parseDouble(st_values.nextToken());
+                                                    double Pmax = Double.parseDouble(st_values.nextToken());
+                                                    double[] Ptilda = computePtilda(Pressure,Pmin,Pmax);
+                                                    line = ChemParser.readUncommentLine(br_thermodat);	// # of basis set info
+                                                    st_cheb = new StringTokenizer(line,"/");
+                                                    currentToken = st_cheb.nextToken();
+                                                    st_values = new StringTokenizer(st_cheb.nextToken());
+                                                    int nT = Integer.parseInt(st_values.nextToken());
+                                                    int nP = Integer.parseInt(st_values.nextToken());
+                                                    // Extract the coefficients
+                                                    double[] coeffs = new double[nT*nP];
+                                                    int coeffCounter = 0;
+                                                    while (coeffCounter < nT*nP) {
+                                                            line = ChemParser.readUncommentLine(br_thermodat);
+                                                            String[] splitSlashes = line.split("/");
+                                                            StringTokenizer st_coeffs = new StringTokenizer(splitSlashes[1]);
+                                                            while (st_coeffs.hasMoreTokens()) {
+                                                                    coeffs[coeffCounter] = Double.parseDouble(st_coeffs.nextToken().trim());
+                                                                    ++coeffCounter;
+                                                            }
+                                                    }
+                                                    double[][] phiT = computephi(Ttilda,nT);
+                                                    double[][] phiP = computephi(Ptilda,nP);
+                                                    // Compute k(T,P)
+                                                    for (int k=0; k<T.length; k++) {
+                                                            for (int i=0; i<nT; i++) {
+                                                                    for (int j=0; j<nP; j++) {
+                                                                            logk[k] += coeffs[i*nP+j] * phiT[i][k] * phiP[j][0];
+                                                                    }
+                                                            }
+                                                    }
+                                                    String output = "";
+                                                    for (int k=0; k<T.length; k++) {
+                                                            output += logk[k] + "\t";
+                                                    }
+    //						System.out.println(output + rxnString);
+                                                    for (int k=0; k<T.length; k++) {
+                                                            if (logk[k] > 15)
+                                                                    System.out.format("logkf = %4.2f at T = %4.0fK for %s\n", logk[k], T[k], fullRxnString);
+                                                    }
+                                                } else {
+                                                    plogRate = true;                                                                                                        // Determine the reactants
+                                                    reactsIndex = determineSpeciesIndex(reactsANDprods[0]);
+                                                    numR = determineNumberOfSpecies(reactsANDprods[0]);
+                                                    // Determine the products
+                                                    prodsIndex = determineSpeciesIndex(reactsANDprods[1]);
+                                                    numP = determineNumberOfSpecies(reactsANDprods[1]);
+                                                    line = ChemParser.readUncommentLine(br_thermodat);	// Begin reading PLOG line
+                                                    while (line != null && line.startsWith("PLOG")) {
+                                                        StringTokenizer st_plog = new StringTokenizer(line,"/");
+                                                        String temporaryString = st_plog.nextToken();
+                                                        StringTokenizer st_plog_info = new StringTokenizer(st_plog.nextToken());
+                                                        String plog_pressure = st_plog_info.nextToken();
+                                                        double plog_A = Double.parseDouble(st_plog_info.nextToken());
+                                                        double plog_n = Double.parseDouble(st_plog_info.nextToken());
+                                                        double plog_E = Double.parseDouble(st_plog_info.nextToken());
+
+                                                        String output = "";
+                                                        for (int k=0; k<T.length; k++) {
+                                                            logk[k] = Math.log10(plog_A * Math.pow(T[k],plog_n) * Math.exp(-plog_E/R/T[k]));
+                                                            if (logk[k] > 15)
+								System.out.format("logkf = %4.2f at T = %4.0fK for %s\n", logk[k], T[k], (fullRxnString+"\t"+plog_pressure));
+                                                        }
+                                                        calculate_G_RT(T,reactsIndex,prodsIndex,reversible,logk,(fullRxnString+"\t"+plog_pressure),(shortRxnString+"\t"+plog_pressure));
+
+                                                        line = ChemParser.readUncommentLine(br_thermodat);
+                                                    }
+                                                }
 					}
 					else if (line.contains("(+m)")) {
 						shortRxnString = line;
@@ -230,9 +267,7 @@ public class CheckForwardAndReverseRateCoefficients {
 //						System.out.println(output + shortRxnString);
 						for (int k=0; k<T.length; k++) {
 							logk[k] = Math.log10(A * Math.pow(T[k],n) * Math.exp(-E/R/T[k]));
-							if (logk[k] > 20 && numR==1) 
-								System.out.format("logkf = %4.2f at T = %4.0fK for %s\n", logk[k], T[k], fullRxnString);
-							else if (logk[k] > 20) 
+							if (logk[k] > 15)
 								System.out.format("logkf = %4.2f at T = %4.0fK for %s\n", logk[k], T[k], fullRxnString);
 						}
 						String[] reactsANDprods = shortRxnString.split("=");
@@ -245,62 +280,7 @@ public class CheckForwardAndReverseRateCoefficients {
 					}
 					// Calculate G_RT
 					if (rmgRate || chebyshevRate) {
-						double[] logKeq = new double[T.length];
-						String outputString = "";
-						for (int iii=0; iii<T.length; iii++) {
-							double H_RT = 0; double S_R = 0; int coeffsCounter = 0;
-							double Temperature = T[iii];
-							if (Temperature < 1000.0) coeffsCounter = 0;
-							else coeffsCounter = -7;
-							for (int numReacts=0; numReacts<numR; numReacts++) {
-								H_RT -= coeffs[reactsIndex[numReacts]][coeffsCounter+7] + 
-										coeffs[reactsIndex[numReacts]][coeffsCounter+8]*Temperature/2 + 
-										coeffs[reactsIndex[numReacts]][coeffsCounter+9]*Temperature*Temperature/3 +
-										coeffs[reactsIndex[numReacts]][coeffsCounter+10]*Temperature*Temperature*Temperature/4 +
-										coeffs[reactsIndex[numReacts]][coeffsCounter+11]*Temperature*Temperature*Temperature*Temperature/5 +
-										coeffs[reactsIndex[numReacts]][coeffsCounter+12]/Temperature;
-								S_R -= coeffs[reactsIndex[numReacts]][coeffsCounter+7]*Math.log(Temperature) + 
-										coeffs[reactsIndex[numReacts]][coeffsCounter+8]*Temperature +
-										coeffs[reactsIndex[numReacts]][coeffsCounter+9]*Temperature*Temperature/2 +
-										coeffs[reactsIndex[numReacts]][coeffsCounter+10]*Temperature*Temperature*Temperature/3 +
-										coeffs[reactsIndex[numReacts]][coeffsCounter+11]*Temperature*Temperature*Temperature*Temperature/4 + 
-										coeffs[reactsIndex[numReacts]][coeffsCounter+13];
-							}
-							for (int numProds=0; numProds<numP; numProds++) {
-								H_RT += coeffs[prodsIndex[numProds]][coeffsCounter+7] + 
-										coeffs[prodsIndex[numProds]][coeffsCounter+8]*Temperature/2 + 
-										coeffs[prodsIndex[numProds]][coeffsCounter+9]*Temperature*Temperature/3 +
-										coeffs[prodsIndex[numProds]][coeffsCounter+10]*Temperature*Temperature*Temperature/4 +
-										coeffs[prodsIndex[numProds]][coeffsCounter+11]*Temperature*Temperature*Temperature*Temperature/5 +
-										coeffs[prodsIndex[numProds]][coeffsCounter+12]/Temperature;
-								S_R += coeffs[prodsIndex[numProds]][coeffsCounter+7]*Math.log(Temperature) + 
-										coeffs[prodsIndex[numProds]][coeffsCounter+8]*Temperature +
-										coeffs[prodsIndex[numProds]][coeffsCounter+9]*Temperature*Temperature/2 +
-										coeffs[prodsIndex[numProds]][coeffsCounter+10]*Temperature*Temperature*Temperature/3 +
-										coeffs[prodsIndex[numProds]][coeffsCounter+11]*Temperature*Temperature*Temperature*Temperature/4 + 
-										coeffs[prodsIndex[numProds]][coeffsCounter+13];
-							}
-							logKeq[iii] = Math.log10(Math.exp(1))*(-H_RT + S_R) + (numP-numR)*Math.log10(1.0/82.06/Temperature);
-							if (reversible) {
-								if (logk[iii] - logKeq[iii] > 20 && numP==1) 
-									System.out.format("logkr = %4.2f at T = %4.0fK for %s\n", (logk[iii]-logKeq[iii]), T[iii], fullRxnString);
-								else if (logk[iii] - logKeq[iii] > 20) 
-									System.out.format("logkr = %4.2f at T = %4.0fK for %s\n", (logk[iii]-logKeq[iii]), T[iii], fullRxnString);
-							}
-							// Check if Ea is sensible
-//							if (rmgRate && iii==T.length-1) {
-//								double deltaHrxn = H_RT * R * T[iii];
-//								double sensible = E - deltaHrxn;
-//								if (sensible < 0.0)								
-//									System.out.println("Ea - deltaHrxn = " + sensible + " for " + shortRxnString);
-//							}
-						}
-						String output = "";
-						for (int iii=0; iii<T.length; iii++) {
-							output += (logk[iii] - logKeq[iii]) + "\t";
-						}
-//						System.out.println(output + shortRxnString);
-                                                reverseRateCoefficients.append(output + shortRxnString + "\n");
+						calculate_G_RT(T,reactsIndex,prodsIndex,reversible,logk,fullRxnString,shortRxnString);
 					}
 				}
 				line = ChemParser.readMeaningfulLine(br_thermodat, true);
@@ -394,4 +374,60 @@ public class CheckForwardAndReverseRateCoefficients {
 		}
 		return phi;
 	}
+
+        public static void calculate_G_RT(double[] T, int[] reactsIndex, int[] prodsIndex, boolean reversible, double[] logk, String fullRxnString, String shortRxnString) {
+            double[] logKeq = new double[T.length];
+            for (int iii=0; iii<T.length; iii++) {
+                double H_RT = 0; double S_R = 0; int coeffsCounter = 0;
+                double Temperature = T[iii];
+                if (Temperature < 1000.0) coeffsCounter = 0;
+                else coeffsCounter = -7;
+                for (int numReacts=0; numReacts<numR; numReacts++) {
+                    H_RT -= coeffs[reactsIndex[numReacts]][coeffsCounter+7] +
+                            coeffs[reactsIndex[numReacts]][coeffsCounter+8]*Temperature/2 +
+                            coeffs[reactsIndex[numReacts]][coeffsCounter+9]*Temperature*Temperature/3 +
+                            coeffs[reactsIndex[numReacts]][coeffsCounter+10]*Temperature*Temperature*Temperature/4 +
+                            coeffs[reactsIndex[numReacts]][coeffsCounter+11]*Temperature*Temperature*Temperature*Temperature/5 +
+                            coeffs[reactsIndex[numReacts]][coeffsCounter+12]/Temperature;
+                    S_R -= coeffs[reactsIndex[numReacts]][coeffsCounter+7]*Math.log(Temperature) +
+                            coeffs[reactsIndex[numReacts]][coeffsCounter+8]*Temperature +
+                            coeffs[reactsIndex[numReacts]][coeffsCounter+9]*Temperature*Temperature/2 +
+                            coeffs[reactsIndex[numReacts]][coeffsCounter+10]*Temperature*Temperature*Temperature/3 +
+                            coeffs[reactsIndex[numReacts]][coeffsCounter+11]*Temperature*Temperature*Temperature*Temperature/4 +
+                            coeffs[reactsIndex[numReacts]][coeffsCounter+13];
+                }
+                for (int numProds=0; numProds<numP; numProds++) {
+                    H_RT += coeffs[prodsIndex[numProds]][coeffsCounter+7] +
+                            coeffs[prodsIndex[numProds]][coeffsCounter+8]*Temperature/2 +
+                            coeffs[prodsIndex[numProds]][coeffsCounter+9]*Temperature*Temperature/3 +
+                            coeffs[prodsIndex[numProds]][coeffsCounter+10]*Temperature*Temperature*Temperature/4 +
+                            coeffs[prodsIndex[numProds]][coeffsCounter+11]*Temperature*Temperature*Temperature*Temperature/5 +
+                            coeffs[prodsIndex[numProds]][coeffsCounter+12]/Temperature;
+                    S_R += coeffs[prodsIndex[numProds]][coeffsCounter+7]*Math.log(Temperature) +
+                            coeffs[prodsIndex[numProds]][coeffsCounter+8]*Temperature +
+                            coeffs[prodsIndex[numProds]][coeffsCounter+9]*Temperature*Temperature/2 +
+                            coeffs[prodsIndex[numProds]][coeffsCounter+10]*Temperature*Temperature*Temperature/3 +
+                            coeffs[prodsIndex[numProds]][coeffsCounter+11]*Temperature*Temperature*Temperature*Temperature/4 +
+                            coeffs[prodsIndex[numProds]][coeffsCounter+13];
+                }
+                logKeq[iii] = Math.log10(Math.exp(1))*(-H_RT + S_R) + (numP-numR)*Math.log10(1.0/82.06/Temperature);
+                if (reversible) {
+                    if (logk[iii] - logKeq[iii] > 15)
+                        System.out.format("logkr = %4.2f at T = %4.0fK for %s\n", (logk[iii]-logKeq[iii]), T[iii], fullRxnString);
+                }
+                // Check if Ea is sensible
+                //							if (rmgRate && iii==T.length-1) {
+                //								double deltaHrxn = H_RT * R * T[iii];
+                //								double sensible = E - deltaHrxn;
+                //								if (sensible < 0.0)
+                //									System.out.println("Ea - deltaHrxn = " + sensible + " for " + shortRxnString);
+                //							}
+            }
+            String output = "";
+            for (int iii=0; iii<T.length; iii++) {
+                output += (logk[iii] - logKeq[iii]) + "\t";
+            }
+            //						System.out.println(output + shortRxnString);
+            reverseRateCoefficients.append(output + shortRxnString + "\n");
+        }
 }
