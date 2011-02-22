@@ -36,9 +36,9 @@ which contains a list of species, in the form of adjacency lists::
 Mol2AdjList
 -----------
 
-To convert a .mol file into an adjacency list, create a .mol file in any directory
+To convert a series of .mol files into a list of adjacency lists, place the list of .mol files in any directory
 you like (for the purpose of this example, we'll create a file named
-:file:`temp.mol`).  An example of a .mol file (for 1,3-hexadiene) is::
+:file:`temp.mol` in a folder named :file:`directoryOfMolFiles`).  An example of a .mol file (for 1,3-hexadiene) is::
 
 	Structure #1
 	  InChI v1 SDfile Output                       
@@ -58,10 +58,10 @@ you like (for the purpose of this example, we'll create a file named
 	M  END
 	$$$$
 
-Passing the location of this .mol file to the Mol2AdjList console, using the
+Passing the location of this directory to the Mol2AdjList console, using the
 following command, generates the adjacency list in a file named :file:`adjList.txt`::
 
-	java -classpath "%rmg%"\bin\RMG.jar Mol2AdjList temp.mol > adjList.txt
+	java -classpath "%rmg%"\bin\RMG.jar Mol2AdjList directoryOfMolFiles > adjList.txt
 
 AdjList2InChI
 -------------
