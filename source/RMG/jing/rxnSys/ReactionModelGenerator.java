@@ -2190,7 +2190,6 @@ public class ReactionModelGenerator {
     			speciesSet.add(species);
 				
     			line = ChemParser.readMeaningfulLine(reader, true);
-				Logger.info(line);
 				
     		}
 		}
