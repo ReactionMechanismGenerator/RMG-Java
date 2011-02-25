@@ -71,6 +71,7 @@ public class GATPFit {
         int On = cg.getOxygenNumber();
         int Sin = cg.getSiliconNumber();
         int Sn = cg.getSulfurNumber();
+        int Cln = cg.getChlorineNumber();
         
         int numUniqueElements = 0;
         if (Hn > 0) ++numUniqueElements;
@@ -78,6 +79,7 @@ public class GATPFit {
         if (On > 0) ++numUniqueElements;
         if (Sin > 0) ++numUniqueElements;
         if (Sn > 0) ++numUniqueElements;
+        if (Cln > 0) ++numUniqueElements;
         
         // GATPFit.exe requires at least two elements but no more than five
 //        if (numUniqueElements > 4) {
@@ -89,6 +91,7 @@ public class GATPFit {
         if (On>0) result.append( "ELEM O " + MathTool.formatInteger(On,3,"L") + ls );
         if (Sin>0) result.append( "ELEM Si " + MathTool.formatInteger(Sin,3,"L") + ls );
         if (Sn>0) result.append( "ELEM S " + MathTool.formatInteger(Sn,3,"L") + ls );
+                if (Cln>0) result.append( "ELEM Cl " + MathTool.formatInteger(Cln,3,"L") + ls );
         
         /*if (Cn>0) result.append( "ELEM C " + MathTool.formatInteger(Cn,3,"L") + ls );
         if (Hn>0) result.append( "ELEM H " + MathTool.formatInteger(Hn,3,"L") + ls );

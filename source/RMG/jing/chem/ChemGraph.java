@@ -1189,6 +1189,7 @@ return sn;
         //	Hardcoding Si and S into RMG-java
         int Si_number = 0;
         int S_number = 0;
+        int Cl_number = 0;
 
         Iterator iter = getNodeList();
         while (iter.hasNext()) {
@@ -1213,6 +1214,9 @@ return sn;
         	else if (atom.isSulfur()) {
         		S_number++;
         	}
+                else if (atom.isChlorine()) {
+                    Cl_number++;
+                }
         	else {
         		throw new InvalidChemNodeElementException();
         	}
@@ -1777,6 +1781,19 @@ return sn;
         	}
         }
         return sNum;
+    }
+
+    public int getChlorineNumber() {
+        int ClNum = 0;
+        Iterator iter = getNodeList();
+        while (iter.hasNext()) {
+        	Node node = (Node)iter.next();
+        	Atom atom = (Atom)node.getElement();
+        	if (atom.isChlorine()) {
+        		ClNum++;
+        	}
+        }
+        return ClNum;
     }
 
     //## operation getSymmetryNumber()
