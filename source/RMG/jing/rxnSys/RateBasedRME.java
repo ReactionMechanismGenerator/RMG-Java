@@ -48,23 +48,11 @@ import jing.chem.Species;
 //## class RateBasedRME 
 public class RateBasedRME implements ReactionModelEnlarger {
     
-	protected HashSet includeSpecies = null; //these species are included into the core even if they have very 
-	  										 //low flux.
     // Constructors
     
     public  RateBasedRME() {
     }
     
-	public void addIncludeSpecies(HashSet p_includeSpecies){
-		if (includeSpecies == null) {
-			includeSpecies = p_includeSpecies;
-		}
-		else {
-			Logger.critical("IncludeSpecies have already been added!!");
-			System.exit(0);
-		}
-			
-	}
 	
     //9/25/07 gmagoon: added ReactionModel parameter
     //10/30/07 gmagoon: updated parameters to match ReactionModelEnlarger
@@ -205,20 +193,6 @@ public class RateBasedRME implements ReactionModelEnlarger {
     
     
     
-    public boolean presentInIncludedSpecies(Species p_species){
-		Iterator iter = includeSpecies.iterator();
-		while (iter.hasNext()){
-			Species spe = (Species)iter.next();
-			Iterator isomers = spe.getResonanceIsomers();
-			while (isomers.hasNext()){
-				ChemGraph cg = (ChemGraph)isomers.next();
-				if (cg.equals(p_species.getChemGraph())) 
-					return true;
-			}
-		}
-		return false;
-	}
-	
     //## operation getNextCandidateSpecies(CoreEdgeReactionModel,PresentStatus) 
     public Species getNextCandidateSpecies(CoreEdgeReactionModel p_reactionModel, PresentStatus p_presentStatus, String maxflux) {
         //#[ operation getNextCandidateSpecies(CoreEdgeReactionModel,PresentStatus) 
@@ -226,8 +200,6 @@ public class RateBasedRME implements ReactionModelEnlarger {
          
         Species maxSpecies = null;
         double maxFlux = 0;
-        Species maxIncludedSpecies = null;
-		double maxIncludedFlux = 0;
 		
         Iterator iter = unreactedSpecies.iterator();
         while (iter.hasNext()) {
@@ -236,27 +208,13 @@ public class RateBasedRME implements ReactionModelEnlarger {
 			//System.out.println(p_presentStatus.unreactedSpeciesFlux[83]);
 			//System.exit(0);
 			double thisFlux = Math.abs(p_presentStatus.unreactedSpeciesFlux[us.getID()]);
-			if (includeSpecies != null && includeSpecies.contains(us)) {
-				if (thisFlux > maxIncludedFlux) {
-	        		maxIncludedFlux = thisFlux;
-	        		maxIncludedSpecies = us;
-	        	}
-			}
-			else {
 				if (thisFlux > maxFlux) {
 	        		maxFlux = thisFlux;
 	        		maxSpecies = us;
 	        	}
-			}
         	
         }
 		
-		if (maxIncludedSpecies != null){
-			Logger.info("Instead of "+maxSpecies.toChemkinString()+" with flux "+ maxFlux + " "+ maxIncludedSpecies.toChemkinString() +" with flux " + maxIncludedFlux);
-			maxFlux = maxIncludedFlux;
-			maxSpecies = maxIncludedSpecies;
-			includeSpecies.remove(maxIncludedSpecies);
-		}
 		
         maxflux = ""+maxFlux;
         if (maxSpecies == null) throw new NullPointerException();

@@ -187,7 +187,7 @@ public class GUI extends JPanel implements ActionListener {
 			* Value(s) and Units(s)
 	Additionally, the user is asked to specify the reactivity of each species:
 		- Reactive: Normal species that RMG will react based on library
-		- Unreactive: Species that RMG will only react based on IncludeSpecies.txt (see GJB work for more details)
+		- Unreactive: Species that RMG will react based on Reaction Libraries ONLY
 		- Inert Gas:
 	The user is asked to supply an adjacency list for the species if it is reactive.
     */
@@ -201,7 +201,6 @@ public class GUI extends JPanel implements ActionListener {
         		- Each species must be given a name, concentration, units, and reactivity
         		- If the reactivity is "Reactive," the user must supply an adjacency list for the molecule
         			This may be done by giving the location of the species .mol file or InChI
-        		- If the reactivity is "Unreactive," the user must supply the location of the IncludeSpecies.txt file
         		- All of this information is stored in a table which the user can add/remove data	
          */
         JPanel Species = new JPanel();
@@ -320,30 +319,11 @@ public class GUI extends JPanel implements ActionListener {
     	
     	speciesAList.add(adj);
         
-        //	Create the "speciesIS" subpanel
-        //		If at least one of the species is "Unreactive," the user must specify the path of IncludeSpecies.txt
-        JPanel speciesIS = new JPanel();
-        
-        //	Create the label for the speciesIS subpanel
-        JLabel labelIS = new JLabel("Location of IncludeSpecies.txt: ");
-        
-        //	Populate the speicesIS subpanel
-        speciesIS.add(labelIS);
-        speciesIS.add(isPath = new JTextField(20));
-        speciesIS.add(isButton = new JButton("Change"));
-    	ChangeButtonListener addListenerIS = new ChangeButtonListener();
-    	isButton.addActionListener(addListenerIS);
-    	isButton.setActionCommand("isPath");
-        //	Update the subpanel's properties
-        isPath.addActionListener(this);
-        isPath.setEditable(false);
-        
         //	Create boxes to store all of the species subpanels
     	Box species1 = Box.createHorizontalBox();
     	Box species2 = Box.createHorizontalBox();
     	Box species3 = Box.createHorizontalBox();
     	Box species4 = Box.createHorizontalBox();
-    	Box species5 = Box.createHorizontalBox();
     	Box speciesTotal = Box.createVerticalBox();
     	
     	//	Add the subpanels to the boxes
@@ -353,12 +333,10 @@ public class GUI extends JPanel implements ActionListener {
     	species3.add(speciesTable);
     	species4.add(speciesAList);
     	species4.setBorder(BorderFactory.createEmptyBorder(10,10,10,10));
-    	species5.add(speciesIS);
         speciesTotal.add(species1);
         speciesTotal.add(species4);
         speciesTotal.add(species2);
         speciesTotal.add(species3);
-        speciesTotal.add(species5);
         
         // Add the boxes to the main panel "Species"
         Species.add(speciesTotal);
@@ -1680,18 +1658,6 @@ public class GUI extends JPanel implements ActionListener {
     					return;
     				}
     			}
-    			// If a species is marked "Reactive-User", ask user for location of IncludeSpecies.txt file
-    			if (icInput4.equals("Reactive-User")) {
-    				// If the path is not known
-    				if (isPath.getText().equals("")) {
-        				File isFile = null;
-        				isFile = askUserForInput("Select IncludeSpecies.txt file", false, null);
-        			    if (isFile != null) {
-        			    	isPath.setText(isFile.getPath());
-        			    	isPath.setEnabled(true);
-        			    }
-    				}
-    			}
     			// Check that all information is present
 				if (icInput1.equals("") || icInput2.equals("") || (icInput5.equals("") & !icInput4.equals("Inert"))) {
         			System.out.println("Please input the molecule's Name, Concentration, and Adjacency List");
@@ -1758,13 +1724,8 @@ public class GUI extends JPanel implements ActionListener {
     
     class ChangeButtonListener implements ActionListener {
     	public void actionPerformed(ActionEvent e) {
-    		// IF the user selects to switch the IncludeSpecies.txt path
-			if ("isPath".equals(e.getActionCommand())) {
-				File path = null;
-				path = askUserForInput("Select IncludeSpecies.txt file", false, null);
-				if (path != null) isPath.setText(path.getPath());
-			// ELSE IF user selects to switch the database path
-			}  else if ("databasePath".equals(e.getActionCommand())) {
+                        // IF user selects to switch the database path
+			if ("databasePath".equals(e.getActionCommand())) {
 				File path = null;
 				String workingDirectory = System.getProperty("RMG.workingDirectory");
 				path = askUserForInput("Select database folder", true, workingDirectory + "/databases");
@@ -2126,22 +2087,6 @@ public class GUI extends JPanel implements ActionListener {
     	}
     	
     	conditionFile += "\r";
-        //	Add the path of the IncludeSpecies.txt file (if present)
-        if (unreactiveStatus) {
-        	conditionFile += "IncludeSpecies: ";
-        	if (isPath.getText().equals("")) {
-            	System.out.println("ERROR: Writing condition.txt file: Could not read location of IncludeSpecies.txt (Initial Conditions tab)");
-            	return;
-        	}
-        	else {
-    	        if (isPath.getText().startsWith(rmgEnvVar)) {
-    	        	int startIndex = rmgEnvVar.length()+1;
-    	        	conditionFile += isPath.getText().substring(startIndex) + "\r\r";
-    	        } else {
-    	        	conditionFile += isPath.getText() + "\r\r";
-    	        }
-        	}
-        }
         
         //	Add the finish controller
         conditionFile += "FinishController:\r" + "(1) Goal ";
@@ -2811,13 +2756,6 @@ public class GUI extends JPanel implements ActionListener {
 		        } else {
 		        	System.out.println("ERROR: Reading in condition.txt file - Invalid argument for DecreaseGrainSize.  RMG recognizes an argument of 'Yes' or 'No', but not " + yesno + ".  GUI does not contain all information present in condition.txt file.");
 		        }
-	        }
-	        
-	        else if (line.startsWith("IncludeSpecies")) {
-		        //	IncludeSpecies.txt file (if present)
-	        	st = new StringTokenizer(line);
-	        	tempString = st.nextToken();	// Skip over IncludeSpecies
-	        	isPath.setText(st.nextToken());
 	        }
 	        
 	        else if (line.startsWith("(1) Goal")) {

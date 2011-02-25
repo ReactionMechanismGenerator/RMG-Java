@@ -716,14 +716,6 @@ public class ReactionModelGenerator {
 //			if (!PDepRateConstant.getMode().name().equals("CHEBYSHEV") &&
 //					!PDepRateConstant.getMode().name().equals("PDEPARRHENIUS"))
 //				line = ChemParser.readMeaningfulLine(reader);
-			if (line.startsWith("IncludeSpecies")) {
-				StringTokenizer st = new StringTokenizer(line);
-				String iS = st.nextToken();
-				String fileName = st.nextToken();
-				HashSet includeSpecies = readIncludeSpecies(fileName);
-				((RateBasedRME)reactionModelEnlarger).addIncludeSpecies(includeSpecies);
-				line = ChemParser.readMeaningfulLine(reader, true);
-			}
 			
 			// read in finish controller
         	if (line.startsWith("FinishController")) {
@@ -2157,47 +2149,6 @@ public class ReactionModelGenerator {
 		uM = tM - fM;
 		Logger.debug("After garbage collection:");
         Logger.info(String.format("Memory used: %.2f MB / %.2f MB (%.2f%%)", uM, tM, uM / tM * 100.));
-	}
-	
-	private HashSet readIncludeSpecies(String fileName) {
-		HashSet speciesSet = new HashSet();
-		try {
-			File includeSpecies = new File (fileName);
-			FileReader fr = new FileReader(includeSpecies);
-			BufferedReader reader = new BufferedReader(fr);
-			String line = ChemParser.readMeaningfulLine(reader, true);
-			while (line!=null) {
-    			StringTokenizer st = new StringTokenizer(line);
-    			String index = st.nextToken();
-    			String name = null;
-    			if (!index.startsWith("(")) name = index;
-    			else name = st.nextToken().trim();
-				
-    			Graph g = ChemParser.readChemGraph(reader);
-				
-    			ChemGraph cg = null;
-    			try {
-    				cg = ChemGraph.make(g);
-    			}
-    			catch (ForbiddenStructureException e) {
-    				Logger.info("Forbidden Structure:\n" + e.getMessage());
-					Logger.critical("Included species file "+fileName+" contains a forbidden structure.");
-    				System.exit(0);
-    			}
-				
-    			Species species = Species.make(name,cg);
-       			//speciesSet.put(name, species);
-    			speciesSet.add(species);
-				
-    			line = ChemParser.readMeaningfulLine(reader, true);
-				
-    		}
-		}
-		catch (IOException e){
-			Logger.critical("Could not read the included species file" + fileName);
-        	System.exit(0);
-		}
-		return speciesSet;
 	}
 	
 	/*
