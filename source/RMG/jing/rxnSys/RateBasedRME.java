@@ -30,20 +30,14 @@
 package jing.rxnSys;
 
 
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
 import java.util.*;
 
 import jing.param.*;
 import jing.rxn.NegativeRateException;
 import jing.rxn.Reaction;
-import jing.rxn.Structure;
 import jing.rxn.TemplateReaction;
 import jing.chem.ChemGraph;
 import jing.chem.Species;
-import jing.rxnSys.SpeciesStatus;
-import jing.chem.SpeciesDictionary;
 //import RMG;
 //## package jing::rxnSys 
 
