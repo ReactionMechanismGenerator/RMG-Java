@@ -3590,26 +3590,21 @@ public class ReactionModelGenerator {
 				
 				// Removing Duplicates instances of reaction if present 
 				 reactionSet = getLibraryReactionGenerator().RemoveDuplicateReac(reactionSet_withdup);
-				 
-				// shamel 6/22/2010 Suppressed output , line is only for debugging
-				//System.out.println("Current Reaction Set after RModG + LRG and Removing Dups"+reactionSet);
 			}
 			
 			else {
 				reactionSet_withdup = new LinkedHashSet();	
 				
-				//System.out.println("Initial Core Species RModG"+allInitialCoreSpecies);
-				
 				LinkedHashSet tempnewReactionSet = getLibraryReactionGenerator().react(allInitialCoreSpecies);
-				if(!tempnewReactionSet.isEmpty()){
-				Logger.info("Reaction Set Found from Reaction Library "+tempnewReactionSet);
+				if(tempnewReactionSet.isEmpty()){
+					Logger.info("No reactions found from Reaction Library");
 				}
-				
+				else {
+					Logger.info("Reactions found from Reaction Library:");
+					Logger.info(tempnewReactionSet.toString());
+				}
 				// Adds Reactions Found in Library Reaction Generator to Reaction Set
 				reactionSet_withdup.addAll(getLibraryReactionGenerator().react(allInitialCoreSpecies));
-				
-				// shamel 6/22/2010 Suppressed output , line is only for debugging
-				//System.out.println("Current Reaction Set after LRG"+reactionSet_withdup);
 				
 				// Generates Reaction from the Reaction Generator and adds them to Reaction Set
 					for (Iterator iter = speciesSeed.iterator(); iter.hasNext(); ) {
@@ -3617,13 +3612,9 @@ public class ReactionModelGenerator {
 					reactionSet_withdup.addAll(getReactionGenerator().react(allInitialCoreSpecies, spec,"All"));
 				}
 					reactionSet = getLibraryReactionGenerator().RemoveDuplicateReac(reactionSet_withdup);
-					
-					// shamel 6/22/2010 Suppressed output , line is only for debugging
-					//System.out.println("Current Reaction Set after RModG + LRG and Removing Dups"+reactionSet);
 			}
 			
 			
-		
 	    	// Set initial core-edge reaction model based on above results
 			if (reactionModelEnlarger instanceof RateBasedRME)	{
 				Iterator iter = reactionSet.iterator();

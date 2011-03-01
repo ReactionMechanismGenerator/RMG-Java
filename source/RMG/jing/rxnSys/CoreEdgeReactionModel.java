@@ -314,7 +314,7 @@ public class CoreEdgeReactionModel implements ReactionModel {
 		Iterator rxnIter = reactions.iterator();
 		while (rxnIter.hasNext()){
 			Reaction rxn = (Reaction)rxnIter.next();
-			System.out.println(rxn.getStructure().toString());
+			Logger.info(rxn.getStructure().toString());
 			addUnreactedReaction(rxn);
 		}
     }
@@ -324,8 +324,7 @@ public class CoreEdgeReactionModel implements ReactionModel {
         //#[ operation addUnreactedSpecies(Species) 
         if (containsAsReactedSpecies(p_species)) {
         	// this is not a unreacted species
-        	Logger.warning("This is a reacted species " + p_species.getFullName());
-        	Logger.warning("Can't add it into unreacted species set!");
+        	Logger.info(String.format("%s is a core species. Can't add it to edge species set.",p_species.getFullName()));
         }
         else {
         	getUnreactedSpeciesSet().add(p_species);
