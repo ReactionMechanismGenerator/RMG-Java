@@ -581,14 +581,6 @@ public  Chemkin() {
       //first get troe, thirdbody, and Lindemann reactions (from seed mechanism and primary kinetics) and add them to the pDepList
       for (Iterator iter = cerm.getReactionSet().iterator(); iter.hasNext(); ) {
         	Reaction r = (Reaction)iter.next();
-        	/*
-        	 * 1Jul2009-MRH:
-        	 * 	Added extra set of parenthesis.  Before, if the rxn was reverse but an instance of
-        	 * 		TROEReaction, it would also be added to the pDepList, resulting in RMG reporting
-        	 * 		both rxns (forward and reverse) in the chem.inp file, w/o a DUP tag.  Furthermore,
-        	 * 		both rxns were given the same set of Arrhenius parameters.  Running this in
-        	 * 		Chemkin-v4.1.1 resulted in an error.
-        	 */
         	if (r.isForward() && (r instanceof ThirdBodyReaction || r instanceof TROEReaction || r instanceof LindemannReaction)) {        		
         		pDepList.add(r);
         	}

@@ -74,11 +74,8 @@ public class CoreEdgeReactionModel implements ReactionModel {
     //## operation CoreEdgeReactionModel(HashSet,HashSet) 
     public  CoreEdgeReactionModel(LinkedHashSet p_reactedSpeciesSet, LinkedHashSet p_reactionSet) {
         initRelations();
-        
-        
         core.setSpeciesSet(p_reactedSpeciesSet);
         addReactionSet(p_reactionSet);
-
         //#]
     }
 
@@ -100,7 +97,7 @@ public class CoreEdgeReactionModel implements ReactionModel {
 		}
 	}
     
-    
+		
     public void addPrimaryKineticSet(LinkedHashSet p_reactionSet) {
         
         for (Iterator iter = p_reactionSet.iterator(); iter.hasNext(); ) {
@@ -159,9 +156,6 @@ public class CoreEdgeReactionModel implements ReactionModel {
         }
         
         return;
-        
-        
-        //#]
     }
     
     //## operation addReactedReaction(Reaction) 
@@ -186,9 +180,7 @@ public class CoreEdgeReactionModel implements ReactionModel {
         }
         catch (InvalidReactedReactionException e) {
         	throw new InvalidReactedReactionException(e.getMessage());
-        }   
-        
-        
+        }
         //#]
     }
     
@@ -334,7 +326,6 @@ public class CoreEdgeReactionModel implements ReactionModel {
 	
 //	## operation addUnreactedSpecies(Species) 
     public void addUnreactedSpeciesSet(LinkedHashSet p_species) {
-        //#[ operation addUnreactedSpecies(Species)
 		Iterator speciesIter = p_species.iterator();
 		while (speciesIter.hasNext()){
 			Species species = (Species)speciesIter.next();
@@ -347,8 +338,6 @@ public class CoreEdgeReactionModel implements ReactionModel {
 	        	getUnreactedSpeciesSet().add(species);
 	        }
 		}
-        
-        //#]
     }
     
     /**
@@ -575,13 +564,11 @@ public class CoreEdgeReactionModel implements ReactionModel {
         return getReactedSpeciesSet();
         //#]
     }
-    
+	
     //## operation getUnreactedReactionSet() 
     public LinkedHashSet getUnreactedReactionSet() {
         //#[ operation getUnreactedReactionSet() 
         return getEdge().getReactionSet();
-        
-        
         //#]
     }
 

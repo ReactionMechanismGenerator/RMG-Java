@@ -52,32 +52,26 @@ import jing.chemParser.*;
 //## class ReactionModelGenerator
 public class ReactionModelGenerator {
 	
-    protected LinkedList timeStep;		//## attribute timeStep
-    protected ReactionModel reactionModel;      //gmagoon 9/24/07
-    protected String workingDirectory;		//## attribute workingDirectory
-	
-	// protected ReactionSystem reactionSystem;
-    protected LinkedList reactionSystemList; //10/24/07 gmagoon: changed from reactionSystem to reactionSystemList
-    
-    protected int paraInfor;//svp
-    protected boolean error;//svp
-    protected boolean sensitivity;//svp
-    protected LinkedList species;//svp
-	//  protected InitialStatus initialStatus;//svp
-    protected LinkedList initialStatusList; //10/23/07 gmagoon: changed from initialStatus to initialStatusList
-    protected double rtol;//svp
-    protected static double atol;
-    protected PrimaryKineticLibrary primaryKineticLibrary;//9/24/07 gmagoon
-    protected ReactionLibrary ReactionLibrary;
-    protected ReactionModelEnlarger reactionModelEnlarger;//9/24/07 gmagoon
-    protected LinkedHashSet speciesSeed;//9/24/07 gmagoon;
-    protected ReactionGenerator reactionGenerator;//9/24/07 gmagoon
-    protected LibraryReactionGenerator lrg;// = new LibraryReactionGenerator();//9/24/07 gmagoon: moved from ReactionSystem.java;10/4/07 gmagoon: postponed initialization of lrg til later
-    //10/23/07 gmagoon: added additional variables
+    protected LinkedList               timeStep;
+    protected ReactionModel            reactionModel;
+    protected String                   workingDirectory;
+	protected LinkedList               reactionSystemList;
+    protected int                      paraInfor;
+    protected boolean                  error;
+    protected boolean                  sensitivity;
+    protected LinkedList               species;
+    protected LinkedList               initialStatusList;
+    protected double                   rtol;
+    protected static double            atol;
+    protected PrimaryKineticLibrary    primaryKineticLibrary;
+    protected ReactionLibrary          ReactionLibrary;
+    protected ReactionModelEnlarger    reactionModelEnlarger;
+    protected LinkedHashSet            speciesSeed;
+    protected ReactionGenerator        reactionGenerator;
+    protected LibraryReactionGenerator lrg;
     protected LinkedList tempList;
     protected LinkedList presList;
-    protected LinkedList validList;//10/24/07 gmagoon: added
-    //10/25/07 gmagoon: moved variables from modelGeneration()
+    protected LinkedList validList;
     protected LinkedList initList = new LinkedList();
     protected LinkedList beginList = new LinkedList();
     protected LinkedList endList = new LinkedList();
@@ -87,17 +81,15 @@ public class ReactionModelGenerator {
     protected LinkedList currentPList = new LinkedList();
     protected LinkedList conditionChangedList = new LinkedList();
     protected LinkedList reactionChangedList = new LinkedList();
-    protected int numConversions;//5/6/08 gmagoon: moved from initializeReactionSystem() to be an attribute so it can be accessed by modelGenerator()
-    protected String equationOfState;
+    protected int        numConversions;
+    protected String     equationOfState;
     // 24Jun2009 MRH: variable stores the first temperature encountered in the condition.txt file
     //	This temperature is used to select the "best" kinetics from the rxn library
     protected static Temperature temp4BestKinetics;
 
-    // Added by AJ on July 12, 2010
     protected static boolean useDiffusion;
-    //
-
     protected static boolean useSolvation;
+	
     protected SeedMechanism seedMechanism = null;
     protected PrimaryThermoLibrary primaryThermoLibrary;
     protected PrimaryTransportLibrary primaryTransportLibrary;
@@ -1528,7 +1520,7 @@ public class ReactionModelGenerator {
 					boolean conditionChanged = (Boolean)conditionChangedList.get(i);
 					ReactionTime begin = (ReactionTime)beginList.get(i);
 					ReactionTime end = (ReactionTime)endList.get(i);
-                                        LinkedHashSet seedmechnonpdeprxns = extractSeedMechRxnsIfTheyExist();
+					LinkedHashSet seedmechnonpdeprxns = extractSeedMechRxnsIfTheyExist();
 					endList.set(i,rs.solveReactionSystem(begin, end, false, reactionChanged, conditionChanged, iterationNumber-1,seedmechnonpdeprxns));
 					//end = reactionSystem.solveReactionSystem(begin, end, false, reactionChanged, conditionChanged, iterationNumber-1);
 				}
@@ -1539,7 +1531,7 @@ public class ReactionModelGenerator {
 					// we over-write the chemkin file each time, so only the LAST reaction system is saved
 					// i.e. if you are using RATE for pdep, only the LAST pressure is used.
 					ReactionSystem rs = (ReactionSystem)reactionSystemList.get(i);
-                                        LinkedHashSet seedmechnonpdeprxns = extractSeedMechRxnsIfTheyExist();
+					LinkedHashSet seedmechnonpdeprxns = extractSeedMechRxnsIfTheyExist();
 					Chemkin.writeChemkinInputFile(rs,seedmechnonpdeprxns);
 				}
 				//9/1/09 gmagoon: if we are using QM, output a file with the CHEMKIN name, the RMG name, the (modified) InChI, and the (modified) InChIKey
@@ -3777,14 +3769,7 @@ public class ReactionModelGenerator {
         		}
         	}
     	}
-        
-		
-		
-		
-        
-		
         return;
-		
         //#]
     }
 	
