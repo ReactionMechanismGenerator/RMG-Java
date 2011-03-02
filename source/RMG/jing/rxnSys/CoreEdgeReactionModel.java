@@ -51,6 +51,7 @@ public class CoreEdgeReactionModel implements ReactionModel {
     
     protected Core core;
     protected Edge edge;
+	protected SeedMechanism seed;
 	
     
     // Constructors
@@ -97,6 +98,12 @@ public class CoreEdgeReactionModel implements ReactionModel {
 		}
 	}
     
+    public void setSeedMechanism(SeedMechanism p_seedMechanism) {
+		seed = p_seedMechanism;
+	}
+    public SeedMechanism getSeedMechanism() {
+		return seed;
+	}
 		
     public void addPrimaryKineticSet(LinkedHashSet p_reactionSet) {
         

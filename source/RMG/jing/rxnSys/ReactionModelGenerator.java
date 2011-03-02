@@ -3556,6 +3556,12 @@ public class ReactionModelGenerator {
     	}
     	
 		CoreEdgeReactionModel cerm = new CoreEdgeReactionModel(allInitialCoreSpecies, allInitialCoreRxns);
+		
+		// Store the seed mechanism in the CERM so that we can access it from there when writing chemkin files:
+		if (hasSeedMechanisms()) {
+			cerm.setSeedMechanism(getSeedMechanism());
+		}
+		
 		if (readrestart) {
 			cerm.addUnreactedSpeciesSet(restartEdgeSpcs);
 			cerm.addUnreactedReactionSet(restartEdgeRxns);
