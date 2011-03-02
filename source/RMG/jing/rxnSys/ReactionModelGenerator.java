@@ -3560,6 +3560,8 @@ public class ReactionModelGenerator {
 			Logger.info("Adding seed mechanisms to edge");
     		cerm.addUnreactedSpeciesSet(getSeedMechanism().getSpeciesSet());
     		cerm.addUnreactedReactionSet(getSeedMechanism().getReactionSet());
+			// Store the seed mechanism in the CERM so that we can access it from there when writing chemkin files:
+			cerm.setSeedMechanism(getSeedMechanism());
     	}
 		
 		setReactionModel(cerm);
