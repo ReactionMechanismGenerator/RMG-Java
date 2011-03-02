@@ -650,7 +650,7 @@ public  Chemkin() {
       }
 
       // write species
-      for (Iterator iter = cerm.getSpecies(); iter.hasNext(); ) {
+      for (Iterator iter = cerm.getCoreAndSeedSpecies(); iter.hasNext(); ) {
       	Species spe = (Species)iter.next();
       	if (spe.getChemkinName().startsWith("SPC"))
       		result.append("\t" + spe.getChemkinName() + "\t! " + spe.getFullName() + "\n");
@@ -718,7 +718,7 @@ public  Chemkin() {
       result.append(thermoHeader);
 
       CoreEdgeReactionModel cerm = (CoreEdgeReactionModel)p_reactionModel;
-      for (Iterator iter = cerm.getSpecies(); iter.hasNext(); ) {
+      for (Iterator iter = cerm.getCoreAndSeedSpecies(); iter.hasNext(); ) {
       	Species spe = (Species)iter.next();
 
       	if (spe.getNasaThermoSource() != null) {
@@ -914,7 +914,7 @@ public static void setSMILES(boolean yesno) {
 						"He                 0    10.200     2.576     0.000     0.000     0.000 !CHEMKIN-v4.1.1\n" +
 						"N2                 1    97.530     3.621     0.000     1.760     4.000 !CHEMKIN-v4.1.1\n";
 		
-		Iterator iter = cerm.getSpecies();
+		Iterator iter = cerm.getCoreAndSeedSpecies();
 		
 		while (iter.hasNext()){
 			Species spe = (Species)iter.next();

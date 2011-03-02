@@ -1779,7 +1779,7 @@ public class ReactionModelGenerator {
         CoreEdgeReactionModel cerm = (CoreEdgeReactionModel)rm;
         //Write core species to RMG_Dictionary.txt
 		String coreSpecies ="";
-		Iterator iter = cerm.getSpecies();
+		Iterator iter = cerm.getCoreAndSeedSpecies();
 		
 		if (Species.useInChI) {
 			while (iter.hasNext()){
