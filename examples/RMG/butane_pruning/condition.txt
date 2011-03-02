@@ -87,14 +87,10 @@ END
 SeedMechanism:
 //Name: Leeds
 //Location: RMG_database/SeedMechanisms/combustion_core/version5
-//GenerateReactions: yes
 Name: GRIMech3.0
 Location: GRI-Mech3.0
-GenerateReactions: yes
 //Name: Glarborg
 //Location: RMG_database\SeedMechanisms\Glarborg\C3_light
-//GenerateReactions: yes
-
 END
 
 ChemkinUnits:

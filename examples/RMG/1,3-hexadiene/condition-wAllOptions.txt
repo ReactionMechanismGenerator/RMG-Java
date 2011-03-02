@@ -180,10 +180,8 @@ END
 SeedMechanism:
 //Name: Leeds
 //Location: combustion_core/version5
-//GenerateReactions: yes
 //Name: GRIMech3.0
 //Location: GRI-Mech3.0
-//GenerateReactions: yes
 END
 
 ChemkinUnits:

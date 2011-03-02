@@ -1089,29 +1089,25 @@ public class ReactionModelGenerator {
 					if (generateStr.equalsIgnoreCase("yes") ||
 						generateStr.equalsIgnoreCase("on") ||
 						generateStr.equalsIgnoreCase("true")){
-						generate = true;
-						Logger.info("Will generate cross-reactions between species in seed mechanism " + name);
+						Logger.error("RMG no longer generates cross-reactions between all species in seed mechanisms.");
+						Logger.error(String.format("Please remove the 'GenerateReactions: %s' instruction.",generateStr));
+						Logger.error("To cross-react certain species, specify them in your input condition file.");
+						System.exit(0);
 					} else if(generateStr.equalsIgnoreCase("no") ||
 							  generateStr.equalsIgnoreCase("off") ||
 							  generateStr.equalsIgnoreCase("false")) {
-						generate = false;
-						Logger.info("Will NOT initially generate cross-reactions between species in seed mechanism "+ name);
-						Logger.info("This may have unintended consequences");
-					}
-					else {
-						System.err.println("Input file invalid");
-						System.err.println("Please include a 'GenerateReactions: yes/no' line for seed mechanism "+name);
-						System.exit(0);
+						Logger.warning(String.format("'GenerateReactions: %s' instruction is redundant.",generateStr));
+						Logger.warning("RMG no longer generates cross-reactions between all species in seed mechanisms.");
+						line = ChemParser.readMeaningfulLine(reader, true);
 					}
 					
 					String path = System.getProperty("jing.rxn.ReactionLibrary.pathName");
 					path += "/" + location;
 										   
 					if (getSeedMechanism() == null)
-						setSeedMechanism(new SeedMechanism(name, path, generate, false));
+						setSeedMechanism(new SeedMechanism(name, path, false));
 					else
-						getSeedMechanism().appendSeedMechanism(name, path, generate, false);
-					line = ChemParser.readMeaningfulLine(reader, true);
+						getSeedMechanism().appendSeedMechanism(name, path, false);
 				}
 				if (getSeedMechanism() != null)	Logger.info("Seed Mechanisms in use: " + getSeedMechanism().getName());
 				else setSeedMechanism(null);
@@ -3069,7 +3065,7 @@ public class ReactionModelGenerator {
 		SeedMechanism restart_seed_mechanism = null;
 		try {
 			String path = System.getProperty("user.dir") +  "/Restart";								   
-			restart_seed_mechanism = new SeedMechanism("Restart", path, false, true);
+			restart_seed_mechanism = new SeedMechanism("Restart", path, true);
 		} catch (IOException e1) {
             Logger.logStackTrace(e1);
 		}

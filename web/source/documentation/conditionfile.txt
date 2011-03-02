@@ -942,37 +942,27 @@ Field is: **Required** but can be empty.
 
 The next section of the :file:`condition.txt` file specifies which, if any, 
 Seed Mechanisms should be used.  If a seed mechanism is passed to RMG, every
-species and reaction present in the mechanism will be placed into the core, in
-addition to the species that are listed in the :ref:`reactants` section.
+species and reaction present in the mechanism will be placed in the edge, and
+will be reacted with the other core species if/when they are included into the
+core. 
 
 For details of the kinetics libraries included with RMG that can be used as a seed mechanism,
 see :ref:`kinetics_libraries`.
 
 You can specify your own
 seed mechanism in the location section. Please note that the oxidation
-library should not be used for pyrolysis models. The syntax for the seed mechanisms
-is similar to that of the primary reaction libraries, except for the ``GenerateReactions`` 
-line, explained below.::
+libraries should not be used for pyrolysis models. The syntax for the seed mechanisms
+is similar to that of the primary reaction libraries::
 
 	SeedMechanism:
 	Name: GRI-Mech 3.0
 	Location: GRI-Mech3.0
-	GenerateReactions: yes
 	Name: Leeds 
 	Location: combustion_core/version5 
-	GenerateReactions: yes
 	END 
 
 The seed mechanisms are stored in :file:`$RMG/databases/RMG_database/kinetics_libraries/`
 and the `Location:` should be specified relative to this path.
-
-There is a new required ``GenerateReactions`` line in seed mechanisms that controls how RMG adds the
-seed species and reactions to the model core. If set to ``yes``, RMG will use its
-reaction families to react all seed species with one another; the generated
-reactions will supplement the seed reactions. If set to ``no``, RMG will not
-generate reactions of the seed species. In either case, RMG will react the
-species in the condition file with one another and with all species in the
-seed mechanism.
 
 Please note that the keyword ``END`` must be placed at the end of the Seed
 Mechanism section. Because the units for the Arrhenius parameters are

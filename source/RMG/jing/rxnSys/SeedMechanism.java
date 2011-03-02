@@ -71,15 +71,12 @@ public class SeedMechanism {
     
     protected HashMap speciesSet = new HashMap(); 
     
-    private boolean generateReactions = false;
-    
     public LinkedList allPdepNetworks = new LinkedList();
 
     // Constructors
     
-    public  SeedMechanism(String p_mechName, String p_directoryPath, boolean p_generateReactions, boolean p_fromRestart) throws IOException {
+    public  SeedMechanism(String p_mechName, String p_directoryPath, boolean p_fromRestart) throws IOException {
     	name = p_mechName;
-		generateReactions = p_generateReactions;
         if ( p_directoryPath == null) throw new NullPointerException("RMG does not recognize Seed Mechanism directory path: Value is null");
         try {
         	read(p_directoryPath,p_fromRestart,p_mechName);
@@ -92,9 +89,7 @@ public class SeedMechanism {
     public SeedMechanism() {
 	}
 
-	public void appendSeedMechanism(String new_mechName, String new_directoryPath, boolean p_generateReactions, boolean p_fromRestart) throws IOException {
-     	if (p_generateReactions)
-			setGenerateReactions(p_generateReactions);
+	public void appendSeedMechanism(String new_mechName, String new_directoryPath, boolean p_fromRestart) throws IOException {
 		setName(name + "/" + new_mechName);
     	try {
     		read(new_directoryPath,p_fromRestart,new_mechName);	
@@ -496,14 +491,6 @@ public class SeedMechanism {
     public LinkedHashSet getReactionSet() {
         return reactionSet;
     }
-
-	public boolean shouldGenerateReactions() {
-		return generateReactions;
-	}
-
-	public void setGenerateReactions(boolean generateReactions) {
-		this.generateReactions = generateReactions;
-	}
 	
 	public double[] parseReactionRateUnits(BufferedReader data) {
 		double[] multipliers = new double[2];
