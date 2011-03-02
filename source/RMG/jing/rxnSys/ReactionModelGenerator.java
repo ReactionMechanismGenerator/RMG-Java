@@ -3579,16 +3579,17 @@ public class ReactionModelGenerator {
 			
 			LinkedHashSet tempnewReactionSet = getLibraryReactionGenerator().react(allInitialCoreSpecies);
 			if(tempnewReactionSet.isEmpty()){
-				Logger.info("No reactions found from Reaction Library");
+				Logger.info("No reactions of initial core species found in Reaction Library");
 			}
 			else {
-				Logger.info("Reactions found from Reaction Library:");
+				Logger.info("Reactions of initial core species found in Reaction Library:");
 				Logger.info(tempnewReactionSet.toString());
 			}
 			// Adds Reactions Found in Library Reaction Generator to Reaction Set
 			reactionSet_withdup.addAll(tempnewReactionSet);
 			
 			// Generates Reaction from the Reaction Generator and adds them to Reaction Set
+			Logger.info("Generating reactions of initial core species using reaction families:");
 			for (Iterator iter = speciesSeed.iterator(); iter.hasNext(); ) {
 				Species spec = (Species) iter.next();
 				reactionSet_withdup.addAll(getReactionGenerator().react(allInitialCoreSpecies, spec,"All"));
