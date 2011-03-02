@@ -1433,7 +1433,7 @@ public class ReactionModelGenerator {
 				
 				//writeCoreSpecies();
 				double pt = System.currentTimeMillis();
-				// Grab all species from primary kinetics / reaction libraries
+				// Grab all species from primary kinetics and reaction libraries and seed mechanisms
 				//	WE CANNOT PRUNE THESE SPECIES
 				HashMap unprunableSpecies = new HashMap();
 				if (getPrimaryKineticLibrary() != null) {
@@ -1441,6 +1441,9 @@ public class ReactionModelGenerator {
 				}
 				if (getReactionLibrary() != null) {
 					unprunableSpecies.putAll(getReactionLibrary().getDictionary());
+				}
+				if (getSeedMechanism() != null) {
+					unprunableSpecies.putAll(getSeedMechanism().speciesSet);
 				}
 				//prune the reaction model (this will only do something in the AUTO case)
 				pruneReactionModel(unprunableSpecies);
