@@ -263,31 +263,37 @@ public abstract class JDAS implements DAESolver {
             LinkedList nonPDepList, LinkedList pDepList) {
 
         CoreEdgeReactionModel cerm = (CoreEdgeReactionModel) p_reactionModel;
+		LinkedHashSet seedList = cerm.getSeedMechanism().getReactionSet();
 
         for (Iterator iter = PDepNetwork.getCoreReactions(cerm).iterator(); iter.hasNext();) {
             PDepReaction rxn = (PDepReaction) iter.next();
             if (cerm.categorizeReaction(rxn) != 1) {
                 continue;
             }
-            //check if this reaction is not already in the list and also check if this reaction has a reverse reaction
-            // which is already present in the list.
+
             if (rxn.getReverseReaction() == null) {
                 rxn.generateReverseReaction();
             }
-
-            if (!rxn.reactantEqualsProduct() && !troeList.contains(rxn) && !troeList.contains(rxn.getReverseReaction()) && !thirdBodyList.contains(rxn) && !thirdBodyList.contains(rxn.getReverseReaction()) && !lindemannList.contains(rxn) && !lindemannList.contains(rxn.getReverseReaction())) {
-                if (!pDepList.contains(rxn) && !pDepList.contains(rxn.getReverseReaction())) {
+			Reaction reverse = rxn.getReverseReaction();
+			
+            // check if this reaction is already in the list and also
+            //  check if this reaction has a reverse reaction which is already present in the list.
+            if (rxn.reactantEqualsProduct()) continue;
+			if (troeList.contains(rxn) || troeList.contains(reverse)) continue;
+			if (thirdBodyList.contains(rxn) || thirdBodyList.contains(reverse)) continue;
+			if (lindemannList.contains(rxn) || lindemannList.contains(reverse)) continue;
+			if (seedList.contains(rxn) || seedList.contains(reverse)) continue; // exclude rxns already in seed mechanism
+			
+            if (!pDepList.contains(rxn) && !pDepList.contains(reverse)) {
+                pDepList.add(rxn);
+            } else if (pDepList.contains(rxn) && !pDepList.contains(reverse)) {
+                continue;
+            } else if (!pDepList.contains(rxn) && pDepList.contains(reverse)) {
+                Temperature T = new Temperature(298, "K");
+                if (rxn.calculateKeq(T) > 0.999) {
+                    pDepList.remove(reverse);
                     pDepList.add(rxn);
-                } else if (pDepList.contains(rxn) && !pDepList.contains(rxn.getReverseReaction())) {
-                    continue;
-                } else if (!pDepList.contains(rxn) && pDepList.contains(rxn.getReverseReaction())) {
-                    Temperature T = new Temperature(298, "K");
-                    if (rxn.calculateKeq(T) > 0.999) {
-                        pDepList.remove(rxn.getReverseReaction());
-                        pDepList.add(rxn);
-                    }
                 }
-
             }
         }
 
