@@ -3579,25 +3579,25 @@ public class ReactionModelGenerator {
 			LinkedHashSet reactionSet_withdup;
 			LinkedHashSet reactionSet;
 			
-				reactionSet_withdup = new LinkedHashSet();	
-				
-				LinkedHashSet tempnewReactionSet = getLibraryReactionGenerator().react(allInitialCoreSpecies);
-				if(tempnewReactionSet.isEmpty()){
-					Logger.info("No reactions found from Reaction Library");
-				}
-				else {
-					Logger.info("Reactions found from Reaction Library:");
-					Logger.info(tempnewReactionSet.toString());
-				}
-				// Adds Reactions Found in Library Reaction Generator to Reaction Set
-				reactionSet_withdup.addAll(tempnewReactionSet);
-				
-				// Generates Reaction from the Reaction Generator and adds them to Reaction Set
-					for (Iterator iter = speciesSeed.iterator(); iter.hasNext(); ) {
-					Species spec = (Species) iter.next();
-					reactionSet_withdup.addAll(getReactionGenerator().react(allInitialCoreSpecies, spec,"All"));
-				}
-					reactionSet = getLibraryReactionGenerator().RemoveDuplicateReac(reactionSet_withdup);
+			reactionSet_withdup = new LinkedHashSet();
+			
+			LinkedHashSet tempnewReactionSet = getLibraryReactionGenerator().react(allInitialCoreSpecies);
+			if(tempnewReactionSet.isEmpty()){
+				Logger.info("No reactions found from Reaction Library");
+			}
+			else {
+				Logger.info("Reactions found from Reaction Library:");
+				Logger.info(tempnewReactionSet.toString());
+			}
+			// Adds Reactions Found in Library Reaction Generator to Reaction Set
+			reactionSet_withdup.addAll(tempnewReactionSet);
+			
+			// Generates Reaction from the Reaction Generator and adds them to Reaction Set
+			for (Iterator iter = speciesSeed.iterator(); iter.hasNext(); ) {
+				Species spec = (Species) iter.next();
+				reactionSet_withdup.addAll(getReactionGenerator().react(allInitialCoreSpecies, spec,"All"));
+			}
+			reactionSet = getLibraryReactionGenerator().RemoveDuplicateReac(reactionSet_withdup);
 			
 	    	// Set initial core-edge reaction model based on above results
 			if (reactionModelEnlarger instanceof RateBasedRME)	{
