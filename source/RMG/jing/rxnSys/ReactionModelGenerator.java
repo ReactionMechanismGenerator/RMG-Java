@@ -3585,17 +3585,17 @@ public class ReactionModelGenerator {
 				
 				// Removing Duplicates instances of reaction if present 
 				reactionSet = getLibraryReactionGenerator().RemoveDuplicateReac(reactionSet_withdup);
+
 			}
-			
 			else {
 				reactionSet_withdup = new LinkedHashSet();	
 				
 				LinkedHashSet tempnewReactionSet = getLibraryReactionGenerator().react(allInitialCoreSpecies);
 				if(tempnewReactionSet.isEmpty()){
-					Logger.info("No reactions found from Reaction Library");
+					Logger.info("No reactions of initial core and seed species found in Reaction Library");
 				}
 				else {
-					Logger.info("Reactions found from Reaction Library:");
+					Logger.info("Reactions of initial core and seed species found in Reaction Library:");
 					Logger.info(tempnewReactionSet.toString());
 				}
 				
@@ -3603,13 +3603,16 @@ public class ReactionModelGenerator {
 				reactionSet_withdup.addAll(tempnewReactionSet);
 				
 				// Generates Reaction from the Reaction Generator and adds them to Reaction Set
+				Logger.info("Generating reactions of initial core species using reaction families.");
+				Logger.info("(Condition file species will react with seed species, but seed species will not \n" +
+							"react with each other because GenerateReactions is off)");
+				// nb. speciesSeed contains the condition file species (not the seed mechanism species)
 				for (Iterator iter = speciesSeed.iterator(); iter.hasNext(); ) {
 					Species spec = (Species) iter.next();
 					reactionSet_withdup.addAll(getReactionGenerator().react(allInitialCoreSpecies, spec,"All"));
 				}
 				reactionSet = getLibraryReactionGenerator().RemoveDuplicateReac(reactionSet_withdup);
 			}
-			
 			
 	    	// Set initial core-edge reaction model based on above results
 			if (reactionModelEnlarger instanceof RateBasedRME)	{
