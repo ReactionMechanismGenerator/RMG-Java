@@ -3557,24 +3557,27 @@ public class ReactionModelGenerator {
     	
     	// Add the species from the condition.txt (input) file
     	allInitialCoreSpecies.addAll(getSpeciesSeed());
-		// Add the species from the seed mechanisms, if they exist
-    	if (hasSeedMechanisms()) {
-    		allInitialCoreSpecies.addAll(getSeedMechanism().getSpeciesSet());
-    		allInitialCoreRxns.addAll(getSeedMechanism().getReactionSet());
-    	}
     	
 		CoreEdgeReactionModel cerm = new CoreEdgeReactionModel(allInitialCoreSpecies, allInitialCoreRxns);
 		if (readrestart) {
 			cerm.addUnreactedSpeciesSet(restartEdgeSpcs);
 			cerm.addUnreactedReactionSet(restartEdgeRxns);
 		}
+		
+		// Add the species and reactions from the seed mechanisms, if they exist, to the edge.
+    	if (hasSeedMechanisms()) {
+			Logger.info("Adding seed mechanisms to edge");
+    		cerm.addUnreactedSpeciesSet(getSeedMechanism().getSpeciesSet());
+    		cerm.addUnreactedReactionSet(getSeedMechanism().getReactionSet());
+    	}
+		
 		setReactionModel(cerm);
 		
 		PDepNetwork.reactionModel = getReactionModel();
 		PDepNetwork.reactionSystem = (ReactionSystem) getReactionSystemList().get(0);
 		
 		// Determine initial set of reactions and edge species using only the
-		// species enumerated in the input file and the seed mechanisms as the core
+		// species enumerated in the input file as the core
 		if (!readrestart) {
 			LinkedHashSet reactionSet_withdup;
 			LinkedHashSet reactionSet;
