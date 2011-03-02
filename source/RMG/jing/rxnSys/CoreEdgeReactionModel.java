@@ -329,14 +329,7 @@ public class CoreEdgeReactionModel implements ReactionModel {
 		Iterator speciesIter = p_species.iterator();
 		while (speciesIter.hasNext()){
 			Species species = (Species)speciesIter.next();
-			if (containsAsReactedSpecies(species)) {
-	        	// this is not a unreacted species
-	        	Logger.warning("This is a reacted species " + species.getFullName());
-	        	Logger.warning("Can't add it into unreacted species set!");
-	        }
-	        else {
-	        	getUnreactedSpeciesSet().add(species);
-	        }
+			addUnreactedSpecies(species);
 		}
     }
     
