@@ -3579,17 +3579,6 @@ public class ReactionModelGenerator {
 			LinkedHashSet reactionSet_withdup;
 			LinkedHashSet reactionSet;
 			
-			// If Seed Mechanism is present and Generate Reaction is set on  
-			if (hasSeedMechanisms() && getSeedMechanism().shouldGenerateReactions()) {
-				
-				reactionSet_withdup = getLibraryReactionGenerator().react(allInitialCoreSpecies);
-				reactionSet_withdup.addAll(getReactionGenerator().react(allInitialCoreSpecies));
-				
-				// Removing Duplicates instances of reaction if present 
-				 reactionSet = getLibraryReactionGenerator().RemoveDuplicateReac(reactionSet_withdup);
-			}
-			
-			else {
 				reactionSet_withdup = new LinkedHashSet();	
 				
 				LinkedHashSet tempnewReactionSet = getLibraryReactionGenerator().react(allInitialCoreSpecies);
@@ -3609,8 +3598,6 @@ public class ReactionModelGenerator {
 					reactionSet_withdup.addAll(getReactionGenerator().react(allInitialCoreSpecies, spec,"All"));
 				}
 					reactionSet = getLibraryReactionGenerator().RemoveDuplicateReac(reactionSet_withdup);
-			}
-			
 			
 	    	// Set initial core-edge reaction model based on above results
 			if (reactionModelEnlarger instanceof RateBasedRME)	{
