@@ -3066,17 +3066,14 @@ public class ReactionModelGenerator {
 		 *  	Place these reactions in a new Seed Mechanism, using the 
 		 *  		coreSpecies.txt file as the species.txt file.
 		 */
+		SeedMechanism restart_seed_mechanism = null;
 		try {
 			String path = System.getProperty("user.dir") +  "/Restart";								   
-			if (getSeedMechanism() == null)
-				setSeedMechanism(new SeedMechanism("Restart", path, false, true));
-			else
-				getSeedMechanism().appendSeedMechanism("Restart", path, false, true);
+			restart_seed_mechanism = new SeedMechanism("Restart", path, false, true);
 		} catch (IOException e1) {
             Logger.logStackTrace(e1);
 		}
-		
-		restartCoreRxns.addAll(getSeedMechanism().getReactionSet());
+		restartCoreRxns.addAll(restart_seed_mechanism.getReactionSet());
 		
 		// Read in edge reactions
 		try {
