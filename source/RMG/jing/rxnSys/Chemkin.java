@@ -573,45 +573,70 @@ public  Chemkin() {
 	  
       bufferedWriter.write("REACTIONS\t" + reactionHeader);
       
+	 LinkedList seedList = new LinkedList();
 	  LinkedList pDepList = new LinkedList();
 	  LinkedList nonPDepList = new LinkedList();
 	  LinkedList duplicates = new LinkedList();
 	  
       CoreEdgeReactionModel cerm = (CoreEdgeReactionModel)p_reactionModel;
-      //first get troe, thirdbody, and Lindemann reactions (from seed mechanism and primary kinetics) and add them to the pDepList
-      for (Iterator iter = cerm.getReactionSet().iterator(); iter.hasNext(); ) {
-        	Reaction r = (Reaction)iter.next();
-        	if (r.isForward() && (r instanceof ThirdBodyReaction || r instanceof TROEReaction || r instanceof LindemannReaction)) {        		
-        		pDepList.add(r);
-        	}
-        }
-      
-	 // then get reactions from pressure-dependent networks and add them to pDepList
+	 
+	  // First, get all the seed mechanism reactions into the seedList.
+	 for (Iterator iter = cerm.getSeedMechanism().getReactionSet().iterator(); iter.hasNext(); ) {
+		 Reaction r = (Reaction)iter.next();
+		 if (r.isForward()) {
+			 seedList.add(r);
+		 }
+	 }
+	 
+	 // Then get troe, thirdbody, and Lindemann reactions (from primary reaction library) and add them to the pDepList
+	 // UNLESS they are already in the seed mechanism.
+	 for (Iterator iter = cerm.getReactionSet().iterator(); iter.hasNext(); ) {
+		 Reaction r = (Reaction)iter.next();
+		 if (!r.isForward()) continue;
+		 if (seedList.contains(r)) continue;
+		 // NB. the following is an if TRUE:
+		 if (r instanceof ThirdBodyReaction || r instanceof TROEReaction || r instanceof LindemannReaction) {
+			 pDepList.add(r);
+		 }
+	 }
+
+	 // Then get reactions from pressure-dependent networks and add them to pDepList
       for (Iterator iter = PDepNetwork.getNetworks().iterator(); iter.hasNext(); ) {
       	PDepNetwork pdn = (PDepNetwork)iter.next();
       	for (ListIterator pdniter = pdn.getNetReactions().listIterator(); pdniter.hasNext();) {
       		PDepReaction rxn = (PDepReaction) pdniter.next();
       		if (cerm.categorizeReaction(rxn) != 1) continue;
       		
-      		//check if this reaction is not already in the list and also check if this reaction has a reverse reaction
-      		// which is already present in the list.
       		if (rxn.getReverseReaction() == null)
       			rxn.generateReverseReaction();
-      		
-      		if (!rxn.reactantEqualsProduct() && !pDepList.contains(rxn) && !pDepList.contains(rxn.getReverseReaction()) &&
-                        !nonpdep_from_seed.contains(rxn) && !nonpdep_from_seed.contains(rxn.getReverseReaction()))  {
-      			pDepList.add(rxn);
-      		}
+      		// Check if this reaction is already in the list 
+      		// and also check if this reaction has a reverse reaction which is already present in the list.
+			// If any of these are true, skip this reaction and continue to the next one.
+      		if (rxn.reactantEqualsProduct()) continue;
+			if (pDepList.contains(rxn) || pDepList.contains(rxn.getReverseReaction())) continue;
+			if (seedList.contains(rxn) || seedList.contains(rxn.getReverseReaction())) continue;
+			if (nonpdep_from_seed.contains(rxn) || nonpdep_from_seed.contains(rxn.getReverseReaction())) continue;
+			
+			// Made it through all the tests.
+			pDepList.add(rxn);
       	}
       }
-
+	 // Then add all non-pdep, non-seed, reactions to the nonPDepList
       for (Iterator iter = p_reactionModel.getReactionSet().iterator(); iter.hasNext(); ) {
-      	Reaction r = (Reaction)iter.next();
-		if (r.isForward() && !(r instanceof ThirdBodyReaction) && !(r instanceof TROEReaction) && !(r instanceof LindemannReaction)) {
-			nonPDepList.add(r);
-      	}
+		  Reaction r = (Reaction)iter.next();
+		  if (!r.isForward()) continue;
+		  if (seedList.contains(r)) continue;
+		  if (r instanceof ThirdBodyReaction || r instanceof TROEReaction || r instanceof LindemannReaction) continue;
+		  // Made it through all the tests.
+		  nonPDepList.add(r);
       }
-      // First report pressure dependent reactions
+	 
+	  // First report seed mechanism reactions
+	  for (Iterator iter = seedList.iterator(); iter.hasNext();){
+		  Reaction r = (Reaction)iter.next();
+		  bufferedWriter.write(r.toChemkinString(p_beginStatus.getTemperature(),p_beginStatus.getPressure())+"\n");
+	  }
+      // Then report pressure dependent reactions
       for (Iterator iter = pDepList.iterator(); iter.hasNext();){
     	  Reaction r = (Reaction)iter.next();
 			// 6Jul2009-MRH:
@@ -625,6 +650,7 @@ public  Chemkin() {
     	  bufferedWriter.write(r.toChemkinString(p_beginStatus.getTemperature(),p_beginStatus.getPressure())+"\n");
       }
 	 // Third, report duplicate reactions
+	 // ...but the duplicates list is empty because nothing has touched it since it was made.
       for (Iterator iter = duplicates.iterator(); iter.hasNext();){
     	  Reaction r = (Reaction)iter.next();
     	  bufferedWriter.write(r.toChemkinString(p_beginStatus.getTemperature(),p_beginStatus.getPressure())+"\n\tDUP\n");
