@@ -1388,9 +1388,8 @@ public class ReactionModelGenerator {
             ReactionSystem rs = (ReactionSystem)reactionSystemList.get(i);
             ReactionTime begin = (ReactionTime)beginList.get(i);
             ReactionTime end = (ReactionTime)endList.get(i);
-            LinkedHashSet seedmechnonpdeprxns = extractSeedMechRxnsIfTheyExist();
-            endList.set(i,rs.solveReactionSystem(begin, end, true, true, true, iterationNumber-1,seedmechnonpdeprxns));
-            Chemkin.writeChemkinInputFile(rs, seedmechnonpdeprxns);
+            endList.set(i,rs.solveReactionSystem(begin, end, true, true, true, iterationNumber-1));
+            Chemkin.writeChemkinInputFile(rs);
             boolean terminated = rs.isReactionTerminated();
             terminatedList.add(terminated);
             if(!terminated)
@@ -1520,8 +1519,7 @@ public class ReactionModelGenerator {
 					boolean conditionChanged = (Boolean)conditionChangedList.get(i);
 					ReactionTime begin = (ReactionTime)beginList.get(i);
 					ReactionTime end = (ReactionTime)endList.get(i);
-					LinkedHashSet seedmechnonpdeprxns = extractSeedMechRxnsIfTheyExist();
-					endList.set(i,rs.solveReactionSystem(begin, end, false, reactionChanged, conditionChanged, iterationNumber-1,seedmechnonpdeprxns));
+					endList.set(i,rs.solveReactionSystem(begin, end, false, reactionChanged, conditionChanged, iterationNumber-1));
 					//end = reactionSystem.solveReactionSystem(begin, end, false, reactionChanged, conditionChanged, iterationNumber-1);
 				}
 				solverMin = solverMin + (System.currentTimeMillis()-startTime)/1000/60;
@@ -1531,8 +1529,7 @@ public class ReactionModelGenerator {
 					// we over-write the chemkin file each time, so only the LAST reaction system is saved
 					// i.e. if you are using RATE for pdep, only the LAST pressure is used.
 					ReactionSystem rs = (ReactionSystem)reactionSystemList.get(i);
-					LinkedHashSet seedmechnonpdeprxns = extractSeedMechRxnsIfTheyExist();
-					Chemkin.writeChemkinInputFile(rs,seedmechnonpdeprxns);
+					Chemkin.writeChemkinInputFile(rs);
 				}
 				//9/1/09 gmagoon: if we are using QM, output a file with the CHEMKIN name, the RMG name, the (modified) InChI, and the (modified) InChIKey
 				if (ChemGraph.useQM){
@@ -1651,8 +1648,7 @@ public class ReactionModelGenerator {
 					boolean conditionChanged = (Boolean)conditionChangedList.get(i);
 					ReactionTime begin = (ReactionTime)beginList.get(i);
 					ReactionTime end = (ReactionTime)endList.get(i);
-                                        LinkedHashSet seedmechnonpdeprxns = extractSeedMechRxnsIfTheyExist();
-					endList.set(i,rs.solveReactionSystem(begin, end, false, reactionChanged, false, iterationNumber-1,seedmechnonpdeprxns));
+					endList.set(i,rs.solveReactionSystem(begin, end, false, reactionChanged, false, iterationNumber-1));
 					// end = reactionSystem.solveReactionSystem(begin, end, false, reactionChanged, false, iterationNumber-1);
 				}
 				solverMin = solverMin + (System.currentTimeMillis()-startTime)/1000/60;
@@ -1730,8 +1726,7 @@ public class ReactionModelGenerator {
                 //terminated = false;
                 ReactionTime begin = (ReactionTime)beginList.get(i);
                 ReactionTime end = (ReactionTime)endList.get(i);
-                LinkedHashSet seedmechnonpdeprxns = extractSeedMechRxnsIfTheyExist();
-                rs.solveReactionSystemwithSEN(begin, end, true, false, false, seedmechnonpdeprxns);
+                rs.solveReactionSystemwithSEN(begin, end, true, false, false);
                 //reactionSystem.solveReactionSystemwithSEN(begin, end, true, false, false);
 			}
 			
@@ -1740,8 +1735,7 @@ public class ReactionModelGenerator {
         // All of the reaction systems are the same, so just write the chemkin
         //	file for the first reaction system
 		ReactionSystem rs = (ReactionSystem)reactionSystemList.get(0);
-                LinkedHashSet seedmechnonpdeprxns = extractSeedMechRxnsIfTheyExist();
-		Chemkin.writeChemkinInputFile(getReactionModel(),rs.getPresentStatus(),seedmechnonpdeprxns);
+		Chemkin.writeChemkinInputFile(getReactionModel(),rs.getPresentStatus()); 
 		
         //9/1/09 gmagoon: if we are using QM, output a file with the CHEMKIN name, the RMG name, the (modified) InChI, and the (modified) InChIKey
         if (ChemGraph.useQM){
@@ -5200,12 +5194,6 @@ public class ReactionModelGenerator {
 		}
 		return true;
 	}
-
-        public LinkedHashSet extractSeedMechRxnsIfTheyExist() {
-            LinkedHashSet seedmechnonpdeprxns = new LinkedHashSet();
-            if (seedMechanism != null)  seedmechnonpdeprxns = seedMechanism.getReactionSet();
-            return seedmechnonpdeprxns;
-        }
 
         public static void addChemGraphToListIfNotPresent_ElseTerminate(LinkedHashMap speciesMap, ChemGraph cg, String name) {
             if (speciesMap.containsKey(cg)) {

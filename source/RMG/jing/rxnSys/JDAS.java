@@ -143,8 +143,7 @@ public abstract class JDAS implements DAESolver {
     }
 
     public StringBuilder generatePDepODEReactionList(ReactionModel p_reactionModel,
-            SystemSnapshot p_beginStatus, Temperature p_temperature, Pressure p_pressure,
-            LinkedHashSet nonpdep_from_seed) {
+            SystemSnapshot p_beginStatus, Temperature p_temperature, Pressure p_pressure) {
 
         StringBuilder rString = new StringBuilder();
         StringBuilder arrayString = new StringBuilder();
@@ -156,7 +155,7 @@ public abstract class JDAS implements DAESolver {
         LinkedList nonPDepList = new LinkedList();
         LinkedList pDepList = new LinkedList();
 
-        generatePDepReactionList(p_reactionModel, p_beginStatus, p_temperature, p_pressure, nonPDepList, pDepList, nonpdep_from_seed);
+        generatePDepReactionList(p_reactionModel, p_beginStatus, p_temperature, p_pressure, nonPDepList, pDepList);
 
         int size = nonPDepList.size() + pDepList.size() + duplicates.size();
 
@@ -261,7 +260,7 @@ public abstract class JDAS implements DAESolver {
 
     public void generatePDepReactionList(ReactionModel p_reactionModel,
             SystemSnapshot p_beginStatus, Temperature p_temperature, Pressure p_pressure,
-            LinkedList nonPDepList, LinkedList pDepList, LinkedHashSet nonpdep_from_seed) {
+            LinkedList nonPDepList, LinkedList pDepList) {
 
         CoreEdgeReactionModel cerm = (CoreEdgeReactionModel) p_reactionModel;
 
@@ -276,10 +275,7 @@ public abstract class JDAS implements DAESolver {
                 rxn.generateReverseReaction();
             }
 
-            if (!rxn.reactantEqualsProduct() && !troeList.contains(rxn) && !troeList.contains(rxn.getReverseReaction()) &&
-                    !thirdBodyList.contains(rxn) && !thirdBodyList.contains(rxn.getReverseReaction()) &&
-                    !lindemannList.contains(rxn) && !lindemannList.contains(rxn.getReverseReaction()) &&
-                    !nonpdep_from_seed.contains(rxn) && !nonpdep_from_seed.contains(rxn.getReverseReaction())) {
+            if (!rxn.reactantEqualsProduct() && !troeList.contains(rxn) && !troeList.contains(rxn.getReverseReaction()) && !thirdBodyList.contains(rxn) && !thirdBodyList.contains(rxn.getReverseReaction()) && !lindemannList.contains(rxn) && !lindemannList.contains(rxn.getReverseReaction())) {
                 if (!pDepList.contains(rxn) && !pDepList.contains(rxn.getReverseReaction())) {
                     pDepList.add(rxn);
                 } else if (pDepList.contains(rxn) && !pDepList.contains(rxn.getReverseReaction())) {
