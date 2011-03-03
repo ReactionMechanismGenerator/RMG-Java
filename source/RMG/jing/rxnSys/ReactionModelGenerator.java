@@ -1380,16 +1380,19 @@ public class ReactionModelGenerator {
         }
 
         printModelSize();
+		
+		// Write Chemkin input file only for the LAST reaction system (preserving old behaviour from when it used to be overwritten N times).
+		Chemkin.writeChemkinInputFile((ReactionSystem)reactionSystemList.getLast());
+
         Logger.info(String.format("Running time: %.3f min", + (System.currentTimeMillis()-Global.tAtInitialization)/1000./60.));
         printMemoryUsed();
-        
+
         //10/24/07 gmagoon: note: each element of for loop could be done in parallel if desired; some modifications would be needed
         for (Integer i = 0; i<reactionSystemList.size();i++) {
             ReactionSystem rs = (ReactionSystem)reactionSystemList.get(i);
             ReactionTime begin = (ReactionTime)beginList.get(i);
             ReactionTime end = (ReactionTime)endList.get(i);
             endList.set(i,rs.solveReactionSystem(begin, end, true, true, true, iterationNumber-1));
-            Chemkin.writeChemkinInputFile(rs);
             boolean terminated = rs.isReactionTerminated();
             terminatedList.add(terminated);
             if(!terminated)
@@ -1463,9 +1466,13 @@ public class ReactionModelGenerator {
 						rs.initializePDepNetwork();
 					}
 					//reactionSystem.initializePDepNetwork();
-				}  
+				}
 				
 				printModelSize();
+				
+				// Write Chemkin input file only for the LAST reaction system (preserving old behaviour from when it used to be overwritten N times).
+				Chemkin.writeChemkinInputFile((ReactionSystem)reactionSystemList.getLast());
+
                 Logger.info(String.format("Running time: %.3f min", + (System.currentTimeMillis()-Global.tAtInitialization)/1000./60.));
 				printMemoryUsed();
 
@@ -1525,12 +1532,7 @@ public class ReactionModelGenerator {
 				solverMin = solverMin + (System.currentTimeMillis()-startTime)/1000/60;
 				
 				startTime = System.currentTimeMillis();
-				for (Integer i = 0; i<reactionSystemList.size();i++) {
-					// we over-write the chemkin file each time, so only the LAST reaction system is saved
-					// i.e. if you are using RATE for pdep, only the LAST pressure is used.
-					ReactionSystem rs = (ReactionSystem)reactionSystemList.get(i);
-					Chemkin.writeChemkinInputFile(rs);
-				}
+
 				//9/1/09 gmagoon: if we are using QM, output a file with the CHEMKIN name, the RMG name, the (modified) InChI, and the (modified) InChIKey
 				if (ChemGraph.useQM){
 					writeInChIs(getReactionModel());                    
