@@ -329,8 +329,8 @@ public class RateBasedPDepRME implements ReactionModelEnlarger {
                 Reaction r = (Reaction) rxnIter.next();
                 if (r.getReactantNumber() > 1 && r.getProductNumber() > 1)
                     cerm.addReaction(r);
-                else {
-                    cerm.categorizeReaction(r.getStructure());
+                else { // this reaction is pressure-dependent.
+                    cerm.categorizeReaction(r.getStructure()); // ensure all products are in model edge.
                     PDepNetwork.addReactionToNetworks(r);
                 }
             }

@@ -351,17 +351,21 @@ public class CoreEdgeReactionModel implements ReactionModel {
 	
 	/**
     Requires: the reactionSpecies set and unreactedSpecies set has been defined properly.
-    Effects: according to the reaction's reactants and products, categorize the pass-in reaction as reacted reaction (return 1), or unreacted reaction(return -1), or reaction not in the model (return 0).
+    Effects: according to the reaction's reactants and products, categorize the pass-in reaction as 
+	         * reacted reaction (return 1) all reactants and products in core.
+	         * unreacted reaction(return -1) a product is on the edge
+	         * reaction not in the model (return 0) a reactant is not in the core
     Modifies:
-    */
+	         if products are not in model, it adds them to the edge (unreacted species).
+	 */
     //## operation categorizeReaction(Reaction) 
     public int categorizeReaction(Structure p_structure) {
         //#[ operation categorizeReaction(Reaction) 
-	if (p_structure == null) throw new NullPointerException();
-	
-	if (!reactantsInCoreQ(p_structure)){
-	    return 0;
-	}
+		if (p_structure == null) throw new NullPointerException();
+		
+		if (!reactantsInCoreQ(p_structure)){
+			return 0;
+		}
         
         int type = 1;
         Iterator iter = p_structure.getProducts();
