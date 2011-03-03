@@ -656,6 +656,10 @@ public  Chemkin() {
       }
 
       bufferedWriter.write("END\n");
+	 Logger.info(String.format("The chem.inp file has %d reactions (excluding duplicates).", seedList.size() + pDepList.size() + nonPDepList.size()));
+	 Logger.debug(String.format("    %d from Seed Mechanism(s)",seedList.size()));
+	 Logger.debug(String.format("    %d extra pressure-dependent reactions from primary libraries or estimated by RMG and FAME",pDepList.size()));
+	 Logger.debug(String.format("    %d extra non pressure-dependent reactions from primary libraries or estimated by RMG",nonPDepList.size()));
       return bufferedWriter;
   }
 
@@ -684,6 +688,10 @@ public  Chemkin() {
       }
 
       result.append("END\n");
+	  int core_and_seed_size = cerm.getCoreAndSeedSpeciesSet().size();
+	  Logger.info(String.format("The chem.inp file has %d species (excluding inert gases).", core_and_seed_size));
+	  Logger.debug(String.format("    %d from the model core.",cerm.getCore().getSpeciesNumber()));
+	  Logger.debug(String.format("    %d extra from the Seed Mechanism(s).",core_and_seed_size - cerm.getCore().getSpeciesNumber()));
       return result.toString();
   }
 
