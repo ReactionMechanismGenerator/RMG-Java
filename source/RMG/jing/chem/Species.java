@@ -96,9 +96,7 @@ public class Species {
     // Flag which specifies whether to generate InChIs
 	public static boolean useInChI = false;
     public static boolean useSolvation = false;
-    
-    protected HashSet paths;
-    
+
     // Constructors
 
     //## operation Species()
@@ -1921,17 +1919,6 @@ public class Species {
         constantConcentration = hasconstantconcentration;
     }
     
-	public void addPdepPaths(HashSet pdepReactionSet) {
-		
-		if (paths == null)
-			paths = pdepReactionSet;
-		else
-			paths.addAll(pdepReactionSet);
-	}
-	
-	public HashSet getPdepPaths(){
-		return paths;
-	}
 	public static void setAddID(boolean p_addID){
 		addID = p_addID;
 	}
