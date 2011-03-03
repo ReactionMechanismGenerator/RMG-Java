@@ -118,8 +118,6 @@ public class TemplateReactionGenerator implements ReactionGenerator {
 		String longestTemplate = "";
 		StringBuffer HAbs = new StringBuffer();//"H_Abstraction");
 		
-		HashSet pdepReactionSet = new HashSet();
-		
         // add here the algorithm to generate reaction
         // loop over all the reaction template to find any possible match between the species seed set and the reaction template library
         Iterator template_iter = reactionTemplateLibrary.getReactionTemplate();
@@ -241,8 +239,6 @@ public class TemplateReactionGenerator implements ReactionGenerator {
 				}
         	}
         }
-		
-        newCoreSpecies.addPdepPaths(pdepReactionSet);
         
 		Global.enlargerInfo.append(newCoreSpecies.getChemkinName() + "\t" + singleReaction + "\t" + doubleReaction + "\t" + longestTime +"\t" + longestTemplate + "\t" + HAbs.toString() + "\n");
 		
