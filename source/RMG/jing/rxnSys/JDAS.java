@@ -279,11 +279,25 @@ public abstract class JDAS implements DAESolver {
             // check if this reaction is already in the list and also
             //  check if this reaction has a reverse reaction which is already present in the list.
             if (rxn.reactantEqualsProduct()) continue;
-			if (troeList.contains(rxn) || troeList.contains(reverse)) continue;
-			if (thirdBodyList.contains(rxn) || thirdBodyList.contains(reverse)) continue;
-			if (lindemannList.contains(rxn) || lindemannList.contains(reverse)) continue;
-			if (seedList.contains(rxn) || seedList.contains(reverse)) continue; // exclude rxns already in seed mechanism
-			
+			if (troeList.contains(rxn) || troeList.contains(reverse)) {
+				//Logger.debug(String.format("Excluding FAME-estimated PDep rate for %s from ODEs because its Troe rate is in a reaction library or seed mechanism.",rxn));
+				continue; // exclude rxns already in seed mechanism
+			}
+			else if (thirdBodyList.contains(rxn) || thirdBodyList.contains(reverse)) {
+				//Logger.debug(String.format("Excluding FAME-estimated PDep rate for %s from ODEs because its 3-body rate is in a reaction library or seed mechanism.",rxn));
+				continue; // exclude rxns already in seed mechanism
+			}
+			else if (lindemannList.contains(rxn) || lindemannList.contains(reverse)) {
+				//Logger.debug(String.format("Excluding FAME-estimated PDep rate for %s from ODEs because its Lindemann rate is in a reaction library or seed mechanism.",rxn));
+				continue; // exclude rxns already in seed mechanism
+			}
+			else if (seedList.contains(rxn) || seedList.contains(reverse)) {
+				//Logger.debug(String.format("Excluding FAME-estimated PDep rate for %s from ODEs because it's in the seed mechanism",rxn));
+				continue; // exclude rxns already in seed mechanism
+			}
+			else {
+				//Logger.debug(String.format("Including FAME-estimated PDep rate for  %s in ODEs because it's not in the seed mechanism, nor does it have a P-dep rate from a reaction library.",rxn));
+			}
             if (!pDepList.contains(rxn) && !pDepList.contains(reverse)) {
                 pDepList.add(rxn);
             } else if (pDepList.contains(rxn) && !pDepList.contains(reverse)) {
