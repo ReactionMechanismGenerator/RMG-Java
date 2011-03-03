@@ -164,7 +164,7 @@ public class CoreEdgeReactionModel implements ReactionModel {
         
         return;
     }
-    
+	
     //## operation addReactedReaction(Reaction) 
     public void addReactedReaction(Reaction p_reaction) throws InvalidReactedReactionException {
         //#[ operation addReactedReaction(Reaction) 
@@ -243,23 +243,32 @@ public class CoreEdgeReactionModel implements ReactionModel {
         	int rxnType = categorizeReaction(rxn);
         	if (rxnType == 1) {
         		addReactedReaction(rxn);
+				//Logger.info(String.format("Adding to model core: %s",rxn));
         	}
         	else if (rxnType == -1) {
         		addUnreactedReaction(rxn);
+				//Logger.info(String.format("Adding to model edge: %s",rxn));
         	}
-        	
+			else {
+				Logger.warning(String.format("Adding to neither edge nor core: %s",rxn));
+			}
+			
         	//also add the reverse reaction 
         	if (rxn.hasReverseReaction()){
         		Reaction reverse = (Reaction)rxn.getReverseReaction();
         		rxnType = categorizeReaction(reverse);
         		if (rxnType == 1){
         			addReactedReaction(reverse);
+					//Logger.info(String.format("Adding to model core: %s",reverse));
         		}
         		else if (rxnType == -1){
         			addUnreactedReaction(reverse);
+					//Logger.info(String.format("Adding to model edge: %s",reverse));
         		}
+				else {
+					Logger.warning(String.format("Adding to neither edge nor core: %s",reverse));
+				}
         	}
-        	
         }
         
         return;
@@ -279,7 +288,46 @@ public class CoreEdgeReactionModel implements ReactionModel {
     	else
     		addUnreactedReaction(p_reaction);
     }
-    
+
+	
+	//## operation addReactionSetFromSeed(HashSet) 
+	/*
+	  This is like addReactionSet(p_reactionSet) but it insists on adding
+	  the reaction *somewhere*, either the core or the edge. It should be
+	 particularly useful for reaction sets that come from seed mechanisms.
+	  Adds both the forward and reverse reactions.
+	*/
+    public void addReactionSetFromSeed(LinkedHashSet p_reactionSet) {
+        //#[ operation addReactionSetFromSeed(HashSet)
+        for (Iterator iter = p_reactionSet.iterator(); iter.hasNext(); ) {
+        	Reaction rxn = (Reaction)iter.next();
+			int rxnType = categorizeReaction(rxn);
+        	if (rxnType == 1) {
+        		addReactedReaction(rxn);
+				Logger.info(String.format("Adding to model core: %s",rxn));
+        	}
+        	else {
+        		addUnreactedReaction(rxn);
+				Logger.info(String.format("Adding to model edge: %s",rxn));
+        	}
+        	//also add the reverse reaction
+        	if (rxn.hasReverseReaction()){
+        		Reaction reverse = (Reaction)rxn.getReverseReaction();
+        		rxnType = categorizeReaction(reverse);
+        		if (rxnType == 1){
+        			addReactedReaction(reverse);
+					Logger.info(String.format("Adding to model core: %s",reverse));
+        		}
+        		else {
+        			addUnreactedReaction(reverse);
+					Logger.info(String.format("Adding to model edge: %s",reverse));
+        		}
+        	}
+        }
+        return;
+        //#]
+    }
+
     //## operation addUnreactedReaction(Reaction) 
     public void addUnreactedReaction(Reaction p_reaction) throws InvalidUnreactedReactionException {
         //#[ operation addUnreactedReaction(Reaction) 
