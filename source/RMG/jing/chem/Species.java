@@ -859,7 +859,7 @@ public class Species {
     }
 
     //## operation make(String,ChemGraph)
-    public static Species make(String p_name, ChemGraph p_chemGraph) {
+    public static Species make(String p_name, ChemGraph p_chemGraph, boolean terminateImmediately) {
         //#[ operation make(String,ChemGraph)
 		double pT = System.currentTimeMillis();
         SpeciesDictionary dictionary = SpeciesDictionary.getInstance();
@@ -885,6 +885,11 @@ public class Species {
 
         }
         else {
+            if (terminateImmediately) {
+                Logger.error("The same ChemGraph appears multiple times in the user-specified input file\n" +
+                        "Species " + p_name + " has the same ChemGraph as " + spe.getName());
+                System.exit(0);
+            }
 			if (spe.chemGraph.equals(p_chemGraph)){
 				//spe.chemGraph.graph = p_chemGraph.graph;
 				//p_chemGraph = spe.chemGraph;

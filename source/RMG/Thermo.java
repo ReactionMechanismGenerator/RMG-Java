@@ -95,7 +95,7 @@ public static void main(String[] args) {
         			  System.out.println("Error in reading graph: Graph contains a forbidden structure.\n" + g.toString());
         			  System.exit(0);
         		  }
-        		  Species species = Species.make(speciesName,cg);
+        		  Species species = Species.make(speciesName,cg,true);
         		  speciesSet.add(species);
         		  line = ChemParser.readMeaningfulLine(data, true);
         	  }

@@ -92,7 +92,7 @@ public class FrequencyEstimator {
 
 		for (ListIterator<ChemGraph> iter = graphList.listIterator(); iter.hasNext(); ) {
 			ChemGraph cg = iter.next();
-			Species spec = Species.make("", cg);
+			Species spec = Species.make("", cg, true);
 			SpectroscopicData data = freqGroups.generateFreqData(spec);
 			System.out.println("");
 			System.out.println(cg.toString());

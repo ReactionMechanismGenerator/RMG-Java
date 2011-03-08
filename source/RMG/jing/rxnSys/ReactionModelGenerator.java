@@ -3153,7 +3153,7 @@ public class ReactionModelGenerator {
 					System.exit(0);
 				}
 				// Make the species
-				Species species = Species.make(splitString1[0],cg);
+				Species species = Species.make(splitString1[0],cg,false);
 				// Add the new species to the set of species
 				//restartCoreSpcs.add(species);
     			int species_type = 1; // reacted species
@@ -3192,7 +3192,7 @@ public class ReactionModelGenerator {
 					System.exit(0);
 				}
 				// Make the species
-				Species species = Species.make(splitString1[0],cg);
+				Species species = Species.make(splitString1[0],cg,false);
 				// Add the new species to the set of species
 				//restartCoreSpcs.add(species);
 				if (is.getSpeciesStatus(species) == null) {
@@ -4813,7 +4813,7 @@ public class ReactionModelGenerator {
 				throw new InvalidSymbolException("A species in the input file has a forbidden structure.");
 			}
 			//System.out.println(name);
-			Species species = Species.make(name,cg);
+			Species species = Species.make(name,cg,true);
 			int numConcentrations = 0;	// The number of concentrations read-in for each species
 			
 			// The remaining tokens are either:
