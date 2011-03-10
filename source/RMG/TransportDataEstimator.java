@@ -59,7 +59,7 @@ public class TransportDataEstimator {
             while (line != null) {
             	String speciesName = line;
             	ChemGraph cg = ChemGraph.make(ChemParser.readChemGraph(reader));
-            	Species sp = Species.make(speciesName,cg);
+            	Species sp = Species.make(speciesName,cg,true);
             	TransportData lj4species = sp.getChemkinTransportData();
             	String whitespace = "                ";
             	

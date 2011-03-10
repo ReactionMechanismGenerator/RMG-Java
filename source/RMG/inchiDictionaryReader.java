@@ -97,7 +97,7 @@ public class inchiDictionaryReader {
                 System.out.println(g);
                 if(!line.equals("InChI=1/H")&&!line.startsWith("HJ(")&&!line.startsWith("H(")){//{for some reason, H does not seem to work in Gaussian, even manually, without freq keyword; not sure about why MOPAC fails
                     ChemGraph chemgraph = ChemGraph.make(g);
-                    Species spe = Species.make(moleculeName,chemgraph);
+                    Species spe = Species.make(moleculeName,chemgraph,true);
 		    thermo.write(moleculeName+ " "+ chemgraph.getThermoData().toString()+"\n");
                     //System.out.println(spe.getName());
                             

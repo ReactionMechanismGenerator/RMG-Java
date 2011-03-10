@@ -102,7 +102,7 @@ public static void main(String[] args) {
 			ChemGraph chemgraph = iter.next();
 
 
-         Species spe = Species.make("molecule",chemgraph);
+         Species spe = Species.make("molecule",chemgraph,true);
 		 /*
 		  *	Following line added by MRH on 10Aug2009:
 		  *		After the species is made, the chemgraph is not necessarily the same
