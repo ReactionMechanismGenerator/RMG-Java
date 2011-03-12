@@ -581,12 +581,15 @@ public  Chemkin() {
       CoreEdgeReactionModel cerm = (CoreEdgeReactionModel)p_reactionModel;
 	 
 	  // First, get all the seed mechanism reactions into the seedList.
-	 for (Iterator iter = cerm.getSeedMechanism().getReactionSet().iterator(); iter.hasNext(); ) {
-		 Reaction r = (Reaction)iter.next();
-		 if (r.isForward()) {
-			 seedList.add(r);
-		 }
-	 }
+          // ... if a seed mechanism exists
+          if (cerm.getSeedMechanism() != null) {
+             for (Iterator iter = cerm.getSeedMechanism().getReactionSet().iterator(); iter.hasNext(); ) {
+                     Reaction r = (Reaction)iter.next();
+                     if (r.isForward()) {
+                             seedList.add(r);
+                     }
+             }
+          }
 	 
 	 // Then get troe, thirdbody, and Lindemann reactions (from primary reaction library) and add them to the pDepList
 	 // UNLESS they are already in the seed mechanism.
