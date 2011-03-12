@@ -2249,33 +2249,33 @@ public class GUI extends JPanel implements ActionListener {
         //	Add the name(s)/location(s) of the seed mechanism
     	conditionFile += "SeedMechanism:\r";
 
-		if (tableSM.getRowCount()==0) {
-        	System.out.println("Warning: Writing condition.txt file: Could not read Seed Mechanism (Thermochemical Libraries tab)");
-		} else {
-    		for (int k=0; k<tableSM.getRowCount(); k++) {
-    			conditionFile += "Name: " + tableSM.getValueAt(k,0) + "\r" + "Location: ";
-    			String smDir = (String)tableSM.getValueAt(k,2);
-    	        if (smDir.toLowerCase().startsWith(prlReferenceDirectory_linux.toLowerCase()) ||
-    	        		smDir.toLowerCase().startsWith(prlReferenceDirectory_windows.toLowerCase())) {
-    	        	int startIndex = prlReferenceDirectory_linux.length();
-    	        	conditionFile += smDir.substring(startIndex) + "\r";
-    	        } else {
-    	        	conditionFile += smDir + "\r";
-    	        }
-    	        conditionFile += "GenerateReactions: " + tableSM.getValueAt(k,1) + "\r";
-    		}
-		}
-		conditionFile += "END\r\r";
-		
-		//	Add the Chemkin chem.inp file options
-		conditionFile += "ChemkinUnits:\r";
-		if (chemkinVerbosity.getSelectedItem().equals("Yes"))
-			conditionFile += "Verbose: on\r";
-		if (chemkinSMILES.getSelectedItem().equals("Yes"))
-			conditionFile += "SMILES: on\r";
-		conditionFile += "A: " + chemkinAUnits.getSelectedItem() + "\r";
-		conditionFile += "Ea: " + chemkinEaUnits.getSelectedItem() + "\r";		
+        if (tableSM.getRowCount()==0) {
+            System.out.println("Warning: Writing condition.txt file: Could not read Seed Mechanism (Thermochemical Libraries tab)");
+        } else {
+            for (int k=0; k<tableSM.getRowCount(); k++) {
+                conditionFile += "Name: " + tableSM.getValueAt(k,0) + "\r" + "Location: ";
+                String smDir = (String)tableSM.getValueAt(k,2);
+                if (smDir.toLowerCase().startsWith(prlReferenceDirectory_linux.toLowerCase()) ||
+                        smDir.toLowerCase().startsWith(prlReferenceDirectory_windows.toLowerCase())) {
+                    int startIndex = prlReferenceDirectory_linux.length();
+                    conditionFile += smDir.substring(startIndex) + "\r";
+                } else {
+                    conditionFile += smDir + "\r";
+                }
+                conditionFile += "GenerateReactions: " + tableSM.getValueAt(k,1) + "\r";
+            }
+        }
+        conditionFile += "END\r\r";
 
+        //	Add the Chemkin chem.inp file options
+        conditionFile += "ChemkinUnits:\r";
+        if (chemkinVerbosity.getSelectedItem().equals("Yes"))
+            conditionFile += "Verbose: on\r";
+        if (chemkinSMILES.getSelectedItem().equals("Yes"))
+            conditionFile += "SMILES: on\r";
+        conditionFile += "A: " + chemkinAUnits.getSelectedItem() + "\r";
+        conditionFile += "Ea: " + chemkinEaUnits.getSelectedItem() + "\r";
+        
         File conditionPath = null;
 		FileWriter fw = null;
 		// Write the conditionFile string to user-specified file
