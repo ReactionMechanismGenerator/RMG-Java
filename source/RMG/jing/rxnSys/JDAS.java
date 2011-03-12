@@ -263,7 +263,9 @@ public abstract class JDAS implements DAESolver {
             LinkedList nonPDepList, LinkedList pDepList) {
 
         CoreEdgeReactionModel cerm = (CoreEdgeReactionModel) p_reactionModel;
-		LinkedHashSet seedList = cerm.getSeedMechanism().getReactionSet();
+        LinkedHashSet seedList = new LinkedHashSet();
+        if (cerm.getSeedMechanism() != null)
+		seedList = cerm.getSeedMechanism().getReactionSet();
 
         for (Iterator iter = PDepNetwork.getCoreReactions(cerm).iterator(); iter.hasNext();) {
             PDepReaction rxn = (PDepReaction) iter.next();

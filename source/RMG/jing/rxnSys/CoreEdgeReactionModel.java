@@ -621,7 +621,8 @@ public class CoreEdgeReactionModel implements ReactionModel {
     public LinkedHashSet getCoreAndSeedSpeciesSet() {
 		LinkedHashSet speciesSet = new LinkedHashSet();
 		speciesSet.addAll(getCore().getSpeciesSet());
-		speciesSet.addAll(seed.getSpeciesSet());
+                if (seed != null)
+                    speciesSet.addAll(seed.getSpeciesSet());
 		return speciesSet;
     }
 	
