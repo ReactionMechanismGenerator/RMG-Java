@@ -3602,9 +3602,9 @@ public class ReactionModelGenerator {
 				else {
 					Logger.info("Reactions found from Reaction Library:");
 					Logger.info(tempnewReactionSet.toString());
+                                        // Adds Reactions Found in Library Reaction Generator to Reaction Set
+                                        reactionSet_withdup.addAll(tempnewReactionSet);
 				}
-				// Adds Reactions Found in Library Reaction Generator to Reaction Set
-				reactionSet_withdup.addAll(getLibraryReactionGenerator().react(allInitialCoreSpecies));
 				
 				// Generates Reaction from the Reaction Generator and adds them to Reaction Set
 					for (Iterator iter = speciesSeed.iterator(); iter.hasNext(); ) {
