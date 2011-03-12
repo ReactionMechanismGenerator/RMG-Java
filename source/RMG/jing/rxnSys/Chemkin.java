@@ -581,12 +581,15 @@ public  Chemkin() {
       CoreEdgeReactionModel cerm = (CoreEdgeReactionModel)p_reactionModel;
 	 
 	  // First, get all the seed mechanism reactions into the seedList.
-	 for (Iterator iter = cerm.getSeedMechanism().getReactionSet().iterator(); iter.hasNext(); ) {
-		 Reaction r = (Reaction)iter.next();
-		 if (r.isForward()) {
-			 seedList.add(r);
-		 }
-	 }
+          // ... if a seed mechanism exists
+          if (cerm.getSeedMechanism() != null) {
+             for (Iterator iter = cerm.getSeedMechanism().getReactionSet().iterator(); iter.hasNext(); ) {
+                     Reaction r = (Reaction)iter.next();
+                     if (r.isForward()) {
+                             seedList.add(r);
+                     }
+             }
+          }
 	 
 	 // Then get troe, thirdbody, and Lindemann reactions (from primary reaction library) and add them to the pDepList
 	 // UNLESS they are already in the seed mechanism.
@@ -599,6 +602,17 @@ public  Chemkin() {
 			 pDepList.add(r);
 		 }
 	 }
+
+      	 // Then add all non-pdep, non-seed, reactions to the nonPDepList
+      for (Iterator iter = p_reactionModel.getReactionSet().iterator(); iter.hasNext(); ) {
+		  Reaction r = (Reaction)iter.next();
+		  if (!r.isForward()) continue;
+                  // Check the seedList against r and its reverse
+		  if (seedList.contains(r) || seedList.contains(r.getReverseReaction())) continue;
+		  if (r instanceof ThirdBodyReaction || r instanceof TROEReaction || r instanceof LindemannReaction) continue;
+		  // Made it through all the tests.
+		  nonPDepList.add(r);
+      }
 
 	 // Then get reactions from pressure-dependent networks and add them to pDepList
       for (Iterator iter = PDepNetwork.getNetworks().iterator(); iter.hasNext(); ) {
@@ -615,21 +629,13 @@ public  Chemkin() {
       		if (rxn.reactantEqualsProduct()) continue;
 			if (pDepList.contains(rxn) || pDepList.contains(rxn.getReverseReaction())) continue;
 			if (seedList.contains(rxn) || seedList.contains(rxn.getReverseReaction())) continue;
+                        if (nonPDepList.contains(rxn) || nonPDepList.contains(rxn.getReverseReaction())) continue;
 			
 			// Made it through all the tests.
 			pDepList.add(rxn);
       	}
       }
-	 // Then add all non-pdep, non-seed, reactions to the nonPDepList
-      for (Iterator iter = p_reactionModel.getReactionSet().iterator(); iter.hasNext(); ) {
-		  Reaction r = (Reaction)iter.next();
-		  if (!r.isForward()) continue;
-		  if (seedList.contains(r)) continue;
-		  if (r instanceof ThirdBodyReaction || r instanceof TROEReaction || r instanceof LindemannReaction) continue;
-		  // Made it through all the tests.
-		  nonPDepList.add(r);
-      }
-	 
+
 	  // First report seed mechanism reactions
 	  for (Iterator iter = seedList.iterator(); iter.hasNext();){
 		  Reaction r = (Reaction)iter.next();
