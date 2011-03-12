@@ -2957,25 +2957,25 @@ public class GUI extends JPanel implements ActionListener {
 	        }
 	        
 	        else if (line.startsWith("SeedMechanism")) {
-		        //	Name(s)/Path(s) of SeedMechanism
-             	line = ChemParser.readMeaningfulLine(reader, true);
-             	int smCounter = 0;
-             	while (!line.equals("END")) {
-             		++smCounter;
-             		tempStringVector = line.split("Name: ");
-             		String name = tempStringVector[tempStringVector.length-1].trim();
-             		line = ChemParser.readMeaningfulLine(reader, true);
-             		tempStringVector = line.split("Location: ");
-             		String path = tempStringVector[tempStringVector.length-1].trim();
-             		line = ChemParser.readMeaningfulLine(reader, true);
-             		tempStringVector = line.split("GenerateReactions: ");
-             		String react = tempStringVector[tempStringVector.length-1].trim();
-             		SMVector smEntry = new SMVector(smCounter-1,name,react,path);
-					// need to read in "GenerateReactions:" line
-					tmodelSM.updateSM(smEntry);
-					line = ChemParser.readMeaningfulLine(reader, true);
-             	}
-	        }
+                    //	Name(s)/Path(s) of SeedMechanism
+                    line = ChemParser.readMeaningfulLine(reader, true);
+                    int smCounter = 0;
+                    while (!line.equals("END")) {
+                        ++smCounter;
+                        tempStringVector = line.split("Name: ");
+                        String name = tempStringVector[tempStringVector.length-1].trim();
+                        line = ChemParser.readMeaningfulLine(reader, true);
+                        tempStringVector = line.split("Location: ");
+                        String path = tempStringVector[tempStringVector.length-1].trim();
+                        line = ChemParser.readMeaningfulLine(reader, true);
+                        tempStringVector = line.split("GenerateReactions: ");
+                        String react = tempStringVector[tempStringVector.length-1].trim();
+                        SMVector smEntry = new SMVector(smCounter-1,name,react,path);
+                        // need to read in "GenerateReactions:" line
+                        tmodelSM.updateSM(smEntry);
+                        line = ChemParser.readMeaningfulLine(reader, true);
+                    }
+                }
 	        
 	        else if (line.startsWith("Verbose")) {
         		st = new StringTokenizer(line);
