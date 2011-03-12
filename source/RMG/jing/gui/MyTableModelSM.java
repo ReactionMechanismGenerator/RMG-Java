@@ -5,7 +5,7 @@ import java.util.Vector;
 import javax.swing.table.AbstractTableModel;
 
 public class MyTableModelSM extends AbstractTableModel {
-	protected int NUM_COLUMNS = 3;
+	protected int NUM_COLUMNS = 2;
     protected int START_NUM_ROWS = 0;
     public int nextEmptyRow = 0;
     protected int numRows = 0;
@@ -15,8 +15,6 @@ public class MyTableModelSM extends AbstractTableModel {
     	case 0:
     		return "Name";
     	case 1:
-    		return "Generate Reactions";
-    	case 2:
     		return "Location";
     	}
     	return "";
@@ -40,8 +38,6 @@ public class MyTableModelSM extends AbstractTableModel {
             case 0:
             	return smvect.Name;
             case 1:
-            	return smvect.React;
-            case 2:
             	return smvect.Location;
             }
     	} catch (Exception e) {
@@ -103,17 +99,14 @@ public class MyTableModelSM extends AbstractTableModel {
     public void deleteRow(int row) {  	
 		String dNameSM = "";
 		String dLocSM = "";
-		String dReactSM = "";
     	for (int i=0; i<nextEmptyRow; i++) {
     		if (i!=row) {
     			dNameSM += getValueAt(i,0) + "\r";
-    			dReactSM += getValueAt(i,1) + "\r";
-    			dLocSM += getValueAt(i,2) + "\r";
+    			dLocSM += getValueAt(i,1) + "\r";
     		}
 		}
     	clear();
     	String[] dNameSMIndiv = dNameSM.split("[\r]",0);
-    	String[] dReactSMIndiv = dReactSM.split("[\r]",0);
     	String[] dLocSMIndiv = dLocSM.split("[\r]",0);
     	if (dNameSMIndiv.length >= START_NUM_ROWS) {
     		START_NUM_ROWS = dNameSMIndiv.length;
@@ -121,7 +114,7 @@ public class MyTableModelSM extends AbstractTableModel {
     		START_NUM_ROWS = 1;
     	if (!dNameSM.equals("")) { 
     		for (int j=0; j<dNameSMIndiv.length; j++) {
-    			SMVector SM = new SMVector(j+1, dNameSMIndiv[j], dReactSMIndiv[j], dLocSMIndiv[j]);
+    			SMVector SM = new SMVector(j+1, dNameSMIndiv[j], dLocSMIndiv[j]);
     			updateSM(SM);
     		}
     	}

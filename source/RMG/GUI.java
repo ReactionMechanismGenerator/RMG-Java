@@ -898,18 +898,12 @@ public class GUI extends JPanel implements ActionListener {
     	smButton.addActionListener(smAddListenerLib);
     	smButton.setActionCommand("smPath");
     	
-    	JPanel smReact = new JPanel();
-    	smReact.setBorder(BorderFactory.createEmptyBorder(5,5,5,5));
-    	smReact.add(new JLabel("Generate reactions between Seed Mechanism species?"));
-    	smReact.add(smCombo = new JComboBox(yesnoOptions));
-
         //	Create table and scroll panel to store SM(s)
         tableSM = new JTable(tmodelSM = new MyTableModelSM());
     	tableSM.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
     	tableSM.setPreferredScrollableViewportSize(new Dimension(700,50));
         tableSM.getColumnModel().getColumn(0).setPreferredWidth(100);
-        tableSM.getColumnModel().getColumn(1).setPreferredWidth(150);
-        tableSM.getColumnModel().getColumn(2).setPreferredWidth(450);
+        tableSM.getColumnModel().getColumn(1).setPreferredWidth(600);
         for (int i=0; i<tableSM.getColumnCount(); i++) {
         	TableColumn column = tableSM.getColumnModel().getColumn(i);
         	column.setCellRenderer(centerTableRenderer);
@@ -945,7 +939,6 @@ public class GUI extends JPanel implements ActionListener {
     	SMtable6.add(smName);
     	SMtable6.add(smLoc);
     	SMtable5.add(SMtable6);
-    	SMtable5.add(smReact);
     	SMtable5.add(SMtable3);
     	SMtable5.add(SMtable4);
     	
@@ -959,9 +952,6 @@ public class GUI extends JPanel implements ActionListener {
     	TabTotal.add(PKL);
     	TabTotal.add(RL);
     	TabTotal.add(SM);
-    	
-        JComboBox[] allTab = {smCombo};
-        initializeJCB(allTab);
         
     	//	Create the thermochemLibrary panel
     	JPanel thermochemLibrary = new JPanel();
@@ -1605,16 +1595,14 @@ public class GUI extends JPanel implements ActionListener {
 				// Extract the information
 				int smInput0 = tmodelSM.nextEmptyRow+1;
 				String smInput1 = smLibName.getText();
-				String smInput2 = (String)smCombo.getSelectedItem();
 				String smInput3 = smPath.getText();
 				// Check that all information is present
-				if (smInput1.equals("") || smInput2.equals("") || smInput3.equals("")) {
+				if (smInput1.equals("") || smInput3.equals("")) {
 					System.out.println("Please input the Name and Location of a Seed Mechanism");
 				} else {
-					SMVector smEntry = new SMVector(smInput0, smInput1, smInput2, smInput3);
+					SMVector smEntry = new SMVector(smInput0, smInput1, smInput3);
 					tmodelSM.updateSM(smEntry);
 					smLibName.setText("");
-					smCombo.setSelectedIndex(0);
     				smPath.setText("");
 				}
 			// ELSE IF the user adds a species ...
@@ -2262,7 +2250,6 @@ public class GUI extends JPanel implements ActionListener {
                 } else {
                     conditionFile += smDir + "\r";
                 }
-                conditionFile += "GenerateReactions: " + tableSM.getValueAt(k,1) + "\r";
             }
         }
         conditionFile += "END\r\r";
@@ -2967,11 +2954,7 @@ public class GUI extends JPanel implements ActionListener {
                         line = ChemParser.readMeaningfulLine(reader, true);
                         tempStringVector = line.split("Location: ");
                         String path = tempStringVector[tempStringVector.length-1].trim();
-                        line = ChemParser.readMeaningfulLine(reader, true);
-                        tempStringVector = line.split("GenerateReactions: ");
-                        String react = tempStringVector[tempStringVector.length-1].trim();
-                        SMVector smEntry = new SMVector(smCounter-1,name,react,path);
-                        // need to read in "GenerateReactions:" line
+                        SMVector smEntry = new SMVector(smCounter-1,name,path);
                         tmodelSM.updateSM(smEntry);
                         line = ChemParser.readMeaningfulLine(reader, true);
                     }
@@ -3602,7 +3585,7 @@ public class GUI extends JPanel implements ActionListener {
 	
     JComboBox
     //	Tab0: Initialization
-    simulatorCombo, timeStepCombo, libraryCombo, smCombo,
+    simulatorCombo, timeStepCombo, libraryCombo,
     //	Tab1: Termination Sequence
     SpeciesConvName, controllerCombo, timeCombo,
     //	Tab2: Initial Condition
