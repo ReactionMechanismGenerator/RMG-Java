@@ -267,6 +267,13 @@ public abstract class JDAS implements DAESolver {
         if (cerm.getSeedMechanism() != null)
 		seedList = cerm.getSeedMechanism().getReactionSet();
 
+        for (Iterator iter = p_reactionModel.getReactionSet().iterator(); iter.hasNext();) {
+            Reaction r = (Reaction) iter.next();
+            if (r.isForward() && !(r instanceof ThirdBodyReaction) && !(r instanceof TROEReaction) && !(r instanceof LindemannReaction)) {
+                nonPDepList.add(r);
+            }
+        }
+
         for (Iterator iter = PDepNetwork.getCoreReactions(cerm).iterator(); iter.hasNext();) {
             PDepReaction rxn = (PDepReaction) iter.next();
             if (cerm.categorizeReaction(rxn) != 1) {
@@ -297,6 +304,17 @@ public abstract class JDAS implements DAESolver {
 				//Logger.debug(String.format("Excluding FAME-estimated PDep rate for %s from ODEs because it's in the seed mechanism",rxn));
 				continue; // exclude rxns already in seed mechanism
 			}
+                        /*
+                         * This elseif statement exists to catch pressure-dependent reactions
+                         * that were supplied to a Reaction Library in the reactions.txt file
+                         * (e.g. the pdep kinetics were fit to a particular pressure, OR
+                         * H+O2=O+OH).  We want the Reaction Library's value to override
+                         * the FAME-estimated pdep kinetics.
+                         */
+                        else if (nonPDepList.contains(rxn) || nonPDepList.contains(reverse)) {
+                                //Logger.debug(String.format("Excluding FAME-estimated PDep rate for %s from ODEs because it's in the reaction mechanism",rxn));
+				continue; // exclude rxns already in mechanism
+                        }
 			else {
 				//Logger.debug(String.format("Including FAME-estimated PDep rate for  %s in ODEs because it's not in the seed mechanism, nor does it have a P-dep rate from a reaction library.",rxn));
 			}
@@ -313,12 +331,7 @@ public abstract class JDAS implements DAESolver {
             }
         }
 
-        for (Iterator iter = p_reactionModel.getReactionSet().iterator(); iter.hasNext();) {
-            Reaction r = (Reaction) iter.next();
-            if (r.isForward() && !(r instanceof ThirdBodyReaction) && !(r instanceof TROEReaction) && !(r instanceof LindemannReaction)) {
-                nonPDepList.add(r);
-            }
-        }
+
 
         duplicates.clear();
 
