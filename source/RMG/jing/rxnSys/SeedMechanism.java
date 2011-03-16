@@ -490,7 +490,8 @@ public class SeedMechanism {
 			 */
         	System.err.println("RMG could not find, or read in its entirety, the pressure-dependent reactions file (pdepreactions.txt)" +
 							   "\n\tin the " + source + p_name + "\n" + e.getMessage());
-        	return null;
+			Logger.logStackTrace(e);
+			return null;
         }
     }
 	
