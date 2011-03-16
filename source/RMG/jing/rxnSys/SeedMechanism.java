@@ -310,6 +310,12 @@ public class SeedMechanism {
 					low = ChemParser.parseSimpleArrheniusKinetics(lowString, A_multiplier, E_multiplier, r.getReactantNumber()+1);
 					nextLine = ChemParser.readMeaningfulLine(data, true);
 				} else if (nextLine.contains("CHEB")) {
+					/*
+					 
+					 CHEBYSHEV FORMAT
+					
+					*/
+					
 					// Read in the Tmin/Tmax and Pmin/Pmax information
 					StringTokenizer st_cheb = new StringTokenizer(nextLine,"/");
 					String nextToken = st_cheb.nextToken(); // Should be TCHEB or PCHEB
@@ -371,6 +377,11 @@ public class SeedMechanism {
 					allPdepNetworks.add(pdeprxn);
 					continueToReadRxn = false;
 				} else if (nextLine.contains("PLOG")) {
+					/*
+					 
+					 PLOG FORMAT
+					 
+					 */
 					while (nextLine != null && nextLine.contains("PLOG")) {
 						// Increase the PLOG counter
 						++numPLOGs;
@@ -404,6 +415,11 @@ public class SeedMechanism {
 					pdepkineticsPLOG = new PDepArrheniusKinetics(numPLOGs);
 					continueToReadRxn = false;
 				} else if (nextLine.contains("/")) {
+					/*
+					 
+					 Collision efficiencies
+					 
+					 */
 					// read in third body colliders + efficiencies
 					thirdBodyList.putAll(ChemParser.parseThirdBodyList(nextLine,allSpecies));
 					nextLine = ChemParser.readMeaningfulLine(data, true);
@@ -437,7 +453,7 @@ public class SeedMechanism {
 			tbr.setKineticsSource(source+ p_name,0);
 			tbr.setKineticsComments(" ",0);
 
-			if (pkl) {
+			if (pkl) { // RHW thinks this should always be set - it later determines if the rate is multiplied by the reaction path degeneracy or not.
 				tbr.setIsFromPrimaryKineticLibrary(true);
 				(tbr.getKinetics())[0].setFromPrimaryKineticLibrary(true);
 			}
