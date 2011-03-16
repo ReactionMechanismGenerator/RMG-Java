@@ -418,48 +418,34 @@ public class SeedMechanism {
 			 * 	are present
 			 */
 			
+			Reaction tbr;
+
 			if ((a==0.0) && (T3star==0.0) && (Tstar==0.0)) {
 				// Not a troe reaction
 				if (low.getAValue() == 0.0) {
 					// thirdbody reaction
-					ThirdBodyReaction tbr = ThirdBodyReaction.make(r,thirdBodyList);
-					tbr.setKineticsSource(source+ p_name,0);
-					tbr.setKineticsComments(" ",0);
-					if (pkl) {
-						tbr.setIsFromPrimaryKineticLibrary(true);
-						(tbr.getKinetics())[0].setFromPrimaryKineticLibrary(true);
-					}
-					localReactions.add(tbr);
-					Reaction reverse = tbr.getReverseReaction();
-					if (reverse != null) localReactions.add(reverse);
+					tbr = ThirdBodyReaction.make(r,thirdBodyList);
 				} else {
 					// lindemann reaction
-					LindemannReaction tbr = LindemannReaction.make(r,thirdBodyList,low);
-					tbr.setKineticsSource(source+ p_name,0);
-					tbr.setKineticsComments(" ",0);
-					if (pkl) {
-						tbr.setIsFromPrimaryKineticLibrary(true);
-						(tbr.getKinetics())[0].setFromPrimaryKineticLibrary(true);
-					}
-					localReactions.add(tbr);
-					Reaction reverse = tbr.getReverseReaction();
-					if (reverse != null) localReactions.add(reverse);
+					tbr = LindemannReaction.make(r,thirdBodyList,low);
 				}
 			} else {
 				// troe reaction
-				TROEReaction tbr = TROEReaction.make(r,thirdBodyList, low, a, T3star, Tstar, troe7, T2star);
-				tbr.setKineticsSource(source+ p_name,0);
-				tbr.setKineticsComments(" ",0);
-				if (pkl) {
-					tbr.setIsFromPrimaryKineticLibrary(true);
-					(tbr.getKinetics())[0].setFromPrimaryKineticLibrary(true);
-				}
-				localReactions.add(tbr);
-				Reaction reverse = tbr.getReverseReaction();
-				if (reverse != null) localReactions.add(reverse);
+				tbr = TROEReaction.make(r,thirdBodyList, low, a, T3star, Tstar, troe7, T2star);
 			}
+
+			tbr.setKineticsSource(source+ p_name,0);
+			tbr.setKineticsComments(" ",0);
+
+			if (pkl) {
+				tbr.setIsFromPrimaryKineticLibrary(true);
+				(tbr.getKinetics())[0].setFromPrimaryKineticLibrary(true);
+			}
+			localReactions.add(tbr);
+			Reaction reverse = tbr.getReverseReaction();
+			if (reverse != null) localReactions.add(reverse);
 		}
-			
+
             in.close();
         	return localReactions;
         }
