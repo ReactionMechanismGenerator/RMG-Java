@@ -247,6 +247,8 @@ public class SeedMechanism {
 			}
 			if (r == null) throw new InvalidReactionFormatException(nextLine);
 			
+			r.setIsFromPrimaryKineticLibrary(true);
+			
 			/*
 			 * Read the next line and determine what to do based on the
 			 * 	presence/absence of keywords
@@ -379,6 +381,9 @@ public class SeedMechanism {
 					PDepIsomer products = new PDepIsomer(r.getStructure().getProductList());
 					PDepRateConstant pdepRC = new PDepRateConstant(coeffs);
 					PDepReaction pdeprxn = new PDepReaction(reactants,products,pdepRC);
+					pdeprxn.setHighPKinetics(r.getKinetics()[0]);
+					r = pdeprxn;
+					
 					allPdepNetworks.add(pdeprxn);
 					continueToReadRxn = false;
 				} else if (nextLine.contains("PLOG")) {
@@ -413,6 +418,9 @@ public class SeedMechanism {
 					PDepIsomer products = new PDepIsomer(r.getStructure().getProductList());
 					PDepRateConstant pdepRC = new PDepRateConstant(pdepkineticsPLOG);
 					PDepReaction pdeprxn = new PDepReaction(reactants,products,pdepRC);
+					pdeprxn.setHighPKinetics(r.getKinetics()[0]);
+					r = pdeprxn;
+					
 					// Add to the list of PDepReactions
 					allPdepNetworks.add(pdeprxn);
 					// Re-initialize the pdepkinetics variable
@@ -441,7 +449,10 @@ public class SeedMechanism {
 			
 			Reaction tbr;
 
-			if ((a==0.0) && (T3star==0.0) && (Tstar==0.0)) {
+			if (r instanceof PDepReaction) {
+				// Chebyshev or PLog
+				tbr = r;
+			} else if ((a==0.0) && (T3star==0.0) && (Tstar==0.0)) {
 				// Not a troe reaction
 				if (low.getAValue() == 0.0) {
 					// thirdbody reaction
