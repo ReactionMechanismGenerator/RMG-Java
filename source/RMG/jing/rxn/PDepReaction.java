@@ -219,7 +219,9 @@ public class PDepReaction extends Reaction {
 	 * @param kin The new high-pressure Arrhenius kinetics for the reaction
 	 */
 	public void setHighPKinetics(Kinetics kin) {
-		setKinetics(kin,-1);
+		//setKinetics(kin,0);
+		kinetics = new Kinetics[1];
+		kinetics[0] = kin;
 	}
 	
 	/** 
