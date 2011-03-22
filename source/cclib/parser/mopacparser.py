@@ -43,7 +43,7 @@ class Mopac(logfileparser.Logfile):
     def extract(self, inputfile, line):
         """Extract information from the file object inputfile."""
         
-        # Number of atoms.
+        # Number of atoms. (I think this section of code may be redundant and not needed)
         # Example:            Empirical Formula: C H2 O  =     4 atoms
         if line.find("Empirical Formula:") > -1:
 
@@ -123,7 +123,8 @@ class Mopac(logfileparser.Logfile):
 #    35       H          2.01935375  *  -1.03805729  *   2.35810565  *
 #    36       H          1.60901654  *  -2.53904354  *   3.20705714  *
 #    37       H          0.97814118  *  -0.98964976  *   3.78695207  *
-        if line.find("NUMBER    SYMBOL      (ANGSTROMS)     (ANGSTROMS)     (ANGSTROMS)") > -1:
+        if (line.find("NUMBER    SYMBOL      (ANGSTROMS)     (ANGSTROMS)     (ANGSTROMS)") > -1 or line.find("NUMBER   SYMBOL      (ANGSTROMS)     (ANGSTROMS)     (ANGSTROMS)") > -1):
+
 
 
             self.updateprogress(inputfile, "Attributes", self.cupdate)
