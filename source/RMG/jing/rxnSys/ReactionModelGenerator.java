@@ -3153,7 +3153,7 @@ public class ReactionModelGenerator {
 					System.exit(0);
 				}
 				// Make the species
-				Species species = Species.make(splitString1[0],cg,false);
+				Species species = Species.make(splitString1[0],cg);
 				// Add the new species to the set of species
 				//restartCoreSpcs.add(species);
     			int species_type = 1; // reacted species
@@ -3192,7 +3192,7 @@ public class ReactionModelGenerator {
 					System.exit(0);
 				}
 				// Make the species
-				Species species = Species.make(splitString1[0],cg,false);
+				Species species = Species.make(splitString1[0],cg);
 				// Add the new species to the set of species
 				//restartCoreSpcs.add(species);
 				if (is.getSpeciesStatus(species) == null) {
@@ -4772,6 +4772,7 @@ public class ReactionModelGenerator {
     public LinkedHashMap populateInitialStatusListWithReactiveSpecies(BufferedReader reader) throws IOException {
         LinkedHashMap speciesSet = new LinkedHashMap();
     	LinkedHashMap speciesStatus = new LinkedHashMap();
+        LinkedHashMap speciesFromInputFileSet = new LinkedHashMap();
     	int numSpeciesStatus = 0;
 		String line = ChemParser.readMeaningfulLine(reader, true);
 		while (!line.equals("END")) {
@@ -4813,7 +4814,11 @@ public class ReactionModelGenerator {
 				throw new InvalidSymbolException("A species in the input file has a forbidden structure.");
 			}
 			//System.out.println(name);
-			Species species = Species.make(name,cg,true);
+
+                        // Check to see if chemgraph already appears in the input file
+                        addChemGraphToListIfNotPresent_ElseTerminate(speciesFromInputFileSet,cg,name);
+
+			Species species = Species.make(name,cg);
 			int numConcentrations = 0;	// The number of concentrations read-in for each species
 			
 			// The remaining tokens are either:
@@ -5208,6 +5213,16 @@ public class ReactionModelGenerator {
             LinkedHashSet seedmechnonpdeprxns = new LinkedHashSet();
             if (seedMechanism != null)  seedmechnonpdeprxns = seedMechanism.getReactionSet();
             return seedmechnonpdeprxns;
+        }
+
+        public static void addChemGraphToListIfNotPresent_ElseTerminate(LinkedHashMap speciesMap, ChemGraph cg, String name) {
+            if (speciesMap.containsKey(cg)) {
+                Logger.error("The same ChemGraph appears multiple times in the user-specified input file\n" +
+                        "Species " + name + " has the same ChemGraph as " +
+                        (speciesMap.get(cg)));
+                System.exit(0);
+            } else
+                speciesMap.put(cg, name);
         }
 }
 /*********************************************************************

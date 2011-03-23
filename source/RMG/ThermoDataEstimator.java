@@ -50,6 +50,7 @@ public static void main(String[] args) {
 	GATPFit.mkdir();
 
 		LinkedList<ChemGraph> graphList = new LinkedList<ChemGraph>();
+                LinkedHashMap speciesFromInputFile = new LinkedHashMap();
 
 		File file = new File(args[0]);
 
@@ -84,6 +85,9 @@ public static void main(String[] args) {
 			Graph g = ChemParser.readChemGraph(reader);
 			while (g != null) {
 				ChemGraph cg = ChemGraph.make(g);
+
+                                ReactionModelGenerator.addChemGraphToListIfNotPresent_ElseTerminate(speciesFromInputFile,cg,"");
+
 				graphList.add(cg);
 				g = ChemParser.readChemGraph(reader);
 			}
@@ -102,7 +106,7 @@ public static void main(String[] args) {
 			ChemGraph chemgraph = iter.next();
 
 
-         Species spe = Species.make("molecule",chemgraph,true);
+         Species spe = Species.make("molecule",chemgraph);
 		 /*
 		  *	Following line added by MRH on 10Aug2009:
 		  *		After the species is made, the chemgraph is not necessarily the same

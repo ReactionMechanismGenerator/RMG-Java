@@ -38,6 +38,7 @@ public class inchiDictionaryReader {
          String name= "RMG_database";
          // Read in the input file
          FileReader input_file = null;
+         LinkedHashMap speciesFromInputFile = new LinkedHashMap();
 	try {
             input_file = new FileReader("inchiDictionary.txt");
 	} catch (FileNotFoundException e) {
@@ -97,7 +98,10 @@ public class inchiDictionaryReader {
                 System.out.println(g);
                 if(!line.equals("InChI=1/H")&&!line.startsWith("HJ(")&&!line.startsWith("H(")){//{for some reason, H does not seem to work in Gaussian, even manually, without freq keyword; not sure about why MOPAC fails
                     ChemGraph chemgraph = ChemGraph.make(g);
-                    Species spe = Species.make(moleculeName,chemgraph,true);
+
+                    ReactionModelGenerator.addChemGraphToListIfNotPresent_ElseTerminate(speciesFromInputFile,chemgraph,"");
+
+                    Species spe = Species.make(moleculeName,chemgraph);
 		    thermo.write(moleculeName+ " "+ chemgraph.getThermoData().toString()+"\n");
                     //System.out.println(spe.getName());
                             

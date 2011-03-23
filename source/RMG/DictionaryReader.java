@@ -82,6 +82,8 @@ public class DictionaryReader {
         //QMTP.qmprogram = "gaussian03";
         QMTP.qmprogram = "mopac";
         QMTP.usePolar = true;
+
+        LinkedHashMap speciesFromInputFile = new LinkedHashMap();
         
          //2. calculate the thermo using QMTP with no HBI; include non-ring species; (primaryThermoLibrary species will still not be included); for triplets, use guess=mix and use gaussian?
           try {
@@ -96,7 +98,10 @@ public class DictionaryReader {
                 System.out.println(g);
                 if(!line.equals("InChI=1/H")&&!line.startsWith("HJ(")&&!line.startsWith("H(")){//{for some reason, H does not seem to work in Gaussian, even manually, without freq keyword; not sure about why MOPAC fails
                     ChemGraph chemgraph = ChemGraph.make(g);
-                    Species spe = Species.make("molecule",chemgraph,true);
+
+                    ReactionModelGenerator.addChemGraphToListIfNotPresent_ElseTerminate(speciesFromInputFile,chemgraph,"");
+
+                    Species spe = Species.make("molecule",chemgraph);
                     //System.out.println(spe.getName());
                             
                     //calculate and display Lennard-Jones estimates based on Joback correlations for critical properties
