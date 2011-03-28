@@ -1066,12 +1066,6 @@ public class Reaction {
       return structure.getProductList();
       //#]
   }
-
-  //10/26/07 gmagoon: changed to have temperature and pressure passed as parameters (part of eliminating use of Global.temperature)
-  public double getRateConstant(Temperature p_temperature){
-          rateConstant = calculateTotalRate(p_temperature);
-	  return rateConstant;
-  }
   
   //## operation getProductNumber()
   public int getProductNumber() {
@@ -1720,7 +1714,7 @@ public class Reaction {
 	 */
 	public double calculateForwardFlux(SystemSnapshot ss) {
 		Temperature T = ss.getTemperature();
-		double forwardFlux = getRateConstant(T);
+		double forwardFlux = calculateTotalRate(T);
 		for (ListIterator<Species> iter = getReactants(); iter.hasNext(); ) {
 			Species spe = iter.next();
 			double conc = 0.0;
