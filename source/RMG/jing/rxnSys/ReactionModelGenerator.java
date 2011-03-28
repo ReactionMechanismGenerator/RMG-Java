@@ -2711,7 +2711,8 @@ public class ReactionModelGenerator {
     		int numFamePress = PDepRateConstant.getPressures().length;
     		int numChebyTemps = ChebyshevPolynomials.getNT();
     		int numChebyPress = ChebyshevPolynomials.getNP();
-    		int numPlog = PDepArrheniusKinetics.getNumPressures();
+    		//int numPlog = PDepArrheniusKinetics.getNumPressures();
+			int numPlog = numFamePress; // probably often the case for FAME-generated PLOG rates (but not for seed or library reactions)
     		String EaUnits = ArrheniusKinetics.getEaUnits();
     		
     		bw.write("UnitsOfEa: " + EaUnits);
@@ -2724,7 +2725,7 @@ public class ReactionModelGenerator {
     		bw.newLine();
     		bw.write("NumberOfChebyPress: " + numChebyPress);
     		bw.newLine();
-    		bw.write("NumberOfPLogs: " + numPlog);
+    		bw.write("NumberOfPLogs: Could be different for seed and library reactions, but default for FAME-generated rates is probably "+ numPlog);
     		bw.newLine();
     		bw.newLine();
     		
