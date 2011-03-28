@@ -116,15 +116,15 @@ public class SeedMechanism {
 	            String pdepreactionFile = p_directoryName + "pdepreactions.txt";
 				
 	        	speciesSet.putAll(readSpecies(speciesFile,seedMechName,"Seed Mechanism: "));
-	        	reactionSet.addAll(readReactions(reactionFile,seedMechName,speciesSet,"Seed Mechanism: ",false));
-	        	reactionSet.addAll(readPdepReactions(pdepreactionFile,seedMechName,speciesSet,"Seed Mechanism: ",false));
+	        	reactionSet.addAll(readReactions(reactionFile,seedMechName,speciesSet,"Seed Mechanism: ",true));
+	        	reactionSet.addAll(readPdepReactions(pdepreactionFile,seedMechName,speciesSet,"Seed Mechanism: ",true));
         	}
         	else {
 	            String speciesFile = p_directoryName + "coreSpecies.txt";
 	            String pdepreactionFile = p_directoryName + "pdepreactions.txt";
 	        	
 	        	speciesSet.putAll(readSpecies(speciesFile,seedMechName,"Seed Mechanism: "));
-	        	reactionSet.addAll(readPdepReactions(pdepreactionFile,seedMechName,speciesSet,"Seed Mechanism: ",false));
+	        	reactionSet.addAll(readPdepReactions(pdepreactionFile,seedMechName,speciesSet,"Seed Mechanism: ",true));
         	}
         	return;
         }

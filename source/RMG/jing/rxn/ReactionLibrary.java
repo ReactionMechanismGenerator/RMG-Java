@@ -133,8 +133,8 @@ public class ReactionLibrary {
              
              SeedMechanism sm = new SeedMechanism();
              dictionary.putAll(sm.readSpecies(dictionaryFile,p_name,"ReactionLibrary: "));
-             library.addAll(sm.readReactions(libraryFile,p_name,dictionary,"ReactionLibrary: ",false));
-             library.addAll(sm.readPdepReactions(pdeplibraryFile,p_name,dictionary,"ReactionLibrary: ",false));
+             library.addAll(sm.readReactions(libraryFile,p_name,dictionary,"ReactionLibrary: ",true));
+             library.addAll(sm.readPdepReactions(pdeplibraryFile,p_name,dictionary,"ReactionLibrary: ",true));
              return;
          }
          catch (Exception e) {

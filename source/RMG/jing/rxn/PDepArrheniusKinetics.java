@@ -140,7 +140,7 @@ public class PDepArrheniusKinetics implements PDepKinetics {
     	kinetics = ListOfKinetics;
     }
     
-    public Pressure getPressures(int i) {
+    public Pressure getPressure(int i) {
     	return pressures[i];
     }
 

@@ -392,7 +392,7 @@ public class ArrheniusKinetics implements Kinetics {
 		fromPrimaryKineticLibrary = p_boolean;
 	}
 	
-	public boolean getFromPrimaryKineticLibrary() {
+	public boolean isFromPrimaryKineticLibrary() {
 		return fromPrimaryKineticLibrary;
 	}
 	
