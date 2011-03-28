@@ -1069,10 +1069,7 @@ public class Reaction {
 
   //10/26/07 gmagoon: changed to have temperature and pressure passed as parameters (part of eliminating use of Global.temperature)
   public double getRateConstant(Temperature p_temperature){
-  //public double getRateConstant(){
-	  if (rateConstant == 0)
-                  rateConstant = calculateTotalRate(p_temperature);
-	//	  rateConstant = calculateTotalRate(Global.temperature);
+          rateConstant = calculateTotalRate(p_temperature);
 	  return rateConstant;
   }
   
