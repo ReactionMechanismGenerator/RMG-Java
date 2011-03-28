@@ -383,12 +383,12 @@ public class SeedMechanism {
                                         Pressure[] previousPressures = new Pressure[numPLOGs];
                                         ArrheniusKinetics[] previousKinetics = new ArrheniusKinetics[numPLOGs];
                                         for (int previousNumPLOG=0; previousNumPLOG<numPLOGs-1; ++previousNumPLOG) {
-                                            previousPressures[previousNumPLOG] = pdepkineticsPLOG.getPressures(previousNumPLOG);
+                                            previousPressures[previousNumPLOG] = pdepkineticsPLOG.getPressure(previousNumPLOG);
                                             previousKinetics[previousNumPLOG] = pdepkineticsPLOG.getKinetics(previousNumPLOG);
                                         }
                                         // Read in the new PLOG information, and add this to the temporary array
                                         PDepArrheniusKinetics newpdepkinetics = parsePLOGline(nextLine);
-                                        previousPressures[numPLOGs-1] = newpdepkinetics.getPressures(0);
+                                        previousPressures[numPLOGs-1] = newpdepkinetics.getPressure(0);
                                         previousKinetics[numPLOGs-1] = newpdepkinetics.getKinetics(0);
                                         // Re-initialize pdepkinetics and populate with stored information
                                         pdepkineticsPLOG = new PDepArrheniusKinetics(numPLOGs);
