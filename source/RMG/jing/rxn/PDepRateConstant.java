@@ -127,12 +127,14 @@ public class PDepRateConstant {
 		rateConstants = rates;
 		chebyshev = null;
 		pDepArrhenius = plogKinetics;
+		mode = Mode.PDEPARRHENIUS;
 	}
 	
 	public PDepRateConstant(PDepArrheniusKinetics plogKinetics) {
 		rateConstants = null;
 		chebyshev = null;
 		pDepArrhenius = plogKinetics;
+		mode = Mode.PDEPARRHENIUS;
 	}
 	
 	public PDepRateConstant(ChebyshevPolynomials chebyPols) {
