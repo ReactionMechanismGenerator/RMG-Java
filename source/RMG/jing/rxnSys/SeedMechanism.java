@@ -116,15 +116,15 @@ public class SeedMechanism {
 	            String pdepreactionFile = p_directoryName + "pdepreactions.txt";
 				
 	        	speciesSet.putAll(readSpecies(speciesFile,seedMechName,"Seed Mechanism: "));
-	        	reactionSet.addAll(readReactions(reactionFile,seedMechName,speciesSet,"Seed Mechanism: ",true));
-	        	reactionSet.addAll(readPdepReactions(pdepreactionFile,seedMechName,speciesSet,"Seed Mechanism: ",true));
+	        	reactionSet.addAll(readReactions(reactionFile,seedMechName,speciesSet,"Seed Mechanism: "));
+	        	reactionSet.addAll(readPdepReactions(pdepreactionFile,seedMechName,speciesSet,"Seed Mechanism: "));
         	}
         	else {
 	            String speciesFile = p_directoryName + "coreSpecies.txt";
 	            String pdepreactionFile = p_directoryName + "pdepreactions.txt";
 	        	
 	        	speciesSet.putAll(readSpecies(speciesFile,seedMechName,"Seed Mechanism: "));
-	        	reactionSet.addAll(readPdepReactions(pdepreactionFile,seedMechName,speciesSet,"Seed Mechanism: ",true));
+	        	reactionSet.addAll(readPdepReactions(pdepreactionFile,seedMechName,speciesSet,"Seed Mechanism: "));
         	}
         	return;
         }
@@ -135,7 +135,7 @@ public class SeedMechanism {
     }
     
 	
-    public LinkedHashSet readReactions(String p_reactionFileName, String p_name, HashMap allSpecies, String source, boolean pkl) throws IOException {
+    public LinkedHashSet readReactions(String p_reactionFileName, String p_name, HashMap allSpecies, String source) throws IOException {
     	LinkedHashSet localReactions = new LinkedHashSet();
         try {
         	FileReader in = new FileReader(p_reactionFileName);
@@ -152,10 +152,10 @@ public class SeedMechanism {
 				r = ChemParser.parseArrheniusReaction(allSpecies, line, A_multiplier, E_multiplier);
 				r.setKineticsSource(source+ p_name,0);
 				r.setKineticsComments(" ",0);
-				if (pkl) {
-					r.setIsFromPrimaryKineticLibrary(true);
-					(r.getKinetics())[0].setFromPrimaryKineticLibrary(true);
-				}
+				
+				r.setIsFromPrimaryKineticLibrary(true);
+				(r.getKinetics())[0].setFromPrimaryKineticLibrary(true);
+				
 			}
 			catch (InvalidReactionFormatException e) {
 				throw new InvalidReactionFormatException(line + ": " + e.getMessage());
@@ -220,7 +220,7 @@ public class SeedMechanism {
         }
     }
     
-    public LinkedHashSet readPdepReactions(String pdepFileName, String p_name, HashMap allSpecies, String source, boolean pkl) throws IOException {
+    public LinkedHashSet readPdepReactions(String pdepFileName, String p_name, HashMap allSpecies, String source) throws IOException {
     	LinkedHashSet localReactions = new LinkedHashSet();
 		LinkedList pdepNetworks = getPDepNetworks();
         try {
@@ -464,10 +464,10 @@ public class SeedMechanism {
 			tbr.setKineticsSource(source+ p_name,0);
 			tbr.setKineticsComments(" ",0);
 
-			if (pkl) { // RHW thinks this should always be set - it later determines if the rate is multiplied by the reaction path degeneracy or not.
-				tbr.setIsFromPrimaryKineticLibrary(true);
-				(tbr.getKinetics())[0].setFromPrimaryKineticLibrary(true);
-			}
+			 // RHW thinks this should always be set - it later determines if the rate is multiplied by the reaction path degeneracy or not.
+			tbr.setIsFromPrimaryKineticLibrary(true);
+			(tbr.getKinetics())[0].setFromPrimaryKineticLibrary(true);
+			
 			localReactions.add(tbr);
 			Reaction reverse = tbr.getReverseReaction();
 			if (reverse != null) localReactions.add(reverse);

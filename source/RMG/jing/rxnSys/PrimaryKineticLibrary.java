@@ -101,8 +101,8 @@ public class PrimaryKineticLibrary {
             
             SeedMechanism sm = new SeedMechanism();
         	speciesSet.putAll(sm.readSpecies(speciesFile,p_name,"Primary Kinetic Library: "));
-        	reactionSet.addAll(sm.readReactions(reactionFile,p_name,speciesSet,"Primary Kinetic Library: ",true));
-        	reactionSet.addAll(sm.readPdepReactions(pdepreactionFile,p_name,speciesSet,"Primary Kinetic Library: ",true));
+        	reactionSet.addAll(sm.readReactions(reactionFile,p_name,speciesSet,"Primary Kinetic Library: "));
+        	reactionSet.addAll(sm.readPdepReactions(pdepreactionFile,p_name,speciesSet,"Primary Kinetic Library: "));
         	return;
         }
         catch (Exception e) {
