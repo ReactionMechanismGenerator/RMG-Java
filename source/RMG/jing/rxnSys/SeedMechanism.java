@@ -204,14 +204,14 @@ public class SeedMechanism {
 				throw new InvalidChemGraphException("Cannot read species '" + name + "': " + e.getMessage());
 			}
 			ChemGraph cg = ChemGraph.make(graph);	
-			Species spe = Species.make(name, cg, false);
+			Species spe = Species.make(name, cg);
 			// GJB: Turn off reactivity if necessary, but don't let code turn it on
 			// again if was already set as unreactive from input file
 			if(IsReactive==false) spe.setReactivity(IsReactive);
 			localSpecies.put(name, spe);
 			line = ChemParser.readMeaningfulLine(data, true);
 		}
-			
+		
             in.close();
         	return localSpecies;
         }

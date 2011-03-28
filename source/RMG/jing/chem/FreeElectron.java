@@ -77,7 +77,7 @@ public class FreeElectron {
     }
     
     //## operation creat(String) 
-    private static FreeElectron creat(String p_name) throws UnknownSymbolException {
+    private static FreeElectron create(String p_name) throws UnknownSymbolException {
         //#[ operation creat(String) 
         FreeElectron electron = null;
         
@@ -141,7 +141,7 @@ public class FreeElectron {
         	String internalName = translateName(p_name);
         	FreeElectron electron = freeElectronDictionary.getFreeElectron(internalName);
         	if (electron == null) {
-        		electron = creat(internalName);
+        		electron = create(internalName);
         		freeElectronDictionary.putFreeElectron(electron);
         	}
         	return electron;

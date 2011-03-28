@@ -59,6 +59,7 @@ public static void main(String[] args) {
     double s=0;
     double es=0;
     String solvent="";
+    LinkedHashMap speciesFromInputFile = new LinkedHashMap();
 
  try {
           FileReader in = new FileReader("Abraham_input.txt");
@@ -95,7 +96,10 @@ public static void main(String[] args) {
         			  System.out.println("Error in reading graph: Graph contains a forbidden structure.\n" + g.toString());
         			  System.exit(0);
         		  }
-        		  Species species = Species.make(speciesName,cg,true);
+
+                          ReactionModelGenerator.addChemGraphToListIfNotPresent_ElseTerminate(speciesFromInputFile,cg,speciesName);
+
+        		  Species species = Species.make(speciesName,cg);
         		  speciesSet.add(species);
         		  line = ChemParser.readMeaningfulLine(data, true);
         	  }

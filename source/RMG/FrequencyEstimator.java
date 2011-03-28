@@ -3,6 +3,7 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.ListIterator;
 import jing.chem.ChemGraph;
@@ -13,6 +14,7 @@ import jing.chem.Species;
 import jing.chem.SpectroscopicData;
 import jing.chemParser.ChemParser;
 import jing.chemUtil.Graph;
+import jing.rxnSys.ReactionModelGenerator;
 
 ////////////////////////////////////////////////////////////////////////////////
 //
@@ -57,6 +59,7 @@ public class FrequencyEstimator {
 		 RMG.globalInitializeSystemProperties();
 
 		LinkedList<ChemGraph> graphList = new LinkedList<ChemGraph>();
+                LinkedHashMap speciesFromInputFile = new LinkedHashMap();
 
 		File file = new File(args[0]);
 
@@ -68,6 +71,9 @@ public class FrequencyEstimator {
 			Graph g = ChemParser.readChemGraph(reader);
 			while (g != null) {
 				ChemGraph cg = ChemGraph.make(g);
+
+                                ReactionModelGenerator.addChemGraphToListIfNotPresent_ElseTerminate(speciesFromInputFile,cg,"");
+
 				graphList.add(cg);
 				g = ChemParser.readChemGraph(reader);
 			}
@@ -92,7 +98,7 @@ public class FrequencyEstimator {
 
 		for (ListIterator<ChemGraph> iter = graphList.listIterator(); iter.hasNext(); ) {
 			ChemGraph cg = iter.next();
-			Species spec = Species.make("", cg, true);
+			Species spec = Species.make("", cg);
 			SpectroscopicData data = freqGroups.generateFreqData(spec);
 			System.out.println("");
 			System.out.println(cg.toString());

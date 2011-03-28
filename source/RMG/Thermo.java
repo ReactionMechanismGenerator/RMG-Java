@@ -48,6 +48,7 @@ public static void main(String[] args) {
 	LinkedHashSet speciesSet = new LinkedHashSet();
     String thermo_output = "";
     Temperature systemTemp = new Temperature();
+    LinkedHashMap speciesFromInputFile = new LinkedHashMap();
 
  try {
           FileReader in = new FileReader("thermo_input.txt");
@@ -95,7 +96,10 @@ public static void main(String[] args) {
         			  System.out.println("Error in reading graph: Graph contains a forbidden structure.\n" + g.toString());
         			  System.exit(0);
         		  }
-        		  Species species = Species.make(speciesName,cg,true);
+
+                          ReactionModelGenerator.addChemGraphToListIfNotPresent_ElseTerminate(speciesFromInputFile,cg,speciesName);
+
+        		  Species species = Species.make(speciesName,cg);
         		  speciesSet.add(species);
         		  line = ChemParser.readMeaningfulLine(data, true);
         	  }

@@ -1588,7 +1588,7 @@ public class ChemParser {
         		Graph g = readChemGraph(reader);
         		if (g == null) throw new NullGraphException();
         		ChemGraph cg = ChemGraph.make(g);
-        		Species spe = Species.make(name,cg,false);
+        		Species spe = Species.make(name,cg);
         		speciesList.add(spe);
         		line = readMeaningfulLine(reader, true);
         	}

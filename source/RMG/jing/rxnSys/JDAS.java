@@ -661,8 +661,6 @@ public abstract class JDAS implements DAESolver {
             double rate = 0;
             if (p_reaction instanceof TemplateReaction) {
                 //startTime = System.currentTimeMillis();
-                //rate = ((TemplateReaction)p_reaction).getRateConstant();
-
                 rate = ((TemplateReaction) p_reaction).calculateTotalRate(p_beginStatus.temperature);
                 ODEReaction or = new ODEReaction(rnum, pnum, rid, pid, rate);
                 //Global.transferReaction = Global.transferReaction + (System.currentTimeMillis() - startTime)/1000/60;
@@ -753,13 +751,11 @@ public abstract class JDAS implements DAESolver {
                 rate = p_reaction.calculateTotalRate(p_beginStatus.temperature);
 
                 double inertColliderEfficiency = ((ThirdBodyReaction) p_reaction).calculateThirdBodyCoefficientForInerts(p_beginStatus);
-                //rate = p_reaction.getRateConstant();
                 ThirdBodyODEReaction or = new ThirdBodyODEReaction(rnum, pnum, rid, pid, rate, colliders, efficiency, numCollider, inertColliderEfficiency);
                 return or;
             } else {
                 rate = p_reaction.calculateTotalRate(p_beginStatus.temperature);
                 //startTime = System.currentTimeMillis();
-                //rate = p_reaction.getRateConstant();
                 ODEReaction or = new ODEReaction(rnum, pnum, rid, pid, rate);
                 //Global.transferReaction = Global.transferReaction + (System.currentTimeMillis() - startTime)/1000/60;
 
@@ -795,11 +791,11 @@ public abstract class JDAS implements DAESolver {
         // Find the rate coefficient
         double k;
         if (r instanceof TemplateReaction) {
-            k = ((TemplateReaction) r).getRateConstant(temperature, pressure);
+            k = ((TemplateReaction) r).calculateTotalPDepRate(temperature, pressure);
         } else if (r instanceof PDepReaction) {
             k = ((PDepReaction) r).calculateRate(temperature, pressure);
         } else {
-            k = r.getRateConstant(temperature);
+            k = r.calculateTotalRate(temperature);
         }
 
         if (k > 0) {

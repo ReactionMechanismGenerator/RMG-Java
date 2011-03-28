@@ -122,11 +122,12 @@ public class RateBasedPDepRME implements ReactionModelEnlarger {
         
         // Iterate over reaction systems, enlarging each individually
 		for (int i = 0; i < rxnSystemList.size(); i++) {
-			
+			Logger.info(String.format("Reaction system %d of %d",i+1, rxnSystemList.size()));
 			// Don't need to enlarge if the system is already valid
 			if ((Boolean) validList.get(i)) {
 				coreUpdateList.add(null);
                 leakUpdateList.add(null);
+				Logger.info("Model is valid");
                 continue;
             }
             
@@ -187,6 +188,7 @@ public class RateBasedPDepRME implements ReactionModelEnlarger {
             
 			if (maxFlux > maxLeakFlux && maxFlux > Rmin) {
 				// Flux is greater than leakFlux, and big enough to matter.
+				Logger.info(String.format("Species %s will be moved to the core.", maxSpecies.getFullName()));
 				if (!coreUpdateList.contains(maxSpecies))
                     coreUpdateList.add(maxSpecies);
                 else
@@ -195,6 +197,7 @@ public class RateBasedPDepRME implements ReactionModelEnlarger {
             }
 			else if (maxLeakFlux > Rmin) { 
 				// leakFlux is greater than Flux, and big enough to matter.
+				Logger.info(String.format("The pressure-dependent network of %s will be explored.", maxLeakSpecies.getFullName()));
 				if (!leakUpdateList.contains(maxLeakSpecies))
                     leakUpdateList.add(maxLeakSpecies);
                 else

@@ -985,14 +985,16 @@ public class QMTP implements GeneralGAPP {
         try{ 
             File runningdir=new File(directory);
             String inpKeyStrTopCombined = inpKeyStrBoth + inpKeyStrTop;
-	    String command = null;
+	    Process babelProc = null;
 	    if(attemptNumber<=scriptAttempts){//use UFF-refined coordinates
-		command = "babel -imol "+ p_molfile.getPath()+ " -omop " + name+".mop -xk \"" + inpKeyStrTopCombined + "\" --title \""+InChIaug+"\"";
+		String[] command = { "babel", "-imol", p_molfile.getPath(), "-xk", inpKeyStrTopCombined,"--title", InChIaug,"-omop", name+".mop" };
+		babelProc = Runtime.getRuntime().exec(command, null, runningdir);
 	    }
 	    else{//use the crude coordinates
-		command = "babel -imol "+ p_molfile.getCrudePath()+ " -omop " + name+".mop -xk \"" + inpKeyStrTopCombined + "\" --title \""+InChIaug+"\"";
+		String[] command = { "babel", "-imol", p_molfile.getCrudePath(), "-xk",  inpKeyStrTopCombined,"--title", InChIaug,"-omop", name+".mop" };
+		babelProc = Runtime.getRuntime().exec(command, null, runningdir);
 	    }
-	    Process babelProc = Runtime.getRuntime().exec(command, null, runningdir);
+	    
             //read in output
             InputStream is = babelProc.getInputStream();
             InputStreamReader isr = new InputStreamReader(is);

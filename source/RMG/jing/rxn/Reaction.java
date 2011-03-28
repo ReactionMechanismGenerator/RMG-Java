@@ -1066,15 +1066,6 @@ public class Reaction {
       return structure.getProductList();
       //#]
   }
-
-  //10/26/07 gmagoon: changed to have temperature and pressure passed as parameters (part of eliminating use of Global.temperature)
-  public double getRateConstant(Temperature p_temperature){
-  //public double getRateConstant(){
-	  if (rateConstant == 0)
-                  rateConstant = calculateTotalRate(p_temperature);
-	//	  rateConstant = calculateTotalRate(Global.temperature);
-	  return rateConstant;
-  }
   
   //## operation getProductNumber()
   public int getProductNumber() {
@@ -1090,21 +1081,6 @@ public class Reaction {
       //#]
   }
 
-  /*//## operation getRateConstant()
-  public Kinetics getRateConstant() {
-      //#[ operation getRateConstant()
-      if (isForward()) {
-      	return rateConstant;
-      }
-      else if (isBackward()) {
-      	Reaction rr = getReverseReaction();
-      	if (rr == null) throw new NullPointerException("Reverse reaction is null.\n" + structure.toString());
-      	if (!rr.isForward()) throw new InvalidReactionDirectionException(structure.toString());
-      	return rr.getRateConstant();
-      }
-      else throw new InvalidReactionDirectionException(structure.toString());
-      //#]
-  }*/
 
   //## operation getReactantList()
   public LinkedList getReactantList() {
@@ -1723,7 +1699,7 @@ public class Reaction {
 	 */
 	public double calculateForwardFlux(SystemSnapshot ss) {
 		Temperature T = ss.getTemperature();
-		double forwardFlux = getRateConstant(T);
+		double forwardFlux = calculateTotalRate(T);
 		for (ListIterator<Species> iter = getReactants(); iter.hasNext(); ) {
 			Species spe = iter.next();
 			double conc = 0.0;

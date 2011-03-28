@@ -3,6 +3,7 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.LinkedHashMap;
 
 import jing.chem.ChemGraph;
 import jing.chem.ForbiddenStructureException;
@@ -25,6 +26,7 @@ public class TransportDataEstimator {
 		gatpfit.mkdir();
 		
 		String transportProperties = "";
+                LinkedHashMap speciesFromInputFile = new LinkedHashMap();
 		
 		// Read in the file contained in args[0] string
 		try {
@@ -59,7 +61,10 @@ public class TransportDataEstimator {
             while (line != null) {
             	String speciesName = line;
             	ChemGraph cg = ChemGraph.make(ChemParser.readChemGraph(reader));
-            	Species sp = Species.make(speciesName,cg,true);
+
+                ReactionModelGenerator.addChemGraphToListIfNotPresent_ElseTerminate(speciesFromInputFile,cg,"");
+
+            	Species sp = Species.make(speciesName,cg);
             	TransportData lj4species = sp.getChemkinTransportData();
             	String whitespace = "                ";
             	

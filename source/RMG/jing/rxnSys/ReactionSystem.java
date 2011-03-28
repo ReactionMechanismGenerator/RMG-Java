@@ -263,14 +263,10 @@ public class ReactionSystem {
 			Reaction r = (Reaction)iur.next();
 			double flux = 0;
 			if (r instanceof TemplateReaction) {
-				//flux = ((TemplateReaction)r).calculateTotalPDepRate(p_temperature);
-				flux = ((TemplateReaction)r).getRateConstant(p_temperature, p_systemSnapshot.getPressure());//10/26/07 gmagoon: changed to pass temperature and pressure; I assume systemSnapshot contains pressure at desired time; note: interestingly, this did not appear to turn up on my initial search for uses of templateReaction version of getRateConstant (I could have missed it by mistaking reaction version for the one I was searching for); also NetBeans did not indicate an error until I changed reaction version of getRateConstant
-				//flux = ((TemplateReaction)r).getRateConstant();
+				flux = ((TemplateReaction)r).calculateTotalPDepRate(p_temperature, p_systemSnapshot.getPressure());
 			}
 			else {
-				// flux = r.calculateTotalRate(p_temperature);
-				flux = r.getRateConstant(p_temperature);//10/26/07 gmagoon: changed to pass temperature
-				// flux = r.getRateConstant();
+				flux = r.calculateTotalRate(p_temperature);
 			}
 			if (flux > 0) {
 				for (Iterator rIter=r.getReactants(); rIter.hasNext();) {

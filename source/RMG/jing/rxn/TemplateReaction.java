@@ -448,13 +448,6 @@ public class TemplateReaction extends Reaction {
         return pDepNetwork;
     }
     
-      public double getRateConstant(Temperature p_temperature, Pressure p_pressure){
-	//public double getRateConstant(){
-		if (rateConstant == 0)
-                        rateConstant = calculateTotalPDepRate(p_temperature, p_pressure);
-			//rateConstant = calculateTotalPDepRate(Global.temperature);
-		return rateConstant;
-	}
 	
     public ReactionTemplate getReactionTemplate() {
         return reactionTemplate;

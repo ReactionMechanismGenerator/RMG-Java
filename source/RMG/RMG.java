@@ -66,7 +66,7 @@ public class RMG {
             // Note that some of these folders are only used when their
             // corresponding features are activated in the condition file
             createFolder("chemkin", true);
-            createFolder("Restart", true);
+            createFolder("Restart", false);
             createFolder("GATPFit", true);
             createFolder("ODESolver", true);
             createFolder("fame", true);

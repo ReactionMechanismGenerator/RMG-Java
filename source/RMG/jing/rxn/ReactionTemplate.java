@@ -875,7 +875,7 @@ public class ReactionTemplate {
 				for (int i=0; i< product.size(); i++){
 					String name = null;
 					if (((ChemGraph)product.get(i)).getSpecies() == null){
-						Species sp = Species.make(name, ((ChemGraph)product.get(i)), false);
+						Species sp = Species.make(name, ((ChemGraph)product.get(i)));
 						productSp.add(sp);
 					}
 				}
@@ -1065,7 +1065,7 @@ public class ReactionTemplate {
 				for (int i=0; i< product.size(); i++){
 					String name = null;
 					if (((ChemGraph)product.get(i)).getSpecies() == null){
-						Species sp = Species.make(name, ((ChemGraph)product.get(i)), false);
+						Species sp = Species.make(name, ((ChemGraph)product.get(i)));
 						productSp.add(sp);
 					}
 				}
@@ -1194,7 +1194,7 @@ public class ReactionTemplate {
 				for (int i=0; i< product.size(); i++){
 					String name = null;
 					if (((ChemGraph)product.get(i)).getSpecies() == null){
-						Species sp = Species.make(name, ((ChemGraph)product.get(i)), false);
+						Species sp = Species.make(name, ((ChemGraph)product.get(i)));
 						productSp.add(sp);
 					}
 				}
