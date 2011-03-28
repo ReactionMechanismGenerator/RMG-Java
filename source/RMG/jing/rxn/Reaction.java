@@ -1081,21 +1081,6 @@ public class Reaction {
       //#]
   }
 
-  /*//## operation getRateConstant()
-  public Kinetics getRateConstant() {
-      //#[ operation getRateConstant()
-      if (isForward()) {
-      	return rateConstant;
-      }
-      else if (isBackward()) {
-      	Reaction rr = getReverseReaction();
-      	if (rr == null) throw new NullPointerException("Reverse reaction is null.\n" + structure.toString());
-      	if (!rr.isForward()) throw new InvalidReactionDirectionException(structure.toString());
-      	return rr.getRateConstant();
-      }
-      else throw new InvalidReactionDirectionException(structure.toString());
-      //#]
-  }*/
 
   //## operation getReactantList()
   public LinkedList getReactantList() {
