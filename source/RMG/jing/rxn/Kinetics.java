@@ -94,7 +94,7 @@ public interface Kinetics {
 	
 	void setFromPrimaryKineticLibrary(boolean p_boolean);
 	
-	boolean getFromPrimaryKineticLibrary();
+	boolean isFromPrimaryKineticLibrary();
     
     //## operation multiply(double) 
     Kinetics multiply(double p_multiple);
