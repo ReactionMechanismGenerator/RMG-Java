@@ -335,10 +335,10 @@ public class ArrheniusKinetics implements Kinetics {
 		{
 			formatString[3] = source;
 			formatString[4] = comment;
-    		return String.format("%1.3e \t %2.2f \t %3.2f \t!%s  %s", formatString);
+    		return String.format("%1.3e \t % 2.2f \t % 3.2f \t!%s  %s", formatString);
     	}
 		else
-    		return String.format("%1.3e \t %2.2f \t %3.2f", formatString);
+    		return String.format("%1.3e \t % 2.2f \t % 3.2f", formatString);
 
     }
    
