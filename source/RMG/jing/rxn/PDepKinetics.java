@@ -37,6 +37,6 @@ import jing.param.Temperature;
  */
 public interface PDepKinetics {
 
-	public double calculateRate(Temperature p_temperature, Pressure p_pressure);
+	public double calculateRate(Temperature p_temperature, Pressure p_pressure) throws POutOfRangeException;
 
 }
