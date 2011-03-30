@@ -185,7 +185,7 @@ public class PDepRateConstant {
 			throw new Exception(String.format("Tried to evaluate P-dep rate coefficient at P=%.2g bar but only valid from %s to %s bar",
 											  pressure.getBar(),PMIN.getBar(),PMAX.getBar() ));
 		
-		if (mode == Mode.INTERPOLATE) {
+		if (getMode() == Mode.INTERPOLATE || getMode() == Mode.RATE ) {
 
 			/*
 			 *  MRH 10Feb2010
