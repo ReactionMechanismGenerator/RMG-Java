@@ -506,9 +506,9 @@ public  Chemkin() {
 	  copyFiles(chemkinFile, "chemkin/chem.inp");
       
 	  // write tableOfRateCoeffs.txt if running with pressure-dependence
-      if (PDepRateConstant.getMode() == Mode.CHEBYSHEV ||
-    		  PDepRateConstant.getMode() == Mode.PDEPARRHENIUS ||
-    		  PDepRateConstant.getMode() == Mode.RATE) {
+      if (PDepRateConstant.getDefaultMode() == Mode.CHEBYSHEV ||
+    		  PDepRateConstant.getDefaultMode() == Mode.PDEPARRHENIUS ||
+    		  PDepRateConstant.getDefaultMode() == Mode.RATE) {
 	      String newFile = directory+"/tableOfRateCoeffs.txt";
 	      BufferedWriter bw = null;
 	      try {

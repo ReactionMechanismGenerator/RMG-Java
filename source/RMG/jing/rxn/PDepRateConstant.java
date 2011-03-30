@@ -54,10 +54,13 @@ public class PDepRateConstant {
 	public enum Mode { NONE, INTERPOLATE, CHEBYSHEV, PDEPARRHENIUS, RATE };
 
 	/**
-	 * The mode to use for evaluation the pressure-dependent rate coefficients.
+	 * The default mode to use for evaluation the pressure-dependent rate coefficients.
 	 * Default is interpolate.
 	 */
 	private static Mode mode = Mode.INTERPOLATE;
+	
+	// The mode for a specific rate coefficient (so it can be non-default)
+	private Mode thisMode;
 
 	/**
 	 * A list of the temperatures at which the rate coefficient has been
@@ -121,26 +124,28 @@ public class PDepRateConstant {
 		rateConstants = rates;
 		chebyshev = chebyPols;
 		pDepArrhenius = null;
+		setThisMode(Mode.CHEBYSHEV);
 	}
 	
 	public PDepRateConstant(double[][] rates, PDepArrheniusKinetics plogKinetics) {
 		rateConstants = rates;
 		chebyshev = null;
 		pDepArrhenius = plogKinetics;
-		mode = Mode.PDEPARRHENIUS;
+		setThisMode(Mode.PDEPARRHENIUS);
 	}
 	
 	public PDepRateConstant(PDepArrheniusKinetics plogKinetics) {
 		rateConstants = null;
 		chebyshev = null;
 		pDepArrhenius = plogKinetics;
-		mode = Mode.PDEPARRHENIUS;
+		setThisMode(Mode.PDEPARRHENIUS);
 	}
 	
 	public PDepRateConstant(ChebyshevPolynomials chebyPols) {
 		rateConstants = null;
 		chebyshev = chebyPols;
 		pDepArrhenius = null;
+		setThisMode(Mode.CHEBYSHEV);
 	}
 
 	//==========================================================================
@@ -148,12 +153,23 @@ public class PDepRateConstant {
 	//	Static methods
 	//
 
-	public static Mode getMode() {
+	public Mode getMode() {
+		if (thisMode != null)
+			return thisMode;
+		else 
+			return mode;
+	}
+	
+	public static Mode getDefaultMode() {
 		return mode;
 	}
 
-	public static void setMode(Mode m) {
+	public static void setDefaultMode(Mode m) {
 		mode = m;
+	}
+	
+	public void setThisMode(Mode m) {
+		thisMode = m;
 	}
 
 	public static Temperature[] getTemperatures() {
@@ -246,12 +262,16 @@ public class PDepRateConstant {
 				rate = Math.pow(10, rate);
 			}
 		}
-		else if (mode == Mode.CHEBYSHEV && chebyshev != null) {
+		else if (getMode() == Mode.CHEBYSHEV && chebyshev != null) {
 			rate = chebyshev.calculateRate(temperature, pressure);
 		}
-		else if (mode == Mode.PDEPARRHENIUS && pDepArrhenius != null) {
+		else if (getMode() == Mode.PDEPARRHENIUS && pDepArrhenius != null) {
 			rate = pDepArrhenius.calculateRate(temperature, pressure);
 		}
+		else {
+			throw new Exception("Failed to evaluate P-dep rate coefficient with type "+getMode());
+		}
+
 
 		return rate;
 	}

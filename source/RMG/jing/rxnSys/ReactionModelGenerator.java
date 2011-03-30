@@ -4511,22 +4511,22 @@ public class ReactionModelGenerator {
 				
 				String pDepKinType = st.nextToken();
 				if (pDepKinType.toLowerCase().equals("chebyshev")) {
-					PDepRateConstant.setMode(PDepRateConstant.Mode.CHEBYSHEV);
+					PDepRateConstant.setDefaultMode(PDepRateConstant.Mode.CHEBYSHEV);
 					// Default is to cubic order for basis functions
 					FastMasterEqn.setNumTBasisFuncs(4);
 					FastMasterEqn.setNumPBasisFuncs(4);
 				}
 				else if (pDepKinType.toLowerCase().equals("pdeparrhenius"))
-					PDepRateConstant.setMode(PDepRateConstant.Mode.PDEPARRHENIUS);
+					PDepRateConstant.setDefaultMode(PDepRateConstant.Mode.PDEPARRHENIUS);
 				else if (pDepKinType.toLowerCase().equals("rate"))
-					PDepRateConstant.setMode(PDepRateConstant.Mode.RATE);
+					PDepRateConstant.setDefaultMode(PDepRateConstant.Mode.RATE);
 				else
 					throw new InvalidSymbolException("condition.txt: Unknown PDepKineticsModel = " + pDepKinType);
 
 				// For Chebyshev polynomials, optionally specify the number of
 				// temperature and pressure basis functions
 				// Such a line would read, e.g.: "PDepKineticsModel: Chebyshev 4 4"
-				if (st.hasMoreTokens() && PDepRateConstant.getMode() == PDepRateConstant.Mode.CHEBYSHEV) {
+				if (st.hasMoreTokens() && PDepRateConstant.getDefaultMode() == PDepRateConstant.Mode.CHEBYSHEV) {
 					try {
 						int numTBasisFuncs = Integer.parseInt(st.nextToken());
 					int numPBasisFuncs = Integer.parseInt(st.nextToken());
@@ -4618,7 +4618,7 @@ public class ReactionModelGenerator {
 			// Set temperatures and pressures (if not already set manually)
 			if (temperatures == null) {
 				temperatures = new Temperature[Tnumber];
-				if (PDepRateConstant.getMode() == PDepRateConstant.Mode.CHEBYSHEV) {
+				if (PDepRateConstant.getDefaultMode() == PDepRateConstant.Mode.CHEBYSHEV) {
 					// Use the Gauss-Chebyshev points
 					// The formula for the Gauss-Chebyshev points was taken from
 					// the Chemkin theory manual
@@ -4639,7 +4639,7 @@ public class ReactionModelGenerator {
 			}
 			if (pressures == null) {
 				pressures = new Pressure[Pnumber];
-				if (PDepRateConstant.getMode() == PDepRateConstant.Mode.CHEBYSHEV) {
+				if (PDepRateConstant.getDefaultMode() == PDepRateConstant.Mode.CHEBYSHEV) {
 					// Use the Gauss-Chebyshev points
 					// The formula for the Gauss-Chebyshev points was taken from
 					// the Chemkin theory manual

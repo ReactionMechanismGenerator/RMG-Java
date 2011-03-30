@@ -518,14 +518,14 @@ public class PDepReaction extends Reaction {
         if (pDepRate != null) {
 
 			String result = getStructure().toChemkinString(true).toString();
-			if (PDepRateConstant.getMode() == PDepRateConstant.Mode.CHEBYSHEV)
+			if (pDepRate.getMode() == PDepRateConstant.Mode.CHEBYSHEV)
 				result = formPDepSign(result);
 			result = String.format("%-52s",result);
 			result += "\t1.0E0 0.0 0.0" ;
 			result += "\t!" + getComments().toString()  + '\n';
-			if (PDepRateConstant.getMode() == PDepRateConstant.Mode.CHEBYSHEV)
+			if (pDepRate.getMode() == PDepRateConstant.Mode.CHEBYSHEV)
 				result += pDepRate.getChebyshev().toChemkinString() + '\n';
-			else if (PDepRateConstant.getMode() == PDepRateConstant.Mode.PDEPARRHENIUS)
+			else if (pDepRate.getMode() == PDepRateConstant.Mode.PDEPARRHENIUS)
 				result += pDepRate.getPDepArrheniusKinetics().toChemkinString();
 
 			return result;
@@ -546,16 +546,16 @@ public class PDepReaction extends Reaction {
         if (pDepRate != null) {
 
 			String result = getStructure().toRestartString(true).toString();
-			if (PDepRateConstant.getMode() == PDepRateConstant.Mode.CHEBYSHEV)
+			if (pDepRate.getMode() == PDepRateConstant.Mode.CHEBYSHEV)
 				result = formPDepSign(result);
 			result = String.format("%-52s",result);
 			result += "\t1.0E0 0.0 0.0" ;
 			result += "\t!" + getComments().toString() +
 				"\tdeltaHrxn(T=298K) = " + 
 				calculateHrxn(new Temperature(298.0,"K")) + " kcal/mol\n";
-			if (PDepRateConstant.getMode() == PDepRateConstant.Mode.CHEBYSHEV)
+			if (pDepRate.getMode() == PDepRateConstant.Mode.CHEBYSHEV)
 				result += pDepRate.getChebyshev().toChemkinString() + '\n';
-			else if (PDepRateConstant.getMode() == PDepRateConstant.Mode.PDEPARRHENIUS)
+			else if (pDepRate.getMode() == PDepRateConstant.Mode.PDEPARRHENIUS)
 				result += pDepRate.getPDepArrheniusKinetics().toChemkinString();
 
 			return result;
@@ -581,7 +581,7 @@ public class PDepReaction extends Reaction {
         if (pDepRate != null) {
 			String result = getStructure().toChemkinString(true).toString();
 
-			if (PDepRateConstant.getMode() == PDepRateConstant.Mode.RATE) {
+			if (pDepRate.getMode() == PDepRateConstant.Mode.RATE) {
 				result = String.format("%-52s",result);
 				result += String.format("\t%.3e   0.0   0.0 ",calculateRate(t,p));
 				result += "\t!" + getComments().toString();
@@ -589,16 +589,16 @@ public class PDepReaction extends Reaction {
 				return result;
 			}
 
-			if (PDepRateConstant.getMode() == PDepRateConstant.Mode.CHEBYSHEV)
+			if (pDepRate.getMode() == PDepRateConstant.Mode.CHEBYSHEV)
 				result = formPDepSign(result);
 			result = String.format("%-52s",result);
 
 			result += "\t1.0E0 0.0 0.0";
 			result += "\t!" + getComments().toString() + '\n';
 
-			if (PDepRateConstant.getMode() == PDepRateConstant.Mode.CHEBYSHEV)
+			if (pDepRate.getMode() == PDepRateConstant.Mode.CHEBYSHEV)
 				result += pDepRate.getChebyshev().toChemkinString() + '\n';
-			else if (PDepRateConstant.getMode() == PDepRateConstant.Mode.PDEPARRHENIUS)
+			else if (pDepRate.getMode() == PDepRateConstant.Mode.PDEPARRHENIUS)
 				result += pDepRate.getPDepArrheniusKinetics().toChemkinString();
 			
 			return result;

@@ -550,10 +550,10 @@ public class FastMasterEqn implements PDepKineticsEstimator {
 			input.append( "#		Example: Chebyshev 4 4\n" );
 			input.append( "#	Option 3: Pressure-dependent Arrhenius\n" );
 			input.append( "#		Example: PDepArrhenius\n" );
-			if (PDepRateConstant.getMode() == PDepRateConstant.Mode.CHEBYSHEV)
+			if (PDepRateConstant.getDefaultMode() == PDepRateConstant.Mode.CHEBYSHEV)
 				input.append( "Chebyshev " + Integer.toString(numChebTempPolys) +
 						" " + Integer.toString(numChebPressPolys) + "\n");
-			else if (PDepRateConstant.getMode() == PDepRateConstant.Mode.PDEPARRHENIUS)
+			else if (PDepRateConstant.getDefaultMode() == PDepRateConstant.Mode.PDEPARRHENIUS)
 				input.append( "PDepArrhenius\n" );
 			else
 				input.append( "None\n" );
