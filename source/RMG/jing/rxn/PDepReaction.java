@@ -580,9 +580,10 @@ public class PDepReaction extends Reaction {
 			String result = getStructure().toChemkinString(true).toString();
 
 			if (PDepRateConstant.getMode() == PDepRateConstant.Mode.RATE) {
-				result = String.format(result = formPDepSign(result));
-				result += String.format("\t%.3e 0.0 0.0",calculateRate(t,p));
-				result += "\t!" + getComments().toString() + '\n';
+				result = String.format("%-52s",result);
+				result += String.format("\t%.3e   0.0   0.0 ",calculateRate(t,p));
+				result += "\t!" + getComments().toString();
+				result += String.format(" Evaluated at T=%s K P=%s bar\n",t.getK(),p.getBar());
 				return result;
 			}
 
