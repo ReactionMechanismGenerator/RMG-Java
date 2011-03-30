@@ -99,14 +99,6 @@ public class PDepArrheniusKinetics implements PDepKinetics {
     public String toChemkinString() {
         String result = "";
 		for (int i = 0; i < pressures.length; i++) {
-			result += "PLOG / " + Double.toString(pressures[i].getAtm());
-//			result += " / " + Double.toString(kinetics[i].getAValue());
-//			result += " / " + Double.toString(kinetics[i].getNValue());
-//			result += " / " + Double.toString(kinetics[i].getEValue());
-			// 6Jul2009-MRH:
-			//	PLOG format does not need "/" between parameters
-			result += " " + Double.toString(kinetics[i].getAValue());
-			result += " " + Double.toString(kinetics[i].getNValue());
 			double Ea_in_kcalmol = kinetics[i].getEValue();
 			double Ea = 0.0;
 			if (ArrheniusKinetics.getEaUnits().equals("kcal/mol"))		Ea = Ea_in_kcalmol;
@@ -114,8 +106,11 @@ public class PDepArrheniusKinetics implements PDepKinetics {
 			else if (ArrheniusKinetics.getEaUnits().equals("kJ/mol"))	Ea = Ea_in_kcalmol * 4.184;
 			else if (ArrheniusKinetics.getEaUnits().equals("J/mol"))	Ea = Ea_in_kcalmol * 4184.0;
 			else if (ArrheniusKinetics.getEaUnits().equals("Kelvins"))	Ea = Ea_in_kcalmol / 1.987e-3;
-			result += " " + Double.toString(Ea);
-			result += " /\n";
+			result += String.format("PLOG / %10s    %10.2e  %10s  %10s /\n",
+									pressures[i].getAtm(),
+									kinetics[i].getAValue(),
+									kinetics[i].getNValue(),
+									Ea);
 		}
 		return result;
     }
