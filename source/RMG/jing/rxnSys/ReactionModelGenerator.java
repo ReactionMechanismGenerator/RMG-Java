@@ -2834,10 +2834,12 @@ public class ReactionModelGenerator {
 		}
 		
 		// If plog parameters are present, write them
-		PDepArrheniusKinetics kinetics = pdeprxn.getPDepRate().getPDepArrheniusKinetics();
+		PDepArrheniusKinetics[] kinetics = pdeprxn.getPDepRate().getPDepArrheniusKinetics();
 		if (kinetics != null) {
-			sb.append(kinetics.toChemkinString());
-			sb.append("\n");
+			for (int i=0; i<kinetics.length; i++) {
+				sb.append(kinetics[i].toChemkinString());
+				sb.append("\n");
+			}
 		}
 	/*
 		else if (numPlog != 0) {

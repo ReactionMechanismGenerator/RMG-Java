@@ -91,7 +91,7 @@ public class PDepRateConstant {
 	/**
 	 * The rate coefficient as represented by pressure-dependent Arrhenius kinetics.
 	 */
-	private PDepArrheniusKinetics pDepArrhenius;
+	private PDepArrheniusKinetics[] pDepArrhenius;
 
 	private static Temperature TMIN;
 	private static Temperature TMAX;
@@ -130,14 +130,16 @@ public class PDepRateConstant {
 	public PDepRateConstant(double[][] rates, PDepArrheniusKinetics plogKinetics) {
 		rateConstants = rates;
 		chebyshev = null;
-		pDepArrhenius = plogKinetics;
+		pDepArrhenius = new PDepArrheniusKinetics[1];
+		pDepArrhenius[0] = plogKinetics;
 		setThisMode(Mode.PDEPARRHENIUS);
 	}
 	
 	public PDepRateConstant(PDepArrheniusKinetics plogKinetics) {
 		rateConstants = null;
 		chebyshev = null;
-		pDepArrhenius = plogKinetics;
+		pDepArrhenius = new PDepArrheniusKinetics[1];
+		pDepArrhenius[0] = plogKinetics;
 		setThisMode(Mode.PDEPARRHENIUS);
 	}
 	
@@ -266,7 +268,10 @@ public class PDepRateConstant {
 			rate = chebyshev.calculateRate(temperature, pressure);
 		}
 		else if (getMode() == Mode.PDEPARRHENIUS && pDepArrhenius != null) {
-			rate = pDepArrhenius.calculateRate(temperature, pressure);
+			rate = 0;
+			for (int i=0; i<pDepArrhenius.length; i++) {
+				rate += pDepArrhenius[i].calculateRate(temperature, pressure);
+			}
 		}
 		else {
 			throw new Exception("Failed to evaluate P-dep rate coefficient with type "+getMode());
@@ -297,12 +302,19 @@ public class PDepRateConstant {
 		}
 	}
 
-	public PDepArrheniusKinetics getPDepArrheniusKinetics() {
+	public PDepArrheniusKinetics[] getPDepArrheniusKinetics() {
 		return pDepArrhenius;
 	}
 
-	public void setPDepArrheniusKinetics(PDepArrheniusKinetics kin) {
+	public void setPDepArrheniusKinetics(PDepArrheniusKinetics[] kin) {
+		// Store the passed in list of kinetics
 		pDepArrhenius = kin;
+	}
+	
+	public void setPDepArrheniusKinetics(PDepArrheniusKinetics kin) {
+		// Make a new list of size 1, containing only the passed in kinetics
+		pDepArrhenius = new PDepArrheniusKinetics[1];
+		pDepArrhenius[0] = kin;
 	}
 	
 	public static void setPMin(Pressure p) {
