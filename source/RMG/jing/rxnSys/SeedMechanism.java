@@ -452,6 +452,10 @@ public class SeedMechanism {
 			if (r instanceof PDepReaction) {
 				// Chebyshev or PLog
 				tbr = r;
+				// For other forms this is stored in tbr.kinetics[0].source rather than trb.comments,
+				// but the PDepReaction class is different, and the net effect is the same:
+				tbr.setComments(source + p_name); 
+				
 			} else if ((a==0.0) && (T3star==0.0) && (Tstar==0.0)) {
 				// Not a troe reaction
 				if (low.getAValue() == 0.0) {
