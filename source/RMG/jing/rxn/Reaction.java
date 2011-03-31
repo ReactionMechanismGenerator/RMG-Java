@@ -1299,7 +1299,9 @@ public class Reaction {
 				result.append(strucString + " " + k);
 			else
 				result.append(strucString + " " + k + "\nDUP\n");
-		}		
+		}
+	  if (result.charAt(result.length()-1)=='\n')
+		  result.deleteCharAt(result.length()-1);
 		ChemkinString = result.toString();
 		return result.toString();
   }
