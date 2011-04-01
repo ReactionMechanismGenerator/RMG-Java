@@ -150,10 +150,10 @@ public class UncertainDouble {
 		// This exaggerates how low the lower bound will be.
 		// (e.g. 10*/2 will become 10+-10.
 		if (isAddingUncertainty()) {
-			return getUncertainty();
+			return uncertainty;
 		}
 		else if (isMultiplyingUncertainty()){
-			return getUncertainty() * ((double)getValue() - 1.0);
+			return value * ( uncertainty - 1.0);
 		}
 		else throw new InvalidUncertaintyTypeException();
     }
