@@ -112,6 +112,8 @@ public class ChemGraph implements Matchable {
     protected boolean isAromatic = false;
     protected String InChI;
     protected String InChIKey;
+
+    protected String thermoComments = "";
     // Constructors
 
     private  ChemGraph() {
@@ -2766,6 +2768,14 @@ return sn;
     
     public static String getRepOkString() {
     	return repOkString;
+    }
+
+    public void appendThermoComments(String newComment) {
+        thermoComments += newComment + "\t";
+    }
+
+    public String getThermoComments() {
+        return thermoComments;
     }
 }
 /*********************************************************************

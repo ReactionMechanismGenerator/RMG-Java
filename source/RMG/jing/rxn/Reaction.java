@@ -1441,9 +1441,13 @@ public class Reaction {
 		}
 		else {
 			boolean kineticsAlreadyPresent = false;
-			for (int numKinetics=0; numKinetics<kinetics.length; ++numKinetics) {
-				if (kinetics[numKinetics].equals(p_kinetics)) {
-					structure.increaseRedundancy(red);
+			for (int i=0; i<kinetics.length; i++) {
+				Kinetics old_kinetics = kinetics[i];
+				if (!( old_kinetics instanceof ArrheniusKinetics))
+					continue; // we can't compare or increment 
+				if ( ((ArrheniusKinetics)old_kinetics).equalNESource(p_kinetics) )
+				{
+					((ArrheniusKinetics)old_kinetics).addToA( p_kinetics.getA().multiply((double)red) );
 					kineticsAlreadyPresent = true;
 				}
 			}

@@ -75,7 +75,7 @@ public class UncertainDouble {
         	return getValue()-getUncertainty();
         }
         else if (isMultiplyingUncertainty()) {
-        	if (getUncertainty() == 0) throw new InvalidUncertaintyException("mutiplier is zero");
+        	if (getUncertainty() < 1.0) throw new InvalidUncertaintyException("Uncertainty mutiplier is less than one");
         	return getValue()/getUncertainty();
         }
         else throw new InvalidUncertaintyTypeException();
@@ -89,7 +89,7 @@ public class UncertainDouble {
         	return getValue()+getUncertainty();
         }
         else if (isMultiplyingUncertainty()) {
-        	if (getUncertainty() == 0) throw new InvalidUncertaintyException("mutiplier is zero");
+        	if (getUncertainty() < 1.0) throw new InvalidUncertaintyException("Uncertainty mutiplier is less than one");
         	return getValue()*getUncertainty();
         }
         else throw new InvalidUncertaintyTypeException();
@@ -120,9 +120,11 @@ public class UncertainDouble {
     //## operation multiply(double) 
     public UncertainDouble multiply(double p_multiplier) {
         //#[ operation multiply(double) 
-        return new UncertainDouble(value*p_multiplier,uncertainty*p_multiplier,type);
-        
-        
+		if (isAddingUncertainty())
+			return new UncertainDouble(value*p_multiplier,uncertainty*p_multiplier,type);
+		if (isMultiplyingUncertainty())
+			return new UncertainDouble(value*p_multiplier,uncertainty,type);
+		throw new RuntimeException("Can't multiply UncertainDouble with type "+type);
         //#]
     }
     
@@ -135,10 +137,19 @@ public class UncertainDouble {
 	
 	//## operation plus(UncertainDouble)
     public UncertainDouble plus(UncertainDouble p_adder) {
-		double newUncertainty = getAddingUncertainty() + p_adder.getAddingUncertainty();
+		
 		double newValue = value + p_adder.getValue();
-        return new UncertainDouble(newValue,newUncertainty,"Adder");
-
+		double newUncertainty;
+		
+		if (isMultiplyingUncertainty() && p_adder.isMultiplyingUncertainty())
+		{
+			newUncertainty = Math.max(uncertainty, p_adder.getUncertainty()); // may overestimate error slightly?
+			return new UncertainDouble(newValue,uncertainty,"Multiplier");
+		}
+		else {
+			newUncertainty = getAddingUncertainty() + p_adder.getAddingUncertainty();
+			return new UncertainDouble(newValue,newUncertainty,"Adder");
+		}
     }
 	
 	//## operation getAddingUncertainty()
@@ -148,10 +159,10 @@ public class UncertainDouble {
 		// This exaggerates how low the lower bound will be.
 		// (e.g. 10*/2 will become 10+-10.
 		if (isAddingUncertainty()) {
-			return getUncertainty();
+			return uncertainty;
 		}
 		else if (isMultiplyingUncertainty()){
-			return getUncertainty() * ((double)getValue() - 1.0);
+			return value * ( uncertainty - 1.0);
 		}
 		else throw new InvalidUncertaintyTypeException();
     }
