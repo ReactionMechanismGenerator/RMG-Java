@@ -50,6 +50,7 @@ public static void main(String[] args) {
 	GATPFit.mkdir();
 
 		LinkedList<ChemGraph> graphList = new LinkedList<ChemGraph>();
+                LinkedList<String> nameList = new LinkedList<String>();
                 LinkedHashMap speciesFromInputFile = new LinkedHashMap();
 
 		File file = new File(args[0]);
@@ -82,14 +83,16 @@ public static void main(String[] args) {
             }
 			
 			// Read adjacency lists from file until an exception is thrown
-			Graph g = ChemParser.readChemGraph(reader);
-			while (g != null) {
+            line = ChemParser.readMeaningfulLine(reader, true);
+			while (line != null) {
+                            nameList.add(line);
+                            Graph g = ChemParser.readChemGraph(reader);
 				ChemGraph cg = ChemGraph.make(g);
 
                                 ReactionModelGenerator.addChemGraphToListIfNotPresent_ElseTerminate(speciesFromInputFile,cg,"");
 
 				graphList.add(cg);
-				g = ChemParser.readChemGraph(reader);
+				line = ChemParser.readMeaningfulLine(reader, true);
 			}
 
 		}
@@ -102,11 +105,12 @@ public static void main(String[] args) {
 			System.out.println(e.toString());
 		}
 
+                int counter = 0;
 		for (ListIterator<ChemGraph> iter = graphList.listIterator(); iter.hasNext(); ) {
 			ChemGraph chemgraph = iter.next();
 
 
-         Species spe = Species.make("molecule",chemgraph);
+         Species spe = Species.make(nameList.get(counter),chemgraph);
 		 /*
 		  *	Following line added by MRH on 10Aug2009:
 		  *		After the species is made, the chemgraph is not necessarily the same
@@ -139,6 +143,7 @@ public static void main(String[] args) {
 
          System.out.println(chemicalFormula + "  H=" + chemgraph.calculateH(T));
 		 System.out.println();
+                 ++counter;
 		}
 
     //      Species species = Species.make(chemicalFormula, chemgraph);
