@@ -237,6 +237,7 @@ public class ThermoGAGroupLibrary {
         	HierarchyTreeNode node = (HierarchyTreeNode)stack.pop();
         	Matchable fg = (Matchable)node.getElement();
         	ThermoGAValue ga = (ThermoGAValue)groupLibrary.get(fg);
+                p_chemGraph.appendThermoComments("Group:" + fg.getName());
         	if (ga != null) //{
                 //System.out.println("Group found: " + fg.getName());
                 return ga;
@@ -263,6 +264,7 @@ public class ThermoGAGroupLibrary {
         	HierarchyTreeNode node = (HierarchyTreeNode)stack.pop();
         	FunctionalGroup fg = (FunctionalGroup)node.getElement();
         	ThermoGAValue ga = (ThermoGAValue)otherLibrary.get(fg);
+                p_chemGraph.appendThermoComments("Other:" + fg.getName());
         	if (ga != null) return ga;
         }
      
@@ -287,6 +289,7 @@ public class ThermoGAGroupLibrary {
         	HierarchyTreeNode node = (HierarchyTreeNode)stack.pop();
         	Matchable fg = (Matchable)node.getElement();
         	ThermoGAValue ga = (ThermoGAValue)radicalLibrary.get(fg);
+                p_chemGraph.appendThermoComments("Radical:" + fg.getName());
         	if (ga != null) return ga;
         }
 
@@ -343,6 +346,7 @@ public class ThermoGAGroupLibrary {
 	                HierarchyTreeNode node = (HierarchyTreeNode)deepestStack.pop();
 	                FunctionalGroup fg = (FunctionalGroup)node.getElement();
 	                ThermoGAValue ga = (ThermoGAValue)ringLibrary.get(fg);
+                        p_chemGraph.appendThermoComments("Ring:" + fg.getName());
 	                if (ga != null) return ga;
 	        }
                 p_chemGraph.getGraph().resetMatchedGC();
@@ -370,6 +374,7 @@ public class ThermoGAGroupLibrary {
         	HierarchyTreeNode node = (HierarchyTreeNode)stack.pop();
         	Matchable fg = (Matchable)node.getElement();
         	ThermoGAValue ga = (ThermoGAValue)gaucheLibrary.get(fg);
+                p_chemGraph.appendThermoComments("Gauche:" + fg.getName());
         	if (ga != null) return ga;
         }
 
@@ -393,6 +398,7 @@ public class ThermoGAGroupLibrary {
         	HierarchyTreeNode node = (HierarchyTreeNode)stack.pop();
         	Matchable fg = (Matchable)node.getElement();
         	ThermoGAValue ga = (ThermoGAValue)oneFiveLibrary.get(fg);
+                p_chemGraph.appendThermoComments("1,5:" + fg.getName());
         	if (ga != null) return ga;
         }
 

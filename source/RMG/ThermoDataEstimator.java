@@ -124,7 +124,8 @@ public static void main(String[] args) {
 		 chemgraph = spe.getChemGraph();
 		 System.out.println(chemgraph);
          System.out.println("The number of resonance isomers is " + spe.getResonanceIsomersHashSet().size());
-		 System.out.println("The NASA data is \n!"+spe.getNasaThermoSource()+"\n"+ 
+		 System.out.println("The NASA data is \n!"+spe.getNasaThermoSource()+"\n"+
+                         "!" + chemgraph.getThermoComments() + "\n" +
 				 spe.getNasaThermoData());
 		 System.out.println("ThermoData is \n" +  chemgraph.getThermoData().toString());
         //int K = chemgraph.getKekule();
