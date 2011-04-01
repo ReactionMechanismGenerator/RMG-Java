@@ -75,7 +75,7 @@ public class UncertainDouble {
         	return getValue()-getUncertainty();
         }
         else if (isMultiplyingUncertainty()) {
-        	if (getUncertainty() == 0) throw new InvalidUncertaintyException("mutiplier is zero");
+        	if (getUncertainty() < 1.0) throw new InvalidUncertaintyException("Uncertainty mutiplier is less than one");
         	return getValue()/getUncertainty();
         }
         else throw new InvalidUncertaintyTypeException();
@@ -89,7 +89,7 @@ public class UncertainDouble {
         	return getValue()+getUncertainty();
         }
         else if (isMultiplyingUncertainty()) {
-        	if (getUncertainty() == 0) throw new InvalidUncertaintyException("mutiplier is zero");
+        	if (getUncertainty() < 1.0) throw new InvalidUncertaintyException("Uncertainty mutiplier is less than one");
         	return getValue()*getUncertainty();
         }
         else throw new InvalidUncertaintyTypeException();
