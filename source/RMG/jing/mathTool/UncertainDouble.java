@@ -137,10 +137,19 @@ public class UncertainDouble {
 	
 	//## operation plus(UncertainDouble)
     public UncertainDouble plus(UncertainDouble p_adder) {
-		double newUncertainty = getAddingUncertainty() + p_adder.getAddingUncertainty();
+		
 		double newValue = value + p_adder.getValue();
-        return new UncertainDouble(newValue,newUncertainty,"Adder");
-
+		double newUncertainty;
+		
+		if (isMultiplyingUncertainty() && p_adder.isMultiplyingUncertainty())
+		{
+			newUncertainty = Math.max(uncertainty, p_adder.getUncertainty()); // may overestimate error slightly?
+			return new UncertainDouble(newValue,uncertainty,"Multiplier");
+		}
+		else {
+			newUncertainty = getAddingUncertainty() + p_adder.getAddingUncertainty();
+			return new UncertainDouble(newValue,newUncertainty,"Adder");
+		}
     }
 	
 	//## operation getAddingUncertainty()
