@@ -106,7 +106,7 @@ public class ArrheniusKinetics implements Kinetics {
         double sum_alpha=0;
         double sum_E=0;
         double max_A=0;
-        double min_A=0;
+        double min_A=Double.MAX_VALUE;
         double max_n=Double.MIN_VALUE;
         double min_n=Double.MAX_VALUE;
         double max_E=Double.MIN_VALUE;
