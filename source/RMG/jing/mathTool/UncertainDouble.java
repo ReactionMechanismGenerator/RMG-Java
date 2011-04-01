@@ -120,9 +120,11 @@ public class UncertainDouble {
     //## operation multiply(double) 
     public UncertainDouble multiply(double p_multiplier) {
         //#[ operation multiply(double) 
-        return new UncertainDouble(value*p_multiplier,uncertainty*p_multiplier,type);
-        
-        
+		if (isAddingUncertainty())
+			return new UncertainDouble(value*p_multiplier,uncertainty*p_multiplier,type);
+		if (isMultiplyingUncertainty())
+			return new UncertainDouble(value*p_multiplier,uncertainty,type);
+		throw new RuntimeException("Can't multiply UncertainDouble with type "+type);
         //#]
     }
     
