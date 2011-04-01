@@ -230,12 +230,11 @@ public class ArrheniusKinetics implements Kinetics {
 	
 	public boolean equals(Kinetics p_k){
 		if (p_k == null) return true;
-		
 		if (Math.abs((p_k.getA().getValue()-A.getValue())/A.getValue()) > 0.01)
 			return false;
-		if (Math.abs((p_k.getE().getValue()-E.getValue())/E.getValue()) > 0.01 && E.getValue() != 0)
+		if (Math.abs((p_k.getE().getValue()-E.getValue())/E.getValue()) > 0.01 && E.getValue() != p_k.getE().getValue())
 			return false;
-		if (Math.abs((p_k.getN().getValue()-n.getValue())/n.getValue()) > 0.01 && n.getValue() != 0)
+		if (Math.abs((p_k.getN().getValue()-n.getValue())/n.getValue()) > 0.01 && n.getValue() != p_k.getN().getValue())
 			return false;
 		return true;
 	}
