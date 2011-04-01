@@ -383,7 +383,7 @@ public class SeedMechanism {
 					PDepReaction pdeprxn = new PDepReaction(reactants,products,pdepRC);
 					pdeprxn.setHighPKinetics(r.getKinetics()[0]);
 					r = pdeprxn;
-					
+					r.setIsFromPrimaryKineticLibrary(true);
 					allPdepNetworks.add(pdeprxn);
 					continueToReadRxn = false;
 				} else if (nextLine.contains("PLOG")) {
@@ -413,6 +413,8 @@ public class SeedMechanism {
 						// Read the next line
 						nextLine = ChemParser.readMeaningfulLine(data, true);
 					}
+					continueToReadRxn = false;
+					
 					// Make the PDepReaction
 					PDepIsomer reactants = new PDepIsomer(r.getStructure().getReactantList());
 					PDepIsomer products = new PDepIsomer(r.getStructure().getProductList());
@@ -420,13 +422,28 @@ public class SeedMechanism {
 					PDepReaction pdeprxn = new PDepReaction(reactants,products,pdepRC);
 					pdeprxn.setHighPKinetics(r.getKinetics()[0]);
 					r = pdeprxn;
+					r.setIsFromPrimaryKineticLibrary(true);
 					
+					// see if we've already made this reaction in this seed mechanism
+					Iterator allRxnsIter = localReactions.iterator();
+					boolean foundRxn = false;
+					while (allRxnsIter.hasNext()) {
+						Reaction old = (Reaction)allRxnsIter.next();
+						if (old.equals(r)) {
+							PDepReaction oldPDep = (PDepReaction)old; // we should be able to cast it
+							oldPDep.addAdditionalKinetics(r.getKinetics()[0],1); // high-P limit kinetics
+							oldPDep.addPDepArrheniusKinetics(pdepkineticsPLOG); // PLOG kinetics
+							continue read; // break out of inner loops and read the next reaction
+						}
+					}
+							
 					// Add to the list of PDepReactions
 					allPdepNetworks.add(pdeprxn);
+					
 					// Re-initialize the pdepkinetics variable
 					numPLOGs = 0;
 					pdepkineticsPLOG = new PDepArrheniusKinetics(numPLOGs);
-					continueToReadRxn = false;
+					
 				} else if (nextLine.contains("/")) {
 					/*
 					 
@@ -620,5 +637,6 @@ public class SeedMechanism {
 		return allPdepNetworks;
 	}
     
+	
 }
 
