@@ -317,6 +317,27 @@ public class PDepRateConstant {
 		pDepArrhenius[0] = kin;
 	}
 	
+	public void addPDepArrheniusKinetics(PDepArrheniusKinetics p_kinetics) {
+		// Add the passed in kinetics to the list (create the list if none exists)
+		if (p_kinetics == null)
+			return;
+		if (getMode() != PDepRateConstant.Mode.PDEPARRHENIUS)
+			throw new RuntimeException(String.format("Cannot add PDepArrheniusKinetics Rate constants to %s rate.",getMode() ));
+
+		if (pDepArrhenius == null){
+			pDepArrhenius = new PDepArrheniusKinetics[1];
+			pDepArrhenius[0] = p_kinetics;
+		}
+		else {
+			PDepArrheniusKinetics[] tempKinetics = pDepArrhenius;
+			pDepArrhenius = new PDepArrheniusKinetics[tempKinetics.length+1];
+			for (int i=0; i<tempKinetics.length; i++) {
+				pDepArrhenius[i] = tempKinetics[i];
+			}
+			pDepArrhenius[pDepArrhenius.length-1] = p_kinetics;
+		}
+	}
+	
 	public static void setPMin(Pressure p) {
 		PMIN = p;
 	}

@@ -610,5 +610,13 @@ public class PDepReaction extends Reaction {
 		return result.toString();
 	}
 	
+	
+	public void addPDepArrheniusKinetics(PDepArrheniusKinetics p_kinetics) {
+		// If the reaction has not been finalized, add the duplicate PDepArrheniusKinetics
+		if (finalized)
+			// (currently I'm not sure that finalized is ever set)
+			return;
+		pDepRate.addPDepArrheniusKinetics(p_kinetics);
+	}
 }
 
