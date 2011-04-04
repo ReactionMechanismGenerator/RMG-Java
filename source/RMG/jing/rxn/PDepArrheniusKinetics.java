@@ -121,7 +121,7 @@ public class PDepArrheniusKinetics implements PDepKinetics {
     }
     
     public void setNumPressures(int numP) {
-    	if (numP > getNumPressures()) numPressures = numP;
+    	numPressures = numP;
     }
     
     public int getNumPressures() {
