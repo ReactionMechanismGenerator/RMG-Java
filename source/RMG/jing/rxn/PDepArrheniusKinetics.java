@@ -82,12 +82,27 @@ public class PDepArrheniusKinetics implements PDepKinetics {
 				index1 = i; index2 = i + 1;
 			}
 		}
-
-		if (index1 < 0 || index2 < 0)
+		
+		/* Chemkin 4 theory manual specifies:
+			"If the rate of the reaction is desired for a pressure lower than
+		 	 any of those provided, the rate parameters provided for the lowest
+			 pressure are used. Likewise, if rate of the reaction is desired for
+			 a pressure higher than any of those provided, the rate parameters
+			 provided for the highest pressure are used."
+		 We take the same approach here, but warn the user (so they can fix their input file).
+		*/
+		 
+		if (P.getPa() < pressures[0].getPa())
 		{
-			Logger.warning(String.format("Tried to evaluate rate coefficient at P=%s Atm, which is outside valid range:",P.getAtm()));
-			Logger.warning(toChemkinString());
-			throw new POutOfRangeException(); // maybe we should return the limiting value closest to the desired pressure.
+			Logger.warning(String.format("Tried to evaluate rate coefficient at P=%s Atm, which is below minimum for this PLOG rate.",P.getAtm()));
+			Logger.warning(String.format("Using rate for minimum %s Atm instead", pressures[0].getAtm() ));
+			return kinetics[0].calculateRate(T);
+		}
+		if (P.getPa() > pressures[pressures.length].getPa())
+		{
+			Logger.warning(String.format("Tried to evaluate rate coefficient at P=%s Atm, which is above maximum for this PLOG rate.",P.getAtm()));
+			Logger.warning(String.format("Using rate for maximum %s Atm instead", pressures[pressures.length].getAtm() ));
+			return kinetics[pressures.length].calculateRate(T);
 		}
 
 		double logk1 = Math.log10(kinetics[index1].calculateRate(T));
