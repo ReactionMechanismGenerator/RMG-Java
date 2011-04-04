@@ -63,7 +63,7 @@ public class PDepArrheniusKinetics implements PDepKinetics {
 	
 	public void setKinetics(int index, Pressure P, ArrheniusKinetics kin) {
 		if (index < 0 || index >= pressures.length)
-			return;
+			throw new RuntimeException(String.format("Cannot set kinetics with index %s because array is only of size %s",index,pressures.length));
 		pressures[index] = P;
 		kinetics[index] = kin;
 	}
