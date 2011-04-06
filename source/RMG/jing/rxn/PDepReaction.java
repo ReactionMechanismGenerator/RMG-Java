@@ -36,6 +36,7 @@ import jing.rxnSys.CoreEdgeReactionModel;
 import jing.rxnSys.NegativeConcentrationException;
 import jing.rxnSys.ReactionModelGenerator;
 import jing.rxnSys.SystemSnapshot;
+import jing.rxnSys.Logger;
 
 /**
  * Represents either a pressure-dependent path reaction (a reaction connecting
@@ -358,10 +359,10 @@ public class PDepReaction extends Reaction {
 				}
 			}
 		}
-		catch (Exception e) {
-			System.err.println(e.getMessage());
-			System.err.println("Reaction: "+this.toChemkinString(temperature, pressure));
-			System.exit(0);
+		catch (RuntimeException e) {
+			Logger.error(e.getMessage());
+			Logger.error("Error with Reaction: "+this.toChemkinString(temperature, pressure));
+			throw e;
 		}
 
 		return k;

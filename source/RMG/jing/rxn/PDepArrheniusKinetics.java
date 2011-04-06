@@ -74,7 +74,7 @@ public class PDepArrheniusKinetics implements PDepKinetics {
 	 * @param P The pressure of interest
 	 * @return The rate coefficient evaluated at T and P
 	 */
-	public double calculateRate(Temperature T, Pressure P) throws POutOfRangeException {
+	public double calculateRate(Temperature T, Pressure P) {
 		int index1 = -1; int index2 = -1;
 
 		for (int i = 0; i < pressures.length - 1; i++) {
