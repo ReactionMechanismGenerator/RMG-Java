@@ -79,7 +79,9 @@ public class PDepArrheniusKinetics implements PDepKinetics {
 
 		for (int i = 0; i < pressures.length - 1; i++) {
 			if (pressures[i].getBar() <= P.getBar() && P.getBar() <= pressures[i+1].getBar()) {
-				index1 = i; index2 = i + 1;
+				index1 = i;
+				index2 = i + 1;
+				break;
 			}
 		}
 		
@@ -98,10 +100,10 @@ public class PDepArrheniusKinetics implements PDepKinetics {
 			Logger.warning(String.format("Using rate for minimum %s Atm instead", pressures[0].getAtm() ));
 			return kinetics[0].calculateRate(T);
 		}
-		if (P.getPa() > pressures[pressures.length].getPa())
+		if (P.getPa() > pressures[pressures.length-1].getPa())
 		{
 			Logger.warning(String.format("Tried to evaluate rate coefficient at P=%s Atm, which is above maximum for this PLOG rate.",P.getAtm()));
-			Logger.warning(String.format("Using rate for maximum %s Atm instead", pressures[pressures.length].getAtm() ));
+			Logger.warning(String.format("Using rate for maximum %s Atm instead", pressures[pressures.length-1].getAtm() ));
 			return kinetics[pressures.length].calculateRate(T);
 		}
 
