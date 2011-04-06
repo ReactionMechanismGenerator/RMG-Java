@@ -620,7 +620,7 @@ public abstract class JDAS implements DAESolver {
         if (p_reaction instanceof PDepReaction) {
             double rate = ((PDepReaction) p_reaction).calculateRate(p_temperature, p_pressure);
             if (String.valueOf(rate).equals("NaN")) {
-                System.err.println(p_reaction.toChemkinString(p_temperature) + "Has bad rate probably due to Ea<DH");
+                Logger.error(p_reaction.toChemkinString(p_temperature) + "Has bad rate probably due to Ea<DH");
                 rate = 0;
             }
             ODEReaction or = new ODEReaction(rnum, pnum, rid, pid, rate);
@@ -1150,7 +1150,7 @@ public abstract class JDAS implements DAESolver {
             }
             edgeSpeciesCounter = edgeID.size() + edgeLeakID.size();//this line is not needed here, but it is included for consistency with the first pass
         } catch (IOException e) {
-            System.err.println("Problem writing Solver Input File!");
+            Logger.error("Problem writing Solver Input File!");
             Logger.logStackTrace(e);
         }
 
@@ -1219,7 +1219,7 @@ public abstract class JDAS implements DAESolver {
                 bw.write("0 \n"); // for liquid EOS or constant volume this should be 1
             }
         } catch (IOException e) {
-            System.err.println("Problem writing Solver Input File!");
+            Logger.error("Problem writing Solver Input File!");
             Logger.logStackTrace(e);
         }
 
@@ -1243,7 +1243,7 @@ public abstract class JDAS implements DAESolver {
             //                fw.write(outputString.toString());
             //                fw.close();
         } catch (IOException e) {
-            System.err.println("Problem creating Solver Input File!");
+            Logger.error("Problem creating Solver Input File!");
             Logger.logStackTrace(e);
         }
     }

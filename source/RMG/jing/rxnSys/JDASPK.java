@@ -182,7 +182,7 @@ public class JDASPK extends JDAS {
                     bw.write("\n" + thermoString.toString() + "\n" + p_temperature.getK() + " " + p_pressure.getPa() + "\n" + rList.size() + "\n" + rString.toString() + "\n" + thirdBodyList.size() + "\n"+tbrString.toString() + "\n" + troeList.size() + "\n" + troeString.toString()+"\n" + lindemannList.size() + "\n" + lindemannString.toString() + "\n");
         }
         catch (IOException e) {
-            System.err.println("Problem writing Solver Input File!");
+            Logger.error("Problem writing Solver Input File!");
             Logger.logStackTrace(e);
         }
 		///4/30/08 gmagoon: code for providing edge reaction info to DASPK in cases if the automatic time stepping flag is set to true
@@ -198,7 +198,7 @@ public class JDASPK extends JDAS {
                     fw.close();
                 }
                 catch (IOException e) {
-                    System.err.println("Problem closing Solver Input File!");
+                    Logger.error("Problem closing Solver Input File!");
                     Logger.logStackTrace(e);
 		}
         int idid=0;
@@ -263,7 +263,7 @@ public class JDASPK extends JDAS {
 //			fw.write(outputString.toString());
 //			fw.close();
 //		} catch (IOException e) {
-//			System.err.println("Problem writing Solver Input File!");
+//			Logger.error("Problem writing Solver Input File!");
 //			Logger.logStackTrace(e);
 //		}
 		
@@ -287,11 +287,11 @@ public class JDASPK extends JDAS {
                                         line = line.trim();
 					silentError = false; //there is actual output from the ODE solver
                                         if (!(line.contains("ODESOLVER SUCCESSFUL"))) {
-                                            System.err.println("Error running the ODESolver: "+line);
+                                            Logger.error("Error running the ODESolver: "+line);
                                         }
                                 }
 				if(silentError){
-				    System.err.println("Error: No stdout output from DASPK");
+				    Logger.error("Error: No stdout output from DASPK");
 				}
                         int exitValue = solver.waitFor();
                 }
@@ -562,7 +562,7 @@ public class JDASPK extends JDAS {
                     getConcentrationFlags(p_reactionModel);        
                 }
                 catch (IOException e) {
-                    System.err.println("Problem writing Solver Input File!");
+                    Logger.error("Problem writing Solver Input File!");
                     Logger.logStackTrace(e);
                 }
        //this should be the end of the input file
@@ -570,7 +570,7 @@ public class JDASPK extends JDAS {
             bw.close();
         }
         catch (IOException e) {
-            System.err.println("Problem closing Solver Input File!");
+            Logger.error("Problem closing Solver Input File!");
             Logger.logStackTrace(e);
         }
         int idid=0;
@@ -599,7 +599,7 @@ public class JDASPK extends JDAS {
 	//		fw.write(outputString.toString());
 	//		fw.close();
 	//	} catch (IOException e) {
-	//		System.err.println("Problem writing Solver Input File!");
+	//		Logger.error("Problem writing Solver Input File!");
         //			Logger.logStackTrace(e);
 	//	}
 		Global.writeSolverFile +=(System.currentTimeMillis()-startTime)/1000/60;
