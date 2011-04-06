@@ -110,9 +110,19 @@ public class Logger {
             logFile.close();
         }
         catch (IOException e) {
-
+			throw new RuntimeException(e);
         }
     }
+	
+	public static void flush() {
+		// Flush the log file
+		try{
+			logFile.flush();
+		}
+		catch (IOException e) {
+			throw new RuntimeException(e);
+		}
+	}
 
     /**
      * Set the level of detail to use for log messages printed to the console
@@ -173,7 +183,13 @@ public class Logger {
         }
         catch (IOException e) {
             // What should we do here?
+			throw new RuntimeException(e);
         }
+		
+		// If it was an error message, make sure the log file is up to date.
+		if (level < WARNING) { // i.e. ERROR and CRITICAL
+			flush();
+		}
 
     }
 
@@ -240,7 +256,7 @@ public class Logger {
         for (int index = 0; index < stackTrace.length; index++) {
             message += "    at " + stackTrace[index].toString() + "\n";
         }
-        info(message);
+        error(message);
     }
 
     /**
