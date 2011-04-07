@@ -112,12 +112,21 @@ public class PDepArrheniusKinetics implements PDepKinetics {
 		double logP0 = Math.log10(P.getBar());
 		double logP1 = Math.log10(pressures[index1].getBar());
 		double logP2 = Math.log10(pressures[index2].getBar());
+		
+		// We can't take logarithms of k=0 and get meaningful interpolation, so we have to do something weird.
+		// The approach used here is arbitrary, but at least it gives a continuous k(P) function.
+		// 
+		// If interpolating between k1=0 and k2=0, return k=0
+		if (logk1 == Double.NEGATIVE_INFINITY && logk2 == Double.NEGATIVE_INFINITY)
+			return 0.0;
+		// if interpolating between k1=0 and k2>0, set k1 to something small but nonzero.
+		else if (logk1 == Double.NEGATIVE_INFINITY)
+			logk1 = Math.min(0, logk2-1); // k1 is a small 1 cm3/mol/sec, or k2/10 if that's even smaller.
+		// if interpolating between k1>0 and k2=0, set k2 to something small but nonzero.
+		else if (logk2 == Double.NEGATIVE_INFINITY)
+			logk2 = Math.min(0, logk1-1); // k2 is a small 1 cm3/mol/sec, or k1/10 if that's even smaller.
 
 		double logk0 = logk1 + (logk2 - logk1) / (logP2 - logP1) * (logP0 - logP1);
-		
-		// if interpolating between zero and something, return zero (because we're interpolating on log scale)
-		if (logk1 == Double.NEGATIVE_INFINITY || logk2 == Double.NEGATIVE_INFINITY) return 0.0;
-		
 		return Math.pow(10, logk0);
 	}
 
