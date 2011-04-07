@@ -1390,6 +1390,7 @@ public class ReactionModelGenerator {
         printModelSize();
         Logger.info(String.format("Running time: %.3f min", + (System.currentTimeMillis()-Global.tAtInitialization)/1000./60.));
         printMemoryUsed();
+		Logger.flush();
         
         //10/24/07 gmagoon: note: each element of for loop could be done in parallel if desired; some modifications would be needed
         for (Integer i = 0; i<reactionSystemList.size();i++) {
@@ -1477,6 +1478,7 @@ public class ReactionModelGenerator {
 				printModelSize();
                 Logger.info(String.format("Running time: %.3f min", + (System.currentTimeMillis()-Global.tAtInitialization)/1000./60.));
 				printMemoryUsed();
+				Logger.flush();
 
                 pt = System.currentTimeMillis();
 				//10/24/07 gmagoon: changed to use reactionSystemList
