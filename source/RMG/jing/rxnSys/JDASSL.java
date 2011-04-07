@@ -192,7 +192,7 @@ public class JDASSL extends JDAS {
             bw.write("\n" + p_temperature.getK() + " " + p_pressure.getPa() + "\n" + rList.size() + "\n" + rString.toString() + "\n" + thirdBodyList.size() + "\n"+tbrString.toString() + "\n" + troeList.size() + "\n" + troeString.toString()+"\n" + lindemannList.size() + "\n" + lindemannString.toString() + "\n");
         }
         catch (IOException e) {
-        	System.err.println("Problem writing Solver Input File!");
+        	Logger.error("Problem writing Solver Input File!");
                 Logger.logStackTrace(e);
         }
         //4/30/08 gmagoon: code for providing edge reaction info to DASSL in cases if the automatic time stepping flag is set to true
@@ -208,7 +208,7 @@ public class JDASSL extends JDAS {
                     fw.close();
                 }
                 catch (IOException e) {
-                    System.err.println("Problem closing Solver Input File!");
+                    Logger.error("Problem closing Solver Input File!");
                     Logger.logStackTrace(e);
 		}
         int idid=0;
@@ -281,7 +281,7 @@ public class JDASSL extends JDAS {
 //			fw.write(outputString.toString());
 //			fw.close();
 //		} catch (IOException e) {
-//			System.err.println("Problem writing Solver Input File!");
+//			Logger.error("Problem writing Solver Input File!");
 //			Logger.logStackTrace(e);
 //		}
 		
@@ -303,7 +303,7 @@ public class JDASSL extends JDAS {
                                 while ( (line = br.readLine()) != null) {
                                         line = line.trim();
                                         if (!(line.contains("ODESOLVER SUCCESSFUL"))) {
-                                                System.err.println("Error running the ODESolver: "+line);
+                                                Logger.error("Error running the ODESolver: "+line);
                                                 error = true;
                                         }          
                                 }
@@ -477,7 +477,7 @@ public class JDASSL extends JDAS {
 			fw.write("\n");
 			fw.close();
 		} catch (IOException e) {
-			System.err.println("Problem creating ODESolver/SpeciesProfiles.txt");
+			Logger.error("Problem creating ODESolver/SpeciesProfiles.txt");
 			Logger.logStackTrace(e);
 		}
 	}
@@ -840,7 +840,7 @@ public class JDASSL extends JDAS {
 //                        Process dot = Runtime.getRuntime().exec(command, null, runningDir);
 //                        int ev = dot.waitFor();               
 //                } catch (Exception e) {
-//                        System.err.println("Problem writing dot File!");
+//                        Logger.error("Problem writing dot File!");
 //                        Logger.logStackTrace(e);
 //                }
 //
