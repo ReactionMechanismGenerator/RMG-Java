@@ -114,7 +114,10 @@ public class PDepArrheniusKinetics implements PDepKinetics {
 		double logP2 = Math.log10(pressures[index2].getBar());
 
 		double logk0 = logk1 + (logk2 - logk1) / (logP2 - logP1) * (logP0 - logP1);
-
+		
+		// if interpolating between zero and something, return zero (because we're interpolating on log scale)
+		if (logk1 == Double.NEGATIVE_INFINITY || logk2 == Double.NEGATIVE_INFINITY) return 0.0;
+		
 		return Math.pow(10, logk0);
 	}
 
