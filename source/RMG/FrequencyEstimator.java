@@ -58,7 +58,13 @@ public class FrequencyEstimator {
 //		initializeSystemProperties();
 		 RMG.globalInitializeSystemProperties();
 
+                 File GATPFit = new File("GATPFit");
+                 GATPFit.mkdir();
+                 File frankie = new File("frankie");
+                 frankie.mkdir();
+
 		LinkedList<ChemGraph> graphList = new LinkedList<ChemGraph>();
+                LinkedList<String> nameList = new LinkedList<String>();
                 LinkedHashMap speciesFromInputFile = new LinkedHashMap();
 
 		File file = new File(args[0]);
@@ -67,17 +73,26 @@ public class FrequencyEstimator {
 
 			BufferedReader reader = new BufferedReader(new FileReader(file));
 
-			// Read adjacency lists from file until an exception is thrown
-			Graph g = ChemParser.readChemGraph(reader);
-			while (g != null) {
-				ChemGraph cg = ChemGraph.make(g);
+                        String line = ChemParser.readMeaningfulLine(reader, true);
+                        if (line.toLowerCase().startsWith("database")) {
+                            RMG.extractAndSetDatabasePath(line);
+                        }
+                        else {
+                            System.err.println("FrequencyEstimator: Could not"
+                                    + " locate the Database field");
+                            System.exit(0);
+                        }
 
-                                ReactionModelGenerator.addChemGraphToListIfNotPresent_ElseTerminate(speciesFromInputFile,cg,"");
-
-				graphList.add(cg);
-				g = ChemParser.readChemGraph(reader);
+                        // Read adjacency lists from file until an exception is thrown
+                        line = ChemParser.readMeaningfulLine(reader, true);
+                        while (line != null) {
+                            nameList.add(line);
+                            Graph g = ChemParser.readChemGraph(reader);
+                            ChemGraph cg = ChemGraph.make(g);
+                            ReactionModelGenerator.addChemGraphToListIfNotPresent_ElseTerminate(speciesFromInputFile,cg,"");
+                            graphList.add(cg);
+                            line = ChemParser.readMeaningfulLine(reader, true);
 			}
-
 		}
 		catch (InvalidChemGraphException e) {
 			e.printStackTrace();
@@ -96,11 +111,13 @@ public class FrequencyEstimator {
             // freqGroups.generateFreqData(cg2);
 
 
+                int counter = 0;
 		for (ListIterator<ChemGraph> iter = graphList.listIterator(); iter.hasNext(); ) {
 			ChemGraph cg = iter.next();
-			Species spec = Species.make("", cg);
+			Species spec = Species.make(nameList.get(counter), cg);
 			SpectroscopicData data = freqGroups.generateFreqData(spec);
 			System.out.println("");
+                        System.out.println(nameList.get(counter));
 			System.out.println(cg.toString());
 			System.out.println("Data:");
 			System.out.print("Vibrations (cm^-1): ");
@@ -119,6 +136,7 @@ public class FrequencyEstimator {
 			for (int i = 0; i < data.getHinderedCount(); i++)
 				System.out.print(data.getHinderedBarrier(i) + "\t");
 			System.out.println();
+                        ++counter;
 		}
 
 	}
