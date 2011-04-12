@@ -310,10 +310,14 @@ public class FrequencyGroups{//gmagoon 111708: removed "implements GeneralGAPP"
         String[] orderedInputGroups={"RsCH3","RdCH2","CtCH","RsCH2sR","CdCHsR","Aldehyde","Cumulene","Ketene","CtCsR","RsCHsR2","CdCsR2","Ketone","RsCsR3","RsCH2r","RdCHr","RsCHrsR","CdCrsR","OdCrsR","RsCrsR2","Alcohol","Ether","ROOH","ROOR","Peroxy"};//this should contain the group names (or keys names) used by Franklin's frequency estimation code in the order that his input format requires them
         for(int i=1;i<=orderedInputGroups.length;i++){
             String inputGroup=orderedInputGroups[i-1];
-            if(groupCountMap.containsKey(inputGroup))
+            if(groupCountMap.containsKey(inputGroup)) {
+                p_chemGraph.appendFreqComments(orderedInputGroups[i-1] + ":" + groupCountMap.get(inputGroup));
                 result.add((Integer)(groupCountMap.get(inputGroup)));
-            else
+            }
+            else {
+                p_chemGraph.appendFreqComments(orderedInputGroups[i-1] + ":0");
                 result.add(0);
+            }
         }
         
         return result;

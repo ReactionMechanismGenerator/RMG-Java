@@ -119,6 +119,7 @@ public class FrequencyEstimator {
 			System.out.println("");
                         System.out.println(nameList.get(counter));
 			System.out.println(cg.toString());
+                        System.out.println(cg.getFreqComments());
 			System.out.println("Data:");
 			System.out.print("Vibrations (cm^-1): ");
 			for (int i = 0; i < data.getVibrationCount(); i++)
