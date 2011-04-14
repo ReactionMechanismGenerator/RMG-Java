@@ -80,6 +80,7 @@ public class Reaction {
   
   protected boolean kineticsFromPrimaryKineticLibrary = false;
   protected ReactionTemplate rxnTemplate;
+  protected boolean expectDuplicate = false;
   // Constructors
 
   //## operation Reaction()
@@ -1757,6 +1758,14 @@ public class Reaction {
 		if (getKinetics().length > 1) return true;
 		else return false;
 	}
+
+    public void setExpectDuplicate(boolean b) {
+        expectDuplicate = b;
+    }
+
+    public boolean getExpectDuplicate() {
+        return expectDuplicate;
+    }
 
 }
 /*********************************************************************
