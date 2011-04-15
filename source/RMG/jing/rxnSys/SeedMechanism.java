@@ -223,10 +223,21 @@ public class SeedMechanism {
         		}
 				ChemGraph cg = ChemGraph.make(graph);	
         		Species spe = Species.make(name, cg);
+                        // Check if species (i.e. chemgraph) already exists in localSpecies
+                        if (localSpecies.containsValue(spe)) {
+                            for (Iterator iter2 = localSpecies.values().iterator(); iter2.hasNext();) {
+                                Species spcInList = (Species)iter2.next();
+                                if (spcInList.equals(spe)) {
+                                    Logger.critical("Species '" + name + "' chemgraph already exists in library" +
+                                    " with name " + spcInList.getName() + "\n\tRemove one of the instances before proceeding.");
+                                    System.exit(0);
+                                }
+                            }
+                        }
         		// GJB: Turn off reactivity if necessary, but don't let code turn it on
         		// again if was already set as unreactive from input file
         		if(IsReactive==false) spe.setReactivity(IsReactive);
-        		localSpecies.put(name, spe);
+                        localSpecies.put(name, spe);
         		line = ChemParser.readMeaningfulLine(data, true);
         	}
         	   
