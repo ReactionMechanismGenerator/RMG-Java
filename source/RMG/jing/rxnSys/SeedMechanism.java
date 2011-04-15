@@ -167,12 +167,25 @@ public class SeedMechanism {
 			}
 			if (r == null) throw new InvalidReactionFormatException(line);
 			
-			localReactions = updateReactionList(r,localReactions,true);
-			
 			line = ChemParser.readMeaningfulLine(data, true);
+			localReactions = updateReactionList(r,localReactions,true,line);
+			if (line != null && line.toLowerCase().startsWith("dup")) line = ChemParser.readMeaningfulLine(data, true);
 		}
 			
             in.close();
+
+            // Check that all reactions labeled with "DUP" tag actually have a duplicate
+            for (Iterator iter = localReactions.iterator(); iter.hasNext();) {
+                Reaction r = (Reaction)iter.next();
+                if (r.getExpectDuplicate()) {
+                    if (r.getKinetics().length < 2) {
+                        Logger.critical("The following reaction was labeled with a duplicate tag," +
+                                " but did not contain a duplicate:\n\t" + r.toString() +
+                                "\nPlease correct the kinetic_libraries directory reactions.txt file");
+                        System.exit(0);
+                    }
+                }
+            }
         	return localReactions;
         }
         catch (Exception e) {
@@ -210,6 +223,17 @@ public class SeedMechanism {
 			}
 			ChemGraph cg = ChemGraph.make(graph);	
 			Species spe = Species.make(name, cg);
+			// Check if species (i.e. chemgraph) already exists in localSpecies
+			if (localSpecies.containsValue(spe)) {
+				for (Iterator iter2 = localSpecies.values().iterator(); iter2.hasNext();) {
+					Species spcInList = (Species)iter2.next();
+					if (spcInList.equals(spe)) {
+						Logger.critical("Species '" + name + "' chemgraph already exists in library" +
+										" with name " + spcInList.getName() + "\n\tRemove one of the instances before proceeding.");
+						System.exit(0);
+					}
+				}
+			}
 			// GJB: Turn off reactivity if necessary, but don't let code turn it on
 			// again if was already set as unreactive from input file
 			if(IsReactive==false) spe.setReactivity(IsReactive);
@@ -586,18 +610,28 @@ public class SeedMechanism {
     	return multipliers;
 	}
 	
-	public LinkedHashSet updateReactionList(Reaction r, LinkedHashSet listOfRxns, boolean generateReverse) {
+	public LinkedHashSet updateReactionList(Reaction r, LinkedHashSet listOfRxns, boolean generateReverse, String nextLine) {
 		Iterator allRxnsIter = listOfRxns.iterator();
 		boolean foundRxn = false;
 		while (allRxnsIter.hasNext()) {
 			Reaction old = (Reaction)allRxnsIter.next();
 			if (old.equals(r)) {
+                            if (old.getExpectDuplicate() && nextLine.toLowerCase().startsWith("dup")) {
 				old.addAdditionalKinetics(r.getKinetics()[0],1);
 				foundRxn = true;
 				break;
+                            }
+                            else {
+                                Logger.critical("Unspecified duplicate reaction found in library:\n\t" + r.toString()
+                                        + "\nPlease add 'DUP' tag after each instance of desired duplicate reaction");
+                                System.exit(0);
+                            }
 			}
 		}
 		if (!foundRxn) {
+                    if (nextLine != null && nextLine.toLowerCase().startsWith("dup")) {
+                        r.setExpectDuplicate(true);
+                    }
 			listOfRxns.add(r);
 			if (generateReverse) {
 	    		Reaction reverse = r.getReverseReaction();

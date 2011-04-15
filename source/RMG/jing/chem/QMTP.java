@@ -448,8 +448,6 @@ public class QMTP implements GeneralGAPP {
 	    }
 	    Process pythonProc = Runtime.getRuntime().exec(command, null, runningdir);
             String killmsg= "Python process for "+twoDmolFile.getName()+" did not complete within 120 seconds, and the process was killed. File was probably not written.";//message to print if the process times out
-            Thread timeoutThread = new TimeoutKill(pythonProc, killmsg, 120000L); //create a timeout thread to handle cases where the UFF optimization get's locked up (cf. Ch. 16 of "Ivor Horton's Beginning Java 2: JDK 5 Edition"); once we use the updated version of RDKit, we should be able to get rid of this
-            timeoutThread.start();//start the thread
             //check for errors and display the error if there is one
             InputStream is = pythonProc.getErrorStream();
             InputStreamReader isr = new InputStreamReader(is);
@@ -465,8 +463,6 @@ public class QMTP implements GeneralGAPP {
                 System.out.println("RDKit received error (see above) on " + twoDmolFile.getName()+". File was probably not written.");
             }
             int exitValue = pythonProc.waitFor();
-            if(timeoutThread.isAlive())//if the timeout thread is still alive (indicating that the process has completed in a timely manner), stop the timeout thread
-                timeoutThread.interrupt();
 	    br.close();
 	    isr.close();
 	    is.close();

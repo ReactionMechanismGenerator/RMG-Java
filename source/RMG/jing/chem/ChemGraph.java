@@ -114,6 +114,7 @@ public class ChemGraph implements Matchable {
     protected String InChIKey;
 
     protected String thermoComments = "";
+    protected String freqComments = "";
     // Constructors
 
     private  ChemGraph() {
@@ -2776,6 +2777,14 @@ return sn;
 
     public String getThermoComments() {
         return thermoComments;
+    }
+
+    public void appendFreqComments(String newComment) {
+        freqComments += newComment + "\t";
+    }
+
+    public String getFreqComments() {
+        return freqComments;
     }
 }
 /*********************************************************************
