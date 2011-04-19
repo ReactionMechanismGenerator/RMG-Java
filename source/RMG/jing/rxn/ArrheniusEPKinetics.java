@@ -132,14 +132,23 @@ public class ArrheniusEPKinetics extends ArrheniusKinetics {
 			newEa = newEa.plus((UncertainDouble)getAlpha().multiply(p_Hrxn));
 		}
 
-		if (Eo>0 && Ea<0) {
-			// Negative barrier estimated by Evans-Polanyi, despite positive intrinsic barrier.
+		if (Eo>=0 && Ea<0) {
+			// Negative barrier estimated by Evans-Polanyi, despite non-negative intrinsic barrier.
 			warning = String.format("Ea raised from %.1f kcal/mol to 0.0.", Ea);
 			newComment += " Warning: " + warning;
 			Logger.info(warning);
 			newEa = newEa.plus((-Ea));
 			Ea = 0.0;
 		}
+		if (Eo<0 && Ea<Eo) {
+			// Negative barrier estimated by Evans-Polanyi is even more negative than negative intrinsic barrier.
+			warning = String.format("Ea raised from %.1f to Eo=%.1f kcal/mol", Ea, Eo);
+			newComment += " Warning: " + warning;
+			Logger.info(warning);
+			newEa = E;
+			Ea = Eo;
+		}
+		
 		if (p_Hrxn>0 && Ea<p_Hrxn){
 			// Reaction is endothermic and the barrier is less than the endothermicity.
 			warning = String.format("Ea raised by %.1f from %.1f to dHrxn(298K)=%.1f kcal/mol.",p_Hrxn-Ea, Ea, p_Hrxn );
