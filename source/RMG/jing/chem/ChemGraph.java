@@ -127,8 +127,17 @@ public class ChemGraph implements Matchable {
         if (isForbiddenStructure(p_graph,getRadicalNumber(),getOxygenNumber(),getCarbonNumber()) || getRadicalNumber() > MAX_RADICAL_NUM || getOxygenNumber() > MAX_OXYGEN_NUM || getCycleNumber() > MAX_CYCLE_NUM) {
 		//if (getRadicalNumber() > MAX_RADICAL_NUM || getOxygenNumber() > MAX_OXYGEN_NUM || getCycleNumber() > MAX_CYCLE_NUM) {		        
 			String message = p_graph.toString() + " is forbidden by "+whichForbiddenStructures(p_graph, getRadicalNumber(), getOxygenNumber(), getCycleNumber()) +"and not allowed.";
-			graph = null;
-        	throw new ForbiddenStructureException(message);
+			
+			getThermoData(); // ensure thermoData has been generated
+			if (fromprimarythermolibrary) {
+				Logger.warning(message);
+				Logger.warning(String.format("But it's in the %s, so I'm letting it through.\n",thermoData.getSource() ));
+				// nb. the source String begins "Primary Thermo Library:"
+			}
+			else{
+				graph = null;
+				throw new ForbiddenStructureException(message);
+			}
         }
     }
 
