@@ -5200,6 +5200,14 @@ public class ReactionModelGenerator {
         Logger.info("The model core has " + Integer.toString(numberOfCoreReactions) + " reactions and "+ Integer.toString(numberOfCoreSpecies) + " species.");
 		Logger.info("The model edge has " + Integer.toString(numberOfEdgeReactions) + " reactions and "+ Integer.toString(numberOfEdgeSpecies) + " species.");
 
+        // If pressure dependence is on, print some information about the networks
+        if (reactionModelEnlarger instanceof RateBasedPDepRME) {
+			int numberOfNetworks = PDepNetwork.getNetworks().size();
+            int numberOfPathReactions = PDepNetwork.getNumPathReactions(cerm);
+            int numberOfNetReactions = PDepNetwork.getNumNetReactions(cerm);
+            Logger.info("There are " + Integer.toString(numberOfNetworks) + " partial pressure-dependent networks containing " + Integer.toString(numberOfPathReactions) + " path and " + Integer.toString(numberOfNetReactions) + " net reactions.");
+		}
+
 	}
 	
 	public boolean areTheNumberOfConcentrationsConsistent(int number) {
