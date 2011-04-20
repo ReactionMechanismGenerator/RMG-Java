@@ -293,6 +293,34 @@ public class TemplateReaction extends Reaction {
 				g1.setCentralNode(4, n4);
 			k = rRT.findRateConstant(rs);
 		}
+
+                //  Adding another elseif statement for Aaron Vandeputte rxn family
+                //  RMG expects to find *1 and *2 in the same ChemGraph (for this rxn family)
+                //      but will instead find *1 and *3 in the same ChemGraph (if we've reached this far)
+                //  Need to switch *2 and *3
+                else if (k == null && rRT.name.equals("substitutionS")) {
+                    ChemGraph cg1 = ((ChemGraph) fproduct.get(0));
+                    ChemGraph cg2 = ((ChemGraph) fproduct.get(1));
+                    Graph g1 = cg1.getGraph();
+                    Graph g2 = cg2.getGraph();
+                    Node n3 = (Node) g1.getCentralNodeAt(3);
+                    if (n3 == null) {
+                        // Switch the identities of cg1/g1 and cg2/g2
+                        cg1 = ((ChemGraph) fproduct.get(1));
+                        g1 = cg1.getGraph();
+                        cg2 = ((ChemGraph) fproduct.get(0));
+                        g2 = cg2.getGraph();
+                        n3 = (Node) g1.getCentralNodeAt(3);
+                    }
+                    Node n1 = (Node) g1.getCentralNodeAt(1);
+                    g1.clearCentralNode();
+                    g1.setCentralNode(2, n3);
+                    g1.setCentralNode(1, n1);
+                    Node n2 = (Node) g2.getCentralNodeAt(2);
+                    g2.clearCentralNode();
+                    g2.setCentralNode(3, n2);
+                    k = rRT.findRateConstant(rs);
+                }
 		
 		else if (k == null && rRT.name.equals("intra_H_migration")) {
 			ChemGraph cg = ((ChemGraph) fproduct.get(0));
