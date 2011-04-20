@@ -3895,7 +3895,9 @@ public class ReactionModelGenerator {
 
     public void pruneReactionModel(HashMap unprunableSpecies) {
 		
-		HashMap prunableSpeciesMap = new HashMap();
+		Runtime runtime = Runtime.getRuntime();
+
+        HashMap prunableSpeciesMap = new HashMap();
 		//check whether all the reaction systems reached target conversion/time
 		boolean allReachedTarget = true;
 		for (Integer i = 0; i < reactionSystemList.size(); i++) {
@@ -4030,7 +4032,10 @@ public class ReactionModelGenerator {
 			//System.out.println("PDep Pruning DEBUG:\nRMG has marked the following number of species" +
 			//		" to be pruned due to low max flux ratio : " + lowMaxFlux);
 			
-			//now, speciesToPrune has been filled with species that should be pruned from the edge
+			runtime.gc();
+            double memoryUsedBeforePruning = (runtime.totalMemory() - runtime.freeMemory()) / 1.0e6;
+
+            //now, speciesToPrune has been filled with species that should be pruned from the edge
 			Logger.info("Pruning...");
 			//prune species from the edge
 			//remove species from the edge and from the species dictionary and from edgeID
@@ -4210,7 +4215,22 @@ public class ReactionModelGenerator {
 					PDepNetwork pdn = (PDepNetwork)iter.next();
 					PDepNetwork.getNetworks().remove(pdn);
 				}
-			} 
+			}
+
+            runtime.gc();
+            double memoryUsedAfterPruning = (runtime.totalMemory() - runtime.freeMemory()) / 1.0e6;
+            
+            Logger.info(String.format("Number of species pruned:    %d", speciesToPrune.size()));
+            Logger.info(String.format("Memory used before pruning:  %10.2f MB", memoryUsedBeforePruning));
+            Logger.info(String.format("Memory used after pruning:   %10.2f MB", memoryUsedAfterPruning));
+            if (memoryUsedAfterPruning < memoryUsedBeforePruning)
+                Logger.info(String.format("Memory recovered by pruning: %10.2f MB", memoryUsedBeforePruning - memoryUsedAfterPruning));
+            else if (speciesToPrune.size() > 100)
+                // There were a significant number of species pruned, but we didn't recover any memory
+                Logger.warning("No memory recovered due to pruning!");
+
+
+
 		}
 		//System.out.println("PDep Pruning DEBUG:\nThe number of species in the model's edge, after pruning: " + ((CoreEdgeReactionModel)reactionModel).getEdge().getSpeciesNumber());
         return;
