@@ -1961,7 +1961,7 @@ public class QMTP implements GeneralGAPP {
 		    else if (attemptNumber==2) command = "\""+System.getProperty("RMG.workingDirectory")+"/scripts/symmetryLoose.bat\" " +qmfolder+ "symminput.txt";//looser criteria (0.1 instead of 0.01) to properly identify C2v group in VBURLMBUVWIEMQ-UHFFFAOYAVmult5 (InChI=1/C3H4O2/c1-3(2,4)5/h1-2H2/mult5) MOPAC result; C2 and sigma were identified with default, but it should be C2 and sigma*2
 		    else if (attemptNumber==3) command = "\""+System.getProperty("RMG.workingDirectory")+"/scripts/symmetryLoose2.bat\" " +qmfolder+ "symminput.txt";//looser criteria to properly identify D2d group in XXHDHKZTASMVSX-UHFFFAOYAM
 		    else if (attemptNumber==4){
-			System.out.println("*****WARNING****: Using last-resort symmetry estimation options; symmetry may be underestimated");
+			Logger.error("*****WARNING****: Using last-resort symmetry estimation options; symmetry may be underestimated");
 			command = "\""+System.getProperty("RMG.workingDirectory")+"/scripts/symmetryLastResort.bat\" " +qmfolder+ "symminput.txt";//last resort criteria to avoid crashing (this will likely result in identification of C1 point group)
 		    }
 		    else{
@@ -1974,7 +1974,7 @@ public class QMTP implements GeneralGAPP {
 		    else if (attemptNumber==2) command = System.getProperty("RMG.workingDirectory")+"/bin/SYMMETRY.EXE -final 0.1 " +qmfolder+ "symminput.txt";//looser criteria (0.1 instead of 0.01) to properly identify C2v group in VBURLMBUVWIEMQ-UHFFFAOYAVmult5 (InChI=1/C3H4O2/c1-3(2,4)5/h1-2H2/mult5) MOPAC result; C2 and sigma were identified with default, but it should be C2 and sigma*2
 		    else if (attemptNumber==3) command = System.getProperty("RMG.workingDirectory")+"/bin/SYMMETRY.EXE -primary 0.2 -final 0.1 " +qmfolder+ "symminput.txt";//looser criteria to identify D2d group in XXHDHKZTASMVSX-UHFFFAOYAM (InChI=1/C12H16/c1-5-9-10(6-2)12(8-4)11(9)7-3/h5-12H,1-4H2)
 		    else if (attemptNumber==4){
-			System.out.println("*****WARNING****: Using last-resort symmetry estimation options; symmetry may be underestimated");
+			Logger.error("*****WARNING****: Using last-resort symmetry estimation options; symmetry may be underestimated");
 			command = System.getProperty("RMG.workingDirectory")+"/bin/SYMMETRY.EXE -final 0.0 " +qmfolder+ "symminput.txt";//last resort criteria to avoid crashing (this will likely result in identification of C1 point group)
 		    }
 		    else{
