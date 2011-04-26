@@ -480,6 +480,13 @@ public class TemplateReaction extends Reaction {
     public ReactionTemplate getReactionTemplate() {
         return reactionTemplate;
     }
+	
+	// Do what's necessary to prune this reaction
+	@Override
+	public void prune() {
+		reactionTemplate.removeFromReactionDictionaryByStructure(getStructure());
+		super.prune();
+	}
     
 }
 /*********************************************************************

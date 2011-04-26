@@ -78,7 +78,7 @@ public class Reaction {
   protected String ChemkinString = null;
    
   protected boolean kineticsFromPrimaryKineticLibrary = false;
-  protected ReactionTemplate rxnTemplate;
+
   protected boolean expectDuplicate = false;
   // Constructors
 
@@ -1566,14 +1566,7 @@ public class Reaction {
 		kineticsFromPrimaryKineticLibrary = p_boolean;
 	}
 	
-	public ReactionTemplate getReactionTemplate() {
-		return rxnTemplate;
-	}
 
-	public void setReactionTemplate(ReactionTemplate rt) {
-		rxnTemplate = rt;
-	}
-	
 	public boolean hasMultipleKinetics() {
 		if (getKinetics().length > 1) return true;
 		else return false;
@@ -1586,6 +1579,17 @@ public class Reaction {
     public boolean getExpectDuplicate() {
         return expectDuplicate;
     }
+	
+	public void prune() {
+		// do what's necessary to prune the reaction
+		
+		if (!((isForward() && getKineticsSource(0).contains("Library")) ||
+			 (isBackward() && getReverseReaction().getKineticsSource(0).contains("Library"))))
+			// why don't we use isFromPrimaryKineticLibrary() ?
+		{
+			setStructure(null);
+		}
+	}
 
 }
 /*********************************************************************
