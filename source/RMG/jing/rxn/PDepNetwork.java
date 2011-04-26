@@ -882,6 +882,37 @@ public class PDepNetwork {
 	}
 
 	/**
+	 * Counts the number of total path reactions in the pressure-dependent
+     * networks.
+	 * @param cerm The current core/edge reaction model
+	 * @return The number of path reactions found
+	 */
+	public static int getNumPathReactions(CoreEdgeReactionModel cerm) {
+		int count = 0;
+        for (ListIterator<PDepNetwork> iter0 = networks.listIterator(); iter0.hasNext(); ) {
+			PDepNetwork pdn = iter0.next();
+            count += pdn.getPathReactions().size();
+		}
+        return count;
+	}
+
+	/**
+	 * Counts the number of total net reactions in the pressure-dependent
+     * networks, including all core-to-core ("core"), core-to-edge ("edge"), and
+     * edge-to-edge reactions.
+	 * @param cerm The current core/edge reaction model
+	 * @return The number of net reactions found
+	 */
+	public static int getNumNetReactions(CoreEdgeReactionModel cerm) {
+		int count = 0;
+        for (ListIterator<PDepNetwork> iter0 = networks.listIterator(); iter0.hasNext(); ) {
+			PDepNetwork pdn = iter0.next();
+            count += pdn.getNetReactions().size();
+		}
+        return count;
+	}
+
+	/**
 	 * Check whether or not a given species is an included (fully explored)
 	 * unimolecular isomer in any currently-existing network.
 	 * @param species The species to check for included status
