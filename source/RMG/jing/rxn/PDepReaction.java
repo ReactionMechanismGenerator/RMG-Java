@@ -113,7 +113,7 @@ public class PDepReaction extends Reaction {
 	
 	/**
 	 * Create a pressure-dependent path reaction connecting isomers reac and
-	 * prod and having high-pressure Arrhenius kinetics as found in rxn.
+	 * prod and having high-pressure Arrhenius kinetics given by kin.
 	 * @param reac The reactant PDepIsomer
 	 * @param prod The product PDepIsomer
 	 * @param kin The high-pressure kinetics for the forward reaction

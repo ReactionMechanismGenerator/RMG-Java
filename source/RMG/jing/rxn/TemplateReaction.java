@@ -156,11 +156,14 @@ public class TemplateReaction extends Reaction {
 
 		Structure rs = new Structure(fproduct, freactant, -1 * this.getDirection());
 		Structure rsSp = new Structure(fsSp.products, fsSp.reactants, -1 * this.getDirection());
+		
+		// If it's in the reverse ReactionTemplate.reactionDictionaryByStructure then just return that one.
 		TemplateReaction rr = rRT.getReactionFromStructure(rsSp);
 		if (rr != null) {
 			rr.setReverseReaction(this);
 			return rr;
 		}
+		
 		int rNum = fproduct.size();
 		Kinetics[] k = rRT.findReverseRateConstant(rs);
 		if (k == null && rRT.name.equals("R_Recombination")) {
