@@ -1582,6 +1582,7 @@ public class Reaction {
 	
 	public void prune() {
 		// Do what's necessary to prune the reaction
+		// Also clears the reverse, so don't expect to be able to get it back
 		
 		// Do santy check on the isFromPrimaryKineticLibrary() method we rely on.
 		// (This shouldn't be necessary, but we have no unit test framework so I'm building one in here!)
@@ -1603,7 +1604,9 @@ public class Reaction {
 		// Use isFromPrimaryKineticLibrary() to decide if it's safe to clear the reaction structure
 		if (!isFromPrimaryKineticLibrary()){
 			setStructure(null);
+			setReverseReaction(null);
 		}
+		
 	}
 
 }
