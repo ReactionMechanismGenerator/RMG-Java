@@ -78,7 +78,7 @@ public class Reaction {
   protected String ChemkinString = null;
    
   protected boolean kineticsFromPrimaryKineticLibrary = false;
-  protected ReactionTemplate rxnTemplate;
+
   protected boolean expectDuplicate = false;
   // Constructors
 
@@ -1566,14 +1566,7 @@ public class Reaction {
 		kineticsFromPrimaryKineticLibrary = p_boolean;
 	}
 	
-	public ReactionTemplate getReactionTemplate() {
-		return rxnTemplate;
-	}
 
-	public void setReactionTemplate(ReactionTemplate rt) {
-		rxnTemplate = rt;
-	}
-	
 	public boolean hasMultipleKinetics() {
 		if (getKinetics().length > 1) return true;
 		else return false;
@@ -1586,6 +1579,35 @@ public class Reaction {
     public boolean getExpectDuplicate() {
         return expectDuplicate;
     }
+	
+	public void prune() {
+		// Do what's necessary to prune the reaction
+		// Also clears the reverse, so don't expect to be able to get it back
+		
+		// Do santy check on the isFromPrimaryKineticLibrary() method we rely on.
+		// (This shouldn't be necessary, but we have no unit test framework so I'm building one in here!)
+		if (!isFromPrimaryKineticLibrary())
+		{
+			if (isForward())
+				if (kinetics != null)
+					if (getKineticsSource(0).contains("Library"))
+						throw new RuntimeException(String.format(
+							"Reaction %s kinetics source contains 'Library' but isFromPrimaryKineticLibrary() returned false.",this));
+			if (isBackward())
+				if (getReverseReaction().getKineticsSource(0) != null)
+					if (getReverseReaction().getKineticsSource(0).contains("Library"))
+						throw new RuntimeException(String.format(
+							"Reverse of reaction %s kinetics source contains 'Library' but isFromPrimaryKineticLibrary() returned false.",this));
+			// I'm not sure why we can't clear the reverse anyway - as long as the direction WITH kinetics still has a Structure we should be ok.
+		}
+		
+		// Use isFromPrimaryKineticLibrary() to decide if it's safe to clear the reaction structure
+		if (!isFromPrimaryKineticLibrary()){
+			setStructure(null);
+			setReverseReaction(null);
+		}
+		
+	}
 
 }
 /*********************************************************************

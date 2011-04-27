@@ -84,6 +84,7 @@ public class PDepReaction extends Reaction {
 	 * dealing with PDepReaction objects.
 	 */
 	private PDepReaction pDepReverse;
+	
 			
 	//==========================================================================
 	//
@@ -101,7 +102,7 @@ public class PDepReaction extends Reaction {
 		super();
 		structure = rxn.structure;
 		kinetics = rxn.getKinetics();
-		reverseReaction = rxn.reverseReaction;
+		reverseReaction = null; // reverseReaction is inaccessible, because getReverseReaction() returns pDepReverse.
 		if (structure == null)
 			structure = new Structure(reac.getSpeciesList(), prod.getSpeciesList(), 1);
 		setReactant(reac);
@@ -112,7 +113,7 @@ public class PDepReaction extends Reaction {
 	
 	/**
 	 * Create a pressure-dependent path reaction connecting isomers reac and
-	 * prod and having high-pressure Arrhenius kinetics as found in rxn.
+	 * prod and having high-pressure Arrhenius kinetics given by kin.
 	 * @param reac The reactant PDepIsomer
 	 * @param prod The product PDepIsomer
 	 * @param kin The high-pressure kinetics for the forward reaction
@@ -257,6 +258,12 @@ public class PDepReaction extends Reaction {
 	public void setReverseReaction(Reaction rxn) {
 		if (rxn instanceof PDepReaction)
 			pDepReverse = (PDepReaction) rxn;
+		else if (rxn == null)
+			pDepReverse = null;
+		else {
+			throw new RuntimeException(String.format("Tried to set reverse of PDepReaction %s with a non-PDepReaction %s",this,rxn));
+		}
+
 	}
 	
 	//==========================================================================
@@ -611,4 +618,5 @@ public class PDepReaction extends Reaction {
 	public PDepRateConstant getPDepRate() {
 		return pDepRate;
 	}
+	
 }

@@ -72,7 +72,7 @@ public class ReactionTemplate {
   
   //protected HashMap reactionDictionaryByReactant = new HashMap();		//## attribute reactionDictionaryByReactant 
   
-  protected LinkedHashMap reactionDictionaryByStructure = new LinkedHashMap();		//## attribute reactionDictionaryByStructure 
+  protected WeakHashMap reactionDictionaryByStructure = new WeakHashMap();		//## attribute reactionDictionaryByStructure 
   
   protected KineticsTemplateLibrary kineticsTemplateLibrary;
   protected ReactionAdjList reactionAdjList;
@@ -115,9 +115,13 @@ public class ReactionTemplate {
       //#]
   }
 
-  public void removeFromReactionDictionaryByStructure(Structure s) {
-      if(reactionDictionaryByStructure.containsKey(s)) reactionDictionaryByStructure.remove(s);
-      return;
+  public boolean removeFromReactionDictionaryByStructure(Structure s) {
+	  // Returns true if it found and removed the structure.
+      if(reactionDictionaryByStructure.remove(s) == null)
+		  return false;
+		//Logger.warning(String.format("ReactionTemplate %s Dictionary did not contain reaction structure %s",name,s));
+		//throw new RuntimeException(String.format("ReactionTemplate %s Dictionary did not contain reaction structure %s",name,s));
+	  else return true;
   }
   
   //## operation calculateDepth(HashSet) 

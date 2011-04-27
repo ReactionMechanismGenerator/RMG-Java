@@ -193,7 +193,25 @@ public class ReactionTemplateLibrary {
     public void clearReactionTemplate() {
         reactionTemplate.clear();
     }
-    
+	
+	
+	public int removeFromAllReactionDictionariesByStructure(Structure structure) {
+		// remove the given reaction structure from all the ReactionTemplate.reactionDictionaryByStructure sets
+		// Returns the number of times it was found and removed.
+		
+		int number_of_times_removed = 0;
+		Iterator<ReactionTemplate> iterRT = getReactionTemplate();
+		while (iterRT.hasNext()){
+			ReactionTemplate rt = (ReactionTemplate)iterRT.next();
+			if (rt.removeFromReactionDictionaryByStructure(structure)) {
+				number_of_times_removed += 1;
+				// If reaction structures were in only one template dictionary, we could break now
+				// but they may be in more than one so we need to check them all.
+			}
+		}
+		return number_of_times_removed;
+	}	
+
 }
 /*********************************************************************
 	File Path	: RMG\RMG\jing\rxn\ReactionTemplateLibrary.java
