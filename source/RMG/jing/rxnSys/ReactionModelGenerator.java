@@ -4052,6 +4052,7 @@ public class ReactionModelGenerator {
 						" Library\nThe species will still be removed from the Edge of the " +
 						"Reaction Mechanism\n" + spe.toString());
 				JDAS.edgeID.remove(spe);
+				JDAS.edgeLeakID.remove(spe); // this would get cleaned up in another iteration when edgeLeakID is rebuilt, but debugging memory leaks is simpler if we explicitly clear it here.
 			}
 			//remove reactions from the edge involving pruned species
 			
