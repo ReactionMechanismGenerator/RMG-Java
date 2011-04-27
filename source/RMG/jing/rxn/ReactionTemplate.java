@@ -72,7 +72,7 @@ public class ReactionTemplate {
   
   //protected HashMap reactionDictionaryByReactant = new HashMap();		//## attribute reactionDictionaryByReactant 
   
-  protected LinkedHashMap reactionDictionaryByStructure = new LinkedHashMap();		//## attribute reactionDictionaryByStructure 
+  protected WeakHashMap reactionDictionaryByStructure = new WeakHashMap();		//## attribute reactionDictionaryByStructure 
   
   protected KineticsTemplateLibrary kineticsTemplateLibrary;
   protected ReactionAdjList reactionAdjList;

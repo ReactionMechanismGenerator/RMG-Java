@@ -4120,6 +4120,7 @@ public class ReactionModelGenerator {
 						Reaction reverse = reaction.getReverseReaction();
 						pdn.removeFromPathReactionList((PDepReaction)reaction);
 						pdn.removeFromPathReactionList((PDepReaction)reverse);
+						// reaction and reverse are PDepReaction not TemplateReaction and don't what template they came from, if any.
 						reaction.prune();
 						if (reverse != null) reverse.prune();
 					}
