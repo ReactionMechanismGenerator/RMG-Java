@@ -85,9 +85,6 @@ public class PDepReaction extends Reaction {
 	 */
 	private PDepReaction pDepReverse;
 	
-	
-	// The reaction template this came from, if any, else null.
-	private ReactionTemplate reactionTemplate;
 			
 	//==========================================================================
 	//
@@ -112,11 +109,6 @@ public class PDepReaction extends Reaction {
 		setProduct(prod);
 		pDepRate = null;
 		kineticsFromPrimaryKineticLibrary = rxn.isFromPrimaryKineticLibrary();
-		
-		if (rxn instanceof TemplateReaction)
-			reactionTemplate = ((TemplateReaction)rxn).getReactionTemplate();
-		else 
-			reactionTemplate = null;
 	}
 	
 	/**
@@ -619,16 +611,6 @@ public class PDepReaction extends Reaction {
 	
 	public PDepRateConstant getPDepRate() {
 		return pDepRate;
-	}
-	
-	
-	// Do what's necessary to prune this reaction
-	// This belongs in TemplateReaction, but I can't think of a cleaner way.
-	@Override
-	public void prune() {
-		if (reactionTemplate != null)
-			reactionTemplate.removeFromReactionDictionaryByStructure(getStructure());
-		super.prune();
 	}
 	
 }
