@@ -484,13 +484,6 @@ public class TemplateReaction extends Reaction {
         return reactionTemplate;
     }
 	
-	// Do what's necessary to prune this reaction
-	@Override
-	public void prune() {
-		reactionTemplate.removeFromReactionDictionaryByStructure(getStructure());
-		super.prune();
-	}
-    
 }
 /*********************************************************************
 	File Path	: RMG\RMG\jing\rxn\TemplateReaction.java

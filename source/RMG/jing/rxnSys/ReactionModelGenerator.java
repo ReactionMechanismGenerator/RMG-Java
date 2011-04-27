@@ -4054,6 +4054,9 @@ public class ReactionModelGenerator {
 				JDAS.edgeID.remove(spe);
 			}
 			//remove reactions from the edge involving pruned species
+			
+			ReactionTemplateLibrary rtl = ReactionTemplateLibrary.getINSTANCE();
+			
 			iter = ((CoreEdgeReactionModel)getReactionModel()).getUnreactedReactionSet().iterator();
 			HashSet toRemove = new HashSet();
 			while(iter.hasNext()){
@@ -4067,6 +4070,11 @@ public class ReactionModelGenerator {
 				Reaction reverse = reaction.getReverseReaction();
 				((CoreEdgeReactionModel)reactionModel).removeFromUnreactedReactionSet(reaction);
 				((CoreEdgeReactionModel)reactionModel).removeFromUnreactedReactionSet(reverse);
+				
+				rtl.removeFromAllReactionDictionariesByStructure(reaction.getStructure());
+				if (reverse != null)
+					rtl.removeFromAllReactionDictionariesByStructure(reverse.getStructure());
+				
 				reaction.prune();
 				if (reverse != null) reverse.prune();
 			}
@@ -4120,8 +4128,7 @@ public class ReactionModelGenerator {
 						Reaction reverse = reaction.getReverseReaction();
 						pdn.removeFromPathReactionList((PDepReaction)reaction);
 						pdn.removeFromPathReactionList((PDepReaction)reverse);
-						// reaction and reverse are PDepReaction not TemplateReaction and don't what template they came from, if any.
-						// so we have to go through them all and check.
+
 						Structure fwd_structure = reaction.getStructure();
 						Structure rev_structure = null;
 						if (reverse != null) {
@@ -4130,31 +4137,8 @@ public class ReactionModelGenerator {
 						else {
 							rev_structure = fwd_structure.generateReverseStructure();
 						}
-
-						boolean removed_fwd_from_template = false;
-						boolean removed_rev_from_template = false;
-						Reaction reverse_template_reaction = null;
-						Iterator<ReactionTemplate> iterRT = ReactionTemplateLibrary.getINSTANCE().getReactionTemplate();
-						while (iterRT.hasNext()){
-							ReactionTemplate rt = (ReactionTemplate)iterRT.next();
-							if (rt.getReactionFromStructure(fwd_structure) != null) {
-								rt.removeFromReactionDictionaryByStructure(fwd_structure);
-								removed_fwd_from_template = true;
-							}
-							reverse_template_reaction = rt.getReactionFromStructure(rev_structure);
-							if (reverse_template_reaction != null) {
-								rt.removeFromReactionDictionaryByStructure(rev_structure);
-								removed_rev_from_template = true;
-								reverse = reverse_template_reaction;
-								// If reactions were in only one template dictionary, we could break now like this:
-								//   if (removed_fwd_from_template) break;
-								// but they may be in more than one so we need to check them all.
-							}
-						}
-						if (!( removed_rev_from_template && removed_fwd_from_template))
-							throw new RuntimeException(String.format("%s not removed from any template dictionaries.\n(fwd removed %s, rev removed %s)",
-																	 reaction,removed_fwd_from_template,removed_rev_from_template));
-						
+						rtl.removeFromAllReactionDictionariesByStructure(fwd_structure);
+						rtl.removeFromAllReactionDictionariesByStructure(rev_structure);						
 						reaction.prune();
 						if (reverse != null) reverse.prune();
 					}
