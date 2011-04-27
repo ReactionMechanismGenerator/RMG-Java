@@ -4015,12 +4015,17 @@ public class ReactionModelGenerator {
 				double maxmaxRatio = (Double)entry.getValue();
 				if (maxmaxRatio < edgeTol)
 				{
-					Logger.info("Edge species "+spe.getChemkinName() +" has a maximum flux ratio ("+maxmaxRatio+") lower than edge inclusion threshhold and will be pruned.");
+					Logger.info(String.format("Edge species %s has a maximum flux ratio (%.2g) lower than edge inclusion threshhold (%.2g) and will be pruned.",spe.getChemkinName(),maxmaxRatio,edgeTol ));
 					speciesToPrune.add(spe);
 					++belowThreshold;
 				}
 				else if ( numberToBePruned - speciesToPrune.size() > 0 ) {
-					Logger.info("Edge species "+spe.getChemkinName() +" has a low maximum flux ratio ("+maxmaxRatio+") and will be pruned to reduce the edge size to the maximum ("+maxEdgeSpeciesAfterPruning+").");
+					if (maxmaxRatio>tolerance){
+						Logger.warning(String.format("To reach the requested maximum edge size after pruning (%d) would require pruning species with a maximum flux ratio above the requested overall tolerance (%.2g) which is inconsistent.",maxEdgeSpeciesAfterPruning,tolerance));
+						Logger.warning(String.format("No more species will be pruned this iteration, leaving an edge size of %d. Please increase your overall Error Tolerance if you'd like more species to be pruned.",maxEdgeSpeciesAfterPruning + numberToBePruned - speciesToPrune.size() ));
+						break;
+					}
+					Logger.info(String.format("Edge species %s has a low maximum flux ratio (%.2g) and will be pruned to reduce the edge size to the maximum (%d).",spe.getChemkinName(),maxmaxRatio,maxEdgeSpeciesAfterPruning ));
 					speciesToPrune.add(spe);
 					++lowMaxFlux;
 				}
