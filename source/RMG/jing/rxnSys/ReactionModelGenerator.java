@@ -4121,6 +4121,19 @@ public class ReactionModelGenerator {
 						pdn.removeFromPathReactionList((PDepReaction)reaction);
 						pdn.removeFromPathReactionList((PDepReaction)reverse);
 						// reaction and reverse are PDepReaction not TemplateReaction and don't what template they came from, if any.
+						// so we have to go through them all and check.
+						Iterator<ReactionTemplate> iterRT = ReactionTemplateLibrary.getINSTANCE().getReactionTemplate();
+						while (iterRT.hasNext()){
+							ReactionTemplate rt = (ReactionTemplate)iterRT.next();
+							if (rt.getReactionFromStructure(reaction.getStructure()) != null) {
+								rt.removeFromReactionDictionaryByStructure(reaction.getStructure());
+							}
+							if ((reverse != null) && (rt.getReactionFromStructure(reverse.getStructure()) != null)) {
+								rt.removeFromReactionDictionaryByStructure(reverse.getStructure());
+							}
+						}
+						
+						
 						reaction.prune();
 						if (reverse != null) reverse.prune();
 					}
