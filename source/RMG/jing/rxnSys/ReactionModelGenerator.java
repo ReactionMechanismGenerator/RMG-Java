@@ -4073,10 +4073,12 @@ public class ReactionModelGenerator {
 				
 				int number_removed;
 				number_removed = rtl.removeFromAllReactionDictionariesByStructure(reaction.getStructure());
-				Logger.info(String.format("Removed edge forward %s from %s dictionaries",reaction.getStructure(),number_removed));
+				if (number_removed != 1)
+					Logger.info(String.format("Removed edge forward %s from %s dictionaries",reaction.getStructure(),number_removed));
 				if (reverse != null) {
 					number_removed = rtl.removeFromAllReactionDictionariesByStructure(reverse.getStructure());
-					Logger.info(String.format("Removed edge reverse %s from %s dictionaries",reverse.getStructure(),number_removed));
+					if (number_removed != 1)
+						Logger.info(String.format("Removed edge reverse %s from %s dictionaries",reverse.getStructure(),number_removed));
 				}
 				reaction.prune();
 				if (reverse != null) reverse.prune();
@@ -4142,9 +4144,11 @@ public class ReactionModelGenerator {
 						}
 						int number_removed;
 						number_removed = rtl.removeFromAllReactionDictionariesByStructure(fwd_structure);
-						Logger.info(String.format("Removed path forward %s from %s dictionaries",fwd_structure,number_removed));
+						if (number_removed != 1)
+							Logger.info(String.format("Removed path forward %s from %s dictionaries",fwd_structure,number_removed));
 						number_removed = rtl.removeFromAllReactionDictionariesByStructure(rev_structure);
-						Logger.info(String.format("Removed path reverse %s from %s dictionaries",rev_structure,number_removed));
+						if (number_removed != 1)
+							Logger.info(String.format("Removed path reverse %s from %s dictionaries",rev_structure,number_removed));
 						reaction.prune();
 						if (reverse != null) reverse.prune();
 					}
