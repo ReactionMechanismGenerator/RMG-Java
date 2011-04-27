@@ -117,7 +117,8 @@ public class ReactionTemplate {
 
   public void removeFromReactionDictionaryByStructure(Structure s) {
       if(reactionDictionaryByStructure.remove(s) == null)
-		  throw new RuntimeException(String.format("ReactionTemplate %s Dictionary did not contain reaction structure %s",name,s));
+		  Logger.warning(String.format("ReactionTemplate %s Dictionary did not contain reaction structure %s",name,s));
+		  //throw new RuntimeException(String.format("ReactionTemplate %s Dictionary did not contain reaction structure %s",name,s));
       return;
   }
   

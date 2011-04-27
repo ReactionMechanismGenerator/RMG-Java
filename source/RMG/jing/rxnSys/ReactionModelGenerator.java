@@ -4122,17 +4122,38 @@ public class ReactionModelGenerator {
 						pdn.removeFromPathReactionList((PDepReaction)reverse);
 						// reaction and reverse are PDepReaction not TemplateReaction and don't what template they came from, if any.
 						// so we have to go through them all and check.
+						Structure fwd_structure = reaction.getStructure();
+						Structure rev_structure = null;
+						if (reverse != null) {
+							rev_structure = reverse.getStructure();
+						}
+						else {
+							rev_structure = fwd_structure.generateReverseStructure();
+						}
+
+						boolean removed_fwd_from_template = false;
+						boolean removed_rev_from_template = false;
+						Reaction reverse_template_reaction = null;
 						Iterator<ReactionTemplate> iterRT = ReactionTemplateLibrary.getINSTANCE().getReactionTemplate();
 						while (iterRT.hasNext()){
 							ReactionTemplate rt = (ReactionTemplate)iterRT.next();
-							if (rt.getReactionFromStructure(reaction.getStructure()) != null) {
-								rt.removeFromReactionDictionaryByStructure(reaction.getStructure());
+							if (rt.getReactionFromStructure(fwd_structure) != null) {
+								rt.removeFromReactionDictionaryByStructure(fwd_structure);
+								removed_fwd_from_template = true;
 							}
-							if ((reverse != null) && (rt.getReactionFromStructure(reverse.getStructure()) != null)) {
-								rt.removeFromReactionDictionaryByStructure(reverse.getStructure());
+							reverse_template_reaction = rt.getReactionFromStructure(rev_structure);
+							if (reverse_template_reaction != null) {
+								rt.removeFromReactionDictionaryByStructure(rev_structure);
+								removed_rev_from_template = true;
+								reverse = reverse_template_reaction;
+								// If reactions were in only one template dictionary, we could break now like this:
+								//   if (removed_fwd_from_template) break;
+								// but they may be in more than one so we need to check them all.
 							}
 						}
-						
+						if (!( removed_rev_from_template && removed_fwd_from_template))
+							throw new RuntimeException(String.format("%s not removed from any template dictionaries.\n(fwd removed %s, rev removed %s)",
+																	 reaction,removed_fwd_from_template,removed_rev_from_template));
 						
 						reaction.prune();
 						if (reverse != null) reverse.prune();
