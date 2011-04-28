@@ -2329,8 +2329,6 @@ return sn;
 			//ChemGraphDictionary cgd = ChemGraphDictionary.getInstance();
 			ChemGraph cg  = null;//= cgd.getChemGraphFromGraph(p_graph);
 			if (cg == null){
-				try {
-					
 		        	cg = new ChemGraph(p_graph);
 					cg.addMissingHydrogen();
 
@@ -2342,10 +2340,6 @@ return sn;
 		        		throw new InvalidChemGraphException();
 		        	}
 					//cgd.putSpecies(cg);
-		        }
-		        catch (ForbiddenStructureException e) {
-		        	throw new ForbiddenStructureException(e.getMessage());
-		        }
 			}
 			
 			return cg;
