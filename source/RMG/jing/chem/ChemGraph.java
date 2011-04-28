@@ -128,8 +128,7 @@ public class ChemGraph implements Matchable {
 		//if (getRadicalNumber() > MAX_RADICAL_NUM || getOxygenNumber() > MAX_OXYGEN_NUM || getCycleNumber() > MAX_CYCLE_NUM) {		        
 			String message = p_graph.toString() + " is forbidden by "+whichForbiddenStructures(p_graph, getRadicalNumber(), getOxygenNumber(), getCycleNumber()) +"and not allowed.";
 			
-			getThermoData(); // ensure thermoData has been generated
-			if (fromprimarythermolibrary) {
+			if (GATP.getINSTANCE().primaryLibrary.getThermoData(getGraph()) != null) {
 				Logger.warning(message);
 				Logger.warning(String.format("But it's in the %s, so I'm letting it through.\n",thermoData.getSource() ));
 				// nb. the source String begins "Primary Thermo Library:"

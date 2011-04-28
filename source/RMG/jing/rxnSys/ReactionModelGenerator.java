@@ -4013,12 +4013,17 @@ public class ReactionModelGenerator {
 				double maxmaxRatio = (Double)entry.getValue();
 				if (maxmaxRatio < edgeTol)
 				{
-					Logger.info("Edge species "+spe.getChemkinName() +" has a maximum flux ratio ("+maxmaxRatio+") lower than edge inclusion threshhold and will be pruned.");
+					Logger.info(String.format("Edge species %s has a maximum flux ratio (%.2g) lower than edge inclusion threshhold (%.2g) and will be pruned.",spe.getChemkinName(),maxmaxRatio,edgeTol ));
 					speciesToPrune.add(spe);
 					++belowThreshold;
 				}
 				else if ( numberToBePruned - speciesToPrune.size() > 0 ) {
-					Logger.info("Edge species "+spe.getChemkinName() +" has a low maximum flux ratio ("+maxmaxRatio+") and will be pruned to reduce the edge size to the maximum ("+maxEdgeSpeciesAfterPruning+").");
+					if (maxmaxRatio>tolerance){
+						Logger.warning(String.format("To reach the requested maximum edge size after pruning (%d) would require pruning species with a maximum flux ratio above the requested overall tolerance (%.2g) which is inconsistent.",maxEdgeSpeciesAfterPruning,tolerance));
+						Logger.warning(String.format("No more species will be pruned this iteration, leaving an edge size of %d. Please increase your overall Error Tolerance if you'd like more species to be pruned.",maxEdgeSpeciesAfterPruning + numberToBePruned - speciesToPrune.size() ));
+						break;
+					}
+					Logger.info(String.format("Edge species %s has a low maximum flux ratio (%.2g) and will be pruned to reduce the edge size to the maximum (%d).",spe.getChemkinName(),maxmaxRatio,maxEdgeSpeciesAfterPruning ));
 					speciesToPrune.add(spe);
 					++lowMaxFlux;
 				}
@@ -4050,8 +4055,12 @@ public class ReactionModelGenerator {
 						" Library\nThe species will still be removed from the Edge of the " +
 						"Reaction Mechanism\n" + spe.toString());
 				JDAS.edgeID.remove(spe);
+				JDAS.edgeLeakID.remove(spe); // this would get cleaned up in another iteration when edgeLeakID is rebuilt, but debugging memory leaks is simpler if we explicitly clear it here.
 			}
 			//remove reactions from the edge involving pruned species
+			
+			ReactionTemplateLibrary rtl = ReactionTemplateLibrary.getINSTANCE();
+			
 			iter = ((CoreEdgeReactionModel)getReactionModel()).getUnreactedReactionSet().iterator();
 			HashSet toRemove = new HashSet();
 			while(iter.hasNext()){
@@ -4065,24 +4074,18 @@ public class ReactionModelGenerator {
 				Reaction reverse = reaction.getReverseReaction();
 				((CoreEdgeReactionModel)reactionModel).removeFromUnreactedReactionSet(reaction);
 				((CoreEdgeReactionModel)reactionModel).removeFromUnreactedReactionSet(reverse);
-				ReactionTemplate rt = reaction.getReactionTemplate();
-				ReactionTemplate rtr = null;
-				if(reverse!=null){
-				    rtr = reverse.getReactionTemplate();
+				
+				int number_removed;
+				number_removed = rtl.removeFromAllReactionDictionariesByStructure(reaction.getStructure());
+				if (number_removed != 1)
+					Logger.info(String.format("Removed edge forward %s from %s dictionaries",reaction.getStructure(),number_removed));
+				if (reverse != null) {
+					number_removed = rtl.removeFromAllReactionDictionariesByStructure(reverse.getStructure());
+					if (number_removed != 1)
+						Logger.info(String.format("Removed edge reverse %s from %s dictionaries",reverse.getStructure(),number_removed));
 				}
-				if(rt!=null){
-				    rt.removeFromReactionDictionaryByStructure(reaction.getStructure());//remove from ReactionTemplate's reactionDictionaryByStructure
-				}
-				if(rtr!=null){
-				    rtr.removeFromReactionDictionaryByStructure(reverse.getStructure());
-				}
-				if ((reaction.isForward() && reaction.getKineticsSource(0).contains("Library")) ||
-						(reaction.isBackward() && reaction.getReverseReaction().getKineticsSource(0).contains("Library")))
-					continue;
-				reaction.setStructure(null);
-				if(reverse!=null){
-				    reverse.setStructure(null);
-				}
+				reaction.prune();
+				if (reverse != null) reverse.prune();
 			}
 			//remove reactions from PDepNetworks in PDep cases
 			if (reactionModelEnlarger instanceof RateBasedPDepRME)	{
@@ -4134,24 +4137,24 @@ public class ReactionModelGenerator {
 						Reaction reverse = reaction.getReverseReaction();
 						pdn.removeFromPathReactionList((PDepReaction)reaction);
 						pdn.removeFromPathReactionList((PDepReaction)reverse);
-						ReactionTemplate rt = reaction.getReactionTemplate();
-						ReactionTemplate rtr = null;
-						if(reverse!=null){
-						    rtr = reverse.getReactionTemplate();
+
+						Structure fwd_structure = reaction.getStructure();
+						Structure rev_structure = null;
+						if (reverse != null) {
+							rev_structure = reverse.getStructure();
 						}
-						if(rt!=null){
-						    rt.removeFromReactionDictionaryByStructure(reaction.getStructure());//remove from ReactionTemplate's reactionDictionaryByStructure
+						else {
+							rev_structure = fwd_structure.generateReverseStructure();
 						}
-						if(rtr!=null){
-						    rtr.removeFromReactionDictionaryByStructure(reverse.getStructure());
-						}
-						if ((reaction.isForward() && reaction.getKineticsSource(0).contains("Library")) ||
-								(reaction.isBackward() && reaction.getReverseReaction().getKineticsSource(0).contains("Library")))
-							continue;
-						reaction.setStructure(null);
-						if(reverse!=null){
-						    reverse.setStructure(null);
-						}
+						int number_removed;
+						number_removed = rtl.removeFromAllReactionDictionariesByStructure(fwd_structure);
+						if (number_removed != 1)
+							Logger.info(String.format("Removed path forward %s from %s dictionaries",fwd_structure,number_removed));
+						number_removed = rtl.removeFromAllReactionDictionariesByStructure(rev_structure);
+						if (number_removed != 1)
+							Logger.info(String.format("Removed path reverse %s from %s dictionaries",rev_structure,number_removed));
+						reaction.prune();
+						if (reverse != null) reverse.prune();
 					}
 					//remove net reactions
 					iterRem = toRemoveNet.iterator();
@@ -4160,21 +4163,8 @@ public class ReactionModelGenerator {
 						Reaction reverse = reaction.getReverseReaction();
 						pdn.removeFromNetReactionList((PDepReaction)reaction);
 						pdn.removeFromNetReactionList((PDepReaction)reverse);
-						ReactionTemplate rt = reaction.getReactionTemplate();
-						ReactionTemplate rtr = null;
-						if(reverse!=null){
-						    rtr = reverse.getReactionTemplate();
-						}
-						if(rt!=null){
-						    rt.removeFromReactionDictionaryByStructure(reaction.getStructure());//remove from ReactionTemplate's reactionDictionaryByStructure
-						}
-						if(rtr!=null){
-						    rtr.removeFromReactionDictionaryByStructure(reverse.getStructure());
-						}
-						reaction.setStructure(null);
-						if(reverse!=null){
-						    reverse.setStructure(null);
-						}
+						reaction.prune();
+						if (reverse != null) reverse.prune();
 					}
 					//remove nonincluded reactions
 					iterRem = toRemoveNonincluded.iterator();
@@ -4183,21 +4173,8 @@ public class ReactionModelGenerator {
 						Reaction reverse = reaction.getReverseReaction();
 						pdn.removeFromNonincludedReactionList((PDepReaction)reaction);
 						pdn.removeFromNonincludedReactionList((PDepReaction)reverse);
-						ReactionTemplate rt = reaction.getReactionTemplate();
-						ReactionTemplate rtr = null;
-						if(reverse!=null){
-						    rtr = reverse.getReactionTemplate();
-						}
-						if(rt!=null){
-						    rt.removeFromReactionDictionaryByStructure(reaction.getStructure());//remove from ReactionTemplate's reactionDictionaryByStructure
-						}
-						if(rtr!=null){
-						    rtr.removeFromReactionDictionaryByStructure(reverse.getStructure());
-						}
-						reaction.setStructure(null);
-						if(reverse!=null){
-						    reverse.setStructure(null);
-						}
+						reaction.prune();
+						if (reverse != null) reverse.prune();
 					}
 					//remove isomers
 					iterRem = toRemoveIsomer.iterator();

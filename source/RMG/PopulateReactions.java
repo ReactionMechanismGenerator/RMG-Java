@@ -63,6 +63,7 @@ import jing.rxnSys.RateBasedRME;
 import jing.rxnSys.ReactionModelGenerator;
 import jing.rxnSys.ReactionSystem;
 import jing.rxnSys.TemperatureModel;
+import jing.rxn.TemplateReaction;
 
 public class PopulateReactions {
 	/**
@@ -571,7 +572,12 @@ public class PopulateReactions {
 			Species species2 = species1;
 			while (iter2.hasNext()) 
 				species2 = (Species)iter2.next();
-			String rxnFamilyName = r.getReverseReaction().getReactionTemplate().getName();
+
+			String rxnFamilyName = "";
+			if (r instanceof TemplateReaction){
+			    rxnFamilyName = ((TemplateReaction)r.getReverseReaction()).getReactionTemplate().getName();
+			}
+
 			LinkedHashSet speciesHashSet = new LinkedHashSet();
 			speciesHashSet.add(species1);
 			reverseReactions = rtLibrary.react(speciesHashSet, species2, rxnFamilyName);

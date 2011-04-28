@@ -374,6 +374,9 @@ public  Chemkin() {
           	//System.out.println(line);
           }
           int exitValue = chemkin.waitFor();
+	  chemkin.getErrorStream().close();
+	  chemkin.getOutputStream().close();
+	  ips.close();
       }
       catch (Exception e) {
       	Logger.critical("Error in running chemkin!");
@@ -404,6 +407,9 @@ public  Chemkin() {
           	//System.out.println(line);
           }
           int exitValue = reactor.waitFor();
+	  reactor.getErrorStream().close();
+	  reactor.getOutputStream().close();
+	  ips.close();
       }
       catch (Exception e) {
       	Logger.critical("Error in running reactor!");

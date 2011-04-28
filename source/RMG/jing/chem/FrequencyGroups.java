@@ -161,6 +161,9 @@ public class FrequencyGroups{//gmagoon 111708: removed "implements GeneralGAPP"
 					frankieOutputFlag =  Integer.parseInt( line.substring(line.length()-1) );
             }
             int exitVal = freqProc.waitFor();
+	    is.close();
+	    freqProc.getErrorStream().close();
+	    freqProc.getOutputStream().close();
 		
         }
         catch (Exception e) {

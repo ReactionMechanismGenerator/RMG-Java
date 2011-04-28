@@ -463,6 +463,8 @@ public class QMTP implements GeneralGAPP {
                 System.out.println("RDKit received error (see above) on " + twoDmolFile.getName()+". File was probably not written.");
             }
             int exitValue = pythonProc.waitFor();
+	    pythonProc.getInputStream().close();
+	    pythonProc.getOutputStream().close();
 	    br.close();
 	    isr.close();
 	    is.close();
@@ -614,6 +616,8 @@ public class QMTP implements GeneralGAPP {
 		//do nothing
             }
             int exitValue = babelProc.waitFor();
+	    babelProc.getErrorStream().close();
+	    babelProc.getOutputStream().close();
 	    br.close();
 	    isr.close();
 	    is.close();
@@ -718,6 +722,8 @@ public class QMTP implements GeneralGAPP {
 		//do nothing
             }
             int exitValue = molecoorProc.waitFor();
+	    molecoorProc.getErrorStream().close();
+	    molecoorProc.getOutputStream().close();
 	    br.close();
 	    isr.close();
 	    is.close();
@@ -1000,6 +1006,8 @@ public class QMTP implements GeneralGAPP {
                 //do nothing
             }
             int exitValue = babelProc.waitFor();
+	    babelProc.getErrorStream().close();
+	    babelProc.getOutputStream().close();
 	    br.close();
 	    isr.close();
 	    is.close();
@@ -1046,6 +1054,8 @@ public class QMTP implements GeneralGAPP {
                 System.out.println("Gaussian process received error (see above) on " + name);
             }
             int exitValue = gaussianProc.waitFor();
+	    gaussianProc.getInputStream().close();
+	    gaussianProc.getOutputStream().close();
 	    br.close();
 	    isr.close();
 	    is.close();
@@ -1142,6 +1152,8 @@ public class QMTP implements GeneralGAPP {
 
 
             int exitValue = mm4Proc.waitFor();
+	    mm4Proc.getErrorStream().close();
+	    mm4Proc.getOutputStream().close();
 	    br.close();
 	    isr.close();
 	    is.close();
@@ -1241,6 +1253,8 @@ public class QMTP implements GeneralGAPP {
 
 
 		int exitValue = mm4Proc.waitFor();
+		mm4Proc.getErrorStream().close();
+		mm4Proc.getOutputStream().close();
 		br.close();
 		isr.close();
 		is.close();
@@ -1283,6 +1297,8 @@ public class QMTP implements GeneralGAPP {
                 System.out.println("MOPAC process received error (see above) on " + name);
             }
             int exitValue = mopacProc.waitFor();
+	    mopacProc.getInputStream().close();
+	    mopacProc.getOutputStream().close();
 	    br.close();
 	    isr.close();
 	    is.close();
@@ -1596,6 +1612,8 @@ public class QMTP implements GeneralGAPP {
 	    }
 
             int exitValue = canProc.waitFor();
+	    canProc.getErrorStream().close();
+	    canProc.getOutputStream().close();
 	    br.close();
 	    isr.close();
 	    is.close();
@@ -1785,6 +1803,8 @@ public class QMTP implements GeneralGAPP {
                 //do nothing (there shouldn't be any more information, but this is included to get all the output)
             }
             int exitValue = cclibProc.waitFor();
+	    cclibProc.getErrorStream().close();
+	    cclibProc.getOutputStream().close();
 	    br.close();
 	    isr.close();
 	    is.close();
@@ -1995,6 +2015,8 @@ public class QMTP implements GeneralGAPP {
                     }
                 }
                 int exitValue = symmProc.waitFor();
+		symmProc.getErrorStream().close();
+		symmProc.getOutputStream().close();
 		br.close();
 		isr.close();
 		is.close();
@@ -2730,6 +2752,8 @@ public class QMTP implements GeneralGAPP {
                 //do nothing (there shouldn't be any more information, but this is included to get all the output)
             }
             int exitValue = cclibProc.waitFor();
+	    cclibProc.getErrorStream().close();
+	    cclibProc.getOutputStream().close();
 	    br.close();
 	    isr.close();
 	    is.close();

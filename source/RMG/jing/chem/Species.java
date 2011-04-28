@@ -1212,6 +1212,7 @@ public class Species {
                     BufferedReader stderr = new BufferedReader(new InputStreamReader(InChI.getErrorStream()));
 
         			// Clean up i/o streams
+				InChI.getOutputStream().close();
         			stdout.close();
         			stderr.close();
         			
@@ -1231,6 +1232,7 @@ public class Species {
                     exitValue = InChI.waitFor();
 
         			// Clean up i/o streams
+				InChI.getOutputStream().close();
         			stdout.close();
         			stderr.close();
                     
@@ -1249,6 +1251,7 @@ public class Species {
                     exitValue = InChI.waitFor();
 
         			// Clean up i/o streams
+				InChI.getOutputStream().close();
         			stdout.close();
         			stderr.close();
                 }
@@ -1546,6 +1549,7 @@ public class Species {
 	            BufferedReader stdout = new BufferedReader(new InputStreamReader(InChI.getInputStream()));
 	            BufferedReader stderr = new BufferedReader(new InputStreamReader(InChI.getErrorStream()));
 	            // Clean up i/o streams
+		    InChI.getOutputStream().close();
 	            stdout.close();
 	            stderr.close();  			
 	            exitValue = InChI.waitFor();
@@ -1555,6 +1559,7 @@ public class Species {
 	            stdout = new BufferedReader(new InputStreamReader(InChI.getInputStream()));
 	            stderr = new BufferedReader(new InputStreamReader(InChI.getErrorStream()));
 	            // Clean up i/o streams
+		    InChI.getOutputStream().close();
 	            stdout.close();
 	            stderr.close();  			
 	            exitValue = InChI.waitFor();	            
@@ -1583,6 +1588,7 @@ public class Species {
 	            BufferedReader stderr = new BufferedReader(new InputStreamReader(InChI.getErrorStream()));
 	            exitValue = InChI.waitFor();
 	            // Clean up i/o streams
+		    InChI.getOutputStream().close();
 	            stdout.close();
 	            stderr.close();  			
 	            
@@ -1592,6 +1598,7 @@ public class Species {
 	            stderr = new BufferedReader(new InputStreamReader(InChI.getErrorStream()));
 	            exitValue = InChI.waitFor();	
 	            // Clean up i/o streams
+		    InChI.getOutputStream().close();
 	            stdout.close();
 	            stderr.close();  		            
             }
@@ -1619,6 +1626,7 @@ public class Species {
 	            BufferedReader stderr = new BufferedReader(new InputStreamReader(InChI.getErrorStream()));
 	            exitValue = InChI.waitFor();
 	            // Clean up i/o streams
+		    InChI.getOutputStream().close();
 	            stdout.close();
 	            stderr.close();  			
 	            
@@ -1628,6 +1636,7 @@ public class Species {
 	            stderr = new BufferedReader(new InputStreamReader(InChI.getErrorStream()));
 	            exitValue = InChI.waitFor();	
 	            // Clean up i/o streams
+		    InChI.getOutputStream().close();
 	            stdout.close();
 	            stderr.close();  		            
             }
