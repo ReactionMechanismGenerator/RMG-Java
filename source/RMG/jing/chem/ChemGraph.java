@@ -126,11 +126,12 @@ public class ChemGraph implements Matchable {
 
         if (isForbiddenStructure(p_graph,getRadicalNumber(),getOxygenNumber(),getCarbonNumber()) || getRadicalNumber() > MAX_RADICAL_NUM || getOxygenNumber() > MAX_OXYGEN_NUM || getCycleNumber() > MAX_CYCLE_NUM) {
 		//if (getRadicalNumber() > MAX_RADICAL_NUM || getOxygenNumber() > MAX_OXYGEN_NUM || getCycleNumber() > MAX_CYCLE_NUM) {		        
-			String message = p_graph.toString() + " is forbidden by "+whichForbiddenStructures(p_graph, getRadicalNumber(), getOxygenNumber(), getCycleNumber()) +"and not allowed.";
+			String message = "The molecular structure\n"+ p_graph.toString() + " is forbidden by "+whichForbiddenStructures(p_graph, getRadicalNumber(), getOxygenNumber(), getCycleNumber()) +"and not allowed.";
 			
-			if (GATP.getINSTANCE().primaryLibrary.getThermoData(getGraph()) != null) {
+			ThermoData themo_from_library = GATP.getINSTANCE().primaryLibrary.getThermoData(getGraph());
+			if ( themo_from_library != null) {
 				Logger.warning(message);
-				Logger.warning(String.format("But it's in the %s, so I'm letting it through.\n",thermoData.getSource() ));
+				Logger.warning(String.format("But it's in the %s, so it will be allowed anyway.\n",themo_from_library.getSource() ));
 				// nb. the source String begins "Primary Thermo Library:"
 			}
 			else{
