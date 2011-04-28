@@ -207,6 +207,9 @@ public class Therfit {
 			int exitValue = therfit.waitFor();
 			br.close();
 			isr.close();
+			is.close();
+			therfit.getInputStream().close();
+			therfit.getOutputStream().close();
 		}
 		catch (Exception e) {
 			System.out.println("Error in run therfit!");

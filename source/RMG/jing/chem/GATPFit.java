@@ -191,6 +191,7 @@ public class GATPFit {
             }
             in.close();        
             error_buff.close();
+	    bufferout.close();
             
             nasaThermoData = new NASAThermoData(nasaString);
             int exitValue = GATPFit.waitFor();

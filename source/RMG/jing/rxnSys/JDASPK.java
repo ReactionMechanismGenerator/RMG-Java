@@ -294,6 +294,9 @@ public class JDASPK extends JDAS {
 				    Logger.error("Error: No stdout output from DASPK");
 				}
                         int exitValue = solver.waitFor();
+			is.close();
+			solver.getErrorStream().close();
+			solver.getOutputStream().close();
                 }
                 catch (Exception e) {
                         String err = "Error in running ODESolver \n";
@@ -626,7 +629,9 @@ public class JDASPK extends JDAS {
         	int exitValue = 4;
         	exitValue = ODESolver.waitFor();
         	//System.out.println(br.readLine() + exitValue);
-        	
+        	is.close();
+		ODESolver.getErrorStream().close();
+		ODESolver.getOutputStream().close();
         }
         catch (Exception e) {
         	String err = "Error in running ODESolver \n";

@@ -190,6 +190,9 @@ public class Chemdis implements PDepKineticsEstimator {
 				//System.out.println(line);
 			}
 			int exitValue = chemdis.waitFor();
+			ips.close();
+			chemdis.getErrorStream().close();
+			chemdis.getOutputStream().close();
 		}
 		catch (Exception e) {
 			System.out.println("Error in run chemdis!");

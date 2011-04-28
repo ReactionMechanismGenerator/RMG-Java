@@ -308,6 +308,9 @@ public class JDASSL extends JDAS {
                                         }          
                                 }
                         int exitValue = solver.waitFor();
+			is.close();
+			solver.getErrorStream().close();
+			solver.getOutputStream().close();
                 }
                 catch (Exception e) {
                         String err = "Error in running ODESolver \n";
