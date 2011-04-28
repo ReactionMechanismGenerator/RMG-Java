@@ -117,8 +117,9 @@ public class FrequencyDatabase {
         	return;
         }
         catch (Exception e) {
-        	System.err.println("Error in read freq dictionary!");
-                System.err.println("Error: " + e.getMessage());
+			Logger.logStackTrace(e);
+        	Logger.critical("Error in read freq dictionary!");
+            Logger.critical("Error: " + e.getMessage());
         	System.exit(0);
         }
         //#]
@@ -132,8 +133,9 @@ public class FrequencyDatabase {
         	freqTree = readStandardTree(p_fileName,freqDictionary,0);
         }
         catch (Exception e) {
-        	System.err.println("Can't read freq group tree file!");
-        	System.err.println("Error: " + e.getMessage());
+			Logger.logStackTrace(e);
+        	Logger.critical("Can't read freq group tree file!");
+        	Logger.critical("Error: " + e.getMessage());
         	System.exit(0);
         }
 
@@ -173,6 +175,7 @@ public class FrequencyDatabase {
                                         fgGraph = ChemParser.readFGGraph(data);
                                 }
                                 catch (Exception e) {
+									Logger.logStackTrace(e);
                                         throw new InvalidFunctionalGroupException(fgname + ": " + e.getMessage());
                                 }
                                 if (fgGraph == null) throw new InvalidFunctionalGroupException(fgname);

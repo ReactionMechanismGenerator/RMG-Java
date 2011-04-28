@@ -1169,6 +1169,7 @@ public class ChemParser {
         	return g;
         }
         catch (Exception e) {
+			Logger.logStackTrace(e);
 			if (e.getMessage() == null)
 				throw new IOException("Couldn't read ChemGraph: " + e.getClass().getName());
 			else
@@ -1662,6 +1663,7 @@ public class ChemParser {
         	return result;
         }
         catch (Exception e) {
+			Logger.logStackTrace(e);
         	throw new InvalidUnionFormatException();
         }
     }

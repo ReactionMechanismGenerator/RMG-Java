@@ -35,6 +35,7 @@ import java.util.*;
 
 import jing.chemUtil.*;
 import jing.chemParser.*;
+import jing.rxnSys.Logger;
 
 /**
  *
@@ -111,6 +112,7 @@ protected static HashMap library;
 		    return library;
 		}
 		catch (Exception e){
+			Logger.logStackTrace(e);
 		   throw new IOException("Can't read solvent descriptors in solvent library!");
 		}
 	}

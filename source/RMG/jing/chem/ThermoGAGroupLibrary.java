@@ -544,7 +544,8 @@ public class ThermoGAGroupLibrary {
         	return;
         }
         catch (Exception e) {
-        	System.err.println("Error in read group dictionary!");
+			Logger.logStackTrace(e);
+        	Logger.critical("Error in read group dictionary!");
         	System.exit(0);
         }
         //#]
@@ -557,7 +558,8 @@ public class ThermoGAGroupLibrary {
         	return;
         }
         catch (Exception e) {
-        	System.err.println("Can't read Group Library!");
+        	Logger.logStackTrace(e);
+        	Logger.critical("Can't read Group Library!");
         	System.exit(0);
         }
     }
@@ -568,8 +570,9 @@ public class ThermoGAGroupLibrary {
         	groupTree = readStandardTree(p_fileName,groupDictionary,0);
         }
         catch (Exception e) {
-        	System.err.println("Can't read thermo group tree file!");
-        	System.err.println("Error: " + e.getMessage());
+        	Logger.logStackTrace(e);
+        	Logger.critical("Can't read thermo group tree file!");
+        	Logger.critical("Error: " + e.getMessage());
         	System.exit(0);
         }
     }
@@ -581,7 +584,8 @@ public class ThermoGAGroupLibrary {
         	return;
         }
         catch (Exception e) {
-        	System.err.println("Error in read other dictionary!");
+        	Logger.logStackTrace(e);
+        	Logger.critical("Error in read other dictionary!");
         	System.exit(0);
         }
     }
@@ -593,7 +597,8 @@ public class ThermoGAGroupLibrary {
         	return;
         }
         catch (Exception e) {
-        	System.err.println("Can't read Other Library!");
+        	Logger.logStackTrace(e);
+        	Logger.critical("Can't read Other Library!");
         	System.exit(0);
         }
     }
@@ -604,8 +609,9 @@ public class ThermoGAGroupLibrary {
         	otherTree = readStandardTree(p_fileName,otherDictionary,0);
         }
         catch (Exception e) {
-        	System.err.println("Can't read thermo Other tree file!");
-        	System.err.println("Error: " + e.getMessage());
+        	Logger.logStackTrace(e);
+        	Logger.critical("Can't read thermo Other tree file!");
+        	Logger.critical("Error: " + e.getMessage());
         	System.exit(0);
         }
     }
@@ -617,7 +623,8 @@ public class ThermoGAGroupLibrary {
         	return;
         }
         catch (Exception e) {
-        	System.err.println("Error in read gauche dictionary!");
+        	Logger.logStackTrace(e);
+        	Logger.critical("Error in read gauche dictionary!");
         	System.exit(0);
         }
     }
@@ -628,7 +635,8 @@ public class ThermoGAGroupLibrary {
         	return;
         }
         catch (Exception e) {
-        	System.err.println("Can't read gauche library!");
+        	Logger.logStackTrace(e);
+        	Logger.critical("Can't read gauche library!");
         	System.exit(0);
         }
     }
@@ -638,8 +646,9 @@ public class ThermoGAGroupLibrary {
         	gaucheTree = readStandardTree(p_fileName,gaucheDictionary,0);
         }
         catch (Exception e) {
-        	System.err.println("Can't read gauche tree file!");
-        	System.err.println("Error: " + e.getMessage());
+        	Logger.logStackTrace(e);
+        	Logger.critical("Can't read gauche tree file!");
+        	Logger.critical("Error: " + e.getMessage());
         	System.exit(0);
         }
     }
@@ -650,7 +659,8 @@ public class ThermoGAGroupLibrary {
         	return;
         }
         catch (Exception e) {
-        	System.err.println("Error in read Abraham dictionary!");
+        	Logger.logStackTrace(e);
+        	Logger.critical("Error in read Abraham dictionary!");
         	System.exit(0);
         }
     }
@@ -662,7 +672,8 @@ public class ThermoGAGroupLibrary {
         	return;
         }
         catch (Exception e) {
-        	System.err.println("Error in read Abraham Radical dictionary!");
+        	Logger.logStackTrace(e);
+        	Logger.critical("Error in read Abraham Radical dictionary!");
         	System.exit(0);
         }
     }
@@ -673,7 +684,8 @@ public class ThermoGAGroupLibrary {
         	return;
         }
         catch (Exception e) {
-        	System.err.println("Error in read Unifac dictionary!");
+        	Logger.logStackTrace(e);
+        	Logger.critical("Error in read Unifac dictionary!");
         	System.exit(0);
         }
     }
@@ -684,7 +696,8 @@ public class ThermoGAGroupLibrary {
         	return;
         }
         catch (Exception e) {
-        	System.err.println("Can't read Abraham library!");
+        	Logger.logStackTrace(e);
+        	Logger.critical("Can't read Abraham library!");
         	System.exit(0);
         }
     }
@@ -696,7 +709,8 @@ public class ThermoGAGroupLibrary {
         	return;
         }
         catch (Exception e) {
-        	System.err.println("Can't read Abraham library!");
+        	Logger.logStackTrace(e);
+        	Logger.critical("Can't read Abraham library!");
         	System.exit(0);
         }
     }
@@ -707,7 +721,8 @@ public class ThermoGAGroupLibrary {
         	return;
         }
         catch (Exception e) {
-        	System.err.println("Can't read Unifac library!");
+        	Logger.logStackTrace(e);
+        	Logger.critical("Can't read Unifac library!");
         	System.exit(0);
         }
     }
@@ -717,8 +732,9 @@ public class ThermoGAGroupLibrary {
         	abramTree = readStandardTree(p_fileName,abramDictionary,0);
         }
         catch (Exception e) {
-        	System.err.println("Can't read Abraham tree file!");
-        	System.err.println("Error: " + e.getMessage());
+        	Logger.logStackTrace(e);
+        	Logger.critical("Can't read Abraham tree file!");
+        	Logger.critical("Error: " + e.getMessage());
         	System.exit(0);
         }
     }
@@ -729,8 +745,9 @@ public class ThermoGAGroupLibrary {
         	abramradTree = readStandardTree(p_fileName,abramradDictionary,0);
         }
         catch (Exception e) {
-        	System.err.println("Can't read Abraham Radical tree file!");
-        	System.err.println("Error: " + e.getMessage());
+        	Logger.logStackTrace(e);
+        	Logger.critical("Can't read Abraham Radical tree file!");
+        	Logger.critical("Error: " + e.getMessage());
         	System.exit(0);
         }
     }
@@ -740,8 +757,9 @@ public class ThermoGAGroupLibrary {
         	unifacTree = readStandardTree(p_fileName,unifacDictionary,0);
         }
         catch (Exception e) {
-        	System.err.println("Can't read Unifac tree file!");
-        	System.err.println("Error: " + e.getMessage());
+        	Logger.logStackTrace(e);
+        	Logger.critical("Can't read Unifac tree file!");
+        	Logger.critical("Error: " + e.getMessage());
         	System.exit(0);
         }
     }
@@ -752,7 +770,8 @@ public class ThermoGAGroupLibrary {
         //	return;
         //}
         //catch (Exception e) {
-        //	System.err.println("Error in read Solvent dictionary!");
+		//		Logger.logStackTrace(e);
+		//		Logger.critical("Error in read Solvent dictionary!");
         //	System.exit(0);
         //}
         //#]
@@ -764,7 +783,8 @@ public class ThermoGAGroupLibrary {
       //  	return;
       //  }
       //  catch (Exception e) {
-      //  	System.err.println("Can't read solvent library!");
+	  //		Logger.logStackTrace(e);
+	  //		Logger.critical("Can't read solvent library!");
       //  	System.exit(0);
       //  }
 
@@ -777,7 +797,8 @@ public class ThermoGAGroupLibrary {
         	return;
         }
         catch (Exception e) {
-        	System.err.println("Error in read 1,5 dictionary!");
+        	Logger.logStackTrace(e);
+        	Logger.critical("Error in read 1,5 dictionary!");
         	System.exit(0);
         }
     }
@@ -788,7 +809,8 @@ public class ThermoGAGroupLibrary {
         	return;
         }
         catch (Exception e) {
-        	System.err.println("Can't read 1,5 library!");
+        	Logger.logStackTrace(e);
+        	Logger.critical("Can't read 1,5 library!");
         	System.exit(0);
         }
     }
@@ -798,8 +820,9 @@ public class ThermoGAGroupLibrary {
         	oneFiveTree = readStandardTree(p_fileName,oneFiveDictionary,0);
         }
         catch (Exception e) {
-        	System.err.println("Can't read 1,5 tree file!");
-        	System.err.println("Error: " + e.getMessage());
+        	Logger.logStackTrace(e);
+        	Logger.critical("Can't read 1,5 tree file!");
+        	Logger.critical("Error: " + e.getMessage());
         	System.exit(0);
         }
     }
@@ -811,7 +834,8 @@ public class ThermoGAGroupLibrary {
         	return;
         }
         catch (Exception e) {
-        	System.err.println("Error in read radical dictionary!\n" + e.getMessage());
+        	Logger.logStackTrace(e);
+        	Logger.critical("Error in read radical dictionary!\n" + e.getMessage());
         	System.exit(0);
         }
     }
@@ -823,7 +847,8 @@ public class ThermoGAGroupLibrary {
         	return;
         }
         catch (Exception e) {
-        	System.err.println("Can't read radical Library!");
+        	Logger.logStackTrace(e);
+        	Logger.critical("Can't read radical Library!");
         	System.exit(0);
         }
     }
@@ -834,8 +859,9 @@ public class ThermoGAGroupLibrary {
         	radicalTree = readStandardTree(p_fileName,radicalDictionary,0);
         }
         catch (Exception e) {
-        	System.err.println("Can't read thermo group tree file!");
-        	System.err.println("Error: " + e.getMessage());
+        	Logger.logStackTrace(e);
+        	Logger.critical("Can't read thermo group tree file!");
+        	Logger.critical("Error: " + e.getMessage());
         	System.exit(0);
         }
     }
@@ -847,7 +873,8 @@ public class ThermoGAGroupLibrary {
                 return;
         }
         catch (Exception e) {
-                System.err.println("Error in read ring dictionary!\n" + e.getMessage());
+			Logger.logStackTrace(e);
+        	Logger.critical("Error in read ring dictionary!\n" + e.getMessage());
                 System.exit(0);
         }
     }
@@ -858,8 +885,9 @@ public class ThermoGAGroupLibrary {
                 ringTree = readStandardTree(p_fileName,ringDictionary,0);
         }
         catch (Exception e) {
-                System.err.println("Can't read ring tree file!");
-                System.err.println("Error: " + e.getMessage());
+			Logger.logStackTrace(e);
+        	Logger.critical("Can't read ring tree file!");
+			Logger.critical("Error: " + e.getMessage());
                 System.exit(0);
         }
     }
@@ -873,8 +901,9 @@ public class ThermoGAGroupLibrary {
         	return;
         }
         catch (Exception e) {
-        	System.err.println("Can't read Ring Correction Library!");
-			System.err.println("Error: " + e);
+        	Logger.logStackTrace(e);
+        	Logger.critical("Can't read Ring Correction Library!");
+			Logger.critical("Error: " + e);
         	System.exit(0);
         }
     }
@@ -962,6 +991,7 @@ public class ThermoGAGroupLibrary {
                                         fgGraph = ChemParser.readFGGraph(data);
                                 }
                                 catch (Exception e) {
+									Logger.logStackTrace(e);
                                         throw new InvalidFunctionalGroupException(fgname + ": " + e.getMessage());
                                 }
                                 if (fgGraph == null) throw new InvalidFunctionalGroupException(fgname);

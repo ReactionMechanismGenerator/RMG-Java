@@ -167,9 +167,10 @@ public class FrequencyGroups{//gmagoon 111708: removed "implements GeneralGAPP"
 		
         }
         catch (Exception e) {
+			Logger.logStackTrace(e);
             String err = "Error in running frequency estimation process \n";
             err += e.toString();
-            Logger.logStackTrace(e);
+            Logger.error(err);
         }
 		  
 		  if (frankieOutputFlag == 4) 

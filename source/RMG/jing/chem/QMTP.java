@@ -470,9 +470,10 @@ public class QMTP implements GeneralGAPP {
 	    is.close();
         }
         catch (Exception e) {
+			Logger.logStackTrace(e);
             String err = "Error in running RDKit Python process \n";
             err += e.toString();
-            Logger.logStackTrace(e);
+			Logger.critical(err);
             System.exit(0);
         }
         
@@ -529,9 +530,10 @@ public class QMTP implements GeneralGAPP {
 //                }
 //            }
 //            catch (Exception e) {
+//					Logger.logStackTrace(e);
 //                String err = "Error in running InChI process \n";
 //                err += e.toString();
-//                Logger.logStackTrace(e);
+//                Logger.critical(err);
 //                System.exit(0);
 //            }
 //        }
@@ -1474,9 +1476,10 @@ public class QMTP implements GeneralGAPP {
 //            int exitValue = cclibProc.waitFor();
 //        }
 //        catch (Exception e) {
+//				Logger.logStackTrace(e);
 //            String err = "Error in running ccLib Python process \n";
 //            err += e.toString();
-//            Logger.logStackTrace(e);
+//            Logger.critical(err);
 //            System.exit(0);
 //        } 
 //   
@@ -1810,9 +1813,10 @@ public class QMTP implements GeneralGAPP {
 	    is.close();
         }
         catch (Exception e) {
+			Logger.logStackTrace(e);
             String err = "Error in running ccLib Python process \n";
             err += e.toString();
-            Logger.logStackTrace(e);
+            Logger.critical(err);
             System.exit(0);
         } 
    
@@ -2613,9 +2617,10 @@ public class QMTP implements GeneralGAPP {
 //            int exitValue = cclibProc.waitFor();
 //        }
 //        catch (Exception e) {
+//				Logger.logStackTrace(e);
 //            String err = "Error in running ccLib Python process \n";
 //            err += e.toString();
-//            Logger.logStackTrace(e);
+//            Logger.critical(err);
 //            System.exit(0);
 //        } 
 //       
@@ -2759,9 +2764,10 @@ public class QMTP implements GeneralGAPP {
 	    is.close();
         }
         catch (Exception e) {
+			Logger.logStackTrace(e);
             String err = "Error in running ccLib Python process \n";
             err += e.toString();
-            Logger.logStackTrace(e);
+            Logger.critical(err);
             System.exit(0);
         }
 	//package up the result

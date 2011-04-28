@@ -259,7 +259,8 @@ public class ChemGraph implements Matchable {
                result = ChemGraph.copy(p_chemGraph);
        }
        catch (Exception e) {
-               Logger.critical(e.getMessage());
+		   Logger.logStackTrace(e);
+		   Logger.critical(e.getMessage());
                System.exit(0);
        }
 
@@ -1322,7 +1323,7 @@ return sn;
 			throw e;
 		}
         catch (Exception e) {
-		Logger.logStackTrace(e);
+			Logger.logStackTrace(e);
         	throw new FailGenerateThermoDataException();
         }
         //#]
@@ -1343,6 +1344,7 @@ return sn;
         	return solvthermoData;
         }
         catch (Exception e) {
+			Logger.logStackTrace(e);
         	throw new FailGenerateThermoDataException();
         }
     }
@@ -1355,6 +1357,7 @@ return sn;
         	return abramData;
         }
         catch (Exception e) {
+			Logger.logStackTrace(e);
         	throw new FailGenerateThermoDataException();
         }
     }
@@ -1366,6 +1369,7 @@ return sn;
         	return unifacData;
         }
         catch (Exception e) {
+			Logger.logStackTrace(e);
         	throw new FailGenerateThermoDataException();
         }
     }
@@ -2398,6 +2402,7 @@ return sn;
         	return;
         }
         catch (Exception e) {
+			Logger.logStackTrace(e);
         	throw new IOException(e.getMessage());
         }
 

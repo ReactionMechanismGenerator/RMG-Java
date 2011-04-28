@@ -133,6 +133,7 @@ public class PrimaryTransportLibrary {
 		    return library;
 		}
 		catch (Exception e){
+			Logger.logStackTrace(e);
 		   throw new IOException("Can't read transport in primary transport library!");
 		}
 	}

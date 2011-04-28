@@ -140,6 +140,7 @@ public class ReactionLibrary {
              return;
          }
          catch (Exception e) {
+			Logger.logStackTrace(e);
          	throw new IOException("Can't read Reaction library.\n" + e.getMessage());
          }
      }

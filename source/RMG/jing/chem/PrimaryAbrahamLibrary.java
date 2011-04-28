@@ -35,7 +35,7 @@ import java.util.*;
 
 import jing.chemUtil.*;
 import jing.chemParser.*;
-
+import jing.rxnSys.Logger;
 
 /**
  *
@@ -134,6 +134,7 @@ public class PrimaryAbrahamLibrary {
 		    return library;
 		}
 		catch (Exception e){
+			Logger.logStackTrace(e);
 		   throw new IOException("Can't read Abraham descriptors in primary Abraham library!");
 		}
 	}

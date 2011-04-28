@@ -1779,6 +1779,7 @@ public class ReactionModelGenerator {
 			fw.close();
 		}
 		catch (Exception e) {
+			Logger.logStackTrace(e);
 			Logger.critical("Error in writing InChI file inchiDictionary.txt!");
 			Logger.critical(e.getMessage());
 			System.exit(0);

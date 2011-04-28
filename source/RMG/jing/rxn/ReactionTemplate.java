@@ -1298,6 +1298,7 @@ public class ReactionTemplate {
       	}
       }
       catch (Exception e) {
+		Logger.logStackTrace(e);
       	System.err.println("Error in read in reaction template: " + name);
       	System.err.println(e.getMessage());
       	System.exit(0);
@@ -1367,6 +1368,7 @@ public class ReactionTemplate {
       	return;
       }
       catch (Exception e) {
+		  Logger.logStackTrace(e);
     	  Logger.error("Failed to read forbiddenStructures file");
       	//throw new IOException(e.getMessage());
       }
@@ -1448,6 +1450,7 @@ public class ReactionTemplate {
       	return;
       }
       catch (Exception e) {
+		Logger.logStackTrace(e);
       	throw new IOException(e.getMessage());
       }
   }
@@ -1511,6 +1514,7 @@ public class ReactionTemplate {
       
       }
       catch (Exception e) {
+		Logger.logStackTrace(e);
       	throw new IOException("Error reading rate library. The error message is:" + '\n' + e.getMessage());
       }
       //#]
