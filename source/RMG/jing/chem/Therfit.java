@@ -117,6 +117,7 @@ public class Therfit {
         	in.close();
         }
         catch (Exception e) {
+			e.printStackTrace(System.out);
         	System.out.println("Wrong output fort.25 from therfit!");
         	System.exit(0);
         }
@@ -212,6 +213,7 @@ public class Therfit {
 			therfit.getOutputStream().close();
 		}
 		catch (Exception e) {
+			e.printStackTrace(System.out);
 			System.out.println("Error in run therfit!");
 			System.exit(0);
 		}
@@ -257,6 +259,7 @@ public class Therfit {
         	nasaThermoData = new NASAThermoData(nasaString);
         }
         catch (Exception e) {
+			e.printStackTrace(System.out);
         	System.out.println("Wrong output from therfit!");
         	System.exit(0);
         }

@@ -141,6 +141,7 @@ public HashMap readLibrary(String p_thermoFileName, HashMap p_dictionary, String
 	    return library;
 	}
 	catch (Exception e){
+		Logger.logStackTrace(e);
 	   throw new IOException("Can't read thermo in primary thermo library!");
 	}
 }
@@ -354,6 +355,7 @@ public HashMap readLibrary(String p_thermoFileName, HashMap p_dictionary) throws
     return library;
  }
  catch (Exception e){
+	 Logger.logStackTrace(e);
    throw new IOException("Can't read thermo in primary thermo library!");
  }
 }

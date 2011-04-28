@@ -302,6 +302,7 @@ public class JDASPK extends JDAS {
                         String err = "Error in running ODESolver \n";
                         err += e.toString();
                         Logger.logStackTrace(e);
+						Logger.error(err);
                         System.exit(0);
                 }
 
@@ -637,6 +638,7 @@ public class JDASPK extends JDAS {
         	String err = "Error in running ODESolver \n";
         	err += e.toString();
         	Logger.logStackTrace(e);
+			Logger.error(err);
         	System.exit(0);
         }
         

@@ -1257,6 +1257,7 @@ public class Species {
                 }
             }
             catch (Exception e) {
+				Logger.logStackTrace(e);
                 String err = "Error running cINChI-1: ";
                 err += e.toString();
                 Logger.error(err);
@@ -1297,6 +1298,7 @@ public class Species {
 			reader.close();
 			in.close();
 		} catch (Exception e) {
+			Logger.logStackTrace(e);
 			String err = "Error closing InChI output reader for " + p_chemGraph.chemicalFormula + " : ";
 			err += e.toString();
 			Logger.error(err);
@@ -1565,6 +1567,7 @@ public class Species {
 	            exitValue = InChI.waitFor();	            
             }
             catch (Exception e) {
+				Logger.logStackTrace(e);
                 String err = "Error running cInChI-1 while converting InChI to .mol file: ";
                 err += e.toString();
                 Logger.error(err);
@@ -1603,6 +1606,7 @@ public class Species {
 	            stderr.close();  		            
             }
             catch (Exception e) {
+				Logger.logStackTrace(e);
                 String err = "Error running cInChI-1 while converting InChI to .mol file: ";
                 err += e.toString();
                 Logger.error(err);
@@ -1641,6 +1645,7 @@ public class Species {
 	            stderr.close();  		            
             }
             catch (Exception e) {
+				Logger.logStackTrace(e);
                 String err = "Error running cInChI-1 while converting InChI to .mol file: ";
                 err += e.toString();
                 Logger.error(err);

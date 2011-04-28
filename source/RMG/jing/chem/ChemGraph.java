@@ -126,11 +126,12 @@ public class ChemGraph implements Matchable {
 
         if (isForbiddenStructure(p_graph,getRadicalNumber(),getOxygenNumber(),getCarbonNumber()) || getRadicalNumber() > MAX_RADICAL_NUM || getOxygenNumber() > MAX_OXYGEN_NUM || getCycleNumber() > MAX_CYCLE_NUM) {
 		//if (getRadicalNumber() > MAX_RADICAL_NUM || getOxygenNumber() > MAX_OXYGEN_NUM || getCycleNumber() > MAX_CYCLE_NUM) {		        
-			String message = p_graph.toString() + " is forbidden by "+whichForbiddenStructures(p_graph, getRadicalNumber(), getOxygenNumber(), getCycleNumber()) +"and not allowed.";
+			String message = "The molecular structure\n"+ p_graph.toString() + " is forbidden by "+whichForbiddenStructures(p_graph, getRadicalNumber(), getOxygenNumber(), getCycleNumber()) +"and not allowed.";
 			
-			if (GATP.getINSTANCE().primaryLibrary.getThermoData(getGraph()) != null) {
+			ThermoData themo_from_library = GATP.getINSTANCE().primaryLibrary.getThermoData(getGraph());
+			if ( themo_from_library != null) {
 				Logger.warning(message);
-				Logger.warning(String.format("But it's in the %s, so I'm letting it through.\n",thermoData.getSource() ));
+				Logger.warning(String.format("But it's in the %s, so it will be allowed anyway.\n",themo_from_library.getSource() ));
 				// nb. the source String begins "Primary Thermo Library:"
 			}
 			else{
@@ -258,7 +259,8 @@ public class ChemGraph implements Matchable {
                result = ChemGraph.copy(p_chemGraph);
        }
        catch (Exception e) {
-               Logger.critical(e.getMessage());
+		   Logger.logStackTrace(e);
+		   Logger.critical(e.getMessage());
                System.exit(0);
        }
 
@@ -1321,7 +1323,7 @@ return sn;
 			throw e;
 		}
         catch (Exception e) {
-		Logger.logStackTrace(e);
+			Logger.logStackTrace(e);
         	throw new FailGenerateThermoDataException();
         }
         //#]
@@ -1342,6 +1344,7 @@ return sn;
         	return solvthermoData;
         }
         catch (Exception e) {
+			Logger.logStackTrace(e);
         	throw new FailGenerateThermoDataException();
         }
     }
@@ -1354,6 +1357,7 @@ return sn;
         	return abramData;
         }
         catch (Exception e) {
+			Logger.logStackTrace(e);
         	throw new FailGenerateThermoDataException();
         }
     }
@@ -1365,6 +1369,7 @@ return sn;
         	return unifacData;
         }
         catch (Exception e) {
+			Logger.logStackTrace(e);
         	throw new FailGenerateThermoDataException();
         }
     }
@@ -2329,8 +2334,6 @@ return sn;
 			//ChemGraphDictionary cgd = ChemGraphDictionary.getInstance();
 			ChemGraph cg  = null;//= cgd.getChemGraphFromGraph(p_graph);
 			if (cg == null){
-				try {
-					
 		        	cg = new ChemGraph(p_graph);
 					cg.addMissingHydrogen();
 
@@ -2342,10 +2345,6 @@ return sn;
 		        		throw new InvalidChemGraphException();
 		        	}
 					//cgd.putSpecies(cg);
-		        }
-		        catch (ForbiddenStructureException e) {
-		        	throw new ForbiddenStructureException(e.getMessage());
-		        }
 			}
 			
 			return cg;
@@ -2403,6 +2402,7 @@ return sn;
         	return;
         }
         catch (Exception e) {
+			Logger.logStackTrace(e);
         	throw new IOException(e.getMessage());
         }
 

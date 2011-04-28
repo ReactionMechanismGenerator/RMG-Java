@@ -42,7 +42,7 @@ import jing.chemUtil.*;
 import jing.mathTool.*;
 import jing.chemUtil.*;
 import jing.chemParser.*;
-
+import jing.rxnSys.Logger;
 /**
  * Contains methods used to interact with GATPFit.
  * @author jwallen
@@ -198,6 +198,7 @@ public class GATPFit {
 			if (exitValue != 0) throw new GATPFitException("Exit value = " + exitValue);
         }
         catch (Exception e) {
+			Logger.logStackTrace(e);
         	String err = "Error running GATPFit" + ls;
         	err += e.toString();
             GATPFit_input_name = "GATPFit/INPUT.txt";
@@ -272,6 +273,7 @@ public class GATPFit {
         	nasaThermoData = new NASAThermoData(nasaString);
         }
         catch (Exception e) {
+			Logger.logStackTrace(e);
         	throw new NASAFittingException("Error reading in GATPFit output file: " + System.getProperty("line.separator") + e.toString());
         }
 */

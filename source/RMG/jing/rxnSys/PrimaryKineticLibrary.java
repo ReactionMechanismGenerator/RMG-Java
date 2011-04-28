@@ -106,6 +106,7 @@ public class PrimaryKineticLibrary {
         	return;
         }
         catch (Exception e) {
+			Logger.logStackTrace(e);
         	throw new IOException("Can't read primary kinetic library.\n" + e.getMessage());
         }
     }

@@ -134,6 +134,7 @@ public class SeedMechanism {
         	return;
         }
         catch (Exception e) {
+			Logger.logStackTrace(e);
         	throw new IOException("RMG cannot read entire Seed Mechanism: " 
 								  + p_directoryName + "\n" + e.getMessage());
         }
@@ -189,9 +190,9 @@ public class SeedMechanism {
         	return localReactions;
         }
         catch (Exception e) {
-        	Logger.error("RMG did not read the following " + source + p_name + " file: "
-						 + p_reactionFileName + " because " + e.getMessage() );
 			Logger.logStackTrace(e);
+        	Logger.error("RMG did not read the following " + source + p_name + " file: "
+        			+ p_reactionFileName + " because " + e.getMessage() );
         	return null;
         }
     }
@@ -245,6 +246,7 @@ public class SeedMechanism {
         	return localSpecies;
         }
         catch (Exception e) {
+			Logger.logStackTrace(e);
 			throw new IOException("RMG cannot read the \"species.txt\" file in the " + source + p_name + "\n" + e.getMessage());
         }
     }
@@ -533,9 +535,9 @@ public class SeedMechanism {
 			 * 		troe reactions.  In the instance that no "troeReactions.txt" file exists, inform
 			 * 		user of this but continue simulation.
 			 */
-        	System.err.println("RMG could not find, or read in its entirety, the pressure-dependent reactions file (pdepreactions.txt)" +
-							   "\n\tin the " + source + p_name + "\n" + e.getMessage());
-			Logger.logStackTrace(e);
+        	Logger.logStackTrace(e);
+			Logger.error("RMG could not find, or read in its entirety, the pressure-dependent reactions file (pdepreactions.txt)" +
+						 "\n\tin the " + source + p_name + "\n" + e.getMessage());
 			return null;
         }
     }

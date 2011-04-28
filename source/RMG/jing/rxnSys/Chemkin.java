@@ -146,6 +146,7 @@ public  Chemkin() {
       	}
        }
        catch (Exception e) {
+		Logger.logStackTrace(e);
        	Logger.critical("Can't read chem.message!");
        	Logger.critical(e.getMessage());
        	System.exit(0);
@@ -344,6 +345,7 @@ public  Chemkin() {
       	return ss;
       }
       catch (Exception e) {
+		Logger.logStackTrace(e);
       	Logger.critical("Error reading reactor model output: " + e.getMessage());
       	System.exit(0);
       	return null;
@@ -379,6 +381,7 @@ public  Chemkin() {
 	  ips.close();
       }
       catch (Exception e) {
+		Logger.logStackTrace(e);
       	Logger.critical("Error in running chemkin!");
       	Logger.critical(e.getMessage());
       	System.exit(0);
@@ -412,6 +415,7 @@ public  Chemkin() {
 	  ips.close();
       }
       catch (Exception e) {
+		Logger.logStackTrace(e);
       	Logger.critical("Error in running reactor!");
       	Logger.critical(e.getMessage());
       	System.exit(0);
@@ -898,6 +902,7 @@ public  Chemkin() {
       	return true;
       }
       catch (Exception e) {
+		Logger.logStackTrace(e);
       	Logger.error("Error in writing reactorInput.xml!");
       	Logger.error(e.getMessage());
       	return false;
