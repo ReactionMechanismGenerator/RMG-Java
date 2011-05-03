@@ -1077,10 +1077,9 @@ public class ReactionModelGenerator {
 			if (line.startsWith("SeedMechanism:")) {
 				line = ChemParser.readMeaningfulLine(reader, true);
 				while (!line.equals("END")) {                     		
-					String[] tempString = line.split("Name: ");
-					String name = tempString[tempString.length-1].trim();
+                                    String name = extractLibraryName(line);
 					line = ChemParser.readMeaningfulLine(reader, true);
-					tempString = line.split("Location: ");
+					String[] tempString = line.split("Location: ");
 					String location = tempString[tempString.length-1].trim();
 					line = ChemParser.readMeaningfulLine(reader, true);
 					tempString = line.split("GenerateReactions: ");
@@ -4331,10 +4330,9 @@ public class ReactionModelGenerator {
     	int Ilib = 0;
     	String line = ChemParser.readMeaningfulLine(reader, true);
     	while (!line.equals("END")) {
-			String[] tempString = line.split("Name: ");
-			String name = tempString[tempString.length-1].trim();
+			String name = extractLibraryName(line);
 			line = ChemParser.readMeaningfulLine(reader, true);
-			tempString = line.split("Location: ");
+			String[] tempString = line.split("Location: ");
 			String location = tempString[tempString.length-1].trim();
 			
 			String path = System.getProperty("jing.rxn.ReactionLibrary.pathName");
@@ -4360,10 +4358,9 @@ public class ReactionModelGenerator {
     	int Ilib = 0;
     	String line = ChemParser.readMeaningfulLine(reader, true);
     	while (!line.equals("END")) {
-			String[] tempString = line.split("Name: ");
-			String name = tempString[tempString.length-1].trim();
+			String name = extractLibraryName(line);
 			line = ChemParser.readMeaningfulLine(reader, true);
-			tempString = line.split("Location: ");
+			String[] tempString = line.split("Location: ");
 			String location = tempString[tempString.length-1].trim();
 			
 			String path = System.getProperty("jing.rxn.ReactionLibrary.pathName");
@@ -4390,10 +4387,9 @@ public class ReactionModelGenerator {
      	int numPTLs = 0;
      	String line = ChemParser.readMeaningfulLine(reader, true);
      	while (!line.equals("END")) {
-     		String[] tempString = line.split("Name: ");
-     		String name = tempString[tempString.length-1].trim();
+     		String name = extractLibraryName(line);
 			line = ChemParser.readMeaningfulLine(reader, true);
-			tempString = line.split("Location: ");
+			String[] tempString = line.split("Location: ");
 			String path = tempString[tempString.length-1].trim();
 			if (numPTLs==0) {
              	setPrimaryThermoLibrary(new PrimaryThermoLibrary(name,path));
@@ -5080,10 +5076,9 @@ public class ReactionModelGenerator {
      	int numPTLs = 0;
      	String line = ChemParser.readMeaningfulLine(reader, true);
      	while (!line.equals("END")) {
-     		String[] tempString = line.split("Name: ");
-     		String name = tempString[tempString.length-1].trim();
+     		String name = extractLibraryName(line);
 			line = ChemParser.readMeaningfulLine(reader, true);
-			tempString = line.split("Location: ");
+			String[] tempString = line.split("Location: ");
 			String path = tempString[tempString.length-1].trim();
 			if (numPTLs==0) {
              	setPrimaryTransportLibrary(new PrimaryTransportLibrary(name,path));
@@ -5232,6 +5227,16 @@ public class ReactionModelGenerator {
             } else
                 speciesMap.put(cg, name);
         }
+
+    public String extractLibraryName(String line) {
+        String[] tempString = line.split("Name: ");
+        String name = tempString[tempString.length-1].trim();
+        if (name.contains("//")) {
+            tempString = line.split("//");
+            name = tempString[0].trim();
+        }
+        return name;
+    }
 }
 /*********************************************************************
  File Path	: RMG\RMG\jing\rxnSys\ReactionModelGenerator.java
