@@ -141,6 +141,90 @@ public class ChemGraph implements Matchable {
         }
     }
 
+    public void determineAromaticityAndWriteBBonds() {
+        // If there are no cycles, cannot be aromatic
+        if (graph.getCycleNumber() == 0) return;
+        // Check each cycle for aromaticity
+        for (Iterator cyclesIter = graph.getCycle().iterator(); cyclesIter.hasNext();) {
+            int piElectronsInCycle = 0;
+            LinkedList graphComps = (LinkedList)cyclesIter.next();
+            boolean[] hadPiElectrons = new boolean[graphComps.size()];
+            boolean cycleStartedWithNode = false;
+            for (int numComps=0; numComps<graphComps.size(); numComps++) {
+                GraphComponent gc = (GraphComponent)graphComps.get(numComps);
+                if (gc instanceof Node) {
+                    if (numComps==0) cycleStartedWithNode = true;
+                    Atom a = (Atom)((Node)gc).getElement();
+                    if (a.isBiradical()) {
+                        piElectronsInCycle += 2;
+                        hadPiElectrons[numComps] = true;
+                    }
+                    else if (!a.isRadical()) {
+                        Iterator neighbors = ((Node)gc).getNeighbor();
+                        int usedValency = 0;
+                        while (neighbors.hasNext()) {
+                            Arc nodeA= (Arc)neighbors.next();
+                            usedValency += ((Bond)(nodeA.getElement())).getOrder();
+                        }
+                        if (a.getChemElement().getValency()-usedValency >= 2) {
+                            piElectronsInCycle += 2;
+                            hadPiElectrons[numComps] = true;
+                        }
+                    }
+                } else if (gc instanceof Arc) {
+                    Bond b = (Bond)((Arc)gc).getElement();
+                    int bondPiElectrons = b.getPiElectrons();
+                    if (bondPiElectrons > 0) {
+                        piElectronsInCycle += bondPiElectrons;
+                        hadPiElectrons[numComps] = true;
+                    }
+                }
+            }
+            // Check if the # of piElectronsInCycle = 4*n+2 (Huckel's rule)
+            int huckelMagicNumber = 2;
+            boolean obeysHuckelRule = false;
+            while (piElectronsInCycle >= huckelMagicNumber) {
+                if (piElectronsInCycle == huckelMagicNumber) {
+                    obeysHuckelRule = true;
+                    break;
+                }
+                else huckelMagicNumber += 4;
+            }
+            if (!obeysHuckelRule) return;
+            // Check if each node (atom) contributed to pi electrons in cycle
+            for (int i=0; i<hadPiElectrons.length/2; i++) {
+                if (cycleStartedWithNode) {
+                    if (!hadPiElectrons[2*i]) {
+                        if (i==0) {
+                            if (!hadPiElectrons[1] && !hadPiElectrons[hadPiElectrons.length-1]) return;
+                        } else {
+                            if (!hadPiElectrons[2*i-1] && !hadPiElectrons[2*i+1]) return;
+                        }
+                    }
+                }
+                else {
+                    if (!hadPiElectrons[2*i+1]) {
+                        if (i==hadPiElectrons.length-1) {
+                            if (!hadPiElectrons[0] && !hadPiElectrons[hadPiElectrons.length-2]) return;
+                        } else {
+                            if (!hadPiElectrons[2*i] && !hadPiElectrons[2*i+2]) return;
+                        }
+                    }
+                }
+            }
+            // If we've reached here, our assumption is that the cycle is aromatic
+            isAromatic = true;
+            for (int numComps=0; numComps<graphComps.size(); numComps++) {
+                GraphComponent gc = (GraphComponent)graphComps.get(numComps);
+                if (gc instanceof Arc) {
+                    Arc currentArc = (Arc)gc;
+                    Bond currentBond = (Bond)currentArc.getElement();
+                    currentArc.setElement(currentBond.changeBondToAromatic());
+                }
+            }
+        }
+    }
+
     /*private boolean isAromatic() {
 		//first see if it is cyclic
     	if (graph.getCycleNumber() == 0)
