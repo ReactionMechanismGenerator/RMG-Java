@@ -143,8 +143,7 @@ public abstract class JDAS implements DAESolver {
     }
 
     public StringBuilder generatePDepODEReactionList(ReactionModel p_reactionModel,
-            SystemSnapshot p_beginStatus, Temperature p_temperature, Pressure p_pressure,
-            LinkedHashSet nonpdep_from_seed) {
+            SystemSnapshot p_beginStatus, Temperature p_temperature, Pressure p_pressure) {
 
         StringBuilder rString = new StringBuilder();
         StringBuilder arrayString = new StringBuilder();
@@ -156,7 +155,7 @@ public abstract class JDAS implements DAESolver {
         LinkedList nonPDepList = new LinkedList();
         LinkedList pDepList = new LinkedList();
 
-        generatePDepReactionList(p_reactionModel, p_beginStatus, p_temperature, p_pressure, nonPDepList, pDepList, nonpdep_from_seed);
+        generatePDepReactionList(p_reactionModel, p_beginStatus, p_temperature, p_pressure, nonPDepList, pDepList);
 
         int size = nonPDepList.size() + pDepList.size() + duplicates.size();
 
@@ -261,39 +260,12 @@ public abstract class JDAS implements DAESolver {
 
     public void generatePDepReactionList(ReactionModel p_reactionModel,
             SystemSnapshot p_beginStatus, Temperature p_temperature, Pressure p_pressure,
-            LinkedList nonPDepList, LinkedList pDepList, LinkedHashSet nonpdep_from_seed) {
+            LinkedList nonPDepList, LinkedList pDepList) {
 
         CoreEdgeReactionModel cerm = (CoreEdgeReactionModel) p_reactionModel;
-
-        for (Iterator iter = PDepNetwork.getCoreReactions(cerm).iterator(); iter.hasNext();) {
-            PDepReaction rxn = (PDepReaction) iter.next();
-            if (cerm.categorizeReaction(rxn) != 1) {
-                continue;
-            }
-            //check if this reaction is not already in the list and also check if this reaction has a reverse reaction
-            // which is already present in the list.
-            if (rxn.getReverseReaction() == null) {
-                rxn.generateReverseReaction();
-            }
-
-            if (!rxn.reactantEqualsProduct() && !troeList.contains(rxn) && !troeList.contains(rxn.getReverseReaction()) &&
-                    !thirdBodyList.contains(rxn) && !thirdBodyList.contains(rxn.getReverseReaction()) &&
-                    !lindemannList.contains(rxn) && !lindemannList.contains(rxn.getReverseReaction()) &&
-                    !nonpdep_from_seed.contains(rxn) && !nonpdep_from_seed.contains(rxn.getReverseReaction())) {
-                if (!pDepList.contains(rxn) && !pDepList.contains(rxn.getReverseReaction())) {
-                    pDepList.add(rxn);
-                } else if (pDepList.contains(rxn) && !pDepList.contains(rxn.getReverseReaction())) {
-                    continue;
-                } else if (!pDepList.contains(rxn) && pDepList.contains(rxn.getReverseReaction())) {
-                    Temperature T = new Temperature(298, "K");
-                    if (rxn.calculateKeq(T) > 0.999) {
-                        pDepList.remove(rxn.getReverseReaction());
-                        pDepList.add(rxn);
-                    }
-                }
-
-            }
-        }
+        LinkedHashSet seedList = new LinkedHashSet();
+        if (cerm.getSeedMechanism() != null)
+		seedList = cerm.getSeedMechanism().getReactionSet();
 
         for (Iterator iter = p_reactionModel.getReactionSet().iterator(); iter.hasNext();) {
             Reaction r = (Reaction) iter.next();
@@ -301,6 +273,65 @@ public abstract class JDAS implements DAESolver {
                 nonPDepList.add(r);
             }
         }
+
+        for (Iterator iter = PDepNetwork.getCoreReactions(cerm).iterator(); iter.hasNext();) {
+            PDepReaction rxn = (PDepReaction) iter.next();
+            if (cerm.categorizeReaction(rxn) != 1) {
+                continue;
+            }
+
+            if (rxn.getReverseReaction() == null) {
+                rxn.generateReverseReaction();
+            }
+			Reaction reverse = rxn.getReverseReaction();
+			
+            // check if this reaction is already in the list and also
+            //  check if this reaction has a reverse reaction which is already present in the list.
+            if (rxn.reactantEqualsProduct()) continue;
+			if (troeList.contains(rxn) || troeList.contains(reverse)) {
+				//Logger.debug(String.format("Excluding FAME-estimated PDep rate for %s from ODEs because its Troe rate is in a reaction library or seed mechanism.",rxn));
+				continue; // exclude rxns already in seed mechanism
+			}
+			else if (thirdBodyList.contains(rxn) || thirdBodyList.contains(reverse)) {
+				//Logger.debug(String.format("Excluding FAME-estimated PDep rate for %s from ODEs because its 3-body rate is in a reaction library or seed mechanism.",rxn));
+				continue; // exclude rxns already in seed mechanism
+			}
+			else if (lindemannList.contains(rxn) || lindemannList.contains(reverse)) {
+				//Logger.debug(String.format("Excluding FAME-estimated PDep rate for %s from ODEs because its Lindemann rate is in a reaction library or seed mechanism.",rxn));
+				continue; // exclude rxns already in seed mechanism
+			}
+			else if (seedList.contains(rxn) || seedList.contains(reverse)) {
+				//Logger.debug(String.format("Excluding FAME-estimated PDep rate for %s from ODEs because it's in the seed mechanism",rxn));
+				continue; // exclude rxns already in seed mechanism
+			}
+                        /*
+                         * This elseif statement exists to catch pressure-dependent reactions
+                         * that were supplied to a Reaction Library in the reactions.txt file
+                         * (e.g. the pdep kinetics were fit to a particular pressure, OR
+                         * H+O2=O+OH).  We want the Reaction Library's value to override
+                         * the FAME-estimated pdep kinetics.
+                         */
+                        else if (nonPDepList.contains(rxn) || nonPDepList.contains(reverse)) {
+                                //Logger.debug(String.format("Excluding FAME-estimated PDep rate for %s from ODEs because it's in the reaction mechanism",rxn));
+				continue; // exclude rxns already in mechanism
+                        }
+			else {
+				//Logger.debug(String.format("Including FAME-estimated PDep rate for  %s in ODEs because it's not in the seed mechanism, nor does it have a P-dep rate from a reaction library.",rxn));
+			}
+            if (!pDepList.contains(rxn) && !pDepList.contains(reverse)) {
+                pDepList.add(rxn);
+            } else if (pDepList.contains(rxn) && !pDepList.contains(reverse)) {
+                continue;
+            } else if (!pDepList.contains(rxn) && pDepList.contains(reverse)) {
+                Temperature T = new Temperature(298, "K");
+                if (rxn.calculateKeq(T) > 0.999) {
+                    pDepList.remove(reverse);
+                    pDepList.add(rxn);
+                }
+            }
+        }
+
+
 
         duplicates.clear();
 

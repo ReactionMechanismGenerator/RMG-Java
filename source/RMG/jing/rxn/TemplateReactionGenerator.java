@@ -118,20 +118,13 @@ public class TemplateReactionGenerator implements ReactionGenerator {
 		String longestTemplate = "";
 		StringBuffer HAbs = new StringBuffer();//"H_Abstraction");
 		
-		HashSet pdepReactionSet = new HashSet();
-		
         // add here the algorithm to generate reaction
         // loop over all the reaction template to find any possible match between the species seed set and the reaction template library
         Iterator template_iter = reactionTemplateLibrary.getReactionTemplate();
         while (template_iter.hasNext()) {
         	ReactionTemplate current_template = (ReactionTemplate)template_iter.next();
         	if (specificRxnFamily.equals("All") || specificRxnFamily.equals(current_template.name)) { 
-	        	/*
-	        	 * Added by MRH on 12-Jun-2009
-	        	 * Display more information to the user:
-	        	 * 	This println command informs the user which rxn family template
-	        	 *		the new core species is reacting against
-	        	 */
+
 	        	Logger.verbose("Reacting " + newCoreSpecies.getChemkinName() + " with the core: " + current_template.name);
 	        	
 	        	// the reaction template has only one reactant, we only need to loop over the whole species seed set to find a match
@@ -145,8 +138,7 @@ public class TemplateReactionGenerator implements ReactionGenerator {
 	        	}
 				
 	        	// the reaction template has two reactants, we need to check all the possible combination of two species
-				
-				
+	
 	        	else if (current_template.hasTwoReactants()) {
 	//        		LinkedHashSet current_reactions = new LinkedHashSet();
 	        		StructureTemplate structTemp = current_template.structureTemplate;
@@ -241,8 +233,6 @@ public class TemplateReactionGenerator implements ReactionGenerator {
 				}
         	}
         }
-		
-        newCoreSpecies.addPdepPaths(pdepReactionSet);
         
 		Global.enlargerInfo.append(newCoreSpecies.getChemkinName() + "\t" + singleReaction + "\t" + doubleReaction + "\t" + longestTime +"\t" + longestTemplate + "\t" + HAbs.toString() + "\n");
 		
@@ -256,10 +246,7 @@ public class TemplateReactionGenerator implements ReactionGenerator {
 //        Global.RT_reactTwoReactants += t;
 		
         return reaction_set;
-        
-        
-        
-        //#]
+
     }
     
     public ChemGraph generateCGcopyIfNecessary(ChemGraph cg1, ChemGraph cg2) {

@@ -52,32 +52,26 @@ import jing.chemParser.*;
 //## class ReactionModelGenerator
 public class ReactionModelGenerator {
 	
-    protected LinkedList timeStep;		//## attribute timeStep
-    protected ReactionModel reactionModel;      //gmagoon 9/24/07
-    protected String workingDirectory;		//## attribute workingDirectory
-	
-	// protected ReactionSystem reactionSystem;
-    protected LinkedList reactionSystemList; //10/24/07 gmagoon: changed from reactionSystem to reactionSystemList
-    
-    protected int paraInfor;//svp
-    protected boolean error;//svp
-    protected boolean sensitivity;//svp
-    protected LinkedList species;//svp
-	//  protected InitialStatus initialStatus;//svp
-    protected LinkedList initialStatusList; //10/23/07 gmagoon: changed from initialStatus to initialStatusList
-    protected double rtol;//svp
-    protected static double atol;
-    protected PrimaryKineticLibrary primaryKineticLibrary;//9/24/07 gmagoon
-    protected ReactionLibrary ReactionLibrary;
-    protected ReactionModelEnlarger reactionModelEnlarger;//9/24/07 gmagoon
-    protected LinkedHashSet speciesSeed;//9/24/07 gmagoon;
-    protected ReactionGenerator reactionGenerator;//9/24/07 gmagoon
-    protected LibraryReactionGenerator lrg;// = new LibraryReactionGenerator();//9/24/07 gmagoon: moved from ReactionSystem.java;10/4/07 gmagoon: postponed initialization of lrg til later
-    //10/23/07 gmagoon: added additional variables
+    protected LinkedList               timeStep;
+    protected ReactionModel            reactionModel;
+    protected String                   workingDirectory;
+	protected LinkedList               reactionSystemList;
+    protected int                      paraInfor;
+    protected boolean                  error;
+    protected boolean                  sensitivity;
+    protected LinkedList               species;
+    protected LinkedList               initialStatusList;
+    protected double                   rtol;
+    protected static double            atol;
+    protected PrimaryKineticLibrary    primaryKineticLibrary;
+    protected ReactionLibrary          ReactionLibrary;
+    protected ReactionModelEnlarger    reactionModelEnlarger;
+    protected LinkedHashSet            speciesSeed;
+    protected ReactionGenerator        reactionGenerator;
+    protected LibraryReactionGenerator lrg;
     protected LinkedList tempList;
     protected LinkedList presList;
-    protected LinkedList validList;//10/24/07 gmagoon: added
-    //10/25/07 gmagoon: moved variables from modelGeneration()
+    protected LinkedList validList;
     protected LinkedList initList = new LinkedList();
     protected LinkedList beginList = new LinkedList();
     protected LinkedList endList = new LinkedList();
@@ -87,17 +81,15 @@ public class ReactionModelGenerator {
     protected LinkedList currentPList = new LinkedList();
     protected LinkedList conditionChangedList = new LinkedList();
     protected LinkedList reactionChangedList = new LinkedList();
-    protected int numConversions;//5/6/08 gmagoon: moved from initializeReactionSystem() to be an attribute so it can be accessed by modelGenerator()
-    protected String equationOfState;
+    protected int        numConversions;
+    protected String     equationOfState;
     // 24Jun2009 MRH: variable stores the first temperature encountered in the condition.txt file
     //	This temperature is used to select the "best" kinetics from the rxn library
     protected static Temperature temp4BestKinetics;
 
-    // Added by AJ on July 12, 2010
     protected static boolean useDiffusion;
-    //
-
     protected static boolean useSolvation;
+	
     protected SeedMechanism seedMechanism = null;
     protected PrimaryThermoLibrary primaryThermoLibrary;
     protected PrimaryTransportLibrary primaryTransportLibrary;
@@ -1387,6 +1379,10 @@ public class ReactionModelGenerator {
         }
 
         printModelSize();
+		
+		// Write Chemkin input file only for the LAST reaction system (preserving old behaviour from when it used to be overwritten N times).
+		Chemkin.writeChemkinInputFile((ReactionSystem)reactionSystemList.getLast());
+
         Logger.info(String.format("Running time: %.3f min", + (System.currentTimeMillis()-Global.tAtInitialization)/1000./60.));
         printMemoryUsed();
 		Logger.flush();
@@ -1396,9 +1392,7 @@ public class ReactionModelGenerator {
             ReactionSystem rs = (ReactionSystem)reactionSystemList.get(i);
             ReactionTime begin = (ReactionTime)beginList.get(i);
             ReactionTime end = (ReactionTime)endList.get(i);
-            LinkedHashSet seedmechnonpdeprxns = extractSeedMechRxnsIfTheyExist();
-            endList.set(i,rs.solveReactionSystem(begin, end, true, true, true, iterationNumber-1,seedmechnonpdeprxns));
-            Chemkin.writeChemkinInputFile(rs, seedmechnonpdeprxns);
+            endList.set(i,rs.solveReactionSystem(begin, end, true, true, true, iterationNumber-1));
             boolean terminated = rs.isReactionTerminated();
             terminatedList.add(terminated);
             if(!terminated)
@@ -1472,9 +1466,13 @@ public class ReactionModelGenerator {
 						rs.initializePDepNetwork();
 					}
 					//reactionSystem.initializePDepNetwork();
-				}  
+				}
 				
 				printModelSize();
+				
+				// Write Chemkin input file only for the LAST reaction system (preserving old behaviour from when it used to be overwritten N times).
+				Chemkin.writeChemkinInputFile((ReactionSystem)reactionSystemList.getLast());
+
                 Logger.info(String.format("Running time: %.3f min", + (System.currentTimeMillis()-Global.tAtInitialization)/1000./60.));
 				printMemoryUsed();
 				Logger.flush();
@@ -1529,20 +1527,13 @@ public class ReactionModelGenerator {
 					boolean conditionChanged = (Boolean)conditionChangedList.get(i);
 					ReactionTime begin = (ReactionTime)beginList.get(i);
 					ReactionTime end = (ReactionTime)endList.get(i);
-                                        LinkedHashSet seedmechnonpdeprxns = extractSeedMechRxnsIfTheyExist();
-					endList.set(i,rs.solveReactionSystem(begin, end, false, reactionChanged, conditionChanged, iterationNumber-1,seedmechnonpdeprxns));
+					endList.set(i,rs.solveReactionSystem(begin, end, false, reactionChanged, conditionChanged, iterationNumber-1));
 					//end = reactionSystem.solveReactionSystem(begin, end, false, reactionChanged, conditionChanged, iterationNumber-1);
 				}
 				solverMin = solverMin + (System.currentTimeMillis()-startTime)/1000/60;
 				
 				startTime = System.currentTimeMillis();
-				for (Integer i = 0; i<reactionSystemList.size();i++) {
-					// we over-write the chemkin file each time, so only the LAST reaction system is saved
-					// i.e. if you are using RATE for pdep, only the LAST pressure is used.
-					ReactionSystem rs = (ReactionSystem)reactionSystemList.get(i);
-                                        LinkedHashSet seedmechnonpdeprxns = extractSeedMechRxnsIfTheyExist();
-					Chemkin.writeChemkinInputFile(rs,seedmechnonpdeprxns);
-				}
+
 				//9/1/09 gmagoon: if we are using QM, output a file with the CHEMKIN name, the RMG name, the (modified) InChI, and the (modified) InChIKey
 				if (ChemGraph.useQM){
 					writeInChIs(getReactionModel());                    
@@ -1660,8 +1651,7 @@ public class ReactionModelGenerator {
 					boolean conditionChanged = (Boolean)conditionChangedList.get(i);
 					ReactionTime begin = (ReactionTime)beginList.get(i);
 					ReactionTime end = (ReactionTime)endList.get(i);
-                                        LinkedHashSet seedmechnonpdeprxns = extractSeedMechRxnsIfTheyExist();
-					endList.set(i,rs.solveReactionSystem(begin, end, false, reactionChanged, false, iterationNumber-1,seedmechnonpdeprxns));
+					endList.set(i,rs.solveReactionSystem(begin, end, false, reactionChanged, false, iterationNumber-1));
 					// end = reactionSystem.solveReactionSystem(begin, end, false, reactionChanged, false, iterationNumber-1);
 				}
 				solverMin = solverMin + (System.currentTimeMillis()-startTime)/1000/60;
@@ -1739,8 +1729,7 @@ public class ReactionModelGenerator {
                 //terminated = false;
                 ReactionTime begin = (ReactionTime)beginList.get(i);
                 ReactionTime end = (ReactionTime)endList.get(i);
-                LinkedHashSet seedmechnonpdeprxns = extractSeedMechRxnsIfTheyExist();
-                rs.solveReactionSystemwithSEN(begin, end, true, false, false, seedmechnonpdeprxns);
+                rs.solveReactionSystemwithSEN(begin, end, true, false, false);
                 //reactionSystem.solveReactionSystemwithSEN(begin, end, true, false, false);
 			}
 			
@@ -1749,8 +1738,7 @@ public class ReactionModelGenerator {
         // All of the reaction systems are the same, so just write the chemkin
         //	file for the first reaction system
 		ReactionSystem rs = (ReactionSystem)reactionSystemList.get(0);
-                LinkedHashSet seedmechnonpdeprxns = extractSeedMechRxnsIfTheyExist();
-		Chemkin.writeChemkinInputFile(getReactionModel(),rs.getPresentStatus(),seedmechnonpdeprxns);
+		Chemkin.writeChemkinInputFile(getReactionModel(),rs.getPresentStatus()); 
 		
         //9/1/09 gmagoon: if we are using QM, output a file with the CHEMKIN name, the RMG name, the (modified) InChI, and the (modified) InChIKey
         if (ChemGraph.useQM){
@@ -2726,7 +2714,8 @@ public class ReactionModelGenerator {
     		int numFamePress = PDepRateConstant.getPressures().length;
     		int numChebyTemps = ChebyshevPolynomials.getNT();
     		int numChebyPress = ChebyshevPolynomials.getNP();
-    		int numPlog = PDepArrheniusKinetics.getNumPressures();
+    		//int numPlog = PDepArrheniusKinetics.getNumPressures();
+			int numPlog = numFamePress; // probably often the case for FAME-generated PLOG rates (but not for seed or library reactions)
     		String EaUnits = ArrheniusKinetics.getEaUnits();
     		
     		bw.write("UnitsOfEa: " + EaUnits);
@@ -2739,7 +2728,7 @@ public class ReactionModelGenerator {
     		bw.newLine();
     		bw.write("NumberOfChebyPress: " + numChebyPress);
     		bw.newLine();
-    		bw.write("NumberOfPLogs: " + numPlog);
+    		bw.write("NumberOfPLogs: Could be different for seed and library reactions, but default for FAME-generated rates is probably "+ numPlog);
     		bw.newLine();
     		bw.newLine();
     		
@@ -2847,6 +2836,14 @@ public class ReactionModelGenerator {
 		}
 		
 		// If plog parameters are present, write them
+		PDepArrheniusKinetics[] kinetics = pdeprxn.getPDepRate().getPDepArrheniusKinetics();
+		if (kinetics != null) {
+			for (int i=0; i<kinetics.length; i++) {
+				sb.append(kinetics[i].toChemkinString());
+				sb.append("\n");
+			}
+		}
+	/*
 		else if (numPlog != 0) {
 			PDepArrheniusKinetics kinetics = pdeprxn.getPDepRate().getPDepArrheniusKinetics();
 			for (int i=0; i<numPlog; i++) {
@@ -2855,6 +2852,7 @@ public class ReactionModelGenerator {
 			}
 			sb.append("\n");
 		}
+	*/
 		
 		return sb.toString();
 	}
@@ -3068,17 +3066,14 @@ public class ReactionModelGenerator {
 		 *  	Place these reactions in a new Seed Mechanism, using the 
 		 *  		coreSpecies.txt file as the species.txt file.
 		 */
+		SeedMechanism restart_seed_mechanism = null;
 		try {
 			String path = System.getProperty("user.dir") +  "/Restart";								   
-			if (getSeedMechanism() == null)
-				setSeedMechanism(new SeedMechanism("Restart", path, false, true));
-			else
-				getSeedMechanism().appendSeedMechanism("Restart", path, false, true);
+			restart_seed_mechanism = new SeedMechanism("Restart", path, false, true);
 		} catch (IOException e1) {
             Logger.logStackTrace(e1);
 		}
-		
-		restartCoreRxns.addAll(getSeedMechanism().getReactionSet());
+		restartCoreRxns.addAll(restart_seed_mechanism.getReactionSet());
 		
 		// Read in edge reactions
 		try {
@@ -3569,6 +3564,12 @@ public class ReactionModelGenerator {
     	}
     	
 		CoreEdgeReactionModel cerm = new CoreEdgeReactionModel(allInitialCoreSpecies, allInitialCoreRxns);
+		
+		// Store the seed mechanism in the CERM so that we can access it from there when writing chemkin files:
+		if (hasSeedMechanisms()) {
+			cerm.setSeedMechanism(getSeedMechanism());
+		}
+		
 		if (readrestart) {
 			cerm.addUnreactedSpeciesSet(restartEdgeSpcs);
 			cerm.addUnreactedReactionSet(restartEdgeRxns);
@@ -3591,31 +3592,35 @@ public class ReactionModelGenerator {
 				reactionSet_withdup.addAll(getReactionGenerator().react(allInitialCoreSpecies));
 				
 				// Removing Duplicates instances of reaction if present 
-				 reactionSet = getLibraryReactionGenerator().RemoveDuplicateReac(reactionSet_withdup);
+				reactionSet = getLibraryReactionGenerator().RemoveDuplicateReac(reactionSet_withdup);
+
 			}
-			
 			else {
 				reactionSet_withdup = new LinkedHashSet();	
 				
 				LinkedHashSet tempnewReactionSet = getLibraryReactionGenerator().react(allInitialCoreSpecies);
 				if(tempnewReactionSet.isEmpty()){
-					Logger.info("No reactions found from Reaction Library");
+					Logger.info("No reactions of initial core and seed species found in Reaction Library");
 				}
 				else {
-					Logger.info("Reactions found from Reaction Library:");
+					Logger.info("Reactions of initial core and seed species found in Reaction Library:");
 					Logger.info(tempnewReactionSet.toString());
-                                        // Adds Reactions Found in Library Reaction Generator to Reaction Set
-                                        reactionSet_withdup.addAll(tempnewReactionSet);
 				}
 				
+				// Adds Reactions Found in Library Reaction Generator to Reaction Set
+				reactionSet_withdup.addAll(tempnewReactionSet);
+				
 				// Generates Reaction from the Reaction Generator and adds them to Reaction Set
-					for (Iterator iter = speciesSeed.iterator(); iter.hasNext(); ) {
+				Logger.info("Generating reactions of initial core species using reaction families.");
+				Logger.info("(Condition file species will react with seed species, but seed species will not \n" +
+							"react with each other because GenerateReactions is off)");
+				// nb. speciesSeed contains the condition file species (not the seed mechanism species)
+				for (Iterator iter = speciesSeed.iterator(); iter.hasNext(); ) {
 					Species spec = (Species) iter.next();
 					reactionSet_withdup.addAll(getReactionGenerator().react(allInitialCoreSpecies, spec,"All"));
 				}
-					reactionSet = getLibraryReactionGenerator().RemoveDuplicateReac(reactionSet_withdup);
+				reactionSet = getLibraryReactionGenerator().RemoveDuplicateReac(reactionSet_withdup);
 			}
-			
 			
 	    	// Set initial core-edge reaction model based on above results
 			if (reactionModelEnlarger instanceof RateBasedRME)	{
@@ -3781,14 +3786,7 @@ public class ReactionModelGenerator {
         		}
         	}
     	}
-        
-		
-		
-		
-        
-		
         return;
-		
         //#]
     }
 	
@@ -4518,22 +4516,22 @@ public class ReactionModelGenerator {
 				
 				String pDepKinType = st.nextToken();
 				if (pDepKinType.toLowerCase().equals("chebyshev")) {
-					PDepRateConstant.setMode(PDepRateConstant.Mode.CHEBYSHEV);
+					PDepRateConstant.setDefaultMode(PDepRateConstant.Mode.CHEBYSHEV);
 					// Default is to cubic order for basis functions
 					FastMasterEqn.setNumTBasisFuncs(4);
 					FastMasterEqn.setNumPBasisFuncs(4);
 				}
 				else if (pDepKinType.toLowerCase().equals("pdeparrhenius"))
-					PDepRateConstant.setMode(PDepRateConstant.Mode.PDEPARRHENIUS);
+					PDepRateConstant.setDefaultMode(PDepRateConstant.Mode.PDEPARRHENIUS);
 				else if (pDepKinType.toLowerCase().equals("rate"))
-					PDepRateConstant.setMode(PDepRateConstant.Mode.RATE);
+					PDepRateConstant.setDefaultMode(PDepRateConstant.Mode.RATE);
 				else
 					throw new InvalidSymbolException("condition.txt: Unknown PDepKineticsModel = " + pDepKinType);
 
 				// For Chebyshev polynomials, optionally specify the number of
 				// temperature and pressure basis functions
 				// Such a line would read, e.g.: "PDepKineticsModel: Chebyshev 4 4"
-				if (st.hasMoreTokens() && PDepRateConstant.getMode() == PDepRateConstant.Mode.CHEBYSHEV) {
+				if (st.hasMoreTokens() && PDepRateConstant.getDefaultMode() == PDepRateConstant.Mode.CHEBYSHEV) {
 					try {
 						int numTBasisFuncs = Integer.parseInt(st.nextToken());
 					int numPBasisFuncs = Integer.parseInt(st.nextToken());
@@ -4625,7 +4623,7 @@ public class ReactionModelGenerator {
 			// Set temperatures and pressures (if not already set manually)
 			if (temperatures == null) {
 				temperatures = new Temperature[Tnumber];
-				if (PDepRateConstant.getMode() == PDepRateConstant.Mode.CHEBYSHEV) {
+				if (PDepRateConstant.getDefaultMode() == PDepRateConstant.Mode.CHEBYSHEV) {
 					// Use the Gauss-Chebyshev points
 					// The formula for the Gauss-Chebyshev points was taken from
 					// the Chemkin theory manual
@@ -4646,7 +4644,7 @@ public class ReactionModelGenerator {
 			}
 			if (pressures == null) {
 				pressures = new Pressure[Pnumber];
-				if (PDepRateConstant.getMode() == PDepRateConstant.Mode.CHEBYSHEV) {
+				if (PDepRateConstant.getDefaultMode() == PDepRateConstant.Mode.CHEBYSHEV) {
 					// Use the Gauss-Chebyshev points
 					// The formula for the Gauss-Chebyshev points was taken from
 					// the Chemkin theory manual
@@ -5211,12 +5209,6 @@ public class ReactionModelGenerator {
 		}
 		return true;
 	}
-
-        public LinkedHashSet extractSeedMechRxnsIfTheyExist() {
-            LinkedHashSet seedmechnonpdeprxns = new LinkedHashSet();
-            if (seedMechanism != null)  seedmechnonpdeprxns = seedMechanism.getReactionSet();
-            return seedmechnonpdeprxns;
-        }
 
         public static void addChemGraphToListIfNotPresent_ElseTerminate(LinkedHashMap speciesMap, ChemGraph cg, String name) {
             if (speciesMap.containsKey(cg)) {

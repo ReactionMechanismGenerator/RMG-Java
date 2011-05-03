@@ -36,6 +36,7 @@ import jing.rxnSys.CoreEdgeReactionModel;
 import jing.rxnSys.NegativeConcentrationException;
 import jing.rxnSys.ReactionModelGenerator;
 import jing.rxnSys.SystemSnapshot;
+import jing.rxnSys.Logger;
 
 /**
  * Represents either a pressure-dependent path reaction (a reaction connecting
@@ -220,7 +221,9 @@ public class PDepReaction extends Reaction {
 	 * @param kin The new high-pressure Arrhenius kinetics for the reaction
 	 */
 	public void setHighPKinetics(Kinetics kin) {
-		setKinetics(kin,-1);
+		//setKinetics(kin,0);
+		kinetics = new Kinetics[1];
+		kinetics[0] = kin;
 	}
 	
 	/** 
@@ -363,10 +366,10 @@ public class PDepReaction extends Reaction {
 				}
 			}
 		}
-		catch (Exception e) {
-			System.err.println(e.getMessage());
-			System.err.println("Reaction: "+this.toChemkinString(temperature, pressure));
-			System.exit(0);
+		catch (RuntimeException e) {
+			Logger.error(e.getMessage());
+			Logger.error("Error with Reaction: "+this.toChemkinString(temperature, pressure));
+			throw e;
 		}
 
 		return k;
@@ -521,19 +524,8 @@ public class PDepReaction extends Reaction {
 	@Override
 	public String toChemkinString(Temperature t) {
         if (pDepRate != null) {
-
-			String result = getStructure().toChemkinString(true).toString();
-			if (PDepRateConstant.getMode() == PDepRateConstant.Mode.CHEBYSHEV)
-				result = formPDepSign(result);
-			result = String.format("%-52s",result);
-			result += "\t1.0E0 0.0 0.0" ;
-			result += "\t!" + getComments().toString()  + '\n';
-			if (PDepRateConstant.getMode() == PDepRateConstant.Mode.CHEBYSHEV)
-				result += pDepRate.getChebyshev().toChemkinString() + '\n';
-			else if (PDepRateConstant.getMode() == PDepRateConstant.Mode.PDEPARRHENIUS)
-				result += pDepRate.getPDepArrheniusKinetics().toChemkinString();
-
-			return result;
+			String rxn_string = getStructure().toChemkinString(true).toString();
+			return toStringWithRate(rxn_string, t, null);
 		}
 		else if (kinetics != null)
 			//return super.toChemkinString(t);
@@ -549,21 +541,8 @@ public class PDepReaction extends Reaction {
 	
 	public String toRestartString(Temperature t) {
         if (pDepRate != null) {
-
-			String result = getStructure().toRestartString(true).toString();
-			if (PDepRateConstant.getMode() == PDepRateConstant.Mode.CHEBYSHEV)
-				result = formPDepSign(result);
-			result = String.format("%-52s",result);
-			result += "\t1.0E0 0.0 0.0" ;
-			result += "\t!" + getComments().toString() +
-				"\tdeltaHrxn(T=298K) = " + 
-				calculateHrxn(new Temperature(298.0,"K")) + " kcal/mol\n";
-			if (PDepRateConstant.getMode() == PDepRateConstant.Mode.CHEBYSHEV)
-				result += pDepRate.getChebyshev().toChemkinString() + '\n';
-			else if (PDepRateConstant.getMode() == PDepRateConstant.Mode.PDEPARRHENIUS)
-				result += pDepRate.getPDepArrheniusKinetics().toChemkinString();
-
-			return result;
+			String rxn_string = getStructure().toRestartString(true).toString();
+			return toStringWithRate(rxn_string, t, null);
 		}
 		else if (kinetics != null)
 			//return super.toChemkinString(t);
@@ -584,39 +563,68 @@ public class PDepReaction extends Reaction {
 	@Override
 	public String toChemkinString(Temperature t, Pressure p) {
         if (pDepRate != null) {
-			String result = getStructure().toChemkinString(true).toString();
-
-			if (PDepRateConstant.getMode() == PDepRateConstant.Mode.RATE) {
-				result = String.format("%-52s",result);
-				result += String.format("\t%.3e   0.0   0.0 ",calculateRate(t,p));
-				result += "\t!" + getComments().toString();
-				result += String.format(" Evaluated at T=%s K P=%s bar\n",t.getK(),p.getBar());
-				return result;
-			}
-
-			if (PDepRateConstant.getMode() == PDepRateConstant.Mode.CHEBYSHEV)
-				result = formPDepSign(result);
-			result = String.format("%-52s",result);
-
-			result += "\t1.0E0 0.0 0.0";
-			result += "\t!" + getComments().toString() + '\n';
-
-			if (PDepRateConstant.getMode() == PDepRateConstant.Mode.CHEBYSHEV)
-				result += pDepRate.getChebyshev().toChemkinString() + '\n';
-			else if (PDepRateConstant.getMode() == PDepRateConstant.Mode.PDEPARRHENIUS)
-				result += pDepRate.getPDepArrheniusKinetics().toChemkinString();
-			
-			return result;
+			String rxn_string = getStructure().toChemkinString(true).toString();
+			return toStringWithRate(rxn_string, t, p);
 		}
 		else if (kinetics != null)
 			return super.toChemkinString(t);
 		else
 			return "";
-    
-    }
+        }
 	
 	public PDepRateConstant getPDepRate() {
 		return pDepRate;
 	}
 	
+	/* 
+	 This takes a reaction string (p_rxn_string), a Temperature t, and Pressure p.
+	 These are used to create a chemkin-style string containing the reaction string
+	 and the rate coefficients, in whatever form they are stored.
+	 The Temperature and Pressure are only used if the pDepRate.mode == RATE.
+	 */
+	public String toStringWithRate(String p_rxn_string, Temperature t, Pressure p){
+		StringBuilder result = new StringBuilder();
+		
+		if (pDepRate.getMode() == PDepRateConstant.Mode.CHEBYSHEV)
+		{
+			result.append(String.format("%-52s",formPDepSign(p_rxn_string)));
+			result.append("\t1.0E0 0.0 0.0");
+			result.append("\t!" + getComments().toString() );
+			result.append('\n');
+			result.append(pDepRate.getChebyshev().toChemkinString());
+		}
+		else if (pDepRate.getMode() == PDepRateConstant.Mode.PDEPARRHENIUS)
+		{
+			PDepArrheniusKinetics[] allKinetics = pDepRate.getPDepArrheniusKinetics();
+			for (int i=0; i<allKinetics.length; i++) {
+				result.append(String.format("%-52s",p_rxn_string));
+				result.append("\t" + getHighPKinetics()[i].toChemkinString(0.0, t, false));
+				//result.append("\t1.0E0 0.0 0.0");
+				result.append("\t!" + getComments().toString() );
+				result.append('\n');
+				result.append(allKinetics[i].toChemkinString());
+				if (allKinetics.length > 1)
+					result.append("DUP\n");
+			}
+		}
+		else if (pDepRate.getMode() == PDepRateConstant.Mode.RATE) {
+			result.append(String.format("%-52s",p_rxn_string));
+			result.append(String.format("\t%.3e   0.0   0.0 ",calculateRate(t,p)));
+			result.append("\t!" + getComments().toString() );
+			result.append(String.format(" Rate evaluated at T=%s K P=%s bar\n",t.getK(),p.getBar()));
+		}
+		else return null;
+		result.append(String.format("! For the above reaction, deltaHrxn(T=298K) = %+.1f kcal/mol\n", calculateHrxn(new Temperature(298.0,"K"))));
+		return result.toString();
+	}
+	
+	
+	public void addPDepArrheniusKinetics(PDepArrheniusKinetics p_kinetics) {
+		// If the reaction has not been finalized, add the duplicate PDepArrheniusKinetics
+		if (finalized)
+			// (currently I'm not sure that finalized is ever set)
+			return;
+		pDepRate.addPDepArrheniusKinetics(p_kinetics);
+	}
 }
+

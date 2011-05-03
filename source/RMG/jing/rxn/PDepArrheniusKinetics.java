@@ -46,14 +46,14 @@ public class PDepArrheniusKinetics implements PDepKinetics {
 	/**
 	 * The list of pressures at which we have Arrhenius parameters.
 	 */
-	public static Pressure[] pressures;
+	public Pressure[] pressures;
 
 	/**
 	 * The list of Arrhenius kinetics fitted at each pressure.
 	 */
 	private ArrheniusKinetics[] kinetics;
 	
-	protected static int numPressures = 0;
+	protected int numPressures = 0;
 
 	public PDepArrheniusKinetics(int numP) {
 		pressures = new Pressure[numP];
@@ -63,7 +63,7 @@ public class PDepArrheniusKinetics implements PDepKinetics {
 	
 	public void setKinetics(int index, Pressure P, ArrheniusKinetics kin) {
 		if (index < 0 || index >= pressures.length)
-			return;
+			throw new RuntimeException(String.format("Cannot set kinetics with index %s because array is only of size %s",index,pressures.length));
 		pressures[index] = P;
 		kinetics[index] = kin;
 	}
@@ -74,20 +74,37 @@ public class PDepArrheniusKinetics implements PDepKinetics {
 	 * @param P The pressure of interest
 	 * @return The rate coefficient evaluated at T and P
 	 */
-	public double calculateRate(Temperature T, Pressure P) throws POutOfRangeException {
+	public double calculateRate(Temperature T, Pressure P) {
 		int index1 = -1; int index2 = -1;
 
 		for (int i = 0; i < pressures.length - 1; i++) {
 			if (pressures[i].getBar() <= P.getBar() && P.getBar() <= pressures[i+1].getBar()) {
-				index1 = i; index2 = i + 1;
+				index1 = i;
+				index2 = i + 1;
+				break;
 			}
 		}
-
-		if (index1 < 0 || index2 < 0)
+		
+		/* Chemkin 4 theory manual specifies:
+			"If the rate of the reaction is desired for a pressure lower than
+		 	 any of those provided, the rate parameters provided for the lowest
+			 pressure are used. Likewise, if rate of the reaction is desired for
+			 a pressure higher than any of those provided, the rate parameters
+			 provided for the highest pressure are used."
+		 We take the same approach here, but warn the user (so they can fix their input file).
+		*/
+		 
+		if (P.getPa() < pressures[0].getPa())
 		{
-			Logger.warning(String.format("Tried to evaluate rate coefficient at P=%s Atm, which is outside valid range:",P.getAtm()));
-			Logger.warning(toChemkinString());
-			throw new POutOfRangeException(); // maybe we should return the limiting value closest to the desired pressure.
+			Logger.warning(String.format("Tried to evaluate rate coefficient at P=%.3g Atm, which is below minimum for this PLOG rate.",P.getAtm()));
+			Logger.warning(String.format("Using rate for minimum %s Atm instead", pressures[0].getAtm() ));
+			return kinetics[0].calculateRate(T);
+		}
+		if (P.getPa() > pressures[pressures.length-1].getPa())
+		{
+			Logger.warning(String.format("Tried to evaluate rate coefficient at P=%.3g Atm, which is above maximum for this PLOG rate.",P.getAtm()));
+			Logger.warning(String.format("Using rate for maximum %s Atm instead", pressures[pressures.length-1].getAtm() ));
+			return kinetics[pressures.length-1].calculateRate(T);
 		}
 
 		double logk1 = Math.log10(kinetics[index1].calculateRate(T));
@@ -95,9 +112,21 @@ public class PDepArrheniusKinetics implements PDepKinetics {
 		double logP0 = Math.log10(P.getBar());
 		double logP1 = Math.log10(pressures[index1].getBar());
 		double logP2 = Math.log10(pressures[index2].getBar());
+		
+		// We can't take logarithms of k=0 and get meaningful interpolation, so we have to do something weird.
+		// The approach used here is arbitrary, but at least it gives a continuous k(P) function.
+		// 
+		// If interpolating between k1=0 and k2=0, return k=0
+		if (logk1 == Double.NEGATIVE_INFINITY && logk2 == Double.NEGATIVE_INFINITY)
+			return 0.0;
+		// if interpolating between k1=0 and k2>0, set k1 to something small but nonzero.
+		else if (logk1 == Double.NEGATIVE_INFINITY)
+			logk1 = Math.min(0, logk2-1); // k1 is a small 1 cm3/mol/sec, or k2/10 if that's even smaller.
+		// if interpolating between k1>0 and k2=0, set k2 to something small but nonzero.
+		else if (logk2 == Double.NEGATIVE_INFINITY)
+			logk2 = Math.min(0, logk1-1); // k2 is a small 1 cm3/mol/sec, or k1/10 if that's even smaller.
 
 		double logk0 = logk1 + (logk2 - logk1) / (logP2 - logP1) * (logP0 - logP1);
-
 		return Math.pow(10, logk0);
 	}
 
@@ -120,11 +149,11 @@ public class PDepArrheniusKinetics implements PDepKinetics {
 		return result;
     }
     
-    public static void setNumPressures(int numP) {
-    	if (numP > getNumPressures()) numPressures = numP;
+    public void setNumPressures(int numP) {
+    	numPressures = numP;
     }
     
-    public static int getNumPressures() {
+    public int getNumPressures() {
     	return numPressures;
     }
     
@@ -132,7 +161,7 @@ public class PDepArrheniusKinetics implements PDepKinetics {
     	return kinetics[i];
     }
     
-    public static void setPressures(Pressure[] ListOfPressures) {
+    public void setPressures(Pressure[] ListOfPressures) {
     	pressures = ListOfPressures;
     }
     

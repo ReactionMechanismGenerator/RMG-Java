@@ -1194,13 +1194,13 @@ public class ReactionTemplate {
            	try {
       	     	LinkedList product = reactionAdjList.reactChemGraph(reactant);
 				LinkedList productSp = new LinkedList();
-//				SpeciesDictionary sd = SpeciesDictionary.getInstance();
 				for (int i=0; i< product.size(); i++){
 					String name = null;
-					if (((ChemGraph)product.get(i)).getSpecies() == null){
-						Species sp = Species.make(name, ((ChemGraph)product.get(i)));
-						productSp.add(sp);
+					Species sp = ((ChemGraph)product.get(i)).getSpecies();
+					if (sp == null){
+						sp = Species.make(name, ((ChemGraph)product.get(i))); // gets old one it if it already exists, and saves it in the chemgraph
 					}
+					productSp.add(sp);
 				}
 				double pt = System.currentTimeMillis();
       	        boolean rpsame = MathTool.isListEquivalent(reactantSp, productSp);

@@ -98,7 +98,7 @@ public class JDASPK extends JDAS {
     }
 
     //## operation solve(boolean,ReactionModel,boolean,SystemSnapshot,ReactionTime,ReactionTime,Temperature,Pressure,boolean)
-    public SystemSnapshot solve(boolean p_initialization, ReactionModel p_reactionModel, boolean p_reactionChanged, SystemSnapshot p_beginStatus, ReactionTime p_beginTime, ReactionTime p_endTime, Temperature p_temperature, Pressure p_pressure, boolean p_conditionChanged,TerminationTester tt, int p_iterationNum, LinkedHashSet nonpdep_from_seed) {
+    public SystemSnapshot solve(boolean p_initialization, ReactionModel p_reactionModel, boolean p_reactionChanged, SystemSnapshot p_beginStatus, ReactionTime p_beginTime, ReactionTime p_endTime, Temperature p_temperature, Pressure p_pressure, boolean p_conditionChanged,TerminationTester tt, int p_iterationNum) {
         // set up the input file
         setupInputFile();
     	//outputString = new StringBuilder();
@@ -141,7 +141,7 @@ public class JDASPK extends JDAS {
 			//rString is a combination of a integer and a real array
 			//real array format:  rate, A, n, Ea, Keq
 			//int array format :  nReac, nProd, r1, r2, r3, p1, p2, p3, HASrev(T=1 or F=0)
-			rString = generatePDepODEReactionList(p_reactionModel, p_beginStatus, p_temperature, p_pressure, nonpdep_from_seed);
+			rString = generatePDepODEReactionList(p_reactionModel, p_beginStatus, p_temperature, p_pressure);
 			
 			nParameter = 0;
 			if (parameterInfor != 0) {
@@ -471,7 +471,7 @@ public class JDASPK extends JDAS {
 		return 1;
 	}
 	
-	public LinkedList solveSEN(boolean p_initialization, ReactionModel p_reactionModel, boolean p_reactionChanged, SystemSnapshot p_beginStatus, ReactionTime p_beginTime, ReactionTime p_endTime, Temperature p_temperature, Pressure p_pressure, boolean p_conditionChanged,TerminationTester tt, LinkedHashSet nonpdep_from_seed) {
+	public LinkedList solveSEN(boolean p_initialization, ReactionModel p_reactionModel, boolean p_reactionChanged, SystemSnapshot p_beginStatus, ReactionTime p_beginTime, ReactionTime p_endTime, Temperature p_temperature, Pressure p_pressure, boolean p_conditionChanged,TerminationTester tt) {
                 setupInputFile();
 	//	outputString = new StringBuilder();
 		Iterator spe_iter = p_reactionModel.getSpecies();
@@ -512,7 +512,7 @@ public class JDASPK extends JDAS {
 			//rString is a combination of a integer and a real array
 			//real array format:  rate, A, n, Ea, Keq
 			//int array format :  nReac, nProd, r1, r2, r3, p1, p2, p3, HASrev(T=1 or F=0)
-			rString = generatePDepODEReactionList(p_reactionModel, p_beginStatus, p_temperature, p_pressure, nonpdep_from_seed);
+			rString = generatePDepODEReactionList(p_reactionModel, p_beginStatus, p_temperature, p_pressure);
 			
 			nParameter = 0;
 			if (parameterInfor != 0) {

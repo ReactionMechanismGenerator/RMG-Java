@@ -101,7 +101,7 @@ public class JDASSL extends JDAS {
     }*/	 
 
     //## operation solve(boolean,ReactionModel,boolean,SystemSnapshot,ReactionTime,ReactionTime,Temperature,Pressure,boolean)
-    public SystemSnapshot solve(boolean p_initialization, ReactionModel p_reactionModel, boolean p_reactionChanged, SystemSnapshot p_beginStatus, ReactionTime p_beginTime, ReactionTime p_endTime, Temperature p_temperature, Pressure p_pressure, boolean p_conditionChanged, TerminationTester tt, int p_iterationNum, LinkedHashSet nonpdep_from_seed) {
+    public SystemSnapshot solve(boolean p_initialization, ReactionModel p_reactionModel, boolean p_reactionChanged, SystemSnapshot p_beginStatus, ReactionTime p_beginTime, ReactionTime p_endTime, Temperature p_temperature, Pressure p_pressure, boolean p_conditionChanged, TerminationTester tt, int p_iterationNum) {
         
         // set up the input file
         setupInputFile();
@@ -158,7 +158,7 @@ public class JDASSL extends JDAS {
 			//rString is a combination of a integer and a real array
 			//real array format:  rate, A, n, Ea, Keq
 			//int array format :  nReac, nProd, r1, r2, r3, p1, p2, p3, rev(=1 or -1)
-			rString = generatePDepODEReactionList(p_reactionModel, p_beginStatus, p_temperature, p_pressure,nonpdep_from_seed);
+			rString = generatePDepODEReactionList(p_reactionModel, p_beginStatus, p_temperature, p_pressure);
 			
 			initializeWorkSpace();
 			initializeConcentrations(p_beginStatus, p_reactionModel, p_beginTime, p_endTime, initialSpecies);

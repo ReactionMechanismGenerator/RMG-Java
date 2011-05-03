@@ -54,10 +54,13 @@ public class PDepRateConstant {
 	public enum Mode { NONE, INTERPOLATE, CHEBYSHEV, PDEPARRHENIUS, RATE };
 
 	/**
-	 * The mode to use for evaluation the pressure-dependent rate coefficients.
+	 * The default mode to use for evaluation the pressure-dependent rate coefficients.
 	 * Default is interpolate.
 	 */
 	private static Mode mode = Mode.INTERPOLATE;
+	
+	// The mode for a specific rate coefficient (so it can be non-default)
+	private Mode thisMode;
 
 	/**
 	 * A list of the temperatures at which the rate coefficient has been
@@ -88,7 +91,7 @@ public class PDepRateConstant {
 	/**
 	 * The rate coefficient as represented by pressure-dependent Arrhenius kinetics.
 	 */
-	private PDepArrheniusKinetics pDepArrhenius;
+	private PDepArrheniusKinetics[] pDepArrhenius;
 
 	private static Temperature TMIN;
 	private static Temperature TMAX;
@@ -121,24 +124,30 @@ public class PDepRateConstant {
 		rateConstants = rates;
 		chebyshev = chebyPols;
 		pDepArrhenius = null;
+		setThisMode(Mode.CHEBYSHEV);
 	}
 	
 	public PDepRateConstant(double[][] rates, PDepArrheniusKinetics plogKinetics) {
 		rateConstants = rates;
 		chebyshev = null;
-		pDepArrhenius = plogKinetics;
+		pDepArrhenius = new PDepArrheniusKinetics[1];
+		pDepArrhenius[0] = plogKinetics;
+		setThisMode(Mode.PDEPARRHENIUS);
 	}
 	
 	public PDepRateConstant(PDepArrheniusKinetics plogKinetics) {
 		rateConstants = null;
 		chebyshev = null;
-		pDepArrhenius = plogKinetics;
+		pDepArrhenius = new PDepArrheniusKinetics[1];
+		pDepArrhenius[0] = plogKinetics;
+		setThisMode(Mode.PDEPARRHENIUS);
 	}
 	
 	public PDepRateConstant(ChebyshevPolynomials chebyPols) {
 		rateConstants = null;
 		chebyshev = chebyPols;
 		pDepArrhenius = null;
+		setThisMode(Mode.CHEBYSHEV);
 	}
 
 	//==========================================================================
@@ -146,12 +155,23 @@ public class PDepRateConstant {
 	//	Static methods
 	//
 
-	public static Mode getMode() {
+	public Mode getMode() {
+		if (thisMode != null)
+			return thisMode;
+		else 
+			return mode;
+	}
+	
+	public static Mode getDefaultMode() {
 		return mode;
 	}
 
-	public static void setMode(Mode m) {
+	public static void setDefaultMode(Mode m) {
 		mode = m;
+	}
+	
+	public void setThisMode(Mode m) {
+		thisMode = m;
 	}
 
 	public static Temperature[] getTemperatures() {
@@ -175,14 +195,14 @@ public class PDepRateConstant {
 	//	Other methods
 	//
 
-	public double calculateRate(Temperature temperature, Pressure pressure) throws Exception {
+	public double calculateRate(Temperature temperature, Pressure pressure) {
 		double rate = 0.0;
 
 		if (temperature.getK() < TMIN.getK() || temperature.getK() > TMAX.getK() )
-			throw new Exception(String.format("Tried to evaluate P-dep rate coefficient at T=%.1f K but only valid from %.1f to %.1f K",
+			throw new IllegalArgumentException(String.format("Tried to evaluate P-dep rate coefficient at T=%.1f K but only valid from %.1f to %.1f K",
 											  temperature.getK(),TMIN.getK(),TMAX.getK() ));
 		if (pressure.getBar()  < PMIN.getBar() || pressure.getBar() > PMAX.getBar() )
-			throw new Exception(String.format("Tried to evaluate P-dep rate coefficient at P=%.2g bar but only valid from %s to %s bar",
+			throw new IllegalArgumentException(String.format("Tried to evaluate P-dep rate coefficient at P=%.2g bar but only valid from %s to %s bar",
 											  pressure.getBar(),PMIN.getBar(),PMAX.getBar() ));
 		
 		if (getMode() == Mode.INTERPOLATE || getMode() == Mode.RATE ) {
@@ -244,12 +264,19 @@ public class PDepRateConstant {
 				rate = Math.pow(10, rate);
 			}
 		}
-		else if (mode == Mode.CHEBYSHEV && chebyshev != null) {
+		else if (getMode() == Mode.CHEBYSHEV && chebyshev != null) {
 			rate = chebyshev.calculateRate(temperature, pressure);
 		}
-		else if (mode == Mode.PDEPARRHENIUS && pDepArrhenius != null) {
-			rate = pDepArrhenius.calculateRate(temperature, pressure);
+		else if (getMode() == Mode.PDEPARRHENIUS && pDepArrhenius != null) {
+			rate = 0;
+			for (int i=0; i<pDepArrhenius.length; i++) {
+				rate += pDepArrhenius[i].calculateRate(temperature, pressure);
+			}
 		}
+		else {
+			throw new RuntimeException("Failed to evaluate P-dep rate coefficient with type "+getMode());
+		}
+
 
 		return rate;
 	}
@@ -275,12 +302,40 @@ public class PDepRateConstant {
 		}
 	}
 
-	public PDepArrheniusKinetics getPDepArrheniusKinetics() {
+	public PDepArrheniusKinetics[] getPDepArrheniusKinetics() {
 		return pDepArrhenius;
 	}
 
-	public void setPDepArrheniusKinetics(PDepArrheniusKinetics kin) {
+	public void setPDepArrheniusKinetics(PDepArrheniusKinetics[] kin) {
+		// Store the passed in list of kinetics
 		pDepArrhenius = kin;
+	}
+	
+	public void setPDepArrheniusKinetics(PDepArrheniusKinetics kin) {
+		// Make a new list of size 1, containing only the passed in kinetics
+		pDepArrhenius = new PDepArrheniusKinetics[1];
+		pDepArrhenius[0] = kin;
+	}
+	
+	public void addPDepArrheniusKinetics(PDepArrheniusKinetics p_kinetics) {
+		// Add the passed in kinetics to the list (create the list if none exists)
+		if (p_kinetics == null)
+			return;
+		if (getMode() != PDepRateConstant.Mode.PDEPARRHENIUS)
+			throw new RuntimeException(String.format("Cannot add PDepArrheniusKinetics Rate constants to %s rate.",getMode() ));
+
+		if (pDepArrhenius == null){
+			pDepArrhenius = new PDepArrheniusKinetics[1];
+			pDepArrhenius[0] = p_kinetics;
+		}
+		else {
+			PDepArrheniusKinetics[] tempKinetics = pDepArrhenius;
+			pDepArrhenius = new PDepArrheniusKinetics[tempKinetics.length+1];
+			for (int i=0; i<tempKinetics.length; i++) {
+				pDepArrhenius[i] = tempKinetics[i];
+			}
+			pDepArrhenius[pDepArrhenius.length-1] = p_kinetics;
+		}
 	}
 	
 	public static void setPMin(Pressure p) {
