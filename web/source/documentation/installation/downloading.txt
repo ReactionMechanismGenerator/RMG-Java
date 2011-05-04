@@ -64,7 +64,7 @@ $ git clone git://github.com/GreenGroup/RMG-Java.git
 
 For subversion, use the command ::
 
-$ svn checkout http://svn.github.com/greengroup/RMG-Java.git
+$ svn checkout http://svn.github.com/GreenGroup/RMG-Java.git RMG-Java
 
 This gives you read-only access. If you might want to make changes, a better 
 idea is to create your own account on `GitHub <http://github.com/>`_, fork 
