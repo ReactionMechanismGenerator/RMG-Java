@@ -299,7 +299,9 @@ public class QMTP implements GeneralGAPP {
 				System.out.println("*****Final attempt (#" + maxAttemptNumber + ") on species " + name + " ("+InChIaug+") failed.");
 				System.out.print(p_chemGraph.toString());
 			        System.exit(0);
-			//	return new ThermoData(1000,0,0,0,0,0,0,0,0,0,0,0,"failed calculation");
+			//	ThermoData temp = new ThermoData(1000,0,0,0,0,0,0,0,0,0,0,0,"failed calculation");
+			//	temp.setSource("***failed calculation***");
+			//	return temp;
 			    }
 			}
 			System.out.println("*****Attempt #"+attemptNumber + " on species " + name + " ("+InChIaug+") failed. Will attempt a new keyword.");
@@ -356,7 +358,9 @@ public class QMTP implements GeneralGAPP {
 				System.out.println("*****Final attempt (#" + maxAttemptNumber + ") on species " + name + " ("+InChIaug+") failed.");
 				System.out.print(p_chemGraph.toString());
 			        System.exit(0);
-				//return new ThermoData(1000,0,0,0,0,0,0,0,0,0,0,0,"failed calculation");
+			//	ThermoData temp = new ThermoData(1000,0,0,0,0,0,0,0,0,0,0,0,"failed calculation");
+			//	temp.setSource("***failed calculation***");
+			//	return temp;
 			}
 			System.out.println("*****Attempt #"+attemptNumber + " on species " + name + " ("+InChIaug+") failed. Will attempt a new keyword.");
 			attemptNumber++;//try again with new keyword
@@ -1501,7 +1505,8 @@ public class QMTP implements GeneralGAPP {
 	    command=command.concat(" "+ System.getenv("RMG")+"/source");//this will pass $RMG/source to the script (in order to get the appropriate path for importing
 	}
 	ThermoData result = getPM3MM4ThermoDataUsingCCLib(name, directory, p_chemGraph, command);
-        System.out.println("Thermo for " + name + ": "+ result.toString());//print result, at least for debugging purposes
+        result.setSource("Gaussian PM3 calculation");
+	System.out.println("Thermo for " + name + ": "+ result.toString());//print result, at least for debugging purposes
         return result;
     }
 
@@ -1512,7 +1517,8 @@ public class QMTP implements GeneralGAPP {
 	command=command.concat(logfilepath);
 	command=command.concat(" "+ System.getenv("RMG")+"/source");//this will pass $RMG/source to the script (in order to get the appropriate path for importing
         ThermoData result = getPM3MM4ThermoDataUsingCCLib(name, directory, p_chemGraph, command);
-        System.out.println("Thermo for " + name + ": "+ result.toString());//print result, at least for debugging purposes
+        result.setSource("MM4 calculation");
+	System.out.println("Thermo for " + name + ": "+ result.toString());//print result, at least for debugging purposes
         return result;
     }
 
@@ -1670,7 +1676,8 @@ public class QMTP implements GeneralGAPP {
         }
 
 	ThermoData result = new ThermoData(Hf298,S298,Cp300,Cp400,Cp500,Cp600,Cp800,Cp1000,Cp1500,3,1,1,"MM4 calculation; includes CanTherm analysis of force-constant matrix");//this includes rough estimates of uncertainty
-        System.out.println("Thermo for " + name + ": "+ result.toString());//print result, at least for debugging purposes
+        result.setSource("MM4 calculation with CanTherm analysis");
+	System.out.println("Thermo for " + name + ": "+ result.toString());//print result, at least for debugging purposes
 
 	return result;
     }
@@ -1691,7 +1698,8 @@ public class QMTP implements GeneralGAPP {
 	    command=command.concat(" "+ System.getenv("RMG")+"/source");//this will pass $RMG/source to the script (in order to get the appropriate path for importing
 	}
         ThermoData result = getPM3MM4ThermoDataUsingCCLib(name, directory, p_chemGraph, command);
-        System.out.println("Thermo for " + name + ": "+ result.toString());//print result, at least for debugging purposes
+        result.setSource("MOPAC PM3 calculation");
+	System.out.println("Thermo for " + name + ": "+ result.toString());//print result, at least for debugging purposes
         return result;
     }
     

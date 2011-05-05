@@ -287,6 +287,9 @@ public class ThermoGAValue {
         return source;
     }
 
+    public void setSource(String p_source) {
+        source = p_source;
+    }
 }
 /*********************************************************************
         File Path	: RMG\RMG\jing\chem\ThermoGAValue.java
