@@ -514,7 +514,7 @@ if present, must include the Unit declaration and Reaction headings.
 	O2 + CO = CO2 + O 1.26E13 0.00 196.90 *1.7 0 0
 
 
-#. The :file:`pdepreaction.txt` file defines pressure-dependent reactions.  The type of
+#. The :file:`pdepreactions.txt` file defines pressure-dependent reactions.  The type of
    pressure-dependence RMG currently handles is: reactions with a third-body (bath gas),
    Lindemann expressions, and Troe expresions.  A sample file, is listed below.
    
