@@ -212,20 +212,20 @@ public class RMG {
      * @param inputfile The path of the input file
      */
     public static void logInputFile(String inputfile) throws FileNotFoundException, IOException {
-        Logger.verbose("----------------------------------------------------------------------");
-        Logger.verbose(" User input:");
-        Logger.verbose("----------------------------------------------------------------------");
-        Logger.verbose("");
+        Logger.info("----------------------------------------------------------------------");
+        Logger.info(" User input:");
+        Logger.info("----------------------------------------------------------------------");
+        Logger.info("");
         BufferedReader minireader = new BufferedReader(new FileReader(inputfile));
         String inputLine = minireader.readLine();
         while (inputLine != null) {
-            Logger.verbose(inputLine);
+            Logger.info(inputLine);
             inputLine = minireader.readLine();
         }
         minireader.close();
-        Logger.verbose("");
-        Logger.verbose("----------------------------------------------------------------------");
-        Logger.verbose("");
+        Logger.info("");
+        Logger.info("----------------------------------------------------------------------");
+        Logger.info("");
     }
 
 }
