@@ -457,7 +457,7 @@ public class SeedMechanism {
 						Reaction old = (Reaction)allRxnsIter.next();
 						if (old.equals(r)) {
 							PDepReaction oldPDep = (PDepReaction)old; // we should be able to cast it
-							oldPDep.addAdditionalKinetics(r.getKinetics()[0],1); // high-P limit kinetics
+							oldPDep.addAdditionalKinetics(r.getKinetics()[0],1,true); // high-P limit kinetics
 							oldPDep.addPDepArrheniusKinetics(pdepkineticsPLOG); // PLOG kinetics
 							continue read; // break out of inner loops and read the next reaction
 						}
@@ -622,7 +622,7 @@ public class SeedMechanism {
 			Reaction old = (Reaction)allRxnsIter.next();
 			if (old.equals(r)) {
                             if (old.getExpectDuplicate() && nextLine.toLowerCase().startsWith("dup")) {
-				old.addAdditionalKinetics(r.getKinetics()[0],1);
+				old.addAdditionalKinetics(r.getKinetics()[0],1,true);
 				foundRxn = true;
 				break;
                             }

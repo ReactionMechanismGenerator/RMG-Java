@@ -375,7 +375,7 @@ public class PDepNetwork {
 		for (ListIterator<PDepReaction> iter = pathReactionList.listIterator(); iter.hasNext(); ) {
 			PDepReaction rxn = iter.next();
 			if (rxn.equals(newRxn)) {
-				if (addKinetics) rxn.addAdditionalKinetics(newRxn.getKinetics()[0], 1);
+				if (addKinetics) rxn.addAdditionalKinetics(newRxn.getKinetics()[0], 1, false);
 				return;
 			}
 		}

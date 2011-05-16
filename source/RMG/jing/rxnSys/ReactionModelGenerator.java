@@ -3038,7 +3038,7 @@ public class ReactionModelGenerator {
 	        		while (rxnIter.hasNext()) {
 	        			Reaction old = (Reaction)rxnIter.next();
 	        			if (old.equals(r)) {
-	        				old.addAdditionalKinetics(r.getKinetics()[0],1);
+	        				old.addAdditionalKinetics(r.getKinetics()[0],1,true);
 	        				foundRxn = true;
 	        				break;
 	        			}
@@ -3097,7 +3097,7 @@ public class ReactionModelGenerator {
 	        		while (rxnIter.hasNext()) {
 	        			Reaction old = (Reaction)rxnIter.next();
 	        			if (old.equals(r)) {
-	        				old.addAdditionalKinetics(r.getKinetics()[0],1);
+	        				old.addAdditionalKinetics(r.getKinetics()[0],1,true);
 	        				foundRxn = true;
 	        				break;
 	        			}

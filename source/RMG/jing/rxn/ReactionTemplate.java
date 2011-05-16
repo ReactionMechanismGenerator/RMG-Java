@@ -906,10 +906,10 @@ public class ReactionTemplate {
 					}
 					else {
 						if (k == null)
-							old_reaction.addAdditionalKinetics(null,redundancy);
+							old_reaction.addAdditionalKinetics(null,redundancy,false);
 						else {
 							for (int i=0; i<k.length; i++) {
-								old_reaction.addAdditionalKinetics(k[i], redundancy);
+								old_reaction.addAdditionalKinetics(k[i], redundancy,false);
 							}
 						}
 						//old_reaction.getStructure().increaseRedundancy(redundancy);
@@ -1086,7 +1086,7 @@ public class ReactionTemplate {
 						else {
 							//p_structure.increaseRedundancy(redundancy);
 							for (int i=0; i<k.length; i++) {
-								reverseReaction.addAdditionalKinetics(k[i],redundancy);
+								reverseReaction.addAdditionalKinetics(k[i],redundancy,false);
 							}
 							//structure = null;
 						}
@@ -1221,10 +1221,10 @@ public class ReactionTemplate {
   					}
   					else {
   						if (k == null)
-  							old_reaction.addAdditionalKinetics(null,redundancy);
+  							old_reaction.addAdditionalKinetics(null,redundancy,false);
   						else {
 	  						for (int i=0; i<k.length; i++) {
-	  							old_reaction.addAdditionalKinetics(k[i], redundancy);
+	  							old_reaction.addAdditionalKinetics(k[i], redundancy,false);
 	  						}
   						}
 						//old_reaction.getStructure().increaseRedundancy(redundancy);

@@ -1409,7 +1409,7 @@ public class Reaction {
 	  }
   }
 	
-	public void addAdditionalKinetics(Kinetics p_kinetics, int red) {
+	public void addAdditionalKinetics(Kinetics p_kinetics, int red, boolean readingFromUserLibrary) {
 		if (finalized)
 			return;
 		if (p_kinetics == null)
@@ -1419,7 +1419,7 @@ public class Reaction {
 			kinetics[0] = p_kinetics;
 			structure.redundancy = 1;
 		}
-		else {
+		else if (readingFromUserLibrary || (!readingFromUserLibrary && !p_kinetics.isFromPrimaryKineticLibrary())) {
 			boolean kineticsAlreadyPresent = false;
 			for (int i=0; i<kinetics.length; i++) {
 				Kinetics old_kinetics = kinetics[i];
