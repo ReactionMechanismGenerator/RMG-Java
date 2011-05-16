@@ -691,11 +691,17 @@ public class PDepNetwork {
 				PDepNetwork n = iter.next();
 				if (n.contains(reactant)) {
 					if (n.getIsomer(reactant).getIncluded())
+					{
 						reac_pdn = n;
+						if (prod_pdn != null) break; // have now found both prod_pdn and reac_pdn.
+					}
 				}
 				if (n.contains(product)) {
 					if (n.getIsomer(product).getIncluded())
+					{
 						prod_pdn = n;
+						if (reac_pdn != null) break; // have now found both reac_pdn and prod_pdn.
+					}
 				}
 			}
 
