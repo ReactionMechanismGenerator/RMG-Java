@@ -523,6 +523,9 @@ public class SeedMechanism {
 			localReactions.add(tbr);
 			Reaction reverse = tbr.getReverseReaction();
 			if (reverse != null) localReactions.add(reverse);
+
+			if (!tbr.repOk()) throw new RuntimeException(String.format("Something wrong with reaction %s", tbr));
+			
 		}
 
             in.close();
