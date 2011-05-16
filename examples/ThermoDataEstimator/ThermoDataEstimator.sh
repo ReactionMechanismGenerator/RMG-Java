@@ -18,6 +18,6 @@ then
   exit
 fi
 
-echo "Running TransportDataEstimator..."
+echo "Running ThermoDataEstimator..."
 java -Xmx500m -classpath  $RMG/bin/RMG.jar ThermoDataEstimator input.txt 2>&1 | tee RMG.log
-echo "TransportDataEstimator job completed."
+echo "ThermoDataEstimator job completed."
