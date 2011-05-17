@@ -94,8 +94,8 @@ public class RateBasedRME implements ReactionModelEnlarger {
 				Species newCoreSpecies = (Species) nextList.get(i);
 				if (cerm.containsAsReactedSpecies(newCoreSpecies)) //throw new InvalidNextCandidateSpeciesException();
 				{
-					Logger.warning("Species " + newCoreSpecies.getFullName() +
-									   " is already present in reaction model");
+					Logger.warning("Tried to add species " + newCoreSpecies.getFullName() +
+									   ", but is already present in reaction model (this should be OK if you are running multiple reaction conditions)");
 				} else {
 					
 					double findSpeciesTime = (System.currentTimeMillis() - startTime) / 1000 / 60;
