@@ -78,7 +78,8 @@ public void appendPrimaryThermoLibrary(String name, String path) {
 		read(dictionaryFile, libraryFile, name);
 	}
 	catch (IOException e) {
-		System.err.println("RMG cannot read Primary Thermo Library: " + name + "\n" + e.getMessage());
+		String message = String.format("RMG cannot read Primary Thermo Library %s: %s", name, e.getMessage());
+		throw new RuntimeException(message);
 	}
 }
 

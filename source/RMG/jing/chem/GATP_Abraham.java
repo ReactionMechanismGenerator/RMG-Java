@@ -34,6 +34,7 @@ import jing.param.*;
 import jing.chemUtil.*;
 import jing.mathTool.*;
 import jing.param.Temperature;
+import jing.rxnSys.Logger;
 
 
 public class GATP_Abraham implements GeneralAbramGAPP {
@@ -171,8 +172,8 @@ public class GATP_Abraham implements GeneralAbramGAPP {
           			AbrahamGAValue thisAbrahamValue = thermoLibrary.findAbrahamGroup(p_chemGraph);
 					
                     if (thisAbrahamValue == null) {
-           				System.err.println("Abraham group not found: " + node.getID());
-                        System.out.println(p_chemGraph.toString());
+           				Logger.warning("Abraham group not found: " + node.getID());
+                        Logger.info(p_chemGraph.toString());
            			}
            			else {
            				//System.out.println(node.getID() + " " + thisGAValue.getName()+ "  "+thisGAValue.toString());
@@ -180,7 +181,7 @@ public class GATP_Abraham implements GeneralAbramGAPP {
            			}
            		}
            		else {
-          			System.err.println("Error: Radical detected after saturation!");
+          			Logger.error("Error: Radical detected after saturation!");
            		}
            	}
         }
@@ -203,7 +204,7 @@ public class GATP_Abraham implements GeneralAbramGAPP {
 		           	p_chemGraph.resetThermoSite(node);
 		           	AbrahamGAValue thisAbrahamValue = thermoLibrary.findAbrahamradGroup(p_chemGraph);
 		           	if (thisAbrahamValue == null) {
-		           		System.err.println("Radical group not found: " + node.getID());
+		           		Logger.warning("Radical group not found: " + node.getID());
 		           	}
 		           	else {
 		           		//System.out.println(node.getID() + " radical correction: " + thisGAValue.getName() + "  "+thisGAValue.toString());

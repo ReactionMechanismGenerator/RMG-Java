@@ -69,7 +69,8 @@ public class PrimaryTransportLibrary {
 			read(dictionaryFile, libraryFile, name);
 		}
 		catch (IOException e) {
-			System.err.println("RMG cannot read Primary Transport Library: " + name + "\n" + e.getMessage());
+			String message = String.format("RMG cannot read Primary Transport Library %s: %s", name, e.getMessage());
+			throw new RuntimeException(message);
 		}
 	}
 

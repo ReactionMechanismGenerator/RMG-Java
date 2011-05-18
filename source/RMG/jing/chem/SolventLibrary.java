@@ -59,13 +59,14 @@ protected static HashMap library;
 			read(libraryFile, name);
 		}
 		catch (IOException e) {
-			System.err.println("RMG cannot read Solvent Library: " + name + "\n" + e.getMessage());
+			String message = String.format("RMG cannot read Solvent Library %s: %s", name, e.getMessage());
+			throw new RuntimeException(message);
 		}
 	}
 
 	public void read(String p_library, String p_name) throws IOException, FileNotFoundException {
 		String source = "Solvent Library: " + p_name;
-		System.out.println("Reading " + source);
+		Logger.info("Reading " + source);
 		library = readLibrary(p_library, source);
 	}
 
@@ -133,8 +134,8 @@ protected static HashMap library;
 			}
 		}
         if (solv==null){
-        System.out.println("Solvent does not exist in RMG solvent library");
-        System.out.println("Stopping.");
+        Logger.error("Solvent does not exist in RMG solvent library");
+        Logger.error("Stopping.");
 		throw new Error();
         }
         return null;

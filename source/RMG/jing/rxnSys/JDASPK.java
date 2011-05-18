@@ -623,7 +623,7 @@ public class JDASPK extends JDAS {
 				//System.out.println(line);
 				line = line.trim();
 				//if (!(line.contains("ODESOLVER SUCCESSFUL"))) {
-					System.out.println(line);
+					Logger.info(line);
 					//error = true;
 				//}
 			}

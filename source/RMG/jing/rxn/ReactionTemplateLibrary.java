@@ -134,8 +134,7 @@ public class ReactionTemplateLibrary {
         String[] fileNames = f.list();
         Arrays.sort(fileNames);
         if (f==null) {
-        	System.err.println("Empty reaction template directory!");
-        	System.exit(0);
+        	throw new RuntimeException(String.format("Empty reaction template directory %s!",p_directoryName));
         }
         for (int i=0; i<fileNames.length;i++) {
         	String fullName = p_directoryName + "/" + fileNames[i];

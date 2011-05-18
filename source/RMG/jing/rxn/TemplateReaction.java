@@ -340,7 +340,7 @@ public class TemplateReaction extends Reaction {
 
 		}
 		if (k == null) {
-			System.err.println("Couldn't find the rate constant for reaction: " + rs.toChemkinString(true) + " with " + rRT.name);
+			Logger.error("Couldn't find the rate constant for reaction: " + rs.toChemkinString(true) + " with " + rRT.name);
 			//System.exit(0);
 			return null;
 		}

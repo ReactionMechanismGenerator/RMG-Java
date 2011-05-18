@@ -862,8 +862,8 @@ public class Reaction {
 			  // this Hrxn is for the reverse reaction (ie. -Hrxn_forward)
 	      	double doubleEr = k[numKinetics].getEValue() - (doubleAlpha-1)*Hrxn;
 	      	if (doubleEr < 0) {
-	      		System.err.println("fitted Er < 0: "+Double.toString(doubleEr));
-	      		System.err.println(getStructure().toString());
+	      		Logger.warning("fitted Er < 0: "+Double.toString(doubleEr));
+	      		Logger.warning(getStructure().toString());
 	      		//doubleEr = 0;
 	      	}
 	

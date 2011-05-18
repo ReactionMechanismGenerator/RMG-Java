@@ -284,7 +284,7 @@ public class CoreEdgeReactionModel implements ReactionModel {
     public void addUnreactedReaction(Reaction p_reaction) throws InvalidUnreactedReactionException {
         //#[ operation addUnreactedReaction(Reaction) 
     	if (p_reaction instanceof PDepReaction)
-    		System.out.println(p_reaction);
+    		Logger.info(String.format("%s",p_reaction));
     	if (p_reaction.hasReverseReaction()) {
 	        if (isUnreactedReaction(p_reaction)) getUnreactedReactionSet().add(p_reaction);
 	        else if (isUnreactedReaction(p_reaction.getReverseReaction())) getUnreactedReactionSet().add(p_reaction.getReverseReaction());
@@ -796,8 +796,8 @@ public class CoreEdgeReactionModel implements ReactionModel {
     public void printPDepModel(Temperature p_temperature,Pressure p_pressure) {
         //#[ operation printPDepModel(Temperature) 
         String modelInformation ="";
-	System.out.print("This model include totally " + String.valueOf(getSpeciesNumber()) + " Species and ");
-        System.out.println(String.valueOf(getReactionNumber()) + " Reactions.");
+		Logger.info("This model include totally " + String.valueOf(getSpeciesNumber()) + " Species and ");
+        Logger.info(String.valueOf(getReactionNumber()) + " Reactions.");
        
 	//System.out.println("Species Set:");
         //System.out.println("Totally " + String.valueOf(getSpeciesNumber()) + " Species:");
@@ -855,24 +855,24 @@ public class CoreEdgeReactionModel implements ReactionModel {
         	} 
         }
         
-        System.out.println("//non p_dep reactions:");
+        Logger.info("//non p_dep reactions:");
         for (Iterator iter = nonPDepList.iterator(); iter.hasNext(); ) {
         	Reaction r = (Reaction)iter.next();
         	double rate = r.calculateTotalRate(p_temperature);
             if (r instanceof TemplateReaction) rate = ((TemplateReaction)r).calculateTotalPDepRate(p_temperature, p_pressure);//10/25/07 gmagoon: added pressure
             //System.out.println(r.toString()+"\t rate = \t"+ String.valueOf(rate));
-			System.out.println(r.toChemkinString(p_temperature));
+			Logger.info(r.toChemkinString(p_temperature));
 		//System.out.println(r.toChemkinString(Global.temperature));//10/25/07 gmagoon eliminating use of Global.temperature
         }
         
-        System.out.println("//p_dep reactions:");
+        Logger.info("//p_dep reactions:");
         for (Iterator iter = pDepList.iterator(); iter.hasNext(); ) {
         	PDepReaction r = (PDepReaction) iter.next();
             //System.out.println(r.getStructure().toString() + "\t rate = \t" + Double.toString(r.getRate()));
-                System.out.println(r.toChemkinString(p_temperature));
+                Logger.info(r.toChemkinString(p_temperature));
 		//System.out.println(r.toChemkinString(Global.temperature));//10/25/07 gmagoon eliminating use of Global.temperature
         }
-        System.out.println("/////////////////////////////");
+        Logger.info("/////////////////////////////");
         return;
         //#]
     }

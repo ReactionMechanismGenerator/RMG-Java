@@ -1294,8 +1294,8 @@ public class ReactionTemplate {
       }
       catch (Exception e) {
 		Logger.logStackTrace(e);
-      	System.err.println("Error in read in reaction template: " + name);
-      	System.err.println(e.getMessage());
+      	Logger.critical("Error in read in reaction template: " + name);
+      	Logger.critical(e.getMessage());
       	System.exit(0);
       }
       

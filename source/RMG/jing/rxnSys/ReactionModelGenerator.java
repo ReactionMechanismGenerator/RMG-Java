@@ -431,7 +431,7 @@ public class ReactionModelGenerator {
                     readAndMakePAL();
                     String solventname = st.nextToken().toLowerCase();
                     readAndMakeSL(solventname);
-					System.out.println(String.format(
+					Logger.info(String.format(
 						"Using solvation corrections to thermochemsitry with solvent properties of %s",solventname));
         		} else if (solvationOnOff.startsWith("off")) {
                     setUseSolvation(false);
@@ -451,7 +451,7 @@ public class ReactionModelGenerator {
                     String viscosity_str = st.nextToken();
                     viscosity = Double.parseDouble(viscosity_str);
                     setUseDiffusion(true);
-					System.out.println(String.format(
+					Logger.info(String.format(
 						"Using diffusion corrections to kinetics with solvent viscosity of %.3g Pa.s.",viscosity));
         		} else if (diffusionOnOff.equals("off")) {
         			setUseDiffusion(false);
@@ -788,7 +788,7 @@ public class ReactionModelGenerator {
                             if (st.nextToken().trim().toLowerCase().equals("non-negative")){
                                 if(simulator.toLowerCase().equals("dassl")) JDAS.nonnegative = true;
                                 else{
-                                    System.err.println("Non-negative option is currently only supported for DASSL. Switch to DASSL solver or remove non-negative option.");
+                                    Logger.critical("Non-negative option is currently only supported for DASSL. Switch to DASSL solver or remove non-negative option.");
                                     System.exit(0);
                                 }
                             }
@@ -1090,8 +1090,8 @@ public class ReactionModelGenerator {
 						Logger.info("This may have unintended consequences");
 					}
 					else {
-						System.err.println("Input file invalid");
-						System.err.println("Please include a 'GenerateReactions: yes/no' line for seed mechanism "+name);
+						Logger.critical("Input file invalid");
+						Logger.critical("Please include a 'GenerateReactions: yes/no' line for seed mechanism "+name);
 						System.exit(0);
 					}
 					
@@ -1157,7 +1157,7 @@ public class ReactionModelGenerator {
 					if (units.equals("moles") || units.equals("molecules"))
 						ArrheniusKinetics.setAUnits(units);
 					else {
-						System.err.println("Units for A were not recognized: " + units);
+						Logger.critical("Units for A were not recognized: " + units);
 						System.exit(0);
 					}
 				} else throw new InvalidSymbolException("Error reading condition.txt file: "
@@ -1171,7 +1171,7 @@ public class ReactionModelGenerator {
 						units.equals("kJ/mol") || units.equals("J/mol") || units.equals("Kelvins"))
 						ArrheniusKinetics.setEaUnits(units);
 					else {
-						System.err.println("Units for Ea were not recognized: " + units);
+						Logger.critical("Units for Ea were not recognized: " + units);
 						System.exit(0);
 					}
 				} else throw new InvalidSymbolException("Error reading condition.txt file: "
@@ -1263,7 +1263,7 @@ public class ReactionModelGenerator {
 			//    PDepNetwork.setPressureArray(pressureArray);//10/30/07 gmagoon: same for pressure;//UPDATE: commenting out: not needed if updateKLeak is done for one temperature/pressure at a time; 11/1-2/07 restored; 11/6/07 gmagoon: moved before initialization of lrg;
 		}
         catch (IOException e) {
-        	System.err.println("Error reading reaction system initialization file.");
+        	Logger.error("Error reading reaction system initialization file.");
         	throw new IOException("Input file error: " + e.getMessage());
         }
 
@@ -1285,11 +1285,13 @@ public class ReactionModelGenerator {
          	initializeReactionSystems();
         }
         catch (IOException e) {
-        	System.err.println(e.getMessage());
+			Logger.logStackTrace(e);
+        	Logger.critical(e.getMessage());
         	System.exit(0);
         }
         catch (InvalidSymbolException e) {
-        	System.err.println(e.getMessage());
+			Logger.logStackTrace(e);
+        	Logger.critical(e.getMessage());
         	System.exit(0);
         }
 		
@@ -4470,7 +4472,7 @@ public class ReactionModelGenerator {
 			 */
 			
 			if (SpectroscopicData.mode != SpectroscopicData.mode.OFF) {
-				System.err.println("Terminating RMG simulation: User requested frequency estimation, " +
+				Logger.critical("Terminating RMG simulation: User requested frequency estimation, " +
 						"yet no pressure-dependence.\nSUGGESTION: Set the " +
 						"SpectroscopicDataEstimator field in the input file to 'off'.");
 				System.exit(0);
@@ -4835,7 +4837,7 @@ public class ReactionModelGenerator {
 					try {
 						concentration = Double.parseDouble(reactive);
 					} catch (NumberFormatException e) {
-						System.out.println(String.format("Unable to read concentration value '%s'. Check syntax of input line '%s'.",reactive,line));
+						Logger.error(String.format("Unable to read concentration value '%s'. Check syntax of input line '%s'.",reactive,line));
 						throw e;
 					}
 					if (unit.equals("mole/l") || unit.equals("mol/l") || unit.equals("mole/liter") || unit.equals("mol/liter")) {
@@ -4850,7 +4852,7 @@ public class ReactionModelGenerator {
 						concentration /= 6.022e23;
 					}
 					else if (!unit.equals("mole/cm3") && !unit.equals("mol/cm3")) {
-						System.out.println(String.format("Unable to read concentration units '%s'. Check syntax of input line '%s'.",unit,line));
+						Logger.error(String.format("Unable to read concentration units '%s'. Check syntax of input line '%s'.",unit,line));
 						throw new InvalidUnitException("Species Concentration in condition.txt!");
 					}
 					SpeciesStatus ss = new SpeciesStatus(species,1,concentration,0.0);

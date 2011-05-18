@@ -701,52 +701,18 @@ public class ReactionSystem {
 
     //## operation printConcentrationProfile(LinkedList)
     public String printConcentrationProfile(LinkedList p_speciesList) {
-        //#[ operation printConcentrationProfile(LinkedList)
-        if (p_speciesList == null) throw new NullPointerException();
-
-
-        if (p_speciesList.isEmpty()) return "EMPTY species list";
-
-        // check the validity of p_speciesList and print the title line
-        System.out.print("Time");
-        int size = p_speciesList.size();
-        for (int i=0; i<size; i++) {
-        	Species spe = (Species)p_speciesList.get(i);
-        	if (!spe.repOk()) throw new InvalidSpeciesException();
-         	String name = spe.getChemkinName();
-         	System.out.print('\t' + name);
-        }
-        System.out.println();
-
-        Iterator iter = getSystemSnapshot();
-        while (iter.hasNext()) {
-        	SystemSnapshot ss = (SystemSnapshot)iter.next();
-        	System.out.print(String.valueOf(ss.getTime().getTime()));
-        	for (int i=0; i<size; i++) {
-        		Species spe = (Species)p_speciesList.get(i);
-
-         		if (spe != null) {
-         			SpeciesStatus speSta = ss.getSpeciesStatus(spe);
-         			double conc = 0;
-         			if (speSta != null) conc = speSta.getConcentration();
-         			System.out.print('\t' + String.valueOf(conc));
-         		}
-         	}
-         	System.out.println();
-        }
-
+		Logger.info(returnConcentrationProfile(p_speciesList));
         return "END";
-        //#]
     }
 
-//	## operation printConcentrationProfile(LinkedList)
+//	## operation returnConcentrationProfile(LinkedList)
     public String returnConcentrationProfile(LinkedList p_speciesList) {
-        //#[ operation printConcentrationProfile(LinkedList)
+        //#[ operation returnConcentrationProfile(LinkedList)
         if (p_speciesList == null) throw new NullPointerException();
 
 
         if (p_speciesList.isEmpty()) return "EMPTY species list";
-		String output = "";
+		String output = ""; // this should really be a StringBuilder, if this code is ever used.
         // check the validity of p_speciesList and print the title line
         output = output + "Time";
         int size = p_speciesList.size();
@@ -882,52 +848,18 @@ public String printLowerBoundConcentrations(LinkedList p_speciesList) {
     //## operation printMoleFractionProfile(LinkedList)
     public String printMoleFractionProfile(LinkedList p_speciesList) {
         //#[ operation printMoleFractionProfile(LinkedList)
-        if (p_speciesList == null) throw new NullPointerException();
-
-        if (p_speciesList.isEmpty()) return "EMPTY species list";
-
-        // check the validity of p_speciesList and print the title line
-        System.out.print("Time");
-        int size = p_speciesList.size();
-        for (int i=0; i<size; i++) {
-        	Species spe = (Species)p_speciesList.get(i);
-        	if (spe != null) {
-        		if (!spe.repOk()) throw new InvalidSpeciesException();
-        	 	String name = spe.getChemkinName();
-        	 	System.out.print('\t' + name);
-        	 }
-        }
-        System.out.println();
-
-        Iterator iter = getSystemSnapshot();
-        while (iter.hasNext()) {
-        	SystemSnapshot ss = (SystemSnapshot)iter.next();
-        	double totalMole = ss.getTotalMole();
-        	System.out.print(String.valueOf(ss.getTime().getTime()));
-        	for (int i=0; i<size; i++) {
-        		Species spe = (Species)p_speciesList.get(i);
-        		if (spe != null) {
-        	 		SpeciesStatus speSta = ss.getSpeciesStatus(spe);
-        	 		double mf;
-        	 		if (speSta==null) mf = 0;
-        	 		else mf = speSta.getConcentration()/totalMole;
-                                System.out.print('\t' + String.valueOf(mf));
-        	 	}
-         	}
-         	System.out.println();
-        }
-
+			Logger.info(returnMoleFractionProfile(p_speciesList));
         return "END";
         //#]
     }
 
-	 //## operation printMoleFractionProfile(LinkedList)
+	 //## operation returnMoleFractionProfile(LinkedList)
     public String returnMoleFractionProfile(LinkedList p_speciesList) {
-        //#[ operation printMoleFractionProfile(LinkedList)
+        //#[ operation returnMoleFractionProfile(LinkedList)
         if (p_speciesList == null) throw new NullPointerException();
 
         if (p_speciesList.isEmpty()) return "EMPTY species list";
-		String output = "";
+		String output = ""; // this should really be a StringBuilder, if this code is ever used.
         // check the validity of p_speciesList and print the title line
 		output = output + "Time";
         int size = p_speciesList.size();

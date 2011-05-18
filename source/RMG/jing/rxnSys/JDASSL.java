@@ -132,7 +132,7 @@ public class JDASSL extends JDAS {
 			nParameter = 0;
 			if (parameterInfor != 0) {
 				nParameter = p_reactionModel.getReactionNumber(); //svp
-				if (initialStatus == null) System.out.println("initialStatus = null");
+				if (initialStatus == null) Logger.info("initialStatus = null");
 				spe_iter = initialStatus.getSpeciesStatus();
 				while (spe_iter.hasNext()) {
 					SpeciesStatus ss = (SpeciesStatus) spe_iter.next();

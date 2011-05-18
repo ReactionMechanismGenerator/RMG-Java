@@ -699,7 +699,7 @@ public class ChemParser {
           	ua = new UncertainDouble(A*p_AMultiplier*p_AMultiplier,1,"Multiplier");
           } else {
         	  ua = null;
-        	  System.err.println("In ChemParser.parseSimpleArrheniusKinetics:\nThe number of " +
+        	  Logger.critical("In ChemParser.parseSimpleArrheniusKinetics:\nThe number of " +
         			  "reactants exceeds three.");
         	  System.exit(0);
           }
@@ -808,7 +808,7 @@ public class ChemParser {
         	ua = new UncertainDouble(A*p_AMultiplier*p_AMultiplier,1,"Multiplier");
         } else {
         	ua = null;
-        	System.err.println("In ChemParser.parseSimpleArrheniusKinetics:\nThe number of " +
+        	Logger.critical("In ChemParser.parseSimpleArrheniusKinetics:\nThe number of " +
         			"reactants exceeds three.");
         	System.exit(0);
         }
@@ -1427,7 +1427,8 @@ public class ChemParser {
         	return fgList;
         }
         catch (IOException e) {
-        	System.err.println("Can't read species!");
+			Logger.logStackTrace(e);
+        	Logger.error("Can't read species from "+p_fileName);
         	return null;
         }
         //#]
@@ -1597,13 +1598,15 @@ public class ChemParser {
         	return speciesList;
         }
         catch (IOException e) {
-        	System.err.println("Can't read species!");
-        	System.err.println(e.getMessage());
+			Logger.logStackTrace(e);
+        	Logger.error("Can't read species from "+p_fileName);
+        	Logger.error(e.getMessage());
         	return null;
         }
         catch (ForbiddenStructureException e) {
-        	System.err.println("Can't read species!");
-        	System.err.println("Forbidden Structure:\n" + e.getMessage());
+			Logger.logStackTrace(e);
+        	Logger.error("Can't read species from "+p_fileName);
+        	Logger.error("Forbidden Structure:\n" + e.getMessage());
         	return null;
         }
         //#]

@@ -70,13 +70,14 @@ public class PrimaryAbrahamLibrary {
 			read(dictionaryFile, libraryFile, name);
 		}
 		catch (IOException e) {
-			System.err.println("RMG cannot read Primary Abraham Library: " + name + "\n" + e.getMessage());
+			String message = String.format("RMG cannot read Primary Abraham Library %s: %s", name, e.getMessage());
+			throw new RuntimeException(message);
 		}
 	}
 
 	public void read(String p_dictionary, String p_library, String p_name) throws IOException, FileNotFoundException {
 		String source = "Primary Abraham Library: " + p_name;
-		System.out.println("Reading " + source);
+		Logger.info("Reading " + source);
 		dictionary = readDictionary(p_dictionary, source);
 		library = readLibrary(p_library, dictionary, source);
 	}
@@ -115,9 +116,9 @@ public class PrimaryAbrahamLibrary {
 						else {
 							AbramData oldAbramData = (AbramData)old;
 							if (!oldAbramData.equals(newAbramData)) {
-					            System.out.println("Duplicate Abraham data (same graph, different name) in " + source);
-					            System.out.println("\tIgnoring Abraham data for species: " + newAbramData.getName());
-					            System.out.println("\tStill storing Abraham data for species: " + oldAbramData.getName());
+					            Logger.info("Duplicate Abraham data (same graph, different name) in " + source);
+					            Logger.verbose("\tIgnoring Abraham data for species: " + newAbramData.getName());
+					            Logger.verbose("\tStill storing Abraham data for species: " + oldAbramData.getName());
 							}
 						}
 					}
@@ -125,7 +126,7 @@ public class PrimaryAbrahamLibrary {
 				catch (NumberFormatException e) {
 					Object o = p_dictionary.get(abram);
 					if (o == null) {
-						System.out.println(name + ": "+abram);
+						Logger.info(name + ": "+abram);
 					}
 				}
 				line = ChemParser.readMeaningfulLine(data, true);
@@ -166,15 +167,14 @@ public class PrimaryAbrahamLibrary {
 					if (td == null){
 						dictionary.put(name, graph);
 					} else {
-						System.out.println("Ignoring species " + name +
+						Logger.warning("Ignoring species " + name +
 							" -- Graph already exists in user-defined " + td.source);
 					}
 				}
 				else{
 					Graph oldGraph = (Graph)old;
 					if (!oldGraph.equals(graph)) {
-						System.out.println("Can't replace graph in primary Abraham library!");
-						System.exit(0);
+						throw new RuntimeException("Can't replace graph in primary Abraham library!");
 					}
 				}
 				line = ChemParser.readMeaningfulLine(data, true);

@@ -2341,7 +2341,7 @@ return sn;
 		        		cg.generateChemicalFormula();
 		        	}
 		        	else {
-		        		System.err.println(getRepOkString());
+		        		Logger.error(getRepOkString());
 		        		throw new InvalidChemGraphException();
 		        	}
 					//cgd.putSpecies(cg);

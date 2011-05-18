@@ -37,6 +37,7 @@ import jing.param.*;
 import jing.chemUtil.*;
 import jing.mathTool.*;
 import jing.param.Temperature;
+import jing.rxnSys.Logger;
 
 //## package jing::chem
 
@@ -189,7 +190,7 @@ public class GATP implements GeneralGAPP {
                                         result.plus(thisOneFiveValue);
                                 }
                                 if (thisGAValue == null) {
-           				System.err.println("Thermo group not found: " + node.getID());
+           				Logger.warning("Thermo group not found: " + node.getID());
            			}
            			else {
            				//System.out.println(node.getID() + " " + thisGAValue.getName()+ "  "+thisGAValue.toString());
@@ -198,7 +199,7 @@ public class GATP implements GeneralGAPP {
            			}
            		}
            		else {
-          			System.err.println("Error: Radical detected after saturation!");
+          			Logger.error("Error: Radical detected after saturation!");
            		}
            	}
         }
@@ -221,7 +222,7 @@ public class GATP implements GeneralGAPP {
            	p_chemGraph.resetThermoSite(node);
            	ThermoGAValue thisGAValue = thermoLibrary.findRadicalGroup(p_chemGraph);
            	if (thisGAValue == null) {
-           		System.err.println("Radical group not found: " + node.getID());
+           		Logger.warning("Radical group not found: " + node.getID());
            	}
            	else {
            		//System.out.println(node.getID() + " radical correction: " + thisGAValue.getName() + "  "+thisGAValue.toString());

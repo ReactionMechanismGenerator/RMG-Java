@@ -138,8 +138,8 @@ public class FrequencyGroups{//gmagoon 111708: removed "implements GeneralGAPP"
 
         }
         catch (IOException e) {
-            System.err.println("Problem writing frequency estimation input file!");
             Logger.logStackTrace(e);
+			Logger.error("Problem writing frequency estimation input file!");
         }
 		
 		touchOutputFile();

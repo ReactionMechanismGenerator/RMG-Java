@@ -37,6 +37,7 @@ import jing.chemUtil.*;
 import jing.chemUtil.Arc;
 import jing.chemUtil.Graph;
 import jing.param.Global;
+import jing.rxnSys.Logger;
 
 //## package jing::rxn 
 
@@ -297,7 +298,8 @@ public class ReactionAdjList {
         	return;
         }
         catch (UnknownSymbolException e) {
-        	System.err.println("unknown symbols: " + e.getMessage());
+        	Logger.logStackTrace(e);
+			Logger.critical("Unknown symbols: " + e.getMessage());
         	System.exit(0);
         }
         //#]

@@ -125,7 +125,7 @@ public class TemplateReactionGenerator implements ReactionGenerator {
         	ReactionTemplate current_template = (ReactionTemplate)template_iter.next();
         	if (specificRxnFamily.equals("All") || specificRxnFamily.equals(current_template.name)) { 
 
-	        	Logger.verbose("Reacting " + newCoreSpecies.getChemkinName() + " with the core: " + current_template.name);
+	        	Logger.info("Reacting " + newCoreSpecies.getChemkinName() + " with the core: " + current_template.name);
 	        	
 	        	// the reaction template has only one reactant, we only need to loop over the whole species seed set to find a match
 	        	double startTime = System.currentTimeMillis();

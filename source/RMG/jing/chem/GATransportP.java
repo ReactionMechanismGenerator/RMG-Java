@@ -29,6 +29,7 @@ package jing.chem;
 
 import java.util.*;
 import jing.chemUtil.*;
+import jing.rxnSys.Logger;
 
 public class GATransportP {
 
@@ -124,14 +125,14 @@ public class GATransportP {
            			}
                     
            			if (thisGAValue == null) {
-           				System.err.println("Transport group not found: " + node.getID());
+           				Logger.warning("Transport group not found: " + node.getID());
            			}
            			else {
            				result.plus(thisGAValue);
            			}
            		}
            		else {
-          			System.err.println("Error: Radical detected after satuation!");
+          			Logger.error("Error: Radical detected after satuation!");
            		}
            	}
         }

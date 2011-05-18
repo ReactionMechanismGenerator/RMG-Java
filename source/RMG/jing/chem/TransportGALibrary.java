@@ -331,8 +331,7 @@ public class TransportGALibrary {
             	catch (NumberFormatException e) {
             		Object o = p_dictionary.get(dTc);
             		if (o == null) {
-            			System.out.print(name);
-            			System.out.println(": " + dTc);
+            			Logger.verbose(name + ": " + dTc);
             		}
             		Object previous = library.put(fg, dTc);
             		if (previous != null) {
