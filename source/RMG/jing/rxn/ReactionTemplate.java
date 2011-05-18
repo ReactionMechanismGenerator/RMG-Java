@@ -670,8 +670,7 @@ public class ReactionTemplate {
       if (direction != 1 || !repOk()) {
       	return null;
       }
-      if (name.equals("Diels-Alder reaction"))
-    	  System.out.println("stop");
+
       ReactionTemplate reversetemplate = new ReactionTemplate();
       
       // set direction
@@ -694,11 +693,7 @@ public class ReactionTemplate {
       this.reverseReactionTemplate = reversetemplate;
       
       return reversetemplate;
-      
-      
-      
-      
-      
+
       //#]
   }
   
