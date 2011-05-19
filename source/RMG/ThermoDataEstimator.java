@@ -28,72 +28,66 @@
 import java.util.*;
 import java.io.*;
 
+import qm.QMFlags;
+
 import jing.chem.*;
 import jing.chemParser.*;
 import jing.param.*;
 import jing.chemUtil.*;
-//import bondGroups.*;
 import jing.rxnSys.*;
 
 
-public class ThermoDataEstimator {//gmagoon 7/24/09: based off of Thermo.java rev. 1.6; this performs original functionality described in the manual
+/**
+ * This {@link ThermoDataEstimator} extends the functionalities of the previous <code>ThermoDataEstimator</code> by
+ * allowing thermodynamic properties of chemical species to generated using 
+ * quantum-mechanical methods.<BR><BR>
+ * 
+ * It does so by reading in a few additional lines in the input file:
+ * <LI> QM active flag
+ * <LI> QM method
+ * <LI> QM for cyclics only flag
+ * <LI> max radical number for QM integer value
+ * 
+ * 
+ *
+ */
+public class ThermoDataEstimator {
 
-  //## configuration RMG::RMG
-  //first argument will be file to read
-public static void main(String[] args) {
-//  initializeSystemProperties();
-//
-//          initializeSystemProperties();
-	RMG.globalInitializeSystemProperties();
-	
-	File GATPFit = new File("GATPFit");
-	GATPFit.mkdir();
 
-		LinkedList<ChemGraph> graphList = new LinkedList<ChemGraph>();
-                LinkedList<String> nameList = new LinkedList<String>();
-                LinkedHashMap speciesFromInputFile = new LinkedHashMap();
+	/**
+	 * 
+	 * @param args  filename of input file
+	 */
+	public static void main(String[] args) {
 
-		File file = new File(args[0]);
+		RMG.globalInitializeSystemProperties();
 
-		try {			
+		createFolders();
+
+		/**
+		 * TODO program against interfaces, not implementations!
+		 */
+		LinkedHashMap speciesFromInputFile = new LinkedHashMap();
+
+		Map<ChemGraph, String> mappedChemGraphsToNames = null;
+		QMFlags qmflags = null;
+
+
+		try {	
+			File file = new File(args[0]);
 			BufferedReader reader = new BufferedReader(new FileReader(file));
 
-                        String line = ChemParser.readMeaningfulLine(reader, true);
-                        if (line.toLowerCase().startsWith("database")) {
-                            RMG.extractAndSetDatabasePath(line);
-                        }
-                        else {
-                            System.err.println("ThermoDataEstimator: Could not"
-                                    + " locate the Database field");
-                            System.exit(0);
-                        }
+			readDatabasePath(reader);
 
-			/*
-			 * 14MAR2010: Allowing ThermoDataEstimator to read from Primary Reaction Library
-			 */
-			ReactionModelGenerator rmg = new ReactionModelGenerator();
-            line = ChemParser.readMeaningfulLine(reader, true);
-            if (line.toLowerCase().startsWith("primarythermolibrary")) {
-            	rmg.readAndMakePTL(reader);
-            }
-            else {
-            	System.err.println("ThermoDataEstimator: Could not locate the PrimaryThermoLibrary field." +
-            			"Line read was: " + line);
-            	System.exit(0);
-            }
-			
-			// Read adjacency lists from file until an exception is thrown
-            line = ChemParser.readMeaningfulLine(reader, true);
-			while (line != null) {
-                            nameList.add(line);
-                            Graph g = ChemParser.readChemGraph(reader);
-				ChemGraph cg = ChemGraph.make(g);
+			qmflags = readQMFlags(reader);
 
-                                ReactionModelGenerator.addChemGraphToListIfNotPresent_ElseTerminate(speciesFromInputFile,cg,"");
+			Global.maxRadNumForQM = qmflags.maxRadNumForQM.intValue();
+			ChemGraph.useQM = qmflags.qmActive.booleanValue();
+			QMTP.qmprogram = qmflags.method.toLowerCase();
+			ChemGraph.useQMonCyclicsOnly = qmflags.qmOnCyclicsOnly.booleanValue();
 
-				graphList.add(cg);
-				line = ChemParser.readMeaningfulLine(reader, true);
-			}
+			readPrimaryThermoLibrary(reader);
+			mappedChemGraphsToNames = readChemGraphsFromFile(speciesFromInputFile, reader);
 
 		}
 		catch (InvalidChemGraphException e) {
@@ -105,67 +99,148 @@ public static void main(String[] args) {
 			System.out.println(e.toString());
 		}
 
-                int counter = 0;
-		for (ListIterator<ChemGraph> iter = graphList.listIterator(); iter.hasNext(); ) {
-			ChemGraph chemgraph = iter.next();
+		generateTDProperties(mappedChemGraphsToNames);
 
+		Logger.info("Done!\n");
 
-         Species spe = Species.make(nameList.get(counter),chemgraph);
-		 /*
-		  *	Following line added by MRH on 10Aug2009:
-		  *		After the species is made, the chemgraph is not necessarily the same
-		  *		(e.g. the species contains resonance isomers, and the adjacency list
-		  *		supplied by the user is not the most stable isomer).  This was causing
-		  *		a discrepancy to be displayed to the screen: the "H=" value we were
-		  *		displaying corresponded to the chemgraph supplied by the user; the 
-		  *		ThermData corresponded to the most stable isomer.
-		  *
-		  *		An example of a troublesome chemgraph:
-		  *		1 C 0 {2,T}
-		  *		2 C 0 {1,T} {3,S}
-		  *		3 O 0 {2,S}
-		  */
-		 chemgraph = spe.getChemGraph();
-		 System.out.println(chemgraph);
-         System.out.println("The number of resonance isomers is " + spe.getResonanceIsomersHashSet().size());
-		 System.out.println("The NASA data is \n!"+spe.getNasaThermoSource()+"\n"+
-                         "!" + chemgraph.getThermoComments() + "\n" +
-				 spe.getNasaThermoData());
-		 System.out.println("ThermoData is \n" +  chemgraph.getThermoData().toString());
-        //int K = chemgraph.getKekule();
-        int symm = chemgraph.getSymmetryNumber();
-        //System.out.println("number of Kekule structures = "+K);
-        System.out.println(" symmetry number = "+symm);
+	}
+	/**
+	 * method that iterates over all read-in ChemGraph's, generates TD
+	 * properties for all of them, and writes properties to the logger
+	 * @param mappedChemGraphsToNames map with Chemgraphs and mapped names
+	 */
+	private static void generateTDProperties(
+			Map<ChemGraph, String> mappedChemGraphsToNames) {
+		for(ChemGraph chemgraph : mappedChemGraphsToNames.keySet()){
 
-         Temperature T = new Temperature(298.0,"K");
+			Species spe = Species.make(mappedChemGraphsToNames.get(chemgraph),chemgraph);
 
-         String chemicalFormula = chemgraph.getChemicalFormula();
-
-         System.out.println(chemicalFormula + "  H=" + chemgraph.calculateH(T));
-		 System.out.println();
-                 ++counter;
+			ChemGraph stableChemGraph = spe.getChemGraph();
+			writeThermoDataInfo(spe, stableChemGraph);
 		}
+	}
+	/**
+	 * Create the working folders for QMTP required folders
+	 */
+	private static void createFolders() {
+		createFolder("GATPFit", true);
+		createFolder("InChI", true);
+		createFolder("2Dmolfiles", true);   // Not sure if we should be deleting this
+		createFolder("3Dmolfiles", true);   // Not sure if we should be deleting this
+		createFolder("QMfiles", false);     // Preserving QM files between runs will speed things up considerably
+	}
 
-    //      Species species = Species.make(chemicalFormula, chemgraph);
-          // this is equal to  System.out.println(species.toString());
-    //      System.out.println(species.toStringWithoutH());
-  //        species.generateResonanceIsomers();
-  //        Iterator rs = species.getResonanceIsomers();
-  //        while (rs.hasNext()){
-  //          ChemGraph cg = (ChemGraph)rs.next();
-  //          Species s = cg.getSpecies();
-  //          String string = s.toStringWithoutH();
-  //          System.out.print(string);
-  //        }
+	/**
+	 * reader method for reading all QM flags
+	 * @param reader
+	 * @return
+	 */
+	private static QMFlags readQMFlags(BufferedReader reader) {
+		QMFlags qmFlags = new QMFlags();
 
-   //       Species species = Species.make(chemicalFormula, chemgraph);
-   //       Iterator iterator = species.getResonanceIsomers();
-   //       System.out.println(iterator);
+		String line = ChemParser.readMeaningfulLine(reader, true);
+		qmFlags.qmActive = Boolean.parseBoolean(line);
 
+		line = ChemParser.readMeaningfulLine(reader, true);
+		qmFlags.method = line;
 
-System.out.println("Done!\n");
+		line = ChemParser.readMeaningfulLine(reader, true);
+		qmFlags.qmOnCyclicsOnly = Boolean.parseBoolean(line);
 
-};
+		line = ChemParser.readMeaningfulLine(reader, true);
+		qmFlags.maxRadNumForQM = Integer.parseInt(line);
+
+		return qmFlags;
+
+	}
+
+	private static void writeThermoDataInfo(Species spe, ChemGraph stableChemGraph) {
+		Logger.info(stableChemGraph.toString());
+
+		Logger.info("The number of resonance isomers is " + 
+				spe.getResonanceIsomersHashSet().size());
+
+		Logger.info("The NASA data is \n!"+spe.getNasaThermoSource()+"\n"+
+				"!" + stableChemGraph.getThermoComments() + "\n" +
+				spe.getNasaThermoData());
+
+		Logger.info("ThermoData is \n" + 
+				stableChemGraph.getThermoData().toString());
+
+		int symm = stableChemGraph.getSymmetryNumber();
+		Logger.info(" symmetry number = "+symm);
+
+		Temperature T = new Temperature(298.0,"K");
+
+		String chemicalFormula = stableChemGraph.getChemicalFormula();
+
+		Logger.info(chemicalFormula + "  H = " + stableChemGraph.calculateH(T));
+
+		Logger.info("");
+	}
+
+	private static Map<ChemGraph, String> readChemGraphsFromFile(LinkedHashMap speciesFromInputFile,
+			BufferedReader reader) throws IOException, ForbiddenStructureException {
+
+		Map<ChemGraph,String> chemgraphNamesMap = new HashMap<ChemGraph,String>();
+
+		String line = ChemParser.readMeaningfulLine(reader, true);
+
+		while (line != null) {
+			String name = line;
+			Graph g = ChemParser.readChemGraph(reader);
+			ChemGraph cg = ChemGraph.make(g);
+
+			ReactionModelGenerator.addChemGraphToListIfNotPresent_ElseTerminate(speciesFromInputFile,cg,"");
+
+			chemgraphNamesMap.put(cg, name);
+
+			line = ChemParser.readMeaningfulLine(reader, true);
+
+		}
+		return chemgraphNamesMap;
+	}
+
+	private static void readPrimaryThermoLibrary(BufferedReader reader) {
+		ReactionModelGenerator rmg = new ReactionModelGenerator();
+		String line;
+		line = ChemParser.readMeaningfulLine(reader, true);
+		if (line.toLowerCase().startsWith("primarythermolibrary")) {
+			rmg.readAndMakePTL(reader);
+		}
+		else {
+			Logger.error("ThermoDataEstimator: Could not locate the PrimaryThermoLibrary field." +
+					"Line read was: " + line);
+			System.exit(0);
+		}
+	}
+
+	private static void readDatabasePath(BufferedReader reader) {
+		String line = ChemParser.readMeaningfulLine(reader, true);
+		if (line.toLowerCase().startsWith("database")) {
+			RMG.extractAndSetDatabasePath(line);
+		}
+		else {
+			Logger.error("ThermoDataEstimator: Could not"
+					+ " locate the Database field");
+			System.exit(0);
+		}
+	}
+
+	/**
+	 * Create a folder in the current (working) directory, deleting the
+	 * existing folder and its contents if desired.
+	 * 
+	 * @param name The name of the folder to create
+	 * @param deleteExisting true to delete the existing folder (and its contents!), false to preserve it
+	 */
+	public static void createFolder(String name, boolean deleteExisting) {
+		File folder = new File(name);
+		if (deleteExisting)
+			ChemParser.deleteDir(folder);
+		if (!folder.exists())
+			folder.mkdir();
+	}
 
 
 
