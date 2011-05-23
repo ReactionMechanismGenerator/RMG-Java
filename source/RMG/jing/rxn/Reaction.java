@@ -996,22 +996,31 @@ public class Reaction {
   // in Reaction Library, Seed Mech and Template Reaction with Library Reaction feature
   
   public String getKineticsSource(int num_k){
-	  // The num_k is the number for different kinetics stored for one type of reaction but formed due to different families
-	  // Check if the kinetics exits
-	  if (kinetics != null) {
-		  // Check if the "source" string is not null
-		  if(kinetics[num_k].getSource() != null){
-			  return kinetics[num_k].getSource();  
-		  }
-		  else{
-			  // This is mostly done for case of H Abstraction where forward kinetic source is null
-			  //we might need to check if this "source" is also null (Can be source of Bug)
-			  return this.reverseReaction.kinetics[num_k].getSource();  
-		  }
-	  } else
-		  // Returns Source as null when there are no Kinetics at all!
-		  return null;
-	  
+	// The num_k is the number for different kinetics stored for one type of reaction but formed due to different families
+
+	// Returns Source as null when there are no Kinetics at all!
+	if (kinetics == null) {
+		return null;
+	}
+	
+	String source = null;
+	if(kinetics[num_k] != null){
+		source = kinetics[num_k].getSource();
+	}
+	// This is mostly done for case of H Abstraction where forward kinetic source may be null
+	if (source == null){
+		try {
+			source = this.reverseReaction.kinetics[num_k].getSource();
+		}
+		catch (NullPointerException e) {
+			// this catches several possibilities:
+			// this.reverseReaction == null
+			// this.reverseReaction.kinetics == null
+			// this.reverseReaction.kinetics[num_k] == null
+			source = null;
+		}
+	}
+	return source;
   }
   
   
@@ -1589,7 +1598,7 @@ public class Reaction {
 		if (!isFromPrimaryKineticLibrary())
 		{
 			if (isForward())
-				if (kinetics != null)
+				if (getKineticsSource(0) != null)
 					if (getKineticsSource(0).contains("Library"))
 						throw new RuntimeException(String.format(
 							"Reaction %s kinetics source contains 'Library' but isFromPrimaryKineticLibrary() returned false.",this));
