@@ -799,7 +799,9 @@ public class ReactionModelGenerator {
 				boolean autoflag = false;//5/2/08 gmagoon: updating the following if/else-if block to consider input where we want to check model validity within the ODE solver at each time step; this will be indicated by the use of a string beginning with "AUTO" after the "TimeStep" or "Conversions" line
         		// read in time step
         		line = ChemParser.readMeaningfulLine(reader, true);
-        		if (line.startsWith("TimeStep:") && finishController.terminationTester instanceof ReactionTimeTT) {
+        		if (line.startsWith("TimeStep:")) {
+					if (!(finishController.terminationTester instanceof ReactionTimeTT))
+						throw new InvalidSymbolException("'TimeStep:' specified but finish controller goal is not reaction time.");
         			st = new StringTokenizer(line);
         			temp = st.nextToken();
         			while (st.hasMoreTokens()) {
@@ -815,7 +817,9 @@ public class ReactionModelGenerator {
         			}      
         			((ReactionTimeTT)finishController.terminationTester).setTimeSteps(timeStep);
         		}
-        		else if (line.startsWith("Conversions:") && finishController.terminationTester instanceof ConversionTT){
+        		else if (line.startsWith("Conversions:")){
+					if (!(finishController.terminationTester instanceof ConversionTT))
+						throw new InvalidSymbolException("'Conversions:' specified but finish controller goal is not conversion.");
         			st = new StringTokenizer(line);
         			temp = st.nextToken();
         			int i=0;
@@ -841,7 +845,7 @@ public class ReactionModelGenerator {
         			conversionSet[i] = (1 - conversionSet[49])* initialConc;
         			numConversions = i+1;
         		}
-        		else throw new InvalidSymbolException("condition.txt: can't find time step for dynamic simulator!");
+        		else throw new InvalidSymbolException("In condition file can't find 'TimeStep:' or 'Conversions:' for dynamic simulator.");
 
 			//
 			if (temp.startsWith("AUTOPRUNE")){//for the AUTOPRUNE case, read in additional lines for termTol and edgeTol
