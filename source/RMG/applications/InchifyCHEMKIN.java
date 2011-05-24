@@ -1,3 +1,4 @@
+package applications;
 //this utility adds inchis as comments to Chemkin files
 
 /**

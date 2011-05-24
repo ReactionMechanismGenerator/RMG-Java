@@ -1,3 +1,4 @@
+package applications;
 //this utility reads the inchiDictionary.txt file and computes thermo using QMTP without HBI/ring-only options
 
 /**
