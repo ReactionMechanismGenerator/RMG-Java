@@ -1,3 +1,4 @@
+package applications;
 ////////////////////////////////////////////////////////////////////////////////
 //
 //	RMG - Reaction Mechanism Generator
@@ -30,15 +31,13 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 
-import jing.chem.ChemGraph;
 import jing.chem.FunctionalGroup;
 import jing.chem.InvalidFunctionalGroupException;
 import jing.chemParser.ChemParser;
 import jing.chemParser.InvalidGraphFormatException;
 import jing.chemUtil.Graph;
 
-
-public class CompareFunctionalGroups {
+public class CompareGraphs {
 
 	 //## configuration RMG::RMG
     public static void main(String[] args) {
@@ -67,7 +66,7 @@ public class CompareFunctionalGroups {
   			}
   			FunctionalGroup fg2 = FunctionalGroup.make(fgname2, fgGraph2);
   			
-  			boolean isSub = fgGraph2.isSub(fg1.getGraph());
+  			boolean isSub = fg2.isSubAtCentralNodes(fg1);
   			//boolean isSub = fg2.isSub(fg1);
   			System.out.println("fg2 is a sub of fg1: "+isSub);
   			
@@ -77,5 +76,4 @@ public class CompareFunctionalGroups {
     	}
     	
     }
-	
 }
