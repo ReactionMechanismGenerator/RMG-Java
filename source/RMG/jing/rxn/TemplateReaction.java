@@ -385,18 +385,16 @@ public class TemplateReaction extends Reaction {
 		if (reaction == null){
 			// Create a new reaction.
 			reaction = new TemplateReaction(p_structureSp, p_kinetics, p_template);
-			// DEBUG: Tell console I made this reaction
-			Logger.info("Created new " + p_template.getName() + " reaction: " + reaction.toString());
 
 			if (reaction.isBackward()) {
-				
+				Logger.info("Created new reverse " + p_template.getName() + " reaction: " + reaction.toString());
 				TemplateReaction reverse = reaction.generateReverseForBackwardReaction(p_structure, p_structureSp);
 				if (reverse == null)
 					return null;
 				reaction.setReverseReaction(reverse);
 			}
 			else {
-				
+				Logger.info("Created new forwards " + p_template.getName() + " reaction: " + reaction.toString());
 				ReactionTemplate fRT = reaction.getReactionTemplate();
 				ReactionTemplate rRT = null;
 
