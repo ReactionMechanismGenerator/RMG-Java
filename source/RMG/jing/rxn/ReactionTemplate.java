@@ -1060,7 +1060,6 @@ public class ReactionTemplate {
           try {
           	LinkedList product = reactionAdjList.reactChemGraph(reactant);
 			LinkedList productSp = new LinkedList();
-				SpeciesDictionary sd = SpeciesDictionary.getInstance();
 				for (int i=0; i< product.size(); i++){
 					String name = null;
 					if (((ChemGraph)product.get(i)).getSpecies() == null){
@@ -1083,16 +1082,8 @@ public class ReactionTemplate {
 							for (int i=0; i<k.length; i++) {
 								reverseReaction.addAdditionalKinetics(k[i],redundancy,false);
 							}
-							//structure = null;
 						}
-							
       			}
-					/*else {
-						SpeciesDictionary sd = SpeciesDictionary.getInstance();
-						while (!product.isEmpty())
-							sd.remove(((ChemGraph)product.remove()));
-						
-					}*/
       		}
           }
           catch (ForbiddenStructureException e) {

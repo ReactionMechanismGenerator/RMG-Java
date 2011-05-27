@@ -4210,8 +4210,6 @@ public class ReactionModelGenerator {
                 // There were a significant number of species pruned, but we didn't recover any memory
                 Logger.warning("No memory recovered due to pruning!");
 
-
-
 		}
 		//System.out.println("PDep Pruning DEBUG:\nThe number of species in the model's edge, after pruning: " + ((CoreEdgeReactionModel)reactionModel).getEdge().getSpeciesNumber());
         return;

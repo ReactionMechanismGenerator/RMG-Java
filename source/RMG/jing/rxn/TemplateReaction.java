@@ -378,17 +378,11 @@ public class TemplateReaction extends Reaction {
 			Kinetics[] p_kinetics, ReactionTemplate p_template, Structure p_structure) {
 		
 		double PT = System.currentTimeMillis();
+		// Look for pre-existing reaction in Template's reactionDictionaryByStructure.
 		TemplateReaction reaction = p_template.getReactionFromStructure(p_structureSp);
 		Global.getReacFromStruc = Global.getReacFromStruc + (System.currentTimeMillis() - PT) / 1000 / 60;
 
-		if (reaction != null){
-			// the same identity of p_structure already exists, clear p_structure to release mem
-			Structure st = reaction.getStructure();
-			if (st != p_structure) {
-				p_structure = null;
-			}
-		}
-		else {
+		if (reaction == null){
 			// Create a new reaction.
 			reaction = new TemplateReaction(p_structureSp, p_kinetics, p_template);
 			// DEBUG: Tell console I made this reaction
