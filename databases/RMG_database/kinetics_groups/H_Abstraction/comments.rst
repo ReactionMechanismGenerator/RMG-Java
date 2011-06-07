@@ -3677,19 +3677,6 @@ his stated uncertainty is a factor of ten.  However, one would expect abstractio
 1-butane to be faster than the primary carbon of propene, because the C-H bond strength should be weaker.  So,
 this calculation is in reasonable agreement with the literature.
 
-----------
-References
-----------
-.. [MRHCBSQB3RRHO] M.R. Harper (mrharper_at_mit_dot_edu or michael.harper.jr_at_gmail_dot_com)
-The geometries of all reactants, products, and the transition state were optimized using the CBS-QB3 calculations.  The zero-point
-energy is that computed by the CBS-QB3 calculations.  The frequencies were computed with B3LYP/CBSB7.
-In computing k(T), an asymmetric tunneling correction was employed, the calculated frequencies were scaled by 0.99, and the 
-temperatures used were: 300, 331, 370, 419, 482, 568, 692, 885, 1227, 2000 (evenly spaced on inverse temperature scale).
-
-.. [Tsang1990] W. Tsang; "Chemical kinetic database for combustion chemistry. Part IV. Isobutane" J. Phys. Chem. Ref. Data 19 (1990) 1-68
-
-.. [Tsang1991] W. Tsang; "Chemical kinetic database for combustion chemistry. Part V. Propene" J. Phys. Chem. Ref. Data 20 (1991) 221-273
-
 ---
 539
 ---
@@ -3709,3 +3696,16 @@ in the A parameter was MRH guess.
 
 RMG previously estimated the kinetics of the titled reaction to be ~2 orders of magnitude faster
 than calculations of MHS.
+
+----------
+References
+----------
+.. [MRHCBSQB3RRHO] M.R. Harper (mrharper_at_mit_dot_edu or michael.harper.jr_at_gmail_dot_com)
+The geometries of all reactants, products, and the transition state were optimized using the CBS-QB3 calculations.  The zero-point
+energy is that computed by the CBS-QB3 calculations.  The frequencies were computed with B3LYP/CBSB7.
+In computing k(T), an asymmetric tunneling correction was employed, the calculated frequencies were scaled by 0.99, and the 
+temperatures used were: 300, 331, 370, 419, 482, 568, 692, 885, 1227, 2000 (evenly spaced on inverse temperature scale).
+
+.. [Tsang1990] W. Tsang; "Chemical kinetic database for combustion chemistry. Part IV. Isobutane" J. Phys. Chem. Ref. Data 19 (1990) 1-68
+
+.. [Tsang1991] W. Tsang; "Chemical kinetic database for combustion chemistry. Part V. Propene" J. Phys. Chem. Ref. Data 20 (1991) 221-273
