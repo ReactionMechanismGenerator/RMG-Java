@@ -230,3 +230,56 @@ Plotting ln(k) vs. 1000/T[=K] and performing a "Linear" regression in Microsoft 
 in "y = -1.502x - 37.412" with an R^2 value of 1.  The A and Ea values calculated
 by MRH are thus: A=3.40x10^7 cm3/mol/s, Ea=2.98 kcal/mol, in agreement w/database.
 MRH 1-Sept-2009
+
+---
+424
+---
+CH3 + CO = CH3CO
+MRH CBS-QB3 calculations with 1D hindered rotor corrections [MRHCBSQB31DHR]_.
+
+Methyl (doublet): external symmetry number (EXTSYM) = 6
+CO (singlet): EXTSYM = 1
+TS (doublet): EXTSYM = 1, one hindered rotor (methyl group, symmetry = 3)
+CH3CO (doublet): EXTSYM = 1, one hindered rotor (methyl group, symmetry = 3)
+
+---
+425
+---
+CH3CH2 + CO = CH3CH2CO
+MRH CBS-QB3 calculations with 1D hindered rotor corrections [MRHCBSQB31DHR]_.
+
+Ethyl (doublet): external symmetry number (EXTSYM) = 1, one hindered rotor (methyl group, symmetry = 6)
+CO (singlet): EXTSYM = 1
+TS (doublet): EXTSYM = 1, two hindered rotors (methyl group, symmetry = 3; ethyl group, symmetry = 1)
+CH3CH2CO (doublet): EXTSYM = 1, two hindered rotors (methyl group, symmetry = 3; ethyl group, symmetry = 1)
+
+---
+426
+---
+CH3CH2CH2 + CO = CH3CH2CH2CO
+MRH CBS-QB3 calculations with 1D hindered rotor corrections [MRHCBSQB31DHR]_.
+
+n-Propyl (doublet): external symmetry number (EXTSYM) = 1, two hindered rotors (methyl group, symmetry = 3; ethyl group, symmetry = 4)
+CO (singlet): EXTSYM = 1
+TS (doublet): EXTSYM = 1, three hindered rotors (methyl group, symmetry = 3; ethyl group, symmetry = 2; propyl group, symmetry = 1)
+CH3CH2CH2CO (doublet): EXTSYM = 1, three hindered rotors (methyl group, symmetry = 3; ethyl group, symmetry = 1; propyl group, symmetry = 1)
+
+---
+427
+---
+CH3CHCH3 + CO = CH3CH(CO)CH3
+MRH CBS-QB3 calculations with 1D hindered rotor corrections [MRHCBSQB31DHR]_.
+
+iso-Propyl (doublet): external symmetry number (EXTSYM) = 1, two hindered rotors (methyl group, symmetry = 6; methyl group, symmetry = 6)
+CO (singlet): EXTSYM = 1
+TS (doublet): EXTSYM = 1, three hindered rotors (methyl group, symmetry = 3; methyl group, symmetry = 3; propyl group, symmetry = 1)
+CH3CH(CO)CH3 (doublet): EXTSYM = 1, three hindered rotors (methyl group, symmetry = 3; methyl group, symmetry = 3; propyl group, symmetry = 1)
+
+----------
+References
+----------
+.. [MRHCBSQB31DHR] M.R. Harper (mrharper_at_mit_dot_edu or michael_dot_harper_dot_jr_at_gmail_dot_com)
+The geometries of all reactants, products, and the transition state were optimized using the CBS-QB3 method.
+The zero-point energy is that computed by the CBS-QB3 calculations.  The frequencies were computed with B3LYP/CBSB7.
+In computing k(T), an asymmetric tunneling correction was employed, the calculated frequencies were scaled by 0.99, and the 
+temperatures used were from 600 K to 2000 K (in 200 K increments).

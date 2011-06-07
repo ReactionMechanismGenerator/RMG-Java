@@ -12,6 +12,8 @@ L1: Y_rad
 		L3: C_methyl
 		L3: C_pri_rad
 			L4: C_rad/H2/Cs
+				L5: CH2CH3
+				L5: CH2CH2CH3
 			L4: C_rad/H2/Cd
 			L4: C_rad/H2/Ct
 			L4: C_rad/H2/Cb
@@ -19,6 +21,7 @@ L1: Y_rad
 			L4: C_rad/H2/O
 		L3: C_sec_rad
 			L4: C_rad/H/NonDeC
+				L5: CH[CH3]2
 			L4: C_rad/H/NonDeO
 				L5: C_rad/H/CsO
 				L5: C_rad/H/O2
