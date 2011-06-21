@@ -1,0 +1,46 @@
+// Sample input file for PopulateReactions module
+
+Database: RMG_database
+
+PrimaryThermoLibrary:
+Name: RMG_Default
+Location: primaryThermoLibrary
+//Name: GRI-Mech3.0
+//Location: GRI-Mech3.0
+END
+
+PrimaryTransportLibrary:
+Name: GRI-Mech-3
+Location: GRI-Mech3.0
+END
+
+TemperatureModel: Constant (K) 1200
+PressureModel: Constant (atm) 1
+
+//Solvation: off
+
+SpeciesStatus:
+// Nothing much here (provided by client)
+Hj (molecule/cm3) 1
+1 H 1
+
+END
+
+BathGas:
+N2 (molecule/cm3) 0.99
+END
+
+SpectroscopicDataEstimator: FrequencyGroups
+PressureDependence: ReservoirState off ModifiedStrongCollision
+PDepKineticsModel: Chebyshev
+//DecreaseGrainSize: yes
+
+PrimaryKineticLibrary:
+//Name: PrIMe-recommended
+//Location: GRI-Mech3.0
+END
+
+ReactionLibrary:
+END
+
+//Verbose: off
