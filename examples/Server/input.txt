@@ -30,9 +30,9 @@ BathGas:
 N2 (molecule/cm3) 0.99
 END
 
-SpectroscopicDataEstimator: FrequencyGroups
-PressureDependence: ReservoirState off ModifiedStrongCollision
-PDepKineticsModel: Chebyshev
+SpectroscopicDataEstimator: off FrequencyGroups
+PressureDependence: off ReservoirState off ModifiedStrongCollision
+//PDepKineticsModel: Chebyshev
 //DecreaseGrainSize: yes
 
 PrimaryKineticLibrary:
