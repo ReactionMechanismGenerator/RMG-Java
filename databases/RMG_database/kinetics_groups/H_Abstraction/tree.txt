@@ -60,6 +60,7 @@ L1: X_H
 		L3: CO_pri
 		L3: CO_sec
 			L4: CO/H/NonDe
+				L5: InChI=1/C4H8O/c1-2-3-4-5/h4H,2-3H2,1H3
 			L4: CO/H/OneDe
 	L2: O_H
 		L3: O_pri

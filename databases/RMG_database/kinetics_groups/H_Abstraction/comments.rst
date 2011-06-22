@@ -3697,6 +3697,19 @@ in the A parameter was MRH guess.
 RMG previously estimated the kinetics of the titled reaction to be ~2 orders of magnitude faster
 than calculations of MHS.
 
+---
+540
+---
+MHS CBS-QB3 calculations without 1d hindered rotor correction (due to presence of hydrogen bond interactions)
+Exact reaction: HO2 + CH3-CH2-CH2-CH=O = H2O2 + CH3-CH2-CH2-C*=O
+
+MHS computed rate coefficient using CBS-QB3 method, see _[MRHCBSQB3RRHO] for general algorithm
+employed.  With the difference that the k(T) was calculated from 600 to 2000 K, in 200 K increments.
+
+MHS computed the fitted Arrhenius expression to be: k(T) = 1.91e-4 (T/1K)^4.25 exp(-0.81 kcal mol-1 / RT) cm3 mol-1 s-1.
+The uncertainty in the E0 was estimated to be 2 kcal mol-1 (general accuracy of CBS-QB3 calculations) and the uncertainty
+in the A parameter was MRH guess.
+
 ----------
 References
 ----------
