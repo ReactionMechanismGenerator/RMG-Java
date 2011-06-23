@@ -463,12 +463,14 @@ PLOG / 5	7.34E+54	-12.09	26187.0 /
 //C3H4-P = CC3H4  1.20E+44 -9.92 69250.0  //99DAV/LAW RRKM 1 ATM
 //C3H4-P = CC3H4  5.47E+42 -9.43 69089.0  //99DAV/LAW RRKM 2 ATM
 //C3H4-P = CC3H4  3.92E+40 -8.69 68706.0  //99DAV/LAW RRKM 5 ATM
-// High-P limit is the reported 5 atm rate.
-C3H4-P = CC3H4	3.92E+40 -8.69 68706.0  	0.0	0.0	0.0
+// High-P limit is the reported KINF rate.
+// 1000 ATM rate is also the reported KINF rate.
+C3H4-P = CC3H4	1.73E+12 0.31 60015.0  	0.0	0.0	0.0
 PLOG / 0.4	2.84E+45	-10.45	69284.0 /
 PLOG / 1	1.20E+44	-9.92	69250.0 /
 PLOG / 2	5.47E+42	-9.43	69089.0 /
 PLOG / 5	3.92E+40	-8.69	68706.0 /
+PLOG / 1000	1.73E+12 	0.31 	60015.0 /
  
 //LASKIN ET AL. IJCK 32 589-614 2000
 ////////////////////////// PRESSURE DEPENDANCE //////////////////////////////////////////
