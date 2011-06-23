@@ -875,6 +875,17 @@ public class Species {
 			int id= ++TOTAL_NUMBER;
 			
         	spe = new Species(id,name,p_chemGraph);
+			
+			// If p_name was not specified, then try to get the name from eth primarythermolibrary.
+			if ((p_name == null || p_name.length()==0) && p_chemGraph.fromprimarythermolibrary){
+				name = spe.getThermoData().getName();
+				if (name.matches("s\\d{8}")){
+					// it's an ugly PrIMe ID! Ignore it.
+				} else{
+					// use the name from the primary thermo library!
+					spe.setName(spe.getThermoData().getName());
+				}
+			}
         	//spe.ID =
         	dictionary.putSpecies(spe, true);
         	
