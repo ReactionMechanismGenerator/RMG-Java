@@ -5,6 +5,8 @@ Database: RMG_database
 PrimaryThermoLibrary:
 Name: RMG_Default
 Location: primaryThermoLibrary
+Name: DFT_QCI
+Location: DFT_QCI_thermo
 //Name: GRI-Mech3.0
 //Location: GRI-Mech3.0
 END
@@ -43,4 +45,4 @@ END
 ReactionLibrary:
 END
 
-//Verbose: off
+Verbose: on
