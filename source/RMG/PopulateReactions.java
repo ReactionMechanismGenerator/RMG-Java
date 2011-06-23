@@ -95,6 +95,9 @@ public class PopulateReactions {
 	 *		(2) The structure of the input file closely resembles the input file for
 	 *			the RMG module.
 	 */
+	
+	public static Temperature systemTemp;
+	
 	public static void main(String[] args) {
 		initializeSystemProperties();
 		try {
@@ -104,8 +107,8 @@ public class PopulateReactions {
 			e1.printStackTrace();
 		}
 		
-		ArrheniusEPKinetics.setAUnits("moles");
-		ArrheniusEPKinetics.setEaUnits("cal/mol");
+		ArrheniusKinetics.setAUnits("moles");
+		ArrheniusKinetics.setEaUnits("kcal/mol");
 		// Creating a new ReactionModelGenerator so I can set the variable temp4BestKinetics
 		//	and call the new readAndMakePTL and readAndMakePRL methods
 		ReactionModelGenerator rmg = new ReactionModelGenerator();
@@ -198,6 +201,12 @@ public class PopulateReactions {
 				System.out.println("Please list only one temperature in the TemperatureModel field.");
 				System.exit(0);
 			}
+			
+			// Set the user's input temperature
+            LinkedList tempList = rmg.getTempList();
+			systemTemp = ((ConstantTM)tempList.get(0)).getTemperature();
+			rmg.setTemp4BestKinetics(systemTemp);
+			
 			
 			/*
 			 * Read the pressure model (must be of length 1)
@@ -299,10 +308,7 @@ public class PopulateReactions {
             		ArrheniusKinetics.setVerbose(true);
             }
 			
-			// Set the user's input temperature
-            LinkedList tempList = rmg.getTempList();
-            Temperature systemTemp = ((ConstantTM)tempList.get(0)).getTemperature();
-			rmg.setTemp4BestKinetics(systemTemp);
+
 			TemplateReactionGenerator rtLibrary = new TemplateReactionGenerator();
 			
 			// Check Reaction Library
@@ -513,18 +519,10 @@ public class PopulateReactions {
 		fame.mkdir();
 	};
 	
-	public static String updateListOfReactions(Kinetics rxn_k, double H_rxn) {
-		double Ea = 0.0;
-		if (rxn_k instanceof ArrheniusEPKinetics){
-		    Ea = ((ArrheniusEPKinetics)rxn_k).getEaValue(H_rxn);
-		}
-		else{
-		    Ea = rxn_k.getEValue();
-		}
-		String output = rxn_k.getAValue() + "\t" + rxn_k.getNValue()
-			   + "\t" + Ea + "\t" + rxn_k.getSource()
-			   + "\t" + rxn_k.getComment() 
-			   + "\tdeltaHrxn(T=298K) = " + H_rxn + " kcal/mol\n";
+	public static String getFormattedKinetics(Kinetics rxn_k, double H_rxn) {
+		String output = rxn_k.toChemkinString( H_rxn, systemTemp,  true)
+			   + String.format("\tdeltaHrxn(T=298K) = %3.2f kcal/mol",H_rxn)
+		       + "\n";
 		return output;
 	}
 	
@@ -551,7 +549,7 @@ public class PopulateReactions {
     		}
     		Kinetics[] allKinetics = getReactionKinetics(r);
 			for (int numKinetics=0; numKinetics<allKinetics.length; ++numKinetics) {
-				listOfReactions += r.toString() + "\t" + updateListOfReactions(allKinetics[numKinetics], Hrxn);
+				listOfReactions += r.toString() + "\t" + getFormattedKinetics(allKinetics[numKinetics], Hrxn);
 				if (allKinetics.length != 1) listOfReactions += "\tDUP\n";
 			}
 			return 	listOfReactions;
@@ -561,7 +559,7 @@ public class PopulateReactions {
 		if (r.isForward()) {
 			Kinetics[] allKinetics = r.getKinetics();
 			for (int numKinetics=0; numKinetics<allKinetics.length; ++numKinetics) {
-				listOfReactions += r.toString() + "\t" + updateListOfReactions(allKinetics[numKinetics], Hrxn);
+				listOfReactions += r.toString() + "\t" + getFormattedKinetics(allKinetics[numKinetics], Hrxn);
 				if (allKinetics.length != 1) listOfReactions += "\tDUP\n";
 			}
 		}
@@ -586,7 +584,7 @@ public class PopulateReactions {
 				if (currentRxn.getStructure() == r.getReverseReaction().getStructure()) {
 					Kinetics[] allKinetics = currentRxn.getKinetics();
 					for (int numKinetics=0; numKinetics<allKinetics.length; ++numKinetics) {
-						listOfReactions += currentRxn.toString() + "\t" + updateListOfReactions(allKinetics[numKinetics], -Hrxn);
+						listOfReactions += currentRxn.toString() + "\t" + getFormattedKinetics(allKinetics[numKinetics], -Hrxn);
 						if (allKinetics.length != 1) listOfReactions += "\tDUP\n";
 					}
 				} 
@@ -595,7 +593,7 @@ public class PopulateReactions {
 		else {
 			Kinetics[] allKinetics = r.getKinetics();
 			for (int numKinetics=0; numKinetics<allKinetics.length; ++numKinetics) {
-				listOfReactions += r.toString() + "\t" + updateListOfReactions(allKinetics[numKinetics], Hrxn);
+				listOfReactions += r.toString() + "\t" + getFormattedKinetics(allKinetics[numKinetics], Hrxn);
 				if (allKinetics.length != 1) listOfReactions += "\tDUP\n";
 			}
 		}
