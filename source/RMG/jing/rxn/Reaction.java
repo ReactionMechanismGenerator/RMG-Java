@@ -1088,7 +1088,62 @@ public class Reaction {
   //## operation getReactants()
   public ListIterator getReactants() {
       //#[ operation getReactants()
-      return structure.getReactants();
+      try{
+	return structure.getReactants();
+      }
+      catch (Exception e){
+
+	  Logger.critical("******DEBUGGING LINES FOLLOW******");
+	  Logger.critical(e.getMessage());
+	  Logger.critical(e.getStackTrace().toString());
+	  Logger.critical("This.toString:"+this.toString());
+	  Logger.critical("Comments:"+comments);
+	  Logger.critical("ChemkinString:"+ChemkinString);
+	  Logger.critical("Rate constant:"+rateConstant);
+	  Logger.critical("Finalized:"+finalized);
+	  Logger.critical("KineticsFromPrimaryKineticLibrary:"+kineticsFromPrimaryKineticLibrary);
+	  Logger.critical("ExpectDuplicate:"+expectDuplicate);
+	  if (kinetics != null){
+		 Logger.critical("Kinetics size:"+kinetics.length);
+		 Logger.critical("First kinetics info:"+kinetics[0].toString());
+		 Logger.critical("First kinetics source:"+kinetics[0].getSource());
+		 Logger.critical("First kinetics comment:"+kinetics[0].getComment());
+	  }
+	  if (fittedReverseKinetics != null){
+		 Logger.critical("Reverse kinetics size:"+fittedReverseKinetics.length);
+		 Logger.critical("First reverse kinetics info:"+fittedReverseKinetics[0].toString());
+		 Logger.critical("First reverse kinetics source:"+fittedReverseKinetics[0].getSource());
+		 Logger.critical("First reverse kinetics comment:"+fittedReverseKinetics[0].getComment());
+	  }
+	  if(reverseReaction != null){
+	      Logger.critical("***Reverse reaction info below***");
+	      Logger.critical("reverseReaction.toString:"+reverseReaction.toString());
+	      Logger.critical("Comments:"+reverseReaction.comments);
+	      Logger.critical("ChemkinString:"+reverseReaction.ChemkinString);
+	      Logger.critical("Rate constant:"+reverseReaction.rateConstant);
+	      Logger.critical("Finalized:"+reverseReaction.finalized);
+	      Logger.critical("KineticsFromPrimaryKineticLibrary:"+reverseReaction.kineticsFromPrimaryKineticLibrary);
+	      Logger.critical("ExpectDuplicate:"+reverseReaction.expectDuplicate);
+	      if (reverseReaction.structure !=null){
+		  Logger.critical("(for reverse reaction): structure.toString()"+reverseReaction.structure.toString());
+	      }
+
+	      if (reverseReaction.kinetics != null){
+		     Logger.critical("Kinetics size:"+reverseReaction.kinetics.length);
+		     Logger.critical("First kinetics info:"+reverseReaction.kinetics[0].toString());
+		     Logger.critical("First kinetics source:"+reverseReaction.kinetics[0].getSource());
+		     Logger.critical("First kinetics comment:"+reverseReaction.kinetics[0].getComment());
+	      }
+	      if (reverseReaction.fittedReverseKinetics != null){
+		     Logger.critical("Reverse kinetics size:"+reverseReaction.fittedReverseKinetics.length);
+		     Logger.critical("First reverse kinetics info:"+reverseReaction.fittedReverseKinetics[0].toString());
+		     Logger.critical("First reverse kinetics source:"+reverseReaction.fittedReverseKinetics[0].getSource());
+		     Logger.critical("First reverse kinetics comment:"+reverseReaction.fittedReverseKinetics[0].getComment());
+	      }
+	  }
+
+	  return null;
+      }
       //#]
   }
 
