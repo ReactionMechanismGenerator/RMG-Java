@@ -1091,7 +1091,7 @@ public class Reaction {
       try{
 	return structure.getReactants();
       }
-      catch (Exception e){
+      catch (RuntimeException e){
 
 	  Logger.critical("******DEBUGGING LINES FOLLOW******");
 	  Logger.critical(e.getMessage());
@@ -1142,7 +1142,7 @@ public class Reaction {
 	      }
 	  }
 
-	  return null;
+	  throw e;
       }
       //#]
   }
