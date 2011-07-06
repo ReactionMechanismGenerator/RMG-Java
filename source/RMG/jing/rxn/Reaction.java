@@ -1094,8 +1094,7 @@ public class Reaction {
       catch (RuntimeException e){
 
 	  Logger.critical("******DEBUGGING LINES FOLLOW******");
-	  Logger.critical(e.getMessage());
-	  Logger.critical(e.getStackTrace().toString());
+	  Logger.logStackTrace(e);
 	  Logger.critical("This.toString:"+this.toString());
 	  Logger.critical("Comments:"+comments);
 	  Logger.critical("ChemkinString:"+ChemkinString);
