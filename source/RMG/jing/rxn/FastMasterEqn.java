@@ -571,11 +571,15 @@ public class FastMasterEqn implements PDepKineticsEstimator {
 			// Collisional transfer probability model to use
 			input.append( "# Collisional transfer probability model\n" );
 			input.append( "# 	Option 1: Single exponential down\n" );
-			input.append( "#		Option must also be accompanied by unit and value of the parameter\n" );
-			input.append( "#		Allowed units are J/mol, kJ/mol, cal/mol, kcal/mol, or cm^-1\n" );
-			input.append( "#		Example: SingleExpDown kJ/mol 7.14\n" );
-			input.append( "SingleExpDown J/mol " + Double.toString(bathGas.getExpDownParam() * 1000) );
-			input.append( "\n\n" );
+			input.append( "#		Option must also be accompanied by three additional lines\n" );
+			input.append( "#        First line is units and value of alpha parameter; allowed units are J/mol, kJ/mol, cal/mol, kcal/mol, or cm^-1\n" );
+            input.append( "#        Second line is units and value of T0 parameter; allowed units are K\n" );
+            input.append( "#		Third line is value of n parameter (without units)\n" );
+			input.append( "SingleExpDown\n" );
+			input.append( "J/mol " + Double.toString(bathGas.getDeltaEdown().getAlpha() * 1000) + "\n" );
+            input.append( "K " + Double.toString(bathGas.getDeltaEdown().getT0()) + "\n" );
+            input.append( Double.toString(bathGas.getDeltaEdown().getN()) + "\n" );
+            input.append( "\n" );
 
 			// Other parameters for bath gas
 			input.append( "# Bath gas parameters\n" );

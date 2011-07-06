@@ -32,6 +32,7 @@ import java.util.Iterator;
 import jing.chem.Species;
 import jing.rxnSys.Logger;
 import jing.rxnSys.ReactionSystem;
+import jing.rxn.DeltaEDown;
 
 /**
  * Represents the bath gas. Calculates parameters of the bath gas as a
@@ -40,7 +41,8 @@ import jing.rxnSys.ReactionSystem;
  * @author jwallen
  */
 public class BathGas {
-	private double expDownParam = 0.0;
+	private DeltaEDown dEdown = new DeltaEDown(0, 0, 0);
+    
 	private double ljSigma = 0.0;
 	private double ljEpsilon = 0.0;
 	private double molWt = 0.0;
@@ -63,11 +65,15 @@ public class BathGas {
 		update();
 	}
 
-	public double getExpDownParam() {
-		return expDownParam;
-	}
+	public DeltaEDown getDeltaEdown() {
+        return dEdown;
+    }
 
-	public double getLJSigma() {
+    public void setDeltaEdown(DeltaEDown dEdown) {
+        this.dEdown = dEdown;
+    }
+
+    public double getLJSigma() {
 		return ljSigma;
 	}
 
@@ -104,7 +110,7 @@ public class BathGas {
 			throw new NullPointerException();
 
 		// Clear parameters
-		expDownParam = 0.0;
+		dEdown = new DeltaEDown(0, 0, 0);
 		ljSigma = 0.0;
 		ljEpsilon = 0.0;
 		molWt = 0.0;
@@ -125,7 +131,6 @@ public class BathGas {
 				double mf = conc/totalConc;
 
 				molWt += mf * spe.getMolecularWeight();
-				expDownParam += mf * spe.getDeltaEDown();
 				ljSigma += mf * spe.getChemkinTransportData().getSigma();
 				ljEpsilon += mf * spe.getChemkinTransportData().getEpsilon();
 			}
@@ -136,8 +141,8 @@ public class BathGas {
 				double mf = conc/totalConc;
 								
 				if (name.equals("Ar") || name.equals("AR")) {
-					expDownParam += mf *374.0;
-					molWt += mf *39.95;
+					dEdown.setParameters(374.0, 1, 0);
+				    molWt += mf *39.95;
 					/*
 					 *  Numbers from Table K.2 of "Fundamentals of Momentum, Heat, and Mass Transfer",
 					 *  	Welty, Wicks, Wilson, Rorrer 4th ed.
@@ -149,8 +154,8 @@ public class BathGas {
 					ljEpsilon += mf * 124;	// Units of Kelvin (actually epsilon/boltzmann constant)
 				}
 				else if (name.equals("N2")) {
-					expDownParam += mf * 461.0;
-					molWt += mf * 28.01;
+					dEdown.setParameters(461.0, 1, 0);
+                    molWt += mf * 28.01;
 //					ljEpsilon += mf * 97.5;
 //					ljSigma += mf * 3.62;
 					/*
@@ -165,8 +170,8 @@ public class BathGas {
 					ljEpsilon += mf * 91.5;	// Units of Kelvin (actually epsilon/boltzmann constant)
 				}
 				else if (name.equals("He") || name.equals("HE")) {
-					expDownParam += mf * 291.0;
-					molWt += mf * 4.00;
+					dEdown.setParameters(291.0, 1, 0);
+                    molWt += mf * 4.00;
 					/*
 					 *  Numbers from Table K.2 of "Fundamentals of Momentum, Heat, and Mass Transfer",
 					 *  	Welty, Wicks, Wilson, Rorrer 4th ed.
@@ -178,17 +183,17 @@ public class BathGas {
 					ljEpsilon += mf * 10.22;	// Units of Kelvin (actually epsilon/boltzmann constant)
 				}
 				else if (name.equals("Ne") || name.equals("NE")) {
-				expDownParam += mf * 291.0;	// This is the value for Helium!!!
-				molWt += mf * 20.18;
-				/*
-				 *  Numbers from Table K.2 of "Fundamentals of Momentum, Heat, and Mass Transfer",
-				 *  	Welty, Wicks, Wilson, Rorrer 4th ed.
-				 *  Numbers come from R.C. Reid and T.K. Sherwood, "The Properties of Gases and
-				 *  	Liquids", McGraw-Hill Book Company, New York, 1958.
-				 *  MRH 30-Jul-2009
-				 */
-				ljSigma += mf * 2.789;	// Units of Angstroms
-				ljEpsilon += mf * 35.7;	// Units of Kelvin (actually epsilon/boltzmann constant)
+    				dEdown.setParameters(291.0, 1, 0);
+                    molWt += mf * 20.18;
+    				/*
+    				 *  Numbers from Table K.2 of "Fundamentals of Momentum, Heat, and Mass Transfer",
+    				 *  	Welty, Wicks, Wilson, Rorrer 4th ed.
+    				 *  Numbers come from R.C. Reid and T.K. Sherwood, "The Properties of Gases and
+    				 *  	Liquids", McGraw-Hill Book Company, New York, 1958.
+    				 *  MRH 30-Jul-2009
+    				 */
+    				ljSigma += mf * 2.789;	// Units of Angstroms
+    				ljEpsilon += mf * 35.7;	// Units of Kelvin (actually epsilon/boltzmann constant)
 				}
 				else {
 					Logger.critical("Unknown colliders: " + name);
@@ -202,7 +207,7 @@ public class BathGas {
 		}
 
 		// Convert to units used by FAME
-		expDownParam *= 2.9979e10 * 6.626e-34 * 6.022e23 / 1000; // cm^-1 --> kJ/mol
+		dEdown.setAlpha(dEdown.getAlpha() * 2.9979e10 * 6.626e-34 * 6.022e23 / 1000); // cm^-1 --> kJ/mol
 		ljSigma *= 1e-10; // A --> m
 		ljEpsilon *= 1.381e-23; // K --> J
 

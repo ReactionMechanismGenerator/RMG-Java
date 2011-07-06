@@ -461,7 +461,7 @@ public class Chemdis implements PDepKineticsEstimator {
         		str += Double.toString(mf) + '\t' + Double.toString(spe.getMolecularWeight()) + '\t';
         		lj = spe.getChemkinTransportData();
         		str += Double.toString(lj.getSigma()) + '\t' + Double.toString(lj.getEpsilon()) + '\t';
-        		dEdown = spe.getDeltaEDown();
+        		dEdown = spe.getDeltaEDown().evaluate(new Temperature(300,"K"));
         		if (dEdown == 0) {
         			System.out.println("unknown colliders's dEdown: " + spe.getName());
         			System.exit(0);

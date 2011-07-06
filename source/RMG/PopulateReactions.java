@@ -384,7 +384,7 @@ public class PopulateReactions {
 		        	if (pdepnetwork.getNetReactions().size() > 0) {
 			        	String formatSpeciesName = "%1$-16s\t";
 		        		listOfReactions += "!PDepNetwork\n" + 
-	        				"!\tdeltaEdown = " + bathGas.getExpDownParam() + " kJ/mol\n" +
+	        				"!\tdeltaEdown = " + bathGas.getDeltaEdown().getAlpha() + "(T / " + bathGas.getDeltaEdown().getT0() + ")^" + bathGas.getDeltaEdown().getN() + " kJ/mol\n" +
 	        				"!\tbathgas MW = " + bathGas.getMolecularWeight() + " amu\n" +
 	        				"!\tbathgas LJ sigma = " + bathGas.getLJSigma() + " meters\n" +
 	        				"!\tbathgas LJ epsilon = " + bathGas.getLJEpsilon() + " Joules\n" +

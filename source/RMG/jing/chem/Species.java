@@ -41,6 +41,7 @@ import jing.chemUtil.Node;
 import jing.param.Global;
 import jing.param.Temperature;
 import jing.rxnSys.Logger;
+import jing.rxn.DeltaEDown;
 
 //## package jing::chem
 
@@ -58,11 +59,7 @@ public class Species {
     protected static boolean addID = true;
     protected ChemGraph chemGraph;		//## attribute chemGraph
 
-    /**
-    The initial value is the parameter for N2, now it is treated as a default value if no further detailed information provided.
-    unit: cm-1
-    */
-    protected double deltaEDown = 461;		//## attribute deltaEDown
+    protected DeltaEDown dEdown = new DeltaEDown(0, 0, 0);		    //## attribute deltaEDown
 
     protected String name = null;		//## attribute name
 
@@ -1029,19 +1026,20 @@ public class Species {
 
     //## operation selectDeltaEDown()
     public void selectDeltaEDown() {
+        
         // Doing this by species name is a really bad idea.
         String name = getName();
 
-        if (name.equals("Ar")) deltaEDown = 374.0;
-        else if (name.equals("H2")) deltaEDown = 224.0;
-        else if (name.equals("O2")) deltaEDown = 517.0;
-        else if (name.equals("N2")) deltaEDown = 461.0;
-        else if (name.equals("He")) deltaEDown = 291.0;
-        else if (name.equals("CH4")) deltaEDown = 1285.0;
-        else if (name.equals("HO2")) deltaEDown = 975.0;
-        else if (name.equals("H2O2")) deltaEDown = 975.0;
-        else if (name.equals("CO2")) deltaEDown = 417.0;
-        else if (name.equals("CO")) deltaEDown = 283.0;
+        if (name.equals("Ar")) dEdown.setParameters(374, 1, 0);
+        else if (name.equals("H2")) dEdown.setParameters(224, 1, 0);
+        else if (name.equals("O2")) dEdown.setParameters(517, 1, 0);
+        else if (name.equals("N2")) dEdown.setParameters(461, 1, 0);
+        else if (name.equals("He")) dEdown.setParameters(291, 1, 0);
+        else if (name.equals("CH4")) dEdown.setParameters(1285, 1, 0);
+        else if (name.equals("HO2")) dEdown.setParameters(975, 1, 0);
+        else if (name.equals("H2O2")) dEdown.setParameters(975, 1, 0);
+        else if (name.equals("CO2")) dEdown.setParameters(417, 1, 0);
+        else if (name.equals("CO")) dEdown.setParameters(283, 1, 0);
 
         return;
 
@@ -1881,8 +1879,8 @@ public class Species {
         chemGraph = p_chemGraph;
     }
 
-    public double getDeltaEDown() {
-        return deltaEDown;
+    public DeltaEDown getDeltaEDown() {
+        return dEdown;
     }
 
     public String getName() {
