@@ -1141,7 +1141,7 @@ public class Reaction {
 		     Logger.critical("First reverse kinetics comment:"+reverseReaction.fittedReverseKinetics[0].getComment());
 	      }
 	  }
-
+	  Logger.flush();
 	  throw e;
       }
       //#]

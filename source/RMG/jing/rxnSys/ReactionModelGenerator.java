@@ -4115,6 +4115,12 @@ public class ReactionModelGenerator {
 							Logger.error("NullPointerException when inspecting Path Reaction");
 							Logger.logStackTrace(e);
 							Logger.error("Path reaction will not be pruned. Here is the network:");
+							Logger.error("List of species to be pruned:");
+							Iterator errIter = speciesToPrune.iterator();
+							while(errIter.hasNext()){
+							    Species errSpe=(Species)errIter.next();
+							    Logger.error(errSpe.getName()+"\t"+errSpe.getFullName()+"\t"+errSpe.getChemkinName());
+							}
 							try {
 								Logger.error(pdn.toString());
 							}
@@ -4122,6 +4128,7 @@ public class ReactionModelGenerator {
 								Logger.error("NullPointerException trying to print PDEpNetwork");
 								Logger.logStackTrace(e2);
 							}
+							Logger.flush();
 						}
 						
 					}
