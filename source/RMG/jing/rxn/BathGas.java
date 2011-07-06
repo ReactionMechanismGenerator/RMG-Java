@@ -141,7 +141,8 @@ public class BathGas {
 				double mf = conc/totalConc;
 								
 				if (name.equals("Ar") || name.equals("AR")) {
-					dEdown.setParameters(374.0, 1, 0);
+				    // Taken from West et al 2009 (doi:10.1016/j.combustflame.2009.04.011)
+					dEdown.setParameters(150.0, 300, 0.85);
 				    molWt += mf *39.95;
 					/*
 					 *  Numbers from Table K.2 of "Fundamentals of Momentum, Heat, and Mass Transfer",
@@ -154,7 +155,8 @@ public class BathGas {
 					ljEpsilon += mf * 124;	// Units of Kelvin (actually epsilon/boltzmann constant)
 				}
 				else if (name.equals("N2")) {
-					dEdown.setParameters(461.0, 1, 0);
+				    // Taken from Zhang et al 2011 (doi:doi:10.1016/j.proci.2010.05.010)
+					dEdown.setParameters(200.0, 300, 0.85);
                     molWt += mf * 28.01;
 //					ljEpsilon += mf * 97.5;
 //					ljSigma += mf * 3.62;
@@ -170,7 +172,8 @@ public class BathGas {
 					ljEpsilon += mf * 91.5;	// Units of Kelvin (actually epsilon/boltzmann constant)
 				}
 				else if (name.equals("He") || name.equals("HE")) {
-					dEdown.setParameters(291.0, 1, 0);
+				    // Taken from Jasper and Miller 2009 (doi:10.1021/jp900802f)
+					dEdown.setParameters(110.0, 300, 0.81);
                     molWt += mf * 4.00;
 					/*
 					 *  Numbers from Table K.2 of "Fundamentals of Momentum, Heat, and Mass Transfer",
@@ -183,7 +186,8 @@ public class BathGas {
 					ljEpsilon += mf * 10.22;	// Units of Kelvin (actually epsilon/boltzmann constant)
 				}
 				else if (name.equals("Ne") || name.equals("NE")) {
-    				dEdown.setParameters(291.0, 1, 0);
+				    // Taken from Giri et al. 2008 (doi:10.1039/B808168A)
+    				dEdown.setParameters(150.0, 300, 0.4);
                     molWt += mf * 20.18;
     				/*
     				 *  Numbers from Table K.2 of "Fundamentals of Momentum, Heat, and Mass Transfer",
