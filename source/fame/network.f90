@@ -10,11 +10,18 @@ module NetworkModule
 
     implicit none
 
+    ! dEdown = alpha * (T / T0)^n
+    type DeltaEDown
+        real(8) :: alpha
+        real(8) :: T0
+        real(8) :: n
+    end type
+    
     type GeneralData
         real(8) :: molWt    ! The molecular weight of the bath gas in kg/mol
         real(8) :: sigma    ! The Lennard-Jones sigma parameter of the bath gas in m
         real(8) :: eps      ! The Lennard-Jones epsilon parameter of the bath gas in J
-        real(8) :: dEdown   ! Average energy transferred in a deactivating collision in J/mol
+        type(DeltaEDown) :: dEdown   ! Average energy transferred in a deactivating collision in J/mol
     end type
 
     type SpectralData
@@ -1054,7 +1061,7 @@ contains
         end do
 
         ! Average energy transferred in a deactivating collision
-        dEdown = net%bathGas%dEdown
+        dEdown = net%bathGas%dEdown%alpha * (T / net%bathGas%dEdown%T0) ** net%bathGas%dEdown%n
 
         if (method == 1) then ! Modified strong collision
 

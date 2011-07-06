@@ -146,20 +146,30 @@ contains
         line = readMeaningfulLine()
         call getFirstToken(line, token)
         if (index(token, 'singleexpdown') /= 0) then
-            call processQuantity(line, units, net%bathGas%dEdown)
+            ! Next three lines are alpha, T0, and n
+            line = readMeaningfulLine()
+            call processQuantity(line, units, net%bathGas%dEdown%alpha)
             if (index(units(1:6), 'kj/mol') /= 0) then
-                net%bathGas%dEdown = net%bathGas%dEdown * 1000
+                net%bathGas%dEdown%alpha = net%bathGas%dEdown%alpha * 1000
             elseif (index(units(1:7), 'cal/mol') /= 0) then
-                net%bathGas%dEdown = net%bathGas%dEdown * 4.184
+                net%bathGas%dEdown%alpha = net%bathGas%dEdown%alpha * 4.184
             elseif (index(units(1:8), 'kcal/mol') /= 0) then
-                net%bathGas%dEdown = net%bathGas%dEdown * 4184
+                net%bathGas%dEdown%alpha = net%bathGas%dEdown%alpha * 4184
             elseif (index(units(1:5), 'cm^-1') /= 0) then
-                net%bathGas%dEdown = net%bathGas%dEdown * 2.9979e10 * 6.626e-34 * 6.022e23
+                net%bathGas%dEdown%alpha = net%bathGas%dEdown%alpha * 2.9979e10 * 6.626e-34 * 6.022e23
             elseif (index(units(1:5), 'j/mol') == 0) then
-                write (0, fmt='(a)') 'Invalid units for single exponential down parameter.'
+                write (0, fmt='(a)') 'Invalid units for single exponential down alpha parameter.'
                 stop
             end if
-            write (1,fmt=*) "dEdown =", net%bathGas%dEdown, "J/mol"
+            line = readMeaningfulLine()
+            call processQuantity(line, units, net%bathGas%dEdown%T0)
+            if (index(units(1:5), 'k') == 0) then
+                write (0, fmt='(a)') 'Invalid units for single exponential down T0 parameter.'
+                stop
+            end if
+            line = readMeaningfulLine()
+            call getFirstToken(line, token)
+            read(token, *), net%bathGas%dEdown%n
         else
             write (0, fmt='(a)') 'Invalid collisional transfer probability model specification. Should be "SingleExpDown".'
             stop
