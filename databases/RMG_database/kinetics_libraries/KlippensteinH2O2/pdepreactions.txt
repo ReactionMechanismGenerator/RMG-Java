@@ -1,0 +1,40 @@
+Unit:
+A: mol/cm3/s
+E: cal/mol
+
+Reactions:
+//! Tsang and Hampson, J. Phys. Chem. Ref. Data, 15:1087 (1986) 
+H2 + M <=> H + H + M			4.577E+19 -1.40  1.0438E+05	0.0 0.0 0.0
+H2/ 2.5/ H2O/ 12/ CO/ 1.9/ CO2/ 3.8/ AR/ 0.0/ HE/ 0.0/
+//! Tsang and Hampson, J. Phys. Chem. Ref. Data, 15:1087 (1986) 
+O + O + M <=> O2 + M            6.165E+15 -0.50  0.000E+00	0.0 0.0 0.0
+H2/ 2.5/ H2O/ 12/ AR/ 0.0/ HE/ 0.0/ CO/ 1.9/ CO2/ 3.8/
+//! Tsang and Hampson, J. Phys. Chem. Ref. Data, 15:1087 (1986) 
+O + H + M <=> OH + M            4.714E+18 -1.00  0.000E+00	0.0 0.0 0.0
+H2/ 2.5/  H2O/ 12/ AR/ 0.75/ HE/ 0.75/ CO/ 1.9/  CO2/ 3.8/
+//! Srinivasan and Michael, Int. J. Chem. Kinetic. 38 (2006)
+//! Rate constant is for Ar with efficiencies from Michael et al., J. Phys. Chem. A, 106 (2002)
+H2O + M <=> H + OH + M          6.064E+27 -3.322 1.2079E+05	0.0 0.0 0.0
+H2/ 3.0/  H2O/ 0.0/ HE/ 1.10/ N2/ 2.00/ O2/ 1.5/ CO/ 1.9/ CO2/ 3.8/
+//! Efficiencies for CO and CO2 taken from Li et al., Int. J. Chem. Kinet. 36:566-575 (2004)
+//! MAIN BATH GAS IS N2 (comment this reaction otherwise)
+//!
+H + O2 (+M) <=> HO2 (+M)         4.65084E+12  0.44  0.000E+00	0.0 0.0 0.0
+H2/ 2.0/ H2O/ 14/ O2/ 0.78/ CO/ 1.9/ CO2/ 3.8/ AR/ 0.67/ HE/ 0.8/
+   LOW/6.366E+20 -1.72  5.248E+02/
+   TROE/0.5  1E-30  1E+30/
+//!=================================================================================
+//! MAIN BATH GAS IS AR OR HE (comment this reaction otherwise)
+//!
+//!H + O2 (+M) <=> HO2 (+M)      4.65084E+12  0.44  0.000E+00	0.0 0.0 0.0
+//!H2/ 3.0/ H2O/ 21/ O2/ 1.1/ CO/ 2.7/ CO2/ 5.4/ HE/ 1.2/ N2/ 1.5/
+!   LOW/9.042E+19 -1.50  4.922E+02/
+!   TROE/0.5 1E-30  1E+30/
+//!=================================================================================
+//! Troe, Combust. Flame,  158:594-601 (2011)
+//! Rate constant is for Ar
+//! Efficiencies for H2 and CO taken from Li et al., Int. J. Chem. Kinet. 36:566-575 (2004)
+H2O2 (+M) <=> OH + OH (+M)       2.00E+12   0.90  4.8749E+04	0.0 0.0 0.0
+H2/ 3.7/ H2O/ 7.5/ CO2/ 1.6/ N2/ 1.5/ O2/ 1.2/ HE/ 0.65/ H2O2/ 7.7/ CO/2.8/
+   LOW/2.49E+24 -2.30 4.8749E+04/
+   TROE/0.43 1E-30 1E+30/
