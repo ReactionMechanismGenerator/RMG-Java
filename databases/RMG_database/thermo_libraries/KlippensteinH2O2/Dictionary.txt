@@ -31,11 +31,11 @@ H2O2
 //2 N 0 {1,T} 
 // No N in RMG yet      
 
-AR
+//Ar
 //1 Ar 0 
 // RMG does not recognize Ar       
 
-HE    
+//He    
 //1 He 0
 // RMG does not recognize He   
 
