@@ -280,3 +280,20 @@ Arrhenius_EP
 875		R3H_DS			Cd_rad_out_singleDe     Cs_H_out_2H				300-1600	1283712039	1.0541	0		46.1467	0	0	0		0	3		Sandeep's CBS-QB3 calculations.
 876		R4H_SDS         O_rad_out               Cs_H_out_H/NonDeC       600-2000    1.11E+06    1.78    0       27.18   *3	0	0		2	3		MHS CBS-QB3 calculations. 
 877		R5H_SSSD		O_rad_out				Cd_H_out_singleH		600-2000	1.234E+06	1.554	0		26.636	*3	0	0		2	3		MRH CBS-QB3 calculations w/1d h.r. corrections
+
+// Added by AJ for intra_H abstraction in HOOQOO radicals (rates take from Sandeep's paper DOI: 10.1021/jp9098792)
+878		R4H_SSS_OOCsCs					O_rad_out		Cs_H_out_OOH/H		300-1500	2.47e12		-0.24	0		28.00	0	0	0		0	3			[AJ]Sandeep's DFT/CBSB7 level of calculations.
+879		R4H_SSS_OOCsCs					O_rad_out		Cs_H_out_OOH/Cs		300-1500	2.76e8		1.20	0		25.70	0	0	0		0	3			[AJ]Sandeep's DFT/CBSB7 level of calculations.
+880		R4H_SSS_OO(Cs/Cs)Cs				O_rad_out		Cs_H_out_OOH/H		300-1500	1.22e7		1.60	0		27.90	0	0	0		0	3			[AJ]Sandeep's DFT/CBSB7 level of calculations.
+881		R4H_SSS_OO(Cs/Cs)Cs				O_rad_out		Cs_H_out_OOH/Cs		300-1500	1.75e8		1.70	0		26.00	0	0	0		0	3			[AJ]Sandeep's DFT/CBSB7 level of calculations.
+882		R5H_SSSS_OOCCC					O_rad_out		Cs_H_out_OOH/H		300-1500	2.59e4		1.90	0		18.80	0	0	0		0	3			[AJ]Sandeep's DFT/CBSB7 level of calculations.
+883		R5H_SSSS_OO(Cs/Cs)Cs 			O_rad_out		Cs_H_out_OOH/H		300-1500	5.49e3		2.40	0		19.90	0	0	0		0	3			[AJ]Sandeep's DFT/CBSB7 level of calculations.
+884		R5H_SSSS_OOCs(Cs/Cs/Cs)			O_rad_out		Cs_H_out_OOH/H		300-1500	6.50e0		3.60	0		17.70	0	0	0		0	3			[AJ]Sandeep's DFT/CBSB7 level of calculations.
+885		R5H_SSSS_OOCCC					O_rad_out		Cs_H_out_OOH/Cs		300-1500	5.79e1		2.90	0		17.00	0	0	0		0	3			[AJ]Sandeep's DFT/CBSB7 level of calculations.
+886		R5H_SSSS_OO(Cs/Cs)Cs			O_rad_out		Cs_H_out_OOH/Cs		300-1500	1.75e2		3.10	0		17.50	0	0	0		0	3			[AJ]Sandeep's DFT/CBSB7 level of calculations.
+887		R6H_SSSSS_OO					O_rad_out		Cs_H_out_OOH/H		300-1500	2.38e3		1.70	0		16.60	0	0	0		0	3			[AJ]Sandeep's DFT/CBSB7 level of calculations.
+888		R6H_SSSSS_OO(Cs/Cs)Cs			O_rad_out		Cs_H_out_OOH/H		300-1500	6.28e2		2.20	0		17.40	0	0	0		0	3			[AJ]Sandeep's DFT/CBSB7 level of calculations.
+889		R6H_SSSSS_OOCCC(Cs/Cs)			O_rad_out		Cs_H_out_OOH/Cs		300-1500	3.77e2		2.20	0		15.30	0	0	0		0	3			[AJ]Sandeep's DFT/CBSB7 level of calculations.
+890		R6H_SSSSS_OO(Cs/Cs)C(Cs/Cs)		O_rad_out		Cs_H_out_OOH/Cs		300-1500	2.54e2		2.60	0		16.20	0	0	0		0	3			[AJ]Sandeep's DFT/CBSB7 level of calculations.
+891		R7H_OOCs4						O_rad_out		Cs_H_out_OOH/H		300-1500	5.57e2		1.80	0		16.60	0	0	0		0	3			[AJ]Sandeep's DFT/CBSB7 level of calculations.
+892		R7H_OOCCCC(Cs/Cs)				O_rad_out		Cs_H_out_OOH/Cs		300-1500	2.00e3		1.90	0		14.90	0	0	0		0	3			[AJ]Sandeep's DFT/CBSB7 level of calculations.

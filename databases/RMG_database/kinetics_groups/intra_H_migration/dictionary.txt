@@ -1592,4 +1592,66 @@ Cb_H_out
 1 *2 Cb 0 {2,S}
 2 *3 H 0 {1,S}
 
+// Added by AJ for intra_H shifts in HOOQOO radicals
+Cs_H_out_OOH
+1 *2 Cs 0 {2,S} {3,S} {4,S}
+2 *3 H 0 {1,S}
+3 R 0 {1,S}
+4 O 0 {1,S} {5,S}
+5 O 0 {4,S}
 
+Cs_H_out_OOH/H
+1 *2 Cs 0 {2,S} {3,S} {4,S}
+2 *3 H 0 {1,S}
+3 H 0 {1,S}
+4 O 0 {1,S} {5,S}
+5 O 0 {4,S}
+
+Cs_H_out_OOH/Cs
+1 *2 Cs 0 {2,S} {3,S} {4,S}
+2 *3 H 0 {1,S}
+3 Cs 0 {1,S}
+4 O 0 {1,S} {5,S}
+5 O 0 {4,S}
+
+R6H_SSSSS_OO(Cs/Cs)Cs
+1 *1 Os 1 {2,S}
+2 *4 Os 0 {1,S}, {3,S}
+3    Cs 0 {2,S}, {4,S} {8,S}
+4    Cs 0 {3,S}, {5,S}
+5 *5 Cs 0 {4,S}, {6,S}
+6 *2 Cs 0 {5,S}, {7,S}
+7 *3 H 0 {6,S}
+8    Cs 0 {3,S} 
+
+R6H_SSSSS_OOCCC(Cs/Cs)
+1 *1 Os 1 {2,S}
+2 *4 Os 0 {1,S}, {3,S}
+3    Cs 0 {2,S}, {4,S}
+4    Cs 0 {3,S}, {5,S}
+5 *5 Cs 0 {4,S}, {6,S}
+6 *2 Cs 0 {5,S}, {7,S} {8,S}
+7 *3 H 0 {6,S}
+8    Cs 0 {6,S}
+
+R6H_SSSSS_OO(Cs/Cs)C(Cs/Cs)
+1 *1 Os 1 {2,S}
+2 *4 Os 0 {1,S}, {3,S}
+3    Cs 0 {2,S}, {4,S} {8,S}
+4    Cs 0 {3,S}, {5,S}
+5 *5 Cs 0 {4,S}, {6,S}
+6 *2 Cs 0 {5,S}, {7,S} {9,S}
+7 *3 H 0  {6,S}
+8    Cs 0 {3,S} 
+9    Cs 0 {6,S}
+
+R7H_OOCCCC(Cs/Cs)
+1 *1 Os 1 {2,S}
+2 *4 Os 0 {1,S}, {3,S}
+3 {R!H} 0 {2,S}, {4,{S,D,T,B}}
+4 {R!H} 0 {3,{S,D,T,B}}, {5,{S,D,T,B}}
+5 {R!H} 0 {4,{S,D,T,B}}, {6,{S,D,T,B}}
+6 *5 {R!H} 0 {5,{S,D,T,B}}, {7,{S,D,T,B}}
+7 *2 {R!H} 0 {6,{S,D,T,B}}, {8,S}, {9,S}
+8 *3 H 0 {7,S}
+9    Cs 0 {7,S}
