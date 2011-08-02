@@ -297,3 +297,8 @@ Arrhenius_EP
 890		R6H_SSSSS_OO(Cs/Cs)C(Cs/Cs)		O_rad_out		Cs_H_out_OOH/Cs		300-1500	2.54e2		2.60	0		16.20	0	0	0		0	3			[AJ]Sandeep's DFT/CBSB7 level of calculations.
 891		R7H_OOCs4						O_rad_out		Cs_H_out_OOH/H		300-1500	5.57e2		1.80	0		16.60	0	0	0		0	3			[AJ]Sandeep's DFT/CBSB7 level of calculations.
 892		R7H_OOCCCC(Cs/Cs)				O_rad_out		Cs_H_out_OOH/Cs		300-1500	2.00e3		1.90	0		14.90	0	0	0		0	3			[AJ]Sandeep's DFT/CBSB7 level of calculations.
+
+//Added by AJ for 1,5 intra_H migration in long chain alkoxy radicals
+893		R5H_CCCC_O						O_rad_out		Cs_H_out_2H			200-1000	4.00e10		0.00	0		7.61	0	0	0		0	3			[AJ]Atkinson recommendation for 1,5 shifts of primary H (per H atom)
+894		R5H_CCCC_O						O_rad_out		Cs_H_out_H/NonDeC	200-1000	4.00e10		0.00	0		6.15	0	0	0		0	3			[AJ]Atkinson recommendation for 1,5 shifts of secondary H  (per H atom)
+895		R5H_CCCC_O						O_rad_out		Cs_H_out			200-1000	4.00e10		0.00	0		5.10	0	0	0		0	3			[AJ]Atkinson recommendation for 1,5 shifts of tertiary H

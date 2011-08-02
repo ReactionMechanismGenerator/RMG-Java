@@ -81,6 +81,7 @@ L1: RnH
 		L3: R5H_RSSR
 			L4: R5H_SSSR
 				L5: R5H_SSSS
+					L6: R5H_CCCC_O
 					L6: R5H_SSSS_OOCCC
 						L7: R5H_SSSS_OO(Cs/Cs)Cs
 							L8: R5H_SSSS_OO(Cs/Cs/Cs)Cs
