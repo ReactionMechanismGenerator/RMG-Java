@@ -23,6 +23,7 @@ Arrhenius_EP
 // [189] Grotheer, H.; Riekert, G.; Walter, D.; Just, T. Symp. Int. Combust. Proc. 1989, 22, 963.
 // [190] Edelbuttel-Einhaus, J.; Hoyermann, K.; Rohde, G.; Seeba, J. Symp. Int. Combust. Proc. 1992, 22, 661.
 // [191] Pagsberg, P.; Munk, J.; Sillesen, A.; Anastasi, C. Chem. Phys. Lett. 1988, 146, 375.
+// [A] Tycholiz, D.R.; Knight, A.R.; J. Am. Chem. Soc. 95 1973
 
  
 //No.		Y_rad_birad		XH_Rrad				Temp.		A			n		a		E0		DA		Dn		Da		DE0		Rank	Comments
@@ -97,3 +98,4 @@ Arrhenius_EP
 534.		O2_birad		O_Csrad        298        2.92067E+12    0    0    0        *1.3        0    0    0    4    Atkinson et al [98] literature review.
 535.		O2_birad		O_Csrad        200-300    2.74001E+12    0    0    0        *1.3        0    0    0.40    4    DeMore et al [183] literature review.
 600.		O2_birad		O_Csrad				250-1000	2.3413E+11	0.3321	0	-1.0635	0	0	0	0	1	Zador et al.
+553.		S_rad/NonDeC	Cmethyl_Srad			298		9.79E+11		0		0		0		0	0		0		0		4		Tycholiz et al [A].

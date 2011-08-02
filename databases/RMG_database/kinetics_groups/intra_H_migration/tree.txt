@@ -36,6 +36,7 @@ L1: RnH
 				L5: R3H_SS_13cy5
 				L5: R3H_SS_2Cd
 				L5: R3H_SS_OC
+				L5: R3H_SS_S
 				L5: Others-R3H_SS
 			L4: R3H_SD
 			L4: R3H_ST
@@ -174,6 +175,7 @@ L1: Y_rad_out
 		L3: C_rad_out_1H
 			L4: C_rad_out_H/NonDeC
 			L4: C_rad_out_H/NonDeO
+			L4: C_rad_out_H/NonDeS
 			L4: C_rad_out_H/OneDe
 		L3: C_rad_out_noH
 			L4: C_rad_out_NonDe
@@ -186,6 +188,7 @@ L1: Y_rad_out
 			L4: C_rad_out_OneDe
 				L5: C_rad_out_OneDe/Cs
 				L5: C_rad_out_OneDe/O
+				L5: C_rad_out_OneDe/S
 			L4: C_rad_out_TwoDe	 
 	L2: Cd_rad_out_double
 	L2: Cd_rad_out_single
@@ -196,6 +199,8 @@ L1: Y_rad_out
 	L2: O_rad_out
 	L2: Cb_rad_out
 	L2: CO_rad_out
+	L2: C=S_rad_out
+	L2: S_rad_out
 
 L1: XH_out
 	L2: Cs_H_out
@@ -241,7 +246,7 @@ L1: XH_out
 	L2: O_H_out
 	L2: Ct_H_out
 	L2: Cb_H_out
-		  
+	L2: S_H_out	  
 	
 	
 

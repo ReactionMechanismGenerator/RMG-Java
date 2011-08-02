@@ -15,6 +15,7 @@ L1: Y_rad
 			L4: C_rad/H2/Cb
 			L4: C_rad/H2/CO
 			L4: C_rad/H2/O
+			L4: CsJ-SsHH
 		L3: C_sec_rad
 			L4: C_rad/H/NonDeC
 			L4: C_rad/H/NonDeO
@@ -24,6 +25,13 @@ L1: Y_rad
 				L5: C_rad/H/OneDeC
 				L5: C_rad/H/OneDeO
 			L4: C_rad/H/TwoDe
+			L4: CsJ-CSH
+				L5: CsJ-CsSsH
+				L5: CsJ-CdSsH
+				L5: CsJ-CtSsH
+				L5: CsJ-CbSsH
+				L5: CsJ-C=SSsH
+			L4: CsJ-SsSsH
 		L3: C_ter_rad
 			L4: C_rad/NonDeC
 				L5: C_rad/Cs3
@@ -35,6 +43,19 @@ L1: Y_rad
 				L5: C_rad/Cs
 				L5: C_rad/TDMustO
 			L4: C_rad/ThreeDe
+			L4: CsJ-CSS
+				L5: CsJ-CsSsSs
+				L5: CsJ-CdSsSs
+				L5: CsJ-CtSsSs
+				L5: CsJ-CbSsSs
+				L5: CsJ-C=SSsSs
+			L4: CsJ-CCS
+				L5: CsJ-CsCsSs
+				L5: CsJ-CsCdSs
+				L5: CsJ-CsCtSs
+				L5: CsJ-CsCbSs
+				L5: CsJ-CsC=SSs
+			L4: CsJ-SsSsSs
 	L2: Cd_rad
 		L3: Cd_pri_rad
 		L3: Cd_sec_rad
@@ -46,10 +67,26 @@ L1: Y_rad
 		L3: CO_pri_rad
 		L3: CO_sec_rad
 			L4: CO_rad/NonDe
-			L4: CO_rad/OneDe		
+			L4: CO_rad/OneDe	
+	L2: C=SJ
+		L3: C=SJ-H
+		L3: C=SJ-C
+			L4: C=SJ-Cs
+		L3: C=SJ-Ss
 	L2: O_rad
 		L3: O_pri_rad
 		L3: O_sec_rad
 			L4: O_rad/NonDe
 			L4: O_rad/OneDe
-      L2: O2_birad
+    L2: O2_birad
+	L2: S_rad
+		L3: SJ
+			L4: SJ-H
+			L4: SJ-C
+				L5: SJ-Cs
+				L5: SJ-Cd
+				L5: SJ-Ct
+				L5: SJ-Cb
+				L5: SJ-C=S
+			L4: SJ-Ss
+		L3: SJJ

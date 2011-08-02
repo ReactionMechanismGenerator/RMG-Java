@@ -268,7 +268,7 @@ public class ReactionSystem {
 			else {
 				flux = r.calculateTotalRate(p_temperature);
 			}
-			if (flux > 0) {
+			if (flux >= 0) {
 				for (Iterator rIter=r.getReactants(); rIter.hasNext();) {
 					Species spe = (Species)rIter.next();
 					double conc = 0;

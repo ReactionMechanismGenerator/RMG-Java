@@ -280,3 +280,15 @@ Arrhenius_EP
 875		R3H_DS			Cd_rad_out_singleDe     Cs_H_out_2H				300-1600	1283712039	1.0541	0		46.1467	0	0	0		0	3		Sandeep's CBS-QB3 calculations.
 876		R4H_SDS         O_rad_out               Cs_H_out_H/NonDeC       600-2000    1.11E+06    1.78    0       27.18   *3	0	0		2	3		MHS CBS-QB3 calculations. 
 877		R5H_SSSD		O_rad_out				Cd_H_out_singleH		600-2000	1.234E+06	1.554	0		26.636	*3	0	0		2	3		MRH CBS-QB3 calculations w/1d h.r. corrections
+901		Others-R2H_S	C_rad_out_2H			S_H_out					300-1500	7.22E-02	4.07	0.00	20.90	0	0	0		0	1		A. G. Vandeputte
+//// cclass 7/27/10: commented out because R3H_SS_C isn't recognized
+//902		R3H_SS_C		C_rad_out_2H			S_H_out					300-1500	8.55E+01	3.04	0.00	11.62	0	0	0		0	1		A. G. Vandeputte
+903		R3H_SS_S		C_rad_out_2H			S_H_out					300-1500	8.21E-04	4.56	0.00	16.05	0	0	0		0	1		A. G. Vandeputte
+904		R4H_SSS			C_rad_out_2H			S_H_out					300-1500	3.73E+08	0.882	0.00	5.35	0	0	0		0	1		A. G. Vandeputte
+905		R4H_SSS			C_rad_out_2H			S_H_out					300-1500	1.91E+07	1.26	0.00	7.13	0	0	0		0	1		A. G. Vandeputte
+906		R4H_SSS			C_rad_out_2H			S_H_out					300-1500	1.18E+02	2.80	0.00	7.75	0	0	0		0	1		A. G. Vandeputte
+907		R4H_SSS			C_rad_out_2H			S_H_out					300-1500	2.10E+07	1.28	0.00	7.93	0	0	0		0	1		A. G. Vandeputte
+908		R5H_SSSS		C_rad_out_2H			S_H_out					300-1500	2.21E+10	0.214	0.00	2.04	0	0	0		0	1		A. G. Vandeputte
+909		R5H_SSSS		C_rad_out_2H			S_H_out					300-1500	1.82E+09	0.586	0.00	3.88	0	0	0		0	1		A. G. Vandeputte
+910		R5H_SSSS		C_rad_out_2H			S_H_out					300-1500	1.94E+10	0.329	0.00	3.45	0	0	0		0	1		A. G. Vandeputte
+911		R5H_SSSS		C_rad_out_2H			S_H_out					300-1500	1.88E+10	0.269	0.00	3.69	0	0	0		0	1		A. G. Vandeputte
