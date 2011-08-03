@@ -4795,7 +4795,7 @@ public class ReactionModelGenerator {
         LinkedHashMap speciesFromInputFileSet = new LinkedHashMap();
     	int numSpeciesStatus = 0;
 		String line = ChemParser.readMeaningfulLine(reader, true);
-		while (!line.equals("END")) {
+		while (line != null && !line.equals("END")) {
 			StringTokenizer st = new StringTokenizer(line);
 			String index = st.nextToken();
 			String name = null;
@@ -4906,6 +4906,7 @@ public class ReactionModelGenerator {
 			getSpeciesSeed().add(species);
 			line = ChemParser.readMeaningfulLine(reader, true);
 		}
+		if (line == null) throw new IOException("Unexpected end of input file before END of reactive SpeciesStatus section");
 		ReactionTime initial = new ReactionTime(0,"S");
 		//10/23/07 gmagoon: modified for handling multiple temperature, pressure conditions; note: concentration within speciesStatus (and list of conversion values) should not need to be modified for each T,P since this is done within isTPCconsistent in ReactionSystem
 		initialStatusList = new LinkedList();
