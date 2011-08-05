@@ -349,3 +349,36 @@ Arrhenius_EP
 538.	InChI=1/C4H8/c1-3-4-2/h3H,1,4H2,2H3	OOCH3	600-2000	7.41e-3	4.313	0	8.016	*3	0	0	2.0	3	MRH CBS-QB3 calculations, w/1dHR corrections
 539.	H2O2	InChI=1/C3H5/c1-3-2/h3H,1-2H2	600-2000	1.755e-02 4.22 0.0 9.86	*3 0.0 0.0 2.0 3	MHS CBS-QB3 w/1dHR calculations
 540.	InChI=1/C4H8O/c1-2-3-4-5/h4H,2-3H2,1H3	O_rad/NonDeO	600-2000	1.91e-04 4.25 0.0 0.81 *3 0.0 0.0 2.0 3		MHS CBS-QB3 w/o 1dHR calculations
+
+// Added by AJ for autoxidation simulations
+487.	C/H2/NonDeC	O2b					378-433	3.16E+14	0		0		43.30	0		0		0		0		4		ET Denisov, LN Denisova. Int J Chem Kinet 8:123-130, 1975 for BuCH2(CH-H)Me in benzene
+//488.	C/H3/Cs		O_rad/NonDeO		300-1500	8.60E+3	0		0		16.02	0		0		0		0		4		Landolt Bornstein estimates for C16H33O2J + C16H34
+//489.	C/H2/NonDeC	O_rad/NonDeO		300-1500	8.60E+3	0		0		16.02	0		0		0		0		4		Landolt Bornstein estimates for C16H33O2J + C16H34
+
+//Added by AJ for low temperature aromatic oxidation (given rank 1 so that RMG will presumably prefer these rates to others that it makes up)
+//Notes: AJ did not find data for ethylbenzene + O2 or ethylbenzene + OH on the NIST Kinetics databasa, so values for toluene (per H) were used instead 
+533.    C/H3/Cb	O_pri_rad		500-1000	0.42e+13	0.0	0.0	2.59	0	0	0	0	1	Tully et al. experimental data (changed to per H)
+534.    C/H2/Cb	O_pri_rad		500-1000	0.42e+13	0.0	0.0	2.59	0	0	0	0	1	Tully et al. experimental data (changed to per H)
+535.    C/H/Cb	O_pri_rad		500-1000	0.42e+13	0.0	0.0	2.59	0	0	0	0	1	Tully et al. experimental data (changed to per H)
+536.    C/H3/Cb	O_rad/NonDeO	600-1000	1.32e+11	0.0	0.0	14.08	0	0	0	0	1	Baulch et al. literature review (value for HO2 + toluene) (changed to per H)
+537.    C/H2/Cb	O_rad/NonDeO	600-1000	1.33e+11	0.0	0.0	11.30	0	0	0	0	1	Baulch et al. literature review (value for HO2 + ethylbenzene) (changed to per H)
+538.    C/H/Cb	O_rad/NonDeO	600-1000	1.33e+11	0.0	0.0	11.30	0	0	0	0	1	Baulch et al. literature review (value for HO2 + ethylbenzene) (changed to per H)
+539.    C/H3/Cb	O2b				700-1200	0.6e+12		0.0	0.0	39.71	0	0	0	0	1	Baulch et al. literature review (value for HO2 + toluene entered here) (changed to per H)
+540.    C/H2/Cb	O2b				700-1200	0.6e+12		0.0	0.0	39.71	0	0	0	0	1	Baulch et al. literature review (value for HO2 + toluene entered here) (changed to per H)
+541.    C/H/Cb	O2b				700-1200	0.6e+12		0.0	0.0	39.71	0	0	0	0	1	Baulch et al. literature review (value for HO2 + toluene entered here) (changed to per H)
+
+//Added by AJ for ROOH + RJ = ROOJ + RH
+// Previously RMG was using an averaging scheme using nodes 301-309 added above by MRH
+542.	ROOH_pri		C_rad/Cs3			500-1000	2.50e+09	0.0		0.0	4.0		0	0	0	0	1	[AJ]Pfaendtner and Broadbelt, ChemPhysChem, DOI: 10.1002/cphc.200700161
+//543.	ROOH_sec		C_rad/Cs3			500-1000	1.00e+10	0.0		0.0	4.4		0	0	0	0	1	[AJ]Pfaendtner and Broadbelt, ChemPhysChem, DOI: 10.1002/cphc.200700161
+543.	ROOH_sec		C_rad/Cs3			500-1000	1.67e+01	3.20	0.0	3.57	0	0	0	0	1	[AJ]Rate expression obtained from recommendation of Aguilera-Iparraguirre et al., 2008 for HO2 + alkanes using the R12 method.
+545.	ROOH_pri		C_rad/H/NonDeC		500-1000	3.16e+10	0.0		0.0	4.1		0	0	0	0	1	[AJ]Pfaendtner and Broadbelt, ChemPhysChem, DOI: 10.1002/cphc.200700161
+//546.	ROOH_sec		C_rad/H/NonDeC		500-1000	7.94e+09	0.0		0.0	4.0		0	0	0	0	1	[AJ]Pfaendtner and Broadbelt, ChemPhysChem, DOI: 10.1002/cphc.200700161
+546.	ROOH_sec		C_rad/H/NonDeC		500-1000	1.67e+01	3.20	0.0	3.57	0	0	0	0	1	[AJ]Rate expression obtained from recommendation of Aguilera-Iparraguirre et al., 2008 for HO2 + alkanes using the R12 method.
+548.	ROOH_pri		C_rad/H2/Cs			500-1000	1.00e+11	0.0		0.0	4.7		0	0	0	0	1	[AJ]Pfaendtner and Broadbelt, ChemPhysChem, DOI: 10.1002/cphc.200700161
+//549.	ROOH_sec		C_rad/H2/Cs			500-1000	1.26e+11	0.0		0.0	4.5		0	0	0	0	1	[AJ]Pfaendtner and Broadbelt, ChemPhysChem, DOI: 10.1002/cphc.200700161
+549.	ROOH_sec		C_rad/H2/Cs			500-1000	1.67e+01	3.20	0.0	3.57	0	0	0	0	1	[AJ]Rate expression obtained from recommendation of Aguilera-Iparraguirre et al., 2008 for HO2 + alkanes using the R12 method.
+//550.	ROOH_ter		C_rad/H2/Cs			500-1000	1e+13		0.0		0.0	0.0		0	0	0	0	1	
+//544.	ROOH_ter		C_rad/Cs3			500-1000	1e+13		0.0		0.0	0.0		0	0	0	0	1
+//547.	ROOH_ter		C_rad/H/NonDeC		500-1000	1e+13		0.0		0.0	0.0		0	0	0	0	1
+551.	ROOH_pri		C_rad/OOH/Cs/Cs		500-1000	9.765e+08	0.0		0.0	6.16	0	0	0	0	1	[AJ] Based on recommendations for reverse rate by Pfaendtner and Broadbelt in DOI: 10.1021/ie0714807.
