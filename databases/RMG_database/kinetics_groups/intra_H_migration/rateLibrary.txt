@@ -292,3 +292,25 @@ Arrhenius_EP
 909		R5H_SSSS		C_rad_out_2H			S_H_out					300-1500	1.82E+09	0.586	0.00	3.88	0	0	0		0	1		A. G. Vandeputte
 910		R5H_SSSS		C_rad_out_2H			S_H_out					300-1500	1.94E+10	0.329	0.00	3.45	0	0	0		0	1		A. G. Vandeputte
 911		R5H_SSSS		C_rad_out_2H			S_H_out					300-1500	1.88E+10	0.269	0.00	3.69	0	0	0		0	1		A. G. Vandeputte
+
+// Added by AJ for intra_H abstraction in HOOQOO radicals (rates take from Sandeep's paper DOI: 10.1021/jp9098792)
+878		R4H_SSS_OOCsCs					O_rad_out		Cs_H_out_OOH/H		300-1500	2.47e12		-0.24	0		28.00	0	0	0		0	3			[AJ]Sandeep's DFT/CBSB7 level of calculations.
+879		R4H_SSS_OOCsCs					O_rad_out		Cs_H_out_OOH/Cs		300-1500	2.76e8		1.20	0		25.70	0	0	0		0	3			[AJ]Sandeep's DFT/CBSB7 level of calculations.
+880		R4H_SSS_OO(Cs/Cs)Cs				O_rad_out		Cs_H_out_OOH/H		300-1500	1.22e7		1.60	0		27.90	0	0	0		0	3			[AJ]Sandeep's DFT/CBSB7 level of calculations.
+881		R4H_SSS_OO(Cs/Cs)Cs				O_rad_out		Cs_H_out_OOH/Cs		300-1500	1.75e8		1.70	0		26.00	0	0	0		0	3			[AJ]Sandeep's DFT/CBSB7 level of calculations.
+882		R5H_SSSS_OOCCC					O_rad_out		Cs_H_out_OOH/H		300-1500	2.59e4		1.90	0		18.80	0	0	0		0	3			[AJ]Sandeep's DFT/CBSB7 level of calculations.
+883		R5H_SSSS_OO(Cs/Cs)Cs 			O_rad_out		Cs_H_out_OOH/H		300-1500	5.49e3		2.40	0		19.90	0	0	0		0	3			[AJ]Sandeep's DFT/CBSB7 level of calculations.
+884		R5H_SSSS_OOCs(Cs/Cs/Cs)			O_rad_out		Cs_H_out_OOH/H		300-1500	6.50e0		3.60	0		17.70	0	0	0		0	3			[AJ]Sandeep's DFT/CBSB7 level of calculations.
+885		R5H_SSSS_OOCCC					O_rad_out		Cs_H_out_OOH/Cs		300-1500	5.79e1		2.90	0		17.00	0	0	0		0	3			[AJ]Sandeep's DFT/CBSB7 level of calculations.
+886		R5H_SSSS_OO(Cs/Cs)Cs			O_rad_out		Cs_H_out_OOH/Cs		300-1500	1.75e2		3.10	0		17.50	0	0	0		0	3			[AJ]Sandeep's DFT/CBSB7 level of calculations.
+887		R6H_SSSSS_OO					O_rad_out		Cs_H_out_OOH/H		300-1500	2.38e3		1.70	0		16.60	0	0	0		0	3			[AJ]Sandeep's DFT/CBSB7 level of calculations.
+888		R6H_SSSSS_OO(Cs/Cs)Cs			O_rad_out		Cs_H_out_OOH/H		300-1500	6.28e2		2.20	0		17.40	0	0	0		0	3			[AJ]Sandeep's DFT/CBSB7 level of calculations.
+889		R6H_SSSSS_OOCCC(Cs/Cs)			O_rad_out		Cs_H_out_OOH/Cs		300-1500	3.77e2		2.20	0		15.30	0	0	0		0	3			[AJ]Sandeep's DFT/CBSB7 level of calculations.
+890		R6H_SSSSS_OO(Cs/Cs)C(Cs/Cs)		O_rad_out		Cs_H_out_OOH/Cs		300-1500	2.54e2		2.60	0		16.20	0	0	0		0	3			[AJ]Sandeep's DFT/CBSB7 level of calculations.
+891		R7H_OOCs4						O_rad_out		Cs_H_out_OOH/H		300-1500	5.57e2		1.80	0		16.60	0	0	0		0	3			[AJ]Sandeep's DFT/CBSB7 level of calculations.
+892		R7H_OOCCCC(Cs/Cs)				O_rad_out		Cs_H_out_OOH/Cs		300-1500	2.00e3		1.90	0		14.90	0	0	0		0	3			[AJ]Sandeep's DFT/CBSB7 level of calculations.
+
+//Added by AJ for 1,5 intra_H migration in long chain alkoxy radicals
+893		R5H_CCCC_O						O_rad_out		Cs_H_out_2H			200-1000	4.00e10		0.00	0		7.61	0	0	0		0	3			[AJ]Atkinson recommendation for 1,5 shifts of primary H (per H atom)
+894		R5H_CCCC_O						O_rad_out		Cs_H_out_H/NonDeC	200-1000	4.00e10		0.00	0		6.15	0	0	0		0	3			[AJ]Atkinson recommendation for 1,5 shifts of secondary H  (per H atom)
+895		R5H_CCCC_O						O_rad_out		Cs_H_out			200-1000	4.00e10		0.00	0		5.10	0	0	0		0	3			[AJ]Atkinson recommendation for 1,5 shifts of tertiary H

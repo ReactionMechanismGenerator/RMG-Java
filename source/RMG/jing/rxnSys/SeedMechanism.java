@@ -439,6 +439,13 @@ public class SeedMechanism {
 						// Read the next line
 						nextLine = ChemParser.readMeaningfulLine(data, true);
 					}
+					// read DUPLICATE tag if it's there
+					boolean expecting_duplicate = false;
+					if (nextLine != null && nextLine.toLowerCase().startsWith("dup")) {
+						expecting_duplicate = true;
+						nextLine = ChemParser.readMeaningfulLine(data, true);
+					}
+					// done with this reaction
 					continueToReadRxn = false;
 					
 					// Make the PDepReaction
@@ -449,6 +456,7 @@ public class SeedMechanism {
 					pdeprxn.setHighPKinetics(r.getKinetics()[0]);
 					r = pdeprxn;
 					r.setIsFromPrimaryKineticLibrary(true);
+					if (expecting_duplicate) r.setExpectDuplicate(true);
 					
 					// see if we've already made this reaction in this seed mechanism
 					Iterator allRxnsIter = localReactions.iterator();
@@ -456,13 +464,13 @@ public class SeedMechanism {
 					while (allRxnsIter.hasNext()) {
 						Reaction old = (Reaction)allRxnsIter.next();
 						if (old.equals(r)) {
+							if (!expecting_duplicate) throw new InvalidKineticsFormatException("Unexpected duplicate reaction found for " + r.toString());
 							PDepReaction oldPDep = (PDepReaction)old; // we should be able to cast it
 							oldPDep.addAdditionalKinetics(r.getKinetics()[0],1,true); // high-P limit kinetics
 							oldPDep.addPDepArrheniusKinetics(pdepkineticsPLOG); // PLOG kinetics
 							continue read; // break out of inner loops and read the next reaction
 						}
-					}
-							
+					}						
 					// Add to the list of PDepReactions
 					allPdepNetworks.add(pdeprxn);
 					
@@ -479,7 +487,12 @@ public class SeedMechanism {
 					// read in third body colliders + efficiencies
 					thirdBodyList.putAll(ChemParser.parseThirdBodyList(nextLine,allSpecies));
 					nextLine = ChemParser.readMeaningfulLine(data, true);
-				} else {
+				} else if (nextLine.toLowerCase().startsWith("dup")) {
+					// read DUPLICATE tag
+					throw new InvalidKineticsFormatException("DUPLICATE pdep kinetics only handled for PLOG form. " + r.toString());
+				}
+				
+				else {
 					// the nextLine is a "new" reaction, hence we need to exit the while loop
 					continueToReadRxn = false;
 				}
@@ -527,6 +540,28 @@ public class SeedMechanism {
 			if (!tbr.repOk()) throw new RuntimeException(String.format("Something wrong with reaction %s", tbr));
 			
 		}
+			//= check duplicates are correctly labeled
+			for (Iterator<Reaction> allRxnsIter = localReactions.iterator(); allRxnsIter.hasNext(); ){
+				Reaction r = allRxnsIter.next();
+				if (!(r instanceof PDepReaction))
+					continue; // ThirdBodyReactions can not be duplicates at this time
+				PDepReaction rxn = (PDepReaction)r;
+				PDepRateConstant pDepRate = rxn.getPDepRate();
+				if (rxn.getExpectDuplicate()) {
+					
+					if (pDepRate.getMode() != PDepRateConstant.Mode.PDEPARRHENIUS)
+						throw new InvalidKineticsFormatException("DUPLICATE pdep kinetics only handled for PLOG form.");
+					if (pDepRate.getPDepArrheniusKinetics().length <= 1)
+						throw new InvalidKineticsFormatException("Was expecting DULPLICATE kinetics but none found for "+rxn.toString());
+				}
+				if (pDepRate.getMode() == PDepRateConstant.Mode.PDEPARRHENIUS){
+					if (pDepRate.getPDepArrheniusKinetics().length > 1){
+						if (!rxn.getExpectDuplicate())
+							throw new InvalidKineticsFormatException("Found unlabeled duplicate kinetics for "+rxn.toString());
+					}
+				}
+			}
+			//=
 
             in.close();
         	return localReactions;
