@@ -827,9 +827,10 @@ PROGRAM CALL_DASPKAUTO
             CURRENTREACTIONFLUX(I) = 0
          END DO
          call reaction_flux(y, prevreactionflux, rpar)
-         
- 1       IF (Time .LE. TSTEPS(K) .AND. Y(IMPSPECIES) .GE. TARGETCONC(K) &
-     &        *Y(NSTATE)) THEN
+
+         !impspecies=-1, corresponds to time goal, rather than conversion goal
+	 IF (IMPSPECIES .EQ. -1) THEN
+ 1        IF (Time .LE. TSTEPS(K)) THEN
             CALL DDASPK(RES, NEQ, Time, Y, YPRIME, Tout,INFO, RTOL, &
      &           Atol, IDID, RWORK, LRW, IWORK, LIW, RPAR, IPAR, JAC, &
      &           PSOL, SENPAR, G_RES)
@@ -851,7 +852,33 @@ PROGRAM CALL_DASPKAUTO
                PREVTIME = TIME
                go to 1
             END IF
-         END IF
+	 !impspecies>0: corresponds to conversion goal; this block differs from above block only in the extra criterion Y(IMPSPECIES) .GE. TARGETCONC(K)*Y(NSTATE)
+	 ELSE
+   1       IF (Time .LE. TSTEPS(K) .AND. Y(IMPSPECIES) .GE. TARGETCONC(K) &
+     &        *Y(NSTATE)) THEN
+            CALL DDASPK(RES, NEQ, Time, Y, YPRIME, Tout,INFO, RTOL, &
+     &           Atol, IDID, RWORK, LRW, IWORK, LIW, RPAR, IPAR, JAC, &
+     &           PSOL, SENPAR, G_RES)
+
+            IF (IDID .EQ. -1) THEN
+               WRITE(*,*) "Warning: 500 steps were already taken, taking &
+     &              another 500 steps"
+               INFO(1) = 1
+               GO TO 1
+            else if (idid .eq. 1) then
+               iter = iter+1
+               call reaction_flux(y, currentreactionflux, rpar)
+              DO I=1,REACTIONSIZE+THIRDBODYREACTIONSIZE+TROEREACTIONSIZE+LINDEREACTIONSIZE
+                  TOTALREACTIONFLUX(I) = TOTALREACTIONFLUX(I) + &
+     &                 (PREVREACTIONFLUX(I) + CURRENTREACTIONFLUX(I))*&
+     &                 (TIME - PREVTIME)/2
+                  PREVREACTIONFLUX(I) = CURRENTREACTIONFLUX(I)
+               END DO
+               PREVTIME = TIME
+               go to 1
+            END IF
+           END IF
+	 END IF
          
          WRITE(*,*) "STEP: ", K, " OF ", NUMITER," DONE"
          WRITE(15,*) (NSTATE-1)*(nparam+1)      
