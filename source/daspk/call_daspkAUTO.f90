@@ -852,6 +852,7 @@ PROGRAM CALL_DASPKAUTO
                PREVTIME = TIME
                go to 1
 	    END IF
+	  END IF
 	 !impspecies>0: corresponds to conversion goal; this block differs from above block only in the extra criterion Y(IMPSPECIES) .GE. TARGETCONC(K)*Y(NSTATE)
 	ELSE
    2       IF (Time .LE. TSTEPS(K) .AND. Y(IMPSPECIES) .GE. TARGETCONC(K) &
