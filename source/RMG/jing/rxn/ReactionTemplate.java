@@ -323,7 +323,7 @@ public class ReactionTemplate {
     	  UncertainDouble uE = new UncertainDouble(0.0,0.0,"Adding");
     	  ArrheniusKinetics[] k_setToZero = new ArrheniusKinetics[1];
     	  k_setToZero[0] = new ArrheniusKinetics(uA,un,uE,"",5,"","k=0.0 to avoid RateConstantNotFoundException");
-    	  return k_setToZero;
+    	  return k_setToZero[0];
 //    	  throw new RateConstantNotFoundException();
       }
       
