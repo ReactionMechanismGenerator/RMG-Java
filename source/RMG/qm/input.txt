@@ -16,7 +16,7 @@ true
 //MaxSiliconNumberPerSpecies:    10
 //MaxHeavyAtomNumberPerSpecies: 100
 //MaxCycleNumberPerSpecies:      10
-//END
+END
 
 PrimaryThermoLibrary:
 Name: RMG-minimal
