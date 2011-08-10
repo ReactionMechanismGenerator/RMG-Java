@@ -9,6 +9,15 @@ true
 //maxradnumforQM?
 0
 
+//MaxCarbonNumberPerSpecies:     10
+//MaxOxygenNumberPerSpecies:     10
+//MaxRadicalNumberPerSpecies:    10
+//MaxSulfurNumberPerSpecies:     10
+//MaxSiliconNumberPerSpecies:    10
+//MaxHeavyAtomNumberPerSpecies: 100
+//MaxCycleNumberPerSpecies:      10
+//END
+
 PrimaryThermoLibrary:
 Name: RMG-minimal
 Location: primaryThermoLibrary
