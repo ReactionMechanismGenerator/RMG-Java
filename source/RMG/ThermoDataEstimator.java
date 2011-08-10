@@ -59,7 +59,7 @@ public class ThermoDataEstimator {
 	 * @param args  filename of input file
 	 */
 	public static void main(String[] args) {
-
+				
 		RMG.globalInitializeSystemProperties();
 
 		createFolders();
@@ -79,13 +79,15 @@ public class ThermoDataEstimator {
 
 			readDatabasePath(reader);
 
-			qmflags = readQMFlags(reader);
+			qmflags = readQMFlags(reader);		
 
 			Global.maxRadNumForQM = qmflags.maxRadNumForQM.intValue();
 			ChemGraph.useQM = qmflags.qmActive.booleanValue();
 			QMTP.qmprogram = qmflags.method.toLowerCase();
 			ChemGraph.useQMonCyclicsOnly = qmflags.qmOnCyclicsOnly.booleanValue();
 
+			readAtomConstraints(reader);
+			
 			readPrimaryThermoLibrary(reader);
 			mappedChemGraphsToNames = readChemGraphsFromFile(speciesFromInputFile, reader);
 
@@ -102,6 +104,75 @@ public class ThermoDataEstimator {
 		generateTDProperties(mappedChemGraphsToNames);
 
 		Logger.info("Done!\n");
+
+	}
+	/**
+	 * dynamic constraints setting on the number of atoms (C,O,heavy,etc) in the species
+	 * 
+	 */
+	private static void readAtomConstraints(BufferedReader reader) {
+		String line;
+		line = ChemParser.readMeaningfulLine(reader, true);
+		while(!line.equals("END")){
+			if (line.startsWith("MaxCarbonNumber")) {
+				StringTokenizer st = new StringTokenizer(line);
+				String dummyString = st.nextToken();
+				int maxCNum = Integer.parseInt(st.nextToken());
+				ChemGraph.setMaxCarbonNumber(maxCNum);
+				Logger.info("Note: Overriding default MAX_CARBON_NUM with user-defined value: " + maxCNum);
+				
+			}
+			else if (line.startsWith("MaxOxygenNumber")) {
+		    	StringTokenizer st = new StringTokenizer(line);
+		    	String dummyString = st.nextToken();	// This should hold "MaxOxygenNumberPerSpecies:"
+		    	int maxONum = Integer.parseInt(st.nextToken());
+		    	ChemGraph.setMaxOxygenNumber(maxONum);
+		    	Logger.info("Note: Overriding default MAX_OXYGEN_NUM with user-defined value: " + maxONum);
+		    	
+		    }
+			else if (line.startsWith("MaxRadicalNumber")) {
+		    	StringTokenizer st = new StringTokenizer(line);
+		    	String dummyString = st.nextToken();	// This should hold "MaxRadicalNumberPerSpecies:"
+		    	int maxRadNum = Integer.parseInt(st.nextToken());
+		    	ChemGraph.setMaxRadicalNumber(maxRadNum);
+		    	Logger.info("Note: Overriding default MAX_RADICAL_NUM with user-defined value: " + maxRadNum);
+		    	
+		    }
+			else if (line.startsWith("MaxSulfurNumber")) {
+		    	StringTokenizer st = new StringTokenizer(line);
+		    	String dummyString = st.nextToken();	// This should hold "MaxSulfurNumberPerSpecies:"
+		    	int maxSNum = Integer.parseInt(st.nextToken());
+		    	ChemGraph.setMaxSulfurNumber(maxSNum);
+		    	Logger.info("Note: Overriding default MAX_SULFUR_NUM with user-defined value: " + maxSNum);
+		    	
+		    }
+			else if (line.startsWith("MaxSiliconNumber")) {
+		    	StringTokenizer st = new StringTokenizer(line);
+		    	String dummyString = st.nextToken();	// This should hold "MaxSiliconNumberPerSpecies:"
+		    	int maxSiNum = Integer.parseInt(st.nextToken());
+		    	ChemGraph.setMaxSiliconNumber(maxSiNum);
+		    	Logger.info("Note: Overriding default MAX_SILICON_NUM with user-defined value: " + maxSiNum);
+		    	
+		    }
+			else if (line.startsWith("MaxHeavyAtom")) {
+		    	StringTokenizer st = new StringTokenizer(line);
+		    	String dummyString = st.nextToken();	// This should hold "MaxHeavyAtomPerSpecies:"
+		    	int maxHANum = Integer.parseInt(st.nextToken());
+		    	ChemGraph.setMaxHeavyAtomNumber(maxHANum);
+		    	Logger.info("Note: Overriding default MAX_HEAVYATOM_NUM with user-defined value: " + maxHANum);
+		    	
+		    }
+			else if (line.startsWith("MaxCycleNumber")) {
+		    	StringTokenizer st = new StringTokenizer(line);
+		    	String dummyString = st.nextToken();	// This should hold "MaxCycleNumberPerSpecies:"
+		    	int maxCycleNum = Integer.parseInt(st.nextToken());
+		    	ChemGraph.setMaxCycleNumber(maxCycleNum);
+		    	Logger.info("Note: Overriding default MAX_CYCLE_NUM with user-defined value: " + maxCycleNum);
+		    	
+		    }
+			line = ChemParser.readMeaningfulLine(reader, true);
+		}
+		
 
 	}
 	/**
