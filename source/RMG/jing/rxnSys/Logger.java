@@ -156,6 +156,8 @@ public class Logger {
         // Do nothing if neither log target accepts messages at that level of detail
         if (consoleLevel < level && fileLevel < level)
             return;
+		if (message == null)
+			return;
 
         // Replace all "\n" with the proper platform end-of-line character
         message = message.replaceAll("\n", newLine);
