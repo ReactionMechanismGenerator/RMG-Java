@@ -120,6 +120,7 @@ public class Logger {
 			logFile.flush();
 		}
 		catch (IOException e) {
+			System.err.println("Couldn't flush RMG.log file. Did you initialize the Logger?");
 			throw new RuntimeException(e);
 		}
 	}
@@ -187,7 +188,7 @@ public class Logger {
         }
 		
 		// If it was an error message, make sure the log file is up to date.
-		if (level < WARNING) { // i.e. ERROR and CRITICAL
+		if (level < WARNING && logFile != null) { // i.e. ERROR and CRITICAL
 			flush();
 		}
 
