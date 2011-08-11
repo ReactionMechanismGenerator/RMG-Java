@@ -5239,10 +5239,10 @@ public class ReactionModelGenerator {
 
         public static void addChemGraphToListIfNotPresent_ElseTerminate(LinkedHashMap speciesMap, ChemGraph cg, String name) {
             if (speciesMap.containsKey(cg)) {
-                Logger.error("The same ChemGraph appears multiple times in the user-specified input file\n" +
-                        "Species " + name + " has the same ChemGraph as " +
-                        (speciesMap.get(cg)));
-                System.exit(0);
+				String message = "The same ChemGraph appears multiple times in the user-specified input file\n" +
+								 String.format("Species %s has the same ChemGraph as %s",name,speciesMap.get(cg));
+				Logger.error(message);
+                throw new RuntimeException(message);
             } else
                 speciesMap.put(cg, name);
         }
