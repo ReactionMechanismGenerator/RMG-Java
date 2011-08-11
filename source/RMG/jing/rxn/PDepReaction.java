@@ -598,7 +598,10 @@ public class PDepReaction extends Reaction {
 			PDepArrheniusKinetics[] allKinetics = pDepRate.getPDepArrheniusKinetics();
 			for (int i=0; i<allKinetics.length; i++) {
 				result.append(String.format("%-52s",p_rxn_string));
-				result.append("\t" + getHighPKinetics()[i].toChemkinString(0.0, t, false));
+				if (getHighPKinetics()[i] == null)
+					result.append("\t1.0E0 0.0 0.0");
+				else 
+					result.append("\t" + getHighPKinetics()[i].toChemkinString(0.0, t, false));
 				//result.append("\t1.0E0 0.0 0.0");
 				result.append("\t!" + getComments().toString() );
 				result.append('\n');
