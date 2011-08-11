@@ -377,6 +377,10 @@ public class FastMasterEqn implements PDepKineticsEstimator {
 			// This may be needed to release memory, which is especially 
 			// important for FAME since it can easily be called tens of
 			// thousands of times in a single job
+			
+			while ( stderr.ready() && (line = stderr.readLine()) != null) {
+				Logger.error(line);
+			}
 			stderr.close();
 
 			// Parse FAME output file and update accordingly
