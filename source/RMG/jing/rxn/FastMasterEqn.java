@@ -403,8 +403,8 @@ public class FastMasterEqn implements PDepKineticsEstimator {
 			Logger.logStackTrace(e);
         	Logger.error(e.getMessage());
 			if (e.getCause() == null){
-				Logger.info("No cause for this exception! Could be because of insufficient memory,");
-				Logger.info("and not actually a problem with FAME or the input files!! Try pruning.");
+				Logger.info("Could be because of insufficient memory and not actually a problem with FAME or the input files.");
+				Logger.info("Try running fame.exe on its own.");
 			}
 			// Save bad input to file
             try {
@@ -743,6 +743,7 @@ public class FastMasterEqn implements PDepKineticsEstimator {
 
 	/**
 	 * Parses one meaningful line from a FAME output buffer.
+	 * Returns null at the end of the file (as would br.readLine() )
 	 */
 	public String readMeaningfulLine(BufferedReader br) throws IOException {
 
@@ -750,7 +751,9 @@ public class FastMasterEqn implements PDepKineticsEstimator {
 		boolean found = false;
 		
 		while (!found) {
-			str = br.readLine().trim();
+			str = br.readLine();
+			if (str==null) return null;
+			str = str.trim();
 			found = !(str.length() == 0 || str.startsWith("#"));
 		}
 
@@ -856,6 +859,10 @@ public class FastMasterEqn implements PDepKineticsEstimator {
 
 				// Reactant and product isomers
 				str = readMeaningfulLine(br);
+				if (str==null) {
+					throw new PDepException(String.format(
+						"Was expecting %d sets of phenomenological rate coefficients in fame output, but output ends after %s",i, numKinetics));
+				}
 				tkn = new StringTokenizer(str);
 				int reac = Integer.parseInt(tkn.nextToken()) - 1;
 				int prod = Integer.parseInt(tkn.nextToken()) - 1;
@@ -1033,7 +1040,7 @@ public class FastMasterEqn implements PDepKineticsEstimator {
 			Logger.verbose(pdn.toString());
 			Logger.error(e.getMessage());
 			Logger.logStackTrace(e);
-			throw new PDepException("Unable to parse FAME output file.");
+			throw new PDepException("Unable to parse FAME output file. "+e.getMessage());
 		}
 		catch(IOException e) {
 			Logger.error("Unable to read from file \"fame_output.txt\".");
