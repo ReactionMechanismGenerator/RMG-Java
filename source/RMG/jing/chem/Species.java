@@ -1170,6 +1170,14 @@ public class Species {
 		// Write the cTable to species.mol file
         try {
         	molFile = new File(inchiDirectory + "/species.mol");
+		File txtFile = new File(inchiDirectory + "/species.txt");
+		//delete any existing molFile or txtFile to make the source of failures more obvious and avoid hidden bugs
+		if(molFile.exists()){
+		    molFile.delete();
+		}
+		if(txtFile.exists()){
+		    txtFile.delete();
+		}
         	FileWriter fw = new FileWriter(molFile);
         	fw.write(cTable);
         	fw.close();
