@@ -861,7 +861,7 @@ public class FastMasterEqn implements PDepKineticsEstimator {
 				str = readMeaningfulLine(br);
 				if (str==null) {
 					throw new PDepException(String.format(
-						"Was expecting %d sets of phenomenological rate coefficients in fame output, but output ends after %s",i, numKinetics));
+						"Was expecting %d sets of phenomenological rate coefficients in fame output, but output ends after %s", numKinetics, i));
 				}
 				tkn = new StringTokenizer(str);
 				int reac = Integer.parseInt(tkn.nextToken()) - 1;
