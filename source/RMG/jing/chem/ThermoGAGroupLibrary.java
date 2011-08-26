@@ -31,6 +31,7 @@ package jing.chem;
 
 import java.io.*;
 import java.util.*;
+
 import jing.chemUtil.*;
 import jing.chemParser.*;
 import jing.chemUtil.HierarchyTree;
@@ -302,7 +303,7 @@ public class ThermoGAGroupLibrary {
     }
 
     //## operation findRingCorrection(ChemGraph)
-	public ThermoGAValue findRingCorrection(ChemGraph p_chemGraph) {
+	public Set<ThermoGAValue> findRingCorrections(ChemGraph p_chemGraph) {
 	    // end pey
 	        //#[ operation findRingCorrection(ChemGraph)
 
@@ -315,7 +316,8 @@ public class ThermoGAGroupLibrary {
 	        int deepest = -1;
 	        Stack deepestStack = new Stack();
 	        deepestStack = null;
-
+	        Set<Stack> deepestStackSet = null;
+	        
 	        // iterate through nodes in chemgraph that are in a cycle
 	        Iterator iter = p_chemGraph.getNodeList();
 	        while (iter.hasNext()) {
@@ -328,32 +330,45 @@ public class ThermoGAGroupLibrary {
 	            p_chemGraph.resetThermoSite(node);
 	            // find the match in the thermo tree
 	            Stack stack = ringTree.findMatchedPath(p_chemGraph);
+	            System.out.println(((FunctionalGroup)((HierarchyTreeNode)stack.lastElement()).getElement()).getName());
 	            // check if it's the deepest match
 	            if (!stack.empty()) {
 	              HierarchyTreeNode htn = (HierarchyTreeNode) stack.peek();
-	              if (htn.getDepth() > deepest) {
-	                deepestStack = stack;
-	                deepest = htn.getDepth();
+	              if (htn.getDepth() >= deepest) {
+	            	  if(htn.getDepth() > deepest){//we have found a Stack that is deeper than the previous ones, re-initialize Set:
+	            		  deepestStackSet = new HashSet<Stack>();
+	            		  deepestStackSet.add(stack);
+	            		  deepest = htn.getDepth();
+	            	  }
+	            	  else {//Stack of equal depth: Set is already there, it should be updated with new Stack:
+	            		  deepestStackSet.add(stack);
+	            	  }  
 	              }
 	            }
 
 	          }
 	        }
 
-	        if (deepestStack == null) return null;
-
-	        while (!deepestStack.empty()) {
-	                HierarchyTreeNode node = (HierarchyTreeNode)deepestStack.pop();
+	        if (deepestStackSet == null) return null;
+	        
+	        Set<ThermoGAValue> GASet = new HashSet<ThermoGAValue>();
+	        for(Stack element : deepestStackSet){
+	        	while (!element.empty()) {
+	        		HierarchyTreeNode node = (HierarchyTreeNode)element.pop();
 	                FunctionalGroup fg = (FunctionalGroup)node.getElement();
 	                ThermoGAValue ga = (ThermoGAValue)ringLibrary.get(fg);
-                        p_chemGraph.appendThermoComments("Ring:" + fg.getName());
-	                if (ga != null) return ga;
+                    p_chemGraph.appendThermoComments("Ring:" + fg.getName());
+                    if (ga != null) GASet.add(ga);
+	        	}
 	        }
-                p_chemGraph.getGraph().resetMatchedGC();
-	        return null;
-	        // end pey
+	        p_chemGraph.getGraph().resetMatchedGC();
+	        if(!GASet.isEmpty()){
+	        	return GASet;
+	        }
+	        else{
+	        	return null;
+	        }
 
-	        //#]
 	    }
 
     //2/5/09 gmagoon: new functions for gauche and 1,5-interactions

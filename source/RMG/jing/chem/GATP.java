@@ -31,6 +31,7 @@ package jing.chem;
 
 
 import java.util.*;
+
 import jing.param.*;
 import jing.chemUtil.*;
 import jing.param.*;
@@ -95,7 +96,7 @@ public class GATP implements GeneralGAPP {
         result.plus(getGAGroup(p_chemGraph));
 
         // comment out, waiting for Bill and Joanna making the right ring correction library
-        result.plus(getRingCorrection(p_chemGraph));
+        result.plus(getRingCorrections(p_chemGraph));
         result.plus(getOtherCorrection(p_chemGraph));
 
         return result;
@@ -294,7 +295,7 @@ public class GATP implements GeneralGAPP {
     }
 
     //## operation getRingCorrection(ChemGraph)
-    public ThermoGAValue getRingCorrection(ChemGraph p_chemGraph) {
+    public Set<ThermoGAValue> getRingCorrections(ChemGraph p_chemGraph) {
         //#[ operation getRingCorrection(ChemGraph)
 		 if (p_chemGraph.isAcyclic()) return null;
 
@@ -303,7 +304,7 @@ public class GATP implements GeneralGAPP {
 	        if (sat.isRadical()) {
 				sat = ChemGraph.saturate(p_chemGraph);
 	        }
-	        ThermoGAValue ga = thermoLibrary.findRingCorrection(sat);
+	        Set<ThermoGAValue> ga = thermoLibrary.findRingCorrections(sat);
 	        /*System.out.println("Ring Correction for "+ p_chemGraph.generateChemicalFormula() +" : " + ga.getName());
 	        System.out.println(p_chemGraph.toStringWithoutH());*/
 			p_chemGraph.setCentralNode(oldCentralNode);

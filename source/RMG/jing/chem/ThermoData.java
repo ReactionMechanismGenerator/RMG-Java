@@ -32,8 +32,10 @@ package jing.chem;
 
 
 import java.util.*;
+
+import com.sun.org.apache.xpath.internal.operations.Plus;
+
 import jing.param.*;
-import jing.param.Temperature;
 
 //## package jing::chem
 
@@ -416,6 +418,18 @@ public class ThermoData extends ThermoGAValue {
         return super.toString();
         //#]
     }
+    
+    /**
+     * This method adds a series of ThermoGAValues 
+     * by iterating over every element of the Set
+     * and calling the Plus(ThermoGAValue) method in the {@link ThermoData} type
+     * @param ringCorrections
+     */
+	public void plus(Set<ThermoGAValue> ringCorrections) {
+		for(ThermoGAValue ga : ringCorrections){
+			plus(ga);
+		}
+	}
 
 }
 /*********************************************************************
