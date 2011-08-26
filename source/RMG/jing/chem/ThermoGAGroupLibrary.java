@@ -303,73 +303,65 @@ public class ThermoGAGroupLibrary {
     }
 
     //## operation findRingCorrection(ChemGraph)
-	public Set<ThermoGAValue> findRingCorrections(ChemGraph p_chemGraph) {
-	    // end pey
-	        //#[ operation findRingCorrection(ChemGraph)
+    public Set<ThermoGAValue> findRingCorrections(ChemGraph p_chemGraph) {
 
-	        // begin pey -- read tree instead of library
-	        // return findCorrectionInLibrary(p_chemGraph,ringLibrary);
+    	if (p_chemGraph == null) return null;
 
-	        if (p_chemGraph == null) return null;
+    	// initialize
+    	int deepest = -1;
+    	Set<Stack> deepestStackSet = null;
 
-	        // initialize
-	        int deepest = -1;
-	        Stack deepestStack = new Stack();
-	        deepestStack = null;
-	        Set<Stack> deepestStackSet = null;
-	        
-	        // iterate through nodes in chemgraph that are in a cycle
-	        Iterator iter = p_chemGraph.getNodeList();
-	        while (iter.hasNext()) {
-	          Node node = (Node) iter.next();
-	          Atom atom = (Atom)node.getElement();
-	          if (!(atom.getType().equals("H"))) {
-	          // waiting on Jing to fix the inCycle issue for radicals that get saturated
-	          // if (node.getInCycle()) {
-	            // make the current node the central atom
-	            p_chemGraph.resetThermoSite(node);
-	            // find the match in the thermo tree
-	            Stack stack = ringTree.findMatchedPath(p_chemGraph);
-	            System.out.println(((FunctionalGroup)((HierarchyTreeNode)stack.lastElement()).getElement()).getName());
-	            // check if it's the deepest match
-	            if (!stack.empty()) {
-	              HierarchyTreeNode htn = (HierarchyTreeNode) stack.peek();
-	              if (htn.getDepth() >= deepest) {
-	            	  if(htn.getDepth() > deepest){//we have found a Stack that is deeper than the previous ones, re-initialize Set:
-	            		  deepestStackSet = new HashSet<Stack>();
-	            		  deepestStackSet.add(stack);
-	            		  deepest = htn.getDepth();
-	            	  }
-	            	  else {//Stack of equal depth: Set is already there, it should be updated with new Stack:
-	            		  deepestStackSet.add(stack);
-	            	  }  
-	              }
-	            }
+    	// iterate through nodes in chemgraph that are in a cycle
+    	Iterator iter = p_chemGraph.getNodeList();
+    	while (iter.hasNext()) {
+    		Node node = (Node) iter.next();
+    		Atom atom = (Atom)node.getElement();
+    		if (!(atom.getType().equals("H"))) {
 
-	          }
-	        }
+    			// make the current node the central atom
+    			p_chemGraph.resetThermoSite(node);
+    			// find the match in the thermo tree
+    			Stack stack = ringTree.findMatchedPath(p_chemGraph);
+    			System.out.println(((FunctionalGroup)((HierarchyTreeNode)stack.lastElement()).getElement()).getName());
+    			// check if it's the deepest match
+    			if (!stack.empty()) {
+    				HierarchyTreeNode htn = (HierarchyTreeNode) stack.peek();
+    				if (htn.getDepth() >= deepest) {
+    					if(htn.getDepth() > deepest){//we have found a Stack that is deeper than the previous ones, re-initialize Set:
+    						deepestStackSet = new HashSet<Stack>();
+    						deepestStackSet.add(stack);
+    						deepest = htn.getDepth();
+    					}
+    					else {//Stack of equal depth: Set is already there, it should be updated with new Stack:
+    						deepestStackSet.add(stack);
+    					}  
+    				}
+    			}
 
-	        if (deepestStackSet == null) return null;
-	        
-	        Set<ThermoGAValue> GASet = new HashSet<ThermoGAValue>();
-	        for(Stack element : deepestStackSet){
-	        	while (!element.empty()) {
-	        		HierarchyTreeNode node = (HierarchyTreeNode)element.pop();
-	                FunctionalGroup fg = (FunctionalGroup)node.getElement();
-	                ThermoGAValue ga = (ThermoGAValue)ringLibrary.get(fg);
-                    p_chemGraph.appendThermoComments("Ring:" + fg.getName());
-                    if (ga != null) GASet.add(ga);
-	        	}
-	        }
-	        p_chemGraph.getGraph().resetMatchedGC();
-	        if(!GASet.isEmpty()){
-	        	return GASet;
-	        }
-	        else{
-	        	return null;
-	        }
+    		}
+    	}
 
-	    }
+    	if (deepestStackSet == null) return null;
+
+    	Set<ThermoGAValue> GASet = new HashSet<ThermoGAValue>();
+    	for(Stack element : deepestStackSet){
+    		while (!element.empty()) {
+    			HierarchyTreeNode node = (HierarchyTreeNode)element.pop();
+    			FunctionalGroup fg = (FunctionalGroup)node.getElement();
+    			ThermoGAValue ga = (ThermoGAValue)ringLibrary.get(fg);
+    			p_chemGraph.appendThermoComments("Ring:" + fg.getName());
+    			if (ga != null) GASet.add(ga);
+    		}
+    	}
+    	p_chemGraph.getGraph().resetMatchedGC();
+    	if(!GASet.isEmpty()){
+    		return GASet;
+    	}
+    	else{
+    		return null;
+    	}
+
+    }
 
     //2/5/09 gmagoon: new functions for gauche and 1,5-interactions
         /**
