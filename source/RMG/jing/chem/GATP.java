@@ -295,7 +295,7 @@ public class GATP implements GeneralGAPP {
     }
 
     //## operation getRingCorrection(ChemGraph)
-    public Set<ThermoGAValue> getRingCorrections(ChemGraph p_chemGraph) {
+    public Map<ThermoGAValue, Integer> getRingCorrections(ChemGraph p_chemGraph) {
         //#[ operation getRingCorrection(ChemGraph)
 		 if (p_chemGraph.isAcyclic()) return null;
 
@@ -304,7 +304,7 @@ public class GATP implements GeneralGAPP {
 	        if (sat.isRadical()) {
 				sat = ChemGraph.saturate(p_chemGraph);
 	        }
-	        Set<ThermoGAValue> ga = thermoLibrary.findRingCorrections(sat);
+	        Map<ThermoGAValue, Integer> ga = thermoLibrary.findRingCorrections(sat);
 	        /*System.out.println("Ring Correction for "+ p_chemGraph.generateChemicalFormula() +" : " + ga.getName());
 	        System.out.println(p_chemGraph.toStringWithoutH());*/
 			p_chemGraph.setCentralNode(oldCentralNode);

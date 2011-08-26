@@ -34,6 +34,7 @@ import jing.chem.*;
 import jing.mathTool.MathTool;
 
 import java.util.*;
+
 import jing.rxnSys.Logger;
 
 //## package jing::chemUtil
@@ -2158,7 +2159,91 @@ public class Graph {
     public void clearArcList() {
         arcList.clear();
     }
+    
+    /**
+     * returns a set of Node's of the ChemGraph that belong to two or more fused rings.
+     * A fused ring system is a set of rings that share at least one common bond. An 
+     * example is decalin, with two fused cyclohexane rings.
+     * @return
+     */
+    public Set<Node> getFusedRingAtoms(){
+    	
+    	if(SSSRings == null){
+    		return null;
+    	}
+    	else if (acyclic){
+    		return null;
+    	}
+    	else if(getCycleNumber() == 1){//monocyclic case
+    		return null;
+    	}
+    	else{
+    		Set<Node> fusedRingAtoms = new HashSet<Node>();
+    		//First retrieve lists with all the Nodes that belong to rings:
+    		List<Set<Node>> ringNodesList = new LinkedList<Set<Node>>();
+    		Iterator iterCycle = SSSRings.iterator(); //loop over all SSSRs
+        	while(iterCycle.hasNext()){
+        		Set<Node> nodesSet = new HashSet<Node>();
+        		LinkedList cycle = (LinkedList)iterCycle.next();
+        		Iterator iter = cycle.iterator();
+        		while(iter.hasNext()){
+        			GraphComponent node = (GraphComponent)iter.next();
+        			if(node instanceof Node){
+        				nodesSet.add((Node)node);
+        			}
+        		}
+        		ringNodesList.add(nodesSet);
+        	}
+        	//Now look for Nodes that belong to more than one Set of Nodes = fused ring atoms
+        	for(int index = 0; index < ringNodesList.size()-1; index++){// end at the one before last
+        		Set<Node> set = ringNodesList.get(index);
+        		for (Node node : set){
+        			if(ringNodesList.get(index+1).contains(node)){
+        				fusedRingAtoms.add(node);
+        			}
+        		}
+        	}
+        	if(fusedRingAtoms.isEmpty()){
+        		return null;
+        	}
+        	else{
+        		return fusedRingAtoms;
+        	}
+    	}
 
+    }
+
+
+    /**
+     * Returns a list with sets of Nodes that belong to SSS Rings.
+     * @return
+     */
+	public List<Set<Node>> getCycleNodes() {
+		if(SSSRings == null){
+    		return null;
+    	}
+    	else if (acyclic){
+    		return null;
+    	}
+    	else{
+    		//First retrieve lists with all the Nodes that belong to rings:
+    		List<Set<Node>> ringNodesList = new LinkedList<Set<Node>>();
+    		Iterator iterCycle = SSSRings.iterator(); //loop over all SSSRs
+        	while(iterCycle.hasNext()){
+        		Set<Node> nodesSet = new HashSet<Node>();
+        		LinkedList cycle = (LinkedList)iterCycle.next();
+        		Iterator iter = cycle.iterator();
+        		while(iter.hasNext()){
+        			GraphComponent node = (GraphComponent)iter.next();
+        			if(node instanceof Node){
+        				nodesSet.add((Node)node);
+        			}
+        		}
+        		ringNodesList.add(nodesSet);
+        	}
+        	return ringNodesList;
+    	}
+	}
 }
 /*********************************************************************
 	File Path	: RMG\RMG\jing\chemUtil\Graph.java

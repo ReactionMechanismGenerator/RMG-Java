@@ -365,6 +365,90 @@ public class ThermoGAGroupLibrary {
 
     //2/5/09 gmagoon: new functions for gauche and 1,5-interactions
         /**
+	//## operation findRingCorrection(ChemGraph)
+	public Map<ThermoGAValue, Integer> findRingCorrections(ChemGraph p_chemGraph) {
+
+		if (p_chemGraph == null) return null;
+
+		Set<Node> fusedRingAtoms = p_chemGraph.getGraph().getFusedRingAtoms();
+		if(fusedRingAtoms != null){
+			p_chemGraph.appendThermoComments("Fused Ring System!\n");
+			p_chemGraph.appendThermoComments("Additive ring strain corrections might not be accurate!\n");
+		}
+
+		List<Set<Node>> ringNodes = p_chemGraph.getGraph().getCycleNodes();
+
+		if(ringNodes == null){
+			Logger.error("Could not find ring nodes in graph.");
+			return null;
+		}
+		else{			
+			Map<Stack, Integer> deepestStackMap = null;
+			deepestStackMap = new HashMap<Stack, Integer>();
+			for(Set<Node> set : ringNodes){
+				int deepest = -1;
+				Stack dummy = null;
+				Iterator iterNodes = set.iterator();
+				while(iterNodes.hasNext()){
+					//take first atom in this ring:
+					Node node = (Node)iterNodes.next();
+					Atom atom = (Atom)node.getElement();
+
+					// make the current node the central atom
+					p_chemGraph.resetThermoSite(node);
+					// find the match in the thermo tree
+					Stack stack = ringTree.findMatchedPath(p_chemGraph);
+					System.out.println(((FunctionalGroup)((HierarchyTreeNode)stack.lastElement()).getElement()).getName());
+					// check if it's the deepest match
+					if (!stack.empty()) {
+						HierarchyTreeNode htn = (HierarchyTreeNode) stack.peek();
+						if (htn.getDepth() > deepest) {
+							//we have found a Stack that is deeper than the previous ones, re-initialize Set:
+							dummy = stack;
+							deepest = htn.getDepth();
+						}
+					}
+				}
+				if(deepestStackMap.containsKey(dummy)){
+					deepestStackMap.put(dummy, deepestStackMap.get(dummy)+1);
+				}
+				else{
+					deepestStackMap.put(dummy,1);
+				}
+			}
+
+			if (deepestStackMap.keySet().isEmpty()) return null;
+
+			//determine ThermoGAValues:
+			Map<ThermoGAValue, Integer> GAMap = new HashMap<ThermoGAValue, Integer>();
+			for(Stack element : deepestStackMap.keySet()){
+				System.out.println("Value for Stack: "+deepestStackMap.get(element));
+				HierarchyTreeNode node = (HierarchyTreeNode)element.pop();
+				FunctionalGroup fg = (FunctionalGroup)node.getElement();
+				ThermoGAValue ga = (ThermoGAValue)ringLibrary.get(fg);
+				p_chemGraph.appendThermoComments("Ring:" + fg.getName()+"\n");
+				if (ga != null) {
+					if(GAMap.containsKey(ga)){
+						GAMap.put(ga, GAMap.get(ga)+1);
+					}
+					else{
+						GAMap.put(ga,1);
+					}
+				}
+
+			}
+			
+			p_chemGraph.getGraph().resetMatchedGC();
+			if(GAMap.isEmpty()){
+				return null;
+			}
+			else{
+				return GAMap;
+			}
+
+		}
+
+	}
     Requires: the central node of p_chemGraph has been set to the thermo center atom.
     Effects: find a matched thermo functional group in the group tree for the pass-in p_chemGraph, return this functional group's thermo value.  If no leaf is found, throw  GroupNotFoundException
     Modifies:
