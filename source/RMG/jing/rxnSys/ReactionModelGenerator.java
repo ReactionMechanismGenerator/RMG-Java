@@ -1701,7 +1701,28 @@ public class ReactionModelGenerator {
         }
         
         //System.out.println("Performing model reduction");
-        
+        if (writerestart) {
+			/*
+			 * Rename current restart files:
+			 * 	In the event RMG fails while writing the restart files,
+			 * 	user won't lose any information
+			 */
+			String[] restartFiles = {"Restart/coreReactions.txt", "Restart/coreSpecies.txt",
+					"Restart/edgeReactions.txt", "Restart/edgeSpecies.txt",
+					"Restart/pdepnetworks.txt", "Restart/pdepreactions.txt"};
+			writeBackupRestartFiles(restartFiles);
+			
+			writeCoreSpecies();
+			writeCoreReactions();
+			writeEdgeSpecies();
+			writeEdgeReactions();
+			if (PDepNetwork.generateNetworks == true)	writePDepNetworks();
+			
+			/*
+			 * Remove backup restart files from Restart folder
+			 */
+			removeBackupRestartFiles(restartFiles);
+		}
 		
         if (paraInfor != 0){
 			Logger.info("Model Generation performed. Now generating sensitivity data.");
@@ -2462,7 +2483,7 @@ public class ReactionModelGenerator {
 	
 	private void writeEdgeSpecies() {
 		BufferedWriter bw = null;
-		
+		Logger.info("Writing Restart Edge Species");
         try {
             bw = new BufferedWriter(new FileWriter("Restart/edgeSpecies.txt"));
 			for(Iterator iter=((CoreEdgeReactionModel)getReactionModel()).getUnreactedSpeciesSet().iterator();iter.hasNext();){
@@ -2548,7 +2569,7 @@ public class ReactionModelGenerator {
 	
 	private void writeCoreSpecies() {
 		BufferedWriter bw = null;
-		
+		Logger.info("Writing Restart Core Species");
         try {
             bw = new BufferedWriter(new FileWriter("Restart/coreSpecies.txt"));
 			for(Iterator iter=getReactionModel().getSpecies();iter.hasNext();){
@@ -2578,7 +2599,7 @@ public class ReactionModelGenerator {
 	private void writeCoreReactions() {
 		BufferedWriter bw_rxns = null;
 		BufferedWriter bw_pdeprxns = null;
-		
+		Logger.info("Writing Restart Core Reactions");
         try {
             bw_rxns = new BufferedWriter(new FileWriter("Restart/coreReactions.txt"));
             bw_pdeprxns = new BufferedWriter(new FileWriter("Restart/pdepreactions.txt"));
@@ -2639,7 +2660,7 @@ public class ReactionModelGenerator {
 	
 	private void writeEdgeReactions() {
 		BufferedWriter bw = null;
-		
+		Logger.info("Writing Restart Edge Reactions");
         try {
             bw = new BufferedWriter(new FileWriter("Restart/edgeReactions.txt"));
             
