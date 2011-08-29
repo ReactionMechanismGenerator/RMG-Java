@@ -47,3 +47,4 @@
 29	  on      SubstitutionS
 30	  on      H_Abstraction
 31	  on      R_Addition_MultipleBond_A		
+32	on	R_Addition_CSm
