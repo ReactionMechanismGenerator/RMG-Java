@@ -297,11 +297,12 @@ public class QMTP implements GeneralGAPP {
 			    }
 			    else{
 				Logger.info("*****Final attempt (#" + maxAttemptNumber + ") on species " + name + " ("+InChIaug+") failed.");
-				Logger.critical(p_chemGraph.toString());
-			        System.exit(0);
-			//	ThermoData temp = new ThermoData(1000,0,0,0,0,0,0,0,0,0,0,0,"failed calculation");
-			//	temp.setSource("***failed calculation***");
-			//	return temp;
+				Logger.info(p_chemGraph.toString());
+			        //System.exit(0);
+				ThermoData temp = new ThermoData(1000,0,0,0,0,0,0,0,0,0,0,0,"failed calculation");
+				temp.setSource("***failed calculation***");
+				return temp;
+				//an upstream loop should catch this so the dummy result should not be used
 			    }
 			}
 			Logger.info("*****Attempt #"+attemptNumber + " on species " + name + " ("+InChIaug+") failed. Will attempt a new keyword.");
@@ -356,11 +357,11 @@ public class QMTP implements GeneralGAPP {
 		    else if(successFlag==0){
 			if(attemptNumber==maxAttemptNumber){//if this is the last possible attempt, and the calculation fails, exit with an error message
 				Logger.info("*****Final attempt (#" + maxAttemptNumber + ") on species " + name + " ("+InChIaug+") failed.");
-				Logger.critical(p_chemGraph.toString());
-			        System.exit(0);
-			//	ThermoData temp = new ThermoData(1000,0,0,0,0,0,0,0,0,0,0,0,"failed calculation");
-			//	temp.setSource("***failed calculation***");
-			//	return temp;
+				Logger.info(p_chemGraph.toString());
+			        //System.exit(0);
+				ThermoData temp = new ThermoData(1000,0,0,0,0,0,0,0,0,0,0,0,"failed calculation");
+				temp.setSource("***failed calculation***");
+				return temp;
 			}
 			Logger.info("*****Attempt #"+attemptNumber + " on species " + name + " ("+InChIaug+") failed. Will attempt a new keyword.");
 			attemptNumber++;//try again with new keyword
@@ -2214,7 +2215,7 @@ public class QMTP implements GeneralGAPP {
                                 return true;
                             }
                             else{//InChI was found but doesn't match
-                                Logger.critical("Congratulations! You appear to have discovered the first recorded instance of an InChIKey collision: InChIKey(augmented) = " + name + " RMG Augmented InChI = "+ InChIaug + " Gaussian input file Augmented InChI = "+inputFileInChI);
+                                Logger.critical("Congratulations! You may have discovered one of the first recorded instances of an InChIKey collision: InChIKey(augmented) = " + name + " RMG Augmented InChI = "+ InChIaug + " Gaussian input file Augmented InChI = "+inputFileInChI);
                                 System.exit(0);
                             }
                         }
@@ -2225,7 +2226,7 @@ public class QMTP implements GeneralGAPP {
                     }
                 }
                 else{
-                    Logger.critical("Congratulations! You appear to have discovered the first recorded instance of an InChIKey collision: InChIKey(augmented) = " + name + " RMG Augmented InChI = "+ InChIaug + " Log file Augmented InChI = "+logFileInChI);
+                    Logger.critical("Congratulations! You may have discovered one of the first recorded instances of an InChIKey collision: InChIKey(augmented) = " + name + " RMG Augmented InChI = "+ InChIaug + " Log file Augmented InChI = "+logFileInChI);
                     System.exit(0);
                 }
             }
@@ -2348,7 +2349,7 @@ public class QMTP implements GeneralGAPP {
                             return true;
                         }
                         else{//InChI was found but doesn't match
-                            Logger.critical("Congratulations! You appear to have discovered the first recorded instance of an InChIKey collision: InChIKey(augmented) = " + name + " RMG Augmented InChI = "+ InChIaug + " MOPAC input file Augmented InChI = " + inputFileInChI + " Log file Augmented InChI = "+logFileInChI);
+                            Logger.critical("Congratulations! You may have discovered one of the first recorded instances of an InChIKey collision: InChIKey(augmented) = " + name + " RMG Augmented InChI = "+ InChIaug + " MOPAC input file Augmented InChI = " + inputFileInChI + " Log file Augmented InChI = "+logFileInChI);
                             System.exit(0);
                         }
                     }
@@ -2359,7 +2360,7 @@ public class QMTP implements GeneralGAPP {
                 }
               //  }
 //                else{
-//                    Logger.critical("Congratulations! You appear to have discovered the first recorded instance of an InChIKey collision: InChIKey(augmented) = " + name + " RMG Augmented InChI = "+ InChIaug + " MOPAC output file Augmented InChI = "+logFileInChI);
+//                    Logger.critical("Congratulations! You may have discovered one of the first recorded instances of an InChIKey collision: InChIKey(augmented) = " + name + " RMG Augmented InChI = "+ InChIaug + " MOPAC output file Augmented InChI = "+logFileInChI);
 //                    System.exit(0);
 //                }
             }
@@ -2476,7 +2477,7 @@ public class QMTP implements GeneralGAPP {
                                 return true;
                             }
                             else{//InChI was found but doesn't match
-                                Logger.critical("Congratulations! You appear to have discovered the first recorded instance of an InChIKey collision: InChIKey(augmented) = " + name + " RMG Augmented InChI = "+ InChIaug + " MM4 input file Augmented InChI = "+inputFileInChI);
+                                Logger.critical("Congratulations! You may have discovered one of the first recorded instances of an InChIKey collision: InChIKey(augmented) = " + name + " RMG Augmented InChI = "+ InChIaug + " MM4 input file Augmented InChI = "+inputFileInChI);
                                 System.exit(0);
                             }
                         }
@@ -2487,7 +2488,7 @@ public class QMTP implements GeneralGAPP {
                     }
                 }
                 else{
-                    Logger.critical("Congratulations! You appear to have discovered the first recorded instance of an InChIKey collision: InChIKey(augmented) = " + name + " RMG Augmented InChI = "+ InChIaug + " Log file Augmented InChI = "+logFileInChI);
+                    Logger.critical("Congratulations! You may have discovered one of the first recorded instances of an InChIKey collision: InChIKey(augmented) = " + name + " RMG Augmented InChI = "+ InChIaug + " Log file Augmented InChI = "+logFileInChI);
                     System.exit(0);
                 }
             }

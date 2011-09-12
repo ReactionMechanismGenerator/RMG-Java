@@ -1315,6 +1315,10 @@ return sn;
                 }
                 else if (thermoGAPP == null) setDefaultThermoGAPP();
         	thermoData = thermoGAPP.generateThermoData(this);
+		//fall back to GATP if it is a failed QMTP calculation
+		if (thermoData.getSource()=="***failed calculation***"){
+		    thermoData=(GATP.getINSTANCE()).generateThermoData(this);
+		}
 
             //thermoData = thermoGAPP.generateAbramData(this);
         	return thermoData;
