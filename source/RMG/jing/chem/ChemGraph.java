@@ -1295,8 +1295,17 @@ return sn;
     }
     
     public String generateMolFileString() {
-    	String mfs = Species.generateMolFileString(this);
-    	return mfs;
+    	String mfs = Species.generateMolFileString(this,4);//use 4 for benzene bond type...this is apparently not part of MDL MOL file spec, but seems to be more-or-less of a de facto standard, and seems to be properly processed by RDKit (cf. http://sourceforge.net/mailarchive/forum.php?forum_name=inchi-discuss&max_rows=25&style=nested&viewmonth=200909 )
+	//note that for aromatic radicals (e.g. phenyl), this produces an RDKit error, as shown below (at least using the (somewhat old) RDKit on gmagoon's laptop as of 9/12/11), but it still seems to process correctly, though the guess geometry isn't that great (more like sp3 than sp2); in practice, we won't often be using radicals with RDKit (exceptions include when requested by user or in DictionaryReader), so this shouldn't be a big deal
+//ERROR: Traceback (most recent call last):
+//ERROR: File "c:\Users\User1\RMG-Java/scripts/distGeomScriptMolLowestEnergyConf.py", line 13, in <module>
+//ERROR: AllChem.EmbedMultipleConfs(m, attempts,randomSeed=1)
+//ERROR: Boost.Python.ArgumentError: Python argument types in
+//ERROR: rdkit.Chem.rdDistGeom.EmbedMultipleConfs(NoneType, int)
+//ERROR: did not match C++ signature:
+//ERROR: EmbedMultipleConfs(class RDKit::ROMol {lvalue} mol, unsigned int numConfs=10, unsigned int maxAttempts=0, int randomSeed=-1, bool clearConfs=True, bool useRandomCoords=False, double boxSizeMult=2.0, bool randNegEig=True, unsigned int numZeroFail=1, double pruneRmsThresh=-1.0, class boost::python::dict {lvalue} coordMap={})
+	//an alternative would be to use bond type of 1, which also seems to work, though the guess geometry for non-radicals (e.g. benzene) is not great (sp3 hybridized rather than sp2 hybridized)
+	return mfs;
     }
     
     /**
@@ -1316,7 +1325,7 @@ return sn;
                 else if (thermoGAPP == null) setDefaultThermoGAPP();
         	thermoData = thermoGAPP.generateThermoData(this);
 		//fall back to GATP if it is a failed QMTP calculation
-		if (thermoData.getSource()=="***failed calculation***"){
+		if (((String)thermoData.getSource()).equals("***failed calculation***")){
 		    thermoData=(GATP.getINSTANCE()).generateThermoData(this);
 		}
 

@@ -362,6 +362,7 @@ public class QMTP implements GeneralGAPP {
 				ThermoData temp = new ThermoData(1000,0,0,0,0,0,0,0,0,0,0,0,"failed calculation");
 				temp.setSource("***failed calculation***");
 				return temp;
+				//an upstream loop should catch this so the dummy result should not be used
 			}
 			Logger.info("*****Attempt #"+attemptNumber + " on species " + name + " ("+InChIaug+") failed. Will attempt a new keyword.");
 			attemptNumber++;//try again with new keyword

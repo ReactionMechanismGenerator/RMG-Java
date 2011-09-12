@@ -1160,7 +1160,7 @@ public class Species {
 		String InChIstring = "";
                 String InChIKeystring = "";
                 String line = "";
-                String cTable = generateMolFileString(p_chemGraph);
+                String cTable = generateMolFileString(p_chemGraph, 1);//we use 1 for benzene bond strength...only connectivity is important for InChI; (don't currently have kekulizer, and alternative of 4 is apparently not part of MDL MOL file spec, and InChI program doesn't process it properly when there is a radical site next to a 4 (B) bond)
 		
 		//
                 File molFile = null;
@@ -1333,7 +1333,8 @@ public class Species {
 	
         //convert a chemgraph into a string that represents a 2D molefile with all atom positions initialized to zero
         //gmagoon 6/2/09: I separated this out from generateInChI so it could be easily be used elsewhere
-        public static String generateMolFileString(ChemGraph p_chemGraph) {
+	//bBond = bond Strength to use with aromatic bonds
+        public static String generateMolFileString(ChemGraph p_chemGraph, int bBond) {
     		// Convert chemGraph to string
 		int randNum = 1;
 		String p_string = p_chemGraph.toString(randNum);
@@ -1452,7 +1453,9 @@ public class Species {
 						} else if (bondOrder[i][j].equals("T")) {
 							bondStrength[bondCount] = 3;
 						} else if (bondOrder[i][j].equals("B")) {
-							bondStrength[bondCount] = 4;
+							bondStrength[bondCount] = bBond;
+							//InChI doesn't work with bond type 4 (which is apparently a de facto standard, and not part of MDL molFile Spec http://sourceforge.net/mailarchive/forum.php?forum_name=inchi-discuss&max_rows=25&style=nested&viewmonth=200909 )
+						        //so, we will use 1 when writing InChI's (only connectivity is important, and tests with phenyl and benzene suggest it works properly), but 4 otherwise (the same tests with using 1 also suggest that it still works when writing 2D mol files for RDKit as well, but I'm not sure if there is any cost to this, and I'd like to avoid using 1 except where "necessary")
 						}
 						
 						cTable += "\n";
