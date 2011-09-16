@@ -225,7 +225,8 @@ public class ReplacePdepKinetics {
                 // Computing the residual sum of squares (rss)
                 for (int m=0; m<T.length; m++) {
                 	k_fit[m] = logk_fit.get(m,0);
-                	res[m] = (y[m][0]-k_fit[m]);
+                	// Divide by ln(10), to get back to base 10 for RMSE
+                	res[m] = (y[m][0]-k_fit[m])/Math.log(10);
                 	rss += res[m]*res[m]; 
                 }
                
