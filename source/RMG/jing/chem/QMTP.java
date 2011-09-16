@@ -482,69 +482,7 @@ public class QMTP implements GeneralGAPP {
 			Logger.critical(err);
             System.exit(0);
         }
-        
-
-        
-// gmagoon 6/3/09 comment out InChI checking for now; in any case, the code will need to be updated, as it is copied from my testing code
-//        //check whether the original InChI is reproduced
-//        if(flag==0){
-//            try{
-//                File f=new File("c:/Python25/"+molfilename);
-//                File newFile= new File("c:/Python25/mol3d.mol");
-//                if(newFile.exists()){
-//                    newFile.delete();//apparently renaming will not work unless target file does not exist (at least on Vista)
-//                }
-//                f.renameTo(newFile);
-//                String command = "c:/Users/User1/Documents/InChI-1/cInChI-1.exe c:/Python25/mol3d.mol inchi3d.inchi /AuxNone /DoNotAddH";//DoNotAddH used to prevent adding Hs to radicals (this would be a problem for current RDKit output which doesn't use M RAD notation)
-//                Process inchiProc = Runtime.getRuntime().exec(command);	
-//               // int exitValue = inchiProc.waitFor();
-//                Thread.sleep(200);//****update: can probably eliminate this using buffered reader
-//                inchiProc.destroy();
-//                
-//                //read output file
-//                File outputFile = new File("inchi3d.inchi");
-//                FileReader fr = new FileReader(outputFile);
-//                BufferedReader br = new BufferedReader(fr);
-//        	String line=null;
-//                String inchi3d=null;
-//                while ( (line = br.readLine()) != null) {
-//                        line = line.trim();
-//                        if(line.startsWith("InChI="))
-//                        {
-//                            inchi3d=line;
-//                        }
-//                }
-//                fr.close();
-//                
-//                //return file to original name:
-//                File f2=new File("c:/Python25/mol3d.mol");
-//                File newFile2= new File("c:/Python25/"+molfilename);
-//                if(newFile2.exists()){
-//                    newFile2.delete();
-//                }
-//                f2.renameTo(newFile2);
-//                
-//                //compare inchi3d with input inchi and print a message if they don't match
-//                if(!inchi3d.equals(inchiString)){
-//                    if(inchi3d.startsWith(inchiString)&&inchiString.length()>10){//second condition ensures 1/C does not match 1/CH4; 6 characters for InChI=, 2 characters for 1/, 2 characters for atom layer
-//                        Logger.info("(probably minor) For File: "+ molfilename+" , 3D InChI (" + inchi3d+") begins with, but does not match original InChI ("+inchiString+"). SMILES string: "+ smilesString);
-//                        
-//                    }
-//                    else{
-//                        Logger.info("For File: "+ molfilename+" , 3D InChI (" + inchi3d+") does not match original InChI ("+inchiString+"). SMILES string: "+ smilesString);
-//                    }
-//                }
-//            }
-//            catch (Exception e) {
-//					Logger.logStackTrace(e);
-//                String err = "Error in running InChI process \n";
-//                err += e.toString();
-//                Logger.critical(err);
-//                System.exit(0);
-//            }
-//        }
-        
-        
+                
         //construct molFile pointer to new file (name will be same as 2D mol file
         return new molFile(name, directory);
     }
@@ -2118,6 +2056,12 @@ public class QMTP implements GeneralGAPP {
 
         return result;
     }
+
+    public String getInChIFromModifiedInChI(String modInChI){
+	int pos = modInChI.indexOf("/mult");
+	if (pos < 0) return modInChI;//no mult component
+	else return modInChI.substring(0,pos); //return the component before the mult section
+    }
     
     //returns true if a Gaussian file for the given name and directory (.log suffix) exists and indicates successful completion (same criteria as used after calculation runs); terminates if the InChI doesn't match the InChI in the file or if there is no InChI in the file; returns false otherwise
     public boolean successfulGaussianResultExistsQ(String name, String directory, String InChIaug){
@@ -2642,6 +2586,71 @@ public class QMTP implements GeneralGAPP {
 //        }
 //        return negativeFreq;
 //    }
+
+
+    //check the connectivity in a Gaussian/MOPAC result (or XYZ file); returns true if the there appears to be a match, and returns false otherwise
+    //the connectivity is assumed to match if the InChI produced by processing the result/coordinates through OpenBabel produces in InChI that is equivalent or superstring to the InChI stored in memory
+    //we do not need/want to compare the augmented multN part of the InChI, so InChI should be the non-modified version
+    //for gaussian03, outfileExtension should be "log" and babelType should be "g03"
+    //for MOPAC, outfileExtension should be "out" and babelType should be "moo"
+    //for XYZ, outfileExtension should be "xyz" and babelType should be "xyz"
+    public boolean connectivityMatchInPM3ResultQ(String name, String directory, String InChI, String outfileExtension, String babelType){
+        //call the OpenBabel process (note that this requires OpenBabel environment variable)
+        String InChI3D = null;
+	try{ 
+            File runningdir=new File(directory);
+	    String command=null;
+	    String molPath=directory+"/"+name+".log";
+	    if (System.getProperty("os.name").toLowerCase().contains("windows")){//special windows case
+		command = "babel -i"+babelType + " \""+ molPath+ "\" -oinchi -xX \"DoNotAddH FixedH\"";
+	    }
+	    else{
+		command = "babel -i"+babelType + " " + molPath+ " -oinchi -xX \"DoNotAddH FixedH\"";
+	    }
+	    Process babelProc = Runtime.getRuntime().exec(command, null, runningdir);
+            //read in output
+            InputStream is = babelProc.getInputStream();
+            InputStreamReader isr = new InputStreamReader(is);
+            BufferedReader br = new BufferedReader(isr);
+	    InChI3D=br.readLine().trim();//read in the InChI produced by OpenBabel
+	    String line=null;
+            while ( (line = br.readLine()) != null) {
+		//do nothing
+            }
+            int exitValue = babelProc.waitFor();
+	    babelProc.getErrorStream().close();
+	    babelProc.getOutputStream().close();
+	    br.close();
+	    isr.close();
+	    is.close();
+        }
+        catch(Exception e){
+            String err = "Error in running OpenBabel G03/MOO/XYZ to InChI process \n";
+            err += e.toString();
+            Logger.logStackTrace(e);
+            System.exit(0);
+        }
+	//check whether there is a match (i.e. InChI is a substring of InChI3D)
+	if (InChI3D.startsWith(InChI)){
+	    return true;
+	}
+	else{
+	    Logger.info("***For species "+ name +" the optimized three-dimensional InChI ("+InChI3D+") does not match the intended (unmodified) InChI (" +InChI+")");
+	    return false;
+	}
+    }
+
+     //check the connectivity in a MM4 result; returns true if the there appears to be a match, and returns false otherwise
+    //the connectivity is assumed to match if the InChI produced by processing the result/coordinates through OpenBabel produces in InChI that is equivalent or superstring to the InChI stored in memory
+    //we do not need/want to compare the augmented multN part of the InChI, so InChI should be the non-modified version
+    public boolean connectivityMatchInMM4ResultQ(String name, String directory, String InChI){
+	//first, we convert the .mm4opt file into an xyz file that can be processed by OpenBabel; we use a python script that calls MoleCoor for this
+
+	//check whether there is a match (i.e. InChI is a substring of InChI3D); note that this makes use of the connectivityMatchInPM3ResultQ function, which is sufficiently general to process XYZ files
+	return connectivityMatchInPM3ResultQ(name, directory, InChI, "xyz", "xyz");
+    }
+
+
         //## operation initGAGroupLibrary()
     protected void initGAGroupLibrary() {
         //#[ operation initGAGroupLibrary()
