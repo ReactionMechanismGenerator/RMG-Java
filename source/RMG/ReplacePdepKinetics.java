@@ -168,7 +168,12 @@ public class ReplacePdepKinetics {
             double[] P = new double[1]; double[] Pbar = new double[P.length];
 
             for (int i=0; i<T.length; i++) {
-                T[i] = 1 / ((1/Thigh) + i * (1/Tlow - 1/Thigh) / (T.length-1));
+            	
+            	double Thigh_plog= 2000;
+            	double Tlow_plog=500;
+            	
+                T[i] = 1 / ((1/Thigh_plog) + i * (1/Tlow_plog - 1/Thigh_plog) / (T.length-1));
+                
                 Tbar[i] = (2/T[i] - 1/Tlow - 1/Thigh) / (1/Thigh - 1/Tlow);
             }
 //            for (int i=0; i<P.length; i++) {
@@ -207,8 +212,30 @@ public class ReplacePdepKinetics {
 //                string2return += "PLOG / " + P[j] + "\t" + Math.exp(b_matrix.get(0,0)) +
 //                        "\t" + b_matrix.get(1,0) + "\t" + -GasConstant.getCalMolK()*b_matrix.get(2,0) +
 //                        "\t/\n";
+              
+                
+                // Computing log fitted rate constants
+                Matrix logk_fit = X_matrix.times(b_matrix);
+                
+                double [] k_fit = new double[T.length];
+                double[] res = new double[T.length];
+                double rss = 0.0;
+                double rmse = 0.0;
+                
+                // Computing the residual sum of squares (rss)
+                for (int m=0; m<T.length; m++) {
+                	k_fit[m] = logk_fit.get(m,0);
+                	res[m] = (y[m][0]-k_fit[m]);
+                	rss += res[m]*res[m]; 
+                }
+               
+                // Calculating the root mean square error
+                rmse = Math.sqrt(rss/T.length);          		
+                System.out.println("Root mean square error "+rmse);
+                
                 string2return +=
-                        String.format("%4.3e\t%5.3f\t%8.2f", Math.exp(b_matrix.get(0,0)), b_matrix.get(1,0), -GasConstant.getCalMolK()*b_matrix.get(2,0));
+                        String.format("%4.3e\t%5.3f\t%8.2f\t!RMSE of fit %2.2f", Math.exp(b_matrix.get(0,0)), b_matrix.get(1,0), -GasConstant.getCalMolK()*b_matrix.get(2,0),rmse);  
+                
             }
 
             return string2return;
