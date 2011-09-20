@@ -500,6 +500,29 @@ public class ReactionModelGenerator {
 						Logger.critical("condition.txt: Can't find 'MaxRadNumForQM:' field");
 						System.exit(0);
 					}
+					line=ChemParser.readMeaningfulLine(reader, true);
+					if(line.startsWith("CheckConnectivity:")){
+						StringTokenizer st4 = new StringTokenizer(line);
+						String nameCheckConnectivity = st4.nextToken();
+						String checkConnSetting = st4.nextToken().toLowerCase();
+						if (checkConnSetting.equals("off")){//no connectivity checking
+						    QMTP.connectivityCheck = 0;
+						}
+						else if (checkConnSetting.equals("check")){//print a warning if the connectivity doesn't appear to match
+						    QMTP.connectivityCheck = 1;
+						}
+						else if (checkConnSetting.equals("confirm")){//consider the run a failure if the connectivity doesn't appear to match
+						    QMTP.connectivityCheck = 2;
+						}
+						else{
+						    Logger.critical("condition.txt: Inappropriate 'CheckConnectivity' value (should be 'off', 'check', or 'confirm')");
+						    System.exit(0);
+						}
+					}
+					else{
+						Logger.critical("condition.txt: Can't find 'CheckConnectivity:' field (should be 'off', 'check', or 'confirm')");
+						System.exit(0);
+					}
         		}//otherwise, the flag useQM will remain false by default and the traditional group additivity approach will be used
 				line = ChemParser.readMeaningfulLine(reader, true);//read in reactants
 			}

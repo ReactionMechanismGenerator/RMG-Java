@@ -57,6 +57,7 @@ public class QMTP implements GeneralGAPP {
     public static boolean usePolar = false; //use polar keyword in MOPAC
     public static boolean useCanTherm = true; //whether to use CanTherm in MM4 cases for interpreting output via force-constant matrix; this will hopefully avoid zero frequency issues
     public static boolean useHindRot = false;//whether to use HinderedRotor scans with MM4 (requires useCanTherm=true)
+    public static int connectivityCheck=0; //level of connectivity checking; 0: "off": no checking; 1: "check": (print warning if connectivity doesn't seem to match); 2: "confirm": consider the run a failure if the connectivity doesn't seem to match
     public static double R = 1.9872; //ideal gas constant in cal/mol-K (does this appear elsewhere in RMG, so I don't need to reuse it?)
     public static double Hartree_to_kcal = 627.5095; //conversion from Hartree to kcal/mol taken from Gaussian thermo white paper
     public static double Na = 6.02214179E23;//Avagadro's number; cf. http://physics.nist.gov/cgi-bin/cuu/Value?na|search_for=physchem_in!
@@ -273,11 +274,11 @@ public class QMTP implements GeneralGAPP {
 			    maxAttemptNumber = createGaussianPM3Input(name, directory, p_3dfile, -1, InChIaug, multiplicity);//use -1 for attemptNumber for monoatomic case
 			}
 			//4. run Gaussian
-			successFlag = runGaussian(name, directory);
+			successFlag = runGaussian(name, directory, InChIaug);
 		    }
 		    else if (qmProgram.equals("mopac") || qmProgram.equals("both")){
 			maxAttemptNumber = createMopacPM3Input(name, directory, p_3dfile, attemptNumber, InChIaug, multiplicity);
-			successFlag = runMOPAC(name, directory);
+			successFlag = runMOPAC(name, directory, InChIaug);
 		    }
 		    else{
 			Logger.critical("Unsupported quantum chemistry program");
@@ -341,7 +342,7 @@ public class QMTP implements GeneralGAPP {
 		while(successFlag==0 && attemptNumber <= maxAttemptNumber){
 		    maxAttemptNumber = createMM4Input(name, directory, p_3dfile, attemptNumber, InChIaug, multiplicity);
 		    //4. run MM4
-		    successFlag = runMM4(name, directory);
+		    successFlag = runMM4(name, directory, InChIaug);
 		    //new IF block to check success
 		    if(successFlag==1){
 			Logger.info("Attempt #"+attemptNumber + " on species " + name + " ("+InChIaug+") succeeded.");
@@ -976,7 +977,7 @@ public class QMTP implements GeneralGAPP {
     //name and directory are the name and directory for the input (and output) file;
     //input is assumed to be preexisting and have the .gjf suffix
     //returns an integer indicating success or failure of the Gaussian calculation: 1 for success, 0 for failure;
-    public int runGaussian(String name, String directory){
+    public int runGaussian(String name, String directory, String InChIaug){
         int flag = 0;
         int successFlag=0;
         try{ 
@@ -1051,7 +1052,17 @@ public class QMTP implements GeneralGAPP {
         }
 	//if the complete flag is still 0, the process did not complete and is a failure
 	if (completeFlag==0) failureFlag=1;
-        //if the failure flag is still 0, the process should have been successful
+	if(failureFlag==0 && connectivityCheck>0){//if the process was successful, check the connectivity (if requested by the user)
+	    boolean connectivityMatch=connectivityMatchInPM3ResultQ(name, directory, getInChIFromModifiedInChI(InChIaug), ".log", "g03");
+	    if (!connectivityMatch)
+		if(connectivityCheck>1){//connectivityCheck=2
+		    failureFlag=1;
+		}
+		else{//connectivityCheck=1; print warning and procede with "return true"
+		    Logger.warning("Connectivity in quantum result for " + name + " ("+InChIaug+") does not appear to match desired connectivity.");
+		}
+	}
+	//if the failure flag is still 0, the process should have been successful
         if (failureFlag==0) successFlag=1;
         
         return successFlag;
@@ -1060,7 +1071,7 @@ public class QMTP implements GeneralGAPP {
         //name and directory are the name and directory for the input (and output) file;
     //input script is assumed to be preexisting and have the .com suffix
     //returns an integer indicating success or failure of the calculation: 1 for success, 0 for failure
-    public int runMM4(String name, String directory){
+    public int runMM4(String name, String directory, String InChIaug){
         int successFlag=0;
         //int flag = 0;
 	try{
@@ -1154,7 +1165,17 @@ public class QMTP implements GeneralGAPP {
 	}
         //if the failure flag is still 0, the process should have been successful
         if(failureOverrideFlag==1) failureFlag=1; //job will be considered a failure if there are imaginary frequencies or if job terminates to to excess time/cycles
-        //if the failure flag is 0 and there are no negative frequencies, the process should have been successful
+        if(failureFlag==0 && connectivityCheck>0){//if the process was successful, check the connectivity (if requested by the user)
+		    boolean connectivityMatch=connectivityMatchInMM4ResultQ(name, directory, getInChIFromModifiedInChI(InChIaug));
+		    if (!connectivityMatch)
+			if(connectivityCheck>1){//connectivityCheck=2
+			    failureFlag=1;
+			}
+			else{//connectivityCheck=1; print warning and procede with "return true"
+			    Logger.warning("Connectivity in MM4 result for " + name + " ("+InChIaug+") does not appear to match desired connectivity.");
+			}
+	}
+	//if the failure flag is 0 and there are no negative frequencies (and connectivity matches, if requested by the user), the process should have been successful
         if (failureFlag==0) successFlag=1;
 
         return successFlag;
@@ -1220,7 +1241,7 @@ public class QMTP implements GeneralGAPP {
     //input is assumed to be preexisting and have the .mop suffix
     //returns an integer indicating success or failure of the MOPAC calculation: 1 for success, 0 for failure;
     //this function is based on the Gaussian analogue
-    public int runMOPAC(String name, String directory){
+    public int runMOPAC(String name, String directory, String InChIaug){
         int flag = 0;
         int successFlag=0;
         try{ 
@@ -1297,7 +1318,17 @@ public class QMTP implements GeneralGAPP {
             }
         }
         if(failureOverrideFlag==1) failureFlag=1; //job will be considered a failure if there are imaginary frequencies or if job terminates to to excess time/cycles
-        //if the failure flag is 0 and there are no negative frequencies, the process should have been successful
+        if(failureFlag==0 && connectivityCheck>0){//if the process was successful, check the connectivity (if requested by the user)
+		    boolean connectivityMatch=connectivityMatchInPM3ResultQ(name, directory, getInChIFromModifiedInChI(InChIaug), ".out", "moo");
+		    if (!connectivityMatch)
+			if(connectivityCheck>1){//connectivityCheck=2
+			    failureFlag=1;
+			}
+			else{//connectivityCheck=1; print warning and procede with "return true"
+			    Logger.warning("Connectivity in quantum result for " + name + " ("+InChIaug+") does not appear to match desired connectivity.");
+			}
+	    }
+	//if the failure flag is 0 (completed, there are no negative frequencies, and connectivity matches (if requested by user)), the process should have been successful
         if (failureFlag==0) successFlag=1;
         
         return successFlag;
@@ -2115,7 +2146,17 @@ public class QMTP implements GeneralGAPP {
             }
 	    //if the complete flag is still 0, the process did not complete and is a failure
 	    if (completeFlag==0) failureFlag=1;
-            //if the failure flag is still 0, the process should have been successful
+	    if(failureFlag==0 && connectivityCheck>0){//if the process was successful, check the connectivity (if requested by the user)
+		    boolean connectivityMatch=connectivityMatchInPM3ResultQ(name, directory, getInChIFromModifiedInChI(InChIaug), ".log", "g03");
+		    if (!connectivityMatch)
+			if(connectivityCheck>1){//connectivityCheck=2
+			    failureFlag=1;
+			}
+			else{//connectivityCheck=1; print warning and procede with "return true"
+			    Logger.warning("Connectivity in quantum result for " + name + " ("+InChIaug+") does not appear to match desired connectivity.");
+			}
+	    }
+	    //if the failure flag is still 0, the process should have been successful
             if (failureFlag==0&&InChIMatch==1){
                 Logger.info("Pre-existing successful quantum result for " + name + " ("+InChIaug+") has been found. This log file will be used.");
                 return true;
@@ -2248,8 +2289,18 @@ public class QMTP implements GeneralGAPP {
                 System.exit(0);
             }
             if(failureOverrideFlag==1) failureFlag=1; //job will be considered a failure if there are imaginary frequencies or if job terminates to to excess time/cycles
-            //if the failure flag is still 0, the process should have been successful
-            if (failureFlag==0&&InChIMatch==1){
+            if(failureFlag==0 && connectivityCheck>0){//if the process was successful, check the connectivity (if requested by the user)
+		    boolean connectivityMatch=connectivityMatchInPM3ResultQ(name, directory, getInChIFromModifiedInChI(InChIaug), ".out", "moo");
+		    if (!connectivityMatch)
+			if(connectivityCheck>1){//connectivityCheck=2
+			    failureFlag=1;
+			}
+			else{//connectivityCheck=1; print warning and procede with "return true"
+			    Logger.warning("Connectivity in quantum result for " + name + " ("+InChIaug+") does not appear to match desired connectivity.");
+			}
+	    }
+	    //if the failure flag is still 0, the process should have been successful
+	    if (failureFlag==0&&InChIMatch==1){
                 Logger.info("Pre-existing successful MOPAC quantum result for " + name + " ("+InChIaug+") has been found. This log file will be used.");
                 return true;
             }
@@ -2381,8 +2432,18 @@ public class QMTP implements GeneralGAPP {
                 System.exit(0);
             }
             if(failureOverrideFlag==1) failureFlag=1; //job will be considered a failure if there are imaginary frequencies or if job terminates to to excess time/cycles
-            //if the failure flag is still 0, the process should have been successful
-            if (failureFlag==0&&InChIMatch==1){
+            if(failureFlag==0 && connectivityCheck>0){//if the process was successful, check the connectivity (if requested by the user)
+		    boolean connectivityMatch=connectivityMatchInMM4ResultQ(name, directory, getInChIFromModifiedInChI(InChIaug));
+		    if (!connectivityMatch)
+			if(connectivityCheck>1){//connectivityCheck=2
+			    failureFlag=1;
+			}
+			else{//connectivityCheck=1; print warning and procede with "return true"
+			    Logger.warning("Connectivity in MM4 result for " + name + " ("+InChIaug+") does not appear to match desired connectivity.");
+			}
+	    }
+	    //if the failure flag is still 0, the process should have been successful
+	    if (failureFlag==0&&InChIMatch==1){
                 Logger.info("Pre-existing successful MM4 result for " + name + " ("+InChIaug+") has been found. This log file will be used.");
                 return true;
             }
@@ -2645,6 +2706,42 @@ public class QMTP implements GeneralGAPP {
     //we do not need/want to compare the augmented multN part of the InChI, so InChI should be the non-modified version
     public boolean connectivityMatchInMM4ResultQ(String name, String directory, String InChI){
 	//first, we convert the .mm4opt file into an xyz file that can be processed by OpenBabel; we use a python script that calls MoleCoor for this
+        //call the MoleCoor script to create the XYZ file from the .mm4opt file
+        try{
+            File runningdir=new File(directory);
+	    //this will only be run on Linux so we don't have to worry about Linux vs. Windows issues
+	    String command = "python "+System.getenv("RMG")+"/scripts/XYZfromMM4.py ";
+	    //first argument: input file path
+	    command=command.concat(directory+"/"+name + ".mm4opt ");
+	    //second argument: output path
+	    String inpfilepath=directory+"/"+name+".xyz";
+	    command=command.concat(inpfilepath+ " ");
+	    //third argument: molecule name (the (un-augmented) InChI)
+	    command=command.concat(InChI+ " ");
+	    //fourth argument: PYTHONPATH
+	    command=command.concat(System.getenv("RMG")+"/source/MoleCoor");//this will pass $RMG/source/MoleCoor to the script (in order to get the appropriate path for importing
+	    Process molecoorProc = Runtime.getRuntime().exec(command, null, runningdir);
+            //read in output
+            InputStream is = molecoorProc.getInputStream();
+            InputStreamReader isr = new InputStreamReader(is);
+            BufferedReader br = new BufferedReader(isr);
+            String line=null;
+            while ( (line = br.readLine()) != null) {
+		//do nothing
+            }
+            int exitValue = molecoorProc.waitFor();
+	    molecoorProc.getErrorStream().close();
+	    molecoorProc.getOutputStream().close();
+	    br.close();
+	    isr.close();
+	    is.close();
+        }
+        catch(Exception e){
+            String err = "Error in running MoleCoor .MM4OPT to .XYZ process \n";
+            err += e.toString();
+            Logger.logStackTrace(e);
+            System.exit(0);
+        }
 
 	//check whether there is a match (i.e. InChI is a substring of InChI3D); note that this makes use of the connectivityMatchInPM3ResultQ function, which is sufficiently general to process XYZ files
 	return connectivityMatchInPM3ResultQ(name, directory, InChI, "xyz", "xyz");
