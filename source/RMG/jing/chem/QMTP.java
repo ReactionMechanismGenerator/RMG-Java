@@ -2663,7 +2663,7 @@ public class QMTP implements GeneralGAPP {
 	    String command=null;
 
 	    String inpPath=directory+"/"+name+outfileExtension;//the path to the QM output file with coordinates
-	    molPath=directory+"/"+name+outfileExtension;//the path to the MOL file to be created (with connectivity
+	    molPath=directory+"/"+name+".mol";//the path to the MOL file to be created (with connectivity
 	    if (System.getProperty("os.name").toLowerCase().contains("windows")){//special windows case
 		command = "babel -i"+babelType + " \""+ inpPath+ "\" -omol \""+molPath+"\"";
 	    }
