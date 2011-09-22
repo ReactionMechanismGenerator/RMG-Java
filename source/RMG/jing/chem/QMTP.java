@@ -2650,30 +2650,31 @@ public class QMTP implements GeneralGAPP {
 
 
     //check the connectivity in a Gaussian/MOPAC result (or XYZ file); returns true if the there appears to be a match, and returns false otherwise
-    //the connectivity is assumed to match if the InChI produced by processing the result/coordinates through OpenBabel produces in InChI that is equivalent or superstring to the InChI stored in memory
+    //the connectivity is assumed to match if the InChI produced by processing the result/coordinates through OpenBabel into MOL file and then using InChI utility produces an InChI that is equivalent or superstring to the InChI stored in memory
     //we do not need/want to compare the augmented multN part of the InChI, so InChI should be the non-modified version
-    //for gaussian03, outfileExtension should be "log" and babelType should be "g03"
-    //for MOPAC, outfileExtension should be "out" and babelType should be "moo"
-    //for XYZ, outfileExtension should be "xyz" and babelType should be "xyz"
+    //for gaussian03, outfileExtension should be ".log" and babelType should be "g03"
+    //for MOPAC, outfileExtension should be ".out" and babelType should be "moo"
+    //for XYZ, outfileExtension should be ".xyz" and babelType should be "xyz"
     public boolean connectivityMatchInPM3ResultQ(String name, String directory, String InChI, String outfileExtension, String babelType){
-        //call the OpenBabel process (note that this requires OpenBabel environment variable)
-        String InChI3D = null;
+        //Step 1: call the OpenBabel process (note that this requires OpenBabel environment variable) to convert to MOL file
+        String molPath="";
 	try{ 
             File runningdir=new File(directory);
 	    String command=null;
-	    String molPath=directory+"/"+name+".log";
+
+	    String inpPath=directory+"/"+name+outfileExtension;//the path to the QM output file with coordinates
+	    molPath=directory+"/"+name+outfileExtension;//the path to the MOL file to be created (with connectivity
 	    if (System.getProperty("os.name").toLowerCase().contains("windows")){//special windows case
-		command = "babel -i"+babelType + " \""+ molPath+ "\" -oinchi -xX \'DoNotAddH FixedH\'";
+		command = "babel -i"+babelType + " \""+ inpPath+ "\" -omol \""+molPath+"\"";
 	    }
 	    else{
-		command = "babel -i"+babelType + " " + molPath+ " -oinchi -xX \'DoNotAddH FixedH\'";
+		command = "babel -i"+babelType + " " + inpPath+ " -omol \""+molPath+"\"";
 	    }
 	    Process babelProc = Runtime.getRuntime().exec(command, null, runningdir);
             //read in output
             InputStream is = babelProc.getInputStream();
             InputStreamReader isr = new InputStreamReader(is);
             BufferedReader br = new BufferedReader(isr);
-	    InChI3D=br.readLine().trim();//read in the InChI produced by OpenBabel
 	    String line=null;
             while ( (line = br.readLine()) != null) {
 		//do nothing
@@ -2686,12 +2687,15 @@ public class QMTP implements GeneralGAPP {
 	    is.close();
         }
         catch(Exception e){
-            String err = "Error in running OpenBabel G03/MOO/XYZ to InChI process \n";
+            String err = "Error in running OpenBabel G03/MOO/XYZ to MOL process \n";
             err += e.toString();
             Logger.logStackTrace(e);
             System.exit(0);
         }
-	//check whether there is a match (i.e. InChI is a substring of InChI3D)
+	//Step 2. convert the MOL file to InChI
+	String[] result = Species.runInChIProcess(new File(molPath), new File("InChI/species.txt"));
+	String InChI3D = result[0];
+	//Step 3. check whether there is a match (i.e. InChI is a substring of InChI3D)
 	if (InChI3D.startsWith(InChI)){
 	    return true;
 	}
@@ -2744,7 +2748,7 @@ public class QMTP implements GeneralGAPP {
         }
 
 	//check whether there is a match (i.e. InChI is a substring of InChI3D); note that this makes use of the connectivityMatchInPM3ResultQ function, which is sufficiently general to process XYZ files
-	return connectivityMatchInPM3ResultQ(name, directory, InChI, "xyz", "xyz");
+	return connectivityMatchInPM3ResultQ(name, directory, InChI, ".xyz", "xyz");
     }
 
 
