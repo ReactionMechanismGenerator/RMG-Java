@@ -2663,10 +2663,10 @@ public class QMTP implements GeneralGAPP {
 	    String command=null;
 	    String molPath=directory+"/"+name+".log";
 	    if (System.getProperty("os.name").toLowerCase().contains("windows")){//special windows case
-		command = "babel -i"+babelType + " \""+ molPath+ "\" -oinchi -xX \"DoNotAddH FixedH\"";
+		command = "babel -i"+babelType + " \""+ molPath+ "\" -oinchi -xX \'DoNotAddH FixedH\'";
 	    }
 	    else{
-		command = "babel -i"+babelType + " " + molPath+ " -oinchi -xX \"DoNotAddH FixedH\"";
+		command = "babel -i"+babelType + " " + molPath+ " -oinchi -xX \'DoNotAddH FixedH\'";
 	    }
 	    Process babelProc = Runtime.getRuntime().exec(command, null, runningdir);
             //read in output
