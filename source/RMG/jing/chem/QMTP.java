@@ -2694,7 +2694,7 @@ public class QMTP implements GeneralGAPP {
             System.exit(0);
         }
 	//Step 2. convert the MOL file to InChI
-	String[] result = Species.runInChIProcess(new File(molPath), new File("InChI/species.txt"));
+	String[] result = Species.runInChIProcess(new File(molPath), new File("InChI/species.txt"), true);
 	String InChI3D = result[0];
 	//Step 3. check whether there is a match (i.e. InChI is a substring of InChI3D)
 	if (InChI3D.startsWith(InChI)){

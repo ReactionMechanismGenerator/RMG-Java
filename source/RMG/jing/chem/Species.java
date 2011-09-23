@@ -1183,7 +1183,7 @@ public class Species {
         	Logger.error(err);
         }
         
-	result= runInChIProcess(molFile, txtFile);
+	result= runInChIProcess(molFile, txtFile, false);
 
         return result;
 	}
@@ -1191,12 +1191,19 @@ public class Species {
 	//separated from generateInChI by gmagoon on 9/22/11 so it can be used elsewhere
 	//requires molFile (which should exist) and contain the structure with appropriate connectivity
 	//requires txtFile (the output text file from the InChI process); this will be deleted and rewritten if it already exists
-	public static String [] runInChIProcess(File molFile, File txtFile){
+	//supressOutput determines whether the .prb and .log files will be written (in the molFile directory)
+	public static String [] runInChIProcess(File molFile, File txtFile, boolean suppressOutput){
 	    	String workingDirectory = System.getProperty("RMG.workingDirectory");
 		String [] result = new String[2];
 		String InChIstring = "";
                 String InChIKeystring = "";
                 String line = "";
+		String logFile = "";
+		String prbFile = "";
+		if (suppressOutput){//if we want to suppress output, we use "NUL" in the command; otherwise, if we don't specify them, they will be written in the molFile directory
+		    logFile = "NUL";
+		    prbFile = "NUL";
+		}
 		if(txtFile.exists()){
 		    txtFile.delete();
 		}
@@ -1236,7 +1243,7 @@ public class Species {
 		    if (getOs().toLowerCase().contains("windows")){
 			String[] command = {workingDirectory + "/bin/cInChI-1",
 			    molFile.getAbsolutePath(),
-			    txtFile.getAbsolutePath(),
+			    txtFile.getAbsolutePath(),logFile, prbFile,
 			    "/DoNotAddH", "/FixedH", "/Key"};//6/9/09 gmagoon: added fixed H so tautomers are considered separately; this is apparently not an option for version 1.02 (standard inchi); also added Key option to generate inchikey...this is only available in version 1.02beta or later; therefore, this keyword combination will only work for version 1.02beta (as of now)
 			File runningDir = new File("InChI");
 			Process InChI = Runtime.getRuntime().exec(command, null, runningDir);
@@ -1254,7 +1261,7 @@ public class Species {
 		    else if (getOs().toLowerCase().contains("linux")){
 			String[] command = {workingDirectory + "/bin/cInChI-1",
 			    molFile.getAbsolutePath(),
-			    txtFile.getAbsolutePath(),
+			    txtFile.getAbsolutePath(),logFile, prbFile,
 			    "-DoNotAddH", "-FixedH", "-Key"};
 			File runningDir = new File("InChI");
 			Process InChI = Runtime.getRuntime().exec(command, null, runningDir);
@@ -1273,7 +1280,7 @@ public class Species {
 		    else if (getOs().toLowerCase().contains("mac")){
 			String[] command = {workingDirectory + "/bin/cInChI-1",
 			    molFile.getAbsolutePath(),
-			    txtFile.getAbsolutePath(),
+			    txtFile.getAbsolutePath(),logFile, prbFile,
 			    "-DoNotAddH", "-FixedH", "-Key"};
 			File runningDir = new File("InChI");
 			Process InChI = Runtime.getRuntime().exec(command, null, runningDir);
