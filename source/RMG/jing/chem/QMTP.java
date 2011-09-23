@@ -2668,7 +2668,7 @@ public class QMTP implements GeneralGAPP {
 		command = "babel -i"+babelType + " \""+ inpPath+ "\" -omol \""+molPath+"\"";
 	    }
 	    else{
-		command = "babel -i"+babelType + " " + inpPath+ " -omol \""+molPath+"\"";
+		command = "babel -i"+babelType + " " + inpPath+ " -omol "+molPath;
 	    }
 	    Process babelProc = Runtime.getRuntime().exec(command, null, runningdir);
             //read in output
@@ -2678,6 +2678,7 @@ public class QMTP implements GeneralGAPP {
 	    String line=null;
             while ( (line = br.readLine()) != null) {
 		//do nothing
+		//Logger.info(line);
             }
             int exitValue = babelProc.waitFor();
 	    babelProc.getErrorStream().close();
