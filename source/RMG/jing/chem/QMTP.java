@@ -2094,6 +2094,15 @@ public class QMTP implements GeneralGAPP {
 	else return modInChI.substring(0,pos); //return the component before the mult section
     }
     
+    //removes b, t, m, and s layers from InChI
+    public String stripStereochemLayersFromInChI(String InChI){
+	//String result1=InChI.replaceFirst("/b[^/]*", "");//replaces forward slash followed by b followed by anything except forward slash with an empty string
+	//String result2=result1.replaceFirst("/t[^/]*", "");//replaces forward slash followed by t followed by anything except forward slash with an empty string
+	//String result3=result2.replaceFirst("/m[^/]*", "");//replaces forward slash followed by m followed by anything except forward slash with an empty string
+	//String result4=result3.replaceFirst("/s[^/]*", "");//replaces forward slash followed by s followed by anything except forward slash with an empty string
+	return InChI.replaceFirst("/b[^/]*", "").replaceFirst("/t[^/]*", "").replaceFirst("/m[^/]*", "").replaceFirst("/s[^/]*", "");//a shorted version of the commented out code above
+    }
+
     //returns true if a Gaussian file for the given name and directory (.log suffix) exists and indicates successful completion (same criteria as used after calculation runs); terminates if the InChI doesn't match the InChI in the file or if there is no InChI in the file; returns false otherwise
     public boolean successfulGaussianResultExistsQ(String name, String directory, String InChIaug){
         //part of the code is taken from runGaussian code above
@@ -2693,9 +2702,9 @@ public class QMTP implements GeneralGAPP {
             Logger.logStackTrace(e);
             System.exit(0);
         }
-	//Step 2. convert the MOL file to InChI
+	//Step 2. convert the MOL file to InChI (with stereochem layers removed)
 	String[] result = Species.runInChIProcess(new File(molPath), new File("InChI/species.txt"), true);
-	String InChI3D = result[0];
+	String InChI3D = stripStereochemLayersFromInChI(result[0]);
 	//Step 3. check whether there is a match (i.e. InChI is a substring of InChI3D)
 	if (InChI3D.startsWith(InChI)){
 	    return true;
