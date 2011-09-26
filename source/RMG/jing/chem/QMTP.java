@@ -2659,7 +2659,7 @@ public class QMTP implements GeneralGAPP {
 
 
     //check the connectivity in a Gaussian/MOPAC result (or XYZ file); returns true if the there appears to be a match, and returns false otherwise
-    //the connectivity is assumed to match if the InChI produced by processing the result/coordinates through OpenBabel into MOL file and then using InChI utility produces an InChI that is equivalent or superstring to the InChI stored in memory
+    //the connectivity is assumed to match if the InChI produced by processing the result/coordinates through OpenBabel into MOL file and then using InChI utility produces an InChI that is equivalent (following stereochemical layer removal) to the InChI stored in memory
     //we do not need/want to compare the augmented multN part of the InChI, so InChI should be the non-modified version
     //for gaussian03, outfileExtension should be ".log" and babelType should be "g03"
     //for MOPAC, outfileExtension should be ".out" and babelType should be "moo"
@@ -2705,8 +2705,8 @@ public class QMTP implements GeneralGAPP {
 	//Step 2. convert the MOL file to InChI (with stereochem layers removed)
 	String[] result = Species.runInChIProcess(new File(molPath), new File("InChI/species.txt"), true);
 	String InChI3D = stripStereochemLayersFromInChI(result[0]);
-	//Step 3. check whether there is a match (i.e. InChI is a substring of InChI3D)
-	if (InChI3D.startsWith(InChI)){
+	//Step 3. check whether there is a match (i.e. InChI equals InChI3D)
+	if (InChI3D.equals(InChI)){
 	    return true;
 	}
 	else{
