@@ -574,7 +574,7 @@ contains
 
         type(Isomer) :: reac, prod
         integer nGrains, r
-        real(8) dE, Keq
+        real(8) dE, Keq, kf0, kf, Keq0, kb
         type(ArrheniusKinetics) :: arrhenius
         real(8), dimension(1:23) :: Tlist0
         
@@ -591,6 +591,12 @@ contains
         reac = isomerList(rxn%reac)
         prod = isomerList(rxn%prod)
 
+        kf0 = 0
+        kf = 0
+        Keq0 = 0
+        Keq = 0
+        kb = 0
+        
         if (rxn%reac <= nIsom .and. rxn%prod <= nIsom) then
 
             ! Calculate forward rate coefficient via inverse Laplace transform
@@ -608,6 +614,13 @@ contains
                 end if
             end do
 
+            ! Check that forward and reverse rates integrate to give the proper k(E) values
+            kf0 = rxn%arrhenius%A * T ** rxn%arrhenius%n * exp(-rxn%arrhenius%Ea / 8.314472 / T)
+            kf = sum(rxn%kf * reac%densStates * exp(-E / 8.314472 / T) / reac%Q * dE)
+            kb = sum(rxn%kb * prod%densStates * exp(-E / 8.314472 / T) / prod%Q * dE)           
+            Keq0 = reaction_getEquilibriumConstant(reac, prod, T, speciesList)
+            Keq = kf / kb        
+
         elseif (rxn%reac <= nIsom .and. rxn%prod > nIsom) then
 
             ! Calculate forward rate coefficient via inverse Laplace transform
@@ -623,6 +636,13 @@ contains
                 rxn%kb(r) = rxn%kf(r) / Keq * &
                     reac%densStates(r) * exp(-E(r) / 8.314472 / T) / reac%Q * dE
             end do
+
+            ! Check that forward and reverse rates integrate to give the proper k(E) values
+            kf0 = rxn%arrhenius%A * T ** rxn%arrhenius%n * exp(-rxn%arrhenius%Ea / 8.314472 / T)
+            kf = sum(rxn%kf * reac%densStates * exp(-E / 8.314472 / T) / reac%Q * dE)
+            kb = sum(rxn%kb)
+            Keq0 = reaction_getEquilibriumConstant(reac, prod, T, speciesList)
+            Keq = kf / kb   
 
         elseif (rxn%reac > nIsom .and. rxn%prod <= nIsom) then
 
@@ -650,8 +670,28 @@ contains
                     reac%densStates(r) * exp(-E(r) / 8.314472 / T) / reac%Q * dE
             end do
 
-        end if
+            ! Check that forward and reverse rates integrate to give the proper k(E) values
+            kf0 = arrhenius%A * T ** arrhenius%n * exp(-arrhenius%Ea / 8.314472 / T)
+            kf = sum(rxn%kb * reac%densStates * exp(-E / 8.314472 / T) / reac%Q * dE)
+            kb = sum(rxn%kf)
+            Keq0 = reaction_getEquilibriumConstant(reac, prod, T, speciesList)
+            Keq = kf / kb   
 
+        end if
+        
+        if (Keq / Keq0 > 2.0 .or. Keq / Keq0 < 0.5) then
+            write (1,*) 'Warning: k(E) values do not satisfy detailed balance!'
+            write (1,*) 'Reaction:', rxn%equation
+            write (1,*) '    Expected Keq at', T, 'K =', Keq0  
+            write (1,*) '      Actual Keq at', T, 'K =', Keq
+        end if
+        if (kf / kf0 > 10.0 .or. kf / kf0 < 0.1) then
+            write (1,*) 'Warning: k(E) values do not match high-pressure-limit!'
+            write (1,*) 'Reaction:', rxn%equation
+            write (1,*) '    Expected kf at', T, 'K =', kf0 
+            write (1,*) '      Actual kf at', T, 'K =', kf
+        end if
+        
         !write (*,*) rxn%reac, rxn%prod, rxn%kf(nGrains), rxn%kb(nGrains)
 
     end subroutine
