@@ -106,7 +106,13 @@ subroutine estimateRateCoefficients_MSC(T, P, E, collFreq, densStates, Eres, &
 
     ! Determine the starting grain for the calculation based on the
     ! active-state cutoff energy
-    start = ceiling((minval(Eres) - minval(E)) / (E(2) - E(1))) + 1
+    start = 0
+    do r = 1, nGrains
+        if (E(r) > minval(Eres)) then
+            start = r
+            exit
+        end if
+    end do      
     if (start < 1 .or. start > nGrains) then
         msg = 'Unable to determine starting grain; check active-state energies.'
         return
@@ -188,8 +194,7 @@ subroutine estimateRateCoefficients_MSC(T, P, E, collFreq, densStates, Eres, &
         end do
 
     end do
-
-
+    
     do src = 1, nIsom + nReac
 
         ! Calculate stabilization rates (i.e.) R + R' --> Ai or M --> Ai
