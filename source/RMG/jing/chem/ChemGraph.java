@@ -1326,6 +1326,7 @@ return sn;
         	thermoData = thermoGAPP.generateThermoData(this);
 		//fall back to GATP if it is a failed QMTP calculation
 		if (((String)thermoData.getSource()).equals("***failed calculation***")){
+		    Logger.warning("Falling back to group additivity due to repeated failure in QMTP calculations");
 		    thermoData=(GATP.getINSTANCE()).generateThermoData(this);
 		}
 
