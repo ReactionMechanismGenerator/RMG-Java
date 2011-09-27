@@ -198,7 +198,9 @@ program fame
     ! Close log file
 99  close(1)
 
-    deallocate(K, chebyshevCoeffs, pDepArrhenius)
+    deallocate(K)
+    if (allocated(chebyshevCoeffs)) deallocate(chebyshevCoeffs)
+    if (allocated(pDepArrhenius)) deallocate(pDepArrhenius)
 
 end program
 
