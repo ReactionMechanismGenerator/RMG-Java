@@ -679,6 +679,19 @@ contains
 
         end if
         
+        ! If the reaction is endothermic and barrierless, it is possible that the
+        ! forward k(E) will have a nonzero value at an energy where the product
+        ! density of states is zero (but the reactant density of states is not),
+        ! which violates detailed balance
+        ! To fix, we set the forward k(E) to zero wherever this is true
+        ! (This is correct within the accuracy of discretizing the energy grains)
+        do r = 1, Ngrains
+            if (rxn%kf(r) == 0 .or. rxn%kb(r) == 0) then
+                rxn%kf(r) = 0
+                rxn%kb(r) = 0
+            end if
+        end do
+        
         if (Keq / Keq0 > 2.0 .or. Keq / Keq0 < 0.5) then
             write (1,*) 'Warning: k(E) values do not satisfy detailed balance!'
             write (1,*) 'Reaction:', rxn%equation
