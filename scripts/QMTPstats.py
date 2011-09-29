@@ -31,6 +31,7 @@ if __name__ == "__main__":
 	preexistGaussian=0
 	preexistMopacList=[]
 	preexistGaussianList=[]
+	masterList=[]
 	connMismatchList=[]
 	newMopacArray=[0 for x in range(MopacKeywords)]
 	newGaussianArray=[0 for x in range(GaussianKeywords)]
@@ -41,7 +42,7 @@ if __name__ == "__main__":
 	iin=open(sys.argv[1], 'r')
 	line = iin.readline()
 	while line != '':#'' marks end of file
-	    if ('#1' in line):#the beginning of a block for a new attempt
+	    if ('Attempt #1' in line):#the beginning of a block for a new attempt
 		#print line
 		connMismatchFlag=False
 		attemptCounter=1
@@ -58,6 +59,8 @@ if __name__ == "__main__":
 			    #!note: I don't think this will catch a failure on the first attempt
 		    attemptCounter=attemptCounter+1 #increment attempt# at each occurence of #
 		if (line.startswith('Attempt')):
+		    inchikey = line.split()[4]
+		    if inchikey not in masterList: masterList.append(inchikey)
 		    if attemptCounter > MopacKeywords :
 			newGaussianArray[attemptCounter-MopacKeywords -2] = newGaussianArray[attemptCounter-MopacKeywords -2]+1 # note we subtract 2 from the index rather than 1 since when the program switches to Gaussian, it prints an extra spurious attempt #0
 		    else:
@@ -72,10 +75,12 @@ if __name__ == "__main__":
 		    preexistMopac=preexistMopac+1
 		    inchikey = line.split()[6]
 		    if inchikey not in preexistMopacList: preexistMopacList.append(inchikey)
+		    if inchikey not in masterList: masterList.append(inchikey)
 		else:
 		    preexistGaussian=preexistGaussian+1
 		    inchikey = line.split()[5]
 		    if inchikey not in preexistGaussianList: preexistGaussianList.append(inchikey)
+		    if inchikey not in masterList: masterList.append(inchikey)
 		line=iin.readline()
 	    elif (line.startswith('Warning: Connectivity in quantum result for')):
 		inchikey = line.split()[6]
@@ -89,13 +94,13 @@ if __name__ == "__main__":
 
 
 	#print the results
-	print 'Number of species that were retried due to apparent connectivity mismatches (CheckConnectivity: confirm) = '+str(connMismatchSpeciesRetry)
 	print 'Number of species that completely failed QMTP = '+str(newFail)
 	print 'Number of the complete failures that were due to apparent connectivity mismatches (CheckConnectivity: confirm) = '+ str(connMismatchFail)
+	print 'Number of species that were retried due to apparent connectivity mismatches (CheckConnectivity: confirm) = '+str(connMismatchSpeciesRetry)
 	print 'Number of reads of pre-existing successful MOPAC results = '+ str(preexistMopac)
 	print 'Number of reads of pre-existing successful Gaussian results = '+ str(preexistGaussian)
-	print 'Number of unique MOPAC results read = '+ str(len(preexistMopacList))
-	print 'Number of unique Gaussian results read = '+str(len(preexistGaussianList))
+	print 'Number of unique pre-existing MOPAC results read = '+ str(len(preexistMopacList))
+	print 'Number of unique pre-existing Gaussian results read = '+str(len(preexistGaussianList))
 	print 'Number of unique species with connectivity warnings (CheckConnectivity: check) = '+str(len(connMismatchList))
 	print 'Number of species that finally succeeded at each attempt #:'
 	newMopacTotal=0
@@ -115,3 +120,4 @@ if __name__ == "__main__":
 	print 'Number of species with new Gaussian results = ' + str(newGaussianTotal)
 	print 'Number of MOPAC attempts = ' + str(mopacTotalAttempts)
 	print 'Number of Gaussian attempts = ' + str(gaussianTotalAttempts)
+	print 'Total number of unique species with QMTP results (pre-existing and/or new) = ' + str(len(masterList))
