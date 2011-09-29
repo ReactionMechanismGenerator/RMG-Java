@@ -118,12 +118,12 @@ program fame
         method, K, model, modelOptions, chebyshevCoeffs, pDepArrhenius)
 
     ! Fit interpolation model
-    allocate( chebyshevCoeffs(1:modelOptions(1), 1:modelOptions(2), 1:nIsom+nReac+nProd, 1:nIsom+nReac+nProd) )
-    allocate( pDepArrhenius(1:nP, 1:nIsom+nReac+nProd, 1:nIsom+nReac+nProd) )
     if (model == 1) then
         write (1,fmt='(A)') 'Fitting Chebyshev interpolation models...'
+        allocate( chebyshevCoeffs(1:modelOptions(1), 1:modelOptions(2), 1:nIsom+nReac+nProd, 1:nIsom+nReac+nProd) )
     elseif (model == 2) then
         write (1,fmt='(A)') 'Fitting PDepArrhenius interpolation models...'
+        allocate( pDepArrhenius(1:nP, 1:nIsom+nReac+nProd, 1:nIsom+nReac+nProd) )
     end if
 
     ! The phenomenological rate coefficients
