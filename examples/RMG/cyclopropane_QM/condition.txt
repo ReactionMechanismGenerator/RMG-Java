@@ -39,6 +39,7 @@ PressureModel: Constant (atm) 1
 ThermoMethod: QM Gaussian03
 QMForCyclicsOnly: on
 MaxRadNumForQM: 0
+CheckConnectivity: check
 
 InitialStatus:
 
