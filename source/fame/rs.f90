@@ -245,10 +245,16 @@ subroutine reservoirCutoffs(E0, Eres, nIsom, E, nGrains, dEdown, densStates, nRe
         do r = 1, nGrains
             if (densStates(i,r) > 0 .and. start(i) == 0) then
                 start(i) = r
+                exit
             end if
         end do
         ! Now find the reservoir cutoff grain for this isomer
-        nRes(i) = ceiling((Eres(i) - Emin) / dE)
+        do r = start(i), nGrains
+            if (E(r) > Eres(i)) then
+                nRes(i) = r
+                exit
+            end if
+        end do  
     end do
 
 end subroutine

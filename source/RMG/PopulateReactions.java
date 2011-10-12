@@ -356,6 +356,33 @@ public class PopulateReactions {
 				LinkedHashSet nonPdepReactions = new LinkedHashSet();
 	        	while (iter.hasNext()){
 	        		Reaction r = (Reaction)iter.next();
+	        		
+	        		if (r.isBackward()) {
+	        			LinkedHashSet reverseReactions = new LinkedHashSet();
+	        			Iterator iter2 = r.getStructure().getProducts();
+	        			Species species1 = (Species)iter2.next();
+	        			Species species2 = species1;
+	        			while (iter2.hasNext()) 
+	        				species2 = (Species)iter2.next();
+
+	        			String rxnFamilyName = "";
+	        			if (r instanceof TemplateReaction){
+	        			    rxnFamilyName = ((TemplateReaction)r.getReverseReaction()).getReactionTemplate().getName();
+	        			}
+
+	        			LinkedHashSet speciesHashSet = new LinkedHashSet();
+	        			speciesHashSet.add(species1);
+	        			reverseReactions = rtLibrary.react(speciesHashSet, species2, rxnFamilyName);
+	        			for (Iterator iter3 = reverseReactions.iterator(); iter3.hasNext();) {
+	        				Reaction currentRxn = (Reaction)iter3.next();
+	        				if (currentRxn.getStructure() == r.getReverseReaction().getStructure()) {
+	        					r = currentRxn;
+	        					break;
+	        				} 
+	        			}
+	        		}
+	        		
+	        		
 	        		if (r.getReactantNumber() < 2 || r.getProductNumber() < 2){
 						cerm.categorizeReaction(r.getStructure());
 						PDepNetwork.addReactionToNetworks(r);

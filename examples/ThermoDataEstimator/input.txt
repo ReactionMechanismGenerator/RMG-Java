@@ -8,6 +8,8 @@ gaussian03
 true
 //maxradnumforQM?
 0
+//CheckConnectivity? off/check/confirm
+check
 
 MaxCarbonNumberPerSpecies:     10
 MaxOxygenNumberPerSpecies:     10

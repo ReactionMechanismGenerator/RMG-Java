@@ -16,7 +16,7 @@ program fame
 
     type(Network) net
     real(8), dimension(:), allocatable :: Tlist, Plist, Elist
-    real(8) :: grainSize, Tmin, Tmax, Pmin, Pmax
+    real(8) :: grainSize, Tmin, Tmax, Pmin, Pmax, Keq, Keq0
     integer :: numGrains
     integer :: method, model
     integer, dimension(1:10) :: modelOptions
@@ -77,6 +77,31 @@ program fame
     call network_calculateRateCoefficients(net, nIsom, nReac, nProd, &
         Elist, nGrains, Tlist, nT, Plist, nP, method, K)
 
+    ! Check that k(T,P) values satisfy thermo consistence
+    do reac = 1, nIsom+nReac
+        do prod = 1, reac-1
+            invalidRate = 0
+            do t = 1, nT
+                do p = 1, nP
+                    Keq = K(t,p,prod,reac) / K(t,p,reac,prod)
+                    Keq0 = reaction_getEquilibriumConstant(net%isomers(reac), net%isomers(prod), Tlist(t), net%species)
+                    if (Keq / Keq0 <= 0.1 .or. Keq / Keq0 >= 10) then
+                        write (1,fmt=*) Tlist(t), Plist(p), Keq0, Keq
+                        invalidRate = 1
+                    end if
+                end do
+            end do
+            if (invalidRate /= 0) then
+                write (1,fmt='(A)') 'Error: One or more k(T,P) values for a net reaction did not satisfy thermodynamic consistency.'
+                write (1,fmt='(A)') trim(net%isomers(reac)%name)//' -> '//trim(net%isomers(prod)%name)
+                do t = 1, nT
+                    write (1,fmt=*) K(t,:,prod,reac)
+                end do
+                go to 99
+            end if
+        end do
+    end do
+    
     ! Adjust units of k(T,P) values to combinations of cm^3, mol, and s
     ! Prior to this point FAME has been thinking in terms of m^3, mol, and s,
     ! but RMG thinks in terms of cm^3, mol, and s
@@ -93,12 +118,12 @@ program fame
         method, K, model, modelOptions, chebyshevCoeffs, pDepArrhenius)
 
     ! Fit interpolation model
-    allocate( chebyshevCoeffs(1:modelOptions(1), 1:modelOptions(2), 1:nIsom+nReac+nProd, 1:nIsom+nReac+nProd) )
-    allocate( pDepArrhenius(1:nP, 1:nIsom+nReac+nProd, 1:nIsom+nReac+nProd) )
     if (model == 1) then
         write (1,fmt='(A)') 'Fitting Chebyshev interpolation models...'
+        allocate( chebyshevCoeffs(1:modelOptions(1), 1:modelOptions(2), 1:nIsom+nReac+nProd, 1:nIsom+nReac+nProd) )
     elseif (model == 2) then
         write (1,fmt='(A)') 'Fitting PDepArrhenius interpolation models...'
+        allocate( pDepArrhenius(1:nP, 1:nIsom+nReac+nProd, 1:nIsom+nReac+nProd) )
     end if
 
     ! The phenomenological rate coefficients
@@ -173,7 +198,9 @@ program fame
     ! Close log file
 99  close(1)
 
-    deallocate(K, chebyshevCoeffs, pDepArrhenius)
+    deallocate(K)
+    if (allocated(chebyshevCoeffs)) deallocate(chebyshevCoeffs)
+    if (allocated(pDepArrhenius)) deallocate(pDepArrhenius)
 
 end program
 
