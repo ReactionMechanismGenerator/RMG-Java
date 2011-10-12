@@ -2602,6 +2602,7 @@ public class QMTP implements GeneralGAPP {
 	    String InChI3D = stripStereochemLayersFromInChI(result[0]);
 	    //Step 4. check whether there is a match (i.e. InChI equals InChI3D)
 	    if (InChI3D.equals(InChI)){
+		 Logger.info("For species "+ name +" a MoleCoor-based check suggests the optimized three-dimensional InChI ("+InChI3D+") actually DOES match the intended (unmodified) InChI (" +InChI+"). Therefore, the result will be assumed to be correct.");
 		 return true;
 	    }
 	    else{

@@ -81,6 +81,7 @@ if __name__ == "__main__":
 				connMismatchBackupFixesEarlierFail=connMismatchBackupFixesEarlierFail+1
 			    else:
 				connMismatchBackupFixesOnFirstPrimaryFail=connMismatchBackupFixesOnFirstPrimaryFail+1
+			line = iin.readline()#read the next line...should be 'For species' (without ***)
 		    else:#else, the case was a genuine mismatch
 			if (not connMismatchFlag):
 			    connMismatchSpeciesRetry = connMismatchSpeciesRetry + 1
@@ -131,6 +132,7 @@ if __name__ == "__main__":
 					connMismatchBackupFixesEarlierFail=connMismatchBackupFixesEarlierFail+1
 				    else:
 					connMismatchBackupFixesOnFirstPrimaryFail=connMismatchBackupFixesOnFirstPrimaryFail+1
+				line = iin.readline()#read the next line...should be 'For species' (without ***)
 			    else:#else, the case was a genuine mismatch
 				if (not connMismatchFlag):
 				    connMismatchSpeciesRetry = connMismatchSpeciesRetry + 1
@@ -162,6 +164,7 @@ if __name__ == "__main__":
 					    connMismatchBackupFixesEarlierFail=connMismatchBackupFixesEarlierFail+1
 					else:
 					    connMismatchBackupFixesOnFirstPrimaryFail=connMismatchBackupFixesOnFirstPrimaryFail+1
+				    line = iin.readline()#read the next line...should be 'For species' (without ***)
 				else:#else, the case was a genuine mismatch
 				    if (not connMismatchFlag):
 					connMismatchSpeciesRetry = connMismatchSpeciesRetry + 1
