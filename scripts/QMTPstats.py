@@ -2,7 +2,7 @@
 # arg[2]: 0 for "check"; 1 for "confirm"
 if __name__ == "__main__":
 	import sys
-
+#Example output:
 #*****Attempt #5 on species VLEXMQNIVAQEHV-UHFFFAOYAI (InChI=1/C10H14/c1-2-3-4-7-10-8-5-6-9-10/h2,7,10H,5-6,8-9H2,1H3) failed. Will attempt a new keyword.
 #*****Imaginary freqencies found:
 #*****Attempt #6 on species VLEXMQNIVAQEHV-UHFFFAOYAI (InChI=1/C10H14/c1-2-3-4-7-10-8-5-6-9-10/h2,7,10H,5-6,8-9H2,1H3) failed. Will attempt a new keyword.
