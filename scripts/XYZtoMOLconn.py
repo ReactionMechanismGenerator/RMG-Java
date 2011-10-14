@@ -8,5 +8,5 @@ import sys
 sys.path.append(sys.argv[5])#add $RMG/source/MoleCoor to the PYTHONPATH so that import statements below work properly
 import MolecularCoordinates
 mg = MolecularCoordinates.readXYZFile(sys.argv[1])
-mg.perceiveConnectivity(tol=sys.argv[4])
+mg.perceiveConnectivity(tol=float(sys.argv[4]))
 mg.writeMOLFile(sys.argv[2],sys.argv[3], connectivity=True)
