@@ -19,7 +19,7 @@
 1       off      Cyclic_Ether_Formation
 2       off      intra_OH_migration
 3       off      H_Abstraction_old
-4       on      R_Addition_MultipleBond
+4       off      R_Addition_MultipleBond
 5       on      R_Recombination
 6       on      Disproportionation
 7       on      1,2_Insertion
@@ -46,5 +46,5 @@
 28	  on      intra_substitutionS_isomerization
 29	  on      SubstitutionS
 30	  on      H_Abstraction
-31	  off      R_Addition_MultipleBond_A		
+31	  on      R_Addition_MultipleBond_A		
 32	on	R_Addition_CSm
