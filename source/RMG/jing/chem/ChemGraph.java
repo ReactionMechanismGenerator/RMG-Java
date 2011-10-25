@@ -139,6 +139,7 @@ public class ChemGraph implements Matchable {
 				throw new ForbiddenStructureException(message);
 			}
         }
+        this.determineAromaticityAndWriteBBonds();
     }
 
     public void determineAromaticityAndWriteBBonds() {
