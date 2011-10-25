@@ -223,6 +223,24 @@ public class ChemGraph implements Matchable {
                     currentArc.setElement(currentBond.changeBondToAromatic());
                 }
             }
+            /**
+             * After the bonds that were previously defined as "S" or "D" bonds,
+             * have been renamed to "B" bonds,
+             * We have to re-perceive the atom type of the atoms in the adjacency list.
+             * This is done by re-iterating over all nodes and calling the 
+             * Node.updateFgElement.
+             * 
+             * If this is not done, the thermodynamic properties estimation
+             * will fail to assign Cb GAVs to those atoms perceived as aromatic. 
+             * 
+             */
+            for (int numComps=0; numComps<graphComps.size(); numComps++) {
+                GraphComponent gc = (GraphComponent)graphComps.get(numComps);
+                if (gc instanceof Node) {
+                	Node currentNode = (Node)gc;
+                	currentNode.updateFgElement();//update the FgElement
+                }
+            }
         }
     }
 
