@@ -70,7 +70,12 @@ public class Bond {
         
         //#]
     }
-    
+
+    public Bond changeBondToAromatic() {
+        Bond b = Bond.make("B");
+        return b;
+    }
+
     //## operation changeBond(int) 
     public Bond changeBond(int p_changedOrder) {
         //#[ operation changeBond(int) 
