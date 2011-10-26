@@ -163,9 +163,37 @@ public class ChemGraph implements Matchable {
                     else if (!a.isRadical()) {
                         Iterator neighbors = ((Node)gc).getNeighbor();
                         int usedValency = 0;
+                        /*
+                         * We count here the number of double bonds attached to a particular 
+                         * atom. 
+                         * 
+                         * We do this because we don't want that species with a 
+                         * Cdd type carbon atom, i.e. carbon bonded by two double bonds,
+                         * is identified as being aromatic.
+                         * 
+                         * Previously, a five-membered cyclic species, containing
+                         * three double bonds with one Cdd carbon, would be perceived
+                         * as aromatic since 3*2 = 6 "Pi" electrons were counted, 
+                         * and a cyclic structure was present.
+                         * 
+                         * This patch, albeit not very general, counts the total
+                         * number of double bonds for a particular atom. If a second
+                         * double bond is detected, the pi-electron counter is not updated
+                         * by  adding two.
+                         * 
+                         * This makes at least some chemical sence, as you could 
+                         * argue that the second pair electrons in the pi-bonds (perpendicular to the other
+                         * pair of electrons) does not interact and conjugate with the
+                         * pi electrons of other electrons.
+                         *  
+                         */
+                        int number_of_double_bonds = 0;
                         while (neighbors.hasNext()) {
                             Arc nodeA= (Arc)neighbors.next();
-                            usedValency += ((Bond)(nodeA.getElement())).getOrder();
+                            double order = ((Bond)(nodeA.getElement())).getOrder();
+                            if(order==2) number_of_double_bonds++;
+                            if(number_of_double_bonds != 2)
+                            	usedValency += ((Bond)(nodeA.getElement())).getOrder();
                         }
                         if (a.getChemElement().getValency()-usedValency >= 2) {
                             piElectronsInCycle += 2;
