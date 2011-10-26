@@ -202,10 +202,26 @@ public class ChemGraph implements Matchable {
                     }
                 } else if (gc instanceof Arc) {
                     Bond b = (Bond)((Arc)gc).getElement();
-                    int bondPiElectrons = b.getPiElectrons();
-                    if (bondPiElectrons > 0) {
-                        piElectronsInCycle += bondPiElectrons;
-                        hadPiElectrons[numComps] = true;
+                    /*
+                     * For now, species with a triple bond conjugated to two double bonds
+                     * would also contribute to the pi electron count. Hence, molecules
+                     * such as benzyne (InChI=1S/C6H4/c1-2-4-6-5-3-1/h1-4H) would
+                     * have a hueckel number of 6 and would then be perceived as aromatic.
+                     * 
+                     *  The atomtype of the triple bonded carbons (Ct) would be changed
+                     *  to Cb and hence an atom would be added afterwards, in a place
+                     *  where that would not possible.
+                     *  
+                     *  In order to avoid this problem, an if conditional is added that 
+                     *  checks whether the iterated bond is a double bond. If not,
+                     *  contributions to the pi electron count are not taken into account.
+                     */
+                    if(b.getOrder() == 2){
+                        int bondPiElectrons = b.getPiElectrons();
+                        if (bondPiElectrons > 0) {
+                            piElectronsInCycle += bondPiElectrons;
+                            hadPiElectrons[numComps] = true;
+                        }
                     }
                 }
             }
