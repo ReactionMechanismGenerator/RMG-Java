@@ -143,6 +143,7 @@ public class ChemGraph implements Matchable {
     }
 
     public void determineAromaticityAndWriteBBonds() {
+    	addMissingHydrogen();
         // If there are no cycles, cannot be aromatic
         if (graph.getCycleNumber() == 0) return;
         // Check each cycle for aromaticity
