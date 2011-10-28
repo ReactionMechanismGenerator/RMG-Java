@@ -64,6 +64,17 @@ L1: doublebond
 			L4: Cd/De2_Cd/Nd2
 			L4: Cd/De2_Cd/Nd/De
 			L4: Cd/De2_Cd/De2
+	L2:	Sd_Cd
+		L3:	Sd_Cds
+			L4:	Sd_Cd/unsub
+			L4:	Sd_Cd/monosub
+				L5:	Sd_Cd/H/Nd
+				L5:	Sd_Cd/H/De
+			L4:	Sd_Cd/disub
+				L5:	Sd_Cd/Nd2
+				L5:	Sd_Cd/Nd/De
+				L5:	Sd_Cd/De2
+		L3:	Sd_Cdd
 L1: R_OR
 	L2: H_OR
 		L3: H_OH

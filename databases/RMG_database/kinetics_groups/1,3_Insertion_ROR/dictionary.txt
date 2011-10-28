@@ -3,7 +3,7 @@
 //HOR
 
 doublebond
-Union {Cd_Cdd, Cdd_Cd, Cd_Cd}
+Union {Cd_Cdd, Cdd_Cd, Cd_Cd, Sd_Cd}
 
 Cd_Cdd
 1 *1 Cd 0 {2,D}
@@ -458,6 +458,68 @@ Cd/De2_Cd/De2
 4 {Cd,Ct,Cb,CO} 0 {1,S}
 5 {Cd,Ct,Cb,CO} 0 {2,S}
 6 {Cd,Ct,Cb,CO} 0 {2,S}
+
+Sd_Cd
+Union {Sd_Cds, Sd_Cdd}
+
+Sd_Cds
+1 *1 Sd 0 {2,D}
+2 *2 Cd 0 {1,D} {3,S} {4,S}
+3 R 0 {2,S}
+4 R 0 {2,S}
+
+Sd_Cd/unsub
+1 *1 Sd 0 {2,D}
+2 *2 Cd 0 {1,D} {3,S} {4,S}
+3 H 0 {2,S}
+4 H 0 {2,S}
+
+Sd_Cd/monosub
+1 *1 Sd 0 {2,D}
+2 *2 Cd 0 {1,D} {3,S} {4,S}
+3 H 0 {2,S}
+4 {R!H} 0 {2,S}
+
+Sd_Cd/H/Nd
+1 *1 Sd 0 {2,D}
+2 *2 Cd 0 {1,D} {3,S} {4,S}
+3 H 0 {2,S}
+4 {Cs,O} 0 {2,S}
+
+Sd_Cd/H/De
+1 *1 Sd 0 {2,D}
+2 *2 Cd 0 {1,D} {3,S} {4,S}
+3 H 0 {2,S}
+4 {Cd,Ct,Cb,CO} 0 {2,S}
+
+Sd_Cd/disub
+1 *1 Sd 0 {2,D}
+2 *2 Cd 0 {1,D} {3,S} {4,S}
+3 {R!H} 0 {2,S}
+4 {R!H} 0 {2,S}
+
+Sd_Cd/Nd2
+1 *1 Sd 0 {2,D}
+2 *2 Cd 0 {1,D} {3,S} {4,S}
+3 {Cs,O} 0 {2,S}
+4 {Cs,O} 0 {2,S}
+
+Sd_Cd/Nd/De
+1 *1 Sd 0 {2,D}
+2 *2 Cd 0 {1,D} {3,S} {4,S}
+3 {Cs,O} 0 {2,S}
+4 {Cd,Ct,Cb,CO} 0 {2,S}
+
+Sd_Cd/De2
+1 *1 Sd 0 {2,D}
+2 *2 Cd 0 {1,D} {3,S} {4,S}
+3 {Cd,Ct,Cb,CO} 0 {2,S}
+4 {Cd,Ct,Cb,CO} 0 {2,S}
+
+Sd_Cdd
+1 *1 Sd 0 {2,D}
+2 *2 Cd 0 {1,D} {3,D}
+3 R 0 {2,D}
 
 R_OR
 Union {H_OR,R_OH}
