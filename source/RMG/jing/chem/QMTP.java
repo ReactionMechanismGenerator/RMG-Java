@@ -1253,11 +1253,11 @@ public class QMTP implements GeneralGAPP {
         try{
 	    String command = new File(System.getenv("MOPAC_LICENSE"), "MOPAC2009.exe").getAbsolutePath() + " ";
             if (System.getProperty("os.name").toLowerCase().contains("windows")){//special windows case where paths can have spaces and are allowed to be surrounded by quotes
-		command=command.concat("\""+directory+"/"+name+".inp\" ");//specify the input file; space is important
+		command=command.concat("\""+directory+"/"+name+".mop\" ");//specify the input file; space is important
 		command=command.concat("\""+directory+"/"+name+".out\"");//specify the output file
 	    }
 	    else{//non-Windows case
-		command=command.concat(directory+"/"+name+".inp ");//specify the input file; space is important
+		command=command.concat(directory+"/"+name+".mop ");//specify the input file; space is important
 		command=command.concat(directory+"/"+name+".out");//specify the output file
 	    }
             Process mopacProc = Runtime.getRuntime().exec(command);
