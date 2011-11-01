@@ -982,8 +982,14 @@ public class QMTP implements GeneralGAPP {
         int successFlag=0;
         try{ 
             String command = "g03 ";
-            command=command.concat(qmfolder+"/"+name+".gjf ");//specify the input file; space is important
-	    command=command.concat(qmfolder+"/"+name+".log");//specify the output file
+            if (System.getProperty("os.name").toLowerCase().contains("windows")){//special windows case where paths can have spaces and are allowed to be surrounded by quotes
+		command=command.concat("\""+qmfolder+"/"+name+".gjf\" ");//specify the input file; space is important
+		command=command.concat("\""+qmfolder+"/"+name+".log\"");//specify the output file
+	    }
+	    else{//non-Windows case
+		command=command.concat(qmfolder+"/"+name+".gjf ");//specify the input file; space is important
+		command=command.concat(qmfolder+"/"+name+".log");//specify the output file
+	    }
 	    Process gaussianProc = Runtime.getRuntime().exec(command);
 
             //check for errors and display the error if there is one
@@ -1244,10 +1250,16 @@ public class QMTP implements GeneralGAPP {
     public int runMOPAC(String name, String directory, String InChIaug){
         int flag = 0;
         int successFlag=0;
-        try{ 
-            String command = System.getenv("MOPAC_LICENSE")+"MOPAC2009.exe ";
-            command=command.concat(directory+"/"+name+".mop ");//specify the input file; space is important
-            command=command.concat(directory+"/"+name+".out");//specify the output file
+        try{
+	    String command = new File(System.getenv("MOPAC_LICENSE"), "MOPAC2009.exe").getAbsolutePath() + " ";
+            if (System.getProperty("os.name").toLowerCase().contains("windows")){//special windows case where paths can have spaces and are allowed to be surrounded by quotes
+		command=command.concat("\""+directory+"/"+name+".inp\" ");//specify the input file; space is important
+		command=command.concat("\""+directory+"/"+name+".out\"");//specify the output file
+	    }
+	    else{//non-Windows case
+		command=command.concat(directory+"/"+name+".inp ");//specify the input file; space is important
+		command=command.concat(directory+"/"+name+".out");//specify the output file
+	    }
             Process mopacProc = Runtime.getRuntime().exec(command);
             //check for errors and display the error if there is one
             InputStream is = mopacProc.getErrorStream();
