@@ -26,7 +26,11 @@ InChI support you must download and install the following:
     Version 1.02beta is required. This is available from 
     http://www.iupac.org/inchi/download/index.html.
 
-After downloading and unpacking the InChI source code, change to the 
+For Windows, in the 1.02beta download package, navigate to the :file:`cInChI/vc6_project/Release`
+directory and copy the file:`cInChI-1.exe` executable to the :file:`$RMG/bin`
+folder.
+
+For Linux, after downloading and unpacking the InChI source code, change to the
 :file:`InChI-1-API/cInChI/gcc_makefile` directory and execute the makefile.
 Copy the resulting executable :file:`cInChI-1.exe` to the :file:`$RMG/bin` 
 folder. ::
