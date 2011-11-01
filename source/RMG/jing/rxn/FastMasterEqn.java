@@ -964,6 +964,18 @@ public class FastMasterEqn implements PDepKineticsEstimator {
 				 * P.S. Want to keep the name fame (fast approximate me) instead of having to change to
 				 * 	smame (slow more accurate me).  ;)
 				 *  
+				 * JWA 01Nov2011:
+				 * 
+				 * Note that the k(T,P) values always combine both direct and
+				 * well-skipping effects. (In this sense they are not true
+				 * rate coefficients, but are instead "flux" coefficients.)
+				 * At low T and high P, the well-skipping effect is usually
+				 * very small. However, there are many examples of isomerization
+				 * reactions for which the well-skipping rate is much larger
+				 * than the direct rate (e.g. due to a very high barrier for
+				 * the direct reaction). For this reason, we do not apply the
+				 * check to isomerization reactions, since they are not 
+				 * necessarily wrong if the check fails.
 				 */
 				LinkedList pathReactionList = pdn.getPathReactions();
 				boolean foundHighPLimitRxn = false;
@@ -972,6 +984,9 @@ public class FastMasterEqn implements PDepKineticsEstimator {
 				for (int HighPRxNum = 0; HighPRxNum < pathReactionList.size(); HighPRxNum++) {
 					PDepReaction rxnWHighPLimit = (PDepReaction)pathReactionList.get(HighPRxNum);
 					if (rxn.getStructure().equals(rxnWHighPLimit.getStructure())) {
+						if (rxn.getReactant().isUnimolecular() && rxn.getProduct().isUnimolecular())
+							// Don't apply the check to isomerization reactions; see above comment
+							continue;
 						foundHighPLimitRxn = true;
 						Hrxn = rxnWHighPLimit.calculateHrxn(stdtemp);
 						double A = 0.0, Ea = 0.0, n = 0.0;
