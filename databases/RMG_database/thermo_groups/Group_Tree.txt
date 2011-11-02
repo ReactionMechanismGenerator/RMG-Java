@@ -604,6 +604,7 @@ L1: C
 		L3: Cs-OsHHH
 		L3: Cs-OsOsHH
 		L3: Cs-OsOsOsH
+		L3: Cs-OsSsHH
 		L3: Cs-SsHHH
 		L3: Cs-SsSsHH
 		L3: Cs-SsSsSsH
@@ -1558,6 +1559,12 @@ L1: C
 						L7: Cs-(Cds-Cdd-Cd)OsOsH	// C-OO(Cd-Ca)H
 			L4: Cs-CtOsOsH
 			L4: Cs-CbOsOsH
+		
+		L3: Cs-COsSsH
+			L4: Cs-CsOsSsH
+			L4: Cs-CdsOsSsH
+			L4: Cs-CtOsSsH
+			L4: Cs-CbOsSsH
 
 		L3: Cs-CCOsH
 			L4: Cs-CsCsOsH
