@@ -55,9 +55,10 @@ if __name__ == "__main__":
 	newGaussianArray=[0 for x in range(GaussianKeywords)]
 	newMopacConnFixArray=[0 for x in range(MopacKeywords)]
 	newGaussianConnFixArray=[0 for x in range(GaussianKeywords)]
-	newFail=0
-	connMismatchSpeciesRetry=0
-	connMismatchFail=0
+	newFail = 0 #note this does not necessarily correspond to newFailList length; it will increase due to repeated attempts on the same molecule
+	newFailList=[]
+	connMismatchSpeciesRetryList=[]
+	connMismatchFailList=[]
 	connMismatchBackupFixesEarlierFail=0
 	connMismatchBackupFixesOnFirstPrimaryFail=0
 
@@ -84,7 +85,8 @@ if __name__ == "__main__":
 			line = iin.readline()#read the next line...should be 'For species' (without ***)
 		    else:#else, the case was a genuine mismatch
 			if (not connMismatchFlag):
-			    connMismatchSpeciesRetry = connMismatchSpeciesRetry + 1
+			    inchikey = line.split()[2]
+			    if inchikey not in connMismatchSpeciesRetryList: connMismatchSpeciesRetryList.append(inchikey)
 			    connMismatchFlag=True
 			if not confirm:#read the next two lines to get to the Attempt line, (there will be a warning line)
 			    line = iin.readline()
@@ -135,7 +137,8 @@ if __name__ == "__main__":
 				line = iin.readline()#read the next line...should be 'For species' (without ***)
 			    else:#else, the case was a genuine mismatch
 				if (not connMismatchFlag):
-				    connMismatchSpeciesRetry = connMismatchSpeciesRetry + 1
+				    inchikey = line.split()[2]
+				    if inchikey not in connMismatchSpeciesRetryList: connMismatchSpeciesRetryList.append(inchikey)
 				    connMismatchFlag=True
 				if not confirm:#read the next two lines to get to the Attempt line, (there will be a warning line)
 				    line = iin.readline()
@@ -167,7 +170,8 @@ if __name__ == "__main__":
 				    line = iin.readline()#read the next line...should be 'For species' (without ***)
 				else:#else, the case was a genuine mismatch
 				    if (not connMismatchFlag):
-					connMismatchSpeciesRetry = connMismatchSpeciesRetry + 1
+					inchikey = line.split()[2]
+					if inchikey not in connMismatchSpeciesRetryList: connMismatchSpeciesRetryList.append(inchikey)
 					connMismatchFlag=True
 				    if not confirm:#read the next two lines to get to the Attempt line, (there will be a warning line)
 					line = iin.readline()
@@ -195,10 +199,12 @@ if __name__ == "__main__":
 			    newMopacArray[attemptCounter-1] = newMopacArray[attemptCounter-1] + 1
 			    if connMismatchFlag:
 				newMopacConnFixArray[attemptCounter-1] = newMopacConnFixArray[attemptCounter-1]+1
-		    else:#starts with '*****Final attempt'
+		    elif(line != ''):#starts with '*****Final attempt'
 			newFail = newFail+1
+			inchikey = line.split()[5]
+			if inchikey not in newFailList: newFailList.append(inchikey)
 			if (connMismatchFlag):
-			    connMismatchFail = connMismatchFail+1
+			    if inchikey not in connMismatchFailList: connMismatchFailList.append(inchikey)
 		    line = iin.readline()
 	    elif (line.startswith('Pre-existing successful')):#a pre-existing successful read
 		if (line.startswith('Pre-existing successful MOPAC')):
@@ -217,9 +223,9 @@ if __name__ == "__main__":
 	iin.close()
 
 	#print the results
-	print 'Number of species that completely failed QMTP = '+str(newFail)
-	if confirm: print 'Number of the complete failures that were due to apparent connectivity mismatches (CheckConnectivity: confirm) = '+ str(connMismatchFail)
-	if confirm: print 'Number of species that were retried due to apparent connectivity mismatches (CheckConnectivity: confirm) = '+str(connMismatchSpeciesRetry)
+	print 'Number of species that completely failed QMTP = '+str(len(newFailList))
+	if confirm: print 'Number of the complete failures that were due to apparent connectivity mismatches (CheckConnectivity: confirm) = '+ str(len(connMismatchFailList))
+	if confirm: print 'Number of species that were retried due to apparent connectivity mismatches (CheckConnectivity: confirm) = '+str(len(connMismatchSpeciesRetryList))
 	if not confirm: print 'Number of unique species with connectivity warnings (CheckConnectivity: check) = '+str(len(connMismatchList))
 	print 'Number of cases where backup connectivity check identified a match missed by the primary method (early/late) = '+str(len(connMismatchBackupFixList))+' ('+str(connMismatchBackupFixesOnFirstPrimaryFail)+'/'+str(connMismatchBackupFixesEarlierFail)+')'#this could double-count for "check" case
 	print 'Number of reads of pre-existing successful MOPAC results = '+ str(preexistMopac)
@@ -246,8 +252,8 @@ if __name__ == "__main__":
 		print 'Attempt #'+str(i+1)+' (MOPAC) : '+str(newMopacConnFixArray[i])
 	    for i in range(len(newGaussianConnFixArray)):
 		print 'Attempt #'+str(i+1)+' (Gaussian) : '+str(newGaussianConnFixArray[i])
-	print 'Number of species with new MOPAC results = ' + str(newMopacTotal)
-	print 'Number of species with new Gaussian results = ' + str(newGaussianTotal)
-	print 'Number of MOPAC attempts = ' + str(mopacTotalAttempts)
-	print 'Number of Gaussian attempts = ' + str(gaussianTotalAttempts)
+	print 'Number of species with new successful MOPAC results = ' + str(newMopacTotal)
+	print 'Number of species with new successful Gaussian results = ' + str(newGaussianTotal)
+	print 'Number of MOPAC attempts = ' + str(mopacTotalAttempts) #this will only include all "sets" of failures for the molecule (i.e. if the molecule is encountered again and retried, this will also be counted)
+	print 'Number of Gaussian attempts = ' + str(gaussianTotalAttempts)#this will only include all "sets" of failures for the molecule (i.e. if the molecule is encountered again and retried, this will also be counted)
 	print 'Total number of unique species with QMTP results (pre-existing and/or new) = ' + str(len(masterList))
