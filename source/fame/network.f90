@@ -852,9 +852,11 @@ contains
         integer nGrains, useGrainSize, r
 
         if (nGrains0 <= 0 .and. dE0 > 0.0) then
-            useGrainSize = 0
-        elseif (nGrains0 > 0 .and. dE0 <= 0.0) then
+            ! Use the grain size, since the number of grains was not given
             useGrainSize = 1
+        elseif (nGrains0 > 0 .and. dE0 <= 0.0) then
+            ! Use the number of grains, since the grain size was not given
+            useGrainSize = 0
         else
             ! Choose the tighter constraint
             useGrainSize = 0
@@ -862,10 +864,12 @@ contains
             if (dE > dE0) useGrainSize = 1
         end if
 
-        if (useGrainSize == 1) then
+        if (useGrainSize == 0) then
+            ! Use the number of grains
             nGrains = nGrains0
             dE = (Emax - Emin) / (nGrains0 - 1)
         else
+            ! Use the grain size
             nGrains = int((Emax - Emin) / dE0) + 1
             dE = dE0
         end if
@@ -887,97 +891,39 @@ contains
         real(8), intent(in) :: Tmax
         real(8), dimension(:), allocatable, intent(inout) :: Elist
 
-        integer nE, done, maxIndex
-        real(8) Emin, Emax0, Emax, dE, mult, maxValue, maxIsomerE0, maxReactionE0, tol
-        type(Isomer) isom
-
+        integer maxIndex
+        real(8) Emin, Emax0, Emax
+        
         integer i, r
-
-        ! For the purposes of finding the maximum energy we will use 401 grains
-        nE = 401
-        dE = 0.0
 
         ! Determine minimum energy and isomer with minimum ground-state energy
         ! Also check reactant and product channels, in case they represent
         ! the minimum energy
         ! if network_shiftToZeroEnergy() has been called, then Emin should be 0
-        isom = net%isomers(1)
+        Emin = net%isomers(1)%E0
         do i = 2, size(net%isomers)
-            if (isom%E0 > net%isomers(i)%E0) isom = net%isomers(i)
+            if (Emin > net%isomers(i)%E0) Emin = net%isomers(i)%E0
         end do
-        Emin = floor(isom%E0)
-
+        do i = 2, size(net%reactions)
+            if (Emin > net%reactions(i)%E0) Emin = net%reactions(i)%E0
+        end do
+        
         ! Determine maximum energy and isomer with maximum ground-state energy
-        isom = net%isomers(1)
-        do i = 2, nIsom
-            if (isom%E0 < net%isomers(i)%E0) isom = net%isomers(i)
+        Emax0 = net%isomers(1)%E0
+        do i = 2, size(net%isomers)
+            if (Emax0 < net%isomers(i)%E0) Emax0 = net%isomers(i)%E0
         end do
-        Emax0 = isom%E0
-
-        ! (Try to) purposely overestimate Emax using arbitrary multiplier
-        ! This is to (hopefully) avoid multiple density of states calculations
-        mult = 50
-        tol = 1e-8
-        done = 0
-        do while (done == 0)
-
-            Emax = ceiling(Emax0 + mult * 8.314472 * Tmax)
-
-            call network_getEnergyGrains(Emin, Emax, dE, nE, Elist)
-            call isomer_getDensityOfStates(net, isom, Elist, nE)
-            call isomer_getEqDist(isom, Elist, nE, Tmax)
-
-            ! Find maximum of distribution
-            maxIndex = 0
-            maxValue = 0.0
-            do r = 1, nE
-                if (isom%eqDist(r) > maxValue) then
-                    maxValue = isom%eqDist(r)
-                    maxIndex = r
-                end if
-            end do
-
-            ! If tail of distribution is much lower than the maximum, then we've found bounds for Emax
-            if (isom%eqDist(nE) / maxValue < tol) then
-                r = nE - 1
-                do while (r > maxIndex .and. done == 0)
-                    if (isom%eqDist(r) / maxValue > tol) then
-                        done = 1
-                    else
-                        r = r - 1
-                    end if
-                end do
-
-                ! Add difference between isomer ground-state energy and highest
-                ! transition state or isomer energy
-                maxIsomerE0 = 0.0
-                maxReactionE0 = 0.0
-                do i = 1, size(net%isomers)
-                    if (net%isomers(i)%E0 > maxIsomerE0) maxIsomerE0 = net%isomers(i)%E0
-                end do
-                do i = 1, size(net%reactions)
-                    if (net%reactions(i)%E0 > maxReactionE0) maxReactionE0 = net%reactions(i)%E0
-                end do
-                Emax = Elist(r) + maxIsomerE0 + maxReactionE0 - Emin
-
-                ! Round Emax up to nearest integer
-                Emax = ceiling(Emax)
-
-            else
-                mult = mult + 50
-            end if
-            
-            ! Deallocate the arrays used for determining the energy grains
-            ! If we haven't found a suitable Emax yet, these arrays will be
-            ! reallocated to a larger size in the next iteration
-            deallocate(isom%densStates, isom%eqDist, Elist)
-
+        do i = 2, size(net%reactions)
+            if (Emax0 < net%reactions(i)%E0) Emax0 = net%reactions(i)%E0
         end do
+        
+        ! Choose the actual Emax as many kB * T above the maximum energy on the PES
+        ! You should check that this is high enough so that the Boltzmann distributions have trailed off to negligible values
+        Emax = ceiling(Emax0 + 40 * 8.314472 * Tmax)
 
         ! Return the chosen energy grains
         call network_getEnergyGrains(Emin, Emax, grainSize, nGrains, Elist)
 
-        write (1,*) '    Using', size(Elist), 'grains of size', Elist(2) - Elist(1), 'J/mol in range 0 to', Emax, 'J/mol'
 
     end subroutine
 
