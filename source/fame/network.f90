@@ -919,6 +919,40 @@ contains
         ! Return the chosen energy grains
         call network_getEnergyGrains(Emin, Emax, grainSize, nGrains, Elist)
 
+    end subroutine
+
+    subroutine network_mapDensityOfStates(E0, densStates0, Elist0, nGrains0, densStates, Elist, nGrains)
+
+        real(8), intent(in) :: E0        
+        integer, intent(in) :: nGrains0
+        real(8), dimension(1:nGrains0), intent(in) :: densStates0
+        real(8), dimension(1:nGrains0), intent(in) :: Elist0
+        integer, intent(in) :: nGrains
+        real(8), dimension(1:nGrains), intent(out) :: densStates
+        real(8), dimension(1:nGrains), intent(in) :: Elist
+
+        integer :: r, s
+
+        do r = 1, nGrains
+            densStates(r) = 0.
+        end do
+
+        do r = 1, nGrains
+            if (Elist(r) >= E0) then
+                do s = 2, nGrains0
+                    if (E0 + Elist0(s) >= Elist(r)) then
+                        if (densStates0(s-1) > 0 .and. densStates0(s) > 0) then
+                            densStates(r) = densStates0(s) * (densStates0(s-1) / densStates0(s)) ** &
+                                ((Elist(r) - E0 - Elist0(s)) / (Elist0(s-1) - Elist0(s)))
+                        else
+                            densStates(r) = densStates0(s) + (densStates0(s-1) - densStates0(s)) * &
+                                (Elist(r) - E0 - Elist0(s)) / (Elist0(s-1) - Elist0(s))
+                        end if
+                        exit
+                    end if
+                end do
+            end if
+        end do
 
     end subroutine
 
@@ -935,12 +969,33 @@ contains
         integer, intent(in) :: method
         real(8), dimension(1:nT,1:nP,1:nIsom+nReac+nProd,1:nIsom+nReac+nProd), intent(out) :: K
 
+        real(8), dimension(:), allocatable :: Elist
+        real(8), dimension(1:nIsom+nReac+nProd,1:nGrains0) :: densStates0
         real(8) T, P
-        integer i, j, u, v, w
+        integer i, j, u, v, w, nGrains
+
+        ! Save the original densities of states for each isomer
+        ! (We'll be overwriting the ones on each isomer at each temperature)
+        do i = 1, nIsom
+            densStates0(i,:) = net%isomers(i)%densStates
+            deallocate(net%isomers(i)%densStates)
+        end do
 
         do u = 1, nT
 
             T = Tlist(u)
+
+            ! Choose energy grains
+            call network_determineEnergyGrains(net, nIsom, grainSize, numGrains, T, Elist)
+            nGrains = size(Elist)
+            write (1,*) '    Using', nGrains, 'grains of size', Elist(2) - Elist(1), 'J/mol in range', minval(Elist), &
+                ' to', maxval(Elist), 'J/mol'
+
+            do i = 1, nIsom
+                allocate( net%isomers(i)%densStates(1:nGrains) )
+                call network_mapDensityOfStates(net%isomers(i)%E0, densStates0(i,:), Elist0, nGrains0, &
+                    net%isomers(i)%densStates, Elist, nGrains)
+            end do
 
             ! Calculate the equilibrium (Boltzmann) distributions for each (unimolecular) well
             do i = 1, nIsom
@@ -949,6 +1004,8 @@ contains
 
             ! Calculate microcanonical rate coefficients at the current conditions
             do w = 1, size(net%reactions)
+                allocate(net%reactions(w)%kf(1:nGrains))
+                allocate(net%reactions(w)%kb(1:nGrains))
                 call reaction_calculateMicrocanonicalRates(net%reactions(w), T, Elist, nGrains, net%isomers, net%species, &
                     nIsom, nReac, nProd)
             end do
@@ -966,6 +1023,15 @@ contains
                 ! Determine phenomenological rate coefficients
                 call network_applyApproximateMethod(net, nIsom, nReac, nProd, Elist, nGrains, T, P, method, K(u,v,:,:))
 
+            end do
+
+            do i = 1, nIsom
+                deallocate(net%isomers(i)%densStates)
+                deallocate(net%isomers(i)%eqDist)
+            end do
+            do w = 1, size(net%reactions)
+                deallocate(net%reactions(w)%kf)
+                deallocate(net%reactions(w)%kb)
             end do
 
         end do
