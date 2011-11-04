@@ -565,11 +565,14 @@ public class FastMasterEqn implements PDepKineticsEstimator {
 
 			// Number of energy grains to use (determines to an extent the accuracy and precision of the results)
 			input.append( "# A method for determining the number of energy grains to use\n" );
-			input.append( "# 	Option 1: Specifying the number to use directly\n" );
-			input.append( "#		Example: NumGrains 201\n" );
-			input.append( "# 	Option 2: Specifying the grain size in J/mol, kJ/mol, cal/mol, kcal/mol, or cm^-1\n" );
-			input.append( "#		Example: GrainSize J/mol 4.184\n" );
+			input.append( "# Specify both the minimum number of grains and the maximum grain size\n" );
+			input.append( "# Allowed units for the grain size are J/mol, kJ/mol, cal/mol, kcal/mol, or cm^-1\n" );
+			input.append( "# Example:\n" );
+			input.append( "#		NumGrains 251\n" );
+			input.append( "#		GrainSize J/mol 4184\n" );
 			input.append( "NumGrains " + numGrains );
+			input.append( "\n" );
+			input.append( "GrainSize J/mol 4184" );
 			input.append( "\n\n" );
 
 			// Collisional transfer probability model to use
