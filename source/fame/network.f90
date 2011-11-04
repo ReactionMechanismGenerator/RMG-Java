@@ -592,11 +592,10 @@ contains
         Keq = 0
         kb = 0
         
-        if (rxn%reac <= nIsom .and. rxn%prod <= nIsom) then
+        ! Calculate forward rate coefficient via inverse Laplace transform
+        call reaction_kineticsILT(rxn%E0, reac%densStates, rxn%arrhenius, T, E, rxn%kf)
 
-            ! Calculate forward rate coefficient via inverse Laplace transform
-            call reaction_kineticsILT(rxn%E0 - reac%E0, reac%densStates, &
-                rxn%arrhenius, T, E, rxn%kf)
+        if (rxn%reac <= nIsom .and. rxn%prod <= nIsom) then
 
             ! Calculate equilibrium constant
             Keq = reaction_getEquilibriumConstant(reac, prod, T, speciesList)
@@ -618,10 +617,6 @@ contains
 
         elseif (rxn%reac <= nIsom .and. rxn%prod > nIsom) then
 
-            ! Calculate forward rate coefficient via inverse Laplace transform
-            call reaction_kineticsILT(rxn%E0 - reac%E0, reac%densStates, &
-                rxn%arrhenius, T, E, rxn%kf)
-
             ! Calculate equilibrium constant
             Keq = reaction_getEquilibriumConstant(reac, prod, T, speciesList)
 
@@ -641,36 +636,28 @@ contains
 
         elseif (rxn%reac > nIsom .and. rxn%prod <= nIsom) then
 
-            ! Convert to dissocation so that a similar algorithm to above can be used
-            reac = isomerList(rxn%prod)
-            prod = isomerList(rxn%reac)
-
-            ! Fit modified Arrhenius expression in reverse direction
-            do r = 1, 23
-                Tlist0(r) = 1.0/(0.000125 * (r-1) + 0.0005)
-            end do
-            arrhenius = reaction_fitReverseKinetics(rxn, Tlist0, 23, speciesList, isomerList)
-
-            ! Calculate forward rate coefficient via inverse Laplace transform
-            call reaction_kineticsILT(rxn%E0 - reac%E0, reac%densStates, &
-                arrhenius, T, E, rxn%kb)
-
             ! Calculate equilibrium constant
             Keq = reaction_getEquilibriumConstant(reac, prod, T, speciesList)
 
             ! Calculate backward rate coefficient via detailed balance
-            ! assuming multimolecular isomer is fully thermalized
             do r = 1, nGrains
-                rxn%kf(r) = rxn%kb(r) / Keq * &
-                    reac%densStates(r) * exp(-E(r) / 8.314472 / T) / reac%Q * dE
+                if (prod%densStates(r) /= 0) then
+                    rxn%kb(r) = rxn%kf(r) / Keq * &
+                        (reac%densStates(r) / reac%Q) / (prod%densStates(r) / prod%Q)
+                end if
+            end do
+
+            ! Include equilibrium distribution in forward direction
+            do r = 1, nGrains
+                rxn%kf(r) = rxn%kf(r) * reac%densStates(r) * exp(-E(r) / 8.314472 / T) / reac%Q * dE
             end do
 
             ! Check that forward and reverse rates integrate to give the proper k(E) values
-            kf0 = arrhenius%A * T ** arrhenius%n * exp(-arrhenius%Ea / 8.314472 / T)
-            kf = sum(rxn%kb * reac%densStates * exp(-E / 8.314472 / T) / reac%Q * dE)
-            kb = sum(rxn%kf)
+            kf0 = rxn%arrhenius%A * T ** rxn%arrhenius%n * exp(-rxn%arrhenius%Ea / 8.314472 / T)
+            kf = sum(rxn%kf)
+            kb = sum(rxn%kb * prod%densStates * exp(-E / 8.314472 / T) / prod%Q * dE)           
             Keq0 = reaction_getEquilibriumConstant(reac, prod, T, speciesList)
-            Keq = kf / kb   
+            Keq = kf / kb  
 
         end if
         
@@ -699,7 +686,7 @@ contains
             write (1,*) '    Expected kf at', T, 'K =', kf0 
             write (1,*) '      Actual kf at', T, 'K =', kf
         end if
-        
+
         !write (*,*) rxn%reac, rxn%prod, rxn%kf(nGrains), rxn%kb(nGrains)
 
     end subroutine
