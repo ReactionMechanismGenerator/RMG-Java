@@ -15,15 +15,15 @@ program fame
     implicit none
 
     type(Network) net
-    real(8), dimension(:), allocatable :: Tlist, Plist, Elist
-    real(8) :: grainSize, Tmin, Tmax, Pmin, Pmax, Keq, Keq0
+    real(8), dimension(:), allocatable :: Tlist, Plist, Elist0
+    real(8) :: grainSize, Tmin, Tmax, Pmin, Pmax, Keq, Keq0, Emin0, Emax0, grainSize0
     integer :: numGrains
     integer :: method, model
     integer, dimension(1:10) :: modelOptions
     real(8), dimension(:,:,:,:), allocatable :: K
     real(8), dimension(:,:,:,:), allocatable :: chebyshevCoeffs
     type(ArrheniusKinetics), dimension(:,:,:), allocatable :: pDepArrhenius
-    integer :: nIsom, nReac, nProd, nGrains, nT, nP, done
+    integer :: nIsom, nReac, nProd, nGrains0, nT, nP, done
 
     integer i, j, t, p, reac, prod
     character(len=64) fmtStr
@@ -56,26 +56,33 @@ program fame
     nT = size(Tlist)
     nP = size(Plist)
 
-    ! Shift network such that lowest-energy isomer has a ground state of 0.0
-    write (1,fmt='(A)') 'Zeroing lowest energy isomer...'
-    call network_shiftToZeroEnergy(net)
+    ! Determine energy grains to use for computing densities of states
+    write (1,fmt='(A)') 'Determining energy grains to use for densities of states...'
+    call network_determineEnergyGrains(net, nIsom, grainSize, numGrains, minval(Tlist), Elist0)
+    Emin0 = minval(Elist0)
+    grainSize0 = Elist0(2) - Elist0(1)
+    call network_determineEnergyGrains(net, nIsom, grainSize, numGrains, maxval(Tlist), Elist0)
+    Emax0 = maxval(Elist0)
+    nGrains0 = size(Elist0)
 
-    ! Determine energy grains
-    write (1,fmt='(A)') 'Determining energy grains...'
-    call network_determineEnergyGrains(net, nIsom, grainSize, numGrains, maxval(Tlist), Elist)
-    nGrains = size(Elist)
+    Emax0 = Emax0 - Emin0
+    Emin0 = 0
+    call network_getEnergyGrains(Emin0, Emax0, grainSize0, nGrains0, Elist0)
+    nGrains0 = size(Elist0)
+    write (1,*) '    Using', nGrains0, 'grains of size', Elist0(2) - Elist0(1), &
+        'J/mol in range', Emin0, 'to', Emax0, 'J/mol'
 
     ! Calculate density of states for all isomers in network
     write (1,fmt='(A)') 'Calculating densities of states...'
     do i = 1, nIsom
-        call isomer_getDensityOfStates(net, net%isomers(i), Elist, nGrains)
+        call isomer_getDensityOfStates(net, net%isomers(i), Elist0, nGrains0)
     end do
 
     ! Determine phenomenological rate coefficients
     write (1,fmt='(A)') 'Calculating phenomenological rate coefficients...'
     allocate( K( 1:nT, 1:nP, 1:nIsom+nReac+nProd, 1:nIsom+nReac+nProd) )
     call network_calculateRateCoefficients(net, nIsom, nReac, nProd, &
-        Elist, nGrains, Tlist, nT, Plist, nP, method, K)
+        Elist0, nGrains0, Tlist, nT, Plist, nP, grainSize, numGrains, method, K)
 
     ! Check that k(T,P) values satisfy thermo consistence
     do reac = 1, nIsom+nReac
@@ -114,7 +121,7 @@ program fame
 
     ! Write results (to stdout)
     write (1,fmt='(A)') 'Writing results header...'
-    call writeOutputIntro(net, nIsom, nReac, nProd, Tlist, nT, Plist, nP, Elist, nGrains, &
+    call writeOutputIntro(net, nIsom, nReac, nProd, Tlist, nT, Plist, nP, Elist0, nGrains0, &
         method, K, model, modelOptions, chebyshevCoeffs, pDepArrhenius)
 
     ! Fit interpolation model

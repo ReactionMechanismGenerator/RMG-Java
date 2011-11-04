@@ -549,12 +549,7 @@ contains
             call convolve(densStates, densStates0, Elist, nGrains)
         end do
 
-        ! Shift to appropriate energy grain using E0
-        index = 0
-        do r = 1, nGrains
-            if (isom%E0 < Elist(r) .and. index == 0) index = r
-        end do
-        isom%densStates(index:nGrains) = densStates(1:nGrains-index+1)
+        isom%densStates = densStates
 
     end subroutine
 
@@ -928,13 +923,15 @@ contains
     end subroutine
 
     subroutine network_calculateRateCoefficients(net, nIsom, nReac, nProd, &
-        Elist, nGrains, Tlist, nT, Plist, nP, method, K)
+        Elist0, nGrains0, Tlist, nT, Plist, nP, grainSize, numGrains, method, K)
 
-        integer, intent(in) :: nIsom, nReac, nProd, nGrains, nT, nP
+        integer, intent(in) :: nIsom, nReac, nProd, nGrains0, nT, nP
         type(Network), intent(inout) :: net
-        real(8), dimension(1:nGrains), intent(in) :: Elist
+        real(8), dimension(1:nGrains0), intent(in) :: Elist0
         real(8), dimension(1:nT), intent(in) :: Tlist
         real(8), dimension(1:nP), intent(in) :: Plist
+        real(8), intent(in) :: grainSize
+        integer, intent(in) :: numGrains
         integer, intent(in) :: method
         real(8), dimension(1:nT,1:nP,1:nIsom+nReac+nProd,1:nIsom+nReac+nProd), intent(out) :: K
 
