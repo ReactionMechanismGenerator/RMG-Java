@@ -714,7 +714,8 @@ contains
         real(8), dimension(:), intent(in) :: E
         real(8), dimension(:), intent(out) :: k
 
-        real(8) dE, A, n, Ea
+        real(8), dimension(:), allocatable :: phi
+        real(8) dE, A, n, Ea, rem
         integer :: r, s
 
         ! We can't use a negative activation energy for this method, so we
@@ -732,13 +733,48 @@ contains
         if (s < 0) s = 0
 
         ! Determine rate coefficients using inverse Laplace transform
-        do r = 1, size(E)
-            if (s >= r .or. rho(r) == 0) then
-                k(r) = 0
+        if (n < 0.001) then
+
+            do r = 1, size(E)
+                if (s >= r .or. rho(r) == 0) then
+                    k(r) = 0
+                else
+                    k(r) = A * (T ** n) * rho(r - s) / rho(r)
+                end if
+            end do
+
+        else
+
+            allocate( phi(1:size(E)) )
+            ! Evaluate the inverse Laplace transform of the T**n piece, which only
+            ! exists for n >= 0
+            phi(1) = 0
+            do r = 2, size(E)
+                phi(r) = (E(r) - E(1))**(n-1) / (8.314472**n * gamma(n))
+            end do
+            ! Evaluate the convolution
+            call convolve(phi, rho, E, size(E))
+
+
+            
+
+            ! Apply to determine the microcanonical rate
+            rem = Ea - s * dE
+            if (rem == 0) then
+                do r = s+1, size(E)
+                    if (E(r) > E0 .and. rho(r) /= 0) &
+                        k(r) = A * phi(r-s) / rho(r)
+                end do
             else
-                k(r) = A * (T ** n) * rho(r - s) / rho(r)
+                do r = s+1, size(E)
+                    if (E(r) > E0 .and. rho(r) /= 0 .and. phi(r-s) /= 0) &
+                        k(r) = A * phi(r-s) * (phi(r-s-1) / phi(r-s)) ** (-rem / (E(r-s-1) - E(r-s))) / rho(r)
+                end do
             end if
-        end do
+
+            deallocate(phi)
+
+        end if
 
     end subroutine
 
