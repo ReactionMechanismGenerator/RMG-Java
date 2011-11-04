@@ -976,7 +976,7 @@ contains
 
         ! Save the original densities of states for each isomer
         ! (We'll be overwriting the ones on each isomer at each temperature)
-        do i = 1, nIsom
+        do i = 1, nIsom+nReac+nProd
             densStates0(i,:) = net%isomers(i)%densStates
             deallocate(net%isomers(i)%densStates)
         end do
@@ -991,14 +991,14 @@ contains
             write (1,*) '    Using', nGrains, 'grains of size', Elist(2) - Elist(1), 'J/mol in range', minval(Elist), &
                 ' to', maxval(Elist), 'J/mol'
 
-            do i = 1, nIsom
+            do i = 1, nIsom+nReac+nProd
                 allocate( net%isomers(i)%densStates(1:nGrains) )
                 call network_mapDensityOfStates(net%isomers(i)%E0, densStates0(i,:), Elist0, nGrains0, &
                     net%isomers(i)%densStates, Elist, nGrains)
             end do
 
             ! Calculate the equilibrium (Boltzmann) distributions for each (unimolecular) well
-            do i = 1, nIsom
+            do i = 1, nIsom+nReac+nProd
                 call isomer_getEqDist(net%isomers(i), Elist, nGrains, T)
             end do
 
@@ -1025,7 +1025,7 @@ contains
 
             end do
 
-            do i = 1, nIsom
+            do i = 1, nIsom+nReac+nProd
                 deallocate(net%isomers(i)%densStates)
                 deallocate(net%isomers(i)%eqDist)
             end do

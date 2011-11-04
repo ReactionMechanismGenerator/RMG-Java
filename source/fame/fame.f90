@@ -74,7 +74,7 @@ program fame
 
     ! Calculate density of states for all isomers in network
     write (1,fmt='(A)') 'Calculating densities of states...'
-    do i = 1, nIsom
+    do i = 1, nIsom+nReac+nProd
         call isomer_getDensityOfStates(net, net%isomers(i), Elist0, nGrains0)
     end do
 
