@@ -19,6 +19,11 @@ examples/*
 # NetBeans project files
 netbeans/*
 
+# Eclipse project files
+.project
+.classpath
+.settings/*
+
 # Folder in which to run RMG
 run/*
 
