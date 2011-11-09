@@ -143,150 +143,61 @@ public class ChemGraph implements Matchable {
     }
 
     public void determineAromaticityAndWriteBBonds() {
-    	addMissingHydrogen();
-        // If there are no cycles, cannot be aromatic
+	// If there are no cycles, cannot be aromatic
         if (graph.getCycleNumber() == 0) return;
-        // Check each cycle for aromaticity
-        for (Iterator cyclesIter = graph.getCycle().iterator(); cyclesIter.hasNext();) {
-            int piElectronsInCycle = 0;
-            LinkedList graphComps = (LinkedList)cyclesIter.next();
-            boolean[] hadPiElectrons = new boolean[graphComps.size()];
-            boolean cycleStartedWithNode = false;
-            for (int numComps=0; numComps<graphComps.size(); numComps++) {
-                GraphComponent gc = (GraphComponent)graphComps.get(numComps);
-                if (gc instanceof Node) {
-                    if (numComps==0) cycleStartedWithNode = true;
-                    Atom a = (Atom)((Node)gc).getElement();
-                    if (a.isBiradical()) {
-                        piElectronsInCycle += 2;
-                        hadPiElectrons[numComps] = true;
-                    }
-                    else if (!a.isRadical()) {
-                        Iterator neighbors = ((Node)gc).getNeighbor();
-                        int usedValency = 0;
-                        /*
-                         * We count here the number of double bonds attached to a particular 
-                         * atom. 
-                         * 
-                         * We do this because we don't want that species with a 
-                         * Cdd type carbon atom, i.e. carbon bonded by two double bonds,
-                         * is identified as being aromatic.
-                         * 
-                         * Previously, a five-membered cyclic species, containing
-                         * three double bonds with one Cdd carbon, would be perceived
-                         * as aromatic since 3*2 = 6 "Pi" electrons were counted, 
-                         * and a cyclic structure was present.
-                         * 
-                         * This patch, albeit not very general, counts the total
-                         * number of double bonds for a particular atom. If a second
-                         * double bond is detected, the pi-electron counter is not updated
-                         * by  adding two.
-                         * 
-                         * This makes at least some chemical sence, as you could 
-                         * argue that the second pair electrons in the pi-bonds (perpendicular to the other
-                         * pair of electrons) does not interact and conjugate with the
-                         * pi electrons of other electrons.
-                         *  
-                         */
-                        int number_of_double_bonds = 0;
-                        while (neighbors.hasNext()) {
-                            Arc nodeA= (Arc)neighbors.next();
-                            double order = ((Bond)(nodeA.getElement())).getOrder();
-                            if(order==2) number_of_double_bonds++;
-                            if(number_of_double_bonds != 2)
-                            	usedValency += ((Bond)(nodeA.getElement())).getOrder();
-                        }
-                        if (a.getChemElement().getValency()-usedValency >= 2) {
-                            piElectronsInCycle += 2;
-                            hadPiElectrons[numComps] = true;
-                        }
-                    }
-                } else if (gc instanceof Arc) {
-                    Bond b = (Bond)((Arc)gc).getElement();
-                    /*
-                     * For now, species with a triple bond conjugated to two double bonds
-                     * would also contribute to the pi electron count. Hence, molecules
-                     * such as benzyne (InChI=1S/C6H4/c1-2-4-6-5-3-1/h1-4H) would
-                     * have a hueckel number of 6 and would then be perceived as aromatic.
-                     * 
-                     *  The atomtype of the triple bonded carbons (Ct) would be changed
-                     *  to Cb and hence an atom would be added afterwards, in a place
-                     *  where that would not possible.
-                     *  
-                     *  In order to avoid this problem, an if conditional is added that 
-                     *  checks whether the iterated bond is a double bond. If not,
-                     *  contributions to the pi electron count are not taken into account.
-                     */
-                    if(b.getOrder() == 2){
-                        int bondPiElectrons = b.getPiElectrons();
-                        if (bondPiElectrons > 0) {
-                            piElectronsInCycle += bondPiElectrons;
-                            hadPiElectrons[numComps] = true;
-                        }
-                    }
-                }
-            }
-            // Check if the # of piElectronsInCycle = 4*n+2 (Huckel's rule)
-            int huckelMagicNumber = 2;
-            boolean obeysHuckelRule = false;
-            while (piElectronsInCycle >= huckelMagicNumber) {
-                if (piElectronsInCycle == huckelMagicNumber) {
-                    obeysHuckelRule = true;
-                    break;
-                }
-                else huckelMagicNumber += 4;
-            }
-            if (!obeysHuckelRule) return;
-            // Check if each node (atom) contributed to pi electrons in cycle
-            for (int i=0; i<hadPiElectrons.length/2; i++) {
-                if (cycleStartedWithNode) {
-                    if (!hadPiElectrons[2*i]) {
-                        if (i==0) {
-                            if (!hadPiElectrons[1] && !hadPiElectrons[hadPiElectrons.length-1]) return;
-                        } else {
-                            if (!hadPiElectrons[2*i-1] && !hadPiElectrons[2*i+1]) return;
-                        }
-                    }
-                }
-                else {
-                    if (!hadPiElectrons[2*i+1]) {
-                        if (i==hadPiElectrons.length-1) {
-                            if (!hadPiElectrons[0] && !hadPiElectrons[hadPiElectrons.length-2]) return;
-                        } else {
-                            if (!hadPiElectrons[2*i] && !hadPiElectrons[2*i+2]) return;
-                        }
-                    }
-                }
-            }
-            // If we've reached here, our assumption is that the cycle is aromatic
-            isAromatic = true;
-            for (int numComps=0; numComps<graphComps.size(); numComps++) {
-                GraphComponent gc = (GraphComponent)graphComps.get(numComps);
-                if (gc instanceof Arc) {
-                    Arc currentArc = (Arc)gc;
-                    Bond currentBond = (Bond)currentArc.getElement();
-                    currentArc.setElement(currentBond.changeBondToAromatic());
-                }
-            }
-            /**
+	//addMissingHydrogen();
+    	graph.getAromatic();//perceive aromaticity using Sandeep's algorithm
+	boolean [] aromaticList=graph.getIsAromatic();//get the list of aromatic rings
+	//LinkedList sssrings = graph.getCycle();//get the ring list
+	//iterate over the rings
+	for (int i=0; i<graph.getCycle().size(); i++){
+	    boolean aromatic = graph.getIsAromatic()[i];
+	    if (aromatic){//if the ring is aromatic, check whether there are any triple bonds; if so, we don't want to convert to B bonds because this messes up the hydrogen balance; otherwise, we convert to B bonds
+		LinkedList graphComps = (LinkedList) graph.getCycle().get(i);//get the aromatic cycle
+		for (int numComps=0; numComps<graphComps.size(); numComps++) {
+		    GraphComponent gc = (GraphComponent)graphComps.get(numComps);
+		    if (gc instanceof Arc) {
+			Arc currentArc = (Arc)gc;
+			double order = ((Bond)currentArc.getElement()).getOrder();
+			if (order > 2) aromatic = false;
+		    }
+		}
+		if(aromatic){//if it is still considered aromatic (given the check for triple bonds) convert to B bonds
+		    for (int numComps=0; numComps<graphComps.size(); numComps++) {
+			GraphComponent gc = (GraphComponent)graphComps.get(numComps);
+			if (gc instanceof Arc) {
+			    Arc currentArc = (Arc)gc;
+			    Bond currentBond = (Bond)currentArc.getElement();
+			    currentArc.setElement(currentBond.changeBondToAromatic());
+			}
+		    }
+		}
+	    }
+	}
+	            /**
              * After the bonds that were previously defined as "S" or "D" bonds,
              * have been renamed to "B" bonds,
              * We have to re-perceive the atom type of the atoms in the adjacency list.
-             * This is done by re-iterating over all nodes and calling the 
+             * This is done by re-iterating over all nodes and calling the
              * Node.updateFgElement.
-             * 
+             *
              * If this is not done, the thermodynamic properties estimation
-             * will fail to assign Cb GAVs to those atoms perceived as aromatic. 
-             * 
+             * will fail to assign Cb GAVs to those atoms perceived as aromatic.
+             *
              */
-            for (int numComps=0; numComps<graphComps.size(); numComps++) {
-                GraphComponent gc = (GraphComponent)graphComps.get(numComps);
-                if (gc instanceof Node) {
-                	Node currentNode = (Node)gc;
-                	currentNode.updateFgElement();//update the FgElement
-                }
-            }
-        }
+	for (int i=0; i<graph.getCycle().size(); i++){
+	    if (graph.getIsAromatic()[i]){
+		LinkedList graphComps = (LinkedList) graph.getCycle().get(i);//get the aromatic cycle
+		for (int numComps=0; numComps<graphComps.size(); numComps++) {
+		    GraphComponent gc = (GraphComponent)graphComps.get(numComps);
+		    if (gc instanceof Node) {
+			Node currentNode = (Node)gc;
+			currentNode.updateFgElement();//update the FgElement
+		    }
+		}
+	    }
+	}
+
     }
 
     /*private boolean isAromatic() {

@@ -611,12 +611,13 @@ public class Graph {
 				if (gc instanceof Node){
 					Node n = (Node)gc;
 					Atom a = (Atom)n.getElement();
-					//has monoradicals not aromatic
-					if (a.getRadicalNumber() == 1){
-						isAromatic[i] =  false;
-						alreadyClassified[i] = 1;
-						break;
-					}
+					//UPDATE: we want molecules like phenyl to be considered aromatic so we comment out the below:
+//					//has monoradicals not aromatic
+//					if (a.getRadicalNumber() == 1){
+//						isAromatic[i] =  false;
+//						alreadyClassified[i] = 1;
+//						break;
+//					}
 					//has more than 2 saturated carbon atoms, not aromatic
 				    if (a.isCarbon() && n.getNeighborNumber() == 4){
 				    	if(saturatedCarbon){
