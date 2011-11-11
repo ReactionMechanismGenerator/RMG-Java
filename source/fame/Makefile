@@ -43,7 +43,9 @@ endif
 
 endif ###### END OF gfortran SETTINGS
 
-LDFLAGS= $(F90_EXTRA_LDFLAGS) -lpthread -lblas -llapack
+LDFLAGS=$(F90_EXTRA_LDFLAGS)
+
+LIBS=-lblas -llapack
 
 OBJ0=math.o states.o _modes.o network.o io.o mastereqn.o msc.o rs.o model.o fame.o
 
@@ -53,7 +55,7 @@ OBJ=$(patsubst %.o,$(BUILDDIR)/%.o,$(OBJ0))
 
 $(BINDIR)/fame.exe: $(OBJ)  
 	mkdir -p $(BINDIR)
-	$(F90) $(LDFLAGS) $(OBJ) -o $(BINDIR)/fame.exe
+	$(F90) $(LDFLAGS) -o $(BINDIR)/fame.exe $(OBJ) $(LIBS)
 
 $(BUILDDIR)/%.o: %.f90
 	mkdir -p $(BUILDDIR)

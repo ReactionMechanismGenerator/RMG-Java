@@ -139,6 +139,73 @@ public class ChemGraph implements Matchable {
 				throw new ForbiddenStructureException(message);
 			}
         }
+        this.determineAromaticityAndWriteBBonds();
+    }
+
+    public void determineAromaticityAndWriteBBonds() {
+	// If there are no cycles, cannot be aromatic
+        if (graph.getCycleNumber() == 0) return;
+	//addMissingHydrogen();
+    	graph.getAromatic();//perceive aromaticity using Sandeep's algorithm
+	//iterate over the rings
+	for (int i=0; i<graph.getCycle().size(); i++){
+	    boolean aromatic = graph.getIsAromatic()[i];
+	    if (aromatic){//if the ring is aromatic, check whether there are any triple bonds or consecutive double bonds; if so, we don't want to convert to B bonds because this messes up the hydrogen balance; otherwise, we convert to B bonds
+		LinkedList graphComps = (LinkedList) graph.getCycle().get(i);//get the aromatic cycle
+		for (int numComps=0; numComps<graphComps.size(); numComps++) {
+		    GraphComponent gc = (GraphComponent)graphComps.get(numComps);
+		    if (gc instanceof Arc) {
+			Arc currentArc = (Arc)gc;
+			double order = ((Bond)currentArc.getElement()).getOrder();
+			if (order > 2) aromatic = false;
+		    }
+		    if (gc instanceof Node) {//check for two double bonds (e.g. Cdd/Sidd); if these are present, we do not want to consider as aromatic as the two D bonds (which should be in the ring if valency is 4) will be changed to two B bonds, and a hydrogen would be incorrectly added
+		        Iterator neighbors = ((Node)gc).getNeighbor();
+			int number_of_double_bonds = 0;
+                        while (neighbors.hasNext()) {
+                            Arc nodeA= (Arc)neighbors.next();
+                            double order = ((Bond)(nodeA.getElement())).getOrder();
+                            if(order==2) number_of_double_bonds++;
+			}
+			if(number_of_double_bonds == 2) aromatic = false;
+		    }
+		}
+		if(aromatic){//if it is still considered aromatic (given the check for triple bonds and consecutive double bonds) convert to B bonds
+		    for (int numComps=0; numComps<graphComps.size(); numComps++) {
+			GraphComponent gc = (GraphComponent)graphComps.get(numComps);
+			if (gc instanceof Arc) {
+			    Arc currentArc = (Arc)gc;
+			    Bond currentBond = (Bond)currentArc.getElement();
+			    currentArc.setElement(currentBond.changeBondToAromatic());
+			}
+		    }
+		}
+	    }
+	}
+	            /**
+             * After the bonds that were previously defined as "S" or "D" bonds,
+             * have been renamed to "B" bonds,
+             * We have to re-perceive the atom type of the atoms in the adjacency list.
+             * This is done by re-iterating over all nodes and calling the
+             * Node.updateFgElement.
+             *
+             * If this is not done, the thermodynamic properties estimation
+             * will fail to assign Cb GAVs to those atoms perceived as aromatic.
+             *
+             */
+	for (int i=0; i<graph.getCycle().size(); i++){
+	    if (graph.getIsAromatic()[i]){
+		LinkedList graphComps = (LinkedList) graph.getCycle().get(i);//get the aromatic cycle
+		for (int numComps=0; numComps<graphComps.size(); numComps++) {
+		    GraphComponent gc = (GraphComponent)graphComps.get(numComps);
+		    if (gc instanceof Node) {
+			Node currentNode = (Node)gc;
+			currentNode.updateFgElement();//update the FgElement
+		    }
+		}
+	    }
+	}
+
     }
 
     /*private boolean isAromatic() {
