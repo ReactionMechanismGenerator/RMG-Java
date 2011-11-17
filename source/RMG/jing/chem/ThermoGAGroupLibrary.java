@@ -335,7 +335,6 @@ public class ThermoGAGroupLibrary {
 					p_chemGraph.resetThermoSite(node);
 					// find the match in the thermo tree
 					Stack stack = ringTree.findMatchedPath(p_chemGraph);
-					System.out.println(((FunctionalGroup)((HierarchyTreeNode)stack.lastElement()).getElement()).getName());
 					// check if it's the deepest match
 					if (!stack.empty()) {
 						HierarchyTreeNode htn = (HierarchyTreeNode) stack.peek();
@@ -359,7 +358,6 @@ public class ThermoGAGroupLibrary {
 			//determine ThermoGAValues:
 			Map<ThermoGAValue, Integer> GAMap = new HashMap<ThermoGAValue, Integer>();
 			for(Stack element : deepestStackMap.keySet()){
-				System.out.println("Value for Stack: "+deepestStackMap.get(element));
 				HierarchyTreeNode node = (HierarchyTreeNode)element.pop();
 				FunctionalGroup fg = (FunctionalGroup)node.getElement();
 				ThermoGAValue ga = (ThermoGAValue)ringLibrary.get(fg);
