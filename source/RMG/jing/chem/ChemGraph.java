@@ -150,16 +150,17 @@ public class ChemGraph implements Matchable {
 	//iterate over the rings
 	for (int i=0; i<graph.getCycle().size(); i++){
 	    boolean aromatic = graph.getIsAromatic()[i];
-	    if (aromatic){//if the ring is aromatic, check whether there are any triple bonds or consecutive double bonds; if so, we don't want to convert to B bonds because this messes up the hydrogen balance; otherwise, we convert to B bonds
+	    //for our purposes, we want the presence of one double bond (either in ring or outside ring (in the case of some naphthalene resonance isomers)) to be a necessary condition for aromaticity (radicals are tricky; phenyl should be aromatic, but not C3H2)
+	    if (aromatic){//if the ring is aromatic, check for exactly one double bond at each node in cycle; unfortunately, because this separates the cycle from neighbors, it doesn't recognize exo-cyclic double-bonds, and so that doesn't work quite right at the moment
 		LinkedList graphComps = (LinkedList) graph.getCycle().get(i);//get the aromatic cycle
 		for (int numComps=0; numComps<graphComps.size(); numComps++) {
 		    GraphComponent gc = (GraphComponent)graphComps.get(numComps);
-		    if (gc instanceof Arc) {
-			Arc currentArc = (Arc)gc;
-			double order = ((Bond)currentArc.getElement()).getOrder();
-			if (order > 2) aromatic = false;
-		    }
-		    if (gc instanceof Node) {//check for two double bonds (e.g. Cdd/Sidd); if these are present, we do not want to consider as aromatic as the two D bonds (which should be in the ring if valency is 4) will be changed to two B bonds, and a hydrogen would be incorrectly added
+//		    if (gc instanceof Arc) {
+//			Arc currentArc = (Arc)gc;
+//			double order = ((Bond)currentArc.getElement()).getOrder();
+//			if (order > 2) aromatic = false;
+//		    }
+		    if (gc instanceof Node) {
 		        Iterator neighbors = ((Node)gc).getNeighbor();
 			int number_of_double_bonds = 0;
                         while (neighbors.hasNext()) {
@@ -167,7 +168,7 @@ public class ChemGraph implements Matchable {
                             double order = ((Bond)(nodeA.getElement())).getOrder();
                             if(order==2) number_of_double_bonds++;
 			}
-			if(number_of_double_bonds == 2) aromatic = false;
+			if(number_of_double_bonds != 1) aromatic = false;
 		    }
 		}
 		if(aromatic){//if it is still considered aromatic (given the check for triple bonds and consecutive double bonds) convert to B bonds

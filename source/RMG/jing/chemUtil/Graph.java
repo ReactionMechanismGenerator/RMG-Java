@@ -611,9 +611,9 @@ public class Graph {
 				if (gc instanceof Node){
 					Node n = (Node)gc;
 					Atom a = (Atom)n.getElement();
-					//UPDATE: we want molecules like phenyl to be considered aromatic so we comment out the below:
-//					//has monoradicals not aromatic
-//					if (a.getRadicalNumber() == 1){
+					//UPDATE: for our purposes, we want the presence of one double bond (either in ring or outside ring (in the case of some naphthalene resonance isomers)) to be a necessary condition for aromaticity (radicals are tricky; phenyl should be aromatic, but not C3H2)
+					//we will do this check in the calling function from ChemGraph, as 1. it will be faster as it won't get called as often and 2. located there, we might be able to eventually get it to consider exocyclic double bonds more easily so that all resonance forms of naphthalene are correctly treated
+//					if (n.getNumDoubleBonds() != 1){
 //						isAromatic[i] =  false;
 //						alreadyClassified[i] = 1;
 //						break;
