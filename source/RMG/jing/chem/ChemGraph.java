@@ -178,7 +178,7 @@ public class ChemGraph implements Matchable {
 	//iterate over rings again, this time converting to B bonds
 	for (int i=0; i<graph.getCycle().size(); i++){
 	    boolean aromatic = aromaticList[i];
-	    if(aromatic){//if it is still considered aromatic (given the check for triple bonds and consecutive double bonds) convert to B bonds
+	    if(aromatic){//if it is still considered aromatic (given the above final screen) convert to B bonds
 		LinkedList graphComps = (LinkedList) graph.getCycle().get(i);//get the aromatic cycle
 		for (int numComps=0; numComps<graphComps.size(); numComps++) {
 		    GraphComponent gc = (GraphComponent)graphComps.get(numComps);
