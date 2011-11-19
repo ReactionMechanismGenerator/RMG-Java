@@ -1454,18 +1454,6 @@ public class Node extends GraphComponent {
       fgElement = p_fgElement;
   }
 
-  //this function extracted by gmagoon from part of mrharper's old aromaticity recognition code (now now longer used)
-//  public int getNumDoubleBonds(){
-//       Iterator neighbors=neighbor.iterator();
-//       int number_of_double_bonds = 0;
-//       while(neighbors.hasNext()){
-//	   Arc nodeA=(Arc)neighbors.next();
-//	   double order = ((Bond)(nodeA.getElement())).getOrder();
-//	   if(order==2) number_of_double_bonds++;
-//       }
-//       return number_of_double_bonds;
-//  }
-
 }
 /*********************************************************************
 	File Path	: RMG\RMG\jing\chemUtil\Node.java
