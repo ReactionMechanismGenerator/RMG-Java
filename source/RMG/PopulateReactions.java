@@ -53,6 +53,7 @@ import jing.rxn.PDepReaction;
 import jing.rxn.Reaction;
 import jing.rxn.ReactionLibrary;
 import jing.rxn.TemplateReactionGenerator;
+import jing.rxnSys.Chemkin;
 import jing.rxnSys.ConstantTM;
 import jing.rxnSys.CoreEdgeReactionModel;
 import jing.rxnSys.FinishController;
@@ -505,6 +506,25 @@ public class PopulateReactions {
         		listOfSpecies += species.getFullName()+"\n" +
         			species.getChemGraph().toStringWithoutH(i) + "\n";
         	}
+        	
+        	// Save a Chemkin file!
+        	CoreEdgeReactionModel cerm = new CoreEdgeReactionModel(speciesSet, reactions);
+			rmg.setReactionModel(cerm);
+			rmg.setReactionGenerator(rtLibrary);
+			ReactionSystem rs = new ReactionSystem((TemperatureModel)rmg.getTempList().get(0),
+					(PressureModel)rmg.getPressList().get(0),
+					rmg.getReactionModelEnlarger(),
+					new FinishController(),
+					null,
+					rmg.getPrimaryKineticLibrary(),
+					rmg.getReactionGenerator(),
+					speciesSet,
+					(InitialStatus)rmg.getInitialStatusList().get(0),
+					rmg.getReactionModel(),
+					rmg.getLibraryReactionGenerator(),
+					0,
+					"GasPhase");
+        	Chemkin.writeChemkinInputFile(cerm,rs.getPresentStatus()); 
         	
         	// Write the output files
         	try{
