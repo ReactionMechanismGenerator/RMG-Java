@@ -496,50 +496,40 @@ public class QMTP implements GeneralGAPP {
         //write a file with the input keywords
         int scriptAttempts = 18;//the number of keyword permutations available; update as additional options are added
         int maxAttemptNumber=2*scriptAttempts;//we will try a second time with crude coordinates if the UFF refined coordinates do not work
-        try{
-            File inpKey=new File(directory+"/inputkeywords.txt");
-            String inpKeyStr="%chk="+directory+"/RMGrunCHKfile.chk\n";
-            inpKeyStr+="%mem=6MW\n";
-            inpKeyStr+="%nproc=1\n";
-            if(attemptNumber==-1) inpKeyStr+="# pm3 freq";//keywords for monoatomic case (still need to use freq keyword to get molecular mass)
-            else if(attemptNumber%scriptAttempts==1) inpKeyStr+="# pm3 opt=(verytight,gdiis) freq IOP(2/16=3)";//added IOP option to avoid aborting when symmetry changes; 3 is supposed to be default according to documentation, but it seems that 0 (the default) is the only option that doesn't work from 0-4; also, it is interesting to note that all 4 options seem to work for test case with z-matrix input rather than xyz coords; cf. http://www.ccl.net/cgi-bin/ccl/message-new?2006+10+17+005 for original idea for solution
-            else if(attemptNumber%scriptAttempts==2) inpKeyStr+="# pm3 opt=(verytight,gdiis) freq IOP(2/16=3) IOP(4/21=2)";//use different SCF method; this addresses at least one case of failure for a C4H7J species
-            else if(attemptNumber%scriptAttempts==3) inpKeyStr+="# pm3 opt=(verytight,calcfc,maxcyc=200) freq IOP(2/16=3) nosymm";//try multiple different options (no gdiis, use calcfc, nosymm); 7/21/09: added maxcyc option to fix case of MPTBUKVAJYJXDE-UHFFFAOYAPmult3 (InChI=1/C4H10O5Si/c1-3-7-9-10(5,6)8-4-2/h4-5H,3H2,1-2H3/mult3) (file manually copied to speed things along)
-            else if(attemptNumber%scriptAttempts==4) inpKeyStr+="# pm3 opt=(verytight,calcfc,maxcyc=200) freq=numerical IOP(2/16=3) nosymm";//7/8/09: numerical frequency keyword version of keyword #3; used to address GYFVJYRUZAKGFA-UHFFFAOYALmult3 (InChI=1/C6H14O6Si/c1-3-10-13(8,11-4-2)12-6-5-9-7/h6-7H,3-5H2,1-2H3/mult3) case; (none of the existing Gaussian or MOPAC combinations worked with it)
-            else if(attemptNumber%scriptAttempts==5) inpKeyStr+="# pm3 opt=(verytight,gdiis,small) freq IOP(2/16=3)";//7/10/09: somehow, this worked for problematic case of ZGAWAHRALACNPM-UHFFFAOYAF (InChI=1/C8H17O5Si/c1-3-11-14(10,12-4-2)13-8-5-7(9)6-8/h7-9H,3-6H2,1-2H3); (was otherwise giving l402 errors); even though I had a keyword that worked for this case, I manually copied the fixed log file to QMfiles folder to speed things along; note that there are a couple of very low frequencies (~5-6 cm^-1 for this case)
-            else if(attemptNumber%scriptAttempts==6) inpKeyStr+="# pm3 opt=(verytight,nolinear,calcfc,small) freq IOP(2/16=3)";//used for troublesome C5H7J2 case (similar error to C5H7J below); calcfc is not necessary for this particular species, but it speeds convergence and probably makes it more robust for other species
-            else if(attemptNumber%scriptAttempts==7) inpKeyStr+="# pm3 opt=(verytight,gdiis,maxcyc=200) freq=numerical IOP(2/16=3)"; //use numerical frequencies; this takes a relatively long time, so should only be used as one of the last resorts; this seemed to address at least one case of failure for a C6H10JJ species; 7/15/09: maxcyc=200 added to address GVCMURUDAUQXEY-UHFFFAOYAVmult3 (InChI=1/C3H4O7Si/c1-2(9-6)10-11(7,8)3(4)5/h6-7H,1H2/mult3)...however, result was manually pasted in QMfiles folder to speed things along
-            else if(attemptNumber%scriptAttempts==8) inpKeyStr+="# pm3 opt=tight freq IOP(2/16=3)";//7/10/09: this worked for problematic case of SZSSHFMXPBKYPR-UHFFFAOYAF (InChI=1/C7H15O5Si/c1-3-10-13(8,11-4-2)12-7-5-6-9-7/h7H,3-6H2,1-2H3) (otherwise, it had l402.exe errors); corrected log file was manually copied to QMfiles to speed things along; we could also add a freq=numerical version of this keyword combination for added robustness; UPDATE: see below
-            else if(attemptNumber%scriptAttempts==9) inpKeyStr+="# pm3 opt=tight freq=numerical IOP(2/16=3)";//7/10/09: used for problematic case of CIKDVMUGTARZCK-UHFFFAOYAImult4 (InChI=1/C8H15O6Si/c1-4-12-15(10,13-5-2)14-7-6-11-8(7,3)9/h7H,3-6H2,1-2H3/mult4 (most other cases had l402.exe errors);  corrected log file was manually copied to QMfiles to speed things along
-            else if(attemptNumber%scriptAttempts==10) inpKeyStr+="# pm3 opt=(tight,nolinear,calcfc,small,maxcyc=200) freq IOP(2/16=3)";//7/8/09: similar to existing #5, but uses tight rather than verytight; used for ADMPQLGIEMRGAT-UHFFFAOYAUmult3 (InChI=1/C6H14O5Si/c1-4-9-12(8,10-5-2)11-6(3)7/h6-7H,3-5H2,1-2H3/mult3)
-            else if(attemptNumber%scriptAttempts==11) inpKeyStr+="# pm3 opt freq IOP(2/16=3)"; //use default (not verytight) convergence criteria; use this as last resort
-            else if(attemptNumber%scriptAttempts==12) inpKeyStr+="# pm3 opt=(verytight,gdiis) freq=numerical IOP(2/16=3) IOP(4/21=200)";//to address problematic C10H14JJ case
-            else if(attemptNumber%scriptAttempts==13) inpKeyStr+="# pm3 opt=(calcfc,verytight,newton,notrustupdate,small,maxcyc=100,maxstep=100) freq=(numerical,step=10) IOP(2/16=3) nosymm";// added 6/10/09 for very troublesome RRMZRNPRCUANER-UHFFFAOYAQ (InChI=1/C5H7/c1-3-5-4-2/h3H,1-2H3) case...there were troubles with negative frequencies, where I don't think they should have been; step size of numerical frequency was adjusted to give positive result; accuracy of result is questionable; it is possible that not all of these keywords are needed; note that for this and other nearly free rotor cases, I think heat capacity will be overestimated by R/2 (R vs. R/2) (but this is a separate issue)
-            else if(attemptNumber%scriptAttempts==14) inpKeyStr+="# pm3 opt=(tight,gdiis,small,maxcyc=200,maxstep=100) freq=numerical IOP(2/16=3) nosymm";// added 6/22/09 for troublesome QDERTVAGQZYPHT-UHFFFAOYAHmult3(InChI=1/C6H14O4Si/c1-4-8-11(7,9-5-2)10-6-3/h4H,5-6H2,1-3H3/mult3); key aspects appear to be tight (rather than verytight) convergence criteria, no calculation of frequencies during optimization, use of numerical frequencies, and probably also the use of opt=small
-      //gmagoon 7/9/09: commented out since although this produces a "reasonable" result for the problematic case, there is a large amount of spin contamination, apparently introducing 70+ kcal/mol of instability      else if(attemptNumber==12) inpKeyStr+="# pm3 opt=(verytight,gdiis,small) freq=numerical IOP(2/16=3) IOP(4/21=200)";//7/9/09: similar to current number 9 with keyword small; this addresses case of VCSJVABXVCFDRA-UHFFFAOYAI (InChI=1/C8H19O5Si/c1-5-10-8(4)13-14(9,11-6-2)12-7-3/h8H,5-7H2,1-4H3)
-            else if(attemptNumber%scriptAttempts==15) inpKeyStr+="# pm3 opt=(verytight,gdiis,calcall) IOP(2/16=3)";//used for troublesome C5H7J case; note that before fixing, I got errors like the following: "Incomplete coordinate system.  Try restarting with Geom=Check Guess=Read Opt=(ReadFC,NewRedundant) Incomplete coordinate system. Error termination via Lnk1e in l103.exe"; we could try to restart, but it is probably preferrable to have each keyword combination standalone; another keyword that may be helpful if additional problematic cases are encountered is opt=small; 6/9/09 note: originally, this had # pm3 opt=(verytight,gdiis,calcall) freq IOP(2/16=3)" (with freq keyword), but I discovered that in this case, there are two thermochemistry sections and cclib parses frequencies twice, giving twice the number of desired frequencies and hence produces incorrect thermo; this turned up on C5H6JJ isomer
-   //gmagoon 7/3/09: it is probably best to retire this keyword combination in light of the similar combination below         //else if(attemptNumber==6) inpKeyStr+="# pm3 opt=(verytight,gdiis,calcall,small) IOP(2/16=3) IOP(4/21=2)";//6/10/09: worked for OJZYSFFHCAPVGA-UHFFFAOYAK (InChI=1/C5H7/c1-3-5-4-2/h1,4H2,2H3) case; IOP(4/21) keyword was key            
-            else if(attemptNumber%scriptAttempts==16) inpKeyStr+="# pm3 opt=(verytight,gdiis,calcall,small,maxcyc=200) IOP(2/16=3) IOP(4/21=2) nosymm";//6/29/09: worked for troublesome ketene case: CCGKOQOJPYTBIH-UHFFFAOYAO (InChI=1/C2H2O/c1-2-3/h1H2) (could just increase number of iterations for similar keyword combination above (#6 at the time of this writing), allowing symmetry, but nosymm seemed to reduce # of iterations; I think one of nosymm or higher number of iterations would allow the similar keyword combination to converge; both are included here for robustness)
-            else if(attemptNumber%scriptAttempts==17) inpKeyStr+="# pm3 opt=(verytight,gdiis,calcall,small) IOP(2/16=3) nosymm";//7/1/09: added for case of ZWMVZWMBTVHPBS-UHFFFAOYAEmult3 (InChI=1/C4H4O2/c1-3-5-6-4-2/h1-2H2/mult3)
-            else if(attemptNumber%scriptAttempts==0) inpKeyStr+="# pm3 opt=(calcall,small,maxcyc=100) IOP(2/16=3)"; //6/10/09: used to address troublesome FILUFGAZMJGNEN-UHFFFAOYAImult3 case (InChI=1/C5H6/c1-3-5-4-2/h3H,1H2,2H3/mult3)
-            else throw new Exception();//this point should not be reached
-           // if(multiplicity == 3) inpKeyStr+= " guess=mix"; //assumed to be triplet biradical...use guess=mix to perform unrestricted ; nevermind...I think this would only be for singlet biradicals based on http://www.gaussian.com/g_tech/g_ur/k_guess.htm
-            if (usePolar) inpKeyStr += " polar";
-            FileWriter fw = new FileWriter(inpKey);
-            fw.write(inpKeyStr);
-            fw.close();
-        }
-        catch(Exception e){
-            String err = "Error in writing inputkeywords.txt \n";
-            err += e.toString();
-            Logger.logStackTrace(e);
-            System.exit(0);
-        }
+	//String inpKeyStr="%chk="+directory+"/RMGrunCHKfile.chk\n";//by not specifying a filename, Gaussian will create its own pseudo-random filename, and it will be deleted at the conclusion of a successful calculation; an alternative would be to specify a checkpoint filename based on the modified InChIKey... however, it wouldn't be automatically deleted after the completion of the calculation
+	String inpKeyStr="%mem=6MW\n";
+	inpKeyStr+="%nproc=1\n";
+	if(attemptNumber==-1) inpKeyStr+="# pm3 freq";//keywords for monoatomic case (still need to use freq keyword to get molecular mass)
+	else if(attemptNumber%scriptAttempts==1) inpKeyStr+="# pm3 opt=(verytight,gdiis) freq IOP(2/16=3)";//added IOP option to avoid aborting when symmetry changes; 3 is supposed to be default according to documentation, but it seems that 0 (the default) is the only option that doesn't work from 0-4; also, it is interesting to note that all 4 options seem to work for test case with z-matrix input rather than xyz coords; cf. http://www.ccl.net/cgi-bin/ccl/message-new?2006+10+17+005 for original idea for solution
+	else if(attemptNumber%scriptAttempts==2) inpKeyStr+="# pm3 opt=(verytight,gdiis) freq IOP(2/16=3) IOP(4/21=2)";//use different SCF method; this addresses at least one case of failure for a C4H7J species
+	else if(attemptNumber%scriptAttempts==3) inpKeyStr+="# pm3 opt=(verytight,calcfc,maxcyc=200) freq IOP(2/16=3) nosymm";//try multiple different options (no gdiis, use calcfc, nosymm); 7/21/09: added maxcyc option to fix case of MPTBUKVAJYJXDE-UHFFFAOYAPmult3 (InChI=1/C4H10O5Si/c1-3-7-9-10(5,6)8-4-2/h4-5H,3H2,1-2H3/mult3) (file manually copied to speed things along)
+	else if(attemptNumber%scriptAttempts==4) inpKeyStr+="# pm3 opt=(verytight,calcfc,maxcyc=200) freq=numerical IOP(2/16=3) nosymm";//7/8/09: numerical frequency keyword version of keyword #3; used to address GYFVJYRUZAKGFA-UHFFFAOYALmult3 (InChI=1/C6H14O6Si/c1-3-10-13(8,11-4-2)12-6-5-9-7/h6-7H,3-5H2,1-2H3/mult3) case; (none of the existing Gaussian or MOPAC combinations worked with it)
+	else if(attemptNumber%scriptAttempts==5) inpKeyStr+="# pm3 opt=(verytight,gdiis,small) freq IOP(2/16=3)";//7/10/09: somehow, this worked for problematic case of ZGAWAHRALACNPM-UHFFFAOYAF (InChI=1/C8H17O5Si/c1-3-11-14(10,12-4-2)13-8-5-7(9)6-8/h7-9H,3-6H2,1-2H3); (was otherwise giving l402 errors); even though I had a keyword that worked for this case, I manually copied the fixed log file to QMfiles folder to speed things along; note that there are a couple of very low frequencies (~5-6 cm^-1 for this case)
+	else if(attemptNumber%scriptAttempts==6) inpKeyStr+="# pm3 opt=(verytight,nolinear,calcfc,small) freq IOP(2/16=3)";//used for troublesome C5H7J2 case (similar error to C5H7J below); calcfc is not necessary for this particular species, but it speeds convergence and probably makes it more robust for other species
+	else if(attemptNumber%scriptAttempts==7) inpKeyStr+="# pm3 opt=(verytight,gdiis,maxcyc=200) freq=numerical IOP(2/16=3)"; //use numerical frequencies; this takes a relatively long time, so should only be used as one of the last resorts; this seemed to address at least one case of failure for a C6H10JJ species; 7/15/09: maxcyc=200 added to address GVCMURUDAUQXEY-UHFFFAOYAVmult3 (InChI=1/C3H4O7Si/c1-2(9-6)10-11(7,8)3(4)5/h6-7H,1H2/mult3)...however, result was manually pasted in QMfiles folder to speed things along
+	else if(attemptNumber%scriptAttempts==8) inpKeyStr+="# pm3 opt=tight freq IOP(2/16=3)";//7/10/09: this worked for problematic case of SZSSHFMXPBKYPR-UHFFFAOYAF (InChI=1/C7H15O5Si/c1-3-10-13(8,11-4-2)12-7-5-6-9-7/h7H,3-6H2,1-2H3) (otherwise, it had l402.exe errors); corrected log file was manually copied to QMfiles to speed things along; we could also add a freq=numerical version of this keyword combination for added robustness; UPDATE: see below
+	else if(attemptNumber%scriptAttempts==9) inpKeyStr+="# pm3 opt=tight freq=numerical IOP(2/16=3)";//7/10/09: used for problematic case of CIKDVMUGTARZCK-UHFFFAOYAImult4 (InChI=1/C8H15O6Si/c1-4-12-15(10,13-5-2)14-7-6-11-8(7,3)9/h7H,3-6H2,1-2H3/mult4 (most other cases had l402.exe errors);  corrected log file was manually copied to QMfiles to speed things along
+	else if(attemptNumber%scriptAttempts==10) inpKeyStr+="# pm3 opt=(tight,nolinear,calcfc,small,maxcyc=200) freq IOP(2/16=3)";//7/8/09: similar to existing #5, but uses tight rather than verytight; used for ADMPQLGIEMRGAT-UHFFFAOYAUmult3 (InChI=1/C6H14O5Si/c1-4-9-12(8,10-5-2)11-6(3)7/h6-7H,3-5H2,1-2H3/mult3)
+	else if(attemptNumber%scriptAttempts==11) inpKeyStr+="# pm3 opt freq IOP(2/16=3)"; //use default (not verytight) convergence criteria; use this as last resort
+	else if(attemptNumber%scriptAttempts==12) inpKeyStr+="# pm3 opt=(verytight,gdiis) freq=numerical IOP(2/16=3) IOP(4/21=200)";//to address problematic C10H14JJ case
+	else if(attemptNumber%scriptAttempts==13) inpKeyStr+="# pm3 opt=(calcfc,verytight,newton,notrustupdate,small,maxcyc=100,maxstep=100) freq=(numerical,step=10) IOP(2/16=3) nosymm";// added 6/10/09 for very troublesome RRMZRNPRCUANER-UHFFFAOYAQ (InChI=1/C5H7/c1-3-5-4-2/h3H,1-2H3) case...there were troubles with negative frequencies, where I don't think they should have been; step size of numerical frequency was adjusted to give positive result; accuracy of result is questionable; it is possible that not all of these keywords are needed; note that for this and other nearly free rotor cases, I think heat capacity will be overestimated by R/2 (R vs. R/2) (but this is a separate issue)
+	else if(attemptNumber%scriptAttempts==14) inpKeyStr+="# pm3 opt=(tight,gdiis,small,maxcyc=200,maxstep=100) freq=numerical IOP(2/16=3) nosymm";// added 6/22/09 for troublesome QDERTVAGQZYPHT-UHFFFAOYAHmult3(InChI=1/C6H14O4Si/c1-4-8-11(7,9-5-2)10-6-3/h4H,5-6H2,1-3H3/mult3); key aspects appear to be tight (rather than verytight) convergence criteria, no calculation of frequencies during optimization, use of numerical frequencies, and probably also the use of opt=small
+  //gmagoon 7/9/09: commented out since although this produces a "reasonable" result for the problematic case, there is a large amount of spin contamination, apparently introducing 70+ kcal/mol of instability      else if(attemptNumber==12) inpKeyStr+="# pm3 opt=(verytight,gdiis,small) freq=numerical IOP(2/16=3) IOP(4/21=200)";//7/9/09: similar to current number 9 with keyword small; this addresses case of VCSJVABXVCFDRA-UHFFFAOYAI (InChI=1/C8H19O5Si/c1-5-10-8(4)13-14(9,11-6-2)12-7-3/h8H,5-7H2,1-4H3)
+	else if(attemptNumber%scriptAttempts==15) inpKeyStr+="# pm3 opt=(verytight,gdiis,calcall) IOP(2/16=3)";//used for troublesome C5H7J case; note that before fixing, I got errors like the following: "Incomplete coordinate system.  Try restarting with Geom=Check Guess=Read Opt=(ReadFC,NewRedundant) Incomplete coordinate system. Error termination via Lnk1e in l103.exe"; we could try to restart, but it is probably preferrable to have each keyword combination standalone; another keyword that may be helpful if additional problematic cases are encountered is opt=small; 6/9/09 note: originally, this had # pm3 opt=(verytight,gdiis,calcall) freq IOP(2/16=3)" (with freq keyword), but I discovered that in this case, there are two thermochemistry sections and cclib parses frequencies twice, giving twice the number of desired frequencies and hence produces incorrect thermo; this turned up on C5H6JJ isomer
+//gmagoon 7/3/09: it is probably best to retire this keyword combination in light of the similar combination below         //else if(attemptNumber==6) inpKeyStr+="# pm3 opt=(verytight,gdiis,calcall,small) IOP(2/16=3) IOP(4/21=2)";//6/10/09: worked for OJZYSFFHCAPVGA-UHFFFAOYAK (InChI=1/C5H7/c1-3-5-4-2/h1,4H2,2H3) case; IOP(4/21) keyword was key            
+	else if(attemptNumber%scriptAttempts==16) inpKeyStr+="# pm3 opt=(verytight,gdiis,calcall,small,maxcyc=200) IOP(2/16=3) IOP(4/21=2) nosymm";//6/29/09: worked for troublesome ketene case: CCGKOQOJPYTBIH-UHFFFAOYAO (InChI=1/C2H2O/c1-2-3/h1H2) (could just increase number of iterations for similar keyword combination above (#6 at the time of this writing), allowing symmetry, but nosymm seemed to reduce # of iterations; I think one of nosymm or higher number of iterations would allow the similar keyword combination to converge; both are included here for robustness)
+	else if(attemptNumber%scriptAttempts==17) inpKeyStr+="# pm3 opt=(verytight,gdiis,calcall,small) IOP(2/16=3) nosymm";//7/1/09: added for case of ZWMVZWMBTVHPBS-UHFFFAOYAEmult3 (InChI=1/C4H4O2/c1-3-5-6-4-2/h1-2H2/mult3)
+	else if(attemptNumber%scriptAttempts==0) inpKeyStr+="# pm3 opt=(calcall,small,maxcyc=100) IOP(2/16=3)"; //6/10/09: used to address troublesome FILUFGAZMJGNEN-UHFFFAOYAImult3 case (InChI=1/C5H6/c1-3-5-4-2/h3H,1H2,2H3/mult3)
+	else{//this point should not be reached
+	    Logger.error("Unexpected error in determining which G03 PM3 keyword set to use");
+	    System.exit(0);
+	}
+       // if(multiplicity == 3) inpKeyStr+= " guess=mix"; //assumed to be triplet biradical...use guess=mix to perform unrestricted ; nevermind...I think this would only be for singlet biradicals based on http://www.gaussian.com/g_tech/g_ur/k_guess.htm
+	if (usePolar) inpKeyStr += " polar";
         
         //call the OpenBabel process (note that this requires OpenBabel environment variable)
         try{ 
             File runningdir=new File(directory);
-	    String command=null;
 	    String molPath=null;
 	    if(attemptNumber<=scriptAttempts){//use UFF-refined coordinates
 		molPath = p_molfile.getPath();
@@ -547,12 +537,7 @@ public class QMTP implements GeneralGAPP {
 	    else{//use crude coordinates
 		molPath = p_molfile.getCrudePath();
 	    }
-	    if (System.getProperty("os.name").toLowerCase().contains("windows")){//special windows case
-		command = "babel -imol \""+ molPath+ "\" -ogjf \"" + name+".gjf\" -xf inputkeywords.txt --title \""+InChIaug+"\"";
-	    }
-	    else{
-		command = "babel -imol "+ molPath+ " -ogjf " + name+".gjf -xf inputkeywords.txt --title "+InChIaug;
-	    }
+	    String[] command = { "babel", "-imol", molPath, "-ogjf", name+".gjf","-xk", inpKeyStr,"--title", InChIaug };
 	    Process babelProc = Runtime.getRuntime().exec(command, null, runningdir);
             //read in output
             InputStream is = babelProc.getInputStream();
@@ -856,32 +841,26 @@ public class QMTP implements GeneralGAPP {
         String inpKeyStrTop = "";//this string will be written only at the top
         String inpKeyStrBottom = "";//this string will be written at the bottom
         String radicalString = getMopacRadicalString(multiplicity);
-        try{
-      //      File inpKey=new File(directory+"/inputkeywords.txt");
-      //      String inpKeyStr="%chk="+directory+"\\RMGrunCHKfile.chk\n";
-      //      inpKeyStr+="%mem=6MW\n";
-      //     inpKeyStr+="%nproc=1\n";
-
-            if(attemptNumber%scriptAttempts==1){
-                inpKeyStrBoth="pm3 "+radicalString;
-                inpKeyStrTop=" precise nosym";
-                inpKeyStrBottom="oldgeo thermo nosym precise ";//7/10/09: based on a quick review of recent results, keyword combo #1 rarely works, and when it did (CJAINEUZFLXGFA-UHFFFAOYAUmult3 (InChI=1/C8H16O5Si/c1-4-11-14(9,12-5-2)13-8-6-10-7(8)3/h7-8H,3-6H2,1-2H3/mult3)), the grad. norm on the force step was about 1.7 (too large); I manually removed this result and re-ran...the entropy was increased by nearly 20 cal/mol-K...perhaps we should add a check for the "WARNING" that MOPAC prints out when the gradient is high; 7/22/09: for the case of FUGDBSHZYPTWLG-UHFFFAOYADmult3 (InChI=1/C5H8/c1-4-3-5(4)2/h4-5H,1-3H2/mult3), adding nosym seemed to resolve 1. large discrepancies from Gaussian and 2. negative frequencies in mass-weighted coordinates and possibly related issue in discrepancies between regular and mass-weighted coordinate frequencies
-            }
-            else if(attemptNumber%scriptAttempts==2){//7/9/09: used for VCSJVABXVCFDRA-UHFFFAOYAI (InChI=1/C8H19O5Si/c1-5-10-8(4)13-14(9,11-6-2)12-7-3/h8H,5-7H2,1-4H3); all existing Gaussian keywords also failed; the Gaussian result was also rectified, but the resulting molecule was over 70 kcal/mol less stable, probably due to a large amount of spin contamination (~1.75 in fixed Gaussian result vs. 0.754 for MOPAC)
-                inpKeyStrBoth="pm3 "+radicalString;
-                inpKeyStrTop=" precise nosym gnorm=0.0 nonr";
-                inpKeyStrBottom="oldgeo thermo nosym precise ";
-            }
-            else if(attemptNumber%scriptAttempts==3){//7/8/09: used for ADMPQLGIEMRGAT-UHFFFAOYAUmult3 (InChI=1/C6H14O5Si/c1-4-9-12(8,10-5-2)11-6(3)7/h6-7H,3-5H2,1-2H3/mult3); all existing Gaussian keywords also failed; however, the Gaussian result was also rectified, and the resulting conformation was about 1.0 kcal/mol more stable than the one resulting from this, so fixed Gaussian result was manually copied to QMFiles folder
-                inpKeyStrBoth="pm3 "+radicalString;
-                inpKeyStrTop=" precise nosym gnorm=0.0";
-                inpKeyStrBottom="oldgeo thermo nosym precise "; //precise appeared to be necessary for the problematic case (to avoid negative frequencies); 
-            }
-            else if(attemptNumber%scriptAttempts==4){//7/8/09: used for GYFVJYRUZAKGFA-UHFFFAOYALmult3 (InChI=1/C6H14O6Si/c1-3-10-13(8,11-4-2)12-6-5-9-7/h6-7H,3-5H2,1-2H3/mult3) case (negative frequency issues in MOPAC) (also, none of the existing Gaussian combinations worked with it); note that the Gaussian result appears to be a different conformation as it is about 0.85 kcal/mol more stable, so the Gaussian result was manually copied to QMFiles directory; note that the MOPAC output included a very low frequency (4-5 cm^-1)
-                inpKeyStrBoth="pm3 "+radicalString;
-                inpKeyStrTop=" precise nosym gnorm=0.0 bfgs";
-                inpKeyStrBottom="oldgeo thermo nosym precise "; //precise appeared to be necessary for the problematic case (to avoid negative frequencies)
-            }
+	if(attemptNumber%scriptAttempts==1){
+	    inpKeyStrBoth="pm3 "+radicalString;
+	    inpKeyStrTop=" precise nosym";
+	    inpKeyStrBottom="oldgeo thermo nosym precise ";//7/10/09: based on a quick review of recent results, keyword combo #1 rarely works, and when it did (CJAINEUZFLXGFA-UHFFFAOYAUmult3 (InChI=1/C8H16O5Si/c1-4-11-14(9,12-5-2)13-8-6-10-7(8)3/h7-8H,3-6H2,1-2H3/mult3)), the grad. norm on the force step was about 1.7 (too large); I manually removed this result and re-ran...the entropy was increased by nearly 20 cal/mol-K...perhaps we should add a check for the "WARNING" that MOPAC prints out when the gradient is high; 7/22/09: for the case of FUGDBSHZYPTWLG-UHFFFAOYADmult3 (InChI=1/C5H8/c1-4-3-5(4)2/h4-5H,1-3H2/mult3), adding nosym seemed to resolve 1. large discrepancies from Gaussian and 2. negative frequencies in mass-weighted coordinates and possibly related issue in discrepancies between regular and mass-weighted coordinate frequencies
+	}
+	else if(attemptNumber%scriptAttempts==2){//7/9/09: used for VCSJVABXVCFDRA-UHFFFAOYAI (InChI=1/C8H19O5Si/c1-5-10-8(4)13-14(9,11-6-2)12-7-3/h8H,5-7H2,1-4H3); all existing Gaussian keywords also failed; the Gaussian result was also rectified, but the resulting molecule was over 70 kcal/mol less stable, probably due to a large amount of spin contamination (~1.75 in fixed Gaussian result vs. 0.754 for MOPAC)
+	    inpKeyStrBoth="pm3 "+radicalString;
+	    inpKeyStrTop=" precise nosym gnorm=0.0 nonr";
+	    inpKeyStrBottom="oldgeo thermo nosym precise ";
+	}
+	else if(attemptNumber%scriptAttempts==3){//7/8/09: used for ADMPQLGIEMRGAT-UHFFFAOYAUmult3 (InChI=1/C6H14O5Si/c1-4-9-12(8,10-5-2)11-6(3)7/h6-7H,3-5H2,1-2H3/mult3); all existing Gaussian keywords also failed; however, the Gaussian result was also rectified, and the resulting conformation was about 1.0 kcal/mol more stable than the one resulting from this, so fixed Gaussian result was manually copied to QMFiles folder
+	    inpKeyStrBoth="pm3 "+radicalString;
+	    inpKeyStrTop=" precise nosym gnorm=0.0";
+	    inpKeyStrBottom="oldgeo thermo nosym precise "; //precise appeared to be necessary for the problematic case (to avoid negative frequencies);
+	}
+	else if(attemptNumber%scriptAttempts==4){//7/8/09: used for GYFVJYRUZAKGFA-UHFFFAOYALmult3 (InChI=1/C6H14O6Si/c1-3-10-13(8,11-4-2)12-6-5-9-7/h6-7H,3-5H2,1-2H3/mult3) case (negative frequency issues in MOPAC) (also, none of the existing Gaussian combinations worked with it); note that the Gaussian result appears to be a different conformation as it is about 0.85 kcal/mol more stable, so the Gaussian result was manually copied to QMFiles directory; note that the MOPAC output included a very low frequency (4-5 cm^-1)
+	    inpKeyStrBoth="pm3 "+radicalString;
+	    inpKeyStrTop=" precise nosym gnorm=0.0 bfgs";
+	    inpKeyStrBottom="oldgeo thermo nosym precise "; //precise appeared to be necessary for the problematic case (to avoid negative frequencies)
+	}
 //            else if(attemptNumber==5){
 //                inpKeyStrBoth="pm3 "+radicalString;
 //                inpKeyStrTop=" precise nosym gnorm=0.0 ddmin=0.0";
@@ -897,33 +876,26 @@ public class QMTP implements GeneralGAPP {
 //                inpKeyStrTop=" precise nosym bfgs gnorm=0.0 ddmin=0.0";
 //                inpKeyStrBottom="oldgeo thermo nosym precise ";
 //            }
-            else if(attemptNumber%scriptAttempts==0){//used for troublesome HGRZRPHFLAXXBT-UHFFFAOYAVmult3 (InChI=1/C3H2O4/c4-2(5)1-3(6)7/h1H2/mult3) case (negative frequency and large gradient issues)
-                inpKeyStrBoth="pm3 "+radicalString;
-                inpKeyStrTop=" precise nosym recalc=10 dmax=0.10 nonr cycles=2000 t=2000";
-                inpKeyStrBottom="oldgeo thermo nosym precise ";
-            }
-         //   else if(attemptNumber==9){//used for troublesome CMARQPBQDRXBTN-UHFFFAOYAAmult3 (InChI=1/C3H2O4/c1-3(5)7-6-2-4/h1H2/mult3) case (negative frequency issues)
-         //       inpKeyStrBoth="pm3 "+radicalString;
-         //       inpKeyStrTop=" precise nosym recalc=1 dmax=0.05 gnorm=0.0 cycles=1000 t=1000";
-         //       inpKeyStrBottom="oldgeo thermo nosym precise ";
-         //   }
-         //   else if(attemptNumber==10){//used for ATCYLHQLTOSVFK-UHFFFAOYAMmult4 (InChI=1/C4H5O5/c1-3(5)8-9-4(2)7-6/h6H,1-2H2/mult4) case (timeout issue; also, negative frequency issues); note that this is very similar to the keyword below, so we may want to consolidate
-         //       inpKeyStrBoth="pm3 "+radicalString;
-         //       inpKeyStrTop=" precise nosym recalc=1 dmax=0.05 gnorm=0.2 cycles=1000 t=1000";
-         //       inpKeyStrBottom="oldgeo thermo nosym precise ";
-         //   }
-            else throw new Exception();//this point should not be reached
-      //      FileWriter fw = new FileWriter(inpKey);
-      //      fw.write(inpKeyStr);
-      //      fw.close();
-        }
-        catch(Exception e){
-            String err = "Error in writing inputkeywords.txt \n";
-            err += e.toString();
-            Logger.logStackTrace(e);
-            System.exit(0);
-        }
-        
+	else if(attemptNumber%scriptAttempts==0){//used for troublesome HGRZRPHFLAXXBT-UHFFFAOYAVmult3 (InChI=1/C3H2O4/c4-2(5)1-3(6)7/h1H2/mult3) case (negative frequency and large gradient issues)
+	    inpKeyStrBoth="pm3 "+radicalString;
+	    inpKeyStrTop=" precise nosym recalc=10 dmax=0.10 nonr cycles=2000 t=2000";
+	    inpKeyStrBottom="oldgeo thermo nosym precise ";
+	}
+     //   else if(attemptNumber==9){//used for troublesome CMARQPBQDRXBTN-UHFFFAOYAAmult3 (InChI=1/C3H2O4/c1-3(5)7-6-2-4/h1H2/mult3) case (negative frequency issues)
+     //       inpKeyStrBoth="pm3 "+radicalString;
+     //       inpKeyStrTop=" precise nosym recalc=1 dmax=0.05 gnorm=0.0 cycles=1000 t=1000";
+     //       inpKeyStrBottom="oldgeo thermo nosym precise ";
+     //   }
+     //   else if(attemptNumber==10){//used for ATCYLHQLTOSVFK-UHFFFAOYAMmult4 (InChI=1/C4H5O5/c1-3(5)8-9-4(2)7-6/h6H,1-2H2/mult4) case (timeout issue; also, negative frequency issues); note that this is very similar to the keyword below, so we may want to consolidate
+     //       inpKeyStrBoth="pm3 "+radicalString;
+     //       inpKeyStrTop=" precise nosym recalc=1 dmax=0.05 gnorm=0.2 cycles=1000 t=1000";
+     //       inpKeyStrBottom="oldgeo thermo nosym precise ";
+     //   }
+	else{//this point should not be reached
+	    Logger.error("Unexpected error in determining which MOPAC keyword set to use");
+	    System.exit(0);
+	}
+
         String polarString = "";
         if (usePolar){
             if(multiplicity == 1) polarString = System.getProperty("line.separator") + System.getProperty("line.separator") + System.getProperty("line.separator")+ "oldgeo polar nosym precise " + inpKeyStrBoth;
@@ -1059,7 +1031,7 @@ public class QMTP implements GeneralGAPP {
 	//if the complete flag is still 0, the process did not complete and is a failure
 	if (completeFlag==0) failureFlag=1;
 	if(failureFlag==0 && connectivityCheck>0){//if the process was successful, check the connectivity (if requested by the user)
-	    boolean connectivityMatch=connectivityMatchInPM3ResultQ(name, directory, getInChIFromModifiedInChI(InChIaug), ".log", "g03");
+	    boolean connectivityMatch=connectivityMatchInPM3ResultQ(name, directory, InChIaug, ".log", "g03");
 	    if (!connectivityMatch)
 		if(connectivityCheck>1){//connectivityCheck=2
 		    failureFlag=1;
@@ -1172,7 +1144,7 @@ public class QMTP implements GeneralGAPP {
         //if the failure flag is still 0, the process should have been successful
         if(failureOverrideFlag==1) failureFlag=1; //job will be considered a failure if there are imaginary frequencies or if job terminates to to excess time/cycles
         if(failureFlag==0 && connectivityCheck>0){//if the process was successful, check the connectivity (if requested by the user)
-		    boolean connectivityMatch=connectivityMatchInMM4ResultQ(name, directory, getInChIFromModifiedInChI(InChIaug));
+		    boolean connectivityMatch=connectivityMatchInMM4ResultQ(name, directory, InChIaug);
 		    if (!connectivityMatch)
 			if(connectivityCheck>1){//connectivityCheck=2
 			    failureFlag=1;
@@ -1331,7 +1303,7 @@ public class QMTP implements GeneralGAPP {
         }
         if(failureOverrideFlag==1) failureFlag=1; //job will be considered a failure if there are imaginary frequencies or if job terminates to to excess time/cycles
         if(failureFlag==0 && connectivityCheck>0){//if the process was successful, check the connectivity (if requested by the user)
-		    boolean connectivityMatch=connectivityMatchInPM3ResultQ(name, directory, getInChIFromModifiedInChI(InChIaug), ".out", "moo");
+		    boolean connectivityMatch=connectivityMatchInPM3ResultQ(name, directory, InChIaug, ".out", "moo");
 		    if (!connectivityMatch)
 			if(connectivityCheck>1){//connectivityCheck=2
 			    failureFlag=1;
@@ -1345,136 +1317,9 @@ public class QMTP implements GeneralGAPP {
         
         return successFlag;
     }
-    
-    //parse the results using cclib and return a ThermoData object; name and directory indicate the location of the Gaussian .log file
-    //may want to split this into several functions
-    public ThermoData parseGaussianPM3(String name, String directory, ChemGraph p_chemGraph){
-//        //parse the Gaussian file using cclib
-//        int natoms = 0; //number of atoms from Gaussian file; in principle, this should agree with number of chemGraph atoms
-//        ArrayList atomicNumber = new ArrayList(); //vector of atomic numbers (integers) (apparently Vector is thread-safe; cf. http://answers.yahoo.com/question/index?qid=20081214065127AArZDT3; ...should I be using this instead?)
-//        ArrayList x_coor = new ArrayList(); //vectors of x-, y-, and z-coordinates (doubles) (Angstroms) (in order corresponding to above atomic numbers)
-//        ArrayList y_coor = new ArrayList();
-//        ArrayList z_coor = new ArrayList();
-//        double energy = 0; //PM3 energy (Hf298) in Hartree
-//        double molmass = 0; //molecular mass in amu
-//        ArrayList freqs = new ArrayList(); //list of frequencies in units of cm^-1
-//        double rotCons_1 = 0;//rotational constants in (1/s)
-//        double rotCons_2 = 0;
-//        double rotCons_3 = 0; 
-//        int gdStateDegen = p_chemGraph.getRadicalNumber()+1;//calculate ground state degeneracy from the number of radicals; this should give the same result as spin multiplicity in Gaussian input file (and output file), but we do not explicitly check this (we could use "mult" which cclib reads in if we wanted to do so); also, note that this is not always correct, as there can apparently be additional spatial degeneracy for non-symmetric linear molecules like OH radical (cf. http://cccbdb.nist.gov/thermo.asp)
-//        try{   
-//            File runningdir=new File(directory);
-//            String command = "c:/Python25/python.exe c:/Python25/GaussianPM3ParsingScript.py ";//this should eventually be modified for added generality
-//            String logfilepath=directory+"/"+name+".log";
-//            command=command.concat(logfilepath);
-//            Process cclibProc = Runtime.getRuntime().exec(command, null, runningdir);
-//            //read the stdout of the process, which should contain the desired information in a particular format
-//            InputStream is = cclibProc.getInputStream();
-//            InputStreamReader isr = new InputStreamReader(is);
-//            BufferedReader br = new BufferedReader(isr);
-//            String line=null;
-//            //example output:
-////            C:\Python25>python.exe GaussianPM3ParsingScript.py TEOS.out
-////            33
-////            [ 6  6  8 14  8  6  6  8  6  6  8  6  6  1  1  1  1  1  1  1  1  1  1  1  1
-////              1  1  1  1  1  1  1  1]
-////            [[ 2.049061 -0.210375  3.133106]
-////             [ 1.654646  0.321749  1.762752]
-////             [ 0.359284 -0.110429  1.471465]
-////             [-0.201871 -0.013365 -0.12819 ]
-////             [ 0.086307  1.504918 -0.82893 ]
-////             [-0.559186  2.619928 -0.284003]
-////             [-0.180246  3.839463 -1.113029]
-////             [ 0.523347 -1.188305 -1.112765]
-////             [ 1.857584 -1.018167 -1.495088]
-////             [ 2.375559 -2.344392 -2.033403]
-////             [-1.870397 -0.297297 -0.075427]
-////             [-2.313824 -1.571765  0.300245]
-////             [-3.83427  -1.535927  0.372171]
-////             [ 1.360346  0.128852  3.917699]
-////             [ 2.053945 -1.307678  3.160474]
-////             [ 3.055397  0.133647  3.403037]
-////             [ 1.677262  1.430072  1.750899]
-////             [ 2.372265 -0.029237  0.985204]
-////             [-0.245956  2.754188  0.771433]
-////             [-1.656897  2.472855 -0.287156]
-////             [-0.664186  4.739148 -0.712606]
-////             [-0.489413  3.734366 -2.161038]
-////             [ 0.903055  4.016867 -1.112198]
-////             [ 1.919521 -0.229395 -2.269681]
-////             [ 2.474031 -0.680069 -0.629949]
-////             [ 2.344478 -3.136247 -1.273862]
-////             [ 1.786854 -2.695974 -2.890647]
-////             [ 3.41648  -2.242409 -2.365094]
-////             [-1.884889 -1.858617  1.28054 ]
-////             [-1.976206 -2.322432 -0.440995]
-////             [-4.284706 -1.26469  -0.591463]
-////             [-4.225999 -2.520759  0.656131]
-////             [-4.193468 -0.809557  1.112677]]
-////            -14.1664924726
-////            [    9.9615    18.102     27.0569    31.8459    39.0096    55.0091
-////                66.4992    80.4552    86.4912   123.3551   141.6058   155.5448
-////               159.4747   167.0013   178.5676   207.3738   237.3201   255.3487
-////               264.5649   292.867    309.4248   344.6503   434.8231   470.2074
-////               488.9717   749.1722   834.257    834.6594   837.7292   839.6352
-////               887.9767   892.9538   899.5374   992.1851  1020.6164  1020.8671
-////              1028.3897  1046.7945  1049.1768  1059.4704  1065.1505  1107.4001
-////              1108.1567  1109.0466  1112.6677  1122.7785  1124.4315  1128.4163
-////              1153.3438  1167.6705  1170.9627  1174.9613  1232.1826  1331.8459
-////              1335.3932  1335.8677  1343.9556  1371.37    1372.8127  1375.5428
-////              1396.0344  1402.4082  1402.7554  1403.2463  1403.396   1411.6946
-////              1412.2456  1412.3519  1414.5982  1415.3613  1415.5698  1415.7993
-////              1418.5409  2870.7446  2905.3132  2907.0361  2914.1662  2949.2646
-////              2965.825   2967.7667  2971.5223  3086.3849  3086.3878  3086.6448
-////              3086.687   3089.2274  3089.4105  3089.4743  3089.5841  3186.0753
-////              3186.1375  3186.3511  3186.365 ]
-////            [ 0.52729  0.49992  0.42466]
-////note: above example has since been updated to print molecular mass; also frequency and atomic number format has been updated
-//            String [] stringArray;
-//            natoms = Integer.parseInt(br.readLine());//read line 1: number of atoms
-//            stringArray = br.readLine().replace("[", "").replace("]","").trim().split(",\\s+");//read line 2: the atomic numbers (first removing braces)
-//           // line = br.readLine().replace("[", "").replace("]","");//read line 2: the atomic numbers (first removing braces)
-//           // StringTokenizer st = new StringTokenizer(line); //apprently the stringTokenizer class is deprecated, but I am having trouble getting the regular expressions to work properly
-//            for(int i=0; i < natoms; i++){
-//               // atomicNumber.add(i,Integer.parseInt(stringArray[i]));
-//                atomicNumber.add(i,Integer.parseInt(stringArray[i]));
-//            }
-//            for(int i=0; i < natoms; i++){
-//                stringArray = br.readLine().replace("[", "").replace("]","").trim().split("\\s+");//read line 3+: coordinates for atom i; used /s+ for split; using spaces with default limit of 0 was giving empty string
-//                x_coor.add(i,Double.parseDouble(stringArray[0]));
-//                y_coor.add(i,Double.parseDouble(stringArray[1]));
-//                z_coor.add(i,Double.parseDouble(stringArray[2]));
-//            }
-//            energy = Double.parseDouble(br.readLine());//read next line: energy
-//            molmass = Double.parseDouble(br.readLine());//read next line: molecular mass (in amu)
-//            if (natoms>1){//read additional info for non-monoatomic species
-//                stringArray = br.readLine().replace("[", "").replace("]","").trim().split(",\\s+");//read next line: frequencies
-//                for(int i=0; i < stringArray.length; i++){
-//                    freqs.add(i,Double.parseDouble(stringArray[i]));
-//                }
-//                stringArray = br.readLine().replace("[", "").replace("]","").trim().split("\\s+");//read next line rotational constants (converting from GHz to Hz in the process)
-//                rotCons_1 = Double.parseDouble(stringArray[0])*1000000000;
-//                rotCons_2 = Double.parseDouble(stringArray[1])*1000000000;
-//                rotCons_3 = Double.parseDouble(stringArray[2])*1000000000;
-//            }
-//            while ( (line = br.readLine()) != null) {
-//                //do nothing (there shouldn't be any more information, but this is included to get all the output)
-//            }
-//            int exitValue = cclibProc.waitFor();
-//        }
-//        catch (Exception e) {
-//				Logger.logStackTrace(e);
-//            String err = "Error in running ccLib Python process \n";
-//            err += e.toString();
-//            Logger.critical(err);
-//            System.exit(0);
-//        } 
-//   
-//        ThermoData result = calculateThermoFromPM3Calc(natoms, atomicNumber, x_coor, y_coor, z_coor, energy, molmass, freqs, rotCons_1, rotCons_2, rotCons_3, gdStateDegen);
-//        Logger.info("Thermo for " + name + ": "+ result.toString());//print result, at least for debugging purposes
-//        return result;
-        
-        String command = null;
+
+    public String getGaussianPM3ParseCommand(String name, String directory){
+	String command = null;
         if (System.getProperty("os.name").toLowerCase().contains("windows")){//special windows case where paths can have spaces and are allowed to be surrounded by quotes
 	    command = "python \""+ System.getProperty("RMG.workingDirectory")+"/scripts/GaussianPM3ParsingScript.py\" ";
 	    String logfilepath="\""+directory+"/"+name+".log\"";
@@ -1487,18 +1332,31 @@ public class QMTP implements GeneralGAPP {
 	    command=command.concat(logfilepath);
 	    command=command.concat(" "+ System.getenv("RMG")+"/source");//this will pass $RMG/source to the script (in order to get the appropriate path for importing
 	}
+	return command;
+    }
+
+    //parse the results using cclib and return a ThermoData object; name and directory indicate the location of the Gaussian .log file
+    public ThermoData parseGaussianPM3(String name, String directory, ChemGraph p_chemGraph){
+//        //parse the Gaussian file using cclib
+	String command = getGaussianPM3ParseCommand(name, directory);
+
 	ThermoData result = getPM3MM4ThermoDataUsingCCLib(name, directory, p_chemGraph, command);
         result.setSource("Gaussian PM3 calculation");
 	Logger.info("Thermo for " + name + ": "+ result.toString());//print result, at least for debugging purposes
         return result;
     }
 
-    //parse the results using cclib and return a ThermoData object; name and directory indicate the location of the MM4 .mm4out file
-    public ThermoData parseMM4(String name, String directory, ChemGraph p_chemGraph){
+    public String getMM4ParseCommand(String name, String directory){
 	String command = "python "+System.getProperty("RMG.workingDirectory")+"/scripts/MM4ParsingScript.py ";
 	String logfilepath=directory+"/"+name+".mm4out";
 	command=command.concat(logfilepath);
 	command=command.concat(" "+ System.getenv("RMG")+"/source");//this will pass $RMG/source to the script (in order to get the appropriate path for importing
+	return command;
+    }
+
+    //parse the results using cclib and return a ThermoData object; name and directory indicate the location of the MM4 .mm4out file
+    public ThermoData parseMM4(String name, String directory, ChemGraph p_chemGraph){
+	String command = getMM4ParseCommand(name, directory);
         ThermoData result = getPM3MM4ThermoDataUsingCCLib(name, directory, p_chemGraph, command);
         result.setSource("MM4 calculation");
 	Logger.info("Thermo for " + name + ": "+ result.toString());//print result, at least for debugging purposes
@@ -1509,7 +1367,7 @@ public class QMTP implements GeneralGAPP {
     //formerly known as parseMM4withForceMat
     public QMData performCanThermCalcs(String name, String directory, ChemGraph p_chemGraph, double[] dihedralMinima, boolean forceRRHO){
 	//1. parse the MM4 file with cclib to get atomic number vector and geometry
-	QMData qmdata = getQMDataWithCClib(name, directory, p_chemGraph, true);
+	QMData qmdata = getMM4QMDataWithCClib(name, directory, true);
 	//unpack the needed results
 	double energy = qmdata.energy;
 	double stericEnergy = qmdata.stericEnergy;
@@ -1529,7 +1387,7 @@ public class QMTP implements GeneralGAPP {
 	//3. write CanTherm input file
 	//determine point group using the SYMMETRY Program
 	String geom = qmdata.getSYMMETRYinput();
-	String pointGroup = determinePointGroupUsingSYMMETRYProgram(geom);
+	String pointGroup = determinePointGroupUsingSYMMETRYProgram(geom,name);
 	double sigmaCorr = getSigmaCorr(pointGroup);
 	String canInp = "Calculation: Thermo\n";
 	canInp += "Trange: 300 100 13\n";//temperatures from 300 to 1500 in increments of 100
@@ -1665,21 +1523,27 @@ public class QMTP implements GeneralGAPP {
 	return result;
     }
 
+        public String getMopacPM3ParseCommand(String name, String directory){
+	    String command=null;
+	    if (System.getProperty("os.name").toLowerCase().contains("windows")){//special windows case where paths can have spaces and are allowed to be surrounded by quotes
+		command = "python \""+System.getProperty("RMG.workingDirectory")+"/scripts/MopacPM3ParsingScript.py\" ";
+		String logfilepath="\""+directory+"/"+name+".out\"";
+		command=command.concat(logfilepath);
+		command=command.concat(" \""+ System.getenv("RMG")+"/source\"");//this will pass $RMG/source to the script (in order to get the appropriate path for importing
+	    }
+	    else{//non-Windows case
+		command = "python "+System.getProperty("RMG.workingDirectory")+"/scripts/MopacPM3ParsingScript.py ";
+		String logfilepath=directory+"/"+name+".out";
+		command=command.concat(logfilepath);
+		command=command.concat(" "+ System.getenv("RMG")+"/source");//this will pass $RMG/source to the script (in order to get the appropriate path for importing
+	    }
+	return command;
+    }
+
     //parse the results using cclib and return a ThermoData object; name and directory indicate the location of the MOPAC .out file
     public ThermoData parseMopacPM3(String name, String directory, ChemGraph p_chemGraph){
-        String command=null;
-        if (System.getProperty("os.name").toLowerCase().contains("windows")){//special windows case where paths can have spaces and are allowed to be surrounded by quotes
-	    command = "python \""+System.getProperty("RMG.workingDirectory")+"/scripts/MopacPM3ParsingScript.py\" ";
-	    String logfilepath="\""+directory+"/"+name+".out\"";
-	    command=command.concat(logfilepath);
-	    command=command.concat(" \""+ System.getenv("RMG")+"/source\"");//this will pass $RMG/source to the script (in order to get the appropriate path for importing
-	}
-	else{//non-Windows case
-	    command = "python "+System.getProperty("RMG.workingDirectory")+"/scripts/MopacPM3ParsingScript.py ";
-	    String logfilepath=directory+"/"+name+".out";
-	    command=command.concat(logfilepath);
-	    command=command.concat(" "+ System.getenv("RMG")+"/source");//this will pass $RMG/source to the script (in order to get the appropriate path for importing
-	}
+	String command = getMopacPM3ParseCommand(name, directory);
+
         ThermoData result = getPM3MM4ThermoDataUsingCCLib(name, directory, p_chemGraph, command);
         result.setSource("MOPAC PM3 calculation");
 	Logger.info("Thermo for " + name + ": "+ result.toString());//print result, at least for debugging purposes
@@ -1688,141 +1552,34 @@ public class QMTP implements GeneralGAPP {
     
     //separated from parseMopacPM3, since the function was originally based off of parseGaussianPM3 and was very similar (differences being command and logfilepath variables);
     public ThermoData getPM3MM4ThermoDataUsingCCLib(String name, String directory, ChemGraph p_chemGraph, String command){
-        //parse the Mopac file using cclib
-        int natoms = 0; //number of atoms from Mopac file; in principle, this should agree with number of chemGraph atoms
-        ArrayList atomicNumber = new ArrayList(); //vector of atomic numbers (integers) (apparently Vector is thread-safe; cf. http://answers.yahoo.com/question/index?qid=20081214065127AArZDT3; ...should I be using this instead?)
-        ArrayList x_coor = new ArrayList(); //vectors of x-, y-, and z-coordinates (doubles) (Angstroms) (in order corresponding to above atomic numbers)
-        ArrayList y_coor = new ArrayList();
-        ArrayList z_coor = new ArrayList();
-        double energy = 0; //PM3 energy (Hf298) in Hartree (***note: in the case of MOPAC, the MOPAC file will contain in units of kcal/mol, but modified ccLib will return in Hartree)
-        double molmass = 0; //molecular mass in amu
-        ArrayList freqs = new ArrayList(); //list of frequencies in units of cm^-1
-        double rotCons_1 = 0;//rotational constants in (1/s)
-        double rotCons_2 = 0;
-        double rotCons_3 = 0; 
+        //parse the file using cclib
         int gdStateDegen = p_chemGraph.getRadicalNumber()+1;//calculate ground state degeneracy from the number of radicals; this should give the same result as spin multiplicity in Gaussian input file (and output file), but we do not explicitly check this (we could use "mult" which cclib reads in if we wanted to do so); also, note that this is not always correct, as there can apparently be additional spatial degeneracy for non-symmetric linear molecules like OH radical (cf. http://cccbdb.nist.gov/thermo.asp)
-        try{   
-            Process cclibProc = Runtime.getRuntime().exec(command);
-            //read the stdout of the process, which should contain the desired information in a particular format
-            InputStream is = cclibProc.getInputStream();
-            InputStreamReader isr = new InputStreamReader(is);
-            BufferedReader br = new BufferedReader(isr);
-
-            String line=null;
-            //example output:
-//            C:\Python25>python.exe GaussianPM3ParsingScript.py TEOS.out
-//            33
-//            [ 6  6  8 14  8  6  6  8  6  6  8  6  6  1  1  1  1  1  1  1  1  1  1  1  1
-//              1  1  1  1  1  1  1  1]
-//            [[ 2.049061 -0.210375  3.133106]
-//             [ 1.654646  0.321749  1.762752]
-//             [ 0.359284 -0.110429  1.471465]
-//             [-0.201871 -0.013365 -0.12819 ]
-//             [ 0.086307  1.504918 -0.82893 ]
-//             [-0.559186  2.619928 -0.284003]
-//             [-0.180246  3.839463 -1.113029]
-//             [ 0.523347 -1.188305 -1.112765]
-//             [ 1.857584 -1.018167 -1.495088]
-//             [ 2.375559 -2.344392 -2.033403]
-//             [-1.870397 -0.297297 -0.075427]
-//             [-2.313824 -1.571765  0.300245]
-//             [-3.83427  -1.535927  0.372171]
-//             [ 1.360346  0.128852  3.917699]
-//             [ 2.053945 -1.307678  3.160474]
-//             [ 3.055397  0.133647  3.403037]
-//             [ 1.677262  1.430072  1.750899]
-//             [ 2.372265 -0.029237  0.985204]
-//             [-0.245956  2.754188  0.771433]
-//             [-1.656897  2.472855 -0.287156]
-//             [-0.664186  4.739148 -0.712606]
-//             [-0.489413  3.734366 -2.161038]
-//             [ 0.903055  4.016867 -1.112198]
-//             [ 1.919521 -0.229395 -2.269681]
-//             [ 2.474031 -0.680069 -0.629949]
-//             [ 2.344478 -3.136247 -1.273862]
-//             [ 1.786854 -2.695974 -2.890647]
-//             [ 3.41648  -2.242409 -2.365094]
-//             [-1.884889 -1.858617  1.28054 ]
-//             [-1.976206 -2.322432 -0.440995]
-//             [-4.284706 -1.26469  -0.591463]
-//             [-4.225999 -2.520759  0.656131]
-//             [-4.193468 -0.809557  1.112677]]
-//            -14.1664924726
-//            [    9.9615    18.102     27.0569    31.8459    39.0096    55.0091
-//                66.4992    80.4552    86.4912   123.3551   141.6058   155.5448
-//               159.4747   167.0013   178.5676   207.3738   237.3201   255.3487
-//               264.5649   292.867    309.4248   344.6503   434.8231   470.2074
-//               488.9717   749.1722   834.257    834.6594   837.7292   839.6352
-//               887.9767   892.9538   899.5374   992.1851  1020.6164  1020.8671
-//              1028.3897  1046.7945  1049.1768  1059.4704  1065.1505  1107.4001
-//              1108.1567  1109.0466  1112.6677  1122.7785  1124.4315  1128.4163
-//              1153.3438  1167.6705  1170.9627  1174.9613  1232.1826  1331.8459
-//              1335.3932  1335.8677  1343.9556  1371.37    1372.8127  1375.5428
-//              1396.0344  1402.4082  1402.7554  1403.2463  1403.396   1411.6946
-//              1412.2456  1412.3519  1414.5982  1415.3613  1415.5698  1415.7993
-//              1418.5409  2870.7446  2905.3132  2907.0361  2914.1662  2949.2646
-//              2965.825   2967.7667  2971.5223  3086.3849  3086.3878  3086.6448
-//              3086.687   3089.2274  3089.4105  3089.4743  3089.5841  3186.0753
-//              3186.1375  3186.3511  3186.365 ]
-//            [ 0.52729  0.49992  0.42466]
-//note: above example has since been updated to print molecular mass; also frequency and atomic number format has been updated
-            String [] stringArray;
-            natoms = Integer.parseInt(br.readLine());//read line 1: number of atoms
-            stringArray = br.readLine().replace("[", "").replace("]","").trim().split(",\\s+");//read line 2: the atomic numbers (first removing braces)
-           // line = br.readLine().replace("[", "").replace("]","");//read line 2: the atomic numbers (first removing braces)
-           // StringTokenizer st = new StringTokenizer(line); //apprently the stringTokenizer class is deprecated, but I am having trouble getting the regular expressions to work properly
-            for(int i=0; i < natoms; i++){
-               // atomicNumber.add(i,Integer.parseInt(stringArray[i]));
-                atomicNumber.add(i,Integer.parseInt(stringArray[i]));
-            }
-            for(int i=0; i < natoms; i++){
-                stringArray = br.readLine().replace("[", "").replace("]","").trim().split("\\s+");//read line 3+: coordinates for atom i; used /s+ for split; using spaces with default limit of 0 was giving empty string
-                x_coor.add(i,Double.parseDouble(stringArray[0]));
-                y_coor.add(i,Double.parseDouble(stringArray[1]));
-                z_coor.add(i,Double.parseDouble(stringArray[2]));
-            }
-            energy = Double.parseDouble(br.readLine());//read next line: energy
-            molmass = Double.parseDouble(br.readLine());//read next line: molecular mass (in amu)
-            if (natoms>1){//read additional info for non-monoatomic species
-                stringArray = br.readLine().replace("[", "").replace("]","").trim().split(",\\s+");//read next line: frequencies
-                for(int i=0; i < stringArray.length; i++){
-                    freqs.add(i,Double.parseDouble(stringArray[i]));
-                }
-                stringArray = br.readLine().replace("[", "").replace("]","").trim().split("\\s+");//read next line rotational constants (converting from GHz to Hz in the process)
-                rotCons_1 = Double.parseDouble(stringArray[0])*1000000000;
-                rotCons_2 = Double.parseDouble(stringArray[1])*1000000000;
-                rotCons_3 = Double.parseDouble(stringArray[2])*1000000000;
-            }
-            while ( (line = br.readLine()) != null) {
-                //do nothing (there shouldn't be any more information, but this is included to get all the output)
-            }
-            int exitValue = cclibProc.waitFor();
-	    cclibProc.getErrorStream().close();
-	    cclibProc.getOutputStream().close();
-	    br.close();
-	    isr.close();
-	    is.close();
-        }
-        catch (Exception e) {
-			Logger.logStackTrace(e);
-            String err = "Error in running ccLib Python process \n";
-            err += e.toString();
-            Logger.critical(err);
-            System.exit(0);
-        } 
-   
-        ThermoData result = calculateThermoFromPM3MM4Calc(natoms, atomicNumber, x_coor, y_coor, z_coor, energy, molmass, freqs, rotCons_1, rotCons_2, rotCons_3, gdStateDegen);
+	QMData qmdata = getQMDataWithCClib(name, directory, command, false);
+        ThermoData result = calculateThermoFromPM3MM4Calc(qmdata, gdStateDegen, name);
         return result;
     }
     //returns a thermo result, given results from quantum PM3 calculation or MM4 calculation (originally, this was in parseGaussianPM3 function
-    public ThermoData calculateThermoFromPM3MM4Calc(int natoms, ArrayList atomicNumber, ArrayList x_coor, ArrayList y_coor, ArrayList z_coor, double energy, double molmass, ArrayList freqs, double rotCons_1, double rotCons_2, double rotCons_3, int gdStateDegen){
+    public ThermoData calculateThermoFromPM3MM4Calc(QMData qmdata, int gdStateDegen, String name){
+	//unpack qmdata
+	int natoms = qmdata.natoms;
+	ArrayList atomicNumber = qmdata.atomicNumber; //vector of atomic numbers (integers) (apparently Vector is thread-safe; cf. http://answers.yahoo.com/question/index?qid=20081214065127AArZDT3; ...should I be using this instead?)
+        ArrayList x_coor = qmdata.x_coor; //vectors of x-, y-, and z-coordinates (doubles) (Angstroms) (in order corresponding to above atomic numbers)
+        ArrayList y_coor = qmdata.y_coor;
+        ArrayList z_coor = qmdata.z_coor;
+        double energy = qmdata.energy; //PM3 energy (Hf298) in Hartree (***note: in the case of MOPAC, the MOPAC file will contain in units of kcal/mol, but modified ccLib will return in Hartree)
+        double molmass = qmdata.molmass; //molecular mass in amu
+        ArrayList freqs = qmdata.freqs; //list of frequencies in units of cm^-1
+        double rotCons_1 = qmdata.rotCons_1;//rotational constants in (1/s)
+        double rotCons_2 = qmdata.rotCons_2;
+        double rotCons_3 = qmdata.rotCons_3;
+
         //determine point group using the SYMMETRY Program
         String geom = natoms + "\n";
         for(int i=0; i < natoms; i++){
             geom += atomicNumber.get(i) + " "+ x_coor.get(i) + " " + y_coor.get(i) + " " +z_coor.get(i) + "\n";
         }
        // String pointGroup = determinePointGroupUsingSYMMETRYProgram(geom, 0.01);
-        String pointGroup = determinePointGroupUsingSYMMETRYProgram(geom);
+        String pointGroup = determinePointGroupUsingSYMMETRYProgram(geom,name);
         
         //calculate thermo quantities using stat. mech. equations        
         //boolean linearity = p_chemGraph.isLinear();//determine linearity (perhaps it would be more appropriate to determine this from point group?)
@@ -1948,13 +1705,13 @@ public class QMTP implements GeneralGAPP {
     //required input is a line with number of atoms followed by lines for each atom including atom number and x,y,z coordinates
     //finalTol determines how loose the point group criteria are; values are comparable to those specifed in the GaussView point group interface
     //public String determinePointGroupUsingSYMMETRYProgram(String geom, double finalTol){
-    public String determinePointGroupUsingSYMMETRYProgram(String geom){
+    public String determinePointGroupUsingSYMMETRYProgram(String geom, String name){
         int attemptNumber = 1;
         int maxAttemptNumber = 4;
         boolean pointGroupFound=false;
         //write the input file
+	File inputFile=new File(qmfolder+name+".symm");
         try {
-            File inputFile=new File(qmfolder+"symminput.txt");//SYMMETRY program directory
             FileWriter fw = new FileWriter(inputFile);
             fw.write(geom);
             fw.close();
@@ -1972,12 +1729,12 @@ public class QMTP implements GeneralGAPP {
             String [] lineArray;
             try{ 
                 if (System.getProperty("os.name").toLowerCase().contains("windows")){//the Windows case where the precompiled executable seems to need to be called from a batch script
-		    if(attemptNumber==1) command = "\""+System.getProperty("RMG.workingDirectory")+"/scripts/symmetryDefault2.bat\" "+qmfolder+ "symminput.txt";//12/1/09 gmagoon: switched to use slightly looser criteria of 0.02 rather than 0.01 to handle methylperoxyl radical result from MOPAC
-		    else if (attemptNumber==2) command = "\""+System.getProperty("RMG.workingDirectory")+"/scripts/symmetryLoose.bat\" " +qmfolder+ "symminput.txt";//looser criteria (0.1 instead of 0.01) to properly identify C2v group in VBURLMBUVWIEMQ-UHFFFAOYAVmult5 (InChI=1/C3H4O2/c1-3(2,4)5/h1-2H2/mult5) MOPAC result; C2 and sigma were identified with default, but it should be C2 and sigma*2
-		    else if (attemptNumber==3) command = "\""+System.getProperty("RMG.workingDirectory")+"/scripts/symmetryLoose2.bat\" " +qmfolder+ "symminput.txt";//looser criteria to properly identify D2d group in XXHDHKZTASMVSX-UHFFFAOYAM
+		    if(attemptNumber==1) command = "\""+System.getProperty("RMG.workingDirectory")+"/scripts/symmetryDefault2.bat\" \""+inputFile.getAbsolutePath()+"\"";//12/1/09 gmagoon: switched to use slightly looser criteria of 0.02 rather than 0.01 to handle methylperoxyl radical result from MOPAC
+		    else if (attemptNumber==2) command = "\""+System.getProperty("RMG.workingDirectory")+"/scripts/symmetryLoose.bat\" \""+inputFile.getAbsolutePath()+"\"";//looser criteria (0.1 instead of 0.01) to properly identify C2v group in VBURLMBUVWIEMQ-UHFFFAOYAVmult5 (InChI=1/C3H4O2/c1-3(2,4)5/h1-2H2/mult5) MOPAC result; C2 and sigma were identified with default, but it should be C2 and sigma*2
+		    else if (attemptNumber==3) command = "\""+System.getProperty("RMG.workingDirectory")+"/scripts/symmetryLoose2.bat\" \""+inputFile.getAbsolutePath()+"\"";//looser criteria to properly identify D2d group in XXHDHKZTASMVSX-UHFFFAOYAM
 		    else if (attemptNumber==4){
 			Logger.error("*****WARNING****: Using last-resort symmetry estimation options; symmetry may be underestimated");
-			command = "\""+System.getProperty("RMG.workingDirectory")+"/scripts/symmetryLastResort.bat\" " +qmfolder+ "symminput.txt";//last resort criteria to avoid crashing (this will likely result in identification of C1 point group)
+			command = "\""+System.getProperty("RMG.workingDirectory")+"/scripts/symmetryLastResort.bat\" \""+inputFile.getAbsolutePath()+"\"";//last resort criteria to avoid crashing (this will likely result in identification of C1 point group)
 		    }
 		    else{
 			Logger.critical("Invalid attemptNumber: "+ attemptNumber);
@@ -1985,12 +1742,12 @@ public class QMTP implements GeneralGAPP {
 		    }
                 }
 		else{//in other (non-Windows) cases, where it is compiled from scratch, we should be able to run this directly
-		    if(attemptNumber==1) command = System.getProperty("RMG.workingDirectory")+"/bin/SYMMETRY.EXE -final 0.02 " +qmfolder+ "symminput.txt";//12/1/09 gmagoon: switched to use slightly looser criteria of 0.02 rather than 0.01 to handle methylperoxyl radical result from MOPAC
-		    else if (attemptNumber==2) command = System.getProperty("RMG.workingDirectory")+"/bin/SYMMETRY.EXE -final 0.1 " +qmfolder+ "symminput.txt";//looser criteria (0.1 instead of 0.01) to properly identify C2v group in VBURLMBUVWIEMQ-UHFFFAOYAVmult5 (InChI=1/C3H4O2/c1-3(2,4)5/h1-2H2/mult5) MOPAC result; C2 and sigma were identified with default, but it should be C2 and sigma*2
-		    else if (attemptNumber==3) command = System.getProperty("RMG.workingDirectory")+"/bin/SYMMETRY.EXE -primary 0.2 -final 0.1 " +qmfolder+ "symminput.txt";//looser criteria to identify D2d group in XXHDHKZTASMVSX-UHFFFAOYAM (InChI=1/C12H16/c1-5-9-10(6-2)12(8-4)11(9)7-3/h5-12H,1-4H2)
+		    if(attemptNumber==1) command = System.getProperty("RMG.workingDirectory")+"/bin/SYMMETRY.EXE -final 0.02 " +inputFile.getAbsolutePath();//12/1/09 gmagoon: switched to use slightly looser criteria of 0.02 rather than 0.01 to handle methylperoxyl radical result from MOPAC
+		    else if (attemptNumber==2) command = System.getProperty("RMG.workingDirectory")+"/bin/SYMMETRY.EXE -final 0.1 " +inputFile.getAbsolutePath();//looser criteria (0.1 instead of 0.01) to properly identify C2v group in VBURLMBUVWIEMQ-UHFFFAOYAVmult5 (InChI=1/C3H4O2/c1-3(2,4)5/h1-2H2/mult5) MOPAC result; C2 and sigma were identified with default, but it should be C2 and sigma*2
+		    else if (attemptNumber==3) command = System.getProperty("RMG.workingDirectory")+"/bin/SYMMETRY.EXE -primary 0.2 -final 0.1 " +inputFile.getAbsolutePath();//looser criteria to identify D2d group in XXHDHKZTASMVSX-UHFFFAOYAM (InChI=1/C12H16/c1-5-9-10(6-2)12(8-4)11(9)7-3/h5-12H,1-4H2)
 		    else if (attemptNumber==4){
 			Logger.warning("*****WARNING****: Using last-resort symmetry estimation options; symmetry may be underestimated");
-			command = System.getProperty("RMG.workingDirectory")+"/bin/SYMMETRY.EXE -final 0.0 " +qmfolder+ "symminput.txt";//last resort criteria to avoid crashing (this will likely result in identification of C1 point group)
+			command = System.getProperty("RMG.workingDirectory")+"/bin/SYMMETRY.EXE -final 0.0 " + inputFile.getAbsolutePath();//last resort criteria to avoid crashing (this will likely result in identification of C1 point group)
 		    }
 		    else{
 			Logger.critical("Invalid attemptNumber: "+ attemptNumber);
@@ -2168,7 +1925,7 @@ public class QMTP implements GeneralGAPP {
 	    //if the complete flag is still 0, the process did not complete and is a failure
 	    if (completeFlag==0) failureFlag=1;
 	    if(failureFlag==0 && connectivityCheck>0){//if the process was successful, check the connectivity (if requested by the user)
-		    boolean connectivityMatch=connectivityMatchInPM3ResultQ(name, directory, getInChIFromModifiedInChI(InChIaug), ".log", "g03");
+		    boolean connectivityMatch=connectivityMatchInPM3ResultQ(name, directory, InChIaug, ".log", "g03");
 		    if (!connectivityMatch)
 			if(connectivityCheck>1){//connectivityCheck=2
 			    failureFlag=1;
@@ -2311,7 +2068,7 @@ public class QMTP implements GeneralGAPP {
             }
             if(failureOverrideFlag==1) failureFlag=1; //job will be considered a failure if there are imaginary frequencies or if job terminates to to excess time/cycles
             if(failureFlag==0 && connectivityCheck>0){//if the process was successful, check the connectivity (if requested by the user)
-		    boolean connectivityMatch=connectivityMatchInPM3ResultQ(name, directory, getInChIFromModifiedInChI(InChIaug), ".out", "moo");
+		    boolean connectivityMatch=connectivityMatchInPM3ResultQ(name, directory, InChIaug, ".out", "moo");
 		    if (!connectivityMatch)
 			if(connectivityCheck>1){//connectivityCheck=2
 			    failureFlag=1;
@@ -2454,7 +2211,7 @@ public class QMTP implements GeneralGAPP {
             }
             if(failureOverrideFlag==1) failureFlag=1; //job will be considered a failure if there are imaginary frequencies or if job terminates to to excess time/cycles
             if(failureFlag==0 && connectivityCheck>0){//if the process was successful, check the connectivity (if requested by the user)
-		    boolean connectivityMatch=connectivityMatchInMM4ResultQ(name, directory, getInChIFromModifiedInChI(InChIaug));
+		    boolean connectivityMatch=connectivityMatchInMM4ResultQ(name, directory, InChIaug);
 		    if (!connectivityMatch)
 			if(connectivityCheck>1){//connectivityCheck=2
 			    failureFlag=1;
@@ -2672,19 +2429,20 @@ public class QMTP implements GeneralGAPP {
 
     //check the connectivity in a Gaussian/MOPAC result (or XYZ file); returns true if the there appears to be a match, and returns false otherwise
     //the connectivity is assumed to match if the InChI produced by processing the result/coordinates through OpenBabel into MOL file and then using InChI utility produces an InChI that is equivalent (following stereochemical layer removal) to the InChI stored in memory
-    //we do not need/want to compare the augmented multN part of the InChI, so InChI should be the non-modified version
+    //we do not need/want to compare the augmented multN part of the InChI, so InChI will be converted within to the non-modified version
     //for gaussian03, outfileExtension should be ".log" and babelType should be "g03"
     //for MOPAC, outfileExtension should be ".out" and babelType should be "moo"
     //for XYZ, outfileExtension should be ".xyz" and babelType should be "xyz"
-    public boolean connectivityMatchInPM3ResultQ(String name, String directory, String InChI, String outfileExtension, String babelType){
-        //Step 1: call the OpenBabel process (note that this requires OpenBabel environment variable) to convert to MOL file
-        String molPath="";
+    public boolean connectivityMatchInPM3ResultQ(String name, String directory, String augInChI, String outfileExtension, String babelType){
+        //Step 0: get the un-modified InChI
+	String InChI = getInChIFromModifiedInChI(augInChI);
+	//Step 1: call the OpenBabel process (note that this requires OpenBabel environment variable) to convert to MOL file
+        String molPath=directory+"/"+name+".mol";//the path to the MOL file to be created (with connectivity);
 	try{ 
             File runningdir=new File(directory);
 	    String command=null;
 
 	    String inpPath=directory+"/"+name+outfileExtension;//the path to the QM output file with coordinates
-	    molPath=directory+"/"+name+".mol";//the path to the MOL file to be created (with connectivity
 	    if (System.getProperty("os.name").toLowerCase().contains("windows")){//special windows case
 		command = "babel -i"+babelType + " \""+ inpPath+ "\" -omol \""+molPath+"\"";
 	    }
@@ -2721,16 +2479,126 @@ public class QMTP implements GeneralGAPP {
 	if (InChI3D.equals(InChI)){
 	    return true;
 	}
-	else{
-	    Logger.info("***For species "+ name +" the optimized three-dimensional InChI ("+InChI3D+") does not match the intended (unmodified) InChI (" +InChI+")");
-	    return false;
+	else{//if there is a mismatch using OpenBabel (either due to OpenBabel segmentation fault (e.g. http://sourceforge.net/tracker/?func=detail&aid=3417992&group_id=40728&atid=428740) or tolerances that are too tight (e.g. InChI=1/C10H12O2/c1-2-6-9(5-1)11-12-10-7-3-4-8-10/h1,7H,2-4,6,8H2)), print a warning and go to the backup check using MoleCoor
+	    Logger.info("***For species "+ name +" an OpenBabel-based check suggests the optimized three-dimensional InChI ("+InChI3D+") does not match the intended (unmodified) InChI (" +InChI+"). Will retry connectivity check with MoleCoor");
+	    return connectivityMatchInPM3ResultQSecondary(name, directory, augInChI, babelType);
 	}
+    }
+
+    //a backup/fallback connectivity check using MoleCoor for when the primary approach using OpenBabel fails
+    public boolean connectivityMatchInPM3ResultQSecondary(String name, String directory, String augInChI, String babelType){
+	    //Step 0: get the un-modified InChI
+	    String InChI = getInChIFromModifiedInChI(augInChI);
+
+	    String molPath=directory+"/"+name+".mol";//the path to the MOL file to be created (with connectivity);
+	    
+	    //Step 1. parse the file according to the program used, as determined by babelType (we could just use coordinates from a pre-existing MOL file, but that wouldn't handle cases where OpenBabel crashed due to segmentation fault
+	    String command = null;
+	    if (babelType.equals("moo")) command = getMopacPM3ParseCommand(name, directory); //MOPAC case
+	    else if (babelType.equals("g03")) command = getGaussianPM3ParseCommand(name, directory); //G03 case
+	    else if (babelType.equals("xyz")) command = getMM4ParseCommand(name, directory); //MM4 case
+	    else{
+		Logger.critical("Unrecognized babelType during backup connectivity check");
+		System.exit(0);
+	    }
+	    QMData qmdata = getQMDataWithCClib(name, directory, command, false);
+	    //Step 2a. write the coordinates as an xyz file
+	    String inpFilePath=directory+"/"+name+".xyz";
+	    //construct the string to write
+	    int natoms = qmdata.natoms;
+	    ArrayList atomicNumber = qmdata.atomicNumber; //vector of atomic numbers (integers) (apparently Vector is thread-safe; cf. http://answers.yahoo.com/question/index?qid=20081214065127AArZDT3; ...should I be using this instead?)
+	    ArrayList x_coor = qmdata.x_coor; //vectors of x-, y-, and z-coordinates (doubles) (Angstroms) (in order corresponding to above atomic numbers)
+	    ArrayList y_coor = qmdata.y_coor;
+	    ArrayList z_coor = qmdata.z_coor;
+	    String geomXYZ = natoms + "\n";
+	    geomXYZ+=augInChI+"\n"; //use modified/augmented InChI as molecule name
+	    for(int i=0; i < natoms; i++){
+		geomXYZ += getAtomicSymbol((Integer)atomicNumber.get(i)) + " "+ x_coor.get(i) + " " + y_coor.get(i) + " " +z_coor.get(i) + "\n";
+	    }
+	    //write the string to file
+	    try {
+		//File inputFilePath=new File(qmfolder+"symminput.txt");//SYMMETRY program directory
+		FileWriter fw = new FileWriter(inpFilePath);
+		fw.write(geomXYZ);
+		fw.close();
+	    } catch (IOException e) {
+		String err = "Error writing XYZ file for backup MoleCoor connectivity perception";
+		err += e.toString();
+		Logger.critical(err);
+		System.exit(0);
+	    }
+	    //Step 2b. call the MoleCoor script to perceive connectivity and write MOL file (with connectivity)
+	    try{
+		File runningdir=new File(directory);
+
+		String command2 = null;
+		if (System.getProperty("os.name").toLowerCase().contains("windows")){//special windows case where paths can have spaces and are allowed to be surrounded by quotes
+		    command2 = "python \""+System.getenv("RMG")+"/scripts/XYZtoMOLconn.py\" ";
+		    //first argument: input file path
+		    command2=command2.concat("\""+inpFilePath+"\" ");
+		    //second argument: output path
+		    command2=command2.concat("\""+molPath+ "\" ");
+		    //third argument: molecule name (the modified InChI)
+		    command2=command2.concat(augInChI+ " ");
+		    //fourth argument: tolerance
+		    command2=command2.concat("0.50 ");//InChI=1/C10H12O2/c1-2-6-9(5-1)11-12-10-7-3-4-8-10/h1,7H,2-4,6,8H2 case has very strained with long O-O bond length; O-O bond 1.83873 Ang.; would need tol = 0.47873 or higher with MoleCoor scheme; 0.50 is used here
+		    //fifth argument: PYTHONPATH
+		    command2=command2.concat("\""+System.getenv("RMG")+"/source/MoleCoor\"");//this will pass $RMG/source/MoleCoor to the script (in order to get the appropriate path for importing
+		}
+		else{//non-Windows case
+		    command2 = "python "+System.getenv("RMG")+"/scripts/XYZtoMOLconn.py ";
+		    //first argument: input file path
+		    command2=command2.concat(inpFilePath+" ");
+		    //second argument: output path
+		    command2=command2.concat(molPath+ " ");
+		    //third argument: molecule name (the modified InChI)
+		    command2=command2.concat(augInChI+ " ");
+		    //fourth argument: tolerance
+		    command2=command2.concat("0.50 ");//InChI=1/C10H12O2/c1-2-6-9(5-1)11-12-10-7-3-4-8-10/h1,7H,2-4,6,8H2 case has very strained with long O-O bond length; O-O bond 1.83873 Ang.; would need tol = 0.47873 or higher with MoleCoor scheme; 0.50 is used here
+		    //fifth argument: PYTHONPATH
+		    command2=command2.concat(System.getenv("RMG")+"/source/MoleCoor");//this will pass $RMG/source/MoleCoor to the script (in order to get the appropriate path for importing
+		}
+		Process molecoorProc = Runtime.getRuntime().exec(command2, null, runningdir);
+		//read in output
+		InputStream is = molecoorProc.getInputStream();
+		InputStreamReader isr = new InputStreamReader(is);
+		BufferedReader br = new BufferedReader(isr);
+		String line=null;
+		while ( (line = br.readLine()) != null) {
+		    //do nothing
+		}
+		int exitValue = molecoorProc.waitFor();
+		molecoorProc.getErrorStream().close();
+		molecoorProc.getOutputStream().close();
+		br.close();
+		isr.close();
+		is.close();
+	    }
+	    catch(Exception e){
+		String err = "Error in running MoleCoor .XYZ to .MOL process \n";
+		err += e.toString();
+		Logger.logStackTrace(e);
+		System.exit(0);
+	    }
+
+	    //Step 3. convert the MOL file to InChI (with stereochem layers removed)
+	    String[] result = Species.runInChIProcess(new File(molPath), new File("InChI/species.txt"), true);
+	    String InChI3D = stripStereochemLayersFromInChI(result[0]);
+	    //Step 4. check whether there is a match (i.e. InChI equals InChI3D)
+	    if (InChI3D.equals(InChI)){
+		 Logger.info("For species "+ name +" a MoleCoor-based check suggests the optimized three-dimensional InChI ("+InChI3D+") actually DOES match the intended (unmodified) InChI (" +InChI+"). Therefore, the result will be assumed to be successful.");
+		 return true;
+	    }
+	    else{
+		Logger.info("***For species "+ name +" a MoleCoor-based check suggests the optimized three-dimensional InChI ("+InChI3D+") does not match the intended (unmodified) InChI (" +InChI+").");
+		return false;
+	    }
     }
 
      //check the connectivity in a MM4 result; returns true if the there appears to be a match, and returns false otherwise
     //the connectivity is assumed to match if the InChI produced by processing the result/coordinates through OpenBabel produces in InChI that is equivalent or superstring to the InChI stored in memory
-    //we do not need/want to compare the augmented multN part of the InChI, so InChI should be the non-modified version
-    public boolean connectivityMatchInMM4ResultQ(String name, String directory, String InChI){
+    //we do not need/want to compare the augmented multN part of the InChI, so InChI will be converted within  to the non-modified version
+    public boolean connectivityMatchInMM4ResultQ(String name, String directory, String augInChI){
 	//first, we convert the .mm4opt file into an xyz file that can be processed by OpenBabel; we use a python script that calls MoleCoor for this
         //call the MoleCoor script to create the XYZ file from the .mm4opt file
         try{
@@ -2742,8 +2610,8 @@ public class QMTP implements GeneralGAPP {
 	    //second argument: output path
 	    String inpfilepath=directory+"/"+name+".xyz";
 	    command=command.concat(inpfilepath+ " ");
-	    //third argument: molecule name (the (un-augmented) InChI)
-	    command=command.concat(InChI+ " ");
+	    //third argument: molecule name (the modified InChI)
+	    command=command.concat(augInChI+ " ");
 	    //fourth argument: PYTHONPATH
 	    command=command.concat(System.getenv("RMG")+"/source/MoleCoor");//this will pass $RMG/source/MoleCoor to the script (in order to get the appropriate path for importing
 	    Process molecoorProc = Runtime.getRuntime().exec(command, null, runningdir);
@@ -2770,7 +2638,7 @@ public class QMTP implements GeneralGAPP {
         }
 
 	//check whether there is a match (i.e. InChI is a substring of InChI3D); note that this makes use of the connectivityMatchInPM3ResultQ function, which is sufficiently general to process XYZ files
-	return connectivityMatchInPM3ResultQ(name, directory, InChI, ".xyz", "xyz");
+	return connectivityMatchInPM3ResultQ(name, directory, augInChI, ".xyz", "xyz");
     }
 
 
@@ -2781,13 +2649,15 @@ public class QMTP implements GeneralGAPP {
         //#]
     }
 
-    public QMData getQMDataWithCClib(String name, String directory, ChemGraph p_chemGraph, boolean getStericEnergy){
-    	String command = "python "+System.getProperty("RMG.workingDirectory")+"/scripts/MM4ParsingScript.py ";
+    public QMData getMM4QMDataWithCClib(String name, String directory, boolean getStericEnergy){
+	String command = "python "+System.getProperty("RMG.workingDirectory")+"/scripts/MM4ParsingScript.py ";
 	String logfilepath=directory+"/"+name+".mm4out";
 	command=command.concat(logfilepath);
 	command=command.concat(" "+ System.getenv("RMG")+"/source");//this will pass $RMG/source to the script (in order to get the appropriate path for importing
         if (getStericEnergy) command=command.concat(" 1");//option to print stericenergy before molar mass (this will only be used in useHindRot cases, but it is always read in with this function
-	///////////beginning of block taken from the bulk of getPM3MM4ThermoDataUsingCCLib////////////
+	return getQMDataWithCClib(name, directory, command, getStericEnergy);
+    }
+    public QMData getQMDataWithCClib(String name, String directory, String command, boolean getStericEnergy){
 	//parse the file using cclib
         int natoms = 0; //number of atoms from Mopac file; in principle, this should agree with number of chemGraph atoms
         ArrayList atomicNumber = new ArrayList(); //vector of atomic numbers (integers) (apparently Vector is thread-safe; cf. http://answers.yahoo.com/question/index?qid=20081214065127AArZDT3; ...should I be using this instead?)
@@ -2796,12 +2666,11 @@ public class QMTP implements GeneralGAPP {
         ArrayList z_coor = new ArrayList();
         double energy = 0; // energy (Hf298) in Hartree
         double molmass = 0; //molecular mass in amu
-	double stericEnergy = 0;//steric energy in Hartree
+	double stericEnergy=99999;//steric energy in Hartree
         ArrayList freqs = new ArrayList(); //list of frequencies in units of cm^-1
         double rotCons_1 = 0;//rotational constants in (1/s)
         double rotCons_2 = 0;
         double rotCons_3 = 0;
-        int gdStateDegen = p_chemGraph.getRadicalNumber()+1;//calculate ground state degeneracy from the number of radicals; this should give the same result as spin multiplicity in Gaussian input file (and output file), but we do not explicitly check this (we could use "mult" which cclib reads in if we wanted to do so); also, note that this is not always correct, as there can apparently be additional spatial degeneracy for non-symmetric linear molecules like OH radical (cf. http://cccbdb.nist.gov/thermo.asp)
         try{
             Process cclibProc = Runtime.getRuntime().exec(command);
             //read the stdout of the process, which should contain the desired information in a particular format
@@ -2883,7 +2752,7 @@ public class QMTP implements GeneralGAPP {
                 z_coor.add(i,Double.parseDouble(stringArray[2]));
             }
             energy = Double.parseDouble(br.readLine());//read next line: energy
-            stericEnergy = Double.parseDouble(br.readLine());//read next line: steric energy (in Hartree)
+            if(getStericEnergy) stericEnergy = Double.parseDouble(br.readLine());//read next line: steric energy (in Hartree)
 	    molmass = Double.parseDouble(br.readLine());//read next line: molecular mass (in amu)
             if (natoms>1){//read additional info for non-monoatomic species
                 stringArray = br.readLine().replace("[", "").replace("]","").trim().split(",\\s+");//read next line: frequencies
@@ -2913,11 +2782,20 @@ public class QMTP implements GeneralGAPP {
             System.exit(0);
         }
 	//package up the result
-	QMData qmdata = new QMData(natoms, atomicNumber, x_coor, y_coor, z_coor, energy, stericEnergy, molmass, freqs, rotCons_1, rotCons_2, rotCons_3);
-	return qmdata;
+	return new QMData(natoms, atomicNumber, x_coor, y_coor, z_coor, energy, stericEnergy, molmass, freqs, rotCons_1, rotCons_2, rotCons_3);
     }
 
-    
+    //converts atomicnumber to atomic symbol
+    //returns Err if the atomic number is not recognized; currently, H, C, O, N, S, and Si are recognized
+    public String getAtomicSymbol(Integer atomicNumber){
+	if (atomicNumber ==1 ) return "H";
+	else if (atomicNumber == 6) return "C";
+	else if (atomicNumber == 8) return "O";
+	else if (atomicNumber == 7) return "N";
+	else if (atomicNumber == 16) return "S";
+	else if (atomicNumber == 14) return "Si";
+	else return "Err";//
+    }
 }
 /*********************************************************************
 	File Path	: RMG\RMG\jing\chem\QMTP.java

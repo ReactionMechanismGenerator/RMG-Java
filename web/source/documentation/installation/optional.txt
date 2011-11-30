@@ -118,10 +118,16 @@ MOPAC 2009 quantum chemistry package. These dependencies are:
 
 **MOPAC 2009**
 
-    Available at http://openmopac.net/downloads.html. On Windows the installer 
-    should set the ``MOPAC_LICENSE`` environment variable automatically. MOPAC
+    Available at http://openmopac.net/downloads.html. MOPAC
     may be obtained freely for academic, not-for-profit use. You only need to
-    install one of MOPAC 2009 or Gaussian 03.
+    install one of MOPAC 2009 or Gaussian 03, though having both can be advantageous
+    for handling troublesome cases.
+
+    On Windows, use the download called ``MOPAC2009 for DOS under any Windows``; the installer
+    should set the ``MOPAC_LICENSE`` environment variable automatically.
+
+    On Linux, you will need to set the MOPAC_LICENSE variable manually
+   (e.g. ``export MOPAC_LICENSE=/opt/mopac/`` in .bashrc or before each time RMG is run with MOPAC calculations).
 
 **Gaussian 03**
 
