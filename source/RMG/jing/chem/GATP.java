@@ -145,7 +145,7 @@ public class GATP implements GeneralGAPP {
            		idArray[radicalSite-1] = node.getID().intValue();
            		atomArray[radicalSite-1] = atom;
            		// new a satuated atom and replace the old one
-           		Atom newAtom = new Atom(atom.getChemElement(),satuated);
+           		Atom newAtom = Atom.make(atom.getChemElement(),satuated);
            		node.setElement(newAtom);
            		node.updateFeElement();
            	}
