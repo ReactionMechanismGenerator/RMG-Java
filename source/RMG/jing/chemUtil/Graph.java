@@ -1531,6 +1531,12 @@ public class Graph {
             return false;
         }
 
+	if (getArcNumber() != graph.getArcNumber()){
+	    Logger.info("Opportunity for speedup by checking arc number!:");
+	    Logger.info(this.toString());
+	    Logger.info(graph.toString());
+	}
+
         resetMatchedGC();
         graph.resetMatchedGC();
 

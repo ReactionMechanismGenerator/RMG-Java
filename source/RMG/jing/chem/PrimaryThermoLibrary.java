@@ -217,6 +217,7 @@ public ThermoData getThermoData(Graph p_graph){
     g.addMissingHydrogen();
     if (g.isEquivalent(p_graph)){
       td = (ThermoData)library.get(g);
+      Logger.info("ATTENTION: this PRIMARY THERMO LIBRARY section of code is used and shouldn't be removed");
       return td;
     }
   }
