@@ -2387,7 +2387,14 @@
  3    Os 0 {1,S}
  4    Os 0 {1,S}
  5    H 0 {1,S}
- 
+
+ Cs-OsSsHH 
+ 1  * Cs 0 {2,S} {3,S} {4,S} {5,S}
+ 2    Os 0 {1,S}       
+ 3    Ss 0 {1,S}      
+ 4    H 0 {1,S}
+ 5    H 0 {1,S}
+
  Cs-CCHH                                                
  1  * Cs 0 {2,S} {3,S} {4,S} {5,S}
  2    C 0 {1,S}
@@ -8503,6 +8510,41 @@
  4    Os 0 {1,S}
  5    H 0 {1,S}
  
+ Cs-COsSsH
+ 1  * Cs 0 {2,S} {3,S} {4,S} {5,S}
+ 2    C 0 {1,S}
+ 3    Os 0 {1,S}
+ 4    Ss 0 {1,S}
+ 5    H 0 {1,S}
+
+ Cs-CsOsSsH
+ 1  * Cs 0 {2,S} {3,S} {4,S} {5,S}
+ 2    Cs 0 {1,S} 
+ 3    Os 0 {1,S}
+ 4    Ss 0 {1,S} 
+ 5    H 0 {1,S}
+
+ Cs-CdsOsSsH
+ 1  * Cs 0 {2,S} {3,S} {4,S} {5,S}
+ 2    Cd 0 {1,S} 
+ 3    Os 0 {1,S}
+ 4    Ss 0 {1,S} 
+ 5    H 0 {1,S}
+
+ Cs-CtOsSsH
+ 1  * Cs 0 {2,S} {3,S} {4,S} {5,S}
+ 2    Ct 0 {1,S} 
+ 3    Os 0 {1,S}
+ 4    Ss 0 {1,S} 
+ 5    H 0 {1,S}
+
+ Cs-CbOsSsH
+ 1  * Cs 0 {2,S} {3,S} {4,S} {5,S}
+ 2    Cb 0 {1,S} 
+ 3    Os 0 {1,S}
+ 4    Ss 0 {1,S} 
+ 5    H 0 {1,S}
+
  Cs-CCOsH                                               
  1  * Cs 0 {2,S} {3,S} {4,S} {5,S}
  2    C 0 {1,S}

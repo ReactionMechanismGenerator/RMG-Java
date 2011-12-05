@@ -166,7 +166,7 @@ t_butanethiol
 4 C 0 {1,S}
 5 S 0 {1,S}
 
-HCSCH3
+CH3CHS
 1 C 0 {2,D} {3,S}
 2 S 0 {1,D}
 3 C 0 {1,S}
@@ -782,3 +782,78 @@ propan-1-yl-1-thione
 //S2
 //1 S 0 {2,D}
 //2 S 0 {1,D}
+
+C2H5SC2H5
+1 C 0 {2,S}
+2 C 0 {1,S} {3,S}
+3 S 0 {2,S} {4,S}
+4 C 0 {3,S} {5,S}
+5 C 0 {4,S}
+
+CH2JCH2SC2H5
+1 C 1 {2,S}
+2 C 0 {1,S} {3,S}
+3 S 0 {2,S} {4,S}
+4 C 0 {3,S} {5,S}
+5 C 0 {4,S}
+
+CH3CHJSC2H5
+1 C 0 {2,S}
+2 C 1 {1,S} {3,S}
+3 S 0 {2,S} {4,S}
+4 C 0 {3,S} {5,S}
+5 C 0 {4,S}
+
+CH2OHSH
+1 C 0 {2,S} {3,S}
+2 O 0 {1,S}
+3 S 0 {1,S}
+
+CHCH3OHSH
+1 C 0 {2,S} {3,S} {4,S}
+2 C 0 {1,S}
+3 O 0 {1,S}
+4 S 0 {1,S}
+
+CH2OHSJ
+1 C 0 {2,S} {3,S}
+2 O 0 {1,S}
+3 S 1 {1,S}
+
+CHCH3OHSJ
+1 C 0 {2,S} {3,S} {4,S}
+2 C 0 {1,S}
+3 O 0 {1,S}
+4 S 1 {1,S}
+
+CHOHS
+1 C 0 {2,D} {3,S}
+2 S 0 {1,D}
+3 O 0 {1,S}
+
+CHOSH
+1 C 0 {2,D} {3,S}
+2 O 0 {1,D}
+3 S 0 {1,S}
+
+CHOSJ
+1 C 0 {2,D} {3,S}
+2 O 0 {1,D}
+3 S 1 {1,S}
+
+COS
+1 C 0 {2,D} {3,D}
+3 S 0 {1,D}
+2 O 0 {1,D}
+
+CSOHOH
+1 C 0 {2,D} {3,S} {4,S}
+2 S 0 {1,D}
+3 O 0 {1,S}
+4 O 0 {1,S}
+
+COSHOH
+1 C 0 {2,D} {3,S} {4,S}
+2 O 0 {1,D}
+3 S 0 {1,S}
+4 O 0 {1,S}
