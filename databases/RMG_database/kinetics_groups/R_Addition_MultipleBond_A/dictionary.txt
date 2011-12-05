@@ -6695,23 +6695,59 @@ Cds_Sd
 3 R 0 {1,S}
 4 R 0 {1,S}
 
-Cds-HH_Sd
+Cds/H2_Sd
 1 *1 Cd 0 {2,D} {3,S} {4,S}
 2 *2 Sd 0 {1,D}
 3 H 0 {1,S}
 4 H 0 {1,S}
 
-Cds-CsH_Sd
+Cds/H/Nd_Sd
 1 *1 Cd 0 {2,D} {3,S} {4,S}
 2 *2 Sd 0 {1,D}
-3 Cs 0 {1,S}
-4 H 0 {1,S}
+3 H 0 {1,S}
+4 {Cs,O,S} 0 {1,S}
 
-Cds-CsCs_Sd
+Cds/H/Cs_Sd
+1 *1 Cd 0 {2,D} {3,S} {4,S}
+2 *2 Sd 0 {1,D}
+3 H 0 {1,S}
+4 Cs 0 {1,S}
+
+Cds/H/Os_Sd
+1 *1 Cd 0 {2,D} {3,S} {4,S}
+2 *2 Sd 0 {1,D}
+3 H 0 {1,S}
+4 O 0 {1,S}
+
+Cds/H/Ss_Sd
+1 *1 Cd 0 {2,D} {3,S} {4,S}
+2 *2 Sd 0 {1,D}
+3 H 0 {1,S}
+4 S 0 {1,S}
+
+Cds/Nd2_Sd
+1 *1 Cd 0 {2,D} {3,S} {4,S}
+2 *2 Sd 0 {1,D}
+3 {Cs,O,S} 0 {1,S}
+4 {Cs,O,S} 0 {1,S}
+
+Cds/CsCs_Sd
 1 *1 Cd 0 {2,D} {3,S} {4,S}
 2 *2 Sd 0 {1,D}
 3 Cs 0 {1,S}
 4 Cs 0 {1,S}
+
+Cds/CsOs_Sd
+1 *1 Cd 0 {2,D} {3,S} {4,S}
+2 *2 Sd 0 {1,D}
+3 Cs 0 {1,S}
+4 O 0 {1,S}
+
+Cds/CsSs_Sd
+1 *1 Cd 0 {2,D} {3,S} {4,S}
+2 *2 Sd 0 {1,D}
+3 Cs 0 {1,S}
+4 S 0 {1,S}
 
 Cds-OneDeH_Sd
 1 *1 Cd 0 {2,D} {3,S} {4,S}
@@ -6905,7 +6941,7 @@ Cdd_Sd
 Cdd-Sd_Sd
 1 *1 Cdd 0 {2,D} {3,D}
 2 *2 Sd 0 {1,D}
-3 Sd 0 {1,D}
+3 Sd 0 {1,D}Cdd-Od_Sd1 *1 Cdd 0 {2,D} {3,D}2 *2 Sd 0 {1,D}3 Od 0 {1,D}
 
 Ct_R 
 1 *1 Ct 0 {2,T}

@@ -2510,16 +2510,23 @@ Arrhenius_EP
 
 // Addition reactions involving S atoms
 
-2498	Cds-HH_Sd	HJ		300-1500	4.62E+08	1.7	0	0.6	0	0	0	0	1	Aäron Vandeputte GAVs CBS-QB3
-2499	Cds-HH_Sd	CsJ-HHH		300-1500	1.15E+04	2.8	0	-0.2	0	0	0	0	1	Aäron Vandeputte GAVs CBS-QB3
-2500	Cds-HH_Sd	CsJ-CsHH	300-1500	5.57E+02	2.9	0	-2.2	0	0	0	0	1	Aäron Vandeputte GAVs CBS-QB3
-2501	Cds-HH_Sd	CsJ-CsCsH	300-1500	1.78E+02	2.9	0	-4.0	0	0	0	0	1	Aäron Vandeputte GAVs CBS-QB3
-2502	Cds-HH_Sd	CsJ-CsCsCs	300-1500	1.20E+02	3.0	0	-5.2	0	0	0	0	1	Aäron Vandeputte GAVs CBS-QB3
-2511	Cds-HH_Sd	SsJ-H		300-1500	2.92E+04	2.5	0	-1.4	0	0	0	0	1	Aäron Vandeputte GAVs CBS-QB3
-2512	Cds-HH_Sd	SsJ-Cs		300-1500	8.58E+02	2.9	0	-0.9	0	0	0	0	1	Aäron Vandeputte GAVs CBS-QB3
-2516	Cds-HH_Sd	SsJ-Ss		300-1500	3.19E+01	3.0	0	3.0	0	0	0	0	1	Aäron Vandeputte GAVs CBS-QB3														
-2517	Cds-CsH_Sd	CsJ-HHH		300-1500	1.00E+00	2.8	0	1.5	0	0	0	0	1	Aäron Vandeputte GAVs CBS-QB3
-2518	Cds-CsCs_Sd	CsJ-HHH		300-1500	1.00E+00	2.7	0	2.9	0	0	0	0	1	Aäron Vandeputte GAVs CBS-QB3
+2498	Cds/H2_Sd	HJ		300-1500	4.62E+08	1.7	0	0.6	0	0	0	0	1	Aäron Vandeputte GAVs CBS-QB3
+2499	Cds/H2_Sd	CsJ-HHH		300-1500	1.15E+04	2.8	0	-0.2	0	0	0	0	1	Aäron Vandeputte GAVs CBS-QB3
+2500	Cds/H2_Sd	CsJ-CsHH	300-1500	5.57E+02	2.9	0	-2.2	0	0	0	0	1	Aäron Vandeputte GAVs CBS-QB3
+2501	Cds/H2_Sd	CsJ-CsCsH	300-1500	1.78E+02	2.9	0	-4.0	0	0	0	0	1	Aäron Vandeputte GAVs CBS-QB3
+2502	Cds/H2_Sd	CsJ-CsCsCs	300-1500	1.20E+02	3.0	0	-5.2	0	0	0	0	1	Aäron Vandeputte GAVs CBS-QB3
+2511	Cds/H2_Sd	SsJ-H		300-1500	2.92E+04	2.5	0	-1.4	0	0	0	0	1	Aäron Vandeputte GAVs CBS-QB3
+2512	Cds/H2_Sd	SsJ-Cs		300-1500	8.58E+02	2.9	0	-0.9	0	0	0	0	1	Aäron Vandeputte GAVs CBS-QB3
+2516	Cds/H2_Sd	SsJ-Ss		300-1500	3.19E+01	3.0	0	3.0	0	0	0	0	1	Aäron Vandeputte GAVs CBS-QB3														
+2517	Cds/H/Cs_Sd	CsJ-HHH		300-1500	1.00E+00	2.8	0	1.5	0	0	0	0	1	Aäron Vandeputte GAVs CBS-QB3
+2518	Cds/CsCs_Sd	CsJ-HHH		300-1500	1.00E+00	2.7	0	2.9	0	0	0	0	1	Aäron Vandeputte GAVs CBS-QB3
+2519	Cds/H/Os_Sd	HJ		300-1500	6.45E+08	1.40	0	2.89	0	0	0	0	1	CAC CBS-QB3 1DHR
+2520	Cds/H/Os_Sd	CsJ-HHH		300-1500	1.72E+05	1.68	0	5.37	0	0	0	0	1	CAC CBS-QB3 1DHR
+
+//  This one's a guess!!!
+3000	Cds/H/Os_Sd	CsJ-CsHH	300-1500	1E+05		1.7	0	3.0	0	0	0	0	1	CAC Guess..
+
+3001	Cdd-Od_Sd	HJ		300-1500	5.67E+08	1.75	0	8.60	0	0	0	0	1	CAC CBS-QB3
 
 2521	Sd_Cds-HH	HJ		300-1500	9.50E+08	1.7	0	-0.7	0	0	0	0	1	Aäron Vandeputte GAVs CBS-QB3
 2522	Sd_Cds-HH	CsJ-HHH		300-1500	3.76E+03	2.9	0	1.0	0	0	0	0	1	Aäron Vandeputte GAVs CBS-QB3
