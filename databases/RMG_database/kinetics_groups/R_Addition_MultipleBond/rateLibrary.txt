@@ -155,6 +155,15 @@ Arrhenius_EP
 2516	CS/H2_S	S_rad/NonDeS		300-1500	3.19E+01	3.0	0	3.0	0	0	0	0	1	Aäron Vandeputte GAVs 														
 2517	CS/H/De_S	C_methyl		300-1500	1.00E+00	2.8	0	1.5	0	0	0	0	1	Aäron Vandeputte GAVs 
 2518	CS/De2_S	C_methyl		300-1500	1.00E+00	2.7	0	2.9	0	0	0	0	1	Aäron Vandeputte GAVs 
+
+2519	CS/H/Os_S	H_rad		300-1500	6.45E+08	1.40	0	2.89	0	0	0	0	1	CAC CBS-QB3 1DHR
+2520	CS/H/Os_S	C_methyl		300-1500	1.72E+05	1.68	0	5.37	0	0	0	0	1	CAC CBS-QB3 1DHR
+
+//  This one's a guess!!!
+3000	CS/H/Os_S	C_rad/H2/Cs	300-1500	1E+05		1.7	0	3.0	0	0	0	0	1	CAC Guess..
+
+3001	CS_O	H_rad		300-1500	5.67E+08	1.75	0	8.60	0	0	0	0	1	CAC CBS-QB3
+
 2521	Sd_Cds/H2	H_rad		300-1500	9.50E+08	1.7	0	-0.7	0	0	0	0	1	Aäron Vandeputte GAVs 
 2522	Sd_Cds/H2	C_methyl		300-1500	3.76E+03	2.9	0	1.0	0	0	0	0	1	Aäron Vandeputte GAVs 
 2523	Sd_Cds/H2	C_rad/H2/Cs	300-1500	1.69E+02	3.0	0	-1.0	0	0	0	0	1	Aäron Vandeputte GAVs 

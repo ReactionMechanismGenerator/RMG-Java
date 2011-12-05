@@ -620,6 +620,24 @@ CS/H/Nd_S
 3 H  0 {1,S}
 4 {Cs,O,S}  0 {1,S}
  
+CS/H/Cs_S
+1 *1 CS  0 {2,D}, {3,S}, {4,S} 
+2 *2 Sd  0 {1,D} 
+3 H  0 {1,S}
+4 Cs  0 {1,S}
+
+CS/H/Os_S
+1 *1 CS  0 {2,D}, {3,S}, {4,S} 
+2 *2 Sd  0 {1,D} 
+3 H  0 {1,S}
+4 O  0 {1,S}
+
+CS/H/Ss_S 
+1 *1 CS  0 {2,D}, {3,S}, {4,S} 
+2 *2 Sd  0 {1,D} 
+3 H  0 {1,S}
+4 S  0 {1,S}
+ 
 CS/H/De_S
 1 *1 CS  0 {2,D}, {3,S}, {4,S} 
 2 *2 Sd  0 {1,D} 
@@ -631,6 +649,24 @@ CS/Nd2_S
 2 *2 Sd  0 {1,D} 
 3 {Cs,O,S} 0 {1,S}
 4 {Cs,O,S} 0 {1,S}
+
+CS/H/CsCs_S
+1 *1 CS  0 {2,D}, {3,S}, {4,S} 
+2 *2 Sd  0 {1,D} 
+3 Cs 0 {1,S}
+4 Cs 0 {1,S}
+
+CS/H/CsOs_S
+1 *1 CS  0 {2,D}, {3,S}, {4,S} 
+2 *2 Sd  0 {1,D} 
+3 Cs 0 {1,S}
+4 O 0 {1,S}
+
+CS/H/CsSs_S
+1 *1 CS  0 {2,D}, {3,S}, {4,S} 
+2 *2 Sd  0 {1,D} 
+3 Cs 0 {1,S}
+4 S 0 {1,S} 
  
 CS/Nd/De_S
 1 *1 CS  0 {2,D}, {3,S}, {4,S} 
@@ -715,6 +751,20 @@ Ck_O
 1 *1 Cdd 0 {2,D} {3,D}
 2 *2 Od 0 {1,D}
 3 C 0 {1,D}
+
+Cdd_Sd
+1 *1 Cdd 0 {2,D}
+2 *2 Sd 0 {1,D}
+
+CS2
+1 *1 Cdd 0 {2,D}, {3,D}
+2 *2 Sd 0 {1,D}
+3 Sd 0 {1,D}
+
+CS_O
+1 *1 Cdd 0 {2,D}, {3,D}
+2 *2 Sd 0 {1,D}
+3 Od 0 {1,D}
 
 O2d
 1 *1 Od 0 {2,D}
@@ -959,6 +1009,11 @@ Sd_Cdd/Sd
 1 *1 Sd 0 {2,D} 
 2 *2 Cdd 0 {1,D} {3,D} 
 3 Sd 0 {2,D}
+
+Sd_Cdd/Od
+1 *1 Sd 0 {2,D} 
+2 *2 Cdd 0 {1,D} {3,D} 
+3 Od 0 {2,D}
 
 Y_rad_birad
 Union {Y_rad, Y_birad} 
