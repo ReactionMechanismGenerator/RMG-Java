@@ -144,7 +144,7 @@ public class QMTP implements GeneralGAPP {
             result = primaryLibrary.getThermoData(p_chemGraph.getGraph());
             //Logger.info(result);
             if (result != null) {
-        	p_chemGraph.fromprimarythermolibrary = true;
+        	p_chemGraph.fromprimarythermolibrary = false;//we don't want to set fromprimarythermolibrary to true, because the result is not directly from the PTL, but comes via PTL + HBI corrections; if true is set here, this would affect two things, both in Species.java: 1) the naming; in the HBI case, we don't want to use a name derived from the thermo name as weird things can happen 2)findStablestThermoData considers the value to be the final word; however, since this is a radical that is not directly in the primaryThermoLibrary, we want to consider alternative thermo for all possible resonance isomers
             }
             else{
                 result=generateQMThermoData(p_chemGraph);
