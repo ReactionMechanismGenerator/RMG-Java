@@ -702,7 +702,7 @@ contains
         real(8), dimension(:), intent(out) :: k
 
         real(8), dimension(:), allocatable :: phi
-        real(8) dE, A, n, Ea, rem
+        real(8) dE, A, n, Ea
         integer :: r, s
 
         ! We can't use a negative activation energy for this method, so we
@@ -742,23 +742,12 @@ contains
             ! Evaluate the convolution
             call convolve(phi, rho, E, size(E))
 
-
-            
-
             ! Apply to determine the microcanonical rate
-            rem = Ea - s * dE
-            if (rem == 0) then
-                do r = s+1, size(E)
-                    if (E(r) > E0 .and. rho(r) /= 0) &
-                        k(r) = A * phi(r-s) / rho(r)
-                end do
-            else
-                do r = s+1, size(E)
-                    if (E(r) > E0 .and. rho(r) /= 0 .and. phi(r-s) /= 0) &
-                        k(r) = A * phi(r-s) * (phi(r-s-1) / phi(r-s)) ** (-rem / (E(r-s-1) - E(r-s))) / rho(r)
-                end do
-            end if
-
+            do r = s+1, size(E)
+                if (E(r) > E0 .and. rho(r) /= 0) &
+                    k(r) = A * phi(r-s) / rho(r)
+            end do
+            
             deallocate(phi)
 
         end if
