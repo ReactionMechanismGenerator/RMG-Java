@@ -50,6 +50,8 @@ endif ###### END OF gfortran SETTINGS
 
 LDFLAGS= $(F90_EXTRA_LDFLAGS)
 
+LIBS=
+
 OBJ0=ddassl.o daux.o dlinpk.o call_dasslAUTO.o res.o getflux.o res_daepack.o reaction_flux.o
 
 OBJ=$(patsubst %.o,$(BUILDDIR)/%.o,$(OBJ0))
@@ -58,7 +60,7 @@ OBJ=$(patsubst %.o,$(BUILDDIR)/%.o,$(OBJ0))
 
 $(BINDIR)/dasslAUTO.exe: $(OBJ)  
 	mkdir -p $(BINDIR)
-	$(F90) $(LDFLAGS) $(OBJ) -o $(BINDIR)/dasslAUTO.exe
+	$(F90) $(LDFLAGS) -o $(BINDIR)/dasslAUTO.exe $(OBJ) $(LIBS)
 
 # only .f files that begin with a d (eg. daux.f, dassl.f, dlinpk.f)
 $(BUILDDIR)/d%.o: d%.f

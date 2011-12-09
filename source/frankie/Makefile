@@ -44,7 +44,9 @@ endif
 
 endif ###### END OF gfortran SETTINGS
 
-LDFLAGS= $(F90_EXTRA_LDFLAGS) -lpthread
+LDFLAGS= $(F90_EXTRA_LDFLAGS)
+
+LIBS=
 
 OBJ0=dqed.o calc_freq_code.o
 
@@ -54,7 +56,7 @@ OBJ=$(patsubst %.o,$(BUILDDIR)/%.o,$(OBJ0))
 
 $(BINDIR)/frankie.exe: $(OBJ)  
 	mkdir -p $(BINDIR)
-	$(F90) $(LDFLAGS) $(OBJ) -o $(BINDIR)/frankie.exe
+	$(F90) $(LDFLAGS) -o $(BINDIR)/frankie.exe $(OBJ) $(LIBS)
 
 $(BUILDDIR)/%.o: %.f90
 	mkdir -p $(BUILDDIR)

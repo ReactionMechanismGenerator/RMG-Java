@@ -368,7 +368,12 @@ public class RateBasedPDepRME implements ReactionModelEnlarger {
                 }
 			}
 		}
-
+        
+        if (networksToRemove.size() == 0) {
+        	Logger.warning("Tried to make species " + species.toString() + " included, but it was not found as a nonincluded species in any partial network.");
+        	return;
+        }
+        
         // Keep the first identified network; remove the others
         PDepNetwork maxNetwork = networksToRemove.get(0);
         networksToRemove.remove(0);

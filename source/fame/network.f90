@@ -549,12 +549,7 @@ contains
             call convolve(densStates, densStates0, Elist, nGrains)
         end do
 
-        ! Shift to appropriate energy grain using E0
-        index = 0
-        do r = 1, nGrains
-            if (isom%E0 < Elist(r) .and. index == 0) index = r
-        end do
-        isom%densStates(index:nGrains) = densStates(1:nGrains-index+1)
+        isom%densStates = densStates
 
     end subroutine
 
@@ -574,7 +569,7 @@ contains
 
         type(Isomer) :: reac, prod
         integer nGrains, r
-        real(8) dE, Keq
+        real(8) dE, Keq, kf0, kf, Keq0, kb
         type(ArrheniusKinetics) :: arrhenius
         real(8), dimension(1:23) :: Tlist0
         
@@ -591,11 +586,16 @@ contains
         reac = isomerList(rxn%reac)
         prod = isomerList(rxn%prod)
 
-        if (rxn%reac <= nIsom .and. rxn%prod <= nIsom) then
+        kf0 = 0
+        kf = 0
+        Keq0 = 0
+        Keq = 0
+        kb = 0
+        
+        ! Calculate forward rate coefficient via inverse Laplace transform
+        call reaction_kineticsILT(rxn%E0, reac%densStates, rxn%arrhenius, T, E, rxn%kf)
 
-            ! Calculate forward rate coefficient via inverse Laplace transform
-            call reaction_kineticsILT(rxn%E0 - reac%E0, reac%densStates, &
-                rxn%arrhenius, T, E, rxn%kf)
+        if (rxn%reac <= nIsom .and. rxn%prod <= nIsom) then
 
             ! Calculate equilibrium constant
             Keq = reaction_getEquilibriumConstant(reac, prod, T, speciesList)
@@ -608,11 +608,14 @@ contains
                 end if
             end do
 
-        elseif (rxn%reac <= nIsom .and. rxn%prod > nIsom) then
+            ! Check that forward and reverse rates integrate to give the proper k(E) values
+            kf0 = rxn%arrhenius%A * T ** rxn%arrhenius%n * exp(-rxn%arrhenius%Ea / 8.314472 / T)
+            kf = sum(rxn%kf * reac%densStates * exp(-E / 8.314472 / T) / reac%Q * dE)
+            kb = sum(rxn%kb * prod%densStates * exp(-E / 8.314472 / T) / prod%Q * dE)           
+            Keq0 = reaction_getEquilibriumConstant(reac, prod, T, speciesList)
+            Keq = kf / kb        
 
-            ! Calculate forward rate coefficient via inverse Laplace transform
-            call reaction_kineticsILT(rxn%E0 - reac%E0, reac%densStates, &
-                rxn%arrhenius, T, E, rxn%kf)
+        elseif (rxn%reac <= nIsom .and. rxn%prod > nIsom) then
 
             ! Calculate equilibrium constant
             Keq = reaction_getEquilibriumConstant(reac, prod, T, speciesList)
@@ -624,32 +627,64 @@ contains
                     reac%densStates(r) * exp(-E(r) / 8.314472 / T) / reac%Q * dE
             end do
 
+            ! Check that forward and reverse rates integrate to give the proper k(E) values
+            kf0 = rxn%arrhenius%A * T ** rxn%arrhenius%n * exp(-rxn%arrhenius%Ea / 8.314472 / T)
+            kf = sum(rxn%kf * reac%densStates * exp(-E / 8.314472 / T) / reac%Q * dE)
+            kb = sum(rxn%kb)
+            Keq0 = reaction_getEquilibriumConstant(reac, prod, T, speciesList)
+            Keq = kf / kb   
+
         elseif (rxn%reac > nIsom .and. rxn%prod <= nIsom) then
-
-            ! Convert to dissocation so that a similar algorithm to above can be used
-            reac = isomerList(rxn%prod)
-            prod = isomerList(rxn%reac)
-
-            ! Fit modified Arrhenius expression in reverse direction
-            do r = 1, 23
-                Tlist0(r) = 1.0/(0.000125 * (r-1) + 0.0005)
-            end do
-            arrhenius = reaction_fitReverseKinetics(rxn, Tlist0, 23, speciesList, isomerList)
-
-            ! Calculate forward rate coefficient via inverse Laplace transform
-            call reaction_kineticsILT(rxn%E0 - reac%E0, reac%densStates, &
-                arrhenius, T, E, rxn%kb)
 
             ! Calculate equilibrium constant
             Keq = reaction_getEquilibriumConstant(reac, prod, T, speciesList)
 
             ! Calculate backward rate coefficient via detailed balance
-            ! assuming multimolecular isomer is fully thermalized
             do r = 1, nGrains
-                rxn%kf(r) = rxn%kb(r) / Keq * &
-                    reac%densStates(r) * exp(-E(r) / 8.314472 / T) / reac%Q * dE
+                if (prod%densStates(r) /= 0) then
+                    rxn%kb(r) = rxn%kf(r) / Keq * &
+                        (reac%densStates(r) / reac%Q) / (prod%densStates(r) / prod%Q)
+                end if
             end do
 
+            ! Include equilibrium distribution in forward direction
+            do r = 1, nGrains
+                rxn%kf(r) = rxn%kf(r) * reac%densStates(r) * exp(-E(r) / 8.314472 / T) / reac%Q * dE
+            end do
+
+            ! Check that forward and reverse rates integrate to give the proper k(E) values
+            kf0 = rxn%arrhenius%A * T ** rxn%arrhenius%n * exp(-rxn%arrhenius%Ea / 8.314472 / T)
+            kf = sum(rxn%kf)
+            kb = sum(rxn%kb * prod%densStates * exp(-E / 8.314472 / T) / prod%Q * dE)           
+            Keq0 = reaction_getEquilibriumConstant(reac, prod, T, speciesList)
+            Keq = kf / kb  
+
+        end if
+        
+        ! If the reaction is endothermic and barrierless, it is possible that the
+        ! forward k(E) will have a nonzero value at an energy where the product
+        ! density of states is zero (but the reactant density of states is not),
+        ! which violates detailed balance
+        ! To fix, we set the forward k(E) to zero wherever this is true
+        ! (This is correct within the accuracy of discretizing the energy grains)
+        do r = 1, Ngrains
+            if (rxn%kf(r) == 0 .or. rxn%kb(r) == 0) then
+                rxn%kf(r) = 0
+                rxn%kb(r) = 0
+            end if
+        end do
+        
+        if (Keq / Keq0 > 2.0 .or. Keq / Keq0 < 0.5) then
+            write (1,*) 'Warning: k(E) values do not satisfy detailed balance!'
+            write (1,*) 'Reaction:', rxn%equation
+            write (1,*) '    Expected Keq at', T, 'K =', Keq0  
+            write (1,*) '      Actual Keq at', T, 'K =', Keq
+        end if
+        if (kf / kf0 > 10.0 .or. kf / kf0 < 0.1) then
+            write (1,*) 'Warning: k(E) values do not match high-pressure-limit!'
+            write (1,*) 'Reaction:', rxn%equation
+            write (1,*) '    Expected kf at', T, 'K =', kf0 
+            write (1,*) '      Actual kf at', T, 'K =', kf
         end if
 
         !write (*,*) rxn%reac, rxn%prod, rxn%kf(nGrains), rxn%kb(nGrains)
@@ -666,6 +701,7 @@ contains
         real(8), dimension(:), intent(in) :: E
         real(8), dimension(:), intent(out) :: k
 
+        real(8), dimension(:), allocatable :: phi
         real(8) dE, A, n, Ea
         integer :: r, s
 
@@ -684,13 +720,37 @@ contains
         if (s < 0) s = 0
 
         ! Determine rate coefficients using inverse Laplace transform
-        do r = 1, size(E)
-            if (s >= r .or. rho(r) == 0) then
-                k(r) = 0
-            else
-                k(r) = A * (T ** n) * rho(r - s) / rho(r)
-            end if
-        end do
+        if (n < 0.001) then
+
+            do r = 1, size(E)
+                if (s >= r .or. rho(r) == 0) then
+                    k(r) = 0
+                else
+                    k(r) = A * (T ** n) * rho(r - s) / rho(r)
+                end if
+            end do
+
+        else
+
+            allocate( phi(1:size(E)) )
+            ! Evaluate the inverse Laplace transform of the T**n piece, which only
+            ! exists for n >= 0
+            phi(1) = 0
+            do r = 2, size(E)
+                phi(r) = (E(r) - E(1))**(n-1) / (8.314472**n * gamma(n))
+            end do
+            ! Evaluate the convolution
+            call convolve(phi, rho, E, size(E))
+
+            ! Apply to determine the microcanonical rate
+            do r = s+1, size(E)
+                if (E(r) > E0 .and. rho(r) /= 0) &
+                    k(r) = A * phi(r-s) / rho(r)
+            end do
+            
+            deallocate(phi)
+
+        end if
 
     end subroutine
 
@@ -799,9 +859,11 @@ contains
         integer nGrains, useGrainSize, r
 
         if (nGrains0 <= 0 .and. dE0 > 0.0) then
-            useGrainSize = 0
-        elseif (nGrains0 > 0 .and. dE0 <= 0.0) then
+            ! Use the grain size, since the number of grains was not given
             useGrainSize = 1
+        elseif (nGrains0 > 0 .and. dE0 <= 0.0) then
+            ! Use the number of grains, since the grain size was not given
+            useGrainSize = 0
         else
             ! Choose the tighter constraint
             useGrainSize = 0
@@ -809,10 +871,12 @@ contains
             if (dE > dE0) useGrainSize = 1
         end if
 
-        if (useGrainSize == 1) then
+        if (useGrainSize == 0) then
+            ! Use the number of grains
             nGrains = nGrains0
             dE = (Emax - Emin) / (nGrains0 - 1)
         else
+            ! Use the grain size
             nGrains = int((Emax - Emin) / dE0) + 1
             dE = dE0
         end if
@@ -834,125 +898,126 @@ contains
         real(8), intent(in) :: Tmax
         real(8), dimension(:), allocatable, intent(inout) :: Elist
 
-        integer nE, done, maxIndex
-        real(8) Emin, Emax0, Emax, dE, mult, maxValue, maxIsomerE0, maxReactionE0, tol
-        type(Isomer) isom
-
+        integer maxIndex
+        real(8) Emin, Emax0, Emax
+        
         integer i, r
-
-        ! For the purposes of finding the maximum energy we will use 401 grains
-        nE = 401
-        dE = 0.0
 
         ! Determine minimum energy and isomer with minimum ground-state energy
         ! Also check reactant and product channels, in case they represent
         ! the minimum energy
         ! if network_shiftToZeroEnergy() has been called, then Emin should be 0
-        isom = net%isomers(1)
+        Emin = net%isomers(1)%E0
         do i = 2, size(net%isomers)
-            if (isom%E0 > net%isomers(i)%E0) isom = net%isomers(i)
+            if (Emin > net%isomers(i)%E0) Emin = net%isomers(i)%E0
         end do
-        Emin = floor(isom%E0)
-
+        do i = 2, size(net%reactions)
+            if (Emin > net%reactions(i)%E0) Emin = net%reactions(i)%E0
+        end do
+        
         ! Determine maximum energy and isomer with maximum ground-state energy
-        isom = net%isomers(1)
-        do i = 2, nIsom
-            if (isom%E0 < net%isomers(i)%E0) isom = net%isomers(i)
+        Emax0 = net%isomers(1)%E0
+        do i = 2, size(net%isomers)
+            if (Emax0 < net%isomers(i)%E0) Emax0 = net%isomers(i)%E0
         end do
-        Emax0 = isom%E0
-
-        ! (Try to) purposely overestimate Emax using arbitrary multiplier
-        ! This is to (hopefully) avoid multiple density of states calculations
-        mult = 50
-        tol = 1e-8
-        done = 0
-        do while (done == 0)
-
-            Emax = ceiling(Emax0 + mult * 8.314472 * Tmax)
-
-            call network_getEnergyGrains(Emin, Emax, dE, nE, Elist)
-            call isomer_getDensityOfStates(net, isom, Elist, nE)
-            call isomer_getEqDist(isom, Elist, nE, Tmax)
-
-            ! Find maximum of distribution
-            maxIndex = 0
-            maxValue = 0.0
-            do r = 1, nE
-                if (isom%eqDist(r) > maxValue) then
-                    maxValue = isom%eqDist(r)
-                    maxIndex = r
-                end if
-            end do
-
-            ! If tail of distribution is much lower than the maximum, then we've found bounds for Emax
-            if (isom%eqDist(nE) / maxValue < tol) then
-                r = nE - 1
-                do while (r > maxIndex .and. done == 0)
-                    if (isom%eqDist(r) / maxValue > tol) then
-                        done = 1
-                    else
-                        r = r - 1
-                    end if
-                end do
-
-                ! Add difference between isomer ground-state energy and highest
-                ! transition state or isomer energy
-                maxIsomerE0 = 0.0
-                maxReactionE0 = 0.0
-                do i = 1, size(net%isomers)
-                    if (net%isomers(i)%E0 > maxIsomerE0) maxIsomerE0 = net%isomers(i)%E0
-                end do
-                do i = 1, size(net%reactions)
-                    if (net%reactions(i)%E0 > maxReactionE0) maxReactionE0 = net%reactions(i)%E0
-                end do
-                Emax = Elist(r) + maxIsomerE0 + maxReactionE0 - Emin
-
-                ! Round Emax up to nearest integer
-                Emax = ceiling(Emax)
-
-            else
-                mult = mult + 50
-            end if
-            
-            ! Deallocate the arrays used for determining the energy grains
-            ! If we haven't found a suitable Emax yet, these arrays will be
-            ! reallocated to a larger size in the next iteration
-            deallocate(isom%densStates, isom%eqDist, Elist)
-
+        do i = 2, size(net%reactions)
+            if (Emax0 < net%reactions(i)%E0) Emax0 = net%reactions(i)%E0
         end do
+        
+        ! Choose the actual Emax as many kB * T above the maximum energy on the PES
+        ! You should check that this is high enough so that the Boltzmann distributions have trailed off to negligible values
+        Emax = ceiling(Emax0 + 40 * 8.314472 * Tmax)
 
         ! Return the chosen energy grains
         call network_getEnergyGrains(Emin, Emax, grainSize, nGrains, Elist)
 
-        write (1,*) '    Using', size(Elist), 'grains of size', Elist(2) - Elist(1), 'J/mol in range 0 to', Emax, 'J/mol'
+    end subroutine
+
+    subroutine network_mapDensityOfStates(E0, densStates0, Elist0, nGrains0, densStates, Elist, nGrains)
+
+        real(8), intent(in) :: E0        
+        integer, intent(in) :: nGrains0
+        real(8), dimension(1:nGrains0), intent(in) :: densStates0
+        real(8), dimension(1:nGrains0), intent(in) :: Elist0
+        integer, intent(in) :: nGrains
+        real(8), dimension(1:nGrains), intent(out) :: densStates
+        real(8), dimension(1:nGrains), intent(in) :: Elist
+
+        integer :: r, s
+
+        do r = 1, nGrains
+            densStates(r) = 0.
+        end do
+
+        do r = 1, nGrains
+            if (Elist(r) >= E0) then
+                do s = 2, nGrains0
+                    if (E0 + Elist0(s) >= Elist(r)) then
+                        if (densStates0(s-1) > 0 .and. densStates0(s) > 0) then
+                            densStates(r) = densStates0(s) * (densStates0(s-1) / densStates0(s)) ** &
+                                ((Elist(r) - E0 - Elist0(s)) / (Elist0(s-1) - Elist0(s)))
+                        else
+                            densStates(r) = densStates0(s) + (densStates0(s-1) - densStates0(s)) * &
+                                (Elist(r) - E0 - Elist0(s)) / (Elist0(s-1) - Elist0(s))
+                        end if
+                        exit
+                    end if
+                end do
+            end if
+        end do
 
     end subroutine
 
     subroutine network_calculateRateCoefficients(net, nIsom, nReac, nProd, &
-        Elist, nGrains, Tlist, nT, Plist, nP, method, K)
+        Elist0, nGrains0, Tlist, nT, Plist, nP, grainSize, numGrains, method, K)
 
-        integer, intent(in) :: nIsom, nReac, nProd, nGrains, nT, nP
+        integer, intent(in) :: nIsom, nReac, nProd, nGrains0, nT, nP
         type(Network), intent(inout) :: net
-        real(8), dimension(1:nGrains), intent(in) :: Elist
+        real(8), dimension(1:nGrains0), intent(in) :: Elist0
         real(8), dimension(1:nT), intent(in) :: Tlist
         real(8), dimension(1:nP), intent(in) :: Plist
+        real(8), intent(in) :: grainSize
+        integer, intent(in) :: numGrains
         integer, intent(in) :: method
         real(8), dimension(1:nT,1:nP,1:nIsom+nReac+nProd,1:nIsom+nReac+nProd), intent(out) :: K
 
+        real(8), dimension(:), allocatable :: Elist
+        real(8), dimension(1:nIsom+nReac+nProd,1:nGrains0) :: densStates0
         real(8) T, P
-        integer i, j, u, v, w
+        integer i, j, u, v, w, nGrains
+
+        ! Save the original densities of states for each isomer
+        ! (We'll be overwriting the ones on each isomer at each temperature)
+        do i = 1, nIsom+nReac+nProd
+            densStates0(i,:) = net%isomers(i)%densStates
+            deallocate(net%isomers(i)%densStates)
+        end do
 
         do u = 1, nT
 
             T = Tlist(u)
 
+            ! Choose energy grains
+            call network_determineEnergyGrains(net, nIsom, grainSize, numGrains, T, Elist)
+            nGrains = size(Elist)
+            write (1,*) '    Using', nGrains, 'grains of size', Elist(2) - Elist(1), 'J/mol in range', minval(Elist), &
+                ' to', maxval(Elist), 'J/mol'
+
+            do i = 1, nIsom+nReac+nProd
+                allocate( net%isomers(i)%densStates(1:nGrains) )
+                call network_mapDensityOfStates(net%isomers(i)%E0, densStates0(i,:), Elist0, nGrains0, &
+                    net%isomers(i)%densStates, Elist, nGrains)
+            end do
+
             ! Calculate the equilibrium (Boltzmann) distributions for each (unimolecular) well
-            do i = 1, nIsom
+            do i = 1, nIsom+nReac+nProd
                 call isomer_getEqDist(net%isomers(i), Elist, nGrains, T)
             end do
 
             ! Calculate microcanonical rate coefficients at the current conditions
             do w = 1, size(net%reactions)
+                allocate(net%reactions(w)%kf(1:nGrains))
+                allocate(net%reactions(w)%kb(1:nGrains))
                 call reaction_calculateMicrocanonicalRates(net%reactions(w), T, Elist, nGrains, net%isomers, net%species, &
                     nIsom, nReac, nProd)
             end do
@@ -970,6 +1035,15 @@ contains
                 ! Determine phenomenological rate coefficients
                 call network_applyApproximateMethod(net, nIsom, nReac, nProd, Elist, nGrains, T, P, method, K(u,v,:,:))
 
+            end do
+
+            do i = 1, nIsom+nReac+nProd
+                deallocate(net%isomers(i)%densStates)
+                deallocate(net%isomers(i)%eqDist)
+            end do
+            do w = 1, size(net%reactions)
+                deallocate(net%reactions(w)%kf)
+                deallocate(net%reactions(w)%kb)
             end do
 
         end do
