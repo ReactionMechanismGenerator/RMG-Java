@@ -33,8 +33,6 @@ package jing.chem;
 
 import java.util.*;
 
-import com.sun.org.apache.xpath.internal.operations.Plus;
-
 import jing.param.*;
 
 //## package jing::chem
