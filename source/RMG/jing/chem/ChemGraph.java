@@ -157,18 +157,20 @@ public class ChemGraph implements Matchable {
 	//iterate over the rings to do one final check for aromaticity; we need to do all at once before converting to B bonds so that double bonds are correctly counted
 	for (int i=0; i<graph.getCycle().size(); i++){
 	    boolean aromatic = aromaticList[i];
-	    //for our purposes, we want the presence of one double bond (either in ring or outside ring (in the case of some naphthalene resonance isomers)) to be a necessary condition for aromaticity (radicals are tricky; phenyl should be aromatic, but not C3H2)
+	    //for our purposes, we want the presence of one double bond (in the ring under consideration...note that this will not accurately handle some resonance isomers of napthalene) to be a necessary condition for aromaticity (radicals are tricky; phenyl should be aromatic, but not C3H2)
 	    if (aromatic){//if the ring is aromatic, check for exactly one double bond at each node in cycle
 		LinkedList graphComps = (LinkedList) graph.getCycle().get(i);//get the aromatic cycle
 		for (int numComps=0; numComps<graphComps.size(); numComps++) {
 		    GraphComponent gc = (GraphComponent)graphComps.get(numComps);
 		    if (gc instanceof Node) {
-		        Iterator neighbors = graph.getNodeAt(((Node)gc).getID()).getNeighbor();//get the iterator for the corresponding node in the original molecule (otherwise, we will only be considering neighbors within the same cycle (which doesn't necessarily work for things like naphthalene)
+			//Iterator neighbors = graph.getNodeAt(((Node)gc).getID()).getNeighbor();
+		        Iterator neighbors = ((Node)gc).getNeighbor();
 			int number_of_double_bonds = 0;
                         while (neighbors.hasNext()) {
                             Arc nodeA= (Arc)neighbors.next();
                             double order = ((Bond)(nodeA.getElement())).getOrder();
-                            if(order==2) number_of_double_bonds++;
+                            //if(order==2) number_of_double_bonds++;
+			    if(order==2 && graphComps.contains(nodeA)) number_of_double_bonds++;//graphComps.contains() portion is used to check that the bond under consideration is part of the ring under consideration; the previous approach without this check would produce false positives
 			}
 			if(number_of_double_bonds != 1) aromaticList[i] = false;
 		    }

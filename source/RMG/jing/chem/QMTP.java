@@ -76,9 +76,11 @@ public class QMTP implements GeneralGAPP {
     public ThermoData generateThermoData(ChemGraph p_chemGraph) {
         //#[ operation generateThermoData(ChemGraph)
         //first, check for thermo data in the primary thermo library and library (?); if it is there, use it
-        ThermoData result = primaryLibrary.getThermoData(p_chemGraph.getGraph());
+        ThermoData result = null;
+	ThermoData tmpTherm = primaryLibrary.getThermoData(p_chemGraph.getGraph());
         //Logger.info(result);
-        if (result != null) {
+        if (tmpTherm != null) {
+		result = tmpTherm.copyWithExtraInfo();//use a copy of the object!; that way, subsequent modifications of this object don't change the primary thermo library
         	p_chemGraph.fromprimarythermolibrary = true;
         	return result;
         }
@@ -116,7 +118,7 @@ public class QMTP implements GeneralGAPP {
            		idArray[radicalSite-1] = node.getID().intValue();
            		atomArray[radicalSite-1] = atom;
            		// new a satuated atom and replace the old one
-           		Atom newAtom = new Atom(atom.getChemElement(),satuated);
+           		Atom newAtom = Atom.make(atom.getChemElement(),satuated);
            		node.setElement(newAtom);
            		node.updateFeElement();
            	}
@@ -141,10 +143,11 @@ public class QMTP implements GeneralGAPP {
             
    //         result = generateThermoData(g);//I'm not sure what GATP does, but this recursive calling will use HBIs on saturated species if it exists in PrimaryThermoLibrary
             //check the primary thermo library for the saturated graph
-            result = primaryLibrary.getThermoData(p_chemGraph.getGraph());
+            tmpTherm = primaryLibrary.getThermoData(p_chemGraph.getGraph());
             //Logger.info(result);
-            if (result != null) {
-        	p_chemGraph.fromprimarythermolibrary = true;
+            if (tmpTherm != null) {
+		result = tmpTherm.copyWithExtraInfo();//use a copy of the object!; that way, subsequent modifications of this object don't change the primary thermo library
+        	p_chemGraph.fromprimarythermolibrary = false;//we don't want to set fromprimarythermolibrary to true, because the result is not directly from the PTL, but comes via PTL + HBI corrections; if true is set here, this would affect two things, both in Species.java: 1) the naming; in the HBI case, we don't want to use a name derived from the thermo name as weird things can happen 2)findStablestThermoData considers the value to be the final word; however, since this is a radical that is not directly in the primaryThermoLibrary, we want to consider alternative thermo for all possible resonance isomers
             }
             else{
                 result=generateQMThermoData(p_chemGraph);

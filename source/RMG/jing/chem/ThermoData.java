@@ -323,6 +323,16 @@ public class ThermoData extends ThermoGAValue {
         //#]
     }
 
+    public ThermoData copyWithExtraInfo() {
+        if (this == null) return null;
+
+        return new ThermoData(name, new ThermoData(H298,S298,Cp300,Cp400,Cp500,Cp600,Cp800,Cp1000,Cp1500,dH,dS,dCp,comments), comments, source);//ideally, shouldn't have to specify comments twice, but it seems this is necessary unless other modifications are made
+
+
+
+        //#]
+    }
+
     //## operation getCpIntecept(double,double,double,double)
     public static final double getCpIntecept(double p_cp1, double p_cp2, double p_t1, double p_t2) {
         //#[ operation getCpIntecept(double,double,double,double)
