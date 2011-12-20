@@ -705,6 +705,8 @@ contains
         real(8) dE, A, n, Ea
         integer :: r, s
 
+        real(8) r8_gamma
+
         ! We can't use a negative activation energy for this method, so we
         ! put it in the preexponential if it is encountered.
         A = kinetics%A
@@ -737,7 +739,7 @@ contains
             ! exists for n >= 0
             phi(1) = 0
             do r = 2, size(E)
-                phi(r) = (E(r) - E(1))**(n-1) / (8.314472**n * gamma(n))
+                phi(r) = (E(r) - E(1))**(n-1) / (8.314472**n * r8_gamma(n))
             end do
             ! Evaluate the convolution
             call convolve(phi, rho, E, size(E))
