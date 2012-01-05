@@ -206,7 +206,7 @@ public class CheckForwardAndReverseRateCoefficients {
 
                                                         String output = "";
                                                         for (int k=0; k<T.length; k++) {
-                                                            logk[k] = Math.log10(plog_A * Math.pow(T[k],plog_n) * Math.exp(-plog_E/R/T[k]));
+                                                            logk[k] = Math.log10(plog_A * Math.pow(T[k],plog_n) * Math.exp(-plog_E/1.987/T[k]));//note that we use 1.987 rather than R here because CHEMKIN apparently requires/interprets this in cal/mol regardless of units specified for the file
                                                             if (logk[k] > 15)
 								System.out.format("logkf = %4.2f at T = %4.0fK for %s\n", logk[k], T[k], (fullRxnString+"\t"+plog_pressure));
                                                         }

@@ -134,12 +134,7 @@ public class PDepArrheniusKinetics implements PDepKinetics {
         String result = "";
 		for (int i = 0; i < pressures.length; i++) {
 			double Ea_in_kcalmol = kinetics[i].getEValue();
-			double Ea = 0.0;
-			if (ArrheniusKinetics.getEaUnits().equals("kcal/mol"))		Ea = Ea_in_kcalmol;
-			else if (ArrheniusKinetics.getEaUnits().equals("cal/mol"))	Ea = Ea_in_kcalmol * 1000.0;
-			else if (ArrheniusKinetics.getEaUnits().equals("kJ/mol"))	Ea = Ea_in_kcalmol * 4.184;
-			else if (ArrheniusKinetics.getEaUnits().equals("J/mol"))	Ea = Ea_in_kcalmol * 4184.0;
-			else if (ArrheniusKinetics.getEaUnits().equals("Kelvins"))	Ea = Ea_in_kcalmol / 1.987e-3;
+			double Ea = Ea_in_kcalmol*1000;//kinetics stored internally as kcal/mol; CHEMKIN requires cal/mol
 			result += String.format("PLOG / %10s    %10.2e  %10s  %10s /\n",
 									pressures[i].getAtm(),
 									kinetics[i].getAValue(),
