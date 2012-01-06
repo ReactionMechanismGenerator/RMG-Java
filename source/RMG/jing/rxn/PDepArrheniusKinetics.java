@@ -130,14 +130,39 @@ public class PDepArrheniusKinetics implements PDepKinetics {
 		return Math.pow(10, logk0);
 	}
 
-    public String toChemkinString() {
+    public String toChemkinString(int numReac) {
         String result = "";
 		for (int i = 0; i < pressures.length; i++) {
 			double Ea_in_kcalmol = kinetics[i].getEValue();
-			double Ea = Ea_in_kcalmol*1000;//kinetics stored internally as kcal/mol; CHEMKIN requires cal/mol
+			//***note: PLOG uses the same units for Ea and A as Arrhenius expressions; this has been a persistent source of confusion; see https://github.com/GreenGroup/RMG-Java/commit/2947e7b8d5b1e3e19543f2489990fa42e43ecad2#commitcomment-844009
+			double A = kinetics[i].getAValue();
+			double A_multiplier = 1.0;//for "moles", multiplier is 1
+			if (ArrheniusKinetics.getAUnits().equals("molecules")) {
+				A_multiplier = 1/6.022e23;
+			}
+			//convert the units (cf. similar code in ChemParser)
+			if (numReac == 1){
+			    //do nothing, no conversion needed
+			}
+			else if (numReac==2){
+			    A = A*A_multiplier;
+			}
+			else if (numReac==3){
+			    A = A*A_multiplier*A_multiplier;
+			}
+			else{
+			    Logger.error("Unsupported number of reactants:" + numReac);
+			    System.exit(0);
+			}
+			double Ea = 0.0;
+			if (ArrheniusKinetics.getEaUnits().equals("kcal/mol"))    Ea = Ea_in_kcalmol;
+			else if (ArrheniusKinetics.getEaUnits().equals("cal/mol"))  Ea = Ea_in_kcalmol * 1000.0;
+			else if (ArrheniusKinetics.getEaUnits().equals("kJ/mol"))  Ea = Ea_in_kcalmol * 4.184;
+			else if (ArrheniusKinetics.getEaUnits().equals("J/mol"))  Ea = Ea_in_kcalmol * 4184.0;
+			else if (ArrheniusKinetics.getEaUnits().equals("Kelvins"))  Ea = Ea_in_kcalmol / 1.987e-3;
 			result += String.format("PLOG / %10s    %10.2e  %10s  %10s /\n",
 									pressures[i].getAtm(),
-									kinetics[i].getAValue(),
+									A,
 									kinetics[i].getNValue(),
 									Ea);
 		}

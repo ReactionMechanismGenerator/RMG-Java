@@ -2889,7 +2889,7 @@ public class ReactionModelGenerator {
 		PDepArrheniusKinetics[] kinetics = pdeprxn.getPDepRate().getPDepArrheniusKinetics();
 		if (kinetics != null) {
 			for (int i=0; i<kinetics.length; i++) {
-				sb.append(kinetics[i].toChemkinString());
+				sb.append(kinetics[i].toChemkinString(pdeprxn.getReactantNumber()));
 				sb.append("\n");
 			}
 		}
@@ -3539,11 +3539,16 @@ public class ReactionModelGenerator {
 																	  chebyPolys);
 			pdepk = new PDepRateConstant(rateCoefficients,chebyshev);
 		} else if (numPlogs > 0) {
+			//***note: PLOG uses the same units for Ea and A as Arrhenius expressions; see https://github.com/GreenGroup/RMG-Java/commit/2947e7b8d5b1e3e19543f2489990fa42e43ecad2#commitcomment-844009
+			//gmagoon 1/6/12: restart feature doesn't currently seem to support alternative A units, so I haven't made any updates to fix this for PLOG in my current round of changes
 			PDepArrheniusKinetics pdepAK = new PDepArrheniusKinetics(numPlogs);
 			for (int i=0; i<numPlogs; i++) {
 				StringTokenizer st = new StringTokenizer(ChemParser.readMeaningfulLine(reader, true));
 				Pressure p = new Pressure(Double.parseDouble(st.nextToken()),"Pa");
-				UncertainDouble dA = new UncertainDouble(Double.parseDouble(st.nextToken()),0.0,"A");
+				double A = Double.parseDouble(st.nextToken());
+				
+				UncertainDouble dA = new UncertainDouble(A,0.0,"A");
+
 				UncertainDouble dn = new UncertainDouble(Double.parseDouble(st.nextToken()),0.0,"A");
 				double Ea = Double.parseDouble(st.nextToken());
 				if (EaUnits.equals("cal/mol"))

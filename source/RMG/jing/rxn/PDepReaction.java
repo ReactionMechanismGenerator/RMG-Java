@@ -605,7 +605,7 @@ public class PDepReaction extends Reaction {
 				//result.append("\t1.0E0 0.0 0.0");
 				result.append("\t!" + getComments().toString() );
 				result.append('\n');
-				result.append(allKinetics[i].toChemkinString());
+				result.append(allKinetics[i].toChemkinString(reactant.getNumSpecies()));
 				if (allKinetics.length > 1)
 					result.append("DUP\n");
 			}
