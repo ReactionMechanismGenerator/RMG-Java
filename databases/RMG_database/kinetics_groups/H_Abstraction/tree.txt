@@ -149,7 +149,7 @@ L1: X_H
 				L5: S/H/Cb
 				L5: S/H/CO
 				L5: S/H/CS
-	L2: Srad_H
+//	L2: Srad_H
 
 L1: Y_rad_birad
 	//L2: Y_2centeradjbirad
