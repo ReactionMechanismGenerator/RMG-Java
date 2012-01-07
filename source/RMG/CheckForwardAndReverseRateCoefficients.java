@@ -122,7 +122,7 @@ public class CheckForwardAndReverseRateCoefficients {
 					boolean rmgRate = false;
                                         boolean plogRate = false;
 					// Find all Chebyshev rate coefficients
-					if (line.contains("1.0E0 0.0 0.0")) {
+					if (line.contains("1.0E0 0.0 0.0") || line.contains("1.000e+00 	  0.00 	  0.00")) {
 						st = new StringTokenizer(line);
 						rxnString = st.nextToken();
 						shortRxnString = rxnString;
