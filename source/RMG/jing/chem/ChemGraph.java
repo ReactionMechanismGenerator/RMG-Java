@@ -204,7 +204,7 @@ public class ChemGraph implements Matchable {
              *
              */
 	for (int i=0; i<graph.getCycle().size(); i++){
-	    if (graph.getIsAromatic()[i]){
+	    if (aromaticList[i]){
 		LinkedList graphComps = (LinkedList) graph.getCycle().get(i);//get the aromatic cycle
 		for (int numComps=0; numComps<graphComps.size(); numComps++) {
 		    GraphComponent gc = (GraphComponent)graphComps.get(numComps);
