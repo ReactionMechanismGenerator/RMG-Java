@@ -250,14 +250,36 @@ public class QMTP implements GeneralGAPP {
         String name = InChInames[0];
         String InChIaug = InChInames[1];
         String directory = qmfolder;
+	File ourHoldFile = null;
         File dir=new File(directory);
         directory = dir.getAbsolutePath();//this and previous three lines get the absolute path for the directory
+	//check for existing hold file before starting calculations (to avoid the possibility of interference with other jobs using the same QMfiles folder)
+	File otherHoldFile = new File(directory, name+".hold");
+	try{
+	    while(otherHoldFile.exists()){
+		Logger.info("Existence of hold file for "+name+" suggests that another RMG process is currently running calculations on this molecule; waiting for other RMG process to finish; will check again in 60 seconds...");
+		Thread.sleep(60000);
+	    }
+	}
+	catch(Exception e){
+	    Logger.error("Unexpected error while waiting for hold to be lifted: "+e.toString());
+	    System.exit(0);
+	}
 	if(qmMethod.equals("pm3")){
 	    //first, check to see if the result already exists and the job terminated successfully
 	    boolean gaussianResultExists = successfulGaussianResultExistsQ(name,directory,InChIaug);
 	    boolean mopacResultExists = successfulMopacResultExistsQ(name,directory,InChIaug);
 	    if(!gaussianResultExists && !mopacResultExists){//if a successful result doesn't exist from previous run (or from this run), run the calculation; if a successful result exists, we will skip directly to parsing the file
-		 //steps 1 and 2: create 2D and 3D mole files
+		//step 0: create a .hold file to prevent other jobs running with the same directory from interfering by trying to run with the same molecule
+		ourHoldFile = new File(directory, name+".hold");
+		try{
+		    ourHoldFile.createNewFile();//we could check the boolean result here, but it doesn't seem necessary   
+		}
+		catch(Exception e){
+		    Logger.error("Error creating .hold file for "+ name+ ": "+ e.toString());
+		    System.exit(0);
+		}
+		//steps 1 and 2: create 2D and 3D mole files
 		molFile p_3dfile = create3Dmolfile(name, p_chemGraph);
 		 //3. create the Gaussian or MOPAC input file
 		directory = qmfolder;
@@ -332,7 +354,16 @@ public class QMTP implements GeneralGAPP {
 	    //first, check to see if the result already exists and the job terminated successfully
 	    boolean mm4ResultExists = successfulMM4ResultExistsQ(name,directory,InChIaug);
 	    if(!mm4ResultExists){//if a successful result doesn't exist from previous run (or from this run), run the calculation; if a successful result exists, we will skip directly to parsing the file
-		 //steps 1 and 2: create 2D and 3D mole files
+		//step 0: create a .hold file to prevent other jobs running with the same directory from interfering by trying to run with the same molecule
+		ourHoldFile = new File(directory, name+".hold");
+		try{
+		    ourHoldFile.createNewFile();//we could check the boolean result here, but it doesn't seem necessary   
+		}
+		catch(Exception e){
+		    Logger.error("Error creating .hold file for "+ name+ ": "+ e.toString());
+		    System.exit(0);
+		}
+		//steps 1 and 2: create 2D and 3D mole files
 		molFile p_3dfile = create3Dmolfile(name, p_chemGraph);
 		 //3. create the MM4 input file
 		directory = qmfolder;
@@ -385,6 +416,17 @@ public class QMTP implements GeneralGAPP {
 		result = parseCanThermFile(name, directory, p_chemGraph);
 		if (p_chemGraph.getInternalRotor()>0) parseCanThermFile(name+"_RRHO", directory, p_chemGraph);//print the RRHO result for comparison
 	    }
+	}
+
+	//remove the hold file if we had set one up (i.e. we ran new calculations)
+	if (ourHoldFile != null){
+	    try{
+		ourHoldFile.delete();
+	    }
+	    catch(Exception e){
+		    Logger.error("Error deleting .hold file for "+ name+": " + e.toString());
+		    System.exit(0);
+		}
 	}
         
         return result;
