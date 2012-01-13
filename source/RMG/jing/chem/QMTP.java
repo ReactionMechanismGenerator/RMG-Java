@@ -327,6 +327,16 @@ public class QMTP implements GeneralGAPP {
 			        //System.exit(0);
 				ThermoData temp = new ThermoData(1000,0,0,0,0,0,0,0,0,0,0,0,"failed calculation");
 				temp.setSource("***failed calculation***");
+
+				//delete the hold file
+				try{
+				    ourHoldFile.delete();
+				}
+				catch(Exception e){
+					Logger.error("Error deleting .hold file for "+ name+": " + e.toString());
+					System.exit(0);
+				}
+
 				return temp;
 				//an upstream loop should catch this so the dummy result should not be used
 			    }
@@ -396,6 +406,16 @@ public class QMTP implements GeneralGAPP {
 			        //System.exit(0);
 				ThermoData temp = new ThermoData(1000,0,0,0,0,0,0,0,0,0,0,0,"failed calculation");
 				temp.setSource("***failed calculation***");
+
+				//delete the hold file
+				try{
+				    ourHoldFile.delete();
+				}
+				catch(Exception e){
+					Logger.error("Error deleting .hold file for "+ name+": " + e.toString());
+					System.exit(0);
+				}
+
 				return temp;
 				//an upstream loop should catch this so the dummy result should not be used
 			}
@@ -426,7 +446,7 @@ public class QMTP implements GeneralGAPP {
 	    catch(Exception e){
 		    Logger.error("Error deleting .hold file for "+ name+": " + e.toString());
 		    System.exit(0);
-		}
+	    }
 	}
         
         return result;
