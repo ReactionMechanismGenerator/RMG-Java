@@ -1111,6 +1111,26 @@ C_rad/H/O2
 3 O 0 {1,S}
 4 O 0 {1,S}
 
+//CAC removed O from atom4, as that would cause a possible
+//overlap with C_rad/H/NonDeO.
+C_rad/H/NonDeS            
+1 *3 C 1 {2,S}, {3,S}, {4,S}
+2 H 0 {1,S}               
+3 S 0 {1,S}
+4 {Cs,S} 0 {1,S}
+
+C_rad/H/CsS
+1 *3 C 1 {2,S}, {3,S}, {4,S}
+2 H 0 {1,S}
+3 S 0 {1,S}
+4 Cs 0 {1,S}
+
+C_rad/H/S2
+1 *3 C 1 {2,S}, {3,S}, {4,S}
+2 H 0 {1,S}
+3 S 0 {1,S}
+4 S 0 {1,S}
+
 C_rad/H/OneDe
 1 *3 C 1 {2,S}, {3,S}, {4,S}
 2 H 0 {1,S}

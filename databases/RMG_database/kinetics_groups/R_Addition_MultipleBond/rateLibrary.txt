@@ -177,3 +177,5 @@ Arrhenius_EP
 2544	Cd/H2_Cd/H2	S_pri_rad		300-1500	4.98E+03	2.7	0	-0.8	0	0	0	0	4	Aäron Vandeputte GAVs 
 2545	Cd/H2_Cd/H2	S_rad/NonDeC		300-1500	7.39E+01	3.1	0	1.3	0	0	0	0	4	Aäron Vandeputte GAVs 
 2549	Cd/H2_Cd/H2	S_rad/NonDeS		300-1500	4.21E+00	3.3	0	7.4	0	0	0	0	4	Aäron Vandeputte GAVs 
+2601	CS/H/Cs_S	H_rad			300-1500	1.70E+09	1.36	0	1.1	0	0	0	0	3	CAC calc CBS-QB3 1dhr
+2602	CS/H/Cs_S	C_rad/H/CsS		300-1500	3.52E+00	3.09	0	-1.83	0	0	0	0	3	CAC calc CBS-QB3 1dhr

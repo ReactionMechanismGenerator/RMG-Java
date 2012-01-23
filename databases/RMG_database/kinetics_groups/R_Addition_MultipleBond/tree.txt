@@ -179,6 +179,9 @@ L1: Y_rad_birad
 			L4: C_rad/H/NonDeO
 				L5: C_rad/H/CsO
 				L5: C_rad/H/O2
+			L4: C_rad/H/NonDeS
+				L5: C_rad/H/CsS
+				L5: C_rad/H/S2
 			L4: C_rad/H/OneDe
 				L5: C_rad/H/OneDeC
 				L5: C_rad/H/OneDeO
