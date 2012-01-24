@@ -5,7 +5,8 @@ Arrhenius_EP
 
 //No.	S-R1R2			YJ				Temp.		A			n		a		E0		DA		Dn		Da		DE0		Rank	Comments
 1	S-HCs(HHH)	HJ	300-1500	4.04E+08	1.49	0	3.9	0	0	0	0	3	Aäron Vandeputte CBS-QB3 HO
-2	S-HCs(CsHH)	HJ	300-1500	4.11E+08	1.51	0	3.6	0	0	0	0	3	Aäron Vandeputte CBS-QB3 HO
+//2	S-HCs(CsHH)	HJ	300-1500	4.11E+08	1.51	0	3.6	0	0	0	0	3	Aäron Vandeputte CBS-QB3 HO
+2	S-HCs(CsHH)	HJ	300-1500	3.06E+07	2.13	0	3.69	0	0	0	0	2	CAC CBS-QB3 1dhr
 3	S-HCs(CsCsH)	HJ	300-1500	2.84E+08	1.59	0	3.1	0	0	0	0	3	Aäron Vandeputte CBS-QB3 HO
 4	S-HCs(CsCsCs)	HJ	300-1500	2.79E+08	1.63	0	2.4	0	0	0	0	3	Aäron Vandeputte CBS-QB3 HO
 5	S-HCds(H)	HJ	300-1500	2.90E+08	1.54	0	4.5	0	0	0	0	3	Aäron Vandeputte CBS-QB3 HO
@@ -133,8 +134,10 @@ Arrhenius_EP
 126	S-Ss(Cs)H	CsJ-HHH	300-1500	1.13E+01	3.03	0	16.0	0	0	0	0	3	Aäron Vandeputte CBS-QB3 HO
 127	S-HH	SsJ-H	300-1500	8.04E+02	3.08	0	26.7	0	0	0	0	3	Aäron Vandeputte CBS-QB3 HO
 128	S-Cs(HHH)H	SsJ-H	300-1500	7.52E+01	3.30	0	22.1	0	0	0	0	3	Aäron Vandeputte CBS-QB3 HO
+// CAC has calculations for 129, but doesn't really trust them..
 129	S-HH	SsJ-Cs	300-1500	1.25E+00	4.01	0	24.8	0	0	0	0	3	Aäron Vandeputte CBS-QB3 HO
 130	S-Cs(HHH)H	SsJ-Cs	300-1500	2.63E-02	4.22	0	20.4	0	0	0	0	3	Aäron Vandeputte CBS-QB3 HO
+131	S-HCs(HHH)	SsJ-H	300-1500	9.99E+02	3.08	0	13.09	0	0	0	0	2	CAC calc CBS-QB3 1dhr
 131	S-HCs(HHH)	SsJ-H	300-1500	1.18E+03	3.00	0	13.3	0	0	0	0	3	Aäron Vandeputte CBS-QB3 HO
 132	S-HCs(HHH)	SsJ-Cs	300-1500	1.28E+00	3.85	0	12.6	0	0	0	0	3	Aäron Vandeputte CBS-QB3 HO
 133	S-Cs(HHH)Cs(HHH)	SsJ-H	300-1500	1.77E+03	3.03	0	12.9	0	0	0	0	3	Aäron Vandeputte CBS-QB3 HO
@@ -157,4 +160,4 @@ Arrhenius_EP
 150	S-Cs(HHH)Cs(HHH)	SsJ-Ss	300-1500	2.05E+00	3.80	0	22.5	0	0	0	0	3	Aäron Vandeputte CBS-QB3 HO
 151	S-Ss(Cs)Cs(HHH)	SsJ-Cs	300-1500	1.07E+00	3.86	0	10.3	0	0	0	0	3	Aäron Vandeputte CBS-QB3 HO
 152	S-Cs(HHH)Cs(HHH)	SsJ-Ss	300-1500	6.15E-01	3.78	0	24.9	0	0	0	0	3	Aäron Vandeputte CBS-QB3 HO
-
+153	S-Cs(CsHH)Cs(CsHH)	HJ	300-1500	1.27E+07	2.26	0	3.83	0	0	0	0	2	CAC CBS-QB3 1dhr
