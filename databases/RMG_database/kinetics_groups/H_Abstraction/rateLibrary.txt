@@ -972,3 +972,10 @@ Arrhenius_EP
 // 1189	SsI-H	H_rad	300-1500	1.42E+08	1.518	0.0	0.8	0	0	0	0	4	Aäron Vandeputte GAVs 
 // 1190	SsI-H	C_methyl	300-1500	2.15E+04	2.289	0.0	0.1	0	0	0	0	4	Aäron Vandeputte GAVs 
 // 1191	SsI-H	S_rad/NonDeC	300-1500	3.00E+02	3.026	0.0	-0.7	0	0	0	0	4	Aäron Vandeputte GAVs 
+
+// H abstractions involving S and O
+1192	S_pri		O_pri_rad	300-1500	2.33E+04	2.61	0.0	11.35	0	0	0	0	3	CAC calculation CBS-QB3 1dhr
+1193	S/H/NonDeC	O_pri_rad	300-1500	3.49E+03	3.13	0.0	-1.73	0	0	0	0	3	CAC calculation CBS-QB3 1dhr
+1194	S/H/NonDeC	O_rad/NonDeC	300-1500	2.84E+04	2.79	0.0	2.64	0	0	0	0	3	CAC calculation CBS-QB3 1dhr
+1195	S_pri		O_rad/OneDe	300-1500	6.41E+02	2.60	0.0	-8.23	0	0	0	0	4	CAC calculation CBS-QB3 *HO approx*
+1196	C/H2/CsS	CO_rad/NonDe	300-1500	1.41E+01	3.53	0.0	13.23	0	0	0	0	3	CAC calculation CBS-QB3 1dhr
