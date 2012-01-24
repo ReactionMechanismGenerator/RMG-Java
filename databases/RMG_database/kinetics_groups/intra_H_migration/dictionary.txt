@@ -226,6 +226,20 @@ R4H_RSS
 4 *2 {R!H} 0 {3,S}, {5,S}
 5 *3 H 0 {4,S}
 
+R4H_SSS_CsSCsCs
+1 *1 Cs 1 {2,S}
+2 *4 Ss 0 {1,S}, {3,S}
+3 *5 Cs 0 {2,S}, {4,S}
+4 *2 Cs 0 {3,S}, {5,S}
+5 *3 H  0 {4,S}
+
+R4H_SSS_CsCsSCs
+1 *1 Cs 1 {2,S}                       
+2 *4 Cs 0 {1,S}, {3,S}                        
+3 *5 Ss 0 {2,S}, {4,S}
+4 *2 Cs 0 {3,S}, {5,S}
+5 *3 H  0 {4,S}
+
 R4H_SSS_OOCsCs
 1 *1 Os 1 {2,S}
 2 *4 Os 0 {1,S}, {3,S}
@@ -467,6 +481,14 @@ R5H_SSSS
 3 {R!H} 0 {2,S}, {4,S}
 4 *5 {R!H} 0 {3,S}, {5,S}
 5 *2 {R!H} 0 {4,S}, {6,S}
+6 *3 H 0 {5,S}
+
+R5H_SSSS_CsCsCsSCs
+1 *1 Cs 1 {2,S}
+2 *4 Cs 0 {1,S}, {3,S}
+3 Cs 0 {2,S}, {4,S}
+4 *5 Ss 0 {3,S}, {5,S}
+5 *2 Cs 0 {4,S}, {6,S}
 6 *3 H 0 {5,S}
 
 R5H_SSSS_OOCCC
@@ -1487,6 +1509,12 @@ Cs_H_out_H/NonDeO
 1 *2 Cs 0 {2,S} {3,S} {4,S}
 2 *3 H 0 {1,S}
 3 O 0 {1,S}
+4 H 0 {1,S}
+
+Cs_H_out_H/NonDeS
+1 *2 Cs 0 {2,S} {3,S} {4,S}
+2 *3 H 0 {1,S}
+3 S 0 {1,S}      
 4 H 0 {1,S}
 
 Cs_H_out_H/OneDe
