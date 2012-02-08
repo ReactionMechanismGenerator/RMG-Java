@@ -151,6 +151,14 @@ public class ChemGraph implements Matchable {
 
 	// If there are no cycles, cannot be aromatic
         if (graph.getCycleNumber() == 0) return;
+
+	//check for already existing B bonds; if so, set isAromatic to true
+	Iterator arcs = graph.getArcList();
+	while (arcs.hasNext()){
+	    Arc arc = (Arc)arcs.next();
+	    if (((Bond)arc.getElement()).isBenzene())     isAromatic = true;
+	}
+
 	//addMissingHydrogen();
     	graph.getAromatic();//perceive aromaticity using Sandeep's algorithm
 	boolean[] aromaticList=graph.getIsAromatic();
@@ -204,7 +212,7 @@ public class ChemGraph implements Matchable {
              *
              */
 	for (int i=0; i<graph.getCycle().size(); i++){
-	    if (graph.getIsAromatic()[i]){
+	    if (aromaticList[i]){
 		LinkedList graphComps = (LinkedList) graph.getCycle().get(i);//get the aromatic cycle
 		for (int numComps=0; numComps<graphComps.size(); numComps++) {
 		    GraphComponent gc = (GraphComponent)graphComps.get(numComps);
@@ -213,6 +221,7 @@ public class ChemGraph implements Matchable {
 			currentNode.updateFgElement();//update the FgElement
 		    }
 		}
+		isAromatic = true;
 	    }
 	}
 
@@ -2884,6 +2893,10 @@ return sn;
 
     public String getFreqComments() {
         return freqComments;
+    }
+
+    public boolean getIsAromatic() {
+	return isAromatic;
     }
 }
 /*********************************************************************

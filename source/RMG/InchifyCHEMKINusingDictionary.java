@@ -16,7 +16,10 @@ import jing.chemUtil.*;
 //arg[2]=new chemkin file
 public class InchifyCHEMKINusingDictionary {
     public static void main(String[] args) {
-         //1. read the Dictionary file, converting to modified inchis along the way and adding them into inchiDict HashMap
+        String workingDir = System.getenv("RMG");
+        System.setProperty("RMG.workingDirectory", workingDir);
+
+	//1. read the Dictionary file, converting to modified inchis along the way and adding them into inchiDict HashMap
         HashMap inchiDict = new HashMap();
 	try {
             FileReader in = new FileReader(args[0]);
@@ -31,7 +34,7 @@ public class InchifyCHEMKINusingDictionary {
 		//get the inchi
 		String inchiString = chemgraph.getModifiedInChIAnew();
 		//get the molecule name; ***this assumes that the names in the dictionary are the same as the names in the chemkin file; additional considerations would be needed if the CHEMKIN names are shortened names of the dictionary names***
-		String name = line.trim();
+		String name = line.split("\\s+")[0];//split on whitespace and take the first part of the name (in case the second part happens to be a pre-existing InChI
 		inchiDict.put(name, inchiString);//add the chemkin name as key, and InChI as value
                 line = ChemParser.readMeaningfulLine(data, true);
 	}

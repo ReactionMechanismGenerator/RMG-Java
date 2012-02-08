@@ -47,7 +47,7 @@ LDFLAGS=$(F90_EXTRA_LDFLAGS)
 
 LIBS=-lblas -llapack
 
-OBJ0=math.o states.o _modes.o network.o io.o mastereqn.o msc.o rs.o model.o fame.o
+OBJ0=math.o specfun.o states.o _modes.o network.o io.o mastereqn.o msc.o rs.o model.o fame.o
 
 OBJ=$(patsubst %.o,$(BUILDDIR)/%.o,$(OBJ0))
 
