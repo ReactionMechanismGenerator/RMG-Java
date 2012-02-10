@@ -89,11 +89,16 @@ Arrhenius_EP
 551.		O_rad/NonDeC	O_Csrad				300-2500	2.41E+13	0		0		0		*2.0	0		0		0		4		Tsang [90] Literature review.
 552.		O_rad/NonDeO	O_Csrad				300-2500	1.21E+13	0		0		0		*2.0	0		0		0		4		Tsang [90] Literature review.
 20001.		O2_birad		XH_Rrad        300-1500    3E+11        0    0    0        0        0    0    0    0
-487.		O2_birad		Cmethyl_Csrad    700-2500    1.05833E+10    0    0    0        *3.0        0    0    0    4    Tsang [91] Literature review.
-501.		O2_birad		C/H2/Nd_Csrad    500-900    2.25825E+10    0    0    0        *3.0        0    0    0    4    Tsang [91] Literature review.
+//487.		O2_birad		Cmethyl_Csrad    700-2500    1.05833E+10    0    0    0        *3.0        0    0    0    4    Tsang [91] Literature review.
+//501.		O2_birad		C/H2/Nd_Csrad    500-900    2.25825E+10    0    0    0        *3.0        0    0    0    4    Tsang [91] Literature review.
 513.		O2_birad		C/H/NdNd_Csrad    600-1000    1.2044E+10    0    0    0        *5.0        0    0    0    4    Tsang [92] Literature review.
 524.		O2_birad		Cdpri_Csrad        300-2500    6.022E+11    0    0    13.55        0        0    0    0    4    Tsang [93] Literature review.
 533.		O2_birad		O_Csrad        298        5.7209E+12    0    0    0        *2.0        0    0    0    4    Atkinson et al [98] literature review.
 534.		O2_birad		O_Csrad        298        2.92067E+12    0    0    0        *1.3        0    0    0    4    Atkinson et al [98] literature review.
 535.		O2_birad		O_Csrad        200-300    2.74001E+12    0    0    0        *1.3        0    0    0.40    4    DeMore et al [183] literature review.
 600.		O2_birad		O_Csrad				250-1000	2.3413E+11	0.3321	0	-1.0635	0	0	0	0	1	Zador et al.
+
+
+// These nodes were modified by AJ on Sept 20, 2011 using rates reported by Miyoshi in dx.doi.org/10.1021/jp112152n
+487.		O2_birad		Cmethyl_Csrad    700-2500   7.23E+12      0    0    15.99        *3.0        0    0    0    4    [AJ] Miyoshi 2011 (Table 4, Node 'sp') dx.doi.org/10.1021/jp112152n
+501.		O2_birad		C/H2/Nd_Csrad    500-900    4.5825E+12    0    0    14.85        *3.0        0    0    0    4    [AJ] Miyoshi 2011 (Table 4, Node 'ss') dx.doi.org/10.1021/jp112152n
