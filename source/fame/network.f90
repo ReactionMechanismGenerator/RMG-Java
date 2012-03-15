@@ -746,7 +746,7 @@ contains
 
             ! Apply to determine the microcanonical rate
             do r = s+1, size(E)
-                if (E(r) > E0 .and. rho(r) /= 0) &
+                if (E(r) > E0 .and. rho(r) /= 0 .and. phi(r-s) > 0) &
                     k(r) = A * phi(r-s) / rho(r)
             end do
             
