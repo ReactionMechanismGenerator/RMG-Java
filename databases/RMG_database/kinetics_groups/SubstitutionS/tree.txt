@@ -39,6 +39,7 @@ L1: S-RR
 				L5: S-HCs(CsHH)
 				L5: S-HCs(CsCsH)
 				L5: S-HCs(CsCsCs)
+				L5: S-HCs(CsOsH)
 			L4: S-HCs(OneDe)
 				L5: S-HCs(CdHH)
 				L5: S-HCs(CdCsH)
@@ -54,6 +55,7 @@ L1: S-RR
 		L3: S-HCt
 		L3: S-HCb
 		L3: S-HCO
+			L4: S-HCO(H)
 		L3: S-HC=S
 	L2: S-CC
 		L3: S-CsCs
