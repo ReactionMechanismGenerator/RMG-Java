@@ -179,3 +179,10 @@ Arrhenius_EP
 2549	Cd/H2_Cd/H2	S_rad/NonDeS		300-1500	4.21E+00	3.3	0	7.4	0	0	0	0	4	Aäron Vandeputte GAVs 
 2601	CS/H/Cs_S	H_rad			300-1500	1.70E+09	1.36	0	1.1	0	0	0	0	3	CAC calc CBS-QB3 1dhr
 2602	CS/H/Cs_S	C_rad/H/CsS		300-1500	3.52E+00	3.09	0	-1.83	0	0	0	0	3	CAC calc CBS-QB3 1dhr
+2603	CS/H/Os_S	H_rad			300-1500	6.45E+08	1.40	0	2.89	0	0	0	0	3	CAC calc CBS-QB3 1dhr
+2604	CS/H/Os_S	C_methyl		300-1500	1.72E+05	1.68	0	5.37	0	0	0	0	3	CAC calc CBS-QB3 1dhr
+2605	CS/H/Os_S	C_rad/H2/Cs		300-1500	7.74E+02	2.56	0	3.56	0	0	0	0	3	CAC calc CBS-QB3 1dhr
+//Based on methyl addition to ethanethial
+2606	Sd_Cds/H/Nd	Cs_rad			300-1500	3.91E+06	1.66	0	-0.87	0	0	0	0	4	CAC calc CBS-QB3 1dhr
+2607	CS_O		H_rad			300-1500	5.67E+08	1.75	0	8.60	0	0	0	0	3	CAC calc CBS-QB3 1dhr
+2608	CS_O		Cs_rad			300-1500	6.03E+05	1.83	0	11.84	0	0	0	0	3	CAC calc CBS-QB3 1dhr

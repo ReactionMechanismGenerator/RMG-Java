@@ -605,77 +605,77 @@ CO/De2_O
 4 {Cd,Ct,Cb,CO,CS} 0 {1,S}
 
 CS_S
-1 *1 CS 0 {2,D}
+1 *1 Cd 0 {2,D}
 2 *2 Sd 0 {1,D}
 
 CS/H2_S
-1 *1 CS  0 {2,D}, {3,S}, {4,S} 
+1 *1 Cd  0 {2,D}, {3,S}, {4,S} 
 2 *2 Sd  0 {1,D} 
 3 H  0 {1,S}
 4 H  0 {1,S}
  
 CS/H/Nd_S
-1 *1 CS  0 {2,D}, {3,S}, {4,S} 
+1 *1 Cd  0 {2,D}, {3,S}, {4,S} 
 2 *2 Sd  0 {1,D} 
 3 H  0 {1,S}
 4 {Cs,O,S}  0 {1,S}
  
 CS/H/Cs_S
-1 *1 CS  0 {2,D}, {3,S}, {4,S} 
+1 *1 Cd  0 {2,D}, {3,S}, {4,S} 
 2 *2 Sd  0 {1,D} 
 3 H  0 {1,S}
 4 Cs  0 {1,S}
 
 CS/H/Os_S
-1 *1 CS  0 {2,D}, {3,S}, {4,S} 
+1 *1 Cd  0 {2,D}, {3,S}, {4,S} 
 2 *2 Sd  0 {1,D} 
 3 H  0 {1,S}
 4 O  0 {1,S}
 
 CS/H/Ss_S 
-1 *1 CS  0 {2,D}, {3,S}, {4,S} 
+1 *1 Cd  0 {2,D}, {3,S}, {4,S} 
 2 *2 Sd  0 {1,D} 
 3 H  0 {1,S}
 4 S  0 {1,S}
  
 CS/H/De_S
-1 *1 CS  0 {2,D}, {3,S}, {4,S} 
+1 *1 Cd  0 {2,D}, {3,S}, {4,S} 
 2 *2 Sd  0 {1,D} 
 3 H  0 {1,S}
 4 {Cd,Ct,Cb,CO,CS} 0 {1,S}
  
 CS/Nd2_S
-1 *1 CS  0 {2,D}, {3,S}, {4,S} 
+1 *1 Cd  0 {2,D}, {3,S}, {4,S} 
 2 *2 Sd  0 {1,D} 
 3 {Cs,O,S} 0 {1,S}
 4 {Cs,O,S} 0 {1,S}
 
 CS/H/CsCs_S
-1 *1 CS  0 {2,D}, {3,S}, {4,S} 
+1 *1 Cd  0 {2,D}, {3,S}, {4,S} 
 2 *2 Sd  0 {1,D} 
 3 Cs 0 {1,S}
 4 Cs 0 {1,S}
 
 CS/H/CsOs_S
-1 *1 CS  0 {2,D}, {3,S}, {4,S} 
+1 *1 Cd  0 {2,D}, {3,S}, {4,S} 
 2 *2 Sd  0 {1,D} 
 3 Cs 0 {1,S}
 4 O 0 {1,S}
 
 CS/H/CsSs_S
-1 *1 CS  0 {2,D}, {3,S}, {4,S} 
+1 *1 Cd  0 {2,D}, {3,S}, {4,S} 
 2 *2 Sd  0 {1,D} 
 3 Cs 0 {1,S}
 4 S 0 {1,S} 
  
 CS/Nd/De_S
-1 *1 CS  0 {2,D}, {3,S}, {4,S} 
+1 *1 Cd  0 {2,D}, {3,S}, {4,S} 
 2 *2 Sd  0 {1,D} 
 3 {Cs,O,S}  0 {1,S}
 4 {Cd,Ct,Cb,CO,CS} 0 {1,S}
  
 CS/De2_S
-1 *1 CS  0 {2,D}, {3,S}, {4,S} 
+1 *1 Cd  0 {2,D}, {3,S}, {4,S} 
 2 *2 Sd 0 {1,D} 
 3 {Cd,Ct,Cb,CO,CS} 0 {1,S}
 4 {Cd,Ct,Cb,CO,CS} 0 {1,S}
@@ -739,8 +739,9 @@ Ct/De_Ct/De
 4 {Cd,Ct,Cb,CO,CS} 0 {2,S}
 
 Cdd_Od
-1 *1 Cdd 0 {2,D}
+1 *1 Cdd 0 {2,D} {3,D}
 2 *2 Od 0 {1,D}
+3 {C,Od} 0 {1,D}
 
 CO2
 1 *1 Cdd 0 {2,D}, {3,D}
@@ -815,6 +816,12 @@ Sd_Cds/Nd2
 2 *2 Cd 0 {1,D} {3,S} {4,S}
 3 {Cs,O,S} 0 {2,S}
 4 {Cs,O,S} 0 {2,S}
+
+Sd_Cds/CsO
+1 *1 Sd 0 {2,D}
+2 *2 Cd 0 {1,D} {3,S} {4,S}
+3 Cs 0 {2,S}
+4 O 0 {2,S}
 
 Sd_Cds/H/De
 1 *1 Sd 0 {2,D} 
@@ -1349,7 +1356,8 @@ S_rad/CO
 
 S_rad/CS
 1 *3 Ss 1 {2,S}
-2 CS 0 {1,S}
+2 Cd 0 {1,S}, {3,D}
+3 S 0 {2,D}
 
 
  
