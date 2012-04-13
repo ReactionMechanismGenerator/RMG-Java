@@ -19,6 +19,7 @@ L1: XSYJ
 		L3: XSR5J_SDD
 		L3: XSR5J_DDD				
 	L2: XSR6J
+		L3: XSR6J_SSSS
 	L2: XSR7J
 
 // Radical tree Radical - First group is ring group + Second and Third are the other two groups neighboring the radical centre
