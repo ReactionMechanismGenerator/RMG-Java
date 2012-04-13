@@ -316,8 +316,8 @@ Arrhenius_EP
 895		R5H_CCCC_O						O_rad_out		Cs_H_out			200-1000	4.00e10		0.00	0		5.10	0	0	0		0	3			[AJ]Atkinson recommendation for 1,5 shifts of tertiary H
 
 //Added by CAC for intra_H migration in sulfide radicals
-1001		R4H_SSS_CsCsSCs		C_rad_out_H/NonDeC		Cs_H_out_H/NonDeC	300-1500	1.70E+07	1.06		0.0		17.86	0	0	0	0	4	CAC CBS-QB3 calc 1dhr
-1002		R5H_SSSS_CsCsCsSCs	C_rad_out_H/NonDeC              Cs_H_out_H/NonDeC	300-1500	2.14E+05        1.33            0.0            10.56   0       0       0       0       4	CAC CBS-QB3 calc 1dhr
-1003		R4H_SSS			C_rad_out_H/NonDeC		Cs_H_out_H/NonDeS	300-1500	6.96E+05        1.95            0.0             19.26   0       0       0       0       4	CAC CBS-QB3 calc 1dhr
-1004		R5H_SSSS                C_rad_out_H/NonDeC              Cs_H_out_H/NonDeS	300-1500	5.31E+05        1.58            0.0             12.07   0       0       0       0       4	CAC CBS-QB3 calc 1dhr
-
+1001		R4H_SSS_CsCsSCs		C_rad_out_H/NonDeC		Cs_H_out_H/NonDeC	300-1500	1.70E+07	1.06		0.0		17.86	0	0	0	0 	3	CAC CBS-QB3 calc 1dhr
+1002		R5H_SSSS_CsCsCsSCs	C_rad_out_H/NonDeC              Cs_H_out_H/NonDeC	300-1500	2.14E+05        1.33            0.0            10.56   0       0       0       0       3	CAC CBS-QB3 calc 1dhr
+1003		R4H_SSS			C_rad_out_H/NonDeC		Cs_H_out_H/NonDeS	300-1500	6.96E+05        1.95            0.0             19.26   0       0       0       0       3	CAC CBS-QB3 calc 1dhr
+1004		R5H_SSSS                C_rad_out_H/NonDeC              Cs_H_out_H/NonDeS	300-1500	5.31E+05        1.58            0.0             12.07   0       0       0       0       3	CAC CBS-QB3 calc 1dhr
+1005		R3H_SS			O_rad_out			S_H_out			300-1500	4.99E+11	0.26		0.0		15.99	0	0	0	0	3	CAC CBS-QB3 calc 1dhr
