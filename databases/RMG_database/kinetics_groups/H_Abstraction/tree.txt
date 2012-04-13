@@ -13,10 +13,10 @@ L1: X_H
 		L3: C_pri
 			L4: C/H3/Cs
 			L4: C/H3/Cd
+				L5: C/H3/CS
 			L4: C/H3/Ct
 			L4: C/H3/Cb
 			L4: C/H3/CO
-			L4: C/H3/CS
 			L4: C/H3/O
 			L4: C/H3/S
 		L3: C_sec
@@ -30,30 +30,30 @@ L1: X_H
 			L4: C/H2/OneDe
 				L5: C/H2/OneDeC
 					L6: C/H2/CdCs
+						L7: C/H2/CSCs
 					L6: C/H2/CtCs
 					L6: C/H2/CbCs
 					L6: C/H2/COCs
-					L6: C/H2/CSCs
 				L5: C/H2/OneDeO
 				L5: C/H2/OneDeS
 					L6: C/H2/CdS
 					L6: C/H2/CtS
 			L4: C/H2/TwoDe
 				L5: C/H2/CdCd
+					L6: C/H2/CdCS
+					L6: C/H2/CSCS
 				L5: C/H2/CdCt
+					L6: C/H2/CtCS
 				L5: C/H2/CdCb
+					L6: C/H2/CbCS
 				L5: C/H2/CdCO
-				L5: C/H2/CdCS
+					L6: C/H2/COCS
 				L5: C/H2/CtCt
 				L5: C/H2/CtCb
 				L5: C/H2/CtCO
-				L5: C/H2/CtCS
 				L5: C/H2/CbCb
 				L5: C/H2/CbCO
-				L5: C/H2/CbCS
 				L5: C/H2/COCO
-				L5: C/H2/COCS
-				L5: C/H2/CSCS
 		L3: C_ter
 			L4: C/H/NonDeC
 				L5: C/H/Cs3
@@ -65,13 +65,15 @@ L1: X_H
 					L6: C/H/Cs2S
 					L6: C/H/CsS2
 					L6: C/H/S3
+				L5: C/H/NDMustOS
+					L6: C/H/CsOS
 			L4: C/H/OneDe
 				L5: C/H/Cs2
 					L6: C/H/Cs2Cd
+						L7: C/H/Cs2CS
 					L6: C/H/Cs2Ct
 					L6: C/H/Cs2Cb
 					L6: C/H/Cs2CO
-					L6: C/H/Cs2CS
 				L5: C/H/CsO
 				L5: C/H/CsS
 					L6: C/H/CdCsS
@@ -82,20 +84,20 @@ L1: X_H
 			L4: C/H/TwoDe
 				L5: C/H/Cs
 					L6: C/H/CdCd
+						L7: C/H/CdCS
+						L7: C/H/CSCS
 					L6: C/H/CdCt
+						L7: C/H/CtCS
 					L6: C/H/CdCb
+						L7: C/H/CbCS
 					L6: C/H/CdCO
-					L6: C/H/CdCS
+						L7: C/H/COCS
 					L6: C/H/CtCt
 					L6: C/H/CtCb
 					L6: C/H/CtCO
-					L6: C/H/CtCS
 					L6: C/H/CbCb
 					L6: C/H/CbCO
-					L6: C/H/CbCS
 					L6: C/H/COCO
-					L6: C/H/COCS
-					L6: C/H/CSCS
 				L5: C/H/TDMustO
 				L5: C/H/TDMustS
 			L4: C/H/ThreeDe
@@ -107,10 +109,10 @@ L1: X_H
 			L4: Cd/H/NonDeS
 			L4: Cd/H/OneDe
 				L5: Cd/H/Cd
+					L6: Cd/H/CS
 				L5: Cd/H/Ct
 				L5: Cd/H/Cb
 				L5: Cd/H/CO
-				L5: Cd/H/CS
 	L2: Ct_H
 	L2: Cb_H
 	L2: CO_H
@@ -126,10 +128,10 @@ L1: X_H
 			L4: CS/H/NonDeS
 			L4: CS/H/OneDe
 				L5: CS/H/Cd
+					L6: CS/H/CS
 				L5: CS/H/Ct
 				L5: CS/H/Cb
 				L5: CS/H/CO
-				L5: CS/H/CS
 	L2: O_H
 		L3: O_pri
 		L3: O_sec
@@ -145,10 +147,10 @@ L1: X_H
 			L4: S/H/NonDeS
 			L4: S/H/OneDe
 				L5: S/H/Cd
+					L6: S/H/CS
 				L5: S/H/Ct
 				L5: S/H/Cb
 				L5: S/H/CO
-				L5: S/H/CS
 //	L2: Srad_H
 
 L1: Y_rad_birad
@@ -193,30 +195,30 @@ L1: Y_rad_birad
 				L5: C_rad/H/OneDe
 					L6: C_rad/H/OneDeC
 						L7: C_rad/H/CdCs
+							L8: C_rad/H/CSCs
 						L7: C_rad/H/CtCs
 						L7: C_rad/H/CbCs
 						L7: C_rad/H/COCs
-						L7: C_rad/H/CSCs
 					L6: C_rad/H/OneDeO
 					L6: C_rad/H/OneDeS
 						L7: C_rad/H/CdS
 						L7: C_rad/H/CtS
 				L5: C_rad/H/TwoDe
 					L6: C_rad/H/CdCd
+						L7: C_rad/H/CdCS
+						L7: C_rad/H/CSCS
 					L6: C_rad/H/CdCt
+						L7: C_rad/H/CtCS
 					L6: C_rad/H/CdCb
+						L7: C_rad/H/CbCS
 					L6: C_rad/H/CdCO
-					L6: C_rad/H/CdCS
+						L7: C_rad/H/COCS
 					L6: C_rad/H/CtCt
 					L6: C_rad/H/CtCb
 					L6: C_rad/H/CtCO
-					L6: C_rad/H/CtCS
 					L6: C_rad/H/CbCb
 					L6: C_rad/H/CbCO
-					L6: C_rad/H/CbCS
 					L6: C_rad/H/COCO
-					L6: C_rad/H/COCS
-					L6: C_rad/H/CSCS
 			L4: C_ter_rad
 				L5: C_rad/NonDe
 					L6: C_rad/Cs3
@@ -232,10 +234,10 @@ L1: Y_rad_birad
 				L5: C_rad/OneDe
 					L6: C_rad/Cs2
 						L7: C_rad/CdCs2
+							L8: C_rad/CSCs2
 						L7: C_rad/CtCs2
 						L7: C_rad/CbCs2
 						L7: C_rad/COCs2
-						L7: C_rad/CSCs2
 					L6: C_rad/CsO
 					L6: C_rad/CsS
 						L7: C_rad/CdCsS
@@ -246,20 +248,20 @@ L1: Y_rad_birad
 				L5: C_rad/TwoDe
 					L6: C_rad/Cs
 						L7: C_rad/CdCdCs
+							L8: C_rad/CdCSCs
+							L8: C_rad/CSCSCs
 						L7: C_rad/CdCtCs
+							L8: C_rad/CtCSCs
 						L7: C_rad/CdCbCs
+							L8: C_rad/CbCSCs
 						L7: C_rad/CdCOCs
-						L7: C_rad/CdCSCs
+							L8: C_rad/COCSCs
 						L7: C_rad/CtCtCs
 						L7: C_rad/CtCbCs
 						L7: C_rad/CtCOCs
-						L7: C_rad/CtCSCs
 						L7: C_rad/CbCbCs
 						L7: C_rad/CbCOCs
-						L7: C_rad/CbCSCs
 						L7: C_rad/COCOCs
-						L7: C_rad/COCSCs
-						L7: C_rad/CSCSCs
 					L6: C_rad/TDMustO
 					L6: C_rad/TDMustS
 				L5: C_rad/ThreeDe
@@ -271,10 +273,10 @@ L1: Y_rad_birad
 				L5: Cd_rad/NonDeS
 				L5: Cd_rad/OneDe
 					L6: Cd_rad/Cd
+						L7: Cd_rad/CS
 					L6: Cd_rad/Ct
 					L6: Cd_rad/Cb
 					L6: Cd_rad/CO
-					L6: Cd_rad/CS
 		L3: Ct_rad
 		L3: Cb_rad
 		L3: CO_rad
@@ -291,10 +293,10 @@ L1: Y_rad_birad
 					L6: CS_rad/S
 				L5: CS_rad/OneDe
 					L6: CS_rad/Cd
+						L7: CS_rad/CS
 					L6: CS_rad/Ct
 					L6: CS_rad/Cb
 					L6: CS_rad/CO
-					L6: CS_rad/CS
 		L3: O_rad
 			L4: O_pri_rad
 			L4: O_sec_rad
@@ -308,7 +310,7 @@ L1: Y_rad_birad
 				L5: S_rad/NonDeS
 				L5: S_rad/OneDe
 					L6: S_rad/Cd
+						L7: S_rad/CS
 					L6: S_rad/Ct
 					L6: S_rad/Cb
 					L6: S_rad/CO
-					L6: S_rad/CS
