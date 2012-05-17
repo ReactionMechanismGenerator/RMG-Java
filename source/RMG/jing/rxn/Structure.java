@@ -504,7 +504,7 @@ public class Structure {
 			Iterator iter = l.iterator();
 			while (iter.hasNext()){
 				ChemGraph cg2 = (ChemGraph)iter.next();
-				if (cg2.getSpecies().hasResonanceIsomers()){
+				if (cg2.getSpecies().hasResonanceIsomers() || cg2.getIsAromatic()){//we check here whether the molecule is aromatic because currently in RMG, it seems that some representations of a given aromatic radicals may be considered to have resonance isomers while other representations do not (probably depending on how the species/chemgraph was generated (e.g. whether generated from a form already known to be aromatic with B bonds vs. a newly formed aromatic species without pre-existing B bonds ))
 					if (cg2.equals(cg)){
 						l.remove(cg2);
 						return true;
