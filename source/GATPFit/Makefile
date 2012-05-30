@@ -44,7 +44,9 @@ endif
 
 endif ###### END OF gfortran SETTINGS
 
-LDFLAGS= $(F90_EXTRA_LDFLAGS) -lblas -llapack
+LDFLAGS=$(F90_EXTRA_LDFLAGS)
+
+LIBS=-lblas -llapack
 
 OBJ0=lsfp_chem1.o lsfp.o lsfp_nasa.o lsfp_nist1.o lsfp_wilh1.o
 
@@ -54,7 +56,7 @@ OBJ=$(patsubst %.o,$(BUILDDIR)/%.o,$(OBJ0))
 
 $(BINDIR)/GATPFit.exe: $(OBJ)  
 	mkdir -p $(BINDIR)
-	$(F90) $(LDFLAGS) $(OBJ) -o $(BINDIR)/GATPFit.exe
+	$(F90) $(LDFLAGS) -o $(BINDIR)/GATPFit.exe $(OBJ) $(LIBS)
 
 $(BUILDDIR)/%.o: %.f
 	mkdir -p $(BUILDDIR)

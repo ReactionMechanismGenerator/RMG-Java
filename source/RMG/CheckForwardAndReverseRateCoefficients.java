@@ -122,7 +122,7 @@ public class CheckForwardAndReverseRateCoefficients {
 					boolean rmgRate = false;
                                         boolean plogRate = false;
 					// Find all Chebyshev rate coefficients
-					if (line.contains("1.0E0 0.0 0.0")) {
+					if (line.contains("1.0E0 0.0 0.0") || line.contains("1.000e+00 	  0.00 	  0.00")) {
 						st = new StringTokenizer(line);
 						rxnString = st.nextToken();
 						shortRxnString = rxnString;
@@ -206,7 +206,7 @@ public class CheckForwardAndReverseRateCoefficients {
 
                                                         String output = "";
                                                         for (int k=0; k<T.length; k++) {
-                                                            logk[k] = Math.log10(plog_A * Math.pow(T[k],plog_n) * Math.exp(-plog_E/R/T[k]));
+                                                            logk[k] = Math.log10(plog_A * Math.pow(T[k],plog_n) * Math.exp(-plog_E/R/T[k]));//***note: PLOG uses the same units for Ea and A as Arrhenius expressions; see https://github.com/GreenGroup/RMG-Java/commit/2947e7b8d5b1e3e19543f2489990fa42e43ecad2#commitcomment-844009
                                                             if (logk[k] > 15)
 								System.out.format("logkf = %4.2f at T = %4.0fK for %s\n", logk[k], T[k], (fullRxnString+"\t"+plog_pressure));
                                                         }

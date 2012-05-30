@@ -8,7 +8,55 @@ Instructions for Use
 --------------------
 
 1. Create a text file named :file:`input.txt` in any directory that you like.  
-   The text file should begin with a block to specify the desired Database.  
+   The text file should begin with a block to specify the desired Database.
+   
+   The next section allows to use on-the-fly generation QM techniques to estimate TD
+   properties, rather than group additivity methods.
+   
+   The first flag activates the use of QM methods (set flag to true):
+   e.g.::
+
+   	//QM?
+   	false
+   
+   The QM package to be used, is specified: either choose "both", "gaussian03", "mopac", 
+   "mm4", or "mm4hr"
+   e.g.::
+
+   	//method
+   	gaussian03
+   
+   Limit the use of on-the-fly methods to only cyclic species with the following flag 
+   (set to true)
+   e.g.::
+
+   	//ForCyclicsOnly?
+   	true
+   
+   Limit the use of on-the-fly methods to only species with less than the specified number
+   of unpaired electrons. E.g. "0", implies that radical species will not computed using
+   on-the-fly QM methods.
+   e.g.::
+
+   	//maxradnumforQM?
+   	0  
+   
+   The next section allows the user to set atom constraints on the species to be processed
+   by the ThermoDataEstimator, beyond the default values hard-coded in TDE. 
+   Only species that satisfy the set atom constraints, will be processed by TDE.
+   Uncomment (//) the desired atom constraint, to set a particular constraint.
+   
+   E.g.::
+
+   	MaxCarbonNumberPerSpecies:     40
+   	//MaxOxygenNumberPerSpecies:     10
+   	//MaxRadicalNumberPerSpecies:    10
+   	//MaxSulfurNumberPerSpecies:     10
+   	//MaxSiliconNumberPerSpecies:    10
+   	//MaxHeavyAtomNumberPerSpecies: 100
+   	//MaxCycleNumberPerSpecies:      10
+   	END 
+   
    The next field should be the PrimaryThermoLibrary, which may be left empty if desired::
 
 	Database: RMG_database
@@ -27,6 +75,9 @@ Instructions for Use
 	7 C 0 {6,S}
 	8 C 0 {6,S}
 	9 C 0 {6,S}
+
+   An complete example can be found in the :file:`examples/ThermoDataEstimator` directory.
+
 
 2. At the command prompt, change directory to the location of the :file:`input.txt` file and then, if you are using a unix-based operating system, execute the command ::
 

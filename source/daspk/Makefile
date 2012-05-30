@@ -48,7 +48,9 @@ DASPK_FFLAGS = -fno-bounds-check -Wtabs -Wno-uninitialized
 endif ###### END OF gfortran SETTINGS
 
 
-LDFLAGS= $(F90_EXTRA_LDFLAGS) -lblas -llapack -ldaepack
+LDFLAGS=$(F90_EXTRA_LDFLAGS)
+
+LIBs=-lblas -llapack -ldaepack
 
 OBJ0=ddaspk.o dbanpre.o daux.o dilupre.o dlinpk.o drbdpre.o drbgpre.o dsensd.o dsparsk.o adf_dummy.o mpi_dummy.o call_daspkAUTO.o res.o getflux.o resad.o jac.o res_rpar.o calcdgdk.o reaction_flux.o
 
@@ -58,7 +60,7 @@ OBJ=$(patsubst %.o,$(BUILDDIR)/%.o,$(OBJ0))
 
 $(BINDIR)/daspkAUTO.exe: $(OBJ)  
 	mkdir -p $(BINDIR)
-	$(F90) $(LDFLAGS) $(OBJ) -o $(BINDIR)/daspkAUTO.exe
+	$(F90) $(LDFLAGS) -o $(BINDIR)/daspkAUTO.exe $(OBJ) $(LIBS)
 
 $(BUILDDIR)/%.o: %.f
 	mkdir -p $(BUILDDIR)

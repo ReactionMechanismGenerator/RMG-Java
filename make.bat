@@ -13,7 +13,7 @@ g95 -Wall -fbounds-check *.f -L"%rmg%"\bin -lblas -llapack -o "%rmg%"\bin\GATPFi
 
 echo Compiling fame...
 cd "%rmg%"\source\fame
-g95 -Wall -fbounds-check -O3 math.f90 states.f90 _modes.f90 network.f90 io.f90 mastereqn.f90 msc.f90 rs.f90 model.f90 fame.f90 -L"%rmg%"\bin -lblas -llapack -o "%rmg%"\bin\fame.exe
+g95 -Wall -fbounds-check -O3 math.f90 states.f90 specfun.f90 _modes.f90 network.f90 io.f90 mastereqn.f90 msc.f90 rs.f90 model.f90 fame.f90 -L"%rmg%"\bin -lblas -llapack -o "%rmg%"\bin\fame.exe
 
 echo Compiling frankie...
 cd "%rmg%"\source\frankie

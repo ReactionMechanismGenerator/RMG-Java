@@ -71,6 +71,23 @@ C/H3/Cb
 4 H 0 {1,S}
 5 Cb 0 {1,S}
 
+//Added by AJ (Jan 25, 2011)
+C/H/Cb
+1 *1 C 0 {2,S}, {3,S}, {4,S}, {5,S}
+2 *2 H 0 {1,S}
+3 C 0 {1,S}
+4 C 0 {1,S}
+5 Cb 0 {1,S}
+
+C/H2/Cb
+1 *1 C 0 {2,S}, {3,S}, {4,S}, {5,S}
+2 *2 H 0 {1,S}
+3 H 0 {1,S}
+4 C 0 {1,S}
+5 Cb 0 {1,S}
+
+// End of additions
+
 C/H3/CO
 1 *1 C 0 {2,S}, {3,S}, {4,S}, {5,S}
 2 *2 H 0 {1,S}
@@ -1942,3 +1959,94 @@ S_rad/CS
 1 *3 S 1 {2,S}
 2 Cd 0 {1,S}, {3,D}
 3 S 0 {2,D}
+
+InChI=1/C3H5O/c1-2-3-4/h2-3H,1H3/o
+1 C 0 {2,S} {5,S} {6,S} {7,S}
+2 C 0 {1,S} {3,D} {8,S}
+3 C 0 {2,D} {4,S} {9,S}
+4 *3 O 1 {3,S}
+5 H 0 {1,S}
+6 H 0 {1,S}
+7 H 0 {1,S}
+8 H 0 {2,S}
+9 H 0 {3,S}
+
+//Added by AJ for ROOJ + RH reactions where R = primary, secondary or tertiary alkyl group
+ROOH_pri
+1 *1 O 0 {2,S} {7,S}
+2 	 O 0 {1,S} {3,S}
+3    C 0 {2,S} {4,S} {5,S} {6,S}
+4    Cs 0 {3,S}
+5    H 0 {3,S}
+6    H 0 {3,S}
+7 *2 H 0 {1,S}
+ 
+ROOH_sec
+1 *1 O 0 {2,S} {7,S}
+2 	 O 0 {1,S} {3,S}
+3    C 0 {2,S} {4,S} {5,S} {6,S}
+4    Cs 0 {3,S}
+5    Cs 0 {3,S}
+6    H 0 {3,S}
+7 *2 H 0 {1,S}
+
+ROOH_ter
+1 *1 O 0 {2,S} {7,S}
+2 	 O 0 {1,S} {3,S}
+3    C 0 {2,S} {4,S} {5,S} {6,S}
+4    Cs 0 {3,S}
+5    Cs 0 {3,S}
+6    Cs 0 {3,S}
+7 *2 H 0 {1,S}
+
+
+InChI=1/C4H7O/c1-2-3-4-5/h3-4H,2H2,1H3
+1 C 0 {2,S}
+2 C 0 {1,S} {3,S}
+3 C 0 {2,S} {4,D}
+4 C 0 {3,D} {5,S}
+5 *3 O 1 {4,S}
+
+//Added by AJ for abstraction from H-ROOH
+C_rad/OOH/Cs/Cs
+1 *3 C 1 {2,S}, {3,S}, {4,S}
+2 O 0 {1,S} {5,S}
+3 Cs 0 {1,S}
+4 Cs 0 {1,S}
+5 O 0 {2,S}
+
+//Added by AJ for abstraction by .C(O)-R
+C_rad/(O)/Cs
+1 *3 C 1 {2,D} {3,S}
+2 O 0 {1,D}
+3 Cs 0 {1,S}
+
+//Added by AJ for abstraction by .CH(R1)-C(O)-R2
+C_rad/H/CO/Cs
+1 *3 C 1 {2,S} {3,S} {4,S}
+2 H  0 {1,S}
+3 Cs 0 {1,S}
+4 CO 0 {1,S}
+
+InChI=1/C3H5/c1-3-2/h3H,1-2H2
+1 *3 C 1 {2,S} {4,S} {5,S}
+2 C 0 {1,S} {3,D}
+3 C 0 {2,D}
+4 H 0 {1,S}
+5 H 0 {1,S}
+
+InChI=1/C4H8O/c1-2-3-4-5/h4H,2-3H2,1H3
+1 *1 C 0 {2,D} {3,S} {6,S}
+2 O 0 {1,D}
+3 C 0 {1,S} {4,S} {7,S} {8,S}
+4 C 0 {3,S} {5,S} {9,S} {10,S}
+5 C 0 {4,S} {11,S} {12,S} {13,S}
+6 *2 H 0 {1,S}
+7 H 0 {3,S}
+8 H 0 {3,S}
+9 H 0 {4,S}
+10 H 0 {4,S} 
+11 H 0 {5,S} 
+12 H 0 {5,S}
+13 H 0 {5,S}
+

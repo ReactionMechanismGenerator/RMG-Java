@@ -275,8 +275,18 @@ class Gaussian(logfileparser.Logfile):
             if not hasattr(self, "rotcons"):
                 self.rotcons = []
 
-            # self.rotcons.append(self.float(line.split()[3:6])) #record last 3 numbers (words)
-            self.rotcons.append(map(float, line.split()[3:6]))
+	    #some linear cases (e.g. if linearity is not recognized) can have asterisks ****... for the first rotational constant; e.g.:
+	    # Rotational constants (GHZ):      ************    12.73690    12.73690
+	    # or:
+	    # Rotational constants (GHZ):***************     10.4988228     10.4988223
+	    # if this is the case, replace the asterisks with a 0.0
+	    #we can also have cases like this:
+	    # Rotational constants (GHZ):6983905.3278703     11.8051382     11.8051183
+            #if line[28:29] == '*' or line.split()[3].startswith('*'):
+            if line[37:38] == '*':
+                self.rotcons.append([0.0]+map(float, line[28:].split()[-2:])) #record last 0.0 and last 2 numbers (words) in the string following the prefix
+	    else:
+                self.rotcons.append(map(float, line[28:].split()[-3:])) #record last 3 numbers (words) in the string following the prefix
 
         # Total energies after Moller-Plesset corrections.
         # Second order correction is always first, so its first occurance
@@ -359,7 +369,14 @@ class Gaussian(logfileparser.Logfile):
                 try:
                     value = self.float(parts[2])
                 except ValueError:
-                    self.logger.error("Problem parsing the value for geometry optimisation: %s is not a number." % parts[2])
+                    value = -1.0
+                    #self.logger.error("Problem parsing the value for geometry optimisation: %s is not a number." % parts[2])
+		    #gmagoon 20111202: because the value can become **** (as shown below, I'm changing this to not report an error, and instead just set the value to -1.0
+#         Item               Value     Threshold  Converged?
+# Maximum Force            ********     0.000015     NO 
+# RMS     Force            1.813626     0.000010     NO 
+# Maximum Displacement     0.915407     0.000060     NO 
+# RMS     Displacement     0.280831     0.000040     NO
                 else:
                     newlist[i] = value
                 self.geotargets[i] = self.float(parts[3])

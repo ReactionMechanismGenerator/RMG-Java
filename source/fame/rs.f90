@@ -245,22 +245,16 @@ subroutine reservoirCutoffs(E0, Eres, nIsom, E, nGrains, dEdown, densStates, nRe
         do r = 1, nGrains
             if (densStates(i,r) > 0 .and. start(i) == 0) then
                 start(i) = r
+                exit
             end if
         end do
         ! Now find the reservoir cutoff grain for this isomer
-        nRes(i) = ceiling((Eres(i) - 10 * dEdown - Emin) / dE)
-        ! Sometimes the above will result in nRes(i) < start (i.e. a cutoff
-        ! below the ground state); we need to handle this if it happends
-        if (nRes(i) < start(i)) then
-            ! First try to place the cutoff a few grains below the lowest
-            ! transition state energy
-            nRes(i) = ceiling((Eres(i) - Emin) / dE) - 4
-            if (nRes(i) < start(i)) then
-                ! If this is still too low, then just put the cutoff a few
-                ! grains above the ground state
-                nRes(i) = start(i) + 4
+        do r = start(i), nGrains
+            if (E(r) > Eres(i)) then
+                nRes(i) = r
+                exit
             end if
-        end if
+        end do  
     end do
 
 end subroutine

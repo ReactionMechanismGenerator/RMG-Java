@@ -500,6 +500,29 @@ public class ReactionModelGenerator {
 						Logger.critical("condition.txt: Can't find 'MaxRadNumForQM:' field");
 						System.exit(0);
 					}
+					line=ChemParser.readMeaningfulLine(reader, true);
+					if(line.startsWith("CheckConnectivity:")){
+						StringTokenizer st4 = new StringTokenizer(line);
+						String nameCheckConnectivity = st4.nextToken();
+						String checkConnSetting = st4.nextToken().toLowerCase();
+						if (checkConnSetting.equals("off")){//no connectivity checking
+						    QMTP.connectivityCheck = 0;
+						}
+						else if (checkConnSetting.equals("check")){//print a warning if the connectivity doesn't appear to match
+						    QMTP.connectivityCheck = 1;
+						}
+						else if (checkConnSetting.equals("confirm")){//consider the run a failure if the connectivity doesn't appear to match
+						    QMTP.connectivityCheck = 2;
+						}
+						else{
+						    Logger.critical("condition.txt: Inappropriate 'CheckConnectivity' value (should be 'off', 'check', or 'confirm')");
+						    System.exit(0);
+						}
+					}
+					else{
+						Logger.critical("condition.txt: Can't find 'CheckConnectivity:' field (should be 'off', 'check', or 'confirm')");
+						System.exit(0);
+					}
         		}//otherwise, the flag useQM will remain false by default and the traditional group additivity approach will be used
 				line = ChemParser.readMeaningfulLine(reader, true);//read in reactants
 			}
@@ -1701,7 +1724,28 @@ public class ReactionModelGenerator {
         }
         
         //System.out.println("Performing model reduction");
-        
+        if (writerestart) {
+			/*
+			 * Rename current restart files:
+			 * 	In the event RMG fails while writing the restart files,
+			 * 	user won't lose any information
+			 */
+			String[] restartFiles = {"Restart/coreReactions.txt", "Restart/coreSpecies.txt",
+					"Restart/edgeReactions.txt", "Restart/edgeSpecies.txt",
+					"Restart/pdepnetworks.txt", "Restart/pdepreactions.txt"};
+			writeBackupRestartFiles(restartFiles);
+			
+			writeCoreSpecies();
+			writeCoreReactions();
+			writeEdgeSpecies();
+			writeEdgeReactions();
+			if (PDepNetwork.generateNetworks == true)	writePDepNetworks();
+			
+			/*
+			 * Remove backup restart files from Restart folder
+			 */
+			removeBackupRestartFiles(restartFiles);
+		}
 		
         if (paraInfor != 0){
 			Logger.info("Model Generation performed. Now generating sensitivity data.");
@@ -2462,7 +2506,7 @@ public class ReactionModelGenerator {
 	
 	private void writeEdgeSpecies() {
 		BufferedWriter bw = null;
-		
+		Logger.info("Writing Restart Edge Species");
         try {
             bw = new BufferedWriter(new FileWriter("Restart/edgeSpecies.txt"));
 			for(Iterator iter=((CoreEdgeReactionModel)getReactionModel()).getUnreactedSpeciesSet().iterator();iter.hasNext();){
@@ -2548,7 +2592,7 @@ public class ReactionModelGenerator {
 	
 	private void writeCoreSpecies() {
 		BufferedWriter bw = null;
-		
+		Logger.info("Writing Restart Core Species");
         try {
             bw = new BufferedWriter(new FileWriter("Restart/coreSpecies.txt"));
 			for(Iterator iter=getReactionModel().getSpecies();iter.hasNext();){
@@ -2578,7 +2622,7 @@ public class ReactionModelGenerator {
 	private void writeCoreReactions() {
 		BufferedWriter bw_rxns = null;
 		BufferedWriter bw_pdeprxns = null;
-		
+		Logger.info("Writing Restart Core Reactions");
         try {
             bw_rxns = new BufferedWriter(new FileWriter("Restart/coreReactions.txt"));
             bw_pdeprxns = new BufferedWriter(new FileWriter("Restart/pdepreactions.txt"));
@@ -2639,7 +2683,7 @@ public class ReactionModelGenerator {
 	
 	private void writeEdgeReactions() {
 		BufferedWriter bw = null;
-		
+		Logger.info("Writing Restart Edge Reactions");
         try {
             bw = new BufferedWriter(new FileWriter("Restart/edgeReactions.txt"));
             
@@ -2845,7 +2889,7 @@ public class ReactionModelGenerator {
 		PDepArrheniusKinetics[] kinetics = pdeprxn.getPDepRate().getPDepArrheniusKinetics();
 		if (kinetics != null) {
 			for (int i=0; i<kinetics.length; i++) {
-				sb.append(kinetics[i].toChemkinString());
+				sb.append(kinetics[i].toChemkinString(pdeprxn.getReactantNumber()));
 				sb.append("\n");
 			}
 		}
@@ -3495,11 +3539,16 @@ public class ReactionModelGenerator {
 																	  chebyPolys);
 			pdepk = new PDepRateConstant(rateCoefficients,chebyshev);
 		} else if (numPlogs > 0) {
+			//***note: PLOG uses the same units for Ea and A as Arrhenius expressions; see https://github.com/GreenGroup/RMG-Java/commit/2947e7b8d5b1e3e19543f2489990fa42e43ecad2#commitcomment-844009
+			//gmagoon 1/6/12: restart feature doesn't currently seem to support alternative A units, so I haven't made any updates to fix this for PLOG in my current round of changes
 			PDepArrheniusKinetics pdepAK = new PDepArrheniusKinetics(numPlogs);
 			for (int i=0; i<numPlogs; i++) {
 				StringTokenizer st = new StringTokenizer(ChemParser.readMeaningfulLine(reader, true));
 				Pressure p = new Pressure(Double.parseDouble(st.nextToken()),"Pa");
-				UncertainDouble dA = new UncertainDouble(Double.parseDouble(st.nextToken()),0.0,"A");
+				double A = Double.parseDouble(st.nextToken());
+				
+				UncertainDouble dA = new UncertainDouble(A,0.0,"A");
+
 				UncertainDouble dn = new UncertainDouble(Double.parseDouble(st.nextToken()),0.0,"A");
 				double Ea = Double.parseDouble(st.nextToken());
 				if (EaUnits.equals("cal/mol"))
@@ -5239,10 +5288,10 @@ public class ReactionModelGenerator {
 
         public static void addChemGraphToListIfNotPresent_ElseTerminate(LinkedHashMap speciesMap, ChemGraph cg, String name) {
             if (speciesMap.containsKey(cg)) {
-                Logger.error("The same ChemGraph appears multiple times in the user-specified input file\n" +
-                        "Species " + name + " has the same ChemGraph as " +
-                        (speciesMap.get(cg)));
-                System.exit(0);
+				String message = "The same ChemGraph appears multiple times in the user-specified input file\n" +
+								 String.format("Species %s has the same ChemGraph as %s",name,speciesMap.get(cg));
+				Logger.error(message);
+                throw new RuntimeException(message);
             } else
                 speciesMap.put(cg, name);
         }

@@ -1627,6 +1627,9 @@ public class Reaction {
 	
 	public void setIsFromPrimaryKineticLibrary(boolean p_boolean) {
 		kineticsFromPrimaryKineticLibrary = p_boolean;
+		if (reverseReaction != null) {
+			reverseReaction.kineticsFromPrimaryKineticLibrary = p_boolean;
+		}
 	}
 	
 

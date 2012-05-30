@@ -68,6 +68,7 @@ import jing.rxnSys.ReactionModelGenerator;
 import jing.rxnSys.ReactionSystem;
 import jing.rxnSys.TemperatureModel;
 import jing.rxn.TemplateReaction;
+import jing.rxnSys.Logger;
 
 public class PopulateReactionsServer {
 	/**
@@ -103,6 +104,11 @@ public class PopulateReactionsServer {
 	public static Temperature systemTemp;
 	
 	public static void main(String[] args) {
+		
+		// Initialize the logger (saves to RMG.log file).
+		Logger.initialize();
+
+		
 		initializeSystemProperties();
 		try {
 			ChemGraph.readForbiddenStructure();
@@ -316,23 +322,27 @@ public class PopulateReactionsServer {
 			TemplateReactionGenerator rtLibrary = new TemplateReactionGenerator();
 			
 			
-			
-			
 			/// THE SERVERY BIT
 			
 			ServerSocket Server = new ServerSocket (5000);
-			System.out.println ("TCPServer Waiting for client on port 5000");
+			Logger.info("TCPServer Waiting for client on port 5000");
+			
+			Logger.info("Switching to quiet mode - only WARNINGS and above will be logged...");
+			Logger.setConsoleLevel(jing.rxnSys.Logger.WARNING);
+			Logger.setFileLevel(jing.rxnSys.Logger.WARNING);
 			
 			while(true) 
-			{
-				Socket connected = Server.accept();
-				System.out.println( " THE CLIENT"+" "+
+			  {
+			  
+			  Socket connected = Server.accept();
+			  Logger.warning( " THE CLIENT"+" "+
 								   connected.getInetAddress() +":"+connected.getPort()+" IS CONNECTED ");
-				BufferedReader inFromClient =
-				new BufferedReader(new InputStreamReader (connected.getInputStream()));
-				PrintWriter outToClient =
-				new PrintWriter(connected.getOutputStream(),true);
-				
+			  BufferedReader inFromClient =
+					new BufferedReader(new InputStreamReader (connected.getInputStream()));
+			  inFromClient.mark(4096); // so you can reset up to 4096 characters back.
+			  PrintWriter outToClient =
+					new PrintWriter(connected.getOutputStream(),true);
+			  try{
 				listOfReactions = "Arrhenius 'A' parameter has units of: " + ArrheniusEPKinetics.getAUnits() + ",cm3,s\n" +
 				"Arrhenius 'n' parameter is unitless and assumes Tref = 1K\n" +
 				"Arrhenius 'E' parameter has units of: " + ArrheniusEPKinetics.getEaUnits() + "\n\n";
@@ -341,7 +351,6 @@ public class PopulateReactionsServer {
 				// clear old things
 				speciesSet.clear();
 				reactions.clear();
-				
 				
 				/*
 				 * Read in the species (name, concentration, adjacency list)
@@ -531,21 +540,41 @@ public class PopulateReactionsServer {
 					fw_spcs.close();
 				}
 				catch (IOException e) {
-					System.out.println("Could not write PopRxnsOutput.txt files");
-					System.exit(0);
+					System.err.println("Could not write PopRxnsOutput*.txt files");
 				}
 				// Display to the user that the program was successful and also
 				//	inform them where the results may be located
-				System.out.println("Reaction population complete. Results are stored" 
-								   + " in PopRxnsOutput_rxns.txt and PopRxnsOutput_spcs.txt");
+				System.out.println("Reaction population complete. " 
+								+ "Results are stored in PopRxnsOutput_rxns.txt and PopRxnsOutput_spcs.txt");
 				
 				// send output to client
 				System.out.println("SENDING RESPONSE TO CLIENT");
 				outToClient.println(listOfSpecies);
 				outToClient.println(listOfReactions);
-				connected.close();
-				System.out.println("SOCKET CLOSED");
-				
+
+			  }
+			  catch (Throwable t) {
+				  Logger.error("Error in PopulateReactionsServer");
+				  try {
+					  inFromClient.reset();
+					  Logger.error("Input:");
+					  while (inFromClient.ready()) {
+						  Logger.error(inFromClient.readLine());
+					  }
+				  }
+				  catch (IOException e) {
+					  Logger.error("Couldn't read input stream");
+				  }
+				  
+				  Logger.logStackTrace(t);
+				  outToClient.println("Error in PopulateReactionsServer");
+				  t.printStackTrace(outToClient);
+			  }
+			  
+			connected.close();
+			System.out.println("SOCKET CLOSED");
+			  
+
 			}
 			
 		} catch (FileNotFoundException e) {
@@ -553,6 +582,9 @@ public class PopulateReactionsServer {
 		} catch(IOException e) {
 			System.err.println("IOException: Something maybe wrong with ChemParser.readChemGraph.\n"+e.toString());
 		}
+		
+		
+		
 	}
 	
 	public static void initializeSystemProperties() {

@@ -1157,175 +1157,204 @@ public class Species {
 		inchi.mkdir();
 		
 		String [] result = new String[2];
-		String InChIstring = "";
-                String InChIKeystring = "";
-                String line = "";
-                String cTable = generateMolFileString(p_chemGraph);
+
+                String cTable = generateMolFileString(p_chemGraph, 1);//we use 1 for benzene bond strength...only connectivity is important for InChI; (don't currently have kekulizer, and alternative of 4 is apparently not part of MDL MOL file spec, and InChI program doesn't process it properly when there is a radical site next to a 4 (B) bond)
 		
 		//
                 File molFile = null;
-		String workingDirectory = System.getProperty("RMG.workingDirectory");
+		File txtFile = null;
 		String inchiDirectory = "InChI";
 
 		// Write the cTable to species.mol file
         try {
         	molFile = new File(inchiDirectory + "/species.mol");
+		txtFile = new File(inchiDirectory + "/species.txt");
+		//delete any existing molFile to make the source of failures more obvious and avoid hidden bugs
+		if(molFile.exists()){
+		    molFile.delete();
+		}
         	FileWriter fw = new FileWriter(molFile);
         	fw.write(cTable);
         	fw.close();
+
         } catch (IOException e) {
         	String err = "Error writing species.mol file for InChI generation: ";
         	err += e.toString();
         	Logger.error(err);
         }
         
-        // Call cINChI-1 executable file
-//        String optionsArgument = "";
-//        if (getOs().toLowerCase().contains("windows"))
-//        	optionsArgument = "/DoNotAddH /FixedH /Key";//6/9/09 gmagoon: added fixed H so tautomers are considered separately; this is apparently not an option for version 1.02 (standard inchi); also added Key option to generate inchikey...this is only available in version 1.02beta or later; therefore, this keyword combination will only work for version 1.02beta (as of now)
-//        else if (getOs().toLowerCase().contains("linux"))
-//        	optionsArgument = "-DoNotAddH -FixedH -Key";
-//        else if (getOs().toLowerCase().contains("mac"))
-//        	optionsArgument = "-DoNotAddH -FixedH -Key";
-        //6/9/09 gmagoon: I have reorganized the function in order to get around difficulty when using multiple options...if I just try to pass all options as a string (e.g. "-DoNotAddH -FixedH -Key") it is not correctly interpreted by the InChI program (note that leading "/" is not shown in the resulting "unrecognized option" warning);
-        //I would have liked to have specified optionsArgument as an array of strings, but I was getting "illegal start of expression" errors in NetBeans IDE
-        int exitValue = -1;
-        //while (exitValue != 0) {
-        
-        /*
-         * MRH 9MAR2010:
-         * Addressing Issue#13: InChI not working consistently on Linux / Mac
-         * 
-         * Switching how the input/error/output of the "InChI" Process is handled.
-         * MRH has copied the format JWA has used for the fame executable.
-         * InChI now appears to run very consistently on Linux (in the limited types
-         * of jobs I have ran - RMG, AdjList2InChI), in addition to running 
-         * consistently on Windows.
-         * 
-         * Hopefully RW can test the new implementation on Mac
-         * 
-         * NOTE: For Windows, the InChI.waitFor() must follow the .close()
-         * 	methods for the stdout and stderr BufferedReaders.  Otherwise,
-         * 	the RMG simulation gets hung up at the .waitFor() method and
-         * 	is perfecting happy waiting ... causing an infinite runtime.
-         * 
-         * NOTE: For Linux, 
-         */
-            try {
-                if (getOs().toLowerCase().contains("windows")){
-                    String[] command = {workingDirectory + "/bin/cInChI-1",
-                        "species.mol",
-                        "species.txt",
-                        "/DoNotAddH", "/FixedH", "/Key"};//6/9/09 gmagoon: added fixed H so tautomers are considered separately; this is apparently not an option for version 1.02 (standard inchi); also added Key option to generate inchikey...this is only available in version 1.02beta or later; therefore, this keyword combination will only work for version 1.02beta (as of now)
-                    File runningDir = new File("InChI");
-                    Process InChI = Runtime.getRuntime().exec(command, null, runningDir);
+	result= runInChIProcess(molFile, txtFile, false);
 
-                    BufferedReader stdout = new BufferedReader(new InputStreamReader(InChI.getInputStream()));
-                    BufferedReader stderr = new BufferedReader(new InputStreamReader(InChI.getErrorStream()));
-
-        			// Clean up i/o streams
-				InChI.getOutputStream().close();
-        			stdout.close();
-        			stderr.close();
-        			
-                    exitValue = InChI.waitFor();                        
-                }
-                else if (getOs().toLowerCase().contains("linux")){
-                    String[] command = {workingDirectory + "/bin/cInChI-1",
-                        "species.mol",
-                        "species.txt",
-                        "-DoNotAddH", "-FixedH", "-Key"};
-                    File runningDir = new File("InChI");
-                    Process InChI = Runtime.getRuntime().exec(command, null, runningDir);
-                    
-                    BufferedReader stdout = new BufferedReader(new InputStreamReader(InChI.getInputStream()));
-                    BufferedReader stderr = new BufferedReader(new InputStreamReader(InChI.getErrorStream()));
-
-                    exitValue = InChI.waitFor();
-
-        			// Clean up i/o streams
-				InChI.getOutputStream().close();
-        			stdout.close();
-        			stderr.close();
-                    
-                }
-                else if (getOs().toLowerCase().contains("mac")){
-                    String[] command = {workingDirectory + "/bin/cInChI-1",
-                        "species.mol",
-                        "species.txt",
-                        "-DoNotAddH", "-FixedH", "-Key"};
-                    File runningDir = new File("InChI");
-                    Process InChI = Runtime.getRuntime().exec(command, null, runningDir);
-                    
-                    BufferedReader stdout = new BufferedReader(new InputStreamReader(InChI.getInputStream()));
-                    BufferedReader stderr = new BufferedReader(new InputStreamReader(InChI.getErrorStream()));
-        			
-                    exitValue = InChI.waitFor();
-
-        			// Clean up i/o streams
-				InChI.getOutputStream().close();
-        			stdout.close();
-        			stderr.close();
-                }
-            }
-            catch (Exception e) {
-				Logger.logStackTrace(e);
-                String err = "Error running cINChI-1: ";
-                err += e.toString();
-                Logger.error(err);
-            }
-        //}
-		
-		// Read in the output of the cINChI-1 executable file (species.txt)
-            /*
-             * MRH 9MAR2010:
-             * This portion of code (reading in the species.txt file and searching
-             * 	for the InChI and InChIKey) is now obsolete (see code above).
-             */
-        FileReader in = null;
-		try {
-			in = new FileReader(inchiDirectory + "/species.txt");
-		} catch (FileNotFoundException e) {
-			String err = "Error reading species.txt file in generating InChI for species " + p_chemGraph.chemicalFormula + " : ";
-			err += e.toString();
-			Logger.error(err);
-		}
-        
-		if (in != null) {
-			BufferedReader reader = new BufferedReader(in);
-	        line = ChemParser.readMeaningfulLine(reader, true);
-	        read: while (line != null) {
-	        	if (line.startsWith("InChI=")) {//changed from InChI to InChI= (to distinguish fro InChIKey
-	        		InChIstring = line;
-	        	}
-	                else if (line.startsWith("InChIKey=")) {//changed from "InChI" to "InChI=" (to distinguish from "InChIKey="
-	        		InChIKeystring = line.replace("InChIKey=", "");//read in the InChIKey without the preceding "InChIKey="
-	        		break;
-	        	}
-	        	line = ChemParser.readMeaningfulLine(reader, true);
-	            }
-	        result[0]=InChIstring;
-	        result[1]=InChIKeystring;
-		try {
-			reader.close();
-			in.close();
-		} catch (Exception e) {
-			Logger.logStackTrace(e);
-			String err = "Error closing InChI output reader for " + p_chemGraph.chemicalFormula + " : ";
-			err += e.toString();
-			Logger.error(err);
-		}
-		}
-		else {
-			result[0] = "";
-			result[1] = "";
-		}
         return result;
+	}
+
+	//separated from generateInChI by gmagoon on 9/22/11 so it can be used elsewhere
+	//requires molFile (which should exist) and contain the structure with appropriate connectivity
+	//requires txtFile (the output text file from the InChI process); this will be deleted and rewritten if it already exists
+	//supressOutput determines whether the .prb and .log files will be written (in the molFile directory)
+	public static String [] runInChIProcess(File molFile, File txtFile, boolean suppressOutput){
+	    	String workingDirectory = System.getProperty("RMG.workingDirectory");
+		String [] result = new String[2];
+		String InChIstring = "";
+                String InChIKeystring = "";
+                String line = "";
+		String logFile = "";
+		String prbFile = "";
+		if (suppressOutput){//if we want to suppress output, we use "NUL" in the command; otherwise, if we don't specify them, they will be written in the molFile directory
+		    logFile = "NUL";
+		    prbFile = "NUL";
+		}
+		if(txtFile.exists()){
+		    txtFile.delete();
+		}
+			    // Call cINChI-1 executable file
+    //        String optionsArgument = "";
+    //        if (getOs().toLowerCase().contains("windows"))
+    //        	optionsArgument = "/DoNotAddH /FixedH /Key";//6/9/09 gmagoon: added fixed H so tautomers are considered separately; this is apparently not an option for version 1.02 (standard inchi); also added Key option to generate inchikey...this is only available in version 1.02beta or later; therefore, this keyword combination will only work for version 1.02beta (as of now)
+    //        else if (getOs().toLowerCase().contains("linux"))
+    //        	optionsArgument = "-DoNotAddH -FixedH -Key";
+    //        else if (getOs().toLowerCase().contains("mac"))
+    //        	optionsArgument = "-DoNotAddH -FixedH -Key";
+	    //6/9/09 gmagoon: I have reorganized the function in order to get around difficulty when using multiple options...if I just try to pass all options as a string (e.g. "-DoNotAddH -FixedH -Key") it is not correctly interpreted by the InChI program (note that leading "/" is not shown in the resulting "unrecognized option" warning);
+	    //I would have liked to have specified optionsArgument as an array of strings, but I was getting "illegal start of expression" errors in NetBeans IDE
+	    int exitValue = -1;
+	    //while (exitValue != 0) {
+
+	    /*
+	     * MRH 9MAR2010:
+	     * Addressing Issue#13: InChI not working consistently on Linux / Mac
+	     *
+	     * Switching how the input/error/output of the "InChI" Process is handled.
+	     * MRH has copied the format JWA has used for the fame executable.
+	     * InChI now appears to run very consistently on Linux (in the limited types
+	     * of jobs I have ran - RMG, AdjList2InChI), in addition to running
+	     * consistently on Windows.
+	     *
+	     * Hopefully RW can test the new implementation on Mac
+	     *
+	     * NOTE: For Windows, the InChI.waitFor() must follow the .close()
+	     * 	methods for the stdout and stderr BufferedReaders.  Otherwise,
+	     * 	the RMG simulation gets hung up at the .waitFor() method and
+	     * 	is perfecting happy waiting ... causing an infinite runtime.
+	     *
+	     * NOTE: For Linux,
+	     */
+		try {
+		    if (getOs().toLowerCase().contains("windows")){
+			String[] command = {workingDirectory + "/bin/cInChI-1",
+			    molFile.getAbsolutePath(),
+			    txtFile.getAbsolutePath(),logFile, prbFile,
+			    "/DoNotAddH", "/FixedH", "/Key"};//6/9/09 gmagoon: added fixed H so tautomers are considered separately; this is apparently not an option for version 1.02 (standard inchi); also added Key option to generate inchikey...this is only available in version 1.02beta or later; therefore, this keyword combination will only work for version 1.02beta (as of now)
+			File runningDir = new File("InChI");
+			Process InChI = Runtime.getRuntime().exec(command, null, runningDir);
+
+			BufferedReader stdout = new BufferedReader(new InputStreamReader(InChI.getInputStream()));
+			BufferedReader stderr = new BufferedReader(new InputStreamReader(InChI.getErrorStream()));
+
+				    // Clean up i/o streams
+				    InChI.getOutputStream().close();
+				    stdout.close();
+				    stderr.close();
+
+			exitValue = InChI.waitFor();
+		    }
+		    else if (getOs().toLowerCase().contains("linux")){
+			String[] command = {workingDirectory + "/bin/cInChI-1",
+			    molFile.getAbsolutePath(),
+			    txtFile.getAbsolutePath(),logFile, prbFile,
+			    "-DoNotAddH", "-FixedH", "-Key"};
+			File runningDir = new File("InChI");
+			Process InChI = Runtime.getRuntime().exec(command, null, runningDir);
+
+			BufferedReader stdout = new BufferedReader(new InputStreamReader(InChI.getInputStream()));
+			BufferedReader stderr = new BufferedReader(new InputStreamReader(InChI.getErrorStream()));
+
+			exitValue = InChI.waitFor();
+
+				    // Clean up i/o streams
+				    InChI.getOutputStream().close();
+				    stdout.close();
+				    stderr.close();
+
+		    }
+		    else if (getOs().toLowerCase().contains("mac")){
+			String[] command = {workingDirectory + "/bin/cInChI-1",
+			    molFile.getAbsolutePath(),
+			    txtFile.getAbsolutePath(),logFile, prbFile,
+			    "-DoNotAddH", "-FixedH", "-Key"};
+			File runningDir = new File("InChI");
+			Process InChI = Runtime.getRuntime().exec(command, null, runningDir);
+
+			BufferedReader stdout = new BufferedReader(new InputStreamReader(InChI.getInputStream()));
+			BufferedReader stderr = new BufferedReader(new InputStreamReader(InChI.getErrorStream()));
+
+			exitValue = InChI.waitFor();
+
+				    // Clean up i/o streams
+				    InChI.getOutputStream().close();
+				    stdout.close();
+				    stderr.close();
+		    }
+		}
+		catch (Exception e) {
+				    Logger.logStackTrace(e);
+		    String err = "Error running cINChI-1: ";
+		    err += e.toString();
+		    Logger.error(err);
+		}
+	    //}
+
+		    // Read in the output of the cINChI-1 executable file (species.txt)
+		/*
+		 * MRH 9MAR2010:
+		 * This portion of code (reading in the species.txt file and searching
+		 * 	for the InChI and InChIKey) is now obsolete (see code above).
+		 */
+	    FileReader in = null;
+		    try {
+			    in = new FileReader(txtFile);
+		    } catch (FileNotFoundException e) {
+			    String err = "Error reading species.txt file in generating InChI for species with MOL file at "+ molFile.getAbsolutePath();
+			    err += e.toString();
+			    Logger.error(err);
+		    }
+
+		    if (in != null) {
+			    BufferedReader reader = new BufferedReader(in);
+		    line = ChemParser.readMeaningfulLine(reader, true);
+		    read: while (line != null) {
+			    if (line.startsWith("InChI=")) {//changed from InChI to InChI= (to distinguish fro InChIKey
+				    InChIstring = line;
+			    }
+			    else if (line.startsWith("InChIKey=")) {//changed from "InChI" to "InChI=" (to distinguish from "InChIKey="
+				    InChIKeystring = line.replace("InChIKey=", "");//read in the InChIKey without the preceding "InChIKey="
+				    break;
+			    }
+			    line = ChemParser.readMeaningfulLine(reader, true);
+			}
+		    result[0]=InChIstring;
+		    result[1]=InChIKeystring;
+		    try {
+			    reader.close();
+			    in.close();
+		    } catch (Exception e) {
+			    Logger.logStackTrace(e);
+			    String err = "Error closing InChI output reader for species with MOL file at " + molFile.getAbsolutePath();
+			    err += e.toString();
+			    Logger.error(err);
+		    }
+		    }
+		    else {
+			    result[0] = "";
+			    result[1] = "";
+		    }
+	    return result;
 	}
 	
         //convert a chemgraph into a string that represents a 2D molefile with all atom positions initialized to zero
         //gmagoon 6/2/09: I separated this out from generateInChI so it could be easily be used elsewhere
-        public static String generateMolFileString(ChemGraph p_chemGraph) {
+	//bBond = bond Strength to use with aromatic bonds
+        public static String generateMolFileString(ChemGraph p_chemGraph, int bBond) {
     		// Convert chemGraph to string
 		int randNum = 1;
 		String p_string = p_chemGraph.toString(randNum);
@@ -1444,7 +1473,9 @@ public class Species {
 						} else if (bondOrder[i][j].equals("T")) {
 							bondStrength[bondCount] = 3;
 						} else if (bondOrder[i][j].equals("B")) {
-							bondStrength[bondCount] = 4;
+							bondStrength[bondCount] = bBond;
+							//InChI doesn't work with bond type 4 (which is apparently a de facto standard, and not part of MDL molFile Spec http://sourceforge.net/mailarchive/forum.php?forum_name=inchi-discuss&max_rows=25&style=nested&viewmonth=200909 )
+						        //so, we will use 1 when writing InChI's (only connectivity is important, and tests with phenyl and benzene suggest it works properly), but 4 otherwise (the same tests with using 1 also suggest that it still works when writing 2D mol files for RDKit as well, but I'm not sure if there is any cost to this, and I'd like to avoid using 1 except where "necessary")
 						}
 						
 						cTable += "\n";

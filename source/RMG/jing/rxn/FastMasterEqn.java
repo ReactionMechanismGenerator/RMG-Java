@@ -377,6 +377,10 @@ public class FastMasterEqn implements PDepKineticsEstimator {
 			// This may be needed to release memory, which is especially 
 			// important for FAME since it can easily be called tens of
 			// thousands of times in a single job
+			
+			while ( stderr.ready() && (line = stderr.readLine()) != null) {
+				Logger.error(line);
+			}
 			stderr.close();
 
 			// Parse FAME output file and update accordingly
@@ -399,8 +403,8 @@ public class FastMasterEqn implements PDepKineticsEstimator {
 			Logger.logStackTrace(e);
         	Logger.error(e.getMessage());
 			if (e.getCause() == null){
-				Logger.info("No cause for this exception! Could be because of insufficient memory,");
-				Logger.info("and not actually a problem with FAME or the input files!! Try pruning.");
+				Logger.info("Could be because of insufficient memory and not actually a problem with FAME or the input files.");
+				Logger.info("Try running fame.exe on its own.");
 			}
 			// Save bad input to file
             try {
@@ -561,11 +565,14 @@ public class FastMasterEqn implements PDepKineticsEstimator {
 
 			// Number of energy grains to use (determines to an extent the accuracy and precision of the results)
 			input.append( "# A method for determining the number of energy grains to use\n" );
-			input.append( "# 	Option 1: Specifying the number to use directly\n" );
-			input.append( "#		Example: NumGrains 201\n" );
-			input.append( "# 	Option 2: Specifying the grain size in J/mol, kJ/mol, cal/mol, kcal/mol, or cm^-1\n" );
-			input.append( "#		Example: GrainSize J/mol 4.184\n" );
+			input.append( "# Specify both the minimum number of grains and the maximum grain size\n" );
+			input.append( "# Allowed units for the grain size are J/mol, kJ/mol, cal/mol, kcal/mol, or cm^-1\n" );
+			input.append( "# Example:\n" );
+			input.append( "#		NumGrains 251\n" );
+			input.append( "#		GrainSize J/mol 4184\n" );
 			input.append( "NumGrains " + numGrains );
+			input.append( "\n" );
+			input.append( "GrainSize J/mol 4184" );
 			input.append( "\n\n" );
 
 			// Collisional transfer probability model to use
@@ -739,6 +746,7 @@ public class FastMasterEqn implements PDepKineticsEstimator {
 
 	/**
 	 * Parses one meaningful line from a FAME output buffer.
+	 * Returns null at the end of the file (as would br.readLine() )
 	 */
 	public String readMeaningfulLine(BufferedReader br) throws IOException {
 
@@ -746,7 +754,9 @@ public class FastMasterEqn implements PDepKineticsEstimator {
 		boolean found = false;
 		
 		while (!found) {
-			str = br.readLine().trim();
+			str = br.readLine();
+			if (str==null) return null;
+			str = str.trim();
 			found = !(str.length() == 0 || str.startsWith("#"));
 		}
 
@@ -852,6 +862,10 @@ public class FastMasterEqn implements PDepKineticsEstimator {
 
 				// Reactant and product isomers
 				str = readMeaningfulLine(br);
+				if (str==null) {
+					throw new PDepException(String.format(
+						"Was expecting %d sets of phenomenological rate coefficients in fame output, but output ends after %s", numKinetics, i));
+				}
 				tkn = new StringTokenizer(str);
 				int reac = Integer.parseInt(tkn.nextToken()) - 1;
 				int prod = Integer.parseInt(tkn.nextToken()) - 1;
@@ -953,6 +967,18 @@ public class FastMasterEqn implements PDepKineticsEstimator {
 				 * P.S. Want to keep the name fame (fast approximate me) instead of having to change to
 				 * 	smame (slow more accurate me).  ;)
 				 *  
+				 * JWA 01Nov2011:
+				 * 
+				 * Note that the k(T,P) values always combine both direct and
+				 * well-skipping effects. (In this sense they are not true
+				 * rate coefficients, but are instead "flux" coefficients.)
+				 * At low T and high P, the well-skipping effect is usually
+				 * very small. However, there are many examples of isomerization
+				 * reactions for which the well-skipping rate is much larger
+				 * than the direct rate (e.g. due to a very high barrier for
+				 * the direct reaction). For this reason, we do not apply the
+				 * check to isomerization reactions, since they are not 
+				 * necessarily wrong if the check fails.
 				 */
 				LinkedList pathReactionList = pdn.getPathReactions();
 				boolean foundHighPLimitRxn = false;
@@ -961,6 +987,9 @@ public class FastMasterEqn implements PDepKineticsEstimator {
 				for (int HighPRxNum = 0; HighPRxNum < pathReactionList.size(); HighPRxNum++) {
 					PDepReaction rxnWHighPLimit = (PDepReaction)pathReactionList.get(HighPRxNum);
 					if (rxn.getStructure().equals(rxnWHighPLimit.getStructure())) {
+						if (rxn.getReactant().isUnimolecular() && rxn.getProduct().isUnimolecular())
+							// Don't apply the check to isomerization reactions; see above comment
+							continue;
 						foundHighPLimitRxn = true;
 						Hrxn = rxnWHighPLimit.calculateHrxn(stdtemp);
 						double A = 0.0, Ea = 0.0, n = 0.0;
@@ -1029,7 +1058,7 @@ public class FastMasterEqn implements PDepKineticsEstimator {
 			Logger.verbose(pdn.toString());
 			Logger.error(e.getMessage());
 			Logger.logStackTrace(e);
-			throw new PDepException("Unable to parse FAME output file.");
+			throw new PDepException("Unable to parse FAME output file. "+e.getMessage());
 		}
 		catch(IOException e) {
 			Logger.error("Unable to read from file \"fame_output.txt\".");

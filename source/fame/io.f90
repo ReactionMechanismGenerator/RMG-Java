@@ -125,19 +125,23 @@ contains
         end if
 
         ! Read number of grains/grain size
-        line = readMeaningfulLine()
-        call getFirstToken(line, token)
-        if (index(token, 'numgrains') /= 0) then
+        grainSize = 0
+        numGrains = 0
+        do i = 1, 2
+            line = readMeaningfulLine()
             call getFirstToken(line, token)
-            read(token, *), numGrains
-            grainSize = 0
-            write (1,fmt=*) "Number of grains =", numGrains
-        elseif (index(token, 'grainsize') /= 0) then
-            call getFirstToken(line, token)
-            read(token, *), grainSize
-            numGrains = 0
-            write (1,fmt=*) "Grain size =", grainSize, "J/mol"
-        else
+            if (index(token, 'numgrains') /= 0) then
+                call getFirstToken(line, token)
+                read(token, *), numGrains
+                write (1,fmt=*) "Number of grains =", numGrains
+            elseif (index(token, 'grainsize') /= 0) then
+                call getFirstToken(line, token)
+                call getFirstToken(line, token)
+                read(token, *), grainSize
+                write (1,fmt=*) "Grain size =", grainSize, "J/mol"
+            endif
+        enddo
+        if (numGrains == 0 .and. grainSize == 0) then
             write (0, fmt='(a)') 'Invalid grain size specification. Should be "NumGrains" or "GrainSize".'
             stop
         end if

@@ -59,11 +59,12 @@ public class ThermoDataEstimator {
 	 * @param args  filename of input file
 	 */
 	public static void main(String[] args) {
-
+				
 		RMG.globalInitializeSystemProperties();
 
 		createFolders();
 
+		Species.setAddID(false);//don't add IDs to species names
 		/**
 		 * TODO program against interfaces, not implementations!
 		 */
@@ -79,13 +80,16 @@ public class ThermoDataEstimator {
 
 			readDatabasePath(reader);
 
-			qmflags = readQMFlags(reader);
+			qmflags = readQMFlags(reader);		
 
 			Global.maxRadNumForQM = qmflags.maxRadNumForQM.intValue();
 			ChemGraph.useQM = qmflags.qmActive.booleanValue();
 			QMTP.qmprogram = qmflags.method.toLowerCase();
 			ChemGraph.useQMonCyclicsOnly = qmflags.qmOnCyclicsOnly.booleanValue();
+			QMTP.connectivityCheck = qmflags.connectivityCheck.intValue();
 
+			readAtomConstraints(reader);
+			
 			readPrimaryThermoLibrary(reader);
 			mappedChemGraphsToNames = readChemGraphsFromFile(speciesFromInputFile, reader);
 
@@ -105,19 +109,106 @@ public class ThermoDataEstimator {
 
 	}
 	/**
+	 * dynamic constraints setting on the number of atoms (C,O,heavy,etc) in the species
+	 * 
+	 */
+	private static void readAtomConstraints(BufferedReader reader) {
+		String line;
+		line = ChemParser.readMeaningfulLine(reader, true);
+		while(!line.equals("END")){
+			if (line.startsWith("MaxCarbonNumber")) {
+				StringTokenizer st = new StringTokenizer(line);
+				String dummyString = st.nextToken();
+				int maxCNum = Integer.parseInt(st.nextToken());
+				ChemGraph.setMaxCarbonNumber(maxCNum);
+				Logger.info("Note: Overriding default MAX_CARBON_NUM with user-defined value: " + maxCNum);
+				
+			}
+			else if (line.startsWith("MaxOxygenNumber")) {
+		    	StringTokenizer st = new StringTokenizer(line);
+		    	String dummyString = st.nextToken();	// This should hold "MaxOxygenNumberPerSpecies:"
+		    	int maxONum = Integer.parseInt(st.nextToken());
+		    	ChemGraph.setMaxOxygenNumber(maxONum);
+		    	Logger.info("Note: Overriding default MAX_OXYGEN_NUM with user-defined value: " + maxONum);
+		    	
+		    }
+			else if (line.startsWith("MaxRadicalNumber")) {
+		    	StringTokenizer st = new StringTokenizer(line);
+		    	String dummyString = st.nextToken();	// This should hold "MaxRadicalNumberPerSpecies:"
+		    	int maxRadNum = Integer.parseInt(st.nextToken());
+		    	ChemGraph.setMaxRadicalNumber(maxRadNum);
+		    	Logger.info("Note: Overriding default MAX_RADICAL_NUM with user-defined value: " + maxRadNum);
+		    	
+		    }
+			else if (line.startsWith("MaxSulfurNumber")) {
+		    	StringTokenizer st = new StringTokenizer(line);
+		    	String dummyString = st.nextToken();	// This should hold "MaxSulfurNumberPerSpecies:"
+		    	int maxSNum = Integer.parseInt(st.nextToken());
+		    	ChemGraph.setMaxSulfurNumber(maxSNum);
+		    	Logger.info("Note: Overriding default MAX_SULFUR_NUM with user-defined value: " + maxSNum);
+		    	
+		    }
+			else if (line.startsWith("MaxSiliconNumber")) {
+		    	StringTokenizer st = new StringTokenizer(line);
+		    	String dummyString = st.nextToken();	// This should hold "MaxSiliconNumberPerSpecies:"
+		    	int maxSiNum = Integer.parseInt(st.nextToken());
+		    	ChemGraph.setMaxSiliconNumber(maxSiNum);
+		    	Logger.info("Note: Overriding default MAX_SILICON_NUM with user-defined value: " + maxSiNum);
+		    	
+		    }
+			else if (line.startsWith("MaxHeavyAtom")) {
+		    	StringTokenizer st = new StringTokenizer(line);
+		    	String dummyString = st.nextToken();	// This should hold "MaxHeavyAtomPerSpecies:"
+		    	int maxHANum = Integer.parseInt(st.nextToken());
+		    	ChemGraph.setMaxHeavyAtomNumber(maxHANum);
+		    	Logger.info("Note: Overriding default MAX_HEAVYATOM_NUM with user-defined value: " + maxHANum);
+		    	
+		    }
+			else if (line.startsWith("MaxCycleNumber")) {
+		    	StringTokenizer st = new StringTokenizer(line);
+		    	String dummyString = st.nextToken();	// This should hold "MaxCycleNumberPerSpecies:"
+		    	int maxCycleNum = Integer.parseInt(st.nextToken());
+		    	ChemGraph.setMaxCycleNumber(maxCycleNum);
+		    	Logger.info("Note: Overriding default MAX_CYCLE_NUM with user-defined value: " + maxCycleNum);
+		    	
+		    }
+			line = ChemParser.readMeaningfulLine(reader, true);
+		}
+		
+
+	}
+	/**
 	 * method that iterates over all read-in ChemGraph's, generates TD
 	 * properties for all of them, and writes properties to the logger
+	 * also, writes a chemkin format file named TDEresultsCHEMKIN.dat with the thermo for all the species
 	 * @param mappedChemGraphsToNames map with Chemgraphs and mapped names
 	 */
 	private static void generateTDProperties(
 			Map<ChemGraph, String> mappedChemGraphsToNames) {
-		for(ChemGraph chemgraph : mappedChemGraphsToNames.keySet()){
 
-			Species spe = Species.make(mappedChemGraphsToNames.get(chemgraph),chemgraph);
 
-			ChemGraph stableChemGraph = spe.getChemGraph();
-			writeThermoDataInfo(spe, stableChemGraph);
+
+		try {
+		     //setup the chemkin output file
+		    File chemkinFile = new File("TDEresultsCHEMKIN.dat");
+		    FileWriter fw = new FileWriter(chemkinFile);
+		    BufferedWriter bw = new BufferedWriter(fw);
+
+		    //iterate through all the species
+		    for(ChemGraph chemgraph : mappedChemGraphsToNames.keySet()){
+
+			    Species spe = Species.make(mappedChemGraphsToNames.get(chemgraph),chemgraph);
+			    ChemGraph stableChemGraph = spe.getChemGraph();
+			    writeThermoDataInfo(spe, stableChemGraph);
+			    fw.write(getChemkinString(spe, stableChemGraph)+"\n");//write to the Chemkin file
+		    }
+
+		    fw.close();//close the chemkin file
+		}catch (IOException e){
+		    Logger.error("Problem creating, writing, or closing Chemkin file!");
+		    Logger.logStackTrace(e);
 		}
+
 	}
 	/**
 	 * Create the working folders for QMTP required folders
@@ -150,6 +241,21 @@ public class ThermoDataEstimator {
 		line = ChemParser.readMeaningfulLine(reader, true);
 		qmFlags.maxRadNumForQM = Integer.parseInt(line);
 
+		line = ChemParser.readMeaningfulLine(reader, true);
+		String checkConnSetting = line.toLowerCase();
+		if (checkConnSetting.equals("off")){//no connectivity checking
+		    qmFlags.connectivityCheck = 0;
+		}
+		else if (checkConnSetting.equals("check")){//print a warning if the connectivity doesn't appear to match
+		    qmFlags.connectivityCheck = 1;
+		}
+		else if (checkConnSetting.equals("confirm")){//consider the run a failure if the connectivity doesn't appear to match
+		    qmFlags.connectivityCheck = 2;
+		}
+		else{
+		    Logger.critical("input.txt: Inappropriate 'CheckConnectivity' value (should be 'off', 'check', or 'confirm')");
+		    System.exit(0);
+		}
 		return qmFlags;
 
 	}
@@ -160,9 +266,7 @@ public class ThermoDataEstimator {
 		Logger.info("The number of resonance isomers is " + 
 				spe.getResonanceIsomersHashSet().size());
 
-		Logger.info("The NASA data is \n!"+spe.getNasaThermoSource()+"\n"+
-				"!" + stableChemGraph.getThermoComments() + "\n" +
-				spe.getNasaThermoData());
+		Logger.info("The NASA data is \n"+getChemkinString(spe, stableChemGraph));
 
 		Logger.info("ThermoData is \n" + 
 				stableChemGraph.getThermoData().toString());
@@ -242,6 +346,12 @@ public class ThermoDataEstimator {
 			folder.mkdir();
 	}
 
+	private static String getChemkinString(Species spe, ChemGraph stableChemGraph){
+	   return "!"+ stableChemGraph.getThermoComments()+"\n"+
+				"!" + spe.getNasaThermoSource() + "\n" +
+				"! [_ SMILES=\"" + spe.getInChI() + "\" _]\n"+
+				spe.getNasaThermoData();
+	}
 
 
 

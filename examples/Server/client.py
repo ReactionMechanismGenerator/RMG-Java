@@ -13,15 +13,12 @@ client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 client_socket.connect(("localhost", 5000))
 
 request = """
-nButanol (molecule/cm3) 0.01 
-1 C 0 {2,S}
-2 C 0 {1,S} {3,S}
-3 C 0 {2,S} {4,S}
-4 C 0 {3,S} {5,S}
-5 O 0 {4,S}
+C2H4 (molecule/cm3) 0.01 
+1 C 0 {2,D}
+2 C 0 {1,D}
 
-CH3 (molecule/cm3) 0.01
-1 C 1
+O (molecule/cm3) 0.01
+1 O 2T
 
 END
 """

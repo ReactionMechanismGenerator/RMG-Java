@@ -54,6 +54,7 @@ L1: X_H
 				L5: C/H2/CbCb
 				L5: C/H2/CbCO
 				L5: C/H2/COCO
+			L4: C/H2/Cb
 		L3: C_ter
 			L4: C/H/NonDeC
 				L5: C/H/Cs3
@@ -101,6 +102,7 @@ L1: X_H
 				L5: C/H/TDMustO
 				L5: C/H/TDMustS
 			L4: C/H/ThreeDe
+			L4: C/H/Cb
 	L2: Cd_H
 		L3: Cd_pri
 		L3: Cd_sec
@@ -138,6 +140,9 @@ L1: X_H
 			L4: O/H/NonDeC
 			L4: O/H/NonDeO
 				L5: H2O2
+				L5: ROOH_pri
+				L5: ROOH_sec
+				L5: ROOH_ter
 			L4: O/H/OneDe
 	L2: Orad_O_H
 	L2: S_H
@@ -199,6 +204,8 @@ L1: Y_rad_birad
 						L7: C_rad/H/CtCs
 						L7: C_rad/H/CbCs
 						L7: C_rad/H/COCs
+						L7: InChI=1/C3H5O/c1-2-3-4/h2-3H,1H3/c
+						L7: C_rad/H/CO/Cs
 					L6: C_rad/H/OneDeO
 					L6: C_rad/H/OneDeS
 						L7: C_rad/H/CdS
@@ -231,6 +238,8 @@ L1: Y_rad_birad
 						L7: C_rad/Cs2S
 						L7: C_rad/CsS2
 						L7: C_rad/S3
+						L7: InChI=1/C4H9O/c1-3-4(2)5/h5H,3H2,1-2H3
+						L7: C_rad/OOH/Cs/Cs
 				L5: C_rad/OneDe
 					L6: C_rad/Cs2
 						L7: C_rad/CdCs2

@@ -139,6 +139,92 @@ public class ChemGraph implements Matchable {
 				throw new ForbiddenStructureException(message);
 			}
         }
+        this.determineAromaticityAndWriteBBonds();
+    }
+
+    public void determineAromaticityAndWriteBBonds() {
+	//General structure: make three passes through the list of cycles:
+	//0. perceive aromaticity using a modified version of Sandeep's algorithm
+	//1. do a final aromaticity screen
+	//2. convert to B bonds
+	//3. re-perceive functional groups
+
+	// If there are no cycles, cannot be aromatic
+        if (graph.getCycleNumber() == 0) return;
+
+	//check for already existing B bonds; if so, set isAromatic to true
+	Iterator arcs = graph.getArcList();
+	while (arcs.hasNext()){
+	    Arc arc = (Arc)arcs.next();
+	    if (((Bond)arc.getElement()).isBenzene())     isAromatic = true;
+	}
+
+	//addMissingHydrogen();
+    	graph.getAromatic();//perceive aromaticity using Sandeep's algorithm
+	boolean[] aromaticList=graph.getIsAromatic();
+	//iterate over the rings to do one final check for aromaticity; we need to do all at once before converting to B bonds so that double bonds are correctly counted
+	for (int i=0; i<graph.getCycle().size(); i++){
+	    boolean aromatic = aromaticList[i];
+	    //for our purposes, we want the presence of one double bond (in the ring under consideration...note that this will not accurately handle some resonance isomers of napthalene) to be a necessary condition for aromaticity (radicals are tricky; phenyl should be aromatic, but not C3H2)
+	    if (aromatic){//if the ring is aromatic, check for exactly one double bond at each node in cycle
+		LinkedList graphComps = (LinkedList) graph.getCycle().get(i);//get the aromatic cycle
+		for (int numComps=0; numComps<graphComps.size(); numComps++) {
+		    GraphComponent gc = (GraphComponent)graphComps.get(numComps);
+		    if (gc instanceof Node) {
+			//Iterator neighbors = graph.getNodeAt(((Node)gc).getID()).getNeighbor();
+		        Iterator neighbors = ((Node)gc).getNeighbor();
+			int number_of_double_bonds = 0;
+                        while (neighbors.hasNext()) {
+                            Arc nodeA= (Arc)neighbors.next();
+                            double order = ((Bond)(nodeA.getElement())).getOrder();
+                            //if(order==2) number_of_double_bonds++;
+			    if(order==2 && graphComps.contains(nodeA)) number_of_double_bonds++;//graphComps.contains() portion is used to check that the bond under consideration is part of the ring under consideration; the previous approach without this check would produce false positives
+			}
+			if(number_of_double_bonds != 1) aromaticList[i] = false;
+		    }
+		}
+	    }
+	}
+	//iterate over rings again, this time converting to B bonds
+	for (int i=0; i<graph.getCycle().size(); i++){
+	    boolean aromatic = aromaticList[i];
+	    if(aromatic){//if it is still considered aromatic (given the above final screen) convert to B bonds
+		LinkedList graphComps = (LinkedList) graph.getCycle().get(i);//get the aromatic cycle
+		for (int numComps=0; numComps<graphComps.size(); numComps++) {
+		    GraphComponent gc = (GraphComponent)graphComps.get(numComps);
+		    if (gc instanceof Arc) {
+			Arc currentArc = (Arc)gc;
+			Bond currentBond = (Bond)currentArc.getElement();
+			currentArc.setElement(currentBond.changeBondToAromatic());
+		    }
+		}
+	    }
+	 }
+	            /**
+             * After the bonds that were previously defined as "S" or "D" bonds,
+             * have been renamed to "B" bonds,
+             * We have to re-perceive the atom type of the atoms in the adjacency list.
+             * This is done by re-iterating over all nodes and calling the
+             * Node.updateFgElement.
+             *
+             * If this is not done, the thermodynamic properties estimation
+             * will fail to assign Cb GAVs to those atoms perceived as aromatic.
+             *
+             */
+	for (int i=0; i<graph.getCycle().size(); i++){
+	    if (aromaticList[i]){
+		LinkedList graphComps = (LinkedList) graph.getCycle().get(i);//get the aromatic cycle
+		for (int numComps=0; numComps<graphComps.size(); numComps++) {
+		    GraphComponent gc = (GraphComponent)graphComps.get(numComps);
+		    if (gc instanceof Node) {
+			Node currentNode = (Node)gc;
+			currentNode.updateFgElement();//update the FgElement
+		    }
+		}
+		isAromatic = true;
+	    }
+	}
+
     }
 
     /*private boolean isAromatic() {
@@ -1295,8 +1381,17 @@ return sn;
     }
     
     public String generateMolFileString() {
-    	String mfs = Species.generateMolFileString(this);
-    	return mfs;
+    	String mfs = Species.generateMolFileString(this,4);//use 4 for benzene bond type...this is apparently not part of MDL MOL file spec, but seems to be more-or-less of a de facto standard, and seems to be properly processed by RDKit (cf. http://sourceforge.net/mailarchive/forum.php?forum_name=inchi-discuss&max_rows=25&style=nested&viewmonth=200909 )
+	//note that for aromatic radicals (e.g. phenyl), this produces an RDKit error, as shown below (at least using the (somewhat old) RDKit on gmagoon's laptop as of 9/12/11), but it still seems to process correctly, though the guess geometry isn't that great (more like sp3 than sp2); in practice, we won't often be using radicals with RDKit (exceptions include when requested by user or in DictionaryReader), so this shouldn't be a big deal
+//ERROR: Traceback (most recent call last):
+//ERROR: File "c:\Users\User1\RMG-Java/scripts/distGeomScriptMolLowestEnergyConf.py", line 13, in <module>
+//ERROR: AllChem.EmbedMultipleConfs(m, attempts,randomSeed=1)
+//ERROR: Boost.Python.ArgumentError: Python argument types in
+//ERROR: rdkit.Chem.rdDistGeom.EmbedMultipleConfs(NoneType, int)
+//ERROR: did not match C++ signature:
+//ERROR: EmbedMultipleConfs(class RDKit::ROMol {lvalue} mol, unsigned int numConfs=10, unsigned int maxAttempts=0, int randomSeed=-1, bool clearConfs=True, bool useRandomCoords=False, double boxSizeMult=2.0, bool randNegEig=True, unsigned int numZeroFail=1, double pruneRmsThresh=-1.0, class boost::python::dict {lvalue} coordMap={})
+	//an alternative would be to use bond type of 1, which also seems to work, though the guess geometry for non-radicals (e.g. benzene) is not great (sp3 hybridized rather than sp2 hybridized)
+	return mfs;
     }
     
     /**
@@ -1315,6 +1410,11 @@ return sn;
                 }
                 else if (thermoGAPP == null) setDefaultThermoGAPP();
         	thermoData = thermoGAPP.generateThermoData(this);
+		//fall back to GATP if it is a failed QMTP calculation
+		if (((String)thermoData.getSource()).equals("***failed calculation***")){
+		    Logger.warning("Falling back to group additivity due to repeated failure in QMTP calculations");
+		    thermoData=(GATP.getINSTANCE()).generateThermoData(this);
+		}
 
             //thermoData = thermoGAPP.generateAbramData(this);
         	return thermoData;
@@ -2793,6 +2893,10 @@ return sn;
 
     public String getFreqComments() {
         return freqComments;
+    }
+
+    public boolean getIsAromatic() {
+	return isAromatic;
     }
 }
 /*********************************************************************
