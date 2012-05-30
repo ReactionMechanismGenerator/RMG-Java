@@ -19,4 +19,5 @@ COS + H2O = COSHOH			1.30E+01	3.35	25.79	0.0	0.0	0.0
 // 3rd pathway, form aldehyde from first product (reverse)
 H2S + CH2O = CH2OHSH		5.02E+01	3.01	38.7	0.0	0.0	0.0
 H2S + CH3CHO = CHCH3OHSH	4.69E+01	2.90	37.1	0.0	0.0	0.0
-
+// Approximate water-gas shift reaction
+// CO + H2O = CO2 + H2		5.0E+03		0.0	0.0	0.0	0.0	0.0

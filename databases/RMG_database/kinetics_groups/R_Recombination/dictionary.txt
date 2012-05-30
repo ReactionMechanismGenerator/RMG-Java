@@ -428,8 +428,10 @@ C=SJ-Ss
 2    Ss 0 {1,S}
 3    Sd 0 {1,D}
 
+//S_rad
+//Union {SJ, SJJ}
 S_rad
-Union {SJ, SJJ}
+1  * S 1
 
 SJ
 1  * Ss 1
@@ -468,5 +470,5 @@ SJ-Ss
 1  * Ss 1 {2,S}
 2    Ss 0 {1,S}
 
-SJJ
-1 * S 2				
+//SJJ
+//1 * S 2				

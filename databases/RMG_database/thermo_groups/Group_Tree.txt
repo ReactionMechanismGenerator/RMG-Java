@@ -101,10 +101,13 @@ L1: C
 
 	L2: Cds
 		L3: Cds-OdHH		
-		L3: Cds-OdOsH		
-		L3: Cds-OdOsOs	
+		L3: Cds-OdOsH
+		L3: CO-SsH		
+		L3: Cds-OdOsOs
+		L3: CO-CsSs
 		L3: C=S-HH
         L3: C=S-SsH
+	L3: CS-OsH
         L3: C=S-SsSs
 		L3: Cds-OdCH
 			L4: Cds-OdCsH
@@ -118,7 +121,7 @@ L1: C
 			L4: Cds-OdCtH
 			L4: Cds-OdCbH
 
-		L3: C=S-CH
+	L3: C=S-CH
             L4: C=S-CsH
             L4: C=S-CdsH
                 L5: C=S-C=SH     // CS-CSH
@@ -245,6 +248,8 @@ L1: C
                         L7: C=S-Cb(Cds-Cdd-Cd)        // CS-(Cd-Ca)Cb
             L4: C=S-CbCt
             L4: C=S-CbCb
+	L3: CS-CsOs
+
 			
 		L3: Cds-CdHH
 			L4: Cds-CdsHH
@@ -1922,6 +1927,7 @@ L1: O
 				L5: Os-(Cds-Cd)H	// O-CdH
 			L4: Os-CsH
 			L4: Os-CbH
+			L4: Os-CSH
 		L3: Os-OsC
 			L4: Os-OsCt
 			L4: Os-OsCds 
@@ -1988,6 +1994,7 @@ L1: S
 				L5: Ss-C=SH
 			L4: Ss-CtH
 			L4: Ss-CbH
+			L4: Ss-COH
 		L3: Ss-SsH
 		L3: Ss-SsSs
 		L3: Ss-SsC

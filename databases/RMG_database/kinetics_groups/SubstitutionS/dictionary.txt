@@ -232,6 +232,14 @@ S-HCs(CsCsCs)
 5 Cs 0 {3,S}
 6 Cs 0 {3,S}
 
+S-HCs(CsOsH)
+1 *1 Ss 0 {2,S} {3,S}
+2 H 0 {1,S}
+3 *2 Cs 0 {1,S} {4,S} {5,S} {6,S}
+4 Cs 0 {3,S}  
+5 Os 0 {3,S}
+6 H 0 {3,S}
+
 S-HCs(OneDe)
 1 *1 Ss 0 {2,S} {3,S}
 2 H 0 {1,S} 
@@ -338,6 +346,12 @@ S-HCO
 1 *1 Ss 0 {2,S} {3,S}
 2 H 0 {1,S} 
 3 *2 CO 0 {1,S}
+
+S-HCO(H)
+1 *1 Ss 0 {2,S} {3,S}
+2 H 0 {1,S}
+3 *2 CO 0 {1,S} {4,S}
+4 H 0 {3,S}
 
 S-HC=S
 1 *1 Ss 0 {2,S} {3,S}

@@ -50,6 +50,8 @@ L1: RnH
 		L3: R4H_RSR
 			L4: R4H_RSS
 				L5: R4H_SSS
+					L6: R4H_SSS_CsSCsCs
+					L6: R4H_SSS_CsCsSCs
 					L6: R4H_SSS_OOCsCs
 						L7: R4H_SSS_OO(Cs/Cs)Cs
 							L8: R4H_SSS_OO(Cs/Cs/Cs)Cs
@@ -83,6 +85,7 @@ L1: RnH
 			L4: R5H_SSSR
 				L5: R5H_SSSS
 					L6: R5H_CCCC_O
+					L6: R5H_SSSS_CsCsCsSCs
 					L6: R5H_SSSS_OOCCC
 						L7: R5H_SSSS_OO(Cs/Cs)Cs
 							L8: R5H_SSSS_OO(Cs/Cs/Cs)Cs
@@ -233,6 +236,7 @@ L1: XH_out
 //				L5: Cs_H_out_H/((C/C)OOH)
 			L4: Cs_H_out_H/NonDeO
 				L5: Cs_H_out_OOH/H
+			L4: Cs_H_out_H/NonDeS
 			L4: Cs_H_out_H/OneDe
 		  L3: Cs_H_out_noH
 			L4: Cs_H_out_NonDe

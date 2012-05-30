@@ -11,10 +11,10 @@
 
 S-RR + YJ -> RJ + S-YR
 
-forward
-reverse(f23): SubstitutionS
+//forward
+//reverse(f23): SubstitutionS
 
-//thermo_consistence
+thermo_consistence
 
 Actions 1
 (1) BREAK_BOND		{*1,S,*2}

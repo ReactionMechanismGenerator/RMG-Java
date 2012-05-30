@@ -1,0 +1,17 @@
+// rate library for f13: 1,3 insertion for RSR
+
+
+
+// JS, define key word for format of the rate: either Arrhenius or Arrhenius_EP
+Arrhenius_EP
+
+//No.	doublebond			R_SR			Temp.		A		N	a		E0		DA		Dn		Da		DE0		Rank	Comments
+//								(K)		(cm3/mol/s)				(kcal/mol)
+100.	doublebond			R_SR			300-1500	1E+02		3	0		50		0		0		0		0		0		Default
+101.	Od_Cd/unsub			H_SH			300-1500	5.02E+01	3.01	0		38.7	0		0		0		0		3		CBS-QB3 calculations from CAC
+//Changed 102's Ea back to 36.30.
+102.	Od_Cd/H/Nd			H_SH			300-1500	6.13E+01	2.77	0		36.30	0		0		0		0		3		CBS-QB3 calculations from CAC, energy from F12
+103.	Cd/unsub_Cd/unsub		H_SH			300-1500	3.48E+01	3.35	0		49.6	0		0		0		0		3	CBS-QB3 by CAC
+104.	Cd/H2_Cd/H/Nd			H_SH			300-1500	5.79E+00	3.42	0		51.3	0		0		0		0		3	CBS-QB3 by CAC
+105.	Cd/H/Nd_Cd/H2			H_SH			300-1500	1.49E+01	3.30	0		46.4	0		0		0		0		3	CBS-QB3 by CAC
+106.	Cd/H/Nd_Cd/H2			H_SCs			300-1500	1.78E+00	3.20	0		43.4	0		0		0		0		3	CBS-QB3 by CAC	
