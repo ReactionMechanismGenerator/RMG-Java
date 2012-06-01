@@ -146,7 +146,12 @@ program fame
                 ! Reaction is product channel -> product channel, which by
                 ! definition has zero rate, so we skip it
                 exit
-            elseif (sum(K(:,:,i,j) - K(:,:,j,i)) > 0) then
+            !elseif (sum(K(:,:,i,j) - K(:,:,j,i)) > 0) then
+            elseif (i > nIsom+nReac) then
+                reac = j; prod = i
+            elseif (j > nIsom+nReac) then
+                reac = i; prod = j
+            elseif (net%isomers(i)%E0 < net%isomers(j)%E0) then
                 reac = j; prod = i
             else
                 reac = i; prod = j
@@ -166,8 +171,12 @@ program fame
                 write (1,fmt='(A)') 'Warning: One or more k(T,P) values for a net reaction was zero.'
                 write (1,fmt='(A)') 'These have been set to 1e-300 to allow for k(T,P) interpolation model fitting.'
                 write (1,fmt='(A)') trim(net%isomers(reac)%name)//' -> '//trim(net%isomers(prod)%name)
+                write (1,*) nIsom, nReac, nProd, i, j, reac, prod
                 do t = 1, nT
                     write (1,fmt=*) K(t,:,prod,reac)
+                end do
+                do t = 1, nT
+                    write (1,fmt=*) K(t,:,reac,prod)
                 end do
                 go to 99
             end if
