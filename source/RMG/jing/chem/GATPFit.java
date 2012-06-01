@@ -49,6 +49,56 @@ import jing.rxnSys.Logger;
  */
 public class GATPFit {
 
+    private static Process GATPFit; 
+    private static BufferedReader errorStream, dataOutput; 
+    private static PrintWriter commandInput; 
+
+    static {
+      try {
+		    String workingDirectory = System.getProperty("RMG.workingDirectory");
+        String[] command = {workingDirectory +  "/bin/GATPFit.exe"};
+        File runningDir = new File("GATPFit");
+        GATPFit = Runtime.getRuntime().exec(command, null, runningDir);
+        
+        errorStream = new BufferedReader(new InputStreamReader(GATPFit.getErrorStream()));
+        commandInput = new PrintWriter(GATPFit.getOutputStream(), true);
+        BufferedInputStream in = new BufferedInputStream(GATPFit.getInputStream());
+        dataOutput = new BufferedReader(new InputStreamReader(in));
+
+        Runtime.getRuntime().addShutdownHook(new Thread() {
+          public void run() {
+            GATPFit.destroy(); 
+          }
+        } ); 
+
+        Thread Terr = new Thread(new Runnable(){
+          public void run(){
+            try {
+              String errline = errorStream.readLine();
+              if (errline!=null){
+                String error_message="GATPFit Error: ";
+                while (errline!=null){
+                  error_message+=errline;
+                  errline=errorStream.readLine();
+                }
+                throw new GATPFitException(error_message);
+              }
+            } catch (Exception e){
+              Logger.logStackTrace(e); 
+              throw new GATPFitException(e.toString()); 
+            }
+          }
+        } );
+        Terr.start(); 
+      } catch (Exception e) {
+        Logger.logStackTrace(e);
+        String ls = System.getProperty("line.separator");
+        String err = "Error running GATPFit" + ls;
+        err += e.toString();
+        throw new GATPFitException(err);
+      }
+    }
+
 		 //## operation callGATPFit(String)
     private static NASAThermoData callGATPFit(Species species, String p_directory) {
         //#[ operation callGATPFit(String)
@@ -58,7 +108,6 @@ public class GATPFit {
         if (p_directory == null) throw new NullPointerException();
 
         // write GATPFit input file
-		String workingDirectory = System.getProperty("RMG.workingDirectory");
         // write species name
         String ls = System.getProperty("line.separator");
         StringBuilder result = new StringBuilder(1024);
@@ -148,59 +197,35 @@ public class GATPFit {
         File GATPFit_input = null;
 
         // call GATPFit
+        final StringBuilder inputString = result; 
         boolean error = false;
         try {
-        	 // system call for GATPFit
-        	String[] command = {workingDirectory +  "/bin/GATPFit.exe"};
-			File runningDir = new File("GATPFit");
-        	Process GATPFit = Runtime.getRuntime().exec(command, null, runningDir);
-            
-            // send input
-            BufferedInputStream error_buff = new BufferedInputStream(GATPFit.getErrorStream());
-            BufferedReader error_stream = new BufferedReader(new InputStreamReader(error_buff));
-            BufferedOutputStream bufferout = new BufferedOutputStream(GATPFit.getOutputStream());
-            PrintWriter commandInput = new PrintWriter((new OutputStreamWriter(bufferout)), true);
-            commandInput.write(result.toString());
-            commandInput.close();
-            
-            String errline = error_stream.readLine();
-            if (errline!=null){
-                String error_message="GATPFit Error: ";
-                while (errline!=null){
-                    error_message+=errline;
-                    errline=error_stream.readLine();
+            //Logger.info(String.format(inputString.toString())); 
+            Thread Tin = new Thread(new Runnable(){
+                public void run(){
+                    commandInput.write(inputString.toString()); 
+                    commandInput.flush(); 
                 }
-                throw new GATPFitException(error_message);
-            }
+            } );
+            Tin.start(); 
             
-            // read in results
-            BufferedInputStream in = new BufferedInputStream(GATPFit.getInputStream());
-            BufferedReader data = new BufferedReader(new InputStreamReader(in));
-            
-            String line = data.readLine();
+            String line = dataOutput.readLine();
             if (line==null) {
-                System.out.print(result.toString());
                 throw new GATPFitException("no output from GATPFit");
             }
-            line = data.readLine(); // skip first line (just says "The Chemkin polynomical coefficients calculated:")
+            line = dataOutput.readLine(); // skip first line (just says "The Chemkin polynomical coefficients calculated:")
             String nasaString = "";
-            while (line != null) {
-                // System.out.println(line);
+            while ( (line != null) && !(line.contains("RSAGATPFITHASFINISHEDONEINPUTEOF"))) {
                 nasaString += line + System.getProperty("line.separator");
-                line = data.readLine();
+                line = dataOutput.readLine();
             }
-            in.close();        
-            error_buff.close();
-	    bufferout.close();
-            
+            //Logger.info(String.format("GATP string read: " + nasaString));
             nasaThermoData = new NASAThermoData(nasaString);
-            int exitValue = GATPFit.waitFor();
-			if (exitValue != 0) throw new GATPFitException("Exit value = " + exitValue);
         }
         catch (Exception e) {
-			Logger.logStackTrace(e);
-        	String err = "Error running GATPFit" + ls;
-        	err += e.toString();
+            Logger.logStackTrace(e);
+            String err = "Error running GATPFit" + ls;
+            err += e.toString();
             GATPFit_input_name = "GATPFit/INPUT.txt";
             err += ls + "To help diagnosis, writing GATPFit input to file "+GATPFit_input_name+ls;
             try {
@@ -208,12 +233,12 @@ public class GATPFit {
                 FileWriter fw = new FileWriter(GATPFit_input);
                 fw.write(result.toString());
                 fw.close();
-        	}
+            }
             catch (IOException e2) {
                 err+= "Couldn't write to file "+ GATPFit_input_name + ls;
                 err += e2.toString();
             }
-        	throw new GATPFitException(err);
+            throw new GATPFitException(err);
         }
        
 		/*
@@ -252,31 +277,6 @@ public class GATPFit {
         catch (GATPFitException e) {
         	throw new NASAFittingException("Error in running GATPFit: " + e.toString());
         }
-/*
-        // parse output from GATPFit, "output.txt" is the output file name
-        String therfit_nasa_output = "GATPFit/OUTPUT.txt";
-
-		NASAThermoData nasaThermoData = null;
-		
-        try {
-        	FileReader in = new FileReader(therfit_nasa_output);
-        	BufferedReader data = new BufferedReader(in);
-
-        	String line = data.readLine();
-        	line = data.readLine();
-        	String nasaString = "";
-
-        	while (line != null) {
-        		nasaString += line + System.getProperty("line.separator");
-        		line = data.readLine();
-        	}
-        	nasaThermoData = new NASAThermoData(nasaString);
-        }
-        catch (Exception e) {
-			Logger.logStackTrace(e);
-        	throw new NASAFittingException("Error reading in GATPFit output file: " + System.getProperty("line.separator") + e.toString());
-        }
-*/
 		
 		return nasaThermoData;
     }
