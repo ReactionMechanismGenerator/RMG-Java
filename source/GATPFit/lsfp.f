@@ -24,17 +24,15 @@ C adjustment:
 C: M_in: the number of input thermo data, use 'DATAGROUP' to read the input data
 C***********************************************************************************
       PROGRAM LSAP
-      use, intrinsic :: iso_fortran_env, only : 
-     1                  LIN=>input_unit, LOUT=>output_unit
 C
       implicit none
 C
-C     INTEGER LIN,LOUT
+      INTEGER LIN,LOUT
       INTEGER I,J,J_elem,IJ
 C max atoms number allowed in a species is 999
 C max number of different atoms is 5 
       integer indc_elno(5,3)
-!      PARAMETER (LIN=5,LOUT=6) ! 5 is STDIN and 6 is STDOUT
+      PARAMETER (LIN=5,LOUT=6) ! 5 is STDIN and 6 is STDOUT
 C For input file
       CHARACTER(LEN=4) MARK, DATATYPE
       CHARACTER(LEN=48) TEXT, SNAM ! beware truncation!
