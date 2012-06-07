@@ -45,7 +45,6 @@ import jing.chemParser.*;
 import jing.rxnSys.Logger;
 /**
  * Contains methods used to interact with GATPFit.
- * @author jwallen
  */
 public class GATPFit {
 
@@ -59,7 +58,6 @@ public class GATPFit {
         String[] command = {workingDirectory +  "/bin/GATPFit.exe"};
         File runningDir = new File("GATPFit");
         GATPFit = Runtime.getRuntime().exec(command, null, runningDir);
-        
         errorStream = new BufferedReader(new InputStreamReader(GATPFit.getErrorStream()));
         commandInput = new PrintWriter(GATPFit.getOutputStream(), true);
         BufferedInputStream in = new BufferedInputStream(GATPFit.getInputStream());
@@ -99,15 +97,14 @@ public class GATPFit {
       }
     }
 
-		 //## operation callGATPFit(String)
-    private static NASAThermoData callGATPFit(Species species, String p_directory) {
-        //#[ operation callGATPFit(String)
-        
-        NASAThermoData nasaThermoData = null;
-        
-        if (p_directory == null) throw new NullPointerException();
 
-        // write GATPFit input file
+    private static NASAThermoData callGATPFit(Species species, String p_directory) {
+
+        NASAThermoData nasaThermoData = null;
+
+        if (p_directory == null) throw new NullPointerException("No direcotry specified to run GATPFit in.");
+
+        // Construct GATPFit input
         // write species name
         String ls = System.getProperty("line.separator");
         StringBuilder result = new StringBuilder(1024);
@@ -121,7 +118,7 @@ public class GATPFit {
         int Sin = cg.getSiliconNumber();
         int Sn = cg.getSulfurNumber();
         int Cln = cg.getChlorineNumber();
-        
+
         int numUniqueElements = 0;
         if (Hn > 0) ++numUniqueElements;
         if (Cn > 0) ++numUniqueElements;
@@ -129,27 +126,19 @@ public class GATPFit {
         if (Sin > 0) ++numUniqueElements;
         if (Sn > 0) ++numUniqueElements;
         if (Cln > 0) ++numUniqueElements;
-        
-        // GATPFit.exe requires at least two elements but no more than five
+
+// GATPFit.exe requires at least two elements but no more than five
 //        if (numUniqueElements > 4) {
 //        	System.err.println("Species contains more than four unique elements.");
 //        }
-        
+
 		result.append( "ELEM C " + MathTool.formatInteger(Cn,3,"L") + ls );
 		result.append( "ELEM H " + MathTool.formatInteger(Hn,3,"L") + ls );
-        if (On>0) result.append( "ELEM O " + MathTool.formatInteger(On,3,"L") + ls );
+        if (On>0)  result.append( "ELEM O " + MathTool.formatInteger(On,3,"L") + ls );
         if (Sin>0) result.append( "ELEM Si " + MathTool.formatInteger(Sin,3,"L") + ls );
-        if (Sn>0) result.append( "ELEM S " + MathTool.formatInteger(Sn,3,"L") + ls );
-                if (Cln>0) result.append( "ELEM Cl " + MathTool.formatInteger(Cln,3,"L") + ls );
-        
-        /*if (Cn>0) result.append( "ELEM C " + MathTool.formatInteger(Cn,3,"L") + ls );
-        if (Hn>0) result.append( "ELEM H " + MathTool.formatInteger(Hn,3,"L") + ls );
-        if (On>0) result.append( "ELEM O " + MathTool.formatInteger(On,3,"L") + ls );*/
-		
-//		result.append( "ELEM C " + MathTool.formatInteger(Cn,3,"L") + ls );
-//        result.append( "ELEM H " + MathTool.formatInteger(Hn,3,"L") + ls );
-//        result.append( "ELEM O " + MathTool.formatInteger(On,3,"L") + ls );
-		
+        if (Sn>0)  result.append( "ELEM S " + MathTool.formatInteger(Sn,3,"L") + ls );
+        if (Cln>0) result.append( "ELEM Cl " + MathTool.formatInteger(Cln,3,"L") + ls );
+
         // write H and S at 298
         ThermoData td = species.getThermoData();
 		result.append( "H298 " + Double.toString(td.getH298()) + "\n" );
@@ -200,7 +189,7 @@ public class GATPFit {
         final StringBuilder inputString = result; 
         boolean error = false;
         try {
-            //Logger.info(String.format(inputString.toString())); 
+            //Logger.info(String.format(inputString.toString()));
             Thread Tin = new Thread(new Runnable(){
                 public void run(){
                     commandInput.write(inputString.toString()); 
@@ -240,7 +229,7 @@ public class GATPFit {
             }
             throw new GATPFitException(err);
         }
-       
+
 		/*
 		// temporarily save all GATPFit files for debugging purposes
 		GATPFit_input_name = "GATPFit/INPUT."+species.getChemkinName()+".txt";
@@ -257,12 +246,7 @@ public class GATPFit {
 		}
 		 */
 
-		
         return nasaThermoData;
-        // return error = true, if there was a problem
-        //return error;
-        
-        //#]
     }
 	
 	
