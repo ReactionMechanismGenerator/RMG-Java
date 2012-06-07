@@ -215,7 +215,7 @@ public class GATPFit {
             }
             line = dataOutput.readLine(); // skip first line (just says "The Chemkin polynomical coefficients calculated:")
             String nasaString = "";
-            while ( (line != null) && !(line.contains("RSAGATPFITHASFINISHEDONEINPUTEOF"))) {
+            while ( (line != null) && !(line.contains("GATPFIT_HAS_FINISHED_ONE_INPUT"))) {
                 nasaString += line + System.getProperty("line.separator");
                 line = dataOutput.readLine();
             }
