@@ -4789,14 +4789,14 @@ public class ReactionModelGenerator {
 			//read first temperature
 			double t = Double.parseDouble(st.nextToken());
 			tempList.add(new ConstantTM(t, unit));
-			Temperature temp = new Temperature(t, unit);//10/29/07 gmagoon: added this line and next two lines to set Global.lowTemperature and Global.highTemperature
+			Temperature temp = new Temperature(t, unit);
 			Global.lowTemperature = (Temperature)temp.clone();
 			Global.highTemperature = (Temperature)temp.clone();
 			//read remaining temperatures
 			while (st.hasMoreTokens()) {
 				t = Double.parseDouble(st.nextToken());
 				tempList.add(new ConstantTM(t, unit));
-				temp = new Temperature(t,unit);//10/29/07 gmagoon: added this line and next two "if" statements to set Global.lowTemperature and Global.highTemperature
+				temp = new Temperature(t,unit);
 				if(temp.getK() < Global.lowTemperature.getK())
 					Global.lowTemperature = (Temperature)temp.clone();
 				if(temp.getK() > Global.highTemperature.getK())
