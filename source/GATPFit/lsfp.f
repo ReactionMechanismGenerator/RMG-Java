@@ -44,7 +44,7 @@ C For input file
 C
 C: 'M' is the size of sample dataset
       INTEGER M_in
-!     PARAMETER (M_in=59)
+C     PARAMETER (M_in=59)
       PARAMETER (M_in=7)
       DOUBLE PRECISION TEMP,CPT,CH,CS,TEMF,CPF,CHF,CSF
       DIMENSION TEMP(M_in),CPT(M_in),CH(M_in),CS(M_in)
@@ -83,34 +83,34 @@ C
             indc_elno(i,j)=0
          enddo
       enddo
-c 
+C 
       DO I=1,8
         IJ=IJ+1
         READ (LIN, 100, END=34511) MARK, TEXT
         IF (MARK .EQ. 'SPEC') THEN
-!        WRITE(*,*) MARK
-!        WRITE(*,*) TEXT
+C        WRITE(*,*) MARK
+C        WRITE(*,*) TEXT
          SNAM=TEXT(1:16)
-!        WRITE(*,103) MARK,SNAM
+C        WRITE(*,103) MARK,SNAM
         ELSE IF (MARK .EQ. 'ELEM') THEN
          J_elem=J_elem+1
-!        WRITE(*,*) TEXT
+C        WRITE(*,*) TEXT
          ENAM(J_elem)=TEXT(1:(INDEX(TEXT,' ')-1))
          do J=1,3
            if (TEXT(INDEX(TEXT,' ')+J:INDEX(TEXT,' ')+J) .EQ. ' ') then
                indc_elno(j_elem,J)=1
             endif
          enddo
-! 
+C 
          ELNO(J_elem)=TEXT(INDEX(TEXT,' ')+1:INDEX(TEXT,' ')+4)
-!        WRITE(*,102) MARK,ENAM(J_ELEM),ELNO(J_ELEM)
+C        WRITE(*,102) MARK,ENAM(J_ELEM),ELNO(J_ELEM)
         ELSE IF (MARK .EQ. 'H298') THEN 
-!       We've read beyond the end of the elements, so read TEXT 
-!       as a double into H_298 and exit the loop
-!    WARNING: if the number in the input spans beyond the end of TEXT
-!             then it will be truncated, eg: 1.345678901234567E+012
-!                                            ---------------#######
-!             this number could be read in as 10^12 too small!
+C       We've read beyond the end of the elements, so read TEXT 
+C       as a double into H_298 and exit the loop
+C    WARNING: if the number in the input spans beyond the end of TEXT
+C             then it will be truncated, eg: 1.345678901234567E+012
+C                                            ---------------#######
+C             this number could be read in as 10^12 too small!
           READ(TEXT,*) H_298
           GOTO 200
         ENDIF
@@ -125,21 +125,21 @@ C
       ENDDO
 C
 
-!   We have already read H_298 line, so continue with S_298
-!     READ (LIN, *) MARK, H_298
-!     WRITE(*,*) MARK, H_298
+C   We have already read H_298 line, so continue with S_298
+C     READ (LIN, *) MARK, H_298
+C     WRITE(*,*) MARK, H_298
       READ (LIN, *) MARK, S_298
-!     WRITE(*,*) MARK, S_298
+C     WRITE(*,*) MARK, S_298
       READ (LIN, *) MARK, DLTH
-!     WRITE(*,*) 'HEAT OF FORMATION at 298K', DLTH
+C     WRITE(*,*) 'HEAT OF FORMATION at 298K', DLTH
       READ (LIN, *) MARK, MW
-!     WRITE(*,*) 'MOLAR WEIGHT', MW
+C     WRITE(*,*) 'MOLAR WEIGHT', MW
       READ (LIN, *) MARK, T_int
-!     WRITE(*,*) MARK, T_int
+C     WRITE(*,*) MARK, T_int
       READ (LIN, *) MARK, T_min
-!     WRITE(*,*) MARK, T_min
+C     WRITE(*,*) MARK, T_min
       READ (LIN, *) MARK, T_max
-!     WRITE(*,*) MARK, T_max
+C     WRITE(*,*) MARK, T_max
       if (T_max .gt. 6000.0) then
       write(*,*) 'Warning!!!'
       write(*,*) 'The maximum T should be no greater than 6000K!'
@@ -148,25 +148,25 @@ C
  102  FORMAT (A5,1X,A2,1X,A4)
  103  FORMAT (A5,1X,A8)
       READ (LIN, *) DATATYPE
-!     WRITE(*,*) 'DATA FORMAT:  ', DATATYPE
+C     WRITE(*,*) 'DATA FORMAT:  ', DATATYPE
 C
       IF (DATATYPE .EQ. 'NASA') THEN
          READ (LIN, *) MARK, T_int1
-!        WRITE(*,*) MARK, T_int1
+C        WRITE(*,*) MARK, T_int1
       ELSE
          READ (LIN, 101)
          T_int1=0.D0
       ENDIF
 C
       READ (LIN, *) STRUC_MOL
-!     WRITE(*,*) STRUC_MOL
+C     WRITE(*,*) STRUC_MOL
       READ (LIN, *) ATOMS
-!     WRITE(*,*) 'NO. OF ATOMS', ATOMS
+C     WRITE(*,*) 'NO. OF ATOMS', ATOMS
       READ (LIN, *) ROTORS
-!     WRITE(*,*) 'NO. OF ROTORS', ROTORS
+C     WRITE(*,*) 'NO. OF ROTORS', ROTORS
  104  FORMAT(F8.1)
-!      CLOSE(LIN)
-!     PAUSE
+C      CLOSE(LIN)
+C     PAUSE
 C
 C: Keywords input over
 C
@@ -180,18 +180,18 @@ C
          CS(I)  =0.D0
       ENDDO
 C
-!      CALL DATAINPUT (M_in,TEMP,CPT,CH,CS)
+C      CALL DATAINPUT (M_in,TEMP,CPT,CH,CS)
       CALL DATAGROUP (M_in,TEMP,CPT,CH,CS,LIN)
 C
       TINT  = 0.D0
       TINT1 = 0.D0
 C
-! SWILT uses the enthalpy in: cal/mol
+C SWILT uses the enthalpy in: cal/mol
       DO I=1,M_in
          CH(I) = CH(I)*1.D3
       ENDDO
 C
-! First fit SWILT because it takes into account limits at 0 and infinite T
+C First fit SWILT because it takes into account limits at 0 and infinite T
          CALL SWILT(SNAM,ENAM,ELNO,STRUC_MOL,ATOMS,ROTORS,THERM1,
      &                TEMP,CPT,CH,CS,M_in)
 C
@@ -200,21 +200,21 @@ C
 C: INTERPOLATE ACCORDING TO THE SWILHOIT FORMAT
 C
       DO I=1,11
-!     10 points between 1 and 298
+C     10 points between 1 and 298
         TEMF(I) = 29.815D0*DFLOAT(I-1)
         IF (TEMF(I) .EQ. 0.D0) TEMF(I)=1.0D0
         CALL DATAFIND(THERM1,TEMF(I),CPF(I),CHF(I),CSF(I))
         CHF(I) = CHF(I)/1.D3
       ENDDO
-!
+C
       DO I=12,101
-!     90 points between 298 and 6000
+C     90 points between 298 and 6000
         TEMF(I)=298.15D0+(6000.D0-298.15D0)*DFLOAT(I-11)/90.D0
         CALL DATAFIND(THERM1,TEMF(I),CPF(I),CHF(I),CSF(I))
         CHF(I)=CHF(I)/1.D3
       ENDDO
 C
-! Then re-fit the other formats to these data points
+C Then re-fit the other formats to these data points
 C
       IF (DATATYPE .EQ. 'CHEM') THEN
          CALL CHEM(T_int,TINT,THERM1,THERM2,TEMF,CPF,CHF,CSF)
@@ -298,8 +298,8 @@ C
       COMMON /INDICTOR/INDC_ELNO
 C
       IF (DATATYPE .EQ. 'WILH') THEN
-!       write(*,*) 'THE COEFFICIENTS OF WILHOIT FORM'
-!       write(*,*) THERM1(1:6)
+C       write(*,*) 'THE COEFFICIENTS OF WILHOIT FORM'
+C       write(*,*) THERM1(1:6)
         WRITE(LOUT,*) 'The Wilhoit polynomial coefficients calculated:'
         WRITE(LOUT,200)
         WRITE(LOUT,201) THERM1(1:6)
@@ -307,7 +307,7 @@ C
  201  FORMAT(1X,E15.6,2X,E15.6,2X,E15.6,2X,E15.6,2X,E15.6,2X,E15.6)
 C
       ELSEIF (DATATYPE .EQ. 'CHEM') THEN
-!      write(*,*) SNAM
+C      write(*,*) SNAM
 C
        WRITE(LOUT,*) 'The Chemkin polynomial coefficients calculated:'
       if (J_elem .eq. 2) then
@@ -1023,7 +1023,7 @@ C
  598  FORMAT(A16,8X,A2,A3,A2,A3,A2,A3,A2,A3,A1,3X,F7.3,2X,F8.3,
      &      2X,F8.3,4X,'1')
  601  FORMAT(A16,28X,'G',3X,F7.3,2X,F8.3,2X,F8.3,4X,'1&')
-!'
+C'
  602  FORMAT(A2,1X,A3,A2,1X,A3,A2,1X,A3,A2,1X,A3,A2,1X,A3)
  300  FORMAT(A16,8X,A4,A1,A4,A1,10X,A1,3X,F7.3,2X,F8.3,2X,F8.3,4X,'1')
  301  FORMAT(ES15.8,ES15.8,ES15.8,ES15.8,ES15.8,4X,'2')
@@ -1031,9 +1031,9 @@ C
  303  FORMAT(ES15.8,ES15.8,ES15.8,ES15.8,15X,4X,'4')
 C
       ELSEIF (DATATYPE .EQ. 'NIST') THEN
-!      write(*,*) 'THE COEFFICIENTS OF NIST FORM'
-!      write(*,*) THERM1(1:7)
-!      write(*,*) THERM2(1:7)
+C      write(*,*) 'THE COEFFICIENTS OF NIST FORM'
+C      write(*,*) THERM1(1:7)
+C      write(*,*) THERM2(1:7)
 C
        WRITE(LOUT,*) 'The NIST polynomial coefficients calculated:'
        WRITE(LOUT,*) 'H0-H0_298=A*t+B*t*t/2+C*t*t*t/3+D*t*t*t*t/4'
@@ -1046,16 +1046,16 @@ C
        WRITE(LOUT,303) THERM2(4),THERM2(5),THERM2(6),THERM2(7)
 C
       ELSE IF (DATATYPE .EQ. 'NASA') THEN
-!      write(*,*) 'THE COEFFICIENTS OF NASA FORM'
-!      write(*,*) THERM1(1:9)
-!      write(*,*) THERM2(1:9)
-!      write(*,*) THERM3(1:9)
+C      write(*,*) 'THE COEFFICIENTS OF NASA FORM'
+C      write(*,*) THERM1(1:9)
+C      write(*,*) THERM2(1:9)
+C      write(*,*) THERM3(1:9)
 C
        WRITE(LOUT,*) 'The NASA polynomial coefficients calculated:'
        WRITE(LOUT,399) SNAM
-! HF_298 in 'J/mol' in NASA format: 1 cal = 4.184 J
-!      WRITE(*,*) MW
-!      WRITE(*,*) DLTH*4.184D0
+C HF_298 in 'J/mol' in NASA format: 1 cal = 4.184 J
+C      WRITE(*,*) MW
+C      WRITE(*,*) DLTH*4.184D0
        WRITE(LOUT,400) 3,ENAM(1),ELNO(1),'.00',ENAM(2),ELNO(2),'.00',
      &                   ENAM(3),ELNO(3),'.00',ENAM(4),ELNO(4),'.00',
      &                 ENAM(5),ELNO(5),'.00',MW,DLTH*4.184D0
@@ -1098,17 +1098,17 @@ C
       DOUBLE PRECISION TEMP,CPT,CH,CS
       DIMENSION TEMP(*),CPT(*),CH(*),CS(*)
       DOUBLE PRECISION TEMP1,C1,CH1,CS1
-!     DIMENSION TEMP1(50),C1(50),CH1(50),CS1(50)
+C     DIMENSION TEMP1(50),C1(50),CH1(50),CS1(50)
 C
-!     DATA TEMP1/290.262D0, 393.258D0, 496.255D0, 589.888D0, 795.88D0,
-!     &           1001.87D0, 1488.76D0/
+C     DATA TEMP1/290.262D0, 393.258D0, 496.255D0, 589.888D0, 795.88D0,
+C     &           1001.87D0, 1488.76D0/
 C
-!     DATA  C1/17.7725D0, 22.4645D0, 27.0142D0, 30.7109D0, 36.9668D0,
-!     &            41.8009D0, 49.3365D0/
+C     DATA  C1/17.7725D0, 22.4645D0, 27.0142D0, 30.7109D0, 36.9668D0,
+C     &            41.8009D0, 49.3365D0/
 C
-!     DATA CH1/0.D0,0.D0,0.D0,0.D0,0.D0,0.D0,0.D0/
+C     DATA CH1/0.D0,0.D0,0.D0,0.D0,0.D0,0.D0,0.D0/
 C
-!     DATA CS1/0.D0,0.D0,0.D0,0.D0,0.D0,0.D0,0.D0/
+C     DATA CS1/0.D0,0.D0,0.D0,0.D0,0.D0,0.D0,0.D0/
 C
       MARK=''
       TEXT=''
