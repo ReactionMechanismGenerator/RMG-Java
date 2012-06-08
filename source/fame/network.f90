@@ -716,6 +716,12 @@ contains
             A = A * exp(-Ea / 8.314472 / T)
             Ea = 0.0
         end if
+        ! We can't use a negative temperature exponent for this method, so we
+        ! put it in the preexponential if it is encountered.
+        if (n < 0) then
+            A = A * T**n
+            n = 0.0
+        end if
 
         dE = E(2) - E(1)
         s = floor(Ea / dE)

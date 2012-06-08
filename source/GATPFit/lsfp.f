@@ -27,7 +27,8 @@ C*******************************************************************************
 C
       implicit none
 C
-      INTEGER LIN,LOUT,I,J,J_elem,IJ
+      INTEGER LIN,LOUT
+      INTEGER I,J,J_elem,IJ
 C max atoms number allowed in a species is 999
 C max number of different atoms is 5 
       integer indc_elno(5,3)
@@ -65,6 +66,7 @@ C     1 FILE='INPUT.txt')
 C      OPEN (LOUT, FORM='FORMATTED', STATUS='UNKNOWN',
 C     1 FILE='OUTPUT.txt')
 C
+34501 CONTINUE
       MARK=''
       DATATYPE=''
       TEXT=''
@@ -84,7 +86,7 @@ C
 c 
       DO I=1,8
         IJ=IJ+1
-        READ (LIN, 100) MARK, TEXT
+        READ (LIN, 100, END=34511) MARK, TEXT
         IF (MARK .EQ. 'SPEC') THEN
 !        WRITE(*,*) MARK
 !        WRITE(*,*) TEXT
@@ -236,7 +238,12 @@ C
      &                   DATATYPE,LOUT,THERM1,THERM2,THERM3,J_elem,
      &                 T_min,T_max)
 C
-      CLOSE(LOUT)
+C     CLOSE(LOUT)
+      WRITE(LOUT,*) 'GATPFIT_HAS_FINISHED_ONE_INPUT'
+      FLUSH(LOUT)
+      GOTO 34501
+
+34511 CONTINUE
 C
       END
 C***********************************************************************
