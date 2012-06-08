@@ -189,7 +189,12 @@ public class GATPFit {
         final String inputString = result.toString(); 
         boolean error = false;
         try {
-        	commandInput.println(inputString);
+        	String[] lines = inputString.split("(\n|"+ls+")");
+        	for (int i = 0; i < lines.length; i++) { 
+        	    commandInput.println(lines[i]);
+        	    Logger.info("Sending the line "+lines[i]);
+        	    if (commandInput.checkError()) throw new GATPFitException("Error writing input to GATPFit buffer");
+        	}
             commandInput.flush();
             
             String line = dataOutput.readLine();
