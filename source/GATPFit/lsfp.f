@@ -163,11 +163,9 @@ C
 C     WRITE(*,*) STRUC_MOL
       READ (LIN, *) ATOMS
 C     WRITE(*,*) 'NO. OF ATOMS', ATOMS
-      READ (LIN, *) ROTORS
+      READ (LIN, *, END=9999) ROTORS
 C     WRITE(*,*) 'NO. OF ROTORS', ROTORS
  104  FORMAT(F8.1)
-C      CLOSE(LIN)
-C     PAUSE
       WRITE(9,*) 'Read up to and including the No. of Rotors: ', ROTORS
 C
       CLOSE(9)
@@ -264,10 +262,17 @@ C     CLOSE(LOUT)
       FLUSH(LOUT)
       GOTO 34501
 
+9999  CONTINUE
+      WRITE(LOUT,*) 'INPUT ENDED SOONER THAN EXPECTED!'
+      WRITE(0,*) 'INPUT ENDED SOONER THAN EXPECTED!'
+      WRITE(9,*) 'INPUT ENDED SOONER THAN EXPECTED!'
+
 34511 CONTINUE
       CLOSE(9)
 C
       END
+      
+
 C***********************************************************************
 C
       SUBROUTINE DATAINPUT(M,TEMP,CPT,CH,CS)
@@ -1139,7 +1144,7 @@ C
 C
 C
       DO I=1,M_in
-         READ(LIN, *) MARK, TEMP(I), CPT(I)
+         READ(LIN, *, END=9998) MARK, TEMP(I), CPT(I)
          WRITE(9,*) MARK, TEMP(I), CPT(I)
          FLUSH(9)
          CH(I)  = 0.0D0
@@ -1151,7 +1156,12 @@ C
          ENDIF
       ENDDO
 C
- 250    CONTINUE
+ 250  CONTINUE
       RETURN
+ 9998 CONTINUE
+      WRITE(LOUT,*) 'INPUT ENDED SOONER THAN EXPECTED!'
+      WRITE(0,*) 'INPUT ENDED SOONER THAN EXPECTED!'
+      WRITE(9,*) 'INPUT ENDED SOONER THAN EXPECTED!'
+      STOP
 C
       END
