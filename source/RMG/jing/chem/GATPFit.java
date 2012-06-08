@@ -190,13 +190,8 @@ public class GATPFit {
         boolean error = false;
         try {
             //Logger.info(String.format(inputString.toString()));
-            Thread Tin = new Thread(new Runnable(){
-                public void run(){
-                    commandInput.write(inputString.toString()); 
-                    commandInput.flush(); 
-                }
-            } );
-            Tin.start(); 
+            commandInput.write(inputString.toString());
+            commandInput.flush();
             
             String line = dataOutput.readLine();
             if (line==null) {
