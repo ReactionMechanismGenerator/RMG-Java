@@ -124,7 +124,8 @@ C
          ENDIF
       ENDDO
 C
-
+      OPEN (9, FORM='FORMATTED', FILE='debug.log', POSITION='APPEND')
+      WRITE(9,*) 'Read elements and H298'
 C   We have already read H_298 line, so continue with S_298
 C     READ (LIN, *) MARK, H_298
 C     WRITE(*,*) MARK, H_298
@@ -167,7 +168,12 @@ C     WRITE(*,*) 'NO. OF ROTORS', ROTORS
  104  FORMAT(F8.1)
 C      CLOSE(LIN)
 C     PAUSE
+      WRITE(9,*) 'Read up to and including the No. of Rotors: ', ROTORS
 C
+      CLOSE(9)
+      OPEN (9, FORM='FORMATTED', FILE='debug.log', POSITION='APPEND')
+      WRITE (9,*) 'I am able to close and re-open this log file'
+      FLUSH(9)
 C: Keywords input over
 C
 C: INPUT the Cp, H, and S sample dataset
@@ -191,9 +197,17 @@ C SWILT uses the enthalpy in: cal/mol
          CH(I) = CH(I)*1.D3
       ENDDO
 C
+      WRITE (9,*) 'About to call SWILT', CH(M_in)
+      CLOSE(9)
+      OPEN (9, FORM='FORMATTED', FILE='debug.log', POSITION='APPEND')
+C
 C First fit SWILT because it takes into account limits at 0 and infinite T
          CALL SWILT(SNAM,ENAM,ELNO,STRUC_MOL,ATOMS,ROTORS,THERM1,
      &                TEMP,CPT,CH,CS,M_in)
+C
+      WRITE (9,*) 'Completed the Wilhoit fitting in SWILT'
+      CLOSE(9)
+      OPEN (9, FORM='FORMATTED', FILE='debug.log', POSITION='APPEND')
 C
       IF (DATATYPE .EQ. 'WILH') GOTO 3000
 C
@@ -206,6 +220,7 @@ C     10 points between 1 and 298
         CALL DATAFIND(THERM1,TEMF(I),CPF(I),CHF(I),CSF(I))
         CHF(I) = CHF(I)/1.D3
       ENDDO
+      WRITE (9,*) CHF(10)
 C
       DO I=12,101
 C     90 points between 298 and 6000
@@ -234,16 +249,23 @@ C
 C
  3000 CONTINUE
 C
+      WRITE(9,*) 'About to call PRINT_THERM'
+      CLOSE(9)
+      OPEN (9, FORM='FORMATTED', FILE='debug.log', POSITION='APPEND')
+      
       CALL PRINT_THERM(T_int,T_int1,SNAM,ENAM,ELNO,MW,H_298,DLTH,
      &                   DATATYPE,LOUT,THERM1,THERM2,THERM3,J_elem,
      &                 T_min,T_max)
 C
 C     CLOSE(LOUT)
+      WRITE(9,*) 'Finished everything'
+      CLOSE(9)
       WRITE(LOUT,*) 'GATPFIT_HAS_FINISHED_ONE_INPUT'
       FLUSH(LOUT)
       GOTO 34501
 
 34511 CONTINUE
+      CLOSE(9)
 C
       END
 C***********************************************************************
@@ -1118,10 +1140,13 @@ C
 C
       DO I=1,M_in
          READ(LIN, *) MARK, TEMP(I), CPT(I)
+         WRITE(9,*) MARK, TEMP(I), CPT(I)
+         FLUSH(9)
          CH(I)  = 0.0D0
          CS(I)  = 0.0D0
          IF (MARK .NE. 'TECP') THEN
-              write(*,*) 'Error. Need more TECP'
+            WRITE(*,*) 'Error. Need more TECP'
+            WRITE(9,*) 'Error. Not enough TECP, instead have ', MARK
             GOTO 250
          ENDIF
       ENDDO
