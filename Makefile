@@ -52,25 +52,6 @@ ifeq ($(shell expr "$(f90version)" : 'GNU Fortran'), 11)
   ifeq ($(shell expr "$(f90version)" : '[4-9]\.[3-9]'),3)
     F90FLAGS += -fbacktrace
   endif
-  
-  # detect buggy versions of gfortran
-  # See http://gcc.gnu.org/bugzilla/show_bug.cgi?id=47694
-  BADGFORTRAN =
-  ifeq ($(shell expr "$(gfortranversion)" : '4\.[3-5]'),3) # 3.3 - 4.5, potentially buggy
-    BADGFORTRAN = OhNoItsABadOne
-    ifeq ($(shell expr "$(gfortranversion)" : '4\.4\.[6-9]'),5) # 4.4.6+ OK
-      BADGFORTRAN =
-    endif
-    ifeq ($(shell expr "$(gfortranversion)" : '4\.5\.[3-9]'),5) # 4.5.3+ OK
-      BADGFORTRAN =
-    endif
-  endif
-  ifdef BADGFORTRAN
-    GFORTRANTEST = echo "You're using gfortran version $(gfortranversion) which contains\
-    a bug that breaks this program. Please change to a different version.\
-    One of 4.4.6+, 4.5.3+, 4.6.0+, or before 4.3.0 should work. See\
-    https://github.com/GreenGroup/RMG-Java/issues/257 for details."; false
-  endif
 
   # Call as `make MACOS=true F90=gfortran` if you want MacOS X 10.6+ 64-bit intel core2 features
   ifdef MACOS
@@ -101,7 +82,7 @@ all: dirs fame frankie GATPFit dassl daspk RMG
 RMG: dirs 
 	mkdir -p $(BUILDDIR)/RMG
 	ant clean # we don't trust ant to spot what needs doing!
-	ant compile
+	#ant compile
 	ant jar
 
 fame: dirs
@@ -117,7 +98,6 @@ daspk: dirs
 	make -C $(SOURCEDIR)/daspk SOURCEDIR=$(SOURCEDIR)/daspk BUILDDIR=$(BUILDDIR)/daspk BINDIR=$(BINDIR) F90=$(F90) F90FLAGS="$(F90FLAGS_NDEBUG)" F90_EXTRA_LDFLAGS="$(F90_EXTRA_LDFLAGS)"
 
 GATPFit: dirs
-	$(GFORTRANTEST)
 	make -C $(SOURCEDIR)/GATPFit SOURCEDIR=$(SOURCEDIR)/GATPFit BUILDDIR=$(BUILDDIR)/GATPFit BINDIR=$(BINDIR) F90=$(F90) F90FLAGS="$(F90FLAGS)" F90_EXTRA_LDFLAGS="$(F90_EXTRA_LDFLAGS)"
 
 dirs:
