@@ -50,7 +50,7 @@ public class GATPFit {
 
     private static Process GATPFit; 
     private static BufferedReader errorStream, dataOutput; 
-  //  private static PrintWriter commandInput; 
+    private static PrintWriter commandInput; 
 
     static {
       try {
@@ -59,7 +59,7 @@ public class GATPFit {
         File runningDir = new File("GATPFit");
         GATPFit = Runtime.getRuntime().exec(command, null, runningDir);
         errorStream = new BufferedReader(new InputStreamReader(GATPFit.getErrorStream()));
-      //  commandInput = new PrintWriter(new BufferedOutputStream(GATPFit.getOutputStream(), 1024));
+        commandInput = new PrintWriter(GATPFit.getOutputStream(), true);
         BufferedInputStream in = new BufferedInputStream(GATPFit.getInputStream());
         dataOutput = new BufferedReader(new InputStreamReader(in));
 
@@ -189,7 +189,6 @@ public class GATPFit {
         final String inputString = result.toString(); 
         boolean error = false;
         try {
-        	PrintWriter commandInput = new PrintWriter(new BufferedOutputStream(GATPFit.getOutputStream()));
         	String[] lines = inputString.split("(\n|"+ls+")");
         	for (int i = 0; i < lines.length; i++) { 
         	    commandInput.println(lines[i]);
@@ -197,7 +196,6 @@ public class GATPFit {
         	    if (commandInput.checkError()) throw new GATPFitException("Error writing input to GATPFit buffer");
         	}
             commandInput.flush();
-            commandInput.close();
             
             String line = dataOutput.readLine();
             if (line==null) {
