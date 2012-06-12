@@ -7600,7 +7600,9 @@ IMPLICIT NONE
   nu_high = 300.0
 
   ! Read everything from the input
-  READ (Uin,*) cp_data, data
+  READ (Uin,*,END=9998) cp_data, data
+ ! WRITE (0,*) "cp_data is ",cp_data
+ ! WRITE (0,'(A,28I3)') "data is ",data
   
   ! call the subroutine which separates the data info and calculates
   ! how many RRHO frequencies it can determine from the structure
@@ -7734,6 +7736,15 @@ IMPLICIT NONE
   DEALLOCATE(Total_predicted_freq )
   DEALLOCATE( HR_params )
 
+  RETURN
+9998 CONTINUE
+  WRITE(0,*) 'End of input stream.'
+  ! Close the input/output file units
+  CLOSE(Uin)
+  CLOSE(Uout)
+  CLOSE(Ulog)
+  STOP
+
 END SUBROUTINE Calculate_RRHO_HR_params
 
 
@@ -7775,6 +7786,7 @@ PROGRAM main
   Uout = 6
   Ulog = 1
 
+1234 CONTINUE
 ! Feel free to cut this.  I use it to determine how long the code runs.  
   CALL  date_and_time(date, time, zone, start_value)
   
@@ -7785,10 +7797,6 @@ PROGRAM main
 ! This is the command that calls the main program.
   CALL Calculate_RRHO_HR_params(Uin, Uout)
   
-! Close the input/output file units
-  CLOSE(Uin)
-  CLOSE(Uout)
-
 ! Ditto for the next five lines.  Cut them.
   CALL  date_and_time(date, time, zone, end_value)
   WRITE(Ulog,*) ''
@@ -7797,7 +7805,11 @@ PROGRAM main
 70 FORMAT('Total computation time is: ',I2.2,' hrs, ',I2.2, ' min, ',I2.2, ' s, ',I4.4 ,' ms')  
 
 ! Close the debug log
-  CLOSE(1)
+  CLOSE(Ulog)
+  
+  WRITE(Uout,*) 'FRANKIE_COMPLETED_ONE_ITERATION'
+  FLUSH(Uout)
+  GOTO 1234
 
   STOP
 
