@@ -7588,8 +7588,14 @@ IMPLICIT NONE
   INTEGER :: Uin  ! input file unit number
   INTEGER :: Uout ! output file unit number
 
+  ! These variables are just used to calculate the running time. FEEL FREE TO REMOVE
+  CHARACTER(10) :: time
+  CHARACTER(8) :: date
+  CHARACTER(5) :: zone
+  INTEGER, DIMENSION(8) :: start_value, end_value
+  
 
-  ! these variables are set to the common block.
+  ! These variables are set to the common block.
   ! They are required by the fitting routine within DQED
   COMMON N_vib, N_rot, nu_low, nu_high, nu_mid, cp_difference, CV_temps
 
@@ -7603,7 +7609,18 @@ IMPLICIT NONE
   READ (Uin,*,END=9998) cp_data, data
  ! WRITE (0,*) "cp_data is ",cp_data
  ! WRITE (0,'(A,28I3)') "data is ",data
-  
+
+! The program may pause at the previous line until it is given more data.
+! Now that we have some data to start processing,
+! we can start the clock and open the log file.
+
+  ! Feel free to cut this.  I use it to determine how long the code runs.  
+  CALL  date_and_time(date, time, zone, start_value)
+
+  ! Open the debug log file
+  ! use /dev/null to silence
+  open (UNIT=Ulog, FILE='frankie.log')
+    
   ! call the subroutine which separates the data info and calculates
   ! how many RRHO frequencies it can determine from the structure
   call read_bonds(data, bond_info,  degeneracy)
@@ -7736,7 +7753,16 @@ IMPLICIT NONE
   DEALLOCATE(Total_predicted_freq )
   DEALLOCATE( HR_params )
 
+! Feel free to cut the next five lines - they are just for calculating run time.
+  CALL  date_and_time(date, time, zone, end_value)
+  WRITE(Ulog,*) ''
+  WRITE(Ulog,70) (end_value(5) - start_value(5)),  (end_value(6) - start_value(6)), &
+       (end_value(7) - start_value(7)),  (end_value(8) - start_value(8))
+70 FORMAT('Total computation time is: ',I2.2,' hrs, ',I2.2, ' min, ',I2.2, ' s, ',I4.4 ,' ms')  
+! Close the debug log
+  CLOSE(Ulog)
   RETURN
+  
 9998 CONTINUE
   WRITE(0,*) 'End of input stream.'
   ! Close the input/output file units
@@ -7772,13 +7798,6 @@ PROGRAM main
   INTEGER :: Uout
   INTEGER :: Ulog
   COMMON /Fio/ Ulog
-  
-  
-  ! Fluffy stuff  FEEL FREE TO REMOVE
-  CHARACTER(10) :: time
-  CHARACTER(8) :: date
-  CHARACTER(5) :: zone
-  INTEGER, DIMENSION(8) :: start_value, end_value
 
 ! Should be getting these unit numbers from iso_fortran_env module
 ! See http://stackoverflow.com/questions/8508590/stderr-in-fortran90
@@ -7787,25 +7806,9 @@ PROGRAM main
   Ulog = 1
 
 1234 CONTINUE
-! Feel free to cut this.  I use it to determine how long the code runs.  
-  CALL  date_and_time(date, time, zone, start_value)
-  
-! Open the debug log file
-! use /dev/null to silence
-  open (UNIT=Ulog, FILE='frankie.log')
-  
+
 ! This is the command that calls the main program.
   CALL Calculate_RRHO_HR_params(Uin, Uout)
-  
-! Ditto for the next five lines.  Cut them.
-  CALL  date_and_time(date, time, zone, end_value)
-  WRITE(Ulog,*) ''
-  WRITE(Ulog,70) (end_value(5) - start_value(5)),  (end_value(6) - start_value(6)), &
-       (end_value(7) - start_value(7)),  (end_value(8) - start_value(8))
-70 FORMAT('Total computation time is: ',I2.2,' hrs, ',I2.2, ' min, ',I2.2, ' s, ',I4.4 ,' ms')  
-
-! Close the debug log
-  CLOSE(Ulog)
   
   WRITE(Uout,*) 'FRANKIE_COMPLETED_ONE_ITERATION'
   FLUSH(Uout)
