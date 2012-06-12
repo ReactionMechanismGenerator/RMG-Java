@@ -7564,7 +7564,7 @@ WRITE(*,*) 'degeneracy = ', Bond_degeneracy
 END SUBROUTINE read_bonds
 !-----------------------------------------------------------------------------
 
-SUBROUTINE Calculate_RRHO_HR_params(input_file, output_file )
+SUBROUTINE Calculate_RRHO_HR_params(Uin, Uout )
 
   USE heat_capacity_functions
   USE Cases
@@ -7601,9 +7601,8 @@ IMPLICIT NONE
   REAL(8) ::  nu_high
 
  ! These variables are used to open the file
-  INTEGER :: OpenStatus
-  CHARACTER(20) :: input_file
-  CHARACTER(20) :: output_file
+  INTEGER :: Uin  ! input file unit number
+  INTEGER :: Uout ! output file unit number
 
 
   ! these variables are set to the common block.
@@ -7616,11 +7615,8 @@ IMPLICIT NONE
   nu_mid = 150.0
   nu_high = 300.0
 
-  ! Open in the input file, read everything, close it back up.
-  open (UNIT = 12, FILE = input_file, STATUS = 'OLD', & 
-       ACTION = 'READ', IOSTAT = OpenStatus)
-  READ (12,*) cp_data, data
-  CLOSE(12)
+  ! Read everything from the input
+  READ (Uin,*) cp_data, data
   
   ! call the subroutine which separates the data info and calculates
   ! how many RRHO frequencies it can determine from the structure
@@ -7723,36 +7719,31 @@ IMPLICIT NONE
 
 
   ! WRITE EVERYTHING TO THE OUTPUT FILE
-  ! open the file
-  open (UNIT = 22, FILE = output_file)
 
   ! Write the number of atoms, internal rotors, and the linearity
-  WRITE(22,*) N_atoms
-  WRITE(22,*) N_rot
-  WRITE(22,*) linearity
+  WRITE(Uout,*) N_atoms
+  WRITE(Uout,*) N_rot
+  WRITE(Uout,*) linearity
   
   ! Write the characteristic RRHO frequencies determined by the structure
-  WRITE(22,*) ''
+  WRITE(Uout,*) ''
   DO i = 1,size(Total_predicted_freq)
-     WRITE(22,*) Total_predicted_freq(i)
+     WRITE(Uout,*) Total_predicted_freq(i)
   ENDDO
-  WRITE(22,*) ''
+  WRITE(Uout,*) ''
 
   ! Write the additional RRHO frequencies determined by the heat capacity
-  WRITE(22,*) ''
+  WRITE(Uout,*) ''
   DO i = (size(Total_predicted_freq)+1), size(Total_harm_osc_freq)
-     WRITE(22,*) Total_harm_osc_freq(i)
+     WRITE(Uout,*) Total_harm_osc_freq(i)
   ENDDO
-  WRITE(22,*) ''
+  WRITE(Uout,*) ''
 
   ! Write the hindered rotor frequencies and barrier heights
   DO i = 1,N_rot
-     WRITE(22,*) HR_params(i,:)
+     WRITE(Uout,*) HR_params(i,:)
   ENDDO
-  WRITE(22,*) ''
-  
-  ! Close the output file
-  CLOSE(22)
+  WRITE(Uout,*) ''
 
   ! Deallocate what's left open
   DEALLOCATE( Total_harm_osc_freq )
@@ -7781,6 +7772,11 @@ PROGRAM main
   CHARACTER(20) :: input_file
   CHARACTER(20) :: output_file
   
+  ! Input/output file unit numbers
+  INTEGER :: Uin
+  INTEGER :: Uout
+  INTEGER :: OpenStatus
+  
   ! Fluffy stuff  FEEL FREE TO REMOVE
   CHARACTER(10) :: time
   CHARACTER(8) :: date
@@ -7793,12 +7789,26 @@ PROGRAM main
 !  READ(*,*) input_file, output_file
   input_file = 'dat'
   output_file = 'rho_input'
+  Uin = 12
+  Uout = 22
 
 ! Feel free to cut this.  I use it to determine how long the code runs.  
   CALL  date_and_time(date, time, zone, start_value)
   
+
+! Open the input file.
+  OPEN (UNIT = Uin, FILE = input_file, STATUS = 'OLD', & 
+       ACTION = 'READ', IOSTAT = OpenStatus)
+  
+! Open the output file
+  open (UNIT = Uout, FILE = output_file)
+  
 ! This is the command that calls the main program.
-  CALL Calculate_RRHO_HR_params(input_file, output_file)
+  CALL Calculate_RRHO_HR_params(Uin, Uout)
+  
+! Close the input/output file units
+  CLOSE(Uin)
+  CLOSE(Uout)
 
 ! Ditto for the next five lines.  Cut them.
   CALL  date_and_time(date, time, zone, end_value)
@@ -7810,6 +7820,4 @@ PROGRAM main
   STOP
 
 END PROGRAM main
-
-
 
