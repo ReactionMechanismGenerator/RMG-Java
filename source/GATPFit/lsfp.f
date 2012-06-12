@@ -10,6 +10,7 @@ C Revised by John Z. WEN at MIT, August 2005
 C Change the input enthalpies in 'Kcal/mole'
 C
 C Modified by Richard H. West, June 2009, to read from STDIN rather than a file
+C  and by Ramanan Sankaran and Richard H West (June 2012) to read continuously.
 C
 C**********************************************************************************
 C Programmed by John Z. WEN at MIT, June 2005
@@ -111,6 +112,12 @@ C    WARNING: if the number in the input spans beyond the end of TEXT
 C             then it will be truncated, eg: 1.345678901234567E+012
 C                                            ---------------#######
 C             this number could be read in as 10^12 too small!
+          IF (TEXT(LEN(TEXT):LEN(TEXT)) .ne. ' ') THEN
+            WRITE(*,*) "WARNING! The H_298 value is longer than ",
+     1        "the string being used to read it.  ",
+     2        "Truncating an exponent could give a very wrong value."
+            STOP
+          ENDIF
           READ(TEXT,*) H_298
           GOTO 200
         ENDIF
