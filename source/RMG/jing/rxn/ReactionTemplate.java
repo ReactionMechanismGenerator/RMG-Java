@@ -1084,7 +1084,6 @@ public class ReactionTemplate {
 							}
 						}
       			}
-
       		}
 
           }
