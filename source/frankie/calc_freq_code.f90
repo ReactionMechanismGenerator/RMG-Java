@@ -1775,7 +1775,6 @@ SUBROUTINE Case_1(Total_char_freq, Total_harm_osc_freq, HR_params  )
   INTEGER :: N_vib, N_rot
  
  COMMON N_vib, N_rot, nu_low, nu_high, nu_mid, cp_difference, CV_temps
- CALL timestamp ( )
 
 ! Define the contraints on the target variables 
 
@@ -1824,7 +1823,6 @@ SUBROUTINE Case_1(Total_char_freq, Total_harm_osc_freq, HR_params  )
   WRITE(Ulog, '(a)' ) '  Normal end of execution.'
 
   WRITE(Ulog, '(a)' ) ' '
-  CALL timestamp ( )
 
   results = x
   Theta_1 = results(1)
@@ -1945,7 +1943,6 @@ SUBROUTINE Case_2(Total_char_freq, Total_harm_osc_freq, HR_params  )
   INTEGER :: N_vib, N_rot
  
  COMMON N_vib, N_rot, nu_low, nu_high, nu_mid, cp_difference, CV_temps
- CALL timestamp ( )
 
 ! Define the contraints on the target variables 
 
@@ -1999,7 +1996,6 @@ SUBROUTINE Case_2(Total_char_freq, Total_harm_osc_freq, HR_params  )
   WRITE(Ulog, '(a)' ) '  Normal end of execution.'
 
   WRITE(Ulog, '(a)' ) ' '
-  CALL timestamp ( )
   results = x
   Theta_1 = results(1)
   Theta_2 = results(2)
@@ -2117,7 +2113,6 @@ SUBROUTINE Case_3(Total_char_freq, Total_harm_osc_freq, HR_params )
   INTEGER :: N_vib, N_rot
  
  COMMON N_vib, N_rot, nu_low, nu_high, nu_mid, cp_difference, CV_temps
- CALL timestamp ( )
 
 ! Define the contraints on the target variables 
 
@@ -2177,7 +2172,6 @@ SUBROUTINE Case_3(Total_char_freq, Total_harm_osc_freq, HR_params )
   WRITE(Ulog, '(a)' ) '  Normal end of execution.'
 
   WRITE(Ulog, '(a)' ) ' '
-  CALL timestamp ( )
 
   results = x
   Theta_1 = results(1)
@@ -2304,7 +2298,6 @@ SUBROUTINE Case_4(Total_char_freq, Total_harm_osc_freq, HR_params  )
   INTEGER :: N_vib, N_rot
  
  COMMON N_vib, N_rot, nu_low, nu_high, nu_mid, cp_difference, CV_temps
- CALL timestamp ( )
 
 ! Define the contraints on the target variables 
 
@@ -2370,7 +2363,6 @@ SUBROUTINE Case_4(Total_char_freq, Total_harm_osc_freq, HR_params  )
   WRITE(Ulog, '(a)' ) '  Normal end of execution.'
 
   WRITE(Ulog, '(a)' ) ' '
-  CALL timestamp ( )
 
   results = x
   Theta_1 = results(1)
@@ -2502,7 +2494,6 @@ SUBROUTINE Case_5(Total_char_freq, Total_harm_osc_freq, HR_params )
   INTEGER :: N_vib, N_rot
  
  COMMON N_vib, N_rot, nu_low, nu_high, nu_mid, cp_difference, CV_temps
- CALL timestamp ( )
 
 ! Define the contraints on the target variables 
 
@@ -2574,7 +2565,6 @@ SUBROUTINE Case_5(Total_char_freq, Total_harm_osc_freq, HR_params )
   WRITE(Ulog, '(a)' ) '  Normal end of execution.'
 
   WRITE(Ulog, '(a)' ) ' '
-  CALL timestamp ( )
 
   results = x
   Theta_1 = results(1)
@@ -2711,7 +2701,6 @@ SUBROUTINE Case_6(Total_char_freq, Total_harm_osc_freq, HR_params )
   INTEGER :: N_vib, N_rot
  
  COMMON N_vib, N_rot, nu_low, nu_high, nu_mid, cp_difference, CV_temps
- CALL timestamp ( )
 
 ! Define the contraints on the target variables 
 
@@ -2789,7 +2778,6 @@ SUBROUTINE Case_6(Total_char_freq, Total_harm_osc_freq, HR_params )
   WRITE(Ulog, '(a)' ) '  Normal end of execution.'
 
   WRITE(Ulog, '(a)' ) ' '
-  CALL timestamp ( )
 
   results = x
   Theta_1 = results(1)
@@ -2932,7 +2920,6 @@ SUBROUTINE Case_7(Total_char_freq, Total_harm_osc_freq, HR_params )
   INTEGER :: N_vib, N_rot
  
  COMMON N_vib, N_rot, nu_low, nu_high, nu_mid, cp_difference, CV_temps
- CALL timestamp ( )
 
 ! Define the contraints on the target variables 
 
@@ -3011,7 +2998,6 @@ SUBROUTINE Case_7(Total_char_freq, Total_harm_osc_freq, HR_params )
   WRITE(Ulog, '(a)' ) '  Normal end of execution.'
 
   WRITE(Ulog, '(a)' ) ' '
-  CALL timestamp ( )
 
   results = x
   Theta_1 =      results(1)
@@ -3157,7 +3143,6 @@ SUBROUTINE Case_8(Total_char_freq, Total_harm_osc_freq, HR_params )
   INTEGER :: N_vib, N_rot
  
  COMMON N_vib, N_rot, nu_low, nu_high, nu_mid, cp_difference, CV_temps
- CALL timestamp ( )
 
 ! Define the contraints on the target variables 
 
@@ -3211,7 +3196,6 @@ SUBROUTINE Case_8(Total_char_freq, Total_harm_osc_freq, HR_params )
   WRITE(Ulog, '(a)' ) '  Normal end of execution.'
 
   WRITE(Ulog, '(a)' ) ' '
-  CALL timestamp ( )
 
   results = x
   V_1  = results(1)
@@ -3334,7 +3318,6 @@ SUBROUTINE Case_9(Total_char_freq, Total_harm_osc_freq, HR_params )
   INTEGER :: N_vib, N_rot
  
  COMMON N_vib, N_rot, nu_low, nu_high, nu_mid, cp_difference, CV_temps
- CALL timestamp ( )
 
 ! Define the contraints on the target variables 
 
@@ -3395,7 +3378,6 @@ SUBROUTINE Case_9(Total_char_freq, Total_harm_osc_freq, HR_params )
   WRITE(Ulog, '(a)' ) '  Normal end of execution.'
 
   WRITE(Ulog, '(a)' ) ' '
-  CALL timestamp ( )
 
 results = x
 V_1     = results(1)
@@ -3522,7 +3504,6 @@ SUBROUTINE Case_10(Total_char_freq, Total_harm_osc_freq, HR_params )
   INTEGER :: N_vib, N_rot
  
  COMMON N_vib, N_rot, nu_low, nu_high, nu_mid, cp_difference, CV_temps
- CALL timestamp ( )
 
 ! Define the contraints on the target variables 
 
@@ -3588,7 +3569,6 @@ SUBROUTINE Case_10(Total_char_freq, Total_harm_osc_freq, HR_params )
   WRITE(Ulog, '(a)' ) '  Normal end of execution.'
 
   WRITE(Ulog, '(a)' ) ' '
-  CALL timestamp ( )
 
   results = x
   V_1     = results(1)
@@ -3719,7 +3699,6 @@ SUBROUTINE Case_11(Total_char_freq, Total_harm_osc_freq, HR_params )
   INTEGER :: N_vib, N_rot
  
  COMMON N_vib, N_rot, nu_low, nu_high, nu_mid, cp_difference, CV_temps
- CALL timestamp ( )
 
 ! Define the contraints on the target variables 
 
@@ -3791,7 +3770,6 @@ SUBROUTINE Case_11(Total_char_freq, Total_harm_osc_freq, HR_params )
   WRITE(Ulog, '(a)' ) '  Normal end of execution.'
 
   WRITE(Ulog, '(a)' ) ' '
-  CALL timestamp ( )
 
   results = x
   V_1     = results(1)
@@ -3928,7 +3906,6 @@ SUBROUTINE Case_12(Total_char_freq, Total_harm_osc_freq, HR_params )
   INTEGER :: N_vib, N_rot
  
  COMMON N_vib, N_rot, nu_low, nu_high, nu_mid, cp_difference, CV_temps
- CALL timestamp ( )
 
 ! Define the contraints on the target variables 
 
@@ -4006,7 +3983,6 @@ SUBROUTINE Case_12(Total_char_freq, Total_harm_osc_freq, HR_params )
   WRITE(Ulog, '(a)' ) '  Normal end of execution.'
 
   WRITE(Ulog, '(a)' ) ' '
-  CALL timestamp ( )
 
   results = x
   V_1     = results(1)
@@ -4148,7 +4124,6 @@ SUBROUTINE Case_13(Total_char_freq, Total_harm_osc_freq, HR_params )
   INTEGER :: N_vib, N_rot
  
  COMMON N_vib, N_rot, nu_low, nu_high, nu_mid, cp_difference, CV_temps
- CALL timestamp ( )
 
 ! Define the contraints on the target variables 
 
@@ -4226,7 +4201,6 @@ SUBROUTINE Case_13(Total_char_freq, Total_harm_osc_freq, HR_params )
   WRITE(Ulog, '(a)' ) '  Normal end of execution.'
 
   WRITE(Ulog, '(a)' ) ' '
-  CALL timestamp ( )
 
   results = x
   V_1     =      results(1)
@@ -4371,7 +4345,6 @@ SUBROUTINE Case_14(Total_char_freq, Total_harm_osc_freq, HR_params )
   INTEGER :: N_vib, N_rot
  
  COMMON N_vib, N_rot, nu_low, nu_high, nu_mid, cp_difference, CV_temps
- CALL timestamp ( )
 
 ! Define the contraints on the target variables 
 
@@ -4437,7 +4410,6 @@ SUBROUTINE Case_14(Total_char_freq, Total_harm_osc_freq, HR_params )
   WRITE(Ulog, '(a)' ) '  Normal end of execution.'
 
   WRITE(Ulog, '(a)' ) ' '
-  CALL timestamp ( )
 
   results = x
   V_1  = results(1)
@@ -4566,7 +4538,6 @@ SUBROUTINE Case_15(Total_char_freq, Total_harm_osc_freq, HR_params )
   INTEGER :: N_vib, N_rot
  
  COMMON N_vib, N_rot, nu_low, nu_high, nu_mid, cp_difference, CV_temps
- CALL timestamp ( )
 
 ! Define the contraints on the target variables 
 
@@ -4638,7 +4609,6 @@ SUBROUTINE Case_15(Total_char_freq, Total_harm_osc_freq, HR_params )
   WRITE(Ulog, '(a)' ) '  Normal end of execution.'
 
   WRITE(Ulog, '(a)' ) ' '
-  CALL timestamp ( )
 
   results = x
   V_1     = results(1)
@@ -4774,7 +4744,6 @@ SUBROUTINE Case_16(Total_char_freq, Total_harm_osc_freq, HR_params )
   INTEGER :: N_vib, N_rot
  
  COMMON N_vib, N_rot, nu_low, nu_high, nu_mid, cp_difference, CV_temps
- CALL timestamp ( )
 
 ! Define the contraints on the target variables 
 
@@ -4852,7 +4821,6 @@ SUBROUTINE Case_16(Total_char_freq, Total_harm_osc_freq, HR_params )
   WRITE(Ulog, '(a)' ) '  Normal end of execution.'
 
   WRITE(Ulog, '(a)' ) ' '
-  CALL timestamp ( )
 
   results = x
   V_1     = results(1)
@@ -4993,8 +4961,6 @@ SUBROUTINE Case_17(Total_char_freq, Total_harm_osc_freq, HR_params )
 
  COMMON N_vib, N_rot, nu_low, nu_high, nu_mid, cp_difference, CV_temps
 
-  CALL timestamp ( )
-
 ! Define the contraints on the target variables 
 
 ! x(1) corresponds to the first harmonic oscillator pseudo-frequency
@@ -5075,7 +5041,6 @@ SUBROUTINE Case_17(Total_char_freq, Total_harm_osc_freq, HR_params )
   WRITE(Ulog, '(a)' ) '  Normal end of execution.'
 
   WRITE(Ulog, '(a)' ) ' '
-  CALL timestamp ( )
 
   results = x
   Theta_1 = results(1)
@@ -5226,8 +5191,6 @@ SUBROUTINE Case_18(Total_char_freq, Total_harm_osc_freq, HR_params )
 
  COMMON N_vib, N_rot, nu_low, nu_high, nu_mid, cp_difference, CV_temps
 
-  CALL timestamp ( )
-
 ! Define the contraints on the target variables 
 
 ! x(1) corresponds to the degeneracy of the first harmonic oscillator
@@ -5308,7 +5271,6 @@ SUBROUTINE Case_18(Total_char_freq, Total_harm_osc_freq, HR_params )
   WRITE(Ulog, '(a)' ) '  Normal end of execution.'
 
   WRITE(Ulog, '(a)' ) ' '
-  CALL timestamp ( )
   
   results = x
   g_1     = NINT(results(1))
@@ -5460,7 +5422,6 @@ SUBROUTINE Case_19(Total_char_freq, Total_harm_osc_freq, HR_params )
   INTEGER :: N_vib, N_rot
  
  COMMON N_vib, N_rot, nu_low, nu_high, nu_mid, cp_difference, CV_temps
- CALL timestamp ( )
 
 ! Define the contraints on the target variables 
 
@@ -5538,7 +5499,6 @@ SUBROUTINE Case_19(Total_char_freq, Total_harm_osc_freq, HR_params )
   WRITE(Ulog, '(a)' ) '  Normal end of execution.'
 
   WRITE(Ulog, '(a)' ) ' '
-  CALL timestamp ( )
 
   results = x
   V_1  = results(1)
@@ -5676,7 +5636,6 @@ SUBROUTINE Case_20(Total_char_freq, Total_harm_osc_freq, HR_params  )
   INTEGER :: N_vib, N_rot
  
  COMMON N_vib, N_rot, nu_low, nu_high, nu_mid, cp_difference, CV_temps
- CALL timestamp ( )
 
 ! Define the contraints on the target variables 
 
@@ -5756,7 +5715,6 @@ SUBROUTINE Case_20(Total_char_freq, Total_harm_osc_freq, HR_params  )
   WRITE(Ulog, '(a)' ) '  Normal end of execution.'
 
   WRITE(Ulog, '(a)' ) ' '
-  CALL timestamp ( )
   results = x
 
   Theta_1  = results(1)
@@ -5897,8 +5855,6 @@ SUBROUTINE Case_21(Total_char_freq, Total_harm_osc_freq, HR_params )
 
  COMMON N_vib, N_rot, nu_low, nu_high, nu_mid, cp_difference, CV_temps
 
- CALL timestamp ( )
-
 ! Define the contraints on the target variables 
 
 ! x(1) corresponds to the first harmonic oscillator pseudo-frequency
@@ -5976,7 +5932,6 @@ SUBROUTINE Case_21(Total_char_freq, Total_harm_osc_freq, HR_params )
   WRITE(Ulog, '(a)' ) '  Normal end of execution.'
 
   WRITE(Ulog, '(a)' ) ' '
-  CALL timestamp ( )
 
   results = x
   Theta_1  = results(1)
@@ -6128,7 +6083,6 @@ SUBROUTINE Case_22(Total_char_freq, Total_harm_osc_freq, HR_params )
   INTEGER :: N_vib, N_rot
  
  COMMON N_vib, N_rot, nu_low, nu_high, nu_mid, cp_difference, CV_temps
- CALL timestamp ( )
 
 ! Define the contraints on the target variables 
 
@@ -6207,7 +6161,6 @@ SUBROUTINE Case_22(Total_char_freq, Total_harm_osc_freq, HR_params )
   WRITE(Ulog, '(a)' ) '  Normal end of execution.'
 
   WRITE(Ulog, '(a)' ) ' '
-  CALL timestamp ( )
 
   results = x
   Theta_1  =      results(1)
@@ -6364,8 +6317,6 @@ SUBROUTINE Case_23(Total_char_freq, Total_harm_osc_freq, HR_params )
 
  COMMON N_vib, N_rot, nu_low, nu_high, nu_mid, cp_difference, CV_temps
 
-  CALL timestamp ( )
-
 ! Define the contraints on the target variables 
 
 ! x(1) corresponds to the degeneracy of the first harmonic oscillator
@@ -6446,7 +6397,6 @@ SUBROUTINE Case_23(Total_char_freq, Total_harm_osc_freq, HR_params )
   WRITE(Ulog, '(a)' ) '  Normal end of execution.'
 
   WRITE(Ulog, '(a)' ) ' '
-  CALL timestamp ( )
 
   results = x
   g_1      = NINT(results(1) )
@@ -6609,8 +6559,6 @@ SUBROUTINE Case_24(Total_char_freq, Total_harm_osc_freq, HR_params )
 
  COMMON N_vib, N_rot, nu_low, nu_high, nu_mid, cp_difference, CV_temps
 
-  CALL timestamp ( )
-
 ! Define the contraints on the target variables 
 
 ! x(1) corresponds to the first hindered rotor pseudo-barrier
@@ -6691,7 +6639,6 @@ SUBROUTINE Case_24(Total_char_freq, Total_harm_osc_freq, HR_params )
   WRITE(Ulog, '(a)' ) '  Normal end of execution.'
 
   WRITE(Ulog, '(a)' ) ' '
-  CALL timestamp ( )
 
   results = x
   V_1  =      results(1)
@@ -6858,8 +6805,6 @@ SUBROUTINE Case_25(Total_char_freq, Total_harm_osc_freq, HR_params )
 
  COMMON N_vib, N_rot, nu_low, nu_high, nu_mid, cp_difference, CV_temps
 
-  CALL timestamp ( )
-
 ! Define the contraints on the target variables 
 
 ! x(1) corresponds to the first hindered rotor pseudo-barrier
@@ -6940,7 +6885,6 @@ SUBROUTINE Case_25(Total_char_freq, Total_harm_osc_freq, HR_params )
   WRITE(Ulog, '(a)' ) '  Normal end of execution.'
 
   WRITE(Ulog, '(a)' ) ' '
-  CALL timestamp ( )
 
   results = x
   V_1     =      results(1)
@@ -7094,8 +7038,6 @@ SUBROUTINE Case_26(Total_char_freq, Total_harm_osc_freq, HR_params )
 
  COMMON N_vib, N_rot, nu_low, nu_high, nu_mid, cp_difference, CV_temps
 
-  CALL timestamp ( )
-
 ! Define the contraints on the target variables 
 
 ! x(1) corresponds to the first harmonic oscillator pseudo-frequency
@@ -7176,7 +7118,6 @@ SUBROUTINE Case_26(Total_char_freq, Total_harm_osc_freq, HR_params )
   WRITE(Ulog, '(a)' ) '  Normal end of execution.'
 
   WRITE(Ulog, '(a)' ) ' '
-  CALL timestamp ( )
 
   results = x
   Theta_1 =      results(1)
