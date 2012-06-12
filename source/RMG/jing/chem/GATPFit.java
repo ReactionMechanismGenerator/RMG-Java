@@ -191,6 +191,7 @@ public class GATPFit {
         try {
         	commandInput.println(inputString);
             commandInput.flush();
+            if (commandInput.checkError()) throw new GATPFitException("Error writing input to GATPFit buffer");
             
             String line = dataOutput.readLine();
             if (line==null) {
