@@ -7759,7 +7759,6 @@ PROGRAM main
   ! Input/output file unit numbers
   INTEGER :: Uin
   INTEGER :: Uout
-  INTEGER :: OpenStatus
   INTEGER :: Ulog
   COMMON /Fio/ Ulog
   
@@ -7770,25 +7769,14 @@ PROGRAM main
   CHARACTER(5) :: zone
   INTEGER, DIMENSION(8) :: start_value, end_value
 
-
-! You can change this so that it will read the names from the command like.
-! It is probably more useful that way.
-!  READ(*,*) input_file, output_file
-  input_file = 'dat'
-  output_file = 'rho_input'
-  Uin = 12
-  Uout = 22
+! Should be getting these unit numbers from iso_fortran_env module
+! See http://stackoverflow.com/questions/8508590/stderr-in-fortran90
+  Uin = 5
+  Uout = 6
   Ulog = 1
 
 ! Feel free to cut this.  I use it to determine how long the code runs.  
   CALL  date_and_time(date, time, zone, start_value)
-
-! Open the input file.
-  OPEN (UNIT = Uin, FILE = input_file, STATUS = 'OLD', & 
-       ACTION = 'READ', IOSTAT = OpenStatus)
-  
-! Open the output file
-  open (UNIT = Uout, FILE = output_file)
   
 ! Open the debug log file
 ! use /dev/null to silence
