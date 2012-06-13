@@ -50,6 +50,25 @@ ifeq ($(shell expr "$(f90version)" : 'GNU Fortran'), 11)
     F90FLAGS += -fbacktrace
   endif
   
+  # detect buggy versions of gfortran
+  # See http://gcc.gnu.org/bugzilla/show_bug.cgi?id=47694
+  BADGFORTRAN =
+  ifeq ($(shell expr "$(gfortranversion)" : '4\.[3-5]'),3) # 3.3 - 4.5, potentially buggy
+    BADGFORTRAN = OhNoItsABadOne
+    ifeq ($(shell expr "$(gfortranversion)" : '4\.4\.[6-9]'),5) # 4.4.6+ OK
+      BADGFORTRAN =
+    endif
+    ifeq ($(shell expr "$(gfortranversion)" : '4\.5\.[3-9]'),5) # 4.5.3+ OK
+      BADGFORTRAN =
+    endif
+  endif
+  ifdef BADGFORTRAN
+    GFORTRANTEST = echo "You're using gfortran version $(gfortranversion) which contains\
+    a bug that breaks this program. Please change to a different version.\
+    One of 4.4.6+, 4.5.3+, 4.6.0+, or before 4.3.0 should work. See\
+    https://github.com/GreenGroup/RMG-Java/issues/257 for details."; false
+  endif
+  
   # Call as `make MACOS=true F90=gfortran` if you want MacOS X 10.6+ 64-bit intel core2 features
   ifdef MACOS
     F90FLAGS += -arch x86_64 -march=core2
@@ -68,11 +87,13 @@ OBJ=$(patsubst %.o,$(BUILDDIR)/%.o,$(OBJ0))
 
 ################################################################################
 
-$(BINDIR)/frankie.exe: $(OBJ)  
+$(BINDIR)/frankie.exe: $(OBJ)
+	$(GFORTRANTEST)
 	mkdir -p $(BINDIR)
 	$(F90) $(LDFLAGS) -o $(BINDIR)/frankie.exe $(OBJ) $(LIBS)
 
 $(BUILDDIR)/%.o: %.f90
+	$(GFORTRANTEST)
 	mkdir -p $(BUILDDIR)
 	$(F90) $(F90FLAGS) -c $< -o $@
 
