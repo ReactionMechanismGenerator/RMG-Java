@@ -81,6 +81,9 @@ LDFLAGS= $(F90_EXTRA_LDFLAGS)
 
 LIBS=
 
+F90_EXTRA_FLAGS = #in case the user needs to add anything, eg...
+#F90_EXTRA_FLAGS='-I""$(BUILDDIR)""' # for early versions of gfortran
+
 OBJ0=dqed.o calc_freq_code.o
 
 OBJ=$(patsubst %.o,$(BUILDDIR)/%.o,$(OBJ0))
@@ -95,7 +98,7 @@ $(BINDIR)/frankie.exe: $(OBJ)
 $(BUILDDIR)/%.o: %.f90
 	$(GFORTRANTEST)
 	mkdir -p $(BUILDDIR)
-	$(F90) $(F90FLAGS) -c $< -o $@
+	$(F90) $(F90FLAGS) $(F90_EXTRA_FLAGS) -c $< -o $@
 
 clean:
 	rm -rf $(BUILDDIR)
