@@ -770,8 +770,8 @@ SUBROUTINE calc_predicted_freq(bond_info, Bond_degeneracy, Total_predicted_freq)
 
   IMPLICIT NONE
   
-  INTEGER :: Ulog
-  COMMON /Fio/ Ulog
+  INTEGER :: Ulog, igo
+  COMMON /Fio/ Ulog, igo
 
 ! The array which contains all the bond info
   INTEGER, DIMENSION(:), INTENT(IN) :: bond_info
@@ -1396,8 +1396,8 @@ SUBROUTINE Bond_avg_6x2_2_1 (Number_of_bonds, &
                               typical_frequencies, predicted_frequencies)
 
   IMPLICIT NONE
-  INTEGER :: Ulog
-  COMMON /Fio/ Ulog
+  INTEGER :: Ulog, igo
+  COMMON /Fio/ Ulog, igo
   INTEGER, INTENT(IN) :: Number_of_bonds
   REAL(8), DIMENSION(:), INTENT(IN) :: typical_frequencies
   REAL(8),DIMENSION(6*Number_of_bonds), INTENT(OUT) :: predicted_frequencies
@@ -1482,8 +1482,8 @@ SUBROUTINE Bond_avg_5x2_2_1 (Number_of_bonds, &
                               typical_frequencies, predicted_frequencies)
 
   IMPLICIT NONE
-  INTEGER :: Ulog
-  COMMON /Fio/ Ulog
+  INTEGER :: Ulog, igo
+  COMMON /Fio/ Ulog, igo
   INTEGER, INTENT(IN) :: Number_of_bonds
   REAL(8), DIMENSION(:), INTENT(IN) :: typical_frequencies
   REAL(8),DIMENSION(5*Number_of_bonds), INTENT(OUT) :: predicted_frequencies
@@ -1733,8 +1733,8 @@ SUBROUTINE Case_1(Total_char_freq, Total_harm_osc_freq, HR_params  )
   USE heat_capacity_functions
  
   IMPLICIT NONE
-  INTEGER :: Ulog
-  COMMON /Fio/ Ulog
+  INTEGER :: Ulog, igo
+  COMMON /Fio/ Ulog, igo
   
 ! Global Variables
   REAL(8), DIMENSION(7) :: CV_temps
@@ -1758,7 +1758,7 @@ SUBROUTINE Case_1(Total_char_freq, Total_harm_osc_freq, HR_params  )
   REAL(8) :: bu(nvars+mcon)
   REAL(8) :: fj(ldfj,nvars+1)
   REAL(8) :: fnorm
-  INTEGER :: igo
+!    INTEGER :: igo
   INTEGER :: ind(nvars+mcon)
   INTEGER :: iopt(24)
   INTEGER :: iwork(liwork)
@@ -1901,8 +1901,8 @@ SUBROUTINE Case_2(Total_char_freq, Total_harm_osc_freq, HR_params  )
   USE heat_capacity_functions
 
   IMPLICIT NONE
-  INTEGER :: Ulog
-  COMMON /Fio/ Ulog
+  INTEGER :: Ulog, igo
+  COMMON /Fio/ Ulog, igo
 ! Global Variables
   REAL(8), DIMENSION(7) :: CV_temps
   REAL(8), DIMENSION(7) :: cp_difference
@@ -1926,7 +1926,7 @@ SUBROUTINE Case_2(Total_char_freq, Total_harm_osc_freq, HR_params  )
   REAL(8) :: bu(nvars+mcon)
   REAL(8) :: fj(ldfj,nvars+1)
   REAL(8) :: fnorm
-  INTEGER :: igo
+!    INTEGER :: igo
   INTEGER :: ind(nvars+mcon)
   INTEGER :: iopt(24)
   INTEGER :: iwork(liwork)
@@ -2069,8 +2069,8 @@ SUBROUTINE Case_3(Total_char_freq, Total_harm_osc_freq, HR_params )
   USE heat_capacity_functions
 
   IMPLICIT NONE
-  INTEGER :: Ulog
-  COMMON /Fio/ Ulog
+  INTEGER :: Ulog, igo
+  COMMON /Fio/ Ulog, igo
   
 ! Global Variables
   REAL(8), DIMENSION(7) :: CV_temps
@@ -2096,7 +2096,7 @@ SUBROUTINE Case_3(Total_char_freq, Total_harm_osc_freq, HR_params )
   REAL(8) :: bu(nvars+mcon)
   REAL(8) :: fj(ldfj,nvars+1)
   REAL(8) :: fnorm
-  INTEGER :: igo
+!  INTEGER :: igo
   INTEGER :: ind(nvars+mcon)
   INTEGER :: iopt(24)
   INTEGER :: iwork(liwork)
@@ -2253,8 +2253,8 @@ SUBROUTINE Case_4(Total_char_freq, Total_harm_osc_freq, HR_params  )
   USE heat_capacity_functions
 
   IMPLICIT NONE
-  INTEGER :: Ulog
-  COMMON /Fio/ Ulog
+  INTEGER :: Ulog, igo
+  COMMON /Fio/ Ulog, igo
   
 ! Global Variables
   REAL(8), DIMENSION(7) :: CV_temps
@@ -2281,7 +2281,7 @@ SUBROUTINE Case_4(Total_char_freq, Total_harm_osc_freq, HR_params  )
   REAL(8) :: bu(nvars+mcon)
   REAL(8) :: fj(ldfj,nvars+1)
   REAL(8) :: fnorm
-  INTEGER :: igo
+!  INTEGER :: igo
   INTEGER :: ind(nvars+mcon)
   INTEGER :: iopt(24)
   INTEGER :: iwork(liwork)
@@ -2448,8 +2448,8 @@ SUBROUTINE Case_5(Total_char_freq, Total_harm_osc_freq, HR_params )
   USE heat_capacity_functions
 
   IMPLICIT NONE
-  INTEGER :: Ulog
-  COMMON /Fio/ Ulog
+  INTEGER :: Ulog, igo
+  COMMON /Fio/ Ulog, igo
   
 ! Global Variables
   REAL(8), DIMENSION(7) :: CV_temps
@@ -2477,7 +2477,7 @@ SUBROUTINE Case_5(Total_char_freq, Total_harm_osc_freq, HR_params )
   REAL(8) :: bu(nvars+mcon)
   REAL(8) :: fj(ldfj,nvars+1)
   REAL(8) :: fnorm
-  INTEGER :: igo
+!  INTEGER :: igo
   INTEGER :: ind(nvars+mcon)
   INTEGER :: iopt(24)
   INTEGER :: iwork(liwork)
@@ -2654,8 +2654,8 @@ SUBROUTINE Case_6(Total_char_freq, Total_harm_osc_freq, HR_params )
   USE heat_capacity_functions
 
   IMPLICIT NONE
-  INTEGER :: Ulog
-  COMMON /Fio/ Ulog
+  INTEGER :: Ulog, igo
+  COMMON /Fio/ Ulog, igo
   
 ! Global Variables
   REAL(8), DIMENSION(7) :: CV_temps
@@ -2684,7 +2684,7 @@ SUBROUTINE Case_6(Total_char_freq, Total_harm_osc_freq, HR_params )
   REAL(8) :: bu(nvars+mcon)
   REAL(8) :: fj(ldfj,nvars+1)
   REAL(8) :: fnorm
-  INTEGER :: igo
+!  INTEGER :: igo
   INTEGER :: ind(nvars+mcon)
   INTEGER :: iopt(24)
   INTEGER :: iwork(liwork)
@@ -2869,11 +2869,10 @@ END SUBROUTINE Case_6_hd
 SUBROUTINE Case_7(Total_char_freq, Total_harm_osc_freq, HR_params )
  
   USE heat_capacity_functions
-   
 
   IMPLICIT NONE
-  INTEGER :: Ulog
-  COMMON /Fio/ Ulog
+  INTEGER :: Ulog, igo
+  COMMON /Fio/ Ulog, igo
 
 ! Global Variables
   REAL(8), DIMENSION(7) :: CV_temps
@@ -2903,7 +2902,7 @@ SUBROUTINE Case_7(Total_char_freq, Total_harm_osc_freq, HR_params )
   REAL(8) :: bu(nvars+mcon)
   REAL(8) :: fj(ldfj,nvars+1)
   REAL(8) :: fnorm
-  INTEGER :: igo
+!  INTEGER :: igo
   INTEGER :: ind(nvars+mcon)
   INTEGER :: iopt(24)
   INTEGER :: iwork(liwork)
@@ -3100,8 +3099,8 @@ SUBROUTINE Case_8(Total_char_freq, Total_harm_osc_freq, HR_params )
   USE heat_capacity_functions
 
   IMPLICIT NONE
-  INTEGER :: Ulog
-  COMMON /Fio/ Ulog
+  INTEGER :: Ulog, igo
+  COMMON /Fio/ Ulog, igo
 
 ! Global Variables
   REAL(8), DIMENSION(7) :: CV_temps
@@ -3126,7 +3125,7 @@ SUBROUTINE Case_8(Total_char_freq, Total_harm_osc_freq, HR_params )
   REAL(8) :: bu(nvars+mcon)
   REAL(8) :: fj(ldfj,nvars+1)
   REAL(8) :: fnorm
-  INTEGER :: igo
+!  INTEGER :: igo
   INTEGER :: ind(nvars+mcon)
   INTEGER :: iopt(24)
   INTEGER :: iwork(liwork)
@@ -3274,8 +3273,8 @@ SUBROUTINE Case_9(Total_char_freq, Total_harm_osc_freq, HR_params )
    
 
   IMPLICIT NONE
-  INTEGER :: Ulog
-  COMMON /Fio/ Ulog
+  INTEGER :: Ulog, igo
+  COMMON /Fio/ Ulog, igo
   
 ! Global Variables
   REAL(8), DIMENSION(7) :: CV_temps
@@ -3301,7 +3300,7 @@ SUBROUTINE Case_9(Total_char_freq, Total_harm_osc_freq, HR_params )
   REAL(8) :: bu(nvars+mcon)
   REAL(8) :: fj(ldfj,nvars+1)
   REAL(8) :: fnorm
-  INTEGER :: igo
+!  INTEGER :: igo
   INTEGER :: ind(nvars+mcon)
   INTEGER :: iopt(24)
   INTEGER :: iwork(liwork)
@@ -3459,8 +3458,8 @@ SUBROUTINE Case_10(Total_char_freq, Total_harm_osc_freq, HR_params )
   USE heat_capacity_functions
 
   IMPLICIT NONE
-  INTEGER :: Ulog
-  COMMON /Fio/ Ulog
+  INTEGER :: Ulog, igo
+  COMMON /Fio/ Ulog, igo
   
 ! Global Variables
   REAL(8), DIMENSION(7) :: CV_temps
@@ -3487,7 +3486,7 @@ SUBROUTINE Case_10(Total_char_freq, Total_harm_osc_freq, HR_params )
   REAL(8) :: bu(nvars+mcon)
   REAL(8) :: fj(ldfj,nvars+1)
   REAL(8) :: fnorm
-  INTEGER :: igo
+!  INTEGER :: igo
   INTEGER :: ind(nvars+mcon)
   INTEGER :: iopt(24)
   INTEGER :: iwork(liwork)
@@ -3653,8 +3652,8 @@ SUBROUTINE Case_11(Total_char_freq, Total_harm_osc_freq, HR_params )
   USE heat_capacity_functions
 
   IMPLICIT NONE
-  INTEGER :: Ulog
-  COMMON /Fio/ Ulog
+  INTEGER :: Ulog, igo
+  COMMON /Fio/ Ulog, igo
   
 ! Global Variables
   REAL(8), DIMENSION(7) :: CV_temps
@@ -3682,7 +3681,7 @@ SUBROUTINE Case_11(Total_char_freq, Total_harm_osc_freq, HR_params )
   REAL(8) :: bu(nvars+mcon)
   REAL(8) :: fj(ldfj,nvars+1)
   REAL(8) :: fnorm
-  INTEGER :: igo
+!  INTEGER :: igo
   INTEGER :: ind(nvars+mcon)
   INTEGER :: iopt(24)
   INTEGER :: iwork(liwork)
@@ -3859,8 +3858,8 @@ SUBROUTINE Case_12(Total_char_freq, Total_harm_osc_freq, HR_params )
   USE heat_capacity_functions
 
   IMPLICIT NONE
-  INTEGER :: Ulog
-  COMMON /Fio/ Ulog
+  INTEGER :: Ulog, igo
+  COMMON /Fio/ Ulog, igo
 
 ! Global Variables
   REAL(8), DIMENSION(7) :: CV_temps
@@ -3889,7 +3888,7 @@ SUBROUTINE Case_12(Total_char_freq, Total_harm_osc_freq, HR_params )
   REAL(8) :: bu(nvars+mcon)
   REAL(8) :: fj(ldfj,nvars+1)
   REAL(8) :: fnorm
-  INTEGER :: igo
+!  INTEGER :: igo
   INTEGER :: ind(nvars+mcon)
   INTEGER :: iopt(24)
   INTEGER :: iwork(liwork)
@@ -4076,8 +4075,8 @@ SUBROUTINE Case_13(Total_char_freq, Total_harm_osc_freq, HR_params )
   USE heat_capacity_functions
 
   IMPLICIT NONE
-  INTEGER :: Ulog
-  COMMON /Fio/ Ulog
+  INTEGER :: Ulog, igo
+  COMMON /Fio/ Ulog, igo
   
 ! Global Variables
   REAL(8), DIMENSION(7) :: CV_temps
@@ -4107,7 +4106,7 @@ SUBROUTINE Case_13(Total_char_freq, Total_harm_osc_freq, HR_params )
   REAL(8) :: bu(nvars+mcon)
   REAL(8) :: fj(ldfj,nvars+1)
   REAL(8) :: fnorm
-  INTEGER :: igo
+!  INTEGER :: igo
   INTEGER :: ind(nvars+mcon)
   INTEGER :: iopt(24)
   INTEGER :: iwork(liwork)
@@ -4300,8 +4299,8 @@ SUBROUTINE Case_14(Total_char_freq, Total_harm_osc_freq, HR_params )
   USE heat_capacity_functions
 
   IMPLICIT NONE
-  INTEGER :: Ulog
-  COMMON /Fio/ Ulog
+  INTEGER :: Ulog, igo
+  COMMON /Fio/ Ulog, igo
   
 ! Global Variables
   REAL(8), DIMENSION(7) :: CV_temps
@@ -4328,7 +4327,7 @@ SUBROUTINE Case_14(Total_char_freq, Total_harm_osc_freq, HR_params )
   REAL(8) :: bu(nvars+mcon)
   REAL(8) :: fj(ldfj,nvars+1)
   REAL(8) :: fnorm
-  INTEGER :: igo
+!  INTEGER :: igo
   INTEGER :: ind(nvars+mcon)
   INTEGER :: iopt(24)
   INTEGER :: iwork(liwork)
@@ -4492,8 +4491,8 @@ SUBROUTINE Case_15(Total_char_freq, Total_harm_osc_freq, HR_params )
   USE heat_capacity_functions
 
   IMPLICIT NONE
-  INTEGER :: Ulog
-  COMMON /Fio/ Ulog
+  INTEGER :: Ulog, igo
+  COMMON /Fio/ Ulog, igo
   
 ! Global Variables
   REAL(8), DIMENSION(7) :: CV_temps
@@ -4521,7 +4520,7 @@ SUBROUTINE Case_15(Total_char_freq, Total_harm_osc_freq, HR_params )
   REAL(8) :: bu(nvars+mcon)
   REAL(8) :: fj(ldfj,nvars+1)
   REAL(8) :: fnorm
-  INTEGER :: igo
+!  INTEGER :: igo
   INTEGER :: ind(nvars+mcon)
   INTEGER :: iopt(24)
   INTEGER :: iwork(liwork)
@@ -4697,8 +4696,8 @@ SUBROUTINE Case_16(Total_char_freq, Total_harm_osc_freq, HR_params )
   USE heat_capacity_functions
 
   IMPLICIT NONE
-  INTEGER :: Ulog
-  COMMON /Fio/ Ulog
+  INTEGER :: Ulog, igo
+  COMMON /Fio/ Ulog, igo
   
 ! Global Variables
   REAL(8), DIMENSION(7) :: CV_temps
@@ -4727,7 +4726,7 @@ SUBROUTINE Case_16(Total_char_freq, Total_harm_osc_freq, HR_params )
   REAL(8) :: bu(nvars+mcon)
   REAL(8) :: fj(ldfj,nvars+1)
   REAL(8) :: fnorm
-  INTEGER :: igo
+!  INTEGER :: igo
   INTEGER :: ind(nvars+mcon)
   INTEGER :: iopt(24)
   INTEGER :: iwork(liwork)
@@ -4912,8 +4911,8 @@ SUBROUTINE Case_17(Total_char_freq, Total_harm_osc_freq, HR_params )
   USE heat_capacity_functions
 
   IMPLICIT NONE
-  INTEGER :: Ulog
-  COMMON /Fio/ Ulog
+  INTEGER :: Ulog, igo
+  COMMON /Fio/ Ulog, igo
 
 ! Global Variables
   REAL(8), DIMENSION(7) :: CV_temps
@@ -4943,7 +4942,7 @@ SUBROUTINE Case_17(Total_char_freq, Total_harm_osc_freq, HR_params )
   REAL(8) :: bu(nvars+mcon)
   REAL(8) :: fj(ldfj,nvars+1)
   REAL(8) :: fnorm
-  INTEGER :: igo
+!  INTEGER :: igo
   INTEGER :: ind(nvars+mcon)
   INTEGER :: iopt(24)
   INTEGER :: iwork(liwork)
@@ -5140,8 +5139,8 @@ SUBROUTINE Case_18(Total_char_freq, Total_harm_osc_freq, HR_params )
   USE heat_capacity_functions
 
   IMPLICIT NONE
-  INTEGER :: Ulog
-  COMMON /Fio/ Ulog
+  INTEGER :: Ulog, igo
+  COMMON /Fio/ Ulog, igo
 
 ! Global Variables
   REAL(8), DIMENSION(7) :: CV_temps
@@ -5173,7 +5172,7 @@ SUBROUTINE Case_18(Total_char_freq, Total_harm_osc_freq, HR_params )
   REAL(8) :: bu(nvars+mcon)
   REAL(8) :: fj(ldfj,nvars+1)
   REAL(8) :: fnorm
-  INTEGER :: igo
+!  INTEGER :: igo
   INTEGER :: ind(nvars+mcon)
   INTEGER :: iopt(24)
   INTEGER :: iwork(liwork)
@@ -5375,8 +5374,8 @@ SUBROUTINE Case_19(Total_char_freq, Total_harm_osc_freq, HR_params )
   USE heat_capacity_functions
 
   IMPLICIT NONE
-  INTEGER :: Ulog
-  COMMON /Fio/ Ulog
+  INTEGER :: Ulog, igo
+  COMMON /Fio/ Ulog, igo
 
 ! Global Variables
   REAL(8), DIMENSION(7) :: CV_temps
@@ -5405,7 +5404,7 @@ SUBROUTINE Case_19(Total_char_freq, Total_harm_osc_freq, HR_params )
   REAL(8) :: bu(nvars+mcon)
   REAL(8) :: fj(ldfj,nvars+1)
   REAL(8) :: fnorm
-  INTEGER :: igo
+!  INTEGER :: igo
   INTEGER :: ind(nvars+mcon)
   INTEGER :: iopt(24)
   INTEGER :: iwork(liwork)
@@ -5587,8 +5586,8 @@ SUBROUTINE Case_20(Total_char_freq, Total_harm_osc_freq, HR_params  )
   USE heat_capacity_functions
 
   IMPLICIT NONE
-  INTEGER :: Ulog
-  COMMON /Fio/ Ulog
+  INTEGER :: Ulog, igo
+  COMMON /Fio/ Ulog, igo
   
 ! Global Variables
   REAL(8), DIMENSION(7) :: CV_temps
@@ -5619,7 +5618,7 @@ SUBROUTINE Case_20(Total_char_freq, Total_harm_osc_freq, HR_params  )
   REAL(8) :: bu(nvars+mcon)
   REAL(8) :: fj(ldfj,nvars+1)
   REAL(8) :: fnorm
-  INTEGER :: igo
+!  INTEGER :: igo
   INTEGER :: ind(nvars+mcon)
   INTEGER :: iopt(24)
   INTEGER :: iwork(liwork)
@@ -5805,8 +5804,8 @@ SUBROUTINE Case_21(Total_char_freq, Total_harm_osc_freq, HR_params )
   USE heat_capacity_functions
 
   IMPLICIT NONE
-  INTEGER :: Ulog
-  COMMON /Fio/ Ulog
+  INTEGER :: Ulog, igo
+  COMMON /Fio/ Ulog, igo
   
 ! Global Variables
   REAL(8), DIMENSION(7) :: CV_temps
@@ -5837,7 +5836,7 @@ SUBROUTINE Case_21(Total_char_freq, Total_harm_osc_freq, HR_params )
   REAL(8) :: bu(nvars+mcon)
   REAL(8) :: fj(ldfj,nvars+1)
   REAL(8) :: fnorm
-  INTEGER :: igo
+!  INTEGER :: igo
   INTEGER :: ind(nvars+mcon)
   INTEGER :: iopt(24)
   INTEGER :: iwork(liwork)
@@ -6031,8 +6030,8 @@ SUBROUTINE Case_22(Total_char_freq, Total_harm_osc_freq, HR_params )
   USE heat_capacity_functions
 
   IMPLICIT NONE
-  INTEGER :: Ulog
-  COMMON /Fio/ Ulog
+  INTEGER :: Ulog, igo
+  COMMON /Fio/ Ulog, igo
   
 ! Global Variables
   REAL(8), DIMENSION(7) :: CV_temps
@@ -6066,7 +6065,7 @@ SUBROUTINE Case_22(Total_char_freq, Total_harm_osc_freq, HR_params )
   REAL(8) :: bu(nvars+mcon)
   REAL(8) :: fj(ldfj,nvars+1)
   REAL(8) :: fnorm
-  INTEGER :: igo
+!  INTEGER :: igo
   INTEGER :: ind(nvars+mcon)
   INTEGER :: iopt(24)
   INTEGER :: iwork(liwork)
@@ -6265,8 +6264,8 @@ SUBROUTINE Case_23(Total_char_freq, Total_harm_osc_freq, HR_params )
   USE heat_capacity_functions
 
   IMPLICIT NONE
-  INTEGER :: Ulog
-  COMMON /Fio/ Ulog
+  INTEGER :: Ulog, igo
+  COMMON /Fio/ Ulog, igo
 
 ! Global Variables
   REAL(8), DIMENSION(7) :: CV_temps
@@ -6299,7 +6298,7 @@ SUBROUTINE Case_23(Total_char_freq, Total_harm_osc_freq, HR_params )
   REAL(8) :: bu(nvars+mcon)
   REAL(8) :: fj(ldfj,nvars+1)
   REAL(8) :: fnorm
-  INTEGER :: igo
+!  INTEGER :: igo
   INTEGER :: ind(nvars+mcon)
   INTEGER :: iopt(24)
   INTEGER :: iwork(liwork)
@@ -6509,8 +6508,8 @@ SUBROUTINE Case_24(Total_char_freq, Total_harm_osc_freq, HR_params )
   USE heat_capacity_functions
 
   IMPLICIT NONE
-  INTEGER :: Ulog
-  COMMON /Fio/ Ulog
+  INTEGER :: Ulog, igo
+  COMMON /Fio/ Ulog, igo
 
 ! Global Variables
   REAL(8), DIMENSION(7) :: CV_temps
@@ -6541,7 +6540,7 @@ SUBROUTINE Case_24(Total_char_freq, Total_harm_osc_freq, HR_params )
   REAL(8) :: bu(nvars+mcon)
   REAL(8) :: fj(ldfj,nvars+1)
   REAL(8) :: fnorm
-  INTEGER :: igo
+!  INTEGER :: igo
   INTEGER :: ind(nvars+mcon)
   INTEGER :: iopt(24)
   INTEGER :: iwork(liwork)
@@ -6754,8 +6753,8 @@ SUBROUTINE Case_25(Total_char_freq, Total_harm_osc_freq, HR_params )
   USE heat_capacity_functions
 
   IMPLICIT NONE
-  INTEGER :: Ulog
-  COMMON /Fio/ Ulog
+  INTEGER :: Ulog, igo
+  COMMON /Fio/ Ulog, igo
 
 ! Global Variables
   REAL(8), DIMENSION(7) :: CV_temps
@@ -6787,7 +6786,7 @@ SUBROUTINE Case_25(Total_char_freq, Total_harm_osc_freq, HR_params )
   REAL(8) :: bu(nvars+mcon)
   REAL(8) :: fj(ldfj,nvars+1)
   REAL(8) :: fnorm
-  INTEGER :: igo
+!  INTEGER :: igo
   INTEGER :: ind(nvars+mcon)
   INTEGER :: iopt(24)
   INTEGER :: iwork(liwork)
@@ -6989,8 +6988,8 @@ SUBROUTINE Case_26(Total_char_freq, Total_harm_osc_freq, HR_params )
   USE heat_capacity_functions
 
   IMPLICIT NONE
-  INTEGER :: Ulog
-  COMMON /Fio/ Ulog
+  INTEGER :: Ulog, igo
+  COMMON /Fio/ Ulog, igo
 
 ! Global Variables
   REAL(8), DIMENSION(7) :: CV_temps
@@ -7020,7 +7019,7 @@ SUBROUTINE Case_26(Total_char_freq, Total_harm_osc_freq, HR_params )
   REAL(8) :: bu(nvars+mcon)
   REAL(8) :: fj(ldfj,nvars+1)
   REAL(8) :: fnorm
-  INTEGER :: igo
+!  INTEGER :: igo
   INTEGER :: ind(nvars+mcon)
   INTEGER :: iopt(24)
   INTEGER :: iwork(liwork)
@@ -7158,8 +7157,6 @@ SUBROUTINE Case_26_hd( x, fj, ldfj, igo, iopt, ropt )
 
   USE heat_capacity_functions 
   IMPLICIT NONE
-  INTEGER :: Ulog
-  COMMON /Fio/ Ulog
 
   INTEGER ldfj
   INTEGER, PARAMETER :: mcon = 0
@@ -7227,8 +7224,8 @@ END SUBROUTINE Case_26_hd
 SUBROUTINE assign_cases(N_rot, N_vib, Total_char_freq, Total_harm_osc_freq, HR_params )
 
 IMPLICIT NONE
-  INTEGER :: Ulog
-  COMMON /Fio/ Ulog
+  INTEGER :: Ulog, igo
+  COMMON /Fio/ Ulog, igo
  INTEGER, INTENT(IN):: N_vib
  INTEGER, INTENT(IN) :: N_rot
 
@@ -7439,8 +7436,8 @@ CONTAINS
 
 SUBROUTINE read_bonds(data, bond_info, bond_degeneracy)
 
-  INTEGER :: Ulog
-  COMMON /Fio/ Ulog
+  INTEGER :: Ulog, igo
+  COMMON /Fio/ Ulog, igo
 
   INTEGER :: RsCH3, RdCH2, CtCH, RSCH2sR, CdCHsR, Aldehyde,Cumulene
   INTEGER :: Ketene, CtCsR, RsCHsR2, CdCsR2, Ketone, RsCsR3
@@ -7554,8 +7551,8 @@ SUBROUTINE Calculate_RRHO_HR_params(Uin, Uout )
   USE frequencies
 
 IMPLICIT NONE
-  INTEGER :: Ulog
-  COMMON /Fio/ Ulog
+  INTEGER :: Ulog, igo
+  COMMON /Fio/ Ulog, igo
 ! Global Variables
   REAL(8), DIMENSION(7) :: CV_temps 
   REAL(8) :: R 
@@ -7792,12 +7789,12 @@ PROGRAM main
   ! These variables are for the input and output filenames
   CHARACTER(20) :: input_file
   CHARACTER(20) :: output_file
-  
+    
   ! Input/output file unit numbers
   INTEGER :: Uin
   INTEGER :: Uout
-  INTEGER :: Ulog
-  COMMON /Fio/ Ulog
+  INTEGER :: Ulog, igo
+  COMMON /Fio/ Ulog, igo
 
 ! Should be getting these unit numbers from iso_fortran_env module
 ! See http://stackoverflow.com/questions/8508590/stderr-in-fortran90
@@ -7806,10 +7803,11 @@ PROGRAM main
   Ulog = 1
 
 1234 CONTINUE
-
+  igo = -1
 ! This is the command that calls the main program.
   CALL Calculate_RRHO_HR_params(Uin, Uout)
   
+  WRITE(Uout, '(a,i6)' ) 'Output flag from DQED, IGO = ', igo
   WRITE(Uout,*) 'FRANKIE_COMPLETED_ONE_ITERATION'
   FLUSH(Uout)
   GOTO 1234

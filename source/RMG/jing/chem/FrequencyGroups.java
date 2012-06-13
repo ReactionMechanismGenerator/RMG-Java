@@ -246,34 +246,26 @@ public class FrequencyGroups{
 				throw new IOException("Number of hindered rotors read is less than expected.");
 			}
 			
-			// Check you're at the end of Frankie output.
+			// Grab the DQED IGO flag and check you're at the end of Frankie output.
+			int frankieOutputFlag = 0;
 			String line = "";
 	        while ( line != null ) {
 	            line = dataOutput.readLine().trim();
 	            if (line.equals("")) continue;
+	            if (line.contains("Output flag from DQED, IGO =")) {
+	        		frankieOutputFlag =  Integer.parseInt( line.substring(line.length()-1) );
+	        		continue;
+	            }
 	            if (line.contains("FRANKIE_COMPLETED_ONE_ITERATION")) break;
 	            throw new FrequencyGroupsException("Was expecting end of Frankie results but instead got: " + line);
 	        }
 	        
-	        // Check log file for warnings
-	        // (Reading a log file from disk to check for a single flag is inefficient and should be replaced)
+	        // Check IGO flag = 4 for success
 	        boolean frankieSuccess = false;
-	        int frankieOutputFlag = 0;
-	        line=null;
-	        FileReader fr = new FileReader(new File("frankie/frankie.log"));
-	        br = new BufferedReader(fr);
-	        while ( (line = br.readLine()) != null) {
-	        	line = line.trim();
-	        	if (line.contains("Output flag from DQED, IGO =")) {
-	        		frankieOutputFlag =  Integer.parseInt( line.substring(line.length()-1) );
-	        		break;
-	        	}
-	        }
 	        if (frankieOutputFlag == 4) 
 	        	frankieSuccess = true;
 	        if (frankieOutputFlag == 8) 
 	        	Logger.verbose("Frankie exceeded maximum number of iterations");
-
 	        if (!frankieSuccess) {
 	     		Logger.verbose("Frankie.exe wasn't fully successful: "+ String.format("species %2$d had output flag %1$d",frankieOutputFlag,species.getID() ));
 	     		Logger.verbose(String.format("Saving input file as 'frankie/dat.%d.%d' should you wish to debug.",frankieOutputFlag,species.getID() ));
@@ -284,16 +276,11 @@ public class FrequencyGroups{
 	     	}
         }
         catch (IOException e) {
-                Logger.critical("Problem reading frequency estimation output!");
+                Logger.critical("I/O problem running frankie.");
 				Logger.critical(e.getMessage());
                 Logger.logStackTrace(e);
-				System.exit(0);
+                throw new FrequencyGroupsException("I/O problem running frankie:"+e.getMessage());
         }
-		catch (NullPointerException e) {
-                Logger.error("Problem reading frequency estimation output!");
-                Logger.logStackTrace(e);           
-        }
-
       catch (FrequencyGroupsException e) {
           Logger.logStackTrace(e);
           String err = "Error running Frankie" + ls;
