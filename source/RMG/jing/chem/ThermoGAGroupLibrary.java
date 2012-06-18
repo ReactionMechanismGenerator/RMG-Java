@@ -309,8 +309,8 @@ public class ThermoGAGroupLibrary {
 
 		Set<Node> fusedRingAtoms = p_chemGraph.getGraph().getFusedRingAtoms();
 		if(fusedRingAtoms != null){
-			p_chemGraph.appendThermoComments("Fused Ring System!\n");
-			p_chemGraph.appendThermoComments("Additive ring strain corrections might not be accurate!\n");
+			p_chemGraph.appendThermoComments("!Fused Ring System!\n");
+			p_chemGraph.appendThermoComments("!Additive ring strain corrections might not be accurate!\n");
 		}
 
 		List<Set<Node>> ringNodes = p_chemGraph.getGraph().getCycleNodes();
@@ -361,7 +361,7 @@ public class ThermoGAGroupLibrary {
 				HierarchyTreeNode node = (HierarchyTreeNode)element.pop();
 				FunctionalGroup fg = (FunctionalGroup)node.getElement();
 				ThermoGAValue ga = (ThermoGAValue)ringLibrary.get(fg);
-				p_chemGraph.appendThermoComments("Ring:" + fg.getName()+"\n");
+				p_chemGraph.appendThermoComments("!Ring:" + fg.getName());
 				if (ga != null) {
 					if(GAMap.containsKey(ga)){
 						GAMap.put(ga, GAMap.get(ga)+1);
