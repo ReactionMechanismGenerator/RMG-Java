@@ -303,10 +303,13 @@ public class GATP implements GeneralGAPP {
 
 		 	HashMap oldCentralNode = (HashMap)(p_chemGraph.getCentralNode()).clone();
 	        ChemGraph sat = p_chemGraph;
-	        if (sat.isRadical()) {
+	        if (p_chemGraph.isRadical()) {
 				sat = ChemGraph.saturate(p_chemGraph);
 	        }
 	        Map<ThermoGAValue, Integer> ga = thermoLibrary.findRingCorrections(sat);
+	        if (p_chemGraph.isRadical()) {
+	        	p_chemGraph.appendThermoComments(sat.getThermoComments());
+	        }
 	        /*System.out.println("Ring Correction for "+ p_chemGraph.generateChemicalFormula() +" : " + ga.getName());
 	        System.out.println(p_chemGraph.toStringWithoutH());*/
 			p_chemGraph.setCentralNode(oldCentralNode);
