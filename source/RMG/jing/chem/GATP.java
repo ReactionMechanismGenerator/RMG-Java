@@ -297,7 +297,7 @@ public class GATP implements GeneralGAPP {
     //## operation getRingCorrection(ChemGraph)
     public Map<ThermoGAValue, Integer> getRingCorrections(ChemGraph p_chemGraph) {
         //#[ operation getRingCorrection(ChemGraph)
-		 if (p_chemGraph.isAcyclic()) return null;
+		 if (p_chemGraph.isAcyclic()) return Collections.emptyMap();
 
 		 	HashMap oldCentralNode = (HashMap)(p_chemGraph.getCentralNode()).clone();
 	        ChemGraph sat = p_chemGraph;
