@@ -773,6 +773,13 @@ public  Chemkin() {
       	if (spe.getNasaThermoSource() != null) {
       		result.append("!" + spe.getNasaThermoSource() + "\n");
       	}
+      	
+      	String thermoComm = spe.getChemGraph().getThermoComments().replace("\n", "");
+      	String [] pieces = thermoComm.split("(?<=\\G.{80})");//80 characters width
+      	for(String piece: pieces){
+      		if(!piece.equals(""))
+      			result.append("!"+piece+"\n");
+      	}
       	/*
       	 * MRH 2MAR2010:
       	 * Added additional line to thermochemistry portion of chemkin file
