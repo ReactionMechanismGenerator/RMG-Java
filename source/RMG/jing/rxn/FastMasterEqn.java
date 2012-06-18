@@ -565,11 +565,14 @@ public class FastMasterEqn implements PDepKineticsEstimator {
 
 			// Number of energy grains to use (determines to an extent the accuracy and precision of the results)
 			input.append( "# A method for determining the number of energy grains to use\n" );
-			input.append( "# 	Option 1: Specifying the number to use directly\n" );
-			input.append( "#		Example: NumGrains 201\n" );
-			input.append( "# 	Option 2: Specifying the grain size in J/mol, kJ/mol, cal/mol, kcal/mol, or cm^-1\n" );
-			input.append( "#		Example: GrainSize J/mol 4.184\n" );
+			input.append( "# Specify both the minimum number of grains and the maximum grain size\n" );
+			input.append( "# Allowed units for the grain size are J/mol, kJ/mol, cal/mol, kcal/mol, or cm^-1\n" );
+			input.append( "# Example:\n" );
+			input.append( "#		NumGrains 251\n" );
+			input.append( "#		GrainSize J/mol 4184\n" );
 			input.append( "NumGrains " + numGrains );
+			input.append( "\n" );
+			input.append( "GrainSize J/mol 4184" );
 			input.append( "\n\n" );
 
 			// Collisional transfer probability model to use
@@ -964,6 +967,18 @@ public class FastMasterEqn implements PDepKineticsEstimator {
 				 * P.S. Want to keep the name fame (fast approximate me) instead of having to change to
 				 * 	smame (slow more accurate me).  ;)
 				 *  
+				 * JWA 01Nov2011:
+				 * 
+				 * Note that the k(T,P) values always combine both direct and
+				 * well-skipping effects. (In this sense they are not true
+				 * rate coefficients, but are instead "flux" coefficients.)
+				 * At low T and high P, the well-skipping effect is usually
+				 * very small. However, there are many examples of isomerization
+				 * reactions for which the well-skipping rate is much larger
+				 * than the direct rate (e.g. due to a very high barrier for
+				 * the direct reaction). For this reason, we do not apply the
+				 * check to isomerization reactions, since they are not 
+				 * necessarily wrong if the check fails.
 				 */
 				LinkedList pathReactionList = pdn.getPathReactions();
 				boolean foundHighPLimitRxn = false;
@@ -972,6 +987,9 @@ public class FastMasterEqn implements PDepKineticsEstimator {
 				for (int HighPRxNum = 0; HighPRxNum < pathReactionList.size(); HighPRxNum++) {
 					PDepReaction rxnWHighPLimit = (PDepReaction)pathReactionList.get(HighPRxNum);
 					if (rxn.getStructure().equals(rxnWHighPLimit.getStructure())) {
+						if (rxn.getReactant().isUnimolecular() && rxn.getProduct().isUnimolecular())
+							// Don't apply the check to isomerization reactions; see above comment
+							continue;
 						foundHighPLimitRxn = true;
 						Hrxn = rxnWHighPLimit.calculateHrxn(stdtemp);
 						double A = 0.0, Ea = 0.0, n = 0.0;

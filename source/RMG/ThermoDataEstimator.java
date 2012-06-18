@@ -85,6 +85,7 @@ public class ThermoDataEstimator {
 			ChemGraph.useQM = qmflags.qmActive.booleanValue();
 			QMTP.qmprogram = qmflags.method.toLowerCase();
 			ChemGraph.useQMonCyclicsOnly = qmflags.qmOnCyclicsOnly.booleanValue();
+			QMTP.connectivityCheck = qmflags.connectivityCheck.intValue();
 
 			readAtomConstraints(reader);
 			
@@ -221,6 +222,21 @@ public class ThermoDataEstimator {
 		line = ChemParser.readMeaningfulLine(reader, true);
 		qmFlags.maxRadNumForQM = Integer.parseInt(line);
 
+		line = ChemParser.readMeaningfulLine(reader, true);
+		String checkConnSetting = line.toLowerCase();
+		if (checkConnSetting.equals("off")){//no connectivity checking
+		    qmFlags.connectivityCheck = 0;
+		}
+		else if (checkConnSetting.equals("check")){//print a warning if the connectivity doesn't appear to match
+		    qmFlags.connectivityCheck = 1;
+		}
+		else if (checkConnSetting.equals("confirm")){//consider the run a failure if the connectivity doesn't appear to match
+		    qmFlags.connectivityCheck = 2;
+		}
+		else{
+		    Logger.critical("input.txt: Inappropriate 'CheckConnectivity' value (should be 'off', 'check', or 'confirm')");
+		    System.exit(0);
+		}
 		return qmFlags;
 
 	}

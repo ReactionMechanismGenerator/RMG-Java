@@ -33,8 +33,6 @@ package jing.chem;
 
 import java.util.*;
 
-import com.sun.org.apache.xpath.internal.operations.Plus;
-
 import jing.param.*;
 
 //## package jing::chem
@@ -317,6 +315,16 @@ public class ThermoData extends ThermoGAValue {
         if (this == null) return null;
 
         return new ThermoData(H298,S298,Cp300,Cp400,Cp500,Cp600,Cp800,Cp1000,Cp1500,dH,dS,dCp,comments);
+
+
+
+        //#]
+    }
+
+    public ThermoData copyWithExtraInfo() {
+        if (this == null) return null;
+
+        return new ThermoData(name, new ThermoData(H298,S298,Cp300,Cp400,Cp500,Cp600,Cp800,Cp1000,Cp1500,dH,dS,dCp,comments), comments, source);//ideally, shouldn't have to specify comments twice, but it seems this is necessary unless other modifications are made
 
 
 
