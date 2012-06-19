@@ -21,11 +21,14 @@ public class QMFlags {
 	public Integer maxRadNumForQM;
 
 	public Integer connectivityCheck;
+
+	public Boolean qmOnFusedCyclicsOnly;
 	
 	public QMFlags(){
 		qmActive = null;
 		method = null;
 		qmOnCyclicsOnly = null;
+		qmOnFusedCyclicsOnly = null;
 		maxRadNumForQM = null;
 		connectivityCheck = null;
 	}
