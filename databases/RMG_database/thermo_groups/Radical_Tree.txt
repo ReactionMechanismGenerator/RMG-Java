@@ -53,14 +53,57 @@ L1: RJ
 				L6: RCCJC	
 				L6: RCCJCC
 				L6: CCJCOOH
+				L6: 7-norbornyl
+				L6: 2-norbornyl
+				L6: cyclopropane
+				L6: cyclobutane
+				L6: cycloheptane
+				L6: spiro[2.2]pentane-secondary
+				L6: bicyclo[1.1.0]butane-secondary
+				L6: bicyclo[2.1.0]pentane-secondary-C4
+				L6: bicyclo[2.1.0]pentane-secondary-C3
+				L6: bicyclo[3.1.0]hexane-C5-2
+				L6: bicyclo[3.1.0]hexane-C5-3
+				L6: bicyclo[3.1.0]hexane-C3
+				L6: bicyclo[2.2.0]hexane-secondary
+				L6: bicyclo[3.2.0]heptane-C5-2
+				L6: bicyclo[3.2.0]heptane-C5-3
+				L6: bicyclo[3.2.0]heptane-C5-6
+				L6: bicyclo[4.1.0]heptane-C6-2
+				L6: bicyclo[4.1.0]heptane-C6-3
+				L6: bicyclo[4.1.0]heptane-C3-7
+				L6: bicyclo[4.1.0]heptane-C6-2
+				L6: bicyclo[4.1.0]heptane-C6-3
+				L6: bicyclo[4.1.0]heptane-C3-7
+				L6: octahydro-pentalene-C5-2
+				L6: octahydro-pentalene-C5-3
+				L6: bicyclo[4.2.0]octane-C6-2
+				L6: bicyclo[4.2.0]octane-C6-3
+				L6: bicyclo[4.2.0]octane-C4-7
+				L6: cyclopentene-4
 			L5: Benzyl_S
 			L5: Allyl_S
+				L6: cyclobutene-allyl
+				L6: cyclopentene-allyl
+				L6: cyclohexene-allyl
+
 			L5: CCJCHO
 			L5: C=CCJC=C
+				L6: cyclopropenyl-allyl
+				L6: 1,3-cyclopentadiene-allyl
 			L5: Sec_Propargyl
 		L4: Cs_T		// tertiary radical
 			L5: Tertalkyl
 				L6: C2CJCOOH
+				L6: bridgehead_norbornyl
+				L6: bicyclo[1.1.0]butane-tertiary
+				L6: bicyclo[2.1.0]pentane-tertiary
+				L6: bicyclo[3.1.0]hexane-tertiary
+				L6: bicyclo[2.2.0]hexane-tertiary
+				L6: bicyclo[3.2.0]heptane-tertiary
+				L6: bicyclo[4.1.0]heptane-tertiary
+				L6: octahydro-pentalene-tertiary
+				L6: bicyclo[4.2.0]octane-tertiary
 			L5: Benzyl_T	
 			L5: Allyl_T
 			L5: C2CJCHO
@@ -109,6 +152,11 @@ L1: RJ
 		L4: Cds_S
 			//L5: Vins
 			L5: C=CJC=C
+			L5: cyclobutene-vinyl
+			L5: cyclopropenyl-vinyl
+			L5: cyclopentene-vinyl
+			L5: 1,3-cyclopentadiene-vinyl-1
+			L5: 1,3-cyclopentadiene-vinyl-2
 		L4: CdsJO
 			L5: HCdsJO	
 			L5: CCJ=O
