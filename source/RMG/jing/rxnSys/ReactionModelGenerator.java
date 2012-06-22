@@ -490,12 +490,12 @@ public class ReactionModelGenerator {
 						System.exit(0);
 					}
 					line=ChemParser.readMeaningfulLine(reader, true);
-					if(line.startsWith("QMForFusedCyclicsOnly:")){
+					if(line.startsWith("QMForNonAromaticFusedCyclicsOnly:")){
 						StringTokenizer st2 = new StringTokenizer(line);
 						String nameCyc = st2.nextToken();
 						String option = st2.nextToken().toLowerCase();
 						if (option.equals("on")) {
-							ChemGraph.useQMonFusedCyclicsOnly = true;
+							ChemGraph.useQMonNonAromaticFusedCyclicsOnly = true;
 						}
 					}
 					

@@ -2245,6 +2245,79 @@ public class Graph {
         	return ringNodesList;
     	}
 	}
+
+
+	/**
+	 * Iterates over the SSSR's and searches for rings
+	 * that solely consist of Cb atoms.<BR><BR>
+	 * 
+	 * The algorithms iterates over all nodes of each ring and then iterates
+	 * over all neighbouring bonds.<BR><BR>
+	 * 
+	 * If at least 2 "B" bonds have been found, the atom must be an
+	 * aromatic atom.<BR><BR>
+	 * 
+	 * If all atoms in the ring are aromatic atoms, then an aromatic ring
+	 * is found, and true is returned.<BR><BR>
+	 * 
+	 * Efficiency is increased by first checking the number of nodes in each
+	 * ring. If this number is different from 6, then skip the ring.
+	 * This assumes that aromatic rings always consist of 6 atoms.
+	 * 
+	 * In cases of naphthalene, where a 6 + 4 aromatic system exists,
+	 * there will be at least one 6 membered aromatic ring so this algorithm
+	 * will not fail for fused aromatic rings.
+	 * 
+	 * 
+	 * @return
+	 */
+	public boolean containsAromaticRing() {
+		if(SSSRings == null || acyclic){
+    		return false;
+    	}
+    	else{
+    		Iterator iterCycle = SSSRings.iterator(); //loop over all SSSRs
+        	while(iterCycle.hasNext()){
+        		Set<Node> nodesSet = new HashSet<Node>();
+        		List cycle = (LinkedList)iterCycle.next();
+        		Iterator iter = cycle.iterator();
+        		int numberOfNodes = 0;
+        		while(iter.hasNext()){//count number of node elements
+        			if((GraphComponent)iter.next() instanceof Node)
+        				numberOfNodes++;
+        		}
+        		if(numberOfNodes == 6){//Assume aromatic rings always count 6 atoms:
+        			iter = cycle.iterator();
+            		boolean isAromaticRing = true;
+            		while(iter.hasNext()&& isAromaticRing){
+            			GraphComponent node = (GraphComponent)iter.next();
+            			if(node instanceof Node){
+            				node = (Node)node;
+            				Iterator neighbours = node.getNeighbor();
+            				int counter = 0;
+            				while(neighbours.hasNext() && counter < 2){
+            					GraphComponent neighbour = (GraphComponent) neighbours.next(); 
+            					if(neighbour instanceof Arc){
+            						neighbour = (Arc)neighbour;
+            						if (((Bond)neighbour.getElement()).getName().equals("B")){
+            							counter++;
+            						}
+            					}
+            				}
+            				if (counter < 2){//this is not an aromatic atom
+            					isAromaticRing = false;
+            				}
+            			}
+            		}
+            		if (isAromaticRing){//as soon as one aromatic ring is found, return true
+            			return true;
+            		}
+        		}
+        	}
+    	}
+		return false;
+    }
+
 }
 /*********************************************************************
 	File Path	: RMG\RMG\jing\chemUtil\Graph.java

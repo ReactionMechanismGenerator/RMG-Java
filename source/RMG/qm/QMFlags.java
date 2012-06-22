@@ -22,13 +22,13 @@ public class QMFlags {
 
 	public Integer connectivityCheck;
 
-	public Boolean qmOnFusedCyclicsOnly;
+	public Boolean qmOnNonAromaticFusedCyclicsOnly;
 	
 	public QMFlags(){
 		qmActive = null;
 		method = null;
 		qmOnCyclicsOnly = null;
-		qmOnFusedCyclicsOnly = null;
+		qmOnNonAromaticFusedCyclicsOnly = null;
 		maxRadNumForQM = null;
 		connectivityCheck = null;
 	}
