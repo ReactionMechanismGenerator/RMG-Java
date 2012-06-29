@@ -20,7 +20,7 @@ C6H12SHOH
 H2O
 1 O 0
 
-C6H12SJOH 
+C6H12OHSJ
 1 C 0 {2,S}
 2 C 0 {1,S} {3,S}
 3 C 0 {2,S} {4,S}
@@ -109,7 +109,7 @@ C5H11COSH
 7 S 0 {6,S}
 8 O 0 {6,D}
 
-C5H11COS
+C5H11COSJ
 1 C 0 {2,S}      
 2 C 0 {1,S} {3,S}
 3 C 0 {2,S} {4,S}
@@ -150,8 +150,8 @@ C12H26O2S2
 SH
 1 S 1
 
-H2S2
-1 S 0 {2,S}
+H2S2 
+1 S 0 {2,S} 
 2 S 0 {1,S}
 
 C5H11COHSHSH
