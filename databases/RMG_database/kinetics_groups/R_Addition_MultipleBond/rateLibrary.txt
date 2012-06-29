@@ -188,3 +188,9 @@ Arrhenius_EP
 2608	CS_O		Cs_rad			300-1500	6.03E+05	1.83	0	11.84	0	0	0	0	3	CAC calc CBS-QB3 1dhr
 2609	CS/H/Cs_S	C_rad/H2/Cs		300-1500	1.80E+03	2.47	0	0.61	0	0	0	0	3	CAC calc CBS-QB3 1dhr	
 2610	CS/H/Cs_S	C_rad/H/NonDeC		300-1500	1.79E+01	2.90	0	-1.43	0	0	0	0	3	CAC calc CBS-QB3 1dhr
+2611	CS/H/Cs_S	S_pri_rad		300-700		1.18E+13	0.0	0	-1.36	0	0	0	0	4	AA calcs
+2612	CS/H/Cs_S       S_pri_rad 		701-1500	2.46E+14	0.0	0	2.93	0	0	0	0	4	AA calcs
+2613	CS/H/Ss_S	C_rad/H/NonDeC 		300-1500	1.95E+11	0.0	0	4.20	0	0	0	0	4	AA calcs	
+2614	CS/CsSs_S	H_rad			300-1500	1.62E+13	0.0	0	4.97	0	0	0	0	4	AA calcs
+2615	CS2		H_rad			300-1500	3.87E+08	1.89	0	7.72	0	0	0	0	3	CAC calc CBS-QB3 1dhr
+2616	CS2		C_rad/H2/Cs		300-1500	3.59E+02	2.94	0	8.96	0	0	0	0	3	CAC calc CBS-QB3 1dhr

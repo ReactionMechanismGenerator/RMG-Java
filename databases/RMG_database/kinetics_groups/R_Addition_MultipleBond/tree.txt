@@ -106,9 +106,9 @@ L1: XZ
 				L5: CS/H/Ss_S
 			L4: CS/H/De_S
 			L4: CS/Nd2_S
-				L5: CS/H/CsCs_S
-				L5: CS/H/CsOs_S
-				L5: CS/H/CsSs_S
+				L5: CS/CsCs_S
+				L5: CS/CsOs_S
+				L5: CS/CsSs_S
 			L4: CS/Nd/De_S
 			L4: CS/De2_S
 		L3: Ct_Ct
