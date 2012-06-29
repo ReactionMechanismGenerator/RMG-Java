@@ -38,7 +38,11 @@ L1: doublebond
 		L3: Cd/monosub_Cd/monosub
 			L4: Cd/H/Nd_Cd/H/Nd
 			L4: Cd/H/Nd_Cd/H/De
+				L5: Cd/H/S_Cd/H/Cd
+					L6: Thiophene3
 			L4: Cd/H/De_Cd/H/Nd
+				L5: Cd/H/Cd_Cd/H/S
+					L6: Thiophene2
 			L4: Cd/H/De_Cd/H/De
 		L3: Cd/monosub_Cd/disub
 			L4: Cd/H/Nd_Cd/Nd2
