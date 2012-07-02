@@ -84,7 +84,22 @@ L1: RJ
 				L6: bicyclo[2.1.0]pent-2-ene-C5
 				L6: bicyclo[2.1.1]hex-2-ene-C5
 				L6: tricyclo[2.1.1.0(1,4)]hex-2-ene-C5
-				
+				L6: bicyclo[1.1.1]pentane-C2
+				L6: tricyclo[1.1.1.0(1,3)]pentane-C2
+				L6: bicyclo[2.1.1]hexane-C2
+				L6: bicyclo[2.1.1]hexane-C5
+				L6: tricyclo[2.1.1.0(1,4)]hexane-C2
+				L6: tricyclo[2.1.1.0(1,4)]hexane-C5
+				L6: bicyclo[3.1.1]heptane-C2
+				L6: bicyclo[3.1.1]heptane-C3
+				L6: bicyclo[3.1.1]heptane-C6
+				L6: tricyclo[3.1.1.0(1,5)]heptane-C2
+				L6: tricyclo[3.1.1.0(1,5)]heptane-C3
+				L6: tricyclo[3.1.1.0(1,5)]heptane-C6
+				L6: tricyclo[2.2.1.0(1,4)]heptane-C2
+				L6: tricyclo[2.2.1.0(1,4)]heptane-C7
+				L6: bicyclo[2.2.2]octane-C2
+				L6: tricyclo[2.2.2.0(1,4)]octane-C2
 			L5: Benzyl_S
 			L5: Allyl_S
 				L6: cyclobutene-allyl
@@ -108,6 +123,11 @@ L1: RJ
 				L6: bicyclo[4.1.0]heptane-tertiary
 				L6: octahydro-pentalene-tertiary
 				L6: bicyclo[4.2.0]octane-tertiary
+				L6: bicyclo[1.1.1]pentane-C1
+				L6: bicyclo[2.1.1]hexane-C1
+				L6: bicyclo[3.1.1]heptane-C1
+				L6: bicyclo[2.2.2]octane-C1
+				
 			L5: Benzyl_T	
 			L5: Allyl_T
 				L6: bicyclo[2.1.0]pent-2-ene-C1
