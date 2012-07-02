@@ -1084,31 +1084,8 @@ public class ReactionTemplate {
 							}
 						}
       			}
-		if (reverseReaction == null) {
-		  System.out.println("DEBUGGING INFO FOR ISSUE #239:");
-		  System.out.println("structure.equalsAsChemGraph(p_structure):"+structure.equalsAsChemGraph(p_structure));
-		  System.out.println("structure:"+structure);
-		  System.out.println("p_structure:"+p_structure);
-		  ChemGraph cg = (ChemGraph)structure.reactants.iterator().next();
-		  System.out.println("structure reactant:"+ cg);
-		  System.out.println("structure reactant has resonanceIsomers:"+ cg.getSpecies().hasResonanceIsomers());
-		  cg = (ChemGraph)p_structure.reactants.iterator().next();
-		  System.out.println("p_structure reactant:"+ cg);
-		  System.out.println("p_structure reactant has resonanceIsomers:"+ cg.getSpecies().hasResonanceIsomers());
-		  cg = (ChemGraph)structure.products.iterator().next();
-		  System.out.println("structure product:"+ cg);
-		  System.out.println("structure product has resonanceIsomers:"+ cg.getSpecies().hasResonanceIsomers());
-		  cg = (ChemGraph)p_structure.products.iterator().next();
-		  System.out.println("p_structure product:"+ cg);
-		  System.out.println("p_structure product has resonanceIsomers:"+ cg.getSpecies().hasResonanceIsomers());
-		}
       		}
-	if (reverseReaction == null) {
-	  System.out.println("DEBUGGING INFO FOR ISSUE #239:");
-	  System.out.println("rpsame:"+rpsame);
-	  System.out.println("p_chemGraph:"+p_chemGraph);
-	  System.out.println("p_structure:"+p_structure);
-      }
+
           }
           catch (ForbiddenStructureException e) {
           	// do the next reaction site
