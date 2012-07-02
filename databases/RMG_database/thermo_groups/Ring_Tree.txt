@@ -64,6 +64,8 @@ L1: FiveMember
 	L2: 124trioxolane
 	L2: methylenecyclopentane
 	L2: Fulvene
+	L2: 3-Methylenecyclopentene
+	L2: 4-Methylenecyclopentene
 L1: SixMember
 	L2: sixnosidedouble
 		L3: Cyclohexane
