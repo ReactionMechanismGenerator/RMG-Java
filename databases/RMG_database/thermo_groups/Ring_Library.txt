@@ -141,4 +141,5 @@
 //39	Tetrahydrofuran	5.9	0	0	0	0	0	0	0	0	0	0	0	Tetrahydrofuran ring BENSON
 //40	Tetrahydro-2H-pyran	0.5	0	0	0	0	0	0	0	0	0	0	0	Tetrahydro-2H-pyran ring BENSON
 123 3-Methylenecyclopentene	6.2	28.9	-4.9	-4.8	-4.4	-3.7	-2.7	-2	-0.9	0	0	0 Copied from 4-methylenecyclopentene		
-123 4-Methylenecyclopentene	6.2	28.9	-4.9	-4.8	-4.4	-3.7	-2.7	-2	-0.9	0	0	0 //Sandeep Sharma Ph.D		
+124 4-Methylenecyclopentene	6.2	28.9	-4.9	-4.8	-4.4	-3.7	-2.7	-2	-0.9	0	0	0 //Sandeep Sharma Ph.D
+125	3,4-dimethylenecyclohexene	4.2	32.5	-2.1	-2.2	-2.2	-2.3	-2.5	-2.3	-0.3	0	0	0	//Copied from o-xylene 

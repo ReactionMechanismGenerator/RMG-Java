@@ -112,6 +112,7 @@ L1: SixMember
 	L2: six-twoin14-twoout
 		L3: pxylene
 		L3: pbenzoquinone
+	L2: 3,4-dimethylenecyclohexene
 //	L2: Pentanedioic_anhydride
 L1: SevenMember
 	L2: Cycloheptane
