@@ -67,6 +67,7 @@ public class ChemGraph implements Matchable {
     
     public static boolean useQM = false;//gmagoon 6/15/09: flag for thermo estimation using quantum results; there may be a better place for this (Global?) but for now, this should work
     public static boolean useQMonCyclicsOnly=false;
+	public static boolean useQMonNonAromaticFusedCyclicsOnly = false;
     /**
     Chemical Formula of a ChemGraph.
     */
@@ -1406,6 +1407,18 @@ return sn;
         try {
                 if (useQM){
                     if(useQMonCyclicsOnly && this.isAcyclic()) thermoGAPP=GATP.getINSTANCE();//use GroupAdditivity for acyclic compounds if this option is set
+                    else if(useQMonCyclicsOnly && !this.isAcyclic()){
+                    	if(useQMonNonAromaticFusedCyclicsOnly && this.getGraph().getFusedRingAtoms() == null)
+                    		thermoGAPP=GATP.getINSTANCE();
+                    	else{
+                    		if(this.getGraph().containsAromaticRing()){//fused naphtheno aromatics are better predicted by Benson than QMTP
+                    			thermoGAPP=GATP.getINSTANCE();
+                    		}
+                    		else
+                    			thermoGAPP=QMTP.getINSTANCE();
+                    	}
+                    		
+                    }
                     else  thermoGAPP=QMTP.getINSTANCE();
                 }
                 else if (thermoGAPP == null) setDefaultThermoGAPP();

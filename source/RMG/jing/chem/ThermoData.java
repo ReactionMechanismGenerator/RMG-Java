@@ -32,8 +32,8 @@ package jing.chem;
 
 
 import java.util.*;
+
 import jing.param.*;
-import jing.param.Temperature;
 
 //## package jing::chem
 
@@ -426,6 +426,21 @@ public class ThermoData extends ThermoGAValue {
         return super.toString();
         //#]
     }
+    
+    /**
+     * This method adds a series of ThermoGAValues 
+     * by iterating over every element of the Map
+     * and calling the Plus(ThermoGAValue) method in the {@link ThermoData} type
+     * x times according to the Value for the particular key in the Map
+     * @param ringCorrections
+     */
+	public void plus(Map<ThermoGAValue, Integer> ringCorrections) {
+		for(ThermoGAValue ga : ringCorrections.keySet()){
+			for (int i = 0; i < ringCorrections.get(ga); i++){
+				plus(ga);
+			}
+		}
+	}
 
 }
 /*********************************************************************

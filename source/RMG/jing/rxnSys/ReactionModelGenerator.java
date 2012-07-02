@@ -490,6 +490,16 @@ public class ReactionModelGenerator {
 						System.exit(0);
 					}
 					line=ChemParser.readMeaningfulLine(reader, true);
+					if(line.startsWith("QMForNonAromaticFusedCyclicsOnly:")){
+						StringTokenizer st2 = new StringTokenizer(line);
+						String nameCyc = st2.nextToken();
+						String option = st2.nextToken().toLowerCase();
+						if (option.equals("on")) {
+							ChemGraph.useQMonNonAromaticFusedCyclicsOnly = true;
+						}
+					}
+					
+					line=ChemParser.readMeaningfulLine(reader, true);
 					if(line.startsWith("MaxRadNumForQM:")){
 						StringTokenizer st3 = new StringTokenizer(line);
 						String nameRadNum = st3.nextToken();

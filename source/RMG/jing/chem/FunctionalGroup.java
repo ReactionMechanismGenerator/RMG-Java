@@ -354,7 +354,16 @@ public class FunctionalGroup implements Matchable {
     public void setGraph(Graph p_Graph) {
         graph = p_Graph;
     }
-    
+    /**
+     * Equals method compares names of instances as the qualifier
+     * for equality.
+     */
+    public boolean equals(Object o){
+    	if(o instanceof FunctionalGroup){
+    		return name.equals(((FunctionalGroup)o).getName());
+    	}
+    	else return false;
+    }
 }
 /*********************************************************************
 	File Path	: RMG\RMG\jing\chem\FunctionalGroup.java
