@@ -1399,7 +1399,7 @@ return sn;
                 if (useQM){
                 	//start by using Benson GA to estimate:
                 	thermoGAPP = GATP.getINSTANCE();
-                	thermoData = thermoGAPP.generateThermoData(this);
+                	ThermoData dummyGA = thermoGAPP.generateThermoData(this);
                 	
                 	/*
                 	 * If the molecule is acyclic, don't even think using QMTP.
@@ -1419,10 +1419,18 @@ return sn;
                 			if(((GATP)thermoGAPP).getPolycyclic() == null){
                 				Logger.info("Could not find a polycyclic ring strain correction. Falling back to QMTP");                		
                 				thermoGAPP=QMTP.getINSTANCE();
-                				thermoData = thermoGAPP.generateThermoData(this);
+                				ThermoData dummyQM = thermoGAPP.generateThermoData(this);
+                				thermoData = dummyQM;
                 			}
+                			else
+                				thermoData = dummyGA;
                 		}
+                		else
+                			thermoData = dummyGA;
                 	}
+                	else
+                		thermoData = dummyGA;
+                	
                 }
                 else{
                 	thermoGAPP = GATP.getINSTANCE();
