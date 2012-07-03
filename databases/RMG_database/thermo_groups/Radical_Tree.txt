@@ -52,6 +52,8 @@ L1: RJ
 				L6: CCJC
 				L6: RCCJC	
 				L6: RCCJCC
+					L7: cyclopentane
+					L7: cyclohexane
 				L6: CCJCOOH
 				L6: 7-norbornyl
 				L6: 2-norbornyl
