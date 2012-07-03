@@ -1410,12 +1410,14 @@ return sn;
                 		 * think using QMTP neither.
                 		 */
                 		if(this.getGraph().getFusedRingAtoms() != null){
+                			Logger.info("Polycyclic ring system with fused ring atoms.");
                 			/*
                 			 * If the Benson GA library did not contain
                 			 * the right polycyclic ring strain correction,
                 			 * then fall back to QMTP!
                 			 */
                 			if(((GATP)thermoGAPP).getPolycyclic() == null){
+                				Logger.info("Could not find a polycyclic ring strain correction. Falling back to QMTP");                		
                 				thermoGAPP=QMTP.getINSTANCE();
                 				thermoData = thermoGAPP.generateThermoData(this);
                 			}
