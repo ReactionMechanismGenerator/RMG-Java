@@ -1,0 +1,21 @@
+1 bicyclo-(1.1.0)-butane	57.07894737	69.29665072	0	0	0	0	0	0	0	0	0	0	//Properties of Liquids and Gases, Poling 5th Ed. 
+2 bicyclo-(2.1.0)-pentane	55.37799043	64.78947368	0	0	0	0	0	0	0	0	0	0	//Properties of Liquids and Gases, Poling 5th Ed. 
+3 bicyclo-(2.2.1)-heptane	16.14354067	0	0	0	0	0	0	0	0	0	0	0	//Properties of Liquids and Gases, Poling 5th Ed. 
+4 bicyclo-(3.1.0)-hexane	32.74641148	60.98564593	0	0	0	0	0	0	0	0	0	0	//Properties of Liquids and Gases, Poling 5th Ed. 
+5 bicyclo-(4.1.0)-heptane	28.94976077	55.57655502	0	0	0	0	0	0	0	0	0	0	//Properties of Liquids and Gases, Poling 5th Ed. 
+6 bicyclo-(5.1.0)-octane	29.64114833	50.66985646	0	0	0	0	0	0	0	0	0	0	//Properties of Liquids and Gases, Poling 5th Ed. 
+7 bicyclo-(6.1.0)-nonane	31.14354067	49.26794258	0	0	0	0	0	0	0	0	0	0	//Properties of Liquids and Gases, Poling 5th Ed. 
+8	bicyclo(2.2.1)hepta-2,5-diene	31.64354067	0	0	0	0	0	0	0	0	0	0	0	//Properties of Liquids and Gases, Poling 5th Ed. 
+9	biphenylene	58.88277512	0	0	0	0	0	0	0	0	0	0	0	//Properties of Liquids and Gases, Poling 5th Ed. 
+10	cis-octahydro-1H-indene	8.210526316	0	0	0	0	0	0	0	0	0	0	0	//Properties of Liquids and Gases, Poling 5th Ed. 
+11	spiropentane	63.58851675	67.6937799	0	0	0	0	0	0	0	0	0	0	//Properties of Liquids and Gases, Poling 5th Ed. 
+12 bicyclo[2.1.1]hexane	37	0	0	0	0	0	0	0	0	0	0	0	//Wiberg, K. Angew. Chem., Int. Ed. Engl. 1986, 25, 312 1986 ab initio
+13 Bicyclo[2.2.0]hexane	51.8	0	0	0	0	0	0	0	0	0	0	0	//Wiberg, K. Angew. Chem., Int. Ed. Engl. 1986, 25, 312 1986 experimental
+14 Bicyclo[1.1.1]pentane	68	0	0	0	0	0	0	0	0	0	0	0	//Wiberg, K. Angew. Chem., Int. Ed. Engl. 1986, 25, 312 1986 ab initio
+15 bicyclo[2.2.2]octane	7.4	0	0	0	0	0	0	0	0	0	0	0	//Wiberg, K. Angew. Chem., Int. Ed. Engl. 1986, 25, 312 1986 experimental
+16 bicyclo[2.1.1]hex-2-ene	51	0	0	0	0	0	0	0	0	0	0	0	//Wiberg, K. Angew. Chem., Int. Ed. Engl. 1986, 25, 312 1986 ab initio
+17 norbornene	19.2	0	0	0	0	0	0	0	0	0	0	0	//Wiberg, K. Angew. Chem., Int. Ed. Engl. 1986, 25, 312 1986 experimental
+18 bicyclo[2.2.0]hex-2-ene	55.7	0	0	0	0	0	0	0	0	0	0	0	//Wiberg, K. Angew. Chem., Int. Ed. Engl. 1986, 25, 312 1986 experimental
+19 Bicyclo[2.2.0]hex-1(4)-ene	87	0	0	0	0	0	0	0	0	0	0	0	//Wiberg, K. Angew. Chem., Int. Ed. Engl. 1986, 25, 312 1986 ab initio
+20 bicyclo[2.1.0]pent-1(4)-ene	126	0	0	0	0	0	0	0	0	0	0	0	//Wiberg, K. Angew. Chem., Int. Ed. Engl. 1986, 25, 312 1986 ab initio
+21 Bicyclo[2.1.0]pent-2-ene	67.9	0	0	0	0	0	0	0	0	0	0	0	//Wiberg, K. Angew. Chem., Int. Ed. Engl. 1986, 25, 312 1986 experimental
