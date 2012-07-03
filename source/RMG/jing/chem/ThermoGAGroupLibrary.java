@@ -93,6 +93,10 @@ public class ThermoGAGroupLibrary {
 	protected HashMap unifacLibrary;
 	protected HierarchyTree unifacTree;
 
+	private HierarchyTree polycylicTree;
+	private HashMap polycyclicDictionary;
+	private HashMap polycyclicLibrary;
+
 	//protected HashMap solventDictionary;
 	//protected HashMap solventLibrary;
 	// Constructors
@@ -135,6 +139,10 @@ public class ThermoGAGroupLibrary {
 		unifacDictionary=new HashMap();
 		unifacTree=new HierarchyTree();
 
+		polycyclicLibrary = new HashMap();
+		polycyclicDictionary = new HashMap();
+		polycylicTree = new HierarchyTree();
+		
 		//  solventDictionary=new HashMap();
 		// solventLibrary=new HashMap();
 
@@ -183,10 +191,15 @@ public class ThermoGAGroupLibrary {
 		String UnTree=directory+"Unifac_Tree.txt";
 		String UnLibrary=directory+"Unifac_Library.txt";
 
+
+		String PolycyclicDictionary=directory+"Polycyclic_Dictionary.txt";
+		String PolycyclicTree=directory+"Polycyclic_Tree.txt";
+		String PolycyclicLibrary=directory+"Polycyclic_Library.txt";
+		
 		//String solventdict=directory+"Solvent_Dictionary.txt";
 		//String solventlib=directory+"Solvent_Library.txt";
 
-		read(gDictionary,gTree,gLibrary,rDictionary,rTree,rLibrary,ringDictionary,ringTree,ringLibrary,otherDictionary,otherLibrary,otherTree,gauDictionary,gauTree,gauLibrary,one5Dictionary,one5Tree,one5Library,AbDictionary,AbTree,AbLibrary,UnDictionary,UnTree,UnLibrary,AbradDictionary,AbradTree,AbradLibrary);
+		read(gDictionary,gTree,gLibrary,rDictionary,rTree,rLibrary,ringDictionary,ringTree,ringLibrary,otherDictionary,otherLibrary,otherTree,gauDictionary,gauTree,gauLibrary,one5Dictionary,one5Tree,one5Library,AbDictionary,AbTree,AbLibrary,UnDictionary,UnTree,UnLibrary,AbradDictionary,AbradTree,AbradLibrary, PolycyclicDictionary,PolycyclicTree,PolycyclicLibrary);
 
 	}
 
@@ -500,7 +513,7 @@ public class ThermoGAGroupLibrary {
 
 
 	//## operation read(String,String,String,String,String,String,String,String,String)
-	public void read(String p_groupDictionary, String p_groupTree, String p_groupLibrary, String p_radicalDictionary, String p_radicalTree, String p_radicalLibrary, String p_ringDictionary, String p_ringTree, String p_ringLibrary, String p_otherDictionary, String p_otherLibrary, String p_otherTree, String p_gaucheDictionary, String p_gaucheTree, String p_gaucheLibrary, String p_15Dictionary, String p_15Tree, String p_15Library,String p_abramDictionary,String p_abramTree,String p_abramLibrary,String p_unifacDictionary,String p_unifacTree,String p_unifacLibrary,String p_abramradDictionary,String p_abramradTree,String p_abramradLibrary) { //,String p_solventDictionary,String p_solventLibrary) {
+	public void read(String p_groupDictionary, String p_groupTree, String p_groupLibrary, String p_radicalDictionary, String p_radicalTree, String p_radicalLibrary, String p_ringDictionary, String p_ringTree, String p_ringLibrary, String p_otherDictionary, String p_otherLibrary, String p_otherTree, String p_gaucheDictionary, String p_gaucheTree, String p_gaucheLibrary, String p_15Dictionary, String p_15Tree, String p_15Library,String p_abramDictionary,String p_abramTree,String p_abramLibrary,String p_unifacDictionary,String p_unifacTree,String p_unifacLibrary,String p_abramradDictionary,String p_abramradTree,String p_abramradLibrary, String polycyclicDictionary,String polycyclicTree,String polycyclicLibrary) { //,String p_solventDictionary,String p_solventLibrary) {
 
 		// step 1: read in GA Groups
 		Logger.info("Reading thermochemistry groups");
@@ -560,10 +573,55 @@ public class ThermoGAGroupLibrary {
 			readUnifacLibrary(p_unifacLibrary);
 			 */
 		}
+		
+		// step 6: read in Polyclic ring libraries
+				Logger.info("Reading polycyclic groups");
+				readPolycyclicDictionary(polycyclicDictionary);
+				readPolycyclicTree(polycyclicTree);
+				readPolycyclicLibrary(polycyclicLibrary);
 
 
 	}
 
+
+	private void readPolycyclicTree(String polycyclicTree2) {
+		try {
+			polycylicTree = readStandardTree(polycyclicTree2,polycyclicDictionary,0);
+		}
+		catch (Exception e) {
+			Logger.logStackTrace(e);
+			Logger.critical("Can't read polycylic tree file!");
+			Logger.critical("Error: " + e.getMessage());
+			System.exit(0);
+		}
+		
+	}
+
+	private void readPolycyclicLibrary(String polycyclicLibrary2) {
+		try {
+			polycyclicLibrary = readStandardLibrary(polycyclicLibrary2, polycyclicDictionary);
+			return;
+		}
+		catch (Exception e) {
+			Logger.logStackTrace(e);
+			Logger.critical("Can't read polycylic library!");
+			System.exit(0);
+		}
+		
+	}
+
+	private void readPolycyclicDictionary(String polycyclicDictionary2) {
+		try {
+			polycyclicDictionary = readStandardDictionary(polycyclicDictionary2);
+			return;
+		}
+		catch (Exception e) {
+			Logger.logStackTrace(e);
+			Logger.critical("Error in read polyclic dictionary!");
+			System.exit(0);
+		}
+		
+	}
 
 	//## operation readGroupDictionary(String)
 	public void readGroupDictionary(String p_fileName) {
@@ -1423,6 +1481,48 @@ public class ThermoGAGroupLibrary {
 
 	protected HashMap getRingLibrary() {
 		return ringLibrary;
+	}
+
+	public ThermoGAValue findPolyCyclicRingCorrections(
+			ChemGraph molecule) {
+		
+		int deepest = -1;
+		Stack dummy = null;
+		Iterator iterNodes = molecule.getGraph().getNodeList();
+
+		while(iterNodes.hasNext()){
+			//take first atom in this ring:
+			Node node = (Node)iterNodes.next();
+			Atom atom = (Atom)node.getElement();
+
+			// make the current node the central atom
+			molecule.resetThermoSite(node);
+			// find the match in the thermo tree
+			Stack stack = polycylicTree.findMatchedPath(molecule);
+			// check if it's the deepest match
+			if (!stack.empty()) {
+				HierarchyTreeNode htn = (HierarchyTreeNode) stack.peek();
+				if (htn.getDepth() > deepest) {
+					//we have found a Stack that is deeper than the previous ones, re-initialize Set:
+					dummy = stack;
+					deepest = htn.getDepth();
+				}
+			}
+		}
+
+		if (dummy == null) return null;
+
+		while (!dummy.empty()) {
+			HierarchyTreeNode node = (HierarchyTreeNode)dummy.pop();
+			Matchable fg = (Matchable)node.getElement();
+			ThermoGAValue ga = (ThermoGAValue)polycyclicLibrary.get(fg);
+			molecule.appendThermoComments("Polyclic ring system:" + fg.getName());
+			if (ga != null) return ga;
+		}
+		
+		molecule.getGraph().resetMatchedGC();
+		
+		return null;
 	}
 
 }

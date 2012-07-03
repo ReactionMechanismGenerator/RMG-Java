@@ -1397,23 +1397,32 @@ return sn;
         // use GAPP to generate Thermo data
         try {
                 if (useQM){
-                    if(useQMonCyclicsOnly && this.isAcyclic()) thermoGAPP=GATP.getINSTANCE();//use GroupAdditivity for acyclic compounds if this option is set
-                    else if(useQMonCyclicsOnly && !this.isAcyclic()){
-                    	if(useQMonNonAromaticFusedCyclicsOnly && this.getGraph().getFusedRingAtoms() == null)
-                    		thermoGAPP=GATP.getINSTANCE();
-                    	else{
-                    		if(this.getGraph().containsAromaticRing()){//fused naphtheno aromatics are better predicted by Benson than QMTP
-                    			thermoGAPP=GATP.getINSTANCE();
-                    		}
-                    		else
-                    			thermoGAPP=QMTP.getINSTANCE();
-                    	}
-                    		
-                    }
-                    else  thermoGAPP=QMTP.getINSTANCE();
+                	//start by using Benson GA to estimate:
+                	thermoGAPP = GATP.getINSTANCE();
+                	thermoData = thermoGAPP.generateThermoData(this);
+                	
+                	/*
+                	 * If the molecule is acyclic, don't even think using QMTP.
+                	 */
+                	if(!this.isAcyclic()){
+                		/*
+                		 * If the molecule has no fused ring atoms, then don't even 
+                		 * think using QMTP neither.
+                		 */
+                		if(this.getGraph().getFusedRingAtoms() != null){
+                			/*
+                			 * If the Benson GA library did not contain
+                			 * the right polycyclic ring strain correction,
+                			 * then fall back to QMTP!
+                			 */
+                			if(((GATP)thermoGAPP).getPolycyclic() == null){
+                				thermoGAPP=QMTP.getINSTANCE();
+                				thermoData = thermoGAPP.generateThermoData(this);
+                			}
+                		}
+                	}
                 }
-                else if (thermoGAPP == null) setDefaultThermoGAPP();
-        	thermoData = thermoGAPP.generateThermoData(this);
+
 		//fall back to GATP if it is a failed QMTP calculation
 		if (((String)thermoData.getSource()).equals("***failed calculation***")){
 		    Logger.warning("Falling back to group additivity due to repeated failure in QMTP calculations");

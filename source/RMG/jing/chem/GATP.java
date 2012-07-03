@@ -70,6 +70,8 @@ public class GATP implements GeneralGAPP {
 
      protected static PrimaryThermoLibrary primaryLibrary;//svp
 
+	public ThermoGAValue polycyclic;
+
     // Constructors
 
 
@@ -98,7 +100,28 @@ public class GATP implements GeneralGAPP {
         result.plus(getGAGroup(p_chemGraph));
 
         // comment out, waiting for Bill and Joanna making the right ring correction library
-        result.plus(getRingCorrections(p_chemGraph));
+        /*
+         * If a molecule has fused ring atoms, this implies that we are dealing
+         * with a polycyclic ring system, for which separate ring strain
+         * corrections might not be the most adequate.
+         * 
+         * Therefore, these RSCs are not added. Instead, the polycyclic RSC library
+         * is iterated over.
+         */
+        if(!p_chemGraph.isAcyclic()){
+        	if (p_chemGraph.getGraph().getFusedRingAtoms() == null){
+        		result.plus(getRingCorrections(p_chemGraph));		
+        	}
+        	else{
+        		polycyclic = getPolyCyclicRingCorrections(p_chemGraph);
+        		if(polycyclic != null)//we found a polycyclic RSC
+        			result.plus(polycyclic);
+        		else{
+        			
+        		}
+        	}
+        }
+        
         result.plus(getOtherCorrection(p_chemGraph));
 
         return result;
@@ -318,7 +341,29 @@ public class GATP implements GeneralGAPP {
 
         //#]
     }
-
+    public ThermoGAValue getPolyCyclicRingCorrections(ChemGraph p_chemGraph) {
+    	/*
+    	 * Return empty Collection if acyclic or if the molecule does
+    	 * not contain fused ring atoms. 
+    	 */
+    	if (p_chemGraph.isAcyclic()|| p_chemGraph.getGraph().getFusedRingAtoms() == null) return null;
+    	else {
+    		//don't really know what this does, but it was cloned in ring correction estimator too...
+    		HashMap oldCentralNode = (HashMap)(p_chemGraph.getCentralNode()).clone();
+    		ChemGraph molecule = p_chemGraph;
+    		
+    		if(molecule.isRadical()){
+    			molecule = ChemGraph.saturate(molecule);
+    		}
+    		
+    		//For now, assume only one  polycyclic RSC can be found per molecule.
+    		ThermoGAValue ga = thermoLibrary.findPolyCyclicRingCorrections(molecule);
+    		p_chemGraph.appendThermoComments(molecule.getThermoComments());
+    		p_chemGraph.setCentralNode(oldCentralNode);
+    		return ga;
+    	}
+    }
+    
     //## operation initGAGroupLibrary()
     protected void initGAGroupLibrary() {
         //#[ operation initGAGroupLibrary()
@@ -354,6 +399,11 @@ public class GATP implements GeneralGAPP {
     protected static GATP getINSTANCE() {
         return INSTANCE;
     }
+
+
+	public ThermoGAValue getPolycyclic() {
+		return polycyclic;
+	}
 
 	/*
     public static HashMap getLibrary() {
