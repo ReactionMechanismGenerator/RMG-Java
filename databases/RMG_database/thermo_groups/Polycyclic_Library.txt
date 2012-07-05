@@ -1,3 +1,4 @@
+0 PolycyclicRing 0	0	0	0	0	0	0	0	0	0	0	0	//Properties of Liquids and Gases, Poling 5th Ed. 
 1 bicyclo-(1.1.0)-butane	57.07894737	69.29665072	0	0	0	0	0	0	0	0	0	0	//Properties of Liquids and Gases, Poling 5th Ed. 
 2 bicyclo-(2.1.0)-pentane	55.37799043	64.78947368	0	0	0	0	0	0	0	0	0	0	//Properties of Liquids and Gases, Poling 5th Ed. 
 3 bicyclo-(2.2.1)-heptane	16.14354067	0	0	0	0	0	0	0	0	0	0	0	//Properties of Liquids and Gases, Poling 5th Ed. 
@@ -19,3 +20,4 @@
 19 Bicyclo[2.2.0]hex-1(4)-ene	87	0	0	0	0	0	0	0	0	0	0	0	//Wiberg, K. Angew. Chem., Int. Ed. Engl. 1986, 25, 312 1986 ab initio
 20 bicyclo[2.1.0]pent-1(4)-ene	126	0	0	0	0	0	0	0	0	0	0	0	//Wiberg, K. Angew. Chem., Int. Ed. Engl. 1986, 25, 312 1986 ab initio
 21 Bicyclo[2.1.0]pent-2-ene	67.9	0	0	0	0	0	0	0	0	0	0	0	//Wiberg, K. Angew. Chem., Int. Ed. Engl. 1986, 25, 312 1986 experimental
+22 indane 5.54 27.3	-6.5	-5.5	-4.5	-3.8	-2.8	-1.93	-0.37	0	0	0	//Verevkin (2011), experimental, S, Cp copied from cyclopentane

@@ -1,21 +1,23 @@
-L0: bicyclo-(1.1.0)-butane
-L0: bicyclo-(2.1.0)-pentane
-L0: bicyclo-(2.2.1)-heptane
-L0: bicyclo-(3.1.0)-hexane
-L0: bicyclo-(4.1.0)-heptane
-L0: bicyclo-(5.1.0)-octane
-L0: bicyclo-(6.1.0)-nonane
-L0: bicyclo(2.2.1)hepta-2,5-diene
-L0: biphenylene
-L0: cis-octahydro-1H-indene
-L0: spiropentane
-L0: bicyclo[2.1.1]hexane
-L0: Bicyclo[2.2.0]hexane
-L0: Bicyclo[1.1.1]pentane
-L0: bicyclo[2.2.2]octane
-L0: bicyclo[2.1.1]hex-2-ene
-L0: norbornene
-L0: bicyclo[2.2.0]hex-2-ene
-L0: Bicyclo[2.2.0]hex-1(4)-ene
-L0: bicyclo[2.1.0]pent-1(4)-ene
-L0: Bicyclo[2.1.0]pent-2-ene
+L0: PolycyclicRing
+	L1: bicyclo-(1.1.0)-butane
+	L1: bicyclo-(2.1.0)-pentane
+	L1: bicyclo-(2.2.1)-heptane
+	L1: bicyclo-(3.1.0)-hexane
+	L1: bicyclo-(4.1.0)-heptane
+	L1: bicyclo-(5.1.0)-octane
+	L1: bicyclo-(6.1.0)-nonane
+	L1: bicyclo(2.2.1)hepta-2,5-diene
+	L1: biphenylene
+	L1: cis-octahydro-1H-indene
+	L1: spiropentane
+	L1: bicyclo[2.1.1]hexane
+	L1: Bicyclo[2.2.0]hexane
+	L1: Bicyclo[1.1.1]pentane
+	L1: bicyclo[2.2.2]octane
+	L1: bicyclo[2.1.1]hex-2-ene
+	L1: norbornene
+	L1: bicyclo[2.2.0]hex-2-ene
+	L1: Bicyclo[2.2.0]hex-1(4)-ene
+	L1: bicyclo[2.1.0]pent-1(4)-ene
+	L1: Bicyclo[2.1.0]pent-2-ene
+	L1: indane

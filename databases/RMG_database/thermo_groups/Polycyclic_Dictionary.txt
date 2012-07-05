@@ -1,3 +1,6 @@
+PolycyclicRing
+1 * R 0
+
 bicyclo-(1.1.0)-butane
 1 *    C     0 {2,S} {3,S} {4,S}
 2     C     0 {1,S} {3,S} {4,S}
@@ -93,7 +96,7 @@ cis-octahydro-1H-indene
 9     C     0 {3,S} {6,S}
 
 spiropentane
-1     C     0 {2,S} {3,S} {4,S} {5,S}
+1   *  C     0 {2,S} {3,S} {4,S} {5,S}
 2     C     0 {1,S} {3,S}
 3     C     0 {1,S} {2,S}
 4     C     0 {1,S} {5,S}
@@ -109,7 +112,7 @@ bicyclo[2.1.1]hexane
 
 
 Bicyclo[2.2.0]hexane
-1     C     0 {2,S} {3,S} {6,S}
+1  *   C     0 {2,S} {3,S} {6,S}
 2     C     0 {1,S} {4,S} {5,S}
 3     C     0 {1,S} {4,S}
 4     C     0 {2,S} {3,S}
@@ -117,7 +120,7 @@ Bicyclo[2.2.0]hexane
 6     C     0 {1,S} {5,S}
 
 Bicyclo[1.1.1]pentane
-1     C     0 {3,S} {4,S} {5,S}
+1  *  C     0 {3,S} {4,S} {5,S}
 2     C     0 {3,S} {4,S} {5,S}
 3     C     0 {1,S} {2,S}
 4     C     0 {1,S} {2,S}
@@ -125,7 +128,7 @@ Bicyclo[1.1.1]pentane
 
 
 bicyclo[2.2.2]octane
-1     C     0 {3,S} {6,S} {8,S}
+1   *  C     0 {3,S} {6,S} {8,S}
 2     C     0 {4,S} {5,S} {7,S}
 3     C     0 {1,S} {4,S}
 4     C     0 {2,S} {3,S}
@@ -136,7 +139,7 @@ bicyclo[2.2.2]octane
 
 
 bicyclo[2.1.1]hex-2-ene
-1     C     0 {3,S} {4,S} {6,S}
+1  *   C     0 {3,S} {4,S} {6,S}
 2     C     0 {3,S} {4,S} {5,S}
 3     C     0 {1,S} {2,S}
 4     C     0 {1,S} {2,S}
@@ -145,7 +148,7 @@ bicyclo[2.1.1]hex-2-ene
 
 
 norbornene
-1     C     0 {3,S} {4,S} {7,S}
+1   *  C     0 {3,S} {4,S} {7,S}
 2     C     0 {3,S} {5,S} {6,S}
 3     C     0 {1,S} {2,S}
 4     C     0 {1,S} {5,S}
@@ -155,7 +158,7 @@ norbornene
 
 
 bicyclo[2.2.0]hex-2-ene
-1     C     0 {2,S} {3,S} {6,S}
+1   *  C     0 {2,S} {3,S} {6,S}
 2     C     0 {1,S} {4,S} {5,S}
 3     C     0 {1,S} {4,S}
 4     C     0 {2,S} {3,S}
@@ -164,7 +167,7 @@ bicyclo[2.2.0]hex-2-ene
 
 
 Bicyclo[2.2.0]hex-1(4)-ene
-1     C     0 {2,S} {6,S}
+1  *   C     0 {2,S} {6,S}
 2     C     0 {1,S} {5,S}
 3     C     0 {4,S} {6,S}
 4     C     0 {3,S} {5,S}
@@ -173,15 +176,26 @@ Bicyclo[2.2.0]hex-1(4)-ene
 
 
 bicyclo[2.1.0]pent-1(4)-ene
-1     C     0 {2,S} {5,S}
+1  *   C     0 {2,S} {5,S}
 2     C     0 {1,S} {4,S}
 3     C     0 {4,S} {5,S}
 4     C     0 {2,S} {3,S} {5,D}
 5     C     0 {1,S} {3,S} {4,D}
 
 Bicyclo[2.1.0]pent-2-ene
-1     C     0 {2,S} {3,S} {5,S}
+1   *  C     0 {2,S} {3,S} {5,S}
 2     C     0 {1,S} {3,S} {4,S}
 3     C     0 {1,S} {2,S}
 4     C     0 {2,S} {5,D}
 5     C     0 {1,S} {4,D}
+
+indane
+1   *  C     0 {2,S} {3,S}
+2     C     0 {1,S} {4,S}
+3     C     0 {1,S} {5,S}
+4     C     0 {2,S} {5,B} {6,B}
+5     C     0 {3,S} {4,B} {7,B}
+6     C     0 {4,B} {8,B}
+7     C     0 {5,B} {9,B}
+8     C     0 {6,B} {9,B}
+9     C     0 {7,B} {8,B}
