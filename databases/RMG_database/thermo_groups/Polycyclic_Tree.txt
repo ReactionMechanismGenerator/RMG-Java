@@ -21,3 +21,4 @@ L0: PolycyclicRing
 	L1: bicyclo[2.1.0]pent-1(4)-ene
 	L1: Bicyclo[2.1.0]pent-2-ene
 	L1: indane
+	L1: indene
