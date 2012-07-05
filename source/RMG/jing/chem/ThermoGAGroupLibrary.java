@@ -1523,7 +1523,7 @@ public class ThermoGAGroupLibrary {
 			HierarchyTreeNode node = (HierarchyTreeNode)dummy.pop();
 			Matchable fg = (Matchable)node.getElement();
 			ThermoGAValue ga = (ThermoGAValue)polycyclicLibrary.get(fg);
-			molecule.appendThermoComments("Polyclic ring system:" + fg.getName());
+			molecule.appendThermoComments("Polycyclic ring system:" + fg.getName());
 			if (ga != null) return ga;
 		}
 		
