@@ -1512,6 +1512,13 @@ public class ThermoGAGroupLibrary {
 
 		if (dummy == null) return null;
 
+		/*
+		 * If deepest node is L0, then none of the L1 nodes could be matched.
+		 * We should return null then.
+		 */
+		if(deepest == 0)
+			return null;
+		
 		while (!dummy.empty()) {
 			HierarchyTreeNode node = (HierarchyTreeNode)dummy.pop();
 			Matchable fg = (Matchable)node.getElement();
