@@ -1521,7 +1521,27 @@ public class ThermoGAGroupLibrary {
 		
 		while (!dummy.empty()) {
 			HierarchyTreeNode node = (HierarchyTreeNode)dummy.pop();
-			Matchable fg = (Matchable)node.getElement();
+			FunctionalGroup fg = (FunctionalGroup)node.getElement();
+			Graph graph  = fg.getGraph();
+			//Number of nodes in the functional group structure
+			Integer numberAtoms = graph.getNodeNumber();
+			
+			//Number of ring atoms in the molecule:
+			Integer numberRingAtoms = molecule.getGraph().getRingAtoms().size();
+			
+			/*
+			 * If both numbers are not equal, it means that the molecule has
+			 * a polycyclic system that involves more atoms than the matched
+			 * structure in the polycyclic dictionary.
+			 * 
+			 * The applied ring correction might therefore not be applicable,
+			 * therefore we return null
+			 */
+			if (numberAtoms != numberRingAtoms) {
+				Logger.info("Molecule has polycyclic system that involves more atoms than the match in the polycyclic dictionary. Not applying the found polyring correction.");
+				return null;
+			}
+			
 			ThermoGAValue ga = (ThermoGAValue)polycyclicLibrary.get(fg);
 			molecule.appendThermoComments("Polycyclic ring system:" + fg.getName());
 			if (ga != null) return ga;
