@@ -380,15 +380,15 @@ Cyclooctane
 8    Cs 0 {7,S} {1,S}
 
 // num. identical central atoms = two
-//cis-Cyclooctene
-//1  * Cd 0 {8,S} {2,Dcis}
-//2    Cd 0 {3,S} {1,Dcis}
-//3    Cs 0 {2,S} {4,S}
-//4    Cs 0 {3,S} {5,S}
-//5    Cs 0 {4,S} {6,S}
-//6    Cs 0 {5,S} {7,S}
-//7    Cs 0 {6,S} {8,S}
-//8    Cs 0 {7,S} {1,S}
+cis-Cyclooctene
+1  * Cd 0 {8,S} {2,D}
+2    Cd 0 {3,S} {1,D}
+3    Cs 0 {2,S} {4,S}
+4    Cs 0 {3,S} {5,S}
+5    Cs 0 {4,S} {6,S}
+6    Cs 0 {5,S} {7,S}
+7    Cs 0 {6,S} {8,S}
+8    Cs 0 {7,S} {1,S}
 
 // num. identical central atoms = two
 //trans-Cyclooctene
