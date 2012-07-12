@@ -2214,7 +2214,32 @@ public class Graph {
 
     }
 
-
+    /**
+     * Returns the atoms belonging to one or more rings.
+     * 
+     * This is retrieved by iterating over all nodes belonging to a cycle
+     * and incrementing a Set of nodes corresponding to the atoms in the molecule. 
+     * Since the java.util.Set type only allows unique elements, adding an already
+     * existing reference to a node will not be permitted.
+     * <BR><BR>
+     * Keep in mind that just adding the number of atoms in each of the SSSRings fails
+     * (overestimates) for fused ring systems, where a single atom can belong to multiple
+     * rings at the time. 
+     * 
+     * 
+     * @return
+     */
+    public Set<Node> getRingAtoms(){
+    	Set<Node> ringAtoms = new HashSet<Node>();
+    	List<Set<Node>> cycleNodes = getCycleNodes();
+    	for (Set set : cycleNodes)
+    		for(Iterator iter =  set.iterator(); iter.hasNext();){
+    			Node  node = (Node)iter.next();
+    			ringAtoms.add(node);
+    		
+    		}
+    	return ringAtoms;
+    }
     /**
      * Returns a list with sets of Nodes that belong to SSS Rings.
      * @return
