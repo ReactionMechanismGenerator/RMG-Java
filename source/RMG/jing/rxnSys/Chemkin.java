@@ -688,10 +688,17 @@ public  Chemkin() {
 
       CoreEdgeReactionModel cerm = (CoreEdgeReactionModel)p_reactionModel;
 
-      // write inert gas
+      // always write Ar, N2, Ne, He
+      result.append("\tAr\n");
+      result.append("\tN2\n");
+      result.append("\tNe\n");
+      result.append("\tHe\n");
+      
+      // write other inert gases
       for (Iterator iter = p_beginStatus.getInertGas(); iter.hasNext();) {
       	String name = (String)iter.next();
-      	result.append('\t' + name + '\n');
+      	if (!(name.equals("Ar") || name.equals("N2") || name.equals("Ne") || name.equals("He")))
+      	    result.append('\t' + name + '\n');
       }
 
       // write species
