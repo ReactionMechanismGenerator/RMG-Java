@@ -247,7 +247,9 @@ public class SeedMechanism {
         }
         catch (Exception e) {
 			Logger.logStackTrace(e);
-			throw new IOException("RMG cannot read the \"species.txt\" file in the " + source + p_name + "\n" + e.getMessage());
+			String message = "RMG cannot read the \"species.txt\" file in the " + source + p_name + "\n" + e.getMessage();
+			if (e instanceof jing.chem.ForbiddenStructureException) message += "\n Try adding it to a Thermo Library to make it allowed.";
+			throw new IOException(message);
         }
     }
     
@@ -429,7 +431,7 @@ public class SeedMechanism {
 							previousKinetics[previousNumPLOG] = pdepkineticsPLOG.getKinetics(previousNumPLOG);
 						}
 						// Read in the new PLOG information, and add this to the temporary array
-						PDepArrheniusKinetics newpdepkinetics = parsePLOGline(nextLine);
+						PDepArrheniusKinetics newpdepkinetics = parsePLOGline(nextLine, A_multiplier, E_multiplier, r.getReactantNumber());
 						previousPressures[numPLOGs-1] = newpdepkinetics.getPressure(0);
 						previousKinetics[numPLOGs-1] = newpdepkinetics.getKinetics(0);
 						// Re-initialize pdepkinetics and populate with stored information
@@ -618,7 +620,7 @@ public class SeedMechanism {
 					multipliers[0] = 1;
 				}
 				else if (unit.compareToIgnoreCase("mol/liter/s") == 0) {
-					multipliers[0] = 1e-3;
+					multipliers[0] = 1e3;
 				}
 				else if (unit.compareToIgnoreCase("molecule/cm3/s") == 0) {
 					multipliers[0] = 6.022e23;
@@ -683,7 +685,7 @@ public class SeedMechanism {
 		return listOfRxns;
 	}
 	
-	public PDepArrheniusKinetics parsePLOGline(String line) {
+	public PDepArrheniusKinetics parsePLOGline(String line, double A_multiplier, double E_multiplier, int numReac) {
 		PDepRateConstant pdepk = new PDepRateConstant();
 		
 		// Delimit the PLOG line by "/"
@@ -694,12 +696,26 @@ public class SeedMechanism {
 		
 		// If reading a chemkin plog line, pressure MUST be in atmospheres
 		Pressure p = new Pressure(Double.parseDouble(st.nextToken().trim()),"atm");
-		UncertainDouble dA = new UncertainDouble(Double.parseDouble(st.nextToken().trim()),0.0,"A");
+		//***note: PLOG uses the same units for Ea and A as Arrhenius expressions; this has been a persistent source of confusion; see https://github.com/GreenGroup/RMG-Java/commit/2947e7b8d5b1e3e19543f2489990fa42e43ecad2#commitcomment-844009
+		double A = Double.parseDouble(st.nextToken().trim());
+		//convert the units (cf. similar code in ChemParser)
+		if (numReac == 1){
+		    //do nothing, no conversion needed
+		}
+		else if (numReac==2){
+		    A = A*A_multiplier;
+		}
+		else if (numReac==3){
+		    A = A*A_multiplier*A_multiplier;
+		}
+		else{
+		    Logger.error("Unsupported number of reactants (" + numReac+"): "+ line);
+		    System.exit(0);
+		}
+		UncertainDouble dA = new UncertainDouble(A,0.0,"A");
 		UncertainDouble dn = new UncertainDouble(Double.parseDouble(st.nextToken().trim()),0.0,"A");
 		double Ea = Double.parseDouble(st.nextToken().trim());
-		// If reading a chemkin plog line, Ea MUST be in cal/mol
-		Ea = Ea / 1000;
-		UncertainDouble dE = new UncertainDouble(Ea,0.0,"A");
+		UncertainDouble dE = new UncertainDouble(Ea * E_multiplier,0.0,"A");
 		ArrheniusKinetics k = new ArrheniusKinetics(dA, dn, dE, "", 1, "", "");
 		PDepArrheniusKinetics pdepAK = new PDepArrheniusKinetics(1);
 		pdepAK.setKinetics(0, p, k);

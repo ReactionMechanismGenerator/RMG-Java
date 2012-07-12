@@ -705,6 +705,8 @@ contains
         real(8) dE, A, n, Ea
         integer :: r, s
 
+        real(8) r8_gamma
+
         ! We can't use a negative activation energy for this method, so we
         ! put it in the preexponential if it is encountered.
         A = kinetics%A
@@ -713,6 +715,12 @@ contains
         if (Ea < 0) then
             A = A * exp(-Ea / 8.314472 / T)
             Ea = 0.0
+        end if
+        ! We can't use a negative temperature exponent for this method, so we
+        ! put it in the preexponential if it is encountered.
+        if (n < 0) then
+            A = A * T**n
+            n = 0.0
         end if
 
         dE = E(2) - E(1)
@@ -737,14 +745,14 @@ contains
             ! exists for n >= 0
             phi(1) = 0
             do r = 2, size(E)
-                phi(r) = (E(r) - E(1))**(n-1) / (8.314472**n * gamma(n))
+                phi(r) = (E(r) - E(1))**(n-1) / (8.314472**n * r8_gamma(n))
             end do
             ! Evaluate the convolution
             call convolve(phi, rho, E, size(E))
 
             ! Apply to determine the microcanonical rate
             do r = s+1, size(E)
-                if (E(r) > E0 .and. rho(r) /= 0) &
+                if (E(r) > E0 .and. rho(r) /= 0 .and. phi(r-s) > 0) &
                     k(r) = A * phi(r-s) / rho(r)
             end do
             

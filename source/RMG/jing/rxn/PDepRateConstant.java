@@ -197,12 +197,12 @@ public class PDepRateConstant {
 
 	public double calculateRate(Temperature temperature, Pressure pressure) {
 		double rate = 0.0;
-
-		if (temperature.getK() < TMIN.getK() || temperature.getK() > TMAX.getK() )
-			throw new IllegalArgumentException(String.format("Tried to evaluate P-dep rate coefficient at T=%.1f K but only valid from %.1f to %.1f K",
+		
+		if ((TMIN != null && temperature.getK() < TMIN.getK() ) || ( TMAX != null && temperature.getK() > TMAX.getK() ))
+			throw new IllegalArgumentException(String.format("Tried to evaluate P-dep rate coefficient at T=%.1f K but Pdep calculations only valid from %.1f to %.1f K",
 											  temperature.getK(),TMIN.getK(),TMAX.getK() ));
-		if (pressure.getBar()  < PMIN.getBar() || pressure.getBar() > PMAX.getBar() )
-			throw new IllegalArgumentException(String.format("Tried to evaluate P-dep rate coefficient at P=%.2g bar but only valid from %s to %s bar",
+		if ((PMIN != null && pressure.getBar()  < PMIN.getBar()) || (PMAX != null && pressure.getBar() > PMAX.getBar() ))
+			throw new IllegalArgumentException(String.format("Tried to evaluate P-dep rate coefficient at P=%.2g bar but Pdep calculations only valid from %s to %s bar",
 											  pressure.getBar(),PMIN.getBar(),PMAX.getBar() ));
 		
 		if (getMode() == Mode.INTERPOLATE || getMode() == Mode.RATE ) {

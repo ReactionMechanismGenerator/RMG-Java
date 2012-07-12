@@ -64,6 +64,7 @@ public class ThermoDataEstimator {
 
 		createFolders();
 
+		Species.setAddID(false);//don't add IDs to species names
 		/**
 		 * TODO program against interfaces, not implementations!
 		 */
@@ -180,17 +181,35 @@ public class ThermoDataEstimator {
 	/**
 	 * method that iterates over all read-in ChemGraph's, generates TD
 	 * properties for all of them, and writes properties to the logger
+	 * also, writes a chemkin format file named TDEresultsCHEMKIN.dat with the thermo for all the species
 	 * @param mappedChemGraphsToNames map with Chemgraphs and mapped names
 	 */
 	private static void generateTDProperties(
 			Map<ChemGraph, String> mappedChemGraphsToNames) {
-		for(ChemGraph chemgraph : mappedChemGraphsToNames.keySet()){
 
-			Species spe = Species.make(mappedChemGraphsToNames.get(chemgraph),chemgraph);
 
-			ChemGraph stableChemGraph = spe.getChemGraph();
-			writeThermoDataInfo(spe, stableChemGraph);
+
+		try {
+		     //setup the chemkin output file
+		    File chemkinFile = new File("TDEresultsCHEMKIN.dat");
+		    FileWriter fw = new FileWriter(chemkinFile);
+		    BufferedWriter bw = new BufferedWriter(fw);
+
+		    //iterate through all the species
+		    for(ChemGraph chemgraph : mappedChemGraphsToNames.keySet()){
+
+			    Species spe = Species.make(mappedChemGraphsToNames.get(chemgraph),chemgraph);
+			    ChemGraph stableChemGraph = spe.getChemGraph();
+			    writeThermoDataInfo(spe, stableChemGraph);
+			    fw.write(getChemkinString(spe, stableChemGraph)+"\n");//write to the Chemkin file
+		    }
+
+		    fw.close();//close the chemkin file
+		}catch (IOException e){
+		    Logger.error("Problem creating, writing, or closing Chemkin file!");
+		    Logger.logStackTrace(e);
 		}
+
 	}
 	/**
 	 * Create the working folders for QMTP required folders
@@ -251,9 +270,7 @@ public class ThermoDataEstimator {
 		Logger.info("The number of resonance isomers is " + 
 				spe.getResonanceIsomersHashSet().size());
 
-		Logger.info("The NASA data is \n!"+spe.getNasaThermoSource()+"\n"+
-				"!" + stableChemGraph.getThermoComments() + "\n" +
-				spe.getNasaThermoData());
+		Logger.info("The NASA data is \n"+getChemkinString(spe, stableChemGraph));
 
 		Logger.info("ThermoData is \n" + 
 				stableChemGraph.getThermoData().toString());
@@ -333,6 +350,12 @@ public class ThermoDataEstimator {
 			folder.mkdir();
 	}
 
+	private static String getChemkinString(Species spe, ChemGraph stableChemGraph){
+	   return "!"+ stableChemGraph.getThermoComments()+"\n"+
+				"!" + spe.getNasaThermoSource() + "\n" +
+				"! [_ SMILES=\"" + spe.getInChI() + "\" _]\n"+
+				spe.getNasaThermoData();
+	}
 
 
 

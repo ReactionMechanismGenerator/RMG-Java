@@ -8,9 +8,9 @@
 //T-T: 2 (except T-T-T, which is 5 total)
 //T-Q: 4
 //Q-Q: 6
-//based on NIST Webbook Group additivity implementation, it seems that this is only applicable to rings and corrections are lower for ring atoms
+//based on NIST Webbook Group additivity implementation, it seems that this is only applicable to non-rings and corrections are lower for ring atoms
 //the above is the "simple" counting scheme (same as used by NIST Webbook with the exception of T-T-T); there is also the revised counting scheme, but as far as I know, it has only been tested on the 1992 revision of values (this is based on 1976 values to be consistent with rest of database)
-//the total contributions for each group will be added and divided by two (since each bond will be counted twice) (except in the case of T-T-T or ethers, where it will not be divided by two); the number of interactions (with division by two where applicable) appears in the comments
+//the total contributions for each group will be added and divided by two (since each bond will be counted twice) (except in the case of T-T-T, alkenes, and ethers, where it will not be divided by two, since it wouldn't be double-counted); the number of interactions (with division by two where applicable) appears in the comments
 //a single gauche correction is worth 0.8 kcal/mol for alkanes and 0.5 kcal/mol for ethers (cf. Benson, Thermochemical Kinetics: Methods for the Estimation of Thermochemical Data and Rate Parameters, 2nd Edition, 1976. and Cohen and Benson, Chem. Rev. 93 (1993) 2419)
 //for alkenes, the value of 0.5 kcal/mol is used and the counting scheme discussed in Benson, Cruickshank, Golden, Haugen, O'Neal, Rodgers, Shaw, and Walsh, Chemical Reviews, 1969, 69, 279, (including neglecting gauche for "secondary" Cs) was used
 

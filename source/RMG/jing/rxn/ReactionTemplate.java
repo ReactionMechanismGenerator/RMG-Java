@@ -1085,6 +1085,7 @@ public class ReactionTemplate {
 						}
       			}
       		}
+
           }
           catch (ForbiddenStructureException e) {
           	// do the next reaction site

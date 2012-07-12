@@ -134,7 +134,8 @@ L1: RJ
 			L5: Allyl_T
 				L6: bicyclo[2.1.0]pent-2-ene-C1
 				L6: bicyclo[2.1.1]hex-2-ene-C1
-			L5: C2CJCHO
+			L5: C2CJCO
+                L6: C2CJCHO
 			L5: Tert_Propargyl
 			L5: bicyclo[2.2.0]hexa-2,5-diene-C1
 		L4: CsJO
