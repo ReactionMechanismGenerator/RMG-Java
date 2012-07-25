@@ -364,10 +364,20 @@ public class ThermoGAGroupLibrary {
 				else{
 					deepestStackMap.put(dummy,1);
 				}
+				
+				/*
+				 * If deepest node is L1 or shallower, then none of the L2+ nodes could be matched.
+				 * We should return null then.
+				 */
+				if(deepest <= 1)
+					return null;
 			}
 
 			if (deepestStackMap.keySet().isEmpty()) return null;
 
+
+			
+			
 			//determine ThermoGAValues:
 			Map<ThermoGAValue, Integer> GAMap = new HashMap<ThermoGAValue, Integer>();
 			for(Stack element : deepestStackMap.keySet()){

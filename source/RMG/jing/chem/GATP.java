@@ -110,7 +110,11 @@ public class GATP implements GeneralGAPP {
          */
         if(!p_chemGraph.isAcyclic()){
         	if (p_chemGraph.getGraph().getFusedRingAtoms() == null){
-        		result.plus(getRingCorrections(p_chemGraph));		
+        		Map<ThermoGAValue, Integer> ring_corrections = getRingCorrections(p_chemGraph);
+        		if (ring_corrections != null)
+        			result.plus(ring_corrections);
+        		else
+        			return null;
         	}
         	else{
         		polycyclic = getPolyCyclicRingCorrections(p_chemGraph);
