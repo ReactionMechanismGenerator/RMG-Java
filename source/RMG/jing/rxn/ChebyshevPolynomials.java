@@ -159,13 +159,23 @@ public class ChebyshevPolynomials implements PDepKinetics {
     	
     }
     
-    //## operation calculatePhi(int,double) 
     private double calculatePhi(int p_i, double p_x) {
-        //#[ operation calculatePhi(int,double) 
+        double phi = 0.0, phi_1, phi_2;
         if (p_i < 0) throw new InvalidChebyshevPolynomialsException();
-        double result = Math.cos(p_i*Math.acos(p_x));
-        return result;
-        //#]
+        else if (p_i == 0)
+            phi = 1;
+        else if (p_i == 1)
+            phi = p_x;
+        else {
+            phi_2 = 1;
+            phi_1 = p_x;
+            for (int i = 2; i <= p_i; i++) {
+                phi = 2 * p_x * phi_1 - phi_2;
+                phi_2 = phi_1;
+                phi_1 = phi;
+            }
+        }
+        return phi;
     }
     
     //## operation calculateRate(Temperature,Pressure) 
