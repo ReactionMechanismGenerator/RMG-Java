@@ -140,7 +140,7 @@ public class ChebyshevPolynomials implements PDepKinetics {
     			double anm = 0;
     			for (int i=0; i<dT; i++){
     				for (int j=0; j<dP; j++){
-    					anm = anm + k_total[i][j] * calculatePhi((n+1), Math.cos((i+0.5)*Math.PI/dT)) * calculatePhi((m+1), Math.cos((j+0.5)*Math.PI/dP));
+    					anm = anm + k_total[i][j] * calculatePhi(n, Math.cos((i+0.5)*Math.PI/dT)) * calculatePhi(m, Math.cos((j+0.5)*Math.PI/dP));
     				}
     			}
     			alpha[n][m] = anm*4/dT/dP;
@@ -162,8 +162,8 @@ public class ChebyshevPolynomials implements PDepKinetics {
     //## operation calculatePhi(int,double) 
     private double calculatePhi(int p_i, double p_x) {
         //#[ operation calculatePhi(int,double) 
-        if (p_i < 1) throw new InvalidChebyshevPolynomialsException();
-        double result = Math.cos((p_i-1)*Math.acos(p_x));
+        if (p_i < 0) throw new InvalidChebyshevPolynomialsException();
+        double result = Math.cos(p_i*Math.acos(p_x));
         return result;
         //#]
     }
@@ -180,7 +180,7 @@ public class ChebyshevPolynomials implements PDepKinetics {
         double result = 0;
         for (int i = 0; i < NT; i++) {
         	for (int j = 0; j < NP; j++) {
-        		result += alpha[i][j]*calculatePhi(i+1, Tavg)*calculatePhi(j+1,Pavg);
+        		result += alpha[i][j]*calculatePhi(i, Tavg)*calculatePhi(j,Pavg);
         	}
         }
         
