@@ -25,3 +25,4 @@ L0: PolycyclicRing
 	L1: octahydropentalene
 	L1: 2,3,3a,4,5,6-hexahydro-1H-indene
 	L1: C12CCCC1=CCC=C2
+	L1: 2,4,5,6,7,7a-Hexahydro-1H-indene
