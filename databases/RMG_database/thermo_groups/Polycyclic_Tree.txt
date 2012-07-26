@@ -30,3 +30,4 @@ L0: PolycyclicRing
 	L1: 2,3,3a,4,7,7a-Hexahydro-1H-indene
 	L1: 2,3,3a,7a-tetrahydro-1H-indene
 	L1: 1,2,3,3a,4,6a-Hexahydropentalene
+	L1: 1,2,3,3a,4,5-hexahydropentalene
