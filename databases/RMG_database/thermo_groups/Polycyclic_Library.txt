@@ -22,3 +22,4 @@
 21 Bicyclo[2.1.0]pent-2-ene	67.9	29.86766974	-3.038	-2.783	-2.423	-2.153	-1.888	-1.694	-1.258	0	0	0	//Wiberg, K. Angew. Chem., Int. Ed. Engl. 1986, 25, 312 1986 experimental S, Cp copied from cyclobutene
 22 indane 5.54 27.3	-6.5	-5.5	-4.5	-3.8	-2.8	-1.93	-0.37	0	0	0	//Verevkin (2011), experimental, S, Cp copied from cyclopentane
 23 indene 2.1 25.8283738	-4.5	-3.942	-3.291	-2.759	-2.08	-1.628	-0.898	0	0	0	//Verevkin (2011), experimental, S, Cp copied from cyclopentane
+24 octahydropentalene 10.3 27.3	-6.5	-5.5	-4.5	-3.8	-2.8	-1.93	-0.37	0	0	0	Automated Estimation of Ring Strain Energies, Gasteiger, 1978, S, Cp from Cyclopentane

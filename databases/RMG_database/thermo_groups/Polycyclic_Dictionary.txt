@@ -210,3 +210,13 @@ indene
 7     C     0 {3,B} {9,B}
 8     C     0 {5,B} {9,B}
 9     C     0 {7,B} {8,B}
+
+octahydropentalene
+1 * Cs 0 {2,S} {5,S} {8,S}
+2 Cs 0 {1,S} {3,S}
+3 Cs 0 {2,S} {4,S}
+4 Cs 0 {3,S} {5,S}
+5 Cs 0 {1,S} {4,S} {6,S}
+6 Cs 0 {5,S} {7,S}
+7 Cs 0 {6,S} {8,S}
+8 Cs 0 {1,S} {7,S}
