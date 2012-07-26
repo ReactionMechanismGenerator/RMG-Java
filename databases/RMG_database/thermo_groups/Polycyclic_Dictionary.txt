@@ -264,3 +264,14 @@ C12CCCC1=CCC=C2
 7 Cd 0 {6,D} {8,S}
 8 Cs 0 {7,S} {9,S}
 9 Cs 0 {1,S} {8,S}
+
+2,3,3a,4,7,7a-Hexahydro-1H-indene
+1 * Cs 0 {2,S} {5,S} {9,S}
+2 Cs 0 {1,S} {3,S}
+3 Cs 0 {2,S} {4,S}
+4 Cs 0 {3,S} {5,S}
+5 Cs 0 {1,S} {4,S} {6,S}
+6 Cs 0 {5,S} {7,S}
+7 Cd 0 {6,S} {8,D}
+8 Cd 0 {7,D} {9,S}
+9 Cs 0 {1,S} {8,S}
