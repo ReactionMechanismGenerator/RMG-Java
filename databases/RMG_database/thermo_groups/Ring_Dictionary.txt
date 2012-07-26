@@ -1246,3 +1246,12 @@ methylenecyclopentane
 6 Cd 0 {5,D} {7,S}
 7 Cs 0 {6,S} {8,S}
 8 Cs 0 {1,S} {7,S}
+
+1,4-Cycloheptadiene
+1 * C 0 {2,D} {7,S}
+2 Cd 0 {1,D} {3,S}
+3 Cs 0 {2,S} {4,S}
+4 Cd 0 {3,S} {5,D}
+5 Cd 0 {4,D} {6,S}
+6 Cs 0 {5,S} {7,S}
+7 Cs 0 {1,S} {6,S}
