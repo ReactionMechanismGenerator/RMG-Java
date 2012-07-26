@@ -24,3 +24,4 @@
 23 indene 2.1 25.8283738	-4.5	-3.942	-3.291	-2.759	-2.08	-1.628	-0.898	0	0	0	//Verevkin (2011), experimental, S, Cp copied from cyclopentane
 24 octahydropentalene 10.3 27.3	-6.5	-5.5	-4.5	-3.8	-2.8	-1.93	-0.37	0	0	0	Automated Estimation of Ring Strain Energies, Gasteiger, 1978, S, Cp from Cyclopentane
 25 2,3,3a,4,5,6-hexahydro-1H-indene 7.5 27.3	-6.5	-5.5	-4.5	-3.8	-2.8	-1.93	-0.37	0	0	0	Automated Estimation of Ring Strain Energies, Gasteiger, 1978, S, Cp from Cyclopentane
+26 C12CCCC1=CCC=C2 6.8 27.3	-6.5	-5.5	-4.5	-3.8	-2.8	-1.93	-0.37	0	0	0	Automated Estimation of Ring Strain Energies, Gasteiger, 1978, S, Cp from Cyclopentane
