@@ -34,3 +34,4 @@ L0: PolycyclicRing
 	L1: 1,3a,4,6a-tetrahydropentalene
 	L1: 1,3a,6,6a-tetrahydropentalene
 	L1: 1,2,6,6a-tetrahydropentalene
+	L1: C12CCC=C1CC=C2
