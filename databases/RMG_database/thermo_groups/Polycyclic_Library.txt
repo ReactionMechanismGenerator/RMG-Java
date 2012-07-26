@@ -29,5 +29,4 @@
 28 2,3,3a,4,5,7a-hexahydro-1H-indene 7.5 27.3	-6.5	-5.5	-4.5	-3.8	-2.8	-1.93	-0.37	0	0	0	Automated Estimation of Ring Strain Energies, Gasteiger, 1978, S, Cp from Cyclopentane
 29 2,3,3a,4,7,7a-Hexahydro-1H-indene 7.5 27.3	-6.5	-5.5	-4.5	-3.8	-2.8	-1.93	-0.37	0	0	0	Automated Estimation of Ring Strain Energies, Gasteiger, 1978, S, Cp from Cyclopentane
 30 2,3,3a,7a-tetrahydro-1H-indene 10.1 27.3	-6.5	-5.5	-4.5	-3.8	-2.8	-1.93	-0.37	0	0	0	Automated Estimation of Ring Strain Energies, Gasteiger, 1978, S, Cp from Cyclopentane
-
-
+31 1,2,3,3a,4,6a-Hexahydropentalene 10.3 27.3	-6.5	-5.5	-4.5	-3.8	-2.8	-1.93	-0.37	0	0	0	Automated Estimation of Ring Strain Energies, Gasteiger, 1978, S, Cp from Cyclopentane
