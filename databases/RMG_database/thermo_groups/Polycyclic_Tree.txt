@@ -23,3 +23,4 @@ L0: PolycyclicRing
 	L1: indane
 	L1: indene
 	L1: octahydropentalene
+	L1: 2,3,3a,4,5,6-hexahydro-1H-indene
