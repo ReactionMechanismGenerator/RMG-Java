@@ -1549,6 +1549,7 @@ public class ThermoGAGroupLibrary {
 			 */
 			if (numberAtoms != numberRingAtoms) {
 				Logger.info("Molecule has polycyclic system that involves more atoms than the match in the polycyclic dictionary. Not applying the found polyring correction.");
+				Logger.info("Hit Polyring correction: "+fg.getName());
 				return null;
 			}
 			
