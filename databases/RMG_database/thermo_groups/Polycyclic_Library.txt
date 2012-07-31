@@ -35,5 +35,16 @@
 34 1,3a,6,6a-tetrahydropentalene  10.0 25.8283738	-4.5	-3.942	-3.291	-2.759	-2.08	-1.628	-0.898	0	0	0	Automated Estimation of Ring Strain Energies, Gasteiger, 1978, S, Cp from Cyclopentene
 35 1,2,6,6a-tetrahydropentalene  10.0 25.8283738	-4.5	-3.942	-3.291	-2.759	-2.08	-1.628	-0.898	0	0	0	Automated Estimation of Ring Strain Energies, Gasteiger, 1978, S, Cp from Cyclopentene
 36 C12CCC=C1CC=C2  10.0 25.8283738	-4.5	-3.942	-3.291	-2.759	-2.08	-1.628	-0.898	0	0	0	Automated Estimation of Ring Strain Energies, Gasteiger, 1978, S, Cp from Cyclopentene
-
-
+37 tricyclo[5.2.1.0(4,10)]decane 15.68 27.3	-6.5	-5.5	-4.5	-3.8	-2.8	-1.93	-0.37	0	0	0	Automated Estimation of Ring Strain Energies, Gasteiger, 1978, S, Cp from Cyclopentane
+38 Exo-tricyclo[5.2.1.0(2.6)]decane 22.65 25.8283738	-4.5	-3.942	-3.291	-2.759		-2.08	-1.628	-0.898	0	0	0	Automated Estimation of Ring Strain Energies, Gasteiger, 1978 S, Cp copied from cyclopentane 
+39 Exo-tricyclo[5.2.1.0(2.6)]decene 22.65 25.8283738	-4.5	-3.942	-3.291	-2.759		-2.08	-1.628	-0.898	0	0	0	Automated Estimation of Ring Strain Energies, Gasteiger, 1978 S, Cp copied from cyclopentane
+40 Exo-tricyclo[5.2.1.0(1,5)]decane 23.86 25.8283738	-4.5	-3.942	-3.291	-2.759		-2.08	-1.628	-0.898	0	0	0	Automated Estimation of Ring Strain Energies, Gasteiger, 1978 S, Cp copied from cyclopentane
+41 tricyclo[4.3.1.0(3,7)]decane 20.77  25.8283738	-4.5	-3.942	-3.291	-2.759		-2.08	-1.628	-0.898	0	0	0	Automated Estimation of Ring Strain Energies, Gasteiger, 1978 S, Cp copied from cyclopentane
+42 tricyclo[4.3.1.0(3,8)]decane 18.29  25.8283738	-4.5	-3.942	-3.291	-2.759		-2.08	-1.628	-0.898	0	0	0	Automated Estimation of Ring Strain Energies, Gasteiger, 1978 S, Cp copied from cyclopentane
+43 tricyclo[4.4.0.0(3,9)]decane 30.90 25.8283738	-4.5	-3.942	-3.291	-2.759		-2.08	-1.628	-0.898	0	0	0	Automated Estimation of Ring Strain Energies, Gasteiger, 1978 S, Cp copied from cyclopentane  
+44 tricyclo[5.2.1.0(4,8)]decane 21.48 25.8283738	-4.5	-3.942	-3.291	-2.759		-2.08	-1.628	-0.898	0	0	0	Automated Estimation of Ring Strain Energies, Gasteiger, 1978 S, Cp copied from cyclopentane
+45 tricyclo[4.4.0.0(3,8)]decane 26.12  18.12768375	-5.8	-4.1	-2.9	-1.3	1.08	2.16	3	0	0	0	Automated Estimation of Ring Strain Energies, Gasteiger, 1978 S, Cp copied from Cyclohexane 
+46 tricyclo[4.2.2.0(1,5)]decane 29.65 25.8283738	-4.5	-3.942	-3.291	-2.759		-2.08	-1.628	-0.898	0	0	0	Automated Estimation of Ring Strain Energies, Gasteiger, 1978 S, Cp copied from cyclopentane
+47 tricyclo[5.3.0.0(4,10)]decane 20.74 25.8283738	-4.5	-3.942	-3.291	-2.759		-2.08	-1.628	-0.898	0	0	0	Automated Estimation of Ring Strain Energies, Gasteiger, 1978 S, Cp copied from cyclopentane 
+48 anti-tricyclo[4.2.1.1(2,5)]decane 30.66 25.8283738	-4.5	-3.942	-3.291	-2.759		-2.08	-1.628	-0.898	0	0	0	Automated Estimation of Ring Strain Energies, Gasteiger, 1978 S, Cp copied from cyclopentane
+49 tricyclo[5.2.1.0(3,8)]decane 19.26  25.8283738	-4.5	-3.942	-3.291	-2.759		-2.08	-1.628	-0.898	0	0	0	Automated Estimation of Ring Strain Energies, Gasteiger, 1978 S, Cp copied from cyclopentane 
