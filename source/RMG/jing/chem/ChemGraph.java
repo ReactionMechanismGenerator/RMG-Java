@@ -1405,6 +1405,7 @@ return sn;
         //#[ operation generateThermoData()
         // use GAPP to generate Thermo data
         try {
+        		useQM = true;
                 if (useQM){
                 	//start by using Benson GA to estimate:
                 	thermoGAPP = GATP.getINSTANCE();
