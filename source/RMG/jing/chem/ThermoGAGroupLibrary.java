@@ -31,6 +31,7 @@ package jing.chem;
 
 import java.io.*;
 import java.util.*;
+import java.util.Map.Entry;
 
 import jing.chemUtil.*;
 import jing.chemParser.*;
@@ -374,23 +375,22 @@ public class ThermoGAGroupLibrary {
 			}
 
 			if (deepestStackMap.keySet().isEmpty()) return null;
-
-
-			
 			
 			//determine ThermoGAValues:
 			Map<ThermoGAValue, Integer> GAMap = new HashMap<ThermoGAValue, Integer>();
-			for(Stack element : deepestStackMap.keySet()){
+			for(Entry<Stack, Integer> entry : deepestStackMap.entrySet()){
+				Stack element = entry.getKey();
 				HierarchyTreeNode node = (HierarchyTreeNode)element.pop();
 				FunctionalGroup fg = (FunctionalGroup)node.getElement();
 				ThermoGAValue ga = (ThermoGAValue)ringLibrary.get(fg);
 				p_chemGraph.appendThermoComments("!Ring:" + fg.getName());
 				if (ga != null) {
+					Integer value = entry.getValue();
 					if(GAMap.containsKey(ga)){
-						GAMap.put(ga, GAMap.get(ga)+1);
+						GAMap.put(ga, GAMap.get(ga)+value);
 					}
 					else{
-						GAMap.put(ga,1);
+						GAMap.put(ga,value);
 					}
 				}
 
