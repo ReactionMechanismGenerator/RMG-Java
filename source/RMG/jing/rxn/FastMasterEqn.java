@@ -113,6 +113,13 @@ public class FastMasterEqn implements PDepKineticsEstimator {
 	 * 	fame-computed k(T,P)
 	 */
 	private static boolean pdepRatesOK = true;
+	
+	/**
+	 * The number of atoms above which to skip pressure dependence. By default
+	 * this is set to an arbitrarily large value so that pressure dependence
+	 * is always run.
+	 */
+	private static int maxAtoms = 100000;
 
 	//==========================================================================
 	//
@@ -1225,6 +1232,23 @@ public class FastMasterEqn implements PDepKineticsEstimator {
 	}
 	
     /**
+     * Return the number of atoms above which pressure dependence is assumed
+     * to be negligible.
+     */
+    public static int getMaxAtoms() {
+        return maxAtoms;
+    }
+    
+    /**
+     * Set the number of atoms above which pressure dependence is assumed
+     * to be negligible. To always run pressure dependence, set this to a very
+     * large number.
+     */
+    public static void setMaxAtoms(int atoms) {
+        maxAtoms = atoms;
+    }
+    
+    /**
      * Return true if the given reaction should be considered as a pressure
      * dependent reaction or false otherwise. A pressure dependent reaction
      * has the form A -> B, A -> B + C, or A + B -> C with a total number of
@@ -1233,7 +1257,10 @@ public class FastMasterEqn implements PDepKineticsEstimator {
      * @return true if the reaction should be considered as pressure dependent, false otherwise
      */
     public static boolean isReactionPressureDependent(Reaction reaction) {
-        return (reaction.getReactantNumber() == 1 || reaction.getProductNumber() == 1);
+        if (reaction.getAtomNumber() > maxAtoms)
+            return false;
+        else
+            return (reaction.getReactantNumber() == 1 || reaction.getProductNumber() == 1);
     }
 
 	public static Kinetics computeKUsingLeastSquares(Kinetics[] k_array, double Hrxn) {
