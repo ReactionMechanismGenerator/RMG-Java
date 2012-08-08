@@ -35,6 +35,7 @@ import java.util.StringTokenizer;
 
 import jing.chem.Species;
 import jing.param.Temperature;
+import jing.rxn.FastMasterEqn;
 import jing.rxn.PDepException;
 import jing.rxn.PDepIsomer;
 import jing.rxn.PDepKineticsEstimator;
@@ -330,12 +331,12 @@ public class RateBasedPDepRME implements ReactionModelEnlarger {
             Iterator rxnIter = newReactionSet_nodup.iterator();
             while (rxnIter.hasNext()){
                 Reaction r = (Reaction) rxnIter.next();
-                if (r.getReactantNumber() > 1 && r.getProductNumber() > 1)
-                    cerm.addReaction(r);
-                else { // this reaction is pressure-dependent.
+                if (FastMasterEqn.isReactionPressureDependent(r)) {
                     cerm.categorizeReaction(r.getStructure()); // ensure all products are in model edge.
                     PDepNetwork.addReactionToNetworks(r);
                 }
+                else
+                    cerm.addReaction(r);
             }
 
         }

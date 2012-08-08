@@ -1224,6 +1224,18 @@ public class FastMasterEqn implements PDepKineticsEstimator {
 		numPBasisFuncs = m;
 	}
 	
+    /**
+     * Return true if the given reaction should be considered as a pressure
+     * dependent reaction or false otherwise. A pressure dependent reaction
+     * has the form A -> B, A -> B + C, or A + B -> C with a total number of
+     * atoms below a certain threshold. 
+     * @param reaction The reaction to assess
+     * @return true if the reaction should be considered as pressure dependent, false otherwise
+     */
+    public static boolean isReactionPressureDependent(Reaction reaction) {
+        return (reaction.getReactantNumber() == 1 || reaction.getProductNumber() == 1);
+    }
+
 	public static Kinetics computeKUsingLeastSquares(Kinetics[] k_array, double Hrxn) {
         /*
          * MRH 24MAR2010:

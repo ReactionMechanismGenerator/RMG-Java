@@ -3690,13 +3690,13 @@ public class ReactionModelGenerator {
 				Iterator iter = reactionSet.iterator();
 	        	while (iter.hasNext()){
 	        		Reaction r = (Reaction)iter.next();
-	        		if (r.getReactantNumber() > 1 && r.getProductNumber() > 1){
+	        		if (FastMasterEqn.isReactionPressureDependent(r)) {
+	        		    cerm.categorizeReaction(r.getStructure());
+                        PDepNetwork.addReactionToNetworks(r);
+	        		}
+	        		else {
 	        			cerm.addReaction(r);
 	        		}
-					else {
-						cerm.categorizeReaction(r.getStructure());
-						PDepNetwork.addReactionToNetworks(r);
-					}
 				}
 			}
 		}
@@ -3776,13 +3776,13 @@ public class ReactionModelGenerator {
 				Iterator iter = reactionSet.iterator();
 	        	while (iter.hasNext()){
 	        		Reaction r = (Reaction)iter.next();
-	        		if (r.getReactantNumber() > 1 && r.getProductNumber() > 1){
+	        		if (FastMasterEqn.isReactionPressureDependent(r)) {
+	        		    cerm.categorizeReaction(r.getStructure());
+                        PDepNetwork.addReactionToNetworks(r);
+	        		}
+	        		else {
 	        			cerm.addReaction(r);
 	        		}
-					else {
-						cerm.categorizeReaction(r.getStructure());
-						PDepNetwork.addReactionToNetworks(r);
-					}
 				}
 			}
 		}
@@ -3875,13 +3875,13 @@ public class ReactionModelGenerator {
 			Iterator iter = reactionSet.iterator();
         	while (iter.hasNext()){
         		Reaction r = (Reaction)iter.next();
-        		if (r.getReactantNumber() > 1 && r.getProductNumber() > 1){
+        		if (FastMasterEqn.isReactionPressureDependent(r)) {
+        		    cerm.categorizeReaction(r.getStructure());
+                    PDepNetwork.addReactionToNetworks(r);
+        		}
+        		else {
         			cerm.addReaction(r);
         		}
-				else {
-					cerm.categorizeReaction(r.getStructure());
-					PDepNetwork.addReactionToNetworks(r);
-				}
 			}
 		}
         
