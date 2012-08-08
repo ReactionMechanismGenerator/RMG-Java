@@ -112,6 +112,10 @@ END
 
 SpectroscopicDataEstimator: off/frequencygroups
 PressureDependence: off/reservoirstate/modifiedstrongcollision
+// If PressureDependence field is not set to "off", you can optionally specify a
+// threshold number of atoms above which pressure dependence is not run
+// The recommended value for this depends on temperature and pressure
+// MaxAtomsForPressureDependence: 16
 // If PressureDependence field is not set to "off", the PDepKineticsModel field must be present
 // If chebyshev chosen, you can also specify the number of basis functions, e.g. "chebyshev 4 4"
 //PDepKineticsModel: chebyshev/pdeparrhenius/rate

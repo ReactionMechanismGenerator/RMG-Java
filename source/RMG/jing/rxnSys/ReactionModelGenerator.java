@@ -4581,9 +4581,20 @@ public class ReactionModelGenerator {
 				Logger.warning("Switching SpectroscopicDataEstimator to three-frequency model.");
 				SpectroscopicData.mode = SpectroscopicData.Mode.THREEFREQUENCY;
 			}
-
-			// Next line must be PDepKineticsModel
+			
+			// Optional: MaxAtomsForPressureDependence
 			line = ChemParser.readMeaningfulLine(reader, true);
+            if (line.toLowerCase().startsWith("maxatomsforpressuredependence:")) {
+                st = new StringTokenizer(line);
+                name = st.nextToken();
+                
+                int atoms = Integer.parseInt(st.nextToken());
+                FastMasterEqn.setMaxAtoms(atoms);
+                
+                line = ChemParser.readMeaningfulLine(reader, true);
+            }
+            
+			// Next line must be PDepKineticsModel
 			if (line.toLowerCase().startsWith("pdepkineticsmodel:")) {
 				
 				st = new StringTokenizer(line);
