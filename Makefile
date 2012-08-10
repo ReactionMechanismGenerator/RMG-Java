@@ -82,7 +82,7 @@ all: dirs fame frankie GATPFit dassl daspk RMG
 RMG: dirs 
 	mkdir -p $(BUILDDIR)/RMG
 	ant clean # we don't trust ant to spot what needs doing!
-	ant compile
+	#ant compile
 	ant jar
 
 fame: dirs

@@ -186,17 +186,12 @@ public class GATPFit {
         File GATPFit_input = null;
 
         // call GATPFit
-        final StringBuilder inputString = result; 
+        final String inputString = result.toString(); 
         boolean error = false;
         try {
-            //Logger.info(String.format(inputString.toString()));
-            Thread Tin = new Thread(new Runnable(){
-                public void run(){
-                    commandInput.write(inputString.toString()); 
-                    commandInput.flush(); 
-                }
-            } );
-            Tin.start(); 
+        	commandInput.println(inputString);
+            commandInput.flush();
+            if (commandInput.checkError()) throw new GATPFitException("Error writing input to GATPFit buffer");
             
             String line = dataOutput.readLine();
             if (line==null) {
@@ -220,7 +215,7 @@ public class GATPFit {
             try {
                 GATPFit_input = new File(GATPFit_input_name);
                 FileWriter fw = new FileWriter(GATPFit_input);
-                fw.write(result.toString());
+                fw.write(inputString);
                 fw.close();
             }
             catch (IOException e2) {
@@ -236,7 +231,7 @@ public class GATPFit {
 		GATPFit_input = new File(GATPFit_input_name);
 		try {
 			FileWriter fw = new FileWriter(GATPFit_input);
-			fw.write(result.toString());
+			fw.write(inputString);
 			fw.close();		
 		}
 		catch (IOException e2) {
