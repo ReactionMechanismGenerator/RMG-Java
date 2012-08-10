@@ -769,6 +769,9 @@ SUBROUTINE calc_predicted_freq(bond_info, Bond_degeneracy, Total_predicted_freq)
 !------------------------------------------------------------------------------
 
   IMPLICIT NONE
+  
+  INTEGER :: Ulog, igo
+  COMMON /Fio/ Ulog, igo
 
 ! The array which contains all the bond info
   INTEGER, DIMENSION(:), INTENT(IN) :: bond_info
@@ -970,31 +973,31 @@ SUBROUTINE calc_predicted_freq(bond_info, Bond_degeneracy, Total_predicted_freq)
   Rings     = bond_info(25)
 
 ! Useful for debugging
- WRITE(*,*) ' RsCH3 = ', RsCH3
- WRITE(*,*) ' RdCH2 = ', RdCH2
- WRITE(*,*) ' CtCH = ', CtCH
- WRITE(*,*) ' RSCH2sR = ', RSCH2sR
- WRITE(*,*) ' CdCHsR = ', CdCHsR
- WRITE(*,*) ' Aldehyde = ', Aldehyde
- WRITE(*,*) ' Cumulene = ', Cumulene
- WRITE(*,*) ' Ketene = ', Ketene
- WRITE(*,*) ' CtCsR = ', CtCsR
- WRITE(*,*) ' RsCHsR2 = ', RsCHsR2
- WRITE(*,*) ' CdCsR2 = ', CdCsR2
- WRITE(*,*) ' Ketone = ', Ketone
- WRITE(*,*) ' RsCsR3 = ', RsCsR3
- WRITE(*,*) ' RsCH2r = ', RsCH2r
- WRITE(*,*) ' RdCHr = ', RdCHr
- WRITE(*,*) ' RsCHrsR = ', RsCHrsR
- WRITE(*,*) ' CdCrsR = ', CdCrsR
- WRITE(*,*) ' OdCrsR = ', OdCrsR
- WRITE(*,*) ' RsCrsR2 = ', RsCrsR2
- WRITE(*,*) ' Alcohol = ', Alcohol
- WRITE(*,*) ' Ether = ', Ether
- WRITE(*,*) ' ROOH = ', ROOH
- WRITE(*,*) ' ROOR = ', ROOR
- WRITE(*,*) ' Peroxy = ', Peroxy
- WRITE(*,*) ' Rings = ', Rings
+ WRITE(Ulog,*) ' RsCH3 = ', RsCH3
+ WRITE(Ulog,*) ' RdCH2 = ', RdCH2
+ WRITE(Ulog,*) ' CtCH = ', CtCH
+ WRITE(Ulog,*) ' RSCH2sR = ', RSCH2sR
+ WRITE(Ulog,*) ' CdCHsR = ', CdCHsR
+ WRITE(Ulog,*) ' Aldehyde = ', Aldehyde
+ WRITE(Ulog,*) ' Cumulene = ', Cumulene
+ WRITE(Ulog,*) ' Ketene = ', Ketene
+ WRITE(Ulog,*) ' CtCsR = ', CtCsR
+ WRITE(Ulog,*) ' RsCHsR2 = ', RsCHsR2
+ WRITE(Ulog,*) ' CdCsR2 = ', CdCsR2
+ WRITE(Ulog,*) ' Ketone = ', Ketone
+ WRITE(Ulog,*) ' RsCsR3 = ', RsCsR3
+ WRITE(Ulog,*) ' RsCH2r = ', RsCH2r
+ WRITE(Ulog,*) ' RdCHr = ', RdCHr
+ WRITE(Ulog,*) ' RsCHrsR = ', RsCHrsR
+ WRITE(Ulog,*) ' CdCrsR = ', CdCrsR
+ WRITE(Ulog,*) ' OdCrsR = ', OdCrsR
+ WRITE(Ulog,*) ' RsCrsR2 = ', RsCrsR2
+ WRITE(Ulog,*) ' Alcohol = ', Alcohol
+ WRITE(Ulog,*) ' Ether = ', Ether
+ WRITE(Ulog,*) ' ROOH = ', ROOH
+ WRITE(Ulog,*) ' ROOR = ', ROOR
+ WRITE(Ulog,*) ' Peroxy = ', Peroxy
+ WRITE(Ulog,*) ' Rings = ', Rings
 
 
 !------------------------------------------------------------------------------
@@ -1393,13 +1396,15 @@ SUBROUTINE Bond_avg_6x2_2_1 (Number_of_bonds, &
                               typical_frequencies, predicted_frequencies)
 
   IMPLICIT NONE
+  INTEGER :: Ulog, igo
+  COMMON /Fio/ Ulog, igo
   INTEGER, INTENT(IN) :: Number_of_bonds
   REAL(8), DIMENSION(:), INTENT(IN) :: typical_frequencies
   REAL(8),DIMENSION(6*Number_of_bonds), INTENT(OUT) :: predicted_frequencies
   INTEGER                                      :: i,j, k
 
   IF (Number_of_bonds == 0 ) THEN
-!     WRITE (*,*) 'N = 0'
+!     WRITE(Ulog,*) 'N = 0'
      ! predicted_frequencies has DIMENSION(0) so we can't assign anything to it
   
  ELSEIF (Number_of_bonds == 1) THEN
@@ -1477,13 +1482,15 @@ SUBROUTINE Bond_avg_5x2_2_1 (Number_of_bonds, &
                               typical_frequencies, predicted_frequencies)
 
   IMPLICIT NONE
+  INTEGER :: Ulog, igo
+  COMMON /Fio/ Ulog, igo
   INTEGER, INTENT(IN) :: Number_of_bonds
   REAL(8), DIMENSION(:), INTENT(IN) :: typical_frequencies
   REAL(8),DIMENSION(5*Number_of_bonds), INTENT(OUT) :: predicted_frequencies
   INTEGER                                      :: i,j, k
 
   IF (Number_of_bonds == 0 ) THEN
-!     WRITE (*,*) 'N = 0'
+!     WRITE(Ulog,*) 'N = 0'
      ! predicted_frequencies has DIMENSION(0) so we can't assign anything to it
   
  ELSEIF (Number_of_bonds == 1) THEN
@@ -1726,6 +1733,8 @@ SUBROUTINE Case_1(Total_char_freq, Total_harm_osc_freq, HR_params  )
   USE heat_capacity_functions
  
   IMPLICIT NONE
+  INTEGER :: Ulog, igo
+  COMMON /Fio/ Ulog, igo
   
 ! Global Variables
   REAL(8), DIMENSION(7) :: CV_temps
@@ -1749,7 +1758,7 @@ SUBROUTINE Case_1(Total_char_freq, Total_harm_osc_freq, HR_params  )
   REAL(8) :: bu(nvars+mcon)
   REAL(8) :: fj(ldfj,nvars+1)
   REAL(8) :: fnorm
-  INTEGER :: igo
+!    INTEGER :: igo
   INTEGER :: ind(nvars+mcon)
   INTEGER :: iopt(24)
   INTEGER :: iwork(liwork)
@@ -1766,7 +1775,6 @@ SUBROUTINE Case_1(Total_char_freq, Total_harm_osc_freq, HR_params  )
   INTEGER :: N_vib, N_rot
  
  COMMON N_vib, N_rot, nu_low, nu_high, nu_mid, cp_difference, CV_temps
- CALL timestamp ( )
 
 ! Define the contraints on the target variables 
 
@@ -1797,25 +1805,24 @@ SUBROUTINE Case_1(Total_char_freq, Total_harm_osc_freq, HR_params  )
 
   CALL dqed ( Case_1_hd, mequa, nvars, mcon, ind, bl, bu, x, fj, ldfj, &
     fnorm, igo, iopt, ropt, iwork, work )
-  WRITE ( *, '(a)' ) ' '
-  WRITE ( *, '(a)' ) ' CASE 1 Baby Yea!'
-  WRITE ( *, '(a)' ) ' '
-  WRITE ( *, '(a,i6)' ) '  Output flag from DQED, IGO = ', igo
-  WRITE ( *, '(a)' ) ' '
-  WRITE ( *, '(a)' ) '  Computed X:'
-  WRITE ( *, '(a)' ) ' '
-  WRITE ( *, '(g14.8)' ) x(1:nvars)
-  WRITE ( *, '(a)' ) ' '
-  WRITE ( *, '(a,g14.6)' ) '  L2 norm of the residual, FNORM = ', fnorm
-  WRITE ( *, '(a)' ) ' '
-  WRITE ( *, '(a)' ) 'Expected X:'
+  WRITE(Ulog, '(a)' ) ' '
+  WRITE(Ulog, '(a)' ) ' CASE 1 Baby Yea!'
+  WRITE(Ulog, '(a)' ) ' '
+  WRITE(Ulog, '(a,i6)' ) '  Output flag from DQED, IGO = ', igo
+  WRITE(Ulog, '(a)' ) ' '
+  WRITE(Ulog, '(a)' ) '  Computed X:'
+  WRITE(Ulog, '(a)' ) ' '
+  WRITE(Ulog, '(g14.8)' ) x(1:nvars)
+  WRITE(Ulog, '(a)' ) ' '
+  WRITE(Ulog, '(a,g14.6)' ) '  L2 norm of the residual, FNORM = ', fnorm
+  WRITE(Ulog, '(a)' ) ' '
+  WRITE(Ulog, '(a)' ) 'Expected X:'
  
-  WRITE ( *, '(a)' ) ' '
-  WRITE ( *, '(a)' ) 'DQED_PRB2'
-  WRITE ( *, '(a)' ) '  Normal end of execution.'
+  WRITE(Ulog, '(a)' ) ' '
+  WRITE(Ulog, '(a)' ) 'DQED_PRB2'
+  WRITE(Ulog, '(a)' ) '  Normal end of execution.'
 
-  WRITE ( *, '(a)' ) ' '
-  CALL timestamp ( )
+  WRITE(Ulog, '(a)' ) ' '
 
   results = x
   Theta_1 = results(1)
@@ -1892,10 +1899,10 @@ END SUBROUTINE Case_1_hd
 
 SUBROUTINE Case_2(Total_char_freq, Total_harm_osc_freq, HR_params  )
   USE heat_capacity_functions
-   
 
   IMPLICIT NONE
-  
+  INTEGER :: Ulog, igo
+  COMMON /Fio/ Ulog, igo
 ! Global Variables
   REAL(8), DIMENSION(7) :: CV_temps
   REAL(8), DIMENSION(7) :: cp_difference
@@ -1919,7 +1926,7 @@ SUBROUTINE Case_2(Total_char_freq, Total_harm_osc_freq, HR_params  )
   REAL(8) :: bu(nvars+mcon)
   REAL(8) :: fj(ldfj,nvars+1)
   REAL(8) :: fnorm
-  INTEGER :: igo
+!    INTEGER :: igo
   INTEGER :: ind(nvars+mcon)
   INTEGER :: iopt(24)
   INTEGER :: iwork(liwork)
@@ -1936,7 +1943,6 @@ SUBROUTINE Case_2(Total_char_freq, Total_harm_osc_freq, HR_params  )
   INTEGER :: N_vib, N_rot
  
  COMMON N_vib, N_rot, nu_low, nu_high, nu_mid, cp_difference, CV_temps
- CALL timestamp ( )
 
 ! Define the contraints on the target variables 
 
@@ -1972,25 +1978,24 @@ SUBROUTINE Case_2(Total_char_freq, Total_harm_osc_freq, HR_params  )
 
   CALL dqed ( Case_2_hd, mequa, nvars, mcon, ind, bl, bu, x, fj, ldfj, &
     fnorm, igo, iopt, ropt, iwork, work )
-  WRITE ( *, '(a)' ) ' '
-  WRITE ( *, '(a)' ) ' CASE 2 Baby Yea!'
-  WRITE ( *, '(a)' ) ' '
-  WRITE ( *, '(a,i6)' ) '  Output flag from DQED, IGO = ', igo
-  WRITE ( *, '(a)' ) ' '
-  WRITE ( *, '(a)' ) '  Computed X:'
-  WRITE ( *, '(a)' ) ' '
-  WRITE ( *, '(g14.8)' ) x(1:nvars)
-  WRITE ( *, '(a)' ) ' '
-  WRITE ( *, '(a,g14.6)' ) '  L2 norm of the residual, FNORM = ', fnorm
-  WRITE ( *, '(a)' ) ' '
-  WRITE ( *, '(a)' ) 'Expected X:'
+  WRITE(Ulog, '(a)' ) ' '
+  WRITE(Ulog, '(a)' ) ' CASE 2 Baby Yea!'
+  WRITE(Ulog, '(a)' ) ' '
+  WRITE(Ulog, '(a,i6)' ) '  Output flag from DQED, IGO = ', igo
+  WRITE(Ulog, '(a)' ) ' '
+  WRITE(Ulog, '(a)' ) '  Computed X:'
+  WRITE(Ulog, '(a)' ) ' '
+  WRITE(Ulog, '(g14.8)' ) x(1:nvars)
+  WRITE(Ulog, '(a)' ) ' '
+  WRITE(Ulog, '(a,g14.6)' ) '  L2 norm of the residual, FNORM = ', fnorm
+  WRITE(Ulog, '(a)' ) ' '
+  WRITE(Ulog, '(a)' ) 'Expected X:'
  
-  WRITE ( *, '(a)' ) ' '
-  WRITE ( *, '(a)' ) 'DQED_PRB2'
-  WRITE ( *, '(a)' ) '  Normal end of execution.'
+  WRITE(Ulog, '(a)' ) ' '
+  WRITE(Ulog, '(a)' ) 'DQED_PRB2'
+  WRITE(Ulog, '(a)' ) '  Normal end of execution.'
 
-  WRITE ( *, '(a)' ) ' '
-  CALL timestamp ( )
+  WRITE(Ulog, '(a)' ) ' '
   results = x
   Theta_1 = results(1)
   Theta_2 = results(2)
@@ -2062,9 +2067,10 @@ END SUBROUTINE Case_2_hd
 !------------------------------------------------------------------------------
 SUBROUTINE Case_3(Total_char_freq, Total_harm_osc_freq, HR_params )
   USE heat_capacity_functions
-   
 
   IMPLICIT NONE
+  INTEGER :: Ulog, igo
+  COMMON /Fio/ Ulog, igo
   
 ! Global Variables
   REAL(8), DIMENSION(7) :: CV_temps
@@ -2090,7 +2096,7 @@ SUBROUTINE Case_3(Total_char_freq, Total_harm_osc_freq, HR_params )
   REAL(8) :: bu(nvars+mcon)
   REAL(8) :: fj(ldfj,nvars+1)
   REAL(8) :: fnorm
-  INTEGER :: igo
+!  INTEGER :: igo
   INTEGER :: ind(nvars+mcon)
   INTEGER :: iopt(24)
   INTEGER :: iwork(liwork)
@@ -2107,7 +2113,6 @@ SUBROUTINE Case_3(Total_char_freq, Total_harm_osc_freq, HR_params )
   INTEGER :: N_vib, N_rot
  
  COMMON N_vib, N_rot, nu_low, nu_high, nu_mid, cp_difference, CV_temps
- CALL timestamp ( )
 
 ! Define the contraints on the target variables 
 
@@ -2149,25 +2154,24 @@ SUBROUTINE Case_3(Total_char_freq, Total_harm_osc_freq, HR_params )
 
   CALL dqed ( Case_3_hd, mequa, nvars, mcon, ind, bl, bu, x, fj, ldfj, &
     fnorm, igo, iopt, ropt, iwork, work )
-  WRITE ( *, '(a)' ) ' '
-  WRITE ( *, '(a)' ) ' CASE 3 Baby Yea!'
-  WRITE ( *, '(a)' ) ' '
-  WRITE ( *, '(a,i6)' ) '  Output flag from DQED, IGO = ', igo
-  WRITE ( *, '(a)' ) ' '
-  WRITE ( *, '(a)' ) '  Computed X:'
-  WRITE ( *, '(a)' ) ' '
-  WRITE ( *, '(g14.8)' ) x(1:nvars)
-  WRITE ( *, '(a)' ) ' '
-  WRITE ( *, '(a,g14.6)' ) '  L2 norm of the residual, FNORM = ', fnorm
-  WRITE ( *, '(a)' ) ' '
-  WRITE ( *, '(a)' ) 'Expected X:'
+  WRITE(Ulog, '(a)' ) ' '
+  WRITE(Ulog, '(a)' ) ' CASE 3 Baby Yea!'
+  WRITE(Ulog, '(a)' ) ' '
+  WRITE(Ulog, '(a,i6)' ) '  Output flag from DQED, IGO = ', igo
+  WRITE(Ulog, '(a)' ) ' '
+  WRITE(Ulog, '(a)' ) '  Computed X:'
+  WRITE(Ulog, '(a)' ) ' '
+  WRITE(Ulog, '(g14.8)' ) x(1:nvars)
+  WRITE(Ulog, '(a)' ) ' '
+  WRITE(Ulog, '(a,g14.6)' ) '  L2 norm of the residual, FNORM = ', fnorm
+  WRITE(Ulog, '(a)' ) ' '
+  WRITE(Ulog, '(a)' ) 'Expected X:'
  
-  WRITE ( *, '(a)' ) ' '
-  WRITE ( *, '(a)' ) 'DQED_PRB2'
-  WRITE ( *, '(a)' ) '  Normal end of execution.'
+  WRITE(Ulog, '(a)' ) ' '
+  WRITE(Ulog, '(a)' ) 'DQED_PRB2'
+  WRITE(Ulog, '(a)' ) '  Normal end of execution.'
 
-  WRITE ( *, '(a)' ) ' '
-  CALL timestamp ( )
+  WRITE(Ulog, '(a)' ) ' '
 
   results = x
   Theta_1 = results(1)
@@ -2247,9 +2251,10 @@ END SUBROUTINE Case_3_hd
 !------------------------------------------------------------------------------
 SUBROUTINE Case_4(Total_char_freq, Total_harm_osc_freq, HR_params  )
   USE heat_capacity_functions
-   
 
   IMPLICIT NONE
+  INTEGER :: Ulog, igo
+  COMMON /Fio/ Ulog, igo
   
 ! Global Variables
   REAL(8), DIMENSION(7) :: CV_temps
@@ -2276,7 +2281,7 @@ SUBROUTINE Case_4(Total_char_freq, Total_harm_osc_freq, HR_params  )
   REAL(8) :: bu(nvars+mcon)
   REAL(8) :: fj(ldfj,nvars+1)
   REAL(8) :: fnorm
-  INTEGER :: igo
+!  INTEGER :: igo
   INTEGER :: ind(nvars+mcon)
   INTEGER :: iopt(24)
   INTEGER :: iwork(liwork)
@@ -2293,7 +2298,6 @@ SUBROUTINE Case_4(Total_char_freq, Total_harm_osc_freq, HR_params  )
   INTEGER :: N_vib, N_rot
  
  COMMON N_vib, N_rot, nu_low, nu_high, nu_mid, cp_difference, CV_temps
- CALL timestamp ( )
 
 ! Define the contraints on the target variables 
 
@@ -2341,25 +2345,24 @@ SUBROUTINE Case_4(Total_char_freq, Total_harm_osc_freq, HR_params  )
 
   CALL dqed ( Case_4_hd, mequa, nvars, mcon, ind, bl, bu, x, fj, ldfj, &
     fnorm, igo, iopt, ropt, iwork, work )
-  WRITE ( *, '(a)' ) ' '
-  WRITE ( *, '(a)' ) ' CASE 4 Baby Yea!'
-  WRITE ( *, '(a)' ) ' '
-  WRITE ( *, '(a,i6)' ) '  Output flag from DQED, IGO = ', igo
-  WRITE ( *, '(a)' ) ' '
-  WRITE ( *, '(a)' ) '  Computed X:'
-  WRITE ( *, '(a)' ) ' '
-  WRITE ( *, '(g14.8)' ) x(1:nvars)
-  WRITE ( *, '(a)' ) ' '
-  WRITE ( *, '(a,g14.6)' ) '  L2 norm of the residual, FNORM = ', fnorm
-  WRITE ( *, '(a)' ) ' '
-  WRITE ( *, '(a)' ) 'Expected X:'
+  WRITE(Ulog, '(a)' ) ' '
+  WRITE(Ulog, '(a)' ) ' CASE 4 Baby Yea!'
+  WRITE(Ulog, '(a)' ) ' '
+  WRITE(Ulog, '(a,i6)' ) '  Output flag from DQED, IGO = ', igo
+  WRITE(Ulog, '(a)' ) ' '
+  WRITE(Ulog, '(a)' ) '  Computed X:'
+  WRITE(Ulog, '(a)' ) ' '
+  WRITE(Ulog, '(g14.8)' ) x(1:nvars)
+  WRITE(Ulog, '(a)' ) ' '
+  WRITE(Ulog, '(a,g14.6)' ) '  L2 norm of the residual, FNORM = ', fnorm
+  WRITE(Ulog, '(a)' ) ' '
+  WRITE(Ulog, '(a)' ) 'Expected X:'
  
-  WRITE ( *, '(a)' ) ' '
-  WRITE ( *, '(a)' ) 'DQED_PRB2'
-  WRITE ( *, '(a)' ) '  Normal end of execution.'
+  WRITE(Ulog, '(a)' ) ' '
+  WRITE(Ulog, '(a)' ) 'DQED_PRB2'
+  WRITE(Ulog, '(a)' ) '  Normal end of execution.'
 
-  WRITE ( *, '(a)' ) ' '
-  CALL timestamp ( )
+  WRITE(Ulog, '(a)' ) ' '
 
   results = x
   Theta_1 = results(1)
@@ -2443,9 +2446,10 @@ END SUBROUTINE Case_4_hd
 SUBROUTINE Case_5(Total_char_freq, Total_harm_osc_freq, HR_params )
  
   USE heat_capacity_functions
-   
 
   IMPLICIT NONE
+  INTEGER :: Ulog, igo
+  COMMON /Fio/ Ulog, igo
   
 ! Global Variables
   REAL(8), DIMENSION(7) :: CV_temps
@@ -2473,7 +2477,7 @@ SUBROUTINE Case_5(Total_char_freq, Total_harm_osc_freq, HR_params )
   REAL(8) :: bu(nvars+mcon)
   REAL(8) :: fj(ldfj,nvars+1)
   REAL(8) :: fnorm
-  INTEGER :: igo
+!  INTEGER :: igo
   INTEGER :: ind(nvars+mcon)
   INTEGER :: iopt(24)
   INTEGER :: iwork(liwork)
@@ -2490,7 +2494,6 @@ SUBROUTINE Case_5(Total_char_freq, Total_harm_osc_freq, HR_params )
   INTEGER :: N_vib, N_rot
  
  COMMON N_vib, N_rot, nu_low, nu_high, nu_mid, cp_difference, CV_temps
- CALL timestamp ( )
 
 ! Define the contraints on the target variables 
 
@@ -2544,25 +2547,24 @@ SUBROUTINE Case_5(Total_char_freq, Total_harm_osc_freq, HR_params )
 
   CALL dqed ( Case_5_hd, mequa, nvars, mcon, ind, bl, bu, x, fj, ldfj, &
     fnorm, igo, iopt, ropt, iwork, work )
-  WRITE ( *, '(a)' ) ' '
-  WRITE ( *, '(a)' ) ' CASE 5 Baby Yea!'
-  WRITE ( *, '(a)' ) ' '
-  WRITE ( *, '(a,i6)' ) '  Output flag from DQED, IGO = ', igo
-  WRITE ( *, '(a)' ) ' '
-  WRITE ( *, '(a)' ) '  Computed X:'
-  WRITE ( *, '(a)' ) ' '
-  WRITE ( *, '(g14.8)' ) x(1:nvars)
-  WRITE ( *, '(a)' ) ' '
-  WRITE ( *, '(a,g14.6)' ) '  L2 norm of the residual, FNORM = ', fnorm
-  WRITE ( *, '(a)' ) ' '
-  WRITE ( *, '(a)' ) 'Expected X:'
+  WRITE(Ulog, '(a)' ) ' '
+  WRITE(Ulog, '(a)' ) ' CASE 5 Baby Yea!'
+  WRITE(Ulog, '(a)' ) ' '
+  WRITE(Ulog, '(a,i6)' ) '  Output flag from DQED, IGO = ', igo
+  WRITE(Ulog, '(a)' ) ' '
+  WRITE(Ulog, '(a)' ) '  Computed X:'
+  WRITE(Ulog, '(a)' ) ' '
+  WRITE(Ulog, '(g14.8)' ) x(1:nvars)
+  WRITE(Ulog, '(a)' ) ' '
+  WRITE(Ulog, '(a,g14.6)' ) '  L2 norm of the residual, FNORM = ', fnorm
+  WRITE(Ulog, '(a)' ) ' '
+  WRITE(Ulog, '(a)' ) 'Expected X:'
  
-  WRITE ( *, '(a)' ) ' '
-  WRITE ( *, '(a)' ) 'DQED_PRB2'
-  WRITE ( *, '(a)' ) '  Normal end of execution.'
+  WRITE(Ulog, '(a)' ) ' '
+  WRITE(Ulog, '(a)' ) 'DQED_PRB2'
+  WRITE(Ulog, '(a)' ) '  Normal end of execution.'
 
-  WRITE ( *, '(a)' ) ' '
-  CALL timestamp ( )
+  WRITE(Ulog, '(a)' ) ' '
 
   results = x
   Theta_1 = results(1)
@@ -2648,10 +2650,12 @@ END SUBROUTINE Case_5_hd
 ! CASE 6:  N_vib = 6, N_rot = 0
 !------------------------------------------------------------------------------
 SUBROUTINE Case_6(Total_char_freq, Total_harm_osc_freq, HR_params )
- 
+
   USE heat_capacity_functions
-   
+
   IMPLICIT NONE
+  INTEGER :: Ulog, igo
+  COMMON /Fio/ Ulog, igo
   
 ! Global Variables
   REAL(8), DIMENSION(7) :: CV_temps
@@ -2680,7 +2684,7 @@ SUBROUTINE Case_6(Total_char_freq, Total_harm_osc_freq, HR_params )
   REAL(8) :: bu(nvars+mcon)
   REAL(8) :: fj(ldfj,nvars+1)
   REAL(8) :: fnorm
-  INTEGER :: igo
+!  INTEGER :: igo
   INTEGER :: ind(nvars+mcon)
   INTEGER :: iopt(24)
   INTEGER :: iwork(liwork)
@@ -2697,7 +2701,6 @@ SUBROUTINE Case_6(Total_char_freq, Total_harm_osc_freq, HR_params )
   INTEGER :: N_vib, N_rot
  
  COMMON N_vib, N_rot, nu_low, nu_high, nu_mid, cp_difference, CV_temps
- CALL timestamp ( )
 
 ! Define the contraints on the target variables 
 
@@ -2757,25 +2760,24 @@ SUBROUTINE Case_6(Total_char_freq, Total_harm_osc_freq, HR_params )
 
   CALL dqed ( Case_6_hd, mequa, nvars, mcon, ind, bl, bu, x, fj, ldfj, &
     fnorm, igo, iopt, ropt, iwork, work )
-  WRITE ( *, '(a)' ) ' '
-  WRITE ( *, '(a)' ) ' CASE 6 Baby Yea!'
-  WRITE ( *, '(a)' ) ' '
-  WRITE ( *, '(a,i6)' ) '  Output flag from DQED, IGO = ', igo
-  WRITE ( *, '(a)' ) ' '
-  WRITE ( *, '(a)' ) '  Computed X:'
-  WRITE ( *, '(a)' ) ' '
-  WRITE ( *, '(g14.8)' ) x(1:nvars)
-  WRITE ( *, '(a)' ) ' '
-  WRITE ( *, '(a,g14.6)' ) '  L2 norm of the residual, FNORM = ', fnorm
-  WRITE ( *, '(a)' ) ' '
-  WRITE ( *, '(a)' ) 'Expected X:'
+  WRITE(Ulog, '(a)' ) ' '
+  WRITE(Ulog, '(a)' ) ' CASE 6 Baby Yea!'
+  WRITE(Ulog, '(a)' ) ' '
+  WRITE(Ulog, '(a,i6)' ) '  Output flag from DQED, IGO = ', igo
+  WRITE(Ulog, '(a)' ) ' '
+  WRITE(Ulog, '(a)' ) '  Computed X:'
+  WRITE(Ulog, '(a)' ) ' '
+  WRITE(Ulog, '(g14.8)' ) x(1:nvars)
+  WRITE(Ulog, '(a)' ) ' '
+  WRITE(Ulog, '(a,g14.6)' ) '  L2 norm of the residual, FNORM = ', fnorm
+  WRITE(Ulog, '(a)' ) ' '
+  WRITE(Ulog, '(a)' ) 'Expected X:'
  
-  WRITE ( *, '(a)' ) ' '
-  WRITE ( *, '(a)' ) 'DQED_PRB2'
-  WRITE ( *, '(a)' ) '  Normal end of execution.'
+  WRITE(Ulog, '(a)' ) ' '
+  WRITE(Ulog, '(a)' ) 'DQED_PRB2'
+  WRITE(Ulog, '(a)' ) '  Normal end of execution.'
 
-  WRITE ( *, '(a)' ) ' '
-  CALL timestamp ( )
+  WRITE(Ulog, '(a)' ) ' '
 
   results = x
   Theta_1 = results(1)
@@ -2867,10 +2869,11 @@ END SUBROUTINE Case_6_hd
 SUBROUTINE Case_7(Total_char_freq, Total_harm_osc_freq, HR_params )
  
   USE heat_capacity_functions
-   
 
   IMPLICIT NONE
-  
+  INTEGER :: Ulog, igo
+  COMMON /Fio/ Ulog, igo
+
 ! Global Variables
   REAL(8), DIMENSION(7) :: CV_temps
   REAL(8), DIMENSION(7) :: cp_difference
@@ -2899,7 +2902,7 @@ SUBROUTINE Case_7(Total_char_freq, Total_harm_osc_freq, HR_params )
   REAL(8) :: bu(nvars+mcon)
   REAL(8) :: fj(ldfj,nvars+1)
   REAL(8) :: fnorm
-  INTEGER :: igo
+!  INTEGER :: igo
   INTEGER :: ind(nvars+mcon)
   INTEGER :: iopt(24)
   INTEGER :: iwork(liwork)
@@ -2916,7 +2919,6 @@ SUBROUTINE Case_7(Total_char_freq, Total_harm_osc_freq, HR_params )
   INTEGER :: N_vib, N_rot
  
  COMMON N_vib, N_rot, nu_low, nu_high, nu_mid, cp_difference, CV_temps
- CALL timestamp ( )
 
 ! Define the contraints on the target variables 
 
@@ -2977,25 +2979,24 @@ SUBROUTINE Case_7(Total_char_freq, Total_harm_osc_freq, HR_params )
 
   CALL dqed ( Case_7_hd, mequa, nvars, mcon, ind, bl, bu, x, fj, ldfj, &
     fnorm, igo, iopt, ropt, iwork, work )
-  WRITE ( *, '(a)' ) ' '
-  WRITE ( *, '(a)' ) ' CASE 7 Baby Yea!'
-  WRITE ( *, '(a)' ) ' '
-  WRITE ( *, '(a,i6)' ) '  Output flag from DQED, IGO = ', igo
-  WRITE ( *, '(a)' ) ' '
-  WRITE ( *, '(a)' ) '  Computed X:'
-  WRITE ( *, '(a)' ) ' '
-  WRITE ( *, '(g14.8)' ) x(1:nvars)
-  WRITE ( *, '(a)' ) ' '
-  WRITE ( *, '(a,g14.6)' ) '  L2 norm of the residual, FNORM = ', fnorm
-  WRITE ( *, '(a)' ) ' '
-  WRITE ( *, '(a)' ) 'Expected X:'
+  WRITE(Ulog, '(a)' ) ' '
+  WRITE(Ulog, '(a)' ) ' CASE 7 Baby Yea!'
+  WRITE(Ulog, '(a)' ) ' '
+  WRITE(Ulog, '(a,i6)' ) '  Output flag from DQED, IGO = ', igo
+  WRITE(Ulog, '(a)' ) ' '
+  WRITE(Ulog, '(a)' ) '  Computed X:'
+  WRITE(Ulog, '(a)' ) ' '
+  WRITE(Ulog, '(g14.8)' ) x(1:nvars)
+  WRITE(Ulog, '(a)' ) ' '
+  WRITE(Ulog, '(a,g14.6)' ) '  L2 norm of the residual, FNORM = ', fnorm
+  WRITE(Ulog, '(a)' ) ' '
+  WRITE(Ulog, '(a)' ) 'Expected X:'
  
-  WRITE ( *, '(a)' ) ' '
-  WRITE ( *, '(a)' ) 'DQED_PRB2'
-  WRITE ( *, '(a)' ) '  Normal end of execution.'
+  WRITE(Ulog, '(a)' ) ' '
+  WRITE(Ulog, '(a)' ) 'DQED_PRB2'
+  WRITE(Ulog, '(a)' ) '  Normal end of execution.'
 
-  WRITE ( *, '(a)' ) ' '
-  CALL timestamp ( )
+  WRITE(Ulog, '(a)' ) ' '
 
   results = x
   Theta_1 =      results(1)
@@ -3096,10 +3097,11 @@ END SUBROUTINE Case_7_hd
 SUBROUTINE Case_8(Total_char_freq, Total_harm_osc_freq, HR_params )
  
   USE heat_capacity_functions
-   
 
   IMPLICIT NONE
-  
+  INTEGER :: Ulog, igo
+  COMMON /Fio/ Ulog, igo
+
 ! Global Variables
   REAL(8), DIMENSION(7) :: CV_temps
   REAL(8), DIMENSION(7) :: cp_difference
@@ -3123,7 +3125,7 @@ SUBROUTINE Case_8(Total_char_freq, Total_harm_osc_freq, HR_params )
   REAL(8) :: bu(nvars+mcon)
   REAL(8) :: fj(ldfj,nvars+1)
   REAL(8) :: fnorm
-  INTEGER :: igo
+!  INTEGER :: igo
   INTEGER :: ind(nvars+mcon)
   INTEGER :: iopt(24)
   INTEGER :: iwork(liwork)
@@ -3140,7 +3142,6 @@ SUBROUTINE Case_8(Total_char_freq, Total_harm_osc_freq, HR_params )
   INTEGER :: N_vib, N_rot
  
  COMMON N_vib, N_rot, nu_low, nu_high, nu_mid, cp_difference, CV_temps
- CALL timestamp ( )
 
 ! Define the contraints on the target variables 
 
@@ -3176,25 +3177,24 @@ SUBROUTINE Case_8(Total_char_freq, Total_harm_osc_freq, HR_params )
 
   CALL dqed ( Case_8_hd, mequa, nvars, mcon, ind, bl, bu, x, fj, ldfj, &
     fnorm, igo, iopt, ropt, iwork, work )
-  WRITE ( *, '(a)' ) ' '
-  WRITE ( *, '(a)' ) ' CASE 8 Baby Yea!'
-  WRITE ( *, '(a)' ) ' '
-  WRITE ( *, '(a,i6)' ) '  Output flag from DQED, IGO = ', igo
-  WRITE ( *, '(a)' ) ' '
-  WRITE ( *, '(a)' ) '  Computed X:'
-  WRITE ( *, '(a)' ) ' '
-  WRITE ( *, '(g14.8)' ) x(1:nvars)
-  WRITE ( *, '(a)' ) ' '
-  WRITE ( *, '(a,g14.6)' ) '  L2 norm of the residual, FNORM = ', fnorm
-  WRITE ( *, '(a)' ) ' '
-  WRITE ( *, '(a)' ) 'Expected X:'
+  WRITE(Ulog, '(a)' ) ' '
+  WRITE(Ulog, '(a)' ) ' CASE 8 Baby Yea!'
+  WRITE(Ulog, '(a)' ) ' '
+  WRITE(Ulog, '(a,i6)' ) '  Output flag from DQED, IGO = ', igo
+  WRITE(Ulog, '(a)' ) ' '
+  WRITE(Ulog, '(a)' ) '  Computed X:'
+  WRITE(Ulog, '(a)' ) ' '
+  WRITE(Ulog, '(g14.8)' ) x(1:nvars)
+  WRITE(Ulog, '(a)' ) ' '
+  WRITE(Ulog, '(a,g14.6)' ) '  L2 norm of the residual, FNORM = ', fnorm
+  WRITE(Ulog, '(a)' ) ' '
+  WRITE(Ulog, '(a)' ) 'Expected X:'
  
-  WRITE ( *, '(a)' ) ' '
-  WRITE ( *, '(a)' ) 'DQED_PRB2'
-  WRITE ( *, '(a)' ) '  Normal end of execution.'
+  WRITE(Ulog, '(a)' ) ' '
+  WRITE(Ulog, '(a)' ) 'DQED_PRB2'
+  WRITE(Ulog, '(a)' ) '  Normal end of execution.'
 
-  WRITE ( *, '(a)' ) ' '
-  CALL timestamp ( )
+  WRITE(Ulog, '(a)' ) ' '
 
   results = x
   V_1  = results(1)
@@ -3273,6 +3273,8 @@ SUBROUTINE Case_9(Total_char_freq, Total_harm_osc_freq, HR_params )
    
 
   IMPLICIT NONE
+  INTEGER :: Ulog, igo
+  COMMON /Fio/ Ulog, igo
   
 ! Global Variables
   REAL(8), DIMENSION(7) :: CV_temps
@@ -3298,7 +3300,7 @@ SUBROUTINE Case_9(Total_char_freq, Total_harm_osc_freq, HR_params )
   REAL(8) :: bu(nvars+mcon)
   REAL(8) :: fj(ldfj,nvars+1)
   REAL(8) :: fnorm
-  INTEGER :: igo
+!  INTEGER :: igo
   INTEGER :: ind(nvars+mcon)
   INTEGER :: iopt(24)
   INTEGER :: iwork(liwork)
@@ -3315,7 +3317,6 @@ SUBROUTINE Case_9(Total_char_freq, Total_harm_osc_freq, HR_params )
   INTEGER :: N_vib, N_rot
  
  COMMON N_vib, N_rot, nu_low, nu_high, nu_mid, cp_difference, CV_temps
- CALL timestamp ( )
 
 ! Define the contraints on the target variables 
 
@@ -3358,25 +3359,24 @@ SUBROUTINE Case_9(Total_char_freq, Total_harm_osc_freq, HR_params )
 
   CALL dqed ( Case_9_hd, mequa, nvars, mcon, ind, bl, bu, x, fj, ldfj, &
     fnorm, igo, iopt, ropt, iwork, work )
-  WRITE ( *, '(a)' ) ' '
-  WRITE ( *, '(a)' ) ' CASE 9 Baby Yea!'
-  WRITE ( *, '(a)' ) ' '
-  WRITE ( *, '(a,i6)' ) '  Output flag from DQED, IGO = ', igo
-  WRITE ( *, '(a)' ) ' '
-  WRITE ( *, '(a)' ) '  Computed X:'
-  WRITE ( *, '(a)' ) ' '
-  WRITE ( *, '(g14.8)' ) x(1:nvars)
-  WRITE ( *, '(a)' ) ' '
-  WRITE ( *, '(a,g14.6)' ) '  L2 norm of the residual, FNORM = ', fnorm
-  WRITE ( *, '(a)' ) ' '
-  WRITE ( *, '(a)' ) 'Expected X:'
+  WRITE(Ulog, '(a)' ) ' '
+  WRITE(Ulog, '(a)' ) ' CASE 9 Baby Yea!'
+  WRITE(Ulog, '(a)' ) ' '
+  WRITE(Ulog, '(a,i6)' ) '  Output flag from DQED, IGO = ', igo
+  WRITE(Ulog, '(a)' ) ' '
+  WRITE(Ulog, '(a)' ) '  Computed X:'
+  WRITE(Ulog, '(a)' ) ' '
+  WRITE(Ulog, '(g14.8)' ) x(1:nvars)
+  WRITE(Ulog, '(a)' ) ' '
+  WRITE(Ulog, '(a,g14.6)' ) '  L2 norm of the residual, FNORM = ', fnorm
+  WRITE(Ulog, '(a)' ) ' '
+  WRITE(Ulog, '(a)' ) 'Expected X:'
  
-  WRITE ( *, '(a)' ) ' '
-  WRITE ( *, '(a)' ) 'DQED_PRB2'
-  WRITE ( *, '(a)' ) '  Normal end of execution.'
+  WRITE(Ulog, '(a)' ) ' '
+  WRITE(Ulog, '(a)' ) 'DQED_PRB2'
+  WRITE(Ulog, '(a)' ) '  Normal end of execution.'
 
-  WRITE ( *, '(a)' ) ' '
-  CALL timestamp ( )
+  WRITE(Ulog, '(a)' ) ' '
 
 results = x
 V_1     = results(1)
@@ -3456,9 +3456,10 @@ END SUBROUTINE Case_9_hd
 SUBROUTINE Case_10(Total_char_freq, Total_harm_osc_freq, HR_params )
  
   USE heat_capacity_functions
-   
 
   IMPLICIT NONE
+  INTEGER :: Ulog, igo
+  COMMON /Fio/ Ulog, igo
   
 ! Global Variables
   REAL(8), DIMENSION(7) :: CV_temps
@@ -3485,7 +3486,7 @@ SUBROUTINE Case_10(Total_char_freq, Total_harm_osc_freq, HR_params )
   REAL(8) :: bu(nvars+mcon)
   REAL(8) :: fj(ldfj,nvars+1)
   REAL(8) :: fnorm
-  INTEGER :: igo
+!  INTEGER :: igo
   INTEGER :: ind(nvars+mcon)
   INTEGER :: iopt(24)
   INTEGER :: iwork(liwork)
@@ -3502,7 +3503,6 @@ SUBROUTINE Case_10(Total_char_freq, Total_harm_osc_freq, HR_params )
   INTEGER :: N_vib, N_rot
  
  COMMON N_vib, N_rot, nu_low, nu_high, nu_mid, cp_difference, CV_temps
- CALL timestamp ( )
 
 ! Define the contraints on the target variables 
 
@@ -3550,25 +3550,24 @@ SUBROUTINE Case_10(Total_char_freq, Total_harm_osc_freq, HR_params )
 
   CALL dqed ( Case_10_hd, mequa, nvars, mcon, ind, bl, bu, x, fj, ldfj, &
     fnorm, igo, iopt, ropt, iwork, work )
-  WRITE ( *, '(a)' ) ' '
-  WRITE ( *, '(a)' ) ' CASE 10 Baby Yea!'
-  WRITE ( *, '(a)' ) ' '
-  WRITE ( *, '(a,i6)' ) '  Output flag from DQED, IGO = ', igo
-  WRITE ( *, '(a)' ) ' '
-  WRITE ( *, '(a)' ) '  Computed X:'
-  WRITE ( *, '(a)' ) ' '
-  WRITE ( *, '(g14.8)' ) x(1:nvars)
-  WRITE ( *, '(a)' ) ' '
-  WRITE ( *, '(a,g14.6)' ) '  L2 norm of the residual, FNORM = ', fnorm
-  WRITE ( *, '(a)' ) ' '
-  WRITE ( *, '(a)' ) 'Expected X:'
+  WRITE(Ulog, '(a)' ) ' '
+  WRITE(Ulog, '(a)' ) ' CASE 10 Baby Yea!'
+  WRITE(Ulog, '(a)' ) ' '
+  WRITE(Ulog, '(a,i6)' ) '  Output flag from DQED, IGO = ', igo
+  WRITE(Ulog, '(a)' ) ' '
+  WRITE(Ulog, '(a)' ) '  Computed X:'
+  WRITE(Ulog, '(a)' ) ' '
+  WRITE(Ulog, '(g14.8)' ) x(1:nvars)
+  WRITE(Ulog, '(a)' ) ' '
+  WRITE(Ulog, '(a,g14.6)' ) '  L2 norm of the residual, FNORM = ', fnorm
+  WRITE(Ulog, '(a)' ) ' '
+  WRITE(Ulog, '(a)' ) 'Expected X:'
  
-  WRITE ( *, '(a)' ) ' '
-  WRITE ( *, '(a)' ) 'DQED_PRB2'
-  WRITE ( *, '(a)' ) '  Normal end of execution.'
+  WRITE(Ulog, '(a)' ) ' '
+  WRITE(Ulog, '(a)' ) 'DQED_PRB2'
+  WRITE(Ulog, '(a)' ) '  Normal end of execution.'
 
-  WRITE ( *, '(a)' ) ' '
-  CALL timestamp ( )
+  WRITE(Ulog, '(a)' ) ' '
 
   results = x
   V_1     = results(1)
@@ -3651,9 +3650,10 @@ END SUBROUTINE Case_10_hd
 SUBROUTINE Case_11(Total_char_freq, Total_harm_osc_freq, HR_params )
  
   USE heat_capacity_functions
-   
 
   IMPLICIT NONE
+  INTEGER :: Ulog, igo
+  COMMON /Fio/ Ulog, igo
   
 ! Global Variables
   REAL(8), DIMENSION(7) :: CV_temps
@@ -3681,7 +3681,7 @@ SUBROUTINE Case_11(Total_char_freq, Total_harm_osc_freq, HR_params )
   REAL(8) :: bu(nvars+mcon)
   REAL(8) :: fj(ldfj,nvars+1)
   REAL(8) :: fnorm
-  INTEGER :: igo
+!  INTEGER :: igo
   INTEGER :: ind(nvars+mcon)
   INTEGER :: iopt(24)
   INTEGER :: iwork(liwork)
@@ -3698,7 +3698,6 @@ SUBROUTINE Case_11(Total_char_freq, Total_harm_osc_freq, HR_params )
   INTEGER :: N_vib, N_rot
  
  COMMON N_vib, N_rot, nu_low, nu_high, nu_mid, cp_difference, CV_temps
- CALL timestamp ( )
 
 ! Define the contraints on the target variables 
 
@@ -3752,25 +3751,24 @@ SUBROUTINE Case_11(Total_char_freq, Total_harm_osc_freq, HR_params )
 
   CALL dqed ( Case_11_hd, mequa, nvars, mcon, ind, bl, bu, x, fj, ldfj, &
     fnorm, igo, iopt, ropt, iwork, work )
-  WRITE ( *, '(a)' ) ' '
-  WRITE ( *, '(a)' ) ' CASE 11 Baby Yea!'
-  WRITE ( *, '(a)' ) ' '
-  WRITE ( *, '(a,i6)' ) '  Output flag from DQED, IGO = ', igo
-  WRITE ( *, '(a)' ) ' '
-  WRITE ( *, '(a)' ) '  Computed X:'
-  WRITE ( *, '(a)' ) ' '
-  WRITE ( *, '(g14.8)' ) x(1:nvars)
-  WRITE ( *, '(a)' ) ' '
-  WRITE ( *, '(a,g14.6)' ) '  L2 norm of the residual, FNORM = ', fnorm
-  WRITE ( *, '(a)' ) ' '
-  WRITE ( *, '(a)' ) 'Expected X:'
+  WRITE(Ulog, '(a)' ) ' '
+  WRITE(Ulog, '(a)' ) ' CASE 11 Baby Yea!'
+  WRITE(Ulog, '(a)' ) ' '
+  WRITE(Ulog, '(a,i6)' ) '  Output flag from DQED, IGO = ', igo
+  WRITE(Ulog, '(a)' ) ' '
+  WRITE(Ulog, '(a)' ) '  Computed X:'
+  WRITE(Ulog, '(a)' ) ' '
+  WRITE(Ulog, '(g14.8)' ) x(1:nvars)
+  WRITE(Ulog, '(a)' ) ' '
+  WRITE(Ulog, '(a,g14.6)' ) '  L2 norm of the residual, FNORM = ', fnorm
+  WRITE(Ulog, '(a)' ) ' '
+  WRITE(Ulog, '(a)' ) 'Expected X:'
  
-  WRITE ( *, '(a)' ) ' '
-  WRITE ( *, '(a)' ) 'DQED_PRB2'
-  WRITE ( *, '(a)' ) '  Normal end of execution.'
+  WRITE(Ulog, '(a)' ) ' '
+  WRITE(Ulog, '(a)' ) 'DQED_PRB2'
+  WRITE(Ulog, '(a)' ) '  Normal end of execution.'
 
-  WRITE ( *, '(a)' ) ' '
-  CALL timestamp ( )
+  WRITE(Ulog, '(a)' ) ' '
 
   results = x
   V_1     = results(1)
@@ -3858,10 +3856,11 @@ END SUBROUTINE Case_11_hd
 SUBROUTINE Case_12(Total_char_freq, Total_harm_osc_freq, HR_params )
  
   USE heat_capacity_functions
-   
 
   IMPLICIT NONE
-  
+  INTEGER :: Ulog, igo
+  COMMON /Fio/ Ulog, igo
+
 ! Global Variables
   REAL(8), DIMENSION(7) :: CV_temps
   REAL(8), DIMENSION(7) :: cp_difference
@@ -3889,7 +3888,7 @@ SUBROUTINE Case_12(Total_char_freq, Total_harm_osc_freq, HR_params )
   REAL(8) :: bu(nvars+mcon)
   REAL(8) :: fj(ldfj,nvars+1)
   REAL(8) :: fnorm
-  INTEGER :: igo
+!  INTEGER :: igo
   INTEGER :: ind(nvars+mcon)
   INTEGER :: iopt(24)
   INTEGER :: iwork(liwork)
@@ -3906,7 +3905,6 @@ SUBROUTINE Case_12(Total_char_freq, Total_harm_osc_freq, HR_params )
   INTEGER :: N_vib, N_rot
  
  COMMON N_vib, N_rot, nu_low, nu_high, nu_mid, cp_difference, CV_temps
- CALL timestamp ( )
 
 ! Define the contraints on the target variables 
 
@@ -3966,25 +3964,24 @@ SUBROUTINE Case_12(Total_char_freq, Total_harm_osc_freq, HR_params )
 
   CALL dqed ( Case_12_hd, mequa, nvars, mcon, ind, bl, bu, x, fj, ldfj, &
     fnorm, igo, iopt, ropt, iwork, work )
-  WRITE ( *, '(a)' ) ' '
-  WRITE ( *, '(a)' ) ' CASE 12 Baby Yea!'
-  WRITE ( *, '(a)' ) ' '
-  WRITE ( *, '(a,i6)' ) '  Output flag from DQED, IGO = ', igo
-  WRITE ( *, '(a)' ) ' '
-  WRITE ( *, '(a)' ) '  Computed X:'
-  WRITE ( *, '(a)' ) ' '
-  WRITE ( *, '(g14.8)' ) x(1:nvars)
-  WRITE ( *, '(a)' ) ' '
-  WRITE ( *, '(a,g14.6)' ) '  L2 norm of the residual, FNORM = ', fnorm
-  WRITE ( *, '(a)' ) ' '
-  WRITE ( *, '(a)' ) 'Expected X:'
+  WRITE(Ulog, '(a)' ) ' '
+  WRITE(Ulog, '(a)' ) ' CASE 12 Baby Yea!'
+  WRITE(Ulog, '(a)' ) ' '
+  WRITE(Ulog, '(a,i6)' ) '  Output flag from DQED, IGO = ', igo
+  WRITE(Ulog, '(a)' ) ' '
+  WRITE(Ulog, '(a)' ) '  Computed X:'
+  WRITE(Ulog, '(a)' ) ' '
+  WRITE(Ulog, '(g14.8)' ) x(1:nvars)
+  WRITE(Ulog, '(a)' ) ' '
+  WRITE(Ulog, '(a,g14.6)' ) '  L2 norm of the residual, FNORM = ', fnorm
+  WRITE(Ulog, '(a)' ) ' '
+  WRITE(Ulog, '(a)' ) 'Expected X:'
  
-  WRITE ( *, '(a)' ) ' '
-  WRITE ( *, '(a)' ) 'DQED_PRB2'
-  WRITE ( *, '(a)' ) '  Normal end of execution.'
+  WRITE(Ulog, '(a)' ) ' '
+  WRITE(Ulog, '(a)' ) 'DQED_PRB2'
+  WRITE(Ulog, '(a)' ) '  Normal end of execution.'
 
-  WRITE ( *, '(a)' ) ' '
-  CALL timestamp ( )
+  WRITE(Ulog, '(a)' ) ' '
 
   results = x
   V_1     = results(1)
@@ -4004,7 +4001,6 @@ SUBROUTINE Case_12(Total_char_freq, Total_harm_osc_freq, HR_params )
 END SUBROUTINE Case_12
 !------------------------------------------------------------------------------
 SUBROUTINE Case_12_hd( x, fj, ldfj, igo, iopt, ropt )
-
 
   USE heat_capacity_functions 
   IMPLICIT NONE
@@ -4077,9 +4073,10 @@ END SUBROUTINE Case_12_hd
 SUBROUTINE Case_13(Total_char_freq, Total_harm_osc_freq, HR_params )
  
   USE heat_capacity_functions
-   
 
   IMPLICIT NONE
+  INTEGER :: Ulog, igo
+  COMMON /Fio/ Ulog, igo
   
 ! Global Variables
   REAL(8), DIMENSION(7) :: CV_temps
@@ -4109,7 +4106,7 @@ SUBROUTINE Case_13(Total_char_freq, Total_harm_osc_freq, HR_params )
   REAL(8) :: bu(nvars+mcon)
   REAL(8) :: fj(ldfj,nvars+1)
   REAL(8) :: fnorm
-  INTEGER :: igo
+!  INTEGER :: igo
   INTEGER :: ind(nvars+mcon)
   INTEGER :: iopt(24)
   INTEGER :: iwork(liwork)
@@ -4126,7 +4123,6 @@ SUBROUTINE Case_13(Total_char_freq, Total_harm_osc_freq, HR_params )
   INTEGER :: N_vib, N_rot
  
  COMMON N_vib, N_rot, nu_low, nu_high, nu_mid, cp_difference, CV_temps
- CALL timestamp ( )
 
 ! Define the contraints on the target variables 
 
@@ -4186,25 +4182,24 @@ SUBROUTINE Case_13(Total_char_freq, Total_harm_osc_freq, HR_params )
 
   CALL dqed ( Case_13_hd, mequa, nvars, mcon, ind, bl, bu, x, fj, ldfj, &
     fnorm, igo, iopt, ropt, iwork, work )
-  WRITE ( *, '(a)' ) ' '
-  WRITE ( *, '(a)' ) ' CASE 13 Baby Yea!'
-  WRITE ( *, '(a)' ) ' '
-  WRITE ( *, '(a,i6)' ) '  Output flag from DQED, IGO = ', igo
-  WRITE ( *, '(a)' ) ' '
-  WRITE ( *, '(a)' ) '  Computed X:'
-  WRITE ( *, '(a)' ) ' '
-  WRITE ( *, '(g14.8)' ) x(1:nvars)
-  WRITE ( *, '(a)' ) ' '
-  WRITE ( *, '(a,g14.6)' ) '  L2 norm of the residual, FNORM = ', fnorm
-  WRITE ( *, '(a)' ) ' '
-  WRITE ( *, '(a)' ) 'Expected X:'
+  WRITE(Ulog, '(a)' ) ' '
+  WRITE(Ulog, '(a)' ) ' CASE 13 Baby Yea!'
+  WRITE(Ulog, '(a)' ) ' '
+  WRITE(Ulog, '(a,i6)' ) '  Output flag from DQED, IGO = ', igo
+  WRITE(Ulog, '(a)' ) ' '
+  WRITE(Ulog, '(a)' ) '  Computed X:'
+  WRITE(Ulog, '(a)' ) ' '
+  WRITE(Ulog, '(g14.8)' ) x(1:nvars)
+  WRITE(Ulog, '(a)' ) ' '
+  WRITE(Ulog, '(a,g14.6)' ) '  L2 norm of the residual, FNORM = ', fnorm
+  WRITE(Ulog, '(a)' ) ' '
+  WRITE(Ulog, '(a)' ) 'Expected X:'
  
-  WRITE ( *, '(a)' ) ' '
-  WRITE ( *, '(a)' ) 'DQED_PRB2'
-  WRITE ( *, '(a)' ) '  Normal end of execution.'
+  WRITE(Ulog, '(a)' ) ' '
+  WRITE(Ulog, '(a)' ) 'DQED_PRB2'
+  WRITE(Ulog, '(a)' ) '  Normal end of execution.'
 
-  WRITE ( *, '(a)' ) ' '
-  CALL timestamp ( )
+  WRITE(Ulog, '(a)' ) ' '
 
   results = x
   V_1     =      results(1)
@@ -4302,9 +4297,10 @@ END SUBROUTINE Case_13_hd
 SUBROUTINE Case_14(Total_char_freq, Total_harm_osc_freq, HR_params )
  
   USE heat_capacity_functions
-   
 
   IMPLICIT NONE
+  INTEGER :: Ulog, igo
+  COMMON /Fio/ Ulog, igo
   
 ! Global Variables
   REAL(8), DIMENSION(7) :: CV_temps
@@ -4331,7 +4327,7 @@ SUBROUTINE Case_14(Total_char_freq, Total_harm_osc_freq, HR_params )
   REAL(8) :: bu(nvars+mcon)
   REAL(8) :: fj(ldfj,nvars+1)
   REAL(8) :: fnorm
-  INTEGER :: igo
+!  INTEGER :: igo
   INTEGER :: ind(nvars+mcon)
   INTEGER :: iopt(24)
   INTEGER :: iwork(liwork)
@@ -4348,7 +4344,6 @@ SUBROUTINE Case_14(Total_char_freq, Total_harm_osc_freq, HR_params )
   INTEGER :: N_vib, N_rot
  
  COMMON N_vib, N_rot, nu_low, nu_high, nu_mid, cp_difference, CV_temps
- CALL timestamp ( )
 
 ! Define the contraints on the target variables 
 
@@ -4396,25 +4391,24 @@ SUBROUTINE Case_14(Total_char_freq, Total_harm_osc_freq, HR_params )
 
   CALL dqed ( Case_14_hd, mequa, nvars, mcon, ind, bl, bu, x, fj, ldfj, &
     fnorm, igo, iopt, ropt, iwork, work )
-  WRITE ( *, '(a)' ) ' '
-  WRITE ( *, '(a)' ) ' CASE 14 Baby Yea!'
-  WRITE ( *, '(a)' ) ' '
-  WRITE ( *, '(a,i6)' ) '  Output flag from DQED, IGO = ', igo
-  WRITE ( *, '(a)' ) ' '
-  WRITE ( *, '(a)' ) '  Computed X:'
-  WRITE ( *, '(a)' ) ' '
-  WRITE ( *, '(g14.8)' ) x(1:nvars)
-  WRITE ( *, '(a)' ) ' '
-  WRITE ( *, '(a,g14.6)' ) '  L2 norm of the residual, FNORM = ', fnorm
-  WRITE ( *, '(a)' ) ' '
-  WRITE ( *, '(a)' ) 'Expected X:'
+  WRITE(Ulog, '(a)' ) ' '
+  WRITE(Ulog, '(a)' ) ' CASE 14 Baby Yea!'
+  WRITE(Ulog, '(a)' ) ' '
+  WRITE(Ulog, '(a,i6)' ) '  Output flag from DQED, IGO = ', igo
+  WRITE(Ulog, '(a)' ) ' '
+  WRITE(Ulog, '(a)' ) '  Computed X:'
+  WRITE(Ulog, '(a)' ) ' '
+  WRITE(Ulog, '(g14.8)' ) x(1:nvars)
+  WRITE(Ulog, '(a)' ) ' '
+  WRITE(Ulog, '(a,g14.6)' ) '  L2 norm of the residual, FNORM = ', fnorm
+  WRITE(Ulog, '(a)' ) ' '
+  WRITE(Ulog, '(a)' ) 'Expected X:'
  
-  WRITE ( *, '(a)' ) ' '
-  WRITE ( *, '(a)' ) 'DQED_PRB2'
-  WRITE ( *, '(a)' ) '  Normal end of execution.'
+  WRITE(Ulog, '(a)' ) ' '
+  WRITE(Ulog, '(a)' ) 'DQED_PRB2'
+  WRITE(Ulog, '(a)' ) '  Normal end of execution.'
 
-  WRITE ( *, '(a)' ) ' '
-  CALL timestamp ( )
+  WRITE(Ulog, '(a)' ) ' '
 
   results = x
   V_1  = results(1)
@@ -4495,9 +4489,10 @@ END SUBROUTINE Case_14_hd
 SUBROUTINE Case_15(Total_char_freq, Total_harm_osc_freq, HR_params )
  
   USE heat_capacity_functions
-   
 
   IMPLICIT NONE
+  INTEGER :: Ulog, igo
+  COMMON /Fio/ Ulog, igo
   
 ! Global Variables
   REAL(8), DIMENSION(7) :: CV_temps
@@ -4525,7 +4520,7 @@ SUBROUTINE Case_15(Total_char_freq, Total_harm_osc_freq, HR_params )
   REAL(8) :: bu(nvars+mcon)
   REAL(8) :: fj(ldfj,nvars+1)
   REAL(8) :: fnorm
-  INTEGER :: igo
+!  INTEGER :: igo
   INTEGER :: ind(nvars+mcon)
   INTEGER :: iopt(24)
   INTEGER :: iwork(liwork)
@@ -4542,7 +4537,6 @@ SUBROUTINE Case_15(Total_char_freq, Total_harm_osc_freq, HR_params )
   INTEGER :: N_vib, N_rot
  
  COMMON N_vib, N_rot, nu_low, nu_high, nu_mid, cp_difference, CV_temps
- CALL timestamp ( )
 
 ! Define the contraints on the target variables 
 
@@ -4596,25 +4590,24 @@ SUBROUTINE Case_15(Total_char_freq, Total_harm_osc_freq, HR_params )
 
   CALL dqed ( Case_15_hd, mequa, nvars, mcon, ind, bl, bu, x, fj, ldfj, &
     fnorm, igo, iopt, ropt, iwork, work )
-  WRITE ( *, '(a)' ) ' '
-  WRITE ( *, '(a)' ) ' CASE 15 Baby Yea!'
-  WRITE ( *, '(a)' ) ' '
-  WRITE ( *, '(a,i6)' ) '  Output flag from DQED, IGO = ', igo
-  WRITE ( *, '(a)' ) ' '
-  WRITE ( *, '(a)' ) '  Computed X:'
-  WRITE ( *, '(a)' ) ' '
-  WRITE ( *, '(g14.8)' ) x(1:nvars)
-  WRITE ( *, '(a)' ) ' '
-  WRITE ( *, '(a,g14.6)' ) '  L2 norm of the residual, FNORM = ', fnorm
-  WRITE ( *, '(a)' ) ' '
-  WRITE ( *, '(a)' ) 'Expected X:'
+  WRITE(Ulog, '(a)' ) ' '
+  WRITE(Ulog, '(a)' ) ' CASE 15 Baby Yea!'
+  WRITE(Ulog, '(a)' ) ' '
+  WRITE(Ulog, '(a,i6)' ) '  Output flag from DQED, IGO = ', igo
+  WRITE(Ulog, '(a)' ) ' '
+  WRITE(Ulog, '(a)' ) '  Computed X:'
+  WRITE(Ulog, '(a)' ) ' '
+  WRITE(Ulog, '(g14.8)' ) x(1:nvars)
+  WRITE(Ulog, '(a)' ) ' '
+  WRITE(Ulog, '(a,g14.6)' ) '  L2 norm of the residual, FNORM = ', fnorm
+  WRITE(Ulog, '(a)' ) ' '
+  WRITE(Ulog, '(a)' ) 'Expected X:'
  
-  WRITE ( *, '(a)' ) ' '
-  WRITE ( *, '(a)' ) 'DQED_PRB2'
-  WRITE ( *, '(a)' ) '  Normal end of execution.'
+  WRITE(Ulog, '(a)' ) ' '
+  WRITE(Ulog, '(a)' ) 'DQED_PRB2'
+  WRITE(Ulog, '(a)' ) '  Normal end of execution.'
 
-  WRITE ( *, '(a)' ) ' '
-  CALL timestamp ( )
+  WRITE(Ulog, '(a)' ) ' '
 
   results = x
   V_1     = results(1)
@@ -4701,9 +4694,10 @@ END SUBROUTINE Case_15_hd
 SUBROUTINE Case_16(Total_char_freq, Total_harm_osc_freq, HR_params )
  
   USE heat_capacity_functions
-   
 
   IMPLICIT NONE
+  INTEGER :: Ulog, igo
+  COMMON /Fio/ Ulog, igo
   
 ! Global Variables
   REAL(8), DIMENSION(7) :: CV_temps
@@ -4732,7 +4726,7 @@ SUBROUTINE Case_16(Total_char_freq, Total_harm_osc_freq, HR_params )
   REAL(8) :: bu(nvars+mcon)
   REAL(8) :: fj(ldfj,nvars+1)
   REAL(8) :: fnorm
-  INTEGER :: igo
+!  INTEGER :: igo
   INTEGER :: ind(nvars+mcon)
   INTEGER :: iopt(24)
   INTEGER :: iwork(liwork)
@@ -4749,7 +4743,6 @@ SUBROUTINE Case_16(Total_char_freq, Total_harm_osc_freq, HR_params )
   INTEGER :: N_vib, N_rot
  
  COMMON N_vib, N_rot, nu_low, nu_high, nu_mid, cp_difference, CV_temps
- CALL timestamp ( )
 
 ! Define the contraints on the target variables 
 
@@ -4809,25 +4802,24 @@ SUBROUTINE Case_16(Total_char_freq, Total_harm_osc_freq, HR_params )
 
   CALL dqed ( Case_16_hd, mequa, nvars, mcon, ind, bl, bu, x, fj, ldfj, &
     fnorm, igo, iopt, ropt, iwork, work )
-  WRITE ( *, '(a)' ) ' '
-  WRITE ( *, '(a)' ) ' CASE 16 Baby Yea!'
-  WRITE ( *, '(a)' ) ' '
-  WRITE ( *, '(a,i6)' ) '  Output flag from DQED, IGO = ', igo
-  WRITE ( *, '(a)' ) ' '
-  WRITE ( *, '(a)' ) '  Computed X:'
-  WRITE ( *, '(a)' ) ' '
-  WRITE ( *, '(g14.8)' ) x(1:nvars)
-  WRITE ( *, '(a)' ) ' '
-  WRITE ( *, '(a,g14.6)' ) '  L2 norm of the residual, FNORM = ', fnorm
-  WRITE ( *, '(a)' ) ' '
-  WRITE ( *, '(a)' ) 'Expected X:'
+  WRITE(Ulog, '(a)' ) ' '
+  WRITE(Ulog, '(a)' ) ' CASE 16 Baby Yea!'
+  WRITE(Ulog, '(a)' ) ' '
+  WRITE(Ulog, '(a,i6)' ) '  Output flag from DQED, IGO = ', igo
+  WRITE(Ulog, '(a)' ) ' '
+  WRITE(Ulog, '(a)' ) '  Computed X:'
+  WRITE(Ulog, '(a)' ) ' '
+  WRITE(Ulog, '(g14.8)' ) x(1:nvars)
+  WRITE(Ulog, '(a)' ) ' '
+  WRITE(Ulog, '(a,g14.6)' ) '  L2 norm of the residual, FNORM = ', fnorm
+  WRITE(Ulog, '(a)' ) ' '
+  WRITE(Ulog, '(a)' ) 'Expected X:'
  
-  WRITE ( *, '(a)' ) ' '
-  WRITE ( *, '(a)' ) 'DQED_PRB2'
-  WRITE ( *, '(a)' ) '  Normal end of execution.'
+  WRITE(Ulog, '(a)' ) ' '
+  WRITE(Ulog, '(a)' ) 'DQED_PRB2'
+  WRITE(Ulog, '(a)' ) '  Normal end of execution.'
 
-  WRITE ( *, '(a)' ) ' '
-  CALL timestamp ( )
+  WRITE(Ulog, '(a)' ) ' '
 
   results = x
   V_1     = results(1)
@@ -4917,9 +4909,10 @@ END SUBROUTINE Case_16_hd
 SUBROUTINE Case_17(Total_char_freq, Total_harm_osc_freq, HR_params )
  
   USE heat_capacity_functions
-   
 
   IMPLICIT NONE
+  INTEGER :: Ulog, igo
+  COMMON /Fio/ Ulog, igo
 
 ! Global Variables
   REAL(8), DIMENSION(7) :: CV_temps
@@ -4949,7 +4942,7 @@ SUBROUTINE Case_17(Total_char_freq, Total_harm_osc_freq, HR_params )
   REAL(8) :: bu(nvars+mcon)
   REAL(8) :: fj(ldfj,nvars+1)
   REAL(8) :: fnorm
-  INTEGER :: igo
+!  INTEGER :: igo
   INTEGER :: ind(nvars+mcon)
   INTEGER :: iopt(24)
   INTEGER :: iwork(liwork)
@@ -4966,8 +4959,6 @@ SUBROUTINE Case_17(Total_char_freq, Total_harm_osc_freq, HR_params )
   INTEGER :: N_vib, N_rot
 
  COMMON N_vib, N_rot, nu_low, nu_high, nu_mid, cp_difference, CV_temps
-
-  CALL timestamp ( )
 
 ! Define the contraints on the target variables 
 
@@ -5031,25 +5022,24 @@ SUBROUTINE Case_17(Total_char_freq, Total_harm_osc_freq, HR_params )
   CALL dqed ( Case_17_hd, mequa, nvars, mcon, ind, bl, bu, x, fj, ldfj, &
     fnorm, igo, iopt, ropt, iwork, work )
 
-  WRITE ( *, '(a)' ) ' '
-  WRITE ( *, '(a)' ) ' CASE 17'
-  WRITE ( *, '(a)' ) ' '
-  WRITE ( *, '(a,i6)' ) '  Output flag from DQED, IGO = ', igo
-  WRITE ( *, '(a)' ) ' '
-  WRITE ( *, '(a)' ) '  Computed X:'
-  WRITE ( *, '(a)' ) ' '
-  WRITE ( *, '(g14.8)' ) x(1:nvars)
-  WRITE ( *, '(a)' ) ' '
-  WRITE ( *, '(a,g14.6)' ) '  L2 norm of the residual, FNORM = ', fnorm
-  WRITE ( *, '(a)' ) ' '
-  WRITE ( *, '(a)' ) 'Expected X:'
+  WRITE(Ulog, '(a)' ) ' '
+  WRITE(Ulog, '(a)' ) ' CASE 17'
+  WRITE(Ulog, '(a)' ) ' '
+  WRITE(Ulog, '(a,i6)' ) '  Output flag from DQED, IGO = ', igo
+  WRITE(Ulog, '(a)' ) ' '
+  WRITE(Ulog, '(a)' ) '  Computed X:'
+  WRITE(Ulog, '(a)' ) ' '
+  WRITE(Ulog, '(g14.8)' ) x(1:nvars)
+  WRITE(Ulog, '(a)' ) ' '
+  WRITE(Ulog, '(a,g14.6)' ) '  L2 norm of the residual, FNORM = ', fnorm
+  WRITE(Ulog, '(a)' ) ' '
+  WRITE(Ulog, '(a)' ) 'Expected X:'
  
-  WRITE ( *, '(a)' ) ' '
-  WRITE ( *, '(a)' ) 'DQED_PRB2'
-  WRITE ( *, '(a)' ) '  Normal end of execution.'
+  WRITE(Ulog, '(a)' ) ' '
+  WRITE(Ulog, '(a)' ) 'DQED_PRB2'
+  WRITE(Ulog, '(a)' ) '  Normal end of execution.'
 
-  WRITE ( *, '(a)' ) ' '
-  CALL timestamp ( )
+  WRITE(Ulog, '(a)' ) ' '
 
   results = x
   Theta_1 = results(1)
@@ -5147,9 +5137,10 @@ END SUBROUTINE Case_17_hd
 SUBROUTINE Case_18(Total_char_freq, Total_harm_osc_freq, HR_params )
  
   USE heat_capacity_functions
-   
 
   IMPLICIT NONE
+  INTEGER :: Ulog, igo
+  COMMON /Fio/ Ulog, igo
 
 ! Global Variables
   REAL(8), DIMENSION(7) :: CV_temps
@@ -5181,7 +5172,7 @@ SUBROUTINE Case_18(Total_char_freq, Total_harm_osc_freq, HR_params )
   REAL(8) :: bu(nvars+mcon)
   REAL(8) :: fj(ldfj,nvars+1)
   REAL(8) :: fnorm
-  INTEGER :: igo
+!  INTEGER :: igo
   INTEGER :: ind(nvars+mcon)
   INTEGER :: iopt(24)
   INTEGER :: iwork(liwork)
@@ -5198,8 +5189,6 @@ SUBROUTINE Case_18(Total_char_freq, Total_harm_osc_freq, HR_params )
   INTEGER :: N_vib, N_rot
 
  COMMON N_vib, N_rot, nu_low, nu_high, nu_mid, cp_difference, CV_temps
-
-  CALL timestamp ( )
 
 ! Define the contraints on the target variables 
 
@@ -5263,25 +5252,24 @@ SUBROUTINE Case_18(Total_char_freq, Total_harm_osc_freq, HR_params )
   CALL dqed ( Case_18_hd, mequa, nvars, mcon, ind, bl, bu, x, fj, ldfj, &
     fnorm, igo, iopt, ropt, iwork, work )
 
-  WRITE ( *, '(a)' ) ' '
-  WRITE ( *, '(a)' ) ' CASE 18'
-  WRITE ( *, '(a)' ) ' '
-  WRITE ( *, '(a,i6)' ) '  Output flag from DQED, IGO = ', igo
-  WRITE ( *, '(a)' ) ' '
-  WRITE ( *, '(a)' ) '  Computed X:'
-  WRITE ( *, '(a)' ) ' '
-  WRITE ( *, '(g14.8)' ) x(1:nvars)
-  WRITE ( *, '(a)' ) ' '
-  WRITE ( *, '(a,g14.6)' ) '  L2 norm of the residual, FNORM = ', fnorm
-  WRITE ( *, '(a)' ) ' '
-  WRITE ( *, '(a)' ) 'Expected X:'
+  WRITE(Ulog, '(a)' ) ' '
+  WRITE(Ulog, '(a)' ) ' CASE 18'
+  WRITE(Ulog, '(a)' ) ' '
+  WRITE(Ulog, '(a,i6)' ) '  Output flag from DQED, IGO = ', igo
+  WRITE(Ulog, '(a)' ) ' '
+  WRITE(Ulog, '(a)' ) '  Computed X:'
+  WRITE(Ulog, '(a)' ) ' '
+  WRITE(Ulog, '(g14.8)' ) x(1:nvars)
+  WRITE(Ulog, '(a)' ) ' '
+  WRITE(Ulog, '(a,g14.6)' ) '  L2 norm of the residual, FNORM = ', fnorm
+  WRITE(Ulog, '(a)' ) ' '
+  WRITE(Ulog, '(a)' ) 'Expected X:'
  
-  WRITE ( *, '(a)' ) ' '
-  WRITE ( *, '(a)' ) 'DQED_PRB2'
-  WRITE ( *, '(a)' ) '  Normal end of execution.'
+  WRITE(Ulog, '(a)' ) ' '
+  WRITE(Ulog, '(a)' ) 'DQED_PRB2'
+  WRITE(Ulog, '(a)' ) '  Normal end of execution.'
 
-  WRITE ( *, '(a)' ) ' '
-  CALL timestamp ( )
+  WRITE(Ulog, '(a)' ) ' '
   
   results = x
   g_1     = NINT(results(1))
@@ -5384,10 +5372,11 @@ END SUBROUTINE Case_18_hd
 SUBROUTINE Case_19(Total_char_freq, Total_harm_osc_freq, HR_params )
  
   USE heat_capacity_functions
-   
 
   IMPLICIT NONE
-  
+  INTEGER :: Ulog, igo
+  COMMON /Fio/ Ulog, igo
+
 ! Global Variables
   REAL(8), DIMENSION(7) :: CV_temps
   REAL(8), DIMENSION(7) :: cp_difference
@@ -5415,7 +5404,7 @@ SUBROUTINE Case_19(Total_char_freq, Total_harm_osc_freq, HR_params )
   REAL(8) :: bu(nvars+mcon)
   REAL(8) :: fj(ldfj,nvars+1)
   REAL(8) :: fnorm
-  INTEGER :: igo
+!  INTEGER :: igo
   INTEGER :: ind(nvars+mcon)
   INTEGER :: iopt(24)
   INTEGER :: iwork(liwork)
@@ -5432,7 +5421,6 @@ SUBROUTINE Case_19(Total_char_freq, Total_harm_osc_freq, HR_params )
   INTEGER :: N_vib, N_rot
  
  COMMON N_vib, N_rot, nu_low, nu_high, nu_mid, cp_difference, CV_temps
- CALL timestamp ( )
 
 ! Define the contraints on the target variables 
 
@@ -5492,25 +5480,24 @@ SUBROUTINE Case_19(Total_char_freq, Total_harm_osc_freq, HR_params )
 
   CALL dqed ( Case_19_hd, mequa, nvars, mcon, ind, bl, bu, x, fj, ldfj, &
     fnorm, igo, iopt, ropt, iwork, work )
-  WRITE ( *, '(a)' ) ' '
-  WRITE ( *, '(a)' ) ' CASE 19 Baby Yea!'
-  WRITE ( *, '(a)' ) ' '
-  WRITE ( *, '(a,i6)' ) '  Output flag from DQED, IGO = ', igo
-  WRITE ( *, '(a)' ) ' '
-  WRITE ( *, '(a)' ) '  Computed X:'
-  WRITE ( *, '(a)' ) ' '
-  WRITE ( *, '(g14.8)' ) x(1:nvars)
-  WRITE ( *, '(a)' ) ' '
-  WRITE ( *, '(a,g14.6)' ) '  L2 norm of the residual, FNORM = ', fnorm
-  WRITE ( *, '(a)' ) ' '
-  WRITE ( *, '(a)' ) 'Expected X:'
+  WRITE(Ulog, '(a)' ) ' '
+  WRITE(Ulog, '(a)' ) ' CASE 19 Baby Yea!'
+  WRITE(Ulog, '(a)' ) ' '
+  WRITE(Ulog, '(a,i6)' ) '  Output flag from DQED, IGO = ', igo
+  WRITE(Ulog, '(a)' ) ' '
+  WRITE(Ulog, '(a)' ) '  Computed X:'
+  WRITE(Ulog, '(a)' ) ' '
+  WRITE(Ulog, '(g14.8)' ) x(1:nvars)
+  WRITE(Ulog, '(a)' ) ' '
+  WRITE(Ulog, '(a,g14.6)' ) '  L2 norm of the residual, FNORM = ', fnorm
+  WRITE(Ulog, '(a)' ) ' '
+  WRITE(Ulog, '(a)' ) 'Expected X:'
  
-  WRITE ( *, '(a)' ) ' '
-  WRITE ( *, '(a)' ) 'DQED_PRB2'
-  WRITE ( *, '(a)' ) '  Normal end of execution.'
+  WRITE(Ulog, '(a)' ) ' '
+  WRITE(Ulog, '(a)' ) 'DQED_PRB2'
+  WRITE(Ulog, '(a)' ) '  Normal end of execution.'
 
-  WRITE ( *, '(a)' ) ' '
-  CALL timestamp ( )
+  WRITE(Ulog, '(a)' ) ' '
 
   results = x
   V_1  = results(1)
@@ -5597,9 +5584,10 @@ END SUBROUTINE Case_19_hd
 SUBROUTINE Case_20(Total_char_freq, Total_harm_osc_freq, HR_params  )
 
   USE heat_capacity_functions
-   
 
   IMPLICIT NONE
+  INTEGER :: Ulog, igo
+  COMMON /Fio/ Ulog, igo
   
 ! Global Variables
   REAL(8), DIMENSION(7) :: CV_temps
@@ -5630,7 +5618,7 @@ SUBROUTINE Case_20(Total_char_freq, Total_harm_osc_freq, HR_params  )
   REAL(8) :: bu(nvars+mcon)
   REAL(8) :: fj(ldfj,nvars+1)
   REAL(8) :: fnorm
-  INTEGER :: igo
+!  INTEGER :: igo
   INTEGER :: ind(nvars+mcon)
   INTEGER :: iopt(24)
   INTEGER :: iwork(liwork)
@@ -5647,7 +5635,6 @@ SUBROUTINE Case_20(Total_char_freq, Total_harm_osc_freq, HR_params  )
   INTEGER :: N_vib, N_rot
  
  COMMON N_vib, N_rot, nu_low, nu_high, nu_mid, cp_difference, CV_temps
- CALL timestamp ( )
 
 ! Define the contraints on the target variables 
 
@@ -5709,25 +5696,24 @@ SUBROUTINE Case_20(Total_char_freq, Total_harm_osc_freq, HR_params  )
 
   CALL dqed ( Case_20_hd, mequa, nvars, mcon, ind, bl, bu, x, fj, ldfj, &
     fnorm, igo, iopt, ropt, iwork, work )
-  WRITE ( *, '(a)' ) ' '
-  WRITE ( *, '(a)' ) ' CASE 20 Baby Yea!'
-  WRITE ( *, '(a)' ) ' '
-  WRITE ( *, '(a,i6)' ) '  Output flag from DQED, IGO = ', igo
-  WRITE ( *, '(a)' ) ' '
-  WRITE ( *, '(a)' ) '  Computed X:'
-  WRITE ( *, '(a)' ) ' '
-  WRITE ( *, '(g14.8)' ) x(1:nvars)
-  WRITE ( *, '(a)' ) ' '
-  WRITE ( *, '(a,g14.6)' ) '  L2 norm of the residual, FNORM = ', fnorm
-  WRITE ( *, '(a)' ) ' '
-  WRITE ( *, '(a)' ) 'Expected X:'
+  WRITE(Ulog, '(a)' ) ' '
+  WRITE(Ulog, '(a)' ) ' CASE 20 Baby Yea!'
+  WRITE(Ulog, '(a)' ) ' '
+  WRITE(Ulog, '(a,i6)' ) '  Output flag from DQED, IGO = ', igo
+  WRITE(Ulog, '(a)' ) ' '
+  WRITE(Ulog, '(a)' ) '  Computed X:'
+  WRITE(Ulog, '(a)' ) ' '
+  WRITE(Ulog, '(g14.8)' ) x(1:nvars)
+  WRITE(Ulog, '(a)' ) ' '
+  WRITE(Ulog, '(a,g14.6)' ) '  L2 norm of the residual, FNORM = ', fnorm
+  WRITE(Ulog, '(a)' ) ' '
+  WRITE(Ulog, '(a)' ) 'Expected X:'
  
-  WRITE ( *, '(a)' ) ' '
-  WRITE ( *, '(a)' ) 'DQED_PRB2'
-  WRITE ( *, '(a)' ) '  Normal end of execution.'
+  WRITE(Ulog, '(a)' ) ' '
+  WRITE(Ulog, '(a)' ) 'DQED_PRB2'
+  WRITE(Ulog, '(a)' ) '  Normal end of execution.'
 
-  WRITE ( *, '(a)' ) ' '
-  CALL timestamp ( )
+  WRITE(Ulog, '(a)' ) ' '
   results = x
 
   Theta_1  = results(1)
@@ -5816,9 +5802,10 @@ END SUBROUTINE Case_20_hd
 SUBROUTINE Case_21(Total_char_freq, Total_harm_osc_freq, HR_params )
 
   USE heat_capacity_functions
-   
 
   IMPLICIT NONE
+  INTEGER :: Ulog, igo
+  COMMON /Fio/ Ulog, igo
   
 ! Global Variables
   REAL(8), DIMENSION(7) :: CV_temps
@@ -5849,7 +5836,7 @@ SUBROUTINE Case_21(Total_char_freq, Total_harm_osc_freq, HR_params )
   REAL(8) :: bu(nvars+mcon)
   REAL(8) :: fj(ldfj,nvars+1)
   REAL(8) :: fnorm
-  INTEGER :: igo
+!  INTEGER :: igo
   INTEGER :: ind(nvars+mcon)
   INTEGER :: iopt(24)
   INTEGER :: iwork(liwork)
@@ -5866,8 +5853,6 @@ SUBROUTINE Case_21(Total_char_freq, Total_harm_osc_freq, HR_params )
   INTEGER :: N_vib, N_rot
 
  COMMON N_vib, N_rot, nu_low, nu_high, nu_mid, cp_difference, CV_temps
-
- CALL timestamp ( )
 
 ! Define the contraints on the target variables 
 
@@ -5928,25 +5913,24 @@ SUBROUTINE Case_21(Total_char_freq, Total_harm_osc_freq, HR_params )
 
   CALL dqed ( Case_21_hd, mequa, nvars, mcon, ind, bl, bu, x, fj, ldfj, &
     fnorm, igo, iopt, ropt, iwork, work )
-  WRITE ( *, '(a)' ) ' '
-  WRITE ( *, '(a)' ) ' CASE 21 Baby Yea!'
-  WRITE ( *, '(a)' ) ' '
-  WRITE ( *, '(a,i6)' ) '  Output flag from DQED, IGO = ', igo
-  WRITE ( *, '(a)' ) ' '
-  WRITE ( *, '(a)' ) '  Computed X:'
-  WRITE ( *, '(a)' ) ' '
-  WRITE ( *, '(g14.8)' ) x(1:nvars)
-  WRITE ( *, '(a)' ) ' '
-  WRITE ( *, '(a,g14.6)' ) '  L2 norm of the residual, FNORM = ', fnorm
-  WRITE ( *, '(a)' ) ' '
-  WRITE ( *, '(a)' ) 'Expected X:'
+  WRITE(Ulog, '(a)' ) ' '
+  WRITE(Ulog, '(a)' ) ' CASE 21 Baby Yea!'
+  WRITE(Ulog, '(a)' ) ' '
+  WRITE(Ulog, '(a,i6)' ) '  Output flag from DQED, IGO = ', igo
+  WRITE(Ulog, '(a)' ) ' '
+  WRITE(Ulog, '(a)' ) '  Computed X:'
+  WRITE(Ulog, '(a)' ) ' '
+  WRITE(Ulog, '(g14.8)' ) x(1:nvars)
+  WRITE(Ulog, '(a)' ) ' '
+  WRITE(Ulog, '(a,g14.6)' ) '  L2 norm of the residual, FNORM = ', fnorm
+  WRITE(Ulog, '(a)' ) ' '
+  WRITE(Ulog, '(a)' ) 'Expected X:'
  
-  WRITE ( *, '(a)' ) ' '
-  WRITE ( *, '(a)' ) 'DQED_PRB2'
-  WRITE ( *, '(a)' ) '  Normal end of execution.'
+  WRITE(Ulog, '(a)' ) ' '
+  WRITE(Ulog, '(a)' ) 'DQED_PRB2'
+  WRITE(Ulog, '(a)' ) '  Normal end of execution.'
 
-  WRITE ( *, '(a)' ) ' '
-  CALL timestamp ( )
+  WRITE(Ulog, '(a)' ) ' '
 
   results = x
   Theta_1  = results(1)
@@ -6044,9 +6028,10 @@ END SUBROUTINE Case_21_hd
 SUBROUTINE Case_22(Total_char_freq, Total_harm_osc_freq, HR_params )
 
   USE heat_capacity_functions
-   
 
   IMPLICIT NONE
+  INTEGER :: Ulog, igo
+  COMMON /Fio/ Ulog, igo
   
 ! Global Variables
   REAL(8), DIMENSION(7) :: CV_temps
@@ -6080,7 +6065,7 @@ SUBROUTINE Case_22(Total_char_freq, Total_harm_osc_freq, HR_params )
   REAL(8) :: bu(nvars+mcon)
   REAL(8) :: fj(ldfj,nvars+1)
   REAL(8) :: fnorm
-  INTEGER :: igo
+!  INTEGER :: igo
   INTEGER :: ind(nvars+mcon)
   INTEGER :: iopt(24)
   INTEGER :: iwork(liwork)
@@ -6097,7 +6082,6 @@ SUBROUTINE Case_22(Total_char_freq, Total_harm_osc_freq, HR_params )
   INTEGER :: N_vib, N_rot
  
  COMMON N_vib, N_rot, nu_low, nu_high, nu_mid, cp_difference, CV_temps
- CALL timestamp ( )
 
 ! Define the contraints on the target variables 
 
@@ -6158,25 +6142,24 @@ SUBROUTINE Case_22(Total_char_freq, Total_harm_osc_freq, HR_params )
 
   CALL dqed ( Case_22_hd, mequa, nvars, mcon, ind, bl, bu, x, fj, ldfj, &
     fnorm, igo, iopt, ropt, iwork, work )
-  WRITE ( *, '(a)' ) ' '
-  WRITE ( *, '(a)' ) ' CASE 22 Baby Yea!'
-  WRITE ( *, '(a)' ) ' '
-  WRITE ( *, '(a,i6)' ) '  Output flag from DQED, IGO = ', igo
-  WRITE ( *, '(a)' ) ' '
-  WRITE ( *, '(a)' ) '  Computed X:'
-  WRITE ( *, '(a)' ) ' '
-  WRITE ( *, '(g14.8)' ) x(1:nvars)
-  WRITE ( *, '(a)' ) ' '
-  WRITE ( *, '(a,g14.6)' ) '  L2 norm of the residual, FNORM = ', fnorm
-  WRITE ( *, '(a)' ) ' '
-  WRITE ( *, '(a)' ) 'Expected X:'
+  WRITE(Ulog, '(a)' ) ' '
+  WRITE(Ulog, '(a)' ) ' CASE 22 Baby Yea!'
+  WRITE(Ulog, '(a)' ) ' '
+  WRITE(Ulog, '(a,i6)' ) '  Output flag from DQED, IGO = ', igo
+  WRITE(Ulog, '(a)' ) ' '
+  WRITE(Ulog, '(a)' ) '  Computed X:'
+  WRITE(Ulog, '(a)' ) ' '
+  WRITE(Ulog, '(g14.8)' ) x(1:nvars)
+  WRITE(Ulog, '(a)' ) ' '
+  WRITE(Ulog, '(a,g14.6)' ) '  L2 norm of the residual, FNORM = ', fnorm
+  WRITE(Ulog, '(a)' ) ' '
+  WRITE(Ulog, '(a)' ) 'Expected X:'
  
-  WRITE ( *, '(a)' ) ' '
-  WRITE ( *, '(a)' ) 'DQED_PRB2'
-  WRITE ( *, '(a)' ) '  Normal end of execution.'
+  WRITE(Ulog, '(a)' ) ' '
+  WRITE(Ulog, '(a)' ) 'DQED_PRB2'
+  WRITE(Ulog, '(a)' ) '  Normal end of execution.'
 
-  WRITE ( *, '(a)' ) ' '
-  CALL timestamp ( )
+  WRITE(Ulog, '(a)' ) ' '
 
   results = x
   Theta_1  =      results(1)
@@ -6279,9 +6262,10 @@ END SUBROUTINE Case_22_hd
 SUBROUTINE Case_23(Total_char_freq, Total_harm_osc_freq, HR_params )
 
   USE heat_capacity_functions
-   
 
   IMPLICIT NONE
+  INTEGER :: Ulog, igo
+  COMMON /Fio/ Ulog, igo
 
 ! Global Variables
   REAL(8), DIMENSION(7) :: CV_temps
@@ -6314,7 +6298,7 @@ SUBROUTINE Case_23(Total_char_freq, Total_harm_osc_freq, HR_params )
   REAL(8) :: bu(nvars+mcon)
   REAL(8) :: fj(ldfj,nvars+1)
   REAL(8) :: fnorm
-  INTEGER :: igo
+!  INTEGER :: igo
   INTEGER :: ind(nvars+mcon)
   INTEGER :: iopt(24)
   INTEGER :: iwork(liwork)
@@ -6331,8 +6315,6 @@ SUBROUTINE Case_23(Total_char_freq, Total_harm_osc_freq, HR_params )
   INTEGER :: N_vib, N_rot
 
  COMMON N_vib, N_rot, nu_low, nu_high, nu_mid, cp_difference, CV_temps
-
-  CALL timestamp ( )
 
 ! Define the contraints on the target variables 
 
@@ -6396,25 +6378,24 @@ SUBROUTINE Case_23(Total_char_freq, Total_harm_osc_freq, HR_params )
   CALL dqed ( Case_23_hd, mequa, nvars, mcon, ind, bl, bu, x, fj, ldfj, &
     fnorm, igo, iopt, ropt, iwork, work )
 
-  WRITE ( *, '(a)' ) ' '
-  WRITE ( *, '(a)' ) ' CASE 23'
-  WRITE ( *, '(a)' ) ' '
-  WRITE ( *, '(a,i6)' ) '  Output flag from DQED, IGO = ', igo
-  WRITE ( *, '(a)' ) ' '
-  WRITE ( *, '(a)' ) '  Computed X:'
-  WRITE ( *, '(a)' ) ' '
-  WRITE ( *, '(g14.8)' ) x(1:nvars)
-  WRITE ( *, '(a)' ) ' '
-  WRITE ( *, '(a,g14.6)' ) '  L2 norm of the residual, FNORM = ', fnorm
-  WRITE ( *, '(a)' ) ' '
-  WRITE ( *, '(a)' ) 'Expected X:'
+  WRITE(Ulog, '(a)' ) ' '
+  WRITE(Ulog, '(a)' ) ' CASE 23'
+  WRITE(Ulog, '(a)' ) ' '
+  WRITE(Ulog, '(a,i6)' ) '  Output flag from DQED, IGO = ', igo
+  WRITE(Ulog, '(a)' ) ' '
+  WRITE(Ulog, '(a)' ) '  Computed X:'
+  WRITE(Ulog, '(a)' ) ' '
+  WRITE(Ulog, '(g14.8)' ) x(1:nvars)
+  WRITE(Ulog, '(a)' ) ' '
+  WRITE(Ulog, '(a,g14.6)' ) '  L2 norm of the residual, FNORM = ', fnorm
+  WRITE(Ulog, '(a)' ) ' '
+  WRITE(Ulog, '(a)' ) 'Expected X:'
  
-  WRITE ( *, '(a)' ) ' '
-  WRITE ( *, '(a)' ) 'DQED_PRB2'
-  WRITE ( *, '(a)' ) '  Normal end of execution.'
+  WRITE(Ulog, '(a)' ) ' '
+  WRITE(Ulog, '(a)' ) 'DQED_PRB2'
+  WRITE(Ulog, '(a)' ) '  Normal end of execution.'
 
-  WRITE ( *, '(a)' ) ' '
-  CALL timestamp ( )
+  WRITE(Ulog, '(a)' ) ' '
 
   results = x
   g_1      = NINT(results(1) )
@@ -6525,9 +6506,10 @@ END SUBROUTINE Case_23_hd
 SUBROUTINE Case_24(Total_char_freq, Total_harm_osc_freq, HR_params )
 
   USE heat_capacity_functions
-   
 
   IMPLICIT NONE
+  INTEGER :: Ulog, igo
+  COMMON /Fio/ Ulog, igo
 
 ! Global Variables
   REAL(8), DIMENSION(7) :: CV_temps
@@ -6558,7 +6540,7 @@ SUBROUTINE Case_24(Total_char_freq, Total_harm_osc_freq, HR_params )
   REAL(8) :: bu(nvars+mcon)
   REAL(8) :: fj(ldfj,nvars+1)
   REAL(8) :: fnorm
-  INTEGER :: igo
+!  INTEGER :: igo
   INTEGER :: ind(nvars+mcon)
   INTEGER :: iopt(24)
   INTEGER :: iwork(liwork)
@@ -6575,8 +6557,6 @@ SUBROUTINE Case_24(Total_char_freq, Total_harm_osc_freq, HR_params )
   INTEGER :: N_vib, N_rot
 
  COMMON N_vib, N_rot, nu_low, nu_high, nu_mid, cp_difference, CV_temps
-
-  CALL timestamp ( )
 
 ! Define the contraints on the target variables 
 
@@ -6640,25 +6620,24 @@ SUBROUTINE Case_24(Total_char_freq, Total_harm_osc_freq, HR_params )
   CALL dqed ( Case_24_hd, mequa, nvars, mcon, ind, bl, bu, x, fj, ldfj, &
     fnorm, igo, iopt, ropt, iwork, work )
 
-  WRITE ( *, '(a)' ) ' '
-  WRITE ( *, '(a)' ) ' CASE 24'
-  WRITE ( *, '(a)' ) ' '
-  WRITE ( *, '(a,i6)' ) '  Output flag from DQED, IGO = ', igo
-  WRITE ( *, '(a)' ) ' '
-  WRITE ( *, '(a)' ) '  Computed X:'
-  WRITE ( *, '(a)' ) ' '
-  WRITE ( *, '(g14.8)' ) x(1:nvars)
-  WRITE ( *, '(a)' ) ' '
-  WRITE ( *, '(a,g14.6)' ) '  L2 norm of the residual, FNORM = ', fnorm
-  WRITE ( *, '(a)' ) ' '
-  WRITE ( *, '(a)' ) 'Expected X:'
+  WRITE(Ulog, '(a)' ) ' '
+  WRITE(Ulog, '(a)' ) ' CASE 24'
+  WRITE(Ulog, '(a)' ) ' '
+  WRITE(Ulog, '(a,i6)' ) '  Output flag from DQED, IGO = ', igo
+  WRITE(Ulog, '(a)' ) ' '
+  WRITE(Ulog, '(a)' ) '  Computed X:'
+  WRITE(Ulog, '(a)' ) ' '
+  WRITE(Ulog, '(g14.8)' ) x(1:nvars)
+  WRITE(Ulog, '(a)' ) ' '
+  WRITE(Ulog, '(a,g14.6)' ) '  L2 norm of the residual, FNORM = ', fnorm
+  WRITE(Ulog, '(a)' ) ' '
+  WRITE(Ulog, '(a)' ) 'Expected X:'
  
-  WRITE ( *, '(a)' ) ' '
-  WRITE ( *, '(a)' ) 'DQED_PRB2'
-  WRITE ( *, '(a)' ) '  Normal end of execution.'
+  WRITE(Ulog, '(a)' ) ' '
+  WRITE(Ulog, '(a)' ) 'DQED_PRB2'
+  WRITE(Ulog, '(a)' ) '  Normal end of execution.'
 
-  WRITE ( *, '(a)' ) ' '
-  CALL timestamp ( )
+  WRITE(Ulog, '(a)' ) ' '
 
   results = x
   V_1  =      results(1)
@@ -6772,9 +6751,10 @@ END SUBROUTINE Case_24_hd
 SUBROUTINE Case_25(Total_char_freq, Total_harm_osc_freq, HR_params )
 
   USE heat_capacity_functions
-   
 
   IMPLICIT NONE
+  INTEGER :: Ulog, igo
+  COMMON /Fio/ Ulog, igo
 
 ! Global Variables
   REAL(8), DIMENSION(7) :: CV_temps
@@ -6806,7 +6786,7 @@ SUBROUTINE Case_25(Total_char_freq, Total_harm_osc_freq, HR_params )
   REAL(8) :: bu(nvars+mcon)
   REAL(8) :: fj(ldfj,nvars+1)
   REAL(8) :: fnorm
-  INTEGER :: igo
+!  INTEGER :: igo
   INTEGER :: ind(nvars+mcon)
   INTEGER :: iopt(24)
   INTEGER :: iwork(liwork)
@@ -6823,8 +6803,6 @@ SUBROUTINE Case_25(Total_char_freq, Total_harm_osc_freq, HR_params )
   INTEGER :: N_vib, N_rot
 
  COMMON N_vib, N_rot, nu_low, nu_high, nu_mid, cp_difference, CV_temps
-
-  CALL timestamp ( )
 
 ! Define the contraints on the target variables 
 
@@ -6888,25 +6866,24 @@ SUBROUTINE Case_25(Total_char_freq, Total_harm_osc_freq, HR_params )
   CALL dqed ( Case_25_hd, mequa, nvars, mcon, ind, bl, bu, x, fj, ldfj, &
     fnorm, igo, iopt, ropt, iwork, work )
 
-  WRITE ( *, '(a)' ) ' '
-  WRITE ( *, '(a)' ) ' CASE 25'
-  WRITE ( *, '(a)' ) ' '
-  WRITE ( *, '(a,i6)' ) '  Output flag from DQED, IGO = ', igo
-  WRITE ( *, '(a)' ) ' '
-  WRITE ( *, '(a)' ) '  Computed X:'
-  WRITE ( *, '(a)' ) ' '
-  WRITE ( *, '(g14.8)' ) x(1:nvars)
-  WRITE ( *, '(a)' ) ' '
-  WRITE ( *, '(a,g14.6)' ) '  L2 norm of the residual, FNORM = ', fnorm
-  WRITE ( *, '(a)' ) ' '
-  WRITE ( *, '(a)' ) 'Expected X:'
+  WRITE(Ulog, '(a)' ) ' '
+  WRITE(Ulog, '(a)' ) ' CASE 25'
+  WRITE(Ulog, '(a)' ) ' '
+  WRITE(Ulog, '(a,i6)' ) '  Output flag from DQED, IGO = ', igo
+  WRITE(Ulog, '(a)' ) ' '
+  WRITE(Ulog, '(a)' ) '  Computed X:'
+  WRITE(Ulog, '(a)' ) ' '
+  WRITE(Ulog, '(g14.8)' ) x(1:nvars)
+  WRITE(Ulog, '(a)' ) ' '
+  WRITE(Ulog, '(a,g14.6)' ) '  L2 norm of the residual, FNORM = ', fnorm
+  WRITE(Ulog, '(a)' ) ' '
+  WRITE(Ulog, '(a)' ) 'Expected X:'
  
-  WRITE ( *, '(a)' ) ' '
-  WRITE ( *, '(a)' ) 'DQED_PRB2'
-  WRITE ( *, '(a)' ) '  Normal end of execution.'
+  WRITE(Ulog, '(a)' ) ' '
+  WRITE(Ulog, '(a)' ) 'DQED_PRB2'
+  WRITE(Ulog, '(a)' ) '  Normal end of execution.'
 
-  WRITE ( *, '(a)' ) ' '
-  CALL timestamp ( )
+  WRITE(Ulog, '(a)' ) ' '
 
   results = x
   V_1     =      results(1)
@@ -7011,6 +6988,8 @@ SUBROUTINE Case_26(Total_char_freq, Total_harm_osc_freq, HR_params )
   USE heat_capacity_functions
 
   IMPLICIT NONE
+  INTEGER :: Ulog, igo
+  COMMON /Fio/ Ulog, igo
 
 ! Global Variables
   REAL(8), DIMENSION(7) :: CV_temps
@@ -7040,7 +7019,7 @@ SUBROUTINE Case_26(Total_char_freq, Total_harm_osc_freq, HR_params )
   REAL(8) :: bu(nvars+mcon)
   REAL(8) :: fj(ldfj,nvars+1)
   REAL(8) :: fnorm
-  INTEGER :: igo
+!  INTEGER :: igo
   INTEGER :: ind(nvars+mcon)
   INTEGER :: iopt(24)
   INTEGER :: iwork(liwork)
@@ -7057,8 +7036,6 @@ SUBROUTINE Case_26(Total_char_freq, Total_harm_osc_freq, HR_params )
   INTEGER :: N_vib, N_rot, i
 
  COMMON N_vib, N_rot, nu_low, nu_high, nu_mid, cp_difference, CV_temps
-
-  CALL timestamp ( )
 
 ! Define the contraints on the target variables 
 
@@ -7122,25 +7099,24 @@ SUBROUTINE Case_26(Total_char_freq, Total_harm_osc_freq, HR_params )
   CALL dqed ( Case_26_hd, mequa, nvars, mcon, ind, bl, bu, x, fj, ldfj, &
     fnorm, igo, iopt, ropt, iwork, work )
 
-  WRITE ( *, '(a)' ) ' '
-  WRITE ( *, '(a)' ) ' CASE 26'
-  WRITE ( *, '(a)' ) ' '
-  WRITE ( *, '(a,i6)' ) '  Output flag from DQED, IGO = ', igo
-  WRITE ( *, '(a)' ) ' '
-  WRITE ( *, '(a)' ) '  Computed X:'
-  WRITE ( *, '(a)' ) ' '
-  WRITE ( *, '(g14.8)' ) x(1:nvars)
-  WRITE ( *, '(a)' ) ' '
-  WRITE ( *, '(a,g14.6)' ) '  L2 norm of the residual, FNORM = ', fnorm
-  WRITE ( *, '(a)' ) ' '
-  WRITE ( *, '(a)' ) 'Expected X:'
+  WRITE(Ulog, '(a)' ) ' '
+  WRITE(Ulog, '(a)' ) ' CASE 26'
+  WRITE(Ulog, '(a)' ) ' '
+  WRITE(Ulog, '(a,i6)' ) '  Output flag from DQED, IGO = ', igo
+  WRITE(Ulog, '(a)' ) ' '
+  WRITE(Ulog, '(a)' ) '  Computed X:'
+  WRITE(Ulog, '(a)' ) ' '
+  WRITE(Ulog, '(g14.8)' ) x(1:nvars)
+  WRITE(Ulog, '(a)' ) ' '
+  WRITE(Ulog, '(a,g14.6)' ) '  L2 norm of the residual, FNORM = ', fnorm
+  WRITE(Ulog, '(a)' ) ' '
+  WRITE(Ulog, '(a)' ) 'Expected X:'
  
-  WRITE ( *, '(a)' ) ' '
-  WRITE ( *, '(a)' ) 'DQED_PRB2'
-  WRITE ( *, '(a)' ) '  Normal end of execution.'
+  WRITE(Ulog, '(a)' ) ' '
+  WRITE(Ulog, '(a)' ) 'DQED_PRB2'
+  WRITE(Ulog, '(a)' ) '  Normal end of execution.'
 
-  WRITE ( *, '(a)' ) ' '
-  CALL timestamp ( )
+  WRITE(Ulog, '(a)' ) ' '
 
   results = x
   Theta_1 =      results(1)
@@ -7248,7 +7224,8 @@ END SUBROUTINE Case_26_hd
 SUBROUTINE assign_cases(N_rot, N_vib, Total_char_freq, Total_harm_osc_freq, HR_params )
 
 IMPLICIT NONE
-
+  INTEGER :: Ulog, igo
+  COMMON /Fio/ Ulog, igo
  INTEGER, INTENT(IN):: N_vib
  INTEGER, INTENT(IN) :: N_rot
 
@@ -7259,48 +7236,48 @@ IMPLICIT NONE
  REAL(8), DIMENSION(:,:), INTENT(OUT) :: HR_params
 
  IF (N_rot<0) THEN
-     WRITE(*,*) 'ERROR!  Number of rotors is negative!'
+     WRITE(Ulog,*) 'ERROR!  Number of rotors is negative!'
    
   ! IF THERE ARE NO ROTORS, THEN CALL CASES 0 THROUGH 7
   ELSE IF (N_rot==0) THEN
 
      IF (N_vib<0) THEN
-        WRITE(*,*) 'ERROR!  Number of unknown harmonic oscillator frequencies &
+        WRITE(Ulog,*) 'ERROR!  Number of unknown harmonic oscillator frequencies &
                     &is negative!'
         
      ELSE IF (N_Vib==0) THEN
-        WRITE(*,*) 'CASE 0'
+        WRITE(Ulog,*) 'CASE 0'
         
      ELSE IF (N_vib==1) THEN
-        WRITE(*,*) 'CASE 1'
+        WRITE(Ulog,*) 'CASE 1'
         CALL Case_1(Total_char_freq, Total_harm_osc_freq, HR_params )
         
      ELSE IF (N_vib==2) THEN
-        WRITE(*,*) 'CASE 2'
+        WRITE(Ulog,*) 'CASE 2'
         CALL Case_2(Total_char_freq, Total_harm_osc_freq, HR_params )
         
      ELSE IF (N_vib==3) THEN
-        WRITE(*,*) 'CASE 3'
+        WRITE(Ulog,*) 'CASE 3'
         CALL Case_3(Total_char_freq, Total_harm_osc_freq, HR_params )
         
      ELSE IF (N_vib==4) THEN
-        WRITE(*,*) 'CASE 4'
+        WRITE(Ulog,*) 'CASE 4'
         CALL Case_4(Total_char_freq, Total_harm_osc_freq, HR_params )
        
      ELSE IF (N_vib==5) THEN
-        WRITE(*,*) 'CASE 5'
+        WRITE(Ulog,*) 'CASE 5'
         CALL Case_5(Total_char_freq, Total_harm_osc_freq, HR_params )
         
      ELSE IF (N_vib==6) THEN
-        WRITE(*,*) 'CASE 6'
+        WRITE(Ulog,*) 'CASE 6'
         CALL Case_6(Total_char_freq, Total_harm_osc_freq, HR_params )
 
      ELSE IF (N_vib>=7) THEN
-        WRITE(*,*) 'CASE 7'
+        WRITE(Ulog,*) 'CASE 7'
         CALL Case_7(Total_char_freq, Total_harm_osc_freq, HR_params )
   
      ELSE
-        WRITE(*,*) 'Something is wrong!'
+        WRITE(Ulog,*) 'Something is wrong!'
         
      END IF
 
@@ -7308,35 +7285,35 @@ IMPLICIT NONE
   ELSE IF (N_rot==1) THEN
 
      IF (N_vib<0) THEN
-        WRITE(*,*) 'ERROR!  Number of unknown harmonic oscillator frequencies &
+        WRITE(Ulog,*) 'ERROR!  Number of unknown harmonic oscillator frequencies &
                     &is negative!'
         
      ELSE IF (N_Vib==0) THEN
-        WRITE(*,*) 'CASE 8'
+        WRITE(Ulog,*) 'CASE 8'
         CALL Case_8(Total_char_freq, Total_harm_osc_freq, HR_params )
         
      ELSE IF (N_vib==1) THEN
-        WRITE(*,*) 'CASE 9'
+        WRITE(Ulog,*) 'CASE 9'
         CALL Case_9(Total_char_freq, Total_harm_osc_freq, HR_params )
         
      ELSE IF (N_vib==2) THEN
-        WRITE(*,*) 'CASE 10'
+        WRITE(Ulog,*) 'CASE 10'
         CALL Case_10(Total_char_freq, Total_harm_osc_freq, HR_params )
         
      ELSE IF (N_vib==3) THEN
-        WRITE(*,*) 'CASE 11'
+        WRITE(Ulog,*) 'CASE 11'
         CALL Case_11(Total_char_freq, Total_harm_osc_freq, HR_params )
         
      ELSE IF (N_vib==4) THEN
-        WRITE(*,*) 'CASE 12'
+        WRITE(Ulog,*) 'CASE 12'
         CALL Case_12(Total_char_freq, Total_harm_osc_freq, HR_params )
         
      ELSE IF (N_vib>=5) THEN
-        WRITE(*,*) 'CASE 13'
+        WRITE(Ulog,*) 'CASE 13'
         CALL Case_13(Total_char_freq, Total_harm_osc_freq, HR_params )
         
      ELSE
-        WRITE(*,*) 'Something is wrong!'
+        WRITE(Ulog,*) 'Something is wrong!'
         
      END IF
   
@@ -7344,31 +7321,31 @@ IMPLICIT NONE
   ELSE IF (N_rot==2) THEN
 
      IF (N_vib<0) THEN
-        WRITE(*,*) 'ERROR!  Number of unknown harmonic oscillator frequencies &
+        WRITE(Ulog,*) 'ERROR!  Number of unknown harmonic oscillator frequencies &
                     &is negative!'
         
      ELSE IF (N_Vib==0) THEN
-        WRITE(*,*) 'CASE 14'
+        WRITE(Ulog,*) 'CASE 14'
         CALL Case_14(Total_char_freq, Total_harm_osc_freq, HR_params )
 
      ELSE IF (N_vib==1) THEN
-        WRITE(*,*) 'CASE 15'
+        WRITE(Ulog,*) 'CASE 15'
         CALL Case_15(Total_char_freq, Total_harm_osc_freq, HR_params )
 
      ELSE IF (N_vib==2) THEN
-        WRITE(*,*) 'CASE 16'
+        WRITE(Ulog,*) 'CASE 16'
         CALL Case_16(Total_char_freq, Total_harm_osc_freq, HR_params )
        
      ELSE IF (N_vib==3) THEN
-        WRITE(*,*) 'CASE 17'
+        WRITE(Ulog,*) 'CASE 17'
         CALL Case_17(Total_char_freq, Total_harm_osc_freq, HR_params )
         
      ELSE IF (N_vib>=4) THEN
-        WRITE(*,*) 'CASE 18'
+        WRITE(Ulog,*) 'CASE 18'
         CALL Case_18(Total_char_freq, Total_harm_osc_freq, HR_params )
         
      ELSE
-        WRITE(*,*) 'Something is wrong!'
+        WRITE(Ulog,*) 'Something is wrong!'
         
      END IF
 
@@ -7376,31 +7353,31 @@ IMPLICIT NONE
   ELSE IF (N_rot==3) THEN
 
      IF (N_vib<0) THEN
-        WRITE(*,*) 'ERROR!  Number of unknown harmonic oscillator frequencies &
+        WRITE(Ulog,*) 'ERROR!  Number of unknown harmonic oscillator frequencies &
                     &is negative!'
         
      ELSE IF (N_Vib==0) THEN
-        WRITE(*,*) 'CASE 19'
+        WRITE(Ulog,*) 'CASE 19'
         CALL Case_19(Total_char_freq, Total_harm_osc_freq, HR_params )
 
      ELSE IF (N_vib==1) THEN
-        WRITE(*,*) 'CASE 20'
+        WRITE(Ulog,*) 'CASE 20'
         CALL Case_20(Total_char_freq, Total_harm_osc_freq, HR_params )
                
      ELSE IF (N_vib==2) THEN
-        WRITE(*,*) 'CASE 21'
+        WRITE(Ulog,*) 'CASE 21'
         CALL Case_21(Total_char_freq, Total_harm_osc_freq, HR_params )
 
      ELSE IF (N_vib==3) THEN
-        WRITE(*,*) 'CASE 22'
+        WRITE(Ulog,*) 'CASE 22'
         CALL Case_22(Total_char_freq, Total_harm_osc_freq, HR_params )
 
      ELSE IF (N_vib>=4) THEN
-        WRITE(*,*) 'CASE 23'
+        WRITE(Ulog,*) 'CASE 23'
         CALL Case_23(Total_char_freq, Total_harm_osc_freq, HR_params )
     
      ELSE
-        WRITE(*,*) 'Something is wrong!'
+        WRITE(Ulog,*) 'Something is wrong!'
         
      END IF
 
@@ -7408,36 +7385,36 @@ IMPLICIT NONE
   ELSE IF (N_rot>=4) THEN
 
      IF (N_vib<0) THEN
-        WRITE(*,*) 'ERROR!  Number of unknown harmonic oscillator frequencies &
+        WRITE(Ulog,*) 'ERROR!  Number of unknown harmonic oscillator frequencies &
                     &is negative!'
         
      ELSE IF (N_Vib==0) THEN
-        WRITE(*,*) 'CASE 24'
+        WRITE(Ulog,*) 'CASE 24'
         CALL Case_24(Total_char_freq, Total_harm_osc_freq, HR_params )
 
      ELSE IF (N_vib==1) THEN
-        WRITE(*,*) 'CASE 25'
+        WRITE(Ulog,*) 'CASE 25'
         CALL Case_25(Total_char_freq, Total_harm_osc_freq, HR_params )
         
      ELSE IF (N_vib==2) THEN
-        WRITE(*,*) 'CASE 26'
+        WRITE(Ulog,*) 'CASE 26'
         CALL Case_26(Total_char_freq, Total_harm_osc_freq, HR_params )
         
      ELSE IF (N_vib==3) THEN
-        WRITE(*,*) 'CASE 22'
+        WRITE(Ulog,*) 'CASE 22'
         CALL Case_22(Total_char_freq, Total_harm_osc_freq, HR_params )
         
      ELSE IF (N_vib>=4) THEN
-        WRITE(*,*) 'CASE 23'
+        WRITE(Ulog,*) 'CASE 23'
         CALL Case_23(Total_char_freq, Total_harm_osc_freq, HR_params )
         
      ELSE
-        WRITE(*,*) 'Something is wrong!'
+        WRITE(Ulog,*) 'Something is wrong!'
         
      END IF
 
   ELSE 
-     WRITE(*,*) 'Something is wrong!'
+     WRITE(Ulog,*) 'Something is wrong!'
   END IF
 
 
@@ -7458,6 +7435,9 @@ MODULE Open_stuff
 CONTAINS
 
 SUBROUTINE read_bonds(data, bond_info, bond_degeneracy)
+
+  INTEGER :: Ulog, igo
+  COMMON /Fio/ Ulog, igo
 
   INTEGER :: RsCH3, RdCH2, CtCH, RSCH2sR, CdCHsR, Aldehyde,Cumulene
   INTEGER :: Ketene, CtCsR, RsCHsR2, CdCsR2, Ketone, RsCsR3
@@ -7531,7 +7511,7 @@ Bond_degeneracy =  8*RsCH3 + 5*RdCH2 + 3*CtCH + 7*RSCH2sR + 5*CdCHsR + &
                    2*Alcohol + 1*Ether + 4*ROOH + 2*ROOR + 2*Peroxy + &
                    2*Rings
 
-WRITE(*,*) 'degeneracy = ', Bond_degeneracy
+WRITE(Ulog,*) 'degeneracy = ', Bond_degeneracy
   
 
   bond_info(1)  = RsCH3
@@ -7564,14 +7544,15 @@ WRITE(*,*) 'degeneracy = ', Bond_degeneracy
 END SUBROUTINE read_bonds
 !-----------------------------------------------------------------------------
 
-SUBROUTINE Calculate_RRHO_HR_params(input_file, output_file )
+SUBROUTINE Calculate_RRHO_HR_params(Uin, Uout )
 
   USE heat_capacity_functions
   USE Cases
   USE frequencies
 
 IMPLICIT NONE
-
+  INTEGER :: Ulog, igo
+  COMMON /Fio/ Ulog, igo
 ! Global Variables
   REAL(8), DIMENSION(7) :: CV_temps 
   REAL(8) :: R 
@@ -7601,12 +7582,17 @@ IMPLICIT NONE
   REAL(8) ::  nu_high
 
  ! These variables are used to open the file
-  INTEGER :: OpenStatus
-  CHARACTER(20) :: input_file
-  CHARACTER(20) :: output_file
+  INTEGER :: Uin  ! input file unit number
+  INTEGER :: Uout ! output file unit number
 
+  ! These variables are just used to calculate the running time. FEEL FREE TO REMOVE
+  CHARACTER(10) :: time
+  CHARACTER(8) :: date
+  CHARACTER(5) :: zone
+  INTEGER, DIMENSION(8) :: start_value, end_value
+  
 
-  ! these variables are set to the common block.
+  ! These variables are set to the common block.
   ! They are required by the fitting routine within DQED
   COMMON N_vib, N_rot, nu_low, nu_high, nu_mid, cp_difference, CV_temps
 
@@ -7616,12 +7602,22 @@ IMPLICIT NONE
   nu_mid = 150.0
   nu_high = 300.0
 
-  ! Open in the input file, read everything, close it back up.
-  open (UNIT = 12, FILE = input_file, STATUS = 'OLD', & 
-       ACTION = 'READ', IOSTAT = OpenStatus)
-  READ (12,*) cp_data, data
-  CLOSE(12)
-  
+  ! Read everything from the input
+  READ (Uin,*,END=9998) cp_data, data
+ ! WRITE (0,*) "cp_data is ",cp_data
+ ! WRITE (0,'(A,28I3)') "data is ",data
+
+! The program may pause at the previous line until it is given more data.
+! Now that we have some data to start processing,
+! we can start the clock and open the log file.
+
+  ! Feel free to cut this.  I use it to determine how long the code runs.  
+  CALL  date_and_time(date, time, zone, start_value)
+
+  ! Open the debug log file
+  ! use /dev/null to silence
+  open (UNIT=Ulog, FILE='frankie.log')
+    
   ! call the subroutine which separates the data info and calculates
   ! how many RRHO frequencies it can determine from the structure
   call read_bonds(data, bond_info,  degeneracy)
@@ -7642,31 +7638,31 @@ IMPLICIT NONE
   ! below the subroutine calc_predicted_freq.
   ! Determine whether the total number of vibrational models is 3N-5 or 3N-6
   IF (linearity<0) THEN
-     WRITE(*,*) 'ERROR!  Linearity is less than zero!'
+     WRITE(Ulog,*) 'ERROR!  Linearity is less than zero!'
   ELSE IF (linearity==0) THEN
-     WRITE(*,*) 'Linear molecule'
+     WRITE(Ulog,*) 'Linear molecule'
      trans_rot_cp_to_cv = 3.5
      N_vib = 3 * (N_atoms) - 5 - (N_rot) - (degeneracy)
      IF (N_vib < 0) THEN
-        WRITE(*,*) 'Something is wrong.  The system is over specified.'
-        WRITE(*,*) 'Either reduce the number of rotors or reduce the number of bond types.'
-        WRITE(*,*) 'Program will now exit to avoid crashing.'
+        WRITE(Ulog,*) 'Something is wrong.  The system is over specified.'
+        WRITE(Ulog,*) 'Either reduce the number of rotors or reduce the number of bond types.'
+        WRITE(Ulog,*) 'Program will now exit to avoid crashing.'
         STOP
      ENDIF
      ALLOCATE( Total_harm_osc_freq(3 * (N_atoms) - 5 - (N_rot) ) )
   ELSE IF (linearity==1) THEN
-     WRITE(*,*) 'Nonlinear molecule'
+     WRITE(Ulog,*) 'Nonlinear molecule'
      trans_rot_cp_to_cv = 4.0
      N_vib = 3 * (N_atoms) - 6 - (N_rot) - (degeneracy)
      IF (N_vib < 0) THEN
-        WRITE(*,*) 'Something is wrong.  The system is over specified.'
-        WRITE(*,*) 'Either reduce the number of rotors or reduce the number of bond types.'
-        WRITE(*,*) 'Program will now exit to avoid crashing.'
+        WRITE(Ulog,*) 'Something is wrong.  The system is over specified.'
+        WRITE(Ulog,*) 'Either reduce the number of rotors or reduce the number of bond types.'
+        WRITE(Ulog,*) 'Program will now exit to avoid crashing.'
         STOP
      ENDIF
      ALLOCATE( Total_harm_osc_freq(3 * (N_atoms) - 6 - (N_rot) ) )
   ELSE
-     WRITE(*,*) 'ERROR!  Linearity greater than one!'
+     WRITE(Ulog,*) 'ERROR!  Linearity greater than one!'
   END IF
   
 
@@ -7723,41 +7719,54 @@ IMPLICIT NONE
 
 
   ! WRITE EVERYTHING TO THE OUTPUT FILE
-  ! open the file
-  open (UNIT = 22, FILE = output_file)
 
   ! Write the number of atoms, internal rotors, and the linearity
-  WRITE(22,*) N_atoms
-  WRITE(22,*) N_rot
-  WRITE(22,*) linearity
+  WRITE(Uout,*) N_atoms
+  WRITE(Uout,*) N_rot
+  WRITE(Uout,*) linearity
   
   ! Write the characteristic RRHO frequencies determined by the structure
-  WRITE(22,*) ''
+  WRITE(Uout,*) ''
   DO i = 1,size(Total_predicted_freq)
-     WRITE(22,*) Total_predicted_freq(i)
+     WRITE(Uout,*) Total_predicted_freq(i)
   ENDDO
-  WRITE(22,*) ''
+  WRITE(Uout,*) ''
 
   ! Write the additional RRHO frequencies determined by the heat capacity
-  WRITE(22,*) ''
+  WRITE(Uout,*) ''
   DO i = (size(Total_predicted_freq)+1), size(Total_harm_osc_freq)
-     WRITE(22,*) Total_harm_osc_freq(i)
+     WRITE(Uout,*) Total_harm_osc_freq(i)
   ENDDO
-  WRITE(22,*) ''
+  WRITE(Uout,*) ''
 
   ! Write the hindered rotor frequencies and barrier heights
   DO i = 1,N_rot
-     WRITE(22,*) HR_params(i,:)
+     WRITE(Uout,*) HR_params(i,:)
   ENDDO
-  WRITE(22,*) ''
-  
-  ! Close the output file
-  CLOSE(22)
+  WRITE(Uout,*) ''
 
   ! Deallocate what's left open
   DEALLOCATE( Total_harm_osc_freq )
   DEALLOCATE(Total_predicted_freq )
   DEALLOCATE( HR_params )
+
+! Feel free to cut the next five lines - they are just for calculating run time.
+  CALL  date_and_time(date, time, zone, end_value)
+  WRITE(Ulog,*) ''
+  WRITE(Ulog,70) (end_value(5) - start_value(5)),  (end_value(6) - start_value(6)), &
+       (end_value(7) - start_value(7)),  (end_value(8) - start_value(8))
+70 FORMAT('Total computation time is: ',I2.2,' hrs, ',I2.2, ' min, ',I2.2, ' s, ',I4.4 ,' ms')  
+! Close the debug log
+  CLOSE(Ulog)
+  RETURN
+  
+9998 CONTINUE
+  WRITE(0,*) 'End of input stream.'
+  ! Close the input/output file units
+  CLOSE(Uin)
+  CLOSE(Uout)
+  CLOSE(Ulog)
+  STOP
 
 END SUBROUTINE Calculate_RRHO_HR_params
 
@@ -7780,36 +7789,30 @@ PROGRAM main
   ! These variables are for the input and output filenames
   CHARACTER(20) :: input_file
   CHARACTER(20) :: output_file
-  
-  ! Fluffy stuff  FEEL FREE TO REMOVE
-  CHARACTER(10) :: time
-  CHARACTER(8) :: date
-  CHARACTER(5) :: zone
-  INTEGER, DIMENSION(8) :: start_value, end_value
+    
+  ! Input/output file unit numbers
+  INTEGER :: Uin
+  INTEGER :: Uout
+  INTEGER :: Ulog, igo
+  COMMON /Fio/ Ulog, igo
 
+! Should be getting these unit numbers from iso_fortran_env module
+! See http://stackoverflow.com/questions/8508590/stderr-in-fortran90
+  Uin = 5
+  Uout = 6
+  Ulog = 1
 
-! You can change this so that it will read the names from the command like.
-! It is probably more useful that way.
-!  READ(*,*) input_file, output_file
-  input_file = 'dat'
-  output_file = 'rho_input'
-
-! Feel free to cut this.  I use it to determine how long the code runs.  
-  CALL  date_and_time(date, time, zone, start_value)
-  
+1234 CONTINUE
+  igo = -1
 ! This is the command that calls the main program.
-  CALL Calculate_RRHO_HR_params(input_file, output_file)
-
-! Ditto for the next five lines.  Cut them.
-  CALL  date_and_time(date, time, zone, end_value)
-  WRITE(*,*) ''
-  WRITE(*,70) (end_value(5) - start_value(5)),  (end_value(6) - start_value(6)), &
-       (end_value(7) - start_value(7)),  (end_value(8) - start_value(8))
-70 FORMAT('Total computation time is: ',I2.2,' hrs, ',I2.2, ' min, ',I2.2, ' s, ',I4.4 ,' ms')  
+  CALL Calculate_RRHO_HR_params(Uin, Uout)
+  
+  WRITE(Uout, '(a,i6)' ) 'Output flag from DQED, IGO = ', igo
+  WRITE(Uout,*) 'FRANKIE_COMPLETED_ONE_ITERATION'
+  FLUSH(Uout)
+  GOTO 1234
 
   STOP
 
 END PROGRAM main
-
-
 
