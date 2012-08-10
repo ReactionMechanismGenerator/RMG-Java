@@ -1834,7 +1834,7 @@ public class ReactionModelGenerator {
 			while (iter.hasNext()){
 				int i=1;
 				Species spe = (Species) iter.next();
-				coreSpecies = coreSpecies + spe.getChemkinName() + " " + spe.getInChI() + "\n"+spe.getChemGraph().toString(i)+"\n\n";
+				coreSpecies = coreSpecies + spe.getChemkinName() + " " + spe.getChemGraph().getModifiedInChIAnew() + "\n"+spe.getChemGraph().toString(i)+"\n\n";
 			}
 		} else {
 			while (iter.hasNext()){
