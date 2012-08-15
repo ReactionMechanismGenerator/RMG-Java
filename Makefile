@@ -104,6 +104,21 @@ dirs:
 	mkdir -p $(BUILDDIR)
 	mkdir -p $(BINDIR)
 
+
+# GET AND BUILD INCHI SUPPORT
+inchi: $(BINDIR)/cInChI-1
+
+$(BINDIR)/cInChI-1: $(BUILDDIR)/InChI-1-software-1-02-beta
+	make -C $(BUILDDIR)/InChI-1-software-1-02-beta/INCHI_API/gcc_makefile
+	cp $(BUILDDIR)/InChI-1-software-1-02-beta/INCHI_API/gcc_makefile/cInChI-1 $(BINDIR)/
+
+$(BUILDDIR)/InChI-1-software-1-02-beta: $(BUILDDIR)/inchi102b.zip
+	cd $(BUILDDIR); unzip inchi102b.zip
+
+$(BUILDDIR)/inchi102b.zip:
+	cd $(BUILDDIR); wget http://old.iupac.org/inchi/download/inchi102b.zip
+# END OF INCHI SUPPORT
+
 clean:
 	make -C $(SOURCEDIR)/fame clean SOURCEDIR=$(SOURCEDIR)/fame BUILDDIR=$(BUILDDIR)/fame BINDIR=$(BINDIR) 
 	make -C $(SOURCEDIR)/frankie clean SOURCEDIR=$(SOURCEDIR)/frankie BUILDDIR=$(BUILDDIR)/frankie BINDIR=$(BINDIR) 
@@ -143,4 +158,5 @@ help:
 	@echo "     daspk     to make daspk, the diff. eq. solver with sensitivity"
 	@echo "*    GATPFit   to make GATPFit"
 	@echo "*    RMG       to make RMG"
+	@echo "     inchi     to get and make InChI support (attempts to download from iupac)"
 	@echo ""
