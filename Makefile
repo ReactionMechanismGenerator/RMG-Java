@@ -77,7 +77,7 @@ fortran: dirs fame frankie GATPFit dassl
 all_fortran: dirs fame frankie GATPFit dassl daspk
 
 # You can also build everything
-all: dirs fame frankie GATPFit dassl daspk RMG
+all: dirs fame frankie GATPFit dassl daspk RMG inchi symmetry
 
 RMG: dirs 
 	mkdir -p $(BUILDDIR)/RMG
