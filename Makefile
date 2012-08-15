@@ -119,6 +119,19 @@ $(BUILDDIR)/inchi102b.zip:
 	cd $(BUILDDIR); wget http://old.iupac.org/inchi/download/inchi102b.zip
 # END OF INCHI SUPPORT
 
+# GET AND BUILD SYMMETRY
+symmetry: $(BINDIR)/SYMMETRY.EXE
+
+$(BINDIR)/SYMMETRY.EXE: $(BUILDDIR)/symmetry/symmetry.c
+	cd $(BUILDDIR)/symmetry/; cc -o $(BINDIR)/SYMMETRY.EXE -O3 -ansi -Wall symmetry.c -lm
+
+$(BUILDDIR)/symmetry/symmetry.c: $(BUILDDIR)/symmetry.zip
+	cd $(BUILDDIR); unzip symmetry.zip -d symmetry
+
+$(BUILDDIR)/symmetry.zip:
+	cd $(BUILDDIR); wget http://www.cobalt.chem.ucalgary.ca/ps/symmetry/symmetry.zip
+# END OF SYMMETRY SUPPORT
+
 clean:
 	make -C $(SOURCEDIR)/fame clean SOURCEDIR=$(SOURCEDIR)/fame BUILDDIR=$(BUILDDIR)/fame BINDIR=$(BINDIR) 
 	make -C $(SOURCEDIR)/frankie clean SOURCEDIR=$(SOURCEDIR)/frankie BUILDDIR=$(BUILDDIR)/frankie BINDIR=$(BINDIR) 
@@ -159,4 +172,5 @@ help:
 	@echo "*    GATPFit   to make GATPFit"
 	@echo "*    RMG       to make RMG"
 	@echo "     inchi     to get and make InChI support (attempts to download from iupac)"
+	@echo "     symmetry  to get and make SYMMETRY (attempts to download from ucalgary.ca)"
 	@echo ""
