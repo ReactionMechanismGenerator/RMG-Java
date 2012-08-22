@@ -11,7 +11,7 @@
 //                                                                      \  /     
 //                                                                       CH2   
 
-RCH(OOH)CH2C(O)R' -> cyclic peroxide
+RCH(OOH)CH2C(O)R' -> cyclic_peroxide
 
 forward
 reverse: cyclic_peroxide_ringopening
