@@ -6,3 +6,5 @@
 2  Cs(Cs(CsCsCs)Cs(CsCsCs)RR) 	3.0	0.0	0.0	0.0	0.0	0.0	0.0	0.0	0.0	0	0	0 //S(QQ) two 1,5 interactions
 3  Os(Cs(CsCsCs)Cs(CsCsR)) 	3.5	0.0	0.0	0.0	0.0	0.0	0.0	0.0	0.0	0	0	0 //S(QT) one 1,5 interaction
 4  Os(Cs(CsCsCs)Cs(CsCsCs)) 	7.0	0.0	0.0	0.0	0.0	0.0	0.0	0.0	0.0	0	0	0 //S(QQ) two 1,5 interactions
+5  Ss(Cs(CsCsCs)Cs(CsCsR)) 	2.25	0.0	0.0	0.0	0.0	0.0	0.0	0.0	0.0	0	0	0 //S(QT) one 1,5 interaction 
+6  Ss(Cs(CsCsCs)Cs(CsCsCs)) 	4.5	0.0	0.0	0.0	0.0	0.0	0.0	0.0	0.0	0	0	0 //S(QQ) two 1,5 interactions
