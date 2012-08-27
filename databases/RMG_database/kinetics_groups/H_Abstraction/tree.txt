@@ -121,8 +121,8 @@ L1: Y_rad_birad
                     L6: C_rad/H/O2
                 L5: C_rad/H/OneDe
                     L6: C_rad/H/OneDeC
-                        L7: InChI=1/C3H5O/c1-2-3-4/h2-3H,1H3/c
                         L7: C_rad/H/CO/Cs
+                            L8: InChI=1/C3H5O/c1-2-3-4/h2-3H,1H3/c
                     L6: C_rad/H/OneDeO
                 L5: C_rad/H/TwoDe
             L4: C_ter_rad
