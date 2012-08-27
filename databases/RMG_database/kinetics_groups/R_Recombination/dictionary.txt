@@ -104,6 +104,18 @@ C_rad/H/OneDeC
 3 {Cd,Ct,Cb,CO} 0 {1,S}
 4 Cs 0 {1,S}
 
+C_rad/H/CdCs
+1 * C 1 {2,S}, {3,S}, {4,S}
+2 H 0 {1,S}
+3 Cd 0 {1,S}
+4 Cs 0 {1,S}
+
+C_rad/H/CtCs
+1 * C 1 {2,S}, {3,S}, {4,S}
+2 H 0 {1,S}
+3 Ct 0 {1,S}
+4 Cs 0 {1,S}
+
 C_rad/H/OneDeO
 1 * C 1 {2,S}, {3,S}, {4,S}
 2 H 0 {1,S}
@@ -115,6 +127,12 @@ C_rad/H/TwoDe
 2 H 0 {1,S}
 3 {Cd,Ct,Cb,CO} 0 {1,S}
 4 {Cd,Ct,Cb,CO} 0 {1,S}
+
+C_rad/H/CdCd
+1 * C 1 {2,S}, {3,S}, {4,S}
+2 H 0 {1,S}
+3 Cd 0 {1,S}
+4 Cd 0 {1,S}
 
 C_ter_rad
 1 * C 1 {2,S}, {3,S}, {4,S}
@@ -206,6 +224,11 @@ Cd_rad/OneDe
 1 * C 1 {2,D}, {3,S}
 2 C 0 {1,D}
 3 {Cd,Ct,Cb,CO} 0 {1,S}
+
+Cd_rad/Cd
+1 * C 1 {2,D}, {3,S}
+2 C 0 {1,D}
+3 Cd 0 {1,S}
 
 Ct_rad
 1 * C 1 {2,T}
@@ -436,39 +459,43 @@ S_rad
 SJ
 1  * Ss 1
 
-SJ-H
+SsJ-H
 1  * Ss 1 {2,S}
 2    H 0 {1,S}
 
-SJ-C
+SsJ-C
 1  * Ss 1 {2,S}
 2    C 0 {1,S}
 
-SJ-Cs
+SsJ-Cs
 1  * Ss 1 {2,S}
 2    Cs 0 {1,S}
 
-SJ-Cd
+SsJ-Cd
 1  * Ss 1 {2,S}
 2    Cd 0 {1,S} {3,D}
 3    C 0 {2,D}
 
-SJ-Ct
+SsJ-Ct
 1  * Ss 1 {2,S}
 2    Ct 0 {1,S}
 
-SJ-Cb
+SsJ-Cb
 1  * Ss 1 {2,S}
 2    Cb 0 {1,S}
 
-SJ-C=S
+SsJ-C=S
 1  * Ss 1 {2,S}
 2    Cd 0 {1,S} {3,D}
 3    Sd 0 {2,D}
 
-SJ-Ss
+SsJ-Ss
 1  * Ss 1 {2,S}
 2    Ss 0 {1,S}
 
-//SJJ
-//1 * S 2				
+SsJ-Os
+1  * Ss 1 {2,S}
+2	 Os 0 {1,S}
+
+SJJ
+1 * S 2				
