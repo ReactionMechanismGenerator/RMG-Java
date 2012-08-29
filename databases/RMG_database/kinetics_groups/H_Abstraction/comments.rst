@@ -3718,7 +3718,7 @@ coefficients for ROO. + RH = ROOH + R. using CBS-QB3 with 1DHR for 8 candidate r
 the parameters for the reverse rate were put into the library. 
 
 Update August 5, 2011
-AJ updated node 543,546 and 549 (i.e. abstraction from secondary ROO-H) using values for HO2 + alkanes recommended by Aguilera-Iparraguirre et al. (J. Phys. Chem. A 2008, 112, 7047–7054) 
+AJ updated node 543,546 and 549 (i.e. abstraction from secondary ROO-H) using values for HO2 + alkanes recommended by Aguilera-Iparraguirre et al. (J. Phys. Chem. A 2008, 112, 7047-7054) 
 using the R12 method. Since RMG requires rate parameters for the reverse reaction, AJ used the recommended rates for the 
 C8H17OO. + octane = C8H17OOH + octyl system (2-octyl isomers) and obtained Arrhenius fits for the reverse reactions using ChemRev software. 
 The thermodynamic data required for this calculation was obtained from RMG group additivity using the ThermoDataEstimator module.

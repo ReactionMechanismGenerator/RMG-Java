@@ -34,6 +34,7 @@ package jing.chem;
 import java.util.*;
 import jing.chemUtil.*;
 
+import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
@@ -41,9 +42,60 @@ import java.io.IOException;
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.PrintWriter;
+
 import jing.rxnSys.Logger;
 
-public class FrequencyGroups{//gmagoon 111708: removed "implements GeneralGAPP"
+public class FrequencyGroups{
+
+    private static Process Frankie;
+    private static BufferedReader errorStream, dataOutput;
+    private static PrintWriter commandInput;
+
+    static { // These processes etc. are made just once for the class
+      try {
+		String workingDirectory = System.getProperty("RMG.workingDirectory");
+        String[] command = {workingDirectory +  "/bin/frankie.exe"};
+        File runningDir = new File("frankie");
+        Frankie = Runtime.getRuntime().exec(command, null, runningDir);
+        errorStream = new BufferedReader(new InputStreamReader(Frankie.getErrorStream()));
+        commandInput = new PrintWriter(Frankie.getOutputStream(), true);
+        BufferedInputStream in = new BufferedInputStream(Frankie.getInputStream());
+        dataOutput = new BufferedReader(new InputStreamReader(in));
+
+        Runtime.getRuntime().addShutdownHook(new Thread() {
+          public void run() {
+        	  Frankie.destroy();
+          }
+        } );
+        
+        Thread Terr = new Thread(new Runnable(){
+          public void run(){
+            try {
+              String errline = errorStream.readLine();
+              if (errline!=null){
+                String error_message="Frankie Error: ";
+                while (errline!=null){
+                  error_message+=errline;
+                  errline=errorStream.readLine();
+                }
+                throw new FrequencyGroupsException(error_message);
+              }
+            } catch (Exception e){
+              Logger.logStackTrace(e);
+              throw new FrequencyGroupsException(e.toString());
+            }
+          }
+        } );
+        Terr.start();
+      } catch (Exception e) {
+        Logger.logStackTrace(e);
+        String ls = System.getProperty("line.separator");
+        String err = "Error running Frankie" + ls;
+        err += e.toString();
+        throw new FrequencyGroupsException(err);
+      }
+    }
 
     private static FrequencyGroups INSTANCE = new FrequencyGroups();		//## attribute INSTANCE
     protected FrequencyDatabase freqLibrary;
@@ -56,7 +108,7 @@ public class FrequencyGroups{//gmagoon 111708: removed "implements GeneralGAPP"
         //#]
     }
 
-   //gmagoon 11/17/08: based off of generateThermoData from GATP.java;
+
    // this function generates a list of frequencies using Franklin's code for use in pressure-dependent network calculations
       public SpectroscopicData generateFreqData(Species species) {
 		
@@ -104,102 +156,46 @@ public class FrequencyGroups{//gmagoon 111708: removed "implements GeneralGAPP"
                     }
                  }
 		
-		//(file writing code based on code in JDASSL.java)
-        File franklInput = new File("frankie/dat");
-        try {
-            FileWriter fw = new FileWriter(franklInput);
-            fw.write(p_thermoData.getCp300()+" "+p_thermoData.getCp400()+" "+p_thermoData.getCp500()+" "+p_thermoData.getCp600()+" "+p_thermoData.getCp800()+" "+p_thermoData.getCp1000()+" "+p_thermoData.getCp1500()+"\n");
-            fw.write(atoms+"\n");
-//            fw.write(rotor+"\n");
-            // Commented out by MRH (in conjunction with CFG) on 12-Jun-2009
+            String ls = System.getProperty("line.separator");
+            StringBuilder input = new StringBuilder(1024);
+            input.append(p_thermoData.getCp300()+" "+p_thermoData.getCp400()+" "+p_thermoData.getCp500()+" "+p_thermoData.getCp600()+" "+p_thermoData.getCp800()+" "+p_thermoData.getCp1000()+" "+p_thermoData.getCp1500()+"\n");
+            input.append(atoms+"\n");
+            // MRH (in conjunction with CFG) on 12-Jun-2009
             //	Some cyclic species were taking ~30 seconds to converge
             //	CFG suggested setting the rotor number to zero for all cyclic species
-            if (p_chemGraph.isAcyclic()) fw.write(rotor+"\n");
-            else fw.write(0+"\n");
-            fw.write(linearity+"\n");
+            if (p_chemGraph.isAcyclic()) input.append(rotor+"\n");
+            else input.append(0+"\n");
+            input.append(linearity+"\n");
             //print the group counts to the file for acyclic case
             if(p_chemGraph.isAcyclic()){
                 for (Iterator iter = groupCount.iterator(); iter.hasNext(); ) {
                     Integer i = (Integer) iter.next();
-                    fw.write(i + "\n");
-		}
-                fw.write(0+"\n");//write a zero for acyclic species
+                    input.append(i + "\n");
+                }
+                input.append(0+"\n");//write a zero for acyclic species
             }
             else{//cyclic case: print zeroes for group values instead, followed by a line with the number of hydrogens
                 for (Iterator iter = groupCount.iterator(); iter.hasNext(); ) {
                     Integer i = (Integer) iter.next();
-                    fw.write(0 + "\n");
+                    input.append(0 + "\n");
                 }
-                fw.write(p_chemGraph.getHydrogenNumber()+"\n");
+                input.append(p_chemGraph.getHydrogenNumber()+"\n");
             }
            
-                
-            fw.close();
+	        // call Franklin's code
+	        final String inputString = input.toString();
+	        boolean error = false;
 
-        }
-        catch (IOException e) {
-            Logger.logStackTrace(e);
-			Logger.error("Problem writing frequency estimation input file!");
-        }
-		
-		touchOutputFile();
-		  boolean frankieSuccess = false;
-		  int frankieOutputFlag = 0;
-		//call Franklin's code
-        try{
-            String dir = System.getProperty("RMG.workingDirectory");
-            File runningdir=new File("frankie");
-            String[] command = { dir + "/bin/frankie.exe" };
-            Process freqProc = Runtime.getRuntime().exec(command, null, runningdir); 
-            InputStream is = freqProc.getInputStream();
-            InputStreamReader isr = new InputStreamReader(is);
-            BufferedReader br = new BufferedReader(isr);
-            String line=null;
-            while ( (line = br.readLine()) != null) {
-				line = line.trim();
-				if (line.contains("Output flag from DQED, IGO ="))
-					frankieOutputFlag =  Integer.parseInt( line.substring(line.length()-1) );
-            }
-            int exitVal = freqProc.waitFor();
-	    is.close();
-	    freqProc.getErrorStream().close();
-	    freqProc.getOutputStream().close();
-		
-        }
-        catch (Exception e) {
-			Logger.logStackTrace(e);
-            String err = "Error in running frequency estimation process \n";
-            err += e.toString();
-            Logger.error(err);
-        }
-		  
-		  if (frankieOutputFlag == 4) 
-			  frankieSuccess = true;
-		  if (frankieOutputFlag == 8) 
-			  Logger.verbose("Frankie exceeded maximum number of iterations");
-		  
-		  if (!frankieSuccess) {
-			  Logger.verbose("Frankie.exe wasn't fully successful: "+ String.format("species %2$d had output flag %1$d",frankieOutputFlag,species.getID() ));
-			  Logger.verbose(String.format("Saving input file as 'frankie/dat.%d.%d' should you wish to debug.",frankieOutputFlag,species.getID() ));
-			  franklInput.renameTo( new File(String.format("frankie/dat.%d.%d",frankieOutputFlag,species.getID() )) );			  
-		  }
+        	commandInput.println(inputString);
+            commandInput.flush();
+            if (commandInput.checkError()) throw new FrequencyGroupsException("Error writing input to Frankie buffer");
 
-        
-         //read in results of Franklin's code into result
-        File franklOutput = new File("frankie/rho_input");
-        String line="";
+        // Read in results of Franklin's code into result
         try { 
-            
-			FileReader fr = new FileReader(franklOutput);
-            BufferedReader br = new BufferedReader(fr);
-			
-			// If the output file is empty, then an error occurred
-			if (franklOutput.length() == 0)
-				throw new IOException("Error: FrequencyGroups estimation for " + 
-						species.getFullName() + " failed.");
-            
-			// Read information about molecule (numuber of atoms, number of rotors, linearity)
-			atoms = Integer.parseInt(br.readLine().trim());
+            BufferedReader br = dataOutput;
+			// Read information about molecule (number of atoms, number of rotors, linearity)
+			int atoms_out = Integer.parseInt(br.readLine().trim());
+			if (atoms_out != atoms) throw new FrequencyGroupsException(String.format("Sent %d atoms to Frankie and got %d atoms back!",atoms, atoms_out));
             int nHind = Integer.parseInt(br.readLine().trim());
             int nonlinearityQ = Integer.parseInt(br.readLine().trim());
             
@@ -220,12 +216,12 @@ public class FrequencyGroups{//gmagoon 111708: removed "implements GeneralGAPP"
 				else {
 					vibFreq[i] = Double.parseDouble(st.nextToken());
 					if (vibFreq[i] < 0)
-						throw new IOException("Encountered a negative vibrational frequency while reading Frankie output.");
+						throw new FrequencyGroupsException("Encountered a negative vibrational frequency while reading Frankie output.");
 					i++;
 				}
 			}
 			if (i != nFreq) {
-				throw new IOException("Number of frequencies read is less than expected.");
+				throw new FrequencyGroupsException("Number of frequencies read is less than expected.");
 			}
 			
 			// Read the hindered rotor frequencies and barrier heights
@@ -240,9 +236,9 @@ public class FrequencyGroups{//gmagoon 111708: removed "implements GeneralGAPP"
 					hindFreq[i] = Double.parseDouble(st.nextToken());
 					hindBarrier[i] = Double.parseDouble(st.nextToken());
 					if (hindFreq[i] < 0)
-						throw new IOException("Encountered a negative hindered rotor frequency while reading Frankie output.");
+						throw new FrequencyGroupsException("Encountered a negative hindered rotor frequency while reading Frankie output.");
 					if (hindBarrier[i] < 0)
-						throw new IOException("Encountered a negative hindered rotor barrier while reading Frankie output.");
+						throw new FrequencyGroupsException("Encountered a negative hindered rotor barrier while reading Frankie output.");
 					i++;
 				}
 			}
@@ -250,30 +246,60 @@ public class FrequencyGroups{//gmagoon 111708: removed "implements GeneralGAPP"
 				throw new IOException("Number of hindered rotors read is less than expected.");
 			}
 			
-			fr.close();
+			// Grab the DQED IGO flag and check you're at the end of Frankie output.
+			int frankieOutputFlag = 0;
+			String line = "";
+	        while ( line != null ) {
+	            line = dataOutput.readLine().trim();
+	            if (line.equals("")) continue;
+	            if (line.contains("Output flag from DQED, IGO =")) {
+	        		frankieOutputFlag =  Integer.parseInt( line.substring(line.length()-1) );
+	        		continue;
+	            }
+	            if (line.contains("FRANKIE_COMPLETED_ONE_ITERATION")) break;
+	            throw new FrequencyGroupsException("Was expecting end of Frankie results but instead got: " + line);
+	        }
+	        
+	        // Check IGO flag = 4 for success
+	        boolean frankieSuccess = false;
+	        if (frankieOutputFlag == 4) 
+	        	frankieSuccess = true;
+	        if (frankieOutputFlag == 8) 
+	        	Logger.verbose("Frankie exceeded maximum number of iterations");
+	        if (!frankieSuccess) {
+	     		Logger.verbose("Frankie.exe wasn't fully successful: "+ String.format("species %2$d had output flag %1$d",frankieOutputFlag,species.getID() ));
+	     		Logger.verbose(String.format("Saving input file as 'frankie/dat.%d.%d' should you wish to debug.",frankieOutputFlag,species.getID() ));
+	     		String Frankie_input_name = String.format("frankie/dat.%d.%d", frankieOutputFlag,species.getID());
+	     		FileWriter fw = new FileWriter(new File(Frankie_input_name));
+	     		fw.write(inputString);
+	     		fw.close();
+	     	}
         }
         catch (IOException e) {
-                Logger.critical("Problem reading frequency estimation output file!");
+                Logger.critical("I/O problem running frankie.");
 				Logger.critical(e.getMessage());
                 Logger.logStackTrace(e);
-				System.exit(0);
+                throw new FrequencyGroupsException("I/O problem running frankie:"+e.getMessage());
         }
-		catch (NullPointerException e) {
-                Logger.error("Problem reading frequency estimation output file!");
-                Logger.logStackTrace(e);           
-        }
-        
-		// Rename input and output files
-		/*String newName = species.getFullName();
-        File f = new File("frankie/dat");
-		File newFile = new File("frankie/"+newName+"_input");
-		f.renameTo(newFile);
-		f = new File("frankie/rho_input");
-		newFile = new File("frankie/"+newName+"_output");
-		f.renameTo(newFile);*/
-		
-        return new SpectroscopicData(vibFreq, hindFreq, hindBarrier);
-        //#]
+      catch (FrequencyGroupsException e) {
+          Logger.logStackTrace(e);
+          String err = "Error running Frankie" + ls;
+          err += e.toString();
+          String Frankie_input_name = "frankie/INPUT.txt";
+          err += ls + "To help diagnosis, writing GATPFit input to file "+Frankie_input_name+ls;
+          try {
+        	  FileWriter fw = new FileWriter(new File(Frankie_input_name));
+        	  fw.write(inputString);
+        	  fw.close();
+          }
+          catch (IOException e2) {
+        	  err+= "Couldn't write to file "+ Frankie_input_name + ls;
+        	  err += e2.toString();
+          }
+          throw new FrequencyGroupsException(err);
+      }
+
+      return new SpectroscopicData(vibFreq, hindFreq, hindBarrier);
     }
 
     //11/17/08 gmagoon: modified from getGAGroup in class GATP

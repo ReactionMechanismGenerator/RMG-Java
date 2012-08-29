@@ -48,6 +48,7 @@ import jing.param.Temperature;
 import jing.rxn.ArrheniusKinetics;
 import jing.rxn.ArrheniusEPKinetics;
 import jing.rxn.BathGas;
+import jing.rxn.FastMasterEqn;
 import jing.rxn.Kinetics;
 import jing.rxn.LibraryReactionGenerator;
 import jing.rxn.PDepIsomer;
@@ -405,7 +406,7 @@ public class PopulateReactionsServer {
 					LinkedHashSet nonPdepReactions = new LinkedHashSet();
 					while (iter.hasNext()){
 						Reaction r = (Reaction)iter.next();
-						if (r.getReactantNumber() < 2 || r.getProductNumber() < 2){
+						if (FastMasterEqn.isReactionPressureDependent(r)){
 							cerm.categorizeReaction(r.getStructure());
 							PDepNetwork.addReactionToNetworks(r);
 						}

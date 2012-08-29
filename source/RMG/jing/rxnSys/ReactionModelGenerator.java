@@ -3690,13 +3690,13 @@ public class ReactionModelGenerator {
 				Iterator iter = reactionSet.iterator();
 	        	while (iter.hasNext()){
 	        		Reaction r = (Reaction)iter.next();
-	        		if (r.getReactantNumber() > 1 && r.getProductNumber() > 1){
+	        		if (FastMasterEqn.isReactionPressureDependent(r)) {
+	        		    cerm.categorizeReaction(r.getStructure());
+                        PDepNetwork.addReactionToNetworks(r);
+	        		}
+	        		else {
 	        			cerm.addReaction(r);
 	        		}
-					else {
-						cerm.categorizeReaction(r.getStructure());
-						PDepNetwork.addReactionToNetworks(r);
-					}
 				}
 			}
 		}
@@ -3776,13 +3776,13 @@ public class ReactionModelGenerator {
 				Iterator iter = reactionSet.iterator();
 	        	while (iter.hasNext()){
 	        		Reaction r = (Reaction)iter.next();
-	        		if (r.getReactantNumber() > 1 && r.getProductNumber() > 1){
+	        		if (FastMasterEqn.isReactionPressureDependent(r)) {
+	        		    cerm.categorizeReaction(r.getStructure());
+                        PDepNetwork.addReactionToNetworks(r);
+	        		}
+	        		else {
 	        			cerm.addReaction(r);
 	        		}
-					else {
-						cerm.categorizeReaction(r.getStructure());
-						PDepNetwork.addReactionToNetworks(r);
-					}
 				}
 			}
 		}
@@ -3875,13 +3875,13 @@ public class ReactionModelGenerator {
 			Iterator iter = reactionSet.iterator();
         	while (iter.hasNext()){
         		Reaction r = (Reaction)iter.next();
-        		if (r.getReactantNumber() > 1 && r.getProductNumber() > 1){
+        		if (FastMasterEqn.isReactionPressureDependent(r)) {
+        		    cerm.categorizeReaction(r.getStructure());
+                    PDepNetwork.addReactionToNetworks(r);
+        		}
+        		else {
         			cerm.addReaction(r);
         		}
-				else {
-					cerm.categorizeReaction(r.getStructure());
-					PDepNetwork.addReactionToNetworks(r);
-				}
 			}
 		}
         
@@ -4581,9 +4581,20 @@ public class ReactionModelGenerator {
 				Logger.warning("Switching SpectroscopicDataEstimator to three-frequency model.");
 				SpectroscopicData.mode = SpectroscopicData.Mode.THREEFREQUENCY;
 			}
-
-			// Next line must be PDepKineticsModel
+			
+			// Optional: MaxAtomsForPressureDependence
 			line = ChemParser.readMeaningfulLine(reader, true);
+            if (line.toLowerCase().startsWith("maxatomsforpressuredependence:")) {
+                st = new StringTokenizer(line);
+                name = st.nextToken();
+                
+                int atoms = Integer.parseInt(st.nextToken());
+                FastMasterEqn.setMaxAtoms(atoms);
+                
+                line = ChemParser.readMeaningfulLine(reader, true);
+            }
+            
+			// Next line must be PDepKineticsModel
 			if (line.toLowerCase().startsWith("pdepkineticsmodel:")) {
 				
 				st = new StringTokenizer(line);

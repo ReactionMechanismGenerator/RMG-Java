@@ -581,6 +581,21 @@ For more information on the two methods, consult the following resources:
 When pressure dependence is on, you must also specify a linear interpolation model to use to evaluate :math:`k(T, P)` and output to the Chemkin file. (This line is not required if pressure dependence is set to
 off.) This line must immediately follow the previous one.
 
+By default pressure dependence is run for every system that might show pressure
+dependence, i.e. every isomerization, dissociation, and association reaction.
+In reality, larger molecules are less likely to exhibit pressure-dependent
+behavior than smaller molecules due to the presence of more modes for 
+randomization of the internal energy. In certain cases involving very large
+molecules, it makes sense to only consider pressure dependence for molecules
+smaller than some user-defined number of atoms. This is specified e.g. using
+the line ::
+
+    MaxAtomsForPressureDependence: 20
+
+to turn off pressure dependence for all molecules larger than the given number
+of atoms (20 in the above example). If this option is present, it must be
+given directly before the ``PDepKineticsModel`` option discussed below.
+
 To disregard all temperature and pressure dependence and simply output the rate at the provided
 temperature and pressure, use the line ::
 

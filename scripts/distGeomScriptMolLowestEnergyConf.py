@@ -4,7 +4,7 @@
 #updated 8/12/09 for Q2 2009 version of RDKit (rdkit "import" lines of script)
 #arg#5 should contain the absolute path of the RDBASE environment variable
 import sys
-sys.path.append(sys.argv[5])#add $RDBASE to the PYTHONPATH so that import statements below work properly
+sys.path.insert(1, sys.argv[5])#add $RDBASE to the PYTHONPATH so that import statements below work properly
 from rdkit import Chem
 from rdkit.Chem import AllChem
 attempts=int(sys.argv[4])
