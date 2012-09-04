@@ -76,6 +76,7 @@ public class RMG {
             createFolder("2Dmolfiles", true);   // Not sure if we should be deleting this
             createFolder("3Dmolfiles", true);   // Not sure if we should be deleting this
             createFolder("QMfiles", false);     // Preserving QM files between runs will speed things up considerably
+            createFolder("QMTPThermoLibrary", false); //Added by nyee will write new thermolibrary from QMTP calculation here
             
             // The only parameter should be the path to the condition file
             String inputfile = args[0];
@@ -94,6 +95,11 @@ public class RMG {
             // Generate the model!
             ReactionModelGenerator rmg = new ReactionModelGenerator();
             rmg.modelGeneration();
+            
+            //close QMTPThermoWriter
+            if (ChemGraph.useQM) {
+         	   QMTPThermoWriter.finish();
+            }
 
             // Save the resulting model to Final_Model.txt
             writeFinalModel(rmg);

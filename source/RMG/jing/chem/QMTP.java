@@ -72,6 +72,20 @@ public class QMTP implements GeneralGAPP {
        // initializeLibrary(); //gmagoon 72509: commented out in GATP, so I am mirroring the change here; other library functions below also commented out
         initializePrimaryThermoLibrary();
     }
+    
+    public String getQmMethod() {
+        String qmProgram = qmprogram;
+        String qmMethod = "";
+        if(qmProgram.equals("mm4")||qmProgram.equals("mm4hr")){
+        	qmMethod = "mm4";
+        	if(qmProgram.equals("mm4hr")) useHindRot=true;
+        }
+        else{
+	    qmMethod="pm3"; //may eventually want to pass this to various functions to choose which "sub-function" to call
+        }
+        return qmMethod;
+    }
+    
        //## operation generateThermoData(ChemGraph)
     public ThermoData generateThermoData(ChemGraph p_chemGraph) {
         //#[ operation generateThermoData(ChemGraph)
@@ -225,6 +239,10 @@ public class QMTP implements GeneralGAPP {
         }
         else{
             result = generateQMThermoData(p_chemGraph);
+            //Writes the result of the QMThermo to the QMTPThermoWriter
+            String inChI = p_chemGraph.getInChI();
+            String qmMethod = getQmMethod();
+            QMTPThermoWriter.addQMTPThermo(p_chemGraph, inChI, result, qmMethod, qmprogram);
         }
         
         return result;
