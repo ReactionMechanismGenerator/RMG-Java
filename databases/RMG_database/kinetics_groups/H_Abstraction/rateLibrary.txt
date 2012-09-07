@@ -357,34 +357,34 @@ Arrhenius_EP
 
 //Added by AJ for low temperature aromatic oxidation (given rank 1 so that RMG will presumably prefer these rates to others that it makes up)
 //Notes: AJ did not find data for ethylbenzene + O2 or ethylbenzene + OH on the NIST Kinetics databasa, so values for toluene (per H) were used instead 
-533.    C/H3/Cb	O_pri_rad		500-1000	0.42e+13	0.0	0.0	2.59	0	0	0	0	1	Tully et al. experimental data (changed to per H)
-534.    C/H2/Cb	O_pri_rad		500-1000	0.42e+13	0.0	0.0	2.59	0	0	0	0	1	Tully et al. experimental data (changed to per H)
-535.    C/H/Cb	O_pri_rad		500-1000	0.42e+13	0.0	0.0	2.59	0	0	0	0	1	Tully et al. experimental data (changed to per H)
-536.    C/H3/Cb	O_rad/NonDeO	600-1000	1.32e+11	0.0	0.0	14.08	0	0	0	0	1	Baulch et al. literature review (value for HO2 + toluene) (changed to per H)
-537.    C/H2/Cb	O_rad/NonDeO	600-1000	1.33e+11	0.0	0.0	11.30	0	0	0	0	1	Baulch et al. literature review (value for HO2 + ethylbenzene) (changed to per H)
-538.    C/H/Cb	O_rad/NonDeO	600-1000	1.33e+11	0.0	0.0	11.30	0	0	0	0	1	Baulch et al. literature review (value for HO2 + ethylbenzene) (changed to per H)
-539.    C/H3/Cb	O2b				700-1200	0.6e+12		0.0	0.0	39.71	0	0	0	0	1	Baulch et al. literature review (value for HO2 + toluene entered here) (changed to per H)
-540.    C/H2/Cb	O2b				700-1200	0.6e+12		0.0	0.0	39.71	0	0	0	0	1	Baulch et al. literature review (value for HO2 + toluene entered here) (changed to per H)
-541.    C/H/Cb	O2b				700-1200	0.6e+12		0.0	0.0	39.71	0	0	0	0	1	Baulch et al. literature review (value for HO2 + toluene entered here) (changed to per H)
+541.    C/H3/Cb	O_pri_rad		500-1000	0.42e+13	0.0	0.0	2.59	0	0	0	0	1	Tully et al. experimental data (changed to per H)
+542.    C/H2/Cb	O_pri_rad		500-1000	0.42e+13	0.0	0.0	2.59	0	0	0	0	1	Tully et al. experimental data (changed to per H)
+543.    C/H/Cb	O_pri_rad		500-1000	0.42e+13	0.0	0.0	2.59	0	0	0	0	1	Tully et al. experimental data (changed to per H)
+544.    C/H3/Cb	O_rad/NonDeO	600-1000	1.32e+11	0.0	0.0	14.08	0	0	0	0	1	Baulch et al. literature review (value for HO2 + toluene) (changed to per H)
+545.    C/H2/Cb	O_rad/NonDeO	600-1000	1.33e+11	0.0	0.0	11.30	0	0	0	0	1	Baulch et al. literature review (value for HO2 + ethylbenzene) (changed to per H)
+546.    C/H/Cb	O_rad/NonDeO	600-1000	1.33e+11	0.0	0.0	11.30	0	0	0	0	1	Baulch et al. literature review (value for HO2 + ethylbenzene) (changed to per H)
+547.    C/H3/Cb	O2b				700-1200	0.6e+12		0.0	0.0	39.71	0	0	0	0	1	Baulch et al. literature review (value for HO2 + toluene entered here) (changed to per H)
+548.    C/H2/Cb	O2b				700-1200	0.6e+12		0.0	0.0	39.71	0	0	0	0	1	Baulch et al. literature review (value for HO2 + toluene entered here) (changed to per H)
+549.    C/H/Cb	O2b				700-1200	0.6e+12		0.0	0.0	39.71	0	0	0	0	1	Baulch et al. literature review (value for HO2 + toluene entered here) (changed to per H)
 
 //Added by AJ for ROOH + RJ = ROOJ + RH
 // Previously RMG was using an averaging scheme using nodes 301-309 added above by MRH
 // The nodes below are for R. + ROOH = RH + ROO
-544.	ROOH_pri		C_rad/H/NonDeC		500-1000	2.51E-11	6.77	0.0	-8.60	0	0	0	0	1	[AJ]Assumed to be same as for ROOH_sec
-545.	ROOH_sec		C_rad/H/NonDeC		500-1000	2.51E-11	6.77	0.0	-8.60	0	0	0	0	1	[AJ]CBS-QB3 calculations with 1DHR corrections, reverse rates computed using DFT_QCI_thermo
-546.	ROOH_pri		C_rad/H2/Cs			500-1000	2.51E-11	6.77	0.0	-8.60	0	0	0	0	1	[AJ]Assumed to be same as for C_rad/H/NonDeC
-547.	ROOH_sec		C_rad/H2/Cs			500-1000	2.51E-11	6.77	0.0	-8.60	0	0	0	0	1	[AJ]Assumed to be same as for C_rad/H/NonDeC
+550.	ROOH_pri		C_rad/H/NonDeC		500-1000	2.51E-11	6.77	0.0	-8.60	0	0	0	0	1	[AJ]Assumed to be same as for ROOH_sec
+551.	ROOH_sec		C_rad/H/NonDeC		500-1000	2.51E-11	6.77	0.0	-8.60	0	0	0	0	1	[AJ]CBS-QB3 calculations with 1DHR corrections, reverse rates computed using DFT_QCI_thermo
+552.	ROOH_pri		C_rad/H2/Cs			500-1000	2.51E-11	6.77	0.0	-8.60	0	0	0	0	1	[AJ]Assumed to be same as for C_rad/H/NonDeC
+553.	ROOH_sec		C_rad/H2/Cs			500-1000	2.51E-11	6.77	0.0	-8.60	0	0	0	0	1	[AJ]Assumed to be same as for C_rad/H/NonDeC
 
 // The nodes below are for R1CJ(OOH)R2 + R3OOH = R1CJ(OOH)R2 + R3OO
-548.	ROOH_pri		C_rad/OOH/Cs/Cs		500-1000	5.066E-14	7.18	0.0	-5.27	0	0	0	0	1	[AJ] Assumed to be same as for ROOH_sec
-549.	ROOH_sec		C_rad/OOH/Cs/Cs		500-1000	5.066E-14	7.18	0.0	-5.27	0	0	0	0	1	[AJ] CBS-QB3 calculations with 1DHR corrections
+554.	ROOH_pri		C_rad/OOH/Cs/Cs		500-1000	5.066E-14	7.18	0.0	-5.27	0	0	0	0	1	[AJ] Assumed to be same as for ROOH_sec
+555.	ROOH_sec		C_rad/OOH/Cs/Cs		500-1000	5.066E-14	7.18	0.0	-5.27	0	0	0	0	1	[AJ] CBS-QB3 calculations with 1DHR corrections
 
 // The nodes below are for R1C(O) + R2OOH = R1C(O)H + R2OO
-550.    ROOH_pri		CO_rad/NonDe		500-1000	9.569E-04 	4.45 	0.0 0.54	0	0	0	0	1   [AJ] Assumed to be same as for ROOH_sec
-551.    ROOH_sec		CO_rad/NonDe		500-1000	9.569E-04 	4.45 	0.0 0.54	0	0	0	0	1	[AJ] CBS-QB3 calculations with 1DHR corrections
+556.    ROOH_pri		CO_rad/NonDe		500-1000	9.569E-04 	4.45 	0.0 0.54	0	0	0	0	1   [AJ] Assumed to be same as for ROOH_sec
+557.    ROOH_sec		CO_rad/NonDe		500-1000	9.569E-04 	4.45 	0.0 0.54	0	0	0	0	1	[AJ] CBS-QB3 calculations with 1DHR corrections
 
 // The nodes below are for R1C(O)-CJ-R2 + R3OOH = R1C(O)-C(H)R2 + R3OO
-552.    ROOH_pri		C_rad/H/CO/Cs		500-1000	1.73E-10 	6.30 	0.0 -2.14	0	0	0	0	1	[AJ] Assumed to be same as for ROOH_sec
-553.    ROOH_sec		C_rad/H/CO/Cs		500-1000	1.73E-10 	6.30 	0.0 -2.14	0	0	0	0	1	[AJ] Assumed to be same as for C_rad/H2/CO
-554.    ROOH_pri		C_rad/H2/CO			500-1000	1.73E-10 	6.30 	0.0 -2.14	0	0	0	0	1	[AJ] Assumed to be same as for ROOH_sec
-555.    ROOH_sec		C_rad/H2/CO			500-1000	1.73E-10 	6.30 	0.0 -2.14	0	0	0	0	1	[AJ] CBS-QB3 calculations with 1DHR corrections
+558.    ROOH_pri		C_rad/H/CO/Cs		500-1000	1.73E-10 	6.30 	0.0 -2.14	0	0	0	0	1	[AJ] Assumed to be same as for ROOH_sec
+559.    ROOH_sec		C_rad/H/CO/Cs		500-1000	1.73E-10 	6.30 	0.0 -2.14	0	0	0	0	1	[AJ] Assumed to be same as for C_rad/H2/CO
+560.    ROOH_pri		C_rad/H2/CO			500-1000	1.73E-10 	6.30 	0.0 -2.14	0	0	0	0	1	[AJ] Assumed to be same as for ROOH_sec
+561.    ROOH_sec		C_rad/H2/CO			500-1000	1.73E-10 	6.30 	0.0 -2.14	0	0	0	0	1	[AJ] CBS-QB3 calculations with 1DHR corrections
