@@ -31,3 +31,4 @@ Arrhenius_EP
 702.	Sd_Cd/H/Nd			H_OH			300-1500	5.96E+00	2.77	0		20.07		0		0		0		0		3		CBS-QB3 calculations by CAC, F12 energy 
 703.	Thiophene2			H_OH			300-1500	1.50E+01	3.15	0		63.64		0		0		0		0		3		CBS-QB3 calc w/ 1dhr, by CAC
 704.	Thiophene3			H_OH			300-1500	5.10E+01	3.11	0		63.03		0		0		0		0		3		CBS-QB3 calc w/ 1dhr, by CAC
+705.	Sd_Cd/H/Cb			H_OH			300-1500	3.69E+02	2.58	0		32.46		0		0		0		0		3		CBS-QB3 calc w/ 1dhr, CAC
