@@ -27,6 +27,7 @@ L1: doublebond
                   	L4: Cd/H/De_Cd/H2
            	L3: Cd/unsub_Cd/disub
 			L4: Cd/H2_Cd/Nd2
+				L5: Cd/H2_Cd/Cs2
 			L4: Cd/H2_Cd/Nd/De
 			L4: Cd/H2_Cd/De2
 		L3: Cd/disub_Cd/unsub
@@ -68,6 +69,7 @@ L1: doublebond
             L4: Od_Cd/monosub
                 L5: Od_Cd/H/Nd
                 L5: Od_Cd/H/De
+		    L6: Od_Cd/H/Cb
             L4: Od_Cd/disub
                 L5: Od_Cd/Nd2
                 L5: Od_Cd/Nd/De
@@ -89,6 +91,10 @@ L1: R_SR
 	L2: H_SR
 		L3: H_SH
 		L3: H_SCs
+			L4: H_SCs(HHH)
+			L4: H_SCs(CsHH)
+			L4: H_SCs(CsCsH)
+			L4: H_SCs(CsCsCs)
 		L3: H_SCd	
 	L2: R_SH
 		L3: Cs_SH
