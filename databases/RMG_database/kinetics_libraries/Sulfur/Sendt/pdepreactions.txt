@@ -1,0 +1,15 @@
+// Pressure dependent reactions from Sendt et al. Proc. Comb. Inst. 2002 
+// Not including reactions 1, 19, 20, 21
+
+Unit:
+A: mol/cm3/s
+E: kcal/mol
+
+Reactions:
+
+H + S2 + M = HSS + M	1.15E25	-2.840	1.66	0.0	0.0	0.0
+N2/ 1/ H2S/ 1.1/ Ar/ 0.88/ He/ 1.39/
+
+// A-factor could also be 2.31E14
+H2S2 + M = SH + SH + M	6.93E14	1.0	57.03	0.0	0.0	0.0
+N2/ 1/ H2S/ 1.1/ Ar/ 0.88/ He/ 1.39/

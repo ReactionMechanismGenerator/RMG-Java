@@ -1,0 +1,25 @@
+// Reactions from Sendt et al. Proc. Comb. Inst. 2002
+// Not including reactions 1, 19, 20, 21
+
+Unit:
+A: mol/cm3/s
+E: kcal/mol
+
+Reactions:
+
+H2S + H = SH + H2	3.49E7	1.940	0.90	0.0	0.0	0.0
+H2S + S = SH + SH	8.32E13	0.0	7.38	0.0	0.0	0.0
+S + H2 = SH + H		1.35E14	0.0	19.29	0.0	0.0	0.0
+S + SH = S2 + H		2.70E13	0.0	0.0	0.0	0.0	0.0
+// Using unadjusted singlet surface calculation for this one (see paper)
+H + HSS = SH + SH	1.10E13	0.353	0.21	0.0	0.0	0.0
+SH + HSS = H2S + S2	6.27E3	3.050	-1.10	0.0	0.0	0.0
+H + HSS = H2 + S2	1.23E8	1.653	-1.10	0.0	0.0	0.0
+H + HSS = H2S + S	4.41E13	0.0	6.33	0.0	0.0	0.0
+S + HSS = S2 + SH	4.17E6	2.200	-0.60	0.0	0.0	0.0
+HSS + HSS = H2S2 + S2	9.56	3.370	-1.67	0.0	0.0	0.0
+H2S2 + H = HSS + H2	4.99E7	1.933	-1.41	0.0	0.0	0.0
+H2S2 + H = H2S + SH	3.66E8	1.724	0.47	0.0	0.0	0.0
+H2S2 + SH = H2S + HSS	6.40E3	2.980	-1.48	0.0	0.0	0.0
+H2S2 + S = HSS + SH	2.85E6	2.310	1.20	0.0	0.0	0.0
+
