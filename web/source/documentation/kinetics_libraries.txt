@@ -12,6 +12,14 @@ Currently, the reaction libraries that are included in RMG are::
 	the GRI-Mech 3.0 mechanism (w/o the nitrogen-containing species and the lumped C3H7 species)
 	the Glarborg combustion mechanism for C1 - C3 species.
 
+.. note::
+
+	One or more species in these mechanisms would normally be forbidden by RMG, 
+	which may lead you to get an error message like  "The molecular structure ...
+	is forbidden by ...". To avoid this, use a 
+	:ref:`Primary Thermodynamic Library <primarythermolibrary>` containing 
+	the species, as this will make it allowed. (e.g. the DFT_QCI_thermo library).
+
 Leeds methane oxidation library
 ===============================
 The species and reactions contained in the :file:`combustion_core\\version5` directory

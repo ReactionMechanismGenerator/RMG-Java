@@ -360,7 +360,7 @@ The next line determines whether RMG will use QM calculations for all species or
 It is often desireable to run with this option on, as the QM calculations can be time-consuming
 and may be less accurate than group-additivity for acyclic species, whereas they are more likely to improve accuracy for cyclic species.
 
-Finally, the user must specify the maximum radical number for species that will be fed to the QM program::
+The user must next specify the maximum radical number for species that will be fed to the QM program::
 
 	MaxRadNumForQM: 0
 
@@ -370,6 +370,16 @@ corrections will be applied, similar to the approach used with group additivity.
 this value be left at 0 (zero), as it has been found that radicals tend to be difficult for the PM3
 implementations to handle robustly, and errors or significant inaccuracies (particularly for biradicals)
 are more likely.
+
+Finally, the user must specify whether (and how) connectivity-checking functionality should be use:
+
+	ConnectivityChecking: confirm
+
+Options include "off", "check", and "confirm". The "off" option disables this functionality.
+The "check" option will perform a check on the final optimized geometry to try to assess whether it corresponds
+to a molecular structure with the desired connectivity; if not, a warning is printed, alerting the user. The "confirm"
+option will perform the same checks, except in cases where there is an apparent mismatch, the job will be treated
+as a failure and calculation with different geometry/keywords will be attempted.
 	
 .. _reactants:
 
@@ -570,6 +580,21 @@ For more information on the two methods, consult the following resources:
 
 When pressure dependence is on, you must also specify a linear interpolation model to use to evaluate :math:`k(T, P)` and output to the Chemkin file. (This line is not required if pressure dependence is set to
 off.) This line must immediately follow the previous one.
+
+By default pressure dependence is run for every system that might show pressure
+dependence, i.e. every isomerization, dissociation, and association reaction.
+In reality, larger molecules are less likely to exhibit pressure-dependent
+behavior than smaller molecules due to the presence of more modes for 
+randomization of the internal energy. In certain cases involving very large
+molecules, it makes sense to only consider pressure dependence for molecules
+smaller than some user-defined number of atoms. This is specified e.g. using
+the line ::
+
+    MaxAtomsForPressureDependence: 20
+
+to turn off pressure dependence for all molecules larger than the given number
+of atoms (20 in the above example). If this option is present, it must be
+given directly before the ``PDepKineticsModel`` option discussed below.
 
 To disregard all temperature and pressure dependence and simply output the rate at the provided
 temperature and pressure, use the line ::

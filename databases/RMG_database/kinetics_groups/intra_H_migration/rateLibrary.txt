@@ -224,35 +224,35 @@ Arrhenius_EP
 824		R7H_OOCs4				O_rad_out		Cs_H_out_2H				300-1500	9.06E+04	1.51	0		19.95	0	0	0		0	2		Curran's [8] estimation in reaction type 19, QOOH = cyclic ether + OH
 825		R7H_OOCs4				O_rad_out		Cs_H_out_H/NonDeC		300-1500	1.37E+06	0.99	0		18.17	0	0	0		0	2		Curran's [8] estimation in reaction type 19, QOOH = cyclic ether + OH
 826		R7H_OOCs4		O_rad_out				Others-Cs_H_out_Cs2		300-1500	5.62E+05	1.09	0		14.28	0	0	0		0	2
-827		Others-R2H_S	C_rad_out_2H			Cs_H_out_H/(CCCOOH)		300-1500	4.07E+09	0.99	0		37.33	0	0	0		0	2		CBS-QB3 calculations (Catherina Wijaya).
-828		Others-R2H_S	C_rad_out_H/NonDeC		Cs_H_out_H/(CCCOOH)		300-1500	6.70E+08	1.15	0		39.04	0	0	0		0	2		CBS-QB3 calculations (Catherina Wijaya).
-829		Others-R2H_S	Others-C_rad_out_Cs2	Cs_H_out_H/(CCCOOH)		300-1500	3.56E+07	1.53	0		40.58	0	0	0		0	2		CBS-QB3 calculations (Catherina Wijaya).
-830		Others-R2H_S	C_rad_out_2H			Cs_H_out_H/((C/C)CCOOH)	300-1500	2.83E+11	0.45	0		35.92	0	0	0		0	2		CBS-QB3 calculations (Catherina Wijaya).
-831		Others-R2H_S	C_rad_out_H/NonDeC		Cs_H_out_H/((C/C)CCOOH)	300-1500	6.89E+10	0.43	0		38.88	0	0	0		0	2		CBS-QB3 calculations (Catherina Wijaya).
-832		Others-R2H_S	C_rad_out_2H			Cs_H_out_H/(CCOOH)		300-1500	5.87E+08	1.28	0		36.70	0	0	0		0	2		CBS-QB3 calculations (Catherina Wijaya).
-833		Others-R2H_S	C_rad_out_H/NonDeC		Cs_H_out_H/(CCOOH)		300-1500	1.75E+08	1.29	0		37.93	0	0	0		0	2		CBS-QB3 calculations (Catherina Wijaya).
-834		Others-R2H_S	Others-C_rad_out_Cs2	Cs_H_out_H/(CCOOH)		300-1500	2.14E+08	1.42	0		38.71	0	0	0		0	2		CBS-QB3 calculations (Catherina Wijaya).
-835		Others-R2H_S	C_rad_out_2H			Cs_H_out_H/((C/C)COOH)	300-1500	4.28E+09	1.12	0		34.69	0	0	0		0	2		Sumathy's CBS-QB3 calculations.
-836		Others-R2H_S	C_rad_out_H/NonDeC		Cs_H_out_H/((C/C)COOH)	300-1500	3.53E+10	0.68	0		37.43	0	0	0		0	2		Sumathy's CBS-QB3 calculations.
-837		Others-R2H_S	Others-C_rad_out_Cs2	Cs_H_out_H/((C/C)COOH)	300-1500	1.24E+09	1.11	0		39.38	0	0	0		0	2		Sumathy's CBS-QB3 calculations.
-838		Others-R3H_SS	C_rad_out_2H			Cs_H_out_H/(CCOOH)		300-1500	6.02E+08	1.11	0		36.56	0	0	0		0	2		Sumathy's CBS-QB3 calculations.
-839		Others-R3H_SS	C_rad_out_H/NonDeC		Cs_H_out_H/(CCOOH)		300-1500	1.63E+07	1.54	0		37.27	0	0	0		0	2		Sumathy's CBS-QB3 calculations.
-840		Others-R3H_SS	Others-C_rad_out_Cs2	Cs_H_out_H/(CCOOH)		300-1500	3.13E+05	2.04	0		36.64	0	0	0		0	2		Sumathy's CBS-QB3 calculations.
-841		Others-R3H_SS	C_rad_out_2H			Cs_H_out_H/((C/C)COOH)	300-1500	6.95E+09	0.79	0		34.71	0	0	0		0	2		Sumathy's CBS-QB3 calculations.
-842		Others-R3H_SS	C_rad_out_H/NonDeC		Cs_H_out_H/((C/C)COOH)	300-1500	3.53E+10	0.68	0		37.43	0	0	0		0	2		Sumathy's CBS-QB3 calculations.
-843		Others-R3H_SS	Others-C_rad_out_Cs2	Cs_H_out_H/((C/C)COOH)	300-1500	4.44E+09	0.8		0		35.84	0	0	0		0	2		Sumathy's CBS-QB3 calculations.
-844		Others-R3H_SS	C_rad_out_2H			Cs_H_out_H/(COOH)		300-1500	1.51E+08	1.16	0		36.24	0	0	0		0	2		Sumathy's CBS-QB3 calculations.
-845		Others-R3H_SS	C_rad_out_H/NonDeC		Cs_H_out_H/(COOH)		300-1500	1.37E+07	1.36	0		37.15	0	0	0		0	2
-846		Others-R3H_SS	Others-C_rad_out_Cs2	Cs_H_out_H/(COOH)		300-1500	4.08E+06	1.55	0		36.68	0	0	0		0	2
-847		Others-R3H_SS	C_rad_out_2H			Cs_H_out_H/((C/C)OOH)	300-1500	4.69E+09	0.68	0		34.81	0	0	0		0	2
-848		Others-R3H_SS	C_rad_out_H/NonDeC		Cs_H_out_H/((C/C)OOH)	300-1500	5.18E+08	0.87	0		36.12	0	0	0		0	2
-849		Others-R3H_SS	Others-C_rad_out_Cs2	Cs_H_out_H/((C/C)OOH)	300-1500	1.07E+07	1.37	0		35.66	0	0	0		0	2
-8441	R4H_SSS			C_rad_out_2H			Cs_H_out_H/(COOH)		300-1500	8.73E+06	1.13	0		18.93	0	0	0		0	2
-8451	R4H_SSS			C_rad_out_H/NonDeC		Cs_H_out_H/(COOH)		300-1500	6.95E+05	1.38	0		19.67	0	0	0		0	2
-8461	R4H_SSS			Others-C_rad_out_Cs2	Cs_H_out_H/(COOH)		300-1500	1.74E+04	1.89	0		18.51	0	0	0		0	2
-8471	R4H_SSS			C_rad_out_2H			Cs_H_out_H/((C/C)OOH)	300-1500	1.09E+09	0.55	0		17.43	0	0	0		0	2
-8481	R4H_SSS			C_rad_out_H/NonDeC		Cs_H_out_H/((C/C)OOH)	300-1500	7.86E+07	0.84	0		15.38	0	0	0		0	2
-8491	R4H_SSS			Others-C_rad_out_Cs2	Cs_H_out_H/((C/C)OOH)	300-1500	1.05E+06	1.39	0		16.19	0	0	0		0	2
+//827		Others-R2H_S	C_rad_out_2H			Cs_H_out_H/(CCCOOH)		300-1500	4.07E+09	0.99	0		37.33	0	0	0		0	2		CBS-QB3 calculations (Catherina Wijaya).
+//828		Others-R2H_S	C_rad_out_H/NonDeC		Cs_H_out_H/(CCCOOH)		300-1500	6.70E+08	1.15	0		39.04	0	0	0		0	2		CBS-QB3 calculations (Catherina Wijaya).
+//829		Others-R2H_S	Others-C_rad_out_Cs2	Cs_H_out_H/(CCCOOH)		300-1500	3.56E+07	1.53	0		40.58	0	0	0		0	2		CBS-QB3 calculations (Catherina Wijaya).
+//830		Others-R2H_S	C_rad_out_2H			Cs_H_out_H/((C/C)CCOOH)	300-1500	2.83E+11	0.45	0		35.92	0	0	0		0	2		CBS-QB3 calculations (Catherina Wijaya).
+//831		Others-R2H_S	C_rad_out_H/NonDeC		Cs_H_out_H/((C/C)CCOOH)	300-1500	6.89E+10	0.43	0		38.88	0	0	0		0	2		CBS-QB3 calculations (Catherina Wijaya).
+//832		Others-R2H_S	C_rad_out_2H			Cs_H_out_H/(CCOOH)		300-1500	5.87E+08	1.28	0		36.70	0	0	0		0	2		CBS-QB3 calculations (Catherina Wijaya).
+//833		Others-R2H_S	C_rad_out_H/NonDeC		Cs_H_out_H/(CCOOH)		300-1500	1.75E+08	1.29	0		37.93	0	0	0		0	2		CBS-QB3 calculations (Catherina Wijaya).
+//834		Others-R2H_S	Others-C_rad_out_Cs2	Cs_H_out_H/(CCOOH)		300-1500	2.14E+08	1.42	0		38.71	0	0	0		0	2		CBS-QB3 calculations (Catherina Wijaya).
+//835		Others-R2H_S	C_rad_out_2H			Cs_H_out_H/((C/C)COOH)	300-1500	4.28E+09	1.12	0		34.69	0	0	0		0	2		Sumathy's CBS-QB3 calculations.
+//836		Others-R2H_S	C_rad_out_H/NonDeC		Cs_H_out_H/((C/C)COOH)	300-1500	3.53E+10	0.68	0		37.43	0	0	0		0	2		Sumathy's CBS-QB3 calculations.
+//837		Others-R2H_S	Others-C_rad_out_Cs2	Cs_H_out_H/((C/C)COOH)	300-1500	1.24E+09	1.11	0		39.38	0	0	0		0	2		Sumathy's CBS-QB3 calculations.
+//838		Others-R3H_SS	C_rad_out_2H			Cs_H_out_H/(CCOOH)		300-1500	6.02E+08	1.11	0		36.56	0	0	0		0	2		Sumathy's CBS-QB3 calculations.
+//839		Others-R3H_SS	C_rad_out_H/NonDeC		Cs_H_out_H/(CCOOH)		300-1500	1.63E+07	1.54	0		37.27	0	0	0		0	2		Sumathy's CBS-QB3 calculations.
+//840		Others-R3H_SS	Others-C_rad_out_Cs2	Cs_H_out_H/(CCOOH)		300-1500	3.13E+05	2.04	0		36.64	0	0	0		0	2		Sumathy's CBS-QB3 calculations.
+//841		Others-R3H_SS	C_rad_out_2H			Cs_H_out_H/((C/C)COOH)	300-1500	6.95E+09	0.79	0		34.71	0	0	0		0	2		Sumathy's CBS-QB3 calculations.
+//842		Others-R3H_SS	C_rad_out_H/NonDeC		Cs_H_out_H/((C/C)COOH)	300-1500	3.53E+10	0.68	0		37.43	0	0	0		0	2		Sumathy's CBS-QB3 calculations.
+//843		Others-R3H_SS	Others-C_rad_out_Cs2	Cs_H_out_H/((C/C)COOH)	300-1500	4.44E+09	0.8		0		35.84	0	0	0		0	2		Sumathy's CBS-QB3 calculations.
+//844		Others-R3H_SS	C_rad_out_2H			Cs_H_out_H/(COOH)		300-1500	1.51E+08	1.16	0		36.24	0	0	0		0	2		Sumathy's CBS-QB3 calculations.
+//845		Others-R3H_SS	C_rad_out_H/NonDeC		Cs_H_out_H/(COOH)		300-1500	1.37E+07	1.36	0		37.15	0	0	0		0	2
+//846		Others-R3H_SS	Others-C_rad_out_Cs2	Cs_H_out_H/(COOH)		300-1500	4.08E+06	1.55	0		36.68	0	0	0		0	2
+//847		Others-R3H_SS	C_rad_out_2H			Cs_H_out_H/((C/C)OOH)	300-1500	4.69E+09	0.68	0		34.81	0	0	0		0	2
+//848		Others-R3H_SS	C_rad_out_H/NonDeC		Cs_H_out_H/((C/C)OOH)	300-1500	5.18E+08	0.87	0		36.12	0	0	0		0	2
+//849		Others-R3H_SS	Others-C_rad_out_Cs2	Cs_H_out_H/((C/C)OOH)	300-1500	1.07E+07	1.37	0		35.66	0	0	0		0	2
+//8441	R4H_SSS			C_rad_out_2H			Cs_H_out_H/(COOH)		300-1500	8.73E+06	1.13	0		18.93	0	0	0		0	2
+//8451	R4H_SSS			C_rad_out_H/NonDeC		Cs_H_out_H/(COOH)		300-1500	6.95E+05	1.38	0		19.67	0	0	0		0	2
+//8461	R4H_SSS			Others-C_rad_out_Cs2	Cs_H_out_H/(COOH)		300-1500	1.74E+04	1.89	0		18.51	0	0	0		0	2
+//8471	R4H_SSS			C_rad_out_2H			Cs_H_out_H/((C/C)OOH)	300-1500	1.09E+09	0.55	0		17.43	0	0	0		0	2
+//8481	R4H_SSS			C_rad_out_H/NonDeC		Cs_H_out_H/((C/C)OOH)	300-1500	7.86E+07	0.84	0		15.38	0	0	0		0	2
+//8491	R4H_SSS			Others-C_rad_out_Cs2	Cs_H_out_H/((C/C)OOH)	300-1500	1.05E+06	1.39	0		16.19	0	0	0		0	2
 //From 850 to 869 added by Sandeep. The rate rules are from DFT/CBSB7 level of calculations.
 850		R3H_SS_OC				O_rad_out		Cs_H_out_H/NonDeO		300-1500	3.00e8		1.23	0		36.85	0   0   0  	    0   3		Sandeep's DFT/CBSB7 level of calculations.
 851		R3H_SS_OC				O_rad_out		Cs_H_out_NDMustO		300-1500	3.00e8		1.23	0		36.85	0	0	0		0	3		Sandeep's DFT/CBSB7 level of calculations.

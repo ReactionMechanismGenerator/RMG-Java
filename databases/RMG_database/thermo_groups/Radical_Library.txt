@@ -56,6 +56,7 @@
 31	C2CJCOOH	97.20	7.31	-3.54	-4.16	-4.44	-4.58	-4.74	-4.88	-5.23	0	0	0	WIJAYA et al.
 32	Benzyl_T	83.8	-5.34	0.27	-0.78	-1.54	-2.06	-2.74	-3.19	-3.19	0	0	0	LAY et al.																
 33	Allyl_T		83.4	-3.69	-1.79	-2.38	-2.74	-2.97	-3.28	-3.55	-3.55	0	0	0	LAY et al.															
+501 C2CJCO     C2CJCHO
 34	C2CJCHO		89.8	-1.71	0.62	-0.2	-1.23	-1.82	-2.87	-3.47	-3.47	0	0	0	CHEN & BOZZELLI #. Value for Cp1500 taken as equal to Cp1000															
 35	Tert_Propargyl	84.5	1.48	-0.04	-1.01	-1.74	-2.41	-3.19	-3.65	-3.65	0	0	0	LAY et al.																
 36	CsJO		CsJOH																								

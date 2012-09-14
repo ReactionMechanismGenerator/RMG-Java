@@ -3710,19 +3710,6 @@ MHS computed the fitted Arrhenius expression to be: k(T) = 1.91e-4 (T/1K)^4.25 e
 The uncertainty in the E0 was estimated to be 2 kcal mol-1 (general accuracy of CBS-QB3 calculations) and the uncertainty
 in the A parameter was MRH guess.
 
----------
-542 - 549
----------
-Obtained from the work of Pfaendtner and Broadbelt (DOI: 10.1002/cphc.200700161) who report both forward and reverse rate
-coefficients for ROO. + RH = ROOH + R. using CBS-QB3 with 1DHR for 8 candidate reactions. Since RMG finds the R. + ROOH to be exothermic,
-the parameters for the reverse rate were put into the library. 
-
-Update August 5, 2011
-AJ updated node 543,546 and 549 (i.e. abstraction from secondary ROO-H) using values for HO2 + alkanes recommended by Aguilera-Iparraguirre et al. (J. Phys. Chem. A 2008, 112, 7047–7054) 
-using the R12 method. Since RMG requires rate parameters for the reverse reaction, AJ used the recommended rates for the 
-C8H17OO. + octane = C8H17OOH + octyl system (2-octyl isomers) and obtained Arrhenius fits for the reverse reactions using ChemRev software. 
-The thermodynamic data required for this calculation was obtained from RMG group additivity using the ThermoDataEstimator module.
-
 ----------
 References
 ----------

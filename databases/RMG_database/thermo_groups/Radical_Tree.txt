@@ -63,7 +63,8 @@ L1: RJ
 				L6: C2CJCOOH
 			L5: Benzyl_T	
 			L5: Allyl_T
-			L5: C2CJCHO
+			L5: C2CJCO
+                L6: C2CJCHO
 			L5: Tert_Propargyl
 		L4: CsJO
 			L5: CsJOH

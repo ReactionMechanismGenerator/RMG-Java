@@ -9233,26 +9233,30 @@ subroutine xerrwv ( xmess, nerr, level, ni, i1, i2, nr, r1, r2 )
   real ( kind = 8 ) r1
   real ( kind = 8 ) r2
   character ( len = * ) xmess
+  
+  integer stderr
+  stderr = 0 ! should use iso_fortran_env
+  ! see http://stackoverflow.com/questions/8508590/stderr-in-fortran90
 !
 !     if ( level < 1) return
 !
-  write(*,'(1x,a)') trim ( xmess )
-  write(*,'('' error number = '',i5,'', message level = '',i5)')nerr,level
+  write(stderr,'(1x,a)') trim ( xmess )
+  write(stderr,'('' error number = '',i5,'', message level = '',i5)')nerr,level
 
   if ( ni == 1 .or. ni == 2 )then
-    write(*,'('' i1 = '',i8)') i1
+    write(stderr,'('' i1 = '',i8)') i1
   end if
 
   if ( ni == 2)then
-    write(*,'('' i2 = '',i8)') i2
+    write(stderr,'('' i2 = '',i8)') i2
   end if
 
   if ( nr == 1 .or. nr == 2)then
-    write(*,'('' r1 = '',1pe15.7)') r1
+    write(stderr,'('' r1 = '',1pe15.7)') r1
   end if
 
   if ( nr == 2)then
-    write(*,'('' r2 = '',1pe15.7)') r2
+    write(stderr,'('' r2 = '',1pe15.7)') r2
   end if
 
   return

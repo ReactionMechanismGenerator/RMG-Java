@@ -247,7 +247,9 @@ public class SeedMechanism {
         }
         catch (Exception e) {
 			Logger.logStackTrace(e);
-			throw new IOException("RMG cannot read the \"species.txt\" file in the " + source + p_name + "\n" + e.getMessage());
+			String message = "RMG cannot read the \"species.txt\" file in the " + source + p_name + "\n" + e.getMessage();
+			if (e instanceof jing.chem.ForbiddenStructureException) message += "\n Try adding it to a Thermo Library to make it allowed.";
+			throw new IOException(message);
         }
     }
     
