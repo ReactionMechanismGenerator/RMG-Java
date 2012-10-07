@@ -36,6 +36,7 @@ endif
 ifeq ($(shell expr "$(f90version)" : 'G95'), 3)
   F90FLAGS = -fbounds-check -ftrace=full -fmod=$(BUILDDIR) -Wall -O3
   F90FLAGS_NDEBUG = -fmod=$(BUILDDIR) -ftrace=full   # used for dassl and daspk
+  F90_FAME_FLAGS = -r8 # used for FAME
 endif ###### END OF G95 SETTINGS
 
 # If running gfortran
@@ -56,6 +57,7 @@ ifeq ($(shell expr "$(f90version)" : 'GNU Fortran'), 11)
     F90_EXTRA_LDFLAGS +=  -framework vecLIB
   endif
 
+  F90_FAME_FLAGS = -fdefault-real-8 # used for FAME
   F90FLAGS_NDEBUG = $(F90FLAGS) # used for dassl and daspk
 endif ###### END OF gfortran SETTINGS
 
@@ -73,11 +75,11 @@ OBJ=$(patsubst %.o,$(BUILDDIR)/%.o,$(OBJ0))
 
 $(BINDIR)/fame.exe: $(OBJ)  
 	mkdir -p $(BINDIR)
-	$(F90) $(LDFLAGS) -o $(BINDIR)/fame.exe $(OBJ) $(LIBS)
+	$(F90) $(F90_FAME_FLAGS) $(LDFLAGS) -o $(BINDIR)/fame.exe $(OBJ) $(LIBS)
 
 $(BUILDDIR)/%.o: %.f90
 	mkdir -p $(BUILDDIR)
-	$(F90) $(F90FLAGS) -c $< -o $@
+	$(F90) $(F90_FAME_FLAGS) $(F90FLAGS) -c $< -o $@
 
 clean:
 	rm -rf $(BUILDDIR)
