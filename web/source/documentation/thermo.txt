@@ -13,25 +13,19 @@ Instructions for Use
    The next section allows to use on-the-fly generation QM techniques to estimate TD
    properties, rather than group additivity methods.
    
-   The first flag activates the use of QM methods (set flag to true):
+   The first flag defines the strategy to estimate thermochemistry:
    e.g.::
 
-   	//QM?
-   	false
+   	//thermo strategy? [BensonOnly/QMforCyclics/Hybrid]
+   	Hybrid
    
    The QM package to be used, is specified: either choose "both", "gaussian03", "mopac", 
    "mm4", or "mm4hr"
    e.g.::
 
-   	//method
+   	//QM method: [both/gaussian03/mopac/mm4/mm4hr] 
    	gaussian03
    
-   Limit the use of on-the-fly methods to only cyclic species with the following flag 
-   (set to true)
-   e.g.::
-
-   	//ForCyclicsOnly?
-   	true
    
    Limit the use of on-the-fly methods to only species with less than the specified number
    of unpaired electrons. E.g. "0", implies that radical species will not computed using
@@ -41,6 +35,15 @@ Instructions for Use
    	//maxradnumforQM?
    	0  
    
+   A check of the connectivity of the passed-in 3D structure can be performed ensuring
+   that the quantumchemical data returned by the QM package is based on a 3D structure with
+   correct connectivity. 
+   e.g.::
+   
+    //CheckConnectivity? [off/check/confirm]
+    check
+    
+    
    The next section allows the user to set atom constraints on the species to be processed
    by the ThermoDataEstimator, beyond the default values hard-coded in TDE. 
    Only species that satisfy the set atom constraints, will be processed by TDE.
