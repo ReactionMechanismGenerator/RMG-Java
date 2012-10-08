@@ -471,33 +471,13 @@ public class ReactionModelGenerator {
         		StringTokenizer st = new StringTokenizer(line);
         		String name = st.nextToken();
         		String thermoMethod = st.nextToken().toLowerCase();
-        		if (thermoMethod.equals("qm")) {
-        			ChemGraph.useQM = true;
-					if(st.hasMoreTokens()){//override the default qmprogram ("both") if there are more; current options: "gaussian03" and "mopac" and of course, "both"
+        		ChemGraph.TDMETHOD = thermoMethod;
+        		if (thermoMethod.toLowerCase().contains("qm")||thermoMethod.toLowerCase().contains("hybrid")) {
+        			if(st.hasMoreTokens()){//override the default qmprogram ("both") if there are more; current options: "gaussian03" and "mopac" and of course, "both"
 					    QMTP.qmprogram = st.nextToken().toLowerCase();
 					}
-					line=ChemParser.readMeaningfulLine(reader, true);
-					if(line.startsWith("QMForCyclicsOnly:")){
-						StringTokenizer st2 = new StringTokenizer(line);
-						String nameCyc = st2.nextToken();
-						String option = st2.nextToken().toLowerCase();
-						if (option.equals("on")) {
-							ChemGraph.useQMonCyclicsOnly = true;
-						}
-					}
-					else{
-						Logger.critical("condition.txt: Can't find 'QMForCyclicsOnly:' field");
-						System.exit(0);
-					}
-					line=ChemParser.readMeaningfulLine(reader, true);
-					if(line.startsWith("QMForNonAromaticFusedCyclicsOnly:")){
-						StringTokenizer st2 = new StringTokenizer(line);
-						String nameCyc = st2.nextToken();
-						String option = st2.nextToken().toLowerCase();
-						if (option.equals("on")) {
-							ChemGraph.useQMonNonAromaticFusedCyclicsOnly = true;
-						}
-					}
+					//line=ChemParser.readMeaningfulLine(reader, true);
+				
 					
 					line=ChemParser.readMeaningfulLine(reader, true);
 					if(line.startsWith("MaxRadNumForQM:")){
@@ -1444,7 +1424,7 @@ public class ReactionModelGenerator {
             reactionChangedList.set(i,false);
         }
         //9/1/09 gmagoon: if we are using QM, output a file with the CHEMKIN name, the RMG name, the (modified) InChI, and the (modified) InChIKey
-        if (ChemGraph.useQM){
+        if (! ChemGraph.TDMETHOD.contains("benson")){
             writeInChIs(getReactionModel());      
         }
         writeDictionary(getReactionModel());
@@ -1574,7 +1554,7 @@ public class ReactionModelGenerator {
 				startTime = System.currentTimeMillis();
 
 				//9/1/09 gmagoon: if we are using QM, output a file with the CHEMKIN name, the RMG name, the (modified) InChI, and the (modified) InChIKey
-				if (ChemGraph.useQM){
+				if (!ChemGraph.TDMETHOD.contains("benson")){
 					writeInChIs(getReactionModel());                    
 				}
 				writeDictionary(getReactionModel());
@@ -1801,7 +1781,7 @@ public class ReactionModelGenerator {
 		Chemkin.writeChemkinInputFile(getReactionModel(),rs.getPresentStatus()); 
 		
         //9/1/09 gmagoon: if we are using QM, output a file with the CHEMKIN name, the RMG name, the (modified) InChI, and the (modified) InChIKey
-        if (ChemGraph.useQM){
+        if (!ChemGraph.TDMETHOD.contains("benson")){
             writeInChIs(getReactionModel());    
         }
 		

@@ -8,7 +8,7 @@ import jing.chem.QMTP;
  *
  */
 public class QMFlags {
-	public Boolean qmActive;
+	public String TDSTRATEGY;
 	
 	/**
 	 * TODO method attribute should become Enum subtype
@@ -16,19 +16,13 @@ public class QMFlags {
 	 */
 	public String method;
 	
-	public Boolean qmOnCyclicsOnly;
-	
 	public Integer maxRadNumForQM;
 
 	public Integer connectivityCheck;
 
-	public Boolean qmOnNonAromaticFusedCyclicsOnly;
-	
 	public QMFlags(){
-		qmActive = null;
+		TDSTRATEGY = null;
 		method = null;
-		qmOnCyclicsOnly = null;
-		qmOnNonAromaticFusedCyclicsOnly = null;
 		maxRadNumForQM = null;
 		connectivityCheck = null;
 	}

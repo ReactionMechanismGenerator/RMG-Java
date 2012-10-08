@@ -65,9 +65,7 @@ public class ChemGraph implements Matchable {
     protected static int MAX_HEAVYATOM_NUM = 100;
     protected static String repOkString = null;
     
-    public static boolean useQM = false;//gmagoon 6/15/09: flag for thermo estimation using quantum results; there may be a better place for this (Global?) but for now, this should work
-    public static boolean useQMonCyclicsOnly=false;
-	public static boolean useQMonNonAromaticFusedCyclicsOnly = false;
+    public static String TDMETHOD = null;
     /**
     Chemical Formula of a ChemGraph.
     */
@@ -1402,76 +1400,22 @@ return sn;
     */
     //## operation generateThermoData()
     public ThermoData generateThermoData() throws FailGenerateThermoDataException {
-        //#[ operation generateThermoData()
-        // use GAPP to generate Thermo data
-        try {
-        		useQM = true;
-                if (useQM){
-                	//start by using Benson GA to estimate:
-                	thermoGAPP = GATP.getINSTANCE();
-                	ThermoData dummyGA = thermoGAPP.generateThermoData(this);
-                	if (dummyGA != null) {
-	                	
-	                	/*
-	                	 * If the molecule is acyclic, don't even think using QMTP.
-	                	 */
-	                	if(!this.isAcyclic()){
-	                		/*
-	                		 * If the molecule has no fused ring atoms, then don't even 
-	                		 * think using QMTP neither.
-	                		 */
-	                		if(this.getGraph().getFusedRingAtoms() != null){
-	                			Logger.info("Polycyclic ring system with fused ring atoms.");
-	                			/*
-	                			 * If the Benson GA library did not contain
-	                			 * the right polycyclic ring strain correction,
-	                			 * then fall back to QMTP!
-	                			 */
-	                			if(((GATP)thermoGAPP).getPolycyclic() == null){
-	                				Logger.info("Could not find a polycyclic ring strain correction. Falling back to QMTP");                		
-	                				thermoGAPP=QMTP.getINSTANCE();
-	                				ThermoData dummyQM = thermoGAPP.generateThermoData(this);
-	                				thermoData = dummyQM;
-	                			}
-	                			else
-	                				thermoData = dummyGA;
-	                		}
-	                		else
-	                			thermoData = dummyGA;
-	                	}
-	                	else
-	                		thermoData = dummyGA;
-                	}
-                	else{
-                		Logger.info("Could not find a non trivial ring correction. Falling back to QMTP!");
-                		thermoGAPP=QMTP.getINSTANCE();
-        				ThermoData dummyQM = thermoGAPP.generateThermoData(this);
-        				thermoData = dummyQM;
-
-                	}
-                }
-                else{
-                	thermoGAPP = GATP.getINSTANCE();
-                	thermoData = thermoGAPP.generateThermoData(this);
-                }
-
-		//fall back to GATP if it is a failed QMTP calculation
-		if (((String)thermoData.getSource()).equals("***failed calculation***")){
-		    Logger.warning("Falling back to group additivity due to repeated failure in QMTP calculations");
-		    thermoData=(GATP.getINSTANCE()).generateThermoData(this);
-		}
-
-            //thermoData = thermoGAPP.generateAbramData(this);
-        	return thermoData;
-        }
-		catch (MultipleGroupFoundException e) {
-			throw e;
-		}
-        catch (Exception e) {
-			Logger.logStackTrace(e);
-        	throw new FailGenerateThermoDataException();
-        }
-        //#]
+    	TDGenerator gen = null;
+        		if(TDMETHOD.toLowerCase().startsWith("benson")){
+        			gen = new BensonTDGenerator();
+        			thermoData = gen.generateThermo(this);
+        			return thermoData;
+        		}
+        		
+        		else if(TDMETHOD.toLowerCase().startsWith("qm")){
+        			gen = new QMForCyclicsGenerator();
+        		}
+        		else {//default method is hybrid
+        			gen = new HybridTDGenerator();
+        		}
+        		
+        thermoData = gen.generateThermo(this);
+    	return thermoData;
     }
     
     public TransportData generateTransportData() {
@@ -2943,6 +2887,10 @@ return sn;
     public boolean getIsAromatic() {
 	return isAromatic;
     }
+
+	public boolean containsFusedRingAtoms() {
+		return graph.getFusedRingAtoms() != null;
+	}
 }
 /*********************************************************************
 	File Path	: RMG\RMG\jing\chem\ChemGraph.java

@@ -71,6 +71,7 @@ public class GATP implements GeneralGAPP {
      protected static PrimaryThermoLibrary primaryLibrary;//svp
 
 	public ThermoGAValue polycyclic;
+	public Map<ThermoGAValue, Integer> monoCyclicRSCs;
 
     // Constructors
 
@@ -110,11 +111,9 @@ public class GATP implements GeneralGAPP {
          */
         if(!p_chemGraph.isAcyclic()){
         	if (p_chemGraph.getGraph().getFusedRingAtoms() == null){
-        		Map<ThermoGAValue, Integer> ring_corrections = getRingCorrections(p_chemGraph);
-        		if (ring_corrections != null)
-        			result.plus(ring_corrections);
-        		else
-        			return null;
+        		getRingCorrections(p_chemGraph);
+        		if (monoCyclicRSCs != null)
+        			result.plus(monoCyclicRSCs);
         	}
         	else{
         		polycyclic = getPolyCyclicRingCorrections(p_chemGraph);
@@ -333,14 +332,14 @@ public class GATP implements GeneralGAPP {
 	        if (p_chemGraph.isRadical()) {
 				sat = ChemGraph.saturate(p_chemGraph);
 	        }
-	        Map<ThermoGAValue, Integer> ga = thermoLibrary.findRingCorrections(sat);
+	        monoCyclicRSCs = thermoLibrary.findRingCorrections(sat);
 	        if (p_chemGraph.isRadical()) {
 	        	p_chemGraph.appendThermoComments(sat.getThermoComments());
 	        }
 	        /*System.out.println("Ring Correction for "+ p_chemGraph.generateChemicalFormula() +" : " + ga.getName());
 	        System.out.println(p_chemGraph.toStringWithoutH());*/
 			p_chemGraph.setCentralNode(oldCentralNode);
-	        return ga;
+	        return monoCyclicRSCs;
 
 
         //#]
@@ -407,6 +406,11 @@ public class GATP implements GeneralGAPP {
 
 	public ThermoGAValue getPolycyclic() {
 		return polycyclic;
+	}
+
+
+	public Map<ThermoGAValue, Integer> getMonoCyclicRSCs() {
+		return monoCyclicRSCs;
 	}
 
 	/*
