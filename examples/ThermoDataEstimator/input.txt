@@ -1,11 +1,9 @@
 Database: RMG_database
 
-//QM? true/false
-false
-//method: both/gaussian03/mopac/mm4/mm4hr 
-gaussian03
-//ForCyclicsOnly? true/false
-true
+//thermo strategy? BensonOnly/QMforCyclics/Hybrid
+hybrid
+//QM method: both/gaussian03/mopac/mm4/mm4hr 
+both
 //maxradnumforQM?
 0
 //CheckConnectivity? off/check/confirm
