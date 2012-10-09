@@ -205,7 +205,7 @@ HOOCH2OH
 
 
 //C2 singlet
-C2(S)
+//C2(S)
 //1  C 0 {2,Q}
 //2  C 0 {1,Q}
 
