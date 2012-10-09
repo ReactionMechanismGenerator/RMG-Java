@@ -44,17 +44,29 @@ import jing.param.Temperature;
 //## class ChebyshevPolynomials 
 public class ChebyshevPolynomials implements PDepKinetics {
     
-    protected static int NP;		//## attribute NP 
+    protected static int default_NP;
     
-    protected static int NT;		//## attribute NT 
+    protected static int default_NT;
     
-    protected static Pressure Plow;		//## attribute Plow 
+    protected static Pressure default_Plow;
     
-    protected static Pressure Pup;		//## attribute Pup 
+    protected static Pressure default_Pup;
     
-    protected static Temperature Tlow;		//## attribute Tlow 
+    protected static Temperature default_Tlow;
     
-    protected static Temperature Tup;		//## attribute Tup 
+    protected static Temperature default_Tup;
+    
+    protected int NP;		//## attribute NP 
+    
+    protected int NT;		//## attribute NT 
+    
+    protected Pressure Plow;		//## attribute Plow 
+    
+    protected Pressure Pup;		//## attribute Pup 
+    
+    protected Temperature Tlow;		//## attribute Tlow 
+    
+    protected Temperature Tup;		//## attribute Tup 
     
     protected double [][] alpha;		//## attribute alpha 
     
@@ -230,7 +242,7 @@ public class ChebyshevPolynomials implements PDepKinetics {
         //#]
     }
     
-    public static int getNP() {
+    public int getNP() {
         return NP;
     }
     
@@ -238,7 +250,7 @@ public class ChebyshevPolynomials implements PDepKinetics {
         NP = p_NP;
     }
     
-    public static int getNT() {
+    public int getNT() {
         return NT;
     }
     
@@ -246,36 +258,84 @@ public class ChebyshevPolynomials implements PDepKinetics {
         NT = p_NT;
     }
     
-    public static Pressure getPlow() {
+    public Pressure getPlow() {
         return Plow;
     }
     
-    public static void setPlow(Pressure p_Plow) {
+    public void setPlow(Pressure p_Plow) {
         Plow = p_Plow;
     }
     
-    public static Pressure getPup() {
+    public Pressure getPup() {
         return Pup;
     }
     
-    public static void setPup(Pressure p_Pup) {
+    public void setPup(Pressure p_Pup) {
         Pup = p_Pup;
     }
     
-    public static Temperature getTlow() {
+    public Temperature getTlow() {
         return Tlow;
     }
     
-    public static void setTlow(Temperature p_Tlow) {
+    public void setTlow(Temperature p_Tlow) {
         Tlow = p_Tlow;
     }
     
-    public static Temperature getTup() {
+    public Temperature getTup() {
         return Tup;
     }
     
-    public static void setTup(Temperature p_Tup) {
+    public void setTup(Temperature p_Tup) {
         Tup = p_Tup;
+    }
+    
+    public static int getDefaultNP() {
+        return default_NP;
+    }
+    
+    public static void setDefaultNP(int p_NP) {
+        default_NP = p_NP;
+    }
+    
+    public static int getDefaultNT() {
+        return default_NT;
+    }
+    
+    public static void setDefaultNT(int p_NT) {
+        default_NT = p_NT;
+    }
+    
+    public static Pressure getDefaultPlow() {
+        return default_Plow;
+    }
+    
+    public static void setDefaultPlow(Pressure p_Plow) {
+        default_Plow = p_Plow;
+    }
+    
+    public static Pressure getDefaultPup() {
+        return default_Pup;
+    }
+    
+    public static void setDefaultPup(Pressure p_Pup) {
+        default_Pup = p_Pup;
+    }
+    
+    public static Temperature getDefaultTlow() {
+        return default_Tlow;
+    }
+    
+    public static void setDefaultTlow(Temperature p_Tlow) {
+        default_Tlow = p_Tlow;
+    }
+    
+    public static Temperature getDefaultTup() {
+        return default_Tup;
+    }
+    
+    public static void setDefaultTup(Temperature p_Tup) {
+        default_Tup = p_Tup;
     }
     
     public double getAlpha(int i2, int i1) {
