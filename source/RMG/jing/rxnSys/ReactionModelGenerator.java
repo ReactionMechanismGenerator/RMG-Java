@@ -473,7 +473,6 @@ public class ReactionModelGenerator {
         		String thermoMethod = st.nextToken().toLowerCase();
         		ChemGraph.TDMETHOD = thermoMethod;
         		if (thermoMethod.contains("qm")||thermoMethod.contains("hybrid")) {
-        			QMTPThermoWriter.initialize();
         			if(st.hasMoreTokens()){//override the default qmprogram ("both") if there are more; current options: "gaussian03" and "mopac" and of course, "both"
 					    QMTP.qmprogram = st.nextToken().toLowerCase();
 					}
