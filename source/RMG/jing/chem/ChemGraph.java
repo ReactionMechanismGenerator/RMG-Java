@@ -65,7 +65,7 @@ public class ChemGraph implements Matchable {
     protected static int MAX_HEAVYATOM_NUM = 100;
     protected static String repOkString = null;
     
-    public static String TDMETHOD = null;
+    public static String TDMETHOD = "benson";
     /**
     Chemical Formula of a ChemGraph.
     */
