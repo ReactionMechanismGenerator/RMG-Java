@@ -34,6 +34,7 @@ import jing.chem.*;
 import jing.mathTool.MathTool;
 
 import java.util.*;
+
 import jing.rxnSys.Logger;
 
 //## package jing::chemUtil
@@ -2158,6 +2159,188 @@ public class Graph {
 
     public void clearArcList() {
         arcList.clear();
+    }
+    
+    /**
+     * returns a set of Node's of the ChemGraph that belong to two or more fused rings.
+     * A fused ring system is a set of rings that share at least one common bond. An 
+     * example is decalin, with two fused cyclohexane rings.
+     * @return
+     */
+    public Set<Node> getFusedRingAtoms(){
+    	
+    	if(SSSRings == null){
+    		return null;
+    	}
+    	else if (acyclic){
+    		return null;
+    	}
+    	else if(getCycleNumber() == 1){//monocyclic case
+    		return null;
+    	}
+    	else{
+    		Set<Node> fusedRingAtoms = new HashSet<Node>();
+    		//First retrieve lists with all the Nodes that belong to rings:
+    		List<Set<Node>> ringNodesList = new LinkedList<Set<Node>>();
+    		Iterator iterCycle = SSSRings.iterator(); //loop over all SSSRs
+        	while(iterCycle.hasNext()){
+        		Set<Node> nodesSet = new HashSet<Node>();
+        		LinkedList cycle = (LinkedList)iterCycle.next();
+        		Iterator iter = cycle.iterator();
+        		while(iter.hasNext()){
+        			GraphComponent node = (GraphComponent)iter.next();
+        			if(node instanceof Node){
+        				nodesSet.add((Node)node);
+        			}
+        		}
+        		ringNodesList.add(nodesSet);
+        	}
+        	//Now look for Nodes that belong to more than one Set of Nodes = fused ring atoms
+        	for(int index = 0; index < ringNodesList.size()-1; index++){// end at the one before last
+        		Set<Node> set = ringNodesList.get(index);
+        		for (Node node : set){
+        			if(ringNodesList.get(index+1).contains(node)){
+        				fusedRingAtoms.add(node);
+        			}
+        		}
+        	}
+        	if(fusedRingAtoms.isEmpty()){
+        		return null;
+        	}
+        	else{
+        		return fusedRingAtoms;
+        	}
+    	}
+
+    }
+
+    /**
+     * Returns the atoms belonging to one or more rings.
+     * 
+     * This is retrieved by iterating over all nodes belonging to a cycle
+     * and incrementing a Set of nodes corresponding to the atoms in the molecule. 
+     * Since the java.util.Set type only allows unique elements, adding an already
+     * existing reference to a node will not be permitted.
+     * <BR><BR>
+     * Keep in mind that just adding the number of atoms in each of the SSSRings fails
+     * (overestimates) for fused ring systems, where a single atom can belong to multiple
+     * rings at the time. 
+     * 
+     * 
+     * @return
+     */
+    public Set<Node> getRingAtoms(){
+    	Set<Node> ringAtoms = new HashSet<Node>();
+    	List<Set<Node>> cycleNodes = getCycleNodes();
+    	for (Set set : cycleNodes)
+    		for(Iterator iter =  set.iterator(); iter.hasNext();){
+    			Node  node = (Node)iter.next();
+    			ringAtoms.add(node);
+    		
+    		}
+    	return ringAtoms;
+    }
+    /**
+     * Returns a list with sets of Nodes that belong to SSS Rings.
+     * @return
+     */
+	public List<Set<Node>> getCycleNodes() {
+		if(SSSRings == null){
+    		return null;
+    	}
+    	else if (acyclic){
+    		return null;
+    	}
+    	else{
+    		//First retrieve lists with all the Nodes that belong to rings:
+    		List<Set<Node>> ringNodesList = new LinkedList<Set<Node>>();
+    		Iterator iterCycle = SSSRings.iterator(); //loop over all SSSRs
+        	while(iterCycle.hasNext()){
+        		Set<Node> nodesSet = new HashSet<Node>();
+        		LinkedList cycle = (LinkedList)iterCycle.next();
+        		Iterator iter = cycle.iterator();
+        		while(iter.hasNext()){
+        			GraphComponent node = (GraphComponent)iter.next();
+        			if(node instanceof Node){
+        				nodesSet.add((Node)node);
+        			}
+        		}
+        		ringNodesList.add(nodesSet);
+        	}
+        	return ringNodesList;
+    	}
+	}
+
+
+	/**
+	 * Iterates over the SSSR's and searches for rings
+	 * that solely consist of Cb atoms.<BR><BR>
+	 * 
+	 * The algorithms iterates over all nodes of each ring and then iterates
+	 * over all neighbouring bonds.<BR><BR>
+	 * 
+	 * If at least 2 "B" bonds have been found, the atom must be an
+	 * aromatic atom.<BR><BR>
+	 * 
+	 * If all atoms in the ring are aromatic atoms, then an aromatic ring
+	 * is found, and true is returned.<BR><BR>
+	 * 
+	 * Efficiency is increased by first checking the number of nodes in each
+	 * ring. If this number is different from 6, then skip the ring.
+	 * This assumes that aromatic rings always consist of 6 atoms.
+	 * 
+	 * In cases of naphthalene, where a 6 + 4 aromatic system exists,
+	 * there will be at least one 6 membered aromatic ring so this algorithm
+	 * will not fail for fused aromatic rings.
+	 * 
+	 * 
+	 * @return
+	 */
+	public boolean containsAromaticRing() {
+		if(SSSRings == null || acyclic){
+    		return false;
+    	}
+    	else{
+    		Iterator iterCycle = SSSRings.iterator(); //loop over all SSSRs
+        	while(iterCycle.hasNext()){
+        		Set<Node> nodesSet = new HashSet<Node>();
+        		List cycle = (LinkedList)iterCycle.next();
+        		Iterator iter = cycle.iterator();
+        		int numberOfNodes = 0;
+        		while(iter.hasNext()){//count number of node elements
+        			if((GraphComponent)iter.next() instanceof Node)
+        				numberOfNodes++;
+        		}
+        		if(numberOfNodes == 6){//Assume aromatic rings always count 6 atoms:
+        			iter = cycle.iterator();
+            		boolean isAromaticRing = true;
+            		while(iter.hasNext()&& isAromaticRing){
+            			GraphComponent node = (GraphComponent)iter.next();
+            			if(node instanceof Node){
+            				node = (Node)node;
+            				Iterator neighbours = node.getNeighbor();
+            				int counter = 0;
+            				while(neighbours.hasNext() && counter < 2){
+            					GraphComponent neighbour = (GraphComponent) neighbours.next(); 
+            					if(neighbour instanceof Arc){
+            						neighbour = (Arc)neighbour;
+            						if (((Bond)neighbour.getElement()).getName().equals("B")){
+            							counter++;
+            						}
+            					}
+            				}
+            				if (counter < 2){//this is not an aromatic atom
+            					isAromaticRing = false;
+            				}
+            			}
+            		}
+            		if (isAromaticRing){//as soon as one aromatic ring is found, return true
+            			return true;
+            		}
+        		}
+        	}
+    	}
+		return false;
     }
 
 }

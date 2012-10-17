@@ -75,8 +75,6 @@ public class DictionaryReader {
 //            System.exit(0);
 //	}
 
-        ChemGraph.useQM = true;
-        ChemGraph.useQMonCyclicsOnly = false;
         Global.maxRadNumForQM = 9999;
         QMTP.qmfolder = "DictionaryQMFiles/";
         //QMTP.qmprogram = "gaussian03";

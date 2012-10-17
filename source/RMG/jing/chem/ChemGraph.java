@@ -65,8 +65,7 @@ public class ChemGraph implements Matchable {
     protected static int MAX_HEAVYATOM_NUM = 100;
     protected static String repOkString = null;
     
-    public static boolean useQM = false;//gmagoon 6/15/09: flag for thermo estimation using quantum results; there may be a better place for this (Global?) but for now, this should work
-    public static boolean useQMonCyclicsOnly=false;
+    public static String TDMETHOD = "benson";
     /**
     Chemical Formula of a ChemGraph.
     */
@@ -1401,32 +1400,22 @@ return sn;
     */
     //## operation generateThermoData()
     public ThermoData generateThermoData() throws FailGenerateThermoDataException {
-        //#[ operation generateThermoData()
-        // use GAPP to generate Thermo data
-        try {
-                if (useQM){
-                    if(useQMonCyclicsOnly && this.isAcyclic()) thermoGAPP=GATP.getINSTANCE();//use GroupAdditivity for acyclic compounds if this option is set
-                    else  thermoGAPP=QMTP.getINSTANCE();
-                }
-                else if (thermoGAPP == null) setDefaultThermoGAPP();
-        	thermoData = thermoGAPP.generateThermoData(this);
-		//fall back to GATP if it is a failed QMTP calculation
-		if (((String)thermoData.getSource()).equals("***failed calculation***")){
-		    Logger.warning("Falling back to group additivity due to repeated failure in QMTP calculations");
-		    thermoData=(GATP.getINSTANCE()).generateThermoData(this);
-		}
-
-            //thermoData = thermoGAPP.generateAbramData(this);
-        	return thermoData;
-        }
-		catch (MultipleGroupFoundException e) {
-			throw e;
-		}
-        catch (Exception e) {
-			Logger.logStackTrace(e);
-        	throw new FailGenerateThermoDataException();
-        }
-        //#]
+    	TDGenerator gen = null;
+        		if(TDMETHOD.toLowerCase().startsWith("benson")){
+        			gen = new BensonTDGenerator();
+        			thermoData = gen.generateThermo(this);
+        			return thermoData;
+        		}
+        		
+        		else if(TDMETHOD.toLowerCase().startsWith("qm")){
+        			gen = new QMForCyclicsGenerator();
+        		}
+        		else {//default method is hybrid
+        			gen = new HybridTDGenerator();
+        		}
+        		
+        thermoData = gen.generateThermo(this);
+    	return thermoData;
     }
     
     public TransportData generateTransportData() {
@@ -2898,6 +2887,10 @@ return sn;
     public boolean getIsAromatic() {
 	return isAromatic;
     }
+
+	public boolean containsFusedRingAtoms() {
+		return graph.getFusedRingAtoms() != null;
+	}
 }
 /*********************************************************************
 	File Path	: RMG\RMG\jing\chem\ChemGraph.java

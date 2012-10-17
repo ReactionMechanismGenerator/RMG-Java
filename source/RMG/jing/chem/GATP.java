@@ -31,6 +31,7 @@ package jing.chem;
 
 
 import java.util.*;
+
 import jing.param.*;
 import jing.chemUtil.*;
 import jing.param.*;
@@ -69,6 +70,9 @@ public class GATP implements GeneralGAPP {
 
      protected static PrimaryThermoLibrary primaryLibrary;//svp
 
+	public ThermoGAValue polycyclic;
+	public Map<ThermoGAValue, Integer> monoCyclicRSCs;
+
     // Constructors
 
 
@@ -97,7 +101,30 @@ public class GATP implements GeneralGAPP {
         result.plus(getGAGroup(p_chemGraph));
 
         // comment out, waiting for Bill and Joanna making the right ring correction library
-        result.plus(getRingCorrection(p_chemGraph));
+        /*
+         * If a molecule has fused ring atoms, this implies that we are dealing
+         * with a polycyclic ring system, for which separate ring strain
+         * corrections might not be the most adequate.
+         * 
+         * Therefore, these RSCs are not added. Instead, the polycyclic RSC library
+         * is iterated over.
+         */
+        if(!p_chemGraph.isAcyclic()){
+        	if (p_chemGraph.getGraph().getFusedRingAtoms() == null){
+        		getRingCorrections(p_chemGraph);
+        		if (monoCyclicRSCs != null)
+        			result.plus(monoCyclicRSCs);
+        	}
+        	else{
+        		polycyclic = getPolyCyclicRingCorrections(p_chemGraph);
+        		if(polycyclic != null)//we found a polycyclic RSC
+        			result.plus(polycyclic);
+        		else{
+        			
+        		}
+        	}
+        }
+        
         result.plus(getOtherCorrection(p_chemGraph));
 
         return result;
@@ -296,25 +323,50 @@ public class GATP implements GeneralGAPP {
     }
 
     //## operation getRingCorrection(ChemGraph)
-    public ThermoGAValue getRingCorrection(ChemGraph p_chemGraph) {
+    public Map<ThermoGAValue, Integer> getRingCorrections(ChemGraph p_chemGraph) {
         //#[ operation getRingCorrection(ChemGraph)
-		 if (p_chemGraph.isAcyclic()) return null;
+		 if (p_chemGraph.isAcyclic()) return Collections.emptyMap();
 
 		 	HashMap oldCentralNode = (HashMap)(p_chemGraph.getCentralNode()).clone();
 	        ChemGraph sat = p_chemGraph;
-	        if (sat.isRadical()) {
+	        if (p_chemGraph.isRadical()) {
 				sat = ChemGraph.saturate(p_chemGraph);
 	        }
-	        ThermoGAValue ga = thermoLibrary.findRingCorrection(sat);
+	        monoCyclicRSCs = thermoLibrary.findRingCorrections(sat);
+	        if (p_chemGraph.isRadical()) {
+	        	p_chemGraph.appendThermoComments(sat.getThermoComments());
+	        }
 	        /*System.out.println("Ring Correction for "+ p_chemGraph.generateChemicalFormula() +" : " + ga.getName());
 	        System.out.println(p_chemGraph.toStringWithoutH());*/
 			p_chemGraph.setCentralNode(oldCentralNode);
-	        return ga;
+	        return monoCyclicRSCs;
 
 
         //#]
     }
-
+    public ThermoGAValue getPolyCyclicRingCorrections(ChemGraph p_chemGraph) {
+    	/*
+    	 * Return empty Collection if acyclic or if the molecule does
+    	 * not contain fused ring atoms. 
+    	 */
+    	if (p_chemGraph.isAcyclic()|| p_chemGraph.getGraph().getFusedRingAtoms() == null) return null;
+    	else {
+    		//don't really know what this does, but it was cloned in ring correction estimator too...
+    		HashMap oldCentralNode = (HashMap)(p_chemGraph.getCentralNode()).clone();
+    		ChemGraph molecule = p_chemGraph;
+    		
+    		if(molecule.isRadical()){
+    			molecule = ChemGraph.saturate(molecule);
+    		}
+    		
+    		//For now, assume only one  polycyclic RSC can be found per molecule.
+    		ThermoGAValue ga = thermoLibrary.findPolyCyclicRingCorrections(molecule);
+    		p_chemGraph.appendThermoComments(molecule.getThermoComments());
+    		p_chemGraph.setCentralNode(oldCentralNode);
+    		return ga;
+    	}
+    }
+    
     //## operation initGAGroupLibrary()
     protected void initGAGroupLibrary() {
         //#[ operation initGAGroupLibrary()
@@ -350,6 +402,16 @@ public class GATP implements GeneralGAPP {
     protected static GATP getINSTANCE() {
         return INSTANCE;
     }
+
+
+	public ThermoGAValue getPolycyclic() {
+		return polycyclic;
+	}
+
+
+	public Map<ThermoGAValue, Integer> getMonoCyclicRSCs() {
+		return monoCyclicRSCs;
+	}
 
 	/*
     public static HashMap getLibrary() {

@@ -2,7 +2,31 @@
 Estimating Species Thermochemistry
 **********************************
 
-The ``ThermoDataEstimator`` utility produces group additivity-based thermochemistry estimates without running RMG. As with the thermochemistry estimates used by RMG, the ``ThermoDataEstimator`` utility bases its estimates on group values located in the RMG database.
+Species thermochemistry can be estimated based on 2 approaches:
+1. Benson group additivity (GA)
+2. On-the-fly quantum-chemical methods based on the explicit 3D structure of the molecule.
+
+For the on-the-fly methods, a number of QM packages [G03, OpenMopac, MM4] and a number of levels of theory [PM3, MM4, MM4HR] are supported.
+Since the accuracy of Benson GA for acyclic molecules is generally superior than for the QM methods, acyclic molecules are always estimated through GA.
+
+For cyclic molecules 3 different strategies can be chosen:
+1. BensonOnly
+2. QMforCyclics
+3. Hybrid [default]
+
+The BensonOnly strategy only uses the Benson Group Additivity framework to estimate thermochemistry of species. 
+For compounds containing one or more rings, it identifies the smallest set of smallest rings in the molecules and perceives whether fused ring atoms are present,
+that indicate that a polycyclic ring system is present.
+Then, the databases of ring corrections and polycyclic ring corrections are used to search an adequate (polycyclic) ring correction. 
+If an apt ring correction is not found, a warning is printed, but the thermochemistry without the ring correction is kept.
+
+The QMforCyclics strategy preferentially choses the on-the-fly semi-empirical methods to estimate thermochemistry. If repeated failures occur for the QM methods,
+this strategy falls back to the BensonOnly strategy.
+
+The hybrid strategy is the default option used in RMG. First, the Benson databases are searched for an adequate (polycyclic) ring correction. If such a correction is not found, 
+this strategy falls back to the QMforCyclics strategy.
+
+The ``ThermoDataEstimator`` utility produces thermochemistry estimates without running RMG.
 
 Instructions for Use
 --------------------
@@ -13,25 +37,19 @@ Instructions for Use
    The next section allows to use on-the-fly generation QM techniques to estimate TD
    properties, rather than group additivity methods.
    
-   The first flag activates the use of QM methods (set flag to true):
+   The first flag defines the strategy to estimate thermochemistry:
    e.g.::
 
-   	//QM?
-   	false
+   	//thermo strategy? [BensonOnly/QMforCyclics/Hybrid]
+   	Hybrid
    
    The QM package to be used, is specified: either choose "both", "gaussian03", "mopac", 
    "mm4", or "mm4hr"
    e.g.::
 
-   	//method
+   	//QM method: [both/gaussian03/mopac/mm4/mm4hr] 
    	gaussian03
    
-   Limit the use of on-the-fly methods to only cyclic species with the following flag 
-   (set to true)
-   e.g.::
-
-   	//ForCyclicsOnly?
-   	true
    
    Limit the use of on-the-fly methods to only species with less than the specified number
    of unpaired electrons. E.g. "0", implies that radical species will not computed using
@@ -41,6 +59,15 @@ Instructions for Use
    	//maxradnumforQM?
    	0  
    
+   A check of the connectivity of the passed-in 3D structure can be performed ensuring
+   that the quantumchemical data returned by the QM package is based on a 3D structure with
+   correct connectivity. 
+   e.g.::
+   
+    //CheckConnectivity? [off/check/confirm]
+    check
+    
+    
    The next section allows the user to set atom constraints on the species to be processed
    by the ThermoDataEstimator, beyond the default values hard-coded in TDE. 
    Only species that satisfy the set atom constraints, will be processed by TDE.
