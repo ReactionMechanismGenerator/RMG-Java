@@ -167,6 +167,8 @@ Arrhenius_EP
 2523	Sd_Cds/H2	C_rad/H2/Cs	300-1500	1.69E+02	3.0	0	-1.0	0	0	0	0	4	Aäron Vandeputte GAVs 
 2524	Sd_Cds/H2	C_rad/H/NonDeC	300-1500	6.44E+01	3.0	0	-2.4	0	0	0	0	4	Aäron Vandeputte GAVs 
 2525	Sd_Cds/H2	C_rad/Cs3	300-1500	3.62E+01	3.1	0	-3.2	0	0	0	0	4	Aäron Vandeputte GAVs 
+//2526 is barrierless! using parameters from 2523.
+2526	Sd_Cds/H/Nd	C_rad/H2/Cs	300-1500	1.69E+02	3.0	0	-1.0	0	0	0	0	4	based on 2523
 2534	Sd_Cds/H2	S_pri_rad		300-1500	1.44E+04	2.6	0	-6.0	0	0	0	0	4	Aäron Vandeputte GAVs 
 2535	Sd_Cds/H2	S_rad/NonDeC		300-1500	3.82E+02	3.0	0	-3.4	0	0	0	0	4	Aäron Vandeputte GAVs 
 2539	Sd_Cds/H2	S_rad/NonDeS		300-1500	1.34E+01	3.3	0	1.5	0	0	0	0	4	Aäron Vandeputte GAVs 
@@ -194,3 +196,5 @@ Arrhenius_EP
 2614	CS/CsSs_S	H_rad			300-1500	1.62E+13	0.0	0	4.97	0	0	0	0	4	AA calcs
 2615	CS2		H_rad			300-1500	3.87E+08	1.89	0	7.72	0	0	0	0	3	CAC calc CBS-QB3 1dhr
 2616	CS2		C_rad/H2/Cs		300-1500	3.59E+02	2.94	0	8.96	0	0	0	0	3	CAC calc CBS-QB3 1dhr
+2617	Sd_Cds/CsO	H_rad			300-2000	5.54E+08	1.24	0	-0.35	0	0	0	0	3	CAC calc CBS-QB3 1dhr 
+2618	Cd/H/Os_Cd/H/Cs	S_pri_rad		300-2000	2.10E+04	2.39	0	-5.00	0	0	0	0	3	CAC calc CBS-QB3 1dhr
