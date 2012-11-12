@@ -38,3 +38,4 @@
 21      on      Intra_R_Add_Endocyclic
 22      on      1,2-Birad_to_alkene
 23      off      Intra_Disproportionation
+24      on       Substitution_O
