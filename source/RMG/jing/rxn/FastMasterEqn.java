@@ -688,8 +688,13 @@ public class FastMasterEqn implements PDepKineticsEstimator {
 				input.append( "\n\n" );
 			}
 
+			int numberOfPathReactions = 0;
+			for (int i = 0; i < pathReactionList.size(); i++) {
+				PDepReaction rxn = pathReactionList.get(i);
+				numberOfPathReactions += rxn.getKinetics().length;
+			}
 			input.append( "# The number of reactions in the network (minimum of 2)\n" );
-			input.append( Integer.toString(pathReactionList.size()) + "\n" );
+			input.append( Integer.toString(numberOfPathReactions) + "\n" );
 			input.append( "\n" );
 
 			for (int i = 0; i < pathReactionList.size(); i++) {
@@ -701,41 +706,43 @@ public class FastMasterEqn implements PDepKineticsEstimator {
                     throw new PDepException("Encountered a path reaction that was not a forward reaction!");
 
                 double A = 0.0, Ea = 0.0, n = 0.0;
-				Temperature stdtemp = new Temperature(298,"K");
-                double Hrxn = rxn.calculateHrxn(stdtemp);
                 Kinetics[] k_array = rxn.getKinetics();
-                Kinetics kin = computeKUsingLeastSquares(k_array, Hrxn);
-                A = kin.getAValue();
-                n = kin.getNValue();
-                Ea = kin.getEValue();//kin should be ArrheniusKinetics (rather than ArrheniusEPKinetics), so it should be correct to use getEValue here (similarly for other uses in this file)
+                for (int j = 0; j < k_array.length; j++) {
+                	Kinetics kin = k_array[j];
+                	
+                    A = kin.getAValue();
+                    n = kin.getNValue();
+                    Ea = kin.getEValue();//kin should be ArrheniusKinetics (rather than ArrheniusEPKinetics), so it should be correct to use getEValue here (similarly for other uses in this file)
 
-				input.append( "# The reaction equation, in the form A + B --> C + D\n" );
-				input.append( rxn.toString() + "\n" );
-
-				input.append( "# Indices of the reactant and product isomers, starting with 1\n" );
-				input.append( Integer.toString(isomerList.indexOf(rxn.getReactant()) + 1) + " " );
-				input.append( Integer.toString(isomerList.indexOf(rxn.getProduct()) + 1) + "\n" );
-
-				input.append( "# Ground-state energy; allowed units are J/mol, kJ/mol, cal/mol, kcal/mol, or cm^-1\n" );
-				if (Ea < 0.0)
-					input.append( "J/mol " + Double.toString((rxn.getReactant().calculateH(stdTemp)) * 4184) + "\n" );
-				else
-					input.append( "J/mol " + Double.toString((Ea + rxn.getReactant().calculateH(stdTemp)) * 4184) + "\n" );
-
-				input.append( "# High-pressure-limit kinetics model k(T):\n" );
-				input.append( "#	Option 1: Arrhenius\n" );
-				input.append( "# 	Arrhenius preexponential factor ; allowed units are combinations of volume {m^3, L, or cm^3} and time {s^-1}\n" );
-				input.append( "# 	Arrhenius activation energy ; allowed units are J/mol, kJ/mol, cal/mol, or kcal/mol\n" );
-				input.append( "# 	Arrhenius temperature exponent\n" );
-				input.append( "Arrhenius\n" );
-				if (rxn.getReactant().isUnimolecular())
-					input.append( "s^-1 " + Double.toString(A) + "\n" );
-				else if (rxn.getReactant().isMultimolecular())
-					input.append( "m^3/mol*s " + Double.toString(A * 1.0e-6) + "\n" );
-				input.append( "J/mol " + Double.toString(Ea * 4184) + "\n" );
-				input.append( Double.toString(n) + "\n" );
-
-				input.append( "\n" );
+    				input.append( "# The reaction equation, in the form A + B --> C + D\n" );
+    				input.append( rxn.toString() + "\n" );
+    
+    				input.append( "# Indices of the reactant and product isomers, starting with 1\n" );
+    				input.append( Integer.toString(isomerList.indexOf(rxn.getReactant()) + 1) + " " );
+    				input.append( Integer.toString(isomerList.indexOf(rxn.getProduct()) + 1) + "\n" );
+    
+    				input.append( "# Ground-state energy; allowed units are J/mol, kJ/mol, cal/mol, kcal/mol, or cm^-1\n" );
+    				if (Ea < 0.0)
+    					input.append( "J/mol " + Double.toString((rxn.getReactant().calculateH(stdTemp)) * 4184) + "\n" );
+    				else
+    					input.append( "J/mol " + Double.toString((Ea + rxn.getReactant().calculateH(stdTemp)) * 4184) + "\n" );
+    
+    				input.append( "# High-pressure-limit kinetics model k(T):\n" );
+    				input.append( "#	Option 1: Arrhenius\n" );
+    				input.append( "# 	Arrhenius preexponential factor ; allowed units are combinations of volume {m^3, L, or cm^3} and time {s^-1}\n" );
+    				input.append( "# 	Arrhenius activation energy ; allowed units are J/mol, kJ/mol, cal/mol, or kcal/mol\n" );
+    				input.append( "# 	Arrhenius temperature exponent\n" );
+    				input.append( "Arrhenius\n" );
+    				if (rxn.getReactant().isUnimolecular())
+    					input.append( "s^-1 " + Double.toString(A) + "\n" );
+    				else if (rxn.getReactant().isMultimolecular())
+    					input.append( "m^3/mol*s " + Double.toString(A * 1.0e-6) + "\n" );
+    				input.append( "J/mol " + Double.toString(Ea * 4184) + "\n" );
+    				input.append( Double.toString(n) + "\n" );
+    
+    				input.append( "\n" );
+    				
+                }
 			}
 
 		}
