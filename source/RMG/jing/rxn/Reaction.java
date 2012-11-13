@@ -1152,6 +1152,10 @@ public class Reaction {
       return getStructure().getRedundancy();
       //#]
   }
+  
+  	public void setRedundancy(int redundancy) {
+  		getStructure().setRedundancy(redundancy);
+  	}
 
 	 public boolean hasResonanceIsomer() {
 	        //#[ operation hasResonanceIsomer()

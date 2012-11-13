@@ -664,7 +664,8 @@ public class PDepNetwork {
 
 		// Expect that most reactions passed to this function will be already
 		// present in a network
-
+		Reaction reaction0 = reaction;
+		
 		// Fail if neither reactant nor product are unimolecular
 		Species species = null;
 		if (reaction.getReactantNumber() == 1)
@@ -748,6 +749,12 @@ public class PDepNetwork {
 				}
 			}
 		}
+		
+		// The above check may have caused the reaction to be reversed
+		// We want to add the reaction to the network in the direction in which
+		// kinetics is known, so make sure we are using the reaction as
+		// originally passed to this method
+		reaction = reaction0;
 
 		// If network not found, create a new network
 		if (pdn == null) {
@@ -772,16 +779,18 @@ public class PDepNetwork {
         PDepReaction rxn = null;
         if (reaction.isForward()) {
             rxn = new PDepReaction(reactantIsomer, productIsomer, reaction);
+            rxn.setRedundancy(reaction.getRedundancy());
         }
         else {
             rxn = new PDepReaction(productIsomer, reactantIsomer, reaction.getReverseReaction());
+            rxn.setRedundancy(reaction.getReverseReaction().getRedundancy());
         }
 		pdn.addReaction(rxn,false);
 
 		// Fill in partial network if necessary
-		if (reactantIsomer.isCore((CoreEdgeReactionModel) reactionModel) && reactantIsomer.isUnimolecular())
+		if (reactantIsomer.isCore((CoreEdgeReactionModel) reactionModel) && reactantIsomer.isUnimolecular() && !reactantIsomer.getIncluded())
 			pdn.makeIsomerIncluded(reactantIsomer);
-		if (productIsomer.isCore((CoreEdgeReactionModel) reactionModel) && productIsomer.isUnimolecular())
+		if (productIsomer.isCore((CoreEdgeReactionModel) reactionModel) && productIsomer.isUnimolecular() && !productIsomer.getIncluded())
 			pdn.makeIsomerIncluded(productIsomer);
 
 		// Return the created network
