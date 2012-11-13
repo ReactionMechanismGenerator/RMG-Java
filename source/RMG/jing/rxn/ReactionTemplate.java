@@ -250,6 +250,23 @@ public class ReactionTemplate {
           k = ArrheniusKinetics.average(kSet);
       	if (k==null) return null;
       	kineticsTemplateLibrary.addKinetics(key,k);
+      	/*System.out.print("Added averaged rate rule for: ");
+      	for (Iterator key_iter = key.iterator(); key_iter.hasNext(); ) {
+      		Object next = key_iter.next();
+      		if (next instanceof FunctionalGroup) {
+	      		FunctionalGroup fg = (FunctionalGroup) next;
+	      		System.out.print(fg.getName());
+	      		if (key_iter.hasNext())
+	      			System.out.print(";");
+      		}
+      		else if (next instanceof FunctionalGroupCollection) {
+      			FunctionalGroupCollection fg = (FunctionalGroupCollection) next;
+	      		System.out.print(fg.getName());
+	      		if (key_iter.hasNext())
+	      			System.out.print(";");
+      		}
+      	}
+      	System.out.println();*/
       }
       
       return k;
@@ -1270,6 +1287,10 @@ public class ReactionTemplate {
       String TreeName = directoryName + "tree.txt";
       String LibraryName = directoryName + "rateLibrary.txt";
       String ForbiddenName = directoryName + "forbiddenGroups.txt";
+      
+      /*if (p_reactionTemplateName.equals("R_Recombination")) {
+    	  System.out.print("");
+      }*/
       
       try {
       	readFGDictionary(DictionaryName);
