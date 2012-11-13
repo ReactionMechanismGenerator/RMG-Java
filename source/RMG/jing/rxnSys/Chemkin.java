@@ -639,7 +639,7 @@ public  Chemkin() {
       		if (rxn.reactantEqualsProduct()) continue;
 			if (pDepList.contains(rxn) || pDepList.contains(rxn.getReverseReaction())) continue;
 			if (seedList.contains(rxn) || seedList.contains(rxn.getReverseReaction())) continue;
-                        if (nonPDepList.contains(rxn) || nonPDepList.contains(rxn.getReverseReaction())) continue;
+            //if (nonPDepList.contains(rxn) || nonPDepList.contains(rxn.getReverseReaction())) continue;
 			
 			// Made it through all the tests.
 			pDepList.add(rxn);
