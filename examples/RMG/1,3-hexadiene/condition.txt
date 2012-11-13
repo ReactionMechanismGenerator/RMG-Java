@@ -58,10 +58,11 @@ Ar (mol/cm3) 0.0e-6
 END
 
 SpectroscopicDataEstimator: FrequencyGroups
-PressureDependence: ReservoirState
-PDepKineticsModel: Chebyshev 4 4
+PressureDependence: ModifiedStrongCollision
+PDepKineticsModel: Chebyshev 6 4
 TRange: (K) 300.0 2000.0 8
 PRange: (bar) 0.01 100.0 5
+DecreaseGrainSize: yes
 
 FinishController:
 (1) Goal Conversion: HXD13 0.9
