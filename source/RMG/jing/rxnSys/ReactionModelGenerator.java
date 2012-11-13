@@ -2762,8 +2762,8 @@ public class ReactionModelGenerator {
             bw = new BufferedWriter(new FileWriter("Restart/pdepnetworks.txt"));
     		int numFameTemps = PDepRateConstant.getTemperatures().length;
     		int numFamePress = PDepRateConstant.getPressures().length;
-    		int numChebyTemps = ChebyshevPolynomials.getNT();
-    		int numChebyPress = ChebyshevPolynomials.getNP();
+    		int numChebyTemps = ChebyshevPolynomials.getDefaultNT();
+    		int numChebyPress = ChebyshevPolynomials.getDefaultNP();
     		//int numPlog = PDepArrheniusKinetics.getNumPressures();
 			int numPlog = numFamePress; // probably often the case for FAME-generated PLOG rates (but not for seed or library reactions)
     		String EaUnits = ArrheniusKinetics.getEaUnits();
@@ -3534,8 +3534,8 @@ public class ReactionModelGenerator {
 				}
 			}
 			ChebyshevPolynomials chebyshev = new ChebyshevPolynomials(numChebyTs,
-																	  ChebyshevPolynomials.getTlow(), ChebyshevPolynomials.getTup(),
-																	  numChebyPs, ChebyshevPolynomials.getPlow(), ChebyshevPolynomials.getPup(),
+																	  ChebyshevPolynomials.getDefaultTlow(), ChebyshevPolynomials.getDefaultTup(),
+																	  numChebyPs, ChebyshevPolynomials.getDefaultPlow(), ChebyshevPolynomials.getDefaultPup(),
 																	  chebyPolys);
 			pdepk = new PDepRateConstant(rateCoefficients,chebyshev);
 		} else if (numPlogs > 0) {
@@ -4754,14 +4754,14 @@ public class ReactionModelGenerator {
 			PDepRateConstant.setTemperatures(temperatures);
 			PDepRateConstant.setTMin(Tmin);
 			PDepRateConstant.setTMax(Tmax);
-			ChebyshevPolynomials.setTlow(Tmin);
-			ChebyshevPolynomials.setTup(Tmax);
+			ChebyshevPolynomials.setDefaultTlow(Tmin);
+			ChebyshevPolynomials.setDefaultTup(Tmax);
 			FastMasterEqn.setPressures(pressures);
 			PDepRateConstant.setPressures(pressures);
 			PDepRateConstant.setPMin(Pmin);
 			PDepRateConstant.setPMax(Pmax);
-			ChebyshevPolynomials.setPlow(Pmin);
-			ChebyshevPolynomials.setPup(Pmax);
+			ChebyshevPolynomials.setDefaultPlow(Pmin);
+			ChebyshevPolynomials.setDefaultPup(Pmax);
 			
 			/*
 			 * New option for input file: DecreaseGrainSize
