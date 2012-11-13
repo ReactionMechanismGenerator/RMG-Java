@@ -61,15 +61,15 @@ CH2O
 
 //hydroxymethylene singlet
 HCOH(S)
-1 C 2S {2,s}
-2 O 0 {1,s}
+1 C 2S {2,S}
+2 O 0 {1,S}
 
 
 
 //hydroxymethylene triplet
 HCOH(T)
-1 C 2T {2,s}
-2 O 0 {1,s}
+1 C 2T {2,S}
+2 O 0 {1,S}
 
 
 
