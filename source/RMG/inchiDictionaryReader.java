@@ -73,8 +73,6 @@ public class inchiDictionaryReader {
             System.exit(0);
 	}
 
-        ChemGraph.useQM = true;
-        ChemGraph.useQMonCyclicsOnly = true;
         Global.maxRadNumForQM = 0;
         QMTP.qmfolder = "DictionaryQMFiles/";
         //QMTP.qmprogram = "gaussian03";

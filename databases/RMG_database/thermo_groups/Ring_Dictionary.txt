@@ -380,15 +380,15 @@ Cyclooctane
 8    Cs 0 {7,S} {1,S}
 
 // num. identical central atoms = two
-//cis-Cyclooctene
-//1  * Cd 0 {8,S} {2,Dcis}
-//2    Cd 0 {3,S} {1,Dcis}
-//3    Cs 0 {2,S} {4,S}
-//4    Cs 0 {3,S} {5,S}
-//5    Cs 0 {4,S} {6,S}
-//6    Cs 0 {5,S} {7,S}
-//7    Cs 0 {6,S} {8,S}
-//8    Cs 0 {7,S} {1,S}
+cis-Cyclooctene
+1  * Cd 0 {8,S} {2,D}
+2    Cd 0 {3,S} {1,D}
+3    Cs 0 {2,S} {4,S}
+4    Cs 0 {3,S} {5,S}
+5    Cs 0 {4,S} {6,S}
+6    Cs 0 {5,S} {7,S}
+7    Cs 0 {6,S} {8,S}
+8    Cs 0 {7,S} {1,S}
 
 // num. identical central atoms = two
 //trans-Cyclooctene
@@ -1191,3 +1191,67 @@ methylenecyclopentane
 5  Cs 0 {4,S} {1,S}
 6  Cd 0 {1,D}
 
+3-Methylenecyclopentene
+1   *  Cs     0 {2,S} {3,S}
+2     Cs     0 {1,S} {4,S}
+3     Cd     0 {1,S} {5,S} {6,D}
+4     Cd     0 {2,S} {5,D}
+5     Cd     0 {3,S} {4,D}
+6     Cd     0 {3,D}
+
+4-Methylenecyclopentene
+1  *   Cs     0 {3,S} {4,S}
+2     Cs     0 {3,S} {5,S}
+3     Cd     0 {1,S} {2,S} {6,D}
+4     Cd     0 {1,S} {5,D}
+5     Cd     0 {2,S} {4,D}
+6     Cd     0 {3,D}
+
+3,4-dimethylenecyclohexene
+1   *  C     0 {2,S} {3,S}
+2     C     0 {1,S} {5,S}
+3     Cd     0 {1,S} {4,S} {7,D}
+4     Cd     0 {3,S} {6,S} {8,D}
+5     Cd     0 {2,S} {6,D}
+6     Cd     0 {4,S} {5,D}
+7     Cd     0 {3,D}
+8     Cd     0 {4,D}
+
+1,3-cyclooctadiene 
+1 * Cd 0 {2,D} {8,S}
+2 Cd 0 {1,D} {3,S}
+3 Cd 0 {2,S} {4,D}
+4 Cd 0 {3,D} {5,S}
+5 Cs 0 {4,S} {6,S}
+6 Cs 0 {5,S} {7,S}
+7 Cs 0 {6,S} {8,S}
+8 Cs 0 {1,S} {7,S}
+
+1,4-cyclooctadiene 
+1 * Cd 0 {2,D} {8,S}
+2 Cd 0 {1,D} {3,S}
+3 Cs 0 {2,S} {4,S}
+4 Cd 0 {3,S} {5,D}
+5 Cd 0 {4,D} {6,S}
+6 Cs 0 {5,S} {7,S}
+7 Cs 0 {6,S} {8,S}
+8 Cs 0 {1,S} {7,S}
+
+1,5-cyclooctadiene 
+1 * Cd 0 {2,D} {8,S}
+2 Cd 0 {1,D} {3,S}
+3 Cs 0 {2,S} {4,S}
+4 Cs 0 {3,S} {5,S}
+5 Cd 0 {4,S} {6,D}
+6 Cd 0 {5,D} {7,S}
+7 Cs 0 {6,S} {8,S}
+8 Cs 0 {1,S} {7,S}
+
+1,4-Cycloheptadiene
+1 * C 0 {2,D} {7,S}
+2 Cd 0 {1,D} {3,S}
+3 Cs 0 {2,S} {4,S}
+4 Cd 0 {3,S} {5,D}
+5 Cd 0 {4,D} {6,S}
+6 Cs 0 {5,S} {7,S}
+7 Cs 0 {1,S} {6,S}

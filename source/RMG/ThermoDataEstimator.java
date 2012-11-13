@@ -83,9 +83,8 @@ public class ThermoDataEstimator {
 			qmflags = readQMFlags(reader);		
 
 			Global.maxRadNumForQM = qmflags.maxRadNumForQM.intValue();
-			ChemGraph.useQM = qmflags.qmActive.booleanValue();
+			ChemGraph.TDMETHOD = qmflags.TDSTRATEGY;
 			QMTP.qmprogram = qmflags.method.toLowerCase();
-			ChemGraph.useQMonCyclicsOnly = qmflags.qmOnCyclicsOnly.booleanValue();
 			QMTP.connectivityCheck = qmflags.connectivityCheck.intValue();
 
 			readAtomConstraints(reader);
@@ -230,14 +229,11 @@ public class ThermoDataEstimator {
 		QMFlags qmFlags = new QMFlags();
 
 		String line = ChemParser.readMeaningfulLine(reader, true);
-		qmFlags.qmActive = Boolean.parseBoolean(line);
+		qmFlags.TDSTRATEGY = line;
 
 		line = ChemParser.readMeaningfulLine(reader, true);
 		qmFlags.method = line;
-
-		line = ChemParser.readMeaningfulLine(reader, true);
-		qmFlags.qmOnCyclicsOnly = Boolean.parseBoolean(line);
-
+		
 		line = ChemParser.readMeaningfulLine(reader, true);
 		qmFlags.maxRadNumForQM = Integer.parseInt(line);
 
