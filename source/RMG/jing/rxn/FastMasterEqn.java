@@ -714,6 +714,9 @@ public class FastMasterEqn implements PDepKineticsEstimator {
                     n = kin.getNValue();
                     Ea = kin.getEValue();//kin should be ArrheniusKinetics (rather than ArrheniusEPKinetics), so it should be correct to use getEValue here (similarly for other uses in this file)
 
+                    if (A == 0 && n == 0 && Ea == 0)
+                        throw new PDepException("Path reaction " + rxn.toString() + " has an A, n, and Ea of zero, which would cause FAME to crash.");   
+                    
     				input.append( "# The reaction equation, in the form A + B --> C + D\n" );
     				input.append( rxn.toString() + "\n" );
     
