@@ -85,7 +85,7 @@ bridgehead_norbornyl
 5     Cs     0 {2,S} {4,S}
 6     Cs     0 {2,S} {7,S}
 7     Cs     0 {1,S} {6,S}
-8	  H	     0 {4,S}
+8	  H	     0 {1,S}
 
 cyclopropane
 1   * Cs     1 {2,S} {3,S} {4,S}
@@ -222,7 +222,7 @@ bicyclo[3.1.0]hexane-C5-3
 4     Cs     0 {2,S} {6,S}
 5     Cs     0 {1,S} {6,S}
 6  *   Cs     1 {4,S} {5,S}
-7	  H	     0 {6,S}
+7	  H	     0 {1,S}
 
 bicyclo[3.1.0]hexane-C3
 1     Cs     0 {2,S} {3,S} {5,S}
