@@ -78,3 +78,35 @@ Arrhenius_EP
 490.		O2_birad		CO_rad/NonDe	200-300		1.505E+12	0	0	0	*3.16		0	0	0	4	Atkinson et al [96] literature review.	
 491.		Y_rad			H_rad			300-1500	1.000E+13	0	0	0	0	0	0	0	1	MRH estimate
 492.		Y_rad			Y_rad			300-1500	1.000E+13	0	0	0	0	0	0	0	1	MRH estimate
+491.		SsJ-Ss			C_methyl		300-1500	6.44E+09	1.19	0.00	0.51	0	0	0	0	5	A.G. Vandeputte
+492.		SsJ-Cs			SsJ-Cs			300-1500	4.36E+10	1.30	0.00	-0.88	0	0	0	0	5	A.G. Vandeputte
+493.		CsJ-SsHH		H_rad			300-1500	8.20E+11	0.68	0.00	0.07	0	0	0	0	5	A.G. Vandeputte
+494.		SsJ-H			H_rad			300-1500	2.53E+13	0.56	0.00	-0.02	0	0	0	0	5	A.G. Vandeputte
+
+//3000	H_rad		SsJ-H	300-1500	5.77E+15	0	0	0.43	0	0	0	0	3	GA Jonas x 3 for spinorbit
+//3001	C_methyl	SsJ-H	300-1500	4.41E+14	0	0	0.29	0	0	0	0	3	GA Jonas x 3 for spinorbit
+//3002	C_rad/H2/Cs	SsJ-H	300-1500	1.87E+14	0	0	1.14	0	0	0	0	3	GA Jonas x 3 for spinorbit
+//3003	C_rad/H/NonDeC	SsJ-H	300-1500	3.75E+13	0	0	1.72	0	0	0	0	3	GA Jonas x 3 for spinorbit
+//3004	C_rad/NonDeC	SsJ-H	300-1500	3.26E+13	0	0	1.59	0	0	0	0	3	GA Jonas x 3 for spinorbit
+//3005	Cd_pri_rad		SsJ-H	300-1500	1.43E+14	0	0	1.31	0	0	0	0	3	GA Jonas x 3 for spinorbit
+//3006	Cd_rad/NonDe		SsJ-H	300-1500	9.81E+13	0	0	1.40	0	0	0	0	3	GA Jonas x 3 for spinorbit
+//3007	Cd_rad/Cd		SsJ-H	300-1500	9.84E+13	0	0	1.70	0	0	0	0	3	GA Jonas x 3 for spinorbit
+//3009	C_rad/H2/Cd	SsJ-H	300-1500	1.71E+14	0	0	0.07	0	0	0	0	3	GA Jonas x 3 for spinorbit
+//3010	C_rad/H/CdCs	SsJ-H	300-1500	4.67E+13	0	0	-0.55	0	0	0	0	3	GA Jonas x 3 for spinorbit
+//3011	C_rad/H/CdCd	SsJ-H	300-1500	1.19E+14	0	0	0.36	0	0	0	0	3	GA Jonas x 3 for spinorbit
+//3012	C_rad/H2/Ct	SsJ-H	300-1500	5.26E+14	0	0	0.21	0	0	0	0	3	GA Jonas x 3 for spinorbit
+//3013	C_rad/H/CtCs	SsJ-H	300-1500	8.99E+13	0	0	0.45	0	0	0	0	3	GA Jonas x 3 for spinorbit
+//3016	H_rad		SsJ-Cs	300-1500	9.42E+14	0	0	1.74	0	0	0	0	3	GA Jonas x 3 for spinorbit
+//3017	C_methyl	SsJ-Cs	300-1500	7.21E+13	0	0	0.29	0	0	0	0	3	GA Jonas x 3 for spinorbit
+//3018	C_rad/H2/Cs	SsJ-Cs	300-1500	3.05E+13	0	0	1.14	0	0	0	0	3	GA Jonas x 3 for spinorbit
+//3019	C_rad/H/NonDeC	SsJ-Cs	300-1500	6.13E+12	0	0	1.72	0	0	0	0	3	GA Jonas x 3 for spinorbit
+//3020	C_rad/NonDeC	SsJ-Cs	300-1500	5.33E+12	0	0	1.59	0	0	0	0	3	GA Jonas x 3 for spinorbit
+//3021	Cd_pri_rad		SsJ-Cs	300-1500	2.33E+13	0	0	1.31	0	0	0	0	3	GA Jonas x 3 for spinorbit
+//3022	Cd_rad/NonDe		SsJ-Cs	300-1500	1.60E+13	0	0	1.40	0	0	0	0	3	GA Jonas x 3 for spinorbit
+//3023	Cd_rad/Cd		SsJ-Cs	300-1500	1.61E+13	0	0	1.70	0	0	0	0	3	GA Jonas x 3 for spinorbit
+//3025	C_rad/H2/Cd	SsJ-Cs	300-1500	2.80E+13	0	0	0.07	0	0	0	0	3	GA Jonas x 3 for spinorbit
+//3026	C_rad/H/CdCs	SsJ-Cs	300-1500	7.63E+12	0	0	-0.55	0	0	0	0	3	GA Jonas x 3 for spinorbit
+//3027	C_rad/H/CdCd	SsJ-Cs	300-1500	1.94E+13	0	0	0.36	0	0	0	0	3	GA Jonas x 3 for spinorbit
+//3028	C_rad/H2/Ct	SsJ-Cs	300-1500	8.59E+13	0	0	0.21	0	0	0	0	3	GA Jonas x 3 for spinorbit
+//3029	C_rad/H/CtCs	SsJ-Cs	300-1500	1.47E+13	0	0	0.45	0	0	0	0	3	GA Jonas x 3 for spinorbit
+

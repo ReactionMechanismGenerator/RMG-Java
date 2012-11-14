@@ -1,0 +1,18 @@
+Unit:
+A: mol/cm3/s
+E: kcal/mol
+
+Reactions:
+//First one should be 36.30 kcal/mol, second 44.42 kcal/mol
+//C6H12O + H2S = C6H12SHOH	6.13E+01	2.77	36.30	0.0	0.0	0.0
+C6H12SHOH = C6H12O + H2S	3.43E+14	-0.41	44.42	0.0	0.0	0.0
+//Correct value of next reaction is in R_Addition_MultipleBond
+//C5H11COHS + HJ = C5H11CJOHSH	1.18E+09	1.15	-0.06	0.0	0.0	0.0
+C5H11COHS = C5H11COSH           5.10E+12        0.13    28.48   0.0     0.0     0.0
+C5H11J + COS = C5H11COSJ	6.03E+05	1.83	11.84	0.0	0.0	0.0
+CHOHS + C5H11J = C6H12OHSJ	7.74E+02	2.56	3.56	0.0	0.0	0.0
+//reverse of next reaction is in R_Addition_MultipleBond library:
+C4H9CHJCHOHSH = SH + hexen-1-ol	2.01E+12	0.13	4.99	0.0	0.0	0.0
+hexen-1-ol = C6H12O		5.32E-33	12.94	31.33	0.0	0.0	0.0
+//Approx water gas shift reaction
+CO + H2O = CO2 + H2		5.0E+03		0.0	0.0	0.0	0.0	0.0

@@ -175,6 +175,34 @@ L1: RJ
 			L5: C2CsJOO
 				L6: C2CsJOOH
 				L6: C2CsJOOC
+		L4: CCsJOS
+			L5: CCsJOHSH
+		L4: CsJ-S
+			L5: CsJ-SsHH
+			L5: CsJ-CSH
+				L6: CsJ-CsSsH
+				L6: CsJ-CdSsH
+				L6: CsJ-CtSsH
+				L6: CsJ-CbSsH
+				L6: CsJ-C=SSsH
+			L5: CsJ-CCS
+				L6: CsJ-CsCsSs
+				L6: CsJ-CsCdSs
+				L6: CsJ-CsCtSs
+				L6: CsJ-CsCbSs
+				L6: CsJ-CsC=SSs	
+
+		L4: CsJ-SS
+			L5: CsJ-SsSsH
+			L5: CsJ-CSS
+				L6: CsJ-CsSsSs
+				L6: CsJ-CdSsSs
+				L6: CsJ-CtSsSs
+				L6: CsJ-CbSsSs
+				L6: CsJ-C=SSsSs
+
+		L4: CsJ-SsSsSs
+		
 	L3: CdsJ	// sp2 central carbon
 		L4: Cds_P
 			//L5: Vin
@@ -207,6 +235,16 @@ L1: RJ
 					L7: (O)CJOCC
 					L7: (O)CJOCC2
 					L7: (O)CJOCC3	
+					
+		L4: CdsJ-Ss
+
+		L4: C=SJ
+			L5: C=SJ-H
+			L5: C=SJ-C
+				L6: C=SJ-Cs
+				L6: C=SJ-Cd
+			L5: C=SJ-Ss			
+					
 	L3: CtJ		// sp central carbon
 		L4: Acetyl
 	L3: CbJ
@@ -224,8 +262,22 @@ L1: RJ
 			L5: C3COOJ
 			L5: C(=O)OOJ
 		L4: HOOJ
+
    L2: SiJ
-   L2: SJ
+
+   L2: SJ	 	// any sulfur radical
+	L3: SJ-H		// H-S.
+	L3: SJ-C
+		L4: SJ-Cs
+		L4: SJ-Cd
+		L4: SJ-Ct
+		L4: SJ-Cb
+		L4: SJ-C=S
+		L4: SJ-CO
+	L3: SJ-Ss
+		L4: SJ-Ss-H
+		L4: SJ-Ss-Cs
+		L4: SJ-Ss-Ss
   
 L1: RJ2		// biradicals
    L2: CJ2
@@ -250,12 +302,15 @@ L1: RJ2		// biradicals
 			L5: CCdJ2_t
 			L5: CCdJ2_s
 		L4: CO	// carbon monoxide
+		L4: CdJ2-Sd
+			L5: CdJ2-Sd_s
+			L5: CdJ2-Sd_t
    L2: Oa
 	L3: Oa_t
 	L3: Oa_s
 
    L2: SiJ2
-   L2: Sa
+   L2: SJ2  // triplet state
 
 L1: RJ3		// triradicals
    L2: CJ3

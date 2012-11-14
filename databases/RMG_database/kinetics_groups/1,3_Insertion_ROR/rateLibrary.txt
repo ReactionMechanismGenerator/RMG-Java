@@ -27,3 +27,9 @@ Arrhenius_EP
 568.	Cd/H/Nd_Cd/H2		H_OH			300-1500	2.27E+02	2.74	0		56.9	0		0		0		0		2		[87]CBS-QB3 calculations from Sumathi 2003.
 569.	Cd/H2_Cd/H/Nd		H_OH			300-1500	6.52E+01	2.92	0		50.7	0		0		0		0		2		[87]CBS-QB3 calculations from Sumathi 2003.
 570.	Cd/H2_Cd/Nd2		H_OH			300-1500	1.25E+03	2.76	0		48.5	0		0		0		0		2		[87]CBS-QB3 calculations from Sumathi 2003.
+701.	Sd_Cd/unsub			H_OH			300-1500	9.60E+02	2.43	0	28.13		0		0		0		0		3		CBS-QB3 calculations by CAC
+702.	Sd_Cd/H/Nd			H_OH			300-1500	5.96E+00	2.77	0		20.07		0		0		0		0		3		CBS-QB3 calculations by CAC, F12 energy 
+703.	Thiophene2			H_OH			300-1500	1.50E+01	3.15	0		63.64		0		0		0		0		3		CBS-QB3 calc w/ 1dhr, by CAC
+704.	Thiophene3			H_OH			300-1500	5.10E+01	3.11	0		63.03		0		0		0		0		3		CBS-QB3 calc w/ 1dhr, by CAC
+705.	Sd_Cd/H/Cb			H_OH			300-1500	3.69E+02	2.58	0		32.46		0		0		0		0		3		CBS-QB3 calc w/ 1dhr, CAC
+706.	Sd_Cd/Nd2			H_OH			300-2000	9.09E-01	3.14	0	36.8		0		0		0		0		4	CBS-QB3 HO

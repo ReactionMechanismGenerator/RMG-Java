@@ -38,7 +38,11 @@ L1: doublebond
 		L3: Cd/monosub_Cd/monosub
 			L4: Cd/H/Nd_Cd/H/Nd
 			L4: Cd/H/Nd_Cd/H/De
+				L5: Cd/H/S_Cd/H/Cd
+					L6: Thiophene3
 			L4: Cd/H/De_Cd/H/Nd
+				L5: Cd/H/Cd_Cd/H/S
+					L6: Thiophene2
 			L4: Cd/H/De_Cd/H/De
 		L3: Cd/monosub_Cd/disub
 			L4: Cd/H/Nd_Cd/Nd2
@@ -64,6 +68,18 @@ L1: doublebond
 			L4: Cd/De2_Cd/Nd2
 			L4: Cd/De2_Cd/Nd/De
 			L4: Cd/De2_Cd/De2
+	L2:	Sd_Cd
+		L3:	Sd_Cds
+			L4:	Sd_Cd/unsub
+			L4:	Sd_Cd/monosub
+				L5:	Sd_Cd/H/Nd
+				L5:	Sd_Cd/H/De
+					L6:	Sd_Cd/H/Cb
+			L4:	Sd_Cd/disub
+				L5:	Sd_Cd/Nd2
+				L5:	Sd_Cd/Nd/De
+				L5:	Sd_Cd/De2
+		L3:	Sd_Cdd
 L1: R_OR
 	L2: H_OR
 		L3: H_OH

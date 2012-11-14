@@ -1,0 +1,23 @@
+Unit:
+A: mol/cm3/s
+E: kcal/mol
+
+Reactions:
+
+CH2S + H2O = CH2OHSH		9.60E+02	2.43	28.13	0.0	0.0	0.0
+CH3CHS + H2O = CHCH3OHSH	1.54E+01	2.78	27.80	0.0	0.0	0.0
+CH2OHSJ = CHOHS + HJ		2.51E+08	1.64	34.58	0.0	0.0	0.0
+CHCH3OHSJ = CHOHS + CH3J	4.09E+10	1.02	29.90	0.0	0.0	0.0
+CHOHS = CHOSH				5.10E+12	0.13	28.48	0.0	0.0	0.0
+CHOSJ = COS + HJ			5.81E+09	1.13	17.98	0.0	0.0	0.0
+// 1st pathway, 1st step 53.85 w/o catalysis
+COS + H2O = CSOHOH			9.16E+00	3.67	27.56	0.0	0.0	0.0
+CSOHOH = COSHOH				2.13E+15	-0.65	28.98	0.0	0.0	0.0
+COSHOH = CO2 + H2S			3.25E+13	-0.09	37.78	0.0	0.0	0.0
+// 2nd pathway, 1st step 43.86 w/o catalysis
+COS + H2O = COSHOH			1.30E+01	3.35	25.79	0.0	0.0	0.0
+// 3rd pathway, form aldehyde from first product (reverse)
+H2S + CH2O = CH2OHSH		5.02E+01	3.01	38.7	0.0	0.0	0.0
+H2S + CH3CHO = CHCH3OHSH	4.69E+01	2.90	37.1	0.0	0.0	0.0
+// Approximate water-gas shift reaction
+// CO + H2O = CO2 + H2		5.0E+03		0.0	0.0	0.0	0.0	0.0

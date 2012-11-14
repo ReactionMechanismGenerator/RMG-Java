@@ -18,6 +18,7 @@ L1: XZ
 			L4: Cd/H/Nd
 				L5: Cd/H/Nd_Cd/H2
 				L5: Cd/H/Nd_Cd/H/Nd
+					L6: Cd/H/Os_Cd/H/Cs
 				L5: Cd/H/Nd_Cd/H/De
 				L5: Cd/H/Nd_Cd/Nd2
 				L5: Cd/H/Nd_Cd/Nd/De
@@ -88,6 +89,9 @@ L1: XZ
 		L3: Cdd_Od
 			L4: CO2
 			L4: Ck_O
+		L3:	Cdd_Sd
+			L4: CS2
+			L4: CS_O
 		L3: CO_O
 			L4: CO/H2_O
 			L4: CO/H/Nd_O
@@ -95,6 +99,19 @@ L1: XZ
 			L4: CO/Nd2_O
 			L4: CO/Nd/De_O
 			L4: CO/De2_O
+		L3: CS_S
+			L4: CS/H2_S
+			L4: CS/H/Nd_S
+				L5: CS/H/Cs_S
+				L5: CS/H/Os_S
+				L5: CS/H/Ss_S
+			L4: CS/H/De_S
+			L4: CS/Nd2_S
+				L5: CS/CsCs_S
+				L5: CS/CsOs_S
+				L5: CS/CsSs_S
+			L4: CS/Nd/De_S
+			L4: CS/De2_S
 		L3: Ct_Ct
 			L4: Ct/H_Ct/H
 			L4: Ct/H_Ct/Nd
@@ -109,7 +126,45 @@ L1: XZ
 	L2: OCddO
 	L2: OSi
 	L2: OSiddO
-
+	L2: SZ
+		L3: Sd_Cds
+			L4: Sd_Cds/H2
+			L4: Sd_Cds/H/Nd
+			L4: Sd_Cds/Nd2
+				L5: Sd_Cds/CsO
+			L4: Sd_Cds/H/De
+				L5: Sd_Cds/H/Cd
+				L5: Sd_Cds/H/CS
+				L5: Sd_Cds/H/Ct
+				L5: Sd_Cds/H/Cb
+				L5: Sd_Cds/H/CO
+			L4: Sd_Cds/Nd/De
+				L5: Sd_Cds/Nd/Cd
+				L5: Sd_Cds/Nd/CS
+				L5: Sd_Cds/Nd/Ct
+				L5: Sd_Cds/Nd/Cb
+				L5: Sd_Cds/Nd/CO
+			L4: Sd_Cds/TwoDe
+				L5: Sd_Cds/CdCd
+				L5: Sd_Cds/CdCS
+				L5: Sd_Cds/CSCS
+				L5: Sd_Cds/CdCt
+				L5: Sd_Cds/CtCS
+				L5: Sd_Cds/CdCb
+				L5: Sd_Cds/CbCS
+				L5: Sd_Cds/CdCO
+				L5: Sd_Cds/COCS
+				L5: Sd_Cds/CtCt
+				L5: Sd_Cds/CtCb
+				L5: Sd_Cds/CtCO
+				L5: Sd_Cds/CbCb
+				L5: Sd_Cds/CbCO
+				L5: Sd_Cds/COCO 			
+		L3: Sd_Cdd
+			L4: Sd_Cdd/Sd
+			L4: Sd_Cdd/Od
+	
+	
 L1: Y_rad_birad
 	L2: H_rad
 	L2: Cs_rad
@@ -126,6 +181,9 @@ L1: Y_rad_birad
 			L4: C_rad/H/NonDeO
 				L5: C_rad/H/CsO
 				L5: C_rad/H/O2
+			L4: C_rad/H/NonDeS
+				L5: C_rad/H/CsS
+				L5: C_rad/H/S2
 			L4: C_rad/H/OneDe
 				L5: C_rad/H/OneDeC
 				L5: C_rad/H/OneDeO
@@ -159,3 +217,14 @@ L1: Y_rad_birad
 		L3: O_sec_rad
 			L4: O_rad/NonDe
 			L4: O_rad/OneDe
+	L2: S_rad
+		L3: S_pri_rad
+		L3: S_sec_rad
+			L4: S_rad/NonDeC
+			L4: S_rad/NonDeS
+			L4: S_rad/OneDe
+				L5: S_rad/Cd
+				L5: S_rad/CS
+				L5: S_rad/Ct
+				L5: S_rad/Cb
+				L5: S_rad/CO

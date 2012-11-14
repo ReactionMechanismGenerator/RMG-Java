@@ -798,7 +798,7 @@ public abstract class JDAS implements DAESolver {
             k = r.calculateTotalRate(temperature);
         }
 
-        if (k > 0) {
+        if (k >= 0) {
             int reacCount = 0;
             int prodCount = 0;
             int[] tempReacArray = {0, 0, 0};

@@ -5,8 +5,8 @@ Y_rad_birad
 Union {Y_1centerbirad, Y_rad}
 
 // Y_2centeradjbirad
-// 1 *1 {Os, Ct} 1 {2,{S,T}}
-// 2    {Os, Ct} 1 {1,{S,T}}
+// 1 *1 {Os, Ct, Ss} 1 {2,{S,T}}
+// 2    {Os, Ct, Ss} 1 {1,{S,T}}
  
 C2b
 1 *1 C 1 {2,T}
@@ -17,7 +17,7 @@ O2_birad
 2    O 1 {1,S}
 
 Y_1centerbirad
-1 *1 {Cs,Cd,O} 2T
+1 *1 {Cs,Cd,O,S} 2T
 
 O_atom_triplet
 1 *1 O 2T
@@ -103,7 +103,7 @@ C_rad/H/NonDeO
 1 *1 C 1 {2,S}, {3,S}, {4,S}
 2 H 0 {1,S}
 3 O 0 {1,S}
-4 {Cs,O} 0 {1,S}
+4 {Cs,O,S} 0 {1,S}
 
 C_rad/H/CsO
 1 *1 C 1 {2,S}, {3,S}, {4,S}
@@ -117,11 +117,29 @@ C_rad/H/O2
 3 O 0 {1,S}
 4 O 0 {1,S}
 
+C_rad/H/NonDeS
+1 *1 C 1 {2,S}, {3,S}, {4,S}
+2 H 0 {1,S}
+3 S 0 {1,S}   
+4 {Cs,S} 0 {1,S}
+
+C_rad/H/CsS
+1 *1 C 1 {2,S}, {3,S}, {4,S}
+2 H 0 {1,S}
+3 S 0 {1,S}   
+4 Cs 0 {1,S}
+
+C_rad/H/S2
+1 *1 C 1 {2,S}, {3,S}, {4,S}
+2 H 0 {1,S}
+3 S 0 {1,S}
+4 S 0 {1,S}
+
 C_rad/H/OneDe
 1 *1 C 1 {2,S}, {3,S}, {4,S}
 2 H 0 {1,S}
 3 {Cd,Ct,Cb,CO} 0 {1,S}
-4 {Cs,O} 0 {1,S}
+4 {Cs,O,S} 0 {1,S}
 
 C_rad/H/OneDeC
 1 *1 C 1 {2,S}, {3,S}, {4,S}
@@ -149,9 +167,9 @@ C_ter_rad
 
 C_rad/NonDeC
 1 *1 C 1 {2,S}, {3,S}, {4,S}
-2 {Cs,O} 0 {1,S}
-3 {Cs,O} 0 {1,S}
-4 {Cs,O} 0 {1,S}
+2 {Cs,O,S} 0 {1,S}
+3 {Cs,O,S} 0 {1,S}
+4 {Cs,O,S} 0 {1,S}
 
 C_rad/Cs3
 1 *1 C 1 {2,S}, {3,S}, {4,S}
@@ -162,14 +180,14 @@ C_rad/Cs3
 C_rad/NDMustO
 1 *1 C 1 {2,S}, {3,S}, {4,S}
 2 O 0 {1,S}
-3 {Cs,O} 0 {1,S}
-4 {Cs,O} 0 {1,S}
+3 {Cs,O,S} 0 {1,S}
+4 {Cs,O,S} 0 {1,S}
 
 C_rad/OneDe
 1 *1 C 1 {2,S}, {3,S}, {4,S}
 2 {Cd,Ct,Cb,CO} 0 {1,S}
-3 {Cs,O} 0 {1,S}
-4 {Cs,O} 0 {1,S}
+3 {Cs,O,S} 0 {1,S}
+4 {Cs,O,S} 0 {1,S}
 
 C_rad/Cs2
 1 *1 C 1 {2,S}, {3,S}, {4,S}
@@ -181,13 +199,13 @@ C_rad/ODMustO
 1 *1 C 1 {2,S}, {3,S}, {4,S}
 2 {Cd,Ct,Cb,CO} 0 {1,S}
 3 O 0 {1,S}
-4 {Cs,O} 0 {1,S}
+4 {Cs,O,S} 0 {1,S}
 
 C_rad/TwoDe
 1 *1 C 1 {2,S}, {3,S}, {4,S}
 2 {Cd,Ct,Cb,CO} 0 {1,S}
 3 {Cd,Ct,Cb,CO} 0 {1,S}
-4 {Cs,O} 0 {1,S}
+4 {Cs,O,S} 0 {1,S}
 
 C_rad/Cs
 1 *1 C 1 {2,S}, {3,S}, {4,S}
@@ -264,7 +282,7 @@ CO_sec_rad
 CO_rad/NonDe
 1 *1 C 1 {2,D}, {3,S}
 2 O 0 {1,D}
-3 {Cs,O} 0 {1,S}
+3 {Cs,O,S} 0 {1,S}
 
 CO_rad/OneDe
 1 *1 C 1 {2,D}, {3,S}
@@ -295,6 +313,30 @@ O_rad/OneDe
 1 *1 O 1 {2,S}
 2 {Cd,Ct,Cb,CO} 0 {1,S}
 
+S_rad
+1 *1 S 1 {2,S}
+2 R 0 {1,S}
+
+S_pri_rad
+1 *1 S 1 {2,S}
+2 H 0 {1,S}
+
+S_sec_rad
+1 *1 S 1 {2,S}
+2 {R!H} 0 {1,S}
+
+S_rad/NonDeC
+1 *1 S 1 {2,S}
+2 Cs 0 {1,S}
+
+S_rad/NonDeS
+1 *1 S 1 {2,S}
+2 S 0 {1,S}
+
+S_rad/OneDe
+1 *1 S 1 {2,S}
+2 {Cd,Ct,Cb,CO} 0 {1,S}
+
 XH_Rrad
 1. *2 {R!H} 0 {2,S}, {3,S}
 2. *3 {R!H} 1 {1,S}
@@ -302,7 +344,7 @@ XH_Rrad
 
 Cmethyl_Rrad
 1. *2 C 0 {2,S}, {3,S}, {4,S}, {5,S}
-2. *3 {Cs,Cd,CO,O} 1 {1,S}
+2. *3 {Cs,Cd,CO,O,S} 1 {1,S}
 3. *4 H 0 {1,S}
 4. H 0 {1,S}
 5. H 0 {1,S}
@@ -335,51 +377,58 @@ Cmethyl_Orad
 4. H 0 {1,S}
 5. H 0 {1,S}
 
+Cmethyl_Srad
+1. *2 C 0 {2,S}, {3,S}, {4,S}, {5,S}
+2. *3 S 1 {1,S}
+3. *4 H 0 {1,S}
+4. H 0 {1,S}
+5. H 0 {1,S}
+
 Cpri_Rrad
 1. *2 C 0 {2,S}, {3,S}, {4,S}, {5,S}
-2. *3 {Cs,Cd,CO,O} 1 {1,S}
+2. *3 {Cs,Cd,CO,O,S} 1 {1,S}
 3. *4 H 0 {1,S}
 4. H 0 {1,S}
 5. {R!H} 0 {1,S}
 
 C/H2/Nd_Rrad
 1. *2 C 0 {2,S}, {3,S}, {4,S}, {5,S}
-2. *3 {Cs,Cd,CO,O} 1 {1,S}
+2. *3 {Cs,Cd,CO,O,S} 1 {1,S}
 3. *4 H 0 {1,S}
 4. H 0 {1,S}
-5. {Cs,O} 0 {1,S}
+5. {Cs,O,S} 0 {1,S}
 
 C/H2/Nd_Csrad
 1. *2 C 0 {2,S}, {3,S}, {4,S}, {5,S}
 2. *3 Cs 1 {1,S}
 3. *4 H 0 {1,S}
 4. H 0 {1,S}
-5. {Cs,O} 0 {1,S}
+5. {Cs,O,S} 0 {1,S}
 
 C/H2/Nd_Cdrad
 1. *2 C 0 {2,S}, {3,S}, {4,S}, {5,S}
 2. *3 Cd 1 {1,S}
 3. *4 H 0 {1,S}
 4. H 0 {1,S}
-5. {Cs,O} 0 {1,S}
+5. {Cs,O,S} 0 {1,S}
 
 C/H2/Nd_COrad
 1. *2 C 0 {2,S}, {3,S}, {4,S}, {5,S}
 2. *3 CO 1 {1,S}
 3. *4 H 0 {1,S}
 4. H 0 {1,S}
-5. {Cs,O} 0 {1,S}
+5. {Cs,O,S} 0 {1,S}
 
 C/H2/Nd_Orad
 1. *2 C 0 {2,S}, {3,S}, {4,S}, {5,S}
 2. *3 O 1 {1,S}
 3. *4 H 0 {1,S}
 4. H 0 {1,S}
-5. {Cs,O} 0 {1,S}
+5. {Cs,O,S} 0 {1,S}
 
 C/H2/De_Rrad
 1. *2 C 0 {2,S}, {3,S}, {4,S}, {5,S}
-2. *3 {Cs,Cd,CO,O} 1 {1,S}
+2. *3 {Cs,Cd,CO,O,S} 1 {1,S}
 3. *4 H 0 {1,S}
 4. H 0 {1,S}
 5. {Cd,Ct,Cb,CO} 0 {1,S}
@@ -414,84 +463,84 @@ C/H2/De_Orad
 
 Csec_Rrad
 1. *2 C 0 {2,S}, {3,S}, {4,S}, {5,S}
-2. *3 {Cs,Cd,CO,O} 1 {1,S}
+2. *3 {Cs,Cd,CO,O,S} 1 {1,S}
 3. *4 H 0 {1,S}
 4. {R!H} 0 {1,S}
 5. {R!H} 0 {1,S}
 
 C/H/NdNd_Rrad
 1. *2 C 0 {2,S}, {3,S}, {4,S}, {5,S}
-2. *3 {Cs,Cd,CO,O} 1 {1,S}
+2. *3 {Cs,Cd,CO,O,S} 1 {1,S}
 3. *4 H 0 {1,S}
-4. {Cs,O} 0 {1,S}
-5. {Cs,O} 0 {1,S}
+4. {Cs,O,S} 0 {1,S}
+5. {Cs,O,S} 0 {1,S}
 
 C/H/NdNd_Csrad
 1. *2 C 0 {2,S}, {3,S}, {4,S}, {5,S}
 2. *3 Cs 1 {1,S}
 3. *4 H 0 {1,S}
-4. {Cs,O} 0 {1,S}
-5. {Cs,O} 0 {1,S}
+4. {Cs,O,S} 0 {1,S}
+5. {Cs,O,S} 0 {1,S}
 
 C/H/NdNd_Cdrad
 1. *2 C 0 {2,S}, {3,S}, {4,S}, {5,S}
 2. *3 Cd 1 {1,S}
 3. *4 H 0 {1,S}
-4. {Cs,O} 0 {1,S}
-5. {Cs,O} 0 {1,S}
+4. {Cs,O,S} 0 {1,S}
+5. {Cs,O,S} 0 {1,S}
 
 C/H/NdNd_COrad
 1. *2 C 0 {2,S}, {3,S}, {4,S}, {5,S}
 2. *3 CO 1 {1,S}
 3. *4 H 0 {1,S}
-4. {Cs,O} 0 {1,S}
-5. {Cs,O} 0 {1,S}
+4. {Cs,O,S} 0 {1,S}
+5. {Cs,O,S} 0 {1,S}
 
 C/H/NdNd_Orad
 1. *2 C 0 {2,S}, {3,S}, {4,S}, {5,S}
 2. *3 O 1 {1,S}
 3. *4 H 0 {1,S}
-4. {Cs,O} 0 {1,S}
-5. {Cs,O} 0 {1,S}
+4. {Cs,O,S} 0 {1,S}
+5. {Cs,O,S} 0 {1,S}
 
 C/H/NdDe_Rrad
 1. *2 C 0 {2,S}, {3,S}, {4,S}, {5,S}
-2. *3 {Cs,Cd,CO,O} 1 {1,S}
+2. *3 {Cs,Cd,CO,O,S} 1 {1,S}
 3. *4 H 0 {1,S}
-4. {Cs,O} 0 {1,S}
+4. {Cs,O,S} 0 {1,S}
 5. {Cd,Ct,Cb,CO} 0 {1,S}
 
 C/H/NdDe_Csrad
 1. *2 C 0 {2,S}, {3,S}, {4,S}, {5,S}
 2. *3 Cs 1 {1,S}
 3. *4 H 0 {1,S}
-4. {Cs,O} 0 {1,S}
+4. {Cs,O,S} 0 {1,S}
 5. {Cd,Ct,Cb,CO} 0 {1,S}
 
 C/H/NdDe_Cdrad
 1. *2 C 0 {2,S}, {3,S}, {4,S}, {5,S}
 2. *3 Cd 1 {1,S}
 3. *4 H 0 {1,S}
-4. {Cs,O} 0 {1,S}
+4. {Cs,O,S} 0 {1,S}
 5. {Cd,Ct,Cb,CO} 0 {1,S}
 
 C/H/NdDe_COrad
 1. *2 C 0 {2,S}, {3,S}, {4,S}, {5,S}
 2. *3 CO 1 {1,S}
 3. *4 H 0 {1,S}
-4. {Cs,O} 0 {1,S}
+4. {Cs,O,S} 0 {1,S}
 5. {Cd,Ct,Cb,CO} 0 {1,S}
 
 C/H/NdDe_Orad
 1. *2 C 0 {2,S}, {3,S}, {4,S}, {5,S}
 2. *3 O 1 {1,S}
 3. *4 H 0 {1,S}
-4. {Cs,O} 0 {1,S}
+4. {Cs,O,S} 0 {1,S}
 5. {Cd,Ct,Cb,CO} 0 {1,S}
 
 C/H/DeDe_Rrad
 1. *2 C 0 {2,S}, {3,S}, {4,S}, {5,S}
-2. *3 {Cs,Cd,CO,O} 1 {1,S}
+2. *3 {Cs,Cd,CO,O,S} 1 {1,S}
 3. *4 H 0 {1,S}
 4. {Cd,Ct,Cb,CO} 0 {1,S}
 5. {Cd,Ct,Cb,CO} 0 {1,S}
@@ -526,7 +575,7 @@ C/H/DeDe_Orad
 
 Cdpri_Rrad
 1. *2 Cd 0 {2,S}, {3,S}
-2. *3 {Cs,Cd,CO,O} 1 {1,S}
+2. *3 {Cs,Cd,CO,O,S} 1 {1,S}
 3. *4 H 0 {1,S}
 
 Cdpri_Csrad
@@ -551,7 +600,7 @@ Cdpri_Orad
 
 COpri_Rrad
 1. *2 CO 0 {2,S}, {3,S}
-2. *3 {Cs,Cd,CO,O} 1 {1,S}
+2. *3 {Cs,Cd,CO,O,S} 1 {1,S}
 3. *4 H 0 {1,S}
 
 COpri_Csrad
@@ -576,7 +625,7 @@ COpri_Orad
 
 O_Rrad
 1. *2 O 0 {2,S}, {3,S}
-2. *3 {Cs,Cd,CO} 1 {1,S}
+2. *3 {Cs,Cd,CO,O,S} 1 {1,S}
 3. *4 H 0 {1,S}
 
 O_Csrad
@@ -592,4 +641,29 @@ O_Cdrad
 O_COrad
 1. *2 O 0 {2,S}, {3,S}
 2. *3 CO 1 {1,S}
+3. *4 H 0 {1,S}
+
+O_Orad
+1. *2 O 0 {2,S}, {3,S}
+2. *3 O 1 {1,S}
+3. *4 H 0 {1,S}
+
+S_Rrad
+1. *2 S 0 {2,S}, {3,S}
+2. *3 {Cs,Cd,S} 1 {1,S}
+3. *4 H 0 {1,S}
+
+S_Csrad
+1. *2 S 0 {2,S}, {3,S}
+2. *3 Cs 1 {1,S}
+3. *4 H 0 {1,S}
+
+S_Cdrad
+1. *2 S 0 {2,S}, {3,S}
+2. *3 Cd 1 {1,S}
+3. *4 H 0 {1,S}
+
+S_Srad
+1. *2 S 0 {2,S}, {3,S}
+2. *3 S 1 {1,S}
 3. *4 H 0 {1,S}

@@ -5,11 +5,11 @@
 //Sandeep included Y_birad in Y_rad. This enables Oa to react with multiple bond
 
 XZ
-Union {CZ,OCO,OCddO,OSi,OSiddO}
+Union {CZ,SZ,OCO,OCddO,OSi,OSiddO}
 
 CZ
-1 *1 {Cd,Cdd,Ct,CO,Sid,Sidd,Sit} 0 {2,{D,T}}
-2 *2 {Cd,Cdd,Ct,Od,Sid,Sidd,Sit} 0 {1,{D,T}}
+1 *1 {Cd,Cdd,Ct,CO,CS,Sid,Sidd,Sit} 0 {2,{D,T}}
+2 *2 {Cd,Cdd,Ct,Od,Sd,Sid,Sidd,Sit} 0 {1,{D,T}}
  
 Cd_Cd
 1 *1 Cd 0 {2,D}
@@ -35,7 +35,7 @@ Cd/H2_Cd/H/Nd
 3    H      0 {1,S}
 4    H      0 {1,S}
 5    H      0 {2,S}
-6    {Cs,O} 0 {2,S}
+6    {Cs,O,S} 0 {2,S}
 
 Cd/H2_Cd/H/De
 1 *1    Cd      0 {2,D}, {3,S}, {4,S}
@@ -43,43 +43,43 @@ Cd/H2_Cd/H/De
 3       H       0 {1,S}
 4       H       0 {1,S}
 5       H       0 {2,S}
-6 {Cd,Ct,Cb,CO} 0 {2,S}
+6 {Cd,Ct,Cb,CO,CS} 0 {2,S}
 
 Cd/H2_Cd/Nd2
 1 *1    Cd  0 {2,D}, {3,S}, {4,S}
 2 *2    Cd  0 {1,D}, {5,S}, {6,S}
 3       H   0 {1,S}
 4       H   0 {1,S}
-5    {Cs,O} 0 {2,S}
-6    {Cs,O} 0 {2,S}
+5    {Cs,O,S} 0 {2,S}
+6    {Cs,O,S} 0 {2,S}
 
 Cd/H2_Cd/Nd/De
 1 *1    Cd      0 {2,D}, {3,S}, {4,S}
 2 *2    Cd      0 {1,D}, {5,S}, {6,S}
 3       H       0 {1,S}
 4       H       0 {1,S}
-5       {Cs,O}  0 {2,S}
-6 {Cd,Ct,Cb,CO} 0 {2,S}
+5       {Cs,O,S}  0 {2,S}
+6 {Cd,Ct,Cb,CO,CS} 0 {2,S}
 
 Cd/H2_Cd/De2
 1 *1        Cd  0 {2,D}, {3,S}, {4,S}
 2 *2        Cd  0 {1,D}, {5,S}, {6,S}
 3           H   0 {1,S}
 4           H   0 {1,S}
-5 {Cd,Ct,Cb,CO} 0 {2,S}
-6 {Cd,Ct,Cb,CO} 0 {2,S}
+5 {Cd,Ct,Cb,CO,CS} 0 {2,S}
+6 {Cd,Ct,Cb,CO,CS} 0 {2,S}
 
 Cd/H/Nd
 1 *1    Cd  0 {2,D}, {3,S}, {4,S}
 2 *2    Cd  0 {1,D}
 3       H   0 {1,S}
-4  {Cs,O}   0 {1,S}
+4  {Cs,O,S}   0 {1,S}
 
 Cd/H/Nd_Cd/H2
 1 *1    Cd  0 {2,D}, {3,S}, {4,S}
 2 *2    Cd  0 {1,D}, {5,S}, {6,S}
 3       H   0 {1,S}
-4   {Cs,O}  0 {1,S}
+4   {Cs,O,S}  0 {1,S}
 5       H   0 {2,S}
 6       H   0 {2,S}
 
@@ -87,53 +87,61 @@ Cd/H/Nd_Cd/H/Nd
 1 *1    Cd  0 {2,D}, {3,S}, {4,S}
 2 *2    Cd  0 {1,D}, {5,S}, {6,S}
 3       H   0 {1,S}
-4   {Cs,O}  0 {1,S}
+4   {Cs,O,S}  0 {1,S}
 5       H   0 {2,S}
-6   {Cs,O}  0 {2,S}
+6   {Cs,O,S}  0 {2,S}
+
+Cd/H/Os_Cd/H/Cs
+1 *1    Cd  0 {2,D}, {3,S}, {4,S}
+2 *2    Cd  0 {1,D}, {5,S}, {6,S}
+3       H   0 {1,S}
+4       O   0 {1,S}
+5       H   0 {2,S}
+6       Cs  0 {2,S}
 
 Cd/H/Nd_Cd/H/De
 1 *1 Cd 0 {2,D}, {3,S}, {4,S}
 2 *2 Cd 0 {1,D}, {5,S}, {6,S}
 3 H 0 {1,S}
-4 {Cs,O} 0 {1,S}
+4 {Cs,O,S} 0 {1,S}
 5 H 0 {2,S}
-6 {Cd,Ct,Cb,CO} 0 {2,S}
+6 {Cd,Ct,Cb,CO,CS} 0 {2,S}
 
 Cd/H/Nd_Cd/Nd2
 1 *1 Cd 0 {2,D}, {3,S}, {4,S}
 2 *2 Cd 0 {1,D}, {5,S}, {6,S}
 3 H 0 {1,S}
-4 {Cs,O} 0 {1,S}
-5 {Cs,O} 0 {2,S}
-6 {Cs,O} 0 {2,S}
+4 {Cs,O,S} 0 {1,S}
+5 {Cs,O,S} 0 {2,S}
+6 {Cs,O,S} 0 {2,S}
 
 Cd/H/Nd_Cd/Nd/De
 1 *1 Cd 0 {2,D}, {3,S}, {4,S}
 2 *2 Cd 0 {1,D}, {5,S}, {6,S}
 3 H 0 {1,S}
-4 {Cs,O} 0 {1,S}
-5 {Cs,O} 0 {2,S}
-6 {Cd,Ct,Cb,CO} 0 {2,S}
+4 {Cs,O,S} 0 {1,S}
+5 {Cs,O,S} 0 {2,S}
+6 {Cd,Ct,Cb,CO,CS} 0 {2,S}
 
 Cd/H/Nd_Cd/De2
 1 *1 Cd 0 {2,D}, {3,S}, {4,S}
 2 *2 Cd 0 {1,D}, {5,S}, {6,S}
 3 H 0 {1,S}
-4 {Cs,O} 0 {1,S}
-5 {Cd,Ct,Cb,CO} 0 {2,S}
-6 {Cd,Ct,Cb,CO} 0 {2,S}
+4 {Cs,O,S} 0 {1,S}
+5 {Cd,Ct,Cb,CO,CS} 0 {2,S}
+6 {Cd,Ct,Cb,CO,CS} 0 {2,S}
 
 Cd/H/De
 1 *1 Cd 0 {2,D}, {3,S}, {4,S}
 2 *2 Cd 0 {1,D}
 3 H 0 {1,S}
-4 {Cd,Ct,Cb,CO} 0 {1,S}
+4 {Cd,Ct,Cb,CO,CS} 0 {1,S}
 
 Cd/H/De_Cd/H2
 1 *1 Cd 0 {2,D}, {3,S}, {4,S}
 2 *2 Cd 0 {1,D}, {5,S}, {6,S}
 3 H 0 {1,S}
-4 {Cd,Ct,Cb,CO} 0 {1,S}
+4 {Cd,Ct,Cb,CO,CS} 0 {1,S}
 5 H 0 {2,S}
 6 H 0 {2,S}
 
@@ -141,203 +149,203 @@ Cd/H/De_Cd/H/Nd
 1 *1 Cd 0 {2,D}, {3,S}, {4,S}
 2 *2 Cd 0 {1,D}, {5,S}, {6,S}
 3 H 0 {1,S}
-4 {Cd,Ct,Cb,CO} 0 {1,S}
+4 {Cd,Ct,Cb,CO,CS} 0 {1,S}
 5 H 0 {2,S}
-6 {Cs,O} 0 {2,S}
+6 {Cs,O,S} 0 {2,S}
 
 Cd/H/De_Cd/H/De
 1 *1 Cd 0 {2,D}, {3,S}, {4,S}
 2 *2 Cd 0 {1,D}, {5,S}, {6,S}
 3 H 0 {1,S}
-4 {Cd,Ct,Cb,CO} 0 {1,S}
+4 {Cd,Ct,Cb,CO,CS} 0 {1,S}
 5 H 0 {2,S}
-6 {Cd,Ct,Cb,CO} 0 {2,S}
+6 {Cd,Ct,Cb,CO,CS} 0 {2,S}
 
 Cd/H/De_Cd/Nd2
 1 *1 Cd 0 {2,D}, {3,S}, {4,S}
 2 *2 Cd 0 {1,D}, {5,S}, {6,S}
 3 H 0 {1,S}
-4 {Cd,Ct,Cb,CO} 0 {1,S}
-5 {Cs,O} 0 {2,S}
-6 {Cs,O} 0 {2,S}
+4 {Cd,Ct,Cb,CO,CS} 0 {1,S}
+5 {Cs,O,S} 0 {2,S}
+6 {Cs,O,S} 0 {2,S}
 
 Cd/H/De_Cd/Nd/De
 1 *1 Cd 0 {2,D}, {3,S}, {4,S}
 2 *2 Cd 0 {1,D}, {5,S}, {6,S}
 3 H 0 {1,S}
-4 {Cd,Ct,Cb,CO} 0 {1,S}
-5 {Cs,O} 0 {2,S}
-6 {Cd,Ct,Cb,CO} 0 {2,S}
+4 {Cd,Ct,Cb,CO,CS} 0 {1,S}
+5 {Cs,O,S} 0 {2,S}
+6 {Cd,Ct,Cb,CO,CS} 0 {2,S}
 
 Cd/H/De_Cd/De2
 1 *1 Cd 0 {2,D}, {3,S}, {4,S}
 2 *2 Cd 0 {1,D}, {5,S}, {6,S}
 3 H 0 {1,S}
-4 {Cd,Ct,Cb,CO} 0 {1,S}
-5 {Cd,Ct,Cb,CO} 0 {2,S}
-6 {Cd,Ct,Cb,CO} 0 {2,S}
+4 {Cd,Ct,Cb,CO,CS} 0 {1,S}
+5 {Cd,Ct,Cb,CO,CS} 0 {2,S}
+6 {Cd,Ct,Cb,CO,CS} 0 {2,S}
 
 Cd/Nd2
 1 *1 Cd 0 {2,D}, {3,S}, {4,S}
 2 *2 Cd 0 {1,D}
-3 {Cs,O} 0 {1,S}
-4 {Cs,O} 0 {1,S}
+3 {Cs,O,S} 0 {1,S}
+4 {Cs,O,S} 0 {1,S}
 
 Cd/Nd2_Cd/H2
 1 *1 Cd 0 {2,D}, {3,S}, {4,S}
 2 *2 Cd 0 {1,D}, {5,S}, {6,S}
-3 {Cs,O} 0 {1,S}
-4 {Cs,O} 0 {1,S}
+3 {Cs,O,S} 0 {1,S}
+4 {Cs,O,S} 0 {1,S}
 5 H 0 {2,S}
 6 H 0 {2,S}
 
 Cd/Nd2_Cd/H/Nd
 1 *1 Cd 0 {2,D}, {3,S}, {4,S}
 2 *2 Cd 0 {1,D}, {5,S}, {6,S}
-3 {Cs,O} 0 {1,S}
-4 {Cs,O} 0 {1,S}
+3 {Cs,O,S} 0 {1,S}
+4 {Cs,O,S} 0 {1,S}
 5 H 0 {2,S}
-6 {Cs,O} 0 {2,S}
+6 {Cs,O,S} 0 {2,S}
 
 Cd/Nd2_Cd/H/De
 1 *1 Cd 0 {2,D}, {3,S}, {4,S}
 2 *2 Cd 0 {1,D}, {5,S}, {6,S}
-3 {Cs,O} 0 {1,S}
-4 {Cs,O} 0 {1,S}
+3 {Cs,O,S} 0 {1,S}
+4 {Cs,O,S} 0 {1,S}
 5 H 0 {2,S}
-6 {Cd,Ct,Cb,CO} 0 {2,S}
+6 {Cd,Ct,Cb,CO,CS} 0 {2,S}
 
 Cd/Nd2_Cd/Nd2
 1 *1 Cd 0 {2,D}, {3,S}, {4,S}
 2 *2 Cd 0 {1,D}, {5,S}, {6,S}
-3 {Cs,O} 0 {1,S}
-4 {Cs,O} 0 {1,S}
-5 {Cs,O} 0 {2,S}
-6 {Cs,O} 0 {2,S}
+3 {Cs,O,S} 0 {1,S}
+4 {Cs,O,S} 0 {1,S}
+5 {Cs,O,S} 0 {2,S}
+6 {Cs,O,S} 0 {2,S}
 
 Cd/Nd2_Cd/Nd/De
 1 *1 Cd 0 {2,D}, {3,S}, {4,S}
 2 *2 Cd 0 {1,D}, {5,S}, {6,S}
-3 {Cs,O} 0 {1,S}
-4 {Cs,O} 0 {1,S}
-5 {Cs,O} 0 {2,S}
-6 {Cd,Ct,Cb,CO} 0 {2,S}
+3 {Cs,O,S} 0 {1,S}
+4 {Cs,O,S} 0 {1,S}
+5 {Cs,O,S} 0 {2,S}
+6 {Cd,Ct,Cb,CO,CS} 0 {2,S}
 
 Cd/Nd2_Cd/De2
 1 *1 Cd 0 {2,D}, {3,S}, {4,S}
 2 *2 Cd 0 {1,D}, {5,S}, {6,S}
-3 {Cs,O} 0 {1,S}
-4 {Cs,O} 0 {1,S}
-5 {Cd,Ct,Cb,CO} 0 {2,S}
-6 {Cd,Ct,Cb,CO} 0 {2,S}
+3 {Cs,O,S} 0 {1,S}
+4 {Cs,O,S} 0 {1,S}
+5 {Cd,Ct,Cb,CO,CS} 0 {2,S}
+6 {Cd,Ct,Cb,CO,CS} 0 {2,S}
 
 Cd/Nd/De
 1 *1 Cd 0 {2,D}, {3,S}, {4,S}
 2 *2 Cd 0 {1,D}
-3 {Cs,O} 0 {1,S}
-4 {Cd,Ct,Cb,CO} 0 {1,S}
+3 {Cs,O,S} 0 {1,S}
+4 {Cd,Ct,Cb,CO,CS} 0 {1,S}
 
 Cd/Nd/De_Cd/H2
 1 *1 Cd 0 {2,D}, {3,S}, {4,S}
 2 *2 Cd 0 {1,D}, {5,S}, {6,S}
-3 {Cs,O} 0 {1,S}
-4 {Cd,Ct,Cb,CO} 0 {1,S}
+3 {Cs,O,S} 0 {1,S}
+4 {Cd,Ct,Cb,CO,CS} 0 {1,S}
 5 H 0 {2,S}
 6 H 0 {2,S}
 
 Cd/Nd/De_Cd/H/Nd
 1 *1 Cd 0 {2,D}, {3,S}, {4,S}
 2 *2 Cd 0 {1,D}, {5,S}, {6,S}
-3 {Cs,O} 0 {1,S}
-4 {Cd,Ct,Cb,CO} 0 {1,S}
+3 {Cs,O,S} 0 {1,S}
+4 {Cd,Ct,Cb,CO,CS} 0 {1,S}
 5 H 0 {2,S}
-6 {Cs,O} 0 {2,S}
+6 {Cs,O,S} 0 {2,S}
 
 Cd/Nd/De_Cd/H/De
 1 *1 Cd 0 {2,D}, {3,S}, {4,S}
 2 *2 Cd 0 {1,D}, {5,S}, {6,S}
-3 {Cs,O} 0 {1,S}
-4 {Cd,Ct,Cb,CO} 0 {1,S}
+3 {Cs,O,S} 0 {1,S}
+4 {Cd,Ct,Cb,CO,CS} 0 {1,S}
 5 H 0 {2,S}
-6 {Cd,Ct,Cb,CO} 0 {2,S}
+6 {Cd,Ct,Cb,CO,CS} 0 {2,S}
 
 Cd/Nd/De_Cd/Nd2
 1 *1 Cd 0 {2,D}, {3,S}, {4,S}
 2 *2 Cd 0 {1,D}, {5,S}, {6,S}
-3 {Cs,O} 0 {1,S}
-4 {Cd,Ct,Cb,CO} 0 {1,S}
-5 {Cs,O} 0 {2,S}
-6 {Cs,O} 0 {2,S}
+3 {Cs,O,S} 0 {1,S}
+4 {Cd,Ct,Cb,CO,CS} 0 {1,S}
+5 {Cs,O,S} 0 {2,S}
+6 {Cs,O,S} 0 {2,S}
 
 Cd/Nd/De_Cd/Nd/De
 1 *1 Cd 0 {2,D}, {3,S}, {4,S}
 2 *2 Cd 0 {1,D}, {5,S}, {6,S}
-3 {Cs,O} 0 {1,S}
-4 {Cd,Ct,Cb,CO} 0 {1,S}
-5 {Cs,O} 0 {2,S}
-6 {Cd,Ct,Cb,CO} 0 {2,S}
+3 {Cs,O,S} 0 {1,S}
+4 {Cd,Ct,Cb,CO,CS} 0 {1,S}
+5 {Cs,O,S} 0 {2,S}
+6 {Cd,Ct,Cb,CO,CS} 0 {2,S}
 
 Cd/Nd/De_Cd/De2
 1 *1 Cd 0 {2,D}, {3,S}, {4,S}
 2 *2 Cd 0 {1,D}, {5,S}, {6,S}
-3 {Cs,O} 0 {1,S}
-4 {Cd,Ct,Cb,CO} 0 {1,S}
-5 {Cd,Ct,Cb,CO} 0 {2,S}
-6 {Cd,Ct,Cb,CO} 0 {2,S}
+3 {Cs,O,S} 0 {1,S}
+4 {Cd,Ct,Cb,CO,CS} 0 {1,S}
+5 {Cd,Ct,Cb,CO,CS} 0 {2,S}
+6 {Cd,Ct,Cb,CO,CS} 0 {2,S}
 
 Cd/De2
 1 *1 Cd 0 {2,D}, {3,S}, {4,S}
 2 *2 Cd 0 {1,D}
-3 {Cd,Ct,Cb,CO} 0 {1,S}
-4 {Cd,Ct,Cb,CO} 0 {1,S}
+3 {Cd,Ct,Cb,CO,CS} 0 {1,S}
+4 {Cd,Ct,Cb,CO,CS} 0 {1,S}
 
 Cd/De2_Cd/H2
 1 *1 Cd 0 {2,D}, {3,S}, {4,S}
 2 *2 Cd 0 {1,D}, {5,S}, {6,S}
-3 {Cd,Ct,Cb,CO} 0 {1,S}
-4 {Cd,Ct,Cb,CO} 0 {1,S}
+3 {Cd,Ct,Cb,CO,CS} 0 {1,S}
+4 {Cd,Ct,Cb,CO,CS} 0 {1,S}
 5 H 0 {2,S}
 6 H 0 {2,S}
 
 Cd/De2_Cd/H/Nd
 1 *1 Cd 0 {2,D}, {3,S}, {4,S}
 2 *2 Cd 0 {1,D}, {5,S}, {6,S}
-3 {Cd,Ct,Cb,CO} 0 {1,S}
-4 {Cd,Ct,Cb,CO} 0 {1,S}
+3 {Cd,Ct,Cb,CO,CS} 0 {1,S}
+4 {Cd,Ct,Cb,CO,CS} 0 {1,S}
 5 H 0 {2,S}
-6 {Cs,O} 0 {2,S}
+6 {Cs,O,S} 0 {2,S}
 
 Cd/De2_Cd/H/De
 1 *1 Cd 0 {2,D}, {3,S}, {4,S}
 2 *2 Cd 0 {1,D}, {5,S}, {6,S}
-3 {Cd,Ct,Cb,CO} 0 {1,S}
-4 {Cd,Ct,Cb,CO} 0 {1,S}
+3 {Cd,Ct,Cb,CO,CS} 0 {1,S}
+4 {Cd,Ct,Cb,CO,CS} 0 {1,S}
 5 H 0 {2,S}
-6 {Cd,Ct,Cb,CO} 0 {2,S}
+6 {Cd,Ct,Cb,CO,CS} 0 {2,S}
 
 Cd/De2_Cd/Nd2
 1 *1 Cd 0 {2,D}, {3,S}, {4,S}
 2 *2 Cd 0 {1,D}, {5,S}, {6,S}
-3 {Cd,Ct,Cb,CO} 0 {1,S}
-4 {Cd,Ct,Cb,CO} 0 {1,S}
-5 {Cs,O} 0 {2,S}
-6 {Cs,O} 0 {2,S}
+3 {Cd,Ct,Cb,CO,CS} 0 {1,S}
+4 {Cd,Ct,Cb,CO,CS} 0 {1,S}
+5 {Cs,O,S} 0 {2,S}
+6 {Cs,O,S} 0 {2,S}
 
 Cd/De2_Cd/Nd/De
 1 *1 Cd 0 {2,D}, {3,S}, {4,S}
 2 *2 Cd 0 {1,D}, {5,S}, {6,S}
-3 {Cd,Ct,Cb,CO} 0 {1,S}
-4 {Cd,Ct,Cb,CO} 0 {1,S}
-5 {Cs,O} 0 {2,S}
-6 {Cd,Ct,Cb,CO} 0 {2,S}
+3 {Cd,Ct,Cb,CO,CS} 0 {1,S}
+4 {Cd,Ct,Cb,CO,CS} 0 {1,S}
+5 {Cs,O,S} 0 {2,S}
+6 {Cd,Ct,Cb,CO,CS} 0 {2,S}
 
 Cd/De2_Cd/De2
 1 *1 Cd 0 {2,D}, {3,S}, {4,S}
 2 *2 Cd 0 {1,D}, {5,S}, {6,S}
-3 {Cd,Ct,Cb,CO} 0 {1,S}
-4 {Cd,Ct,Cb,CO} 0 {1,S}
-5 {Cd,Ct,Cb,CO} 0 {2,S}
-6 {Cd,Ct,Cb,CO} 0 {2,S}
+3 {Cd,Ct,Cb,CO,CS} 0 {1,S}
+4 {Cd,Ct,Cb,CO,CS} 0 {1,S}
+5 {Cd,Ct,Cb,CO,CS} 0 {2,S}
+6 {Cd,Ct,Cb,CO,CS} 0 {2,S}
 
 Cd_Cdd
 1 *1 Cd 0 {2,D}
@@ -359,35 +367,35 @@ Cd/H/Nd_Ca
 1 *1 Cd  0 {2,D}, {3,S}, {4,S} 
 2 *2 Cdd  0 {1,D}, {5,D} 
 3 H  0 {1,S}
-4 {Cs,O} 0 {1,S}
+4 {Cs,O,S} 0 {1,S}
 5 C 0 {2,D}
  
 Cd/H/De_Ca
 1 *1 Cd  0 {2,D}, {3,S}, {4,S} 
 2 *2 Cdd  0 {1,D}, {5,D} 
 3 H  0 {1,S}
-4 {Cd,Ct,Cb,CO} 0 {1,S}
+4 {Cd,Ct,Cb,CO,CS} 0 {1,S}
 5 C 0 {2,D}
  
 Cd/Nd2_Ca
 1 *1 Cd  0 {2,D}, {3,S}, {4,S} 
 2 *2 Cdd  0 {1,D}, {5,D} 
-3 {Cs,O} 0 {1,S}
-4 {Cs,O} 0 {1,S}
+3 {Cs,O,S} 0 {1,S}
+4 {Cs,O,S} 0 {1,S}
 5 C 0 {2,D}
  
 Cd/Nd/De_Ca
 1 *1 Cd  0 {2,D}, {3,S}, {4,S} 
 2 *2 Cdd  0 {1,D}, {5,D} 
-3 {Cs,O} 0 {1,S}
-4 {Cd,Ct,Cb,CO} 0 {1,S}
+3 {Cs,O,S} 0 {1,S}
+4 {Cd,Ct,Cb,CO,CS} 0 {1,S}
 5 C 0 {2,D}
  
 Cd/De2_Ca
 1 *1 Cd  0 {2,D}, {3,S}, {4,S} 
 2 *2 Cdd  0 {1,D}, {5,D} 
-3 {Cd,Ct,Cb,CO} 0 {1,S}
-4 {Cd,Ct,Cb,CO} 0 {1,S}
+3 {Cd,Ct,Cb,CO,CS} 0 {1,S}
+4 {Cd,Ct,Cb,CO,CS} 0 {1,S}
 5 C 0 {2,D}
 
 Cd_Ck
@@ -406,35 +414,35 @@ Cd/H/Nd_Ck
 1 *1 Cd  0 {2,D}, {3,S}, {4,S} 
 2 *2 Cdd  0 {1,D}, {5,D} 
 3 H  0 {1,S}
-4 {Cs,O}  0 {1,S}
+4 {Cs,O,S}  0 {1,S}
 5 Od 0 {2,D}
  
 Cd/H/De_Ck
 1 *1 Cd  0 {2,D}, {3,S}, {4,S} 
 2 *2 Cdd  0 {1,D}, {5,D} 
 3 H  0 {1,S}
-4 {Cd,Ct,Cb,CO} 0 {1,S}
+4 {Cd,Ct,Cb,CO,CS} 0 {1,S}
 5 Od 0 {2,D}
  
 Cd/Nd2_Ck
 1 *1 Cd  0 {2,D}, {3,S}, {4,S} 
 2 *2 Cdd  0 {1,D}, {5,D} 
-3 {Cs,O} 0 {1,S}
-4 {Cs,O} 0 {1,S}
+3 {Cs,O,S} 0 {1,S}
+4 {Cs,O,S} 0 {1,S}
 5 Od 0 {2,D}
  
 Cd/Nd/De_Ck
 1 *1 Cd  0 {2,D}, {3,S}, {4,S} 
 2 *2 Cdd  0 {1,D}, {5,D} 
-3 {Cs,O}  0 {1,S}
-4 {Cd,Ct,Cb,CO} 0 {1,S}
+3 {Cs,O,S}  0 {1,S}
+4 {Cd,Ct,Cb,CO,CS} 0 {1,S}
 5 Od 0 {2,D}
  
 Cd/De2_Ck
 1 *1 Cd  0 {2,D}, {3,S}, {4,S} 
 2 *2 Cdd  0 {1,D}, {5,D} 
-3 {Cd,Ct,Cb,CO} 0 {1,S}
-4 {Cd,Ct,Cb,CO} 0 {1,S}
+3 {Cd,Ct,Cb,CO,CS} 0 {1,S}
+4 {Cd,Ct,Cb,CO,CS} 0 {1,S}
 5 Od 0 {2,D}
 
 
@@ -459,35 +467,35 @@ Ca_Cd/H/Nd
 2 *2 Cd 0 {1,D} {4,S} {5,S}
 3 C 0 {1,D}
 4 H 0 {2,S}
-5 {Cs,O} 0 {2,S}
+5 {Cs,O,S} 0 {2,S}
 
 Ca_Cd/H/De
 1 *1 Cdd 0 {2,D}, {3,D}
 2 *2 Cd 0 {1,D} {4,S} {5,S}
 3 C 0 {1,D}
 4 H 0 {2,S}
-5 {Cd,Ct,Cb,CO} 0 {2,S}
+5 {Cd,Ct,Cb,CO,CS} 0 {2,S}
 
 Ca_Cd/Nd2
 1 *1 Cdd 0 {2,D}, {3,D}
 2 *2 Cd 0 {1,D} {4,S} {5,S}
 3 C 0 {1,D}
-4 {Cs,O} 0 {2,S}
-5 {Cs,O} 0 {2,S}
+4 {Cs,O,S} 0 {2,S}
+5 {Cs,O,S} 0 {2,S}
 
 Ca_Cd/Nd/De
 1 *1 Cdd 0 {2,D}, {3,D}
 2 *2 Cd 0 {1,D} {4,S} {5,S}
 3 C 0 {1,D}
-4 {Cs,O} 0 {2,S}
-5 {Cd,Ct,Cb,CO} 0 {2,S}
+4 {Cs,O,S} 0 {2,S}
+5 {Cd,Ct,Cb,CO,CS} 0 {2,S}
 
 Ca_Cd/De2
 1 *1 Cdd 0 {2,D}, {3,D}
 2 *2 Cd 0 {1,D} {4,S} {5,S}
 3 C 0 {1,D}
-4 {Cd,Ct,Cb,CO} 0 {2,S}
-5 {Cd,Ct,Cb,CO} 0 {2,S}
+4 {Cd,Ct,Cb,CO,CS} 0 {2,S}
+5 {Cd,Ct,Cb,CO,CS} 0 {2,S}
 
 Ck_Cd
 1 *1 Cdd 0 {2,D}, {3,D}
@@ -506,35 +514,35 @@ Ck_Cd/H/Nd
 2 *2 Cd 0 {1,D} {4,S} {5,S}
 3 Od 0 {1,D}
 4 H 0 {2,S}
-5 {Cs,O} 0 {2,S}
+5 {Cs,O,S} 0 {2,S}
 
 Ck_Cd/H/De
 1 *1 Cdd 0 {2,D}, {3,D}
 2 *2 Cd 0 {1,D} {4,S} {5,S}
 3 Od 0 {1,D}
 4 H 0 {2,S}
-5 {Cd,Ct,Cb,CO} 0 {2,S}
+5 {Cd,Ct,Cb,CO,CS} 0 {2,S}
 
 Ck_Cd/Nd2
 1 *1 Cdd 0 {2,D}, {3,D}
 2 *2 Cd 0 {1,D} {4,S} {5,S}
 3 Od 0 {1,D}
-4 {Cs,O} 0 {2,S}
-5 {Cs,O} 0 {2,S}
+4 {Cs,O,S} 0 {2,S}
+5 {Cs,O,S} 0 {2,S}
 
 Ck_Cd/Nd/De
 1 *1 Cdd 0 {2,D}, {3,D}
 2 *2 Cd 0 {1,D} {4,S} {5,S}
 3 Od 0 {1,D}
-4 {Cs,O} 0 {2,S}
-5 {Cd,Ct,Cb,CO} 0 {2,S}
+4 {Cs,O,S} 0 {2,S}
+5 {Cd,Ct,Cb,CO,CS} 0 {2,S}
 
 Ck_Cd/De2
 1 *1 Cdd 0 {2,D}, {3,D}
 2 *2 Cd 0 {1,D} {4,S} {5,S}
 3 Od 0 {1,D}
-4 {Cd,Ct,Cb,CO} 0 {2,S}
-5 {Cd,Ct,Cb,CO} 0 {2,S}
+4 {Cd,Ct,Cb,CO,CS} 0 {2,S}
+5 {Cd,Ct,Cb,CO,CS} 0 {2,S}
 
 Cdd_Cdd
 1 *1 Cdd 0 {2,D}
@@ -578,31 +586,107 @@ CO/H/Nd_O
 1 *1 CO  0 {2,D}, {3,S}, {4,S} 
 2 *2 Od  0 {1,D} 
 3 H  0 {1,S}
-4 {Cs,O}  0 {1,S}
+4 {Cs,O,S}  0 {1,S}
  
 CO/H/De_O
 1 *1 CO  0 {2,D}, {3,S}, {4,S} 
 2 *2 Od  0 {1,D} 
 3 H  0 {1,S}
-4 {Cd,Ct,Cb,CO} 0 {1,S}
+4 {Cd,Ct,Cb,CO,CS} 0 {1,S}
  
 CO/Nd2_O
 1 *1 CO  0 {2,D}, {3,S}, {4,S} 
 2 *2 Od  0 {1,D} 
-3 {Cs,O} 0 {1,S}
-4 {Cs,O} 0 {1,S}
+3 {Cs,O,S} 0 {1,S}
+4 {Cs,O,S} 0 {1,S}
  
 CO/Nd/De_O
 1 *1 CO  0 {2,D}, {3,S}, {4,S} 
 2 *2 Od  0 {1,D} 
-3 {Cs,O}  0 {1,S}
-4 {Cd,Ct,Cb,CO} 0 {1,S}
+3 {Cs,O,S}  0 {1,S}
+4 {Cd,Ct,Cb,CO,CS} 0 {1,S}
  
 CO/De2_O
 1 *1 CO  0 {2,D}, {3,S}, {4,S} 
 2 *2 Od 0 {1,D} 
-3 {Cd,Ct,Cb,CO} 0 {1,S}
-4 {Cd,Ct,Cb,CO} 0 {1,S}
+3 {Cd,Ct,Cb,CO,CS} 0 {1,S}
+4 {Cd,Ct,Cb,CO,CS} 0 {1,S}
+
+CS_S
+1 *1 Cd 0 {2,D}
+2 *2 Sd 0 {1,D}
+
+CS/H2_S
+1 *1 Cd  0 {2,D}, {3,S}, {4,S} 
+2 *2 Sd  0 {1,D} 
+3 H  0 {1,S}
+4 H  0 {1,S}
+ 
+CS/H/Nd_S
+1 *1 Cd  0 {2,D}, {3,S}, {4,S} 
+2 *2 Sd  0 {1,D} 
+3 H  0 {1,S}
+4 {Cs,O,S}  0 {1,S}
+ 
+CS/H/Cs_S
+1 *1 Cd  0 {2,D}, {3,S}, {4,S} 
+2 *2 Sd  0 {1,D} 
+3 H  0 {1,S}
+4 Cs  0 {1,S}
+
+CS/H/Os_S
+1 *1 Cd  0 {2,D}, {3,S}, {4,S} 
+2 *2 Sd  0 {1,D} 
+3 H  0 {1,S}
+4 O  0 {1,S}
+
+CS/H/Ss_S 
+1 *1 Cd  0 {2,D}, {3,S}, {4,S} 
+2 *2 Sd  0 {1,D} 
+3 H  0 {1,S}
+4 S  0 {1,S}
+ 
+CS/H/De_S
+1 *1 Cd  0 {2,D}, {3,S}, {4,S} 
+2 *2 Sd  0 {1,D} 
+3 H  0 {1,S}
+4 {Cd,Ct,Cb,CO,CS} 0 {1,S}
+ 
+CS/Nd2_S
+1 *1 Cd  0 {2,D}, {3,S}, {4,S} 
+2 *2 Sd  0 {1,D} 
+3 {Cs,O,S} 0 {1,S}
+4 {Cs,O,S} 0 {1,S}
+
+CS/CsCs_S
+1 *1 Cd  0 {2,D}, {3,S}, {4,S} 
+2 *2 Sd  0 {1,D} 
+3 Cs 0 {1,S}
+4 Cs 0 {1,S}
+
+CS/CsOs_S
+1 *1 Cd  0 {2,D}, {3,S}, {4,S} 
+2 *2 Sd  0 {1,D} 
+3 Cs 0 {1,S}
+4 O 0 {1,S}
+
+CS/CsSs_S
+1 *1 Cd  0 {2,D}, {3,S}, {4,S} 
+2 *2 Sd  0 {1,D} 
+3 Cs 0 {1,S}
+4 S 0 {1,S} 
+ 
+CS/Nd/De_S
+1 *1 Cd  0 {2,D}, {3,S}, {4,S} 
+2 *2 Sd  0 {1,D} 
+3 {Cs,O,S}  0 {1,S}
+4 {Cd,Ct,Cb,CO,CS} 0 {1,S}
+ 
+CS/De2_S
+1 *1 Cd  0 {2,D}, {3,S}, {4,S} 
+2 *2 Sd 0 {1,D} 
+3 {Cd,Ct,Cb,CO,CS} 0 {1,S}
+4 {Cd,Ct,Cb,CO,CS} 0 {1,S}
 
 Ct_Ct 
 1 *1 Ct 0 {2,T}
@@ -618,53 +702,54 @@ Ct/H_Ct/Nd
 1 *1 Ct 0 {2,T}, {3,S}
 2 *2 Ct 0 {1,T}, {4,S}
 3 H 0 {1,S}
-4 {Cs,O} 0 {2,S}
+4 {Cs,O,S} 0 {2,S}
 
 Ct/H_Ct/De 
 1 *1 Ct 0 {2,T}, {3,S}
 2 *2 Ct 0 {1,T}, {4,S}
 3 H 0 {1,S}
-4 {Cd,Ct,Cb,CO} 0 {2,S}
+4 {Cd,Ct,Cb,CO,CS} 0 {2,S}
 
 Ct/Nd_Ct/H
 1 *1 Ct 0 {2,T}, {3,S}
 2 *2 Ct 0 {1,T}, {4,S}
-3 {Cs,O} 0 {1,S}
+3 {Cs,O,S} 0 {1,S}
 4 H 0 {2,S}
 
 Ct/Nd_Ct/Nd
 1 *1 Ct 0 {2,T}, {3,S}
 2 *2 Ct 0 {1,T}, {4,S}
-3 {Cs,O} 0 {1,S}
-4 {Cs,O} 0 {2,S}
+3 {Cs,O,S} 0 {1,S}
+4 {Cs,O,S} 0 {2,S}
 
 Ct/Nd_Ct/De
 1 *1 Ct 0 {2,T}, {3,S}
 2 *2 Ct 0 {1,T}, {4,S}
-3 {Cs,O} 0 {1,S}
-4 {Cd,Ct,Cb,CO} 0 {2,S}
+3 {Cs,O,S} 0 {1,S}
+4 {Cd,Ct,Cb,CO,CS} 0 {2,S}
 
 Ct/De_Ct/H
 1 *1 Ct 0 {2,T}, {3,S}
 2 *2 Ct 0 {1,T}, {4,S}
-3 {Cd,Ct,Cb,CO} 0 {1,S}
+3 {Cd,Ct,Cb,CO,CS} 0 {1,S}
 4 H 0 {2,S}
 
 Ct/De_Ct/Nd
 1 *1 Ct 0 {2,T}, {3,S}
 2 *2 Ct 0 {1,T}, {4,S}
-3 {Cd,Ct,Cb,CO} 0 {1,S}
-4 {Cs,O} 0 {2,S}
+3 {Cd,Ct,Cb,CO,CS} 0 {1,S}
+4 {Cs,O,S} 0 {2,S}
 
 Ct/De_Ct/De
 1 *1 Ct 0 {2,T}, {3,S}
 2 *2 Ct 0 {1,T}, {4,S}
-3 {Cd,Ct,Cb,CO} 0 {1,S}
-4 {Cd,Ct,Cb,CO} 0 {2,S}
+3 {Cd,Ct,Cb,CO,CS} 0 {1,S}
+4 {Cd,Ct,Cb,CO,CS} 0 {2,S}
 
 Cdd_Od
-1 *1 Cdd 0 {2,D}
+1 *1 Cdd 0 {2,D} {3,D}
 2 *2 Od 0 {1,D}
+3 {C,Od} 0 {1,D}
 
 CO2
 1 *1 Cdd 0 {2,D}, {3,D}
@@ -675,6 +760,20 @@ Ck_O
 1 *1 Cdd 0 {2,D} {3,D}
 2 *2 Od 0 {1,D}
 3 C 0 {1,D}
+
+Cdd_Sd
+1 *1 Cdd 0 {2,D}
+2 *2 Sd 0 {1,D}
+
+CS2
+1 *1 Cdd 0 {2,D}, {3,D}
+2 *2 Sd 0 {1,D}
+3 Sd 0 {1,D}
+
+CS_O
+1 *1 Cdd 0 {2,D}, {3,D}
+2 *2 Sd 0 {1,D}
+3 Od 0 {1,D}
 
 O2d
 1 *1 Od 0 {2,D}
@@ -697,6 +796,239 @@ OSiddO
 OSi
 1 *1 Od 0 {2,D}
 2 *2 Si 0 {1,D}
+
+SZ
+1 *1 Sd 0 {2,D}
+2 *2 R 0 {1,D}
+
+Sd_Cds
+1 *1 Sd 0 {2,D} 
+2 *2 Cd 0 {1,D} {3,S} {4,S}
+3 R 0 {2,S}
+4 R 0 {2,S}
+
+Sd_Cds/H2
+1 *1 Sd 0 {2,D} 
+2 *2 Cd 0 {1,D} {3,S} {4,S}
+3 H 0 {2,S}
+4 H 0 {2,S}
+
+Sd_Cds/H/Nd
+1 *1 Sd 0 {2,D} 
+2 *2 Cd 0 {1,D} {3,S} {4,S}
+3 {Cs,O,S} 0 {2,S}
+4 H 0 {2,S}
+
+Sd_Cds/Nd2
+1 *1 Sd 0 {2,D} 
+2 *2 Cd 0 {1,D} {3,S} {4,S}
+3 {Cs,O,S} 0 {2,S}
+4 {Cs,O,S} 0 {2,S}
+
+Sd_Cds/CsO
+1 *1 Sd 0 {2,D}
+2 *2 Cd 0 {1,D} {3,S} {4,S}
+3 Cs 0 {2,S}
+4 O 0 {2,S}
+
+Sd_Cds/H/De
+1 *1 Sd 0 {2,D} 
+2 *2 Cd 0 {1,D} {3,S} {4,S}
+3 {Cd,Ct,Cb,CO,CS} 0 {2,S}
+4 H 0 {2,S}
+
+Sd_Cds/H/Cd
+1 *1 Sd 0 {2,D} 
+2 *2 Cd 0 {1,D} {3,S} {4,S}
+3 Cd 0 {2,S} {5,D}
+4 H 0 {2,S}
+5 C 0 {3,D}
+
+Sd_Cds/H/Ct
+1 *1 Sd 0 {2,D} 
+2 *2 Cd 0 {1,D} {3,S} {4,S}
+3 Ct 0 {2,S}
+4 H 0 {2,S}
+
+Sd_Cds/H/Cb
+1 *1 Sd 0 {2,D} 
+2 *2 Cd 0 {1,D} {3,S} {4,S}
+3 Cb 0 {2,S}
+4 H 0 {2,S}
+
+Sd_Cds/H/CO
+1 *1 Sd 0 {2,D} 
+2 *2 Cd 0 {1,D} {3,S} {4,S}
+3 CO 0 {2,S}
+4 H 0 {2,S}
+
+Sd_Cds/H/CS
+1 *1 Sd 0 {2,D} 
+2 *2 Cd 0 {1,D} {3,S} {4,S}
+3 Cd 0 {2,S} {5,D}
+4 H 0 {2,S}
+5 Sd 0 {3,D}
+
+Sd_Cds/Nd/De
+1 *1 Sd 0 {2,D} 
+2 *2 Cd 0 {1,D} {3,S} {4,S}
+3 {Cd,Ct,Cb,CO,CS} 0 {2,S}
+4 {Cs,O,S} 0 {2,S}
+
+Sd_Cds/Nd/Cd
+1 *1 Sd 0 {2,D} 
+2 *2 Cd 0 {1,D} {3,S} {4,S}
+3 Cd 0 {2,S} {5,D}
+4 {Cs,O,S} 0 {2,S}
+5 C 0 {3,D}
+
+Sd_Cds/Nd/Ct
+1 *1 Sd 0 {2,D} 
+2 *2 Cd 0 {1,D} {3,S} {4,S}
+3 Ct 0 {2,S}
+4 {Cs,O,S} 0 {2,S}
+
+Sd_Cds/Nd/Cb
+1 *1 Sd 0 {2,D} 
+2 *2 Cd 0 {1,D} {3,S} {4,S}
+3 Cb 0 {2,S}
+4 {Cs,O,S} 0 {2,S}
+
+Sd_Cds/Nd/CO
+1 *1 Sd 0 {2,D} 
+2 *2 Cd 0 {1,D} {3,S} {4,S}
+3 CO 0 {2,S}
+4 {Cs,O,S} 0 {2,S}
+
+Sd_Cds/Nd/CS
+1 *1 Sd 0 {2,D} 
+2 *2 Cd 0 {1,D} {3,S} {4,S}
+3 Cd 0 {2,S} {5,D}
+4 {Cs,O,S} 0 {2,S}
+5 Sd 0 {3,D}
+
+Sd_Cds/TwoDe
+1 *1 Sd 0 {2,D} 
+2 *2 Cd 0 {1,D} {3,S} {4,S}
+3 {Cd,Ct,Cb,CO,CS} 0 {2,S}
+4 {Cd,Ct,Cb,CO,CS} 0 {2,S}
+
+Sd_Cds/CdCd
+1 *1 Sd 0 {2,D} 
+2 *2 Cd 0 {1,D} {3,S} {4,S}
+3 Cd 0 {2,S} {5,D}
+4 Cd 0 {2,S}	 {6,D}
+5 C 0 {3,D}
+6 C 0 {4,D}
+
+Sd_Cds/CdCt
+1 *1 Sd 0 {2,D} 
+2 *2 Cd 0 {1,D} {3,S} {4,S}
+3 Cd 0 {2,S} {5,D}
+4 Ct 0 {2,S}	
+5 C 0 {3,D}
+
+Sd_Cds/CdCb
+1 *1 Sd 0 {2,D} 
+2 *2 Cd 0 {1,D} {3,S} {4,S}
+3 Cd 0 {2,S} {5,D}
+4 Cb 0 {2,S}	
+5 C 0 {3,D}
+
+Sd_Cds/CdCO
+1 *1 Sd 0 {2,D} 
+2 *2 Cd 0 {1,D} {3,S} {4,S}
+3 Cd 0 {2,S} {5,D}
+4 CO 0 {2,S}	
+5 C 0 {3,D}
+
+Sd_Cds/CdCS
+1 *1 Sd 0 {2,D} 
+2 *2 Cd 0 {1,D} {3,S} {4,S}
+3 Cd 0 {2,S} {6,D}
+4 Cd 0 {2,S} {5,D}
+5 Sd 0 {4,D}	
+6 C 0 {3,D}
+
+Sd_Cds/CtCt
+1 *1 Sd 0 {2,D} 
+2 *2 Cd 0 {1,D} {3,S} {4,S}
+3 Ct 0 {2,S}
+4 Ct 0 {2,S}	
+
+Sd_Cds/CtCb
+1 *1 Sd 0 {2,D} 
+2 *2 Cd 0 {1,D} {3,S} {4,S}
+3 Ct 0 {2,S}
+4 Cb 0 {2,S}	
+
+Sd_Cds/CtCO
+1 *1 Sd 0 {2,D} 
+2 *2 Cd 0 {1,D} {3,S} {4,S}
+3 Ct 0 {2,S}
+4 CO 0 {2,S}	
+
+Sd_Cds/CtCS
+1 *1 Sd 0 {2,D} 
+2 *2 Cd 0 {1,D} {3,S} {4,S}
+3 Ct 0 {2,S}
+4 Cd 0 {2,S} {5,D}
+5 Sd 0 {4,D}
+
+Sd_Cds/CbCb
+1 *1 Sd 0 {2,D} 
+2 *2 Cd 0 {1,D} {3,S} {4,S}
+3 Cb 0 {2,S}
+4 Cb 0 {2,S}	
+
+Sd_Cds/CbCO
+1 *1 Sd 0 {2,D} 
+2 *2 Cd 0 {1,D} {3,S} {4,S}
+3 Cb 0 {2,S}
+4 CO 0 {2,S}	
+
+Sd_Cds/CbCS
+1 *1 Sd 0 {2,D} 
+2 *2 Cd 0 {1,D} {3,S} {4,S}
+3 Cb 0 {2,S}
+4 Cd 0 {2,S} {5,D}
+5 Sd 0 {4,D}
+
+Sd_Cds/COCO
+1 *1 Sd 0 {2,D} 
+2 *2 Cd 0 {1,D} {3,S} {4,S}
+3 CO 0 {2,S}
+4 CO 0 {2,S}	
+
+Sd_Cds/COCS
+1 *1 Sd 0 {2,D} 
+2 *2 Cd 0 {1,D} {3,S} {4,S}
+3 CO 0 {2,S}
+4 Cd 0 {2,S} {5,D}
+5 Sd 0 {4,D}
+
+Sd_Cds/CSCS
+1 *1 Sd 0 {2,D} 
+2 *2 Cd 0 {1,D} {3,S} {4,S}
+3 Cd 0 {2,S} {5,D}
+4 Cd 0 {2,S} {6,D}
+5 Sd 0 {3,D}
+6 Sd 0 {4,D}
+
+Sd_Cdd
+1 *1 Sd 0 {2,D} 
+2 *2 Cdd 0 {1,D} {3,D} 
+3 R 0 {2,D}
+
+Sd_Cdd/Sd
+1 *1 Sd 0 {2,D} 
+2 *2 Cdd 0 {1,D} {3,D} 
+3 Sd 0 {2,D}
+
+Sd_Cdd/Od
+1 *1 Sd 0 {2,D} 
+2 *2 Cdd 0 {1,D} {3,D} 
+3 Od 0 {2,D}
 
 Y_rad_birad
 Union {Y_rad, Y_birad} 
@@ -780,7 +1112,7 @@ C_rad/H/NonDeO
 1 *3 C 1 {2,S}, {3,S}, {4,S}
 2 H 0 {1,S}
 3 O 0 {1,S}
-4 {Cs,O} 0 {1,S}
+4 {Cs,O,S} 0 {1,S}
 
 C_rad/H/CsO
 1 *3 C 1 {2,S}, {3,S}, {4,S}
@@ -794,29 +1126,49 @@ C_rad/H/O2
 3 O 0 {1,S}
 4 O 0 {1,S}
 
+//CAC removed O from atom4, as that would cause a possible
+//overlap with C_rad/H/NonDeO.
+C_rad/H/NonDeS            
+1 *3 C 1 {2,S}, {3,S}, {4,S}
+2 H 0 {1,S}               
+3 S 0 {1,S}
+4 {Cs,S} 0 {1,S}
+
+C_rad/H/CsS
+1 *3 C 1 {2,S}, {3,S}, {4,S}
+2 H 0 {1,S}
+3 S 0 {1,S}
+4 Cs 0 {1,S}
+
+C_rad/H/S2
+1 *3 C 1 {2,S}, {3,S}, {4,S}
+2 H 0 {1,S}
+3 S 0 {1,S}
+4 S 0 {1,S}
+
 C_rad/H/OneDe
 1 *3 C 1 {2,S}, {3,S}, {4,S}
 2 H 0 {1,S}
-3 {Cd,Ct,Cb,CO} 0 {1,S}
-4 {Cs,O} 0 {1,S}
+3 {Cd,Ct,Cb,CO,CS} 0 {1,S}
+4 {Cs,O,S} 0 {1,S}
 
 C_rad/H/OneDeC
 1 *3 C 1 {2,S}, {3,S}, {4,S}
 2 H 0 {1,S}
-3 {Cd,Ct,Cb,CO} 0 {1,S}
+3 {Cd,Ct,Cb,CO,CS} 0 {1,S}
 4 Cs 0 {1,S}
 
 C_rad/H/OneDeO
 1 *3 C 1 {2,S}, {3,S}, {4,S}
 2 H 0 {1,S}
-3 {Cd,Ct,Cb,CO} 0 {1,S}
+3 {Cd,Ct,Cb,CO,CS} 0 {1,S}
 4 O 0 {1,S}
 
 C_rad/H/TwoDe
 1 *3 C 1 {2,S}, {3,S}, {4,S}
 2 H 0 {1,S}
-3 {Cd,Ct,Cb,CO} 0 {1,S}
-4 {Cd,Ct,Cb,CO} 0 {1,S}
+3 {Cd,Ct,Cb,CO,CS} 0 {1,S}
+4 {Cd,Ct,Cb,CO,CS} 0 {1,S}
 
 C_ter_rad
 1 *3 C 1 {2,S}, {3,S}, {4,S}
@@ -826,9 +1178,9 @@ C_ter_rad
 
 C_rad/NonDeC
 1 *3 C 1 {2,S}, {3,S}, {4,S}
-2 {Cs,O} 0 {1,S}
-3 {Cs,O} 0 {1,S}
-4 {Cs,O} 0 {1,S}
+2 {Cs,O,S} 0 {1,S}
+3 {Cs,O,S} 0 {1,S}
+4 {Cs,O,S} 0 {1,S}
 
 C_rad/Cs3
 1 *3 C 1 {2,S}, {3,S}, {4,S}
@@ -839,50 +1191,50 @@ C_rad/Cs3
 C_rad/NDMustO
 1 *3 C 1 {2,S}, {3,S}, {4,S}
 2 O 0 {1,S}
-3 {Cs,O} 0 {1,S}
-4 {Cs,O} 0 {1,S}
+3 {Cs,O,S} 0 {1,S}
+4 {Cs,O,S} 0 {1,S}
 
 C_rad/OneDe
 1 *3 C 1 {2,S}, {3,S}, {4,S}
-2 {Cd,Ct,Cb,CO} 0 {1,S}
-3 {Cs,O} 0 {1,S}
-4 {Cs,O} 0 {1,S}
+2 {Cd,Ct,Cb,CO,CS} 0 {1,S}
+3 {Cs,O,S} 0 {1,S}
+4 {Cs,O,S} 0 {1,S}
 
 C_rad/Cs2
 1 *3 C 1 {2,S}, {3,S}, {4,S}
-2 {Cd,Ct,Cb,CO} 0 {1,S}
+2 {Cd,Ct,Cb,CO,CS} 0 {1,S}
 3 Cs 0 {1,S}
 4 Cs 0 {1,S}
 
 C_rad/ODMustO
 1 *3 C 1 {2,S}, {3,S}, {4,S}
-2 {Cd,Ct,Cb,CO} 0 {1,S}
+2 {Cd,Ct,Cb,CO,CS} 0 {1,S}
 3 O 0 {1,S}
-4 {Cs,O} 0 {1,S}
+4 {Cs,O,S} 0 {1,S}
 
 C_rad/TwoDe
 1 *3 C 1 {2,S}, {3,S}, {4,S}
-2 {Cd,Ct,Cb,CO} 0 {1,S}
-3 {Cd,Ct,Cb,CO} 0 {1,S}
-4 {Cs,O} 0 {1,S}
+2 {Cd,Ct,Cb,CO,CS} 0 {1,S}
+3 {Cd,Ct,Cb,CO,CS} 0 {1,S}
+4 {Cs,O,S} 0 {1,S}
 
 C_rad/Cs
 1 *3 C 1 {2,S}, {3,S}, {4,S}
-2 {Cd,Ct,Cb,CO} 0 {1,S}
-3 {Cd,Ct,Cb,CO} 0 {1,S}
+2 {Cd,Ct,Cb,CO,CS} 0 {1,S}
+3 {Cd,Ct,Cb,CO,CS} 0 {1,S}
 4 Cs 0 {1,S}
 
 C_rad/TDMustO
 1 *3 C 1 {2,S}, {3,S}, {4,S}
-2 {Cd,Ct,Cb,CO} 0 {1,S}
-3 {Cd,Ct,Cb,CO} 0 {1,S}
+2 {Cd,Ct,Cb,CO,CS} 0 {1,S}
+3 {Cd,Ct,Cb,CO,CS} 0 {1,S}
 4 O 0 {1,S}
 
 C_rad/ThreeDe
 1 *3 C 1 {2,S}, {3,S}, {4,S}
-2 {Cd,Ct,Cb,CO} 0 {1,S}
-3 {Cd,Ct,Cb,CO} 0 {1,S}
-4 {Cd,Ct,Cb,CO} 0 {1,S}
+2 {Cd,Ct,Cb,CO,CS} 0 {1,S}
+3 {Cd,Ct,Cb,CO,CS} 0 {1,S}
+4 {Cd,Ct,Cb,CO,CS} 0 {1,S}
 
 Cd_rad
 1 *3 Cd 1 {2,D}, {3,S}
@@ -908,12 +1260,12 @@ Cd_sec_rad
 Cd_rad/NonDe
 1 *3 Cd 1 {2,D}, {3,S}
 2 Cd 0 {1,D}
-3 {Cs,O} 0 {1,S}
+3 {Cs,O,S} 0 {1,S}
 
 Cd_rad/OneDe
 1 *3 Cd 1 {2,D}, {3,S}
 2 Cd 0 {1,D}
-3 {Cd,Ct,Cb,CO} 0 {1,S}
+3 {Cd,Ct,Cb,CO,CS} 0 {1,S}
 
 Ct_rad
 1 *3 Ct 1 {2,T}
@@ -942,12 +1294,12 @@ CO_sec_rad
 CO_rad/NonDe
 1 *3 C 1 {2,D}, {3,S}
 2 O 0 {1,D}
-3 {Cs,O} 0 {1,S}
+3 {Cs,O,S} 0 {1,S}
 
 CO_rad/OneDe
 1 *3 C 1 {2,D}, {3,S}
 2 O 0 {1,D}
-3 {Cd,Ct,Cb,CO} 0 {1,S}
+3 {Cd,Ct,Cb,CO,CS} 0 {1,S}
 
 O_rad
 1 *3 O 1 {2,S}
@@ -963,12 +1315,57 @@ O_sec_rad
 
 O_rad/NonDe
 1 *3 O 1 {2,S}
-2 {Cs,O} 0 {1,S}
+2 {Cs,O,S} 0 {1,S}
 
 O_rad/OneDe
 1 *3 O 1 {2,S}
-2 {Cd,Ct,Cb,CO} 0 {1,S}
+2 {Cd,Ct,Cb,CO,CS} 0 {1,S}
 
+S_rad
+1 *3 Ss 1 {2,S}
+2 R 0 {1,S}
+
+S_pri_rad
+1 *3 Ss 1 {2,S}
+2 H 0 {1,S}
+
+S_sec_rad
+1 *3 Ss 1 {2,S}
+2 {R!H} 0 {1,S}
+
+S_rad/NonDeC
+1 *3 Ss 1 {2,S}
+2 Cs 0 {1,S}
+
+S_rad/NonDeS
+1 *3 Ss 1 {2,S}
+2 Ss 0 {1,S}
+
+S_rad/OneDe
+1 *3 Ss 1 {2,S}
+2 {Cd,Ct,Cb,CO,CS} 0 {1,S}
+
+S_rad/Cd
+1 *3 Ss 1 {2,S}
+2 Cd 0 {1,S}, {3,D}
+3 C 0 {2,D}
+
+S_rad/Ct
+1 *3 Ss 1 {2,S}
+2 Ct 0 {1,S}
+
+S_rad/Cb
+1 *3 Ss 1 {2,S}
+2 Cb 0 {1,S}
+
+S_rad/CO
+1 *3 Ss 1 {2,S}
+2 CO 0 {1,S}
+
+S_rad/CS
+1 *3 Ss 1 {2,S}
+2 Cd 0 {1,S}, {3,D}
+3 S 0 {2,D}
 
 
  

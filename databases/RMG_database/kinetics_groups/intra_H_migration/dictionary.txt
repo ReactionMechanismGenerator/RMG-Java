@@ -145,6 +145,12 @@ R3H_SS_2Cd
 3 *2 {R!H} 0 {2,S}, {4,S}
 4 *3 H 0 {3,S}
 
+R3H_SS_S
+1 *1 R 1 {2,S}
+2 *4 Ss 0 {1,S}, {3,S}
+3 *2 R 0 {2,S}, {4,S}
+4 *3 H 0 {3,S}
+
 R3H_SD
 1 *1 {R!H} 1 {2,S}
 2 *4 Cd 0 {1,S}, {3,D}
@@ -219,6 +225,20 @@ R4H_RSS
 3 *5 {R!H} 0 {2,S}, {4,S}
 4 *2 {R!H} 0 {3,S}, {5,S}
 5 *3 H 0 {4,S}
+
+R4H_SSS_CsSCsCs
+1 *1 Cs 1 {2,S}
+2 *4 Ss 0 {1,S}, {3,S}
+3 *5 Cs 0 {2,S}, {4,S}
+4 *2 Cs 0 {3,S}, {5,S}
+5 *3 H  0 {4,S}
+
+R4H_SSS_CsCsSCs
+1 *1 Cs 1 {2,S}                       
+2 *4 Cs 0 {1,S}, {3,S}                        
+3 *5 Ss 0 {2,S}, {4,S}
+4 *2 Cs 0 {3,S}, {5,S}
+5 *3 H  0 {4,S}
 
 R4H_SSS_OOCsCs
 1 *1 Os 1 {2,S}
@@ -461,6 +481,14 @@ R5H_SSSS
 3 {R!H} 0 {2,S}, {4,S}
 4 *5 {R!H} 0 {3,S}, {5,S}
 5 *2 {R!H} 0 {4,S}, {6,S}
+6 *3 H 0 {5,S}
+
+R5H_SSSS_CsCsCsSCs
+1 *1 Cs 1 {2,S}
+2 *4 Cs 0 {1,S}, {3,S}
+3 Cs 0 {2,S}, {4,S}
+4 *5 Ss 0 {3,S}, {5,S}
+5 *2 Cs 0 {4,S}, {6,S}
 6 *3 H 0 {5,S}
 
 R5H_SSSS_OOCCC
@@ -1262,6 +1290,11 @@ C_rad_out_H/NonDeO
 2 H 0 {1,S}
 3 O 0 {1,S}
 
+C_rad_out_H/NonDeS
+1 *1 C 1 {2,S}, {3,S}
+2 H 0 {1,S}
+3 S 0 {1,S}
+
 C_rad_out_H/OneDe
 1 *1 C 1 {2,S}, {3,S}
 2 H 0 {1,S}
@@ -1274,8 +1307,8 @@ C_rad_out_noH
 
 C_rad_out_NonDe
 1 *1 C 1 {2,S}, {3,S}
-2 {Cs,O} 0 {1,S}
-3 {Cs,O} 0 {1,S}
+2 {Cs,O,S} 0 {1,S}
+3 {Cs,O,S} 0 {1,S}
 
 C_rad_out_Cs2
 1 *1 C 1 {2,S}, {3,S}
@@ -1306,12 +1339,12 @@ AND{C_rad_out_Cs2, NOT OR{C_rad_out_Cs2_cy3, C_rad_out_Cs2_cy4, C_rad_out_Cs2_cy
 C_rad_out_NDMustO
 1 *1 C 1 {2,S}, {3,S}
 2 O 0 {1,S}
-3 {Cs,O} 0 {1,S}
+3 {Cs,O,S} 0 {1,S}
 
 C_rad_out_OneDe
 1 *1 C 1 {2,S}, {3,S}
 2 {Cd,Ct,Cb,CO} 0 {1,S}
-3 {Cs,O} 0 {1,S}
+3 {Cs,O,S} 0 {1,S}
 
 C_rad_out_OneDe/Cs
 1 *1 C 1 {2,S}, {3,S}
@@ -1322,6 +1355,11 @@ C_rad_out_OneDe/O
 1 *1 C 1 {2,S}, {3,S}
 2 {Cd,Ct,Cb,CO} 0 {1,S}
 3 O 0 {1,S}
+
+C_rad_out_OneDe/S
+1 *1 C 1 {2,S}, {3,S}
+2 {Cd,Ct,Cb,CO} 0 {1,S}
+3 S 0 {1,S}
 
 C_rad_out_TwoDe
 1 *1 C 1 {2,S}, {3,S}
@@ -1342,7 +1380,7 @@ Cd_rad_out_singleH
 
 Cd_rad_out_singleNd
 1 *1 Cd 1 {2,S}
-2 {Cs,O} 0 {1,S}
+2 {Cs,O,S} 0 {1,S}
 
 Cd_rad_out_singleDe
 1 *1 Cd 1 {2,S}
@@ -1362,6 +1400,13 @@ Cb_rad_out
 CO_rad_out
 1 *1 C 1 {2,D}
 2 O 0 {1,D}
+
+C=S_rad_out
+1 *1 Cd 1 {2,D}
+2 Sd 0 {1,D}
+
+S_rad_out
+1 *1 S 1
 
 XH_out
 1 *2 {R!H} 0 {2,S}
@@ -1464,6 +1509,12 @@ Cs_H_out_H/NonDeO
 1 *2 Cs 0 {2,S} {3,S} {4,S}
 2 *3 H 0 {1,S}
 3 O 0 {1,S}
+4 H 0 {1,S}
+
+Cs_H_out_H/NonDeS
+1 *2 Cs 0 {2,S} {3,S} {4,S}
+2 *3 H 0 {1,S}
+3 S 0 {1,S}      
 4 H 0 {1,S}
 
 Cs_H_out_H/OneDe
@@ -1590,6 +1641,10 @@ Ct_H_out
 
 Cb_H_out
 1 *2 Cb 0 {2,S}
+2 *3 H 0 {1,S}
+
+S_H_out
+1 *2 S 0 {2,S}
 2 *3 H 0 {1,S}
 
 // Added by AJ for intra_H shifts in HOOQOO radicals
