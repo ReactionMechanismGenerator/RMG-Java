@@ -1,5 +1,7 @@
 //Thermo Library for Sulfur Compounds
-//Last Updated 8/5/11 by cclass
+//Last Updated 11/15/2012 by cclass
+//
+//Note: RMG database does not include cyclic sulfide formation or most tautomerization reactions.
 //
 //Unless othewise noted in "Comments," all values are from QM calculations (CBS-QB3 with 1D-HR corrections).
 //Uncertainties estimated at 1.00, unless experimental uncertainty available.
