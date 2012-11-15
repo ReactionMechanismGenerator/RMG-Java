@@ -1257,7 +1257,7 @@ methylenecyclopentane
 7 Cs 0 {1,S} {6,S}
 
 // Sulfur containing rings
-// Added by Aäron Vandeputte August 25th 2009
+// Added by AÃ¤ron Vandeputte August 25th 2009
 
 
 // Three membered rings

@@ -2,7 +2,7 @@
 //                                                  //
 // the reaction adjList defining the reaction type  //
 //                                                  //
-// Aäron Vandeputte 11 aug 2009                     //
+// AÃ¤ron Vandeputte 11 aug 2009                     //
 //                                                  //
 //////////////////////////////////////////////////////
 
