@@ -301,7 +301,7 @@ public class TemplateReaction extends Reaction {
                 //  RMG expects to find *1 and *2 in the same ChemGraph (for this rxn family)
                 //      but will instead find *1 and *3 in the same ChemGraph (if we've reached this far)
                 //  Need to switch *2 and *3
-                else if (k == null && rRT.name.equals("substitutionS")) {
+                else if (k == null && (rRT.name.equals("substitutionS") || rRT.name.equals("Substitution_O"))) {
                     ChemGraph cg1 = ((ChemGraph) fproduct.get(0));
                     ChemGraph cg2 = ((ChemGraph) fproduct.get(1));
                     Graph g1 = cg1.getGraph();
