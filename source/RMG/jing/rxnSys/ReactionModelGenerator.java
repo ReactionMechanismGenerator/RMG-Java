@@ -113,6 +113,7 @@ public class ReactionModelGenerator {
 	//static {System.loadLibrary("cpuTime");}
 
 	public static boolean rerunFame = false;
+	public static boolean qmVerbose = false;
 
 	protected static double tolerance;//can be interpreted as "coreTol" (vs. edgeTol)
 	protected static double termTol;
@@ -511,6 +512,24 @@ public class ReactionModelGenerator {
 					}
 					else{
 						Logger.critical("condition.txt: Can't find 'CheckConnectivity:' field (should be 'off', 'check', or 'confirm')");
+						System.exit(0);
+					}
+					line = ChemParser.readMeaningfulLine(reader, true); //read in either QM verbose option
+					if (line.startsWith("Verbose:")){
+						StringTokenizer st5 = new StringTokenizer(line);
+						String nameQmVerbose = st5.nextToken(); //String Verbose
+						String checkQmVerbose = st5.nextToken().toLowerCase();
+						if (checkQmVerbose.equals("on")){
+							QMTP.qmfolder = "QMfiles/";
+							QMTP.qmVerbose = true;
+						}
+						else if(!checkQmVerbose.equals("off")){
+							Logger.critical("condition.txt: QMTP 'Verbose' field should be 'on' or 'off'");
+							System.exit(0);
+						}
+					}
+					else{
+						Logger.critical("condition.txt: Can't find QMTP 'Verbose:' field (should be 'on' or 'off)'");
 						System.exit(0);
 					}
         		}//otherwise, the flag useQM will remain false by default and the traditional group additivity approach will be used

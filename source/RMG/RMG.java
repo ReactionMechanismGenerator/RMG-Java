@@ -78,6 +78,12 @@ public class RMG {
             createFolder("QMfiles", false);     // Preserving QM files between runs will speed things up considerably
             createFolder("QMThermoLibrary", false); //Added by nyee will write new thermolibrary from QMTP calculation here
             
+            //Test QMFiles in temp directory
+            String tmpdir = System.getProperty("java.io.tmpdir");
+            String qmFolderName = tmpdir + "/RMG_QMfiles";
+            createFolder (qmFolderName, true);
+            Logger.info("TEST!!!" + qmFolderName);
+            
             // The only parameter should be the path to the condition file
             String inputfile = args[0];
             System.setProperty("jing.rxnSys.ReactionModelGenerator.conditionFile",inputfile);
@@ -96,6 +102,12 @@ public class RMG {
             ReactionModelGenerator rmg = new ReactionModelGenerator();
             rmg.modelGeneration();
             
+            //delete tmpQm
+            File qmFolder = new File(qmFolderName);
+            if(qmFolder.exists()){
+            	ChemParser.deleteDir(qmFolder);
+            }
+
             // Save the resulting model to Final_Model.txt
             writeFinalModel(rmg);
 
