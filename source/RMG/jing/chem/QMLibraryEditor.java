@@ -94,14 +94,13 @@ public class QMLibraryEditor {
 	}
 	
     /**
-     * Close the Dictionary and Library when finished. If unsuccessful will abort 
-     * ...I think
+     * Close the Dictionary and Library when finished. 
      */
     public static void finish() {
         try {
-            // Close the log file (throws IOException if unsuccessful)
-            dictionaryFile.close();
-            libraryFile.close();
+            // Close the log file (throws IOException if unsuccessful) 
+        	if (dictionaryFile != null) dictionaryFile.close();
+            if (libraryFile != null) libraryFile.close();
         }
         catch (IOException e) {
 			throw new RuntimeException(e);

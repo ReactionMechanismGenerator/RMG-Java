@@ -110,7 +110,9 @@ public class RMG {
 
             // Save the resulting model to Final_Model.txt
             writeFinalModel(rmg);
-
+            
+            //close QMLibraryEditor
+            QMLibraryEditor.finish();
        }
        catch (Exception e) {
            // Any unhandled exception will land here
@@ -119,8 +121,6 @@ public class RMG {
            Logger.critical(e.getMessage());
        }
         
-       //close QMLibraryEditor
-        QMLibraryEditor.finish();
        // Finish the logger
        Logger.finish();
        System.exit(0); 
