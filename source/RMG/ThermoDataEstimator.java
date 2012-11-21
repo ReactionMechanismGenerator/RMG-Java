@@ -218,6 +218,7 @@ public class ThermoDataEstimator {
 		createFolder("2Dmolfiles", true);   // Not sure if we should be deleting this
 		createFolder("3Dmolfiles", true);   // Not sure if we should be deleting this
 		createFolder("QMfiles", false);     // Preserving QM files between runs will speed things up considerably
+		createFolder("QMThermoLibrary", false);
 	}
 
 	/**
