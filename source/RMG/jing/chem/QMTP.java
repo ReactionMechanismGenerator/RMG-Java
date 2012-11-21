@@ -72,7 +72,6 @@ public class QMTP implements GeneralGAPP {
 
     //## operation QMTP()
     private QMTP() {
-       // initializeLibrary(); //gmagoon 72509: commented out in GATP, so I am mirroring the change here; other library functions below also commented out
         initializePrimaryThermoLibrary();
         initalizeQmLibrary();
         if (System.getenv("RDBASE") == null) {
@@ -109,12 +108,9 @@ public class QMTP implements GeneralGAPP {
         	p_chemGraph.fromprimarythermolibrary = true;
         	return result;
         }
-       
+
         
-        //        result = getFromLibrary(p_chemGraph.getChemicalFormula());//gmagoon 72509: commented out in GATP, so I am mirroring the change here
-//        if (result != null) return result;
-        
-        result=new ThermoData();
+        result = new ThermoData();
          
         int maxRadNumForQM = Global.maxRadNumForQM;
         if (p_chemGraph.getRadicalNumber() > maxRadNumForQM)//use HBI if the molecule has more radicals than maxRadNumForQM; this is helpful because ; also MM4 (and MM3) look like they may have issues with radicals
@@ -175,26 +171,7 @@ public class QMTP implements GeneralGAPP {
         	p_chemGraph.fromprimarythermolibrary = false;//we don't want to set fromprimarythermolibrary to true, because the result is not directly from the PTL, but comes via PTL + HBI corrections; if true is set here, this would affect two things, both in Species.java: 1) the naming; in the HBI case, we don't want to use a name derived from the thermo name as weird things can happen 2)findStablestThermoData considers the value to be the final word; however, since this is a radical that is not directly in the primaryThermoLibrary, we want to consider alternative thermo for all possible resonance isomers
             }
             else{
-            	//Try to get from qmLibrary Hashmap. -nyee
-                String inChI= p_chemGraph.getInChI();
-//                result = qmLibrary.get(inChI);
-                tmpTherm = qmLibrary.get(inChI);
-                                		
-                if (tmpTherm != null){
-                result = tmpTherm.copyWithExtraInfo();//use a copy of the object!; that way, subsequent modifications of this object don't change the QM library
-                Logger.info("QM calculation for " + inChI + " previously performed. Pulling Thermo from previous results.");
-                result.setSource(result.comments);
-                }
-                //this happens if not in qmLibrary Hashmap
-                else {
-                result=generateQMThermoData(p_chemGraph);
-              //Writes the result of the qmThermo to the QMTPThermoWriter
-                String qmMethod = getQmMethod();
-                QMLibraryEditor.addQMTPThermo(p_chemGraph, inChI, result, qmMethod, qmprogram);
-                Logger.info("Writing results of QMTP calcultion to QM Thermo Library for " + inChI);
-                //put in Hashmap for quicker access? -nyee
-                qmLibrary.put(inChI, result);
-                }
+            	result = getQMThermoData(p_chemGraph);
             }
             
             // find the BDE for all radical groups
@@ -268,29 +245,33 @@ public class QMTP implements GeneralGAPP {
             Logger.info("HBI-based thermo for " + name + "("+InChIaug+"): "+ result.toString());//print result, at least for debugging purposes
         }
         else{
-        	//Try to get from qmLibrary Hashmap. -nyee
-            String inChI= p_chemGraph.getInChI();
-            //result = qmLibrary.get(inChI);
-            ThermoData tempTherm = qmLibrary.get(inChI);
-            if (tempTherm != null){
-            	result = tempTherm.copyWithExtraInfo(); //use a copy of the object!; that way, subsequent modifications of this object don't change the QM library
-            	Logger.info("QM calculation for " + inChI + " previously performed. Pulling Thermo from previous results.");
-            	result.setSource(result.comments);
-            }
-            else {
-            	result = generateQMThermoData(p_chemGraph);
-                
-                //Writes the result of the QMThermo to the QMTPThermoWriter
-                String qmMethod = getQmMethod();
-                QMLibraryEditor.addQMTPThermo(p_chemGraph, inChI, result, qmMethod, qmprogram);
-                Logger.info("Writing results of QMTP calcultion to QM Thermo Library for " + inChI);
-                //put in Hashmap for quicker access? -nyee
-                qmLibrary.put(inChI, result);
-            }
+        	result = getQMThermoData(p_chemGraph);
         }
         
         return result;
         //#]
+    }
+    
+    public ThermoData getQMThermoData(ChemGraph p_chemGraph){
+    	// Try to get the QMThermoData from the qmLibrary, if it's not there then call getQMThermoData and save it for future.
+    	ThermoData result = null;
+    	// First to get from qmLibrary
+        String inChI= p_chemGraph.getInChI();
+        ThermoData tempTherm = qmLibrary.get(inChI);
+        if (tempTherm != null){
+        	result = tempTherm.copyWithExtraInfo(); //use a copy of the object!; that way, subsequent modifications of this object don't change the QM library
+        	Logger.info("QM calculation for " + inChI + " previously performed. Pulling Thermo from previous results.");
+        	result.setSource(result.comments);
+        }
+        else { // couldn't find it in qmLibrary
+        	// generate new Thermo Data
+        	result = generateQMThermoData(p_chemGraph);
+        	// now save it for next time
+            String qmMethod = getQmMethod();
+            QMLibraryEditor.addQMTPThermo(p_chemGraph, inChI, result, qmMethod, qmprogram);
+            qmLibrary.put(inChI, result);
+        }
+        return result;
     }
    
     public ThermoData generateQMThermoData(ChemGraph p_chemGraph){
