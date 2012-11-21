@@ -95,11 +95,6 @@ public class RMG {
             // Generate the model!
             ReactionModelGenerator rmg = new ReactionModelGenerator();
             rmg.modelGeneration();
-            
-            //close QMTPThermoWriter
-            if (ChemGraph.useQM) {
-         	   QMTPThermoWriter.finish();
-            }
 
             // Save the resulting model to Final_Model.txt
             writeFinalModel(rmg);
@@ -111,7 +106,9 @@ public class RMG {
            Logger.logStackTrace(e);
            Logger.critical(e.getMessage());
        }
-
+        
+       //close QMTPThermoWriter
+       QMTPThermoWriter.finish();
        // Finish the logger
        Logger.finish();
        System.exit(0); 
