@@ -317,10 +317,11 @@ public class ThermoGAGroupLibrary {
 	}
 
 	//## operation findRingCorrection(ChemGraph)
-	public Map<ThermoGAValue, Integer> findRingCorrections(ChemGraph p_chemGraph) {
+	public BensonRingCorrections findRingCorrections(ChemGraph p_chemGraph) {
 
 		if (p_chemGraph == null) return null;
-
+		boolean imperfect = false;
+		
 		Set<Node> fusedRingAtoms = p_chemGraph.getGraph().getFusedRingAtoms();
 		if(fusedRingAtoms != null){
 			p_chemGraph.appendThermoComments("!Fused Ring System!\n");
@@ -371,10 +372,13 @@ public class ThermoGAGroupLibrary {
 				 * We should return null then.
 				 */
 				if(deepest <= 1)
-					return null;
+				    imperfect = true;
 			}
 
 			if (deepestStackMap.keySet().isEmpty()) return null;
+			
+			BensonRingCorrections ringCorrections = new BensonRingCorrections();
+			ringCorrections.setImperfectMatch(imperfect);
 			
 			//determine ThermoGAValues:
 			Map<ThermoGAValue, Integer> GAMap = new HashMap<ThermoGAValue, Integer>();
@@ -386,22 +390,17 @@ public class ThermoGAGroupLibrary {
 				p_chemGraph.appendThermoComments("!Ring:" + fg.getName());
 				if (ga != null) {
 					Integer value = entry.getValue();
-					if(GAMap.containsKey(ga)){
-						GAMap.put(ga, GAMap.get(ga)+value);
-					}
-					else{
-						GAMap.put(ga,value);
-					}
+					ringCorrections.addCorrection(ga, value);
 				}
 
 			}
 			
 			p_chemGraph.getGraph().resetMatchedGC();
-			if(GAMap.isEmpty()){
+			if(ringCorrections.isEmpty()){
 				return null;
 			}
 			else{
-				return GAMap;
+				return ringCorrections;
 			}
 
 		}

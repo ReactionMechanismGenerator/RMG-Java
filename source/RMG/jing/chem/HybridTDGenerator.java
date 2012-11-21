@@ -26,7 +26,7 @@ public class HybridTDGenerator extends TDGenerator {
 			boolean fusedPolycyclic = chemGraph.containsFusedRingAtoms();
 			
 			//Check if cyclic RSCs have been found in case of a cyclic molecule that are non trivial nodes such as six-membered ring.
-			if (!fusedPolycyclic && ((GATP)thermoGAPP).getMonoCyclicRSCs() == null) {
+			if (!fusedPolycyclic && ((GATP)thermoGAPP).getMonoCyclicRSCs().isImperfectMatch()) {
 				Logger.info("Could not find a non trivial ring correction!" +
 						"Trying QMTP...");
 				TDGenerator gen = new QMForCyclicsGenerator();
