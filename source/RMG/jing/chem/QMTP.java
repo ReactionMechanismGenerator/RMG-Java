@@ -71,6 +71,11 @@ public class QMTP implements GeneralGAPP {
     private QMTP() {
        // initializeLibrary(); //gmagoon 72509: commented out in GATP, so I am mirroring the change here; other library functions below also commented out
         initializePrimaryThermoLibrary();
+        
+        if (System.getenv("RDBASE") == null) {
+        	Logger.critical("Please set your RDBASE environment variable to the directory containing RDKit.");
+        	System.exit(0);
+        }
     }
     
     public String getQmMethod() {
