@@ -2603,7 +2603,7 @@ public class QMTP implements GeneralGAPP {
             System.exit(0);
         }
 	//Step 2. convert the MOL file to InChI (with stereochem layers removed)
-	String[] result = Species.runInChIProcess(new File(molPath), new File("InChI/species.txt"), true);
+	String[] result = Species.runInChIProcess(new File(molPath), new File(System.getProperty("RMG.InChI_running_directory")+"/species.txt"), true);
 	String InChI3D = stripStereochemLayersFromInChI(result[0]);
 	//Step 3. check whether there is a match (i.e. InChI equals InChI3D)
 	if (InChI3D.equals(InChI)){
@@ -2712,7 +2712,7 @@ public class QMTP implements GeneralGAPP {
 	    }
 
 	    //Step 3. convert the MOL file to InChI (with stereochem layers removed)
-	    String[] result = Species.runInChIProcess(new File(molPath), new File("InChI/species.txt"), true);
+	    String[] result = Species.runInChIProcess(new File(molPath), new File(System.getProperty("RMG.InChI_running_directory")+"/species.txt"), true);
 	    String InChI3D = stripStereochemLayersFromInChI(result[0]);
 	    //Step 4. check whether there is a match (i.e. InChI equals InChI3D)
 	    if (InChI3D.equals(InChI)){

@@ -214,7 +214,7 @@ public class ThermoDataEstimator {
 	 */
 	private static void createFolders() {
 		createFolder("GATPFit", true);
-		createFolder("InChI", true);
+		createFolder(System.getProperty("RMG.InChI_running_directory"), true);
 		createFolder("2Dmolfiles", true);   // Not sure if we should be deleting this
 		createFolder("3Dmolfiles", true);   // Not sure if we should be deleting this
 		createFolder("QMfiles", false);     // Preserving QM files between runs will speed things up considerably

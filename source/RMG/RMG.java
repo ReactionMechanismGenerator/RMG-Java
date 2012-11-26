@@ -71,11 +71,12 @@ public class RMG {
             createFolder("ODESolver", true);
             createFolder("fame", true);
             createFolder("frankie", true);
-            createFolder("InChI", true);
             createFolder( System.getProperty("RMG.jobScratchDir") , false);
+            createFolder( System.getProperty("RMG.InChI_running_directory") , true);
             createFolder("Pruning", true);
             createFolder("2Dmolfiles", true);   // Not sure if we should be deleting this
             createFolder("3Dmolfiles", true);   // Not sure if we should be deleting this
+            
             createFolder("QMfiles", false);     // Preserving QM files between runs will speed things up considerably
             createFolder("QMThermoLibrary", false); //Added by nyee will write new thermolibrary from QMTP calculation here
             
@@ -220,6 +221,9 @@ public class RMG {
             Logger.info("RMG_JOB_OUTPUT = . (default)");
         }
         
+        // Set the directory to run the inchi executable in.
+        System.setProperty("RMG.InChI_running_directory", System.getProperty("RMG.jobScratchDir") + "/InChI");
+
 
     }
 
