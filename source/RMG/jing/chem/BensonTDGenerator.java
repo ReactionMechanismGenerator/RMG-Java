@@ -20,8 +20,8 @@ public class BensonTDGenerator extends TDGenerator{
 		boolean fusedPolycyclic = chemGraph.containsFusedRingAtoms();
 		
 		//Check if cyclic RSCs have been found in case of a cyclic molecule that are non trivial nodes such as six-membered ring.
-		if (!chemGraph.isAcyclic() && !fusedPolycyclic && ((GATP)thermoGAPP).getMonoCyclicRSCs() == null) {
-			Logger.error("Could not find a non trivial ring correction!" +
+		if (!chemGraph.isAcyclic() && !fusedPolycyclic && ((GATP)thermoGAPP).getMonoCyclicRSCs().isImperfectMatch()) {
+			Logger.warning("Could not find a non trivial ring correction!" +
 					"It is advised to review the thermochemistry data of this species.");
 		}
 		//Check if polycyclic RSCs have been found in case of a polycyclic molecule:
