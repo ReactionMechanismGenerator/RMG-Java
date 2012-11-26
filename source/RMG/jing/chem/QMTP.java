@@ -167,12 +167,12 @@ public class QMTP implements GeneralGAPP {
             tmpTherm = primaryLibrary.getThermoData(p_chemGraph.getGraph());
             //Logger.info(result);
             if (tmpTherm != null) {
-		result = tmpTherm.copyWithExtraInfo();//use a copy of the object!; that way, subsequent modifications of this object don't change the primary thermo library
-        	p_chemGraph.fromprimarythermolibrary = false;//we don't want to set fromprimarythermolibrary to true, because the result is not directly from the PTL, but comes via PTL + HBI corrections; if true is set here, this would affect two things, both in Species.java: 1) the naming; in the HBI case, we don't want to use a name derived from the thermo name as weird things can happen 2)findStablestThermoData considers the value to be the final word; however, since this is a radical that is not directly in the primaryThermoLibrary, we want to consider alternative thermo for all possible resonance isomers
+                result = tmpTherm.copyWithExtraInfo();//use a copy of the object!; that way, subsequent modifications of this object don't change the primary thermo library
+                p_chemGraph.fromprimarythermolibrary = false;//we don't want to set fromprimarythermolibrary to true, because the result is not directly from the PTL, but comes via PTL + HBI corrections; if true is set here, this would affect two things, both in Species.java: 1) the naming; in the HBI case, we don't want to use a name derived from the thermo name as weird things can happen 2)findStablestThermoData considers the value to be the final word; however, since this is a radical that is not directly in the primaryThermoLibrary, we want to consider alternative thermo for all possible resonance isomers
             }
             else{
-            	tmpTherm = getQMThermoData(p_chemGraph);
-            	result = tmpTherm.copyWithExtraInfo();
+                tmpTherm = getQMThermoData(p_chemGraph);
+                result = tmpTherm.copyWithExtraInfo();
             }
             
             // find the BDE for all radical groups
@@ -246,8 +246,8 @@ public class QMTP implements GeneralGAPP {
             Logger.info("HBI-based thermo for " + name + "("+InChIaug+"): "+ result.toString());//print result, at least for debugging purposes
         }
         else{
-        	tmpTherm = getQMThermoData(p_chemGraph);
-        	result = tmpTherm.copyWithExtraInfo();
+            tmpTherm = getQMThermoData(p_chemGraph);
+            result = tmpTherm.copyWithExtraInfo();
         }
         
         return result;
