@@ -72,6 +72,7 @@ public class RMG {
             createFolder("fame", true);
             createFolder("frankie", true);
             createFolder("InChI", true);
+            createFolder( System.getProperty("RMG.jobScratchDir") , false);
             createFolder("Pruning", true);
             createFolder("2Dmolfiles", true);   // Not sure if we should be deleting this
             createFolder("3Dmolfiles", true);   // Not sure if we should be deleting this
@@ -197,6 +198,27 @@ public class RMG {
         }
         // Set the default database
         extractAndSetDatabasePath("Database: RMG_database");
+
+        // Set the job scratch dir
+        String jobScratchDir = System.getenv("RMG_JOB_SCRATCH");
+        if (jobScratchDir != null) {
+            System.setProperty("RMG.jobScratchDir", jobScratchDir);
+            Logger.info("RMG_JOB_SCRATCH = "+jobScratchDir+" (environment variable)");
+        }
+        else{
+            System.setProperty("RMG.jobScratchDir", ""); // default of "scratch" may be nicer
+            Logger.info("RMG_JOB_SCRATCH = . (default)");
+        }
+        // Set the job output dir
+        String jobOutputDir = System.getenv("RMG_JOB_OUTPUT");
+        if (jobOutputDir != null) {
+            System.setProperty("RMG.jobOutputDir", jobOutputDir);
+            Logger.info("RMG_JOB_OUTPUT = "+jobOutputDir+" (environment variable)");
+        }
+        else{
+            System.setProperty("RMG.jobOutputDir", "");
+            Logger.info("RMG_JOB_OUTPUT = . (default)");
+        }
         
 
     }
