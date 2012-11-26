@@ -228,11 +228,13 @@ public class QMLibraryEditor {
             return library;
 
         }
-
+        catch(FileNotFoundException e){
+            Logger.info("QMTP thermo library file could not be found at "+p_qmThermoFileName);
+            throw e;
+        }
         catch(IOException e) {
             Logger.logStackTrace(e);
-            throw new IOException("Can't read thermo in primary thermo library!");
+            throw new IOException("Can't read QMTP thermo library.");
         }
-
     }
 }
