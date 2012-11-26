@@ -180,10 +180,24 @@ public class RMG {
         String workingDir = System.getenv("RMG");
         if (workingDir == null) throw new RuntimeException("The RMG environment variable is not defined.");
         System.setProperty("RMG.workingDirectory", workingDir);
+        
+        Logger.info(" Environment Variables:");
+        Logger.info("RMG = "+workingDir);
 		
-        System.setProperty("RMG.databasesDirectory", workingDir + "/databases");
+        // Set the databases directory
+        String databaseDir = System.getenv("RMG_DATABASES");
+        if (databaseDir != null) {
+            System.setProperty("RMG.databasesDirectory", databaseDir);
+            Logger.info("RMG_DATABASES = "+databaseDir+" (environment variable)");
+        }
+        else{
+            System.setProperty("RMG.databasesDirectory", workingDir + "/databases");
+            Logger.info("RMG_DATABASES = $RMG/databases (default)");
+
+        }
         // Set the default database
         extractAndSetDatabasePath("Database: RMG_database");
+        
 
     }
 
