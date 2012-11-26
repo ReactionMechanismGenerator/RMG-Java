@@ -82,7 +82,6 @@ public class RMG {
             String tmpdir = System.getProperty("java.io.tmpdir");
             String qmFolderName = tmpdir + "/RMG_QMfiles";
             createFolder (qmFolderName, true);
-            Logger.info("TEST!!!" + qmFolderName);
             
             // The only parameter should be the path to the condition file
             String inputfile = args[0];
