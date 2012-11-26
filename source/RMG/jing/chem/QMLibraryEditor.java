@@ -155,6 +155,7 @@ public class QMLibraryEditor {
     	//write to Library.txt
         try {
         	libraryFile.write(line + newLine);
+        	libraryFile.flush();
         }
         catch (IOException e) {
             // What should we do here?
@@ -178,6 +179,7 @@ public class QMLibraryEditor {
     	//write to Dictionary.txt
         try {
         	dictionaryFile.write(definition);
+        	dictionaryFile.flush();
         }
         catch (IOException e) {
             // What should we do here?
