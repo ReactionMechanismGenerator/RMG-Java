@@ -1753,6 +1753,25 @@ public class ChemParser {
 
         //#]
     }
+    
+
+	public static String readMeaningfulAndEmptyLine(
+			BufferedReader p_reader, boolean toTrimOrNotToTrim) {
+        if (p_reader == null) return null;
+
+        String line = null;
+        try {
+            do {
+                line = p_reader.readLine();
+                if (line == null) return null;
+                if (toTrimOrNotToTrim)	line = line.trim();
+            } while (line.startsWith("//"));
+            return line;
+        }
+        catch (IOException e) {
+            return null;
+        }
+	}
 
 }
 /*********************************************************************

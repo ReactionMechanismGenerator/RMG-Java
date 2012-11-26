@@ -1587,9 +1587,10 @@ public class ReactionModelGenerator {
 					 */
 					String[] restartFiles = {"Restart/coreReactions.txt", "Restart/coreSpecies.txt",
 							"Restart/edgeReactions.txt", "Restart/edgeSpecies.txt",
-							"Restart/pdepnetworks.txt", "Restart/pdepreactions.txt"};
+							"Restart/pdepnetworks.txt", "Restart/pdepreactions.txt","Restart/restartConditionFile.txt"};
 					writeBackupRestartFiles(restartFiles);
 					
+					writeRestartConditionFile();
 					writeCoreSpecies();
 					writeCoreReactions();
 					writeEdgeSpecies();
@@ -1741,9 +1742,10 @@ public class ReactionModelGenerator {
 			 */
 			String[] restartFiles = {"Restart/coreReactions.txt", "Restart/coreSpecies.txt",
 					"Restart/edgeReactions.txt", "Restart/edgeSpecies.txt",
-					"Restart/pdepnetworks.txt", "Restart/pdepreactions.txt"};
+					"Restart/pdepnetworks.txt", "Restart/pdepreactions.txt","Restart/restartConditionFile.txt"};
 			writeBackupRestartFiles(restartFiles);
 			
+			writeRestartConditionFile();
 			writeCoreSpecies();
 			writeCoreReactions();
 			writeEdgeSpecies();
@@ -1807,7 +1809,165 @@ public class ReactionModelGenerator {
         writeDictionary(getReactionModel());
     }
     
-    //9/1/09 gmagoon: this function writes a "dictionary" with Chemkin name, RMG name, (modified) InChI, and InChIKey
+    private void writeRestartConditionFile() {
+    	StringBuilder restartConditionFile = new StringBuilder();
+    	
+		// Read in the condition file 
+		
+		try {
+			String initialConditionFile = System.getProperty("jing.rxnSys.ReactionModelGenerator.conditionFile");
+			FileReader condition_file = new FileReader(initialConditionFile);
+			BufferedReader condition_file_br = new BufferedReader(condition_file);
+			
+			String line = ChemParser.readMeaningfulAndEmptyLine(condition_file_br, true);
+			
+			// Read lines from condition file and store them in the string till
+			// you reach the species definition 
+			
+			while (!line.equals("InitialStatus:")) {
+				
+				restartConditionFile.append(line+"\n");				
+			
+				line = ChemParser.readMeaningfulAndEmptyLine(condition_file_br, true);
+			}
+			
+			restartConditionFile.append(line+"\n");
+			
+			// Read in the next line
+			line = ChemParser.readMeaningfulLine(condition_file_br, true);
+
+			
+			// Read in the species in the initial condition file  
+			// and figure out the number of concentrations specified and units
+			
+			String unit="";
+			int numSpeciesConditionfile = 0;
+			int numConcentrations = 0;
+			
+			// This blocks reads in the initial species in condition file
+			while (line != null && !line.equals("END")) {
+				
+				StringTokenizer st = new StringTokenizer(line);
+				String index = st.nextToken();
+				String name = null;
+				if (!index.startsWith("(")) name = index;
+				else name = st.nextToken();
+				 
+				
+				// The next token will be the concentration units
+				unit = st.nextToken();
+				
+				
+				// The remaining tokens are the either token unreactive, constant concentrations
+				// or concentrations for the species
+				
+				// The number of concentrations
+				numConcentrations = 0;
+				
+				while (st.hasMoreTokens()) {
+					String reactive = st.nextToken().trim();
+					
+					// Dont count the unreactive and constantconcentration tokens
+					if(!reactive.equalsIgnoreCase("unreactive")||!reactive.equalsIgnoreCase("constantconcentration"))
+						++numConcentrations;				
+
+				}
+				
+				restartConditionFile.append(line+"\n");			
+				
+				Graph g;
+				try {
+					g = ChemParser.readChemGraph(condition_file_br);
+					ChemGraph cg = null;
+					try {
+						cg = ChemGraph.make(g);
+						restartConditionFile.append(cg.toStringWithoutH(0)+"\n");
+					}
+					catch(ForbiddenStructureException e){
+						
+					}
+				} 
+				catch (IOException e1) {
+	                System.out.println("Something wrong with graph");
+	                System.exit(0);
+				}
+						
+			
+				// increment species counter
+				++ numSpeciesConditionfile;
+				
+				line = ChemParser.readMeaningfulLine(condition_file_br, true);
+			}
+			
+			
+			// Creates an array initialized with default value of double 0.0, with size of numConcentrations
+			double[] ConcArray = new double[numConcentrations];
+			String ConcString = ArraytoString(ConcArray);
+
+			
+			// Read in dictionary and append the units and 0.0 for number of concentrations
+			// *** Strictly assuming that species in condition file are the initial species
+			// in the RMG_Dictionary ***
+			
+			int speciestoSkip=1;
+			
+			Iterator iter=getReactionModel().getSpecies();
+			
+			while(iter.hasNext()){
+				Species spe = (Species) iter.next();
+                if(speciestoSkip>numSpeciesConditionfile){
+                	// Append the name + units + concentrations as 0.0
+                	restartConditionFile.append(spe.getChemkinName()+" "+unit+" "+ConcString+"\n");
+                	// Append the Chemgraph
+                	restartConditionFile.append(spe.getChemGraph().toString(0)+"\n");
+                }
+                ++speciestoSkip;
+                	              
+			}
+			
+			// Read lines till end of condition file 
+			while (line !=null) {
+				restartConditionFile.append(line+"\n");				
+				
+				line = ChemParser.readMeaningfulAndEmptyLine(condition_file_br, true);
+			}
+			
+            // Write the restartConditionFile.txt output file
+            try {
+            	
+            	String filename = "Restart/restartConditionFile.txt";           	
+            	
+				File rxns = new File(filename);
+				FileWriter fw_rxns = new FileWriter(rxns);
+                fw_rxns.write(restartConditionFile.toString());
+                fw_rxns.close();
+            }
+            
+            catch (IOException e) {
+                System.out.println("Could not write restartCondition.txt file");
+                System.exit(0);
+            }
+			
+		}
+		
+		catch (FileNotFoundException e) {
+			System.err.println("Condition file not found");
+			}
+					
+	}
+
+	private String ArraytoString(double[] concArray) {	
+		    StringBuilder sb = new StringBuilder();
+		    for (int i = 0; i < concArray.length; i++)
+		    {
+		        if (i != 0)
+		            sb.append(" ");
+		        sb.append(concArray[i]);
+		    }
+		    return sb.toString();
+	}
+
+	//9/1/09 gmagoon: this function writes a "dictionary" with Chemkin name, RMG name, (modified) InChI, and InChIKey
     //this is based off of writeChemkinFile in ChemkinInputFile.java
     private void writeInChIs(ReactionModel p_reactionModel) {
         StringBuilder result=new StringBuilder();
@@ -2598,6 +2758,7 @@ public class ReactionModelGenerator {
 //        	System.exit(0);
 //		}
 //	}
+	
 	
 	private void writeCoreSpecies() {
 		BufferedWriter bw = null;
