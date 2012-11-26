@@ -246,6 +246,7 @@ public class QMTP implements GeneralGAPP {
             Logger.info("HBI-based thermo for " + name + "("+InChIaug+"): "+ result.toString());//print result, at least for debugging purposes
         }
         else{
+            // no need for HBI radical corrections, just get the QM result
             tmpTherm = getQMThermoData(p_chemGraph);
             result = tmpTherm.copyWithExtraInfo();
         }
@@ -258,7 +259,7 @@ public class QMTP implements GeneralGAPP {
     	// Try to get the QMThermoData from the qmLibrary, if it's not there then call getQMThermoData and save it for future.
     	ThermoData result = null;
     	// First to get from qmLibrary
-        String inChI= p_chemGraph.getInChI();
+        String inChI = p_chemGraph.getModifiedInChIAnew(); // get the MODIFIED InChI with multiplicity info in case we are dealing with (di)radicals.
         ThermoData tempTherm = qmLibrary.get(inChI);
         if (tempTherm != null){
         	result = tempTherm.copyWithExtraInfo(); //use a copy of the object!; that way, subsequent modifications of this object don't change the QM library
