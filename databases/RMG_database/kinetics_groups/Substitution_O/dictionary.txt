@@ -4,9 +4,17 @@
 // R-H Tree
 //
 
+O-RR_or_RRrad
+Union {O-RR,O-RRrad}
+
 O-RR
 1 *1 Os 0 {2,S} {3,S}
 2 *2 R 0 {1,S} 
+3 R 0 {1,S}
+
+O-RRrad
+1 *1 Os 0 {2,S} {3,S}
+2 *2 R 1 {1,S} 
 3 R 0 {1,S}
 
 O-HH
