@@ -560,7 +560,7 @@ public class PopulateReactions {
 		File GATPFit = new File("GATPFit");
 		ChemParser.deleteDir(GATPFit);
 		GATPFit.mkdir();
-		File frankie = new File("frankie");
+		File frankie = new File(System.getProperty("RMG.frankieOutputDir"));
 		ChemParser.deleteDir(frankie);
 		frankie.mkdir();
 		File fame = new File("fame");

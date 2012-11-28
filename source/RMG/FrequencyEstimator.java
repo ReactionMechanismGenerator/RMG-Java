@@ -60,7 +60,7 @@ public class FrequencyEstimator {
 
                  File GATPFit = new File("GATPFit");
                  GATPFit.mkdir();
-                 File frankie = new File("frankie");
+                 File frankie = new File(System.getProperty("RMG.frankieOutputDir"));
                  frankie.mkdir();
 
 		LinkedList<ChemGraph> graphList = new LinkedList<ChemGraph>();

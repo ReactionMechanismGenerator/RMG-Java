@@ -56,7 +56,7 @@ public class FrequencyGroups{
       try {
 		String workingDirectory = System.getProperty("RMG.workingDirectory");
         String[] command = {workingDirectory +  "/bin/frankie.exe"};
-        File runningDir = new File("frankie");
+        File runningDir = new File(System.getProperty("RMG.frankieOutputDir"));
         Frankie = Runtime.getRuntime().exec(command, null, runningDir);
         errorStream = new BufferedReader(new InputStreamReader(Frankie.getErrorStream()));
         commandInput = new PrintWriter(Frankie.getOutputStream(), true);
@@ -268,9 +268,9 @@ public class FrequencyGroups{
 	        	Logger.verbose("Frankie exceeded maximum number of iterations");
 	        if (!frankieSuccess) {
 	     		Logger.verbose("Frankie.exe wasn't fully successful: "+ String.format("species %2$d had output flag %1$d",frankieOutputFlag,species.getID() ));
-	     		Logger.verbose(String.format("Saving input file as 'frankie/dat.%d.%d' should you wish to debug.",frankieOutputFlag,species.getID() ));
-	     		String Frankie_input_name = String.format("frankie/dat.%d.%d", frankieOutputFlag,species.getID());
-	     		FileWriter fw = new FileWriter(new File(Frankie_input_name));
+                String Frankie_input_name = String.format("dat.%d.%d", frankieOutputFlag,species.getID());
+	     		Logger.verbose(String.format("Saving input file as '%s' should you wish to debug.",Frankie_input_name));
+	     		FileWriter fw = new FileWriter(new File(System.getProperty("RMG.frankieOutputDir"), Frankie_input_name));
 	     		fw.write(inputString);
 	     		fw.close();
 	     	}
@@ -285,10 +285,10 @@ public class FrequencyGroups{
           Logger.logStackTrace(e);
           String err = "Error running Frankie" + ls;
           err += e.toString();
-          String Frankie_input_name = "frankie/INPUT.txt";
+          String Frankie_input_name = "INPUT.txt";
           err += ls + "To help diagnosis, writing GATPFit input to file "+Frankie_input_name+ls;
           try {
-        	  FileWriter fw = new FileWriter(new File(Frankie_input_name));
+        	  FileWriter fw = new FileWriter(new File(System.getProperty("RMG.frankieOutputDir"),Frankie_input_name));
         	  fw.write(inputString);
         	  fw.close();
           }
@@ -369,13 +369,13 @@ public class FrequencyGroups{
 	
 	private void touchOutputFile() {
 		try {
-			File output = new File("frankie/rho_input");
+			File output = new File(System.getProperty("RMG.frankieOutputDir"),"rho_input");
 			if (output.exists())
 				output.delete();
 			output.createNewFile();
 		}
 		catch(IOException e) {
-			Logger.critical("Error: Unable to touch file \"frankie/rho_input\".");
+			Logger.critical("Error: Unable to touch file \"rho_input\".");
 			Logger.critical(e.getMessage());
 			System.exit(0);
 		}
