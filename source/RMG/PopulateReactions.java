@@ -551,6 +551,7 @@ public class PopulateReactions {
 		} catch(IOException e) {
 			System.err.println("Something wrong with ChemParser.readChemGraph");
 		}
+		System.exit(0);
 	}
 	
 	public static void initializeSystemProperties() {
