@@ -268,16 +268,24 @@ public class QMTP implements GeneralGAPP {
         }
         else { // couldn't find it in qmLibrary
         	// generate new Thermo Data
-        	result = generateQMThermoData(p_chemGraph);
-        	// now save it for next time
-            String qmMethod = getQmMethod();
-            QMLibraryEditor.addQMTPThermo(p_chemGraph, inChI, result, qmMethod, qmprogram);
-            qmLibrary.put(inChI, result);
+        	try {
+				result = generateQMThermoData(p_chemGraph);
+	            
+	        	// now save it for next time
+				String qmMethod = getQmMethod();
+	            QMLibraryEditor.addQMTPThermo(p_chemGraph, inChI, result, qmMethod, qmprogram);
+	            qmLibrary.put(inChI, result);
+			} catch (AllQmtpAttemptsFailedException e) {
+				Logger.warning("Falling back to group additivity due to repeated failure in QMTP calculations");
+			    TDGenerator gen = new BensonTDGenerator();
+    			return gen.generateThermo(p_chemGraph);
+			}
+
         }
         return result;
     }
    
-    public ThermoData generateQMThermoData(ChemGraph p_chemGraph){
+    public ThermoData generateQMThermoData(ChemGraph p_chemGraph) throws AllQmtpAttemptsFailedException{
         //if there is no data in the libraries, calculate the result based on QM or MM calculations; the below steps will be generalized later to allow for other quantum mechanics packages, etc.
         String qmProgram = qmprogram;
 	String qmMethod = "";
@@ -371,9 +379,8 @@ public class QMTP implements GeneralGAPP {
 				Logger.info("*****Final attempt (#" + maxAttemptNumber + ") on species " + name + " ("+InChIaug+") failed.");
 				Logger.info(p_chemGraph.toString());
 			        //System.exit(0);
-				ThermoData temp = new ThermoData(1000,0,0,0,0,0,0,0,0,0,0,0,"failed calculation");
-				temp.setSource("***failed calculation***");
-
+				//ThermoData temp = new ThermoData(1000,0,0,0,0,0,0,0,0,0,0,0,"failed calculation");
+				//temp.setSource("***failed calculation***");
 				//delete the hold file
 				try{
 				    ourHoldFile.delete();
@@ -383,7 +390,7 @@ public class QMTP implements GeneralGAPP {
 					System.exit(0);
 				}
 
-				return temp;
+				throw new AllQmtpAttemptsFailedException();
 				//an upstream loop should catch this so the dummy result should not be used
 			    }
 			}
@@ -450,9 +457,9 @@ public class QMTP implements GeneralGAPP {
 				Logger.info("*****Final attempt (#" + maxAttemptNumber + ") on species " + name + " ("+InChIaug+") failed.");
 				Logger.info(p_chemGraph.toString());
 			        //System.exit(0);
-				ThermoData temp = new ThermoData(1000,0,0,0,0,0,0,0,0,0,0,0,"failed calculation");
-				temp.setSource("***failed calculation***");
-
+				//ThermoData temp = new ThermoData(1000,0,0,0,0,0,0,0,0,0,0,0,"failed calculation");
+				//temp.setSource("***failed calculation***");
+				//Changed to return null instead of dummy result
 				//delete the hold file
 				try{
 				    ourHoldFile.delete();
@@ -461,8 +468,10 @@ public class QMTP implements GeneralGAPP {
 					Logger.error("Error deleting .hold file for "+ name+": " + e.toString());
 					System.exit(0);
 				}
+				throw new AllQmtpAttemptsFailedException();
+				
 
-				return temp;
+				//return temp;
 				//an upstream loop should catch this so the dummy result should not be used
 			}
 			Logger.info("*****Attempt #"+attemptNumber + " on species " + name + " ("+InChIaug+") failed. Will attempt a new keyword.");
