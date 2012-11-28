@@ -207,7 +207,7 @@ public class RMG {
             Logger.info("RMG_JOB_SCRATCH = "+jobScratchDir+" (environment variable)");
         }
         else{
-            System.setProperty("RMG.jobScratchDir", ""); // default of "scratch" may be nicer
+            System.setProperty("RMG.jobScratchDir", "."); // default of "scratch" may be nicer
             Logger.info("RMG_JOB_SCRATCH = . (default)");
         }
         // Set the job output dir
@@ -217,12 +217,12 @@ public class RMG {
             Logger.info("RMG_JOB_OUTPUT = "+jobOutputDir+" (environment variable)");
         }
         else{
-            System.setProperty("RMG.jobOutputDir", "");
+            System.setProperty("RMG.jobOutputDir", ".");
             Logger.info("RMG_JOB_OUTPUT = . (default)");
         }
         
         // Set the directory to run the inchi executable in.
-        System.setProperty("RMG.InChI_running_directory", System.getProperty("RMG.jobScratchDir") + "/InChI");
+        System.setProperty("RMG.InChI_running_directory", new File(System.getProperty("RMG.jobScratchDir"), "InChI").getPath());
 
 
     }
