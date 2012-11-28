@@ -24,7 +24,7 @@ public class QMForCyclicsGenerator extends TDGenerator {
 				ThermoData thermo = thermoQM.generateThermoData(chemGraph);
 				return thermo;
 			//	}
-			
+			//Changed to an exception and moved to QMTP.generateQMThermoData (caught in QMTP.getQMThermoData)
 			//if (((String)thermo.getSource()).equals("***failed calculation***")){ 
 			//	Logger.warning("Falling back to group additivity due to repeated failure in QMTP calculations");
 			//   TDGenerator gen = new BensonTDGenerator();

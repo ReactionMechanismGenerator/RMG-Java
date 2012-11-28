@@ -35,7 +35,6 @@ import java.util.*;
 import jing.chemParser.ChemParser;
 import jing.chemUtil.*;
 import jing.param.*;
-
 import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
@@ -54,6 +53,7 @@ public class QMTP implements GeneralGAPP {
     public static String qmfolder= System.getProperty("java.io.tmpdir") + "/RMG_QMfiles/"; //default location for Gaussian/mopac output in temp folder
     protected HashMap <String, ThermoData>  qmLibrary = new HashMap <String, ThermoData>();
     //   protected static HashMap library;		//as above, may be able to move this and associated functions to GeneralGAPP (and possibly change from "x implements y" to "x extends y"), as it is common to both GATP and QMTP
+    protected Vector <String> failedQm = new Vector <String>(); 
     protected ThermoGAGroupLibrary thermoLibrary; //needed for HBI
     public static String qmprogram= "both";//the qmprogram can be "mopac", "gaussian03", "both" (MOPAC and Gaussian), or "mm4"/"mm4hr"
     public static boolean usePolar = false; //use polar keyword in MOPAC
@@ -77,7 +77,7 @@ public class QMTP implements GeneralGAPP {
         if (System.getenv("RDBASE") == null) {
         	Logger.critical("Please set your RDBASE environment variable to the directory containing RDKit.");
         	System.exit(0);
-        }
+        }  
     }
     
     public String getQmMethod() {
@@ -259,28 +259,37 @@ public class QMTP implements GeneralGAPP {
     	// Try to get the QMThermoData from the qmLibrary, if it's not there then call getQMThermoData and save it for future.
     	ThermoData result = null;
     	// First to get from qmLibrary
-        String inChI = p_chemGraph.getModifiedInChIAnew(); // get the MODIFIED InChI with multiplicity info in case we are dealing with (di)radicals.
-        ThermoData tempTherm = qmLibrary.get(inChI);
+    	String [] InChInames = getQMFileName(p_chemGraph);//determine the filename (InChIKey) and InChI with appended info for triplets, etc.
+        String name = InChInames[0];
+    	String InChIaug = InChInames[1];
+        ThermoData tempTherm = qmLibrary.get(InChIaug);
         if (tempTherm != null){
         	result = tempTherm.copyWithExtraInfo(); //use a copy of the object!; that way, subsequent modifications of this object don't change the QM library
-        	Logger.info("QM calculation for " + inChI + " previously performed. Pulling Thermo from previous results.");
+        	Logger.info("QM calculation for " + InChIaug + " previously performed. Using Thermo from previous results in QMlibrary.");
         	result.setSource(result.comments);
+        	//Added for debugging
+        	Logger.info("Thermo Data for " + InChIaug + " is " + result);
         }
         else { // couldn't find it in qmLibrary
-        	// generate new Thermo Data
+        	//Check to see if QMTP has failed all attempts on this molecule before
+        	//If so, generate Thermo using Benson groups
+        	if (failedQm.contains(InChIaug)){
+        		Logger.info("All attempts at QMTP for " + name + "(" + InChIaug + ") have previously failed. Falling back to Benson Group Additivity.");
+        		TDGenerator gen = new BensonTDGenerator();
+    			return gen.generateThermo(p_chemGraph);
+        	}
+        	// generate new QM Thermo Data
         	try {
 				result = generateQMThermoData(p_chemGraph);
-	            
 	        	// now save it for next time
 				String qmMethod = getQmMethod();
-	            QMLibraryEditor.addQMTPThermo(p_chemGraph, inChI, result, qmMethod, qmprogram);
-	            qmLibrary.put(inChI, result);
+	            QMLibraryEditor.addQMTPThermo(p_chemGraph, InChIaug, result, qmMethod, qmprogram);
+	            qmLibrary.put(InChIaug, result);
 			} catch (AllQmtpAttemptsFailedException e) {
-				Logger.warning("Falling back to group additivity due to repeated failure in QMTP calculations");
+				Logger.warning("Falling back to Benson group additivity due to repeated failure in QMTP calculations");
 			    TDGenerator gen = new BensonTDGenerator();
     			return gen.generateThermo(p_chemGraph);
 			}
-
         }
         return result;
     }
@@ -389,9 +398,10 @@ public class QMTP implements GeneralGAPP {
 					Logger.error("Error deleting .hold file for "+ name+": " + e.toString());
 					System.exit(0);
 				}
-
+				//Add to augmented InChI failedQm so that RMG will not try to run this molecule in QMTP again
+				failedQm.add(InChIaug);
 				throw new AllQmtpAttemptsFailedException();
-				//an upstream loop should catch this so the dummy result should not be used
+
 			    }
 			}
 			Logger.info("*****Attempt #"+attemptNumber + " on species " + name + " ("+InChIaug+") failed. Will attempt a new keyword.");
