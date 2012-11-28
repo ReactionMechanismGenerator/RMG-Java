@@ -69,7 +69,7 @@ public class RMG {
             createFolder("Restart", false);
             createFolder("GATPFit", true);
             createFolder("ODESolver", true);
-            createFolder("fame", true);
+            createFolder( System.getProperty("RMG.fameOutputDir"), true);
             createFolder("frankie", true);
             createFolder( System.getProperty("RMG.jobScratchDir") , false);
             createFolder( System.getProperty("RMG.InChI_running_directory") , true);
@@ -220,6 +220,10 @@ public class RMG {
             System.setProperty("RMG.jobOutputDir", ".");
             Logger.info("RMG_JOB_OUTPUT = . (default)");
         }
+        
+        String fameOutputDir = new File(jobOutputDir, "fame").getPath();
+        Logger.info("Fame directory = "+fameOutputDir);
+        System.setProperty("RMG.fameOutputDir", fameOutputDir);
         
         // Set the directory to run the inchi executable in.
         System.setProperty("RMG.InChI_running_directory", new File(System.getProperty("RMG.jobScratchDir"), "InChI").getPath());
