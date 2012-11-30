@@ -9,12 +9,15 @@
 export RMG_DATABASES=$RMG/databases
 
 # Scratch directory, unique to this job (be careful on shared computers).
-# Fast I/O is beneficial.
+# Fast I/O is beneficial. 
+# Stuff stored here may be useful for debugging but in general you don't need to keep it.
+# One option which should be safe on shared computers is:
+# export RMG_JOB_SCRATCH=`mktemp -d -t RMG.XXXXXX`
 # Default is the current working directory from which you run RMG.
 export RMG_JOB_SCRATCH=$PWD
 
 # Output directory, unique to this job (be careful on shared computers).
-# This is where output you want to keep are saved.
+# This is where output that you want to keep is saved.
 # Default is the current working directory from which you run RMG.
 export RMG_JOB_OUTPUT=$PWD
 
