@@ -26,5 +26,11 @@ export RMG_JOB_OUTPUT=$PWD
 # Making it common to all your RMG jobs will allow them to pool all their QM results in the same place
 export RMG_QM_LIBRARY=$RMG_JOB_OUTPUT/QMThermoLibrary
 
+# Quantum Mechanics Thermodynamics calculations results directory.
+# Default is 'QMfiles' inside the current job's output directory.
+# Making it common to all your RMG jobs will allow them to pool all their QM results in the same place
+# If you set "KeepQMFiles: no" in your condition file, this directory will be deleted.
+export RMG_QM_CALCS=$RMG_JOB_OUTPUT/QMfiles
+
 # Now run RMG on the condition.txt input file.
 java -Xmx500m -jar $RMG/bin/RMG.jar condition.txt

@@ -217,7 +217,7 @@ public class ThermoDataEstimator {
 		createFolder(System.getProperty("RMG.InChI_running_directory"), true);
 		createFolder(System.getProperty("RMG.2DmolfilesDir"), true);
 		createFolder(System.getProperty("RMG.3DmolfilesDir"), true);
-		createFolder("QMfiles", false);     // Preserving QM files between runs will speed things up considerably
+		createFolder(System.getProperty("RMG.qmCalculationsDir"), false);     // Preserving QM files between runs will speed things up considerably
 		createFolder(System.getProperty("RMG.qmLibraryDir"), false);
 	}
 

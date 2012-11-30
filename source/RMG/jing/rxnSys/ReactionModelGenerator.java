@@ -113,7 +113,7 @@ public class ReactionModelGenerator {
 	//static {System.loadLibrary("cpuTime");}
 
 	public static boolean rerunFame = false;
-	public static boolean qmVerbose = false;
+	public static boolean keepQMfiles = false;
 
 	protected static double tolerance;//can be interpreted as "coreTol" (vs. edgeTol)
 	protected static double termTol;
@@ -514,25 +514,24 @@ public class ReactionModelGenerator {
 						Logger.critical("condition.txt: Can't find 'CheckConnectivity:' field (should be 'off', 'check', or 'confirm')");
 						System.exit(0);
 					}
-					line = ChemParser.readMeaningfulLine(reader, true); //read in either QM 'Verbose:' option or 'InitialStatus' line.
-					if (line.startsWith("Verbose:")){
+					line = ChemParser.readMeaningfulLine(reader, true); //read in either QM 'KeepQMFiles:' option or 'InitialStatus' line.
+					if (line.startsWith("KeepQMFiles:")){
 						StringTokenizer st5 = new StringTokenizer(line);
 						String nameQmVerbose = st5.nextToken(); //String Verbose
 						String checkQmVerbose = st5.nextToken().toLowerCase();
-						if (checkQmVerbose.equals("on")){
-							QMTP.qmfolder = "QMfiles/";
-							QMTP.qmVerbose = true;
+						if (checkQmVerbose.equals("yes")){
+							QMTP.keepQMfiles = true;
 						}
-						else if(!checkQmVerbose.equals("off")){
-							Logger.critical("condition.txt: QMTP 'Verbose' field should be 'on' or 'off'");
+						else if(!checkQmVerbose.equals("no")){
+							Logger.critical("condition.txt: QMTP 'KeepQMFiles' field should be 'yes' or 'no'");
 							System.exit(0);
 						}
 						// Read another line
 						line = ChemParser.readMeaningfulLine(reader, true);
 					}
 					else{
-						Logger.critical("Can't find QMTP 'Verbose:' field. Defaulting to 'off'.");
-						QMTP.qmVerbose = false;
+						Logger.critical("Can't find QMTP 'KeepQMFiles:' field. Defaulting to 'yes'.");
+						QMTP.keepQMfiles = true;
 					}
         		}//otherwise, the flag useQM will remain false by default and the traditional group additivity approach will be used
 

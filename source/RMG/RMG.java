@@ -78,13 +78,9 @@ public class RMG {
             createFolder( System.getProperty("RMG.2DmolfilesDir"), true);
             createFolder( System.getProperty("RMG.3DmolfilesDir"), true);
             
-            createFolder("QMfiles", false);     // Preserving QM files between runs will speed things up considerably
+            createFolder( System.getProperty("RMG.qmCalculationsDir"), false);     // Preserving QM files between runs will speed things up considerably
             createFolder( System.getProperty("RMG.qmLibraryDir"), false);
             
-            //Test QMFiles in temp directory
-            String tmpdir = System.getProperty("java.io.tmpdir");
-            String qmFolderName = tmpdir + "/RMG_QMfiles";
-            createFolder (qmFolderName, true);
             
             // The only parameter should be the path to the condition file
             String inputfile = args[0];
@@ -104,10 +100,12 @@ public class RMG {
             ReactionModelGenerator rmg = new ReactionModelGenerator();
             rmg.modelGeneration();
             
-            //delete tmpQm
-            File qmFolder = new File(qmFolderName);
-            if(qmFolder.exists()){
-            	ChemParser.deleteDir(qmFolder);
+            //Delete remaining QM files if they were only meant tobe temporary
+            if (!QMTP.keepQMfiles){
+                File qmFolder = new File(System.getProperty("RMG.qmCalculationsDir"));
+                if(qmFolder.exists()){
+                    ChemParser.deleteDir(qmFolder);
+                }
             }
 
             // Save the resulting model to Final_Model.txt
@@ -244,6 +242,18 @@ public class RMG {
         else source = "environment variable";
         Logger.info(String.format("RMG_QM_LIBRARY = %s (%s)",qmLibraryDir,source));
         System.setProperty("RMG.qmLibraryDir", qmLibraryDir);
+        
+        
+        // Set the QM calculations directory
+        String qmCalculationsDir = System.getenv("RMG_QM_CALCS");
+        if (qmCalculationsDir == null) {
+            qmCalculationsDir = new File(jobOutputDir, "QMfiles").getPath();
+            source = "default - relative to RMG_JOB_OUTPUT";
+        }
+        else source = "environment variable";
+        Logger.info(String.format("RMG_QM_CALCS = %s (%s)",qmCalculationsDir,source));
+        System.setProperty("RMG.qmCalculationsDir", qmCalculationsDir);
+        
 
     }
 
