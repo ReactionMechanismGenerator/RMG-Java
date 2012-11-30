@@ -293,6 +293,53 @@ public class QMTP implements GeneralGAPP {
         }
         return result;
     }
+
+    private Thread setHoldAndGetClearerThread(final String name){
+        /*
+         * Creates a .hold file for the given name, and creates a shutdown hook
+         * to delete the hold file. Returns the hook, which is a thread which
+         * you can later run and de-register.
+         */
+        Logger.debug("Creating hold file for "+name);
+        final File holdFile = new File(qmfolder, name+".hold");
+        try{
+            holdFile.createNewFile();
+        }
+        catch(Exception e){
+            Logger.error("Error creating .hold file for "+ name+ ": "+ e.toString());
+            System.exit(0);
+            throw new RuntimeException("Error creating .hold file for "+ name, e);
+        }
+        Thread hook =  new Thread() {public void run() {
+            Logger.debug("Deleting hold file for "+name);
+            holdFile.delete(); };
+            };
+        Runtime.getRuntime().addShutdownHook(hook);
+        return hook;
+    }
+    
+    private boolean checkHoldExists(String name){
+        /*
+         * Checks for existance of a .hold file for the given name.
+         * Returns true if it exists (and you shouldn't run a new job).
+         */
+        Logger.debug("Checking hold file for "+name);
+        final File holdFile = new File(qmfolder, name+".hold");
+        return holdFile.exists();
+    }
+    
+    private void clearHold(Thread holdClearerThread){
+        /*
+         * Clears the hold, by running and unregistering the hold-clearing thread.
+         */
+        Runtime.getRuntime().removeShutdownHook(holdClearerThread);
+        holdClearerThread.start();
+        try {
+            holdClearerThread.join(); // wait for it to finish
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+        }
+    }
    
     public ThermoData generateQMThermoData(ChemGraph p_chemGraph) throws AllQmtpAttemptsFailedException{
         //if there is no data in the libraries, calculate the result based on QM or MM calculations; the below steps will be generalized later to allow for other quantum mechanics packages, etc.
@@ -313,13 +360,11 @@ public class QMTP implements GeneralGAPP {
         String name = InChInames[0];
         String InChIaug = InChInames[1];
         String directory = qmfolder;
-	File ourHoldFile = null;
         File dir=new File(directory);
         directory = dir.getAbsolutePath();//this and previous three lines get the absolute path for the directory
 	//check for existing hold file before starting calculations (to avoid the possibility of interference with other jobs using the same QMfiles folder)
-	File otherHoldFile = new File(directory, name+".hold");
 	try{
-	    while(otherHoldFile.exists()){
+	    while(checkHoldExists(name)){
 		Logger.info("Existence of hold file for "+name+" suggests that another RMG process is currently running calculations on this molecule; waiting for other RMG process to finish; will check again in 60 seconds...");
 		Thread.sleep(60000);
 	    }
@@ -333,15 +378,10 @@ public class QMTP implements GeneralGAPP {
 	    boolean gaussianResultExists = successfulGaussianResultExistsQ(name,directory,InChIaug);
 	    boolean mopacResultExists = successfulMopacResultExistsQ(name,directory,InChIaug);
 	    if(!gaussianResultExists && !mopacResultExists){//if a successful result doesn't exist from previous run (or from this run), run the calculation; if a successful result exists, we will skip directly to parsing the file
-		//step 0: create a .hold file to prevent other jobs running with the same directory from interfering by trying to run with the same molecule
-		ourHoldFile = new File(directory, name+".hold");
-		try{
-		    ourHoldFile.createNewFile();//we could check the boolean result here, but it doesn't seem necessary   
-		}
-		catch(Exception e){
-		    Logger.error("Error creating .hold file for "+ name+ ": "+ e.toString());
-		    System.exit(0);
-		}
+
+	    //step 0: create a .hold file to prevent other jobs running with the same directory from interfering by trying to run with the same molecule
+		Thread holdClearer = setHoldAndGetClearerThread(name);
+	        
 		//steps 1 and 2: create 2D and 3D mole files
 		molFile p_3dfile = create3Dmolfile(name, p_chemGraph);
 		 //3. create the Gaussian or MOPAC input file
@@ -374,6 +414,7 @@ public class QMTP implements GeneralGAPP {
 		    }
 		    //new IF block to check success
 		    if(successFlag==1){
+		        clearHold(holdClearer);
 			Logger.info("Attempt #"+attemptNumber + " on species " + name + " ("+InChIaug+") succeeded.");
 		    }
 		    else if(successFlag==0){
@@ -387,13 +428,8 @@ public class QMTP implements GeneralGAPP {
 			    else{
 				Logger.info("*****Final attempt (#" + maxAttemptNumber + ") on species " + name + " ("+InChIaug+") failed.");
 				Logger.info(p_chemGraph.toString());
-				try{
-				    ourHoldFile.delete();
-				}
-				catch(Exception e){
-					Logger.error("Error deleting .hold file for "+ name+": " + e.toString());
-					System.exit(0);
-				}
+
+				clearHold(holdClearer);
 				//Add to augmented InChI failedQm so that RMG will not try to run this molecule in QMTP again
 				failedQm.add(InChIaug);
 				throw new AllQmtpAttemptsFailedException();
@@ -422,14 +458,7 @@ public class QMTP implements GeneralGAPP {
 	    boolean mm4ResultExists = successfulMM4ResultExistsQ(name,directory,InChIaug);
 	    if(!mm4ResultExists){//if a successful result doesn't exist from previous run (or from this run), run the calculation; if a successful result exists, we will skip directly to parsing the file
 		//step 0: create a .hold file to prevent other jobs running with the same directory from interfering by trying to run with the same molecule
-		ourHoldFile = new File(directory, name+".hold");
-		try{
-		    ourHoldFile.createNewFile();//we could check the boolean result here, but it doesn't seem necessary   
-		}
-		catch(Exception e){
-		    Logger.error("Error creating .hold file for "+ name+ ": "+ e.toString());
-		    System.exit(0);
-		}
+	    Thread holdClearer = setHoldAndGetClearerThread(name);
 		//steps 1 and 2: create 2D and 3D mole files
 		molFile p_3dfile = create3Dmolfile(name, p_chemGraph);
 		 //3. create the MM4 input file
@@ -446,6 +475,7 @@ public class QMTP implements GeneralGAPP {
 		    successFlag = runMM4(name, directory, InChIaug);
 		    //new IF block to check success
 		    if(successFlag==1){
+		        clearHold(holdClearer);
 			Logger.info("Attempt #"+attemptNumber + " on species " + name + " ("+InChIaug+") succeeded.");
 			//run rotor calculations if necessary
 			int rotors = p_chemGraph.getInternalRotor();
@@ -461,13 +491,7 @@ public class QMTP implements GeneralGAPP {
 				Logger.info("*****Final attempt (#" + maxAttemptNumber + ") on species " + name + " ("+InChIaug+") failed.");
 				Logger.info(p_chemGraph.toString());
 				//delete the hold file
-				try{
-				    ourHoldFile.delete();
-				}
-				catch(Exception e){
-					Logger.error("Error deleting .hold file for "+ name+": " + e.toString());
-					System.exit(0);
-				}
+				clearHold(holdClearer);
 				throw new AllQmtpAttemptsFailedException();
 			}
 			Logger.info("*****Attempt #"+attemptNumber + " on species " + name + " ("+InChIaug+") failed. Will attempt a new keyword.");
@@ -489,16 +513,6 @@ public class QMTP implements GeneralGAPP {
 	    }
 	}
 
-	//remove the hold file if we had set one up (i.e. we ran new calculations)
-	if (ourHoldFile != null){
-	    try{
-		ourHoldFile.delete();
-	    }
-	    catch(Exception e){
-		    Logger.error("Error deleting .hold file for "+ name+": " + e.toString());
-		    System.exit(0);
-	    }
-	}
         
         return result;
     }
