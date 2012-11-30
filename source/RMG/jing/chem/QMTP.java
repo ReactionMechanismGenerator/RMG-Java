@@ -1367,6 +1367,10 @@ public class QMTP implements GeneralGAPP {
     //returns an integer indicating success or failure of the MOPAC calculation: 1 for success, 0 for failure;
     //this function is based on the Gaussian analogue
     public int runMOPAC(String name, String directory, String InChIaug){
+        if (!new File(System.getenv("MOPAC_LICENSE"), "MOPAC2009.exe").exists()){
+            Logger.error("Please set your MOPAC_LICENSE environment variable to the directory containing MOPAC2009.exe");
+            System.exit(1);
+        }
         int flag = 0;
         int successFlag=0;
         try{
