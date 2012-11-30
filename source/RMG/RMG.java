@@ -65,6 +65,7 @@ public class RMG {
             // Create the working folders for various RMG components
             // Note that some of these folders are only used when their
             // corresponding features are activated in the condition file
+            createFolder( System.getProperty("RMG.jobOutputDir"), false);
             createFolder("chemkin", true);
             createFolder("Restart", false);
             createFolder("GATPFit", true);
@@ -78,7 +79,7 @@ public class RMG {
             createFolder( System.getProperty("RMG.3DmolfilesDir"), true);
             
             createFolder("QMfiles", false);     // Preserving QM files between runs will speed things up considerably
-            createFolder("QMThermoLibrary", false); //Added by nyee will write new thermolibrary from QMTP calculation here
+            createFolder( System.getProperty("RMG.qmLibraryDir"), false);
             
             //Test QMFiles in temp directory
             String tmpdir = System.getProperty("java.io.tmpdir");
@@ -233,6 +234,16 @@ public class RMG {
         // 2D and 3D mol files for the RDKit portion of QM Thermo
         System.setProperty("RMG.2DmolfilesDir", new File(System.getProperty("RMG.jobScratchDir"), "2Dmolfiles").getPath());
         System.setProperty("RMG.3DmolfilesDir", new File(System.getProperty("RMG.jobScratchDir"), "3Dmolfiles").getPath());
+        
+        // Set the QM library directory
+        String qmLibraryDir = System.getenv("RMG_QM_LIBRARY");
+        if (qmLibraryDir == null) {
+            qmLibraryDir = new File(jobOutputDir, "QMThermoLibrary").getPath();
+            source = "default - relative to RMG_JOB_OUTPUT";
+        }
+        else source = "environment variable";
+        Logger.info(String.format("RMG_QM_LIBRARY = %s (%s)",qmLibraryDir,source));
+        System.setProperty("RMG.qmLibraryDir", qmLibraryDir);
 
     }
 

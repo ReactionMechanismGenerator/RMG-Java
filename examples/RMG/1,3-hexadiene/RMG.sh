@@ -18,5 +18,10 @@ export RMG_JOB_SCRATCH=$PWD
 # Default is the current working directory from which you run RMG.
 export RMG_JOB_OUTPUT=$PWD
 
+# Quantum Mechanics Thermodynamics library directory.
+# Default is 'QMThermoLibrary' inside the current job's output directory
+# Making it common to all your RMG jobs will allow them to pool all their QM results in the same place
+export RMG_QM_LIBRARY=$RMG_JOB_OUTPUT/QMThermoLibrary
+
 # Now run RMG on the condition.txt input file.
 java -Xmx500m -jar $RMG/bin/RMG.jar condition.txt

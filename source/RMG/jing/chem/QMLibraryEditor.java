@@ -65,7 +65,7 @@ public class QMLibraryEditor {
     //methods
     /** Initializes the two files Dictionary.txt and Library.txt  */
     public static void initialize() {
-        dictionaryFile = new File("QMThermoLibrary","Dictionary.txt");
+        dictionaryFile = new File(System.getProperty("RMG.qmLibraryDir"),"Dictionary.txt");
         if (!dictionaryFile.exists()){
             Logger.info(String.format("Creating new QM Thermo Dictionary file at %s because it does not yet exist.", dictionaryFile.getPath()));
             try {
@@ -78,7 +78,7 @@ public class QMLibraryEditor {
                 System.exit(1);
             }
         }
-        libraryFile = new File("QMThermoLibrary","Library.txt");
+        libraryFile = new File(System.getProperty("RMG.qmLibraryDir"),"Library.txt");
         if (!libraryFile.exists()){
             Logger.info(String.format("Creating new QM Thermo Library file at %s because it does not yet exist.", libraryFile.getPath()));
             try {
