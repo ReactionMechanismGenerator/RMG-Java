@@ -20,15 +20,18 @@ public class QMForCyclicsGenerator extends TDGenerator {
 			return thermoGAPP.generateThermoData(chemGraph);
 		}
 		else{
-			ThermoData thermo = thermoQM.generateThermoData(chemGraph);
+			//try{
+				ThermoData thermo = thermoQM.generateThermoData(chemGraph);
+				return thermo;
+			//	}
+			//Changed to an exception and moved to QMTP.generateQMThermoData (caught in QMTP.getQMThermoData)
+			//if (((String)thermo.getSource()).equals("***failed calculation***")){ 
+			//	Logger.warning("Falling back to group additivity due to repeated failure in QMTP calculations");
+			//   TDGenerator gen = new BensonTDGenerator();
+    		//	return gen.generateThermo(chemGraph);
 			
-			if (((String)thermo.getSource()).equals("***failed calculation***")){
-			    Logger.warning("Falling back to group additivity due to repeated failure in QMTP calculations");
-			    TDGenerator gen = new BensonTDGenerator();
-    			return gen.generateThermo(chemGraph);
-			}
 			
-			return thermo;
+
 		}
 	}
 

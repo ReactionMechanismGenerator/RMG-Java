@@ -9,7 +9,7 @@
 
 // f24 Substitution on O
 
-O-RR + YJ -> YJ + O-RR
+O-RR_or_RRrad + YJ -> YJ + O-RR_or_RRrad
 
 thermo_consistence
 
