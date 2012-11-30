@@ -112,8 +112,6 @@ public class RMG {
             // Save the resulting model to Final_Model.txt
             writeFinalModel(rmg);
             
-            //close QMLibraryEditor
-            QMLibraryEditor.finish();
        }
        catch (Exception e) {
            // Any unhandled exception will land here
