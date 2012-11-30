@@ -74,8 +74,8 @@ public class RMG {
             createFolder( System.getProperty("RMG.jobScratchDir") , false);
             createFolder( System.getProperty("RMG.InChI_running_directory") , true);
             createFolder("Pruning", true);
-            createFolder("2Dmolfiles", true);   // Not sure if we should be deleting this
-            createFolder("3Dmolfiles", true);   // Not sure if we should be deleting this
+            createFolder( System.getProperty("RMG.2DmolfilesDir"), true);
+            createFolder( System.getProperty("RMG.3DmolfilesDir"), true);
             
             createFolder("QMfiles", false);     // Preserving QM files between runs will speed things up considerably
             createFolder("QMThermoLibrary", false); //Added by nyee will write new thermolibrary from QMTP calculation here
@@ -232,6 +232,9 @@ public class RMG {
         // Set the directory to run the inchi executable in.
         System.setProperty("RMG.InChI_running_directory", new File(System.getProperty("RMG.jobScratchDir"), "InChI").getPath());
 
+        // 2D and 3D mol files for the RDKit portion of QM Thermo
+        System.setProperty("RMG.2DmolfilesDir", new File(System.getProperty("RMG.jobScratchDir"), "2Dmolfiles").getPath());
+        System.setProperty("RMG.3DmolfilesDir", new File(System.getProperty("RMG.jobScratchDir"), "3Dmolfiles").getPath());
 
     }
 

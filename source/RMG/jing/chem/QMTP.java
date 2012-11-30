@@ -549,10 +549,8 @@ public class QMTP implements GeneralGAPP {
     public molFile create3Dmolfile(String name, ChemGraph p_chemGraph){
 	//1. create a 2D file
 	//use the absolute path for directory, so we can easily reference from other directories in command-line paths
-	//can't use RMG.workingDirectory, since this basically holds the RMG environment variable, not the workingDirectory
-	String directory = "2Dmolfiles/";
-	File dir=new File(directory);
-	directory = dir.getAbsolutePath();
+	String directory = System.getProperty("RMG.2DmolfilesDir");
+	directory = new File(directory).getAbsolutePath();
 	molFile p_2dfile = new molFile(name, directory, p_chemGraph);
 	molFile p_3dfile = new molFile();//it seems this must be initialized, so we initialize to empty object
 	//2. convert from 2D to 3D using RDKit if the 2D molfile is for a molecule with 2 or more atoms
@@ -575,9 +573,8 @@ public class QMTP implements GeneralGAPP {
     public molFile embed3D(molFile twoDmolFile, int numConfAttempts){
     //convert to 3D MOL file using RDKit script
         int flag=0;
-        String directory = "3Dmolfiles/";
-        File dir=new File(directory);
-        directory = dir.getAbsolutePath();//this uses the absolute path for the directory
+        String directory = System.getProperty("RMG.3DmolfilesDir");
+        directory = new File(directory).getAbsolutePath(); // get the absolute path for the directory
         String name = twoDmolFile.getName();
         try{   
             File runningdir=new File(directory);
