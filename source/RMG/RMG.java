@@ -188,46 +188,45 @@ public class RMG {
 		
         // Set the databases directory
         String databaseDir = System.getenv("RMG_DATABASES");
-        if (databaseDir != null) {
-            System.setProperty("RMG.databasesDirectory", databaseDir);
-            Logger.info("RMG_DATABASES = "+databaseDir+" (environment variable)");
+        if (databaseDir == null) {
+            databaseDir =  workingDir + "/databases";
+            Logger.info("RMG_DATABASES = $RMG/databases (default)");
         }
         else{
-            System.setProperty("RMG.databasesDirectory", workingDir + "/databases");
-            Logger.info("RMG_DATABASES = $RMG/databases (default)");
-
+            Logger.info(String.format("RMG_DATABASES = %s (environment variable)",databaseDir));
         }
-        // Set the default database
+        System.setProperty("RMG.databasesDirectory", databaseDir);
+        // Set the default database. Will be over-ridden if a "Database:" line is found in the condition file.
         extractAndSetDatabasePath("Database: RMG_database");
 
+        String source = "";
         // Set the job scratch dir
         String jobScratchDir = System.getenv("RMG_JOB_SCRATCH");
-        if (jobScratchDir != null) {
-            System.setProperty("RMG.jobScratchDir", jobScratchDir);
-            Logger.info("RMG_JOB_SCRATCH = "+jobScratchDir+" (environment variable)");
+        if (jobScratchDir == null) {
+            jobScratchDir = ".";  // default of "scratch" may be nicer
+            source = "default";
         }
-        else{
-            System.setProperty("RMG.jobScratchDir", "."); // default of "scratch" may be nicer
-            Logger.info("RMG_JOB_SCRATCH = . (default)");
-        }
+        else source = "environment variable";
+        Logger.info(String.format("RMG_JOB_SCRATCH = %s (%s)",jobScratchDir,source));
+        System.setProperty("RMG.jobScratchDir", jobScratchDir);
+        
         // Set the job output dir
         String jobOutputDir = System.getenv("RMG_JOB_OUTPUT");
-        if (jobOutputDir != null) {
-            System.setProperty("RMG.jobOutputDir", jobOutputDir);
-            Logger.info("RMG_JOB_OUTPUT = "+jobOutputDir+" (environment variable)");
+        if (jobOutputDir == null) {
+            jobOutputDir = ".";
+            source = "default";
         }
-        else{
-            System.setProperty("RMG.jobOutputDir", ".");
-            Logger.info("RMG_JOB_OUTPUT = . (default)");
-        }
+        else source = "environment variable";
+        Logger.info(String.format("RMG_JOB_OUTPUT = %s (%s)",jobOutputDir,source));
+        System.setProperty("RMG.jobOutputDir", jobOutputDir);
         
         // Set the directory to save problematic Fame input/output in
         String fameOutputDir = new File(jobOutputDir, "fame").getPath();
-        Logger.info("Fame directory = "+fameOutputDir);
+        Logger.info("Fame errors directory = "+fameOutputDir);
         System.setProperty("RMG.fameOutputDir", fameOutputDir);
         // Set the directory to save problematic Franki input/output in
         String frankieOutputDir = new File(jobOutputDir, "frankie").getPath();
-        Logger.info("Frankie directory = "+frankieOutputDir);
+        Logger.info("Frankie errors directory = "+frankieOutputDir);
         System.setProperty("RMG.frankieOutputDir", frankieOutputDir);
         
         // Set the directory to run the inchi executable in.
