@@ -286,7 +286,7 @@ public class FrequencyGroups{
           String err = "Error running Frankie" + ls;
           err += e.toString();
           String Frankie_input_name = "INPUT.txt";
-          err += ls + "To help diagnosis, writing GATPFit input to file "+Frankie_input_name+ls;
+          err += ls + "To help diagnosis, writing Frankie input to file "+Frankie_input_name+ls;
           try {
         	  FileWriter fw = new FileWriter(new File(System.getProperty("RMG.frankieOutputDir"),Frankie_input_name));
         	  fw.write(inputString);
