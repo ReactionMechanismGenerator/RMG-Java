@@ -387,10 +387,6 @@ public class QMTP implements GeneralGAPP {
 			    else{
 				Logger.info("*****Final attempt (#" + maxAttemptNumber + ") on species " + name + " ("+InChIaug+") failed.");
 				Logger.info(p_chemGraph.toString());
-			        //System.exit(0);
-				//ThermoData temp = new ThermoData(1000,0,0,0,0,0,0,0,0,0,0,0,"failed calculation");
-				//temp.setSource("***failed calculation***");
-				//delete the hold file
 				try{
 				    ourHoldFile.delete();
 				}
@@ -408,8 +404,6 @@ public class QMTP implements GeneralGAPP {
 			attemptNumber++;//try again with new keyword
 		    }
 		}
-
-
 	    }
 	    //5. parse QM output and record as thermo data (function includes symmetry/point group calcs, etc.); if both Gaussian and MOPAC results exist, Gaussian result is used
 	    if (gaussianResultExists || (qmProgram.equals("gaussian03") && !mopacResultExists)){
@@ -466,10 +460,6 @@ public class QMTP implements GeneralGAPP {
 			if(attemptNumber==maxAttemptNumber){//if this is the last possible attempt, and the calculation fails, exit with an error message
 				Logger.info("*****Final attempt (#" + maxAttemptNumber + ") on species " + name + " ("+InChIaug+") failed.");
 				Logger.info(p_chemGraph.toString());
-			        //System.exit(0);
-				//ThermoData temp = new ThermoData(1000,0,0,0,0,0,0,0,0,0,0,0,"failed calculation");
-				//temp.setSource("***failed calculation***");
-				//Changed to return null instead of dummy result
 				//delete the hold file
 				try{
 				    ourHoldFile.delete();
@@ -479,10 +469,6 @@ public class QMTP implements GeneralGAPP {
 					System.exit(0);
 				}
 				throw new AllQmtpAttemptsFailedException();
-				
-
-				//return temp;
-				//an upstream loop should catch this so the dummy result should not be used
 			}
 			Logger.info("*****Attempt #"+attemptNumber + " on species " + name + " ("+InChIaug+") failed. Will attempt a new keyword.");
 			attemptNumber++;//try again with new keyword
@@ -522,10 +508,8 @@ public class QMTP implements GeneralGAPP {
     }
     
 
-    public void initializePrimaryThermoLibrary(){//svp
-
+    public void initializePrimaryThermoLibrary(){
         primaryLibrary = PrimaryThermoLibrary.getINSTANCE();
-
       }
     
     //Checks to see if QmLibrary already exists. If not, creates the necessary directorys and files
