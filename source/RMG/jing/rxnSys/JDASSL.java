@@ -377,6 +377,23 @@ public class JDASSL extends JDAS {
                 Logger.critical("Renaming of IWORK file(s) failed. (renameIntermediateFiles())");
                 System.exit(0);
             }
+            
+            /*
+             * Rename the SpeciesProfiles.txt result file too
+             */
+            new File(System.getProperty("RMG.ODESolverDir"),"SpeciesProfiles.txt");
+            f = new File(System.getProperty("RMG.ODESolverDir"),"SpeciesProfiles.txt");
+            newFile = new File(System.getProperty("RMG.ODESolverDir"),"SpeciesProfiles_"+index+".txt");
+            if(newFile.exists())
+                newFile.delete();
+            renameSuccess = f.renameTo(newFile);
+            if (!renameSuccess)
+            {
+                Logger.critical("Renaming of IWORK file(s) failed. (renameIntermediateFiles())");
+                System.exit(0);
+            }
+            
+            
 	}
         
 	public int readOutputFile(String path) {
