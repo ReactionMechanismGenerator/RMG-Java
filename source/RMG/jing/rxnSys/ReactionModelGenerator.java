@@ -2495,7 +2495,7 @@ public class ReactionModelGenerator {
 	
 	private void writeEnlargerInfo() {
 		try {
-	        File diagnosis = new File("enlarger.xls");
+	        File diagnosis = new File(System.getProperty("RMG.jobOutputDir"),"enlarger.xls");
 	        FileWriter fw = new FileWriter(diagnosis);
 	        fw.write(Global.enlargerInfo.toString());
 	        fw.close();
@@ -2509,7 +2509,7 @@ public class ReactionModelGenerator {
 	private void writeDiagnosticInfo() {
 		
 		try {
-	        File diagnosis = new File("diagnosis.xls");
+	        File diagnosis = new File(System.getProperty("RMG.jobOutputDir"),"diagnosis.xls");
 	        FileWriter fw = new FileWriter(diagnosis);
 	        fw.write(Global.diagnosticInfo.toString());
 	        fw.close();
