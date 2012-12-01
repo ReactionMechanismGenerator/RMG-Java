@@ -66,7 +66,7 @@ public class RMG {
             // Note that some of these folders are only used when their
             // corresponding features are activated in the condition file
             createFolder( System.getProperty("RMG.jobOutputDir"), false);
-            createFolder("chemkin", true);
+            createFolder( System.getProperty("RMG.ChemkinOutputDir"), true);
             createFolder("Restart", false);
             createFolder("GATPFit", true);
             createFolder( System.getProperty("RMG.ODESolverDir"), true);
@@ -231,6 +231,9 @@ public class RMG {
         
         // Set the directory to run the ODE solver in.
         System.setProperty("RMG.ODESolverDir", new File(System.getProperty("RMG.jobScratchDir"), "ODESolver").getPath());
+        
+        // Set the directory to save the chemkin files in.
+        System.setProperty("RMG.ChemkinOutputDir", new File(System.getProperty("RMG.jobOutputDir"), "chemkin").getPath());
 
         // 2D and 3D mol files for the RDKit portion of QM Thermo
         System.setProperty("RMG.2DmolfilesDir", new File(System.getProperty("RMG.jobScratchDir"), "2Dmolfiles").getPath());
