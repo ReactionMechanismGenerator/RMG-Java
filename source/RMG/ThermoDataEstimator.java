@@ -213,7 +213,7 @@ public class ThermoDataEstimator {
 	 * Create the working folders for QMTP required folders
 	 */
 	private static void createFolders() {
-		createFolder("GATPFit", true);
+		createFolder(System.getProperty("RMG.GATPFitDir"), true);
 		createFolder(System.getProperty("RMG.InChI_running_directory"), true);
 		createFolder(System.getProperty("RMG.2DmolfilesDir"), true);
 		createFolder(System.getProperty("RMG.3DmolfilesDir"), true);

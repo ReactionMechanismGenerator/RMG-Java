@@ -69,7 +69,7 @@ public class RMG {
             createFolder( System.getProperty("RMG.jobOutputDir"), false);
             createFolder( System.getProperty("RMG.ChemkinOutputDir"), true);
             createFolder( System.getProperty("RMG.RestartDir"), false);
-            createFolder("GATPFit", true);
+            createFolder( System.getProperty("RMG.GATPFitDir"), true);
             createFolder( System.getProperty("RMG.ODESolverDir"), true);
             createFolder( System.getProperty("RMG.fameOutputDir"), true);
             createFolder( System.getProperty("RMG.frankieOutputDir"), true);
@@ -226,6 +226,10 @@ public class RMG {
         String frankieOutputDir = new File(jobOutputDir, "frankie").getPath();
         Logger.info("Frankie errors directory = "+frankieOutputDir);
         System.setProperty("RMG.frankieOutputDir", frankieOutputDir);
+        // Set the directory to save problematic GATPFit input/output in
+        String GATPFitDir = new File(jobOutputDir, "GATPFit").getPath();
+        Logger.info("GATPFit errors directory = "+GATPFitDir);
+        System.setProperty("RMG.GATPFitDir", GATPFitDir);
         
         // Set the directory to run the inchi executable in.
         System.setProperty("RMG.InChI_running_directory", new File(System.getProperty("RMG.jobScratchDir"), "InChI").getPath());
