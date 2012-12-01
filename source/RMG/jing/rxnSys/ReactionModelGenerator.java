@@ -926,8 +926,8 @@ public class ReactionModelGenerator {
 			    //print header for pruning log (based on restart format)
 			    BufferedWriter bw = null;
 			    try {
-				File f = new File("Pruning/edgeReactions.txt");
-				bw = new BufferedWriter(new FileWriter("Pruning/edgeReactions.txt", true));
+				File f = new File(System.getProperty("RMG.PruningDir"),"edgeReactions.txt");
+				bw = new BufferedWriter(new FileWriter(f, true));
 			        String EaUnits = ArrheniusKinetics.getEaUnits();
 				bw.write("UnitsOfEa: " + EaUnits);
 				bw.newLine();
@@ -2693,7 +2693,7 @@ public class ReactionModelGenerator {
 		BufferedWriter bw = null;
 
 		try {
-		    bw = new BufferedWriter(new FileWriter("Pruning/edgeSpecies.txt", true));
+		    bw = new BufferedWriter(new FileWriter(new File(System.getProperty("RMG.PruningDir"),"edgeSpecies.txt"), true));
 		    bw.write(species.getChemkinName());
 		    bw.newLine();
 		    int dummyInt = 0;
@@ -2884,7 +2884,7 @@ public class ReactionModelGenerator {
 		BufferedWriter bw = null;
 
 		try {
-		    bw = new BufferedWriter(new FileWriter("Pruning/edgeReactions.txt", true));
+		    bw = new BufferedWriter(new FileWriter(new File(System.getProperty("RMG.PruningDir"),"edgeReactions.txt"), true));
 
 		    if (reaction.isForward()) {
 			    bw.write(reaction.toChemkinString(new Temperature(298,"K")));

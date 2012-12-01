@@ -75,7 +75,7 @@ public class RMG {
             createFolder( System.getProperty("RMG.frankieOutputDir"), true);
             createFolder( System.getProperty("RMG.jobScratchDir") , false);
             createFolder( System.getProperty("RMG.InChI_running_directory") , true);
-            createFolder("Pruning", true);
+            createFolder( System.getProperty("RMG.PruningDir"), true);
             createFolder( System.getProperty("RMG.2DmolfilesDir"), true);
             createFolder( System.getProperty("RMG.3DmolfilesDir"), true);
             
@@ -235,7 +235,8 @@ public class RMG {
         
         // Set the directory to save the chemkin files in.
         System.setProperty("RMG.ChemkinOutputDir", new File(System.getProperty("RMG.jobOutputDir"), "chemkin").getPath());
-        
+        // Set the directory to save the Pruning files in.
+        System.setProperty("RMG.PruningDir", new File(System.getProperty("RMG.jobOutputDir"), "Pruning").getPath());
         // Set the directory to save the Restart files in.
         System.setProperty("RMG.RestartDir", new File(System.getProperty("RMG.jobOutputDir"), "Restart").getPath());
 
