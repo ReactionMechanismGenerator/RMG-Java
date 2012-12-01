@@ -69,7 +69,7 @@ public class RMG {
             createFolder("chemkin", true);
             createFolder("Restart", false);
             createFolder("GATPFit", true);
-            createFolder("ODESolver", true);
+            createFolder( System.getProperty("RMG.ODESolverDir"), true);
             createFolder( System.getProperty("RMG.fameOutputDir"), true);
             createFolder( System.getProperty("RMG.frankieOutputDir"), true);
             createFolder( System.getProperty("RMG.jobScratchDir") , false);
@@ -228,6 +228,9 @@ public class RMG {
         
         // Set the directory to run the inchi executable in.
         System.setProperty("RMG.InChI_running_directory", new File(System.getProperty("RMG.jobScratchDir"), "InChI").getPath());
+        
+        // Set the directory to run the ODE solver in.
+        System.setProperty("RMG.ODESolverDir", new File(System.getProperty("RMG.jobScratchDir"), "ODESolver").getPath());
 
         // 2D and 3D mol files for the RDKit portion of QM Thermo
         System.setProperty("RMG.2DmolfilesDir", new File(System.getProperty("RMG.jobScratchDir"), "2Dmolfiles").getPath());
