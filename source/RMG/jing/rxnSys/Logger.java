@@ -69,17 +69,26 @@ public class Logger {
 
     /**
      * Initialize the logger. The log file will be opened; if this is not
+     * successful, the program will abort. If called with no log file path,
+     * then "RMG.log" is assumed.
+     */
+	public static void initialize() {
+	    initialize("RMG.log");
+	}
+    /**
+     * Initialize the logger. The specified log file will be opened; if this is not
      * successful, the program will abort.
      */
-    public static void initialize() {
+    public static void initialize(String logFilePath) {
         try {
             // Open the log file (throws IOException if unsuccessful)
-            logFile = new BufferedWriter(new FileWriter("RMG.log"));
+            
+            logFile = new BufferedWriter(new FileWriter(logFilePath));
         }
         catch (IOException e) {
             // Log information is important, so we better stop if we're not
             // saving any!
-            System.out.println("Unable to open file \"RMG.log\" for logging.");
+            System.out.println(String.format("Unable to open file \"%s\" for logging.",logFilePath));
             System.exit(0);
         }
 

@@ -48,7 +48,8 @@ public class RMG {
     public static void main(String[] args) {
 		
 		// Initialize the logger
-        Logger.initialize();
+        String logFileName = new File(System.getenv("RMG_JOB_OUTPUT"),"RMG.log").getPath();
+        Logger.initialize(logFileName);
 
         // Log the RMG header
         Logger.logHeader();
