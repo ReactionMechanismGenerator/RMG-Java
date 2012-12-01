@@ -1814,8 +1814,12 @@ public class ReactionModelGenerator {
         writeDictionary(getReactionModel());
     }
     
+    /*
+     * Write a condition file suitable for restarting the job. Basically, the same
+     * condition file that you started with, but with all the core species added.
+     */
     private void writeRestartConditionFile() {
-    	StringBuilder restartConditionFile = new StringBuilder();
+    	StringBuilder restartConditionFile = new StringBuilder("// This is based on the original input condition file, but with core species added.");
     	
 		// Read in the condition file 
 		
@@ -1830,9 +1834,7 @@ public class ReactionModelGenerator {
 			// you reach the species definition 
 			
 			while (!line.equals("InitialStatus:")) {
-				
-				restartConditionFile.append(line+"\n");				
-			
+				restartConditionFile.append(line+"\n");
 				line = ChemParser.readMeaningfulAndEmptyLine(condition_file_br, true);
 			}
 			
@@ -1841,12 +1843,10 @@ public class ReactionModelGenerator {
 			// Read in the next line
 			line = ChemParser.readMeaningfulLine(condition_file_br, true);
 
-			
 			// Read in the species in the initial condition file  
 			// and figure out the number of concentrations specified and units
-			
 			String unit="";
-			int numSpeciesConditionfile = 0;
+			int numSpeciesInitialConditionFile = 0;
 			int numConcentrations = 0;
 			
 			// This blocks reads in the initial species in condition file
@@ -1857,11 +1857,9 @@ public class ReactionModelGenerator {
 				String name = null;
 				if (!index.startsWith("(")) name = index;
 				else name = st.nextToken();
-				 
 				
 				// The next token will be the concentration units
 				unit = st.nextToken();
-				
 				
 				// The remaining tokens are the either token unreactive, constant concentrations
 				// or concentrations for the species
@@ -1871,10 +1869,9 @@ public class ReactionModelGenerator {
 				
 				while (st.hasMoreTokens()) {
 					String reactive = st.nextToken().trim();
-					
 					// Dont count the unreactive and constantconcentration tokens
 					if(!reactive.equalsIgnoreCase("unreactive")||!reactive.equalsIgnoreCase("constantconcentration"))
-						++numConcentrations;				
+						++numConcentrations;
 
 				}
 				
@@ -1889,76 +1886,67 @@ public class ReactionModelGenerator {
 						restartConditionFile.append(cg.toStringWithoutH(0)+"\n");
 					}
 					catch(ForbiddenStructureException e){
-						
+						Logger.error("Forbidden Structure in restart condition file! Will not be written.");
 					}
 				} 
 				catch (IOException e1) {
-	                System.out.println("Something wrong with graph");
+	                Logger.error("Something wrong with writing the graph to the restartConditionFile");
 	                System.exit(0);
 				}
-						
-			
+
 				// increment species counter
-				++ numSpeciesConditionfile;
+				++ numSpeciesInitialConditionFile;
 				
 				line = ChemParser.readMeaningfulLine(condition_file_br, true);
 			}
 			
-			
 			// Creates an array initialized with default value of double 0.0, with size of numConcentrations
 			double[] ConcArray = new double[numConcentrations];
 			String ConcString = ArraytoString(ConcArray);
-
 			
-			// Read in dictionary and append the units and 0.0 for number of concentrations
+			// Then print the core and append the units and 0.0 for number of concentrations
 			// *** Strictly assuming that species in condition file are the initial species
 			// in the RMG_Dictionary ***
 			
-			int speciestoSkip=1;
+			int speciesCounter = 1;
 			
 			Iterator iter=getReactionModel().getSpecies();
 			
 			while(iter.hasNext()){
 				Species spe = (Species) iter.next();
-                if(speciestoSkip>numSpeciesConditionfile){
+                if(speciesCounter > numSpeciesInitialConditionFile){
                 	// Append the name + units + concentrations as 0.0
                 	restartConditionFile.append(spe.getChemkinName()+" "+unit+" "+ConcString+"\n");
                 	// Append the Chemgraph
                 	restartConditionFile.append(spe.getChemGraph().toString(0)+"\n");
                 }
-                ++speciestoSkip;
-                	              
+                ++speciesCounter;
 			}
 			
 			// Read lines till end of condition file 
 			while (line !=null) {
-				restartConditionFile.append(line+"\n");				
-				
+				restartConditionFile.append(line+"\n");
 				line = ChemParser.readMeaningfulAndEmptyLine(condition_file_br, true);
 			}
 			
             // Write the restartConditionFile.txt output file
             try {
-            	
-            	String filename = "Restart/restartConditionFile.txt";           	
-            	
-				File rxns = new File(filename);
+				File rxns = new File(System.getProperty("RMG.jobOutputDir"), "RestartConditionFile.txt");
 				FileWriter fw_rxns = new FileWriter(rxns);
                 fw_rxns.write(restartConditionFile.toString());
                 fw_rxns.close();
             }
             
             catch (IOException e) {
-                System.out.println("Could not write restartCondition.txt file");
+                System.out.println("Could not write RestartConditionFile.txt file");
                 System.exit(0);
             }
-			
 		}
 		
 		catch (FileNotFoundException e) {
-			System.err.println("Condition file not found");
+			Logger.error("Condition file not found");
 			}
-					
+
 	}
 
 	private String ArraytoString(double[] concArray) {	
