@@ -306,8 +306,9 @@ public class FastMasterEqn implements PDepKineticsEstimator {
 		int id = pdn.getID();
 		
 		// DEBUG only: Write input file
+		if (false) { // Only do this if trying to debug
 		try {
-			String path = "fame/";
+			String path = System.getProperty("RMG.fameOutputDir") + "/";
 			if (id < 10)        path += "000";
 			else if (id < 100)  path += "00";
 			else if (id < 1000) path += "0";
@@ -322,11 +323,12 @@ public class FastMasterEqn implements PDepKineticsEstimator {
 			Logger.warning("Unable to write FAME input file.");
 			System.exit(0);
 		}
-
+		}
+		
 		// FAME system call
 		try {
            	String[] command = {dir + "/bin/fame.exe"};
-           	File runningDir = new File("fame/");
+           	File runningDir = new File(System.getProperty("RMG.fameOutputDir"));
 			Process fame = Runtime.getRuntime().exec(command, null, runningDir);
 			if (fame == null) throw new PDepException("Couldn't start FAME process.");
 			
@@ -415,14 +417,15 @@ public class FastMasterEqn implements PDepKineticsEstimator {
 			}
 			// Save bad input to file
             try {
-                FileWriter fw = new FileWriter(new File("fame/" + Integer.toString(pdn.getID()) + "_input.txt"));
+                String fameOutputDir = System.getProperty("RMG.fameOutputDir");
+                FileWriter fw = new FileWriter(new File(fameOutputDir + "/" + Integer.toString(pdn.getID()) + "_input.txt"));
                 fw.write(input);
                 fw.close();
-				Logger.info("Troublesome FAME input saved to ./fame/" + Integer.toString(pdn.getID()) + "_input.txt");
-                FileWriter fwo = new FileWriter(new File("fame/" + Integer.toString(pdn.getID()) + "_output.txt"));
+				Logger.info("Troublesome FAME input saved to fame/" + Integer.toString(pdn.getID()) + "_input.txt");
+                FileWriter fwo = new FileWriter(new File(fameOutputDir + "/" + Integer.toString(pdn.getID()) + "_output.txt"));
                 fwo.write(output.toString());
                 fwo.close();
-				Logger.info("Troublesome FAME result saved to ./fame/" + Integer.toString(pdn.getID()) + "_output.txt");
+				Logger.info("Troublesome FAME result saved to fame/" + Integer.toString(pdn.getID()) + "_output.txt");
             } catch (IOException ex) {
                 Logger.info("Unable to save FAME input that caused the error.");
                 System.exit(0);

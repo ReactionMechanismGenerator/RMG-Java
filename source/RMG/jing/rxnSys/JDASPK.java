@@ -257,7 +257,7 @@ public class JDASPK extends JDAS {
                 String workingDirectory = System.getProperty("RMG.workingDirectory");
 		
 		// write the input file
-//		File SolverInput = new File("ODESolver/SolverInput.dat");
+//		File SolverInput = new File(System.getProperty("RMG.ODESolverDir"),"SolverInput.dat");
 //		try {
 //			FileWriter fw = new FileWriter(SolverInput);
 //			fw.write(outputString.toString());
@@ -276,7 +276,7 @@ public class JDASPK extends JDAS {
                 try {
 
                         String[] command = {workingDirectory +  "/bin/daspkAUTO.exe"};//5/5/08 gmagoon: changed to call daspkAUTO.exe
-                                File runningDir = new File("ODESolver");
+                                File runningDir = new File(System.getProperty("RMG.ODESolverDir"));
 
                                 Process solver = Runtime.getRuntime().exec(command, null, runningDir);
                                 InputStream is = solver.getInputStream();
@@ -308,12 +308,12 @@ public class JDASPK extends JDAS {
 
                 //11/1/07 gmagoon: renaming RWORK and IWORK files
                 renameIntermediateFilesAfterRun();
-		return readOutputFile("ODESolver/SolverOutput.dat");
+		return readOutputFile(new File(System.getProperty("RMG.ODESolverDir"),"SolverOutput.dat").getPath());
 	}
         
         private void renameIntermediateFilesBeforeRun(){
-                File f = new File("ODESolver/RWORK_"+index+".DAT");
-		File newFile = new File("ODESolver/RWORK.DAT");
+                File f = new File(System.getProperty("RMG.ODESolverDir"),"RWORK_"+index+".DAT");
+		File newFile = new File(System.getProperty("RMG.ODESolverDir"),"RWORK.DAT");
                 boolean renameSuccess = false;
                 if(f.exists()){
 			if(newFile.exists())
@@ -326,8 +326,8 @@ public class JDASPK extends JDAS {
                         }
                 }
                 
-                f = new File("ODESolver/IWORK_"+index+".DAT");
-                newFile = new File("ODESolver/IWORK.DAT");
+                f = new File(System.getProperty("RMG.ODESolverDir"),"IWORK_"+index+".DAT");
+                newFile = new File(System.getProperty("RMG.ODESolverDir"),"IWORK.DAT");
                 if(f.exists()){
                     if(newFile.exists())
                             newFile.delete();
@@ -339,8 +339,8 @@ public class JDASPK extends JDAS {
                     }
                 }
 		
-                f = new File("ODESolver/variables_"+index+".dat");
-                newFile = new File("ODESolver/variables.dat");
+                f = new File(System.getProperty("RMG.ODESolverDir"),"variables_"+index+".dat");
+                newFile = new File(System.getProperty("RMG.ODESolverDir"),"variables.dat");
                 if(f.exists()){
                     if(newFile.exists())
                             newFile.delete();
@@ -354,8 +354,8 @@ public class JDASPK extends JDAS {
         }
         
 	private void renameIntermediateFilesAfterRun() {
-            File f = new File("ODESolver/RWORK.DAT");
-            File newFile = new File("ODESolver/RWORK_"+index+".DAT");
+            File f = new File(System.getProperty("RMG.ODESolverDir"),"RWORK.DAT");
+            File newFile = new File(System.getProperty("RMG.ODESolverDir"),"RWORK_"+index+".DAT");
             if(newFile.exists())
                 newFile.delete();
             boolean renameSuccess = f.renameTo(newFile);
@@ -365,8 +365,8 @@ public class JDASPK extends JDAS {
                 System.exit(0);
             }
             
-            f = new File("ODESolver/IWORK.DAT");
-            newFile = new File("ODESolver/IWORK_"+index+".DAT");
+            f = new File(System.getProperty("RMG.ODESolverDir"),"IWORK.DAT");
+            newFile = new File(System.getProperty("RMG.ODESolverDir"),"IWORK_"+index+".DAT");
             if(newFile.exists())
                 newFile.delete();
             renameSuccess = f.renameTo(newFile);
@@ -376,8 +376,8 @@ public class JDASPK extends JDAS {
                 System.exit(0);
             }
             
-            f = new File("ODESolver/variables.dat");
-            newFile = new File("ODESolver/variables_"+index+".dat");
+            f = new File(System.getProperty("RMG.ODESolverDir"),"variables.dat");
+            newFile = new File(System.getProperty("RMG.ODESolverDir"),"variables_"+index+".dat");
             if(newFile.exists())
                 newFile.delete();
             renameSuccess = f.renameTo(newFile);
@@ -597,7 +597,7 @@ public class JDASPK extends JDAS {
 		ReactionTime beginT = new ReactionTime(0.0, "sec");
 		ReactionTime endT;
 		//write the input file
-	//	File SolverInput = new File("ODESolver/SolverInput.dat");
+	//	File SolverInput = new File(System.getProperty("RMG.ODESolverDir"),"SolverInput.dat");
 	//	try {
 	//		FileWriter fw = new FileWriter(SolverInput);
 	//		fw.write(outputString.toString());
@@ -612,7 +612,7 @@ public class JDASPK extends JDAS {
         try {
         	 // system call for therfit
         	String[] command = {workingDirectory +  "/bin/daspkAUTO.exe"};
-			File runningDir = new File("ODESolver");
+			File runningDir = new File(System.getProperty("RMG.ODESolverDir"));
 			
 			Process ODESolver = Runtime.getRuntime().exec(command, null, runningDir);
 			InputStream is = ODESolver.getInputStream();
@@ -644,7 +644,7 @@ public class JDASPK extends JDAS {
         
         startTime = System.currentTimeMillis();
         //read the result
-        File SolverOutput = new File("ODESolver/SolverOutput.dat");
+        File SolverOutput = new File(System.getProperty("RMG.ODESolverDir"),"SolverOutput.dat");
         try {
         	FileReader fr = new FileReader(SolverOutput);
         	BufferedReader br = new BufferedReader(fr);

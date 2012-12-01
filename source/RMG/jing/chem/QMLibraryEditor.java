@@ -29,6 +29,7 @@ package jing.chem;
 
 import java.util.*;
 import java.io.BufferedWriter;
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.FileReader;
@@ -51,61 +52,49 @@ public class QMLibraryEditor {
 
     //data fields
     /** The object representing the dictionary. */
-    private static BufferedWriter dictionaryFile = null;
+    private static File dictionaryFile = null;
 
     /** The object representing the library     */
-    private static BufferedWriter libraryFile = null;
+    private static File libraryFile = null;
 
     /** The newline character to use. */
     private static String newLine = System.getProperty("line.separator");
-
-    /** Number of species added to Library used for naming */
-    //may have to get rid of this if I find naming is important
-    private static int counter = 0;
 
     //Constructor
 
     //methods
     /** Initializes the two files Dictionary.txt and Library.txt  */
     public static void initialize() {
-        try {
-            // Open the log file (throws IOException if unsuccessful)
-            dictionaryFile = new BufferedWriter(new FileWriter("QMThermoLibrary/Dictionary.txt", true));
-            Logger.info("Creating Dictionary for QM Thermo Library");
+        dictionaryFile = new File(System.getProperty("RMG.qmLibraryDir"),"Dictionary.txt");
+        if (!dictionaryFile.exists()){
+            Logger.info(String.format("Creating new QM Thermo Dictionary file at %s because it does not yet exist.", dictionaryFile.getPath()));
+            try {
+                dictionaryFile.createNewFile();
+            }
+            catch (IOException e) {
+                // This is pretty essential to new QMTP regime. Stop if it fails
+                Logger.critical("Could not create QM Thermo Dictionary");
+                Logger.logStackTrace(e);
+                System.exit(1);
+            }
         }
-        catch (IOException e) {
-            // This is pretty essential to new QMTP regime. Stop if it fails
-            Logger.critical("Could not create QM Thermo Dictionary");
-            System.exit(0);
+        libraryFile = new File(System.getProperty("RMG.qmLibraryDir"),"Library.txt");
+        if (!libraryFile.exists()){
+            Logger.info(String.format("Creating new QM Thermo Library file at %s because it does not yet exist.", libraryFile.getPath()));
+            try {
+                libraryFile.createNewFile();
+            }
+            catch (IOException e) {
+                // This is pretty essential to new QMTP regime. Stop if it fails
+                Logger.critical("Could not create QM Thermo Library file");
+                Logger.logStackTrace(e);
+                System.exit(1);
+            }
         }
-
-        try {
-            // Open the log file (throws IOException if unsuccessful)
-            // Boolean Argument in FileWriter means that it will append to existing files.
-            libraryFile = new BufferedWriter(new FileWriter("QMThermoLibrary/Library.txt", true));
-            Logger.info("Creating Library for QM Thermo Library");
-        }
-        catch (IOException e) {
-            // This is pretty essential to new QMTP regime. Stop if it fails
-            Logger.critical("Could not create QM Thermo Library");
-            System.exit(0);
-        }
-
+        if (!dictionaryFile.canWrite()) throw new RuntimeException("Can't write to QM Thermo Dictionary file at "+dictionaryFile.getAbsolutePath());
+        if (!libraryFile.canWrite()) throw new RuntimeException("Can't write to QM Thermo Dictionary file at "+libraryFile.getAbsolutePath());
     }
 
-    /**
-     * Close the Dictionary and Library when finished. 
-     */
-    public static void finish() {
-        try {
-            // Close the log file (throws IOException if unsuccessful) 
-            if (dictionaryFile != null) dictionaryFile.close();
-            if (libraryFile != null) libraryFile.close();
-        }
-        catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-    }
 
     /**
      * Adds species to Dictionary.txt and Library.txt
@@ -113,18 +102,10 @@ public class QMLibraryEditor {
     //Will probably require p_graph also
     //Using InChI as name as per suggestion by gmagoon
     public static void addQMTPThermo(ChemGraph p_graph, String inChI, ThermoData qmResult, String qmMethod, String qmProgram){
-        //Count the number of species added for naming
-        counter ++;
         //Create comment for logger. I need to double check if naming convention will interfere with model
         String comment = "Adding " + inChI + " to the QMTP thermo Library";
-        //    	String name = "SQM(";
-        //    	name.concat(Integer.toString(counter));
-        //    	name.concat(")");
-
         Logger.info(comment);
-        //finish implementation of this method
         addLibraryEntry(inChI, qmResult, qmMethod, qmProgram);
-        //finish implementation of this method
         addDictionaryEntry(inChI, p_graph);
     }
     /**
@@ -153,13 +134,28 @@ public class QMLibraryEditor {
         line = (line + qmProgram + " " + qmMethod + " Calculation");
 
         //write to Library.txt
-        try {
-            libraryFile.write(line + newLine);
-            libraryFile.flush();
+        //write to Dictionary.txt. Try up to five times before giving up
+        int remainingTries = 5;
+        boolean succeeded = false;
+        while (remainingTries>0 && !succeeded){
+            try {
+                BufferedWriter libraryFileWriter = new BufferedWriter(new FileWriter(libraryFile, true));
+                libraryFileWriter.write(line + newLine);
+                libraryFileWriter.close();
+                succeeded = true;
+            }
+            catch (IOException e) {
+                remainingTries -= 1;
+                try {
+                    Logger.warning(String.format("Couldn't write to %s. Waiting 1s then trying again.",libraryFile.getPath()));
+                    Thread.sleep(1000); // wait 1s in case another copy of RMG has the file open
+                } catch (InterruptedException e1) {
+                    Thread.currentThread().interrupt();
+                } 
+            }
         }
-        catch (IOException e) {
-            // What should we do here?
-            throw new RuntimeException(e);
+        if (!succeeded){
+            Logger.error(String.format("Could not save species %s to QMLibrary library file %s", inChI, libraryFile.getAbsolutePath()));
         }
 
     }
@@ -176,21 +172,33 @@ public class QMLibraryEditor {
         //without prefacing it with the chemical formula
         definition= (definition + p_graph.toString(i) + newLine + newLine);
 
-        //write to Dictionary.txt
-        try {
-            dictionaryFile.write(definition);
-            dictionaryFile.flush();
+        //write to Dictionary.txt. Try up to five times before giving up
+        int remainingTries = 5;
+        boolean succeeded = false;
+        while (remainingTries>0 && !succeeded){
+            try {
+                BufferedWriter dictionaryFileWriter = new BufferedWriter(new FileWriter(dictionaryFile, true));
+                dictionaryFileWriter.write(definition);
+                dictionaryFileWriter.close();
+                succeeded = true;
+            }
+            catch (IOException e) {
+                remainingTries -= 1;
+                try {
+                    Logger.warning(String.format("Couldn't write to %s. Waiting 1s then trying again.",dictionaryFile.getPath()));
+                    Thread.sleep(1000); // wait 1s in case another copy of RMG has the file open
+                } catch (InterruptedException e1) {
+                    Thread.currentThread().interrupt();
+                } 
+            }
         }
-        catch (IOException e) {
-            // What should we do here?
-            throw new RuntimeException(e);
+        if (!succeeded){
+            Logger.error(String.format("Could not save species %s to QMLibrary dictionary file %s", inChI, dictionaryFile.getAbsolutePath()));
         }
     }
 
     /**
-     * Adds an entry to the Dictionary.txt of the QMTP thermo library using
-     * @throws IOException 
-
+     * 
      */
     public static HashMap readLibrary(String p_qmThermoFileName) throws IOException {
         try {

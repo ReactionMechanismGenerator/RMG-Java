@@ -22,7 +22,7 @@ public class TransportDataEstimator {
 		 * 	is calculated by calling GATPFit.  The .exe expects a working directory
 		 * 	named GATPFit to be present in the current directory.
 		 */
-		File gatpfit = new File("GATPFit");
+		File gatpfit = new File(System.getProperty("RMG.GATPFitDir"));
 		gatpfit.mkdir();
 		
 		String transportProperties = "";

@@ -40,7 +40,7 @@ PressureModel: Constant (atm) 1
 ThermoMethod: QMforCyclics Gaussian03
 MaxRadNumForQM: 0
 CheckConnectivity: check
-Verbose: off
+KeepQMFiles: no
 
 InitialStatus:
 

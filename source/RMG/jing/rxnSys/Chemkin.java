@@ -80,10 +80,12 @@ public class Chemkin implements DAESolver {
       String dir = System.getProperty("RMG.workingDirectory");
       
       //create the documentTypesDefinitions
-      File docFile = new File("chemkin/documentTypeDefinitions");
+      File docFile = new File(System.getProperty("RMG.ChemkinOutputDir"),"documentTypeDefinitions");
       docFile.mkdir();
-      copyFiles(dir+"/software/reactorModel/documentTypeDefinitions/reactorInput.dtd", "chemkin/documentTypeDefinitions/reactorInput.dtd");
-      copyFiles(dir+"/software/reactorModel/documentTypeDefinitions/reactorOutput.dtd", "chemkin/documentTypeDefinitions/reactorOutput.dtd");
+      copyFiles(new File(dir,"software/reactorModel/documentTypeDefinitions/reactorInput.dtd"),
+                new File(System.getProperty("RMG.ChemkinOutputDir"),"documentTypeDefinitions/reactorInput.dtd"));
+      copyFiles(new File(dir,"software/reactorModel/documentTypeDefinitions/reactorOutput.dtd"),
+                new File(System.getProperty("RMG.ChemkinOutputDir"),"documentTypeDefinitions/reactorOutput.dtd"));
       
       rtol = p_rtol;
       atol = p_atol;
@@ -91,10 +93,8 @@ public class Chemkin implements DAESolver {
       
   }
 
-  private static void copyFiles(String string, String string2)  {
-	  // Copy file named 'string' to file named 'string2' using a buffered stream.
-	  File src = new File(string);
-	  File dest = new File(string2);
+  private static void copyFiles(File src, File dest)  {
+	  // Copy file at 'src' to file at 'dest' using a buffered stream.
 	  InputStream fin = null;
 	  OutputStream fout = null;
 	  try {
@@ -128,7 +128,7 @@ public  Chemkin() {
       //#[ operation checkChemkinMessage()
       try {
       	String dir = System.getProperty("RMG.workingDirectory");
-      	String filename = "chemkin/chem.message";
+      	String filename = new File(System.getProperty("RMG.ChemkinOutputDir"),"chem.message").getPath();
       	FileReader fr = new FileReader(filename);
       	BufferedReader br = new BufferedReader(fr);
 
@@ -225,7 +225,7 @@ public  Chemkin() {
       try {
       	// open output file and build the DOM tree
       	String dir = System.getProperty("RMG.workingDirectory");
-      	String filename = "chemkin/reactorOutput.xml";
+      	String filename = new File(System.getProperty("RMG.ChemkinOutputDir"),"reactorOutput.xml").getPath();
       	File inputFile = new File(filename);
 
       	DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
@@ -366,7 +366,7 @@ public  Chemkin() {
       try {
          	// system call for chemkin
          	String[] command = {dir + "/software/reactorModel/chem.exe"};
-         	File runningDir = new File("chemkin");
+         	File runningDir = new File(System.getProperty("RMG.ChemkinOutputDir"));
           Process chemkin = Runtime.getRuntime().exec(command, null, runningDir);
           InputStream ips = chemkin.getInputStream();
           InputStreamReader is = new InputStreamReader(ips);
@@ -400,7 +400,7 @@ public  Chemkin() {
       try {
          	// system call for reactor
          	String[] command = {dir + "/software/reactorModel/reactor.exe"};
-         	File runningDir = new File("chemkin");
+         	File runningDir = new File(System.getProperty("RMG.ChemkinOutputDir"));
           Process reactor = Runtime.getRuntime().exec(command, null, runningDir);
           InputStream ips = reactor.getInputStream();
           InputStreamReader is = new InputStreamReader(ips);
@@ -478,8 +478,8 @@ public  Chemkin() {
       //dir += "software/reactorModel/";
 	  
 	  // This defines the directory that all the chemkin files will be written to.
-	  // They will also be copied to the "chemkin" directory.
-	  String directory = "chemkin/"+String.valueOf(p_reactionModel.getSpeciesNumber());
+	  // They will also be copied to the System.getProperty("RMG.ChemkinOutputDir") ("chemkin") directory.
+	  String directory = new File(System.getProperty("RMG.ChemkinOutputDir"), String.valueOf(p_reactionModel.getSpeciesNumber())).getPath();
 	  // Make directory if it don't exist
 	  File directory_object = new File(directory);
 	  directory_object.mkdirs();
@@ -513,7 +513,7 @@ public  Chemkin() {
       }
       
 	  // put a copy of the latest in the root chemkin folder
-	  copyFiles(chemkinFile, "chemkin/chem.inp");
+	  copyFiles(new File(chemkinFile), new File(System.getProperty("RMG.ChemkinOutputDir"),"chem.inp"));
       
 	  // write tableOfRateCoeffs.txt if running with pressure-dependence
       if (PDepRateConstant.getDefaultMode() == Mode.CHEBYSHEV ||
@@ -541,14 +541,14 @@ public  Chemkin() {
 	      }
 
 		  // put a copy of the latest in the root chemkin folder
-		  copyFiles(newFile, "chemkin/tableOfRateCoeffs.txt");
+		  copyFiles(new File(newFile), new File(System.getProperty("RMG.ChemkinOutputDir"),"tableOfRateCoeffs.txt"));
       }
       
 	  // Write the transport file
 	  String transportFilePath = directory+"/tran.dat";
       writeTransportFile((CoreEdgeReactionModel)p_reactionModel, transportFilePath);
 	  // put a copy of the latest in the root chemkin folder
-	  copyFiles(transportFilePath, "chemkin/tran.dat");
+	  copyFiles(new File(transportFilePath), new File(System.getProperty("RMG.ChemkinOutputDir"),"tran.dat"));
 	  
   }
   
@@ -909,7 +909,7 @@ public  Chemkin() {
 
       // write "input" string to file
       try {
-      	String file = "chemkin/reactorInput.xml";
+      	String file = new File(System.getProperty("RMG.ChemkinOutputDir"),"reactorInput.xml").getPath();
       	FileWriter fw = new FileWriter(file);
       	fw.write(input);
       	fw.close();

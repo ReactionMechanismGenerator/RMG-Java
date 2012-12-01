@@ -213,12 +213,12 @@ public class ThermoDataEstimator {
 	 * Create the working folders for QMTP required folders
 	 */
 	private static void createFolders() {
-		createFolder("GATPFit", true);
-		createFolder("InChI", true);
-		createFolder("2Dmolfiles", true);   // Not sure if we should be deleting this
-		createFolder("3Dmolfiles", true);   // Not sure if we should be deleting this
-		createFolder("QMfiles", false);     // Preserving QM files between runs will speed things up considerably
-		createFolder("QMThermoLibrary", false);
+		createFolder(System.getProperty("RMG.GATPFitDir"), true);
+		createFolder(System.getProperty("RMG.InChI_running_directory"), true);
+		createFolder(System.getProperty("RMG.2DmolfilesDir"), true);
+		createFolder(System.getProperty("RMG.3DmolfilesDir"), true);
+		createFolder(System.getProperty("RMG.qmCalculationsDir"), false);     // Preserving QM files between runs will speed things up considerably
+		createFolder(System.getProperty("RMG.qmLibraryDir"), false);
 	}
 
 	/**

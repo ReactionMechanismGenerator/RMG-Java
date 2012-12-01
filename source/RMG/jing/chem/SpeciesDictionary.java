@@ -117,7 +117,7 @@ public class SpeciesDictionary {
         // for diagnostic purposes, print stuff to a log file if we didn't get a cache hit
         /*
         try{
-            File consideredSpecies = new File ("Restart/consideredSpecies.txt");
+            File consideredSpecies = new File (System.getProperty("RMG.RestartDir"),"consideredSpecies.txt");
             FileWriter fw = new FileWriter(consideredSpecies, true);
             if (species==null) fw.write( "not in dictionary or cache:");
             else fw.write( "not in cache: ");
@@ -258,7 +258,7 @@ public class SpeciesDictionary {
 		 String restartFileContent="";
 		if (write){
 			try{
-				File allSpecies = new File ("Restart/allSpecies.txt");
+				File allSpecies = new File (System.getProperty("RMG.RestartDir"),"allSpecies.txt");
 				FileWriter fw = new FileWriter(allSpecies, true);
 				//Species species = (Species) iter.next();
 				restartFileContent = restartFileContent + p_species.getChemkinName() + " \n ";// + 0 + " (mol/cm3) \n";

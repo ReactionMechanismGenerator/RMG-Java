@@ -1267,7 +1267,7 @@ public abstract class JDAS implements DAESolver {
 
     // set up the input file
     public void setupInputFile() {
-        File SolverInput = new File("ODESolver/SolverInput.dat");
+        File SolverInput = new File(System.getProperty("RMG.ODESolverDir"),"SolverInput.dat");
         try {
             fw = new FileWriter(SolverInput);
             bw = new BufferedWriter(fw);
