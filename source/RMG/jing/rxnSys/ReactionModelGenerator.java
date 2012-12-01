@@ -1580,6 +1580,9 @@ public class ReactionModelGenerator {
 				writeDictionary(getReactionModel());
 				double chemkint = (System.currentTimeMillis()-startTime)/1000/60;
 				
+                // this is cheap to do, so do it even if not saving other restart files
+                writeRestartConditionFile();
+                
 				if (writerestart) {
 					/*
 					 * Rename current restart files:
@@ -1588,10 +1591,9 @@ public class ReactionModelGenerator {
 					 */
 					String[] restartFiles = {"Restart/coreReactions.txt", "Restart/coreSpecies.txt",
 							"Restart/edgeReactions.txt", "Restart/edgeSpecies.txt",
-							"Restart/pdepnetworks.txt", "Restart/pdepreactions.txt","Restart/restartConditionFile.txt"};
+							"Restart/pdepnetworks.txt", "Restart/pdepreactions.txt"};
 					writeBackupRestartFiles(restartFiles);
-					
-					writeRestartConditionFile();
+
 					writeCoreSpecies();
 					writeCoreReactions();
 					writeEdgeSpecies();
@@ -1603,6 +1605,7 @@ public class ReactionModelGenerator {
 					 */
 					removeBackupRestartFiles(restartFiles);
 				}
+
 				
 				//10/24/07 gmagoon: changed to use reactionSystemList
                 Logger.info("");
@@ -1734,6 +1737,8 @@ public class ReactionModelGenerator {
 			vTester = vTester + (System.currentTimeMillis()-startTime)/1000/60;//5/6/08 gmagoon: for case where intermediateSteps = false, this will use startTime declared just before intermediateSteps loop, and will only include termination testing, but no validity testing
         }
         
+        // always write this, even if not saving other restart files
+        writeRestartConditionFile();
         //System.out.println("Performing model reduction");
         if (writerestart) {
 			/*
@@ -1743,10 +1748,9 @@ public class ReactionModelGenerator {
 			 */
 			String[] restartFiles = {"Restart/coreReactions.txt", "Restart/coreSpecies.txt",
 					"Restart/edgeReactions.txt", "Restart/edgeSpecies.txt",
-					"Restart/pdepnetworks.txt", "Restart/pdepreactions.txt","Restart/restartConditionFile.txt"};
+					"Restart/pdepnetworks.txt", "Restart/pdepreactions.txt"};
 			writeBackupRestartFiles(restartFiles);
 			
-			writeRestartConditionFile();
 			writeCoreSpecies();
 			writeCoreReactions();
 			writeEdgeSpecies();
