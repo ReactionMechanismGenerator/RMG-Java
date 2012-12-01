@@ -929,7 +929,7 @@ public class Species {
         // N.B. this file is not cleared at the start of a run; results are just appended
         String restartFileContent="";
 		try{
-			File consideredSpecies = new File ("Restart/consideredSpecies.txt");
+			File consideredSpecies = new File (System.getProperty("RMG.RestartDir"),"consideredSpecies.txt");
 			FileWriter fw = new FileWriter(consideredSpecies, true);
 			restartFileContent = restartFileContent + spe.getChemkinName() + " \n ";  // name and number
 		//	restartFileContent = restartFileContent + spe.toString(1) + "\n\n";  // full chemgraph
