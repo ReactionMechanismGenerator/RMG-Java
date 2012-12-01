@@ -1977,8 +1977,7 @@ public class ReactionModelGenerator {
             result.append(species.getChemkinName() + "\t"+species.getName() + "\t" + species.getChemGraph().getModifiedInChIAnew() + "\t" + species.getChemGraph().getModifiedInChIKeyAnew()+ "\n");
         }
 		
-		
-		String file = "inchiDictionary.txt";
+		String file = new File(System.getProperty("RMG.jobOutputDir"), "inchiDictionary.txt").getPath();
 		
 		try {
 			FileWriter fw = new FileWriter(file);
@@ -2010,7 +2009,7 @@ public class ReactionModelGenerator {
 		}
 
 		try{
-			File rmgDictionary = new File("RMG_Dictionary.txt");
+			File rmgDictionary = new File(System.getProperty("RMG.jobOutputDir"),"RMG_Dictionary.txt");
 			FileWriter fw = new FileWriter(rmgDictionary);
 			fw.write(coreSpecies.toString());
 			fw.close();
@@ -2043,7 +2042,7 @@ public class ReactionModelGenerator {
 			result.append(spe.getChemkinName() + "\n");
 		}
 		try{
-			File rmgSolvationProperties = new File("RMG_Solvation_Properties.txt");
+			File rmgSolvationProperties = new File(System.getProperty("RMG.jobOutputDir"),"RMG_Solvation_Properties.txt");
 			FileWriter fw = new FileWriter(rmgSolvationProperties);
 			fw.write(result.toString() );
 			fw.close();
