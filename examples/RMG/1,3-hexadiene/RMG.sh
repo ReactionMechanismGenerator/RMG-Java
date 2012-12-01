@@ -13,6 +13,7 @@ export RMG_DATABASES=$RMG/databases
 # Stuff stored here may be useful for debugging but in general you don't need to keep it.
 # One option which should be safe on shared computers is:
 # export RMG_JOB_SCRATCH=`mktemp -d -t RMG.XXXXXX`
+# Or if you are using a PBS or LAVA queuing system you could use the job identifier.
 # Default is the current working directory from which you run RMG.
 export RMG_JOB_SCRATCH=$PWD
 

@@ -68,7 +68,7 @@ public class RMG {
             // corresponding features are activated in the condition file
             createFolder( System.getProperty("RMG.jobOutputDir"), false);
             createFolder( System.getProperty("RMG.ChemkinOutputDir"), true);
-            createFolder( System.getProperty("RMG.RestartDir"), false);
+            createFolder( System.getProperty("RMG.RestartDir"), false); // don't delete
             createFolder( System.getProperty("RMG.GATPFitDir"), true);
             createFolder( System.getProperty("RMG.ODESolverDir"), true);
             createFolder( System.getProperty("RMG.fameOutputDir"), true);
@@ -80,7 +80,7 @@ public class RMG {
             createFolder( System.getProperty("RMG.3DmolfilesDir"), true);
             
             createFolder( System.getProperty("RMG.qmCalculationsDir"), false);     // Preserving QM files between runs will speed things up considerably
-            createFolder( System.getProperty("RMG.qmLibraryDir"), false);
+            createFolder( System.getProperty("RMG.qmLibraryDir"), false); // don't delete
             
             
             // The only parameter should be the path to the condition file
@@ -218,36 +218,6 @@ public class RMG {
         Logger.info(String.format("RMG_JOB_OUTPUT = %s (%s)",jobOutputDir,source));
         System.setProperty("RMG.jobOutputDir", jobOutputDir);
         
-        // Set the directory to save problematic Fame input/output in
-        String fameOutputDir = new File(jobOutputDir, "fame").getPath();
-        Logger.info("Fame errors directory = "+fameOutputDir);
-        System.setProperty("RMG.fameOutputDir", fameOutputDir);
-        // Set the directory to save problematic Franki input/output in
-        String frankieOutputDir = new File(jobOutputDir, "frankie").getPath();
-        Logger.info("Frankie errors directory = "+frankieOutputDir);
-        System.setProperty("RMG.frankieOutputDir", frankieOutputDir);
-        // Set the directory to save problematic GATPFit input/output in
-        String GATPFitDir = new File(jobOutputDir, "GATPFit").getPath();
-        Logger.info("GATPFit errors directory = "+GATPFitDir);
-        System.setProperty("RMG.GATPFitDir", GATPFitDir);
-        
-        // Set the directory to run the inchi executable in.
-        System.setProperty("RMG.InChI_running_directory", new File(System.getProperty("RMG.jobScratchDir"), "InChI").getPath());
-        
-        // Set the directory to run the ODE solver in.
-        System.setProperty("RMG.ODESolverDir", new File(System.getProperty("RMG.jobScratchDir"), "ODESolver").getPath());
-        
-        // Set the directory to save the chemkin files in.
-        System.setProperty("RMG.ChemkinOutputDir", new File(System.getProperty("RMG.jobOutputDir"), "chemkin").getPath());
-        // Set the directory to save the Pruning files in.
-        System.setProperty("RMG.PruningDir", new File(System.getProperty("RMG.jobOutputDir"), "Pruning").getPath());
-        // Set the directory to save the Restart files in.
-        System.setProperty("RMG.RestartDir", new File(System.getProperty("RMG.jobOutputDir"), "Restart").getPath());
-
-        // 2D and 3D mol files for the RDKit portion of QM Thermo
-        System.setProperty("RMG.2DmolfilesDir", new File(System.getProperty("RMG.jobScratchDir"), "2Dmolfiles").getPath());
-        System.setProperty("RMG.3DmolfilesDir", new File(System.getProperty("RMG.jobScratchDir"), "3Dmolfiles").getPath());
-        
         // Set the QM library directory
         String qmLibraryDir = System.getenv("RMG_QM_LIBRARY");
         if (qmLibraryDir == null) {
@@ -258,7 +228,6 @@ public class RMG {
         Logger.info(String.format("RMG_QM_LIBRARY = %s (%s)",qmLibraryDir,source));
         System.setProperty("RMG.qmLibraryDir", qmLibraryDir);
         
-        
         // Set the QM calculations directory
         String qmCalculationsDir = System.getenv("RMG_QM_CALCS");
         if (qmCalculationsDir == null) {
@@ -268,6 +237,40 @@ public class RMG {
         else source = "environment variable";
         Logger.info(String.format("RMG_QM_CALCS = %s (%s)",qmCalculationsDir,source));
         System.setProperty("RMG.qmCalculationsDir", qmCalculationsDir);
+        
+        Logger.verbose(" Derived paths:");
+        // Set the directory to save problematic Fame input/output in
+        String fameOutputDir = new File(jobOutputDir, "fame").getPath();
+        Logger.verbose("Fame errors directory = "+fameOutputDir);
+        System.setProperty("RMG.fameOutputDir", fameOutputDir);
+        // Set the directory to save problematic Frankie input/output in
+        String frankieOutputDir = new File(jobOutputDir, "frankie").getPath();
+        Logger.verbose("Frankie errors directory = "+frankieOutputDir);
+        System.setProperty("RMG.frankieOutputDir", frankieOutputDir);
+        // Set the directory to save problematic GATPFit input/output in
+        String GATPFitDir = new File(jobOutputDir, "GATPFit").getPath();
+        Logger.verbose("GATPFit errors directory = "+GATPFitDir);
+        System.setProperty("RMG.GATPFitDir", GATPFitDir);
+        // Set the directory to run the inchi executable in.
+        System.setProperty("RMG.InChI_running_directory", new File(System.getProperty("RMG.jobScratchDir"), "InChI").getPath());
+        Logger.verbose("InChI running directory = "+System.getProperty("RMG.InChI_running_directory"));
+        // Set the directory to run the ODE solver in.
+        System.setProperty("RMG.ODESolverDir", new File(System.getProperty("RMG.jobScratchDir"), "ODESolver").getPath());
+        Logger.verbose("ODE Solver running directory = "+System.getProperty("RMG.ODESolverDir"));
+        // 2D and 3D mol files for the RDKit portion of QM Thermo
+        System.setProperty("RMG.2DmolfilesDir", new File(System.getProperty("RMG.jobScratchDir"), "2Dmolfiles").getPath());
+        System.setProperty("RMG.3DmolfilesDir", new File(System.getProperty("RMG.jobScratchDir"), "3Dmolfiles").getPath());
+        // output files
+        // Set the directory to save the chemkin files in.
+        System.setProperty("RMG.ChemkinOutputDir", new File(System.getProperty("RMG.jobOutputDir"), "chemkin").getPath());
+        // Set the directory to save the Pruning files in.
+        System.setProperty("RMG.PruningDir", new File(System.getProperty("RMG.jobOutputDir"), "Pruning").getPath());
+        // Set the directory to save the Restart files in.
+        System.setProperty("RMG.RestartDir", new File(System.getProperty("RMG.jobOutputDir"), "Restart").getPath());
+
+
+        
+
         
 
     }
