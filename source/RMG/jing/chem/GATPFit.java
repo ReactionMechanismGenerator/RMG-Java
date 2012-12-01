@@ -56,7 +56,7 @@ public class GATPFit {
       try {
 		    String workingDirectory = System.getProperty("RMG.workingDirectory");
         String[] command = {workingDirectory +  "/bin/GATPFit.exe"};
-        File runningDir = new File("GATPFit");
+        File runningDir = new File(System.getProperty("RMG.GATPFitDir"));
         GATPFit = Runtime.getRuntime().exec(command, null, runningDir);
         errorStream = new BufferedReader(new InputStreamReader(GATPFit.getErrorStream()));
         commandInput = new PrintWriter(GATPFit.getOutputStream(), true);
@@ -210,10 +210,10 @@ public class GATPFit {
             Logger.logStackTrace(e);
             String err = "Error running GATPFit" + ls;
             err += e.toString();
-            GATPFit_input_name = "GATPFit/INPUT.txt";
+            GATPFit_input_name = species.getChemkinName()+".INPUT.txt";
             err += ls + "To help diagnosis, writing GATPFit input to file "+GATPFit_input_name+ls;
             try {
-                GATPFit_input = new File(GATPFit_input_name);
+                GATPFit_input = new File(System.getProperty("RMG.GATPFitDir"), GATPFit_input_name);
                 FileWriter fw = new FileWriter(GATPFit_input);
                 fw.write(inputString);
                 fw.close();
@@ -227,8 +227,8 @@ public class GATPFit {
 
 		/*
 		// temporarily save all GATPFit files for debugging purposes
-		GATPFit_input_name = "GATPFit/INPUT."+species.getChemkinName()+".txt";
-		GATPFit_input = new File(GATPFit_input_name);
+		GATPFit_input_name = "INPUT."+species.getChemkinName()+".txt";
+		GATPFit_input = new File(System.getProperty("RMG.GATPFitDir"), GATPFit_input_name);
 		try {
 			FileWriter fw = new FileWriter(GATPFit_input);
 			fw.write(inputString);

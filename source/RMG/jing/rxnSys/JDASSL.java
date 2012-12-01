@@ -275,7 +275,7 @@ public class JDASSL extends JDAS {
             	String workingDirectory = System.getProperty("RMG.workingDirectory");
 		
 //		// write the input file
-//		File SolverInput = new File("ODESolver/SolverInput.dat");
+//		File SolverInput = new File(System.getProperty("RMG.ODESolverDir"),"SolverInput.dat");
 //		try {
 //			FileWriter fw = new FileWriter(SolverInput);
 //			fw.write(outputString.toString());
@@ -293,7 +293,7 @@ public class JDASSL extends JDAS {
                 try {
 
                         String[] command = {workingDirectory +  "/bin/dasslAUTO.exe"};//5/5/08 gmagoon: changed to call dasslAUTO.exe
-                                File runningDir = new File("ODESolver");
+                                File runningDir = new File(System.getProperty("RMG.ODESolverDir"));
 
                                 Process solver = Runtime.getRuntime().exec(command, null, runningDir);
                                 InputStream is = solver.getInputStream();
@@ -322,12 +322,12 @@ public class JDASSL extends JDAS {
 
                 //11/1/07 gmagoon: renaming RWORK and IWORK files
                 renameIntermediateFilesAfterRun();
-		return readOutputFile("ODESolver/SolverOutput.dat");
+		return readOutputFile(new File(System.getProperty("RMG.ODESolverDir"),"SolverOutput.dat").getPath());
 	}
         
         private void renameIntermediateFilesBeforeRun(){
-                File f = new File("ODESolver/RWORK_"+index+".DAT");
-		File newFile = new File("ODESolver/RWORK.DAT");
+                File f = new File(System.getProperty("RMG.ODESolverDir"),"RWORK_"+index+".DAT");
+		File newFile = new File(System.getProperty("RMG.ODESolverDir"),"RWORK.DAT");
                 boolean renameSuccess = false;
                 if(f.exists()){
 			if(newFile.exists())
@@ -340,8 +340,8 @@ public class JDASSL extends JDAS {
                         }
                 }
                 
-                f = new File("ODESolver/IWORK_"+index+".DAT");
-                newFile = new File("ODESolver/IWORK.DAT");
+                f = new File(System.getProperty("RMG.ODESolverDir"),"IWORK_"+index+".DAT");
+                newFile = new File(System.getProperty("RMG.ODESolverDir"),"IWORK.DAT");
                 if(f.exists()){
                     if(newFile.exists())
                             newFile.delete();
@@ -356,8 +356,8 @@ public class JDASSL extends JDAS {
         }
         
 	private void renameIntermediateFilesAfterRun() {
-            File f = new File("ODESolver/RWORK.DAT");
-			File newFile = new File("ODESolver/RWORK_"+index+".DAT");
+            File f = new File(System.getProperty("RMG.ODESolverDir"),"RWORK.DAT");
+			File newFile = new File(System.getProperty("RMG.ODESolverDir"),"RWORK_"+index+".DAT");
             if(newFile.exists())
                 newFile.delete();
             boolean renameSuccess = f.renameTo(newFile);
@@ -367,8 +367,8 @@ public class JDASSL extends JDAS {
                 System.exit(0);
             }
             
-            f = new File("ODESolver/IWORK.DAT");
-            newFile = new File("ODESolver/IWORK_"+index+".DAT");
+            f = new File(System.getProperty("RMG.ODESolverDir"),"IWORK.DAT");
+            newFile = new File(System.getProperty("RMG.ODESolverDir"),"IWORK_"+index+".DAT");
             if(newFile.exists())
                 newFile.delete();
             renameSuccess = f.renameTo(newFile);
@@ -377,6 +377,23 @@ public class JDASSL extends JDAS {
                 Logger.critical("Renaming of IWORK file(s) failed. (renameIntermediateFiles())");
                 System.exit(0);
             }
+            
+            /*
+             * Rename the SpeciesProfiles.txt result file too
+             */
+            new File(System.getProperty("RMG.ODESolverDir"),"SpeciesProfiles.txt");
+            f = new File(System.getProperty("RMG.ODESolverDir"),"SpeciesProfiles.txt");
+            newFile = new File(System.getProperty("RMG.ODESolverDir"),"SpeciesProfiles_"+index+".txt");
+            if(newFile.exists())
+                newFile.delete();
+            renameSuccess = f.renameTo(newFile);
+            if (!renameSuccess)
+            {
+                Logger.critical("Renaming of IWORK file(s) failed. (renameIntermediateFiles())");
+                System.exit(0);
+            }
+            
+            
 	}
         
 	public int readOutputFile(String path) {
@@ -462,7 +479,7 @@ public class JDASSL extends JDAS {
 	void createSpeciesProfilesOutputFile(CoreEdgeReactionModel cerm) {
 		// This creates the 'SpeciesProfiles.txt' and writes the header line
 		// ready for dasslAUTO.exe (see call_dasslAUTO.f90) to write to it
-		File SpeciesProfilesFile = new File("ODESolver/SpeciesProfiles.txt");
+		File SpeciesProfilesFile = new File(System.getProperty("RMG.ODESolverDir"),"SpeciesProfiles.txt");
 		try {
 			FileWriter fw = new FileWriter(SpeciesProfilesFile);
 			fw.write("Time(s)\t");

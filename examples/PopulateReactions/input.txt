@@ -38,7 +38,7 @@ N2 (molecule/cm3) 0.99
 END
 
 SpectroscopicDataEstimator: FrequencyGroups
-PressureDependence: ReservoirState off ModifiedStrongCollision
+PressureDependence: ModifiedStrongCollision ReservoirState off
 PDepKineticsModel: Chebyshev
 //DecreaseGrainSize: yes
 

@@ -371,7 +371,7 @@ this value be left at 0 (zero), as it has been found that radicals tend to be di
 implementations to handle robustly, and errors or significant inaccuracies (particularly for biradicals)
 are more likely.
 
-Finally, the user must specify whether (and how) connectivity-checking functionality should be use:
+Next, the user must specify whether (and how) connectivity-checking functionality should be use:
 
 	ConnectivityChecking: confirm
 
@@ -380,7 +380,15 @@ The "check" option will perform a check on the final optimized geometry to try t
 to a molecular structure with the desired connectivity; if not, a warning is printed, alerting the user. The "confirm"
 option will perform the same checks, except in cases where there is an apparent mismatch, the job will be treated
 as a failure and calculation with different geometry/keywords will be attempted.
-	
+
+Finally, you can choose whether or not to save the QM calculation input and output files.
+The benefits of saving them are that if another job encounters the same species it can re-use the result,
+if you have set them up to share the same RMG_QM_CALCS directory, and you can check the outputs if debugging.
+However, they can just take a lot of disk space, so if you'd rather not save them, then set it to 'no'::
+
+	KeepQMFiles: no
+
+
 .. _reactants:
 
 Reactants

@@ -37,12 +37,14 @@ import jing.chemParser.ChemParser;
 public class InChI2AdjList {
 	public static void main(String[] args) {
 		
+	    String inchiDirectory = System.getProperty("RMG.InChI_running_directory");
+	    
 		// This string will hold the InChI strings and their respective
 		//	adjacency lists
 		String listOfAdjLists = "";
 		
 		// In case a folder named InChI is not already present, make it
-		File inchi = new File("InChI");
+		File inchi = new File(inchiDirectory);
 		ChemParser.deleteDir(inchi);
 		inchi.mkdir();
 		

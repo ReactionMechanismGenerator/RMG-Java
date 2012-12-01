@@ -58,9 +58,9 @@ public class FrequencyEstimator {
 //		initializeSystemProperties();
 		 RMG.globalInitializeSystemProperties();
 
-                 File GATPFit = new File("GATPFit");
+                 File GATPFit = new File(System.getProperty("RMG.GATPFitDir"));
                  GATPFit.mkdir();
-                 File frankie = new File("frankie");
+                 File frankie = new File(System.getProperty("RMG.frankieOutputDir"));
                  frankie.mkdir();
 
 		LinkedList<ChemGraph> graphList = new LinkedList<ChemGraph>();

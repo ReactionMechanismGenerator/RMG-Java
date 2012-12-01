@@ -929,7 +929,7 @@ public class Species {
         // N.B. this file is not cleared at the start of a run; results are just appended
         String restartFileContent="";
 		try{
-			File consideredSpecies = new File ("Restart/consideredSpecies.txt");
+			File consideredSpecies = new File (System.getProperty("RMG.RestartDir"),"consideredSpecies.txt");
 			FileWriter fw = new FileWriter(consideredSpecies, true);
 			restartFileContent = restartFileContent + spe.getChemkinName() + " \n ";  // name and number
 		//	restartFileContent = restartFileContent + spe.toString(1) + "\n\n";  // full chemgraph
@@ -1153,9 +1153,12 @@ public class Species {
         //output is string array with first ([0]) element being the InChI string (with "InChI="); the second ([1]) element will be the InChIKey (WITHOUT "InChIKey=")
         // the function can be easily changed to accomodate other versions of the InChI program by changing the command line options (optionsArgument); for example, if InChIKey generation is turned off, the second element of the string array will be an empty string;
 	public static String [] generateInChI(ChemGraph p_chemGraph) {
-		File inchi = new File("InChI");
+	    
+	    String inchiDirectory = System.getProperty("RMG.InChI_running_directory");
+	    
+		File inchi = new File(inchiDirectory);
 		inchi.mkdir();
-		
+
 		String [] result = new String[2];
 
                 String cTable = generateMolFileString(p_chemGraph, 1);//we use 1 for benzene bond strength...only connectivity is important for InChI; (don't currently have kekulizer, and alternative of 4 is apparently not part of MDL MOL file spec, and InChI program doesn't process it properly when there is a radical site next to a 4 (B) bond)
@@ -1163,7 +1166,6 @@ public class Species {
 		//
                 File molFile = null;
 		File txtFile = null;
-		String inchiDirectory = "InChI";
 
 		// Write the cTable to species.mol file
         try {
@@ -1194,6 +1196,7 @@ public class Species {
 	//supressOutput determines whether the .prb and .log files will be written (in the molFile directory)
 	public static String [] runInChIProcess(File molFile, File txtFile, boolean suppressOutput){
 	    	String workingDirectory = System.getProperty("RMG.workingDirectory");
+	    String inchiDirectory = System.getProperty("RMG.InChI_running_directory");
 		String [] result = new String[2];
 		String InChIstring = "";
                 String InChIKeystring = "";
@@ -1245,7 +1248,7 @@ public class Species {
 			    molFile.getAbsolutePath(),
 			    txtFile.getAbsolutePath(),logFile, prbFile,
 			    "/DoNotAddH", "/FixedH", "/Key"};//6/9/09 gmagoon: added fixed H so tautomers are considered separately; this is apparently not an option for version 1.02 (standard inchi); also added Key option to generate inchikey...this is only available in version 1.02beta or later; therefore, this keyword combination will only work for version 1.02beta (as of now)
-			File runningDir = new File("InChI");
+			File runningDir = new File(inchiDirectory);
 			Process InChI = Runtime.getRuntime().exec(command, null, runningDir);
 
 			BufferedReader stdout = new BufferedReader(new InputStreamReader(InChI.getInputStream()));
@@ -1263,7 +1266,7 @@ public class Species {
 			    molFile.getAbsolutePath(),
 			    txtFile.getAbsolutePath(),logFile, prbFile,
 			    "-DoNotAddH", "-FixedH", "-Key"};
-			File runningDir = new File("InChI");
+			File runningDir = new File(inchiDirectory);
 			Process InChI = Runtime.getRuntime().exec(command, null, runningDir);
 
 			BufferedReader stdout = new BufferedReader(new InputStreamReader(InChI.getInputStream()));
@@ -1282,7 +1285,7 @@ public class Species {
 			    molFile.getAbsolutePath(),
 			    txtFile.getAbsolutePath(),logFile, prbFile,
 			    "-DoNotAddH", "-FixedH", "-Key"};
-			File runningDir = new File("InChI");
+			File runningDir = new File(inchiDirectory);
 			Process InChI = Runtime.getRuntime().exec(command, null, runningDir);
 
 			BufferedReader stdout = new BufferedReader(new InputStreamReader(InChI.getInputStream()));
@@ -1518,10 +1521,11 @@ public class Species {
      * @return
      */
 	public static String inchi2AdjList (String p_inchi) {
+	    String inchiDirectory = System.getProperty("RMG.InChI_running_directory");
 		// Convert InChI to .mol file
 		inchi2mol(p_inchi);
 		// Convert .mol file to adjacency list
-        String adjList = mol2AdjList(p_inchi,"InChI/temp.mol");
+        String adjList = mol2AdjList(p_inchi,inchiDirectory+"/temp.mol");
         return adjList;
 	}
 	
@@ -1532,9 +1536,9 @@ public class Species {
 	 */
 	public static void inchi2mol(String p_inchi) {
 		String workingDirectory = System.getenv("RMG");
-		File inchi = new File("InChI");
+		String inchiDirectory = System.getProperty("RMG.InChI_running_directory");
+		File inchi = new File(inchiDirectory);
 		inchi.mkdir();
-		String inchiDirectory = "InChI";
 		File inchiFile = null;
 		
 		// Save InChI string in inchi.txt file
@@ -1588,7 +1592,7 @@ public class Species {
             		"temp.mol",
             		optionsArgument[1]};
             try {
-	            File runningDir = new File("InChI");
+	            File runningDir = new File(inchiDirectory);
 	            Process InChI = Runtime.getRuntime().exec(command1, null, runningDir);
 	            
 	            BufferedReader stdout = new BufferedReader(new InputStreamReader(InChI.getInputStream()));
@@ -1627,7 +1631,7 @@ public class Species {
             		"temp.mol",
             		optionsArgument[1]};
             try {
-	            File runningDir = new File("InChI");
+	            File runningDir = new File(inchiDirectory);
 	            Process InChI = Runtime.getRuntime().exec(command1, null, runningDir);
 	            
 	            BufferedReader stdout = new BufferedReader(new InputStreamReader(InChI.getInputStream()));
@@ -1666,7 +1670,7 @@ public class Species {
             		"temp.mol",
             		optionsArgument[1]};
             try {
-	            File runningDir = new File("InChI");
+	            File runningDir = new File(inchiDirectory);
 	            Process InChI = Runtime.getRuntime().exec(command1, null, runningDir);
 	            
 	            BufferedReader stdout = new BufferedReader(new InputStreamReader(InChI.getInputStream()));

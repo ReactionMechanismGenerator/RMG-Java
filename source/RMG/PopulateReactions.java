@@ -551,15 +551,16 @@ public class PopulateReactions {
 		} catch(IOException e) {
 			System.err.println("Something wrong with ChemParser.readChemGraph");
 		}
+		System.exit(0);
 	}
 	
 	public static void initializeSystemProperties() {
 		RMG.globalInitializeSystemProperties();
 		
-		File GATPFit = new File("GATPFit");
+		File GATPFit = new File(System.getProperty("RMG.GATPFitDir"));
 		ChemParser.deleteDir(GATPFit);
 		GATPFit.mkdir();
-		File frankie = new File("frankie");
+		File frankie = new File(System.getProperty("RMG.frankieOutputDir"));
 		ChemParser.deleteDir(frankie);
 		frankie.mkdir();
 		File fame = new File("fame");

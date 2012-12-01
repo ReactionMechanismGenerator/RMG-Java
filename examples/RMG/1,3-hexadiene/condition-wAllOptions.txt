@@ -71,6 +71,7 @@ PressureModel: Constant (atm) 1
 //MaxRadNumForQM: 0
 //CheckConnectivity? [off/check/confirm]
 //CheckConnectivity: check
+//KeepQMFiles: no [no/yes]
 
 InitialStatus:
 

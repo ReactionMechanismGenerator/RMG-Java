@@ -113,7 +113,7 @@ public class ReactionModelGenerator {
 	//static {System.loadLibrary("cpuTime");}
 
 	public static boolean rerunFame = false;
-	public static boolean qmVerbose = false;
+	public static boolean keepQMfiles = false;
 
 	protected static double tolerance;//can be interpreted as "coreTol" (vs. edgeTol)
 	protected static double termTol;
@@ -514,25 +514,24 @@ public class ReactionModelGenerator {
 						Logger.critical("condition.txt: Can't find 'CheckConnectivity:' field (should be 'off', 'check', or 'confirm')");
 						System.exit(0);
 					}
-					line = ChemParser.readMeaningfulLine(reader, true); //read in either QM 'Verbose:' option or 'InitialStatus' line.
-					if (line.startsWith("Verbose:")){
+					line = ChemParser.readMeaningfulLine(reader, true); //read in either QM 'KeepQMFiles:' option or 'InitialStatus' line.
+					if (line.startsWith("KeepQMFiles:")){
 						StringTokenizer st5 = new StringTokenizer(line);
 						String nameQmVerbose = st5.nextToken(); //String Verbose
 						String checkQmVerbose = st5.nextToken().toLowerCase();
-						if (checkQmVerbose.equals("on")){
-							QMTP.qmfolder = "QMfiles/";
-							QMTP.qmVerbose = true;
+						if (checkQmVerbose.equals("yes")){
+							QMTP.keepQMfiles = true;
 						}
-						else if(!checkQmVerbose.equals("off")){
-							Logger.critical("condition.txt: QMTP 'Verbose' field should be 'on' or 'off'");
+						else if(!checkQmVerbose.equals("no")){
+							Logger.critical("condition.txt: QMTP 'KeepQMFiles' field should be 'yes' or 'no'");
 							System.exit(0);
 						}
 						// Read another line
 						line = ChemParser.readMeaningfulLine(reader, true);
 					}
 					else{
-						Logger.critical("Can't find QMTP 'Verbose:' field. Defaulting to 'off'.");
-						QMTP.qmVerbose = false;
+						Logger.critical("Can't find QMTP 'KeepQMFiles:' field. Defaulting to 'yes'.");
+						QMTP.keepQMfiles = true;
 					}
         		}//otherwise, the flag useQM will remain false by default and the traditional group additivity approach will be used
 
@@ -927,8 +926,8 @@ public class ReactionModelGenerator {
 			    //print header for pruning log (based on restart format)
 			    BufferedWriter bw = null;
 			    try {
-				File f = new File("Pruning/edgeReactions.txt");
-				bw = new BufferedWriter(new FileWriter("Pruning/edgeReactions.txt", true));
+				File f = new File(System.getProperty("RMG.PruningDir"),"edgeReactions.txt");
+				bw = new BufferedWriter(new FileWriter(f, true));
 			        String EaUnits = ArrheniusKinetics.getEaUnits();
 				bw.write("UnitsOfEa: " + EaUnits);
 				bw.newLine();
@@ -1581,18 +1580,20 @@ public class ReactionModelGenerator {
 				writeDictionary(getReactionModel());
 				double chemkint = (System.currentTimeMillis()-startTime)/1000/60;
 				
+                // this is cheap to do, so do it even if not saving other restart files
+                writeRestartConditionFile();
+                
 				if (writerestart) {
 					/*
 					 * Rename current restart files:
 					 * 	In the event RMG fails while writing the restart files,
 					 * 	user won't lose any information
 					 */
-					String[] restartFiles = {"Restart/coreReactions.txt", "Restart/coreSpecies.txt",
-							"Restart/edgeReactions.txt", "Restart/edgeSpecies.txt",
-							"Restart/pdepnetworks.txt", "Restart/pdepreactions.txt","Restart/restartConditionFile.txt"};
+					String[] restartFiles = {"coreReactions.txt", "coreSpecies.txt",
+							"edgeReactions.txt", "edgeSpecies.txt",
+							"pdepnetworks.txt", "pdepreactions.txt"};
 					writeBackupRestartFiles(restartFiles);
-					
-					writeRestartConditionFile();
+
 					writeCoreSpecies();
 					writeCoreReactions();
 					writeEdgeSpecies();
@@ -1604,6 +1605,7 @@ public class ReactionModelGenerator {
 					 */
 					removeBackupRestartFiles(restartFiles);
 				}
+
 				
 				//10/24/07 gmagoon: changed to use reactionSystemList
                 Logger.info("");
@@ -1735,6 +1737,8 @@ public class ReactionModelGenerator {
 			vTester = vTester + (System.currentTimeMillis()-startTime)/1000/60;//5/6/08 gmagoon: for case where intermediateSteps = false, this will use startTime declared just before intermediateSteps loop, and will only include termination testing, but no validity testing
         }
         
+        // always write this, even if not saving other restart files
+        writeRestartConditionFile();
         //System.out.println("Performing model reduction");
         if (writerestart) {
 			/*
@@ -1742,12 +1746,11 @@ public class ReactionModelGenerator {
 			 * 	In the event RMG fails while writing the restart files,
 			 * 	user won't lose any information
 			 */
-			String[] restartFiles = {"Restart/coreReactions.txt", "Restart/coreSpecies.txt",
-					"Restart/edgeReactions.txt", "Restart/edgeSpecies.txt",
-					"Restart/pdepnetworks.txt", "Restart/pdepreactions.txt","Restart/restartConditionFile.txt"};
+			String[] restartFiles = {"coreReactions.txt", "coreSpecies.txt",
+					"edgeReactions.txt", "edgeSpecies.txt",
+					"pdepnetworks.txt", "pdepreactions.txt"};
 			writeBackupRestartFiles(restartFiles);
 			
-			writeRestartConditionFile();
 			writeCoreSpecies();
 			writeCoreReactions();
 			writeEdgeSpecies();
@@ -1811,8 +1814,12 @@ public class ReactionModelGenerator {
         writeDictionary(getReactionModel());
     }
     
+    /*
+     * Write a condition file suitable for restarting the job. Basically, the same
+     * condition file that you started with, but with all the core species added.
+     */
     private void writeRestartConditionFile() {
-    	StringBuilder restartConditionFile = new StringBuilder();
+    	StringBuilder restartConditionFile = new StringBuilder("// This is based on the original input condition file, but with core species added.");
     	
 		// Read in the condition file 
 		
@@ -1827,9 +1834,7 @@ public class ReactionModelGenerator {
 			// you reach the species definition 
 			
 			while (!line.equals("InitialStatus:")) {
-				
-				restartConditionFile.append(line+"\n");				
-			
+				restartConditionFile.append(line+"\n");
 				line = ChemParser.readMeaningfulAndEmptyLine(condition_file_br, true);
 			}
 			
@@ -1838,12 +1843,10 @@ public class ReactionModelGenerator {
 			// Read in the next line
 			line = ChemParser.readMeaningfulLine(condition_file_br, true);
 
-			
 			// Read in the species in the initial condition file  
 			// and figure out the number of concentrations specified and units
-			
 			String unit="";
-			int numSpeciesConditionfile = 0;
+			int numSpeciesInitialConditionFile = 0;
 			int numConcentrations = 0;
 			
 			// This blocks reads in the initial species in condition file
@@ -1854,11 +1857,9 @@ public class ReactionModelGenerator {
 				String name = null;
 				if (!index.startsWith("(")) name = index;
 				else name = st.nextToken();
-				 
 				
 				// The next token will be the concentration units
 				unit = st.nextToken();
-				
 				
 				// The remaining tokens are the either token unreactive, constant concentrations
 				// or concentrations for the species
@@ -1868,10 +1869,9 @@ public class ReactionModelGenerator {
 				
 				while (st.hasMoreTokens()) {
 					String reactive = st.nextToken().trim();
-					
 					// Dont count the unreactive and constantconcentration tokens
 					if(!reactive.equalsIgnoreCase("unreactive")||!reactive.equalsIgnoreCase("constantconcentration"))
-						++numConcentrations;				
+						++numConcentrations;
 
 				}
 				
@@ -1886,76 +1886,67 @@ public class ReactionModelGenerator {
 						restartConditionFile.append(cg.toStringWithoutH(0)+"\n");
 					}
 					catch(ForbiddenStructureException e){
-						
+						Logger.error("Forbidden Structure in restart condition file! Will not be written.");
 					}
 				} 
 				catch (IOException e1) {
-	                System.out.println("Something wrong with graph");
+	                Logger.error("Something wrong with writing the graph to the restartConditionFile");
 	                System.exit(0);
 				}
-						
-			
+
 				// increment species counter
-				++ numSpeciesConditionfile;
+				++ numSpeciesInitialConditionFile;
 				
 				line = ChemParser.readMeaningfulLine(condition_file_br, true);
 			}
 			
-			
 			// Creates an array initialized with default value of double 0.0, with size of numConcentrations
 			double[] ConcArray = new double[numConcentrations];
 			String ConcString = ArraytoString(ConcArray);
-
 			
-			// Read in dictionary and append the units and 0.0 for number of concentrations
+			// Then print the core and append the units and 0.0 for number of concentrations
 			// *** Strictly assuming that species in condition file are the initial species
 			// in the RMG_Dictionary ***
 			
-			int speciestoSkip=1;
+			int speciesCounter = 1;
 			
 			Iterator iter=getReactionModel().getSpecies();
 			
 			while(iter.hasNext()){
 				Species spe = (Species) iter.next();
-                if(speciestoSkip>numSpeciesConditionfile){
+                if(speciesCounter > numSpeciesInitialConditionFile){
                 	// Append the name + units + concentrations as 0.0
                 	restartConditionFile.append(spe.getChemkinName()+" "+unit+" "+ConcString+"\n");
                 	// Append the Chemgraph
                 	restartConditionFile.append(spe.getChemGraph().toString(0)+"\n");
                 }
-                ++speciestoSkip;
-                	              
+                ++speciesCounter;
 			}
 			
 			// Read lines till end of condition file 
 			while (line !=null) {
-				restartConditionFile.append(line+"\n");				
-				
+				restartConditionFile.append(line+"\n");
 				line = ChemParser.readMeaningfulAndEmptyLine(condition_file_br, true);
 			}
 			
             // Write the restartConditionFile.txt output file
             try {
-            	
-            	String filename = "Restart/restartConditionFile.txt";           	
-            	
-				File rxns = new File(filename);
+				File rxns = new File(System.getProperty("RMG.jobOutputDir"), "RestartConditionFile.txt");
 				FileWriter fw_rxns = new FileWriter(rxns);
                 fw_rxns.write(restartConditionFile.toString());
                 fw_rxns.close();
             }
             
             catch (IOException e) {
-                System.out.println("Could not write restartCondition.txt file");
+                System.out.println("Could not write RestartConditionFile.txt file");
                 System.exit(0);
             }
-			
 		}
 		
 		catch (FileNotFoundException e) {
-			System.err.println("Condition file not found");
+			Logger.error("Condition file not found");
 			}
-					
+
 	}
 
 	private String ArraytoString(double[] concArray) {	
@@ -1978,8 +1969,7 @@ public class ReactionModelGenerator {
             result.append(species.getChemkinName() + "\t"+species.getName() + "\t" + species.getChemGraph().getModifiedInChIAnew() + "\t" + species.getChemGraph().getModifiedInChIKeyAnew()+ "\n");
         }
 		
-		
-		String file = "inchiDictionary.txt";
+		String file = new File(System.getProperty("RMG.jobOutputDir"), "inchiDictionary.txt").getPath();
 		
 		try {
 			FileWriter fw = new FileWriter(file);
@@ -1998,27 +1988,22 @@ public class ReactionModelGenerator {
     private void writeDictionary(ReactionModel rm){
         CoreEdgeReactionModel cerm = (CoreEdgeReactionModel)rm;
         //Write core species to RMG_Dictionary.txt
-		String coreSpecies ="";
+		StringBuilder coreSpecies = new StringBuilder(1024);
 		Iterator iter = cerm.getSpecies();
-		
-		if (Species.useInChI) {
-			while (iter.hasNext()){
-				int i=1;
-				Species spe = (Species) iter.next();
-				coreSpecies = coreSpecies + spe.getChemkinName() + " " + spe.getChemGraph().getModifiedInChIAnew() + "\n"+spe.getChemGraph().toString(i)+"\n\n";
-			}
-		} else {
-			while (iter.hasNext()){
-				int i=1;
-				Species spe = (Species) iter.next();
-				coreSpecies = coreSpecies + spe.getChemkinName() + "\n"+spe.getChemGraph().toString(i)+"\n\n";
-			}
+
+		while (iter.hasNext()){
+		    int i=1;
+		    Species spe = (Species) iter.next();
+		    coreSpecies.append(spe.getChemkinName());
+		    if (Species.useInChI) coreSpecies.append(" " + spe.getChemGraph().getModifiedInChIAnew());
+		    coreSpecies.append("\n");
+		    coreSpecies.append(spe.getChemGraph().toString(i)+"\n\n");
 		}
-		
+
 		try{
-			File rmgDictionary = new File("RMG_Dictionary.txt");
+			File rmgDictionary = new File(System.getProperty("RMG.jobOutputDir"),"RMG_Dictionary.txt");
 			FileWriter fw = new FileWriter(rmgDictionary);
-			fw.write(coreSpecies);
+			fw.write(coreSpecies.toString());
 			fw.close();
 		}
 		catch (IOException e) {
@@ -2049,7 +2034,7 @@ public class ReactionModelGenerator {
 			result.append(spe.getChemkinName() + "\n");
 		}
 		try{
-			File rmgSolvationProperties = new File("RMG_Solvation_Properties.txt");
+			File rmgSolvationProperties = new File(System.getProperty("RMG.jobOutputDir"),"RMG_Solvation_Properties.txt");
 			FileWriter fw = new FileWriter(rmgSolvationProperties);
 			fw.write(result.toString() );
 			fw.close();
@@ -2084,7 +2069,7 @@ public class ReactionModelGenerator {
 //		SpeciesDictionary dictionary = SpeciesDictionary.getInstance();
 //		//HasMap speciesMap = dictionary.dictionary;
 //		try{
-//			File coreReactions = new File("Restart/edgeReactions.txt");
+//			File coreReactions = new File(System.getProperty("RMG.RestartDir"),"edgeReactions.txt");
 //			FileReader fr = new FileReader(coreReactions);
 //			BufferedReader reader = new BufferedReader(fr);
 //			String line = ChemParser.readMeaningfulLine(reader);
@@ -2131,7 +2116,7 @@ public class ReactionModelGenerator {
 //		int i=1;
 //		//HasMap speciesMap = dictionary.dictionary;
 //		try{
-//			File coreReactions = new File("Restart/coreReactions.txt");
+//			File coreReactions = new File(System.getProperty("RMG.RestartDir"),"coreReactions.txt");
 //			FileReader fr = new FileReader(coreReactions);
 //			BufferedReader reader = new BufferedReader(fr);
 //			String line = ChemParser.readMeaningfulLine(reader);
@@ -2185,7 +2170,7 @@ public class ReactionModelGenerator {
 //		int i=1;
 //		//HasMap speciesMap = dictionary.dictionary;
 //		try{
-//			File allReactions = new File("Restart/allReactions.txt");
+//			File allReactions = new File(System.getProperty("RMG.RestartDir"),"allReactions.txt");
 //			FileReader fr = new FileReader(allReactions);
 //			BufferedReader reader = new BufferedReader(fr);
 //			String line = ChemParser.readMeaningfulLine(reader);
@@ -2318,7 +2303,7 @@ public class ReactionModelGenerator {
 		//boolean added;
 		SpeciesDictionary dictionary = SpeciesDictionary.getInstance();
 		try{
-			File coreSpecies = new File ("Restart/coreSpecies.txt");
+			File coreSpecies = new File (System.getProperty("RMG.RestartDir"),"coreSpecies.txt");
 			FileReader fr = new FileReader(coreSpecies);
 			BufferedReader reader = new BufferedReader(fr);
 			String line = ChemParser.readMeaningfulLine(reader, true);
@@ -2468,7 +2453,7 @@ public class ReactionModelGenerator {
 //		//		String restartFileContent ="";
 //		SpeciesDictionary dictionary = SpeciesDictionary.getInstance();
 //		try{
-//			File edgeSpecies = new File ("Restart/edgeSpecies.txt");
+//			File edgeSpecies = new File (System.getProperty("RMG.RestartDir"),"edgeSpecies.txt");
 //			FileReader fr = new FileReader(edgeSpecies);
 //			BufferedReader reader = new BufferedReader(fr);
 //			String line = ChemParser.readMeaningfulLine(reader);
@@ -2510,7 +2495,7 @@ public class ReactionModelGenerator {
 	
 	private void writeEnlargerInfo() {
 		try {
-	        File diagnosis = new File("enlarger.xls");
+	        File diagnosis = new File(System.getProperty("RMG.jobOutputDir"),"enlarger.xls");
 	        FileWriter fw = new FileWriter(diagnosis);
 	        fw.write(Global.enlargerInfo.toString());
 	        fw.close();
@@ -2524,7 +2509,7 @@ public class ReactionModelGenerator {
 	private void writeDiagnosticInfo() {
 		
 		try {
-	        File diagnosis = new File("diagnosis.xls");
+	        File diagnosis = new File(System.getProperty("RMG.jobOutputDir"),"diagnosis.xls");
 	        FileWriter fw = new FileWriter(diagnosis);
 	        fw.write(Global.diagnosticInfo.toString());
 	        fw.close();
@@ -2614,7 +2599,7 @@ public class ReactionModelGenerator {
 //		StringBuilder restartFileContent =new StringBuilder();
 //		int reactionCount = 1;
 //		try{
-//			File coreSpecies = new File ("Restart/edgeReactions.txt");
+//			File coreSpecies = new File (System.getProperty("RMG.RestartDir"),"edgeReactions.txt");
 //			FileWriter fw = new FileWriter(coreSpecies);
 //			for(Iterator iter=((CoreEdgeReactionModel)getReactionModel()).getUnreactedReactionSet().iterator();iter.hasNext();){
 //				
@@ -2645,7 +2630,7 @@ public class ReactionModelGenerator {
 //		StringBuilder restartFileContent = new StringBuilder();
 //		int reactionCount = 1;
 //		try{
-//			File allReactions = new File ("Restart/allReactions.txt");
+//			File allReactions = new File (System.getProperty("RMG.RestartDir"),"allReactions.txt");
 //			FileWriter fw = new FileWriter(allReactions);
 //			for(Iterator iter=getReactionModel().getReaction();iter.hasNext();){
 //				
@@ -2679,7 +2664,7 @@ public class ReactionModelGenerator {
 		BufferedWriter bw = null;
 		Logger.info("Writing Restart Edge Species");
         try {
-            bw = new BufferedWriter(new FileWriter("Restart/edgeSpecies.txt"));
+            bw = new BufferedWriter(new FileWriter(new File(System.getProperty("RMG.RestartDir"),"edgeSpecies.txt")));
 			for(Iterator iter=((CoreEdgeReactionModel)getReactionModel()).getUnreactedSpeciesSet().iterator();iter.hasNext();){
 				Species species = (Species) iter.next();
 				bw.write(species.getFullName());
@@ -2708,7 +2693,7 @@ public class ReactionModelGenerator {
 		BufferedWriter bw = null;
 
 		try {
-		    bw = new BufferedWriter(new FileWriter("Pruning/edgeSpecies.txt", true));
+		    bw = new BufferedWriter(new FileWriter(new File(System.getProperty("RMG.PruningDir"),"edgeSpecies.txt"), true));
 		    bw.write(species.getChemkinName());
 		    bw.newLine();
 		    int dummyInt = 0;
@@ -2740,7 +2725,7 @@ public class ReactionModelGenerator {
 //		StringBuilder restartFileContent = new StringBuilder();
 //		int reactionCount = 0;
 //		try{
-//			File coreSpecies = new File ("Restart/coreReactions.txt");
+//			File coreSpecies = new File (System.getProperty("RMG.RestartDir"),"coreReactions.txt");
 //			FileWriter fw = new FileWriter(coreSpecies);
 //			for(Iterator iter=getReactionModel().getReaction();iter.hasNext();){
 //				
@@ -2766,7 +2751,7 @@ public class ReactionModelGenerator {
 		BufferedWriter bw = null;
 		Logger.info("Writing Restart Core Species");
         try {
-            bw = new BufferedWriter(new FileWriter("Restart/coreSpecies.txt"));
+            bw = new BufferedWriter(new FileWriter(new File(System.getProperty("RMG.RestartDir"),"coreSpecies.txt")));
 			for(Iterator iter=getReactionModel().getSpecies();iter.hasNext();){
 				Species species = (Species) iter.next();
 				bw.write(species.getFullName());
@@ -2796,8 +2781,8 @@ public class ReactionModelGenerator {
 		BufferedWriter bw_pdeprxns = null;
 		Logger.info("Writing Restart Core Reactions");
         try {
-            bw_rxns = new BufferedWriter(new FileWriter("Restart/coreReactions.txt"));
-            bw_pdeprxns = new BufferedWriter(new FileWriter("Restart/pdepreactions.txt"));
+            bw_rxns = new BufferedWriter(new FileWriter(new File(System.getProperty("RMG.RestartDir"),"coreReactions.txt")));
+            bw_pdeprxns = new BufferedWriter(new FileWriter(new File(System.getProperty("RMG.RestartDir"),"pdepreactions.txt")));
             
     		String EaUnits = ArrheniusKinetics.getEaUnits();
     		String AUnits = ArrheniusKinetics.getAUnits();
@@ -2857,7 +2842,7 @@ public class ReactionModelGenerator {
 		BufferedWriter bw = null;
 		Logger.info("Writing Restart Edge Reactions");
         try {
-            bw = new BufferedWriter(new FileWriter("Restart/edgeReactions.txt"));
+            bw = new BufferedWriter(new FileWriter(new File(System.getProperty("RMG.RestartDir"),"edgeReactions.txt")));
             
     		String EaUnits = ArrheniusKinetics.getEaUnits();
     		bw.write("UnitsOfEa: " + EaUnits);
@@ -2899,7 +2884,7 @@ public class ReactionModelGenerator {
 		BufferedWriter bw = null;
 
 		try {
-		    bw = new BufferedWriter(new FileWriter("Pruning/edgeReactions.txt", true));
+		    bw = new BufferedWriter(new FileWriter(new File(System.getProperty("RMG.PruningDir"),"edgeReactions.txt"), true));
 
 		    if (reaction.isForward()) {
 			    bw.write(reaction.toChemkinString(new Temperature(298,"K")));
@@ -2931,7 +2916,7 @@ public class ReactionModelGenerator {
 		BufferedWriter bw = null;
 		
         try {
-            bw = new BufferedWriter(new FileWriter("Restart/pdepnetworks.txt"));
+            bw = new BufferedWriter(new FileWriter(new File(System.getProperty("RMG.RestartDir"),"pdepnetworks.txt")));
     		int numFameTemps = PDepRateConstant.getTemperatures().length;
     		int numFamePress = PDepRateConstant.getPressures().length;
     		int numChebyTemps = ChebyshevPolynomials.getDefaultNT();
@@ -3152,7 +3137,7 @@ public class ReactionModelGenerator {
 		Logger.info("Reading in species from Restart folder");
 		// Read in core species -- NOTE code is almost duplicated in Read in edge species (second part of procedure)
 		try {
-			FileReader in = new FileReader("Restart/coreSpecies.txt");
+			FileReader in = new FileReader(new File(System.getProperty("RMG.RestartDir"),"coreSpecies.txt"));
 			BufferedReader reader = new BufferedReader(in);
             String line = ChemParser.readMeaningfulLine(reader, true);
 			while (line != null) {
@@ -3190,7 +3175,7 @@ public class ReactionModelGenerator {
 		
 		// Read in edge species
 		try {
-			FileReader in = new FileReader("Restart/edgeSpecies.txt");
+			FileReader in = new FileReader(new File(System.getProperty("RMG.RestartDir"),"edgeSpecies.txt"));
 			BufferedReader reader = new BufferedReader(in);
             String line = ChemParser.readMeaningfulLine(reader, true);
 			while (line != null) {
@@ -3240,7 +3225,7 @@ public class ReactionModelGenerator {
 		Logger.info("Reading reactions from Restart folder");
 		// Read in core reactions
 		try {
-			FileReader in = new FileReader("Restart/coreReactions.txt");
+			FileReader in = new FileReader(new File(System.getProperty("RMG.RestartDir"),"coreReactions.txt"));
 			BufferedReader reader = new BufferedReader(in);
             String line = ChemParser.readMeaningfulLine(reader, true);
             
@@ -3290,7 +3275,7 @@ public class ReactionModelGenerator {
 		 */
 		SeedMechanism restart_seed_mechanism = null;
 		try {
-			String path = System.getProperty("user.dir") +  "/Restart";								   
+			String path = System.getProperty("RMG.RestartDir");								   
 			restart_seed_mechanism = new SeedMechanism("Restart", path, false, true);
 		} catch (IOException e1) {
             Logger.logStackTrace(e1);
@@ -3299,7 +3284,7 @@ public class ReactionModelGenerator {
 		
 		// Read in edge reactions
 		try {
-			FileReader in = new FileReader("Restart/edgeReactions.txt");
+			FileReader in = new FileReader(new File(System.getProperty("RMG.RestartDir"),"edgeReactions.txt"));
 			BufferedReader reader = new BufferedReader(in);
             String line = ChemParser.readMeaningfulLine(reader, true);
             
@@ -3343,7 +3328,7 @@ public class ReactionModelGenerator {
     	LinkedHashMap speciesStatus = new LinkedHashMap();
     	
 		try {
-			FileReader in = new FileReader("Restart/coreSpecies.txt");
+			FileReader in = new FileReader(new File(System.getProperty("RMG.RestartDir"),"coreSpecies.txt"));
 			BufferedReader reader = new BufferedReader(in);
             Integer numRxnSystems = Integer.parseInt(ChemParser.readMeaningfulLine(reader, true));
             String line = ChemParser.readMeaningfulLine(reader, true);
@@ -3392,7 +3377,7 @@ public class ReactionModelGenerator {
     public void putRestartSpeciesInInitialStatus(InitialStatus is, int i) {
     	
 		try {
-			FileReader in = new FileReader("Restart/coreSpecies.txt");
+			FileReader in = new FileReader(new File(System.getProperty("RMG.RestartDir"),"coreSpecies.txt"));
 			BufferedReader reader = new BufferedReader(in);
             String line = ChemParser.readMeaningfulLine(reader, true);
 			while (line != null) {
@@ -3432,7 +3417,7 @@ public class ReactionModelGenerator {
     	LinkedList allNetworks = PDepNetwork.getNetworks(); 
     	
     	try {
-			FileReader in = new FileReader("Restart/pdepnetworks.txt");
+			FileReader in = new FileReader(new File(System.getProperty("RMG.RestartDir"),"pdepnetworks.txt"));
 			BufferedReader reader = new BufferedReader(in);
             
 			StringTokenizer st = new StringTokenizer(ChemParser.readMeaningfulLine(reader, true));
@@ -5305,14 +5290,19 @@ public class ReactionModelGenerator {
     
     public void writeBackupRestartFiles(String[] listOfFiles) {
     	for (int i=0; i<listOfFiles.length; i++) {
-    		File temporaryRestartFile = new File(listOfFiles[i]);
-    		if (temporaryRestartFile.exists()) temporaryRestartFile.renameTo(new File(listOfFiles[i]+"~"));
+    	    // delete the backup if it exists (it shouldn't)
+    	    File temporaryRestartFile = new File(System.getProperty("RMG.RestartDir"), listOfFiles[i]+"~");
+    	    if (temporaryRestartFile.exists()) temporaryRestartFile.delete();
+    	    // rename the original to the backup
+    		temporaryRestartFile = new File(System.getProperty("RMG.RestartDir"), listOfFiles[i]);
+    		if (temporaryRestartFile.exists()) temporaryRestartFile.renameTo(new File(System.getProperty("RMG.RestartDir"), listOfFiles[i]+"~"));
     	}
     }
     
     public void removeBackupRestartFiles(String[] listOfFiles) {
     	for (int i=0; i<listOfFiles.length; i++) {
-    		File temporaryRestartFile = new File(listOfFiles[i]+"~");
+    	    // delete the backup
+    		File temporaryRestartFile = new File(System.getProperty("RMG.RestartDir"), listOfFiles[i]+"~");
     		temporaryRestartFile.delete();
     	}
     }

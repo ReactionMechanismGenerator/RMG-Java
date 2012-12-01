@@ -48,7 +48,8 @@ public class RMG {
     public static void main(String[] args) {
 		
 		// Initialize the logger
-        Logger.initialize();
+        String logFileName = new File(System.getenv("RMG_JOB_OUTPUT"),"RMG.log").getPath();
+        Logger.initialize(logFileName);
 
         // Log the RMG header
         Logger.logHeader();
@@ -65,23 +66,22 @@ public class RMG {
             // Create the working folders for various RMG components
             // Note that some of these folders are only used when their
             // corresponding features are activated in the condition file
-            createFolder("chemkin", true);
-            createFolder("Restart", false);
-            createFolder("GATPFit", true);
-            createFolder("ODESolver", true);
-            createFolder("fame", true);
-            createFolder("frankie", true);
-            createFolder("InChI", true);
-            createFolder("Pruning", true);
-            createFolder("2Dmolfiles", true);   // Not sure if we should be deleting this
-            createFolder("3Dmolfiles", true);   // Not sure if we should be deleting this
-            createFolder("QMfiles", false);     // Preserving QM files between runs will speed things up considerably
-            createFolder("QMThermoLibrary", false); //Added by nyee will write new thermolibrary from QMTP calculation here
+            createFolder( System.getProperty("RMG.jobOutputDir"), false);
+            createFolder( System.getProperty("RMG.ChemkinOutputDir"), true);
+            createFolder( System.getProperty("RMG.RestartDir"), false); // don't delete
+            createFolder( System.getProperty("RMG.GATPFitDir"), true);
+            createFolder( System.getProperty("RMG.ODESolverDir"), true);
+            createFolder( System.getProperty("RMG.fameOutputDir"), true);
+            createFolder( System.getProperty("RMG.frankieOutputDir"), true);
+            createFolder( System.getProperty("RMG.jobScratchDir") , false);
+            createFolder( System.getProperty("RMG.InChI_running_directory") , true);
+            createFolder( System.getProperty("RMG.PruningDir"), true);
+            createFolder( System.getProperty("RMG.2DmolfilesDir"), true);
+            createFolder( System.getProperty("RMG.3DmolfilesDir"), true);
             
-            //Test QMFiles in temp directory
-            String tmpdir = System.getProperty("java.io.tmpdir");
-            String qmFolderName = tmpdir + "/RMG_QMfiles";
-            createFolder (qmFolderName, true);
+            createFolder( System.getProperty("RMG.qmCalculationsDir"), false);     // Preserving QM files between runs will speed things up considerably
+            createFolder( System.getProperty("RMG.qmLibraryDir"), false); // don't delete
+            
             
             // The only parameter should be the path to the condition file
             String inputfile = args[0];
@@ -101,17 +101,17 @@ public class RMG {
             ReactionModelGenerator rmg = new ReactionModelGenerator();
             rmg.modelGeneration();
             
-            //delete tmpQm
-            File qmFolder = new File(qmFolderName);
-            if(qmFolder.exists()){
-            	ChemParser.deleteDir(qmFolder);
+            //Delete remaining QM files if they were only meant tobe temporary
+            if (!QMTP.keepQMfiles){
+                File qmFolder = new File(System.getProperty("RMG.qmCalculationsDir"));
+                if(qmFolder.exists()){
+                    ChemParser.deleteDir(qmFolder);
+                }
             }
 
             // Save the resulting model to Final_Model.txt
             writeFinalModel(rmg);
             
-            //close QMLibraryEditor
-            QMLibraryEditor.finish();
        }
        catch (Exception e) {
            // Any unhandled exception will land here
@@ -180,9 +180,98 @@ public class RMG {
         String workingDir = System.getenv("RMG");
         if (workingDir == null) throw new RuntimeException("The RMG environment variable is not defined.");
         System.setProperty("RMG.workingDirectory", workingDir);
+        
+        Logger.info(" Environment Variables:");
+        Logger.info("RMG = "+workingDir);
 		
-        // Set the default database
-        setDatabasePaths(workingDir + "/databases/RMG_database");
+        // Set the databases directory
+        String databaseDir = System.getenv("RMG_DATABASES");
+        if (databaseDir == null) {
+            databaseDir =  workingDir + "/databases";
+            Logger.info("RMG_DATABASES = $RMG/databases (default)");
+        }
+        else{
+            Logger.info(String.format("RMG_DATABASES = %s (environment variable)",databaseDir));
+        }
+        System.setProperty("RMG.databasesDirectory", databaseDir);
+        // Set the default database. Will be over-ridden if a "Database:" line is found in the condition file.
+        extractAndSetDatabasePath("Database: RMG_database");
+
+        String source = "";
+        // Set the job scratch dir
+        String jobScratchDir = System.getenv("RMG_JOB_SCRATCH");
+        if (jobScratchDir == null) {
+            jobScratchDir = ".";  // default of "scratch" may be nicer
+            source = "default";
+        }
+        else source = "environment variable";
+        Logger.info(String.format("RMG_JOB_SCRATCH = %s (%s)",jobScratchDir,source));
+        System.setProperty("RMG.jobScratchDir", jobScratchDir);
+        
+        // Set the job output dir
+        String jobOutputDir = System.getenv("RMG_JOB_OUTPUT");
+        if (jobOutputDir == null) {
+            jobOutputDir = ".";
+            source = "default";
+        }
+        else source = "environment variable";
+        Logger.info(String.format("RMG_JOB_OUTPUT = %s (%s)",jobOutputDir,source));
+        System.setProperty("RMG.jobOutputDir", jobOutputDir);
+        
+        // Set the QM library directory
+        String qmLibraryDir = System.getenv("RMG_QM_LIBRARY");
+        if (qmLibraryDir == null) {
+            qmLibraryDir = new File(jobOutputDir, "QMThermoLibrary").getPath();
+            source = "default - relative to RMG_JOB_OUTPUT";
+        }
+        else source = "environment variable";
+        Logger.info(String.format("RMG_QM_LIBRARY = %s (%s)",qmLibraryDir,source));
+        System.setProperty("RMG.qmLibraryDir", qmLibraryDir);
+        
+        // Set the QM calculations directory
+        String qmCalculationsDir = System.getenv("RMG_QM_CALCS");
+        if (qmCalculationsDir == null) {
+            qmCalculationsDir = new File(jobOutputDir, "QMfiles").getPath();
+            source = "default - relative to RMG_JOB_OUTPUT";
+        }
+        else source = "environment variable";
+        Logger.info(String.format("RMG_QM_CALCS = %s (%s)",qmCalculationsDir,source));
+        System.setProperty("RMG.qmCalculationsDir", qmCalculationsDir);
+        
+        Logger.verbose(" Derived paths:");
+        // Set the directory to save problematic Fame input/output in
+        String fameOutputDir = new File(jobOutputDir, "fame").getPath();
+        Logger.verbose("Fame errors directory = "+fameOutputDir);
+        System.setProperty("RMG.fameOutputDir", fameOutputDir);
+        // Set the directory to save problematic Frankie input/output in
+        String frankieOutputDir = new File(jobOutputDir, "frankie").getPath();
+        Logger.verbose("Frankie errors directory = "+frankieOutputDir);
+        System.setProperty("RMG.frankieOutputDir", frankieOutputDir);
+        // Set the directory to save problematic GATPFit input/output in
+        String GATPFitDir = new File(jobOutputDir, "GATPFit").getPath();
+        Logger.verbose("GATPFit errors directory = "+GATPFitDir);
+        System.setProperty("RMG.GATPFitDir", GATPFitDir);
+        // Set the directory to run the inchi executable in.
+        System.setProperty("RMG.InChI_running_directory", new File(System.getProperty("RMG.jobScratchDir"), "InChI").getPath());
+        Logger.verbose("InChI running directory = "+System.getProperty("RMG.InChI_running_directory"));
+        // Set the directory to run the ODE solver in.
+        System.setProperty("RMG.ODESolverDir", new File(System.getProperty("RMG.jobScratchDir"), "ODESolver").getPath());
+        Logger.verbose("ODE Solver running directory = "+System.getProperty("RMG.ODESolverDir"));
+        // 2D and 3D mol files for the RDKit portion of QM Thermo
+        System.setProperty("RMG.2DmolfilesDir", new File(System.getProperty("RMG.jobScratchDir"), "2Dmolfiles").getPath());
+        System.setProperty("RMG.3DmolfilesDir", new File(System.getProperty("RMG.jobScratchDir"), "3Dmolfiles").getPath());
+        // output files
+        // Set the directory to save the chemkin files in.
+        System.setProperty("RMG.ChemkinOutputDir", new File(System.getProperty("RMG.jobOutputDir"), "chemkin").getPath());
+        // Set the directory to save the Pruning files in.
+        System.setProperty("RMG.PruningDir", new File(System.getProperty("RMG.jobOutputDir"), "Pruning").getPath());
+        // Set the directory to save the Restart files in.
+        System.setProperty("RMG.RestartDir", new File(System.getProperty("RMG.jobOutputDir"), "Restart").getPath());
+
+
+        
+
+        
 
     }
 
@@ -214,11 +303,12 @@ public class RMG {
     }
 
     public static void extractAndSetDatabasePath(String line) {
+        
         StringTokenizer st = new StringTokenizer(line);
         String next = st.nextToken();
         String database_name = st.nextToken().trim();
-        String workingDir = System.getProperty("RMG.workingDirectory");
-        String database_path = workingDir + "/databases/" + database_name;
+        String databases_path = System.getProperty("RMG.databasesDirectory");
+        String database_path = databases_path + "/" + database_name;
         setDatabasePaths(database_path);
     }
 

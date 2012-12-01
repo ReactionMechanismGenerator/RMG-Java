@@ -22,22 +22,24 @@ condition file :file:`hexane_pyro.txt`.
 
     $ cd /hexane_pyro/
 
-#. Run the following Java command to launch the program 
+#. Run the following Java command to launch the program
    (all one line)::
 
     $ java -Xmx500m -classpath $RMG/bin/RMG.jar RMG hexane_pyro.txt
 
-When RMG is started, it creates 11 subdirectories in the directory containing
-the condition file: :file:`2Dmolfiles`, :file:`3Dmolfiles`, :file:`chemkin`,
+When RMG is started, it creates several subdirectories: :file:`2Dmolfiles`, :file:`3Dmolfiles`, :file:`chemkin`,
 :file:`fame`, :file:`frankie`, :file:`GATPFit`, :file:`InChI`,
 :file:`ODESolver`, :file:`Pruning`, :file:`QMfiles` and :file:`Restart`.
+By default these are in the directory from which you ran the command, but to
+configure them see :ref:`configuringpaths`.
 
-In this example, all of the output from RMG is piped to a file :file:`output.log`. The ``> output`` 
+
+In this example, all of the output from RMG is piped to a file :file:`output.log`. The ``> output``
 part of the command is optional but recommended.
 The Java option ``-Xmx500m`` is hardware specific. In this example, we assume that
 we can allot five hundred megabytes of memory for Java Virtual Machine running
-RMG; please consult a guide to Java for more information. 
-On unix systems we recommend allocating less than half of your available virtual memory, because of 
+RMG; please consult a guide to Java for more information.
+On unix systems we recommend allocating less than half of your available virtual memory, because of
 the way the Java Virtual Machine forks processes.
 
 To see the content of
@@ -73,7 +75,7 @@ As of version 3.2, several batch scripts have been provided to make running RMG 
 
 The easiest way to use them is:
 
-1. Create the condition or input file for the job you wish to run. For general RMG jobs this file should be named ``condition.txt``. For other jobs this file should be named ``input.txt``. 
+1. Create the condition or input file for the job you wish to run. For general RMG jobs this file should be named ``condition.txt``. For other jobs this file should be named ``input.txt``.
 
 2. Copy the batch script corresponding to the job you wish to run to the folder containing the condition file. For best results, this folder should only contain the condition file and the batch script at this step. The batch script will happily overwrite existing files if they correspond to files created by RMG, including the results of a previous RMG run.
 
@@ -85,4 +87,25 @@ The easiest way to use them is:
 
 	You can edit the batch script file using a program like Notepad if you want to change thing like the filenames or memory allocation.
 
-.. % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+.. _configuringpaths:
+
+Configuring paths using Environment Variables
+=============================================
+
+You can control where a lot of output and temporary files are stored by manipulating
+environment variables before running RMG. This can be useful for running on networked
+clusters of computers, eg. for running several jobs concurrently that can share the
+same quantum mechanics calculations results, or for saving your temporary scratch
+files on a local (fast) hard disk, and your final results on a shared network drive.
+
+An example bash script provided in the 1,3-hexadiene example directory, demonstrates
+the variables and their default values:
+
+.. literalinclude:: ../../../examples/RMG/1,3-hexadiene/RMG.sh
+
+The same approach should work for Windows.
+
+You can also pass the variables when you call the program, eg::
+
+$ RMG_QM_LIBRARY=$HOME/myQMlibrary java -Xmx500m -classpath $RMG/bin/RMG.jar RMG condition.txt
+
