@@ -1855,7 +1855,7 @@ public class QMTP implements GeneralGAPP {
         int maxAttemptNumber = 4;
         boolean pointGroupFound=false;
         //write the input file
-	File inputFile=new File(qmfolder+name+".symm");
+	File inputFile=new File(qmfolder,name+".symm");
         try {
             FileWriter fw = new FileWriter(inputFile);
             fw.write(geom);
@@ -2662,7 +2662,7 @@ public class QMTP implements GeneralGAPP {
 	    }
 	    //write the string to file
 	    try {
-		//File inputFilePath=new File(qmfolder+"symminput.txt");//SYMMETRY program directory
+		//File inputFilePath=new File(qmfolder,"symminput.txt");//SYMMETRY program directory
 		FileWriter fw = new FileWriter(inpFilePath);
 		fw.write(geomXYZ);
 		fw.close();
