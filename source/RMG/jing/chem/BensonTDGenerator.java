@@ -18,9 +18,13 @@ public class BensonTDGenerator extends TDGenerator{
 		ThermoData thermo = thermoGAPP.generateThermoData(chemGraph);
 		
 		boolean fusedPolycyclic = chemGraph.containsFusedRingAtoms();
+		BensonRingCorrections monoCyclicRSCs = ((GATP)thermoGAPP).getMonoCyclicRSCs();
 		
 		//Check if cyclic RSCs have been found in case of a cyclic molecule that are non trivial nodes such as six-membered ring.
-		if (!chemGraph.isAcyclic() && !fusedPolycyclic && ((GATP)thermoGAPP).getMonoCyclicRSCs().isImperfectMatch()) {
+		if (chemGraph.fromprimarythermolibrary) {
+			// No action is needed because the thermo comes from a library
+		}
+		else if (!chemGraph.isAcyclic() && !fusedPolycyclic && monoCyclicRSCs.isImperfectMatch()) {
 			Logger.warning("Could not find a non trivial ring correction!" +
 					"It is advised to review the thermochemistry data of this species.");
 		}
