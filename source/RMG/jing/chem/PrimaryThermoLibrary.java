@@ -182,10 +182,10 @@ public HashMap readDictionary(String p_fileName, String source) throws FileNotFo
 	      else{
 	        Graph oldGraph = (Graph)old;
 	        if (!oldGraph.equals(graph)) {
-	          Logger.critical("Can't replace graph in primary thermo library!");
-	          Logger.info("The species name '" + name + "' is given multiple times");
-	          Logger.info("in the thermo library '" + source + "', yet has");
-	          Logger.info("different graphs");
+		  Logger.info("The species name '" + name + "' is given multiple times");
+                  Logger.info("in the thermo library '" + source + "', yet has");
+                  Logger.info("different graphs");
+		  Logger.critical("Can't replace graph in primary thermo library!");
 	          System.exit(0);
 	        }
 

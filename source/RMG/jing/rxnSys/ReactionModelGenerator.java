@@ -519,10 +519,10 @@ public class ReactionModelGenerator {
 						StringTokenizer st5 = new StringTokenizer(line);
 						String nameQmVerbose = st5.nextToken(); //String Verbose
 						String checkQmVerbose = st5.nextToken().toLowerCase();
-						if (checkQmVerbose.equals("yes")){
-							QMTP.keepQMfiles = true;
+						if (checkQmVerbose.equals("no")){
+							QMTP.keepQMfiles = false;
 						}
-						else if(!checkQmVerbose.equals("no")){
+						else if(!checkQmVerbose.equals("yes")){
 							Logger.critical("condition.txt: QMTP 'KeepQMFiles' field should be 'yes' or 'no'");
 							System.exit(0);
 						}
