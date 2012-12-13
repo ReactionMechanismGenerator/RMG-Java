@@ -1142,7 +1142,7 @@ public class ReactionModelGenerator {
 					line = ChemParser.readMeaningfulLine(reader, true);
 				}
 				if (getSeedMechanism() != null)	Logger.info("Seed Mechanisms in use: " + getSeedMechanism().getName());
-				else setSeedMechanism(null);
+				else setSeedMechanism(null);		
 			} else throw new InvalidSymbolException("Error reading condition.txt file: "
 													+ "Could not locate SeedMechanism field");
 			
@@ -1907,20 +1907,31 @@ public class ReactionModelGenerator {
 			// Then print the core and append the units and 0.0 for number of concentrations
 			// *** Strictly assuming that species in condition file are the initial species
 			// in the RMG_Dictionary ***
-			
-			int speciesCounter = 1;
-			
-			Iterator iter=getReactionModel().getSpecies();
+				
+			int speciestoSkip=1;
+			Iterator iter=getReactionModel().getSpecies();		
 			
 			while(iter.hasNext()){
-				Species spe = (Species) iter.next();
-                if(speciesCounter > numSpeciesInitialConditionFile){
-                	// Append the name + units + concentrations as 0.0
-                	restartConditionFile.append(spe.getChemkinName()+" "+unit+" "+ConcString+"\n");
-                	// Append the Chemgraph
-                	restartConditionFile.append(spe.getChemGraph().toString(0)+"\n");
+				Species spe = (Species) iter.next();						
+				if(speciestoSkip>numSpeciesInitialConditionFile){
+					// Check if species is in the seed, if yes do not print it in restart file
+					if(getSeedMechanism()!=null){
+						LinkedHashSet seedMechanismSpecies = getSeedMechanism().getSpeciesSet();
+						if(!seedMechanismSpecies.contains(spe)){
+							// Append the name + units + concentrations as 0.0
+		                	restartConditionFile.append(spe.getChemkinName()+" "+unit+" "+ConcString+"\n");
+		                	// Append the Chemgraph
+		                	restartConditionFile.append(spe.getChemGraph().toString(0)+"\n");						
+						}
+					}
+					else{
+						// Append the name + units + concentrations as 0.0
+						restartConditionFile.append(spe.getChemkinName()+" "+unit+" "+ConcString+"\n");
+						// Append the Chemgraph
+						restartConditionFile.append(spe.getChemGraph().toString(0)+"\n");
+					}			
                 }
-                ++speciesCounter;
+                ++speciestoSkip;
 			}
 			
 			// Read lines till end of condition file 
