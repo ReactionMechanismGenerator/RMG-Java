@@ -16,8 +16,7 @@ import jing.chemUtil.*;
 //arg[2]=new chemkin file
 public class InchifyCHEMKINusingDictionary {
     public static void main(String[] args) {
-        String workingDir = System.getenv("RMG");
-        System.setProperty("RMG.workingDirectory", workingDir);
+        RMG.globalInitializeSystemProperties();
 
 	//1. read the Dictionary file, converting to modified inchis along the way and adding them into inchiDict HashMap
         HashMap inchiDict = new HashMap();
