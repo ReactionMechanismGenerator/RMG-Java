@@ -20,4 +20,4 @@ Arrhenius_EP
 845		CH3CH(OO)CHCH2	600-2000	8.253E+05	1.829	0		24.247	*5		0		0		2		3	MRH CBS-QB3 calculations with 1d h.r. corrections.
 846		R2OO_2H_HDe		600-2000	8.253E+05	1.829	0		24.247	*5		0		0		2		3	Same as node 845 (MRH assumption)
 847		HOCH[OO]CH3		600-2000	6.813E+10	0.493	0		11.894	*10		0		0		2		5	MRH CBS-QB3 calculations with 1d h.r. corrections.
-848		OCOO			600-2000	6.813E+10	0.493	0		11.894	*10		0		0		2		5	Same as node 847 (MRH assumption)
+848		OCOO			200-600 	6.380E+12	0.0 	0		11.400	*5		0		0		2		3	Hermans et al. 2005 (doi:10.1021/jp044080v) G2M calculations
