@@ -7,9 +7,9 @@ public class SMVector {
     public String Location;
 
     public SMVector(int ID, String name1, String name2, String name3) {
-    	this.Index = ID;
-    	this.Name = name1;
-    	this.React = name2;
-    	this.Location = name3;
+        this.Index = ID;
+        this.Name = name1;
+        this.React = name2;
+        this.Location = name3;
     }
 }

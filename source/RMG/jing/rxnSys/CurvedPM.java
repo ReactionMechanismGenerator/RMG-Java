@@ -1,87 +1,75 @@
-////////////////////////////////////////////////////////////////////////////////
+// //////////////////////////////////////////////////////////////////////////////
 //
-//	RMG - Reaction Mechanism Generator
+// RMG - Reaction Mechanism Generator
 //
-//	Copyright (c) 2002-2011 Prof. William H. Green (whgreen@mit.edu) and the
-//	RMG Team (rmg_dev@mit.edu)
+// Copyright (c) 2002-2011 Prof. William H. Green (whgreen@mit.edu) and the
+// RMG Team (rmg_dev@mit.edu)
 //
-//	Permission is hereby granted, free of charge, to any person obtaining a
-//	copy of this software and associated documentation files (the "Software"),
-//	to deal in the Software without restriction, including without limitation
-//	the rights to use, copy, modify, merge, publish, distribute, sublicense,
-//	and/or sell copies of the Software, and to permit persons to whom the
-//	Software is furnished to do so, subject to the following conditions:
+// Permission is hereby granted, free of charge, to any person obtaining a
+// copy of this software and associated documentation files (the "Software"),
+// to deal in the Software without restriction, including without limitation
+// the rights to use, copy, modify, merge, publish, distribute, sublicense,
+// and/or sell copies of the Software, and to permit persons to whom the
+// Software is furnished to do so, subject to the following conditions:
 //
-//	The above copyright notice and this permission notice shall be included in
-//	all copies or substantial portions of the Software.
+// The above copyright notice and this permission notice shall be included in
+// all copies or substantial portions of the Software.
 //
-//	THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-//	IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-//	FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-//	AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-//	LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
-//	FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
-//	DEALINGS IN THE SOFTWARE.
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+// FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
+// DEALINGS IN THE SOFTWARE.
 //
-////////////////////////////////////////////////////////////////////////////////
-
-
-
+// //////////////////////////////////////////////////////////////////////////////
 package jing.rxnSys;
-
 
 import java.util.*;
 import jing.param.Pressure;
 
-//## package jing::rxnSys 
-
-//----------------------------------------------------------------------------
-// jing\rxnSys\CurvedPM.java                                                                  
-//----------------------------------------------------------------------------
-
-//## class CurvedPM 
+// ## package jing::rxnSys
+// ----------------------------------------------------------------------------
+// jing\rxnSys\CurvedPM.java
+// ----------------------------------------------------------------------------
+// ## class CurvedPM
 public class CurvedPM implements PressureModel {
-    
-    protected LinkedList pressureProfile;		//## attribute pressureProfile 
-    
-    
+    protected LinkedList pressureProfile; // ## attribute pressureProfile
+
     // Constructors
-    
-    //## operation CurvedPM(LinkedList) 
-    public  CurvedPM(LinkedList p_pressureProfile) {
-        //#[ operation CurvedPM(LinkedList) 
+    // ## operation CurvedPM(LinkedList)
+    public CurvedPM(LinkedList p_pressureProfile) {
+        // #[ operation CurvedPM(LinkedList)
         pressureProfile = p_pressureProfile;
-        
-        
-        //#]
+        // #]
     }
-    public  CurvedPM() {
+
+    public CurvedPM() {
     }
-    
-    //## operation getPressure() 
+
+    // ## operation getPressure()
     public Pressure getPressure() {
-        //#[ operation getPressure() 
-        return new Pressure(1.0,"atm");
-        //#]
-    }
-    
-    //## operation getPressure(ReactionTime) 
-    public Pressure getPressure(ReactionTime p_reactionTime) {
-        //#[ operation getPressure(ReactionTime) 
+        // #[ operation getPressure()
         return new Pressure(1.0, "atm");
-        //#]
+        // #]
     }
-    
+
+    // ## operation getPressure(ReactionTime)
+    public Pressure getPressure(ReactionTime p_reactionTime) {
+        // #[ operation getPressure(ReactionTime)
+        return new Pressure(1.0, "atm");
+        // #]
+    }
+
     public LinkedList getPressureProfile() {
         return pressureProfile;
     }
-    
+
     public void setPressureProfile(LinkedList p_pressureProfile) {
         pressureProfile = p_pressureProfile;
     }
-    
 }
 /*********************************************************************
-	File Path	: RMG\RMG\jing\rxnSys\CurvedPM.java
-*********************************************************************/
-
+ * File Path : RMG\RMG\jing\rxnSys\CurvedPM.java
+ *********************************************************************/

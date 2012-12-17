@@ -5,7 +5,7 @@ public class SensVector {
     public String Name;
 
     public SensVector(int ID, String name1) {
-    	this.Index = ID;
-    	this.Name = name1;
+        this.Index = ID;
+        this.Name = name1;
     }
 }
