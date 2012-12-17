@@ -232,7 +232,7 @@ public class ThermoDataEstimator {
     private static Map<ChemGraph, String> readChemGraphsFromFile(
             LinkedHashMap speciesFromInputFile, BufferedReader reader)
             throws IOException, ForbiddenStructureException {
-        Map<ChemGraph, String> chemgraphNamesMap = new HashMap<ChemGraph, String>();
+        Map<ChemGraph, String> chemgraphNamesMap = new LinkedHashMap<ChemGraph, String>();
         String line = ChemParser.readMeaningfulLine(reader, true);
         while (line != null) {
             String name = line;

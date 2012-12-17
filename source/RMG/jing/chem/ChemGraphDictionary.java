@@ -40,13 +40,13 @@ import jing.rxnSys.CoreEdgeReactionModel;
 // ## class SpeciesDictionary
 public class ChemGraphDictionary {
     private static ChemGraphDictionary INSTANCE = new ChemGraphDictionary(); // ## attribute INSTANCE
-    private static HashMap dictionary; // ## attribute dictionary
+    private static LinkedHashMap dictionary; // ## attribute dictionary
 
     // Constructors
     // ## operation SpeciesDictionary()
     private ChemGraphDictionary() {
         // #[ operation SpeciesDictionary()
-        dictionary = new HashMap();
+        dictionary = new LinkedHashMap();
         // #]
     }
 

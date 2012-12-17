@@ -128,7 +128,7 @@ public class GATP_Abraham implements GeneralAbramGAPP {
     public AbrahamGAValue getABGroup(ChemGraph p_chemGraph) {
         AbramData result_abram = new AbramData();
         Graph g = p_chemGraph.getGraph();
-        HashMap oldCentralNode = (HashMap) (p_chemGraph.getCentralNode())
+        LinkedHashMap oldCentralNode = (LinkedHashMap) (p_chemGraph.getCentralNode())
                 .clone();
         // saturate radical site
         int max_radNum_molecule = ChemGraph.getMAX_RADICAL_NUM();

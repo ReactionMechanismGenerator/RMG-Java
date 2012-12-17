@@ -316,11 +316,11 @@ public class FrequencyGroups {
      */
     public LinkedList getFreqGroup(ChemGraph p_chemGraph) {
         LinkedList result = new LinkedList();
-        HashMap oldCentralNode = (HashMap) (p_chemGraph.getCentralNode())
+        LinkedHashMap oldCentralNode = (LinkedHashMap) (p_chemGraph.getCentralNode())
                 .clone();
-        // find all the groups, and store them in the HashMap groupCountMap, where the name of the group is the key and
+        // find all the groups, and store them in the LinkedHashMap groupCountMap, where the name of the group is the key and
 // the value is the number of times the group has been encountered in the structure
-        HashMap groupCountMap = new HashMap();
+        LinkedHashMap groupCountMap = new LinkedHashMap();
         Iterator iter = p_chemGraph.getNodeList();
         while (iter.hasNext()) {
             Node node = (Node) iter.next();

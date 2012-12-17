@@ -42,7 +42,7 @@ import jing.chemParser.*;
 public class PrimaryKineticLibrary {
     protected String name;
     protected static LinkedHashSet reactionSet = new LinkedHashSet();
-    protected HashMap speciesSet = new HashMap();
+    protected LinkedHashMap speciesSet = new LinkedHashMap();
 
     // Constructors
     public PrimaryKineticLibrary(String p_libraryName, String p_directoryPath)

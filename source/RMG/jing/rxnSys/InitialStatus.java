@@ -43,8 +43,8 @@ public class InitialStatus extends SystemSnapshot {
                 p_pressure);
     }
 
-    public HashMap identifyColliders() {
-        HashMap result = new HashMap();
+    public LinkedHashMap identifyColliders() {
+        LinkedHashMap result = new LinkedHashMap();
         double totalMole = getTotalMole();
         double adjTotalMole = 0;
         for (Iterator iter = getSpeciesStatus(); iter.hasNext();) {

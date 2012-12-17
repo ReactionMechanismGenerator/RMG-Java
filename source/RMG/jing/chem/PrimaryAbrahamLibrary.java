@@ -39,22 +39,22 @@ import jing.rxnSys.Logger;
  * @author amrit
  */
 public class PrimaryAbrahamLibrary {
-    protected static HashMap library;
-    protected static HashMap dictionary;
+    protected static LinkedHashMap library;
+    protected static LinkedHashMap dictionary;
 
     public PrimaryAbrahamLibrary() {
-        library = new HashMap();
-        dictionary = new HashMap();
+        library = new LinkedHashMap();
+        dictionary = new LinkedHashMap();
     }
 
-    public PrimaryAbrahamLibrary(HashMap Dictionary, HashMap Library) {
+    public PrimaryAbrahamLibrary(LinkedHashMap Dictionary, LinkedHashMap Library) {
         dictionary = Dictionary;
         library = Library;
     }
 
     public PrimaryAbrahamLibrary(String name, String location) {
-        library = new HashMap();
-        dictionary = new HashMap();
+        library = new LinkedHashMap();
+        dictionary = new LinkedHashMap();
         appendPrimaryAbrahamLibrary(name, location);
     }
 
@@ -83,12 +83,12 @@ public class PrimaryAbrahamLibrary {
         library = readLibrary(p_library, dictionary, source);
     }
 
-    public HashMap readLibrary(String p_transportFileName,
-            HashMap p_dictionary, String source) throws IOException {
+    public LinkedHashMap readLibrary(String p_transportFileName,
+            LinkedHashMap p_dictionary, String source) throws IOException {
         try {
             FileReader in = new FileReader(p_transportFileName);
             BufferedReader data = new BufferedReader(in);
-            HashMap tempLibrary = new HashMap();
+            LinkedHashMap tempLibrary = new LinkedHashMap();
             String line = ChemParser.readMeaningfulLine(data, true);
             while (line != null) {
                 StringTokenizer token = new StringTokenizer(line);
@@ -144,7 +144,7 @@ public class PrimaryAbrahamLibrary {
         }
     }
 
-    public HashMap readDictionary(String p_fileName, String source)
+    public LinkedHashMap readDictionary(String p_fileName, String source)
             throws FileNotFoundException, IOException {
         try {
             FileReader in = new FileReader(p_fileName);

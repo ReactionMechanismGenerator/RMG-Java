@@ -26,7 +26,7 @@
 // //////////////////////////////////////////////////////////////////////////////
 package jing.rxn;
 
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Iterator;
 import jing.chem.Species;
 import jing.rxnSys.Logger;
@@ -44,14 +44,14 @@ public class BathGas {
     private double ljSigma = 0.0;
     private double ljEpsilon = 0.0;
     private double molWt = 0.0;
-    private HashMap colliders;
+    private LinkedHashMap colliders;
 
     public BathGas() {
         colliders = null;
     }
 
     public BathGas(String inertGas) {
-        HashMap bathGas4PopRxns = new HashMap();
+        LinkedHashMap bathGas4PopRxns = new LinkedHashMap();
         bathGas4PopRxns.put(inertGas, new Double(1e-6));
         setColliders(bathGas4PopRxns);
         update();
@@ -83,7 +83,7 @@ public class BathGas {
         return molWt;
     }
 
-    public HashMap getColliders() {
+    public LinkedHashMap getColliders() {
         return colliders;
     }
 
@@ -92,7 +92,7 @@ public class BathGas {
         update();
     }
 
-    public void setColliders(HashMap Colliders) {
+    public void setColliders(LinkedHashMap Colliders) {
         colliders = Colliders;
     }
 

@@ -34,8 +34,8 @@ import java.util.*;
 // ----------------------------------------------------------------------------
 // ## class MatchedSite
 public class MatchedSite {
-    protected HashMap center = new HashMap(); // ## attribute center
-    protected HashMap periphery = new HashMap(); // ## attribute periphery
+    protected LinkedHashMap center = new LinkedHashMap(); // ## attribute center
+    protected LinkedHashMap periphery = new LinkedHashMap(); // ## attribute periphery
     protected int redundancy = 1; // ## attribute redundancy
 
     // Constructors
@@ -155,12 +155,12 @@ public class MatchedSite {
         MatchedSite merged = new MatchedSite();
         if (p_ms1.isSuper(p_ms2))
             return p_ms1;
-        HashMap c1 = p_ms1.getCenter();
-        HashMap c2 = p_ms2.getCenter();
-        HashMap cm = merged.getCenter();
-        HashMap p1 = p_ms1.getPeriphery();
-        HashMap p2 = p_ms2.getPeriphery();
-        HashMap pm = merged.getPeriphery();
+        LinkedHashMap c1 = p_ms1.getCenter();
+        LinkedHashMap c2 = p_ms2.getCenter();
+        LinkedHashMap cm = merged.getCenter();
+        LinkedHashMap p1 = p_ms1.getPeriphery();
+        LinkedHashMap p2 = p_ms2.getPeriphery();
+        LinkedHashMap pm = merged.getPeriphery();
         cm.putAll(c1);
         pm.putAll(p1);
         for (Iterator cIter = c2.keySet().iterator(); cIter.hasNext();) {
@@ -224,7 +224,7 @@ public class MatchedSite {
         // #]
     }
 
-    public HashMap getCenter() {
+    public LinkedHashMap getCenter() {
         return center;
     }
 
@@ -236,7 +236,7 @@ public class MatchedSite {
         return center.toString();
     }
 
-    public HashMap getPeriphery() {
+    public LinkedHashMap getPeriphery() {
         return periphery;
     }
 

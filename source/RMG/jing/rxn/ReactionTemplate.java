@@ -56,7 +56,7 @@ public class ReactionTemplate {
     protected int direction = 0; // ## attribute direction
     protected LinkedHashMap fgDictionary = new LinkedHashMap(); // ## attribute fgDictionary
     protected String name = ""; // ## attribute name
-    // protected HashMap reactionDictionaryByReactant = new HashMap(); //## attribute reactionDictionaryByReactant
+    // protected LinkedHashMap reactionDictionaryByReactant = new LinkedHashMap(); //## attribute reactionDictionaryByReactant
     protected WeakHashMap reactionDictionaryByStructure = new WeakHashMap(); // ## attribute
 // reactionDictionaryByStructure
     protected KineticsTemplateLibrary kineticsTemplateLibrary;
@@ -587,9 +587,9 @@ public class ReactionTemplate {
         return comment.toString();
     }
 
-    // ## operation findUnion(String,HashMap)
-    private void findUnion(String p_name, HashMap p_unRead) {
-        // #[ operation findUnion(String,HashMap)
+    // ## operation findUnion(String,LinkedHashMap)
+    private void findUnion(String p_name, LinkedHashMap p_unRead) {
+        // #[ operation findUnion(String,LinkedHashMap)
         HashSet union = (HashSet) p_unRead.get(p_name);
         FunctionalGroupCollection fgc = new FunctionalGroupCollection(p_name);
         Iterator union_iter = union.iterator();
@@ -786,7 +786,7 @@ public class ReactionTemplate {
         LinkedHashMap reactionMap = new LinkedHashMap();
         for (Iterator iter = allReactionSites.iterator(); iter.hasNext();) {
             MatchedSite ms = (MatchedSite) iter.next();
-            HashMap site = ms.getCenter();
+            LinkedHashMap site = ms.getCenter();
             int redundancy = ms.getRedundancy();
             // System.out.println(ms.toString());
             // reset the reacted site for rg in reactant linkedlist
@@ -881,10 +881,10 @@ public class ReactionTemplate {
      * structureTemplate.identifyReactedSites(r1,1); HashSet allReactionSites2 =
      * structureTemplate.identifyReactedSites(r2,2); LinkedList reactant = new LinkedList(); reactant.add(r1);
      * reactant.add(r2); HashSet rateSet = new HashSet(); for (Iterator iter1 = allReactionSites1.iterator();
-     * iter1.hasNext(); ) { MatchedSite ms1 = (MatchedSite)iter1.next(); HashMap site1 = ms1.getCenter();
+     * iter1.hasNext(); ) { MatchedSite ms1 = (MatchedSite)iter1.next(); LinkedHashMap site1 = ms1.getCenter();
      * r1.resetReactedSite(site1); int redundancy1 = ms1.getRedundancy(); for (Iterator iter2 =
-     * allReactionSites2.iterator(); iter2.hasNext(); ) { MatchedSite ms2 = (MatchedSite)iter2.next(); HashMap site2 =
-     * (HashMap)ms2.getCenter(); r2.resetReactedSite(site2); int redundancy2 = ms2.getRedundancy(); int redundancy =
+     * allReactionSites2.iterator(); iter2.hasNext(); ) { MatchedSite ms2 = (MatchedSite)iter2.next(); LinkedHashMap site2 =
+     * (LinkedHashMap)ms2.getCenter(); r2.resetReactedSite(site2); int redundancy2 = ms2.getRedundancy(); int redundancy =
      * redundancy1*redundancy2; try { LinkedList product = reactionAdjList.reactChemGraph(reactant); SpeciesDictionary
      * sd = SpeciesDictionary.getInstance(); for (int i=0; i< product.size(); i++){ String name = null; if
      * (((ChemGraph)product.get(i)).getSpecies() == null){ Species sp = Species.make(name, ((ChemGraph)product.get(i)));
@@ -914,7 +914,7 @@ public class ReactionTemplate {
         reactant.add(p_chemGraph);
         for (Iterator iter = allReactionSites.iterator(); iter.hasNext();) {
             MatchedSite ms = (MatchedSite) iter.next();
-            HashMap site = ms.getCenter();
+            LinkedHashMap site = ms.getCenter();
             int redundancy = ms.getRedundancy();
             // reset the reacted site for rg in reactant linkedlist
             p_chemGraph.resetReactedSite(site);
@@ -1003,7 +1003,7 @@ public class ReactionTemplate {
         LinkedHashMap reactionMap = new LinkedHashMap();
         for (Iterator iter1 = rs1.iterator(); iter1.hasNext();) {
             MatchedSite ms1 = (MatchedSite) iter1.next();
-            HashMap site1 = ms1.getCenter();
+            LinkedHashMap site1 = ms1.getCenter();
             r1.resetReactedSite(site1);
             boolean forbidden1 = false;
             Iterator forbiddenIter = forbiddenStructures.values().iterator();
@@ -1019,7 +1019,7 @@ public class ReactionTemplate {
             int redundancy1 = ms1.getRedundancy();
             for (Iterator iter2 = rs2.iterator(); iter2.hasNext();) {
                 MatchedSite ms2 = (MatchedSite) iter2.next();
-                HashMap site2 = (HashMap) ms2.getCenter();
+                LinkedHashMap site2 = (LinkedHashMap) ms2.getCenter();
                 r2.resetReactedSite(site2);
                 boolean forbidden2 = false;
                 forbiddenIter = forbiddenStructures.values().iterator();
@@ -1158,7 +1158,7 @@ public class ReactionTemplate {
             }
             FileReader in = new FileReader(p_fileName);
             BufferedReader data = new BufferedReader(in);
-            HashMap unRead = new HashMap();
+            LinkedHashMap unRead = new LinkedHashMap();
             String fgname = null;
             // step 1: read in structure
             String line = ChemParser.readMeaningfulLine(data, true);
@@ -1217,7 +1217,7 @@ public class ReactionTemplate {
         try {
             FileReader in = new FileReader(p_fileName);
             BufferedReader data = new BufferedReader(in);
-            HashMap unRead = new HashMap();
+            LinkedHashMap unRead = new LinkedHashMap();
             String fgname = null;
             // step 1: read in structure
             String line = ChemParser.readMeaningfulLine(data, true);
@@ -1534,7 +1534,7 @@ public class ReactionTemplate {
         direction = p_direction;
     }
 
-    public HashMap getFgDictionary() {
+    public LinkedHashMap getFgDictionary() {
         return fgDictionary;
     }
 

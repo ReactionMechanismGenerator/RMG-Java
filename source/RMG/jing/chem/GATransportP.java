@@ -61,7 +61,7 @@ public class GATransportP {
         LJData result = new LJData();
         result.na = p_chemGraph.getAtomNumber();
         Graph g = p_chemGraph.getGraph();
-        HashMap oldCentralNode = (HashMap) (p_chemGraph.getCentralNode())
+        LinkedHashMap oldCentralNode = (LinkedHashMap) (p_chemGraph.getCentralNode())
                 .clone();
         int na = p_chemGraph.getAtomNumber();// determine the number of atoms (before saturation)
         // saturate radical site
@@ -154,8 +154,8 @@ public class GATransportP {
     }
 
     public void initializePrimaryTransportLibrary() {
-        HashMap ptlLibrary = PrimaryTransportLibrary.library;
-        HashMap ptlDictionary = PrimaryTransportLibrary.dictionary;
+        LinkedHashMap ptlLibrary = PrimaryTransportLibrary.library;
+        LinkedHashMap ptlDictionary = PrimaryTransportLibrary.dictionary;
         primaryLibrary = new PrimaryTransportLibrary(ptlDictionary, ptlLibrary);
     }
 }

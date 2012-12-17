@@ -33,7 +33,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
@@ -92,8 +92,8 @@ public abstract class JDAS implements DAESolver {
     protected double[] conversionSet;
     protected double endTime;
     protected StringBuilder thermoString = new StringBuilder();
-    protected static HashMap edgeID;
-    protected static HashMap edgeLeakID;
+    protected static LinkedHashMap edgeID;
+    protected static LinkedHashMap edgeLeakID;
     protected double[] maxEdgeFluxRatio;
     protected boolean[] prunableSpecies;
     protected double termTol;
@@ -651,7 +651,7 @@ public abstract class JDAS implements DAESolver {
                 return or;
             } else if (p_reaction instanceof TROEReaction) {// svp
                 startTime = System.currentTimeMillis();
-                HashMap weightMap = ((ThirdBodyReaction) p_reaction)
+                LinkedHashMap weightMap = ((ThirdBodyReaction) p_reaction)
                         .getWeightMap();
                 int weightMapSize = weightMap.size();
                 int[] colliders = new int[weightMapSize];
@@ -700,7 +700,7 @@ public abstract class JDAS implements DAESolver {
                         highRate, lowRate, troe7);
                 return or;
             } else if (p_reaction instanceof LindemannReaction) {
-                HashMap weightMap = ((ThirdBodyReaction) p_reaction)
+                LinkedHashMap weightMap = ((ThirdBodyReaction) p_reaction)
                         .getWeightMap();
                 int weightMapSize = weightMap.size();
                 int[] colliders = new int[weightMapSize];
@@ -741,7 +741,7 @@ public abstract class JDAS implements DAESolver {
                 return or;
             } else if (p_reaction instanceof ThirdBodyReaction) {// svp
                 startTime = System.currentTimeMillis();
-                HashMap weightMap = ((ThirdBodyReaction) p_reaction)
+                LinkedHashMap weightMap = ((ThirdBodyReaction) p_reaction)
                         .getWeightMap();
                 int weightMapSize = weightMap.size();
                 int[] colliders = new int[weightMapSize];
@@ -801,7 +801,7 @@ public abstract class JDAS implements DAESolver {
     }
 
     public String getEdgeReactionString(CoreEdgeReactionModel model,
-            HashMap IDmap, Reaction r, Temperature temperature,
+            LinkedHashMap IDmap, Reaction r, Temperature temperature,
             Pressure pressure, int offset) {
         int edgeSpeciesCounter = IDmap.size() + offset;
         // Find the rate coefficient
@@ -826,7 +826,7 @@ public abstract class JDAS implements DAESolver {
                 tempReacArray[reacCount - 1] = getRealID(spe);
             }
             // iterate over the products, selecting products which are not already in the core, counting and storing
-// ID's (created sequentially in a HashMap, similar to getRealID) in tempProdArray, up to a maximum of 3
+// ID's (created sequentially in a LinkedHashMap, similar to getRealID) in tempProdArray, up to a maximum of 3
             for (Iterator pIter = r.getProducts(); pIter.hasNext();) {
                 Species spe = (Species) pIter.next();
                 if (model.containsAsUnreactedSpecies(spe)) {
@@ -864,8 +864,8 @@ public abstract class JDAS implements DAESolver {
         int edgeReactionCounter = 0;
         int edgeSpeciesCounter = 0;
         // First use reactions in unreacted reaction set, which is valid for both RateBasedRME and RateBasedPDepRME
-        edgeID = new HashMap();
-        edgeLeakID = new HashMap();
+        edgeID = new LinkedHashMap();
+        edgeLeakID = new LinkedHashMap();
         LinkedHashSet ur = model.getUnreactedReactionSet();
         for (Iterator iur = ur.iterator(); iur.hasNext();) {
             Reaction r = (Reaction) iur.next();
@@ -1084,8 +1084,8 @@ public abstract class JDAS implements DAESolver {
             edgeReactionCounter = 0;
             edgeSpeciesCounter = 0;
             // First use reactions in unreacted reaction set, which is valid for both RateBasedRME and RateBasedPDepRME
-            edgeID = new HashMap();
-            edgeLeakID = new HashMap();
+            edgeID = new LinkedHashMap();
+            edgeLeakID = new LinkedHashMap();
             ur = model.getUnreactedReactionSet();
             for (Iterator iur = ur.iterator(); iur.hasNext();) {
                 Reaction r = (Reaction) iur.next();

@@ -49,78 +49,78 @@ import jing.rxnSys.Logger;
 // ## class ThermoGAGroupLibrary
 public class ThermoGAGroupLibrary {
     protected static ThermoGAGroupLibrary INSTANCE = new ThermoGAGroupLibrary(); // ## attribute INSTANCE
-    protected HashMap groupDictionary; // ## attribute groupDictionary
-    protected HashMap groupLibrary; // ## attribute groupLibrary
+    protected LinkedHashMap groupDictionary; // ## attribute groupDictionary
+    protected LinkedHashMap groupLibrary; // ## attribute groupLibrary
     /**
      * Note: this kind of tree is different with the kinetics tree. In kinetics tree, tree nodes are FunctionalGroup or
      * FunctionalGroupCollection. In thermo tree, tree nodes are Nodes with connectivity,
      */
     protected HierarchyTree groupTree; // ## attribute groupTree
-    protected HashMap otherDictionary; // ## attribute otherDictionary
-    protected HashMap otherLibrary; // ## attribute otherLibrary
+    protected LinkedHashMap otherDictionary; // ## attribute otherDictionary
+    protected LinkedHashMap otherLibrary; // ## attribute otherLibrary
     protected HierarchyTree otherTree; // ## attribute otherTree
-    protected HashMap radicalDictionary; // ## attribute radicalDictionary
-    protected HashMap radicalLibrary; // ## attribute radicalLibrary
+    protected LinkedHashMap radicalDictionary; // ## attribute radicalDictionary
+    protected LinkedHashMap radicalLibrary; // ## attribute radicalLibrary
     protected HierarchyTree radicalTree; // ## attribute radicalTree
     protected HierarchyTree ringTree;
-    protected HashMap ringDictionary;
-    protected HashMap ringLibrary; // ## attribute ringLibrary
-    protected HashMap gaucheDictionary;
-    protected HashMap gaucheLibrary;
+    protected LinkedHashMap ringDictionary;
+    protected LinkedHashMap ringLibrary; // ## attribute ringLibrary
+    protected LinkedHashMap gaucheDictionary;
+    protected LinkedHashMap gaucheLibrary;
     protected HierarchyTree gaucheTree;
-    protected HashMap oneFiveDictionary;
-    protected HashMap oneFiveLibrary;
+    protected LinkedHashMap oneFiveDictionary;
+    protected LinkedHashMap oneFiveLibrary;
     protected HierarchyTree oneFiveTree;
-    protected HashMap abramDictionary;
-    protected HashMap abramLibrary;
+    protected LinkedHashMap abramDictionary;
+    protected LinkedHashMap abramLibrary;
     protected HierarchyTree abramTree;
-    protected HashMap abramradDictionary;
-    protected HashMap abramradLibrary;
+    protected LinkedHashMap abramradDictionary;
+    protected LinkedHashMap abramradLibrary;
     protected HierarchyTree abramradTree;
-    protected HashMap unifacDictionary;
-    protected HashMap unifacLibrary;
+    protected LinkedHashMap unifacDictionary;
+    protected LinkedHashMap unifacLibrary;
     protected HierarchyTree unifacTree;
     private HierarchyTree polycylicTree;
-    private HashMap polycyclicDictionary;
-    private HashMap polycyclicLibrary;
+    private LinkedHashMap polycyclicDictionary;
+    private LinkedHashMap polycyclicLibrary;
 
-    // protected HashMap solventDictionary;
-    // protected HashMap solventLibrary;
+    // protected LinkedHashMap solventDictionary;
+    // protected LinkedHashMap solventLibrary;
     // Constructors
     // ## operation ThermoGAGroupLibrary()
     private ThermoGAGroupLibrary() {
         groupTree = new HierarchyTree();
-        groupDictionary = new HashMap();
-        groupLibrary = new HashMap();
+        groupDictionary = new LinkedHashMap();
+        groupLibrary = new LinkedHashMap();
         radicalTree = new HierarchyTree();
-        radicalDictionary = new HashMap();
-        radicalLibrary = new HashMap();
-        ringLibrary = new HashMap();
-        ringDictionary = new HashMap();
+        radicalDictionary = new LinkedHashMap();
+        radicalLibrary = new LinkedHashMap();
+        ringLibrary = new LinkedHashMap();
+        ringDictionary = new LinkedHashMap();
         ringTree = new HierarchyTree();
-        otherLibrary = new HashMap();
-        otherDictionary = new HashMap();
+        otherLibrary = new LinkedHashMap();
+        otherDictionary = new LinkedHashMap();
         otherTree = new HierarchyTree();
-        gaucheLibrary = new HashMap();
-        gaucheDictionary = new HashMap();
+        gaucheLibrary = new LinkedHashMap();
+        gaucheDictionary = new LinkedHashMap();
         gaucheTree = new HierarchyTree();
-        oneFiveLibrary = new HashMap();
-        oneFiveDictionary = new HashMap();
+        oneFiveLibrary = new LinkedHashMap();
+        oneFiveDictionary = new LinkedHashMap();
         oneFiveTree = new HierarchyTree();
-        abramLibrary = new HashMap();
-        abramDictionary = new HashMap();
+        abramLibrary = new LinkedHashMap();
+        abramDictionary = new LinkedHashMap();
         abramTree = new HierarchyTree();
-        abramradLibrary = new HashMap();
-        abramradDictionary = new HashMap();
+        abramradLibrary = new LinkedHashMap();
+        abramradDictionary = new LinkedHashMap();
         abramradTree = new HierarchyTree();
-        unifacLibrary = new HashMap();
-        unifacDictionary = new HashMap();
+        unifacLibrary = new LinkedHashMap();
+        unifacDictionary = new LinkedHashMap();
         unifacTree = new HierarchyTree();
-        polycyclicLibrary = new HashMap();
-        polycyclicDictionary = new HashMap();
+        polycyclicLibrary = new LinkedHashMap();
+        polycyclicDictionary = new LinkedHashMap();
         polycylicTree = new HierarchyTree();
-        // solventDictionary=new HashMap();
-        // solventLibrary=new HashMap();
+        // solventDictionary=new LinkedHashMap();
+        // solventLibrary=new LinkedHashMap();
         String directory = System
                 .getProperty("jing.chem.ThermoGAGroupLibrary.pathName");
         if (directory == null) {
@@ -173,10 +173,10 @@ public class ThermoGAGroupLibrary {
                 PolycyclicLibrary);
     }
 
-    // ## operation findCorrectionInLibrary(ChemGraph,HashMap)
+    // ## operation findCorrectionInLibrary(ChemGraph,LinkedHashMap)
     private ThermoData findCorrectionInLibrary(ChemGraph p_chemGraph,
-            HashMap p_library) {
-        // #[ operation findCorrectionInLibrary(ChemGraph,HashMap)
+            LinkedHashMap p_library) {
+        // #[ operation findCorrectionInLibrary(ChemGraph,LinkedHashMap)
         p_chemGraph.clearCentralNode();
         ThermoData result = new ThermoData();
         int redundance;
@@ -298,7 +298,7 @@ public class ThermoGAGroupLibrary {
             return null;
         } else {
             Map<Stack, Integer> deepestStackMap = null;
-            deepestStackMap = new HashMap<Stack, Integer>();
+            deepestStackMap = new LinkedHashMap<Stack, Integer>();
             for (Set<Node> set : ringNodes) {
                 int deepest = -1;
                 Stack dummy = null;
@@ -339,7 +339,7 @@ public class ThermoGAGroupLibrary {
             BensonRingCorrections ringCorrections = new BensonRingCorrections();
             ringCorrections.setImperfectMatch(imperfect);
             // determine ThermoGAValues:
-            Map<ThermoGAValue, Integer> GAMap = new HashMap<ThermoGAValue, Integer>();
+            Map<ThermoGAValue, Integer> GAMap = new LinkedHashMap<ThermoGAValue, Integer>();
             for (Entry<Stack, Integer> entry : deepestStackMap.entrySet()) {
                 Stack element = entry.getKey();
                 HierarchyTreeNode node = (HierarchyTreeNode) element.pop();
@@ -922,9 +922,9 @@ public class ThermoGAGroupLibrary {
         }
     }
 
-    // ## operation readStandardCorrectionLibrary(String,HashMap)
+    // ## operation readStandardCorrectionLibrary(String,LinkedHashMap)
     protected void readStandardCorrectionLibrary(String p_fileName,
-            HashMap p_library) throws IOException {
+            LinkedHashMap p_library) throws IOException {
         try {
             FileReader in = new FileReader(p_fileName);
             BufferedReader data = new BufferedReader(in);
@@ -971,14 +971,14 @@ public class ThermoGAGroupLibrary {
     }
 
     // ## operation readStandardDictionary(String)
-    public HashMap readStandardDictionary(String p_fileName)
+    public LinkedHashMap readStandardDictionary(String p_fileName)
             throws FileNotFoundException, IOException {
         // #[ operation readStandardDictionary(String)
         try {
             FileReader in = new FileReader(p_fileName);
             BufferedReader data = new BufferedReader(in);
-            HashMap dictionary = new HashMap();
-            HashMap unRead = new HashMap();
+            LinkedHashMap dictionary = new LinkedHashMap();
+            LinkedHashMap unRead = new LinkedHashMap();
             String line = ChemParser.readMeaningfulLine(data, true);
             read: while (line != null) {
                 StringTokenizer st = new StringTokenizer(line);
@@ -1030,13 +1030,13 @@ public class ThermoGAGroupLibrary {
         }
     }
 
-    // ## operation readStandardLibrary(String,HashMap)
-    protected HashMap readStandardLibrary(String p_fileName,
-            HashMap p_dictionary) throws IOException {
+    // ## operation readStandardLibrary(String,LinkedHashMap)
+    protected LinkedHashMap readStandardLibrary(String p_fileName,
+            LinkedHashMap p_dictionary) throws IOException {
         try {
             FileReader in = new FileReader(p_fileName);
             BufferedReader data = new BufferedReader(in);
-            HashMap library = new HashMap();
+            LinkedHashMap library = new LinkedHashMap();
             String line = ChemParser.readMeaningfulLine(data, true);
             while (line != null) {
                 // System.out.println(line);//
@@ -1119,14 +1119,14 @@ public class ThermoGAGroupLibrary {
         }
     }
 
-    // ## operation readAbramLibrary(String,HashMap)
-    protected HashMap readAbramLibrary(String p_fileName, HashMap p_dictionary)
+    // ## operation readAbramLibrary(String,LinkedHashMap)
+    protected LinkedHashMap readAbramLibrary(String p_fileName, LinkedHashMap p_dictionary)
             throws IOException {
-        // #[ operation readStandardLibrary(String,HashMap)
+        // #[ operation readStandardLibrary(String,LinkedHashMap)
         try {
             FileReader in = new FileReader(p_fileName);
             BufferedReader data = new BufferedReader(in);
-            HashMap library = new HashMap();
+            LinkedHashMap library = new LinkedHashMap();
             String line = ChemParser.readMeaningfulLine(data, true);
             while (line != null) {
                 // step 1: read in index and name
@@ -1207,13 +1207,13 @@ public class ThermoGAGroupLibrary {
         }
     }
 
-    // ## operation readAbramLibrary(String,HashMap)
-    protected HashMap readUNIFACLibrary(String p_fileName, HashMap p_dictionary)
+    // ## operation readAbramLibrary(String,LinkedHashMap)
+    protected LinkedHashMap readUNIFACLibrary(String p_fileName, LinkedHashMap p_dictionary)
             throws IOException {
         try {
             FileReader in = new FileReader(p_fileName);
             BufferedReader data = new BufferedReader(in);
-            HashMap library = new HashMap();
+            LinkedHashMap library = new LinkedHashMap();
             String line = ChemParser.readMeaningfulLine(data, true);
             while (line != null) {
                 // step 1: read in index and name
@@ -1294,10 +1294,10 @@ public class ThermoGAGroupLibrary {
         }
     }
 
-    // ## operation readStandardTree(String,HashMap,int)
+    // ## operation readStandardTree(String,LinkedHashMap,int)
     public HierarchyTree readStandardTree(String p_fileName,
-            HashMap p_dictionary, int p_level) throws IOException {
-        // #[ operation readStandardTree(String,HashMap,int)
+            LinkedHashMap p_dictionary, int p_level) throws IOException {
+        // #[ operation readStandardTree(String,LinkedHashMap,int)
         try {
             FileReader in = new FileReader(p_fileName);
             BufferedReader data = new BufferedReader(in);
@@ -1314,15 +1314,15 @@ public class ThermoGAGroupLibrary {
         return INSTANCE;
     }
 
-    public HashMap getGroupDictionary() {
+    public LinkedHashMap getGroupDictionary() {
         return groupDictionary;
     }
 
-    public HashMap getGroupLibrary() {
+    public LinkedHashMap getGroupLibrary() {
         return groupLibrary;
     }
 
-    public void setGroupLibrary(HashMap p_groupLibrary) {
+    public void setGroupLibrary(LinkedHashMap p_groupLibrary) {
         groupLibrary = p_groupLibrary;
     }
 
@@ -1330,15 +1330,15 @@ public class ThermoGAGroupLibrary {
         return groupTree;
     }
 
-    public HashMap getOtherDictionary() {
+    public LinkedHashMap getOtherDictionary() {
         return otherDictionary;
     }
 
-    public void setOtherDictionary(HashMap p_otherDictionary) {
+    public void setOtherDictionary(LinkedHashMap p_otherDictionary) {
         otherDictionary = p_otherDictionary;
     }
 
-    public HashMap getOtherLibrary() {
+    public LinkedHashMap getOtherLibrary() {
         return otherLibrary;
     }
 
@@ -1350,15 +1350,15 @@ public class ThermoGAGroupLibrary {
         otherTree = p_otherTree;
     }
 
-    public HashMap getRadicalDictionary() {
+    public LinkedHashMap getRadicalDictionary() {
         return radicalDictionary;
     }
 
-    public void setRadicalDictionary(HashMap p_radicalDictionary) {
+    public void setRadicalDictionary(LinkedHashMap p_radicalDictionary) {
         radicalDictionary = p_radicalDictionary;
     }
 
-    protected HashMap getRadicalLibrary() {
+    protected LinkedHashMap getRadicalLibrary() {
         return radicalLibrary;
     }
 
@@ -1370,7 +1370,7 @@ public class ThermoGAGroupLibrary {
         radicalTree = p_radicalTree;
     }
 
-    protected HashMap getRingLibrary() {
+    protected LinkedHashMap getRingLibrary() {
         return ringLibrary;
     }
 

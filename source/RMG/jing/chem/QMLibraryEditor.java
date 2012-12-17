@@ -207,13 +207,13 @@ public class QMLibraryEditor {
     /**
      * 
      */
-    public static HashMap readLibrary(String p_qmThermoFileName)
+    public static LinkedHashMap readLibrary(String p_qmThermoFileName)
             throws IOException {
         try {
             FileReader in = new FileReader(p_qmThermoFileName);
             BufferedReader data = new BufferedReader(in);
             String line = ChemParser.readMeaningfulLine(data, true);
-            HashMap<String, ThermoData> library = new HashMap<String, ThermoData>();
+            LinkedHashMap<String, ThermoData> library = new LinkedHashMap<String, ThermoData>();
             while (line != null) {
                 String[] result = line.split("\\s");
                 // Construct information to create instance of ThermData

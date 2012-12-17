@@ -7,8 +7,8 @@ import java.io.*;
 
 public class InchifyCHEMKIN {
     public static void main(String[] args) {
-        // 1. read the inchis into HashMap
-        HashMap inchiDict = new HashMap();
+        // 1. read the inchis into LinkedHashMap
+        LinkedHashMap inchiDict = new LinkedHashMap();
         try {
             FileReader inchiDictionary = new FileReader(args[0]);
             BufferedReader inchiDictionaryBR = new BufferedReader(

@@ -38,11 +38,11 @@ import jing.param.Temperature;
 // ## class PresentStatus
 public class PresentStatus extends SystemSnapshot {
     // Constructors
-    // ## operation PresentStatus(ReactionTime,HashMap,Temperature,Pressure)
+    // ## operation PresentStatus(ReactionTime,LinkedHashMap,Temperature,Pressure)
     public PresentStatus(ReactionTime p_reactionTime,
             LinkedHashMap p_speciesStatus, Temperature p_temperature,
             Pressure p_pressure) {
-        // #[ operation PresentStatus(ReactionTime,HashMap,Temperature,Pressure)
+        // #[ operation PresentStatus(ReactionTime,LinkedHashMap,Temperature,Pressure)
         super(p_reactionTime, p_speciesStatus, p_temperature, p_pressure);
         // #]
     }

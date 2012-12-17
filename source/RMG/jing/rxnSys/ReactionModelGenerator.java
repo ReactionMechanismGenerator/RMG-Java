@@ -1515,7 +1515,7 @@ public class ReactionModelGenerator {
                 double pt = System.currentTimeMillis();
                 // Grab all species from primary kinetics / reaction libraries
                 // WE CANNOT PRUNE THESE SPECIES
-                HashMap unprunableSpecies = new HashMap();
+                LinkedHashMap unprunableSpecies = new LinkedHashMap();
                 if (getPrimaryKineticLibrary() != null) {
                     unprunableSpecies
                             .putAll(getPrimaryKineticLibrary().speciesSet);
@@ -4114,9 +4114,9 @@ public class ReactionModelGenerator {
         // #]
     }
 
-    public void pruneReactionModel(HashMap unprunableSpecies) {
+    public void pruneReactionModel(LinkedHashMap unprunableSpecies) {
         Runtime runtime = Runtime.getRuntime();
-        HashMap prunableSpeciesMap = new HashMap();
+        LinkedHashMap prunableSpeciesMap = new LinkedHashMap();
         // check whether all the reaction systems reached target conversion/time
         boolean allReachedTarget = true;
         for (Integer i = 0; i < reactionSystemList.size(); i++) {

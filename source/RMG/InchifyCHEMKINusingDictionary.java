@@ -15,8 +15,8 @@ public class InchifyCHEMKINusingDictionary {
     public static void main(String[] args) {
         RMG.globalInitializeSystemProperties();
         // 1. read the Dictionary file, converting to modified inchis along the way and adding them into inchiDict
-// HashMap
-        HashMap inchiDict = new HashMap();
+// LinkedHashMap
+        LinkedHashMap inchiDict = new LinkedHashMap();
         try {
             FileReader in = new FileReader(args[0]);
             BufferedReader data = new BufferedReader(in);

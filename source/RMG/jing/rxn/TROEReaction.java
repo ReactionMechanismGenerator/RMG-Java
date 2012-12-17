@@ -128,11 +128,11 @@ public class TROEReaction extends ThirdBodyReaction {
         // #]
     }
 
-    // ## operation make(Reaction,HashMap,ArrheniusKinetics,double,double,double,boolean,double)
-    public static TROEReaction make(Reaction p_reaction, HashMap p_weightMap,
+    // ## operation make(Reaction,LinkedHashMap,ArrheniusKinetics,double,double,double,boolean,double)
+    public static TROEReaction make(Reaction p_reaction, LinkedHashMap p_weightMap,
             final ArrheniusKinetics p_low, double p_a, double p_T3star,
             double p_Tstar, boolean p_troe7, double p_T2star) {
-        // #[ operation make(Reaction,HashMap,ArrheniusKinetics,double,double,double,boolean,double)
+        // #[ operation make(Reaction,LinkedHashMap,ArrheniusKinetics,double,double,double,boolean,double)
         TROEReaction tr = new TROEReaction();
         tr.structure = p_reaction.getStructure();
         tr.kinetics = p_reaction.getKinetics();

@@ -35,13 +35,13 @@ import java.util.*;
 // ## class BondDictionary
 public class BondDictionary {
     private static BondDictionary INSTANCE = new BondDictionary(); // ## attribute INSTANCE
-    protected HashMap dictionary; // ## attribute dictionary
+    protected LinkedHashMap dictionary; // ## attribute dictionary
 
     // Constructors
     // ## operation BondDictionary()
     private BondDictionary() {
         // #[ operation BondDictionary()
-        dictionary = new HashMap();
+        dictionary = new LinkedHashMap();
         // #]
     }
 
@@ -73,7 +73,7 @@ public class BondDictionary {
         // #]
     }
 
-    public HashMap getDictionary() {
+    public LinkedHashMap getDictionary() {
         return dictionary;
     }
 }

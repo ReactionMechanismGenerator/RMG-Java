@@ -34,7 +34,7 @@ import java.util.*;
 // ----------------------------------------------------------------------------
 // ## class Curve
 public class Curve {
-    protected HashMap curve; // ## attribute curve
+    protected LinkedHashMap curve; // ## attribute curve
 
     // Constructors
     public Curve() {
@@ -46,11 +46,11 @@ public class Curve {
         // #]
     }
 
-    public HashMap getCurve() {
+    public LinkedHashMap getCurve() {
         return curve;
     }
 
-    public void setCurve(HashMap p_curve) {
+    public void setCurve(LinkedHashMap p_curve) {
         curve = p_curve;
     }
 }

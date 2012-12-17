@@ -1870,13 +1870,13 @@ public class Graph {
 
     /**
      * Set all the current central nodes as normal ones, and reset the centralID and centralNode list according to the
-     * pass-in p_centralNode HashMap.<br>
+     * pass-in p_centralNode LinkedHashMap.<br>
      * <b>Modifies</b><br>
      * this.centralNode, centralID of all the old and new central nodes
      */
-    // ## operation setCentralNodes(HashMap)
-    public void setCentralNodes(HashMap p_centralNode) {
-        // #[ operation setCentralNodes(HashMap)
+    // ## operation setCentralNodes(LinkedHashMap)
+    public void setCentralNodes(LinkedHashMap p_centralNode) {
+        // #[ operation setCentralNodes(LinkedHashMap)
         clearCentralNode();
         Iterator iter = p_centralNode.keySet().iterator();
         while (iter.hasNext()) {

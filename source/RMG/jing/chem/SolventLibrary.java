@@ -39,10 +39,10 @@ import jing.rxnSys.Logger;
  * @author amrit
  */
 public class SolventLibrary {
-    protected static HashMap library;
+    protected static LinkedHashMap library;
 
     public SolventLibrary(String name, String location) {
-        library = new HashMap();
+        library = new LinkedHashMap();
         readSolventLibrary(name, location);
     }
 
@@ -69,12 +69,12 @@ public class SolventLibrary {
         library = readLibrary(p_library, source);
     }
 
-    public HashMap readLibrary(String p_transportFileName, String source)
+    public LinkedHashMap readLibrary(String p_transportFileName, String source)
             throws IOException {
         try {
             FileReader in = new FileReader(p_transportFileName);
             BufferedReader data = new BufferedReader(in);
-            HashMap tempLibrary = new HashMap();
+            LinkedHashMap tempLibrary = new LinkedHashMap();
             String line = ChemParser.readMeaningfulLine(data, true);
             while (line != null) {
                 StringTokenizer token = new StringTokenizer(line);

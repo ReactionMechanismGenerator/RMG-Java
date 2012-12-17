@@ -2325,10 +2325,10 @@ public class ChemGraph implements Matchable {
     /**
      * Requires: Effects: reset reacting site as the pass-in p_site. Modifies: this.graph.centralNode
      */
-    // ## operation resetReactedSite(HashMap)
-    public void resetReactedSite(HashMap p_site)
+    // ## operation resetReactedSite(LinkedHashMap)
+    public void resetReactedSite(LinkedHashMap p_site)
             throws SiteNotInSpeciesException {
-        // #[ operation resetReactedSite(HashMap)
+        // #[ operation resetReactedSite(LinkedHashMap)
         setCentralNode(p_site);
         // #]
     }
@@ -2361,9 +2361,9 @@ public class ChemGraph implements Matchable {
     /**
      * Requires: Effects: reset centreNode list as the pass-in p_site. Modifies: this.graph.centralNode
      */
-    // ## operation setCentralNode(HashMap)
-    protected void setCentralNode(HashMap p_site) {
-        // #[ operation setCentralNode(HashMap)
+    // ## operation setCentralNode(LinkedHashMap)
+    protected void setCentralNode(LinkedHashMap p_site) {
+        // #[ operation setCentralNode(LinkedHashMap)
         try {
             Graph g = getGraph();
             g.clearCentralNode();

@@ -213,7 +213,7 @@ public class RateBasedRME implements ReactionModelEnlarger {
         if (maxSpecies == null)
             throw new NullPointerException();
         LinkedHashSet ur = p_reactionModel.getUnreactedReactionSet();
-        HashMap significantReactions = new HashMap();
+        LinkedHashMap significantReactions = new LinkedHashMap();
         int reactionWithSpecies = 0;
         for (Iterator iur = ur.iterator(); iur.hasNext();) {
             Reaction r = (Reaction) iur.next();

@@ -56,7 +56,7 @@ import jing.rxnSys.SeedMechanism;
  */
 public class ReactionLibrary {
     private static ReactionLibrary INSTANCE = new ReactionLibrary();
-    protected HashMap dictionary = new HashMap();
+    protected LinkedHashMap dictionary = new LinkedHashMap();
     protected LinkedHashSet library = new LinkedHashSet();
     protected String name;
 
@@ -185,7 +185,7 @@ public class ReactionLibrary {
         name = p_name;
     }
 
-    public HashMap getDictionary() {
+    public LinkedHashMap getDictionary() {
         return dictionary;
     }
 }

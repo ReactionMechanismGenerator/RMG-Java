@@ -27,7 +27,7 @@
 package jing.rxn;
 
 import java.io.*;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.ListIterator;
@@ -420,7 +420,7 @@ public class Chemdis implements PDepKineticsEstimator {
         str += "XMG\n";
         // Determine bath gas concentration (i.e. total concentration of colliders)
         double totalConc = 0;
-        HashMap colliders = rxnSystem.identifyColliders();
+        LinkedHashMap colliders = rxnSystem.identifyColliders();
         for (Iterator iter = colliders.values().iterator(); iter.hasNext();) {
             totalConc += ((Double) iter.next()).doubleValue();
         }

@@ -26,7 +26,7 @@
 // //////////////////////////////////////////////////////////////////////////////
 package jing.chem;
 
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 /**
@@ -39,7 +39,7 @@ public class BensonRingCorrections {
      * Default constructor.
      */
     public BensonRingCorrections() {
-        corrections = new HashMap<ThermoGAValue, Integer>();
+        corrections = new LinkedHashMap<ThermoGAValue, Integer>();
         clear();
     }
 

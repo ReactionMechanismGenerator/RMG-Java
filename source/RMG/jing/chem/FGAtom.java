@@ -34,7 +34,7 @@ import java.util.*;
 // ----------------------------------------------------------------------------
 // ## class FGAtom
 public class FGAtom implements ChemNodeElement {
-    protected static HashMap dictionary = new HashMap(); // ## attribute dictionary
+    protected static LinkedHashMap dictionary = new LinkedHashMap(); // ## attribute dictionary
     protected String name; // ## attribute name
     protected FGElement fgElement;
     protected FreeElectron freeElectron;
@@ -188,11 +188,11 @@ public class FGAtom implements ChemNodeElement {
         // #]
     }
 
-    public static HashMap getDictionary() {
+    public static LinkedHashMap getDictionary() {
         return dictionary;
     }
 
-    public static void setDictionary(HashMap p_dictionary) {
+    public static void setDictionary(LinkedHashMap p_dictionary) {
         dictionary = p_dictionary;
     }
 

@@ -474,7 +474,7 @@ public class ReactionSystem {
 // //#]
 // }
     // ## operation identifyColliders()
-    public HashMap identifyColliders() {
+    public LinkedHashMap identifyColliders() {
         // #[ operation identifyColliders()
         return getInitialStatus().identifyColliders();
         // #]

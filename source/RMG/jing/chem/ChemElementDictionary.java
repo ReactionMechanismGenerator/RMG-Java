@@ -38,13 +38,13 @@ public class ChemElementDictionary {
     /**
      * Table holds all the element in the system.
      */
-    protected HashMap dictionary; // ## attribute dictionary
+    protected LinkedHashMap dictionary; // ## attribute dictionary
 
     // Constructors
     // ## operation ChemElementDictionary()
     private ChemElementDictionary() {
         // #[ operation ChemElementDictionary()
-        dictionary = new HashMap();
+        dictionary = new LinkedHashMap();
         // #]
     }
 
@@ -76,7 +76,7 @@ public class ChemElementDictionary {
         // #]
     }
 
-    protected HashMap getDictionary() {
+    protected LinkedHashMap getDictionary() {
         return dictionary;
     }
 }

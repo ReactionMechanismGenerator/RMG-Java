@@ -35,13 +35,13 @@ import java.util.*;
 // ## class FreeElectronDictionary
 public class FreeElectronDictionary {
     private static FreeElectronDictionary INSTANCE = new FreeElectronDictionary(); // ## attribute INSTANCE
-    protected HashMap dictionary; // ## attribute dictionary
+    protected LinkedHashMap dictionary; // ## attribute dictionary
 
     // Constructors
     // ## operation FreeElectronDictionary()
     private FreeElectronDictionary() {
         // #[ operation FreeElectronDictionary()
-        dictionary = new HashMap();
+        dictionary = new LinkedHashMap();
         // #]
     }
 
@@ -73,7 +73,7 @@ public class FreeElectronDictionary {
         // #]
     }
 
-    public HashMap getDictionary() {
+    public LinkedHashMap getDictionary() {
         return dictionary;
     }
 }

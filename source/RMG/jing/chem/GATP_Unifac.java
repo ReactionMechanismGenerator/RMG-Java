@@ -54,7 +54,7 @@ public class GATP_Unifac implements GeneralUnifacGAPP {
     public UnifacGAValue getUnifacGroup(ChemGraph p_chemGraph) {
         UnifacData result_unifac = new UnifacData();
         Graph g = p_chemGraph.getGraph();
-        HashMap oldCentralNode = (HashMap) (p_chemGraph.getCentralNode())
+        LinkedHashMap oldCentralNode = (LinkedHashMap) (p_chemGraph.getCentralNode())
                 .clone();
         // satuate radical site
         int max_radNum_molecule = ChemGraph.getMAX_RADICAL_NUM();
