@@ -78,11 +78,11 @@ public class ArrheniusKinetics implements Kinetics {
     public ArrheniusKinetics() {
     }
 
-    // ## operation average(HashSet)
+    // ## operation average(LinkedHashSet)
     public static final Kinetics average(LinkedHashSet p_kSet) {// 06/26/09 gmagoon: made p_kSet a LinkedHashSet rather
-// than a HashSet...this seems to make the averaged values reproducible; previously, numerical-errors caused slight
+// than a LinkedHashSet...this seems to make the averaged values reproducible; previously, numerical-errors caused slight
 // differences in results when averaging was done in a different order
-        // #[ operation average(HashSet)
+        // #[ operation average(LinkedHashSet)
         int size = p_kSet.size();
         if (size == 0)
             return null;

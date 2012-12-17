@@ -35,13 +35,13 @@ import java.util.*;
 // ----------------------------------------------------------------------------
 // ## class KineticsTemplate
 public class KineticsTemplate {
-    protected HashSet key; // ## attribute key
+    protected LinkedHashSet key; // ## attribute key
     protected Kinetics kinetics;
 
     // Constructors
-    // ## operation KineticsTemplate(HashSet,Kinetics)
-    protected KineticsTemplate(HashSet p_key, Kinetics p_kinetics) {
-        // #[ operation KineticsTemplate(HashSet,Kinetics)
+    // ## operation KineticsTemplate(LinkedHashSet,Kinetics)
+    protected KineticsTemplate(LinkedHashSet p_key, Kinetics p_kinetics) {
+        // #[ operation KineticsTemplate(LinkedHashSet,Kinetics)
         key = p_key;
         kinetics = p_kinetics;
         // #]
@@ -87,11 +87,11 @@ public class KineticsTemplate {
         // #]
     }
 
-    public HashSet getKey() {
+    public LinkedHashSet getKey() {
         return key;
     }
 
-    public void setKey(HashSet p_key) {
+    public void setKey(LinkedHashSet p_key) {
         key = p_key;
     }
 

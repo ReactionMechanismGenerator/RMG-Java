@@ -241,7 +241,7 @@ public class TransportGALibrary {
                 line = line.trim();
                 String prefix = line.substring(0, 5);
                 if (prefix.compareToIgnoreCase("union") == 0) {
-                    HashSet union = ChemParser.readUnion(line);
+                    LinkedHashSet union = ChemParser.readUnion(line);
                     unRead.put(fgname, union);
                 } else {
                     data.reset();

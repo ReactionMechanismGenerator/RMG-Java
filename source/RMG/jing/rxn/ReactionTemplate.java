@@ -109,9 +109,9 @@ public class ReactionTemplate {
             return true;
     }
 
-    // ## operation calculateDepth(HashSet)
-    private static final int calculateDepth(HashSet p_treeNodeSet) {
-        // #[ operation calculateDepth(HashSet)
+    // ## operation calculateDepth(LinkedHashSet)
+    private static final int calculateDepth(LinkedHashSet p_treeNodeSet) {
+        // #[ operation calculateDepth(LinkedHashSet)
         if (p_treeNodeSet == null)
             throw new NullPointerException();
         int dep = 0;
@@ -128,19 +128,19 @@ public class ReactionTemplate {
         // #]
     }
 
-    // ## operation calculateDistance(HashSet,HashSet)
-    private static final int calculateDistance(HashSet p_treeNodeSet1,
-            HashSet p_treeNodeSet2) {
-        // #[ operation calculateDistance(HashSet,HashSet)
+    // ## operation calculateDistance(LinkedHashSet,LinkedHashSet)
+    private static final int calculateDistance(LinkedHashSet p_treeNodeSet1,
+            LinkedHashSet p_treeNodeSet2) {
+        // #[ operation calculateDistance(LinkedHashSet,LinkedHashSet)
         return Math.abs(calculateDepth(p_treeNodeSet1)
                 - calculateDepth(p_treeNodeSet2));
         // #]
     }
 
-    // ## operation extractKineticsTemplateKey(HashSet)
+    // ## operation extractKineticsTemplateKey(LinkedHashSet)
     private static final LinkedHashSet extractKineticsTemplateKey(
             LinkedHashSet p_treeNode) {
-        // #[ operation extractKineticsTemplateKey(HashSet)
+        // #[ operation extractKineticsTemplateKey(LinkedHashSet)
         LinkedHashSet key = new LinkedHashSet();
         for (Iterator iter = p_treeNode.iterator(); iter.hasNext();) {
             Object n = iter.next();
@@ -161,7 +161,7 @@ public class ReactionTemplate {
     // ## operation fillKineticsBottomToTop()
     public void fillKineticsBottomToTop() {
         // #[ operation fillKineticsBottomToTop()
-        LinkedHashSet rootSet = new LinkedHashSet();// 6/26/09 gmagoon: changed from HashSet to LinkedHashSet to make
+        LinkedHashSet rootSet = new LinkedHashSet();// 6/26/09 gmagoon: changed from LinkedHashSet to LinkedHashSet to make
 // behavior deterministic
         Iterator tree_iter = getReactantTree();
         while (tree_iter.hasNext()) {
@@ -176,9 +176,9 @@ public class ReactionTemplate {
     /**
      * Requires: Effects: Modifies:
      */
-    // ## operation fillKineticsByAverage(HashSet)
+    // ## operation fillKineticsByAverage(LinkedHashSet)
     private Kinetics fillKineticsByAverage(LinkedHashSet p_treeNodeSet) {
-        // #[ operation fillKineticsByAverage(HashSet)
+        // #[ operation fillKineticsByAverage(LinkedHashSet)
         // check if k is already in the library
         // if it is, don't do any average;
         // if it isn't, average all the k below this tree node set to get an estimated k for this tree node set;
@@ -275,7 +275,7 @@ public class ReactionTemplate {
         }
         Collection allPossibleTreeNodeSet = MathTool.expand(p_matchedPathSet
                 .iterator());
-        HashSet bestKineticsTemplateSet = new HashSet();
+        LinkedHashSet bestKineticsTemplateSet = new LinkedHashSet();
         LinkedHashSet bestKineticsSet = new LinkedHashSet();
         // find the closest distance
         int closest = Integer.MAX_VALUE;
@@ -411,12 +411,12 @@ public class ReactionTemplate {
                 if (name.equals("intra_H_migration")) {
                     ChemGraph rcg = (ChemGraph) (p_structure.getReactants()
                             .next());
-                    HashSet rrad = rcg.getRadicalNode();
+                    LinkedHashSet rrad = rcg.getRadicalNode();
                     Atom rra = (Atom) ((Node) ((rrad.iterator()).next()))
                             .getElement();
                     ChemGraph pcg = (ChemGraph) (p_structure.getProducts()
                             .next());
-                    HashSet prad = pcg.getRadicalNode();
+                    LinkedHashSet prad = pcg.getRadicalNode();
                     Atom pra = (Atom) ((Node) ((prad.iterator()).next()))
                             .getElement();
                     if (rra.isOxygen() && pra.isCarbon()) {
@@ -590,7 +590,7 @@ public class ReactionTemplate {
     // ## operation findUnion(String,LinkedHashMap)
     private void findUnion(String p_name, LinkedHashMap p_unRead) {
         // #[ operation findUnion(String,LinkedHashMap)
-        HashSet union = (HashSet) p_unRead.get(p_name);
+        LinkedHashSet union = (LinkedHashSet) p_unRead.get(p_name);
         FunctionalGroupCollection fgc = new FunctionalGroupCollection(p_name);
         Iterator union_iter = union.iterator();
         while (union_iter.hasNext()) {
@@ -737,7 +737,7 @@ public class ReactionTemplate {
         LinkedList r = new LinkedList();
         r.add(p_reactant);
         /*
-         * HashSet reaction = getReactionSetFromReactant(r); if (reaction != null) return reaction;
+         * LinkedHashSet reaction = getReactionSetFromReactant(r); if (reaction != null) return reaction;
          */
         ChemGraph rg;
         LinkedHashSet reaction = new LinkedHashSet();
@@ -877,10 +877,10 @@ public class ReactionTemplate {
      * chemGraph2; if (r1 == r2) { try{ r2 = ChemGraph.copy(r2); } catch (ForbiddenStructureException e) { return null;
      * } } TemplateReaction reverseReaction = null; /*TemplateReaction reverseReaction =
      * getReactionFromStructure(p_structure); if (reverseReaction != null){ if (!reverseReaction.isForward()) throw new
-     * InvalidReactionDirectionException(); return reverseReaction; } HashSet allReactionSites1 =
-     * structureTemplate.identifyReactedSites(r1,1); HashSet allReactionSites2 =
+     * InvalidReactionDirectionException(); return reverseReaction; } LinkedHashSet allReactionSites1 =
+     * structureTemplate.identifyReactedSites(r1,1); LinkedHashSet allReactionSites2 =
      * structureTemplate.identifyReactedSites(r2,2); LinkedList reactant = new LinkedList(); reactant.add(r1);
-     * reactant.add(r2); HashSet rateSet = new HashSet(); for (Iterator iter1 = allReactionSites1.iterator();
+     * reactant.add(r2); LinkedHashSet rateSet = new LinkedHashSet(); for (Iterator iter1 = allReactionSites1.iterator();
      * iter1.hasNext(); ) { MatchedSite ms1 = (MatchedSite)iter1.next(); LinkedHashMap site1 = ms1.getCenter();
      * r1.resetReactedSite(site1); int redundancy1 = ms1.getRedundancy(); for (Iterator iter2 =
      * allReactionSites2.iterator(); iter2.hasNext(); ) { MatchedSite ms2 = (MatchedSite)iter2.next(); LinkedHashMap site2 =
@@ -1172,7 +1172,7 @@ public class ReactionTemplate {
                 line = line.trim();
                 String prefix = line.substring(0, 5);
                 if (prefix.compareToIgnoreCase("union") == 0) {
-                    HashSet union = ChemParser.readUnion(line);
+                    LinkedHashSet union = ChemParser.readUnion(line);
                     unRead.put(fgname, union);
                 } else {
                     data.reset();
@@ -1243,7 +1243,7 @@ public class ReactionTemplate {
                 line = line.trim();
                 if (line.toLowerCase().startsWith("union")
                         || line.startsWith("OR")) {
-                    HashSet union = ChemParser.readUnion(line);
+                    LinkedHashSet union = ChemParser.readUnion(line);
                     unRead.put(fgname, union);
                 } else {
                     data.reset();
@@ -1504,9 +1504,9 @@ public class ReactionTemplate {
         // #]
     }
 
-    // ## operation setReactantTree(HashSet)
+    // ## operation setReactantTree(LinkedHashSet)
     public void setReactantTree(LinkedHashSet p_treeSet) {
-        // #[ operation setReactantTree(HashSet)
+        // #[ operation setReactantTree(LinkedHashSet)
         structureTemplate.setReactantTree(p_treeSet);
         // #]
     }

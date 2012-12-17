@@ -28,7 +28,7 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.Iterator;
 import jing.chem.ChemGraph;
 import jing.chem.ForbiddenStructureException;
@@ -75,7 +75,7 @@ public class IdentifyMatchesSites {
                 // TODO Auto-generated catch block
                 e.printStackTrace();
             }
-            HashSet matchedSites = cg2.identifyReactionMatchedSite(fg1);
+            LinkedHashSet matchedSites = cg2.identifyReactionMatchedSite(fg1);
             // boolean isSub = cg2.isSubAtCentralNodes(fg1);
             // System.out.println("fg2 is a sub of fg1: "+ isSub);
             Iterator iter = matchedSites.iterator();

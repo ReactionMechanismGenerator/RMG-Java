@@ -68,7 +68,7 @@ public class ReactionSystem {
 
     // Constructors
     // ## operation
-// ReactionSystem(TemperatureModel,PressureModel,ReactionModelEnlarger,FinishController,DynamicSimulator,PrimaryKineticLibrary,ReactionGenerator,HashSet,InitialStatus)
+// ReactionSystem(TemperatureModel,PressureModel,ReactionModelEnlarger,FinishController,DynamicSimulator,PrimaryKineticLibrary,ReactionGenerator,LinkedHashSet,InitialStatus)
     // 9/24/07 gmagoon: reactionModel changed to parameter passed to class; setReactionModel method removed; 10/4/07:
 // this was incorrect; setReactionModel restored
     // 9/25/07 gmagoon: removed primaryKineticLibrary from parameters
@@ -86,7 +86,7 @@ public class ReactionSystem {
             systemSnapshot = new LinkedList();
         }
         // #[ operation
-// ReactionSystem(TemperatureModel,PressureModel,ReactionModelEnlarger,FinishController,DynamicSimulator,PrimaryKineticLibrary,ReactionGenerator,HashSet,InitialStatus)
+// ReactionSystem(TemperatureModel,PressureModel,ReactionModelEnlarger,FinishController,DynamicSimulator,PrimaryKineticLibrary,ReactionGenerator,LinkedHashSet,InitialStatus)
         temperatureModel = p_temperatureModel;
         pressureModel = p_pressureModel;
         setFinishController(p_finishController);
@@ -560,7 +560,7 @@ public class ReactionSystem {
         // #[ operation outputReactionFlux(SystemSnapshot)
         ReactionTime rt = p_systemSnapshot.getTime();
         Temperature t = getTemperature(rt);
-        HashSet speSet = new HashSet();
+        LinkedHashSet speSet = new LinkedHashSet();
         for (Iterator iter = getReactionModel().getReaction(); iter.hasNext();) {
             Reaction rxn = (Reaction) iter.next();
             double k = rxn.calculateTotalRate(t);

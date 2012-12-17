@@ -688,7 +688,7 @@ public class Graph {
         // remove the nonRing Nodes
         Graph g = Graph.copy(this);
         boolean moreRemovals = true;
-        HashSet removeNodes = new HashSet();
+        LinkedHashSet removeNodes = new LinkedHashSet();
         while (moreRemovals) {
             moreRemovals = false;
             Iterator nodeIter = g.getNodeList();
@@ -2029,12 +2029,12 @@ public class Graph {
         } else if (getCycleNumber() == 1) {// monocyclic case
             return null;
         } else {
-            Set<Node> fusedRingAtoms = new HashSet<Node>();
+            Set<Node> fusedRingAtoms = new LinkedHashSet<Node>();
             // First retrieve lists with all the Nodes that belong to rings:
             List<Set<Node>> ringNodesList = new LinkedList<Set<Node>>();
             Iterator iterCycle = SSSRings.iterator(); // loop over all SSSRs
             while (iterCycle.hasNext()) {
-                Set<Node> nodesSet = new HashSet<Node>();
+                Set<Node> nodesSet = new LinkedHashSet<Node>();
                 LinkedList cycle = (LinkedList) iterCycle.next();
                 Iterator iter = cycle.iterator();
                 while (iter.hasNext()) {
@@ -2073,7 +2073,7 @@ public class Graph {
      * @return
      */
     public Set<Node> getRingAtoms() {
-        Set<Node> ringAtoms = new HashSet<Node>();
+        Set<Node> ringAtoms = new LinkedHashSet<Node>();
         List<Set<Node>> cycleNodes = getCycleNodes();
         for (Set set : cycleNodes)
             for (Iterator iter = set.iterator(); iter.hasNext();) {
@@ -2098,7 +2098,7 @@ public class Graph {
             List<Set<Node>> ringNodesList = new LinkedList<Set<Node>>();
             Iterator iterCycle = SSSRings.iterator(); // loop over all SSSRs
             while (iterCycle.hasNext()) {
-                Set<Node> nodesSet = new HashSet<Node>();
+                Set<Node> nodesSet = new LinkedHashSet<Node>();
                 LinkedList cycle = (LinkedList) iterCycle.next();
                 Iterator iter = cycle.iterator();
                 while (iter.hasNext()) {
@@ -2135,7 +2135,7 @@ public class Graph {
         } else {
             Iterator iterCycle = SSSRings.iterator(); // loop over all SSSRs
             while (iterCycle.hasNext()) {
-                Set<Node> nodesSet = new HashSet<Node>();
+                Set<Node> nodesSet = new LinkedHashSet<Node>();
                 List cycle = (LinkedList) iterCycle.next();
                 Iterator iter = cycle.iterator();
                 int numberOfNodes = 0;

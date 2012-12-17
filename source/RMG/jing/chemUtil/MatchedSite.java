@@ -74,7 +74,7 @@ public class MatchedSite {
     }
 
     /*
-     * public boolean contains(HashSet arcs, Node mainNode){ Iterator iter = arcs.iterator(); while (iter.hasNext()){
+     * public boolean contains(LinkedHashSet arcs, Node mainNode){ Iterator iter = arcs.iterator(); while (iter.hasNext()){
      * Arc arc = (Arc)iter.next(); Iterator nodeIter = arc.getNeighbor(); while (nodeIter.hasNext()){ Node node =
      * (Node)nodeIter.next(); if (!contains(node) && node != mainNode) return false; } } return true; }
      */

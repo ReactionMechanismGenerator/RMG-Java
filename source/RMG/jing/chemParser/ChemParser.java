@@ -99,7 +99,7 @@ public class ChemParser {
             LinkedHashMap p_dictionary) {
         FunctionalGroupCollection fgc = new FunctionalGroupCollection(p_name);
         // get the union set according to the p_name
-        HashSet union = (HashSet) p_unRead.get(p_name);
+        LinkedHashSet union = (LinkedHashSet) p_unRead.get(p_name);
         Iterator union_iter = union.iterator();
         while (union_iter.hasNext()) {
             String fg_name = (String) union_iter.next();
@@ -1014,7 +1014,7 @@ public class ChemParser {
                 Bond bond = Bond.make(b);
                 return bond;
             } else {
-                HashSet bondList = new HashSet();
+                LinkedHashSet bondList = new LinkedHashSet();
                 while (bondToken.hasMoreTokens()) {
                     String b = bondToken.nextToken();
                     Bond bond = Bond.make(b);
@@ -1206,7 +1206,7 @@ public class ChemParser {
                 }
                 return atom;
             } else {
-                HashSet atomList = new HashSet();
+                LinkedHashSet atomList = new LinkedHashSet();
                 ChemNodeElement atom = null;
                 while (aListToken.hasMoreTokens()) {
                     String nextToken = aListToken.nextToken();
@@ -1323,7 +1323,7 @@ public class ChemParser {
         try {
             FileReader in = new FileReader(p_fileName);
             BufferedReader reader = new BufferedReader(in);
-            HashSet fgList = new HashSet();
+            LinkedHashSet fgList = new LinkedHashSet();
             String line = readMeaningfulLine(reader, true);
             while (line != null) {
                 StringTokenizer st = new StringTokenizer(line);
@@ -1479,7 +1479,7 @@ public class ChemParser {
         try {
             FileReader in = new FileReader(p_fileName);
             BufferedReader reader = new BufferedReader(in);
-            HashSet speciesList = new HashSet();
+            LinkedHashSet speciesList = new LinkedHashSet();
             String line = readMeaningfulLine(reader, true);
             while (line != null) {
                 StringTokenizer st = new StringTokenizer(line);
@@ -1535,10 +1535,10 @@ public class ChemParser {
         // #]
     }
 
-    public static HashSet readUnion(String p_string)
+    public static LinkedHashSet readUnion(String p_string)
             throws InvalidUnionFormatException {
         try {
-            HashSet result = new HashSet();
+            LinkedHashSet result = new LinkedHashSet();
             if (p_string == null)
                 return result;
             p_string = p_string.trim();

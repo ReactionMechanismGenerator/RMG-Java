@@ -59,15 +59,15 @@ public class HierarchyTreeNode extends TreeNode {
 
     /**
      * Requires: Effects: construct a new HierarchyTreeNode by setting it element as the pass-in Matchable object, and
-     * setting it children as the pass-in HashSet object, if all the tree node in the collection satisfies repOk() check
+     * setting it children as the pass-in LinkedHashSet object, if all the tree node in the collection satisfies repOk() check
      * and isSub(this) check. If any of the children is not an instance of HierarchyTreeNode, throw new
      * HierarchyTreeNodeExcption; if any of the children can't pass the repOk() or isSub(this) check, throw
      * InvalidHierarchyRelationException. Modifies
      */
-    // ## operation HierarchyTreeNode(Matchable,int,HashSet)
+    // ## operation HierarchyTreeNode(Matchable,int,LinkedHashSet)
     public HierarchyTreeNode(Matchable p_element, int p_depth,
             LinkedHashSet p_children) {
-        // #[ operation HierarchyTreeNode(Matchable,int,HashSet)
+        // #[ operation HierarchyTreeNode(Matchable,int,LinkedHashSet)
         super(p_element);
         depth = p_depth;
         Iterator iter = children.iterator();

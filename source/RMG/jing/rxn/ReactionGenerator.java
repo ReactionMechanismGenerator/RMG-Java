@@ -47,10 +47,10 @@ public interface ReactionGenerator {
     /**
      * a set of reactants.
      */
-    // ## operation react(HashSet)
+    // ## operation react(LinkedHashSet)
     LinkedHashSet react(LinkedHashSet p_speciesseed);
 
-    // ## operation react(HashSet,Species)
+    // ## operation react(LinkedHashSet,Species)
     LinkedHashSet react(LinkedHashSet p_speciesSet, Species p_species,
             String p_rxnFamilyName);
 }

@@ -223,7 +223,7 @@ public class SystemSnapshot {
             return true;
         } else {
 // renormalizing the concentration
-            HashSet hs = new HashSet(inertGas.keySet());
+            LinkedHashSet hs = new LinkedHashSet(inertGas.keySet());
             for (Iterator iter = hs.iterator(); iter.hasNext();) {
                 String name = (String) iter.next();
                 double c = (Double) inertGas.get(name);

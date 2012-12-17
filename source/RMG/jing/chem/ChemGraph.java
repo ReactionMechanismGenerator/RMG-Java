@@ -65,12 +65,12 @@ public class ChemGraph implements Matchable {
      * The overall forbidden structure. When any new ChemGraph instance is generated, RMG check if it has any of the
      * forbidden structure. If it has, it wont be generated.
      */
-    protected static HashSet forbiddenStructure = new HashSet(); // ## attribute forbiddenStructure
+    protected static LinkedHashSet forbiddenStructure = new LinkedHashSet(); // ## attribute forbiddenStructure
     protected int internalRotor = -1; // ## attribute internalRotor
     /**
      * A collection of all the possible symmetry Axis in a ChemGraph. For example: the C=C=O skeleton in (CH3)2C=C=O
      */
-    // protected HashSet symmetryAxis = null; //## attribute symmetryAxis
+    // protected LinkedHashSet symmetryAxis = null; //## attribute symmetryAxis
     /**
      * Symmetry number of a ChemGraph. Used in calculating entropy.
      */
@@ -1123,9 +1123,9 @@ public class ChemGraph implements Matchable {
         cg.internalRotor = p_chemGraph.internalRotor;
         cg.solvthermoData = p_chemGraph.solvthermoData;
         /*
-         * HashSet oldSymmetryAxis = p_chemGraph.getSymmetryAxis(); if (oldSymmetryAxis != null) { cg.symmetryAxis = new
-         * HashSet(); for (Iterator iAxis = oldSymmetryAxis.iterator(); iAxis.hasNext(); ) { HashSet newAxis = new
-         * HashSet(); HashSet oldAxis = (HashSet)iAxis.next(); for (Iterator iArc = oldAxis.iterator(); iArc.hasNext();
+         * LinkedHashSet oldSymmetryAxis = p_chemGraph.getSymmetryAxis(); if (oldSymmetryAxis != null) { cg.symmetryAxis = new
+         * LinkedHashSet(); for (Iterator iAxis = oldSymmetryAxis.iterator(); iAxis.hasNext(); ) { LinkedHashSet newAxis = new
+         * LinkedHashSet(); LinkedHashSet oldAxis = (LinkedHashSet)iAxis.next(); for (Iterator iArc = oldAxis.iterator(); iArc.hasNext();
          * ) { Arc arc = (Arc)iArc.next(); Iterator iNode = arc.getNeighbor(); int n1 =
          * ((Node)iNode.next()).getID().intValue(); int n2 = ((Node)iNode.next()).getID().intValue(); Arc newArc =
          * cg.getArcBetween(n1,n2); newAxis.add(newArc); } cg.symmetryAxis.add(newAxis); } }
@@ -1851,10 +1851,10 @@ public class ChemGraph implements Matchable {
     /**
      * Requires: Effects: find out the end of C=C=C... pattern Modifies:
      */
-    // ## operation getToEndOfAxis(Arc,Node,HashSet)
+    // ## operation getToEndOfAxis(Arc,Node,LinkedHashSet)
     private static final Node getToEndOfAxis(Arc p_beginArc, Node p_beginNode,
-            HashSet p_axis) {
-        // #[ operation getToEndOfAxis(Arc,Node,HashSet)
+            LinkedHashSet p_axis) {
+        // #[ operation getToEndOfAxis(Arc,Node,LinkedHashSet)
         Arc nextArc = null;
         Iterator iter = p_beginNode.getNeighbor();
         while (iter.hasNext()) {
@@ -1878,8 +1878,8 @@ public class ChemGraph implements Matchable {
     // find the end of the Ct-Ct-Ct... pattern
     // based on similar function getToEndOfAxis
     private static final Node getToEndOfCumulatedTripleBondSystem(
-            Arc p_beginArc, Node p_beginNode, HashSet p_axis) {
-        // #[ operation getToEndOfAxis(Arc,Node,HashSet)
+            Arc p_beginArc, Node p_beginNode, LinkedHashSet p_axis) {
+        // #[ operation getToEndOfAxis(Arc,Node,LinkedHashSet)
         Arc nextArc = null;
         Iterator iter = p_beginNode.getNeighbor();
         while (iter.hasNext()) {
@@ -2496,7 +2496,7 @@ public class ChemGraph implements Matchable {
         return MAX_RADICAL_NUM;
     }
 
-    public static HashSet getForbiddenStructure() {
+    public static LinkedHashSet getForbiddenStructure() {
         return forbiddenStructure;
     }
 
@@ -2508,7 +2508,7 @@ public class ChemGraph implements Matchable {
     }
 
     /*
-     * public HashSet getSymmetryAxis() { return symmetryAxis; }
+     * public LinkedHashSet getSymmetryAxis() { return symmetryAxis; }
      */
     protected String getUniqueString() {
         return uniqueString;

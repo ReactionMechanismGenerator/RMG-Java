@@ -59,7 +59,7 @@ public class TemplateReactionGenerator implements ReactionGenerator {
     /**
      * the set of species in the reaction system.
      */
-    // ## operation react(HashSet)
+    // ## operation react(LinkedHashSet)
     public LinkedHashSet react(LinkedHashSet p_speciesSeed) {
         LinkedHashSet allReactions = new LinkedHashSet();
         LinkedHashSet allSpecies = new LinkedHashSet();
@@ -95,11 +95,11 @@ public class TemplateReactionGenerator implements ReactionGenerator {
         return pdepReactionSet;
     }
 
-    // ## operation react(HashSet,Species)
+    // ## operation react(LinkedHashSet,Species)
     public LinkedHashSet react(LinkedHashSet p_speciesSet,
             Species newCoreSpecies, String specificRxnFamily) {
 // double pT = System.currentTimeMillis();
-        // #[ operation react(HashSet,Species)
+        // #[ operation react(LinkedHashSet,Species)
         LinkedHashSet reaction_set = new LinkedHashSet();
         if (!newCoreSpecies.isReactive()) {
             return reaction_set;

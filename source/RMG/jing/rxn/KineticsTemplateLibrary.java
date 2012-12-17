@@ -49,9 +49,9 @@ public class KineticsTemplateLibrary {
         }
     }
 
-    // ## operation addKinetics(HashSet,Kinetics)
+    // ## operation addKinetics(LinkedHashSet,Kinetics)
     public KineticsTemplate addKinetics(LinkedHashSet p_fgc, Kinetics p_kinetics) {
-        // #[ operation addKinetics(HashSet,Kinetics)
+        // #[ operation addKinetics(LinkedHashSet,Kinetics)
         KineticsTemplate old = getKineticsTemplate(p_fgc);
         // if there is already a number in the library, and it is not the root node, output information
         // otherwise, add the kt number into library, or replace the root number
@@ -268,9 +268,9 @@ public class KineticsTemplateLibrary {
         // #]
     }
 
-    // ## operation getKinetics(HashSet)
+    // ## operation getKinetics(LinkedHashSet)
     public Kinetics getKinetics(LinkedHashSet p_key) {
-        // #[ operation getKinetics(HashSet)
+        // #[ operation getKinetics(LinkedHashSet)
         KineticsTemplate kt = getKineticsTemplate(p_key);
         if (kt == null)
             return null;
@@ -279,9 +279,9 @@ public class KineticsTemplateLibrary {
         // #]
     }
 
-    // ## operation getKineticsTemplate(HashSet)
+    // ## operation getKineticsTemplate(LinkedHashSet)
     public KineticsTemplate getKineticsTemplate(LinkedHashSet p_key) {
-        // #[ operation getKineticsTemplate(HashSet)
+        // #[ operation getKineticsTemplate(LinkedHashSet)
         return (KineticsTemplate) (kineticsTemplate.get(p_key));
         // #]
     }

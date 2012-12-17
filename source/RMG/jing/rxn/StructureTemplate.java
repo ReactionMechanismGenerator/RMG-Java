@@ -222,16 +222,16 @@ public class StructureTemplate {
         // #]
     }
 
-    // ## operation setReactant(int,HashSet)
+    // ## operation setReactant(int,LinkedHashSet)
     public void setReactant(int p_position, LinkedHashSet p_reactantFGSet) {
-        // #[ operation setReactant(int,HashSet)
+        // #[ operation setReactant(int,LinkedHashSet)
         reactants.add(p_position, p_reactantFGSet);
         // #]
     }
 
-    // ## operation setReactantTree(HashSet)
+    // ## operation setReactantTree(LinkedHashSet)
     public void setReactantTree(LinkedHashSet p_treeSet) {
-        // #[ operation setReactantTree(HashSet)
+        // #[ operation setReactantTree(LinkedHashSet)
         if (p_treeSet == null)
             throw new InvalidReactantTreeException();
         int size = p_treeSet.size();

@@ -249,9 +249,9 @@ public class Species {
     }
 
     // ## operation findAllDelocalizationPaths(Node)
-    private HashSet findAllDelocalizationPaths(Node p_radical) {
+    private LinkedHashSet findAllDelocalizationPaths(Node p_radical) {
         // #[ operation findAllDelocalizationPaths(Node)
-        HashSet allPaths = new HashSet();
+        LinkedHashSet allPaths = new LinkedHashSet();
         Atom atom = (Atom) p_radical.getElement();
         if (!atom.isRadical())
             return allPaths;
@@ -451,18 +451,18 @@ public class Species {
         undoChemGraph.add(chemGraph);
 // Queue undoChemGraph = new Queue(4*chemGraph.getAtomNumber());
 // undoChemGraph.enqueue(chemGraph);
-        HashSet processedChemGraph = new HashSet();
+        LinkedHashSet processedChemGraph = new LinkedHashSet();
         while (!undoChemGraph.isEmpty()) {
             ChemGraph cg = (ChemGraph) undoChemGraph.remove();
 // ChemGraph cg = (ChemGraph)undoChemGraph.dequeue();
-            HashSet radicalNode = cg.getRadicalNode();
+            LinkedHashSet radicalNode = cg.getRadicalNode();
             Iterator radicalIter = radicalNode.iterator();
             while (radicalIter.hasNext()) {
                 Node radical = (Node) radicalIter.next();
                 int radicalNumber = ((Atom) radical.getElement())
                         .getRadicalNumber();
                 if (radicalNumber > 0) {
-                    HashSet allPath = findAllDelocalizationPaths(radical);
+                    LinkedHashSet allPath = findAllDelocalizationPaths(radical);
                     Iterator pathIter = allPath.iterator();
                     while (pathIter.hasNext()) {
                         Stack path = (Stack) pathIter.next();
@@ -485,7 +485,7 @@ public class Species {
     }
 
     private void makeSingletAndTriplet(ChemGraph cg) {
-        HashSet radicalNode = cg.getRadicalNode();
+        LinkedHashSet radicalNode = cg.getRadicalNode();
         Iterator radicalIter = radicalNode.iterator();
         while (radicalIter.hasNext()) {
             Node radical = (Node) radicalIter.next();
@@ -637,7 +637,7 @@ public class Species {
         // #]
     }
 
-    public HashSet getResonanceIsomersHashSet() {
+    public LinkedHashSet getResonanceIsomersHashSet() {
         return resonanceIsomers;
     }
 

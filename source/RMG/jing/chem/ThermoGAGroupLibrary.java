@@ -184,7 +184,7 @@ public class ThermoGAGroupLibrary {
         while (iter.hasNext()) {
             redundance = 0;
             FunctionalGroup f = (FunctionalGroup) iter.next();
-            HashSet gv = p_chemGraph.identifyThermoMatchedSite(f);
+            LinkedHashSet gv = p_chemGraph.identifyThermoMatchedSite(f);
             if (gv != null) {
                 redundance = gv.size();
                 if (redundance > 0) {
@@ -990,7 +990,7 @@ public class ThermoGAGroupLibrary {
                 line = line.trim();
                 String prefix = line.substring(0, 5);
                 if (prefix.compareToIgnoreCase("union") == 0) {
-                    HashSet union = ChemParser.readUnion(line);
+                    LinkedHashSet union = ChemParser.readUnion(line);
                     unRead.put(fgname, union);
                 } else {
                     data.reset();

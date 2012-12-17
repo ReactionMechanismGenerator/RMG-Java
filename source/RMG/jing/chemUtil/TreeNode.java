@@ -54,12 +54,12 @@ public class TreeNode {
     /**
      * Requires: Effects: construct a new object by setting the element and childre as the pass-ins. Modifies:
      */
-    // ## operation TreeNode(Object,HashSet)
+    // ## operation TreeNode(Object,LinkedHashSet)
     public TreeNode(Object p_element, LinkedHashSet p_children) {
         {
             children = new LinkedHashSet();
         }
-        // #[ operation TreeNode(Object,HashSet)
+        // #[ operation TreeNode(Object,LinkedHashSet)
         element = p_element;
         children = p_children;
         // #]

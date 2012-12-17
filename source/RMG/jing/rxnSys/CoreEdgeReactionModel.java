@@ -61,7 +61,7 @@ public class CoreEdgeReactionModel implements ReactionModel {
     /**
      * All the reaction generated from the reacted species set
      */
-    // ## operation CoreEdgeReactionModel(HashSet,HashSet)
+    // ## operation CoreEdgeReactionModel(LinkedHashSet,LinkedHashSet)
     public CoreEdgeReactionModel(LinkedHashSet p_reactedSpeciesSet,
             LinkedHashSet p_reactionSet) {
         initRelations();
@@ -168,10 +168,10 @@ public class CoreEdgeReactionModel implements ReactionModel {
         // #]
     }
 
-    // ## operation addReactedReactionSet(HashSet)
+    // ## operation addReactedReactionSet(LinkedHashSet)
     public void addReactedReactionSet(LinkedHashSet p_reactedReactionSet)
             throws InvalidReactedReactionException {
-        // #[ operation addReactedReactionSet(HashSet)
+        // #[ operation addReactedReactionSet(LinkedHashSet)
         try {
             for (Iterator iter = p_reactedReactionSet.iterator(); iter
                     .hasNext();) {
@@ -196,9 +196,9 @@ public class CoreEdgeReactionModel implements ReactionModel {
         // #]
     }
 
-    // ## operation addReactedSpeciesSet(HashSet)
+    // ## operation addReactedSpeciesSet(LinkedHashSet)
     public void addReactedSpeciesSet(LinkedHashSet p_reactedSpeciesSet) {
-        // #[ operation addReactedSpeciesSet(HashSet)
+        // #[ operation addReactedSpeciesSet(LinkedHashSet)
         boolean added = false;
         LinkedHashSet rs = getReactedSpeciesSet();
         for (Iterator iter = p_reactedSpeciesSet.iterator(); iter.hasNext();) {
@@ -222,9 +222,9 @@ public class CoreEdgeReactionModel implements ReactionModel {
         // #]
     }
 
-    // ## operation addReactionSet(HashSet)
+    // ## operation addReactionSet(LinkedHashSet)
     public void addReactionSet(LinkedHashSet p_reactionSet) {
-        // #[ operation addReactionSet(HashSet)
+        // #[ operation addReactionSet(LinkedHashSet)
         for (Iterator iter = p_reactionSet.iterator(); iter.hasNext();) {
             Reaction rxn = (Reaction) iter.next();
             int rxnType = categorizeReaction(rxn);
@@ -779,7 +779,7 @@ public class CoreEdgeReactionModel implements ReactionModel {
          */
         LinkedList nonPDepList = new LinkedList();
         LinkedList pDepList = new LinkedList();
-        HashSet pDepStructureSet = new HashSet();
+        LinkedHashSet pDepStructureSet = new LinkedHashSet();
         for (Iterator iter = PDepNetwork.getNetworks().iterator(); iter
                 .hasNext();) {
             PDepNetwork pdn = (PDepNetwork) iter.next();
@@ -850,7 +850,7 @@ public class CoreEdgeReactionModel implements ReactionModel {
          */
         LinkedList nonPDepList = new LinkedList();
         LinkedList pDepList = new LinkedList();
-        HashSet pDepStructureSet = new HashSet();
+        LinkedHashSet pDepStructureSet = new LinkedHashSet();
         for (Iterator iter = PDepNetwork.getNetworks().iterator(); iter
                 .hasNext();) {
             PDepNetwork pdn = (PDepNetwork) iter.next();
