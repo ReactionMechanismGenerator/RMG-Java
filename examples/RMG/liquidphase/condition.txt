@@ -52,9 +52,10 @@ END
 SpectroscopicDataEstimator: off
 PressureDependence: off
 
+// Change Goal ReactionTime:  10 (min) for a more realistic simulation
 FinishController:
-(1) Goal ReactionTime:  10 (min)
-(2) Error Tolerance: 0.1
+(1) Goal ReactionTime:  10 (sec)
+(2) Error Tolerance: 0.5
 
 DynamicSimulator: DASSL
 TimeStep: AUTO
