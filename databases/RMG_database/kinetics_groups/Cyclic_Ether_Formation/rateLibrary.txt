@@ -8,8 +8,9 @@ Arrhenius_EP
 
 // Catherina Wijaya Thesis, pg 159.
 
+812.        RnOOR        Y_rad_intra            300-1500    1E+11       0       0       10      0       0       0       0       0
+
 //No.		RnOOH		 Y_rad_intra			Temp.		A			n		a		E0		A		Dn		Da		DE0		Rank	Comments
-812.		RnOOH		 Y_rad_intra			300-1500	1E+11		0		0		10		0		0		0		0		0
 813.		R2OOH_S		 C_pri_rad_intra		300-1500	3.98E+12	0		1.3		37.0	*1.20	0		0.3		3.0		2		CBS-QB3 and BH&HLYP calculations (Catherina Wijaya & Sumathy Raman). Including treatment of hindered rotor.
 814.		R2OOH_S		 C_sec_rad_intra		300-1500	1.38E+12	0		1.3		37.0	*1.20	0		0.3		3.0		2		CBS-QB3 and BH&HLYP calculations (Catherina Wijaya & Sumathy Raman). Including treatment of hindered rotor.
 815.		R2OOH_S		 C_ter_rad_intra		300-1500	3.09E+12	0		1.3		37.0	*1.20	0		0.3		3.0		2		CBS-QB3 and BH&HLYP calculations (Catherina Wijaya & Sumathy Raman). Including treatment of hindered rotor.
@@ -29,7 +30,6 @@ Arrhenius_EP
 829.        R3OOH_SSCO   Cs_rad_intra       	300-1500    1.27E+08    0.77    0       18.73	0		0		0		0		0       Estimate (Same as 5 memebered ring)
 
 // Added by Amrit Jalan for RnOOR -> RO + OR. Kinetics assumed to be same as RnOOH with the same index number.
-812.		RnOOR		 Y_rad_intra			300-1500	1E+11		0		0		10		0		0		0		0		0
 813.		R2OOR_S		 C_pri_rad_intra		300-1500	3.98E+12	0		1.3		37.0	*1.20	0		0.3		3.0		2		CBS-QB3 and BH&HLYP calculations (Catherina Wijaya & Sumathy Raman). Including treatment of hindered rotor.
 814.		R2OOR_S		 C_sec_rad_intra		300-1500	1.38E+12	0		1.3		37.0	*1.20	0		0.3		3.0		2		CBS-QB3 and BH&HLYP calculations (Catherina Wijaya & Sumathy Raman). Including treatment of hindered rotor.
 815.		R2OOR_S		 C_ter_rad_intra		300-1500	3.09E+12	0		1.3		37.0	*1.20	0		0.3		3.0		2		CBS-QB3 and BH&HLYP calculations (Catherina Wijaya & Sumathy Raman). Including treatment of hindered rotor.

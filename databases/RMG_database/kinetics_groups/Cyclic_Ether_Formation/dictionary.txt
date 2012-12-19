@@ -9,10 +9,7 @@
 // AJ added new definitions to generalize the reaction family to QOOR=QO+OR
 
 RnOOR
-Union {RnOOH, R2OOR, R3OOR, R4OOR, R5OOR}
-
-RnOOH
-Union {R2OOH, R3OOH, R4OOH, R5OOH}
+Union {R2OOH, R3OOH, R4OOH, R5OOH, R2OOR, R3OOR, R4OOR, R5OOR}
 
 R2OOH
 1 *1 {CO,Cd,Cs,Sid,Sis} 1 {2,{S,D}}
