@@ -931,8 +931,6 @@ public class ReactionModelGenerator {
 			        String EaUnits = ArrheniusKinetics.getEaUnits();
 				bw.write("UnitsOfEa: " + EaUnits);
 				bw.newLine();
-			    } catch (FileNotFoundException ex) {
-				Logger.logStackTrace(ex);
 			    } catch (IOException ex) {
 				Logger.logStackTrace(ex);
 			    } finally {
@@ -2684,8 +2682,6 @@ public class ReactionModelGenerator {
 				bw.write(species.getChemGraph().toString(dummyInt));
 				bw.newLine();
 			}
-        } catch (FileNotFoundException ex) {
-            Logger.logStackTrace(ex);
         } catch (IOException ex) {
             Logger.logStackTrace(ex);
         } finally {
@@ -2710,8 +2706,6 @@ public class ReactionModelGenerator {
 		    int dummyInt = 0;
 		    bw.write(species.getChemGraph().toString(dummyInt));
 		    bw.newLine();
-		} catch (FileNotFoundException ex) {
-		    Logger.logStackTrace(ex);
 		} catch (IOException ex) {
 		    Logger.logStackTrace(ex);
 		} finally {
@@ -2771,8 +2765,6 @@ public class ReactionModelGenerator {
 				bw.write(species.getChemGraph().toString(dummyInt));
 				bw.newLine();
 			}
-        } catch (FileNotFoundException ex) {
-            Logger.logStackTrace(ex);
         } catch (IOException ex) {
             Logger.logStackTrace(ex);
         } finally {
@@ -2829,8 +2821,6 @@ public class ReactionModelGenerator {
 					}
 				}
 			}
-        } catch (FileNotFoundException ex) {
-            Logger.logStackTrace(ex);
         } catch (IOException ex) {
             Logger.logStackTrace(ex);
         } finally {
@@ -2874,8 +2864,6 @@ public class ReactionModelGenerator {
 				} else
 					Logger.warning("Could not determine forward direction for following rxn: " + reaction.toString());
 			}
-        } catch (FileNotFoundException ex) {
-            Logger.logStackTrace(ex);
         } catch (IOException ex) {
             Logger.logStackTrace(ex);
         } finally {
@@ -2907,8 +2895,6 @@ public class ReactionModelGenerator {
 			    bw.newLine();
 		    } else
 			    Logger.warning("Could not determine forward direction for following rxn: " + reaction.toString());
-		} catch (FileNotFoundException ex) {
-		    Logger.logStackTrace(ex);
 		} catch (IOException ex) {
 		    Logger.logStackTrace(ex);
 		} finally {
@@ -3011,8 +2997,6 @@ public class ReactionModelGenerator {
 				bw.newLine();
 			}
     		
-        } catch (FileNotFoundException ex) {
-            Logger.logStackTrace(ex);
         } catch (IOException ex) {
             Logger.logStackTrace(ex);
         } finally {
@@ -3178,8 +3162,6 @@ public class ReactionModelGenerator {
 				 }*/
 				line = ChemParser.readMeaningfulLine(reader, true);
 			}
-		} catch (FileNotFoundException e) {
-			Logger.logStackTrace(e);
 		} catch (IOException e) {
 			Logger.logStackTrace(e);
 		}
@@ -3215,8 +3197,6 @@ public class ReactionModelGenerator {
 				restartEdgeSpcs.add(species);
 				line = ChemParser.readMeaningfulLine(reader, true);
 			}
-		} catch (FileNotFoundException e) {
-			Logger.logStackTrace(e);
 		} catch (IOException e) {
 			Logger.logStackTrace(e);
 		}
@@ -3269,8 +3249,6 @@ public class ReactionModelGenerator {
 				
 				line = ChemParser.readMeaningfulLine(reader, true);
 			}
-		} catch (FileNotFoundException e) {
-			Logger.logStackTrace(e);
 		} catch (IOException e) {
 			Logger.logStackTrace(e);
 		}
@@ -3328,8 +3306,6 @@ public class ReactionModelGenerator {
 				
 				line = ChemParser.readMeaningfulLine(reader, true);
 			}
-		} catch (FileNotFoundException e) {
-			Logger.logStackTrace(e);
 		} catch (IOException e) {
 			Logger.logStackTrace(e);
 		}
@@ -3376,8 +3352,6 @@ public class ReactionModelGenerator {
     			speciesStatus.put(species, ss);
 				line = ChemParser.readMeaningfulLine(reader, true);
 			}
-		} catch (FileNotFoundException e) {
-			Logger.logStackTrace(e);
 		} catch (IOException e) {
 			Logger.logStackTrace(e);
 		}
@@ -3416,8 +3390,6 @@ public class ReactionModelGenerator {
 				}
 				line = ChemParser.readMeaningfulLine(reader, true);
 			}
-		} catch (FileNotFoundException e) {
-			Logger.logStackTrace(e);
 		} catch (IOException e) {
 			Logger.logStackTrace(e);
 		}
@@ -3634,8 +3606,6 @@ public class ReactionModelGenerator {
 				
 			}
 			
-		} catch (FileNotFoundException e) {
-			Logger.logStackTrace(e);
 		} catch (IOException e) {
 			Logger.logStackTrace(e);
 		}
