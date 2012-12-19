@@ -31,7 +31,6 @@ L1: RnOOR
 			L4: R5OOH_DSSS		
 			L4: R5OOH_SDSD		
 			L4: R5OOH_DSDS
-	L2: R2OOR_cyclic
 	L2: R2OOR		
 		L3: R2OOR_S	
 		L3: R2OOR_SCO	

@@ -47,4 +47,3 @@ Arrhenius_EP
 827.		R2OOR_SCO	 Cs_rad_intra			300-1500	6.92E+15   -0.53    0       24.34	0		0		0		0		5       CBS-QB3 Including treatment for hindered rotor, QTST Calculation (CFG & JWA) 
 828.        R4OOR_SSSCO  Cs_rad_intra       	300-1500    1.27E+08    0.77    0       18.73	0		0		0		0		0 		Estimate (Same as 5 memebered ring)
 829.        R3OOR_SSCO   Cs_rad_intra       	300-1500    1.27E+08    0.77    0       18.73	0		0		0		0		0       Estimate (Same as 5 memebered ring)
-812.		R2OOR_cyclic Y_rad_intra			300-1500	1E+11		0		0		10		0		0		0		0		0

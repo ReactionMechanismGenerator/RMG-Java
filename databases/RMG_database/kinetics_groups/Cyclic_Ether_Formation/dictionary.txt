@@ -9,7 +9,7 @@
 // AJ added new definitions to generalize the reaction family to QOOR=QO+OR
 
 RnOOR
-Union {RnOOH, R2OOR, R3OOR, R4OOR, R5OOR, R2OOR_cyclic}
+Union {RnOOH, R2OOR, R3OOR, R4OOR, R5OOR}
 
 RnOOH
 Union {R2OOH, R3OOH, R4OOH, R5OOH}
@@ -212,7 +212,7 @@ R5OOH_DSSS
 2 *4 Cd 0 {1,D}, {3,S} 
 3 {Cd,Cs,CO} 0 {2,S}, {4,S}
 4 {Cd,Cs,CO} 0 {3,S}, {5,S}
-5 {Cd,Cs,CO} 0 {4,S}, {6,S}
+5 {Cd,Cs,CO} 0 {4,S}, {6,S}R2OOR_cyclic
 6 *2 O 0 {5,S}, {7,S}
 7 *3 O 0 {6,S}, {8,S}
 8 H 0 {7,S}
