@@ -1990,7 +1990,7 @@ public class ReactionModelGenerator {
                     String reactive = st.nextToken().trim();
                     // Dont count the unreactive and constantconcentration tokens
                     if (!reactive.equalsIgnoreCase("unreactive")
-                            || !reactive
+                            && !reactive
                                     .equalsIgnoreCase("constantconcentration"))
                         ++numConcentrations;
                 }
