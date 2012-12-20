@@ -29,5 +29,6 @@ for INPUT in {hexadiene,cyclopropane_QM,minimal,liquidphase,butane_pruning}
      grep "Running time"       $OUTPUT | tail -1  | tee $REPORT
      grep "Memory used"        $OUTPUT | tail -1  | tee $REPORT
      grep "ERROR:"            $OUTPUT             | tee $REPORT
+     grep "CRITICAL"          $OUTPUT             | tee $REPORT
   done
 echo RMG test calculations finished on `date`     | tee $REPORT
