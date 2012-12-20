@@ -153,8 +153,7 @@ test:
 
 # Run all test cases
 test_all: 
-	export RMG=$(CURDIR);
-	scripts/test_all.sh;
+	export RMG=$(CURDIR); scripts/test_all.sh;
 
 help:
 	@echo ""
