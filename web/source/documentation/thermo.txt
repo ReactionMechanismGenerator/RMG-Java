@@ -1,4 +1,4 @@
-**********************************
+﻿**********************************
 Estimating Species Thermochemistry
 **********************************
 
@@ -25,6 +25,9 @@ this strategy falls back to the BensonOnly strategy.
 
 The hybrid strategy is the default option used in RMG. First, the Benson databases are searched for an adequate (polycyclic) ring correction. If such a correction is not found, 
 this strategy falls back to the QMforCyclics strategy.
+
+The thermochemistry calculated from on-the-fly quantum methods are now saved to $RMG_QM_LIBRARY, which defaults as QMThermoLibrary in the working directory.
+These results can be inputted into subsequent RMG runs by copying QMThermoLibrary from a previous run into the working directory of the new run.
 
 The ``ThermoDataEstimator`` utility produces thermochemistry estimates without running RMG.
 
@@ -64,10 +67,15 @@ Instructions for Use
    correct connectivity. 
    e.g.::
    
-    //CheckConnectivity? [off/check/confirm]
-    check
+       //CheckConnectivity? [off/check/confirm]
+       check
     
-    
+   Specify whether to keep all output files from Gaussian03 or Mopac. If no enviornment
+   variable for qmCalculationsDir is set, the output files will be kept in $WorkDir/QMFiles. 
+
+       //KeepQMFiles? [yes/no]
+       yes
+ 
    The next section allows the user to set atom constraints on the species to be processed
    by the ThermoDataEstimator, beyond the default values hard-coded in TDE. 
    Only species that satisfy the set atom constraints, will be processed by TDE.
