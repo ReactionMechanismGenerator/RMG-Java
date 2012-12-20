@@ -32,8 +32,8 @@ public class BensonTDGenerator extends TDGenerator {
         else if (!chemGraph.isAcyclic() && fusedPolycyclic
                 && ((GATP) thermoGAPP).getPolycyclic() == null) {
             Logger.info("Polycyclic ring system with fused ring atoms.");
-            Logger.error("Could not find a polycyclic ring strain correction.");
-            Logger.error("Thermochemistry of polycyclic species does not contain corrections for the"
+            Logger.warning("Could not find a polycyclic ring strain correction.");
+            Logger.warning("Thermochemistry of polycyclic species does not contain corrections for the"
                     + "polyclic ring system. It is advised to review the thermochemistry data of this species.");
         }
         return thermo;

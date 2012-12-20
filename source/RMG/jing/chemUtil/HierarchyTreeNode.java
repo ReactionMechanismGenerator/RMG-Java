@@ -106,11 +106,11 @@ public class HierarchyTreeNode extends TreeNode {
             InvalidHierarchyRelationException {
         // #[ operation addChildren(HierarchyTreeNode)
         if (!(p_child.isSubAtCentralNodes(this))) {
-            String s = "Error in database: "
+            String s = "Problem in database: "
                     + ((Matchable) (p_child.element)).getName()
                     + " is not actually a child of "
                     + ((Matchable) (this.element)).getName();
-            Logger.error(s);
+            Logger.warning(s);
             // throw new InvalidHierarchyRelationException(s);
         }
         if (p_child.getDepth() != getDepth() + 1)
