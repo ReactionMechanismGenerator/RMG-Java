@@ -89,16 +89,17 @@ public class RMG {
             // Generate the model!
             ReactionModelGenerator rmg = new ReactionModelGenerator();
             rmg.modelGeneration();
+            // Save the resulting model to Final_Model.txt
+            Logger.info("Writing Final_Model.txt");
+            writeFinalModel(rmg);
             // Delete remaining QM files if they were only meant tobe temporary
-            if (!QMTP.keepQMfiles) {
+            if (!QMTP.keepQMfiles) {//keceli 20/Dec/12 There is a potential bug here 
                 File qmFolder = new File(
                         System.getProperty("RMG.qmCalculationsDir"));
                 if (qmFolder.exists()) {
                     ChemParser.deleteDir(qmFolder);
                 }
             }
-            // Save the resulting model to Final_Model.txt
-            writeFinalModel(rmg);
         } catch (Exception e) {
             // Any unhandled exception will land here
             // We assume that these were critical errors
