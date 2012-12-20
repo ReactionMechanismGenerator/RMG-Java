@@ -12,7 +12,7 @@ Since the accuracy of Benson GA for acyclic molecules is generally superior than
 For cyclic molecules 3 different strategies can be chosen:
 1. BensonOnly
 2. QMforCyclics
-3. Hybrid [default]
+3. Hybrid
 
 The BensonOnly strategy only uses the Benson Group Additivity framework to estimate thermochemistry of species. 
 For compounds containing one or more rings, it identifies the smallest set of smallest rings in the molecules and perceives whether fused ring atoms are present,
@@ -46,35 +46,37 @@ Instructions for Use
    	//thermo strategy? [BensonOnly/QMforCyclics/Hybrid]
    	Hybrid
    
-   The QM package to be used, is specified: either choose "both", "gaussian03", "mopac", 
-   "mm4", or "mm4hr"
-   e.g.::
+   The following lines are not required if the ``BensonOnly`` flag is used:
 
-   	//QM method: [both/gaussian03/mopac/mm4/mm4hr] 
-   	gaussian03
-   
-   
-   Limit the use of on-the-fly methods to only species with less than the specified number
-   of unpaired electrons. E.g. "0", implies that radical species will not computed using
-   on-the-fly QM methods.
-   e.g.::
+       The QM package to be used, is specified: either choose "both", "gaussian03", "mopac", 
+       "mm4", or "mm4hr"
+       e.g.::
 
-   	//maxradnumforQM?
-   	0  
-   
-   A check of the connectivity of the passed-in 3D structure can be performed ensuring
-   that the quantumchemical data returned by the QM package is based on a 3D structure with
-   correct connectivity. 
-   e.g.::
-   
-       //CheckConnectivity? [off/check/confirm]
-       check
-    
-   Specify whether to keep all output files from Gaussian03 or Mopac. If no enviornment
-   variable for qmCalculationsDir is set, the output files will be kept in $WorkDir/QMFiles. 
+       	//QM method: [both/gaussian03/mopac/mm4/mm4hr] 
+       	gaussian03
+       
+       
+       Limit the use of on-the-fly methods to only species with less than the specified number
+       of unpaired electrons. E.g. "0", implies that radical species will not computed using
+       on-the-fly QM methods.
+       e.g.::
 
-       //KeepQMFiles? [yes/no]
-       yes
+       	//maxradnumforQM?
+       	0  
+       
+       A check of the connectivity of the passed-in 3D structure can be performed ensuring
+       that the quantumchemical data returned by the QM package is based on a 3D structure with
+       correct connectivity. 
+       e.g.::
+       
+           //CheckConnectivity? [off/check/confirm]
+           check
+        
+       Specify whether to keep all output files from Gaussian03 or Mopac. If no enviornment
+       variable for qmCalculationsDir is set, the output files will be kept in $WorkDir/QMFiles. 
+
+           //KeepQMFiles? [yes/no]
+           yes
  
    The next section allows the user to set atom constraints on the species to be processed
    by the ThermoDataEstimator, beyond the default values hard-coded in TDE. 
