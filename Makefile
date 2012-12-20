@@ -146,8 +146,8 @@ clean:
 # Run a test case
 test:
 	mkdir -p $(RUNDIR)
-	cp examples/RMG/1,3-hexadiene/condition.txt $(RUNDIR)
-	cp examples/RMG/1,3-hexadiene/RMG.sh $(RUNDIR)
+	cp examples/RMG/hexadiene/condition.txt $(RUNDIR)
+	cp examples/RMG/hexadiene/RMG.sh $(RUNDIR)
 	export RMG=$(CURDIR); cd $(RUNDIR); ./RMG.sh;
 	echo "Results saved to $(RUNDIR)"
 
