@@ -80,10 +80,6 @@ public class QMTP implements GeneralGAPP {
     private QMTP() {
         initializePrimaryThermoLibrary();
         initalizeQmLibrary();
-        if (System.getenv("RDBASE") == null) {
-            Logger.critical("Please set your RDBASE environment variable to the directory containing RDKit.");
-            System.exit(0);
-        }
     }
 
     public String getQmMethod() {
@@ -638,6 +634,13 @@ public class QMTP implements GeneralGAPP {
         String directory = System.getProperty("RMG.3DmolfilesDir");
         directory = new File(directory).getAbsolutePath(); // get the absolute path for the directory
         String name = twoDmolFile.getName();
+        
+        String rdbase = System.getenv("RDBASE");
+        if (rdbase == null) {
+            Logger.critical("Please set your RDBASE environment variable to the directory containing RDKit.");
+            System.exit(0);
+        }
+
         try {
             File runningdir = new File(directory);
             String command = "";
@@ -654,7 +657,7 @@ public class QMTP implements GeneralGAPP {
 // (corresponding to the minimum energy conformation based on UFF refinement); use the same name as the twoDmolFile (but
 // it will be in he 3Dmolfiles folder) and have suffix .cmol
                 command = command.concat(numConfAttempts + " ");
-                command = command.concat("\"" + System.getenv("RDBASE") + "\"");// pass the $RDBASE environment variable
+                command = command.concat("\"" + rdbase + "\"");// pass the $RDBASE environment variable
 // to the script so it can use the approprate directory when importing rdkit
             } else {// non-Windows case
                 command = "python "
@@ -668,7 +671,7 @@ public class QMTP implements GeneralGAPP {
 // (corresponding to the minimum energy conformation based on UFF refinement); use the same name as the twoDmolFile (but
 // it will be in he 3Dmolfiles folder) and have suffix .cmol
                 command = command.concat(numConfAttempts + " ");
-                command = command.concat(System.getenv("RDBASE"));// pass the $RDBASE environment variable to the script
+                command = command.concat(rdbase);// pass the $RDBASE environment variable to the script
 // so it can use the approprate directory when importing rdkit
             }
             Process pythonProc = Runtime.getRuntime().exec(command, null,
