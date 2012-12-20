@@ -10,7 +10,7 @@ REPORT=$RUNDIR/report.rmg
 echo This script will run the examples in $RMG/examples/RMG directory  
 echo It takes about ten minutes and outputs are stored in $RUNDIR
 echo RMG test calculations started on `date`      | tee $REPORT
-for INPUT in {hexadiene,cyclopropane_QM,minimal,liquidphase,butane_pruning}
+for INPUT in {hexadiene,cyclopropane_QM,minimal,liquidphase,butane_pruning,diethylsulfide}
   do
      cd $RUNDIR
      mkdir -p $INPUT
