@@ -6,8 +6,8 @@ public class FSVector {
     public String AdjList;
 
     public FSVector(int ID, String name, String graph) {
-    	this.Index = ID;
-    	this.Name = name;
-    	this.AdjList = graph;
+        this.Index = ID;
+        this.Name = name;
+        this.AdjList = graph;
     }
 }

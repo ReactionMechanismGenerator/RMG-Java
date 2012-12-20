@@ -151,6 +151,11 @@ test:
 	export RMG=$(CURDIR); cd $(RUNDIR); ./RMG.sh;
 	echo "Results saved to $(RUNDIR)"
 
+# Run all test cases
+test_all: 
+	export RMG=$(CURDIR);
+	scripts/test_all.sh;
+
 help:
 	@echo ""
 	@echo "This makefile can be used to build all of the code required by RMG."
