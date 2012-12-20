@@ -192,22 +192,29 @@ public class ThermoDataEstimator {
         QMFlags qmFlags = new QMFlags();
         String line = ChemParser.readMeaningfulLine(reader, true);
         qmFlags.TDSTRATEGY = line;
-        line = ChemParser.readMeaningfulLine(reader, true);
-        qmFlags.method = line;
-        line = ChemParser.readMeaningfulLine(reader, true);
-        qmFlags.maxRadNumForQM = Integer.parseInt(line);
-        line = ChemParser.readMeaningfulLine(reader, true);
-        String checkConnSetting = line.toLowerCase();
-        if (checkConnSetting.equals("off")) {// no connectivity checking
-            qmFlags.connectivityCheck = 0;
-        } else if (checkConnSetting.equals("check")) {// print a warning if the connectivity doesn't appear to match
-            qmFlags.connectivityCheck = 1;
-        } else if (checkConnSetting.equals("confirm")) {// consider the run a failure if the connectivity doesn't appear
-// to match
-            qmFlags.connectivityCheck = 2;
+        if (!qmFlags.TDSTRATEGY.equalsIgnoreCase("BensonOnly")) {
+            line = ChemParser.readMeaningfulLine(reader, true);
+            qmFlags.method = line;
+            line = ChemParser.readMeaningfulLine(reader, true);
+            qmFlags.maxRadNumForQM = Integer.parseInt(line);
+            line = ChemParser.readMeaningfulLine(reader, true);
+            String checkConnSetting = line.toLowerCase();
+            if (checkConnSetting.equals("off")) {// no connectivity checking
+                qmFlags.connectivityCheck = 0;
+            } else if (checkConnSetting.equals("check")) {// print a warning if the connectivity doesn't appear to match
+                qmFlags.connectivityCheck = 1;
+            } else if (checkConnSetting.equals("confirm")) {// consider the run a failure if the connectivity doesn't appear
+    // to match
+                qmFlags.connectivityCheck = 2;
+            } else {
+                Logger.critical("input.txt: Inappropriate 'CheckConnectivity' value (should be 'off', 'check', or 'confirm')");
+                System.exit(0);
+            }
         } else {
-            Logger.critical("input.txt: Inappropriate 'CheckConnectivity' value (should be 'off', 'check', or 'confirm')");
-            System.exit(0);
+            // Dummy values; not actually used by Benson GA method
+            qmFlags.method = "";
+            qmFlags.maxRadNumForQM = 0;
+            qmFlags.connectivityCheck = 0;
         }
         return qmFlags;
     }
