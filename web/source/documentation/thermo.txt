@@ -23,7 +23,7 @@ If an apt ring correction is not found, a warning is printed, but the thermochem
 The QMforCyclics strategy preferentially choses the on-the-fly semi-empirical methods to estimate thermochemistry. If repeated failures occur for the QM methods,
 this strategy falls back to the BensonOnly strategy.
 
-The hybrid strategy is the default option used in RMG. First, the Benson databases are searched for an adequate (polycyclic) ring correction. If such a correction is not found, 
+In the hybrid strategy, first, the Benson databases are searched for an adequate (polycyclic) ring correction. If such a correction is not found, 
 this strategy falls back to the QMforCyclics strategy.
 
 The thermochemistry calculated from on-the-fly quantum methods are now saved to $RMG_QM_LIBRARY, which defaults as QMThermoLibrary in the working directory.
