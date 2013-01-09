@@ -4,6 +4,7 @@ Arrhenius_EP
 
 
 //No.	S-R1R2			YJ				Temp.		A			n		a		E0		DA		Dn		Da		DE0		Rank	Comments
+0	S-RR_or_RRrad	YJ	300-1500	1.0E+09		0	0	3.0	0	0	0	0	0	Default
 1	S-HCs(HHH)	HJ	300-1500	4.04E+08	1.49	0	3.9	0	0	0	0	3	Aäron Vandeputte CBS-QB3 HO
 //2	S-HCs(CsHH)	HJ	300-1500	4.11E+08	1.51	0	3.6	0	0	0	0	3	Aäron Vandeputte CBS-QB3 HO
 2	S-HCs(CsHH)	HJ	300-1500	3.06E+07	2.13	0	3.69	0	0	0	0	2	CAC CBS-QB3 1dhr

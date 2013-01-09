@@ -9,9 +9,17 @@
 // R-H Tree
 //
 
+S-RR_or_RRrad
+Union {S-RR,S-RRrad}
+
 S-RR
 1 *1 Ss 0 {2,S} {3,S}
 2 *2 R 0 {1,S} 
+3 R 0 {1,S}
+
+S-RRrad
+1 *1 Ss 0 {2,S} {3,S}
+2 *2 R 1 {1,S}
 3 R 0 {1,S}
 
 S-HH

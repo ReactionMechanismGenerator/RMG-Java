@@ -9,7 +9,7 @@
 
 // f01 Substitution on S
 
-S-RR + YJ -> RJ + S-YR
+S-RR_or_RRrad + YJ -> YJ + S-RR_or_RRrad
 
 forward
 reverse(f23): SubstitutionS
