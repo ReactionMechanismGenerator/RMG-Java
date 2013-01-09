@@ -1067,3 +1067,5 @@ Arrhenius_EP
 
 562.	CS/H/NonDeC		C_rad/H/CsS		300-1500	4.36E-10	4.56	0.0	4.77	0	0	0	0	3	CAC CBS-QB3 calc, 1dhr
 563.	CS/H/NonDeC		C_rad/H2/Cs		300-1500	3.77E-01	3.63	0.0	3.98	0	0	0	0	3	CAC CBS-QB3 calc, 1dhr
+
+564.	C/H2/NonDeC		C_rad/H2/Cs		300-1500        9.20E-04        4.34    0.00    7.0     0       0       0       0	3	AGV CBS-QB3, 1D-HR
