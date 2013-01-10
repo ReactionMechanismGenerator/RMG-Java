@@ -58,6 +58,387 @@ RCCJ
 6    H 0 {2,S}
 7    H 0 {2,S}
 
+bridgehead_norbornyl
+1  *  Cs     1 {3,S} {4,S} {7,S}
+2     Cs     0 {3,S} {5,S} {6,S}
+3     Cs     0 {1,S} {2,S}
+4     Cs     0 {1,S} {5,S}
+5     Cs     0 {2,S} {4,S}
+6     Cs     0 {2,S} {7,S}
+7     Cs     0 {1,S} {6,S}
+
+7-norbornyl
+1     Cs     0 {3,S} {4,S} {7,S}
+2     Cs     0 {3,S} {5,S} {6,S}
+3  *  Cs     1 {1,S} {2,S} {8,S}
+4     Cs     0 {1,S} {5,S}
+5     Cs     0 {2,S} {4,S}
+6     Cs     0 {2,S} {7,S}
+7     Cs     0 {1,S} {6,S}
+8	  H	     0 {3,S}	
+
+2-norbornyl
+1     Cs     0 {3,S} {4,S} {7,S} {8,S}
+2     Cs     0 {3,S} {5,S} {6,S}
+3     Cs     0 {1,S} {2,S}
+4  *  Cs     1 {1,S} {5,S}
+5     Cs     0 {2,S} {4,S}
+6     Cs     0 {2,S} {7,S}
+7     Cs     0 {1,S} {6,S}
+8	  H	     0 {1,S}
+
+cyclopropane
+1   * Cs     1 {2,S} {3,S} {4,S}
+2     Cs     0 {1,S} {3,S}
+3     Cs     0 {1,S} {2,S}
+4	  H	     0 {1,S}
+
+cyclobutane
+1   *  Cs     1 {2,S} {4,S} {5,S}
+2     Cs     0 {1,S} {3,S}
+3     Cs     0 {2,S} {4,S}
+4     Cs     0 {1,S} {3,S}
+5	  H	     0 {1,S}
+
+cyclopropenyl-vinyl
+1     C     0 {2,S} {3,S}
+2  *   C     1 {1,S} {3,D}
+3     C     0 {1,S} {2,D}
+
+cyclopropenyl-allyl
+1  *   C     1 {2,S} {3,S} {4,S}
+2     Cd     0 {1,S} {3,D}
+3     Cd     0 {1,S} {2,D}
+4	  H     0 {1,S}
+
+cyclobutene-vinyl
+1     C     0 {2,S} {4,S}
+2     C     0 {1,S} {3,S}
+3   *  C     1 {2,S} {4,D}
+4     C     0 {1,S} {3,D}
+
+cyclobutene-allyl
+1   *  C     1 {2,S} {4,S} {5,S}
+2     Cs     0 {1,S} {3,S}
+3     C     0 {2,S} {4,D}
+4     Cd     0 {1,S} {3,D}
+5	  H     0 {1,S}
+
+cyclopentene-allyl
+1     Cs     0 {2,S} {3,S}
+2     C     0 {1,S} {5,S}
+3 *    C     1 {1,S} {4,S} {6,S}
+4     Cd     0 {3,S} {5,D}
+5     C     0 {2,S} {4,D}
+6	  H     0 {3,S}
+
+cyclohexene-allyl
+1     C     0 {2,S} {3,S}
+2     Cs     0 {1,S} {4,S}
+3     C     0 {1,S} {6,S}
+4   *  C     1 {2,S} {5,S} {7,S}
+5     Cd     0 {4,S} {6,D}
+6     C     0 {3,S} {5,D}
+7	  H     0 {4,S}
+
+cycloheptane
+1   *  Cs     1 {2,S} {7,S} {8,S}
+2     Cs     0 {1,S} {3,S}
+3     Cs     0 {2,S} {4,S}
+4     Cs     0 {3,S} {5,S}
+5     Cs     0 {4,S} {6,S}
+6     Cs     0 {5,S} {7,S}
+7     Cs     0 {1,S} {6,S}
+8	  H	     0 {1,S}
+
+spiro[2.2]pentane-secondary
+1     Cs     0 {2,S} {3,S} {4,S} {5,S}
+2  *   Cs     1 {1,S} {3,S} {6,S}
+3     Cs     0 {1,S} {2,S}
+4     Cs     0 {1,S} {5,S}
+5     Cs     0 {1,S} {4,S}
+6	  H	     0 {2,S}
+
+
+bicyclo[1.1.0]butane-secondary
+1     Cs     0 {2,S} {3,S} {4,S}
+2     Cs     0 {1,S} {3,S} {4,S}
+3  *   Cs     1 {1,S} {2,S} {5,S}
+4     Cs     0 {1,S} {2,S}
+5	  H	     0 {3,S}
+
+
+bicyclo[1.1.0]butane-tertiary
+1     Cs     0 {2,S} {3,S} {4,S}
+2  *   Cs     1 {1,S} {3,S} {4,S}
+3     Cs     0 {1,S} {2,S}
+4     Cs     0 {1,S} {2,S}
+
+bicyclo[2.1.0]pentane-tertiary
+1  *   Cs     1 {2,S} {3,S} {5,S}
+2     Cs     0 {1,S} {3,S} {4,S}
+3     Cs     0 {1,S} {2,S}
+4     Cs     0 {2,S} {5,S}
+5     Cs     0 {1,S} {4,S}
+
+bicyclo[2.1.0]pentane-secondary-C4
+1     Cs     0 {2,S} {3,S} {5,S}
+2     Cs     0 {1,S} {3,S} {4,S}
+3     Cs     0 {1,S} {2,S}
+4     Cs     0 {2,S} {5,S}
+5  *   Cs     1 {1,S} {4,S} {6,S}
+6	  H	     0 {5,S}
+
+
+bicyclo[2.1.0]pentane-secondary-C3
+1     Cs     0 {2,S} {3,S} {5,S}
+2     Cs     0 {1,S} {3,S} {4,S}
+3  *   Cs     1 {1,S} {2,S} {6,S}
+4     Cs     0 {2,S} {5,S}
+5     Cs     0 {1,S} {4,S}
+6	  H	     0 {3,S}
+
+bicyclo[3.1.0]hexane-tertiary
+1  *   Cs     1 {2,S} {3,S} {5,S}
+2     Cs     0 {1,S} {3,S} {4,S}
+3     Cs     0 {1,S} {2,S}
+4     Cs     0 {2,S} {6,S}
+5     Cs     0 {1,S} {6,S}
+6     Cs     0 {4,S} {5,S}
+
+bicyclo[3.1.0]hexane-C5-2
+1     Cs     0 {2,S} {3,S} {5,S}
+2     Cs     0 {1,S} {3,S} {4,S}
+3     Cs     0 {1,S} {2,S}
+4  *   Cs     1 {2,S} {6,S} {7,S}
+5     Cs     0 {1,S} {6,S}
+6     Cs     0 {4,S} {5,S}
+7	  H	     0 {4,S}
+
+bicyclo[3.1.0]hexane-C5-3
+1     Cs     0 {2,S} {3,S} {5,S} {7,S}
+2     Cs     0 {1,S} {3,S} {4,S}
+3     Cs     0 {1,S} {2,S}
+4     Cs     0 {2,S} {6,S}
+5     Cs     0 {1,S} {6,S}
+6  *   Cs     1 {4,S} {5,S}
+7	  H	     0 {1,S}
+
+bicyclo[3.1.0]hexane-C3
+1     Cs     0 {2,S} {3,S} {5,S}
+2     Cs     0 {1,S} {3,S} {4,S}
+3  *   Cs     1 {1,S} {2,S} {8,S}
+4     Cs     0 {2,S} {6,S}
+5     Cs     0 {1,S} {6,S}
+6     Cs     0 {4,S} {5,S}
+8	  H	     0 {3,S}
+
+bicyclo[2.2.0]hexane-tertiary
+1 *    Cs     1 {2,S} {3,S} {6,S}
+2     Cs     0 {1,S} {4,S} {5,S}
+3     Cs     0 {1,S} {4,S}
+4     Cs     0 {2,S} {3,S}
+5     Cs     0 {2,S} {6,S}
+6     Cs     0 {1,S} {5,S}
+
+bicyclo[2.2.0]hexane-secondary
+1     Cs     0 {2,S} {3,S} {6,S}
+2     Cs     0 {1,S} {4,S} {5,S}
+3  *   Cs     1 {1,S} {4,S} {7,S}
+4     Cs     0 {2,S} {3,S}
+5     Cs     0 {2,S} {6,S}
+6     Cs     0 {1,S} {5,S}
+7	  H	     0 {3,S}
+
+bicyclo[3.2.0]heptane-tertiary
+1  *   Cs     1 {2,S} {3,S} {6,S}
+2     Cs     0 {1,S} {4,S} {5,S}
+3     Cs     0 {1,S} {4,S}
+4     Cs     0 {2,S} {3,S}
+5     Cs     0 {2,S} {7,S}
+6     Cs     0 {1,S} {7,S}
+7     Cs     0 {5,S} {6,S}
+
+bicyclo[3.2.0]heptane-C5-2
+1     Cs     0 {2,S} {3,S} {6,S}
+2     Cs     0 {1,S} {4,S} {5,S}
+3     Cs     0 {1,S} {4,S}
+4     Cs     0 {2,S} {3,S}
+5  *   Cs     1 {2,S} {7,S} {8,S}
+6     Cs     0 {1,S} {7,S}
+7     Cs     0 {5,S} {6,S}
+8	  H	     0 {5,S}
+
+bicyclo[3.2.0]heptane-C5-3
+1     Cs     0 {2,S} {3,S} {6,S}
+2     Cs     0 {1,S} {4,S} {5,S}
+3     Cs     0 {1,S} {4,S}
+4     Cs     0 {2,S} {3,S}
+5     Cs     0 {2,S} {7,S}
+6     Cs     0 {1,S} {7,S}
+7  *   Cs     1 {5,S} {6,S} {8,S}
+8	  H	     0 {7,S}
+
+bicyclo[3.2.0]heptane-C5-6
+1     Cs     0 {2,S} {3,S} {6,S}
+2     Cs     0 {1,S} {4,S} {5,S}
+3  *   Cs     1 {1,S} {4,S} {8,S}
+4     Cs     0 {2,S} {3,S}
+5     Cs     0 {2,S} {7,S}
+6     Cs     0 {1,S} {7,S}
+7     Cs     0 {5,S} {6,S}
+8	  H	     0 {3,S}
+
+bicyclo[4.1.0]heptane-tertiary
+1  *   Cs     1 {2,S} {3,S} {5,S}
+2     Cs     0 {1,S} {3,S} {4,S}
+3     Cs     0 {1,S} {2,S}
+4     Cs     0 {2,S} {6,S}
+5     Cs     0 {1,S} {7,S}
+6     Cs     0 {4,S} {7,S}
+7     Cs     0 {5,S} {6,S}
+
+bicyclo[4.1.0]heptane-C6-2
+1     C     0 {2,S} {3,S} {5,S}
+2     Cs     0 {1,S} {3,S} {4,S}
+3     C     0 {1,S} {2,S}
+4  *   C     1 {2,S} {6,S} {8,S}
+5     C     0 {1,S} {7,S}
+6     Cs     0 {4,S} {7,S}
+7     C     0 {5,S} {6,S}
+8	  H     0 {4,S}
+
+bicyclo[4.1.0]heptane-C6-3
+1     C     0 {2,S} {3,S} {5,S}
+2     C     0 {1,S} {3,S} {4,S}
+3     C     0 {1,S} {2,S}
+4     Cs     0 {2,S} {6,S}
+5     C     0 {1,S} {7,S}
+6  *   Cs     1 {4,S} {7,S} {8,S}
+7     Cs     0 {5,S} {6,S}
+8	  H     0 {6,S}
+
+bicyclo[4.1.0]heptane-C3-7
+1     Cs     0 {2,S} {3,S} {5,S}
+2     Cs     0 {1,S} {3,S} {4,S}
+3  *   C     1 {1,S} {2,S} {8,S}
+4     C     0 {2,S} {6,S}
+5     C     0 {1,S} {7,S}
+6     C     0 {4,S} {7,S}
+7     C     0 {5,S} {6,S}
+8	  H     0 {3,S}
+
+octahydro-pentalene-tertiary
+1   *  C     1 {2,S} {3,S} {4,S}
+2     Cs     0 {1,S} {5,S} {6,S}
+3     Cs     0 {1,S} {8,S}
+4     Cs     0 {1,S} {7,S}
+5     C     0 {2,S} {7,S}
+6     C     0 {2,S} {8,S}
+7     C     0 {4,S} {5,S}
+8     C     0 {3,S} {6,S}
+
+octahydro-pentalene-C5-2
+1     Cs     0 {2,S} {3,S} {4,S}
+2     C     0 {1,S} {5,S} {6,S}
+3   *  C     1 {1,S} {8,S} {9,S}
+4     C     0 {1,S} {7,S}
+5     C     0 {2,S} {7,S}
+6     C     0 {2,S} {8,S}
+7     C     0 {4,S} {5,S}
+8     Cs     0 {3,S} {6,S}
+9	  H     0 {3,S}
+
+octahydro-pentalene-C5-3
+1     C     0 {2,S} {3,S} {4,S}
+2     C     0 {1,S} {5,S} {6,S}
+3     C     0 {1,S} {8,S}
+4     Cs     0 {1,S} {7,S}
+5     Cs     0 {2,S} {7,S}
+6     C     0 {2,S} {8,S}
+7   *  C     1 {4,S} {5,S} {9,S}
+8     C     0 {3,S} {6,S}
+9	  H     0 {7,S}
+
+bicyclo[4.2.0]octane-tertiary
+1   *  C     1 {2,S} {3,S} {6,S}
+2     Cs     0 {1,S} {4,S} {5,S}
+3     Cs     0 {1,S} {4,S}
+4     C     0 {2,S} {3,S}
+5     C     0 {2,S} {7,S}
+6     Cs     0 {1,S} {8,S}
+7     C     0 {5,S} {8,S}
+8     C     0 {6,S} {7,S}
+
+bicyclo[4.2.0]octane-C6-2
+1     C     0 {2,S} {3,S} {6,S}
+2     Cs     0 {1,S} {4,S} {5,S}
+3     C     0 {1,S} {4,S}
+4     C     0 {2,S} {3,S}
+5    * C     1 {2,S} {7,S} {9,S}
+6     C     0 {1,S} {8,S}
+7     Cs     0 {5,S} {8,S}
+8     C     0 {6,S} {7,S}
+9	  H     0 {5,S}
+
+bicyclo[4.2.0]octane-C6-3
+1     C     0 {2,S} {3,S} {6,S}
+2     C     0 {1,S} {4,S} {5,S}
+3     C     0 {1,S} {4,S}
+4     C     0 {2,S} {3,S}
+5     Cs     0 {2,S} {7,S}
+6     C     0 {1,S} {8,S}
+7 *    C     1 {5,S} {8,S}  {9,S}
+8     Cs     0 {6,S} {7,S}
+9	  H     0 {7,S}
+
+bicyclo[4.2.0]octane-C4-7
+1     Cs     0 {2,S} {3,S} {6,S}
+2     C     0 {1,S} {4,S} {5,S}
+3  *   C     1 {1,S} {4,S} {9,S}
+4     Cs     0 {2,S} {3,S}
+5     C     0 {2,S} {7,S}
+6     C     0 {1,S} {8,S}
+7     C     0 {5,S} {8,S}
+8     C     0 {6,S} {7,S}
+9	  H     0 {3,S}
+
+cyclopentene-vinyl
+1     C     0 {2,S} {3,S}
+2     C     0 {1,S} {5,S}
+3     C     0 {1,S} {4,S}
+4   *  C     1 {3,S} {5,D}
+5     C     0 {2,S} {4,D}
+
+cyclopentene-4
+1   *  Cs     1 {2,S} {3,S} {6,S}
+2     Cs     0 {1,S} {5,S}
+3     Cs     0 {1,S} {4,S}
+4     C     0 {3,S} {5,D}
+5     C     0 {2,S} {4,D}
+6     H     0 {1,S}
+
+1,3-cyclopentadiene-vinyl-1
+1     C     0 {2,S} {3,S}
+2  *   C     1 {1,S} {4,D}
+3     C     0 {1,S} {5,D}
+4     C     0 {2,D} {5,S}
+5     C     0 {3,D} {4,S}
+
+1,3-cyclopentadiene-vinyl-2
+1     C     0 {2,S} {3,S}
+2     C     0 {1,S} {4,D}
+3     C     0 {1,S} {5,D}
+4  *   C     1 {2,D} {5,S}
+5     C     0 {3,D} {4,S}
+
+1,3-cyclopentadiene-allyl
+1  *   C     1 {2,S} {3,S} {6,S}
+2     Cd     0 {1,S} {4,D}
+3     Cd     0 {1,S} {5,D}
+4     C     0 {2,D} {5,S}
+5     C     0 {3,D} {4,S}
+6    H 0 {1,S}
 
 Isobutyl		
 1  * C 1 {2,S} {3,S} {4,S} 
@@ -1083,6 +1464,9 @@ C=SJ-Ss
 2    Ss 0 {1,S}
 3    Sd 0 {1,D}
 
+Sa
+1  * S 2
+
 SJ
 1  * Ss 1
 
@@ -1155,13 +1539,309 @@ CdJ2-Sd_t
 SJ2
 1  * S 2
 
+bicyclo[2.1.0]pent-2-ene-C1
+1  *   C     1 {2,S} {3,S} {5,S}
+2     Cs     0 {1,S} {3,S} {4,S}
+3     Cs     0 {1,S} {2,S}
+4     C     0 {2,S} {5,D}
+5     Cd     0 {1,S} {4,D}
 
+bicyclo[2.1.0]pent-2-ene-C2
+1     C     0 {2,S} {3,S} {5,S}
+2     C     0 {1,S} {3,S} {4,S}
+3     C     0 {1,S} {2,S}
+4   *  C     1 {2,S} {5,D}
+5     C     0 {1,S} {4,D}
 
+bicyclo[2.1.0]pent-2-ene-C5
+1     Cs     0 {2,S} {3,S} {5,S}
+2     Cs     0 {1,S} {3,S} {4,S}
+3   *  C     1 {1,S} {2,S} {6,S}
+4     C     0 {2,S} {5,D}
+5     C     0 {1,S} {4,D}
+6	  H     0 {3,S}
 
+bicyclo[2.1.1]hex-2-ene-C1
+1 *    C     1 {3,S} {4,S} {6,S}
+2     C     0 {3,S} {4,S} {5,S}
+3     Cs     0 {1,S} {2,S}
+4     Cs     0 {1,S} {2,S}
+5     C     0 {2,S} {6,D}
+6     Cd     0 {1,S} {5,D}
 
+bicyclo[2.1.1]hex-2-ene-C2
+1     C     0 {3,S} {4,S} {6,S}
+2     C     0 {3,S} {4,S} {5,S}
+3     C     0 {1,S} {2,S}
+4     C     0 {1,S} {2,S}
+5   *  C     1 {2,S} {6,D}
+6     C     0 {1,S} {5,D}
 
+bicyclo[2.1.1]hex-2-ene-C5
+1     Cs     0 {3,S} {4,S} {6,S}
+2     Cs     0 {3,S} {4,S} {5,S}
+3  *   C     1 {1,S} {2,S} {7,S}
+4     C     0 {1,S} {2,S}
+5     C     0 {2,S} {6,D}
+6     C     0 {1,S} {5,D}
+7	  H     0 {3,S}
 
+tricyclo[2.1.1.0(1,4)]hex-2-ene-C2
+1     C     0 {2,S} {3,S} {4,S} {6,S}
+2     C     0 {1,S} {3,S} {4,S} {5,S}
+3     C     0 {1,S} {2,S}
+4     C     0 {1,S} {2,S}
+5  *   C     1 {2,S} {6,D}
+6     C     0 {1,S} {5,D}
 
+tricyclo[2.1.1.0(1,4)]hex-2-ene-C5
+1     Cs     0 {2,S} {3,S} {4,S} {6,S}
+2     Cs     0 {1,S} {3,S} {4,S} {5,S}
+3  *   C     1 {1,S} {2,S} {7,S}
+4     C     0 {1,S} {2,S}
+5     C     0 {2,S} {6,D}
+6     C     0 {1,S} {5,D}
+7	  H     0 {3,S}
 
+bicyclo[2.2.0]hexa-2,5-diene-C1
+1   *  C     1 {2,S} {3,S} {6,S}
+2     Cs     0 {1,S} {4,S} {5,S}
+3     Cd     0 {1,S} {4,D}
+4     C     0 {2,S} {3,D}
+5     C     0 {2,S} {6,D}
+6     Cd     0 {1,S} {5,D}
 
-	
+bicyclo[2.2.0]hexa-2,5-diene-C2
+1     C     0 {2,S} {3,S} {6,S}
+2     C     0 {1,S} {4,S} {5,S}
+3   *  C     1 {1,S} {4,D}
+4     C     0 {2,S} {3,D}
+5     C     0 {2,S} {6,D}
+6     C     0 {1,S} {5,D}
+
+bicyclo[2.2.0]hexa-1(4),2,5-triene-C2
+1     C     0 {2,D} {3,S} {6,S}
+2     C     0 {1,D} {4,S} {5,S}
+3   *  C     1 {1,S} {4,D}
+4     C     0 {2,S} {3,D}
+5     C     0 {2,S} {6,D}
+6     C     0 {1,S} {5,D}
+
+cyclobutadiene-C1
+1   *  C     1 {2,D} {4,S}
+2     Cd     0 {1,D} {3,S}
+3     C     0 {2,S} {4,D}
+4     Cd     0 {1,S} {3,D}
+
+bicyclo[1.1.1]pentane-C1
+1   *  C     1 {3,S} {4,S} {5,S}
+2     C     0 {3,S} {4,S} {5,S}
+3     Cs     0 {1,S} {2,S}
+4     Cs     0 {1,S} {2,S}
+5     Cs     0 {1,S} {2,S}
+
+bicyclo[1.1.1]pentane-C2
+1     Cs     0 {3,S} {4,S} {5,S}
+2     Cs     0 {3,S} {4,S} {5,S}
+3  *   C     1 {1,S} {2,S} {6,S}
+4     C     0 {1,S} {2,S}
+5     C     0 {1,S} {2,S}
+6	  H     0 {3,S}
+
+tricyclo[1.1.1.0(1,3)]pentane-C2
+1     Cs     0 {2,S} {3,S} {4,S} {5,S}
+2     Cs     0 {1,S} {3,S} {4,S} {5,S}
+3  *   C     1 {1,S} {2,S} {6,S}
+4     C     0 {1,S} {2,S}
+5     C     0 {1,S} {2,S}
+6	  H     0 {3,S}
+
+bicyclo[2.1.1]hexane-C1
+1   *  C     1 {3,S} {4,S} {6,S}
+2     C     0 {3,S} {4,S} {5,S}
+3     Cs     0 {1,S} {2,S}
+4     Cs     0 {1,S} {2,S}
+5     C     0 {2,S} {6,S}
+6     Cs     0 {1,S} {5,S}
+
+bicyclo[2.1.1]hexane-C2
+1     C     0 {3,S} {4,S} {6,S}
+2     Cs     0 {3,S} {4,S} {5,S}
+3     C     0 {1,S} {2,S}
+4     C     0 {1,S} {2,S}
+5  *   C     1 {2,S} {6,S} {7,S}
+6     Cs     0 {1,S} {5,S}
+7	  H     0 {5,S}
+
+bicyclo[2.1.1]hexane-C5
+1     Cs     0 {3,S} {4,S} {6,S}
+2     Cs     0 {3,S} {4,S} {5,S}
+3  *   C     1 {1,S} {2,S} {7,S}
+4     C     0 {1,S} {2,S}
+5     C     0 {2,S} {6,S}
+6     C     0 {1,S} {5,S}
+7	  H     0 {3,S}
+
+tricyclo[2.1.1.0(1,4)]hexane-C2
+1     C     0 {2,S} {3,S} {4,S} {6,S}
+2     Cs     0 {1,S} {3,S} {4,S} {5,S}
+3     C     0 {1,S} {2,S}
+4     C     0 {1,S} {2,S}
+5  *   C     1 {2,S} {6,S} {7,S}
+6     Cs     0 {1,S} {5,S}
+7	  H     0 {5,S}
+
+tricyclo[2.1.1.0(1,4)]hexane-C5
+1     Cs     0 {2,S} {3,S} {4,S} {6,S}
+2     Cs     0 {1,S} {3,S} {4,S} {5,S}
+3  *   C     1 {1,S} {2,S} {7,S}
+4     C     0 {1,S} {2,S}
+5     C     0 {2,S} {6,S}
+6     C     0 {1,S} {5,S}
+7	  H     0 {3,S}
+
+bicyclo[3.1.1]heptane-C1
+1  *   C     1 {3,S} {4,S} {6,S}
+2     C     0 {3,S} {4,S} {5,S}
+3     Cs     0 {1,S} {2,S}
+4     Cs     0 {1,S} {2,S}
+5     C     0 {2,S} {7,S}
+6     Cs     0 {1,S} {7,S}
+7     C     0 {5,S} {6,S}
+
+bicyclo[3.1.1]heptane-C2
+1     C     0 {3,S} {4,S} {6,S}
+2     Cs     0 {3,S} {4,S} {5,S}
+3     C     0 {1,S} {2,S}
+4     C     0 {1,S} {2,S}
+5   *  C     1 {2,S} {7,S} {8,S}
+6     C     0 {1,S} {7,S}
+7     Cs     0 {5,S} {6,S}
+8	  H     0 {5,S}
+
+bicyclo[3.1.1]heptane-C3
+1     C     0 {3,S} {4,S} {6,S}
+2     C     0 {3,S} {4,S} {5,S}
+3     C     0 {1,S} {2,S}
+4     C     0 {1,S} {2,S}
+5     Cs     0 {2,S} {7,S}
+6     Cs     0 {1,S} {7,S}
+7  *   C     1 {5,S} {6,S} {8,S}
+8	  H     0 {7,S}
+
+bicyclo[3.1.1]heptane-C6
+1     Cs     0 {3,S} {4,S} {6,S}
+2     Cs     0 {3,S} {4,S} {5,S}
+3   *  C     1 {1,S} {2,S} {8,S}
+4     C     0 {1,S} {2,S}
+5     C     0 {2,S} {7,S}
+6     C     0 {1,S} {7,S}
+7     C     0 {5,S} {6,S}
+8	  H     0 {3,S}
+
+tricyclo[3.1.1.0(1,5)]heptane-C2
+1     C     0 {2,S} {3,S} {4,S} {6,S}
+2     Cs    0 {1,S} {3,S} {4,S} {5,S}
+3     C     0 {1,S} {2,S}
+4     C     0 {1,S} {2,S}
+5   *  C     1 {2,S} {7,S} {8,S}
+6     C     0 {1,S} {7,S}
+7     Cs     0 {5,S} {6,S}
+8	  H     0 {5,S}
+
+tricyclo[3.1.1.0(1,5)]heptane-C3
+1     C     0 {2,S} {3,S} {4,S} {6,S}
+2     C     0 {1,S} {3,S} {4,S} {5,S}
+3     C     0 {1,S} {2,S}
+4     C     0 {1,S} {2,S}
+5     Cs     0 {2,S} {7,S}
+6     Cs     0 {1,S} {7,S}
+7  *   C     1 {5,S} {6,S} {8,S}
+8	  H     0 {7,S}
+
+tricyclo[3.1.1.0(1,5)]heptane-C6
+1     Cs     0 {2,S} {3,S} {4,S} {6,S}
+2     Cs     0 {1,S} {3,S} {4,S} {5,S}
+3   *  C     1 {1,S} {2,S} {8,S}
+4     C     0 {1,S} {2,S}
+5     C     0 {2,S} {7,S}
+6     C     0 {1,S} {7,S}
+7     C     0 {5,S} {6,S}
+8	  H     0 {3,S}
+
+tricyclo[2.2.1.0(1,4)]heptane-C2
+1     C     0 {2,S} {3,S} {5,S} {7,S}
+2     Cs     0 {1,S} {3,S} {4,S} {6,S}
+3     C     0 {1,S} {2,S}
+4  *   C     1 {2,S} {5,S} {8,S}
+5     Cs     0 {1,S} {4,S}
+6     C     0 {2,S} {7,S}
+7     C     0 {1,S} {6,S}
+8	  H     0 {4,S}
+
+tricyclo[2.2.1.0(1,4)]heptane-C7
+1     Cs     0 {2,S} {3,S} {5,S} {7,S}
+2     Cs     0 {1,S} {3,S} {4,S} {6,S}
+3  *   C     1 {1,S} {2,S} {8,S}
+4     C     0 {2,S} {5,S}
+5     C     0 {1,S} {4,S}
+6     C     0 {2,S} {7,S}
+7     C     0 {1,S} {6,S}
+8	  H     0 {3,S}
+
+bicyclo[2.2.2]octane-C1
+1  *   C     1 {3,S} {6,S} {8,S}
+2     C     0 {4,S} {5,S} {7,S}
+3     Cs     0 {1,S} {4,S}
+4     C     0 {2,S} {3,S}
+5     C     0 {2,S} {6,S}
+6     Cs     0 {1,S} {5,S}
+7     C     0 {2,S} {8,S}
+8     Cs     0 {1,S} {7,S}
+
+bicyclo[2.2.2]octane-C2
+1     Cs     0 {3,S} {6,S} {8,S}
+2     C     0 {4,S} {5,S} {7,S}
+3   *  C     1 {1,S} {4,S} {9,S}
+4     Cs     0 {2,S} {3,S}
+5     C     0 {2,S} {6,S}
+6     C     0 {1,S} {5,S}
+7     C     0 {2,S} {8,S}
+8     C     0 {1,S} {7,S}
+9	  H     0 {3,S}
+
+tricyclo[2.2.2.0(1,4)]octane-C2
+1     C     0 {2,S} {4,S} {6,S} {8,S}
+2     Cs     0 {1,S} {3,S} {5,S} {7,S}
+3  *   C     1 {2,S} {4,S} {9,S}
+4     Cs     0 {1,S} {3,S}
+5     C     0 {2,S} {6,S}
+6     C     0 {1,S} {5,S}
+7     C     0 {2,S} {8,S}
+8     C     0 {1,S} {7,S}
+9	  H     0 {3,S}
+
+cyclopentane
+1 *  C 1 {2,S} {3,S} {4,S} 
+2    C 0 {1,S} {5,S} {6,S} {7,S}
+3    C 0 {1,S} {8,S} {9,S} {10,S}
+4    H 0 {1,S}
+5    C 0 {2,S} {8,S}
+6    H 0 {2,S}
+7    H 0 {2,S}
+8    C 0 {3,S} {5,S}
+9    H 0 {3,S}
+10    H 0 {3,S}
+
+cyclohexane
+1  * C 1 {2,S} {3,S} {4,S} 
+2    C 0 {1,S} {5,S} {6,S} {7,S}
+3    C 0 {1,S} {8,S} {9,S} {10,S}
+4    H 0 {1,S}
+5    C 0 {2,S} {11,S}
+6    H 0 {2,S}
+7    H 0 {2,S}
+8    C 0 {3,S} {11,S}
+9    H 0 {3,S}
+10    H 0 {3,S}
+11    C 0 {8,S} {5,S}

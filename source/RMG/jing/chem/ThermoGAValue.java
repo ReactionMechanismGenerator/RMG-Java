@@ -1,90 +1,65 @@
-////////////////////////////////////////////////////////////////////////////////
+// //////////////////////////////////////////////////////////////////////////////
 //
-//	RMG - Reaction Mechanism Generator
+// RMG - Reaction Mechanism Generator
 //
-//	Copyright (c) 2002-2011 Prof. William H. Green (whgreen@mit.edu) and the
-//	RMG Team (rmg_dev@mit.edu)
+// Copyright (c) 2002-2011 Prof. William H. Green (whgreen@mit.edu) and the
+// RMG Team (rmg_dev@mit.edu)
 //
-//	Permission is hereby granted, free of charge, to any person obtaining a
-//	copy of this software and associated documentation files (the "Software"),
-//	to deal in the Software without restriction, including without limitation
-//	the rights to use, copy, modify, merge, publish, distribute, sublicense,
-//	and/or sell copies of the Software, and to permit persons to whom the
-//	Software is furnished to do so, subject to the following conditions:
+// Permission is hereby granted, free of charge, to any person obtaining a
+// copy of this software and associated documentation files (the "Software"),
+// to deal in the Software without restriction, including without limitation
+// the rights to use, copy, modify, merge, publish, distribute, sublicense,
+// and/or sell copies of the Software, and to permit persons to whom the
+// Software is furnished to do so, subject to the following conditions:
 //
-//	The above copyright notice and this permission notice shall be included in
-//	all copies or substantial portions of the Software.
+// The above copyright notice and this permission notice shall be included in
+// all copies or substantial portions of the Software.
 //
-//	THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-//	IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-//	FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-//	AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-//	LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
-//	FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
-//	DEALINGS IN THE SOFTWARE.
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+// FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
+// DEALINGS IN THE SOFTWARE.
 //
-////////////////////////////////////////////////////////////////////////////////
-
-
-
+// //////////////////////////////////////////////////////////////////////////////
 package jing.chem;
-
 
 import java.text.DecimalFormat;
 import java.util.*;
 
-//## package jing::chem
-
-//----------------------------------------------------------------------------
+// ## package jing::chem
+// ----------------------------------------------------------------------------
 // jing\chem\ThermoGAValue.java
-//----------------------------------------------------------------------------
-
+// ----------------------------------------------------------------------------
 /**
-Immutable data holds all the benson's group value.
-*/
-//## class ThermoGAValue
+ * Immutable data holds all the benson's group value.
+ */
+// ## class ThermoGAValue
 public class ThermoGAValue {
-
-    protected double Cp1000 = 0;		//## attribute Cp1000
-
-    protected double Cp1500 = 0;		//## attribute Cp1500
-
-    protected double Cp300 = 0;		//## attribute Cp300
-
-    protected double Cp400 = 0;		//## attribute Cp400
-
-    protected double Cp500 = 0;		//## attribute Cp500
-
-    protected double Cp600 = 0;		//## attribute Cp600
-
-    protected double Cp800 = 0;		//## attribute Cp800
-
-    protected double H298 = 0;		//## attribute H298
-
-    protected double S298 = 0;		//## attribute S298
-
-    protected double dH = 0;//svp
-
-    protected double dS = 0;//svp
-
-    protected double dCp = 0;//svp
-
-    protected static double T_HIGH = 1500;		//## attribute T_HIGH
-
-    protected static double T_LOW = 300;		//## attribute T_LOW
-
-    protected String comments = null;		//## attribute comments
-
-    protected String name = null;		//## attribute name
-    
+    protected double Cp1000 = 0; // ## attribute Cp1000
+    protected double Cp1500 = 0; // ## attribute Cp1500
+    protected double Cp300 = 0; // ## attribute Cp300
+    protected double Cp400 = 0; // ## attribute Cp400
+    protected double Cp500 = 0; // ## attribute Cp500
+    protected double Cp600 = 0; // ## attribute Cp600
+    protected double Cp800 = 0; // ## attribute Cp800
+    protected double H298 = 0; // ## attribute H298
+    protected double S298 = 0; // ## attribute S298
+    protected double dH = 0;// svp
+    protected double dS = 0;// svp
+    protected double dCp = 0;// svp
+    protected static double T_HIGH = 1500; // ## attribute T_HIGH
+    protected static double T_LOW = 300; // ## attribute T_LOW
+    protected String comments = null; // ## attribute comments
+    protected String name = null; // ## attribute name
     protected String source = null;
 
-
     // Constructors
-
-    //## operation ThermoGAValue()
-    public  ThermoGAValue() {
-        //#[ operation ThermoGAValue()
+    // ## operation ThermoGAValue()
+    public ThermoGAValue() {
+        // #[ operation ThermoGAValue()
         H298 = 0;
         S298 = 0;
         Cp300 = 0;
@@ -97,14 +72,15 @@ public class ThermoGAValue {
         dH = 0;
         dS = 0;
         dCp = 0;
-
-
-
-        //#]
+        // #]
     }
-    //## operation ThermoGAValue(double,double,double,double,double,double,double,double,double,String)
-    public  ThermoGAValue(double p_H298, double p_S298, double p_Cp300, double p_Cp400, double p_Cp500, double p_Cp600, double p_Cp800, double p_Cp1000, double p_Cp1500, double p_dH,double p_dS,double p_dCp,String p_comments) {
-        //#[ operation ThermoGAValue(double,double,double,double,double,double,double,double,double,String)
+
+    // ## operation ThermoGAValue(double,double,double,double,double,double,double,double,double,String)
+    public ThermoGAValue(double p_H298, double p_S298, double p_Cp300,
+            double p_Cp400, double p_Cp500, double p_Cp600, double p_Cp800,
+            double p_Cp1000, double p_Cp1500, double p_dH, double p_dS,
+            double p_dCp, String p_comments) {
+        // #[ operation ThermoGAValue(double,double,double,double,double,double,double,double,double,String)
         H298 = p_H298;
         S298 = p_S298;
         Cp300 = p_Cp300;
@@ -118,14 +94,12 @@ public class ThermoGAValue {
         dS = p_dS;
         dCp = p_dCp;
         comments = p_comments;
-
-
-
-        //#]
+        // #]
     }
-    //## operation ThermoGAValue(String,ThermoGAValue,String)
-    public  ThermoGAValue(String p_name, ThermoGAValue p_ga, String p_comments) {
-        //#[ operation ThermoGAValue(String,ThermoGAValue,String)
+
+    // ## operation ThermoGAValue(String,ThermoGAValue,String)
+    public ThermoGAValue(String p_name, ThermoGAValue p_ga, String p_comments) {
+        // #[ operation ThermoGAValue(String,ThermoGAValue,String)
         H298 = p_ga.H298;
         S298 = p_ga.S298;
         Cp300 = p_ga.Cp300;
@@ -140,13 +114,11 @@ public class ThermoGAValue {
         dCp = p_ga.dCp;
         comments = p_comments;
         name = p_name;
-
-
-
-        //#]
+        // #]
     }
-    
-    public ThermoGAValue(String p_name, ThermoGAValue p_ga, String p_comments, String p_source) {
+
+    public ThermoGAValue(String p_name, ThermoGAValue p_ga, String p_comments,
+            String p_source) {
         H298 = p_ga.H298;
         S298 = p_ga.S298;
         Cp300 = p_ga.Cp300;
@@ -162,12 +134,11 @@ public class ThermoGAValue {
         comments = p_comments;
         name = p_name;
         source = p_source;
+    }
 
-	}    
-    
-    //## operation ThermoGAValue(ThermoGAValue)
-    public  ThermoGAValue(ThermoGAValue p_ga) {
-        //#[ operation ThermoGAValue(ThermoGAValue)
+    // ## operation ThermoGAValue(ThermoGAValue)
+    public ThermoGAValue(ThermoGAValue p_ga) {
+        // #[ operation ThermoGAValue(ThermoGAValue)
         H298 = p_ga.H298;
         S298 = p_ga.S298;
         Cp300 = p_ga.Cp300;
@@ -182,15 +153,13 @@ public class ThermoGAValue {
         dCp = p_ga.dCp;
         comments = p_ga.comments;
         name = p_ga.name;
-
-
-        //#]
+        // #]
     }
 
-    //## operation toString()
+    // ## operation toString()
     public String toString() {
-        //#[ operation toString()
-    	DecimalFormat twoDForm = new DecimalFormat("####.##");
+        // #[ operation toString()
+        DecimalFormat twoDForm = new DecimalFormat("####.##");
         String s = "";
         s = s + Double.valueOf(twoDForm.format(H298)) + '\t';
         s = s + Double.valueOf(twoDForm.format(S298)) + '\t';
@@ -201,9 +170,8 @@ public class ThermoGAValue {
         s = s + Double.valueOf(twoDForm.format(Cp800)) + '\t';
         s = s + Double.valueOf(twoDForm.format(Cp1000)) + '\t';
         s = s + Double.valueOf(twoDForm.format(Cp1500)) + '\t';
-
         return s;
-        //#]
+        // #]
     }
 
     protected double getCp1000() {
@@ -242,21 +210,20 @@ public class ThermoGAValue {
         return S298;
     }
 
-    //svp
+    // svp
     protected double getDH() {
-      return Math.pow(dH,0.5);
+        return Math.pow(dH, 0.5);
     }
 
-    //svp
-    protected double getDS(){
-      return Math.pow(dS,0.5);
+    // svp
+    protected double getDS() {
+        return Math.pow(dS, 0.5);
     }
 
-    //svp
+    // svp
     protected double getDCp() {
-      return Math.pow(dCp,0.5);
+        return Math.pow(dCp, 0.5);
     }
-
 
     private static double getT_HIGH() {
         return T_HIGH;
@@ -283,7 +250,8 @@ public class ThermoGAValue {
     }
 
     public String getSource() {
-        if (source == null) return "Estimated by Group Additivity";
+        if (source == null)
+            return "Estimated by Group Additivity";
         return source;
     }
 
@@ -292,6 +260,5 @@ public class ThermoGAValue {
     }
 }
 /*********************************************************************
-        File Path	: RMG\RMG\jing\chem\ThermoGAValue.java
-*********************************************************************/
-
+ * File Path : RMG\RMG\jing\chem\ThermoGAValue.java
+ *********************************************************************/

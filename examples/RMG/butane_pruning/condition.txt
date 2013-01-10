@@ -63,7 +63,7 @@ PressureDependence: off
 
 FinishController:
 (1) Goal Conversion: C4H10 0.7
-(2) Error Tolerance: 0.1
+(2) Error Tolerance: 0.5
 
 DynamicSimulator: DASSL
 //Conversions: AUTO

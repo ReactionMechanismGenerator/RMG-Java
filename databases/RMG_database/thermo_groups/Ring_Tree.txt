@@ -73,6 +73,8 @@ L1: FiveMember
 	L2: 124trioxolane
 	L2: methylenecyclopentane
 	L2: Fulvene
+	L2: 3-Methylenecyclopentene
+	L2: 4-Methylenecyclopentene
 	L2: thiolane
 	L2: 2,3-dihydrothiophene
 	L2: 2,5-dihydrothiophene
@@ -129,6 +131,7 @@ L1: SixMember
 	L2: six-twoin14-twoout
 		L3: pxylene
 		L3: pbenzoquinone
+	L2: 3,4-dimethylenecyclohexene
 //	L2: Pentanedioic_anhydride
 L1: SevenMember
 	L2: Cycloheptane
@@ -136,13 +139,17 @@ L1: SevenMember
 	L2: 1,3-Cycloheptadiene
 	L2: 1,3,5-Cycloheptatriene
 	L2: Cycloheptanone
+	L2: 1,4-Cycloheptadiene
 L1: EightMember
 	L2: Cyclooctane
-//	L2: cis-Cyclooctene
+	L2: cis-Cyclooctene
 //	L2: trans-Cyclooctene
 	L2: 1,3,5-Cyclooctatriene
 	L2: Cyclooctatetraene
 	L2: Cyclooctanone
+	L2: 1,3-cyclooctadiene 
+	L2: 1,4-cyclooctadiene 
+	L2: 1,5-cyclooctadiene
 L1: NineMember
 	L2: Cyclononane
 //	L2: cis-Cyclononene

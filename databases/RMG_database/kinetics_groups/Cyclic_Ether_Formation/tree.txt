@@ -3,32 +3,59 @@
 //QOOH --> QO + OH
 
 //f31_cyclic_ether_form
-L1: RnOOH
-	L2: R2OOH		
-		L3: R2OOH_S	
-		L3: R2OOH_SCO	
-		L3: R2OOH_D	
-	L2: R3OOH
-		L3: R3OOH_SS
-		L3: R3OOH_SSCO	
-		L3: R3OOH_SD		
-		L3: R3OOH_DS	
-	L2: R4OOH		
-		L3: R4OOH_SSS
-		L3: R4OOH_SSSCO	
-		L3: R4OOH_SSD		
-		L3: R4OOH_SDS		
-		L3: R4OOH_DSS		
-		L3: R4OOH_DSD	
-	L2: R5OOH		
-		L3: R5OOH_SSSS
-	    L3: R5OOH_SSSSCO
-		L3: R5OOH_SSSD		
-		L3: R5OOH_SSDS		
-		L3: R5OOH_SDSS		
-		L3: R5OOH_DSSS		
-		L3: R5OOH_SDSD		
-		L3: R5OOH_DSDS
+
+L1: RnOOR
+    L2: R2OOH		
+        L3: R2OOH_S	
+        L3: R2OOH_SCO	
+        L3: R2OOH_D	
+    L2: R3OOH
+        L3: R3OOH_SS
+        L3: R3OOH_SSCO	
+        L3: R3OOH_SD		
+        L3: R3OOH_DS	
+    L2: R4OOH		
+        L3: R4OOH_SSS
+        L3: R4OOH_SSSCO	
+        L3: R4OOH_SSD		
+        L3: R4OOH_SDS		
+        L3: R4OOH_DSS		
+        L3: R4OOH_DSD	
+    L2: R5OOH		
+        L3: R5OOH_SSSS
+        L3: R5OOH_SSSSCO
+        L3: R5OOH_SSSD		
+        L3: R5OOH_SSDS		
+        L3: R5OOH_SDSS		
+        L3: R5OOH_DSSS		
+        L3: R5OOH_SDSD		
+        L3: R5OOH_DSDS
+	L2: R2OOR		
+		L3: R2OOR_S	
+		L3: R2OOR_SCO	
+		L3: R2OOR_D	
+	L2: R3OOR
+		L3: R3OOR_SS
+		L3: R3OOR_SSCO	
+		L3: R3OOR_SD		
+		L3: R3OOR_DS	
+	L2: R4OOR		
+		L3: R4OOR_SSS
+		L3: R4OOR_SSSCO	
+		L3: R4OOR_SSD		
+		L3: R4OOR_SDS		
+		L3: R4OOR_DSS		
+		L3: R4OOR_DSD	
+	L2: R5OOR		
+		L3: R5OOR_SSSS
+		L3: R5OOR_SSSSCO
+		L3: R5OOR_SSSD		
+		L3: R5OOR_SSDS		
+		L3: R5OOR_SDSS		
+		L3: R5OOR_DSSS		
+		L3: R5OOR_SDSD		
+		L3: R5OOR_DSDS
+		
 L1: Y_rad_intra
 	L2: Cs_rad_intra
 		L3: C_pri_rad_intra		

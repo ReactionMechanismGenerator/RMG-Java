@@ -1,0 +1,102 @@
+// Diethylsulfide + H2O desulfurization
+
+Database: RMG_database
+
+MaxCarbonNumberPerSpecies: 18
+MaxOxygenNumberPerSpecies: 3
+MaxSulfurNumberPerSpecies: 3
+
+PrimaryThermoLibrary:
+Name: RMG_Default
+Location: primaryThermoLibrary
+Name: Sulfur_Thermo
+Location: SulfurLibrary
+Name: DFT_QCI
+Location: DFT_QCI_thermo
+END
+
+PrimaryTransportLibrary:
+END
+
+ForbiddenStructures:
+END
+
+ReadRestart: No
+WriteRestart: Yes
+
+TemperatureModel: Constant (K) 673
+PressureModel: Constant (Bar) 244.3
+
+InChIGeneration: off
+
+InitialStatus:
+
+(1) DES (mol/cm3) 0.000363
+1 C 0 {2,S}
+2 C 0 {1,S} {3,S}
+3 S 0 {2,S} {4,S}
+4 C 0 {3,S} {5,S}
+5 C 0 {4,S}
+
+(2) H2O (mol/cm3) 0.0040
+1 O 0
+
+(3) ethanethial (mol/cm3) 0.0
+1 C 0 {2,S}
+2 C 0 {1,S} {3,D}
+3 S 0 {2,D}
+
+(4) hydro-ET (mol/cm3) 0.0
+1 C 0 {2,S}
+2 C 0 {1,S} {3,S} {4,S}
+3 S 0 {2,S}
+4 O 0 {2,S}
+
+(5) hydro-ET-rad (mol/cm3) 0.0
+1 C 0 {2,S}
+2 C 0 {1,S} {3,S} {4,S}
+3 S 1 {2,S}
+4 O 0 {2,S}
+
+(6) ethanal (mol/cm3) 0.0
+1 C 0 {2,S}
+2 C 0 {1,S} {3,D}
+3 O 0 {2,D}
+
+END
+
+InertGas:
+Ar (mol/cm3)        0
+N2 (mol/cm3)        0
+He (mol/cm3)        0
+END
+
+SpectroscopicDataEstimator: off
+PressureDependence: off
+
+FinishController:
+(1) Goal Conversion: DES 0.10
+(2) Error Tolerance: 0.50
+
+DynamicSimulator: DASSL
+Conversions: AUTO
+Atol: 1E-18
+Rtol: 1E-8
+
+PrimaryKineticLibrary:
+END
+
+
+ReactionLibrary:
+END
+
+SeedMechanism:
+Name: Hydrolysis
+Location: Sulfur/Thial_Hydrolysis
+GenerateReactions: no
+END
+
+ChemkinUnits:
+Verbose: off
+A: moles
+Ea: kcal/mol

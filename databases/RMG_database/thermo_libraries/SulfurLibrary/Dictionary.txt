@@ -224,21 +224,21 @@ propane2thione
 
 but3ene2thione
 1 C 0 {2,S}
-2 C 0 {3,D} {4,S}
+2 C 0 {1,S} {3,D} {4,S}
 3 S 0 {2,D}
 4 C 0 {2,S} {5,D}
 5 C 0 {4,D}
 
 but3yne2thione
 1 C 0 {2,S}
-2 C 0 {3,D} {4,S}
+2 C 0 {1,S} {3,D} {4,S}
 3 S 0 {2,D}
 4 C 0 {2,S} {5,T}
 5 C 0 {4,T}
 
 HCSCSCH3
 1 C 0 {2,S}
-2 C 0 {3,S} {4,D}
+2 C 0 {1,S} {3,S} {4,D}
 3 C 0 {2,S} {5,D}
 4 S 0 {2,D}
 5 S 0 {3,D}

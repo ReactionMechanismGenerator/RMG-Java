@@ -12,7 +12,7 @@
 R2OO -> R=R + OOH
 
 forward
-reverse: none
+reverse: HO2_concerted_addition
 
 Actions 1
 (1) BREAK_BOND		{*1,S,*5}

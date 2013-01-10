@@ -12,13 +12,12 @@
 //
 // Families can be deactivated by simply changing the "on/off" column to off.
 //
-// ***H_Abstraction_old is current RMG version, H_Abstraction is Aaron's version
 ////////////////////////////////////////////////////////////////////////////////
 
 // No.  on/off  Forward reaction                     
 1       on      Cyclic_Ether_Formation
 2       on      intra_OH_migration
-3       off      H_Abstraction_old
+3       on      H_Abstraction
 4       on      R_Addition_MultipleBond
 5       on      R_Recombination
 6       on      Disproportionation
@@ -39,13 +38,12 @@
 21      on      Intra_R_Add_Endocyclic
 22      on      1,2-Birad_to_alkene
 23      on      Intra_Disproportionation
-24	  off      1,2_shiftS
-25	  on      intra_substitutionCS_cyclization
-26	  on      intra_substitutionCS_isomerization
-27	  on      intra_substitutionS_cyclization
-28	  on      intra_substitutionS_isomerization
-29	  on      SubstitutionS
-30	  on      H_Abstraction
-31	  off      R_Addition_MultipleBond_A		
-32	on	R_Addition_CSm
-33	on	1,3_Insertion_RSR
+24      on      Substitution_O
+25      off     1,2_shiftS
+26      on      intra_substitutionCS_cyclization
+27      on      intra_substitutionCS_isomerization
+28      on      intra_substitutionS_cyclization
+29      on      intra_substitutionS_isomerization
+30      on      SubstitutionS
+31      on      R_Addition_CSm
+32      on      1,3_Insertion_RSR

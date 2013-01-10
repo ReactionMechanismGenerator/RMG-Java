@@ -48,7 +48,7 @@
     otherwise the property will remain unset. This only runs if inGit -->
     <condition property="HEADishash">
       <length when="equal" length="41">
-        <fileset dir="." includes=".git/HEAD">
+        <fileset dir=".git" includes="HEAD">
           <containsregexp expression="[0-9a-f]{40}"/>
         </fileset>
       </length>

@@ -36,10 +36,11 @@ WriteRestart: no
 TemperatureModel: Constant (K) 1350
 PressureModel: Constant (atm) 1 
 
-ThermoMethod: QM Gaussian03
-QMForCyclicsOnly: on
+//thermo strategy? BensonOnly/QMforCyclics/Hybrid
+ThermoMethod: QMforCyclics Gaussian03
 MaxRadNumForQM: 0
 CheckConnectivity: check
+KeepQMFiles: no
 
 InitialStatus:
 

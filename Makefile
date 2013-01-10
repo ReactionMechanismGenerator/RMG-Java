@@ -146,9 +146,14 @@ clean:
 # Run a test case
 test:
 	mkdir -p $(RUNDIR)
-	cp examples/RMG/1,3-hexadiene/condition.txt $(RUNDIR)
-	export RMG=$(CURDIR); cd $(RUNDIR); java -jar $(BINDIR)/RMG.jar condition.txt
+	cp examples/RMG/hexadiene/condition.txt $(RUNDIR)
+	cp examples/RMG/hexadiene/RMG.sh $(RUNDIR)
+	export RMG=$(CURDIR); cd $(RUNDIR); ./RMG.sh;
 	echo "Results saved to $(RUNDIR)"
+
+# Run all test cases
+test_all: 
+	export RMG=$(CURDIR); scripts/test_all.sh;
 
 help:
 	@echo ""

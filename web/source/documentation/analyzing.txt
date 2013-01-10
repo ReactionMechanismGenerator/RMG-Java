@@ -115,17 +115,23 @@ Generally, there are five outputs from RMG (six if pressure-dependence is turned
    mechanism, for each temperature and pressure requested by the user in the :file:`condition.txt` file.  These rate coefficients were
    used to compute the reported Chebyshev or PLOG pressure-dependent rate coefficients reported in the :file:`chem.inp` file.
 
-#. :file:`SpeciesProfiles.txt` (located in :file:`$RMG/ODESolver`).
+#. :file:`SpeciesProfiles_N.txt` (located in :file:`$RMG_JOB_SCRATCH/ODESolver`).
    This is a tab-separated text file (suitable for opening in a spreadsheet
    like Excel) containing the concentration of each species (moles per cm\
    :sup:`3`\ ) as a function of time (seconds). There is an entry for every
    timestep of the ODE solver. This is particularly useful when running with
-   AUTO timesteps in the :ref:`dynamicsimulator`. Because the file is replaced
+   AUTO timesteps in the :ref:`dynamicsimulator`. The number at the end of the
+   filename indicates which reaction system it corresponds to
+   (e.g. if multiple reaction systems are set up at different :ref:`initial conditions
+   <initialconditions>`\ ).
+   Because the file is replaced
    every time the ODE solver runs, at the end of running RMG it will
-   contain the results from the last reaction system if multiple reaction
-   systems have been defined (e.g. at different :ref:`initial conditions
-   <initialconditions>`\ ). 
-
+   contain the results from the most recently run simulations.
+   
+#. :file:`restartConditionFile.txt`.  This file is a modified condition file which can be used for restarting a RMG job.
+   The original condition file is appended with all the species in the current core (not contained in the seed) with 
+   zero concentration. All other settings/options in the original condition file are preserved. Running an RMG job using
+   this condition file causes the original model to be recovered after the first time step.
 
 .. _viewrmgve:
 

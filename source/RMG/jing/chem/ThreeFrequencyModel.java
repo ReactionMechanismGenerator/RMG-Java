@@ -1,86 +1,75 @@
-////////////////////////////////////////////////////////////////////////////////
+// //////////////////////////////////////////////////////////////////////////////
 //
-//	RMG - Reaction Mechanism Generator
+// RMG - Reaction Mechanism Generator
 //
-//	Copyright (c) 2002-2011 Prof. William H. Green (whgreen@mit.edu) and the
-//	RMG Team (rmg_dev@mit.edu)
+// Copyright (c) 2002-2011 Prof. William H. Green (whgreen@mit.edu) and the
+// RMG Team (rmg_dev@mit.edu)
 //
-//	Permission is hereby granted, free of charge, to any person obtaining a
-//	copy of this software and associated documentation files (the "Software"),
-//	to deal in the Software without restriction, including without limitation
-//	the rights to use, copy, modify, merge, publish, distribute, sublicense,
-//	and/or sell copies of the Software, and to permit persons to whom the
-//	Software is furnished to do so, subject to the following conditions:
+// Permission is hereby granted, free of charge, to any person obtaining a
+// copy of this software and associated documentation files (the "Software"),
+// to deal in the Software without restriction, including without limitation
+// the rights to use, copy, modify, merge, publish, distribute, sublicense,
+// and/or sell copies of the Software, and to permit persons to whom the
+// Software is furnished to do so, subject to the following conditions:
 //
-//	The above copyright notice and this permission notice shall be included in
-//	all copies or substantial portions of the Software.
+// The above copyright notice and this permission notice shall be included in
+// all copies or substantial portions of the Software.
 //
-//	THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-//	IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-//	FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-//	AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-//	LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
-//	FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
-//	DEALINGS IN THE SOFTWARE.
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+// FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
+// DEALINGS IN THE SOFTWARE.
 //
-////////////////////////////////////////////////////////////////////////////////
-
-
-
+// //////////////////////////////////////////////////////////////////////////////
 package jing.chem;
-
 
 import java.util.*;
 
-//## package jing::chem 
-
-//----------------------------------------------------------------------------
-// jing\chem\ThreeFrequencyModel.java                                                                  
-//----------------------------------------------------------------------------
-
-//## class ThreeFrequencyModel 
+// ## package jing::chem
+// ----------------------------------------------------------------------------
+// jing\chem\ThreeFrequencyModel.java
+// ----------------------------------------------------------------------------
+// ## class ThreeFrequencyModel
 public class ThreeFrequencyModel {
-    
-    protected double [] degeneracy;		//## attribute degeneracy 
-    
-    protected double [] frequency;		//## attribute frequency 
-    
-    
+    protected double[] degeneracy; // ## attribute degeneracy
+    protected double[] frequency; // ## attribute frequency
+
     // Constructors
-    
-    //## operation ThreeFrequencyModel(double [],double []) 
-    public  ThreeFrequencyModel(double [] p_frequency, double [] p_degeneracy) {
-        //#[ operation ThreeFrequencyModel(double [],double []) 
+    // ## operation ThreeFrequencyModel(double [],double [])
+    public ThreeFrequencyModel(double[] p_frequency, double[] p_degeneracy) {
+        // #[ operation ThreeFrequencyModel(double [],double [])
         degeneracy = p_degeneracy;
         frequency = p_frequency;
-        //#]
+        // #]
     }
-    public  ThreeFrequencyModel() {
+
+    public ThreeFrequencyModel() {
     }
-    
-    //## operation getDegeneracy() 
-    public double [] getDegeneracy() {
-        //#[ operation getDegeneracy() 
+
+    // ## operation getDegeneracy()
+    public double[] getDegeneracy() {
+        // #[ operation getDegeneracy()
         return degeneracy;
-        //#]
+        // #]
     }
-    
-    //## operation getFrequency() 
-    public double [] getFrequency() {
-        //#[ operation getFrequency() 
+
+    // ## operation getFrequency()
+    public double[] getFrequency() {
+        // #[ operation getFrequency()
         return frequency;
-        //#]
+        // #]
     }
-    
-    //## operation getFrequencyNumber() 
+
+    // ## operation getFrequencyNumber()
     public int getFrequencyNumber() {
-        //#[ operation getFrequencyNumber() 
+        // #[ operation getFrequencyNumber()
         return 3;
-        //#]
+        // #]
     }
-    
 }
 /*********************************************************************
-	File Path	: RMG\RMG\jing\chem\ThreeFrequencyModel.java
-*********************************************************************/
-
+ * File Path : RMG\RMG\jing\chem\ThreeFrequencyModel.java
+ *********************************************************************/
