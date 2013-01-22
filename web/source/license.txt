@@ -6,7 +6,7 @@ License
 
 RMG is intended to be an open source program, available to the general public free of charge. The primary RMG code is distributed under the terms of the `MIT/X11 License <http://www.opensource.org/licenses/mit-license.php>`_\ , reproduced below. Although many of RMG's dependencies are also available under compatible open source licenses, there remain a few dependencies with more restrictive licenses. **It is the user's responsibility to ensure these licenses have been obtained.** ::
 
-	Copyright (c) 2002-2009 William H. Green and the RMG Team
+	Copyright (c) 2002-2013 William H. Green and the RMG Team
 
 	Permission is hereby granted, free of charge, to any person obtaining a copy of
 	this software and associated documentation files (the "Software"), to deal in
