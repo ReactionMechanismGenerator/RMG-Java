@@ -14,27 +14,35 @@ Current Developers: (rmg_dev@mit.edu)
 
 - Joshua W. Allen
 
+- Dr. Beat A. Buesser
+
 - Caleb A. Class
 
 - Connie Gao
 
-- Michael R. Harper
-
 - Amrit Jalan
 
-- Gregory R. Magoon
+- Dr. Murat Keceli
 
 - Shamel S. Merchant
 
-- Jeffrey D. Mo
+- Dr. Yury Suleymanov
 
-- Dr. Richard H. West
+- Prof. Richard H. West
+
+- Nathan Yee
 
 Original Developer:
 
 - Dr. Jing Song
 
 Previous Developers: 
+
+- Dr. Gregory R. Magoon
+
+- Jeffrey D. Mo
+
+- Dr. Michael R. Harper
 
 - Dr. C. Franklin Goldsmith
 
@@ -86,4 +94,4 @@ Special thanks for helpful error reports:
 How to cite
 *************
 
-To cite RMG, please refer to this website: William H. Green, Joshua W. Allen, Robert W. Ashcraft, Gregory J. Beran, Caleb A. Class, Connie Gao, C. Franklin Goldsmith, Michael R. Harper, Amrit Jalan, Gregory R. Magoon, David M. Matheu, Shamel S. Merchant, Jeffrey D. Mo, Sarah Petway, Sumathy Raman, Sandeep Sharma, Jing Song, Kevin M. Van Geem, John Wen, Richard H. West, Andrew Wong, Hsi-Wu Wong, Paul E. Yelvington, Joanna Yu; "RMG - Reaction Mechanism Generator v3.3", 2011, http://rmg.sourceforge.net/
+To cite RMG, please refer to this website: William H. Green, Joshua W. Allen, Beat A. Buesser, Robert W. Ashcraft, Gregory J. Beran, Caleb A. Class, Connie Gao, C. Franklin Goldsmith, Michael R. Harper, Amrit Jalan, Murat Keceli, Gregory R. Magoon, David M. Matheu, Shamel S. Merchant, Jeffrey D. Mo, Sarah Petway, Sumathy Raman, Sandeep Sharma, Jing Song, Yury Suleymanov, Kevin M. Van Geem, John Wen, Richard H. West, Andrew Wong, Hsi-Wu Wong, Paul E. Yelvington, Nathan Yee, Joanna Yu; "RMG - Reaction Mechanism Generator v4.0", 2013, http://rmg.sourceforge.net/
