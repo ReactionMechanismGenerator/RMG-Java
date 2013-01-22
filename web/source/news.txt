@@ -3,7 +3,7 @@
 RMG News and Updates
 **********************************
 
-2012-12-20: RMG 4.0 Released!
+2013-1-23: RMG 4.0 Released!
 =============================
 
 The fourth major version of the RMG software has been released. Changes since
@@ -12,7 +12,7 @@ RMG 3.3 include:
 - Support for sulfur (divalent) has been added, including many new thermo
   groups and reaction families.
 
-- Improved suppoort for automatic MM4 calculations to estimate the 
+- Improved support for automatic MM4 calculations to estimate the 
   thermochemistry of cyclic molecules, including a new hybrid mode for
   reducing the number of MM4 calculations by first checking an existing database
   for corrections.
