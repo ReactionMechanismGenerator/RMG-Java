@@ -4,10 +4,10 @@
 Example Condition Files
 **********************************
 
-Minimal Example
+Ethane pyrolysis (Minimal)
 ========================
 
-This is a minimal example and should run quickly. It does not include any 
+This is the minimal example file characterizing a very basic system for ethane pyrolysis and should run quickly if RMG is set up properly. It does not include any 
 calculation of pressure-dependent reaction rates.
 
 .. literalinclude:: ../../../examples/RMG/minimal/condition.txt
@@ -16,23 +16,23 @@ calculation of pressure-dependent reaction rates.
 1,3-hexadiene pyrolysis
 ========================
 
-This is our first example. Somebody should write something wise about it:
+This example models the pyrolysis of 1,3-hexadiene and demonstrates the effect of turning on the pressure-dependence module within RMG.  
 
-.. literalinclude:: ../../../examples/RMG/1,3-hexadiene/condition.txt
+.. literalinclude:: ../../../examples/RMG/hexadiene/condition.txt
 
 
 Butane oxidation with pruning
 =============================
 
-This example illustrates the use of pruning, as well
-as multiple reaction conditions. The example should
+This example illustrates the use of pruning to reduce model generation time, as well as the simulation of
+as multiple reaction conditions in a single condition file. The example should
 take at least several hours to run and may require allocation
 of a large amount of memory (e.g. 1500 MB) to complete:
 
 .. literalinclude:: ../../../examples/RMG/butane_pruning/condition.txt
 
 
-Quantum mechanics calculations
+Cyclopropane pyrolysis with quantum mechanics calculations
 ================================
 
 This is an example illustrating the use of on-the-fly thermo
@@ -48,4 +48,16 @@ described in the :ref:`installation documentation <installing_qm>`.
 
 .. literalinclude:: ../../../examples/RMG/cyclopropane_QM/condition.txt
 
+Octane liquid phase autoxidation
+================================
+This example showcases RMG's ability to model liquid-phase reaction systems.
+
+.. literalinclude:: ../../../examples/RMG/liquidphase/condition.txt
+
+
+Diethylsulfide and H2O desulfurization
+================================
+RMG 4.0+ can now handle systems involving sulfur-containing compounds.  This example models the desulfurization of diethylsulfide in the presence of water.
+
+.. literalinclude:: ../../../examples/RMG/diethylsulfide/condition.txt
 
