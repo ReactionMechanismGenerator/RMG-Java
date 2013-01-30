@@ -302,9 +302,17 @@ public class ReactionTemplate {
          * if (bestKineticsSet.size() == 0) { System.out.println("problem with rate constant");
          * System.out.println(reactionAdjList.productNumber); System.out.println(reactionAdjList.reactantNumber); }
          */
-        if (bestKineticsSet.size() == 0)
-            throw new RateConstantNotFoundException();
-        // get averaged k with the closest distance
+
+	if (bestKineticsSet.size() == 0) {
+	  UncertainDouble uA = new UncertainDouble(0.0,0.0,"Adding");
+          UncertainDouble un = new UncertainDouble(0.0,0.0,"Adding");
+          UncertainDouble uE = new UncertainDouble(0.0,0.0,"Adding");
+	  ArrheniusKinetics[] k_setToZero = new ArrheniusKinetics[1];
+	  k_setToZero[0] = new ArrheniusKinetics(uA,un,uE,"",5,"","k=0.0 to avoid RateConstantNotFoundException");
+	  return k_setToZero[0];
+	}
+
+       // get averaged k with the closest distance
         Kinetics newK = ArrheniusKinetics.average(bestKineticsSet);
         return newK;
     }
