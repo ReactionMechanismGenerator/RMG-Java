@@ -273,14 +273,14 @@ C/H2/OneDe
 1 *1 C 0 {2,S}, {3,S}, {4,S}, {5,S}
 2 *2 H 0 {1,S}
 3 H 0 {1,S}
-4 {Cd,Ct,CO,Cb,CS} 0 {1,S}
+4 {Cd,Ct,CO,Cb} 0 {1,S}
 5 {Cs,O,S} 0 {1,S}
 
 C/H2/OneDeC
 1 *1 C 0 {2,S}, {3,S}, {4,S}, {5,S}
 2 *2 H 0 {1,S}
 3 H 0 {1,S}
-4 {Cd,Ct,CO,Cb,CS} 0 {1,S}
+4 {Cd,Ct,CO,Cb} 0 {1,S}
 5 Cs 0 {1,S}
 
 C/H2/CdCs
@@ -350,14 +350,14 @@ C/H2/OneDeO
 1 *1 C 0 {2,S}, {3,S}, {4,S}, {5,S}
 2 *2 H 0 {1,S}
 3 H 0 {1,S}
-4 {Cd,Ct,CO,Cb,CS} 0 {1,S}
+4 {Cd,Ct,CO,Cb} 0 {1,S}
 5 O 0 {1,S}
 
 C/H2/OneDeS
 1 *1 C 0 {2,S}, {3,S}, {4,S}, {5,S}
 2 *2 H 0 {1,S}
 3 H 0 {1,S}
-4 {Cd,Ct,CO,Cb,CS} 0 {1,S}
+4 {Cd,Ct,CO,Cb} 0 {1,S}
 5 S 0 {1,S}
 
 C/H2/CdS
@@ -379,8 +379,8 @@ C/H2/TwoDe
 1 *1 C 0 {2,S}, {3,S}, {4,S}, {5,S}
 2 *2 H 0 {1,S}
 3 H 0 {1,S}
-4 {Cd,Ct,CO,Cb,CS} 0 {1,S}
-5 {Cd,Ct,CO,Cb,CS} 0 {1,S}
+4 {Cd,Ct,CO,Cb} 0 {1,S}
+5 {Cd,Ct,CO,Cb} 0 {1,S}
 
 C/H2/CdCd
 1 *1 C 0 {2,S}, {3,S}, {4,S}, {5,S}
@@ -604,14 +604,14 @@ C/H/S3
 C/H/OneDe
 1 *1 C 0 {2,S}, {3,S}, {4,S}, {5,S}
 2 *2 H 0 {1,S}
-3 {Cd,Ct,Cb,CO,CS} 0 {1,S}
+3 {Cd,Ct,Cb,CO} 0 {1,S}
 4 {Cs,O,S} 0 {1,S}
 5 {Cs,O,S} 0 {1,S}
 
 C/H/Cs2
 1 *1 C 0 {2,S}, {3,S}, {4,S}, {5,S}
 2 *2 H 0 {1,S}
-3 {Cd,Ct,Cb,CO,CS} 0 {1,S}
+3 {Cd,Ct,Cb,CO} 0 {1,S}
 4 Cs 0 {1,S}
 5 Cs 0 {1,S}
 
@@ -654,14 +654,14 @@ C/H/Cs2CS
 C/H/CsO
 1 *1 C 0 {2,S}, {3,S}, {4,S}, {5,S}
 2 *2 H 0 {1,S}
-3 {Cd,Ct,Cb,CO,CS} 0 {1,S}
+3 {Cd,Ct,Cb,CO} 0 {1,S}
 4 O 0 {1,S}
 5 Cs 0 {1,S}
 
 C/H/CsS
 1 *1 C 0 {2,S}, {3,S}, {4,S}, {5,S}
 2 *2 H 0 {1,S}
-3 {Cd,Ct,Cb,CO,CS} 0 {1,S}
+3 {Cd,Ct,Cb,CO} 0 {1,S}
 4 S 0 {1,S}
 5 Cs 0 {1,S}
 
@@ -682,36 +682,36 @@ C/H/CtCsS
 C/H/OO
 1 *1 C 0 {2,S}, {3,S}, {4,S}, {5,S}
 2 *2 H 0 {1,S}
-3 {Cd,Ct,Cb,CO,CS} 0 {1,S}
+3 {Cd,Ct,Cb,CO} 0 {1,S}
 4 O 0 {1,S}
 5 O 0 {1,S}
 
 C/H/OS
 1 *1 C 0 {2,S}, {3,S}, {4,S}, {5,S}
 2 *2 H 0 {1,S}
-3 {Cd,Ct,Cb,CO,CS} 0 {1,S}
+3 {Cd,Ct,Cb,CO} 0 {1,S}
 4 O 0 {1,S}
 5 S 0 {1,S}
 
 C/H/SS
 1 *1 C 0 {2,S}, {3,S}, {4,S}, {5,S}
 2 *2 H 0 {1,S}
-3 {Cd,Ct,Cb,CO,CS} 0 {1,S}
+3 {Cd,Ct,Cb,CO} 0 {1,S}
 4 S 0 {1,S}
 5 S 0 {1,S}
 
 C/H/TwoDe
 1 *1 C 0 {2,S}, {3,S}, {4,S}, {5,S}
 2 *2 H 0 {1,S}
-3 {Cd,Ct,Cb,CO,CS} 0 {1,S}
-4 {Cd,Ct,Cb,CO,CS} 0 {1,S}
+3 {Cd,Ct,Cb,CO} 0 {1,S}
+4 {Cd,Ct,Cb,CO} 0 {1,S}
 5 {Cs,O,S} 0 {1,S}
 
 C/H/Cs
 1 *1 C 0 {2,S}, {3,S}, {4,S}, {5,S}
 2 *2 H 0 {1,S}
-3 {Cd,Ct,Cb,CO,CS} 0 {1,S}
-4 {Cd,Ct,Cb,CO,CS} 0 {1,S}
+3 {Cd,Ct,Cb,CO} 0 {1,S}
+4 {Cd,Ct,Cb,CO} 0 {1,S}
 5 Cs 0 {1,S}
 
 C/H/CdCd
@@ -843,23 +843,23 @@ C/H/CSCS
 C/H/TDMustO
 1 *1 C 0 {2,S}, {3,S}, {4,S}, {5,S}
 2 *2 H 0 {1,S}
-3 {Cd,Ct,Cb,CO,CS} 0 {1,S}
-4 {Cd,Ct,Cb,CO,CS} 0 {1,S}
+3 {Cd,Ct,Cb,CO} 0 {1,S}
+4 {Cd,Ct,Cb,CO} 0 {1,S}
 5 O 0 {1,S}
 
 C/H/TDMustS
 1 *1 C 0 {2,S}, {3,S}, {4,S}, {5,S}
 2 *2 H 0 {1,S}
-3 {Cd,Ct,Cb,CO,CS} 0 {1,S}
-4 {Cd,Ct,Cb,CO,CS} 0 {1,S}
+3 {Cd,Ct,Cb,CO} 0 {1,S}
+4 {Cd,Ct,Cb,CO} 0 {1,S}
 5 S 0 {1,S}
 
 C/H/ThreeDe
 1 *1 C 0 {2,S}, {3,S}, {4,S}, {5,S}
 2 *2 H 0 {1,S}
-3 {Cd,Ct,Cb,CO,CS} 0 {1,S}
-4 {Cd,Ct,Cb,CO,CS} 0 {1,S}
-5 {Cd,Ct,Cb,CO,CS} 0 {1,S}
+3 {Cd,Ct,Cb,CO} 0 {1,S}
+4 {Cd,Ct,Cb,CO} 0 {1,S}
+5 {Cd,Ct,Cb,CO} 0 {1,S}
 
 Cd_H
 1 *1 C 0 {2,D}, {3,S}, {4,S}
@@ -901,7 +901,7 @@ Cd/H/OneDe
 1 *1 C 0 {2,D}, {3,S}, {4,S}
 2 C 0 {1,D}
 3 *2 H 0 {1,S}
-4 {Cd,Ct,Cb,CO,CS} 0 {1,S}
+4 {Cd,Ct,Cb,CO} 0 {1,S}
 
 Cd/H/Cd
 1 *1 C 0 {2,D}, {3,S}, {4,S}
@@ -973,7 +973,7 @@ CO/H/OneDe
 1 *1 C 0 {2,D}, {3,S}, {4,S}
 2 O 0 {1,D}
 3 *2 H 0 {1,S}
-4 {Cd,Ct,Cb,CO,CS} 0 {1,S} 
+4 {Cd,Ct,Cb,CO} 0 {1,S} 
 
 CS_H
 1 *1 C 0 {2,D}, {3,S}, {4,S}
@@ -1015,7 +1015,7 @@ CS/H/OneDe
 1 *1 C 0 {2,D}, {3,S}, {4,S}
 2 S 0 {1,D}
 3 *2 H 0 {1,S}
-4 {Cd,Ct,Cb,CO,CS} 0 {1,S} 
+4 {Cd,Ct,Cb,CO} 0 {1,S} 
 
 CS/H/Cd
 1 *1 C 0 {2,D}, {3,S}, {4,S}
@@ -1082,7 +1082,7 @@ H2O2
 O/H/OneDe
 1 *1 O 0 {2,S}, {3,S}
 2 *2 H 0 {1,S}
-3 {Cd,Ct,Cb,CO,CS} 0 {1,S}
+3 {Cd,Ct,Cb,CO} 0 {1,S}
 
 Orad_O_H
 1 *1 O 0 {2,S}, {3,S}
@@ -1117,7 +1117,7 @@ S/H/NonDeS
 S/H/OneDe
 1 *1 S 0 {2,S}, {3,S}
 2 *2 H 0 {1,S}
-3 {Cd,Ct,Cb,CO,CS} 0 {1,S}
+3 {Cd,Ct,Cb,CO} 0 {1,S}
 
 S/H/Cd
 1 *1 S 0 {2,S}, {3,S}
@@ -1492,13 +1492,13 @@ C_rad/H/S2
 C_rad/H/OneDe
 1 *3 C 1 {2,S}, {3,S}, {4,S}
 2 H 0 {1,S}
-3 {Cd,Ct,Cb,CO,CS} 0 {1,S}
+3 {Cd,Ct,Cb,CO} 0 {1,S}
 4 {Cs,O,S} 0 {1,S}
 
 C_rad/H/OneDeC
 1 *3 C 1 {2,S}, {3,S}, {4,S}
 2 H 0 {1,S}
-3 {Cd,Ct,Cb,CO,CS} 0 {1,S}
+3 {Cd,Ct,Cb,CO} 0 {1,S}
 4 Cs 0 {1,S}
 
 C_rad/H/CdCs
@@ -1529,13 +1529,13 @@ C_rad/H/CSCs
 C_rad/H/OneDeO
 1 *3 C 1 {2,S}, {3,S}, {4,S}
 2 H 0 {1,S}
-3 {Cd,Ct,Cb,CO,CS} 0 {1,S}
+3 {Cd,Ct,Cb,CO} 0 {1,S}
 4 O 0 {1,S}
 
 C_rad/H/OneDeS
 1 *3 C 1 {2,S}, {3,S}, {4,S}
 2 H 0 {1,S}
-3 {Cd,Ct,Cb,CO,CS} 0 {1,S}
+3 {Cd,Ct,Cb,CO} 0 {1,S}
 4 S 0 {1,S}
 
 C_rad/H/CdS
@@ -1553,8 +1553,8 @@ C_rad/H/CtS
 C_rad/H/TwoDe
 1 *3 C 1 {2,S}, {3,S}, {4,S}
 2 H 0 {1,S}
-3 {Cd,Ct,Cb,CO,CS} 0 {1,S}
-4 {Cd,Ct,Cb,CO,CS} 0 {1,S}
+3 {Cd,Ct,Cb,CO} 0 {1,S}
+4 {Cd,Ct,Cb,CO} 0 {1,S}
 
 C_rad/H/CdCd
 1 *3 C 1 {2,S}, {3,S}, {4,S}
@@ -1764,13 +1764,13 @@ C_rad/S3
 
 C_rad/OneDe
 1 *3 C 1 {2,S}, {3,S}, {4,S}
-2 {Cd,Ct,Cb,CO,CS} 0 {1,S}
+2 {Cd,Ct,Cb,CO} 0 {1,S}
 3 {Cs,O,S} 0 {1,S}
 4 {Cs,O,S} 0 {1,S}
 
 C_rad/Cs2
 1 *3 C 1 {2,S}, {3,S}, {4,S}
-2 {Cd,Ct,Cb,CO,CS} 0 {1,S}
+2 {Cd,Ct,Cb,CO} 0 {1,S}
 3 Cs 0 {1,S}
 4 Cs 0 {1,S}
 
@@ -1807,13 +1807,13 @@ C_rad/CSCs2
 
 C_rad/CsO
 1 *3 C 1 {2,S}, {3,S}, {4,S}
-2 {Cd,Ct,Cb,CO,CS} 0 {1,S}
+2 {Cd,Ct,Cb,CO} 0 {1,S}
 3 O 0 {1,S}
 4 Cs 0 {1,S}
 
 C_rad/CsS
 1 *3 C 1 {2,S}, {3,S}, {4,S}
-2 {Cd,Ct,Cb,CO,CS} 0 {1,S}
+2 {Cd,Ct,Cb,CO} 0 {1,S}
 3 S 0 {1,S}
 4 Cs 0 {1,S}
 
@@ -1831,32 +1831,32 @@ C_rad/CtCsS
 
 C_rad/O2
 1 *3 C 1 {2,S}, {3,S}, {4,S}
-2 {Cd,Ct,Cb,CO,CS} 0 {1,S}
+2 {Cd,Ct,Cb,CO} 0 {1,S}
 3 O 0 {1,S}
 4 O 0 {1,S}
 
 C_rad/OS
 1 *3 C 1 {2,S}, {3,S}, {4,S}
-2 {Cd,Ct,Cb,CO,CS} 0 {1,S}
+2 {Cd,Ct,Cb,CO} 0 {1,S}
 3 S 0 {1,S}
 4 O 0 {1,S}
 
 C_rad/S2
 1 *3 C 1 {2,S}, {3,S}, {4,S}
-2 {Cd,Ct,Cb,CO,CS} 0 {1,S}
+2 {Cd,Ct,Cb,CO} 0 {1,S}
 3 S 0 {1,S}
 4 S 0 {1,S}
 
 C_rad/TwoDe
 1 *3 C 1 {2,S}, {3,S}, {4,S}
-2 {Cd,Ct,Cb,CO,CS} 0 {1,S}
-3 {Cd,Ct,Cb,CO,CS} 0 {1,S}
+2 {Cd,Ct,Cb,CO} 0 {1,S}
+3 {Cd,Ct,Cb,CO} 0 {1,S}
 4 {Cs,O,S} 0 {1,S}
 
 C_rad/Cs
 1 *3 C 1 {2,S}, {3,S}, {4,S}
-2 {Cd,Ct,Cb,CO,CS} 0 {1,S}
-3 {Cd,Ct,Cb,CO,CS} 0 {1,S}
+2 {Cd,Ct,Cb,CO} 0 {1,S}
+3 {Cd,Ct,Cb,CO} 0 {1,S}
 4 Cs 0 {1,S}
 
 InChI=1/C4H7/c1-3-4-2/h1,3H,4H2,2H3
@@ -2002,21 +2002,21 @@ C_rad/CSCSCs
 
 C_rad/TDMustO
 1 *3 C 1 {2,S}, {3,S}, {4,S}
-2 {Cd,Ct,Cb,CO,CS} 0 {1,S}
-3 {Cd,Ct,Cb,CO,CS} 0 {1,S}
+2 {Cd,Ct,Cb,CO} 0 {1,S}
+3 {Cd,Ct,Cb,CO} 0 {1,S}
 4 O 0 {1,S}
 
 C_rad/TDMustS
 1 *3 C 1 {2,S}, {3,S}, {4,S}
-2 {Cd,Ct,Cb,CO,CS} 0 {1,S}
-3 {Cd,Ct,Cb,CO,CS} 0 {1,S}
+2 {Cd,Ct,Cb,CO} 0 {1,S}
+3 {Cd,Ct,Cb,CO} 0 {1,S}
 4 S 0 {1,S}
 
 C_rad/ThreeDe
 1 *3 C 1 {2,S}, {3,S}, {4,S}
-2 {Cd,Ct,Cb,CO,CS} 0 {1,S}
-3 {Cd,Ct,Cb,CO,CS} 0 {1,S}
-4 {Cd,Ct,Cb,CO,CS} 0 {1,S}
+2 {Cd,Ct,Cb,CO} 0 {1,S}
+3 {Cd,Ct,Cb,CO} 0 {1,S}
+4 {Cd,Ct,Cb,CO} 0 {1,S}
 
 Cd_rad
 1 *3 C 1 {2,D}, {3,S}
@@ -2067,7 +2067,7 @@ Cd_rad/NonDeS
 Cd_rad/OneDe
 1 *3 C 1 {2,D}, {3,S}
 2 C 0 {1,D}
-3 {Cd,Ct,Cb,CO,CS} 0 {1,S}
+3 {Cd,Ct,Cb,CO} 0 {1,S}
 
 Cd_rad/Cd
 1 *3 C 1 {2,D}, {3,S}
@@ -2127,7 +2127,7 @@ CO_rad/NonDe
 CO_rad/OneDe
 1 *3 C 1 {2,D}, {3,S}
 2 O 0 {1,D}
-3 {Cd,Ct,Cb,CO,CS} 0 {1,S}
+3 {Cd,Ct,Cb,CO} 0 {1,S}
 
 CS_rad
 1 *3 C 1 {2,D}, {3,S}
@@ -2167,7 +2167,7 @@ CS_rad/S
 CS_rad/OneDe
 1 *3 C 1 {2,D}, {3,S}
 2 S 0 {1,D}
-3 {Cd,Ct,Cb,CO,CS} 0 {1,S}
+3 {Cd,Ct,Cb,CO} 0 {1,S}
 
 CS_rad/Cd
 1 *3 C 1 {2,D}, {3,S}
@@ -2217,7 +2217,7 @@ O_rad/NonDeO
 
 O_rad/OneDe
 1 *3 O 1 {2,S}
-2 {Cd,Ct,Cb,CO,CS} 0 {1,S}
+2 {Cd,Ct,Cb,CO} 0 {1,S}
 
 S_rad
 1 *3 S 1 {2,S}
@@ -2241,7 +2241,7 @@ S_rad/NonDeS
 
 S_rad/OneDe
 1 *3 S 1 {2,S}
-2 {Cd,Ct,Cb,CO,CS} 0 {1,S}
+2 {Cd,Ct,Cb,CO} 0 {1,S}
 
 S_rad/Cd
 1 *3 S 1 {2,S}
