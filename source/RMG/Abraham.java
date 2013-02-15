@@ -45,6 +45,10 @@ public class Abraham {
 // initializeSystemProperties();
         RMG.globalInitializeSystemProperties();
         LinkedHashSet speciesSet = new LinkedHashSet();
+        Species.useSolvation = true; // if we don't set this, it won't load the Abraham groups.
+        new BensonTDGenerator(); // make an instance to force it to load the group definitions
+        Species.useSolvation = false; // turn this off, because we haven't got a solvent correctly set.
+        
         String abraham_output = "";
         double c = 0;
         double a = 0;
