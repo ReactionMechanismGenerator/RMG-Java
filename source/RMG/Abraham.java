@@ -45,6 +45,10 @@ public class Abraham {
 // initializeSystemProperties();
         RMG.globalInitializeSystemProperties();
         LinkedHashSet speciesSet = new LinkedHashSet();
+        Species.useSolvation = true; // if we don't set this, it won't load the Abraham groups.
+        new BensonTDGenerator(); // make an instance to force it to load the group definitions
+        Species.useSolvation = false; // turn this off, because we haven't got a solvent correctly set.
+        
         String abraham_output = "";
         double c = 0;
         double a = 0;
@@ -95,8 +99,8 @@ public class Abraham {
                 line = ChemParser.readMeaningfulLine(data, true);
             }
             in.close();
-            abraham_output += "Solvent:" + "\t" + solvent + "\n\n";
-            // abraham_output += "Name" + "\t" +"S"+"\t"+"B"+"\t"+"E"+"\t"+"L"+"\t"+"A" + "\n";
+            //abraham_output += "Solvent:" + "\t" + solvent + "\n\n";
+            abraham_output += "Name" + "\t" +"S"+"\t"+"B"+"\t"+"E"+"\t"+"L"+"\t"+"A" + "\n";
             Iterator iter = speciesSet.iterator();
             while (iter.hasNext()) {
                 Species spe = (Species) iter.next();
@@ -111,8 +115,8 @@ public class Abraham {
                 double L = result_Abraham.L;
                 double A = result_Abraham.A;
                 double logK = c + s * S + b * B + es * E + l * L + a * A; // Implementation of Abraham Model
-                // abraham_output += spe.getName() + "\t" +S+"\t"+B+"\t"+E+"\t"+L+"\t"+A + "\n";
-                abraham_output += spe.getName() + "\t" + logK + "\n";
+                abraham_output += spe.getName() + "\t" +S+"\t"+B+"\t"+E+"\t"+L+"\t"+A + "\n";
+                //abraham_output += spe.getName() + "\t" + logK + "\n";
             }
             try {
                 File abrahamOutput = new File("Abraham_output.txt");
