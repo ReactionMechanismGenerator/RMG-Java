@@ -55,6 +55,11 @@ public class GATPFit {
                     .getProperty("RMG.workingDirectory");
             String[] command = { workingDirectory + "/bin/GATPFit.exe" };
             File runningDir = new File(System.getProperty("RMG.GATPFitDir"));
+            if (!(runningDir.exists() && runningDir.isDirectory())){
+                Logger.warning("GATPFit working directory does not exist. Creating now.");
+                Boolean success = runningDir.mkdirs();
+                if (!success) throw new GATPFitException("Couldn't create GATPFit working directory");
+            }
             GATPFit = Runtime.getRuntime().exec(command, null, runningDir);
             errorStream = new BufferedReader(new InputStreamReader(
                     GATPFit.getErrorStream()));
