@@ -44,10 +44,10 @@ public class GATP_Solvation implements GeneralSolvationGAPP {
 
     public ThermoData generateSolvThermoData(ChemGraph p_chemGraph) {
         /*
-         * AJ 16JULY2010 The Pierotti method has now been replaced with the method of MIntz et al. based on some recent
+         * AJ 16JULY2010 The Pierotti method has now been replaced with the method of Mintz et al. based on some recent
          * comparisons between the 2 methods
          */
-        double R = 8.314; // Gas constant units J/mol K
+        double R = 8.314472; // Gas constant units J/mol K
         double T = 298; // Standard state temperature
         // Generation of Abraham Solute Parameters
         AbramData result_Abraham = new AbramData();
@@ -69,8 +69,8 @@ public class GATP_Solvation implements GeneralSolvationGAPP {
         double l_g = solvent.l_g;
         double logK = c_g + s_g * S + b_g * B + e_g * E + l_g * L + a_g * A; // Implementation of Abraham Model for
 // calculation of partition coefficient
-        double deltaG0 = -8.314 * 298 * 2.303 * logK; // J/mol
-        deltaG0 = deltaG0 / 4180; // conversion from kJ/mol to kcal/mol
+        double deltaG0 = -8.314472 * 298 * 2.30258509299 * logK; // J/mol
+        deltaG0 = deltaG0 / 4184.00; // conversion from J/mol to kcal/mol
         // System.out.println("The free energy of solvation in decane at 298K w/o reference state corrections  = " +
 // deltaG0_decane +" J/mol for " );
         /*
@@ -84,7 +84,7 @@ public class GATP_Solvation implements GeneralSolvationGAPP {
         double l_h = solvent.l_h;
         double deltaH0 = c_h + s_h * S + b_h * B + e_h * E + l_h * L + a_h * A; // Implementation of Mintz model for
 // calculation of solution phase enthalpy (kJ/mol)
-        deltaH0 = deltaH0 / 4.18; // Conversion from kJ/mol to kcal/mol
+        deltaH0 = deltaH0 / 4.18400; // Conversion from kJ/mol to kcal/mol
         double deltaS0 = (deltaH0 - deltaG0) / T; // kcal/mol/K
         deltaS0 = deltaS0 * 1000; // conversion from kcal/mol/K to cal/mol/K
         // Generation of Gas Phase data to add to the solution phase quantities
@@ -93,11 +93,9 @@ public class GATP_Solvation implements GeneralSolvationGAPP {
                 "Solvation correction");
         // Now, solvationCorrection contains solution phase estimates of CORRECTION TO H298, S298 and all the gas phase
 // heat capacities.
-        // Assuming the solution phase heat capcities to be the same as that in the gas phase we wouls now want to pass
+        // Assuming the solution phase heat capacities to be the same as that in the gas phase we would now want to pass
 // on this
-        // modified version of result to the kinetics codes. This might require reading in a keyword from the
-// condition.txt file.
-        // Exactly how this will be done is yet to be figured out.
+        // modified version of result to the kinetics codes.
         return solvationCorrection;
     }
 
