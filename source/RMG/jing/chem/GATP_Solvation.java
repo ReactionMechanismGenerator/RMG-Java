@@ -82,7 +82,7 @@ public class GATP_Solvation implements GeneralSolvationGAPP {
         double a_h = solvent.a_h;
         double b_h = solvent.b_h;
         double l_h = solvent.l_h;
-        double deltaH0 = c_g + s_g * S + b_g * B + e_g * E + l_g * L + a_g * A; // Implementation of Mintz model for
+        double deltaH0 = c_h + s_h * S + b_h * B + e_h * E + l_h * L + a_h * A; // Implementation of Mintz model for
 // calculation of solution phase enthalpy (kJ/mol)
         deltaH0 = deltaH0 / 4.18; // Conversion from kJ/mol to kcal/mol
         double deltaS0 = (deltaH0 - deltaG0) / T; // kcal/mol/K
