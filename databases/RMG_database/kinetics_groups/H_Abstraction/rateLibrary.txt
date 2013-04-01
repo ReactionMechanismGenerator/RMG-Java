@@ -978,7 +978,7 @@ Arrhenius_EP
 1193	S/H/NonDeC	O_pri_rad	300-1500	4.52E+03	3.09	0.0	-1.94	0	0	0	0	3	CAC calculation CBS-QB3 1dhr
 1194	S/H/NonDeC	O_rad/NonDeC	300-1500	5.55E+03	3.02	0.0	1.96	0	0	0	0	3	CAC calculation CBS-QB3 1dhr
 1195	S_pri		O_rad/OneDe	300-1500	3.60E-04	4.74	0.0	13.48	0	0	0	0	3	CAC calculation CBS-QB3 1dhr
-1196	C/H2/CsS	CO_rad/NonDe	300-1500	2.34E-04	4.79	0.0	9.68	0	0	0	0	3	CAC calculation CBS-QB3 1dhr
+1196	CO/H/NonDe	C_rad/H/CsS	300-1500	4.11E-04	4.60	0.0	5.36	0	0	0	0	3	CAC calculation CBS-QB3 1dhr
 1197	C/H/CsOS	Cs_rad		300-2000	4.57E-03	4.08	0.0	2.89	0	0	0	0	3	CAC calculation CBS-QB3 1dhr
 1198	S/H/CO		Cs_rad		300-1500	1.31E+00	3.54	0.0	-1.22	0	0	0	0	3	CAC calculation CBS-QB3 1dhr
 1199	C/H/CsOS	S_pri_rad	300-2000	1.31E+03	2.94	0.0	-0.26	0	0	0	0	3	CAC calculation CBS-QB3 1dhr
