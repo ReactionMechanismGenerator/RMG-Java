@@ -26,6 +26,36 @@ of Technology <http://web.mit.edu/>`_. Currently there are several members of th
 Changes
 -------
 
+RMG 4.0 includes many new features and bugfixes.  Changes since
+RMG 3.3 include:
+
+- Support for sulfur (divalent) has been added, including many new thermo
+  groups and reaction families.
+
+- Improved support for automatic MM4 calculations to estimate the 
+  thermochemistry of cyclic molecules, including a new hybrid mode for
+  reducing the number of MM4 calculations by first checking an existing database
+  for corrections.
+
+- A new reaction family for R group substitution on ethers has been added.
+
+- RMG can now be constrained to only run pressure dependence for small 
+  molecules.
+
+- Some Fortran modules now run as listener subprocesses to reduce the overhead
+  of forking new processes, making RMG jobs run quite a bit faster.
+
+- A new method for restarting jobs has been added, via saving of a new
+  condition file on output with all of the final model core species.
+
+- Some settings can now be optionally controlled using environment variables,
+  particularly in the setting of output and scratch directories.
+
+- Many new rate rules have been added, corrected, or otherwise improved.
+
+- Many other bugfixes
+
+
 RMG 3.3 includes a few new features and many bugfixes. Changes since 3.2.1 include the following:
 
 .. note:: There have been several significant changes to the condition file syntax in RMG 3.3. Condition files created for earlier versions of RMG will not work with RMG 3.3. Please refer to :ref:`conditionfile` for more information on the new syntax.

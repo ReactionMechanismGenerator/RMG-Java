@@ -67,7 +67,7 @@ endif ###### END OF gfortran SETTINGS
 
 LDFLAGS=$(F90_EXTRA_LDFLAGS)
 
-LIBs=-lblas -llapack -ldaepack
+LIBS=-lblas -llapack -ldaepack
 
 OBJ0=ddaspk.o dbanpre.o daux.o dilupre.o dlinpk.o drbdpre.o drbgpre.o dsensd.o dsparsk.o adf_dummy.o mpi_dummy.o call_daspkAUTO.o res.o getflux.o resad.o jac.o res_rpar.o calcdgdk.o reaction_flux.o
 
