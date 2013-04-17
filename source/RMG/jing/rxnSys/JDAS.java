@@ -831,7 +831,7 @@ public abstract class JDAS implements DAESolver {
             int reacCount = 0;
             int prodCount = 0;
             int[] tempReacArray = { 0, 0, 0 };
-            int[] tempProdArray = { 0, 0, 0 };
+            int[] tempProdArray = { 0, 0, 0, 0 };
             // iterate over the reactants, counting and storing IDs in tempReacArray, up to a maximum of 3 reactants
             for (Iterator rIter = r.getReactants(); rIter.hasNext();) {
                 reacCount++;
@@ -857,7 +857,7 @@ public abstract class JDAS implements DAESolver {
             String str = reacCount + " " + prodCount + " " + tempReacArray[0]
                     + " " + tempReacArray[1] + " " + tempReacArray[2] + " "
                     + tempProdArray[0] + " " + tempProdArray[1] + " "
-                    + tempProdArray[2] + " " + k;
+                    + tempProdArray[2] + " " + tempProdArray[3] + " " + k;
             return str;
         } else {
             throw new NegativeRateException(r.toChemkinString(temperature)

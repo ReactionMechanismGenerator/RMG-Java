@@ -241,6 +241,15 @@ public class Reaction {
                     keff = k_forw_eff;
                     DiffFactor = keff / rate;
                     rate = keff;
+                } else if (numReacts == 2 && numProds == 4) {
+                    double k_forw = rate;
+                    LinkedList reactantsInForwRxn = structure.reactants;
+                    double k_forw_diff = calculatediff(reactantsInForwRxn);
+                    double k_forw_eff = k_forw * k_forw_diff
+                            / (k_forw + k_forw_diff);
+                    keff = k_forw_eff;
+                    DiffFactor = keff / rate;
+                    rate = keff;
                 }
                 // Add comments only if the temperature at which the function has been called corresponds to the system
 // temperature specified in the condition file
