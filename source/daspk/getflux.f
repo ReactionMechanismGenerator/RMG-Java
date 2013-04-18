@@ -39,22 +39,22 @@ C     CALCULATE THE FLUX DUE TO REACTIONS
 
          FRATE = RPAR(I+1)
 
-         RNUM = REACTIONARRAY(9*I+1)
-         PNUM = REACTIONARRAY(9*I+2)
+         RNUM = REACTIONARRAY(10*I+1)
+         PNUM = REACTIONARRAY(10*I+2)
   
          DG = 0
          DO J=1,RNUM
-            DG = DG - THERMO(REACTIONARRAY(9*I+2+J))
+            DG = DG - THERMO(REACTIONARRAY(10*I+2+J))
          END DO
 
          DO J=1,PNUM
-            DG = DG + THERMO(REACTIONARRAY(9*I+5+J))
+            DG = DG + THERMO(REACTIONARRAY(10*I+5+J))
          END DO
 
          KEQ = EXP(-DG*4184/8.314/TEMPERATURE)*(82.053*TEMPERATURE)**
      $        (RNUM-PNUM)
 
-         IF (REACTIONARRAY(9*I+9) .EQ. 1) THEN
+         IF (REACTIONARRAY(10*I+10) .EQ. 1) THEN
             RRATE = RPAR(I+1)/KEQ
          ELSE
             RRATE = 0
@@ -62,21 +62,21 @@ C     CALCULATE THE FLUX DUE TO REACTIONS
 
 
          DO J=1,RNUM
-            FRATE = FRATE*Y(REACTIONARRAY(9*I+2+J))
+            FRATE = FRATE*Y(REACTIONARRAY(10*I+2+J))
          END DO
 
          DO J=1,PNUM
-            RRATE = RRATE*Y(REACTIONARRAY(9*I+5+J))
+            RRATE = RRATE*Y(REACTIONARRAY(10*I+5+J))
          END DO
 
          
          DO J=1,RNUM
-            DEL(REACTIONARRAY(9*I+2+J)) = DEL(REACTIONARRAY(9*I+2+J))
+            DEL(REACTIONARRAY(10*I+2+J)) = DEL(REACTIONARRAY(10*I+2+J))
      $           - FRATE + RRATE
          END DO
 
          DO J=1,PNUM
-            DEL(REACTIONARRAY(9*I+5+J)) = DEL(REACTIONARRAY(9*I+5+J))
+            DEL(REACTIONARRAY(10*I+5+J)) = DEL(REACTIONARRAY(10*I+5+J))
      $           + FRATE - RRATE
          END DO
 
@@ -88,15 +88,15 @@ C     CALCULATE THE FLUX DUE TO THIRDBODYREACTIONS
          FRATE = RPAR(REACTIONSIZE+I+1)
 
 C CALCULATE THE KEQ
-         RNUM = THIRDBODYREACTIONARRAY(I*20+1)
-         PNUM = THIRDBODYREACTIONARRAY(I*20+2)
+         RNUM = THIRDBODYREACTIONARRAY(I*21+1)
+         PNUM = THIRDBODYREACTIONARRAY(I*21+2)
          DG = 0
          DO J=1,RNUM
-            DG = DG - THERMO(THIRDBODYREACTIONARRAY(20*I+2+J))
+            DG = DG - THERMO(THIRDBODYREACTIONARRAY(I*21+2+J))
          END DO
 
          DO J=1,PNUM
-            DG = DG + THERMO(THIRDBODYREACTIONARRAY(20*I+5+J))
+            DG = DG + THERMO(THIRDBODYREACTIONARRAY(I*21+5+J))
          END DO
 
          KEQ = EXP(-DG*4184/8.314/TEMPERATURE)*(82.053*TEMPERATURE)**
@@ -106,7 +106,7 @@ C     *****CALCULATE THE THIRDBODY EFFICIENCY
 
          inertefficiency = pressure*1e-6/8.314/temperature
 
-         NUMCOLLIDER = THIRDBODYREACTIONARRAY(I*20+10)
+         NUMCOLLIDER = THIRDBODYREACTIONARRAY(I*21+11)
          DO J=1,NUMCOLLIDER
             INERTEFFICIENCY = INERTEFFICIENCY + Y(THIRDBODYREACTIONARRAY
      $           (I*20+10+J))
@@ -116,7 +116,7 @@ C     *************************************
 
          FRATE = FRATE * INERTEFFICIENCY
 
-         IF (THIRDBODYREACTIONARRAY(20*I+9) .EQ. 1) THEN
+         IF (THIRDBODYREACTIONARRAY(I*21+10) .EQ. 1) THEN
             RRATE = fRATE / KEQ
          ELSE
             RRATE = 0
@@ -126,21 +126,21 @@ c         write(*,*) rrate, frate, thirdbodyreactionratearray(16*i+5)
 
 
          DO J=1,RNUM
-            FRATE = FRATE*Y(THIRDBODYREACTIONARRAY(20*I+2+J))
+            FRATE = FRATE*Y(THIRDBODYREACTIONARRAY(I*21+2+J))
          END DO
 
          DO J=1,PNUM
-            RRATE = RRATE*Y(THIRDBODYREACTIONARRAY(20*I+5+J))
+            RRATE = RRATE*Y(THIRDBODYREACTIONARRAY(I*21+5+J))
          END DO
 
          DO J=1,RNUM
             DEL(THIRDBODYREACTIONARRAY(20*i+2+J)) =
-     $           DEL(THIRDBODYREACTIONARRAY(20*I+2+J)) - FRATE + RRATE
+     $           DEL(THIRDBODYREACTIONARRAY(I*21+2+J)) - FRATE + RRATE
          END DO
 
          DO J=1,PNUM
-            DEL(THIRDBODYREACTIONARRAY(20*I+5+J)) =
-     $           DEL(THIRDBODYREACTIONARRAY(20*I+5+J)) + FRATE - RRATE
+            DEL(THIRDBODYREACTIONARRAY(I*21+5+J)) =
+     $           DEL(THIRDBODYREACTIONARRAY(I*21+5+J)) + FRATE - RRATE
          END DO
         
       END DO
@@ -149,15 +149,15 @@ C     ******CALCULATE THE FLUX DUE TO TROE REACTIONS
       DO I=0,TROEREACTIONSIZE -1
 
 C CALCULATE THE KEQ
-         RNUM = TROEREACTIONARRAY(I*21+1)
-         PNUM = TROEREACTIONARRAY(I*21+2)
+         RNUM = TROEREACTIONARRAY(I*22+1)
+         PNUM = TROEREACTIONARRAY(I*22+2)
          DG = 0
          DO J=1,RNUM
-            DG = DG - THERMO(TROEREACTIONARRAY(21*I+2+J))
+            DG = DG - THERMO(TROEREACTIONARRAY(22*I+2+J))
          END DO
 
          DO J=1,PNUM
-            DG = DG + THERMO(TROEREACTIONARRAY(21*I+5+J))
+            DG = DG + THERMO(TROEREACTIONARRAY(22*I+5+J))
          END DO
 
          KEQ = EXP(-DG*4184/8.314/TEMPERATURE)*(82.053*TEMPERATURE)**
@@ -167,9 +167,9 @@ C     FIRST CALCULATE THE RATE OF TROEREACTION
 
          m = pressure*1e-6/8.314/temperature
 
-         NUMCOLLIDER = TROEREACTIONARRAY(I*21 + 10)
+         NUMCOLLIDER = TROEREACTIONARRAY(I*22 + 11)
          DO J=1,NUMCOLLIDER
-            M = M + Y(TROEREACTIONARRAY(I*21+10+J))
+            M = M + Y(TROEREACTIONARRAY(I*22+11+J))
      $           *(TROEREACTIONRATEARRAY(21*I+6+J)-1)
          END DO
 
@@ -180,12 +180,12 @@ C     FIRST CALCULATE THE RATE OF TROEREACTION
          LOWRATE = TROEREACTIONRATEARRAY(21*I + 21)
          RATE = RPAR(REACTIONSIZE+THIRDBODYREACTIONSIZE
      $        +I+1)
-         DIRECTION = TROEREACTIONARRAY(21*I+9)
+         DIRECTION = TROEREACTIONARRAY(22*I+10)
 c         write(*,*) temperature
-         IF (TROEREACTIONARRAY(21*I + 21) .EQ. 0) THEN
+         IF (TROEREACTIONARRAY(22*I + 22) .EQ. 0) THEN
             FCENT = (1-ALPHA)*EXP(-TEMPERATURE/T3STAR) + ALPHA
      $           *EXP(-TEMPERATURE/TSTAR) + EXP(-T2STAR/TEMPERATURE)
-         ELSE if  (TROEREACTIONARRAY(21*I + 21) .EQ. 1) THEN
+         ELSE if  (TROEREACTIONARRAY(22*I + 22) .EQ. 1) THEN
             FCENT = (1-ALPHA)*EXP(-TEMPERATURE/T3STAR) + ALPHA
      $           *EXP(-TEMPERATURE/TSTAR)
          else
@@ -220,7 +220,7 @@ c         write(*,*) temperature
 	      FRATE = RATE * (PR/(1+PR)) * F
 	   END IF
 
-         IF (TROEREACTIONARRAY(21*I+9) .EQ. 1) THEN
+         IF (TROEREACTIONARRAY(22*I+10) .EQ. 1) THEN
             RRATE = fRATE/KEQ
          ELSE
             RRATE = 0
@@ -230,20 +230,20 @@ C     **********************************
 
 
          DO J=1,RNUM
-            FRATE = FRATE*Y(TROEREACTIONARRAY(21*I+2+J))
+            FRATE = FRATE*Y(TROEREACTIONARRAY(22*I+2+J))
          END DO
 
          DO J=1,PNUM
-            RRATE = RRATE*Y(TROEREACTIONARRAY(21*I+5+J))
+            RRATE = RRATE*Y(TROEREACTIONARRAY(22*I+5+J))
          END DO
 
          DO J=1,RNUM
-            DEL(TROEREACTIONARRAY(21*i+2+J)) = DEL(TROEREACTIONARRAY
+            DEL(TROEREACTIONARRAY(22*I+2+J)) = DEL(TROEREACTIONARRAY
      $           (21*I+2+J)) - FRATE + RRATE
          END DO
 
          DO J=1,PNUM
-            DEL(TROEREACTIONARRAY(21*I+5+J)) = DEL(TROEREACTIONARRAY
+            DEL(TROEREACTIONARRAY(22*I+5+J)) = DEL(TROEREACTIONARRAY
      $           (21*I+5+J)) + FRATE - RRATE
          END DO
 
@@ -253,15 +253,15 @@ C     ******CALCULATE THE FLUX DUE TO LINDEMANN REACTIONS
       DO I=0,LINDEREACTIONSIZE -1
 
 C CALCULATE THE KEQ
-         RNUM = LINDEREACTIONARRAY(I*20+1)
-         PNUM = LINDEREACTIONARRAY(I*20+2)
+         RNUM = LINDEREACTIONARRAY(I*21+1)
+         PNUM = LINDEREACTIONARRAY(I*21+2)
          DG = 0
          DO J=1,RNUM
-            DG = DG - THERMO(LINDEREACTIONARRAY(20*I+2+J))
+            DG = DG - THERMO(LINDEREACTIONARRAY(21*I+2+J))
          END DO
 
          DO J=1,PNUM
-            DG = DG + THERMO(LINDEREACTIONARRAY(20*I+5+J))
+            DG = DG + THERMO(LINDEREACTIONARRAY(21*I+5+J))
          END DO
 
          KEQ = EXP(-DG*4184/8.314/TEMPERATURE)*(82.053*TEMPERATURE)**
@@ -271,16 +271,16 @@ C     FIRST CALCULATE THE RATE OF LINDEREACTION
 
          m = pressure*1e-6/8.314/temperature
 
-         NUMCOLLIDER = LINDEREACTIONARRAY(I*20 + 10)
+         NUMCOLLIDER = LINDEREACTIONARRAY(I*21 + 11)
          DO J=1,NUMCOLLIDER
-            M = M + Y(LINDEREACTIONARRAY(I*20+10+J))
+            M = M + Y(LINDEREACTIONARRAY(I*21+11+J))
      $           *(LINDEREACTIONRATEARRAY(17*I+6+J)-1)
          END DO
 
          LOWRATE = LINDEREACTIONRATEARRAY(17*I + 17)
          RATE = RPAR(REACTIONSIZE+THIRDBODYREACTIONSIZE+TROEREACTIONSIZE
      $        +I+1)
-         DIRECTION = LINDEREACTIONARRAY(20*I+9)
+         DIRECTION = LINDEREACTIONARRAY(21*I+10)
 c         write(*,*) temperature
 
          PR = LOWRATE * M/RATE
@@ -291,7 +291,7 @@ c         write(*,*) temperature
 	      FRATE = RATE * (PR/(1+PR))
 	   END IF
 
-         IF (LINDEREACTIONARRAY(20*I+9) .EQ. 1) THEN
+         IF (LINDEREACTIONARRAY(21*I+10) .EQ. 1) THEN
             RRATE = fRATE/KEQ
          ELSE
             RRATE = 0
@@ -301,11 +301,11 @@ C     **********************************
 
 
          DO J=1,RNUM
-            FRATE = FRATE*Y(LINDEREACTIONARRAY(20*I+2+J))
+            FRATE = FRATE*Y(LINDEREACTIONARRAY(21*I+2+J))
          END DO
 
          DO J=1,PNUM
-            RRATE = RRATE*Y(LINDEREACTIONARRAY(20*I+5+J))
+            RRATE = RRATE*Y(LINDEREACTIONARRAY(21*I+5+J))
          END DO
 
          DO J=1,RNUM
@@ -314,7 +314,7 @@ C     **********************************
          END DO
 
          DO J=1,PNUM
-            DEL(LINDEREACTIONARRAY(20*I+5+J)) = DEL(LINDEREACTIONARRAY
+            DEL(LINDEREACTIONARRAY(21*I+5+J)) = DEL(LINDEREACTIONARRAY
      $           (20*I+5+J)) + FRATE - RRATE
          END DO
 

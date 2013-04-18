@@ -89,24 +89,24 @@ PROGRAM CALL_DASPKAUTO
          
 !     READ INFORMATION ABOUT REACTIONS
          READ(12,*) REACTIONSIZE
-         READ(12,*) (REACTIONARRAY(I),I=1,9*REACTIONSIZE)
+         READ(12,*) (REACTIONARRAY(I),I=1,10*REACTIONSIZE)
          READ(12,*) (REACTIONRATEARRAY(I),I=1,5*REACTIONSIZE)
 
 !     READ INFORMATION ABOUT THIRDBODYREACTIONS
          READ(12,*) THIRDBODYREACTIONSIZE
          READ(12,*)(THIRDBODYREACTIONARRAY(I),I=1, &
-         &   20*THIRDBODYREACTIONSIZE)
+         &   21*THIRDBODYREACTIONSIZE)
          READ(12,*)(THIRDBODYREACTIONRATEARRAY(I),I=1, &
         &    16*THIRDBODYREACTIONSIZE)
          
 !     READ INFORMATION ABOUT TROEREACTIONS
          READ(12,*) TROEREACTIONSIZE
-         READ(12,*)(TROEREACTIONARRAY(I),I=1,21*TROEREACTIONSIZE)
+         READ(12,*)(TROEREACTIONARRAY(I),I=1,22*TROEREACTIONSIZE)
          READ(12,*)(TROEREACTIONRATEARRAY(I),I=1,21*TROEREACTIONSIZE)
 
 !     READ INFORMATION ABOUT LINDEREACTIONS
          READ(12,*) LINDEREACTIONSIZE
-         READ(12,*)(LINDEREACTIONARRAY(I),I=1,20*LINDEREACTIONSIZE)
+         READ(12,*)(LINDEREACTIONARRAY(I),I=1,21*LINDEREACTIONSIZE)
          READ(12,*)(LINDEREACTIONRATEARRAY(I),I=1,17*LINDEREACTIONSIZE)
 
 ! 6/26/08 gmagoon: if autoFlag = 1, read in additional information 
@@ -187,7 +187,7 @@ PROGRAM CALL_DASPKAUTO
 
 !     c write the reaction info
          read(13) reactionsize
-         do i=1,9*reactionsize
+         do i=1,10*reactionsize
             read(13) reactionarray(i)
          end do
          do i=1,5*reactionsize
@@ -195,7 +195,7 @@ PROGRAM CALL_DASPKAUTO
          end do
          
          read(13) thirdbodyreactionsize
-         do i=1,20*thirdbodyreactionsize
+         do i=1,21*thirdbodyreactionsize
             read(13) thirdbodyreactionarray(i)
          end do
 
@@ -204,7 +204,7 @@ PROGRAM CALL_DASPKAUTO
          end do
          
          read(13) troereactionsize
-         do i=1,21*troereactionsize
+         do i=1,22*troereactionsize
             read(13) troereactionarray(i)
          end do
          do i=1,21*troereactionsize
@@ -212,7 +212,7 @@ PROGRAM CALL_DASPKAUTO
          end do
 
          READ(13) LINDEREACTIONSIZE
-         DO I=1,20*LINDEREACTIONSIZE
+         DO I=1,21*LINDEREACTIONSIZE
             READ(13) LINDEREACTIONARRAY(I)
          END DO
          DO I=1,17*LINDEREACTIONSIZE
@@ -655,7 +655,7 @@ PROGRAM CALL_DASPKAUTO
       end do
 
       write(16) reactionsize
-      do i=1,9*reactionsize
+      do i=1,10*reactionsize
          write(16) reactionarray(i)
       end do
       do i=1,5*reactionsize
@@ -663,7 +663,7 @@ PROGRAM CALL_DASPKAUTO
       end do
 
       write(16) thirdbodyreactionsize
-      do i=1,20*thirdbodyreactionsize
+      do i=1,21*thirdbodyreactionsize
          write(16) thirdbodyreactionarray(i)
       end do
       do i=1,16*thirdbodyreactionsize
@@ -671,7 +671,7 @@ PROGRAM CALL_DASPKAUTO
       end do
 
       write(16) troereactionsize
-      do i=1,21*troereactionsize
+      do i=1,22*troereactionsize
          write(16) troereactionarray(i)
       end do
       do i=1,21*troereactionsize
@@ -679,7 +679,7 @@ PROGRAM CALL_DASPKAUTO
       end do
 
       WRITE(16) LINDEREACTIONSIZE
-      DO i=1,20*LINDEREACTIONSIZE
+      DO i=1,21*LINDEREACTIONSIZE
          WRITE(16) LINDEREACTIONARRAY(I)
       END DO
       DO i=1,17*LINDEREACTIONSIZE
