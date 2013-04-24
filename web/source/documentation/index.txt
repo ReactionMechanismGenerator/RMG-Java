@@ -34,6 +34,7 @@ Contents
    speciesIDs
    theory/index
    faq
+   tips
    troubleshooting
    ../credits
 

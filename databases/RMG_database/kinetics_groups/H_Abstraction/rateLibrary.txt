@@ -86,7 +86,7 @@ Arrhenius_EP
 72.		Cd/H/OneDe	C_methyl			300-1500	5.78E+13	0		0		16.2	0		0		0		0		3		Mark Saeys, CBS-QB3 calculations, without hindered rotor treatment. Rate expression per H atom.	
 73.		Cd/H/OneDe	C_methyl			300-1500	2.26E+13	0		0		15.9	0		0		0		0		3		Mark Saeys, CBS-QB3 calculations, without hindered rotor treatment. Rate expression per H atom.	
 74.		Cd/H/OneDe	C_methyl			300-1500	4.37E+13	0		0		13.7	0		0		0		0		3		Mark Saeys, CBS-QB3 calculations, without hindered rotor treatment. Rate expression per H atom.	
-75.		Ct_H		C_methyl			300-1500	3.33E+18	0		0		28.0	0		0		0		0		3		Mark Saeys, CBS-QB3 calculations, without hindered rotor treatment. Rate expression per H atom.	
+75.		Ct_H		C_methyl			300-1500	3.33E+12	0		0		28.0	0		0		0		0		3		Mark Saeys, CBS-QB3 calculations, without hindered rotor treatment. Rate expression per H atom.	
 76.		Cb_H		C_methyl			300-1500	1.17E+15	0		0		19.9	0		0		0		0		3		Mark Saeys, CBS-QB3 calculations, without hindered rotor treatment. Rate expression per H atom.	
 77.		C/H2/NonDeC	C_methyl			300-1500	9.87E+14	0		0		13.5	0		0		0		0		3		Mark Saeys, CBS-QB3 calculations, without hindered rotor treatment. Rate expression per H atom.	
 78.		C/H2/NonDeC	C_methyl			300-1500	4.51E+12	0		0		12.6	0		0		0		0		3		Mark Saeys, CBS-QB3 calculations, without hindered rotor treatment. Rate expression per H atom.	

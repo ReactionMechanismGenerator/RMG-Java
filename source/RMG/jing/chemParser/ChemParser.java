@@ -697,7 +697,7 @@ public class ChemParser {
             throw new NullPointerException();
         StringTokenizer st = new StringTokenizer(p_speciesString, "+");
         int speNum = st.countTokens();
-        if (speNum > 3)
+        if (speNum > 4)
             throw new InvalidStructureException("too many reactants/products: "
                     + p_speciesString);
         LinkedList reactionSpe = new LinkedList();

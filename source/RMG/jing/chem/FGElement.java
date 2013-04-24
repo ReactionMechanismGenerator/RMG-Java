@@ -99,6 +99,8 @@ public class FGElement {
             fge = new FGElement("Cbf");
         } else if (p_name.equals("CO")) {
             fge = new FGElement("CO");
+        } else if (p_name.equals("CS")) {
+            fge = new FGElement("CS");
         } else if (p_name.equals("Cl")) {// svp
             fge = new FGElement("Cl");
         } else if (p_name.equals("Os")) {
@@ -203,51 +205,52 @@ public class FGElement {
     // ## operation translateName(String)
     public static String translateName(String p_name) {
         // #[ operation translateName(String)
+        
         if (p_name == null)
             throw new NullSymbolException("FGElement");
-        if ((p_name.compareToIgnoreCase("H") == 0)
-                || (p_name.compareToIgnoreCase("Hydrogen") == 0)) {
+        if (p_name.equals("H") || p_name.equalsIgnoreCase("Hydrogen")) {
             return "H";
-        } else if ((p_name.compareToIgnoreCase("Cs") == 0)) {
+        } else if (p_name.equals("Cs")) {
             return "Cs";
-        } else if ((p_name.compareToIgnoreCase("Cd") == 0)) {
+        } else if (p_name.equals("CS")) {
+            return "CS";
+        } else if (p_name.equals("Cd")) {
             return "Cd";
-        } else if ((p_name.compareToIgnoreCase("Cdd") == 0)) {
+        } else if (p_name.equals("Cdd")) {
             return "Cdd";
-        } else if ((p_name.compareToIgnoreCase("Ct") == 0)) {
+        } else if (p_name.equals("Ct")) {
             return "Ct";
-        } else if ((p_name.compareToIgnoreCase("Cb") == 0)) {
+        } else if (p_name.equals("Cb")) {
             return "Cb";
-        } else if ((p_name.compareToIgnoreCase("Cbf") == 0)) {
+        } else if (p_name.equals("Cbf")) {
             return "Cbf";
-        } else if ((p_name.compareToIgnoreCase("CO") == 0)) {
+        } else if (p_name.equals("CO")) {
             return "CO";
-        } else if ((p_name.compareToIgnoreCase("Cl") == 0)) {// svp
+        } else if (p_name.equals("Cl")) {// svp
             return "Cl";
-        } else if ((p_name.compareToIgnoreCase("Os") == 0)) {
+        } else if (p_name.equals("Os")) {
             return "Os";
-        } else if ((p_name.compareToIgnoreCase("Oa") == 0)) {
+        } else if (p_name.equals("Oa")) {
             return "Oa";
-        } else if ((p_name.compareToIgnoreCase("Od") == 0)) {
+        } else if (p_name.equals("Od")) {
             return "Od";
-        } else if (p_name.compareToIgnoreCase("R") == 0) {
+        } else if (p_name.equals("R")) {
             return "R";
-        } else if (p_name.compareToIgnoreCase("R!H") == 0
-                || p_name.compareToIgnoreCase("R|H") == 0) {
+        } else if (p_name.equals("R!H") || p_name.equals("R|H")) {
             return "R!H";
-        } else if ((p_name.compareToIgnoreCase("Sis") == 0)) {
+        } else if (p_name.equals("Sis")) {
             return "Sis";
-        } else if ((p_name.compareToIgnoreCase("Sid") == 0)) {
+        } else if (p_name.equals("Sid")) {
             return "Sid";
-        } else if ((p_name.compareToIgnoreCase("Sidd") == 0)) {
+        } else if (p_name.equals("Sidd")) {
             return "Sidd";
-        } else if ((p_name.compareToIgnoreCase("Sit") == 0)) {
+        } else if (p_name.equals("Sit")) {
             return "Sit";
-        } else if ((p_name.compareToIgnoreCase("Ss") == 0)) {
+        } else if (p_name.equals("Ss")) {
             return "Ss";
-        } else if ((p_name.compareToIgnoreCase("Sa") == 0)) {
+        } else if (p_name.equals("Sa")) {
             return "Sa";
-        } else if ((p_name.compareToIgnoreCase("Sd") == 0)) {
+        } else if (p_name.equals("Sd")) {
             return "Sd";
         } else {
             throw new UnknownSymbolException("FGElement");

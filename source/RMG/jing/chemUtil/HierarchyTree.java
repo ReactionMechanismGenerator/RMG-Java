@@ -28,6 +28,7 @@ package jing.chemUtil;
 
 import java.util.*;
 import jing.chem.Matchable;
+import jing.rxnSys.Logger;
 
 // ## package jing::chemUtil
 // ----------------------------------------------------------------------------
@@ -35,6 +36,7 @@ import jing.chem.Matchable;
 // ----------------------------------------------------------------------------
 // ## class HierarchyTree
 public class HierarchyTree extends Tree {
+
     // Constructors
     // ## operation HierarchyTree(HierarchyTreeNode)
     public HierarchyTree(HierarchyTreeNode p_root) {
@@ -45,6 +47,7 @@ public class HierarchyTree extends Tree {
     }
 
     public HierarchyTree() {
+        HierarchyTreeNode root = null;
     }
 
     /**
@@ -67,8 +70,10 @@ public class HierarchyTree extends Tree {
     // ## operation findMatchedPath(Matchable)
     public Stack findMatchedPath(Matchable p_element) {
         // Returns the PATH
-        if (root == null)
+        if (root == null){
+            Logger.warning("Trying to match a group in a tree that hasn't yet been loaded (or has a 'null' root element for some other reason).");
             return null;
+        }
         Stack path = new Stack();
         ((HierarchyTreeNode) root).findMatchedPath(p_element, path);
         return path;
