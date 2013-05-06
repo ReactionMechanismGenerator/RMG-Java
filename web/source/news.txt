@@ -3,6 +3,21 @@
 RMG News and Updates
 **********************************
 
+
+2013-05-06: RMG 4.0.1 Released
+==============================
+
+RMG 4.0.1 is a bug-fix release, primarily addressing a problem with liquid phase solvation energy predictions. Changes since RMG 4.0 include:
+
+- Fix a bug predicting thermochemistry of species in solution at temperatures other than 298 K. (Prior versions had an incorrect enthalpy of solvation leading  to erroneous temperature dependence, although the Gibbs free energy at 298 K would have been correct).
+
+- Solvation parameter predictions improved for several classes of species.
+
+- Example input files for using the stand-alone Abraham parameter estimator (for solvation predictions) are now provided.
+
+- Seed mechanisms may now contain reactions with up to four products.
+
+
 2013-1-23: RMG 4.0 Released!
 =============================
 
@@ -12,14 +27,14 @@ RMG 3.3 include:
 - Support for sulfur (divalent) has been added, including many new thermo
   groups and reaction families.
 
-- Improved support for automatic MM4 calculations to estimate the 
+- Improved support for automatic MM4 calculations to estimate the
   thermochemistry of cyclic molecules, including a new hybrid mode for
   reducing the number of MM4 calculations by first checking an existing database
   for corrections.
 
 - A new reaction family for R group substitution on ethers has been added.
 
-- RMG can now be constrained to only run pressure dependence for small 
+- RMG can now be constrained to only run pressure dependence for small
   molecules.
 
 - Some Fortran modules now run as listener subprocesses to reduce the overhead
@@ -219,5 +234,5 @@ Also including a number of bug fixes, RMG 3.0 is a marked improvement over RMG 2
 
 2007-03-25: RMG 2 Release
 ==============================
-RMG 2 has been released. The source code of the software, the manual, and sample initialization files are provided with this release. 
+RMG 2 has been released. The source code of the software, the manual, and sample initialization files are provided with this release.
 
