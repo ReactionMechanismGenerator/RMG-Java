@@ -26,6 +26,16 @@ of Technology <http://web.mit.edu/>`_. Currently there are several members of th
 Changes
 -------
 
+RMG 4.0.1 is a bug-fix release, primarily addressing a problem with liquid phase solvation energy predictions. Changes since RMG 4.0 include:
+
+- Fix a bug predicting thermochemistry of species in solution at temperatures other than 298 K. (Prior versions had an incorrect enthalpy of solvation leading  to erroneous temperature dependence, although the Gibbs free energy at 298 K would have been correct).
+
+- Solvation parameter predictions improved for several classes of species.
+
+- Example input files for using the stand-alone Abraham parameter estimator (for solvation predictions) are now provided.
+
+- Seed mechanisms may now contain reactions with up to four products.
+
 RMG 4.0 includes many new features and bugfixes.  Changes since
 RMG 3.3 include:
 
