@@ -1,6 +1,6 @@
 @echo off
 
-REM RMG 3.2 Windows batch script for RMG execution
+REM RMG 4.0.1 Windows batch script for RMG execution
 REM Put me in the directory containing the condition file and double-click to run RMG.
 REM This assumes that the condition file is called condition.txt.
 REM This script will check that the necessary setup has been done before running RMG.
