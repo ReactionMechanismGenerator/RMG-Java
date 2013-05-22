@@ -1,0 +1,45 @@
+//B3LYP/CBS-QB3 calculations performed by gmagoon
+
+Unit:
+A: mol/cm3/s
+E: kcal/mol
+
+Reactions:
+JP10R4 = JR4BS			8.08E11 	0.47 		32.58 0.0 0.0 0.0
+DUP
+JP10R4 = JR4BS			7.57E11 	0.47 		32.03 0.0 0.0 0.0
+DUP
+JP10R4 = JR4HA + H		1.82E10 	0.99 		33.74 0.0 0.0 0.0
+DUP
+JP10R4 = JR4HA + H		3.65E10 	0.97 		32.71 0.0 0.0 0.0
+DUP
+JP10R5 = JR5BS1			2.45E12 	0.39 		21.69 0.0 0.0 0.0
+JP10R5 = JR5BS2			1.33E12 	0.32 		29.26 0.0 0.0 0.0
+JP10R5 = JR5BS3			3.49E11 	0.62 		32.07 0.0 0.0 0.0
+JP10R5 = JR5HA1 + H		5.97E10	0.96		41.09 0.0 0.0 0.0
+JP10R5 = JR4HA + H		2.94E10	0.98		33.71 0.0 0.0 0.0
+DUP
+JP10R5 = JR4HA + H		4.04E10	0.98		33.31 0.0 0.0 0.0
+DUP
+JP10R6 = JR6BS1			6.28E11	0.72		30.74 0.0 0.0 0.0
+JP10R6 = JR6BS2			5.80E11	0.68		33.58 0.0 0.0 0.0
+JP10R6 = JR6BS3			9.38E11	0.56		30.62 0.0 0.0 0.0
+JP10R6 = JR6BS4			8.26E11	0.56		24.42 0.0 0.0 0.0
+JP10R6 = JR6BS5			1.43E12	0.61		30.70 0.0 0.0 0.0
+JP10R6 = JR6HA2 + H		3.55E10	1.03		42.85 0.0 0.0 0.0
+//two pathways, but one was marked as highly suspicious
+//Instead I doubled the A-factor fo the unsuspicious pathway
+JP10R6 = JR5HA1 + H		1.24E11	1.09		39.25 0.0 0.0 0.0
+JP10R7 = JR7BS1			8.64E11	0.58		25.18 0.0 0.0 0.0
+JP10R7 = JR7BS2			8.86E11	0.46		19.20 0.0 0.0 0.0
+JP10R7 = JR7BS4			3.01E11	0.71		23.46 0.0 0.0 0.0
+JP10R8 = JR8BS1			2.28E12	0.37		23.58 0.0 0.0 0.0
+JP10R8 = JR8BS2			9.20E11	0.44		27.46 0.0 0.0 0.0
+JP10R8 = JR8BS3			6.22E11	0.50		33.61 0.0 0.0 0.0
+//two pathways, but one was marked as highly suspicious
+//Instead I doubled the A-factor for the unsuspicious pathway
+JP10R8 = JR8HA2 + H		4.12E10	1.04		41.03 0.0 0.0 0.0
+JP10R10 = JR10BS1		3.32E12	0.43		24.70 0.0 0.0 0.0
+JP10R10 = JR10BS2		1.79E12	0.53		24.85 0.0 0.0 0.0
+pentylCPT = Pentadiene + CPTyl	2.88E13	0.0	26.44 0.0 0.0 0.0
+pentylCPT = Allyl + allylCPT	1.32E13	0.0	20.72 0.0 0.0 0.0
