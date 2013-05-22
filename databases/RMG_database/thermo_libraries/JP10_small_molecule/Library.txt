@@ -1,0 +1,3 @@
+C3H4O		-15.5		65.3		16.9		20.4		23.5		26.1		30.1		33.0		37.3		0.0	0.0	0.0	"Franklin et al, "Database of Small Molecule Thermochemistry for Combustion, Journal of Physical Chemistry A, 2012"	
+C4H5		76.2		69.6		18.8		23.1		26.6		29.5		33.9		37.2		42.3		0.0	0.0	0.0	"Franklin et al, "Database of Small Molecule Thermochemistry for Combustion, Journal of Physical Chemistry A, 2012"	
+C3H3O		45.2		70.3		16.3		19.1		21.6		23.7		27.0		29.4		33.0		0.0	0.0	0.0	"Franklin et al, "Database of Small Molecule Thermochemistry for Combustion, Journal of Physical Chemistry A, 2012"

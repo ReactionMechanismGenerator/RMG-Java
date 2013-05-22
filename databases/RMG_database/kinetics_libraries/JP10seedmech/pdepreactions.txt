@@ -1,0 +1,93 @@
+Unit:
+A: mol/cm3/s
+E: kcal/mol
+
+Reactions:
+
+//2003 miller and klippenstein
+//uses same reactions and nomenclature as used in Sandeep's chem14.inp
+
+H2CCCH+H2CCCH = C*CC(C#C)*C 1.0 0.0 0.0 0.0 0.0 0.0
+ PLOG / 0.03947  8.313E+71 -17.58 29.253 /
+ PLOG / 1.0 6.306E+59 -13.80 24.953 /
+ PLOG / 10.0         1.071E+61   -13.96  28.084 /
+DUP
+
+H2CCCH+H2CCCH = C*CC(C#C)*C 1.0 0.0 0.0 0.0 0.0 0.0
+ PLOG / 0.03947  8.704E+40 -9.173 7.568 /
+ PLOG / 1.0 2.551E+32 -6.352 5.432 /
+ PLOG / 10.0         3.204E+28   -5.043  4.517  /
+DUP
+
+H2CCCH+H2CCCH = FULVENE  1.0 0.0 0.0 0.0 0.0 0.0
+ PLOG / 0.03947  2.343E+69 -17.02 25.864 /
+ PLOG / 1.0  5.492E+62 -14.73 25.602 /
+ PLOG / 10.0         5.620E+60     -13.93  27.093  /
+DUP
+
+H2CCCH+H2CCCH = FULVENE 1.0 0.0 0.0 0.0 0.0 0.0
+ PLOG / 0.03947 1.737E+44 -10.31 7.992 /
+ PLOG / 1.0 3.018E+35 -7.37 5.963 /
+ PLOG / 10.0         7.975E+29        -5.50   4.665  /
+DUP
+
+H2CCCH+H2CCCH = BENZENE  1.0 0.0 0.0 0.0 0.0 0.0
+ PLOG / 0.03947 1.287E+69 -16.73 27.864 /
+ PLOG / 1.0 3.160E+55 -12.55 22.264 /
+ PLOG / 10.0   3.888E+50    -11.01  20.320  /
+DUP
+
+H2CCCH+H2CCCH = BENZENE  1.0 0.0 0.0 0.0 0.0 0.0
+ PLOG / 0.03947 7.075E+39 -8.819 7.049 /
+ PLOG / 1.0 0.0 0.0 0.0 /
+ PLOG / 10.0 0.0 0.0 0.0 /
+DUP
+
+H2CCCH+H2CCCH = PHENYL+H  1.0 0.0 0.0 0.0 0.0 0.0
+ PLOG / 0.03947  1.584E+54 -11.94 28.973 /
+ PLOG / 1.0  1.697E+48 -9.977 36.755 /
+ PLOG / 10.0        3.671E+26     -3.879  28.963  /
+DUP
+
+H2CCCH+H2CCCH = PHENYL+H  1.0 0.0 0.0 0.0 0.0 0.0
+ PLOG / 0.03947 1.380E+34 -6.722 13.799 /
+ PLOG / 1.0 0.0 0.0 0.0 /
+ PLOG / 10.0 0.0 0.0 0.0 /
+DUP
+
+C*CC(C#C)*C = FULVENE   1.0 0.0 0.0 0.0 0.0 0.0
+ PLOG / 0.03947  5.754E+76 -18.67 95.531 /
+ PLOG / 1.0  2.344E+56 -12.55 86.405 /
+ PLOG / 10.0    4.898E+26   -4.144  65.424  / 
+                 
+C*CC(C#C)*C = BENZENE  1.0 0.0 0.0 0.0 0.0 0.0
+ PLOG / 0.03947  6.761E+98 -24.58 122.310 /
+ PLOG / 1.0  1.622E+53 -11.34 100.210 /
+ PLOG / 10.0    2.818E+51     -10.68  106.950  /
+
+C*CC(C#C)*C = PHENYL+H 1.0 0.0 0.0 0.0 0.0 0.0
+ PLOG / 0.03947 2.692E+84 -20.14 121.900 /
+ PLOG / 1.0 4.169E+77 -17.68 133.520 /
+ PLOG / 10.0       3.090E+43 -7.928  118.650 /
+
+FULVENE = BENZENE  1.0 0.0 0.0 0.0 0.0 0.0
+ PLOG / 0.03947 5.623E81 -19.36 121.500 /
+ PLOG / 1.0 1.445E+45 -8.90 96.999 /
+ PLOG / 10.0       2.951E+31       -4.97   88.465  /
+
+FULVENE = PHENYL+H 1.0 0.0 0.0 0. 0.0 0.0
+ PLOG / 0.03947  2.570E+97 -23.16 153.470 /
+ PLOG / 1.0  2.239E+68 -14.65 142.570 /
+ PLOG / 10.0   8.511E+24    -2.505  113.330  /
+
+//BENZENE = PHENYL + H from Klippenstein omitted by Sandeep, probably because a different source is used for parameters for this reaction
+ 
+
+
+
+///Moskaleva and Lin 2000: http://onlinelibrary.wiley.com/doi/10.1002/(SICI)1096-987X(20000430)21:6%3C415::AID-JCC1%3E3.0.CO;2-6/abstract
+CPDYL = H2CCCH + C2H2 1.0 0.0 0.0 0. 0.0 0.0
+ PLOG /0.131578947   2.79e+79   -18.3  130.847 /
+ PLOG /1.            1.98e+68   -15.0  124.899 /
+ PLOG /10.           5.70e+54   -11.1  116.945 /
+

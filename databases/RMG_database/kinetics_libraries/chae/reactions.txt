@@ -1,0 +1,406 @@
+//Kinetics from:
+//Thermal Decomposition of Decalin: An Ab Initio Study Kyungchan Chae and Angela Violi* 
+//Department of Mechanical Engineering, The UniVersity of Michigan, Ann Arbor, Michigan 48109-2125
+//J. Org. Chem., Vol. 72, No. 9, 2007
+
+Unit:
+A: mol/cm3/s
+E: kcal/mol
+
+Reactions:
+//names of species correspond to the tables in the SI of the paper in which every reaction is named specifically. ChaeR stands for radical, M for molecular species
+
+decalin	+	methyl	=	decaJ	+	methane		2.671E+12	0.31573	15.392 0.0 0.0 0.0
+	
+//decaJ	+	methane	=	decalin	+	methyl		7.925E+11	0.33150	23.872 0.0 0.0 0.0
+	
+decaJ	=	ChaeR12		5.752E+14	-0.30744	34.619 0.0 0.0 0.0
+	
+//ChaeR12	=	decaJ		1.235E+12	-0.37251	19.239 0.0 0.0 0.0
+	
+ChaeR12	=	ChaeR13		9.057E+11	-0.11915	11.316 0.0 0.0 0.0
+
+	
+//ChaeR13	=	ChaeR12		1.082E+12	-0.08198	34.629 0.0 0.0 0.0
+
+	
+ChaeR13	=	ChaeM14	+	propyl		1.844E+16	-0.28498	39.355 0.0 0.0 0.0
+
+	
+//ChaeM14	+	propyl	=	ChaeR13		1.257E+13	-0.30436	8.473 0.0 0.0 0.0
+
+	
+ChaeM14	+	methyl	=	ChaeR15	+	methane		2.113E+12	0.28600	10.100 0.0 0.0 0.0
+
+	
+//ChaeR15	+	methane	=	ChaeM14	+	methyl		3.513E+12	0.30680	30.420 0.0 0.0 0.0
+
+	
+ChaeR15	+	methane	=	ChaeM17	+	methyl		1.623E+13	0.30018	31.207 0.0 0.0 0.0
+
+	
+//ChaeM17	+	methyl	=	ChaeR15	+	methane		5.800E+12	0.29452	11.012 0.0 0.0 0.0
+
+	
+ChaeM17	+	methyl	=	tolJ	+	methane		2.297E+12	0.25650	7.896 0.0 0.0 0.0
+
+	
+//tolJ	+	methane	=	ChaeM17	+	methyl		4.517E+12	0.28643	40.507 0.0 0.0 0.0
+
+	
+tolJ	+	methyl	=	toluene	+	methane		2.338E+11	0.10499	8.250 0.0 0.0 0.0
+
+	
+//toluene	+	methane	=	tolJ	+	methyl		1.817E+12	0.31475	88.477 0.0 0.0 0.0
+
+	
+ChaeR15	+	methyl	=	ChaeM26	+	methane		9.972E+10	0.12649	9.358 0.0 0.0 0.0
+
+	
+//ChaeM26	+	methane	=	ChaeR15	+	methyl		1.790E+12	0.29685	71.208 0.0 0.0 0.0
+
+	
+ChaeM26	+	methyl	=	ChaeR27	+	methane		1.209E+13	0.21989	5.688 0.0 0.0 0.0
+
+	
+//ChaeR27	+	methane	=	ChaeM26	+	methyl		5.013E+13	0.28842	53.105 0.0 0.0 0.0
+
+	
+ChaeR27	+	methane	=	toluene	+	methyl		8.112E+12	0.32867	27.171 0.0 0.0 0.0
+
+	
+//toluene	+	methyl	=	ChaeR27	+	methane		5.949E+11	0.29221	10.547 0.0 0.0 0.0
+
+	
+ChaeR12	=	ChaeR33	+	ethene		1.258E+15	-0.30286	30.969 0.0 0.0 0.0
+
+	
+//ChaeR33	+	ethene	=	ChaeR12		6.522E+12	-0.31250	12.526 0.0 0.0 0.0
+
+	
+ChaeR33	=	ChaeR34	+	ethene		2.615E+14	-0.24370	22.478 0.0 0.0 0.0
+
+	
+//ChaeR34	+	ethene	=	ChaeR33		5.852E+12	-0.21731	20.240 0.0 0.0 0.0
+
+	
+ChaeR34	+	methyl	=	ChaeM35	+	methane		1.622E+11	0.16830	7.877 0.0 0.0 0.0
+
+	
+//ChaeM35	+	methane	=	ChaeR34	+	methyl		4.161E+12	0.32652	61.592 0.0 0.0 0.0
+
+	
+ChaeM35	+	methyl	=	ChaeR36	+	methane		5.007E+12	0.25421	7.230 0.0 0.0 0.0
+
+	
+//ChaeR36	+	methane	=	ChaeM35	+	methyl		1.480E+13	0.28425	40.368 0.0 0.0 0.0
+
+	
+ChaeR36	+	methyl	=	benzene	+	methane		1.504E+11	0.12669	7.600 0.0 0.0 0.0
+
+	
+//benzene	+	methane	=	ChaeR36	+	methyl		2.425E+13	0.33921	87.937 0.0 0.0 0.0
+
+	
+ChaeR33	+	methyl	=	ChaeM44	+	methane		1.944E+10	0.14242	9.409 0.0 0.0 0.0
+
+	
+//ChaeM44	+	methane	=	ChaeR33	+	methyl		7.473E+11	0.33513	77.772 0.0 0.0 0.0
+
+	
+ChaeM44	+	methyl	=	ChaeR45	+	methane		5.392E+11	0.31820	14.351 0.0 0.0 0.0
+
+	
+//ChaeR45	+	methane	=	ChaeM44	+	methyl		4.671E+11	0.33086	21.238 0.0 0.0 0.0
+
+	
+ChaeR45	+	methyl	=	ChaeM46	+	methane		9.172E+10	0.12427	10.837 0.0 0.0 0.0
+
+	
+//ChaeM46	+	methane	=	ChaeR45	+	methyl		2.574E+12	0.29891	80.142 0.0 0.0 0.0
+
+	
+ChaeM46	+	methyl	=	ChaeR47	+	methane		3.511E+12	0.24637	8.072 0.0 0.0 0.0
+
+	
+//ChaeR47	+	methane	=	ChaeM46	+	methyl		1.091E+13	0.29287	40.915 0.0 0.0 0.0
+
+	
+ChaeR47	+	methyl	=	styrene	+	methane		5.865E+10	0.12088	7.044 0.0 0.0 0.0
+
+	
+//styrene	+	methane	=	ChaeR47	+	methyl		1.701E+12	0.32594	94.300 0.0 0.0 0.0
+
+	
+ChaeR45	=	ChaeM35	+	vinyl		6.387E+14	-0.16959	35.557 0.0 0.0 0.0
+
+	
+//ChaeM35	+	vinyl	=	ChaeR45		8.166E+12	-0.17896	7.300 0.0 0.0 0.0
+
+	
+ChaeR33	+	methane	=	ChaeM64	+	methyl		7.281E+11	0.32328	20.925 0.0 0.0 0.0
+
+	
+//ChaeM64	+	methyl	=	ChaeR33	+	methane		2.380E+12	0.32214	15.476 0.0 0.0 0.0
+
+	
+ChaeM64	+	methyl	=	ChaeR65	+	methane		6.431E+11	0.31917	14.551 0.0 0.0 0.0
+
+	
+//ChaeR65	+	methane	=	ChaeM64	+	methyl		5.307E+11	0.33619	22.827 0.0 0.0 0.0
+
+	
+ChaeR65	+	methyl	=	ChaeM66	+	methane		9.978E+10	0.12523	11.032 0.0 0.0 0.0
+
+	
+//ChaeM66	+	methane	=	ChaeR65	+	methyl		2.252E+12	0.29925	80.350 0.0 0.0 0.0
+
+	
+ChaeM66	+	methyl	=	ChaeR67	+	methane		2.668E+12	0.24728	8.345 0.0 0.0 0.0
+
+	
+//ChaeR67	+	methane	=	ChaeM66	+	methyl		8.563E+12	0.29549	41.439 0.0 0.0 0.0
+
+	
+ChaeR67	+	methyl	=	ethylB	+	methane		3.606E+10	0.11008	7.727 0.0 0.0 0.0
+
+	
+//ethylB	+	methane	=	ChaeR67	+	methyl		1.131E+12	0.30724	91.139 0.0 0.0 0.0
+
+	
+decaJ	=	ChaeR72		1.230E+15	-0.29374	35.373 0.0 0.0 0.0
+
+	
+//ChaeR72	=	decaJ		3.660E+12	-0.35229	12.968 0.0 0.0 0.0
+
+	
+ChaeR72	=	ChaeR73	+	ethene		2.140E+15	-0.31624	29.340 0.0 0.0 0.0
+
+	
+//ChaeR73	+	ethene	=	ChaeR72		6.552E+12	-0.31085	13.682 0.0 0.0 0.0
+
+	
+ChaeR73	=	ChaeM74	+	vinyl		1.223E+15	-0.20230	35.498 0.0 0.0 0.0
+
+	
+//ChaeM74	+	vinyl	=	ChaeR73		2.343E+13	-0.21973	8.899 0.0 0.0 0.0
+
+	
+ChaeM74	+	methyl	=	ChaeR75	+	methane		2.252E+12	0.31905	12.848 0.0 0.0 0.0
+
+	
+//ChaeR75	+	methane	=	ChaeM74	+	methyl		1.037E+12	0.32647	21.414 0.0 0.0 0.0
+
+	
+ChaeR75	+	methyl	=	ChaeM76	+	methane		1.045E+11	0.12735	10.084 0.0 0.0 0.0
+
+	
+//ChaeM76	+	methane	=	ChaeR75	+	methyl		9.816E+12	0.30235	79.271 0.0 0.0 0.0
+
+	
+ChaeM76	+	methyl	=	ChaeR36	+	methane		1.156E+13	0.28685	40.550 0.0 0.0 0.0
+
+	
+//ChaeR36	+	methane	=	ChaeM76	+	methyl		2.126E+13	0.28685	40.550 0.0 0.0 0.0
+
+//reaction below commented out because duplicate reaction!!!	
+//ChaeR36	+	methyl	=	benzene	+	methane		1.862E+11	0.09502	7.597 0.0 0.0 0.0
+
+	
+//benzene	+	methane	=	ChaeR36	+	methyl		3.072E+12	0.30608	87.943 0.0 0.0 0.0
+
+	
+ChaeR73	+	methyl	=	ChaeM44	+ methane	8.925E+10	0.13348	9.888 0.0 0.0 0.0
+
+	
+//ChaeM44	+ methane =	ChaeR73	+	methyl		5.123E+12	0.30551	81.611 0.0 0.0 0.0
+
+	
+ChaeR72	+	methane	=	ChaeM93	+	methyl		9.828E+11	0.32043	22.465 0.0 0.0 0.0
+
+	
+//ChaeM93	+	methyl	=	ChaeR72	+	methane		1.929E+12	0.31914	16.423 0.0 0.0 0.0
+
+	
+ChaeM93	+	methyl	=	ChaeR94	+	methane		3.366E+11	0.30187	14.748 0.0 0.0 0.0
+
+	
+//ChaeR94	+	methane	=	ChaeM93	+	methyl		5.333E+10	0.32231	29.016 0.0 0.0 0.0
+
+	
+ChaeR94	=	ChaeM95	+	vinyl		9.315E+14	-0.28587	34.885 0.0 0.0 0.0
+
+	
+//ChaeM95	+	vinyl	=	ChaeR94		1.160E+13	-0.30492	8.339 0.0 0.0 0.0
+
+	
+ChaeM95	+	methyl	=	ChaeR96	+	methane		1.212E+12	0.31916	13.944 0.0 0.0 0.0
+
+	
+//ChaeR96	+	methane	=	ChaeM95	+	methyl		1.116E+12	0.32493	22.595 0.0 0.0 0.0
+
+	
+ChaeR96	+	methyl	=	ChaeM97	+	methane		1.056E+11	0.12633	11.008 0.0 0.0 0.0
+
+	
+//ChaeM97	+	methane	=	ChaeR96	+	methyl		1.780E+12	0.30174	80.186 0.0 0.0 0.0
+
+	
+ChaeM97	+	methyl	=	ChaeR98	+	methane		2.726E+12	0.24500	8.347 0.0 0.0 0.0
+
+	
+//ChaeR98	+	methane	=	ChaeM97	+	methyl		1.289E+13	0.28117	42.056 0.0 0.0 0.0
+
+	
+ChaeR98	+	methyl	=	ethylB	+	methane		9.406E+10	0.10393	6.879 0.0 0.0 0.0
+
+	
+//ethylB	+	methane	=	ChaeR98	+	methyl		1.243E+12	0.31491	85.379 0.0 0.0 0.0
+
+	
+decalin	+	methyl	=	ChaeR101	+	methane		7.010E+12	0.31069	14.809 0.0 0.0 0.0
+
+	
+//ChaeR101	+	methane	=	decalin	+	methyl		1.317E+12	0.23602	22.891 0.0 0.0 0.0
+
+	
+ChaeR101	=	ChaeR102		9.051E+14	-0.30982	37.467 0.0 0.0 0.0
+
+	
+//ChaeR102	=	decalin		5.010E+12	-0.36605	14.671 0.0 0.0 0.0
+
+	
+ChaeR102	+	methane	=	ChaeM103	+	methyl		7.004E+11	0.33509	22.203 0.0 0.0 0.0
+
+	
+//ChaeM103	+	methyl	=	ChaeR102	+	methane		1.478E+12	0.32234	16.640 0.0 0.0 0.0
+
+	
+ChaeM103	+	methyl	=	ChaeR104	+	methane		4.661E+11	0.29960	13.529 0.0 0.0 0.0
+
+	
+//ChaeR104	+	methane	=	ChaeM103	+	methyl		2.073E+11	0.31290	27.250 0.0 0.0 0.0
+
+	
+ChaeR104	=	ChaeM105	+	allyl		4.730E+14	-0.30610	17.813 0.0 0.0 0.0
+
+	
+//ChaeM105	+	allyl	=	ChaeR104		6.124E+12	-0.30189	20.451 0.0 0.0 0.0
+
+	
+ChaeM105	+	methyl	=	ChaeR106	+	methane		1.246E+12	0.31506	13.448 0.0 0.0 0.0
+
+	
+//ChaeR106	+	methane	=	ChaeM105	+	methyl		1.080E+12	0.32187	22.030 0.0 0.0 0.0
+
+	
+ChaeR106	+	methyl	=	ChaeM107	+	methane		1.152E+11	0.12698	10.410 0.0 0.0 0.0
+
+	
+//ChaeM107	+	methane	=	ChaeR106	+	methyl		2.844E+12	0.30224	79.772 0.0 0.0 0.0
+
+	
+ChaeM107	+	methyl	=	ChaeR108	+	methane		5.596E+12	0.24484	7.807 0.0 0.0 0.0
+
+	
+//ChaeR108	+	methane	=	ChaeM107	+	methyl		1.822E+13	0.28487	41.521 0.0 0.0 0.0
+
+	
+ChaeR108	+	methyl	=	toluene	+	methane		1.691E+11	0.07343	6.461 0.0 0.0 0.0
+
+	
+//toluene	+	methane	=	ChaeR108	+	methyl		8.630E+11	0.28355	85.313 0.0 0.0 0.0
+
+	
+ChaeR101	=	ChaeR112		4.693E+14	-0.31601	34.643 0.0 0.0 0.0
+
+	
+//ChaeR112	=	ChaeR101		1.278E+12	-0.37025	16.768 0.0 0.0 0.0
+
+	
+ChaeR112	=	ChaeM74	+	butenyl		7.389E+14	-0.29418	28.952 0.0 0.0 0.0
+
+	
+//ChaeM74	+	butenyl	=	ChaeR112		1.079E+12	-0.30405	15.776 0.0 0.0 0.0
+
+	
+decalin	+	methyl	=	ChaeR121	+	methane		7.190E+11	0.29892	13.521 0.0 0.0 0.0
+
+//ChaeR121	+	methane 	= decalin	+	methyl				1.183E+12	0.32814	28.233 0.0 0.0 0.0
+
+	
+//ChaeR121	+	methane	=	decaJ	+	methyl		1.183E+12	0.32814	28.233 0.0 0.0 0.0
+
+	
+ChaeR121	=	ChaeR122		2.189E+15	-0.28067	34.037 0.0 0.0 0.0
+
+	
+//ChaeR122	=	ChaeR121		1.598E+12	-0.34842	11.984 0.0 0.0 0.0
+
+	
+ChaeR122	=	ChaeR123	+	ethene		1.291E+15	-0.30703	31.135 0.0 0.0 0.0
+
+	
+//ChaeR123	+	ethene	=	ChaeR122		1.599E+13	-0.32284	12.849 0.0 0.0 0.0
+
+	
+ChaeR123	+	methane	=	ChaeM124	+	methyl		6.154E+11	0.32422	20.946 0.0 0.0 0.0
+
+	
+//ChaeM124	+	methyl	=	ChaeR123	+	methane		2.057E+12	0.32235	15.472 0.0 0.0 0.0
+
+	
+ChaeM124	+	methyl	=	ChaeR125	+	methane		5.616E+11	0.30409	12.815 0.0 0.0 0.0
+
+	
+//ChaeR125	+	methane	=	ChaeM124	+	methyl		1.469E+11	0.32753	38.256 0.0 0.0 0.0
+
+	
+ChaeR125	+	methyl	=	ChaeM126	+	methane		5.769E+11	0.12463	14.339 0.0 0.0 0.0
+
+	
+//ChaeM126	+	methane	=	ChaeR125	+	methyl		5.271E+12	0.29789	73.238 0.0 0.0 0.0
+
+	
+ChaeM126	+	methyl	=	ChaeR127	+	methane		2.229E+12	0.28517	10.742 0.0 0.0 0.0
+
+	
+//ChaeR127	+	methane	=	ChaeM126	+	methyl		4.000E+12	0.30076	31.162 0.0 0.0 0.0
+
+	
+ChaeR127	+	methyl	=	ChaeM128	+	methane		9.545E+10	0.12968	9.392 0.0 0.0 0.0
+
+	
+//ChaeM128	+	methane	=	ChaeR127	+	methyl		1.702E+12	0.29818	71.538 0.0 0.0 0.0
+
+	
+ChaeM128	+	methyl	=	ChaeR129	+	methane		4.134E+12	0.21851	6.263 0.0 0.0 0.0
+
+	
+//ChaeR129	+	methane	=	ChaeM128	+	methyl		1.377E+13	0.28536	53.399 0.0 0.0 0.0
+
+	
+ChaeR129	+	methane	=	xylene	+	methyl		8.226E+12	0.33200	28.119 0.0 0.0 0.0
+
+	
+//xylene	+	methyl	=	ChaeR129	+	methane		4.944E+12	0.29090	11.434 0.0 0.0 0.0
+
+	
+ChaeR122	+	methane	=	ChaeM133	+	methyl		5.154E+11	0.32096	21.867 0.0 0.0 0.0
+
+	
+//ChaeM133	+	methyl	=	ChaeR122	+	methane		1.457E+12	0.31932	16.387 0.0 0.0 0.0
+
+	
+ChaeM133	+	methyl	=	ChaeR134	+	methane		5.245E+11	0.31123	14.855 0.0 0.0 0.0
+
+	
+//ChaeR134	+	methane	=	ChaeM133	+	methyl		3.129E+11	0.33032	23.229 0.0 0.0 0.0
+
+	
+ChaeR134	=	ChaeM14	+	propyl		1.260E+15	-0.28112	25.478 0.0 0.0 0.0
+
+	
+//ChaeM14	+	propyl	=	ChaeR134		9.701E+11	-0.29149	15.457 0.0 0.0 0.0
+
+	

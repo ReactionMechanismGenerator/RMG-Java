@@ -1,0 +1,13 @@
+//gmagoon 06/11/10; cf. e-mail from Bill
+//CH2 assumed to be singlet (Glass 2000 paper suggests about 92% goes to singlet at room temperature in H+CHCO->CH2+CO); in any case, Ben's simulations suggest that changing multiplicity of CH2 in H+CHCO->CH2+CO does not have a significant effect on results 
+
+Unit:
+A: mol/cm3/s
+E: cal/mol
+
+Reactions:
+//taken from H+CHCO->CH2+CO (as per Bill's e-mail); value for this reaction is taken from Baulch et al. value which cites Frank Bhaskaran, and Just at 21st Combustion Symposium; kinetics.nist.gov has similar value over a wider temperature range (http://kinetics.nist.gov/kinetics/Detail?id=1988FRA/BHA885:5), citing 1988 work by the same people 
+H + CHCO = CH2CO		1.51E14	0.0	0.0	0.0	0.0	0.0 
+//taken from k_inf in GRI-Mech for CH2 + CO (+M) -> CH2CO (+M), which references the following:  Wagner, H.Gg., and Zabel, F. (1971) Ber. Bunsenges. Phys. Chem. 71, 114. and Frank, P., Bhaskaran, K.A., and Just, T. (1986) J. Phys. Chem. 90, 2226. 
+CH2(S) + CO = CH2CO	8.10E11	0.5	4510	0.0	0.0	0.0 
+

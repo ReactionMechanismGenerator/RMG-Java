@@ -1,0 +1,40 @@
+//Kinetics from:
+//The Peculiar Kinetics of the Reaction between Acetylene and the Cyclopentadienyl Radical 
+//Simone Fascella, Carlo Cavallotti,* Renato Rota,* and Sergio Carra`
+//Politecnico di Milano, Dipartimento di Chimica, Materiali e Ingegneria Chimica “G. Natta” / CIIRCO
+//J. Phys. Chem. A 2005, 109, 7546-7557
+
+Unit:
+A: mol/cm3/s
+E: kcal/mol
+
+//a Kinetic parameters are reported in units consistent with kcal, s, mol, and cm. All calculations were performed both at the 
+//G2MP2* levels of theory. The rate coefficients of the backward reactions were determined through thermodynamic consistence.
+
+Reactions: 
+cC5H5 +	ethyne	= C7H71		3.20E+11	0	13.3	   0.0	0.0	0.0
+//C7H71	=	cC5H5 +	ethyne	4.20E+15	-1	19.5	   0.0	0.0	0.0	   
+							   
+C7H71	=	C7H7c4			3.10E+12	0	13.2	   0.0	0.0	0.0
+//cC7H7c4	=	C7H71			1.60E+13	0	28.7	  	   0.0	0.0	0.0 
+							   
+C7H7c4	=	cC7H7				1.40E+13	0	26.6	   	   0.0	0.0	0.0
+//cC7H7		= C7H7c4				2.70E+13	0	52.9	   	   0.0	0.0	0.0
+							   
+cC7H7	+ ethyne = 	C9H91				1.20E+12	0	20.1	   	   0.0	0.0	0.0
+//C9H91	=	cC7H7 +	ethyne		7.50E+15	-1	20.1	   	   0.0	0.0	0.0
+							   
+C9H91	=	C9H9c4				6.70E+12	0	17.1	   	   0.0	0.0	0.0
+//C9H9c4	=	C9H91				1.80E+13	0	31.9	   	   0.0	0.0	0.0
+							   
+C9H9c4 =		cC9H9				1.30E+13	0	23.5	   	   0.0	0.0	0.0
+//cC9H9	 =	C9H9c4				2.40E+11	0	25.6	   	   0.0	0.0	0.0
+							   
+cC9H9	=	C9H9c5				1.10E+11	0	26.8	   	   0.0	0.0	0.0
+//C9H9c5 =		cC9H9				7.70E+12	0	40.5	   	   0.0	0.0	0.0
+							   
+C9H9c5	=	C9H9c5_T			5.90E+12	0	33.6	   	   0.0	0.0	0.0
+//C9H9c5_T	=	C9H9c5			4.10E+12	0	47.8	   	   0.0	0.0	0.0
+							   
+C9H9c5_T	=	indene +	H		4.50E+12	0	23.7	   	   0.0	0.0	0.0
+//indene +	H	= C9H9c5_T			5.50E+12	0	11.6	 	   0.0	0.0	0.0

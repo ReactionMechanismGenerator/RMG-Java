@@ -1,0 +1,23 @@
+JP10R4 		27.0		90.1825			36.9205			52.0895			65.484			76.499			92.972			104.575			121.855			0.0	0.0	0.0	"Hudzik et al. 2010 using CBS-QB3/G3MP2B3 for Hf298"
+JP10R5		26.4		88.3615			36.8055			52.025			65.435			76.4515			92.915			104.511			121.7965		0.0	0.0	0.0	"Hudzik et al. 2010 using CBS-QB3/G3MP2B3 for Hf298"
+JP10R6		28.5		88.05			36.353			51.525			64.954			76.022			92.601			104.288			121.693			0.0	0.0	0.0	"Hudzik et al. 2010 using CBS-QB3/G3MP2B3 for Hf298"
+JP10R7		35.7		86.827			36.066			51.301			64.763			75.848			92.443			104.140			121.580			0.0	0.0	0.0	"Hudzik et al. 2010 using CBS-QB3/G3MP2B3 for Hf298"
+JP10R8		27.1		87.394			36.889			52.130			65.5255			76.519			92.941			104.510			121.775			0.0	0.0	0.0	"Hudzik et al. 2010 using CBS-QB3/G3MP2B3 for Hf298"
+JP10R10		32.5		87.9715			36.766			51.993			65.394			76.396			92.8305			104.411			121.703			0.0	0.0	0.0	"Hudzik et al. 2010 using CBS-QB3/G3MP2B3 for Hf298"
+BR1		57.41		106.36			39.6			55.17			68.25			79.29			96.23			107.93			126.63			0.0	0.0	0.0	"gmagoon 072909: BR species taken from Herbinet et al. paper...may eventually replace with CBS-QB3 results for triplet (Hf0) and unrestricted Singlet (S, Cp, Hf298-Hf0) with CASSCF correction for Hf0 (ZPE considerations needed also?)
+BR2		61.79		98.37			40.88			57.71			71.78			83.99			102.88			115.56			134.73			0.0	0.0	0.0
+BR3		67.49		106.03			39.92			55.95			69.87			81.39			99.04			111.64			131.36			0.0	0.0	0.0
+BR4		67.39		103.59			40.14			56.34			70.25			81.60			99.14			111.60			131.31			0.0	0.0	0.0
+BR5		67.80		106.61			44.96			60.61			73.85			84.79			101.37			113.10			127.51			0.0	0.0	0.0
+BR6		72.21		105.65			41.65			56.72			69.57			79.96			96.32			107.79			124.91			0.0	0.0	0.0
+BR7 		68.14		105.56			45.17			60.99			74.23			85.00			101.47			113.06			127.46			0.0	0.0	0.0
+MA110		-0.74		102.69			40.02			55.40			68.62			79.87			97.35			109.55			128.26			0.0	0.0	0.0
+JP10		-19.5           85.39			36.142			51.917			65.987			77.67			95.158			107.552			126.069			0.0	0.0	0.0	"Hudzik et al. 2010 using CBS-QB3/G3MP2B3 for Hf298"
+CPDYL		63.7		64.0			18.1			23.9			28.6			32.3			37.6			41.3			46.9			0.0	0.0	0.0	Sharma and Green, JPCA 113, 8871
+MCPDYL		53.3		77.1			23.4			30.6			36.7			41.6			48.9			54.1			61.9			0.0	0.0	0.0	Sharma and Green, JPCA 113, 8871 (R2)
+FULVENE		52.7		70.2			21.7			28.8			34.6			39.3			46.1			50.8			57.9			0.0	0.0	0.0	Sharma and Green, JPCA 113, 8871
+YMN		78.84		87.29			31.80			40.94			48.37			54.39			63.24			69.21		78.20	 0.0 0.0 0.0  Supplementary therm.dat file associated with Sharma, Harper, and Green, 2010, Combustion and Flame
+C5H5orig        96.41           68.21                   17.58                   23.39                   28.28                   32.18        37.89        41.84        47.72 0.0 0.0 0.0 CBS-QB3 calculation processed in Cantherm (fixed version as of Jan. 24, 2012) by gmagoon
+C5H5new         95.88           68.01                   17.62                   23.47                   28.36                   32.26        37.94        41.89        47.74 0.0 0.0 0.0 CBS-QB3 calculation processed in Cantherm (fixed version as of Jan. 24, 2012) by gmagoon; differs significantly (Hf298 is about 16 kcal/mol higher) than the QMTP-based HBI result, apparently mainly due to inaccurate HBI value 
+cyclopentene   8.7        69.41        19.56        26.79        33.22        38.57        46.73        52.57        61.31 0.0 0.0 0.0 Benson GA values (assumed to be more reliable than QMTP since this includes ring correction specific to cyclopentene)
+
