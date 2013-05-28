@@ -478,73 +478,73 @@ Union {Od_Cds, Od_Cdd}
 
 Od_Cds
 1 *1 Od 0 {2,D}
-2 *2 Cd 0 {1,D} {3,S} {4,S}
+2 *2 CO 0 {1,D} {3,S} {4,S}
 3 R 0 {2,S}
 4 R 0 {2,S}
 
 Od_Cd/unsub
 1 *1 Od 0 {2,D}
-2 *2 Cd 0 {1,D} {3,S} {4,S}
+2 *2 CO 0 {1,D} {3,S} {4,S}
 3 H 0 {2,S}
 4 H 0 {2,S}
 
 Od_Cd/monosub
 1 *1 Od 0 {2,D}
-2 *2 Cd 0 {1,D} {3,S} {4,S}
+2 *2 CO 0 {1,D} {3,S} {4,S}
 3 H 0 {2,S}
 4 {R!H} 0 {2,S}
 
 Od_Cd/H/Nd
 1 *1 Od 0 {2,D}
-2 *2 Cd 0 {1,D} {3,S} {4,S}
+2 *2 CO 0 {1,D} {3,S} {4,S}
 3 H 0 {2,S}
 4 {Cs,O,S} 0 {2,S}
 
 Od_Cd/H/Os
 1 *1 Od 0 {2,D}
-2 *2 Cd 0 {1,D} {3,S} {4,S}
+2 *2 CO 0 {1,D} {3,S} {4,S}
 3 H 0 {2,S}
 4 O 0 {2,S}
 
 Od_Cd/H/De
 1 *1 Od 0 {2,D}
-2 *2 Cd 0 {1,D} {3,S} {4,S}
+2 *2 CO 0 {1,D} {3,S} {4,S}
 3 H 0 {2,S}
 4 {Cd,Ct,Cb,CO} 0 {2,S}
 
 Od_Cd/H/Cb      
 1 *1 Od 0 {2,D}
-2 *2 Cd 0 {1,D} {3,S} {4,S}
+2 *2 CO 0 {1,D} {3,S} {4,S}
 3 H 0 {2,S}                  
 4 Cb 0 {2,S}
 
 Od_Cd/disub
 1 *1 Od 0 {2,D}
-2 *2 Cd 0 {1,D} {3,S} {4,S}
+2 *2 CO 0 {1,D} {3,S} {4,S}
 3 {R!H} 0 {2,S}
 4 {R!H} 0 {2,S}
 
 Od_Cd/Nd2
 1 *1 Od 0 {2,D}
-2 *2 Cd 0 {1,D} {3,S} {4,S}
+2 *2 CO 0 {1,D} {3,S} {4,S}
 3 {Cs,O,S} 0 {2,S}
 4 {Cs,O,S} 0 {2,S}
 
 Od_Cd/Nd/De
 1 *1 Od 0 {2,D}
-2 *2 Cd 0 {1,D} {3,S} {4,S}
+2 *2 CO 0 {1,D} {3,S} {4,S}
 3 {Cs,O,S} 0 {2,S}
 4 {Cd,Ct,Cb,CO} 0 {2,S}
 
 Od_Cd/De2
 1 *1 Od 0 {2,D}
-2 *2 Cd 0 {1,D} {3,S} {4,S}
+2 *2 CO 0 {1,D} {3,S} {4,S}
 3 {Cd,Ct,Cb,CO} 0 {2,S}
 4 {Cd,Ct,Cb,CO} 0 {2,S}
 
 Od_Cdd
 1 *1 Od 0 {2,D}
-2 *2 Cd 0 {1,D} {3,D}
+2 *2 CO 0 {1,D} {3,D}
 3 R 0 {2,D}
 
 Sd_Cd
