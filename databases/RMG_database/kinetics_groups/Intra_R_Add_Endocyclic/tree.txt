@@ -39,10 +39,12 @@ L1: Rn
             L4: R5_SD_D
             L4: R5_SD_T
             L4: R5_SD_CO
+	    L4: R5_SD_CS
         L3: R5_DS
             L4: R5_DS_D
             L4: R5_DS_T
             L4: R5_DS_CO
+	    L4: R5_DS_CS
         L3: R5_DS_allenic
             L4: R5_DS_allenic_D
             L4: R5_DS_allenic_CO
