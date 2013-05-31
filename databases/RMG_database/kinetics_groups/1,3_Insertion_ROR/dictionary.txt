@@ -544,6 +544,18 @@ Sd_Cd/Nd2
 3 {Cs,O,S} 0 {2,S}
 4 {Cs,O,S} 0 {2,S}
 
+Sd_Cd/CsCs
+1 *1 Sd 0 {2,D}
+2 *2 Cd 0 {1,D} {3,S} {4,S}
+3 Cs 0 {2,S}
+4 Cs 0 {2,S}
+
+Sd_Cd/CsOs
+1 *1 Sd 0 {2,D}
+2 *2 Cd 0 {1,D} {3,S} {4,S}
+3 Cs 0 {2,S}
+4 O 0 {2,S}
+
 Sd_Cd/Nd/De
 1 *1 Sd 0 {2,D}
 2 *2 Cd 0 {1,D} {3,S} {4,S}
@@ -560,6 +572,16 @@ Sd_Cdd
 1 *1 Sd 0 {2,D}
 2 *2 Cd 0 {1,D} {3,D}
 3 R 0 {2,D}
+
+Sd_Cdd/Cd
+1 *1 Sd 0 {2,D}        
+2 *2 Cd 0 {1,D} {3,D}       
+3 Cd 0 {2,D}
+
+Sd_Cdd/Od
+1 *1 Sd 0 {2,D}        
+2 *2 Cd 0 {1,D} {3,D}       
+3 Od 0 {2,D}
 
 R_OR
 Union {H_OR,R_OH}
