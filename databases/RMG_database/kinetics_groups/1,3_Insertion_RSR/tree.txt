@@ -74,6 +74,8 @@ L1: doublebond
 		    L6: Od_Cd/H/Cb
             L4: Od_Cd/disub
                 L5: Od_Cd/Nd2
+			L6: Od_Cd/CsCs
+			L6: Od_Cd/CsOs
                 L5: Od_Cd/Nd/De
                 L5: Od_Cd/De2
         L3: Od_Cdd

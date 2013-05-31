@@ -530,6 +530,18 @@ Od_Cd/Nd2
 3 {Cs,O,S} 0 {2,S}
 4 {Cs,O,S} 0 {2,S}
 
+Od_Cd/CsCs
+1 *1 Od 0 {2,D}
+2 *2 CO 0 {1,D} {3,S} {4,S}
+3 Cs 0 {2,S}
+4 Cs 0 {2,S}
+
+Od_Cd/CsOs 
+1 *1 Od 0 {2,D}
+2 *2 CO 0 {1,D} {3,S} {4,S}
+3 Cs 0 {2,S}
+4 O 0 {2,S}
+
 Od_Cd/Nd/De
 1 *1 Od 0 {2,D}
 2 *2 CO 0 {1,D} {3,S} {4,S}
