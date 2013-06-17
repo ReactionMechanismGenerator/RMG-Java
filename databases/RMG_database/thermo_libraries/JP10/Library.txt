@@ -20,4 +20,7 @@ YMN		78.84		87.29			31.80			40.94			48.37			54.39			63.24			69.21		78.20	 0.0 0.
 C5H5orig        96.41           68.21                   17.58                   23.39                   28.28                   32.18        37.89        41.84        47.72 0.0 0.0 0.0 CBS-QB3 calculation processed in Cantherm (fixed version as of Jan. 24, 2012) by gmagoon
 C5H5new         95.88           68.01                   17.62                   23.47                   28.36                   32.26        37.94        41.89        47.74 0.0 0.0 0.0 CBS-QB3 calculation processed in Cantherm (fixed version as of Jan. 24, 2012) by gmagoon; differs significantly (Hf298 is about 16 kcal/mol higher) than the QMTP-based HBI result, apparently mainly due to inaccurate HBI value 
 cyclopentene   8.7        69.41        19.56        26.79        33.22        38.57        46.73        52.57        61.31 0.0 0.0 0.0 Benson GA values (assumed to be more reliable than QMTP since this includes ring correction specific to cyclopentene)
-
+BRad	24.83	86.514	28.861	37.431	44.585	50.302	58.654	64.436	72.973	77.229	0.0 0.0 0.0	de Silva and Bozzelli, J. Phys. Chem. A 2009, 113, 6979–6986
+BZO	30.0	84.346	28.155	36.528	43.689	49.508	58.104	64.068	72.823	77.154	0.0 0.0 0.0	de Silva and Bozzelli, J. Phys. Chem. A 2009, 113, 6979–6986
+BZA	-9.51	 79.030	26.042	34.048	40.952	46.602	54.965	60.701	68.818	72.612	0.0 0.0 0.0	de Silva and Bozzelli, J. Phys. Chem. A 2009, 113, 6979–6986
+C5H5yl	91.996	31.293	22.284	27.017	30.795	33.812	38.254	41.567	46.677	49.722	0.0 0.0 0.0 Burcat database http://garfield.chem.elte.hu/Burcat/BURCAT.THR

@@ -476,5 +476,5 @@ C5H7VIN = C5H7_125p             2.0E13 0.0 33.0 0.0 0.0 0.0
 C5H7_125p = C2H4 + H2CCCH   2.0E13 0.0 22.5 0.0 0.0 0.0
 
 //NIST/Senosiain, J.P; Klippenstein, S.J,; Miller, J.A. "Pathways and rate coefficients for the decomposition of vinoxy and acetyl radicals" 2000
-CH2CO + H = CH3CO                        2.21E12      1.61     2.63    0.0    0.0   0.0
+CH2CO + H = CH3CO                        2.30E8      1.61     2.63    0.0    0.0   0.0
 
