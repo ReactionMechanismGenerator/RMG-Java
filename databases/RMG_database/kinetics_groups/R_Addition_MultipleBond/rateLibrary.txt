@@ -151,6 +151,20 @@ Arrhenius_EP
 419.  CO/H2_O   O_rad/NonDeO  300-1600	4.245e-02	3.486	0	22.64 0		0		0	0		5
 420.  CO/Nd2_O   O_rad/NonDeO  300-1600	4.245e-02	3.486	0	22.64 0		0		0	0		5
 
+// Adding rate rules (421-429) for olefin + HO2 radical addition from 
+// Rate rules, Branching Ratios, and Pressure Dependence of the HO2+Olefin Addition Channels
+//  http://pubs.acs.org/doi/abs/10.1021/jp405262r
+// Using CBS-QB3 w/1D-HR calculations (Table 2) 
+421.  Cd/H2_Cd/H2     O_rad/NonDeO  400-1100  3.56E+1    3.22   0	11.1 0		0		0	0		2     pp, CBS-QB3 calculations, with hindered rotor treatment.
+422.  Cd/H2_Cd/H/Nd   O_rad/NonDeO  400-1100  7.91E+2    2.78   0	9.5  0		0		0	0		2     ps, CBS-QB3 calculations, with hindered rotor treatment.
+423.  Cd/H2_Cd/Nd2    O_rad/NonDeO  400-1100  1.35E+3    2.67   0	7.9  0		0		0	0		2     pt, CBS-QB3 calculations, with hindered rotor treatment.
+424.  Cd/H/Nd_Cd/H2   O_rad/NonDeO  400-1100  1.06E+1    3.29   0	9.1  0		0		0	0		2     sp, CBS-QB3 calculations, with hindered rotor treatment.
+425.  Cd/H/Nd_Cd/H/Nd O_rad/NonDeO  400-1100  4.62E+1    3.09   0	7.2  0		0		0	0		2	  ss , CBS-QB3 calculations, with hindered rotor treatment.
+426.  Cd/H/Nd_Cd/Nd2  O_rad/NonDeO  400-1100  1.86E+2    2.95   0	5.4  0		0		0	0		2     st, CBS-QB3 calculations, with hindered rotor treatment.
+427.  Cd/Nd2_Cd/H2    O_rad/NonDeO  400-1100  3.37E-1    3.67   0	7.2  0		0		0	0		2     tp, CBS-QB3 calculations, with hindered rotor treatment.
+428.  Cd/Nd2_Cd/H/Nd  O_rad/NonDeO  400-1100  1.72E-1    3.70   0	4.7  0		0		0	0		2     ts, CBS-QB3 calculations, with hindered rotor treatment. 
+429.  Cd/Nd2_Cd/Nd2   O_rad/NonDeO  400-1100  1.69       3.44   0	2.7  0		0		0	0		2     tt, CBS-QB3 calculations, with hindered rotor treatment.
+
 // Addition reactions involving S atoms
 2498	CS/H2_S	H_rad		300-1500	4.62E+08	1.7	0	0.6	0	0	0	0	4	Aäron Vandeputte GAVs 
 2499	CS/H2_S	C_methyl		300-1500	1.15E+04	2.8	0	-0.2	0	0	0	0	4	Aäron Vandeputte GAVs 
