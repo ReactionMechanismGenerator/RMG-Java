@@ -174,7 +174,7 @@ Arrhenius_EP
 431.  Cd/H2_Cd/H/Nd   C_methyl   300-2000  5.32E5       1.85   0	5.71  0		0		0	0		3
 432.  Cd/H2_Cd/H/Nd   C_rad/H2/Cs 300-2000  1.071e+03       2.72   0	8.24  0		0		0	0		3
 433.  Cd/H2_Cd/H/Nd   C_rad/H2/O  300-2000  1.381e+06       1.76   0	8.87  0		0		0	0		3
-434.  CO/H2_O         C_rad/H2/C  300-2000  1.201e+02       2.8   0	1.79  0		0		0	0		3 
+434.  CO/H2_O         C_rad/H2/Cs  300-2000  1.201e+02       2.8   0	1.79  0		0		0	0		3 
 435.  CO/H/Nd_O       H_rad       300-2000  9.6E9       0.935   0	4.17  0		0		0	0		3
 
 // Addition reactions involving S atoms
