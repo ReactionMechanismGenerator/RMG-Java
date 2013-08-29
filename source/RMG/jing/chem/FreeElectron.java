@@ -145,7 +145,9 @@ public class FreeElectron {
                 || (p_name.compareToIgnoreCase("MonoRadical") == 0)) {
             return "1";
         } else if ((p_name.equals("2"))
-                || (p_name.compareToIgnoreCase("DiRadical") == 0)) {
+                || (p_name.compareToIgnoreCase("DiRadical") == 0)
+                || (p_name.compareToIgnoreCase("2S,2T") == 0)
+                || (p_name.compareToIgnoreCase("2T,2S") == 0)) {
             return "2";
         } else if ((p_name.compareToIgnoreCase("2T") == 0)
                 || (p_name.compareToIgnoreCase("Triplet") == 0)) {
