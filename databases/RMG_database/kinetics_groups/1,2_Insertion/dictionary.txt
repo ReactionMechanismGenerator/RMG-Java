@@ -1,5 +1,13 @@
 //f11 : carbon monoxide insertion reaction (1,2-insertion) C.D.W. 01/29/03
 
+Y_birad
+Union{carbene,CO_birad}
+
+carbene
+1 *1 C 2S {2,S}, {3,S}
+2 H 0 {1,S}
+3 H 0 {1,S}
+
 CO_birad
 1 *1 C 2 {2,D}
 2    O 0 {1,D}
@@ -8,7 +16,7 @@ RR'
 Union {R_H,R_R'}
 
 R_H
-1 *2 {H,Cs,Cd,Cb,O,Sis,Sid} 0 {2,S}
+1 *2 {H,Cs,Cd,Cb,Ct,O,Sis,Sid} 0 {2,S}
 2 *3 H 0 {1,S}
 
 H2
@@ -56,6 +64,20 @@ C_pri/De
 3 H 0 {1,S}
 4 H 0 {1,S}
 5 {Cd,Ct,Cb,CO} 0 {1,S}
+
+C_pri/Ct
+1 *2 C 0 {2,S}, {3,S}, {4,S}, {5,S}
+2 *3 H 0 {1,S}
+3 H 0 {1,S}
+4 H 0 {1,S}
+5 Ct 0 {1,S}
+
+C_pri/Cd
+1 *2 C 0 {2,S}, {3,S}, {4,S}, {5,S}
+2 *3 H 0 {1,S}
+3 H 0 {1,S}
+4 H 0 {1,S}
+5 Cd 0 {1,S}
 
 C_sec
 1 *2 C 0 {2,S}, {3,S}, {4,S}, {5,S}
@@ -209,6 +231,14 @@ Cd_pri
 3 *3 H 0 {1,S}
 4 H 0 {1,S}
 
+ethene
+1 *2 C 0 {2,D}, {3,S}, {4,S}
+2 C 0 {1,D} {5,S} {6,S}
+3 *3 H 0 {1,S}
+4 H 0 {1,S}
+5 H 0 {2,S}
+6 H 0 {2,S}
+
 Cd_sec
 1 *2 C 0 {2,D}, {3,S}, {4,S}
 2 C 0 {1,D}
@@ -239,9 +269,19 @@ Cb_H
 3 {Cb,Cbf} 0 {1,B}
 4 *3 H 0 {1,S} 
 
+Ct_H
+1 *2 Ct 0 {2,S}
+2 *3 H 0 {1,S}
+
+acetylene
+1 *2 Ct 0 {2,S} {3,T}
+2 *3 H 0 {1,S}
+3 Ct 0 {1,T} {4,S}
+4 H 0 {3,S}
+
 R_R'
 1 *2 {Cs,Sis} 0 {2,S}, {3,S}, {4,S}, {5,S}
-2 *3 {Cs,Cd,Cb,Sis,Sid} 0 {1,S}
+2 *3 {Cs,Cd,Cb,Ct,Sis,Sid} 0 {1,S}
 3 H 0 {1,S}
 4 H 0 {1,S}
 5 H 0 {1,S}

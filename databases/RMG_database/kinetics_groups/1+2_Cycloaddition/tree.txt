@@ -21,7 +21,7 @@ L1: multiplebond
            L3: mb_db_unsub
            L3: mb_db_monosub
                L4: mb_db_monosub_Nd
-               L4: mb_db_monosub_De
+               L4: mb_db_monosub_De	
            L3: mb_db_onecdisub
                L4: mb_db_onecdisub_Nd
                L4: mb_db_onecdisub_oneDe
@@ -31,7 +31,7 @@ L1: multiplebond
                L4: mb_db_twocdisub_oneDe
                L4: mb_db_twocdisub_twoDe
            L3: mb_db_trisub
-	       L4: mb_db_trisub_Nd
+			   L4: mb_db_trisub_Nd
                L4: mb_db_trisub_oneMDe
                L4: mb_db_trisub_oneDDe
                L4: mb_db_trisub_onectwoDe
@@ -44,4 +44,12 @@ L1: multiplebond
                L4: mb_db_tetrasub_twoctwoDe
                L4: mb_db_tetrasub_threeDe
                L4: mb_db_tetrasub_fourDe
+			L3: mb_db_dbSub
+	 L2: mb_tb
+		   L3: mb_tb_unsub
+		   L3: mb_tb_monosub
+			   L4: mb_tb_monosub_Nd
+		   L3: mb_tb_disub
+			   L4: mb_tb_disub_twoNd
+	
  

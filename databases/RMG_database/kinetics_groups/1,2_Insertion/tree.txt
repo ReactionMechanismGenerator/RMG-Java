@@ -6,8 +6,12 @@
 // "Ketone" for this reaction family.  The other reactions seem not to be
 // favourable.Especially with CH2T and Oat it is not possible.  It has to be
 // singlet. I now feel it is not necessary.
+// note from nyee: I'm reinstating at least CH2(singlet) seeing as I have a paper with some of the rates. See rateLib for reference
 
-L1: CO_birad
+
+L1: Y_birad
+	L2: CO_birad
+	L2: carbene
 
 L1: RR'
 	L2: R_H
@@ -18,6 +22,8 @@ L1: RR'
 				L5: C_pri/NonDeC
 				L5: C_pri/NonDeO
 				L5: C_pri/De
+					L6: C_pri/Cd
+					L6: C_pri/Ct
 			L4: C_sec
 				L5: C/H2/NonDeC
 				L5: C/H2/NonDeO
@@ -40,6 +46,7 @@ L1: RR'
 				L5: C/H/ThreeDe
 	    L3: Cd_H
 			L4: Cd_pri
+				L5: ethene
 			L4: Cd_sec
 				L5: Cd/H/NonDeC
 				L5: Cd/H/NonDeO
@@ -47,6 +54,8 @@ L1: RR'
 	    L3: Cb_H
 	    L3: RO_H
                    L4: CsO_H	
+		L3: Ct_H
+			L4: acetylene
 	L2 : R_R'
 		L3: Cs_Cs
 			L4: C_methyl_C_methyl
