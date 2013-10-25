@@ -3,10 +3,8 @@
 CPD		31.26		65.50		18.23		24.76		30.15		34.59		41.25		45.81		52.50		0.0	0.0	0.0	"Zhong et al, " Thermochemical and Kinetic Analysis of the H, OH, HO2, O, and O2 Association Reactions with Cyclopentadienyl Radical" J phys Chem A, 1998" 
 CPDYL		57.17		63.58		17.86		24.30		29.47		33.58		39.46		43.26		48.68		0.0	0.0	0.0	"Zhong et al, " Thermochemical and Kinetic Analysis of the H, OH, HO2, O, and O2 Association Reactions with Cyclopentadienyl Radical" J phys Chem A, 1998"
 CYC5H7a	39.89		73.30		19.18		26.37		32.63		37.61		44.83		49.77		57.40		0.0	0.0	0.0	"Zhong et al "Thermochemical and Kinetic Analysis on the Addition Reactions of H, O, OH, and HO2 with 1,3 Cyclopentadiene", International Journal of Chemical Kinetics 1997"
-//Missing Cp1500
-//CYC5H5Oa	16.77		73.20		17.27		24.22		30.14		34.88		41.96		46.94				0.0	0.0	0.0	"Zhong et al "Thermochemical and Kinetic Analysis on the Addition Reactions of H, O, OH, and HO2 with 1,3 Cyclopentadiene", International Journal of Chemical Kinetics 1997"
-//Missing CP1500
-//CYC5H5Ob	23.14		75.73		20.84		27.24		32.35		36.29		42.39		46.69				0.0	0.0	0.0	"Zhong et al "Thermochemical and Kinetic Analysis on the Addition Reactions of H, O, OH, and HO2 with 1,3 Cyclopentadiene", International Journal of Chemical Kinetics 1997"
+CYC5H5Oa	16.77		73.20		17.27		24.22		30.14		34.88		41.96		46.94   53.69				0.0	0.0	0.0	"Zhong et al "Thermochemical and Kinetic Analysis on the Addition Reactions of H, O, OH, and HO2 with 1,3 Cyclopentadiene", International Journal of Chemical Kinetics 1997; Cp1500 estimated using GA"
+CYC5H5Ob	23.14		75.73		20.84		27.24		32.35		36.29		42.39		46.69   52.34				0.0	0.0	0.0	"Zhong et al "Thermochemical and Kinetic Analysis on the Addition Reactions of H, O, OH, and HO2 with 1,3 Cyclopentadiene", International Journal of Chemical Kinetics 1997, Cp1500 estimated using GA"
 PHENYL	80.70		70.66		19.03		25.46		30.83		35.11		41.49		45.98		53.14		0.0	0.0	0.0	"Zhong et al "Thermochemical and Kinetic Analysis on the Addition Reactions of H, O, OH, and HO2 with 1,3 Cyclopentadiene", International Journal of Chemical Kinetics 1997"	
 C6H6		19.80		64.25		19.53		26.69		32.68		37.67		45.30		50.60		58.17		0.0	0.0	0.0	"Zhong et al "Thermochemical and Kinetic Analysis on the Addition Reactions of H, O, OH, and HO2 with 1,3 Cyclopentadiene", International Journal of Chemical Kinetics 1997"
 CYC5H7b	54.17		73.68		18.06		24.46		30.12		35.18		42.98		48.12		56.11		0.0	0.0	0.0	"Zhong et al "Thermochemical and Kinetic Analysis on the Addition Reactions of H, O, OH, and HO2 with 1,3 Cyclopentadiene", International Journal of Chemical Kinetics 1997"
@@ -47,11 +45,11 @@ CYC5H6OHa	0.75		78.89		22.63		30.38		36.89		41.74		49.16		54.19		61.11		0.0	0.0	
 CYC5H6OHc	42.38		90.44		26.98		33.43		38.63		42.76		48.97		53.45		60.20		0.0	0.0	0.0	"Zhong et al "Thermochemical and Kinetic Analysis on the Addition Reactions of H, O, OH, and HO2 with 1,3 Cyclopentadiene", International Journal of Chemical Kinetics 1997"	
 C3H5O		3.69		70.64		17.14		20.93		24.38		27.40		32.21		35.67		40.80		0.0	0.0	0.0	"Zhong et al "Thermochemical and Kinetic Analysis on the Addition Reactions of H, O, OH, and HO2 with 1,3 Cyclopentadiene", International Journal of Chemical Kinetics 1997"
 
-//Missing Cp at 1500K
-//CPTOa		53.11		74.00		20.64		27.86		34.20		38.97		46.36		51.30
+CPTOa		53.11		74.00		20.64		27.86		34.20		38.97		46.36		51.30   59.10   0.0	0.0	0.0	"Zhong et al "Thermochemical and Kinetic Analysis on the Addition Reactions of H, O, OH, and HO2 with 1,3 Cyclopentadiene", International Journal of Chemical Kinetics 1997, CP1500 estimated by GA"
+// These lack Cp1500
 //C5H6O		36.08		84.84		23.49		30.05		35.58		40.06		46.78		51.41		
 //C5H5O		52.34		80.62		26.36		32.27		36.63		39.87		44.67		47.98					
-//CPTOOH		15.07		85.80		27.81		35.38		41.77		47.18		48.62		53.87	
-//CPTOO		19.10		85.92		26.34		33.44		39.50		44.83		52.36		58.13
-//CYC5H6O		7.93		67.20		19.81		28.05		34.66		39.12		46.67		51.65
+CPTOOH		15.07		85.80		27.81		35.38		41.77		47.18		48.62		53.87   69.48   0.0	0.0	0.0	"Zhong et al "Thermochemical and Kinetic Analysis on the Addition Reactions of H, O, OH, and HO2 with 1,3 Cyclopentadiene", International Journal of Chemical Kinetics 1997, CP1500 estimated by GA"
+CPTOO		19.10		85.92		26.34		33.44		39.50		44.83		52.36		58.13   67.65   0.0	0.0	0.0	"Zhong et al "Thermochemical and Kinetic Analysis on the Addition Reactions of H, O, OH, and HO2 with 1,3 Cyclopentadiene", International Journal of Chemical Kinetics 1997, CP1500 estimated by GA"
+CYC5H6O		7.93		67.20		19.81		28.05		34.66		39.12		46.67		51.65   60.73   0.0	0.0	0.0	"Zhong et al "Thermochemical and Kinetic Analysis on the Addition Reactions of H, O, OH, and HO2 with 1,3 Cyclopentadiene", International Journal of Chemical Kinetics 1997, CP1500 estimated by GA"
 		
