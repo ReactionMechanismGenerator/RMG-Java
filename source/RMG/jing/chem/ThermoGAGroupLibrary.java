@@ -548,6 +548,12 @@ public class ThermoGAGroupLibrary {
         try {
             polycylicTree = readStandardTree(polycyclicTree2,
                     polycyclicDictionary, 0);
+            if (polycylicTree == null) {
+                Logger.debug("Couldn't read polycylicTree starting at L0: node. Trying to read tree starting with L1: node");
+                polycylicTree = readStandardTree(polycyclicTree2, polycyclicDictionary, 1);
+                if (polycylicTree == null) 
+                    throw new RuntimeException("polycylicTree is null after reading.");
+            }
         } catch (Exception e) {
             Logger.logStackTrace(e);
             Logger.critical("Can't read polycylic tree file!");
@@ -609,6 +615,12 @@ public class ThermoGAGroupLibrary {
     public void readGroupTree(String p_fileName) {
         try {
             groupTree = readStandardTree(p_fileName, groupDictionary, 0);
+            if (groupTree == null) {
+                Logger.debug("Couldn't read groupTree starting at L0: node. Trying to read tree starting with L1: node");
+                groupTree = readStandardTree(p_fileName, groupDictionary, 1);
+                if (groupTree == null) 
+                    throw new RuntimeException("groupTree is null after reading.");
+            }
         } catch (Exception e) {
             Logger.logStackTrace(e);
             Logger.critical("Can't read thermo group tree file!");
@@ -645,6 +657,12 @@ public class ThermoGAGroupLibrary {
     public void readOtherTree(String p_fileName) {
         try {
             otherTree = readStandardTree(p_fileName, otherDictionary, 0);
+            if (otherTree == null) {
+                Logger.debug("Couldn't read otherTree starting at L0: node. Trying to read tree starting with L1: node");
+                otherTree = readStandardTree(p_fileName, otherDictionary, 1);
+                if (otherTree == null) 
+                    throw new RuntimeException("otherTree is null after reading.");
+            }
         } catch (Exception e) {
             Logger.logStackTrace(e);
             Logger.critical("Can't read thermo Other tree file!");
@@ -680,6 +698,12 @@ public class ThermoGAGroupLibrary {
     public void readGaucheTree(String p_fileName) {
         try {
             gaucheTree = readStandardTree(p_fileName, gaucheDictionary, 0);
+            if (gaucheTree == null) {
+                Logger.debug("Couldn't read gaucheTree starting at L0: node. Trying to read tree starting with L1: node");
+                gaucheTree = readStandardTree(p_fileName, gaucheDictionary, 1);
+                if (gaucheTree == null) 
+                    throw new RuntimeException("gaucheTree is null after reading.");
+            }
         } catch (Exception e) {
             Logger.logStackTrace(e);
             Logger.critical("Can't read gauche tree file!");
@@ -759,6 +783,12 @@ public class ThermoGAGroupLibrary {
     public void readAbrahamTree(String p_fileName) {
         try {
             abramTree = readStandardTree(p_fileName, abramDictionary, 0);
+            if (abramTree == null) {
+                Logger.debug("Couldn't read abramTree starting at L0: node. Trying to read tree starting with L1: node");
+                abramTree = readStandardTree(p_fileName, abramDictionary, 1);
+                if (abramTree == null) 
+                    throw new RuntimeException("abramTree is null after reading.");
+            }
         } catch (Exception e) {
             Logger.logStackTrace(e);
             Logger.critical("Can't read Abraham tree file!");
@@ -771,6 +801,12 @@ public class ThermoGAGroupLibrary {
     public void readAbrahamradTree(String p_fileName) {
         try {
             abramradTree = readStandardTree(p_fileName, abramradDictionary, 0);
+            if (abramradTree == null) {
+                Logger.debug("Couldn't read abramradTree starting at L0: node. Trying to read tree starting with L1: node");
+                abramradTree = readStandardTree(p_fileName, abramradDictionary, 1);
+                if (abramradTree == null) 
+                    throw new RuntimeException("abramradTree is null after reading.");
+            }
         } catch (Exception e) {
             Logger.logStackTrace(e);
             Logger.critical("Can't read Abraham Radical tree file!");
@@ -782,6 +818,12 @@ public class ThermoGAGroupLibrary {
     public void readUnifacTree(String p_fileName) {
         try {
             unifacTree = readStandardTree(p_fileName, unifacDictionary, 0);
+            if (unifacTree == null) {
+                Logger.debug("Couldn't read unifacTree starting at L0: node. Trying to read tree starting with L1: node");
+                unifacTree = readStandardTree(p_fileName, unifacDictionary, 1);
+                if (unifacTree == null) 
+                    throw new RuntimeException("unifacTree is null after reading.");
+            }
         } catch (Exception e) {
             Logger.logStackTrace(e);
             Logger.critical("Can't read Unifac tree file!");
@@ -839,6 +881,12 @@ public class ThermoGAGroupLibrary {
     public void read15Tree(String p_fileName) {
         try {
             oneFiveTree = readStandardTree(p_fileName, oneFiveDictionary, 0);
+            if (oneFiveTree == null) {
+                Logger.debug("Couldn't read oneFiveTree starting at L0: node. Trying to read tree starting with L1: node");
+                oneFiveTree = readStandardTree(p_fileName, oneFiveDictionary, 1);
+                if (oneFiveTree == null) 
+                    throw new RuntimeException("oneFiveTree is null after reading.");
+            }
         } catch (Exception e) {
             Logger.logStackTrace(e);
             Logger.critical("Can't read 1,5 tree file!");
@@ -876,6 +924,12 @@ public class ThermoGAGroupLibrary {
     public void readRadicalTree(String p_fileName) {
         try {
             radicalTree = readStandardTree(p_fileName, radicalDictionary, 0);
+            if (radicalTree == null) {
+                Logger.debug("Couldn't read radicalTree starting at L0: node. Trying to read tree starting with L1: node");
+                radicalTree = readStandardTree(p_fileName, radicalDictionary, 1);
+                if (radicalTree == null) 
+                    throw new RuntimeException("radicalTree is null after reading.");
+            }
         } catch (Exception e) {
             Logger.logStackTrace(e);
             Logger.critical("Can't read thermo group tree file!");
@@ -900,6 +954,12 @@ public class ThermoGAGroupLibrary {
     public void readRingTree(String p_fileName) {
         try {
             ringTree = readStandardTree(p_fileName, ringDictionary, 0);
+            if (ringTree == null) {
+                Logger.debug("Couldn't read ringTree starting at L0: node. Trying to read tree starting with L1: node");
+                ringTree = readStandardTree(p_fileName, ringDictionary, 1);
+                if (ringTree == null) 
+                    throw new RuntimeException("ringTree is null after reading.");
+            }
         } catch (Exception e) {
             Logger.logStackTrace(e);
             Logger.critical("Can't read ring tree file!");

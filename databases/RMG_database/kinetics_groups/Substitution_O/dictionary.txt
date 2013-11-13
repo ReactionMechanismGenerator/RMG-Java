@@ -2388,8 +2388,7 @@ CH2_triplet
 3 H 0 {1,S}
 
 OJ
-1 *3 Os 1 {2,S}
-2 R 0 {1,S}
+1 *3 Os 1 
 
 OsJ
 1 *3 Os 1 {2,S}

@@ -21,19 +21,24 @@ The first statement
 will have two effects:
 
 #. disable the ideal gas law renormalization and instead rely on the concentrations you specified in the input file to initialize the system.
-#. prevent the volume from changing when there is a net stoichiometry change due to a chemical reaction (A = B + C). 
+#. prevent the volume from changing when there is a net stoichiometry change due to a chemical reaction (A = B + C).
 
 
 Solvation thermochemistry
 --------------------------
 
-The next correction for liquids is solvation effects on the thermochemistry. 
-The method used is described briefly in 
+The next correction for liquids is solvation effects on the thermochemistry.
+The method used is described briefly in
 "Building Models of Liquid Phase Kinetics and Separation: Hydrocarbon Autoxidation", Richard H. West, Amrit Jalan, and William H. Green,
 `AIChE Annual Meeting <http://aiche.confex.com/aiche/2010/webprogram/Paper200216.html>`_, 2010 (`download pdf <http://web.mit.edu/rwest/www/Richard%20West%20AIChE%20Extended%20Abstract%20153g.pdf>`_)
+and in more detail in
+"An Extensible Framework for Capturing Solvent Effects in Computer Generated Kinetic Models", Amrit Jalan, Richard H. West, and William H. Green, *J. Phys. Chem. B*, 2013, 117 (10), pp 2955–2970
+DOI: `10.1021/jp310824h <http://dx.doi.org/10.1021/jp310824h>`_
+
+.. warning:: In versions of RMG prior to 4.0.1, there was an error in predicting solvation thermochemistry at temperatures other than 298 K. Please read the release notes to 4.0.1 and upgrade to a recent version of RMG.
 
 The statement ``Solvation: on <solvent>`` turns this on, and specifies the solvent parameters to use.
-Parameters are provided for the following solvents: 
+Parameters are provided for the following solvents:
 acetonitrile
 benzene
 butanol

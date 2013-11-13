@@ -14,7 +14,7 @@ at
 
 .. admonition:: Download
 
-    `RMG 4.0 Installer for Windows <http://sourceforge.net/projects/rmg/files/rmg/RMG%204.0/rmg-4.0-win32-setup.exe/download>`_ (32-bit only)
+    `RMG 4.0.1 Installer for Windows <http://sourceforge.net/projects/rmg/files/rmg/RMG%204.0.1/rmg-4.0.1-win32-setup.exe/download>`_ (32-bit only)
 
 The installer provides a 32-bit version of RMG. You must compile RMG yourself 
 to obtain 64-bit versions of the binaries.
@@ -37,7 +37,7 @@ A tarball of the most recent stable release can be downloaded here:
 
 .. admonition:: Download
 
-    `RMG 4.0 Source Package <http://sourceforge.net/projects/rmg/files/rmg/RMG%204.0/rmg-4.0-source.tar.gz/download>`_ (all platforms)
+    `RMG 4.0.1 Source Package <http://sourceforge.net/projects/rmg/files/rmg/RMG%204.0.1/rmg-4.0.1-source.tar.gz/download>`_ (all platforms)
    
 The above package is suitable for all platforms.
 

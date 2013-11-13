@@ -321,3 +321,26 @@ Arrhenius_EP
 1003		R4H_SSS			C_rad_out_H/NonDeC		Cs_H_out_H/NonDeS	300-1500	6.96E+05        1.95            0.0             19.26   0       0       0       0       3	CAC CBS-QB3 calc 1dhr
 1004		R5H_SSSS                C_rad_out_H/NonDeC              Cs_H_out_H/NonDeS	300-1500	5.31E+05        1.58            0.0             12.07   0       0       0       0       3	CAC CBS-QB3 calc 1dhr
 1005		R3H_SS			O_rad_out			S_H_out			300-1500	4.99E+11	0.26		0.0		15.99	0	0	0	0	3	CAC CBS-QB3 calc 1dhr
+
+// Rules 1006 - 1014 are intra-H migration calculated at RQCISD(T)/CBS//B3LYP/6-311++G(d,p) with 1-d Hindered rotor correction
+// Ref Ab Initio Kinetics for the Decomposition of Hydroxybutyl and Butoxy Radicals of n-Butanol,Zhang P.,Klippenstein S.K.,Law C.K.
+// dx.doi.org/10.1021/jp400155z | J. Phys. Chem. A 2013, 117, 1890-1906
+// Note some of rate rules were given as sum of two Arrhenius and they were refitted to single Arrhenius  
+
+1006.       Others-R3H_SS     C_rad_out_H/NonDeC    O_H_out      300-2500  5.71  	3.021		0.0		25.23	0	0	0	0	2	 RQCISD(T)/CBS//B3LYP/6-311++G(d,p) with 1-d Hindered rotor correction
+1007.       R4H_SSS           C_rad_out_H/NonDeO    Cs_H_out_2H  300-2500  2.79E4	1.97		0.0		23.1	0	0	0	0	2	 RQCISD(T)/CBS//B3LYP/6-311++G(d,p) with 1-d Hindered rotor correction
+1008.       Others-R2H_S      C_rad_out_H/NonDeC    O_H_out      300-2500  4.5E3	2.62		0.0		30.9	0	0	0	0	2    RQCISD(T)/CBS//B3LYP/6-311++G(d,p) with 1-d Hindered rotor correction
+1009.       R4H_SSS           C_rad_out_H/NonDeC    O_H_out      300-2500  2.96E3	2.11		0.0		20.1	0	0	0	0	2    RQCISD(T)/CBS//B3LYP/6-311++G(d,p) with 1-d Hindered rotor correction
+1010.       Others-R2H_S      C_rad_out_H/NonDeC    Cs_H_out_2H  300-2500  1.0E3	2.705		0.0		34.65	0	0	0	0	2    RQCISD(T)/CBS//B3LYP/6-311++G(d,p) with 1-d Hindered rotor correction
+1011.       R4H_SSS           C_rad_out_2H          Cs_H_out_H/NonDeO  300-2500  1.52E2	2.77		0.0		14.91	0	0	0	0	2   RQCISD(T)/CBS//B3LYP/6-311++G(d,p) with 1-d Hindered rotor correction
+1012.       R5H_CCCC_O        O_rad_out             Cs_H_out_2H        300-2500  2.07E14	1.78		0.0		5.35	0	0	0	0	2   RQCISD(T)/CBS//B3LYP/6-311++G(d,p) with 1-d Hindered rotor correction
+1013.       Others-R2H_S      O_rad_out             Cs_H_out_H/(NonDeC/Cs) 300-2500  7.65E4	2.26		0.0		21.27	0	0	0	0	2   RQCISD(T)/CBS//B3LYP/6-311++G(d,p) with 1-d Hindered rotor correction
+1014.       R4H_SSS           O_rad_out             Cs_H_out_H/NonDeC 300-2500  1.05E5	1.76		0.0		12.88	0	0	0	0	2       RQCISD(T)/CBS//B3LYP/6-311++G(d,p) with 1-d Hindered rotor correction
+
+// These rate coefficients are obtained by reversing the rate coefficients from dx.doi.org/10.1021/jp400155z | J. Phys. Chem. A 2013, 117, 1890-1906
+// Ref Ab Initio Kinetics for the Decomposition of Hydroxybutyl and Butoxy Radicals of n-Butanol,Zhang P.,Klippenstein S.K.,Law C.K.
+// The thermochemistry for the species is obtained from Mike's n-butanol paper dx.doi.org/10.1016/j.combustflame.2010.06.002
+
+1015.      Others-R3H_SS      O_rad_out             Cs_H_out_H/(NonDeC/Cs) 300-2500  9E3	2.287		0.0		20.24	0	0	0	0	3  Obtained by reversing rate rule 1006
+1016.      Others-R2H_S       C_rad_out_2H          Cs_H_out_H/(NonDeC/Cs) 300-2500  1.5E5	2.15		0.0		32.38	0	0	0	0	3  Obtained by reversing rate rule  1010
+ 
