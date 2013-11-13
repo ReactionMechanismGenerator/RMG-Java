@@ -57,6 +57,7 @@ L1: FiveMember
 	L2: Cyclopentane
 	L2: Cyclopentene
 	L2: Cyclopentadiene
+        L2: Cyclopentatriene
 	L2: Tetrahydrofuran
 	L2: 2,3-Dihydrofuran
 	L2: 1,3-Dioxolane

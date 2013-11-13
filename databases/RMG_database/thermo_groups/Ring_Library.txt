@@ -165,4 +165,7 @@
 148	1,2,4-trithiolane	4.40	24.39	-11.78	-9.58	-7.37	-5.67	-3.50	-2.26	-0.71	0	0	0	CBS-QB3 GA 1D-HR Aäron Vandeputte 2009
 149	tetrathiolane	10.72	26.56	-9.82	-8.46	-7.22	-6.33	-5.17	-4.28	-2.40	0	0	0	CBS-QB3 GA 1D-HR Aäron Vandeputte 2009
 150	pentathiolane	17.23	30.31	-8.87	-8.30	-7.89	-7.72	-7.45	-6.84	-4.46	0	0	0	CBS-QB3 GA 1D-HR Aäron Vandeputte 2009
-151	thiirene	52.44	34.28	-1.13	-3.80	-6.26	-8.36	-11.65	-14.12	-18.01 	0	0	0	CBS-QB3 GA 1D-HR Aäron Vandeputte 2009
+151	thiirene	52.44	34.28	-1.13	-3.80	-6.26	-8.36	-11.65	-14.12	-18.01 	0	0	0	CBS-QB3 GA 1D-HR Aäron Vandeputte 20009
+
+152     Cyclopentatriene 131.61	36.76	-4.08	-4.69	-4.58	-4.25	-3.54	-3.08	-2.47 	0       0       0       CBS-QB3 isodesmic reaction approach allene + 2-butene = cyclopentatriene + 2 CH4, DHr = 220.8 kJ mol-1, exp data from NIST	
+
