@@ -23,6 +23,10 @@ L1: diene_out
        L3: diene_disubNd2_disubNd2_out
        L3: diene_disubNd2_disubDe_out
        L3: diene_disubDe_disubDe_out
+   L2: diene_5ring_out
+       L3: diene_5ring_H_H_out
+       L3: diene_5ring_H_Nd_out
+       L3: diene_5ring_Nd_Nd_out
 
 L1: diene_in
     L2: diene_in_2H

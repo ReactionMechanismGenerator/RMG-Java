@@ -210,8 +210,8 @@ InChI=1/C3H8/c1-3-2/h3H2,1-2H3
 10 H 0 {3,S}
 11 H 0 {3,S}
 
-C/H2/NonDeC5ring
-1 *1 C 0 {2,S}, {3,S}, {4,S}, {5,S}
+C/H2/NonDeC_5ring
+1 *1 C 0 {2,S} {3,S} {4,S} {5,S}
 2 *2 H 0 {1,S}
 3 H 0 {1,S}
 4 Cs 0 {1,S} {6,S}
@@ -220,7 +220,7 @@ C/H2/NonDeC5ring
 7 Cs 0 {5,S} {6,S}
 
 C/H2/NonDeC_5ring_fused6_1
-1 *1 C 0 {2,S}, {3,S}, {4,S}, {5,S}
+1 *1 C 0 {2,S} {3,S} {4,S} {5,S}
 2 *2 H 0 {1,S}
 3 H 0 {1,S}
 4 Cs 0 {1,S} {6,S} {8,S}
@@ -231,7 +231,7 @@ C/H2/NonDeC_5ring_fused6_1
 9 Cs 0 {8,S} {7,S}
 
 C/H2/NonDeC_5ring_fused6_2
-1 *1 C 0 {2,S}, {3,S}, {4,S}, {5,S}
+1 *1 C 0 {2,S} {3,S} {4,S} {5,S}
 2 *2 H 0 {1,S}
 3 H 0 {1,S}
 4 Cs 0 {1,S} {6,S} {8,S}
@@ -240,6 +240,32 @@ C/H2/NonDeC_5ring_fused6_2
 7 Cs 0 {5,S} {6,S} 
 8 Cs 0 {4,S} {9,S}
 9 Cs 0 {8,S} {5,S}
+
+C/H2/NonDeC_5ring_alpha6ring
+1 *1 C 0 {2,S} {3,S} {4,S} {5,S}
+2 *2 H 0 {1,S}
+3 H 0 {1,S}
+4 Cs 0 {1,S} {6,S} {8,S}
+5 Cs 0 {1,S} {7,S}
+6 Cs 0 {4,S} {7,S} {11,S}
+7 Cs 0 {5,S} {6,S}
+8 C 0 {4,S} {9,S}
+9 C 0 {8,S} {10,S}
+10 C 0 {9,S} {11,S}
+11 C 0 {10,S} {6,S}
+
+C/H2/NonDeC_5ring_beta6ring
+1 *1 C 0 {2,S}, {3,S}, {4,S}, {5,S}
+2 *2 H 0 {1,S}
+3 H 0 {1,S}
+4 Cs 0 {1,S} {6,S} 
+5 Cs 0 {1,S} {7,S}
+6 Cs 0 {4,S} {7,S} {8,S} 
+7 Cs 0 {5,S} {6,S} {11,S}
+8 C 0 {6,S} {9,S}
+9 C 0 {8,S} {10,S}
+10 C 0 {9,S} {11,S}
+11 C 0 {10,S} {7,S}
 
 C/H2/NonDeO
 1 *1 C 0 {2,S}, {3,S}, {4,S}, {5,S}
