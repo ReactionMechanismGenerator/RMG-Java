@@ -304,674 +304,674 @@ Arrhenius_EP
 309.	H2O2	InChI=1/C4H9O/c1-4(2,3)5/h5H,1H2,2-3H3		600-2000	2.100E-01	3.53	0.0	1.56	0	0	0	0	3	MRH CBS-QB3 calculations w/o HR corrections
 486.	Orad_O_H		O_rad/NonDeO	300-1500	1.75E+10	0	0	-3.275	0	0	0	0	5	[8] Curran's estimation in reaction type 13, RO2 + HO2 --> RO2H + O2
 //	Rate constants involving sulfur
-24.		H2			C_rad/H2/S	300-1500	8.00E-03	4.24	0.00	13.1	0	0	0	0	4	AÃ¤ron Vandeputte GAVs CBS-QB3
-25.		H2			C_rad/H/CsS	300-1500	1.43E-02	4.24	0.00	13.1	0	0	0	0	4	AÃ¤ron Vandeputte GAVs CBS-QB3
-26.		H2			C_rad/Cs2S	300-1500	5.76E-03	4.24	0.00	12.8	0	0	0	0	4	AÃ¤ron Vandeputte GAVs CBS-QB3
-27.		H2			Cd_rad/NonDeS	300-1500	4.78E-02	4.24	0.00	5.3	0	0	0	0	4	AÃ¤ron Vandeputte GAVs CBS-QB3
-28.		H2			C_rad/H/CdS	300-1500	7.89E-02	4.24	0.00	24.2	0	0	0	0	4	AÃ¤ron Vandeputte GAVs CBS-QB3
-29.		H2			C_rad/CdCsS	300-1500	9.97E-03	4.24	0.00	24.2	0	0	0	0	4	AÃ¤ron Vandeputte GAVs CBS-QB3
-30.		H2			C_rad/H/CtS	300-1500	4.69E-02	4.24	0.00	22.7	0	0	0	0	4	AÃ¤ron Vandeputte GAVs CBS-QB3
-31.		H2			C_rad/CtCsS	300-1500	1.92E-01	4.24	0.00	23.5	0	0	0	0	4	AÃ¤ron Vandeputte GAVs CBS-QB3
-55.		C_methane		C_rad/H2/S	300-1500	4.52E-03	4.24	0.00	15.8	0	0	0	0	4	AÃ¤ron Vandeputte GAVs CBS-QB3
-56.		C_methane		C_rad/H/CsS	300-1500	8.07E-03	4.24	0.00	15.8	0	0	0	0	4	AÃ¤ron Vandeputte GAVs CBS-QB3
-57.		C_methane		C_rad/Cs2S	300-1500	3.26E-03	4.24	0.00	15.6	0	0	0	0	4	AÃ¤ron Vandeputte GAVs CBS-QB3
-58.		C_methane		Cd_rad/NonDeS	300-1500	2.70E-02	4.24	0.00	8.0	0	0	0	0	4	AÃ¤ron Vandeputte GAVs CBS-QB3
-59.		C_methane		C_rad/H/CdS	300-1500	4.46E-02	4.24	0.00	26.9	0	0	0	0	4	AÃ¤ron Vandeputte GAVs CBS-QB3
-60.		C_methane		C_rad/CdCsS	300-1500	5.64E-03	4.24	0.00	26.9	0	0	0	0	4	AÃ¤ron Vandeputte GAVs CBS-QB3
-61.		C_methane		C_rad/H/CtS	300-1500	2.65E-02	4.24	0.00	25.5	0	0	0	0	4	AÃ¤ron Vandeputte GAVs CBS-QB3
-62.		C_methane		C_rad/CtCsS	300-1500	1.08E-01	4.24	0.00	26.2	0	0	0	0	4	AÃ¤ron Vandeputte GAVs CBS-QB3
-86.		C/H3/Cs	C_rad/H2/S	300-1500	6.81E-03	4.24	0.00	13.4	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-87.		C/H3/Cs	C_rad/H/CsS	300-1500	1.22E-02	4.24	0.00	13.4	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-88.		C/H3/Cs	C_rad/Cs2S	300-1500	4.91E-03	4.24	0.00	13.2	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-89.		C/H3/Cs	Cd_rad/NonDeS	300-1500	4.07E-02	4.24	0.00	5.7	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-90.		C/H3/Cs	C_rad/H/CdS	300-1500	6.72E-02	4.24	0.00	24.6	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-91.		C/H3/Cs	C_rad/CdCsS	300-1500	8.49E-03	4.24	0.00	24.6	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-92.		C/H3/Cs	C_rad/H/CtS	300-1500	4.00E-02	4.24	0.00	23.1	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-93.		C/H3/Cs	C_rad/CtCsS	300-1500	1.63E-01	4.24	0.00	23.9	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-117.	C/H2/NonDeC	C_rad/H2/S	300-1500	1.56E-02	4.24	0.00	11.4	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-118.	C/H2/NonDeC	C_rad/H/CsS	300-1500	2.79E-02	4.24	0.00	11.4	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-119.	C/H2/NonDeC	C_rad/Cs2S	300-1500	1.12E-02	4.24	0.00	11.2	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-120.	C/H2/NonDeC	Cd_rad/NonDeS	300-1500	9.33E-02	4.24	0.00	3.7	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-121.	C/H2/NonDeC	C_rad/H/CdS	300-1500	1.54E-01	4.24	0.00	22.6	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-122.	C/H2/NonDeC	C_rad/CdCsS	300-1500	1.95E-02	4.24	0.00	22.6	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-123.	C/H2/NonDeC	C_rad/H/CtS	300-1500	9.15E-02	4.24	0.00	21.1	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-124.	C/H2/NonDeC	C_rad/CtCsS	300-1500	3.74E-01	4.24	0.00	21.9	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-148.	C/H/Cs3	C_rad/H2/S	300-1500	9.40E-03	4.24	0.00	9.6	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-149.	C/H/Cs3	C_rad/H/CsS	300-1500	1.68E-02	4.24	0.00	9.6	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-150.	C/H/Cs3	C_rad/Cs2S	300-1500	6.77E-03	4.24	0.00	9.4	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-151.	C/H/Cs3	Cd_rad/NonDeS	300-1500	5.62E-02	4.24	0.00	1.8	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-152.	C/H/Cs3	C_rad/H/CdS	300-1500	9.28E-02	4.24	0.00	20.7	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-153.	C/H/Cs3	C_rad/CdCsS	300-1500	1.17E-02	4.24	0.00	20.7	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-154.	C/H/Cs3	C_rad/H/CtS	300-1500	5.52E-02	4.24	0.00	19.3	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-155.	C/H/Cs3	C_rad/CtCsS	300-1500	2.26E-01	4.24	0.00	20.0	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-179.	C/H3/Cd	C_rad/H2/S	300-1500	1.40E-03	4.24	0.00	10.1	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-180.	C/H3/Cd	C_rad/H/CsS	300-1500	2.50E-03	4.24	0.00	10.2	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-181.	C/H3/Cd	C_rad/Cs2S	300-1500	1.01E-03	4.24	0.00	9.9	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-182.	C/H3/Cd	Cd_rad/NonDeS	300-1500	8.35E-03	4.24	0.00	2.4	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-183.	C/H3/Cd	C_rad/H/CdS	300-1500	1.38E-02	4.24	0.00	21.3	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-184.	C/H3/Cd	C_rad/CdCsS	300-1500	1.74E-03	4.24	0.00	21.3	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-185.	C/H3/Cd	C_rad/H/CtS	300-1500	8.20E-03	4.24	0.00	19.8	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-186.	C/H3/Cd	C_rad/CtCsS	300-1500	3.35E-02	4.24	0.00	20.6	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-210.	C/H2/CdCs	C_rad/H2/S	300-1500	5.55E-03	4.24	0.00	8.8	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-211.	C/H2/CdCs	C_rad/H/CsS	300-1500	9.91E-03	4.24	0.00	8.8	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-212.	C/H2/CdCs	C_rad/Cs2S	300-1500	4.00E-03	4.24	0.00	8.6	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-213.	C/H2/CdCs	Cd_rad/NonDeS	300-1500	3.32E-02	4.24	0.00	1.1	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-214.	C/H2/CdCs	C_rad/H/CdS	300-1500	5.47E-02	4.24	0.00	20.0	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-215.	C/H2/CdCs	C_rad/CdCsS	300-1500	6.92E-03	4.24	0.00	20.0	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-216.	C/H2/CdCs	C_rad/H/CtS	300-1500	3.25E-02	4.24	0.00	18.5	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-217.	C/H2/CdCs	C_rad/CtCsS	300-1500	1.33E-01	4.24	0.00	19.3	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-241.	C/H/Cs2Cd	C_rad/H2/S	300-1500	5.97E-03	4.24	0.00	7.7	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-242.	C/H/Cs2Cd	C_rad/H/CsS	300-1500	1.07E-02	4.24	0.00	7.7	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-243.	C/H/Cs2Cd	C_rad/Cs2S	300-1500	4.30E-03	4.24	0.00	7.5	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-244.	C/H/Cs2Cd	Cd_rad/NonDeS	300-1500	3.57E-02	4.24	0.00	-0.1	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-245.	C/H/Cs2Cd	C_rad/H/CdS	300-1500	5.89E-02	4.24	0.00	18.8	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-246.	C/H/Cs2Cd	C_rad/CdCsS	300-1500	7.45E-03	4.24	0.00	18.8	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-247.	C/H/Cs2Cd	C_rad/H/CtS	300-1500	3.50E-02	4.24	0.00	17.4	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-248.	C/H/Cs2Cd	C_rad/CtCsS	300-1500	1.43E-01	4.24	0.00	18.2	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-272.	C/H2/CdCd	C_rad/H2/S	300-1500	7.54E-03	4.24	0.00	7.2	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-273.	C/H2/CdCd	C_rad/H/CsS	300-1500	1.35E-02	4.24	0.00	7.2	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-274.	C/H2/CdCd	C_rad/Cs2S	300-1500	5.43E-03	4.24	0.00	7.0	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-275.	C/H2/CdCd	Cd_rad/NonDeS	300-1500	4.50E-02	4.24	0.00	-0.6	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-276.	C/H2/CdCd	C_rad/H/CdS	300-1500	7.44E-02	4.24	0.00	18.3	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-277.	C/H2/CdCd	C_rad/CdCsS	300-1500	9.40E-03	4.24	0.00	18.3	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-278.	C/H2/CdCd	C_rad/H/CtS	300-1500	4.42E-02	4.24	0.00	16.9	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-279.	C/H2/CdCd	C_rad/CtCsS	300-1500	1.81E-01	4.24	0.00	17.7	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-303.	C/H/CdCd	C_rad/H2/S	300-1500	6.07E-03	4.24	0.00	6.1	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-304.	C/H/CdCd	C_rad/H/CsS	300-1500	1.08E-02	4.24	0.00	6.2	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-305.	C/H/CdCd	C_rad/Cs2S	300-1500	4.37E-03	4.24	0.00	5.9	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-306.	C/H/CdCd	Cd_rad/NonDeS	300-1500	3.63E-02	4.24	0.00	-1.6	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-307.	C/H/CdCd	C_rad/H/CdS	300-1500	5.98E-02	4.24	0.00	17.3	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-308.	C/H/CdCd	C_rad/CdCsS	300-1500	7.56E-03	4.24	0.00	17.3	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-309.	C/H/CdCd	C_rad/H/CtS	300-1500	3.56E-02	4.24	0.00	15.8	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-310.	C/H/CdCd	C_rad/CtCsS	300-1500	1.45E-01	4.24	0.00	16.6	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-334.	C/H3/Ct	C_rad/H2/S	300-1500	3.88E-03	4.24	0.00	10.7	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-335.	C/H3/Ct	C_rad/H/CsS	300-1500	6.93E-03	4.24	0.00	10.7	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-336.	C/H3/Ct	C_rad/Cs2S	300-1500	2.79E-03	4.24	0.00	10.5	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-337.	C/H3/Ct	Cd_rad/NonDeS	300-1500	2.32E-02	4.24	0.00	2.9	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-338.	C/H3/Ct	C_rad/H/CdS	300-1500	3.83E-02	4.24	0.00	21.8	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-339.	C/H3/Ct	C_rad/CdCsS	300-1500	4.83E-03	4.24	0.00	21.8	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-340.	C/H3/Ct	C_rad/H/CtS	300-1500	2.27E-02	4.24	0.00	20.4	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-341.	C/H3/Ct	C_rad/CtCsS	300-1500	9.30E-02	4.24	0.00	21.2	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-365.	C/H2/CtCs	C_rad/H2/S	300-1500	5.30E-03	4.24	0.00	9.2	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-366.	C/H2/CtCs	C_rad/H/CsS	300-1500	9.46E-03	4.24	0.00	9.2	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-367.	C/H2/CtCs	C_rad/Cs2S	300-1500	3.82E-03	4.24	0.00	9.0	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-368.	C/H2/CtCs	Cd_rad/NonDeS	300-1500	3.17E-02	4.24	0.00	1.4	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-369.	C/H2/CtCs	C_rad/H/CdS	300-1500	5.23E-02	4.24	0.00	20.4	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-370.	C/H2/CtCs	C_rad/CdCsS	300-1500	6.60E-03	4.24	0.00	20.4	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-371.	C/H2/CtCs	C_rad/H/CtS	300-1500	3.11E-02	4.24	0.00	18.9	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-372.	C/H2/CtCs	C_rad/CtCsS	300-1500	1.27E-01	4.24	0.00	19.7	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-396.	C/H/Cs2Ct	C_rad/H2/S	300-1500	9.47E-03	4.24	0.00	7.7	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-397.	C/H/Cs2Ct	C_rad/H/CsS	300-1500	1.69E-02	4.24	0.00	7.8	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-398.	C/H/Cs2Ct	C_rad/Cs2S	300-1500	6.82E-03	4.24	0.00	7.5	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-399.	C/H/Cs2Ct	Cd_rad/NonDeS	300-1500	5.66E-02	4.24	0.00	0.0	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-400.	C/H/Cs2Ct	C_rad/H/CdS	300-1500	9.34E-02	4.24	0.00	18.9	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-401.	C/H/Cs2Ct	C_rad/CdCsS	300-1500	1.18E-02	4.24	0.00	18.9	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-402.	C/H/Cs2Ct	C_rad/H/CtS	300-1500	5.55E-02	4.24	0.00	17.4	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-403.	C/H/Cs2Ct	C_rad/CtCsS	300-1500	2.27E-01	4.24	0.00	18.2	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-427.	C/H2/CtCt	C_rad/H2/S	300-1500	6.74E-03	4.24	0.00	7.3	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-428.	C/H2/CtCt	C_rad/H/CsS	300-1500	1.20E-02	4.24	0.00	7.3	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-429.	C/H2/CtCt	C_rad/Cs2S	300-1500	4.86E-03	4.24	0.00	7.1	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-430.	C/H2/CtCt	Cd_rad/NonDeS	300-1500	4.03E-02	4.24	0.00	-0.5	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-431.	C/H2/CtCt	C_rad/H/CdS	300-1500	6.65E-02	4.24	0.00	18.5	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-432.	C/H2/CtCt	C_rad/CdCsS	300-1500	8.40E-03	4.24	0.00	18.5	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-433.	C/H2/CtCt	C_rad/H/CtS	300-1500	3.95E-02	4.24	0.00	17.0	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-434.	C/H2/CtCt	C_rad/CtCsS	300-1500	1.62E-01	4.24	0.00	17.8	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-458.	C/H/CtCt	C_rad/H2/S	300-1500	7.43E-03	4.24	0.00	6.2	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-459.	C/H/CtCt	C_rad/H/CsS	300-1500	1.33E-02	4.24	0.00	6.2	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-460.	C/H/CtCt	C_rad/Cs2S	300-1500	5.35E-03	4.24	0.00	6.0	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-461.	C/H/CtCt	Cd_rad/NonDeS	300-1500	4.44E-02	4.24	0.00	-1.5	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-462.	C/H/CtCt	C_rad/H/CdS	300-1500	7.33E-02	4.24	0.00	17.4	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-463.	C/H/CtCt	C_rad/CdCsS	300-1500	9.26E-03	4.24	0.00	17.4	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-464.	C/H/CtCt	C_rad/H/CtS	300-1500	4.36E-02	4.24	0.00	15.9	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-465.	C/H/CtCt	C_rad/CtCsS	300-1500	1.78E-01	4.24	0.00	16.7	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-489.	C/H3/Cb	C_rad/H2/S	300-1500	1.25E-03	4.24	0.00	12.0	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-490.	C/H3/Cb	C_rad/H/CsS	300-1500	2.23E-03	4.24	0.00	12.0	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-491.	C/H3/Cb	C_rad/Cs2S	300-1500	8.98E-04	4.24	0.00	11.8	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-492.	C/H3/Cb	Cd_rad/NonDeS	300-1500	7.45E-03	4.24	0.00	4.2	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-493.	C/H3/Cb	C_rad/H/CdS	300-1500	1.23E-02	4.24	0.00	23.2	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-494.	C/H3/Cb	C_rad/CdCsS	300-1500	1.55E-03	4.24	0.00	23.2	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-495.	C/H3/Cb	C_rad/H/CtS	300-1500	7.31E-03	4.24	0.00	21.7	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-496.	C/H3/Cb	C_rad/CtCsS	300-1500	2.99E-02	4.24	0.00	22.5	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-520.	C/H2/CbCs	C_rad/H2/S	300-1500	1.84E-03	4.24	0.00	10.2	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-521.	C/H2/CbCs	C_rad/H/CsS	300-1500	3.29E-03	4.24	0.00	10.2	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-522.	C/H2/CbCs	C_rad/Cs2S	300-1500	1.33E-03	4.24	0.00	10.0	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-523.	C/H2/CbCs	Cd_rad/NonDeS	300-1500	1.10E-02	4.24	0.00	2.5	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-524.	C/H2/CbCs	C_rad/H/CdS	300-1500	1.82E-02	4.24	0.00	21.4	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-525.	C/H2/CbCs	C_rad/CdCsS	300-1500	2.29E-03	4.24	0.00	21.4	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-526.	C/H2/CbCs	C_rad/H/CtS	300-1500	1.08E-02	4.24	0.00	19.9	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-527.	C/H2/CbCs	C_rad/CtCsS	300-1500	4.41E-02	4.24	0.00	20.7	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-551.	C/H/Cs2Cb	C_rad/H2/S	300-1500	1.27E-03	4.24	0.00	9.1	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-552.	C/H/Cs2Cb	C_rad/H/CsS	300-1500	2.28E-03	4.24	0.00	9.1	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-553.	C/H/Cs2Cb	C_rad/Cs2S	300-1500	9.18E-04	4.24	0.00	8.9	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-554.	C/H/Cs2Cb	Cd_rad/NonDeS	300-1500	7.62E-03	4.24	0.00	1.3	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-555.	C/H/Cs2Cb	C_rad/H/CdS	300-1500	1.26E-02	4.24	0.00	20.3	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-556.	C/H/Cs2Cb	C_rad/CdCsS	300-1500	1.59E-03	4.24	0.00	20.3	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-557.	C/H/Cs2Cb	C_rad/H/CtS	300-1500	7.48E-03	4.24	0.00	18.8	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-558.	C/H/Cs2Cb	C_rad/CtCsS	300-1500	3.06E-02	4.24	0.00	19.6	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-582.	Cd_pri	C_rad/H2/S	300-1500	6.55E-03	4.24	0.00	16.2	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-583.	Cd_pri	C_rad/H/CsS	300-1500	1.17E-02	4.24	0.00	16.2	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-584.	Cd_pri	C_rad/Cs2S	300-1500	4.72E-03	4.24	0.00	16.0	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-585.	Cd_pri	Cd_rad/NonDeS	300-1500	3.91E-02	4.24	0.00	8.4	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-586.	Cd_pri	C_rad/H/CdS	300-1500	6.46E-02	4.24	0.00	27.3	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-587.	Cd_pri	C_rad/CdCsS	300-1500	8.17E-03	4.24	0.00	27.3	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-588.	Cd_pri	C_rad/H/CtS	300-1500	3.84E-02	4.24	0.00	25.9	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-589.	Cd_pri	C_rad/CtCsS	300-1500	1.57E-01	4.24	0.00	26.6	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-613.	Cd/H/NonDeC	C_rad/H2/S	300-1500	1.01E-02	4.24	0.00	13.9	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-614.	Cd/H/NonDeC	C_rad/H/CsS	300-1500	1.80E-02	4.24	0.00	13.9	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-615.	Cd/H/NonDeC	C_rad/Cs2S	300-1500	7.25E-03	4.24	0.00	13.7	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-616.	Cd/H/NonDeC	Cd_rad/NonDeS	300-1500	6.01E-02	4.24	0.00	6.1	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-617.	Cd/H/NonDeC	C_rad/H/CdS	300-1500	9.93E-02	4.24	0.00	25.1	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-618.	Cd/H/NonDeC	C_rad/CdCsS	300-1500	1.25E-02	4.24	0.00	25.1	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-619.	Cd/H/NonDeC	C_rad/H/CtS	300-1500	5.90E-02	4.24	0.00	23.6	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-620.	Cd/H/NonDeC	C_rad/CtCsS	300-1500	2.41E-01	4.24	0.00	24.4	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-644.	Cd/H/Cd	C_rad/H2/S	300-1500	6.75E-03	4.24	0.00	13.8	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-645.	Cd/H/Cd	C_rad/H/CsS	300-1500	1.21E-02	4.24	0.00	13.8	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-646.	Cd/H/Cd	C_rad/Cs2S	300-1500	4.86E-03	4.24	0.00	13.5	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-647.	Cd/H/Cd	Cd_rad/NonDeS	300-1500	4.04E-02	4.24	0.00	6.0	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-648.	Cd/H/Cd	C_rad/H/CdS	300-1500	6.66E-02	4.24	0.00	24.9	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-649.	Cd/H/Cd	C_rad/CdCsS	300-1500	8.42E-03	4.24	0.00	24.9	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-650.	Cd/H/Cd	C_rad/H/CtS	300-1500	3.96E-02	4.24	0.00	23.4	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-651.	Cd/H/Cd	C_rad/CtCsS	300-1500	1.62E-01	4.24	0.00	24.2	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-675.	Cb_H	C_rad/H2/S	300-1500	7.47E-03	4.24	0.00	18.1	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-676.	Cb_H	C_rad/H/CsS	300-1500	1.33E-02	4.24	0.00	18.1	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-677.	Cb_H	C_rad/Cs2S	300-1500	5.38E-03	4.24	0.00	17.8	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-678.	Cb_H	Cd_rad/NonDeS	300-1500	4.46E-02	4.24	0.00	10.3	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-679.	Cb_H	C_rad/H/CdS	300-1500	7.37E-02	4.24	0.00	29.2	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-680.	Cb_H	C_rad/CdCsS	300-1500	9.31E-03	4.24	0.00	29.2	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-681.	Cb_H	C_rad/H/CtS	300-1500	4.38E-02	4.24	0.00	27.7	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-682.	Cb_H	C_rad/CtCsS	300-1500	1.79E-01	4.24	0.00	28.5	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-706	Cd/H/Ct	C_rad/H2/S	300-1500	4.98E-03	4.24	0.00	11.4	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-707	Cd/H/Ct	C_rad/H/CsS	300-1500	8.89E-03	4.24	0.00	11.4	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-708	Cd/H/Ct	C_rad/Cs2S	300-1500	3.59E-03	4.24	0.00	11.2	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-709	Cd/H/Ct	Cd_rad/NonDeS	300-1500	2.98E-02	4.24	0.00	3.6	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-710	Cd/H/Ct	C_rad/H/CdS	300-1500	4.91E-02	4.24	0.00	22.5	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-711	Cd/H/Ct	C_rad/CdCsS	300-1500	6.21E-03	4.24	0.00	22.5	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-712	Cd/H/Ct	C_rad/H/CtS	300-1500	2.92E-02	4.24	0.00	21.1	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-713	Cd/H/Ct	C_rad/CtCsS	300-1500	1.19E-01	4.24	0.00	21.8	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-714	C/H3/S	H_rad	300-1500	1.77E-01	4.24	0.00	3.7	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-715	C/H3/S	C_methyl	300-1500	5.11E-03	4.24	0.00	5.9	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-716	C/H3/S	C_rad/H2/Cs	300-1500	1.04E-03	4.24	0.00	7.3	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-717	C/H3/S	C_rad/H/NonDeC	300-1500	2.75E-03	4.24	0.00	8.1	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-718	C/H3/S	C_rad/Cs3	300-1500	1.44E-03	4.24	0.00	8.1	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-719	C/H3/S	C_rad/H2/Cd	300-1500	1.07E-02	4.24	0.00	18.7	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-720	C/H3/S	C_rad/H/CdCs	300-1500	8.46E-03	4.24	0.00	20.4	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-721	C/H3/S	C_rad/CdCs2	300-1500	2.31E-03	4.24	0.00	20.9	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-722	C/H3/S	C_rad/H/CdCd	300-1500	3.41E-02	4.24	0.00	28.7	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-723	C/H3/S	C_rad/CdCdCs	300-1500	3.02E-03	4.24	0.00	29.1	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-724	C/H3/S	C_rad/H2/Ct	300-1500	4.88E-03	4.24	0.00	14.9	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-725	C/H3/S	C_rad/H/CtCs	300-1500	2.03E-03	4.24	0.00	16.4	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-726	C/H3/S	C_rad/CtCs2	300-1500	1.44E-03	4.24	0.00	17.3	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-727	C/H3/S	C_rad/H/CtCt	300-1500	1.03E-02	4.24	0.00	22.9	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-728	C/H3/S	C_rad/CtCtCs	300-1500	5.08E-04	4.24	0.00	24.0	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-729	C/H3/S	C_rad/H2/Cb	300-1500	1.05E-02	4.24	0.00	16.5	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-730	C/H3/S	C_rad/H/CbCs	300-1500	5.38E-03	4.24	0.00	17.4	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-731	C/H3/S	C_rad/CbCs2	300-1500	2.56E-04	4.24	0.00	17.0	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-732	C/H3/S	Cd_pri_rad	300-1500	4.81E-03	4.24	0.00	1.3	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-733	C/H3/S	Cd_rad/NonDeC	300-1500	4.76E-03	4.24	0.00	2.1	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-734	C/H3/S	Cd_rad/Cd	300-1500	2.27E-03	4.24	0.00	9.0	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-735	C/H3/S	Cb_rad	300-1500	5.72E-03	4.24	0.00	-1.5	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-736	C/H3/S	Cd_rad/Ct	300-1500	4.87E-04	4.24	0.00	6.2	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-737	C/H3/S	C_rad/H2/S	300-1500	1.65E-03	4.24	0.00	11.2	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-738	C/H3/S	C_rad/H/CsS	300-1500	2.94E-03	4.24	0.00	11.2	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-739	C/H3/S	C_rad/Cs2S	300-1500	1.19E-03	4.24	0.00	11.0	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-740	C/H3/S	Cd_rad/NonDeS	300-1500	9.86E-03	4.24	0.00	3.4	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-741	C/H3/S	C_rad/H/CdS	300-1500	1.63E-02	4.24	0.00	22.3	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-742	C/H3/S	C_rad/CdCsS	300-1500	2.06E-03	4.24	0.00	22.3	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-743	C/H3/S	C_rad/H/CtS	300-1500	9.67E-03	4.24	0.00	20.9	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-744	C/H3/S	C_rad/CtCsS	300-1500	3.95E-02	4.24	0.00	21.6	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-745	C/H2/CsS	H_rad	300-1500	4.87E-01	4.24	0.00	2.3	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-746	C/H2/CsS	C_methyl	300-1500	1.41E-02	4.24	0.00	4.4	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-747	C/H2/CsS	C_rad/H2/Cs	300-1500	2.87E-03	4.24	0.00	5.8	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-748	C/H2/CsS	C_rad/H/NonDeC	300-1500	7.59E-03	4.24	0.00	6.7	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-749	C/H2/CsS	C_rad/Cs3	300-1500	3.98E-03	4.24	0.00	6.7	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-750	C/H2/CsS	C_rad/H2/Cd	300-1500	2.96E-02	4.24	0.00	17.2	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-751	C/H2/CsS	C_rad/H/CdCs	300-1500	2.33E-02	4.24	0.00	19.0	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-752	C/H2/CsS	C_rad/CdCs2	300-1500	6.38E-03	4.24	0.00	19.4	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-753	C/H2/CsS	C_rad/H/CdCd	300-1500	9.39E-02	4.24	0.00	27.2	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-754	C/H2/CsS	C_rad/CdCdCs	300-1500	8.34E-03	4.24	0.00	27.7	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-755	C/H2/CsS	C_rad/H2/Ct	300-1500	1.35E-02	4.24	0.00	13.4	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-756	C/H2/CsS	C_rad/H/CtCs	300-1500	5.60E-03	4.24	0.00	15.0	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-757	C/H2/CsS	C_rad/CtCs2	300-1500	3.97E-03	4.24	0.00	15.8	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-758	C/H2/CsS	C_rad/H/CtCt	300-1500	2.85E-02	4.24	0.00	21.5	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-759	C/H2/CsS	C_rad/CtCtCs	300-1500	1.40E-03	4.24	0.00	22.5	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-760	C/H2/CsS	C_rad/H2/Cb	300-1500	2.89E-02	4.24	0.00	15.1	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-761	C/H2/CsS	C_rad/H/CbCs	300-1500	1.48E-02	4.24	0.00	15.9	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-762	C/H2/CsS	C_rad/CbCs2	300-1500	7.07E-04	4.24	0.00	15.5	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-763	C/H2/CsS	Cd_pri_rad	300-1500	1.33E-02	4.24	0.00	-0.2	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-764	C/H2/CsS	Cd_rad/NonDeC	300-1500	1.31E-02	4.24	0.00	0.7	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-765	C/H2/CsS	Cd_rad/Cd	300-1500	6.26E-03	4.24	0.00	7.5	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-766	C/H2/CsS	Cb_rad	300-1500	1.58E-02	4.24	0.00	-2.9	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-767	C/H2/CsS	Cd_rad/Ct	300-1500	1.34E-03	4.24	0.00	4.8	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-768	C/H2/CsS	C_rad/H2/S	300-1500	4.55E-03	4.24	0.00	9.7	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-769	C/H2/CsS	C_rad/H/CsS	300-1500	8.12E-03	4.24	0.00	9.7	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-770	C/H2/CsS	C_rad/Cs2S	300-1500	3.28E-03	4.24	0.00	9.5	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-771	C/H2/CsS	Cd_rad/NonDeS	300-1500	2.72E-02	4.24	0.00	2.0	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-772	C/H2/CsS	C_rad/H/CdS	300-1500	4.49E-02	4.24	0.00	20.9	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-773	C/H2/CsS	C_rad/CdCsS	300-1500	5.67E-03	4.24	0.00	20.9	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-774	C/H2/CsS	C_rad/H/CtS	300-1500	2.67E-02	4.24	0.00	19.4	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-775	C/H2/CsS	C_rad/CtCsS	300-1500	1.09E-01	4.24	0.00	20.2	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-776	C/H/Cs2S	H_rad	300-1500	5.95E-01	4.24	0.00	0.8	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-777	C/H/Cs2S	C_methyl	300-1500	1.72E-02	4.24	0.00	2.9	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-778	C/H/Cs2S	C_rad/H2/Cs	300-1500	3.51E-03	4.24	0.00	4.3	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-779	C/H/Cs2S	C_rad/H/NonDeC	300-1500	9.26E-03	4.24	0.00	5.2	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-780	C/H/Cs2S	C_rad/Cs3	300-1500	4.87E-03	4.24	0.00	5.2	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-781	C/H/Cs2S	C_rad/H2/Cd	300-1500	3.62E-02	4.24	0.00	15.7	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-782	C/H/Cs2S	C_rad/H/CdCs	300-1500	2.85E-02	4.24	0.00	17.5	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-783	C/H/Cs2S	C_rad/CdCs2	300-1500	7.79E-03	4.24	0.00	17.9	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-784	C/H/Cs2S	C_rad/H/CdCd	300-1500	1.15E-01	4.24	0.00	25.7	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-785	C/H/Cs2S	C_rad/CdCdCs	300-1500	1.02E-02	4.24	0.00	26.2	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-786	C/H/Cs2S	C_rad/H2/Ct	300-1500	1.64E-02	4.24	0.00	11.9	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-787	C/H/Cs2S	C_rad/H/CtCs	300-1500	6.84E-03	4.24	0.00	13.5	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-788	C/H/Cs2S	C_rad/CtCs2	300-1500	4.85E-03	4.24	0.00	14.3	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-789	C/H/Cs2S	C_rad/H/CtCt	300-1500	3.48E-02	4.24	0.00	20.0	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-790	C/H/Cs2S	C_rad/CtCtCs	300-1500	1.71E-03	4.24	0.00	21.0	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-791	C/H/Cs2S	C_rad/H2/Cb	300-1500	3.53E-02	4.24	0.00	13.6	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-792	C/H/Cs2S	C_rad/H/CbCs	300-1500	1.81E-02	4.24	0.00	14.4	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-793	C/H/Cs2S	C_rad/CbCs2	300-1500	8.64E-04	4.24	0.00	14.0	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-794	C/H/Cs2S	Cd_pri_rad	300-1500	1.62E-02	4.24	0.00	-1.7	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-795	C/H/Cs2S	Cd_rad/NonDeC	300-1500	1.60E-02	4.24	0.00	-0.8	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-796	C/H/Cs2S	Cd_rad/Cd	300-1500	7.65E-03	4.24	0.00	6.0	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-797	C/H/Cs2S	Cb_rad	300-1500	1.93E-02	4.24	0.00	-4.4	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-798	C/H/Cs2S	Cd_rad/Ct	300-1500	1.64E-03	4.24	0.00	3.3	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-799	C/H/Cs2S	C_rad/H2/S	300-1500	5.55E-03	4.24	0.00	8.2	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-800	C/H/Cs2S	C_rad/H/CsS	300-1500	9.92E-03	4.24	0.00	8.2	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-801	C/H/Cs2S	C_rad/Cs2S	300-1500	4.00E-03	4.24	0.00	8.0	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-802	C/H/Cs2S	Cd_rad/NonDeS	300-1500	3.32E-02	4.24	0.00	0.4	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-803	C/H/Cs2S	C_rad/H/CdS	300-1500	5.48E-02	4.24	0.00	19.4	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-804	C/H/Cs2S	C_rad/CdCsS	300-1500	6.92E-03	4.24	0.00	19.4	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-805	C/H/Cs2S	C_rad/H/CtS	300-1500	3.26E-02	4.24	0.00	17.9	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-806	C/H/Cs2S	C_rad/CtCsS	300-1500	1.33E-01	4.24	0.00	18.7	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-807	Cd/H/CS	H_rad	300-1500	1.24E+00	4.24	0.00	4.7	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-808	Cd/H/CS	C_methyl	300-1500	3.60E-02	4.24	0.00	6.8	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-809	Cd/H/CS	C_rad/H2/Cs	300-1500	7.33E-03	4.24	0.00	8.2	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-810	Cd/H/CS	C_rad/H/NonDeC	300-1500	1.94E-02	4.24	0.00	9.1	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-811	Cd/H/CS	C_rad/Cs3	300-1500	1.02E-02	4.24	0.00	9.1	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-812	Cd/H/CS	C_rad/H2/Cd	300-1500	7.56E-02	4.24	0.00	19.6	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-813	Cd/H/CS	C_rad/H/CdCs	300-1500	5.96E-02	4.24	0.00	21.4	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-814	Cd/H/CS	C_rad/CdCs2	300-1500	1.63E-02	4.24	0.00	21.9	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-815	Cd/H/CS	C_rad/H/CdCd	300-1500	2.40E-01	4.24	0.00	29.7	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-816	Cd/H/CS	C_rad/CdCdCs	300-1500	2.13E-02	4.24	0.00	30.1	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-817	Cd/H/CS	C_rad/H2/Ct	300-1500	3.44E-02	4.24	0.00	15.8	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-818	Cd/H/CS	C_rad/H/CtCs	300-1500	1.43E-02	4.24	0.00	17.4	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-819	Cd/H/CS	C_rad/CtCs2	300-1500	1.01E-02	4.24	0.00	18.2	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-820	Cd/H/CS	C_rad/H/CtCt	300-1500	7.28E-02	4.24	0.00	23.9	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-821	Cd/H/CS	C_rad/CtCtCs	300-1500	3.58E-03	4.24	0.00	25.0	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-822	Cd/H/CS	C_rad/H2/Cb	300-1500	7.38E-02	4.24	0.00	17.5	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-823	Cd/H/CS	C_rad/H/CbCs	300-1500	3.79E-02	4.24	0.00	18.3	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-824	Cd/H/CS	C_rad/CbCs2	300-1500	1.81E-03	4.24	0.00	17.9	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-825	Cd/H/CS	Cd_pri_rad	300-1500	3.39E-02	4.24	0.00	2.2	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-826	Cd/H/CS	Cd_rad/NonDeC	300-1500	3.35E-02	4.24	0.00	3.1	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-827	Cd/H/CS	Cd_rad/Cd	300-1500	1.60E-02	4.24	0.00	9.9	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-828	Cd/H/CS	Cb_rad	300-1500	4.03E-02	4.24	0.00	-0.5	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-829	Cd/H/CS	Cd_rad/Ct	300-1500	3.43E-03	4.24	0.00	7.2	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-830	Cd/H/CS	C_rad/H2/S	300-1500	1.16E-02	4.24	0.00	12.1	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-831	Cd/H/CS	C_rad/H/CsS	300-1500	2.07E-02	4.24	0.00	12.1	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-832	Cd/H/CS	C_rad/Cs2S	300-1500	8.37E-03	4.24	0.00	11.9	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-833	Cd/H/CS	Cd_rad/NonDeS	300-1500	6.94E-02	4.24	0.00	4.4	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-834	Cd/H/CS	C_rad/H/CdS	300-1500	1.15E-01	4.24	0.00	23.3	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-835	Cd/H/CS	C_rad/CdCsS	300-1500	1.45E-02	4.24	0.00	23.3	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-836	Cd/H/CS	C_rad/H/CtS	300-1500	6.81E-02	4.24	0.00	21.8	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-837	Cd/H/CS	C_rad/CtCsS	300-1500	2.79E-01	4.24	0.00	22.6	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-838	C/H2/CdS	H_rad	300-1500	8.93E-01	4.24	0.00	1.3	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-839	C/H2/CdS	C_methyl	300-1500	2.58E-02	4.24	0.00	3.4	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-840	C/H2/CdS	C_rad/H2/Cs	300-1500	5.26E-03	4.24	0.00	4.8	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-841	C/H2/CdS	C_rad/H/NonDeC	300-1500	1.39E-02	4.24	0.00	5.7	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-842	C/H2/CdS	C_rad/Cs3	300-1500	7.30E-03	4.24	0.00	5.7	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-843	C/H2/CdS	C_rad/H2/Cd	300-1500	5.43E-02	4.24	0.00	16.2	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-844	C/H2/CdS	C_rad/H/CdCs	300-1500	4.28E-02	4.24	0.00	18.0	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-845	C/H2/CdS	C_rad/CdCs2	300-1500	1.17E-02	4.24	0.00	18.5	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-846	C/H2/CdS	C_rad/H/CdCd	300-1500	1.72E-01	4.24	0.00	26.3	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-847	C/H2/CdS	C_rad/CdCdCs	300-1500	1.53E-02	4.24	0.00	26.7	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-848	C/H2/CdS	C_rad/H2/Ct	300-1500	2.47E-02	4.24	0.00	12.4	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-849	C/H2/CdS	C_rad/H/CtCs	300-1500	1.03E-02	4.24	0.00	14.0	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-850	C/H2/CdS	C_rad/CtCs2	300-1500	7.28E-03	4.24	0.00	14.8	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-851	C/H2/CdS	C_rad/H/CtCt	300-1500	5.23E-02	4.24	0.00	20.5	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-852	C/H2/CdS	C_rad/CtCtCs	300-1500	2.57E-03	4.24	0.00	21.6	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-853	C/H2/CdS	C_rad/H2/Cb	300-1500	5.29E-02	4.24	0.00	14.1	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-854	C/H2/CdS	C_rad/H/CbCs	300-1500	2.72E-02	4.24	0.00	14.9	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-855	C/H2/CdS	C_rad/CbCs2	300-1500	1.30E-03	4.24	0.00	14.5	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-856	C/H2/CdS	Cd_pri_rad	300-1500	2.43E-02	4.24	0.00	-1.2	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-857	C/H2/CdS	Cd_rad/NonDeC	300-1500	2.40E-02	4.24	0.00	-0.3	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-858	C/H2/CdS	Cd_rad/Cd	300-1500	1.15E-02	4.24	0.00	6.5	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-859	C/H2/CdS	Cb_rad	300-1500	2.89E-02	4.24	0.00	-3.9	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-860	C/H2/CdS	Cd_rad/Ct	300-1500	2.46E-03	4.24	0.00	3.8	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-861	C/H2/CdS	C_rad/H2/S	300-1500	8.34E-03	4.24	0.00	8.7	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-862	C/H2/CdS	C_rad/H/CsS	300-1500	1.49E-02	4.24	0.00	8.7	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-863	C/H2/CdS	C_rad/Cs2S	300-1500	6.00E-03	4.24	0.00	8.5	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-864	C/H2/CdS	Cd_rad/NonDeS	300-1500	4.98E-02	4.24	0.00	1.0	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-865	C/H2/CdS	C_rad/H/CdS	300-1500	8.23E-02	4.24	0.00	19.9	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-866	C/H2/CdS	C_rad/CdCsS	300-1500	1.04E-02	4.24	0.00	19.9	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-867	C/H2/CdS	C_rad/H/CtS	300-1500	4.89E-02	4.24	0.00	18.4	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-868	C/H2/CdS	C_rad/CtCsS	300-1500	2.00E-01	4.24	0.00	19.2	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-869	C/H/CdCsS	H_rad	300-1500	4.81E-01	4.24	0.00	0.0	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-870	C/H/CdCsS	C_methyl	300-1500	1.39E-02	4.24	0.00	2.2	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-871	C/H/CdCsS	C_rad/H2/Cs	300-1500	2.83E-03	4.24	0.00	3.6	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-872	C/H/CdCsS	C_rad/H/NonDeC	300-1500	7.49E-03	4.24	0.00	4.4	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-873	C/H/CdCsS	C_rad/Cs3	300-1500	3.93E-03	4.24	0.00	4.4	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-874	C/H/CdCsS	C_rad/H2/Cd	300-1500	2.92E-02	4.24	0.00	14.9	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-875	C/H/CdCsS	C_rad/H/CdCs	300-1500	2.30E-02	4.24	0.00	16.7	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-876	C/H/CdCsS	C_rad/CdCs2	300-1500	6.30E-03	4.24	0.00	17.2	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-877	C/H/CdCsS	C_rad/H/CdCd	300-1500	9.27E-02	4.24	0.00	25.0	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-878	C/H/CdCsS	C_rad/CdCdCs	300-1500	8.23E-03	4.24	0.00	25.4	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-879	C/H/CdCsS	C_rad/H2/Ct	300-1500	1.33E-02	4.24	0.00	11.2	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-880	C/H/CdCsS	C_rad/H/CtCs	300-1500	5.53E-03	4.24	0.00	12.7	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-881	C/H/CdCsS	C_rad/CtCs2	300-1500	3.92E-03	4.24	0.00	13.6	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-882	C/H/CdCsS	C_rad/H/CtCt	300-1500	2.82E-02	4.24	0.00	19.2	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-883	C/H/CdCsS	C_rad/CtCtCs	300-1500	1.38E-03	4.24	0.00	20.3	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-884	C/H/CdCsS	C_rad/H2/Cb	300-1500	2.85E-02	4.24	0.00	12.8	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-885	C/H/CdCsS	C_rad/H/CbCs	300-1500	1.47E-02	4.24	0.00	13.7	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-886	C/H/CdCsS	C_rad/CbCs2	300-1500	6.98E-04	4.24	0.00	13.3	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-887	C/H/CdCsS	Cd_pri_rad	300-1500	1.31E-02	4.24	0.00	-2.4	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-888	C/H/CdCsS	Cd_rad/NonDeC	300-1500	1.30E-02	4.24	0.00	-1.6	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-889	C/H/CdCsS	Cd_rad/Cd	300-1500	6.18E-03	4.24	0.00	5.3	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-890	C/H/CdCsS	Cb_rad	300-1500	1.56E-02	4.24	0.00	-5.2	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-891	C/H/CdCsS	Cd_rad/Ct	300-1500	1.33E-03	4.24	0.00	2.5	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-892	C/H/CdCsS	C_rad/H2/S	300-1500	4.49E-03	4.24	0.00	7.5	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-893	C/H/CdCsS	C_rad/H/CsS	300-1500	8.02E-03	4.24	0.00	7.5	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-894	C/H/CdCsS	C_rad/Cs2S	300-1500	3.23E-03	4.24	0.00	7.3	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-895	C/H/CdCsS	Cd_rad/NonDeS	300-1500	2.68E-02	4.24	0.00	-0.3	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-896	C/H/CdCsS	C_rad/H/CdS	300-1500	4.43E-02	4.24	0.00	18.6	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-897	C/H/CdCsS	C_rad/CdCsS	300-1500	5.60E-03	4.24	0.00	18.6	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-898	C/H/CdCsS	C_rad/H/CtS	300-1500	2.63E-02	4.24	0.00	17.2	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-899	C/H/CdCsS	C_rad/CtCsS	300-1500	1.08E-01	4.24	0.00	17.9	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-900	C/H2/CtS	H_rad	300-1500	7.32E-01	4.24	0.00	0.9	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-901	C/H2/CtS	C_methyl	300-1500	2.12E-02	4.24	0.00	3.0	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-902	C/H2/CtS	C_rad/H2/Cs	300-1500	4.31E-03	4.24	0.00	4.4	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-903	C/H2/CtS	C_rad/H/NonDeC	300-1500	1.14E-02	4.24	0.00	5.3	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-904	C/H2/CtS	C_rad/Cs3	300-1500	5.98E-03	4.24	0.00	5.3	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-905	C/H2/CtS	C_rad/H2/Cd	300-1500	4.45E-02	4.24	0.00	15.8	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-906	C/H2/CtS	C_rad/H/CdCs	300-1500	3.51E-02	4.24	0.00	17.6	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-907	C/H2/CtS	C_rad/CdCs2	300-1500	9.58E-03	4.24	0.00	18.0	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-908	C/H2/CtS	C_rad/H/CdCd	300-1500	1.41E-01	4.24	0.00	25.8	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-909	C/H2/CtS	C_rad/CdCdCs	300-1500	1.25E-02	4.24	0.00	26.3	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-910	C/H2/CtS	C_rad/H2/Ct	300-1500	2.02E-02	4.24	0.00	12.0	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-911	C/H2/CtS	C_rad/H/CtCs	300-1500	8.41E-03	4.24	0.00	13.6	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-912	C/H2/CtS	C_rad/CtCs2	300-1500	5.97E-03	4.24	0.00	14.4	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-913	C/H2/CtS	C_rad/H/CtCt	300-1500	4.28E-02	4.24	0.00	20.1	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-914	C/H2/CtS	C_rad/CtCtCs	300-1500	2.11E-03	4.24	0.00	21.2	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-915	C/H2/CtS	C_rad/H2/Cb	300-1500	4.34E-02	4.24	0.00	13.7	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-916	C/H2/CtS	C_rad/H/CbCs	300-1500	2.23E-02	4.24	0.00	14.5	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-917	C/H2/CtS	C_rad/CbCs2	300-1500	1.06E-03	4.24	0.00	14.1	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-918	C/H2/CtS	Cd_pri_rad	300-1500	1.99E-02	4.24	0.00	-1.6	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-919	C/H2/CtS	Cd_rad/NonDeC	300-1500	1.97E-02	4.24	0.00	-0.7	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-920	C/H2/CtS	Cd_rad/Cd	300-1500	9.40E-03	4.24	0.00	6.1	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-921	C/H2/CtS	Cb_rad	300-1500	2.37E-02	4.24	0.00	-4.3	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-922	C/H2/CtS	Cd_rad/Ct	300-1500	2.02E-03	4.24	0.00	3.4	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-923	C/H2/CtS	C_rad/H2/S	300-1500	6.83E-03	4.24	0.00	8.3	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-924	C/H2/CtS	C_rad/H/CsS	300-1500	1.22E-02	4.24	0.00	8.3	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-925	C/H2/CtS	C_rad/Cs2S	300-1500	4.92E-03	4.24	0.00	8.1	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-926	C/H2/CtS	Cd_rad/NonDeS	300-1500	4.08E-02	4.24	0.00	0.6	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-927	C/H2/CtS	C_rad/H/CdS	300-1500	6.74E-02	4.24	0.00	19.5	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-928	C/H2/CtS	C_rad/CdCsS	300-1500	8.51E-03	4.24	0.00	19.5	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-929	C/H2/CtS	C_rad/H/CtS	300-1500	4.01E-02	4.24	0.00	18.0	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-930	C/H2/CtS	C_rad/CtCsS	300-1500	1.64E-01	4.24	0.00	18.8	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-931	C/H/CtCsS	H_rad	300-1500	7.39E-01	4.24	0.00	-0.6	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-932	C/H/CtCsS	C_methyl	300-1500	2.14E-02	4.24	0.00	1.5	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-933	C/H/CtCsS	C_rad/H2/Cs	300-1500	4.35E-03	4.24	0.00	2.9	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-934	C/H/CtCsS	C_rad/H/NonDeC	300-1500	1.15E-02	4.24	0.00	3.8	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-935	C/H/CtCsS	C_rad/Cs3	300-1500	6.04E-03	4.24	0.00	3.8	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-936	C/H/CtCsS	C_rad/H2/Cd	300-1500	4.49E-02	4.24	0.00	14.3	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-937	C/H/CtCsS	C_rad/H/CdCs	300-1500	3.54E-02	4.24	0.00	16.1	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-938	C/H/CtCsS	C_rad/CdCs2	300-1500	9.67E-03	4.24	0.00	16.6	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-939	C/H/CtCsS	C_rad/H/CdCd	300-1500	1.42E-01	4.24	0.00	24.4	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-940	C/H/CtCsS	C_rad/CdCdCs	300-1500	1.26E-02	4.24	0.00	24.8	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-941	C/H/CtCsS	C_rad/H2/Ct	300-1500	2.04E-02	4.24	0.00	10.5	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-942	C/H/CtCsS	C_rad/H/CtCs	300-1500	8.49E-03	4.24	0.00	12.1	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-943	C/H/CtCsS	C_rad/CtCs2	300-1500	6.02E-03	4.24	0.00	12.9	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-944	C/H/CtCsS	C_rad/H/CtCt	300-1500	4.32E-02	4.24	0.00	18.6	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-945	C/H/CtCsS	C_rad/CtCtCs	300-1500	2.13E-03	4.24	0.00	19.7	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-946	C/H/CtCsS	C_rad/H2/Cb	300-1500	4.38E-02	4.24	0.00	12.2	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-947	C/H/CtCsS	C_rad/H/CbCs	300-1500	2.25E-02	4.24	0.00	13.0	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-948	C/H/CtCsS	C_rad/CbCs2	300-1500	1.07E-03	4.24	0.00	12.6	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-949	C/H/CtCsS	Cd_pri_rad	300-1500	2.01E-02	4.24	0.00	-3.1	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-950	C/H/CtCsS	Cd_rad/NonDeC	300-1500	1.99E-02	4.24	0.00	-2.2	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-951	C/H/CtCsS	Cd_rad/Cd	300-1500	9.49E-03	4.24	0.00	4.6	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-952	C/H/CtCsS	Cb_rad	300-1500	2.39E-02	4.24	0.00	-5.8	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-953	C/H/CtCsS	Cd_rad/Ct	300-1500	2.04E-03	4.24	0.00	1.9	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-954	C/H/CtCsS	C_rad/H2/S	300-1500	6.89E-03	4.24	0.00	6.8	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-955	C/H/CtCsS	C_rad/H/CsS	300-1500	1.23E-02	4.24	0.00	6.8	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-956	C/H/CtCsS	C_rad/Cs2S	300-1500	4.97E-03	4.24	0.00	6.6	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-957	C/H/CtCsS	Cd_rad/NonDeS	300-1500	4.12E-02	4.24	0.00	-0.9	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-958	C/H/CtCsS	C_rad/H/CdS	300-1500	6.80E-02	4.24	0.00	18.0	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-959	C/H/CtCsS	C_rad/CdCsS	300-1500	8.59E-03	4.24	0.00	18.0	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-960	C/H/CtCsS	C_rad/CtCsS	300-1500	4.04E-02	4.24	0.00	16.5	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-961	C/H/CtCsS	C_rad/CtCsS	300-1500	1.65E-01	4.24	0.00	17.3	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-962	S_pri	H_rad	300-1500	1.16E+04	2.98	0.00	-0.2	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-963	S_pri	C_methyl	300-1500	2.08E+02	2.98	0.00	0.7	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-964	S_pri	C_rad/H2/Cs	300-1500	3.22E+01	2.98	0.00	-0.2	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-965	S_pri	C_rad/H/NonDeC	300-1500	3.92E+01	2.98	0.00	-1.2	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-966	S_pri	C_rad/Cs3	300-1500	8.74E+01	2.98	0.00	-2.8	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-967	S_pri	Cd_pri_rad	300-1500	5.50E+02	2.98	0.00	-1.7	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-968	S_pri	Cd_rad/NonDeC	300-1500	2.91E+02	2.98	0.00	-2.7	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-969	S_pri	Cd_rad/Cd	300-1500	1.95E+02	2.98	0.00	2.4	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-970	S_pri	Cd_rad/Ct	300-1500	3.08E+01	2.98	0.00	-0.2	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-971	S_pri	C_rad/H2/Cd	300-1500	1.43E+02	2.98	0.00	6.0	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-972	S_pri	C_rad/H/CdCs	300-1500	1.14E+02	2.98	0.00	6.1	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-973	S_pri	C_rad/CdCs2	300-1500	2.10E+01	2.98	0.00	5.5	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-974	S_pri	C_rad/H/CdCd	300-1500	2.35E+02	2.98	0.00	13.0	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-975	S_pri	C_rad/CdCdCs	300-1500	1.25E+01	2.98	0.00	13.1	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-976	S_pri	C_rad/H2/Ct	300-1500	1.24E+02	2.98	0.00	4.5	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-977	S_pri	C_rad/H/CtCs	300-1500	3.93E+01	2.98	0.00	4.1	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-978	S_pri	C_rad/CtCs2	300-1500	1.37E+01	2.98	0.00	3.5	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-979	S_pri	C_rad/H/CtCt	300-1500	9.86E+01	2.98	0.00	9.7	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-980	S_pri	C_rad/CtCtCs	300-1500	2.75E+00	2.98	0.00	9.9	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-981	S_pri	Cb_rad	300-1500	3.83E+02	2.98	0.00	-3.2	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-982	S_pri	C_rad/H2/Cb	300-1500	8.91E+01	2.98	0.00	3.2	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-983	S_pri	C_rad/H/CbCs	300-1500	3.35E+01	2.98	0.00	2.8	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-984	S_pri	C_rad/CbCs2	300-1500	2.33E+00	2.98	0.00	1.9	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-985	S_pri	C_rad/H2/S	300-1500	2.83E+01	2.98	0.00	1.0	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-986	S_pri	C_rad/H/CsS	300-1500	6.67E+01	2.98	0.00	-0.3	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-987	S_pri	C_rad/Cs2S	300-1500	1.63E+01	2.98	0.00	-1.4	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-988	S_pri	Cd_rad/NonDeS	300-1500	7.76E+03	2.98	0.00	-1.3	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-989	S_pri	C_rad/H/CdS	300-1500	1.24E+02	2.98	0.00	8.0	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-990	S_pri	C_rad/CdCsS	300-1500	2.26E+01	2.98	0.00	7.5	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-991	S_pri	C_rad/H/CtS	300-1500	8.09E+01	2.98	0.00	7.2	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-992	S_pri	C_rad/CtCsS	300-1500	3.81E+02	2.98	0.00	7.3	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-993	S/H/NonDeC	H_rad	300-1500	3.22E+04	2.98	0.00	-0.5	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-994	S/H/NonDeC	C_methyl	300-1500	5.79E+02	2.98	0.00	0.4	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-995	S/H/NonDeC	C_rad/H2/Cs	300-1500	8.99E+01	2.98	0.00	-0.6	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-996	S/H/NonDeC	C_rad/H/NonDeC	300-1500	1.09E+02	2.98	0.00	-1.5	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-997	S/H/NonDeC	C_rad/Cs3	300-1500	2.44E+02	2.98	0.00	-3.1	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-998	S/H/NonDeC	Cd_pri_rad	300-1500	1.53E+03	2.98	0.00	-2.0	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-999	S/H/NonDeC	Cd_rad/NonDeC	300-1500	8.10E+02	2.98	0.00	-3.0	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-1000	S/H/NonDeC	Cd_rad/Cd	300-1500	5.45E+02	2.98	0.00	2.1	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-1001	S/H/NonDeC	Cd_rad/Ct	300-1500	8.60E+01	2.98	0.00	-0.5	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-1002	S/H/NonDeC	C_rad/H2/Cd	300-1500	4.00E+02	2.98	0.00	5.7	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-1003	S/H/NonDeC	C_rad/H/CdCs	300-1500	3.17E+02	2.98	0.00	5.8	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-1004	S/H/NonDeC	C_rad/CdCs2	300-1500	5.86E+01	2.98	0.00	5.2	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-1005	S/H/NonDeC	C_rad/H/CdCd	300-1500	6.55E+02	2.98	0.00	12.7	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-1006	S/H/NonDeC	C_rad/CdCdCs	300-1500	3.48E+01	2.98	0.00	12.8	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-1007	S/H/NonDeC	C_rad/H2/Ct	300-1500	3.46E+02	2.98	0.00	4.2	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-1008	S/H/NonDeC	C_rad/H/CtCs	300-1500	1.10E+02	2.98	0.00	3.8	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-1009	S/H/NonDeC	C_rad/CtCs2	300-1500	3.81E+01	2.98	0.00	3.2	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-1010	S/H/NonDeC	C_rad/H/CtCt	300-1500	2.75E+02	2.98	0.00	9.4	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-1011	S/H/NonDeC	C_rad/CtCtCs	300-1500	7.66E+00	2.98	0.00	9.6	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-1012	S/H/NonDeC	Cb_rad	300-1500	1.07E+03	2.98	0.00	-3.5	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-1013	S/H/NonDeC	C_rad/H2/Cb	300-1500	2.49E+02	2.98	0.00	2.9	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-1014	S/H/NonDeC	C_rad/H/CbCs	300-1500	9.35E+01	2.98	0.00	2.5	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-1015	S/H/NonDeC	C_rad/CbCs2	300-1500	6.51E+00	2.98	0.00	1.6	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-1016	S/H/NonDeC	C_rad/H2/S	300-1500	7.90E+01	2.98	0.00	0.7	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-1017	S/H/NonDeC	C_rad/H/CsS	300-1500	1.86E+02	2.98	0.00	-0.6	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-1018	S/H/NonDeC	C_rad/Cs2S	300-1500	4.56E+01	2.98	0.00	-1.7	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-1019	S/H/NonDeC	Cd_rad/NonDeS	300-1500	2.16E+04	2.98	0.00	-1.6	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-1020	S/H/NonDeC	C_rad/H/CdS	300-1500	3.44E+02	2.98	0.00	7.7	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-1021	S/H/NonDeC	C_rad/CdCsS	300-1500	6.30E+01	2.98	0.00	7.2	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-1022	S/H/NonDeC	C_rad/H/CtS	300-1500	2.26E+02	2.98	0.00	6.9	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-1023	S/H/NonDeC	C_rad/CtCsS	300-1500	1.06E+03	2.98	0.00	7.0	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-1024	S/H/Cd	H_rad	300-1500	4.42E+04	2.98	0.00	-1.2	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-1025	S/H/Cd	C_methyl	300-1500	7.95E+02	2.98	0.00	-0.2	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-1026	S/H/Cd	C_rad/H2/Cs	300-1500	1.23E+02	2.98	0.00	-1.2	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-1027	S/H/Cd	C_rad/H/NonDeC	300-1500	1.50E+02	2.98	0.00	-2.1	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-1028	S/H/Cd	C_rad/Cs3	300-1500	3.34E+02	2.98	0.00	-3.8	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-1029	S/H/Cd	Cd_pri_rad	300-1500	2.10E+03	2.98	0.00	-2.6	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-1030	S/H/Cd	Cd_rad/NonDeC	300-1500	1.11E+03	2.98	0.00	-3.7	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-1031	S/H/Cd	Cd_rad/Cd	300-1500	7.47E+02	2.98	0.00	1.5	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-1032	S/H/Cd	Cd_rad/Ct	300-1500	1.18E+02	2.98	0.00	-1.2	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-1033	S/H/Cd	C_rad/H2/Cd	300-1500	5.49E+02	2.98	0.00	5.1	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-1034	S/H/Cd	C_rad/H/CdCs	300-1500	4.35E+02	2.98	0.00	5.2	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-1035	S/H/Cd	C_rad/CdCs2	300-1500	8.04E+01	2.98	0.00	4.6	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-1036	S/H/Cd	C_rad/H/CdCd	300-1500	8.98E+02	2.98	0.00	12.1	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-1037	S/H/Cd	C_rad/CdCdCs	300-1500	4.77E+01	2.98	0.00	12.1	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-1038	S/H/Cd	C_rad/H2/Ct	300-1500	4.75E+02	2.98	0.00	3.5	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-1039	S/H/Cd	C_rad/H/CtCs	300-1500	1.50E+02	2.98	0.00	3.2	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-1040	S/H/Cd	C_rad/CtCs2	300-1500	5.22E+01	2.98	0.00	2.6	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-1041	S/H/Cd	C_rad/H/CtCt	300-1500	3.77E+02	2.98	0.00	8.8	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-1042	S/H/Cd	C_rad/CtCtCs	300-1500	1.05E+01	2.98	0.00	8.9	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-1043	S/H/Cd	Cb_rad	300-1500	1.46E+03	2.98	0.00	-4.1	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-1044	S/H/Cd	C_rad/H2/Cb	300-1500	3.41E+02	2.98	0.00	2.3	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-1045	S/H/Cd	C_rad/H/CbCs	300-1500	1.28E+02	2.98	0.00	1.9	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-1046	S/H/Cd	C_rad/CbCs2	300-1500	8.93E+00	2.98	0.00	1.0	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-1047	S/H/Cd	C_rad/H2/S	300-1500	1.08E+02	2.98	0.00	0.0	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-1048	S/H/Cd	C_rad/H/CsS	300-1500	2.55E+02	2.98	0.00	-1.2	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-1049	S/H/Cd	C_rad/Cs2S	300-1500	6.25E+01	2.98	0.00	-2.3	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-1050	S/H/Cd	Cd_rad/NonDeS	300-1500	2.97E+04	2.98	0.00	-2.2	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-1051	S/H/Cd	C_rad/H/CdS	300-1500	4.72E+02	2.98	0.00	7.1	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-1052	S/H/Cd	C_rad/CdCsS	300-1500	8.64E+01	2.98	0.00	6.5	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-1053	S/H/Cd	C_rad/H/CtS	300-1500	3.09E+02	2.98	0.00	6.3	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-1054	S/H/Cd	C_rad/CtCsS	300-1500	1.46E+03	2.98	0.00	6.3	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-1055	S/H/Ct	H_rad	300-1500	4.48E+04	2.98	0.00	-2.7	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-1056	S/H/Ct	C_methyl	300-1500	8.06E+02	2.98	0.00	-1.7	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-1057	S/H/Ct	C_rad/H2/Cs	300-1500	1.25E+02	2.98	0.00	-2.7	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-1058	S/H/Ct	C_rad/H/NonDeC	300-1500	1.52E+02	2.98	0.00	-3.6	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-1059	S/H/Ct	C_rad/Cs3	300-1500	3.39E+02	2.98	0.00	-5.2	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-1060	S/H/Ct	Cd_pri_rad	300-1500	2.13E+03	2.98	0.00	-4.1	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-1061	S/H/Ct	Cd_rad/NonDeC	300-1500	1.13E+03	2.98	0.00	-5.1	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-1062	S/H/Ct	Cd_rad/Cd	300-1500	7.58E+02	2.98	0.00	0.0	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-1063	S/H/Ct	Cd_rad/Ct	300-1500	1.20E+02	2.98	0.00	-2.7	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-1064	S/H/Ct	C_rad/H2/Cd	300-1500	5.57E+02	2.98	0.00	3.6	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-1065	S/H/Ct	C_rad/H/CdCs	300-1500	4.41E+02	2.98	0.00	3.7	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-1066	S/H/Ct	C_rad/CdCs2	300-1500	8.15E+01	2.98	0.00	3.1	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-1067	S/H/Ct	C_rad/H/CdCd	300-1500	9.11E+02	2.98	0.00	10.6	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-1068	S/H/Ct	C_rad/CdCdCs	300-1500	4.84E+01	2.98	0.00	10.6	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-1069	S/H/Ct	C_rad/H2/Ct	300-1500	4.82E+02	2.98	0.00	2.0	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-1070	S/H/Ct	C_rad/H/CtCs	300-1500	1.53E+02	2.98	0.00	1.7	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-1071	S/H/Ct	C_rad/CtCs2	300-1500	5.30E+01	2.98	0.00	1.1	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-1072	S/H/Ct	C_rad/H/CtCt	300-1500	3.82E+02	2.98	0.00	7.3	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-1073	S/H/Ct	C_rad/CtCtCs	300-1500	1.07E+01	2.98	0.00	7.5	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-1074	S/H/Ct	Cb_rad	300-1500	1.49E+03	2.98	0.00	-5.6	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-1075	S/H/Ct	C_rad/H2/Cb	300-1500	3.46E+02	2.98	0.00	0.8	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-1076	S/H/Ct	C_rad/H/CbCs	300-1500	1.30E+02	2.98	0.00	0.4	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-1077	S/H/Ct	C_rad/CbCs2	300-1500	9.05E+00	2.98	0.00	-0.5	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-1078	S/H/Ct	C_rad/H2/S	300-1500	1.10E+02	2.98	0.00	-1.5	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-1079	S/H/Ct	C_rad/H/CsS	300-1500	2.59E+02	2.98	0.00	-2.7	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-1080	S/H/Ct	C_rad/Cs2S	300-1500	6.34E+01	2.98	0.00	-3.8	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-1081	S/H/Ct	Cd_rad/NonDeS	300-1500	3.01E+04	2.98	0.00	-3.7	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-1082	S/H/Ct	C_rad/H/CdS	300-1500	4.79E+02	2.98	0.00	5.6	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-1083	S/H/Ct	C_rad/CdCsS	300-1500	8.76E+01	2.98	0.00	5.1	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-1084	S/H/Ct	C_rad/H/CtS	300-1500	3.14E+02	2.98	0.00	4.8	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-1085	S/H/Ct	C_rad/CtCsS	300-1500	1.48E+03	2.98	0.00	4.9	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-1086	S/H/Cb	H_rad	300-1500	3.64E+03	2.98	0.00	-1.7	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-1087	S/H/Cb	C_methyl	300-1500	6.54E+01	2.98	0.00	-0.7	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-1088	S/H/Cb	C_rad/H2/Cs	300-1500	1.01E+01	2.98	0.00	-1.7	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-1089	S/H/Cb	C_rad/H/NonDeC	300-1500	1.24E+01	2.98	0.00	-2.6	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-1090	S/H/Cb	C_rad/Cs3	300-1500	2.75E+01	2.98	0.00	-4.2	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-1091	S/H/Cb	Cd_pri_rad	300-1500	1.73E+02	2.98	0.00	-3.1	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-1092	S/H/Cb	Cd_rad/NonDeC	300-1500	9.15E+01	2.98	0.00	-4.1	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-1093	S/H/Cb	Cd_rad/Cd	300-1500	6.15E+01	2.98	0.00	1.0	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-1094	S/H/Cb	Cd_rad/Ct	300-1500	9.71E+00	2.98	0.00	-1.6	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-1095	S/H/Cb	C_rad/H2/Cd	300-1500	4.52E+01	2.98	0.00	4.6	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-1096	S/H/Cb	C_rad/H/CdCs	300-1500	3.58E+01	2.98	0.00	4.7	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-1097	S/H/Cb	C_rad/CdCs2	300-1500	6.62E+00	2.98	0.00	4.1	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-1098	S/H/Cb	C_rad/H/CdCd	300-1500	7.40E+01	2.98	0.00	11.6	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-1099	S/H/Cb	C_rad/CdCdCs	300-1500	3.93E+00	2.98	0.00	11.6	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-1100	S/H/Cb	C_rad/H2/Ct	300-1500	3.91E+01	2.98	0.00	3.0	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-1101	S/H/Cb	C_rad/H/CtCs	300-1500	1.24E+01	2.98	0.00	2.7	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-1102	S/H/Cb	C_rad/CtCs2	300-1500	4.30E+00	2.98	0.00	2.1	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-1103	S/H/Cb	C_rad/H/CtCt	300-1500	3.10E+01	2.98	0.00	8.3	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-1104	S/H/Cb	C_rad/CtCtCs	300-1500	8.65E-01	2.98	0.00	8.5	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-1105	S/H/Cb	Cb_rad	300-1500	1.21E+02	2.98	0.00	-4.6	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-1106	S/H/Cb	C_rad/H2/Cb	300-1500	2.81E+01	2.98	0.00	1.8	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-1107	S/H/Cb	C_rad/H/CbCs	300-1500	1.06E+01	2.98	0.00	1.4	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-1108	S/H/Cb	C_rad/CbCs2	300-1500	7.35E-01	2.98	0.00	0.5	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-1109	S/H/Cb	C_rad/H2/S	300-1500	8.92E+00	2.98	0.00	-0.4	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-1110	S/H/Cb	C_rad/H/CsS	300-1500	2.10E+01	2.98	0.00	-1.7	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-1111	S/H/Cb	C_rad/Cs2S	300-1500	5.15E+00	2.98	0.00	-2.8	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-1112	S/H/Cb	Cd_rad/NonDeS	300-1500	2.44E+03	2.98	0.00	-2.7	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-1113	S/H/Cb	C_rad/H/CdS	300-1500	3.89E+01	2.98	0.00	6.6	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-1114	S/H/Cb	C_rad/CdCsS	300-1500	7.11E+00	2.98	0.00	6.1	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-1115	S/H/Cb	C_rad/H/CtS	300-1500	2.55E+01	2.98	0.00	5.8	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-1116	S/H/Cb	C_rad/CtCsS	300-1500	1.20E+02	2.98	0.00	5.9	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-1117	S/H/NonDeS	H_rad	300-1500	4.83E+04	2.98	0.00	-2.5	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-1118	S/H/NonDeS	C_methyl	300-1500	8.69E+02	2.98	0.00	-1.6	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-1119	S/H/NonDeS	C_rad/H2/Cs	300-1500	1.35E+02	2.98	0.00	-2.6	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-1120	S/H/NonDeS	C_rad/H/NonDeC	300-1500	1.64E+02	2.98	0.00	-3.5	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-1121	S/H/NonDeS	C_rad/Cs3	300-1500	3.65E+02	2.98	0.00	-5.1	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-1122	S/H/NonDeS	Cd_pri_rad	300-1500	2.30E+03	2.98	0.00	-4.0	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-1123	S/H/NonDeS	Cd_rad/NonDeC	300-1500	1.21E+03	2.98	0.00	-5.0	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-1124	S/H/NonDeS	Cd_rad/Cd	300-1500	8.17E+02	2.98	0.00	0.1	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-1125	S/H/NonDeS	Cd_rad/Ct	300-1500	1.29E+02	2.98	0.00	-2.5	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-1126	S/H/NonDeS	C_rad/H2/Cd	300-1500	6.00E+02	2.98	0.00	3.7	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-1127	S/H/NonDeS	C_rad/H/CdCs	300-1500	4.75E+02	2.98	0.00	3.8	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-1128	S/H/NonDeS	C_rad/CdCs2	300-1500	8.79E+01	2.98	0.00	3.2	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-1129	S/H/NonDeS	C_rad/H/CdCd	300-1500	9.82E+02	2.98	0.00	10.7	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-1130	S/H/NonDeS	C_rad/CdCdCs	300-1500	5.22E+01	2.98	0.00	10.8	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-1131	S/H/NonDeS	C_rad/H2/Ct	300-1500	5.19E+02	2.98	0.00	2.1	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-1132	S/H/NonDeS	C_rad/H/CtCs	300-1500	1.64E+02	2.98	0.00	1.8	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-1133	S/H/NonDeS	C_rad/CtCs2	300-1500	5.71E+01	2.98	0.00	1.2	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-1134	S/H/NonDeS	C_rad/H/CtCt	300-1500	4.12E+02	2.98	0.00	7.4	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-1135	S/H/NonDeS	C_rad/CtCtCs	300-1500	1.15E+01	2.98	0.00	7.6	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-1136	S/H/NonDeS	Cb_rad	300-1500	1.60E+03	2.98	0.00	-5.5	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-1137	S/H/NonDeS	C_rad/H2/Cb	300-1500	3.73E+02	2.98	0.00	0.9	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-1138	S/H/NonDeS	C_rad/H/CbCs	300-1500	1.40E+02	2.98	0.00	0.5	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-1139	S/H/NonDeS	C_rad/CbCs2	300-1500	9.76E+00	2.98	0.00	-0.4	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-1140	S/H/NonDeS	C_rad/H2/S	300-1500	1.18E+02	2.98	0.00	-1.3	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-1141	S/H/NonDeS	C_rad/H/CsS	300-1500	2.79E+02	2.98	0.00	-2.6	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-1142	S/H/NonDeS	C_rad/Cs2S	300-1500	6.83E+01	2.98	0.00	-3.7	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-1143	S/H/NonDeS	Cd_rad/NonDeS	300-1500	3.24E+04	2.98	0.00	-3.6	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-1144	S/H/NonDeS	C_rad/H/CdS	300-1500	5.17E+02	2.98	0.00	5.7	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-1145	S/H/NonDeS	C_rad/CdCsS	300-1500	9.44E+01	2.98	0.00	5.2	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-1146	S/H/NonDeS	C_rad/H/CtS	300-1500	3.38E+02	2.98	0.00	4.9	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-1147	S/H/NonDeS	C_rad/CtCsS	300-1500	1.59E+03	2.98	0.00	5.0	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
+24.		H2			C_rad/H2/S	300-1500	8.00E-03	4.24	0.00	13.1	0	0	0	0	4	Aäron Vandeputte GAVs CBS-QB3
+25.		H2			C_rad/H/CsS	300-1500	1.43E-02	4.24	0.00	13.1	0	0	0	0	4	Aäron Vandeputte GAVs CBS-QB3
+26.		H2			C_rad/Cs2S	300-1500	5.76E-03	4.24	0.00	12.8	0	0	0	0	4	Aäron Vandeputte GAVs CBS-QB3
+27.		H2			Cd_rad/NonDeS	300-1500	4.78E-02	4.24	0.00	5.3	0	0	0	0	4	Aäron Vandeputte GAVs CBS-QB3
+28.		H2			C_rad/H/CdS	300-1500	7.89E-02	4.24	0.00	24.2	0	0	0	0	4	Aäron Vandeputte GAVs CBS-QB3
+29.		H2			C_rad/CdCsS	300-1500	9.97E-03	4.24	0.00	24.2	0	0	0	0	4	Aäron Vandeputte GAVs CBS-QB3
+30.		H2			C_rad/H/CtS	300-1500	4.69E-02	4.24	0.00	22.7	0	0	0	0	4	Aäron Vandeputte GAVs CBS-QB3
+31.		H2			C_rad/CtCsS	300-1500	1.92E-01	4.24	0.00	23.5	0	0	0	0	4	Aäron Vandeputte GAVs CBS-QB3
+55.		C_methane		C_rad/H2/S	300-1500	4.52E-03	4.24	0.00	15.8	0	0	0	0	4	Aäron Vandeputte GAVs CBS-QB3
+56.		C_methane		C_rad/H/CsS	300-1500	8.07E-03	4.24	0.00	15.8	0	0	0	0	4	Aäron Vandeputte GAVs CBS-QB3
+57.		C_methane		C_rad/Cs2S	300-1500	3.26E-03	4.24	0.00	15.6	0	0	0	0	4	Aäron Vandeputte GAVs CBS-QB3
+58.		C_methane		Cd_rad/NonDeS	300-1500	2.70E-02	4.24	0.00	8.0	0	0	0	0	4	Aäron Vandeputte GAVs CBS-QB3
+59.		C_methane		C_rad/H/CdS	300-1500	4.46E-02	4.24	0.00	26.9	0	0	0	0	4	Aäron Vandeputte GAVs CBS-QB3
+60.		C_methane		C_rad/CdCsS	300-1500	5.64E-03	4.24	0.00	26.9	0	0	0	0	4	Aäron Vandeputte GAVs CBS-QB3
+61.		C_methane		C_rad/H/CtS	300-1500	2.65E-02	4.24	0.00	25.5	0	0	0	0	4	Aäron Vandeputte GAVs CBS-QB3
+62.		C_methane		C_rad/CtCsS	300-1500	1.08E-01	4.24	0.00	26.2	0	0	0	0	4	Aäron Vandeputte GAVs CBS-QB3
+86.		C/H3/Cs	C_rad/H2/S	300-1500	6.81E-03	4.24	0.00	13.4	0	0	0	0	4	Aäron Vandeputte GAVs 
+87.		C/H3/Cs	C_rad/H/CsS	300-1500	1.22E-02	4.24	0.00	13.4	0	0	0	0	4	Aäron Vandeputte GAVs 
+88.		C/H3/Cs	C_rad/Cs2S	300-1500	4.91E-03	4.24	0.00	13.2	0	0	0	0	4	Aäron Vandeputte GAVs 
+89.		C/H3/Cs	Cd_rad/NonDeS	300-1500	4.07E-02	4.24	0.00	5.7	0	0	0	0	4	Aäron Vandeputte GAVs 
+90.		C/H3/Cs	C_rad/H/CdS	300-1500	6.72E-02	4.24	0.00	24.6	0	0	0	0	4	Aäron Vandeputte GAVs 
+91.		C/H3/Cs	C_rad/CdCsS	300-1500	8.49E-03	4.24	0.00	24.6	0	0	0	0	4	Aäron Vandeputte GAVs 
+92.		C/H3/Cs	C_rad/H/CtS	300-1500	4.00E-02	4.24	0.00	23.1	0	0	0	0	4	Aäron Vandeputte GAVs 
+93.		C/H3/Cs	C_rad/CtCsS	300-1500	1.63E-01	4.24	0.00	23.9	0	0	0	0	4	Aäron Vandeputte GAVs 
+117.	C/H2/NonDeC	C_rad/H2/S	300-1500	1.56E-02	4.24	0.00	11.4	0	0	0	0	4	Aäron Vandeputte GAVs 
+118.	C/H2/NonDeC	C_rad/H/CsS	300-1500	2.79E-02	4.24	0.00	11.4	0	0	0	0	4	Aäron Vandeputte GAVs 
+119.	C/H2/NonDeC	C_rad/Cs2S	300-1500	1.12E-02	4.24	0.00	11.2	0	0	0	0	4	Aäron Vandeputte GAVs 
+120.	C/H2/NonDeC	Cd_rad/NonDeS	300-1500	9.33E-02	4.24	0.00	3.7	0	0	0	0	4	Aäron Vandeputte GAVs 
+121.	C/H2/NonDeC	C_rad/H/CdS	300-1500	1.54E-01	4.24	0.00	22.6	0	0	0	0	4	Aäron Vandeputte GAVs 
+122.	C/H2/NonDeC	C_rad/CdCsS	300-1500	1.95E-02	4.24	0.00	22.6	0	0	0	0	4	Aäron Vandeputte GAVs 
+123.	C/H2/NonDeC	C_rad/H/CtS	300-1500	9.15E-02	4.24	0.00	21.1	0	0	0	0	4	Aäron Vandeputte GAVs 
+124.	C/H2/NonDeC	C_rad/CtCsS	300-1500	3.74E-01	4.24	0.00	21.9	0	0	0	0	4	Aäron Vandeputte GAVs 
+148.	C/H/Cs3	C_rad/H2/S	300-1500	9.40E-03	4.24	0.00	9.6	0	0	0	0	4	Aäron Vandeputte GAVs 
+149.	C/H/Cs3	C_rad/H/CsS	300-1500	1.68E-02	4.24	0.00	9.6	0	0	0	0	4	Aäron Vandeputte GAVs 
+150.	C/H/Cs3	C_rad/Cs2S	300-1500	6.77E-03	4.24	0.00	9.4	0	0	0	0	4	Aäron Vandeputte GAVs 
+151.	C/H/Cs3	Cd_rad/NonDeS	300-1500	5.62E-02	4.24	0.00	1.8	0	0	0	0	4	Aäron Vandeputte GAVs 
+152.	C/H/Cs3	C_rad/H/CdS	300-1500	9.28E-02	4.24	0.00	20.7	0	0	0	0	4	Aäron Vandeputte GAVs 
+153.	C/H/Cs3	C_rad/CdCsS	300-1500	1.17E-02	4.24	0.00	20.7	0	0	0	0	4	Aäron Vandeputte GAVs 
+154.	C/H/Cs3	C_rad/H/CtS	300-1500	5.52E-02	4.24	0.00	19.3	0	0	0	0	4	Aäron Vandeputte GAVs 
+155.	C/H/Cs3	C_rad/CtCsS	300-1500	2.26E-01	4.24	0.00	20.0	0	0	0	0	4	Aäron Vandeputte GAVs 
+179.	C/H3/Cd	C_rad/H2/S	300-1500	1.40E-03	4.24	0.00	10.1	0	0	0	0	4	Aäron Vandeputte GAVs 
+180.	C/H3/Cd	C_rad/H/CsS	300-1500	2.50E-03	4.24	0.00	10.2	0	0	0	0	4	Aäron Vandeputte GAVs 
+181.	C/H3/Cd	C_rad/Cs2S	300-1500	1.01E-03	4.24	0.00	9.9	0	0	0	0	4	Aäron Vandeputte GAVs 
+182.	C/H3/Cd	Cd_rad/NonDeS	300-1500	8.35E-03	4.24	0.00	2.4	0	0	0	0	4	Aäron Vandeputte GAVs 
+183.	C/H3/Cd	C_rad/H/CdS	300-1500	1.38E-02	4.24	0.00	21.3	0	0	0	0	4	Aäron Vandeputte GAVs 
+184.	C/H3/Cd	C_rad/CdCsS	300-1500	1.74E-03	4.24	0.00	21.3	0	0	0	0	4	Aäron Vandeputte GAVs 
+185.	C/H3/Cd	C_rad/H/CtS	300-1500	8.20E-03	4.24	0.00	19.8	0	0	0	0	4	Aäron Vandeputte GAVs 
+186.	C/H3/Cd	C_rad/CtCsS	300-1500	3.35E-02	4.24	0.00	20.6	0	0	0	0	4	Aäron Vandeputte GAVs 
+210.	C/H2/CdCs	C_rad/H2/S	300-1500	5.55E-03	4.24	0.00	8.8	0	0	0	0	4	Aäron Vandeputte GAVs 
+211.	C/H2/CdCs	C_rad/H/CsS	300-1500	9.91E-03	4.24	0.00	8.8	0	0	0	0	4	Aäron Vandeputte GAVs 
+212.	C/H2/CdCs	C_rad/Cs2S	300-1500	4.00E-03	4.24	0.00	8.6	0	0	0	0	4	Aäron Vandeputte GAVs 
+213.	C/H2/CdCs	Cd_rad/NonDeS	300-1500	3.32E-02	4.24	0.00	1.1	0	0	0	0	4	Aäron Vandeputte GAVs 
+214.	C/H2/CdCs	C_rad/H/CdS	300-1500	5.47E-02	4.24	0.00	20.0	0	0	0	0	4	Aäron Vandeputte GAVs 
+215.	C/H2/CdCs	C_rad/CdCsS	300-1500	6.92E-03	4.24	0.00	20.0	0	0	0	0	4	Aäron Vandeputte GAVs 
+216.	C/H2/CdCs	C_rad/H/CtS	300-1500	3.25E-02	4.24	0.00	18.5	0	0	0	0	4	Aäron Vandeputte GAVs 
+217.	C/H2/CdCs	C_rad/CtCsS	300-1500	1.33E-01	4.24	0.00	19.3	0	0	0	0	4	Aäron Vandeputte GAVs 
+241.	C/H/Cs2Cd	C_rad/H2/S	300-1500	5.97E-03	4.24	0.00	7.7	0	0	0	0	4	Aäron Vandeputte GAVs 
+242.	C/H/Cs2Cd	C_rad/H/CsS	300-1500	1.07E-02	4.24	0.00	7.7	0	0	0	0	4	Aäron Vandeputte GAVs 
+243.	C/H/Cs2Cd	C_rad/Cs2S	300-1500	4.30E-03	4.24	0.00	7.5	0	0	0	0	4	Aäron Vandeputte GAVs 
+244.	C/H/Cs2Cd	Cd_rad/NonDeS	300-1500	3.57E-02	4.24	0.00	-0.1	0	0	0	0	4	Aäron Vandeputte GAVs 
+245.	C/H/Cs2Cd	C_rad/H/CdS	300-1500	5.89E-02	4.24	0.00	18.8	0	0	0	0	4	Aäron Vandeputte GAVs 
+246.	C/H/Cs2Cd	C_rad/CdCsS	300-1500	7.45E-03	4.24	0.00	18.8	0	0	0	0	4	Aäron Vandeputte GAVs 
+247.	C/H/Cs2Cd	C_rad/H/CtS	300-1500	3.50E-02	4.24	0.00	17.4	0	0	0	0	4	Aäron Vandeputte GAVs 
+248.	C/H/Cs2Cd	C_rad/CtCsS	300-1500	1.43E-01	4.24	0.00	18.2	0	0	0	0	4	Aäron Vandeputte GAVs 
+272.	C/H2/CdCd	C_rad/H2/S	300-1500	7.54E-03	4.24	0.00	7.2	0	0	0	0	4	Aäron Vandeputte GAVs 
+273.	C/H2/CdCd	C_rad/H/CsS	300-1500	1.35E-02	4.24	0.00	7.2	0	0	0	0	4	Aäron Vandeputte GAVs 
+274.	C/H2/CdCd	C_rad/Cs2S	300-1500	5.43E-03	4.24	0.00	7.0	0	0	0	0	4	Aäron Vandeputte GAVs 
+275.	C/H2/CdCd	Cd_rad/NonDeS	300-1500	4.50E-02	4.24	0.00	-0.6	0	0	0	0	4	Aäron Vandeputte GAVs 
+276.	C/H2/CdCd	C_rad/H/CdS	300-1500	7.44E-02	4.24	0.00	18.3	0	0	0	0	4	Aäron Vandeputte GAVs 
+277.	C/H2/CdCd	C_rad/CdCsS	300-1500	9.40E-03	4.24	0.00	18.3	0	0	0	0	4	Aäron Vandeputte GAVs 
+278.	C/H2/CdCd	C_rad/H/CtS	300-1500	4.42E-02	4.24	0.00	16.9	0	0	0	0	4	Aäron Vandeputte GAVs 
+279.	C/H2/CdCd	C_rad/CtCsS	300-1500	1.81E-01	4.24	0.00	17.7	0	0	0	0	4	Aäron Vandeputte GAVs 
+303.	C/H/CdCd	C_rad/H2/S	300-1500	6.07E-03	4.24	0.00	6.1	0	0	0	0	4	Aäron Vandeputte GAVs 
+304.	C/H/CdCd	C_rad/H/CsS	300-1500	1.08E-02	4.24	0.00	6.2	0	0	0	0	4	Aäron Vandeputte GAVs 
+305.	C/H/CdCd	C_rad/Cs2S	300-1500	4.37E-03	4.24	0.00	5.9	0	0	0	0	4	Aäron Vandeputte GAVs 
+306.	C/H/CdCd	Cd_rad/NonDeS	300-1500	3.63E-02	4.24	0.00	-1.6	0	0	0	0	4	Aäron Vandeputte GAVs 
+307.	C/H/CdCd	C_rad/H/CdS	300-1500	5.98E-02	4.24	0.00	17.3	0	0	0	0	4	Aäron Vandeputte GAVs 
+308.	C/H/CdCd	C_rad/CdCsS	300-1500	7.56E-03	4.24	0.00	17.3	0	0	0	0	4	Aäron Vandeputte GAVs 
+309.	C/H/CdCd	C_rad/H/CtS	300-1500	3.56E-02	4.24	0.00	15.8	0	0	0	0	4	Aäron Vandeputte GAVs 
+310.	C/H/CdCd	C_rad/CtCsS	300-1500	1.45E-01	4.24	0.00	16.6	0	0	0	0	4	Aäron Vandeputte GAVs 
+334.	C/H3/Ct	C_rad/H2/S	300-1500	3.88E-03	4.24	0.00	10.7	0	0	0	0	4	Aäron Vandeputte GAVs 
+335.	C/H3/Ct	C_rad/H/CsS	300-1500	6.93E-03	4.24	0.00	10.7	0	0	0	0	4	Aäron Vandeputte GAVs 
+336.	C/H3/Ct	C_rad/Cs2S	300-1500	2.79E-03	4.24	0.00	10.5	0	0	0	0	4	Aäron Vandeputte GAVs 
+337.	C/H3/Ct	Cd_rad/NonDeS	300-1500	2.32E-02	4.24	0.00	2.9	0	0	0	0	4	Aäron Vandeputte GAVs 
+338.	C/H3/Ct	C_rad/H/CdS	300-1500	3.83E-02	4.24	0.00	21.8	0	0	0	0	4	Aäron Vandeputte GAVs 
+339.	C/H3/Ct	C_rad/CdCsS	300-1500	4.83E-03	4.24	0.00	21.8	0	0	0	0	4	Aäron Vandeputte GAVs 
+340.	C/H3/Ct	C_rad/H/CtS	300-1500	2.27E-02	4.24	0.00	20.4	0	0	0	0	4	Aäron Vandeputte GAVs 
+341.	C/H3/Ct	C_rad/CtCsS	300-1500	9.30E-02	4.24	0.00	21.2	0	0	0	0	4	Aäron Vandeputte GAVs 
+365.	C/H2/CtCs	C_rad/H2/S	300-1500	5.30E-03	4.24	0.00	9.2	0	0	0	0	4	Aäron Vandeputte GAVs 
+366.	C/H2/CtCs	C_rad/H/CsS	300-1500	9.46E-03	4.24	0.00	9.2	0	0	0	0	4	Aäron Vandeputte GAVs 
+367.	C/H2/CtCs	C_rad/Cs2S	300-1500	3.82E-03	4.24	0.00	9.0	0	0	0	0	4	Aäron Vandeputte GAVs 
+368.	C/H2/CtCs	Cd_rad/NonDeS	300-1500	3.17E-02	4.24	0.00	1.4	0	0	0	0	4	Aäron Vandeputte GAVs 
+369.	C/H2/CtCs	C_rad/H/CdS	300-1500	5.23E-02	4.24	0.00	20.4	0	0	0	0	4	Aäron Vandeputte GAVs 
+370.	C/H2/CtCs	C_rad/CdCsS	300-1500	6.60E-03	4.24	0.00	20.4	0	0	0	0	4	Aäron Vandeputte GAVs 
+371.	C/H2/CtCs	C_rad/H/CtS	300-1500	3.11E-02	4.24	0.00	18.9	0	0	0	0	4	Aäron Vandeputte GAVs 
+372.	C/H2/CtCs	C_rad/CtCsS	300-1500	1.27E-01	4.24	0.00	19.7	0	0	0	0	4	Aäron Vandeputte GAVs 
+396.	C/H/Cs2Ct	C_rad/H2/S	300-1500	9.47E-03	4.24	0.00	7.7	0	0	0	0	4	Aäron Vandeputte GAVs 
+397.	C/H/Cs2Ct	C_rad/H/CsS	300-1500	1.69E-02	4.24	0.00	7.8	0	0	0	0	4	Aäron Vandeputte GAVs 
+398.	C/H/Cs2Ct	C_rad/Cs2S	300-1500	6.82E-03	4.24	0.00	7.5	0	0	0	0	4	Aäron Vandeputte GAVs 
+399.	C/H/Cs2Ct	Cd_rad/NonDeS	300-1500	5.66E-02	4.24	0.00	0.0	0	0	0	0	4	Aäron Vandeputte GAVs 
+400.	C/H/Cs2Ct	C_rad/H/CdS	300-1500	9.34E-02	4.24	0.00	18.9	0	0	0	0	4	Aäron Vandeputte GAVs 
+401.	C/H/Cs2Ct	C_rad/CdCsS	300-1500	1.18E-02	4.24	0.00	18.9	0	0	0	0	4	Aäron Vandeputte GAVs 
+402.	C/H/Cs2Ct	C_rad/H/CtS	300-1500	5.55E-02	4.24	0.00	17.4	0	0	0	0	4	Aäron Vandeputte GAVs 
+403.	C/H/Cs2Ct	C_rad/CtCsS	300-1500	2.27E-01	4.24	0.00	18.2	0	0	0	0	4	Aäron Vandeputte GAVs 
+427.	C/H2/CtCt	C_rad/H2/S	300-1500	6.74E-03	4.24	0.00	7.3	0	0	0	0	4	Aäron Vandeputte GAVs 
+428.	C/H2/CtCt	C_rad/H/CsS	300-1500	1.20E-02	4.24	0.00	7.3	0	0	0	0	4	Aäron Vandeputte GAVs 
+429.	C/H2/CtCt	C_rad/Cs2S	300-1500	4.86E-03	4.24	0.00	7.1	0	0	0	0	4	Aäron Vandeputte GAVs 
+430.	C/H2/CtCt	Cd_rad/NonDeS	300-1500	4.03E-02	4.24	0.00	-0.5	0	0	0	0	4	Aäron Vandeputte GAVs 
+431.	C/H2/CtCt	C_rad/H/CdS	300-1500	6.65E-02	4.24	0.00	18.5	0	0	0	0	4	Aäron Vandeputte GAVs 
+432.	C/H2/CtCt	C_rad/CdCsS	300-1500	8.40E-03	4.24	0.00	18.5	0	0	0	0	4	Aäron Vandeputte GAVs 
+433.	C/H2/CtCt	C_rad/H/CtS	300-1500	3.95E-02	4.24	0.00	17.0	0	0	0	0	4	Aäron Vandeputte GAVs 
+434.	C/H2/CtCt	C_rad/CtCsS	300-1500	1.62E-01	4.24	0.00	17.8	0	0	0	0	4	Aäron Vandeputte GAVs 
+458.	C/H/CtCt	C_rad/H2/S	300-1500	7.43E-03	4.24	0.00	6.2	0	0	0	0	4	Aäron Vandeputte GAVs 
+459.	C/H/CtCt	C_rad/H/CsS	300-1500	1.33E-02	4.24	0.00	6.2	0	0	0	0	4	Aäron Vandeputte GAVs 
+460.	C/H/CtCt	C_rad/Cs2S	300-1500	5.35E-03	4.24	0.00	6.0	0	0	0	0	4	Aäron Vandeputte GAVs 
+461.	C/H/CtCt	Cd_rad/NonDeS	300-1500	4.44E-02	4.24	0.00	-1.5	0	0	0	0	4	Aäron Vandeputte GAVs 
+462.	C/H/CtCt	C_rad/H/CdS	300-1500	7.33E-02	4.24	0.00	17.4	0	0	0	0	4	Aäron Vandeputte GAVs 
+463.	C/H/CtCt	C_rad/CdCsS	300-1500	9.26E-03	4.24	0.00	17.4	0	0	0	0	4	Aäron Vandeputte GAVs 
+464.	C/H/CtCt	C_rad/H/CtS	300-1500	4.36E-02	4.24	0.00	15.9	0	0	0	0	4	Aäron Vandeputte GAVs 
+465.	C/H/CtCt	C_rad/CtCsS	300-1500	1.78E-01	4.24	0.00	16.7	0	0	0	0	4	Aäron Vandeputte GAVs 
+489.	C/H3/Cb	C_rad/H2/S	300-1500	1.25E-03	4.24	0.00	12.0	0	0	0	0	4	Aäron Vandeputte GAVs 
+490.	C/H3/Cb	C_rad/H/CsS	300-1500	2.23E-03	4.24	0.00	12.0	0	0	0	0	4	Aäron Vandeputte GAVs 
+491.	C/H3/Cb	C_rad/Cs2S	300-1500	8.98E-04	4.24	0.00	11.8	0	0	0	0	4	Aäron Vandeputte GAVs 
+492.	C/H3/Cb	Cd_rad/NonDeS	300-1500	7.45E-03	4.24	0.00	4.2	0	0	0	0	4	Aäron Vandeputte GAVs 
+493.	C/H3/Cb	C_rad/H/CdS	300-1500	1.23E-02	4.24	0.00	23.2	0	0	0	0	4	Aäron Vandeputte GAVs 
+494.	C/H3/Cb	C_rad/CdCsS	300-1500	1.55E-03	4.24	0.00	23.2	0	0	0	0	4	Aäron Vandeputte GAVs 
+495.	C/H3/Cb	C_rad/H/CtS	300-1500	7.31E-03	4.24	0.00	21.7	0	0	0	0	4	Aäron Vandeputte GAVs 
+496.	C/H3/Cb	C_rad/CtCsS	300-1500	2.99E-02	4.24	0.00	22.5	0	0	0	0	4	Aäron Vandeputte GAVs 
+520.	C/H2/CbCs	C_rad/H2/S	300-1500	1.84E-03	4.24	0.00	10.2	0	0	0	0	4	Aäron Vandeputte GAVs 
+521.	C/H2/CbCs	C_rad/H/CsS	300-1500	3.29E-03	4.24	0.00	10.2	0	0	0	0	4	Aäron Vandeputte GAVs 
+522.	C/H2/CbCs	C_rad/Cs2S	300-1500	1.33E-03	4.24	0.00	10.0	0	0	0	0	4	Aäron Vandeputte GAVs 
+523.	C/H2/CbCs	Cd_rad/NonDeS	300-1500	1.10E-02	4.24	0.00	2.5	0	0	0	0	4	Aäron Vandeputte GAVs 
+524.	C/H2/CbCs	C_rad/H/CdS	300-1500	1.82E-02	4.24	0.00	21.4	0	0	0	0	4	Aäron Vandeputte GAVs 
+525.	C/H2/CbCs	C_rad/CdCsS	300-1500	2.29E-03	4.24	0.00	21.4	0	0	0	0	4	Aäron Vandeputte GAVs 
+526.	C/H2/CbCs	C_rad/H/CtS	300-1500	1.08E-02	4.24	0.00	19.9	0	0	0	0	4	Aäron Vandeputte GAVs 
+527.	C/H2/CbCs	C_rad/CtCsS	300-1500	4.41E-02	4.24	0.00	20.7	0	0	0	0	4	Aäron Vandeputte GAVs 
+551.	C/H/Cs2Cb	C_rad/H2/S	300-1500	1.27E-03	4.24	0.00	9.1	0	0	0	0	4	Aäron Vandeputte GAVs 
+552.	C/H/Cs2Cb	C_rad/H/CsS	300-1500	2.28E-03	4.24	0.00	9.1	0	0	0	0	4	Aäron Vandeputte GAVs 
+553.	C/H/Cs2Cb	C_rad/Cs2S	300-1500	9.18E-04	4.24	0.00	8.9	0	0	0	0	4	Aäron Vandeputte GAVs 
+554.	C/H/Cs2Cb	Cd_rad/NonDeS	300-1500	7.62E-03	4.24	0.00	1.3	0	0	0	0	4	Aäron Vandeputte GAVs 
+555.	C/H/Cs2Cb	C_rad/H/CdS	300-1500	1.26E-02	4.24	0.00	20.3	0	0	0	0	4	Aäron Vandeputte GAVs 
+556.	C/H/Cs2Cb	C_rad/CdCsS	300-1500	1.59E-03	4.24	0.00	20.3	0	0	0	0	4	Aäron Vandeputte GAVs 
+557.	C/H/Cs2Cb	C_rad/H/CtS	300-1500	7.48E-03	4.24	0.00	18.8	0	0	0	0	4	Aäron Vandeputte GAVs 
+558.	C/H/Cs2Cb	C_rad/CtCsS	300-1500	3.06E-02	4.24	0.00	19.6	0	0	0	0	4	Aäron Vandeputte GAVs 
+582.	Cd_pri	C_rad/H2/S	300-1500	6.55E-03	4.24	0.00	16.2	0	0	0	0	4	Aäron Vandeputte GAVs 
+583.	Cd_pri	C_rad/H/CsS	300-1500	1.17E-02	4.24	0.00	16.2	0	0	0	0	4	Aäron Vandeputte GAVs 
+584.	Cd_pri	C_rad/Cs2S	300-1500	4.72E-03	4.24	0.00	16.0	0	0	0	0	4	Aäron Vandeputte GAVs 
+585.	Cd_pri	Cd_rad/NonDeS	300-1500	3.91E-02	4.24	0.00	8.4	0	0	0	0	4	Aäron Vandeputte GAVs 
+586.	Cd_pri	C_rad/H/CdS	300-1500	6.46E-02	4.24	0.00	27.3	0	0	0	0	4	Aäron Vandeputte GAVs 
+587.	Cd_pri	C_rad/CdCsS	300-1500	8.17E-03	4.24	0.00	27.3	0	0	0	0	4	Aäron Vandeputte GAVs 
+588.	Cd_pri	C_rad/H/CtS	300-1500	3.84E-02	4.24	0.00	25.9	0	0	0	0	4	Aäron Vandeputte GAVs 
+589.	Cd_pri	C_rad/CtCsS	300-1500	1.57E-01	4.24	0.00	26.6	0	0	0	0	4	Aäron Vandeputte GAVs 
+613.	Cd/H/NonDeC	C_rad/H2/S	300-1500	1.01E-02	4.24	0.00	13.9	0	0	0	0	4	Aäron Vandeputte GAVs 
+614.	Cd/H/NonDeC	C_rad/H/CsS	300-1500	1.80E-02	4.24	0.00	13.9	0	0	0	0	4	Aäron Vandeputte GAVs 
+615.	Cd/H/NonDeC	C_rad/Cs2S	300-1500	7.25E-03	4.24	0.00	13.7	0	0	0	0	4	Aäron Vandeputte GAVs 
+616.	Cd/H/NonDeC	Cd_rad/NonDeS	300-1500	6.01E-02	4.24	0.00	6.1	0	0	0	0	4	Aäron Vandeputte GAVs 
+617.	Cd/H/NonDeC	C_rad/H/CdS	300-1500	9.93E-02	4.24	0.00	25.1	0	0	0	0	4	Aäron Vandeputte GAVs 
+618.	Cd/H/NonDeC	C_rad/CdCsS	300-1500	1.25E-02	4.24	0.00	25.1	0	0	0	0	4	Aäron Vandeputte GAVs 
+619.	Cd/H/NonDeC	C_rad/H/CtS	300-1500	5.90E-02	4.24	0.00	23.6	0	0	0	0	4	Aäron Vandeputte GAVs 
+620.	Cd/H/NonDeC	C_rad/CtCsS	300-1500	2.41E-01	4.24	0.00	24.4	0	0	0	0	4	Aäron Vandeputte GAVs 
+644.	Cd/H/Cd	C_rad/H2/S	300-1500	6.75E-03	4.24	0.00	13.8	0	0	0	0	4	Aäron Vandeputte GAVs 
+645.	Cd/H/Cd	C_rad/H/CsS	300-1500	1.21E-02	4.24	0.00	13.8	0	0	0	0	4	Aäron Vandeputte GAVs 
+646.	Cd/H/Cd	C_rad/Cs2S	300-1500	4.86E-03	4.24	0.00	13.5	0	0	0	0	4	Aäron Vandeputte GAVs 
+647.	Cd/H/Cd	Cd_rad/NonDeS	300-1500	4.04E-02	4.24	0.00	6.0	0	0	0	0	4	Aäron Vandeputte GAVs 
+648.	Cd/H/Cd	C_rad/H/CdS	300-1500	6.66E-02	4.24	0.00	24.9	0	0	0	0	4	Aäron Vandeputte GAVs 
+649.	Cd/H/Cd	C_rad/CdCsS	300-1500	8.42E-03	4.24	0.00	24.9	0	0	0	0	4	Aäron Vandeputte GAVs 
+650.	Cd/H/Cd	C_rad/H/CtS	300-1500	3.96E-02	4.24	0.00	23.4	0	0	0	0	4	Aäron Vandeputte GAVs 
+651.	Cd/H/Cd	C_rad/CtCsS	300-1500	1.62E-01	4.24	0.00	24.2	0	0	0	0	4	Aäron Vandeputte GAVs 
+675.	Cb_H	C_rad/H2/S	300-1500	7.47E-03	4.24	0.00	18.1	0	0	0	0	4	Aäron Vandeputte GAVs 
+676.	Cb_H	C_rad/H/CsS	300-1500	1.33E-02	4.24	0.00	18.1	0	0	0	0	4	Aäron Vandeputte GAVs 
+677.	Cb_H	C_rad/Cs2S	300-1500	5.38E-03	4.24	0.00	17.8	0	0	0	0	4	Aäron Vandeputte GAVs 
+678.	Cb_H	Cd_rad/NonDeS	300-1500	4.46E-02	4.24	0.00	10.3	0	0	0	0	4	Aäron Vandeputte GAVs 
+679.	Cb_H	C_rad/H/CdS	300-1500	7.37E-02	4.24	0.00	29.2	0	0	0	0	4	Aäron Vandeputte GAVs 
+680.	Cb_H	C_rad/CdCsS	300-1500	9.31E-03	4.24	0.00	29.2	0	0	0	0	4	Aäron Vandeputte GAVs 
+681.	Cb_H	C_rad/H/CtS	300-1500	4.38E-02	4.24	0.00	27.7	0	0	0	0	4	Aäron Vandeputte GAVs 
+682.	Cb_H	C_rad/CtCsS	300-1500	1.79E-01	4.24	0.00	28.5	0	0	0	0	4	Aäron Vandeputte GAVs 
+706	Cd/H/Ct	C_rad/H2/S	300-1500	4.98E-03	4.24	0.00	11.4	0	0	0	0	4	Aäron Vandeputte GAVs 
+707	Cd/H/Ct	C_rad/H/CsS	300-1500	8.89E-03	4.24	0.00	11.4	0	0	0	0	4	Aäron Vandeputte GAVs 
+708	Cd/H/Ct	C_rad/Cs2S	300-1500	3.59E-03	4.24	0.00	11.2	0	0	0	0	4	Aäron Vandeputte GAVs 
+709	Cd/H/Ct	Cd_rad/NonDeS	300-1500	2.98E-02	4.24	0.00	3.6	0	0	0	0	4	Aäron Vandeputte GAVs 
+710	Cd/H/Ct	C_rad/H/CdS	300-1500	4.91E-02	4.24	0.00	22.5	0	0	0	0	4	Aäron Vandeputte GAVs 
+711	Cd/H/Ct	C_rad/CdCsS	300-1500	6.21E-03	4.24	0.00	22.5	0	0	0	0	4	Aäron Vandeputte GAVs 
+712	Cd/H/Ct	C_rad/H/CtS	300-1500	2.92E-02	4.24	0.00	21.1	0	0	0	0	4	Aäron Vandeputte GAVs 
+713	Cd/H/Ct	C_rad/CtCsS	300-1500	1.19E-01	4.24	0.00	21.8	0	0	0	0	4	Aäron Vandeputte GAVs 
+714	C/H3/S	H_rad	300-1500	1.77E-01	4.24	0.00	3.7	0	0	0	0	4	Aäron Vandeputte GAVs 
+715	C/H3/S	C_methyl	300-1500	5.11E-03	4.24	0.00	5.9	0	0	0	0	4	Aäron Vandeputte GAVs 
+716	C/H3/S	C_rad/H2/Cs	300-1500	1.04E-03	4.24	0.00	7.3	0	0	0	0	4	Aäron Vandeputte GAVs 
+717	C/H3/S	C_rad/H/NonDeC	300-1500	2.75E-03	4.24	0.00	8.1	0	0	0	0	4	Aäron Vandeputte GAVs 
+718	C/H3/S	C_rad/Cs3	300-1500	1.44E-03	4.24	0.00	8.1	0	0	0	0	4	Aäron Vandeputte GAVs 
+719	C/H3/S	C_rad/H2/Cd	300-1500	1.07E-02	4.24	0.00	18.7	0	0	0	0	4	Aäron Vandeputte GAVs 
+720	C/H3/S	C_rad/H/CdCs	300-1500	8.46E-03	4.24	0.00	20.4	0	0	0	0	4	Aäron Vandeputte GAVs 
+721	C/H3/S	C_rad/CdCs2	300-1500	2.31E-03	4.24	0.00	20.9	0	0	0	0	4	Aäron Vandeputte GAVs 
+722	C/H3/S	C_rad/H/CdCd	300-1500	3.41E-02	4.24	0.00	28.7	0	0	0	0	4	Aäron Vandeputte GAVs 
+723	C/H3/S	C_rad/CdCdCs	300-1500	3.02E-03	4.24	0.00	29.1	0	0	0	0	4	Aäron Vandeputte GAVs 
+724	C/H3/S	C_rad/H2/Ct	300-1500	4.88E-03	4.24	0.00	14.9	0	0	0	0	4	Aäron Vandeputte GAVs 
+725	C/H3/S	C_rad/H/CtCs	300-1500	2.03E-03	4.24	0.00	16.4	0	0	0	0	4	Aäron Vandeputte GAVs 
+726	C/H3/S	C_rad/CtCs2	300-1500	1.44E-03	4.24	0.00	17.3	0	0	0	0	4	Aäron Vandeputte GAVs 
+727	C/H3/S	C_rad/H/CtCt	300-1500	1.03E-02	4.24	0.00	22.9	0	0	0	0	4	Aäron Vandeputte GAVs 
+728	C/H3/S	C_rad/CtCtCs	300-1500	5.08E-04	4.24	0.00	24.0	0	0	0	0	4	Aäron Vandeputte GAVs 
+729	C/H3/S	C_rad/H2/Cb	300-1500	1.05E-02	4.24	0.00	16.5	0	0	0	0	4	Aäron Vandeputte GAVs 
+730	C/H3/S	C_rad/H/CbCs	300-1500	5.38E-03	4.24	0.00	17.4	0	0	0	0	4	Aäron Vandeputte GAVs 
+731	C/H3/S	C_rad/CbCs2	300-1500	2.56E-04	4.24	0.00	17.0	0	0	0	0	4	Aäron Vandeputte GAVs 
+732	C/H3/S	Cd_pri_rad	300-1500	4.81E-03	4.24	0.00	1.3	0	0	0	0	4	Aäron Vandeputte GAVs 
+733	C/H3/S	Cd_rad/NonDeC	300-1500	4.76E-03	4.24	0.00	2.1	0	0	0	0	4	Aäron Vandeputte GAVs 
+734	C/H3/S	Cd_rad/Cd	300-1500	2.27E-03	4.24	0.00	9.0	0	0	0	0	4	Aäron Vandeputte GAVs 
+735	C/H3/S	Cb_rad	300-1500	5.72E-03	4.24	0.00	-1.5	0	0	0	0	4	Aäron Vandeputte GAVs 
+736	C/H3/S	Cd_rad/Ct	300-1500	4.87E-04	4.24	0.00	6.2	0	0	0	0	4	Aäron Vandeputte GAVs 
+737	C/H3/S	C_rad/H2/S	300-1500	1.65E-03	4.24	0.00	11.2	0	0	0	0	4	Aäron Vandeputte GAVs 
+738	C/H3/S	C_rad/H/CsS	300-1500	2.94E-03	4.24	0.00	11.2	0	0	0	0	4	Aäron Vandeputte GAVs 
+739	C/H3/S	C_rad/Cs2S	300-1500	1.19E-03	4.24	0.00	11.0	0	0	0	0	4	Aäron Vandeputte GAVs 
+740	C/H3/S	Cd_rad/NonDeS	300-1500	9.86E-03	4.24	0.00	3.4	0	0	0	0	4	Aäron Vandeputte GAVs 
+741	C/H3/S	C_rad/H/CdS	300-1500	1.63E-02	4.24	0.00	22.3	0	0	0	0	4	Aäron Vandeputte GAVs 
+742	C/H3/S	C_rad/CdCsS	300-1500	2.06E-03	4.24	0.00	22.3	0	0	0	0	4	Aäron Vandeputte GAVs 
+743	C/H3/S	C_rad/H/CtS	300-1500	9.67E-03	4.24	0.00	20.9	0	0	0	0	4	Aäron Vandeputte GAVs 
+744	C/H3/S	C_rad/CtCsS	300-1500	3.95E-02	4.24	0.00	21.6	0	0	0	0	4	Aäron Vandeputte GAVs 
+745	C/H2/CsS	H_rad	300-1500	4.87E-01	4.24	0.00	2.3	0	0	0	0	4	Aäron Vandeputte GAVs 
+746	C/H2/CsS	C_methyl	300-1500	1.41E-02	4.24	0.00	4.4	0	0	0	0	4	Aäron Vandeputte GAVs 
+747	C/H2/CsS	C_rad/H2/Cs	300-1500	2.87E-03	4.24	0.00	5.8	0	0	0	0	4	Aäron Vandeputte GAVs 
+748	C/H2/CsS	C_rad/H/NonDeC	300-1500	7.59E-03	4.24	0.00	6.7	0	0	0	0	4	Aäron Vandeputte GAVs 
+749	C/H2/CsS	C_rad/Cs3	300-1500	3.98E-03	4.24	0.00	6.7	0	0	0	0	4	Aäron Vandeputte GAVs 
+750	C/H2/CsS	C_rad/H2/Cd	300-1500	2.96E-02	4.24	0.00	17.2	0	0	0	0	4	Aäron Vandeputte GAVs 
+751	C/H2/CsS	C_rad/H/CdCs	300-1500	2.33E-02	4.24	0.00	19.0	0	0	0	0	4	Aäron Vandeputte GAVs 
+752	C/H2/CsS	C_rad/CdCs2	300-1500	6.38E-03	4.24	0.00	19.4	0	0	0	0	4	Aäron Vandeputte GAVs 
+753	C/H2/CsS	C_rad/H/CdCd	300-1500	9.39E-02	4.24	0.00	27.2	0	0	0	0	4	Aäron Vandeputte GAVs 
+754	C/H2/CsS	C_rad/CdCdCs	300-1500	8.34E-03	4.24	0.00	27.7	0	0	0	0	4	Aäron Vandeputte GAVs 
+755	C/H2/CsS	C_rad/H2/Ct	300-1500	1.35E-02	4.24	0.00	13.4	0	0	0	0	4	Aäron Vandeputte GAVs 
+756	C/H2/CsS	C_rad/H/CtCs	300-1500	5.60E-03	4.24	0.00	15.0	0	0	0	0	4	Aäron Vandeputte GAVs 
+757	C/H2/CsS	C_rad/CtCs2	300-1500	3.97E-03	4.24	0.00	15.8	0	0	0	0	4	Aäron Vandeputte GAVs 
+758	C/H2/CsS	C_rad/H/CtCt	300-1500	2.85E-02	4.24	0.00	21.5	0	0	0	0	4	Aäron Vandeputte GAVs 
+759	C/H2/CsS	C_rad/CtCtCs	300-1500	1.40E-03	4.24	0.00	22.5	0	0	0	0	4	Aäron Vandeputte GAVs 
+760	C/H2/CsS	C_rad/H2/Cb	300-1500	2.89E-02	4.24	0.00	15.1	0	0	0	0	4	Aäron Vandeputte GAVs 
+761	C/H2/CsS	C_rad/H/CbCs	300-1500	1.48E-02	4.24	0.00	15.9	0	0	0	0	4	Aäron Vandeputte GAVs 
+762	C/H2/CsS	C_rad/CbCs2	300-1500	7.07E-04	4.24	0.00	15.5	0	0	0	0	4	Aäron Vandeputte GAVs 
+763	C/H2/CsS	Cd_pri_rad	300-1500	1.33E-02	4.24	0.00	-0.2	0	0	0	0	4	Aäron Vandeputte GAVs 
+764	C/H2/CsS	Cd_rad/NonDeC	300-1500	1.31E-02	4.24	0.00	0.7	0	0	0	0	4	Aäron Vandeputte GAVs 
+765	C/H2/CsS	Cd_rad/Cd	300-1500	6.26E-03	4.24	0.00	7.5	0	0	0	0	4	Aäron Vandeputte GAVs 
+766	C/H2/CsS	Cb_rad	300-1500	1.58E-02	4.24	0.00	-2.9	0	0	0	0	4	Aäron Vandeputte GAVs 
+767	C/H2/CsS	Cd_rad/Ct	300-1500	1.34E-03	4.24	0.00	4.8	0	0	0	0	4	Aäron Vandeputte GAVs 
+768	C/H2/CsS	C_rad/H2/S	300-1500	4.55E-03	4.24	0.00	9.7	0	0	0	0	4	Aäron Vandeputte GAVs 
+769	C/H2/CsS	C_rad/H/CsS	300-1500	8.12E-03	4.24	0.00	9.7	0	0	0	0	4	Aäron Vandeputte GAVs 
+770	C/H2/CsS	C_rad/Cs2S	300-1500	3.28E-03	4.24	0.00	9.5	0	0	0	0	4	Aäron Vandeputte GAVs 
+771	C/H2/CsS	Cd_rad/NonDeS	300-1500	2.72E-02	4.24	0.00	2.0	0	0	0	0	4	Aäron Vandeputte GAVs 
+772	C/H2/CsS	C_rad/H/CdS	300-1500	4.49E-02	4.24	0.00	20.9	0	0	0	0	4	Aäron Vandeputte GAVs 
+773	C/H2/CsS	C_rad/CdCsS	300-1500	5.67E-03	4.24	0.00	20.9	0	0	0	0	4	Aäron Vandeputte GAVs 
+774	C/H2/CsS	C_rad/H/CtS	300-1500	2.67E-02	4.24	0.00	19.4	0	0	0	0	4	Aäron Vandeputte GAVs 
+775	C/H2/CsS	C_rad/CtCsS	300-1500	1.09E-01	4.24	0.00	20.2	0	0	0	0	4	Aäron Vandeputte GAVs 
+776	C/H/Cs2S	H_rad	300-1500	5.95E-01	4.24	0.00	0.8	0	0	0	0	4	Aäron Vandeputte GAVs 
+777	C/H/Cs2S	C_methyl	300-1500	1.72E-02	4.24	0.00	2.9	0	0	0	0	4	Aäron Vandeputte GAVs 
+778	C/H/Cs2S	C_rad/H2/Cs	300-1500	3.51E-03	4.24	0.00	4.3	0	0	0	0	4	Aäron Vandeputte GAVs 
+779	C/H/Cs2S	C_rad/H/NonDeC	300-1500	9.26E-03	4.24	0.00	5.2	0	0	0	0	4	Aäron Vandeputte GAVs 
+780	C/H/Cs2S	C_rad/Cs3	300-1500	4.87E-03	4.24	0.00	5.2	0	0	0	0	4	Aäron Vandeputte GAVs 
+781	C/H/Cs2S	C_rad/H2/Cd	300-1500	3.62E-02	4.24	0.00	15.7	0	0	0	0	4	Aäron Vandeputte GAVs 
+782	C/H/Cs2S	C_rad/H/CdCs	300-1500	2.85E-02	4.24	0.00	17.5	0	0	0	0	4	Aäron Vandeputte GAVs 
+783	C/H/Cs2S	C_rad/CdCs2	300-1500	7.79E-03	4.24	0.00	17.9	0	0	0	0	4	Aäron Vandeputte GAVs 
+784	C/H/Cs2S	C_rad/H/CdCd	300-1500	1.15E-01	4.24	0.00	25.7	0	0	0	0	4	Aäron Vandeputte GAVs 
+785	C/H/Cs2S	C_rad/CdCdCs	300-1500	1.02E-02	4.24	0.00	26.2	0	0	0	0	4	Aäron Vandeputte GAVs 
+786	C/H/Cs2S	C_rad/H2/Ct	300-1500	1.64E-02	4.24	0.00	11.9	0	0	0	0	4	Aäron Vandeputte GAVs 
+787	C/H/Cs2S	C_rad/H/CtCs	300-1500	6.84E-03	4.24	0.00	13.5	0	0	0	0	4	Aäron Vandeputte GAVs 
+788	C/H/Cs2S	C_rad/CtCs2	300-1500	4.85E-03	4.24	0.00	14.3	0	0	0	0	4	Aäron Vandeputte GAVs 
+789	C/H/Cs2S	C_rad/H/CtCt	300-1500	3.48E-02	4.24	0.00	20.0	0	0	0	0	4	Aäron Vandeputte GAVs 
+790	C/H/Cs2S	C_rad/CtCtCs	300-1500	1.71E-03	4.24	0.00	21.0	0	0	0	0	4	Aäron Vandeputte GAVs 
+791	C/H/Cs2S	C_rad/H2/Cb	300-1500	3.53E-02	4.24	0.00	13.6	0	0	0	0	4	Aäron Vandeputte GAVs 
+792	C/H/Cs2S	C_rad/H/CbCs	300-1500	1.81E-02	4.24	0.00	14.4	0	0	0	0	4	Aäron Vandeputte GAVs 
+793	C/H/Cs2S	C_rad/CbCs2	300-1500	8.64E-04	4.24	0.00	14.0	0	0	0	0	4	Aäron Vandeputte GAVs 
+794	C/H/Cs2S	Cd_pri_rad	300-1500	1.62E-02	4.24	0.00	-1.7	0	0	0	0	4	Aäron Vandeputte GAVs 
+795	C/H/Cs2S	Cd_rad/NonDeC	300-1500	1.60E-02	4.24	0.00	-0.8	0	0	0	0	4	Aäron Vandeputte GAVs 
+796	C/H/Cs2S	Cd_rad/Cd	300-1500	7.65E-03	4.24	0.00	6.0	0	0	0	0	4	Aäron Vandeputte GAVs 
+797	C/H/Cs2S	Cb_rad	300-1500	1.93E-02	4.24	0.00	-4.4	0	0	0	0	4	Aäron Vandeputte GAVs 
+798	C/H/Cs2S	Cd_rad/Ct	300-1500	1.64E-03	4.24	0.00	3.3	0	0	0	0	4	Aäron Vandeputte GAVs 
+799	C/H/Cs2S	C_rad/H2/S	300-1500	5.55E-03	4.24	0.00	8.2	0	0	0	0	4	Aäron Vandeputte GAVs 
+800	C/H/Cs2S	C_rad/H/CsS	300-1500	9.92E-03	4.24	0.00	8.2	0	0	0	0	4	Aäron Vandeputte GAVs 
+801	C/H/Cs2S	C_rad/Cs2S	300-1500	4.00E-03	4.24	0.00	8.0	0	0	0	0	4	Aäron Vandeputte GAVs 
+802	C/H/Cs2S	Cd_rad/NonDeS	300-1500	3.32E-02	4.24	0.00	0.4	0	0	0	0	4	Aäron Vandeputte GAVs 
+803	C/H/Cs2S	C_rad/H/CdS	300-1500	5.48E-02	4.24	0.00	19.4	0	0	0	0	4	Aäron Vandeputte GAVs 
+804	C/H/Cs2S	C_rad/CdCsS	300-1500	6.92E-03	4.24	0.00	19.4	0	0	0	0	4	Aäron Vandeputte GAVs 
+805	C/H/Cs2S	C_rad/H/CtS	300-1500	3.26E-02	4.24	0.00	17.9	0	0	0	0	4	Aäron Vandeputte GAVs 
+806	C/H/Cs2S	C_rad/CtCsS	300-1500	1.33E-01	4.24	0.00	18.7	0	0	0	0	4	Aäron Vandeputte GAVs 
+807	Cd/H/CS	H_rad	300-1500	1.24E+00	4.24	0.00	4.7	0	0	0	0	4	Aäron Vandeputte GAVs 
+808	Cd/H/CS	C_methyl	300-1500	3.60E-02	4.24	0.00	6.8	0	0	0	0	4	Aäron Vandeputte GAVs 
+809	Cd/H/CS	C_rad/H2/Cs	300-1500	7.33E-03	4.24	0.00	8.2	0	0	0	0	4	Aäron Vandeputte GAVs 
+810	Cd/H/CS	C_rad/H/NonDeC	300-1500	1.94E-02	4.24	0.00	9.1	0	0	0	0	4	Aäron Vandeputte GAVs 
+811	Cd/H/CS	C_rad/Cs3	300-1500	1.02E-02	4.24	0.00	9.1	0	0	0	0	4	Aäron Vandeputte GAVs 
+812	Cd/H/CS	C_rad/H2/Cd	300-1500	7.56E-02	4.24	0.00	19.6	0	0	0	0	4	Aäron Vandeputte GAVs 
+813	Cd/H/CS	C_rad/H/CdCs	300-1500	5.96E-02	4.24	0.00	21.4	0	0	0	0	4	Aäron Vandeputte GAVs 
+814	Cd/H/CS	C_rad/CdCs2	300-1500	1.63E-02	4.24	0.00	21.9	0	0	0	0	4	Aäron Vandeputte GAVs 
+815	Cd/H/CS	C_rad/H/CdCd	300-1500	2.40E-01	4.24	0.00	29.7	0	0	0	0	4	Aäron Vandeputte GAVs 
+816	Cd/H/CS	C_rad/CdCdCs	300-1500	2.13E-02	4.24	0.00	30.1	0	0	0	0	4	Aäron Vandeputte GAVs 
+817	Cd/H/CS	C_rad/H2/Ct	300-1500	3.44E-02	4.24	0.00	15.8	0	0	0	0	4	Aäron Vandeputte GAVs 
+818	Cd/H/CS	C_rad/H/CtCs	300-1500	1.43E-02	4.24	0.00	17.4	0	0	0	0	4	Aäron Vandeputte GAVs 
+819	Cd/H/CS	C_rad/CtCs2	300-1500	1.01E-02	4.24	0.00	18.2	0	0	0	0	4	Aäron Vandeputte GAVs 
+820	Cd/H/CS	C_rad/H/CtCt	300-1500	7.28E-02	4.24	0.00	23.9	0	0	0	0	4	Aäron Vandeputte GAVs 
+821	Cd/H/CS	C_rad/CtCtCs	300-1500	3.58E-03	4.24	0.00	25.0	0	0	0	0	4	Aäron Vandeputte GAVs 
+822	Cd/H/CS	C_rad/H2/Cb	300-1500	7.38E-02	4.24	0.00	17.5	0	0	0	0	4	Aäron Vandeputte GAVs 
+823	Cd/H/CS	C_rad/H/CbCs	300-1500	3.79E-02	4.24	0.00	18.3	0	0	0	0	4	Aäron Vandeputte GAVs 
+824	Cd/H/CS	C_rad/CbCs2	300-1500	1.81E-03	4.24	0.00	17.9	0	0	0	0	4	Aäron Vandeputte GAVs 
+825	Cd/H/CS	Cd_pri_rad	300-1500	3.39E-02	4.24	0.00	2.2	0	0	0	0	4	Aäron Vandeputte GAVs 
+826	Cd/H/CS	Cd_rad/NonDeC	300-1500	3.35E-02	4.24	0.00	3.1	0	0	0	0	4	Aäron Vandeputte GAVs 
+827	Cd/H/CS	Cd_rad/Cd	300-1500	1.60E-02	4.24	0.00	9.9	0	0	0	0	4	Aäron Vandeputte GAVs 
+828	Cd/H/CS	Cb_rad	300-1500	4.03E-02	4.24	0.00	-0.5	0	0	0	0	4	Aäron Vandeputte GAVs 
+829	Cd/H/CS	Cd_rad/Ct	300-1500	3.43E-03	4.24	0.00	7.2	0	0	0	0	4	Aäron Vandeputte GAVs 
+830	Cd/H/CS	C_rad/H2/S	300-1500	1.16E-02	4.24	0.00	12.1	0	0	0	0	4	Aäron Vandeputte GAVs 
+831	Cd/H/CS	C_rad/H/CsS	300-1500	2.07E-02	4.24	0.00	12.1	0	0	0	0	4	Aäron Vandeputte GAVs 
+832	Cd/H/CS	C_rad/Cs2S	300-1500	8.37E-03	4.24	0.00	11.9	0	0	0	0	4	Aäron Vandeputte GAVs 
+833	Cd/H/CS	Cd_rad/NonDeS	300-1500	6.94E-02	4.24	0.00	4.4	0	0	0	0	4	Aäron Vandeputte GAVs 
+834	Cd/H/CS	C_rad/H/CdS	300-1500	1.15E-01	4.24	0.00	23.3	0	0	0	0	4	Aäron Vandeputte GAVs 
+835	Cd/H/CS	C_rad/CdCsS	300-1500	1.45E-02	4.24	0.00	23.3	0	0	0	0	4	Aäron Vandeputte GAVs 
+836	Cd/H/CS	C_rad/H/CtS	300-1500	6.81E-02	4.24	0.00	21.8	0	0	0	0	4	Aäron Vandeputte GAVs 
+837	Cd/H/CS	C_rad/CtCsS	300-1500	2.79E-01	4.24	0.00	22.6	0	0	0	0	4	Aäron Vandeputte GAVs 
+838	C/H2/CdS	H_rad	300-1500	8.93E-01	4.24	0.00	1.3	0	0	0	0	4	Aäron Vandeputte GAVs 
+839	C/H2/CdS	C_methyl	300-1500	2.58E-02	4.24	0.00	3.4	0	0	0	0	4	Aäron Vandeputte GAVs 
+840	C/H2/CdS	C_rad/H2/Cs	300-1500	5.26E-03	4.24	0.00	4.8	0	0	0	0	4	Aäron Vandeputte GAVs 
+841	C/H2/CdS	C_rad/H/NonDeC	300-1500	1.39E-02	4.24	0.00	5.7	0	0	0	0	4	Aäron Vandeputte GAVs 
+842	C/H2/CdS	C_rad/Cs3	300-1500	7.30E-03	4.24	0.00	5.7	0	0	0	0	4	Aäron Vandeputte GAVs 
+843	C/H2/CdS	C_rad/H2/Cd	300-1500	5.43E-02	4.24	0.00	16.2	0	0	0	0	4	Aäron Vandeputte GAVs 
+844	C/H2/CdS	C_rad/H/CdCs	300-1500	4.28E-02	4.24	0.00	18.0	0	0	0	0	4	Aäron Vandeputte GAVs 
+845	C/H2/CdS	C_rad/CdCs2	300-1500	1.17E-02	4.24	0.00	18.5	0	0	0	0	4	Aäron Vandeputte GAVs 
+846	C/H2/CdS	C_rad/H/CdCd	300-1500	1.72E-01	4.24	0.00	26.3	0	0	0	0	4	Aäron Vandeputte GAVs 
+847	C/H2/CdS	C_rad/CdCdCs	300-1500	1.53E-02	4.24	0.00	26.7	0	0	0	0	4	Aäron Vandeputte GAVs 
+848	C/H2/CdS	C_rad/H2/Ct	300-1500	2.47E-02	4.24	0.00	12.4	0	0	0	0	4	Aäron Vandeputte GAVs 
+849	C/H2/CdS	C_rad/H/CtCs	300-1500	1.03E-02	4.24	0.00	14.0	0	0	0	0	4	Aäron Vandeputte GAVs 
+850	C/H2/CdS	C_rad/CtCs2	300-1500	7.28E-03	4.24	0.00	14.8	0	0	0	0	4	Aäron Vandeputte GAVs 
+851	C/H2/CdS	C_rad/H/CtCt	300-1500	5.23E-02	4.24	0.00	20.5	0	0	0	0	4	Aäron Vandeputte GAVs 
+852	C/H2/CdS	C_rad/CtCtCs	300-1500	2.57E-03	4.24	0.00	21.6	0	0	0	0	4	Aäron Vandeputte GAVs 
+853	C/H2/CdS	C_rad/H2/Cb	300-1500	5.29E-02	4.24	0.00	14.1	0	0	0	0	4	Aäron Vandeputte GAVs 
+854	C/H2/CdS	C_rad/H/CbCs	300-1500	2.72E-02	4.24	0.00	14.9	0	0	0	0	4	Aäron Vandeputte GAVs 
+855	C/H2/CdS	C_rad/CbCs2	300-1500	1.30E-03	4.24	0.00	14.5	0	0	0	0	4	Aäron Vandeputte GAVs 
+856	C/H2/CdS	Cd_pri_rad	300-1500	2.43E-02	4.24	0.00	-1.2	0	0	0	0	4	Aäron Vandeputte GAVs 
+857	C/H2/CdS	Cd_rad/NonDeC	300-1500	2.40E-02	4.24	0.00	-0.3	0	0	0	0	4	Aäron Vandeputte GAVs 
+858	C/H2/CdS	Cd_rad/Cd	300-1500	1.15E-02	4.24	0.00	6.5	0	0	0	0	4	Aäron Vandeputte GAVs 
+859	C/H2/CdS	Cb_rad	300-1500	2.89E-02	4.24	0.00	-3.9	0	0	0	0	4	Aäron Vandeputte GAVs 
+860	C/H2/CdS	Cd_rad/Ct	300-1500	2.46E-03	4.24	0.00	3.8	0	0	0	0	4	Aäron Vandeputte GAVs 
+861	C/H2/CdS	C_rad/H2/S	300-1500	8.34E-03	4.24	0.00	8.7	0	0	0	0	4	Aäron Vandeputte GAVs 
+862	C/H2/CdS	C_rad/H/CsS	300-1500	1.49E-02	4.24	0.00	8.7	0	0	0	0	4	Aäron Vandeputte GAVs 
+863	C/H2/CdS	C_rad/Cs2S	300-1500	6.00E-03	4.24	0.00	8.5	0	0	0	0	4	Aäron Vandeputte GAVs 
+864	C/H2/CdS	Cd_rad/NonDeS	300-1500	4.98E-02	4.24	0.00	1.0	0	0	0	0	4	Aäron Vandeputte GAVs 
+865	C/H2/CdS	C_rad/H/CdS	300-1500	8.23E-02	4.24	0.00	19.9	0	0	0	0	4	Aäron Vandeputte GAVs 
+866	C/H2/CdS	C_rad/CdCsS	300-1500	1.04E-02	4.24	0.00	19.9	0	0	0	0	4	Aäron Vandeputte GAVs 
+867	C/H2/CdS	C_rad/H/CtS	300-1500	4.89E-02	4.24	0.00	18.4	0	0	0	0	4	Aäron Vandeputte GAVs 
+868	C/H2/CdS	C_rad/CtCsS	300-1500	2.00E-01	4.24	0.00	19.2	0	0	0	0	4	Aäron Vandeputte GAVs 
+869	C/H/CdCsS	H_rad	300-1500	4.81E-01	4.24	0.00	0.0	0	0	0	0	4	Aäron Vandeputte GAVs 
+870	C/H/CdCsS	C_methyl	300-1500	1.39E-02	4.24	0.00	2.2	0	0	0	0	4	Aäron Vandeputte GAVs 
+871	C/H/CdCsS	C_rad/H2/Cs	300-1500	2.83E-03	4.24	0.00	3.6	0	0	0	0	4	Aäron Vandeputte GAVs 
+872	C/H/CdCsS	C_rad/H/NonDeC	300-1500	7.49E-03	4.24	0.00	4.4	0	0	0	0	4	Aäron Vandeputte GAVs 
+873	C/H/CdCsS	C_rad/Cs3	300-1500	3.93E-03	4.24	0.00	4.4	0	0	0	0	4	Aäron Vandeputte GAVs 
+874	C/H/CdCsS	C_rad/H2/Cd	300-1500	2.92E-02	4.24	0.00	14.9	0	0	0	0	4	Aäron Vandeputte GAVs 
+875	C/H/CdCsS	C_rad/H/CdCs	300-1500	2.30E-02	4.24	0.00	16.7	0	0	0	0	4	Aäron Vandeputte GAVs 
+876	C/H/CdCsS	C_rad/CdCs2	300-1500	6.30E-03	4.24	0.00	17.2	0	0	0	0	4	Aäron Vandeputte GAVs 
+877	C/H/CdCsS	C_rad/H/CdCd	300-1500	9.27E-02	4.24	0.00	25.0	0	0	0	0	4	Aäron Vandeputte GAVs 
+878	C/H/CdCsS	C_rad/CdCdCs	300-1500	8.23E-03	4.24	0.00	25.4	0	0	0	0	4	Aäron Vandeputte GAVs 
+879	C/H/CdCsS	C_rad/H2/Ct	300-1500	1.33E-02	4.24	0.00	11.2	0	0	0	0	4	Aäron Vandeputte GAVs 
+880	C/H/CdCsS	C_rad/H/CtCs	300-1500	5.53E-03	4.24	0.00	12.7	0	0	0	0	4	Aäron Vandeputte GAVs 
+881	C/H/CdCsS	C_rad/CtCs2	300-1500	3.92E-03	4.24	0.00	13.6	0	0	0	0	4	Aäron Vandeputte GAVs 
+882	C/H/CdCsS	C_rad/H/CtCt	300-1500	2.82E-02	4.24	0.00	19.2	0	0	0	0	4	Aäron Vandeputte GAVs 
+883	C/H/CdCsS	C_rad/CtCtCs	300-1500	1.38E-03	4.24	0.00	20.3	0	0	0	0	4	Aäron Vandeputte GAVs 
+884	C/H/CdCsS	C_rad/H2/Cb	300-1500	2.85E-02	4.24	0.00	12.8	0	0	0	0	4	Aäron Vandeputte GAVs 
+885	C/H/CdCsS	C_rad/H/CbCs	300-1500	1.47E-02	4.24	0.00	13.7	0	0	0	0	4	Aäron Vandeputte GAVs 
+886	C/H/CdCsS	C_rad/CbCs2	300-1500	6.98E-04	4.24	0.00	13.3	0	0	0	0	4	Aäron Vandeputte GAVs 
+887	C/H/CdCsS	Cd_pri_rad	300-1500	1.31E-02	4.24	0.00	-2.4	0	0	0	0	4	Aäron Vandeputte GAVs 
+888	C/H/CdCsS	Cd_rad/NonDeC	300-1500	1.30E-02	4.24	0.00	-1.6	0	0	0	0	4	Aäron Vandeputte GAVs 
+889	C/H/CdCsS	Cd_rad/Cd	300-1500	6.18E-03	4.24	0.00	5.3	0	0	0	0	4	Aäron Vandeputte GAVs 
+890	C/H/CdCsS	Cb_rad	300-1500	1.56E-02	4.24	0.00	-5.2	0	0	0	0	4	Aäron Vandeputte GAVs 
+891	C/H/CdCsS	Cd_rad/Ct	300-1500	1.33E-03	4.24	0.00	2.5	0	0	0	0	4	Aäron Vandeputte GAVs 
+892	C/H/CdCsS	C_rad/H2/S	300-1500	4.49E-03	4.24	0.00	7.5	0	0	0	0	4	Aäron Vandeputte GAVs 
+893	C/H/CdCsS	C_rad/H/CsS	300-1500	8.02E-03	4.24	0.00	7.5	0	0	0	0	4	Aäron Vandeputte GAVs 
+894	C/H/CdCsS	C_rad/Cs2S	300-1500	3.23E-03	4.24	0.00	7.3	0	0	0	0	4	Aäron Vandeputte GAVs 
+895	C/H/CdCsS	Cd_rad/NonDeS	300-1500	2.68E-02	4.24	0.00	-0.3	0	0	0	0	4	Aäron Vandeputte GAVs 
+896	C/H/CdCsS	C_rad/H/CdS	300-1500	4.43E-02	4.24	0.00	18.6	0	0	0	0	4	Aäron Vandeputte GAVs 
+897	C/H/CdCsS	C_rad/CdCsS	300-1500	5.60E-03	4.24	0.00	18.6	0	0	0	0	4	Aäron Vandeputte GAVs 
+898	C/H/CdCsS	C_rad/H/CtS	300-1500	2.63E-02	4.24	0.00	17.2	0	0	0	0	4	Aäron Vandeputte GAVs 
+899	C/H/CdCsS	C_rad/CtCsS	300-1500	1.08E-01	4.24	0.00	17.9	0	0	0	0	4	Aäron Vandeputte GAVs 
+900	C/H2/CtS	H_rad	300-1500	7.32E-01	4.24	0.00	0.9	0	0	0	0	4	Aäron Vandeputte GAVs 
+901	C/H2/CtS	C_methyl	300-1500	2.12E-02	4.24	0.00	3.0	0	0	0	0	4	Aäron Vandeputte GAVs 
+902	C/H2/CtS	C_rad/H2/Cs	300-1500	4.31E-03	4.24	0.00	4.4	0	0	0	0	4	Aäron Vandeputte GAVs 
+903	C/H2/CtS	C_rad/H/NonDeC	300-1500	1.14E-02	4.24	0.00	5.3	0	0	0	0	4	Aäron Vandeputte GAVs 
+904	C/H2/CtS	C_rad/Cs3	300-1500	5.98E-03	4.24	0.00	5.3	0	0	0	0	4	Aäron Vandeputte GAVs 
+905	C/H2/CtS	C_rad/H2/Cd	300-1500	4.45E-02	4.24	0.00	15.8	0	0	0	0	4	Aäron Vandeputte GAVs 
+906	C/H2/CtS	C_rad/H/CdCs	300-1500	3.51E-02	4.24	0.00	17.6	0	0	0	0	4	Aäron Vandeputte GAVs 
+907	C/H2/CtS	C_rad/CdCs2	300-1500	9.58E-03	4.24	0.00	18.0	0	0	0	0	4	Aäron Vandeputte GAVs 
+908	C/H2/CtS	C_rad/H/CdCd	300-1500	1.41E-01	4.24	0.00	25.8	0	0	0	0	4	Aäron Vandeputte GAVs 
+909	C/H2/CtS	C_rad/CdCdCs	300-1500	1.25E-02	4.24	0.00	26.3	0	0	0	0	4	Aäron Vandeputte GAVs 
+910	C/H2/CtS	C_rad/H2/Ct	300-1500	2.02E-02	4.24	0.00	12.0	0	0	0	0	4	Aäron Vandeputte GAVs 
+911	C/H2/CtS	C_rad/H/CtCs	300-1500	8.41E-03	4.24	0.00	13.6	0	0	0	0	4	Aäron Vandeputte GAVs 
+912	C/H2/CtS	C_rad/CtCs2	300-1500	5.97E-03	4.24	0.00	14.4	0	0	0	0	4	Aäron Vandeputte GAVs 
+913	C/H2/CtS	C_rad/H/CtCt	300-1500	4.28E-02	4.24	0.00	20.1	0	0	0	0	4	Aäron Vandeputte GAVs 
+914	C/H2/CtS	C_rad/CtCtCs	300-1500	2.11E-03	4.24	0.00	21.2	0	0	0	0	4	Aäron Vandeputte GAVs 
+915	C/H2/CtS	C_rad/H2/Cb	300-1500	4.34E-02	4.24	0.00	13.7	0	0	0	0	4	Aäron Vandeputte GAVs 
+916	C/H2/CtS	C_rad/H/CbCs	300-1500	2.23E-02	4.24	0.00	14.5	0	0	0	0	4	Aäron Vandeputte GAVs 
+917	C/H2/CtS	C_rad/CbCs2	300-1500	1.06E-03	4.24	0.00	14.1	0	0	0	0	4	Aäron Vandeputte GAVs 
+918	C/H2/CtS	Cd_pri_rad	300-1500	1.99E-02	4.24	0.00	-1.6	0	0	0	0	4	Aäron Vandeputte GAVs 
+919	C/H2/CtS	Cd_rad/NonDeC	300-1500	1.97E-02	4.24	0.00	-0.7	0	0	0	0	4	Aäron Vandeputte GAVs 
+920	C/H2/CtS	Cd_rad/Cd	300-1500	9.40E-03	4.24	0.00	6.1	0	0	0	0	4	Aäron Vandeputte GAVs 
+921	C/H2/CtS	Cb_rad	300-1500	2.37E-02	4.24	0.00	-4.3	0	0	0	0	4	Aäron Vandeputte GAVs 
+922	C/H2/CtS	Cd_rad/Ct	300-1500	2.02E-03	4.24	0.00	3.4	0	0	0	0	4	Aäron Vandeputte GAVs 
+923	C/H2/CtS	C_rad/H2/S	300-1500	6.83E-03	4.24	0.00	8.3	0	0	0	0	4	Aäron Vandeputte GAVs 
+924	C/H2/CtS	C_rad/H/CsS	300-1500	1.22E-02	4.24	0.00	8.3	0	0	0	0	4	Aäron Vandeputte GAVs 
+925	C/H2/CtS	C_rad/Cs2S	300-1500	4.92E-03	4.24	0.00	8.1	0	0	0	0	4	Aäron Vandeputte GAVs 
+926	C/H2/CtS	Cd_rad/NonDeS	300-1500	4.08E-02	4.24	0.00	0.6	0	0	0	0	4	Aäron Vandeputte GAVs 
+927	C/H2/CtS	C_rad/H/CdS	300-1500	6.74E-02	4.24	0.00	19.5	0	0	0	0	4	Aäron Vandeputte GAVs 
+928	C/H2/CtS	C_rad/CdCsS	300-1500	8.51E-03	4.24	0.00	19.5	0	0	0	0	4	Aäron Vandeputte GAVs 
+929	C/H2/CtS	C_rad/H/CtS	300-1500	4.01E-02	4.24	0.00	18.0	0	0	0	0	4	Aäron Vandeputte GAVs 
+930	C/H2/CtS	C_rad/CtCsS	300-1500	1.64E-01	4.24	0.00	18.8	0	0	0	0	4	Aäron Vandeputte GAVs 
+931	C/H/CtCsS	H_rad	300-1500	7.39E-01	4.24	0.00	-0.6	0	0	0	0	4	Aäron Vandeputte GAVs 
+932	C/H/CtCsS	C_methyl	300-1500	2.14E-02	4.24	0.00	1.5	0	0	0	0	4	Aäron Vandeputte GAVs 
+933	C/H/CtCsS	C_rad/H2/Cs	300-1500	4.35E-03	4.24	0.00	2.9	0	0	0	0	4	Aäron Vandeputte GAVs 
+934	C/H/CtCsS	C_rad/H/NonDeC	300-1500	1.15E-02	4.24	0.00	3.8	0	0	0	0	4	Aäron Vandeputte GAVs 
+935	C/H/CtCsS	C_rad/Cs3	300-1500	6.04E-03	4.24	0.00	3.8	0	0	0	0	4	Aäron Vandeputte GAVs 
+936	C/H/CtCsS	C_rad/H2/Cd	300-1500	4.49E-02	4.24	0.00	14.3	0	0	0	0	4	Aäron Vandeputte GAVs 
+937	C/H/CtCsS	C_rad/H/CdCs	300-1500	3.54E-02	4.24	0.00	16.1	0	0	0	0	4	Aäron Vandeputte GAVs 
+938	C/H/CtCsS	C_rad/CdCs2	300-1500	9.67E-03	4.24	0.00	16.6	0	0	0	0	4	Aäron Vandeputte GAVs 
+939	C/H/CtCsS	C_rad/H/CdCd	300-1500	1.42E-01	4.24	0.00	24.4	0	0	0	0	4	Aäron Vandeputte GAVs 
+940	C/H/CtCsS	C_rad/CdCdCs	300-1500	1.26E-02	4.24	0.00	24.8	0	0	0	0	4	Aäron Vandeputte GAVs 
+941	C/H/CtCsS	C_rad/H2/Ct	300-1500	2.04E-02	4.24	0.00	10.5	0	0	0	0	4	Aäron Vandeputte GAVs 
+942	C/H/CtCsS	C_rad/H/CtCs	300-1500	8.49E-03	4.24	0.00	12.1	0	0	0	0	4	Aäron Vandeputte GAVs 
+943	C/H/CtCsS	C_rad/CtCs2	300-1500	6.02E-03	4.24	0.00	12.9	0	0	0	0	4	Aäron Vandeputte GAVs 
+944	C/H/CtCsS	C_rad/H/CtCt	300-1500	4.32E-02	4.24	0.00	18.6	0	0	0	0	4	Aäron Vandeputte GAVs 
+945	C/H/CtCsS	C_rad/CtCtCs	300-1500	2.13E-03	4.24	0.00	19.7	0	0	0	0	4	Aäron Vandeputte GAVs 
+946	C/H/CtCsS	C_rad/H2/Cb	300-1500	4.38E-02	4.24	0.00	12.2	0	0	0	0	4	Aäron Vandeputte GAVs 
+947	C/H/CtCsS	C_rad/H/CbCs	300-1500	2.25E-02	4.24	0.00	13.0	0	0	0	0	4	Aäron Vandeputte GAVs 
+948	C/H/CtCsS	C_rad/CbCs2	300-1500	1.07E-03	4.24	0.00	12.6	0	0	0	0	4	Aäron Vandeputte GAVs 
+949	C/H/CtCsS	Cd_pri_rad	300-1500	2.01E-02	4.24	0.00	-3.1	0	0	0	0	4	Aäron Vandeputte GAVs 
+950	C/H/CtCsS	Cd_rad/NonDeC	300-1500	1.99E-02	4.24	0.00	-2.2	0	0	0	0	4	Aäron Vandeputte GAVs 
+951	C/H/CtCsS	Cd_rad/Cd	300-1500	9.49E-03	4.24	0.00	4.6	0	0	0	0	4	Aäron Vandeputte GAVs 
+952	C/H/CtCsS	Cb_rad	300-1500	2.39E-02	4.24	0.00	-5.8	0	0	0	0	4	Aäron Vandeputte GAVs 
+953	C/H/CtCsS	Cd_rad/Ct	300-1500	2.04E-03	4.24	0.00	1.9	0	0	0	0	4	Aäron Vandeputte GAVs 
+954	C/H/CtCsS	C_rad/H2/S	300-1500	6.89E-03	4.24	0.00	6.8	0	0	0	0	4	Aäron Vandeputte GAVs 
+955	C/H/CtCsS	C_rad/H/CsS	300-1500	1.23E-02	4.24	0.00	6.8	0	0	0	0	4	Aäron Vandeputte GAVs 
+956	C/H/CtCsS	C_rad/Cs2S	300-1500	4.97E-03	4.24	0.00	6.6	0	0	0	0	4	Aäron Vandeputte GAVs 
+957	C/H/CtCsS	Cd_rad/NonDeS	300-1500	4.12E-02	4.24	0.00	-0.9	0	0	0	0	4	Aäron Vandeputte GAVs 
+958	C/H/CtCsS	C_rad/H/CdS	300-1500	6.80E-02	4.24	0.00	18.0	0	0	0	0	4	Aäron Vandeputte GAVs 
+959	C/H/CtCsS	C_rad/CdCsS	300-1500	8.59E-03	4.24	0.00	18.0	0	0	0	0	4	Aäron Vandeputte GAVs 
+960	C/H/CtCsS	C_rad/CtCsS	300-1500	4.04E-02	4.24	0.00	16.5	0	0	0	0	4	Aäron Vandeputte GAVs 
+961	C/H/CtCsS	C_rad/CtCsS	300-1500	1.65E-01	4.24	0.00	17.3	0	0	0	0	4	Aäron Vandeputte GAVs 
+962	S_pri	H_rad	300-1500	1.16E+04	2.98	0.00	-0.2	0	0	0	0	4	Aäron Vandeputte GAVs 
+963	S_pri	C_methyl	300-1500	2.08E+02	2.98	0.00	0.7	0	0	0	0	4	Aäron Vandeputte GAVs 
+964	S_pri	C_rad/H2/Cs	300-1500	3.22E+01	2.98	0.00	-0.2	0	0	0	0	4	Aäron Vandeputte GAVs 
+965	S_pri	C_rad/H/NonDeC	300-1500	3.92E+01	2.98	0.00	-1.2	0	0	0	0	4	Aäron Vandeputte GAVs 
+966	S_pri	C_rad/Cs3	300-1500	8.74E+01	2.98	0.00	-2.8	0	0	0	0	4	Aäron Vandeputte GAVs 
+967	S_pri	Cd_pri_rad	300-1500	5.50E+02	2.98	0.00	-1.7	0	0	0	0	4	Aäron Vandeputte GAVs 
+968	S_pri	Cd_rad/NonDeC	300-1500	2.91E+02	2.98	0.00	-2.7	0	0	0	0	4	Aäron Vandeputte GAVs 
+969	S_pri	Cd_rad/Cd	300-1500	1.95E+02	2.98	0.00	2.4	0	0	0	0	4	Aäron Vandeputte GAVs 
+970	S_pri	Cd_rad/Ct	300-1500	3.08E+01	2.98	0.00	-0.2	0	0	0	0	4	Aäron Vandeputte GAVs 
+971	S_pri	C_rad/H2/Cd	300-1500	1.43E+02	2.98	0.00	6.0	0	0	0	0	4	Aäron Vandeputte GAVs 
+972	S_pri	C_rad/H/CdCs	300-1500	1.14E+02	2.98	0.00	6.1	0	0	0	0	4	Aäron Vandeputte GAVs 
+973	S_pri	C_rad/CdCs2	300-1500	2.10E+01	2.98	0.00	5.5	0	0	0	0	4	Aäron Vandeputte GAVs 
+974	S_pri	C_rad/H/CdCd	300-1500	2.35E+02	2.98	0.00	13.0	0	0	0	0	4	Aäron Vandeputte GAVs 
+975	S_pri	C_rad/CdCdCs	300-1500	1.25E+01	2.98	0.00	13.1	0	0	0	0	4	Aäron Vandeputte GAVs 
+976	S_pri	C_rad/H2/Ct	300-1500	1.24E+02	2.98	0.00	4.5	0	0	0	0	4	Aäron Vandeputte GAVs 
+977	S_pri	C_rad/H/CtCs	300-1500	3.93E+01	2.98	0.00	4.1	0	0	0	0	4	Aäron Vandeputte GAVs 
+978	S_pri	C_rad/CtCs2	300-1500	1.37E+01	2.98	0.00	3.5	0	0	0	0	4	Aäron Vandeputte GAVs 
+979	S_pri	C_rad/H/CtCt	300-1500	9.86E+01	2.98	0.00	9.7	0	0	0	0	4	Aäron Vandeputte GAVs 
+980	S_pri	C_rad/CtCtCs	300-1500	2.75E+00	2.98	0.00	9.9	0	0	0	0	4	Aäron Vandeputte GAVs 
+981	S_pri	Cb_rad	300-1500	3.83E+02	2.98	0.00	-3.2	0	0	0	0	4	Aäron Vandeputte GAVs 
+982	S_pri	C_rad/H2/Cb	300-1500	8.91E+01	2.98	0.00	3.2	0	0	0	0	4	Aäron Vandeputte GAVs 
+983	S_pri	C_rad/H/CbCs	300-1500	3.35E+01	2.98	0.00	2.8	0	0	0	0	4	Aäron Vandeputte GAVs 
+984	S_pri	C_rad/CbCs2	300-1500	2.33E+00	2.98	0.00	1.9	0	0	0	0	4	Aäron Vandeputte GAVs 
+985	S_pri	C_rad/H2/S	300-1500	2.83E+01	2.98	0.00	1.0	0	0	0	0	4	Aäron Vandeputte GAVs 
+986	S_pri	C_rad/H/CsS	300-1500	6.67E+01	2.98	0.00	-0.3	0	0	0	0	4	Aäron Vandeputte GAVs 
+987	S_pri	C_rad/Cs2S	300-1500	1.63E+01	2.98	0.00	-1.4	0	0	0	0	4	Aäron Vandeputte GAVs 
+988	S_pri	Cd_rad/NonDeS	300-1500	7.76E+03	2.98	0.00	-1.3	0	0	0	0	4	Aäron Vandeputte GAVs 
+989	S_pri	C_rad/H/CdS	300-1500	1.24E+02	2.98	0.00	8.0	0	0	0	0	4	Aäron Vandeputte GAVs 
+990	S_pri	C_rad/CdCsS	300-1500	2.26E+01	2.98	0.00	7.5	0	0	0	0	4	Aäron Vandeputte GAVs 
+991	S_pri	C_rad/H/CtS	300-1500	8.09E+01	2.98	0.00	7.2	0	0	0	0	4	Aäron Vandeputte GAVs 
+992	S_pri	C_rad/CtCsS	300-1500	3.81E+02	2.98	0.00	7.3	0	0	0	0	4	Aäron Vandeputte GAVs 
+993	S/H/NonDeC	H_rad	300-1500	3.22E+04	2.98	0.00	-0.5	0	0	0	0	4	Aäron Vandeputte GAVs 
+994	S/H/NonDeC	C_methyl	300-1500	5.79E+02	2.98	0.00	0.4	0	0	0	0	4	Aäron Vandeputte GAVs 
+995	S/H/NonDeC	C_rad/H2/Cs	300-1500	8.99E+01	2.98	0.00	-0.6	0	0	0	0	4	Aäron Vandeputte GAVs 
+996	S/H/NonDeC	C_rad/H/NonDeC	300-1500	1.09E+02	2.98	0.00	-1.5	0	0	0	0	4	Aäron Vandeputte GAVs 
+997	S/H/NonDeC	C_rad/Cs3	300-1500	2.44E+02	2.98	0.00	-3.1	0	0	0	0	4	Aäron Vandeputte GAVs 
+998	S/H/NonDeC	Cd_pri_rad	300-1500	1.53E+03	2.98	0.00	-2.0	0	0	0	0	4	Aäron Vandeputte GAVs 
+999	S/H/NonDeC	Cd_rad/NonDeC	300-1500	8.10E+02	2.98	0.00	-3.0	0	0	0	0	4	Aäron Vandeputte GAVs 
+1000	S/H/NonDeC	Cd_rad/Cd	300-1500	5.45E+02	2.98	0.00	2.1	0	0	0	0	4	Aäron Vandeputte GAVs 
+1001	S/H/NonDeC	Cd_rad/Ct	300-1500	8.60E+01	2.98	0.00	-0.5	0	0	0	0	4	Aäron Vandeputte GAVs 
+1002	S/H/NonDeC	C_rad/H2/Cd	300-1500	4.00E+02	2.98	0.00	5.7	0	0	0	0	4	Aäron Vandeputte GAVs 
+1003	S/H/NonDeC	C_rad/H/CdCs	300-1500	3.17E+02	2.98	0.00	5.8	0	0	0	0	4	Aäron Vandeputte GAVs 
+1004	S/H/NonDeC	C_rad/CdCs2	300-1500	5.86E+01	2.98	0.00	5.2	0	0	0	0	4	Aäron Vandeputte GAVs 
+1005	S/H/NonDeC	C_rad/H/CdCd	300-1500	6.55E+02	2.98	0.00	12.7	0	0	0	0	4	Aäron Vandeputte GAVs 
+1006	S/H/NonDeC	C_rad/CdCdCs	300-1500	3.48E+01	2.98	0.00	12.8	0	0	0	0	4	Aäron Vandeputte GAVs 
+1007	S/H/NonDeC	C_rad/H2/Ct	300-1500	3.46E+02	2.98	0.00	4.2	0	0	0	0	4	Aäron Vandeputte GAVs 
+1008	S/H/NonDeC	C_rad/H/CtCs	300-1500	1.10E+02	2.98	0.00	3.8	0	0	0	0	4	Aäron Vandeputte GAVs 
+1009	S/H/NonDeC	C_rad/CtCs2	300-1500	3.81E+01	2.98	0.00	3.2	0	0	0	0	4	Aäron Vandeputte GAVs 
+1010	S/H/NonDeC	C_rad/H/CtCt	300-1500	2.75E+02	2.98	0.00	9.4	0	0	0	0	4	Aäron Vandeputte GAVs 
+1011	S/H/NonDeC	C_rad/CtCtCs	300-1500	7.66E+00	2.98	0.00	9.6	0	0	0	0	4	Aäron Vandeputte GAVs 
+1012	S/H/NonDeC	Cb_rad	300-1500	1.07E+03	2.98	0.00	-3.5	0	0	0	0	4	Aäron Vandeputte GAVs 
+1013	S/H/NonDeC	C_rad/H2/Cb	300-1500	2.49E+02	2.98	0.00	2.9	0	0	0	0	4	Aäron Vandeputte GAVs 
+1014	S/H/NonDeC	C_rad/H/CbCs	300-1500	9.35E+01	2.98	0.00	2.5	0	0	0	0	4	Aäron Vandeputte GAVs 
+1015	S/H/NonDeC	C_rad/CbCs2	300-1500	6.51E+00	2.98	0.00	1.6	0	0	0	0	4	Aäron Vandeputte GAVs 
+1016	S/H/NonDeC	C_rad/H2/S	300-1500	7.90E+01	2.98	0.00	0.7	0	0	0	0	4	Aäron Vandeputte GAVs 
+1017	S/H/NonDeC	C_rad/H/CsS	300-1500	1.86E+02	2.98	0.00	-0.6	0	0	0	0	4	Aäron Vandeputte GAVs 
+1018	S/H/NonDeC	C_rad/Cs2S	300-1500	4.56E+01	2.98	0.00	-1.7	0	0	0	0	4	Aäron Vandeputte GAVs 
+1019	S/H/NonDeC	Cd_rad/NonDeS	300-1500	2.16E+04	2.98	0.00	-1.6	0	0	0	0	4	Aäron Vandeputte GAVs 
+1020	S/H/NonDeC	C_rad/H/CdS	300-1500	3.44E+02	2.98	0.00	7.7	0	0	0	0	4	Aäron Vandeputte GAVs 
+1021	S/H/NonDeC	C_rad/CdCsS	300-1500	6.30E+01	2.98	0.00	7.2	0	0	0	0	4	Aäron Vandeputte GAVs 
+1022	S/H/NonDeC	C_rad/H/CtS	300-1500	2.26E+02	2.98	0.00	6.9	0	0	0	0	4	Aäron Vandeputte GAVs 
+1023	S/H/NonDeC	C_rad/CtCsS	300-1500	1.06E+03	2.98	0.00	7.0	0	0	0	0	4	Aäron Vandeputte GAVs 
+1024	S/H/Cd	H_rad	300-1500	4.42E+04	2.98	0.00	-1.2	0	0	0	0	4	Aäron Vandeputte GAVs 
+1025	S/H/Cd	C_methyl	300-1500	7.95E+02	2.98	0.00	-0.2	0	0	0	0	4	Aäron Vandeputte GAVs 
+1026	S/H/Cd	C_rad/H2/Cs	300-1500	1.23E+02	2.98	0.00	-1.2	0	0	0	0	4	Aäron Vandeputte GAVs 
+1027	S/H/Cd	C_rad/H/NonDeC	300-1500	1.50E+02	2.98	0.00	-2.1	0	0	0	0	4	Aäron Vandeputte GAVs 
+1028	S/H/Cd	C_rad/Cs3	300-1500	3.34E+02	2.98	0.00	-3.8	0	0	0	0	4	Aäron Vandeputte GAVs 
+1029	S/H/Cd	Cd_pri_rad	300-1500	2.10E+03	2.98	0.00	-2.6	0	0	0	0	4	Aäron Vandeputte GAVs 
+1030	S/H/Cd	Cd_rad/NonDeC	300-1500	1.11E+03	2.98	0.00	-3.7	0	0	0	0	4	Aäron Vandeputte GAVs 
+1031	S/H/Cd	Cd_rad/Cd	300-1500	7.47E+02	2.98	0.00	1.5	0	0	0	0	4	Aäron Vandeputte GAVs 
+1032	S/H/Cd	Cd_rad/Ct	300-1500	1.18E+02	2.98	0.00	-1.2	0	0	0	0	4	Aäron Vandeputte GAVs 
+1033	S/H/Cd	C_rad/H2/Cd	300-1500	5.49E+02	2.98	0.00	5.1	0	0	0	0	4	Aäron Vandeputte GAVs 
+1034	S/H/Cd	C_rad/H/CdCs	300-1500	4.35E+02	2.98	0.00	5.2	0	0	0	0	4	Aäron Vandeputte GAVs 
+1035	S/H/Cd	C_rad/CdCs2	300-1500	8.04E+01	2.98	0.00	4.6	0	0	0	0	4	Aäron Vandeputte GAVs 
+1036	S/H/Cd	C_rad/H/CdCd	300-1500	8.98E+02	2.98	0.00	12.1	0	0	0	0	4	Aäron Vandeputte GAVs 
+1037	S/H/Cd	C_rad/CdCdCs	300-1500	4.77E+01	2.98	0.00	12.1	0	0	0	0	4	Aäron Vandeputte GAVs 
+1038	S/H/Cd	C_rad/H2/Ct	300-1500	4.75E+02	2.98	0.00	3.5	0	0	0	0	4	Aäron Vandeputte GAVs 
+1039	S/H/Cd	C_rad/H/CtCs	300-1500	1.50E+02	2.98	0.00	3.2	0	0	0	0	4	Aäron Vandeputte GAVs 
+1040	S/H/Cd	C_rad/CtCs2	300-1500	5.22E+01	2.98	0.00	2.6	0	0	0	0	4	Aäron Vandeputte GAVs 
+1041	S/H/Cd	C_rad/H/CtCt	300-1500	3.77E+02	2.98	0.00	8.8	0	0	0	0	4	Aäron Vandeputte GAVs 
+1042	S/H/Cd	C_rad/CtCtCs	300-1500	1.05E+01	2.98	0.00	8.9	0	0	0	0	4	Aäron Vandeputte GAVs 
+1043	S/H/Cd	Cb_rad	300-1500	1.46E+03	2.98	0.00	-4.1	0	0	0	0	4	Aäron Vandeputte GAVs 
+1044	S/H/Cd	C_rad/H2/Cb	300-1500	3.41E+02	2.98	0.00	2.3	0	0	0	0	4	Aäron Vandeputte GAVs 
+1045	S/H/Cd	C_rad/H/CbCs	300-1500	1.28E+02	2.98	0.00	1.9	0	0	0	0	4	Aäron Vandeputte GAVs 
+1046	S/H/Cd	C_rad/CbCs2	300-1500	8.93E+00	2.98	0.00	1.0	0	0	0	0	4	Aäron Vandeputte GAVs 
+1047	S/H/Cd	C_rad/H2/S	300-1500	1.08E+02	2.98	0.00	0.0	0	0	0	0	4	Aäron Vandeputte GAVs 
+1048	S/H/Cd	C_rad/H/CsS	300-1500	2.55E+02	2.98	0.00	-1.2	0	0	0	0	4	Aäron Vandeputte GAVs 
+1049	S/H/Cd	C_rad/Cs2S	300-1500	6.25E+01	2.98	0.00	-2.3	0	0	0	0	4	Aäron Vandeputte GAVs 
+1050	S/H/Cd	Cd_rad/NonDeS	300-1500	2.97E+04	2.98	0.00	-2.2	0	0	0	0	4	Aäron Vandeputte GAVs 
+1051	S/H/Cd	C_rad/H/CdS	300-1500	4.72E+02	2.98	0.00	7.1	0	0	0	0	4	Aäron Vandeputte GAVs 
+1052	S/H/Cd	C_rad/CdCsS	300-1500	8.64E+01	2.98	0.00	6.5	0	0	0	0	4	Aäron Vandeputte GAVs 
+1053	S/H/Cd	C_rad/H/CtS	300-1500	3.09E+02	2.98	0.00	6.3	0	0	0	0	4	Aäron Vandeputte GAVs 
+1054	S/H/Cd	C_rad/CtCsS	300-1500	1.46E+03	2.98	0.00	6.3	0	0	0	0	4	Aäron Vandeputte GAVs 
+1055	S/H/Ct	H_rad	300-1500	4.48E+04	2.98	0.00	-2.7	0	0	0	0	4	Aäron Vandeputte GAVs 
+1056	S/H/Ct	C_methyl	300-1500	8.06E+02	2.98	0.00	-1.7	0	0	0	0	4	Aäron Vandeputte GAVs 
+1057	S/H/Ct	C_rad/H2/Cs	300-1500	1.25E+02	2.98	0.00	-2.7	0	0	0	0	4	Aäron Vandeputte GAVs 
+1058	S/H/Ct	C_rad/H/NonDeC	300-1500	1.52E+02	2.98	0.00	-3.6	0	0	0	0	4	Aäron Vandeputte GAVs 
+1059	S/H/Ct	C_rad/Cs3	300-1500	3.39E+02	2.98	0.00	-5.2	0	0	0	0	4	Aäron Vandeputte GAVs 
+1060	S/H/Ct	Cd_pri_rad	300-1500	2.13E+03	2.98	0.00	-4.1	0	0	0	0	4	Aäron Vandeputte GAVs 
+1061	S/H/Ct	Cd_rad/NonDeC	300-1500	1.13E+03	2.98	0.00	-5.1	0	0	0	0	4	Aäron Vandeputte GAVs 
+1062	S/H/Ct	Cd_rad/Cd	300-1500	7.58E+02	2.98	0.00	0.0	0	0	0	0	4	Aäron Vandeputte GAVs 
+1063	S/H/Ct	Cd_rad/Ct	300-1500	1.20E+02	2.98	0.00	-2.7	0	0	0	0	4	Aäron Vandeputte GAVs 
+1064	S/H/Ct	C_rad/H2/Cd	300-1500	5.57E+02	2.98	0.00	3.6	0	0	0	0	4	Aäron Vandeputte GAVs 
+1065	S/H/Ct	C_rad/H/CdCs	300-1500	4.41E+02	2.98	0.00	3.7	0	0	0	0	4	Aäron Vandeputte GAVs 
+1066	S/H/Ct	C_rad/CdCs2	300-1500	8.15E+01	2.98	0.00	3.1	0	0	0	0	4	Aäron Vandeputte GAVs 
+1067	S/H/Ct	C_rad/H/CdCd	300-1500	9.11E+02	2.98	0.00	10.6	0	0	0	0	4	Aäron Vandeputte GAVs 
+1068	S/H/Ct	C_rad/CdCdCs	300-1500	4.84E+01	2.98	0.00	10.6	0	0	0	0	4	Aäron Vandeputte GAVs 
+1069	S/H/Ct	C_rad/H2/Ct	300-1500	4.82E+02	2.98	0.00	2.0	0	0	0	0	4	Aäron Vandeputte GAVs 
+1070	S/H/Ct	C_rad/H/CtCs	300-1500	1.53E+02	2.98	0.00	1.7	0	0	0	0	4	Aäron Vandeputte GAVs 
+1071	S/H/Ct	C_rad/CtCs2	300-1500	5.30E+01	2.98	0.00	1.1	0	0	0	0	4	Aäron Vandeputte GAVs 
+1072	S/H/Ct	C_rad/H/CtCt	300-1500	3.82E+02	2.98	0.00	7.3	0	0	0	0	4	Aäron Vandeputte GAVs 
+1073	S/H/Ct	C_rad/CtCtCs	300-1500	1.07E+01	2.98	0.00	7.5	0	0	0	0	4	Aäron Vandeputte GAVs 
+1074	S/H/Ct	Cb_rad	300-1500	1.49E+03	2.98	0.00	-5.6	0	0	0	0	4	Aäron Vandeputte GAVs 
+1075	S/H/Ct	C_rad/H2/Cb	300-1500	3.46E+02	2.98	0.00	0.8	0	0	0	0	4	Aäron Vandeputte GAVs 
+1076	S/H/Ct	C_rad/H/CbCs	300-1500	1.30E+02	2.98	0.00	0.4	0	0	0	0	4	Aäron Vandeputte GAVs 
+1077	S/H/Ct	C_rad/CbCs2	300-1500	9.05E+00	2.98	0.00	-0.5	0	0	0	0	4	Aäron Vandeputte GAVs 
+1078	S/H/Ct	C_rad/H2/S	300-1500	1.10E+02	2.98	0.00	-1.5	0	0	0	0	4	Aäron Vandeputte GAVs 
+1079	S/H/Ct	C_rad/H/CsS	300-1500	2.59E+02	2.98	0.00	-2.7	0	0	0	0	4	Aäron Vandeputte GAVs 
+1080	S/H/Ct	C_rad/Cs2S	300-1500	6.34E+01	2.98	0.00	-3.8	0	0	0	0	4	Aäron Vandeputte GAVs 
+1081	S/H/Ct	Cd_rad/NonDeS	300-1500	3.01E+04	2.98	0.00	-3.7	0	0	0	0	4	Aäron Vandeputte GAVs 
+1082	S/H/Ct	C_rad/H/CdS	300-1500	4.79E+02	2.98	0.00	5.6	0	0	0	0	4	Aäron Vandeputte GAVs 
+1083	S/H/Ct	C_rad/CdCsS	300-1500	8.76E+01	2.98	0.00	5.1	0	0	0	0	4	Aäron Vandeputte GAVs 
+1084	S/H/Ct	C_rad/H/CtS	300-1500	3.14E+02	2.98	0.00	4.8	0	0	0	0	4	Aäron Vandeputte GAVs 
+1085	S/H/Ct	C_rad/CtCsS	300-1500	1.48E+03	2.98	0.00	4.9	0	0	0	0	4	Aäron Vandeputte GAVs 
+1086	S/H/Cb	H_rad	300-1500	3.64E+03	2.98	0.00	-1.7	0	0	0	0	4	Aäron Vandeputte GAVs 
+1087	S/H/Cb	C_methyl	300-1500	6.54E+01	2.98	0.00	-0.7	0	0	0	0	4	Aäron Vandeputte GAVs 
+1088	S/H/Cb	C_rad/H2/Cs	300-1500	1.01E+01	2.98	0.00	-1.7	0	0	0	0	4	Aäron Vandeputte GAVs 
+1089	S/H/Cb	C_rad/H/NonDeC	300-1500	1.24E+01	2.98	0.00	-2.6	0	0	0	0	4	Aäron Vandeputte GAVs 
+1090	S/H/Cb	C_rad/Cs3	300-1500	2.75E+01	2.98	0.00	-4.2	0	0	0	0	4	Aäron Vandeputte GAVs 
+1091	S/H/Cb	Cd_pri_rad	300-1500	1.73E+02	2.98	0.00	-3.1	0	0	0	0	4	Aäron Vandeputte GAVs 
+1092	S/H/Cb	Cd_rad/NonDeC	300-1500	9.15E+01	2.98	0.00	-4.1	0	0	0	0	4	Aäron Vandeputte GAVs 
+1093	S/H/Cb	Cd_rad/Cd	300-1500	6.15E+01	2.98	0.00	1.0	0	0	0	0	4	Aäron Vandeputte GAVs 
+1094	S/H/Cb	Cd_rad/Ct	300-1500	9.71E+00	2.98	0.00	-1.6	0	0	0	0	4	Aäron Vandeputte GAVs 
+1095	S/H/Cb	C_rad/H2/Cd	300-1500	4.52E+01	2.98	0.00	4.6	0	0	0	0	4	Aäron Vandeputte GAVs 
+1096	S/H/Cb	C_rad/H/CdCs	300-1500	3.58E+01	2.98	0.00	4.7	0	0	0	0	4	Aäron Vandeputte GAVs 
+1097	S/H/Cb	C_rad/CdCs2	300-1500	6.62E+00	2.98	0.00	4.1	0	0	0	0	4	Aäron Vandeputte GAVs 
+1098	S/H/Cb	C_rad/H/CdCd	300-1500	7.40E+01	2.98	0.00	11.6	0	0	0	0	4	Aäron Vandeputte GAVs 
+1099	S/H/Cb	C_rad/CdCdCs	300-1500	3.93E+00	2.98	0.00	11.6	0	0	0	0	4	Aäron Vandeputte GAVs 
+1100	S/H/Cb	C_rad/H2/Ct	300-1500	3.91E+01	2.98	0.00	3.0	0	0	0	0	4	Aäron Vandeputte GAVs 
+1101	S/H/Cb	C_rad/H/CtCs	300-1500	1.24E+01	2.98	0.00	2.7	0	0	0	0	4	Aäron Vandeputte GAVs 
+1102	S/H/Cb	C_rad/CtCs2	300-1500	4.30E+00	2.98	0.00	2.1	0	0	0	0	4	Aäron Vandeputte GAVs 
+1103	S/H/Cb	C_rad/H/CtCt	300-1500	3.10E+01	2.98	0.00	8.3	0	0	0	0	4	Aäron Vandeputte GAVs 
+1104	S/H/Cb	C_rad/CtCtCs	300-1500	8.65E-01	2.98	0.00	8.5	0	0	0	0	4	Aäron Vandeputte GAVs 
+1105	S/H/Cb	Cb_rad	300-1500	1.21E+02	2.98	0.00	-4.6	0	0	0	0	4	Aäron Vandeputte GAVs 
+1106	S/H/Cb	C_rad/H2/Cb	300-1500	2.81E+01	2.98	0.00	1.8	0	0	0	0	4	Aäron Vandeputte GAVs 
+1107	S/H/Cb	C_rad/H/CbCs	300-1500	1.06E+01	2.98	0.00	1.4	0	0	0	0	4	Aäron Vandeputte GAVs 
+1108	S/H/Cb	C_rad/CbCs2	300-1500	7.35E-01	2.98	0.00	0.5	0	0	0	0	4	Aäron Vandeputte GAVs 
+1109	S/H/Cb	C_rad/H2/S	300-1500	8.92E+00	2.98	0.00	-0.4	0	0	0	0	4	Aäron Vandeputte GAVs 
+1110	S/H/Cb	C_rad/H/CsS	300-1500	2.10E+01	2.98	0.00	-1.7	0	0	0	0	4	Aäron Vandeputte GAVs 
+1111	S/H/Cb	C_rad/Cs2S	300-1500	5.15E+00	2.98	0.00	-2.8	0	0	0	0	4	Aäron Vandeputte GAVs 
+1112	S/H/Cb	Cd_rad/NonDeS	300-1500	2.44E+03	2.98	0.00	-2.7	0	0	0	0	4	Aäron Vandeputte GAVs 
+1113	S/H/Cb	C_rad/H/CdS	300-1500	3.89E+01	2.98	0.00	6.6	0	0	0	0	4	Aäron Vandeputte GAVs 
+1114	S/H/Cb	C_rad/CdCsS	300-1500	7.11E+00	2.98	0.00	6.1	0	0	0	0	4	Aäron Vandeputte GAVs 
+1115	S/H/Cb	C_rad/H/CtS	300-1500	2.55E+01	2.98	0.00	5.8	0	0	0	0	4	Aäron Vandeputte GAVs 
+1116	S/H/Cb	C_rad/CtCsS	300-1500	1.20E+02	2.98	0.00	5.9	0	0	0	0	4	Aäron Vandeputte GAVs 
+1117	S/H/NonDeS	H_rad	300-1500	4.83E+04	2.98	0.00	-2.5	0	0	0	0	4	Aäron Vandeputte GAVs 
+1118	S/H/NonDeS	C_methyl	300-1500	8.69E+02	2.98	0.00	-1.6	0	0	0	0	4	Aäron Vandeputte GAVs 
+1119	S/H/NonDeS	C_rad/H2/Cs	300-1500	1.35E+02	2.98	0.00	-2.6	0	0	0	0	4	Aäron Vandeputte GAVs 
+1120	S/H/NonDeS	C_rad/H/NonDeC	300-1500	1.64E+02	2.98	0.00	-3.5	0	0	0	0	4	Aäron Vandeputte GAVs 
+1121	S/H/NonDeS	C_rad/Cs3	300-1500	3.65E+02	2.98	0.00	-5.1	0	0	0	0	4	Aäron Vandeputte GAVs 
+1122	S/H/NonDeS	Cd_pri_rad	300-1500	2.30E+03	2.98	0.00	-4.0	0	0	0	0	4	Aäron Vandeputte GAVs 
+1123	S/H/NonDeS	Cd_rad/NonDeC	300-1500	1.21E+03	2.98	0.00	-5.0	0	0	0	0	4	Aäron Vandeputte GAVs 
+1124	S/H/NonDeS	Cd_rad/Cd	300-1500	8.17E+02	2.98	0.00	0.1	0	0	0	0	4	Aäron Vandeputte GAVs 
+1125	S/H/NonDeS	Cd_rad/Ct	300-1500	1.29E+02	2.98	0.00	-2.5	0	0	0	0	4	Aäron Vandeputte GAVs 
+1126	S/H/NonDeS	C_rad/H2/Cd	300-1500	6.00E+02	2.98	0.00	3.7	0	0	0	0	4	Aäron Vandeputte GAVs 
+1127	S/H/NonDeS	C_rad/H/CdCs	300-1500	4.75E+02	2.98	0.00	3.8	0	0	0	0	4	Aäron Vandeputte GAVs 
+1128	S/H/NonDeS	C_rad/CdCs2	300-1500	8.79E+01	2.98	0.00	3.2	0	0	0	0	4	Aäron Vandeputte GAVs 
+1129	S/H/NonDeS	C_rad/H/CdCd	300-1500	9.82E+02	2.98	0.00	10.7	0	0	0	0	4	Aäron Vandeputte GAVs 
+1130	S/H/NonDeS	C_rad/CdCdCs	300-1500	5.22E+01	2.98	0.00	10.8	0	0	0	0	4	Aäron Vandeputte GAVs 
+1131	S/H/NonDeS	C_rad/H2/Ct	300-1500	5.19E+02	2.98	0.00	2.1	0	0	0	0	4	Aäron Vandeputte GAVs 
+1132	S/H/NonDeS	C_rad/H/CtCs	300-1500	1.64E+02	2.98	0.00	1.8	0	0	0	0	4	Aäron Vandeputte GAVs 
+1133	S/H/NonDeS	C_rad/CtCs2	300-1500	5.71E+01	2.98	0.00	1.2	0	0	0	0	4	Aäron Vandeputte GAVs 
+1134	S/H/NonDeS	C_rad/H/CtCt	300-1500	4.12E+02	2.98	0.00	7.4	0	0	0	0	4	Aäron Vandeputte GAVs 
+1135	S/H/NonDeS	C_rad/CtCtCs	300-1500	1.15E+01	2.98	0.00	7.6	0	0	0	0	4	Aäron Vandeputte GAVs 
+1136	S/H/NonDeS	Cb_rad	300-1500	1.60E+03	2.98	0.00	-5.5	0	0	0	0	4	Aäron Vandeputte GAVs 
+1137	S/H/NonDeS	C_rad/H2/Cb	300-1500	3.73E+02	2.98	0.00	0.9	0	0	0	0	4	Aäron Vandeputte GAVs 
+1138	S/H/NonDeS	C_rad/H/CbCs	300-1500	1.40E+02	2.98	0.00	0.5	0	0	0	0	4	Aäron Vandeputte GAVs 
+1139	S/H/NonDeS	C_rad/CbCs2	300-1500	9.76E+00	2.98	0.00	-0.4	0	0	0	0	4	Aäron Vandeputte GAVs 
+1140	S/H/NonDeS	C_rad/H2/S	300-1500	1.18E+02	2.98	0.00	-1.3	0	0	0	0	4	Aäron Vandeputte GAVs 
+1141	S/H/NonDeS	C_rad/H/CsS	300-1500	2.79E+02	2.98	0.00	-2.6	0	0	0	0	4	Aäron Vandeputte GAVs 
+1142	S/H/NonDeS	C_rad/Cs2S	300-1500	6.83E+01	2.98	0.00	-3.7	0	0	0	0	4	Aäron Vandeputte GAVs 
+1143	S/H/NonDeS	Cd_rad/NonDeS	300-1500	3.24E+04	2.98	0.00	-3.6	0	0	0	0	4	Aäron Vandeputte GAVs 
+1144	S/H/NonDeS	C_rad/H/CdS	300-1500	5.17E+02	2.98	0.00	5.7	0	0	0	0	4	Aäron Vandeputte GAVs 
+1145	S/H/NonDeS	C_rad/CdCsS	300-1500	9.44E+01	2.98	0.00	5.2	0	0	0	0	4	Aäron Vandeputte GAVs 
+1146	S/H/NonDeS	C_rad/H/CtS	300-1500	3.38E+02	2.98	0.00	4.9	0	0	0	0	4	Aäron Vandeputte GAVs 
+1147	S/H/NonDeS	C_rad/CtCsS	300-1500	1.59E+03	2.98	0.00	5.0	0	0	0	0	4	Aäron Vandeputte GAVs 
 
-1148	S_pri	S_pri_rad	300-1500	1.53E+03	3.17	0.00	2.1	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-1149	S_pri	S_rad/NonDeC	300-1500	7.90E+02	3.17	0.00	4.4	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-1150	S_pri	S_rad/Cd	300-1500	3.12E+02	3.17	0.00	0.3	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-1151	S_pri	S_rad/Ct	300-1500	9.01E+02	3.17	0.00	12.4	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-1152	S_pri	S_rad/Cb	300-1500	2.27E+02	3.17	0.00	2.5	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-1153	S_pri	S_rad/NonDeS	300-1500	1.64E+02	3.17	0.00	3.3	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-1154	S/H/NonDeC	S_pri_rad	300-1500	1.49E+03	3.17	0.00	-0.5	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-1155	S/H/NonDeC	S_rad/NonDeC	300-1500	7.68E+02	3.17	0.00	1.8	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-1156	S/H/NonDeC	S_rad/Cd	300-1500	3.04E+02	3.17	0.00	-2.3	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-1157	S/H/NonDeC	S_rad/Ct	300-1500	8.76E+02	3.17	0.00	9.8	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-1158	S/H/NonDeC	S_rad/Cb	300-1500	2.20E+02	3.17	0.00	-0.1	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-1159	S/H/NonDeC	S_rad/NonDeS	300-1500	1.59E+02	3.17	0.00	0.6	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-1160	S/H/Cd	S_pri_rad	300-1500	1.56E+03	3.17	0.00	-3.0	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-1161	S/H/Cd	S_rad/NonDeC	300-1500	8.01E+02	3.17	0.00	-0.7	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-1162	S/H/Cd	S_rad/Cd	300-1500	3.17E+02	3.17	0.00	-4.8	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-1163	S/H/Cd	S_rad/Ct	300-1500	9.14E+02	3.17	0.00	7.3	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-1164	S/H/Cd	S_rad/Cb	300-1500	2.30E+02	3.17	0.00	-2.6	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-1165	S/H/Cd	S_rad/NonDeS	300-1500	1.66E+02	3.17	0.00	-1.8	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-1166	S/H/Ct	S_pri_rad	300-1500	5.95E+02	3.17	0.00	-3.2	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-1167	S/H/Ct	S_rad/NonDeC	300-1500	3.06E+02	3.17	0.00	-0.9	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-1168	S/H/Ct	S_rad/Cd	300-1500	1.21E+02	3.17	0.00	-5.0	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-1169	S/H/Ct	S_rad/Ct	300-1500	3.49E+02	3.17	0.00	7.1	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-1170	S/H/Ct	S_rad/Cb	300-1500	8.78E+01	3.17	0.00	-2.9	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-1171	S/H/Ct	S_rad/NonDeS	300-1500	6.35E+01	3.17	0.00	-2.1	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-1172	S/H/Cb	S_pri_rad	300-1500	4.28E+02	3.17	0.00	-2.4	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-1173	S/H/Cb	S_rad/NonDeC	300-1500	2.20E+02	3.17	0.00	-0.1	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-1174	S/H/Cb	S_rad/Cd	300-1500	8.72E+01	3.17	0.00	-4.2	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-1175	S/H/Cb	S_rad/Ct	300-1500	2.51E+02	3.17	0.00	7.8	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-1176	S/H/Cb	S_rad/Cb	300-1500	6.32E+01	3.17	0.00	-2.1	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-1177	S/H/Cb	S_rad/NonDeS	300-1500	4.57E+01	3.17	0.00	-1.3	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-1178	S/H/NonDeS	S_pri_rad	300-1500	3.09E+02	3.17	0.00	-1.6	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-1179	S/H/NonDeS	S_rad/NonDeC	300-1500	1.59E+02	3.17	0.00	0.6	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-1180	S/H/NonDeS	S_rad/Cd	300-1500	6.30E+01	3.17	0.00	-3.4	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-1181	S/H/NonDeS	S_rad/Ct	300-1500	1.82E+02	3.17	0.00	8.6	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-1182	S/H/NonDeS	S_rad/Cb	300-1500	4.57E+01	3.17	0.00	-1.3	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-1183	S/H/NonDeS	S_rad/NonDeS	300-1500	3.30E+01	3.17	0.00	-0.5	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
+1148	S_pri	S_pri_rad	300-1500	1.53E+03	3.17	0.00	2.1	0	0	0	0	4	Aäron Vandeputte GAVs 
+1149	S_pri	S_rad/NonDeC	300-1500	7.90E+02	3.17	0.00	4.4	0	0	0	0	4	Aäron Vandeputte GAVs 
+1150	S_pri	S_rad/Cd	300-1500	3.12E+02	3.17	0.00	0.3	0	0	0	0	4	Aäron Vandeputte GAVs 
+1151	S_pri	S_rad/Ct	300-1500	9.01E+02	3.17	0.00	12.4	0	0	0	0	4	Aäron Vandeputte GAVs 
+1152	S_pri	S_rad/Cb	300-1500	2.27E+02	3.17	0.00	2.5	0	0	0	0	4	Aäron Vandeputte GAVs 
+1153	S_pri	S_rad/NonDeS	300-1500	1.64E+02	3.17	0.00	3.3	0	0	0	0	4	Aäron Vandeputte GAVs 
+1154	S/H/NonDeC	S_pri_rad	300-1500	1.49E+03	3.17	0.00	-0.5	0	0	0	0	4	Aäron Vandeputte GAVs 
+1155	S/H/NonDeC	S_rad/NonDeC	300-1500	7.68E+02	3.17	0.00	1.8	0	0	0	0	4	Aäron Vandeputte GAVs 
+1156	S/H/NonDeC	S_rad/Cd	300-1500	3.04E+02	3.17	0.00	-2.3	0	0	0	0	4	Aäron Vandeputte GAVs 
+1157	S/H/NonDeC	S_rad/Ct	300-1500	8.76E+02	3.17	0.00	9.8	0	0	0	0	4	Aäron Vandeputte GAVs 
+1158	S/H/NonDeC	S_rad/Cb	300-1500	2.20E+02	3.17	0.00	-0.1	0	0	0	0	4	Aäron Vandeputte GAVs 
+1159	S/H/NonDeC	S_rad/NonDeS	300-1500	1.59E+02	3.17	0.00	0.6	0	0	0	0	4	Aäron Vandeputte GAVs 
+1160	S/H/Cd	S_pri_rad	300-1500	1.56E+03	3.17	0.00	-3.0	0	0	0	0	4	Aäron Vandeputte GAVs 
+1161	S/H/Cd	S_rad/NonDeC	300-1500	8.01E+02	3.17	0.00	-0.7	0	0	0	0	4	Aäron Vandeputte GAVs 
+1162	S/H/Cd	S_rad/Cd	300-1500	3.17E+02	3.17	0.00	-4.8	0	0	0	0	4	Aäron Vandeputte GAVs 
+1163	S/H/Cd	S_rad/Ct	300-1500	9.14E+02	3.17	0.00	7.3	0	0	0	0	4	Aäron Vandeputte GAVs 
+1164	S/H/Cd	S_rad/Cb	300-1500	2.30E+02	3.17	0.00	-2.6	0	0	0	0	4	Aäron Vandeputte GAVs 
+1165	S/H/Cd	S_rad/NonDeS	300-1500	1.66E+02	3.17	0.00	-1.8	0	0	0	0	4	Aäron Vandeputte GAVs 
+1166	S/H/Ct	S_pri_rad	300-1500	5.95E+02	3.17	0.00	-3.2	0	0	0	0	4	Aäron Vandeputte GAVs 
+1167	S/H/Ct	S_rad/NonDeC	300-1500	3.06E+02	3.17	0.00	-0.9	0	0	0	0	4	Aäron Vandeputte GAVs 
+1168	S/H/Ct	S_rad/Cd	300-1500	1.21E+02	3.17	0.00	-5.0	0	0	0	0	4	Aäron Vandeputte GAVs 
+1169	S/H/Ct	S_rad/Ct	300-1500	3.49E+02	3.17	0.00	7.1	0	0	0	0	4	Aäron Vandeputte GAVs 
+1170	S/H/Ct	S_rad/Cb	300-1500	8.78E+01	3.17	0.00	-2.9	0	0	0	0	4	Aäron Vandeputte GAVs 
+1171	S/H/Ct	S_rad/NonDeS	300-1500	6.35E+01	3.17	0.00	-2.1	0	0	0	0	4	Aäron Vandeputte GAVs 
+1172	S/H/Cb	S_pri_rad	300-1500	4.28E+02	3.17	0.00	-2.4	0	0	0	0	4	Aäron Vandeputte GAVs 
+1173	S/H/Cb	S_rad/NonDeC	300-1500	2.20E+02	3.17	0.00	-0.1	0	0	0	0	4	Aäron Vandeputte GAVs 
+1174	S/H/Cb	S_rad/Cd	300-1500	8.72E+01	3.17	0.00	-4.2	0	0	0	0	4	Aäron Vandeputte GAVs 
+1175	S/H/Cb	S_rad/Ct	300-1500	2.51E+02	3.17	0.00	7.8	0	0	0	0	4	Aäron Vandeputte GAVs 
+1176	S/H/Cb	S_rad/Cb	300-1500	6.32E+01	3.17	0.00	-2.1	0	0	0	0	4	Aäron Vandeputte GAVs 
+1177	S/H/Cb	S_rad/NonDeS	300-1500	4.57E+01	3.17	0.00	-1.3	0	0	0	0	4	Aäron Vandeputte GAVs 
+1178	S/H/NonDeS	S_pri_rad	300-1500	3.09E+02	3.17	0.00	-1.6	0	0	0	0	4	Aäron Vandeputte GAVs 
+1179	S/H/NonDeS	S_rad/NonDeC	300-1500	1.59E+02	3.17	0.00	0.6	0	0	0	0	4	Aäron Vandeputte GAVs 
+1180	S/H/NonDeS	S_rad/Cd	300-1500	6.30E+01	3.17	0.00	-3.4	0	0	0	0	4	Aäron Vandeputte GAVs 
+1181	S/H/NonDeS	S_rad/Ct	300-1500	1.82E+02	3.17	0.00	8.6	0	0	0	0	4	Aäron Vandeputte GAVs 
+1182	S/H/NonDeS	S_rad/Cb	300-1500	4.57E+01	3.17	0.00	-1.3	0	0	0	0	4	Aäron Vandeputte GAVs 
+1183	S/H/NonDeS	S_rad/NonDeS	300-1500	3.30E+01	3.17	0.00	-0.5	0	0	0	0	4	Aäron Vandeputte GAVs 
 
 // H abstractions involving H2C=S
 
-1184	S/H/NonDeC	CS_pri_rad	300-1500	3.95E+02	3.17	0.00	0.6	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-1185	CS_pri	C_methyl	300-1500	8.32E+04	2.3	0.00	-0.1	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
+1184	S/H/NonDeC	CS_pri_rad	300-1500	3.95E+02	3.17	0.00	0.6	0	0	0	0	4	Aäron Vandeputte GAVs 
+1185	CS_pri	C_methyl	300-1500	8.32E+04	2.3	0.00	-0.1	0	0	0	0	4	Aäron Vandeputte GAVs 
 
 // H abstractions involving SJJ
-// 1186	H2	SJJ	300-1500	3.49E+07	1.650	0.0	21.4	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-// 1187	C_methane	SJJ	300-1500	1.73E+02	2.748	0.0	20.8	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-// 1188	S/H/NonDeC	SJJ	300-1500	4.69E+04	2.639	0.0	2.1	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-// 1189	SsI-H	H_rad	300-1500	1.42E+08	1.518	0.0	0.8	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-// 1190	SsI-H	C_methyl	300-1500	2.15E+04	2.289	0.0	0.1	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
-// 1191	SsI-H	S_rad/NonDeC	300-1500	3.00E+02	3.026	0.0	-0.7	0	0	0	0	4	AÃ¤ron Vandeputte GAVs 
+// 1186	H2	SJJ	300-1500	3.49E+07	1.650	0.0	21.4	0	0	0	0	4	Aäron Vandeputte GAVs 
+// 1187	C_methane	SJJ	300-1500	1.73E+02	2.748	0.0	20.8	0	0	0	0	4	Aäron Vandeputte GAVs 
+// 1188	S/H/NonDeC	SJJ	300-1500	4.69E+04	2.639	0.0	2.1	0	0	0	0	4	Aäron Vandeputte GAVs 
+// 1189	SsI-H	H_rad	300-1500	1.42E+08	1.518	0.0	0.8	0	0	0	0	4	Aäron Vandeputte GAVs 
+// 1190	SsI-H	C_methyl	300-1500	2.15E+04	2.289	0.0	0.1	0	0	0	0	4	Aäron Vandeputte GAVs 
+// 1191	SsI-H	S_rad/NonDeC	300-1500	3.00E+02	3.026	0.0	-0.7	0	0	0	0	4	Aäron Vandeputte GAVs 
 
 // H abstractions involving S and O
 1192	S_pri		O_pri_rad	300-1500	2.33E+04	2.61	0.0	11.35	0	0	0	0	3	CAC calculation CBS-QB3 1dhr
@@ -1067,3 +1067,176 @@ Arrhenius_EP
 
 562.	CS/H/NonDeC		C_rad/H/CsS		300-1500	4.36E-10	4.56	0.0	4.77	0	0	0	0	3	CAC CBS-QB3 calc, 1dhr
 563.	CS/H/NonDeC		C_rad/H2/Cs		300-1500	3.77E-01	3.63	0.0	3.98	0	0	0	0	3	CAC CBS-QB3 calc, 1dhr
+
+
+// Reactions added by A.G. Vandeputte for hydrogen abstraction from JP-10
+// 5 new nodes were added October 22nd 
+// 
+// C/H2/NonDeC_5ring_fused6_1 : secondary C atom on a 5 ring, that is part of the fused 6 ring 
+// C/H/Cs3_5ring_fused6 : tertiary C atom on a fused 5 + 6 ring, e.g. tertiary site of norbornane
+// C/H2/NonDeC_5ring_fused6_2 : secondary C atom on a 5 ring, that is not part of the fused 6 ring
+// C/H/Cs3_5ring_adj5 : tertiary C atom on a C atom that is part of two non-fused 5 rings
+// C/H2/NonDeC_5ring_alpha6ring : secondary C atom on a 5 ring, in alpha of the flanking 6 ring (JP10)
+// C/H2/NonDeC_5ring_beta6ring : secondary C atom on a 5 ring, in beta of the flanking 6 ring (JP10)
+// Rate coefficients were obtained by calculating the habstractions involving methyl using BMK/cbsb7 with inclusion of HR
+// CBS-QB3 GAV°´s were then used to estimate the rate coefficients with a variety of radical sites
+//  
+// Despite the fact they are not CBS-QB3 and use GA, I would give these a priority of 4. Aaron
+//
+
+2001	C/H2/NonDeC_5ring_fused6_1	C_methyl	300-1500	1.27E-02	4.24	0.00	5.8	0	0	0	0	4	Aaron Vandeputte GAVs CBS-QB3
+2002	C/H2/NonDeC_5ring_fused6_1	C_rad/H2/Cs	300-1500	1.47E-03	4.24	0.00	6.8	0	0	0	0	4	Aaron Vandeputte GAVs CBS-QB3
+2003	C/H2/NonDeC_5ring_fused6_1	C_rad/H/NonDeC	300-1500	2.21E-03	4.24	0.00	7.3	0	0	0	0	4	Aaron Vandeputte GAVs CBS-QB3
+2004	C/H2/NonDeC_5ring_fused6_1	C_rad/Cs3	300-1500	6.60E-04	4.24	0.00	6.9	0	0	0	0	4	Aaron Vandeputte GAVs CBS-QB3
+2005	C/H2/NonDeC_5ring_fused6_1	C_rad/H2/Cd	300-1500	1.26E-02	4.24	0.00	16.7	0	0	0	0	4	Aaron Vandeputte GAVs CBS-QB3
+2006	C/H2/NonDeC_5ring_fused6_1	C_rad/H/CdCs	300-1500	5.67E-03	4.24	0.00	18.1	0	0	0	0	4	Aaron Vandeputte GAVs CBS-QB3
+2007	C/H2/NonDeC_5ring_fused6_1	C_rad/CdCs2	300-1500	8.81E-04	4.24	0.00	18.1	0	0	0	0	4	Aaron Vandeputte GAVs CBS-QB3
+2008	C/H2/NonDeC_5ring_fused6_1	C_rad/H/CdCd	300-1500	1.90E-02	4.24	0.00	24.7	0	0	0	0	4	Aaron Vandeputte GAVs CBS-QB3
+2009	C/H2/NonDeC_5ring_fused6_1	C_rad/CdCdCs	300-1500	9.61E-04	4.24	0.00	24.8	0	0	0	0	4	Aaron Vandeputte GAVs CBS-QB3
+2010	C/H2/NonDeC_5ring_fused6_1	C_rad/H2/Ct	300-1500	5.75E-03	4.24	0.00	12.9	0	0	0	0	4	Aaron Vandeputte GAVs CBS-QB3
+2011	C/H2/NonDeC_5ring_fused6_1	C_rad/H/CtCs	300-1500	1.36E-03	4.24	0.00	14.0	0	0	0	0	4	Aaron Vandeputte GAVs CBS-QB3
+2012	C/H2/NonDeC_5ring_fused6_1	C_rad/CtCs2	300-1500	5.49E-04	4.24	0.00	14.5	0	0	0	0	4	Aaron Vandeputte GAVs CBS-QB3
+2013	C/H2/NonDeC_5ring_fused6_1	C_rad/H/CtCt	300-1500	5.77E-03	4.24	0.00	19.0	0	0	0	0	4	Aaron Vandeputte GAVs CBS-QB3
+2014	C/H2/NonDeC_5ring_fused6_1	C_rad/CtCtCs	300-1500	1.61E-04	4.24	0.00	19.7	0	0	0	0	4	Aaron Vandeputte GAVs CBS-QB3
+2015	C/H2/NonDeC_5ring_fused6_1	C_rad/H2/Cb	300-1500	1.23E-02	4.24	0.00	14.6	0	0	0	0	4	Aaron Vandeputte GAVs CBS-QB3
+2016	C/H2/NonDeC_5ring_fused6_1	C_rad/H/CbCs	300-1500	3.61E-03	4.24	0.00	15.0	0	0	0	0	4	Aaron Vandeputte GAVs CBS-QB3
+2017	C/H2/NonDeC_5ring_fused6_1	C_rad/CbCs2	300-1500	9.77E-05	4.24	0.00	14.2	0	0	0	0	4	Aaron Vandeputte GAVs CBS-QB3
+2018	C/H2/NonDeC_5ring_fused6_1	Cd_pri_rad	300-1500	1.19E-02	4.24	0.00	1.2	0	0	0	0	4	Aaron Vandeputte GAVs CBS-QB3
+2019	C/H2/NonDeC_5ring_fused6_1	Cd_rad/NonDeC	300-1500	6.72E-03	4.24	0.00	1.7	0	0	0	0	4	Aaron Vandeputte GAVs CBS-QB3
+2020	C/H2/NonDeC_5ring_fused6_1	Cd_rad/Cd	300-1500	5.64E-03	4.24	0.00	8.9	0	0	0	0	4	Aaron Vandeputte GAVs CBS-QB3
+2021	C/H2/NonDeC_5ring_fused6_1	Cb_rad	300-1500	1.42E-02	4.24	0.00	-1.5	0	0	0	0	4	Aaron Vandeputte GAVs CBS-QB3
+2022	C/H2/NonDeC_5ring_fused6_1	Cd_rad/Ct	300-1500	1.21E-03	4.24	0.00	6.2	0	0	0	0	4	Aaron Vandeputte GAVs CBS-QB3
+2024	C/H/Cs3_5ring_fused6	C_methyl	300-1500	1.83E-02	4.24	0.00	7.8	0	0	0	0	4	Aaron Vandeputte GAVs CBS-QB3
+2025	C/H/Cs3_5ring_fused6	C_rad/H2/Cs	300-1500	1.60E-03	4.24	0.00	8.7	0	0	0	0	4	Aaron Vandeputte GAVs CBS-QB3
+2026	C/H/Cs3_5ring_fused6	C_rad/H/NonDeC	300-1500	1.81E-03	4.24	0.00	8.9	0	0	0	0	4	Aaron Vandeputte GAVs CBS-QB3
+2027	C/H/Cs3_5ring_fused6	C_rad/Cs3	300-1500	4.08E-04	4.24	0.00	8.3	0	0	0	0	4	Aaron Vandeputte GAVs CBS-QB3
+2028	C/H/Cs3_5ring_fused6	C_rad/H2/Cd	300-1500	1.25E-02	4.24	0.00	17.7	0	0	0	0	4	Aaron Vandeputte GAVs CBS-QB3
+2029	C/H/Cs3_5ring_fused6	C_rad/H/CdCs	300-1500	4.24E-03	4.24	0.00	18.9	0	0	0	0	4	Aaron Vandeputte GAVs CBS-QB3
+2030	C/H/Cs3_5ring_fused6	C_rad/CdCs2	300-1500	4.98E-04	4.24	0.00	18.7	0	0	0	0	4	Aaron Vandeputte GAVs CBS-QB3
+2031	C/H/Cs3_5ring_fused6	C_rad/H/CdCd	300-1500	1.30E-02	4.24	0.00	24.8	0	0	0	0	4	Aaron Vandeputte GAVs CBS-QB3
+2032	C/H/Cs3_5ring_fused6	C_rad/CdCdCs	300-1500	4.95E-04	4.24	0.00	24.7	0	0	0	0	4	Aaron Vandeputte GAVs CBS-QB3
+2033	C/H/Cs3_5ring_fused6	C_rad/H2/Ct	300-1500	5.70E-03	4.24	0.00	13.9	0	0	0	0	4	Aaron Vandeputte GAVs CBS-QB3
+2034	C/H/Cs3_5ring_fused6	C_rad/H/CtCs	300-1500	1.02E-03	4.24	0.00	14.9	0	0	0	0	4	Aaron Vandeputte GAVs CBS-QB3
+2035	C/H/Cs3_5ring_fused6	C_rad/CtCs2	300-1500	3.10E-04	4.24	0.00	15.1	0	0	0	0	4	Aaron Vandeputte GAVs CBS-QB3
+2036	C/H/Cs3_5ring_fused6	C_rad/H/CtCt	300-1500	3.94E-03	4.24	0.00	19.0	0	0	0	0	4	Aaron Vandeputte GAVs CBS-QB3
+2037	C/H/Cs3_5ring_fused6	C_rad/CtCtCs	300-1500	8.32E-05	4.24	0.00	19.5	0	0	0	0	4	Aaron Vandeputte GAVs CBS-QB3
+2038	C/H/Cs3_5ring_fused6	C_rad/H2/Cb	300-1500	1.22E-02	4.24	0.00	15.6	0	0	0	0	4	Aaron Vandeputte GAVs CBS-QB3
+2039	C/H/Cs3_5ring_fused6	C_rad/H/CbCs	300-1500	2.70E-03	4.24	0.00	15.8	0	0	0	0	4	Aaron Vandeputte GAVs CBS-QB3
+2040	C/H/Cs3_5ring_fused6	C_rad/CbCs2	300-1500	5.52E-05	4.24	0.00	14.8	0	0	0	0	4	Aaron Vandeputte GAVs CBS-QB3
+2041	C/H/Cs3_5ring_fused6	Cd_pri_rad	300-1500	1.72E-02	4.24	0.00	3.3	0	0	0	0	4	Aaron Vandeputte GAVs CBS-QB3
+2042	C/H/Cs3_5ring_fused6	Cd_rad/NonDeC	300-1500	7.30E-03	4.24	0.00	3.5	0	0	0	0	4	Aaron Vandeputte GAVs CBS-QB3
+2043	C/H/Cs3_5ring_fused6	Cd_rad/Cd	300-1500	8.13E-03	4.24	0.00	10.9	0	0	0	0	4	Aaron Vandeputte GAVs CBS-QB3
+2044	C/H/Cs3_5ring_fused6	Cb_rad	300-1500	2.05E-02	4.24	0.00	0.5	0	0	0	0	4	Aaron Vandeputte GAVs CBS-QB3
+2045	C/H/Cs3_5ring_fused6	Cd_rad/Ct	300-1500	1.74E-03	4.24	0.00	8.2	0	0	0	0	4	Aaron Vandeputte GAVs CBS-QB3
+2047	C/H2/NonDeC_5ring_fused6_2	C_methyl	300-1500	7.26E-03	4.24	0.00	7.8	0	0	0	0	4	Aaron Vandeputte GAVs CBS-QB3
+2048	C/H2/NonDeC_5ring_fused6_2	C_rad/H2/Cs	300-1500	8.42E-04	4.24	0.00	8.8	0	0	0	0	4	Aaron Vandeputte GAVs CBS-QB3
+2049	C/H2/NonDeC_5ring_fused6_2	C_rad/H/NonDeC	300-1500	1.27E-03	4.24	0.00	9.3	0	0	0	0	4	Aaron Vandeputte GAVs CBS-QB3
+2050	C/H2/NonDeC_5ring_fused6_2	C_rad/Cs3	300-1500	3.78E-04	4.24	0.00	8.9	0	0	0	0	4	Aaron Vandeputte GAVs CBS-QB3
+2051	C/H2/NonDeC_5ring_fused6_2	C_rad/H2/Cd	300-1500	7.24E-03	4.24	0.00	18.6	0	0	0	0	4	Aaron Vandeputte GAVs CBS-QB3
+2052	C/H2/NonDeC_5ring_fused6_2	C_rad/H/CdCs	300-1500	3.25E-03	4.24	0.00	20.0	0	0	0	0	4	Aaron Vandeputte GAVs CBS-QB3
+2053	C/H2/NonDeC_5ring_fused6_2	C_rad/CdCs2	300-1500	5.05E-04	4.24	0.00	20.1	0	0	0	0	4	Aaron Vandeputte GAVs CBS-QB3
+2054	C/H2/NonDeC_5ring_fused6_2	C_rad/H/CdCd	300-1500	1.09E-02	4.24	0.00	26.7	0	0	0	0	4	Aaron Vandeputte GAVs CBS-QB3
+2055	C/H2/NonDeC_5ring_fused6_2	C_rad/CdCdCs	300-1500	5.50E-04	4.24	0.00	26.8	0	0	0	0	4	Aaron Vandeputte GAVs CBS-QB3
+2056	C/H2/NonDeC_5ring_fused6_2	C_rad/H2/Ct	300-1500	3.29E-03	4.24	0.00	14.9	0	0	0	0	4	Aaron Vandeputte GAVs CBS-QB3
+2057	C/H2/NonDeC_5ring_fused6_2	C_rad/H/CtCs	300-1500	7.79E-04	4.24	0.00	16.0	0	0	0	0	4	Aaron Vandeputte GAVs CBS-QB3
+2058	C/H2/NonDeC_5ring_fused6_2	C_rad/CtCs2	300-1500	3.14E-04	4.24	0.00	16.5	0	0	0	0	4	Aaron Vandeputte GAVs CBS-QB3
+2059	C/H2/NonDeC_5ring_fused6_2	C_rad/H/CtCt	300-1500	3.31E-03	4.24	0.00	21.0	0	0	0	0	4	Aaron Vandeputte GAVs CBS-QB3
+2060	C/H2/NonDeC_5ring_fused6_2	C_rad/CtCtCs	300-1500	9.25E-05	4.24	0.00	21.6	0	0	0	0	4	Aaron Vandeputte GAVs CBS-QB3
+2061	C/H2/NonDeC_5ring_fused6_2	C_rad/H2/Cb	300-1500	7.06E-03	4.24	0.00	16.5	0	0	0	0	4	Aaron Vandeputte GAVs CBS-QB3
+2062	C/H2/NonDeC_5ring_fused6_2	C_rad/H/CbCs	300-1500	2.06E-03	4.24	0.00	17.0	0	0	0	0	4	Aaron Vandeputte GAVs CBS-QB3
+2063	C/H2/NonDeC_5ring_fused6_2	C_rad/CbCs2	300-1500	5.60E-05	4.24	0.00	16.2	0	0	0	0	4	Aaron Vandeputte GAVs CBS-QB3
+2064	C/H2/NonDeC_5ring_fused6_2	Cd_pri_rad	300-1500	6.84E-03	4.24	0.00	3.2	0	0	0	0	4	Aaron Vandeputte GAVs CBS-QB3
+2065	C/H2/NonDeC_5ring_fused6_2	Cd_rad/NonDeC	300-1500	3.85E-03	4.24	0.00	3.7	0	0	0	0	4	Aaron Vandeputte GAVs CBS-QB3
+2066	C/H2/NonDeC_5ring_fused6_2	Cd_rad/Cd	300-1500	3.23E-03	4.24	0.00	10.9	0	0	0	0	4	Aaron Vandeputte GAVs CBS-QB3
+2067	C/H2/NonDeC_5ring_fused6_2	Cb_rad	300-1500	8.13E-03	4.24	0.00	0.5	0	0	0	0	4	Aaron Vandeputte GAVs CBS-QB3
+2068	C/H2/NonDeC_5ring_fused6_2	Cd_rad/Ct	300-1500	6.93E-04	4.24	0.00	8.2	0	0	0	0	4	Aaron Vandeputte GAVs CBS-QB3
+2070	C/H/Cs3_5ring_adj5	C_methyl	300-1500	6.65E-03	4.24	0.00	5.4	0	0	0	0	4	Aaron Vandeputte GAVs CBS-QB3
+2071	C/H/Cs3_5ring_adj5	C_rad/H2/Cs	300-1500	5.82E-04	4.24	0.00	6.2	0	0	0	0	4	Aaron Vandeputte GAVs CBS-QB3
+2072	C/H/Cs3_5ring_adj5	C_rad/H/NonDeC	300-1500	6.60E-04	4.24	0.00	6.4	0	0	0	0	4	Aaron Vandeputte GAVs CBS-QB3
+2073	C/H/Cs3_5ring_adj5	C_rad/Cs3	300-1500	1.49E-04	4.24	0.00	5.9	0	0	0	0	4	Aaron Vandeputte GAVs CBS-QB3
+2074	C/H/Cs3_5ring_adj5	C_rad/H2/Cd	300-1500	4.57E-03	4.24	0.00	15.2	0	0	0	0	4	Aaron Vandeputte GAVs CBS-QB3
+2075	C/H/Cs3_5ring_adj5	C_rad/H/CdCs	300-1500	1.54E-03	4.24	0.00	16.4	0	0	0	0	4	Aaron Vandeputte GAVs CBS-QB3
+2076	C/H/Cs3_5ring_adj5	C_rad/CdCs2	300-1500	1.81E-04	4.24	0.00	16.3	0	0	0	0	4	Aaron Vandeputte GAVs CBS-QB3
+2077	C/H/Cs3_5ring_adj5	C_rad/H/CdCd	300-1500	4.73E-03	4.24	0.00	22.3	0	0	0	0	4	Aaron Vandeputte GAVs CBS-QB3
+2078	C/H/Cs3_5ring_adj5	C_rad/CdCdCs	300-1500	1.80E-04	4.24	0.00	22.2	0	0	0	0	4	Aaron Vandeputte GAVs CBS-QB3
+2079	C/H/Cs3_5ring_adj5	C_rad/H2/Ct	300-1500	2.08E-03	4.24	0.00	11.4	0	0	0	0	4	Aaron Vandeputte GAVs CBS-QB3
+2080	C/H/Cs3_5ring_adj5	C_rad/H/CtCs	300-1500	3.71E-04	4.24	0.00	12.4	0	0	0	0	4	Aaron Vandeputte GAVs CBS-QB3
+2081	C/H/Cs3_5ring_adj5	C_rad/CtCs2	300-1500	1.13E-04	4.24	0.00	12.7	0	0	0	0	4	Aaron Vandeputte GAVs CBS-QB3
+2082	C/H/Cs3_5ring_adj5	C_rad/H/CtCt	300-1500	1.44E-03	4.24	0.00	16.6	0	0	0	0	4	Aaron Vandeputte GAVs CBS-QB3
+2083	C/H/Cs3_5ring_adj5	C_rad/CtCtCs	300-1500	3.03E-05	4.24	0.00	17.0	0	0	0	0	4	Aaron Vandeputte GAVs CBS-QB3
+2084	C/H/Cs3_5ring_adj5	C_rad/H2/Cb	300-1500	4.46E-03	4.24	0.00	13.1	0	0	0	0	4	Aaron Vandeputte GAVs CBS-QB3
+2085	C/H/Cs3_5ring_adj5	C_rad/H/CbCs	300-1500	9.83E-04	4.24	0.00	13.4	0	0	0	0	4	Aaron Vandeputte GAVs CBS-QB3
+2086	C/H/Cs3_5ring_adj5	C_rad/CbCs2	300-1500	2.01E-05	4.24	0.00	12.4	0	0	0	0	4	Aaron Vandeputte GAVs CBS-QB3
+2087	C/H/Cs3_5ring_adj5	Cd_pri_rad	300-1500	6.27E-03	4.24	0.00	0.8	0	0	0	0	4	Aaron Vandeputte GAVs CBS-QB3
+2088	C/H/Cs3_5ring_adj5	Cd_rad/NonDeC	300-1500	2.66E-03	4.24	0.00	1.0	0	0	0	0	4	Aaron Vandeputte GAVs CBS-QB3
+2089	C/H/Cs3_5ring_adj5	Cd_rad/Cd	300-1500	2.96E-03	4.24	0.00	8.5	0	0	0	0	4	Aaron Vandeputte GAVs CBS-QB3
+2090	C/H/Cs3_5ring_adj5	Cb_rad	300-1500	7.45E-03	4.24	0.00	-1.9	0	0	0	0	4	Aaron Vandeputte GAVs CBS-QB3
+2091	C/H/Cs3_5ring_adj5	Cd_rad/Ct	300-1500	6.35E-04	4.24	0.00	5.7	0	0	0	0	4	Aaron Vandeputte GAVs CBS-QB3
+2093	C/H2/NonDeC_5ring_alpha6ring	C_methyl	300-1500	1.04E-02	4.24	0.00	6.3	0	0	0	0	4	Aaron Vandeputte GAVs CBS-QB3
+2094	C/H2/NonDeC_5ring_alpha6ring	C_rad/H2/Cs	300-1500	1.21E-03	4.24	0.00	7.3	0	0	0	0	4	Aaron Vandeputte GAVs CBS-QB3
+2095	C/H2/NonDeC_5ring_alpha6ring	C_rad/H/NonDeC	300-1500	1.82E-03	4.24	0.00	7.7	0	0	0	0	4	Aaron Vandeputte GAVs CBS-QB3
+2096	C/H2/NonDeC_5ring_alpha6ring	C_rad/Cs3	300-1500	5.43E-04	4.24	0.00	7.4	0	0	0	0	4	Aaron Vandeputte GAVs CBS-QB3
+2097	C/H2/NonDeC_5ring_alpha6ring	C_rad/H2/Cd	300-1500	1.04E-02	4.24	0.00	17.1	0	0	0	0	4	Aaron Vandeputte GAVs CBS-QB3
+2098	C/H2/NonDeC_5ring_alpha6ring	C_rad/H/CdCs	300-1500	4.66E-03	4.24	0.00	18.5	0	0	0	0	4	Aaron Vandeputte GAVs CBS-QB3
+2099	C/H2/NonDeC_5ring_alpha6ring	C_rad/CdCs2	300-1500	7.24E-04	4.24	0.00	18.6	0	0	0	0	4	Aaron Vandeputte GAVs CBS-QB3
+2100	C/H2/NonDeC_5ring_alpha6ring	C_rad/H/CdCd	300-1500	1.56E-02	4.24	0.00	25.2	0	0	0	0	4	Aaron Vandeputte GAVs CBS-QB3
+2101	C/H2/NonDeC_5ring_alpha6ring	C_rad/CdCdCs	300-1500	7.89E-04	4.24	0.00	25.3	0	0	0	0	4	Aaron Vandeputte GAVs CBS-QB3
+2102	C/H2/NonDeC_5ring_alpha6ring	C_rad/H2/Ct	300-1500	4.72E-03	4.24	0.00	13.3	0	0	0	0	4	Aaron Vandeputte GAVs CBS-QB3
+2103	C/H2/NonDeC_5ring_alpha6ring	C_rad/H/CtCs	300-1500	1.12E-03	4.24	0.00	14.5	0	0	0	0	4	Aaron Vandeputte GAVs CBS-QB3
+2104	C/H2/NonDeC_5ring_alpha6ring	C_rad/CtCs2	300-1500	4.51E-04	4.24	0.00	15.0	0	0	0	0	4	Aaron Vandeputte GAVs CBS-QB3
+2105	C/H2/NonDeC_5ring_alpha6ring	C_rad/H/CtCt	300-1500	4.74E-03	4.24	0.00	19.5	0	0	0	0	4	Aaron Vandeputte GAVs CBS-QB3
+2106	C/H2/NonDeC_5ring_alpha6ring	C_rad/CtCtCs	300-1500	1.33E-04	4.24	0.00	20.1	0	0	0	0	4	Aaron Vandeputte GAVs CBS-QB3
+2107	C/H2/NonDeC_5ring_alpha6ring	C_rad/H2/Cb	300-1500	1.01E-02	4.24	0.00	15.0	0	0	0	0	4	Aaron Vandeputte GAVs CBS-QB3
+2108	C/H2/NonDeC_5ring_alpha6ring	C_rad/H/CbCs	300-1500	2.96E-03	4.24	0.00	15.4	0	0	0	0	4	Aaron Vandeputte GAVs CBS-QB3
+2109	C/H2/NonDeC_5ring_alpha6ring	C_rad/CbCs2	300-1500	8.03E-05	4.24	0.00	14.7	0	0	0	0	4	Aaron Vandeputte GAVs CBS-QB3
+2110	C/H2/NonDeC_5ring_alpha6ring	Cd_pri_rad	300-1500	9.81E-03	4.24	0.00	1.7	0	0	0	0	4	Aaron Vandeputte GAVs CBS-QB3
+2111	C/H2/NonDeC_5ring_alpha6ring	Cd_rad/NonDeC	300-1500	5.52E-03	4.24	0.00	2.1	0	0	0	0	4	Aaron Vandeputte GAVs CBS-QB3
+2112	C/H2/NonDeC_5ring_alpha6ring	Cd_rad/Cd	300-1500	4.63E-03	4.24	0.00	9.4	0	0	0	0	4	Aaron Vandeputte GAVs CBS-QB3
+2113	C/H2/NonDeC_5ring_alpha6ring	Cb_rad	300-1500	1.17E-02	4.24	0.00	-1.0	0	0	0	0	4	Aaron Vandeputte GAVs CBS-QB3
+2114	C/H2/NonDeC_5ring_alpha6ring	Cd_rad/Ct	300-1500	9.94E-04	4.24	0.00	6.6	0	0	0	0	4	Aaron Vandeputte GAVs CBS-QB3
+2116	C/H2/NonDeC_5ring_beta6ring	C_methyl	300-1500	1.51E-02	4.24	0.00	5.9	0	0	0	0	4	Aaron Vandeputte GAVs CBS-QB3
+2117	C/H2/NonDeC_5ring_beta6ring	C_rad/H2/Cs	300-1500	1.75E-03	4.24	0.00	7.0	0	0	0	0	4	Aaron Vandeputte GAVs CBS-QB3
+2118	C/H2/NonDeC_5ring_beta6ring	C_rad/H/NonDeC	300-1500	2.63E-03	4.24	0.00	7.4	0	0	0	0	4	Aaron Vandeputte GAVs CBS-QB3
+2119	C/H2/NonDeC_5ring_beta6ring	C_rad/Cs3	300-1500	7.87E-04	4.24	0.00	7.0	0	0	0	0	4	Aaron Vandeputte GAVs CBS-QB3
+2120	C/H2/NonDeC_5ring_beta6ring	C_rad/H2/Cd	300-1500	1.51E-02	4.24	0.00	16.8	0	0	0	0	4	Aaron Vandeputte GAVs CBS-QB3
+2121	C/H2/NonDeC_5ring_beta6ring	C_rad/H/CdCs	300-1500	6.75E-03	4.24	0.00	18.2	0	0	0	0	4	Aaron Vandeputte GAVs CBS-QB3
+2122	C/H2/NonDeC_5ring_beta6ring	C_rad/CdCs2	300-1500	1.05E-03	4.24	0.00	18.2	0	0	0	0	4	Aaron Vandeputte GAVs CBS-QB3
+2123	C/H2/NonDeC_5ring_beta6ring	C_rad/H/CdCd	300-1500	2.26E-02	4.24	0.00	24.9	0	0	0	0	4	Aaron Vandeputte GAVs CBS-QB3
+2124	C/H2/NonDeC_5ring_beta6ring	C_rad/CdCdCs	300-1500	1.14E-03	4.24	0.00	24.9	0	0	0	0	4	Aaron Vandeputte GAVs CBS-QB3
+2125	C/H2/NonDeC_5ring_beta6ring	C_rad/H2/Ct	300-1500	6.85E-03	4.24	0.00	13.0	0	0	0	0	4	Aaron Vandeputte GAVs CBS-QB3
+2126	C/H2/NonDeC_5ring_beta6ring	C_rad/H/CtCs	300-1500	1.62E-03	4.24	0.00	14.2	0	0	0	0	4	Aaron Vandeputte GAVs CBS-QB3
+2127	C/H2/NonDeC_5ring_beta6ring	C_rad/CtCs2	300-1500	6.54E-04	4.24	0.00	14.6	0	0	0	0	4	Aaron Vandeputte GAVs CBS-QB3
+2128	C/H2/NonDeC_5ring_beta6ring	C_rad/H/CtCt	300-1500	6.88E-03	4.24	0.00	19.1	0	0	0	0	4	Aaron Vandeputte GAVs CBS-QB3
+2129	C/H2/NonDeC_5ring_beta6ring	C_rad/CtCtCs	300-1500	1.92E-04	4.24	0.00	19.8	0	0	0	0	4	Aaron Vandeputte GAVs CBS-QB3
+2130	C/H2/NonDeC_5ring_beta6ring	C_rad/H2/Cb	300-1500	1.47E-02	4.24	0.00	14.7	0	0	0	0	4	Aaron Vandeputte GAVs CBS-QB3
+2131	C/H2/NonDeC_5ring_beta6ring	C_rad/H/CbCs	300-1500	4.30E-03	4.24	0.00	15.1	0	0	0	0	4	Aaron Vandeputte GAVs CBS-QB3
+2132	C/H2/NonDeC_5ring_beta6ring	C_rad/CbCs2	300-1500	1.16E-04	4.24	0.00	14.3	0	0	0	0	4	Aaron Vandeputte GAVs CBS-QB3
+2133	C/H2/NonDeC_5ring_beta6ring	Cd_pri_rad	300-1500	1.42E-02	4.24	0.00	1.4	0	0	0	0	4	Aaron Vandeputte GAVs CBS-QB3
+2134	C/H2/NonDeC_5ring_beta6ring	Cd_rad/NonDeC	300-1500	8.00E-03	4.24	0.00	1.8	0	0	0	0	4	Aaron Vandeputte GAVs CBS-QB3
+2135	C/H2/NonDeC_5ring_beta6ring	Cd_rad/Cd	300-1500	6.72E-03	4.24	0.00	9.1	0	0	0	0	4	Aaron Vandeputte GAVs CBS-QB3
+2136	C/H2/NonDeC_5ring_beta6ring	Cb_rad	300-1500	1.69E-02	4.24	0.00	-1.4	0	0	0	0	4	Aaron Vandeputte GAVs CBS-QB3
+2137	C/H2/NonDeC_5ring_beta6ring	Cd_rad/Ct	300-1500	1.44E-03	4.24	0.00	6.3	0	0	0	0	4	Aaron Vandeputte GAVs CBS-QB3
+
+// Additional rate coefficients for reactions involving O radicals
+// 
+// Calculated with BMK using the HO approach, 1D-HR calculations underway (October 22nd)
+// Some barriers are significant below the entrance/exit channel and a two TS model might be needed.  
+// There is a likelyhood that the calculated rate coefficients overestimate the real values.
+//
+
+3021	C/H2/NonDeC_5ring_fused6_1	O_pri_rad	300-1500	8.61E+04	2.38	0.0	-1.8	0	0	0	0	4	Aaron Vandeputte CBS-QB3 OH + JP10
+3022	C/H/Cs3_5ring_fused6		O_pri_rad	300-1500	2.78E+05	2.38	0.0	-1.0	0	0	0	0	4	Aaron Vandeputte CBS-QB3 OH + JP10
+3023	C/H2/NonDeC_5ring_fused6_2	O_pri_rad	300-1500	8.44E+04	2.38	0.0	-0.9	0	0	0	0	4	Aaron Vandeputte CBS-QB3 OH + JP10
+3024	C/H/Cs3_5ring_adj5		O_pri_rad	300-1500	5.67E+04	2.38	0.0	-2.7	0	0	0	0	4	Aaron Vandeputte CBS-QB3 OH + JP10
+3025	C/H2/NonDeC_5ring_alpha6ring	O_pri_rad	300-1500	6.88E+04	2.38	0.0	-1.6	0	0	0	0	4	Aaron Vandeputte CBS-QB3 OH + JP10
+3026	C/H2/NonDeC_5ring_beta6ring	O_pri_rad	300-1500	1.51E+05	2.38	0.0	-1.5	0	0	0	0	4	Aaron Vandeputte CBS-QB3 OH + JP10
+
+3029 	Orad_O_H 			Y_rad	300-1500        2E+12 		0.0 	0.0 	0.0 	0 	0 	0 	0 	5 	Good guess based on NIST data
+
+3030	C/H2/NonDeC_5ring_fused6_1	H_rad	300-1500	2.87E+03	3.02	0.0	4.5	0	0	0	0	4	Aaron Vandeputte CBS-QB3 H + JP10
+3031	C/H/Cs3_5ring_fused6		H_rad	300-1500	4.52E+03	3.02	0.0	8.3	0	0	0	0	4	Aaron Vandeputte CBS-QB3 H + JP10
+3032	C/H2/NonDeC_5ring_fused6_2	H_rad	300-1500	3.18E+03	3.02	0.0	7.7	0	0	0	0	4	Aaron Vandeputte CBS-QB3 H + JP10
+3033	C/H/Cs3_5ring_adj5		H_rad	300-1500	3.84E+03	3.02	0.0	3.8	0	0	0	0	4	Aaron Vandeputte CBS-QB3 H + JP10
+3034	C/H2/NonDeC_5ring_alpha6ring	H_rad	300-1500	2.22E+03	3.02	0.0	5.3	0	0	0	0	4	Aaron Vandeputte CBS-QB3 H + JP10
+3035	C/H2/NonDeC_5ring_beta6ring	H_rad	300-1500	4.02E+03	3.02	0.0	4.9	0	0	0	0	4	Aaron Vandeputte CBS-QB3 H + JP10
+ 

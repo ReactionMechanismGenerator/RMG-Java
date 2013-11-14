@@ -72,8 +72,8 @@ CH2CO
 H
 1 H 1
 
-CH
-1 C 3
+//CH
+//1 C 3
 
 CH2
 1 C 2T

@@ -1,0 +1,32 @@
+Unit:
+A: mol/cm3/s
+E: kcal/mol
+
+Reactions:
+
+//Forbidden intramolecular disproportionations
+
+BR2 = BR2_ene1		                        1E-10	  0.0	  0.0	  0.0	  0.0	  0.0               
+BR2 = BR2_ene2  	                        1E-10     0.0     0.0     0.0     0.0     0.0    
+BR3 = BR3_ene1  	                        1E-10     0.0     0.0     0.0     0.0     0.0    
+BR3 = BR3_ene2  	                        1E-10     0.0     0.0     0.0     0.0     0.0    
+
+// Hindered intramolecular disproportionations
+
+BR1 = C1CCCC1C2CCdCC2 				1E-10	  0.0	  0.0	  0.0	  0.0	  0.0
+
+// Hindered intramolecular hydrogen abstractions
+
+R4 = R8					1E-10	  0.0	  0.0     0.0	  0.0	  0.0
+R5 = R8					1E-10     0.0     0.0     0.0     0.0     0.0
+R6 = R8                               	1E-10     0.0     0.0     0.0     0.0     0.0
+R10 = R5				1E-10     0.0     0.0     0.0     0.0     0.0
+R10 = R4				1E-10     0.0     0.0     0.0     0.0     0.0
+R7 = R5                               	1E-10     0.0     0.0     0.0     0.0     0.0
+R7 = R4                               	1E-10     0.0     0.0     0.0     0.0     0.0
+R6 = R4                               	1E-10     0.0     0.0     0.0     0.0     0.0
+
+// Check this reaction
+
+//cyclopentene + C5H8JJ = BR1             3.284e+03    2.41    5.03    0.0     0.0     0.0
+

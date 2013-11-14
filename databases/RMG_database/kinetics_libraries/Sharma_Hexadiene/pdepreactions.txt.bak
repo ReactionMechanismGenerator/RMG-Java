@@ -1,0 +1,37 @@
+Unit:
+A: mol/cm3/s
+E: kcal/mol
+
+Reactions:
+
+C4H3 (+m) = C4H2 + H (+m)      1.00E+14 0.0 47.00 0.0   0.0     0.0
+lOw / 2.0E+15 0.0 40.00/
+// Sandeep (MarinOv 1998)
+
+
+//the following are taken June 2011 from Sandeep's chem-14.inp from Supp. Material of his Comb. & Flame paper
+PHENOXY+H(+m) = PHENOL(+m) 1.0E14  0.0  0.0	0.0   0.0     0.0
+LOW /1.0E94  -21.84 13.9/
+TROE /0.043 304 60000 5896/
+O2/0.4/ CO/ 0.75/ CO2/ 1.5/ H2O/ 6.5/ N2/ 0.4/ BENZENE/3.0/
+//Their estimate, Wang 27
+
+PHENYL + H(+m) = BENZENE(+m) 1E14 0.0 0.0 	0.0   0.0     0.0
+LOW/ 6.6E75  -16.3  7.000/
+TROE/ 1.0 0.1 585 6113/
+//Wang&Frenklach 2000
+
+PHENYL(+m) = BENZYNE + H(+m) 4.3E12  0.62  77.3000 	0.0   0.0     0.0
+LOW/ 1.0E84  -18.87  90.1000/
+TROE/ 0.902  696  358  3856/
+//Wang&Frenklach 2000
+
+//Klippenstein, lawrence and Georgievskii 2007...parameters correctly refit by enoch dames ucsd
+PHENYL + CH3(+m) = TOLUENE(+m) 2.331e14  -0.283  -0.191		0.0   0.0     0.0
+LOW/ 6.74743E+83 -19.22	     14.98/
+TROE/ 0.735  60000  513  100000/
+BENZYL + H = TOLUENE(+m) 7.23e13  0.062  -0.044		0.0   0.0     0.0
+LOW/ 3.0327E+136	  -33.35   55.56/
+TROE/ 0.163  714  728  5112/ 
+
+ 

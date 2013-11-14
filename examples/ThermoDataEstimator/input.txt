@@ -1,7 +1,7 @@
 Database: RMG_database
 
 //thermo strategy? BensonOnly/QMforCyclics/Hybrid
-hybrid
+BensonOnly
 //QM method: both/gaussian03/mopac/mm4/mm4hr 
 both
 //maxradnumforQM?
@@ -9,7 +9,7 @@ both
 //CheckConnectivity? off/check/confirm
 check
 
-MaxCarbonNumberPerSpecies:     10
+MaxCarbonNumberPerSpecies:     15
 MaxOxygenNumberPerSpecies:     10
 MaxRadicalNumberPerSpecies:    10
 MaxSulfurNumberPerSpecies:     10
@@ -23,80 +23,38 @@ Name: RMG-minimal
 Location: primaryThermoLibrary
 END
 
-nC4H10O
-1 C 0 {2,S}
-2 C 0 {1,S} {3,S}
-3 C 0 {2,S} {4,S}
-4 C 0 {3,S} {5,S}
-5 O 0 {4,S}
+SPC(1)
+1  C 0 {2,S} {7,D} {8,S}
+2  C 0 {3,D} {1,S} {4,S}
+3  C 0 {2,D} {9,S} {10,S}
+4  C 0 {2,S} {5,D} {11,S}
+5  C 0 {4,D} {6,S} {14,S}
+6  C 0 {7,S} {5,S} {12,S} {13,S}
+7  C 0 {1,D} {6,S} {15,S}
+8  H 0 {1,S}
+9  H 0 {3,S}
+10  H 0 {3,S}
+11  H 0 {4,S}
+12  H 0 {6,S}
+13  H 0 {6,S}
+14  H 0 {5,S}
+15  H 0 {7,S}
 
-C4H9O-1
-1 C 1 {2,S}
-2 C 0 {1,S} {3,S}
-3 C 0 {2,S} {4,S}
-4 C 0 {3,S} {5,S}
-5 O 0 {4,S}
+SPC(2)
+1  C 0 {2,D} {7,S} {8,S}
+2  C 0 {3,S} {1,D} {4,S}
+3  C 0 {2,S} {9,S} {10,S} {13,S}
+4  C 0 {2,S} {5,D} {11,S}
+5  C 0 {4,D} {6,S} {14,S}
+6  C 0 {7,D} {5,S} {12,S} 
+7  C 0 {1,S} {6,D} {15,S}
+8  H 0 {1,S}
+9  H 0 {3,S}
+10  H 0 {3,S}
+11  H 0 {4,S}
+12  H 0 {6,S}
+13  H 0 {3,S}
+14  H 0 {5,S}
+15  H 0 {7,S}
 
-C4H9O-2
-1 C 0 {2,S}
-2 C 1 {1,S} {3,S}
-3 C 0 {2,S} {4,S}
-4 C 0 {3,S} {5,S}
-5 O 0 {4,S}
 
-C4H9O-3
-1 C 0 {2,S}
-2 C 0 {1,S} {3,S}
-3 C 1 {2,S} {4,S}
-4 C 0 {3,S} {5,S}
-5 O 0 {4,S}
-
-C4H9O-4
-1 C 0 {2,S}
-2 C 0 {1,S} {3,S}
-3 C 0 {2,S} {4,S}
-4 C 1 {3,S} {5,S}
-5 O 0 {4,S}
-
-C4H9O-5
-1 C 0 {2,S}
-2 C 0 {1,S} {3,S}
-3 C 0 {2,S} {4,S}
-4 C 0 {3,S} {5,S}
-5 O 1 {4,S}
-
-CH3
-1 C 1
-
-C3H7O-N1
-1 C 1 {2,S}
-2 C 0 {1,S} {3,S}
-3 C 0 {2,S} {4,S}
-4 O 0 {3,S}
-
-C2H5
-1 C 1 {2,S}
-2 C 0 {1,S}
-
-C2H5O-1
-1 C 1 {2,S}
-2 C 0 {1,S} {3,S}
-3 O 0 {2,S}
-
-C3H7-1
-1 C 1 {2,S}
-2 C 0 {1,S} {3,S}
-3 C 0 {2,S}
-
-CH2OH
-1 C 1 {2,S}
-2 O 0 {1,S}
-
-C4H9-1
-1 C 1 {2,S}
-2 C 0 {1,S} {3,S}
-3 C 0 {2,S} {4,S}
-4 C 0 {3,S}
-
-OH
-1 O 1

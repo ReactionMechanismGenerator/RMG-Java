@@ -1,0 +1,59 @@
+Unit:
+A: mol/cm3/s
+E: kcal/mol
+
+Reactions:
+
+//### Selected reactions of C7 species ###
+
+//M.B. Colket, D.J. Seery, Proc. Combust. Inst. 25 (1994) 883.891 
+//modified by Reduced by a factor of 10 considering the pressure fall-off (Combustion and Flame 157 (2010) 1686.1697)
+BENZYL = CPDYL + C2H2 3E13 0 70 0 0 0
+
+//(Combustion and Flame 157 (2010) 1686.1697)
+BENZYL = fulvenallene + H 4.38E13 0.078 75.9 0 0 0
+
+//(Combustion and Flame 157 (2010) 1686.1697)
+BENZYL + H = fulvenallene + H2 5E13 0 0 0 0 0
+
+fulvenallene + H = CPDYL + C2H2 3E14 0 0 0 0 0
+
+//Reactions of C9 species
+ fulvenallene + C2H2 = INDENE 1.44E292  -78.2 245.010 0 0 0
+ BENZYL + C2H2 = INDENE + H 3.16E04 2.48 11.061 0 0 0
+ PHENYL + C3H4a = INDENE + H 5.13E02 3.19 2.788 0 0 0
+ PHENYL + H2CCCH = INDENE 1.00E75  -17.8 39.600 0 0 0
+ BENZENE + H2CCCH = INDENE + H 6.26E09 2.61 56.500 0 0 0
+ INDENE = INDENYL + H 1.73E68  -15.2 116.372 0 0 0
+// INDENYL + H2CCCH = ACENAPHTHYLENE + H2 4.10E43  -9.20 15.153 0 0 0
+// INDENYL + C3H2 = ACENAPHTHYLENE + H 1.00E13 0.0 0.0 0 0 0
+// INDENYL + CPDYL = PHENANTHRENE + H + H 6.29E29 -4.03 35.205 0 0 0
+
+//Reactions of C10 species
+C6H4C2H + C2H = C6H5(C2H)2 5.00E13 0.0 0. 0 0 0
+C6H4C2H + C2H2 = C6H5(C2H)2 + H 5.50E32  -5.5 27.600 0 0 0
+C6H5(C2H)2 + H = 1-naphthyl 2.00E82  -20.2 36.900 0 0 0
+BENZYL + H2CCCH = naphthalene + H + H 2.00E14 0.0 20.000 0 0 0 
+CPDYL + CPDYL = naphthalene + H + H 6.39E29  -4.03 35.205 0 0 0
+PHENYL + C4H3 = naphthalene 1.51E75  -17.8 39.600  0 0 0
+PHENYL + C4H3 = 1-naphthyl + H 1.84E75  -16.1 57.630  0 0 0
+PHENYL + C4H3 = 2-naphthyl + H 1.84E72  -16.1 57.630  0 0 0
+INDENYL + CH2 = C10H9 1.00E11 0.0 0.0  0 0 0
+//n-A1C2H2 + C2H2 = naphthalene + H 2.10E15  -1.07 4.800 0 0 0
+//A1C2H3* + C2H2 = naphthalene + H 2.10E15  -1.07 6.000 0 0 0
+BENZYL + H2CCCH = C10H10 1.51E75  -17.8 39.600 0 0 0
+//TOLUENE + C3H2 = C10H10 1.51E75  -17.8 39.600 0 0 0
+C10H9 + H = C10H10 1.00E13 0.0 0.0  0 0 0
+C10H9 + H = naphthalene + H2 1.00E13 0.0 0.0 0 0 0
+
+
+//Reactions with C8 species
+BENZENE + C2H = C6H5C2H + H 1.00E13 0.0 0.0 0.0 0.0 0.0 //[42]
+TOLUENE + CH2 = STYRENE + H2 1.00E13 0.0 0.0 0.0 0.0 0.0 //Est.g
+BENZYL + CH3 = ETHYLBENZ 2.00E13 0.0 0.0 0.0 0.0 0.0 //Est.g
+PHENYL + CH2CHCCH = STYRENE + C2H 3.20E11 0.0 1.900 0.0 0.0 0.0 //[43]
+PHENYL + C4H6 = STYRENE + C2H3 3.20E11 0.0 1.900 0.0 0.0 0.0 //[43]
+CH2CHCCH + CH2CHCCH = STYRENE 1.50E14 0.0 38 0.0 0.0 0.0 //[43]
+ETHYLBENZ + H = BENZENE + ETHYL 1.20E13 0.0 5.100 0.0 0.0 0.0 //[43]
+ETHYLBENZ = STYRENE + H2 5.01E12 0.0 64 0.0 0.0 0.0 //[43]
+PHENYL + ETHANE = ETHYLBENZ + H 2.51E12 0.0 6.190 0.0 0.0 0.0 //Est.f
