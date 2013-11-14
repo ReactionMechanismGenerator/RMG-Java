@@ -1,0 +1,38 @@
+Unit:
+A: mol/cm3/s
+E: cal/mol
+
+Reactions:
+//! Miller 1992
+CH2(S) + m <=> CH2 + m          1.00E+13  0.0      0.0  0.0	0.0	0.0 
+   H /12.0/ C2H2 /4.0/ H2O/3.0/
+   
+//!Saito 1984
+HCOOH + m <=> CO + H2O + m        2.09E+14   0.0   40400.0 	0.0	0.0	0.0
+
+//!Saito 1984
+HCOOH + m <=> CO2 + H2 + m        1.35E+15   0.0   60600.0 	0.0	0.0	0.0
+
+//! Knyazev 1995
+//! Marinov 1996 
+//! Estimate: This study multiplies high pressure limit pre-exponential factor by 10
+C2H2 + H (+m) = C2H3 (+m)    3.11E+12  0.58   2589.0  	0.0	0.0	0.0
+   LOW / 2.25E+40  -7.269   6577.0 /	            
+   TROE /1.0 1.0E-15  675.0 1.0E+15 /
+   H2O /5.0/ H2/2.0/ CO2/3.0/ CO/2.0/
+   
+//! Warnatz 1984  
+CH3CO (+m) <=> CH3 + CO (+m)    3.00E+12  0.0   16722.0  0.0	0.0	0.0
+    LOW / 1.20E+15    0.0     12518.0 /             
+
+//! Miller 1992
+nC4H3 (+M) <=> C4H2 + H (+M)	7.500E+13	0.000	39000.00	0.0	0.0	0.0	
+   LOW / 1.000E+14	0.000	30000.00 /		
+
+//! Marinov 1998
+iC4H3 (+M) <=> C4H2 + H (+M)	7.500E+13	0.000	50000.00	0.0	0.0	0.0
+   LOW / 2.000E+15	0.000	40000.00 /			
+   
+//! Miller 1992
+nC4H5 (+m) <=> C4H4 + H (+m)	1.00E+14	0.0	37000.0	0.0	0.0	0.0
+   LOW / 1.00E+14		0.0	30000.0 /			

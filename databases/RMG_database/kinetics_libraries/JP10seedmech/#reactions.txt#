@@ -1,0 +1,13 @@
+lUnit:
+A: mol/cm3/s
+E: kcal/mol
+
+Reactions:
+
+// Aäron Vandeputte
+// Main reaction path
+
+JP10R6 = Ethylhexahydropentalene			1.13E+11	0.98	35.21	0	0	0
+Ethylhexahydropentalene = Ethene + Hexahydropentalenyl 	4.16E+11	0.66	30.69	0	0	0
+Hexahydropentalenyl = n-propylcyclopentadiene		3.19E+10	0.91	25.94   0	0	0
+n-propylcyclopentadiene = Methylcyclopentadiene + ethene 4.16E+11	0.66	30.69	0	0	0

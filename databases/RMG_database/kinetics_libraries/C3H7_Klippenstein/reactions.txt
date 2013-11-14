@@ -1,0 +1,19 @@
+Unit:
+A: mol/cm3/s
+E: kcal/mol
+
+Reactions:
+H + C3H6 = sC3H5 + H2                      1.494e+04 3.381     8.909    0.0 0.0 0.0
+
+H + C3H6 = pC3H5 + H2                      5.102e+02 3.234     12.357   0.0 0.0 0.0
+DUPLICATE
+H + C3H6 = pC3H5 + H2                      3.969e+02 3.252     12.007   0.0 0.0 0.0
+DUPLICATE
+
+C2H4 + CH3 = CH4 + C2H3                     9.757e+02 2.947     15.148   0.0 0.0 0.0
+DUPLICATE
+C2H4 + CH3 = CH4 + C2H3                     8.131e-05 4.417     8.836    0.0 0.0 0.0
+DUPLICATE
+
+H + C3H6 = H2 + aC3H5                     4.467e+04 2.860     4.350    0.0 0.0 0.0
+

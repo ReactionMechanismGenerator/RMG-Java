@@ -1,6 +1,5 @@
 Unit:
 A: mol/cm3/s
-E: cal/mol
+E: kcal/mol
 
 Reactions:
-

@@ -1,0 +1,23 @@
+Unit:
+A: mol/cm3/s
+E: kcal/mol
+
+//Analysis of Some Reaction Pathways Active during Cyclopentadiene Pyrolysis
+//Carlo Cavallotti,* Daniela Polino, Alessio Frassoldati, and Eliseo Ranzi*
+//dx.doi.org/10.1021/jp212151p | J. Phys. Chem. A 2012, 116, 3313.3324
+//PARAMETERS AT 1 ATM, RRKM calcs, interpolated 900-2000K
+
+Reactions:
+CPDYL + CPD = INDENE + METHYL 				1.573E25 -3.935 23.108 0.0 0.0 0.0 
+CPDYL + CPD = BENZENE + BUTADIENYL 			1.286E29 -4.515 40.873 0.0 0.0 0.0 
+CPDYL + CPD = vinylfulvene + vinyl			1.193E65 -14.20 74.645 0.0 0.0 0.0 
+CPDYL + CPD = phenylbutadiene + H			5.5335E16 -1.407 23.545 0.0 0.0 0.0 
+
+//vinylfulvene rearrangements into 1,5-dihydropentalene. 
+//Cavallotti stated that based on prelim DFT calcs this rearrangement does not seem to be hindered by significant barriers
+//Dudek (1979) experimentally determined the conversion of dihydropentalene to styrene.
+// i have a assumed that the dihydropentalene is rate delimiting and used these kinetics for the global conversion
+//of vinylfulvene to styrene:
+ //Dudek 1979 
+
+vinylfulvene = STYRENE 		1.26E13 0 57.81 0.0 0.0 0.0 

@@ -1,0 +1,7 @@
+Unit:
+A: mol/cm3/s
+E: kcal/mol
+
+Reactions:
+//RO2_C9H17O3J = HO2 + TMCP                            1.000e+12    0.00   0.0    0.0 0.0 0.0
+QOOH_C9H17O3J = HO2 + TMCP                           1.000e+12    0.00   0.0    0.0 0.0 0.0

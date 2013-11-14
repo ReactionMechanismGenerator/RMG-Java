@@ -16,7 +16,7 @@ Reactions:
 CPD + H = CPDYL + H2    3.0E14 0.0 6.6E0	0.0	0.0	0.0	
 //Bacskay
 
-O2 + CH3CO = HO2 + CH2CO    7.05E7 1.63 2.259E1	0.0	0.0	0.0
+//O2 + CH3CO = HO2 + CH2CO    7.05E7 1.63 2.259E1	0.0	0.0	0.0
 //Lee and Bozelli
 
 BZO = BRad    1.67E8 1.426 1.926E1	0.0 0.0 0.0
@@ -28,10 +28,10 @@ BZO = PHENYL + CH2O    1.09E14 0.157 3.116E1 0.0 0.0 0.0
 BENZYL + HO2 = OH + BZO    5.0E12 0.0 0.0E0 0.0 0.0 0.0
 //Ellis
 
-O2 + H2CCCH = CH2CO + HCO    1.70E05 1.70 1.50 0.0 0.0 0.0
+//O2 + H2CCCH = CH2CO + HCO    1.70E05 1.70 1.50 0.0 0.0 0.0
 //Hahn and Klippenstein-fixed NIST reference temp error
 
-CH2CO  +  H  =  CH3CO                        2.30E08      1.61     2.63    0.0    0.0   0.0
+//CH2CO  +  H  =  CH3CO                        2.30E08      1.61     2.63    0.0    0.0   0.0
 //Senosiain and Klippenstein-fixed NIST reference temp error
 
 C10H15 = CP2ENYL + C5H8	1.69E12	0.36	25.95 0.0 0.0 0.0
