@@ -118,6 +118,7 @@ L1: SixMember
 	L2: six-inringtwodouble-14
 		L3: 1,4-Cyclohexadiene
 		L3: 14dioxin
+        L2: six-inringthreedouble
 	L2: six-inringtwodouble-12
 	L2: six-oneside-twoindoubles-25
 		L3: 25cyclohexadienone
