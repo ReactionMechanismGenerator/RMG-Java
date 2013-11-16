@@ -29,6 +29,7 @@ package jing.chemUtil;
 import jing.chem.*;
 import jing.mathTool.MathTool;
 import java.util.*;
+
 import jing.rxnSys.Logger;
 
 // ## package jing::chemUtil
@@ -1913,6 +1914,16 @@ public class Graph {
         // #]
     }
 
+    
+    /**
+     * Finds the shortest number of bonds between 2 nodes.  Must enter a starting distance of 0.
+     */
+    public int minimumDistance(Node node1, Node node2) {
+    	setVisited(false);
+    	return node1.minimumNumBonds(node2, 0);
+    	// not sure if we need to reset the visited status of all the nodes and arcs?
+    }
+    
     /**
      * Output a string of adjacency list of this graph Modifies:
      */

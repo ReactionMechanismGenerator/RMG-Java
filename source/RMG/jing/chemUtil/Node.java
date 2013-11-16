@@ -1108,7 +1108,56 @@ public class Node extends GraphComponent {
         return null;
         // #]
     }
-
+    
+    
+    /**
+     * Finds the shortest number of bonds to the node.  Must enter a starting distance of 0.
+     */
+    public int minimumNumBonds(Node p_node, int distance) {
+    	setVisited(true);
+    	distance += 1;
+    	if (neighborsNode(p_node))
+    		return distance; // you have found the node!
+    	
+    	else { 
+	    	// couldn't find the node in any of the nearest neighbors, so go deeper
+	    	LinkedHashSet neighboringNodes = getNeighboringNodes();	    	
+	    	Iterator it = neighboringNodes.iterator();
+	    	
+	    	ArrayList<Integer> lengths = new ArrayList<Integer>();
+	    	while(it.hasNext()) {	   
+	    		Node neighborNode = (Node) it.next();
+	    		if (!neighborNode.getVisited() && !neighborNode.isLeaf()) {  
+	    			// if the node was not visited, check its neighbors
+	    			int temp = neighborNode.minimumNumBonds(p_node, distance);
+	    			if (temp != -1)
+	    				lengths.add(temp);
+	    
+	    		}
+	    	}
+	    	if (lengths.size() != 0) {
+	    		return Collections.min(lengths);
+	    	}
+    	}
+    	
+    	return -1;
+    }
+    
+    
+    /**
+     * Determines whether this node neighbors a p_node by any arc
+     */
+    public boolean neighborsNode(Node p_node) {
+	    LinkedHashSet neighboringNodes = getNeighboringNodes();		
+		Iterator it = neighboringNodes.iterator();
+		
+		while(it.hasNext()) {
+			if (it.next() == p_node) return true;
+		}   	
+		return false;
+    }
+    
+    
     /**
      * Requires: Effects: if this node only has one or zero neighbor, return true; otherwise, return false. Modifies:
      */
