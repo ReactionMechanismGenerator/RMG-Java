@@ -1097,6 +1097,8 @@ public class Reaction {
          * return false; }
          */
         Kinetics[] allKinetics = getKinetics();
+        if (allKinetics == null) return false;
+        
         for (int numKinetics = 0; numKinetics < allKinetics.length; ++numKinetics) {
             if (!allKinetics[numKinetics].repOk()) {
                 Logger.error("Invalid Kinetics: "

@@ -343,10 +343,12 @@ public class TemplateReaction extends Reaction {
                     rRT.addReaction(reverse);
                 }
             }
-            p_template.addReaction(reaction);
             if (!reaction.repOk()) {
-                throw new InvalidTemplateReactionException();
+                return null;
+                //throw new InvalidTemplateReactionException();
             }
+
+            p_template.addReaction(reaction);
         }
         Global.makeTR += (System.currentTimeMillis() - PT) / 1000 / 60;
         return reaction;
