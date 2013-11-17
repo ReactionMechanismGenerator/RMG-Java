@@ -431,13 +431,54 @@ public class ReactionTemplate {
         }
         if (p_structure.isForward()) {
             Kinetics kf = null;
+            
             LinkedList fg = structureTemplate
                     .getMatchedFunctionalGroup(reactants);
+            
+            String comments = null;
+            
+            if (fg != null) {
+            	comments = getKineticsComments(fg);
+            	
+	            if (name.equals("intra_H_migration")) {
+	            	ChemGraph rcg = (ChemGraph) ((reactants.iterator()).next());
+	            	// check if the reactant is cyclic
+	            	if (rcg.getCycleNumber() != 0) {
+	            		// First find the two node reaction sites of interest
+	            		// This is hardcoding of the intra_H_migration reaction family
+	            		//Iterator act_iter = reactionAdjList.getActions();            		
+	                        
+	                    Node n1 = rcg.getCentralNodeAt(1); // loses radical here
+	                    Node n2 = rcg.getCentralNodeAt(2); // gains radical here
+	                    
+	                    
+	                    int mindistance = rcg.getGraph().minimumDistance(n1, n2);
+
+	                    //Logger.info("Minimum distance between reacting sites is " + String.valueOf(mindistance));
+	                    
+	                    switch (mindistance) {
+	                		case 1: if (!comments.contains("R2H")) {fg = null;} break;
+	                		case 2: if (!comments.contains("R3H")) {fg = null;} break;
+	                		case 3: if (!comments.contains("R4H")) {fg = null;} break;
+	                		case 4: if (!comments.contains("R5H")) {fg = null;} break;
+	                		case 5: if (!comments.contains("R6H")) {fg = null;} break;
+	                		case 6: if (!comments.contains("R7H")) {fg = null;} break;
+	                		default: 
+	                		    // There shouldn't be any rings larger than this.  For now don't do anything extra.
+	                		    break;
+	                	}
+	            	}
+	            	
+	            } // end intraHmigration loop
+            }
+
+            //Logger.info(comments);	
+            
             if (fg == null) {
+            	//Logger.info("fg was null");
                 Global.RT_findRateConstant += (System.currentTimeMillis() - pT) / 1000 / 60;
                 return null;
-            }
-            String comments = getKineticsComments(fg);
+            }	
             kf = findExactRateConstant(fg);
             if (kf == null) {
                 kf = findClosestRateConstant(fg);
@@ -828,18 +869,34 @@ public class ReactionTemplate {
                     structure.setRedundancy(redundancy);
                     Reaction old_reaction = (Reaction) reactionMap
                             .get(structureSp);
-                    if (old_reaction == null) {
+                    if (old_reaction == null) {    // could not map it to old reaction
+                        //Logger.info("Could not map to an old reaction. Trying to make a new reaction template.");
+                        
                         TemplateReaction r = TemplateReaction
                                 .makeTemplateReaction(structureSp, k, this,
                                         structure);
                         structure = null;
-                        if (r != null)
+                        if (r != null) {
+                        	//Logger.info("Could not map to an old reaction. But found a new reaction template so adding it now.");
                             reactionMap.put(structureSp, r);
+                        }
+                        
                     } else {
+
                         if (k == null)
                             old_reaction.addAdditionalKinetics(null,
                                     redundancy, false);
                         else {
+
+//                        	Logger.info("Found some duplicate reactions and adding them now");
+//                        	for (Iterator iter2 = reactantSp.iterator(); iter2.hasNext();) {
+//                            	Species x = (Species) iter2.next();
+//                            	Logger.info(x.getChemkinName());
+//                            }
+//                        	for (Iterator iter3 = productSp.iterator(); iter3.hasNext();) {
+//                            	Species x = (Species) iter3.next();
+//                            	Logger.info(x.getChemkinName());
+//                            }
                             for (int i = 0; i < k.length; i++) {
                                 old_reaction.addAdditionalKinetics(k[i],
                                         redundancy, false);
@@ -944,9 +1001,14 @@ public class ReactionTemplate {
                                             p_structure);
                         } else {
                             // p_structure.increaseRedundancy(redundancy);
-                            for (int i = 0; i < k.length; i++) {
-                                reverseReaction.addAdditionalKinetics(k[i],
+                            if (k == null)
+                                reverseReaction.addAdditionalKinetics(null,
                                         redundancy, false);
+                            else {
+                                for (int i = 0; i < k.length; i++) {
+                                    reverseReaction.addAdditionalKinetics(k[i],
+                                            redundancy, false);
+                                }
                             }
                         }
                     }
