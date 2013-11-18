@@ -9,7 +9,9 @@
 //1) Definition of "inside" ring : when at least two of the *1,*2,*4,..atoms 
 //are members of that ring. 
 //2) Added also R3H_SS_2Cd (for .C-Cd-CH case)
-//3) Use "Others" : Others-[father] to catch the noncyclic cases (discussion with J.S. 04/17/03) 
+//3) Use "Others" : Others-[father] to catch the noncyclic cases (discussion with J.S. 04/17/03)
+// AG Vandeputte "Others" caused systematic overcounting of the rate coefficient for this reaction family and was removed
+// Linear case is just R3H_SS and the 'special' cases (ie rings) are its leaves 
 //4) The policy now is to add only nodes for which rate rules are available.  
 //Thus here I expanded R2H_S, R3H_SS, etc. but not for e.g. R2H_D, R3H_SD, etc. 
 //C.D.W. 05/28/03 : added R6H and R7H
@@ -20,7 +22,7 @@ L1: RnH
 			L4: R2H_S_cy3
 			L4: R2H_S_cy4
 			L4: R2H_S_cy5
-			L4: Others-R2H_S
+//			L4: Others-R2H_S
 		L3: R2H_D
 		L3: R2H_B
 	L2: R3H
@@ -37,7 +39,7 @@ L1: RnH
 				L5: R3H_SS_2Cd
 				L5: R3H_SS_OC
 				L5: R3H_SS_S
-				L5: Others-R3H_SS
+//				L5: Others-R3H_SS
 			L4: R3H_SD
 			L4: R3H_ST
 			L4: R3H_SB
@@ -192,7 +194,7 @@ L1: Y_rad_out
 					L6: C_rad_out_Cs2_cy3
 					L6: C_rad_out_Cs2_cy4
 					L6: C_rad_out_Cs2_cy5
-					L6: Others-C_rad_out_Cs2
+//					L6: Others-C_rad_out_Cs2
 				L5: C_rad_out_NDMustO
 			L4: C_rad_out_OneDe
 				L5: C_rad_out_OneDe/Cs
@@ -244,7 +246,7 @@ L1: XH_out
 					L6: Cs_H_out_Cs2_cy3
 					L6: Cs_H_out_Cs2_cy4
 					L6: Cs_H_out_Cs2_cy5
-					L6: Others-Cs_H_out_Cs2
+//					L6: Others-Cs_H_out_Cs2
 				L5: Cs_H_out_NDMustO
 			L4: Cs_H_out_OneDe
 			L4: Cs_H_out_TwoDe

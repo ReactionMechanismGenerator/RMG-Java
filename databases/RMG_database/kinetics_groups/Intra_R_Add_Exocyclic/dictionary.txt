@@ -1614,6 +1614,20 @@ doublebond_intra_HDe_pri
 4 H 0 {2,S}
 5 {Cd,Ct,Cb,CO} 0 {2,S}
 
+doublebond_intra_HCd_pri
+1 *2 Cd 0 {2,D} {3,S}
+2 *3 Cd 0 {1,D} {4,S} {5,S}
+3 H 0 {1,S}
+4 H 0 {2,S}
+5 Cd 0 {2,S}
+
+doublebond_intra_HCt_pri
+1 *2 Cd 0 {2,D} {3,S}
+2 *3 Cd 0 {1,D} {4,S} {5,S}
+3 H 0 {1,S}
+4 H 0 {2,S}
+5 Ct 0 {2,S}
+
 doublebond_intra_HDe_secNd
 1 *2 Cd 0 {2,D} {3,S}
 2 *3 Cd 0 {1,D} {4,S} {5,S}
@@ -1667,6 +1681,21 @@ doublebond_intra_NdDe_pri
 3 H 0 {1,S}
 4 {Cs,O} 0 {2,S}
 5 {Cd,Ct,Cb,CO} 0 {2,S}
+
+doublebond_intra_NdCd_pri
+1 *2 Cd 0 {2,D} {3,S}
+2 *3 Cd 0 {1,D} {4,S} {5,S}
+3 H 0 {1,S}
+4 {Cs,O} 0 {2,S}
+5 Cd 0 {2,S}
+
+doublebond_intra_NdCt_pri
+1 *2 Cd 0 {2,D} {3,S}
+2 *3 Cd 0 {1,D} {4,S} {5,S}
+3 H 0 {1,S}
+4 {Cs,O} 0 {2,S}
+5 Ct 0 {2,S}
+
 
 doublebond_intra_NdDe_secNd
 1 *2 Cd 0 {2,D} {3,S}
@@ -1768,6 +1797,16 @@ radadd_intra_csHDe
 2 H 0 {1,S}
 3 {Cd,Ct,Cb,CO} 0 {1,S}
 
+radadd_intra_csHCt
+1 *1 Cs 1 {2,S} {3,S}
+2 H 0 {1,S}
+3 Ct 0 {1,S}
+
+radadd_intra_csHCd
+1 *1 Cs 1 {2,S} {3,S}
+2 H 0 {1,S}
+3 Cd 0 {1,S}
+
 radadd_intra_csNdNd
 1 *1 Cs 1 {2,S} {3,S}
 2 {Cs,O} 0 {1,S}
@@ -1777,6 +1816,16 @@ radadd_intra_csNdDe
 1 *1 Cs 1 {2,S} {3,S}
 2 {Cs,O} 0 {1,S}
 3 {Cd,Ct,Cb,CO} 0 {1,S}
+
+radadd_intra_csNdCt
+1 *1 Cs 1 {2,S} {3,S}
+2 {Cs,O} 0 {1,S}
+3 Ct 0 {1,S}
+
+radadd_intra_csNdCd
+1 *1 Cs 1 {2,S} {3,S}
+2 {Cs,O} 0 {1,S}
+3 Cd 0 {1,S}
 
 radadd_intra_csDeDe
 1 *1 Cs 1 {2,S} {3,S}

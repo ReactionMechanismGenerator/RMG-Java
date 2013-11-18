@@ -14,7 +14,9 @@ hexahydropentalen-1-ylethyl = ethene + hexahydropentalen-1-yl 			4.16E+11	0.66	3
 hexahydropentalen-1-yl = cyclopenta-1,4-dien-1-ylpropyl				3.19E+10	0.91	25.94   0	0	0
 cyclopenta-1,4-dien-1-ylpropyl = cyclopenta-1,4-dien-1-ylmethyl + ethene 	4.16E+11	0.66	30.69	0	0	0
 
-BR2 = cyclopentene + C5H8JJ							4.24E+11	0.64	32.2	0	0	0
+BR1 = cyclopentene + C5H8JJ							4.24E+11	0.64	32.2	0	0	0
+//BR3 = ethene + C5H8JJ								
+
 
 // Rate coefficients calculated from BMK/cbsb7 calculations, no HR corrections
 // They should be a good initial estimate
