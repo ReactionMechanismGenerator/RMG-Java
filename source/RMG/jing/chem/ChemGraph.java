@@ -132,7 +132,12 @@ public class ChemGraph implements Matchable {
                 throw new ForbiddenStructureException(message);
             }
         }
-        this.determineAromaticityAndWriteBBonds();
+        
+        // For now we will not perceive aromaticity since
+        // this causes aromatic species to stop reacting since we do not have Cb
+        // bonds rate rules in  the rate library
+        
+        //this.determineAromaticityAndWriteBBonds();
     }
 
     public void determineAromaticityAndWriteBBonds() {
@@ -1275,34 +1280,73 @@ public class ChemGraph implements Matchable {
     public ThermoData generateThermoData()
             throws FailGenerateThermoDataException {
         TDGenerator gen = null;
+        
+        ChemGraph thermo_graph = null;
+        try{
+        	thermo_graph = ChemGraph.copy(this);
+        } catch(Exception e){
+        	Logger.logStackTrace(e);
+        	Logger.critical(e.getMessage());
+        	System.exit(0);
+        }
+        
+        // Percieve aromaticity to get the right thermo
+        thermo_graph.determineAromaticityAndWriteBBonds();
+               
         if (TDMETHOD.toLowerCase().startsWith("benson")) {
             gen = new BensonTDGenerator();
-            thermoData = gen.generateThermo(this);
+            thermoData = gen.generateThermo(thermo_graph);
             return thermoData;
         } else if (TDMETHOD.toLowerCase().startsWith("qm")) {
             gen = new QMForCyclicsGenerator();
         } else {// default method is hybrid
             gen = new HybridTDGenerator();
         }
-        thermoData = gen.generateThermo(this);
+        thermoData = gen.generateThermo(thermo_graph);
         return thermoData;
     }
 
     public TransportData generateTransportData() {
+        
+    	ChemGraph trans_graph = null;
+        try{
+        	trans_graph = ChemGraph.copy(this);
+        } catch(Exception e){
+        	Logger.logStackTrace(e);
+        	Logger.critical(e.getMessage());
+        	System.exit(0);
+        }
+        
+        // Percieve aromaticity to get the right trans
+        trans_graph.determineAromaticityAndWriteBBonds();
+        
         if (transportGAPP == null)
             setDefaultTransportGAPP();
-        transportData = transportGAPP.generateTransportData(this);
+        transportData = transportGAPP.generateTransportData(trans_graph);
         return transportData;
     }
 
     // Amrit Jalan 05/09/2009
     public ThermoData generateSolvThermoData()
             throws FailGenerateThermoDataException {
+        
+    	ChemGraph sol_graph = null;
+        try{
+        	sol_graph = ChemGraph.copy(this);
+        } catch(Exception e){
+        	Logger.logStackTrace(e);
+        	Logger.critical(e.getMessage());
+        	System.exit(0);
+        }
+        
+        // Percieve aromaticity to get the right thermo
+        sol_graph.determineAromaticityAndWriteBBonds();
+        
         // use GAPP to generate Thermo data
         try {
             if (SolvationGAPP == null)
                 setDefaultSolvationGAPP();
-            solvthermoData = SolvationGAPP.generateSolvThermoData(this);
+            solvthermoData = SolvationGAPP.generateSolvThermoData(sol_graph);
             return solvthermoData;
         } catch (Exception e) {
             Logger.logStackTrace(e);
