@@ -571,6 +571,12 @@ public class Graph {
                         } else
                             saturatedCarbon = true;
                     }
+		    // Added by AG Vandeputte for problems with phenyl radical, as all resonance isomers obey the Huckel theory they are all considered aromatic
+                    // linear C atom 
+		    if(a.isCarbon() && n.getNeighborNumber() == 2) {
+			isAromatic[i] = false;
+		        alreadyClassified[i] = 1;
+                    }
                     // has a quarternary atom, not aromatic
                     if (n.getNeighborNumber() == 4) {
                         Iterator neighborNodes = n.getNeighboringNodes()
