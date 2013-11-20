@@ -573,7 +573,7 @@ public class Graph {
                     }
 		    // Added by AG Vandeputte for problems with phenyl radical, as all resonance isomers obey the Huckel theory they are all considered aromatic
                     // linear C atom 
-		    if(a.isCarbon() && n.getNeighborNumber() == 2) {
+		    if(a.isCarbon() && n.getNeighborNumber() == 2 && !a.isRadical()) {
 			isAromatic[i] = false;
 		        alreadyClassified[i] = 1;
                     }
