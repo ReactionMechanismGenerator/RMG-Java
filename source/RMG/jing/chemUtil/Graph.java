@@ -689,7 +689,7 @@ public class Graph {
                     numPiBonds = numPiBonds + 2;
             }
         }
-        if ((numPiBonds - 2) % 4 == 0) {
+        if (numPiBonds > 2 && (numPiBonds - 2) % 4 == 0) {
             alreadyClassified[j] = 1;
             isAromatic[j] = true;
             j=-1;
