@@ -132,7 +132,9 @@ public class ChemGraph implements Matchable {
                 throw new ForbiddenStructureException(message);
             }
         }
-        this.determineAromaticityAndWriteBBonds();
+    // 	  Flagged out by AG Vandeputte, only use aromatics for thermo    
+    //    this.determineAromaticityAndWriteBBonds();
+    //
     }
 
     public void determineAromaticityAndWriteBBonds() {
@@ -180,8 +182,8 @@ public class ChemGraph implements Matchable {
 // under consideration is part of the ring under consideration; the previous approach without this check would produce
 // false positives
                         }
-                        if (number_of_double_bonds != 1)
-                            aromaticList[i] = false;
+//                        if (number_of_double_bonds != 1)
+//                            aromaticList[i] = false;
                     }
                 }
             }
@@ -1275,16 +1277,28 @@ public class ChemGraph implements Matchable {
     public ThermoData generateThermoData()
             throws FailGenerateThermoDataException {
         TDGenerator gen = null;
+
+        ChemGraph thermograph = null;
+        try {
+            thermograph = ChemGraph.copy(this);
+        } catch (Exception e) {
+            Logger.logStackTrace(e);
+            Logger.critical(e.getMessage());
+            System.exit(0);
+        }
+
+        thermograph.determineAromaticityAndWriteBBonds();
+
         if (TDMETHOD.toLowerCase().startsWith("benson")) {
             gen = new BensonTDGenerator();
-            thermoData = gen.generateThermo(this);
+            thermoData = gen.generateThermo(thermograph);
             return thermoData;
         } else if (TDMETHOD.toLowerCase().startsWith("qm")) {
             gen = new QMForCyclicsGenerator();
         } else {// default method is hybrid
             gen = new HybridTDGenerator();
         }
-        thermoData = gen.generateThermo(this);
+        thermoData = gen.generateThermo(thermograph);
         return thermoData;
     }
 
