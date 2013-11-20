@@ -132,12 +132,13 @@ public class ChemGraph implements Matchable {
                 throw new ForbiddenStructureException(message);
             }
         }
-        
+		
         // For now we will not perceive aromaticity since
         // this causes aromatic species to stop reacting since we do not have Cb
         // bonds rate rules in  the rate library
         
         //this.determineAromaticityAndWriteBBonds();
+
     }
 
     public void determineAromaticityAndWriteBBonds() {
@@ -185,8 +186,8 @@ public class ChemGraph implements Matchable {
 // under consideration is part of the ring under consideration; the previous approach without this check would produce
 // false positives
                         }
-                        if (number_of_double_bonds != 1)
-                            aromaticList[i] = false;
+//                        if (number_of_double_bonds != 1)
+//                            aromaticList[i] = false;
                     }
                 }
             }
@@ -1280,19 +1281,17 @@ public class ChemGraph implements Matchable {
     public ThermoData generateThermoData()
             throws FailGenerateThermoDataException {
         TDGenerator gen = null;
-        
         ChemGraph thermo_graph = null;
-        try{
-        	thermo_graph = ChemGraph.copy(this);
-        } catch(Exception e){
-        	Logger.logStackTrace(e);
-        	Logger.critical(e.getMessage());
-        	System.exit(0);
+        try {
+            thermo_graph = ChemGraph.copy(this);
+        } catch (Exception e) {
+            Logger.logStackTrace(e);
+            Logger.critical(e.getMessage());
+            System.exit(0);
         }
-        
-        // Percieve aromaticity to get the right thermo
+
         thermo_graph.determineAromaticityAndWriteBBonds();
-               
+
         if (TDMETHOD.toLowerCase().startsWith("benson")) {
             gen = new BensonTDGenerator();
             thermoData = gen.generateThermo(thermo_graph);
