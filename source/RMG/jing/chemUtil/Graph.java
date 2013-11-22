@@ -29,6 +29,7 @@ package jing.chemUtil;
 import jing.chem.*;
 import jing.mathTool.MathTool;
 import java.util.*;
+
 import jing.rxnSys.Logger;
 
 // ## package jing::chemUtil
@@ -527,11 +528,9 @@ public class Graph {
         return hasExoPi;
     }
 
-    public void getAromatic() {
+    public void getAromatic(int[] alreadyClassified) {
         isAromatic = new boolean[SSSRings.size()];
-        int[] alreadyClassified = new int[SSSRings.size()];
-        for (int i = 0; i < SSSRings.size(); i++)
-            alreadyClassified[i] = 0;
+ 
         LinkedList ringWithExoCyclicPi = new LinkedList();
         for (int i = 0; i < SSSRings.size(); i++) {
             LinkedList cycle = (LinkedList) SSSRings.get(i);
@@ -558,30 +557,20 @@ public class Graph {
 				    // a final test (check if double bond is inside) was performed. That test has been removed.
 				    // So far code seems to work for benzene, napthalene and does not give a fake hit for InChI=1/C9H8/c1-2-5-9-7-3-6-8(9)4-1/h1-2,4-7H,3H2 
 
-                    // if (n.getNumDoubleBonds() != 1){
-                    // isAromatic[i] = false;
-                    // alreadyClassified[i] = 1;
-                    // break;
-                    // }
                     
                     // has more than 2 saturated carbon atoms, not aromatic
                     if (a.isCarbon() && n.getNeighborNumber() == 4) {
-                        System.out.println("Found saturated carbon");
-                    	if (saturatedCarbon) {
+
+                     	    if (saturatedCarbon) {
                             isAromatic[i] = false;
                             alreadyClassified[i] = 1;
                             break;
-                        } else
-                            saturatedCarbon = true;
+
+                          } else
+                          saturatedCarbon = true;
                     }
-		    // Added by AG Vandeputte for problems with phenyl radical, as all resonance isomers obey the Huckel theory they are all considered aromatic
-                    // linear C atom 
-		    
-            //if(a.isCarbon() && n.getNeighborNumber() == 2 && !a.isRadical()) {
-			//isAromatic[i] = false;
-		    //    alreadyClassified[i] = 1;
-            //       }
-            
+                    
+                    // Added by AG Vandeputte for problems with phenyl radical, as all resonance isomers obey the Huckel theory they are all considered aromatic
                     // has a quarternary atom, not aromatic
                     if (n.getNeighborNumber() == 4) {
                         Iterator neighborNodes = n.getNeighboringNodes()
@@ -609,29 +598,31 @@ public class Graph {
             if (!ringDoubleBonds) {
                 isAromatic[i] = false;
                 alreadyClassified[i] = 1;
-//                continue;
             }
-        }
-            
-         
-        for(int i = 0; i < SSSRings.size(); i++) {
-        	classifyAsAromatic(i, alreadyClassified);
-        }
-        
-            for (int j = 0; j < SSSRings.size(); j++) {
-                if(alreadyClassified[j] == 0) {
-                	isAromatic[j] = false;
-                }
-            }
-        }
-    
+        } 
 
-    public void classifyAsAromatic(int j, int[] alreadyClassified) {
+
+        int check=0;
+        while(check < SSSRings.size()) {
+            check=classifyAsAromatic(check, alreadyClassified);
+
+        }
+        for (int i = 0; i < SSSRings.size(); i++) {
+            if(alreadyClassified[i] == 0) {
+            isAromatic[i] = false;
+            }
+        }
+
+    }
+
+    public int classifyAsAromatic(int j, int[] alreadyClassified) {
         if (alreadyClassified[j] == 1)
-            return;
+            return ++j;
+
         LinkedList cycle = (LinkedList) SSSRings.get(j);
         int aromaticExoPi = 0;
         int nonAromaticExoPi = 0;
+
         for (int i = 0; i < cycle.size(); i = i + 1) {
 
           GraphComponent gx = (GraphComponent) cycle.get(i);
@@ -667,14 +658,6 @@ public class Graph {
 	  }
         }
         int numPiBonds = 0;
-//        if (aromaticExoPi != 0) {
-//            if (aromaticExoPi % 2 != 0) {
-//                alreadyClassified[j] = 1;
-//                isAromatic[j] = false;
-//                return;
-//            }
-//        } else
-        //    numPiBonds = aromaticExoPi + nonAromaticExoPi;
         numPiBonds = aromaticExoPi;
         // more thorough screening, for cycles with no exocyclic Pi bonds
         // if (aromaticExoPi == 0 && nonAromaticExoPi == 0 ){
@@ -696,55 +679,19 @@ public class Graph {
                     numPiBonds = numPiBonds + 2;
             }
         }
-        if (numPiBonds > 2 && (numPiBonds - 2) % 4 == 0) {
+        if ( numPiBonds > 2 && (numPiBonds - 2) % 4 == 0) {
             alreadyClassified[j] = 1;
             isAromatic[j] = true;
-            j=-1;
-            return;
+
+
+            j=0;
         } 
-//	else {
-//            alreadyClassified[j] = 1;
-//            isAromatic[j] = false;
-//            return;
-//        }
-        // }
+	else {
+            j++;
+        }
+        return j;
     }
-
-
-    public void classifyAsAromaticwithoutExoPi(int j) {
-        LinkedList cycle = (LinkedList) SSSRings.get(j);
-
-        int numPiBonds = 0;
-        for (int k = 0; k < cycle.size(); k++) {
-            GraphComponent gc = (GraphComponent) cycle.get(k);
-            if (gc instanceof Node) {
-                Node node = (Node) gc;
-                Atom a = (Atom) node.getElement();
-                // dont have to check for cationic carbon or boron
-                // saturated heteroatoms contribute 2 pi bonds, but only O is the heteroatom
-                if (a.isOxygen() && node.getNeighborNumber() == 2)
-                    numPiBonds = numPiBonds + 2;
-                // we dont have anionic carbon
-            } else {
-                // if a double bond then 2 pi electrons and if a triple bond then 4 pi electrons
-                Arc a = (Arc) gc;
-                Bond b = (Bond) a.getElement();
-                if (b.isDouble() || b.isTriple())
-                    numPiBonds = numPiBonds + 2;
-            }
-        }
-        if (numPiBonds > 2 && (numPiBonds - 2) % 4 == 0) {
-            isAromatic[j] = true;
-            return;
-        }
-        else{
-            isAromatic[j] = false;
-            return;
-        }
-        
-    }
-    
-    
+     
 	public void formSSSR() {
         // determine the number of SSSR
         if (SSSRings != null)
@@ -1985,6 +1932,7 @@ public class Graph {
         // #]
     }
 
+       
     /**
      * Output a string of adjacency list of this graph Modifies:
      */
