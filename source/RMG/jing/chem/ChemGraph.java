@@ -132,9 +132,13 @@ public class ChemGraph implements Matchable {
                 throw new ForbiddenStructureException(message);
             }
         }
-    // 	  Flagged out by AG Vandeputte, only use aromatics for thermo    
-    //    this.determineAromaticityAndWriteBBonds();
-    //
+		
+        // For now we will not perceive aromaticity since
+        // this causes aromatic species to stop reacting since we do not have Cb
+        // bonds rate rules in  the rate library
+        
+        //this.determineAromaticityAndWriteBBonds();
+
     }
 
     public void determineAromaticityAndWriteBBonds() {
@@ -143,9 +147,11 @@ public class ChemGraph implements Matchable {
         // 1. do a final aromaticity screen
         // 2. convert to B bonds
         // 3. re-perceive functional groups
-        // If there are no cycles, cannot be aromatic
+        
+    	// If there are no cycles, cannot be aromatic
         if (graph.getCycleNumber() == 0)
             return;
+
         // check for already existing B bonds; if so, set isAromatic to true
         Iterator arcs = graph.getArcList();
         while (arcs.hasNext()) {
@@ -153,42 +159,112 @@ public class ChemGraph implements Matchable {
             if (((Bond) arc.getElement()).isBenzene())
                 isAromatic = true;
         }
+
+
+    	// In this check we apply stricter checks 
+        // Like an aromatic ring cannot have a C with two double bonds
+        // Aromatic ring needs to have 6 carbon atoms since we have corrections only for Benzene
+        // Aromatic ring does not have triple bond
+        // In case we find a ring which is misclassified we update the updatedAromaticlist to false for that ring
+        // We also record this ring number as alreadyClassified and should not be sent for reclassification
+        // The Aromatic list is then sent back to be reclassified by Sandeep's algorithm using the Huckle rule
+        // This process continues till the time the Aromaticlist and UpdatedAromaticList is exactly same and the classification is converged
+        
+        // This was done for fused ring isomers, Sandeep's algorithm would classify both rings as aromatic
+        // in the second check one of them would become non-aromatic failing one of the stricter checks 
+        // if at this time we would convert the ring to B bonds then an invalid connectivity exception is thrown 
+        // since you can end up with C 0 {*,B} {*,B} {*,D}
+        // Now we reclassify the rings to avoid this problem. 
+        
+        boolean converged = false;
+        int[] alreadyClassified = new int[graph.getCycle().size()]; // we define a vector that remembers which rings are already defined
+        boolean[] aromaticList = new boolean[graph.getCycle().size()];
+        boolean[] updatedAromaticList = new boolean[graph.getCycle().size()];
+
+        while(!converged) { 
+
         // addMissingHydrogen();
-        graph.getAromatic();// perceive aromaticity using Sandeep's algorithm
-        boolean[] aromaticList = graph.getIsAromatic();
+        graph.getAromatic(alreadyClassified);  // perceive aromaticity using Sandeep's algorithm
+        
+        aromaticList = graph.getIsAromatic();
+
+        int[] number_of_triple_bonds = new int[graph.getCycle().size()];
+        int[] number_of_carbon_atoms = new int[graph.getCycle().size()];
+ 
+        for (int i = 0; i < graph.getCycle().size(); i++) {
+        	updatedAromaticList[i]=aromaticList[i];
+            }
+
         // iterate over the rings to do one final check for aromaticity; we need to do all at once before converting to
-// B bonds so that double bonds are correctly counted
+        // B bonds so that double bonds are correctly counted
         for (int i = 0; i < graph.getCycle().size(); i++) {
             boolean aromatic = aromaticList[i];
-            // for our purposes, we want the presence of one double bond (in the ring under consideration...note that
-// this will not accurately handle some resonance isomers of napthalene) to be a necessary condition for aromaticity
-// (radicals are tricky; phenyl should be aromatic, but not C3H2)
-            if (aromatic) {// if the ring is aromatic, check for exactly one double bond at each node in cycle
-                LinkedList graphComps = (LinkedList) graph.getCycle().get(i);// get the aromatic cycle
+    	    
+            // The aromaticity check is working for almost all aromatic structures known, involving double bonds, triple bonds and heteroelements
+            // in the next part we check is the ring is a benzene type of ring in order to change the carbon atoms to Cb
+    	    // we skip this step in case the ring has triple bonds, heteroelements or does not contain 6 atoms hence eliminating
+            // structures like furan, benzyne and C1=CSi=CC=C1
+            
+            number_of_triple_bonds[i] = 0;
+            number_of_carbon_atoms[i] = 0;
+            if (aromatic) {  // if the ring is aromatic, check for exactly one double bond at each node in cycle
+                LinkedList graphComps = (LinkedList) graph.getCycle().get(i);  // get the aromatic cycle
                 for (int numComps = 0; numComps < graphComps.size(); numComps++) {
                     GraphComponent gc = (GraphComponent) graphComps
                             .get(numComps);
                     if (gc instanceof Node) {
-                        // Iterator neighbors = graph.getNodeAt(((Node)gc).getID()).getNeighbor();
-                        Iterator neighbors = ((Node) gc).getNeighbor();
-                        int number_of_double_bonds = 0;
-                        while (neighbors.hasNext()) {
+                    	Node n = (Node) gc;
+                    	Atom a = (Atom) n.getElement();
+                    	Iterator neighbors = n.getNeighbor();
+                    	int number_of_double_bonds = 0;
+                    
+                    	if(a.isCarbon()){
+                    		number_of_carbon_atoms[i]++;
+                    	}
+                    	while (neighbors.hasNext()) {
                             Arc nodeA = (Arc) neighbors.next();
                             double order = ((Bond) (nodeA.getElement()))
                                     .getOrder();
-                            // if(order==2) number_of_double_bonds++;
                             if (order == 2 && graphComps.contains(nodeA))
-                                number_of_double_bonds++;// graphComps.contains() portion is used to check that the bond
-// under consideration is part of the ring under consideration; the previous approach without this check would produce
-// false positives
+                                number_of_double_bonds++;
+                            if(order == 3 && graphComps.contains(nodeA)) {
+                            	// If a triple bond is found, update classification of ring to false
+                            	// Also record this ring in alreadyClassified list so as not to send for reclassification
+                            	updatedAromaticList[i] = false;
+                            	alreadyClassified[i]=1;
+                            }
                         }
-//                        if (number_of_double_bonds != 1)
-//                            aromaticList[i] = false;
+                       if (number_of_double_bonds == 2) {
+                    	   // If the atom has two double bonds, update classification of ring to false
+                    	   // Also record this ring in alreadyClassified list so as not to send for reclassification
+                    	    updatedAromaticList[i] = false;
+                    	    alreadyClassified[i]=1;
+                       }
                     }
                 }
             }
+            
+            if(number_of_carbon_atoms[i] != 6) {
+         	   // If number of C atoms in ring > 6, update classification of ring to false
+         	   // Also record this ring in alreadyClassified list so as not to send for reclassification
+            	updatedAromaticList[i] = false;
+            	alreadyClassified[i]=1;
+            }
+
         }
-        // iterate over rings again, this time converting to B bonds
+        
+        // check if updatedAromatic list and aromaticList are exactly same, for the classification procedure to converge
+        converged=true;
+        for (int i = 0; i < graph.getCycle().size(); i++) {
+            if(aromaticList[i] != updatedAromaticList[i] ) {
+              converged=false;
+              break;
+            }
+        }
+
+        } // End of while converged
+       
+        // Once converged we can finally convert to B bonds
         for (int i = 0; i < graph.getCycle().size(); i++) {
             boolean aromatic = aromaticList[i];
             if (aromatic) {// if it is still considered aromatic (given the above final screen) convert to B bonds
@@ -205,6 +281,7 @@ public class ChemGraph implements Matchable {
                 }
             }
         }
+
         /**
          * After the bonds that were previously defined as "S" or "D" bonds, have been renamed to "B" bonds, We have to
          * re-perceive the atom type of the atoms in the adjacency list. This is done by re-iterating over all nodes and
@@ -1277,46 +1354,70 @@ public class ChemGraph implements Matchable {
     public ThermoData generateThermoData()
             throws FailGenerateThermoDataException {
         TDGenerator gen = null;
-
-        ChemGraph thermograph = null;
+        ChemGraph thermo_graph = null;
         try {
-            thermograph = ChemGraph.copy(this);
+            thermo_graph = ChemGraph.copy(this);
         } catch (Exception e) {
             Logger.logStackTrace(e);
             Logger.critical(e.getMessage());
             System.exit(0);
         }
-
-        thermograph.determineAromaticityAndWriteBBonds();
-
+        thermo_graph.determineAromaticityAndWriteBBonds();
+        //System.out.println(thermo_graph.toString());
         if (TDMETHOD.toLowerCase().startsWith("benson")) {
             gen = new BensonTDGenerator();
-            thermoData = gen.generateThermo(thermograph);
+            thermoData = gen.generateThermo(thermo_graph);
             return thermoData;
         } else if (TDMETHOD.toLowerCase().startsWith("qm")) {
             gen = new QMForCyclicsGenerator();
         } else {// default method is hybrid
             gen = new HybridTDGenerator();
         }
-        thermoData = gen.generateThermo(thermograph);
+        thermoData = gen.generateThermo(thermo_graph);
         return thermoData;
     }
 
     public TransportData generateTransportData() {
+        
+    	ChemGraph trans_graph = null;
+        try{
+        	trans_graph = ChemGraph.copy(this);
+        } catch(Exception e){
+        	Logger.logStackTrace(e);
+        	Logger.critical(e.getMessage());
+        	System.exit(0);
+        }
+        
+        // Percieve aromaticity to get the right trans
+        trans_graph.determineAromaticityAndWriteBBonds();
+        
         if (transportGAPP == null)
             setDefaultTransportGAPP();
-        transportData = transportGAPP.generateTransportData(this);
+        transportData = transportGAPP.generateTransportData(trans_graph);
         return transportData;
     }
 
     // Amrit Jalan 05/09/2009
     public ThermoData generateSolvThermoData()
             throws FailGenerateThermoDataException {
+        
+    	ChemGraph sol_graph = null;
+        try{
+        	sol_graph = ChemGraph.copy(this);
+        } catch(Exception e){
+        	Logger.logStackTrace(e);
+        	Logger.critical(e.getMessage());
+        	System.exit(0);
+        }
+        
+        // Percieve aromaticity to get the right thermo
+        sol_graph.determineAromaticityAndWriteBBonds();
+        
         // use GAPP to generate Thermo data
         try {
             if (SolvationGAPP == null)
                 setDefaultSolvationGAPP();
-            solvthermoData = SolvationGAPP.generateSolvThermoData(this);
+            solvthermoData = SolvationGAPP.generateSolvThermoData(sol_graph);
             return solvthermoData;
         } catch (Exception e) {
             Logger.logStackTrace(e);
