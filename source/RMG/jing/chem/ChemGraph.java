@@ -1363,7 +1363,7 @@ public class ChemGraph implements Matchable {
             System.exit(0);
         }
         thermo_graph.determineAromaticityAndWriteBBonds();
-        System.out.println(thermo_graph.toString());
+        //System.out.println(thermo_graph.toString());
         if (TDMETHOD.toLowerCase().startsWith("benson")) {
             gen = new BensonTDGenerator();
             thermoData = gen.generateThermo(thermo_graph);
