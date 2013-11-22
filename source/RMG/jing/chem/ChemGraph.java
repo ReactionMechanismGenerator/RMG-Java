@@ -160,42 +160,101 @@ public class ChemGraph implements Matchable {
         // addMissingHydrogen();
         graph.getAromatic();// perceive aromaticity using Sandeep's algorithm
         boolean[] aromaticList = graph.getIsAromatic();
+        int[] number_of_triple_bonds = new int[graph.getCycle().size()];
+        int[] number_of_carbon_atoms = new int[graph.getCycle().size()];
+
         // iterate over the rings to do one final check for aromaticity; we need to do all at once before converting to
-// B bonds so that double bonds are correctly counted
+        // B bonds so that double bonds are correctly counted
         for (int i = 0; i < graph.getCycle().size(); i++) {
             boolean aromatic = aromaticList[i];
-            // for our purposes, we want the presence of one double bond (in the ring under consideration...note that
-// this will not accurately handle some resonance isomers of napthalene) to be a necessary condition for aromaticity
-// (radicals are tricky; phenyl should be aromatic, but not C3H2)
-            if (aromatic) {// if the ring is aromatic, check for exactly one double bond at each node in cycle
+                       
+    	    // Updating of the routine!!
+    	    // The aromaticity check is working for almost all aromatic structures known, involving double bonds, triple bonds and heteroelements
+            // in the next part we check is the ring is a benzene type of ring in order to change the carbon atoms to Cb
+    	    // we skip this step in case the ring has triple bonds, heteroelements or does not contain 6 atoms hence eliminating
+            // structures like furan, benzyne and C1=CSi=CC=C1
+            
+            number_of_triple_bonds[i] = 0;
+            number_of_carbon_atoms[i] = 0;
+
+            if (aromatic) {// if the ring is aromatic, ycheck for exactly one double bond at each node in cycle
                 LinkedList graphComps = (LinkedList) graph.getCycle().get(i);// get the aromatic cycle
                 for (int numComps = 0; numComps < graphComps.size(); numComps++) {
                     GraphComponent gc = (GraphComponent) graphComps
                             .get(numComps);
                     if (gc instanceof Node) {
-                        // Iterator neighbors = graph.getNodeAt(((Node)gc).getID()).getNeighbor();
-                        Iterator neighbors = ((Node) gc).getNeighbor();
-                        int number_of_double_bonds = 0;
-                        while (neighbors.hasNext()) {
+                    	Node n = (Node) gc;
+                    	Atom a = (Atom) n.getElement();
+                    	Iterator neighbors = n.getNeighbor();
+                    	int number_of_double_bonds = 0;
+                    
+                    	if(a.isCarbon()){
+                    		number_of_carbon_atoms[i]++;
+                    	}
+                    	while (neighbors.hasNext()) {
                             Arc nodeA = (Arc) neighbors.next();
                             double order = ((Bond) (nodeA.getElement()))
                                     .getOrder();
                             // if(order==2) number_of_double_bonds++;
                             if (order == 2 && graphComps.contains(nodeA))
-                                number_of_double_bonds++;// graphComps.contains() portion is used to check that the bond
-// under consideration is part of the ring under consideration; the previous approach without this check would produce
-// false positives
+                                number_of_double_bonds++;
+                            // graphComps.contains() portion is used to check that the bond
+                            // under consideration is part of the ring under consideration; the previous approach without this check would produce
+                            // false positives
+                            
+                            if(order == 3 && graphComps.contains(nodeA))
+                            	number_of_triple_bonds[i]++;
                         }
-//                        if (number_of_double_bonds != 1)
-//                            aromaticList[i] = false;
+                       if (number_of_double_bonds == 2) {
+                            aromaticList[i] = false;
+                       }
                     }
                 }
             }
         }
+               
+        Set<Node> fusedNodes =  graph.getFusedRingAtoms();
+        //int[] alreadyClassified  = new int[graph.getCycle().size()];
+        if (fusedNodes != null) {
+	        for (Node node : fusedNodes) {
+	        	boolean aromatic = true;  
+	        	
+	        	// Go through all cycles within molecule
+	        	for (int i = 0; i < graph.getCycle().size(); i++) {
+	        		LinkedList graphComps = (LinkedList) graph.getCycle().get(i);
+	        		if (graphComps.contains(node)) {
+	        			if (aromaticList[i] == false)
+	        				// if the current ring it is in is not aromatic, set aromaticity for the node to be false
+	        				aromatic = false;        			
+	        			// do nothing otherwise
+	        		}
+	        	}
+	        	
+	        	
+	        	//Reiterate through cycles, set cycles to nonaromatic if aromaticity is false
+	        	// Go through all cycles within molecule
+	        	for (int i = 0; i < graph.getCycle().size(); i++) {
+	        		LinkedList graphComps = (LinkedList) graph.getCycle().get(i);
+	        		if (graphComps.contains(node)) {
+	        			if (aromatic == false)
+	        				// if the some bordering is not aromatic, set aromaticity for this cycle to be false, if it is not
+	        				// aromatic with endopi bonds only
+	        				if (aromaticList[i] == true) 
+	        					graph.classifyAsAromaticwithoutExoPi(i);
+	        			// do nothing otherwise
+	        		}
+	        	}
+	        }
+        }
+        
         // iterate over rings again, this time converting to B bonds
         for (int i = 0; i < graph.getCycle().size(); i++) {
             boolean aromatic = aromaticList[i];
-            if (aromatic) {// if it is still considered aromatic (given the above final screen) convert to B bonds
+            
+            int ntriple_bonds = (int) number_of_triple_bonds[i];
+            int ncarbon_atoms = (int) number_of_carbon_atoms[i];
+            
+            if (aromatic && ncarbon_atoms==6 && ntriple_bonds==0) {// if it is still considered aromatic (given the above final screen) convert to B bonds
                 LinkedList graphComps = (LinkedList) graph.getCycle().get(i);// get the aromatic cycle
                 for (int numComps = 0; numComps < graphComps.size(); numComps++) {
                     GraphComponent gc = (GraphComponent) graphComps
@@ -1291,7 +1350,7 @@ public class ChemGraph implements Matchable {
         }
 
         thermo_graph.determineAromaticityAndWriteBBonds();
-
+        System.out.println(thermo_graph.toString());
         if (TDMETHOD.toLowerCase().startsWith("benson")) {
             gen = new BensonTDGenerator();
             thermoData = gen.generateThermo(thermo_graph);

@@ -550,21 +550,24 @@ public class Graph {
                     // tricky; phenyl should be aromatic, but not C3H2)
                     // we will do this check in the calling function from ChemGraph, as it will be faster as it won't
                     // get called as often
-		    // UPDATE November 19th 2013 by AG Vandeputte
-		    // Tried to resolve the naphtalene issue
-		    // The code will loop trough all rings and only using exo-aromatic double bonds for the Huckel test
-		    // hence each time a new aromatic ring is found we have to loop over all rings again => growing aromatic complex
-		    // Before, double bonds were always added leading to fake hits which were then overwritten in Graph.java where a 
-		    // a final test (check if double bond is inside) was performed. That test has been removed.
-		    // So far code seems to work for benzene, napthalene and does not give a fake hit for InChI=1/C9H8/c1-2-5-9-7-3-6-8(9)4-1/h1-2,4-7H,3H2 
-// if (n.getNumDoubleBonds() != 1){
-// isAromatic[i] = false;
-// alreadyClassified[i] = 1;
-// break;
-// }
+				    // UPDATE November 19th 2013 by AG Vandeputte
+				    // Tried to resolve the naphtalene issue
+				    // The code will loop trough all rings and only using exo-aromatic double bonds for the Huckel test
+				    // hence each time a new aromatic ring is found we have to loop over all rings again => growing aromatic complex
+				    // Before, double bonds were always added leading to fake hits which were then overwritten in Graph.java where a 
+				    // a final test (check if double bond is inside) was performed. That test has been removed.
+				    // So far code seems to work for benzene, napthalene and does not give a fake hit for InChI=1/C9H8/c1-2-5-9-7-3-6-8(9)4-1/h1-2,4-7H,3H2 
+
+                    // if (n.getNumDoubleBonds() != 1){
+                    // isAromatic[i] = false;
+                    // alreadyClassified[i] = 1;
+                    // break;
+                    // }
+                    
                     // has more than 2 saturated carbon atoms, not aromatic
                     if (a.isCarbon() && n.getNeighborNumber() == 4) {
-                        if (saturatedCarbon) {
+                        System.out.println("Found saturated carbon");
+                    	if (saturatedCarbon) {
                             isAromatic[i] = false;
                             alreadyClassified[i] = 1;
                             break;
@@ -573,10 +576,12 @@ public class Graph {
                     }
 		    // Added by AG Vandeputte for problems with phenyl radical, as all resonance isomers obey the Huckel theory they are all considered aromatic
                     // linear C atom 
-		    if(a.isCarbon() && n.getNeighborNumber() == 2 && !a.isRadical()) {
-			isAromatic[i] = false;
-		        alreadyClassified[i] = 1;
-                    }
+		    
+            //if(a.isCarbon() && n.getNeighborNumber() == 2 && !a.isRadical()) {
+			//isAromatic[i] = false;
+		    //    alreadyClassified[i] = 1;
+            //       }
+            
                     // has a quarternary atom, not aromatic
                     if (n.getNeighborNumber() == 4) {
                         Iterator neighborNodes = n.getNeighboringNodes()
@@ -604,20 +609,22 @@ public class Graph {
             if (!ringDoubleBonds) {
                 isAromatic[i] = false;
                 alreadyClassified[i] = 1;
-                continue;
+//                continue;
             }
-            // check for aromaticity of rings with exocyclipi bonds
-            for (int j = 0; j < SSSRings.size(); j++) {
-                classifyAsAromatic(j, alreadyClassified);
-            }
-
+        }
+            
+         
+        for(int i = 0; i < SSSRings.size(); i++) {
+        	classifyAsAromatic(i, alreadyClassified);
+        }
+        
             for (int j = 0; j < SSSRings.size(); j++) {
                 if(alreadyClassified[j] == 0) {
-		isAromatic[j] = false;
+                	isAromatic[j] = false;
                 }
             }
         }
-    }
+    
 
     public void classifyAsAromatic(int j, int[] alreadyClassified) {
         if (alreadyClassified[j] == 1)
@@ -636,7 +643,7 @@ public class Graph {
             while (neighbor.hasNext()) {
                 Arc arc = (Arc) neighbor.next();
                 Bond b = (Bond) arc.getElement();
-                if (!cycle.contains(arc) && b.isDouble()) {
+                if ((!cycle.contains(arc) && b.isDouble()) || (!cycle.contains(arc) && b.isTriple())) {
                     boolean classifiedThisDouble = false;
                     // this is a exocycle, find out if it is part of any other cycle
                     for (int k = 0 ; k < SSSRings.size(); k++) {
@@ -703,7 +710,42 @@ public class Graph {
         // }
     }
 
-    public void formSSSR() {
+
+    public void classifyAsAromaticwithoutExoPi(int j) {
+        LinkedList cycle = (LinkedList) SSSRings.get(j);
+
+        int numPiBonds = 0;
+        for (int k = 0; k < cycle.size(); k++) {
+            GraphComponent gc = (GraphComponent) cycle.get(k);
+            if (gc instanceof Node) {
+                Node node = (Node) gc;
+                Atom a = (Atom) node.getElement();
+                // dont have to check for cationic carbon or boron
+                // saturated heteroatoms contribute 2 pi bonds, but only O is the heteroatom
+                if (a.isOxygen() && node.getNeighborNumber() == 2)
+                    numPiBonds = numPiBonds + 2;
+                // we dont have anionic carbon
+            } else {
+                // if a double bond then 2 pi electrons and if a triple bond then 4 pi electrons
+                Arc a = (Arc) gc;
+                Bond b = (Bond) a.getElement();
+                if (b.isDouble() || b.isTriple())
+                    numPiBonds = numPiBonds + 2;
+            }
+        }
+        if (numPiBonds > 2 && (numPiBonds - 2) % 4 == 0) {
+            isAromatic[j] = true;
+            return;
+        }
+        else{
+            isAromatic[j] = false;
+            return;
+        }
+        
+    }
+    
+    
+	public void formSSSR() {
         // determine the number of SSSR
         if (SSSRings != null)
             return;
