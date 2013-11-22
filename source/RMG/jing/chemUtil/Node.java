@@ -1113,12 +1113,12 @@ public class Node extends GraphComponent {
     /**
      * Finds the shortest number of bonds to the node.  Must enter a starting distance of 0.
      */
-    public int minimumNumBonds(Node p_node, int distance) {
-    	setVisited(true);
+    public int minimumNumBonds(Node p_node, int distance, LinkedHashSet pathlist) {
+
+    	pathlist.add(this);
     	distance += 1;
     	if (neighborsNode(p_node))
     		return distance; // you have found the node!
-    	
     	else { 
 	    	// couldn't find the node in any of the nearest neighbors, so go deeper
 	    	LinkedHashSet neighboringNodes = getNeighboringNodes();	    	
@@ -1127,9 +1127,9 @@ public class Node extends GraphComponent {
 	    	ArrayList<Integer> lengths = new ArrayList<Integer>();
 	    	while(it.hasNext()) {	   
 	    		Node neighborNode = (Node) it.next();
-	    		if (!neighborNode.getVisited() && !neighborNode.isLeaf()) {  
+	    		if (!pathlist.contains(neighborNode) && !neighborNode.isLeaf()) {  
 	    			// if the node was not visited, check its neighbors
-	    			int temp = neighborNode.minimumNumBonds(p_node, distance);
+	    			int temp = neighborNode.minimumNumBonds(p_node, distance, (LinkedHashSet) pathlist.clone());
 	    			if (temp != -1)
 	    				lengths.add(temp);
 	    

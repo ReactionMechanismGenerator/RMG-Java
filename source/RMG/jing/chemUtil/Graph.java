@@ -1949,8 +1949,8 @@ public class Graph {
      * Finds the shortest number of bonds between 2 nodes.  Must enter a starting distance of 0.
      */
     public int minimumDistance(Node node1, Node node2) {
-    	setVisited(false);
-    	return node1.minimumNumBonds(node2, 0);
+    	LinkedHashSet pathlist = new LinkedHashSet();
+    	return node1.minimumNumBonds(node2, 0, pathlist);
     	// not sure if we need to reset the visited status of all the nodes and arcs?
     }
     
