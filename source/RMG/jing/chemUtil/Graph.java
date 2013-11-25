@@ -612,12 +612,7 @@ public class Graph {
             isAromatic[i] = false;
             }
 
-            for (int j = 0; j < SSSRings.size(); j++) {
-                if(alreadyClassified[j] == 0) {
-		isAromatic[j] = false;
-                }
-            }
-        }
+        } 
 
     }
 
@@ -1915,6 +1910,15 @@ public class Graph {
                 old.setCentralID(-1);
         }
         // #]
+    }
+
+   /**
+   * Finds the shortest number of bonds between 2 nodes. Must enter a starting distance of 0.
+   */
+    public int minimumDistance(Node node1, Node node2) {
+            LinkedHashSet pathlist = new LinkedHashSet();
+            return node1.minimumNumBonds(node2, 0, pathlist);
+            // not sure if we need to reset the visited status of all the nodes and arcs?
     }
 
     /**

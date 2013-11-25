@@ -33,14 +33,17 @@ Arrhenius_EP
 633		R7H				O_rad_out				Cs_H_out_2H				300-1500	1.95E+08	0		0		25.55	0	0	0		0	5		Curran's estimstion [8] in his reaction type 12 RO2 isomerization.
 634		R7H				O_rad_out				Cs_H_out_1H				300-1500	1.95E+08	0		0		25.55	0	0	0		0	5		Curran's estimstion [8] in his reaction type 12 RO2 isomerization.
 635		R7H				O_rad_out				Cs_H_out_noH			300-1500	1.95E+08	0		0		25.55	0	0	0		0	5		Curran's estimstion [8] in his reaction type 12 RO2 isomerization.
-636		R2H_S	C_rad_out_2H			Cs_H_out_2H				300-1500	4.45E+09	1.12	0		38.70	0	0	0		0	2		Sumathy B3LYP/CCPVDZ calculations
-637		R2H_S	C_rad_out_H/NonDeC		Cs_H_out_2H				300-1500	8.10E+08	1.32	0		40.30	0	0	0		0	2		Sumathy B3LYP/CCPVDZ calculations
-638		R2H_S	C_rad_out_2H			Cs_H_out_H/NonDeC		300-1500	9.69E+09	0.89	0		35.80	0	0	0		0	2		Sumathy B3LYP/CCPVDZ calculations
-639		R2H_S	C_rad_out_Cs2	Cs_H_out_2H				300-1500	8.12E+07	1.66	0		40.60	0	0	0		0	2		Sumathy B3LYP/CCPVDZ calculations
-640		R2H_S	C_rad_out_2H			Cs_H_out_Cs2		300-1500	4.04E+10	0.64	0		33.90	0	0	0		0	2		Sumathy B3LYP/CCPVDZ calculations
-641		R2H_S	C_rad_out_Cs2	Cs_H_out_Cs2		300-1500	1.28E+10	0.97	0		38.50	0	0	0		0	2		Sumathy B3LYP/CCPVDZ calculations
-642		R2H_S	C_rad_out_H/NonDeC		Cs_H_out_H/NonDeC		300-1500	3.38E+09	0.88	0		38.00	0	0	0		0	2		Sumathy B3LYP/CCPVDZ calculations
-643		R2H_S	C_rad_out_H/NonDeC		Cs_H_out_Cs2		300-1500	7.25E+10	0.6		0		36.90	0	0	0		0	2		Sumathy B3LYP/CCPVDZ calculations
+
+// Beginning of list of reactions calculated by Sumathy
+
+636	R2H_S	C_rad_out_2H		Cs_H_out_2H		300-1500	4.45E+09	1.12	0	38.70	0	0	0	0	2	Sumathy B3LYP/CCPVDZ calculations
+637	R2H_S	C_rad_out_H/NonDeC	Cs_H_out_2H		300-1500	8.10E+08	1.32	0	40.30	0	0	0	0	2	Sumathy B3LYP/CCPVDZ calculations
+638	R2H_S	C_rad_out_2H		Cs_H_out_H/NonDeC	300-1500	9.69E+09	0.89	0	35.80	0	0	0	0	2	Sumathy B3LYP/CCPVDZ calculations
+639	R2H_S	C_rad_out_Cs2		Cs_H_out_2H		300-1500	8.12E+07	1.66	0	40.60	0	0	0	0	2	Sumathy B3LYP/CCPVDZ calculations
+640	R2H_S	C_rad_out_2H		Cs_H_out_Cs2		300-1500	4.04E+10	0.64	0	33.90	0	0	0	0	2	Sumathy B3LYP/CCPVDZ calculations
+641	R2H_S	C_rad_out_Cs2		Cs_H_out_Cs2		300-1500	1.28E+10	0.97	0	38.50	0	0	0	0	2	Sumathy B3LYP/CCPVDZ calculations
+642	R2H_S	C_rad_out_H/NonDeC	Cs_H_out_H/NonDeC	300-1500	3.38E+09	0.88	0	38.00	0	0	0	0	2	Sumathy B3LYP/CCPVDZ calculations
+643	R2H_S	C_rad_out_H/NonDeC	Cs_H_out_Cs2		300-1500	7.25E+10	0.6	0	36.90	0	0	0	0	2	Sumathy B3LYP/CCPVDZ calculations
 644		R2H_S	C_rad_out_Cs2	Cs_H_out_H/NonDeC		300-1500	1.12E+09	1.19	0		39.00	0	0	0		0	2		Sumathy B3LYP/CCPVDZ calculations
 645		R2H_S	Cd_rad_out_double		Cs_H_out_2H				300-1500	2.44E+09	1.12	0		41.30	0	0	0		0	2		Sumathy B3LYP/CCPVDZ calculations
 646		R2H_S	C_rad_out_2H			Cd_H_out_doubleC		300-1500	2.68E+11	0.63	0		62.20	0	0	0		0	2		Sumathy B3LYP/CCPVDZ calculations
@@ -101,7 +104,9 @@ Arrhenius_EP
 701		R3H_SS	C_rad_out_Cs2	Cs_H_out_H/NonDeC		300-1500	1.71E+07	1.41	0		36.10	0	0	0		0	2		Sumathy B3LYP/CCPVDZ calculations
 702		R3H_SS	C_rad_out_Cs2	Cs_H_out_Cs2		300-1500	6.78E+08	1		0		35.30	0	0	0		0	2		Sumathy B3LYP/CCPVDZ calculations
 703		R3H_DS			Cd_rad_out_singleH		Cs_H_out_2H				300-1500	5.10E+09	0.97	0		37.70	0	0	0		0	2		Sumathy B3LYP/CCPVDZ calculations
-704		R3H_SD			C_rad_out_2H			Cd_H_out_singleH		300-1500	2.11E+11	0.58	0		38.30	0	0	0		0	2		Sumathy B3LYP/CCPVDZ calculations
+// Aaron Vandeputte 2013  Definitely wrong compare with 706 and 708, replaced by BMK/cbsb7 rate coefficients
+//704		R3H_SD			C_rad_out_2H			Cd_H_out_singleH		300-1500	2.11E+11	0.58	0		38.30	0	0	0		0	2		Sumathy B3LYP/CCPVDZ calculations
+704	R3H_SD		C_rad_out_2H		Cd_H_out_singleH	300-1500	4.76E+03	2.82	0	57.1	0	0	0	0	2	calculated BMK/cbsb7 Aaron Vandeputte	
 705		R3H_DS			Cd_rad_out_singleH		Cs_H_out_H/NonDeC		300-1500	9.23E+09	0.74	0		34.70	0	0	0		0	2		Sumathy B3LYP/CCPVDZ calculations
 706		R3H_SD			C_rad_out_H/NonDeC		Cd_H_out_singleH		300-1500	4.16E+10	0.77	0		64.10	0	0	0		0	2		Sumathy B3LYP/CCPVDZ calculations
 707		R3H_DS			Cd_rad_out_singleH		Cs_H_out_Cs2		300-1500	6.04E+10	0.59	0		32.50	0	0	0		0	2		Sumathy B3LYP/CCPVDZ calculations
@@ -356,4 +361,5 @@ Arrhenius_EP
 1023. R4H_SSS 	C_rad_out_2H	Cs_H_out_H/OneDe	300-2500	4.61E+01        3.21    0.0	6.53	0       0       0       0       5 A. G. Vandeputte BMK/cbsb7 HO
 1024. R4H_SSS 	C_rad_out_2H 	Cs_H_out_OneDe		300-2500	1.05E+04        2.14    0.0	7.97	0       0       0       0       5 A. G. Vandeputte BMK/cbsb7 HO
 
- 
+
+

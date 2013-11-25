@@ -20,7 +20,7 @@ JP10R4 = JR4HA + H 		5.01E+08	1.46	37.12   0.0 0.0 0.0
 //DUP
 //JP10R4 = JR4HA + H		3.65E10 	0.97 		32.71 0.0 0.0 0.0
 //DUP
-// A.G. Vandeputte, rate coefficients a little on the high side
+// A.G. Vandeputte, rate coefficients a little on the high side, recalculated BMK/cbsb7
 //JP10R5 = JR5BS1		2.45E12 0.39 	21.69 	0.0 	0.0 	0.0
 JP10R5 = JR5BS1			2.96E11	0.64	25.44 	0.0 	0.0 	0.0
 JP10R5 = JR5BS2			1.33E12 0.32 	29.26 	0.0 	0.0 	0.0

@@ -175,8 +175,9 @@ public class HierarchyTreeNode extends TreeNode {
             for (Iterator iter = children.iterator(); iter.hasNext();) {
                 HierarchyTreeNode node = (HierarchyTreeNode) iter.next();
                 boolean match = node.findMatchedPath(p_element, p_path);
-                if (match)
+                if (match) {
                     return true; // got all the way to a leaf
+                    }
             }
             // if all real children don't match, but there is a dummy child, still return true;
             if (hasDummyChild()) {

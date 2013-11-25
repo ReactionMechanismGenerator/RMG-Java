@@ -160,7 +160,6 @@ public class ChemGraph implements Matchable {
                 isAromatic = true;
         }
 
-
     	// In this check we apply stricter checks 
         // Like an aromatic ring cannot have a C with two double bonds
         // Aromatic ring needs to have 6 carbon atoms since we have corrections only for Benzene
@@ -281,7 +280,6 @@ public class ChemGraph implements Matchable {
                 }
             }
         }
-
         /**
          * After the bonds that were previously defined as "S" or "D" bonds, have been renamed to "B" bonds, We have to
          * re-perceive the atom type of the atoms in the adjacency list. This is done by re-iterating over all nodes and

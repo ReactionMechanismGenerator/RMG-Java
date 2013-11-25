@@ -103,7 +103,7 @@ public class ChemParser {
         Iterator union_iter = union.iterator();
         while (union_iter.hasNext()) {
             String fg_name = (String) union_iter.next();
-            // if the name of a union componenet is another union group, call findUnion() recusively
+            // if the name of a union component is another union group, call findUnion() recusively
             if (p_unRead.containsKey(fg_name)) {
                 findUnion(fg_name, p_unRead, p_dictionary);
             }

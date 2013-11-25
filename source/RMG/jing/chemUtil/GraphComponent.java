@@ -567,8 +567,10 @@ abstract public class GraphComponent {
     public boolean isSubCentralMatched(GraphComponent p_graphComponent,
             Stack p_stack1, Stack p_stack2) {
         // #[ operation isSubCentralMatched(GraphComponent,Stack,Stack)
+        // if equal then no real child
         if (this == p_graphComponent)
             return false;
+        // if centralID different then also not a child (central ID = *1 *2 ...)
         if ((this instanceof Node) && (p_graphComponent instanceof Node)) {
             if (((Node) this).getCentralID().intValue() != ((Node) p_graphComponent)
                     .getCentralID().intValue())

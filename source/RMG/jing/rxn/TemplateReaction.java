@@ -131,7 +131,11 @@ public class TemplateReaction extends Reaction {
             return rr;
         }
         int rNum = fproduct.size();
+
         Kinetics[] k = rRT.findReverseRateConstant(rs);
+
+        // If that didnt work, what to do....
+
         if (k == null && rRT.name.equals("R_Recombination")) {
             ChemGraph cg = ((ChemGraph) fproduct.get(0));
             Graph g = cg.getGraph();
@@ -250,23 +254,55 @@ public class TemplateReaction extends Reaction {
             k = rRT.findRateConstant(rs);
         } else if (k == null && rRT.name.equals("intra_H_migration")) {
             ChemGraph cg = ((ChemGraph) fproduct.get(0));
-            rr = rRT.calculateForwardRateConstant(cg, rs);
-            if (!rr.isForward()) {
-                String err = "Backward:"
-                        + structure.toString()
-                        + String.valueOf(structure
-                                .calculateKeq(new Temperature(298, "K")))
-                        + '\n';
-                err = err
-                        + "Forward:"
-                        + rr.structure.toString()
-                        + String.valueOf(rr.structure
-                                .calculateKeq(new Temperature(298, "K")));
-                throw new InvalidReactionDirectionException(err);
-            }
-            rr.setReverseReaction(this);
-            rRT.addReaction(rr);
-            return rr;
+            Graph g = cg.getGraph();
+            Node n1 = (Node) g.getCentralNodeAt(1); //Radical site
+            Node n2 = (Node) g.getCentralNodeAt(2); //atom losing H
+            Node n3 = (Node) g.getCentralNodeAt(3); //H 
+            Node n4 = (Node) g.getCentralNodeAt(4); //atom next to rad
+            Node n5 = (Node) g.getCentralNodeAt(5); //atom next to H
+            Node n6 = (Node) g.getCentralNodeAt(6); //ring
+            Node n7 = (Node) g.getCentralNodeAt(7); //ring
+
+            g.clearCentralNode();
+            g.setCentralNode(1, n2);
+            g.setCentralNode(2, n1);
+            g.setCentralNode(3, n3);
+
+            if (n7 != null) {
+                g.setCentralNode(7, n4);
+                g.setCentralNode(6, n5);
+                g.setCentralNode(5, n6);
+                g.setCentralNode(4, n7);
+            } else if (n6 != null) {
+                g.setCentralNode(6, n4);
+                g.setCentralNode(5, n5);
+                g.setCentralNode(4, n6);
+            } else if (n5 != null) {
+                g.setCentralNode(5, n4);
+                g.setCentralNode(4, n5);
+            } else if (n4 != null)
+                g.setCentralNode(4, n4);
+            k = rRT.findRateConstant(rs);
+
+
+// old version
+//            rr = rRT.calculateForwardRateConstant(cg, rs);
+//           if (!rr.isForward()) {
+//                String err = "Backward:"
+//                        + structure.toString()
+//                        + String.valueOf(structure
+//                                .calculateKeq(new Temperature(298, "K")))
+//                        + '\n';
+//                err = err
+//                        + "Forward:"
+//                        + rr.structure.toString()
+//                        + String.valueOf(rr.structure
+//                                .calculateKeq(new Temperature(298, "K")));
+//              throw new InvalidReactionDirectionException(err);
+//            }
+//            rr.setReverseReaction(this);
+//            rRT.addReaction(rr);
+//           return rr;
         }
         if (k == null) {
             Logger.error("Couldn't find the rate constant for reaction: "
