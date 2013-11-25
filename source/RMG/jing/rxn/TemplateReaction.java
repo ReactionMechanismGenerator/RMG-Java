@@ -131,7 +131,11 @@ public class TemplateReaction extends Reaction {
             return rr;
         }
         int rNum = fproduct.size();
+
         Kinetics[] k = rRT.findReverseRateConstant(rs);
+
+        // If that didnt work, what to do....
+
         if (k == null && rRT.name.equals("R_Recombination")) {
             ChemGraph cg = ((ChemGraph) fproduct.get(0));
             Graph g = cg.getGraph();
@@ -289,6 +293,7 @@ public class TemplateReaction extends Reaction {
             rr.setReverseReaction(this);
             rRT.addReaction(rr);
             return rr;
+
         }
         if (k == null) {
             Logger.error("Couldn't find the rate constant for reaction: "
@@ -366,8 +371,8 @@ public class TemplateReaction extends Reaction {
                 }
             }
             if (!reaction.repOk()) {
-                //return null;
-                throw new InvalidTemplateReactionException();
+                return null;
+                //throw new InvalidTemplateReactionException();
             }
 
             p_template.addReaction(reaction);

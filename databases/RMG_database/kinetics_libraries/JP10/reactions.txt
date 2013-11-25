@@ -1,0 +1,61 @@
+// Aaron Vandeputte
+// Main reaction path
+
+Unit:
+A: mol/cm3/s
+E: kcal/mol
+
+Reactions: 
+
+// Added this path to make sure that rate coefficients are right, leads to 2 ethene molecules per mole JP-10 reacted
+
+R6 = hexahydropentalen-1-ylethyl						1.13E+11	0.98	35.21	0	0	0
+hexahydropentalen-1-ylethyl = ethene + hexahydropentalen-1-yl 			4.16E+11	0.66	30.69	0	0	0
+hexahydropentalen-1-yl = cyclopenta-1,4-dien-1-ylpropyl				3.19E+10	0.91	25.94   0	0	0
+cyclopenta-1,4-dien-1-ylpropyl = cyclopenta-1,4-dien-1-ylmethyl + ethene 	4.16E+11	0.66	30.69	0	0	0
+
+BR1 = cyclopentene + C5H8JJ							4.24E+11	0.64	32.2	0	0	0
+BR1 = [CH2]CCCdCC1C[CH]CC1                                                      7.07E+10	0.75	41.2	0	0	0 
+BR1 = CdCCC[CH]C1[CH]CCC1							7.07E+10        0.75    41.2    0       0       0
+
+BR3 = ethene + C8H12JJ								6.75E+11	0.68	28.5	0	0	0
+BR3 = [CH2]CCC1CdCCC1C[CH2]							3.78E+10	0.83	28.3	0	0	0
+
+// Rate coefficients calculated from BMK/cbsb7 calculations, no HR corrections
+// They should be a good initial estimate
+
+//R4 + O2 = R4OO						7.00E+12	0	0	0	0	0
+//R4OO = Q4OOH1 						6.05E-12	6.84	25.6	0	0	0
+//R4OO = Q4OOH2						1.06E-13	7.51	22.5	0	0	0
+//Q4OOH1 = Q4O + OH					2.12E+12	0.35	25.2	0	0	0
+//Q4OOH2 = R4ene + OOH					1.38E+12	0.39	15.7	0	0	0
+
+//R5 + O2 = R5OO						7.00E+12	0	0	0	0	0
+//R5OO = Q5OOH1						1.65E+08	1.23	26.8	0	0	0
+//R5OO = Q5OOH2						9.17E-13	7.37	22.8	0	0	0
+//Q5OOH1 = Q5O + OH					2.12E+12        0.35    25.2    0       0       0  
+//Q5OOH2 = R5ene + OOH					1.38E+12        0.39    15.7    0       0       0  
+
+//R6 + O2 = R6OO						7.00E+12	0	0	0	0	0
+//R6OO = Q6OOH1						3.75E+04	2.37	19.7	0	0	0 
+//Q6OOH1 = Q6O + OH					2.12E+12	0.35	25.2	0	0	0
+
+//R8 + O2 = R8OO						7.00E+12	0	0	0	0	0
+//R8OO = Q8OOH1						2.39E+05	2.07	19.1	0	0	0  
+//R8OO = Q8OOH2						5.79E-11	6.64	24.6	0	0	0
+//Q8OOH1 = Q8O + OH					6.37E+11	0.69	31.7	0	0	0
+//Q8OOH2 = R8ene + OOH					7.05E+11	0.62	19.1	0	0	0
+
+// Ketene reactions
+// Taken good guess from data from NIST Chemical kinetics database
+// CH2CO + OH -> products ~ 1.0E+13 (1992BAU/COB411-429)
+// branching to CO is 0.6 at 298K (1994GRU/NOL546-553)
+// other two reactions are ~ 3E+12 (1977VAN/VAN1133 + 2000FAR/GOL2601-2608)
+//CH2CO + OH = CO + CH2OH					6.00E+12	0.0	0.0	0	0	0
+//CH2CO + OH = CH3 + CO2					3.00E+12        0.0     0.0     0       0       0
+//CH2CO + OH = CH2O + HCO					3.00E+12        0.0     0.0     0       0       0
+
+// 2005JOS/YOU8016-8027
+//CH2CO + H = CH3 + CO					1.97E+7		1.93    1.75	0	0	0					
+
+

@@ -40,9 +40,9 @@ L1: Rn
             L4: R5_DS_D
             L4: R5_DS_T
             L4: R5_DS_CO
-        L3: R5_DS_allenic
-            L4: R5_DS_allenic_D
-            L4: R5_DS_allenic_CO
+//        L3: R5_DS_allenic
+//            L4: R5_DS_allenic_D
+//            L4: R5_DS_allenic_CO
         L3: R5_ST
             L4: R5_ST_D
             L4: R5_ST_T
@@ -121,8 +121,12 @@ L1: multiplebond_intra
             L4: doublebond_intra_pri_2H
             L4: doublebond_intra_pri_HNd
             L4: doublebond_intra_pri_HDe
+		L5: doublebond_intra_pri_HCd
+		L5: doublebond_intra_pri_HCt
             L4: doublebond_intra_pri_NdNd
             L4: doublebond_intra_pri_NdDe
+		L5: doublebond_intra_pri_NdCd
+		L5: doublebond_intra_pri_NdCt
             L4: doublebond_intra_pri_DeDe                               
         L3: doublebond_intra_secNd
             L4: doublebond_intra_secNd_2H
@@ -156,8 +160,12 @@ L1: radadd_intra
         L3: radadd_intra_cs2H
         L3: radadd_intra_csHNd
         L3: radadd_intra_csHDe
+		L4: radadd_intra_csHCd
+		L4: radadd_intra_csHCt
         L3: radadd_intra_csNdNd
         L3: radadd_intra_csNdDe
+		L4: radadd_intra_csNdCd
+		L4: radadd_intra_csNdCt
         L3: radadd_intra_csDeDe
     L2: radadd_intra_cdsingle
         L3: radadd_intra_cdsingleH

@@ -38,3 +38,25 @@ R8OO = Q8OOH1						2.39E+05	2.07	19.1	0	0	0
 R8OO = Q8OOH2						5.79E-11	6.64	24.6	0	0	0
 Q8OOH1 = Q8O + OH					6.37E+11	0.69	31.7	0	0	0
 Q8OOH2 = R8ene + OOH					7.05E+11	0.62	19.1	0	0	0
+
+//Forbidden intramolecular disproportionations
+
+BR2 = BR2_ene1		                        1E-10	  0.0	  0.0	  0.0	  0.0	  0.0               
+BR2 = BR2_ene2  	                        1E-10     0.0     0.0     0.0     0.0     0.0    
+BR3 = BR3_ene1  	                        1E-10     0.0     0.0     0.0     0.0     0.0    
+BR3 = BR3_ene2  	                        1E-10     0.0     0.0     0.0     0.0     0.0    
+
+// Hindered intramolecular disproportionations
+
+BR1 = C1CCCC1C2CCdCC2 				1E-10	  0.0	  0.0	  0.0	  0.0	  0.0
+
+// Hindered intramolecular hydrogen abstractions
+
+R4 = R8					1E-10	  0.0	  0.0     0.0	  0.0	  0.0
+R5 = R8					1E-10     0.0     0.0     0.0     0.0     0.0
+R6 = R8                               	1E-10     0.0     0.0     0.0     0.0     0.0
+R10 = R5				1E-10     0.0     0.0     0.0     0.0     0.0
+R10 = R4				1E-10     0.0     0.0     0.0     0.0     0.0
+R7 = R5                               	1E-10     0.0     0.0     0.0     0.0     0.0
+R7 = R4                               	1E-10     0.0     0.0     0.0     0.0     0.0
+R6 = R4                               	1E-10     0.0     0.0     0.0     0.0     0.0

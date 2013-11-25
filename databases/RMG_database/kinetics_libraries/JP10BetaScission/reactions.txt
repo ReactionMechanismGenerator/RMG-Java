@@ -1,9 +1,10 @@
+//B3LYP/CBS-QB3 calculations performed by gmagoon
+
 Unit:
 A: mol/cm3/s
 E: kcal/mol
 
 Reactions:
-
 // A.G. Vandeputte, these are very important reactions so I redid them on BMK/cbsb7
 // in my opinion the C-H scission was way to fast compared to C-C scission in R4, leading
 // to too much C10H14 which will decompose mainly to C5H6

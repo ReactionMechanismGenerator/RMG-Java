@@ -429,6 +429,7 @@ public class ReactionTemplate {
         } else {
             throw new InvalidReactionTemplateDirectionException();
         }
+
         if (p_structure.isForward()) {
             Kinetics kf = null;
             
@@ -440,8 +441,18 @@ public class ReactionTemplate {
             if (fg != null) {
             	comments = getKineticsComments(fg);
             	
-	            if (name.equals("intra_H_migration")) {
+
+	            if (name.equals("intra_H_migration") || name.equals("Birad_recombination") || name.equals("Intra_Disproportionation") || name.equals("Intra_R_Add_Endocyclic") || name.equals("Intra_R_Add_Exocyclic")) {
+
+                        int temp = 2;
+//                        if (name.equals("intra_H_migration")) {temp=2;}
+//                        if (name.equals("Birad_recombination")) {temp=2;}
+                        if (name.equals("Intra_R_Add_Endocyclic")) {temp=3;}
+                        if (name.equals("Intra_R_Add_Exocyclic")) {temp=3;}
+
+
 	            	ChemGraph rcg = (ChemGraph) ((reactants.iterator()).next());
+                        //Logger.info(rcg.toString());
 	            	// check if the reactant is cyclic
 	            	if (rcg.getCycleNumber() != 0) {
 	            		// First find the two node reaction sites of interest
@@ -449,20 +460,21 @@ public class ReactionTemplate {
 	            		//Iterator act_iter = reactionAdjList.getActions();            		
 	                        
 	                    Node n1 = rcg.getCentralNodeAt(1); // loses radical here
-	                    Node n2 = rcg.getCentralNodeAt(2); // gains radical here
+	                    Node n2 = rcg.getCentralNodeAt(temp); // gains radical here
 	                    
 	                    
 	                    int mindistance = rcg.getGraph().minimumDistance(n1, n2);
 
 	                    //Logger.info("Minimum distance between reacting sites is " + String.valueOf(mindistance));
+			    //Logger.info("Comments "+comments);
 	                    
 	                    switch (mindistance) {
-	                		case 1: if (!comments.contains("R2H")) {fg = null;} break;
-	                		case 2: if (!comments.contains("R3H")) {fg = null;} break;
-	                		case 3: if (!comments.contains("R4H")) {fg = null;} break;
-	                		case 4: if (!comments.contains("R5H")) {fg = null;} break;
-	                		case 5: if (!comments.contains("R6H")) {fg = null;} break;
-	                		case 6: if (!comments.contains("R7H")) {fg = null;} break;
+	                		case 1: if (!comments.contains("R2")) {fg = null;} break;
+	                		case 2: if (!comments.contains("R3")) {fg = null;} break;
+	                		case 3: if (!comments.contains("R4")) {fg = null;} break;
+	                		case 4: if (!comments.contains("R5")) {fg = null;} break;
+	                		case 5: if (!comments.contains("R6")) {fg = null;} break;
+	                		case 6: if (!comments.contains("R7")) {fg = null;} break;
 	                		default: 
 	                		    // There shouldn't be any rings larger than this.  For now don't do anything extra.
 	                		    break;
@@ -472,8 +484,7 @@ public class ReactionTemplate {
 	            } // end intraHmigration loop
             }
 
-            //Logger.info(comments);	
-            
+
             if (fg == null) {
             	//Logger.info("fg was null");
                 Global.RT_findRateConstant += (System.currentTimeMillis() - pT) / 1000 / 60;
@@ -829,7 +840,7 @@ public class ReactionTemplate {
             MatchedSite ms = (MatchedSite) iter.next();
             LinkedHashMap site = ms.getCenter();
             int redundancy = ms.getRedundancy();
-            // System.out.println(ms.toString());
+            // System.out.println("matched site "+ms.toString());
             // reset the reacted site for rg in reactant linkedlist
             p_chemGraph.resetReactedSite(site);
             boolean forbidden = false;
@@ -863,7 +874,8 @@ public class ReactionTemplate {
                         + (System.currentTimeMillis() - pt) / 1000 / 60;
                 if (!rpsame) {
                     Structure structure = new Structure(reactant, product);
-                    Kinetics[] k = findRateConstant(structure);
+                    //Logger.info(reactant.toString());
+		    Kinetics[] k = findRateConstant(structure);
                     Structure structureSp = new Structure(reactantSp, productSp);
                     structureSp.direction = structure.direction;
                     structure.setRedundancy(redundancy);
@@ -996,7 +1008,12 @@ public class ReactionTemplate {
                     Structure structure = new Structure(reactant, product);
                     Structure structureSp = new Structure(reactantSp, productSp);
                     if (structure.equalsAsChemGraph(p_structure)) {
+                        System.out.println("Trying to find rate ");
+		        System.out.println(p_structure.toString());
+			System.out.println(reactant.toString());
+			System.out.println(product.toString());
                         Kinetics[] k = findRateConstant(p_structure);
+                        System.out.println("Kinetics out "+k.toString());
                         structureSp.direction = p_structure.direction;
                         if (reverseReaction == null) {
                             reverseReaction = TemplateReaction
@@ -1008,6 +1025,7 @@ public class ReactionTemplate {
                                 reverseReaction.addAdditionalKinetics(null,
                                         redundancy, false);
                             else {
+
                                 for (int i = 0; i < k.length; i++) {
                                     reverseReaction.addAdditionalKinetics(k[i],
                                             redundancy, false);

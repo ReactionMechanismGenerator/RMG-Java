@@ -1,13 +1,13 @@
 //Intra_Disproportionation
 //what should we put for "2-member TS" rate (for adjacent biradicals?)
 
-L1: Y_birad
+L1: Rn
         //ring-size includes hydrogen
-	L2: Y_biCyc3 
-      	L2: Y_biCyc4
-	L2: Y_biCyc5
-	L2: Y_biCyc6
-	L2: Y_biCyc7
+	L2: R3 
+      	L2: R4
+	L2: R5
+	L2: R6
+	L2: R7
 
 // the abstracting radical
 L1: Y_rad

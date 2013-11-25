@@ -21,15 +21,15 @@ PressureModel: Constant (atm) 1
 
 SpeciesStatus:
 
-nButanol (molecule/cm3) 0.01 
-1 C 0 {2,S}
-2 C 0 {1,S} {3,S}
+inputspecies (mol/cm3) 1
+1 C 1 {2,S}
+2 C 0 {1,S} {3,S} {6,S}
 3 C 0 {2,S} {4,S}
 4 C 0 {3,S} {5,S}
-5 O 0 {4,S}
-
-CH3 (molecule/cm3) 0.01
-1 C 1
+5 C 0 {4,S} {6,S}
+6 C 0 {2,S} {5,S} {7,S}
+7 C 0 {6,S} {8,D}
+8 C 0 {7,D}
 
 END
 
@@ -37,9 +37,9 @@ BathGas:
 N2 (molecule/cm3) 0.99
 END
 
-SpectroscopicDataEstimator: FrequencyGroups
-PressureDependence: ModifiedStrongCollision ReservoirState off
-PDepKineticsModel: Chebyshev
+SpectroscopicDataEstimator: off
+PressureDependence: off
+//PDepKineticsModel: Chebyshev
 //DecreaseGrainSize: yes
 
 PrimaryKineticLibrary:

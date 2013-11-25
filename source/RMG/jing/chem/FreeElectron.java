@@ -85,6 +85,8 @@ public class FreeElectron {
             electron = new FreeElectron("3", 3);
         } else if (p_name.equals("4")) {
             electron = new FreeElectron("4", 4);
+        } else if (p_name.equals("X")) {
+            electron = new FreeElectron("X", 10);
         } else {
             throw new UnknownSymbolException("FreeElectron");
         }
@@ -98,7 +100,7 @@ public class FreeElectron {
         return freeElectronDictionary;
         // #]
     }
-
+    
     // ## operation getOrder()
     public int getOrder() {
         // #[ operation getOrder()
@@ -161,6 +163,8 @@ public class FreeElectron {
         } else if ((p_name.equals("4"))
                 || (p_name.compareToIgnoreCase("TetraRadical") == 0)) {
             return "4";
+        } else if ( p_name.compareToIgnoreCase("X") == 0 ) {
+	    return "X";
         } else {
             throw new UnknownSymbolException("FreeElectron");
         }

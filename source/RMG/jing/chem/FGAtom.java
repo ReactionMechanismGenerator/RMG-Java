@@ -58,6 +58,8 @@ public class FGAtom implements ChemNodeElement {
                 name = name + " bi-radical " + freeElectron.getSpin();
             else if (order == 3)
                 name = name + " tri-radical";
+            else if (order == 10)
+                name = name + " X";
             else
                 throw new InvalidChemNodeElementException();
         } else
@@ -76,15 +78,15 @@ public class FGAtom implements ChemNodeElement {
         if (fe == null) {
             throw new InvalidFreeElectronException();
         } else {
-            int order = fe.getOrder() + p_radical;
-            if (order < 0)
-                throw new InvalidFreeElectronException();
-            String name = String.valueOf(order);
-            if (order == 2 && p_spin != null) {
-                name = name + p_spin;
-            }
-            FreeElectron newfe = FreeElectron.make(name);
-            newAtom = FGAtom.make(getFgElement(), newfe);
+               int order = fe.getOrder() + p_radical;
+               if (order < 0)
+                   throw new InvalidFreeElectronException();
+               String name = String.valueOf(order);
+               if (order == 2 && p_spin != null) {
+                   name = name + p_spin;
+               }
+               FreeElectron newfe = FreeElectron.make(name);
+               newAtom = FGAtom.make(getFgElement(), newfe);
         }
         return newAtom;
         // #]
@@ -151,7 +153,7 @@ public class FGAtom implements ChemNodeElement {
         // #[ operation isRadical()
         if (freeElectron == null)
             throw new InvalidFreeElectronException();
-        if (freeElectron.getOrder() == 0)
+        if (freeElectron.getOrder() < 1)
             return false;
         else
             return true;

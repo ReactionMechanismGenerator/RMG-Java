@@ -32,3 +32,4 @@ BZA	            -9.51	 79.030	26.042	34.048	40.952	46.602	54.965	60.701	68.818	 
 C5H5yl	        91.996	74.27	22.284	27.017	30.795	33.812	38.254	41.567	46.677	    0.0 0.0 0.0     Burcat database http://garfield.chem.elte.hu/Burcat/burcat.html
 tricyclo-3-ene 	14.036 	86.74   35.55   50.75   63.72   74.316  90.09   101.14  117.47      0.0 0.0 0.0     Derived from bond additivity corrections
 tricyclo-3-ene 	13.09 	84.74   36.88   51.49   65.34   77.46  94.73   104.01  118.59      0.0 0.0 0.0     Nick vandewiele estimate
+

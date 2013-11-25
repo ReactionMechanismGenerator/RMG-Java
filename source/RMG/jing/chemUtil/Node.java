@@ -369,22 +369,29 @@ public class Node extends GraphComponent {
         // compare radical number
         FreeElectron fe1 = getFeElement();
         FreeElectron fe2 = node.getFeElement();
-        if (fe1.getOrder() != fe2.getOrder())
-            return false;
-        // compare spin of biradical
-        if (fe1.getOrder() == 2) {
-            String spin1 = fe1.getSpin();
-            String spin2 = fe2.getSpin();
-            if (spin1 == null) {
-                if (spin2 != null)
-                    return false;
-            } else {
-                if (spin2 != null) {
-                    if (!spin1.equals(spin2))
-                        return false;
-                }
-            }
-        }
+        // if child has the flag X for radical number, check if parent has the same flag
+        if(fe1.getName()=="X" && fe2.getName()!="X") {
+               return false;
+          }
+        // if parent has flag X skip radical check
+        if(fe2.getName()!="X") {
+           if (fe1.getOrder() != fe2.getOrder())
+               return false;
+           // compare spin of biradical
+           if (fe1.getOrder() == 2) {
+               String spin1 = fe1.getSpin();
+               String spin2 = fe2.getSpin();
+               if (spin1 == null) {
+                   if (spin2 != null)
+                       return false;
+               } else {
+                   if (spin2 != null) {
+                       if (!spin1.equals(spin2))
+                           return false;
+                   }
+               }
+           }
+        } 
         // compare R, R!H
         Object fge1 = getFgElement();
         Object fge2 = node.getFgElement();
