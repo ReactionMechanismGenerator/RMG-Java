@@ -248,8 +248,30 @@ public class TemplateReaction extends Reaction {
             g2.clearCentralNode();
             g2.setCentralNode(3, n2);
             k = rRT.findRateConstant(rs);
-        } else if (k == null && rRT.name.equals("intra_H_migration")) {
+        } else if (k == null && rRT.name.equals("intra_H_migration")) { 	
             ChemGraph cg = ((ChemGraph) fproduct.get(0));
+            Graph g = cg.getGraph();
+            
+            Node n1 = (Node) g.getCentralNodeAt(1);
+            Node n2 = (Node) g.getCentralNodeAt(2);
+            Node n3 = (Node) g.getCentralNodeAt(3);
+            Node n4 = (Node) g.getCentralNodeAt(4);
+            Node n5 = (Node) g.getCentralNodeAt(5);
+            
+            g.clearCentralNode();
+            // Swap the locations of the central nodes 1 and 2
+            g.setCentralNode(1, n2);
+            g.setCentralNode(2, n1);
+            // Retain the location of the central node at 3
+            g.setCentralNode(3, n3);
+            
+            // Swap the locations of the central nodes 4 and 5, if node 5 exists
+            if (n5 != null) {
+            	g.setCentralNode(4, n5);
+            	g.setCentralNode(5, n4);
+            } else if (n4 != null)  // if only central node 4 exists, retain that location
+            	g.setCentralNode(4, n4); 
+            
             rr = rRT.calculateForwardRateConstant(cg, rs);
             if (!rr.isForward()) {
                 String err = "Backward:"
@@ -344,8 +366,8 @@ public class TemplateReaction extends Reaction {
                 }
             }
             if (!reaction.repOk()) {
-                return null;
-                //throw new InvalidTemplateReactionException();
+                //return null;
+                throw new InvalidTemplateReactionException();
             }
 
             p_template.addReaction(reaction);

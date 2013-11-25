@@ -911,6 +911,9 @@ public class ReactionTemplate {
                 // do the next reaction site
             } catch (InvalidProductNumberException e) {
                 // do the next reaction site
+            } catch (InvalidTemplateReactionException e) {
+            	Logger.info("Invalid Template Reaction Exception found.");
+                // do the next reaction site
             }
         }
         for (Iterator mapIter = reactionMap.values().iterator(); mapIter
@@ -1016,6 +1019,9 @@ public class ReactionTemplate {
             } catch (ForbiddenStructureException e) {
                 // do the next reaction site
             } catch (InvalidProductNumberException e) {
+                // do the next reaction site
+            } catch (InvalidTemplateReactionException e) {
+            	Logger.info("Invalid Template Reaction Exception found.");
                 // do the next reaction site
             }
         }

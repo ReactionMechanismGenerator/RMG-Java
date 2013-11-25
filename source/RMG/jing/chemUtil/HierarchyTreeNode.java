@@ -28,6 +28,7 @@ package jing.chemUtil;
 
 import jing.chem.*;
 import java.util.*;
+
 import jing.chem.Matchable;
 import jing.rxnSys.Logger;
 
@@ -164,27 +165,53 @@ public class HierarchyTreeNode extends TreeNode {
      * Matchable p_element : the element we will match with the elements stroed in the tree. // Argument Stack p_path :
      * This stack stores the tree nodes on the found path.
      */
-    public boolean findMatchedPath(Matchable p_element, Stack p_path) {
+//    public boolean findMatchedPath(Matchable p_element, Stack p_path) {
+//        if (p_element.isSubAtCentralNodes((Matchable) element)) {
+//            // if there is a match add node to the p_path;
+//            p_path.push(this);
+//            // if this node is a leaf, we're done.
+//            if (isLeaf()) {
+//                return true;
+//            }
+//            // if there is a match but this node is not a leaf, check its children recursively
+//            for (Iterator iter = children.iterator(); iter.hasNext();) {
+//                HierarchyTreeNode node = (HierarchyTreeNode) iter.next();
+//                boolean match = node.findMatchedPath(p_element, p_path);
+//                if (match)
+//                    return true; // got all the way to a leaf
+//            }
+//            // if all real children don't match, but there is a dummy child, still return true;
+//            if (hasDummyChild()) {
+//                return true;
+//            }
+//        }
+//        // if there is no match, return false to the upper level
+//        return false;
+//    }
+    
+    public LinkedHashSet findMatchedPath(Matchable p_element, LinkedHashSet p_path) {
         if (p_element.isSubAtCentralNodes((Matchable) element)) {
             // if there is a match add node to the p_path;
-            p_path.push(this);
+            p_path.add(this);
             // if this node is a leaf, we're done.
             if (isLeaf())
-                return true;
+                return p_path;
+            // if all real children don't match, but there is a dummy child, still return true;
+            if (hasDummyChild()) 
+                return p_path;
+            
             // if there is a match but this node is not a leaf, check its children recursively
             for (Iterator iter = children.iterator(); iter.hasNext();) {
                 HierarchyTreeNode node = (HierarchyTreeNode) iter.next();
-                boolean match = node.findMatchedPath(p_element, p_path);
-                if (match)
-                    return true; // got all the way to a leaf
+                LinkedHashSet match = node.findMatchedPath(p_element, (LinkedHashSet) p_path.clone());
+                if (match.size() != p_path.size())
+                    return match; // got all the way to a leaf
             }
-            // if all real children don't match, but there is a dummy child, still return true;
-            if (hasDummyChild()) {
-                return true;
-            }
+
+
         }
         // if there is no match, return false to the upper level
-        return false;
+        return p_path;
     }
 
     // ## operation hasDummyChild()

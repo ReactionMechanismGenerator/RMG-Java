@@ -74,9 +74,16 @@ public class HierarchyTree extends Tree {
             Logger.warning("Trying to match a group in a tree that hasn't yet been loaded (or has a 'null' root element for some other reason).");
             return null;
         }
-        Stack path = new Stack();
-        ((HierarchyTreeNode) root).findMatchedPath(p_element, path);
-        return path;
+        LinkedHashSet path = new LinkedHashSet();
+        path = ((HierarchyTreeNode) root).findMatchedPath(p_element, path);
+        Stack stackpath = new Stack();
+        if (path != null) {
+	        for (Iterator iter = path.iterator(); iter.hasNext();) 
+	            stackpath.push(iter.next());
+        }
+//        Stack stackpath = new Stack();
+//        ((HierarchyTreeNode) root).findMatchedPath(p_element, stackpath);
+        return stackpath;
     }
 
     /**
