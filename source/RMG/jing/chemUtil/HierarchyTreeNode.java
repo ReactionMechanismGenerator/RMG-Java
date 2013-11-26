@@ -189,10 +189,10 @@ public class HierarchyTreeNode extends TreeNode {
 //        return false;
 //    }
     
-    public LinkedHashSet findMatchedPath(Matchable p_element, LinkedHashSet p_path) {
+    public Stack findMatchedPath(Matchable p_element, Stack p_path) {
         if (p_element.isSubAtCentralNodes((Matchable) element)) {
             // if there is a match add node to the p_path;
-            p_path.add(this);
+            p_path.push(this);
             // if this node is a leaf, we're done.
             if (isLeaf())
                 return p_path;
@@ -203,7 +203,7 @@ public class HierarchyTreeNode extends TreeNode {
             // if there is a match but this node is not a leaf, check its children recursively
             for (Iterator iter = children.iterator(); iter.hasNext();) {
                 HierarchyTreeNode node = (HierarchyTreeNode) iter.next();
-                LinkedHashSet match = node.findMatchedPath(p_element, (LinkedHashSet) p_path.clone());
+                Stack match = node.findMatchedPath(p_element, (Stack) p_path.clone());
                 if (match.size() != p_path.size())
                     return match; // got all the way to a leaf
             }
