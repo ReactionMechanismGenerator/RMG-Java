@@ -823,6 +823,9 @@ public class ReactionTemplate {
 // mind that when this is commented out, it is probably more likely that one will obtain reactions for which the group
 // identification (and hence kinetics estimates) are not reproducible due to identification of different ring paths in
 // the same molecule
+        // AG Vandeputte, added the following line again
+        if ((name.equals("Intra_R_Add_Endocyclic") || name.equals("Intra_R_Add_Exocyclic")) && !p_chemGraph.isAcyclic()) 
+		return reaction_set;
         LinkedHashSet allReactionSites = structureTemplate
                 .identifyReactedSites(p_chemGraph, 1);
         // System.out.println("Species: "+p_chemGraph.toString());

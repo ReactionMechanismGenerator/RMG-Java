@@ -9,51 +9,51 @@ Reactions:
 // in my opinion the C-H scission was way to fast compared to C-C scission in R4, leading
 // to too much C10H14 which will decompose mainly to C5H6
 
-JP10R4 = JR4BS                  1.40E+11        0.82    35.81   0.0 0.0 0.0
-JP10R4 = JR4HA + H              5.01E+08        1.46    37.12   0.0 0.0 0.0
+R4 = JR4BS                  1.40E+11        0.82    35.81   0.0 0.0 0.0
+R4 = JR4HA + H              5.01E+08        1.46    37.12   0.0 0.0 0.0
 
 //B3LYP/CBS-QB3 calculations performed by gmagoon
-//JP10R4 = JR4BS           8.08E11 	0.47 32.58 0.0 0.0 0.0  
+//R4 = JR4BS           8.08E11 	0.47 32.58 0.0 0.0 0.0  
 //DUP
-//JP10R4 = JR4BS           7.57E11 0.47 32.03 0.0 0.0 0.0 
+//R4 = JR4BS           7.57E11 0.47 32.03 0.0 0.0 0.0 
 //DUP
-//JP10R4 = JR4HA + H 		1.82E10 0.99 33.74 0.0 0.0 0.0   
+//R4 = JR4HA + H 		1.82E10 0.99 33.74 0.0 0.0 0.0   
 //DUP
-//JP10R4 = JR4HA + H		3.65E10 0.97 32.71 0.0 0.0 0.0  
+//R4 = JR4HA + H		3.65E10 0.97 32.71 0.0 0.0 0.0  
 //DUP
 // A.G. Vandeputte, rate coefficients a little on the high side
-//JP10R5 = JR5BS1		2.45E12 0.39 	    21.69 0.0 0.0 0.0   
-JP10R5 = JR5BS1			2.96E11	0.64	    25.44 0.0 0.0 0.0   
-JP10R5 = JR5BS2			1.33E12 0.32 		29.26 0.0 0.0 0.0   
-JP10R5 = JR5BS3			3.49E11 0.62 		32.07 0.0 0.0 0.0   
-JP10R5 = JR5HA1 + H		5.97E10	0.96		41.09 0.0 0.0 0.0   
-JP10R5 = JR4HA + H		2.94E10	0.98		33.71 0.0 0.0 0.0   
+//R5 = JR5BS1		2.45E12 0.39 	    21.69 0.0 0.0 0.0   
+R5 = JR5BS1			2.96E11	0.64	    25.44 0.0 0.0 0.0   
+R5 = JR5BS2			1.33E12 0.32 		29.26 0.0 0.0 0.0   
+R5 = JR5BS3			3.49E11 0.62 		32.07 0.0 0.0 0.0   
+R5 = JR5HA1 + H		5.97E10	0.96		41.09 0.0 0.0 0.0   
+R5 = JR4HA + H		2.94E10	0.98		33.71 0.0 0.0 0.0   
 DUP
-JP10R5 = JR4HA + H		4.04E10	0.98		33.31 0.0 0.0 0.0   
+R5 = JR4HA + H		4.04E10	0.98		33.31 0.0 0.0 0.0   
 DUP
-JP10R6 = JR6BS1			6.28E11	0.72		30.74 0.0 0.0 0.0   
-JP10R6 = JR6BS2			5.80E11	0.68		33.58 0.0 0.0 0.0   
-JP10R6 = JR6BS3			9.38E11	0.56		30.62 0.0 0.0 0.0   
-JP10R6 = JR6BS4			8.26E11	0.56		24.42 0.0 0.0 0.0   
-JP10R6 = JR6BS5			1.43E12	0.61		30.70 0.0 0.0 0.0   
-JP10R6 = JR6HA2 + H		3.55E10	1.03		42.85 0.0 0.0 0.0   
+R6 = JR6BS1			6.28E11	0.72		30.74 0.0 0.0 0.0   
+R6 = JR6BS2			5.80E11	0.68		33.58 0.0 0.0 0.0   
+R6 = JR6BS3			9.38E11	0.56		30.62 0.0 0.0 0.0   
+R6 = JR6BS4			8.26E11	0.56		24.42 0.0 0.0 0.0   
+R6 = JR6BS5			1.43E12	0.61		30.70 0.0 0.0 0.0   
+R6 = JR6HA2 + H		3.55E10	1.03		42.85 0.0 0.0 0.0   
 //two pathways, but one was marked as highly suspicious
 //Instead I doubled the A-factor fo the unsuspicious pathway
-JP10R6 = JR5HA1 + H		1.24E11	1.09		39.25 0.0 0.0 0.0   
-JP10R7 = JR7BS1			8.64E11	0.58		25.18 0.0 0.0 0.0   
-JP10R7 = JR7BS2			8.86E11	0.46		19.20 0.0 0.0 0.0   
-JP10R7 = JR7BS3         2.08E12 0.84        68.51 0.0 0.0 0.0 	
-JP10R7 = JR7BS4			3.01E11	0.71		23.46 0.0 0.0 0.0   
-JP10R7 = JR7HA5 + H       8.16E9 	1.48 	    78.82 0.0 0.0 0.0	
+R6 = JR5HA1 + H		1.24E11	1.09		39.25 0.0 0.0 0.0   
+R7 = JR7BS1			8.64E11	0.58		25.18 0.0 0.0 0.0   
+R7 = JR7BS2			8.86E11	0.46		19.20 0.0 0.0 0.0   
+R7 = JR7BS3         2.08E12 0.84        68.51 0.0 0.0 0.0 	
+R7 = JR7BS4			3.01E11	0.71		23.46 0.0 0.0 0.0   
+R7 = JR7HA5 + H       8.16E9 	1.48 	    78.82 0.0 0.0 0.0	
 
-JP10R8 = JR8BS1			2.28E12	0.37		23.58 0.0 0.0 0.0   
-JP10R8 = JR8BS2			9.20E11	0.44		27.46 0.0 0.0 0.0   
-JP10R8 = JR8BS3			6.22E11	0.50		33.61 0.0 0.0 0.0  
+R8 = JR8BS1			2.28E12	0.37		23.58 0.0 0.0 0.0   
+R8 = JR8BS2			9.20E11	0.44		27.46 0.0 0.0 0.0   
+R8 = JR8BS3			6.22E11	0.50		33.61 0.0 0.0 0.0  
 //two pathways, but one was marked as highly suspicious
 //Instead I doubled the A-factor for the unsuspicious pathway
-JP10R8 = JR8HA2 + H		4.12E10	1.04		41.03 0.0 0.0 0.0   
-JP10R10 = JR10BS1		3.32E12	0.43		24.70 0.0 0.0 0.0  
-JP10R10 = JR10BS2		1.79E12	0.53		24.85 0.0 0.0 0.0   
+R8 = JR8HA2 + H		4.12E10	1.04		41.03 0.0 0.0 0.0   
+R10 = JR10BS1		3.32E12	0.43		24.70 0.0 0.0 0.0  
+R10 = JR10BS2		1.79E12	0.53		24.85 0.0 0.0 0.0   
 
 CPTDyl = Pentadiene             3.30E13 0.0 22.00 0.0 0.0 0.0   
 CHDyl = Hexadiene15             3.30E13 0.0 2.50  0.0 0.0 0.0   
@@ -61,22 +61,22 @@ pentylCPT = Pentadiene + CPTyl	2.88E13	0.0	26.44 0.0 0.0 0.0
 pentylCPT = Allyl + allylCPT	1.32E13	0.0	20.72 0.0 0.0 0.0   
 
 // CAS-PT2, CBS QB3 estimates for unimolecular CC scission reactions of JP10. Calculated in this work.
-JP10 = BR1  1.800e+13 0.830     77.810   0.0 0.0 0.0    
-JP10 = BR2  8.320e+10 1.870     79.550   0.0 0.0 0.0    
-DUP
-JP10 = BR2  3.870e+12 0.950     76.720   0.0 0.0 0.0    
-DUP
-JP10 = BR3  3.400e+12 1.090     79.820   0.0 0.0 0.0    
+//JP10 = BR1  1.800e+13 0.830     77.810   0.0 0.0 0.0    
+//JP10 = BR2  8.320e+10 1.870     79.550   0.0 0.0 0.0    
+//DUP
+//JP10 = BR2  3.870e+12 0.950     76.720   0.0 0.0 0.0    
+//DUP
+//JP10 = BR3  3.400e+12 1.090     79.820   0.0 0.0 0.0    
 //UB3LYP/CBS-QB3, this work   
-JP10 = BR4  8.050e+12 1.240     79.710   0.0 0.0 0.0    
+//JP10 = BR4  8.050e+12 1.240     79.710   0.0 0.0 0.0    
 
 //A, n calculated in this work, CAS-PT2, barrier based on Magoon et al. 2012
-BR1 = MA110     8.640e+11 0.080     0.170    0.0 0.0 0.0    
+//BR1 = MA110     8.640e+11 0.080     0.170    0.0 0.0 0.0    
 
 // CAS-PT2 estimates of intramolecular H abstraction reactions of biradicals. UB3LYP/CBS-QB3, this work   
-BR2 = BR2IntraD     4.500e+09 0.650     4.810    0.0 0.0 0.0    
-BR3 = BR3IntraD1    2.870e+10 0.400     5.450    0.0 0.0 0.0     
-BR3 = BR3IntraD2    9.000e+08 0.670     5.220    0.0 0.0 0.0   
+//BR2 = BR2IntraD     4.500e+09 0.650     4.810    0.0 0.0 0.0    
+//BR3 = BR3IntraD1    2.870e+10 0.400     5.450    0.0 0.0 0.0     
+//BR3 = BR3IntraD2    9.000e+08 0.670     5.220    0.0 0.0 0.0   
  
 
 //Concerted isomerizations calculated by Magoon et al.   
@@ -87,7 +87,7 @@ JP10 = MA110    5.760e-10 6.880     99.310   0.0 0.0 0.0
 JP10 = MA111    1.848e+11 1.230     80.340   0.0 0.0 0.0    
 
 // Herbinet 2006
-JP10 = BR5                                      5.000e+15 	  0.00 	  81.00 	0.0 0.0 0.0      
-JP10 = BR6                                      5.000e+15 	  0.00 	  81.00 	0.0 0.0 0.0     
-JP10 = BR7                                      5.000e+15 	  0.00 	  81.00 	0.0 0.0 0.0     
-BR1 = MA112                                     9.700e+09 	  1.00 	  17.75 	0.0 0.0 0.0     
+//JP10 = BR5                                      5.000e+15 	  0.00 	  81.00 	0.0 0.0 0.0      
+//JP10 = BR6                                      5.000e+15 	  0.00 	  81.00 	0.0 0.0 0.0     
+//JP10 = BR7                                      5.000e+15 	  0.00 	  81.00 	0.0 0.0 0.0     
+//BR1 = MA112                                     9.700e+09 	  1.00 	  17.75 	0.0 0.0 0.0     
