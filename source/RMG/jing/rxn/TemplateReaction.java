@@ -371,13 +371,16 @@ public class TemplateReaction extends Reaction {
                 }
             }
             if (!reaction.repOk()) {
-                return null;
-                //throw new InvalidTemplateReactionException();
+                throw new InvalidTemplateReactionException();
             }
 
             p_template.addReaction(reaction);
         }
         Global.makeTR += (System.currentTimeMillis() - PT) / 1000 / 60;
+        
+        if (!reaction.repOk()) {
+            throw new InvalidTemplateReactionException();
+        }
         return reaction;
     }
 
