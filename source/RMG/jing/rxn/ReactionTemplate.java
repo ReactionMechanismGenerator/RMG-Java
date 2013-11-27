@@ -465,8 +465,8 @@ public class ReactionTemplate {
 	                    
 	                    int mindistance = rcg.getGraph().minimumDistance(n1, n2);
 
-	                    //Logger.info("Minimum distance between reacting sites is " + String.valueOf(mindistance));
-			    //Logger.info("Comments "+comments);
+	                   // Logger.info("Minimum distance between reacting sites is " + String.valueOf(mindistance));
+			   // Logger.info("Comments "+comments);
 	                    
 	                    switch (mindistance) {
 	                		case 1: if (!comments.contains("R2")) {fg = null;} break;
@@ -823,9 +823,6 @@ public class ReactionTemplate {
 // mind that when this is commented out, it is probably more likely that one will obtain reactions for which the group
 // identification (and hence kinetics estimates) are not reproducible due to identification of different ring paths in
 // the same molecule
-        // AG Vandeputte, added the following line again
-        if ((name.equals("Intra_R_Add_Endocyclic") || name.equals("Intra_R_Add_Exocyclic")) && !p_chemGraph.isAcyclic()) 
-		return reaction_set;
         LinkedHashSet allReactionSites = structureTemplate
                 .identifyReactedSites(p_chemGraph, 1);
         // System.out.println("Species: "+p_chemGraph.toString());

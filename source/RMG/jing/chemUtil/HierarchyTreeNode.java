@@ -194,8 +194,9 @@ public class HierarchyTreeNode extends TreeNode {
             // if there is a match add node to the p_path;
             p_path.push(this);
             // if this node is a leaf, we're done.
-            if (isLeaf())
+            if (isLeaf()) {
                 return p_path;
+                }
             // if all real children don't match, but there is a dummy child, still return true;
             if (hasDummyChild()) 
                 return p_path;
@@ -211,6 +212,7 @@ public class HierarchyTreeNode extends TreeNode {
 
         }
         // if there is no match, return false to the upper level
+        //System.out.print("IN LOOP NO MATCH FOUND");
         return p_path;
     }
 

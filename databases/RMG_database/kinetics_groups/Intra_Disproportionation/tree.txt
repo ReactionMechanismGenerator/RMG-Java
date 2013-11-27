@@ -3,11 +3,21 @@
 
 L1: Rn
         //ring-size includes hydrogen
-	L2: R3 
+	L2: R3
+		L3: R3radExo 
+		L3: R3radEndo
       	L2: R4
+		L3: R4radExo
+		L3: R4radEndo
 	L2: R5
+		L3: R5radExo
+		L3: R5radEndo
 	L2: R6
+		L3: R6radExo
+		L3: R6radEndo
 	L2: R7
+		L3: R7radExo
+		L3: R7radEndo
 
 // the abstracting radical
 L1: Y_rad
