@@ -21,6 +21,8 @@ BR1 = CdCCC[CH]C1[CH]CCC1							7.07E+10        0.75    41.2    0       0       
 BR3 = ethene + C8H12JJ								6.75E+11	0.68	28.5	0	0	0
 BR3 = [CH2]CCC1CdCCC1C[CH2]							3.78E+10	0.83	28.3	0	0	0
 
+
+
 // Rate coefficients calculated from BMK/cbsb7 calculations, no HR corrections
 // They should be a good initial estimate
 
