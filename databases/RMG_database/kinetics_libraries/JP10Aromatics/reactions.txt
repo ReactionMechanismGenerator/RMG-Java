@@ -73,6 +73,14 @@ H2CCCH+ALLYL = FULVENE+H+H   1.000e+12 	  0.00 	  3.00 	0.0 0.0 0.0
 CPDYL+CPDYL = C5H5C5H4+H   2.500e+12 	  0.00 	  8.28 	    0.0 0.0 0.0    
 C5H5C5H4 = NAPHTHAL+H      3.000e+16 	  0.00 	  47.10     0.0 0.0 0.0     
 
+//Kinetics from:
+//Investigation of a New Pathway Forming Naphthalene
+//by the Recombination Reaction of Cyclopentadienyl Radicals
+//Yoshinori Murakami, Taweesak Saejung, Chikako Ohashi, and Nobuyuki Fujiiy
+//Department of Chemistry, Nagaoka University of Technology, Nagaoka 940-2188
+//yLife Engineering Center, Niigata Sangyo University, 4730 Karuigawa, Niigata 945-1395
+CPDYL + CPDYL = NAPHTHAL + H + H	3.3e+17	0.00		32.2	0.0	0.0	0.0	
+
 //On the chemical kinetics of cyclopentadiene oxidation
 //R.K. Robinson, R.P. Lindstedt
 //Combustion and Flame 158 (2011) 666-686
@@ -83,6 +91,11 @@ cC7H7+C2H2 = INDENE+H                    6.600e+11 	  0.00 	  20.00 	 0.0 0.0 0.
 CPDYL+H2CCCH = STYRENE                   1.000e+13 	  0.00 	  8.29  	 0.0 0.0 0.0 
 CPDYL  =  CHCCH2CHCH              1.21E+112 -28.1 130.4   0.0 0.0 0.0    
 CHCCH2CHCH  =  H2CCCH + C2H2      1.95E+86 -20.6 68.7  0.0 0.0 0.0   
+
+//Kinetics from:
+//We found kinetics for the CPDyl recombination to indenyl and methyl. (Robinson 2011)
+//However the conversion of indenyl to indene, via e.g. H-abstractions, was not documented.
+CPDYL + CPDYL = INDENYL + METHYL      2.0E13          0.00     9.55    0.0     0.0     0.0
 
 //Combustion and Flame 157 (2010) 1686-1697
 //Kinetic modeling study of toluene pyrolysis at low pressure
