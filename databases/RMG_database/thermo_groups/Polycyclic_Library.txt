@@ -81,9 +81,9 @@
 69 tricyclo[4.4.0.0(3.8)]decane         26.12   75.25	-16.13	-15.02	-12.47	-9.29	-5.32	-4.70	-1.53   0       0       0       //Automated Estimation of Ring Strain Energies, Gasteiger, 1978 S, Cp copied from cyclohexane
 
 70 bicyclo[3.2.1]oct{a/e}ne		bicyclo[3.2.1]octane
-71 bicyclo[3.2.1]octane			0	0	0	0	0	0	0	0	0	0	0	0
+71 bicyclo[3.2.1]octane			8.5	48.66	-11.2	-9.9	-8.4	-7.1	-5.2	-3.8	-1.7	0	0	0	// A.G Vandeputte CBS-QB3, isodesmic reactions approach
 72 tricyclo[4.2.1.1(2.5)]decane		22.5	77.13	-15.1	-13.4	-11.6	-10.0	-7.8	-6.1	-3.7	0	0	0	// A.G Vandeputte CBS-QB3, reaction JP10 <-> tricyclo[4.2.1.1(2.5)]decane
-73 bicyclo[3.2.1]octene			0	0	0	0	0	0	0	0	0	0	0	0
+73 bicyclo[3.2.1]octene			8.5	48.61	-9.3	-8.3	-7.2	-6.1	-4.8	-3.6	-2.0	0	0	0	// A.G Vandeputte CBS-QB3, isodesmic reactions approach
 
 
 

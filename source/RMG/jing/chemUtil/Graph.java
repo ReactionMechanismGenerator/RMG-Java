@@ -683,6 +683,7 @@ public class Graph {
         if ( numPiBonds > 2 && (numPiBonds - 2) % 4 == 0) {
             alreadyClassified[j] = 1;
             isAromatic[j] = true;
+            System.out.print("Ring is aromatic!");
             j=0;
         } 
 	else {
