@@ -298,6 +298,7 @@ public class PopulateReactions {
                         speciesSet, reactions);
                 rmg.setReactionModel(cerm);
                 rmg.setReactionGenerator(rtLibrary);
+                rmg.setLibraryReactionGenerator(lrg1);
                 ReactionSystem rs = new ReactionSystem((TemperatureModel) rmg
                         .getTempList().get(0), (PressureModel) rmg
                         .getPressList().get(0), rmg.getReactionModelEnlarger(),
