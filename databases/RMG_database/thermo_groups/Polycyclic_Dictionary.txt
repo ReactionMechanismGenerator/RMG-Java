@@ -82,6 +82,41 @@ exo-tricyclo[5.2.1.0(2.6)]dec-8-ene
 9     Cs     0 {8,S} {10,S}
 10    Cs     0 {5,S} {9,S}
 
+bicyclo[3.2.1]oct{a/e}ne 
+Union{bicyclo[3.2.1]octane,bicyclo[3.2.1]octene}
+
+bicyclo[3.2.1]octane
+1   * Cs 0 {2,S} {6,S} {8,S}
+2     Cs 0 {1,S} {3,S}
+3     Cs 0 {2,S} {4,S}
+4     Cs 0 {3,S} {5,S}
+5     Cs 0 {4,S} {6,S} {7,S}
+6     Cs 0 {1,S} {5,S}
+7     Cs 0 {5,S} {8,S}
+8     Cs 0 {1,S} {7,S}
+
+tricyclo[4.2.1.1(2.5)]decane
+1   * Cs 0 {2,S} {6,S} {8,S}
+2     Cs 0 {1,S} {3,S} {9,S}
+3     Cs 0 {2,S} {4,S}
+4     Cs 0 {3,S} {5,S} {10,S}
+5     Cs 0 {4,S} {6,S} {7,S}
+6     Cs 0 {1,S} {5,S}
+7     Cs 0 {5,S} {8,S}
+8     Cs 0 {1,S} {7,S}
+9     Cs 0 {2,S} {10,S}
+10    Cs 0 {4,S} {9,S}
+
+bicyclo[3.2.1]octene
+1   * Cs 0 {2,S} {6,S} {8,S}
+2     C 0 {1,S} {3,D}
+3     C 0 {2,D} {4,S}
+4     Cs 0 {3,S} {5,S}
+5     Cs 0 {4,S} {6,S} {7,S}
+6     Cs 0 {1,S} {5,S}
+7     Cs 0 {5,S} {8,S}
+8     Cs 0 {1,S} {7,S}
+
 ind{a/e}ne
 Union {indane, indene, cis-octahydro-1H-indene, hexahydro-1H-indene, tetrahydro-1H-indene }
 
@@ -629,17 +664,4 @@ tricyclo[4.4.0.0(3.9)]decane
 8  Cs 0 {7,S} {9,S}
 9  Cs 0 {3,S} {8,S} {10,S}
 10 Cs 0 {1,S} {9,S}
-
-anti-tricyclo[4.2.1.1(2.5)]decane
-1 * Cs 0 {2,S} {8,S} {10,S}
-2  Cs 0 {1,S} {3,S}
-3  Cs 0 {2,S} {4,S}
-4  Cs 0 {3,S} {5,S} {10,S}
-5  Cs 0 {4,S} {6,S} {9,S}
-6  Cs 0 {5,S} {7,S}
-7  Cs 0 {6,S} {8,S}
-8  Cs 0 {1,S} {7,S} {9,S}
-9  Cs 0 {5,S} {8,S}
-10 Cs 0 {1,S} {4,S}
-
 

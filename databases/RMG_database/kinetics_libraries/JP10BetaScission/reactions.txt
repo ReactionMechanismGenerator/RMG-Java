@@ -12,6 +12,11 @@ Reactions:
 R4 = JR4BS                  1.40E+11        0.82    35.81   0.0 0.0 0.0
 R4 = JR4HA + H              5.01E+08        1.46    37.12   0.0 0.0 0.0
 
+JR4BS = norbornene + Allyl	7.21E+12	0.5	26.6	0.0 0.0 0.0
+JR4BS = JR4BS1			1.51E+11	0.81	27.4	0.0 0.0 0.0
+JR4BS = JR4BS2			1.50E+11	0.73	32.3	0.0 0.0 0.0
+JR4BS = JR4BS3			1.51E+11        0.81    27.4    0.0 0.0 0.0 
+
 //B3LYP/CBS-QB3 calculations performed by gmagoon
 //R4 = JR4BS           8.08E11 	0.47 32.58 0.0 0.0 0.0  
 //DUP
@@ -47,8 +52,7 @@ R7 = JR7BS4			3.01E11	0.71		23.46 0.0 0.0 0.0
 R7 = JR7HA5 + H       8.16E9 	1.48 	    78.82 0.0 0.0 0.0	
 
 R8 = JR8HA1			1.81E-3	4.39		12.2  0.0 0.0 0.0	
-R8 = JR8BS1			3.79E11 0.59		28.0  0.0 0.0 0.0	
-//R8 = JR8BS1			2.28E12	0.37		23.58 0.0 0.0 0.0   
+R8 = JR8BS1			2.28E12	0.37		23.58 0.0 0.0 0.0   
 R8 = JR8BS2			9.20E11	0.44		27.46 0.0 0.0 0.0   
 R8 = JR8BS3			6.22E11	0.50		33.61 0.0 0.0 0.0  
 //two pathways, but one was marked as highly suspicious
@@ -79,7 +83,6 @@ pentylCPT = Allyl + allylCPT	1.32E13	0.0	20.72 0.0 0.0 0.0
 //BR2 = BR2IntraD     4.500e+09 0.650     4.810    0.0 0.0 0.0    
 //BR3 = BR3IntraD1    2.870e+10 0.400     5.450    0.0 0.0 0.0     
 //BR3 = BR3IntraD2    9.000e+08 0.670     5.220    0.0 0.0 0.0   
- 
 
 //Concerted isomerizations calculated by Magoon et al.   
 //G.R. Magoon, J. Aguilera-Iparraguirre, W.H. Green, J.J. Lutz, P. Piecuch, H.-W. Wong, O.O. Oluwole, Detailed chemical kinetic modeling of JP-10 
