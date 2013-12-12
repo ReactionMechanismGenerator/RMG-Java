@@ -78,9 +78,12 @@
 65 bicyclo[2.1.0]pent-1(4)-ene		126     66.41	-4.52	-5.35	-5.15	-4.39	-3.54	-3.73	-2.70   0       0       0       //Wiberg, K. Angew. Chem., Int. Ed. Engl. 1986, 25, 312 1986 ab initio, S, Cp from PM7 calculation
 66 bicyclo[2.1.0]pent-2-ene		67.9    65.71	-4.56	-5.10	-4.92	-3.97	-3.38	-3.81	-2.92   0       0       0       //Wiberg, K. Angew. Chem., Int. Ed. Engl. 1986, 25, 312 1986 experimental S, Cp from PM7 calculation
 67 tricyclo[4.4.0.0(3.9)]decane		30.90  	75.36	-16.09	-14.97	-12.40	-9.23	-5.27	-4.66	-1.50	0       0       0       //Automated Estimation of Ring Strain Energies, Gasteiger, 1978 S, Cp copied from cyclopentane
-68 anti-tricyclo[4.2.1.1(2.5)]decane	30.66   75.25   -16.13  -15.02  -12.47  -9.29   -5.32   -4.70   -1.53	0   	0       0       //Automated Estimation of Ring Strain Energies, Gasteiger, 1978 S, Cp taken from tricyclo[4.4.0.0(3.8)]decane
 69 tricyclo[4.4.0.0(3.8)]decane         26.12   75.25	-16.13	-15.02	-12.47	-9.29	-5.32	-4.70	-1.53   0       0       0       //Automated Estimation of Ring Strain Energies, Gasteiger, 1978 S, Cp copied from cyclohexane
 
+70 bicyclo[3.2.1]oct{a/e}ne		bicyclo[3.2.1]octane
+71 bicyclo[3.2.1]octane			0	0	0	0	0	0	0	0	0	0	0	0
+72 tricyclo[4.2.1.1(2.5)]decane		22.5	77.13	-15.1	-13.4	-11.6	-10.0	-7.8	-6.1	-3.7	0	0	0	// A.G Vandeputte CBS-QB3, reaction JP10 <-> tricyclo[4.2.1.1(2.5)]decane
+73 bicyclo[3.2.1]octene			0	0	0	0	0	0	0	0	0	0	0	0
 
 
 

@@ -5,7 +5,7 @@ R6	    	    28.5	88.05	36.353	51.525	64.954	76.022	92.601	104.288	121.693		0.0	0
 R7  	    	35.7	86.827	36.066	51.301	64.763	75.848	92.443	104.140	121.580		0.0	0.0	0.0	    Hudzik et al. 2010 using CBS-QB3/G3MP2B3 for Hf298
 R8	         	27.1	87.394	36.889	52.130	65.5255	76.519	92.941	104.510	121.775		0.0	0.0	0.0	    Hudzik et al. 2010 using CBS-QB3/G3MP2B3 for Hf298
 R10	          	32.5	87.9715	36.766	51.993	65.394	76.396	92.8305	104.411	121.703		0.0	0.0	0.0	    Hudzik et al. 2010 using CBS-QB3/G3MP2B3 for Hf298
-BR2     61.19   101.73  43.10   57.88   70.88   81.67   98.03   109.72  127.32  0       0       0       Biradical triplet CBS-QB3 + free rotor (added +Rln(2) to S to account for boat conformation)
+BR2     61.19   100.35  43.10   57.88   70.88   81.67   98.03   109.72  127.32  0       0       0       Biradical triplet CBS-QB3 + free rotor
 BR1     58.46   102.17  44.37   58.92   71.75   82.35   98.39   109.79  126.79  0       0       0       Biradical triplet CBS-QB3 + 1D HR
 BR3     60.89   103.64  43.42   58.17   71.07   81.67   97.62   108.96  126.00  0       0       0       Biradical triplet CBS-QB3 + 1D HR
 BR5     65.76   105.17  43.90   58.65   71.36   81.74   97.29   108.39  125.14  0       0       0       Biradical triplet CBS-QB3 + 1D HR

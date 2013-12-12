@@ -244,3 +244,4 @@ Arrhenius_EP
 1122	R7_SSSS_D	doublebond_intra_NdCt_pri	radadd_intra_csNdCt	300-1500	6.75E+10	0.21	0	12.40	0	0	0	0	0	Aän Vandeputte small GA method
 1123	R7_SSSS_D	doublebond_intra_NdCt_pri	radadd_intra_cdsingleH	300-1500	2.54E+11	0.21	0	3.10	0	0	0	0	0	Aän Vandeputte small GA method
 
+
