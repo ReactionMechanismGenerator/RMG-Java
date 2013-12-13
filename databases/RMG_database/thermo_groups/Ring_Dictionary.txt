@@ -288,6 +288,43 @@ Cyclopentane
 4    Cs 0 {3,S} {5,S}
 5    Cs 0 {4,S} {1,S}
 
+Bicyclopentane
+1  * Cs 0 {2,S} {5,S}
+2    Cs 0 {1,S} {3,S}
+3    Cs 0 {2,S} {4,S}
+4    Cs 0 {3,S} {5,S}
+5    Cs 0 {4,S} {1,S} {6,S}
+6    Cs 0 {5,S} {7,S} {10,S}
+7    Cs 0 {8,S} {6,S}
+8    Cs 0 {9,S} {7,S}
+9    Cs 0 {10,S} {8,S}
+10    Cs 0 {6,S} {9,S}
+
+Bicyclopentene_1
+1  * Cs 0 {2,S} {5,S}
+2    Cs 0 {1,S} {3,S}
+3    Cs 0 {2,S} {4,S}
+4    Cs 0 {3,S} {5,S}
+5    Cs 0 {4,S} {1,S} {6,S}
+6    Cs 0 {5,S} {7,S} {10,S}
+7    C 0 {8,D} {6,S}
+8    C 0 {9,S} {7,D}
+9    Cs 0 {10,S} {8,S}
+10   Cs 0 {6,S} {9,S}
+
+Bicyclopentene_2
+1  * Cs 0 {2,S} {5,S}
+2    Cs 0 {1,S} {3,S}
+3    Cs 0 {2,S} {4,S}
+4    Cs 0 {3,S} {5,S}
+5    Cs 0 {4,S} {1,S} {6,S}
+6    Cs 0 {5,S} {7,S} {10,S}
+7    Cs 0 {8,S} {6,S}
+8    C 0 {9,D} {7,S}
+9    C 0 {10,S} {8,D}
+10   Cs 0 {6,S} {9,S}
+
+
 Cyclopentene
 1    Cs 0 {2,S} {5,S}
 2    Cd 0 {1,S} {3,D}

@@ -2341,7 +2341,13 @@ Arrhenius_EP
 // Despite the fact they are not CBS-QB3 and use GA, I would give these a priority of 4. Aaron
 //
 
-3000	Cs-CsCsHH_5ring_fused6_1	HJ	300-1500	4.39E-01	4.24	0.00	3.7	0	0	0	0	4	Aaron Vandeputte GAVs CBS-QB3
+2900	Cs-CsCsHH_5ring_fused6_1	HJ	300-1500	2.87E+03	3.02	0.0	4.5	0	0	0	0	4	Aaron Vandeputte CBS-QB3 H + JP10
+2901	Cs-CsCsCsH_5ring_fused6		HJ	300-1500	4.52E+03	3.02	0.0	8.3	0	0	0	0	4	Aaron Vandeputte CBS-QB3 H + JP10
+2902	Cs-CsCsHH_5ring_fused6_2	HJ	300-1500	3.18E+03	3.02	0.0	7.7	0	0	0	0	4	Aaron Vandeputte CBS-QB3 H + JP10
+2903	Cs-CsCsCsH_5ring_adj5		HJ	300-1500	3.84E+03	3.02	0.0	3.8	0	0	0	0	4	Aaron Vandeputte CBS-QB3 H + JP10
+2904	Cs-CsCsHH_5ring_alpha6ring	HJ	300-1500	2.22E+03	3.02	0.0	5.3	0	0	0	0	4	Aaron Vandeputte CBS-QB3 H + JP10
+2905	Cs-CsCsHH_5ring_beta6ring	HJ	300-1500	4.02E+03	3.02	0.0	4.9	0	0	0	0	4	Aaron Vandeputte CBS-QB3 H + JP10
+
 3001	Cs-CsCsHH_5ring_fused6_1	CsJ-HHH	300-1500	1.27E-02	4.24	0.00	5.8	0	0	0	0	4	Aaron Vandeputte GAVs CBS-QB3
 3002	Cs-CsCsHH_5ring_fused6_1	CsJ-CsHH	300-1500	1.47E-03	4.24	0.00	6.8	0	0	0	0	4	Aaron Vandeputte GAVs CBS-QB3
 3003	Cs-CsCsHH_5ring_fused6_1	CsJ-CsCsH	300-1500	2.21E-03	4.24	0.00	7.3	0	0	0	0	4	Aaron Vandeputte GAVs CBS-QB3
@@ -2364,7 +2370,6 @@ Arrhenius_EP
 3020	Cs-CsCsHH_5ring_fused6_1	CdsJ-Cd	300-1500	5.64E-03	4.24	0.00	8.9	0	0	0	0	4	Aaron Vandeputte GAVs CBS-QB3
 3021	Cs-CsCsHH_5ring_fused6_1	CbJ	300-1500	1.42E-02	4.24	0.00	-1.5	0	0	0	0	4	Aaron Vandeputte GAVs CBS-QB3
 3022	Cs-CsCsHH_5ring_fused6_1	CdsJ-Ct	300-1500	1.21E-03	4.24	0.00	6.2	0	0	0	0	4	Aaron Vandeputte GAVs CBS-QB3
-3023	Cs-CsCsCsH_5ring_fused6	HJ	300-1500	6.32E-01	4.24	0.00	5.7	0	0	0	0	4	Aaron Vandeputte GAVs CBS-QB3
 3024	Cs-CsCsCsH_5ring_fused6	CsJ-HHH	300-1500	1.83E-02	4.24	0.00	7.8	0	0	0	0	4	Aaron Vandeputte GAVs CBS-QB3
 3025	Cs-CsCsCsH_5ring_fused6	CsJ-CsHH	300-1500	1.60E-03	4.24	0.00	8.7	0	0	0	0	4	Aaron Vandeputte GAVs CBS-QB3
 3026	Cs-CsCsCsH_5ring_fused6	CsJ-CsCsH	300-1500	1.81E-03	4.24	0.00	8.9	0	0	0	0	4	Aaron Vandeputte GAVs CBS-QB3
@@ -2387,7 +2392,6 @@ Arrhenius_EP
 3043	Cs-CsCsCsH_5ring_fused6	CdsJ-Cd	300-1500	8.13E-03	4.24	0.00	10.9	0	0	0	0	4	Aaron Vandeputte GAVs CBS-QB3
 3044	Cs-CsCsCsH_5ring_fused6	CbJ	300-1500	2.05E-02	4.24	0.00	0.5	0	0	0	0	4	Aaron Vandeputte GAVs CBS-QB3
 3045	Cs-CsCsCsH_5ring_fused6	CdsJ-Ct	300-1500	1.74E-03	4.24	0.00	8.2	0	0	0	0	4	Aaron Vandeputte GAVs CBS-QB3
-3046	Cs-CsCsHH_5ring_fused6_2	HJ	300-1500	2.51E-01	4.24	0.00	5.7	0	0	0	0	4	Aaron Vandeputte GAVs CBS-QB3
 3047	Cs-CsCsHH_5ring_fused6_2	CsJ-HHH	300-1500	7.26E-03	4.24	0.00	7.8	0	0	0	0	4	Aaron Vandeputte GAVs CBS-QB3
 3048	Cs-CsCsHH_5ring_fused6_2	CsJ-CsHH	300-1500	8.42E-04	4.24	0.00	8.8	0	0	0	0	4	Aaron Vandeputte GAVs CBS-QB3
 3049	Cs-CsCsHH_5ring_fused6_2	CsJ-CsCsH	300-1500	1.27E-03	4.24	0.00	9.3	0	0	0	0	4	Aaron Vandeputte GAVs CBS-QB3
@@ -2410,7 +2414,6 @@ Arrhenius_EP
 3066	Cs-CsCsHH_5ring_fused6_2	CdsJ-Cd	300-1500	3.23E-03	4.24	0.00	10.9	0	0	0	0	4	Aaron Vandeputte GAVs CBS-QB3
 3067	Cs-CsCsHH_5ring_fused6_2	CbJ	300-1500	8.13E-03	4.24	0.00	0.5	0	0	0	0	4	Aaron Vandeputte GAVs CBS-QB3
 3068	Cs-CsCsHH_5ring_fused6_2	CdsJ-Ct	300-1500	6.93E-04	4.24	0.00	8.2	0	0	0	0	4	Aaron Vandeputte GAVs CBS-QB3
-3069	Cs-CsCsCsH_5ring_adj5	HJ	300-1500	2.30E-01	4.24	0.00	3.2	0	0	0	0	4	Aaron Vandeputte GAVs CBS-QB3
 3070	Cs-CsCsCsH_5ring_adj5	CsJ-HHH	300-1500	6.65E-03	4.24	0.00	5.4	0	0	0	0	4	Aaron Vandeputte GAVs CBS-QB3
 3071	Cs-CsCsCsH_5ring_adj5	CsJ-CsHH	300-1500	5.82E-04	4.24	0.00	6.2	0	0	0	0	4	Aaron Vandeputte GAVs CBS-QB3
 3072	Cs-CsCsCsH_5ring_adj5	CsJ-CsCsH	300-1500	6.60E-04	4.24	0.00	6.4	0	0	0	0	4	Aaron Vandeputte GAVs CBS-QB3
@@ -2433,7 +2436,6 @@ Arrhenius_EP
 3089	Cs-CsCsCsH_5ring_adj5	CdsJ-Cd	300-1500	2.96E-03	4.24	0.00	8.5	0	0	0	0	4	Aaron Vandeputte GAVs CBS-QB3
 3090	Cs-CsCsCsH_5ring_adj5	CbJ	300-1500	7.45E-03	4.24	0.00	-1.9	0	0	0	0	4	Aaron Vandeputte GAVs CBS-QB3
 3091	Cs-CsCsCsH_5ring_adj5	CdsJ-Ct	300-1500	6.35E-04	4.24	0.00	5.7	0	0	0	0	4	Aaron Vandeputte GAVs CBS-QB3
-3092	Cs-CsCsHH_5ring_alpha6ring	HJ	300-1500	3.60E-01	4.24	0.00	4.1	0	0	0	0	4	Aaron Vandeputte GAVs CBS-QB3
 3093	Cs-CsCsHH_5ring_alpha6ring	CsJ-HHH	300-1500	1.04E-02	4.24	0.00	6.3	0	0	0	0	4	Aaron Vandeputte GAVs CBS-QB3
 3094	Cs-CsCsHH_5ring_alpha6ring	CsJ-CsHH	300-1500	1.21E-03	4.24	0.00	7.3	0	0	0	0	4	Aaron Vandeputte GAVs CBS-QB3
 3095	Cs-CsCsHH_5ring_alpha6ring	CsJ-CsCsH	300-1500	1.82E-03	4.24	0.00	7.7	0	0	0	0	4	Aaron Vandeputte GAVs CBS-QB3
@@ -2456,7 +2458,6 @@ Arrhenius_EP
 3112	Cs-CsCsHH_5ring_alpha6ring	CdsJ-Cd	300-1500	4.63E-03	4.24	0.00	9.4	0	0	0	0	4	Aaron Vandeputte GAVs CBS-QB3
 3113	Cs-CsCsHH_5ring_alpha6ring	CbJ	300-1500	1.17E-02	4.24	0.00	-1.0	0	0	0	0	4	Aaron Vandeputte GAVs CBS-QB3
 3114	Cs-CsCsHH_5ring_alpha6ring	CdsJ-Ct	300-1500	9.94E-04	4.24	0.00	6.6	0	0	0	0	4	Aaron Vandeputte GAVs CBS-QB3
-3115	Cs-CsCsHH_5ring_beta6ring	HJ	300-1500	5.23E-01	4.24	0.00	3.8	0	0	0	0	4	Aaron Vandeputte GAVs CBS-QB3
 3116	Cs-CsCsHH_5ring_beta6ring	CsJ-HHH	300-1500	1.51E-02	4.24	0.00	5.9	0	0	0	0	4	Aaron Vandeputte GAVs CBS-QB3
 3117	Cs-CsCsHH_5ring_beta6ring	CsJ-CsHH	300-1500	1.75E-03	4.24	0.00	7.0	0	0	0	0	4	Aaron Vandeputte GAVs CBS-QB3
 3118	Cs-CsCsHH_5ring_beta6ring	CsJ-CsCsH	300-1500	2.63E-03	4.24	0.00	7.4	0	0	0	0	4	Aaron Vandeputte GAVs CBS-QB3

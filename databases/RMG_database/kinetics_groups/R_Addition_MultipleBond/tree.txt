@@ -181,6 +181,7 @@ L1: R_R
 					L6: Cds-CdH_Cds
                 				L7: Cds-CdH_Cds-HH
                 				L7: Cds-CdH_Cds-CsH
+							L8: Cds-CdH_Cds-CsH_6ring
 						L7: Cds-CdH_Cds-CsCs
 						L7: Cds-CdH_Cds-OsH
 						L7: Cds-CdH_Cds-OsCs

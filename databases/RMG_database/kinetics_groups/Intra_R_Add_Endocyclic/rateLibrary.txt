@@ -10,7 +10,9 @@ Arrhenius_EP
 //		Rn			multiplebond_intra			radadd_intra		Temp.		A			n		a	E0		DA	Dn	Da	DE0	Rank
 809.	Rn			multiplebond_intra			radadd_intra		300-1500	1E+08		0		0	5		0	0	0	0	0
 810.	R5_SS_D		doublebond_intra_pri_2H		radadd_intra_cs2H	300-1500	1.22E+08	1.05	0	15.82	0	0	0	0	2
-811.	R6_SSS_D	doublebond_intra_pri_2H		radadd_intra_cs2H	300-1500	1.00E+08	0.855	0	5.9		0	0	0	0	2
+
+// AAArrrrrgggghhhhhhh.... 
+//811.	R6_SSS_D	doublebond_intra_pri_2H		radadd_intra_cs2H	300-1500	1.00E+08	0.855	0	5.9		0	0	0	0	2
 //added by sandeep after performing simulations on 13HXD system, modified by AG Vandeputte October 29th 2014
 812.	R5_SD_D		doublebond_intra_pri_2H	radadd_intra_cs2H		300-1600	1.02676E+11	0.556649726	0 37.54090546	0	0	0	0	2
 //very crude rough guess
@@ -192,5 +194,60 @@ Arrhenius_EP
 1065	R5_SS_D	doublebond_intra_pri_NdCt	radadd_intra_csHCt	300-1500	4.63E+12	0.19	0	11.18	0	0	0	0	0	Aän Vandeputte small GA method
 1066	R5_SS_D	doublebond_intra_pri_NdCt	radadd_intra_csNdCt	300-1500	4.17E+12	0.19	0	12.13	0	0	0	0	0	Aän Vandeputte small GA method
 1067	R5_SS_D	doublebond_intra_pri_NdCt	radadd_intra_cdsingleH	300-1500	1.49E+14	0.19	0	2.76	0	0	0	0	0	Aän Vandeputte small GA method
-
+1068	R6_SMS_D	doublebond_intra_pri_2H	radadd_intra_cs2H	300-1500	1.31E+10	0.19	0	23.76	0	0	0	0	0	Aän Vandeputte small GA method
+1069	R6_SMS_D	doublebond_intra_pri_2H	radadd_intra_csHNd	300-1500	9.46E+10	0.19	0	23.74	0	0	0	0	0	Aän Vandeputte small GA method
+1070	R6_SMS_D	doublebond_intra_pri_2H	radadd_intra_csNdNd	300-1500	2.42E+10	0.19	0	23.50	0	0	0	0	0	Aän Vandeputte small GA method
+1071	R6_SMS_D	doublebond_intra_pri_2H	radadd_intra_csHCd	300-1500	1.11E+11	0.19	0	30.50	0	0	0	0	0	Aän Vandeputte small GA method
+1072	R6_SMS_D	doublebond_intra_pri_2H	radadd_intra_csNdCd	300-1500	3.13E+10	0.19	0	31.23	0	0	0	0	0	Aän Vandeputte small GA method
+1073	R6_SMS_D	doublebond_intra_pri_2H	radadd_intra_csHCt	300-1500	5.51E+10	0.19	0	27.41	0	0	0	0	0	Aän Vandeputte small GA method
+1074	R6_SMS_D	doublebond_intra_pri_2H	radadd_intra_csNdCt	300-1500	4.96E+10	0.19	0	28.35	0	0	0	0	0	Aän Vandeputte small GA method
+1075	R6_SMS_D	doublebond_intra_pri_2H	radadd_intra_cdsingleH	300-1500	1.78E+12	0.19	0	18.98	0	0	0	0	0	Aän Vandeputte small GA method
+1076	R6_SMS_D	doublebond_intra_pri_HNd	radadd_intra_cs2H	300-1500	8.17E+10	0.19	0	24.09	0	0	0	0	0	Aän Vandeputte small GA method
+1077	R6_SMS_D	doublebond_intra_pri_HNd	radadd_intra_csHNd	300-1500	5.92E+11	0.19	0	24.07	0	0	0	0	0	Aän Vandeputte small GA method
+1078	R6_SMS_D	doublebond_intra_pri_HNd	radadd_intra_csNdNd	300-1500	1.51E+11	0.19	0	23.83	0	0	0	0	0	Aän Vandeputte small GA method
+1079	R6_SMS_D	doublebond_intra_pri_HNd	radadd_intra_csHCd	300-1500	6.92E+11	0.19	0	30.83	0	0	0	0	0	Aän Vandeputte small GA method
+1080	R6_SMS_D	doublebond_intra_pri_HNd	radadd_intra_csNdCd	300-1500	1.96E+11	0.19	0	31.55	0	0	0	0	0	Aän Vandeputte small GA method
+1081	R6_SMS_D	doublebond_intra_pri_HNd	radadd_intra_csHCt	300-1500	3.44E+11	0.19	0	27.73	0	0	0	0	0	Aän Vandeputte small GA method
+1082	R6_SMS_D	doublebond_intra_pri_HNd	radadd_intra_csNdCt	300-1500	3.10E+11	0.19	0	28.68	0	0	0	0	0	Aän Vandeputte small GA method
+1083	R6_SMS_D	doublebond_intra_pri_HNd	radadd_intra_cdsingleH	300-1500	1.11E+13	0.19	0	19.31	0	0	0	0	0	Aän Vandeputte small GA method
+1084	R6_SMS_D	doublebond_intra_pri_NdNd	radadd_intra_cs2H	300-1500	1.79E+10	0.19	0	25.85	0	0	0	0	0	Aän Vandeputte small GA method
+1085	R6_SMS_D	doublebond_intra_pri_NdNd	radadd_intra_csHNd	300-1500	1.29E+11	0.19	0	25.83	0	0	0	0	0	Aän Vandeputte small GA method
+1086	R6_SMS_D	doublebond_intra_pri_NdNd	radadd_intra_csNdNd	300-1500	3.30E+10	0.19	0	25.59	0	0	0	0	0	Aän Vandeputte small GA method
+1087	R6_SMS_D	doublebond_intra_pri_NdNd	radadd_intra_csHCd	300-1500	1.51E+11	0.19	0	32.59	0	0	0	0	0	Aän Vandeputte small GA method
+1088	R6_SMS_D	doublebond_intra_pri_NdNd	radadd_intra_csNdCd	300-1500	4.28E+10	0.19	0	33.32	0	0	0	0	0	Aän Vandeputte small GA method
+1089	R6_SMS_D	doublebond_intra_pri_NdNd	radadd_intra_csHCt	300-1500	7.53E+10	0.19	0	29.50	0	0	0	0	0	Aän Vandeputte small GA method
+1090	R6_SMS_D	doublebond_intra_pri_NdNd	radadd_intra_csNdCt	300-1500	6.77E+10	0.19	0	30.44	0	0	0	0	0	Aän Vandeputte small GA method
+1091	R6_SMS_D	doublebond_intra_pri_NdNd	radadd_intra_cdsingleH	300-1500	2.43E+12	0.19	0	21.07	0	0	0	0	0	Aän Vandeputte small GA method
+1092	R6_SMS_D	doublebond_intra_pri_HCd	radadd_intra_cs2H	300-1500	2.32E+13	0.19	0	21.34	0	0	0	0	0	Aän Vandeputte small GA method
+1093	R6_SMS_D	doublebond_intra_pri_HCd	radadd_intra_csHNd	300-1500	1.68E+14	0.19	0	21.32	0	0	0	0	0	Aän Vandeputte small GA method
+1094	R6_SMS_D	doublebond_intra_pri_HCd	radadd_intra_csNdNd	300-1500	4.30E+13	0.19	0	21.08	0	0	0	0	0	Aän Vandeputte small GA method
+1095	R6_SMS_D	doublebond_intra_pri_HCd	radadd_intra_csHCd	300-1500	1.97E+14	0.19	0	28.08	0	0	0	0	0	Aän Vandeputte small GA method
+1096	R6_SMS_D	doublebond_intra_pri_HCd	radadd_intra_csNdCd	300-1500	5.57E+13	0.19	0	28.80	0	0	0	0	0	Aän Vandeputte small GA method
+1097	R6_SMS_D	doublebond_intra_pri_HCd	radadd_intra_csHCt	300-1500	9.79E+13	0.19	0	24.98	0	0	0	0	0	Aän Vandeputte small GA method
+1098	R6_SMS_D	doublebond_intra_pri_HCd	radadd_intra_csNdCt	300-1500	8.81E+13	0.19	0	25.93	0	0	0	0	0	Aän Vandeputte small GA method
+1099	R6_SMS_D	doublebond_intra_pri_HCd	radadd_intra_cdsingleH	300-1500	3.16E+15	0.19	0	16.56	0	0	0	0	0	Aän Vandeputte small GA method
+1100	R6_SMS_D	doublebond_intra_pri_NdCd	radadd_intra_cs2H	300-1500	1.73E+10	0.19	0	27.37	0	0	0	0	0	Aän Vandeputte small GA method
+1101	R6_SMS_D	doublebond_intra_pri_NdCd	radadd_intra_csHNd	300-1500	1.26E+11	0.19	0	27.36	0	0	0	0	0	Aän Vandeputte small GA method
+1102	R6_SMS_D	doublebond_intra_pri_NdCd	radadd_intra_csNdNd	300-1500	3.21E+10	0.19	0	27.12	0	0	0	0	0	Aän Vandeputte small GA method
+1103	R6_SMS_D	doublebond_intra_pri_NdCd	radadd_intra_csHCd	300-1500	1.47E+11	0.19	0	34.12	0	0	0	0	0	Aän Vandeputte small GA method
+1104	R6_SMS_D	doublebond_intra_pri_NdCd	radadd_intra_csNdCd	300-1500	4.15E+10	0.19	0	34.84	0	0	0	0	0	Aän Vandeputte small GA method
+1105	R6_SMS_D	doublebond_intra_pri_NdCd	radadd_intra_csHCt	300-1500	7.31E+10	0.19	0	31.02	0	0	0	0	0	Aän Vandeputte small GA method
+1106	R6_SMS_D	doublebond_intra_pri_NdCd	radadd_intra_csNdCt	300-1500	6.58E+10	0.19	0	31.97	0	0	0	0	0	Aän Vandeputte small GA method
+1107	R6_SMS_D	doublebond_intra_pri_NdCd	radadd_intra_cdsingleH	300-1500	2.36E+12	0.19	0	22.60	0	0	0	0	0	Aän Vandeputte small GA method
+1108	R6_SMS_D	doublebond_intra_pri_HCt	radadd_intra_cs2H	300-1500	2.32E+13	0.19	0	21.34	0	0	0	0	0	Aän Vandeputte small GA method
+1109	R6_SMS_D	doublebond_intra_pri_HCt	radadd_intra_csHNd	300-1500	1.68E+14	0.19	0	21.32	0	0	0	0	0	Aän Vandeputte small GA method
+1110	R6_SMS_D	doublebond_intra_pri_HCt	radadd_intra_csNdNd	300-1500	4.30E+13	0.19	0	21.08	0	0	0	0	0	Aän Vandeputte small GA method
+1111	R6_SMS_D	doublebond_intra_pri_HCt	radadd_intra_csHCd	300-1500	1.97E+14	0.19	0	28.08	0	0	0	0	0	Aän Vandeputte small GA method
+1112	R6_SMS_D	doublebond_intra_pri_HCt	radadd_intra_csNdCd	300-1500	5.57E+13	0.19	0	28.80	0	0	0	0	0	Aän Vandeputte small GA method
+1113	R6_SMS_D	doublebond_intra_pri_HCt	radadd_intra_csHCt	300-1500	9.79E+13	0.19	0	24.98	0	0	0	0	0	Aän Vandeputte small GA method
+1114	R6_SMS_D	doublebond_intra_pri_HCt	radadd_intra_csNdCt	300-1500	8.81E+13	0.19	0	25.93	0	0	0	0	0	Aän Vandeputte small GA method
+1115	R6_SMS_D	doublebond_intra_pri_HCt	radadd_intra_cdsingleH	300-1500	3.16E+15	0.19	0	16.56	0	0	0	0	0	Aän Vandeputte small GA method
+1116	R6_SMS_D	doublebond_intra_pri_NdCt	radadd_intra_cs2H	300-1500	1.72E+12	0.19	0	15.34	0	0	0	0	0	Aän Vandeputte small GA method
+1117	R6_SMS_D	doublebond_intra_pri_NdCt	radadd_intra_csHNd	300-1500	1.24E+13	0.19	0	15.33	0	0	0	0	0	Aän Vandeputte small GA method
+1118	R6_SMS_D	doublebond_intra_pri_NdCt	radadd_intra_csNdNd	300-1500	3.17E+12	0.19	0	15.09	0	0	0	0	0	Aän Vandeputte small GA method
+1119	R6_SMS_D	doublebond_intra_pri_NdCt	radadd_intra_csHCd	300-1500	1.45E+13	0.19	0	22.09	0	0	0	0	0	Aän Vandeputte small GA method
+1120	R6_SMS_D	doublebond_intra_pri_NdCt	radadd_intra_csNdCd	300-1500	4.11E+12	0.19	0	22.81	0	0	0	0	0	Aän Vandeputte small GA method
+1121	R6_SMS_D	doublebond_intra_pri_NdCt	radadd_intra_csHCt	300-1500	7.23E+12	0.19	0	18.99	0	0	0	0	0	Aän Vandeputte small GA method
+1122	R6_SMS_D	doublebond_intra_pri_NdCt	radadd_intra_csNdCt	300-1500	6.51E+12	0.19	0	19.94	0	0	0	0	0	Aän Vandeputte small GA method
+1123	R6_SMS_D	doublebond_intra_pri_NdCt	radadd_intra_cdsingleH	300-1500	2.33E+14	0.19	0	10.57	0	0	0	0	0	Aän Vandeputte small GA method
 
