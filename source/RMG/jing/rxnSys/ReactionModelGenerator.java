@@ -5100,6 +5100,9 @@ public class ReactionModelGenerator {
                 throw new InvalidSymbolException(
                         "A species in the input file has a forbidden structure.");
             }
+            // Make sure to kekulize species in the input file to convert adjlists
+            // containing benzene bonds to single/double bonds
+            cg.kekulize();
             // System.out.println(name);
             // Check to see if chemgraph already appears in the input file
             addChemGraphToListIfNotPresent_ElseTerminate(

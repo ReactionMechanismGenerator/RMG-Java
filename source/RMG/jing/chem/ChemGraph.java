@@ -138,8 +138,72 @@ public class ChemGraph implements Matchable {
         // bonds rate rules in  the rate library
         
         //this.determineAromaticityAndWriteBBonds();
-
     }
+    
+    public void kekulize() {
+        // If the molecule is aromatic (it contains B bonds using the old adjlist representation)
+        // kekulize the bonds to single double now.
+        
+    	// If there are no cycles, cannot be aromatic
+        if (graph.getCycleNumber() == 0)
+            return;
+
+        // check for already existing B bonds; if so, set isAromatic to true
+        boolean aromatic = false;
+        Iterator arcs = graph.getArcList();
+        while (arcs.hasNext()) {
+            Arc arc = (Arc) arcs.next();
+            if (((Bond) arc.getElement()).isBenzene()) {
+                aromatic = true;
+            	break;
+            }
+        }
+        
+        if (aromatic) {
+        
+	        Iterator node_iter = getNodeList();
+	        while (node_iter.hasNext()){
+	        	Node node = (Node) node_iter.next();
+	        	Atom atom = (Atom) node.getElement();
+	        	if (atom.isCarbon()) {       		
+	        		// Currently B bonds should only be attached to carbon atoms.  No heteroatoms allowed!
+		        	
+		        	double valence = 0;
+		            valence += atom.getRadicalNumber();
+		            
+		            Iterator neighbor_iter = node.getNeighbor();
+		            while (neighbor_iter.hasNext()) {
+		                Arc arc = (Arc) neighbor_iter.next();
+		                Bond bond = (Bond) arc.getElement();
+		                valence += bond.getOrder();
+		                }
+		            neighbor_iter = node.getNeighbor();
+		            while (neighbor_iter.hasNext()) {
+		                    Arc arc = (Arc) neighbor_iter.next();
+		                    Bond bond = (Bond) arc.getElement();
+		
+		                    if (bond.isBenzene()) {
+		                    	if (valence >= 4) {
+		                    		arc.setElement(bond.make("S"));
+		                    		valence -= 0.5;
+		                    	}
+		                    	else {
+		                    		arc.setElement(bond.make("D"));
+		                    		valence += 0.5;
+		                    	}
+		                    }                              		
+		            }
+		            
+		            if (valence != 4.0) 
+		            	throw new InvalidChemGraphException("Attempted conversion of B bonds to single/double bonds failed. Please manually kekulize.\n" + this.toString());	            	
+		            
+	        	}
+	        }
+        }
+        
+        return;
+    }
+        
 
     public void determineAromaticityAndWriteBBonds() {
         // General structure: make three passes through the list of cycles:
