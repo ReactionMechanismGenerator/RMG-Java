@@ -114,6 +114,10 @@ L1: Rn
             L4: R6_BBS_D
             L4: R6_BBS_T
             L4: R6_BBS_CO
+    L2: R7
+    L2: R8
+    L2: R9
+
 
 L1: multiplebond_intra
     L2: doublebond_intra
@@ -132,15 +136,24 @@ L1: multiplebond_intra
             L4: doublebond_intra_secNd_2H
             L4: doublebond_intra_secNd_HNd
             L4: doublebond_intra_secNd_HDe
+                L5: doublebond_intra_secNd_HCd
+                L5: doublebond_intra_secNd_HCt
             L4: doublebond_intra_secNd_NdNd
             L4: doublebond_intra_secNd_NdDe
+                L5: doublebond_intra_secNd_NdCd
+                L5: doublebond_intra_secNd_NdCt
             L4: doublebond_intra_secNd_DeDe
         L3: doublebond_intra_secDe
             L4: doublebond_intra_secDe_2H
             L4: doublebond_intra_secDe_HNd
             L4: doublebond_intra_secDe_HDe
+                L5: doublebond_intra_secDe_HCd
+                L5: doublebond_intra_secDe_HCt
             L4: doublebond_intra_secDe_NdNd
             L4: doublebond_intra_secDe_NdDe
+                L5: doublebond_intra_secDe_NdCd
+                L5: doublebond_intra_secDe_NdCt
+
             L4: doublebond_intra_secDe_DeDe
     L2: triplebond_intra
         L3: triplebond_intra_H

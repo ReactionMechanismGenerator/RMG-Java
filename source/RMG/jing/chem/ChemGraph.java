@@ -2162,7 +2162,7 @@ public class ChemGraph implements Matchable {
                 p_functionalGroup.getGraph());
         // #]
     }
-
+    
     /**
      * Requires: Effects: return true if there is no cycle in the chem graph Modifies:
      */

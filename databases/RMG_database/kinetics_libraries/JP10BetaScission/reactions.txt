@@ -63,7 +63,8 @@ R10 = JR10BS2		1.79E12	0.53		24.85 0.0 0.0 0.0
 
 // A.G. Vandeputte, plausible reaction path towards benzene
 
-C1CC2CC1C1CCC2C1yl = C1CC2CC1C1CCC2C1ylbscis	1.70E+11 0.87	32.6	0.0	0.0	0.0
+C1CC2CC1C1CCC2C1yl = C1CC2CC1C1CCC2C1ylbscis		1.70E+11 0.87	32.6	0.0	0.0	0.0
+butenylcyclohexenyl = cyclohexadiene + butenyl		1.49E+11 1.0    29.4	0.0	0.0	0.0
 
 // A.G. Vandeputte, where are these coming from?
 //CPTDyl = Pentadiene             3.30E13 0.0 22.00 0.0 0.0 0.0   
