@@ -168,3 +168,5 @@ Arrhenius_EP
 157	S-HCs(CsOsH)	CsJ-HHH	300-1500	2.96e-03  	5.57    0	8.47	0	0	0	0	3	CAC CBS-QB3 1dhr
 158	S-HCs(CsOsH)	CJ	300-1500        2.96e-03        5.57    0       8.47    0       0       0       0	4	based on 157
 159	S-HCs(CsOsH)	SsJ-H	300-1500        1.18E+03        3.00    0       13.3   0       0       0       0	4	based on CAC's 131 calc
+160	S-HSs(H)	CsJ-CdHH	300-1500	1.19E+03	2.81	0	9.80	0	0	0	0	4	CAC CBS-QB3, HO approx
+
