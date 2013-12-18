@@ -177,4 +177,3 @@
 154 Bicyclopentane	6.3	22.3	-6.5	-5.5	-4.5	-3.8	-2.8	-1.93	-0.37	0	0	0 	A.G. Vandeputte, to bring the entropy of 2 adjacent cyclics in better agreement with the calculated data, -5 cal / mol K
 155 Bicyclopentene_1 	6.3     17.3    -6.5    -5.5    -4.5    -3.8    -2.8    -1.93   -0.37   0       0       0
 155 Bicyclopentene_2    6.3     17.3    -6.5    -5.5    -4.5    -3.8    -2.8    -1.93   -0.37   0       0       0
-

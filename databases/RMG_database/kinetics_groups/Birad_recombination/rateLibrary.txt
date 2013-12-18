@@ -21,13 +21,13 @@ Arrhenius_EP
 482	R6_SSSDS		C_rad_out_H/OneDe		Cpri_rad_out_2H		550-650		2.0E+12		0		0		1.80	0		0		0		1.0		4	[186] Benson et al.
 //483.	R6_SDSDS		C_rad_out_2H			Cpri_rad_out_2H		555-606		2.77E+13	0		0		45.51	*1.2	0		0		0		3	[187] Grimme et al.
 //484.	R6_SDSDS		C_rad_out_2H			Cpri_rad_out_2H		390-463		7.14E+11	0		0		29.01	*3.7	0		0		0.58	3	[188] Lewis et al.
-485	R4_SSS			C_rad_out_2H			Cpri_rad_out_2H		600-2000	1.62E+12	-0.305		0		1.98		0		0		0		0		3    [x] Sirjean et al.
-486	R5_SSSS			C_rad_out_2H			Cpri_rad_out_2H		600-2000	7.76E+9		0.311		0		1.7		0		0		0		0		3    [x] Sirjean et al.
-487	R6_SSSSS		C_rad_out_2H			Cpri_rad_out_2H		600-2000	3.21E+10	0.137		0		2.12		0		0		0		0		3    [x] Sirjean et al.
+//485	R4_SSS			C_rad_out_2H			Cpri_rad_out_2H		600-2000	1.62E+12	-0.305		0		1.98		0		0		0		0		3    [x] Sirjean et al.
+//486	R5_SSSS			C_rad_out_2H			Cpri_rad_out_2H		600-2000	7.76E+9		0.311		0		1.7		0		0		0		0		3    [x] Sirjean et al.
+//487	R6_SSSSS		C_rad_out_2H			Cpri_rad_out_2H		600-2000	3.21E+10	0.137		0		2.12		0		0		0		0		3    [x] Sirjean et al.
 
-//485   R4_SSS                  C_rad_out_2H                    Cpri_rad_out_2H         600-2000        8.10E+10        -0.305          0               1.98            0               0               0               0               3    [x] Sirjean et al.
-//486   R5_SSSS                 C_rad_out_2H                    Cpri_rad_out_2H         600-2000        3.88E+8         0.311           0               1.7             0               0               0               0               3    [x] Sirjean et al.
-//487   R6_SSSSS                C_rad_out_2H                    Cpri_rad_out_2H         600-2000        1.60E+9        0.137           0               2.12            0               0               0               0               3    [x] Sirjean et al.
+485   R4_SSS                  C_rad_out_2H                    Cpri_rad_out_2H         600-2000        8.10E+10        -0.305          0               1.98            0               0               0               0               3    [x] Sirjean et al.
+486   R5_SSSS                 C_rad_out_2H                    Cpri_rad_out_2H         600-2000        3.88E+8         0.311           0               1.7             0               0               0               0               3    [x] Sirjean et al.
+487   R6_SSSSS                C_rad_out_2H                    Cpri_rad_out_2H         600-2000        1.60E+9        0.137           0               2.12            0               0               0               0               3    [x] Sirjean et al.
 
 //  Aäron Vandeputte S-S recombination, scission pre-exp equal to the one for S-S scission
 488	R3_SS			S_rad			Spri_rad		300-1500	2.18E+16    	0      		0		0.7		0		0		0		0		4	A.G. Vandeputte

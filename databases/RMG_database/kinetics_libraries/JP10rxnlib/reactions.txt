@@ -105,17 +105,17 @@ C3H2lin + C2H2 = C5H4			6.68E4	2.45	6.83	0.0	0.0	0.0
 //JP10=BR1 important for making results more reproducible; adjust according to thermo??; taken from Herbinet et al. p. 11303
 //updated by CASPT2 calculations by gmagoon 
 JP10 = BR1							1.80E13		0.83	77.81	0.0	0.0	0.0
-BR1 = MA110						8.64E11		0.08	0.17	0.0	0.0	0.0
+BR1 = MA110							8.64E11		0.08	0.17	0.0	0.0	0.0
 JP10 = BR2							8.32E10		1.87	79.55	0.0	0.0	0.0
-DUP
+//DUP
 
 
 //updated by calculations by gmagoon UB3LYP/CBSQB3 no special corrections for spin contimination; harmonic osillator assumed
-JP10 = BR2							3.87E12		0.95	76.72	0.0	0.0	0.0
-DUP
-JP10 = BR3							3.40E12		1.09	79.82		0.0	0.0	0.0
-JP10 = BR4							8.05E12		1.24	79.71		0.0	0.0	0.0		
-JP10 = BR6							7.98E-2		4.45	114.85	0.0	0.0	0.0
+//JP10 = BR2							3.87E12		0.95	76.72	0.0	0.0	0.0
+//DUP
+//JP10 = BR3							3.40E12		1.09	79.82		0.0	0.0	0.0
+//JP10 = BR4							8.05E12		1.24	79.71		0.0	0.0	0.0		
+//JP10 = BR6							7.98E-2		4.45	114.85	0.0	0.0	0.0
 
 
 //below is from old PrimaryReactionLibrary
