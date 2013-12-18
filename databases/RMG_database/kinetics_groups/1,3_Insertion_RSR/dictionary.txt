@@ -512,6 +512,12 @@ Od_Cd/H/De
 3 H 0 {2,S}
 4 {Cd,Ct,Cb,CO} 0 {2,S}
 
+Od_Cd/H/Cd
+1 *1 Od 0 {2,D}
+2 *2 CO 0 {1,D} {3,S} {4,S}
+3 H 0 {2,S}                
+4 Cd 0 {2,S}
+
 Od_Cd/H/Cb      
 1 *1 Od 0 {2,D}
 2 *2 CO 0 {1,D} {3,S} {4,S}
