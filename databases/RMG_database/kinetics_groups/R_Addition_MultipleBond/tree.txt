@@ -19,6 +19,7 @@ L1: XZ
 				L5: Cd/H/Nd_Cd/H2
 				L5: Cd/H/Nd_Cd/H/Nd
 					L6: Cd/H/Os_Cd/H/Cs
+					L6: Cd/H/Ss_Cd/H/Cs
 				L5: Cd/H/Nd_Cd/H/De
 				L5: Cd/H/Nd_Cd/Nd2
 				L5: Cd/H/Nd_Cd/Nd/De

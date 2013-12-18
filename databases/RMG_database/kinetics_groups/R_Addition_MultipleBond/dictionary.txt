@@ -99,6 +99,14 @@ Cd/H/Os_Cd/H/Cs
 5       H   0 {2,S}
 6       Cs  0 {2,S}
 
+Cd/H/Ss_Cd/H/Cs
+1 *1    Cd  0 {2,D}, {3,S}, {4,S}
+2 *2    Cd  0 {1,D}, {5,S}, {6,S}
+3       H   0 {1,S}
+4       S   0 {1,S}
+5       H   0 {2,S}          
+6       Cs  0 {2,S}    
+
 Cd/H/Nd_Cd/H/De
 1 *1 Cd 0 {2,D}, {3,S}, {4,S}
 2 *2 Cd 0 {1,D}, {5,S}, {6,S}
