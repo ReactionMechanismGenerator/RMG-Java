@@ -74,6 +74,7 @@ L1: doublebond
 			L4:	Sd_Cd/monosub
 				L5:	Sd_Cd/H/Nd
 				L5:	Sd_Cd/H/De
+					L6:	Sd_Cd/H/Cd
 					L6:	Sd_Cd/H/Cb
 			L4:	Sd_Cd/disub
 				L5:	Sd_Cd/Nd2
