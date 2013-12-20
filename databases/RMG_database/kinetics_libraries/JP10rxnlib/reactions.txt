@@ -113,12 +113,13 @@ JP10 = BR2							8.32E10		1.87	79.55	0.0	0.0	0.0
 //updated by calculations by gmagoon UB3LYP/CBSQB3 no special corrections for spin contimination; harmonic osillator assumed
 //JP10 = BR2							3.87E12		0.95	76.72	0.0	0.0	0.0
 //DUP
-//JP10 = BR3							3.40E12		1.09	79.82		0.0	0.0	0.0
+JP10 = BR3							3.40E12		1.09	79.82		0.0	0.0	0.0
+// Aaron Vandeputte, this rate seems a little on the big side, added to the section having the old PrimaryReactionLib
 //JP10 = BR4							8.05E12		1.24	79.71		0.0	0.0	0.0		
-//JP10 = BR6							7.98E-2		4.45	114.85	0.0	0.0	0.0
-
+JP10 = BR6							7.98E-2		4.45	114.85	0.0	0.0	0.0
 
 //below is from old PrimaryReactionLibrary
+JP10 = BR4                                                      5.0E15          0.0     81.0    0.0     0.0     0.0
 JP10 = BR5							5.0E15		0.0	81.0	0.0	0.0	0.0
 JP10 = BR7							5.0E15		0.0	81.0	0.0	0.0	0.0
 BR1 = MA111						1.9E10		1.0	19.85	0.0	0.0	0.0

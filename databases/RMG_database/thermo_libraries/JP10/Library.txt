@@ -37,6 +37,6 @@ tricyclo-3-ene 	13.09 	84.74   36.88   51.49   65.34   77.46  	94.73   104.01  1
 
 // Some problem cases
 // Estimated by Benson groups, but entropy too high : pentenylcyclopentene 58.56   118.42  42.27   54.85   66.46   76.13   91.34   102.24  118.98
-pentenylcyclopentene 	58.56   118.42  42.27   54.85   66.46   76.13   91.34   102.24  118.98 	0.0 	0.0 	0.0     Aaron Vandeputte
-
-
+pentenylcyclopentene 	58.56   104.62 	42.89 	57.20 	70.03 	80.76 	97.18 	108.99 	126.84 	0.0 	0.0 	0.0     Aaron Vandeputte
+JR5BS1 			40.96   95.57 	39.79 	54.32 	67.15 	77.75 	93.73 	105.08 	122.09  0.0     0.0     0.0     Aaron Vandeputte
+C10H16JJ	        78.02   108.6   43.11   56.8    68.86   79.13   95.04   106.21  124.68	0.0     0.0     0.0     Aaron Vandeputte	

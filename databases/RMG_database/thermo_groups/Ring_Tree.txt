@@ -55,9 +55,9 @@ L1: FourMember
 	L2: tetrathietane
 L1: FiveMember
 	L2: Cyclopentane
-		L3: Bicyclopentane
-		L3: Bicyclopentene_1
-		L3: Bicyclopentene_2
+//		L3: Bicyclopentane
+//		L3: Bicyclopentene_1
+//		L3: Bicyclopentene_2
 	L2: Cyclopentene
 	L2: Cyclopentadiene
         L2: Cyclopentatriene

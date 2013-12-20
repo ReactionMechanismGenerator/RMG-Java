@@ -352,14 +352,19 @@ Arrhenius_EP
 // Additional rate coefficients for intramolecular H abstractions adjacent to a double bond
 // A. G. Vandeputte BMK/cbsb7 HO, waiting for 1D-HR
 
-1017. R2H_S 	C_rad_out_2H 	Cs_H_out_H/OneDe  	300-2500	9.46E-19        8.97	0.0    	15.78 	0       0       0       0       5 A. G. Vandeputte BMK/cbsb7 HO
-1018. R2H_S 	C_rad_out_2H	Cs_H_out_OneDe		300-2500	5.14E-16        8.15    0.0	16.41	0       0       0       0       5 A. G. Vandeputte BMK/cbsb7 HO
-1019. R2H_S 	C_rad_out_H/NonDeC	Cs_H_out_OneDe	300-2500	2.76E-23        10.17   0.0	13.52	0       0       0       0       5 A. G. Vandeputte BMK/cbsb7 HO
-1020. R2H_S 	C_rad_out_Cs2	Cs_H_out_OneDe 		300-2500	8.59E-19        8.79    0.0	16.66	0       0       0       0       5 A. G. Vandeputte BMK/cbsb7 HO
-1021. R3H_SS 	C_rad_out_2H	Cs_H_out_H/OneDe	300-2500	1.13E-04        4.37    0.0	8.06	0       0       0       0       5 A. G. Vandeputte BMK/cbsb7 HO
-1022. R3H_SS	C_rad_out_2H	Cs_H_out_OneDe		300-2500	1.81E-03        4.25    0.0	9.07	0       0       0       0       5 A. G. Vandeputte BMK/cbsb7 HO
-1023. R4H_SSS 	C_rad_out_2H	Cs_H_out_H/OneDe	300-2500	4.61E+01        3.21    0.0	6.53	0       0       0       0       5 A. G. Vandeputte BMK/cbsb7 HO
-1024. R4H_SSS 	C_rad_out_2H 	Cs_H_out_OneDe		300-2500	1.05E+04        2.14    0.0	7.97	0       0       0       0       5 A. G. Vandeputte BMK/cbsb7 HO
+1017. R3H_SS 	C_rad_out_2H 	Cs_H_out_H/OneDe  	300-2500	9.46E-19        8.97	0.0    	15.78 	0       0       0       0       5 A. G. Vandeputte BMK/cbsb7 HO
+1018. R3H_SS 	C_rad_out_2H	Cs_H_out_OneDe		300-2500	5.14E-16        8.15    0.0	16.41	0       0       0       0       5 A. G. Vandeputte BMK/cbsb7 HO
+1019. R3H_SS 	C_rad_out_H/NonDeC	Cs_H_out_OneDe	300-2500	2.76E-23        10.17   0.0	13.52	0       0       0       0       5 A. G. Vandeputte BMK/cbsb7 HO
+1020. R3H_SS 	C_rad_out_Cs2	Cs_H_out_OneDe 		300-2500	8.59E-19        8.79    0.0	16.66	0       0       0       0       5 A. G. Vandeputte BMK/cbsb7 HO
+1021. R4H_SSS 	C_rad_out_2H	Cs_H_out_H/OneDe	300-2500	1.13E-04        4.37    0.0	8.06	0       0       0       0       5 A. G. Vandeputte BMK/cbsb7 HO
+1022. R4H_SSS	C_rad_out_2H	Cs_H_out_OneDe		300-2500	1.81E-03        4.25    0.0	9.07	0       0       0       0       5 A. G. Vandeputte BMK/cbsb7 HO
+1023. R5H_SSSS 	C_rad_out_2H	Cs_H_out_H/OneDe	300-2500	4.61E+01        3.21    0.0	6.53	0       0       0       0       5 A. G. Vandeputte BMK/cbsb7 HO
+1024. R5H_SSSS 	C_rad_out_2H 	Cs_H_out_OneDe		300-2500	1.05E+04        2.14    0.0	7.97	0       0       0       0       5 A. G. Vandeputte BMK/cbsb7 HO
 
+// 1025 calculated, 1027+1028 Estimates
+
+1025. R4H_SSS 	C_rad_out_H/NonDeC Cs_H_out_H/OneDe 	300-2500        2.51E-01	3.86	0.0	9.95    0       0       0       0       5 A. G. Vandeputte BMK/cbsb7 HO
+1027. R6H_SSSSS   C_rad_out_2H    Cs_H_out_H/OneDe      300-2500        4.61E+01        3.21    0.0     6.53    0       0       0       0     	5 A. G. Vandeputte BMK/cbsb7 HO
+1028. R6H_SSSSS   C_rad_out_2H    Cs_H_out_OneDe        300-2500        1.05E+04        2.14    0.0     7.97    0       0       0       0     	5 A. G. Vandeputte BMK/cbsb7 HO
 
 
