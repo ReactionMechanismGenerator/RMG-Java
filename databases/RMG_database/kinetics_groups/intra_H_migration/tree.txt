@@ -158,7 +158,8 @@ L1: RnH
 							L8: R6H_SSSSS_OO(Cs/Cs)Cs
 								L9: R6H_SSSSS_OO(Cs/Cs)C(Cs/Cs)
 							L8: R6H_SSSSS_OOCCC(Cs/Cs)
-								L9: R6H_SSSSS_OO(Cs/Cs)C(Cs/Cs)						
+								L9: R6H_SSSSS_OO(Cs/Cs)C(Cs/Cs)
+						L7: R6H_SSSSS_bicyclopentane						
 					L6: R6H_SSSSD
 					L6: R6H_SSSST
 					L6: R6H_SSSSB

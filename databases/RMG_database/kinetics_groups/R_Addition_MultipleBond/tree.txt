@@ -887,7 +887,6 @@ L1: R_R
 				L5: Ct-Cd_Ct-Ct
 				L5: Ct-Ct_Ct-Cd
 				L5: Ct-Ct_Ct-Ct
-        L2: O2d
 	L2: OCO
 	L2: OCddO
 	L2: Sd_R

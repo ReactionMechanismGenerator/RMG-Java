@@ -247,7 +247,7 @@ Union {2.3.3a.4.5.6-hexahydro-1H-indene, 2.4.5.6.7.7a-hexahydro-1H-indene, 2.3.3
 9 Cs 0 {1,S} {8,S}
 
 tetrahydro-1H-indene
-Union {2.3.4.5-tetrahydro-1H-indene, 2.3.4.7-tetrahydro-1H-indene, 2.3.3a.7a-tetrahydro-1H-indene, C12CCCC1=CCC=C2, 2.3.3a.4-tetrahydro-1H-indene, 2.3.5.6-tetrahydro-1H-indene }
+Union {2.3.4.5-tetrahydro-1H-indene, 2.3.4.7-tetrahydro-1H-indene, 2.3.3a.7a-tetrahydro-1H-indene, C12CCCC1=CCC=C2, 2.3.3a.4-tetrahydro-1H-indene, 2.3.5.6-tetrahydro-1H-indene, 2.6.7.7a-tetrahydro-1H-indene }
 
 2.3.4.5-tetrahydro-1H-indene
 1 * Cd 0 {2,S} {5,D} {9,S}
@@ -314,6 +314,17 @@ C12CCCC1=CCC=C2
 7 Cd 0 {6,D} {8,S}
 8 Cd 0 {7,S} {9,D}
 9 Cd 0 {1,S} {8,D}
+
+2.6.7.7a-tetrahydro-1H-indene
+1 * Cs 0 {2,S} {5,S} {9,S}
+2 Cs 0 {1,S} {3,S}
+3 Cs 0 {2,S} {4,S}
+4 Cd 0 {3,S} {5,D}
+5 Cd 0 {1,S} {4,D} {6,S}
+6 Cd 0 {5,S} {7,D}
+7 Cd 0 {6,D} {8,S}
+8 Cs 0 {7,S} {9,S}
+9 Cs 0 {1,S} {8,S}
 
 pental{a/e}ne
 Union {octahydropentalene, hexahydropentalene, tetrahydropentalene }

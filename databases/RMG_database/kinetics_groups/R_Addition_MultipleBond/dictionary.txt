@@ -5,7 +5,7 @@
 //Sandeep included Y_birad in Y_rad. This enables Oa to react with multiple bond
 
 R_R
-Union {Cd_R,Ct_R,O2d,OCO,OCddO,Sd_R}
+Union {Cd_R,Ct_R,OCO,OCddO,Sd_R}
 
 Cd_R
 1 *1 C 0 {2,D}
@@ -7178,10 +7178,6 @@ C=S_O
 1 *1 Cdd 0 {2,D} {3,D}
 2 *2 Od 0 {1,D}
 3 S 0 {1,D}
-
-O2d
-1 *1 Od 0 {2,D}
-2 *2 Od 0 {1,D}
 
 OCddO
 1 *1 Od 0 {2,D}

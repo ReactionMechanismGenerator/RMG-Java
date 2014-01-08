@@ -367,4 +367,14 @@ Arrhenius_EP
 1027. R6H_SSSSS   C_rad_out_2H    Cs_H_out_H/OneDe      300-2500        4.61E+01        3.21    0.0     6.53    0       0       0       0     	5 A. G. Vandeputte BMK/cbsb7 HO
 1028. R6H_SSSSS   C_rad_out_2H    Cs_H_out_OneDe        300-2500        1.05E+04        2.14    0.0     7.97    0       0       0       0     	5 A. G. Vandeputte BMK/cbsb7 HO
 
+// Eclips in cyclopentane appr 8 kcal/mol
+
+1029. R6H_SSSSS_bicyclopentane C_rad_out_H/NonDeC      Cs_H_out_OneDe 	300-2500        4.61E+01        3.21    0.0     14.53  0       0       0       0       5 A. G. Vandeputte BMK/cbsb7 HO
+1031. R6H_SSSSS_bicyclopentane C_rad_out_H/NonDeC      Cs_H_out_H/OneDe	300-2500        1.05E+04        2.14    0.0     15.97  0       0       0       0       5 A. G. Vandeputte BMK/cbsb7 HO
+
+// Block C*C=CCH abstractions
+
+1032. R4H_SMS 	Y_rad_out 	XH_out			300-2500        1.0E+10        0.0    0.0     100.0    0       0       0       0       5 estimate
+1033. R4H_SDS   C_rad_out_H/NonDeC Cs_H_out_H/(NonDeC/Cs) 300-2500        1.0E+10        0.0    0.0     100.0    0       0       0       0       5 estimate
+
 
