@@ -40,6 +40,13 @@ public class HybridTDGenerator extends TDGenerator {
                 TDGenerator gen = new QMForCyclicsGenerator();
                 return gen.generateThermo(chemGraph);
             }
+            
+            // Special case for bicyclics, which should always be run using QMTP
+            else if (chemGraph.getCycleNumber() > 1) {
+            	Logger.info("Bicyclic molecule found. " + "Trying QMTP...");
+                TDGenerator gen = new QMForCyclicsGenerator();
+                return gen.generateThermo(chemGraph);
+            }
             return thermo;
         }
     }
