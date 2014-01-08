@@ -41,8 +41,8 @@ public class HybridTDGenerator extends TDGenerator {
                 return gen.generateThermo(chemGraph);
             }
             
-            // Special case for bicyclics, which should always be run using QMTP
-            else if (chemGraph.getCycleNumber() > 1) {
+            // Special case for cyclics containing more than 1 ring, which should be run using QMTP unless a polycyclic correction was found
+            else if (chemGraph.getCycleNumber() > 1 && ((GATP) thermoGAPP).getPolycyclic() == null) {
             	Logger.info("Bicyclic molecule found. " + "Trying QMTP...");
                 TDGenerator gen = new QMForCyclicsGenerator();
                 return gen.generateThermo(chemGraph);
