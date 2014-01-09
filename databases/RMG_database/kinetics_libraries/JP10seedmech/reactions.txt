@@ -72,3 +72,8 @@ R6 = R4                               	1E-10     0.0     0.0     0.0     0.0    
 C1CCCdC2C[CH]CC21 = CC1CCdC[C]2CCCC21	1E-10     0.0     0.0     0.0     0.0     0.0
 methylpropylcyclohexadiene = habs1	1E-10     0.0     0.0     0.0     0.0     0.0
 methylpropylcyclohexadiene = habs2	1E-10     0.0     0.0     0.0     0.0     0.0
+
+C1CC2CC1C1CCC2C1ylbscis = habs3		1E-10     0.0     0.0     0.0     0.0     0.0
+
+
+

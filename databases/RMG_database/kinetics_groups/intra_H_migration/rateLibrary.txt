@@ -377,4 +377,6 @@ Arrhenius_EP
 1032. R4H_SMS 	Y_rad_out 	XH_out			300-2500        1.0E+10        0.0    0.0     100.0    0       0       0       0       5 estimate
 1033. R4H_SDS   C_rad_out_H/NonDeC Cs_H_out_H/(NonDeC/Cs) 300-2500        1.0E+10        0.0    0.0     100.0    0       0       0       0       5 estimate
 
-
+// Estimates for R6H_SSSSS (taken from R5H_SSSS)
+1034.             R6H_SSSSS                C_rad_out_single                Cs_H_out_2H                             300-1500        4.28E+11        -1.05   0               11.76   0       0       0               0       5               Currans's estimation [5] in his reaction type 5.
+1035.             R6H_SSSSS                C_rad_out_single                Cs_H_out_1H                             300-1500        1.36E+10        -0.66   0               14.28   0       0       0               0       5               Currans's estimation [5] in his reaction type 5.

@@ -13,6 +13,10 @@ JP10
 H
 1 H 1 
 
+ethene
+1 C 0 {2,D}
+2 C 0 {1,D}
+
 R4
 1  C 1 {2,S} {10,S}
 2  C 0 {1,S} {3,S}
@@ -763,6 +767,17 @@ C1CC2CC1C1CCC2C1ylbscis
 8  C 0 {7,S} {9,S}
 9  C 0 {3,S} {8,S} {10,S}
 10 C 0 {6,S} {9,S}
+
+CH1CdCC2CCC1C2
+1 C 1 {2,S} {7,S}
+2 C 0 {1,S} {3,D}
+3 C 0 {2,D} {4,S}
+4 C 0 {3,S} {5,S} {8,S}
+5 C 0 {4,S} {6,S}
+6 C 0 {5,S} {7,S}
+7 C 0 {1,S} {6,S} {8,S}
+8 C 0 {4,S} {7,S}
+
 
 pentenylcyclopentene
 1  C 0 {2,D} {5,S} {11,S}

@@ -42,5 +42,9 @@ JR5BS1 			40.96   95.57 	39.79 	54.32 	67.15 	77.75 	93.73 	105.08 	122.09  0.0 
 C10H16JJ	        78.02   108.6   43.11   56.8    68.86   79.13   95.04   106.21  124.68	0.0     0.0     0.0     Aaron Vandeputte	
 C=C1CCC=C2CCCC21	15.63   93.19   38.12   52.17   64.52   74.72   90.13   101.07  117.37 	0.0     0.0     0.0     Aaron Vandeputte, add 8 kcal mol-1, probably PM3 not so accurate for this molecule
 
+// Calculated by QM but enthalpy too low
+C10H14_1		17.63   93.18   38.12   52.17   64.52   74.72   90.13   101.07  117.37 0.0     0.0     0.0     Aaron Vandeputte, add 10 kcal mol-1	
+C10H14_2                23.83   94.61   37.5    51.76   64.33   74.68   90.19   101.14  117.4 0.0     0.0     0.0      Aaron Vandeputte, add 10 kcal mol-1
+C10H14_3		23.83   94.61   37.5    51.76   64.33   74.68   90.19   101.14  117.4 0.0     0.0     0.0      Aaron Vandeputte, add 10 kcal mol-1
 
 

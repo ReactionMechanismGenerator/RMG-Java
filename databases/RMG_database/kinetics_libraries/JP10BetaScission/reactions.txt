@@ -66,7 +66,8 @@ R10 = JR10BS2		1.79E12	0.53		24.85 0.0 0.0 0.0
 JR5BS1 = JR8HA1						1.73E+06 1.39	19.0	0.0	0.0	0.0
 JR5BS1 = pentenylcyclopentene				1.90E+12 0.50	35.8	0.0	0.0	0.0
 JR5BS1 = C1CC2CC1C1CCC2C1yl				7.57E+10 0.01   19.9	0.0	0.0	0.0
-C1CC2CC1C1CCC2C1yl = C1CC2CC1C1CCC2C1ylbscis		1.70E+11 0.87	32.6	0.0	0.0	0.0
+C1CC2CC1C1CCC2C1yl = C1CC2CC1C1CCC2C1ylbscis		3.39E+11 0.87	32.6	0.0	0.0	0.0
+C1CC2CC1C1CCC2C1ylbscis = ethene + CH1CdCC2CCC1C2	1.69E+11 0.70    22.5    0.0     0.0     0.0 
 butenylcyclohexenyl = cyclohexadiene + butenyl		1.49E+11 1.0    29.4	0.0	0.0	0.0
 
 // A.G. Vandeputte, estimated from JR5BS1 = pentenylcyclopentene, but added 2 kcal/mol for primary rad
