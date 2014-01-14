@@ -17,6 +17,10 @@ JR4BS = JR4BS1			1.51E+11	0.81	27.4	0.0 0.0 0.0
 JR4BS = JR4BS2			1.50E+11	0.73	32.3	0.0 0.0 0.0
 JR4BS = JR4BS3			1.51E+11        0.81    27.4    0.0 0.0 0.0 
 
+// Added hydrogen abstractions as RMG used the reverse reaction direction to estimate these
+JP10 + H = R7 + H2		9.0E+03		3.02	8.3	0.0 0.0	0.0	
+JP10 + CH3 = R7 + CH4		3.6E-04		4.24	7.8	0.0 0.0	0.0
+
 //B3LYP/CBS-QB3 calculations performed by gmagoon
 //R4 = JR4BS           		8.08E11	0.47 32.58 0.0 0.0 0.0  
 //DUP

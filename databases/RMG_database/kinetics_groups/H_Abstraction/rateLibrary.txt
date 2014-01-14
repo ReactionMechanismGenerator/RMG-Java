@@ -1231,7 +1231,9 @@ Arrhenius_EP
 3025	C/H2/NonDeC_5ring_alpha6ring	O_pri_rad	300-1500	6.88E+04	2.38	0.0	-1.6	0	0	0	0	4	Aaron Vandeputte CBS-QB3 OH + JP10
 3026	C/H2/NonDeC_5ring_beta6ring	O_pri_rad	300-1500	1.51E+05	2.38	0.0	-1.5	0	0	0	0	4	Aaron Vandeputte CBS-QB3 OH + JP10
 
-3029 	Orad_O_H 			Y_rad	300-1500        2E+12 		0.0 	0.0 	0.0 	0 	0 	0 	0 	5 	Good guess based on NIST data
+// A.G. Vandeputte, flagged out, seems to correspond with NIST data but leads to too fast combustion
+// also other networks (e.g. Mani Sarathy) has similar reactions as this that are much slower, so I decided to take it out
+//3029 	Orad_O_H 			Y_rad	300-1500        2E+12 		0.0 	0.0 	0.0 	0 	0 	0 	0 	5 	Good guess based on NIST data
 
 3030	C/H2/NonDeC_5ring_fused6_1	H_rad	300-1500	2.87E+03	3.02	0.0	4.5	0	0	0	0	4	Aaron Vandeputte CBS-QB3 H + JP10
 3031	C/H/Cs3_5ring_fused6		H_rad	300-1500	4.52E+03	3.02	0.0	8.3	0	0	0	0	4	Aaron Vandeputte CBS-QB3 H + JP10
@@ -1242,17 +1244,37 @@ Arrhenius_EP
 
 // Additional rate coefficients for hydrogen abstraction by JP10rads from allylic and diallylic (diallylic were set to allylic)
 
-3040 C_rad/H/NonDeC_5ring_fused6_1	InChI=1/C3H6/c1-3-2/h3H,1H2,2H3	300-1500 8.14E-04	4.24	0.0	6.8	0	0	0	0	4	Aaron Vandeputte BMK
-3041 C_rad/Cs3_5ring_adj5		InChI=1/C3H6/c1-3-2/h3H,1H2,2H3 300-1500 4.41E-04	4.24	0.0	5.9	0	0	0	0	4	Aaron Vandeputte BMK
-3042 C_rad/H/NonDeC_5ring_alpha6ring	InChI=1/C3H6/c1-3-2/h3H,1H2,2H3 300-1500 3.16E-04	4.24	0.0	8.2	0	0	0	0	4	Aaron Vandeputte BMK
-3045 C_rad/H/NonDeC_5ring_fused6_1      C/H2/CdCd 	300-1500 	8.14E-04       4.24    0.0     6.8     0       0       0       0       4       Aaron Vandeputte BMK
-3046 C_rad/Cs3_5ring_adj5               C/H2/CdCd 	300-1500 	4.41E-04       4.24    0.0     5.9     0       0       0       0       4       Aaron Vandeputte BMK
-3047 C_rad/H/NonDeC_5ring_alpha6ring    C/H2/CdCd 	300-1500 	3.16E-04       4.24    0.0     8.2     0       0       0       0       4       Aaron Vandeputte BMK
+3040 C_rad/H/NonDeC_5ring_fused6_1	InChI=1/C3H6/c1-3-2/h3H,1H2,2H3	300-1500 	8.14E-04	4.24	0.0	6.8	0	0	0	0	4	Aaron Vandeputte BMK
+3041 C_rad/Cs3_5ring_adj5		InChI=1/C3H6/c1-3-2/h3H,1H2,2H3 300-1500 	4.41E-04	4.24	0.0	5.9	0	0	0	0	4	Aaron Vandeputte BMK
+3042 C_rad/H/NonDeC_5ring_alpha6ring	InChI=1/C3H6/c1-3-2/h3H,1H2,2H3 300-1500 	3.16E-04	4.24	0.0	8.2	0	0	0	0	4	Aaron Vandeputte BMK
+3043 C_rad/H/NonDeC_5ring_beta6ring 	InChI=1/C3H6/c1-3-2/h3H,1H2,2H3 300-1500	9.67E-05	4.24    0.0	7.6     0       0       0       0       4       Aaron Vandeputte BMK
 
+// Estimated from C_rad/Cs3_5ring_adj5               InChI=1/C3H6/c1-3-2/h3H,1H2,2H3 300-1500
 
+3044 C_rad/Cs3_5ring_adj5		InChI=1/C3H6/c1-3-2/h3H,1H2,2H3 300-1500	4.41E-04        4.24    0.0     5.9     0       0       0       0       4       Aaron Vandeputte BMK
+3045 C_rad/Cs3_5ring_fused6		InChI=1/C3H6/c1-3-2/h3H,1H2,2H3 300-1500        4.41E-04        4.24    0.0     5.9     0       0       0       0       4       Aaron Vandeputte BMK
 
+// Estimated from InChI=1/C3H6/c1-3-2/h3H,1H2,2H3
 
+3046 C_rad/H/NonDeC_5ring_fused6_1      C/H2/CdCd 			300-1500 	8.14E-04       	4.24    0.0     6.8     0       0       0       0       4       Aaron Vandeputte BMK
+3047 C_rad/Cs3_5ring_adj5               C/H2/CdCd 			300-1500 	4.41E-04       	4.24    0.0     5.9     0       0       0       0       4       Aaron Vandeputte BMK
+3048 C_rad/H/NonDeC_5ring_alpha6ring    C/H2/CdCd 			300-1500 	3.16E-04       	4.24    0.0     8.2     0       0       0       0       4       Aaron Vandeputte BMK
+3049 C_rad/H/NonDeC_5ring_beta6ring	C/H2/CdCd       		300-1500	9.67E-05       	4.24    0.0     7.6     0       0       0       0       4       Aaron Vandeputte BMK
+3050 C_rad/Cs3_5ring_adj5		C/H2/CdCd			300-1500        4.41E-04       	4.24    0.0     5.9     0       0       0       0       4       Aaron Vandeputte BMK
+3050 C_rad/Cs3_5ring_fused6             C/H2/CdCd                       300-1500        4.41E-04       	4.24    0.0     5.9     0       0       0       0       4       Aaron Vandeputte BMK
 
+// H abstractions by vinylic radicals, extract from AI database AG Vandeputte
+3053	H2		InChI=1/C2H3/c1-2/h1H,2H2	300-1500	2.33E-02	4.24	0	3.2	0	0	0	0	4	Aän Vandeputte GAVs CBS-QB3
+3054	C_methane	InChI=1/C2H3/c1-2/h1H,2H2	300-1500	1.32E-02	4.24	0	5.9	0	0	0	0	4	Aän Vandeputte GAVs CBS-QB3
+3055	C/H3/Cs		InChI=1/C2H3/c1-2/h1H,2H2	300-1500	1.99E-02	4.24	0	3.5	0	0	0	0	4	Aän Vandeputte GAVs CBS-QB3
+3056	C/H2/NonDeC	InChI=1/C2H3/c1-2/h1H,2H2	300-1500	4.55E-02	4.24	0	1.5	0	0	0	0	4	Aän Vandeputte GAVs CBS-QB3
+3057 	C/H/Cs3		InChI=1/C2H3/c1-2/h1H,2H2	300-1500	2.74E-02	4.24	0	-0.3	0	0	0	0	4	Aän Vandeputte GAVs CBS-QB3
+3058	C/H3/Cd		InChI=1/C2H3/c1-2/h1H,2H2	300-1500	4.08E-03	4.24	0	0.3	0	0	0	0	4	Aän Vandeputte GAVs CBS-QB3
+3059	C/H2/CdCs	InChI=1/C2H3/c1-2/h1H,2H2	300-1500	1.62E-02	4.24	0	-1.1	0	0	0	0	4	Aän Vandeputte GAVs CBS-QB3
+3060	C/H3/Ct		InChI=1/C2H3/c1-2/h1H,2H2	300-1500	1.13E-02	4.24	0	0.8	0	0	0	0	4	Aän Vandeputte GAVs CBS-QB3
+3061	C/H2/CtCs	InChI=1/C2H3/c1-2/h1H,2H2	300-1500	1.55E-02	4.24	0	-0.7	0	0	0	0	4	Aän Vandeputte GAVs CBS-QB3
+3062	C/H3/Cb		InChI=1/C2H3/c1-2/h1H,2H2	300-1500	3.64E-03	4.24	0	2.1	0	0	0	0	4	Aän Vandeputte GAVs CBS-QB3
+3063	C/H2/CbCs	InChI=1/C2H3/c1-2/h1H,2H2	300-1500	5.37E-03	4.24	0	0.3	0	0	0	0	4	Aän Vandeputte GAVs CBS-QB3
 
 
 

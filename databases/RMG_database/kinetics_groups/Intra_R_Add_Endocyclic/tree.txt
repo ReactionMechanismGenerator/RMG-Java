@@ -117,7 +117,8 @@ L1: Rn
     L2: R7
     L2: R8
     L2: R9
-
+	L3: R9_SSSSSD
+	L3: R9_SDSSSD
 
 L1: multiplebond_intra
     L2: doublebond_intra
