@@ -48,5 +48,5 @@
 31     on           R_Addition_CSm
 32     on           1,3_Insertion_RSR
 33     on           Intra_Diels_alder
-34     on           14Birad_scission
-35     on           14Birad2_scission
+34     on           1,4_Cyclic_birad_scission
+35     on           1,4_Linear_birad_scission
