@@ -30,4 +30,3 @@
 12	ketene_2C-H	 	0.0	0.0	0.0	0.0	0.0	0.0	0.0	0.0	0.0	0	0	0	"This is correction NN0 from Sumathi & Green, J. Phys. Chem. A, 2002, 106, 7937-7949"
 13	ketene_2C-C	 	-1.6	0.0	0.0	0.0	0.0	0.0	0.0	0.0	0.0	0	0	0	"This is correction NN2 from Sumathi & Green, J. Phys. Chem. A, 2002, 106, 7937-7949"
 14	biketene		-0.9	0.0	0.0	0.0	0.0	0.0	0.0	0.0	0.0	0	0	0	"This is correction NN3 from Sumathi & Green, J. Phys. Chem. A, 2002, 106, 7937-7949"
-

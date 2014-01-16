@@ -83,9 +83,9 @@ Arrhenius_EP
 493.		CsJ-SsHH		H_rad			300-1500	8.20E+11	0.68	0.00	0.07	0	0	0	0	5	A.G. Vandeputte
 494.		SsJ-H			H_rad			300-1500	2.53E+13	0.56	0.00	-0.02	0	0	0	0	5	A.G. Vandeputte
 495. 		H_rad		  	C_rad/H2/Cd		200-2000	2.92E+13	0.18	0.0 	0.124	0	0	0	0	3	Harding et al. (2007HAR/KLI3789-3801), value devided by 2 to account for two addition sites
-496.		H_rad			C_rad/H/OneDeC		200-2000        2.92E+13        0.18    0.0     0.124   0       0       0       0       3      Idem 495
-497.		H_rad                   C_rad/OneDe             200-2000        2.92E+13        0.18    0.0     0.124   0       0       0       0       3      Idem 495
-498.            H_rad                   C_rad/TwoDe             200-2000        2.92E+13        0.18    0.0     0.124   0       0       0       0       3      Idem 495
+496.		H_rad			C_rad/H/OneDeC		200-2000        2.92E+13        0.18    0.0     0.124   0       0       0       0       5      Estimated as same rate constant as 495.
+497.		H_rad                   C_rad/OneDe             200-2000        2.92E+13        0.18    0.0     0.124   0       0       0       0       5      Estimated as same rate constant as 495.
+498.            H_rad                   C_rad/TwoDe             200-2000        2.92E+13        0.18    0.0     0.124   0       0       0       0       5      Estimated as same rate constant as 495.
 
 //3000	H_rad		SsJ-H	300-1500	5.77E+15	0	0	0.43	0	0	0	0	3	GA Jonas x 3 for spinorbit
 //3001	C_methyl	SsJ-H	300-1500	4.41E+14	0	0	0.29	0	0	0	0	3	GA Jonas x 3 for spinorbit

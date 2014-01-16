@@ -13,7 +13,6 @@ Arrhenius_EP
 // [187] Grimme, W.; Schumachers, L.; Roth, W.R.; Breuckmann, R. Chem. Ber. 1981, 114, 3197. 
 // [188] Lewis, K.E.; Steiner, H. J. Chem. Soc. 1964, 3080.
 // [x] Sirjean, B.; Glaude, P. A.; Ruiz-Lopez, M. F.; Fournet, R.; J. Phys. Chem. A. 2006, 110, 12693-12704. 
-// [x] A.G. Vandeputte, /20
 
 //No.	Rn			Y_rad_out			Ypri_rad_out		Temp.		A			n	a		E0		DA		Dn		Da		DE0		Rank	Comments
 480	Rn			Y_rad_out			Ypri_rad_out		300-1500	5E+11		0		0		30		0		0		0		0		0	Default
@@ -24,10 +23,5 @@ Arrhenius_EP
 485	R4_SSS			C_rad_out_2H			Cpri_rad_out_2H		600-2000	1.62E+12	-0.305		0		1.98		0		0		0		0		3    [x] Sirjean et al.
 486	R5_SSSS			C_rad_out_2H			Cpri_rad_out_2H		600-2000	7.76E+9		0.311		0		1.7		0		0		0		0		3    [x] Sirjean et al.
 487	R6_SSSSS		C_rad_out_2H			Cpri_rad_out_2H		600-2000	3.21E+10	0.137		0		2.12		0		0		0		0		3    [x] Sirjean et al.
-
-//485   R4_SSS                  C_rad_out_2H                    Cpri_rad_out_2H         600-2000        8.10E+10        -0.305          0               1.98            0               0               0               0               3    [x] Sirjean et al.
-//486   R5_SSSS                 C_rad_out_2H                    Cpri_rad_out_2H         600-2000        3.88E+8         0.311           0               1.7             0               0               0               0               3    [x] Sirjean et al.
-//487   R6_SSSSS                C_rad_out_2H                    Cpri_rad_out_2H         600-2000        1.60E+9        0.137           0               2.12            0               0               0               0               3    [x] Sirjean et al.
-
 //  Aäron Vandeputte S-S recombination, scission pre-exp equal to the one for S-S scission
 488	R3_SS			S_rad			Spri_rad		300-1500	2.18E+16    	0      		0		0.7		0		0		0		0		4	A.G. Vandeputte
