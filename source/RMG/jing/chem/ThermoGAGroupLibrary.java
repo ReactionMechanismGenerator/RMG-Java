@@ -1482,7 +1482,7 @@ public class ThermoGAGroupLibrary {
                 return null;
             }
             ThermoGAValue ga = (ThermoGAValue) polycyclicLibrary.get(fg);
-            molecule.appendThermoComments("Polycyclic ring system:"
+            molecule.appendThermoComments("Polycyclic:"
                     + fg.getName());
             if (ga != null)
                 return ga;

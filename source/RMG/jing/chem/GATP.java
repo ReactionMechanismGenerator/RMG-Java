@@ -317,7 +317,7 @@ public class GATP implements GeneralGAPP {
             // For now, assume only one polycyclic RSC can be found per molecule.
             ThermoGAValue ga = thermoLibrary
                     .findPolyCyclicRingCorrections(molecule);
-            p_chemGraph.appendThermoComments(molecule.getThermoComments());
+            //p_chemGraph.appendThermoComments(molecule.getThermoComments());
             p_chemGraph.setCentralNode(oldCentralNode);
             return ga;
         }

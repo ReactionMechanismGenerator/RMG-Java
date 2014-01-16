@@ -1428,14 +1428,13 @@ public class ChemGraph implements Matchable {
         //System.out.println(thermo_graph.toString());
         if (TDMETHOD.toLowerCase().startsWith("benson")) {
             gen = new BensonTDGenerator();
-            thermoData = gen.generateThermo(thermo_graph);
-            return thermoData;
         } else if (TDMETHOD.toLowerCase().startsWith("qm")) {
             gen = new QMForCyclicsGenerator();
         } else {// default method is hybrid
             gen = new HybridTDGenerator();
         }
         thermoData = gen.generateThermo(thermo_graph);
+        this.thermoComments = thermo_graph.getThermoComments(); // must copy comments since we made a copy of the chemgraph
         return thermoData;
     }
 
