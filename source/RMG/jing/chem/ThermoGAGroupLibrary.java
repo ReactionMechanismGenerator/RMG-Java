@@ -1435,7 +1435,7 @@ public class ThermoGAGroupLibrary {
     }
 
     public ThermoGAValue findPolyCyclicRingCorrections(ChemGraph molecule) {
-        int deepest = -1;
+        int largest = -1;
         Stack dummy = null;
         Iterator iterNodes = molecule.getGraph().getNodeList();
         while (iterNodes.hasNext()) {
@@ -1449,10 +1449,18 @@ public class ThermoGAGroupLibrary {
             // check if it's the deepest match
             if (!stack.empty()) {
                 HierarchyTreeNode htn = (HierarchyTreeNode) stack.peek();
-                if (htn.getDepth() > deepest) {
-                    // we have found a Stack that is deeper than the previous ones, re-initialize Set:
+                // We look for the Stack with the highest number of matched atoms to the group,
+                // in other words, the ring correction for the largest set of rings, rather than the
+                // deepest node
+                FunctionalGroup fg = (FunctionalGroup) htn.getElement();
+                Graph graph = fg.getGraph();
+                // Number of nodes in the functional group structure
+                Integer numberAtoms = graph.getNodeNumber();              
+                
+                if (numberAtoms > largest) {
+                    // we have found a ring correction with more matching atoms, re-initialize Set:
                     dummy = stack;
-                    deepest = htn.getDepth();
+                    largest = numberAtoms;
                 }
             }
         }
@@ -1461,8 +1469,8 @@ public class ThermoGAGroupLibrary {
         /*
          * If deepest node is L0, then none of the L1 nodes could be matched. We should return null then.
          */
-        if (deepest == 0)
-            return null;
+        //if (deepest == 0)
+        //   return null;
         while (!dummy.empty()) {
             HierarchyTreeNode node = (HierarchyTreeNode) dummy.pop();
             FunctionalGroup fg = (FunctionalGroup) node.getElement();
