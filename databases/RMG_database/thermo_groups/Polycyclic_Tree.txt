@@ -6,13 +6,13 @@ L0: PolycyclicRing
 // define before ind{a/e}ne
         L1: norborn{a/e}ne
                 // norbornane was formerly bicyclo-(2.2.1)-heptane
-		L2: norbornane 
-			L3: exo-tricyclo[5.2.1.0(2.6)]decane
-			L3: exo-tricyclo[5.2.1.0(2.6)]decene
-			L3: exo-tricyclo[5.2.1.0(1.5)]decane
-			L3: tricyclo[5.2.1.0(3.8)]decane
-		L2: norbornene
-			L3: exo-tricyclo[5.2.1.0(2.6)]dec-8-ene
+                L2: norbornane
+                        L3: exo-tricyclo[5.2.1.0(2.6)]decane
+                        L3: exo-tricyclo[5.2.1.0(2.6)]decene
+                        L3: exo-tricyclo[5.2.1.0(1.5)]decane
+                        L3: tricyclo[5.2.1.0(3.8)]decane
+                L2: norbornene
+                        L3: exo-tricyclo[5.2.1.0(2.6)]dec-8-ene
 
 // bicyclo[3.2.1]oct{a/e}ne: fused: 5/6 (3.2.1 => 5 ring included 3 atoms of 6 ring)
 
@@ -89,3 +89,5 @@ L0: PolycyclicRing
 	L1: bicyclo[2.1.0]pent-1(4)-ene
 	L1: bicyclo[2.1.0]pent-2-ene
 	L1: tricyclo[4.4.0.0(3.9)]decane
+
+
