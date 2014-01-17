@@ -284,6 +284,17 @@ public class FastMasterEqn implements PDepKineticsEstimator {
         // Create FAME input files
         String input = writeInputString(pdn, rxnSystem, speciesList,
                 isomerList, pathReactionList, nIsom, nReac, nProd);
+        try {
+            String fameOutputDir = System.getProperty("RMG.fameOutputDir");
+            FileWriter fw = new FileWriter(new File(fameOutputDir + "/"
+                    + Integer.toString(pdn.getID()) + "_input.txt"));
+            fw.write(input);
+            fw.close();
+            }
+            catch (IOException ex) {
+            Logger.info("Unable to save FAME input file for pdep network.");
+            
+            }
         // Only used in the case of an error:
         StringBuilder output = new StringBuilder();
         int id = pdn.getID();
@@ -397,10 +408,11 @@ public class FastMasterEqn implements PDepKineticsEstimator {
             // Save bad input to file
             try {
                 String fameOutputDir = System.getProperty("RMG.fameOutputDir");
-                FileWriter fw = new FileWriter(new File(fameOutputDir + "/"
-                        + Integer.toString(pdn.getID()) + "_input.txt"));
-                fw.write(input);
-                fw.close();
+                //FileWriter fw = new FileWriter(new File(fameOutputDir + "/"
+                //        + Integer.toString(pdn.getID()) + "_input.txt"));
+                //fw.write(input);
+                //fw.close();
+                // Don't need to duplicate the saving of the file
                 Logger.info("Troublesome FAME input saved to fame/"
                         + Integer.toString(pdn.getID()) + "_input.txt");
                 FileWriter fwo = new FileWriter(new File(fameOutputDir + "/"
