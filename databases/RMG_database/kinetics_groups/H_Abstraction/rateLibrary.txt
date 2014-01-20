@@ -18,141 +18,141 @@ Arrhenius_EP
 4.		X_H			O_pri_rad			300-1500	1.2E+06		2.0		0.50	10.1	0		0		0		0		5		Dean, A. M. [118]
 5.		X_H			O_sec_rad			300-1500	1.4E+04		2.69	0.60	11.3	0		0		0		0		5		Dean, A. M. [118]
 6.		X_H			C_methyl			300-1500	8.1E+05		1.87	0.65	13.0	0		0		0		0		5		Dean, A. M. [118]
-7.		C/H/Cs3		C_rad/Cs3			300-1500	1.30E-01	3.71	0		6.85	0		0		0		0		2		Sumathy CBS-Q calculations. Rate expression per H atom.
-8.		C/H2/NonDeC	C_rad/Cs3			300-1500	1.26E+00	3.55	0		8.31	0		0		0		0		2		Sumathy CBS-Q calculations. Rate expression per H atom.
-9.		C/H3/Cs		C_rad/Cs3			300-1500	2.85E+00	3.62	0		11.20	0		0		0		0		2		Sumathy CBS-Q calculations. Rate expression per H atom.
-10.		C/H/Cs3		C_rad/H/NonDeC		300-1500	5.58E+01	3.01	0		7.34	0		0		0		0		2		Sumathy CBS-Q calculations. Rate expression per H atom.
-11.		C/H2/NonDeC	C_rad/H/NonDeC		300-1500	1.52E+01	3.19	0		10.31	0		0		0		0		2		Sumathy CBS-Q calculations. Rate expression per H atom.
-12.		C/H3/Cs		C_rad/H/NonDeC		300-1500	4.71E+01	3.23	0		12.27	0		0		0		0		2		Sumathy CBS-Q calculations. Rate expression per H atom.
-13.		C/H/Cs3		C_rad/H2/Cs			300-1500	4.22E+03	2.51	0		8.06	0		0		0		0		2		Sumathy CBS-Q calculations. Rate expression per H atom.
-14.		C/H2/NonDeC	C_rad/H2/Cs			300-1500	1.54E+03	2.66	0		10.10	0		0		0		0		2		Sumathy CBS-Q calculations. Rate expression per H atom.
-15.		C/H3/Cs		C_rad/H2/Cs			300-1500	6.59E+02	2.71	0		12.92	0		0		0		0		2		Sumathy CBS-Q calculations. Rate expression per H atom.
-16.		C/H/Cs3		C_methyl			300-1500	5.74E+05	1.83	0		6.94	0		0		0		0		2		Sumathy CBS-Q calculations. Rate expression per H atom.
-17.		C/H2/NonDeC	C_methyl			300-1500	1.45E+06	1.77	0		8.53	0		0		0		0		2		Sumathy CBS-Q calculations. Rate expression per H atom.
-18.		C/H3/Cs		C_methyl			300-1500	2.78E+05	1.9		0		11.05	0		0		0		0		2		Sumathy CBS-Q calculations. Rate expression per H atom.
-19.		C_methane	C_methyl			300-1500	1.01E+04	2.47	0		13.96	0		0		0		0		2		Sumathy CBS-Q calculations. Rate expression per H atom.
-20.		C/H/Cs3		H_rad				300-1500	4.83E+08	1.54	0		2.98	0		0		0		0		2		Sumathy CBS-Q calculations. Rate expression per H atom.
-21.		C/H2/NonDeC	H_rad				300-1500	1.30E+08	1.69	0		4.78	0		0		0		0		2		Sumathy CBS-Q calculations. Rate expression per H atom.
-22.		C/H3/Cs		H_rad				300-1500	6.28E+07	1.75	0		7.51	0		0		0		0		2		Sumathy CBS-Q calculations. Rate expression per H atom.
-23.		C_methane	H_rad				300-1500	3.06E+07	1.87	0		10.59	0		0		0		0		2		Sumathy CBS-Q calculations. Rate expression per H atom.
-24.		O/H/NonDeC	H_rad				300-1500	8.70E+08	1.39	0		10.07	0		0		0		0		2		Sumathy CBS-Q calculations. Rate expression per H atom.
-25.		CO_pri		H_rad				300-1500	5.48E+07	1.82	0		2.44	0		0		0		0		2		Sumathy CBS-Q calculations. Rate expression per H atom.
-26.		CO/H/NonDe	H_rad				300-1500	8.07E+07	1.76	0		0.67	0		0		0		0		2		Sumathy CBS-Q calculations. Rate expression per H atom.
-27.		Cd_pri		H_rad				300-1500	2.53E+07	1.98	0		11.78	0		0		0		0		2		Sumathy CBS-Q calculations. Rate expression per H atom. Primary vinylic {Cd/H2}
-28.		Cd_pri		H_rad				300-1500	4.53E+03	2.43	0		8.85	0		0		0		0		2		Sumathy CBS-Q calculations. Rate expression per H atom. Ketene hydrogen {CCO/H2}
-29.		Cd_pri		H_rad				300-1500	1.46E+07	2.09	0		5.49	0		0		0		0		2		Sumathy CBS-Q calculations. Rate expression per H atom. Allene hydrogen {Cd/H2/Ca}
-30.		Cd/H/NonDeC	H_rad				300-1500	2.98E+07	1.95	0		8.65	0		0		0		0		2		Sumathy CBS-Q calculations. Rate expression per H atom.
-31.		C/H3/Cd		H_rad				300-1500	4.33E+05	2.38	0		2.80	0		0		0		0		2		Sumathy CBS-Q calculations. Rate expression per H atom.
-32.		C/H2/OneDeC	H_rad				300-1500	6.99E+05	2.36	0		1.11	0		0		0		0		2		Sumathy CBS-Q calculations. Rate expression per H atom. Primary allylic hydrogen {C/Cd/C/H2}
-33.		C/H2/OneDeC	H_rad				300-1500	7.79E+07	1.78	0		2.11	0		0		0		0		2		Sumathy CBS-Q calculations. Rate expression per H atom. Primary propergylic {C/Ct/C/H2}
-34.		C/H/Cs2		H_rad				300-1500	3.02E+06	2.16	0		-0.45	0		0		0		0		2		Sumathy CBS-Q calculations. Rate expression per H atom. Secondary allylic hydrogen {C/Cd/C2/H}
-35.		C/H/Cs2		H_rad				300-1500	1.21E+08	1.72	0		-0.73	0		0		0		0		2		Sumathy CBS-Q calculations. Rate expression per H atom. Secondary propergylic {C/Ct/C2/H}
-36.		C/H2/TwoDe	H_rad				300-1500	7.09E+03	2.85	0		-1.90	0		0		0		0		2		Sumathy CBS-Q calculations. Rate expression per H atom.
-37.		Cd/H/OneDe	H_rad				300-1500	1.93E+08	1.74	0		10.28	0		0		0		0		2		Sumathy CBS-Q calculations. Rate expression per H atom. Dienylic {Cd/Cd/H}
-38.		Cd/H/OneDe	H_rad				300-1500	2.18E+06	2.4		0		6.11	0		0		0		0		2		Sumathy CBS-Q calculations. Rate expression per H atom. Eneynic {Cd/Ct/H}
-39.		Ct_H		H_rad				300-1500	1.65E+08	1.85	0		26.52	0		0		0		0		2		Sumathy CBS-Q calculations. Rate expression per H atom.
-40.		C/H3/Ct		H_rad				300-1500	2.70E+07	1.91	0		5.99	0		0		0		0		2		Sumathy CBS-Q calculations. Rate expression per H atom.
-41.		Cd/H/NonDeO	H_rad				300-1500	9.67E+09	1.23	0		11.69	0		0		0		0		2		Sumathy CBS-Q calculations. Rate expression per H atom.
-42.		O/H/OneDe	H_rad				300-1500	1.30E+11	0.82	0		7.75	0		0		0		0		2		Sumathy CBS-Q calculations. Rate expression per H atom.
-43.		Cd_pri		C_methyl			300-1500	3.24E+03	2.58	0		14.04	0		0		0		0		2		Sumathy CBS-Q calculations. Rate expression per H atom.
-44.		C/H3/Cd		C_methyl			300-1500	8.04E+01	2.92	0		7.16	0		0		0		0		2		Sumathy CBS-Q calculations. Rate expression per H atom.		
-45.		O/H/NonDeC	C_methyl			300-1500	2.54E+05	1.89	0		8.97	0		0		0		0		2		Sumathy CBS-Q calculations. Rate expression per H atom.
-46.		CO/H/NonDe	C_methyl			300-1500	2.92E+04	2.29	0		5.44	0		0		0		0		2		Sumathy CBS-Q calculations. Rate expression per H atom.
-47.		O/H/OneDe	C_methyl			300-1500	9.07E+04	2.04	0		10.85	0		0		0		0		2		Sumathy CBS-Q calculations. Rate expression per H atom. Olefinic alcohol {O/Cd/H}
-48.		O/H/OneDe	H_rad				300-1500	3.30E+08	1.56	0		13.94	0		0		0		0		2		Sumathy CBS-Q calculations. Rate expression per H atom. Acid O-H {O/CO/H}
-49.		CO/H/NonDe	C_methyl			300-1500	4.53E+03	2.43	0		8.85	0		0		0		0		2		Sumathy CBS-Q calculations. Rate expression per H atom.
-50.		C_methane	C_methyl			300-1500	6.03E+13	0		0		19.0	0		0		0		0		3		Mark Saeys, CBS-QB3 calculations, without hindered rotor treatment. Rate expression per H atom.	
-51.		C/H3/Cs		C_methyl			300-1500	2.80E+14	0		0		16.1	0		0		0		0		3		Mark Saeys, CBS-QB3 calculations, without hindered rotor treatment. Rate expression per H atom.	
-52.		C/H3/Cs		C_methyl			300-1500	6.15E+13	0		0		15.9	0		0		0		0		3		Mark Saeys, CBS-QB3 calculations, without hindered rotor treatment. Rate expression per H atom.	
-53.		C/H3/Cs		C_methyl			300-1500	7.71E+12	0		0		13.5	0		0		0		0		3		Mark Saeys, CBS-QB3 calculations, without hindered rotor treatment. Rate expression per H atom.	
-54.		C/H2/NonDeC	C_methyl			300-1500	5.02E+13	0		0		13.7	0		0		0		0		3		Mark Saeys, CBS-QB3 calculations, without hindered rotor treatment. Rate expression per H atom.	
-55.		C/H/Cs3		C_methyl			300-1500	5.02E+13	0		0		11.3	0		0		0		0		3		Mark Saeys, CBS-QB3 calculations, without hindered rotor treatment. Rate expression per H atom.	
-56.		C/H/Cs3		C_methyl			300-1500	4.42E+13	0		0		11.3	0		0		0		0		3		Mark Saeys, CBS-QB3 calculations, without hindered rotor treatment. Rate expression per H atom.	
-57.		C/H3/Cd		C_methyl			300-1500	2.62E+13	0		0		12.3	0		0		0		0		3		Mark Saeys, CBS-QB3 calculations, without hindered rotor treatment. Rate expression per H atom.	
-58.		C/H2/OneDeC	C_methyl			300-1500	2.73E+13	0		0		10.4	0		0		0		0		3		Mark Saeys, CBS-QB3 calculations, without hindered rotor treatment. Rate expression per H atom.	
-59.		C/H/Cs2		C_methyl			300-1500	2.73E+13	0		0		8.9		0		0		0		0		3		Mark Saeys, CBS-QB3 calculations, without hindered rotor treatment. Rate expression per H atom.	
-60.		C/H2/TwoDe	C_methyl			300-1500	7.54E+13	0		0		8.1		0		0		0		0		3		Mark Saeys, CBS-QB3 calculations, without hindered rotor treatment. Rate expression per H atom.	
-61.		C/H/Cs		C_methyl			300-1500	9.32E+12	0		0		7.0		0		0		0		0		3		Mark Saeys, CBS-QB3 calculations, without hindered rotor treatment. Rate expression per H atom.	
-62.		C/H3/Cb		C_methyl			300-1500	4.90E+12	0		0		13.1	0		0		0		0		3		Mark Saeys, CBS-QB3 calculations, without hindered rotor treatment. Rate expression per H atom.	
-63.		C/H2/OneDeC	C_methyl			300-1500	1.70E+13	0		0		11.8	0		0		0		0		3		Mark Saeys, CBS-QB3 calculations, without hindered rotor treatment. Rate expression per H atom.	
-64.		C/H/Cs2		C_methyl			300-1500	1.17E+13	0		0		11.0	0		0		0		0		3		Mark Saeys, CBS-QB3 calculations, without hindered rotor treatment. Rate expression per H atom.	
-65.		C/H3/Ct		C_methyl			300-1500	6.60E+13	0		0		13.1	0		0		0		0		3		Mark Saeys, CBS-QB3 calculations, without hindered rotor treatment. Rate expression per H atom.	
-66.		C/H2/OneDeC	C_methyl			300-1500	2.81E+13	0		0		11.0	0		0		0		0		3		Mark Saeys, CBS-QB3 calculations, without hindered rotor treatment. Rate expression per H atom.	
-67.		C/H2/TwoDe	C_methyl			300-1500	1.38E+14	0		0		8.5		0		0		0		0		3		Mark Saeys, CBS-QB3 calculations, without hindered rotor treatment. Rate expression per H atom.	
-68.		C/H/Cs		C_methyl			300-1500	3.43E+13	0		0		7.1		0		0		0		0		3		Mark Saeys, CBS-QB3 calculations, without hindered rotor treatment. Rate expression per H atom.	
-69.		C/H/Cs2		C_methyl			300-1500	5.03E+13	0		0		9.1		0		0		0		0		3		Mark Saeys, CBS-QB3 calculations, without hindered rotor treatment. Rate expression per H atom.	
-70.		Cd_pri		C_methyl			300-1500	1.88E+14	0		0		18.6	0		0		0		0		3		Mark Saeys, CBS-QB3 calculations, without hindered rotor treatment. Rate expression per H atom.	
-71.		Cd/H/NonDeC	C_methyl			300-1500	4.43E+13	0		0		16.3	0		0		0		0		3		Mark Saeys, CBS-QB3 calculations, without hindered rotor treatment. Rate expression per H atom.	
-72.		Cd/H/OneDe	C_methyl			300-1500	5.78E+13	0		0		16.2	0		0		0		0		3		Mark Saeys, CBS-QB3 calculations, without hindered rotor treatment. Rate expression per H atom.	
-73.		Cd/H/OneDe	C_methyl			300-1500	2.26E+13	0		0		15.9	0		0		0		0		3		Mark Saeys, CBS-QB3 calculations, without hindered rotor treatment. Rate expression per H atom.	
-74.		Cd/H/OneDe	C_methyl			300-1500	4.37E+13	0		0		13.7	0		0		0		0		3		Mark Saeys, CBS-QB3 calculations, without hindered rotor treatment. Rate expression per H atom.	
-75.		Ct_H		C_methyl			300-1500	3.33E+12	0		0		28.0	0		0		0		0		3		Mark Saeys, CBS-QB3 calculations, without hindered rotor treatment. Rate expression per H atom.	
-76.		Cb_H		C_methyl			300-1500	1.17E+15	0		0		19.9	0		0		0		0		3		Mark Saeys, CBS-QB3 calculations, without hindered rotor treatment. Rate expression per H atom.	
-77.		C/H2/NonDeC	C_methyl			300-1500	9.87E+14	0		0		13.5	0		0		0		0		3		Mark Saeys, CBS-QB3 calculations, without hindered rotor treatment. Rate expression per H atom.	
-78.		C/H2/NonDeC	C_methyl			300-1500	4.51E+12	0		0		12.6	0		0		0		0		3		Mark Saeys, CBS-QB3 calculations, without hindered rotor treatment. Rate expression per H atom.	
-79.		C/H/Cs3		C_methyl			300-1500	2.46E+13	0		0		11.0	0		0		0		0		3		Mark Saeys, CBS-QB3 calculations, without hindered rotor treatment. Rate expression per H atom.	
-80.		C/H2/OneDeC	C_methyl			300-1500	5.98E+13	0		0		9.6		0		0		0		0		3		Mark Saeys, CBS-QB3 calculations, without hindered rotor treatment. Rate expression per H atom.	
-81.		C_methane	H_rad				300-1500	1.87E+14	0		0		14.2	0		0		0		0		3		Mark Saeys, CBS-QB3 calculations, without hindered rotor treatment. Rate expression per H atom.	
-82.		C_methane	C_methyl			300-1500	6.03E+13	0		0		19.0	0		0		0		0		3		Mark Saeys, CBS-QB3 calculations, without hindered rotor treatment. Rate expression per H atom.	
-83.		C_methane	C_rad/H2/Cd			300-1500	1.53E+14	0		0		30.6	0		0		0		0		3		Mark Saeys, CBS-QB3 calculations, without hindered rotor treatment. Rate expression per H atom.	
-84.		C_methane	Cd_pri_rad			300-1500	1.59E+14	0		0		13.7	0		0		0		0		3		Mark Saeys, CBS-QB3 calculations, without hindered rotor treatment. Rate expression per H atom.	
-85.		C_methane	C_rad/Cs3			300-1500	1.86E+13	0		0		20.2	0		0		0		0		3		Mark Saeys, CBS-QB3 calculations, without hindered rotor treatment. Rate expression per H atom.	
-86.		C/H/Cs3		H_rad				300-1500	5.31E+13	0		0		5.9		0		0		0		0		3		Mark Saeys, CBS-QB3 calculations, without hindered rotor treatment. Rate expression per H atom.	
-87.		C/H/Cs3		C_methyl			300-1500	5.02E+13	0		0		11.3	0		0		0		0		3		Mark Saeys, CBS-QB3 calculations, without hindered rotor treatment. Rate expression per H atom.	
-88.		C/H/Cs3		C_rad/H2/Cd			300-1500	5.02E+13	0		0		20.5	0		0		0		0		3		Mark Saeys, CBS-QB3 calculations, without hindered rotor treatment. Rate expression per H atom.	
-89.		C/H/Cs3		Cd_pri_rad			300-1500	8.95E+13	0		0		6.2		0		0		0		0		3		Mark Saeys, CBS-QB3 calculations, without hindered rotor treatment. Rate expression per H atom.	
-90.		C/H/Cs3		C_rad/Cs3			300-1500	5.43E+11	0		0		11.6	0		0		0		0		3		Mark Saeys, CBS-QB3 calculations, without hindered rotor treatment. Rate expression per H atom.	
-91.		C/H/Cs3		C_rad/H2/Cs			300-1500	3.03E+12	0		0		12.2	0		0		0		0		3		Mark Saeys, CBS-QB3 calculations, without hindered rotor treatment. Rate expression per H atom.	
-92.		C/H/Cs3		C_rad/H/NonDeC		300-1500	2.44E+12	0		0		12.3	0		0		0		0		3		Mark Saeys, CBS-QB3 calculations, without hindered rotor treatment. Rate expression per H atom.	
-93.		C/H/Cs3		C_rad/H/OneDeC		300-1500	5.46E+12	0		0		21.7	0		0		0		0		3		Mark Saeys, CBS-QB3 calculations, without hindered rotor treatment. Rate expression per H atom.	
-94.		C/H/Cs3		C_rad/Cs2			300-1500	1.10E+12	0		0		21.6	0		0		0		0		3		Mark Saeys, CBS-QB3 calculations, without hindered rotor treatment. Rate expression per H atom.	
-95.		C/H/Cs3		Cd_rad/NonDeC		300-1500	1.02E+11	0		0		5.3		0		0		0		0		3		Mark Saeys, CBS-QB3 calculations, without hindered rotor treatment. Rate expression per H atom.	
-96.		C/H/Cs3		Cd_rad/OneDe		300-1500	4.16E+12	0		0		13.2	0		0		0		0		3		Mark Saeys, CBS-QB3 calculations, without hindered rotor treatment. Rate expression per H atom.	
-97.		C/H/Cs3		C_rad/H2/Ct			300-1500	3.14E+13	0		0		17.0	0		0		0		0		3		Mark Saeys, CBS-QB3 calculations, without hindered rotor treatment. Rate expression per H atom.	
-98.		C/H/Cs3		C_rad/H/OneDeC		300-1500	2.53E+12	0		0		18.0	0		0		0		0		3		Mark Saeys, CBS-QB3 calculations, without hindered rotor treatment. Rate expression per H atom.	
-99.		C/H/Cs3		C_rad/Cs2			300-1500	9.78E+11	0		0		18.4	0		0		0		0		3		Mark Saeys, CBS-QB3 calculations, without hindered rotor treatment. Rate expression per H atom.	
-100.	Cd_pri		H_rad				300-1500	3.39E+14	0		0		15.3	0		0		0		0		3		Mark Saeys, CBS-QB3 calculations, without hindered rotor treatment. Rate expression per H atom.	
-101.	Cd_pri		C_methyl			300-1500	1.88E+14	0		0		18.6	0		0		0		0		3		Mark Saeys, CBS-QB3 calculations, without hindered rotor treatment. Rate expression per H atom.	
-102.	Cd_pri		C_rad/H2/Cd			300-1500	5.36E+13	0		0		30.7	0		0		0		0		3		Mark Saeys, CBS-QB3 calculations, without hindered rotor treatment. Rate expression per H atom.	
-103.	Cd_pri		Cd_pri_rad			300-1500	1.47E+13	0		0		13.1	0		0		0		0		3		Mark Saeys, CBS-QB3 calculations, without hindered rotor treatment. Rate expression per H atom.	
-104.	Cd_pri		C_rad/Cs3			300-1500	3.93E+13	0		0		20.1	0		0		0		0		3		Mark Saeys, CBS-QB3 calculations, without hindered rotor treatment. Rate expression per H atom.	
-105.	Cd_pri		C_rad/H2/Cs			300-1500	7.82E+12	0		0		19.7	0		0		0		0		3		Mark Saeys, CBS-QB3 calculations, without hindered rotor treatment. Rate expression per H atom.	
-106.	Cd_pri		C_rad/H/NonDeC		300-1500	3.25E+12	0		0		20.2	0		0		0		0		3		Mark Saeys, CBS-QB3 calculations, without hindered rotor treatment. Rate expression per H atom.	
-107.	Cd_pri		C_rad/H/OneDeC		300-1500	1.51E+13	0		0		31.7	0		0		0		0		3		Mark Saeys, CBS-QB3 calculations, without hindered rotor treatment. Rate expression per H atom.	
-108.	Cd_pri		C_rad/Cs2			300-1500	3.39E+12	0		0		38.5	0		0		0		0		3		Mark Saeys, CBS-QB3 calculations, without hindered rotor treatment. Rate expression per H atom.	
-109.	Cd_pri		Cd_rad/NonDeC		300-1500	6.04E+13	0		0		14.0	0		0		0		0		3		Mark Saeys, CBS-QB3 calculations, without hindered rotor treatment. Rate expression per H atom.	
-110.	Cd_pri		Cd_rad/OneDe		300-1500	1.30E+13	0		0		20.6	0		0		0		0		3		Mark Saeys, CBS-QB3 calculations, without hindered rotor treatment. Rate expression per H atom.	
-111.	Cd_pri		C_rad/H2/Ct			300-1500	2.55E+13	0		0		26.8	0		0		0		0		3		Mark Saeys, CBS-QB3 calculations, without hindered rotor treatment. Rate expression per H atom.	
-112.	Cd_pri		C_rad/H/OneDeC		300-1500	4.41E+12	0		0		28.1	0		0		0		0		3		Mark Saeys, CBS-QB3 calculations, without hindered rotor treatment. Rate expression per H atom.	
-113.	Cd_pri		C_rad/Cs2			300-1500	3.59E+12	0		0		35.6	0		0		0		0		3		Mark Saeys, CBS-QB3 calculations, without hindered rotor treatment. Rate expression per H atom.	
-114.	C/H3/Cd		H_rad				300-1500	3.13E+13	0		0		7.3		0		0		0		0		3		Mark Saeys, CBS-QB3 calculations, without hindered rotor treatment. Rate expression per H atom.	
-115.	C/H3/Cd		C_methyl			300-1500	2.62E+13	0		0		12.3	0		0		0		0		3		Mark Saeys, CBS-QB3 calculations, without hindered rotor treatment. Rate expression per H atom.	
-116.	C/H3/Cd		C_rad/H2/Cd			300-1500	5.78E+12	0		0		21.4	0		0		0		0		3		Mark Saeys, CBS-QB3 calculations, without hindered rotor treatment. Rate expression per H atom.	
-117.	C/H3/Cd		Cd_pri_rad			300-1500	7.73E+12	0		0		7.5		0		0		0		0		3		Mark Saeys, CBS-QB3 calculations, without hindered rotor treatment. Rate expression per H atom.	
-118.	C/H3/Cd		C_rad/Cs3			300-1500	3.18E+12	0		0		11.2	0		0		0		0		3		Mark Saeys, CBS-QB3 calculations, without hindered rotor treatment. Rate expression per H atom.	
-119.	C/H3/Cd		C_rad/H2/Cs			300-1500	5.60E+11	0		0		12.4	0		0		0		0		3		Mark Saeys, CBS-QB3 calculations, without hindered rotor treatment. Rate expression per H atom.	
-120.	C/H3/Cd		C_rad/H/NonDeC		300-1500	2.87E+11	0		0		12.3	0		0		0		0		3		Mark Saeys, CBS-QB3 calculations, without hindered rotor treatment. Rate expression per H atom.	
-121.	C/H3/Cd		C_rad/H/OneDeC		300-1500	1.52E+12	0		0		21.4	0		0		0		0		3		Mark Saeys, CBS-QB3 calculations, without hindered rotor treatment. Rate expression per H atom.	
-122.	C/H3/Cd		C_rad/Cs2			300-1500	4.13E+11	0		0		21.1	0		0		0		0		3		Mark Saeys, CBS-QB3 calculations, without hindered rotor treatment. Rate expression per H atom.	
-123.	C/H3/Cd		Cd_rad/NonDeC		300-1500	5.52E+12	0		0		7.5		0		0		0		0		3		Mark Saeys, CBS-QB3 calculations, without hindered rotor treatment. Rate expression per H atom.	
-124.	C/H3/Cd		Cd_rad/OneDe		300-1500	1.95E+12	0		0		14.2	0		0		0		0		3		Mark Saeys, CBS-QB3 calculations, without hindered rotor treatment. Rate expression per H atom.	
-125.	C/H3/Cd		C_rad/H2/Ct			300-1500	7.58E+12	0		0		18.2	0		0		0		0		3		Mark Saeys, CBS-QB3 calculations, without hindered rotor treatment. Rate expression per H atom.	
-126.	C/H3/Cd		C_rad/H/OneDeC		300-1500	5.09E+11	0		0		18.5	0		0		0		0		3		Mark Saeys, CBS-QB3 calculations, without hindered rotor treatment. Rate expression per H atom.	
-127.	C/H3/Cd		C_rad/Cs2			300-1500	3.32E+11	0		0		18.4	0		0		0		0		3		Mark Saeys, CBS-QB3 calculations, without hindered rotor treatment. Rate expression per H atom.	
-128.	H2			H_rad				300-1500	2.37E+13	0		0		9.4		0		0		0		0		3		Mark Saeys, CBS-QB3 calculations, without hindered rotor treatment. Rate expression per H atom.	
-129.	H2			C_methyl			300-1500	2.95E+12	0		0		14.1	0		0		0		0		3		Mark Saeys, CBS-QB3 calculations, without hindered rotor treatment. Rate expression per H atom.	
-130.	H2			C_rad/H2/Cd			300-1500	2.87E+12	0		0		25.6	0		0		0		0		3		Mark Saeys, CBS-QB3 calculations, without hindered rotor treatment. Rate expression per H atom.	
-131.	H2			Cd_pri_rad			300-1500	4.49E+12	0		0		10.3	0		0		0		0		3		Mark Saeys, CBS-QB3 calculations, without hindered rotor treatment. Rate expression per H atom.	
-132.	H2			C_rad/Cs3			300-1500	3.08E+11	0		0		14.8	0		0		0		0		3		Mark Saeys, CBS-QB3 calculations, without hindered rotor treatment. Rate expression per H atom.	
-133.	H2			C_rad/H2/Cs			300-1500	4.57E+11	0		0		14.8	0		0		0		0		3		Mark Saeys, CBS-QB3 calculations, without hindered rotor treatment. Rate expression per H atom.	
-134.	H2			C_rad/H/NonDeC		300-1500	3.04E+11	0		0		15.1	0		0		0		0		3		Mark Saeys, CBS-QB3 calculations, without hindered rotor treatment. Rate expression per H atom.	
-135.	H2			C_rad/H/OneDeC		300-1500	1.82E+12	0		0		27.0	0		0		0		0		3		Mark Saeys, CBS-QB3 calculations, without hindered rotor treatment. Rate expression per H atom.	
-136.	H2			C_rad/Cs2			300-1500	4.30E+11	0		0		27.6	0		0		0		0		3		Mark Saeys, CBS-QB3 calculations, without hindered rotor treatment. Rate expression per H atom.	
-137.	H2			Cd_rad/NonDeC		300-1500	3.01E+12	0		0		10.6	0		0		0		0		3		Mark Saeys, CBS-QB3 calculations, without hindered rotor treatment. Rate expression per H atom.	
-138.	H2			Cd_rad/OneDe		300-1500	2.37E+12	0		0		18.2	0		0		0		0		3		Mark Saeys, CBS-QB3 calculations, without hindered rotor treatment. Rate expression per H atom.	
-139.	H2			C_rad/H2/Ct			300-1500	2.91E+12	0		0		23.0	0		0		0		0		3		Mark Saeys, CBS-QB3 calculations, without hindered rotor treatment. Rate expression per H atom.	
-140.	H2			C_rad/H/OneDeC		300-1500	5.34E+11	0		0		24.0	0		0		0		0		3		Mark Saeys, CBS-QB3 calculations, without hindered rotor treatment. Rate expression per H atom.	
-141.	H2			C_rad/Cs2			300-1500	4.20E+11	0		0		24.7	0		0		0		0		3		Mark Saeys, CBS-QB3 calculations, without hindered rotor treatment. Rate expression per H atom.	
+7.		C/H/Cs3		C_rad/Cs3			300-1500	1.30E-01	3.71	0		6.85	0		0		0		0		3		Sumathy CBS-Q calculations. Rate expression per H atom.
+8.		C/H2/NonDeC	C_rad/Cs3			300-1500	1.26E+00	3.55	0		8.31	0		0		0		0		3		Sumathy CBS-Q calculations. Rate expression per H atom.
+9.		C/H3/Cs		C_rad/Cs3			300-1500	2.85E+00	3.62	0		11.20	0		0		0		0		3		Sumathy CBS-Q calculations. Rate expression per H atom.
+10.		C/H/Cs3		C_rad/H/NonDeC		300-1500	5.58E+01	3.01	0		7.34	0		0		0		0		3		Sumathy CBS-Q calculations. Rate expression per H atom.
+11.		C/H2/NonDeC	C_rad/H/NonDeC		300-1500	1.52E+01	3.19	0		10.31	0		0		0		0		3		Sumathy CBS-Q calculations. Rate expression per H atom.
+12.		C/H3/Cs		C_rad/H/NonDeC		300-1500	4.71E+01	3.23	0		12.27	0		0		0		0		3		Sumathy CBS-Q calculations. Rate expression per H atom.
+13.		C/H/Cs3		C_rad/H2/Cs			300-1500	4.22E+03	2.51	0		8.06	0		0		0		0		3		Sumathy CBS-Q calculations. Rate expression per H atom.
+14.		C/H2/NonDeC	C_rad/H2/Cs			300-1500	1.54E+03	2.66	0		10.10	0		0		0		0		3		Sumathy CBS-Q calculations. Rate expression per H atom.
+15.		C/H3/Cs		C_rad/H2/Cs			300-1500	6.59E+02	2.71	0		12.92	0		0		0		0		3		Sumathy CBS-Q calculations. Rate expression per H atom.
+16.		C/H/Cs3		C_methyl			300-1500	5.74E+05	1.83	0		6.94	0		0		0		0		3		Sumathy CBS-Q calculations. Rate expression per H atom.
+17.		C/H2/NonDeC	C_methyl			300-1500	1.45E+06	1.77	0		8.53	0		0		0		0		3		Sumathy CBS-Q calculations. Rate expression per H atom.
+18.		C/H3/Cs		C_methyl			300-1500	2.78E+05	1.9		0		11.05	0		0		0		0		3		Sumathy CBS-Q calculations. Rate expression per H atom.
+19.		C_methane	C_methyl			300-1500	1.01E+04	2.47	0		13.96	0		0		0		0		3		Sumathy CBS-Q calculations. Rate expression per H atom.
+20.		C/H/Cs3		H_rad				300-1500	4.83E+08	1.54	0		2.98	0		0		0		0		3		Sumathy CBS-Q calculations. Rate expression per H atom.
+21.		C/H2/NonDeC	H_rad				300-1500	1.30E+08	1.69	0		4.78	0		0		0		0		3		Sumathy CBS-Q calculations. Rate expression per H atom.
+22.		C/H3/Cs		H_rad				300-1500	6.28E+07	1.75	0		7.51	0		0		0		0		3		Sumathy CBS-Q calculations. Rate expression per H atom.
+23.		C_methane	H_rad				300-1500	3.06E+07	1.87	0		10.59	0		0		0		0		3		Sumathy CBS-Q calculations. Rate expression per H atom.
+24.		O/H/NonDeC	H_rad				300-1500	8.70E+08	1.39	0		10.07	0		0		0		0		3		Sumathy CBS-Q calculations. Rate expression per H atom.
+25.		CO_pri		H_rad				300-1500	5.48E+07	1.82	0		2.44	0		0		0		0		3		Sumathy CBS-Q calculations. Rate expression per H atom.
+26.		CO/H/NonDe	H_rad				300-1500	8.07E+07	1.76	0		0.67	0		0		0		0		3		Sumathy CBS-Q calculations. Rate expression per H atom.
+27.		Cd_pri		H_rad				300-1500	2.53E+07	1.98	0		11.78	0		0		0		0		3		Sumathy CBS-Q calculations. Rate expression per H atom. Primary vinylic {Cd/H2}
+28.		Cd_pri		H_rad				300-1500	4.53E+03	2.43	0		8.85	0		0		0		0		3		Sumathy CBS-Q calculations. Rate expression per H atom. Ketene hydrogen {CCO/H2}
+29.		Cd_pri		H_rad				300-1500	1.46E+07	2.09	0		5.49	0		0		0		0		3		Sumathy CBS-Q calculations. Rate expression per H atom. Allene hydrogen {Cd/H2/Ca}
+30.		Cd/H/NonDeC	H_rad				300-1500	2.98E+07	1.95	0		8.65	0		0		0		0		3		Sumathy CBS-Q calculations. Rate expression per H atom.
+31.		C/H3/Cd		H_rad				300-1500	4.33E+05	2.38	0		2.80	0		0		0		0		3		Sumathy CBS-Q calculations. Rate expression per H atom.
+32.		C/H2/OneDeC	H_rad				300-1500	6.99E+05	2.36	0		1.11	0		0		0		0		3		Sumathy CBS-Q calculations. Rate expression per H atom. Primary allylic hydrogen {C/Cd/C/H2}
+33.		C/H2/OneDeC	H_rad				300-1500	7.79E+07	1.78	0		2.11	0		0		0		0		3		Sumathy CBS-Q calculations. Rate expression per H atom. Primary propergylic {C/Ct/C/H2}
+34.		C/H/Cs2		H_rad				300-1500	3.02E+06	2.16	0		-0.45	0		0		0		0		3		Sumathy CBS-Q calculations. Rate expression per H atom. Secondary allylic hydrogen {C/Cd/C2/H}
+35.		C/H/Cs2		H_rad				300-1500	1.21E+08	1.72	0		-0.73	0		0		0		0		3		Sumathy CBS-Q calculations. Rate expression per H atom. Secondary propergylic {C/Ct/C2/H}
+36.		C/H2/TwoDe	H_rad				300-1500	7.09E+03	2.85	0		-1.90	0		0		0		0		3		Sumathy CBS-Q calculations. Rate expression per H atom.
+37.		Cd/H/OneDe	H_rad				300-1500	1.93E+08	1.74	0		10.28	0		0		0		0		3		Sumathy CBS-Q calculations. Rate expression per H atom. Dienylic {Cd/Cd/H}
+38.		Cd/H/OneDe	H_rad				300-1500	2.18E+06	2.4		0		6.11	0		0		0		0		3		Sumathy CBS-Q calculations. Rate expression per H atom. Eneynic {Cd/Ct/H}
+39.		Ct_H		H_rad				300-1500	1.65E+08	1.85	0		26.52	0		0		0		0		3		Sumathy CBS-Q calculations. Rate expression per H atom.
+40.		C/H3/Ct		H_rad				300-1500	2.70E+07	1.91	0		5.99	0		0		0		0		3		Sumathy CBS-Q calculations. Rate expression per H atom.
+41.		Cd/H/NonDeO	H_rad				300-1500	9.67E+09	1.23	0		11.69	0		0		0		0		3		Sumathy CBS-Q calculations. Rate expression per H atom.
+42.		O/H/OneDe	H_rad				300-1500	1.30E+11	0.82	0		7.75	0		0		0		0		3		Sumathy CBS-Q calculations. Rate expression per H atom.
+43.		Cd_pri		C_methyl			300-1500	3.24E+03	2.58	0		14.04	0		0		0		0		3		Sumathy CBS-Q calculations. Rate expression per H atom.
+44.		C/H3/Cd		C_methyl			300-1500	8.04E+01	2.92	0		7.16	0		0		0		0		3		Sumathy CBS-Q calculations. Rate expression per H atom.		
+45.		O/H/NonDeC	C_methyl			300-1500	2.54E+05	1.89	0		8.97	0		0		0		0		3		Sumathy CBS-Q calculations. Rate expression per H atom.
+46.		CO/H/NonDe	C_methyl			300-1500	2.92E+04	2.29	0		5.44	0		0		0		0		3		Sumathy CBS-Q calculations. Rate expression per H atom.
+47.		O/H/OneDe	C_methyl			300-1500	9.07E+04	2.04	0		10.85	0		0		0		0		3		Sumathy CBS-Q calculations. Rate expression per H atom. Olefinic alcohol {O/Cd/H}
+48.		O/H/OneDe	H_rad				300-1500	3.30E+08	1.56	0		13.94	0		0		0		0		3		Sumathy CBS-Q calculations. Rate expression per H atom. Acid O-H {O/CO/H}
+49.		CO/H/NonDe	C_methyl			300-1500	4.53E+03	2.43	0		8.85	0		0		0		0		3		Sumathy CBS-Q calculations. Rate expression per H atom.
+50.		C_methane	C_methyl			300-1500	6.03E+13	0		0		19.0	0		0		0		0		4		Mark Saeys, CBS-QB3 calculations, without hindered rotor treatment. Rate expression per H atom.	
+51.		C/H3/Cs		C_methyl			300-1500	2.80E+14	0		0		16.1	0		0		0		0		4		Mark Saeys, CBS-QB3 calculations, without hindered rotor treatment. Rate expression per H atom.	
+52.		C/H3/Cs		C_methyl			300-1500	6.15E+13	0		0		15.9	0		0		0		0		4		Mark Saeys, CBS-QB3 calculations, without hindered rotor treatment. Rate expression per H atom.	
+53.		C/H3/Cs		C_methyl			300-1500	7.71E+12	0		0		13.5	0		0		0		0		4		Mark Saeys, CBS-QB3 calculations, without hindered rotor treatment. Rate expression per H atom.	
+54.		C/H2/NonDeC	C_methyl			300-1500	5.02E+13	0		0		13.7	0		0		0		0		4		Mark Saeys, CBS-QB3 calculations, without hindered rotor treatment. Rate expression per H atom.	
+55.		C/H/Cs3		C_methyl			300-1500	5.02E+13	0		0		11.3	0		0		0		0		4		Mark Saeys, CBS-QB3 calculations, without hindered rotor treatment. Rate expression per H atom.	
+56.		C/H/Cs3		C_methyl			300-1500	4.42E+13	0		0		11.3	0		0		0		0		4		Mark Saeys, CBS-QB3 calculations, without hindered rotor treatment. Rate expression per H atom.	
+57.		C/H3/Cd		C_methyl			300-1500	2.62E+13	0		0		12.3	0		0		0		0		4		Mark Saeys, CBS-QB3 calculations, without hindered rotor treatment. Rate expression per H atom.	
+58.		C/H2/OneDeC	C_methyl			300-1500	2.73E+13	0		0		10.4	0		0		0		0		4		Mark Saeys, CBS-QB3 calculations, without hindered rotor treatment. Rate expression per H atom.	
+59.		C/H/Cs2		C_methyl			300-1500	2.73E+13	0		0		8.9		0		0		0		0		4		Mark Saeys, CBS-QB3 calculations, without hindered rotor treatment. Rate expression per H atom.	
+60.		C/H2/TwoDe	C_methyl			300-1500	7.54E+13	0		0		8.1		0		0		0		0		4		Mark Saeys, CBS-QB3 calculations, without hindered rotor treatment. Rate expression per H atom.	
+61.		C/H/Cs		C_methyl			300-1500	9.32E+12	0		0		7.0		0		0		0		0		4		Mark Saeys, CBS-QB3 calculations, without hindered rotor treatment. Rate expression per H atom.	
+62.		C/H3/Cb		C_methyl			300-1500	4.90E+12	0		0		13.1	0		0		0		0		4		Mark Saeys, CBS-QB3 calculations, without hindered rotor treatment. Rate expression per H atom.	
+63.		C/H2/OneDeC	C_methyl			300-1500	1.70E+13	0		0		11.8	0		0		0		0		4		Mark Saeys, CBS-QB3 calculations, without hindered rotor treatment. Rate expression per H atom.	
+64.		C/H/Cs2		C_methyl			300-1500	1.17E+13	0		0		11.0	0		0		0		0		4		Mark Saeys, CBS-QB3 calculations, without hindered rotor treatment. Rate expression per H atom.	
+65.		C/H3/Ct		C_methyl			300-1500	6.60E+13	0		0		13.1	0		0		0		0		4		Mark Saeys, CBS-QB3 calculations, without hindered rotor treatment. Rate expression per H atom.	
+66.		C/H2/OneDeC	C_methyl			300-1500	2.81E+13	0		0		11.0	0		0		0		0		4		Mark Saeys, CBS-QB3 calculations, without hindered rotor treatment. Rate expression per H atom.	
+67.		C/H2/TwoDe	C_methyl			300-1500	1.38E+14	0		0		8.5		0		0		0		0		4		Mark Saeys, CBS-QB3 calculations, without hindered rotor treatment. Rate expression per H atom.	
+68.		C/H/Cs		C_methyl			300-1500	3.43E+13	0		0		7.1		0		0		0		0		4		Mark Saeys, CBS-QB3 calculations, without hindered rotor treatment. Rate expression per H atom.	
+69.		C/H/Cs2		C_methyl			300-1500	5.03E+13	0		0		9.1		0		0		0		0		4		Mark Saeys, CBS-QB3 calculations, without hindered rotor treatment. Rate expression per H atom.	
+70.		Cd_pri		C_methyl			300-1500	1.88E+14	0		0		18.6	0		0		0		0		4		Mark Saeys, CBS-QB3 calculations, without hindered rotor treatment. Rate expression per H atom.	
+71.		Cd/H/NonDeC	C_methyl			300-1500	4.43E+13	0		0		16.3	0		0		0		0		4		Mark Saeys, CBS-QB3 calculations, without hindered rotor treatment. Rate expression per H atom.	
+72.		Cd/H/OneDe	C_methyl			300-1500	5.78E+13	0		0		16.2	0		0		0		0		4		Mark Saeys, CBS-QB3 calculations, without hindered rotor treatment. Rate expression per H atom.	
+73.		Cd/H/OneDe	C_methyl			300-1500	2.26E+13	0		0		15.9	0		0		0		0		4		Mark Saeys, CBS-QB3 calculations, without hindered rotor treatment. Rate expression per H atom.	
+74.		Cd/H/OneDe	C_methyl			300-1500	4.37E+13	0		0		13.7	0		0		0		0		4		Mark Saeys, CBS-QB3 calculations, without hindered rotor treatment. Rate expression per H atom.	
+75.		Ct_H		C_methyl			300-1500	3.33E+12	0		0		28.0	0		0		0		0		4		Mark Saeys, CBS-QB3 calculations, without hindered rotor treatment. Rate expression per H atom.	
+76.		Cb_H		C_methyl			300-1500	1.17E+15	0		0		19.9	0		0		0		0		4		Mark Saeys, CBS-QB3 calculations, without hindered rotor treatment. Rate expression per H atom.	
+77.		C/H2/NonDeC	C_methyl			300-1500	9.87E+14	0		0		13.5	0		0		0		0		4		Mark Saeys, CBS-QB3 calculations, without hindered rotor treatment. Rate expression per H atom.	
+78.		C/H2/NonDeC	C_methyl			300-1500	4.51E+12	0		0		12.6	0		0		0		0		4		Mark Saeys, CBS-QB3 calculations, without hindered rotor treatment. Rate expression per H atom.	
+79.		C/H/Cs3		C_methyl			300-1500	2.46E+13	0		0		11.0	0		0		0		0		4		Mark Saeys, CBS-QB3 calculations, without hindered rotor treatment. Rate expression per H atom.	
+80.		C/H2/OneDeC	C_methyl			300-1500	5.98E+13	0		0		9.6		0		0		0		0		4		Mark Saeys, CBS-QB3 calculations, without hindered rotor treatment. Rate expression per H atom.	
+81.		C_methane	H_rad				300-1500	1.87E+14	0		0		14.2	0		0		0		0		4		Mark Saeys, CBS-QB3 calculations, without hindered rotor treatment. Rate expression per H atom.	
+82.		C_methane	C_methyl			300-1500	6.03E+13	0		0		19.0	0		0		0		0		4		Mark Saeys, CBS-QB3 calculations, without hindered rotor treatment. Rate expression per H atom.	
+83.		C_methane	C_rad/H2/Cd			300-1500	1.53E+14	0		0		30.6	0		0		0		0		4		Mark Saeys, CBS-QB3 calculations, without hindered rotor treatment. Rate expression per H atom.	
+84.		C_methane	Cd_pri_rad			300-1500	1.59E+14	0		0		13.7	0		0		0		0		4		Mark Saeys, CBS-QB3 calculations, without hindered rotor treatment. Rate expression per H atom.	
+85.		C_methane	C_rad/Cs3			300-1500	1.86E+13	0		0		20.2	0		0		0		0		4		Mark Saeys, CBS-QB3 calculations, without hindered rotor treatment. Rate expression per H atom.	
+86.		C/H/Cs3		H_rad				300-1500	5.31E+13	0		0		5.9		0		0		0		0		4		Mark Saeys, CBS-QB3 calculations, without hindered rotor treatment. Rate expression per H atom.	
+87.		C/H/Cs3		C_methyl			300-1500	5.02E+13	0		0		11.3	0		0		0		0		4		Mark Saeys, CBS-QB3 calculations, without hindered rotor treatment. Rate expression per H atom.	
+88.		C/H/Cs3		C_rad/H2/Cd			300-1500	5.02E+13	0		0		20.5	0		0		0		0		4		Mark Saeys, CBS-QB3 calculations, without hindered rotor treatment. Rate expression per H atom.	
+89.		C/H/Cs3		Cd_pri_rad			300-1500	8.95E+13	0		0		6.2		0		0		0		0		4		Mark Saeys, CBS-QB3 calculations, without hindered rotor treatment. Rate expression per H atom.	
+90.		C/H/Cs3		C_rad/Cs3			300-1500	5.43E+11	0		0		11.6	0		0		0		0		4		Mark Saeys, CBS-QB3 calculations, without hindered rotor treatment. Rate expression per H atom.	
+91.		C/H/Cs3		C_rad/H2/Cs			300-1500	3.03E+12	0		0		12.2	0		0		0		0		4		Mark Saeys, CBS-QB3 calculations, without hindered rotor treatment. Rate expression per H atom.	
+92.		C/H/Cs3		C_rad/H/NonDeC		300-1500	2.44E+12	0		0		12.3	0		0		0		0		4		Mark Saeys, CBS-QB3 calculations, without hindered rotor treatment. Rate expression per H atom.	
+93.		C/H/Cs3		C_rad/H/OneDeC		300-1500	5.46E+12	0		0		21.7	0		0		0		0		4		Mark Saeys, CBS-QB3 calculations, without hindered rotor treatment. Rate expression per H atom.	
+94.		C/H/Cs3		C_rad/Cs2			300-1500	1.10E+12	0		0		21.6	0		0		0		0		4		Mark Saeys, CBS-QB3 calculations, without hindered rotor treatment. Rate expression per H atom.	
+95.		C/H/Cs3		Cd_rad/NonDeC		300-1500	1.02E+11	0		0		5.3		0		0		0		0		4		Mark Saeys, CBS-QB3 calculations, without hindered rotor treatment. Rate expression per H atom.	
+96.		C/H/Cs3		Cd_rad/OneDe		300-1500	4.16E+12	0		0		13.2	0		0		0		0		4		Mark Saeys, CBS-QB3 calculations, without hindered rotor treatment. Rate expression per H atom.	
+97.		C/H/Cs3		C_rad/H2/Ct			300-1500	3.14E+13	0		0		17.0	0		0		0		0		4		Mark Saeys, CBS-QB3 calculations, without hindered rotor treatment. Rate expression per H atom.	
+98.		C/H/Cs3		C_rad/H/OneDeC		300-1500	2.53E+12	0		0		18.0	0		0		0		0		4		Mark Saeys, CBS-QB3 calculations, without hindered rotor treatment. Rate expression per H atom.	
+99.		C/H/Cs3		C_rad/Cs2			300-1500	9.78E+11	0		0		18.4	0		0		0		0		4		Mark Saeys, CBS-QB3 calculations, without hindered rotor treatment. Rate expression per H atom.	
+100.	Cd_pri		H_rad				300-1500	3.39E+14	0		0		15.3	0		0		0		0		4		Mark Saeys, CBS-QB3 calculations, without hindered rotor treatment. Rate expression per H atom.	
+101.	Cd_pri		C_methyl			300-1500	1.88E+14	0		0		18.6	0		0		0		0		4		Mark Saeys, CBS-QB3 calculations, without hindered rotor treatment. Rate expression per H atom.	
+102.	Cd_pri		C_rad/H2/Cd			300-1500	5.36E+13	0		0		30.7	0		0		0		0		4		Mark Saeys, CBS-QB3 calculations, without hindered rotor treatment. Rate expression per H atom.	
+103.	Cd_pri		Cd_pri_rad			300-1500	1.47E+13	0		0		13.1	0		0		0		0		4		Mark Saeys, CBS-QB3 calculations, without hindered rotor treatment. Rate expression per H atom.	
+104.	Cd_pri		C_rad/Cs3			300-1500	3.93E+13	0		0		20.1	0		0		0		0		4		Mark Saeys, CBS-QB3 calculations, without hindered rotor treatment. Rate expression per H atom.	
+105.	Cd_pri		C_rad/H2/Cs			300-1500	7.82E+12	0		0		19.7	0		0		0		0		4		Mark Saeys, CBS-QB3 calculations, without hindered rotor treatment. Rate expression per H atom.	
+106.	Cd_pri		C_rad/H/NonDeC		300-1500	3.25E+12	0		0		20.2	0		0		0		0		4		Mark Saeys, CBS-QB3 calculations, without hindered rotor treatment. Rate expression per H atom.	
+107.	Cd_pri		C_rad/H/OneDeC		300-1500	1.51E+13	0		0		31.7	0		0		0		0		4		Mark Saeys, CBS-QB3 calculations, without hindered rotor treatment. Rate expression per H atom.	
+108.	Cd_pri		C_rad/Cs2			300-1500	3.39E+12	0		0		38.5	0		0		0		0		4		Mark Saeys, CBS-QB3 calculations, without hindered rotor treatment. Rate expression per H atom.	
+109.	Cd_pri		Cd_rad/NonDeC		300-1500	6.04E+13	0		0		14.0	0		0		0		0		4		Mark Saeys, CBS-QB3 calculations, without hindered rotor treatment. Rate expression per H atom.	
+110.	Cd_pri		Cd_rad/OneDe		300-1500	1.30E+13	0		0		20.6	0		0		0		0		4		Mark Saeys, CBS-QB3 calculations, without hindered rotor treatment. Rate expression per H atom.	
+111.	Cd_pri		C_rad/H2/Ct			300-1500	2.55E+13	0		0		26.8	0		0		0		0		4		Mark Saeys, CBS-QB3 calculations, without hindered rotor treatment. Rate expression per H atom.	
+112.	Cd_pri		C_rad/H/OneDeC		300-1500	4.41E+12	0		0		28.1	0		0		0		0		4		Mark Saeys, CBS-QB3 calculations, without hindered rotor treatment. Rate expression per H atom.	
+113.	Cd_pri		C_rad/Cs2			300-1500	3.59E+12	0		0		35.6	0		0		0		0		4		Mark Saeys, CBS-QB3 calculations, without hindered rotor treatment. Rate expression per H atom.	
+114.	C/H3/Cd		H_rad				300-1500	3.13E+13	0		0		7.3		0		0		0		0		4		Mark Saeys, CBS-QB3 calculations, without hindered rotor treatment. Rate expression per H atom.	
+115.	C/H3/Cd		C_methyl			300-1500	2.62E+13	0		0		12.3	0		0		0		0		4		Mark Saeys, CBS-QB3 calculations, without hindered rotor treatment. Rate expression per H atom.	
+116.	C/H3/Cd		C_rad/H2/Cd			300-1500	5.78E+12	0		0		21.4	0		0		0		0		4		Mark Saeys, CBS-QB3 calculations, without hindered rotor treatment. Rate expression per H atom.	
+117.	C/H3/Cd		Cd_pri_rad			300-1500	7.73E+12	0		0		7.5		0		0		0		0		4		Mark Saeys, CBS-QB3 calculations, without hindered rotor treatment. Rate expression per H atom.	
+118.	C/H3/Cd		C_rad/Cs3			300-1500	3.18E+12	0		0		11.2	0		0		0		0		4		Mark Saeys, CBS-QB3 calculations, without hindered rotor treatment. Rate expression per H atom.	
+119.	C/H3/Cd		C_rad/H2/Cs			300-1500	5.60E+11	0		0		12.4	0		0		0		0		4		Mark Saeys, CBS-QB3 calculations, without hindered rotor treatment. Rate expression per H atom.	
+120.	C/H3/Cd		C_rad/H/NonDeC		300-1500	2.87E+11	0		0		12.3	0		0		0		0		4		Mark Saeys, CBS-QB3 calculations, without hindered rotor treatment. Rate expression per H atom.	
+121.	C/H3/Cd		C_rad/H/OneDeC		300-1500	1.52E+12	0		0		21.4	0		0		0		0		4		Mark Saeys, CBS-QB3 calculations, without hindered rotor treatment. Rate expression per H atom.	
+122.	C/H3/Cd		C_rad/Cs2			300-1500	4.13E+11	0		0		21.1	0		0		0		0		4		Mark Saeys, CBS-QB3 calculations, without hindered rotor treatment. Rate expression per H atom.	
+123.	C/H3/Cd		Cd_rad/NonDeC		300-1500	5.52E+12	0		0		7.5		0		0		0		0		4		Mark Saeys, CBS-QB3 calculations, without hindered rotor treatment. Rate expression per H atom.	
+124.	C/H3/Cd		Cd_rad/OneDe		300-1500	1.95E+12	0		0		14.2	0		0		0		0		4		Mark Saeys, CBS-QB3 calculations, without hindered rotor treatment. Rate expression per H atom.	
+125.	C/H3/Cd		C_rad/H2/Ct			300-1500	7.58E+12	0		0		18.2	0		0		0		0		4		Mark Saeys, CBS-QB3 calculations, without hindered rotor treatment. Rate expression per H atom.	
+126.	C/H3/Cd		C_rad/H/OneDeC		300-1500	5.09E+11	0		0		18.5	0		0		0		0		4		Mark Saeys, CBS-QB3 calculations, without hindered rotor treatment. Rate expression per H atom.	
+127.	C/H3/Cd		C_rad/Cs2			300-1500	3.32E+11	0		0		18.4	0		0		0		0		4		Mark Saeys, CBS-QB3 calculations, without hindered rotor treatment. Rate expression per H atom.	
+128.	H2			H_rad				300-1500	2.37E+13	0		0		9.4		0		0		0		0		4		Mark Saeys, CBS-QB3 calculations, without hindered rotor treatment. Rate expression per H atom.	
+129.	H2			C_methyl			300-1500	2.95E+12	0		0		14.1	0		0		0		0		4		Mark Saeys, CBS-QB3 calculations, without hindered rotor treatment. Rate expression per H atom.	
+130.	H2			C_rad/H2/Cd			300-1500	2.87E+12	0		0		25.6	0		0		0		0		4		Mark Saeys, CBS-QB3 calculations, without hindered rotor treatment. Rate expression per H atom.	
+131.	H2			Cd_pri_rad			300-1500	4.49E+12	0		0		10.3	0		0		0		0		4		Mark Saeys, CBS-QB3 calculations, without hindered rotor treatment. Rate expression per H atom.	
+132.	H2			C_rad/Cs3			300-1500	3.08E+11	0		0		14.8	0		0		0		0		4		Mark Saeys, CBS-QB3 calculations, without hindered rotor treatment. Rate expression per H atom.	
+133.	H2			C_rad/H2/Cs			300-1500	4.57E+11	0		0		14.8	0		0		0		0		4		Mark Saeys, CBS-QB3 calculations, without hindered rotor treatment. Rate expression per H atom.	
+134.	H2			C_rad/H/NonDeC		300-1500	3.04E+11	0		0		15.1	0		0		0		0		4		Mark Saeys, CBS-QB3 calculations, without hindered rotor treatment. Rate expression per H atom.	
+135.	H2			C_rad/H/OneDeC		300-1500	1.82E+12	0		0		27.0	0		0		0		0		4		Mark Saeys, CBS-QB3 calculations, without hindered rotor treatment. Rate expression per H atom.	
+136.	H2			C_rad/Cs2			300-1500	4.30E+11	0		0		27.6	0		0		0		0		4		Mark Saeys, CBS-QB3 calculations, without hindered rotor treatment. Rate expression per H atom.	
+137.	H2			Cd_rad/NonDeC		300-1500	3.01E+12	0		0		10.6	0		0		0		0		4		Mark Saeys, CBS-QB3 calculations, without hindered rotor treatment. Rate expression per H atom.	
+138.	H2			Cd_rad/OneDe		300-1500	2.37E+12	0		0		18.2	0		0		0		0		4		Mark Saeys, CBS-QB3 calculations, without hindered rotor treatment. Rate expression per H atom.	
+139.	H2			C_rad/H2/Ct			300-1500	2.91E+12	0		0		23.0	0		0		0		0		4		Mark Saeys, CBS-QB3 calculations, without hindered rotor treatment. Rate expression per H atom.	
+140.	H2			C_rad/H/OneDeC		300-1500	5.34E+11	0		0		24.0	0		0		0		0		4		Mark Saeys, CBS-QB3 calculations, without hindered rotor treatment. Rate expression per H atom.	
+141.	H2			C_rad/Cs2			300-1500	4.20E+11	0		0		24.7	0		0		0		0		4		Mark Saeys, CBS-QB3 calculations, without hindered rotor treatment. Rate expression per H atom.	
 142.	C/H3/Cs		O_pri_rad			300-1500	5.93E+06	1.80	0		1.431	0		0		0		0		5		Curran et al. [8] Rate expressions for H atom abstraction from fuels. Fixed by RWest (changed to per H)
 //142.	C/H3/Cs		O_pri_rad			300-1500	2.92E+06	1.80	0		0.278	0		0		0		0		5		Curran et al. [8] Rate expressions for H atom abstraction from fuels. (changed to per H)	
 143.	C/H2/NonDeC	O_pri_rad			300-1500	4.50E+05	2.00	0		-1.133	0		0		0		0		5		Curran et al. [8] Rate expressions for H atom abstraction from fuels. (changed to per H)	
