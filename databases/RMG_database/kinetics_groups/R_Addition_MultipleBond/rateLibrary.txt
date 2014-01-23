@@ -2669,6 +2669,26 @@ Arrhenius_EP
 3098	Sd_Cds-OsCs	HJ		300-2000	5.54E+08	1.24	0	-0.35	0	0	0	0	3	CAC calc CBS-QB3 1dhr
 3099	Cds-OsH_Cds-CsH	SsJ-H		300-2000	2.10E+04	2.39	0	-5.00	0	0	0	0	3	CAC calc CBS-QB3 1dhr
 
+// SSM calculations for propene+OH surface CBS-QB3 level , with 1d-HR
+3100	InChI=1S/C3H6/c1-3-2/h3H,1H2,2H3	O_pri_rad	300-2000	2.31E+6		1.76	0	-2.45	0	0	0	0	3 SSM calc CBS-QB3 1dhr
+3101    Cds-OsH_Cds-CsH                     HJ          300-2000	2.182e+10 	0.859  	0	1.618	0	0	0	0	3 SSM calc CBS-QB3 1dhr 
+3102    Cds-HH_Cds-CsH 					    HJ          300-2000	5.014e+08 	1.733  	0	0.76	0	0	0	0	3 SSM calc CBS-QB3 1dhr 
+3103    Cds-HH_Cds-CsH-Os				    HJ          300-2000	5.014e+08 	1.733  	0	0.76	0	0	0	0	3 SSM calc CBS-QB3 1dhr 
+3104    Cds-CsH_Cds-OsH                     HJ          300-2000	3.720e+08  	1.477  	0	1.61	0	0	0	0	3 SSM calc CBS-QB3 1dhr
+3105    Cds-HH_Cds-OsH 						CsJ-HHH     300-2000	4.167e+04  	2.299  	0	6.83	0	0	0	0	3 SSM calc CBS-QB3 1dhr 
+3106    OCO 							    HJ          300-2000	3.867e+05   2.941   0	8.52	0	0	0	0	3 SSM calc CBS-QB3 1dhr
+3107    OCOCs 							    HJ          300-2000	3.867e+05   2.941   0	8.52	0	0	0	0	3 SSM calc CBS-QB3 1dhr
+3108    Cds-HH_Cds-HH                       CsJ-OsHH    300-2000	2.55e+03   2.562   0	5.04	0	0	0	0	3 SSM calc CBS-QB3 1dhr
+3109    Cds-CsH-Os_Cds-HH                   HJ          300-2000	1.730e+08   1.583   0	1.81	0	0	0	0	3 SSM calc CBS-QB3 1dhr
+3110    CsJ-CsHH                            CO/H2_O     300-2000	3.4E-03     2.48    0	2.7	    0	0	0	0	3 SSM calc CBS-QB3 1dhr 
+3111    CO/H/Cs                             HJ          300-2000    8.0E+00     2.41    0   4.5     0	0	0	0	3 SSM calc CBS-QB3 1dhr
+ 
+3112    CO/H2_O                             HJ          300-2000    8.1E+11     0.37    0   5.19     0	0	0	0	3 High-P Limit from EFRC Mechanism
 
-
-
+//Dissociation of propyl radicals and other reactions on a C3H7 potential.
+// Miller JA, Klippenstein SJ.
+// doi: 10.1021/jp312712p.
+3113    InChI=1S/C3H6/c1-3-2/h3H,1H2,2H3    HJ          300-2000    1.84E+09 1.553     0   1.57     0	0	0	0	2 CCSD(T)/cc-pVTZ
+3114    Cds-CsH_Cds-HH                      HJ          300-2000    1.17e+08 1.68      0   2.03     0	0	0	0	2 CCSD(T)/cc-pVTZ
+// SSM Estimate
+3115   InChI=1S/C3H6/c1-3-2/h3H,1H2,2H3    CsJ-OsHH     300-2000	2.55e+03   2.562   0	5.04	0	0	0	0	5 same as 3108

@@ -43,6 +43,26 @@ Cds-HH_Cds-CsH
 5 Cs 0 {2,S}
 6 H 0 {2,S}
 
+Cds-HH_Cds-CsH-Os
+1 *1 Cd 0 {2,D} {3,S} {4,S}
+2 *2 Cd 0 {1,D} {5,S} {6,S}
+3 H 0 {1,S}
+4 H 0 {1,S}
+5 Cs 0 {2,S} {7,S}
+6 H 0 {2,S}
+7 Os 0 {5,S}
+
+InChI=1S/C3H6/c1-3-2/h3H,1H2,2H3
+1 C 0 {2,S} {4,S} {5,S} {6,S}
+2 *2 C 0 {1,S} {3,D} {7,S}
+3 *1 C 0 {2,D} {8,S} {9,S}
+4 H 0 {1,S}
+5 H 0 {1,S}
+6 H 0 {1,S}
+7 H 0 {2,S}
+8 H 0 {3,S}
+9 H 0 {3,S}
+
 Cds-HH_Cds-CsCs
 1 *1 Cd 0 {2,D} {3,S} {4,S}
 2 *2 Cd 0 {1,D} {5,S} {6,S}
@@ -470,6 +490,15 @@ Cds-CsH_Cds-HH
 4 H 0 {1,S}
 5 H 0 {2,S}
 6 H 0 {2,S}
+
+Cds-CsH-Os_Cds-HH
+1 *1 Cd 0 {2,D} {3,S} {4,S}
+2 *2 Cd 0 {1,D} {5,S} {6,S}
+3 Cs 0 {1,S} {7,S}
+4 H 0 {1,S}
+5 H 0 {2,S}
+6 H 0 {2,S}
+7 Os 0 {3,S}
 
 Cds-CsH_Cds-CsH
 1 *1 Cd 0 {2,D} {3,S} {4,S}
@@ -6674,6 +6703,12 @@ CO/H/Nd_O
 3 H  0 {1,S}
 4 {Cs,O}  0 {1,S}
 
+CO/H/Cs
+1 *1 CO  0 {2,D}, {3,S}, {4,S} 
+2 *2 Od  0 {1,D} 
+3 H  0 {1,S}
+4 Cs  0 {1,S}
+
 CO/H/De_O
 1 *1 CO  0 {2,D}, {3,S}, {4,S} 
 2 *2 Od  0 {1,D} 
@@ -7187,6 +7222,11 @@ OCddO
 OCO
 1 *1 Od 0 {2,D}
 2 *2 CO 0 {1,D}
+
+OCOCs
+1 *1 Od 0 {2,D}
+2 *2 CO 0 {1,D} {3,S}
+3  Cs 0 {2,S}
 
 Sd_R
 1 *1 Sd 0 {2,D}

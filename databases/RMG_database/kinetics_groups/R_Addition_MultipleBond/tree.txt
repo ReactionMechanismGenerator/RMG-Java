@@ -16,6 +16,8 @@ L1: R_R
         		L4: Cds-HH_Cds
                 		L5: Cds-HH_Cds-HH
                 		L5: Cds-HH_Cds-CsH
+							L6:	InChI=1S/C3H6/c1-3-2/h3H,1H2,2H3
+							L6: Cds-HH_Cds-CsH-Os
 				L5: Cds-HH_Cds-CsCs
 				L5: Cds-HH_Cds-OsH
 				L5: Cds-HH_Cds-OsCs
@@ -67,6 +69,7 @@ L1: R_R
                 			L6: Cds-HH_Cds-C=SC=S					
 			L4: Cds-CsH_Cds
                 		L5: Cds-CsH_Cds-HH
+							L6: Cds-CsH-Os_Cds-HH
                 		L5: Cds-CsH_Cds-CsH
 				L5: Cds-CsH_Cds-CsCs
 				L5: Cds-CsH_Cds-OsH
@@ -803,6 +806,7 @@ L1: R_R
               		L4: CO/H2_O
 
               		L4: CO/H/Nd_O
+						L5: CO/H/Cs
 
               		L4: CO/H/De_O
 
@@ -888,6 +892,7 @@ L1: R_R
 				L5: Ct-Ct_Ct-Cd
 				L5: Ct-Ct_Ct-Ct
 	L2: OCO
+		L3: OCOCs
 	L2: OCddO
 	L2: Sd_R
 		L3: Sd_Cd
