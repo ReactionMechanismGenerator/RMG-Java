@@ -14,8 +14,9 @@ L1: X_H_or_Xrad_H
             L4: C_pri
                 L5: C/H3/Cs
                     L6: InChI=1/C2H6/c1-2/h1-2H3
-					L6: InChI=1/C4H10O/c1-4(2)3-5/h4-5H,3H2,1-2H3/gamma
-					L6: C/H3/Cs(OH) 
+					L6: C/H3/CsOs
+					L6: C/H3/CsCsOs
+						L7: InChI=1/C4H10O/c1-4(2)3-5/h4-5H,3H2,1-2H3/gamma
                 L5: C/H3/Cd
 					L6: C/H3/Cd_Cd/H2
 					L6: C/H3/Cd_Cd/Cs
@@ -28,6 +29,7 @@ L1: X_H_or_Xrad_H
             L4: C_sec
                 L5: C/H2/NonDeC
                     L6: InChI=1/C3H8/c1-3-2/h3H2,1-2H3
+					L6: C/H2/Cs/CsOs
                     L6: C/H2/NonDeC_5ring
                         L7: C/H2/NonDeC_5ring_fused6_1
                         L7: C/H2/NonDeC_5ring_fused6_2
@@ -72,7 +74,8 @@ L1: X_H_or_Xrad_H
             L4: C_ter
                 L5: C/H/NonDeC
                     L6: C/H/Cs3
-                        L7: InChI=1/C4H10O/c1-4(2)3-5/h4-5H,3H2,1-2H3/beta
+						L7:C/H/Cs2/CsOs
+							L8: InChI=1/C4H10O/c1-4(2)3-5/h4-5H,3H2,1-2H3/beta
                         L7: C/H/Cs3_5ring
                             L8: C/H/Cs3_5ring_adj5
                             L8: C/H/Cs3_5ring_fused6
@@ -201,7 +204,8 @@ L1: Y_rad_birad
 					L6: InChI=1/C4H9O/c1-3-4(2)5/h4-5H,2-3H2,1H3
 					L6: InChI=1/C4H9O/c1-3-4(2)5/h4-5H,1,3H2,2H3
 					L6: InChI=1/C4H9O/c1-4(2,3)5/h5H,1H2,2-3H3
-					L6: InChI=1/C4H9O/c1-4(2)3-5/h4-5H,1,3H2,2H3
+					L6: C_rad/H2/CsCsOs
+						L7: InChI=1/C4H9O/c1-4(2)3-5/h4-5H,1,3H2,2H3
 					L6: InChI=1/C2H5/c1-2/h1H2,2H3
 				L5: C_rad/H2/Cd
 					L6: InChI=1/C4H7/c1-4(2)3/h1-2H2,3H3
@@ -260,7 +264,8 @@ L1: Y_rad_birad
 			L4: C_ter_rad
 				L5: C_rad/NonDe
 					L6: C_rad/Cs3
-						L7: InChI=1/C4H9O/c1-4(2)3-5/h5H,3H2,1-2H3
+						L7:C_rad/Cs2/CsOs
+							L8: InChI=1/C4H9O/c1-4(2)3-5/h5H,3H2,1-2H3
 						L7: C_rad/Cs3_5ring_fused6
 						L7: C_rad/Cs3_5ring_adj5
 					L6: C_rad/NDMustO
