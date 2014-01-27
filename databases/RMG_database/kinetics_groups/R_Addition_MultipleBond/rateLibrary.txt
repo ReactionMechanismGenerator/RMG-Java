@@ -2692,3 +2692,9 @@ Arrhenius_EP
 3114    Cds-CsH_Cds-HH                      HJ          300-2000    1.17e+08 1.68      0   2.03     0	0	0	0	2 CCSD(T)/cc-pVTZ
 // SSM Estimate
 3115   InChI=1S/C3H6/c1-3-2/h3H,1H2,2H3    CsJ-OsHH     300-2000	2.55e+03   2.562   0	5.04	0	0	0	0	5 same as 3108
+// Calculated by Enoch Dames
+3116   Cds-HH_Cds-OsH                      HJ           300-2000	6.67E+12   0.1    0	    1.544	0	0	0	0	2  ED calc RQCISD(T)/aug-cc-pVTZ with 1dHR
+3117   CsJ-HHH                             CO/H2_O      300-2000	2.16E+2    2.97   0	    3.8	    0	0	0	0	2  ED calc RQCISD(T)/aug-cc-pVTZ with 1dHR
+3118   OCOCs                               HJ           300-2000	4E+9       1.39   0	    8.577	0	0	0	0	2  ED calc RQCISD(T)/aug-cc-pVTZ with 1dHR
+
+  
