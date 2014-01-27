@@ -391,3 +391,8 @@ Arrhenius_EP
 1042. R3H_SS C_rad_out_H/NonDeO  Cs_H_out_2H       300-2500        2E-15         8.23    0.0     34.1  0       0       0       0       3 SSM CBS-QB3 with 1-dHR
 1043. R3H_SS  O_rad_out  Cs_H_out_H/NonDeC       300-2500          7E-8          6.3     0.0     19.75  0       0       0       0       3 SSM CBS-QB3 with 1-dHR
 1044. R2H_S  C_rad_out_H/NonDeC  Cs_H_out_2H     300-2500          5E-18         8.38      0.0     27.05  0       0       0       0       3 SSM CBS-QB3 with 1-dHR
+
+1045. R2H_S  C_rad_out_2H  O_H_out               600-2000          2.56E4         2.36      0.0     33.1  0       0       0       0       3  Aaron BMK/cbsb7 with 1-dHR
+1046. R4H_SSS  C_rad_out_2H  O_H_out             600-2000          9.79E3         1.91      0.0     16.7  0       0       0       0       3  Aaron BMK/cbsb7 with 1-dHR
+1047. R4H_SSS  O_rad_out  Cs_H_out_2H             600-2000          1.68E4        2.06      0.0     18.5  0       0       0       0       3  Aaron BMK/cbsb7 with 1-dHR
+  
