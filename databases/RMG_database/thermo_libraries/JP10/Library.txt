@@ -47,8 +47,11 @@ C=C1CCC=C2CCCC21	15.63   93.19   38.12   52.17   64.52   74.72   90.13   101.07 
 // Calculated by QM but enthalpy too low
 C10H14_1		17.63   93.18   38.12   52.17   64.52   74.72   90.13   101.07  117.37 	0.0     0.0     0.0     Aaron Vandeputte, add 10 kcal mol-1	
 C10H14_2                23.83   94.61   37.5    51.76   64.33   74.68   90.19   101.14  117.4 	0.0     0.0     0.0     Aaron Vandeputte, add 10 kcal mol-1
-C10H14_3		23.83   94.61   37.5    51.76   64.33   74.68   90.19   101.14  117.4 	0.0     0.0     0.0     Aaron Vandeputte, add 10 kcal mol-1
+C10H14_3		24.22   93.8    37.54   51.79   64.35   74.69   90.19   101.13  117.4 	0.0     0.0     0.0     Aaron Vandeputte, add 10 kcal mol-1
 JR7BS4			41.82   98.86   39.63   53.99   66.76   77.37   93.44   104.9   122.93 	0.0	0.0	0.0	Aaron Vandeputte, add 10 kcal mol-1
-JR4HA			16.35    84.93   34.23   49.4    62.7    73.55   89.61   100.8   117.28	0.0	0.0	0.0	Aaron Vandeputte, add 10 kcal mol-1 (is in polyring library but depending on graph RMG does not always find the same ring correction)
+C5dC5_1			-4.45	99.59   39.29   54.38   67.97   79.28   96.4    108.57  126.74	0.0	0.0	0.0	Aaron Vandeputte, H from RMG Benson, S and Cp from QM
+C5dC5_2			-2.8	98.31	39.1	54.37	68.1	79.42	96.6	108.7	126.8 	0.0	0.0	0.0	Aaron Vandeputte, H from CBS-QB3 reaction scheme, S and Cp from QM (QM estimates -13.17 kcal/mol for this component, once more illustrating that it does not work for unsaturated cyclics, RMG Benson estimates -3.4 kcal/mol -> slightly lower due to missing gauche corrections)
+C5dC5_3			-3.59	96.51   39.09   54.37   68.07   79.43   96.57   108.72  126.84 0.0     0.0     0.0     Aaron Vandeputte, H from RMG Benson, S and Cp from QM	
+
 
 

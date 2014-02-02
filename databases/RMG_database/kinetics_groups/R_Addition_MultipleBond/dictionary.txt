@@ -5,7 +5,7 @@
 //Sandeep included Y_birad in Y_rad. This enables Oa to react with multiple bond
 
 R_R
-Union {Cd_R,Ct_R,OCO,OCddO,Sd_R}
+Union {Cd_R,Ct_R,Od_R,Sd_R}
 
 Cd_R
 1 *1 C 0 {2,D}
@@ -14,8 +14,8 @@ Cd_R
 Cds_Cds
 1 *1 Cd 0 {2,D} {3,S} {4,S}
 2 *2 Cd 0 {1,D} {5,S} {6,S}
-3 R 0 {1,S}
-4 R 0 {1,S}
+3 R X {1,S}
+4 R X {1,S}
 5 R 0 {2,S}
 6 R 0 {2,S}
 
@@ -5847,17 +5847,65 @@ Cds-C=SC=S_Cds
 7 R 0 {2,S}
 8 R 0 {2,S}
 
+Cds-OJH_Cds
+1 *1 Cd 0 {2,D} {3,S} {4,S}
+2 *2 Cd 0 {1,D} {5,S} {6,S}
+3 O 1 {1,S}
+4 H 0 {1,S} 
+5 R 0 {2,S}
+6 R 0 {2,S}
+
+Cds-OJH_Cds-HH
+1 *1 Cd 0 {2,D} {3,S} {4,S}
+2 *2 Cd 0 {1,D} {5,S} {6,S}
+3 O 1 {1,S}
+4 H 0 {1,S}
+5 H 0 {2,S}
+6 H 0 {2,S}
+
+Cds-OJH_Cds-CsH
+1 *1 Cd 0 {2,D} {3,S} {4,S}
+2 *2 Cd 0 {1,D} {5,S} {6,S}
+3 O 1 {1,S}
+4 H 0 {1,S}
+5 Cs 0 {2,S}
+6 H 0 {2,S}
+
+Cds-OJNonDe_Cds
+1 *1 Cd 0 {2,D} {3,S} {4,S}
+2 *2 Cd 0 {1,D} {5,S} {6,S}
+3 O 1 {1,S}
+4 {Cs,Os,Ss} 0 {1,S}
+5 R 0 {2,S}
+6 R 0 {2,S}
+
+Cds-OJCs_Cds-HH
+1 *1 Cd 0 {2,D} {3,S} {4,S}
+2 *2 Cd 0 {1,D} {5,S} {6,S}
+3 O 1 {1,S}
+4 Cs 0 {1,S}
+5 H 0 {2,S}
+6 H 0 {2,S}
+
+Cds-OJDe_Cds
+1 *1 Cd 0 {2,D} {3,S} {4,S}
+2 *2 Cd 0 {1,D} {5,S} {6,S}
+3 O 1 {1,S}
+4 {Cd,Ct,Cb,CO} 0 {1,S}
+5 R 0 {2,S}
+6 R 0 {2,S}
+
 Cds_Cdd
 1 *1 Cd 0 {2,D} {3,S} {4,S}
 2 *2 Cdd 0 {1,D}
-3 R 0 {1,S}
-4 R 0 {1,S}
+3 R X {1,S}
+4 R X {1,S}
 
 Cds_Ca
 1 *1 Cd 0 {2,D} {3,S} {4,S}
 2 *2 Cdd 0 {1,D}, {5,D}
-3 R 0 {1,S}
-4 R 0 {1,S}
+3 R X {1,S}
+4 R X {1,S}
 5 C 0 {2,D}
 
 Cds-HH_Ca
@@ -6096,8 +6144,8 @@ Cds-C=SC=S_Ca
 Cds_Ck
 1 *1 Cd 0 {2,D} {3,S} {4,S}
 2 *2 Cdd 0 {1,D}, {5,D}
-3 R 0 {1,S}
-4 R 0 {1,S}
+3 R X {1,S}
+4 R X {1,S}
 5 Od 0 {2,D}
 
 Cds-HH_Ck
@@ -6701,8 +6749,8 @@ CO/De2_O
 Cds_Sd
 1 *1 Cd 0 {2,D} {3,S} {4,S}
 2 *2 Sd 0 {1,D}
-3 R 0 {1,S}
-4 R 0 {1,S}
+3 R X {1,S}
+4 R X {1,S}
 
 Cds-HH_Sd
 1 *1 Cd 0 {2,D} {3,S} {4,S}
@@ -7179,14 +7227,25 @@ C=S_O
 2 *2 Od 0 {1,D}
 3 S 0 {1,D}
 
-OCddO
+Od_R
+1 *1 Od 0 {2,D}
+2 *2 R 0 {1,D}
+
+Od_Cd
+1 *1 Od 0 {2,D}
+2 *2 Cd 0 {1,D} {3,S} {4,S}
+3 R 0 {2,S}
+4 R 0 {2,S}
+
+Od_Cdd
 1 *1 Od 0 {2,D}
 2 *2 Cdd 0 {1,D} {3,D}
-3 Od 0 {2,D}
+3 R 0 {2,D}
 
-OCO
+Od_Cdd-Od
 1 *1 Od 0 {2,D}
-2 *2 CO 0 {1,D}
+2 *2 Cdd 0 {1,D} {3,D}
+3 O 0 {2,D}
 
 Sd_R
 1 *1 Sd 0 {2,D}

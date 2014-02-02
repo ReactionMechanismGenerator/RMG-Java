@@ -2,21 +2,26 @@
 //                                                  //
 // the reaction adjList defining the reaction type  //
 //                                                  //
-// Jing Song, Nov. 18, 2002                         //
+// AG Vandeputte, Nov 10, 2013                      //
 //                                                  //
 //////////////////////////////////////////////////////
 
 
-// f31 Cyclic Ether Formation
+// f36 ketoenol
+// I called this reaction family ketoenol but I do not want to restrict this
+// to only enols!, also C groups can migrate!!!
 
-RnOO -> RO + OR
+R_ROR -> keton
 
 forward
-reverse(f32): OH+CyclicEther_Form_Alkyl-hydroperoxyl
+reverse(f36): none 
 
 Actions 1
-(1) BREAK_BOND		{*2,S,*3}
-(2) FORM_BOND		{*1,S,*2}
-(3) GAIN_RADICAL	{*3,1}
-(4) LOSE_RADICAL 	{*1,1}
+(1) CHANGE_BOND		{*1,-1,*2}
+(2) CHANGE_BOND		{*2,1,*3}
+(3) BREAK_BOND		{*3,S,*4}
+(4) FORM_BOND		{*4,S,*1}
+
+
+
 

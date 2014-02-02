@@ -2669,6 +2669,28 @@ Arrhenius_EP
 3098	Sd_Cds-OsCs	HJ		300-2000	5.54E+08	1.24	0	-0.35	0	0	0	0	3	CAC calc CBS-QB3 1dhr
 3099	Cds-OsH_Cds-CsH	SsJ-H		300-2000	2.10E+04	2.39	0	-5.00	0	0	0	0	3	CAC calc CBS-QB3 1dhr
 
+// Pyrolysis reactions, calculated using BMK/cbsb7
+// AG Vandeputte, I feel that these reactions might be redundant with data in the combustion core
+3100	Cds-HH_Cds-HH	O_atom_triplet	300-1500	4.42E+07	1.55	0	-0.7	0       0       0       0       4	AG Vandeputte, BMK/cbsb7
+3101    Cds-CsH_Cds-HH	O_atom_triplet  300-1500	4.17E+07	1.64	0	-1.4	0       0       0       0       4       AG Vandeputte, BMK/cbsb7
+3102	Cds-HH_Cds-CsH	O_atom_triplet	300-1500	1.06E+08	1.58	0	-2.0	0       0       0       0       4       AG Vandeputte, BMK/cbsb7
+
+3103    Cds-HH_Cds-HH   O2b  		300-1500	1.11E+02        2.90    0	31.6	0       0       0       0       4       AG Vandeputte, BMK/cbsb7
+3104    Cds-CsH_Cds-HH  O2b  		300-1500	4.42E+01        3.08    0	30.2	0       0       0       0       4       AG Vandeputte, BMK/cbsb7
+3105    Cds-HH_Cds-CsH  O2b  		300-1500	2.76E+02        2.78    0	29.8	0       0       0       0       4       AG Vandeputte, BMK/cbsb7
+3106    Cds-HH_Cds-CdH  O2b		300-1500	1.30E+02	3.01	0	23.6	0	0	0	0	4	AG Vandeputte, BMK/cbsb7
+
+3107	Cds-OJH_Cds-HH	HJ		300-1500	6.50E+06	1.86	0	6.6	0       0       0       0       4       AG Vandeputte, BMK/cbsb7
+3108	Cds-OJH_Cds-CsH	HJ		300-1500	1.08E+07	1.84	0	7.4	0       0       0       0       4       AG Vandeputte, BMK/cbsb7
+3109	Cds-OJH_Cds-HH	CsJ-HHH		300-1500	3.35E+02        2.68	0    	9.6	0       0       0       0       4       AG Vandeputte, BMK/cbsb7
+
+
+
+
+
+
+
+
 
 
 

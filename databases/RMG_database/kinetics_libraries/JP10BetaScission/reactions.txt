@@ -42,15 +42,20 @@ R5 = JR5HA1 + H			5.97E10		0.96	41.09 0.0 0.0 0.0
 //DUP
 //R5 = JR4HA + H		4.04E10		0.98	33.31 0.0 0.0 0.0   
 //DUP
-R6 = JR6BS1			6.28E11		0.72	30.74 0.0 0.0 0.0   
-R6 = JR6BS2			5.80E11		0.68	33.58 0.0 0.0 0.0   
-R6 = JR6BS3			9.38E11		0.56	30.62 0.0 0.0 0.0   
-R6 = JR6BS4			8.26E11		0.56	24.42 0.0 0.0 0.0   
-R6 = JR6BS5			1.43E12		0.61	30.70 0.0 0.0 0.0   
 
+// A.G. Vandeputte, I recalculated all reactions for R6
 
-
-R6 = JR6HA2 + H			3.55E10	1.03		42.85 0.0 0.0 0.0   
+R6 = JR6BS1			2.76E08 1.62    54.6  0.0 0.0 0.0
+//R6 = JR6BS1			6.28E11	0.72	30.74 0.0 0.0 0.0   
+R6 = JR6BS2			3.71E10 1.14    37.9  0.0 0.0 0.0
+//R6 = JR6BS2			5.80E11	0.68	33.58 0.0 0.0 0.0   
+R6 = JR6BS3			8.33E10 0.87    35.1  0.0 0.0 0.0
+//R6 = JR6BS3			9.38E11	0.56	30.62 0.0 0.0 0.0   
+R6 = JR6BS4			8.27E10	0.88	29.4  0.0 0.0 0.0
+//R6 = JR6BS4			8.26E11	0.56	24.42 0.0 0.0 0.0   
+// R6 -> JR6BS5 featured in JP10calculated
+//R6 = JR6BS5			1.43E12	0.61	30.70 0.0 0.0 0.0   
+R6 = JR6HA2 + H			3.55E10	1.03	42.85 0.0 0.0 0.0   
 
 //two pathways, but one was marked as highly suspicious
 //Instead I doubled the A-factor fo the unsuspicious pathway
@@ -105,9 +110,9 @@ JR5BS1 = pentylCPT                                      1.90E+12 0.50   37.8    
 //BR1 = MA110     					8.640e+11 0.080     0.170    0.0 0.0 0.0    
 
 // CAS-PT2 estimates of intramolecular H abstraction reactions of biradicals. UB3LYP/CBS-QB3, this work   
-//BR2 = BR2IntraD     					4.500e+09 0.650     4.810    0.0 0.0 0.0    
-//BR3 = BR3IntraD1    					2.870e+10 0.400     5.450    0.0 0.0 0.0     
-//BR3 = BR3IntraD2    					9.000e+08 0.670     5.220    0.0 0.0 0.0   
+BR2 = BR2IntraD     					4.500e+09 0.650     4.810    0.0 0.0 0.0    
+BR3 = BR3IntraD1    					2.870e+10 0.400     5.450    0.0 0.0 0.0     
+BR3 = BR3IntraD2    					9.000e+08 0.670     5.220    0.0 0.0 0.0   
 
 //Concerted isomerizations calculated by Magoon et al.   
 //G.R. Magoon, J. Aguilera-Iparraguirre, W.H. Green, J.J. Lutz, P. Piecuch, H.-W. Wong, O.O. Oluwole, Detailed chemical kinetic modeling of JP-10 
@@ -140,9 +145,4 @@ JP10 = BR6                                                      7.98E-2         
 JP10 = BR4                                                      5.0E15          0.0     81.0    0.0     0.0     0.0
 JP10 = BR5                                                      5.0E15          0.0     81.0    0.0     0.0     0.0
 JP10 = BR7                                                      5.0E15          0.0     81.0    0.0     0.0     0.0
-
-//new intradisproportion reactions calculated by gmagoon UB3LYP/CBSQB3
-BR2 = BR2ID                                                     4.50E9          0.65    4.81    0.0     0.0     0.0
-BR3 = BR3IDA                                                    2.87E10         0.40    5.45    0.0     0.0     0.0
-BR3 = BR3IDB                                                    9.00E8          0.67    5.22    0.0     0.0     0.0
 
