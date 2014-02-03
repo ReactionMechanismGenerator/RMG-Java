@@ -217,7 +217,7 @@ R3H_BB
 3 *2 Cb 0 {2,B}, {4,S}
 4 *3 H 0 {3,S}
 
-R3H_SS_OC
+R3H_SS_OOCs
 1 *1 Os 1 {2,S}
 2 *4 Os 0 {1,S}, {3,S}
 3 *2 Cs 0 {2,S}, {4,S}
@@ -284,6 +284,13 @@ R4H_SSS_OOCsCs
 2 *4 Os 0 {1,S}, {3,S}
 3 *5 Cs 0 {2,S}, {4,S}
 4 *2 Cs 0 {3,S}, {5,S}
+5 *3 H  0 {4,S}
+
+R4H_SSS_OOCsCd
+1 *1 Os 1 {2,S}
+2 *4 Os 0 {1,S}, {3,S}
+3 *5 Cs 0 {2,S}, {4,S}
+4 *2 Cd 0 {3,S}, {5,S}
 5 *3 H  0 {4,S}
 
 R4H_SSS_OO(Cs/Cs)Cs

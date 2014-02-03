@@ -256,11 +256,15 @@ public class TemplateReaction extends Reaction {
             ChemGraph cg = ((ChemGraph) fproduct.get(0));
             Graph g = cg.getGraph();
             
+            // Current max is 8 identified nodes
             Node n1 = (Node) g.getCentralNodeAt(1);
             Node n2 = (Node) g.getCentralNodeAt(2);
             Node n3 = (Node) g.getCentralNodeAt(3);
             Node n4 = (Node) g.getCentralNodeAt(4);
             Node n5 = (Node) g.getCentralNodeAt(5);
+            Node n6 = (Node) g.getCentralNodeAt(6);
+            Node n7 = (Node) g.getCentralNodeAt(7);
+            Node n8 = (Node) g.getCentralNodeAt(8);
             
             g.clearCentralNode();
             // Swap the locations of the central nodes 1 and 2
@@ -269,30 +273,45 @@ public class TemplateReaction extends Reaction {
             // Retain the location of the central node at 3
             g.setCentralNode(3, n3);
             
-            // Swap the locations of the central nodes 4 and 5, if node 5 exists
-            if (n5 != null) {
+            if (n8 != null) {
+		g.setCentralNode(4, n5);
+		g.setCentralNode(5, n4);
+		g.setCentralNode(6, n8);
+		g.setCentralNode(7, n7);
+		g.setCentralNode(8, n6);
+            } else if (n7 != null) {
+            	g.setCentralNode(4, n5);
+                g.setCentralNode(5, n4);
+                g.setCentralNode(6, n7);
+                g.setCentralNode(7, n6);
+	    } else if (n6 != null) {
+                g.setCentralNode(4, n5);
+                g.setCentralNode(5, n4);
+                g.setCentralNode(6, n6);
+            } else if (n5 != null) { // Swap the locations of the central nodes 4 and 5, if node 5 exists
             	g.setCentralNode(4, n5);
             	g.setCentralNode(5, n4);
-            } else if (n4 != null)  // if only central node 4 exists, retain that location
-            	g.setCentralNode(4, n4); 
-            
-            rr = rRT.calculateForwardRateConstant(cg, rs);
-            if (!rr.isForward()) {
-                String err = "Backward:"
-                        + structure.toString()
-                        + String.valueOf(structure
-                                .calculateKeq(new Temperature(298, "K")))
-                        + '\n';
-                err = err
-                        + "Forward:"
-                        + rr.structure.toString()
-                        + String.valueOf(rr.structure
-                                .calculateKeq(new Temperature(298, "K")));
-                throw new InvalidReactionDirectionException(err);
-            }
-            rr.setReverseReaction(this);
-            rRT.addReaction(rr);
-            return rr;
+            } else if (n4 != null) {  // if only central node 4 exists, retain that location
+            	g.setCentralNode(4, n4);
+            } 
+            k = rRT.findRateConstant(rs); 
+//            rr = rRT.calculateForwardRateConstant(cg, rs);
+//            if (!rr.isForward()) {
+//                String err = "Backward:"
+//                        + structure.toString()
+//                        + String.valueOf(structure
+//                                .calculateKeq(new Temperature(298, "K")))
+//                        + '\n';
+//                err = err
+//                        + "Forward:"
+//                        + rr.structure.toString()
+//                        + String.valueOf(rr.structure
+//                                .calculateKeq(new Temperature(298, "K")));
+//                throw new InvalidReactionDirectionException(err);
+//            }
+ //           rr.setReverseReaction(this);
+ //           rRT.addReaction(rr);
+ //           return rr;
 
         }
         if (k == null) {

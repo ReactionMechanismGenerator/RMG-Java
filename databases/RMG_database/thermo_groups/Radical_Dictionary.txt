@@ -81,7 +81,7 @@ bridgehead_norbornyl
 1     Cs     0 {3,S} {4,S} {7,S} {8,S}
 2     Cs     0 {3,S} {5,S} {6,S}
 3     Cs     0 {1,S} {2,S}
-4  *  Cs     1 {1,S} {5,S} {9,H}
+4  *  Cs     1 {1,S} {5,S} {9,S}
 5     Cs     0 {2,S} {4,S}
 6     Cs     0 {2,S} {7,S}
 7     Cs     0 {1,S} {6,S}
@@ -92,7 +92,7 @@ cyclopropane
 1   * Cs     1 {2,S} {3,S} {4,S}
 2     Cs     0 {1,S} {3,S}
 3     Cs     0 {1,S} {2,S}
-4	  H	     0 {1,S}
+4     H	     0 {1,S}
 
 cyclobutane
 1   *  Cs     1 {2,S} {4,S} {5,S}

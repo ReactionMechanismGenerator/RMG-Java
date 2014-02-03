@@ -4,7 +4,7 @@
 // In F11, I have now removed CH2 and O insertion.  I am restricting myself
 // to the CO insertion to C-H and C-C bond giving rise to "Aldehyde" and
 // "Ketone" for this reaction family.  The other reactions seem not to be
-// favourable.Especially with CH2T and Oat it is not possible.  It has to be
+// favourable. Especially with CH2T and Oat it is not possible. It has to be
 // singlet. I now feel it is not necessary.
 // note from nyee: I'm reinstating at least CH2(singlet) seeing as I have a paper with some of the rates. See rateLib for reference
 

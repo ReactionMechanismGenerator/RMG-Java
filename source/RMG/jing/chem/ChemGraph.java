@@ -281,9 +281,13 @@ public class ChemGraph implements Matchable {
                     	Iterator neighbors = n.getNeighbor();
                     	int number_of_double_bonds = 0;
                     
-                    	if(a.isCarbon()){
-                    		number_of_carbon_atoms[i]++;
-                    	}
+                    	if (a.isCarbon()) {
+                    	   number_of_carbon_atoms[i]++;
+			} else {
+				updatedAromaticList[i] = false;
+                                alreadyClassified[i]=1;
+			}
+
                     	while (neighbors.hasNext()) {
                             Arc nodeA = (Arc) neighbors.next();
                             double order = ((Bond) (nodeA.getElement()))
@@ -297,7 +301,7 @@ public class ChemGraph implements Matchable {
                             	alreadyClassified[i]=1;
                             }
                         }
-                       if (number_of_double_bonds == 2) {
+                        if (number_of_double_bonds == 2) {
                     	   // If the atom has two double bonds, update classification of ring to false
                     	   // Also record this ring in alreadyClassified list so as not to send for reclassification
                     	    updatedAromaticList[i] = false;

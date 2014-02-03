@@ -1,12 +1,18 @@
 // tree for f02: Radical Addition to Multiple Bond
 
 // SR, Jan. 30, 2003
-
 // CDW : since having both Cd/H/H and Cd/H2, Cd/Nd/Nd and Cd/Nd2, Cd/De/De and Cd/De2 at the same time
-
 // are confusing, made them uniform as Cd/H2, Cd/Nd2, and Cd/De2. 03/25/03
-
-
+// AG Vandeputte, tree completely redesigned
+// Legend:
+// 	X_Y : double bond between X and Y
+//	X-R1R2_Y-R3R4 : R1 and R2 ligands of X, R3 and R4 ligands of Y
+// I also updated the definitions to account for beta scissions in birads
+// X*-Y(A)-Z* -> X=Y-Z* + A*
+//	Cd-OJH_Cd-HH : addition to double bond next to radical site
+// I did not account for the following type of groups
+//	Cd-HH_Cd-OJH
+// as I feel this is rather a recombination reaction
 
 // f02_radical_addition_to_multiple_bond
 
@@ -16,8 +22,8 @@ L1: R_R
         		L4: Cds-HH_Cds
                 		L5: Cds-HH_Cds-HH
                 		L5: Cds-HH_Cds-CsH
-							L6:	InChI=1S/C3H6/c1-3-2/h3H,1H2,2H3
-							L6: Cds-HH_Cds-CsH-Os
+					L6: Cds-HH_Cds-Cs\H3/H
+					L6: Cds-HH_Cds-CsH-Os
 				L5: Cds-HH_Cds-CsCs
 				L5: Cds-HH_Cds-OsH
 				L5: Cds-HH_Cds-OsCs
@@ -69,7 +75,7 @@ L1: R_R
                 			L6: Cds-HH_Cds-C=SC=S					
 			L4: Cds-CsH_Cds
                 		L5: Cds-CsH_Cds-HH
-							L6: Cds-CsH-Os_Cds-HH
+					L6: Cds-CsH-Os_Cds-HH
                 		L5: Cds-CsH_Cds-CsH
 				L5: Cds-CsH_Cds-CsCs
 				L5: Cds-CsH_Cds-OsH
@@ -680,6 +686,12 @@ L1: R_R
 				L5: Cds-COCO_Cds
 				L5: Cds-COC=S_Cds
 				L5: Cds-C=SC=S_Cds
+                        L4: Cds-OJH_Cds
+				L5: Cds-OJH_Cds-HH
+                                L5: Cds-OJH_Cds-CsH
+			L4: Cds-OJNonDe_Cds
+				L5: Cds-OJCs_Cds-HH
+			L4: Cds-OJDe_Cds
         	L3: Cds_Cdd
            		L4: Cds_Ca
               			L5: Cds-HH_Ca
@@ -794,26 +806,17 @@ L1: R_R
 // Not adapted
 
 	       	L3: Cdd_Od
-
              		L4: CO2
-
             		L4: Ck_O
-
                         L4: C=S_O
 
         	L3: CO_O
-
               		L4: CO/H2_O
-
               		L4: CO/H/Nd_O
-						L5: CO/H/Cs
-
+				L5: CO/H/Cs
               		L4: CO/H/De_O
-
               		L4: CO/Nd2_O
-
               		L4: CO/Nd/De_O
-
               		L4: CO/De2_O
 
 // Untill here
@@ -891,9 +894,11 @@ L1: R_R
 				L5: Ct-Cd_Ct-Ct
 				L5: Ct-Ct_Ct-Cd
 				L5: Ct-Ct_Ct-Ct
-	L2: OCO
-		L3: OCOCs
-	L2: OCddO
+	L2: Od_R
+		L3: Od_Cd
+			L4: Od_Cd-CsH
+		L3: Od_Cdd
+			L4: Od_Cdd-Od
 	L2: Sd_R
 		L3: Sd_Cd
 			L4: Sd_Cds-HH

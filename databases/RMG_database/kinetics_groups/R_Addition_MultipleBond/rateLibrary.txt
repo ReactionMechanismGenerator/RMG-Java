@@ -163,10 +163,10 @@ Arrhenius_EP
 157	Cds-HH_Cds-CtH	CsJ-CtHH	300-1500	1.38E+04	2.41	0	6.09	0	0	0	0	4	Aäron Vandeputte GAVs CBS-QB3
 158	Cds-HH_Cds-CtH	CsJ-CtCsH	300-1500	3.12E+03	2.41	0	5.62	0	0	0	0	4	Aäron Vandeputte GAVs CBS-QB3
 159	Cds-HH_Cds-CtH	CsJ-CtCsCs	300-1500	7.95E+02	2.41	0	4.94	0	0	0	0	4	Aäron Vandeputte GAVs CBS-QB3
-160	Cds-HH_Cds-CtH	CdsJ-H	300-1500	2.09E+04	2.41	0	-1.46	0	0	0	0	4	Aäron Vandeputte GAVs CBS-QB3
-161	Cds-HH_Cds-CtH	CdsJ-Cs	300-1500	1.11E+04	2.41	0	-1.67	0	0	0	0	4	Aäron Vandeputte GAVs CBS-QB3
-162	Cds-HH_Cds-CtH	CbJ	300-1500	3.30E+04	2.41	0	-3.85	0	0	0	0	4	Aäron Vandeputte GAVs CBS-QB3
-163	Cds-HH_Cds-CtCs	CsJ-HHH	300-1500	3.13E+04	2.41	0	2.28	0	0	0	0	4	Aäron Vandeputte GAVs CBS-QB3
+160	Cds-HH_Cds-CtH	CdsJ-H		300-1500	2.09E+04	2.41	0	-1.46	0	0	0	0	4	Aäron Vandeputte GAVs CBS-QB3
+161	Cds-HH_Cds-CtH	CdsJ-Cs		300-1500	1.11E+04	2.41	0	-1.67	0	0	0	0	4	Aäron Vandeputte GAVs CBS-QB3
+162	Cds-HH_Cds-CtH	CbJ		300-1500	3.30E+04	2.41	0	-3.85	0	0	0	0	4	Aäron Vandeputte GAVs CBS-QB3
+163	Cds-HH_Cds-CtCs	CsJ-HHH		300-1500	3.13E+04	2.41	0	2.28	0	0	0	0	4	Aäron Vandeputte GAVs CBS-QB3
 164	Cds-HH_Cds-CtCs	CsJ-CsHH	300-1500	3.18E+03	2.41	0	1.71	0	0	0	0	4	Aäron Vandeputte GAVs CBS-QB3
 165	Cds-HH_Cds-CtCs	CsJ-CsCsH	300-1500	2.55E+03	2.41	0	0.52	0	0	0	0	4	Aäron Vandeputte GAVs CBS-QB3
 166	Cds-HH_Cds-CtCs	CsJ-CsCsCs	300-1500	1.89E+03	2.41	0	-0.90	0	0	0	0	4	Aäron Vandeputte GAVs CBS-QB3
@@ -181,10 +181,10 @@ Arrhenius_EP
 175	Cds-HH_Cds-CtCs	CsJ-CtHH	300-1500	1.42E+04	2.41	0	6.00	0	0	0	0	4	Aäron Vandeputte GAVs CBS-QB3
 176	Cds-HH_Cds-CtCs	CsJ-CtCsH	300-1500	3.19E+03	2.41	0	5.54	0	0	0	0	4	Aäron Vandeputte GAVs CBS-QB3
 177	Cds-HH_Cds-CtCs	CsJ-CtCsCs	300-1500	8.14E+02	2.41	0	4.86	0	0	0	0	4	Aäron Vandeputte GAVs CBS-QB3
-178	Cds-HH_Cds-CtCs	CdsJ-H	300-1500	2.14E+04	2.41	0	-1.55	0	0	0	0	4	Aäron Vandeputte GAVs CBS-QB3
-179	Cds-HH_Cds-CtCs	CdsJ-Cs	300-1500	1.14E+04	2.41	0	-1.76	0	0	0	0	4	Aäron Vandeputte GAVs CBS-QB3
-180	Cds-HH_Cds-CtCs	CbJ	300-1500	3.38E+04	2.41	0	-3.93	0	0	0	0	4	Aäron Vandeputte GAVs CBS-QB3
-181	Cds-HH_Ca	CsJ-HHH	300-1500	2.26E+04	2.41	0	6.20	0	0	0	0	4	Aäron Vandeputte GAVs CBS-QB3
+178	Cds-HH_Cds-CtCs	CdsJ-H		300-1500	2.14E+04	2.41	0	-1.55	0	0	0	0	4	Aäron Vandeputte GAVs CBS-QB3
+179	Cds-HH_Cds-CtCs	CdsJ-Cs		300-1500	1.14E+04	2.41	0	-1.76	0	0	0	0	4	Aäron Vandeputte GAVs CBS-QB3
+180	Cds-HH_Cds-CtCs	CbJ		300-1500	3.38E+04	2.41	0	-3.93	0	0	0	0	4	Aäron Vandeputte GAVs CBS-QB3
+181	Cds-HH_Ca	CsJ-HHH		300-1500	2.26E+04	2.41	0	6.20	0	0	0	0	4	Aäron Vandeputte GAVs CBS-QB3
 182	Cds-HH_Ca	CsJ-CsHH	300-1500	2.29E+03	2.41	0	5.63	0	0	0	0	4	Aäron Vandeputte GAVs CBS-QB3
 183	Cds-HH_Ca	CsJ-CsCsH	300-1500	1.84E+03	2.41	0	4.43	0	0	0	0	4	Aäron Vandeputte GAVs CBS-QB3
 184	Cds-HH_Ca	CsJ-CsCsCs	300-1500	1.36E+03	2.41	0	3.02	0	0	0	0	4	Aäron Vandeputte GAVs CBS-QB3
@@ -199,10 +199,10 @@ Arrhenius_EP
 193	Cds-HH_Ca	CsJ-CtHH	300-1500	1.02E+04	2.41	0	9.91	0	0	0	0	4	Aäron Vandeputte GAVs CBS-QB3
 194	Cds-HH_Ca	CsJ-CtCsH	300-1500	2.30E+03	2.41	0	9.45	0	0	0	0	4	Aäron Vandeputte GAVs CBS-QB3
 195	Cds-HH_Ca	CsJ-CtCsCs	300-1500	5.88E+02	2.41	0	8.77	0	0	0	0	4	Aäron Vandeputte GAVs CBS-QB3
-196	Cds-HH_Ca	CdsJ-H	300-1500	1.54E+04	2.41	0	2.37	0	0	0	0	4	Aäron Vandeputte GAVs CBS-QB3
-197	Cds-HH_Ca	CdsJ-Cs	300-1500	8.19E+03	2.41	0	2.15	0	0	0	0	4	Aäron Vandeputte GAVs CBS-QB3
-198	Cds-HH_Ca	CbJ	300-1500	2.44E+04	2.41	0	-0.02	0	0	0	0	4	Aäron Vandeputte GAVs CBS-QB3
-199	Cds-CsH_Cds-HH	CsJ-HHH	300-1500	1.00E+04	2.41	0	7.11	0	0	0	0	4	Aäron Vandeputte GAVs CBS-QB3
+196	Cds-HH_Ca	CdsJ-H		300-1500	1.54E+04	2.41	0	2.37	0	0	0	0	4	Aäron Vandeputte GAVs CBS-QB3
+197	Cds-HH_Ca	CdsJ-Cs		300-1500	8.19E+03	2.41	0	2.15	0	0	0	0	4	Aäron Vandeputte GAVs CBS-QB3
+198	Cds-HH_Ca	CbJ		300-1500	2.44E+04	2.41	0	-0.02	0	0	0	0	4	Aäron Vandeputte GAVs CBS-QB3
+199	Cds-CsH_Cds-HH	CsJ-HHH		300-1500	1.00E+04	2.41	0	7.11	0	0	0	0	4	Aäron Vandeputte GAVs CBS-QB3
 200	Cds-CsH_Cds-HH	CsJ-CsHH	300-1500	1.02E+03	2.41	0	6.54	0	0	0	0	4	Aäron Vandeputte GAVs CBS-QB3
 201	Cds-CsH_Cds-HH	CsJ-CsCsH	300-1500	8.18E+02	2.41	0	5.35	0	0	0	0	4	Aäron Vandeputte GAVs CBS-QB3
 202	Cds-CsH_Cds-HH	CsJ-CsCsCs	300-1500	6.06E+02	2.41	0	3.93	0	0	0	0	4	Aäron Vandeputte GAVs CBS-QB3
@@ -217,10 +217,10 @@ Arrhenius_EP
 211	Cds-CsH_Cds-HH	CsJ-CtHH	300-1500	4.54E+03	2.41	0	10.83	0	0	0	0	4	Aäron Vandeputte GAVs CBS-QB3
 212	Cds-CsH_Cds-HH	CsJ-CtCsH	300-1500	1.02E+03	2.41	0	10.36	0	0	0	0	4	Aäron Vandeputte GAVs CBS-QB3
 213	Cds-CsH_Cds-HH	CsJ-CtCsCs	300-1500	2.61E+02	2.41	0	9.68	0	0	0	0	4	Aäron Vandeputte GAVs CBS-QB3
-214	Cds-CsH_Cds-HH	CdsJ-H	300-1500	6.87E+03	2.41	0	3.28	0	0	0	0	4	Aäron Vandeputte GAVs CBS-QB3
-215	Cds-CsH_Cds-HH	CdsJ-Cs	300-1500	3.64E+03	2.41	0	3.07	0	0	0	0	4	Aäron Vandeputte GAVs CBS-QB3
-216	Cds-CsH_Cds-HH	CbJ	300-1500	1.08E+04	2.41	0	0.89	0	0	0	0	4	Aäron Vandeputte GAVs CBS-QB3
-217	Cds-CsH_Cds-CsH	CsJ-HHH	300-1500	1.01E+04	2.41	0	6.80	0	0	0	0	4	Aäron Vandeputte GAVs CBS-QB3
+214	Cds-CsH_Cds-HH	CdsJ-H		300-1500	6.87E+03	2.41	0	3.28	0	0	0	0	4	Aäron Vandeputte GAVs CBS-QB3
+215	Cds-CsH_Cds-HH	CdsJ-Cs		300-1500	3.64E+03	2.41	0	3.07	0	0	0	0	4	Aäron Vandeputte GAVs CBS-QB3
+216	Cds-CsH_Cds-HH	CbJ		300-1500	1.08E+04	2.41	0	0.89	0	0	0	0	4	Aäron Vandeputte GAVs CBS-QB3
+217	Cds-CsH_Cds-CsH	CsJ-HHH		300-1500	1.01E+04	2.41	0	6.80	0	0	0	0	4	Aäron Vandeputte GAVs CBS-QB3
 218	Cds-CsH_Cds-CsH	CsJ-CsHH	300-1500	1.02E+03	2.41	0	6.23	0	0	0	0	4	Aäron Vandeputte GAVs CBS-QB3
 219	Cds-CsH_Cds-CsH	CsJ-CsCsH	300-1500	8.21E+02	2.41	0	5.03	0	0	0	0	4	Aäron Vandeputte GAVs CBS-QB3
 220	Cds-CsH_Cds-CsH	CsJ-CsCsCs	300-1500	6.08E+02	2.41	0	3.62	0	0	0	0	4	Aäron Vandeputte GAVs CBS-QB3
@@ -235,10 +235,10 @@ Arrhenius_EP
 229	Cds-CsH_Cds-CsH	CsJ-CtHH	300-1500	4.56E+03	2.41	0	10.51	0	0	0	0	4	Aäron Vandeputte GAVs CBS-QB3
 230	Cds-CsH_Cds-CsH	CsJ-CtCsH	300-1500	1.03E+03	2.41	0	10.05	0	0	0	0	4	Aäron Vandeputte GAVs CBS-QB3
 231	Cds-CsH_Cds-CsH	CsJ-CtCsCs	300-1500	2.62E+02	2.41	0	9.37	0	0	0	0	4	Aäron Vandeputte GAVs CBS-QB3
-232	Cds-CsH_Cds-CsH	CdsJ-H	300-1500	6.90E+03	2.41	0	2.97	0	0	0	0	4	Aäron Vandeputte GAVs CBS-QB3
-233	Cds-CsH_Cds-CsH	CdsJ-Cs	300-1500	3.66E+03	2.41	0	2.75	0	0	0	0	4	Aäron Vandeputte GAVs CBS-QB3
-234	Cds-CsH_Cds-CsH	CbJ	300-1500	1.09E+04	2.41	0	0.58	0	0	0	0	4	Aäron Vandeputte GAVs CBS-QB3
-235	Cds-CsH_Cds-CsCs	CsJ-HHH	300-1500	1.27E+04	2.41	0	6.41	0	0	0	0	4	Aäron Vandeputte GAVs CBS-QB3
+232	Cds-CsH_Cds-CsH	CdsJ-H		300-1500	6.90E+03	2.41	0	2.97	0	0	0	0	4	Aäron Vandeputte GAVs CBS-QB3
+233	Cds-CsH_Cds-CsH	CdsJ-Cs		300-1500	3.66E+03	2.41	0	2.75	0	0	0	0	4	Aäron Vandeputte GAVs CBS-QB3
+234	Cds-CsH_Cds-CsH	CbJ		300-1500	1.09E+04	2.41	0	0.58	0	0	0	0	4	Aäron Vandeputte GAVs CBS-QB3
+235	Cds-CsH_Cds-CsCs	CsJ-HHH		300-1500	1.27E+04	2.41	0	6.41	0	0	0	0	4	Aäron Vandeputte GAVs CBS-QB3
 236	Cds-CsH_Cds-CsCs	CsJ-CsHH	300-1500	1.29E+03	2.41	0	5.84	0	0	0	0	4	Aäron Vandeputte GAVs CBS-QB3
 237	Cds-CsH_Cds-CsCs	CsJ-CsCsH	300-1500	1.03E+03	2.41	0	4.65	0	0	0	0	4	Aäron Vandeputte GAVs CBS-QB3
 238	Cds-CsH_Cds-CsCs	CsJ-CsCsCs	300-1500	7.65E+02	2.41	0	3.23	0	0	0	0	4	Aäron Vandeputte GAVs CBS-QB3
@@ -253,10 +253,10 @@ Arrhenius_EP
 247	Cds-CsH_Cds-CsCs	CsJ-CtHH	300-1500	5.74E+03	2.41	0	10.13	0	0	0	0	4	Aäron Vandeputte GAVs CBS-QB3
 248	Cds-CsH_Cds-CsCs	CsJ-CtCsH	300-1500	1.29E+03	2.41	0	9.67	0	0	0	0	4	Aäron Vandeputte GAVs CBS-QB3
 249	Cds-CsH_Cds-CsCs	CsJ-CtCsCs	300-1500	3.30E+02	2.41	0	8.98	0	0	0	0	4	Aäron Vandeputte GAVs CBS-QB3
-250	Cds-CsH_Cds-CsCs	CdsJ-H	300-1500	8.68E+03	2.41	0	2.58	0	0	0	0	4	Aäron Vandeputte GAVs CBS-QB3
-251	Cds-CsH_Cds-CsCs	CdsJ-Cs	300-1500	4.60E+03	2.41	0	2.37	0	0	0	0	4	Aäron Vandeputte GAVs CBS-QB3
-252	Cds-CsH_Cds-CsCs	CbJ	300-1500	1.37E+04	2.41	0	0.20	0	0	0	0	4	Aäron Vandeputte GAVs CBS-QB3
-253	Cds-CsH_Cds-CdH	CsJ-HHH	300-1500	1.13E+04	2.41	0	4.00	0	0	0	0	4	Aäron Vandeputte GAVs CBS-QB3
+250	Cds-CsH_Cds-CsCs	CdsJ-H		300-1500	8.68E+03	2.41	0	2.58	0	0	0	0	4	Aäron Vandeputte GAVs CBS-QB3
+251	Cds-CsH_Cds-CsCs	CdsJ-Cs		300-1500	4.60E+03	2.41	0	2.37	0	0	0	0	4	Aäron Vandeputte GAVs CBS-QB3
+252	Cds-CsH_Cds-CsCs	CbJ		300-1500	1.37E+04	2.41	0	0.20	0	0	0	0	4	Aäron Vandeputte GAVs CBS-QB3
+253	Cds-CsH_Cds-CdH	CsJ-HHH		300-1500	1.13E+04	2.41	0	4.00	0	0	0	0	4	Aäron Vandeputte GAVs CBS-QB3
 254	Cds-CsH_Cds-CdH	CsJ-CsHH	300-1500	1.15E+03	2.41	0	3.43	0	0	0	0	4	Aäron Vandeputte GAVs CBS-QB3
 255	Cds-CsH_Cds-CdH	CsJ-CsCsH	300-1500	9.22E+02	2.41	0	2.24	0	0	0	0	4	Aäron Vandeputte GAVs CBS-QB3
 256	Cds-CsH_Cds-CdH	CsJ-CsCsCs	300-1500	6.83E+02	2.41	0	0.82	0	0	0	0	4	Aäron Vandeputte GAVs CBS-QB3
@@ -271,10 +271,10 @@ Arrhenius_EP
 265	Cds-CsH_Cds-CdH	CsJ-CtHH	300-1500	5.12E+03	2.41	0	7.72	0	0	0	0	4	Aäron Vandeputte GAVs CBS-QB3
 266	Cds-CsH_Cds-CdH	CsJ-CtCsH	300-1500	1.15E+03	2.41	0	7.26	0	0	0	0	4	Aäron Vandeputte GAVs CBS-QB3
 267	Cds-CsH_Cds-CdH	CsJ-CtCsCs	300-1500	2.95E+02	2.41	0	6.58	0	0	0	0	4	Aäron Vandeputte GAVs CBS-QB3
-268	Cds-CsH_Cds-CdH	CdsJ-H	300-1500	7.74E+03	2.41	0	0.17	0	0	0	0	4	Aäron Vandeputte GAVs CBS-QB3
-269	Cds-CsH_Cds-CdH	CdsJ-Cs	300-1500	4.11E+03	2.41	0	-0.04	0	0	0	0	4	Aäron Vandeputte GAVs CBS-QB3
-270	Cds-CsH_Cds-CdH	CbJ	300-1500	1.22E+04	2.41	0	-2.21	0	0	0	0	4	Aäron Vandeputte GAVs CBS-QB3
-271	Cds-CsH_Cds-CdCs	CsJ-HHH	300-1500	1.28E+04	2.41	0	3.58	0	0	0	0	4	Aäron Vandeputte GAVs CBS-QB3
+268	Cds-CsH_Cds-CdH	CdsJ-H		300-1500	7.74E+03	2.41	0	0.17	0	0	0	0	4	Aäron Vandeputte GAVs CBS-QB3
+269	Cds-CsH_Cds-CdH	CdsJ-Cs		300-1500	4.11E+03	2.41	0	-0.04	0	0	0	0	4	Aäron Vandeputte GAVs CBS-QB3
+270	Cds-CsH_Cds-CdH	CbJ		300-1500	1.22E+04	2.41	0	-2.21	0	0	0	0	4	Aäron Vandeputte GAVs CBS-QB3
+271	Cds-CsH_Cds-CdCs	CsJ-HHH		300-1500	1.28E+04	2.41	0	3.58	0	0	0	0	4	Aäron Vandeputte GAVs CBS-QB3
 272	Cds-CsH_Cds-CdCs	CsJ-CsHH	300-1500	1.30E+03	2.41	0	3.01	0	0	0	0	4	Aäron Vandeputte GAVs CBS-QB3
 273	Cds-CsH_Cds-CdCs	CsJ-CsCsH	300-1500	1.05E+03	2.41	0	1.82	0	0	0	0	4	Aäron Vandeputte GAVs CBS-QB3
 274	Cds-CsH_Cds-CdCs	CsJ-CsCsCs	300-1500	7.75E+02	2.41	0	0.41	0	0	0	0	4	Aäron Vandeputte GAVs CBS-QB3
@@ -289,10 +289,10 @@ Arrhenius_EP
 283	Cds-CsH_Cds-CdCs	CsJ-CtHH	300-1500	5.81E+03	2.41	0	7.30	0	0	0	0	4	Aäron Vandeputte GAVs CBS-QB3
 284	Cds-CsH_Cds-CdCs	CsJ-CtCsH	300-1500	1.31E+03	2.41	0	6.84	0	0	0	0	4	Aäron Vandeputte GAVs CBS-QB3
 285	Cds-CsH_Cds-CdCs	CsJ-CtCsCs	300-1500	3.34E+02	2.41	0	6.16	0	0	0	0	4	Aäron Vandeputte GAVs CBS-QB3
-286	Cds-CsH_Cds-CdCs	CdsJ-H	300-1500	8.79E+03	2.41	0	-0.24	0	0	0	0	4	Aäron Vandeputte GAVs CBS-QB3
-287	Cds-CsH_Cds-CdCs	CdsJ-Cs	300-1500	4.66E+03	2.41	0	-0.46	0	0	0	0	4	Aäron Vandeputte GAVs CBS-QB3
-288	Cds-CsH_Cds-CdCs	CbJ	300-1500	1.39E+04	2.41	0	-2.63	0	0	0	0	4	Aäron Vandeputte GAVs CBS-QB3
-289	Cds-CsH_Cds-CdCd	CsJ-HHH	300-1500	3.91E+04	2.41	0	2.68	0	0	0	0	4	Aäron Vandeputte GAVs CBS-QB3
+286	Cds-CsH_Cds-CdCs	CdsJ-H		300-1500	8.79E+03	2.41	0	-0.24	0	0	0	0	4	Aäron Vandeputte GAVs CBS-QB3
+287	Cds-CsH_Cds-CdCs	CdsJ-Cs		300-1500	4.66E+03	2.41	0	-0.46	0	0	0	0	4	Aäron Vandeputte GAVs CBS-QB3
+288	Cds-CsH_Cds-CdCs	CbJ		300-1500	1.39E+04	2.41	0	-2.63	0	0	0	0	4	Aäron Vandeputte GAVs CBS-QB3
+289	Cds-CsH_Cds-CdCd	CsJ-HHH		300-1500	3.91E+04	2.41	0	2.68	0	0	0	0	4	Aäron Vandeputte GAVs CBS-QB3
 290	Cds-CsH_Cds-CdCd	CsJ-CsHH	300-1500	3.98E+03	2.41	0	2.11	0	0	0	0	4	Aäron Vandeputte GAVs CBS-QB3
 291	Cds-CsH_Cds-CdCd	CsJ-CsCsH	300-1500	3.19E+03	2.41	0	0.92	0	0	0	0	4	Aäron Vandeputte GAVs CBS-QB3
 292	Cds-CsH_Cds-CdCd	CsJ-CsCsCs	300-1500	2.36E+03	2.41	0	-0.50	0	0	0	0	4	Aäron Vandeputte GAVs CBS-QB3
@@ -307,10 +307,10 @@ Arrhenius_EP
 301	Cds-CsH_Cds-CdCd	CsJ-CtHH	300-1500	1.77E+04	2.41	0	6.40	0	0	0	0	4	Aäron Vandeputte GAVs CBS-QB3
 302	Cds-CsH_Cds-CdCd	CsJ-CtCsH	300-1500	3.99E+03	2.41	0	5.94	0	0	0	0	4	Aäron Vandeputte GAVs CBS-QB3
 303	Cds-CsH_Cds-CdCd	CsJ-CtCsCs	300-1500	1.02E+03	2.41	0	5.26	0	0	0	0	4	Aäron Vandeputte GAVs CBS-QB3
-304	Cds-CsH_Cds-CdCd	CdsJ-H	300-1500	2.68E+04	2.41	0	-1.15	0	0	0	0	4	Aäron Vandeputte GAVs CBS-QB3
-305	Cds-CsH_Cds-CdCd	CdsJ-Cs	300-1500	1.42E+04	2.41	0	-1.36	0	0	0	0	4	Aäron Vandeputte GAVs CBS-QB3
-306	Cds-CsH_Cds-CdCd	CbJ	300-1500	4.23E+04	2.41	0	-3.53	0	0	0	0	4	Aäron Vandeputte GAVs CBS-QB3
-307	Cds-CsH_Cds-CbH	CsJ-HHH	300-1500	3.69E+03	2.41	0	5.76	0	0	0	0	4	Aäron Vandeputte GAVs CBS-QB3
+304	Cds-CsH_Cds-CdCd	CdsJ-H		300-1500	2.68E+04	2.41	0	-1.15	0	0	0	0	4	Aäron Vandeputte GAVs CBS-QB3
+305	Cds-CsH_Cds-CdCd	CdsJ-Cs		300-1500	1.42E+04	2.41	0	-1.36	0	0	0	0	4	Aäron Vandeputte GAVs CBS-QB3
+306	Cds-CsH_Cds-CdCd	CbJ		300-1500	4.23E+04	2.41	0	-3.53	0	0	0	0	4	Aäron Vandeputte GAVs CBS-QB3
+307	Cds-CsH_Cds-CbH	CsJ-HHH		300-1500	3.69E+03	2.41	0	5.76	0	0	0	0	4	Aäron Vandeputte GAVs CBS-QB3
 308	Cds-CsH_Cds-CbH	CsJ-CsHH	300-1500	3.75E+02	2.41	0	5.19	0	0	0	0	4	Aäron Vandeputte GAVs CBS-QB3
 309	Cds-CsH_Cds-CbH	CsJ-CsCsH	300-1500	3.01E+02	2.41	0	3.99	0	0	0	0	4	Aäron Vandeputte GAVs CBS-QB3
 310	Cds-CsH_Cds-CbH	CsJ-CsCsCs	300-1500	2.23E+02	2.41	0	2.58	0	0	0	0	4	Aäron Vandeputte GAVs CBS-QB3
@@ -325,10 +325,10 @@ Arrhenius_EP
 319	Cds-CsH_Cds-CbH	CsJ-CtHH	300-1500	1.67E+03	2.41	0	9.47	0	0	0	0	4	Aäron Vandeputte GAVs CBS-QB3
 320	Cds-CsH_Cds-CbH	CsJ-CtCsH	300-1500	3.77E+02	2.41	0	9.01	0	0	0	0	4	Aäron Vandeputte GAVs CBS-QB3
 321	Cds-CsH_Cds-CbH	CsJ-CtCsCs	300-1500	9.61E+01	2.41	0	8.33	0	0	0	0	4	Aäron Vandeputte GAVs CBS-QB3
-322	Cds-CsH_Cds-CbH	CdsJ-H	300-1500	2.53E+03	2.41	0	1.93	0	0	0	0	4	Aäron Vandeputte GAVs CBS-QB3
-323	Cds-CsH_Cds-CbH	CdsJ-Cs	300-1500	1.34E+03	2.41	0	1.71	0	0	0	0	4	Aäron Vandeputte GAVs CBS-QB3
-324	Cds-CsH_Cds-CbH	CbJ	300-1500	3.99E+03	2.41	0	-0.46	0	0	0	0	4	Aäron Vandeputte GAVs CBS-QB3
-325	Cds-CsH_Cds-CbCs	CsJ-HHH	300-1500	7.84E+03	2.41	0	5.60	0	0	0	0	4	Aäron Vandeputte GAVs CBS-QB3
+322	Cds-CsH_Cds-CbH	CdsJ-H		300-1500	2.53E+03	2.41	0	1.93	0	0	0	0	4	Aäron Vandeputte GAVs CBS-QB3
+323	Cds-CsH_Cds-CbH	CdsJ-Cs		300-1500	1.34E+03	2.41	0	1.71	0	0	0	0	4	Aäron Vandeputte GAVs CBS-QB3
+324	Cds-CsH_Cds-CbH	CbJ		300-1500	3.99E+03	2.41	0	-0.46	0	0	0	0	4	Aäron Vandeputte GAVs CBS-QB3
+325	Cds-CsH_Cds-CbCs	CsJ-HHH		300-1500	7.84E+03	2.41	0	5.60	0	0	0	0	4	Aäron Vandeputte GAVs CBS-QB3
 326	Cds-CsH_Cds-CbCs	CsJ-CsHH	300-1500	7.96E+02	2.41	0	5.03	0	0	0	0	4	Aäron Vandeputte GAVs CBS-QB3
 327	Cds-CsH_Cds-CbCs	CsJ-CsCsH	300-1500	6.38E+02	2.41	0	3.83	0	0	0	0	4	Aäron Vandeputte GAVs CBS-QB3
 328	Cds-CsH_Cds-CbCs	CsJ-CsCsCs	300-1500	4.73E+02	2.41	0	2.42	0	0	0	0	4	Aäron Vandeputte GAVs CBS-QB3
@@ -343,10 +343,10 @@ Arrhenius_EP
 337	Cds-CsH_Cds-CbCs	CsJ-CtHH	300-1500	3.54E+03	2.41	0	9.31	0	0	0	0	4	Aäron Vandeputte GAVs CBS-QB3
 338	Cds-CsH_Cds-CbCs	CsJ-CtCsH	300-1500	7.99E+02	2.41	0	8.85	0	0	0	0	4	Aäron Vandeputte GAVs CBS-QB3
 339	Cds-CsH_Cds-CbCs	CsJ-CtCsCs	300-1500	2.04E+02	2.41	0	8.17	0	0	0	0	4	Aäron Vandeputte GAVs CBS-QB3
-340	Cds-CsH_Cds-CbCs	CdsJ-H	300-1500	5.36E+03	2.41	0	1.77	0	0	0	0	4	Aäron Vandeputte GAVs CBS-QB3
-341	Cds-CsH_Cds-CbCs	CdsJ-Cs	300-1500	2.84E+03	2.41	0	1.55	0	0	0	0	4	Aäron Vandeputte GAVs CBS-QB3
-342	Cds-CsH_Cds-CbCs	CbJ	300-1500	8.47E+03	2.41	0	-0.62	0	0	0	0	4	Aäron Vandeputte GAVs CBS-QB3
-343	Cds-CsH_Cds-CtH	CsJ-HHH	300-1500	1.47E+04	2.41	0	3.85	0	0	0	0	4	Aäron Vandeputte GAVs CBS-QB3
+340	Cds-CsH_Cds-CbCs	CdsJ-H		300-1500	5.36E+03	2.41	0	1.77	0	0	0	0	4	Aäron Vandeputte GAVs CBS-QB3
+341	Cds-CsH_Cds-CbCs	CdsJ-Cs		300-1500	2.84E+03	2.41	0	1.55	0	0	0	0	4	Aäron Vandeputte GAVs CBS-QB3
+342	Cds-CsH_Cds-CbCs	CbJ		300-1500	8.47E+03	2.41	0	-0.62	0	0	0	0	4	Aäron Vandeputte GAVs CBS-QB3
+343	Cds-CsH_Cds-CtH	CsJ-HHH		300-1500	1.47E+04	2.41	0	3.85	0	0	0	0	4	Aäron Vandeputte GAVs CBS-QB3
 344	Cds-CsH_Cds-CtH	CsJ-CsHH	300-1500	1.49E+03	2.41	0	3.28	0	0	0	0	4	Aäron Vandeputte GAVs CBS-QB3
 345	Cds-CsH_Cds-CtH	CsJ-CsCsH	300-1500	1.20E+03	2.41	0	2.08	0	0	0	0	4	Aäron Vandeputte GAVs CBS-QB3
 346	Cds-CsH_Cds-CtH	CsJ-CsCsCs	300-1500	8.85E+02	2.41	0	0.67	0	0	0	0	4	Aäron Vandeputte GAVs CBS-QB3
@@ -361,10 +361,10 @@ Arrhenius_EP
 355	Cds-CsH_Cds-CtH	CsJ-CtHH	300-1500	6.64E+03	2.41	0	7.57	0	0	0	0	4	Aäron Vandeputte GAVs CBS-QB3
 356	Cds-CsH_Cds-CtH	CsJ-CtCsH	300-1500	1.50E+03	2.41	0	7.10	0	0	0	0	4	Aäron Vandeputte GAVs CBS-QB3
 357	Cds-CsH_Cds-CtH	CsJ-CtCsCs	300-1500	3.82E+02	2.41	0	6.42	0	0	0	0	4	Aäron Vandeputte GAVs CBS-QB3
-358	Cds-CsH_Cds-CtH	CdsJ-H	300-1500	1.00E+04	2.41	0	0.02	0	0	0	0	4	Aäron Vandeputte GAVs CBS-QB3
-359	Cds-CsH_Cds-CtH	CdsJ-Cs	300-1500	5.32E+03	2.41	0	-0.19	0	0	0	0	4	Aäron Vandeputte GAVs CBS-QB3
-360	Cds-CsH_Cds-CtH	CbJ	300-1500	1.59E+04	2.41	0	-2.37	0	0	0	0	4	Aäron Vandeputte GAVs CBS-QB3
-361	Cds-CsH_Cds-CtCs	CsJ-HHH	300-1500	1.50E+04	2.41	0	3.76	0	0	0	0	4	Aäron Vandeputte GAVs CBS-QB3
+358	Cds-CsH_Cds-CtH	CdsJ-H		300-1500	1.00E+04	2.41	0	0.02	0	0	0	0	4	Aäron Vandeputte GAVs CBS-QB3
+359	Cds-CsH_Cds-CtH	CdsJ-Cs		300-1500	5.32E+03	2.41	0	-0.19	0	0	0	0	4	Aäron Vandeputte GAVs CBS-QB3
+360	Cds-CsH_Cds-CtH	CbJ		300-1500	1.59E+04	2.41	0	-2.37	0	0	0	0	4	Aäron Vandeputte GAVs CBS-QB3
+361	Cds-CsH_Cds-CtCs	CsJ-HHH		300-1500	1.50E+04	2.41	0	3.76	0	0	0	0	4	Aäron Vandeputte GAVs CBS-QB3
 362	Cds-CsH_Cds-CtCs	CsJ-CsHH	300-1500	1.53E+03	2.41	0	3.19	0	0	0	0	4	Aäron Vandeputte GAVs CBS-QB3
 363	Cds-CsH_Cds-CtCs	CsJ-CsCsH	300-1500	1.22E+03	2.41	0	2.00	0	0	0	0	4	Aäron Vandeputte GAVs CBS-QB3
 364	Cds-CsH_Cds-CtCs	CsJ-CsCsCs	300-1500	9.06E+02	2.41	0	0.58	0	0	0	0	4	Aäron Vandeputte GAVs CBS-QB3
@@ -379,10 +379,10 @@ Arrhenius_EP
 373	Cds-CsH_Cds-CtCs	CsJ-CtHH	300-1500	6.79E+03	2.41	0	7.48	0	0	0	0	4	Aäron Vandeputte GAVs CBS-QB3
 374	Cds-CsH_Cds-CtCs	CsJ-CtCsH	300-1500	1.53E+03	2.41	0	7.02	0	0	0	0	4	Aäron Vandeputte GAVs CBS-QB3
 375	Cds-CsH_Cds-CtCs	CsJ-CtCsCs	300-1500	3.91E+02	2.41	0	6.34	0	0	0	0	4	Aäron Vandeputte GAVs CBS-QB3
-376	Cds-CsH_Cds-CtCs	CdsJ-H	300-1500	1.03E+04	2.41	0	-0.07	0	0	0	0	4	Aäron Vandeputte GAVs CBS-QB3
-377	Cds-CsH_Cds-CtCs	CdsJ-Cs	300-1500	5.45E+03	2.41	0	-0.28	0	0	0	0	4	Aäron Vandeputte GAVs CBS-QB3
-378	Cds-CsH_Cds-CtCs	CbJ	300-1500	1.62E+04	2.41	0	-2.45	0	0	0	0	4	Aäron Vandeputte GAVs CBS-QB3
-379	Cds-CsH_Ca	CsJ-HHH	300-1500	1.08E+04	2.41	0	7.68	0	0	0	0	4	Aäron Vandeputte GAVs CBS-QB3
+376	Cds-CsH_Cds-CtCs	CdsJ-H		300-1500	1.03E+04	2.41	0	-0.07	0	0	0	0	4	Aäron Vandeputte GAVs CBS-QB3
+377	Cds-CsH_Cds-CtCs	CdsJ-Cs		300-1500	5.45E+03	2.41	0	-0.28	0	0	0	0	4	Aäron Vandeputte GAVs CBS-QB3
+378	Cds-CsH_Cds-CtCs	CbJ		300-1500	1.62E+04	2.41	0	-2.45	0	0	0	0	4	Aäron Vandeputte GAVs CBS-QB3
+379	Cds-CsH_Ca	CsJ-HHH		300-1500	1.08E+04	2.41	0	7.68	0	0	0	0	4	Aäron Vandeputte GAVs CBS-QB3
 380	Cds-CsH_Ca	CsJ-CsHH	300-1500	1.10E+03	2.41	0	7.11	0	0	0	0	4	Aäron Vandeputte GAVs CBS-QB3
 381	Cds-CsH_Ca	CsJ-CsCsH	300-1500	8.83E+02	2.41	0	5.91	0	0	0	0	4	Aäron Vandeputte GAVs CBS-QB3
 382	Cds-CsH_Ca	CsJ-CsCsCs	300-1500	6.54E+02	2.41	0	4.50	0	0	0	0	4	Aäron Vandeputte GAVs CBS-QB3
@@ -397,10 +397,10 @@ Arrhenius_EP
 391	Cds-CsH_Ca	CsJ-CtHH	300-1500	4.90E+03	2.41	0	11.39	0	0	0	0	4	Aäron Vandeputte GAVs CBS-QB3
 392	Cds-CsH_Ca	CsJ-CtCsH	300-1500	1.11E+03	2.41	0	10.93	0	0	0	0	4	Aäron Vandeputte GAVs CBS-QB3
 393	Cds-CsH_Ca	CsJ-CtCsCs	300-1500	2.82E+02	2.41	0	10.25	0	0	0	0	4	Aäron Vandeputte GAVs CBS-QB3
-394	Cds-CsH_Ca	CdsJ-H	300-1500	7.42E+03	2.41	0	3.85	0	0	0	0	4	Aäron Vandeputte GAVs CBS-QB3
-395	Cds-CsH_Ca	CdsJ-Cs	300-1500	3.93E+03	2.41	0	3.63	0	0	0	0	4	Aäron Vandeputte GAVs CBS-QB3
-396	Cds-CsH_Ca	CbJ	300-1500	1.17E+04	2.41	0	1.46	0	0	0	0	4	Aäron Vandeputte GAVs CBS-QB3
-397	Cds-CsCs_Cds-HH	CsJ-HHH	300-1500	6.24E+03	2.41	0	8.04	0	0	0	0	4	Aäron Vandeputte GAVs CBS-QB3
+394	Cds-CsH_Ca	CdsJ-H		300-1500	7.42E+03	2.41	0	3.85	0	0	0	0	4	Aäron Vandeputte GAVs CBS-QB3
+395	Cds-CsH_Ca	CdsJ-Cs		300-1500	3.93E+03	2.41	0	3.63	0	0	0	0	4	Aäron Vandeputte GAVs CBS-QB3
+396	Cds-CsH_Ca	CbJ		300-1500	1.17E+04	2.41	0	1.46	0	0	0	0	4	Aäron Vandeputte GAVs CBS-QB3
+397	Cds-CsCs_Cds-HH	CsJ-HHH		300-1500	6.24E+03	2.41	0	8.04	0	0	0	0	4	Aäron Vandeputte GAVs CBS-QB3
 398	Cds-CsCs_Cds-HH	CsJ-CsHH	300-1500	6.34E+02	2.41	0	7.47	0	0	0	0	4	Aäron Vandeputte GAVs CBS-QB3
 399	Cds-CsCs_Cds-HH	CsJ-CsCsH	300-1500	5.08E+02	2.41	0	6.28	0	0	0	0	4	Aäron Vandeputte GAVs CBS-QB3
 400	Cds-CsCs_Cds-HH	CsJ-CsCsCs	300-1500	3.76E+02	2.41	0	4.86	0	0	0	0	4	Aäron Vandeputte GAVs CBS-QB3
@@ -2627,12 +2627,12 @@ Arrhenius_EP
 // Ref Ab Initio Kinetics for the Decomposition of Hydroxybutyl and Butoxy Radicals of n-Butanol,Zhang P.,Klippenstein S.K.,Law C.K.
 // The thermochemistry for the species is obtained from Mike's n-butanol paper dx.doi.org/10.1016/j.combustflame.2010.06.002
 
-3069	Cds-HH_Cds-CsH	O_pri_rad	     300-2000	4.15E10		0.68	0	-1.945	0	0	0	0	3
-3070	Cds-HH_Cds-CsH-Os CsJ-HHH		 300-2000	5.32E5		1.85	0	5.71	0	0	0	0	3 
-3071	Cds-HH_Cds-OsH	CsJ-CsHH	     300-2000	1.071e+03	2.72	0	8.24	0	0	0	0	3 
-3072	Cds-HH_Cds-CsH	CsJ-OsHH	     300-2000	1.381e+06	1.76	0	8.87	0	0	0	0	3
-3073	CO/H2_O		CsJ-CsHH	         300-2000	1.201e+02	2.8	    0	1.79	0	0	0	0	3
-3074	CO/H/Nd_O	HJ		             300-2000	9.6E9		0.935	0	4.17	0	0	0	0	3
+3069	Cds-HH_Cds-CsH	O_pri_rad	300-2000	4.15E10		0.68	0	-1.945	0	0	0	0	3
+3070	Cds-HH_Cds-CsH-Os CsJ-HHH	300-2000	5.32E5		1.85	0	5.71	0	0	0	0	3 
+3071	Cds-HH_Cds-OsH	CsJ-CsHH	300-2000	1.071e+03	2.72	0	8.24	0	0	0	0	3 
+3072	Cds-HH_Cds-CsH	CsJ-OsHH	300-2000	1.381e+06	1.76	0	8.87	0	0	0	0	3
+3073	CO/H2_O		CsJ-CsHH	300-2000	1.201e+02	2.8	 0	1.79	0	0	0	0	3
+3074	CO/H/Nd_O	HJ		300-2000	9.6E9		0.935	0	4.17	0	0	0	0	3
 
 // Sulfur
 
@@ -2669,32 +2669,32 @@ Arrhenius_EP
 3098	Sd_Cds-OsCs	HJ		300-2000	5.54E+08	1.24	0	-0.35	0	0	0	0	3	CAC calc CBS-QB3 1dhr
 3099	Cds-OsH_Cds-CsH	SsJ-H		300-2000	2.10E+04	2.39	0	-5.00	0	0	0	0	3	CAC calc CBS-QB3 1dhr
 
-// SSM calculations for propene+OH surface CBS-QB3 level , with 1d-HR
-3100	InChI=1S/C3H6/c1-3-2/h3H,1H2,2H3	O_pri_rad	300-2000	2.31E+6		1.76	0	-2.45	0	0	0	0	3 SSM calc CBS-QB3 1dhr
-3101    Cds-OsH_Cds-CsH                     HJ          300-2000	2.182e+10 	0.859  	0	1.618	0	0	0	0	3 SSM calc CBS-QB3 1dhr 
-3102    Cds-HH_Cds-CsH 					    HJ          300-2000	5.014e+08 	1.733  	0	0.76	0	0	0	0	3 SSM calc CBS-QB3 1dhr 
-3103    Cds-HH_Cds-CsH-Os				    HJ          300-2000	5.014e+08 	1.733  	0	0.76	0	0	0	0	3 SSM calc CBS-QB3 1dhr 
-3104    Cds-CsH_Cds-OsH                     HJ          300-2000	3.720e+08  	1.477  	0	1.61	0	0	0	0	3 SSM calc CBS-QB3 1dhr
-3105    Cds-HH_Cds-OsH 						CsJ-HHH     300-2000	4.167e+04  	2.299  	0	6.83	0	0	0	0	3 SSM calc CBS-QB3 1dhr 
-3106    OCO 							    HJ          300-2000	3.867e+05   2.941   0	8.52	0	0	0	0	3 SSM calc CBS-QB3 1dhr
-3107    OCOCs 							    HJ          300-2000	3.867e+05   2.941   0	8.52	0	0	0	0	3 SSM calc CBS-QB3 1dhr
-3108    Cds-HH_Cds-HH                       CsJ-OsHH    300-2000	2.55e+03   2.562   0	5.04	0	0	0	0	3 SSM calc CBS-QB3 1dhr
-3109    Cds-CsH-Os_Cds-HH                   HJ          300-2000	1.730e+08   1.583   0	1.81	0	0	0	0	3 SSM calc CBS-QB3 1dhr
-3110    CsJ-CsHH                            CO/H2_O     300-2000	3.4E-03     2.48    0	2.7	    0	0	0	0	3 SSM calc CBS-QB3 1dhr 
-3111    CO/H/Cs                             HJ          300-2000    8.0E+00     2.41    0   4.5     0	0	0	0	3 SSM calc CBS-QB3 1dhr
- 
-3112    CO/H2_O                             HJ          300-2000    8.1E+11     0.37    0   5.19     0	0	0	0	3 High-P Limit from EFRC Mechanism
+// Pyrolysis reactions, calculated using BMK/cbsb7
+// AG Vandeputte, I feel that these reactions might be redundant with data in the combustion core
+3100	Cds-HH_Cds-HH	O_atom_triplet	300-1500	4.42E+07	1.55	0	-0.7	0 0 0 0 4 AG Vandeputte, BMK/cbsb7
+3101 	Cds-CsH_Cds-HH	O_atom_triplet 	300-1500	4.17E+07	1.64	0	-1.4	0 0 0 0 4 AG Vandeputte, BMK/cbsb7
+3102 	Cds-HH_Cds-CsH	O_atom_triplet	300-1500	1.06E+08	1.58	0	-2.0	0 0 0 0 4 AG Vandeputte, BMK/cbsb7
+
+3103 	Cds-HH_Cds-HH 	O2b 		300-1500	1.11E+02 	2.90 	0	31.6	0 0 0 0 4 AG Vandeputte, BMK/cbsb7
+3104 	Cds-CsH_Cds-HH 	O2b 		300-1500	4.42E+01 	3.08 	0	30.2	0 0 0 0 4 AG Vandeputte, BMK/cbsb7
+3105 	Cds-HH_Cds-CsH 	O2b 		300-1500	2.76E+02 	2.78 	0	29.8	0 0 0 0 4 AG Vandeputte, BMK/cbsb7
+3106 	Cds-HH_Cds-CdH 	O2b		300-1500	1.30E+02	3.01	0	23.6	0 0 0 0 4 AG Vandeputte, BMK/cbsb7
+
+3107	Cds-OJH_Cds-HH	HJ		300-1500	6.50E+06	1.86	0	6.6	0 0 0 0 4 AG Vandeputte, BMK/cbsb7
+3108	Cds-OJH_Cds-CsH	HJ		300-1500	1.08E+07	1.84	0	7.4	0 0 0 0 4 AG Vandeputte, BMK/cbsb7
+3109	Cds-OJH_Cds-HH	CsJ-HHH		300-1500	3.35E+02 	2.68	0 	9.6	0 0 0 0 4 AG Vandeputte, BMK/cbsb7
 
 //Dissociation of propyl radicals and other reactions on a C3H7 potential.
 // Miller JA, Klippenstein SJ.
 // doi: 10.1021/jp312712p.
-3113    InChI=1S/C3H6/c1-3-2/h3H,1H2,2H3    HJ          300-2000    1.84E+09 1.553     0   1.57     0	0	0	0	2 CCSD(T)/cc-pVTZ
-3114    Cds-CsH_Cds-HH                      HJ          300-2000    1.17e+08 1.68      0   2.03     0	0	0	0	2 CCSD(T)/cc-pVTZ
+3113 Cds-HH_Cds-Cs\H3/H	HJ 		300-2000 	1.84E+09 	1.553 	0 	1.57 	0	0	0	0	2 CCSD(T)/cc-pVTZ
+3114 Cds-CsH_Cds-HH 	HJ 		300-2000 	1.17e+08 	1.68 	0 	2.03 	0	0	0	0	2 CCSD(T)/cc-pVTZ
 // SSM Estimate
-3115   InChI=1S/C3H6/c1-3-2/h3H,1H2,2H3    CsJ-OsHH     300-2000	2.55e+03   2.562   0	5.04	0	0	0	0	5 same as 3108
-// Calculated by Enoch Dames
-3116   Cds-HH_Cds-OsH                      HJ           300-2000	6.67E+12   0.1    0	    1.544	0	0	0	0	2  ED calc RQCISD(T)/aug-cc-pVTZ with 1dHR
-3117   CsJ-HHH                             CO/H2_O      300-2000	2.16E+2    2.97   0	    3.8	    0	0	0	0	2  ED calc RQCISD(T)/aug-cc-pVTZ with 1dHR
-3118   OCOCs                               HJ           300-2000	4E+9       1.39   0	    8.577	0	0	0	0	2  ED calc RQCISD(T)/aug-cc-pVTZ with 1dHR
+3115 Cds-HH_Cds-Cs\H3/H CsJ-OsHH 	300-2000	2.55e+03 	2.562 	0	5.04	0	0	0	0	5 same as 3108
 
-  
+// Calculated by Enoch Dames
+3116 Cds-HH_Cds-OsH 	HJ		300-2000	6.67E+12 	0.1 	0 	1.544	0	0	0	0	2 ED calc RQCISD(T)/aug-cc-pVTZ with 1dHR
+3117 CO/H2_O		CsJ-HHH		300-2000	2.16E+2 	2.97 	0 	3.8	0	0	0	0	2 ED calc RQCISD(T)/aug-cc-pVTZ with 1dHR
+3118 Od_Cd-CsH 		HJ 		300-2000	4E+9 		1.39	0 	8.577	0	0	0	0	2 ED calc RQCISD(T)/aug-cc-pVTZ with 1dHR
+
+ 

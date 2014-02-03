@@ -24,8 +24,8 @@
 13 tricyclo[4.3.1.0(3.7)]decane		20.77   78.58	-15.58	-14.70	-12.37	-9.37	-5.42	-4.64	-1.58  	0       0       0       //Automated Estimation of Ring Strain Energies, Gasteiger, 1978 S, Cp from PM7
 14 tricyclo[4.3.1.0(3.8)]decane		18.29   75.75	-16.03	-15.03	-12.57	-9.46	-5.47	-4.74	-1.59	0	0	0       //Automated Estimation of Ring Strain Energies, Gasteiger, 1978 S, Cp from PM7
 15 hexahydro-1H-indene			2.4.5.6.7.7a-hexahydro-1H-indene
-16 2.3.3a.4.5.6-hexahydro-1H-indene	7.8	47.04	-9.8	-9.0	-7.9	-6.5	-4.7	-3.4	-1.3	0	0	0	//A. G. Vandeputte CBS-QB3 isodesmic reaction, S and cp match B3LYP/cbsb7 data
-17 2.4.5.6.7.7a-hexahydro-1H-indene	7.8    	45.3    -8.0    -7.6    -6.8    -5.7    -4.3    -3.3    -2.1    0       0       0	//ring strain 2.3.3a.4.5.6-hexahydro-1H-indene, S and cp modified by A. G. Vandeputte to match BMK/6-311G(2d,p) data
+16 2.3.3a.4.5.6-hexahydro-1H-indene	9.0	47.04	-9.8	-9.0	-7.9	-6.5	-4.7	-3.4	-1.3	0	0	0	//A. G. Vandeputte CBS-QB3 isodesmic reaction, S and cp match B3LYP/cbsb7 data
+17 2.4.5.6.7.7a-hexahydro-1H-indene	9.0    	45.3    -8.0    -7.6    -6.8    -5.7    -4.3    -3.3    -2.1    0       0       0	//ring strain 2.3.3a.4.5.6-hexahydro-1H-indene, S and cp modified by A. G. Vandeputte to match BMK/6-311G(2d,p) data
 18 2.3.3a.4.5.7a-hexahydro-1H-indene	2.4.5.6.7.7a-hexahydro-1H-indene
 19 2.3.3a.4.7.7a-hexahydro-1H-indene	2.4.5.6.7.7a-hexahydro-1H-indene
 20 2.3.4.5.6.7-hexahydro-1H-indene	2.4.5.6.7.7a-hexahydro-1H-indene

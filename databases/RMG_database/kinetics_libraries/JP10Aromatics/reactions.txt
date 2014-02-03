@@ -79,7 +79,8 @@ C5H5C5H4 = NAPHTHAL+H      3.000e+16 	  0.00 	  47.10     0.0 0.0 0.0
 //Yoshinori Murakami, Taweesak Saejung, Chikako Ohashi, and Nobuyuki Fujiiy
 //Department of Chemistry, Nagaoka University of Technology, Nagaoka 940-2188
 //yLife Engineering Center, Niigata Sangyo University, 4730 Karuigawa, Niigata 945-1395
-CPDYL + CPDYL = NAPHTHAL + H + H	3.3e+17	0.00		32.2	0.0	0.0	0.0	
+//CPDYL + CPDYL = NAPHTHAL + H + H	3.3e+17	0.00		32.2	0.0	0.0	0.0	
+// This rate coefficient yields too much NAPHTAL, I flagged it out, AGV
 
 //On the chemical kinetics of cyclopentadiene oxidation
 //R.K. Robinson, R.P. Lindstedt

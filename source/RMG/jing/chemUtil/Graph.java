@@ -671,23 +671,6 @@ public class Graph {
                 // saturated heteroatoms contribute 2 pi bonds, but only O is the heteroatom
                 if (a.isOxygen() && node.getNeighborNumber() == 2)
                     numPiBonds = numPiBonds + 2;
-                // we dont have anionic carbon
-                if (a.isRadical()) {
-                	Iterator iter = node.getNeighbor();
-                	boolean onlySingleBonds = true;
-                	while (iter.hasNext()) {
-                		Arc arc = (Arc) iter.next();
-                		Bond b = (Bond) arc.getElement();
-                		if (b.isDouble() || b.isTriple()) {
-                			onlySingleBonds = false;
-                			break;
-                		}
-                	}
-                	if(onlySingleBonds) {
-                		numPiBonds = numPiBonds + 1;                	
-                	}
-                }
-                
             } else {
                 // if a double bond then 2 pi electrons and if a triple bond then 4 pi electrons
                 Arc a = (Arc) gc;
@@ -696,6 +679,7 @@ public class Graph {
                     numPiBonds = numPiBonds + 2;
             }
         }
+	System.out.print("numPiBonds"+numPiBonds);
         if ( numPiBonds > 2 && (numPiBonds - 2) % 4 == 0) {
             alreadyClassified[j] = 1;
             isAromatic[j] = true;
