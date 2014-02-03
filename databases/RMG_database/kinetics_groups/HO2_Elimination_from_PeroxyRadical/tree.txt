@@ -55,7 +55,7 @@ L1: R2OO
         L3: R2OO_DeDe_NdNd
         L3: R2OO_DeDe_NdDe
         L3: R2OO_DeDe_DeDe
-    L2: R2OO_1H
-	L3: R2OO_1H_2H
+    L2: R2OO_0H
+	L3: R2OO_0H_2H
     L2: R2OO_O
         L3: R2OO_O_HNd
