@@ -14,10 +14,13 @@ L1: X_H_or_Xrad_H
             L4: C_pri
                 L5: C/H3/Cs
 		    L6: C/H3/Cs\H3
-		    L6: C/H3/Cs\NonDe
+		    L6: C/H3/Cs\1NonDe
 			L7: C/H3/Cs\H2\Cs
 				L8: C/H3/Cs\H2\Cs|O
 			L7: C/H3/Cs\H2\O
+		    L6: C/H3/Cs\2NonDe
+			L7: C/H3/Cs\H\Cs\O
+			L7: C/H3/Cs\H\Cs\Cs|O
                 L5: C/H3/O
 	        L5: C/H3/S
                 L5: C/H3/OneDe
@@ -32,6 +35,8 @@ L1: X_H_or_Xrad_H
             L4: C_sec
                 L5: C/H2/NonDeC
                     L6: C/H2/Cs\H3/Cs\H3
+		    L6: C/H2/Cs/Cs\O
+		    L6: C/H2/Cs/Cs\Cs|O
                     L6: C/H2/NonDeC_5ring
                         L7: C/H2/NonDeC_5ring_fused6_1
                         L7: C/H2/NonDeC_5ring_fused6_2
