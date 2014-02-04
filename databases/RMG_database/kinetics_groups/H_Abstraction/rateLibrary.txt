@@ -1320,11 +1320,11 @@ Arrhenius_EP
 3074 C/H3/Cd\Cs_Cd\H2 	H_rad 		300-2000	8.38E+2		3.18	0	4.37	0	0	0	0	3	MRH CBS-QB3 with 1-dHR corrections ref: doi: 10.1021/ie1005349
 3075 C/H3/Cd\Cs_Cd\H2 	C_methyl 	300-2000	1.98E-2		4.26	0	7.55	0	0	0	0	3	MRH CBS-QB3 with 1-dHR corrections ref: doi: 10.1021/ie1005349
 
-3076 Cd/H/NonDeC 	H_rad 		300-1500 	3.86E-01 	4.34 	0.00 	6.3 	0 0 0 0 3 Aäron Vandeputte GAVs CBS-QB3 
-3077 Cd/H/NonDeC 	C_methyl 	300-1500 	9.15E-03 	4.34 	0.00 	8.4 	0 0 0 0 3 Aäron Vandeputte GAVs CBS-QB3 
-3078 Cd/H/NonDeC 	C_rad/H2/Cs 	300-1500 	1.28E-03 	4.34 	0.00 	9.7 	0 0 0 0 3 Aäron Vandeputte GAVs CBS-QB3 
-3079 Cd/H/NonDeC 	C_rad/H/NonDeC 	300-1500 	1.48E-03 	4.34 	0.00 	10.3 	0 0 0 0 3 Aäron Vandeputte GAVs CBS-QB3 
-3080 Cd/H/NonDeC 	C_rad/Cs3 	300-1500 	1.48E-03 	4.34 	0.00 	10.2 	0 0 0 0 3 Aäron Vandeputte GAVs CBS-QB3 
+3076 Cd/H/NonDeC 	H_rad 		300-1500 	3.86E-01 	4.34 	0.00 	6.3 	0 0 0 0 3 Aaron Vandeputte GAVs CBS-QB3 
+3077 Cd/H/NonDeC 	C_methyl 	300-1500 	9.15E-03 	4.34 	0.00 	8.4 	0 0 0 0 3 Aaron Vandeputte GAVs CBS-QB3 
+3078 Cd/H/NonDeC 	C_rad/H2/Cs 	300-1500 	1.28E-03 	4.34 	0.00 	9.7 	0 0 0 0 3 Aaron Vandeputte GAVs CBS-QB3 
+3079 Cd/H/NonDeC 	C_rad/H/NonDeC 	300-1500 	1.48E-03 	4.34 	0.00 	10.3 	0 0 0 0 3 Aaron Vandeputte GAVs CBS-QB3 
+3080 Cd/H/NonDeC 	C_rad/Cs3 	300-1500 	1.48E-03 	4.34 	0.00 	10.2 	0 0 0 0 3 Aaron Vandeputte GAVs CBS-QB3 
 
 // iBuOH + OH (communication from truhlar group) refitted to arrhenius form
 3081 C/H2/Cs\Cs2/O 	O_pri_rad 	300-2000 	2.16E+6 	2.002 	0.00 	-0.113 	0 0 0 0 3 
