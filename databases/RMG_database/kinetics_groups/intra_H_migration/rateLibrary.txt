@@ -389,7 +389,7 @@ Arrhenius_EP
 1035. R6H_SSSSS		C_rad_out_single	Cs_H_out_1H		300-1500	1.36E+10 	-0.66 	0.0 	14.28 	0 0 0 0 5 Currans's estimation [5] in his reaction type 5.
 
 // A. G. Vandeputte BMK/cbsb7 HO 
-1036. R3H_SS_OOCs       O_rad_out               Cs_H_out_H/OneDe	300-1500	1.66E+07 	1.69	0.0	38.1	0 0 0 0 5 A. G. Vandeputte BMK/cbsb7 HO
+1036. R3H_SS_OOCs       O_rad_out               Cs_H_out_H/Cd		300-1500	1.66E+07 	1.69	0.0	38.1	0 0 0 0 5 A. G. Vandeputte BMK/cbsb7 HO
 1037. R4H_SSS_OOCsCd    O_rad_out               Cd_H_out_doubleC	300-1500        2.74E+02        3.09    0.0     34.8    0 0 0 0 5 A. G. Vandeputte BMK/cbsb7 HO
 
 // Calculated by SSM CBS-QB3 calculations with 1d-HR for C3H6+OH surface

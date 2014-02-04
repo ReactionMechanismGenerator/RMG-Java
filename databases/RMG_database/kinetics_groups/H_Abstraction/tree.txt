@@ -6,6 +6,28 @@
 // JS, remove CO_birad to form a new family later: CO + RH -> HCO + R.  Aug, 26, 2003
 // f01_intermolecular_HA
 
+// AG Vandeputte, tree explained
+// Legend:
+// 	Parent node from which the H abstraction occurs or has the radical site
+//	follwed by '/' for the ligand type
+//	eg. C/H3/Cs -> C-(Cs)(H)(H)(H)
+//	Legacy reasons often cause ligands missing which can cause some confusion
+// 	eg. C/H2/NonDeO -> C-(NonDeX!H)(O)(H)(H)      
+//	
+// 	\ = second level, defines beta positions
+//      eg. C/H3/Cs\H3 ->  C-(CH3)(H)(H)(H)		
+//
+//	| = third level, defines gamma positions
+//	eg. C/H3/Cs\H2\Cs|O -> C-(CH2(Cs-O))(H)(H)(H)
+//
+//	_ = double bonds
+//	eg. C/H3/Cd\Cs_Cd\H2 -> C-(Cd(Cs)=Cd(H)2)(H)(H)(H) -> 2-me-propene
+//
+//	Definitions for H abstractions from JP-10 can be found in library
+//	5ring_fused6_1, 5ring_fused6_2, 5ring_alpha6ring, 5ring_beta6ring, 
+//	5ring_adj5, Cs3_5ring_fused6
+// 
+
 L1: X_H_or_Xrad_H
     L2: X_H
         L3: H2

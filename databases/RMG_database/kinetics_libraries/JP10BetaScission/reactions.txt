@@ -83,9 +83,12 @@ R10 = JR10BS2			1.79E12	0.53		24.85 0.0 0.0 0.0
 JR5BS1 = JR8HA1						1.73E+06 1.39	19.0	0.0	0.0	0.0
 JR5BS1 = pentenylcyclopentene				1.90E+12 0.50	35.8	0.0	0.0	0.0
 JR5BS1 = C1CC2CC1C1CCC2C1yl				7.57E+10 0.01   19.9	0.0	0.0	0.0
+JR5BS1 = [CH]1CdC(C2CCCC2)CC1				1E-10	 0.00	0.00	0.0	0.0	0.0
 C1CC2CC1C1CCC2C1yl = C1CC2CC1C1CCC2C1ylbscis		3.39E+11 0.87	32.6	0.0	0.0	0.0
 C1CC2CC1C1CCC2C1ylbscis = ethene + CH1CdCC2CCC1C2	1.69E+11 0.70   22.5    0.0     0.0     0.0 
-butenylcyclohexenyl = cyclohexadiene + butenyl		1.49E+11 1.0    29.4	0.0	0.0	0.0
+//butenylcyclohexenyl = cyclohexadiene + butenyl		1.49E+11 1.01   29.4	0.0	0.0	0.0
+butenylcyclohexenyl = cyclohexadiene + butenyl          2.98E+11 1.01   29.4    0.0     0.0     0.0
+pentenylcyclopentene = Allyl + allylCPT                 1.28E+10        0.97    22.5    0.0     0.0     0.0
 
 // A.G. Vandeputte, estimated from JR5BS1 = pentenylcyclopentene, but added 2 kcal/mol for primary rad
 
@@ -95,7 +98,7 @@ JR5BS1 = pentylCPT                                      1.90E+12 0.50   37.8    
 //CPTDyl = Pentadiene             			3.30E13	0.0 	22.00 	0.0 	0.0 	0.0   
 //CHDyl = Hexadiene15             			3.30E13 0.0 	2.50  	0.0 	0.0 	0.0   
 //pentylCPT = Pentadiene + CPTyl			2.88E13	0.0	26.44 	0.0 	0.0 	0.0  
-//pentylCPT = Allyl + allylCPT				1.32E13	0.0	20.72	0.0 	0.0 	0.0   
+//pentylCPT = Allyl + allylCPT				1.32E13		0.0	20.72	0.0 	0.0 	0.0   
 
 // CAS-PT2, CBS QB3 estimates for unimolecular CC scission reactions of JP10. Calculated in this work.
 //JP10 = BR1  						1.800e+13 0.830     77.810   0.0 0.0 0.0    
