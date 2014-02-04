@@ -1783,80 +1783,168 @@ Cs_H_out_H/NonDeS
 3 S 0 {1,S}      
 4 H 0 {1,S}
 
+// I defined them this way as sometimes a special ring structure can occur with additional strain when 
+// one of the identified groups is a neighbor of the Pi system
 Cs_H_out_H/OneDe
+Union {Cs_H_out_H/Cd, Cs_H_out_H/Ct, Cs_H_out_H/CO, Cs_H_out_H/CS}
+
+Cs_H_out_H/Cd
 1 *2 Cs 0 {2,S} {3,S} {4,S}
 2 *3 H 0 {1,S}
-3 {Cd,Ct,Cb,CO} 0 {1,S}
+3 C 0 {1,S} {5,D} {6,S}
 4 H 0 {1,S}
+5 C 0 {3,D} {7,S} {8,S}
+6 R 0 {3,S}
+7 R 0 {5,S}
+8 R 0 {5,S}
+
+Cs_H_out_H/CO
+1 *2 Cs 0 {2,S} {3,S} {4,S}
+2 *3 H 0 {1,S}
+3 C 0 {1,S} {5,D} {6,S}
+4 H 0 {1,S}
+5 O 0 {3,D}
+6 R 0 {3,S}
+
+Cs_H_out_H/Ct
+1 *2 Cs 0 {2,S} {3,S} {4,S}
+2 *3 H 0 {1,S}
+3 C 0 {1,S} {5,T}
+4 H 0 {1,S}
+5 C 0 {3,T} {6,S}
+6 R 0 {5,S}
+
+Cs_H_out_H/CS
+1 *2 Cs 0 {2,S} {3,S} {4,S}
+2 *3 H 0 {1,S}
+3 C 0 {1,S} {5,D} {6,S}
+4 H 0 {1,S}
+5 S 0 {3,D}
+6 R 0 {3,S}
 
 Cs_H_out_noH
-1 *2 Cs 0 {2,S} {3,S} {4,S} {5,S}
+1 *2 Cs 0 {2,S} {3,S} {4,S}
 2 *3 H 0 {1,S}
 3 {R!H} 0 {1,S}
 4 {R!H} 0 {1,S}
-5 {R!H} 0 {1,S}
 
 Cs_H_out_NonDe
-1 *2 Cs 0 {2,S} {3,S} {4,S} {5,S}
+1 *2 Cs 0 {2,S} {3,S} {4,S}
 2 *3 H 0 {1,S}
 3 {Cs,O} 0 {1,S}
 4 {Cs,O} 0 {1,S}
-5 {R!H} 0 {1,S}
 
 Cs_H_out_Cs2
-1 *2 Cs 0 {2,S} {3,S} {4,S} {5,S}
+1 *2 Cs 0 {2,S} {3,S} {4,S}
 2 *3 H 0 {1,S}
 3 Cs 0 {1,S}
 4 Cs 0 {1,S}
-5 {R!H} 0 {1,S}
 
 Cs_H_out_Cs2_cy3
-1 *2 Cs 0 {2,S} {3,S} {4,S} {5,S}
+1 *2 Cs 0 {2,S} {3,S} {4,S}
 2 *3 H 0 {1,S}
 3 Cs 0 {1,S}, {4,S}
 4 Cs 0 {1,S}, {3,S}
-5 {R!H} 0 {1,S}
 
 Cs_H_out_Cs2_cy4
-1 *2 Cs 0 {2,S} {3,S} {4,S} {6,S}
+1 *2 Cs 0 {2,S} {3,S} {4,S}
 2 *3 H 0 {1,S}
 3 Cs 0 {1,S}, {5,S}
 4 Cs 0 {1,S}, {5,S}
 5 Cs 0 {3,S}, {4,S}
-6 {R!H} 0 {1,S}
 
 Cs_H_out_Cs2_cy5
-1 *2 Cs 0 {2,S} {3,S} {4,S} {7,S}
+1 *2 Cs 0 {2,S} {3,S} {4,S}
 2 *3 H 0 {1,S}
 3 Cs 0 {1,S}, {5,S}
 4 Cs 0 {1,S}, {6,S}
 5 Cs 0 {3,S}, {6,S}
 6 Cs 0 {4,S}, {5,S}
-7 {R!H} 0 {1,S}
 
 //Others-Cs_H_out_Cs2
 //AND{ Cs_H_out_Cs2, NOT OR{Cs_H_out_Cs2_cy3, Cs_H_out_Cs2_cy4, Cs_H_out_Cs2_cy5}}
 
 Cs_H_out_NDMustO
-1 *2 Cs 0 {2,S} {3,S} {4,S} {5,S}
+1 *2 Cs 0 {2,S} {3,S} {4,S}
 2 *3 H 0 {1,S}
 3 O 0 {1,S}
 4 {Cs,O} 0 {1,S}
-5 {R!H} 0 {1,S}
 
 Cs_H_out_OneDe
-1 *2 Cs 0 {2,S} {3,S} {4,S} {5,S}
+Union {Cs_H_out_Cd, Cs_H_out_Ct, Cs_H_out_CO, Cs_H_out_CS}
+
+Cs_H_out_Cd
+1 *2 Cs 0 {2,S} {3,S} {4,S}
 2 *3 H 0 {1,S}
-3 {Cs,O} 0 {1,S}
-4 {Cd,Ct,Cb,CO} 0 {1,S}
-5 {R!H} 0 {1,S}
+3 C 0 {1,S} {5,D} {6,S}
+4 {Cs,O} 0 {1,S}
+5 C 0 {3,D} {7,S} {8,S}
+6 R 0 {3,S}
+7 R 0 {5,S}
+8 R 0 {5,S}
+
+Cs_H_out_CO
+1 *2 Cs 0 {2,S} {3,S} {4,S}
+2 *3 H 0 {1,S}
+3 C 0 {1,S} {5,D} {6,S}
+4 {Cs,O} 0 {1,S}
+5 O 0 {3,D}
+6 R 0 {3,S}
+
+Cs_H_out_Ct
+1 *2 Cs 0 {2,S} {3,S} {4,S}
+2 *3 H 0 {1,S}
+3 C 0 {1,S} {5,T}
+4 {Cs,O} 0 {1,S}
+5 C 0 {3,T} {6,S}
+6 R 0 {5,S}
+
+Cs_H_out_CS
+1 *2 Cs 0 {2,S} {3,S} {4,S}
+2 *3 H 0 {1,S}
+3 C 0 {1,S} {5,D} {6,S}
+4 {Cs,O} 0 {1,S}
+5 S 0 {3,D}
+6 R 0 {3,S}
 
 Cs_H_out_TwoDe
-1 *2 Cs 0 {2,S} {3,S} {4,S} {5,S}
+Union {Cs_H_out_CdCd, Cs_H_out_CdCt, Cs_H_out_CtCt}
+
+Cs_H_out_CdCd
+1 *2 Cs 0 {2,S} {3,S} {4,S}
 2 *3 H 0 {1,S}
-3 {Cd,Ct,Cb,CO} 0 {1,S}
-4 {Cd,Ct,Cb,CO} 0 {1,S}
-5 {R!H} 0 {1,S}
+3 C 0 {1,S} {5,D} {9,S}
+4 C 0 {1,S} {7,D} {10,S}
+5 C 0 {3,D} {6,S} {11,S}
+6 R 0 {5,S}
+7 C 0 {4,D} {8,S} {12,S}
+8 C 0 {7,S}
+9 R 0 {3,S}
+10 R 0 {4,S}
+11 R 0 {5,S}
+12 R 0 {7,S}
+
+Cs_H_out_CdCt
+1 *2 Cs 0 {2,S} {3,S} {4,S}
+2 *3 H 0 {1,S}
+3 C 0 {1,S} {5,D} {9,S}
+4 C 0 {1,S} {7,T}
+5 C 0 {3,D} {6,S} {10,S}
+6 R 0 {5,S}
+7 C 0 {4,T} {8,S}
+8 C 0 {7,S}
+9 R 0 {3,S}
+10 R 0 {5,S}
+
+Cs_H_out_CtCt
+1 *2 Cs 0 {2,S} {3,S} {4,S}
+2 *3 H 0 {1,S}
+3 C 0 {1,S} {5,T}
+4 C 0 {1,S} {7,T}
+5 C 0 {3,T} {6,S}
+6 R 0 {5,S}
+7 C 0 {4,T} {8,S}
+8 R 0 {7,S}
 
 // Added by AJ for intra_H shifts in HOOQOO radicals
 Cs_H_out_OOH

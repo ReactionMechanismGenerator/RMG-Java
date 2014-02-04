@@ -1268,13 +1268,13 @@ Arrhenius_EP
 
 // Additional rate coefficients for hydrogen abstraction by JP10rads from allylic and diallylic (diallylic were set to allylic)
 
-3040 C_rad/H/NonDeC_5ring_fused6_1	C/H3/Cd\H_Cd\H2		300-1500 	8.14E-04	4.24	0.0	6.8	0	0	0	0	4	Aaron Vandeputte BMK
-3041 C_rad/Cs3_5ring_adj5		C/H3/Cd\H_Cd\H2 	300-1500 	4.41E-04	4.24	0.0	5.9	0	0	0	0	4	Aaron Vandeputte BMK
-3042 C_rad/H/NonDeC_5ring_alpha6ring	C/H3/Cd\H_Cd\H2 	300-1500 	3.16E-04	4.24	0.0	8.2	0	0	0	0	4	Aaron Vandeputte BMK
-3043 C_rad/H/NonDeC_5ring_beta6ring 	C/H3/Cd\H_Cd\H2 	300-1500	9.67E-05	4.24    0.0	7.6     0       0       0       0       4       Aaron Vandeputte BMK
-// Estimated from C_rad/Cs3_5ring_adj5  C/H3/Cd\H_Cd\H2 
-3044 C_rad/Cs3_5ring_adj5		C/H3/Cd\H_Cd\H2 	300-1500	4.41E-04        4.24    0.0     5.9     0       0       0       0       4       Aaron Vandeputte BMK
-3045 C_rad/Cs3_5ring_fused6		C/H3/Cd\H_Cd\H2 	300-1500        4.41E-04        4.24    0.0     5.9     0       0       0       0       4       Aaron Vandeputte BMK
+3040 C_rad/H/NonDeC_5ring_fused6_1	C/H3/Cd		300-1500 	8.14E-04	4.24	0.0	6.8	0	0	0	0	4	Aaron Vandeputte BMK
+3041 C_rad/Cs3_5ring_adj5		C/H3/Cd 	300-1500 	4.41E-04	4.24	0.0	5.9	0	0	0	0	4	Aaron Vandeputte BMK
+3042 C_rad/H/NonDeC_5ring_alpha6ring	C/H3/Cd 	300-1500 	3.16E-04	4.24	0.0	8.2	0	0	0	0	4	Aaron Vandeputte BMK
+3043 C_rad/H/NonDeC_5ring_beta6ring 	C/H3/Cd 	300-1500	9.67E-05	4.24    0.0	7.6     0       0       0       0       4       Aaron Vandeputte BMK
+// Estimated from C_rad/Cs3_5ring_adj5  
+3044 C_rad/H/NonDeC_5ring_fused6_2	C/H3/Cd 	300-1500	4.41E-04        4.24    0.0     5.9     0       0       0       0       4       Aaron Vandeputte BMK
+3045 C_rad/Cs3_5ring_fused6		C/H3/Cd 	300-1500        4.41E-04        4.24    0.0     5.9     0       0       0       0       4       Aaron Vandeputte BMK
 
 // Estimated from C/H3/Cd\H_Cd\H2
 
@@ -1282,7 +1282,7 @@ Arrhenius_EP
 3047 C_rad/Cs3_5ring_adj5               C/H2/CdCd	300-1500 	4.41E-04       	4.24    0.0     5.9     0       0       0       0       4       Estimated value
 3048 C_rad/H/NonDeC_5ring_alpha6ring    C/H2/CdCd	300-1500 	3.16E-04       	4.24    0.0     8.2     0       0       0       0       4       Estimated value
 3049 C_rad/H/NonDeC_5ring_beta6ring	C/H2/CdCd      	300-1500	9.67E-05       	4.24    0.0     7.6     0       0       0       0       4       Estimated value
-3050 C_rad/Cs3_5ring_adj5		C/H2/CdCd	300-1500        4.41E-04       	4.24    0.0     5.9     0       0       0       0       4       Estimated value
+3050 C_rad/H/NonDeC_5ring_fused6_2	C/H2/CdCd	300-1500        4.41E-04       	4.24    0.0     5.9     0       0       0       0       4       Estimated value
 3050 C_rad/Cs3_5ring_fused6             C/H2/CdCd       300-1500        4.41E-04       	4.24    0.0     5.9     0       0       0       0       4       Estimated value
 
 // H abstractions by vinylic radicals, extract from AI database AG Vandeputte

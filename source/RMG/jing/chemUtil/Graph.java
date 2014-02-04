@@ -679,7 +679,7 @@ public class Graph {
                     numPiBonds = numPiBonds + 2;
             }
         }
-	System.out.print("numPiBonds"+numPiBonds);
+	// System.out.print("numPiBonds"+numPiBonds);
         if ( numPiBonds > 2 && (numPiBonds - 2) % 4 == 0) {
             alreadyClassified[j] = 1;
             isAromatic[j] = true;
