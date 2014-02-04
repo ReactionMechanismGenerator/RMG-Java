@@ -43,7 +43,7 @@ Cds-HH_Cds-CsH
 5 Cs 0 {2,S}
 6 H 0 {2,S}
 
-Cds-HH_Cds-CsH-Os
+Cds-HH_Cds-Cs\Os/H
 1 *1 Cd 0 {2,D} {3,S} {4,S}
 2 *2 Cd 0 {1,D} {5,S} {6,S}
 3 H 0 {1,S}
@@ -491,7 +491,7 @@ Cds-CsH_Cds-HH
 5 H 0 {2,S}
 6 H 0 {2,S}
 
-Cds-CsH-Os_Cds-HH
+Cds-Cs\Os/H_Cds-HH
 1 *1 Cd 0 {2,D} {3,S} {4,S}
 2 *2 Cd 0 {1,D} {5,S} {6,S}
 3 Cs 0 {1,S} {7,S}

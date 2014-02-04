@@ -23,7 +23,7 @@ L1: R_R
                 		L5: Cds-HH_Cds-HH
                 		L5: Cds-HH_Cds-CsH
 					L6: Cds-HH_Cds-Cs\H3/H
-					L6: Cds-HH_Cds-CsH-Os
+					L6: Cds-HH_Cds-Cs\Os/H
 				L5: Cds-HH_Cds-CsCs
 				L5: Cds-HH_Cds-OsH
 				L5: Cds-HH_Cds-OsCs
@@ -75,7 +75,7 @@ L1: R_R
                 			L6: Cds-HH_Cds-C=SC=S					
 			L4: Cds-CsH_Cds
                 		L5: Cds-CsH_Cds-HH
-					L6: Cds-CsH-Os_Cds-HH
+					L6: Cds-Cs\Os/H_Cds-HH
                 		L5: Cds-CsH_Cds-CsH
 				L5: Cds-CsH_Cds-CsCs
 				L5: Cds-CsH_Cds-OsH

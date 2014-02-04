@@ -63,6 +63,7 @@ L1: RnH
 						L7: R4H_SSS_OOCsCs
 							L8: R4H_SSS_OO(Cs/Cs)Cs
 								L9: R4H_SSS_OO(Cs/Cs/Cs)Cs
+						L7: R4H_SSS_OOCsCd
 					L6: R4H_DSS
 					L6: R4H_TSS
 					L6: R4H_BSS

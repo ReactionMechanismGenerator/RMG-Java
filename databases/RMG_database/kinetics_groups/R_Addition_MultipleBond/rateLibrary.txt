@@ -2627,12 +2627,12 @@ Arrhenius_EP
 // Ref Ab Initio Kinetics for the Decomposition of Hydroxybutyl and Butoxy Radicals of n-Butanol,Zhang P.,Klippenstein S.K.,Law C.K.
 // The thermochemistry for the species is obtained from Mike's n-butanol paper dx.doi.org/10.1016/j.combustflame.2010.06.002
 
-3069	Cds-HH_Cds-CsH	O_pri_rad	300-2000	4.15E10		0.68	0	-1.945	0	0	0	0	3
-3070	Cds-HH_Cds-CsH-Os CsJ-HHH	300-2000	5.32E5		1.85	0	5.71	0	0	0	0	3 
-3071	Cds-HH_Cds-OsH	CsJ-CsHH	300-2000	1.071e+03	2.72	0	8.24	0	0	0	0	3 
-3072	Cds-HH_Cds-CsH	CsJ-OsHH	300-2000	1.381e+06	1.76	0	8.87	0	0	0	0	3
-3073	CO/H2_O		CsJ-CsHH	300-2000	1.201e+02	2.8	 0	1.79	0	0	0	0	3
-3074	CO/H/Nd_O	HJ		300-2000	9.6E9		0.935	0	4.17	0	0	0	0	3
+3069	Cds-HH_Cds-CsH		O_pri_rad	300-2000	4.15E10		0.68	0	-1.945	0	0	0	0	3
+3070	Cds-HH_Cds-Cs\Os/H 	CsJ-HHH		300-2000	5.32E5		1.85	0	5.71	0	0	0	0	3 
+3071	Cds-HH_Cds-OsH		CsJ-CsHH	300-2000	1.071e+03	2.72	0	8.24	0	0	0	0	3 
+3072	Cds-HH_Cds-CsH		CsJ-OsHH	300-2000	1.381e+06	1.76	0	8.87	0	0	0	0	3
+3073	CO/H2_O			CsJ-CsHH	300-2000	1.201e+02	2.8	 0	1.79	0	0	0	0	3
+3074	CO/H/Nd_O		HJ		300-2000	9.6E9		0.935	0	4.17	0	0	0	0	3
 
 // Sulfur
 
@@ -2668,6 +2668,22 @@ Arrhenius_EP
 3097	Cdd-Sd_Sd	CsJ-CsHH	300-1500	3.59E+02	2.94	0	8.96	0	0	0	0	3	CAC calc CBS-QB3 1dhr
 3098	Sd_Cds-OsCs	HJ		300-2000	5.54E+08	1.24	0	-0.35	0	0	0	0	3	CAC calc CBS-QB3 1dhr
 3099	Cds-OsH_Cds-CsH	SsJ-H		300-2000	2.10E+04	2.39	0	-5.00	0	0	0	0	3	CAC calc CBS-QB3 1dhr
+
+// SSM calculations for propene+OH surface CBS-QB3 level , with 1d-HR
+3119 	Cds-HH_Cds-Cs\H3/H	O_pri_rad 	300-2000 	2.31E+6 	1.76 	0 	-2.45 	0 0 0 0 3 SSM calc CBS-QB3 1dhr
+3120 	Cds-OsH_Cds-CsH 	HJ 		300-2000 	2.182e+10 	0.859 	0 	1.618 	0 0 0 0 3 SSM calc CBS-QB3 1dhr
+3121 	Cds-HH_Cds-CsH 		HJ 		300-2000 	5.014e+08 	1.733 	0 	0.76 	0 0 0 0 3 SSM calc CBS-QB3 1dhr
+3122 	Cds-HH_Cds-Cs\Os/H 	HJ 		300-2000 	5.014e+08 	1.733 	0 	0.76 	0 0 0 0 3 SSM calc CBS-QB3 1dhr
+3123 	Cds-CsH_Cds-OsH 	HJ 		300-2000 	3.720e+08 	1.477 	0 	1.61 	0 0 0 0 3 SSM calc CBS-QB3 1dhr
+3124 	Cds-HH_Cds-OsH 		CsJ-HHH 	300-2000 	4.167e+04 	2.299 	0 	6.83 	0 0 0 0 3 SSM calc CBS-QB3 1dhr
+3125 	Od_Cd 			HJ 		300-2000 	3.867e+05 	2.941 	0 	8.52 	0 0 0 0 5 SSM calc CBS-QB3 1dhr, gave parent same value as one of the children
+3126 	Od_Cd-CsH		HJ		300-2000 	3.867e+05 	2.941 	0 	8.52 	0 0 0 0 3 SSM calc CBS-QB3 1dhr
+3127 	Cds-HH_Cds-HH 		CsJ-OsHH 	300-2000 	2.55e+03 	2.562 	0 	5.04 	0 0 0 0 3 SSM calc CBS-QB3 1dhr
+3128 	Cds-Cs\Os/H_Cds-HH 	HJ 		300-2000 	1.730e+08 	1.583 	0 	1.81 	0 0 0 0 3 SSM calc CBS-QB3 1dhr
+3129 	CO/H2_O			CsJ-CsHH 	300-2000 	3.4E-03 	2.48 	0 	2.7 	0 0 0 0 3 SSM calc CBS-QB3 1dhr
+3130 	CO/H/Cs 		HJ 		300-2000 	8.0E+00 	2.41 	0 	4.5 	0 0 0 0 3 SSM calc CBS-QB3 1dhr
+
+3131 	CO/H2_O 		HJ 		300-2000 	8.1E+11 	0.37 	0 	5.19 	0 0 0 0 3 High-P Limit from EFRC Mechanism
 
 // Pyrolysis reactions, calculated using BMK/cbsb7
 // AG Vandeputte, I feel that these reactions might be redundant with data in the combustion core
