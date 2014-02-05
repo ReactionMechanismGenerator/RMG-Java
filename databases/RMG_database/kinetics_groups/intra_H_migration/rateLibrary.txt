@@ -407,9 +407,8 @@ Arrhenius_EP
 1048. R4H_SSS 	C_rad_out_2H 		O_H_out			600-2000 	9.79E3 		1.91 	0.0 	16.7	0 0 0 0 3 Aaron BMK/cbsb7 with 1-dHR
 1049. R4H_SSS 	O_rad_out 		Cs_H_out_2H		600-2000 	1.68E4 		2.06 	0.0 	18.5 	0 0 0 0 3 Aaron BMK/cbsb7 with 1-dHR
 
-// Estimates from Enoch for alpha-hydroxyethyl surface, reference: doi 10.1002/kin.20844
-// Uncertainty factors of high pressure limit are estimated to be a factor of 2
-1050. R2H_S  C_rad_out_H/NonDeO  Cs_H_out_2H  700-1500 	1.47E+13 		 0.0 	0.0 	45.0 	0 0 0 0 5 Estimates by ED
-1051  R2H_S  C_rad_out_H/NonDeC  O_H_out      700-1500 	3E+13 		     0.0 	0.0 	37.0 	0 0 0 0 5 Estimates by ED
-1052  R2H_S  C_rad_out_2H  Cs_H_out_H/NonDeO  700-1500 	1.85E+13 		-0.1 	0.0 	37.85 	0 0 0 0 5 Estimates by ED
-1053  R2H_S  O_rad_out  Cs_H_out_H/NonDeC     700-1500 	2.15E+14 		-0.27 	0.0 	27.24 	0 0 0 0 5 Estimates by ED 
+// RQCISD(T)/CBS TST calculations with Eckart and 1-dHR corrections from Enoch for alpha-hydroxyethyl surface, reference: doi 10.1002/kin.20844
+1050. R2H_S  C_rad_out_H/NonDeO  Cs_H_out_2H  700-1500 	1.47E+13 		 0.0 	0.0 	45.0 	2 0 0 0 3 ED, RQCISD(T)/CBS TST with Eckart and 1-HR
+1051  R2H_S  C_rad_out_H/NonDeC  O_H_out      700-1500 	3E+13 		     0.0 	0.0 	37.0 	2 0 0 0 3 ED, RQCISD(T)/CBS TST with Eckart and 1-HR
+1052  R2H_S  C_rad_out_2H  Cs_H_out_H/NonDeO  700-1800 	1.85E+13 		-0.1 	0.0 	37.85 	2 0 0 0 3 ED, RQCISD(T)/CBS TST with Eckart and 1-HR
+1053  R2H_S  O_rad_out  Cs_H_out_H/NonDeC     700-1800 	2.15E+14 		-0.27 	0.0 	27.24 	2 0 0 0 3 ED, RQCISD(T)/CBS TST with Eckart and 1-HR 
