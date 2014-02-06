@@ -4,7 +4,7 @@ E: kcal/mol
 
 Reactions:
 
-// Aäron Vandeputte
+// Aaron Vandeputte
 // Main reaction path
 
 // Added this path to make sure that rate coefficients are right, leads to 2 ethene molecules per mole JP-10 reacted

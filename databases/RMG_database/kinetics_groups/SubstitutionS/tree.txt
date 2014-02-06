@@ -1,5 +1,5 @@
 //
-// Tree fully developped by Aäron Vandeputte Aug 11th 2009
+// Tree fully developped by Aaron Vandeputte Aug 11th 2009
 //
 // Molecule tree departs from the idea that the rates are dependent of both
 // groups neighboring the sulfur atom
