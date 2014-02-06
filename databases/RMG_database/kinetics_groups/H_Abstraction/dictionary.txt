@@ -1664,7 +1664,7 @@ C_rad/H/Cs\H2\Cs/O
 4 O 0 {1,S}
 5 H 0 {3,S}
 6 H 0 {3,S}
-7 Cs 0 {7,S}
+7 Cs 0 {3,S}
 
 C_rad/H/Cs\H2\Cs|H2|Cs/O
 1 C 0 {2,S} {6,S} {7,S} {8,S}
