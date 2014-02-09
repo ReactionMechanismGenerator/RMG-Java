@@ -1115,6 +1115,10 @@ RC=COJ
 1  * O 1 {2,S}
 2    Cd 0 {1,S}
 
+CbOJ
+1  * O 1 {2,S}
+2    Cb 0 {1,S}
+
 OJC=O
 1  * O 1 {2,S}
 2    CO 0 {1,S} 

@@ -60,8 +60,14 @@
 45	123trioxene	4	21.57	-1.73	-2.67	-2.62	-2.27	-2.14	-2.08	-0.97	0	0	0	
 46	13cyclohexadiene5methylene	-4.78	28.295	-5.437	-6.088	-5.788	-4.994	-3.626	-2.664	-1.187	0	0	0	
 47	14cyclohexadiene3methylene	-2.31	27.775	-2.818	-2.82	-2.578	-2.314	-2.091	-1.771	-1.49	0	0	0	
-48	24cyclohexadienone	-10.77000001	29.286	-3.46	-4.214	-4.306	-4.049	-3.424	-3.243	0.32	0	0	0	
-49	25cyclohexadienone	-7.63	22.52643142	-3.3	-3.342	-3.034	-2.574	-1.976	-1.883	-0.24	0	0	0	
+// A.G Vandeputte, calculated 48 and 49 using CBS-QB3 and a isodesmic reaction approach
+// I did not trust the 13cyclohexadiene enthalpy reported on NIST as the same values were given for 14cyclohexadiene (i.e. 104.75 kJ/mol) however CBS-QB3 calculations confirm H 13CHD ~ H 14 CHD
+// CBS-QB3 isodesmic reaction approach for 13CHD yielded 106.8 kJ/mol, which was used to determine H 24cyclohexadienone and 25cyclohexadienone 
+// What suprises me are the very accurate S and cp values on those, so they seem to have been calculated although enthalpy was +10 kcal/mol off
+//48	24cyclohexadienone	-10.77000001	29.286	-3.46	-4.214	-4.306	-4.049	-3.424	-3.243	0.32	0	0	0	
+//49	25cyclohexadienone	-7.63	22.52643142	-3.3	-3.342	-3.034	-2.574	-1.976	-1.883	-0.24	0	0	0	
+48	24cyclohexadienone	3.3	29.7	-3.6	-4.3	-4.4	-4.1	-3.5	-3.3	0.3	0	0	0
+49 	25cyclohexadienone	2.9	25.3	-3.4	-3.4	-3.1	-2.6	-2.0	-1.9	-0.3	0	0	0
 50	fg6	-4.62	28.901	-5.597	-6.43	-6.331	-5.573	-4.198	-3.361	-1.155	0	0	0	
 51	oxylene	4.16	32.519	-2.078	-2.192	-2.249	-2.275	-2.541	-2.331	-2.797	0	0	0	
 52	pxylene	1.16	31.34986284	-2.139	-2.309	-2.384	-2.407	-2.643	-2.403	-2.826	0	0	0	

@@ -256,7 +256,8 @@ L1: RJ
 			L5: H3COJ
 		L4: CdsOJ
 			L5: RC=COJ
-			L5: OJC=O	
+			L5: OJC=O
+		L4: CbOJ	
 	L3: OOJ		// O-O.
 		L4: ROOJ
 			L5: C3COOJ
