@@ -1099,8 +1099,8 @@
 1093	O	Os-CsCs									
 1094	Od	Od-Cd									
 1095	Od-Cd	0	0	0	0	0	0	0	0	0	0	0	0	In this case the C is treated as the central atom 
-1096	Od-Od	0	25.19	3.5	3.61	3.72	3.825	4.035	4.175	4.36	0.001	0	0	"O2 Kee et al., SAND87-8215B, 1994", we cut it half to account for adding two single Od groups, also the symmetric number is considered too. S(group) = (S(o2) + Rln(sigma))/2
-// 1096	Od-Od	14.01	24.085	3.5	3.575	3.685	3.8	3.99	4.12	4.29	0	0	0	A. Vandeputte pipo's!  (?)
+//1096	Od-Od	14.01	25.19	3.5	3.61	3.72	3.825	4.035	4.175	4.36	0.001	0	0	"O2 Kee et al., SAND87-8215B, 1994", we cut it half to account for adding two single Od groups, also the symmetric number is considered too. S(group) = (S(o2) + Rln(sigma))/2
+1096	Od-Od	14.01	24.085	3.5	3.575	3.685	3.8	3.99	4.12	4.29	0	0	0	A. Vandeputte
 1097	Os	Os-(Cds-Cd)(Cds-Cd)									
 1098	Os-HH	-57.8	46.51	8.03	8.19	8.42	8.68	9.26	9.86	11.26	0.01	0.002	0	O-HH WATER. !!!Using NIST value for H2O, S(group) = S(H2O) + Rln(2)
 1099	Os-OsH	-16.3	27.83	5.21	5.72	6.17	6.66	7.15	7.61	8.43	0.14	0.07	0.07	O-OH SANDIA 1/2*H2O2
