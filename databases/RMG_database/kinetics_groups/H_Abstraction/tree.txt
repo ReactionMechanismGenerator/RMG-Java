@@ -27,6 +27,9 @@
 //	5ring_fused6_1, 5ring_fused6_2, 5ring_alpha6ring, 5ring_beta6ring, 
 //	5ring_adj5, Cs3_5ring_fused6
 // 
+// All work and no play makes Aaron a dull boy.
+// All work and no play makes Aaron a dull boy.
+// All work and no play...
 
 L1: X_H_or_Xrad_H
     L2: X_H
@@ -82,7 +85,9 @@ L1: X_H_or_Xrad_H
                     L6: C/H2/OneDeO
 	            L6: C/H2/OneDeS
 			L7: C/H2/CdS
+			L7: C/H2/CbS
 			L7: C/H2/CtS
+			L7: C/H2/CSS
                 L5: C/H2/TwoDe
 		    L6: C/H2/CdCd
 		    L6: C/H2/CdCS
@@ -127,7 +132,9 @@ L1: X_H_or_Xrad_H
                     L6: C/H/CsO
 		    L6: C/H/CsS
 			L7: C/H/CdCsS
+			L7: C/H/CbCsS
 			L7: C/H/CtCsS
+			L7: C/H/CSCsS
 		    L6: C/H/OO
 		    L6: C/H/OS
 		    L6: C/H/SS
@@ -237,6 +244,7 @@ L1: Y_rad_birad
 				L5: C_rad/H2/Cd
 					L6: C_rad/H2/Cd\H_Cd\H2
 					L6: C_rad/H2/Cd\Cs_Cd\H2
+				L5: C_rad/H2/CS
 				L5: C_rad/H2/Ct
 				L5: C_rad/H2/Cb
 				L5: C_rad/H2/CO
@@ -273,6 +281,8 @@ L1: Y_rad_birad
 					L6: C_rad/H/OneDeS
 						L7: C_rad/H/CdS
 						L7: C_rad/H/CtS
+						L7: C_rad/H/CSS
+						L7: C_rad/H/CbS
 				L5: C_rad/H/TwoDe
 					L6: C_rad/H/CdCd
 					L6: C_rad/H/CdCS
@@ -316,6 +326,8 @@ L1: Y_rad_birad
 					L6: C_rad/CsS
 						L7: C_rad/CdCsS
 						L7: C_rad/CtCsS
+                                                L7: C_rad/CbCsS
+                                                L7: C_rad/CSCsS
 					L6: C_rad/O2
 					L6: C_rad/OS
 					L6: C_rad/S2
