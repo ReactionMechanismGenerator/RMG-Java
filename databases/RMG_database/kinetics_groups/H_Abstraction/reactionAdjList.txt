@@ -9,7 +9,7 @@
 
 // f01 H Abstraction
 
-X_H + Y_rad_birad -> X_rad + Y_H
+X_H_or_Xrad_H + Y_rad_birad -> X_rad + Y_H
 
 thermo_consistence
 

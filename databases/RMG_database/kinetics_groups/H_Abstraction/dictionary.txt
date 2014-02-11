@@ -1380,6 +1380,9 @@ Srad_H
 1 *1 S 1 {2,S}
 2 *2 H 0 {1,S}
 
+Orad_H
+1 *1 O 1 {2,S}
+2 *2 H 0 {1,S}
 
 
 Y_rad_birad
