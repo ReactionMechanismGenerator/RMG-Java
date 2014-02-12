@@ -345,7 +345,7 @@ Arrhenius_EP
 1009. R4H_SSS 		C_rad_out_H/NonDeC 	O_H_out 		300-2500 	2.96E3	2.11	0.0	20.1	0	0	0	0	2 RQCISD(T)/CBS//B3LYP/6-311++G(d,p) with 1-d Hindered rotor correction
 1010. R2H_S 		C_rad_out_H/NonDeC 	Cs_H_out_2H 		300-2500 	1.0E3	2.705	0.0	34.65	0	0	0	0	2 RQCISD(T)/CBS//B3LYP/6-311++G(d,p) with 1-d Hindered rotor correction
 1011. R4H_SSS 		C_rad_out_2H 		Cs_H_out_H/NonDeO 	300-2500 	1.52E2	2.77	0.0	14.91	0	0	0	0	2 RQCISD(T)/CBS//B3LYP/6-311++G(d,p) with 1-d Hindered rotor correction
-1012. R5H_CCCC_O 	O_rad_out 		Cs_H_out_2H 		300-2500 	2.07E14	1.78	0.0	5.35	0	0	0	0	2 RQCISD(T)/CBS//B3LYP/6-311++G(d,p) with 1-d Hindered rotor correction
+1012. R5H_CCCC_O 	O_rad_out 		Cs_H_out_2H 		300-2500 	2.07E4	1.78	0.0	5.35	0	0	0	0	2 RQCISD(T)/CBS//B3LYP/6-311++G(d,p) with 1-d Hindered rotor correction
 1013. R2H_S 		O_rad_out 		Cs_H_out_H/(NonDeC/Cs) 	300-2500 	7.65E4	2.26	0.0	21.27	0	0	0	0	2 RQCISD(T)/CBS//B3LYP/6-311++G(d,p) with 1-d Hindered rotor correction
 1014. R4H_SSS 		O_rad_out 		Cs_H_out_H/NonDeC 	300-2500 	1.05E5	1.76	0.0	12.88	0	0	0	0	2 RQCISD(T)/CBS//B3LYP/6-311++G(d,p) with 1-d Hindered rotor correction
 
