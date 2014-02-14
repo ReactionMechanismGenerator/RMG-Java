@@ -29,7 +29,7 @@ Arrhenius_EP
 849.   R2OO_2H_2H 		300-1500	4.84E+6		1.67	0		29.7	0		0		0		0		2	pp, CBS-QB3 calculations, with hindered rotor treatment. 
 850.   R2OO_2H_HNd		300-1500	1.36E+8		1.28	0		30.0	0		0		0		0		2	sp, CBS-QB3 calculations, with hindered rotor treatment. 		  	
 851.   R2OO_HNd_2H		300-1500	2.08E+8	 	1.25	0		29.6	0		0		0		0		2	ps, CBS-QB3 calculations, with hindered rotor treatment.		  	
-852.   R2OO_2H_NdNd    		300-1500	3.66E+1		0.62	0		30.1	0		0		0		0		2	tp, CBS-QB3 calculations, with hindered rotor treatment.
+852.   R2OO_2H_NdNd    		300-1500	3.66E+10		0.62	0		30.1	0		0		0		0		2	tp, CBS-QB3 calculations, with hindered rotor treatment.
 853.   R2OO_NdNd_2H     	300-1500	1.94E+8		1.27	0		29.6	0		0		0		0		2	pt, CBS-QB3 calculations, with hindered rotor treatment.
 855.   R2OO_HNd_HNd     	300-1500	10.87E+10	0.8 	0		29.9	0		0		0		0		2	ss ,Multiplied 1.5 to trans rate coefficient , CBS-QB3 calculations, with hindered rotor treatment. 
 856.   R2OO_NdNd_HNd    	300-1500	3.5E+10 	0.71	0		30.1	0		0		0		0		2	st, CBS-QB3 calculations, with hindered rotor treatment.
