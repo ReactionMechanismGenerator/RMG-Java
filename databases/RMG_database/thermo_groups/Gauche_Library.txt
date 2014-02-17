@@ -13,8 +13,6 @@
 //the total contributions for each group will be added and divided by two (since each bond will be counted twice) (except in the case of T-T-T, alkenes, and ethers, where it will not be divided by two, since it wouldn't be double-counted); the number of interactions (with division by two where applicable) appears in the comments
 //a single gauche correction is worth 0.8 kcal/mol for alkanes and 0.5 kcal/mol for ethers (cf. Benson, Thermochemical Kinetics: Methods for the Estimation of Thermochemical Data and Rate Parameters, 2nd Edition, 1976. and Cohen and Benson, Chem. Rev. 93 (1993) 2419)
 //for alkenes, the value of 0.5 kcal/mol is used and the counting scheme discussed in Benson, Cruickshank, Golden, Haugen, O'Neal, Rodgers, Shaw, and Walsh, Chemical Reviews, 1969, 69, 279, (including neglecting gauche for "secondary" Cs) was used
-//Modified 11/06/13 to be able to deal with 3-membered cyclic components by A.G. Vandeputte
-//just referenced the open ring analogue for that node
 
 0  CsOsCd						0.0	0.0	0.0	0.0	0.0	0.0	0.0	0.0	0.0	0	0	0
 1  Cs(RRRR) 						0.0	0.0	0.0	0.0	0.0	0.0	0.0	0.0	0.0	0	0	0 //"zeroary" (e.g. methane)
@@ -112,67 +110,3 @@
 93 Cd(Cs(CsCsCs)Cs(CsRR)) 				1.0	0.0	0.0	0.0	0.0	0.0	0.0	0.0	0.0	0	0	0 //S(QS) 2 GI
 94 Cd(Cs(CsCsCs)Cs(CsCsR)) 				2.0	0.0	0.0	0.0	0.0	0.0	0.0	0.0	0.0	0	0	0 //S(QT) 4 GI
 95 Cd(Cs(CsCsCs)Cs(CsCsCs)) 				2.0	0.0	0.0	0.0	0.0	0.0	0.0	0.0	0.0	0	0	0 //S(QQ) 4 GI
-
-100 3memberedring					Cs3
-101 Cs3							Cs3(CsCsRR)
-102 Cs3(CsCsRR)						Cs3(Cs(CsRR)Cs(CsRR)RR)
-103 Cs3(Cs(CsRR)Cs(CsRR)RR)				Cs(Cs(CsRR)Cs(CsRR)RR)
-104 Cs3(Cs(CsCsR)Cs(CsRR)RR)				Cs(Cs(CsCsR)Cs(CsRR)RR)
-105 Cs3(Cs(CsCsR)Cs(CsCsR)RR)				Cs(Cs(CsCsR)Cs(CsCsR)RR)
-106 Cs3(Cs(CsCsCs)Cs(CsRR)RR)				Cs(Cs(CsCsCs)Cs(CsRR)RR)
-107 Cs3(Cs(CsCsCs)Cs(CsCsR)RR)				Cs(Cs(CsCsCs)Cs(CsCsR)RR)
-108 Cs3(Cs(CsCsCs)Cs(CsCsCs)RR)				Cs(Cs(CsCsCs)Cs(CsCsCs)RR)
-109 Cs3(CsCsCsR)					Cs3(Cs(CsRR)Cs(CsRR)CsR)
-110 Cs3(Cs(CsRR)Cs(CsRR)CsR)				Cs(Cs(CsRR)Cs(CsRR)CsR)
-111 Cs3(Cs(CsRR)Cs(CsRR)Cs(CsRR)R)			Cs(Cs(CsRR)Cs(CsRR)Cs(CsRR)R)
-112 Cs3(Cs(CsCsR)Cs(CsRR)CsR)				Cs(Cs(CsCsR)Cs(CsRR)CsR)
-113 Cs3(Cs(CsCsR)Cs(CsRR)Cs(CsRR)R)			Cs(Cs(CsCsR)Cs(CsRR)Cs(CsRR)R)
-114 Cs3(Cs(CsCsR)Cs(CsCsR)CsR)				Cs(Cs(CsCsR)Cs(CsCsR)CsR)
-115 Cs3(Cs(CsCsR)Cs(CsCsR)Cs(CsRR)R)			Cs(Cs(CsCsR)Cs(CsCsR)Cs(CsRR)R)
-116 Cs3(Cs(CsCsR)Cs(CsCsR)Cs(CsCsR)R)			Cs(Cs(CsCsR)Cs(CsCsR)Cs(CsCsR)R)
-117 Cs3(Cs(CsCsCs)Cs(CsRR)CsR)				Cs(Cs(CsCsCs)Cs(CsRR)CsR)
-118 Cs3(Cs(CsCsCs)Cs(CsRR)Cs(CsRR)R)			Cs(Cs(CsCsCs)Cs(CsRR)Cs(CsRR)R)
-119 Cs3(Cs(CsCsCs)Cs(CsCsR)CsR)				Cs(Cs(CsCsCs)Cs(CsCsR)CsR)
-120 Cs3(Cs(CsCsCs)Cs(CsCsR)Cs(CsRR)R)			Cs(Cs(CsCsCs)Cs(CsCsR)Cs(CsRR)R)
-121 Cs3(Cs(CsCsCs)Cs(CsCsR)Cs(CsCsR)R)			Cs(Cs(CsCsCs)Cs(CsCsR)Cs(CsCsR)R)
-122 Cs3(Cs(CsCsCs)Cs(CsCsCs)CsR)			Cs(Cs(CsCsCs)Cs(CsCsCs)CsR)
-123 Cs3(Cs(CsCsCs)Cs(CsCsCs)Cs(CsRR)R)			Cs(Cs(CsCsCs)Cs(CsCsCs)Cs(CsRR)R)
-124 Cs3(Cs(CsCsCs)Cs(CsCsCs)Cs(CsCsR)R)			Cs(Cs(CsCsCs)Cs(CsCsCs)Cs(CsCsR)R)
-125 Cs3(Cs(CsCsCs)Cs(CsCsCs)Cs(CsCsCs)R)		Cs(Cs(CsCsCs)Cs(CsCsCs)Cs(CsCsCs)R)
-126 Cs3(CsCsCsCs)					Cs3(Cs(CsRR)Cs(CsRR)CsCs)
-127 Cs3(Cs(CsRR)Cs(CsRR)CsCs)				Cs(Cs(CsRR)Cs(CsRR)CsCs)
-128 Cs3(Cs(CsRR)Cs(CsRR)Cs(CsRR)Cs)			Cs(Cs(CsRR)Cs(CsRR)Cs(CsRR)Cs)
-129 Cs3(Cs(CsRR)Cs(CsRR)Cs(CsRR)Cs(CsRR))		Cs(Cs(CsRR)Cs(CsRR)Cs(CsRR)Cs(CsRR))
-130 Cs3(Cs(CsCsR)Cs(CsRR)CsCs)				Cs(Cs(CsCsR)Cs(CsRR)CsCs)
-131 Cs3(Cs(CsCsR)Cs(CsRR)Cs(CsRR)Cs)			Cs(Cs(CsCsR)Cs(CsRR)Cs(CsRR)Cs)
-132 Cs3(Cs(CsCsR)Cs(CsRR)Cs(CsRR)Cs(CsRR))		Cs(Cs(CsCsR)Cs(CsRR)Cs(CsRR)Cs(CsRR))
-133 Cs3(Cs(CsCsR)Cs(CsCsR)CsCs)				Cs(Cs(CsCsR)Cs(CsCsR)CsCs)
-134 Cs3(Cs(CsCsR)Cs(CsCsR)Cs(CsRR)Cs)			Cs(Cs(CsCsR)Cs(CsCsR)Cs(CsRR)Cs)
-135 Cs3(Cs(CsCsR)Cs(CsCsR)Cs(CsRR)Cs(CsRR))		Cs(Cs(CsCsR)Cs(CsCsR)Cs(CsRR)Cs(CsRR))
-136 Cs3(Cs(CsCsR)Cs(CsCsR)Cs(CsCsR)Cs)			Cs(Cs(CsCsR)Cs(CsCsR)Cs(CsCsR)Cs)
-137 Cs3(Cs(CsCsR)Cs(CsCsR)Cs(CsCsR)Cs(CsRR))		Cs(Cs(CsCsR)Cs(CsCsR)Cs(CsCsR)Cs(CsRR))
-138 Cs3(Cs(CsCsR)Cs(CsCsR)Cs(CsCsR)Cs(CsCsR))		Cs(Cs(CsCsR)Cs(CsCsR)Cs(CsCsR)Cs(CsCsR))
-139 Cs3(Cs(CsCsCs)Cs(CsCsR)CsCs)			Cs(Cs(CsCsCs)Cs(CsCsR)CsCs)
-140 Cs3(Cs(CsCsCs)Cs(CsCsR)Cs(CsRR)Cs)			Cs(Cs(CsCsCs)Cs(CsCsR)Cs(CsRR)Cs)
-141 Cs3(Cs(CsCsCs)Cs(CsCsR)Cs(CsRR)Cs(CsRR))		Cs(Cs(CsCsCs)Cs(CsCsR)Cs(CsRR)Cs(CsRR))
-142 Cs3(Cs(CsCsCs)Cs(CsCsR)Cs(CsCsR)Cs)			Cs(Cs(CsCsCs)Cs(CsCsR)Cs(CsCsR)Cs)
-143 Cs3(Cs(CsCsCs)Cs(CsCsR)Cs(CsCsR)Cs(CsRR))		Cs(Cs(CsCsCs)Cs(CsCsR)Cs(CsCsR)Cs(CsRR))
-144 Cs3(Cs(CsCsCs)Cs(CsCsR)Cs(CsCsR)Cs(CsCsR))		Cs(Cs(CsCsCs)Cs(CsCsR)Cs(CsCsR)Cs(CsCsR))
-145 Cs3(Cs(CsCsCs)Cs(CsCsCs)CsCs)			Cs(Cs(CsCsCs)Cs(CsCsCs)CsCs)
-146 Cs3(Cs(CsCsCs)Cs(CsCsCs)Cs(CsRR)Cs)			Cs(Cs(CsCsCs)Cs(CsCsCs)Cs(CsRR)Cs)
-147 Cs3(Cs(CsCsCs)Cs(CsCsCs)Cs(CsRR)Cs(CsRR))		Cs(Cs(CsCsCs)Cs(CsCsCs)Cs(CsRR)Cs(CsRR))
-148 Cs3(Cs(CsCsCs)Cs(CsCsCs)Cs(CsCsR)Cs)		Cs(Cs(CsCsCs)Cs(CsCsCs)Cs(CsCsR)Cs)
-149 Cs3(Cs(CsCsCs)Cs(CsCsCs)Cs(CsCsR)Cs(CsRR))		Cs(Cs(CsCsCs)Cs(CsCsCs)Cs(CsCsR)Cs(CsRR))
-150 Cs3(Cs(CsCsCs)Cs(CsCsCs)Cs(CsCsR)Cs(CsCsR))		Cs(Cs(CsCsCs)Cs(CsCsCs)Cs(CsCsR)Cs(CsCsR))
-151 Cs3(Cs(CsCsCs)Cs(CsCsCs)Cs(CsCsCs)Cs)		Cs(Cs(CsCsCs)Cs(CsCsCs)Cs(CsCsCs)Cs)
-152 Cs3(Cs(CsCsCs)Cs(CsCsCs)Cs(CsCsCs)Cs(CsRR))		Cs(Cs(CsCsCs)Cs(CsCsCs)Cs(CsCsCs)Cs(CsRR))
-153 Cs3(Cs(CsCsCs)Cs(CsCsCs)Cs(CsCsCs)Cs(CsCsR))	Cs(Cs(CsCsCs)Cs(CsCsCs)Cs(CsCsCs)Cs(CsCsR))
-154 Cs3(Cs(CsCsCs)Cs(CsCsCs)Cs(CsCsCs)Cs(CsCsCs))	Cs(Cs(CsCsCs)Cs(CsCsCs)Cs(CsCsCs)Cs(CsCsCs))
-
-
-
-
-
-
-
-
