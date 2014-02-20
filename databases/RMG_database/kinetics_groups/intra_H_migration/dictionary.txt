@@ -1702,11 +1702,10 @@ Cs_H_out_H/NonDeC
 4 H 0 {1,S}
 
 Cs_H_out_H/2NonDeC
-1 *2 Cs 0 {2,S} {3,S} {4,S} {5,S}
+1 *2 Cs 0 {2,S} {3,S} {4,S}
 2 *3 H 0 {1,S}
-3 *4 Cs 0 {1,S}
-4 Cs 0 {1,S}
-5 H 0 {1,S}
+3  Cs 0 {1,S}
+4  Cs 0 {1,S}
 
 Cs_H_out_H/(NonDeC/O)
 1 *2 Cs 0 {2,S} {3,S} {4,S}
