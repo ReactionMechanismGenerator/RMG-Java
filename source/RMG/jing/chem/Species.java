@@ -333,13 +333,6 @@ public class Species {
         generateResonanceIsomersFromRadicalCenter();
         // generaate RI for O2, removed, don't allow .o-o.
         // generateResonanceIsomersForOxygen();
-        if (resonanceIsomers.size() == 1) {
-            ChemGraph cg = (ChemGraph) (resonanceIsomers.iterator().next());
-            if (cg == chemGraph)
-                resonanceIsomers.clear();
-            else
-                addResonanceIsomer(chemGraph);
-        }
         if (chemGraph.getRadicalNumber() >= 2) {
             // find if there are radicals next to each other and in that case
             // increase the bond order by 1
@@ -467,7 +460,7 @@ public class Species {
                     while (pathIter.hasNext()) {
                         Stack path = (Stack) pathIter.next();
                         ChemGraph newCG = doDelocalization(cg, path);
-                        if (newCG != null
+                        if (newCG != null && !undoChemGraph.contains(newCG)
                                 && !processedChemGraph.contains(newCG)) {
                             undoChemGraph.add(newCG);
 // undoChemGraph.enqueue(newCG);
@@ -476,6 +469,7 @@ public class Species {
                 }
             }
             processedChemGraph.add(cg);
+            addResonanceIsomer(cg);
         }
         /*
          * for (Iterator iter = getResonanceIsomers(); iter.hasNext(); ){ ChemGraph cg = (ChemGraph)iter.next();
