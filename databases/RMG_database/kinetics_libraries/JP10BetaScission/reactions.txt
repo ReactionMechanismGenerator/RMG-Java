@@ -58,6 +58,8 @@ R6 = JR6BS4			8.27E10	0.88	29.4  0.0 0.0 0.0
 //R6 = JR6BS5			1.43E12	0.61	30.70 0.0 0.0 0.0   
 R6 = JR6HA2 + H			3.55E10	1.03	42.85 0.0 0.0 0.0   
 
+//habsbscisR6 = bscishabsbscisR6	8.21E+10 0.95	46.0  0.0 0.0 0.0
+
 //two pathways, but one was marked as highly suspicious
 //Instead I doubled the A-factor fo the unsuspicious pathway
 R6 = JR5HA1 + H			1.24E11	1.09		39.25 0.0 0.0 0.0   
@@ -68,7 +70,9 @@ R7 = JR7BS3         		2.08E12 0.84        	68.51 0.0 0.0 0.0
 R7 = JR7BS4			3.01E11	0.71		23.46 0.0 0.0 0.0   
 R7 = JR7HA5 + H       		8.16E9 	1.48 	    	78.82 0.0 0.0 0.0	
 
-JR8BS1 = JR8HA1			2.51E-01 3.86    	9.95  0.0 0.0 0.0	
+JR8BS1 = JR8HA1			2.51E-01 3.86    	9.95  0.0 0.0 0.0
+//JR8HA1 = CPD + CPyl 		6.88E+10 0.86		36.0  0.0 0.0 0.0
+	
 R8 = JR8BS1			2.28E12	0.37		23.58 0.0 0.0 0.0   
 R8 = JR8BS2			9.20E11	0.44		27.46 0.0 0.0 0.0   
 R8 = JR8BS3			6.22E11	0.50		33.61 0.0 0.0 0.0  
@@ -83,7 +87,9 @@ R10 = JR10BS2			1.79E12	0.53		24.85 0.0 0.0 0.0
 JR5BS1 = JR8HA1						1.73E+06 1.39	19.0	0.0	0.0	0.0
 JR5BS1 = pentenylcyclopentene				1.90E+12 0.50	35.8	0.0	0.0	0.0
 JR5BS1 = C1CC2CC1C1CCC2C1yl				7.57E+10 0.01   19.9	0.0	0.0	0.0
-JR5BS1 = [CH]1CdC(C2CCCC2)CC1				1E-10	 0.00	0.00	0.0	0.0	0.0
+JR5BS1 = [CH]1CdC(C2CCCC2)CC1                         	1.00E-11 0.00   0.0     0.0     0.0     0.0
+//JR5BS1 = [CH]1CdC(C2CCCC2)CC1				2.63E+06 1.78	17.1	0.0	0.0	0.0
+[CH]1CdC(C2CCCC2)CC1 = [CH2]CCCCdC1CdCCC1		1.64E+11 0.95   37.2	0.0     0.0     0.0
 C1CC2CC1C1CCC2C1yl = C1CC2CC1C1CCC2C1ylbscis		3.39E+11 0.87	32.6	0.0	0.0	0.0
 C1CC2CC1C1CCC2C1ylbscis = ethene + CH1CdCC2CCC1C2	1.69E+11 0.70   22.5    0.0     0.0     0.0 
 //butenylcyclohexenyl = cyclohexadiene + butenyl		1.49E+11 1.01   29.4	0.0	0.0	0.0
