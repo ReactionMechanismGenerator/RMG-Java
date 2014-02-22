@@ -28,4 +28,11 @@ public class QMForCyclicsGenerator extends TDGenerator {
             // return gen.generateThermo(chemGraph);
         }
     }
+
+    public ThermoData generateFakeThermo() {
+        ThermoData thermo = thermoGAPP.generateFakeThermoData();
+        return thermo;
+    }
+
+
 }

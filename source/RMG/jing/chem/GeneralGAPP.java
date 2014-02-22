@@ -36,6 +36,7 @@ import java.util.*;
 public interface GeneralGAPP {
     // ## operation generateThermoData(ChemGraph)
     ThermoData generateThermoData(ChemGraph p_chemGraph);
+    ThermoData generateFakeThermoData();
     // ThermoData generateSolvationData(ChemGraph p_chemGraph);
 }
 /*********************************************************************

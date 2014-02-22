@@ -386,6 +386,26 @@ public class ThermoGAGroupLibrary {
         return null;
     }
 
+    public ThermoGAValue findGaucheGroupCyclics(ChemGraph p_chemGraph)
+            throws MultipleGroupFoundException, InvalidCenterTypeException {
+        // #[ operation findGAGroup(ChemGraph)
+        if (p_chemGraph == null)
+            return null;
+        Stack stack = gaucheTree.findMatchedPath(p_chemGraph);
+        p_chemGraph.getGraph().resetMatchedGC();
+        if (stack == null)
+            return null;
+        while (!stack.empty()) {
+            HierarchyTreeNode node = (HierarchyTreeNode) stack.pop();
+            Matchable fg = (Matchable) node.getElement();
+            ThermoGAValue ga = (ThermoGAValue) gaucheLibrary.get(fg);
+            p_chemGraph.appendThermoComments("Gauche:" + fg.getName());
+            if (ga != null)
+                return ga;
+        }
+        return null;
+    }
+
     /**
      * Requires: the central node of p_chemGraph has been set to the thermo center atom. Effects: find a matched thermo
      * functional group in the group tree for the pass-in p_chemGraph, return this functional group's thermo value. If

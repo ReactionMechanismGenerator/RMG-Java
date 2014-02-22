@@ -96,6 +96,14 @@ public class QMTP implements GeneralGAPP {
         return qmMethod;
     }
 
+    public ThermoData generateFakeThermoData() {
+        ThermoData result = null;
+        ThermoGAValue impossible = new ThermoGAValue(1000
+                , 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, null);
+        result.plus(impossible);
+        return result;
+    }
+
     // ## operation generateThermoData(ChemGraph)
     public ThermoData generateThermoData(ChemGraph p_chemGraph) {
         if (!keepQMfiles) {
@@ -292,7 +300,8 @@ public class QMTP implements GeneralGAPP {
                         + InChIaug
                         + ") have previously failed. Falling back to Benson Group Additivity.");
                 TDGenerator gen = new BensonTDGenerator();
-                return gen.generateThermo(p_chemGraph);
+                return gen.generateFakeThermo();
+            //    return gen.generateThermo(p_chemGraph);
             }
             // generate new QM Thermo Data
             try {
@@ -305,7 +314,8 @@ public class QMTP implements GeneralGAPP {
             } catch (AllQmtpAttemptsFailedException e) {
                 Logger.warning("Falling back to Benson group additivity due to repeated failure in QMTP calculations");
                 TDGenerator gen = new BensonTDGenerator();
-                return gen.generateThermo(p_chemGraph);
+             //   return gen.generateThermo(p_chemGraph);
+		return gen.generateFakeThermo();
             }
         }
         return result;

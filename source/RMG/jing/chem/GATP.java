@@ -64,6 +64,13 @@ public class GATP implements GeneralGAPP {
         initGAGroupLibrary();
         initializePrimaryThermoLibrary();// svp
     }
+    
+    public ThermoData generateFakeThermoData() {
+	ThermoGAValue impossible = new ThermoGAValue(1000
+                , 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, null);
+	ThermoData result = new ThermoData(impossible);
+        return result;
+    }
 
     public ThermoData generateThermoData(ChemGraph p_chemGraph) {
         ThermoData result = null;
@@ -183,7 +190,7 @@ public class GATP implements GeneralGAPP {
                             result.plus(thisGaucheValue);
                         if (thisOneFiveValue != null)
                             result.plus(thisOneFiveValue);
-                    }
+                    } 
                     if (thisGAValue == null) {
                         Logger.warning("Thermo group not found: "
                                 + node.getID());

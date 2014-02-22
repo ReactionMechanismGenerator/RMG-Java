@@ -50,4 +50,10 @@ public class HybridTDGenerator extends TDGenerator {
             return thermo;
         }
     }
+
+    public ThermoData generateFakeThermo() {
+        ThermoData thermo = thermoGAPP.generateFakeThermoData();
+        return thermo;
+    }
+
 }

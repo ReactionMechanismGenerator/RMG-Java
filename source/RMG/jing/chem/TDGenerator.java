@@ -10,4 +10,5 @@ public abstract class TDGenerator {
     GeneralGAPP thermoQM;
 
     public abstract ThermoData generateThermo(ChemGraph chemGraph);
+    public abstract ThermoData generateFakeThermo();
 }
