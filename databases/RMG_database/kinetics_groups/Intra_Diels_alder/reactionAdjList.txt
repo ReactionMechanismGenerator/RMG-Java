@@ -12,7 +12,7 @@
 cyclohexene -> open
 
 forward
-reverse(f33): none 
+reverse(f33): ringopening 
 
 Actions 1
 (1) CHANGE_BOND		{*1,1,*2}
