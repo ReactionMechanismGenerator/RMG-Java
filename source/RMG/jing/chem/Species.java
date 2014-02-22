@@ -119,6 +119,11 @@ public class Species {
         // #]
     }
 
+    public void resetResonanceIsomer(ChemGraph p_resonanceIsomer) {
+       resonanceIsomers = new LinkedHashSet();
+       p_resonanceIsomer.setSpecies(this);
+    }
+
     // ## operation calculateCp(Temperature)
     public double calculateCp(Temperature p_temperature) {
         // #[ operation calculateCp(Temperature)
@@ -468,6 +473,60 @@ public class Species {
                     }
                 }
             }
+// The problem with removing the birads and considering the double bond as a resonance form of it is the following
+// Assume CH2*CH2* birad, this birad now get the same thermo as CH2=CH2
+// Results every time I can do somewhere a B-scission resulting in CH2=CH2, I can do a facter bond scission yielding CH2*CH2*
+
+//	    int radicalNumber = cg.getRadicalNumber();
+//            if (radicalNumber >= 2) {
+            	// find if there are radicals next to each other and in that case
+            	// increase the bond order by 1
+//		radicalIter = radicalNode.iterator();
+//        	while (radicalIter.hasNext()) {
+//                	Node n1 = (Node) radicalIter.next();
+//                	Iterator arcs = n1.getNeighbor();
+//                	while (arcs.hasNext()) {
+//                		Arc arc = (Arc) arcs.next();
+//                    		Bond bond = (Bond) arc.getElement();
+//                    		Node n2 = arc.getOtherNode(n1);
+//                    		Atom a2 = (Atom) n2.getElement();
+//                    			if (a2.isRadical() && !bond.isTriple()) {
+//                        			Graph newG = Graph.copy(cg.getGraph());
+//                        			Node node1 = newG.getNodeAt(n1.getID());
+//                        			Atom atom1 = (Atom) node1.getElement();
+//                        			Atom newatom1 = (Atom) atom1.changeRadical(-1, null);
+//			                        node1.setElement(newatom1);
+//                       				Node node2 = newG.getNodeAt(n2.getID());
+//                        			Atom atom2 = (Atom) node2.getElement();
+//                        			Atom newatom2 = (Atom) atom2.changeRadical(-1, null);
+//                        			node2.setElement(newatom2);
+//                        			Arc  arc1 = newG.getArcBetween(n2.getID(), n1.getID());
+//                        			Bond bond1 = (Bond) arc1.getElement();
+//                        			Bond newbond = bond1.changeBond(1);
+//                        			arc1.setElement(newbond);
+//					        node1.updateFgElement();
+//					        node1.updateFeElement();
+//					        node2.updateFgElement();
+//						node2.updateFeElement();
+//                        			ChemGraph newCG;
+//                        			try {
+//                        				newCG = ChemGraph.make(newG);
+		//					System.out.println("Tried to add the following component "+newCG.toString());
+//							if (!processedChemGraph.contains(newCG) && !undoChemGraph.contains(newCG)) {
+//                        					undoChemGraph.add(newCG);
+//								}
+//                        			} catch (InvalidChemGraphException e) {
+                        				// TODO Auto-generated catch block
+//                        				Logger.logStackTrace(e);
+//                        			} catch (ForbiddenStructureException e) {
+                        				// TODO Auto-generated catch block
+//                        				Logger.logStackTrace(e);
+//                        			}
+//                    			}
+//                		}
+//            		}
+//        	}
+            //System.out.println("Added the following component "+cg.toString());
             processedChemGraph.add(cg);
             addResonanceIsomer(cg);
         }
