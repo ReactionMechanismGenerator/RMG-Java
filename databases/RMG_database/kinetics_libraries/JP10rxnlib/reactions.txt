@@ -328,18 +328,19 @@ BENZYL + H = PHENYL + CH3 	5.84e67 	-14.15	68.33	0.0 0.0 0.0
 //Wang&Frenklach 2000
 
 //high-P limit rates taken from Sharma and Green (2009)
-C5H5CH3_5 = C5H5CH3_1 		7.03E8 		1.2 	24.8	0.0 0.0 0.0
-C5H5CH3_1 = C5H5CH3_2 		1.65E7 		2.1 	25.1	0.0 0.0 0.0
-CPDYL+CH3 = C5H5CH3_5 		8.34E15		-0.7 	-0.5	0.0 0.0 0.0
-FULVENE + H2 = C5H5CH3_5 	1.44E5 		3.9	81.1	0.0 0.0 0.0
-FULVENE + H2 = C5H5CH3_1 	6.08E7	 	1.4	71.0	0.0 0.0 0.0
-FULVENE + H2 = C5H5CH3_2 	1.62E7 		1.6	55.5	0.0 0.0 0.0
-MCPDYL+H = C5H5CH3_5 		4.57E14 	-0.1 	0.4	0.0 0.0 0.0
-MCPDYL+H = C5H5CH3_1 		4.09E13 	0.3 	0.1	0.0 0.0 0.0
-C5H5CH2-2 + H = C5H5CH3_1 	1.05E12 	0.6 	-0.2 	0.0 0.0 0.0
-MCPDYL+H = C5H5CH3_2 		9.05E13 	0.1 	0.0 	0.0 0.0 0.0
-C5H5CH2-3 + H = C5H5CH3_2 	3.43E12 	0.5 	-0.1 	0.0 0.0 0.0
-C5H5CH2-1 + H = C5H5CH3_5 	2.10E12 	0.6 	-0.8 	0.0 0.0 0.0
+// Check these... highly suspicious, AG Vandeputte
+//C5H5CH3_5 = C5H5CH3_1 		7.03E8 		1.2 	24.8	0.0 0.0 0.0
+//C5H5CH3_1 = C5H5CH3_2 		1.65E7 		2.1 	25.1	0.0 0.0 0.0
+//CPDYL+CH3 = C5H5CH3_5 		8.34E15		-0.7 	-0.5	0.0 0.0 0.0
+//FULVENE + H2 = C5H5CH3_5 	1.44E5 		3.9	81.1	0.0 0.0 0.0
+//FULVENE + H2 = C5H5CH3_1 	6.08E7	 	1.4	71.0	0.0 0.0 0.0
+//FULVENE + H2 = C5H5CH3_2 	1.62E7 		1.6	55.5	0.0 0.0 0.0
+//MCPDYL+H = C5H5CH3_5 		4.57E14 	-0.1 	0.4	0.0 0.0 0.0
+//MCPDYL+H = C5H5CH3_1 		4.09E13 	0.3 	0.1	0.0 0.0 0.0
+//C5H5CH2-2 + H = C5H5CH3_1 	1.05E12 	0.6 	-0.2 	0.0 0.0 0.0
+//MCPDYL+H = C5H5CH3_2 		9.05E13 	0.1 	0.0 	0.0 0.0 0.0
+//C5H5CH2-3 + H = C5H5CH3_2 	3.43E12 	0.5 	-0.1 	0.0 0.0 0.0
+//C5H5CH2-1 + H = C5H5CH3_5 	2.10E12 	0.6 	-0.8 	0.0 0.0 0.0
 
 //********************************************************
 //Reactions replaced below by new kinetics on suggestion of gmagoon

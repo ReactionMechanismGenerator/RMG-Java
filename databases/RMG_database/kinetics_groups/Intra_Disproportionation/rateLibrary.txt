@@ -13,11 +13,13 @@ Arrhenius_EP
 
 //No	Rn		Y_rad		XH_Rrad		Temp		A	N	Alpha	E	DA	DN	DAlpha	DE	Rank	Comments											
 // before A = 5.66E+10
-1	R3	Y_rad		XH_Rrad		300-1500	1.62E+11        -0.305  0       2	0	0	0	0	5	Herbinet et al.(2006) reference Ea and Warth et al.(1998) prefactor with deltan_int=-1
+//1	R3	Y_rad		XH_Rrad		300-1500	1.62E+11        -0.305  0       2	0	0	0	0	5	Herbinet et al.(2006) reference Ea and Warth et al.(1998) prefactor with deltan_int=-1
+1       R3      Y_rad           XH_Rrad         300-1500        1.62E+10        -0.305  0       20       0       0       0       0       5       Herbinet et al.(2006) reference Ea and Warth et al.(1998) prefactor with deltan_int=-1, increase barrier and decreased A
 2	R4	Y_rad		XH_Rrad		300-1500	7.76E+08        0.311   0       2	0	0	0	0	5	Herbinet et al.(2006) reference Ea and Warth et al.(1998) prefactor with deltan_int=-1
 3	R5	Y_rad		XH_Rrad		300-1500	3.21E+09        0.137   0       2	0	0	0	0	5	Herbinet et al.(2006) reference Ea and Warth et al.(1998) prefactor with deltan_int=-1
 4	R6	Y_rad		XH_Rrad		300-1500	3.21E+09        0.137   0       2	0	0	0	0	5	Herbinet et al.(2006) reference Ea and Warth et al.(1998) prefactor with deltan_int=-1
 5	R7	Y_rad		XH_Rrad		300-1500	3.21E+09        0.137   0       2	0	0	0	0	5	Herbinet et al.(2006) reference Ea and Warth et al.(1998) prefactor with deltan_int=-1
+
 
 
 

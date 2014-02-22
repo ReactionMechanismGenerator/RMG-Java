@@ -38,6 +38,18 @@ fused5rings_4
 7 C 1 {6,S} {8,S}
 8 C 0 {4,S} {7,S}
 
+Allylicrad1
+1 *1 R 1 {2,S}
+2 R 0 {1,S} {3,D}
+3 R 0 {2,D} {4,S}
+
+Allylicrad2
+1 *3 R  1 {2,S}
+2 R 0 {1,S} {3,D}
+3 R 0 {2,D} {4,S}
+
+
+
 
 
 

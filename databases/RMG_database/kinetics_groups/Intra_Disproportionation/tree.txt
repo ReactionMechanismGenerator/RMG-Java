@@ -5,7 +5,7 @@ L1: Rn
         //ring-size includes hydrogen
 	L2: R3
 		L3: R3radExo 
-		L3: R3radEndo
+//		L3: R3radEndo
       	L2: R4
 		L3: R4radExo
 		L3: R4radEndo
