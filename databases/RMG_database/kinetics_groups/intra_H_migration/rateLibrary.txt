@@ -400,7 +400,7 @@ Arrhenius_EP
 1042. R3H_SS 	C_rad_out_H/NonDeC 	O_H_out 		300-2500 	3.0E-10 	6.82 	0.0 	25.00 	0 0 0 0 3 SSM CBS-QB3 with 1-dHR
 1043. R2H_S 	C_rad_out_H/NonDeO 	Cs_H_out_H/NonDeC 	300-2500 	4.7E-19 	8.84 	0.0 	30.0 	0 0 0 0 3 SSM CBS-QB3 with 1-dHR
 1044. R3H_SS 	C_rad_out_H/NonDeO 	Cs_H_out_2H 		300-2500 	2E-15 		8.23 	0.0 	34.1 	0 0 0 0 3 SSM CBS-QB3 with 1-dHR
-1045. R3H_SS 	O_rad_out 		Cs_H_out_H/2NonDeC	300-2500 	7E-8 		6.3 	0.0 	19.75 	0 0 0 0 3 SSM CBS-QB3 with 1-dHR
+1045. R3H_SS 	O_rad_out 		Cs_H_out_Cs2		300-2500 	7E-8 		6.3 	0.0 	19.75 	0 0 0 0 3 SSM CBS-QB3 with 1-dHR
 1046. R2H_S 	C_rad_out_H/NonDeC 	Cs_H_out_2H 		300-2500 	5E-18 		8.38 	0.0 	27.05 	0 0 0 0 3 SSM CBS-QB3 with 1-dHR
 
 1047. R2H_S 	C_rad_out_2H 		O_H_out			600-2000 	2.56E4 		2.36 	0.0 	33.1	0 0 0 0 3 Aaron BMK/cbsb7 with 1-dHR
@@ -409,7 +409,7 @@ Arrhenius_EP
 
 // RQCISD(T)/CBS TST calculations with Eckart and 1-dHR corrections from Enoch for alpha-hydroxyethyl surface, reference: doi 10.1002/kin.20844
 1050. R2H_S  C_rad_out_H/NonDeO  Cs_H_out_2H  700-1500 	1.47E+13 		 0.0 	0.0 	45.0 	2 0 0 0 3 ED, RQCISD(T)/CBS TST with Eckart and 1-HR
-1051  R2H_S  C_rad_out_H/NonDeC  O_H_out      700-1500 	3E+13 		     0.0 	0.0 	37.0 	2 0 0 0 3 ED, RQCISD(T)/CBS TST with Eckart and 1-HR
+1051  R2H_S  C_rad_out_H/NonDeC  O_H_out      700-1500 	3E13 		     0.0 	0.0 	37.0 	2 0 0 0 3 ED, RQCISD(T)/CBS TST with Eckart and 1-HR
 1052  R2H_S  C_rad_out_2H  Cs_H_out_H/NonDeO  700-1800 	1.85E+13 		-0.1 	0.0 	37.85 	2 0 0 0 3 ED, RQCISD(T)/CBS TST with Eckart and 1-HR
 1053  R2H_S  O_rad_out     Cs_H_out_H/NonDeC  700-1800 	2.15E+14 		-0.27 	0.0 	27.24 	2 0 0 0 3 ED, RQCISD(T)/CBS TST with Eckart and 1-HR 
-1054  R3H_SS O_rad_out 	   Cs_H_out_H/2NonDeC 700-1800 	1.72E+08		 1.31   0.0		24.94   2 0 0 0 3 ED, RQCISD(T)/CBS TST with Eckart and 1-HR 
+1054  R3H_SS O_rad_out 	   Cs_H_out_Cs2       700-1800 	1.72E+08		 1.31   0.0		24.94   2 0 0 0 3 ED, RQCISD(T)/CBS TST with Eckart and 1-HR 
