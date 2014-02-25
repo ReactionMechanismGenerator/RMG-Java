@@ -361,12 +361,12 @@ C5H7RES = C5H7RESLIN 		8.07E11		0.73 		43.02	0.0 0.0 0.0
 
 //************c6h9 pes
 //recalculated by Yu Shi to get High-P limit values; barrierless reactions omitted, as Sandeep apparently only used estimates for these anyway
-C5H6CH3 = HXD3YL 		1.99e+11 	0.80		1.44 	0.0 0.0 0.0
-HXD3YL = HXD6YL 		8.93e-10 	6.23		1.97 	0.0 0.0 0.0
-HXD6YL = cyC6H9 		1.29e+11 	0.10		21.04 	0.0 0.0 0.0
-C5H6CH3 = cyC5H7CH2 		1.96e-21 	9.49		28.57 	0.0 0.0 0.0
-cyC5H7CH2 = HXD6YL 		4.59e+11 	0.49		21.72 	0.0 0.0 0.0
-CPD + CH3 = C5H6CH3 		7.03e+02 	2.83		2.74 	0.0 0.0 0.0
+//C5H6CH3 = HXD3YL 		1.99e+11 	0.80		1.44 	0.0 0.0 0.0
+//HXD3YL = HXD6YL 		8.93e-10 	6.23		1.97 	0.0 0.0 0.0
+//HXD6YL = cyC6H9 		1.29e+11 	0.10		21.04 	0.0 0.0 0.0
+//C5H6CH3 = cyC5H7CH2 		1.96e-21 	9.49		28.57 	0.0 0.0 0.0
+//cyC5H7CH2 = HXD6YL 		4.59e+11 	0.49		21.72 	0.0 0.0 0.0
+//CPD + CH3 = C5H6CH3 		7.03e+02 	2.83		2.74 	0.0 0.0 0.0
 
 //Sandeep's 1 atm P-dep rates below
 //HXD3YL = CPD+CH3 		1.04e+75 	-17.94		78.18 	0.0 0.0 0.0
@@ -419,12 +419,14 @@ FULVENE+H = BENZENE+H 		7.70944E+50 	-10.14		31.58	0.0 0.0 0.0
 //****************************
 
 //C5H5+C3H3 pes*******
-CPDYL+H2CCCH = YMN 		1.41541E+68 	-15.98 		33.05	0.0 0.0 0.0
-CPDYL+H2CCCH = c5h4chchch2 	6.92645E+90 	-21.96 		65.28	0.0 0.0 0.0
-CPDYL+H2CCCH = STYRENE 		6.74576E+98 	-24.38 		79.46	0.0 0.0 0.0
-YMN = c5h4chchch2 		1.29e+56 	-12.78 		72.30	0.0 0.0 0.0
-YMN = STYRENE 			3.47e+86 	-21.20 		113.33	0.0 0.0 0.0
-c5h4chchch2 = STYRENE 		1.54e+50 	-10.72 		99.64	0.0 0.0 0.0
+
+// YMN is guessed so we opt not to use these
+//CPDYL+H2CCCH = YMN 		1.41541E+68 	-15.98 		33.05	0.0 0.0 0.0
+//CPDYL+H2CCCH = c5h4chchch2 	6.92645E+90 	-21.96 		65.28	0.0 0.0 0.0
+//CPDYL+H2CCCH = STYRENE 		6.74576E+98 	-24.38 		79.46	0.0 0.0 0.0
+//YMN = c5h4chchch2 		1.29e+56 	-12.78 		72.30	0.0 0.0 0.0
+//YMN = STYRENE 			3.47e+86 	-21.20 		113.33	0.0 0.0 0.0
+//c5h4chchch2 = STYRENE 		1.54e+50 	-10.72 		99.64	0.0 0.0 0.0
 
 
 //c5h4chchch2+h pes ********** 
