@@ -318,3 +318,5 @@ c5h4c5h5 = H + NAPHTHALENE		4.53e5		1.83	36.34  	0.0 0.0 0.0
 
 c10h9 = H + NAPHTHALENE			7.843E7 	0.97 	34.9	0.0 0.0 0.0
 
+H2CCCH + H2CCCH <=> BENZENE             3.160e+55   -12.55   22.26    0.0 0.0 0.0
+

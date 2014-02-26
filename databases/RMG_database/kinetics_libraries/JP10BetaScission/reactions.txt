@@ -93,7 +93,7 @@ JR5BS1 = pentenylcyclopentene				1.90E+12 0.50	35.8	0.0	0.0	0.0
 JR5BS1 = C1CC2CC1C1CCC2C1yl				7.57E+10 0.01   19.9	0.0	0.0	0.0
 
 // Fast?
-//JR5BS1 = [CH]1CdC(C2CCCC2)CC1                         	1.00E-11 0.00   0.0     0.0     0.0     0.0
+JR5BS1 = [CH]1CdC(C2CCCC2)CC1                         	1.00E-11 0.00   0.0     0.0     0.0     0.0
 //JR5BS1 = [CH]1CdC(C2CCCC2)CC1				2.63E+06 1.78	17.1	0.0	0.0	0.0
 
 [CH]1CdC(C2CCCC2)CC1 = [CH2]CCCCdC1CdCCC1		1.64E+11 0.95   37.2	0.0     0.0     0.0
