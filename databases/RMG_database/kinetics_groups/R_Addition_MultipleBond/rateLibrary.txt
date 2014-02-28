@@ -73,7 +73,8 @@ Arrhenius_EP
 67	Cds-HH_Cds-CdH	CsJ-CtHH	300-1500	1.07E+04	2.41	0	6.24	0	0	0	0	4	Aaron Vandeputte GAVs CBS-QB3
 68	Cds-HH_Cds-CdH	CsJ-CtCsH	300-1500	2.40E+03	2.41	0	5.78	0	0	0	0	4	Aaron Vandeputte GAVs CBS-QB3
 69	Cds-HH_Cds-CdH	CsJ-CtCsCs	300-1500	6.14E+02	2.41	0	5.10	0	0	0	0	4	Aaron Vandeputte GAVs CBS-QB3
-70	Cds-HH_Cds-CdH	CdsJ-H		300-1500	1.61E+04	2.41	0	-1.31	0	0	0	0	4	Aaron Vandeputte GAVs CBS-QB3
+//70	Cds-HH_Cds-CdH	CdsJ-H		300-1500	1.61E+04	2.41	0	-1.31	0	0	0	0	4	Aaron Vandeputte GAVs CBS-QB3
+70	Cds-HH_Cds-CdH  CdsJ-H          300-1500	2.45E+2		3.08	0	1.4	0	0	0	0	4	Update BMK/6-311G(2d,d,p) Eckart no HR
 71	Cds-HH_Cds-CdH	CdsJ-Cs		300-1500	8.55E+03	2.41	0	-1.52	0	0	0	0	4	Aaron Vandeputte GAVs CBS-QB3
 72	Cds-HH_Cds-CdH	CbJ		300-1500	2.55E+04	2.41	0	-3.69	0	0	0	0	4	Aaron Vandeputte GAVs CBS-QB3
 73	Cds-HH_Cds-CdCs	CsJ-HHH		300-1500	2.68E+04	2.41	0	2.10	0	0	0	0	4	Aaron Vandeputte GAVs CBS-QB3
