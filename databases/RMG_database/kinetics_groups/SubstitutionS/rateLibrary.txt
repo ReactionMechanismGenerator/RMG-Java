@@ -1,7 +1,5 @@
 Arrhenius_EP
-
 // Defined as forward, so also include reverse reactions!
-
 
 //No.	S-R1R2			YJ				Temp.		A			n		a		E0		DA		Dn		Da		DE0		Rank	Comments
 0	S-RR_or_RRrad	YJ	300-1500	1.0E+09		0	0	3.0	0	0	0	0	0	Default
@@ -25,7 +23,7 @@ Arrhenius_EP
 17	S-Cs(HHH)Cds(H)	HJ	300-1500	2.38E+10	0.79	0	8.2	0	0	0	0	3	Aäron Vandeputte CBS-QB3 HO
 18	S-Cs(HHH)Cds(Cs)	HJ	300-1500	2.81E+09	1.15	0	5.9	0	0	0	0	3	Aäron Vandeputte CBS-QB3 HO
 19	S-Cs(HHH)Cs(CdHH)	HJ	300-1500	2.53E+08	1.54	0	2.2	0	0	0	0	3	Aäron Vandeputte CBS-QB3 HO
-20	S-Cs(HHH)Cs(CdCsH)	HJ	300-1500	4.05E+08	1.49	0	2.0	0	0	0	0	3	Aäron Vandeputte CBS-QB3 HO
+20 S-Cs(HHH)Cs(CdCsH)	HJ	300-1500	4.05E+08	1.49	0	2.0	0	0	0	0	3	Aäron Vandeputte CBS-QB3 HO
 21	S-Cs(HHH)Cs(CdCsCs)	HJ	300-1500	1.92E+08	1.57	0	1.6	0	0	0	0	3	Aäron Vandeputte CBS-QB3 HO
 22	S-Cs(HHH)Cs(CtHH)	HJ	300-1500	1.33E+08	1.62	0	2.5	0	0	0	0	3	Aäron Vandeputte CBS-QB3 HO
 23	S-Cs(HHH)Cs(CtCsH)	HJ	300-1500	1.87E+08	1.62	0	2.0	0	0	0	0	3	Aäron Vandeputte CBS-QB3 HO
@@ -82,7 +80,6 @@ Arrhenius_EP
 74	S-Cs(HHH)Ss(Ss)	CsJ-HHH	300-1500	6.06E+03	2.68	0	3.2	0	0	0	0	3	Aäron Vandeputte CBS-QB3 HO
 75	S-Ss(Cs)Ss(Cs)	CsJ-HHH	300-1500	3.71E+03	2.65	0	5.1	0	0	0	0	3	Aäron Vandeputte CBS-QB3 HO
 76	S-Cs(HHH)Ss(Ss)	CsJ-HHH	300-1500	5.43E+03	2.68	0	3.3	0	0	0	0	3	Aäron Vandeputte CBS-QB3 HO
-
 77	S-HH	CsJ-HHH	300-1500	1.48E+03	2.72	0	19.3	0	0	0	0	3	Aäron Vandeputte CBS-QB3 HO
 78	S-HH	CsJ-CsHH	300-1500	1.02E+01	2.96	0	18.8	0	0	0	0	3	Aäron Vandeputte CBS-QB3 HO
 79	S-HH	CsJ-CsCsH	300-1500	4.82E-01	3.24	0	18.5	0	0	0	0	3	Aäron Vandeputte CBS-QB3 HO
@@ -170,4 +167,4 @@ Arrhenius_EP
 159	S-HCs(CsOsH)	SsJ-H	300-1500        1.18E+03        3.00    0       13.3   0       0       0       0	4	based on CAC's 131 calc
 160	S-HSs(H)	CsJ-CdHH	300-1500	9.30E+02	2.61	0	10.07	0	0	0	0	4	CAC CBS-QB3, HO approx
 161	S-HCs(CsHH)	SsJ-Cs	300-2000	7.25E+01	3.21	0	11.45	0	0	0	0	3	CAC CBS-QB3 1dhr
-
+

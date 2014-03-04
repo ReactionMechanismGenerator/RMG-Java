@@ -14,7 +14,7 @@ public class QMForCyclicsGenerator extends TDGenerator {
      */
     @Override
     public ThermoData generateThermo(ChemGraph chemGraph) {
-        if (chemGraph.isAcyclic()) {
+        if (chemGraph.isAcyclic() || chemGraph.getIsAromatic()) {
             return thermoGAPP.generateThermoData(chemGraph);
         } else {
             // try{
@@ -28,4 +28,11 @@ public class QMForCyclicsGenerator extends TDGenerator {
             // return gen.generateThermo(chemGraph);
         }
     }
+
+    public ThermoData generateFakeThermo() {
+        ThermoData thermo = thermoGAPP.generateFakeThermoData();
+        return thermo;
+    }
+
+
 }

@@ -109,6 +109,12 @@ public class FrequencyDatabase {
         // #[ operation readGroupTree(String)
         try {
             freqTree = readStandardTree(p_fileName, freqDictionary, 0);
+            if (freqTree == null) {
+                Logger.debug("Couldn't read freqTree starting at L0: node. Trying to read tree starting with L1: node");
+                freqTree = readStandardTree(p_fileName, freqDictionary, 1);
+                if (freqTree == null) 
+                    throw new RuntimeException("freqTree is null after reading.");
+            }
         } catch (Exception e) {
             Logger.logStackTrace(e);
             Logger.critical("Can't read freq group tree file!");

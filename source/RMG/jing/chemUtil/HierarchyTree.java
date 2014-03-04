@@ -75,7 +75,7 @@ public class HierarchyTree extends Tree {
             return null;
         }
         Stack path = new Stack();
-        ((HierarchyTreeNode) root).findMatchedPath(p_element, path);
+        path = ((HierarchyTreeNode) root).findMatchedPath(p_element, path);
         return path;
     }
 

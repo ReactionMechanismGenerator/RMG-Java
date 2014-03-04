@@ -1,0 +1,118 @@
+Unit:
+A: mol/cm3/s
+E: kcal/mol
+
+Reactions:
+
+//J.H. Kiefer, S.S. Kumaran, S. Sundaram J. Chem. Phys., 99 (5) (1993), pp. 3531.3541 k_inf
+Norbornene  =  ethene + CPD                   1.050e+15 0.000     46.310   0.0 0.0 0.0     
+
+//Analysis of Some Reaction Pathways Active during Cyclopentadiene Pyrolysis
+//Carlo Cavallotti,* Daniela Polino, Alessio Frassoldati, and Eliseo Ranzi*
+//dx.doi.org/10.1021/jp212151p | J. Phys. Chem. A 2012, 116, 3313.3324
+//PARAMETERS AT 1 ATM, RRKM calcs, interpolated 900-2000K
+
+CPDYL + CPD  =  INDENE + METHYL 				1.573E25 -3.935 23.108 0.0 0.0 0.0     
+CPDYL + CPD  =  BENZENE + BUTADIENYL 			1.286E29 -4.515 40.873 0.0 0.0 0.0    
+CPDYL + CPD  =  vinylfulvene + vinyl			1.193E65 -14.20 74.645 0.0 0.0 0.0     
+CPDYL + CPD  =  phenylbutadiene + H			5.5335E16 -1.407 23.545 0.0 0.0 0.0     
+
+//vinylfulveneful rearrangements into 1,5-dihydropentalene. 
+//Cavallotti stated that based on prelim DFT calcs this rearrangement does not seem to be hindered by significant barriers
+//Dudek (1979) experimentally determined the conversion of dihydropentalene to styrene.
+// i have a assumed that the dihydropentalene is rate delimiting and used these kinetics for the global conversion
+//of vinylfulvene to styrene:
+
+vinylfulvene  =  STYRENE 		1.26E13 0 57.81 0.0 0.0 0.0     
+
+
+//Vinyl cyclopentadiene rearrangements (with H atoms) towards toluene based on the analogy with the vinylfulvene 
+//rearrangements into 1,5-dihydropentalene.
+//Cavallotti (2012) stated that based on prelim DFT calcs this rearrangement does not seem to be hindered by significant barriers
+//Dudek (1979) experimentally determined the conversion of dihydropentalene to styrene.
+// We assumed that the dihydropentalene is rate delimiting and used these kinetics for the global conversion
+//of vinylfulvene to styrene:
+
+VICPD2 = TOLUENE      1.260e+13 	  0.00 	  57.81 	0.0 0.0 0.0    
+VINYCPD5 = TOLUENE    1.260e+13 	  0.00 	  57.81 	0.0 0.0 0.0     
+VINYCPD1 = TOLUENE    1.260e+13 	  0.00 	  57.81 	0.0 0.0 0.0    
+
+//Vinyl cyclopentadiene rearrangements (with H atoms) towards toluene
+//based on the analogy with the vinylfulvene (species Z in Sharma's paper) rearreangements to styrene by Sharma et al
+//S. Sharma, M.R. Harper, W.H. Green, Modeling of 1,3-hexadiene, 2,4-hexadiene and 1,4-hexadiene-doped methane flames: 
+//Flame modeling, benzene and styrene formation, Combustion and Flame, 157 (2010) 1331-1345.
+
+VICPD2+H = TOLUENE+H      1.934e+51 	 -10.45 	  28.65 	0.0 0.0 0.0
+VINYCPD5+H = TOLUENE+H    1.934e+51 	 -10.45 	  28.65 	0.0 0.0 0.0 
+VINYCPD1+H = TOLUENE+H    1.934e+51 	 -10.45 	  28.65 	0.0 0.0 0.0 
+
+
+// C7H9 Pathway estimates
+
+//C7H9 radicals derived from ethenylcyclopentene: One additional route is added that involves an isomerization via a five-membered transition state. 
+//This pathway converts the terminal atom of the exocyclic double bond into an sp3-hybridized atom while one of the sp3-hybridized ring atoms is transformed into an sp2 hybridized carbon
+//kinetics estimate based on RMG database for intra_H_migrations:
+//intra_H_migration estimate: (Average:)  [ R6H_SMSMS , C_rad_out_2H , Cs_H_out_H/NonDeC ]
+C7H9J  =  C7H9J2      4.056e+08 	  1.22 	  34.49 	0.0 0.0 0.0 
+
+
+//The resulting radical, methyl-beta-H-fulvenyl, bears many structural similarities with the beta-H-fulvenyl species 
+// which takes part of the H-assisted isomerization of fulvene to benzene. Because kinetics for the actual isomerization reactions on the C7H9 PES 
+//are missing, the kinetics of the analogous C6H7 PES calculated by Sharma et al are used to provide exit channels from methyl-beta-H-fulvenyl to fulvene and methyl. 
+//[37] S. Sharma, W.H. Green, Computed Rate Coefficients and Product Yields for c-C(5)H(5) + CH(3) -> Products, Journal of Physical Chemistry A, 113 (2009) 8871-8882.
+C7H9J2 = FULVENE+METHYL   1.930e+90   -22.28  92.96 	0.0 0.0 0.0     
+C7H9J2 = BENZENE+METHYL   9.480e+71   -17.24  72.92 	0.0 0.0 0.0     
+
+//J. Phys. Chem. A 2007, 111, 4102-4115
+//Combustion Modeling and Kinetic Rate Calculations for a Stoichiometric Cyclohexane
+//Flame. 1. Major Reaction Pathways
+//Hongzhi R. Zhang, Lam K. Huynh, Nawee Kungwan, Zhiwei Yang, and Shaowen Zhang
+H2CCCH+ALLYL = FULVENE+H+H   1.000e+12 	  0.00 	  3.00 	0.0 0.0 0.0     
+
+//Naphthalene formation from Lindstedt Faraday Discuss., 2001, 119, 409-432, discussed by Robinson et al Combustion and Flame 158 (2011) 666-686
+CPDYL+CPDYL = C5H5C5H4+H   2.500e+12 	  0.00 	  8.28 	    0.0 0.0 0.0    
+C5H5C5H4 = NAPHTHAL+H      3.000e+16 	  0.00 	  47.10     0.0 0.0 0.0     
+
+//On the chemical kinetics of cyclopentadiene oxidation
+//R.K. Robinson, R.P. Lindstedt
+//Combustion and Flame 158 (2011) 666-686
+CPDYL+C2H2 = cC7H7                        2.200e+11 	  0.00 	  12.80 	 0.0 0.0 0.0 
+cC7H7+H = BENZYL+H                      2.200e+63 	 -13.00 	  58.50 	 0.0 0.0 0.0 
+cC7H7+H = PHENYL+METHYL                 1.200e+61 	 -12.40 	  57.00  	0.0 0.0 0.0 
+cC7H7+C2H2 = INDENE+H                    6.600e+11 	  0.00 	  20.00 	 0.0 0.0 0.0 
+CPDYL+H2CCCH = STYRENE                   1.000e+13 	  0.00 	  8.29  	 0.0 0.0 0.0 
+CPDYL  =  CHCCH2CHCH              1.21E+112 -28.1 130.4   0.0 0.0 0.0    
+CHCCH2CHCH  =  H2CCCH + C2H2      1.95E+86 -20.6 68.7  0.0 0.0 0.0   
+
+//Combustion and Flame 157 (2010) 1686-1697
+//Kinetic modeling study of toluene pyrolysis at low pressure
+//Lidong Zhang a, Jianghuai Cai a, Taichang Zhang a, Fei Qi a,b,*
+BENZYL = CPDYL+C2H2                       3.000e+13 	  0.00 	  70.00 	 0.0 0.0 0.0    
+BENZYL+C2H2 = INDENE+H                    3.160e+04 	  2.48 	  11.06 	0.0 0.0 0.0   
+PHENYL+ALLENE = INDENE+H                   5.130e+02 	  3.19 	  2.79 	    0.0 0.0 0.0    
+PHENYL+H2CCCH = INDENE                       1.000e+75 	 -17.80 	  39.60 	0.0 0.0 0.0    
+INDENE = INDENYL+H                 1.730e+68 	 -15.20 	  116.37 	0.0 0.0 0.0    
+BENZYL+H2CCCH = NAPHTHAL+H+H             2.000e+14 	  0.00 	  20.00 	0.0 0.0 0.0    
+PHENYL+C4H3 = NAPHTHAL                         1.510e+75 	 -17.80 	  39.60 	0.0 0.0 0.0    
+BENZENE+H2CCCH = INDENE+H                     6.260e+09 	  2.61 	  56.50 	0.0 0.0 0.0    
+BENZYL = FULVALLE+H                             4.380e+13 	  0.08 	  75.90 	0.0 0.0 0.0    
+BENZYL+H = FULVALLE+H2                       5.000e+13 	  0.00 	  0.00 	0.0 0.0 0.0    
+FULVALLE+H = CPDYL+C2H2                     3.000e+14 	  0.00 	  0.00 	0.0 0.0 0.0    
+FULVALLE+C2H2 = INDENE                           1.440e+292 	 -78.20 	  245.01 	0.0 0.0 0.0    
+INDENYL+CH2 = C10H9                          1.000e+11 	  0.00 	  0.00 	0.0 0.0 0.0    
+C10H9+H = NAPHTHAL+H2                       1.000e+13 	  0.00 	  0.00 	0.0 0.0 0.0    
+
+BENZENE + C2H  =  C6H5C2H + H  1.00E13 0.0 0.0 0.0 0.0 0.0    
+TOLUENE + CH2  =  STYRENE + H2  1.00E13 0.0 0.0 0.0 0.0 0.0   
+BENZYL + METHYL  =  ETHYLBENZ  2.00E13 0.0 0.0 0.0 0.0 0.0   
+PHENYL + CH2CHCCH  =  STYRENE + C2H  3.20E11 0.0 1.900 0.0 0.0 0.0    
+PHENYL + BD  =  STYRENE + vinyl  3.20E11 0.0 1.900 0.0 0.0 0.0 
+CH2CHCCH + CH2CHCCH  =  STYRENE  1.50E14 0.0 38.0 0.0 0.0 0.0   
+ETHYLBENZ + H  =  BENZENE + ETHYL  1.20E13 0.0 5.100 0.0 0.0 0.0  
+ETHYLBENZ  =  STYRENE + H2  5.01E12 0.0 64 0.0 0.0 0.0    
+PHENYL + ETHANE  =  ETHYLBENZ + H  2.51E12 0.0 6.190 0.0 0.0 0.0  
+
+//Cyclopentene decomposition in shock waves
+//Lewis et al. 1974
+//http://pubs.acs.org/doi/abs/10.1021/j100597a025
+CP = CPD+H2                                 2.240e+13 	  0.00 	  60.00 	0.0 0.0 0.0 

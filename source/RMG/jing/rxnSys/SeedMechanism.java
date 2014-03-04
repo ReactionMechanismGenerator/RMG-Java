@@ -212,6 +212,8 @@ public class SeedMechanism {
                             + name + "': " + e.getMessage());
                 }
                 ChemGraph cg = ChemGraph.make(graph);
+                // Make sure to kekulize any molecules in a seed mechanism or library
+                cg.kekulize();                
                 Species spe = Species.make(name, cg);
                 // Check if species (i.e. chemgraph) already exists in localSpecies
                 if (localSpecies.containsValue(spe)) {

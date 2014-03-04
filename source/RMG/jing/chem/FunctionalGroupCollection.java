@@ -54,6 +54,17 @@ public class FunctionalGroupCollection implements Matchable {
         }
     }
 
+    public String toString() {
+        Iterator iter = ((FunctionalGroupCollection) this)
+                 .getFunctionalGroups();
+        String t = new String();
+        while (iter.hasNext()) {
+             FunctionalGroup fg = (FunctionalGroup) iter.next();
+             t = t + fg.getGraph().toString();
+        }
+        return t;
+    }
+
     // ## operation addFunctionalGroups(FunctionalGroup)
     public void addFunctionalGroups(FunctionalGroup p_FunctionalGroup) {
         // #[ operation addFunctionalGroups(FunctionalGroup)

@@ -155,6 +155,13 @@ six-inringtwodouble-12
 5   {Cs,Os} 0 {4,S} {6,S}
 6   {Cs,Os} 0 {5,S} {1,S}
 
+six-inringthreedouble
+1   Cd 0 {2,D} {6,S}
+2 * Cdd 0 {1,D} {3,D}
+3   Cd 0 {2,D} {4,S}
+4   {Cs,Os} 0 {3,S} {5,S}
+5   Cd 0 {4,S} {6,D}
+6   Cd 0 {5,D} {1,S}
 
 six-oneside-twoindoubles-25
 1 {Cs,Os} 0 {2,S} {6,S}
@@ -281,6 +288,126 @@ Cyclopentane
 4    Cs 0 {3,S} {5,S}
 5    Cs 0 {4,S} {1,S}
 
+Bicyclopentane
+1  * Cs 0 {2,S} {5,S}
+2    Cs 0 {1,S} {3,S}
+3    Cs 0 {2,S} {4,S}
+4    Cs 0 {3,S} {5,S}
+5    Cs 0 {4,S} {1,S} {6,S}
+6    Cs 0 {5,S} {7,S} {10,S}
+7    Cs 0 {8,S} {6,S}
+8    Cs 0 {9,S} {7,S}
+9    Cs 0 {10,S} {8,S}
+10    Cs 0 {6,S} {9,S}
+
+Bicyclopentene_1
+1  * Cs 0 {2,S} {5,S}
+2    Cs 0 {1,S} {3,S}
+3    Cs 0 {2,S} {4,S}
+4    Cs 0 {3,S} {5,S}
+5    Cs 0 {4,S} {1,S} {6,S}
+6    Cs 0 {5,S} {7,S} {10,S}
+7    C 0 {8,D} {6,S}
+8    C 0 {9,S} {7,D}
+9    Cs 0 {10,S} {8,S}
+10   Cs 0 {6,S} {9,S}
+
+Bicyclopentene_2
+1  * Cs 0 {2,S} {5,S}
+2    Cs 0 {1,S} {3,S}
+3    Cs 0 {2,S} {4,S}
+4    Cs 0 {3,S} {5,S}
+5    Cs 0 {4,S} {1,S} {6,S}
+6    Cs 0 {5,S} {7,S} {10,S}
+7    Cs 0 {8,S} {6,S}
+8    C 0 {9,D} {7,S}
+9    C 0 {10,S} {8,D}
+10   Cs 0 {6,S} {9,S}
+
+Bicyclopentene_3
+1  * Cs 0 {2,S} {5,S}
+2    Cs 0 {1,S} {3,S}
+3    Cs 0 {2,S} {4,S}
+4    Cs 0 {3,S} {5,S}
+5    Cs 0 {4,S} {1,S} {6,S}
+6    C 0 {5,S} {7,D} {10,S}
+7    C 0 {8,S} {6,D}
+8    Cs 0 {9,S} {7,S}
+9    Cs 0 {10,S} {8,S}
+10   Cs 0 {6,S} {9,S}
+
+Bicyclopentadiene_11
+1  * C 0 {2,S} {5,D}
+2    Cs 0 {1,S} {3,S}
+3    Cs 0 {2,S} {4,S}
+4    Cs 0 {3,S} {5,S}
+5    C 0 {4,S} {1,D} {6,S}
+6    Cs 0 {5,S} {7,S} {10,S}
+7    C 0 {8,D} {6,S}
+8    C 0 {9,S} {7,D}
+9    Cs 0 {10,S} {8,S}
+10   Cs 0 {6,S} {9,S}
+
+Bicyclopentadiene_12
+1  * C 0 {2,S} {5,D}
+2    Cs 0 {1,S} {3,S}
+3    Cs 0 {2,S} {4,S}
+4    Cs 0 {3,S} {5,S}
+5    C 0 {4,S} {1,D} {6,S}
+6    Cs 0 {5,S} {7,S} {10,S}
+7    Cs 0 {8,S} {6,S}
+8    C 0 {9,D} {7,S}
+9    C 0 {10,S} {8,D}
+10   Cs 0 {6,S} {9,S}
+
+Bicyclopentadiene_13
+1  * C 0 {2,S} {5,D}
+2    Cs 0 {1,S} {3,S}
+3    Cs 0 {2,S} {4,S}
+4    Cs 0 {3,S} {5,S}
+5    C 0 {4,S} {1,D} {6,S}
+6    C 0 {5,S} {7,D} {10,S}
+7    C 0 {8,S} {6,D}
+8    Cs 0 {9,S} {7,S}
+9    Cs 0 {10,S} {8,S}
+10   Cs 0 {6,S} {9,S}
+
+Bicyclopentadiene_21
+1  * C 0 {2,D} {5,S}
+2    C 0 {1,D} {3,S}
+3    Cs 0 {2,S} {4,S}
+4    Cs 0 {3,S} {5,S}
+5    Cs 0 {4,S} {1,S} {6,S}
+6    Cs 0 {5,S} {7,S} {10,S}
+7    C 0 {8,D} {6,S}
+8    C 0 {9,S} {7,D}
+9    Cs 0 {10,S} {8,S}
+10   Cs 0 {6,S} {9,S}
+
+Bicyclopentadiene_22
+1  * C 0 {2,D} {5,S}
+2    C 0 {1,D} {3,S}
+3    Cs 0 {2,S} {4,S}
+4    Cs 0 {3,S} {5,S}
+5    Cs 0 {4,S} {1,S} {6,S}
+6    Cs 0 {5,S} {7,S} {10,S}
+7    Cs 0 {8,S} {6,S}
+8    C 0 {9,D} {7,S}
+9    C 0 {10,S} {8,D}
+10   Cs 0 {6,S} {9,S}
+
+Bicyclopentadiene_31
+1  * Cs 0 {2,S} {5,S}
+2    C 0 {1,S} {3,D}
+3    C 0 {2,D} {4,S}
+4    Cs 0 {3,S} {5,S}
+5    Cs 0 {4,S} {1,S} {6,S}
+6    Cs 0 {5,S} {7,S} {10,S}
+7    Cs 0 {8,S} {6,S}
+8    C 0 {9,D} {7,S}
+9    C 0 {10,S} {8,D}
+10   Cs 0 {6,S} {9,S}
+
 Cyclopentene
 1    Cs 0 {2,S} {5,S}
 2    Cd 0 {1,S} {3,D}
@@ -291,6 +418,13 @@ Cyclopentene
 Cyclopentadiene
 1  * Cs 0 {2,S} {5,S}
 2    Cd 0 {1,S} {3,D}
+3    Cd 0 {4,S} {2,D}
+4    Cd 0 {3,S} {5,D}
+5    Cd 0 {1,S} {4,D}
+
+Cyclopentatriene
+1  * Cd 0 {2,D} {5,S}
+2    Cdd 0 {1,D} {3,D}
 3    Cd 0 {4,S} {2,D}
 4    Cd 0 {3,S} {5,D}
 5    Cd 0 {1,S} {4,D}
@@ -1257,7 +1391,7 @@ methylenecyclopentane
 7 Cs 0 {1,S} {6,S}
 
 // Sulfur containing rings
-// Added by Aäron Vandeputte August 25th 2009
+// Added by Aaron Vandeputte August 25th 2009
 
 
 // Three membered rings

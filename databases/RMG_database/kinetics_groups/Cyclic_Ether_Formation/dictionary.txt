@@ -1,15 +1,19 @@
-//C.D.W., S.R., J.S. (1/17/03)
-//cyclic ether formation from QOOH
-//QOOH --> QO + OH
+// C.D.W., S.R., J.S. (1/17/03)
+// cyclic ether formation from QOOR
+// QOOR --> QO + OR
 // SR and JS, get rid of R3OOH_DD
 // SR and JS, give more specific description of C at *1 and {R!H} in the middle to remove the ambiguity on Cdd
 // JS, fix error in R5OOH, change from "5 {Cd,Cs,CO} 0 {4,S}, {6,S}" to "5 {Cd,Cs,CO} 0 {4,{S,D}}, {6,S}"
 // SSM added new definitation R2OOH_SCO,R3OOH_SSCO,R4OOH_SSSCO,R5OOH_SSSSCO as rates when CO is present on peroxyl group maybe different
 // SSM modified definiation of R2OOH, R3OOH,R4OOH and R5OOH so that lactones can be formed
 // AJ added new definitions to generalize the reaction family to QOOR=QO+OR
+// AG Vandeputte, redefined tree to also account for QOOJ -> QO + OJJ
 
-RnOOR
-Union {R2OOH, R3OOH, R4OOH, R5OOH, R2OOR, R3OOR, R4OOR, R5OOR}
+RnOO
+Union {R2OO, R3OO, R4OO, R5OO}
+
+R2OO
+Union {R2OOH, R2OOR, R2OOJ}
 
 R2OOH
 1 *1 {CO,Cd,Cs,Sid,Sis} 1 {2,{S,D}}
@@ -39,6 +43,21 @@ R2OOH_D
 3 *2 O 0 {2,S}, {4,S}
 4 *3 O 0 {3,S}, {5,S}
 5 H 0 {4,S}
+
+R2OOJ
+1 *1 {CO,Cd,Cs,Sid,Sis} 1 {2,{S,D}}
+2 *4 {CO,Cd,Cs,Sid,Sis} 0 {1,{S,D}}, {3,S}
+3 *2 O 0 {2,S}, {4,S}
+4 *3 O 1 {3,S}
+
+R2OOJ_S
+1 *1 {Cd,Cs} 1 {2,S}
+2 *4 {Cd,Cs} 0 {1,S}, {3,S}
+3 *2 O 0 {2,S}, {4,S}
+4 *3 O 1 {3,S}
+
+R3OO
+Union {R3OOH, R3OOR, R3OOJ}
 
 R3OOH
 1 *1 {CO,Cd,Cs,Sid,Sis} 1 {2,{S,D}} 
@@ -79,6 +98,16 @@ R3OOH_DS
 4 *2 O 0 {3,S}, {5,S}
 5 *3 O 0 {4,S}, {6,S}
 6 H 0 {5,S}
+
+R3OOJ
+1 *1 {CO,Cd,Cs,Sid,Sis} 1 {2,{S,D}}
+2 *4 {CO,Cd,Cs,Sid,Sis} 0 {1,{S,D}}, {3,{S,D}}
+3 {CO,Cd,Cs,Sid,Sis} 0 {2,{S,D}}, {4,S}
+4 *2 O 0 {3,S}, {5,S}
+5 *3 O 1 {4,S}
+
+R4OO
+Union {R4OOH, R4OOR, R4OOJ}
 
 R4OOH
 1 *1 {CO,Cd,Cs,Sid,Sis} 1 {2,{S,D}} 
@@ -142,6 +171,17 @@ R4OOH_DSD
 5 *2 O 0 {4,S}, {6,S}
 6 *3 O 0 {5,S}, {7,S}
 7 H 0 {6,S}
+
+R4OOJ
+1 *1 {CO,Cd,Cs,Sid,Sis} 1 {2,{S,D}}
+2 *4 {CO,Cd,Cs,Sid,Sis} 0 {1,{S,D}}, {3,{S,D}}
+3 {CO,Cd,Cs,Sid,Sis} 0 {2,{S,D}}, {4,{S,D}}
+4 {CO,Cd,Cs,Sid,Sis} 0 {3,{S,D}}, {5,S}
+5 *2 O 0 {4,S}, {6,S}
+6 *3 O 1 {5,S}
+
+R5OO
+Union {R5OOH, R5OOR, R5OOJ}
 
 R5OOH
 1 *1 {CO,Cd,Cs,Sid,Sis} 1 {2,{S,D}} 
@@ -233,6 +273,15 @@ R5OOH_DSDS
 6 *2 O 0 {5,S}, {7,S}
 7 *3 O 0 {6,S}, {8,S}
 8 H 0 {7,S}
+
+R5OOJ
+1 *1 {CO,Cd,Cs,Sid,Sis} 1 {2,{S,D}}
+2 *4 {CO,Cd,Cs,Sid,Sis} 0 {1,{S,D}}, {3,{S,D}}
+3 {CO,Cd,Cs,Sid,Sis} 0 {2,{S,D}}, {4,{S,D}}
+4 {CO,Cd,Cs,Sid,Sis} 0 {3,{S,D}}, {5,{S,D}}
+5 {CO,Cd,Cs,Sid,Sis} 0 {4,{S,D}}, {6,S}
+6. *2 O 0 {5,S}, {7,S}
+7. *3 O 1 {6,S}
 
 //RnOOR definitions added by Amrit Jalan
 R2OOR

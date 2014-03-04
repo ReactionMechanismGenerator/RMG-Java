@@ -9,7 +9,7 @@
 
 // f11 1,2_insertion
 
-CO_birad + RR' -> R_CO_R'
+Y_birad + RR' -> R_CO_R'
 
 forward
 reverse(f12): 1,1_Elimination

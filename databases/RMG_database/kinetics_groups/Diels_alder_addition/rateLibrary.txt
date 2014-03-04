@@ -42,3 +42,4 @@ Arrhenius_EP
 610.	diene_monosubNd_monosubNd_out	diene_in_2H			ene_HDe_2H		379-581		1.02E+09	0		0		20.07	*1.07	0		0		0		3		Van Mele et al [110]
 611.	diene_monosubNd_monosubNd_out	diene_in_2H			ene_HNd_HDe		352-423		1.26E+9		0		0		16.69	0		0		0		0		3		Benford et al [200] 	
 612.	diene_monosubNd_monosubNd_out	diene_in_2H			ene_HDe_HNd		352-423		1.26E+9		0		0		16.69	0		0		0		0		3		Benford et al [200] 
+614.    diene_5ring_Nd_Nd_out           diene_in_2H         ene_HNd_HNd     300-1500    3.24E-01	3.05    0.0	    24.75   0       0       0       0       4       A. G. Vandeputte

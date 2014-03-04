@@ -1,0 +1,10 @@
+//Kinetics from:
+//We found kinetics for the CPDyl recombination to indenyl and methyl. (Robinson 2011)
+//However the conversion of indenyl to indene, via e.g. H-abstractions, was not documented.
+
+Unit:
+A: mol/cm3/s
+E: kcal/mol
+
+Reactions:
+CPDYL + CPDYL = indnyl + methyl                                                      2.0E13          0.00     9.55    0.0     0.0     0.0

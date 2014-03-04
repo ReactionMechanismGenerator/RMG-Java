@@ -1,0 +1,61 @@
+Unit:
+A: mol/cm3/s
+E: kcal/mol
+
+//George B. Bacskay, John C. Mackiea, The pyrolysis of cyclopentadiene: quantum chemical and kinetic modelling studies of the acetylene plus propyne/allene decomposition channels, Phys. Chem. Chem. Phys., 2001,3, 2467-2473
+//Gabriel da Silva, M. Rafiq Hamdan, and Joseph W. Bozzelli, Benzoxyl Radical Decomposition Kinetics: Formation of Benzaldehyde  +  H,Phenyl  +  CH2O, and Benzene  +  HCO, J. Phys. Chem. A 2009, 113, 6979–6986
+//Jongwoo Lee , Chiung-Ju Chen , and Joseph W. Bozzelli, Thermochemical and Kinetic Analysis of the Acetyl Radical (CH3C•O)  +  O2 Reaction System, J. Phys. Chem. A, 2002, 106 (31), pp 7155–7170
+//Colin Ellis, Michael S. Scott, Raymond W. Walker, Addition of toluene and ethylbenzene to mixtures of H2 and O2 at 772 K: Part 2: formation of products and determination of kinetic data for H +  additive and for other elementary reactions involved, Combustion and Flame, Volume 132, Issue 3, February 2003, Pages 291-304,
+//Hahn, D.K, Klippenstein S.J, Miller J.A, "A Theoretical Analysis of the Reaction Between Propargyl and Molecular Oxygen" 2001
+//Senosiain, J.P; Klippenstein, S.J,; Miller, J.A. "Pathways and rate coefficients for the decomposition of vinoxy and acetyl radicals" 2000
+//Mati, K.; Ristori, A.; Pengloan, G.; Dagaut, P., Oxidation of 1-methylnaphthalene at 1-13 atm: experimental study in a JSR and detailed chemical kinetic modeling. Combustion Science and Technology 2007, 179 (7), 1261-1285.
+//Frank, P.; Herzler, J.; Just, T.; Wahl, C., High-temperature reactions of phenyl oxidation. Symposium (International) on Combustion 1994, 25 (1), 833-840.
+
+Reactions:
+
+CPD + H = CPDYL + H2    3.0E14 0.0 6.6E0	0.0	0.0	0.0	
+//Bacskay
+
+//O2 + CH3CO = HO2 + CH2CO    7.05E7 1.63 2.259E1	0.0	0.0	0.0
+//Lee and Bozelli
+
+BZO = BRad    1.67E8 1.426 1.926E1	0.0 0.0 0.0
+BRad = BENZ + HCO    6.72E12 0.229 1.722E1	0.0 0.0 0.0 
+BZO = BZA + H    5.07E8 1.56 1.685E1	0.0 0.0 0.0
+BZO = PHENYL + CH2O    1.09E14 0.157 3.116E1 0.0 0.0 0.0
+//da Silva
+
+BENZYL + HO2 = OH + BZO    5.0E12 0.0 0.0E0 0.0 0.0 0.0
+//Ellis
+
+//O2 + H2CCCH = CH2CO + HCO    1.70E05 1.70 1.50 0.0 0.0 0.0
+//Hahn and Klippenstein-fixed NIST reference temp error
+
+//CH2CO  +  H  =  CH3CO                        2.30E08      1.61     2.63    0.0    0.0   0.0
+//Senosiain and Klippenstein-fixed NIST reference temp error
+
+C10H15 = CP2ENYL + C5H8	1.69E12	0.36	25.95 0.0 0.0 0.0
+C10H15 = ETHCP2ENE + C3H5 	3.89E11	0.45	20.10 0.0 0.0 0.0
+//CBS-QB3 calculations performed by gmagoon
+
+NAPH = NAP1YL + H    4.5E15 0.0 1.074331E2 0.0 0.0 0.0
+NAPH + H = NAP1YL + H2    2.5E14 0.0 1.5999E1 0.0 0.0 0.0
+NAPH + OH = NAP1YL + H2O    1.63E8 1.4 1.4508E0 0.0 0.0 0.0
+NAPH + CH3 = NAP1YL + CH4    2.0E12 0.0 1.506E1 0.0 0.0 0.0
+NAPH + O = NAP1YL + OH    2.0E13 0.0 1.4704E1 0.0 0.0 0.0
+NAPH + O2 = NAP1YL + HO2    6.3E13 0.0 6.0E1 0.0 0.0 0.0
+NAPH + O = NAP1OXY + H    2.23E13 0.0 4.5307E0 0.0 0.0 0.0
+NAP1YL + HO2 = NAP1OXY + OH    5.0E13 0.0 9.99E-1 0.0 0.0 0.0
+NAP1YL + O2 = NAP1OXY + O    2.09E12 0.0 7.4689E0 0.0 0.0 0.0
+NAP1OXY + H = NAP1OL    5.06E14 0.0 0.0E0 0.0 0.0 0.0
+//Mati et al
+
+NAPH + OH = NAP1OL + H    1.43E4 2.6 1.1E0 0.0 0.0 0.0
+//reaction from kinetics.nist.gov with 1988HE/MAL2196, 2002TOK/LIN11309-11326, 2006SET/NAK5081-5090, and 1992BAU/COB411-429
+
+NAP1OXY = C9H7YL + CO    7.4E11 0.0 4.386E1 0.0 0.0 0.0
+//!assumed to be same as phenoxy  = cyclopentadienyl  +  CO from Frank, Herzler, Just, and Wahl
+//Kunioshi et al. seems to suggest that PES is similar
+
+CP3ENONE = CP2ENONE    1.0E14 0.0 0.0E0 0.0 0.0 0.0
+//!assume rapid equilibration between cp3enone and cp2enone; this isn't an elementary step but should

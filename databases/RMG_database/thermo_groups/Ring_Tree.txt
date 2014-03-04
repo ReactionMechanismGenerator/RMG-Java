@@ -55,8 +55,19 @@ L1: FourMember
 	L2: tetrathietane
 L1: FiveMember
 	L2: Cyclopentane
+//		L3: Bicyclopentane
+//		L3: Bicyclopentene_1
+//		L3: Bicyclopentene_2
+//		L3: Bicyclopentene_3
 	L2: Cyclopentene
+//                L3: Bicyclopentadiene_11
+//                L3: Bicyclopentadiene_12
+//                L3: Bicyclopentadiene_13
+//                L3: Bicyclopentadiene_21
+//                L3: Bicyclopentadiene_22
+//                L3: Bicyclopentadiene_31
 	L2: Cyclopentadiene
+        L2: Cyclopentatriene
 	L2: Tetrahydrofuran
 	L2: 2,3-Dihydrofuran
 	L2: 1,3-Dioxolane
@@ -83,7 +94,7 @@ L1: FiveMember
 	L2: 1,3-dithiolane
 	L2: 1,2,3-trithiolane
 	L2: 1,2,4-trithiolane
-	L2: tetrathiolane
+    L2: tetrathiolane
 	L2: pentathiolane
 L1: SixMember
 	L2: sixnosidedouble
@@ -117,6 +128,7 @@ L1: SixMember
 	L2: six-inringtwodouble-14
 		L3: 1,4-Cyclohexadiene
 		L3: 14dioxin
+        L2: six-inringthreedouble
 	L2: six-inringtwodouble-12
 	L2: six-oneside-twoindoubles-25
 		L3: 25cyclohexadienone

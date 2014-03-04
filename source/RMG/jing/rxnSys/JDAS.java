@@ -50,6 +50,7 @@ import jing.rxn.NegativeRateException;
 import jing.rxn.PDepNetwork;
 import jing.rxn.PDepReaction;
 import jing.rxn.Reaction;
+import jing.rxn.Structure;
 import jing.rxn.TROEReaction;
 import jing.rxn.TemplateReaction;
 import jing.rxn.ThirdBodyReaction;
@@ -153,6 +154,9 @@ public abstract class JDAS implements DAESolver {
         generatePDepReactionList(p_reactionModel, p_beginStatus, p_temperature,
                 p_pressure, nonPDepList, pDepList);
         int size = nonPDepList.size() + pDepList.size() + duplicates.size();
+        int maxReactantNumber = Structure.getMAX_REACTANT_NUMBER();
+        int maxProductNumber = Structure.getMAX_PRODUCT_NUMBER();
+        
         for (Iterator iter = nonPDepList.iterator(); iter.hasNext();) {
             Reaction r = (Reaction) iter.next();
             if (!(r instanceof ThirdBodyReaction)
@@ -162,14 +166,14 @@ public abstract class JDAS implements DAESolver {
                 ODEReaction or = transferReaction(r, p_beginStatus,
                         p_temperature, p_pressure);
                 arrayString.append(or.rNum + " " + or.pNum + " ");
-                for (int i = 0; i < 3; i++) {
+                for (int i = 0; i < maxReactantNumber; i++) {
                     if (i < or.rNum) {
                         arrayString.append(or.rID[i] + " ");
                     } else {
                         arrayString.append(0 + " ");
                     }
                 }
-                for (int i = 0; i < 3; i++) {
+                for (int i = 0; i < maxProductNumber; i++) {
                     if (i < or.pNum) {
                         arrayString.append(or.pID[i] + " ");
                     } else {
@@ -193,14 +197,14 @@ public abstract class JDAS implements DAESolver {
                 ODEReaction or = transferReaction(r, p_beginStatus,
                         p_temperature, p_pressure);
                 arrayString.append(or.rNum + " " + or.pNum + " ");
-                for (int i = 0; i < 3; i++) {
+                for (int i = 0; i < maxReactantNumber; i++) {
                     if (i < or.rNum) {
                         arrayString.append(or.rID[i] + " ");
                     } else {
                         arrayString.append(0 + " ");
                     }
                 }
-                for (int i = 0; i < 3; i++) {
+                for (int i = 0; i < maxProductNumber; i++) {
                     if (i < or.pNum) {
                         arrayString.append(or.pID[i] + " ");
                     } else {
@@ -221,14 +225,14 @@ public abstract class JDAS implements DAESolver {
                 ODEReaction or = transferReaction(r, p_beginStatus,
                         p_temperature, p_pressure);
                 arrayString.append(or.rNum + " " + or.pNum + " ");
-                for (int i = 0; i < 3; i++) {
+                for (int i = 0; i < maxReactantNumber; i++) {
                     if (i < or.rNum) {
                         arrayString.append(or.rID[i] + " ");
                     } else {
                         arrayString.append(0 + " ");
                     }
                 }
-                for (int i = 0; i < 3; i++) {
+                for (int i = 0; i < maxProductNumber; i++) {
                     if (i < or.pNum) {
                         arrayString.append(or.pID[i] + " ");
                     } else {
@@ -369,6 +373,9 @@ public abstract class JDAS implements DAESolver {
         StringBuilder tbrString = new StringBuilder();
         Iterator iter = p_reactionModel.getReactionSet().iterator();
         thirdBodyList = new LinkedList();
+        int maxReactantNumber = Structure.getMAX_REACTANT_NUMBER();
+        int maxProductNumber = Structure.getMAX_PRODUCT_NUMBER();
+        
         while (iter.hasNext()) {
             Reaction r = (Reaction) iter.next();
             if ((r.isForward()) && (r instanceof ThirdBodyReaction)
@@ -378,14 +385,14 @@ public abstract class JDAS implements DAESolver {
                         r, p_beginStatus, p_temperature, p_pressure);
                 thirdBodyList.add((ThirdBodyReaction) r);
                 arrayString.append(or.rNum + " " + or.pNum + " ");
-                for (int i = 0; i < 3; i++) {
+                for (int i = 0; i < maxReactantNumber; i++) {
                     if (i < or.rNum) {
                         arrayString.append(or.rID[i] + " ");
                     } else {
                         arrayString.append(0 + " ");
                     }
                 }
-                for (int i = 0; i < 3; i++) {
+                for (int i = 0; i < maxProductNumber; i++) {
                     if (i < or.pNum) {
                         arrayString.append(or.pID[i] + " ");
                     } else {
@@ -430,6 +437,9 @@ public abstract class JDAS implements DAESolver {
         StringBuilder troeString = new StringBuilder();
         Iterator iter = p_reactionModel.getReactionSet().iterator();
         troeList = new LinkedList();
+        int maxReactantNumber = Structure.getMAX_REACTANT_NUMBER();
+        int maxProductNumber = Structure.getMAX_PRODUCT_NUMBER();
+        
         while (iter.hasNext()) {
             Reaction r = (Reaction) iter.next();
             if (r.isForward() && r instanceof TROEReaction) {
@@ -437,14 +447,14 @@ public abstract class JDAS implements DAESolver {
                         p_beginStatus, p_temperature, p_pressure);
                 troeList.add((TROEReaction) r);
                 arrayString.append(or.rNum + " " + or.pNum + " ");
-                for (int i = 0; i < 3; i++) {
+                for (int i = 0; i < maxReactantNumber; i++) {
                     if (i < or.rNum) {
                         arrayString.append(or.rID[i] + " ");
                     } else {
                         arrayString.append(0 + " ");
                     }
                 }
-                for (int i = 0; i < 3; i++) {
+                for (int i = 0; i < maxProductNumber; i++) {
                     if (i < or.pNum) {
                         arrayString.append(or.pID[i] + " ");
                     } else {
@@ -497,6 +507,9 @@ public abstract class JDAS implements DAESolver {
         StringBuilder lindemannString = new StringBuilder();
         Iterator iter = p_reactionModel.getReactionSet().iterator();
         lindemannList = new LinkedList();
+        int maxReactantNumber = Structure.getMAX_REACTANT_NUMBER();
+        int maxProductNumber = Structure.getMAX_PRODUCT_NUMBER();
+        
         while (iter.hasNext()) {
             Reaction r = (Reaction) iter.next();
             if (r.isForward() && r instanceof LindemannReaction) {
@@ -504,14 +517,14 @@ public abstract class JDAS implements DAESolver {
                         r, p_beginStatus, p_temperature, p_pressure);
                 lindemannList.add((LindemannReaction) r);
                 arrayString.append(or.rNum + " " + or.pNum + " ");
-                for (int i = 0; i < 3; i++) {
+                for (int i = 0; i < maxReactantNumber; i++) {
                     if (i < or.rNum) {
                         arrayString.append(or.rID[i] + " ");
                     } else {
                         arrayString.append(0 + " ");
                     }
                 }
-                for (int i = 0; i < 3; i++) {
+                for (int i = 0; i < maxProductNumber; i++) {
                     if (i < or.pNum) {
                         arrayString.append(or.pID[i] + " ");
                     } else {
@@ -818,7 +831,7 @@ public abstract class JDAS implements DAESolver {
             int reacCount = 0;
             int prodCount = 0;
             int[] tempReacArray = { 0, 0, 0 };
-            int[] tempProdArray = { 0, 0, 0 };
+            int[] tempProdArray = { 0, 0, 0, 0 };
             // iterate over the reactants, counting and storing IDs in tempReacArray, up to a maximum of 3 reactants
             for (Iterator rIter = r.getReactants(); rIter.hasNext();) {
                 reacCount++;
@@ -844,7 +857,7 @@ public abstract class JDAS implements DAESolver {
             String str = reacCount + " " + prodCount + " " + tempReacArray[0]
                     + " " + tempReacArray[1] + " " + tempReacArray[2] + " "
                     + tempProdArray[0] + " " + tempProdArray[1] + " "
-                    + tempProdArray[2] + " " + k;
+                    + tempProdArray[2] + " " + tempProdArray[3] + " " + k;
             return str;
         } else {
             throw new NegativeRateException(r.toChemkinString(temperature)

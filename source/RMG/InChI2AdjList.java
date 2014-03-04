@@ -34,8 +34,10 @@ import jing.chemParser.ChemParser;
 // is only one copy of the code.
 public class InChI2AdjList {
     public static void main(String[] args) {
+    	RMG.globalInitializeSystemProperties();
         String inchiDirectory = System
                 .getProperty("RMG.InChI_running_directory");
+        System.out.println(inchiDirectory);
         // This string will hold the InChI strings and their respective
         // adjacency lists
         String listOfAdjLists = "";

@@ -1,0 +1,30 @@
+//Kinetics from:													
+//First Principle-Based Simulation of Ethane
+//Steam Cracking
+//Maarten K. Sabbe, Kevin M. Van Geem, Marie-Franc¸oise Reyniers, and Guy B. Marin
+//Laboratorium voor Chemische Technologie, Universiteit Gent, Krijgslaan 281 S5, B-9000 Gent, Belgium
+//DOI 10.1002/aic.12269
+//Published online April 28, 2010 in Wiley Online Library (wileyonlinelibrary.com).													
+//level of theory:Ab initio CBS QB3"													
+													
+Unit:													
+A: mol/cm3/s													
+E: kcal/mol													
+													
+Reactions:													
+cyclohexadiene14	+	H	=	cyclohexene-yl				1.57E+14	0	6	0	0	0
+cyclohexadiene14	+	methyl	=	cyclohexadiene14-yl	+	methane		5.08E+13	0	9.8	0	0	0
+cyclohexadiene14	+	ethyl	=	cyclohexadiene14-yl	+	ethane		1.23E+12	0	9.3	0	0	0
+cyclohexadiene14	+	H	=	cyclohexadiene14-yl	+	H2		3.23E+14	0	5.8	0	0	0
+cyclohexadiene14	+	n-butyl	=	cyclohexadiene14-yl	+	n-butane		3.32E+12	0	18.8	0	0	0
+cyclohexadiene14	+	vinyl	=	cyclohexadiene14-yl	+	ethene		1.71E+13	0	4.7	0	0	0
+benzene	+	H	=	cyclohexadiene14-yl				2.36E+14	0	6	0	0	0
+cyclopentadiene	+	H	=	cyclopentene-1-yl				1.11E+14	0	3.9	0	0	0
+cyclopentadiene	+	H	=	cyclopentene-2-yl				7.85E+13	0	6	0	0	0
+cyclopentene	+	methyl	=	methylcyclopentyl				1.78E+12	0	11.5	0	0	0
+cyclopentene	+	H	=	cyclopentene-1-yl	+	H2		3.31E+14	0	7.8	0	0	0
+cyclopentene	+	methyl	=	cyclopentene-1-yl	+	methane		2.12E+13	0	11.6	0	0	0
+cyclopentene	+	ethyl	=	cyclopentene-1-yl	+	ethane		1.30E+12	0	12	0	0	0
+cyclopentene	+	H	=	cyclopentene-2-yl	+	H2		5.48E+14	0	10.8	0	0	0
+cyclopentene	+	methyl	=	cyclopentene-2-yl	+	methane		3.50E+13	0	14.5	0	0	0
+cyclopentene	+	ethyl	=	cyclopentene-2-yl	+	ethane		2.20E+12	0	15.6	0	0	0

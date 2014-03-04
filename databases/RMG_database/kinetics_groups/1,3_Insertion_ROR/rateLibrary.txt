@@ -36,3 +36,17 @@ Arrhenius_EP
 707.	Sd_Cd/CsOs			H_OH			300-2000	9.98E-06	4.65	0	32.21		0		0		0		0		2	CBS-QB3 1d-hr calc by CAC, F12a energy	
 708.	Sd_Cdd/Od			H_OH			300-2000	1.29E-06	5.17	0	45.13		0		0		0		0		2	CBS-QB3 1d-hr calc by CAC, F12a energy
 709.	Sd_Cd/H/Cd			H_OH			300-2000	2.84E-02	3.76	0	29.14		0		0		0		0		3	CBS-QB3 1d-hr by CAC, F12a energy
+
+// Rules 707 -709 are obtained by reversing the dehydration rate for butanol isomers
+// Thermochemistry obtained from butanol mechanism dx.doi.org/10.1016/j.combustflame.2010.06.002
+
+// 707 n-Butanol decomposition reaction, experimental measurements by Claudette Rosada Reyes JPCA (2012) 116, 9825-9831 
+707.    Cd/H/Nd_Cd/H2       H_OH            300-2000	6.104e+07	1.287	0	60.9		0		0		0		0		2
+// 708 Dehydration of Isobutanol and the Elimination of Water from Fuel Alcohols by Claudette Rosada Reyes JPCA (2013) DOI: 10.1021/jp4045513
+708.    Cd/Nd2_Cd/H2        H_OH            300-2000	5.181e+07	1.302	0	62.9		0		0		0		0		2
+// 709 Dehydration of Isobutanol and the Elimination of Water from Fuel Alcohols by Claudette Rosada Reyes JPCA (2013) DOI: 10.1021/jp4045513
+709.    Cd/H2_Cd/Nd2		H_OH            300-2000	3.013e+05	1.820	0	51.1		0		0		0		0		2
+// Estimate made from rule 707.
+710.    Cd/H/De_Cd/H2       H_OH            300-2000	6.104e+07	1.287	0	60.9		0		0		0		0		4  Same as rule 707
+
+

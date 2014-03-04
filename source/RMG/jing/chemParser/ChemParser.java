@@ -103,7 +103,7 @@ public class ChemParser {
         Iterator union_iter = union.iterator();
         while (union_iter.hasNext()) {
             String fg_name = (String) union_iter.next();
-            // if the name of a union componenet is another union group, call findUnion() recusively
+            // if the name of a union component is another union group, call findUnion() recusively
             if (p_unRead.containsKey(fg_name)) {
                 findUnion(fg_name, p_unRead, p_dictionary);
             }
@@ -697,7 +697,7 @@ public class ChemParser {
             throw new NullPointerException();
         StringTokenizer st = new StringTokenizer(p_speciesString, "+");
         int speNum = st.countTokens();
-        if (speNum > 3)
+        if (speNum > 4)
             throw new InvalidStructureException("too many reactants/products: "
                     + p_speciesString);
         LinkedList reactionSpe = new LinkedList();

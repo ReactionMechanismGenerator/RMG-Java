@@ -40,7 +40,20 @@ public class HybridTDGenerator extends TDGenerator {
                 TDGenerator gen = new QMForCyclicsGenerator();
                 return gen.generateThermo(chemGraph);
             }
+            
+            // Special case for cyclics containing more than 1 ring, which should be run using QMTP unless a polycyclic correction was found
+//            else if (chemGraph.getCycleNumber() > 1 && ((GATP) thermoGAPP).getPolycyclic() == null) {
+//            	Logger.info("Bicyclic molecule found. " + "Trying QMTP...");
+//                TDGenerator gen = new QMForCyclicsGenerator();
+//                return gen.generateThermo(chemGraph);
+//            }
             return thermo;
         }
     }
+
+    public ThermoData generateFakeThermo() {
+        ThermoData thermo = thermoGAPP.generateFakeThermoData();
+        return thermo;
+    }
+
 }

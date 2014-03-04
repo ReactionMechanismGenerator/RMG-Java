@@ -64,6 +64,13 @@ public class GATP implements GeneralGAPP {
         initGAGroupLibrary();
         initializePrimaryThermoLibrary();// svp
     }
+    
+    public ThermoData generateFakeThermoData() {
+	ThermoGAValue impossible = new ThermoGAValue(1000
+                , 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, null);
+	ThermoData result = new ThermoData(impossible);
+        return result;
+    }
 
     public ThermoData generateThermoData(ChemGraph p_chemGraph) {
         ThermoData result = null;
@@ -183,7 +190,7 @@ public class GATP implements GeneralGAPP {
                             result.plus(thisGaucheValue);
                         if (thisOneFiveValue != null)
                             result.plus(thisOneFiveValue);
-                    }
+                    } 
                     if (thisGAValue == null) {
                         Logger.warning("Thermo group not found: "
                                 + node.getID());
@@ -317,7 +324,7 @@ public class GATP implements GeneralGAPP {
             // For now, assume only one polycyclic RSC can be found per molecule.
             ThermoGAValue ga = thermoLibrary
                     .findPolyCyclicRingCorrections(molecule);
-            p_chemGraph.appendThermoComments(molecule.getThermoComments());
+            //p_chemGraph.appendThermoComments(molecule.getThermoComments());
             p_chemGraph.setCentralNode(oldCentralNode);
             return ga;
         }

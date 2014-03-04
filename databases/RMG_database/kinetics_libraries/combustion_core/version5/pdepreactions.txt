@@ -85,3 +85,19 @@ N2/0.4/ O2/0.4/ CO/0.75/ CO2/1.5/ H2O/6.5/ CH4/3.0/ C2H6/3.0/ AR/0.35/
 N2/0.4/ O2/0.4/ CO/0.75/ CO2/1.5/ H2O/6.5/ CH4/3.0/ C2H6/3.0/ AR/0.35/
         LOW / 3.63E41  -7.0   11.56 /
         TROE /  0.62  73  1180 /
+
+//****6/20/11: replacement rate for JP-10 modelling for HCO+M=H+CO+M, taken from GRI-Mech
+HCO + M <=> H + CO + M                           1.870E+17   -1.000  71.128	0.0	0.0	0.0
+H2/2.00/ H2O/ .00/ CH4/2.00/ CO/1.50/ CO2/2.00/ C2H6/3.00/ 
+
+//1/25/12: replacement for JP-10 modelling 
+//! based on Jasper et al. JPCA 111, 2007, 3932-3950, fitted to Chebyshev form from a variant of Troe form using RMG-Py for Ar bath gas; the first coefficient supplied by old version of RMG-Py (now fixed by jwallen) was increased by log10 (Na~6.022E23) to convert to units of cm3/mole/s 
+CH3 + OH (+m) = CH2(S) + H2O (+m)            1.0E0 0.0 0.0 0.0 0.0 0.0 
+TCHEB / 300.0 3000.0 /	PCHEB / 0.0013156 131.56 /
+CHEB / 6	4 /
+CHEB /  1.24209299e+01  -7.99240713e-01  -2.99133178e-01  -1.43011979e-02 /
+CHEB /  2.36291289e-01   8.56853348e-01   2.46313173e-01  -4.63755433e-02 /
+CHEB / -8.27560935e-02   4.57236062e-02   1.05699460e-01   5.75309563e-02 /
+CHEB / -4.91450296e-02  -7.60609148e-02  -2.14573921e-02   2.47001354e-02 /
+CHEB / -6.64555754e-03  -4.12732608e-02  -3.08561333e-02  -9.59838131e-03 /
+CHEB /  1.11918541e-02  -6.49913529e-03  -1.06088313e-02  -1.37528297e-02 /

@@ -1,0 +1,159 @@
+//Kinetics from:
+//Ab Initio G3-type/Statistical Theory Study of the Formation of Indene in Combustion
+//Flames. I. Pathways Involving Benzene and Phenyl Radical
+//V. V. Kislov‡ and A. M. Mebel*
+//Department of Chemistry and Biochemistry, Florida International UniVersity, Miami, Florida 33199
+//ReceiVed: October 30, 2006; In Final Form: December 19, 2006
+//J. Phys. Chem. A 2007, 111, 3922-3931
+
+//level of theory:Ab initio G3(MP2,CC)//B3LYP
+
+Unit:
+A: mol/cm3/s
+E: kcal/mol
+
+//species names are the ones used in the paper and in the SI of the paper.
+Reactions:
+
+benzene	+	methyl	=	KislovT1		2195.137575	2.878	10.9119 0.0 0.0 0.0
+	 
+//KislovT1	=	benzene	+	methyl		3.19945E+12	0.472	22.4157 0.0 0.0 0.0
+	
+benzene	+	methyl	=	phenyl	+	methane		5151.277391	2.896	15.3076 0.0 0.0 0.0
+
+	
+//phenyl	+	methane	=	benzene	+	methyl		223.6315877	3.202	6.6208 0.0 0.0 0.0
+
+	
+KislovT1	=	toluene	+	H		42171058282	0.87	25.199 0.0 0.0 0.0
+
+	
+//toluene	+	H	=	KislovT1		2741456.756	1.768	5.8153 0.0 0.0 0.0
+
+	
+toluene	+	H	=	KislovT2	+	H2		1151988.342	1.985	6.1749 0.0 0.0 0.0
+
+	
+//KislovT2	+	H2	=	toluene	+	H		223462.7472	2.3	17.9762 0.0 0.0 0.0
+
+	
+toluene	+	H	=	KislovT3	+	H2		17382943.07	1.889	15.4607 0.0 0.0 0.0
+
+	
+//KislovT3	+	H2	=	toluene	+	H		84626.26852	2.371	5.6916 0.0 0.0 0.0
+
+	
+KislovT3	=	KislovT2		47121725741	0.722	41.8779 0.0 0.0 0.0
+
+	
+//KislovT2	=	KislovT3		6.80436E+11	0.545	63.4434 0.0 0.0 0.0
+
+	
+KislovT2	+	ethyne	=	KislovT4		31634.38687	2.479	11.0608 0.0 0.0 0.0
+
+	
+//KislovT4	=	KislovT2	+	ethyne		1.73148E+12	0.675	27.3222 0.0 0.0 0.0
+
+	
+KislovT4	=	KislovT5		1.25679E+11	0.139	13.2335 0.0 0.0 0.0
+
+	
+//KislovT5	=	KislovT4		3.80752E+12	0.267	27.8895 0.0 0.0 0.0
+
+	
+KislovT5	=	indene	+	H		35971759168	0.889	20.8933 0.0 0.0 0.0
+
+	
+//indene	+	H	=	KislovT5		118568332.7	1.554	7.8006 0.0 0.0 0.0
+
+	
+benzene	+	propargyl	=	KislovB1		144.6041487	2.951	14.0549 0.0 0.0 0.0
+
+	
+//KislovB1	=	benzene	+	propargyl		3.54302E+12	0.342	15.3527 0.0 0.0 0.0
+
+	
+benzene	+	propargyl	=	KislovB5		312.3111605	2.973	16.3956 0.0 0.0 0.0
+
+	
+//KislovB5	=	benzene	+	propargyl		6.83447E+12	0.322	19.1394 0.0 0.0 0.0
+
+	
+KislovB1	=	KislovB2		6.48547E+11	0.0648	27.9414 0.0 0.0 0.0
+
+	
+//KislovB2	=	KislovB1		7.32698E+11	0.548	21.6048 0.0 0.0 0.0
+
+	
+KislovB5	=	KislovB2		5.56537E+11	0.00935	28.5208 0.0 0.0 0.0
+
+	
+//KislovB2	=	KislovB5		7.08205E+11	0.534	20.8399 0.0 0.0 0.0
+
+	
+KislovB2	=	KislovC3		95271828948	0.853	47.8482 0.0 0.0 0.0
+
+	
+//KislovC3	=	KislovB2		76000062530	0.663	75.0119 0.0 0.0 0.0
+
+	
+KislovC3	=	KislovT5		44377570064	0.625	38.3239 0.0 0.0 0.0
+
+	
+//KislovT5	=	KislovC3		1.33718E+11	0.64	45.7951 0.0 0.0 0.0
+
+	
+KislovB2	=	KislovB3		1.23068E+11	0.765	55.9411 0.0 0.0 0.0
+
+	
+//KislovB3	=	KislovB2		1.27451E+11	0.772	55.5603 0.0 0.0 0.0
+
+	
+KislovB3	=	KislovB4		36771907226	0.839	43.6379 0.0 0.0 0.0
+
+	
+//KislovB4	=	KislovB3		1.67626E+11	0.707	85.3162 0.0 0.0 0.0
+
+	
+KislovB4	=	indene	+	H		45912350872	0.886	24.9749 0.0 0.0 0.0
+
+	
+//indene	+	H	=	KislovB4		154082695.5	1.5	5.2149 0.0 0.0 0.0
+
+//commented out because triradical!	
+//KislovB2	=	KislovB6		24624309919	0.964	61.1662 0.0 0.0 0.0
+
+	
+//KislovB6	=	KislovB2		6.18152E+11	0.361	30.0646 0.0 0.0 0.0
+
+//commented out because triradical!	
+//KislovB6	=	KislovB4		3.66189E+12	0.12	1.4313 0.0 0.0 0.0
+
+	
+//KislovB4	=	KislovB6		2.92872E+11	0.618	73.9642 0.0 0.0 0.0
+
+	
+KislovB10	+	H	=	KislovB12	+	H2		55395005.82	1.901	15.4181 0.0 0.0 0.0
+
+	
+//KislovB12	+	H2	=	KislovB10	+	H		84965.45151	2.378	5.602 0.0 0.0 0.0
+
+	
+KislovB12	=	KislovB13		1.53352E+11	0.102	13.0485 0.0 0.0 0.0
+
+	
+//KislovB13	=	KislovB12		5.2592E+12	0.445	44.9914 0.0 0.0 0.0
+
+	
+KislovB11	+	H	=	KislovB14	+	H2		67254870.66	1.892	16.6195 0.0 0.0 0.0
+
+	
+//KislovB14	+	H2	=	KislovB11	+	H		111524.5472	2.365	5.9931 0.0 0.0 0.0
+
+	
+KislovB14	=	KislovB13		4.43073E+11	0.114	15.5791 0.0 0.0 0.0
+
+	
+//KislovB13	=	KislovB14		2.98613E+12	0.474	43.1633 0.0 0.0 0.0
+
+	

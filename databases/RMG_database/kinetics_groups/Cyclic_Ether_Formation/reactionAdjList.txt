@@ -9,7 +9,7 @@
 
 // f31 Cyclic Ether Formation
 
-RnOOR -> RO + OR
+RnOO -> RO + OR
 
 forward
 reverse(f32): OH+CyclicEther_Form_Alkyl-hydroperoxyl

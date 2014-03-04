@@ -1,0 +1,104 @@
+Unit:
+A: mol/cm3/s
+E: kcal/mol
+
+Reactions:
+//JP10=MA111 based on CBS-QB3 calculations with factor of two chirality correction
+JP10 = MA111                                                      1.848E11          1.23     80.34    0.0     0.0     0.0 
+
+<<<<<<< HEAD
+CPDYL + O = C2H2 + C2H2 + HCO   3.2E13          -0.17           0.44    0.0     0.0     0.0        
+//Zhong 39 (from Sandeep, I think)
+
+=======
+//CH2(S) + CO = CH2CO					 	  1.29474E18	    -2.55198	1.06897	0.0	0.0	0.0
+//fitted to Chebyshev at 1 atm, which, in turn, comes from PDep run
+
+CPDYL + O = C2H2 + C2H2 + HCO   3.2E13          -0.17           0.44    0.0     0.0     0.0        
+//Zhong 39 (from Sandeep, I think)
+
+
+CPDYL = H2CCCH + C2H2           2.79e+79   -18.3  130.702325       0.0     0.0     0.0
+//taken from PLOG at 10 atm, Bacskay
+
+//CPDYL = H2CCCH + C2H2           1.98E68         -15.0           124.76122       0.0     0.0     0.0        
+//taken from PLOG at 1 atm, Bacskay
+
+>>>>>>> greg/JP10_2011
+C4H3 + H = C4H2 + H2						5.0E13		0.0	0.0	0.0	0.0	0.0
+//Sandeep
+
+C3H6 + O = C2H5 + HCO					1.58E7		1.76	-1.216 0.0	0.0	0.0
+//Sandeep
+
+C3H4a + O = C2H4 + CO						1.34E7		1.88	0.1790 0.0	0.0	0.0
+//Sandeep
+	
+//CH + C2H2 = C3H2 + H							1.0E14		0.0	0.0	0.0	0.0	0.0
+//Sandeep
+
+C3H2 + O2 = HCCO + CO + H						5.0E12		0.0	0.0	0.0	0.0	0.0
+//Sandeep
+
+C4H3 + O = CH2CO + C2H						2.0E13		0.0	0.0	0.0	0.0	0.0
+//Sandeep
+
+C4H3 + CH2 = C3H4a + C2H                                      2.0E13          0.0     0.0     0.0     0.0     0.0
+//Sandeep
+
+CH2(S) + C2H4 = C3H5 + H						1.3E14		0.0	0.0	0.0	0.0	0.0
+//Sandeep
+
+C2H3 + CH3 = C3H5 + H					4.73E2		3.7	5.677	0.0	0.0	0.0
+//Sandeep
+
+CPDYL + CH3 = MCPDYL + H						2.1425E-33	13.255	-16.2812	0.0	0.0	0.0
+//Sandeep
+
+CPDYL + CH3 = FULVENE + H2                                       1.1446E-34      13.3067  -15.7179        0.0     0.0    	0.0
+//Sandeep
+
+C3H2 + OH = C2H2 + HCO						5.0E13		0.0	0.0	0.0	0.0	0.0
+//Sandeep
+
+C3H2 + O = C2H2 + CO						1.0E14		0.0	0.0	0.0	0.0	0.0
+//Sandeep
+
+C2H2 + C2H = C4H3						9.6358E16	-1.19575	3.78497	0.0	0.0	0.0
+//Sandeep
+
+C3H4a + H = CH3 + C2H2						9.35235E6	2.40807		13.0741	0.0	0.0	0.0
+//Sandeep
+
+CPDYL + O = C4H5 + CO        3.2E13       -0.17     0.440	0.0	0.0	0.0
+//Sandeep_Zho98 qrrk
+
+C2H3 + C2H2 = C4H5             1.14424e+23  -3.72699  8.15962	0.0	0.0	0.0
+//Sandeep
+
+CPD + H = C3H5 + C2H2     6.60E+14      0.0      12.33826	0.0	0.0	0.0
+//Roy
+
+H2CCCH + H2CCCH = FULVENE       7.91665e+35  -6.8701   14.7204	0.0	0.0	0.0
+//Sandeep
+
+CPD = C5H6a		       		1.35E+15      0.0      80.450	0.0	0.0	0.0
+//Bacskay
+
+C5H6a = C3H4p + C2H2	      	 	2.88E+13      0.0      66.550	0.0	0.0	0.0  
+//Bacskay
+
+CPD = C2H2 + C3H4a	       		3.80E+17      0.0      104.000	0.0	0.0	0.0
+//Bacskay
+
+CPD = C5H6b		       		8.50E+14      0.0      90.540	0.0	0.0	0.0
+//Bacskay
+
+C5H6b = C2H2 + C3H4a	       		3.55E+13      0.0      63.360 	0.0	0.0	0.0
+//Bacskay
+
+CPD + H2CCCH = CPDYL + C3H4p	1.10E+11      0.0      5.5      0.0	0.0	0.0
+//Bacskay
+
+C3H2lin + C2H2 = C5H4			6.68E4	2.45	6.83	0.0	0.0	0.0
+//rate on triplet surface from Jorge; probably valid from 298-1500 K

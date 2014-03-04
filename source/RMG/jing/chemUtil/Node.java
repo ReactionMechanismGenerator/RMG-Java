@@ -369,22 +369,29 @@ public class Node extends GraphComponent {
         // compare radical number
         FreeElectron fe1 = getFeElement();
         FreeElectron fe2 = node.getFeElement();
-        if (fe1.getOrder() != fe2.getOrder())
-            return false;
-        // compare spin of biradical
-        if (fe1.getOrder() == 2) {
-            String spin1 = fe1.getSpin();
-            String spin2 = fe2.getSpin();
-            if (spin1 == null) {
-                if (spin2 != null)
-                    return false;
-            } else {
-                if (spin2 != null) {
-                    if (!spin1.equals(spin2))
-                        return false;
-                }
-            }
-        }
+        // if child has the flag X for radical number, check if parent has the same flag
+        if(fe1.getName()=="X" && fe2.getName()!="X") {
+               return false;
+          }
+        // if parent has flag X skip radical check
+        if(fe2.getName()!="X") {
+           if (fe1.getOrder() != fe2.getOrder())
+               return false;
+           // compare spin of biradical
+           if (fe1.getOrder() == 2) {
+               String spin1 = fe1.getSpin();
+               String spin2 = fe2.getSpin();
+               if (spin1 == null) {
+                   if (spin2 != null)
+                       return false;
+               } else {
+                   if (spin2 != null) {
+                       if (!spin1.equals(spin2))
+                           return false;
+                   }
+               }
+           }
+        } 
         // compare R, R!H
         Object fge1 = getFgElement();
         Object fge2 = node.getFgElement();
@@ -1108,7 +1115,56 @@ public class Node extends GraphComponent {
         return null;
         // #]
     }
+    
+    
+    /**
+     * Finds the shortest number of bonds to the node.  Must enter a starting distance of 0.
+     */
+    public int minimumNumBonds(Node p_node, int distance, LinkedHashSet pathlist) {
 
+    	pathlist.add(this);
+    	distance += 1;
+    	if (neighborsNode(p_node))
+    		return distance; // you have found the node!
+    	else { 
+	    	// couldn't find the node in any of the nearest neighbors, so go deeper
+	    	LinkedHashSet neighboringNodes = getNeighboringNodes();	    	
+	    	Iterator it = neighboringNodes.iterator();
+	    	
+	    	ArrayList<Integer> lengths = new ArrayList<Integer>();
+	    	while(it.hasNext()) {	   
+	    		Node neighborNode = (Node) it.next();
+	    		if (!pathlist.contains(neighborNode) && !neighborNode.isLeaf()) {  
+	    			// if the node was not visited, check its neighbors
+	    			int temp = neighborNode.minimumNumBonds(p_node, distance, (LinkedHashSet) pathlist.clone());
+	    			if (temp != -1)
+	    				lengths.add(temp);
+	    
+	    		}
+	    	}
+	    	if (lengths.size() != 0) {
+	    		return Collections.min(lengths);
+	    	}
+    	}
+    	
+    	return -1;
+    }
+    
+    
+    /**
+     * Determines whether this node neighbors a p_node by any arc
+     */
+    public boolean neighborsNode(Node p_node) {
+	    LinkedHashSet neighboringNodes = getNeighboringNodes();		
+		Iterator it = neighboringNodes.iterator();
+		
+		while(it.hasNext()) {
+			if (it.next() == p_node) return true;
+		}   	
+		return false;
+    }
+    
+    
     /**
      * Requires: Effects: if this node only has one or zero neighbor, return true; otherwise, return false. Modifies:
      */

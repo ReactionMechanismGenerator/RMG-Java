@@ -10,7 +10,7 @@
 // Intra_Disproportionation
 // Intramolecular analog of Disproportionation; implemented by gmagoon 8/6/09
 
-Y_birad -> Y
+Rn -> Y
 
 forward
 reverse(f10): BiradFromMultipleBond

@@ -1,0 +1,422 @@
+Unit:
+A: mol/cm3/s
+E: kcal/mol
+
+Reactions:
+//CH2(S) + CO = CH2CO					 	  1.29474E18	    -2.55198	1.06897	0.0	0.0	0.0
+//fitted to Chebyshev at 1 atm, which, in turn, comes from PDep run
+
+CPDYL + O = C2H2 + C2H2 + HCO   3.2E13          -0.17           0.44    0.0     0.0     0.0        
+//Sandeep ! Zhong 39
+
+//moved to seed mech pdep reactions as of Jan 2012 to better account for pressure dependence
+//CPDYL = H2CCCH + C2H2           2.79e+79   -18.3  130.702325       0.0     0.0     0.0
+//taken from PLOG at 10 atm to approximate high P limit, Bacskay; UPDATE Jan. 2012: this citation was in error here and (differently in error) in our 2011 IJCK manuscript; the actual reference is Moskaleva and Lin http://onlinelibrary.wiley.com/doi/10.1002/(SICI)1096-987X(20000430)21:6%3C415::AID-JCC1%3E3.0.CO;2-6/abstract
+
+
+//CPDYL = H2CCCH + C2H2           1.98E68         -15.0           124.76122       0.0     0.0     0.0        
+//taken from PLOG at 1 atm, Bacskay UPDATE: from Moskaleva and Lin (see above)
+
+C4H3 + H = C4H2 + H2						5.0E13		0.0	0.0	0.0	0.0	0.0
+//Sandeep !Miller 92 taken frOm MarinOv 98
+
+C3H6 + O = C2H5 + HCO					1.58E7		1.76	-1.216 0.0	0.0	0.0
+//Sandeep  ! Tsang 1991
+
+C3H4a + O = C2H4 + CO						1.34E7		1.88	0.1790 0.0	0.0	0.0
+//Sandeep !   (bb)
+	
+//CH + C2H2 = C3H2 + H							1.0E14		0.0	0.0	0.0	0.0	0.0
+//Sandeep ! Miller 1992
+
+C3H2 + O2 = HCCO + CO + H						5.0E12		0.0	0.0	0.0	0.0	0.0
+//Sandeep ! Miller 1992 add
+
+C4H3 + O = CH2CO + C2H						2.0E13		0.0	0.0	0.0	0.0	0.0
+//Sandeep ! Miller 1992 add
+
+C4H3 + CH2 = C3H4a + C2H                                      2.0E13          0.0     0.0     0.0     0.0     0.0
+//Sandeep ! Miller 1992
+
+CH2(S) + C2H4 = C3H5 + H						1.3E14		0.0	0.0	0.0	0.0	0.0
+//Sandeep ! CanOsa-Mas85
+
+C2H3 + CH3 = C3H5 + H					4.73E2		3.7	5.677	0.0	0.0	0.0
+//Sandeep ! (i)
+
+//CPDYL + CH3 = MCPDYL + H						2.1425E-33	13.255	-16.2812	0.0	0.0	0.0
+//Sandeep !****c5h5+ch3 paper sharma and green jpca 2009
+//see below
+
+//CPDYL + CH3 = FULVENE + H2                                       1.1446E-34      13.3067  -15.7179        0.0     0.0    	0.0
+//Sandeep !****c5h5+ch3 paper sharma and green jpca 2009
+//see below
+
+C2H2 + C2H = C4H3						9.6358E16	-1.19575	3.78497	0.0	0.0	0.0
+//Sandeep !C2H_C2H2  chemdis file 
+
+C3H4a + H = CH3 + C2H2						1.26483E20	-1.83		15.003	0.0	0.0	0.0
+DUP
+C3H4a + H = CH3 + C2H2                                          12286.92       2.68         6.335 0.0     0.0     0.0
+DUP
+//Sandeep !miller and senosiain 2008 ***updated 6/17/11 to use Sandeeps chem-14 mechanism (now has two sets of parameters) from supp. info from Combustion and Flame paper (older value from chem-sandeep.txt was from !H_aC3H4 chemdis file)
+
+CPDYL + O = BD1YL + CO        3.2E13       -0.17     0.440	0.0	0.0	0.0
+//Sandeep !   Zho98 qrrk
+
+C2H3 + C2H2 = BD1YL             1.14424e+23  -3.72699  8.15962	0.0	0.0	0.0
+//Sandeep !C2H3_C2H2 chemdis file
+
+CPD + H = C3H5 + C2H2     6.60E+14      0.0      12.33826	0.0	0.0	0.0
+//Roy
+
+//H2CCCH + H2CCCH = FULVENE       5.49E+62	-1.47E+01	2.56E+01 	0.0	0.0	0.0
+//H2CCCH + H2CCCH = FULVENE       3.02E+35	-7.37E+00	5.96E+00  0.0     0.0     0.0        
+//Sandeep !2003 miller and klippenstein ![1]1ATM  ***updated 6/17/11 to use Sandeep's chem-14 mechanism (now has two sets of parameters) from supp. info of comb. and flame paper; old value from chem-sandeep.inp was commented with !propargyl_propargyl_chemdis) 
+//replaced by 10 atm values to approx. high-P limit...see below
+
+CPD = C5H6a		       		1.35E+15      0.0      80.450	0.0	0.0	0.0
+//Bacskay
+
+C5H6a = C3H4p + C2H2	      	 	2.88E+13      0.0      66.550	0.0	0.0	0.0  
+//Bacskay
+
+CPD = C2H2 + C3H4a	       		3.80E+17      0.0      104.000	0.0	0.0	0.0
+//Bacskay
+
+CPD = C5H6b		       		8.50E+14      0.0      90.540	0.0	0.0	0.0
+//Bacskay
+
+C5H6b = C2H2 + C3H4a	       		3.55E+13      0.0      63.360 	0.0	0.0	0.0
+//Bacskay
+
+CPD + H2CCCH = CPDYL + C3H4p	1.10E+11      0.0      5.5      0.0	0.0	0.0
+//Bacskay
+
+C3H2lin + C2H2 = C5H4			6.68E4	2.45	6.83	0.0	0.0	0.0
+//rate on triplet surface from Jorge; probably valid from 298-1500 K
+
+//partial C5H5 PES from CBS-QB3 calculations, 298-3000 K, corrected for chirality when appropriate
+C5H5new = C5H5orig						2.52E7		1.87	55.0	0.0	0.0	0.0
+C5H5orig = CPDYL						5.82E6		1.88	24.67	0.0	0.0	0.0
+C5H5new = C5H5newacyc						8.78E11		0.77	33.44	0.0	0.0	0.0
+C5H5orig = C5H5origacycA					9.66E11		0.65	42.43	0.0	0.0	0.0
+C5H5orig = C5H5origacycB					6.70E11		0.70	41.82	0.0	0.0	0.0
+
+C3H4a + H = C3H5 			4.67385E+51  -11.45  21.34 0.0	0.0	0.0
+DUP
+C3H4a + H = C3H5                        3.31867E+30  -5.78  6.913  0.0     0.0     0.0	
+DUP
+//Sandeep !miller and senosiain 2008 ***updated 6/17/11 to use values from chem-14.inp (now has two sets of parameters) from supp. info of Comb. and Flame paper; original was from chem-sandeep.txt with comment !H_aC3H4 chemdis file
+
+//HCCO + H = CH2CO				7.1917E18 	-2.75419	7.244	0.0	0.0	0.0	
+//fitted to Chebyshev at 1 atm
+
+H + C2H = C2H2					2.25E13 	0.32		0.0	0.0	0.0	0.0	
+//Harding, L.B., Y. Georgievskii, and S.J. Klippenstein, Predictive Theory for Hydrogen Atom - Hydrocarbon Radical Association Kinetics. The Journal of Physical Chemistry A, 2005. 109(21): p. 4646-4656.
+
+H + H2CCCH = C3H4a			6.62E13		0.20600		-0.17297 0.0	0.0	0.0	
+//Harding, L.B., S.J. Klippenstein, and Y. Georgievskii, On the Combination Reactions of Hydrogen Atoms with Resonance-Stabilized Hydrocarbon Radicalsâ€ The Journal of Physical Chemistry A, 2007. 111(19): p. 3789-3801.
+
+H + C3H5 = C3H6				1.59E14		0.176		-0.12511 0.0	0.0	0.0	
+//Harding, L.B., S.J. Klippenstein, and Y. Georgievskii, On the Combination Reactions of Hydrogen Atoms with Resonance-Stabilized Hydrocarbon Radicalsâ€ The Journal of Physical Chemistry A, 2007. 111(19): p. 3789-3801.
+
+H + C3H2 = H2CCCH			2.66E14		0.2200		-0.08678 0.0	0.0	0.0	
+//Harding, L.B., S.J. Klippenstein, and Y. Georgievskii, On the Combination Reactions of Hydrogen Atoms with Resonance-Stabilized Hydrocarbon Radicalsâ€ The Journal of Physical Chemistry A, 2007. 111(19): p. 3789-3801.
+
+//CPD + H = C5H7RES			0.3675E74	-17.83		40.01	0.0	0.0	0.0	
+//Sandeep !********C5H7 PES ***6/17/11 cut in half to mirror chem-14.inp from supp. info from Comb. and Flame paper ; original value was from chem-sandeep.inp
+//see below; C5H7RES is incorrect...this rate is for linear product
+
+CPD + O = CPDYL + OH			4.8E4		2.70		1.10	0.0	0.0	0.0	
+//Sandeep !Zhong 39 ***6/17/11 original values (source?...maybe taken directly from paper?) tweaked slightly to match values in the chem-14.inp from Supp. Info from Combustion and Flame paper
+
+CPD + H = CPDYL + H2			3.0E14		0.0		6.6	0.0	0.0	0.0	
+//Bacskay
+
+CPD + OH = CPDYL + H2O		3.1E6		2.0		0.0	0.0	0.0	0.0	
+//Sandeep !Zhong 39
+
+CPD + HO2 = CPDYL + H2O2             1.1E4           2.6             12.9    0.0     0.0     0.0     
+//Sandeep !Zhong 39
+
+CPD + CH3 = CPDYL + CH4              3.0E11          0.0             5.0     0.0     0.0     0.0     
+//Bacskay
+
+//CPD + C2H3 = CPDYL + C2H4               6.0E12           0.0             0.0     0.0     0.0     0.0     
+//Bacskay
+//omitted in favor of version from Sandeep's chem14 below
+
+CPD + C3H5 = CPDYL + C3H6        1.10E11           0.0             5.5     0.0     0.0     0.0     
+//Bacskay
+
+CPDYL + H = CPD		1.0E14		0.0		0.0	0.0	0.0	0.0	
+//Sandeep !Their Estimate (! BENZENE OXIDATION TAKEN FROM DACOSTA 2003 IJCK)
+
+CPD + O2 = CPDYL + HO2       1.4E12           0.0             31.6     0.0     0.0     0.0     
+//Sandeep (!their Estimate) (! BENZENE OXIDATION TAKEN FROM DACOSTA 2003 IJCK)
+
+C3H4p + O = H2CCCH + OH		3.4E4		2.16		4.8	0.0	0.0	0.0	
+//Adusei, G.Y., A.S. Blue, and A. Fontijn, The O(3P) Methylacetylene Reaction over Wide Temperature and Pressure Ranges. The Journal of Physical Chemistry, 1996. 100(42): p. 16921-16924.
+
+MCPDYL = FULVENE + H                 9.58e+61    -13.93       80.26	0.0	0.0	0.0	
+//Sandeep !***************fulvene+h pes in present paper ***6/20/11 updated to mirror chem-14.inp from supp. info from Comb. and Flame paper; original value from chem-sandeep.txt with same stated source
+
+CPD + H = C5H7JAI			1.108E9		1.55		2.28		0.0	0.0	0.0
+//from Jorge's C5H7 PES, with factor of 2 chirality correction
+
+C5H7JAI = C5H7LIN			8.68E12		0.48		43.11		0.0	0.0	0.0
+//from Jorge's C5H7 PES, with factor of 2 chirality correction
+
+C5H7LIN = C3H5 + C2H2			4.72E11		0.81		24.35		0.0	0.0	0.0
+//from Jorge's C5H7 PES; assumed no factor of 2 chirality correction
+
+
+//below: additional cycC5, benzene, toluene, styrene, etc. reactions from Sandeep's chem-14.inp, added June 2011
+//BLOCK 1 from Sharma et al.:
+//! BENZENE OXIDATION TAKEN FROM DACOSTA 2003 IJCK
+BENZENE+O = PHENOXY+H 2.8E13  0.0  4.9 	0.0     0.0     0.0
+//Nicovich 1982
+BENZENE+OH = PHENOL+H  1.3E13  0.0  10.6 	0.0     0.0     0.0
+//Baulch 22
+BENZENE+O = PHENYL+OH  2.0E13 0.0 14.7 	0.0     0.0     0.0
+//Lindstedt 13
+BENZENE+HO2 = PHENYL+H2O2 5.5E12 0.0 28.9	0.0     0.0     0.0
+//Baulch 22
+BENZENE+CH3 = PHENYL+CH4  2.0E12  0.0  15.0	0.0     0.0     0.0
+//Zhang 31
+BENZENE+C2H5 = PHENYL+C2H6  6.3E11 0.0 15.0	0.0     0.0     0.0
+//Zhang 31
+BENZENE+C3H5 = PHENYL+C3H6  6.3E11  0.0 20.0	0.0     0.0     0.0
+//Their estimate
+BENZENE+BD1YL = PHENYL+BD 6.3E11 0.0  15.0		0.0     0.0     0.0
+//Their Estimate
+BENZENE+BD2YL = PHENYL+BD 6.3E11 0.0 20.0		0.0     0.0     0.0
+//Their Estimate
+
+PHENYL+O2 = PHENOXY+O  2.6E13 0.0 6.1		0.0     0.0     0.0
+//frank 34
+PHENYL+O = CPDYL + CO 1.0E14 0.0 0.0 		0.0     0.0     0.0
+//Frank 34
+PHENYL+OH = PHENOL  1.0E13  0.0 0.0		0.0     0.0     0.0
+//Their Calculation
+PHENYL+HO2 = PHENOXY + OH 5.0E12 0.0 0.0	0.0     0.0     0.0
+//Their Calculation
+
+PHENOXY = CO+CPDYL 2.5E11 0.0 43.8 		0.0     0.0     0.0
+//Baulch 30
+
+PHENOXY+H = CPD+CO 1.1E53  -10.7  41.4		0.0     0.0     0.0
+//Tan15
+PHENOXY+O = CPDYL+CO2 1.0E13 0.0 0.0		0.0     0.0     0.0
+//Alzueta7
+
+
+PHENOL = CPD+CO 1.0E12 0.0 61.2 		0.0     0.0     0.0
+//Horn40
+
+PHENOL+O2 = HO2+PHENOXY 1.0E13 0.0 38.8	0.0     0.0     0.0
+//Their Estimate
+PHENOL+H = PHENOXY+H2 1.2E14 0.0 12.4	0.0     0.0     0.0
+//Alzueta 7
+PHENOL+O = PHENOXY+OH 1.3E13 0.0 2.9	0.0     0.0     0.0
+//Alzueta 7
+PHENOL+OH = PHENOXY+H2O 1.4E8 1.4 -0.96 	0.0     0.0     0.0
+//Shandross 4
+PHENOL+HO2 = PHENOXY+H2O2 1.0E12 0.0 10.0 	0.0     0.0     0.0
+//Alzueta 7
+PHENOL+CH3 = PHENOXY+CH4 1.8E11 0.0 7.7 	0.0     0.0     0.0
+//Mulchahy 41
+PHENOL+PHENYL = PHENOXY+BENZENE 4.9E12 0.0 4.4 	0.0     0.0     0.0
+//Alzueta 7
+PHENOL+CPDYL = PHENOXY+CPD 4.9E11 0.0 9.4	0.0     0.0     0.0 
+//Their Estimate
+PHENOL+C3H5 = PHENOXY+C3H6 4.9E11 0.0 9.4	0.0     0.0     0.0
+//Their Estimate
+PHENOL+BD2YL = PHENOXY+BD 4.9E11 0.0 9.4	0.0     0.0     0.0
+//Their Estimate
+
+CPD+BD1YL = CPDYL+BD 6.0E12 0.0 0.0	0.0     0.0     0.0
+//Their Esimate [sic]
+CPD+BD2YL = CPDYL+BD 6.0E12 0.0 0.0	0.0     0.0     0.0
+//Emdee 12
+
+//BLOCK 2 from Sharma et al.:
+//Alzueta et al....IJCK 2000
+PHENYL + H2 = BENZENE + H 5.7e4  2.43  6.2800	0.0     0.0     0.0
+//Mebel 1997
+PHENYL+OH  =  BENZYNE+H2O    1.0E07  2.00   1.000	0.0     0.0     0.0
+//   Pauwels 1995 est
+PHENYL+OH = PHENOXY + H 5.0E13 0.0 0.0		0.0     0.0     0.0
+//Their estimate
+PHENOL+C2H3  =  PHENOXY+C2H4    6.0E12  0.00      0	0.0     0.0     0.0
+//   Emd92 est
+CPD+C2H3  =  BENZENE+CH3  2.1E67 -16.08 42.460	0.0     0.0     0.0
+//   Zho98 est^c
+CPD+C2H3  =  CPDYL+C2H4  1.2E-1  4.00      0 	0.0     0.0     0.0
+//   Zho98 est^c
+PHENYL+H  =  BENZYNE+H2                     2.0E07  2.00   1.000  	0.0     0.0     0.0
+//   Pau96 est
+C3H2+HCCO = C4H3b+CO 3.0e13 0.0 0.0 	0.0     0.0     0.0
+//Pauwels 1995
+C3H2+OH = C2H2+HCO      5.00E+13  0.0        0.0   	0.0     0.0     0.0
+// Pauwels 1995
+C3H2+O = C2H2+CO 1.0E14 0.0 0.0 	0.0     0.0     0.0
+//Pauwels 1995
+
+//BLOCK 3 from Sharma et al.:
+//Zhang and mckinnon*****
+PHENYL+C2H3 = STYRENE 1.06e26 -4.0 5.25 		0.0     0.0     0.0
+//Colket 1986
+PHENYL+CH2CHCCH = STYRENE+C2H 3.2E11 0.0 1.9 	0.0     0.0     0.0
+//Harris 1988
+BENZENE+C2H = PHNLACTYLN + H 1e12  0.0  0.0 	0.0     0.0     0.0
+// [Colket 1986]
+PHENYL+C2H = PHNLACTYLN 5.24e14 -0.5  0.7 	0.0     0.0     0.0
+//Harris 1988
+PHENYL+C4H2 = PHNLACTYLN+C2H 2e13 0.0 0.0 	0.0     0.0     0.0
+//Frenklach 1984
+PHENYL + CH2CHCCH = PHNLACTYLN + C2H3 3.2e11 0.0 1.35  	0.0     0.0     0.0
+//Harris 1988
+//*********
+
+//BLOCK 4 from Sharma et al.:
+//aromatic pieces from:
+//****************Marinov butane llnl mechanism*****************
+STYRENE+OH = C6H5CCH2+H2O 1.0e7 2.0 2.0 	0.0     0.0     0.0
+// Marinov 1996
+STYRENE+H = C6H5CCH2+H2  2.0e7 2.0 6.0 	0.0     0.0     0.0
+// Marinov 1996
+C6H5CCH2+OH = PHNLACTYLN +H2O 2e13 0.0 0.0 	0.0     0.0     0.0
+// Marinov 1996
+C6H5CCH2+H = PHNLACTYLN+H2  5.0e13 0.0 0.0 	0.0     0.0     0.0
+// Marinov 1996
+   TOLUENE+O2 = BENZYL+HO2      2.00E+12 0.0 39.0800 	0.0     0.0     0.0
+// Ingram 1994
+   TOLUENE+OH = BENZYL+H2O      1.26E+13 0.0 2.5830  	0.0     0.0     0.0
+// Emdee 1992
+   TOLUENE+O = BENZYL+OH        5.00E+08 1.5 8.0000  	0.0     0.0     0.0
+// Emdee 1992
+   TOLUENE+H = BENZYL+H2        3.98E+02 3.44 3.1200 	0.0     0.0     0.0
+// Emdee 1992
+   TOLUENE+H = BENZENE+CH3          1.20E+13 0.0 5.1480  	0.0     0.0     0.0
+// Emdee 1992
+   TOLUENE+PHENYL = BENZENE+BENZYL   2.10E+12 0.0 4.4000  	0.0     0.0     0.0
+// Emdee 1992
+   CH3CCCH2+H2CCCH = BENZYL+H   3.00E+12 0.0     0.0 	0.0     0.0     0.0
+// Marinov 1996
+   CH3CHCCH+H2CCCH = BENZYL+H   3.00E+12 0.0     0.0 	0.0     0.0     0.0
+// Marinov 1996
+BENZYL+O = PHENYL+CH2O         8.00E+13 0.0    0.0  	0.0     0.0     0.0
+// Emdee 1992
+    BENZYL+HO2 = PHENYL+CH2O+OH    8.00E+13 0.0    0.0  	0.0     0.0     0.0
+// Emdee 1992
+PHENYL + C2H2 = PHNLACTYLN +H 3.98E+13 0.0 10.0990  	0.0     0.0     0.0
+//Stein1989
+BENZENE+O2 = PHENYL+HO2            6.30E+13 0.0 60.000 	0.0     0.0     0.0
+// Emdee 1992
+BENZENE+OH = PHENYL+H2O            1.63E+08 1.42 1.4540 	0.0     0.0     0.0
+// BaulCH 1992
+H2CCCH+C2H3 = CPDYL+H   9.63E+40 -7.8   28.8200   	0.0     0.0     0.0
+// Marinov 1996 
+BD2YL+C2H2 = BENZENE+H      3.00E+11  0.0 14.9000		0.0     0.0     0.0
+// MarinOv 1996
+//********************************************************************************
+
+C4H2 + C2H2 = BENZYNE 5E78  -19.31  67.9200 	0.0     0.0     0.0
+//Wang&Frenklach 2000
+BENZYL + H = PHENYL + CH3 5.84e67 -14.15 68.33	0.0     0.0     0.0
+//Wang&Frenklach 2000
+
+//high-P limit rates taken from Sharma and Green (2009)
+C5H5CH3_5 = C5H5CH3_1 7.03E8 1.2 24.8	0.0     0.0     0.0
+C5H5CH3_1 = C5H5CH3_2 1.65E7 2.1 25.1	0.0     0.0     0.0
+CPDYL+CH3 = C5H5CH3_5 8.34E15 -0.7 -0.5		0.0     0.0     0.0
+FULVENE + H2 = C5H5CH3_5 1.44E5 3.9	81.1	0.0     0.0     0.0
+FULVENE + H2 = C5H5CH3_1 6.08E7 1.4	71.0	0.0     0.0     0.0
+FULVENE + H2 = C5H5CH3_2 1.62E7 1.6	55.5	0.0     0.0     0.0
+MCPDYL+H = C5H5CH3_5 4.57E14 -0.1 0.4	0.0     0.0     0.0
+MCPDYL+H = C5H5CH3_1 4.09E13 0.3  0.1	0.0     0.0     0.0
+C5H5CH2-2 + H = C5H5CH3_1 1.05E12 0.6 -0.2  0.0     0.0     0.0
+MCPDYL+H = C5H5CH3_2 9.05E13 0.1 0.0  0.0     0.0     0.0
+C5H5CH2-3 + H = C5H5CH3_2 3.43E12 0.5 -0.1  0.0     0.0     0.0
+C5H5CH2-1 + H = C5H5CH3_5 2.10E12 0.6 -0.8  0.0     0.0     0.0
+
+//********************************************************
+//****Additional blocks from Sandeep's chem14.inp that are 1 atm values; ideally, these should be replaced with high-P limit values when doing a P-dep run
+//********C5H7 PES
+CPD+H = C5H7RESLIN  .3675e+74       -17.83        40.01  0.0     0.0     0.0
+C5H7RESLIN = C5H7RES 7.58e+62    -14.99       60.09  0.0     0.0     0.0
+C5H7RES = CPD + H 4.54e+48    -10.75       64.52  0.0     0.0     0.0
+
+
+//Sandeep's 1 atm P-dep rates below
+HXD3YL = CPD+CH3 1.04e+75    -17.94       78.18  0.0     0.0     0.0
+HXD3YL = C5H6CH3 2.45e+60    -14.81       54.72  0.0     0.0     0.0
+HXD3YL = HXD6YL 8.82e+74    -18.18       80.88  0.0     0.0     0.0
+HXD3YL = C5H5CH3_1 + H 1.03e+75    -18.37       83.70  0.0     0.0     0.0
+HXD3YL = C5H5CH3_2 + H  3.61e+74    -18.16       81.84  0.0     0.0     0.0
+HXD3YL = CHD13 + H  1.75e+105    -26.49      114.06  0.0     0.0     0.0
+HXD3YL = CHD14 + H  1.81e+105    -26.48      114.08  0.0     0.0     0.0
+
+C5H6CH3 = CPD + CH3 8.41e+62    -14.74       60.13  0.0     0.0     0.0
+C5H6CH3 = HXD6YL  1.10e+37     -7.95       55.85  0.0     0.0     0.0
+C5H6CH3 = C5H5CH3_1 + H  1.99e+68    -16.88       69.26 	0.0     0.0     0.0
+C5H6CH3 = C5H5CH3_2 + H  3.26e+66    -16.23       66.54 	0.0     0.0     0.0
+//C5H6CH3 = CHD13 + H  numerical difficulty in calculating rates
+//C5H6CH3 = CHD14 + H  numerical difficulty in calculating rates
+
+HXD6YL = CPD + CH3 7.81e+68    -16.19       77.39  0.0     0.0     0.0
+HXD6YL = C5H5CH3_1 + H 1.60e+73    -17.77       85.64  0.0     0.0     0.0
+HXD6YL = C5H5CH3_2 + H 4.50e+71    -17.26       83.18	0.0     0.0     0.0
+HXD6YL = CHD13 + H  5.01e+39     -8.49       44.94	0.0     0.0     0.0
+HXD6YL = CHD14 + H   8.72e+39     -8.55       45.17	0.0     0.0     0.0
+
+CPD + CH3 = C5H5CH3_1 + H	1.9e16     -0.98       23.95	0.0     0.0     0.0
+CPD + CH3 = C5H5CH3_2 + H	3.7e19     -1.88       23.90	0.0     0.0     0.0
+CPD + CH3 = CHD13 + H  4.0e69    -15.57       79.91	0.0     0.0     0.0
+CPD + CH3 = CHD14 + H 3.1e69    -15.53       79.85	0.0     0.0     0.0
+//*********************
+
+//***************fulvene+h pes in present paper
+//MCPDYL = FULVENE+H  9.58e+61    -13.93       80.26	0.0     0.0     0.0 see comment above
+MCPDYL = C5H5CH2-2  3.00e+92    -23.48       94.07	0.0     0.0     0.0
+MCPDYL = cyC6H7     2.00e+08     0.0  36.48	0.0     0.0     0.0
+MCPDYL = BENZENE+H  7.93e+52    -11.67       71.17	0.0     0.0     0.0
+MCPDYL = C5H5CH2-3  1.81E+83	-20.85	91.54	0.0     0.0     0.0
+
+C5H5CH2-2 = FULVENE+H  1.93e+90    -22.28       92.96	0.0     0.0     0.0
+C5H5CH2-2 = cyC6H7     1.00e+13     -1.42       26.29	0.0     0.0     0.0
+C5H5CH2-2 = BENZENE+H  9.48e+71    -17.24       72.92	0.0     0.0     0.0
+C5H5CH2-2 = C5H5CH2-3  1.67e+67    -16.33       59.92	0.0     0.0     0.0
+
+C5H5CH2-3 = FULVENE+H  2.01e+55    -12.33       67.05	0.0     0.0     0.0
+C5H5CH2-3 = cyC6H7     1.04e+14     -1.57       29.76	0.0     0.0     0.0
+C5H5CH2-3 = BENZENE+H  1.90e+67    -15.79       70.10	0.0     0.0     0.0
+
+cyC6H7 = BENZENE+H     1.16e+54    -12.53       44.85	0.0     0.0     0.0
+cyC6H7 = FULVENE+H     2.47e+40     -8.83       67.10	0.0     0.0     0.0
+
+FULVENE+H = BENZENE+H 7.70944E+50 -10.14	31.58	0.0     0.0     0.0
+//****************************
+
+//C5H5+C3H3 pes*******
+CPDYL+H2CCCH = YMN 1.41541E+68    -15.98       33.05	0.0     0.0     0.0
+CPDYL+H2CCCH = c5h4chchch2  6.92645E+90    -21.96       65.28	0.0     0.0     0.0
+CPDYL+H2CCCH = STYRENE  6.74576E+98    -24.38       79.46	0.0     0.0     0.0
+YMN = c5h4chchch2  1.29e+56    -12.78       72.30	0.0     0.0     0.0
+YMN = STYRENE  3.47e+86    -21.20      113.33	0.0     0.0     0.0
+c5h4chchch2 = STYRENE 1.54e+50    -10.72       99.64	0.0     0.0     0.0
+
+
+//c5h4chchch2+h pes ********** 
+c5h4chchch2+H = STYRENE + H 1.934e+51       -10.45        28.65		0.0     0.0     0.0
+
+//***added based on rates outside of Sandeep's chem14.inp:
+TOLUENE+HO2 = BENZYL+H2O2  3.97E11 0.0 14.07	0.0	0.0	0.0
+//from Baulch 1994 review; note: T=600-1000K; (a recent theory study is also available): http://onlinelibrary.wiley.com/doi/10.1002/jcc.21756/pdf
+
+
+//Gueniche et al. Comb. & flame 152 p. 252
+C5H7VIN = C5H7_125p             2.0E13 0.0 33.0 0.0 0.0 0.0
+C5H7_125p = C2H4 + H2CCCH   2.0E13 0.0 22.5 0.0 0.0 0.0

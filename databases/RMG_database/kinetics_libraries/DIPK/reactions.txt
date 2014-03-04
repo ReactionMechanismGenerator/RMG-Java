@@ -1,0 +1,58 @@
+Unit:
+A: mol/cm3/s
+E: kcal/mol
+
+Reactions:
+// From Zhou (2011) calculations at G3 level (doi:10.1039/C0CP02754E)
+DIPK + OH = R_tert + H2O                             9.840e+03    2.70   -4.04  0.0 0.0 0.0
+DIPK + OH = R_pri + H2O                              3.108e+01    3.54   -2.91  0.0 0.0 0.0
+// Computed by us at CBS-QB3 level (includes 1D HR)
+DIPK + HO2 = R_tert + H2O2                           5.334e-06    5.24    6.31  0.0 0.0 0.0
+DIPK + HO2 = R_pri + H2O2                            4.940e-03    4.57   14.12  0.0 0.0 0.0
+DIPK + H = R_tert + H2                               1.338e+06    2.32    3.38  0.0 0.0 0.0
+DIPK + H = R_pri + H2                                2.260e+06    2.45    7.58  0.0 0.0 0.0
+C3H6 + C4H7OJ = R_pri                                1.506e+00    3.38    3.64  0.0 0.0 0.0
+C3H6 + C4H5OJ = C7H11O-3                             1.506e+00    3.38    3.64  0.0 0.0 0.0
+R_pri = R_sec                                        4.387e+07    1.04    8.40  0.0 0.0 0.0
+// Computed by us at CBS-QB3 level (no HR)
+DIPK + CH3 = R_tert + CH4                            1.823e-01    3.98    3.84  0.0 0.0 0.0
+DIPK + CH3 = R_pri + CH4                             4.667e-04    4.92    7.28  0.0 0.0 0.0
+DMK + iC3H7 = R_tert                                 1.508e+00    2.98    3.80  0.0 0.0 0.0
+C7H12O + H = C7H11O-1 + H2                           4.580e+06    2.08    3.28  0.0 0.0 0.0
+C7H12O + H = C7H11O-2 + H2                           3.570e+05    2.52    3.70  0.0 0.0 0.0
+C7H12O + H = C7H11O-3 + H2                           4.470e+05    2.54    7.38  0.0 0.0 0.0
+C7H10O + H = C7H9O-1 + H2                            7.140e+05    2.52    3.70  0.0 0.0 0.0
+C7H12O + CH3 = C7H11O-1 + CH4                        1.824e-01    3.98    3.84  0.0 0.0 0.0
+C7H12O + CH3 = C7H11O-3 + CH4                        2.333e-04    4.92    7.28  0.0 0.0 0.0
+R_tert = C7H13OJ-3                                   8.308e-10    6.04   29.27  0.0 0.0 0.0
+pC3H4 + CH3 = pC3H3 + CH4                            1.800e+12    0.00    7.70  0.0 0.0 0.0
+DIPK + HO2 = C7H15O3-1                               4.245e-02    3.49   22.64  0.0 0.0 0.0
+// Peroxy chemistry from Miyoshi (2012) rate rules (doi:10.1021/jp112152n)
+O2 + R_tert = ROO_tert                               9.756e+11    0.325  -0.417 0.0 0.0 0.0
+O2 + R_pri = ROO_pri                                 6.865e+16   -1.627   0.199 0.0 0.0 0.0
+O2 + R_tert = HO2 + C7H12O                           8.676e+13    0.00   15.99  0.0 0.0 0.0
+O2 + R_pri = HO2 + C7H12O                            1.398e+12    0.00   14.37  0.0 0.0 0.0
+ROO_tert = C7H12O + HO2                              7.560e+13    0.00   31.16  0.0 0.0 0.0
+ROO_pri = C7H12O + HO2                               3.420e+12    0.00   31.89  0.0 0.0 0.0
+ROO_tert = QOOH_tt                                   3.570e+11    0.00   16.89  0.0 0.0 0.0
+ROO_tert = QOOH_tp                                   3.024e+11    0.00   22.69  0.0 0.0 0.0
+ROO_pri = QOOH_pt                                    1.530e+10    0.00   15.34  0.0 0.0 0.0
+ROO_pri = QOOH_pp                                    1.164e+11    0.00   23.07  0.0 0.0 0.0
+ROO_pri = QOOH_5                                     9.210e+11    0.00   22.97  0.0 0.0 0.0
+O2 + R_sec = ROO_sec                                 3.487e+14   -0.816  -0.536 0.0 0.0 0.0
+O2 + R_sec = HO2 + C7H12O-2                          2.168e+13    0.00   16.05  0.0 0.0 0.0
+O2 + R_sec = HO2 + C7H12O-3                          9.165e+12    0.00   14.90  0.0 0.0 0.0
+ROO_sec = HO2 + C7H12O-2                             6.960e+12    0.00   31.69  0.0 0.0 0.0
+ROO_sec = HO2 + C7H12O-3                             1.470e+13    0.00   31.49  0.0 0.0 0.0
+ROO_sec = QOOH_st                                    3.280e+10    0.00   16.09  0.0 0.0 0.0
+ROO_sec = QOOH_sp                                    2.718e+11    0.00   23.90  0.0 0.0 0.0
+ROO_sec = QOOH_8                                     3.080e+12    0.00   33.22  0.0 0.0 0.0
+//QOOH_tt = cyclicether_4 + OH                         6.950e+11    0.00   12.86  0.0 0.0 0.0
+//QOOH_tp = cyclicether_5 + OH                         3.650e+10    0.00   12.28  0.0 0.0 0.0
+//QOOH_pt = cyclicether_5 + OH                         1.150e+11    0.00    8.70  0.0 0.0 0.0
+//QOOH_pp = cyclicether_6 + OH                         6.480e+08    0.00   14.90  0.0 0.0 0.0
+//QOOH_5 = cyclicether_4a + OH                         6.990e+11    0.00   20.15  0.0 0.0 0.0
+// Overridden rate rule estimates (to avoid crazy averaging)
+HO2 + R_tert = H2O2 + C7H12O                         1.800e+12    0.00    0.00  0.0 0.0 0.0
+// Unknown
+R1OOH = R1O + OH                                     5.012e+15    0.00   42.54  0.0 0.0 0.0

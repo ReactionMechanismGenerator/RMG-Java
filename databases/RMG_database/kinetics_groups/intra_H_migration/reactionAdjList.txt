@@ -12,6 +12,8 @@
 RnH -> HR.
 
 thermo_consistence:
+//forward
+reverse(f25): revintraHabs
 
 Actions 1
 (1) BREAK_BOND		{*2,S,*3}

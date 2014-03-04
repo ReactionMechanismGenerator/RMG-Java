@@ -65,6 +65,8 @@ public class Atom implements ChemNodeElement {
                 name = name + " tri-rad";
             } else if (order == 4) {
                 name = name + "tetra-rad";
+            } else if (order == 10) {
+                name = name + " X";
             } else {
                 throw new InvalidFreeElectronException();
             }
@@ -82,19 +84,19 @@ public class Atom implements ChemNodeElement {
         if (fe == null) {
             throw new InvalidFreeElectronException();
         } else {
-            int order = fe.getOrder() + p_radical;
-            if (order < 0)
-                throw new InvalidFreeElectronException();
-            String name = String.valueOf(order);
-            if (order == 2) {
-                // here, set a default value for 1-centered biradical to be 2T.
-                String spin = "T";
-                if (p_spin != null)
-                    spin = p_spin;
-                name = name + spin;
-            }
-            FreeElectron newfe = FreeElectron.make(name);
-            newAtom = Atom.make(getChemElement(), newfe);
+               int order = fe.getOrder() + p_radical;
+               if (order < 0)
+                   throw new InvalidFreeElectronException();
+               String name = String.valueOf(order);
+               if (order == 2) {
+                   // here, set a default value for 1-centered biradical to be 2T.
+                   String spin = "T";
+                   if (p_spin != null)
+                       spin = p_spin;
+                   name = name + spin;
+               }
+               FreeElectron newfe = FreeElectron.make(name);
+               newAtom = Atom.make(getChemElement(), newfe);
         }
         return newAtom;
         // #]

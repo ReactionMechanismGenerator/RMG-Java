@@ -87,6 +87,13 @@ public class FunctionalGroup implements Matchable {
         graph.addNodeAt(p_position, p_atomList);
         // #]
     }
+    
+    public String toString() {
+        FunctionalGroup fg = (FunctionalGroup) this;
+        String s = fg.getGraph().toString();
+        return s;
+    }
+
 
     /**
      * Requires: Effects: add a new node at p_position storing p_atom Modifies: this.graph.nodeList

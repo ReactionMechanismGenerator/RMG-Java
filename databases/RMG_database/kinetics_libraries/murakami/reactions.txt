@@ -1,0 +1,14 @@
+//Kinetics from:
+//Investigation of a New Pathway Forming Naphthalene
+//by the Recombination Reaction of Cyclopentadienyl Radicals
+//Yoshinori Murakami, Taweesak Saejung, Chikako Ohashi, and Nobuyuki Fujiiy
+//Department of Chemistry, Nagaoka University of Technology, Nagaoka 940-2188
+//yLife Engineering Center, Niigata Sangyo University, 4730 Karuigawa, Niigata 945-1395
+
+Unit:
+A: mol/cm3/s
+E: kcal/mol
+
+Reactions:
+CPDYL + CPDYL = NAPHTHALENE + H + H	3.3e+17	0.00		32.2	0.0	0.0	0.0	
+// Global reaction

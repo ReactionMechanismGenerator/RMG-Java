@@ -240,7 +240,6 @@ L1: YJ
 		L3: S2b	
 		L3: O2b
 		L3: C2b
-		
 	L2: Y_1centerbirad
 	L2: HJ
 	L2: CJ
@@ -383,5 +382,4 @@ L1: YJ
 				L5: SsJ-Cb
 				L5: SsJ-CO
 				L5: SsJ-C=S
-
 
