@@ -974,15 +974,15 @@ Arrhenius_EP
 // 1191	SsI-H	S_rad/NonDeC	300-1500	3.00E+02	3.026	0.0	-0.7	0	0	0	0	4	Aäron Vandeputte GAVs 
 
 // H abstractions involving S and O
-1192	S_pri		O_pri_rad	300-1500	2.55E+07	1.74	0.0	-0.06	0	0	0	0	2	CAC calculation CBS-QB3 1dhr, F12a energy
-1193	S/H/NonDeC	O_pri_rad	300-1500	1.30E+04	2.92	0.0	-4.22	0	0	0	0	2	CAC calculation CBS-QB3 1dhr, F12a energy
-1194	S/H/NonDeC	O_rad/NonDeC	300-1500	4.09E+04	2.78	0.0	-0.56	0	0	0	0	2	CAC calculation CBS-QB3 1dhr, F12a energy
+1192	S_pri		O_pri_rad	300-1500	5.15E+07	1.73	0.0	-0.07	0	0	0	0	2	CAC calculation CBS-QB3 1dhr, F12a energy
+1193	S/H/NonDeC	O_pri_rad	300-1500	2.03E+05	2.41	0.0	-4.19	0	0	0	0	2	CAC calculation CBS-QB3 1dhr, F12a energy
+1194	S/H/NonDeC	O_rad/NonDeC	300-1500	1.26E+06	2.09	0.0	-0.67	0	0	0	0	2	CAC calculation CBS-QB3 1dhr, F12a energy
 1195	S_pri		O_rad/OneDe	300-1500	3.19E+02	3.08	0.0	1.21	0	0	0	0	2	CAC calculation CBS-QB3 1dhr, F12a energy
-1196	CO/H/NonDe	C_rad/H/CsS	300-1500	4.55E-04	4.58	0.0	6.32	0	0	0	0	2	CAC calculation CBS-QB3 1dhr, F12a energy
+1196	CO/H/NonDe	C_rad/H/CsS	300-1500	1.79E-04	4.68	0.0	6.30	0	0	0	0	2	CAC calculation CBS-QB3 1dhr, F12a energy
 1197	C/H/CsOS	Cs_rad		300-2000	5.13E-03	4.07	0.0	2.80	0	0	0	0	3	CAC calculation CBS-QB3 1dhr
-1198	S/H/CO		Cs_rad		300-1500	1.36E+00	3.53	0.0	-1.28	0	0	0	0	2	CAC calculation CBS-QB3 1dhr, F12a energy
-1199	C/H/CsOS	S_pri_rad	300-2000	1.52E+05	2.37	0.0	0.77	0	0	0	0	3	CAC calculation CBS-QB3 1dhr, F12a energy
-1200	CO/H/NonDe	S_pri_rad	300-2000	2.33E+04	2.83	0.0	0.22	0	0	0	0	2	CAC calculation CBS-QB3 1dhr, F12a energy
+1198	S/H/CO		Cs_rad		300-1500	1.35E+00	3.50	0.0	-1.34	0	0	0	0	2	CAC calculation CBS-QB3 1dhr, F12a energy
+1199	C/H/CsOS	S_pri_rad	300-2000	1.23E+05	2.48	0.0	0.78	0	0	0	0	3	CAC calculation CBS-QB3 1dhr, F12a energy
+1200	CO/H/NonDe	S_pri_rad	300-2000	1.14E+04	2.89	0.0	0.22	0	0	0	0	2	CAC calculation CBS-QB3 1dhr, F12a energy
 1201	O/H/OneDe	S_pri_rad	300-2000	1.17E-02	4.42	0.0	6.33	0	0	0	0	2	CAC calculation CBS-QB3 1dhr, F12a energy	
 1202	O/H/OneDe	S_rad/NonDeC	300-2000	3.73E-06	5.56	0.0	11.25	0	0	0	0	2	CAC calculation CBS-QB3 1dhr, F12a energy
 
@@ -1072,6 +1072,6 @@ Arrhenius_EP
 563.	CS/H/NonDeC		C_rad/H2/Cs		300-1500	3.77E-01	3.63	0.0	3.98	0	0	0	0	3	CAC CBS-QB3 calc, 1dhr
 
 564.	C/H2/NonDeC		C_rad/H2/Cs		300-1500        9.20E-04        4.34    0.00    7.0     0       0       0       0	3	AGV CBS-QB3, 1D-HR
-565.	C/H2/CSCs		S_pri_rad		300-1500	7.08E+01	3.27	0.00	-0.27	0	0	0	0	3	CAC CBS-QB3 1dhr	
-566.	C/H2/CSCs		Cs_rad			300-1500	8.03E+00	3.31	0.00	3.52	0	0	0	0	3	CAC CBS-QB3 1dhr
+565.	C/H2/CSCs		S_pri_rad		300-1500	9.61E+01	3.34	0.00	-0.27	0	0	0	0	3	CAC CBS-QB3 1dhr	
+566.	C/H2/CSCs		Cs_rad			300-1500	1.21E+01	3.35	0.00	3.49	0	0	0	0	3	CAC CBS-QB3 1dhr
 567.	C/H2/CdS		S_rad/NonDeC		300-1500	1.88E-02	4.57	0.00	4.06	0	0	0	0	4	CAC CBS-QB3, HO approx

@@ -82,7 +82,7 @@ Arrhenius_EP
 492.		SsJ-Cs			SsJ-Cs			300-1500	4.36E+10	1.30	0.00	-0.88	0	0	0	0	5	A.G. Vandeputte
 493.		CsJ-SsHH		H_rad			300-1500	8.20E+11	0.68	0.00	0.07	0	0	0	0	5	A.G. Vandeputte
 494.		SsJ-H			H_rad			300-1500	2.53E+13	0.56	0.00	-0.02	0	0	0	0	5	A.G. Vandeputte
-
+495.		SsJ-Cs			C_rad/H2/Cs		300-1500	8.94E+7         1.54    0.00    -1.32	0	0	0	0	5	A.G. Vandeputte
 //3000	H_rad		SsJ-H	300-1500	5.77E+15	0	0	0.43	0	0	0	0	3	GA Jonas x 3 for spinorbit
 //3001	C_methyl	SsJ-H	300-1500	4.41E+14	0	0	0.29	0	0	0	0	3	GA Jonas x 3 for spinorbit
 //3002	C_rad/H2/Cs	SsJ-H	300-1500	1.87E+14	0	0	1.14	0	0	0	0	3	GA Jonas x 3 for spinorbit
