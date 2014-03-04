@@ -1,0 +1,51 @@
+////////////////////////////////////////////////////////////////////////////////
+//
+// REACTION FAMILIES USED BY RMG
+//
+// Created 1 Jun 2009 by Josh Allen (jwallen@mit.edu)
+//
+// Notes:
+//
+// The name of each forward reaction should match up with a folder
+// in this directory containing the dictionary, tree, library, and adjusts
+// for that family.
+//
+// Families can be deactivated by simply changing the "on/off" column to off.
+//
+// ***H_Abstraction_old is current RMG version, H_Abstraction is Aaron's version
+////////////////////////////////////////////////////////////////////////////////
+
+// No.  on/off  Forward reaction                     
+1       off      Cyclic_Ether_Formation
+2       off      intra_OH_migration
+3       off      H_Abstraction_old
+4       off     R_Addition_MultipleBond
+5       on      R_Recombination
+6       off     Disproportionation
+7       off     1,2_Insertion
+8       off     1,3_Insertion_CO2
+9       off     1,3_Insertion_ROR
+10      off     1+2_Cycloaddition
+11      off     2+2_cycloaddition_Cd
+12      off     2+2_cycloaddition_CO
+13      off     2+2_cycloaddition_CCO
+14      off     Diels_alder_addition
+15      off     intra_H_migration
+16      off     HO2_Elimination_from_PeroxyRadical
+17      off     Birad_recombination
+18      off     Oa_R_Recombination
+19      off     R_Addition_COm
+20      off     Intra_R_Add_Exocyclic
+21      off     Intra_R_Add_Endocyclic
+22      off     1,2-Birad_to_alkene
+23      off     Intra_Disproportionation
+24	  off      1,2_shiftS
+25	  off     intra_substitutionCS_cyclization
+26	  off     intra_substitutionCS_isomerization
+27	  off     intra_substitutionS_cyclization
+28	  off     intra_substitutionS_isomerization
+29	  off     SubstitutionS
+30	  on     H_Abstraction
+31	  off      R_Addition_MultipleBond_A		
+32	off	R_Addition_CSm
+33	off	1,3_Insertion_RSR
