@@ -11,6 +11,7 @@ L1: Y_rad_birad
 		L3: CH2_triplet
 	L2: Y_rad
 		L3: O2_birad
+		L3: S2_birad
 		L3: C2b
 		L3: H_rad
 		L3: Cs_rad
@@ -84,6 +85,7 @@ L1 : XH_Rrad
 			L4 : C/H2/Nd_Cdrad
 			L4 : C/H2/Nd_COrad
 			L4 : C/H2/Nd_Orad
+			L4 : C/H2/Nd_Srad
 		L3 : C/H2/De_Rrad
 			L4 : C/H2/De_Csrad
 			L4 : C/H2/De_Cdrad

@@ -105,3 +105,11 @@ Arrhenius_EP
 // These nodes were modified by AJ on Sept 20, 2011 using rates reported by Miyoshi in dx.doi.org/10.1021/jp112152n
 487.		O2_birad		Cmethyl_Csrad    700-2500   7.23E+12      0    0    15.99        *3.0        0    0    0    4    [AJ] Miyoshi 2011 (Table 4, Node 'sp') dx.doi.org/10.1021/jp112152n
 501.		O2_birad		C/H2/Nd_Csrad    500-900    4.5825E+12    0    0    14.85        *3.0        0    0    0    4    [AJ] Miyoshi 2011 (Table 4, Node 'ss') dx.doi.org/10.1021/jp112152n
+
+502		S_rad/OneDe		C/H2/Nd_Csrad	300-2000	7.19E-01	3.13	0	-3.65	0	0	0	0	3	CAC calc CBS-QB3, 1dhr
+// 503		C_rad/H/OneDe		Cmethyl_Csrad	600-800		5.0E+10		0	0	0	0	0	0	0	5	CAC Test
+504.		C_rad/H/OneDeC		C/H2/Nd_Srad	300-1500	7.63E+11	0	0	-0.55	0	0	0	0	5	Rough estimate based on 1/10 of #3026 in R_Recombination
+505.		C_rad/H/TwoDe		C/H2/Nd_Srad	300-1500	1.94E+12        0       0       0.36    0       0       0       0	5	Rough estimate based on 1/10 of #3027 in R_Recombination
+506.		S_rad/OneDe		C/H/NdNd_Csrad	300-1500	7.63E+11	0	0	-0.55	0	0	0	0	5	VERY Rough estimate based on 1/10 of #3026 in R_Recombination
+507.		S_rad/NonDeC		C/H/NdNd_Csrad	300-1500	7.63E+11	0	0	-0.55	0	0	0	0	5	Rough estimate based on 1/10 of #3026 in R_Recombination
+
