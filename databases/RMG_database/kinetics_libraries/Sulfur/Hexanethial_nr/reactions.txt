@@ -5,14 +5,28 @@ E: kcal/mol
 Reactions:
 //First one should be 36.30 kcal/mol, second 44.42 kcal/mol
 //C6H12O + H2S = C6H12SHOH	6.13E+01	2.77	36.30	0.0	0.0	0.0
-C6H12SHOH = C6H12O + H2S	3.43E+14	-0.41	44.42	0.0	0.0	0.0
+//C6H12SHOH = C6H12O + H2S	6.76E+12	0.01	43.90	0.0	0.0	0.0
 //Correct value of next reaction is in R_Addition_MultipleBond
 //C5H11COHS + HJ = C5H11CJOHSH	1.18E+09	1.15	-0.06	0.0	0.0	0.0
-C5H11COHS = C5H11COSH           1.95E+01        3.33    20.43   0.0     0.0     0.0
-C5H11J + COS = C5H11COSJ	8.02E+06	1.68	12.09	0.0	0.0	0.0
-CHOHS + C5H11J = C6H12OHSJ	7.60E+02	2.56	3.33	0.0	0.0	0.0
+C5H11COHS = C5H11COSH           8.75E+01        3.23    18.85   0.0     0.0     0.0
+//C5H11J + COS = C5H11COSJ	8.02E+06	1.68	12.09	0.0	0.0	0.0
+//CHOHS + C5H11J = C6H12OHSJ	7.60E+02	2.56	3.33	0.0	0.0	0.0
 //reverse of next reaction is in R_Addition_MultipleBond library:
-C4H9CHJCHOHSH = SH + hexen-1-ol	1.92E+12	0.14	5.35	0.0	0.0	0.0
+//C4H9CHJCHOHSH = SH + hexen-1-ol	1.92E+12	0.14	5.35	0.0	0.0	0.0
 //hexen-1-ol = C6H12O		5.32E-33	12.94	31.33	0.0	0.0	0.0
 //Approx water gas shift reaction
 // CO + H2O = CO2 + H2		5.0E+03		0.0	0.0	0.0	0.0	0.0
+//Using F12 calculations for 1st one
+C6H12SHOH + H2O = C6H12O + H2S + H2O    3.46E+00        3.05    21.52   0.0     0.0     0.0
+C6H12SHOH + H2S = C6H12O + H2S + H2S	1.72E-01	3.43	27.50	0.0	0.0	0.0
+C6H12SHOH + H2O = C6H12S + H2O + H2O	1.32E+01	2.56	20.55	0.0	0.0	0.0
+C6H12SHOH + H2S = C6H12S + H2O + H2S	2.14E+00	2.93	28.62	0.0	0.0	0.0
+//Reverse reaction available in H_abs library
+C6H9SJ + C6H11SH = C6H10S + C6H11SJ	    3.17E+02        3.17    -4.8	0.0	0.0	0.0
+//Reverse of these reactions has large negative Ea
+C6H12S + HS2 = C6H13SJ + S2	9.71E+03	1.37	17.76	0.0	0.0	0.0	
+//C6H10-1,3 + HS2 = C6H11 + S2	1.90E-02	3.95	4.52	0.0	0.0	0.0
+C6H9SH + HS2 = C6H10JSH + S2	3.50E-01	3.27	6.00	0.0	0.0	0.0
+delta-DHS = Et-THT + C6H13J	7.89E+04	1.26	9.86	0.0	0.0	0.0
+//Next one is based on C6H10-1,3 reaction
+//C6H10-2,4 + HS2 = C6H11 + S2    1.90E-02        3.95    4.52    0.0     0.0     0.0
