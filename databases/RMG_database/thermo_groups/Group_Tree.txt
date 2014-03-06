@@ -74,6 +74,7 @@ L1: C
 
 	L2: Cdd
 		L3: Cdd-OdOd	// CO2
+		L3: Cdd-OdSd	// OCS
 		L3: Cdd-SdSd    // CS2
 		L3: Cdd-CdOd 	
 			L4: Cdd-CdsOd // O=C*=C<  currently treat the adjacent C as Ck

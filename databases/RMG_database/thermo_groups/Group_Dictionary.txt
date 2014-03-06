@@ -167,6 +167,11 @@
  2    Od 0 {1,D}
  3    Od 0 {1,D}
  
+ Cdd-OdSd
+ 1  * Cdd 0 {2,D} {3,D}
+ 2    Od 0 {1,D}             
+ 3    Sd 0 {1,D}
+
  Cdd-CdOd                                               
  1  * Cdd 0 {2,D} {3,D}
  2    C 0 {1,D}
