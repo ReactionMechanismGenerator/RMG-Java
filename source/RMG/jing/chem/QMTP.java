@@ -82,16 +82,21 @@ public class QMTP implements GeneralGAPP {
         initalizeQmLibrary();
     }
 
-    public String getQmMethod() {
+    public String getQmMethod()
+	throws CouldNotDetermineQMMethodException {
         String qmProgram = qmprogram;
         String qmMethod = "";
         if (qmProgram.equals("mm4") || qmProgram.equals("mm4hr")) {
             qmMethod = "mm4";
             if (qmProgram.equals("mm4hr"))
                 useHindRot = true;
-        } else {
-            qmMethod = "pm3"; // may eventually want to pass this to various functions to choose which "sub-function" to
+        } else if (qmProgram.equals("mopac")) {
+            qmMethod = "pm7"; // may eventually want to pass this to various functions to choose which "sub-function" to
 // call
+        } else if (qmProgram.equals("gaussian03") || qmProgram.equals("both")) {
+	    qmMethod = "pm3";
+	} else {
+	    throw new CouldNotDetermineQMMethodException();
         }
         return qmMethod;
     }
@@ -305,9 +310,9 @@ public class QMTP implements GeneralGAPP {
             }
             // generate new QM Thermo Data
             try {
-                result = generateQMThermoData(p_chemGraph);
-                // now save it for next time
                 String qmMethod = getQmMethod();
+                result = generateQMThermoData(p_chemGraph, qmMethod);
+                // now save it for next time
                 QMLibraryEditor.addQMTPThermo(p_chemGraph, InChIaug, result,
                         qmMethod, qmprogram);
                 qmLibrary.put(InChIaug, result);
@@ -370,20 +375,11 @@ public class QMTP implements GeneralGAPP {
         }
     }
 
-    public ThermoData generateQMThermoData(ChemGraph p_chemGraph)
+    public ThermoData generateQMThermoData(ChemGraph p_chemGraph, String qmMethod)
             throws AllQmtpAttemptsFailedException {
         // if there is no data in the libraries, calculate the result based on QM or MM calculations; the below steps
 // will be generalized later to allow for other quantum mechanics packages, etc.
         String qmProgram = qmprogram;
-        String qmMethod = "";
-        if (qmProgram.equals("mm4") || qmProgram.equals("mm4hr")) {
-            qmMethod = "mm4";
-            if (qmProgram.equals("mm4hr"))
-                useHindRot = true;
-        } else {
-            qmMethod = "pm3"; // may eventually want to pass this to various functions to choose which "sub-function" to
-// call
-        }
         ThermoData result = new ThermoData();
         double[] dihedralMinima = null;
         String[] InChInames = getQMFileName(p_chemGraph);// determine the filename (InChIKey) and InChI with appended
@@ -407,7 +403,7 @@ public class QMTP implements GeneralGAPP {
                     + e.toString());
             System.exit(0);
         }
-        if (qmMethod.equals("pm3")) {
+        if (qmMethod.equals("pm3") || qmMethod.equals("pm7")) { 
             // first, check to see if the result already exists and the job terminated successfully
             boolean gaussianResultExists = successfulGaussianResultExistsQ(
                     name, directory, InChIaug);
@@ -433,20 +429,21 @@ public class QMTP implements GeneralGAPP {
                     // IF block to check which program to use
                     if (qmProgram.equals("gaussian03")) {
                         if (p_chemGraph.getAtomNumber() > 1) {
-                            maxAttemptNumber = createGaussianPM3Input(name,
+                            maxAttemptNumber = createGaussianInput(name,
                                     directory, p_3dfile, attemptNumber,
-                                    InChIaug, multiplicity);
+                                    InChIaug, multiplicity, qmMethod);
                         } else {
-                            maxAttemptNumber = createGaussianPM3Input(name,
+                            maxAttemptNumber = createGaussianInput(name,
                                     directory, p_3dfile, -1, InChIaug,
-                                    multiplicity);// use -1 for attemptNumber for monoatomic case
+                                    multiplicity, qmMethod);// use -1 for attemptNumber for monoatomic case
                         }
                         // 4. run Gaussian
                         successFlag = runGaussian(name, directory, InChIaug);
                     } else if (qmProgram.equals("mopac")
                             || qmProgram.equals("both")) {
-                        maxAttemptNumber = createMopacPM3Input(name, directory,
-                                p_3dfile, attemptNumber, InChIaug, multiplicity);
+			// Modified by Aaron
+                        maxAttemptNumber = createMopacInput(name, directory,
+                                p_3dfile, attemptNumber, InChIaug, multiplicity, qmMethod);
                         successFlag = runMOPAC(name, directory, InChIaug);
                     } else {
                         Logger.critical("Unsupported quantum chemistry program");
@@ -497,7 +494,7 @@ public class QMTP implements GeneralGAPP {
                 result = parseGaussianPM3(name, directory, p_chemGraph);
             } else if (mopacResultExists || qmProgram.equals("mopac")
                     || qmProgram.equals("both")) {
-                result = parseMopacPM3(name, directory, p_chemGraph);
+                result = parseMopac(name, directory, p_chemGraph, qmMethod);
             } else {
                 Logger.critical("Unexpected situation in QMTP thermo estimation");
                 System.exit(0);
@@ -728,9 +725,9 @@ public class QMTP implements GeneralGAPP {
     // the function returns the maximum number of keywords that can be attempted; this will be the same throughout the
 // evaluation of the code, so it may be more appropriate to have this as a "constant" attribute of some sort
     // attemptNumber=-1 will call a special set of keywords for the monoatomic case
-    public int createGaussianPM3Input(String name, String directory,
+    public int createGaussianInput(String name, String directory,
             molFile p_molfile, int attemptNumber, String InChIaug,
-            int multiplicity) {
+            int multiplicity, String qmMethod) {
         // write a file with the input keywords
         int scriptAttempts = 18;// the number of keyword permutations available; update as additional options are added
         int maxAttemptNumber = 2 * scriptAttempts;// we will try a second time with crude coordinates if the UFF refined
@@ -742,70 +739,70 @@ public class QMTP implements GeneralGAPP {
         String inpKeyStr = "%mem=6MW\n";
         inpKeyStr += "%nproc=1\n";
         if (attemptNumber == -1)
-            inpKeyStr += "# pm3 freq";// keywords for monoatomic case (still need to use freq keyword to get molecular
+            inpKeyStr += "# " + qmMethod + " freq";// keywords for monoatomic case (still need to use freq keyword to get molecular
 // mass)
         else if (attemptNumber % scriptAttempts == 1)
-            inpKeyStr += "# pm3 opt=(verytight,gdiis) freq IOP(2/16=3)";// added IOP option to avoid aborting when
+            inpKeyStr += "# " + qmMethod + " opt=(verytight,gdiis) freq IOP(2/16=3)";// added IOP option to avoid aborting when
 // symmetry changes; 3 is supposed to be default according to documentation, but it seems that 0 (the default) is the
 // only option that doesn't work from 0-4; also, it is interesting to note that all 4 options seem to work for test case
 // with z-matrix input rather than xyz coords; cf. http://www.ccl.net/cgi-bin/ccl/message-new?2006+10+17+005 for
 // original idea for solution
         else if (attemptNumber % scriptAttempts == 2)
-            inpKeyStr += "# pm3 opt=(verytight,gdiis) freq IOP(2/16=3) IOP(4/21=2)";// use different SCF method; this
+            inpKeyStr += "# " + qmMethod + " opt=(verytight,gdiis) freq IOP(2/16=3) IOP(4/21=2)";// use different SCF method; this
 // addresses at least one case of failure for a C4H7J species
         else if (attemptNumber % scriptAttempts == 3)
-            inpKeyStr += "# pm3 opt=(verytight,calcfc,maxcyc=200) freq IOP(2/16=3) nosymm";// try multiple different
+            inpKeyStr += "# " + qmMethod + " opt=(verytight,calcfc,maxcyc=200) freq IOP(2/16=3) nosymm";// try multiple different
 // options (no gdiis, use calcfc, nosymm); 7/21/09: added maxcyc option to fix case of MPTBUKVAJYJXDE-UHFFFAOYAPmult3
 // (InChI=1/C4H10O5Si/c1-3-7-9-10(5,6)8-4-2/h4-5H,3H2,1-2H3/mult3) (file manually copied to speed things along)
         else if (attemptNumber % scriptAttempts == 4)
-            inpKeyStr += "# pm3 opt=(verytight,calcfc,maxcyc=200) freq=numerical IOP(2/16=3) nosymm";// 7/8/09:
+            inpKeyStr += "# " + qmMethod + " opt=(verytight,calcfc,maxcyc=200) freq=numerical IOP(2/16=3) nosymm";// 7/8/09:
 // numerical frequency keyword version of keyword #3; used to address GYFVJYRUZAKGFA-UHFFFAOYALmult3
 // (InChI=1/C6H14O6Si/c1-3-10-13(8,11-4-2)12-6-5-9-7/h6-7H,3-5H2,1-2H3/mult3) case; (none of the existing Gaussian or
 // MOPAC combinations worked with it)
         else if (attemptNumber % scriptAttempts == 5)
-            inpKeyStr += "# pm3 opt=(verytight,gdiis,small) freq IOP(2/16=3)";// 7/10/09: somehow, this worked for
+            inpKeyStr += "# " + qmMethod + " opt=(verytight,gdiis,small) freq IOP(2/16=3)";// 7/10/09: somehow, this worked for
 // problematic case of ZGAWAHRALACNPM-UHFFFAOYAF
 // (InChI=1/C8H17O5Si/c1-3-11-14(10,12-4-2)13-8-5-7(9)6-8/h7-9H,3-6H2,1-2H3); (was otherwise giving l402 errors); even
 // though I had a keyword that worked for this case, I manually copied the fixed log file to QMfiles folder to speed
 // things along; note that there are a couple of very low frequencies (~5-6 cm^-1 for this case)
         else if (attemptNumber % scriptAttempts == 6)
-            inpKeyStr += "# pm3 opt=(verytight,nolinear,calcfc,small) freq IOP(2/16=3)";// used for troublesome C5H7J2
+            inpKeyStr += "# " + qmMethod + " opt=(verytight,nolinear,calcfc,small) freq IOP(2/16=3)";// used for troublesome C5H7J2
 // case (similar error to C5H7J below); calcfc is not necessary for this particular species, but it speeds convergence
 // and probably makes it more robust for other species
         else if (attemptNumber % scriptAttempts == 7)
-            inpKeyStr += "# pm3 opt=(verytight,gdiis,maxcyc=200) freq=numerical IOP(2/16=3)"; // use numerical
+            inpKeyStr += "# " + qmMethod + " opt=(verytight,gdiis,maxcyc=200) freq=numerical IOP(2/16=3)"; // use numerical
 // frequencies; this takes a relatively long time, so should only be used as one of the last resorts; this seemed to
 // address at least one case of failure for a C6H10JJ species; 7/15/09: maxcyc=200 added to address
 // GVCMURUDAUQXEY-UHFFFAOYAVmult3 (InChI=1/C3H4O7Si/c1-2(9-6)10-11(7,8)3(4)5/h6-7H,1H2/mult3)...however, result was
 // manually pasted in QMfiles folder to speed things along
         else if (attemptNumber % scriptAttempts == 8)
-            inpKeyStr += "# pm3 opt=tight freq IOP(2/16=3)";// 7/10/09: this worked for problematic case of
+            inpKeyStr += "# " + qmMethod + " opt=tight freq IOP(2/16=3)";// 7/10/09: this worked for problematic case of
 // SZSSHFMXPBKYPR-UHFFFAOYAF (InChI=1/C7H15O5Si/c1-3-10-13(8,11-4-2)12-7-5-6-9-7/h7H,3-6H2,1-2H3) (otherwise, it had
 // l402.exe errors); corrected log file was manually copied to QMfiles to speed things along; we could also add a
 // freq=numerical version of this keyword combination for added robustness; UPDATE: see below
         else if (attemptNumber % scriptAttempts == 9)
-            inpKeyStr += "# pm3 opt=tight freq=numerical IOP(2/16=3)";// 7/10/09: used for problematic case of
+            inpKeyStr += "# " + qmMethod + " opt=tight freq=numerical IOP(2/16=3)";// 7/10/09: used for problematic case of
 // CIKDVMUGTARZCK-UHFFFAOYAImult4 (InChI=1/C8H15O6Si/c1-4-12-15(10,13-5-2)14-7-6-11-8(7,3)9/h7H,3-6H2,1-2H3/mult4 (most
 // other cases had l402.exe errors); corrected log file was manually copied to QMfiles to speed things along
         else if (attemptNumber % scriptAttempts == 10)
-            inpKeyStr += "# pm3 opt=(tight,nolinear,calcfc,small,maxcyc=200) freq IOP(2/16=3)";// 7/8/09: similar to
+            inpKeyStr += "# " + qmMethod + " opt=(tight,nolinear,calcfc,small,maxcyc=200) freq IOP(2/16=3)";// 7/8/09: similar to
 // existing #5, but uses tight rather than verytight; used for ADMPQLGIEMRGAT-UHFFFAOYAUmult3
 // (InChI=1/C6H14O5Si/c1-4-9-12(8,10-5-2)11-6(3)7/h6-7H,3-5H2,1-2H3/mult3)
         else if (attemptNumber % scriptAttempts == 11)
-            inpKeyStr += "# pm3 opt freq IOP(2/16=3)"; // use default (not verytight) convergence criteria; use this as
+            inpKeyStr += "# " + qmMethod + " opt freq IOP(2/16=3)"; // use default (not verytight) convergence criteria; use this as
 // last resort
         else if (attemptNumber % scriptAttempts == 12)
-            inpKeyStr += "# pm3 opt=(verytight,gdiis) freq=numerical IOP(2/16=3) IOP(4/21=200)";// to address
+            inpKeyStr += "# " + qmMethod + " opt=(verytight,gdiis) freq=numerical IOP(2/16=3) IOP(4/21=200)";// to address
 // problematic C10H14JJ case
         else if (attemptNumber % scriptAttempts == 13)
-            inpKeyStr += "# pm3 opt=(calcfc,verytight,newton,notrustupdate,small,maxcyc=100,maxstep=100) freq=(numerical,step=10) IOP(2/16=3) nosymm";// added
+            inpKeyStr += "# " + qmMethod + " opt=(calcfc,verytight,newton,notrustupdate,small,maxcyc=100,maxstep=100) freq=(numerical,step=10) IOP(2/16=3) nosymm";// added
 // 6/10/09 for very troublesome RRMZRNPRCUANER-UHFFFAOYAQ (InChI=1/C5H7/c1-3-5-4-2/h3H,1-2H3) case...there were troubles
 // with negative frequencies, where I don't think they should have been; step size of numerical frequency was adjusted
 // to give positive result; accuracy of result is questionable; it is possible that not all of these keywords are
 // needed; note that for this and other nearly free rotor cases, I think heat capacity will be overestimated by R/2 (R
 // vs. R/2) (but this is a separate issue)
         else if (attemptNumber % scriptAttempts == 14)
-            inpKeyStr += "# pm3 opt=(tight,gdiis,small,maxcyc=200,maxstep=100) freq=numerical IOP(2/16=3) nosymm";// added
+            inpKeyStr += "# " + qmMethod + " opt=(tight,gdiis,small,maxcyc=200,maxstep=100) freq=numerical IOP(2/16=3) nosymm";// added
 // 6/22/09 for troublesome
 // QDERTVAGQZYPHT-UHFFFAOYAHmult3(InChI=1/C6H14O4Si/c1-4-8-11(7,9-5-2)10-6-3/h4H,5-6H2,1-3H3/mult3); key aspects appear
 // to be tight (rather than verytight) convergence criteria, no calculation of frequencies during optimization, use of
@@ -817,7 +814,7 @@ public class QMTP implements GeneralGAPP {
 // number 9 with keyword small; this addresses case of VCSJVABXVCFDRA-UHFFFAOYAI
 // (InChI=1/C8H19O5Si/c1-5-10-8(4)13-14(9,11-6-2)12-7-3/h8H,5-7H2,1-4H3)
         else if (attemptNumber % scriptAttempts == 15)
-            inpKeyStr += "# pm3 opt=(verytight,gdiis,calcall) IOP(2/16=3)";// used for troublesome C5H7J case; note that
+            inpKeyStr += "# " + qmMethod + " opt=(verytight,gdiis,calcall) IOP(2/16=3)";// used for troublesome C5H7J case; note that
 // before fixing, I got errors like the following:
 // "Incomplete coordinate system.  Try restarting with Geom=Check Guess=Read Opt=(ReadFC,NewRedundant) Incomplete coordinate system. Error termination via Lnk1e in l103.exe";
 // we could try to restart, but it is probably preferrable to have each keyword combination standalone; another keyword
@@ -829,16 +826,16 @@ public class QMTP implements GeneralGAPP {
 // //else if(attemptNumber==6) inpKeyStr+="# pm3 opt=(verytight,gdiis,calcall,small) IOP(2/16=3) IOP(4/21=2)";//6/10/09:
 // worked for OJZYSFFHCAPVGA-UHFFFAOYAK (InChI=1/C5H7/c1-3-5-4-2/h1,4H2,2H3) case; IOP(4/21) keyword was key
         else if (attemptNumber % scriptAttempts == 16)
-            inpKeyStr += "# pm3 opt=(verytight,gdiis,calcall,small,maxcyc=200) IOP(2/16=3) IOP(4/21=2) nosymm";// 6/29/09:
+            inpKeyStr += "# " + qmMethod + " opt=(verytight,gdiis,calcall,small,maxcyc=200) IOP(2/16=3) IOP(4/21=2) nosymm";// 6/29/09:
 // worked for troublesome ketene case: CCGKOQOJPYTBIH-UHFFFAOYAO (InChI=1/C2H2O/c1-2-3/h1H2) (could just increase number
 // of iterations for similar keyword combination above (#6 at the time of this writing), allowing symmetry, but nosymm
 // seemed to reduce # of iterations; I think one of nosymm or higher number of iterations would allow the similar
 // keyword combination to converge; both are included here for robustness)
         else if (attemptNumber % scriptAttempts == 17)
-            inpKeyStr += "# pm3 opt=(verytight,gdiis,calcall,small) IOP(2/16=3) nosymm";// 7/1/09: added for case of
+            inpKeyStr += "# " + qmMethod + " opt=(verytight,gdiis,calcall,small) IOP(2/16=3) nosymm";// 7/1/09: added for case of
 // ZWMVZWMBTVHPBS-UHFFFAOYAEmult3 (InChI=1/C4H4O2/c1-3-5-6-4-2/h1-2H2/mult3)
         else if (attemptNumber % scriptAttempts == 0)
-            inpKeyStr += "# pm3 opt=(calcall,small,maxcyc=100) IOP(2/16=3)"; // 6/10/09: used to address troublesome
+            inpKeyStr += "# " + qmMethod + " opt=(calcall,small,maxcyc=100) IOP(2/16=3)"; // 6/10/09: used to address troublesome
 // FILUFGAZMJGNEN-UHFFFAOYAImult3 case (InChI=1/C5H6/c1-3-5-4-2/h3H,1H2,2H3/mult3)
         else {// this point should not be reached
             Logger.error("Unexpected error in determining which G03 PM3 keyword set to use");
@@ -1213,59 +1210,59 @@ public class QMTP implements GeneralGAPP {
         return "this should not be returned: error associated with getMopacRadicalString()";
     }
 
-    // creates MOPAC PM3 input file in directory with filename name.mop by using OpenBabel to convert p_molfile
+    // creates MOPAC input file in directory with filename name.mop by using OpenBabel to convert p_molfile
     // attemptNumber determines which keywords to try
     // the function returns the maximum number of keywords that can be attempted; this will be the same throughout the
-// evaluation of the code, so it may be more appropriate to have this as a "constant" attribute of some sort
+    // evaluation of the code, so it may be more appropriate to have this as a "constant" attribute of some sort
     // unlike createGaussianPM3 input, this requires an additional input specifying the spin multiplicity (radical
-// number + 1) for the species
-    public int createMopacPM3Input(String name, String directory,
+    // number + 1) for the species
+    public int createMopacInput(String name, String directory,
             molFile p_molfile, int attemptNumber, String InChIaug,
-            int multiplicity) {
+            int multiplicity, String qmMethod) {
         // write a file with the input keywords
         int scriptAttempts = 5;// the number of keyword permutations available; update as additional options are added
         int maxAttemptNumber = 2 * scriptAttempts;// we will try a second time with crude coordinates if the UFF refined
-// coordinates do not work
+     // coordinates do not work
         String inpKeyStrBoth = "";// this string will be written at both the top (for optimization) and the bottom (for
-// thermo/force calc)
+     // thermo/force calc)
         String inpKeyStrTop = "";// this string will be written only at the top
         String inpKeyStrBottom = "";// this string will be written at the bottom
         String radicalString = getMopacRadicalString(multiplicity);
         if (attemptNumber % scriptAttempts == 1) {
-            inpKeyStrBoth = "pm3 " + radicalString;
+            inpKeyStrBoth = qmMethod + " " + radicalString;
             inpKeyStrTop = " precise nosym";
             inpKeyStrBottom = "oldgeo thermo nosym precise ";// 7/10/09: based on a quick review of recent results,
-// keyword combo #1 rarely works, and when it did (CJAINEUZFLXGFA-UHFFFAOYAUmult3
-// (InChI=1/C8H16O5Si/c1-4-11-14(9,12-5-2)13-8-6-10-7(8)3/h7-8H,3-6H2,1-2H3/mult3)), the grad. norm on the force step
-// was about 1.7 (too large); I manually removed this result and re-ran...the entropy was increased by nearly 20
-// cal/mol-K...perhaps we should add a check for the "WARNING" that MOPAC prints out when the gradient is high; 7/22/09:
-// for the case of FUGDBSHZYPTWLG-UHFFFAOYADmult3 (InChI=1/C5H8/c1-4-3-5(4)2/h4-5H,1-3H2/mult3), adding nosym seemed to
-// resolve 1. large discrepancies from Gaussian and 2. negative frequencies in mass-weighted coordinates and possibly
-// related issue in discrepancies between regular and mass-weighted coordinate frequencies
+     // keyword combo #1 rarely works, and when it did (CJAINEUZFLXGFA-UHFFFAOYAUmult3
+     // (InChI=1/C8H16O5Si/c1-4-11-14(9,12-5-2)13-8-6-10-7(8)3/h7-8H,3-6H2,1-2H3/mult3)), the grad. norm on the force step
+     // was about 1.7 (too large); I manually removed this result and re-ran...the entropy was increased by nearly 20
+     // cal/mol-K...perhaps we should add a check for the "WARNING" that MOPAC prints out when the gradient is high; 7/22/09:
+     // for the case of FUGDBSHZYPTWLG-UHFFFAOYADmult3 (InChI=1/C5H8/c1-4-3-5(4)2/h4-5H,1-3H2/mult3), adding nosym seemed to
+     // resolve 1. large discrepancies from Gaussian and 2. negative frequencies in mass-weighted coordinates and possibly
+     // related issue in discrepancies between regular and mass-weighted coordinate frequencies
         } else if (attemptNumber % scriptAttempts == 2) {// 7/9/09: used for VCSJVABXVCFDRA-UHFFFAOYAI
-// (InChI=1/C8H19O5Si/c1-5-10-8(4)13-14(9,11-6-2)12-7-3/h8H,5-7H2,1-4H3); all existing Gaussian keywords also failed;
-// the Gaussian result was also rectified, but the resulting molecule was over 70 kcal/mol less stable, probably due to
-// a large amount of spin contamination (~1.75 in fixed Gaussian result vs. 0.754 for MOPAC)
-            inpKeyStrBoth = "pm3 " + radicalString;
+     // (InChI=1/C8H19O5Si/c1-5-10-8(4)13-14(9,11-6-2)12-7-3/h8H,5-7H2,1-4H3); all existing Gaussian keywords also failed;
+     // the Gaussian result was also rectified, but the resulting molecule was over 70 kcal/mol less stable, probably due to
+     // a large amount of spin contamination (~1.75 in fixed Gaussian result vs. 0.754 for MOPAC)
+            inpKeyStrBoth = qmMethod + " " + radicalString;
             inpKeyStrTop = " precise nosym gnorm=0.0 nonr";
             inpKeyStrBottom = "oldgeo thermo nosym precise ";
         } else if (attemptNumber % scriptAttempts == 3) {// 7/8/09: used for ADMPQLGIEMRGAT-UHFFFAOYAUmult3
-// (InChI=1/C6H14O5Si/c1-4-9-12(8,10-5-2)11-6(3)7/h6-7H,3-5H2,1-2H3/mult3); all existing Gaussian keywords also failed;
-// however, the Gaussian result was also rectified, and the resulting conformation was about 1.0 kcal/mol more stable
-// than the one resulting from this, so fixed Gaussian result was manually copied to QMFiles folder
-            inpKeyStrBoth = "pm3 " + radicalString;
+     // (InChI=1/C6H14O5Si/c1-4-9-12(8,10-5-2)11-6(3)7/h6-7H,3-5H2,1-2H3/mult3); all existing Gaussian keywords also failed;
+     // however, the Gaussian result was also rectified, and the resulting conformation was about 1.0 kcal/mol more stable
+     // than the one resulting from this, so fixed Gaussian result was manually copied to QMFiles folder
+            inpKeyStrBoth = qmMethod + " " + radicalString;
             inpKeyStrTop = " precise nosym gnorm=0.0";
             inpKeyStrBottom = "oldgeo thermo nosym precise "; // precise appeared to be necessary for the problematic
-// case (to avoid negative frequencies);
+     // case (to avoid negative frequencies);
         } else if (attemptNumber % scriptAttempts == 4) {// 7/8/09: used for GYFVJYRUZAKGFA-UHFFFAOYALmult3
-// (InChI=1/C6H14O6Si/c1-3-10-13(8,11-4-2)12-6-5-9-7/h6-7H,3-5H2,1-2H3/mult3) case (negative frequency issues in MOPAC)
-// (also, none of the existing Gaussian combinations worked with it); note that the Gaussian result appears to be a
-// different conformation as it is about 0.85 kcal/mol more stable, so the Gaussian result was manually copied to
-// QMFiles directory; note that the MOPAC output included a very low frequency (4-5 cm^-1)
-            inpKeyStrBoth = "pm3 " + radicalString;
+     // (InChI=1/C6H14O6Si/c1-3-10-13(8,11-4-2)12-6-5-9-7/h6-7H,3-5H2,1-2H3/mult3) case (negative frequency issues in MOPAC)
+     // (also, none of the existing Gaussian combinations worked with it); note that the Gaussian result appears to be a
+     // different conformation as it is about 0.85 kcal/mol more stable, so the Gaussian result was manually copied to
+     // QMFiles directory; note that the MOPAC output included a very low frequency (4-5 cm^-1)
+            inpKeyStrBoth = qmMethod + " " + radicalString;
             inpKeyStrTop = " precise nosym gnorm=0.0 bfgs";
             inpKeyStrBottom = "oldgeo thermo nosym precise "; // precise appeared to be necessary for the problematic
-// case (to avoid negative frequencies)
+     // case (to avoid negative frequencies)
         }
 // else if(attemptNumber==5){
 // inpKeyStrBoth="pm3 "+radicalString;
@@ -1284,7 +1281,7 @@ public class QMTP implements GeneralGAPP {
 // }
         else if (attemptNumber % scriptAttempts == 0) {// used for troublesome HGRZRPHFLAXXBT-UHFFFAOYAVmult3
 // (InChI=1/C3H2O4/c4-2(5)1-3(6)7/h1H2/mult3) case (negative frequency and large gradient issues)
-            inpKeyStrBoth = "pm3 " + radicalString;
+            inpKeyStrBoth = qmMethod + " " + radicalString;
             inpKeyStrTop = " precise nosym recalc=10 dmax=0.10 nonr cycles=2000 t=2000";
             inpKeyStrBottom = "oldgeo thermo nosym precise ";
         }
@@ -2029,12 +2026,12 @@ public class QMTP implements GeneralGAPP {
 
     // parse the results using cclib and return a ThermoData object; name and directory indicate the location of the
 // MOPAC .out file
-    public ThermoData parseMopacPM3(String name, String directory,
-            ChemGraph p_chemGraph) {
+    public ThermoData parseMopac(String name, String directory,
+            ChemGraph p_chemGraph, String qmMethod) {
         String command = getMopacPM3ParseCommand(name, directory);
         ThermoData result = getPM3MM4ThermoDataUsingCCLib(name, directory,
                 p_chemGraph, command);
-        result.setSource("MOPAC PM3 calculation");
+        result.setSource("MOPAC "+qmMethod+" calculation");
         Logger.info("Thermo for " + name + ": " + result.toString());// print result, at least for debugging purposes
         return result;
     }
