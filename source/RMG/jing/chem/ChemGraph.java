@@ -1438,6 +1438,8 @@ public class ChemGraph implements Matchable {
             gen = new HybridTDGenerator();
         }
         thermoData = gen.generateThermo(thermo_graph);
+        if(thermo_graph.fromprimarythermolibrary) {
+        	this.fromprimarythermolibrary = true;}
         this.thermoComments = thermo_graph.getThermoComments(); // must copy comments since we made a copy of the chemgraph
         return thermoData;
     }

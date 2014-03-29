@@ -78,7 +78,6 @@ public class GATP implements GeneralGAPP {
         polycyclic = null;
         ThermoData tmpTherm = primaryLibrary.getThermoData(p_chemGraph
                 .getGraph());
-        // System.out.println(result);
         if (tmpTherm != null) {
             result = tmpTherm.copyWithExtraInfo();// use a copy of the object!; that way, subsequent modifications of
 // this object don't change the primary thermo library
