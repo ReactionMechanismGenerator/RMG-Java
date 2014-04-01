@@ -4,5 +4,7 @@ Arrhenius_EP
 
 //No.	cycloehexene	Temp.		A		N	a	E0	DA	Dn	Da	DE0	Rank	Comments
 1. 	cyclohexadiene	300-1500	2.66E+11	0.16	0.0	32.6	0	0	0	0	4	A. G. Vandeputte, BMK/cbsb7 calculation C=CC=CC=C to C1=CC=CCC1
+2. 	cyclohexatriene	300-1500	1.96E+11	0.67	0.0	24.4	0	0	0	0	4	A. G. Vandeputte, BMK/cbsb7 calculation C#CC=CC=C to C1=C=CC=CC1	
+
 
  
