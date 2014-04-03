@@ -2707,7 +2707,7 @@ Arrhenius_EP
 3113 Cds-HH_Cds-Cs\H3/H	HJ 		300-2000 	1.84E+09 	1.553 	0 	1.57 	0	0	0	0	2 CCSD(T)/cc-pVTZ
 3114 Cds-CsH_Cds-HH 	HJ 		300-2000 	1.17e+08 	1.68 	0 	2.03 	0	0	0	0	2 CCSD(T)/cc-pVTZ
 // SSM Estimate
-3115 Cds-HH_Cds-Cs\H3/H CsJ-OsHH 	300-2000	2.55e+03 	2.562 	0	5.04	0	0	0	0	5 same as 3108
+3115 Cds-HH_Cds-Cs\H3/H CsJ-OsHH 	300-2000	2.55e+03 	2.562 	0	5.04	0	0	0	0	5 same as 3127
 
 // Calculated by Enoch Dames
 3116 Cds-HH_Cds-OsH 	HJ		300-2000	6.67E+12 	0.1 	0 	1.544	0	0	0	0	2 ED calc RQCISD(T)/aug-cc-pVTZ with 1dHR
