@@ -171,6 +171,8 @@ L1: X_H_or_Xrad_H
 		   L6: Cd/H/Ct
 		   L6: Cd/H/Cb
 		   L6: Cd/H/CO
+	     L4: Cd_allenic
+		L5: Cd_Cdd/H2 
         L3: Ct_H
         L3: Cb_H
         L3: CO_H
@@ -374,6 +376,8 @@ L1: Y_rad_birad
 					L6: Cd_rad/Ct
 					L6: Cd_rad/Cb
 					L6: Cd_rad/CO
+			L4: Cd_allenic_rad
+				L5: Cd_Cdd_rad/H
 		L3: Ct_rad
 		L3: Cb_rad
 		L3: CO_rad
