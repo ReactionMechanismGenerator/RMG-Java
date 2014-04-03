@@ -38,7 +38,8 @@ Arrhenius_EP
 	
 636	R2H_S			C_rad_out_2H		Cs_H_out_2H			300-1500	4.45E+09	1.12	0	38.70	0	0	0	0	2	Sumathy B3LYP/CCPVDZ calculations
 637	R2H_S			C_rad_out_H/NonDeC	Cs_H_out_2H			300-1500	8.10E+08	1.32	0	40.30	0	0	0	0	2	Sumathy B3LYP/CCPVDZ calculations
-638	R2H_S			C_rad_out_2H		Cs_H_out_H/NonDeC		300-1500	9.69E+09	0.89	0	35.80	0	0	0	0	2	Sumathy B3LYP/CCPVDZ calculations
+// SSM: This rate is too fast when compared to npropyl =ipropyl reaction defining new rate coefficient
+//638	R2H_S			C_rad_out_2H		Cs_H_out_H/NonDeC		300-1500	9.69E+09	0.89	0	35.80	0	0	0	0	2	Sumathy B3LYP/CCPVDZ calculations
 639	R2H_S			C_rad_out_Cs2		Cs_H_out_2H			300-1500	8.12E+07	1.66	0	40.60	0	0	0	0	2	Sumathy B3LYP/CCPVDZ calculations
 640	R2H_S			C_rad_out_2H		Cs_H_out_Cs2			300-1500	4.04E+10	0.64	0	33.90	0	0	0	0	2	Sumathy B3LYP/CCPVDZ calculations
 641	R2H_S			C_rad_out_Cs2		Cs_H_out_Cs2			300-1500	1.28E+10	0.97	0	38.50	0	0	0	0	2	Sumathy B3LYP/CCPVDZ calculations
@@ -415,4 +416,5 @@ Arrhenius_EP
 1054  R3H_SS 	O_rad_out 	   	Cs_H_out_Cs2       	700-1800 	1.72E+08	 1.31   0.0	24.94   2 0 0 0 3 ED, RQCISD(T)/CBS TST with Eckart and 1-HR
 
 1055  R2H_S	C_rad_out_2H		Cs_H_out_CdCd		600-1500	4.52E+08	1.11	0.0	20.9	0 0 0 0 4 AV, BMK/6-311G(2d,d,p) TST Eckart, no HR (calculated for cycC5H5-CH2 -> cycC5H4-CH3
- 
+
+1056	R2H_S			C_rad_out_2H		Cs_H_out_H/NonDeC		500-2000	3.59E+05	2.05	0	36.3	0	0	0	0	2	JWA CCSD(T)-F12/cc-pVTZ-F12 with 1d-HR
