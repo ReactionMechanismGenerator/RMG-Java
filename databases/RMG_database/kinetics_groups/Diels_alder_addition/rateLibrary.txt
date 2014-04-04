@@ -42,4 +42,9 @@ Arrhenius_EP
 610.	diene_monosubNd_monosubNd_out	diene_in_2H			ene_HDe_2H		379-581		1.02E+09	0		0		20.07	*1.07	0		0		0		3		Van Mele et al [110]
 611.	diene_monosubNd_monosubNd_out	diene_in_2H			ene_HNd_HDe		352-423		1.26E+9		0		0		16.69	0		0		0		0		3		Benford et al [200] 	
 612.	diene_monosubNd_monosubNd_out	diene_in_2H			ene_HDe_HNd		352-423		1.26E+9		0		0		16.69	0		0		0		0		3		Benford et al [200] 
-614.    diene_5ring_Nd_Nd_out           diene_in_2H         ene_HNd_HNd     300-1500    3.24E-01	3.05    0.0	    24.75   0       0       0       0       4       A. G. Vandeputte
+614.    diene_5ring_Nd_Nd_out           diene_in_2H		ene_HNd_HNd     300-1500    	8.11E-02	3.05    0.0	24.75   0       0       0       0       4       A. G. Vandeputte, BMK/cbsb7 HO
+615.    diene_unsub_unsub_out		diene_in_2H		yne_unsub_monosub	300-1500	1.22E-01 2.98	0.0	28.1	0       0       0       0       4       A. G. Vandeputte, BMK/cbsb7 HO, butadiene + propyne
+616.	diene_unsub_unsub_out           diene_in_2H             allene_unsub	300-1500        1.77e-01        2.94	0.0	29.0	0       0       0       0       4       A. G. Vandeputte, BMK/cbsb7 HO, butadiene + allene
+
+
+

@@ -9,7 +9,7 @@
 
 // f19 Diels-Alder reaction
 
-ene + diene_out -> Six_Ring
+{ene,yne} + diene_out -> Six_Ring
 
 forward
 reverse(f20): Retro_Diels_Alder_Addition
