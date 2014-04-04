@@ -2938,5 +2938,6 @@ Arrhenius_EP
 7034	S/H/NonDeS	S_rad/Cb	300-1500	9.48E+02	3.15	0.00	-1.7	0	0	0	0	4	Group additivity method for S--H--S abstractions, Aaron Vandeputte
 7035	S/H/NonDeS	S_rad/NonDeS	300-1500	1.13E+02	3.15	0.00	0.4	0	0	0	0	4	Group additivity method for S--H--S abstractions, Aaron Vandeputte
 
-
-
+// SSM CBS-QB3 calculations for propargyl + vinylalcohol (RRHO approximation)
+7036   O/H/OneDe C_rad/H2/Ct 500-2500	6.5E-3	4.245	0.00	7.2	0	0	0	0	3	CBS-QB3 (RRHO), SSM
+7037   O_rad/Cd\H_Cd\H2  Cd_Cdd/H2 500-2500	2.1E-3	4.36	0.00	14.2	0	0	0	0	3	CBS-QB3 (RRHO), SSM
