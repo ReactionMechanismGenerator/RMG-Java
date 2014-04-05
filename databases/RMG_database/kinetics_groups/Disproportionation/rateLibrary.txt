@@ -105,3 +105,8 @@ Arrhenius_EP
 // These nodes were modified by AJ on Sept 20, 2011 using rates reported by Miyoshi in dx.doi.org/10.1021/jp112152n
 487.		O2_birad		Cmethyl_Csrad    700-2500   7.23E+12      0    0    15.99        *3.0        0    0    0    4    [AJ] Miyoshi 2011 (Table 4, Node 'sp') dx.doi.org/10.1021/jp112152n
 501.		O2_birad		C/H2/Nd_Csrad    500-900    4.5825E+12    0    0    14.85        *3.0        0    0    0    4    [AJ] Miyoshi 2011 (Table 4, Node 'ss') dx.doi.org/10.1021/jp112152n
+
+// Estimating rate coefficient for cyclopentadienyl radical + butadieneyl radical
+// NIST estimate for allyl + iso-butyl is 8E+11 at 1000 K, however in our system the butadieneyl radical is also resonance stabilized
+// and it will be harder to break the bond to give butadiene + cyclopentadiene. Currently estimate it to be a factor of 5 slower.
+555.        C_rad/H/TwoDe  Cmethyl_Csrad/H/Cd 300-2500   5E+10      0    0    0.0        0.0        0    0    0    5    SSM estimate
