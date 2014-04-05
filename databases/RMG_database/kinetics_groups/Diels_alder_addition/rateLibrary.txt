@@ -18,7 +18,7 @@ Arrhenius_EP
 // [200] Benford, G. A.; Wassermann, A. J. Chem. Soc. 1939, 362. 
 
 //No.	diene_out						diene_in			ene				Temp.		A			N		a		E0		DA		Dn		Da		DE0		Rank	Comments
-589.	diene_out						diene_in			ene				300-1500	5E+09		0		0		0		0		0		0		0		0		"default"
+589.	diene_out						diene_in			ene				300-1500	5E+09		0		0		20.00		0		0		0		0		5		"default"
 590.	diene_unsub_unsub_out			diene_in_2H			ene_2H_HDe		464-557		8.91E+09	0		0		24.44	0		0		0		0		3		Huybrechts et al. [198] 
 591.	diene_unsub_unsub_out			diene_in_2H			ene_HDe_2H		464-557		8.91E+09	0		0		24.44	0		0		0		0		3		Huybrechts et al. [198]	
 592.	diene_unsub_unsub_out			diene_in_2H			ene_HNd_HDe		515-572		8.99E+08	0		0		22.06	0		0		0		0		3		Kistiakowsky et al [112] 
