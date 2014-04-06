@@ -1,0 +1,9 @@
+//f40_H_shift_cyclopentadiene
+//No	CPD	Temp	A	n	Alpha	E	DA	DN	DAlpha	DE	Rank	Comments
+
+Arrhenius_EP
+
+1. cyclopentadiene 300-1500	5.06E+07	1.74	0.0	24.3	0	0	0	0	4	AG Vandeputte, CBS-QB3 
+
+
+
