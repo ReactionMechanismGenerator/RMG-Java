@@ -132,7 +132,7 @@ Cds-HH_Cds-OneDe
 2 *2 Cd 0 {1,D} {5,S} {6,S}
 3 H 0 {1,S}
 4 H 0 {1,S}
-5 R 0 {2,S}
+5 {H,Cs,Os,Ss} 0 {2,S}
 6 {Cd,Ct,Cb,CO} 0 {2,S}
 
 Cds-HH_Cds-OneDeH
@@ -577,7 +577,7 @@ Cds-CsH_Cds-OneDe
 2 *2 Cd 0 {1,D} {5,S} {6,S}
 3 Cs 0 {1,S}
 4 H 0 {1,S}
-5 R 0 {2,S}
+5 {H,Cs,Os,Ss} 0 {2,S}
 6 {Cd,Ct,Cb,CO} 0 {2,S}
 
 Cds-CsH_Cds-OneDeH
@@ -1013,7 +1013,7 @@ Cds-CsCs_Cds-OneDe
 2 *2 Cd 0 {1,D} {5,S} {6,S}
 3 Cs 0 {1,S}
 4 Cs 0 {1,S}
-5 R 0 {2,S}
+5 {H,Cs,Os,Ss} 0 {2,S}
 6 {Cd,Ct,Cb,CO} 0 {2,S}
 
 Cds-CsCs_Cds-OneDeH
@@ -1425,7 +1425,7 @@ Cds-OneDe_Cds
 1 *1 Cd 0 {2,D} {3,S} {4,S}
 2 *2 Cd 0 {1,D} {5,S} {6,S}
 3 {Cd,Ct,Cb,CO} 0 {1,S}
-4 R 0 {1,S}
+4 {H,Cs,Os,Ss} 0 {1,S}
 5 R 0 {2,S}
 6 R 0 {2,S}
 
@@ -2018,7 +2018,7 @@ Cds-CtH_Cds-OneDe
 2 *2 Cd 0 {1,D} {5,S} {6,S}
 3 Ct 0 {1,S}
 4 H 0 {1,S}
-5 R 0 {2,S}
+5 {H,Cs,Os,Ss} 0 {2,S}
 6 {Cd,Ct,Cb,CO} 0 {2,S}
 
 Cds-CtH_Cds-OneDeH
@@ -2454,7 +2454,7 @@ Cds-CbH_Cds-OneDe
 2 *2 Cd 0 {1,D} {5,S} {6,S}
 3 Cb 0 {1,S}
 4 H 0 {1,S}
-5 R 0 {2,S}
+5 {H,Cs,Os,Ss} 0 {2,S}
 6 {Cd,Ct,Cb,CO} 0 {2,S}
 
 Cds-CbH_Cds-OneDeH
@@ -3403,7 +3403,7 @@ Cds-CtCs_Cds-OneDe
 2 *2 Cd 0 {1,D} {5,S} {6,S}
 3 Ct 0 {1,S}
 4 Cs 0 {1,S}
-5 R 0 {2,S}
+5 {H,Cs,Os,Ss} 0 {2,S}
 6 {Cd,Ct,Cb,CO} 0 {2,S}
 
 Cds-CtCs_Cds-OneDeH
@@ -3839,7 +3839,7 @@ Cds-CbCs_Cds-OneDe
 2 *2 Cd 0 {1,D} {5,S} {6,S}
 3 Cb 0 {1,S}
 4 Cs 0 {1,S}
-5 R 0 {2,S}
+5 {H,Cs,Os,Ss} 0 {2,S}
 6 {Cd,Ct,Cb,CO} 0 {2,S}
 
 Cds-CbCs_Cds-OneDeH
@@ -4422,7 +4422,7 @@ Cds-CdCd_Cds-OneDe
 2 *2 Cd 0 {1,D} {5,S} {6,S}
 3 Cd 0 {1,S} {7,D}
 4 Cd 0 {1,S} {8,D}
-5 R 0 {2,S}
+5 {H,Cs,Os,Ss} 0 {2,S}
 6 {Cd,Ct,Cb,CO} 0 {2,S}
 7 C 0 {3,D}
 8 C 0 {4,D}
@@ -4951,7 +4951,7 @@ Cds-CdCt_Cds-OneDe
 2 *2 Cd 0 {1,D} {5,S} {6,S}
 3 Cd 0 {1,S} {7,D}
 4 Ct 0 {1,S}
-5 R 0 {2,S}
+5 {H,Cs,Os,Ss} 0 {2,S}
 6 {Cd,Ct,Cb,CO} 0 {2,S}
 7 C 0 {3,D}
 
@@ -5456,7 +5456,7 @@ Cds-CtCt_Cds-OneDe
 2 *2 Cd 0 {1,D} {5,S} {6,S}
 3 Ct 0 {1,S}
 4 Ct 0 {1,S}
-5 R 0 {2,S}
+5 {H,Cs,Os,Ss} 0 {2,S}
 6 {Cd,Ct,Cb,CO} 0 {2,S}
 
 Cds-CtCt_Cds-OneDeH
