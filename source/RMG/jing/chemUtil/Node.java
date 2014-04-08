@@ -1150,7 +1150,47 @@ public class Node extends GraphComponent {
     	return -1;
     }
     
-    
+    public LinkedHashSet minimumPath(Node p_node, LinkedHashSet pathlist) {
+
+        pathlist.add(this);
+        if (neighborsNode(p_node))
+                return pathlist; // you have found the node!
+        else {
+                // couldn't find the node in any of the nearest neighbors, so go deeper
+                LinkedHashSet neighboringNodes = getNeighboringNodes();
+                Iterator it = neighboringNodes.iterator();
+
+                ArrayList<LinkedHashSet> paths = new ArrayList<LinkedHashSet>();
+                while(it.hasNext()) {
+                        Node neighborNode = (Node) it.next();
+                        if (!pathlist.contains(neighborNode) && !neighborNode.isLeaf()) {
+                                // if the node was not visited, check its neighbours
+                                LinkedHashSet temp = neighborNode.minimumPath(p_node, (LinkedHashSet) pathlist.clone());
+                                if (temp != null) {
+                                        paths.add(temp);
+                                }
+                        }
+                }
+                if (paths.size() != 0) {
+                        int minimum = 100;
+                        int temp2 = 0;
+                        while(temp2 < paths.size()) {
+                           if(((LinkedHashSet)  paths.get(temp2)).size() < minimum) {
+                                minimum = ( (LinkedHashSet)  paths.get(temp2)).size();
+                                pathlist = paths.get(temp2);
+                                }
+                           temp2 += 1;
+                           }
+                        return pathlist;
+                }
+        }
+
+        return null;
+    }
+   
+
+
+ 
     /**
      * Determines whether this node neighbors a p_node by any arc
      */

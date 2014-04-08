@@ -542,7 +542,6 @@ public class Graph {
         // #]
     }
 
-
     public boolean inBiRing(Node node1) {
     int count = 0;
     for (int i = 0; i < SSSRings.size(); i++) {
