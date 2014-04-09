@@ -338,8 +338,8 @@ S_rad/OneDe
 2 {Cd,Ct,Cb,CO} 0 {1,S}
 
 XH_Rrad
-1. *2 {R!H} 0 {2,S}, {3,S}
-2. *3 {R!H} 1 {1,S}
+1. *2 {R!H} 0 {2,{S,D}}, {3,S}
+2. *3 {R!H} 1 {1,{S,D}}
 3. *4 H 0 {1,S}
 
 Cmethyl_Rrad
