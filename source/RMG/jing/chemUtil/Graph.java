@@ -513,6 +513,34 @@ public class Graph {
         // #]
     }
 
+
+    public boolean inBiRing(Node node1) {
+    int count = 0;
+    for (int i = 0; i < SSSRings.size(); i++) {
+        LinkedList cycle = (LinkedList) SSSRings.get(i);
+        if(cycle.contains(node1)) {
+	    count++;
+            }
+        }
+    if(count >= 2) 
+	return true;
+    else
+	return false;
+    }
+
+    public boolean sameRing(Node node1, Node node2) { 
+
+    for (int i = 0; i < SSSRings.size(); i++) {
+        LinkedList cycle = (LinkedList) SSSRings.get(i);
+	if(cycle.contains(node1) && cycle.contains(node2)) {
+	    return true;
+	    }
+    }
+
+    return false;
+
+    }
+
     public boolean hasExocyclicPi(LinkedList cycle) {
         boolean hasExoPi = false;
         for (int i = 0; i < cycle.size(); i = i + 2) {
@@ -1920,6 +1948,26 @@ public class Graph {
             LinkedHashSet pathlist = new LinkedHashSet();
             return node1.minimumNumBonds(node2, 0, pathlist);
             // not sure if we need to reset the visited status of all the nodes and arcs?
+    }
+
+    public LinkedHashSet minimumPath(Node node1, Node node2) {
+	    LinkedHashSet pathlist = new LinkedHashSet();
+	    return node1.minimumPath(node2, pathlist);
+    }
+
+    public int countCyclicsAlongMinPathInSameRing (Node node1, Node node2) {
+	    LinkedHashSet pathlist = new LinkedHashSet();
+	    LinkedHashSet minpath = node1.minimumPath(node2, pathlist);
+	    Iterator it = minpath.iterator();
+            int ncyclics = 0;
+ 	    int debug = 0;
+            while(it.hasNext()) {
+		debug += 1;
+		if (sameRing(node1, (Node) it.next())) {
+		   ncyclics +=1;
+		   }
+		}	
+	    return ncyclics;
     }
 
     /**
