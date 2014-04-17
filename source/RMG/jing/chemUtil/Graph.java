@@ -45,9 +45,9 @@ public class Graph {
      * number of nodes in this graph
      */
     private static int MAXNODENUMBER = 1000; // ## attribute MAXNODENUMBER
-    private boolean acyclic; // ## attribute acyclic
+    public boolean acyclic; // ## attribute acyclic
     private LinkedHashMap centralNode; // ## attribute centralNode
-    private LinkedList SSSRings; // ## attribute cycle
+    public LinkedList SSSRings; // ## attribute cycle
     private int highestCentralID = 0; // ## attribute highestCentralID
     private int highestNodeID = 0; // ## attribute highestNodeID
     private int lowestCentralID = 10000;
@@ -451,6 +451,35 @@ public class Graph {
             result.addArcBetween(n1.getID().intValue(), a.getElement(), n2
                     .getID().intValue());
         }
+        return result;
+        // #]
+    }
+
+    public static Graph copywithSSSR(Graph p_graph) throws InvalidNeighborException {
+        // #[ operation copy(Graph)
+        Graph result = new Graph();
+        Iterator iter = p_graph.getNodeList();
+        while (iter.hasNext()) {
+            Node n = (Node) iter.next();
+            Node newNode = result.addNodeAt(n.getID().intValue(),
+                    n.getElement(), n.getCentralID().intValue());
+        }
+        iter = p_graph.getArcList();
+        while (iter.hasNext()) {
+            Arc a = (Arc) iter.next();
+            Iterator iter1 = a.getNeighbor();
+            if (!iter1.hasNext())
+                throw new InvalidNeighborException();
+            Node n1 = (Node) iter1.next();
+            if (!iter1.hasNext())
+                throw new InvalidNeighborException();
+            Node n2 = (Node) iter1.next();
+            if (iter1.hasNext())
+                throw new InvalidNeighborException();
+            result.addArcBetween(n1.getID().intValue(), a.getElement(), n2
+                    .getID().intValue());
+        }
+        result.formSSSR();
         return result;
         // #]
     }

@@ -90,6 +90,10 @@ public class Species {
         name = p_name;
         chemGraph = p_chemGraph;
         generateResonanceIsomers();
+
+	System.out.println("Resonance isomers:");
+        System.out.println(this.resonanceIsomers.toString());
+
         if (!constantConcentration) {
             findStablestThermoData();
         } else {
@@ -203,6 +207,44 @@ public class Species {
         // return getThermoData().calculateS(p_temperature);
         return nasaThermoData.calculateEntropy(p_temperature);
         // #]
+    }
+
+    private ChemGraph doRingDelocalization(ChemGraph p_chemGraph, int ring) {
+	Graph copy = Graph.copywithSSSR(p_chemGraph.getGraph());
+        LinkedList cycle = (LinkedList) copy.SSSRings.get(ring);
+        for (int j = 0; j < cycle.size(); j++) {
+            GraphComponent gc = (GraphComponent) cycle.get(j);
+            if (gc instanceof Arc) {
+               Arc a = (Arc) gc;
+               if (((Bond) a.getElement()).isSingle()) {
+                   Bond singlebond = (Bond) a.getElement();
+                   Bond newBond = singlebond.changeBond(1);
+                   a.setElement(newBond);
+               } else { 
+	           if (((Bond) a.getElement()).isDouble()) {
+                      Bond doublebond = (Bond) a.getElement();
+                      Bond newBond = doublebond.changeBond(-1);
+                      a.setElement(newBond);
+	          }
+	       }
+            }
+	}
+        for (int j = 0; j < cycle.size(); j++) {
+            GraphComponent gc = (GraphComponent) cycle.get(j);
+            if (gc instanceof Node) {
+               Node a = (Node) gc;
+	       a.updateFgElement();
+            }
+        }
+        try {
+            ChemGraph newIsomer = ChemGraph.make(copy);
+            if (addResonanceIsomer(newIsomer))
+                return newIsomer;
+            else
+                return null;
+        } catch (ForbiddenStructureException e) {
+            return null;
+        }
     }
 
     // ## operation doDelocalization(ChemGraph,Stack)
@@ -336,6 +378,9 @@ public class Species {
         }
         // generate RI for radical
         generateResonanceIsomersFromRadicalCenter();
+	// generate RI for rings
+	generateResonanceIsomersFromConjugatedRings();
+
         // generaate RI for O2, removed, don't allow .o-o.
         // generateResonanceIsomersForOxygen();
         if (chemGraph.getRadicalNumber() >= 2) {
@@ -425,6 +470,47 @@ public class Species {
             return;
         }
         // #]
+    }
+
+    // ## operation generateResonanceIsomersFromConjugatedRings();
+
+    private void generateResonanceIsomersFromConjugatedRings() {
+	if(chemGraph.graph.acyclic)
+		return;
+	LinkedHashSet processedChemGraph = new LinkedHashSet();
+	for (int i = 0; i < chemGraph.graph.SSSRings.size(); i++) {
+            LinkedList cycle = (LinkedList) chemGraph.graph.SSSRings.get(i);
+	    int deloc = 1; //integer that will remain 1 is delocalization can occur
+            int nsinglebonds=0;
+            int ndoublebonds=0;
+	    for (int j = 0; j < cycle.size(); j++) {
+		GraphComponent gc = (GraphComponent) cycle.get(j);
+		if (gc instanceof Node) {
+		   Node n = (Node) gc;
+		   Atom a = (Atom) n.getElement();
+		   if (n.getNeighborNumber() != 3) //if one atom has more or less than 3 neighbors then ring not planar
+			deloc*=0;
+		} else {
+		   Arc a = (Arc) gc;
+                   if (((Bond) a.getElement()).isSingle())
+                        nsinglebonds+=1;
+		   else if (((Bond) a.getElement()).isDouble())
+			ndoublebonds+=1;
+		   else 
+			deloc*=0;
+		}	
+            }
+	    if (nsinglebonds!=ndoublebonds)
+		deloc*=0;
+	    if (deloc==1) {
+		ChemGraph newCG = doRingDelocalization(chemGraph, i);
+		if (newCG != null && !processedChemGraph.contains(newCG)) {
+			addResonanceIsomer(newCG);
+			processedChemGraph.add(newCG);
+		}
+	    }
+	}
+	return;
     }
 
     // ## operation generateResonanceIsomersFromRadicalCenter()

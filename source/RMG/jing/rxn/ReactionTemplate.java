@@ -526,8 +526,6 @@ public class ReactionTemplate {
 				}
 			}
 
-			System.out.println("Number of cyclics "+nbicyclics);
-
 			if(nbicyclics >2) {
 			   k = new Kinetics[1];
 			   UncertainDouble uncertd = new UncertainDouble(0.0, 1.0,"Multiplier");
