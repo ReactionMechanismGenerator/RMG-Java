@@ -91,9 +91,6 @@ public class Species {
         chemGraph = p_chemGraph;
         generateResonanceIsomers();
 
-	System.out.println("Resonance isomers:");
-        System.out.println(this.resonanceIsomers.toString());
-
         if (!constantConcentration) {
             findStablestThermoData();
         } else {

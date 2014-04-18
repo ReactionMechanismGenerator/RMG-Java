@@ -109,6 +109,7 @@ public class TemplateReaction extends Reaction {
         }
         ReactionTemplate fRT = getReactionTemplate();
         ReactionTemplate rRT = null;
+
         if (fRT.isForward()) {
             return null;
         } else if (fRT.isNeutral()) {
@@ -255,7 +256,7 @@ public class TemplateReaction extends Reaction {
         } else if (k == null && rRT.name.equals("intra_H_migration")) { 	
             ChemGraph cg = ((ChemGraph) fproduct.get(0));
             Graph g = cg.getGraph();
-            
+           
             // Current max is 8 identified nodes
             Node n1 = (Node) g.getCentralNodeAt(1);
             Node n2 = (Node) g.getCentralNodeAt(2);
@@ -294,6 +295,7 @@ public class TemplateReaction extends Reaction {
             } else if (n4 != null) {  // if only central node 4 exists, retain that location
             	g.setCentralNode(4, n4);
             } 
+
             k = rRT.findRateConstant(rs); 
 //            rr = rRT.calculateForwardRateConstant(cg, rs);
 //            if (!rr.isForward()) {
@@ -380,6 +382,7 @@ public class TemplateReaction extends Reaction {
                 .getReactionFromStructure(p_structureSp);
         Global.getReacFromStruc = Global.getReacFromStruc
                 + (System.currentTimeMillis() - PT) / 1000 / 60;
+
         if (reaction == null) {
             // Create a new reaction.
             reaction = new TemplateReaction(p_structureSp, p_kinetics,

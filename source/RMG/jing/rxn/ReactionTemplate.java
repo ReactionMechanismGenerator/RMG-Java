@@ -479,6 +479,11 @@ public class ReactionTemplate {
 	                		    // There shouldn't be any rings larger than this.  For now don't do anything extra.
 	                		    break;
 	                	}
+				
+			   if (name.equals("intra_H_migration") && comments.contains("R2") && rcg.getCentralNodeAt(4)!=null) {
+				fg = null;
+				}
+
 
 			    if (name.equals("intra_H_migration") || name.equals("Intra_Disproportionation")) {
 
@@ -498,11 +503,12 @@ public class ReactionTemplate {
 
 			    if (mindistance > 1 ) {
 			        if ((rcg.getGraph().sameRing(n1, n2)) || failtest1 || failtest2 ) {
-				    k = new Kinetics[1];
-				    UncertainDouble uncertd = new UncertainDouble(0.0, 1.0,"Multiplier");
-				    ArrheniusKinetics zero = new ArrheniusKinetics(uncertd, uncertd, uncertd,"Unknown", 5, name, "Forbidden");
-				    k[0] = zero;
-				    return k;		
+//				    k = new Kinetics[1];
+//				    UncertainDouble uncertd = new UncertainDouble(0.0, 1.0,"Multiplier");
+//				    ArrheniusKinetics zero = new ArrheniusKinetics(uncertd, uncertd, uncertd,"Unknown", 5, name, "Forbidden");
+//				    k[0] = zero;
+//				    return k;		
+				    fg = null;
 				    }	
 			    }
 
@@ -527,11 +533,12 @@ public class ReactionTemplate {
 			}
 
 			if(nbicyclics >2) {
-			   k = new Kinetics[1];
-			   UncertainDouble uncertd = new UncertainDouble(0.0, 1.0,"Multiplier");
-			   ArrheniusKinetics zero = new ArrheniusKinetics(uncertd, uncertd, uncertd,"Unknown", 5, name, "Forbidden");
-			   k[0] = zero;
-			   return k;
+//			   k = new Kinetics[1];
+//			   UncertainDouble uncertd = new UncertainDouble(0.0, 1.0,"Multiplier");
+//			   ArrheniusKinetics zero = new ArrheniusKinetics(uncertd, uncertd, uncertd,"Unknown", 5, name, "Forbidden");
+//			   k[0] = zero;
+//			   return k;
+			   fg = null;
 			}
 		    } // end Intra_Diels_alder2
 
