@@ -418,4 +418,3 @@ Arrhenius_EP
 
 1055  R2H_S	C_rad_out_2H		Cs_H_out_CdCd		600-1500	4.52E+08	1.11	0.0	20.9	0 0 0 0 4 AV, BMK/6-311G(2d,d,p) TST Eckart, no HR (calculated for cycC5H5-CH2 -> cycC5H4-CH3
  
->>>>>>> 0a44a9aa52791fef0175cfeb114109ad43c39df4
