@@ -116,7 +116,8 @@ $(BUILDDIR)/InChI-1-software-1-02-beta: $(BUILDDIR)/inchi102b.zip
 	cd $(BUILDDIR); unzip inchi102b.zip
 
 $(BUILDDIR)/inchi102b.zip:
-	cd $(BUILDDIR); wget http://old.iupac.org/inchi/download/inchi102b.zip
+	cd $(BUILDDIR); wget http://www.iupac.org/fileadmin/user_upload/publications/e-resources/inchi/1.02beta/inchi102b.zip
+	# was at http://old.iupac.org/inchi/download/inchi102b.zip
 # END OF INCHI SUPPORT
 
 # GET AND BUILD SYMMETRY

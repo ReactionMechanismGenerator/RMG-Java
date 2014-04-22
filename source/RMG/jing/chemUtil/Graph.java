@@ -45,9 +45,9 @@ public class Graph {
      * number of nodes in this graph
      */
     private static int MAXNODENUMBER = 1000; // ## attribute MAXNODENUMBER
-    private boolean acyclic; // ## attribute acyclic
+    public boolean acyclic; // ## attribute acyclic
     private LinkedHashMap centralNode; // ## attribute centralNode
-    private LinkedList SSSRings; // ## attribute cycle
+    public LinkedList SSSRings; // ## attribute cycle
     private int highestCentralID = 0; // ## attribute highestCentralID
     private int highestNodeID = 0; // ## attribute highestNodeID
     private int lowestCentralID = 10000;
@@ -455,6 +455,35 @@ public class Graph {
         // #]
     }
 
+    public static Graph copywithSSSR(Graph p_graph) throws InvalidNeighborException {
+        // #[ operation copy(Graph)
+        Graph result = new Graph();
+        Iterator iter = p_graph.getNodeList();
+        while (iter.hasNext()) {
+            Node n = (Node) iter.next();
+            Node newNode = result.addNodeAt(n.getID().intValue(),
+                    n.getElement(), n.getCentralID().intValue());
+        }
+        iter = p_graph.getArcList();
+        while (iter.hasNext()) {
+            Arc a = (Arc) iter.next();
+            Iterator iter1 = a.getNeighbor();
+            if (!iter1.hasNext())
+                throw new InvalidNeighborException();
+            Node n1 = (Node) iter1.next();
+            if (!iter1.hasNext())
+                throw new InvalidNeighborException();
+            Node n2 = (Node) iter1.next();
+            if (iter1.hasNext())
+                throw new InvalidNeighborException();
+            result.addArcBetween(n1.getID().intValue(), a.getElement(), n2
+                    .getID().intValue());
+        }
+        result.formSSSR();
+        return result;
+        // #]
+    }
+
     /*
      * /** Recursive function to identify possible cycle starting from p_node. Add identified cycle to this.cycle.<br>
      * <b>Modifies</b><br> this.cycle. visited status of nodes and arcs.
@@ -511,6 +540,33 @@ public class Graph {
                 removeNode(node);
         }
         // #]
+    }
+
+    public boolean inBiRing(Node node1) {
+    int count = 0;
+    for (int i = 0; i < SSSRings.size(); i++) {
+        LinkedList cycle = (LinkedList) SSSRings.get(i);
+        if(cycle.contains(node1)) {
+	    count++;
+            }
+        }
+    if(count >= 2) 
+	return true;
+    else
+	return false;
+    }
+
+    public boolean sameRing(Node node1, Node node2) { 
+
+    for (int i = 0; i < SSSRings.size(); i++) {
+        LinkedList cycle = (LinkedList) SSSRings.get(i);
+	if(cycle.contains(node1) && cycle.contains(node2)) {
+	    return true;
+	    }
+    }
+
+    return false;
+
     }
 
     public boolean hasExocyclicPi(LinkedList cycle) {
@@ -1920,6 +1976,26 @@ public class Graph {
             LinkedHashSet pathlist = new LinkedHashSet();
             return node1.minimumNumBonds(node2, 0, pathlist);
             // not sure if we need to reset the visited status of all the nodes and arcs?
+    }
+
+    public LinkedHashSet minimumPath(Node node1, Node node2) {
+	    LinkedHashSet pathlist = new LinkedHashSet();
+	    return node1.minimumPath(node2, pathlist);
+    }
+
+    public int countCyclicsAlongMinPathInSameRing (Node node1, Node node2) {
+	    LinkedHashSet pathlist = new LinkedHashSet();
+	    LinkedHashSet minpath = node1.minimumPath(node2, pathlist);
+	    Iterator it = minpath.iterator();
+            int ncyclics = 0;
+ 	    int debug = 0;
+            while(it.hasNext()) {
+		debug += 1;
+		if (sameRing(node1, (Node) it.next())) {
+		   ncyclics +=1;
+		   }
+		}	
+	    return ncyclics;
     }
 
     /**

@@ -41,12 +41,10 @@ Arrhenius_EP
 // Thermochemistry obtained from butanol mechanism dx.doi.org/10.1016/j.combustflame.2010.06.002
 
 // 707 n-Butanol decomposition reaction, experimental measurements by Claudette Rosada Reyes JPCA (2012) 116, 9825-9831 
-707.    Cd/H/Nd_Cd/H2       H_OH            300-2000	6.104e+07	1.287	0	60.9		0		0		0		0		2
+707.    Cd/H/Nd_Cd/H2	H_OH            300-2000	6.104e+07	1.287	0	60.9		0		0		0		0		2
 // 708 Dehydration of Isobutanol and the Elimination of Water from Fuel Alcohols by Claudette Rosada Reyes JPCA (2013) DOI: 10.1021/jp4045513
-708.    Cd/Nd2_Cd/H2        H_OH            300-2000	5.181e+07	1.302	0	62.9		0		0		0		0		2
+708.    Cd/Nd2_Cd/H2	H_OH            300-2000	5.181e+07	1.302	0	62.9		0		0		0		0		2
 // 709 Dehydration of Isobutanol and the Elimination of Water from Fuel Alcohols by Claudette Rosada Reyes JPCA (2013) DOI: 10.1021/jp4045513
-709.    Cd/H2_Cd/Nd2		H_OH            300-2000	3.013e+05	1.820	0	51.1		0		0		0		0		2
-// Estimate made from rule 707.
-710.    Cd/H/De_Cd/H2       H_OH            300-2000	6.104e+07	1.287	0	60.9		0		0		0		0		4  Same as rule 707
-
-
+709.    Cd/H2_Cd/Nd2	H_OH            300-2000	3.013e+05	1.820	0	51.1		0		0		0		0		2
+// Estimate made from rule 707., updated by AG Vandeputte, CBSQB3 + HO, calculated for butadiene + H2O -> 2-butenol
+710.    Cd/H/De_Cd/H2	H_OH            300-2000	2.74E-5		4.73	0	52.3		0		0		0		0		4  CBS-QB3+HO

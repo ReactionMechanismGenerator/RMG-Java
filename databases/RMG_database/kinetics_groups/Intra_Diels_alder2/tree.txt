@@ -1,4 +1,7 @@
 //F38 Intra_Diels_alder2 reaction
 
-L1: cyclohexadiene
+
+L1: conjugated6memberedring
+	L2: cyclohexadiene
+	L2: cyclohexatriene
 

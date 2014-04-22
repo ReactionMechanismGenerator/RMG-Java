@@ -327,9 +327,12 @@ diene_in_De2
 3 {Cd,Ct,Cb,CO} 0 {1,S}
 4 {Cd,Ct,Cb,CO} 0 {2,S}
 
+{ene,yne}
+Union {ene, yne}
+
 ene
-1 *1 Cd 0 {2,D}
-2 *2 Cd 0 {1,D}
+1 *1 C 0 {2,D}
+2 *2 C 0 {1,D}
 
 ene_unsub_unsub
 1 *1 Cd 0 {2,D}, {3,S}, {4,S}
@@ -682,5 +685,57 @@ ene_De2_De2
 4 {Cd,Ct,Cb,CO} 0 {1,S}
 5 {Cd,Ct,Cb,CO} 0 {2,S}
 6 {Cd,Ct,Cb,CO} 0 {2,S}
+
+allene
+1 *1 Cdd 0 {2,D}
+2 *2 Cd 0 {1,D}
+
+allene_unsub
+1 *1 Cdd 0 {2,D}
+2 *2 Cd 0 {1,D} {3,S} {4,S}
+3 H 0 {2,S}
+4 H 0 {2,S}
+
+allene_monosub
+1 *1 Cdd 0 {2,D}
+2 *2 Cd 0 {1,D} {3,S} {4,S}
+3 {R!H} 0 {2,S}
+4 H 0 {2,S}
+
+allene_disub
+1 *1 Cdd 0 {2,D}
+2 *2 Cd 0 {1,D} {3,S} {4,S}
+3 {R!H} 0 {2,S}
+4 {R!H} 0 {2,S}
+
+yne
+1 *1 Ct 0 {2,T}
+2 *2 Ct 0 {1,T}
+
+yne_unsub_unsub
+1 *1 Ct 0 {2,T} {3,S}
+2 *2 Ct 0 {1,T} {4,S}
+3 H 0 {1,S}
+4 H 0 {2,S}
+
+yne_unsub_monosub
+1 *1 Ct 0 {2,T} {3,S}
+2 *2 Ct 0 {1,T} {4,S}
+3 H 0 {1,S}
+4 {R!H} 0 {2,S}
+
+yne_monosub_monosub
+1 *1 Ct 0 {2,T} {3,S}
+2 *2 Ct 0 {1,T} {4,S}
+3 {R!H} 0 {1,S}
+4 {R!H} 0 {2,S}
+
+
+
+
+
+
+
+
 
 

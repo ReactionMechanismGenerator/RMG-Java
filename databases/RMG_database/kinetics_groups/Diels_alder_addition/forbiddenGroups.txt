@@ -9,3 +9,8 @@ threeMemberedRing_3213
 2 *4 Cd 0 {1,D} {3,S}
 3 *5 Cd 0 {2,S} {4,D} {1,S}
 4 *6 Cd 0 {3,D}
+
+allene_avoid_doublecounting
+1 *2 Cdd 0
+
+

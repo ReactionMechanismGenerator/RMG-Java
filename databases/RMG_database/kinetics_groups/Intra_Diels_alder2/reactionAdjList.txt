@@ -9,7 +9,7 @@
 
 // f38 Intra_Diels_alder2
 
-cyclohexadiene -> triene
+conjugated6memberedring -> ringopening 
 
 forward
 reverse(f38): ringclosing2

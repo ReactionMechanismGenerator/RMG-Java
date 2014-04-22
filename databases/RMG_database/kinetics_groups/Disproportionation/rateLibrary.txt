@@ -113,3 +113,7 @@ Arrhenius_EP
 506.		S_rad/OneDe		C/H/NdNd_Csrad	300-1500	7.63E+11	0	0	-0.55	0	0	0	0	5	VERY Rough estimate based on 1/10 of #3026 in R_Recombination
 507.		S_rad/NonDeC		C/H/NdNd_Csrad	300-1500	7.63E+11	0	0	-0.55	0	0	0	0	5	Rough estimate based on 1/10 of #3026 in R_Recombination
 
+// Estimating rate coefficient for cyclopentadienyl radical + butadieneyl radical
+// NIST estimate for allyl + iso-butyl is 8E+11 at 1000 K, however in our system the butadieneyl radical is also resonance stabilized
+// and it will be harder to break the bond to give butadiene + cyclopentadiene. Currently estimate it to be a factor of 5 slower.
+555.        C_rad/H/TwoDe  Cmethyl_Csrad/H/Cd 300-2500   5E+10      0    0    0.0        0.0        0    0    0    5    SSM estimate

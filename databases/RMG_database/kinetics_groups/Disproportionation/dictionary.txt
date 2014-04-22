@@ -342,8 +342,8 @@ S_rad/OneDe
 2 {Cd,Ct,Cb,CO} 0 {1,S}
 
 XH_Rrad
-1. *2 {R!H} 0 {2,S}, {3,S}
-2. *3 {R!H} 1 {1,S}
+1. *2 {R!H} 0 {2,{S,D}}, {3,S}
+2. *3 {R!H} 1 {1,{S,D}}
 3. *4 H 0 {1,S}
 
 Cmethyl_Rrad
@@ -359,6 +359,15 @@ Cmethyl_Csrad
 3. *4 H 0 {1,S}
 4. H 0 {1,S}
 5. H 0 {1,S}
+
+Cmethyl_Csrad/H/Cd
+1. *2 C 0 {2,S}, {3,S}, {4,S}, {5,S}
+2. *3 Cs 1 {1,S} {6,S} {7,S}
+3. *4 H 0 {1,S}
+4. H 0 {1,S}
+5. H 0 {1,S}
+6. H 0 {2,S}
+7. Cd 0 {2,S}
 
 Cmethyl_Cdrad
 1. *2 C 0 {2,S}, {3,S}, {4,S}, {5,S}
@@ -409,6 +418,15 @@ C/H2/Nd_Csrad
 4. H 0 {1,S}
 5. {Cs,O,S} 0 {1,S}
 
+C/H2/Nd_Csrad/H/Cd
+1. *2 C 0 {2,S}, {3,S}, {4,S}, {5,S}
+2. *3 Cs 1 {1,S} {6,S} {7,S}
+3. *4 H 0 {1,S}
+4. H 0 {1,S}
+5. {Cs,O,S} 0 {1,S}
+6. H 0 {2,S}
+7. Cd 0 {2,S}
+
 C/H2/Nd_Cdrad
 1. *2 C 0 {2,S}, {3,S}, {4,S}, {5,S}
 2. *3 Cd 1 {1,S}
@@ -450,6 +468,15 @@ C/H2/De_Csrad
 3. *4 H 0 {1,S}
 4. H 0 {1,S}
 5. {Cd,Ct,Cb,CO} 0 {1,S}
+
+C/H2/De_Csrad/H/Cd
+1. *2 C 0 {2,S}, {3,S}, {4,S}, {5,S}
+2. *3 Cs 1 {1,S} {6,S} {7,S}
+3. *4 H 0 {1,S}
+4. H 0 {1,S}
+5. {Cd,Ct,Cb,CO} 0 {1,S}
+6. H 0 {2,S}
+7. Cd 0 {2,S}
 
 C/H2/De_Cdrad
 1. *2 C 0 {2,S}, {3,S}, {4,S}, {5,S}
@@ -493,6 +520,16 @@ C/H/NdNd_Csrad
 4. {Cs,O,S} 0 {1,S}
 5. {Cs,O,S} 0 {1,S}
 
+C/H/NdMd_Csrad/H/Cd
+1. *2 C 0 {2,S}, {3,S}, {4,S}, {5,S}
+2. *3 Cs 1 {1,S} {6,S} {7,S}
+3. *4 H 0 {1,S}
+4. {Cs,O,S} 0 {1,S}
+5. {Cs,O,S} 0 {1,S}
+6. H 0 {2,S}
+7. Cd 0 {2,S} 
+
+
 C/H/NdNd_Cdrad
 1. *2 C 0 {2,S}, {3,S}, {4,S}, {5,S}
 2. *3 Cd 1 {1,S}
@@ -528,6 +565,15 @@ C/H/NdDe_Csrad
 4. {Cs,O,S} 0 {1,S}
 5. {Cd,Ct,Cb,CO} 0 {1,S}
 
+C/H/NdDe_Csrad/H/Cd
+1. *2 C 0 {2,S}, {3,S}, {4,S}, {5,S}
+2. *3 Cs 1 {1,S} {6,S} {7,S}
+3. *4 H 0 {1,S}
+4. {Cs,O,S} 0 {1,S}
+5. {Cd,Ct,Cb,CO} 0 {1,S}
+6. H 0 {2,S}
+7. Cd 0 {2,S}
+
 C/H/NdDe_Cdrad
 1. *2 C 0 {2,S}, {3,S}, {4,S}, {5,S}
 2. *3 Cd 1 {1,S}
@@ -562,6 +608,15 @@ C/H/DeDe_Csrad
 3. *4 H 0 {1,S}
 4. {Cd,Ct,Cb,CO} 0 {1,S}
 5. {Cd,Ct,Cb,CO} 0 {1,S}
+
+C/H/DeDe_Csrad/H/Cd
+1. *2 C 0 {2,S}, {3,S}, {4,S}, {5,S}
+2. *3 Cs 1 {1,S} {6,S} {7,S}
+3. *4 H 0 {1,S}
+4. {Cd,Ct,Cb,CO} 0 {1,S}
+5. {Cd,Ct,Cb,CO} 0 {1,S}
+6. H 0 {2,S}
+7. Cd 0 {2,S}
 
 C/H/DeDe_Cdrad
 1. *2 C 0 {2,S}, {3,S}, {4,S}, {5,S}

@@ -166,6 +166,9 @@ public class Reaction {
             for (int numKinetics = 0; numKinetics < kinetics.length; numKinetics++) {
                 Kinetics k = k_All[numKinetics];
                 rate += k.calculateRate(p_temperature, Hrxn);
+            }            
+            if(isBackward()){
+            	rate = rate * calculateKeq(p_temperature);	
             }
             return rate;
         } else if (isForward()) {

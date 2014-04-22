@@ -109,6 +109,7 @@ public class TemplateReaction extends Reaction {
         }
         ReactionTemplate fRT = getReactionTemplate();
         ReactionTemplate rRT = null;
+
         if (fRT.isForward()) {
             return null;
         } else if (fRT.isNeutral()) {
@@ -255,7 +256,7 @@ public class TemplateReaction extends Reaction {
         } else if (k == null && rRT.name.equals("intra_H_migration")) { 	
             ChemGraph cg = ((ChemGraph) fproduct.get(0));
             Graph g = cg.getGraph();
-            
+           
             // Current max is 8 identified nodes
             Node n1 = (Node) g.getCentralNodeAt(1);
             Node n2 = (Node) g.getCentralNodeAt(2);
@@ -294,6 +295,7 @@ public class TemplateReaction extends Reaction {
             } else if (n4 != null) {  // if only central node 4 exists, retain that location
             	g.setCentralNode(4, n4);
             } 
+
             k = rRT.findRateConstant(rs); 
 //            rr = rRT.calculateForwardRateConstant(cg, rs);
 //            if (!rr.isForward()) {
@@ -313,7 +315,29 @@ public class TemplateReaction extends Reaction {
  //           rRT.addReaction(rr);
  //           return rr;
 
-        }
+        } else if (k == null && rRT.name.equals("H_shift_cyclopentadiene")) {
+            ChemGraph cg = ((ChemGraph) fproduct.get(0));
+            Graph g = cg.getGraph();
+
+            // Current max is 6 identified nodes
+            Node n1 = (Node) g.getCentralNodeAt(1);
+            Node n2 = (Node) g.getCentralNodeAt(2);
+            Node n3 = (Node) g.getCentralNodeAt(3);
+            Node n4 = (Node) g.getCentralNodeAt(4);
+            Node n5 = (Node) g.getCentralNodeAt(5);
+            Node n6 = (Node) g.getCentralNodeAt(6);
+
+            g.clearCentralNode();
+
+            // Swap the locations of the central nodes 1 to 6
+            g.setCentralNode(1, n2);
+            g.setCentralNode(2, n1);
+            g.setCentralNode(3, n5);
+            g.setCentralNode(4, n4);
+            g.setCentralNode(5, n3);
+            g.setCentralNode(6, n6);
+            k = rRT.findRateConstant(rs);
+	}
         if (k == null) {
             Logger.error("Couldn't find the rate constant for reaction: "
                     + rs.toChemkinString(true) + " with " + rRT.name);
@@ -358,6 +382,7 @@ public class TemplateReaction extends Reaction {
                 .getReactionFromStructure(p_structureSp);
         Global.getReacFromStruc = Global.getReacFromStruc
                 + (System.currentTimeMillis() - PT) / 1000 / 60;
+
         if (reaction == null) {
             // Create a new reaction.
             reaction = new TemplateReaction(p_structureSp, p_kinetics,
