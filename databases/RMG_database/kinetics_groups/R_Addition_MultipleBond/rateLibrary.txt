@@ -2649,7 +2649,7 @@ Arrhenius_EP
 //2526 is barrierless! using parameters from 2523.
 3081	Sd_Cds-CsH	CsJ-CsHH	300-1500	1.69E+02	3.0	0	-1.0	0	0	0	0	4	based on 2523
 
-3082	Cds-CsH_Sd	HJ		300-1500	2.13+09	1.43	0	1.14	0	0	0	0	3	CAC calc CBS-QB3 1dhr
+3082	Cds-CsH_Sd	HJ		300-1500	2.13E+09	1.43	0	1.14	0	0	0	0	3	CAC calc CBS-QB3 1dhr
 3083	Cds-CsH_Sd	CsJ-SsCsH	300-1500	2.57E+00	3.04	0	-1.57	0	0	0	0	3	CAC calc CBS-QB3 1dhr
 3084	Cds-OsH_Sd	HJ		300-1500	2.92E+08	1.58	0	2.53	0	0	0	0	3	CAC calc CBS-QB3 1dhr
 3085	Cds-OsH_Sd	CsJ-HHH		300-1500	2.29E+04	2.32	0	5.16	0	0	0	0	3	CAC calc CBS-QB3 1dhr
