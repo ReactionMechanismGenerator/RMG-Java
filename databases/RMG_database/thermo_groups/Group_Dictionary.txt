@@ -8557,6 +8557,20 @@
  4    Ss 0 {1,S} 
  5    H 0 {1,S}
 
+ Cs-CCOsSs
+ 1  * Cs 0 {2,S} {3,S} {4,S} {5,S}
+ 2    C 0 {1,S}
+ 3    C 0 {1,S}
+ 4    Os 0 {1,S}
+ 5    Ss 0 {1,S} 
+
+ Cs-CsCsOsSs
+ 1  * Cs 0 {2,S} {3,S} {4,S} {5,S}
+ 2    Cs 0 {1,S}
+ 3    Cs 0 {1,S} 
+ 4    Os 0 {1,S}
+ 5    Ss 0 {1,S}
+
  Cs-COsOsSs 
  1  * Cs 0 {2,S} {3,S} {4,S} {5,S}
  2    C 0 {1,S}
@@ -15529,6 +15543,12 @@
  2    Cs 0 {1,S}
  3    CO 0 {1,S}
  
+ Os-Cs(Cds-Sd)
+ 1  * Os 0 {2,S} {3,S}            
+ 2    Cs 0 {1,S}
+ 3    Cd 0 {1,S} {4,D}
+ 4    Sd 0 {3,D}
+
  Os-Cs(Cds-Cd)                                          
  1  * Os 0 {2,S} {3,S}
  2    Cs 0 {1,S}
@@ -15680,11 +15700,21 @@
  2    Cs 0 {1,S}
  3    Cd 0 {1,S}
 
+ Ss-CsCO                  
+ 1  * Ss 0 {2,S} {3,S}
+ 2    Cs 0 {1,S}
+ 3    CO 0 {1,S}
+
  Ss-C=SCs
  1  * Ss 0 {2,S} {3,S}
  2    Cs 0 {1,S}
  3    Cd 0 {1,S} {4,D}
  4    Sd 0 {3,D}
+
+ Ss-CsCd
+ 1  * Ss 0 {2,S} {3,S}
+ 2    Cs 0 {1,S}
+ 3    CO 0 {1,S}
 
  Ss-CsCt                                          
  1  * Ss 0 {2,S} {3,S}
@@ -15764,11 +15794,23 @@ CO-CsSs
 3    Ss 0 {1,S} 
 4    Cs 0 {1,S}
 
+CO-OsSs
+1  * C 0 {2,D} {3,S} {4,S}        
+2    Od 0 {1,D}
+3    Os 0 {1,S}
+4    Ss 0 {1,S}
+
 CS-OsH
 1  * C 0 {2,D} {3,S} {4,S}
 2    Sd 0 {1,D} 
 3    Os 0 {1,S} 
 4    H 0 {1,S}
+
+CS-OsOs  
+1  * C 0 {2,D} {3,S} {4,S}        
+2    Sd 0 {1,D} 
+3    Os 0 {1,S}
+4    Os 0 {1,S} 
 
 CS-CsOs
 1  * C 0 {2,D} {3,S} {4,S}
@@ -15787,3 +15829,5 @@ Ss-COH
 2    C 0 {1,S} {4,D}
 3    H 0 {1,S}
 4    Od 0 {2,D}
+
+
