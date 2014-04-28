@@ -329,9 +329,13 @@ public class Species {
     // ## operation findStablestThermoData()
     public void findStablestThermoData() {
         // #[ operation findStablestThermoData()
+
+	System.out.println("We are in findStablestThermoData");
+
         double H = chemGraph.getThermoData().getH298();
         ChemGraph stablest = chemGraph;
-        if (!resonanceIsomers.isEmpty()) {
+
+        if (!resonanceIsomers.isEmpty() && !stablest.fromprimarythermolibrary) {
             Iterator iter = resonanceIsomers.iterator();
             while (iter.hasNext()) {
                 ChemGraph g = (ChemGraph) iter.next();
@@ -431,8 +435,8 @@ public class Species {
 //                    }
 //                }
 //            }
-//	System.out.println(this.getName());
-//	System.out.println(resonanceIsomers.toString());
+	System.out.println(this.getName());
+	System.out.println(resonanceIsomers.toString());
 //        }
 //        /*
 //         * Graph g = Graph.copy(chemGraph.getGraph()); // generate node-electron stucture int nodeNumber =
