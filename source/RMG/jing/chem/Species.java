@@ -380,58 +380,70 @@ public class Species {
 
         // generaate RI for O2, removed, don't allow .o-o.
         // generateResonanceIsomersForOxygen();
-        if (chemGraph.getRadicalNumber() >= 2) {
+
+// The following part of the code has been commented out on April 28th 2014
+// This part of the code doesnt do what it is supposed to do
+// It tries to find 2 adjacent radical sites and make a double bond between them
+// However, there is no cycling over the different resonance isomers
+// and nodes are not updated after they have been changed making the new graph identical to the first graph
+// A working code doing the same has been written in the generateResonanceIsomersFromRadicalCenter() subroutine
+// but was flagged out due to wrong thermo for birads and unwanted reactions
+
+//        if (chemGraph.getRadicalNumber() >= 2) {
             // find if there are radicals next to each other and in that case
             // increase the bond order by 1
-            Iterator radicalnodeIter = chemGraph.getRadicalNode().iterator();
-            while (radicalnodeIter.hasNext()) {
-                Node n1 = (Node) radicalnodeIter.next();
-                Iterator arcs = n1.getNeighbor();
-                while (arcs.hasNext()) {
-                    Arc arc1 = (Arc) arcs.next();
-                    Bond bond1 = (Bond) arc1.getElement();
-                    Node n2 = arc1.getOtherNode(n1);
-                    Atom a2 = (Atom) n2.getElement();
-                    if (a2.isRadical() && !bond1.isTriple()) {
-                        Graph newG = Graph.copy(chemGraph.getGraph());
-                        Node newn1 = newG.getNodeAt(n1.getID());
-                        Atom newa1 = (Atom) newn1.getElement();
-                        newa1.changeRadical(-1, null);
-                        newn1.setElement(newa1);
-                        Node newn2 = newG.getNodeAt(n2.getID());
-                        Atom newa2 = (Atom) newn2.getElement();
-                        newa2.changeRadical(-1, null);
-                        newn2.setElement(newa2);
-                        Arc newarc1 = newG
-                                .getArcBetween(n2.getID(), n1.getID());
-                        Bond newb1 = (Bond) newarc1.getElement();
-                        newb1.changeBond(1);
-                        newarc1.setElement(newb1);
-                        ChemGraph newchemG;
-                        try {
-                            newchemG = ChemGraph.make(newG);
-                            addResonanceIsomer(newchemG);
-                        } catch (InvalidChemGraphException e) {
-                            // TODO Auto-generated catch block
-                            Logger.logStackTrace(e);
-                        } catch (ForbiddenStructureException e) {
-                            // TODO Auto-generated catch block
-                            Logger.logStackTrace(e);
-                        }
-                    }
-                }
-            }
-        }
-        /*
-         * Graph g = Graph.copy(chemGraph.getGraph()); // generate node-electron stucture int nodeNumber =
-         * g.getNodeNumber(); int [] electronOnNode = new int[nodeNumber+1]; Iterator nodeIter = g.getNodeList(); while
-         * (nodeIter.hasNext()) { Node node = (Node)nodeIter.next(); Atom atom = (Atom)node.getElement(); if
-         * (atom.isRadical()) { int ID = node.getID().intValue(); electronOnNode[ID] = atom.getRadicalNumber(); Iterator
-         * arcIter = node.getNeighbor(); arcLoop:while (arcIter.hasNext()) { Arc arc = (Arc)arcIter.next(); Bond bond =
-         * (Bond)arc.getElement(); if (bond.isBenzene() || bond.isTriple()) { electronOnNode[ID] = 1; break arcLoop; }
-         * else if (bond.isDouble()) { electronOnNode[node.getID().intValue()-1] += 1; } } } }
-         */
-        // combine them accordingly
+//	    System.out.println("Do we enter here");
+//            Iterator radicalnodeIter = chemGraph.getRadicalNode().iterator();
+//            while (radicalnodeIter.hasNext()) {
+//                Node n1 = (Node) radicalnodeIter.next();
+//                Iterator arcs = n1.getNeighbor();
+//                while (arcs.hasNext()) {
+//                    Arc arc1 = (Arc) arcs.next();
+//                    Bond bond1 = (Bond) arc1.getElement();
+//                    Node n2 = arc1.getOtherNode(n1);
+//                    Atom a2 = (Atom) n2.getElement();
+//                    if (a2.isRadical() && !bond1.isTriple()) {
+//                        Graph newG = Graph.copy(chemGraph.getGraph());
+//                        Node newn1 = newG.getNodeAt(n1.getID());
+//                        Atom newa1 = (Atom) newn1.getElement();
+//                        newa1.changeRadical(-1, null);
+//                        newn1.setElement(newa1);
+//                        Node newn2 = newG.getNodeAt(n2.getID());
+//                        Atom newa2 = (Atom) newn2.getElement();
+//                        newa2.changeRadical(-1, null);
+//                        newn2.setElement(newa2);
+//                        Arc newarc1 = newG
+//                                .getArcBetween(n2.getID(), n1.getID());
+//                        Bond newb1 = (Bond) newarc1.getElement();
+//                        newb1.changeBond(1);
+//                        newarc1.setElement(newb1);
+//                        ChemGraph newchemG;
+//                        try {
+//                            newchemG = ChemGraph.make(newG);
+//                            addResonanceIsomer(newchemG);
+//                        } catch (InvalidChemGraphException e) {
+//                            // TODO Auto-generated catch block
+//                            Logger.logStackTrace(e);
+//                        } catch (ForbiddenStructureException e) {
+//                            // TODO Auto-generated catch block
+//                            Logger.logStackTrace(e);
+//                        }
+//                    }
+//                }
+//            }
+//	System.out.println(this.getName());
+//	System.out.println(resonanceIsomers.toString());
+//        }
+//        /*
+//         * Graph g = Graph.copy(chemGraph.getGraph()); // generate node-electron stucture int nodeNumber =
+//         * g.getNodeNumber(); int [] electronOnNode = new int[nodeNumber+1]; Iterator nodeIter = g.getNodeList(); while
+//         * (nodeIter.hasNext()) { Node node = (Node)nodeIter.next(); Atom atom = (Atom)node.getElement(); if
+//         * (atom.isRadical()) { int ID = node.getID().intValue(); electronOnNode[ID] = atom.getRadicalNumber(); Iterator
+//         * arcIter = node.getNeighbor(); arcLoop:while (arcIter.hasNext()) { Arc arc = (Arc)arcIter.next(); Bond bond =
+//         * (Bond)arc.getElement(); if (bond.isBenzene() || bond.isTriple()) { electronOnNode[ID] = 1; break arcLoop; }
+//         * else if (bond.isDouble()) { electronOnNode[node.getID().intValue()-1] += 1; } } } }
+//         */
+//        // combine them accordingly
         // resonanceIsomer = combineElectronBetweenNodes(g);
         return;
         // #]
