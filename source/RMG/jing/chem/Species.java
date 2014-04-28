@@ -330,12 +330,10 @@ public class Species {
     public void findStablestThermoData() {
         // #[ operation findStablestThermoData()
 
-	System.out.println("We are in findStablestThermoData");
-
         double H = chemGraph.getThermoData().getH298();
         ChemGraph stablest = chemGraph;
 
-        if (!resonanceIsomers.isEmpty() && !stablest.fromprimarythermolibrary) {
+        if (!resonanceIsomers.isEmpty()) {
             Iterator iter = resonanceIsomers.iterator();
             while (iter.hasNext()) {
                 ChemGraph g = (ChemGraph) iter.next();
@@ -435,8 +433,6 @@ public class Species {
 //                    }
 //                }
 //            }
-	System.out.println(this.getName());
-	System.out.println(resonanceIsomers.toString());
 //        }
 //        /*
 //         * Graph g = Graph.copy(chemGraph.getGraph()); // generate node-electron stucture int nodeNumber =
@@ -491,6 +487,7 @@ public class Species {
 	if(chemGraph.graph.acyclic)
 		return;
 	LinkedHashSet processedChemGraph = new LinkedHashSet();
+        boolean foundResonanceIsomer = false;
 	for (int i = 0; i < chemGraph.graph.SSSRings.size(); i++) {
             LinkedList cycle = (LinkedList) chemGraph.graph.SSSRings.get(i);
 	    int deloc = 1; //integer that will remain 1 is delocalization can occur
@@ -518,6 +515,10 @@ public class Species {
 	    if (deloc==1) {
 		ChemGraph newCG = doRingDelocalization(chemGraph, i);
 		if (newCG != null && !processedChemGraph.contains(newCG)) {
+			if (!foundResonanceIsomer) {
+			   addResonanceIsomer(chemGraph);
+			   foundResonanceIsomer = true;
+			}		
 			addResonanceIsomer(newCG);
 			processedChemGraph.add(newCG);
 		}
@@ -543,7 +544,7 @@ public class Species {
         // only radical is considered here
         if (chemGraph.getRadicalNumber() <= 0)
             return;
-        addResonanceIsomer(chemGraph);
+	addResonanceIsomer(chemGraph);
         LinkedList undoChemGraph = new LinkedList();
         undoChemGraph.add(chemGraph);
 // Queue undoChemGraph = new Queue(4*chemGraph.getAtomNumber());
@@ -862,7 +863,11 @@ public class Species {
         double pT = System.currentTimeMillis();
         SpeciesDictionary dictionary = SpeciesDictionary.getInstance();
         // first try to get it from the dictionary (which now uses a cache to speed it up)
+
+//	spe = new Species(id, name, p_chemGraph); //make a fake  species
+
         Species spe = (Species) (dictionary.getSpecies(p_chemGraph));
+
         // if it wasn't there then it's unique and we need to add it
         if (spe == null) {
             String name = p_name;
@@ -1995,6 +2000,12 @@ public class Species {
         if (nasaThermoSource == null)
             nasaThermoSource = "Estimated by RMG using Group Additivity";
         return nasaThermoSource;
+    }
+
+    public LinkedHashSet getListResonanceIsomers() {
+        if (resonanceIsomers == null)
+            resonanceIsomers = new LinkedHashSet();
+	return resonanceIsomers;
     }
 
     public boolean equals(Species species) {
