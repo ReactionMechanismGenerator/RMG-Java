@@ -544,7 +544,7 @@ public class Species {
         // only radical is considered here
         if (chemGraph.getRadicalNumber() <= 0)
             return;
-	addResonanceIsomer(chemGraph);
+	boolean foundResonanceIsomer = false;
         LinkedList undoChemGraph = new LinkedList();
         undoChemGraph.add(chemGraph);
 // Queue undoChemGraph = new Queue(4*chemGraph.getAtomNumber());
@@ -628,6 +628,10 @@ public class Species {
 //        	}
             //System.out.println("Added the following component "+cg.toString());
             processedChemGraph.add(cg);
+	    if (!foundResonanceIsomer) {
+		foundResonanceIsomer = true;
+		addResonanceIsomer(chemGraph);
+	    }
             addResonanceIsomer(cg);
         }
         /*
