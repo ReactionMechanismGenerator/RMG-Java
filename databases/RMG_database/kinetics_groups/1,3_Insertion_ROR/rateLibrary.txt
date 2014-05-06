@@ -46,4 +46,12 @@ Arrhenius_EP
 // Estimate made from rule 707., updated by AG Vandeputte, CBSQB3 + HO, calculated for butadiene + H2O -> 2-butenol
 710.    Cd/H/De_Cd/H2	H_OH            300-2000	2.74E-5		4.73	0	52.3		0		0		0		0		4  CBS-QB3+HO
 
+// AG Vandeputte, calculated the rate coefficient for methanol + ethene -> propanol
+
+712. 	doublebond		R_OH		300-1500        1.00E-5         4.00            0               80.0            0               0               0               0               0               Default
+713.	Cd/unsub_Cd/unsub	CH3OH		300-1500	1.79E-5		3.97		0		78.7		0               0               0               0               0               CBS-QB3, HO
+
+
+
+
 	
