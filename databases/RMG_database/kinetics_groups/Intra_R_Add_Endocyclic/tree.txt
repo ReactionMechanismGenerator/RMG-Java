@@ -23,102 +23,118 @@ L1: Rn
             L4: R4_T_D
             L4: R4_T_T
             L4: R4_T_CO
-        L3: R4_B
-            L4: R4_B_D
-            L4: R4_B_T 
-            L4: R4_B_CO    
+//        L3: R4_B
+//            L4: R4_B_D
+//            L4: R4_B_T 
+//            L4: R4_B_CO    
     L2: R5
+
         L3: R5_SS
             L4: R5_SS_D
             L4: R5_SS_T
             L4: R5_SS_CO
-        L3: R5_SD
-            L4: R5_SD_D
-            L4: R5_SD_T
-            L4: R5_SD_CO
-        L3: R5_DS
-            L4: R5_DS_D
-            L4: R5_DS_T
-            L4: R5_DS_CO
-//        L3: R5_DS_allenic
-//            L4: R5_DS_allenic_D
-//            L4: R5_DS_allenic_CO
-        L3: R5_ST
-            L4: R5_ST_D
-            L4: R5_ST_T
-            L4: R5_ST_CO
-        L3: R5_TS
-            L4: R5_TS_D
-            L4: R5_TS_T
-            L4: R5_TS_CO
-        L3: R5_SB
-            L4: R5_SB_D
-            L4: R5_SB_T
-            L4: R5_SB_CO
-        L3: R5_BS
-            L4: R5_BS_D
-            L4: R5_BS_T
-            L4: R5_BS_CO
-        L3: R5_BB
-            L4: R5_BB_D
-            L4: R5_BB_T
-            L4: R5_BB_CO
+
+	L3: R5_SM
+	    L4: R5_SD
+		L5: R5_SD_D
+		L5: R5_SD_T
+		L5: R5_SD_CO
+	    L4: R5_ST
+		L5: R5_ST_D
+		L5: R5_ST_T
+		L5: R5_ST_CO
+//           L4: R5_SB
+//                L5: R5_SB_D
+//                L5: R5_SB_T
+//                L5: R5_SB_CO
+
+	L3: R5_MS
+	    L4: R5_DS
+		L5: R5_DS_D
+                L5: R5_DS_T
+                L5: R5_DS_CO
+            L4: R5_TS
+                L5: R5_TS_D
+                L5: R5_TS_T
+                L5: R5_TS_CO
+//            L4: R5_BS
+//                L5: R5_BS_D
+//                L5: R5_BS_T
+//                L5: R5_BS_CO
+//          L4: R5_DS_allenic
+//              L5: R5_DS_allenic_D
+//              L5: R5_DS_allenic_CO
+
+	L3: R5_MM
+//            L4: R5_BB
+//            	L5: R5_BB_D
+//            	L5: R5_BB_T
+//            	L5: R5_BB_CO
+
 //        L3: R5_SDD
-    L2: R6
-        L3: R6_RSR
-            L4: R6_SSR
-                L5: R6_SSS
-                    L6: R6_SSS_D
-                    L6: R6_SSS_T
-                    L6: R6_SSS_CO
-                L5: R6_SSM
-                    L6: R6_SSM_D
-                    L6: R6_SSM_T
-                    L6: R6_SSM_CO
-            L4: R6_DSR
-                L5: R6_DSS
-                    L6: R6_DSS_D
-                    L6: R6_DSS_T
-                    L6: R6_DSS_CO
-                L5: R6_DSM
-                    L6: R6_DSM_D
-                    L6: R6_DSM_T
-                    L6: R6_DSM_CO
-            L4: R6_TSR
-                L5: R6_TSS
-                    L6: R6_TSS_D
-                    L6: R6_TSS_T
-                    L6: R6_TSS_CO
-                L5: R6_TSM
-                    L6: R6_TSM_D
-                    L6: R6_TSM_T
-                    L6: R6_TSM_CO
-            L4: R6_BSR
-                L5: R6_BSS
-                    L6: R6_BSS_D
-                    L6: R6_BSS_T
-                    L6: R6_BSS_CO
-                L5: R6_BSM
-                    L6: R6_BSM_D
-                    L6: R6_BSM_T
-                    L6: R6_BSM_CO
-        L3: R6_SMS
-            L4: R6_SMS_D
-            L4: R6_SMS_T
-            L4: R6_SMS_CO
-        L3: R6_SBB
-            L4: R6_SBB_D
-            L4: R6_SBB_T
-            L4: R6_SBB_CO
-        L3: R6_BBS
-            L4: R6_BBS_D
-            L4: R6_BBS_T
-            L4: R6_BBS_CO
-    L2: R7
-    L2: R8
-    L2: R9
-	L3: R9_SSSSSD
-	L3: R9_SDSSSD
+
+    L2: R6plus
+
+	L3: R6
+            L4: R6_RSR
+            	L5: R6_SSR
+                    L6: R6_SSS
+                    	L7: R6_SSS_D
+                    	L7: R6_SSS_T
+                    	L7: R6_SSS_CO
+                    L6: R6_SSM
+                    	L7: R6_SSM_D
+                    	L7: R6_SSM_T
+                    	L7: R6_SSM_CO
+		L5: R6_MSR
+                    L6: R6_DSR
+                    	L7: R6_DSS
+                    	    L8: R6_DSS_D
+                    	    L8: R6_DSS_T
+                    	    L8: R6_DSS_CO
+                    	L7: R6_DSM
+                    	    L8: R6_DSM_D
+                    	    L8: R6_DSM_T
+                    	    L8: R6_DSM_CO
+            	    L6: R6_TSR
+                    	L7: R6_TSS
+                            L8: R6_TSS_D
+                            L8: R6_TSS_T
+                            L8: R6_TSS_CO
+                    	L7: R6_TSM
+                            L8: R6_TSM_D
+                            L8: R6_TSM_T
+                            L8: R6_TSM_CO
+//            	    L6: R6_BSR
+//                    	L7: R6_BSS
+//                            L8: R6_BSS_D
+//                            L8: R6_BSS_T
+//                            L8: R6_BSS_CO
+//                    	L7: R6_BSM
+//                            L8: R6_BSM_D
+//                            L8: R6_BSM_T
+//                            L8: R6_BSM_CO
+            L4: R6_SMS
+            	L5: R6_SMS_D
+            	L5: R6_SMS_T
+            	L5: R6_SMS_CO
+	   
+	    L4: R6_SMM
+//            	L5: R6_SBB
+//            	    L6: R6_SBB_D
+//            	    L6: R6_SBB_T
+//            	    L6: R6_SBB_CO
+
+//            L4: R6_BBS
+//            	L5: R6_BBS_D
+//            	L5: R6_BBS_T
+//            	L5: R6_BBS_CO
+
+    	L3: R7
+    	L3: R8
+    	L3: R9
+	    L4: R9_SSSSSD
+	    L4: R9_SDSSSD
 
 L1: multiplebond_intra
     L2: doublebond_intra

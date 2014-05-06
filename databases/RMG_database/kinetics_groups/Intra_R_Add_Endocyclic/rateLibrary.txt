@@ -8,7 +8,8 @@ Arrhenius_EP
 // JS, add 144., a dummy number for debugging, need to be deleted!!!!!!!!!!!!!!!!
 
 //		Rn			multiplebond_intra			radadd_intra		Temp.		A			n		a	E0		DA	Dn	Da	DE0	Rank
-809.	Rn			multiplebond_intra			radadd_intra		300-1500	1E+08		0		0	5		0	0	0	0	0
+809.	Rn                      multiplebond_intra                      radadd_intra            300-1500        1.0E+09        0.19    		0       20.0            0       0       0       0       5
+
 // These estimates are probably HO and should not be used
 //810.	R5_SS_D		doublebond_intra_pri_2H		radadd_intra_cs2H	300-1500	1.22E+08	1.05	0	15.82	0	0	0	0	2
 //811.	R6_SSS_D	doublebond_intra_pri_2H		radadd_intra_cs2H	300-1500	1.00E+08	0.855	0	5.9		0	0	0	0	2
@@ -20,6 +21,18 @@ Arrhenius_EP
 //815.	R6_SSS_D    doublebond_intra_pri_NdNd   radadd_intra_cs		300-1500	1.00E+10	0		0	50.9	0	0	0	0	2
 // A.G. Vandeputte flagged out as it does not match the reaction template any longer
 //816.	R5_DS_allenic_D		doublebond_intra_secDe_2H		radadd_intra_cdsingleH			298-3000	2.82E+11	0.12		0	14.82	   0	0   0	0   2 RRHO, CBS-QB3 treatment of H2C=C=CH-CH=CH. cyclization by gmagoon
+
+// A.G. Vandeputte Slowing down some heavily constrained intra additions
+
+817.	R5_SM			multiplebond_intra                      radadd_intra		300-1500        1.00E+10        0.19    0       30.0   0       0       0       0       5       Guess
+818.	R6_SMM			multiplebond_intra                      radadd_intra            300-1500        1.00E+10        0.19    0       35.0   0       0       0       0       5       Guess
+
+// A.G Vandeputte calculated rate coefficients, BMK/cbsb7 + 1D-HR
+821.    R5_DS_D                 doublebond_intra_pri_2H                 radadd_intra_cdsingleH  300-1500        3.73E+10        0.19    0       11.9    0       0       0       0       3       BMK/cbsb7 + 1D-HR
+822.    R6_DSS_D                doublebond_intra_pri_2H                 radadd_intra_cdsingleH  300-1500        1.03E+10        0.19    0       4.0     0       0       0       0       3       BMK/cbsb7 + 1D-HR
+
+823.    R5_MS                   multiplebond_intra                      radadd_intra_cdsingle   300-1500        3.73E+10        0.19    0       11.9    0       0       0       0       5       Guess, i.e. 821
+824.    R6_MSR                  multiplebond_intra                      radadd_intra_cdsingle	300-1500        1.03E+10        0.19    0       4.1     0       0       0       0       5       Guess, i.e. 822
 
 // A.G. Vandeputte 
 // Better estimates for a few endocyclic additions
