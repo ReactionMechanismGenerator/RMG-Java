@@ -93,6 +93,12 @@ Arrhenius_EP
 503.		C_rad/H2/Cd		C_rad/Cs3		300-2500	7.24E+14	-0.75	0.0	-0.13	0	0	0	0	4	Tsang (1991) Chemical kinetic data base for combustion chemistry. Part V. Propene Literature review
 504.		C_rad/H2/Cd		C_rad/H/CdCd		300-2500	1.02E+13        0.00    0.0     -0.26  	0       0       0       0       5       Better estimate then averaging out, Tsang (1991) Chemical kinetic data base for combustion chemistry. Part V. Propene Literature review
 
+// A. G. Vandeputte
+// Some estimated values for propyne recombination reactions
+505. 		Cd_allenic		Cd_allenic		300-2200	4.29E9		0.8	0.0	-1.03	0	0	0	0	3	2007GEO/MIL4259-4268
+506.		Cd_allenic		C_methyl		300-2500	5.00E+12	0.0     0.0     0.0     0       0       0       0       5       Estimated value, agrees with 1987WU/KER6291
+507.		Cd_allenic		H_rad			300-2500	1.00E+13	0.0     0.0     0.0     0       0       0       0       5       Estimated value
+
 3000	H_rad		SsJ-H	300-1500	5.77E+15	0	0	0.43	0	0	0	0	3	GA Jonas x 3 for spinorbit
 //3001	C_methyl	SsJ-H	300-1500	4.41E+14	0	0	0.29	0	0	0	0	3	GA Jonas x 3 for spinorbit
 //3002	C_rad/H2/Cs	SsJ-H	300-1500	1.87E+14	0	0	1.14	0	0	0	0	3	GA Jonas x 3 for spinorbit
