@@ -207,28 +207,43 @@ Cd_rad
 
 Cd_pri_rad
 1 * C 1 {2,D}, {3,S}
-2 C 0 {1,D}
+2 C 0 {1,D} {4,S} {5,S}
 3 H 0 {1,S}
+4 R 0 {2,S}
+5 R 0 {2,S}
 
 Cd_sec_rad
 1 * C 1 {2,D}, {3,S}
-2 C 0 {1,D}
-3 {R!H} 0 {1,S}
+2 C 0 {1,D} {4,S} {5,S}
+3 {R!H} 0 {1,S} 
+4 R 0 {2,S}
+5 R 0 {2,S}
 
 Cd_rad/NonDe
 1 * C 1 {2,D}, {3,S}
-2 C 0 {1,D}
+2 C 0 {1,D} {4,S} {5,S}
 3 {Cs,O} 0 {1,S}
+4 R 0 {2,S}
+5 R 0 {2,S}
 
 Cd_rad/OneDe
 1 * C 1 {2,D}, {3,S}
-2 C 0 {1,D}
+2 C 0 {1,D} {4,S} {5,S}
 3 {Cd,Ct,Cb,CO} 0 {1,S}
+4 R 0 {2,S}
+5 R 0 {2,S}
 
 Cd_rad/Cd
 1 * C 1 {2,D}, {3,S}
-2 C 0 {1,D}
+2 C 0 {1,D} {4,S} {5,S}
 3 Cd 0 {1,S}
+4 R 0 {2,S}
+5 R 0 {2,S}
+
+Cd_allenic
+1 * C 1 {2,D}, {3,S}
+2 Cdd 0 {1,D}
+3 R 0 {1,S}
 
 Ct_rad
 1 * C 1 {2,T}
