@@ -2605,7 +2605,8 @@ Arrhenius_EP
 // This value looks on the high side, also no CdsJ=Cdd in 1,3-Hexadiene...
 // A.G. Vandeputte, BMK/cbsb7 no 1D-HR (slow anyway)
 3055  	Cds-HH_Cds-HH  	CdsJ=Cdd        300-1500	1.04E+00        3.05    0	13.1	0       0       0       0       4	A.G. Vandeputte, BMK/cbsb7
-3056  	Ct-H_Ct-H   	CdsJ=Cdd        300-1500	1.70E+05        1.64	0	13.8	0       0       0       0       4       A.G. Vandeputte, BMK/cbsb7
+3133  	Ct-H_Ct-H   	CdsJ=Cdd        300-1500	1.70E+05        1.64	0	13.8	0       0       0       0       4       A.G. Vandeputte, BMK/cbsb7
+3134	Ca_Cds-HH	CdsJ=Cdd        300-1500        1.04E+00        3.05    0       13.1    0       0       0       0       5	A.G. Vandeputte, Estimate equal to 3055
 
 //	Oxygen
 
