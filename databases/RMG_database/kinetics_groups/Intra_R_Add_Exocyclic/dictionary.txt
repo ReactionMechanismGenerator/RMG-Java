@@ -1,7 +1,7 @@
 //f27_intra_radical_addition_to_exocyclic_radical
 
 Rn
-Union {R4, R5, R6, R7}
+Union {R4, R5, R6, R7plus}
 
 //R4 groups
 
@@ -144,6 +144,13 @@ R5_SS_CO
 4 *2 CO 0 {3,S} {5,D}
 5 *3 Od 0 {4,D}
 
+R5_SM
+1 *1 {R!H} 1 {2,S}
+2 *4 {Cd,Ct,Cb} 0 {1,S} {3,{B,T,D}}
+3 *5 {Cd,Ct,Cb} 0 {2,{B,T,D}} {4,S}
+4 *2 {Cd,Ct,CO} 0 {3,S} {5,{D,T}}
+5 *3 {Cd,Ct,Od,Cdd} 0 {4,{D,T}}
+
 R5_SD
 1 *1 {R!H} 1 {2,S}
 2 *4 Cd 0 {1,S} {3,D}
@@ -171,6 +178,13 @@ R5_SD_CO
 3 *5 Cd 0 {2,D} {4,S}
 4 *2 CO 0 {3,S} {5,D}
 5 *3 Od 0 {4,D}
+
+R5_MS
+1 *1 {Cd,Ct,Cb} 1 {2,{B,T,D}}
+2 *4 {Cd,Ct,Cb} 0 {1,{B,T,D}} {3,S}
+3 *5 {R!H} 0 {2,S} {4,S}
+4 *2 {Cd,Ct,CO} 0 {3,S} {5,{D,T}}
+5 *3 {Cd,Ct,Od,Cdd} 0 {4,{D,T}}
 
 R5_DS
 1 *1 Cd 1 {2,D}
@@ -312,6 +326,14 @@ R5_BS_CO
 4 *2 CO 0 {3,S} {5,D}
 5 *3 Od 0 {4,D}
 
+R5_MM
+1 *1 {Cd} 1 {2,{B,D}}
+2 *4 {Cdd,Cbf} 0 {1,{B,D}} {3,{B,D}}
+3 *5 {Cb,Cd} 0 {2,{B,D}} {4,S}
+4 *2 {Cd,Ct,CO} 0 {3,S} {5,{D,T}}
+5 *3 {Cd,Ct,Od,Cdd} 0 {4,{D,T}}
+
+
 //R6 groups
 
 R6
@@ -401,6 +423,14 @@ R6_SSM_CO
 4 *5 {Cd,Ct,Cb} 0 {3,{D,T,B}} {5,S}
 5 *2 CO 0 {4,S} {6,D}
 6 *3 Od 0 {5,D}
+
+R6_MSR
+1 *1 {Cd,Ct,Cb} 1 {2,{D,T,B}}
+2 *4 {Cd,Ct,Cb} 0 {1,{D,T,B}} {3,S}
+3 *6 {R!H} 0 {2,S} {4,{S,D,T,B}}
+4 *5 {R!H} 0 {3,{S,D,T,B}} {5,S}
+5 *2 {Cd,Ct,CO} 0 {4,S} {6,{D,T}}
+6 *3 {Cd,Ct,Od,Cdd} 0 {5,{D,T}}
 
 R6_DSR
 1 *1 Cd 1 {2,D}
@@ -650,6 +680,14 @@ R6_SMS_CO
 5 *2 CO 0 {4,S} {6,D}
 6 *3 Od 0 {5,D}
 
+R6_SMM
+1 *1 {R!H} 1 {2,S}
+2 *4 {Cd,Cb} 0 {1,S} {3,{D,B}}
+3 *6 {Cdd,Cbf} 0 {2,{D,B}} {4,{D,B}}
+4 *5 {Cd,Cb} 0 {3,{D,B}} {5,S}
+5 *2 {Cd,Ct,CO} 0 {4,S} {6,{D,T}}
+6 *3 {Cd,Ct,Od,Cdd} 0 {5,{D,T}}
+
 R6_SBB
 1 *1 {R!H} 1 {2,S}
 2 *4 Cb 0 {1,S} {3,B}
@@ -715,6 +753,9 @@ R6_BBS_CO
 6 *3 Od 0 {5,D}
 
 //R7 groups
+
+R7plus
+Union {R7, R8, R9}
 
 R7
 1 *1 {R!H} 1 {2,{S,D,T,B}}
@@ -814,6 +855,15 @@ R7_SSSM_CO
 5 *5 {Cd,Ct,Cb} 0 {4,{D,T,B}} {6,S}
 6 *2 CO 0 {5,S} {7,D}
 7 *3 Od 0 {6,D}
+
+R7_MSSR
+1 *1 {Cd,Ct,Cb} 1 {2,{D,B,T}}
+2 *4 {Cd,Ct,Cb} 0 {1,{D,B,T}} {3,S}
+3 *6 {R!H} 0 {2,S} {4,S}
+4 *7 {R!H} 0 {3,S} {5,{S,D,T,B}}
+5 *5 {R!H} 0 {4,{S,D,T,B}} {6,S}
+6 *2 {Cd,Ct,CO} 0 {5,S} {7,{D,T}}
+7 *3 {Cd,Ct,Od,Cdd} 0 {6,{D,T}}
 
 R7_DSSR
 1 *1 Cd 1 {2,D}
@@ -1103,6 +1153,15 @@ R7_SSMS_CO
 6 *2 CO 0 {5,S} {7,D}
 7 *3 Od 0 {6,D}
 
+R7_MSMS
+1 *1 {Cd,Ct,Cb} 1 {2,{B,T,D}}
+2 *4 {Cd,Ct,Cb} 0 {1,{B,T,D}} {3,S}
+3 *6 {Cd,Ct,Cb} 0 {2,S} {4,{D,T,B}}
+4 *7 {Cd,Ct,Cb} 0 {3,{D,T,B}} {5,S}
+5 *5 {R!H} 0 {4,S} {6,S}
+6 *2 {Cd,Ct,CO} 0 {5,S} {7,{D,T}}
+7 *3 {Cd,Ct,Od,Cdd} 0 {6,{D,T}}
+
 R7_DSMS
 1 *1 Cd 1 {2,D}
 2 *4 Cd 0 {1,D} {3,S}
@@ -1292,6 +1351,15 @@ R7_SMSM_CO
 6 *2 CO 0 {5,S} {7,D}
 7 *3 Od 0 {6,D}
 
+R7_MMSR
+1 *1 {Cb,Cd} 1 {2,{B,D}}
+2 *4 {Cbf,Cdd} 0 {1,{B,D}} {3,{B,D}}
+3 *6 {Cb,Cd} 0 {2,{B,D}} {4,S}
+4 *7 {R!H} 0 {3,S} {5,{S,D,T,B}}
+5 *5 {R!H} 0 {4,{S,D,T,B}} {6,S}
+6 *2 {Cd,Ct,CO} 0 {5,S} {7,{D,T}}
+7 *3 {Cd,Ct,Od,Cdd} 0 {6,{D,T}}
+
 R7_BBSR
 1 *1 Cb 1 {2,B}
 2 *4 Cbf 0 {1,B} {3,B}
@@ -1372,6 +1440,15 @@ R7_BBSM_CO
 5 *5 {Cd,Ct,Cb} 0 {4,{D,T,B}} {6,S}
 6 *2 CO 0 {5,S} {7,D}
 7 *3 Od 0 {6,D}
+
+R7_RSMM
+1 *1 {R!H} 1 {2,{S,D,T,B}}
+2 *4 {R!H} 0 {1,{S,D,T,B}} {3,S}
+3 *6 {Cb,Cd} 0  {2,S} {4,{D,B}}
+4 *7 {Cbf,Cdd} 0 {3,{D,B}} {5,{D,B}}
+5 *5 {Cb,Cd} 0 {4,{D,B}} {6,S}
+6 *2 {Cd,Ct,CO} 0 {5,S} {7,{D,T}}
+7 *3 {Cd,Ct,Od,Cdd} 0 {6,{D,T}}
 
 R7_RSBB
 1 *1 {R!H} 1 {2,{S,D,T,B}}
@@ -1526,6 +1603,15 @@ R7_BSBB_CO
 6 *2 CO 0 {5,S} {7,D}
 7 *3 Od 0 {6,D}
 
+R7_SMMS
+1 *1 {R!H} 1 {2,S}
+2 *4 {Cb,Cd} 0 {1,S} {3,{D,B}}
+3 *6 {Cbf,Cdd} 0 {2,{D,B}} {4,{D,B}}
+4 *7 {Cb,Cd} 0 {3,{D,B}} {5,S}
+5 *5 {R!H} 0 {4,S} {6,S}
+6 *2 {Cd,Ct,CO} 0 {5,S} {7,{D,T}}
+7 *3 {Cd,Ct,Od,Cdd} 0 {6,{D,T}}
+
 R7_SBBS
 1 *1 {R!H} 1 {2,S}
 2 *4 Cb 0 {1,S} {3,B}
@@ -1561,6 +1647,32 @@ R7_SBBS_CO
 5 *5 {R!H} 0 {4,S} {6,S}
 6 *2 CO 0 {5,S} {7,D}
 7 *3 Od 0 {6,D}
+
+//R8 groups
+
+R8
+1 *1 {R!H} 1 {2,{S,D,T,B}}
+2 *4 {R!H} X {1,{S,D,T,B}}, {3,{S,D,T,B}}
+3 *6 {R!H} X {2,{S,D,T,B}}, {4,{S,D,T,B}}
+4 *7 {R!H} X {3,{S,D,T,B}}, {5,{S,D,T,B}}
+5 *8 {R!H} X {4,{S,D,T,B}}, {6,{S,D,T,B}}
+6 *5 {R!H} X {5,{S,D,T,B}}, {7,S}
+7 *2 {Cd,Ct,CO} 0 {6,S}, {8,{D,T}}
+8 *3 {Cd,Ct,Od,Sd} 0 {7,{D,T}}
+
+//R9 groups
+
+R9
+1 *1 {R!H} 1 {2,{S,D,T,B}}
+2 *4 {R!H} X {1,{S,D,T,B}}, {3,{S,D,T,B}}
+3 *6 {R!H} X {2,{S,D,T,B}}, {4,{S,D,T,B}}
+4 *7 {R!H} X {3,{S,D,T,B}}, {5,{S,D,T,B}}
+5 *8 {R!H} X {4,{S,D,T,B}}, {6,{S,D,T,B}}
+6 *9 {R!H} X {5,{S,D,T,B}}, {7,{S,D,T,B}}
+7 *5 {R!H} X {6,{S,D,T,B}}, {8,S}
+8 *2 {Cd,Ct,CO} 0 {7,S}, {9,{D,T}}
+9 *3 {Cd,Ct,Od,Sd} 0 {8,{D,T}}
+
 
 multiplebond_intra
 1 *2 {Cd,Ct,CO} 0 {2,{D,T}}

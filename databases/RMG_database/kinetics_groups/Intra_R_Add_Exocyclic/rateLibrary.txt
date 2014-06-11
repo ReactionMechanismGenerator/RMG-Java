@@ -7,13 +7,32 @@ Arrhenius_EP
 // f27 intra_radical_addition_form_exocyclic_radical
 
 //		Rn			multiplebond_intra			radadd_intra		Temp.		A			n	a		E0		DA		Dn		Da		DE0		Rank	Comments
-807.	Rn			multiplebond_intra			radadd_intra		300-1500	1E+10		0		0		5		0		0		0		0		0
+// A.G. Vandeputte updating head value similar to the most standard addition, R6_SSS_D
+
+807. Rn                      multiplebond_intra                      radadd_intra            300-1500        1.00E+09        0.21    0       20.0    0       0       0       0       0       Aaron Vandeputte small GA method
+
 808.	R6_SSS_D	doublebond_intra_2H_pri		radadd_intra_cs2H	300-1500	2.51E+10	0		0		6.85	0		0		0		0		2
 809.	R4_S_D     	doublebond_intra_2H_pri     radadd_intra_csHDe	300-1500	1.00E+10	0		0		25.85	0		0		0		0		2
 810. 	R6_SMS_D	doublebond_intra			radadd_intra_cs		300-1500	1E+10		0		0		46.85	0		0		0		0		2
 811.	R6_SSM_D    doublebond_intra     		radadd_intra_cs 	300-1500	1E+10		0		0		46.85	0		0		0		0		2
 812.	R5_SD_D     doublebond_intra_HNd_pri    radadd_intra_csHNd	300-1500	1E+10		0		0		46.85	0		0		0		0		2 
-813		R5_SS_D		doublebond_intra_2H_pri		radadd_intra_O		600-2000	2.724E+10	0.478	0		29.169	*3		0		0		2		3	MRH CBS-QB3 calculations with 1d h.r. corrections
+813.		R5_SS_D		doublebond_intra_2H_pri		radadd_intra_O		600-2000	2.724E+10	0.478	0		29.169	*3		0		0		2		3	MRH CBS-QB3 calculations with 1d h.r. corrections
+
+// A.G. Vandeputte slowing down some heavily constrained additions
+814.	R6_SSM		 	multiplebond_intra                      radadd_intra            300-1500	1.00E+11        0.21    0       30.0    0       0       0       0       5       Guess        
+815. 	R6_SMM			multiplebond_intra                      radadd_intra            300-1500        1.00E+11        0.21    0       40.0    0       0       0       0       5       Guess
+816.	R7_MSMS			multiplebond_intra                      radadd_intra            300-1500        1.00E+11        0.21    0       30.0    0       0       0       0       5       Guess
+817.    R7_SMSM                 multiplebond_intra                      radadd_intra            300-1500        1.00E+11        0.21    0       40.0    0       0       0       0       5       Guess
+818.	R7_MMSR			multiplebond_intra                      radadd_intra            300-1500        1.00E+11        0.21    0       30.0    0       0       0       0       5       Guess
+819.	R7_RSMM			multiplebond_intra                      radadd_intra            300-1500        1.00E+11        0.21    0       40.0    0       0       0       0       5       Guess
+820.	R7_SMMS			multiplebond_intra                      radadd_intra            300-1500        1.00E+11        0.21    0       45.0    0       0       0       0       5       Guess
+
+// A.G Vandeputte calculated rate coefficients, BMK/cbsb7 + 1D-HR
+821.	R5_DS_D 		doublebond_intra_2H_pri			radadd_intra_cdsingleH	300-1500	5.41E+10	0.21	0	12.8	0       0       0       0       3       BMK/cbsb7 + 1D-HR
+822.	R6_DSS_D		doublebond_intra_2H_pri         	radadd_intra_cdsingleH	300-1500	8.73E+09	0.21	0	4.0	0       0       0       0       3       BMK/cbsb7 + 1D-HR
+
+823.	R5_MS			multiplebond_intra			radadd_intra_cdsingle	300-1500        5.41E+10        0.21    0       12.8    0       0       0       0       5	Guess, i.e. 821
+824.	R6_MSR			multiplebond_intra			radadd_intra_cdsingle	300-1500        8.73E+09        0.21    0       4.0     0       0       0       0       5	Guess, i.e. 822
 
 // A.G. Vandeputte
 // Better estimates for a few exocyclic additions
@@ -187,61 +206,118 @@ Arrhenius_EP
 1065	R5_SS_D	doublebond_intra_NdCt_pri	radadd_intra_csHCt	300-1500	5.71E+11	0.21	0	19.62	0	0	0	0	0	Aaron Vandeputte small GA method
 1066	R5_SS_D	doublebond_intra_NdCt_pri	radadd_intra_csNdCt	300-1500	6.01E+11	0.21	0	20.63	0	0	0	0	0	Aaron Vandeputte small GA method
 1067	R5_SS_D	doublebond_intra_NdCt_pri	radadd_intra_cdsingleH	300-1500	2.26E+12	0.21	0	11.34	0	0	0	0	0	Aaron Vandeputte small GA method
-1068	R7_SSSS_D	doublebond_intra_2H_pri	radadd_intra_cs2H	300-1500	1.71E+09	0.21	0	8.75	0	0	0	0	0	Aaron Vandeputte small GA method
-1069	R7_SSSS_D	doublebond_intra_2H_pri	radadd_intra_csHNd	300-1500	1.14E+10	0.21	0	8.97	0	0	0	0	0	Aaron Vandeputte small GA method
-1070	R7_SSSS_D	doublebond_intra_2H_pri	radadd_intra_csNdNd	300-1500	3.59E+09	0.21	0	8.54	0	0	0	0	0	Aaron Vandeputte small GA method
-1071	R7_SSSS_D	doublebond_intra_2H_pri	radadd_intra_csHCd	300-1500	2.42E+10	0.21	0	17.15	0	0	0	0	0	Aaron Vandeputte small GA method
-1072	R7_SSSS_D	doublebond_intra_2H_pri	radadd_intra_csNdCd	300-1500	3.56E+09	0.21	0	17.76	0	0	0	0	0	Aaron Vandeputte small GA method
-1073	R7_SSSS_D	doublebond_intra_2H_pri	radadd_intra_csHCt	300-1500	8.36E+09	0.21	0	14.46	0	0	0	0	0	Aaron Vandeputte small GA method
-1074	R7_SSSS_D	doublebond_intra_2H_pri	radadd_intra_csNdCt	300-1500	8.80E+09	0.21	0	15.48	0	0	0	0	0	Aaron Vandeputte small GA method
-1075	R7_SSSS_D	doublebond_intra_2H_pri	radadd_intra_cdsingleH	300-1500	3.31E+10	0.21	0	6.18	0	0	0	0	0	Aaron Vandeputte small GA method
-1076	R7_SSSS_D	doublebond_intra_HNd_pri	radadd_intra_cs2H	300-1500	1.80E+10	0.21	0	8.62	0	0	0	0	0	Aaron Vandeputte small GA method
-1077	R7_SSSS_D	doublebond_intra_HNd_pri	radadd_intra_csHNd	300-1500	1.20E+11	0.21	0	8.84	0	0	0	0	0	Aaron Vandeputte small GA method
-1078	R7_SSSS_D	doublebond_intra_HNd_pri	radadd_intra_csNdNd	300-1500	3.77E+10	0.21	0	8.41	0	0	0	0	0	Aaron Vandeputte small GA method
-1079	R7_SSSS_D	doublebond_intra_HNd_pri	radadd_intra_csHCd	300-1500	2.54E+11	0.21	0	17.02	0	0	0	0	0	Aaron Vandeputte small GA method
-1080	R7_SSSS_D	doublebond_intra_HNd_pri	radadd_intra_csNdCd	300-1500	3.74E+10	0.21	0	17.63	0	0	0	0	0	Aaron Vandeputte small GA method
-1081	R7_SSSS_D	doublebond_intra_HNd_pri	radadd_intra_csHCt	300-1500	8.78E+10	0.21	0	14.33	0	0	0	0	0	Aaron Vandeputte small GA method
-1082	R7_SSSS_D	doublebond_intra_HNd_pri	radadd_intra_csNdCt	300-1500	9.24E+10	0.21	0	15.35	0	0	0	0	0	Aaron Vandeputte small GA method
-1083	R7_SSSS_D	doublebond_intra_HNd_pri	radadd_intra_cdsingleH	300-1500	3.48E+11	0.21	0	6.05	0	0	0	0	0	Aaron Vandeputte small GA method
-1084	R7_SSSS_D	doublebond_intra_NdNd_pri	radadd_intra_cs2H	300-1500	3.01E+10	0.21	0	8.35	0	0	0	0	0	Aaron Vandeputte small GA method
-1085	R7_SSSS_D	doublebond_intra_NdNd_pri	radadd_intra_csHNd	300-1500	2.01E+11	0.21	0	8.57	0	0	0	0	0	Aaron Vandeputte small GA method
-1086	R7_SSSS_D	doublebond_intra_NdNd_pri	radadd_intra_csNdNd	300-1500	6.32E+10	0.21	0	8.14	0	0	0	0	0	Aaron Vandeputte small GA method
-1087	R7_SSSS_D	doublebond_intra_NdNd_pri	radadd_intra_csHCd	300-1500	4.26E+11	0.21	0	16.74	0	0	0	0	0	Aaron Vandeputte small GA method
-1088	R7_SSSS_D	doublebond_intra_NdNd_pri	radadd_intra_csNdCd	300-1500	6.26E+10	0.21	0	17.35	0	0	0	0	0	Aaron Vandeputte small GA method
-1089	R7_SSSS_D	doublebond_intra_NdNd_pri	radadd_intra_csHCt	300-1500	1.47E+11	0.21	0	14.06	0	0	0	0	0	Aaron Vandeputte small GA method
-1090	R7_SSSS_D	doublebond_intra_NdNd_pri	radadd_intra_csNdCt	300-1500	1.55E+11	0.21	0	15.07	0	0	0	0	0	Aaron Vandeputte small GA method
-1091	R7_SSSS_D	doublebond_intra_NdNd_pri	radadd_intra_cdsingleH	300-1500	5.83E+11	0.21	0	5.78	0	0	0	0	0	Aaron Vandeputte small GA method
-1092	R7_SSSS_D	doublebond_intra_HCd_pri	radadd_intra_cs2H	300-1500	1.04E+10	0.21	0	5.56	0	0	0	0	0	Aaron Vandeputte small GA method
-1093	R7_SSSS_D	doublebond_intra_HCd_pri	radadd_intra_csHNd	300-1500	6.96E+10	0.21	0	5.78	0	0	0	0	0	Aaron Vandeputte small GA method
-1094	R7_SSSS_D	doublebond_intra_HCd_pri	radadd_intra_csNdNd	300-1500	2.18E+10	0.21	0	5.35	0	0	0	0	0	Aaron Vandeputte small GA method
-1095	R7_SSSS_D	doublebond_intra_HCd_pri	radadd_intra_csHCd	300-1500	1.47E+11	0.21	0	13.95	0	0	0	0	0	Aaron Vandeputte small GA method
-1096	R7_SSSS_D	doublebond_intra_HCd_pri	radadd_intra_csNdCd	300-1500	2.16E+10	0.21	0	14.57	0	0	0	0	0	Aaron Vandeputte small GA method
-1097	R7_SSSS_D	doublebond_intra_HCd_pri	radadd_intra_csHCt	300-1500	5.08E+10	0.21	0	11.27	0	0	0	0	0	Aaron Vandeputte small GA method
-1098	R7_SSSS_D	doublebond_intra_HCd_pri	radadd_intra_csNdCt	300-1500	5.35E+10	0.21	0	12.29	0	0	0	0	0	Aaron Vandeputte small GA method
-1099	R7_SSSS_D	doublebond_intra_HCd_pri	radadd_intra_cdsingleH	300-1500	2.01E+11	0.21	0	2.99	0	0	0	0	0	Aaron Vandeputte small GA method
-1100	R7_SSSS_D	doublebond_intra_NdCd_pri	radadd_intra_cs2H	300-1500	1.25E+10	0.21	0	5.80	0	0	0	0	0	Aaron Vandeputte small GA method
-1101	R7_SSSS_D	doublebond_intra_NdCd_pri	radadd_intra_csHNd	300-1500	8.34E+10	0.21	0	6.02	0	0	0	0	0	Aaron Vandeputte small GA method
-1102	R7_SSSS_D	doublebond_intra_NdCd_pri	radadd_intra_csNdNd	300-1500	2.62E+10	0.21	0	5.59	0	0	0	0	0	Aaron Vandeputte small GA method
-1103	R7_SSSS_D	doublebond_intra_NdCd_pri	radadd_intra_csHCd	300-1500	1.77E+11	0.21	0	14.19	0	0	0	0	0	Aaron Vandeputte small GA method
-1104	R7_SSSS_D	doublebond_intra_NdCd_pri	radadd_intra_csNdCd	300-1500	2.59E+10	0.21	0	14.80	0	0	0	0	0	Aaron Vandeputte small GA method
-1105	R7_SSSS_D	doublebond_intra_NdCd_pri	radadd_intra_csHCt	300-1500	6.09E+10	0.21	0	11.51	0	0	0	0	0	Aaron Vandeputte small GA method
-1106	R7_SSSS_D	doublebond_intra_NdCd_pri	radadd_intra_csNdCt	300-1500	6.41E+10	0.21	0	12.52	0	0	0	0	0	Aaron Vandeputte small GA method
-1107	R7_SSSS_D	doublebond_intra_NdCd_pri	radadd_intra_cdsingleH	300-1500	2.41E+11	0.21	0	3.23	0	0	0	0	0	Aaron Vandeputte small GA method
-1108	R7_SSSS_D	doublebond_intra_HCt_pri	radadd_intra_cs2H	300-1500	2.26E+10	0.21	0	5.39	0	0	0	0	0	Aaron Vandeputte small GA method
-1109	R7_SSSS_D	doublebond_intra_HCt_pri	radadd_intra_csHNd	300-1500	1.51E+11	0.21	0	5.61	0	0	0	0	0	Aaron Vandeputte small GA method
-1110	R7_SSSS_D	doublebond_intra_HCt_pri	radadd_intra_csNdNd	300-1500	4.73E+10	0.21	0	5.18	0	0	0	0	0	Aaron Vandeputte small GA method
-1111	R7_SSSS_D	doublebond_intra_HCt_pri	radadd_intra_csHCd	300-1500	3.19E+11	0.21	0	13.78	0	0	0	0	0	Aaron Vandeputte small GA method
-1112	R7_SSSS_D	doublebond_intra_HCt_pri	radadd_intra_csNdCd	300-1500	4.69E+10	0.21	0	14.39	0	0	0	0	0	Aaron Vandeputte small GA method
-1113	R7_SSSS_D	doublebond_intra_HCt_pri	radadd_intra_csHCt	300-1500	1.10E+11	0.21	0	11.10	0	0	0	0	0	Aaron Vandeputte small GA method
-1114	R7_SSSS_D	doublebond_intra_HCt_pri	radadd_intra_csNdCt	300-1500	1.16E+11	0.21	0	12.11	0	0	0	0	0	Aaron Vandeputte small GA method
-1115	R7_SSSS_D	doublebond_intra_HCt_pri	radadd_intra_cdsingleH	300-1500	4.37E+11	0.21	0	2.82	0	0	0	0	0	Aaron Vandeputte small GA method
-1116	R7_SSSS_D	doublebond_intra_NdCt_pri	radadd_intra_cs2H	300-1500	1.31E+10	0.21	0	5.67	0	0	0	0	0	Aaron Vandeputte small GA method
-1117	R7_SSSS_D	doublebond_intra_NdCt_pri	radadd_intra_csHNd	300-1500	8.79E+10	0.21	0	5.89	0	0	0	0	0	Aaron Vandeputte small GA method
-1118	R7_SSSS_D	doublebond_intra_NdCt_pri	radadd_intra_csNdNd	300-1500	2.76E+10	0.21	0	5.46	0	0	0	0	0	Aaron Vandeputte small GA method
-1119	R7_SSSS_D	doublebond_intra_NdCt_pri	radadd_intra_csHCd	300-1500	1.86E+11	0.21	0	14.06	0	0	0	0	0	Aaron Vandeputte small GA method
-1120	R7_SSSS_D	doublebond_intra_NdCt_pri	radadd_intra_csNdCd	300-1500	2.73E+10	0.21	0	14.68	0	0	0	0	0	Aaron Vandeputte small GA method
-1121	R7_SSSS_D	doublebond_intra_NdCt_pri	radadd_intra_csHCt	300-1500	6.42E+10	0.21	0	11.38	0	0	0	0	0	Aaron Vandeputte small GA method
-1122	R7_SSSS_D	doublebond_intra_NdCt_pri	radadd_intra_csNdCt	300-1500	6.76E+10	0.21	0	12.40	0	0	0	0	0	Aaron Vandeputte small GA method
-1123	R7_SSSS_D	doublebond_intra_NdCt_pri	radadd_intra_cdsingleH	300-1500	2.54E+11	0.21	0	3.10	0	0	0	0	0	Aaron Vandeputte small GA method
+1068	R6_SMS_D	doublebond_intra_2H_pri	radadd_intra_cs2H	300-1500	1.69E+10	0.21	0	21.91	0	0	0	0	0	Aaron Vandeputte small GA method
+1069	R6_SMS_D	doublebond_intra_2H_pri	radadd_intra_csHNd	300-1500	1.13E+11	0.21	0	22.13	0	0	0	0	0	Aaron Vandeputte small GA method
+1070	R6_SMS_D	doublebond_intra_2H_pri	radadd_intra_csNdNd	300-1500	3.55E+10	0.21	0	21.70	0	0	0	0	0	Aaron Vandeputte small GA method
+1071	R6_SMS_D	doublebond_intra_2H_pri	radadd_intra_csHCd	300-1500	2.40E+11	0.21	0	30.30	0	0	0	0	0	Aaron Vandeputte small GA method
+1072	R6_SMS_D	doublebond_intra_2H_pri	radadd_intra_csNdCd	300-1500	3.52E+10	0.21	0	30.91	0	0	0	0	0	Aaron Vandeputte small GA method
+1073	R6_SMS_D	doublebond_intra_2H_pri	radadd_intra_csHCt	300-1500	8.27E+10	0.21	0	27.62	0	0	0	0	0	Aaron Vandeputte small GA method
+1074	R6_SMS_D	doublebond_intra_2H_pri	radadd_intra_csNdCt	300-1500	8.70E+10	0.21	0	28.63	0	0	0	0	0	Aaron Vandeputte small GA method
+1075	R6_SMS_D	doublebond_intra_2H_pri	radadd_intra_cdsingleH	300-1500	3.27E+11	0.21	0	19.34	0	0	0	0	0	Aaron Vandeputte small GA method
+1076	R6_SMS_D	doublebond_intra_HNd_pri	radadd_intra_cs2H	300-1500	1.78E+11	0.21	0	21.78	0	0	0	0	0	Aaron Vandeputte small GA method
+1077	R6_SMS_D	doublebond_intra_HNd_pri	radadd_intra_csHNd	300-1500	1.19E+12	0.21	0	22.00	0	0	0	0	0	Aaron Vandeputte small GA method
+1078	R6_SMS_D	doublebond_intra_HNd_pri	radadd_intra_csNdNd	300-1500	3.73E+11	0.21	0	21.57	0	0	0	0	0	Aaron Vandeputte small GA method
+1079	R6_SMS_D	doublebond_intra_HNd_pri	radadd_intra_csHCd	300-1500	2.52E+12	0.21	0	30.17	0	0	0	0	0	Aaron Vandeputte small GA method
+1080	R6_SMS_D	doublebond_intra_HNd_pri	radadd_intra_csNdCd	300-1500	3.69E+11	0.21	0	30.78	0	0	0	0	0	Aaron Vandeputte small GA method
+1081	R6_SMS_D	doublebond_intra_HNd_pri	radadd_intra_csHCt	300-1500	8.69E+11	0.21	0	27.49	0	0	0	0	0	Aaron Vandeputte small GA method
+1082	R6_SMS_D	doublebond_intra_HNd_pri	radadd_intra_csNdCt	300-1500	9.14E+11	0.21	0	28.50	0	0	0	0	0	Aaron Vandeputte small GA method
+1083	R6_SMS_D	doublebond_intra_HNd_pri	radadd_intra_cdsingleH	300-1500	3.44E+12	0.21	0	19.21	0	0	0	0	0	Aaron Vandeputte small GA method
+1084	R6_SMS_D	doublebond_intra_NdNd_pri	radadd_intra_cs2H	300-1500	2.98E+11	0.21	0	21.50	0	0	0	0	0	Aaron Vandeputte small GA method
+1085	R6_SMS_D	doublebond_intra_NdNd_pri	radadd_intra_csHNd	300-1500	1.99E+12	0.21	0	21.72	0	0	0	0	0	Aaron Vandeputte small GA method
+1086	R6_SMS_D	doublebond_intra_NdNd_pri	radadd_intra_csNdNd	300-1500	6.25E+11	0.21	0	21.29	0	0	0	0	0	Aaron Vandeputte small GA method
+1087	R6_SMS_D	doublebond_intra_NdNd_pri	radadd_intra_csHCd	300-1500	4.22E+12	0.21	0	29.90	0	0	0	0	0	Aaron Vandeputte small GA method
+1088	R6_SMS_D	doublebond_intra_NdNd_pri	radadd_intra_csNdCd	300-1500	6.19E+11	0.21	0	30.51	0	0	0	0	0	Aaron Vandeputte small GA method
+1089	R6_SMS_D	doublebond_intra_NdNd_pri	radadd_intra_csHCt	300-1500	1.46E+12	0.21	0	27.21	0	0	0	0	0	Aaron Vandeputte small GA method
+1090	R6_SMS_D	doublebond_intra_NdNd_pri	radadd_intra_csNdCt	300-1500	1.53E+12	0.21	0	28.23	0	0	0	0	0	Aaron Vandeputte small GA method
+1091	R6_SMS_D	doublebond_intra_NdNd_pri	radadd_intra_cdsingleH	300-1500	5.77E+12	0.21	0	18.93	0	0	0	0	0	Aaron Vandeputte small GA method
+1092	R6_SMS_D	doublebond_intra_HCd_pri	radadd_intra_cs2H	300-1500	1.03E+11	0.21	0	18.71	0	0	0	0	0	Aaron Vandeputte small GA method
+1093	R6_SMS_D	doublebond_intra_HCd_pri	radadd_intra_csHNd	300-1500	6.88E+11	0.21	0	18.93	0	0	0	0	0	Aaron Vandeputte small GA method
+1094	R6_SMS_D	doublebond_intra_HCd_pri	radadd_intra_csNdNd	300-1500	2.16E+11	0.21	0	18.50	0	0	0	0	0	Aaron Vandeputte small GA method
+1095	R6_SMS_D	doublebond_intra_HCd_pri	radadd_intra_csHCd	300-1500	1.46E+12	0.21	0	27.11	0	0	0	0	0	Aaron Vandeputte small GA method
+1096	R6_SMS_D	doublebond_intra_HCd_pri	radadd_intra_csNdCd	300-1500	2.14E+11	0.21	0	27.72	0	0	0	0	0	Aaron Vandeputte small GA method
+1097	R6_SMS_D	doublebond_intra_HCd_pri	radadd_intra_csHCt	300-1500	5.03E+11	0.21	0	24.42	0	0	0	0	0	Aaron Vandeputte small GA method
+1098	R6_SMS_D	doublebond_intra_HCd_pri	radadd_intra_csNdCt	300-1500	5.29E+11	0.21	0	25.44	0	0	0	0	0	Aaron Vandeputte small GA method
+1099	R6_SMS_D	doublebond_intra_HCd_pri	radadd_intra_cdsingleH	300-1500	1.99E+12	0.21	0	16.14	0	0	0	0	0	Aaron Vandeputte small GA method
+1100	R6_SMS_D	doublebond_intra_NdCd_pri	radadd_intra_cs2H	300-1500	1.23E+11	0.21	0	18.95	0	0	0	0	0	Aaron Vandeputte small GA method
+1101	R6_SMS_D	doublebond_intra_NdCd_pri	radadd_intra_csHNd	300-1500	8.25E+11	0.21	0	19.17	0	0	0	0	0	Aaron Vandeputte small GA method
+1102	R6_SMS_D	doublebond_intra_NdCd_pri	radadd_intra_csNdNd	300-1500	2.59E+11	0.21	0	18.74	0	0	0	0	0	Aaron Vandeputte small GA method
+1103	R6_SMS_D	doublebond_intra_NdCd_pri	radadd_intra_csHCd	300-1500	1.75E+12	0.21	0	27.35	0	0	0	0	0	Aaron Vandeputte small GA method
+1104	R6_SMS_D	doublebond_intra_NdCd_pri	radadd_intra_csNdCd	300-1500	2.56E+11	0.21	0	27.96	0	0	0	0	0	Aaron Vandeputte small GA method
+1105	R6_SMS_D	doublebond_intra_NdCd_pri	radadd_intra_csHCt	300-1500	6.03E+11	0.21	0	24.66	0	0	0	0	0	Aaron Vandeputte small GA method
+1106	R6_SMS_D	doublebond_intra_NdCd_pri	radadd_intra_csNdCt	300-1500	6.34E+11	0.21	0	25.68	0	0	0	0	0	Aaron Vandeputte small GA method
+1107	R6_SMS_D	doublebond_intra_NdCd_pri	radadd_intra_cdsingleH	300-1500	2.39E+12	0.21	0	16.38	0	0	0	0	0	Aaron Vandeputte small GA method
+1108	R6_SMS_D	doublebond_intra_HCt_pri	radadd_intra_cs2H	300-1500	2.23E+11	0.21	0	18.54	0	0	0	0	0	Aaron Vandeputte small GA method
+1109	R6_SMS_D	doublebond_intra_HCt_pri	radadd_intra_csHNd	300-1500	1.49E+12	0.21	0	18.76	0	0	0	0	0	Aaron Vandeputte small GA method
+1110	R6_SMS_D	doublebond_intra_HCt_pri	radadd_intra_csNdNd	300-1500	4.68E+11	0.21	0	18.33	0	0	0	0	0	Aaron Vandeputte small GA method
+1111	R6_SMS_D	doublebond_intra_HCt_pri	radadd_intra_csHCd	300-1500	3.16E+12	0.21	0	26.94	0	0	0	0	0	Aaron Vandeputte small GA method
+1112	R6_SMS_D	doublebond_intra_HCt_pri	radadd_intra_csNdCd	300-1500	4.64E+11	0.21	0	27.55	0	0	0	0	0	Aaron Vandeputte small GA method
+1113	R6_SMS_D	doublebond_intra_HCt_pri	radadd_intra_csHCt	300-1500	1.09E+12	0.21	0	24.25	0	0	0	0	0	Aaron Vandeputte small GA method
+1114	R6_SMS_D	doublebond_intra_HCt_pri	radadd_intra_csNdCt	300-1500	1.15E+12	0.21	0	25.27	0	0	0	0	0	Aaron Vandeputte small GA method
+1115	R6_SMS_D	doublebond_intra_HCt_pri	radadd_intra_cdsingleH	300-1500	4.32E+12	0.21	0	15.97	0	0	0	0	0	Aaron Vandeputte small GA method
+1116	R6_SMS_D	doublebond_intra_NdCt_pri	radadd_intra_cs2H	300-1500	1.30E+11	0.21	0	18.82	0	0	0	0	0	Aaron Vandeputte small GA method
+1117	R6_SMS_D	doublebond_intra_NdCt_pri	radadd_intra_csHNd	300-1500	8.69E+11	0.21	0	19.04	0	0	0	0	0	Aaron Vandeputte small GA method
+1118	R6_SMS_D	doublebond_intra_NdCt_pri	radadd_intra_csNdNd	300-1500	2.73E+11	0.21	0	18.61	0	0	0	0	0	Aaron Vandeputte small GA method
+1119	R6_SMS_D	doublebond_intra_NdCt_pri	radadd_intra_csHCd	300-1500	1.84E+12	0.21	0	27.22	0	0	0	0	0	Aaron Vandeputte small GA method
+1120	R6_SMS_D	doublebond_intra_NdCt_pri	radadd_intra_csNdCd	300-1500	2.70E+11	0.21	0	27.83	0	0	0	0	0	Aaron Vandeputte small GA method
+1121	R6_SMS_D	doublebond_intra_NdCt_pri	radadd_intra_csHCt	300-1500	6.35E+11	0.21	0	24.53	0	0	0	0	0	Aaron Vandeputte small GA method
+1122	R6_SMS_D	doublebond_intra_NdCt_pri	radadd_intra_csNdCt	300-1500	6.68E+11	0.21	0	25.55	0	0	0	0	0	Aaron Vandeputte small GA method
+1123	R6_SMS_D	doublebond_intra_NdCt_pri	radadd_intra_cdsingleH	300-1500	2.51E+12	0.21	0	16.25	0	0	0	0	0	Aaron Vandeputte small GA method
+1124	R7_SSSS_D	doublebond_intra_2H_pri	radadd_intra_cs2H	300-1500	1.71E+09	0.21	0	8.75	0	0	0	0	0	Aaron Vandeputte small GA method
+1125	R7_SSSS_D	doublebond_intra_2H_pri	radadd_intra_csHNd	300-1500	1.14E+10	0.21	0	8.97	0	0	0	0	0	Aaron Vandeputte small GA method
+1126	R7_SSSS_D	doublebond_intra_2H_pri	radadd_intra_csNdNd	300-1500	3.59E+09	0.21	0	8.54	0	0	0	0	0	Aaron Vandeputte small GA method
+1127	R7_SSSS_D	doublebond_intra_2H_pri	radadd_intra_csHCd	300-1500	2.42E+10	0.21	0	17.15	0	0	0	0	0	Aaron Vandeputte small GA method
+1128	R7_SSSS_D	doublebond_intra_2H_pri	radadd_intra_csNdCd	300-1500	3.56E+09	0.21	0	17.76	0	0	0	0	0	Aaron Vandeputte small GA method
+1129	R7_SSSS_D	doublebond_intra_2H_pri	radadd_intra_csHCt	300-1500	8.36E+09	0.21	0	14.46	0	0	0	0	0	Aaron Vandeputte small GA method
+1130	R7_SSSS_D	doublebond_intra_2H_pri	radadd_intra_csNdCt	300-1500	8.80E+09	0.21	0	15.48	0	0	0	0	0	Aaron Vandeputte small GA method
+1131	R7_SSSS_D	doublebond_intra_2H_pri	radadd_intra_cdsingleH	300-1500	3.31E+10	0.21	0	6.18	0	0	0	0	0	Aaron Vandeputte small GA method
+1132	R7_SSSS_D	doublebond_intra_HNd_pri	radadd_intra_cs2H	300-1500	1.80E+10	0.21	0	8.62	0	0	0	0	0	Aaron Vandeputte small GA method
+1133	R7_SSSS_D	doublebond_intra_HNd_pri	radadd_intra_csHNd	300-1500	1.20E+11	0.21	0	8.84	0	0	0	0	0	Aaron Vandeputte small GA method
+1134	R7_SSSS_D	doublebond_intra_HNd_pri	radadd_intra_csNdNd	300-1500	3.77E+10	0.21	0	8.41	0	0	0	0	0	Aaron Vandeputte small GA method
+1135	R7_SSSS_D	doublebond_intra_HNd_pri	radadd_intra_csHCd	300-1500	2.54E+11	0.21	0	17.02	0	0	0	0	0	Aaron Vandeputte small GA method
+1136	R7_SSSS_D	doublebond_intra_HNd_pri	radadd_intra_csNdCd	300-1500	3.74E+10	0.21	0	17.63	0	0	0	0	0	Aaron Vandeputte small GA method
+1137	R7_SSSS_D	doublebond_intra_HNd_pri	radadd_intra_csHCt	300-1500	8.78E+10	0.21	0	14.33	0	0	0	0	0	Aaron Vandeputte small GA method
+1138	R7_SSSS_D	doublebond_intra_HNd_pri	radadd_intra_csNdCt	300-1500	9.24E+10	0.21	0	15.35	0	0	0	0	0	Aaron Vandeputte small GA method
+1139	R7_SSSS_D	doublebond_intra_HNd_pri	radadd_intra_cdsingleH	300-1500	3.48E+11	0.21	0	6.05	0	0	0	0	0	Aaron Vandeputte small GA method
+1140	R7_SSSS_D	doublebond_intra_NdNd_pri	radadd_intra_cs2H	300-1500	3.01E+10	0.21	0	8.35	0	0	0	0	0	Aaron Vandeputte small GA method
+1141	R7_SSSS_D	doublebond_intra_NdNd_pri	radadd_intra_csHNd	300-1500	2.01E+11	0.21	0	8.57	0	0	0	0	0	Aaron Vandeputte small GA method
+1142	R7_SSSS_D	doublebond_intra_NdNd_pri	radadd_intra_csNdNd	300-1500	6.32E+10	0.21	0	8.14	0	0	0	0	0	Aaron Vandeputte small GA method
+1143	R7_SSSS_D	doublebond_intra_NdNd_pri	radadd_intra_csHCd	300-1500	4.26E+11	0.21	0	16.74	0	0	0	0	0	Aaron Vandeputte small GA method
+1144	R7_SSSS_D	doublebond_intra_NdNd_pri	radadd_intra_csNdCd	300-1500	6.26E+10	0.21	0	17.35	0	0	0	0	0	Aaron Vandeputte small GA method
+1145	R7_SSSS_D	doublebond_intra_NdNd_pri	radadd_intra_csHCt	300-1500	1.47E+11	0.21	0	14.06	0	0	0	0	0	Aaron Vandeputte small GA method
+1146	R7_SSSS_D	doublebond_intra_NdNd_pri	radadd_intra_csNdCt	300-1500	1.55E+11	0.21	0	15.07	0	0	0	0	0	Aaron Vandeputte small GA method
+1147	R7_SSSS_D	doublebond_intra_NdNd_pri	radadd_intra_cdsingleH	300-1500	5.83E+11	0.21	0	5.78	0	0	0	0	0	Aaron Vandeputte small GA method
+1148	R7_SSSS_D	doublebond_intra_HCd_pri	radadd_intra_cs2H	300-1500	1.04E+10	0.21	0	5.56	0	0	0	0	0	Aaron Vandeputte small GA method
+1149	R7_SSSS_D	doublebond_intra_HCd_pri	radadd_intra_csHNd	300-1500	6.96E+10	0.21	0	5.78	0	0	0	0	0	Aaron Vandeputte small GA method
+1150	R7_SSSS_D	doublebond_intra_HCd_pri	radadd_intra_csNdNd	300-1500	2.18E+10	0.21	0	5.35	0	0	0	0	0	Aaron Vandeputte small GA method
+1151	R7_SSSS_D	doublebond_intra_HCd_pri	radadd_intra_csHCd	300-1500	1.47E+11	0.21	0	13.95	0	0	0	0	0	Aaron Vandeputte small GA method
+1152	R7_SSSS_D	doublebond_intra_HCd_pri	radadd_intra_csNdCd	300-1500	2.16E+10	0.21	0	14.57	0	0	0	0	0	Aaron Vandeputte small GA method
+1153	R7_SSSS_D	doublebond_intra_HCd_pri	radadd_intra_csHCt	300-1500	5.08E+10	0.21	0	11.27	0	0	0	0	0	Aaron Vandeputte small GA method
+1154	R7_SSSS_D	doublebond_intra_HCd_pri	radadd_intra_csNdCt	300-1500	5.35E+10	0.21	0	12.29	0	0	0	0	0	Aaron Vandeputte small GA method
+1155	R7_SSSS_D	doublebond_intra_HCd_pri	radadd_intra_cdsingleH	300-1500	2.01E+11	0.21	0	2.99	0	0	0	0	0	Aaron Vandeputte small GA method
+1156	R7_SSSS_D	doublebond_intra_NdCd_pri	radadd_intra_cs2H	300-1500	1.25E+10	0.21	0	5.80	0	0	0	0	0	Aaron Vandeputte small GA method
+1157	R7_SSSS_D	doublebond_intra_NdCd_pri	radadd_intra_csHNd	300-1500	8.34E+10	0.21	0	6.02	0	0	0	0	0	Aaron Vandeputte small GA method
+1158	R7_SSSS_D	doublebond_intra_NdCd_pri	radadd_intra_csNdNd	300-1500	2.62E+10	0.21	0	5.59	0	0	0	0	0	Aaron Vandeputte small GA method
+1159	R7_SSSS_D	doublebond_intra_NdCd_pri	radadd_intra_csHCd	300-1500	1.77E+11	0.21	0	14.19	0	0	0	0	0	Aaron Vandeputte small GA method
+1160	R7_SSSS_D	doublebond_intra_NdCd_pri	radadd_intra_csNdCd	300-1500	2.59E+10	0.21	0	14.80	0	0	0	0	0	Aaron Vandeputte small GA method
+1161	R7_SSSS_D	doublebond_intra_NdCd_pri	radadd_intra_csHCt	300-1500	6.09E+10	0.21	0	11.51	0	0	0	0	0	Aaron Vandeputte small GA method
+1162	R7_SSSS_D	doublebond_intra_NdCd_pri	radadd_intra_csNdCt	300-1500	6.41E+10	0.21	0	12.52	0	0	0	0	0	Aaron Vandeputte small GA method
+1163	R7_SSSS_D	doublebond_intra_NdCd_pri	radadd_intra_cdsingleH	300-1500	2.41E+11	0.21	0	3.23	0	0	0	0	0	Aaron Vandeputte small GA method
+1164	R7_SSSS_D	doublebond_intra_HCt_pri	radadd_intra_cs2H	300-1500	2.26E+10	0.21	0	5.39	0	0	0	0	0	Aaron Vandeputte small GA method
+1165	R7_SSSS_D	doublebond_intra_HCt_pri	radadd_intra_csHNd	300-1500	1.51E+11	0.21	0	5.61	0	0	0	0	0	Aaron Vandeputte small GA method
+1166	R7_SSSS_D	doublebond_intra_HCt_pri	radadd_intra_csNdNd	300-1500	4.73E+10	0.21	0	5.18	0	0	0	0	0	Aaron Vandeputte small GA method
+1167	R7_SSSS_D	doublebond_intra_HCt_pri	radadd_intra_csHCd	300-1500	3.19E+11	0.21	0	13.78	0	0	0	0	0	Aaron Vandeputte small GA method
+1168	R7_SSSS_D	doublebond_intra_HCt_pri	radadd_intra_csNdCd	300-1500	4.69E+10	0.21	0	14.39	0	0	0	0	0	Aaron Vandeputte small GA method
+1169	R7_SSSS_D	doublebond_intra_HCt_pri	radadd_intra_csHCt	300-1500	1.10E+11	0.21	0	11.10	0	0	0	0	0	Aaron Vandeputte small GA method
+1170	R7_SSSS_D	doublebond_intra_HCt_pri	radadd_intra_csNdCt	300-1500	1.16E+11	0.21	0	12.11	0	0	0	0	0	Aaron Vandeputte small GA method
+1171	R7_SSSS_D	doublebond_intra_HCt_pri	radadd_intra_cdsingleH	300-1500	4.37E+11	0.21	0	2.82	0	0	0	0	0	Aaron Vandeputte small GA method
+1172	R7_SSSS_D	doublebond_intra_NdCt_pri	radadd_intra_cs2H	300-1500	1.31E+10	0.21	0	5.67	0	0	0	0	0	Aaron Vandeputte small GA method
+1173	R7_SSSS_D	doublebond_intra_NdCt_pri	radadd_intra_csHNd	300-1500	8.79E+10	0.21	0	5.89	0	0	0	0	0	Aaron Vandeputte small GA method
+1174	R7_SSSS_D	doublebond_intra_NdCt_pri	radadd_intra_csNdNd	300-1500	2.76E+10	0.21	0	5.46	0	0	0	0	0	Aaron Vandeputte small GA method
+1175	R7_SSSS_D	doublebond_intra_NdCt_pri	radadd_intra_csHCd	300-1500	1.86E+11	0.21	0	14.06	0	0	0	0	0	Aaron Vandeputte small GA method
+1176	R7_SSSS_D	doublebond_intra_NdCt_pri	radadd_intra_csNdCd	300-1500	2.73E+10	0.21	0	14.68	0	0	0	0	0	Aaron Vandeputte small GA method
+1177	R7_SSSS_D	doublebond_intra_NdCt_pri	radadd_intra_csHCt	300-1500	6.42E+10	0.21	0	11.38	0	0	0	0	0	Aaron Vandeputte small GA method
+1178	R7_SSSS_D	doublebond_intra_NdCt_pri	radadd_intra_csNdCt	300-1500	6.76E+10	0.21	0	12.40	0	0	0	0	0	Aaron Vandeputte small GA method
+1179	R7_SSSS_D	doublebond_intra_NdCt_pri	radadd_intra_cdsingleH	300-1500	2.54E+11	0.21	0	3.10	0	0	0	0	0	Aaron Vandeputte small GA method
+
 
 

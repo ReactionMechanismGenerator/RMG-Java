@@ -21,8 +21,13 @@ L1: Rn
 
 // the abstracting radical
 L1: Y_rad
+	L2: Y_rad_NDe
+	L2: Y_rad_De
 //L1: Rrad; gmagoon 8/7/09: changed name to more closely match disproportionation library
+// A.G. Vandeputte 
 
 //the site with a free hydrogen adjacent to a radical
 L1: XH_Rrad
+	L2: XH_Rrad_NDe
+	L2: XH_Rrad_De
 //L1: RHRrad; gmagoon 8/7/09: changed name to more closely match disproportionation library 

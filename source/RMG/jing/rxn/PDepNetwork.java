@@ -676,6 +676,8 @@ public class PDepNetwork {
             return null;
         if (reaction.getReactantNumber() > 1)
             reaction = reaction.getReverseReaction();
+        	if(reaction == null)
+        		System.out.println("Irreversible reaction sent to pdep module, most likely it is comming from one of the libraries "+reaction0.toString());
         PDepNetwork pdn = null;
         if (reaction.getProductNumber() == 1) {
             // Isomerization reactions should cause networks to be merged together

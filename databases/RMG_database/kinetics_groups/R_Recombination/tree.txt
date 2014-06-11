@@ -65,6 +65,7 @@ L1: Y_rad
 			L4: Cd_rad/NonDe
 			L4: Cd_rad/OneDe
 				L5: Cd_rad/Cd
+		L3: Cd_allenic
 	L2: Ct_rad
 	L2: Cb_rad
 	L2: CO_rad
