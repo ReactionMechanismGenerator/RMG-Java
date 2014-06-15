@@ -519,20 +519,18 @@ Arrhenius_EP
 3085 C/H3/Cs\H\Cs\Cs|O 	O_pri_rad 	300-2000 	2.3E+8 		1.225 	0.00 	-0.467 	0 0 0 0 3 
 3087 O/H/NonDeC 	O_pri_rad 	300-2000 	3.35E+4 	2.378 	0.00 	-0.881 	0 0 0 0 3 
 
-// iBuOH+H SSM CBS-QB3 1dHR 
-3088 C/H3/Cs\H\Cs\Cs|O 	H_rad 		300-2000 	4.5E+6 		1.76 	0.00 	7.45 	0 0 0 0 3 SSM CBS-QB3 with 1-dHR corrections
-3090 C/H/Cs2/Cs\O 	H_rad 		300-2000 	1.74E+7 	1.48 	0.00 	3.44 	0 0 0 0 3 SSM CBS-QB3 with 1-dHR corrections
-// Not using the rate calculated for iBuOH as it seemed almost a factor of 10 slower than the literature rates for similar reactions
-// Using rate calculated for ethanol alpha site by Park J et al. 
-// Ea calculated using G2M method with B3LYP/6-311+G(d,p). Rate expressions calculated using Truhlars Polyrate program using SCT/CVT method 
-3092 C/H2/Cs\Cs2/O 	H_rad 		300-2000 	8.95E+5 		2.53 	0.00 	3.42 	0 0 0 0 3 G2M/B3lYP
-3094 O/H/NonDeC 	H_rad 		300-2000 	4.05E+4 	2.38 	0.00 	9.34 	0 0 0 0 3 SSM CBS-QB3 with 1-dHR corrections
+// iBuOH AG Vandeputte CBS-QB3 1dHR 
+3088 O/H/NonDeC 	H_rad 		300-2000 	2.93E-01	4.14 	0.00 	4.8 	0 0 0 0 3 
+3090 C/H2/CsO 		H_rad 		300-2000  	2.61E+03	3.04	0.00	2.5 	0 0 0 0 3 
+3092 C/H/Cs2/Cs\O 	H_rad 		300-2000 	5.76E+03	3.02    0.00    3.5 	0 0 0 0 3 
+3094 C/H3/Cs	 	H_rad 		300-2000 	1.03E+03	3.24	0.00    7.1 	0 0 0 0 3 
 
-// iBuOH+CH3 SSM CBS-QB3 1dHR 
-3095 C/H3/Cs\H\Cs\Cs|O 	C_methyl 	300-2000 	2.68E-1 	3.59 	0.00 	7.72 	0 0 0 0 3 SSM CBS-QB3 with 1-dHR corrections
-3097 C/H/Cs2/Cs\O 	C_methyl 	300-2000 	4.14E+2 	2.87 	0.00 	4.9 	0 0 0 0 3 SSM CBS-QB3 with 1-dHR corrections
-3099 C/H2/Cs\Cs2/O 	C_methyl 	300-2000 	7.65 		3.31 	0.00 	6.95 	0 0 0 0 3 SSM CBS-QB3 with 1-dHR corrections
-3101 O/H/NonDeC 	C_methyl 	300-2000 	2.32 		3.49 	0.00 	6.09 	0 0 0 0 3 SSM CBS-QB3 with 1-dHR corrections
+// iBuOH & iPtOH AG Vandeputte CBS-QB3 1dHR
+3095 C/H3/Cs 		C_methyl 	300-2000 	7.48E-06 	4.99 	0.00 	8.0 	0 0 0 0 3 
+3097 C/H/Cs2/Cs\O 	C_methyl 	300-2000 	1.46E-02	4.47	0.00	7.2 	0 0 0 0 3 Value for ibutanol
+3098 C/H/Cs2/Cs\Cs|O    C_methyl        300-2000        7.19E-02        3.96    0.00    4.5     0 0 0 0 3 Value for ipentanol, x3 lower mainly because of gamma O restricting rotation of abstracting methyl
+3099 C/H2/CsO 		C_methyl 	300-2000 	1.24E-03	4.44	0.00	4.5 	0 0 0 0 3 
+3101 O/H/NonDeC 	C_methyl 	300-2000 	2.97E-03        4.35    0.00    4.1 	0 0 0 0 3 
 
 // iBuOH+C2H3 SSM CBS-QB3 1dHR 
 3102 C/H3/Cs\H\Cs\Cs|O 	Cd_Cd\H2_pri_rad 300-2000 	1.8E-4 		4.55 	0.00 	3.5 	0 0 0 0 3 SSM CBS-QB3 with 1-dHR corrections

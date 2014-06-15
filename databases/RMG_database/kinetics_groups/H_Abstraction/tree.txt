@@ -109,6 +109,7 @@ L1: X_H_or_Xrad_H
                 L5: C/H/NonDeC
                     L6: C/H/Cs3
                         L7: C/H/Cs2/Cs\O
+						L7: C/H/Cs2/Cs\Cs|O
                         L7: C/H/Cs3_5ring
                             L8: C/H/Cs3_5ring_adj5
                             L8: C/H/Cs3_5ring_fused6
