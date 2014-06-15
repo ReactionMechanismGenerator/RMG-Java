@@ -2941,3 +2941,15 @@ Arrhenius_EP
 // SSM CBS-QB3 calculations for propargyl + vinylalcohol (RRHO approximation)
 7036   O/H/OneDe C_rad/H2/Ct 500-2500	6.5E-3	4.245	0.00	7.2	0	0	0	0	3	CBS-QB3 (RRHO), SSM
 7037   O_rad/Cd\H_Cd\H2  Cd_Cdd/H2 500-2500	2.1E-3	4.36	0.00	14.2	0	0	0	0	3	CBS-QB3 (RRHO), SSM
+
+// NIST CH3CHO + OH = CH3CO + H2O rate coefficient ref: DOI: 10.1016/S0082-0784(96)80252-9
+// Most estimates seem to be  ~ 3E+12 for 200-350 K range
+7038   CO/H/Cs     O_pri_rad       295-600  2.0E+6  1.80 0.00 -1.3   0	0	0	0	5	NIST SSM
+
+// ref: Role of conformational structures and torsional anharmonicity in controlling chemical reaction rates and
+// relative yields: butanal + HO2 reactions
+// Refitted from four parameter fits to three parameters fits,  
+7039   CO_rad/Cs H2O2 300-2000	4.33E-6	5.09	0.00	1.2	0	0	0	0	2	CCSD(T)/CBS//M08-HX/maug-cc-pVTZ, MSTOR
+7040   C_rad/H/CO/Cs  H2O2  300-2000	1.62E-11	6.525	0.00	2.9	0	0	0	0	2 CCSD(T)/CBS//M08-HX/maug-cc-pVTZ, MSTOR
+7041   C_rad/H/Cs\H2\CO/Cs H2O2  300-2000	0.83E-07	5.407	0.00	0.04	0	0	0	0	2 CCSD(T)/CBS//M08-HX/maug-cc-pVTZ, MSTOR
+7042   C_rad/H/NonDeC  H2O2      300-2000	0.83E-07	5.407	0.00	0.04	0	0	0	0	5 Same as  C_rad/H/Cs\H2\CO/Cs H2O2
