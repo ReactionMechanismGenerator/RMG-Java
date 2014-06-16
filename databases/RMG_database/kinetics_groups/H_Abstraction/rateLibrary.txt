@@ -2951,3 +2951,11 @@ Arrhenius_EP
 7040   C_rad/H/CO/Cs  H2O2  300-2000	1.62E-11	6.525	0.00	2.9	0	0	0	0	2 CCSD(T)/CBS//M08-HX/maug-cc-pVTZ, MSTOR
 7041   C_rad/H/Cs\H2\CO/Cs H2O2  300-2000	0.83E-07	5.407	0.00	0.04	0	0	0	0	2 CCSD(T)/CBS//M08-HX/maug-cc-pVTZ, MSTOR
 7042   C_rad/H/NonDeC  H2O2      300-2000	0.83E-07	5.407	0.00	0.04	0	0	0	0	5 Same as  C_rad/H/Cs\H2\CO/Cs H2O2
+
+// Kinetics of Hydrogen Abstraction Reactions of Butene Isomers by OH Radical
+// s-allylic site from 1-Butene + OH ref: DOI: 10.1021/jp1062786
+7043   C/H2/CdCs  O_pri_rad  300-1500	3.35E+1	3.475	0.00	-2.8	0	0	0	0	3  CCSD(T)/6-311++G(d,p)//BH&HLYP/6-311G(d,p)
+// p-allylic site of 2-butene ref: DOI: 10.1021/jp1062786
+7044   C/H3/Cd\H_Cd\H\Cs O_pri_rad  300-1500	0.203E+1	3.774	0.00	-1.49	0	0	0	0	3  CCSD(T)/6-311++G(d,p)//BH&HLYP/6-311G(d,p)
+// p-allylic site of iso-butene ref: DOI: 10.1021/jp1062786
+7045   C/H3/Cd\Cs_Cd\H2  O_pri_rad  300-1500	0.2E+1	3.594	0.00	-1.07	0	0	0	0	3  CCSD(T)/6-311++G(d,p)//BH&HLYP/6-311G(d,p)
