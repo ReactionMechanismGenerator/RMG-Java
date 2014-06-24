@@ -114,3 +114,10 @@ Arrhenius_EP
 // NIST estimate for allyl + iso-butyl is 8E+11 at 1000 K, however in our system the butadieneyl radical is also resonance stabilized
 // and it will be harder to break the bond to give butadiene + cyclopentadiene. Currently estimate it to be a factor of 5 slower.
 555.        C_rad/H/TwoDe  Cmethyl_Csrad/H/Cd 300-2500   5E+10      0    0    0.0        0.0        0    0    0    5    SSM estimate
+
+// This rate rule is a estimate taken from NIST, ref: Aromatic and Polycyclic Aromatic Hydrocarbon Formation in a Laminar Premixed n-butane Flame
+// Derived from fitting to a complex mechanism for C2H3 + O2 = C2H2 + HO2  
+601.       O2_birad      Cd_Cdrad            300-2000    1.3E+15    -1.26    0    3.31        *5.0        0    0    0    5  Estimate from NIST
+
+// SSM estimate based on Miyoshi rate rule for secondary carbon in dx.doi.org/10.1021/jp112152n, modified to account for allylic stability (+7 kcal)
+602.       O2_birad      Cmethyl_Csrad/H/Cd   300-2000    7.23E+12    0.0    0    22.0        *10.0        0    0    0    5  SSM estimate
