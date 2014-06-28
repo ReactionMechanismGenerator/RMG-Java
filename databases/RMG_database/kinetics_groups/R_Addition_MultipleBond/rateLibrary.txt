@@ -2679,7 +2679,8 @@ Arrhenius_EP
 // SSM calculations for propene+OH surface CBS-QB3 level , with 1d-HR
 3119 	Cds-HH_Cds-Cs\H3/H	O_pri_rad 	300-2000 	2.31E+6 	1.76 	0 	-2.45 	0 0 0 0 3 SSM calc CBS-QB3 1dhr
 3120 	Cds-OsH_Cds-CsH 	HJ 		300-2000 	2.182e+10 	0.859 	0 	1.618 	0 0 0 0 3 SSM calc CBS-QB3 1dhr
-3121 	Cds-HH_Cds-CsH 		HJ 		300-2000 	5.014e+08 	1.733 	0 	0.76 	0 0 0 0 3 SSM calc CBS-QB3 1dhr
+// AGV Flagged this one out, GA estimate is probably better
+//3121 	Cds-HH_Cds-CsH 		HJ 		300-2000 	5.014e+08 	1.733 	0 	0.76 	0 0 0 0 3 SSM calc CBS-QB3 1dhr
 3122 	Cds-HH_Cds-Cs\Os/H 	HJ 		300-2000 	5.014e+08 	1.733 	0 	0.76 	0 0 0 0 3 SSM calc CBS-QB3 1dhr
 3123 	Cds-CsH_Cds-OsH 	HJ 		300-2000 	3.720e+08 	1.477 	0 	1.61 	0 0 0 0 3 SSM calc CBS-QB3 1dhr
 3124 	Cds-HH_Cds-OsH 		CsJ-HHH 	300-2000 	4.167e+04 	2.299 	0 	6.83 	0 0 0 0 3 SSM calc CBS-QB3 1dhr
