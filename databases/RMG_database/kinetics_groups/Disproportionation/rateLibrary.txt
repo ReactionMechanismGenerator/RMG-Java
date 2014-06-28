@@ -64,14 +64,14 @@ Arrhenius_EP
 521.		C_rad/Cs3		C/H/NdNd_Csrad		300-2500	1.08E+14	-0.75	0		0		*2.0		0		0		0		4		Tsang [92] Literature review.
 522.		Cd_pri_rad		C/H/NdNd_Csrad		300-2500	8.43E+11	0		0		0		*4.0	0		0		0		4		Tsang [92] Literature review.
 523.		O_pri_rad		C/H/NdNd_Csrad		300-2500	1.21E+13	0		0		0		*3.0	0		0		0		4		Tsang [92] Literature review.
-525.		H_rad			Cdpri_Csrad			300-2500	1.81E+13	0		0		0		*3.0	0		0		0		4		Tsang [93] Literature review.
-526.		C_methyl		Cdpri_Csrad			300-2500	3.01E+12	-0.32	0		-0.13	*3.0	0		0		0		4		Tsang [93] Literature review.
-527.		C_rad/H2/Cs		Cdpri_Csrad			300-2500	9.64E+11	0		0		-0.13	*2.0	0		0		0		4		Tsang [93] Literature review.
-528.		C_rad/H2/Cd		Cdpri_Csrad			300-2500	8.43E+10	0		0		-0.26	*2.5	0		0		0		4		Tsang [93] Literature review.
-529.		C_rad/H/NonDeC	Cdpri_Csrad			300-2500	4.58E+12	-0.35	0		-0.13	*3.0	0		0		0		4		Tsang [93] Literature review.
-530.		C_rad/Cs3		Cdpri_Csrad			300-2500	2.89E+13	-0.75	0		-0.13	*3.0	0		0		0		4		Tsang [93] Literature review.
-531.		Cd_pri_rad		Cdpri_Csrad			300-2500	2.41E+12	0		0		0		*3.0	0		0		0		4		Tsang [93] Literature review.
-532.		O_pri_rad		Cdpri_Csrad			300-2500	6.03E+12	0		0		0		*3.0	0		0		0		4		Tsang [93] Literature review.
+//525.		H_rad			Cdpri_Csrad			300-2500	1.81E+13	0		0		0		*3.0	0		0		0		4		Tsang [93] Literature review.
+//526.		C_methyl		Cdpri_Csrad			300-2500	3.01E+12	-0.32	0		-0.13	*3.0	0		0		0		4		Tsang [93] Literature review.
+//527.		C_rad/H2/Cs		Cdpri_Csrad			300-2500	9.64E+11	0		0		-0.13	*2.0	0		0		0		4		Tsang [93] Literature review.
+//528.		C_rad/H2/Cd		Cdpri_Csrad			300-2500	8.43E+10	0		0		-0.26	*2.5	0		0		0		4		Tsang [93] Literature review.
+//529.		C_rad/H/NonDeC	Cdpri_Csrad			300-2500	4.58E+12	-0.35	0		-0.13	*3.0	0		0		0		4		Tsang [93] Literature review.
+//530.		C_rad/Cs3		Cdpri_Csrad			300-2500	2.89E+13	-0.75	0		-0.13	*3.0	0		0		0		4		Tsang [93] Literature review.
+//531.		Cd_pri_rad		Cdpri_Csrad			300-2500	2.41E+12	0		0		0		*3.0	0		0		0		4		Tsang [93] Literature review.
+//532.		O_pri_rad		Cdpri_Csrad			300-2500	6.03E+12	0		0		0		*3.0	0		0		0		4		Tsang [93] Literature review.
 536.		O_atom_triplet	O_Csrad				298			9.04E+13	0		0		0		3.01E+13	0		0		0		3		Grotheer et al [189].
 537.		CH2_triplet		O_Csrad				300-2500	1.21E+12	0		0		0		*3.0	0		0		0		4		Tsang [90] Literature review.
 538.		H_rad			O_Csrad				295			2.0E+13		0		0		0		1.0E+13	0		0		0		4		Edelbuttel-Einhaus et al [190].
@@ -89,7 +89,7 @@ Arrhenius_EP
 550.		O_pri_rad		O_Csrad				300-2500	2.41E+13	0		0		0		*2.0	0		0		0		4		Tsang [90] Literature review.
 551.		O_rad/NonDeC	O_Csrad				300-2500	2.41E+13	0		0		0		*2.0	0		0		0		4		Tsang [90] Literature review.
 552.		O_rad/NonDeO	O_Csrad				300-2500	1.21E+13	0		0		0		*2.0	0		0		0		4		Tsang [90] Literature review.
-20001.		O2_birad		XH_Rrad        300-1500    3E+11        0    0    0        0        0    0    0    0
+20001.		O2_birad		XH_Rrad        300-1500    5E+10        0    0    0        0        0    0    0    5	Estimated value, AG Vandeputte
 //487.		O2_birad		Cmethyl_Csrad    700-2500    1.05833E+10    0    0    0        *3.0        0    0    0    4    Tsang [91] Literature review.
 //501.		O2_birad		C/H2/Nd_Csrad    500-900    2.25825E+10    0    0    0        *3.0        0    0    0    4    Tsang [91] Literature review.
 513.		O2_birad		C/H/NdNd_Csrad    600-1000    1.2044E+10    0    0    0        *5.0        0    0    0    4    Tsang [92] Literature review.
@@ -121,3 +121,17 @@ Arrhenius_EP
 
 // SSM estimate based on Miyoshi rate rule for secondary carbon in dx.doi.org/10.1021/jp112152n, modified to account for allylic stability (+7 kcal)
 602.       O2_birad      Cmethyl_Csrad/H/Cd   300-2000    7.23E+12    0.0    0    22.0        *10.0        0    0    0    5  SSM estimate
+
+// AG Vandeputte, tried to add some new rules for disproportionations from, I departed from the value given in Tsang [93]
+//526.            C_methyl                Cdpri_Csrad                     300-2500        3.01E+12        -0.32   0               -0.13   *3.0    0               0               0               4               Tsang [93] Literature review.
+
+// AG Vandeputte, Trying to slow down rates for birads such as O2 
+556.	Y_rad_birad	Cdpri_Csrad            300-2500	       1.00E+9 	       0       0       0       0       0       0       0       4       Estimated value, AG Vandeputte
+557.	O2_birad 	C/H2/De_Csrad	       300-2500	       1.00E+10	       0       0       0       0       0       0       0       4       Estimated value, AG Vandeputte
+558.    O2_birad    	C/H2/Nd_Rrad	       300-2500        1.00E+10        0       0       0       0       0       0       0       4       Estimated value, AG Vandeputte
+559.    O2_birad        C/H2/De_Rrad	       300-2500        1.00E+10        0       0       0       0       0       0       0       4       Estimated value, AG Vandeputte
+560.    O2_birad        C/H/NdNd_Rrad	       300-2500        1.00E+10        0       0       0       0       0       0       0       4       Estimated value, AG Vandeputte
+561.    O2_birad        C/H/NdDe_Rrad	       300-2500        1.00E+10        0       0       0       0       0       0       0       4       Estimated value, AG Vandeputte
+562.    O2_birad        C/H/DeDe_Rrad          300-2500        1.00E+10        0       0       0       0       0       0       0       4       Estimated value, AG Vandeputte
+
+
