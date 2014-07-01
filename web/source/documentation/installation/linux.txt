@@ -28,7 +28,9 @@ A Fortran compiler
     We recommend `gfortran <http://gcc.gnu.org/wiki/GFortran>`_ from the free 
     GNU Compiler Collection. `g95 <http://www.g95.org/>`_ is another free 
     compiler that is known to work, but is less likely to be available within 
-    your distribution's package repository.
+    your distribution's package repository. If running Ubuntu-12.04, the default
+    gfortran-4.6 may cause trouble. See `this thread on Github 
+    <https://github.com/GreenGroup/RMG-Java/issues/251>`_ for more information.
     
 The Basic Linear Algebra Subprograms (BLAS) and Linear Algebra PACKage (LAPACK)
     You may need to install the development version of these packages in order
