@@ -134,4 +134,13 @@ Arrhenius_EP
 561.    O2_birad        C/H/NdDe_Rrad	       300-2500        1.00E+10        0       0       0       0       0       0       0       4       Estimated value, AG Vandeputte
 562.    O2_birad        C/H/DeDe_Rrad          300-2500        1.00E+10        0       0       0       0       0       0       0       4       Estimated value, AG Vandeputte
 
+// SSM trying to slow down rates, in discussion with AGV we think the Allyl disp should have a barrier of 6 kcal 
+525.		H_rad			Cdpri_Csrad			300-2500	1.81E+13	0		0		6.0		*3.0	0		0		0		5		SSM estimate
+526.		C_methyl		Cdpri_Csrad			300-2500	3.01E+12	0		0		6.0		*3.0	0		0		0		5		SSM estimate
+527.		C_rad/H2/Cs		Cdpri_Csrad			300-2500	9.64E+11	0		0		6.0		*2.0	0		0		0		5		SSM estimate
+528.		C_rad/H2/Cd		Cdpri_Csrad			300-2500	8.43E+10	0		0		6.0		*2.5	0		0		0		5		SSM estimate
+529.		C_rad/H/NonDeC	Cdpri_Csrad			300-2500	4.58E+12	0		0		6.0		*3.0	0		0		0		5		SSM estimate
+530.		C_rad/Cs3		Cdpri_Csrad			300-2500	2.89E+13	0		0		6.0		*3.0	0		0		0		5		SSM estimate
+531.		Cd_pri_rad		Cdpri_Csrad			300-2500	2.41E+12	0		0		6.0		*3.0	0		0		0		5		SSM estimate
+532.		O_pri_rad		Cdpri_Csrad			300-2500	6.03E+12	0		0		6.0		*3.0	0		0		0		5		SSM estimate
 
