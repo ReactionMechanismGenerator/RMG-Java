@@ -213,13 +213,15 @@
 208	Cds-Cds(Cds-Cdd-Cd)Cs 	Cds-Cds(Cds-Cds)Cs 									
 209	Cds-CdsCdsCds	Cds-Cds(Cds-Cds)(Cds-Cds)									
 210	Cds-Cds(Cds-Od)(Cds-Od)	Cds-CdsCsCs									
-211	Cds-Cds(Cds-Od)(Cds-Cd)	Cds-Cds(Cds-Od)(Cds-Cds)									
-212	Cds-Cds(Cds-Od)(Cds-Cds)	4.60	-16.5	4.7	6.13	6.87	7.1	7.2	7.16	7.06	0.24	0.12	0.1	Cd-COCd from CD/CD2/ jwb est 6/97 
+211	Cds-Cds(Cds-Od)(Cds-Cd)	Cds-Cds(Cds-Od)(Cds-Cds)	
+// AG Vandeputte, I added 7 kcal/mol to the following value (see phd M Sabbe)								
+212	Cds-Cds(Cds-Od)(Cds-Cds)	11.60	-16.5	4.7	6.13	6.87	7.1	7.2	7.16	7.06	0.24	0.12	0.1	Cd-COCd from CD/CD2/ jwb est 6/97 
 213	Cds-Cds(Cds-Od)(Cds-Cdd)	Cds-Cds(Cds-Od)(Cds-Cdd-Cd)									
 214	Cds-Cds(Cds-Od)(Cds-Cdd-Od)	Cds-Cds(Cds-Cdd-Od)Cs									
 215	Cds-Cds(Cds-Od)(Cds-Cdd-Cd)	Cds-Cds(Cds-Od)(Cds-Cds)									
-216	Cds-Cds(Cds-Cd)(Cds-Cd)	Cds-Cds(Cds-Cds)(Cds-Cds)									
-217	Cds-Cds(Cds-Cds)(Cds-Cds)	4.60	-15.67	1.9	2.69	3.5	4.28	5.57	6.21	7.37	0.24	0.12	0.1	"Cd-CdCd Hf=3D est S,Cp mopac nov99"
+216	Cds-Cds(Cds-Cd)(Cds-Cd)	Cds-Cds(Cds-Cds)(Cds-Cds)								
+// AG Vandeputte, I added 7 kcal/mol to the following value (see phd M Sabbe)	
+217	Cds-Cds(Cds-Cds)(Cds-Cds)	11.60	-15.67	1.9	2.69	3.5	4.28	5.57	6.21	7.37	0.24	0.12	0.1	"Cd-CdCd Hf=3D est S,Cp mopac nov99"
 218	Cds-Cds(Cds-Cds)(Cds-Cdd)	Cds-Cds(Cds-Cds)(Cds-Cdd-Cd)									
 219	Cds-Cds(Cds-Cds)(Cds-Cdd-Od)	Cds-Cds(Cds-Cdd-Od)Cs									
 220	Cds-Cds(Cds-Cds)(Cds-Cdd-Cd)	Cds-Cds(Cds-Cds)(Cds-Cds)									

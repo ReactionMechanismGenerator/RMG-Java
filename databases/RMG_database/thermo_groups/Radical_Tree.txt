@@ -103,6 +103,7 @@ L1: RJ
 				L6: bicyclo[2.2.2]octane-C2
 				L6: tricyclo[2.2.2.0(1,4)]octane-C2
 			L5: Benzyl_S
+				L6: Indenyl
 			L5: Allyl_S
 				L6: cyclobutene-allyl
 				L6: cyclopentene-allyl
