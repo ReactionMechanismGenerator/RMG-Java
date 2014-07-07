@@ -1508,6 +1508,18 @@ public class Reaction {
         }
         return atoms;
     }
+    
+    /**
+     * Return the total number of Carbon atoms in the reactants (and products).
+     */
+    public int getCarbonAtomNumber() {
+        int atoms = 0;
+        for (ListIterator<Species> iter = getReactants(); iter.hasNext();) {
+            Species spe = iter.next();
+            atoms += spe.getChemGraph().getCarbonNumber();
+        }
+        return atoms;
+    }
 }
 /*********************************************************************
  * File Path : RMG\RMG\jing\rxn\Reaction.java

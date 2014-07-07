@@ -4799,6 +4799,16 @@ public class ReactionModelGenerator {
                 FastMasterEqn.setMaxAtoms(atoms);
                 line = ChemParser.readMeaningfulLine(reader, true);
             }
+            
+            // Optional: MaxCarbonAtomsForPressureDependence
+            if (line.toLowerCase().startsWith("maxcarbonatomsforpressuredependence:")) {
+                st = new StringTokenizer(line);
+                name = st.nextToken();
+                int atoms = Integer.parseInt(st.nextToken());
+                FastMasterEqn.setMaxCarbonAtoms(atoms);
+                line = ChemParser.readMeaningfulLine(reader, true);
+            }
+            
             // Next line must be PDepKineticsModel
             if (line.toLowerCase().startsWith("pdepkineticsmodel:")) {
                 st = new StringTokenizer(line);
