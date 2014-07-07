@@ -1443,10 +1443,10 @@ public class ChemGraph implements Matchable {
         thermoData = gen.generateThermo(this);
         if(!this.fromprimarythermolibrary && this.isAromatic) {
         	thermoData = gen.generateThermo(thermo_graph);
+        	this.thermoComments = thermo_graph.getThermoComments(); // must copy comments since we made a copy of the chemgraph
         	} 
         if(thermo_graph.fromprimarythermolibrary) {
         	this.fromprimarythermolibrary = true;}
-        this.thermoComments = thermo_graph.getThermoComments(); // must copy comments since we made a copy of the chemgraph
         return thermoData;
     }
 
