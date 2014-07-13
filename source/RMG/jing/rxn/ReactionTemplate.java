@@ -447,17 +447,31 @@ public class ReactionTemplate {
                         int temp = 2;
 //                        if (name.equals("intra_H_migration")) {temp=2;}
 //                        if (name.equals("Birad_recombination")) {temp=2;}
-                        if (name.equals("Intra_R_Add_Endocyclic")) {temp=3;}
-                        if (name.equals("Intra_R_Add_Exocyclic")) {temp=3;}
+//                        if (name.equals("Intra_R_Add_Endocyclic")) {temp=3;}
+//                        if (name.equals("Intra_R_Add_Exocyclic")) {temp=3;}
 
 
 	            	ChemGraph rcg = (ChemGraph) ((reactants.iterator()).next());
+			Graph reactant = rcg.getGraph();
                         //Logger.info(rcg.toString());
 	            	// check if the reactant is cyclic
 	            	if (rcg.getCycleNumber() != 0) {
-	            		// First find the two node reaction sites of interest
-	            		// This is hardcoding of the intra_H_migration reaction family
-	            		//Iterator act_iter = reactionAdjList.getActions();            		
+
+
+	                    if (name.equals("Intra_R_Add_Exocyclic") || name.equals("Intra_R_Add_Endocyclic")) {
+
+				temp=3;
+				
+	                        Node n1 = rcg.getCentralNodeAt(1); //node having the radical site
+	                        Node n2 = rcg.getCentralNodeAt(temp); //addition node
+	                        if(reactant.strainedRing(n1,n2)) { //check if n1 and n2 are part of a planar ring
+                	                fg = null;
+        	                }
+	                    }
+
+	          	   // First find the two node reaction sites of interest
+	          	   // This is hardcoding of the intra_H_migration reaction family
+	           	   //Iterator act_iter = reactionAdjList.getActions();            		
 	                        
 	                    Node n1 = rcg.getCentralNodeAt(1); // loses radical here
 	                    Node n2 = rcg.getCentralNodeAt(temp); // gains radical here
@@ -482,7 +496,6 @@ public class ReactionTemplate {
 			   if (name.equals("intra_H_migration") && comments.contains("R2") && rcg.getCentralNodeAt(4)!=null) {
 				fg = null;
 				}
-
 
 			    if (name.equals("intra_H_migration") || name.equals("Intra_Disproportionation")) {
 
@@ -510,6 +523,7 @@ public class ReactionTemplate {
 				    fg = null;
 				    }	
 			    }
+
 
 			    }
 	

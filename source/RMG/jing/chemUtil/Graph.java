@@ -542,6 +542,32 @@ public class Graph {
         // #]
     }
 
+    public boolean strainedRing(Node node1,Node node2) { 
+    boolean strained = false;
+    for (int i = 0; i < SSSRings.size(); i++) {
+        LinkedList cycle1 = (LinkedList) SSSRings.get(i);
+        if (cycle1.contains(node1)) {
+	    for (int j = 0; j < SSSRings.size(); j++) {
+	    int atomCount = 0;
+            LinkedList cycle2 = (LinkedList) SSSRings.get(j);
+	    if (i!=j && cycle2.contains(node2)) {
+		for (int k = 0; k < cycle2.size(); k++) {
+		    GraphComponent gc = (GraphComponent) cycle2.get(k);
+		    if (gc instanceof Node) {	
+		       Node n = (Node) gc;
+                       if(cycle1.contains(n))
+			   atomCount += 1;
+		       }	
+		    }
+		}
+	    if(atomCount >= 2)
+		strained = true;
+	    }
+	}
+    }
+    return strained;
+    }
+
     public boolean inBiRing(Node node1) {
     int count = 0;
     for (int i = 0; i < SSSRings.size(); i++) {
