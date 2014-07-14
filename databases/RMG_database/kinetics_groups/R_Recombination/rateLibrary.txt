@@ -99,6 +99,15 @@ Arrhenius_EP
 506.		Cd_allenic		C_methyl		300-2500	5.00E+12	0.0     0.0     0.0     0       0       0       0       5       Estimated value, agrees with 1987WU/KER6291
 507.		Cd_allenic		H_rad			300-2500	1.00E+13	0.0     0.0     0.0     0       0       0       0       5       Estimated value
 
+// A. G. Vandeputte
+// Some values for recombination reactions involving CPDyl
+508. 		C_rad_cyclopentadiene	H_rad			300-2000	1.0E+14		0.0     0.0     0.0     0       0       0       0       3	(! BENZENE OXIDATION TAKEN FROM DACOSTA 2003 IJCK)
+509.		C_rad_cyclopentadiene	C_methyl		300-2000	8.34E+15	-0.7	0.0	0.5	0       0       0       0       3	Sharma J. Phys. Chem. A 113 8871 - 8882 (2009)	
+510.		C_rad_cyclopentadiene	C_rad_cyclopentadiene	300-2000	5.00E13		0.0     0.0     0.0     0       0       0       0       5	Estimated value
+
+// A. G. Vandeputte
+511. 		H_rad			C_rad/H/CdCd            300-2500        2.00E+13	0.0     0.0     0.0     0       0       0       0       5       Estimated value
+
 3000	H_rad		SsJ-H	300-1500	5.77E+15	0	0	0.43	0	0	0	0	3	GA Jonas x 3 for spinorbit
 //3001	C_methyl	SsJ-H	300-1500	4.41E+14	0	0	0.29	0	0	0	0	3	GA Jonas x 3 for spinorbit
 //3002	C_rad/H2/Cs	SsJ-H	300-1500	1.87E+14	0	0	1.14	0	0	0	0	3	GA Jonas x 3 for spinorbit
