@@ -74,8 +74,6 @@ L1: Rn
 //            	L5: R5_BB_D
 //            	L5: R5_BB_T
 //            	L5: R5_BB_CO
-
->>>>>>> d2ee6caee9b8b8c54980f1066fd333a0cbdd78ba
 //        L3: R5_SDD
 
     L2: R6plus
