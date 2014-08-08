@@ -502,6 +502,15 @@ Cycloheptene
 6    Cd 0 {5,S} {7,D}
 7    Cd 0 {1,S} {6,D}
 
+1,2,4,6-Cycloheptatetraene
+1  * Cd 0 {2,D} {7,S}
+2    Cdd 0 {1,D} {3,D}
+3    Cd 0 {4,S} {2,D}
+4    Cd 0 {3,S} {5,D}
+5    Cd 0 {6,S} {4,D}
+6    Cd 0 {5,S} {7,D}
+7    Cd 0 {1,S} {6,D}
+
 // num. identical central atoms = eight
 Cyclooctane
 1  * Cs 0 {2,S} {8,S}

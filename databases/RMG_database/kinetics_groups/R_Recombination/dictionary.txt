@@ -134,6 +134,14 @@ C_rad/H/CdCd
 3 Cd 0 {1,S}
 4 Cd 0 {1,S}
 
+C_rad_cyclopentadiene
+1 * C 1 {2,S} {3,S} {4,S}
+2 H 0 {1,S}
+3 Cd 0 {1,S} {5,D} 
+4 Cd 0 {1,S} {6,D} 
+5 Cd 0 {3,D} {6,S} 
+6 Cd 0 {4,D} {5,S} 
+
 C_ter_rad
 1 * C 1 {2,S}, {3,S}, {4,S}
 2 {R!H} 0 {1,S}

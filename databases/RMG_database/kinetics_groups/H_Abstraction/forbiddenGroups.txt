@@ -1,0 +1,42 @@
+// Not R in this one, as O*-O* H abstractions are accounted for in this reaction family
+disprop1
+1  *1 R 0 {2,S} {3,S}
+2  C 1 {1,S}
+3  *2 H 0 {1,S}
+
+disprop2
+1  *1 R 0 {2,S} {3,S}
+2  R 0 {1,S} {4,D}
+3  *2 H 0 {1,S}
+4  R 0 {2,D} {5,S}
+5  R 1 {4,S}
+
+disprop3
+1  *1 R 0 {2,S} {3,S}
+2  R 0 {1,S} {4,T}
+3  *2 H 0 {1,S}
+4  R 0 {2,T} {5,S}
+5  R 1 {4,S}
+
+disprop4
+1  *1 R 0 {2,S} {3,S}
+2  R 0 {1,S} {4,D}
+3  *2 H 0 {1,S}
+4  R 0 {2,D} {5,S}
+5  R 0 {4,S} {6,D}
+6  R 0 {5,D} {7,S}
+7  R 1 {6,S}
+
+disprop5
+1  *1 R 0 {2,S} {3,S}
+2  R 0 {1,S} {4,D}
+3  *2 H 0 {1,S}
+4  R 0 {2,D} {5,S}
+5  R 0 {4,S} {6,D}
+6  R 0 {5,D} {7,S}
+7  R 1 {6,S}
+
+
+
+
+

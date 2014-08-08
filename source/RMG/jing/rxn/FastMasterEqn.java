@@ -109,6 +109,7 @@ public class FastMasterEqn implements PDepKineticsEstimator {
      * so that pressure dependence is always run.
      */
     private static int maxAtoms = 100000;
+    private static int maxCarbonAtoms = 100000;
 
     // ==========================================================================
     //
@@ -1233,6 +1234,13 @@ public class FastMasterEqn implements PDepKineticsEstimator {
     }
 
     /**
+     * Return the number of carbon atoms above which pressure dependence is assumed to be negligible.
+     */
+    public static int getMaxCarbonAtoms() {
+        return maxCarbonAtoms;
+    }
+    
+    /**
      * Set the number of atoms above which pressure dependence is assumed to be negligible. To always run pressure
      * dependence, set this to a very large number.
      */
@@ -1241,8 +1249,16 @@ public class FastMasterEqn implements PDepKineticsEstimator {
     }
 
     /**
+     * Set the number of atoms above which pressure dependence is assumed to be negligible. To always run pressure
+     * dependence, set this to a very large number.
+     */
+    public static void setMaxCarbonAtoms(int atoms) {
+        maxCarbonAtoms = atoms;
+    }
+    
+    /**
      * Return true if the given reaction should be considered as a pressure dependent reaction or false otherwise. A
-     * pressure dependent reaction has the form A -> B, A -> B + C, or A + B -> C with a total number of atoms below a
+     * pressure dependent reaction has the form A -> B, A -> B + C, or A + B -> C with a total number of atoms (or number of Carbon atoms) below a
      * certain threshold.
      * 
      * @param reaction
@@ -1250,7 +1266,7 @@ public class FastMasterEqn implements PDepKineticsEstimator {
      * @return true if the reaction should be considered as pressure dependent, false otherwise
      */
     public static boolean isReactionPressureDependent(Reaction reaction) {
-        if (reaction.getAtomNumber() > maxAtoms)
+        if (reaction.getAtomNumber() > maxAtoms || reaction.getCarbonAtomNumber() > maxCarbonAtoms)
             return false;
         else
             return (reaction.getReactantNumber() == 1 || reaction

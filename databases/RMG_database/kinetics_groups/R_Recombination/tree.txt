@@ -28,6 +28,7 @@ L1: Y_rad
 				L5: C_rad/H/OneDeO
 			L4: C_rad/H/TwoDe
 				L5: C_rad/H/CdCd
+					L6: C_rad_cyclopentadiene
 			L4: CsJ-CSH
 				L5: CsJ-CsSsH
 				L5: CsJ-CdSsH

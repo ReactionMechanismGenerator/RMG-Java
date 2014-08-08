@@ -152,6 +152,7 @@ L1: SevenMember
 	L2: 1,3,5-Cycloheptatriene
 	L2: Cycloheptanone
 	L2: 1,4-Cycloheptadiene
+	L2: 1,2,4,6-Cycloheptatetraene
 L1: EightMember
 	L2: Cyclooctane
 	L2: cis-Cyclooctene

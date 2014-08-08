@@ -109,6 +109,7 @@ L1: X_H_or_Xrad_H
                 L5: C/H/NonDeC
                     L6: C/H/Cs3
                         L7: C/H/Cs2/Cs\O
+						L7: C/H/Cs2/Cs\Cs|O
                         L7: C/H/Cs3_5ring
                             L8: C/H/Cs3_5ring_adj5
                             L8: C/H/Cs3_5ring_fused6
@@ -263,6 +264,7 @@ L1: Y_rad_birad
 					L6: C_rad/H/Cs\H2\Cs/Cs\H2\O
 					L6: C_rad/H/Cs\H\Cs\O/Cs
 					L6: C_rad/H/Cs\H2\Cs|O/Cs
+					L6: C_rad/H/Cs\H2\CO/Cs
 					L6: C_rad/H/NonDeC_5ring_fused6_1
 					L6: C_rad/H/NonDeC_5ring_fused6_2
                                         L6: C_rad/H/NonDeC_5ring_alpha6ring
@@ -384,6 +386,7 @@ L1: Y_rad_birad
 			L4: CO_pri_rad
 			L4: CO_sec_rad
 				L5: CO_rad/NonDe
+					L6: CO_rad/Cs
 				L5: CO_rad/OneDe
 		L3: CS_rad
 			L4: CS_pri_rad
