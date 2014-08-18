@@ -2634,7 +2634,8 @@ Arrhenius_EP
 // Ref Ab Initio Kinetics for the Decomposition of Hydroxybutyl and Butoxy Radicals of n-Butanol,Zhang P.,Klippenstein S.K.,Law C.K.
 // The thermochemistry for the species is obtained from Mike's n-butanol paper dx.doi.org/10.1016/j.combustflame.2010.06.002
 
-3069	Cds-HH_Cds-CsH		O_pri_rad	300-2000	4.15E10		0.68	0	-1.945	0	0	0	0	3
+// 3069 is too high (~ factor of 10) replaced with propene+OH rate coefficient 
+3069	Cds-HH_Cds-CsH		O_pri_rad	500-3000	3.2E+5 	    2.03 	0 	-3.5	0	0	0	0	3
 3070	Cds-HH_Cds-Cs\Os/H 	CsJ-HHH		300-2000	5.32E5		1.85	0	5.71	0	0	0	0	3 
 3071	Cds-HH_Cds-OsH		CsJ-CsHH	300-2000	1.071e+03	2.72	0	8.24	0	0	0	0	3 
 3072	Cds-HH_Cds-CsH		CsJ-OsHH	300-2000	1.381e+06	1.76	0	8.87	0	0	0	0	3
