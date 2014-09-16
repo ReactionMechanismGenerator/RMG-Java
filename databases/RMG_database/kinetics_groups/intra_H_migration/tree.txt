@@ -86,8 +86,10 @@ L1: RnH
 				L5: R4H_SDS
 				L5: R4H_STS
 				L5: R4H_SBS
-			L4: R4H_SBB
-			L4: R4H_BBS
+			L4: R4H_SMM
+				L5: R4H_SBB
+			L4: R4H_MMS
+				L5: R4H_BBS
 			L4: R4H_BBB
 	L2: R5Hall
 		L3: R5HJ_1
@@ -224,11 +226,12 @@ L1: Y_rad_out
 				L5: C_rad_out_OneDe/O
 				L5: C_rad_out_OneDe/S
 			L4: C_rad_out_TwoDe	 
-	L2: Cd_rad_out_double
-	L2: Cd_rad_out_single
-		  L3: Cd_rad_out_singleH
-		  L3: Cd_rad_out_singleNd
-		  L3: Cd_rad_out_singleDe
+	L2: Cd_rad_out
+		L3: Cd_rad_out_double
+		L3: Cd_rad_out_single
+			  L4: Cd_rad_out_singleH
+			  L4: Cd_rad_out_singleNd
+			  L4: Cd_rad_out_singleDe
 	L2: Ct_rad_out
 	L2: O_rad_out
 	L2: Cb_rad_out

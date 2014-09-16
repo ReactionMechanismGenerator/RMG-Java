@@ -471,11 +471,25 @@ R4H_SBS
 4 *2 {R!H} 0 {3,S}, {5,S}
 5 *3 H 0 {4,S}
 
+R4H_SMM
+1 *1 {R!H} 1 {2,S}
+2 *4 {Cb,Cd} 0 {1,S}, {3,{D,B}}
+3 *5 {Cbf,Cdd} 0 {2,{D,B}}, {4,{D,B}}
+4 *2 {Cb,Cd} 0 {3,{D,B}}, {5,S}
+5 *3 H 0 {4,S}
+
 R4H_SBB
 1 *1 {R!H} 1 {2,S}
 2 *4 Cb 0 {1,S}, {3,B}
 3 *5 Cbf 0 {2,B}, {4,B}
 4 *2 Cb 0 {3,B}, {5,S}
+5 *3 H 0 {4,S}
+
+R4H_MMS
+1 *1 {Cb,Cd} 1 {2,{D,B}}
+2 *4 {Cbf,Cdd} 0 {1,{D,B}}, {3,{D,B}}
+3 *5 {Cb,Cd} 0 {2,{D,B}}, {4,S}
+4 *2 {R!H} 0 {3,S}, {5,S}
 5 *3 H 0 {4,S}
 
 R4H_BBS
@@ -1624,9 +1638,12 @@ C_rad_out_TwoDe
 2 {Cd,Ct,Cb,CO} 0 {1,S}
 3 {Cd,Ct,Cb,CO} 0 {1,S}
 
+Cd_rad_out
+1 *1 Cd 1
+
 Cd_rad_out_double
 1 *1 Cd 1 {2,D}
-2 Cd 0 {1,D}
+2 {Cd,Cdd} 0 {1,D}
 
 Cd_rad_out_single
 1 *1 Cd 1 {2,S}
@@ -1978,12 +1995,12 @@ Cs_H_out_OOH/Cs
 Cd_H_out_double
 1 *2 Cd 0 {2,S} {3,D}
 2 *3 H 0 {1,S}
-3 {Cd,O} 0 {1,D}
+3 {Cd,Cdd,O} 0 {1,D}
 
 Cd_H_out_doubleC
 1 *2 Cd 0 {2,S} {3,D}
 2 *3 H 0 {1,S}
-3 Cd 0 {1,D}
+3 {Cd,Cdd} 0 {1,D}
 
 Cd_H_out_doubleO
 1 *2 Cd 0 {2,S} {3,D}

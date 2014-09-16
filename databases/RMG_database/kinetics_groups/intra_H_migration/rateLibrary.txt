@@ -11,7 +11,7 @@ Arrhenius_EP
 
 //f25_intra_H_migration
 //No	RnH	Y_rad_out	XH_out	Temp	A	n	Alpha	E	DA	DN	DAlpha	DE	Rank	Comments
-614 RnH 		Y_rad_out 	XH_out 	300-1500 	1.00E+10 	0 	0 	25.00 	0 	0 	0 	0 	0 	default
+614 RnH 		Y_rad_out 		XH_out 		300-1500 	1.00E+10 	0 	0 	25.00 	0 	0 	0 	0 	0 	default
 615 R2H_S		C_rad_out_single	Cs_H_out_2H	300-1500	5.48E+08	1.62	0	38.76	0	0	0	0	5	Currans's estimation [5] in his reaction type 5.
 616 R2H_S		C_rad_out_single	Cs_H_out_1H	300-1500	9.59E+08	1.39	0	39.70	0	0	0	0	5	Currans's estimation [5] in his reaction type 5.
 617 R3H_SS		C_rad_out_single	Cs_H_out_2H	300-1500	1.39E+09	0.98	0	33.76	0	0	0	0	5	Currans's estimation [5] in his reaction type 5.
@@ -368,6 +368,7 @@ Arrhenius_EP
 1022. R4H_SSS	C_rad_out_2H		Cs_H_out_OneDe		300-2500	1.81E-03 	4.25 	0.0	9.07	0 0 0 0 5 A. G. Vandeputte BMK/cbsb7 HO
 1023. R5H_SSSS 	C_rad_out_2H		Cs_H_out_H/OneDe	300-2500	4.61E+01 	3.21 	0.0	6.53	0 0 0 0 5 A. G. Vandeputte BMK/cbsb7 HO
 1024. R5H_SSSS 	C_rad_out_2H 		Cs_H_out_OneDe		300-2500	1.05E+04 	2.14 	0.0	7.97	0 0 0 0 5 A. G. Vandeputte BMK/cbsb7 HO
+1027. R5H_SMSS	C_rad_out_2H 		Cs_H_out_H/Cd		300-2500        2.40E+03	2.15	0.0	22.1	0 0 0 0 5 A. G. Vandeputte BMK/cbsb7 1D-HR
 
 // 1025 calculated, 1027+1028 Estimates
 
@@ -418,3 +419,9 @@ Arrhenius_EP
 1055  R2H_S	C_rad_out_2H		Cs_H_out_CdCd		600-1500	4.52E+08	1.11	0.0	20.9	0 0 0 0 4 AV, BMK/6-311G(2d,d,p) TST Eckart, no HR (calculated for cycC5H5-CH2 -> cycC5H4-CH3
 
 1056	R2H_S			C_rad_out_2H		Cs_H_out_H/NonDeC		500-2000	3.59E+05	2.05	0	36.3	0	0	0	0	2	JWA CCSD(T)-F12/cc-pVTZ-F12 with 1d-HR
+
+// AG Vandeputte, sterically hampered int H abs
+1057  R4H_MMS	Cd_rad_out		Cs_H_out		300-1500	1.0E-10		0.0	0.0	0.0	0 0 0 0 4 AV, Guess
+1058  R2H_D 	Cd_rad_out_singleH  	Cd_H_out_singleDe	300-1500	1.0E-10         0.0     0.0     0.0	0 0 0 0 4 AV, Guess
+
+
