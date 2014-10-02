@@ -247,7 +247,7 @@ public class ThermoDataEstimator {
             ChemGraph cg = ChemGraph.make(g);
             ReactionModelGenerator
                     .addChemGraphToListIfNotPresent_ElseTerminate(
-                            speciesFromInputFile, cg, "");
+                            speciesFromInputFile, cg, name);
             chemgraphNamesMap.put(cg, name);
             line = ChemParser.readMeaningfulLine(reader, true);
         }
