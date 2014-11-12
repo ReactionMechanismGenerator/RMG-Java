@@ -577,7 +577,7 @@ Indenyl
 2    Cb 0 {1,S} {3,B}
 3    Cb 0 {2,B} {4,S}
 4    Cd 0 {3,S} {5,D}
-5    Cd 0 {4,S} {1,S}
+5    Cd 0 {4,D} {1,S}
 6    H 0 {1,S}
 
 Allyl_S			
