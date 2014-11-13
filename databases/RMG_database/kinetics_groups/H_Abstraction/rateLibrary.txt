@@ -242,7 +242,7 @@ Arrhenius_EP
 530.	H2O2			Cd_pri_rad					300-1500	1.00e+00	3.52	0	-7.48	0	0	0	0	5	SSM due to lack of better value ref rate rule 531
 531.	H2O2			Cd_Cd\H\Cs|H2|Cs_pri_rad 			300-1500	1.00e+00	3.52	0	-7.48	0	0	0	0	5	SSM CBS-QB3 calculations w/o HR corrections
 533.    C_methane   		C2b						294-376     	7.5e12  	0.0  	0  	1.05	1.6e12  0.0 	0   	0.12 	4	Matsugi et al 10.1021/jp1012494
-534.	H2O2			O_rad/Cd\H_Cd\H\Cs|Cs				600-2000	3.495e-02 	3.75 	0.0 	10.89  	*3	0.0	0.0	2.0	3	MHS CBS-QB3 w/1dHR calculations
+534.	H2O2			O_rad/Cd\H_Cd\H\Cs				600-2000	3.495e-02 	3.75 	0.0 	10.89  	*3	0.0	0.0	2.0	3	MHS CBS-QB3 w/1dHR calculations
 535.	H2O2			O_rad/OneDe					600-2000	3.495e-02 	3.75 	0.0 	10.89  	*3	0.0	0.0	2.0	3	MHS CBS-QB3 w/1dHR calculations, see node 534.
 536.	H2O2			OOC						600-2000	9.2e-02 	3.96 	0.0 	6.63  	*3  	0.0 	0.0 	2.0 	3  	MHS CBS-QB3 w/1dHR calculations
 537.	H2O2			O_rad/NonDeO					600-2000	9.2e-02 	3.96	0.0 	6.63  	*3  	0.0 	0.0 	2.0 	3  	MHS CBS-QB3 w/1dHR calculations, see node 536.
@@ -303,7 +303,7 @@ Arrhenius_EP
 // C/H2/NonDeC_5ring_alpha6ring : secondary C atom on a 5 ring, in alpha of the flanking 6 ring (JP10)
 // C/H2/NonDeC_5ring_beta6ring : secondary C atom on a 5 ring, in beta of the flanking 6 ring (JP10)
 // Rate coefficients were obtained by calculating the habstractions involving methyl using BMK/cbsb7 with inclusion of HR
-// CBS-QB3 GAV°´s were then used to estimate the rate coefficients with a variety of radical sites
+// CBS-QB3 GAVÂ°Å½s were then used to estimate the rate coefficients with a variety of radical sites
 //  
 // Despite the fact they are not CBS-QB3 and use GA, I would give these a priority of 4. Aaron
 //
@@ -633,7 +633,7 @@ Arrhenius_EP
 4041	H2	CS_rad/Cs	300-1500	3.23E-02	4.34	0.00	14.3	0	0	0	0	4	Group additivity method for C--H--C abstractions, Aaron Vandeputte
 4042	H2	CS_rad/S	300-1500	4.96E-02	4.34	0.00	16.9	0	0	0	0	4	Group additivity method for C--H--C abstractions, Aaron Vandeputte
 4043	H2	CS_rad/Cd	300-1500	1.74E-02	4.34	0.00	17.2	0	0	0	0	4	Group additivity method for C--H--C abstractions, Aaron Vandeputte
-4044	H2	CS_rad/Ct	300-1500	4.87E-02	4.34	1.00	20.8	0	0	0	0	4	Group additivity method for C--H--C abstractions, Aaron Vandeputte
+4044	H2	CS_rad/Ct	300-1500	4.87E-02	4.34	0.00	20.8	0	0	0	0	4	Group additivity method for C--H--C abstractions, Aaron Vandeputte
 4045	C_methane	H_rad	300-1500	2.19E-01	4.34	0.00	8.2	0	0	0	0	4	Group additivity method for C--H--C abstractions, Aaron Vandeputte
 4046	C_methane	C_methyl	300-1500	5.18E-03	4.34	0.00	10.3	0	0	0	0	4	Group additivity method for C--H--C abstractions, Aaron Vandeputte
 4047	C_methane	C_rad/H2/Cs	300-1500	8.89E-04	4.34	0.00	11.7	0	0	0	0	4	Group additivity method for C--H--C abstractions, Aaron Vandeputte
