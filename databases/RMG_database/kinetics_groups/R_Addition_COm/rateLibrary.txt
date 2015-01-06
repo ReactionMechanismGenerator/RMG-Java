@@ -22,3 +22,4 @@ Arrhenius_EP
 425.		COm		CH2CH3		600-2000	7.70E+07	1.37	0		5.69	*3		0		0		2.0		3		MRH CBS-QB3 calculations with 1dHR corrections
 426.		COm		CH2CH2CH3	600-2000	6.51E+10	0.45	0		6.68	*3		0		0		2.0		3		MRH CBS-QB3 calculations with 1dHR corrections
 427.		COm		CH[CH3]2	600-2000	8.61E+07	1.36	0		4.80	*3		0		0		2.0		3		MRH CBS-QB3 calculations with 1dHR corrections
+428.		COm		S_rad/NonDe	300-2000	7.85E+04	2.33	0		2.23	0		0		0		0		4		CAC CBS-QB3 calcs, HO

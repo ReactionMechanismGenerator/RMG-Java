@@ -290,8 +290,27 @@ O_sec_rad
 
 O_rad/NonDe
 1 *2 O 1 {2,S}
-2 {Cs,O} 0 {1,S}
+2 {Cs,O,S} 0 {1,S}
 
 O_rad/OneDe
 1 *2 O 1 {2,S}
+2 {Cd,Ct,Cb,CO} 0 {1,S}
+
+S_rad
+1 *2 S 1
+
+S_pri_rad
+1 *2 S 1 {2,S}      
+2 H 0 {1,S}
+
+S_sec_rad
+1 *2 S 1 {2,S}
+2 {R!H} 0 {1,S}
+
+S_rad/NonDe
+1 *2 S 1 {2,S}
+2 {Cs,O,S} 0 {1,S}
+
+S_rad/OneDe
+1 *2 S 1 {2,S}
 2 {Cd,Ct,Cb,CO} 0 {1,S}
