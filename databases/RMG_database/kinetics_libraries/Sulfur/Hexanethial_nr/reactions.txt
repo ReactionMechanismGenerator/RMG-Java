@@ -38,4 +38,7 @@ delta-DHS = Et-THT + C6H13J	7.89E+04	1.26	9.86	0.0	0.0	0.0
 C6H11SH + C6H11SJ = C6H11SJ + C6H12S	8.20E+01	3.06	7.70	0.0	0.0	0.0
 H2S + C6H10JSH = SH + C6H11SH-2e		6.08E+01	3.06	9.30	0.0	0.0	0.0
 H2S + C6H10JSH-b = SH + C6H11SH-2e		1.16E+02	3.06	7.40	0.0	0.0	0.0
+//ene addition reactions to form vinyl-dihydrothiophene:
+C6H8S = 2-Vinyl-2,5-DHT		1.36E+09	0.545	37.50	0.0	0.0	0.0
+4-Hexenethial = 2-Vinyl-THT	1.43E+01	2.437	24.18	0.0	0.0	0.0
 
