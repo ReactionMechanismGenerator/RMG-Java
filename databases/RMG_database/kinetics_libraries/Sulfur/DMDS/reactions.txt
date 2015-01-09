@@ -9,11 +9,7 @@ A: mol/cm3/s
 E: kcal/mol
 
 Reactions: 
-
-// Ontbinding DMDS
-
 C2H5SJ1 = C2H5SJ2	85.5	3.04	11.62	0	0	0
-C2H4 + SH = C2H5SJ2 	9960.0	2.7	-0.8	0	0	0
-
-SJJ + SJJ = S2		1.6E11	1.3	-0.88	0	0	0	// x4 
+C2H4+SH = C2H5SJ2 	9960.0	2.7	-0.8	0	0	0
+SJJ+SJJ = S2JJ		1.6e+11	1.3	-0.88	0	0	0
 
