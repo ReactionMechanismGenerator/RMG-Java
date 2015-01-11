@@ -14,5 +14,7 @@ C3H2	113.99	56.44	10.61	12.79	14.81	16.48	18.71	20.33	22.59	0.0	0.0	0.0	"Burcat'
 H	52.103	27.419	4.968	4.968	4.968	4.968	4.968	4.968	4.968	0.001	0.0005	0	 "library value for H radical"
 //C2O2	14.90	57.613	11.00	12.00	13.00	14.00	15.00	16.00	17.00	0	0	0	 "G03 CBSQB3 calculation - Cp values estimated poorly"
 O2 -0.0010244	49.0236	7.0233	7.1986	7.4285	7.6673	8.0656	8.3363	8.7407	0.0	0.0	0.0		"from GRI-Mech 3.0"
-S2	29.19 	55.96 	7.81 	8.17 	8.40 	8.54 	8.70 	8.78 	8.87	0	0	0	"CBS-QB3 value A.G. Vandeputte"
+S2	  47.12   53.78   7.81    8.17    8.40    8.54    8.70    8.78    8.87	0	0	0	"CBS-QB3 value A.G. Vandeputte"
+S2JJ      30.74   54.54   7.79    8.14    8.35    8.51    8.75    8.94    9.31    0	0	0	"from Chase thermo database"
 HCS	71.7	56.37	8.77	9.46	10.04	10.51	11.22	11.76	12.62	0	0	0	"NIST value + B3LYP/cbsb7 entropy and heat cap A.G. Vandeputte"
+
