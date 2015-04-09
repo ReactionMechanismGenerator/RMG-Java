@@ -1,0 +1,70 @@
+//tracks the decomposition of hexyl sulfide, without any pressure-dependent reactions.
+//sulfur chemistry is a new addition to RMG as of release RMG 4.0
+
+Database: RMG_database
+
+PrimaryThermoLibrary:
+Name: RMG-Default
+Location: primaryThermoLibrary
+Name: Sulfur_Thermo
+Location: SulfurLibrary
+END
+
+PrimaryTransportLibrary:
+END
+
+ReadRestart: no
+WriteRestart: no
+
+TemperatureModel: Constant (K) 1350
+PressureModel: Constant (atm) 1 
+
+InitialStatus:
+
+(1) DHS (mol/cm3) 1.0
+1 C 0 {2,S}
+2 C 0 {1,S} {3,S}
+3 C 0 {2,S} {4,S}
+4 C 0 {3,S} {5,S}
+5 C 0 {4,S} {6,S}
+6 C 0 {5,S} {7,S}
+7 S 0 {6,S} {8,S}
+8 C 0 {7,S} {9,S}
+9 C 0 {8,S} {10,S}
+10 C 0 {9,S} {11,S}
+11 C 0 {10,S} {12,S}
+12 C 0 {11,S} {13,S}
+13 C 0 {12,S}
+
+END
+
+InertGas:
+N2 (mol/cm3) 0.0 
+Ar (mol/cm3) 0.0 
+END
+
+SpectroscopicDataEstimator: off
+PressureDependence: off
+
+FinishController:
+(1) Goal Conversion: DHS 0.9
+(2) Error Tolerance: 0.1
+
+DynamicSimulator: DASSL
+Conversions: AUTO
+Atol: 1e-18
+Rtol: 1e-8
+
+PrimaryKineticLibrary:
+END
+
+ReactionLibrary:
+END
+
+SeedMechanism:
+END
+
+ChemkinUnits:
+A: moles
+Ea: kcal/mol
+

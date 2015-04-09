@@ -26,6 +26,9 @@ L1: Rn
 		L3: R6_SDSSD
 		L3: R6_DSSSD
 		L3: R6_DSDSD
+	L2: R7
+	L2: R8
+		L3: R8_SSSSSSS
 L1: Y_rad_out
 	L2: C_rad_out_single
 		L3: C_rad_out_2H

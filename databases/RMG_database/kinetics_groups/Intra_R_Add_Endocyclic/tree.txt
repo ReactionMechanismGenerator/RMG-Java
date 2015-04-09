@@ -33,12 +33,15 @@ L1: Rn
             L4: R5_SS_D
             L4: R5_SS_T
             L4: R5_SS_CO
-
+	    L4: R5_SS_CS
+			L5: Cs-R5_SS_CS
+			L5: H2-R5_SS_CS
 	L3: R5_SM
 	    L4: R5_SD
 		L5: R5_SD_D
 		L5: R5_SD_T
 		L5: R5_SD_CO
+		L5: R5_SD_CS
 	    L4: R5_ST
 		L5: R5_ST_D
 		L5: R5_ST_T
@@ -64,13 +67,13 @@ L1: Rn
 //          L4: R5_DS_allenic
 //              L5: R5_DS_allenic_D
 //              L5: R5_DS_allenic_CO
+//				L5: R5_DS_allenic_CS
 
 	L3: R5_MM
 //            L4: R5_BB
 //            	L5: R5_BB_D
 //            	L5: R5_BB_T
 //            	L5: R5_BB_CO
-
 //        L3: R5_SDD
 
     L2: R6plus

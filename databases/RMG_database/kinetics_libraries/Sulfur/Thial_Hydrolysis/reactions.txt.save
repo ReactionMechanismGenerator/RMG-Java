@@ -3,6 +3,7 @@ A: mol/cm3/s
 E: kcal/mol
 
 Reactions:
+//2nd and last 4, have been updated
 //CH2S + H2O = CH2OHSH		9.60E+02	2.43	28.13	0.0	0.0	0.0
 //CH3CHS + H2O = CHCH3OHSH	3.89E-03	3.95	24.72	0.0	0.0	0.0
 CH2OHSJ = CHOHS + HJ		2.51E+08	1.64	34.58	0.0	0.0	0.0
@@ -17,11 +18,9 @@ COS + H2O = COSHOH			4.87E-07	5.38	45.13	0.0	0.0	0.0
 H2S + CH2O = CH2OHSH		5.02E+01	3.01	38.7	0.0	0.0	0.0
 H2S + CH3CHO = CHCH3OHSH	4.69E+01	2.90	37.1	0.0	0.0	0.0
 // Approximate water-gas shift reaction
-CO + H2O = CO2 + H2		5.0E+03		0.0	0.0	0.0	0.0	0.0
+// CO + H2O = CO2 + H2		5.0E+03		0.0	0.0	0.0	0.0	0.0
 CHCH3OHSH + H2O = CH3CHO + H2S + H2O    3.46E+00        3.05    21.52   0.0     0.0     0.0
 CHCH3OHSH + H2S = CH3CHO + H2S + H2S    1.72E-01        3.43    27.50   0.0     0.0     0.0
 CHCH3OHSH + H2O = CH3CHS + H2O + H2O    1.32E+01        2.56    20.55   0.0     0.0     0.0
 CHCH3OHSH + H2S = CH3CHS + H2O + H2S    2.14E+00        2.93    28.62   0.0     0.0     0.0
-COSHOH + H2O = COS + H2O + H2O		4.29E+02	2.45	19.54	0.0	0.0	0.0
-COSHOH + H2O = CO2 + H2S + H2O		1.18E+03	2.49	17.76	0.0	0.0	0.0
 

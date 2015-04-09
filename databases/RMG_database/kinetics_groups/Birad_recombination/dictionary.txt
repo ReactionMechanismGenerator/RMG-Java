@@ -1,7 +1,7 @@
 //f07 : biradical recombination to form cyclic structure 
 
 Rn
-Union {R3, R4, R5, R6}
+Union {R3, R4, R5, R6, R7, R8}
 
 R3
 1 *1 {Cs,Cd,CO,Os,Ss} 1 {2,{S,D}}
@@ -169,6 +169,35 @@ R6_DSDSD
 4 Cd 0 {3,D}, {5,S}
 5 *4 Cd 0 {4,S}, {6,D}
 6 *2 Cd 1 {5,D}
+
+R7
+1 *1 {Cs,Cd,CO,Os,Ss} 1 {2,{S,D}}
+2 *3 {Cs,Cd,CO,Os,Ss} 0 {1,{S,D}}, {3,{S,D}}
+3 {Cs,Cd,CO,Os,Ss} 0 {2,{S,D}}, {4,{S,D}}
+4 {Cs,Cd,CO,Os,Ss} 0 {3,{S,D}}, {5,{S,D}}   
+5 {Cs,Cd,CO,Os,Ss} 0 {4,{S,D}}, {6,{S,D}}
+6 *4 {Cs,Cd,CO,Os,Ss} 0 {5,{S,D}}, {7,{S,D}}  
+7 *2 {Cs,Cd,CO,Os,Ss} 1 {6,{S,D}}
+
+R8
+1 *1 {Cs,Cd,CO,Os,Ss} 1 {2,{S,D}}
+2 *3 {Cs,Cd,CO,Os,Ss} 0 {1,{S,D}}, {3,{S,D}}
+3 {Cs,Cd,CO,Os,Ss} 0 {2,{S,D}}, {4,{S,D}}
+4 {Cs,Cd,CO,Os,Ss} 0 {3,{S,D}}, {5,{S,D}}
+5 {Cs,Cd,CO,Os,Ss} 0 {4,{S,D}}, {6,{S,D}}   
+6 {Cs,Cd,CO,Os,Ss} 0 {5,{S,D}}, {7,{S,D}}
+7 *4 {Cs,Cd,CO,Os,Ss} 0 {6,{S,D}}, {8,{S,D}}
+8 *2 {Cs,Cd,CO,Os,Ss} 1 {7,{S,D}}
+
+R8_SSSSSSS
+1 *1 {Cs,Cd,CO,Os,Ss} 1 {2,S}
+2 *3 {Cs,Cd,CO,Os,Ss} 0 {1,S}, {3,S}
+3 {Cs,Cd,CO,Os,Ss} 0 {2,S}, {4,S}
+4 {Cs,Cd,CO,Os,Ss} 0 {3,S}, {5,S}
+5 {Cs,Cd,CO,Os,Ss} 0 {4,S}, {6,S}
+6 {Cs,Cd,CO,Os,Ss} 0 {5,S}, {7,S}
+7 *4 {Cs,Cd,CO,Os,Ss} 0 {6,S}, {8,S}
+8 *2 {Cs,Cd,CO,Os,Ss} 1 {7,S}
 
 Y_rad_out
 1 *1 {R!H} 1 
