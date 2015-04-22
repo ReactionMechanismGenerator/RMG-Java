@@ -14,7 +14,7 @@
 //a single gauche correction is worth 0.8 kcal/mol for alkanes and 0.5 kcal/mol for ethers (cf. Benson, Thermochemical Kinetics: Methods for the Estimation of Thermochemical Data and Rate Parameters, 2nd Edition, 1976. and Cohen and Benson, Chem. Rev. 93 (1993) 2419)
 //for alkenes, the value of 0.5 kcal/mol is used and the counting scheme discussed in Benson, Cruickshank, Golden, Haugen, O'Neal, Rodgers, Shaw, and Walsh, Chemical Reviews, 1969, 69, 279, (including neglecting gauche for "secondary" Cs) was used
 
-0  CsOsCd						0.0	0.0	0.0	0.0	0.0	0.0	0.0	0.0	0.0	0	0	0
+0  CsOsCdSs						0.0	0.0	0.0	0.0	0.0	0.0	0.0	0.0	0.0	0	0	0
 1  Cs(RRRR) 						0.0	0.0	0.0	0.0	0.0	0.0	0.0	0.0	0.0	0	0	0 //"zeroary" (e.g. methane)
 2  Cs(CsRRR)						0.0	0.0	0.0	0.0	0.0	0.0	0.0	0.0	0.0	0	0	0 //P(P)
 3  Cs(Cs(CsRR)RRR)					0.0	0.0	0.0	0.0	0.0	0.0	0.0	0.0	0.0	0	0	0 //P(S)
@@ -110,3 +110,14 @@
 93 Cd(Cs(CsCsCs)Cs(CsRR)) 				1.0	0.0	0.0	0.0	0.0	0.0	0.0	0.0	0.0	0	0	0 //S(QS) 2 GI
 94 Cd(Cs(CsCsCs)Cs(CsCsR)) 				2.0	0.0	0.0	0.0	0.0	0.0	0.0	0.0	0.0	0	0	0 //S(QT) 4 GI
 95 Cd(Cs(CsCsCs)Cs(CsCsCs)) 				2.0	0.0	0.0	0.0	0.0	0.0	0.0	0.0	0.0	0	0	0 //S(QQ) 4 GI
+
+
+// Toegevoegd AG Vandeputte 28/03/2011
+// E�n gauchecorrectie in rekening brengen voor zwavelcomponenten
+
+96 Ss(RR)                                               0.0     0.0     0.0     0.0     0.0     0.0     0.0     0.0     0.0     0       0       0             
+97 Ss(CsR)                                              0.0     0.0     0.0     0.0     0.0     0.0     0.0     0.0     0.0     0       0       0             
+98 Ss(CsH)                                              0.0     0.0     0.0     0.0     0.0     0.0     0.0     0.0     0.0     0       0       0             
+99 Ss(Cs(CsHH)H)                                        -0.97   -1.01   0.33    0.62    0.67    0.59    0.38    0.21    -0.01   0       0       0             
+100 Ss(CsCs)                                            0.0     0.0     0.0     0.0     0.0     0.0     0.0     0.0     0.0     0       0       0
+

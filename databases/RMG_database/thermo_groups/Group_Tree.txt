@@ -74,6 +74,7 @@ L1: C
 
 	L2: Cdd
 		L3: Cdd-OdOd	// CO2
+		L3: Cdd-OdSd	// OCS
 		L3: Cdd-SdSd    // CS2
 		L3: Cdd-CdOd 	
 			L4: Cdd-CdsOd // O=C*=C<  currently treat the adjacent C as Ck
@@ -105,9 +106,11 @@ L1: C
 		L3: CO-SsH		
 		L3: Cds-OdOsOs
 		L3: CO-CsSs
+		L3: CO-OsSs
 		L3: C=S-HH
         L3: C=S-SsH
 	L3: CS-OsH
+	L3: CS-OsOs
         L3: C=S-SsSs
 		L3: Cds-OdCH
 			L4: Cds-OdCsH
@@ -1571,6 +1574,9 @@ L1: C
 			L4: Cs-CdsOsSsH
 			L4: Cs-CtOsSsH
 			L4: Cs-CbOsSsH
+		
+		L3: Cs-CCOsSs
+			L4: Cs-CsCsOsSs
 
 		L3: Cs-COsOsSs
 			L4: Cs-CsOsOsSs
@@ -1952,6 +1958,7 @@ L1: O
 				L5: Os-(Cds-Cd)(Cds-Cd)	// O-CdCd
 			L4: Os-CdsCs  
 				L5: Os-Cs(Cds-Od)	// O-CsCO
+				L5: Os-Cs(Cds-Sd)	// O-CsCS
 				L5: Os-Cs(Cds-Cd)	// O-CsCd
 			L4: Os-CdsCb  
 				L5: Os-Cb(Cds-Od)	// O-CbCO
@@ -2011,6 +2018,7 @@ L1: S
 			L4: Ss-CsCs
 			L4: Ss-CsCd
 				L5: Ss-C=SCs
+			L4: Ss-CsCO
 			L4: Ss-CsCt
 			L4: Ss-CsCb
 			L4: Ss-CdCd

@@ -2,7 +2,7 @@
 //P = primary Cs, S=secondary Cs, T=tertiary Cs, Q=quarternary Cs where n-ary Cs refers to a Cs bonded to n other Cs atoms
 //notation in comments x(y1...yn) refers to central atom of type x, with ligands of type yi
 //here, R refers to R!Cs
-L0: CsOsCd
+L0: CsOsCdSs
 L1: Cs(RRRR) //"zeroary" (e.g. methane)
  L2: Cs(CsRRR) //P(P)
   L3: Cs(Cs(CsRR)RRR) //P(S)
@@ -98,3 +98,9 @@ L1: Cd(CsCs) //S(PP)
  L2: Cd(Cs(CsCsCs)Cs(CsRR)) //S(QS)
  L2: Cd(Cs(CsCsCs)Cs(CsCsR)) //S(QT)
  L2: Cd(Cs(CsCsCs)Cs(CsCsCs)) //S(QQ)  
+L1: Ss(RR)
+ L2: Ss(CsR)
+  L3: Ss(CsH)            
+   L4: Ss(Cs(CsHH)H)            
+ L2: Ss(CsCs)
+
