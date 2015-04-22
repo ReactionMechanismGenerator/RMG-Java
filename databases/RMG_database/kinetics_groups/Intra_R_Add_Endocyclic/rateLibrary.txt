@@ -8,6 +8,7 @@ Arrhenius_EP
 // JS, add 144., a dummy number for debugging, need to be deleted!!!!!!!!!!!!!!!!
 
 //		Rn			multiplebond_intra			radadd_intra		Temp.		A			n		a	E0		DA	Dn	Da	DE0	Rank
+
 809.	Rn                      multiplebond_intra                      radadd_intra            300-1500        1.0E+09        0.19    		0       20.0            0       0       0       0       5
 
 // These estimates are probably HO and should not be used
@@ -21,6 +22,10 @@ Arrhenius_EP
 //815.	R6_SSS_D    doublebond_intra_pri_NdNd   radadd_intra_cs		300-1500	1.00E+10	0		0	50.9	0	0	0	0	2
 // A.G. Vandeputte flagged out as it does not match the reaction template any longer
 //816.	R5_DS_allenic_D		doublebond_intra_secDe_2H		radadd_intra_cdsingleH			298-3000	2.82E+11	0.12		0	14.82	   0	0   0	0   2 RRHO, CBS-QB3 treatment of H2C=C=CH-CH=CH. cyclization by gmagoon
+817.	Cs-R5_SS_CS	thiyl_intra_H		radadd_intra_csHNd		300-1500	4.48E+06		1.17	0	0.27	0	0	0	0	3	CBS-QB3, 1d-hr by CAC
+//818.	R5_DS_allenic_CS	thiyl_intra	radadd_intra_cdsingleNd		300-1500	7.08E+11	-0.14	0	10.92	0	0	0	0	3	CBS-QB3, 1d-hr by CAC
+//819.	R5_SD_CS	thiyl_intra_H		radadd_intra_csHNd		300-1500	7.97E+11	0.10	0	10.70	0	0	0	0	3	CBS-QB3, 1d-hr by CAC
+819.	R5_SD_D		doublebond_intra_pri_HNd	radadd_intra_S		300-1500        7.97E+11        0.10    0       10.70   0       0       0	0	3	same reaction as above
 
 // A.G. Vandeputte Slowing down some heavily constrained intra additions
 
@@ -715,7 +720,4 @@ Arrhenius_EP
 
 //Added AG Vandeputte, rate rules for R7 to R9 still missing, taken from R6_SMS
 1572   	R9_SDSSSD	doublebond_intra_pri_2H	 	radadd_intra_cs2H	300-1500 	1.71E+10        0.19    0       20.58   0       0       0       0       0       Aan Vandeputte small GA method	
-
-
-
 

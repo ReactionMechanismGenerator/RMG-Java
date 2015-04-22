@@ -78,10 +78,7 @@ Arrhenius_EP
 490.		O2_birad		CO_rad/NonDe	200-300		1.505E+12	0	0	0	*3.16		0	0	0	4	Atkinson et al [96] literature review.	
 491.		Y_rad			H_rad			300-1500	1.000E+13	0	0	0	0	0	0	0	1	MRH estimate
 492.		Y_rad			Y_rad			300-1500	1.000E+13	0	0	0	0	0	0	0	1	MRH estimate
-491.		SsJ-Ss			C_methyl		300-1500	6.44E+09	1.19	0.00	0.51	0	0	0	0	5	A.G. Vandeputte
-492.		SsJ-Cs			SsJ-Cs			300-1500	4.36E+10	1.30	0.00	-0.88	0	0	0	0	5	A.G. Vandeputte
-493.		CsJ-SsHH		H_rad			300-1500	8.20E+11	0.68	0.00	0.07	0	0	0	0	5	A.G. Vandeputte
-494.		SsJ-H			H_rad			300-1500	2.53E+13	0.56	0.00	-0.02	0	0	0	0	5	A.G. Vandeputte
+
 495. 		H_rad		  	C_rad/H2/Cd		200-2000	2.92E+13	0.18	0.0 	0.124	0	0	0	0	3	Harding et al. (2007HAR/KLI3789-3801), value devided by 2 to account for two addition sites
 496.		H_rad			C_rad/H/OneDeC		200-2000        2.92E+13        0.18    0.0     0.124   0       0       0       0       5       Estimated by 495
 497.		H_rad                   C_rad/OneDe             200-2000        2.92E+13        0.18    0.0     0.124   0       0       0       0       5       Estimated by 495
@@ -107,6 +104,21 @@ Arrhenius_EP
 
 // A. G. Vandeputte
 511. 		H_rad			C_rad/H/CdCd            300-2500        2.00E+13	0.0     0.0     0.0     0       0       0       0       5       Estimated value
+
+
+480.            SsJ-Ss           C_methyl                300-1500        3.94E+09        1.25    0.00    -0.74   0       0       0       0       1       A.G. Vandeputte
+481.            SsJ-Cs           SsJ-Cs                  300-1500        1.06E+11        1.21    0.00    -0.95   0       0       0       0       1       A.G. Vandeputte
+482.            CsJ-SsHH         H_rad                   300-1500        5.00E+11        0.65    0.00    -0.37   0       0       0       0       1       A.G. Vandeputte
+483.            SsJ-H            H_rad                   300-1500        7.07E+12        0.56    0.00    -0.08   0       0       0       0       1       A.G. Vandeputte
+
+484.            SsJ-Ss           C_rad/Cs3               300-1500        3.94E+09        1.25    0.00    -0.74   0       0       0       0       1       A.G. Vandeputte 
+
+//485.          SsJ-Cs           C_rad/H2/Cs             600-800         1.0E+13         0       0       0       0       0       0       0       1       A.G. Vandeputte, fitted 
+485.            SsJ-Cs           C_rad/H2/Cs             300-1500        8.94E+7         1.54    0.00    -1.32   0       0       0       0       1       A.G. Vandeputte, calcula
+//486.          SsJ-Cs           C_methyl                600-800         1.0E+13         0       0       0       0       0       0       0       1       A.G. Vandeputte, fitted 
+486.            SsJ-Cs           C_methyl                300-1500        8.94E+7         1.54    0.00    -1.32   0       0       0       0       1       A.G. Vandeputte, calcula
+//487.          SsJ-Cs           C_rad/Cs3               300-1500        1.0E+13         0       0       0       0       0       0       0       1       A.G. Vandeputte, fitted
+487.            SsJ-Cs           C_rad/Cs3               300-1500        8.94E+7         1.54    0.00    -1.32   0       0       0       0       1       A.G. Vandeputte, calcula
 
 3000	H_rad		SsJ-H	300-1500	5.77E+15	0	0	0.43	0	0	0	0	3	GA Jonas x 3 for spinorbit
 //3001	C_methyl	SsJ-H	300-1500	4.41E+14	0	0	0.29	0	0	0	0	3	GA Jonas x 3 for spinorbit

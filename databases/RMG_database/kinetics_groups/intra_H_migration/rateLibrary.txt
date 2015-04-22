@@ -294,8 +294,7 @@ Arrhenius_EP
 
 
 901	R2H_S		C_rad_out_2H	S_H_out	300-1500	7.22E-02	4.07	0.00	20.90	0	0	0	0	1	A. G. Vandeputte
-//// cclass 7/27/10: commented out because R3H_SS_C isn't recognized
-//902	R3H_SS_C	C_rad_out_2H	S_H_out	300-1500	8.55E+01	3.04	0.00	11.62	0	0	0	0	1	A. G. Vandeputte
+902	R3H_SS_Cs	C_rad_out_2H	S_H_out	300-1500	8.55E+01	3.04	0.00	11.62	0	0	0	0	1	A. G. Vandeputte
 903	R3H_SS_S	C_rad_out_2H	S_H_out	300-1500	8.21E-04	4.56	0.00	16.05	0	0	0	0	1	A. G. Vandeputte
 904	R4H_SSS		C_rad_out_2H	S_H_out	300-1500	3.73E+08	0.882	0.00	5.35	0	0	0	0	1	A. G. Vandeputte
 905	R4H_SSS		C_rad_out_2H	S_H_out	300-1500	1.91E+07	1.26	0.00	7.13	0	0	0	0	1	A. G. Vandeputte
@@ -329,11 +328,13 @@ Arrhenius_EP
 895	R5H_CCCC_O	O_rad_out	Cs_H_out	200-1000	4.00e10	0.00	0	5.10	0	0	0	0	3	[AJ]Atkinson recommendation for 1,5 shifts of tertiary H
 
 //Added by CAC for intra_H migration in sulfide radicals
-1001	R4H_SSS_CsCsSCs	C_rad_out_H/NonDeC	Cs_H_out_H/NonDeC	300-1500	1.70E+07	1.06	0.0	17.86	0	0	0	0 	3	CAC CBS-QB3 calc 1dhr
-1002	R5H_SSSS_CsCsCsSCs	C_rad_out_H/NonDeC Cs_H_out_H/NonDeC	300-1500	2.14E+05 1.33 0.0 10.56 0 0 0 0 3	CAC CBS-QB3 calc 1dhr
-1003	R4H_SSS	C_rad_out_H/NonDeC	Cs_H_out_H/NonDeS	300-1500	6.96E+05 1.95 0.0 19.26 0 0 0 0 3	CAC CBS-QB3 calc 1dhr
-1004	R5H_SSSS C_rad_out_H/NonDeC Cs_H_out_H/NonDeS	300-1500	5.31E+05 1.58 0.0 12.07 0 0 0 0 3	CAC CBS-QB3 calc 1dhr
-1005	R3H_SS	O_rad_out	S_H_out	300-1500	4.99E+11	0.26	0.0	15.99	0	0	0	0	3	CAC CBS-QB3 calc 1dhr
+1001		R4H_SSS_CsCsSCs		C_rad_out_H/NonDeC		Cs_H_out_H/NonDeC	300-1500	1.14E-03	3.95		0.0		11.17	0	0	0	0 	3	CAC CBS-QB3 calc 1dhr
+1002		R5H_SSSS_CsCsCsSCs	C_rad_out_H/NonDeC              Cs_H_out_H/NonDeC	300-1500	2.82E-02        3.28            0.0            5.91   0       0       0       0       3		CAC CBS-QB3 calc 1dhr
+1003		R4H_SSS			C_rad_out_H/NonDeC		Cs_H_out_H/NonDeS	300-1500	1.79E-05        4.50            0.0             11.93   0       0       0       0       3	CAC CBS-QB3 calc 1dhr
+1004		R5H_SSSS                C_rad_out_H/NonDeC              Cs_H_out_H/NonDeS	300-1500	5.08E-02        3.24            0.0             6.94   0       0       0       0       3	CAC CBS-QB3 calc 1dhr
+1005		R3H_SS			O_rad_out			S_H_out			300-1500	4.99E+11	0.26		0.0		15.99	0	0	0	0	3	CAC CBS-QB3 calc 1dhr
+1006		R4H_SDS			C_rad_out_H/NonDeC		S_H_out			300-1550	7.61e+11	0.22    	0.0		21.10	0	0	0	0	3	CAC CBS-QB3 calc, HO approx
+
 
 // Rules 1006 - 1014 are intra-H migration calculated at RQCISD(T)/CBS//B3LYP/6-311++G(d,p) with 1-d Hindered rotor correction
 // Ref Ab Initio Kinetics for the Decomposition of Hydroxybutyl and Butoxy Radicals of n-Butanol,Zhang P.,Klippenstein S.K.,Law C.K.

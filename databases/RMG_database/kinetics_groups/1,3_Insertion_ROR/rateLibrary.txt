@@ -17,22 +17,25 @@ Arrhenius_EP
 
 //No.	doublebond			R_OR			Temp.		A			N		a		E0		DA		Dn		Da		DE0		Rank	Comments
 560.	doublebond			R_OR			300-1500	1E+02		3		0		45		0		0		0		0		0		Default
-561.	Cd/H2_Cd/Nd2		H_OCmethyl		300-1500	9.36E+01	2.85	0		41.9	0		0		0		0		3		[87]CBS-QB3 calculations from Sumathi 2003.
-562.	Cd/H2_Cd/H/Nd		H_OCmethyl		300-1500	2.48E+01	2.93	0		43.9	0		0		0		0		3		[87]CBS-QB3 calculations from Sumathi 2003.
-563.	Cd/unsub_Cd/unsub	H_OCmethyl		300-1500	4.73E+01	3.00	0		47.0	0		0		0		0		3		[87]CBS-QB3 calculations from Sumathi 2003.
-564.	cco_2H				H_OH			300-1500	1.57E+02	3.04	0		39.4	0		0		0		0		3		[87]CBS-QB3 calculations from Sumathi 2003.
-565.	cco_HNd				H_OH			300-1500	5.15E+01	3.05	0		41.0	0		0		0		0		3		[87]CBS-QB3 calculations from Sumathi 2003.
-566.	cco_Nd2				H_OH			300-1500	1.45E+03	2.80	0		40.8	0		0		0		0		3		[87]CBS-QB3 calculations from Sumathi 2003.
-567.	Cd/unsub_Cd/unsub	H_OH			300-1500	1.47E+02	2.94	0		53.1	0		0		0		0		3		[87]CBS-QB3 calculations from Sumathi 2003.
-568.	Cd/H/Nd_Cd/H2		H_OH			300-1500	2.27E+02	2.74	0		56.9	0		0		0		0		3		[87]CBS-QB3 calculations from Sumathi 2003.
-569.	Cd/H2_Cd/H/Nd		H_OH			300-1500	6.52E+01	2.92	0		50.7	0		0		0		0		3		[87]CBS-QB3 calculations from Sumathi 2003.
-570.	Cd/H2_Cd/Nd2		H_OH			300-1500	1.25E+03	2.76	0		48.5	0		0		0		0		3		[87]CBS-QB3 calculations from Sumathi 2003.
-701.	Sd_Cd/unsub			H_OH			300-1500	9.60E+02	2.43	0	28.13		0		0		0		0		3		CBS-QB3 calculations by CAC
-702.	Sd_Cd/H/Nd			H_OH			300-1500	5.96E+00	2.77	0		20.07		0		0		0		0		3		CBS-QB3 calculations by CAC, F12 energy 
-703.	Thiophene2			H_OH			300-1500	1.50E+01	3.15	0		63.64		0		0		0		0		3		CBS-QB3 calc w/ 1dhr, by CAC
-704.	Thiophene3			H_OH			300-1500	5.10E+01	3.11	0		63.03		0		0		0		0		3		CBS-QB3 calc w/ 1dhr, by CAC
-705.	Sd_Cd/H/Cb			H_OH			300-1500	3.69E+02	2.58	0		32.46		0		0		0		0		3		CBS-QB3 calc w/ 1dhr, CAC
-706.	Sd_Cd/Nd2			H_OH			300-2000	9.09E-01	3.14	0	36.8		0		0		0		0		4	CBS-QB3 HO
+561.	Cd/H2_Cd/Nd2		H_OCmethyl		300-1500	9.36E+01	2.85	0		41.9	0		0		0		0		2		[87]CBS-QB3 calculations from Sumathi 2003.
+562.	Cd/H2_Cd/H/Nd		H_OCmethyl		300-1500	2.48E+01	2.93	0		43.9	0		0		0		0		2		[87]CBS-QB3 calculations from Sumathi 2003.
+563.	Cd/unsub_Cd/unsub	H_OCmethyl		300-1500	4.73E+01	3.00	0		47.0	0		0		0		0		2		[87]CBS-QB3 calculations from Sumathi 2003.
+564.	cco_2H				H_OH			300-1500	1.57E+02	3.04	0		39.4	0		0		0		0		2		[87]CBS-QB3 calculations from Sumathi 2003.
+565.	cco_HNd				H_OH			300-1500	5.15E+01	3.05	0		41.0	0		0		0		0		2		[87]CBS-QB3 calculations from Sumathi 2003.
+566.	cco_Nd2				H_OH			300-1500	1.45E+03	2.80	0		40.8	0		0		0		0		2		[87]CBS-QB3 calculations from Sumathi 2003.
+567.	Cd/unsub_Cd/unsub	H_OH			300-1500	1.47E+02	2.94	0		53.1	0		0		0		0		2		[87]CBS-QB3 calculations from Sumathi 2003.
+568.	Cd/H/Nd_Cd/H2		H_OH			300-1500	2.27E+02	2.74	0		56.9	0		0		0		0		2		[87]CBS-QB3 calculations from Sumathi 2003.
+569.	Cd/H2_Cd/H/Nd		H_OH			300-1500	6.52E+01	2.92	0		50.7	0		0		0		0		2		[87]CBS-QB3 calculations from Sumathi 2003.
+570.	Cd/H2_Cd/Nd2		H_OH			300-1500	1.25E+03	2.76	0		48.5	0		0		0		0		2		[87]CBS-QB3 calculations from Sumathi 2003.
+701.	Sd_Cd/unsub			H_OH			300-1500	2.43E-01	3.55	0	24.33		0		0		0		0		2		CBS-QB3 calculations by CAC, F12a energy
+702.	Sd_Cd/H/Nd			H_OH			300-1500	2.66E-03	3.95	0		24.55		0		0		0		0		2		CBS-QB3 calculations by CAC, F12a energy 
+703.	Thiophene2			H_OH			300-1500	6.02E+00	3.27	0		63.77		0		0		0		0		2		CBS-QB3 1d-hr calc by CAC, F12a energy
+704.	Thiophene3			H_OH			300-1500	2.08E+01	3.23	0		61.43		0		0		0		0		2		CBS-QB3 1d-hr calc by CAC, F12a energy
+705.	Sd_Cd/H/Cb			H_OH			300-1500	1.64E-02	3.89	0		29.20		0		0		0		0		3		CBS-QB3 1d-hr calc by CAC
+706.	Sd_Cd/CsCs			H_OH			300-2000	5.06E-05	4.54	0	24.31		0		0		0		0		2	CBS-QB3 1d-hr calc by CAC, F12a energy
+717.	Sd_Cd/CsOs			H_OH			300-2000	1.04E-05	4.64	0	32.37		0		0		0		0		2	CBS-QB3 1d-hr calc by CAC, F12a energy	
+718.	Sd_Cdd/Od			H_OH			300-2000	4.39E-07	5.40	0	45.10		0		0		0		0		2	CBS-QB3 1d-hr calc by CAC, F12a energy
+719.	Sd_Cd/H/Cd			H_OH			300-2000	5.98E-02	3.75	0	29.34		0		0		0		0		3	CBS-QB3 1d-hr by CAC, F12a energy
 
 // Rules 707 -709 are obtained by reversing the dehydration rate for butanol isomers
 // Thermochemistry obtained from butanol mechanism dx.doi.org/10.1016/j.combustflame.2010.06.002
@@ -45,13 +48,7 @@ Arrhenius_EP
 709.    Cd/H2_Cd/Nd2	H_OH            300-2000	3.013e+05	1.820	0	51.1		0		0		0		0		2
 // Estimate made from rule 707., updated by AG Vandeputte, CBSQB3 + HO, calculated for butadiene + H2O -> 2-butenol
 710.    Cd/H/De_Cd/H2	H_OH            300-2000	2.74E-5		4.73	0	52.3		0		0		0		0		4  CBS-QB3+HO
-
 // AG Vandeputte, calculated the rate coefficient for methanol + ethene -> propanol
 
 712. 	doublebond		R_OH		300-1500        1.00E-5         4.00            0               80.0            0               0               0               0               0               Default
 713.	Cd/unsub_Cd/unsub	CH3OH		300-1500	1.79E-5		3.97		0		78.7		0               0               0               0               0               CBS-QB3, HO
-
-
-
-
-	
