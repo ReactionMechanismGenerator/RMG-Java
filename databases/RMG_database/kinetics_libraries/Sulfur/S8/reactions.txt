@@ -1,0 +1,107 @@
+Unit:
+A: mol/cm3/s
+E: kcal/mol
+
+Reactions:
+
+S8JJ(2) = S8(1)                                        4.360e+17 	  0.00 	  0.70 		0.0	0.0	0.0	//Birad_recombination exact:   [ R8_SSSSSSS , S_rad , Spri_rad ]
+S2(5)+S6JJ(4) = S8JJ(2)                                4.000e+13 	  0.00 	  0.00 		0.0	0.0	0.0	//R_Recombination estimate: (Average:)  [ SJ , SsJ-Ss ]
+S8JJ(2) = SPC(12)+S2(5)                                5.949e+11 	  0.60 	  28.06 		0.0	0.0	0.0	//intra_substitutionS_cyclization estimate: (Average:)  [ XSR6J_SSSS , SsJ-Ss , S-SsSs ] Ea computed using Evans-Polanyi dHrxn(298K) = -9.8 kcal/mol and alpha = 0.50.
+S6JJ(4) = SPC(12)                                      5.458e+13 	  0.01 	  1.41 		0.0	0.0	0.0	//Birad_recombination estimate: (Average:)  [ R6_SSSSS , S_rad , Spri_rad ]
+S4JJ(8)+S4JJ(8) = S8JJ(2)                              4.000e+13 	  0.00 	  0.00 		0.0	0.0	0.0	//R_Recombination estimate: (Average:)  [ SsJ-Ss , SsJ-Ss ]
+S2(5)+S2(5) = S4JJ(8)                                  4.000e+13 	  0.00 	  0.00 		0.0	0.0	0.0	//R_Recombination estimate: (Average:)  [ SJ , SJ ]
+S8JJ(2)+S2(5) = S6JJ(4)+S4JJ(8)                        2.008e+04 	  2.70 	  16.03 		0.0	0.0	0.0	//SubstitutionS estimate: (Average:)  [ S-Ss(Ss)Ss(Ss) , S2b ] Warning: Ea raised by 5.1 from 10.9 to dHrxn(298K) = 16.0 kcal/mol.
+S2(5)+S4JJ(8) = S6JJ(4)                                4.000e+13 	  0.00 	  0.00 		0.0	0.0	0.0	//R_Recombination estimate: (Average:)  [ SJ , SsJ-Ss ]
+S8JJ(2) = SPC(10)+S4JJ(8)                              5.949e+11 	  0.60 	  44.34 		0.0	0.0	0.0	//intra_substitutionS_cyclization estimate: (Average:)  [ XSR4J_SS , SsJ-Ss , S-SsSs ] Ea computed using Evans-Polanyi dHrxn(298K) = 22.7 kcal/mol and alpha = 0.50.
+S6JJ(4) = SPC(10)+S2(5)                                5.949e+11 	  0.60 	  36.33 		0.0	0.0	0.0	//intra_substitutionS_cyclization estimate: (Average:)  [ XSR4J_SS , SsJ-Ss , S-SsSs ] Ea computed using Evans-Polanyi dHrxn(298K) = 6.7 kcal/mol and alpha = 0.50.
+S4JJ(8) = SPC(10)                                      5.458e+13 	  0.01 	  1.41 		0.0	0.0	0.0	//Birad_recombination estimate: (Average:)  [ R4_SSS , S_rad , Spri_rad ]
+S2(5)+S8JJ(2) = S10JJ(13)                              4.000e+13 	  0.00 	  0.00 		0.0	0.0	0.0	//R_Recombination estimate: (Average:)  [ SJ , SsJ-Ss ]
+S8JJ(2)+S6JJ(4) = S10JJ(13)+S4JJ(8)                    2.232e+01 	  3.63 	  19.84 		0.0	0.0	0.0	//SubstitutionS estimate: (Average:)  [ S-Ss(Ss)Ss(Ss) , SsJ-Ss ]
+S6JJ(4)+S6JJ(4) = S2(5)+S10JJ(13)                      2.232e+01 	  3.63 	  19.84 		0.0	0.0	0.0	//SubstitutionS estimate: (Average:)  [ S-SsSs , SsJ-Ss ]
+S4JJ(8)+S6JJ(4) = S10JJ(13)                            4.000e+13 	  0.00 	  0.00 		0.0	0.0	0.0	//R_Recombination estimate: (Average:)  [ SsJ-Ss , SsJ-Ss ]
+S10JJ(13) = SPC(12)+S4JJ(8)                            5.949e+11 	  0.60 	  36.07 		0.0	0.0	0.0	//intra_substitutionS_cyclization estimate: (Average:)  [ XSR6J_SSSS , SsJ-Ss , S-SsSs ] Ea computed using Evans-Polanyi dHrxn(298K) = 6.2 kcal/mol and alpha = 0.50.
+S8JJ(2)+S4JJ(8) = S2(5)+S10JJ(13)                      2.232e+01 	  3.63 	  19.84 		0.0	0.0	0.0	//SubstitutionS estimate: (Average:)  [ S-SsSs , SsJ-Ss ]
+S10JJ(13) = SPC(10)+S6JJ(4)                            5.949e+11 	  0.60 	  44.34 		0.0	0.0	0.0	//intra_substitutionS_cyclization estimate: (Average:)  [ XSR4J_SS , SsJ-Ss , S-SsSs ] Ea computed using Evans-Polanyi dHrxn(298K) = 22.7 kcal/mol and alpha = 0.50.
+S2(3)+S6JJ(4) = S8JJ(2)                                1.332e+03 	  2.97 	 -2.63 		0.0	0.0	0.0	//R_Addition_MultipleBond estimate: (Average:)  [ Sd_R , SsJ-Ss ]
+S2(3)+S4JJ(8) = S6JJ(4)                                1.332e+03 	  2.97 	 -2.63 		0.0	0.0	0.0	//R_Addition_MultipleBond estimate: (Average:)  [ Sd_R , SsJ-Ss ]
+S2(3)+S2(5) = S4JJ(8)                                  1.332e+03 	  2.97 	 -2.63 		0.0	0.0	0.0	//R_Addition_MultipleBond exact:   [ Sd_R , SJ ]
+S4JJ(8) = S2(3)+S2(3)                                 1.000e+13 	  0.00 	  40.00 		0.0	0.0	0.0	//1,4_Linear_birad_scission exact:   [ RJJ ] Warning: Ea raised by 40.0 from 0.0 to dHrxn(298K) = 40.0 kcal/mol.
+S2(3)+S8JJ(2) = S10JJ(13)                              1.332e+03 	  2.97 	 -2.63 		0.0	0.0	0.0	//R_Addition_MultipleBond estimate: (Average:)  [ Sd_R , SsJ-Ss ]
+S3JJ(6)+S3JJ(6) = S6JJ(4)                              4.000e+13 	  0.00 	  0.00 		0.0	0.0	0.0	//R_Recombination estimate: (Average:)  [ SsJ-Ss , SsJ-Ss ]
+S6JJ(4) = SPC(9)+S3JJ(6)                               5.949e+11 	  0.60 	  45.34 		0.0	0.0	0.0	//intra_substitutionS_cyclization estimate: (Average:)  [ XSR3J_S , SsJ-3-Ss , S-SsSs ] Ea computed using Evans-Polanyi dHrxn(298K) = 24.7 kcal/mol and alpha = 0.50.
+S3JJ(6) = SPC(9)                                       4.360e+16 	  0.00 	  0.70 		0.0	0.0	0.0	//Birad_recombination exact:   [ R3_SS , S_rad , Spri_rad ]
+S3JJ(6)+S5JJ(7) = S8JJ(2)                              4.000e+13 	  0.00 	  0.00 		0.0	0.0	0.0	//R_Recombination estimate: (Average:)  [ SsJ-Ss , SsJ-Ss ]
+S8JJ(2) = SPC(9)+S5JJ(7)                               5.949e+11 	  0.60 	  45.34 		0.0	0.0	0.0	//intra_substitutionS_cyclization estimate: (Average:)  [ XSR3J_S , SsJ-3-Ss , S-SsSs ] Ea computed using Evans-Polanyi dHrxn(298K) = 24.7 kcal/mol and alpha = 0.50.
+S8JJ(2)+S2(5) = S5JJ(7)+S5JJ(7)                        2.008e+04 	  2.70 	  16.03 		0.0	0.0	0.0	//SubstitutionS estimate: (Average:)  [ S-SsSs , S2b ] Warning: Ea raised by 5.1 from 10.9 to dHrxn(298K) = 16.0 kcal/mol.
+S6JJ(4)+S2(5) = S5JJ(7)+S3JJ(6)                        2.008e+04 	  2.70 	  16.03 		0.0	0.0	0.0	//SubstitutionS estimate: (Average:)  [ S-SsSs , S2b ] Warning: Ea raised by 5.1 from 10.9 to dHrxn(298K) = 16.0 kcal/mol.
+S5JJ(7)+S5JJ(7) = S10JJ(13)                            4.000e+13 	  0.00 	  0.00 		0.0	0.0	0.0	//R_Recombination estimate: (Average:)  [ SsJ-Ss , SsJ-Ss ]
+S2(3)+S3JJ(6) = S5JJ(7)                                1.332e+03 	  2.97 	 -2.63 		0.0	0.0	0.0	//R_Addition_MultipleBond estimate: (Average:)  [ Sd_R , SsJ-Ss ]
+S3JJ(6)+S2(5) = S5JJ(7)                                4.000e+13 	  0.00 	  0.00 		0.0	0.0	0.0	//R_Recombination estimate: (Average:)  [ SsJ-Ss , SJ ]
+S8JJ(2)+S3JJ(6) = S6JJ(4)+S5JJ(7)                      2.232e+01 	  3.63 	  19.84 		0.0	0.0	0.0	//SubstitutionS estimate: (Average:)  [ S-SsSs , SsJ-Ss ]
+S10JJ(13)+S3JJ(6) = S8JJ(2)+S5JJ(7)                    2.232e+01 	  3.63 	  19.84 		0.0	0.0	0.0	//SubstitutionS estimate: (Average:)  [ S-Ss(Ss)Ss(Ss) , SsJ-Ss ]
+S5JJ(7) = SPC(9)+S2(5)                                 5.949e+11 	  0.60 	  37.33 		0.0	0.0	0.0	//intra_substitutionS_cyclization estimate: (Average:)  [ XSR3J_S , SsJ-3-Ss , S-SsSs ] Ea computed using Evans-Polanyi dHrxn(298K) = 8.7 kcal/mol and alpha = 0.50.
+S8JJ(2) = SPC(11)+S3JJ(6)                              5.949e+11 	  0.60 	  38.48 		0.0	0.0	0.0	//intra_substitutionS_cyclization estimate: (Average:)  [ XSR5J_SSS , SsJ-Ss , S-SsSs ] Ea computed using Evans-Polanyi dHrxn(298K) = 11.0 kcal/mol and alpha = 0.50.
+S10JJ(13) = SPC(11)+S5JJ(7)                            5.949e+11 	  0.60 	  38.48 		0.0	0.0	0.0	//intra_substitutionS_cyclization estimate: (Average:)  [ XSR5J_SSS , SsJ-Ss , S-SsSs ] Ea computed using Evans-Polanyi dHrxn(298K) = 11.0 kcal/mol and alpha = 0.50.
+S5JJ(7) = SPC(11)                                      5.458e+13 	  0.01 	  1.41 		0.0	0.0	0.0	//Birad_recombination estimate: (Average:)  [ R5_SSSS , S_rad , Spri_rad ]
+S8JJ(2)+S2(5) = S3JJ(6)+S7JJ(14)                       2.008e+04 	  2.70 	  16.03 		0.0	0.0	0.0	//SubstitutionS estimate: (Average:)  [ S-Ss(Ss)Ss(Ss) , S2b ] Warning: Ea raised by 5.1 from 10.9 to dHrxn(298K) = 16.0 kcal/mol.
+S8JJ(2)+S4JJ(8) = S7JJ(14)+S5JJ(7)                     2.232e+01 	  3.63 	  19.84 		0.0	0.0	0.0	//SubstitutionS estimate: (Average:)  [ S-SsSs , SsJ-Ss ]
+S6JJ(4)+S4JJ(8) = S7JJ(14)+S3JJ(6)                     2.232e+01 	  3.63 	  19.84 		0.0	0.0	0.0	//SubstitutionS estimate: (Average:)  [ S-SsSs , SsJ-Ss ]
+S3JJ(6)+S7JJ(14) = S10JJ(13)                           4.000e+13 	  0.00 	  0.00 		0.0	0.0	0.0	//R_Recombination estimate: (Average:)  [ SsJ-Ss , SsJ-Ss ]
+S10JJ(13) = SPC(9)+S7JJ(14)                            5.949e+11 	  0.60 	  45.34 		0.0	0.0	0.0	//intra_substitutionS_cyclization estimate: (Average:)  [ XSR3J_S , SsJ-3-Ss , S-SsSs ] Ea computed using Evans-Polanyi dHrxn(298K) = 24.7 kcal/mol and alpha = 0.50.
+S10JJ(13)+S2(5) = S5JJ(7)+S7JJ(14)                     4.017e+04 	  2.70 	  16.03 		0.0	0.0	0.0	//SubstitutionS estimate: (Average:)  [ S-SsSs , S2b ] Warning: Ea raised by 5.1 from 10.9 to dHrxn(298K) = 16.0 kcal/mol.
+S10JJ(13)+S4JJ(8) = S7JJ(14)+S7JJ(14)                  2.232e+01 	  3.63 	  19.84 		0.0	0.0	0.0	//SubstitutionS estimate: (Average:)  [ S-SsSs , SsJ-Ss ]
+S3JJ(6)+S4JJ(8) = S7JJ(14)                             4.000e+13 	  0.00 	  0.00 		0.0	0.0	0.0	//R_Recombination estimate: (Average:)  [ SsJ-Ss , SsJ-Ss ]
+S7JJ(14) = SPC(10)+S3JJ(6)                             5.949e+11 	  0.60 	  44.34 		0.0	0.0	0.0	//intra_substitutionS_cyclization estimate: (Average:)  [ XSR4J_SS , SsJ-Ss , S-SsSs ] Ea computed using Evans-Polanyi dHrxn(298K) = 22.7 kcal/mol and alpha = 0.50.
+S8JJ(2)+S3JJ(6) = S7JJ(14)+S4JJ(8)                     2.232e+01 	  3.63 	  19.84 		0.0	0.0	0.0	//SubstitutionS estimate: (Average:)  [ S-Ss(Ss)Ss(Ss) , SsJ-Ss ]
+S6JJ(4)+S3JJ(6) = S2(5)+S7JJ(14)                       2.232e+01 	  3.63 	  19.84 		0.0	0.0	0.0	//SubstitutionS estimate: (Average:)  [ S-SsSs , SsJ-Ss ]
+S10JJ(13)+S3JJ(6) = S6JJ(4)+S7JJ(14)                   4.464e+01 	  3.63 	  19.84 		0.0	0.0	0.0	//SubstitutionS estimate: (Average:)  [ S-SsSs , SsJ-Ss ]
+S7JJ(14) = SPC(9)+S4JJ(8)                              5.949e+11 	  0.60 	  45.34 		0.0	0.0	0.0	//intra_substitutionS_cyclization estimate: (Average:)  [ XSR3J_S , SsJ-3-Ss , S-SsSs ] Ea computed using Evans-Polanyi dHrxn(298K) = 24.7 kcal/mol and alpha = 0.50.
+S2(3)+S5JJ(7) = S7JJ(14)                               1.332e+03 	  2.97 	 -2.63 		0.0	0.0	0.0	//R_Addition_MultipleBond estimate: (Average:)  [ Sd_R , SsJ-Ss ]
+S5JJ(7)+S2(5) = S7JJ(14)                               4.000e+13 	  0.00 	  0.00 		0.0	0.0	0.0	//R_Recombination estimate: (Average:)  [ SsJ-Ss , SJ ]
+S5JJ(7)+S4JJ(8) = S2(5)+S7JJ(14)                       2.232e+01 	  3.63 	  19.84 		0.0	0.0	0.0	//SubstitutionS estimate: (Average:)  [ S-SsSs , SsJ-Ss ]
+S10JJ(13)+S5JJ(7) = S8JJ(2)+S7JJ(14)                   2.232e+01 	  3.63 	  19.84 		0.0	0.0	0.0	//SubstitutionS estimate: (Average:)  [ S-SsSs , SsJ-Ss ]
+S7JJ(14) = SPC(11)+S2(5)                               5.949e+11 	  0.60 	  30.46 		0.0	0.0	0.0	//intra_substitutionS_cyclization estimate: (Average:)  [ XSR5J_SSS , SsJ-Ss , S-SsSs ] Ea computed using Evans-Polanyi dHrxn(298K) = -5.0 kcal/mol and alpha = 0.50.
+S10JJ(13) = SPC(17)+S3JJ(6)                            5.949e+11 	  0.60 	  35.96 		0.0	0.0	0.0	//intra_substitutionS_cyclization estimate: (Average:)  [ XSR7J , SsJ-Ss , S-SsSs ] Ea computed using Evans-Polanyi dHrxn(298K) = 6.0 kcal/mol and alpha = 0.50.
+S7JJ(14) = SPC(17)                                     5.458e+13 	  0.01 	  1.41 		0.0	0.0	0.0	//Birad_recombination estimate: (Average:)  [ R7 , S_rad , Spri_rad ]
+S8JJ(2)+S6JJ(4) = S9JJ(16)+S5JJ(7)                     2.232e+01 	  3.63 	  19.84 		0.0	0.0	0.0	//SubstitutionS estimate: (Average:)  [ S-SsSs , SsJ-Ss ]
+S6JJ(4)+S6JJ(4) = S9JJ(16)+S3JJ(6)                     2.232e+01 	  3.63 	  19.84 		0.0	0.0	0.0	//SubstitutionS estimate: (Average:)  [ S-SsSs , SsJ-Ss ]
+S8JJ(2)+S4JJ(8) = S3JJ(6)+S9JJ(16)                     2.232e+01 	  3.63 	  19.84 		0.0	0.0	0.0	//SubstitutionS estimate: (Average:)  [ S-Ss(Ss)Ss(Ss) , SsJ-Ss ]
+S10JJ(13)+S2(5) = S3JJ(6)+S9JJ(16)                     2.008e+04 	  2.70 	  16.03 		0.0	0.0	0.0	//SubstitutionS estimate: (Average:)  [ S-Ss(Ss)Ss(Ss) , S2b ] Warning: Ea raised by 5.1 from 10.9 to dHrxn(298K) = 16.0 kcal/mol.
+S10JJ(13)+S6JJ(4) = S9JJ(16)+S7JJ(14)                  2.232e+01 	  3.63 	  19.84 		0.0	0.0	0.0	//SubstitutionS estimate: (Average:)  [ S-SsSs , SsJ-Ss ]
+S10JJ(13)+S4JJ(8) = S9JJ(16)+S5JJ(7)                   2.232e+01 	  3.63 	  19.84 		0.0	0.0	0.0	//SubstitutionS estimate: (Average:)  [ S-Ss(Ss)Ss(Ss) , SsJ-Ss ]
+S3JJ(6)+S6JJ(4) = S9JJ(16)                             4.000e+13 	  0.00 	  0.00 		0.0	0.0	0.0	//R_Recombination estimate: (Average:)  [ SsJ-Ss , SsJ-Ss ]
+S9JJ(16) = SPC(12)+S3JJ(6)                             5.949e+11 	  0.60 	  36.07 		0.0	0.0	0.0	//intra_substitutionS_cyclization estimate: (Average:)  [ XSR6J_SSSS , SsJ-Ss , S-SsSs ] Ea computed using Evans-Polanyi dHrxn(298K) = 6.2 kcal/mol and alpha = 0.50.
+S8JJ(2)+S3JJ(6) = S2(5)+S9JJ(16)                       2.232e+01 	  3.63 	  19.84 		0.0	0.0	0.0	//SubstitutionS estimate: (Average:)  [ S-SsSs , SsJ-Ss ]
+S10JJ(13)+S3JJ(6) = S4JJ(8)+S9JJ(16)                   2.232e+01 	  3.63 	  19.84 		0.0	0.0	0.0	//SubstitutionS estimate: (Average:)  [ S-Ss(Ss)Ss(Ss) , SsJ-Ss ]
+S9JJ(16) = SPC(9)+S6JJ(4)                              5.949e+11 	  0.60 	  45.34 		0.0	0.0	0.0	//intra_substitutionS_cyclization estimate: (Average:)  [ XSR3J_S , SsJ-3-Ss , S-SsSs ] Ea computed using Evans-Polanyi dHrxn(298K) = 24.7 kcal/mol and alpha = 0.50.
+S5JJ(7)+S4JJ(8) = S9JJ(16)                             4.000e+13 	  0.00 	  0.00 		0.0	0.0	0.0	//R_Recombination estimate: (Average:)  [ SsJ-Ss , SsJ-Ss ]
+S9JJ(16) = SPC(10)+S5JJ(7)                             5.949e+11 	  0.60 	  44.34 		0.0	0.0	0.0	//intra_substitutionS_cyclization estimate: (Average:)  [ XSR4J_SS , SsJ-Ss , S-SsSs ] Ea computed using Evans-Polanyi dHrxn(298K) = 22.7 kcal/mol and alpha = 0.50.
+S8JJ(2)+S5JJ(7) = S9JJ(16)+S4JJ(8)                     2.232e+01 	  3.63 	  19.84 		0.0	0.0	0.0	//SubstitutionS estimate: (Average:)  [ S-Ss(Ss)Ss(Ss) , SsJ-Ss ]
+S5JJ(7)+S6JJ(4) = S2(5)+S9JJ(16)                       2.232e+01 	  3.63 	  19.84 		0.0	0.0	0.0	//SubstitutionS estimate: (Average:)  [ S-SsSs , SsJ-Ss ]
+S10JJ(13)+S5JJ(7) = S9JJ(16)+S6JJ(4)                   2.232e+01 	  3.63 	  19.84 		0.0	0.0	0.0	//SubstitutionS estimate: (Average:)  [ S-Ss(Ss)Ss(Ss) , SsJ-Ss ]
+S9JJ(16) = SPC(11)+S4JJ(8)                             5.949e+11 	  0.60 	  38.48 		0.0	0.0	0.0	//intra_substitutionS_cyclization estimate: (Average:)  [ XSR5J_SSS , SsJ-Ss , S-SsSs ] Ea computed using Evans-Polanyi dHrxn(298K) = 11.0 kcal/mol and alpha = 0.50.
+S2(3)+S7JJ(14) = S9JJ(16)                              1.332e+03 	  2.97 	 -2.63 		0.0	0.0	0.0	//R_Addition_MultipleBond estimate: (Average:)  [ Sd_R , SsJ-Ss ]
+S7JJ(14)+S2(5) = S9JJ(16)                              4.000e+13 	  0.00 	  0.00 		0.0	0.0	0.0	//R_Recombination estimate: (Average:)  [ SsJ-Ss , SJ ]
+S7JJ(14)+S6JJ(4) = S9JJ(16)+S4JJ(8)                    2.232e+01 	  3.63 	  19.84 		0.0	0.0	0.0	//SubstitutionS estimate: (Average:)  [ S-SsSs , SsJ-Ss ]
+S7JJ(14)+S4JJ(8) = S9JJ(16)+S2(5)                      2.232e+01 	  3.63 	  19.84 		0.0	0.0	0.0	//SubstitutionS estimate: (Average:)  [ S-SsSs , SsJ-Ss ]
+S7JJ(14)+S5JJ(7) = S3JJ(6)+S9JJ(16)                    2.232e+01 	  3.63 	  19.84 		0.0	0.0	0.0	//SubstitutionS estimate: (Average:)  [ S-Ss(Ss)Ss(Ss) , SsJ-Ss ]
+S9JJ(16) = SPC(17)+S2(5)                               5.949e+11 	  0.60 	  27.95 		0.0	0.0	0.0	//intra_substitutionS_cyclization estimate: (Average:)  [ XSR7J , SsJ-Ss , S-SsSs ] Ea computed using Evans-Polanyi dHrxn(298K) = -10.1 kcal/mol and alpha = 0.50.
+S8JJ(2)+S2(5) = SJJ(15)+S9JJ(16)                       2.008e+04 	  2.70 	  40.69 		0.0	0.0	0.0	//SubstitutionS estimate: (Average:)  [ S-RRrad , S2b ] Warning: Ea raised by 29.7 from 10.9 to dHrxn(298K) = 40.7 kcal/mol.
+S6JJ(4)+S2(5) = SJJ(15)+S7JJ(14)                       2.008e+04 	  2.70 	  40.69 		0.0	0.0	0.0	//SubstitutionS estimate: (Average:)  [ S-RRrad , S2b ] Warning: Ea raised by 29.7 from 10.9 to dHrxn(298K) = 40.7 kcal/mol.
+S4JJ(8)+S2(5) = SJJ(15)+S5JJ(7)                        2.008e+04 	  2.70 	  40.69 		0.0	0.0	0.0	//SubstitutionS estimate: (Average:)  [ S-RRrad , S2b ] Warning: Ea raised by 29.7 from 10.9 to dHrxn(298K) = 40.7 kcal/mol.
+S4JJ(8)+S6JJ(4) = SJJ(15)+S9JJ(16)                     2.008e+04 	  2.70 	  24.66 		0.0	0.0	0.0	//SubstitutionS estimate: (Average:)  [ S-RRrad , SsJ-Ss ] Warning: Ea raised by 13.7 from 10.9 to dHrxn(298K) = 24.7 kcal/mol.
+S4JJ(8)+S4JJ(8) = SJJ(15)+S7JJ(14)                     2.008e+04 	  2.70 	  24.66 		0.0	0.0	0.0	//SubstitutionS estimate: (Average:)  [ S-RRrad , SsJ-Ss ] Warning: Ea raised by 13.7 from 10.9 to dHrxn(298K) = 24.7 kcal/mol.
+S2(3)+SJJ(15) = S3JJ(6)                                3.021e+06 	  2.06 	  3.33 		0.0	0.0	0.0	//R_Addition_MultipleBond estimate: (Average:)  [ Sd_R , SJJ ]
+S8JJ(2)+S3JJ(6) = SJJ(15)+S10JJ(13)                    2.008e+04 	  2.70 	  24.66 		0.0	0.0	0.0	//SubstitutionS estimate: (Average:)  [ S-RRrad , SsJ-Ss ] Warning: Ea raised by 13.7 from 10.9 to dHrxn(298K) = 24.7 kcal/mol.
+S6JJ(4)+S3JJ(6) = SJJ(15)+S8JJ(2)                      2.008e+04 	  2.70 	  24.66 		0.0	0.0	0.0	//SubstitutionS estimate: (Average:)  [ S-RRrad , SsJ-Ss ] Warning: Ea raised by 13.7 from 10.9 to dHrxn(298K) = 24.7 kcal/mol.
+S4JJ(8)+S3JJ(6) = SJJ(15)+S6JJ(4)                      2.008e+04 	  2.70 	  24.66 		0.0	0.0	0.0	//SubstitutionS estimate: (Average:)  [ S-RRrad , SsJ-Ss ] Warning: Ea raised by 13.7 from 10.9 to dHrxn(298K) = 24.7 kcal/mol.
+S5JJ(7)+S2(5) = SJJ(15)+S6JJ(4)                        2.008e+04 	  2.70 	  40.69 		0.0	0.0	0.0	//SubstitutionS estimate: (Average:)  [ S-RRrad , S2b ] Warning: Ea raised by 29.7 from 10.9 to dHrxn(298K) = 40.7 kcal/mol.
+S5JJ(7)+S6JJ(4) = SJJ(15)+S10JJ(13)                    2.008e+04 	  2.70 	  24.66 		0.0	0.0	0.0	//SubstitutionS estimate: (Average:)  [ S-RRrad , SsJ-Ss ] Warning: Ea raised by 13.7 from 10.9 to dHrxn(298K) = 24.7 kcal/mol.
+S5JJ(7)+S4JJ(8) = SJJ(15)+S8JJ(2)                      2.008e+04 	  2.70 	  24.66 		0.0	0.0	0.0	//SubstitutionS estimate: (Average:)  [ S-RRrad , SsJ-Ss ] Warning: Ea raised by 13.7 from 10.9 to dHrxn(298K) = 24.7 kcal/mol.
+S5JJ(7)+S3JJ(6) = SJJ(15)+S7JJ(14)                     2.008e+04 	  2.70 	  24.66 		0.0	0.0	0.0	//SubstitutionS estimate: (Average:)  [ S-RRrad , SsJ-Ss ] Warning: Ea raised by 13.7 from 10.9 to dHrxn(298K) = 24.7 kcal/mol.
+S5JJ(7)+S5JJ(7) = SJJ(15)+S9JJ(16)                     2.008e+04 	  2.70 	  24.66 		0.0	0.0	0.0	//SubstitutionS estimate: (Average:)  [ S-RRrad , SsJ-Ss ] Warning: Ea raised by 13.7 from 10.9 to dHrxn(298K) = 24.7 kcal/mol.
+S7JJ(14)+S2(5) = S8JJ(2)+SJJ(15)                       2.008e+04 	  2.70 	  40.69 		0.0	0.0	0.0	//SubstitutionS estimate: (Average:)  [ S-RRrad , S2b ] Warning: Ea raised by 29.7 from 10.9 to dHrxn(298K) = 40.7 kcal/mol.
+S7JJ(14)+S4JJ(8) = S10JJ(13)+SJJ(15)                   2.008e+04 	  2.70 	  24.66 		0.0	0.0	0.0	//SubstitutionS estimate: (Average:)  [ S-RRrad , SsJ-Ss ] Warning: Ea raised by 13.7 from 10.9 to dHrxn(298K) = 24.7 kcal/mol.
+S7JJ(14)+S3JJ(6) = S9JJ(16)+SJJ(15)                    2.008e+04 	  2.70 	  24.66 		0.0	0.0	0.0	//SubstitutionS estimate: (Average:)  [ S-RRrad , SsJ-Ss ] Warning: Ea raised by 13.7 from 10.9 to dHrxn(298K) = 24.7 kcal/mol.
+S9JJ(16)+S2(5) = S10JJ(13)+SJJ(15)                     2.008e+04 	  2.70 	  40.69 		0.0	0.0	0.0	//SubstitutionS estimate: (Average:)  [ S-RRrad , S2b ] Warning: Ea raised by 29.7 from 10.9 to dHrxn(298K) = 40.7 kcal/mol.
+

@@ -1,0 +1,14 @@
+Unit:
+A: mol/cm3/s
+E: kcal/mol
+
+Reactions:
+S2 = S2JJ                              	2.1E+10    	1 	0.0	0.0	0.0	0.0
+//C4H8 + HJ = tbutyl			2.88E+8		1.64	-0.01	0.0 	0.0 	0.0
+//DTBS = C4H8 + HStbutyl			3.00E+15           0.0     56.0    0.0 	0.0	0.0
+//DTBS + H2O = C4H8 + HStbutyl + H2O	5.93E+0		3.59	55.32	0.0	0.0	0.0
+//S2JJ + S2JJ = S4_cyc
+//S4JJ + S2JJ = S6_cyc
+//S6JJ + S2JJ = S8_cyc
+C4H8JSH = C4H9SJ			3.76E+3		2.40	12.28	0.0	0.0	0.0
+

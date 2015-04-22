@@ -1,0 +1,11 @@
+Unit:
+A: mol/cm3/s
+E: kcal/mol
+
+Reactions:
+
+Hexylbenzene+Styrene = C8H9J+C12H17-J1               	1.60e+12	0.00	38.00	0.0	0.0	0.0
+Hexylbenzene = Toluene+C5H10                        	6.80E+12	0.00	54.40	0.0	0.0	0.0
+//Rough estimate, leave out for now
+//Toluene+Styrene = C8H9J+Benzyl				1.60e+12	0.00	38.00	0.0	0.0	0.0
+

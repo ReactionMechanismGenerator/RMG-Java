@@ -1,0 +1,19 @@
+// small molecule oxidation library, third body reaction file, version 2, JS, August 6, 2003
+
+// originally from Leeds methane oxidation mechanism v1.5
+
+// http://www.chem.leeds.ac.uk/Combustion/Combustion.html
+
+
+
+Unit:
+
+A: mol/cm3/s
+
+E: kJ/mol
+
+
+
+Reactions:
+//H2S2(25)+m = SH(24)+SH(24)+m                                  6.930e+14         1.00    57.03               
+//N2/1.0/ H2S(16)/1.1/ Ar/0.88/ He/1.39/

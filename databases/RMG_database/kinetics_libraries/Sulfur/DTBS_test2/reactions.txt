@@ -1,0 +1,774 @@
+Unit:
+A: mol/cm3/s
+E: kcal/mol
+
+Reactions:
+
+S2(4) = S2JJ(3)                                        2.100e+10 	  1.00 	  0.00 		0.0	0.0	0.0	//Seed Mechanism: ditbutylsulfide   
+HSJ(5)+HSJ(5)+m = HSSH(6)+m                           	8.700e+18 	 -0.76 	  0.00 		0.0	0.0	0.0	//Seed Mechanism: ditbutylsulfide   
+
+
+SPC(7)+C4H8(9) = DTBS(1)                               4.960e+00 	  3.33 	  40.40 		0.0	0.0	0.0	//1,3_Insertion_RSR exact:   [ H_SCs(CsCsCs) , Cd/H2_Cd/Cs2 ]
+DTBS(1)+HJ(10) = SPC(7)+tbutyl(11)                     3.943e+08 	  1.50 	  3.40 		0.0	0.0	0.0	//substitutionS estimate: (Average:)  [ S-Cs(CsCsCs)Cs(CsCsCs) , HJ ]
+C4H8(9)+HJ(10) = tbutyl(11)                            2.880e+08 	  1.64 	 -0.01 		0.0	0.0	0.0	//R_Addition_MultipleBond exact:   [ Cds-HH_Cds-CsCs , HJ ]
+tbutyl(11)+HJ(10) = C4H10(8)                           5.200e+12 	  0.28 	  0.00 		0.0	0.0	0.0	//R_Recombination exact:   [ C_rad/Cs3 , H_rad ]
+tbutyl(11)+tbutyl(11) = C4H10(8)+C4H8(9)               2.574e+16 	 -1.10 	  0.00 		0.0	0.0	0.0	//Disproportionation exact:   [ C_rad/Cs3 , Cmethyl_Csrad ]
+HSJ(5)+tbutyl(11) = SPC(7)                             7.338e+12 	  0.23 	 -0.58 		0.0	0.0	0.0	//R_Recombination estimate: (Average:)  [ SJ-H , C_rad/Cs3 ]
+tbutyl(11)+HSSH(6) = SPC(7)+HSJ(5)                     1.028e+04 	  2.72 	  2.80 		0.0	0.0	0.0	//substitutionS estimate: (Average:)  [ CsJ-CsCsCs , S-HSs(H) ]
+C4H9SJ(13)+tbutyl(11) = DTBS(1)                        8.940e+07 	  1.54 	 -1.32 		0.0	0.0	0.0	//R_Recombination exact:   [ SJ-Cs , C_rad/Cs3 ]
+SPC(7)+tbutyl(11) = C4H9SJ(13)+C4H10(8)                1.380e+02 	  3.06 	 -3.20 		0.0	0.0	0.0	//H_Abstraction exact:   [ Ss-CsH , CsJ-CsCsCs ]
+C4H9SJ(13)+HJ(10) = SPC(7)                             7.338e+12 	  0.23 	 -0.58 		0.0	0.0	0.0	//R_Recombination estimate: (Average:)  [ SJ-Cs , H_rad ]
+tbutyl(11)+C4H9SJ(13) = C4H8(9)+SPC(7)                 1.346e+14 	 -0.20 	 -0.00 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ Cmethyl_Csrad , S_rad/NonDeC ]
+C6H9J(17)+HJ(10) = C6H10(2)                            7.000e+12 	  0.31 	 -0.19 		0.0	0.0	0.0	//R_Recombination exact:   [ C_rad/H/OneDeC , H_rad ]
+C6H10(2)+tbutyl(11) = C6H9J(17)+C4H10(8)               2.804e-03 	  4.34 	  1.90 		0.0	0.0	0.0	//H_Abstraction exact:   [ Cs-CdCsHH , CsJ-CsCsCs ]
+tbutyl(11)+C6H9J(17) = C4H8(9)+C6H10(2)                1.899e+15 	 -0.70 	  0.00 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ Cmethyl_Csrad , C_rad/H/OneDeC ]
+C6H10(2)+C4H9SJ(13) = C6H9J(17)+SPC(7)                 1.259e+04 	  2.86 	  2.18 		0.0	0.0	0.0	//H_Abstraction estimate: (Average:)  [ Cs-CdCsHH , SsJ-Cs ]
+C6H9J(17) = C6H9J(93)                                  2.510e+10 	  0.00 	  17.89 		0.0	0.0	0.0	//Intra_R_Add_Exocyclic estimate: (Average:)  [ R6_SSS_D , doublebond_intra , radadd_intra_cs ] Warning: Ea raised by 11.0 from 6.9 to dHrxn(298K) = 17.9 kcal/mol.
+C6H9J(94) = C6H9J(17)                                  1.000e+08 	  0.86 	  5.90 		0.0	0.0	0.0	//Intra_R_Add_Endocyclic estimate: (Average:)  [ R6_SSM_D , doublebond_intra_pri_2H , radadd_intra_cs2H ]
+C6H11J(19)+C6H9J(17) = C6H10(2)+C6H10(2)               2.052e+14 	 -0.35 	  0.00 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ C/H2/Nd_Csrad , C_rad/H/OneDeC ]
+C6H10(2)+HJ(10) = C6H11J(19)                           2.920e+08 	  1.64 	  1.37 		0.0	0.0	0.0	//R_Addition_MultipleBond exact:   [ Cds-CsH_Cds-CsH , HJ ]
+C6H11J(19)+C4H9SJ(13) = C6H10(2)+SPC(7)                2.280e+13 	 -0.07 	 -0.00 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ C/H2/Nd_Csrad , S_rad/NonDeC ]
+C6H11J(19)+tbutyl(11) = C6H10(2)+C4H10(8)              8.640e+14 	 -0.75 	  0.00 		0.0	0.0	0.0	//Disproportionation exact:   [ C/H2/Nd_Csrad , C_rad/Cs3 ]
+C6H9J(94) = C6H9J(197)                                 2.510e+10 	  0.00 	  6.85 		0.0	0.0	0.0	//Intra_R_Add_Exocyclic estimate: (Average:)  [ R6_SSM_D , doublebond_intra_2H_pri , radadd_intra_cs2H ]
+C6H9J(197) = C6H9J(293)                                2.510e+10 	  0.00 	  6.85 		0.0	0.0	0.0	//Intra_R_Add_Exocyclic estimate: (Average:)  [ R6_SSS_D , doublebond_intra , radadd_intra_cs2H ]
+SPC(231) = C6H11J(19)                                  1.000e+08 	  0.86 	  5.90 		0.0	0.0	0.0	//Intra_R_Add_Endocyclic exact:   [ R6_SSS_D , doublebond_intra_pri_2H , radadd_intra_cs2H ]
+SPC(231) = SPC(405)                                    2.510e+10 	  0.00 	  6.85 		0.0	0.0	0.0	//Intra_R_Add_Exocyclic exact:   [ R6_SSS_D , doublebond_intra_2H_pri , radadd_intra_cs2H ]
+SPC(405) = SPC(444)                                    1.288e+10 	  0.13 	  20.70 		0.0	0.0	0.0	//intra_H_migration estimate: (Average:)  [ R4H_SSS , C_rad_out_2H , Cs_H_out_H/(NonDeC/Cs) ]
+DUP
+SPC(405) = SPC(444)                                    5.440e+10 	 -0.66 	  14.28 		0.0	0.0	0.0	//intra_H_migration estimate: (Average:)  [ R5H_SSSS , C_rad_out_2H , Cs_H_out_H/NonDeC ]
+DUP
+C6H9J(17)+C4H9SJ(13) = SPC(88)                         7.338e+12 	  0.23 	 -0.58 		0.0	0.0	0.0	//R_Recombination estimate: (Average:)  [ C_rad/H/OneDeC , SJ-Cs ]
+SPC(88)+tbutyl(11) = DTBS(1)+C6H9J(17)                 7.941e+03 	  2.69 	  10.68 		0.0	0.0	0.0	//substitutionS estimate: (Average:)  [ S-Cs(NonDe)Cs(OneDe) , CsJ-CsCsCs ]
+SPC(88)+HJ(10) = SPC(7)+C6H9J(17)                      2.013e+08 	  1.58 	  2.03 		0.0	0.0	0.0	//substitutionS exact:   [ S-Cs(NonDe)Cs(OneDe) , HJ ]
+SPC(405) = SPC(443)                                    5.000e+09 	  0.99 	  34.80 		0.0	0.0	0.0	//intra_H_migration estimate: (Average:)  [ R3H_SS_23cy5 , C_rad_out_2H , Cs_H_out_H/(NonDeC/Cs) ]
+DUP
+SPC(405) = SPC(443)                                    1.505e+08 	  1.34 	  30.40 		0.0	0.0	0.0	//intra_H_migration estimate: (Average:)  [ R3H_SS_C , C_rad_out_2H , XH_out ]
+DUP
+SPC(443) = SPC(444)                                    3.420e+11 	  0.61 	  41.90 		0.0	0.0	0.0	//intra_H_migration estimate: (Average:)  [ R2H_S_cy5 , C_rad_out_H/NonDeC , Cs_H_out_H/(NonDeC/Cs) ]
+DUP
+SPC(443) = SPC(444)                                    2.720e+11 	  0.46 	  47.20 		0.0	0.0	0.0	//intra_H_migration estimate: (Average:)  [ R3H_SS_13cy5 , C_rad_out_H/NonDeC , Cs_H_out_H/(NonDeC/Cs) ]
+DUP
+SPC(443) = SPC(444)                                    6.440e+09 	  0.13 	  20.70 		0.0	0.0	0.0	//intra_H_migration estimate: (Average:)  [ R4H_SSS , C_rad_out_H/NonDeC , Cs_H_out_H/NonDeC ]
+DUP
+SPC(443) = SPC(444)                                    7.524e+07 	  1.34 	  30.40 		0.0	0.0	0.0	//intra_H_migration estimate: (Average:)  [ Others-R2H_S , Y_rad_out , XH_out ]
+DUP
+C6H10(2)+tbutyl(11) = SPC(31)                          1.216e+03 	  2.41 	  3.62 		0.0	0.0	0.0	//R_Addition_MultipleBond exact:   [ Cds-CsH_Cds-CsH , CsJ-CsCsCs ]
+SPC(405) = SPC(442)                                    3.350e+09 	  0.99 	  33.70 		0.0	0.0	0.0	//intra_H_migration exact:   [ Others-R2H_S , C_rad_out_2H , Cs_H_out_Cs2_cy5 ]
+SPC(444) = SPC(442)                                    1.100e+12 	  0.23 	  44.40 		0.0	0.0	0.0	//intra_H_migration exact:   [ R3H_SS_13cy5 , C_rad_out_H/NonDeC , Others-Cs_H_out_Cs2 ]
+DUP
+SPC(444) = SPC(442)                                    1.860e+10 	  0.58 	  26.19 		0.0	0.0	0.0	//intra_H_migration estimate: (Average:)  [ R4H_SSS , C_rad_out_H/NonDeC , Others-Cs_H_out_Cs2 ]
+DUP
+SPC(443) = SPC(442)                                    3.720e+12 	  0.26 	  39.20 		0.0	0.0	0.0	//intra_H_migration exact:   [ R2H_S_cy5 , C_rad_out_H/NonDeC , Others-Cs_H_out_Cs2 ]
+DUP
+SPC(443) = SPC(442)                                    3.762e+07 	  1.34 	  30.40 		0.0	0.0	0.0	//intra_H_migration estimate: (Average:)  [ Others-R2H_S , Y_rad_out , XH_out ]
+DUP
+C6H8(85)+HJ(10) = C6H9J(17)                            2.700e+08 	  1.64 	  0.38 		0.0	0.0	0.0	//R_Addition_MultipleBond exact:   [ Cds-CsH_Cds-CdH , HJ ]
+tbutyl(11)+C6H9J(17) = C4H10(8)+C6H8(85)               4.320e+14 	 -0.75 	  0.00 		0.0	0.0	0.0	//Disproportionation exact:   [ C_rad/Cs3 , C/H2/Nd_Csrad ]
+C4H9SJ(13)+C6H9J(17) = SPC(7)+C6H8(85)                 1.140e+13 	 -0.07 	 -0.00 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ S_rad/NonDeC , C/H2/Nd_Csrad ]
+C6H9J(17)+C6H9J(17) = C6H10(2)+C6H8(85)                1.026e+14 	 -0.35 	  0.00 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ C_rad/H/OneDeC , C/H2/Nd_Csrad ]
+C6H8(85)+SPC(7) = SPC(88)                              3.292e+01 	  3.30 	  41.73 		0.0	0.0	0.0	//1,3_Insertion_RSR estimate: (Average:)  [ Cd/H/Nd_Cd/H/De , H_SCs(CsCsCs) ]
+C6H10(2)+SPC(405) = C6H9J(17)+C6H12(414)               3.612e-03 	  4.34 	  3.50 		0.0	0.0	0.0	//H_Abstraction exact:   [ Cs-CdCsHH , CsJ-CsHH ]
+SPC(7)+SPC(405) = C4H9SJ(13)+C6H12(414)                2.080e+01 	  3.06 	 -0.70 		0.0	0.0	0.0	//H_Abstraction exact:   [ Ss-CsH , CsJ-CsHH ]
+C4H10(8)+SPC(405) = tbutyl(11)+C6H12(414)              1.060e-03 	  4.34 	  5.00 		0.0	0.0	0.0	//H_Abstraction exact:   [ Cs-CsCsCsH , CsJ-CsHH ]
+SPC(405)+HJ(10) = C6H12(414)                           5.440e+13 	  0.16 	  0.00 		0.0	0.0	0.0	//R_Recombination exact:   [ C_rad/H2/Cs , H_rad ]
+SPC(405)+tbutyl(11) = C6H12(414)+C4H8(9)               2.070e+14 	 -0.35 	  0.00 		0.0	0.0	0.0	//Disproportionation exact:   [ C_rad/H2/Cs , Cmethyl_Csrad ]
+SPC(405)+C6H9J(17) = C6H12(414)+C6H8(85)               2.900e+12 	  0.00 	  0.00 		0.0	0.0	0.0	//Disproportionation exact:   [ C_rad/H2/Cs , C/H2/Nd_Csrad ]
+SPC(405)+C6H11J(19) = C6H12(414)+C6H10(2)              5.800e+12 	  0.00 	  0.00 		0.0	0.0	0.0	//Disproportionation exact:   [ C_rad/H2/Cs , C/H2/Nd_Csrad ]
+C6H10(2)+SPC(444) = C6H9J(17)+C6H12(414)               3.412e-03 	  4.34 	  3.10 		0.0	0.0	0.0	//H_Abstraction exact:   [ Cs-CdCsHH , CsJ-CsCsH ]
+SPC(7)+SPC(444) = C4H9SJ(13)+C6H12(414)                3.910e+01 	  3.06 	 -1.60 		0.0	0.0	0.0	//H_Abstraction exact:   [ Ss-CsH , CsJ-CsCsH ]
+C4H10(8)+SPC(444) = tbutyl(11)+C6H12(414)              8.120e-04 	  4.34 	  5.30 		0.0	0.0	0.0	//H_Abstraction exact:   [ Cs-CsCsCsH , CsJ-CsCsH ]
+SPC(444)+HJ(10) = C6H12(414)                           1.660e+13 	  0.22 	  0.00 		0.0	0.0	0.0	//R_Recombination exact:   [ C_rad/H/NonDeC , H_rad ]
+SPC(444)+tbutyl(11) = C6H12(414)+C4H8(9)               1.899e+15 	 -0.70 	  0.00 		0.0	0.0	0.0	//Disproportionation exact:   [ C_rad/H/NonDeC , Cmethyl_Csrad ]
+SPC(444)+C6H9J(17) = C6H12(414)+C6H8(85)               1.026e+14 	 -0.35 	  0.00 		0.0	0.0	0.0	//Disproportionation exact:   [ C_rad/H/NonDeC , C/H2/Nd_Csrad ]
+SPC(444)+C6H11J(19) = C6H12(414)+C6H10(2)              2.052e+14 	 -0.35 	  0.00 		0.0	0.0	0.0	//Disproportionation exact:   [ C_rad/H/NonDeC , C/H2/Nd_Csrad ]
+C6H10(2)+SPC(443) = C6H9J(17)+C6H12(414)               3.412e-03 	  4.34 	  3.10 		0.0	0.0	0.0	//H_Abstraction exact:   [ Cs-CdCsHH , CsJ-CsCsH ]
+SPC(7)+SPC(443) = C4H9SJ(13)+C6H12(414)                3.910e+01 	  3.06 	 -1.60 		0.0	0.0	0.0	//H_Abstraction exact:   [ Ss-CsH , CsJ-CsCsH ]
+C4H10(8)+SPC(443) = tbutyl(11)+C6H12(414)              8.120e-04 	  4.34 	  5.30 		0.0	0.0	0.0	//H_Abstraction exact:   [ Cs-CsCsCsH , CsJ-CsCsH ]
+SPC(443)+HJ(10) = C6H12(414)                           1.660e+13 	  0.22 	  0.00 		0.0	0.0	0.0	//R_Recombination exact:   [ C_rad/H/NonDeC , H_rad ]
+SPC(443)+tbutyl(11) = C6H12(414)+C4H8(9)               1.899e+15 	 -0.70 	  0.00 		0.0	0.0	0.0	//Disproportionation exact:   [ C_rad/H/NonDeC , Cmethyl_Csrad ]
+SPC(443)+C6H9J(17) = C6H12(414)+C6H8(85)               1.026e+14 	 -0.35 	  0.00 		0.0	0.0	0.0	//Disproportionation exact:   [ C_rad/H/NonDeC , C/H2/Nd_Csrad ]
+SPC(443)+C6H11J(19) = C6H12(414)+C6H10(2)              2.052e+14 	 -0.35 	  0.00 		0.0	0.0	0.0	//Disproportionation exact:   [ C_rad/H/NonDeC , C/H2/Nd_Csrad ]
+C6H10(2)+SPC(442) = C6H9J(17)+C6H12(414)               2.804e-03 	  4.34 	  1.90 		0.0	0.0	0.0	//H_Abstraction exact:   [ Cs-CdCsHH , CsJ-CsCsCs ]
+SPC(7)+SPC(442) = C4H9SJ(13)+C6H12(414)                1.380e+02 	  3.06 	 -3.20 		0.0	0.0	0.0	//H_Abstraction exact:   [ Ss-CsH , CsJ-CsCsCs ]
+tbutyl(11)+C6H12(414) = C4H10(8)+SPC(442)              5.420e-04 	  4.34 	  4.90 		0.0	0.0	0.0	//H_Abstraction exact:   [ CsJ-CsCsCs , Cs-CsCsCsH ]
+SPC(442)+HJ(10) = C6H12(414)                           5.200e+12 	  0.28 	  0.00 		0.0	0.0	0.0	//R_Recombination exact:   [ C_rad/Cs3 , H_rad ]
+SPC(442)+tbutyl(11) = C6H12(414)+C4H8(9)               2.574e+16 	 -1.10 	  0.00 		0.0	0.0	0.0	//Disproportionation exact:   [ C_rad/Cs3 , Cmethyl_Csrad ]
+SPC(442)+C6H9J(17) = C6H12(414)+C6H8(85)               4.320e+14 	 -0.75 	  0.00 		0.0	0.0	0.0	//Disproportionation exact:   [ C_rad/Cs3 , C/H2/Nd_Csrad ]
+SPC(442)+C6H11J(19) = C6H12(414)+C6H10(2)              8.640e+14 	 -0.75 	  0.00 		0.0	0.0	0.0	//Disproportionation exact:   [ C_rad/Cs3 , C/H2/Nd_Csrad ]
+C6H12(414)+SPC(405) = SPC(443)+C6H12(414)              3.680e-03 	  4.34 	  7.00 		0.0	0.0	0.0	//H_Abstraction exact:   [ Cs-CsCsHH , CsJ-CsHH ]
+C6H12(414)+SPC(405) = SPC(442)+C6H12(414)              1.060e-03 	  4.34 	  5.00 		0.0	0.0	0.0	//H_Abstraction exact:   [ Cs-CsCsCsH , CsJ-CsHH ]
+C6H12(414)+SPC(405) = SPC(444)+C6H12(414)              3.680e-03 	  4.34 	  7.00 		0.0	0.0	0.0	//H_Abstraction exact:   [ Cs-CsCsHH , CsJ-CsHH ]
+SPC(443)+C6H12(414) = C6H12(414)+SPC(444)              3.464e-03 	  4.34 	  7.50 		0.0	0.0	0.0	//H_Abstraction exact:   [ CsJ-CsCsH , Cs-CsCsHH ]
+C6H12(414)+SPC(444) = SPC(442)+C6H12(414)              8.120e-04 	  4.34 	  5.30 		0.0	0.0	0.0	//H_Abstraction exact:   [ Cs-CsCsCsH , CsJ-CsCsH ]
+C6H12(414)+SPC(443) = SPC(442)+C6H12(414)              8.120e-04 	  4.34 	  5.30 		0.0	0.0	0.0	//H_Abstraction exact:   [ Cs-CsCsCsH , CsJ-CsCsH ]
+C6H9J(94)+tbutyl(11) = SPC(122)+C4H10(8)               1.559e-02 	  4.34 	  8.34 		0.0	0.0	0.0	//H_Abstraction estimate: (Average:)  [ C-H , CsJ-CsCsCs ]
+C6H9J(94)+C4H9SJ(13) = SPC(122)+SPC(7)                 6.042e+04 	  2.77 	  11.74 		0.0	0.0	0.0	//H_Abstraction estimate: (Average:)  [ C-H , SsJ-Cs ]
+C6H9J(94)+C6H9J(17) = SPC(122)+C6H10(2)                1.559e-02 	  4.34 	  8.34 		0.0	0.0	0.0	//H_Abstraction estimate: (Average:)  [ C-H , CsJ-CdCsH ]
+SPC(122)+HJ(10) = C6H9J(94)                            7.338e+12 	  0.23 	 -0.58 		0.0	0.0	0.0	//R_Recombination estimate: (Average:)  [ Cs_rad , H_rad ]
+C6H11J(19)+SPC(122) = C6H10(2)+C6H9J(94)               2.280e+13 	 -0.07 	 -0.00 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ C/H2/Nd_Csrad , Y_rad ]
+tbutyl(11)+SPC(122) = C4H8(9)+C6H9J(94)                1.346e+14 	 -0.20 	 -0.00 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ Cmethyl_Csrad , Y_rad ]
+C6H9J(94)+SPC(405) = SPC(122)+C6H12(414)               1.559e-02 	  4.34 	  8.34 		0.0	0.0	0.0	//H_Abstraction estimate: (Average:)  [ C-H , CsJ-CsHH ]
+C6H9J(94)+SPC(444) = SPC(122)+C6H12(414)               1.559e-02 	  4.34 	  8.34 		0.0	0.0	0.0	//H_Abstraction estimate: (Average:)  [ C-H , CsJ-CsCsH ]
+C6H9J(94)+SPC(443) = SPC(122)+C6H12(414)               1.559e-02 	  4.34 	  8.34 		0.0	0.0	0.0	//H_Abstraction estimate: (Average:)  [ C-H , CsJ-CsCsH ]
+C6H9J(94)+SPC(442) = SPC(122)+C6H12(414)               1.559e-02 	  4.34 	  8.34 		0.0	0.0	0.0	//H_Abstraction estimate: (Average:)  [ C-H , CsJ-CsCsCs ]
+C6H9J(17)+SPC(122) = C6H8(85)+C6H9J(94)                1.140e+13 	 -0.07 	 -0.00 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ C/H2/Nd_Csrad , Y_rad ]
+SPC(122) = C6H8(85)                                    5.068e+11 	  0.07 	  1.96 		0.0	0.0	0.0	//Birad_recombination estimate: (Average:)  [ R6_SDSDS , C_rad_out_2H , Cpri_rad_out_2H ]
+SPC(122) = C6H8(775)                                   5.660e+10 	  1.00 	  3.85 		0.0	0.0	0.0	//Intra_Disproportionation exact:   [ Y_biCyc6 , Y_rad , XH_Rrad ]
+SPC(122) = C6H8(770)                                   3.240e+12 	 -0.31 	  1.98 		0.0	0.0	0.0	//Birad_recombination estimate: (Average:)  [ R4_SDS , C_rad_out_H/OneDe , Cpri_rad_out_2H ]
+C6H10(2)+HSJ(5) = C6H9J(17)+H2S(34)                    1.192e+04 	  2.88 	  0.70 		0.0	0.0	0.0	//H_Abstraction exact:   [ Cs-CdCsHH , SsJ-H ]
+HSJ(5)+HJ(10) = H2S(34)                                7.070e+12 	  0.56 	 -0.08 		0.0	0.0	0.0	//R_Recombination exact:   [ SJ-H , H_rad ]
+HSJ(5)+tbutyl(11) = H2S(34)+C4H8(9)                    1.346e+14 	 -0.20 	 -0.00 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ S_pri_rad , Cmethyl_Csrad ]
+SPC(7)+HSJ(5) = C4H9SJ(13)+H2S(34)                     9.030e+02 	  3.15 	 -0.50 		0.0	0.0	0.0	//H_Abstraction exact:   [ Ss-CsH , SsJ-H ]
+SPC(7)+HJ(10) = tbutyl(11)+H2S(34)                     5.570e+08 	  1.63 	  2.40 		0.0	0.0	0.0	//substitutionS exact:   [ S-HCs(CsCsCs) , HJ ]
+C4H8(9)+H2S(34) = SPC(7)                               3.736e+02 	  3.02 	  42.00 		0.0	0.0	0.0	//1,3_Insertion_RSR exact:   [ Cd/H2_Cd/Cs2 , H_SH ]
+HSSH(6)+HJ(10) = H2S(34)+HSJ(5)                        1.086e+09 	  1.56 	  0.80 		0.0	0.0	0.0	//substitutionS exact:   [ S-HSs(H) , HJ ]
+tbutyl(11)+H2S(34) = C4H10(8)+HSJ(5)                   6.840e+02 	  2.68 	 -2.60 		0.0	0.0	0.0	//H_Abstraction exact:   [ CsJ-CsCsCs , Ss-HH ]
+HSJ(5)+C6H9J(17) = H2S(34)+C6H8(85)                    1.140e+13 	 -0.07 	 -0.00 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ S_pri_rad , C/H2/Nd_Csrad ]
+C6H9J(94)+HSJ(5) = SPC(122)+H2S(34)                    6.042e+04 	  2.77 	  11.74 		0.0	0.0	0.0	//H_Abstraction estimate: (Average:)  [ C-H , SsJ-H ]
+HSJ(5)+C6H11J(19) = H2S(34)+C6H10(2)                   2.280e+13 	 -0.07 	 -0.00 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ S_pri_rad , C/H2/Nd_Csrad ]
+SPC(443)+H2S(34) = C6H12(414)+HSJ(5)                   2.000e+03 	  2.55 	 -0.90 		0.0	0.0	0.0	//H_Abstraction exact:   [ CsJ-CsCsH , Ss-HH ]
+SPC(442)+H2S(34) = C6H12(414)+HSJ(5)                   6.840e+02 	  2.68 	 -2.60 		0.0	0.0	0.0	//H_Abstraction exact:   [ CsJ-CsCsCs , Ss-HH ]
+SPC(405)+H2S(34) = C6H12(414)+HSJ(5)                   6.380e+03 	  2.49 	  0.40 		0.0	0.0	0.0	//H_Abstraction exact:   [ CsJ-CsHH , Ss-HH ]
+SPC(444)+H2S(34) = C6H12(414)+HSJ(5)                   2.000e+03 	  2.55 	 -0.90 		0.0	0.0	0.0	//H_Abstraction exact:   [ CsJ-CsCsH , Ss-HH ]
+C4H9SJ(40)+C4H10(8) = SPC(7)+tbutyl(11)                1.060e-03 	  4.34 	  5.00 		0.0	0.0	0.0	//H_Abstraction exact:   [ CsJ-CsHH , Cs-CsCsCsH ]
+C4H9SJ(40)+H2S(34) = SPC(7)+HSJ(5)                     6.380e+03 	  2.49 	  0.40 		0.0	0.0	0.0	//H_Abstraction exact:   [ CsJ-CsHH , Ss-HH ]
+C4H9SJ(40)+HJ(10) = SPC(7)                             5.440e+13 	  0.16 	  0.00 		0.0	0.0	0.0	//R_Recombination exact:   [ C_rad/H2/Cs , H_rad ]
+C6H11J(19)+C4H9SJ(40) = C6H10(2)+SPC(7)                5.800e+12 	  0.00 	  0.00 		0.0	0.0	0.0	//Disproportionation exact:   [ C/H2/Nd_Csrad , C_rad/H2/Cs ]
+C4H8(9)+HSJ(5) = C4H9SJ(40)                            9.184e+01 	  3.03 	  2.63 		0.0	0.0	0.0	//R_Addition_MultipleBond estimate: (Average:)  [ Cds-CsCs_Cds-HH , SsJ-H ]
+tbutyl(11)+C4H9SJ(40) = C4H8(9)+SPC(7)                 2.070e+14 	 -0.35 	  0.00 		0.0	0.0	0.0	//Disproportionation exact:   [ Cmethyl_Csrad , C_rad/H2/Cs ]
+C4H9SJ(40)+SPC(7) = SPC(7)+C4H9SJ(13)                  2.080e+01 	  3.06 	 -0.70 		0.0	0.0	0.0	//H_Abstraction exact:   [ CsJ-CsHH , Ss-CsH ]
+C4H9SJ(40) = C4H9SJ(13)                                8.550e+01 	  3.04 	  11.62 		0.0	0.0	0.0	//intra_H_migration exact:   [ R3H_SS_C , C_rad_out_2H , S_H_out ]
+C4H9SJ(40)+C6H10(2) = SPC(7)+C6H9J(17)                 3.612e-03 	  4.34 	  3.50 		0.0	0.0	0.0	//H_Abstraction exact:   [ CsJ-CsHH , Cs-CdCsHH ]
+SPC(7)+SPC(405) = C4H9SJ(40)+C6H12(414)                8.280e-03 	  4.34 	  9.20 		0.0	0.0	0.0	//H_Abstraction exact:   [ Cs-CsHHH , CsJ-CsHH ]
+C4H9SJ(40)+C6H12(414) = SPC(7)+SPC(444)                3.680e-03 	  4.34 	  7.00 		0.0	0.0	0.0	//H_Abstraction exact:   [ CsJ-CsHH , Cs-CsCsHH ]
+C4H9SJ(40)+C6H12(414) = SPC(7)+SPC(443)                3.680e-03 	  4.34 	  7.00 		0.0	0.0	0.0	//H_Abstraction exact:   [ CsJ-CsHH , Cs-CsCsHH ]
+C4H9SJ(40)+C6H12(414) = SPC(7)+SPC(442)                1.060e-03 	  4.34 	  5.00 		0.0	0.0	0.0	//H_Abstraction exact:   [ CsJ-CsHH , Cs-CsCsCsH ]
+C6H9J(17)+C4H9SJ(40) = C6H8(85)+SPC(7)                 2.900e+12 	  0.00 	  0.00 		0.0	0.0	0.0	//Disproportionation exact:   [ C/H2/Nd_Csrad , C_rad/H2/Cs ]
+C4H9SJ(40)+C6H9J(94) = SPC(7)+SPC(122)                 1.559e-02 	  4.34 	  8.34 		0.0	0.0	0.0	//H_Abstraction estimate: (Average:)  [ CsJ-CsHH , C-H ]
+C6H10(2)+C4H9SJ(13) = SPC(63)                          1.837e+02 	  3.03 	  2.63 		0.0	0.0	0.0	//R_Addition_MultipleBond estimate: (Average:)  [ Cds-CsH_Cds-CsH , SsJ-Cs ]
+SPC(88)+HJ(10) = SPC(63)                               1.460e+08 	  1.64 	  1.37 		0.0	0.0	0.0	//R_Addition_MultipleBond exact:   [ Cds-CsH_Cds-CsH , HJ ]
+SPC(63)+C6H9J(17) = SPC(88)+C6H10(2)                   1.026e+14 	 -0.35 	  0.00 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ C/H2/Nd_Csrad , C_rad/H/OneDeC ]
+SPC(63)+C4H9SJ(40) = SPC(88)+SPC(7)                    2.900e+12 	  0.00 	  0.00 		0.0	0.0	0.0	//Disproportionation exact:   [ C/H2/Nd_Csrad , C_rad/H2/Cs ]
+SPC(63)+C4H9SJ(13) = SPC(88)+SPC(7)                    1.140e+13 	 -0.07 	 -0.00 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ C/H2/Nd_Csrad , S_rad/NonDeC ]
+SPC(63)+tbutyl(11) = SPC(88)+C4H10(8)                  4.320e+14 	 -0.75 	  0.00 		0.0	0.0	0.0	//Disproportionation exact:   [ C/H2/Nd_Csrad , C_rad/Cs3 ]
+SPC(63)+SPC(122) = SPC(88)+C6H9J(94)                   1.140e+13 	 -0.07 	 -0.00 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ C/H2/Nd_Csrad , Y_rad ]
+SPC(63)+SPC(405) = SPC(88)+C6H12(414)                  2.900e+12 	  0.00 	  0.00 		0.0	0.0	0.0	//Disproportionation exact:   [ C/H2/Nd_Csrad , C_rad/H2/Cs ]
+SPC(63)+SPC(443) = SPC(88)+C6H12(414)                  1.026e+14 	 -0.35 	  0.00 		0.0	0.0	0.0	//Disproportionation exact:   [ C/H2/Nd_Csrad , C_rad/H/NonDeC ]
+SPC(63)+SPC(442) = SPC(88)+C6H12(414)                  4.320e+14 	 -0.75 	  0.00 		0.0	0.0	0.0	//Disproportionation exact:   [ C/H2/Nd_Csrad , C_rad/Cs3 ]
+SPC(63)+SPC(444) = SPC(88)+C6H12(414)                  1.026e+14 	 -0.35 	  0.00 		0.0	0.0	0.0	//Disproportionation exact:   [ C/H2/Nd_Csrad , C_rad/H/NonDeC ]
+SPC(63)+HSJ(5) = SPC(88)+H2S(34)                       1.140e+13 	 -0.07 	 -0.00 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ C/H2/Nd_Csrad , S_pri_rad ]
+C6H10(2)+C6H8(85) = SPC(638)                           5.040e+09 	  0.00 	  16.69 		0.0	0.0	0.0	//Diels_alder_addition estimate: (Average:)  [ ene_HNd_HNd , diene_monosubNd_monosubNd_out , diene_in_2H ]
+C6H8(85)+tbutyl(11) = C6H7J(596)+C4H10(8)              2.804e-03 	  4.34 	  1.90 		0.0	0.0	0.0	//H_Abstraction exact:   [ Cs-CdCsHH , CsJ-CsCsCs ]
+C6H8(85)+HSJ(5) = C6H7J(596)+H2S(34)                   1.192e+04 	  2.88 	  0.70 		0.0	0.0	0.0	//H_Abstraction exact:   [ Cs-CdCsHH , SsJ-H ]
+C6H8(85)+C4H9SJ(13) = C6H7J(596)+SPC(7)                1.259e+04 	  2.86 	  2.18 		0.0	0.0	0.0	//H_Abstraction estimate: (Average:)  [ Cs-CdCsHH , SsJ-Cs ]
+C6H8(85)+C6H9J(17) = C6H7J(596)+C6H10(2)               9.160e-03 	  4.34 	  11.70 		0.0	0.0	0.0	//H_Abstraction exact:   [ Cs-CdCsHH , CsJ-CdCsH ]
+C6H8(85)+SPC(405) = C6H7J(596)+C6H12(414)              3.612e-03 	  4.34 	  3.50 		0.0	0.0	0.0	//H_Abstraction exact:   [ Cs-CdCsHH , CsJ-CsHH ]
+C6H8(85)+SPC(444) = C6H7J(596)+C6H12(414)              3.412e-03 	  4.34 	  3.10 		0.0	0.0	0.0	//H_Abstraction exact:   [ Cs-CdCsHH , CsJ-CsCsH ]
+C6H8(85)+SPC(443) = C6H7J(596)+C6H12(414)              3.412e-03 	  4.34 	  3.10 		0.0	0.0	0.0	//H_Abstraction exact:   [ Cs-CdCsHH , CsJ-CsCsH ]
+C6H8(85)+SPC(442) = C6H7J(596)+C6H12(414)              2.804e-03 	  4.34 	  1.90 		0.0	0.0	0.0	//H_Abstraction exact:   [ Cs-CdCsHH , CsJ-CsCsCs ]
+C6H7J(596)+HJ(10) = C6H8(85)                           7.000e+12 	  0.31 	 -0.19 		0.0	0.0	0.0	//R_Recombination exact:   [ C_rad/H/OneDeC , H_rad ]
+C6H11J(19)+C6H7J(596) = C6H10(2)+C6H8(85)              2.052e+14 	 -0.35 	  0.00 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ C/H2/Nd_Csrad , C_rad/H/OneDeC ]
+tbutyl(11)+C6H7J(596) = C4H8(9)+C6H8(85)               1.899e+15 	 -0.70 	  0.00 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ Cmethyl_Csrad , C_rad/H/OneDeC ]
+SPC(63)+C6H7J(596) = SPC(88)+C6H8(85)                  1.026e+14 	 -0.35 	  0.00 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ C/H2/Nd_Csrad , C_rad/H/OneDeC ]
+C6H9J(17)+C6H7J(596) = C6H8(85)+C6H8(85)               1.026e+14 	 -0.35 	  0.00 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ C/H2/Nd_Csrad , C_rad/H/OneDeC ]
+C6H7J(596)+C6H9J(94) = C6H8(85)+SPC(122)               1.559e-02 	  4.34 	  8.34 		0.0	0.0	0.0	//H_Abstraction estimate: (Average:)  [ CsJ-CdCsH , C-H ]
+C6H8(85)+C4H9SJ(40) = C6H7J(596)+SPC(7)                3.612e-03 	  4.34 	  3.50 		0.0	0.0	0.0	//H_Abstraction exact:   [ Cs-CdCsHH , CsJ-CsHH ]
+C6H7J(596) = SPC(1455)                                 1.000e+10 	  0.00 	  25.85 		0.0	0.0	0.0	//Intra_R_Add_Exocyclic estimate: (Average:)  [ R4_S_D , doublebond_intra_HDe_pri , radadd_intra_csHDe ]
+C6H9J(17)+C6H8(1261) = C6H10(2)+C6H7J(596)             3.924e-03 	  4.34 	  6.30 		0.0	0.0	0.0	//H_Abstraction exact:   [ CsJ-CdCsH , Cs-CdCdHH ]
+C4H9SJ(40)+C6H8(1261) = SPC(7)+C6H7J(596)              4.880e-03 	  4.34 	  1.00 		0.0	0.0	0.0	//H_Abstraction exact:   [ CsJ-CsHH , Cs-CdCdHH ]
+C4H9SJ(13)+C6H8(1261) = SPC(7)+C6H7J(596)              1.259e+04 	  2.86 	  2.18 		0.0	0.0	0.0	//H_Abstraction estimate: (Average:)  [ SsJ-Cs , Cs-CdCdHH ]
+tbutyl(11)+C6H8(1261) = C4H10(8)+C6H7J(596)            3.832e-03 	  4.34 	 -2.50 		0.0	0.0	0.0	//H_Abstraction exact:   [ CsJ-CsCsCs , Cs-CdCdHH ]
+C6H9J(94)+C6H7J(596) = SPC(122)+C6H8(1261)             1.559e-02 	  4.34 	  8.34 		0.0	0.0	0.0	//H_Abstraction estimate: (Average:)  [ C-H , CsJ-CdCdH ]
+C6H7J(596)+C6H8(1261) = C6H8(85)+C6H7J(596)            3.924e-03 	  4.34 	  6.30 		0.0	0.0	0.0	//H_Abstraction exact:   [ CsJ-CdCsH , Cs-CdCdHH ]
+SPC(443)+C6H8(1261) = C6H12(414)+C6H7J(596)            4.640e-03 	  4.34 	 -0.40 		0.0	0.0	0.0	//H_Abstraction exact:   [ CsJ-CsCsH , Cs-CdCdHH ]
+SPC(442)+C6H8(1261) = C6H12(414)+C6H7J(596)            3.832e-03 	  4.34 	 -2.50 		0.0	0.0	0.0	//H_Abstraction exact:   [ CsJ-CsCsCs , Cs-CdCdHH ]
+SPC(405)+C6H8(1261) = C6H12(414)+C6H7J(596)            4.880e-03 	  4.34 	  1.00 		0.0	0.0	0.0	//H_Abstraction exact:   [ CsJ-CsHH , Cs-CdCdHH ]
+SPC(444)+C6H8(1261) = C6H12(414)+C6H7J(596)            4.640e-03 	  4.34 	 -0.40 		0.0	0.0	0.0	//H_Abstraction exact:   [ CsJ-CsCsH , Cs-CdCdHH ]
+HSJ(5)+C6H8(1261) = H2S(34)+C6H7J(596)                 1.088e+04 	  2.85 	 -2.00 		0.0	0.0	0.0	//H_Abstraction exact:   [ SsJ-H , Cs-CdCdHH ]
+C6H7J(596)+HJ(10) = C6H8(1261)                         7.338e+12 	  0.23 	 -0.58 		0.0	0.0	0.0	//R_Recombination estimate: (Average:)  [ C_rad/H/TwoDe , H_rad ]
+C6H7J(596)+tbutyl(11) = C6H8(1261)+C4H8(9)             1.899e+15 	 -0.70 	  0.00 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ C_rad/H/TwoDe , Cmethyl_Csrad ]
+C6H7J(596)+C6H9J(17) = C6H8(1261)+C6H8(85)             1.026e+14 	 -0.35 	  0.00 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ C_rad/H/TwoDe , C/H2/Nd_Csrad ]
+C6H7J(596)+C6H11J(19) = C6H8(1261)+C6H10(2)            2.052e+14 	 -0.35 	  0.00 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ C_rad/H/TwoDe , C/H2/Nd_Csrad ]
+C6H7J(596)+SPC(63) = C6H8(1261)+SPC(88)                1.026e+14 	 -0.35 	  0.00 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ C_rad/H/TwoDe , C/H2/Nd_Csrad ]
+tbutyl(11)+C6H7J(596) = C4H10(8)+C6H6(1364)            1.140e+13 	 -0.07 	 -0.00 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ C_rad/Cs3 , C/H2/De_Csrad ]
+HSJ(5)+C6H7J(596) = H2S(34)+C6H6(1364)                 1.140e+13 	 -0.07 	 -0.00 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ S_pri_rad , C/H2/De_Csrad ]
+C4H9SJ(13)+C6H7J(596) = SPC(7)+C6H6(1364)              1.140e+13 	 -0.07 	 -0.00 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ S_rad/NonDeC , C/H2/De_Csrad ]
+C6H9J(17)+C6H7J(596) = C6H10(2)+C6H6(1364)             1.140e+13 	 -0.07 	 -0.00 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ C_rad/H/OneDeC , C/H2/De_Csrad ]
+SPC(405)+C6H7J(596) = C6H12(414)+C6H6(1364)            1.140e+13 	 -0.07 	 -0.00 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ C_rad/H2/Cs , C/H2/De_Csrad ]
+SPC(444)+C6H7J(596) = C6H12(414)+C6H6(1364)            1.140e+13 	 -0.07 	 -0.00 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ C_rad/H/NonDeC , C/H2/De_Csrad ]
+SPC(443)+C6H7J(596) = C6H12(414)+C6H6(1364)            1.140e+13 	 -0.07 	 -0.00 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ C_rad/H/NonDeC , C/H2/De_Csrad ]
+SPC(442)+C6H7J(596) = C6H12(414)+C6H6(1364)            1.140e+13 	 -0.07 	 -0.00 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ C_rad/Cs3 , C/H2/De_Csrad ]
+SPC(122)+C6H7J(596) = C6H9J(94)+C6H6(1364)             1.140e+13 	 -0.07 	 -0.00 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ Y_rad , C/H2/De_Csrad ]
+C4H9SJ(40)+C6H7J(596) = SPC(7)+C6H6(1364)              1.140e+13 	 -0.07 	 -0.00 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ C_rad/H2/Cs , C/H2/De_Csrad ]
+C6H7J(596)+C6H7J(596) = C6H8(85)+C6H6(1364)            1.140e+13 	 -0.07 	 -0.00 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ C_rad/H/OneDeC , C/H2/De_Csrad ]
+C6H7J(596)+C6H7J(596) = C6H8(1261)+C6H6(1364)          1.140e+13 	 -0.07 	 -0.00 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ C_rad/H/TwoDe , C/H2/De_Csrad ]
+SPC(88)+tbutyl(11) = SPC(485)+C4H10(8)                 1.402e-03 	  4.34 	  1.90 		0.0	0.0	0.0	//H_Abstraction exact:   [ Cs-CdCsHH , CsJ-CsCsCs ]
+SPC(88)+HSJ(5) = SPC(485)+H2S(34)                      5.960e+03 	  2.88 	  0.70 		0.0	0.0	0.0	//H_Abstraction exact:   [ Cs-CdCsHH , SsJ-H ]
+SPC(88)+C4H9SJ(13) = SPC(485)+SPC(7)                   6.296e+03 	  2.86 	  2.18 		0.0	0.0	0.0	//H_Abstraction estimate: (Average:)  [ Cs-CdCsHH , SsJ-Cs ]
+SPC(485)+C6H10(2) = SPC(88)+C6H9J(17)                  9.160e-03 	  4.34 	  11.70 		0.0	0.0	0.0	//H_Abstraction exact:   [ CsJ-CdCsH , Cs-CdCsHH ]
+SPC(88)+SPC(405) = SPC(485)+C6H12(414)                 1.806e-03 	  4.34 	  3.50 		0.0	0.0	0.0	//H_Abstraction exact:   [ Cs-CdCsHH , CsJ-CsHH ]
+SPC(88)+SPC(444) = SPC(485)+C6H12(414)                 1.706e-03 	  4.34 	  3.10 		0.0	0.0	0.0	//H_Abstraction exact:   [ Cs-CdCsHH , CsJ-CsCsH ]
+SPC(485)+HJ(10) = SPC(88)                              7.000e+12 	  0.31 	 -0.19 		0.0	0.0	0.0	//R_Recombination exact:   [ C_rad/H/OneDeC , H_rad ]
+C6H11J(19)+SPC(485) = C6H10(2)+SPC(88)                 2.052e+14 	 -0.35 	  0.00 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ C/H2/Nd_Csrad , C_rad/H/OneDeC ]
+tbutyl(11)+SPC(485) = C4H8(9)+SPC(88)                  1.899e+15 	 -0.70 	  0.00 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ Cmethyl_Csrad , C_rad/H/OneDeC ]
+SPC(63)+SPC(485) = SPC(88)+SPC(88)                     1.026e+14 	 -0.35 	  0.00 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ C/H2/Nd_Csrad , C_rad/H/OneDeC ]
+SPC(88)+SPC(443) = SPC(485)+C6H12(414)                 1.706e-03 	  4.34 	  3.10 		0.0	0.0	0.0	//H_Abstraction exact:   [ Cs-CdCsHH , CsJ-CsCsH ]
+SPC(88)+SPC(442) = SPC(485)+C6H12(414)                 1.402e-03 	  4.34 	  1.90 		0.0	0.0	0.0	//H_Abstraction exact:   [ Cs-CdCsHH , CsJ-CsCsCs ]
+C6H8(85)+C4H9SJ(13) = SPC(485)                         1.837e+02 	  3.03 	  2.63 		0.0	0.0	0.0	//R_Addition_MultipleBond estimate: (Average:)  [ Cds-CsH_Cds-CdH , SsJ-Cs ]
+C6H9J(17)+SPC(485) = C6H8(85)+SPC(88)                  1.026e+14 	 -0.35 	  0.00 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ C/H2/Nd_Csrad , C_rad/H/OneDeC ]
+SPC(485)+C6H9J(94) = SPC(88)+SPC(122)                  1.559e-02 	  4.34 	  8.34 		0.0	0.0	0.0	//H_Abstraction estimate: (Average:)  [ CsJ-CdCsH , C-H ]
+SPC(88)+C4H9SJ(40) = SPC(485)+SPC(7)                   1.806e-03 	  4.34 	  3.50 		0.0	0.0	0.0	//H_Abstraction exact:   [ Cs-CdCsHH , CsJ-CsHH ]
+SPC(485)+C6H8(85) = SPC(88)+C6H7J(596)                 9.160e-03 	  4.34 	  11.70 		0.0	0.0	0.0	//H_Abstraction exact:   [ CsJ-CdCsH , Cs-CdCsHH ]
+SPC(485)+C6H8(1261) = SPC(88)+C6H7J(596)               3.924e-03 	  4.34 	  6.30 		0.0	0.0	0.0	//H_Abstraction exact:   [ CsJ-CdCsH , Cs-CdCdHH ]
+C6H7J(596)+SPC(7) = SPC(485)                           1.646e+01 	  3.30 	  41.73 		0.0	0.0	0.0	//1,3_Insertion_RSR estimate: (Average:)  [ Cd/H/Nd_Cd/H/De , H_SCs(CsCsCs) ]
+SPC(485)+C6H7J(596) = SPC(88)+C6H6(1364)               1.140e+13 	 -0.07 	 -0.00 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ C_rad/H/OneDeC , C/H2/De_Csrad ]
+C4H8(9)+HSJ(5) = C4H9SJ(48)                            2.490e+03 	  2.70 	 -0.80 		0.0	0.0	0.0	//R_Addition_MultipleBond estimate: (Average:)  [ Cds-HH_Cds-CsCs , SsJ-H ]
+C4H9SJ(40) = C4H9SJ(48)                                1.000e+12 	  0.00 	  20.00 		0.0	0.0	0.0	//intra_substitutionS_isomerization estimate: (Average:)  [ XSR3J_S , CsJ-3-CsHH , S-HC ]
+C4H8(9)+C4H9SJ(13) = SPC(64)                           7.390e+01 	  3.10 	  1.30 		0.0	0.0	0.0	//R_Addition_MultipleBond estimate: (Average:)  [ Cds-HH_Cds-CsCs , SsJ-Cs ]
+SPC(64)+HJ(10) = C4H9SJ(48)+tbutyl(11)                 1.703e+08 	  1.53 	  3.20 		0.0	0.0	0.0	//substitutionS exact:   [ S-CsCs , HJ ]
+C4H8(9)+C4H9SJ(48) = SPC(64)                           2.597e+01 	  3.20 	  40.15 		0.0	0.0	0.0	//1,3_Insertion_RSR estimate: (Average:)  [ Cd/H2_Cd/Cs2 , H_SCs ]
+SPC(122) = C6H8(776)                                   5.660e+10 	  1.00 	  16.30 		0.0	0.0	0.0	//Intra_Disproportionation exact:   [ Y_biCyc4 , Y_rad , XH_Rrad ]
+S2(4)+HJ(10) = HS2J(38)                                1.900e+09 	  1.70 	 -0.70 		0.0	0.0	0.0	//R_Addition_MultipleBond exact:   [ Sd_R , HJ ]
+HS2J(38)+C6H9J(17) = S2(4)+C6H10(2)                    1.188e+12 	 -0.01 	  0.96 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ S_Srad , C_rad/H/OneDeC ]
+HS2J(38)+C4H9SJ(40) = S2(4)+SPC(7)                     1.188e+12 	 -0.01 	  0.96 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ S_Srad , C_rad/H2/Cs ]
+HS2J(38)+C4H9SJ(13) = S2(4)+SPC(7)                     1.188e+12 	 -0.01 	  0.96 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ S_Srad , S_rad/NonDeC ]
+HSSH(6)+tbutyl(11) = HS2J(38)+C4H10(8)                 9.200e+02 	  3.06 	 -6.40 		0.0	0.0	0.0	//H_Abstraction exact:   [ Ss-SsH , CsJ-CsCsCs ]
+HSSH(6)+HSJ(5) = HS2J(38)+H2S(34)                      2.880e+03 	  3.15 	 -2.40 		0.0	0.0	0.0	//H_Abstraction exact:   [ Ss-SsH , SsJ-H ]
+HS2J(38)+HJ(10) = HSSH(6)                              7.338e+12 	  0.23 	 -0.58 		0.0	0.0	0.0	//R_Recombination estimate: (Average:)  [ SJ-Ss , H_rad ]
+C6H11J(19)+HS2J(38) = C6H10(2)+HSSH(6)                 2.280e+13 	 -0.07 	 -0.00 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ C/H2/Nd_Csrad , S_rad/NonDeS ]
+HS2J(38)+HS2J(38) = S2(4)+HSSH(6)                      1.188e+12 	 -0.01 	  0.96 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ S_Srad , S_rad/NonDeS ]
+tbutyl(11)+HS2J(38) = C4H8(9)+HSSH(6)                  1.346e+14 	 -0.20 	 -0.00 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ Cmethyl_Csrad , S_rad/NonDeS ]
+S2JJ(3)+HJ(10) = HS2J(38)                              1.468e+13 	  0.23 	 -0.58 		0.0	0.0	0.0	//R_Recombination estimate: (Average:)  [ SJ , H_rad ]
+S2JJ(3)+tbutyl(11) = HS2J(38)+C4H8(9)                  1.432e+13 	 -0.10 	 -0.00 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ Y_rad , Cmethyl_Csrad ]
+HS2J(38)+tbutyl(11) = S2(4)+C4H10(8)                   1.188e+12 	 -0.01 	  0.96 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ S_Srad , C_rad/Cs3 ]
+HSSH(6)+C4H9SJ(13) = HS2J(38)+SPC(7)                   1.234e+03 	  3.15 	 -2.30 		0.0	0.0	0.0	//H_Abstraction exact:   [ Ss-SsH , SsJ-Cs ]
+HSSH(6)+C6H9J(17) = HS2J(38)+C6H10(2)                  3.520e+02 	  3.06 	  1.20 		0.0	0.0	0.0	//H_Abstraction exact:   [ Ss-SsH , CsJ-CdCsH ]
+S2JJ(3)+C6H9J(17) = HS2J(38)+C6H8(85)                  2.870e+12 	 -0.04 	 -0.00 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ Y_rad , C/H2/Nd_Csrad ]
+HS2J(38)+SPC(122) = S2(4)+C6H9J(94)                    1.188e+12 	 -0.01 	  17.62 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ S_Srad , Y_rad ] Warning: Ea raised by 16.7 from 1.0 to dHrxn(298K) = 17.6 kcal/mol.
+S2JJ(3)+C6H11J(19) = HS2J(38)+C6H10(2)                 5.741e+12 	 -0.04 	 -0.00 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ Y_rad , C/H2/Nd_Csrad ]
+HSSH(6)+SPC(405) = HS2J(38)+C6H12(414)                 7.260e+01 	  3.06 	 -3.00 		0.0	0.0	0.0	//H_Abstraction exact:   [ Ss-SsH , CsJ-CsHH ]
+HSSH(6)+SPC(444) = HS2J(38)+C6H12(414)                 1.884e+02 	  3.06 	 -4.30 		0.0	0.0	0.0	//H_Abstraction exact:   [ Ss-SsH , CsJ-CsCsH ]
+HS2J(38)+SPC(485) = S2(4)+SPC(88)                      1.188e+12 	 -0.01 	  0.96 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ S_Srad , C_rad/H/OneDeC ]
+SPC(63)+HS2J(38) = SPC(88)+HSSH(6)                     1.140e+13 	 -0.07 	 -0.00 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ C/H2/Nd_Csrad , S_rad/NonDeS ]
+HSSH(6)+SPC(443) = HS2J(38)+C6H12(414)                 1.884e+02 	  3.06 	 -4.30 		0.0	0.0	0.0	//H_Abstraction exact:   [ Ss-SsH , CsJ-CsCsH ]
+HSSH(6)+SPC(442) = HS2J(38)+C6H12(414)                 9.200e+02 	  3.06 	 -6.40 		0.0	0.0	0.0	//H_Abstraction exact:   [ Ss-SsH , CsJ-CsCsCs ]
+HS2J(38)+C6H7J(596) = S2(4)+C6H8(85)                   1.188e+12 	 -0.01 	  0.96 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ S_Srad , C_rad/H/OneDeC ]
+C6H9J(17)+HS2J(38) = C6H8(85)+HSSH(6)                  1.140e+13 	 -0.07 	 -0.00 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ C/H2/Nd_Csrad , S_rad/NonDeS ]
+HS2J(38)+SPC(405) = S2(4)+C6H12(414)                   1.188e+12 	 -0.01 	  0.96 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ S_Srad , C_rad/H2/Cs ]
+HS2J(38)+SPC(443) = S2(4)+C6H12(414)                   1.188e+12 	 -0.01 	  0.96 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ S_Srad , C_rad/H/NonDeC ]
+HS2J(38)+SPC(442) = S2(4)+C6H12(414)                   1.188e+12 	 -0.01 	  0.96 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ S_Srad , C_rad/Cs3 ]
+HS2J(38)+SPC(444) = S2(4)+C6H12(414)                   1.188e+12 	 -0.01 	  0.96 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ S_Srad , C_rad/H/NonDeC ]
+HS2J(38)+C6H9J(94) = HSSH(6)+SPC(122)                  6.042e+04 	  2.77 	  11.74 		0.0	0.0	0.0	//H_Abstraction estimate: (Average:)  [ SsJ-Ss , C-H ]
+HS2J(38)+HSJ(5) = S2(4)+H2S(34)                        1.188e+12 	 -0.01 	  0.96 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ S_Srad , S_pri_rad ]
+HSSH(6)+C4H9SJ(40) = HS2J(38)+SPC(7)                   7.260e+01 	  3.06 	 -3.00 		0.0	0.0	0.0	//H_Abstraction exact:   [ Ss-SsH , CsJ-CsHH ]
+S2JJ(3)+SPC(63) = HS2J(38)+SPC(88)                     2.870e+12 	 -0.04 	 -0.00 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ Y_rad , C/H2/Nd_Csrad ]
+HSSH(6)+C6H7J(596) = HS2J(38)+C6H8(85)                 3.520e+02 	  3.06 	  1.20 		0.0	0.0	0.0	//H_Abstraction exact:   [ Ss-SsH , CsJ-CdCsH ]
+HSSH(6)+C6H7J(596) = HS2J(38)+C6H8(1261)               2.640e+02 	  3.06 	  6.20 		0.0	0.0	0.0	//H_Abstraction exact:   [ Ss-SsH , CsJ-CdCdH ]
+S2JJ(3)+C6H7J(596) = HS2J(38)+C6H6(1364)               2.870e+12 	 -0.04 	 -0.00 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ Y_rad , C/H2/De_Csrad ]
+HS2J(38)+C6H7J(596) = S2(4)+C6H8(1261)                 1.188e+12 	 -0.01 	  0.96 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ S_Srad , C_rad/H/TwoDe ]
+HSSH(6)+SPC(485) = HS2J(38)+SPC(88)                    3.520e+02 	  3.06 	  1.20 		0.0	0.0	0.0	//H_Abstraction exact:   [ Ss-SsH , CsJ-CdCsH ]
+S2JJ(3)+HS2J(38) = HS2J(38)+S2(4)                      4.754e+12 	 -0.01 	  16.46 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ Y_rad , S_Srad ] Warning: Ea raised by 15.5 from 1.0 to dHrxn(298K) = 16.5 kcal/mol.
+HS2J(38)+C6H7J(596) = HSSH(6)+C6H6(1364)               1.140e+13 	 -0.07 	 -0.00 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ S_rad/NonDeS , C/H2/De_Csrad ]
+C6H9J(18)+HJ(10) = C6H10(2)                            1.660e+13 	  0.22 	  0.00 		0.0	0.0	0.0	//R_Recombination exact:   [ C_rad/H/NonDeC , H_rad ]
+C6H11J(19)+C6H9J(18) = C6H10(2)+C6H10(2)               2.052e+14 	 -0.35 	  0.00 		0.0	0.0	0.0	//Disproportionation exact:   [ C/H2/Nd_Csrad , C_rad/H/NonDeC ]
+C6H9J(18)+C4H10(8) = C6H10(2)+tbutyl(11)               8.120e-04 	  4.34 	  5.30 		0.0	0.0	0.0	//H_Abstraction exact:   [ CsJ-CsCsH , Cs-CsCsCsH ]
+C6H9J(18)+H2S(34) = C6H10(2)+HSJ(5)                    2.000e+03 	  2.55 	 -0.90 		0.0	0.0	0.0	//H_Abstraction exact:   [ CsJ-CsCsH , Ss-HH ]
+HS2J(38)+C6H9J(18) = S2(4)+C6H10(2)                    1.188e+12 	 -0.01 	  0.96 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ S_Srad , C_rad/H/NonDeC ]
+tbutyl(11)+C6H9J(18) = C4H8(9)+C6H10(2)                1.899e+15 	 -0.70 	  0.00 		0.0	0.0	0.0	//Disproportionation exact:   [ Cmethyl_Csrad , C_rad/H/NonDeC ]
+C6H9J(18)+SPC(7) = C6H10(2)+C4H9SJ(13)                 3.910e+01 	  3.06 	 -1.60 		0.0	0.0	0.0	//H_Abstraction exact:   [ CsJ-CsCsH , Ss-CsH ]
+C6H9J(18)+C6H10(2) = C6H10(2)+C6H9J(17)                3.412e-03 	  4.34 	  3.10 		0.0	0.0	0.0	//H_Abstraction exact:   [ CsJ-CsCsH , Cs-CdCsHH ]
+C6H9J(18) = C6H9J(17)                                  1.682e+10 	  0.35 	  29.90 		0.0	0.0	0.0	//intra_H_migration exact:   [ Others-R2H_S , C_rad_out_H/NonDeC , Cs_H_out_H/OneDe ]
+DUP
+C6H9J(18) = C6H9J(17)                                  6.820e+09 	  0.73 	  30.50 		0.0	0.0	0.0	//intra_H_migration estimate: (Average:)  [ R3H_SS_C , C_rad_out_H/NonDeC , Cs_H_out_H/OneDe ]
+DUP
+C6H9J(18) = C6H9J(17)                                  1.505e+08 	  1.34 	  30.40 		0.0	0.0	0.0	//intra_H_migration estimate: (Average:)  [ Others-R2H_S , Y_rad_out , XH_out ]
+DUP
+C6H10(2)+SPC(405) = C6H9J(18)+C6H12(414)               3.680e-03 	  4.34 	  7.00 		0.0	0.0	0.0	//H_Abstraction exact:   [ Cs-CsCsHH , CsJ-CsHH ]
+C6H10(2)+SPC(444) = C6H9J(18)+C6H12(414)               6.062e-03 	  4.34 	  7.50 		0.0	0.0	0.0	//H_Abstraction exact:   [ Cs-CsCsHH , CsJ-CsCsH ]
+SPC(63)+C6H9J(18) = SPC(88)+C6H10(2)                   1.026e+14 	 -0.35 	  0.00 		0.0	0.0	0.0	//Disproportionation exact:   [ C/H2/Nd_Csrad , C_rad/H/NonDeC ]
+C6H10(2)+SPC(443) = C6H9J(18)+C6H12(414)               3.464e-03 	  4.34 	  7.50 		0.0	0.0	0.0	//H_Abstraction exact:   [ Cs-CsCsHH , CsJ-CsCsH ]
+C6H9J(18)+C6H12(414) = C6H10(2)+SPC(442)               8.120e-04 	  4.34 	  5.30 		0.0	0.0	0.0	//H_Abstraction exact:   [ CsJ-CsCsH , Cs-CsCsCsH ]
+C6H8(85)+HJ(10) = C6H9J(18)                            3.480e+08 	  1.64 	  1.91 		0.0	0.0	0.0	//R_Addition_MultipleBond exact:   [ Cds-CdH_Cds-CsH , HJ ]
+C6H9J(17)+C6H9J(18) = C6H8(85)+C6H10(2)                1.026e+14 	 -0.35 	  0.00 		0.0	0.0	0.0	//Disproportionation exact:   [ C/H2/Nd_Csrad , C_rad/H/NonDeC ]
+C6H9J(18)+C6H9J(18) = C6H8(85)+C6H10(2)                1.140e+13 	 -0.07 	 -0.00 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ C/H2/De_Csrad , C_rad/H/NonDeC ]
+C6H9J(18)+C4H9SJ(40) = C6H8(85)+SPC(7)                 1.140e+13 	 -0.07 	 -0.00 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ C/H2/De_Csrad , C_rad/H2/Cs ]
+C6H9J(18)+C4H9SJ(13) = C6H8(85)+SPC(7)                 1.140e+13 	 -0.07 	 -0.00 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ C/H2/De_Csrad , S_rad/NonDeC ]
+C6H9J(18)+HS2J(38) = C6H8(85)+HSSH(6)                  1.140e+13 	 -0.07 	 -0.00 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ C/H2/De_Csrad , S_rad/NonDeS ]
+C6H9J(18)+tbutyl(11) = C6H8(85)+C4H10(8)               1.140e+13 	 -0.07 	 -0.00 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ C/H2/De_Csrad , C_rad/Cs3 ]
+C6H9J(18)+SPC(122) = C6H8(85)+C6H9J(94)                1.140e+13 	 -0.07 	 -0.00 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ C/H2/De_Csrad , Y_rad ]
+C6H9J(18)+SPC(485) = C6H8(85)+SPC(88)                  1.140e+13 	 -0.07 	 -0.00 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ C/H2/De_Csrad , C_rad/H/OneDeC ]
+C6H9J(18)+C6H7J(596) = C6H8(85)+C6H8(85)               1.140e+13 	 -0.07 	 -0.00 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ C/H2/De_Csrad , C_rad/H/OneDeC ]
+C6H9J(18)+SPC(405) = C6H8(85)+C6H12(414)               1.140e+13 	 -0.07 	 -0.00 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ C/H2/De_Csrad , C_rad/H2/Cs ]
+C6H9J(18)+SPC(443) = C6H8(85)+C6H12(414)               1.140e+13 	 -0.07 	 -0.00 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ C/H2/De_Csrad , C_rad/H/NonDeC ]
+C6H9J(18)+SPC(442) = C6H8(85)+C6H12(414)               1.140e+13 	 -0.07 	 -0.00 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ C/H2/De_Csrad , C_rad/Cs3 ]
+C6H9J(18)+SPC(444) = C6H8(85)+C6H12(414)               1.140e+13 	 -0.07 	 -0.00 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ C/H2/De_Csrad , C_rad/H/NonDeC ]
+C6H9J(18)+C6H9J(94) = C6H10(2)+SPC(122)                1.559e-02 	  4.34 	  8.34 		0.0	0.0	0.0	//H_Abstraction estimate: (Average:)  [ CsJ-CsCsH , C-H ]
+C6H9J(18)+HSJ(5) = C6H8(85)+H2S(34)                    1.140e+13 	 -0.07 	 -0.00 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ C/H2/De_Csrad , S_pri_rad ]
+C6H10(2)+C4H9SJ(40) = C6H9J(18)+SPC(7)                 3.680e-03 	  4.34 	  7.00 		0.0	0.0	0.0	//H_Abstraction exact:   [ Cs-CsCsHH , CsJ-CsHH ]
+C6H9J(18)+C6H8(85) = C6H10(2)+C6H7J(596)               3.412e-03 	  4.34 	  3.10 		0.0	0.0	0.0	//H_Abstraction exact:   [ CsJ-CsCsH , Cs-CdCsHH ]
+C6H9J(18)+C6H8(1261) = C6H10(2)+C6H7J(596)             4.640e-03 	  4.34 	 -0.40 		0.0	0.0	0.0	//H_Abstraction exact:   [ CsJ-CsCsH , Cs-CdCdHH ]
+C6H8(1261)+HJ(10) = C6H9J(18)                          5.840e+08 	  1.64 	  1.37 		0.0	0.0	0.0	//R_Addition_MultipleBond exact:   [ Cds-CsH_Cds-CsH , HJ ]
+C6H9J(18)+C6H9J(17) = C6H8(1261)+C6H10(2)              1.026e+14 	 -0.35 	  0.00 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ C/H2/Nd_Csrad , C_rad/H/OneDeC ]
+C6H9J(18)+C6H9J(18) = C6H8(1261)+C6H10(2)              1.026e+14 	 -0.35 	  0.00 		0.0	0.0	0.0	//Disproportionation exact:   [ C/H2/Nd_Csrad , C_rad/H/NonDeC ]
+C6H9J(18)+C4H9SJ(40) = C6H8(1261)+SPC(7)               2.900e+12 	  0.00 	  0.00 		0.0	0.0	0.0	//Disproportionation exact:   [ C/H2/Nd_Csrad , C_rad/H2/Cs ]
+C6H9J(18)+C4H9SJ(13) = C6H8(1261)+SPC(7)               1.140e+13 	 -0.07 	 -0.00 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ C/H2/Nd_Csrad , S_rad/NonDeC ]
+C6H9J(18)+HS2J(38) = C6H8(1261)+HSSH(6)                1.140e+13 	 -0.07 	 -0.00 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ C/H2/Nd_Csrad , S_rad/NonDeS ]
+C6H9J(18)+tbutyl(11) = C6H8(1261)+C4H10(8)             4.320e+14 	 -0.75 	  0.00 		0.0	0.0	0.0	//Disproportionation exact:   [ C/H2/Nd_Csrad , C_rad/Cs3 ]
+C6H9J(18)+SPC(122) = C6H8(1261)+C6H9J(94)              1.140e+13 	 -0.07 	 -0.00 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ C/H2/Nd_Csrad , Y_rad ]
+C6H9J(18)+SPC(485) = C6H8(1261)+SPC(88)                1.026e+14 	 -0.35 	  0.00 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ C/H2/Nd_Csrad , C_rad/H/OneDeC ]
+C6H9J(18)+C6H7J(596) = C6H8(1261)+C6H8(85)             1.026e+14 	 -0.35 	  0.00 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ C/H2/Nd_Csrad , C_rad/H/OneDeC ]
+C6H9J(18)+SPC(405) = C6H8(1261)+C6H12(414)             2.900e+12 	  0.00 	  0.00 		0.0	0.0	0.0	//Disproportionation exact:   [ C/H2/Nd_Csrad , C_rad/H2/Cs ]
+C6H9J(18)+SPC(443) = C6H8(1261)+C6H12(414)             1.026e+14 	 -0.35 	  0.00 		0.0	0.0	0.0	//Disproportionation exact:   [ C/H2/Nd_Csrad , C_rad/H/NonDeC ]
+C6H9J(18)+SPC(442) = C6H8(1261)+C6H12(414)             4.320e+14 	 -0.75 	  0.00 		0.0	0.0	0.0	//Disproportionation exact:   [ C/H2/Nd_Csrad , C_rad/Cs3 ]
+C6H9J(18)+SPC(444) = C6H8(1261)+C6H12(414)             1.026e+14 	 -0.35 	  0.00 		0.0	0.0	0.0	//Disproportionation exact:   [ C/H2/Nd_Csrad , C_rad/H/NonDeC ]
+C6H9J(18)+HSJ(5) = C6H8(1261)+H2S(34)                  1.140e+13 	 -0.07 	 -0.00 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ C/H2/Nd_Csrad , S_pri_rad ]
+C6H9J(18)+C6H7J(596) = C6H8(1261)+C6H8(1261)           1.026e+14 	 -0.35 	  0.00 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ C/H2/Nd_Csrad , C_rad/H/TwoDe ]
+C6H9J(18)+SPC(88) = C6H10(2)+SPC(485)                  1.706e-03 	  4.34 	  3.10 		0.0	0.0	0.0	//H_Abstraction exact:   [ CsJ-CsCsH , Cs-CdCsHH ]
+C6H9J(18)+HSSH(6) = C6H10(2)+HS2J(38)                  1.884e+02 	  3.06 	 -4.30 		0.0	0.0	0.0	//H_Abstraction exact:   [ CsJ-CsCsH , Ss-SsH ]
+C6H9J(18)+S2JJ(3) = C6H8(85)+HS2J(38)                  2.870e+12 	 -0.04 	 -0.00 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ C/H2/De_Csrad , Y_rad ]
+C6H9J(18)+S2JJ(3) = C6H8(1261)+HS2J(38)                2.870e+12 	 -0.04 	 -0.00 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ C/H2/Nd_Csrad , Y_rad ]
+C6H9J(18)+C6H7J(596) = C6H10(2)+C6H6(1364)             1.140e+13 	 -0.07 	 -0.00 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ C_rad/H/NonDeC , C/H2/De_Csrad ]
+C6H9J(17)+C6H9J(660) = C6H10(2)+SPC(122)               1.962e-03 	  4.34 	  6.30 		0.0	0.0	0.0	//H_Abstraction exact:   [ CsJ-CdCsH , Cs-CdCdHH ]
+C6H9J(18)+C6H9J(660) = C6H10(2)+SPC(122)               2.320e-03 	  4.34 	 -0.40 		0.0	0.0	0.0	//H_Abstraction exact:   [ CsJ-CsCsH , Cs-CdCdHH ]
+C4H9SJ(40)+C6H9J(660) = SPC(7)+SPC(122)                2.440e-03 	  4.34 	  1.00 		0.0	0.0	0.0	//H_Abstraction exact:   [ CsJ-CsHH , Cs-CdCdHH ]
+C4H9SJ(13)+C6H9J(660) = SPC(7)+SPC(122)                6.296e+03 	  2.86 	  2.18 		0.0	0.0	0.0	//H_Abstraction estimate: (Average:)  [ SsJ-Cs , Cs-CdCdHH ]
+HS2J(38)+C6H9J(660) = HSSH(6)+SPC(122)                 6.296e+03 	  2.86 	  2.18 		0.0	0.0	0.0	//H_Abstraction estimate: (Average:)  [ SsJ-Ss , Cs-CdCdHH ]
+tbutyl(11)+C6H9J(660) = C4H10(8)+SPC(122)              1.916e-03 	  4.34 	 -2.50 		0.0	0.0	0.0	//H_Abstraction exact:   [ CsJ-CsCsCs , Cs-CdCdHH ]
+C6H9J(94)+SPC(122) = SPC(122)+C6H9J(660)               1.559e-02 	  4.34 	  8.34 		0.0	0.0	0.0	//H_Abstraction estimate: (Average:)  [ C-H , CsJ-CdCdH ]
+SPC(485)+C6H9J(660) = SPC(88)+SPC(122)                 1.962e-03 	  4.34 	  6.30 		0.0	0.0	0.0	//H_Abstraction exact:   [ CsJ-CdCsH , Cs-CdCdHH ]
+C6H7J(596)+C6H9J(660) = C6H8(85)+SPC(122)              1.962e-03 	  4.34 	  6.30 		0.0	0.0	0.0	//H_Abstraction exact:   [ CsJ-CdCsH , Cs-CdCdHH ]
+SPC(443)+C6H9J(660) = C6H12(414)+SPC(122)              2.320e-03 	  4.34 	 -0.40 		0.0	0.0	0.0	//H_Abstraction exact:   [ CsJ-CsCsH , Cs-CdCdHH ]
+SPC(442)+C6H9J(660) = C6H12(414)+SPC(122)              1.916e-03 	  4.34 	 -2.50 		0.0	0.0	0.0	//H_Abstraction exact:   [ CsJ-CsCsCs , Cs-CdCdHH ]
+SPC(405)+C6H9J(660) = C6H12(414)+SPC(122)              2.440e-03 	  4.34 	  1.00 		0.0	0.0	0.0	//H_Abstraction exact:   [ CsJ-CsHH , Cs-CdCdHH ]
+SPC(444)+C6H9J(660) = C6H12(414)+SPC(122)              2.320e-03 	  4.34 	 -0.40 		0.0	0.0	0.0	//H_Abstraction exact:   [ CsJ-CsCsH , Cs-CdCdHH ]
+SPC(122)+HJ(10) = C6H9J(660)                           7.338e+12 	  0.23 	 -0.58 		0.0	0.0	0.0	//R_Recombination estimate: (Average:)  [ C_rad/H/TwoDe , H_rad ]
+SPC(122)+tbutyl(11) = C6H9J(660)+C4H8(9)               1.899e+15 	 -0.70 	  0.00 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ C_rad/H/TwoDe , Cmethyl_Csrad ]
+SPC(122)+C6H9J(17) = C6H9J(660)+C6H8(85)               1.026e+14 	 -0.35 	  0.00 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ C_rad/H/TwoDe , C/H2/Nd_Csrad ]
+SPC(122)+C6H11J(19) = C6H9J(660)+C6H10(2)              2.052e+14 	 -0.35 	  0.00 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ C_rad/H/TwoDe , C/H2/Nd_Csrad ]
+HSJ(5)+C6H9J(660) = H2S(34)+SPC(122)                   5.440e+03 	  2.85 	 -2.00 		0.0	0.0	0.0	//H_Abstraction exact:   [ SsJ-H , Cs-CdCdHH ]
+SPC(122)+SPC(63) = C6H9J(660)+SPC(88)                  1.026e+14 	 -0.35 	  0.00 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ C_rad/H/TwoDe , C/H2/Nd_Csrad ]
+SPC(122)+C6H7J(596) = C6H9J(660)+C6H6(1364)            1.140e+13 	 -0.07 	 -0.00 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ C_rad/H/TwoDe , C/H2/De_Csrad ]
+C6H7J(596)+C6H9J(660) = C6H8(1261)+SPC(122)            7.820e-04 	  4.34 	  8.90 		0.0	0.0	0.0	//H_Abstraction exact:   [ CsJ-CdCdH , Cs-CdCdHH ]
+C6H8(776)+HJ(10) = C6H9J(660)                          4.420e+08 	  1.64 	  2.82 		0.0	0.0	0.0	//R_Addition_MultipleBond exact:   [ Ca_Cds-HH , HJ ]
+DUP
+C6H8(776)+HJ(10) = C6H9J(660)                          5.460e+08 	  1.64 	  3.78 		0.0	0.0	0.0	//R_Addition_MultipleBond exact:   [ Ca_Cds-CsH , HJ ]
+DUP
+C6H9J(660)+C6H9J(17) = C6H8(776)+C6H10(2)              4.580e+12 	 -0.35 	 -0.13 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ Cdpri_Csrad , C_rad/H/OneDeC ]
+C6H9J(660)+C6H9J(18) = C6H8(776)+C6H10(2)              4.580e+12 	 -0.35 	 -0.13 		0.0	0.0	0.0	//Disproportionation exact:   [ Cdpri_Csrad , C_rad/H/NonDeC ]
+C6H9J(660)+C4H9SJ(40) = C6H8(776)+SPC(7)               9.640e+11 	  0.00 	 -0.13 		0.0	0.0	0.0	//Disproportionation exact:   [ Cdpri_Csrad , C_rad/H2/Cs ]
+C6H9J(660)+C4H9SJ(13) = C6H8(776)+SPC(7)               5.413e+12 	 -0.09 	 -0.04 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ Cdpri_Csrad , S_rad/NonDeC ]
+C6H9J(660)+HS2J(38) = C6H8(776)+HSSH(6)                5.413e+12 	 -0.09 	 -0.04 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ Cdpri_Csrad , S_rad/NonDeS ]
+C6H9J(660)+tbutyl(11) = C6H8(776)+C4H10(8)             2.890e+13 	 -0.75 	 -0.13 		0.0	0.0	0.0	//Disproportionation exact:   [ Cdpri_Csrad , C_rad/Cs3 ]
+C6H9J(660)+SPC(122) = C6H8(776)+C6H9J(94)              5.413e+12 	 -0.09 	  2.28 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ Cdpri_Csrad , Y_rad ] Warning: Ea raised by 2.3 from -0.0 to dHrxn(298K) = 2.3 kcal/mol.
+C6H9J(660)+SPC(485) = C6H8(776)+SPC(88)                4.580e+12 	 -0.35 	 -0.13 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ Cdpri_Csrad , C_rad/H/OneDeC ]
+C6H9J(660)+C6H7J(596) = C6H8(776)+C6H8(85)             4.580e+12 	 -0.35 	 -0.13 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ Cdpri_Csrad , C_rad/H/OneDeC ]
+C6H9J(660)+SPC(405) = C6H8(776)+C6H12(414)             9.640e+11 	  0.00 	 -0.13 		0.0	0.0	0.0	//Disproportionation exact:   [ Cdpri_Csrad , C_rad/H2/Cs ]
+C6H9J(660)+SPC(443) = C6H8(776)+C6H12(414)             4.580e+12 	 -0.35 	 -0.13 		0.0	0.0	0.0	//Disproportionation exact:   [ Cdpri_Csrad , C_rad/H/NonDeC ]
+C6H9J(660)+SPC(442) = C6H8(776)+C6H12(414)             2.890e+13 	 -0.75 	 -0.13 		0.0	0.0	0.0	//Disproportionation exact:   [ Cdpri_Csrad , C_rad/Cs3 ]
+C6H9J(660)+SPC(444) = C6H8(776)+C6H12(414)             4.580e+12 	 -0.35 	 -0.13 		0.0	0.0	0.0	//Disproportionation exact:   [ Cdpri_Csrad , C_rad/H/NonDeC ]
+C6H9J(660)+HSJ(5) = C6H8(776)+H2S(34)                  5.413e+12 	 -0.09 	 -0.04 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ Cdpri_Csrad , S_pri_rad ]
+C6H9J(660)+C6H7J(596) = C6H8(776)+C6H8(1261)           4.580e+12 	 -0.35 	 -0.13 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ Cdpri_Csrad , C_rad/H/TwoDe ]
+SPC(122)+HS2J(38) = C6H9J(660)+S2(4)                   1.188e+12 	 -0.01 	  8.81 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ C_rad/H/TwoDe , S_Srad ] Warning: Ea raised by 7.9 from 1.0 to dHrxn(298K) = 8.8 kcal/mol.
+C6H9J(660)+S2JJ(3) = C6H8(776)+HS2J(38)                7.222e+12 	 -0.04 	  6.76 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ Cdpri_Csrad , Y_rad ]
+SPC(122)+C6H9J(18) = C6H9J(660)+C6H8(85)               1.140e+13 	 -0.07 	 -0.00 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ C_rad/H/TwoDe , C/H2/De_Csrad ]
+SPC(122)+C6H9J(18) = C6H9J(660)+C6H8(1261)             1.026e+14 	 -0.35 	  0.00 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ C_rad/H/TwoDe , C/H2/Nd_Csrad ]
+C6H9J(660) = C6H9J(18)                                 1.000e+08 	  0.86 	  5.90 		0.0	0.0	0.0	//Intra_R_Add_Endocyclic estimate: (Average:)  [ R6_SMS_D , doublebond_intra_pri_2H , radadd_intra_cs2H ]
+SPC(122)+C6H9J(660) = C6H9J(660)+C6H8(776)             4.580e+12 	 -0.35 	 -0.13 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ C_rad/H/TwoDe , Cdpri_Csrad ]
+C6H9J(16)+HJ(10) = C6H10(2)                            7.338e+12 	  0.23 	 -0.58 		0.0	0.0	0.0	//R_Recombination estimate: (Average:)  [ Cd_rad/NonDe , H_rad ]
+C6H11J(19)+C6H9J(16) = C6H10(2)+C6H10(2)               4.840e+12 	  0.00 	  0.00 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ C/H2/Nd_Csrad , Cd_rad/NonDeC ]
+C6H9J(16)+C4H10(8) = C6H10(2)+tbutyl(11)               4.570e-03 	  4.34 	 -0.10 		0.0	0.0	0.0	//H_Abstraction exact:   [ CdsJ-Cs , Cs-CsCsCsH ]
+C6H9J(16)+H2S(34) = C6H10(2)+HSJ(5)                    7.180e+03 	  2.61 	 -2.30 		0.0	0.0	0.0	//H_Abstraction exact:   [ CdsJ-Cs , Ss-HH ]
+HS2J(38)+C6H9J(16) = S2(4)+C6H10(2)                    1.188e+12 	 -0.01 	  0.96 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ S_Srad , Cd_rad/NonDeC ]
+tbutyl(11)+C6H9J(16) = C4H8(9)+C6H10(2)                1.368e+15 	 -0.70 	  0.00 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ Cmethyl_Csrad , Cd_rad/NonDeC ]
+C6H9J(16)+SPC(7) = C6H10(2)+C4H9SJ(13)                 1.610e+02 	  3.06 	 -3.10 		0.0	0.0	0.0	//H_Abstraction exact:   [ CdsJ-Cs , Ss-CsH ]
+C6H9J(16)+C6H10(2) = C6H10(2)+C6H9J(17)                1.564e-02 	  4.34 	 -1.60 		0.0	0.0	0.0	//H_Abstraction exact:   [ CdsJ-Cs , Cs-CdCsHH ]
+C6H9J(16) = C6H9J(17)                                  1.448e+10 	  0.82 	  37.50 		0.0	0.0	0.0	//intra_H_migration estimate: (Average:)  [ Others-R2H_S , Cd_rad_out_double , Cs_H_out_H/(NonDeC/Cs) ]
+DUP
+C6H9J(16) = C6H9J(17)                                  1.505e+08 	  1.34 	  30.40 		0.0	0.0	0.0	//intra_H_migration estimate: (Average:)  [ Others-R2H_S , Y_rad_out , XH_out ]
+DUP
+C6H9J(16) = C6H9J(17)                                  1.182e+10 	  0.86 	  35.70 		0.0	0.0	0.0	//intra_H_migration estimate: (Average:)  [ R3H_DS , Cd_rad_out_singleNd , Cs_H_out_H/(NonDeC/Cs) ]
+DUP
+C6H9J(16)+C6H12(414) = C6H10(2)+SPC(405)               1.194e-02 	  4.34 	  4.10 		0.0	0.0	0.0	//H_Abstraction exact:   [ CdsJ-Cs , Cs-CsHHH ]
+C6H9J(16)+C6H12(414) = C6H10(2)+SPC(444)               1.592e-02 	  4.34 	  1.90 		0.0	0.0	0.0	//H_Abstraction exact:   [ CdsJ-Cs , Cs-CsCsHH ]
+SPC(63)+C6H9J(16) = SPC(88)+C6H10(2)                   2.420e+12 	  0.00 	  0.00 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ C/H2/Nd_Csrad , Cd_rad/NonDeC ]
+C6H9J(16)+C6H12(414) = C6H10(2)+SPC(443)               1.592e-02 	  4.34 	  1.90 		0.0	0.0	0.0	//H_Abstraction exact:   [ CdsJ-Cs , Cs-CsCsHH ]
+C6H9J(16)+C6H12(414) = C6H10(2)+SPC(442)               4.570e-03 	  4.34 	 -0.10 		0.0	0.0	0.0	//H_Abstraction exact:   [ CdsJ-Cs , Cs-CsCsCsH ]
+C6H9J(17)+C6H9J(16) = C6H8(85)+C6H10(2)                2.420e+12 	  0.00 	  0.00 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ C/H2/Nd_Csrad , Cd_rad/NonDeC ]
+C6H9J(18)+C6H9J(16) = C6H8(85)+C6H10(2)                1.140e+13 	 -0.07 	 -0.00 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ C/H2/De_Csrad , Cd_rad/NonDeC ]
+C6H9J(16)+C6H9J(94) = C6H10(2)+SPC(122)                1.559e-02 	  4.34 	  8.34 		0.0	0.0	0.0	//H_Abstraction estimate: (Average:)  [ CdsJ-Cs , C-H ]
+C6H9J(16)+C6H9J(660) = C6H10(2)+SPC(122)               1.058e-02 	  4.34 	 -4.20 		0.0	0.0	0.0	//H_Abstraction exact:   [ CdsJ-Cs , Cs-CdCdHH ]
+C6H9J(16)+SPC(7) = C6H10(2)+C4H9SJ(40)                 3.582e-02 	  4.34 	  4.10 		0.0	0.0	0.0	//H_Abstraction exact:   [ CdsJ-Cs , Cs-CsHHH ]
+C6H9J(16)+C6H8(85) = C6H10(2)+C6H7J(596)               1.564e-02 	  4.34 	 -1.60 		0.0	0.0	0.0	//H_Abstraction exact:   [ CdsJ-Cs , Cs-CdCsHH ]
+C6H9J(16)+C6H8(1261) = C6H10(2)+C6H7J(596)             2.116e-02 	  4.34 	 -4.20 		0.0	0.0	0.0	//H_Abstraction exact:   [ CdsJ-Cs , Cs-CdCdHH ]
+C6H9J(18)+C6H9J(16) = C6H8(1261)+C6H10(2)              2.420e+12 	  0.00 	  0.00 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ C/H2/Nd_Csrad , Cd_rad/NonDeC ]
+C6H9J(16)+SPC(88) = C6H10(2)+SPC(485)                  7.820e-03 	  4.34 	 -1.60 		0.0	0.0	0.0	//H_Abstraction exact:   [ CdsJ-Cs , Cs-CdCsHH ]
+C6H9J(660)+C6H9J(16) = C6H8(776)+C6H10(2)              2.410e+12 	  0.00 	  0.00 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ Cdpri_Csrad , Cd_rad/NonDeC ]
+C6H9J(16)+HSSH(6) = C6H10(2)+HS2J(38)                  5.640e+02 	  3.06 	 -5.50 		0.0	0.0	0.0	//H_Abstraction exact:   [ CdsJ-Cs , Ss-SsH ]
+C6H9J(16)+C6H10(2) = C6H10(2)+C6H9J(18)                1.592e-02 	  4.34 	  1.90 		0.0	0.0	0.0	//H_Abstraction exact:   [ CdsJ-Cs , Cs-CsCsHH ]
+C6H9J(16) = C6H9J(18)                                  5.813e+09 	  1.01 	  34.00 		0.0	0.0	0.0	//intra_H_migration estimate: (Average:)  [ R3H_SS_C , Cd_rad_out_double , Cs_H_out_H/(NonDeC/Cs) ]
+DUP
+C6H9J(16) = C6H9J(18)                                  7.524e+07 	  1.34 	  30.40 		0.0	0.0	0.0	//intra_H_migration estimate: (Average:)  [ R4H_DSS , Cd_rad_out_singleNd , Cs_H_out_H/(NonDeC/Cs) ]
+DUP
+C6H9J(16) = C6H9J(18)                                  2.220e+08 	  1.19 	  24.76 		0.0	0.0	0.0	//intra_H_migration estimate: (Average:)  [ R4H_SSS , Cd_rad_out_double , Cs_H_out_H/NonDeC ]
+DUP
+C6H9J(16) = C6H9J(18)                                  2.720e+05 	  1.92 	  7.90 		0.0	0.0	0.0	//intra_H_migration estimate: (Average:)  [ R5H_DSSS , Cd_rad_out_singleNd , Cs_H_out_H/NonDeC ]
+DUP
+C6H9J(16)+C6H7J(596) = C6H10(2)+C6H6(1364)             1.140e+13 	 -0.07 	 -0.00 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ Cd_rad/NonDeC , C/H2/De_Csrad ]
+SPC(1209)+tbutyl(11) = SPC(63)+HSJ(5)                  6.809e+03 	  2.69 	  3.40 		0.0	0.0	0.0	//substitutionS estimate: (Average:)  [ S-CsSs , CsJ-CsCsCs ]
+C6H10(2)+HS2J(38) = SPC(1209)                          1.837e+02 	  3.03 	  3.83 		0.0	0.0	0.0	//R_Addition_MultipleBond estimate: (Average:)  [ Cds-CsH_Cds-CsH , SsJ-Ss ] Warning: Ea raised by 1.2 from 2.6 to dHrxn(298K) = 3.8 kcal/mol.
+SPC(122) = C6H8(777)                                   5.660e+10 	  1.00 	  16.30 		0.0	0.0	0.0	//Intra_Disproportionation exact:   [ Y_biCyc4 , Y_rad , XH_Rrad ]
+SPC(1151)+HJ(10) = C4H9SJ(40)+HSJ(5)                   4.785e+08 	  1.59 	  0.93 		0.0	0.0	0.0	//substitutionS exact:   [ S-CsSs , HJ ]
+C4H8(9)+HS2J(38) = SPC(1151)                           9.184e+01 	  3.03 	  4.69 		0.0	0.0	0.0	//R_Addition_MultipleBond estimate: (Average:)  [ Cds-CsCs_Cds-HH , SsJ-Ss ] Warning: Ea raised by 2.1 from 2.6 to dHrxn(298K) = 4.7 kcal/mol.
+C4H8(9)+tbutyl(11) = C4H7J(45)+C4H10(8)                2.028e-03 	  4.34 	  3.70 		0.0	0.0	0.0	//H_Abstraction exact:   [ Cs-CdHHH , CsJ-CsCsCs ]
+C4H8(9)+HSJ(5) = C4H7J(45)+H2S(34)                     1.428e+04 	  2.87 	  4.10 		0.0	0.0	0.0	//H_Abstraction exact:   [ Cs-CdHHH , SsJ-H ]
+C4H7J(45)+HJ(10) = C4H8(9)                             5.830e+13 	  0.18 	 -0.13 		0.0	0.0	0.0	//R_Recombination exact:   [ C_rad/H2/Cd , H_rad ]
+C6H11J(19)+C4H7J(45) = C6H10(2)+C4H8(9)                5.800e+12 	  0.00 	 -0.13 		0.0	0.0	0.0	//Disproportionation exact:   [ C/H2/Nd_Csrad , C_rad/H2/Cd ]
+HS2J(38)+C4H7J(45) = S2(4)+C4H8(9)                     1.188e+12 	 -0.01 	  0.96 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ S_Srad , C_rad/H2/Cd ]
+tbutyl(11)+C4H7J(45) = C4H8(9)+C4H8(9)                 2.061e+14 	 -0.35 	 -0.13 		0.0	0.0	0.0	//Disproportionation exact:   [ Cmethyl_Csrad , C_rad/H2/Cd ]
+C4H7J(45)+SPC(7) = C4H8(9)+C4H9SJ(13)                  2.170e+02 	  3.06 	  5.60 		0.0	0.0	0.0	//H_Abstraction exact:   [ CsJ-CdHH , Ss-CsH ]
+C4H7J(45)+C6H10(2) = C4H8(9)+C6H9J(17)                 1.808e-02 	  4.34 	  11.20 		0.0	0.0	0.0	//H_Abstraction exact:   [ CsJ-CdHH , Cs-CdCsHH ]
+C4H8(9)+SPC(405) = C4H7J(45)+C6H12(414)                1.740e-03 	  4.34 	  5.00 		0.0	0.0	0.0	//H_Abstraction exact:   [ Cs-CdHHH , CsJ-CsHH ]
+C4H8(9)+SPC(444) = C4H7J(45)+C6H12(414)                2.016e-03 	  4.34 	  4.70 		0.0	0.0	0.0	//H_Abstraction exact:   [ Cs-CdHHH , CsJ-CsCsH ]
+SPC(63)+C4H7J(45) = SPC(88)+C4H8(9)                    2.900e+12 	  0.00 	 -0.13 		0.0	0.0	0.0	//Disproportionation exact:   [ C/H2/Nd_Csrad , C_rad/H2/Cd ]
+C4H8(9)+SPC(443) = C4H7J(45)+C6H12(414)                2.016e-03 	  4.34 	  4.70 		0.0	0.0	0.0	//H_Abstraction exact:   [ Cs-CdHHH , CsJ-CsCsH ]
+C4H8(9)+SPC(442) = C4H7J(45)+C6H12(414)                2.028e-03 	  4.34 	  3.70 		0.0	0.0	0.0	//H_Abstraction exact:   [ Cs-CdHHH , CsJ-CsCsCs ]
+C6H9J(17)+C4H7J(45) = C6H8(85)+C4H8(9)                 2.900e+12 	  0.00 	 -0.13 		0.0	0.0	0.0	//Disproportionation exact:   [ C/H2/Nd_Csrad , C_rad/H2/Cd ]
+C6H9J(18)+C4H7J(45) = C6H8(85)+C4H8(9)                 1.140e+13 	 -0.07 	 -0.00 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ C/H2/De_Csrad , C_rad/H2/Cd ]
+C4H7J(45)+C6H9J(94) = C4H8(9)+SPC(122)                 1.559e-02 	  4.34 	  8.34 		0.0	0.0	0.0	//H_Abstraction estimate: (Average:)  [ CsJ-CdHH , C-H ]
+C4H7J(45)+C6H9J(660) = C4H8(9)+SPC(122)                3.860e-03 	  4.34 	  6.70 		0.0	0.0	0.0	//H_Abstraction exact:   [ CsJ-CdHH , Cs-CdCdHH ]
+C4H8(9)+C4H9SJ(40) = C4H7J(45)+SPC(7)                  1.740e-03 	  4.34 	  5.00 		0.0	0.0	0.0	//H_Abstraction exact:   [ Cs-CdHHH , CsJ-CsHH ]
+C4H7J(45)+C6H8(85) = C4H8(9)+C6H7J(596)                1.808e-02 	  4.34 	  11.20 		0.0	0.0	0.0	//H_Abstraction exact:   [ CsJ-CdHH , Cs-CdCsHH ]
+C4H7J(45)+C6H8(1261) = C4H8(9)+C6H7J(596)              7.720e-03 	  4.34 	  6.70 		0.0	0.0	0.0	//H_Abstraction exact:   [ CsJ-CdHH , Cs-CdCdHH ]
+C6H9J(18)+C4H7J(45) = C6H8(1261)+C4H8(9)               2.900e+12 	  0.00 	 -0.13 		0.0	0.0	0.0	//Disproportionation exact:   [ C/H2/Nd_Csrad , C_rad/H2/Cd ]
+C4H7J(45)+SPC(88) = C4H8(9)+SPC(485)                   9.040e-03 	  4.34 	  11.20 		0.0	0.0	0.0	//H_Abstraction exact:   [ CsJ-CdHH , Cs-CdCsHH ]
+C6H9J(660)+C4H7J(45) = C6H8(776)+C4H8(9)               8.430e+10 	  0.00 	 -0.26 		0.0	0.0	0.0	//Disproportionation exact:   [ Cdpri_Csrad , C_rad/H2/Cd ]
+C4H7J(45)+HSSH(6) = C4H8(9)+HS2J(38)                   2.880e+02 	  3.06 	  1.40 		0.0	0.0	0.0	//H_Abstraction exact:   [ CsJ-CdHH , Ss-SsH ]
+C4H8(9)+C6H9J(18) = C4H7J(45)+C6H10(2)                 2.016e-03 	  4.34 	  4.70 		0.0	0.0	0.0	//H_Abstraction exact:   [ Cs-CdHHH , CsJ-CsCsH ]
+C4H8(9)+C6H9J(16) = C4H7J(45)+C6H10(2)                 7.560e-03 	  4.34 	 -0.20 		0.0	0.0	0.0	//H_Abstraction exact:   [ Cs-CdHHH , CdsJ-Cs ]
+C4H7J(45)+C6H7J(596) = C4H8(9)+C6H6(1364)              1.140e+13 	 -0.07 	 -0.00 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ C_rad/H2/Cd , C/H2/De_Csrad ]
+SPC(12)+HJ(10) = DTBS(1)                               5.440e+13 	  0.16 	  0.00 		0.0	0.0	0.0	//R_Recombination exact:   [ C_rad/H2/Cs , H_rad ]
+C6H11J(19)+SPC(12) = C6H10(2)+DTBS(1)                  5.800e+12 	  0.00 	  0.00 		0.0	0.0	0.0	//Disproportionation exact:   [ C/H2/Nd_Csrad , C_rad/H2/Cs ]
+SPC(12)+C4H10(8) = DTBS(1)+tbutyl(11)                  1.060e-03 	  4.34 	  5.00 		0.0	0.0	0.0	//H_Abstraction exact:   [ CsJ-CsHH , Cs-CsCsCsH ]
+SPC(12)+H2S(34) = DTBS(1)+HSJ(5)                       6.380e+03 	  2.49 	  0.40 		0.0	0.0	0.0	//H_Abstraction exact:   [ CsJ-CsHH , Ss-HH ]
+HS2J(38)+SPC(12) = S2(4)+DTBS(1)                       1.188e+12 	 -0.01 	  0.96 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ S_Srad , C_rad/H2/Cs ]
+tbutyl(11)+SPC(12) = C4H8(9)+DTBS(1)                   2.070e+14 	 -0.35 	  0.00 		0.0	0.0	0.0	//Disproportionation exact:   [ Cmethyl_Csrad , C_rad/H2/Cs ]
+SPC(12)+SPC(7) = DTBS(1)+C4H9SJ(13)                    2.080e+01 	  3.06 	 -0.70 		0.0	0.0	0.0	//H_Abstraction exact:   [ CsJ-CsHH , Ss-CsH ]
+C4H8(9)+C4H9SJ(13) = SPC(12)                           9.184e+01 	  3.03 	  2.63 		0.0	0.0	0.0	//R_Addition_MultipleBond estimate: (Average:)  [ Cds-CsCs_Cds-HH , SsJ-Cs ]
+SPC(12)+C6H10(2) = DTBS(1)+C6H9J(17)                   3.612e-03 	  4.34 	  3.50 		0.0	0.0	0.0	//H_Abstraction exact:   [ CsJ-CsHH , Cs-CdCsHH ]
+DTBS(1)+SPC(405) = SPC(12)+C6H12(414)                  1.656e-02 	  4.34 	  9.20 		0.0	0.0	0.0	//H_Abstraction exact:   [ Cs-CsHHH , CsJ-CsHH ]
+SPC(12)+C6H12(414) = DTBS(1)+SPC(444)                  3.680e-03 	  4.34 	  7.00 		0.0	0.0	0.0	//H_Abstraction exact:   [ CsJ-CsHH , Cs-CsCsHH ]
+SPC(63)+SPC(12) = SPC(88)+DTBS(1)                      2.900e+12 	  0.00 	  0.00 		0.0	0.0	0.0	//Disproportionation exact:   [ C/H2/Nd_Csrad , C_rad/H2/Cs ]
+SPC(12)+C6H12(414) = DTBS(1)+SPC(443)                  3.680e-03 	  4.34 	  7.00 		0.0	0.0	0.0	//H_Abstraction exact:   [ CsJ-CsHH , Cs-CsCsHH ]
+SPC(12)+C6H12(414) = DTBS(1)+SPC(442)                  1.060e-03 	  4.34 	  5.00 		0.0	0.0	0.0	//H_Abstraction exact:   [ CsJ-CsHH , Cs-CsCsCsH ]
+C6H9J(17)+SPC(12) = C6H8(85)+DTBS(1)                   2.900e+12 	  0.00 	  0.00 		0.0	0.0	0.0	//Disproportionation exact:   [ C/H2/Nd_Csrad , C_rad/H2/Cs ]
+C6H9J(18)+SPC(12) = C6H8(85)+DTBS(1)                   1.140e+13 	 -0.07 	 -0.00 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ C/H2/De_Csrad , C_rad/H2/Cs ]
+SPC(12)+C6H9J(94) = DTBS(1)+SPC(122)                   1.559e-02 	  4.34 	  8.34 		0.0	0.0	0.0	//H_Abstraction estimate: (Average:)  [ CsJ-CsHH , C-H ]
+SPC(12)+C6H9J(660) = DTBS(1)+SPC(122)                  2.440e-03 	  4.34 	  1.00 		0.0	0.0	0.0	//H_Abstraction exact:   [ CsJ-CsHH , Cs-CdCdHH ]
+DTBS(1)+C4H9SJ(40) = SPC(12)+SPC(7)                    1.656e-02 	  4.34 	  9.20 		0.0	0.0	0.0	//H_Abstraction exact:   [ Cs-CsHHH , CsJ-CsHH ]
+SPC(12)+HJ(10) = C4H9SJ(40)+tbutyl(11)                 1.703e+08 	  1.53 	  3.20 		0.0	0.0	0.0	//substitutionS exact:   [ S-CsCs , HJ ]
+C4H8(9)+C4H9SJ(40) = SPC(12)                           2.597e+01 	  3.20 	  40.15 		0.0	0.0	0.0	//1,3_Insertion_RSR estimate: (Average:)  [ Cd/H2_Cd/Cs2 , H_SCs ]
+SPC(12)+C6H8(85) = DTBS(1)+C6H7J(596)                  3.612e-03 	  4.34 	  3.50 		0.0	0.0	0.0	//H_Abstraction exact:   [ CsJ-CsHH , Cs-CdCsHH ]
+SPC(12)+C6H8(1261) = DTBS(1)+C6H7J(596)                4.880e-03 	  4.34 	  1.00 		0.0	0.0	0.0	//H_Abstraction exact:   [ CsJ-CsHH , Cs-CdCdHH ]
+C6H9J(18)+SPC(12) = C6H8(1261)+DTBS(1)                 2.900e+12 	  0.00 	  0.00 		0.0	0.0	0.0	//Disproportionation exact:   [ C/H2/Nd_Csrad , C_rad/H2/Cs ]
+SPC(12)+SPC(88) = DTBS(1)+SPC(485)                     1.806e-03 	  4.34 	  3.50 		0.0	0.0	0.0	//H_Abstraction exact:   [ CsJ-CsHH , Cs-CdCsHH ]
+SPC(12) = SPC(64)                                      1.000e+12 	  0.00 	  20.00 		0.0	0.0	0.0	//intra_substitutionS_isomerization estimate: (Average:)  [ XSR3J_S , CsJ-3-CsHH , S-Cs(CsCsCs)C ]
+C6H9J(660)+SPC(12) = C6H8(776)+DTBS(1)                 9.640e+11 	  0.00 	 -0.13 		0.0	0.0	0.0	//Disproportionation exact:   [ Cdpri_Csrad , C_rad/H2/Cs ]
+SPC(12)+HSSH(6) = DTBS(1)+HS2J(38)                     7.260e+01 	  3.06 	 -3.00 		0.0	0.0	0.0	//H_Abstraction exact:   [ CsJ-CsHH , Ss-SsH ]
+SPC(12)+C6H10(2) = DTBS(1)+C6H9J(18)                   3.680e-03 	  4.34 	  7.00 		0.0	0.0	0.0	//H_Abstraction exact:   [ CsJ-CsHH , Cs-CsCsHH ]
+DTBS(1)+C6H9J(16) = SPC(12)+C6H10(2)                   7.164e-02 	  4.34 	  4.10 		0.0	0.0	0.0	//H_Abstraction exact:   [ Cs-CsHHH , CdsJ-Cs ]
+SPC(12)+HSJ(5) = SPC(1151)+tbutyl(11)                  8.740e+02 	  3.03 	  12.90 		0.0	0.0	0.0	//substitutionS exact:   [ S-CsCs , SsJ-H ]
+SPC(12)+C4H8(9) = DTBS(1)+C4H7J(45)                    1.740e-03 	  4.34 	  5.00 		0.0	0.0	0.0	//H_Abstraction exact:   [ CsJ-CsHH , Cs-CdHHH ]
+SPC(12)+C6H7J(596) = DTBS(1)+C6H6(1364)                1.140e+13 	 -0.07 	 -0.00 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ C_rad/H2/Cs , C/H2/De_Csrad ]
+S2(4)+C6H7J(596) = SPC(1269)                           1.529e+03 	  2.98 	  0.03 		0.0	0.0	0.0	//R_Addition_MultipleBond estimate: (Average:)  [ Sd_R , CsJ-CdCsH ]
+C6H7J(596)+S2JJ(3) = SPC(1269)                         1.468e+13 	  0.23 	 -0.58 		0.0	0.0	0.0	//R_Recombination estimate: (Average:)  [ C_rad/H/OneDeC , SJ ]
+C6H7J(596)+HSSH(6) = SPC(1471)                         3.292e+01 	  3.30 	  41.73 		0.0	0.0	0.0	//1,3_Insertion_RSR estimate: (Average:)  [ Cd/H/Nd_Cd/H/De , H_SR ]
+SPC(1471)+tbutyl(11) = SPC(485)+HSJ(5)                 6.809e+03 	  2.69 	  3.40 		0.0	0.0	0.0	//substitutionS estimate: (Average:)  [ S-CsSs , CsJ-CsCsCs ]
+C6H8(85)+HS2J(38) = SPC(1471)                          1.837e+02 	  3.03 	  2.63 		0.0	0.0	0.0	//R_Addition_MultipleBond estimate: (Average:)  [ Cds-CsH_Cds-CdH , SsJ-Ss ]
+S2(4)+C6H7J(596) = SPC(1339)                           1.529e+03 	  2.98 	  0.03 		0.0	0.0	0.0	//R_Addition_MultipleBond estimate: (Average:)  [ Sd_R , CsJ-CdCdH ]
+C6H7J(596)+S2JJ(3) = SPC(1339)                         1.468e+13 	  0.23 	 -0.58 		0.0	0.0	0.0	//R_Recombination estimate: (Average:)  [ C_rad/H/TwoDe , SJ ]
+SPC(1459)+HJ(10) = HSSH(6)+C6H7J(596)                  8.341e+07 	  1.65 	  5.33 		0.0	0.0	0.0	//substitutionS exact:   [ S-SsCs , HJ ]
+HS2J(38)+C6H7J(596) = SPC(1459)                        7.338e+12 	  0.23 	 -0.58 		0.0	0.0	0.0	//R_Recombination estimate: (Average:)  [ SJ-Ss , C_rad/H/OneDeC ]
+SPC(12)+SPC(1459) = DTBS(1)+SPC(1269)                  3.630e+01 	  3.06 	 -3.00 		0.0	0.0	0.0	//H_Abstraction exact:   [ CsJ-CsHH , Ss-SsH ]
+C6H9J(16)+SPC(1459) = C6H10(2)+SPC(1269)               2.820e+02 	  3.06 	 -5.50 		0.0	0.0	0.0	//H_Abstraction exact:   [ CdsJ-Cs , Ss-SsH ]
+C6H9J(17)+SPC(1459) = C6H10(2)+SPC(1269)               1.760e+02 	  3.06 	  1.20 		0.0	0.0	0.0	//H_Abstraction exact:   [ CsJ-CdCsH , Ss-SsH ]
+C6H9J(18)+SPC(1459) = C6H10(2)+SPC(1269)               9.420e+01 	  3.06 	 -4.30 		0.0	0.0	0.0	//H_Abstraction exact:   [ CsJ-CsCsH , Ss-SsH ]
+C4H9SJ(40)+SPC(1459) = SPC(7)+SPC(1269)                3.630e+01 	  3.06 	 -3.00 		0.0	0.0	0.0	//H_Abstraction exact:   [ CsJ-CsHH , Ss-SsH ]
+C4H9SJ(13)+SPC(1459) = SPC(7)+SPC(1269)                6.170e+02 	  3.15 	 -2.30 		0.0	0.0	0.0	//H_Abstraction exact:   [ SsJ-Cs , Ss-SsH ]
+C4H7J(45)+SPC(1459) = C4H8(9)+SPC(1269)                1.440e+02 	  3.06 	  1.40 		0.0	0.0	0.0	//H_Abstraction exact:   [ CsJ-CdHH , Ss-SsH ]
+HS2J(38)+SPC(1459) = HSSH(6)+SPC(1269)                 1.130e+02 	  3.15 	  0.40 		0.0	0.0	0.0	//H_Abstraction exact:   [ SsJ-Ss , Ss-SsH ]
+tbutyl(11)+SPC(1459) = C4H10(8)+SPC(1269)              4.600e+02 	  3.06 	 -6.40 		0.0	0.0	0.0	//H_Abstraction exact:   [ CsJ-CsCsCs , Ss-SsH ]
+C6H9J(94)+SPC(1269) = SPC(122)+SPC(1459)               6.042e+04 	  2.77 	  11.74 		0.0	0.0	0.0	//H_Abstraction estimate: (Average:)  [ C-H , SsJ-Ss ]
+SPC(485)+SPC(1459) = SPC(88)+SPC(1269)                 1.760e+02 	  3.06 	  1.20 		0.0	0.0	0.0	//H_Abstraction exact:   [ CsJ-CdCsH , Ss-SsH ]
+C6H7J(596)+SPC(1459) = C6H8(85)+SPC(1269)              1.760e+02 	  3.06 	  1.20 		0.0	0.0	0.0	//H_Abstraction exact:   [ CsJ-CdCsH , Ss-SsH ]
+SPC(443)+SPC(1459) = C6H12(414)+SPC(1269)              9.420e+01 	  3.06 	 -4.30 		0.0	0.0	0.0	//H_Abstraction exact:   [ CsJ-CsCsH , Ss-SsH ]
+SPC(442)+SPC(1459) = C6H12(414)+SPC(1269)              4.600e+02 	  3.06 	 -6.40 		0.0	0.0	0.0	//H_Abstraction exact:   [ CsJ-CsCsCs , Ss-SsH ]
+SPC(405)+SPC(1459) = C6H12(414)+SPC(1269)              3.630e+01 	  3.06 	 -3.00 		0.0	0.0	0.0	//H_Abstraction exact:   [ CsJ-CsHH , Ss-SsH ]
+SPC(444)+SPC(1459) = C6H12(414)+SPC(1269)              9.420e+01 	  3.06 	 -4.30 		0.0	0.0	0.0	//H_Abstraction exact:   [ CsJ-CsCsH , Ss-SsH ]
+HSJ(5)+SPC(1459) = H2S(34)+SPC(1269)                   1.440e+03 	  3.15 	 -2.40 		0.0	0.0	0.0	//H_Abstraction exact:   [ SsJ-H , Ss-SsH ]
+C6H7J(596)+SPC(1459) = C6H8(1261)+SPC(1269)            1.320e+02 	  3.06 	  6.20 		0.0	0.0	0.0	//H_Abstraction exact:   [ CsJ-CdCdH , Ss-SsH ]
+C6H9J(660)+SPC(1269) = SPC(122)+SPC(1459)              6.296e+03 	  2.86 	  2.18 		0.0	0.0	0.0	//H_Abstraction estimate: (Average:)  [ Cs-CdCdHH , SsJ-Ss ]
+SPC(1269)+HJ(10) = SPC(1459)                           7.338e+12 	  0.23 	 -0.58 		0.0	0.0	0.0	//R_Recombination estimate: (Average:)  [ SJ-Ss , H_rad ]
+SPC(1269)+tbutyl(11) = SPC(1459)+C4H8(9)               1.346e+14 	 -0.20 	 -0.00 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ S_rad/NonDeS , Cmethyl_Csrad ]
+SPC(1269)+C6H9J(17) = SPC(1459)+C6H8(85)               1.140e+13 	 -0.07 	 -0.00 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ S_rad/NonDeS , C/H2/Nd_Csrad ]
+SPC(1269)+C6H11J(19) = SPC(1459)+C6H10(2)              2.280e+13 	 -0.07 	 -0.00 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ S_rad/NonDeS , C/H2/Nd_Csrad ]
+SPC(1269)+SPC(63) = SPC(1459)+SPC(88)                  1.140e+13 	 -0.07 	 -0.00 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ S_rad/NonDeS , C/H2/Nd_Csrad ]
+SPC(1269)+C6H7J(596) = SPC(1459)+C6H6(1364)            1.140e+13 	 -0.07 	 -0.00 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ S_rad/NonDeS , C/H2/De_Csrad ]
+SPC(1269)+HS2J(38) = SPC(1459)+S2(4)                   1.188e+12 	 -0.01 	  2.37 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ S_rad/NonDeS , S_Srad ] Warning: Ea raised by 1.4 from 1.0 to dHrxn(298K) = 2.4 kcal/mol.
+SPC(1269)+C6H9J(18) = SPC(1459)+C6H8(85)               1.140e+13 	 -0.07 	 -0.00 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ S_rad/NonDeS , C/H2/De_Csrad ]
+SPC(1269)+C6H9J(18) = SPC(1459)+C6H8(1261)             1.140e+13 	 -0.07 	 -0.00 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ S_rad/NonDeS , C/H2/Nd_Csrad ]
+SPC(1269)+C6H9J(660) = SPC(1459)+C6H8(776)             5.413e+12 	 -0.09 	 -0.04 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ S_rad/NonDeS , Cdpri_Csrad ]
+SPC(1459)+HJ(10) = SPC(1471)                           1.350e+08 	  1.64 	  0.38 		0.0	0.0	0.0	//R_Addition_MultipleBond exact:   [ Cds-CsH_Cds-CdH , HJ ]
+tbutyl(11)+SPC(1471) = C4H10(8)+SPC(1459)              4.320e+14 	 -0.75 	  0.00 		0.0	0.0	0.0	//Disproportionation exact:   [ C_rad/Cs3 , C/H2/Nd_Csrad ]
+HSJ(5)+SPC(1471) = H2S(34)+SPC(1459)                   1.140e+13 	 -0.07 	 -0.00 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ S_pri_rad , C/H2/Nd_Csrad ]
+S2JJ(3)+SPC(1471) = HS2J(38)+SPC(1459)                 2.870e+12 	 -0.04 	 -0.00 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ Y_rad , C/H2/Nd_Csrad ]
+C4H9SJ(13)+SPC(1471) = SPC(7)+SPC(1459)                1.140e+13 	 -0.07 	 -0.00 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ S_rad/NonDeC , C/H2/Nd_Csrad ]
+C6H9J(17)+SPC(1471) = C6H10(2)+SPC(1459)               1.026e+14 	 -0.35 	  0.00 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ C_rad/H/OneDeC , C/H2/Nd_Csrad ]
+SPC(405)+SPC(1471) = C6H12(414)+SPC(1459)              2.900e+12 	  0.00 	  0.00 		0.0	0.0	0.0	//Disproportionation exact:   [ C_rad/H2/Cs , C/H2/Nd_Csrad ]
+SPC(444)+SPC(1471) = C6H12(414)+SPC(1459)              1.026e+14 	 -0.35 	  0.00 		0.0	0.0	0.0	//Disproportionation exact:   [ C_rad/H/NonDeC , C/H2/Nd_Csrad ]
+SPC(443)+SPC(1471) = C6H12(414)+SPC(1459)              1.026e+14 	 -0.35 	  0.00 		0.0	0.0	0.0	//Disproportionation exact:   [ C_rad/H/NonDeC , C/H2/Nd_Csrad ]
+SPC(442)+SPC(1471) = C6H12(414)+SPC(1459)              4.320e+14 	 -0.75 	  0.00 		0.0	0.0	0.0	//Disproportionation exact:   [ C_rad/Cs3 , C/H2/Nd_Csrad ]
+SPC(122)+SPC(1471) = C6H9J(94)+SPC(1459)               1.140e+13 	 -0.07 	 -0.00 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ Y_rad , C/H2/Nd_Csrad ]
+SPC(122)+SPC(1471) = C6H9J(660)+SPC(1459)              1.026e+14 	 -0.35 	  0.00 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ C_rad/H/TwoDe , C/H2/Nd_Csrad ]
+C4H9SJ(40)+SPC(1471) = SPC(7)+SPC(1459)                2.900e+12 	  0.00 	  0.00 		0.0	0.0	0.0	//Disproportionation exact:   [ C_rad/H2/Cs , C/H2/Nd_Csrad ]
+C6H7J(596)+SPC(1471) = C6H8(85)+SPC(1459)              1.026e+14 	 -0.35 	  0.00 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ C_rad/H/OneDeC , C/H2/Nd_Csrad ]
+C6H7J(596)+SPC(1471) = C6H8(1261)+SPC(1459)            1.026e+14 	 -0.35 	  0.00 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ C_rad/H/TwoDe , C/H2/Nd_Csrad ]
+SPC(485)+SPC(1471) = SPC(88)+SPC(1459)                 1.026e+14 	 -0.35 	  0.00 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ C_rad/H/OneDeC , C/H2/Nd_Csrad ]
+HS2J(38)+SPC(1471) = HSSH(6)+SPC(1459)                 1.140e+13 	 -0.07 	 -0.00 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ S_rad/NonDeS , C/H2/Nd_Csrad ]
+C6H9J(18)+SPC(1471) = C6H10(2)+SPC(1459)               1.026e+14 	 -0.35 	  0.00 		0.0	0.0	0.0	//Disproportionation exact:   [ C_rad/H/NonDeC , C/H2/Nd_Csrad ]
+C6H9J(16)+SPC(1471) = C6H10(2)+SPC(1459)               2.420e+12 	  0.00 	  0.00 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ Cd_rad/NonDeC , C/H2/Nd_Csrad ]
+C4H7J(45)+SPC(1471) = C4H8(9)+SPC(1459)                2.900e+12 	  0.00 	 -0.13 		0.0	0.0	0.0	//Disproportionation exact:   [ C_rad/H2/Cd , C/H2/Nd_Csrad ]
+SPC(12)+SPC(1471) = DTBS(1)+SPC(1459)                  2.900e+12 	  0.00 	  0.00 		0.0	0.0	0.0	//Disproportionation exact:   [ C_rad/H2/Cs , C/H2/Nd_Csrad ]
+SPC(1269)+SPC(1471) = SPC(1459)+SPC(1459)              1.140e+13 	 -0.07 	 -0.00 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ S_rad/NonDeS , C/H2/Nd_Csrad ]
+SPC(1463)+HJ(10) = HSSH(6)+C6H7J(596)                  8.341e+07 	  1.65 	  5.33 		0.0	0.0	0.0	//substitutionS exact:   [ S-SsCs , HJ ]
+HS2J(38)+C6H7J(596) = SPC(1463)                        7.338e+12 	  0.23 	 -0.58 		0.0	0.0	0.0	//R_Recombination estimate: (Average:)  [ SJ-Ss , C_rad/H/TwoDe ]
+SPC(12)+SPC(1463) = DTBS(1)+SPC(1339)                  3.630e+01 	  3.06 	 -3.00 		0.0	0.0	0.0	//H_Abstraction exact:   [ CsJ-CsHH , Ss-SsH ]
+C6H9J(16)+SPC(1463) = C6H10(2)+SPC(1339)               2.820e+02 	  3.06 	 -5.50 		0.0	0.0	0.0	//H_Abstraction exact:   [ CdsJ-Cs , Ss-SsH ]
+C6H9J(17)+SPC(1463) = C6H10(2)+SPC(1339)               1.760e+02 	  3.06 	  1.20 		0.0	0.0	0.0	//H_Abstraction exact:   [ CsJ-CdCsH , Ss-SsH ]
+C6H9J(18)+SPC(1463) = C6H10(2)+SPC(1339)               9.420e+01 	  3.06 	 -4.30 		0.0	0.0	0.0	//H_Abstraction exact:   [ CsJ-CsCsH , Ss-SsH ]
+C4H9SJ(40)+SPC(1463) = SPC(7)+SPC(1339)                3.630e+01 	  3.06 	 -3.00 		0.0	0.0	0.0	//H_Abstraction exact:   [ CsJ-CsHH , Ss-SsH ]
+C4H9SJ(13)+SPC(1463) = SPC(7)+SPC(1339)                6.170e+02 	  3.15 	 -2.30 		0.0	0.0	0.0	//H_Abstraction exact:   [ SsJ-Cs , Ss-SsH ]
+C4H7J(45)+SPC(1463) = C4H8(9)+SPC(1339)                1.440e+02 	  3.06 	  1.40 		0.0	0.0	0.0	//H_Abstraction exact:   [ CsJ-CdHH , Ss-SsH ]
+HS2J(38)+SPC(1463) = HSSH(6)+SPC(1339)                 1.130e+02 	  3.15 	  0.40 		0.0	0.0	0.0	//H_Abstraction exact:   [ SsJ-Ss , Ss-SsH ]
+tbutyl(11)+SPC(1463) = C4H10(8)+SPC(1339)              4.600e+02 	  3.06 	 -6.40 		0.0	0.0	0.0	//H_Abstraction exact:   [ CsJ-CsCsCs , Ss-SsH ]
+C6H9J(94)+SPC(1339) = SPC(122)+SPC(1463)               6.042e+04 	  2.77 	  11.74 		0.0	0.0	0.0	//H_Abstraction estimate: (Average:)  [ C-H , SsJ-Ss ]
+SPC(485)+SPC(1463) = SPC(88)+SPC(1339)                 1.760e+02 	  3.06 	  1.20 		0.0	0.0	0.0	//H_Abstraction exact:   [ CsJ-CdCsH , Ss-SsH ]
+C6H7J(596)+SPC(1463) = C6H8(85)+SPC(1339)              1.760e+02 	  3.06 	  1.20 		0.0	0.0	0.0	//H_Abstraction exact:   [ CsJ-CdCsH , Ss-SsH ]
+SPC(443)+SPC(1463) = C6H12(414)+SPC(1339)              9.420e+01 	  3.06 	 -4.30 		0.0	0.0	0.0	//H_Abstraction exact:   [ CsJ-CsCsH , Ss-SsH ]
+SPC(442)+SPC(1463) = C6H12(414)+SPC(1339)              4.600e+02 	  3.06 	 -6.40 		0.0	0.0	0.0	//H_Abstraction exact:   [ CsJ-CsCsCs , Ss-SsH ]
+SPC(405)+SPC(1463) = C6H12(414)+SPC(1339)              3.630e+01 	  3.06 	 -3.00 		0.0	0.0	0.0	//H_Abstraction exact:   [ CsJ-CsHH , Ss-SsH ]
+SPC(444)+SPC(1463) = C6H12(414)+SPC(1339)              9.420e+01 	  3.06 	 -4.30 		0.0	0.0	0.0	//H_Abstraction exact:   [ CsJ-CsCsH , Ss-SsH ]
+HSJ(5)+SPC(1463) = H2S(34)+SPC(1339)                   1.440e+03 	  3.15 	 -2.40 		0.0	0.0	0.0	//H_Abstraction exact:   [ SsJ-H , Ss-SsH ]
+C6H7J(596)+SPC(1463) = C6H8(1261)+SPC(1339)            1.320e+02 	  3.06 	  6.20 		0.0	0.0	0.0	//H_Abstraction exact:   [ CsJ-CdCdH , Ss-SsH ]
+C6H9J(660)+SPC(1339) = SPC(122)+SPC(1463)              6.296e+03 	  2.86 	  2.18 		0.0	0.0	0.0	//H_Abstraction estimate: (Average:)  [ Cs-CdCdHH , SsJ-Ss ]
+SPC(1339)+HJ(10) = SPC(1463)                           7.338e+12 	  0.23 	 -0.58 		0.0	0.0	0.0	//R_Recombination estimate: (Average:)  [ SJ-Ss , H_rad ]
+SPC(1339)+tbutyl(11) = SPC(1463)+C4H8(9)               1.346e+14 	 -0.20 	 -0.00 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ S_rad/NonDeS , Cmethyl_Csrad ]
+SPC(1339)+C6H9J(17) = SPC(1463)+C6H8(85)               1.140e+13 	 -0.07 	 -0.00 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ S_rad/NonDeS , C/H2/Nd_Csrad ]
+SPC(1339)+C6H11J(19) = SPC(1463)+C6H10(2)              2.280e+13 	 -0.07 	 -0.00 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ S_rad/NonDeS , C/H2/Nd_Csrad ]
+SPC(1339)+SPC(63) = SPC(1463)+SPC(88)                  1.140e+13 	 -0.07 	 -0.00 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ S_rad/NonDeS , C/H2/Nd_Csrad ]
+SPC(1339)+C6H7J(596) = SPC(1463)+C6H6(1364)            1.140e+13 	 -0.07 	 -0.00 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ S_rad/NonDeS , C/H2/De_Csrad ]
+SPC(1339)+HS2J(38) = SPC(1463)+S2(4)                   1.188e+12 	 -0.01 	  2.37 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ S_rad/NonDeS , S_Srad ] Warning: Ea raised by 1.4 from 1.0 to dHrxn(298K) = 2.4 kcal/mol.
+SPC(1339)+C6H9J(18) = SPC(1463)+C6H8(85)               1.140e+13 	 -0.07 	 -0.00 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ S_rad/NonDeS , C/H2/De_Csrad ]
+SPC(1339)+C6H9J(18) = SPC(1463)+C6H8(1261)             1.140e+13 	 -0.07 	 -0.00 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ S_rad/NonDeS , C/H2/Nd_Csrad ]
+SPC(1339)+C6H9J(660) = SPC(1463)+C6H8(776)             5.413e+12 	 -0.09 	 -0.04 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ S_rad/NonDeS , Cdpri_Csrad ]
+SPC(1339)+SPC(1471) = SPC(1463)+SPC(1459)              1.140e+13 	 -0.07 	 -0.00 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ S_rad/NonDeS , C/H2/Nd_Csrad ]
+SPC(1459)+SPC(1339) = SPC(1269)+SPC(1463)              1.130e+02 	  3.15 	  0.40 		0.0	0.0	0.0	//H_Abstraction exact:   [ Ss-SsH , SsJ-Ss ]
+SPC(1463)+C6H7J(596) = SPC(1459)+C6H7J(596)            7.941e+03 	  2.69 	  10.68 		0.0	0.0	0.0	//substitutionS estimate: (Average:)  [ S-SsCs , CsJ-CdCsH ]
+S2(4)+C6H9J(17) = SPC(77)                              1.529e+03 	  2.98 	  0.03 		0.0	0.0	0.0	//R_Addition_MultipleBond estimate: (Average:)  [ Sd_R , CsJ-CdCsH ]
+C6H9J(17)+S2JJ(3) = SPC(77)                            1.468e+13 	  0.23 	 -0.58 		0.0	0.0	0.0	//R_Recombination estimate: (Average:)  [ C_rad/H/OneDeC , SJ ]
+SPC(1471) = SPC(77)                                    7.524e+07 	  1.34 	  30.40 		0.0	0.0	0.0	//intra_H_migration estimate: (Average:)  [ R6H_SSSSS , C_rad_out_H/OneDe , S_H_out ]
+SPC(95)+HJ(10) = HSSH(6)+C6H9J(17)                     8.341e+07 	  1.65 	  5.33 		0.0	0.0	0.0	//substitutionS exact:   [ S-SsCs , HJ ]
+SPC(95)+tbutyl(11) = SPC(88)+HSJ(5)                    6.809e+03 	  2.69 	  3.40 		0.0	0.0	0.0	//substitutionS estimate: (Average:)  [ S-CsSs , CsJ-CsCsCs ]
+C6H8(85)+HSSH(6) = SPC(95)                             6.585e+01 	  3.30 	  41.73 		0.0	0.0	0.0	//1,3_Insertion_RSR estimate: (Average:)  [ Cd/H/Nd_Cd/H/De , H_SR ]
+HS2J(38)+C6H9J(17) = SPC(95)                           7.338e+12 	  0.23 	 -0.58 		0.0	0.0	0.0	//R_Recombination estimate: (Average:)  [ SJ-Ss , C_rad/H/OneDeC ]
+SPC(95)+HJ(10) = SPC(1209)                             1.460e+08 	  1.64 	  1.37 		0.0	0.0	0.0	//R_Addition_MultipleBond exact:   [ Cds-CsH_Cds-CsH , HJ ]
+tbutyl(11)+SPC(1209) = C4H10(8)+SPC(95)                4.320e+14 	 -0.75 	  0.00 		0.0	0.0	0.0	//Disproportionation exact:   [ C_rad/Cs3 , C/H2/Nd_Csrad ]
+HSJ(5)+SPC(1209) = H2S(34)+SPC(95)                     1.140e+13 	 -0.07 	 -0.00 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ S_pri_rad , C/H2/Nd_Csrad ]
+S2JJ(3)+SPC(1209) = HS2J(38)+SPC(95)                   2.870e+12 	 -0.04 	 -0.00 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ Y_rad , C/H2/Nd_Csrad ]
+C4H9SJ(13)+SPC(1209) = SPC(7)+SPC(95)                  1.140e+13 	 -0.07 	 -0.00 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ S_rad/NonDeC , C/H2/Nd_Csrad ]
+C6H9J(17)+SPC(1209) = C6H10(2)+SPC(95)                 1.026e+14 	 -0.35 	  0.00 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ C_rad/H/OneDeC , C/H2/Nd_Csrad ]
+SPC(405)+SPC(1209) = C6H12(414)+SPC(95)                2.900e+12 	  0.00 	  0.00 		0.0	0.0	0.0	//Disproportionation exact:   [ C_rad/H2/Cs , C/H2/Nd_Csrad ]
+SPC(444)+SPC(1209) = C6H12(414)+SPC(95)                1.026e+14 	 -0.35 	  0.00 		0.0	0.0	0.0	//Disproportionation exact:   [ C_rad/H/NonDeC , C/H2/Nd_Csrad ]
+SPC(443)+SPC(1209) = C6H12(414)+SPC(95)                1.026e+14 	 -0.35 	  0.00 		0.0	0.0	0.0	//Disproportionation exact:   [ C_rad/H/NonDeC , C/H2/Nd_Csrad ]
+SPC(442)+SPC(1209) = C6H12(414)+SPC(95)                4.320e+14 	 -0.75 	  0.00 		0.0	0.0	0.0	//Disproportionation exact:   [ C_rad/Cs3 , C/H2/Nd_Csrad ]
+SPC(122)+SPC(1209) = C6H9J(94)+SPC(95)                 1.140e+13 	 -0.07 	 -0.00 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ Y_rad , C/H2/Nd_Csrad ]
+SPC(122)+SPC(1209) = C6H9J(660)+SPC(95)                1.026e+14 	 -0.35 	  0.00 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ C_rad/H/TwoDe , C/H2/Nd_Csrad ]
+C4H9SJ(40)+SPC(1209) = SPC(7)+SPC(95)                  2.900e+12 	  0.00 	  0.00 		0.0	0.0	0.0	//Disproportionation exact:   [ C_rad/H2/Cs , C/H2/Nd_Csrad ]
+C6H7J(596)+SPC(1209) = C6H8(85)+SPC(95)                1.026e+14 	 -0.35 	  0.00 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ C_rad/H/OneDeC , C/H2/Nd_Csrad ]
+C6H7J(596)+SPC(1209) = C6H8(1261)+SPC(95)              1.026e+14 	 -0.35 	  0.00 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ C_rad/H/TwoDe , C/H2/Nd_Csrad ]
+SPC(485)+SPC(1209) = SPC(88)+SPC(95)                   1.026e+14 	 -0.35 	  0.00 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ C_rad/H/OneDeC , C/H2/Nd_Csrad ]
+HS2J(38)+SPC(1209) = HSSH(6)+SPC(95)                   1.140e+13 	 -0.07 	 -0.00 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ S_rad/NonDeS , C/H2/Nd_Csrad ]
+C6H9J(18)+SPC(1209) = C6H10(2)+SPC(95)                 1.026e+14 	 -0.35 	  0.00 		0.0	0.0	0.0	//Disproportionation exact:   [ C_rad/H/NonDeC , C/H2/Nd_Csrad ]
+C6H9J(16)+SPC(1209) = C6H10(2)+SPC(95)                 2.420e+12 	  0.00 	  0.00 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ Cd_rad/NonDeC , C/H2/Nd_Csrad ]
+C4H7J(45)+SPC(1209) = C4H8(9)+SPC(95)                  2.900e+12 	  0.00 	 -0.13 		0.0	0.0	0.0	//Disproportionation exact:   [ C_rad/H2/Cd , C/H2/Nd_Csrad ]
+SPC(12)+SPC(1209) = DTBS(1)+SPC(95)                    2.900e+12 	  0.00 	  0.00 		0.0	0.0	0.0	//Disproportionation exact:   [ C_rad/H2/Cs , C/H2/Nd_Csrad ]
+SPC(1269)+SPC(1209) = SPC(1459)+SPC(95)                1.140e+13 	 -0.07 	 -0.00 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ S_rad/NonDeS , C/H2/Nd_Csrad ]
+SPC(12)+SPC(95) = DTBS(1)+SPC(1471)                    1.806e-03 	  4.34 	  3.50 		0.0	0.0	0.0	//H_Abstraction exact:   [ CsJ-CsHH , Cs-CdCsHH ]
+C6H9J(16)+SPC(95) = C6H10(2)+SPC(1471)                 7.820e-03 	  4.34 	 -1.60 		0.0	0.0	0.0	//H_Abstraction exact:   [ CdsJ-Cs , Cs-CdCsHH ]
+C6H10(2)+SPC(1471) = C6H9J(17)+SPC(95)                 9.160e-03 	  4.34 	  11.70 		0.0	0.0	0.0	//H_Abstraction exact:   [ Cs-CdCsHH , CsJ-CdCsH ]
+C6H9J(18)+SPC(95) = C6H10(2)+SPC(1471)                 1.706e-03 	  4.34 	  3.10 		0.0	0.0	0.0	//H_Abstraction exact:   [ CsJ-CsCsH , Cs-CdCsHH ]
+C4H9SJ(40)+SPC(95) = SPC(7)+SPC(1471)                  1.806e-03 	  4.34 	  3.50 		0.0	0.0	0.0	//H_Abstraction exact:   [ CsJ-CsHH , Cs-CdCsHH ]
+C4H9SJ(13)+SPC(95) = SPC(7)+SPC(1471)                  6.296e+03 	  2.86 	  2.18 		0.0	0.0	0.0	//H_Abstraction estimate: (Average:)  [ SsJ-Cs , Cs-CdCsHH ]
+C4H7J(45)+SPC(95) = C4H8(9)+SPC(1471)                  9.040e-03 	  4.34 	  11.20 		0.0	0.0	0.0	//H_Abstraction exact:   [ CsJ-CdHH , Cs-CdCsHH ]
+HSSH(6)+SPC(1471) = HS2J(38)+SPC(95)                   3.520e+02 	  3.06 	  1.20 		0.0	0.0	0.0	//H_Abstraction exact:   [ Ss-SsH , CsJ-CdCsH ]
+tbutyl(11)+SPC(95) = C4H10(8)+SPC(1471)                1.402e-03 	  4.34 	  1.90 		0.0	0.0	0.0	//H_Abstraction exact:   [ CsJ-CsCsCs , Cs-CdCsHH ]
+C6H9J(94)+SPC(1471) = SPC(122)+SPC(95)                 1.559e-02 	  4.34 	  8.34 		0.0	0.0	0.0	//H_Abstraction estimate: (Average:)  [ C-H , CsJ-CdCsH ]
+SPC(88)+SPC(1471) = SPC(485)+SPC(95)                   6.870e-03 	  4.34 	  11.70 		0.0	0.0	0.0	//H_Abstraction exact:   [ Cs-CdCsHH , CsJ-CdCsH ]
+C6H8(85)+SPC(1471) = C6H7J(596)+SPC(95)                9.160e-03 	  4.34 	  11.70 		0.0	0.0	0.0	//H_Abstraction exact:   [ Cs-CdCsHH , CsJ-CdCsH ]
+SPC(443)+SPC(95) = C6H12(414)+SPC(1471)                1.706e-03 	  4.34 	  3.10 		0.0	0.0	0.0	//H_Abstraction exact:   [ CsJ-CsCsH , Cs-CdCsHH ]
+SPC(442)+SPC(95) = C6H12(414)+SPC(1471)                1.402e-03 	  4.34 	  1.90 		0.0	0.0	0.0	//H_Abstraction exact:   [ CsJ-CsCsCs , Cs-CdCsHH ]
+SPC(405)+SPC(95) = C6H12(414)+SPC(1471)                1.806e-03 	  4.34 	  3.50 		0.0	0.0	0.0	//H_Abstraction exact:   [ CsJ-CsHH , Cs-CdCsHH ]
+SPC(444)+SPC(95) = C6H12(414)+SPC(1471)                1.706e-03 	  4.34 	  3.10 		0.0	0.0	0.0	//H_Abstraction exact:   [ CsJ-CsCsH , Cs-CdCsHH ]
+HSJ(5)+SPC(95) = H2S(34)+SPC(1471)                     5.960e+03 	  2.88 	  0.70 		0.0	0.0	0.0	//H_Abstraction exact:   [ SsJ-H , Cs-CdCsHH ]
+C6H8(1261)+SPC(1471) = C6H7J(596)+SPC(95)              3.924e-03 	  4.34 	  6.30 		0.0	0.0	0.0	//H_Abstraction exact:   [ Cs-CdCdHH , CsJ-CdCsH ]
+C6H9J(660)+SPC(1471) = SPC(122)+SPC(95)                1.962e-03 	  4.34 	  6.30 		0.0	0.0	0.0	//H_Abstraction exact:   [ Cs-CdCdHH , CsJ-CdCsH ]
+SPC(1471)+HJ(10) = SPC(95)                             7.000e+12 	  0.31 	 -0.19 		0.0	0.0	0.0	//R_Recombination exact:   [ C_rad/H/OneDeC , H_rad ]
+SPC(1471)+tbutyl(11) = SPC(95)+C4H8(9)                 1.899e+15 	 -0.70 	  0.00 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ C_rad/H/OneDeC , Cmethyl_Csrad ]
+SPC(1471)+C6H9J(17) = SPC(95)+C6H8(85)                 1.026e+14 	 -0.35 	  0.00 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ C_rad/H/OneDeC , C/H2/Nd_Csrad ]
+SPC(1471)+C6H11J(19) = SPC(95)+C6H10(2)                2.052e+14 	 -0.35 	  0.00 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ C_rad/H/OneDeC , C/H2/Nd_Csrad ]
+SPC(1471)+SPC(63) = SPC(95)+SPC(88)                    1.026e+14 	 -0.35 	  0.00 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ C_rad/H/OneDeC , C/H2/Nd_Csrad ]
+SPC(1471)+C6H7J(596) = SPC(95)+C6H6(1364)              1.140e+13 	 -0.07 	 -0.00 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ C_rad/H/OneDeC , C/H2/De_Csrad ]
+SPC(1471)+HS2J(38) = SPC(95)+S2(4)                     1.188e+12 	 -0.01 	  0.96 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ C_rad/H/OneDeC , S_Srad ]
+SPC(1471)+C6H9J(18) = SPC(95)+C6H8(85)                 1.140e+13 	 -0.07 	 -0.00 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ C_rad/H/OneDeC , C/H2/De_Csrad ]
+SPC(1471)+C6H9J(18) = SPC(95)+C6H8(1261)               1.026e+14 	 -0.35 	  0.00 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ C_rad/H/OneDeC , C/H2/Nd_Csrad ]
+SPC(1471)+C6H9J(660) = SPC(95)+C6H8(776)               4.580e+12 	 -0.35 	 -0.13 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ C_rad/H/OneDeC , Cdpri_Csrad ]
+SPC(1471)+SPC(1209) = SPC(95)+SPC(95)                  1.026e+14 	 -0.35 	  0.00 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ C_rad/H/OneDeC , C/H2/Nd_Csrad ]
+SPC(1471)+SPC(1471) = SPC(95)+SPC(1459)                1.026e+14 	 -0.35 	  0.00 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ C_rad/H/OneDeC , C/H2/Nd_Csrad ]
+SPC(1339)+SPC(1209) = SPC(1463)+SPC(95)                1.140e+13 	 -0.07 	 -0.00 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ S_rad/NonDeS , C/H2/Nd_Csrad ]
+SPC(1459)+SPC(1471) = SPC(1269)+SPC(95)                1.760e+02 	  3.06 	  1.20 		0.0	0.0	0.0	//H_Abstraction exact:   [ Ss-SsH , CsJ-CdCsH ]
+SPC(1459)+C6H9J(17) = SPC(95)+C6H7J(596)               7.941e+03 	  2.69 	  10.68 		0.0	0.0	0.0	//substitutionS estimate: (Average:)  [ S-SsCs , CsJ-CdCsH ]
+SPC(1463)+SPC(1471) = SPC(1339)+SPC(95)                1.760e+02 	  3.06 	  1.20 		0.0	0.0	0.0	//H_Abstraction exact:   [ Ss-SsH , CsJ-CdCsH ]
+SPC(1463)+C6H9J(17) = SPC(95)+C6H7J(596)               7.941e+03 	  2.69 	  10.68 		0.0	0.0	0.0	//substitutionS estimate: (Average:)  [ S-SsCs , CsJ-CdCsH ]
+SPC(12)+SPC(95) = DTBS(1)+SPC(77)                      3.630e+01 	  3.06 	 -3.00 		0.0	0.0	0.0	//H_Abstraction exact:   [ CsJ-CsHH , Ss-SsH ]
+C6H9J(16)+SPC(95) = C6H10(2)+SPC(77)                   2.820e+02 	  3.06 	 -5.50 		0.0	0.0	0.0	//H_Abstraction exact:   [ CdsJ-Cs , Ss-SsH ]
+C6H9J(17)+SPC(95) = C6H10(2)+SPC(77)                   1.760e+02 	  3.06 	  1.20 		0.0	0.0	0.0	//H_Abstraction exact:   [ CsJ-CdCsH , Ss-SsH ]
+C6H9J(18)+SPC(95) = C6H10(2)+SPC(77)                   9.420e+01 	  3.06 	 -4.30 		0.0	0.0	0.0	//H_Abstraction exact:   [ CsJ-CsCsH , Ss-SsH ]
+C4H9SJ(40)+SPC(95) = SPC(7)+SPC(77)                    3.630e+01 	  3.06 	 -3.00 		0.0	0.0	0.0	//H_Abstraction exact:   [ CsJ-CsHH , Ss-SsH ]
+C4H9SJ(13)+SPC(95) = SPC(7)+SPC(77)                    6.170e+02 	  3.15 	 -2.30 		0.0	0.0	0.0	//H_Abstraction exact:   [ SsJ-Cs , Ss-SsH ]
+C4H7J(45)+SPC(95) = C4H8(9)+SPC(77)                    1.440e+02 	  3.06 	  1.40 		0.0	0.0	0.0	//H_Abstraction exact:   [ CsJ-CdHH , Ss-SsH ]
+HS2J(38)+SPC(95) = HSSH(6)+SPC(77)                     1.130e+02 	  3.15 	  0.40 		0.0	0.0	0.0	//H_Abstraction exact:   [ SsJ-Ss , Ss-SsH ]
+tbutyl(11)+SPC(95) = C4H10(8)+SPC(77)                  4.600e+02 	  3.06 	 -6.40 		0.0	0.0	0.0	//H_Abstraction exact:   [ CsJ-CsCsCs , Ss-SsH ]
+C6H9J(94)+SPC(77) = SPC(122)+SPC(95)                   6.042e+04 	  2.77 	  11.74 		0.0	0.0	0.0	//H_Abstraction estimate: (Average:)  [ C-H , SsJ-Ss ]
+SPC(485)+SPC(95) = SPC(88)+SPC(77)                     1.760e+02 	  3.06 	  1.20 		0.0	0.0	0.0	//H_Abstraction exact:   [ CsJ-CdCsH , Ss-SsH ]
+C6H7J(596)+SPC(95) = C6H8(85)+SPC(77)                  1.760e+02 	  3.06 	  1.20 		0.0	0.0	0.0	//H_Abstraction exact:   [ CsJ-CdCsH , Ss-SsH ]
+SPC(443)+SPC(95) = C6H12(414)+SPC(77)                  9.420e+01 	  3.06 	 -4.30 		0.0	0.0	0.0	//H_Abstraction exact:   [ CsJ-CsCsH , Ss-SsH ]
+SPC(442)+SPC(95) = C6H12(414)+SPC(77)                  4.600e+02 	  3.06 	 -6.40 		0.0	0.0	0.0	//H_Abstraction exact:   [ CsJ-CsCsCs , Ss-SsH ]
+SPC(405)+SPC(95) = C6H12(414)+SPC(77)                  3.630e+01 	  3.06 	 -3.00 		0.0	0.0	0.0	//H_Abstraction exact:   [ CsJ-CsHH , Ss-SsH ]
+SPC(444)+SPC(95) = C6H12(414)+SPC(77)                  9.420e+01 	  3.06 	 -4.30 		0.0	0.0	0.0	//H_Abstraction exact:   [ CsJ-CsCsH , Ss-SsH ]
+HSJ(5)+SPC(95) = H2S(34)+SPC(77)                       1.440e+03 	  3.15 	 -2.40 		0.0	0.0	0.0	//H_Abstraction exact:   [ SsJ-H , Ss-SsH ]
+C6H7J(596)+SPC(95) = C6H8(1261)+SPC(77)                1.320e+02 	  3.06 	  6.20 		0.0	0.0	0.0	//H_Abstraction exact:   [ CsJ-CdCdH , Ss-SsH ]
+C6H9J(660)+SPC(77) = SPC(122)+SPC(95)                  6.296e+03 	  2.86 	  2.18 		0.0	0.0	0.0	//H_Abstraction estimate: (Average:)  [ Cs-CdCdHH , SsJ-Ss ]
+SPC(1459)+SPC(77) = SPC(1269)+SPC(95)                  1.130e+02 	  3.15 	  0.40 		0.0	0.0	0.0	//H_Abstraction exact:   [ Ss-SsH , SsJ-Ss ]
+SPC(1463)+SPC(77) = SPC(1339)+SPC(95)                  1.130e+02 	  3.15 	  0.40 		0.0	0.0	0.0	//H_Abstraction exact:   [ Ss-SsH , SsJ-Ss ]
+SPC(77)+HJ(10) = SPC(95)                               7.338e+12 	  0.23 	 -0.58 		0.0	0.0	0.0	//R_Recombination estimate: (Average:)  [ SJ-Ss , H_rad ]
+SPC(77)+tbutyl(11) = SPC(95)+C4H8(9)                   1.346e+14 	 -0.20 	 -0.00 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ S_rad/NonDeS , Cmethyl_Csrad ]
+SPC(77)+C6H9J(17) = SPC(95)+C6H8(85)                   1.140e+13 	 -0.07 	 -0.00 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ S_rad/NonDeS , C/H2/Nd_Csrad ]
+SPC(77)+C6H11J(19) = SPC(95)+C6H10(2)                  2.280e+13 	 -0.07 	 -0.00 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ S_rad/NonDeS , C/H2/Nd_Csrad ]
+SPC(77)+SPC(63) = SPC(95)+SPC(88)                      1.140e+13 	 -0.07 	 -0.00 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ S_rad/NonDeS , C/H2/Nd_Csrad ]
+SPC(77)+C6H7J(596) = SPC(95)+C6H6(1364)                1.140e+13 	 -0.07 	 -0.00 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ S_rad/NonDeS , C/H2/De_Csrad ]
+SPC(77)+HS2J(38) = SPC(95)+S2(4)                       1.188e+12 	 -0.01 	  2.37 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ S_rad/NonDeS , S_Srad ] Warning: Ea raised by 1.4 from 1.0 to dHrxn(298K) = 2.4 kcal/mol.
+SPC(77)+C6H9J(18) = SPC(95)+C6H8(85)                   1.140e+13 	 -0.07 	 -0.00 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ S_rad/NonDeS , C/H2/De_Csrad ]
+SPC(77)+C6H9J(18) = SPC(95)+C6H8(1261)                 1.140e+13 	 -0.07 	 -0.00 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ S_rad/NonDeS , C/H2/Nd_Csrad ]
+SPC(77)+C6H9J(660) = SPC(95)+C6H8(776)                 5.413e+12 	 -0.09 	 -0.04 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ S_rad/NonDeS , Cdpri_Csrad ]
+SPC(77)+SPC(1209) = SPC(95)+SPC(95)                    1.140e+13 	 -0.07 	 -0.00 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ S_rad/NonDeS , C/H2/Nd_Csrad ]
+SPC(77)+SPC(1471) = SPC(95)+SPC(1459)                  1.140e+13 	 -0.07 	 -0.00 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ S_rad/NonDeS , C/H2/Nd_Csrad ]
+SPC(95)+SPC(1471) = SPC(77)+SPC(95)                    1.760e+02 	  3.06 	  1.20 		0.0	0.0	0.0	//H_Abstraction exact:   [ Ss-SsH , CsJ-CdCsH ]
+C6H8(1261)+HS2J(38) = SPC(2030)                        3.674e+02 	  3.03 	  4.97 		0.0	0.0	0.0	//R_Addition_MultipleBond estimate: (Average:)  [ Cds-CsH_Cds-CsH , SsJ-Ss ] Warning: Ea raised by 2.3 from 2.6 to dHrxn(298K) = 5.0 kcal/mol.
+SPC(2030) = SPC(1471)                                  6.820e+09 	  0.73 	  30.50 		0.0	0.0	0.0	//intra_H_migration estimate: (Average:)  [ R3H_SS_C , C_rad_out_H/NonDeC , Cs_H_out_H/OneDe ]
+DUP
+SPC(2030) = SPC(1471)                                  7.524e+07 	  1.34 	  30.40 		0.0	0.0	0.0	//intra_H_migration estimate: (Average:)  [ R5H_SSMS , C_rad_out_H/NonDeC , Cs_H_out_H/NonDeC ]
+DUP
+SPC(1459)+HJ(10) = SPC(2030)                           1.740e+08 	  1.64 	  1.91 		0.0	0.0	0.0	//R_Addition_MultipleBond exact:   [ Cds-CdH_Cds-CsH , HJ ]
+SPC(2030)+SPC(12) = SPC(1459)+DTBS(1)                  1.140e+13 	 -0.07 	 -0.00 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ C/H2/De_Csrad , C_rad/H2/Cs ]
+SPC(2030)+C6H9J(16) = SPC(1459)+C6H10(2)               1.140e+13 	 -0.07 	 -0.00 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ C/H2/De_Csrad , Cd_rad/NonDeC ]
+SPC(2030)+C6H9J(17) = SPC(1459)+C6H10(2)               1.140e+13 	 -0.07 	 -0.00 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ C/H2/De_Csrad , C_rad/H/OneDeC ]
+SPC(2030)+C6H9J(18) = SPC(1459)+C6H10(2)               1.140e+13 	 -0.07 	 -0.00 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ C/H2/De_Csrad , C_rad/H/NonDeC ]
+SPC(2030)+C4H9SJ(40) = SPC(1459)+SPC(7)                1.140e+13 	 -0.07 	 -0.00 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ C/H2/De_Csrad , C_rad/H2/Cs ]
+SPC(2030)+C4H9SJ(13) = SPC(1459)+SPC(7)                1.140e+13 	 -0.07 	 -0.00 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ C/H2/De_Csrad , S_rad/NonDeC ]
+SPC(2030)+C4H7J(45) = SPC(1459)+C4H8(9)                1.140e+13 	 -0.07 	 -0.00 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ C/H2/De_Csrad , C_rad/H2/Cd ]
+SPC(2030)+HS2J(38) = SPC(1459)+HSSH(6)                 1.140e+13 	 -0.07 	 -0.00 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ C/H2/De_Csrad , S_rad/NonDeS ]
+SPC(2030)+tbutyl(11) = SPC(1459)+C4H10(8)              1.140e+13 	 -0.07 	 -0.00 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ C/H2/De_Csrad , C_rad/Cs3 ]
+SPC(2030)+SPC(122) = SPC(1459)+C6H9J(94)               1.140e+13 	 -0.07 	 -0.00 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ C/H2/De_Csrad , Y_rad ]
+SPC(2030)+SPC(485) = SPC(1459)+SPC(88)                 1.140e+13 	 -0.07 	 -0.00 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ C/H2/De_Csrad , C_rad/H/OneDeC ]
+SPC(2030)+C6H7J(596) = SPC(1459)+C6H8(85)              1.140e+13 	 -0.07 	 -0.00 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ C/H2/De_Csrad , C_rad/H/OneDeC ]
+SPC(2030)+SPC(405) = SPC(1459)+C6H12(414)              1.140e+13 	 -0.07 	 -0.00 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ C/H2/De_Csrad , C_rad/H2/Cs ]
+SPC(2030)+SPC(443) = SPC(1459)+C6H12(414)              1.140e+13 	 -0.07 	 -0.00 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ C/H2/De_Csrad , C_rad/H/NonDeC ]
+SPC(2030)+SPC(442) = SPC(1459)+C6H12(414)              1.140e+13 	 -0.07 	 -0.00 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ C/H2/De_Csrad , C_rad/Cs3 ]
+SPC(2030)+SPC(444) = SPC(1459)+C6H12(414)              1.140e+13 	 -0.07 	 -0.00 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ C/H2/De_Csrad , C_rad/H/NonDeC ]
+SPC(2030)+HSJ(5) = SPC(1459)+H2S(34)                   1.140e+13 	 -0.07 	 -0.00 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ C/H2/De_Csrad , S_pri_rad ]
+SPC(2030)+C6H7J(596) = SPC(1459)+C6H8(1261)            1.140e+13 	 -0.07 	 -0.00 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ C/H2/De_Csrad , C_rad/H/TwoDe ]
+SPC(2030)+S2JJ(3) = SPC(1459)+HS2J(38)                 2.870e+12 	 -0.04 	 -0.00 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ C/H2/De_Csrad , Y_rad ]
+SPC(2030)+SPC(122) = SPC(1459)+C6H9J(660)              1.140e+13 	 -0.07 	 -0.00 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ C/H2/De_Csrad , C_rad/H/TwoDe ]
+SPC(2030)+SPC(1269) = SPC(1459)+SPC(1459)              1.140e+13 	 -0.07 	 -0.00 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ C/H2/De_Csrad , S_rad/NonDeS ]
+SPC(2030)+SPC(1339) = SPC(1459)+SPC(1463)              1.140e+13 	 -0.07 	 -0.00 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ C/H2/De_Csrad , S_rad/NonDeS ]
+SPC(2030)+SPC(77) = SPC(1459)+SPC(95)                  1.140e+13 	 -0.07 	 -0.00 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ C/H2/De_Csrad , S_rad/NonDeS ]
+SPC(2030)+SPC(1471) = SPC(1459)+SPC(95)                1.140e+13 	 -0.07 	 -0.00 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ C/H2/De_Csrad , C_rad/H/OneDeC ]
+SPC(1209)+tbutyl(11) = SPC(2647)+C4H10(8)              4.600e+02 	  3.06 	 -6.40 		0.0	0.0	0.0	//H_Abstraction exact:   [ Ss-SsH , CsJ-CsCsCs ]
+SPC(1209)+HSJ(5) = SPC(2647)+H2S(34)                   1.440e+03 	  3.15 	 -2.40 		0.0	0.0	0.0	//H_Abstraction exact:   [ Ss-SsH , SsJ-H ]
+SPC(1209)+C4H9SJ(13) = SPC(2647)+SPC(7)                6.170e+02 	  3.15 	 -2.30 		0.0	0.0	0.0	//H_Abstraction exact:   [ Ss-SsH , SsJ-Cs ]
+SPC(1209)+C6H9J(17) = SPC(2647)+C6H10(2)               1.760e+02 	  3.06 	  1.20 		0.0	0.0	0.0	//H_Abstraction exact:   [ Ss-SsH , CsJ-CdCsH ]
+SPC(1209)+SPC(405) = SPC(2647)+C6H12(414)              3.630e+01 	  3.06 	 -3.00 		0.0	0.0	0.0	//H_Abstraction exact:   [ Ss-SsH , CsJ-CsHH ]
+SPC(1209)+SPC(444) = SPC(2647)+C6H12(414)              9.420e+01 	  3.06 	 -4.30 		0.0	0.0	0.0	//H_Abstraction exact:   [ Ss-SsH , CsJ-CsCsH ]
+SPC(1209)+SPC(443) = SPC(2647)+C6H12(414)              9.420e+01 	  3.06 	 -4.30 		0.0	0.0	0.0	//H_Abstraction exact:   [ Ss-SsH , CsJ-CsCsH ]
+SPC(1209)+SPC(442) = SPC(2647)+C6H12(414)              4.600e+02 	  3.06 	 -6.40 		0.0	0.0	0.0	//H_Abstraction exact:   [ Ss-SsH , CsJ-CsCsCs ]
+SPC(2647)+C6H9J(94) = SPC(1209)+SPC(122)               6.042e+04 	  2.77 	  11.74 		0.0	0.0	0.0	//H_Abstraction estimate: (Average:)  [ SsJ-Ss , C-H ]
+SPC(2647)+C6H9J(660) = SPC(1209)+SPC(122)              6.296e+03 	  2.86 	  2.18 		0.0	0.0	0.0	//H_Abstraction estimate: (Average:)  [ SsJ-Ss , Cs-CdCdHH ]
+SPC(1209)+C4H9SJ(40) = SPC(2647)+SPC(7)                3.630e+01 	  3.06 	 -3.00 		0.0	0.0	0.0	//H_Abstraction exact:   [ Ss-SsH , CsJ-CsHH ]
+SPC(1209)+C6H7J(596) = SPC(2647)+C6H8(85)              1.760e+02 	  3.06 	  1.20 		0.0	0.0	0.0	//H_Abstraction exact:   [ Ss-SsH , CsJ-CdCsH ]
+SPC(1209)+C6H7J(596) = SPC(2647)+C6H8(1261)            1.320e+02 	  3.06 	  6.20 		0.0	0.0	0.0	//H_Abstraction exact:   [ Ss-SsH , CsJ-CdCdH ]
+SPC(1209)+SPC(485) = SPC(2647)+SPC(88)                 1.760e+02 	  3.06 	  1.20 		0.0	0.0	0.0	//H_Abstraction exact:   [ Ss-SsH , CsJ-CdCsH ]
+SPC(1209)+HS2J(38) = SPC(2647)+HSSH(6)                 1.130e+02 	  3.15 	  0.40 		0.0	0.0	0.0	//H_Abstraction exact:   [ Ss-SsH , SsJ-Ss ]
+SPC(1209)+C6H9J(18) = SPC(2647)+C6H10(2)               9.420e+01 	  3.06 	 -4.30 		0.0	0.0	0.0	//H_Abstraction exact:   [ Ss-SsH , CsJ-CsCsH ]
+SPC(1209)+C6H9J(16) = SPC(2647)+C6H10(2)               2.820e+02 	  3.06 	 -5.50 		0.0	0.0	0.0	//H_Abstraction exact:   [ Ss-SsH , CdsJ-Cs ]
+SPC(2647)+HJ(10) = SPC(1209)                           7.338e+12 	  0.23 	 -0.58 		0.0	0.0	0.0	//R_Recombination estimate: (Average:)  [ SJ-Ss , H_rad ]
+C6H11J(19)+SPC(2647) = C6H10(2)+SPC(1209)              2.280e+13 	 -0.07 	 -0.00 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ C/H2/Nd_Csrad , S_rad/NonDeS ]
+HS2J(38)+SPC(2647) = S2(4)+SPC(1209)                   1.188e+12 	 -0.01 	  2.37 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ S_Srad , S_rad/NonDeS ] Warning: Ea raised by 1.4 from 1.0 to dHrxn(298K) = 2.4 kcal/mol.
+tbutyl(11)+SPC(2647) = C4H8(9)+SPC(1209)               1.346e+14 	 -0.20 	 -0.00 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ Cmethyl_Csrad , S_rad/NonDeS ]
+SPC(63)+SPC(2647) = SPC(88)+SPC(1209)                  1.140e+13 	 -0.07 	 -0.00 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ C/H2/Nd_Csrad , S_rad/NonDeS ]
+C6H9J(17)+SPC(2647) = C6H8(85)+SPC(1209)               1.140e+13 	 -0.07 	 -0.00 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ C/H2/Nd_Csrad , S_rad/NonDeS ]
+C6H9J(18)+SPC(2647) = C6H8(85)+SPC(1209)               1.140e+13 	 -0.07 	 -0.00 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ C/H2/De_Csrad , S_rad/NonDeS ]
+C6H9J(18)+SPC(2647) = C6H8(1261)+SPC(1209)             1.140e+13 	 -0.07 	 -0.00 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ C/H2/Nd_Csrad , S_rad/NonDeS ]
+C6H9J(660)+SPC(2647) = C6H8(776)+SPC(1209)             5.413e+12 	 -0.09 	 -0.04 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ Cdpri_Csrad , S_rad/NonDeS ]
+SPC(1209)+C4H7J(45) = SPC(2647)+C4H8(9)                1.440e+02 	  3.06 	  1.40 		0.0	0.0	0.0	//H_Abstraction exact:   [ Ss-SsH , CsJ-CdHH ]
+SPC(1209)+SPC(12) = SPC(2647)+DTBS(1)                  3.630e+01 	  3.06 	 -3.00 		0.0	0.0	0.0	//H_Abstraction exact:   [ Ss-SsH , CsJ-CsHH ]
+SPC(1209)+SPC(1269) = SPC(2647)+SPC(1459)              1.130e+02 	  3.15 	  0.40 		0.0	0.0	0.0	//H_Abstraction exact:   [ Ss-SsH , SsJ-Ss ]
+SPC(1209)+SPC(1471) = SPC(2647)+SPC(95)                1.760e+02 	  3.06 	  1.20 		0.0	0.0	0.0	//H_Abstraction exact:   [ Ss-SsH , CsJ-CdCsH ]
+SPC(1209)+SPC(1339) = SPC(2647)+SPC(1463)              1.130e+02 	  3.15 	  0.40 		0.0	0.0	0.0	//H_Abstraction exact:   [ Ss-SsH , SsJ-Ss ]
+SPC(1471)+SPC(2647) = SPC(1459)+SPC(1209)              1.140e+13 	 -0.07 	 -0.00 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ C/H2/Nd_Csrad , S_rad/NonDeS ]
+SPC(2030)+SPC(2647) = SPC(1459)+SPC(1209)              1.140e+13 	 -0.07 	 -0.00 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ C/H2/De_Csrad , S_rad/NonDeS ]
+SPC(1209)+SPC(77) = SPC(2647)+SPC(95)                  1.130e+02 	  3.15 	  0.40 		0.0	0.0	0.0	//H_Abstraction exact:   [ Ss-SsH , SsJ-Ss ]
+SPC(77)+HJ(10) = SPC(2647)                             1.460e+08 	  1.64 	  1.37 		0.0	0.0	0.0	//R_Addition_MultipleBond exact:   [ Cds-CsH_Cds-CsH , HJ ]
+SPC(2647)+SPC(12) = SPC(77)+DTBS(1)                    2.900e+12 	  0.00 	  0.00 		0.0	0.0	0.0	//Disproportionation exact:   [ C/H2/Nd_Csrad , C_rad/H2/Cs ]
+SPC(2647)+C6H9J(16) = SPC(77)+C6H10(2)                 2.420e+12 	  0.00 	  0.00 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ C/H2/Nd_Csrad , Cd_rad/NonDeC ]
+SPC(2647)+C6H9J(17) = SPC(77)+C6H10(2)                 1.026e+14 	 -0.35 	  0.00 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ C/H2/Nd_Csrad , C_rad/H/OneDeC ]
+SPC(2647)+C6H9J(18) = SPC(77)+C6H10(2)                 1.026e+14 	 -0.35 	  0.00 		0.0	0.0	0.0	//Disproportionation exact:   [ C/H2/Nd_Csrad , C_rad/H/NonDeC ]
+SPC(2647)+C4H9SJ(40) = SPC(77)+SPC(7)                  2.900e+12 	  0.00 	  0.00 		0.0	0.0	0.0	//Disproportionation exact:   [ C/H2/Nd_Csrad , C_rad/H2/Cs ]
+SPC(2647)+C4H9SJ(13) = SPC(77)+SPC(7)                  1.140e+13 	 -0.07 	 -0.00 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ C/H2/Nd_Csrad , S_rad/NonDeC ]
+SPC(2647)+C4H7J(45) = SPC(77)+C4H8(9)                  2.900e+12 	  0.00 	 -0.13 		0.0	0.0	0.0	//Disproportionation exact:   [ C/H2/Nd_Csrad , C_rad/H2/Cd ]
+SPC(2647)+HS2J(38) = SPC(77)+HSSH(6)                   1.140e+13 	 -0.07 	 -0.00 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ C/H2/Nd_Csrad , S_rad/NonDeS ]
+SPC(2647)+tbutyl(11) = SPC(77)+C4H10(8)                4.320e+14 	 -0.75 	  0.00 		0.0	0.0	0.0	//Disproportionation exact:   [ C/H2/Nd_Csrad , C_rad/Cs3 ]
+SPC(2647)+SPC(122) = SPC(77)+C6H9J(94)                 1.140e+13 	 -0.07 	 -0.00 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ C/H2/Nd_Csrad , Y_rad ]
+SPC(2647)+SPC(485) = SPC(77)+SPC(88)                   1.026e+14 	 -0.35 	  0.00 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ C/H2/Nd_Csrad , C_rad/H/OneDeC ]
+SPC(2647)+C6H7J(596) = SPC(77)+C6H8(85)                1.026e+14 	 -0.35 	  0.00 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ C/H2/Nd_Csrad , C_rad/H/OneDeC ]
+SPC(2647)+SPC(405) = SPC(77)+C6H12(414)                2.900e+12 	  0.00 	  0.00 		0.0	0.0	0.0	//Disproportionation exact:   [ C/H2/Nd_Csrad , C_rad/H2/Cs ]
+SPC(2647)+SPC(443) = SPC(77)+C6H12(414)                1.026e+14 	 -0.35 	  0.00 		0.0	0.0	0.0	//Disproportionation exact:   [ C/H2/Nd_Csrad , C_rad/H/NonDeC ]
+SPC(2647)+SPC(442) = SPC(77)+C6H12(414)                4.320e+14 	 -0.75 	  0.00 		0.0	0.0	0.0	//Disproportionation exact:   [ C/H2/Nd_Csrad , C_rad/Cs3 ]
+SPC(2647)+SPC(444) = SPC(77)+C6H12(414)                1.026e+14 	 -0.35 	  0.00 		0.0	0.0	0.0	//Disproportionation exact:   [ C/H2/Nd_Csrad , C_rad/H/NonDeC ]
+SPC(2647)+HSJ(5) = SPC(77)+H2S(34)                     1.140e+13 	 -0.07 	 -0.00 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ C/H2/Nd_Csrad , S_pri_rad ]
+SPC(2647)+C6H7J(596) = SPC(77)+C6H8(1261)              1.026e+14 	 -0.35 	  0.00 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ C/H2/Nd_Csrad , C_rad/H/TwoDe ]
+SPC(2647)+S2JJ(3) = SPC(77)+HS2J(38)                   2.870e+12 	 -0.04 	 -0.00 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ C/H2/Nd_Csrad , Y_rad ]
+SPC(2647)+SPC(122) = SPC(77)+C6H9J(660)                1.026e+14 	 -0.35 	  0.00 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ C/H2/Nd_Csrad , C_rad/H/TwoDe ]
+SPC(2647)+SPC(2647) = SPC(77)+SPC(1209)                1.140e+13 	 -0.07 	 -0.00 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ C/H2/Nd_Csrad , S_rad/NonDeS ]
+SPC(2647)+SPC(1269) = SPC(77)+SPC(1459)                1.140e+13 	 -0.07 	 -0.00 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ C/H2/Nd_Csrad , S_rad/NonDeS ]
+SPC(2647)+SPC(1339) = SPC(77)+SPC(1463)                1.140e+13 	 -0.07 	 -0.00 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ C/H2/Nd_Csrad , S_rad/NonDeS ]
+SPC(1209)+SPC(2647) = SPC(95)+SPC(1209)                1.140e+13 	 -0.07 	 -0.00 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ C/H2/Nd_Csrad , S_rad/NonDeS ]
+SPC(2647)+SPC(77) = SPC(77)+SPC(95)                    1.140e+13 	 -0.07 	 -0.00 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ C/H2/Nd_Csrad , S_rad/NonDeS ]
+SPC(2647)+SPC(1471) = SPC(77)+SPC(95)                  1.026e+14 	 -0.35 	  0.00 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ C/H2/Nd_Csrad , C_rad/H/OneDeC ]
+SPC(2647) = SPC(95)                                    1.132e+11 	  1.00 	  3.85 		0.0	0.0	0.0	//Intra_Disproportionation exact:   [ Y_biCyc6 , Y_rad , XH_Rrad ]
+SPC(2647)+C6H7J(596) = SPC(1209)+C6H6(1364)            1.140e+13 	 -0.07 	 -0.00 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ S_rad/NonDeS , C/H2/De_Csrad ]
+SPC(1750)+HJ(10) = C4H9SJ(48)+HSJ(5)                   4.785e+08 	  1.59 	  0.93 		0.0	0.0	0.0	//substitutionS exact:   [ S-CsSs , HJ ]
+SPC(1750)+tbutyl(11) = SPC(64)+HSJ(5)                  6.809e+03 	  2.69 	  3.40 		0.0	0.0	0.0	//substitutionS estimate: (Average:)  [ S-CsSs , CsJ-CsCsCs ]
+C4H8(9)+HS2J(38) = SPC(1750)                           4.210e+00 	  3.30 	  7.40 		0.0	0.0	0.0	//R_Addition_MultipleBond estimate: (Average:)  [ Cds-HH_Cds-CsCs , SsJ-Ss ]
+SPC(1151) = SPC(1750)                                  1.000e+12 	  0.00 	  20.00 		0.0	0.0	0.0	//intra_substitutionS_isomerization estimate: (Average:)  [ XSR3J_S , CsJ-3-CsHH , S-Ss(H)C ]
+SPC(1209) = SPC(2734)+HJ(10)                           4.000e+12 	  0.00 	  20.00 		0.0	0.0	0.0	//intra_substitutionS_cyclization estimate: (Average:)  [ XSR8J , CsJ-Cs , S-HSs ]
+SPC(2647) = SPC(2734)                                  6.888e+13 	  0.01 	  1.41 		0.0	0.0	0.0	//Birad_recombination estimate: (Average:)  [ R4_SSS , C_rad_out_H/NonDeC , Spri_rad ]
+
